@@ -338,7 +338,7 @@ class LMS
 
 	function GetCustomerName($id)
 	{
-		return $this->DB->GetOne('SELECT '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' 
+		return $this->DB->GetOne('SELECT '.$this->DB->Concat('lastname',"' '",'name').' 
 			    FROM customers WHERE id=?', array($id));
 	}
 
@@ -537,16 +537,16 @@ class LMS
 
 	function GetCustomerNames()
 	{
-		return $this->DB->GetAllByKey('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername 
+		return $this->DB->GetAllByKey('SELECT id, '.$this->DB->Concat('lastname',"' '",'name').' AS customername 
 				FROM customersview WHERE status > 1 AND deleted = 0 
-				ORDER BY customername', 'id');
+				ORDER BY lastname, name', 'id');
 	}
 
 	function GetAllCustomerNames()
 	{
-		return $this->DB->GetAllByKey('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername 
+		return $this->DB->GetAllByKey('SELECT id, '.$this->DB->Concat('lastname',"' '",'name').' AS customername 
 				FROM customersview WHERE deleted = 0
-				ORDER BY customername', 'id');
+				ORDER BY lastname, name', 'id');
 	}
 
 	function GetCustomerNodesAC($id)
@@ -994,13 +994,13 @@ class LMS
 			FROM customergroups WHERE id=?', array($id));
 
 		$result['customers'] = $this->DB->GetAll('SELECT c.id AS id,'
-			.$this->DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername 
+			.$this->DB->Concat('c.lastname',"' '",'c.name').' AS customername 
 			FROM customerassignments, customers c '
 			.($network ? 'LEFT JOIN nodes ON c.id = nodes.ownerid ' : '')
 			.'WHERE c.id = customerid AND customergroupid = ? '
 			.($network ? 'AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR
 			(ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')) ' : '')
-			.' GROUP BY c.id, customername ORDER BY customername', array($id));
+			.' GROUP BY c.id, c.lastname, c.name ORDER BY c.lastname, c.name', array($id));
 
 		$result['customerscount'] = sizeof($result['customers']);
 		$result['count'] = $network ? $this->CustomergroupWithCustomerGet($id) : $result['customerscount'];
@@ -1083,15 +1083,15 @@ class LMS
 		if($network)
 			$net = $this->GetNetworkParams($network);
 
-		return $this->DB->GetAll('SELECT c.id AS id, '.$this->DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername,
-			customerid FROM customersview c
-			LEFT JOIN customerassignments ON (c.id = customerid AND customerassignments.customergroupid = ?) '
-			.($network ? 'LEFT JOIN nodes ON c.id = nodes.ownerid ' : '').'WHERE '
-			.($network ? '((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '
-			.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')) AND ' : '')
-			.'deleted = 0
-			GROUP BY c.id, customerid, lastname, c.name
-			HAVING customerid IS NULL ORDER BY customername', array($groupid));
+		return $this->DB->GetAll('SELECT c.id AS id, '.$this->DB->Concat('c.lastname',"' '",'c.name').' AS customername
+			FROM customersview c '
+			.($network ? 'LEFT JOIN nodes ON (c.id = nodes.ownerid) ' : '')
+			.'WHERE c.deleted = 0 AND c.id NOT IN (
+				SELECT customerid FROM customerassignments WHERE customergroupid = ?) '
+			.($network ? 'AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '
+				.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')) ' : '')
+			.'GROUP BY c.id, c.lastname, c.name
+			ORDER BY c.lastname, c.name', array($groupid));
 	}
 
 	/*
@@ -1295,7 +1295,7 @@ class LMS
 		if($nodelist = $this->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, 
 				inet_ntoa(ipaddr_pub) AS ip_pub, mac, nodes.name AS name, ownerid, access, warning, 
 				netdev, lastonline, nodes.info AS info, '
-				.$this->DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS owner
+				.$this->DB->Concat('c.lastname',"' '",'c.name').' AS owner
 				FROM nodes 
 				JOIN customersview c ON (nodes.ownerid = c.id) '
 				.($customergroup ? 'JOIN customerassignments ON (customerid = c.id) ' : '')
@@ -1555,7 +1555,7 @@ class LMS
 		return $this->DB->GetAll('SELECT nodes.id AS id, nodes.name AS name, linktype, ipaddr, 
 			inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, 
 			netdev, port, ownerid,
-			'.$this->DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS owner 
+			'.$this->DB->Concat('c.lastname',"' '",'c.name').' AS owner 
 			FROM nodes, customersview c 
 			WHERE ownerid = c.id AND netdev = ? AND ownerid > 0 
 			ORDER BY nodes.name ASC', array($id));
@@ -2185,13 +2185,14 @@ class LMS
 			WHERE t.id=?', array($id));
 
 		$result['customers'] = $this->DB->GetAll('SELECT c.id AS id, COUNT(c.id) AS cnt, '
-			.$this->DB->Concat('upper(c.lastname)',"' '",'c.name').' AS customername '
+			.$this->DB->Concat('c.lastname',"' '",'c.name').' AS customername '
 			.($network ? ', COUNT(nodes.id) AS nodescount ' : '')
-			.'FROM assignments, customersview c '.($network ? 'LEFT JOIN nodes ON (c.id = nodes.ownerid) ' : '')
+			.'FROM assignments, customersview c '
+			.($network ? 'LEFT JOIN nodes ON (c.id = nodes.ownerid) ' : '')
 			.'WHERE c.id = customerid AND deleted = 0 AND tariffid = ? '
 			.($network ? 'AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '
 			.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')) ' : '')
-			.'GROUP BY c.id, customername ORDER BY customername', array($id));
+			.'GROUP BY c.id, customername ORDER BY c.lastname, c.name', array($id));
 
 		$unactive = $this->DB->GetRow('SELECT COUNT(*) AS count,
                         SUM(CASE a.period
@@ -3170,7 +3171,7 @@ class LMS
 		    'SELECT t.id, t.customerid, c.address, users.name AS ownername,
 			    t.subject, state, owner AS ownerid, t.requestor AS req,
 			    CASE WHEN customerid = 0 THEN t.requestor ELSE '
-			    .$this->DB->Concat('UPPER(c.lastname)',"' '",'c.name').' END AS requestor, 
+			    .$this->DB->Concat('c.lastname',"' '",'c.name').' END AS requestor, 
 			    t.createtime AS createtime, u.name AS creatorname,
 			    (SELECT MAX(createtime) FROM rtmessages WHERE ticketid = t.id) AS lastmodified
 		    FROM rttickets t 
@@ -3336,7 +3337,7 @@ class LMS
 		
 		$ticket = $this->DB->GetRow('SELECT t.id AS ticketid, t.queueid, rtqueues.name AS queuename, 
 				    t.requestor, t.state, t.owner, t.customerid, t.cause, t.creatorid, c.name AS creator, '
-				    .$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, 
+				    .$this->DB->Concat('customers.lastname',"' '",'customers.name').' AS customername, 
 				    o.name AS ownername, t.createtime, t.resolvetime, t.subject
 				FROM rttickets t
 				LEFT JOIN rtqueues ON (t.queueid = rtqueues.id)
@@ -3347,7 +3348,7 @@ class LMS
 		
 		$ticket['messages'] = $this->DB->GetAll(
 				'(SELECT rtmessages.id AS id, mailfrom, subject, body, createtime, '
-				    .$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, 
+				    .$this->DB->Concat('customers.lastname',"' '",'customers.name').' AS customername, 
 				    userid, users.name AS username, customerid, rtattachments.filename AS attachment
 				FROM rtmessages
 				LEFT JOIN customers ON (customers.id = customerid)
@@ -3917,7 +3918,7 @@ class LMS
 
 		$list = $this->DB->GetAll(
 			'SELECT events.id AS id, title, description, date, begintime, endtime, customerid, closed, '
-			.$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername
+			.$this->DB->Concat('customers.lastname',"' '",'customers.name').' AS customername
 			FROM events
 			LEFT JOIN customers ON (customerid = customers.id)
 			WHERE (private = 0 OR (private = 1 AND userid = ?)) '
@@ -4240,7 +4241,7 @@ class LMS
 
 		$voipaccountlist =
 			$this->DB->GetAll('SELECT voipaccounts.id AS id, login, passwd, voipaccounts.phone AS phone, ownerid, '
-				.$this->DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS owner
+				.$this->DB->Concat('c.lastname',"' '",'c.name').' AS owner
 				FROM voipaccounts 
 				JOIN customersview c ON (voipaccounts.ownerid = c.id) '
 				.' WHERE 1=1 '
