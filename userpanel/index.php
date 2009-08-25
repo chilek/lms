@@ -35,56 +35,7 @@ $CONFIG_FILE = (is_readable('lms.ini')) ? 'lms.ini' : '/etc/lms/lms.ini';
 ini_set('session.name','LMSSESSIONID');
 
 // Parse configuration file
-
-function lms_parse_ini_file($filename, $process_sections = false) 
-{
-     $ini_array = array();
-     $section = '';
-     $lines = file($filename);
-     foreach($lines as $line) 
-     {
-          $line = trim($line);
-          
-          if($line == '' || $line[0] == ';' || $line[0] == '#') 
-               continue;
-          
-          list($sec_name) = sscanf($line, "[%[^]]");
-          
-          if( $sec_name )
-               $section = trim($sec_name);
-          else 
-          {
-               list($property, $value) = sscanf($line, "%[^=] = '%[^']'");
-               if ( !$property || !$value ) 
-               {
-                    list($property, $value) = sscanf($line, "%[^=] = \"%[^\"]\"");
-                    if ( !$property || !$value ) 
-                    {
-                         list($property, $value) = sscanf($line, "%[^=] = %[^;#]");
-                         if( !$property || !$value ) 
-                              continue;
-                         else
-                              $value = trim($value, "\"'");
-                    }
-               }
-          
-               $property = trim($property);
-               $value = trim($value);
-               
-               if($process_sections) 
-                    $ini_array[$section][$property] = $value;
-               else 
-                    $ini_array[$property] = $value;
-          }
-     }
-     
-     return $ini_array;
-}
-
-$CONFIG = array();
-
-foreach(lms_parse_ini_file($CONFIG_FILE, true) as $key => $val)
-     $CONFIG[$key] = $val;
+$CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 
 // Check for configuration vars and set default values
 if(empty($CONFIG['directories']['sys_dir']) || !file_exists($CONFIG['directories']['sys_dir']))
@@ -120,6 +71,8 @@ $_DBNAME = $CONFIG['database']['database'];
 require_once(LIB_DIR.'/LMSDB.php');
 
 $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
+
+if (!$DB) die;
 
 require_once(LIB_DIR.'/dbencoding.php');
 

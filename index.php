@@ -43,56 +43,7 @@ elseif(is_readable('/etc/lms/lms-'.$_SERVER['HTTP_HOST'].'.ini'))
 elseif(!is_readable($CONFIG_FILE))
 	die('Unable to read configuration file ['.$CONFIG_FILE.']!'); 
 
-// Parse configuration file
-function lms_parse_ini_file($filename, $process_sections = false) 
-{
-	$ini_array = array();
-	$section = '';
-	$lines = file($filename);
-	foreach($lines as $line) 
-	{
-		$line = trim($line);
-		
-		if($line == '' || $line[0] == ';' || $line[0] == '#') 
-			continue;
-		
-		list($sec_name) = sscanf($line, "[%[^]]");
-		
-		if( $sec_name )
-			$section = trim($sec_name);
-		else 
-		{
-			list($property, $value) = sscanf($line, "%[^=] = '%[^']'");
-			if ( !$property || !$value ) 
-			{
-				list($property, $value) = sscanf($line, "%[^=] = \"%[^\"]\"");
-				if ( !$property || !$value ) 
-				{
-					list($property, $value) = sscanf($line, "%[^=] = %[^;#]");
-					if( !$property || !$value ) 
-						continue;
-					else
-						$value = trim($value, "\"'");
-				}
-			}
-		
-			$property = trim($property);
-			$value = trim($value);
-			
-			if($process_sections) 
-				$ini_array[$section][$property] = $value;
-			else 
-				$ini_array[$property] = $value;
-		}
-	}
-	
-	return $ini_array;
-}
-
-$CONFIG = array();
-
-foreach(lms_parse_ini_file($CONFIG_FILE, true) as $key => $val)
-	$CONFIG[$key] = $val;
+$CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 
 // Check for configuration vars and set default values
 $CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
@@ -132,7 +83,6 @@ $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 if(!$DB)
 {
 	// can't working without database
-	header('HTTP/1.0 503 Service Unavailable');
 	die();
 }
 
