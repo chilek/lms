@@ -69,7 +69,7 @@
 		else if (type == 'note')
 			document.addbalance.action = '?m=notelist';
 		else
-			return location.href = '?m=customerbalance&id={/literal}{$balancelist.customerid}{literal}';
+			return window.location = '?m=customerbalance&id={/literal}{$balancelist.customerid}{literal}';
 
 		document.addbalance.target = '';
 		document.addbalance.submit();
