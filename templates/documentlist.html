@@ -117,7 +117,6 @@
 		<TD WIDTH="95%" onclick="window.open('?m=documentview&id={$doc.docid}');">{$doc.description}</TD>
 		<TD WIDTH="1%" CLASS="fright" ALIGN="RIGHT" NOWRAP>
 			{assign var=type value=$doc.type}
-			<a href="?m=documentview&id={$doc.docid}" target="_blank"><img src="img/{if preg_match('/pdf/',$doc.contenttype)}pdf{else}view{/if}.gif" alt="[ {t}View{/t} ]" title="[ {t}View{/t} ]"></a>
 			<a href="?m=documentview&id={$doc.docid}&save=1"><img src="img/save.gif" alt="[ {t}Save{/t} ]" title="[ {t}Save{/t} ]"></a>
 			{if ! $doc.closed && ($docrights.$type.rights & 4)}
 			<a href="?m=documentedit&id={$doc.docid}&action=confirm"><img src="img/confirm.gif" alt="[ {t}Confirm{/t} ]" title="[ {t}Confirm{/t} ]"></a>
@@ -128,6 +127,7 @@
 			{if ($docrights.$type.rights & 8)}
 			<a href="?m=documentedit&id={$doc.docid}"><img src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></a>
 			{/if}
+			<a href="?m=documentview&id={$doc.docid}" target="_blank"><img src="img/{if preg_match('/pdf/',$doc.contenttype)}pdf{else}view{/if}.gif" alt="[ {t}View{/t} ]" title="[ {t}View{/t} ]"></a>
 			<INPUT TYPE="checkbox" NAME="marks[{$docid}]" VALUE="{$docid}"{if $marks.$docid}CHECKED{/if}>
 		</TD>
 	
