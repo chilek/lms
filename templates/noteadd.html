@@ -1,9 +1,9 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-{if $newnote}
+{if $newnoteid}
 <SCRIPT type="text/javascript">
-window.open('?m=note&id={$newnote.id}');
+window.open('?m=note&id={$newnoteid}');
 </SCRIPT>
 {/if}
 {include file="calendar_js.html"}

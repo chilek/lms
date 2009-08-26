@@ -245,7 +245,7 @@ if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_
 
 if($newnote = $SESSION->get('noteprint'))
 {
-        $SMARTY->assign('newnote', $newnote);
+        $SMARTY->assign('newnoteid', $newnote);
         $SESSION->remove('noteprint');
 }
 
