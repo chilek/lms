@@ -123,10 +123,10 @@
 			{if $queue[ticket].state == 0 || $queue[ticket].state == 3}</FONT>{/if}
 		</TD>
 		<TD class="fright" align="right" NOWRAP>
-			<A href="?m=rtticketview&id={$queue[ticket].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"> </A>
-			<A href="?m=rtticketedit&id={$queue[ticket].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"> </A>
-			<A href="?m=rtticketdel&id={$queue[ticket].id}" onClick="return confirmLink(this, '{t 0=$queue[ticket].id|string_format:"%06d"}Are you sure, you want to remove ticket $0?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
 			<A href="?m=rtticketprint&id={$queue[ticket].id}" target="_BLANK"><IMG src="img/print.gif" alt="[ {t}Print{/t} ]" title="[ {t}Print{/t} ]" title="[ {t}Edit{/t} ]"> </A>
+			<A href="?m=rtticketdel&id={$queue[ticket].id}" onClick="return confirmLink(this, '{t 0=$queue[ticket].id|string_format:"%06d"}Are you sure, you want to remove ticket $0?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+			<A href="?m=rtticketedit&id={$queue[ticket].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"> </A>
+			<A href="?m=rtticketview&id={$queue[ticket].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"> </A>
 		</TD>
 	</TR>
 	{sectionelse}

@@ -34,11 +34,11 @@
 		</TD>
 		<TD WIDTH="1%" CLASS="fright" ALIGN="right">
 			<NOBR>
-			<A HREF="?m=nodegroupinfo&id={$nodegrouplist[nodegroups].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
-			<A HREF="?m=nodegroupedit&id={$nodegrouplist[nodegroups].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 			{if $nodegrouplist[nodegroups].nodescount}<A HREF="javascript:alert('{t}Group with members cannot be deleted!{/t}');">
 			{else}<A HREF="?m=nodegroupdel&id={$nodegrouplist[nodegroups].id}" onClick="return confirmLink(this,'{t}Are you sure, you want to remove this group?{/t}');">
 			{/if}<IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+			<A HREF="?m=nodegroupedit&id={$nodegrouplist[nodegroups].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+			<A HREF="?m=nodegroupinfo&id={$nodegrouplist[nodegroups].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
 			<INPUT CLASS="radio light" TYPE="radio" NAME="from" ID="{$nodegrouplist[nodegroups].id}" VALUE="{$nodegrouplist[nodegroups].id}" {if $selectednodegroupid==$nodegrouplist[nodegroups].id}CHECKED{/if}></INPUT>
 			<INPUT CLASS="radio light" TYPE="radio" NAME="to" ID="{$nodegrouplist[nodegroups].id}" VALUE="{$nodegrouplist[nodegroups].id}" onClick="javascript:document.tmove.submit();"></INPUT>
 			</NOBR>

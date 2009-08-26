@@ -176,8 +176,8 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 			{if ! $invoice.closed}
 			    {if $invoice.type == $smarty.const.DOC_INVOICE}
 			    <A HREF="?m=invoicenote&id={$invoice.id}&action=init"><IMG src="img/eraser.gif" alt="[ {t}Revise{/t} ]" title="[ {t}Revise{/t} ]"></A>
-			    <A HREF="?m=invoiceedit&id={$invoice.id}&action=edit"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 			    <A onClick="return confirmLink(this, '{t 0=$number}Are you sure, you want to remove invoice \'$0\' from database?{/t}')" HREF="?m=invoicedel&id={$invoice.id}"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+			    <A HREF="?m=invoiceedit&id={$invoice.id}&action=edit"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 			    {/if}
 			    {if $invoice.type == $smarty.const.DOC_CNOTE}
 			    <A onClick="return confirmLink(this, '{t 0=$number}Are you sure, you want to remove credit note \'$0\' from database?{/t}')" HREF="?m=invoicedel&id={$invoice.id}"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>

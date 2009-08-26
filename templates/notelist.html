@@ -162,8 +162,8 @@ window.open('?m=note&id={$note}');
 		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright">
 			<NOBR>
 			{if !$note.closed}
-			    <A HREF="?m=noteedit&id={$note.id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 			    <A onClick="return confirmLink(this, '{t 0=$number}Are you sure, you want to remove debit note \'$0\' from database?{/t}')" HREF="?m=notedel&id={$note.id}"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+			    <A HREF="?m=noteedit&id={$note.id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 			{/if}
 			<A HREF="?m=note&id={$note.id}" TARGET="_blank"><IMG src="img/printd.gif" alt="[ {t}Print{/t} ]" title="[ {t}Print{/t} ]"></A>
 			<INPUT TYPE="checkbox" NAME="marks[{$note.id}]" VALUE="{$note.id}"{if $marks.$noteid}CHECKED{/if}>

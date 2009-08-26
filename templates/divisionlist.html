@@ -32,9 +32,9 @@
 			{$divisionlist[list].cnt|default:0}
 		</TD>
 		<TD class="fright" align="right" NOWRAP>
-			<A href="?m=divisionedit&id={$divisionlist[list].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 			<A href="?m=divisionedit&id={$divisionlist[list].id}&changestatus=1"><IMG src="img/wait.gif" alt="[ {if $divisionlist[list].status}{t}Unlock{/t}{else}{t}Lock{/t}{/if} ]" title="[ {if $divisionlist[list].status}{t}Unlock{/t}{else}{t}Lock{/t}{/if} ]"></A>
 			<A href="?m=divisiondel&id={$divisionlist[list].id}" OnClick="return confirmLink(this, '{t 0=$divisionlist[list].name}Are you sure, you want to delete division \'$0\'?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+			<A href="?m=divisionedit&id={$divisionlist[list].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 		</TD>
 	</TR>
 	{sectionelse}

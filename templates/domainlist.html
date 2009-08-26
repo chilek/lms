@@ -73,9 +73,9 @@
 			{$domainlist[domainlist].cnt|default:0}
 		</TD>
 		<TD class="fright" align="right" NOWRAP>
-			<A href="?m=domaininfo&id={$domainlist[domainlist].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
-			<A href="?m=domainedit&id={$domainlist[domainlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 			<A href="?m=domaindel&id={$domainlist[domainlist].id}" OnClick="return confirmLink(this, '{t 0=$domainlist[domainlist].name}Are you sure, you want to delete domain: \'$0\' and all accounts/aliases in that domain?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+			<A href="?m=domainedit&id={$domainlist[domainlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+			<A href="?m=domaininfo&id={$domainlist[domainlist].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
 		</TD>
 	</TR>
 	{sectionelse}

@@ -32,13 +32,13 @@
 		</TD>
 		<TD WIDTH="1%" CLASS="fright" ALIGN="right">
 			<NOBR>
-				<A HREF="?m=customergroupinfo&id={$customergrouplist[customergroups].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
-				<A HREF="?m=customergroupedit&id={$customergrouplist[customergroups].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 			{if $customergrouplist[customergroups].customers}
 				<A HREF="javascript:alert('{t}Group with members cannot be deleted!{/t}');">
 			{else}
 				<A HREF="?m=customergroupdel&id={$customergrouplist[customergroups].id}" onClick="return confirmLink(this,'{t}Are you sure, you want to remove this group?{/t}');">
 			{/if}<IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+				<A HREF="?m=customergroupedit&id={$customergrouplist[customergroups].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+				<A HREF="?m=customergroupinfo&id={$customergrouplist[customergroups].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
 			</NOBR>
 		</TD>
 	</TR>

@@ -75,9 +75,9 @@
 		</TD>
 		<TD class="fright" align="right" NOWRAP>
 			{assign var=alias value="`$aliaslist[aliaslist].login`@`$aliaslist[aliaslist].domain`}
-			<A href="?m=aliasinfo&id={$aliaslist[aliaslist].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A> 
-			<A href="?m=aliasedit&id={$aliaslist[aliaslist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A> 
 			<A href="?m=aliasdel&id={$aliaslist[aliaslist].id}" OnClick="return confirmLink(this, '{t 0=$alias}Are you sure, you want to delete alias: \'$0\'?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+			<A href="?m=aliasedit&id={$aliaslist[aliaslist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A> 
+			<A href="?m=aliasinfo&id={$aliaslist[aliaslist].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A> 
 		</TD>
 	</TR>
 	{sectionelse}
