@@ -51,7 +51,7 @@ switch($action)
 			$customer = $LMS->GetCustomer($_GET['customerid'], true);
 			
 			$note['numberplanid'] = $DB->GetOne('SELECT n.id FROM numberplans n
-				JOIN numberplanassignments a ON (n.id = numberplanid)
+				JOIN numberplanassignments a ON (n.id = a.planid)
 				WHERE n.doctype = ? AND n.isdefault = 1 AND a.divisionid = ?',
 				array(DOC_DNOTE, $customer['divisionid']));
 		}
