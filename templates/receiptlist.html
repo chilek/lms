@@ -162,9 +162,9 @@
 			{if !$receipt.closed}
 			<A HREF="?m=receiptadv&id={$receipt.id}"><IMG SRC="img/eraser.gif" ALT="[ {t}Settle advance{/t} ]" title="[ {t}Settle advance{/t} ]"></A>
 			{/if}
-			<A HREF="?m=receipt&id={$receipt.id}" TARGET="_blank"><IMG src="img/printr.gif" alt="[ {t}Print{/t} ]" title="[ {t}Print{/t} ]"></A>
-			<A HREF="?m=receiptedit&id={$receipt.id}"><IMG SRC="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 			<A onClick="return confirmLink(this, '{t 0=$receipt.number}Are you sure, you want to remove receipt \'$0\' from database?{/t}')" HREF="?m=receiptdel&id={$receipt.id}"><IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+			<A HREF="?m=receiptedit&id={$receipt.id}"><IMG SRC="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+			<A HREF="?m=receipt&id={$receipt.id}" TARGET="_blank"><IMG src="img/printr.gif" alt="[ {t}Print{/t} ]" title="[ {t}Print{/t} ]"></A>
 			<INPUT TYPE="checkbox" NAME="marks[{$receipt.id}]" VALUE="{$receipt.id}"{if $marks.$receiptid}CHECKED{/if}>
 		</TD>
 	</TR>

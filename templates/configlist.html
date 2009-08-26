@@ -58,8 +58,8 @@
 		</TD>
 		<TD class="fright" align="right" nowrap>
 			<A href="?m=configedit&id={$configlist[configlist].id}&statuschange=1"><IMG src="img/wait.gif" alt="[ {if $configlist[configlist].disabled}{t}Enable{/t}{else}{t}Disable{/t}{/if} ]" title="[ {if $configlist[configlist].disabled}{t}Enable{/t}{else}{t}Disable{/t}{/if} ]"></A>
-			<A href="?m=configedit&id={$configlist[configlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 			<A href="?m=configdel&id={$configlist[configlist].id}" OnClick="return confirmLink(this, '{t 0=$configlist[configlist].var}Are you sure, you want to delete option \'$0\' from database?{/t}');"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+			<A href="?m=configedit&id={$configlist[configlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 		</TD>
 	</TR>
 	{sectionelse}

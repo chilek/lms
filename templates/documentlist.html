@@ -122,11 +122,11 @@
 			{if ! $doc.closed && ($docrights.$type.rights & 4)}
 			<a href="?m=documentedit&id={$doc.docid}&action=confirm"><img src="img/confirm.gif" alt="[ {t}Confirm{/t} ]" title="[ {t}Confirm{/t} ]"></a>
 			{/if}      
-			{if ($docrights.$type.rights & 8)}
-			<a href="?m=documentedit&id={$doc.docid}"><img src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></a>
-			{/if}
 			{if ($docrights.$type.rights & 16)}
 			<a onclick="return confirmLink(this, '{t}Are you sure, you want to remove that document?{/t}')" HREF="?m=documentdel&id={$doc.docid}"><img src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></a>
+			{/if}
+			{if ($docrights.$type.rights & 8)}
+			<a href="?m=documentedit&id={$doc.docid}"><img src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></a>
 			{/if}
 			<INPUT TYPE="checkbox" NAME="marks[{$docid}]" VALUE="{$docid}"{if $marks.$docid}CHECKED{/if}>
 		</TD>

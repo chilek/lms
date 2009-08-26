@@ -30,8 +30,8 @@
 			{$source.description}
 		</TD>
 		<TD CLASS="fright" align="right" NOWRAP>
-			<A HREF="?m=cashsourceedit&id={$source.id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 			<A HREF="?m=cashsourcedel&id={$source.id}" OnClick="return confirmLink(this, '{t 0=$source.name}Are you sure, you want to remove source \'$0\'?{/t}');"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+			<A HREF="?m=cashsourceedit&id={$source.id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 		</TD>
 	</TR>
 	{foreachelse}

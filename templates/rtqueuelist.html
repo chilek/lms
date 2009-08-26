@@ -48,10 +48,10 @@
 			{if $queue.lastticket}{$queue.lastticket|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
 		</TD>
 		<TD CLASS="fright" NOWRAP>
-			<A HREF="?m=rtqueueinfo&id={$queue.id}"><IMG SRC="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
-			<A HREF="?m=rtqueueedit&id={$queue.id}"><IMG SRC="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 			<A HREF="?m=rtqueueview&id={$queue.id}"><IMG SRC="img/view.gif" alt="[ {t}Browse{/t} ]" title="[ {t}Browse{/t} ]"></A>
 			<A HREF="?m=rtqueuedel&id={$queue.id}" OnClick="return confirmLink(this, '{t 0=$queue.name}Are you sure, you want to remove queue \'$0\' and all assigned tickets and messages?{/t}');"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+			<A HREF="?m=rtqueueedit&id={$queue.id}"><IMG SRC="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+			<A HREF="?m=rtqueueinfo&id={$queue.id}"><IMG SRC="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
 		</TD>
 	</TR>
 	{foreachelse}
