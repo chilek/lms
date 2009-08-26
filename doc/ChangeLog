@@ -30,7 +30,8 @@ version ? (????-??-??):
   - optimized GetCustomerList() by moving more operations to DB server (alec)
   - BTS#0000799: optimized GetCustomerNames() and some other SQL queries
     with customer name sorting (alec)
-  - unified order of action icons on lists
+  - unified order of action icons on lists (alec)
+  - BTS#0000749: allow selecting gateway address for devices (alec)
 
 version 1.11.8 Belus (2009-05-19):
 
