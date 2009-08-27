@@ -28,9 +28,18 @@ $DB->BeginTrans();
 
 $DB->Execute("
 
+DROP VIEW customersview;
+
 ALTER TABLE customers ALTER lastname TYPE varchar(128);
 ALTER TABLE customers ALTER name TYPE varchar(128);
 CREATE INDEX customers_lastname_idx ON customers (lastname, name);
+
+CREATE VIEW customersview AS 
+SELECT c.* FROM customers c
+	WHERE NOT EXISTS (
+		SELECT 1 FROM customerassignments a
+		JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+		WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 
 ");
 
