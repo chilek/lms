@@ -24,9 +24,19 @@
  *  $Id$
  */
 
+$DB->Execute("DROP VIEW customersview");
+
 $DB->Execute("ALTER TABLE customers CHANGE lastname lastname varchar(128) NOT NULL DEFAULT ''");
 $DB->Execute("ALTER TABLE customers CHANGE name name varchar(128) NOT NULL DEFAULT ''");
 $DB->Execute("ALTER TABLE customers ADD INDEX name (lastname, name)");
+
+$DB->Execute("CREATE VIEW customersview AS
+	SELECT c.* FROM customers c
+		WHERE NOT EXISTS (
+		SELECT 1 FROM customerassignments a
+		JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+			WHERE e.userid = lms_current_user() AND a.customerid = c.id);
+");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009082500', 'dbversion'));
 
