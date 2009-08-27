@@ -2675,9 +2675,11 @@ http://www.bigpro.com/
        Some keywords are substitiuted:
        %tariff - subscription name
        %period - period (counted from current day to the last in cycle, in
-       YYYY/MM/DD form)
+       YYYY/MM/DD format)
        %current_month - period form 1st day of current month to the last
        day
+       %current_period - current month in MM/YYYY format
+       %next_period - next month in MM/YYYY format
        %desc - tariff description
        Example: comment = 'Subscription for %current_month'
      * settlement_comment (optional)

@@ -2999,9 +2999,11 @@ http://www.naszasiec.pl/
        Niektóre ze słów kluczowych są zastępowane:
        %tariff - nazwa taryfy
        %period - okres (liczony od dziś do ostatniego dnia cyklu
-       rozliczeniowego, w formacie YYYY/MM/DD)
+       rozliczeniowego, w formacie RRRR/MM/DD)
        %current_month - okres od pierwszego dnia bieżącego miesiąca do
        jego końca
+       %current_period - bieżący miesiąc w formacie MM/RRRR
+       %next_period - następny miesiąc w formacie MM/RRRR
        %desc - opis taryfy
        Przykład: comment = 'Abonament za %current_month w/g taryfy
        %tariff'
