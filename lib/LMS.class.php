@@ -2192,7 +2192,7 @@ class LMS
 			.'WHERE c.id = customerid AND deleted = 0 AND tariffid = ? '
 			.($network ? 'AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '
 			.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')) ' : '')
-			.'GROUP BY c.id, customername ORDER BY c.lastname, c.name', array($id));
+			.'GROUP BY c.id, c.lastname, c.name ORDER BY c.lastname, c.name', array($id));
 
 		$unactive = $this->DB->GetRow('SELECT COUNT(*) AS count,
                         SUM(CASE a.period
