@@ -1,7 +1,8 @@
 $Id$
 
 version ? (????-??-??):
-
+ 
+  - added display of IP address for DHCP, BROADCAST, NETWORK and netdevices entries on IP list (Grzegorz Chwesewicz, Chilan)
   - BTS#0000794: fixed postfix configuration for MySQL (alec)
   - improved performance of bank account fetching (alec)
   - added contrib/bin cash-import scripts for BPH, BZ WBK and PEKAO
