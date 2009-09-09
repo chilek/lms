@@ -2537,8 +2537,8 @@ class LMS
 			$netadd['mask'] = prefix2mask($netadd['prefix']);
 
 		if($this->DB->Execute('INSERT INTO networks (name, address, mask, interface, gateway, 
-				dns, dns2, domain, wins, dhcpstart, dhcpend) 
-				VALUES (?, inet_aton(?), ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				dns, dns2, domain, wins, dhcpstart, dhcpend, notes) 
+				VALUES (?, inet_aton(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				array(strtoupper($netadd['name']),
 					$netadd['address'],
 					$netadd['mask'],
@@ -2549,7 +2549,8 @@ class LMS
 					$netadd['domain'],
 					$netadd['wins'],
 					$netadd['dhcpstart'],
-					$netadd['dhcpend']
+					$netadd['dhcpend'],
+					$netadd['notes']
 		)))
 			return $this->DB->GetOne('SELECT id FROM networks WHERE address = inet_aton(?)', array($netadd['address']));
 		else
@@ -2670,7 +2671,7 @@ class LMS
 	{
 		return $this->DB->Execute('UPDATE networks SET name=?, address=inet_aton(?), 
 			mask=?, interface=?, gateway=?, dns=?, dns2=?, domain=?, wins=?, 
-			dhcpstart=?, dhcpend=? WHERE id=?', 
+			dhcpstart=?, dhcpend=?, notes=? WHERE id=?', 
 			array(strtoupper($networkdata['name']),
 				$networkdata['address'],
 				$networkdata['mask'],
@@ -2682,6 +2683,7 @@ class LMS
 				$networkdata['wins'],
 				$networkdata['dhcpstart'],
 				$networkdata['dhcpend'],
+				$networkdata['notes'],
 				$networkdata['id']
 			));
 	}
@@ -2775,7 +2777,8 @@ class LMS
 				address AS addresslong, mask, interface, gateway, dns, dns2, 
 				domain, wins, dhcpstart, dhcpend, 
 				mask2prefix(inet_aton(mask)) AS prefix,
-				inet_ntoa(broadcast(address, inet_aton(mask))) AS broadcast 
+				inet_ntoa(broadcast(address, inet_aton(mask))) AS broadcast, 
+				notes 
 				FROM networks WHERE id = ?', array($id));
 
 		$nodes = $this->DB->GetAllByKey('
