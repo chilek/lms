@@ -109,10 +109,13 @@ my $mailfname = $ini->val('notify', 'mailfname') || '';
 my $limit = $ini->val('notify', 'limit') || 0;
 my $debtors_file = $ini->val('notify', 'debtors_template');
 my $debtors_subject = $ini->val('notify', 'debtors_subject') || 'Debtors notification';
+# new debit note notify
+my $notes_file = $ini->val('notify', 'notes_template');
+my $notes_subject = $ini->val('notify', 'notes_subject') || 'New debit note notification';
 # new invoice notify
-my $invoices_file = $ini->val('notify', 'invoice_template');
-my $invoices_subject = $ini->val('notify', 'invoice_subject') || 'New invoice notification';
-#deadline notify
+my $invoices_file = $ini->val('notify', 'invoices_template');
+my $invoices_subject = $ini->val('notify', 'invoices_subject') || 'New invoice notification';
+# deadline notify
 my $deadline_file = $ini->val('notify', 'deadline_template');
 my $deadline_subject = $ini->val('notify', 'deadline_subject') || 'Invoice deadline notification';
 
@@ -130,6 +133,11 @@ if($debtors_file && ! -r $debtors_file)
 if($invoices_file && ! -r $invoices_file)
 {
 	print STDERR "Fatal error: unable to read mail template file $invoices_file, exiting!\n";
+	exit 1;
+}
+if($notes_file && ! -r $notes_file)
+{
+	print STDERR "Fatal error: unable to read mail template file $notes_file, exiting!\n";
 	exit 1;
 }
 if($deadline_file && ! -r $deadline_file)
@@ -241,9 +249,12 @@ sub parse_data
 		$l10 = $l10."-----------+-----------+----------------------------------------------------\n";
 		$data =~ s/\%last_10_in_a_table/$l10/;
 	} 
-# invoices
-	if ($data =~ /\%invoice/) {
-		$data =~ s/\%invoice/$row->{'invoice_number'}/g;
+# invoices, debit notes
+	if ($data =~ /\%invoice/) { # for backward compat.
+		$data =~ s/\%invoice/$row->{'doc_number'}/g;
+	}
+	if ($data =~ /\%number/) {
+		$data =~ s/\%number/$row->{'doc_number'}/g;
 	}
 	if ($data =~ /\%value/) {
 		$data =~ s/\%value/$row->{'value'}/g;
@@ -403,14 +414,14 @@ if ($invoices_file)
 		my $recipient_name = $row->{'name'};
 		my $recipient_mail = $debugemail || $row->{'email'};
 
-		$row->{'invoice_number'} = $row->{'template'} || '%N/LMS/%Y';
-		$row->{'invoice_number'} =~ s/%(\d*)N/sprintf"%0${1}d",$row->{'number'}/e;
-		$row->{'invoice_number'} = strftime($row->{'invoice_number'}, localtime($row->{'cdate'}));
+		$row->{'doc_number'} = $row->{'template'} || '%N/LMS/%Y';
+		$row->{'doc_number'} =~ s/%(\d*)N/sprintf"%0${1}d",$row->{'number'}/e;
+		$row->{'doc_number'} = strftime($row->{'doc_number'}, localtime($row->{'cdate'}));
 			
 		if(!$quiet)
 		{
 			printf STDOUT "[new invoice] %s (%04d) %s: %s\n",
-				$row->{'name'}, $row->{'id'}, $row->{'invoice_number'}, $recipient_mail;
+				$row->{'name'}, $row->{'id'}, $row->{'doc_number'}, $recipient_mail;
 		}
 			
 		if(!$debug)
@@ -461,20 +472,76 @@ if ($deadline_file)
 		my $recipient_name = $row->{'name'};
 		my $recipient_mail = $debugemail || $row->{'email'};
 
-		$row->{'invoice_number'} = $row->{'template'} || '%N/LMS/%Y';
-		$row->{'invoice_number'} =~ s/%(\d*)N/sprintf"%0${1}d",$row->{'number'}/e;
-		$row->{'invoice_number'} = strftime($row->{'invoice_number'}, localtime($row->{'cdate'}));
+		$row->{'doc_number'} = $row->{'template'} || '%N/LMS/%Y';
+		$row->{'doc_number'} =~ s/%(\d*)N/sprintf"%0${1}d",$row->{'number'}/e;
+		$row->{'doc_number'} = strftime($row->{'doc_number'}, localtime($row->{'cdate'}));
 			
 		if(!$quiet)
 		{
 			printf STDOUT "[deadline] %s (%04d) %s: %s\n",
-				$row->{'name'}, $row->{'id'}, $row->{'invoice_number'}, $recipient_mail;
+				$row->{'name'}, $row->{'id'}, $row->{'doc_number'}, $recipient_mail;
 		}
 			
 		if(!$debug)
 		{
 			send_message($msgid, $row->{'id'}, $recipient_mail, $recipient_name,
 				$deadline_subject, parse_data($template, $row));
+		}
+	}
+	$dbq->finish();
+}
+
+# Debit notes created up to 24 hours ago
+if ($notes_file)
+{
+	open(MAILFILE, "$notes_file");
+	my $template = join(' ', <MAILFILE>);
+	close MAILFILE;
+
+	my $dbq = $dbase->prepare("SELECT d.id AS docid, c.id, c.pin, d.name,
+		d.number, n.template, d.cdate, c.email,
+		COALESCE(ca.balance, 0) AS balance, v.value
+		FROM documents d
+		JOIN customers c ON (c.id = d.customerid)
+		JOIN (SELECT SUM(value) * -1 AS value, docid
+			FROM cash
+			GROUP BY docid
+		) v ON (v.docid = d.id)
+		LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+		LEFT JOIN (SELECT SUM(value) AS balance, customerid
+			FROM cash
+			GROUP BY customerid
+		) ca ON (ca.customerid = d.customerid)
+		WHERE d.type = 5
+	    		AND d.cdate > $utsfmt - 86400
+			AND c.email != ''
+		");
+	$dbq->execute();
+
+	my $msgid;
+	if ($dbq->rows && !$debug) {
+		$msgid = create_message($notes_subject, $template);
+	}
+
+	while (my $row = $dbq->fetchrow_hashref())
+	{
+		my $recipient_name = $row->{'name'};
+		my $recipient_mail = $debugemail || $row->{'email'};
+
+		$row->{'doc_number'} = $row->{'template'} || '%N/LMS/%Y';
+		$row->{'doc_number'} =~ s/%(\d*)N/sprintf"%0${1}d",$row->{'number'}/e;
+		$row->{'doc_number'} = strftime($row->{'doc_number'}, localtime($row->{'cdate'}));
+			
+		if(!$quiet)
+		{
+			printf STDOUT "[new debit note] %s (%04d) %s: %s\n",
+				$row->{'name'}, $row->{'id'}, $row->{'doc_number'}, $recipient_mail;
+		}
+			
+		if(!$debug)
+		{
+			send_message($msgid, $row->{'id'}, $recipient_mail, $recipient_name,
+				$notes_subject, parse_data($template, $row));
 		}
 	}
 	$dbq->finish();

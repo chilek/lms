@@ -31,8 +31,6 @@ $SESSION->restore('notecustomer', $customer);
 $SESSION->restore('note', $note);
 $SESSION->restore('notenewerror', $error);
 
-$itemdata = r_trim($_POST);
-
 $action = isset($_GET['action']) ? $_GET['action'] : NULL;
 
 switch($action)
@@ -63,8 +61,10 @@ switch($action)
 
 	case 'additem':
 
+		$itemdata = r_trim($_POST);
+
 		$itemdata['value'] = f_round($itemdata['value']);
-		$itemdata['description'] = trim($itemdata['description']);
+		$itemdata['description'] = $itemdata['description'];
 		
 		if ($itemdata['value'] > 0 && $itemdata['description'] != '')		
 		{

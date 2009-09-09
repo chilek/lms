@@ -1838,8 +1838,6 @@ class LMS
 
 		$this->DB->Execute('DELETE FROM invoicecontents WHERE docid = ?', array($iid));
 		$this->DB->Execute('DELETE FROM cash WHERE docid = ?', array($iid));
-		$this->DB->Execute('UPDATE cash SET docid = 0, itemid = 0, customerid = ? WHERE docid = ?',
-				array($invoice['customer']['id'], $iid));
 
 		$itemid=0;
 		foreach($invoice['contents'] as $idx => $item)

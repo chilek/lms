@@ -159,7 +159,7 @@ scripts.</para>
 				<para>%cid - customer ID</para>
 			</listitem>
 			<listitem>
-				<para>%invoice - invoice number (invoices and deadline notifies only)</para>
+				<para>%number - document number (invoices, debit notes and deadline notifies only)</para>
 			</listitem>
 			<listitem>
 				<para>%value - invoice value (invoices and deadline notifies only)</para>
@@ -243,6 +243,17 @@ http://www.bigpro.com/</screen></example>
 					<para>invoices_subject</para>
 					<para>Subject of 'invoices' message. Default: 'New invoice notification'.</para>
 					<para>Example:	<prompt>invoices_subject = Invoice information</prompt></para>
+				</listitem>
+				<listitem>
+					<para>notes_template</para>
+					<para>The message template which will be sent to customers if new debit note is created
+					(in last 24 hours). Default: none.</para>
+					<para>Example:	<prompt>notes_template = /etc/lms/notes_template.txt</prompt></para>
+        			</listitem>
+    				<listitem>
+					<para>notes_subject</para>
+					<para>Subject of 'notes' message. Default: 'New debit note notification'.</para>
+					<para>Example:	<prompt>notes_subject = Debit note information</prompt></para>
 				</listitem>
 				<listitem>
 					<para>deadline_template</para>
