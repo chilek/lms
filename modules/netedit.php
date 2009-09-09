@@ -173,6 +173,7 @@ if(isset($_POST['networkdata']))
 	$network['wins'] = $networkdata['wins'];
 	$network['dns'] = $networkdata['dns'];
 	$network['dns2'] = $networkdata['dns2'];
+	$network['notes'] = $networkdata['notes'];
 }
 
 $networks = $LMS->GetNetworks();

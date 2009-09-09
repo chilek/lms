@@ -49,6 +49,12 @@
 		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[dhcpend]" VALUE="{$netadd.dhcpend}" {tip text="Enter end of DHCP range (optional)" trigger="dhcpend"}></TD>
 	</TR>
 	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/info1.gif" ALT=""> <B>{t}Notes:{/t}</B></TD>
+		<TD CLASS="fright">
+		  <TEXTAREA NAME="netadd[notes]" COLS="60" ROWS="7" {tip text="Enter notes (optional)"}>{$netadd.notes}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
 		<TD width="100%" CLASS="fbottomu" COLSPAN="2" align="right">
 			<A HREF="javascript:document.netadd.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
 			<A HREF="?m=netlist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>

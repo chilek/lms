@@ -113,6 +113,34 @@
 			{/if}
 		</TD>
 	</TR>
+	{if $network.notes || $unlockedit}
+	<TR class="light">
+		<TD width="50%" class="fleft" colspan="2">
+			<TABLE width="100%" cellpadding="5">
+				<TR>
+					<TD width="1%">
+						<NOBR><IMG src="img/info1.gif" alt=""></NOBR>
+					</TD>
+					<TD width="99%">
+					  {if $unlockedit}
+					    <TEXTAREA NAME="networkdata[notes]" COLS="50" ROWS="5" {tip text="Enter notes (optional)"}>{$network.notes}</TEXTAREA>
+					  {else}
+					    <TABLE width="100%" cellpadding="5">
+					      <TR>
+						<TD class="fall superlight">
+						  {$network.notes|replace:"\n":"<BR>"}
+						</TD>
+					      </TR>
+					    </TABLE>
+					  {/if}
+					</TD>
+				</TR>
+			  </TABLE>
+		</TD>
+		<TD width="50%" class="fright" colspan="2">
+		</TD>
+	</TR>
+	{/if}
 {if $unlockedit}</form>{/if}
 	<TR class="light">
 		<TD width="100%" class="fbottomu" colspan="4" align="right">
