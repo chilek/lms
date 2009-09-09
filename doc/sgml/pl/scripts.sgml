@@ -167,7 +167,7 @@
 					<para>%cid - ID klienta</para>
 				</listitem>
 				<listitem>
-					<para>%invoice - numer faktury (tylko w powiadomieniu o fakturze)</para>
+					<para>%number - numer dokumentu (tylko w powiadomieniu o fakturze lub nocie obci±¿eniowej)</para>
 				</listitem>
 				<listitem>
 					<para>%value - warto¶æ brutto na fakturze (tylko w powiadomieniu o fakturze)</para>
@@ -250,12 +250,26 @@ http://www.naszasiec.pl/</screen></example>
 				w ci±gu ostatnich 24 godzin od uruchomienia skryptu.	
 				Pozostawienie tej opcji pustej wy³±czy
 				powiadomienia o nowych fakturach. Domy¶lnie: pusta</para>
-				<para>Przyk³ad:	<prompt>invoice_template = /etc/lms/new_invoice.txt</prompt></para>
+				<para>Przyk³ad:	<prompt>invoices_template = /etc/lms/new_invoice.txt</prompt></para>
 			</listitem>
 			<listitem>
 				<para>invoices_subject (opcjonalny)</para>
 				<para>Temat wiadomo¶ci o nowej fakturze. Domy¶lnie: 'New invoice notification'</para>
 				<para>Przyk³ad:	<prompt>invoices_subject = 'Powiadomienie o wystawieniu faktury'</prompt></para>
+			</listitem>
+			<listitem>
+				<para>notes_template (opcjonalny)</para>
+				<para>Lokalizacja pliku z szablonem wiadomo¶ci z informacj± o 
+				wystawieniu noty obci±¿eniowej. Pod uwagê brane s± noty wystawione
+				w ci±gu ostatnich 24 godzin od uruchomienia skryptu.	
+				Pozostawienie tej opcji pustej wy³±czy
+				powiadomienia o nowych notach. Domy¶lnie: pusta</para>
+				<para>Przyk³ad:	<prompt>notes_template = /etc/lms/new_note.txt</prompt></para>
+			</listitem>
+			<listitem>
+				<para>notes_subject (opcjonalny)</para>
+				<para>Temat wiadomo¶ci o nowej nocie obci±¿eniowej. Domy¶lnie: 'New debit note notification'</para>
+				<para>Przyk³ad:	<prompt>notes_subject = 'Powiadomienie o wystawieniu noty obci±¿eniowej'</prompt></para>
 			</listitem>
 			<listitem>
 				<para>deadline_template (opcjonalny)</para>

@@ -130,7 +130,7 @@ $_LANG['Are you sure, you want to delete domain: \\\'$0\\\' and all accounts/ali
 $_LANG['Are you sure, you want to delete node $0?'] = 'Jesteś pewien, że chcesz usunąć komputer $0?';
 $_LANG['Are you sure, you want to delete node \\\'$0\\\' from database?'] = 'Jesteś pewien, że chcesz usunąć komputer \\\'$0\\\' z bazy danych?';
 $_LANG['Are you sure, you want to delete option \\\'$0\\\' from database?'] = 'Jesteś pewien, że chcesz usunąć opcję \\\'$0\\\' z bazy danych?';
-$_LANG['Are you sure, you want to delete selected operation(s) and document item(s)?'] = 'Czy na pewno usunąć wybrane operacje wraz z pozycjami dokumentu?';
+$_LANG['Are you sure, you want to delete selected operation(s) and/or document item(s)?'] = 'Czy na pewno usunąć wybrane operacje wraz z pozycjami dokumentów?';
 $_LANG['Are you sure, you want to delete that connection?'] = 'Jesteś pewien, że chcesz usunąć to połączenie?';
 $_LANG['Are you sure, you want to delete that device?'] = 'Jesteś pewien, że chcesz usunąć to urządzenie?';
 $_LANG['Are you sure, you want to delete that event?'] = 'Jesteś pewien, że chcesz usunąć ten wpis?';
@@ -2250,5 +2250,7 @@ $_LANG['Show All:'] = 'Pokaż wszystkie:';
 $_LANG['transactions'] = 'transakcje';
 $_LANG['invoices'] = 'faktury';
 $_LANG['debit notes'] = 'noty obciążeniowe';
+$_LANG['Debit Note Edit: $0'] = 'Edycja noty: $0';
+
 
 ?>

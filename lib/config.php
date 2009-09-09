@@ -103,6 +103,7 @@ $DEFAULTS = array(
 		'ticketlist_status' => '',
 		'ewx_support' => false,
 		'invoice_check_payment' => false,
+		'note_check_payment' => false,
 		'radius' => 1,
 		'public_ip' => 1,
 	),
