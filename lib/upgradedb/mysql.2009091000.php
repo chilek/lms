@@ -24,18 +24,16 @@
  *  $Id$
  */
 
-$DB->Execute("
-DROP VIEW nas;
+$DB->Execute("DROP VIEW nas");
 
-ALTER TABLE netdevices ALTER description TYPE text;
+$DB->Execute("ALTER TABLE netdevices CHANGE description description text NOT NULL DEFAULT ''");
 
-CREATE VIEW nas AS 
+$DB->Execute("CREATE VIEW nas AS 
         SELECT n.id, inet_ntoa(n.ipaddr) AS nasname, d.shortname, d.nastype AS type,
 	d.clients AS ports, d.secret, d.community, d.description 
         FROM nodes n 
         JOIN netdevices d ON (n.netdev = d.id) 
-        WHERE n.nas = 1;
-");
+        WHERE n.nas = 1");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009091000', 'dbversion'));
 
