@@ -35,6 +35,7 @@ version ? (????-??-??):
   - added display of IP address for DHCP, BROADCAST, NETWORK and netdevices entries on IP list (Grzegorz Chwesewicz, Chilan)
   - lms-notify(-sms): added debit notes notifications (alec)
   - added networks description functionality (Grzegorz Chwesewicz, Chilan)
+  - extended description size of netdevices (Grzegorz Chwesewicz, Chilan)
 
 version 1.11.8 Belus (2009-05-19):
 
