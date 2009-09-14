@@ -51,7 +51,7 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached')
 		foreach($ilm as $mark)
 			$ids[] = intval($mark);
 
-	if(isset($_GET['cash']))
+	if(isset($_GET['cash']) && !empty($ids))
 	{
 		// we need to check if that document is a debit note
 		$ids = $DB->GetCol('SELECT DISTINCT docid FROM cash, documents
@@ -59,14 +59,15 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached')
 			AND cash.id IN ('.implode(',', $ids).')');
 	}
 
-	$layout['pagetitle'] = trans('Debit Notes');
-	$SMARTY->display('noteheader.html');
-
 	if(empty($ids))
 	{
 		$SESSION->close();
 		die;
 	}
+
+	$layout['pagetitle'] = trans('Debit Notes');
+	$SMARTY->display('noteheader.html');
+
 
 	sort($ids);
 	
