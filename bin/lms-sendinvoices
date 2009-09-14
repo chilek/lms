@@ -268,6 +268,7 @@ while(my $row = $dbq->fetchrow_hashref())
 				        ctype => $ftype,
 				        encoding => $fencoding,
 					disposition => 'inline; filename="invoice_'.$row->{'id'}.'.'.$fext.'"',
+					charset => 'UTF-8',
 					msg => $response->content,
 				});
 				$sender->EndPart($ftype);

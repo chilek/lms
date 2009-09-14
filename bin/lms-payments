@@ -315,8 +315,8 @@ while(my $row = $dbq->fetchrow_hashref())
 
 # let's go, fetch *ALL* assignments in given day
 $dbq = $dbase->prepare("SELECT tariffid, liabilityid, customerid, period, at, suspended, 
-	invoice, t.description AS description, assignments.id AS assignmentid,
-	settlement, datefrom, discount, divisionid,
+	invoice, t.description AS description, a.id AS assignmentid,
+	settlement, datefrom, discount, divisionid, c.paytype,
 	(CASE liabilityid WHEN 0 THEN t.name ELSE l.name END) AS name, 
 	(CASE liabilityid WHEN 0 THEN t.taxid ELSE l.taxid END) AS taxid, 
 	(CASE liabilityid WHEN 0 THEN t.prodid ELSE l.prodid END) AS prodid, 
@@ -335,11 +335,11 @@ $dbq = $dbase->prepare("SELECT tariffid, liabilityid, customerid, period, at, su
 				ELSE ((100-discount)*l.value)/100 END, 2) * $suspension_percentage/100, 2) 
 			END)
 		END) AS value
-	FROM assignments
-	LEFT JOIN tariffs t ON (tariffid = t.id)
-	LEFT JOIN liabilities l ON (liabilityid = l.id)
-	LEFT JOIN customers ON (customerid = customers.id)
-	WHERE status = 3
+	FROM assignments a
+	JOIN customers c ON (a.customerid = c.id)
+	LEFT JOIN tariffs t ON (a.tariffid = t.id)
+	LEFT JOIN liabilities l ON (a.liabilityid = l.id)
+	WHERE c.status = 3
 		AND (period = ".DAY." 
 			OR (period = ".WEEK." AND at = $weekday) 
 			OR (period = ".MONTH." AND at = $day) 
@@ -349,7 +349,7 @@ $dbq = $dbase->prepare("SELECT tariffid, liabilityid, customerid, period, at, su
 			OR (period = ".DISPOSABLE." AND at = $today)) 
 		AND (datefrom <= $currtime OR datefrom = 0)
 		AND (dateto > $currtime OR dateto = 0)
-	ORDER BY customerid, invoice, value DESC");
+	ORDER BY a.customerid, a.invoice, value DESC");
 $dbq->execute();
 
 while(my $assign = $dbq->fetchrow_hashref())
@@ -467,6 +467,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 						FROM customers WHERE id = ?");
 				$udbq->execute($uid);
 				my $urow = $udbq->fetchrow_hashref();
+				my $inv_paytype = $assign->{'paytype'} || $paytype;
 				my $paytime = $urow->{'paytime'};
 				if($paytime eq -1) { $paytime = $deadline; }
 
@@ -475,7 +476,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 						VALUES (?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 				$idbq->execute($numbers{$plan}, $plan, $urow->{'divisionid'}, $uid,
 						$urow->{'lastname'}.' '.$urow->{'name'}, $urow->{'address'}, $urow->{'zip'},
-						$urow->{'city'}, $urow->{'ten'}, $urow->{'ssn'}, $currtime, $paytime, $paytype);
+						$urow->{'city'}, $urow->{'ten'}, $urow->{'ssn'}, $currtime, $paytime, $inv_paytype);
 
 				$idbq = $dbase->prepare("SELECT id FROM documents
 						WHERE cdate = ? AND number = ? AND type = 1 AND customerid = ?");
