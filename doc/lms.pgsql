@@ -109,6 +109,7 @@ CREATE TABLE networks (
 	dhcpstart varchar(16) 	DEFAULT '' NOT NULL,
 	dhcpend varchar(16) 	DEFAULT '' NOT NULL,
 	disabled smallint 	DEFAULT 0 NOT NULL,
+	notes text		DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (name),
 	UNIQUE (address)
@@ -436,6 +437,7 @@ CREATE TABLE customers (
 	consentdate integer	DEFAULT 0 NOT NULL,
 	divisionid integer	DEFAULT 0 NOT NULL,
     	paytime smallint 	DEFAULT -1 NOT NULL,
+    	paytype varchar(255) 	DEFAULT NULL,
 	PRIMARY KEY (id)
 );
 
@@ -494,7 +496,7 @@ CREATE TABLE netdevices (
 	id integer default nextval('netdevices_id_seq'::text) NOT NULL,
 	name varchar(32) 	DEFAULT '' NOT NULL,
 	location varchar(255) 	DEFAULT '' NOT NULL,
-	description varchar(255) DEFAULT '' NOT NULL,
+	description text 	DEFAULT '' NOT NULL,
 	producer varchar(64) 	DEFAULT '' NOT NULL,
 	model varchar(32) 	DEFAULT '' NOT NULL,
 	serialnumber varchar(32) DEFAULT '' NOT NULL,
@@ -1350,4 +1352,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2009082500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2009091100');

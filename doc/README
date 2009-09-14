@@ -2505,7 +2505,8 @@ Chapter 4. Scripts
      * %B - customer balance with real sign, eg. -107
      * %pin - PIN code of the customer
      * %cid - customer ID
-     * %invoice - invoice number (invoices and deadline notifies only)
+     * %number - document number (invoices, debit notes and deadline
+       notifies only)
      * %value - invoice value (invoices and deadline notifies only)
      * %last_10_in_a_table - list of last 10 operations on customer's
        account, eg.
@@ -2576,6 +2577,13 @@ http://www.bigpro.com/
      * invoices_subject
        Subject of 'invoices' message. Default: 'New invoice notification'.
        Example: invoices_subject = Invoice information
+     * notes_template
+       The message template which will be sent to customers if new debit
+       note is created (in last 24 hours). Default: none.
+       Example: notes_template = /etc/lms/notes_template.txt
+     * notes_subject
+       Subject of 'notes' message. Default: 'New debit note notification'.
+       Example: notes_subject = Debit note information
      * deadline_template
        Lets you setup message template which will be sent to debted
        customers when (not payed) invoice reaches paytime. Default: none.
@@ -5324,6 +5332,7 @@ Chapter 7. For curious
    message - message to be displayed if warnings enabled
    cutoffstop - date to which customers cutting off is disabled
    paytime - invoices deadline in days
+   paytype - invoices payment type
      __________________________________________________________________
 
 7.2.3. Customer groups ('customergroups')
@@ -5362,6 +5371,7 @@ Chapter 7. For curious
    dhcpstart - first address of dynamic DHCP range
    dhcpend - last address of dynamic DHCP range
    disabled - disabled/enabled flag (1/0)
+   notes - additional notes
      __________________________________________________________________
 
 7.2.7. Network devices ('netdevices')

@@ -127,6 +127,7 @@
                     <member>message - komunikat do wy¶wietlenia przy w³±czonych ostrze¿eniach</member>
 		    <member>cutoffstop - data, do której blokowanie klientów zad³u¿onych jest wy³±czone</member>
 		    <member>paytime - termin p³atno¶ci faktur</member>
+		    <member>paytype - typ p³atno¶ci faktur</member>
                </simplelist>
           </sect2>
           <sect2 id="customergroups">
@@ -169,6 +170,7 @@
                     <member>dhcpstart - pocz±tek zakresu DHCP</member>
                     <member>dhcpend - koniec zakresu DHCP</member>
 		    <member>disabled - status sieci: w³±czona/wy³±czona (0/1)</member>
+		    <member>notes - dodatkowe notatki</member>
                </simplelist>
           </sect2>
           <sect2 id="netdevices">

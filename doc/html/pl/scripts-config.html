@@ -143,7 +143,7 @@ NAME="LMS-NOTIFY-TEMPLATES"
 ></LI
 ><LI
 ><P
->%invoice - numer faktury (tylko w powiadomieniu o fakturze)</P
+>%number - numer dokumentu (tylko w powiadomieniu o fakturze lub nocie obciążeniowej)</P
 ></LI
 ><LI
 ><P
@@ -282,7 +282,7 @@ CLASS="PROMPT"
 ><P
 >Przykład:	<SAMP
 CLASS="PROMPT"
->invoice_template = /etc/lms/new_invoice.txt</SAMP
+>invoices_template = /etc/lms/new_invoice.txt</SAMP
 ></P
 ></LI
 ><LI
@@ -294,6 +294,32 @@ CLASS="PROMPT"
 >Przykład:	<SAMP
 CLASS="PROMPT"
 >invoices_subject = 'Powiadomienie o wystawieniu faktury'</SAMP
+></P
+></LI
+><LI
+><P
+>notes_template (opcjonalny)</P
+><P
+>Lokalizacja pliku z szablonem wiadomości z informacją o 
+				wystawieniu noty obciążeniowej. Pod uwagę brane są noty wystawione
+				w ciągu ostatnich 24 godzin od uruchomienia skryptu.	
+				Pozostawienie tej opcji pustej wyłączy
+				powiadomienia o nowych notach. Domyślnie: pusta</P
+><P
+>Przykład:	<SAMP
+CLASS="PROMPT"
+>notes_template = /etc/lms/new_note.txt</SAMP
+></P
+></LI
+><LI
+><P
+>notes_subject (opcjonalny)</P
+><P
+>Temat wiadomości o nowej nocie obciążeniowej. Domyślnie: 'New debit note notification'</P
+><P
+>Przykład:	<SAMP
+CLASS="PROMPT"
+>notes_subject = 'Powiadomienie o wystawieniu noty obciążeniowej'</SAMP
 ></P
 ></LI
 ><LI

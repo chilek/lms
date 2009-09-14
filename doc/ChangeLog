@@ -36,6 +36,7 @@ version ? (????-??-??):
   - lms-notify(-sms): added debit notes notifications (alec)
   - added networks description functionality (Grzegorz Chwesewicz, Chilan)
   - extended description size of netdevices (Grzegorz Chwesewicz, Chilan)
+  - invoices payment type per-customer (alec)
 
 version 1.11.8 Belus (2009-05-19):
 

@@ -190,6 +190,14 @@
 			{t}Deadline:{/t} {if $customerinfo.paytime eq -1}{t}default<!paytime>{/t}{else}{$customerinfo.paytime}&nbsp;{t}days{/t}{/if}
 		</TD>
 	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/options.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			{t}Payment type:{/t} {if !$customerinfo.paytype}{t}default{/t}{else}{$customerinfo.paytype}{/if}
+		</TD>
+	</TR>
 {if $customerinfo.cutoffstop > $smarty.now}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">

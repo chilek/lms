@@ -140,7 +140,7 @@ NAME="LMS-NOTIFY-TEMPLATES"
 ></LI
 ><LI
 ><P
->%invoice - invoice number (invoices and deadline notifies only)</P
+>%number - document number (invoices, debit notes and deadline notifies only)</P
 ></LI
 ><LI
 ><P
@@ -286,6 +286,29 @@ CLASS="PROMPT"
 >Example:	<SAMP
 CLASS="PROMPT"
 >invoices_subject = Invoice information</SAMP
+></P
+></LI
+><LI
+><P
+>notes_template</P
+><P
+>The message template which will be sent to customers if new debit note is created
+					(in last 24 hours). Default: none.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>notes_template = /etc/lms/notes_template.txt</SAMP
+></P
+></LI
+><LI
+><P
+>notes_subject</P
+><P
+>Subject of 'notes' message. Default: 'New debit note notification'.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>notes_subject = Debit note information</SAMP
 ></P
 ></LI
 ><LI

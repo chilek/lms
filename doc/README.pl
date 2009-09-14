@@ -2818,7 +2818,8 @@ Rozdział 4. Skrypty
      * %B - saldo z prawdziwym znakiem, np. -107
      * %pin - numer PIN klienta
      * %cid - ID klienta
-     * %invoice - numer faktury (tylko w powiadomieniu o fakturze)
+     * %number - numer dokumentu (tylko w powiadomieniu o fakturze lub
+       nocie obciążeniowej)
      * %value - wartość brutto na fakturze (tylko w powiadomieniu o
        fakturze)
      * %last_10_in_a_table - wyciąg ostatnich 10 operacji kasowych na
@@ -2889,11 +2890,23 @@ http://www.naszasiec.pl/
        faktury. Pod uwagę brane są faktury wystawione w ciągu ostatnich 24
        godzin od uruchomienia skryptu. Pozostawienie tej opcji pustej
        wyłączy powiadomienia o nowych fakturach. Domyślnie: pusta
-       Przykład: invoice_template = /etc/lms/new_invoice.txt
+       Przykład: invoices_template = /etc/lms/new_invoice.txt
      * invoices_subject (opcjonalny)
        Temat wiadomości o nowej fakturze. Domyślnie: 'New invoice
        notification'
        Przykład: invoices_subject = 'Powiadomienie o wystawieniu faktury'
+     * notes_template (opcjonalny)
+       Lokalizacja pliku z szablonem wiadomości z informacją o wystawieniu
+       noty obciążeniowej. Pod uwagę brane są noty wystawione w ciągu
+       ostatnich 24 godzin od uruchomienia skryptu. Pozostawienie tej
+       opcji pustej wyłączy powiadomienia o nowych notach. Domyślnie:
+       pusta
+       Przykład: notes_template = /etc/lms/new_note.txt
+     * notes_subject (opcjonalny)
+       Temat wiadomości o nowej nocie obciążeniowej. Domyślnie: 'New debit
+       note notification'
+       Przykład: notes_subject = 'Powiadomienie o wystawieniu noty
+       obciążeniowej'
      * deadline_template (opcjonalny)
        Lokalizacja pliku z szablonem wiadomości wysyłanej do zadłużonych
        klientów, posiadających przeterminowane (nierozliczone) faktury.
@@ -6062,6 +6075,7 @@ Rozdział 7. Dla dociekliwych
    cutoffstop - data, do której blokowanie klientów zadłużonych jest
    wyłączone
    paytime - termin płatności faktur
+   paytype - typ płatności faktur
      __________________________________________________________________
 
 7.2.3. Grupy klientów ('customergroups')
@@ -6100,6 +6114,7 @@ Rozdział 7. Dla dociekliwych
    dhcpstart - początek zakresu DHCP
    dhcpend - koniec zakresu DHCP
    disabled - status sieci: włączona/wyłączona (0/1)
+   notes - dodatkowe notatki
      __________________________________________________________________
 
 7.2.7. Sprzęt sieciowy ('netdevices')
