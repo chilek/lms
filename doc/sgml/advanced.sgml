@@ -123,6 +123,7 @@
                     <member>message - message to be displayed if warnings enabled</member>
                     <member>cutoffstop - date to which customers cutting off is disabled</member>
                     <member>paytime - invoices deadline in days</member>
+                    <member>paytype - invoices payment type</member>
                </simplelist>
           </sect2>
           <sect2 id="customergroups">
@@ -165,6 +166,7 @@
                     <member>dhcpstart - first address of dynamic DHCP range</member>
                     <member>dhcpend - last address of dynamic DHCP range</member>
                     <member>disabled - disabled/enabled flag (1/0)</member>
+                    <member>notes - additional notes</member>
                </simplelist>
           </sect2>
           <sect2 id="netdevices">

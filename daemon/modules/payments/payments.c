@@ -471,8 +471,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 	/****** customer payments *******/
 	// let's create main query
 	char *query = strdup("\
-			SELECT tariffid, liabilityid, customerid, period, at, suspended, invoice, \
-			    UPPER(lastname) AS lastname, customers.name AS custname, address, zip, city, ten, ssn, \
+			SELECT tariffid, liabilityid, customerid, period, at, suspended, invoice, c.paytype, \
+			    UPPER(c.lastname) AS lastname, c.name AS custname, address, zip, city, ten, ssn, \
 			    ats.id AS assignmentid, settlement, datefrom, discount, divisionid, paytime, \
 			    (CASE liabilityid WHEN 0 THEN tariffs.name ELSE liabilities.name END) AS name, \
 			    (CASE liabilityid WHEN 0 THEN tariffs.taxid ELSE liabilities.taxid END) AS taxid, \
@@ -483,10 +483,10 @@ void reload(GLOBAL *g, struct payments_module *p)
 				ROUND(CASE discount WHEN 0 THEN liabilities.value ELSE liabilities.value-liabilities.value*discount/100 END, 2) \
 			    END) AS value \
 			FROM assignments ats \
+			JOIN customers c ON (ats.customerid = c.id) \
 			LEFT JOIN tariffs ON (ats.tariffid = tariffs.id) \
 			LEFT JOIN liabilities ON (ats.liabilityid = liabilities.id) \
-			LEFT JOIN customers ON (ats.customerid = customers.id) \
-			WHERE status = 3 AND deleted = 0 \
+			WHERE c.status = 3 AND c.deleted = 0 \
 			    AND (period="_DAILY_" \
 				    OR (period="_WEEKLY_" AND at=?) \
 				    OR (period="_MONTHLY_" AND at=?) \
@@ -606,6 +606,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 				if( last_customerid != uid ) 
 				{
 					char *divisionid = g->db_get_data(res,i,"divisionid");
+					char *paytype = g->db_get_data(res,i,"paytype");
 					int divid = atoi(divisionid);
 					int period, number = 0;
 					char *numberplanid, *paytime;
@@ -662,6 +663,10 @@ void reload(GLOBAL *g, struct payments_module *p)
 					else
 						paytime = g->db_get_data(res,i,"paytime");
 
+					// paytype
+					if (!*paytype)
+						paytype = p->paytype;
+
 					// prepare insert to 'invoices' table
 					g->db_pexec(g->conn, "INSERT INTO documents (number, numberplanid, type, divisionid, "
 						"customerid, name, address, zip, city, ten, ssn, cdate, paytime, paytype) "
@@ -679,7 +684,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 						g->db_get_data(res,i,"ssn"),
 						currtime,
 						paytime,
-						p->paytype
+						paytype
 					);
 
 					docid = g->db_last_insert_id(g->conn, "documents");

@@ -374,9 +374,9 @@ class LMS
 		if($this->DB->Execute('INSERT INTO customers (name, lastname, type,  
 				    address, zip, city, countryid, email, ten, ssn, status, creationdate, 
 				    creatorid, info, notes, serviceaddr, message, pin, regon, rbe, 
-				    icn, cutoffstop, consentdate, divisionid, paytime) 
+				    icn, cutoffstop, consentdate, divisionid, paytime, paytype) 
 				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, 
-				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
 				    array(lms_ucwords($customeradd['name']),  
 					    $customeradd['lastname'], 
 					    empty($customeradd['type']) ? 0 : 1,
@@ -401,6 +401,7 @@ class LMS
 					    $customeradd['consentdate'],
 					    $customeradd['divisionid'],
 					    $customeradd['paytime'],
+					    $customeradd['paytype'],
 					    )))
 		{
 			return $this->DB->GetLastInsertID('customers');
@@ -438,7 +439,7 @@ class LMS
 				zip=?, city=?, countryid=?, email=?, ten=?, ssn=?, moddate=?NOW?, modid=?, 
 				info=?, notes=?, serviceaddr=?, lastname=UPPER(?), name=?, 
 				deleted=0, message=?, pin=?, regon=?, icn=?, rbe=?, 
-				cutoffstop=?, consentdate=?, divisionid=?, paytime=? 
+				cutoffstop=?, consentdate=?, divisionid=?, paytime=?, paytype=? 
 				WHERE id=?', 
 			array( $customerdata['status'], 
 				empty($customerdata['type']) ? 0 : 1,
@@ -464,6 +465,7 @@ class LMS
 				$customerdata['consentdate'],
 				$customerdata['divisionid'],
 				$customerdata['paytime'],
+				$customerdata['paytype'],
 				$customerdata['id'],
 				));
 	}
