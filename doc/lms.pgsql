@@ -724,8 +724,9 @@ CREATE TABLE aliasassignments (
 	id              integer         DEFAULT nextval('passwd_id_seq'::text) NOT NULL,
 	aliasid         integer         DEFAULT 0 NOT NULL,
 	accountid       integer         DEFAULT 0 NOT NULL,
+	mail_forward    varchar(255)    DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
-	UNIQUE (aliasid, accountid)
+	UNIQUE (aliasid, accountid, mail_forward)
 );
 
 /* ---------------------------------------------------

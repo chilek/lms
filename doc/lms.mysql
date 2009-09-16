@@ -688,8 +688,9 @@ CREATE TABLE aliasassignments (
     id              int(11)         NOT NULL auto_increment,
     aliasid         int(11)         DEFAULT '0' NOT NULL,
     accountid       int(11)         DEFAULT '0' NOT NULL,
+    mail_forward    varchar(255)    DEFAULT '' NOT NULL,
     PRIMARY KEY (id),
-    UNIQUE KEY aliasid (aliasid, accountid)
+    UNIQUE KEY aliasid (aliasid, accountid, mail_forward)
 ) ENGINE=MyISAM;
 
 # --------------------------------------------------------
