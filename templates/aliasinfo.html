@@ -10,7 +10,7 @@
 			<B>{t}Login:{/t}</B>
 		</TD>
 		<TD width="98%" class="frightu">
-			<B>{$alias.login}</B>
+			<B>{if $alias.login ne ""}{$alias.login}{else}{t}(domain alias){/t}{/if}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">

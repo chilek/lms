@@ -49,11 +49,16 @@ if($alias)
 		$SESSION->redirect('?m=aliaslist');
 	}
 	
-	if($alias['login'] == '')
-		$error['login'] = trans('You have to specify alias name!');
-	elseif(!preg_match('/^[a-z0-9._-]+$/', $alias['login']))
-    		$error['login'] = trans('Login contains forbidden characters!');
-	elseif(!$alias['domainid'])
+	if(!isset($alias['domainalias']))
+	{
+		if($alias['login'] == '')
+			$error['login'] = trans('You have to specify alias name!');
+		elseif(!preg_match('/^[a-z0-9._-]+$/', $alias['login']))
+	    		$error['login'] = trans('Login contains forbidden characters!');
+	}
+	else
+		$alias['login'] = '';
+	if(!$alias['domainid'])
 		$error['domainid'] = trans('You have to select domain for alias!');
 	elseif(AliasExists($alias['login'], $alias['domainid']))
 		$error['login'] = trans('Alias with that login name already exists in that domain!');

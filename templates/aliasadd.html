@@ -24,6 +24,12 @@ function delmailforward(mailforward)
 	document.aliasadd.action += '&delmailforward=' + mailforward;
 	document.aliasadd.submit();
 }
+
+function togglelogin()
+{
+	document.aliasadd.login.disabled =
+		!document.aliasadd.login.disabled;
+}
 </SCRIPT>
 {/literal}
 <H1>{$layout.pagetitle}</H1>
@@ -38,7 +44,14 @@ function delmailforward(mailforward)
 			<B>{t}Login:{/t}</B>
 		</TD>
 		<TD width="98%" class="frightu">
-			<INPUT type="text" name="alias[login]" value="{$alias.login}" {tip text="Enter alias name" trigger="login"} size="20">
+			<INPUT type="text" name="alias[login]" id="login" value="{$alias.login}" {tip text="Enter alias name" trigger="login"} size="20" {if $alias.domainalias}disabled{/if}>
+		</TD>
+	</TR>
+        <TR class="LIGHT">
+		<TD width="2%" colspan="2" class="fleft">
+		</TD>
+		<TD width="98%" class="fright">
+			<INPUT type="checkbox" name="alias[domainalias]" id="domainalias" value="" onClick="javascript:togglelogin()" {if $alias.domainalias}checked{/if}><A href="javascript:checkElement('domainalias');javascript:togglelogin()">{t}domain alias{/t}</A>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
