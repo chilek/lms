@@ -82,12 +82,12 @@ if($alias)
 	
 	if(!empty($_GET['delmailforward']))
 	{
-		unset($alias['mailforwards'][$_GET['delmailforward']]);
+		unset($alias['mailforwards'][array_search($_GET['delmailforward'], $alias['mailforwards'])]);
 	}
 
 	if($alias['mailforward'] && (!is_array($alias['mailforwards']) || !in_array($alias['mailforward'], $alias['mailforwards'])))
 	{
-			$alias['mailforwards'][] = $alias['mailforward'];
+		$alias['mailforwards'][] = $alias['mailforward'];
 	}
 	
 	if(empty($_GET['addaccount']) && empty($_GET['delaccount'])
