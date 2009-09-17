@@ -1913,6 +1913,7 @@ $_LANG['You have to select destination account!'] = 'Musisz wybrać konto docelo
 $_LANG['You have to select domain for account!'] = 'Musisz wybrać domenę dla konta!';
 $_LANG['You have to select domain for alias!'] = 'Musisz wybrać domenę dla aliasu!';
 $_LANG['You have to specify login!'] = 'Musisz podać login!';
+$_LANG['You have to specify forward e-mail!'] = 'Musisz określić e-mail przekierowania!';
 $_LANG['no limit'] = 'bez ograniczeń';
 $_LANG['Enter destination e-mail address for redirect (optional)'] = 'Wprowadź docelowy adres e-mail przekierowania (opcjonalnie)';
 $_LANG['Enter limit of account aliases'] = 'Wprowadź limit liczby aliasów kont';
@@ -2253,5 +2254,6 @@ $_LANG['debit notes'] = 'noty obciążeniowe';
 $_LANG['Debit Note Edit: $0'] = 'Edycja noty: $0';
 $_LANG['default'] = 'domyślny';
 $_LANG['Enter invoices payment type (leave this field empty to use default)'] = 'Wprowadź typ płatności faktur (pozostaw to pole puste aby zastosować typ domyślny)';
+$_LANG['(domain alias)'] = '(alias domenowy)';
 
 ?>
