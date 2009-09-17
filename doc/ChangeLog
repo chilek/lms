@@ -37,6 +37,7 @@ version ? (????-??-??):
   - added networks description functionality (Grzegorz Chwesewicz, Chilan)
   - extended description size of netdevices (Grzegorz Chwesewicz, Chilan)
   - invoices payment type per-customer (alec)
+  - we can add mail forwards to aliases (Tomasz Chilinski, Chilan)
 
 version 1.11.8 Belus (2009-05-19):
 
