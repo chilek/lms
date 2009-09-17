@@ -128,7 +128,7 @@ if(isset($_POST['alias']))
 		&& !sizeof($alias['accounts']) && !sizeof($alias['mailforwards']))
 	{
 		$error['accountid'] = trans('You have to select destination account!');
-		$error['mailforward'] = trans('You have to select forward e-mail!');
+		$error['mailforward'] = trans('You have to specify forward e-mail!');
 	}
 	
 	if(!$error && empty($_GET['addaccount']) && empty($_GET['delaccount'])
