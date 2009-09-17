@@ -42,6 +42,7 @@ $aliasold = $DB->GetRow('SELECT a.id, a.login, a.domainid, d.name AS domain
 
 if(!$aliasold)
 {
+//	print_r($SESSION->get('backto'));die;
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
@@ -65,6 +66,26 @@ if(!empty($_GET['delaccount']))
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
+if(!empty($_GET['delmailforward']))
+{
+	$cnt = $DB->GetOne('SELECT COUNT(*) FROM aliasassignments WHERE aliasid = ?', array($aliasold['id']));
+
+	if($cnt < 2)
+	{
+		$DB->BeginTrans();
+	        $DB->Execute('DELETE FROM aliases WHERE id = ?', array($aliasold['id']));
+		$DB->Execute('DELETE FROM aliasassignments WHERE aliasid = ?', array($aliasold['id']));
+		$DB->CommitTrans();		
+	}
+	else
+	{
+		$DB->Execute('DELETE FROM aliasassignments WHERE aliasid = ? AND mail_forward = ?',
+			array($aliasold['id'], $_GET['delmailforward']));
+	}
+	
+	$SESSION->redirect('?'.$SESSION->get('backto'));
+}
+
 $layout['pagetitle'] = trans('Alias Edit: $0', $aliasold['login'].'@'.$aliasold['domain']);
 
 if(isset($_POST['alias']))
@@ -73,6 +94,7 @@ if(isset($_POST['alias']))
 	$alias['id'] = $aliasold['id'];
 	$alias['login'] = trim($alias['login']);
 	$alias['accounts'] = $SESSION->get('aliasaccounts');
+	$alias['mailforwards'] = $SESSION->get('aliasmailforwards');
 
 	if($alias['login'] == '')
 		$error['login'] = trans('You have to specify alias name!');
@@ -87,9 +109,7 @@ if(isset($_POST['alias']))
 		elseif(AccountExists($alias['login'], $alias['domainid']))
 			$error['login'] = trans('Account with that login name already exists in that domain!');
 	}
-	
-	$alias['accounts'] = $SESSION->get('aliasaccounts');
-	
+		
 	if(!empty($_GET['delaccount']))
 	{
 		unset($alias['accounts'][intval($_GET['delaccount'])]);
@@ -104,13 +124,27 @@ if(isset($_POST['alias']))
 			$alias['accounts'][$account['id']] = $account;
 		}
 	}
-	
-	if(empty($_GET['addaccount']) && empty($_GET['delaccount']) && !sizeof($alias['accounts']))
+
+	if(!empty($_GET['delmailforward']))
+	{
+		unset($alias['mailforwards'][$_GET['delmailforward']]);
+	}
+
+	if($alias['mailforward'] && (!is_array($alias['mailforwards']) || !in_array($alias['mailforward'], $alias['mailforwards'])))
+	{
+		$alias['mailforwards'][] = $alias['mailforward'];
+	}
+
+	if(empty($_GET['addaccount']) && empty($_GET['delaccount'])
+		&& empty($_GET['addaccount']) && empty($_GET['delaccount'])
+		&& !sizeof($alias['accounts']) && !sizeof($alias['mailforwards']))
 	{
 		$error['accountid'] = trans('You have to select destination account!');
+		$error['mailforward'] = trans('You have to select forward e-mail!');
 	}
 	
-	if(!$error && empty($_GET['addaccount']) && empty($_GET['delaccount']))
+	if(!$error && empty($_GET['addaccount']) && empty($_GET['delaccount'])
+		&& empty($_GET['addmailforward']) && empty($_GET['delmailforward']))
 	{
 		$DB->BeginTrans();
 		
@@ -123,13 +157,20 @@ if(isset($_POST['alias']))
 		$DB->Execute('DELETE FROM aliasassignments WHERE aliasid = ?',
 			array($alias['id']));
 		
-		foreach($alias['accounts'] as $account)
-			$DB->Execute('INSERT INTO aliasassignments (aliasid, accountid)
-				VALUES(?,?)', array($alias['id'], $account['id']));
+		if(sizeof($alias['accounts']))
+			foreach($alias['accounts'] as $account)
+				$DB->Execute('INSERT INTO aliasassignments (aliasid, accountid)
+					VALUES(?,?)', array($alias['id'], $account['id']));
+
+		if(sizeof($alias['mailforwards']))
+			foreach($alias['mailforwards'] as $mailforward)
+				$DB->Execute('INSERT INTO aliasassignments (aliasid, mail_forward)
+					VALUES(?,?)', array($alias['id'], $mailforward));
 		
 		$DB->CommitTrans();
 
 		$SESSION->remove('aliasaccounts');
+		$SESSION->remove('aliasmailforwards');
 		$SESSION->redirect('?m=aliaslist');
 	}
 }	
@@ -139,7 +180,15 @@ else
 	$alias['accounts'] = $DB->GetAllByKey('SELECT p.id, p.login, d.name AS domain
 			FROM passwd p JOIN domains d ON (p.domainid = d.id)
 			WHERE p.id IN (SELECT accountid FROM aliasassignments
-				WHERE aliasid = ?)', 'id', array($alias['id'])); 
+				WHERE aliasid = ? AND mail_forward=\'\')', 'id', array($alias['id'])); 
+	$mailforwards = $DB->GetAllByKey('SELECT mail_forward
+			FROM aliasassignments WHERE aliasid = ? AND accountid = 0 AND mail_forward <> \'\' 
+			ORDER BY mail_forward',
+			'mail_forward', array($alias['id']));
+	$alias['mailforwards'] = array();
+	if (sizeof($mailforwards))
+		foreach ($mailforwards as $mailforward => $idx)
+			$alias['mailforwards'][] = $mailforward;
 }
 
 if(isset($alias['accounts']) && sizeof($alias['accounts']))
@@ -155,6 +204,7 @@ $accountlist = $DB->GetAll('SELECT passwd.id, login, domains.name AS domain
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SESSION->save('aliasaccounts', $alias['accounts']);
+$SESSION->save('aliasmailforwards', $alias['mailforwards']);
 
 $SMARTY->assign('alias', $alias);
 $SMARTY->assign('error', $error);

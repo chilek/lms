@@ -8,9 +8,21 @@ function addaccount()
 	document.aliasedit.submit();
 }
 
+function addmailforward()
+{
+	document.aliasedit.action += '&addmailforward=1';
+	document.aliasedit.submit();
+}
+
 function delaccount(id)
 {
 	document.aliasedit.action += '&delaccount=' + id;
+	document.aliasedit.submit();
+}
+
+function delmailforward(mailforward)
+{
+	document.aliasedit.action += '&delmailforward=' + mailforward;
 	document.aliasedit.submit();
 }
 </SCRIPT>
@@ -65,6 +77,22 @@ function delaccount(id)
 				{/foreach}
 			</SELECT>
 			<A href="javascript:addaccount()"><IMG src="img/save.gif" alt="" {tip text="Add"}></A>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD width="1%" class="fleft">
+			<IMG src="img/forward.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Forward e-mail:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" class="fright">
+			{foreach from=$alias.mailforwards item=mailforward}
+			{$mailforward}
+			<A href="javascript:delmailforward('{$mailforward}')"><IMG src="img/delete.gif" alt="" {tip text="Delete"}></A><BR>
+			{/foreach}
+			<INPUT type="text" name="alias[mailforward]" value="" {tip text="Enter destination e-mail address for redirect (optional)" trigger="mailforward"} size="25">
+			<A href="javascript:addmailforward()"><IMG src="img/save.gif" alt="" {tip text="Add"}></A>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
