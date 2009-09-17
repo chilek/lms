@@ -79,11 +79,16 @@ if(isset($_POST['alias']))
 	$alias['accounts'] = $SESSION->get('aliasaccounts');
 	$alias['mailforwards'] = $SESSION->get('aliasmailforwards');
 
-	if($alias['login'] == '')
-		$error['login'] = trans('You have to specify alias name!');
-	elseif(!preg_match('/^[a-z0-9._-]+$/', $alias['login']))
-    		$error['login'] = trans('Login contains forbidden characters!');
-	elseif(!$alias['domainid'])
+	if(!isset($alias['domainalias']))
+	{
+		if($alias['login'] == '')
+			$error['login'] = trans('You have to specify alias name!');
+		elseif(!preg_match('/^[a-z0-9._-]+$/', $alias['login']))
+	    		$error['login'] = trans('Login contains forbidden characters!');
+	}
+	else
+		$alias['login'] == '';
+	if(!$alias['domainid'])
 		$error['domainid'] = trans('You have to select domain for alias!');
 	elseif($alias['login'] != $aliasold['login'] || $alias['domainid'] != $aliasold['domainid'])
 	{
@@ -172,6 +177,8 @@ else
 	if (sizeof($mailforwards))
 		foreach ($mailforwards as $mailforward => $idx)
 			$alias['mailforwards'][] = $mailforward;
+	if($alias['login'] == '')
+		$alias['domainalias'] = TRUE;
 }
 
 if(isset($alias['accounts']) && sizeof($alias['accounts']))
