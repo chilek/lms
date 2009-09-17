@@ -42,11 +42,10 @@ $aliasold = $DB->GetRow('SELECT a.id, a.login, a.domainid, d.name AS domain
 
 if(!$aliasold)
 {
-//	print_r($SESSION->get('backto'));die;
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
-if(!empty($_GET['delaccount']))
+if(!empty($_GET['delaccount']) || !empty($_GET['delmailforward']))
 {
 	$cnt = $DB->GetOne('SELECT COUNT(*) FROM aliasassignments WHERE aliasid = ?', array($aliasold['id']));
 
@@ -59,28 +58,12 @@ if(!empty($_GET['delaccount']))
 	}
 	else
 	{
-		$DB->Execute('DELETE FROM aliasassignments WHERE aliasid = ? AND accountid = ?',
-			array($aliasold['id'], intval($_GET['delaccount'])));
-	}
-	
-	$SESSION->redirect('?'.$SESSION->get('backto'));
-}
-
-if(!empty($_GET['delmailforward']))
-{
-	$cnt = $DB->GetOne('SELECT COUNT(*) FROM aliasassignments WHERE aliasid = ?', array($aliasold['id']));
-
-	if($cnt < 2)
-	{
-		$DB->BeginTrans();
-	        $DB->Execute('DELETE FROM aliases WHERE id = ?', array($aliasold['id']));
-		$DB->Execute('DELETE FROM aliasassignments WHERE aliasid = ?', array($aliasold['id']));
-		$DB->CommitTrans();		
-	}
-	else
-	{
-		$DB->Execute('DELETE FROM aliasassignments WHERE aliasid = ? AND mail_forward = ?',
-			array($aliasold['id'], $_GET['delmailforward']));
+		if (!empty($_GET['delaccount']))
+			$DB->Execute('DELETE FROM aliasassignments WHERE aliasid = ? AND accountid = ?',
+				array($aliasold['id'], intval($_GET['delaccount'])));
+		else
+			$DB->Execute('DELETE FROM aliasassignments WHERE aliasid = ? AND mail_forward = ?',
+				array($aliasold['id'], $_GET['delmailforward']));
 	}
 	
 	$SESSION->redirect('?'.$SESSION->get('backto'));
