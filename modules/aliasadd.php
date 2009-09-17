@@ -42,6 +42,7 @@ if($alias)
 {
 	$alias['login'] = trim($alias['login']);
 	$alias['accounts'] = $SESSION->get('aliasaccounts');
+	$alias['mailforwards'] = $SESSION->get('aliasmailforwards');
 
 	if($alias['login']=='' && !$alias['domainid'] && !$alias['accountid'])
 	{
@@ -59,8 +60,6 @@ if($alias)
 	elseif(AccountExists($alias['login'], $alias['domainid']))
 		$error['login'] = trans('Account with that login name already exists in that domain!');	
 	
-	$alias['accounts'] = $SESSION->get('aliasaccounts');
-	
 	if(!empty($_GET['delaccount']))
 	{
 		unset($alias['accounts'][intval($_GET['delaccount'])]);
@@ -76,10 +75,24 @@ if($alias)
 		}
 	}
 	
-	if(empty($_GET['addaccount']) && empty($_GET['delaccount']))
+	if(!empty($_GET['delmailforward']))
 	{
-		if(!sizeof($alias['accounts']))
+		unset($alias['mailforwards'][$_GET['delmailforward']]);
+	}
+
+	if($alias['mailforward'] && (!is_array($alias['mailforwards']) || !in_array($alias['mailforward'], $alias['mailforwards'])))
+	{
+			$alias['mailforwards'][] = $alias['mailforward'];
+	}
+	
+	if(empty($_GET['addaccount']) && empty($_GET['delaccount'])
+		&& empty($_GET['addmailforward']) && empty($_GET['delmailforward']))
+	{
+		if(!sizeof($alias['accounts']) && !sizeof($alias['mailforwards']))
+		{
 			$error['accountid'] = trans('You have to select destination account!');
+			$error['mailforward'] = trans('You have to select forward e-mail!');
+		}
 		
 		if($alias['domainid'])
 		{
@@ -100,7 +113,8 @@ if($alias)
 		}
 	}
 	
-	if(!$error && empty($_GET['addaccount']) && empty($_GET['delaccount']))
+	if(!$error && empty($_GET['addaccount']) && empty($_GET['delaccount'])
+		&& empty($_GET['addmailforward']) && empty($_GET['delmailforward']))
 	{
 		$DB->BeginTrans();
 		
@@ -109,13 +123,19 @@ if($alias)
 		
 		$id = $DB->GetLastInsertId('aliases');
 		
-		foreach($alias['accounts'] as $account)
-			$DB->Execute('INSERT INTO aliasassignments (aliasid, accountid)
-				VALUES(?,?)', array($id, $account['id']));
+		if (sizeof($alias['accounts']))
+			foreach($alias['accounts'] as $account)
+				$DB->Execute('INSERT INTO aliasassignments (aliasid, accountid)
+					VALUES(?,?)', array($id, $account['id']));
+		if (sizeof($alias['mailforwards']))
+			foreach($alias['mailforwards'] as $mailforward)
+				$DB->Execute('INSERT INTO aliasassignments (aliasid, mail_forward)
+					VALUES(?,?)', array($id, $mailforward));
 		
 		$DB->CommitTrans();
 
 		$SESSION->remove('aliasaccounts');
+		$SESSION->remove('aliasmailforwards');
 		
 		if(!isset($alias['reuse']))
 		{
@@ -124,6 +144,7 @@ if($alias)
 
 		unset($alias['login']);
 		unset($alias['accounts']);
+		unset($alias['mailforwards']);
 	}
 
 }	
@@ -155,6 +176,7 @@ $layout['pagetitle'] = trans('New Alias');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SESSION->save('aliasaccounts', $alias['accounts']);
+$SESSION->save('aliasmailforwards', $alias['mailforwards']);
 
 $SMARTY->assign('alias', $alias);
 $SMARTY->assign('error', $error);

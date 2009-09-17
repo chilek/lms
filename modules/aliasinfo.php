@@ -37,6 +37,13 @@ $alias['accounts'] = $DB->GetAllByKey('SELECT p.id, p.login, d.name AS domain
 		FROM passwd p JOIN domains d ON (p.domainid = d.id)
 		WHERE p.id IN (SELECT accountid FROM aliasassignments
 			WHERE aliasid = ?)', 'id', array($alias['id'])); 
+$mailforwards = $DB->GetAllByKey('SELECT mail_forward
+		FROM aliasassignments WHERE aliasid = ? AND accountid = 0 AND mail_forward <> \'\'',
+		'mail_forward', array($alias['id']));
+$alias['mailforwards'] = array();
+if(sizeof($mailforwards))
+	foreach($mailforwards as $mailforward => $idx)
+		$alias['mailforwards'][] = $mailforward;
 
 $layout['pagetitle'] = trans('Alias Info: $0', $alias['login'].'@'.$alias['domain']);
 
