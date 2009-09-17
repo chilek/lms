@@ -387,6 +387,7 @@ $_LANG['DNS servers:'] = 'Serwery DNS:';
 $_LANG['Documentation'] = 'Dokumentacja';
 $_LANG['Document with specified number exists!'] = 'Dokument z podanym numerem już istnieje!';
 $_LANG['Domain:'] = 'Domena:';
+$_LANG['domain alias'] = 'alias domenowy';
 $_LANG['Domain Edit: $0'] = 'Edycja domeny: $0';
 $_LANG['Domain name is required!'] = 'Nazwa domeny jest wymagana!';
 $_LANG['Domains'] = 'Domeny';
