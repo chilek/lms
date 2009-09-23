@@ -3742,8 +3742,10 @@ class LMS
 
 		$number = preg_replace('/[^0-9]/', '', $number);
 		$number = preg_replace('/^0+/', '', $number);
-		$number = (substr_compare($number, $prefix, 0, 2)) ? $prefix . $number : $number;
 
+		if ($prefix && substr($number, 0, strlen($prefix)) != $prefix)
+			$number = $prefix . $number;
+		
 		switch($service)
 		{
 			case 'smscenter':
