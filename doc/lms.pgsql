@@ -1081,7 +1081,7 @@ CREATE TABLE countries (
  Structure of table "zipcodes"
 ------------------------------------------------------*/
 DROP SEQUENCE zipcodes_id_seq;
-CREATE SEQUENCES zipcodes_id_seq;
+CREATE SEQUENCE zipcodes_id_seq;
 DROP TABLE zipcodes;
 CREATE TABLE zipcodes (
     	id 		integer 	DEFAULT nextval('customerassignments_id_seq'::text) NOT NULL,
