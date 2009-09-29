@@ -893,14 +893,8 @@ $access['table'][100]['allow_reg'] = '^invoice$';
 2.9.3. Transfer forms
 
    Transfer forms it's Polish specific feature. Data for payment form
-   printouts is stored in [finances] configuration section. That is:
-   name - seller name
-   shortname - short seller name
-   address - seller address
-   zip - seller postal code
-   city - seller city
-   account - banking account number
-   pay_title - title of payment
+   printouts is get from customer's division info. The title of payment
+   can be set using 'pay_title' option in [finances] section.
      __________________________________________________________________
 
 2.9.4. Cash Receipts

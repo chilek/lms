@@ -650,17 +650,8 @@ $access['table'][100]['allow_reg'] = '^invoice$';
 	<sect2 id="install-transferforms">
 	<title>Transfer forms</title>
 		<para>Transfer forms it's Polish specific feature. Data for payment form printouts 
-		is stored in <emphasis>[finances]</emphasis> configuration section. That is:
-		<simplelist>
-			<member>name - seller name</member>
-			<member>shortname - short seller name</member>
-			<member>address - seller address</member>
-			<member>zip - seller postal code</member>
-			<member>city - seller city</member>
-			<member>account - banking account number</member>
-			<member>pay_title - title of payment</member>
-		</simplelist>
-		</para>
+		is get from customer's division info. The title of payment can be set using 'pay_title' option
+		in <emphasis>[finances]</emphasis> section.</para>
 	</sect2>
 	<sect2 id="install-receipts">
      <title>Cash Receipts</title>
