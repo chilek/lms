@@ -1009,17 +1009,11 @@ AddDefaultCharset Off
 
 2.9.3. Polecenia przelewu/wpłaty
 
-   Dane do druków polecenia przelewu brane są z sekcji [finances]
-   konfiguracji. Dotyczą zarówno wydruków poleceń przelewu dostępnych w
-   Finanse -> Wydruki jak i wydruków faktur typu FT-0100. A oto dostępne
-   opcje:
-   name - nazwa firmy
-   shortname - skrócona nazwa firmy
-   address - adres firmy (ulica, nr domu)
-   zip - kod pocztowy
-   city - miasto
-   account - numer konta bankowego
-   pay_title - tytuł płatności
+   Dane do druków polecenia przelewu brane są z danych firmy do której
+   przypisany jest dany klient. Tytuł płatności można ustawić przy użyciu
+   opcji 'pay_title' w sekcji [finances]. Dotyczy to zarówno wydruków
+   poleceń przelewu dostępnych w Finanse -> Wydruki jak i wydruków faktur
+   typu FT-0100.
      __________________________________________________________________
 
 2.9.4. Dokumenty kasowe (KP/KW)

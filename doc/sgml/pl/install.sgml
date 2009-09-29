@@ -758,19 +758,11 @@ AddDefaultCharset Off
 	</sect2>
 	<sect2 id="install-transferforms">
 	<title>Polecenia przelewu/wp³aty</title>
-		<para>Dane do druków polecenia przelewu brane s± z sekcji <emphasis>[finances]</emphasis>
-		konfiguracji. Dotycz± zarówno wydruków poleceñ przelewu dostêpnych w Finanse -> Wydruki 
-		jak i wydruków faktur typu FT-0100. A oto dostêpne opcje:
-		<simplelist>
-			<member>name - nazwa firmy</member>
-			<member>shortname - skrócona nazwa firmy</member>
-			<member>address - adres firmy (ulica, nr domu)</member>
-			<member>zip - kod pocztowy</member>
-			<member>city - miasto</member>
-			<member>account - numer konta bankowego</member>
-			<member>pay_title - tytu³ p³atno¶ci</member>
-		</simplelist>
-        	</para>
+		<para>Dane do druków polecenia przelewu brane s± z danych firmy do której
+		przypisany jest dany klient. Tytu³ p³atno¶ci mo¿na ustawiæ przy u¿yciu
+		opcji 'pay_title' w sekcji <emphasis>[finances]</emphasis>.
+		Dotyczy to zarówno wydruków poleceñ przelewu dostêpnych w Finanse -> Wydruki 
+		jak i wydruków faktur typu FT-0100.</para>
 	</sect2>
 	<sect2 id="install-receipts">
 	<title>Dokumenty kasowe (KP/KW)</title>
