@@ -61,11 +61,11 @@ function GetAccountList($order='login,asc', $customer=NULL, $type=NULL, $kind=NU
 		FROM passwd p
 		LEFT JOIN customers c ON c.id = p.ownerid 
 		LEFT JOIN domains d ON d.id = p.domainid WHERE 1=1'
-		.($customer != '' ? ' AND p.ownerid = '.$customer : '')
-		.($type ? ' AND p.type & '.$type.' = '.$type : '')
+		.($customer != '' ? ' AND p.ownerid = '.intval($customer) : '')
+		.($type ? ' AND p.type & '.$type.' = '.intval($type) : '')
 		.($kind == 1 ? ' AND p.expdate!= 0 AND p.expdate < ?NOW?' : '')
 		.($kind == 2 ? ' AND (p.expdate=0 OR p.expdate > ?NOW?)' : '')
-		.($domain != '' ? ' AND p.domainid = '.$domain : '')
+		.($domain != '' ? ' AND p.domainid = '.intval($domain) : '')
 		.($sqlord != '' ? $sqlord : '')
 		);
 	

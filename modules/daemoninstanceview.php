@@ -27,13 +27,20 @@
 function GetOptionList($instanceid)
 {
 	global $DB;
-	$list = $DB->GetAll('SELECT id, var, value, description, disabled FROM daemonconfig WHERE instanceid=? ORDER BY var', array($instanceid));
+	$list = $DB->GetAll('SELECT id, var, value, description, disabled
+		FROM daemonconfig
+		WHERE instanceid = ?
+		ORDER BY var', array($instanceid));
 	return $list;
 }
 
-$instance = $DB->GetRow('SELECT daemoninstances.id AS id, hosts.id AS hostid, daemoninstances.name AS name, hosts.name AS hostname FROM daemoninstances, hosts WHERE hosts.id=hostid AND daemoninstances.id=?', array($_GET['id']));
+$instance = $DB->GetRow('SELECT i.id, hosts.id AS hostid, i.name, hosts.name AS hostname
+	FROM daemoninstances i, hosts
+	WHERE hosts.id = i.hostid AND i.id = ?',
+	array($_GET['id']));
 
-$layout['pagetitle'] = trans('Configuration of Instance: $0/$1', $instance['name'], '<A href="?m=daemoninstancelist&id='.$instance['hostid'].'">'.$instance['hostname'].'</A>');
+$layout['pagetitle'] = trans('Configuration of Instance: $0/$1', $instance['name'],
+	'<A href="?m=daemoninstancelist&id='.$instance['hostid'].'">'.$instance['hostname'].'</A>');
 
 $optionlist = GetOptionList($instance['id']);
 

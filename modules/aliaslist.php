@@ -56,8 +56,8 @@ function GetAliasList($order='login,asc', $customer=NULL, $domain='')
 		JOIN (SELECT COUNT(*) AS cnt, MIN(accountid) AS accountid, aliasid
 			FROM aliasassignments GROUP BY aliasid) s ON (a.id = s.aliasid)
 		WHERE 1=1'
-		.($customer != '' ? ' AND d.ownerid = '.$customer : '')
-		.($domain != '' ? ' AND a.domainid = '.$domain : '')
+		.($customer != '' ? ' AND d.ownerid = '.intval($customer) : '')
+		.($domain != '' ? ' AND a.domainid = '.intval($domain) : '')
 		.($sqlord != '' ? $sqlord : '')
 		);
 	

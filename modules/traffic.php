@@ -28,8 +28,8 @@ function Traffic($from = 0, $to = 0, $net = 0, $customerid = 0, $order = '', $li
 	global $DB, $LMS;
 	
 	// period
-	$fromdate = $from;
-	$todate = $to;
+	$fromdate = intval($from);
+	$todate = intval($to);
 	$delta = ($todate-$fromdate) ? ($todate-$fromdate) : 1;
 
 	$dt = "( dt >= $fromdate AND dt < $todate ) ";
@@ -80,7 +80,7 @@ function Traffic($from = 0, $to = 0, $net = 0, $customerid = 0, $order = '', $li
 		    WHERE '
 		    .$dt
 		    .$net
-		    .($customerid ? ' AND ownerid = '.$customerid : '')
+		    .($customerid ? ' AND ownerid = '.intval($customerid) : '')
 		    .' GROUP BY nodeid, name, ipaddr'
 		    .$order.$limit;
 

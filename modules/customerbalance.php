@@ -27,9 +27,9 @@
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if(!$LMS->CustomerExists($_GET['id']))
-	header("Location: ?m=customerlist");
+	header('Location: ?m=customerlist');
 
-$customername=$LMS->GetCustomerName($_GET['id']);
+$customername = $LMS->GetCustomerName($_GET['id']);
 $id = $_GET['id'];
 
 $layout['pagetitle'] = trans('Customer Balance: $0', '<A HREF="?m=customerinfo&id='.$_GET['id'].'">'.$customername.'</A>');

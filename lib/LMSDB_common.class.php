@@ -229,6 +229,11 @@ Class LMSDB_common
 		return $this->_driver_lastinsertid($table);
 	}
 
+	function Escape($input)
+	{
+		return $this->_quote_value($input);
+	}
+
 	function _query_parser($query, $inputarray = NULL)
 	{
 		// najpierw sparsujmy wszystkie specjalne meta śmieci.

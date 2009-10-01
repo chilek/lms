@@ -55,10 +55,10 @@ function GetItemList($id, $order='id,desc', $search=NULL, $cat=NULL, $status=NUL
 				$where[] = ' i.customerid = '.intval($search);
 			break;
 			case 'destination':
-				$where[] = ' UPPER(i.destination) ?LIKE? UPPER(\'%'.$search.'%\')';
+				$where[] = ' UPPER(i.destination) ?LIKE? UPPER('.$DB->Escape('%'.$search.'%').')';
 			break;
 			case 'name':
-				$where[] = ' UPPER(c.lastname) ?LIKE? UPPER(\'%'.$search.'%\')';
+				$where[] = ' UPPER(c.lastname) ?LIKE? UPPER('.$DB->Escape('%'.$search.'%').')';
 			break;
 		}
 	}

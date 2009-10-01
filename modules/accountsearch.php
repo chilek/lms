@@ -55,13 +55,13 @@ function GetAccountList($order='login,asc', $search, $customer=NULL, $type=NULL,
 	}
 
 	if(!empty($search['login']))
-		$where[] = 'p.login ?LIKE? \'%'.$search['login'].'%\''; 
+		$where[] = 'p.login ?LIKE? '.$DB->Escape('%'.$search['login'].'%'); 
 	if(!empty($search['domain']))
-		$where[] = 'd.name ?LIKE? \'%'.$search['domain'].'%\''; 
+		$where[] = 'd.name ?LIKE? '.$DB->Escape('%'.$search['domain'].'%'); 
 	if(!empty($search['realname']))
-		$where[] = 'p.realname ?LIKE? \'%'.$search['realname'].'%\''; 
+		$where[] = 'p.realname ?LIKE? '.$DB->Escape('%'.$search['realname'].'%'); 
 	if(!empty($search['description']))
-		$where[] = 'p.description ?LIKE? \'%'.$search['description'].'%\''; 
+		$where[] = 'p.description ?LIKE? '.$DB->Escape('%'.$search['description'].'%'); 
 	if($customer != '')
 		$where[] = 'p.ownerid = '.intval($customer);
 	if($type)

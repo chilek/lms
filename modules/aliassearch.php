@@ -46,9 +46,9 @@ function GetAliasList($order='login,asc', $search, $customer='', $domain='')
 	}
 
 	if(!empty($search['login']))
-		$where[] = 'a.login ?LIKE? \'%'.$search['login'].'%\''; 
+		$where[] = 'a.login ?LIKE? '.$DB->Escape('%'.$search['login'].'%'); 
 	if(!empty($search['domain']))
-		$where[] = 'd.name ?LIKE? \'%'.$search['domain'].'%\''; 
+		$where[] = 'd.name ?LIKE? '.$DB->Escape('%'.$search['domain'].'%'); 
 	if($customer != '')
 		$where[] = 'd.ownerid = '.intval($customer);
 	if($domain)
