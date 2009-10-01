@@ -39,6 +39,7 @@ version ? (????-??-??):
   - invoices payment type per-customer (alec)
   - we can add mail forwards to aliases (Tomasz Chilinski, Chilan)
   - we can add domain aliases (Tomasz Chilinski, Chilan)
+  - prevent SQL Injection in some queries using proper values escaping (alec)
 
 version 1.11.8 Belus (2009-05-19):
 

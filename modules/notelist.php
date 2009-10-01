@@ -66,23 +66,23 @@ function GetNotesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL, $o
 				$where = ' AND number = '.intval($search);
 			break;
 			case 'cdate':
-				$where = ' AND cdate >= '.$search.' AND cdate < '.($search+86400);
+				$where = ' AND cdate >= '.intval($search).' AND cdate < '.(intval($search)+86400);
 			break;
 			case 'month':
 				$last = mktime(23,59,59, date('n',$search) + 1, 0, date('Y', $search));
-				$where = ' AND cdate >= '.$search.' AND cdate <= '.$last;
+				$where = ' AND cdate >= '.intval($search).' AND cdate <= '.$last;
 			break;
 			case 'ten':
-			        $where = ' AND ten = \''.$search.'\'';
+			        $where = ' AND ten = '.$DB->Escape($search);
 			break;
 			case 'customerid':
 				$where = ' AND d.customerid = '.intval($search);
 			break;
 			case 'name':
-				$where = ' AND UPPER(d.name) ?LIKE? UPPER(\'%'.$search.'%\')';
+				$where = ' AND UPPER(d.name) ?LIKE? UPPER('.$DB->Escape('%'.$search.'%').')';
 			break;
 			case 'address':
-				$where = ' AND UPPER(address) ?LIKE? UPPER(\'%'.$search.'%\')';
+				$where = ' AND UPPER(address) ?LIKE? UPPER('.$DB->Escape('%'.$search.'%').')';
 			break;
 			case 'value':
 				$having = ' HAVING SUM(n.value) = '.str_replace(',','.',f_round($search)).' ';

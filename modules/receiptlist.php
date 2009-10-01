@@ -56,30 +56,30 @@ function GetReceiptList($registry, $order='', $search=NULL, $cat=NULL, $from=0, 
 		switch($cat)
 		{
 			case 'value':
-				$having = ' HAVING SUM(value) = '.str_replace(',','.',$search);
+				$having = ' HAVING SUM(value) = '.$DB->Escape(str_replace(',','.',$search));
 				break;
 			case 'number':
 				$where = ' AND number = '.intval($search);
 				break;
 			case 'ten':
-				$where = ' AND ten = \''.$search.'\'';
+				$where = ' AND ten = '.$DB->Escape($search);
 				break;
 			case 'customerid':
 				$where = ' AND customerid = '.intval($search);
 				break;
 			case 'name':
-				$where = ' AND documents.name ?LIKE? \'%'.$search.'%\'';
+				$where = ' AND documents.name ?LIKE? '.$DB->Escape('%'.$search.'%');
 				break;
 			case 'address':
-				$where = ' AND address ?LIKE? \'%'.$search.'%\'';
+				$where = ' AND address ?LIKE? '.$DB->Escape('%'.$search.'%');
 				break;
 		}
 	}
 
 	if($from)
-		$where .= ' AND cdate >= '.$from;
+		$where .= ' AND cdate >= '.intval($from);
 	if($to)
-		$where .= ' AND cdate <= '.$to;
+		$where .= ' AND cdate <= '.intval($to);
 
 	if($advances)
 		$where = ' AND closed = 0';

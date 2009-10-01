@@ -62,10 +62,10 @@ function GetDocumentList($order='cdate,asc', $type=NULL, $customer=NULL, $from=0
 				WHERE e.userid = lms_current_user()
 			) e ON (e.customerid = d.customerid)
 			WHERE e.customerid IS NULL '
-			.($customer ? 'AND d.customerid = '.$customer : '')
-			.($type ? ' AND d.type = '.$type : '')
-			.($from ? ' AND d.cdate >= '.$from : '')
-			.($to ? ' AND d.cdate <= '.$to : '')
+			.($customer ? 'AND d.customerid = '.intval($customer) : '')
+			.($type ? ' AND d.type = '.intval($type) : '')
+			.($from ? ' AND d.cdate >= '.intval($from) : '')
+			.($to ? ' AND d.cdate <= '.intval($to) : '')
 			.$sqlord, array($AUTH->id));
 
 	$list['total'] = sizeof($list);

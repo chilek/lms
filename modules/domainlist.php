@@ -53,7 +53,7 @@ function GetDomainList($order='name,asc', $customer='')
 		.$DB->Concat('lastname', "' '",'c.name').' AS customername 
 		FROM domains d
 		LEFT JOIN customers c ON (d.ownerid = c.id) '
-		.($customer != '' ? ' WHERE d.ownerid = '.$customer : '')
+		.($customer != '' ? ' WHERE d.ownerid = '.intval($customer) : '')
 		.($sqlord != '' ? $sqlord : ''));
 	
 	$list['total'] = sizeof($list);

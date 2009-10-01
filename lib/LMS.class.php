@@ -401,7 +401,7 @@ class LMS
 					    $customeradd['consentdate'],
 					    $customeradd['divisionid'],
 					    $customeradd['paytime'],
-					    $customeradd['paytype'],
+					    isset($customeradd['paytype']) ? $customeradd['paytype'] : NULL,
 					    )))
 		{
 			return $this->DB->GetLastInsertID('customers');
@@ -630,17 +630,19 @@ class LMS
 					switch($key)
 					{
 						case 'phone':
-							$searchargs[] = "EXISTS (SELECT 1 FROM customercontacts WHERE customerid = c.id AND phone ?LIKE? '%$value%')";
+							$searchargs[] = 'EXISTS (SELECT 1 FROM customercontacts
+								WHERE customerid = c.id AND phone ?LIKE? '.$this->DB->Escape("%$value%").')';
 						break;
 						case 'zip':
 						case 'city':
 						case 'address':
 							// UPPER here is a workaround for postgresql ILIKE bug
-							$searchargs[] = "(UPPER($key) ?LIKE? UPPER('%$value%') OR UPPER(serviceaddr) ?LIKE? UPPER('%$value%'))";
+							$searchargs[] = "(UPPER($key) ?LIKE? UPPER(".$this->DB->Escape("%$value%").')
+								OR UPPER(serviceaddr) ?LIKE? UPPER('.$this->DB->Escape("%$value%").'))';
 						break;
 						case 'customername':
 							// UPPER here is a workaround for postgresql ILIKE bug
-							$searchargs[] = $this->DB->Concat('UPPER(c.lastname)',"' '",'UPPER(c.name)')." ?LIKE? UPPER('%$value%')";
+							$searchargs[] = $this->DB->Concat('UPPER(c.lastname)',"' '",'UPPER(c.name)').' ?LIKE? UPPER('.$this->DB->Escape("%$value%").')';
 						break;
 						case 'createdfrom':
 							if($search['createdto'])
@@ -691,7 +693,7 @@ class LMS
 								WHERE z.zip = c.zip AND z.stateid = '.intval($value).')';
 						break;
 						default:
-							$searchargs[] = "$key ?LIKE? '%$value%'";
+							$searchargs[] = "$key ?LIKE? ".$this->DB->Escape("%$value%");
 					}
 				}
 			}
@@ -1271,17 +1273,18 @@ class LMS
 				switch($idx)
 				{
 					case 'ipaddr' :
-						$searchargs[] = "(inet_ntoa(ipaddr) ?LIKE? '%".trim($value)."%'"." OR "."inet_ntoa(ipaddr_pub) ?LIKE? '%".trim($value)."%')";
+						$searchargs[] = '(inet_ntoa(ipaddr) ?LIKE? '.$this->DB->Escape('%'.trim($value).'%')
+							.' OR inet_ntoa(ipaddr_pub) ?LIKE? '.$this->DB->Escape('%'.trim($value).'%').')';
 					break;
 					case 'name' :
-						$searchargs[] = "nodes.name ?LIKE? '%".$value."%'";
+						$searchargs[] = 'nodes.name ?LIKE? '.$this->DB->Escape("%$value%");
 					break;
 					case 'info' :
 						// UPPER here is a postgresql ILIKE bug workaround
-						$searchargs[] = "UPPER(nodes.info) ?LIKE? UPPER('%".$value."%')";
+						$searchargs[] = 'UPPER(nodes.info) ?LIKE? UPPER('.$this->DB->Escape("%$value%").')';
 					break;
 					default :
-						$searchargs[] = $idx." ?LIKE? '%".$value."%'";
+						$searchargs[] = $idx.' ?LIKE? '.$this->DB->Escape("%$value%");
 				}
 			}
 		}
@@ -3927,12 +3930,12 @@ class LMS
 			FROM events
 			LEFT JOIN customers ON (customerid = customers.id)
 			WHERE (private = 0 OR (private = 1 AND userid = ?)) '
-			.(!empty($search['datefrom']) ? ' AND date >= '.$search['datefrom'] : '')
-			.(!empty($search['dateto']) ? ' AND date <= '.$search['dateto'] : '')
-			.(!empty($search['customerid']) ? ' AND customerid = '.$search['customerid'] : '')
-			.(!empty($search['title']) ? ' AND title ?LIKE? \'%'.$search['title'].'%\'' : '')
-			.(!empty($search['description']) ? ' AND description ?LIKE? \'%'.$search['description'].'%\'' : '')
-			.(!empty($search['note']) ? ' AND note ?LIKE? \'%'.$search['note'].'%\'' : '')
+			.(!empty($search['datefrom']) ? ' AND date >= '.intval($search['datefrom']) : '')
+			.(!empty($search['dateto']) ? ' AND date <= '.intval($search['dateto']) : '')
+			.(!empty($search['customerid']) ? ' AND customerid = '.intval($search['customerid']) : '')
+			.(!empty($search['title']) ? ' AND title ?LIKE? '.$this->DB->Escape('%'.$search['title'].'%') : '')
+			.(!empty($search['description']) ? ' AND description ?LIKE? '.$this->DB->Escape('%'.$search['description'].'%') : '')
+			.(!empty($search['note']) ? ' AND note ?LIKE? '.$this->DB->Escape('%'.$search['note'].'%') : '')
 			.$sqlord, array($this->AUTH->id));
 
 		if($list)
@@ -4200,19 +4203,19 @@ class LMS
 		switch($order)
 		{
 			case 'login':
-				$sqlord = ' ORDER BY voipaccounts.login';
+				$sqlord = ' ORDER BY v.login';
 			break;
 			case 'passwd':
-				$sqlord = ' ORDER BY voipaccounts.passwd';
+				$sqlord = ' ORDER BY v.passwd';
 			break;
 			case 'phone':
-				$sqlord = ' ORDER BY voipaccounts.phone';
+				$sqlord = ' ORDER BY v.phone';
 			break;
 			case 'id':
-				$sqlord = ' ORDER BY voipaccounts.id';
+				$sqlord = ' ORDER BY v.id';
 			break;
 			case 'ownerid':
-				$sqlord = ' ORDER BY ownerid';
+				$sqlord = ' ORDER BY v.ownerid';
 			break;
 			case 'owner':
 				$sqlord = ' ORDER BY owner';
@@ -4227,16 +4230,16 @@ class LMS
 				switch($idx)
 				{
 					case 'login' :
-						$searchargs[] = "voipaccounts.login ?LIKE? '%".$value."%'";
+						$searchargs[] = 'v.login ?LIKE? '.$this->DB->Escape("%$value%");
 					break;
 					case 'phone' :
-						$searchargs[] = "voipaccounts.phone ?LIKE? '%".$value."%'";
+						$searchargs[] = 'v.phone ?LIKE? '.$this->DB->Escape("%$value%");
 					break;
 					case 'password' :
-						$searchargs[] = "voipaccounts.passwd ?LIKE? '%".$value."%'";
+						$searchargs[] = 'v.passwd ?LIKE? '.$this->DB->Escape("%$value%");
 					break;
 					default :
-						$searchargs[] = $idx." ?LIKE? '%".$value."%'";
+						$searchargs[] = $idx.' ?LIKE? '.$this->DB->Escape("%$value%");
 				}
 			}
 		}
@@ -4245,10 +4248,10 @@ class LMS
 			$searchargs = ' AND ('.implode(' '.$sqlskey.' ',$searchargs).')';
 
 		$voipaccountlist =
-			$this->DB->GetAll('SELECT voipaccounts.id AS id, login, passwd, voipaccounts.phone AS phone, ownerid, '
+			$this->DB->GetAll('SELECT v.id, v.login, v.passwd, v.phone, v.ownerid, '
 				.$this->DB->Concat('c.lastname',"' '",'c.name').' AS owner
-				FROM voipaccounts 
-				JOIN customersview c ON (voipaccounts.ownerid = c.id) '
+				FROM voipaccounts v 
+				JOIN customersview c ON (v.ownerid = c.id) '
 				.' WHERE 1=1 '
 				.(isset($searchargs) ? $searchargs : '')
 				.($sqlord != '' ? $sqlord.' '.$direction : ''));

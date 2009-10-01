@@ -58,15 +58,15 @@ function GetMessagesList($order='cdate,desc', $search=NULL, $cat=NULL, $type='',
 				$where[] = 'm.userid = '.intval($search);
 			break;
 			case 'username':
-				$where[] = 'UPPER(u.name) ?LIKE? UPPER(\'%'.$search.'%\')';
+				$where[] = 'UPPER(u.name) ?LIKE? UPPER('.$DB->Escape('%'.$search.'%').')';
 				$userjoin = true;
 			break;
 			case 'subject':
-				$where[] = 'UPPER(m.subject) ?LIKE? UPPER(\'%'.$search.'%\')';
+				$where[] = 'UPPER(m.subject) ?LIKE? UPPER('.$DB->Escape('%'.$search.'%').')';
 			break;
 			case 'destination':
 				$where[] = 'EXISTS (SELECT 1 FROM messageitems i
-					WHERE i.messageid = m.id AND UPPER(i.destination) ?LIKE? UPPER(\'%'.$search.'%\'))';
+					WHERE i.messageid = m.id AND UPPER(i.destination) ?LIKE? UPPER('.$DB->Escape('%'.$search.'%').'))';
 			break;
 			case 'customerid':
 				$where[] = 'EXISTS (SELECT 1 FROM messageitems i
@@ -75,7 +75,7 @@ function GetMessagesList($order='cdate,desc', $search=NULL, $cat=NULL, $type='',
 			case 'name':
 				$where[] = 'EXISTS (SELECT 1 FROM messageitems i
 					JOIN customers c ON (c.id = i.customerid)
-					WHERE i.messageid = m.id AND UPPER(c.lastname) ?LIKE? UPPER(\'%'.$search.'%\'))';
+					WHERE i.messageid = m.id AND UPPER(c.lastname) ?LIKE? UPPER('.$DB->Escape('%'.$search.'%').'))';
 			break;
 		}
 	}

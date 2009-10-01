@@ -61,28 +61,30 @@ function RTSearch($search, $order='createtime,desc')
 	$op = !empty($search['operator']) && $search['operator'] == 'OR' ? $op = ' OR ' : $op = ' AND ';
 
 	if(!empty($search['owner']))
-		$where[] = 'owner = '.$search['owner'];
+		$where[] = 'owner = '.intval($search['owner']);
 	if(!empty($search['customerid']))
-		$where[] = 't.customerid = '.$search['customerid'];
+		$where[] = 't.customerid = '.intval($search['customerid']);
 	if(!empty($search['subject']))
-		$where[] = 't.subject ?LIKE? \'%'.$search['subject'].'%\'';
-	if(!empty($search['state']) || (isset($search['state']) && $search['state'] == '0'))
+		$where[] = 't.subject ?LIKE? '.$DB->Escape('%'.$search['subject'].'%');
+	if(isset($search['state']))
 	{
 		if($search['state'] == '-1')
 			$where[] = 'state != '.RT_RESOLVED;
 		else
-			$where[] = 'state = '.$search['state'];
+			$where[] = 'state = '.intval($search['state']);
 	}
 	if(!empty($search['email']))
-		$where[] = 'requestor ?LIKE? \'%'.$search['email'].'%\'';
+		$where[] = 'requestor ?LIKE? '.$DB->Escape('%'.$search['email'].'%');
 	if(!empty($search['uptime']))
-		$where[] = '(resolvetime-t.createtime > '.$search['uptime'].' OR ('.time().'-t.createtime > '.$search['uptime'].' AND resolvetime = 0) )';
+		$where[] = '(resolvetime-t.createtime > '.intval($search['uptime'])
+			.' OR ('.time().'-t.createtime > '.intval($search['uptime']).' AND resolvetime = 0))';
 	if(!empty($search['name']))
-		$where[] = '(UPPER(requestor) ?LIKE? UPPER(\'%'.$search['name'].'%\') OR '.$DB->Concat('UPPER(customers.lastname)',"' '",'UPPER(customers.name)').' ?LIKE? UPPER(\'%'.$search['name'].'%\')) ';
+		$where[] = '(UPPER(requestor) ?LIKE? UPPER('.$DB->Escape('%'.$search['name'].'%').') OR '
+			.$DB->Concat('UPPER(customers.lastname)',"' '",'UPPER(customers.name)').' ?LIKE? UPPER('.$DB->Escape('%'.$search['name'].'%').'))';
 	if(isset($search['queue']) && is_array($search['queue']))
-		$where[] = 'queueid IN ('.implode(',',$search['queue']).') ';
+		$where[] = 'queueid IN ('.implode(',', $search['queue']).')';
 	elseif(!empty($search['queue']))
-		$where[] = 'queueid = '.$search['queue'].' ';
+		$where[] = 'queueid = '.intval($search['queue']);
 	
 	if(isset($where))
 		$where = ' WHERE '.implode($op, $where);

@@ -43,7 +43,7 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 		LEFT JOIN customers ON (customerid = customers.id)
 		LEFT JOIN users ON (userid = users.id)
 		WHERE date >= ? AND date < ? AND (private = 0 OR (private = 1 AND userid = ?)) '
-		.($customerid ? ' AND customerid = '.$customerid : '')
+		.($customerid ? ' AND customerid = '.intval($customerid) : '')
 		.($userid ? ' AND EXISTS (
 			SELECT 1 FROM eventassignments 
 			WHERE eventid = events.id AND userid = '.intval($userid).'

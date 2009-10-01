@@ -45,16 +45,16 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL, $pagelimit=100, $p
 				$where = ' AND cash.time >= '.$search.' AND cash.time < '.($search+86400);
 			break;
 			case 'ten':
-				$where = ' AND c.ten = \''.$search.'\'';
+				$where = ' AND c.ten = '.$DB->Escape($search);
 			break;
 			case 'customerid':
 				$where = ' AND cash.customerid = '.intval($search);
 			break;
 			case 'name':
-				$where = ' AND '.$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' ?LIKE? \'%'.$search.'%\'';
+				$where = ' AND '.$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' ?LIKE? '.$DB->Escape("%$search%");
 			break;
 			case 'address':
-				$where = ' AND c.address ?LIKE? \'%'.$search.'%\'';
+				$where = ' AND c.address ?LIKE? '.$DB->Escape("%$search%");
 			break;
 		}
 	}

@@ -1926,7 +1926,9 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	echo ' [OK]<BR>';
 	echo '<B>'.trans('Generating network...').'</B>'; flush();
 	$prefix = ($_GET['l']*2>1024) ? 16 : 22;
-	$netdata = array( 'name' => 'LAN1', 'address' => '192.168.0.0', 'prefix' => $prefix, 'gateway' => '192.168.0.1', 'dns' => '192.168.0.1', 'dns2' => '192.168.3.254', 'domain' => 'ultralan.net', 'wins' => '192.168.0.2', 'dhcpstart' => '192.168.3.230', 'dhcpend' => '192.168.3.253', 'interface' => 'eth0');
+	$netdata = array( 'name' => 'LAN1', 'address' => '192.168.0.0', 'prefix' => $prefix, 'gateway' => '192.168.0.1',
+		'dns' => '192.168.0.1', 'dns2' => '192.168.3.254', 'domain' => 'ultralan.net', 'wins' => '192.168.0.2',
+		'dhcpstart' => '192.168.3.230', 'dhcpend' => '192.168.3.253', 'interface' => 'eth0', 'notes' => '');
 	$LMS->NetworkAdd($netdata);
 
 	echo ' [OK]<BR>';
@@ -1950,7 +1952,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$customeradd['address'] = $streets[$street].' '.mt_rand(1,50).'/'.mt_rand(1,300);
 		$customeradd['zip'] = '03-7'.sprintf('%02d',$street);
 		$customeradd['city'] = 'Mahagonny';
-		$customeradd['email'] = strtolower($customeradd['name']).'.'.strtolower($customeradd['lastname']).'@'.$emaildomains[mt_rand(0,$esize-1)];
+		$customeradd['email'] = preg_replace('/[^0-9a-z@.]/i', '', strtolower($customeradd['name']).'.'.strtolower($customeradd['lastname']).'@'.$emaildomains[mt_rand(0,$esize-1)]);
 		$customeradd['status'] = 3;
 		$customeradd['tariff'] = mt_rand(1,3);
 		$customeradd['payday'] = mt_rand(1,28);

@@ -49,9 +49,9 @@ function GetDomainList($order='name,asc', $search, $customer='')
 	}
 	
 	if(!empty($search['domain']))
-		$where[] = 'd.name ?LIKE? \'%'.$search['domain'].'%\''; 
+		$where[] = 'd.name ?LIKE? '.$DB->Escape('%'.$search['domain'].'%'); 
 	if(!empty($search['description']))
-		$where[] = 'd.description ?LIKE? \'%'.$search['description'].'%\''; 
+		$where[] = 'd.description ?LIKE? '.$DB->Escape('%'.$search['description'].'%'); 
 	if($customer != '')
 		$where[] = 'd.ownerid = '.intval($customer);
 

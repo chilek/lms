@@ -68,15 +68,17 @@ function NetDevSearch($order='name,asc', $search=NULL, $sqlskey='AND')
 			switch($idx)
 			{
 				case 'ipaddr':
-					$searchargs[] = "(inet_ntoa(n.ipaddr) ?LIKE? '%$value%' OR inet_ntoa(n.ipaddr_pub) ?LIKE? '%$value%')";
+					$searchargs[] = '(inet_ntoa(n.ipaddr) ?LIKE? '.$DB->Escape("%$value%")
+						.' OR inet_ntoa(n.ipaddr_pub) ?LIKE? '.$DB->Escape("%$value%").')';
 					$nodes = true;
 				break;
 				case 'mac':
-					$searchargs[] = "n.mac ?LIKE? '%$value%'";
+					$searchargs[] = 'n.mac ?LIKE? '.$DB->Escape("%$value%");
 					$nodes = true;
 				break;
 				case 'name':
-				        $searchargs[] = "(d.name ?LIKE? '%$value%' OR n.name ?LIKE? '%$value%')";
+				        $searchargs[] = '(d.name ?LIKE? '.$DB->Escape("%$value%")
+						.' OR n.name ?LIKE? '.$DB->Escape("%$value%").')';
 					$nodes = true;
 				break;
 				case 'ports':
@@ -84,7 +86,7 @@ function NetDevSearch($order='name,asc', $search=NULL, $sqlskey='AND')
 				break;
 				default:
 					// UPPER here is a postgresql ILIKE bug workaround
-					$searchargs[] = "UPPER($idx) ?LIKE? UPPER('%$value%')";
+					$searchargs[] = "UPPER(d.$idx) ?LIKE? UPPER(".$DB->Escape("%$value%").')';
 				break;
 			}
 		}

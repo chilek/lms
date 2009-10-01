@@ -38,14 +38,14 @@ if(isset($_POST['searchcustomer']) && $_POST['searchcustomer'])
 	$search = $_POST['searchcustomer'];
 
 	$where_cust = 'AND ('.(intval($search) ? 'c.id = '.intval($search).' OR' : '')
-			.'    ten LIKE \'%'.$search.'%\''
-			.' OR ssn LIKE \'%'.$search.'%\''
-			.' OR icn LIKE \'%'.$search.'%\''
-			.' OR rbe LIKE \'%'.$search.'%\''
-			.' OR regon LIKE \'%'.$search.'%\''
-			.' OR UPPER(email) LIKE UPPER(\'%'.$search.'%\')'
-			.' OR UPPER('.$DB->Concat('lastname',"' '",'c.name').') LIKE UPPER(\'%'.$search.'%\')'
-			.' OR UPPER(address) LIKE UPPER(\'%'.$search.'%\')) ';
+			.'    ten LIKE '.$DB->Escape('%'.$search.'%')
+			.' OR ssn LIKE '.$DB->Escape('%'.$search.'%')
+			.' OR icn LIKE '.$DB->Escape('%'.$search.'%')
+			.' OR rbe LIKE '.$DB->Escape('%'.$search.'%')
+			.' OR regon LIKE '.$DB->Escape('%'.$search.'%')
+			.' OR UPPER(email) LIKE UPPER('.$DB->Escape('%'.$search.'%').')'
+			.' OR UPPER('.$DB->Concat('lastname',"' '",'c.name').') LIKE UPPER('.$DB->Escape('%'.$search.'%').')'
+			.' OR UPPER(address) LIKE UPPER('.$DB->Escape('%'.$search.'%').')) ';
 	
 	$SMARTY->assign('searchcustomer', $search);
 }
@@ -55,11 +55,11 @@ if(isset($_POST['searchnode']) && $_POST['searchnode'])
 	$search = $_POST['searchnode'];
 
 	$where_node = 'AND ('.(intval($search) ? 'nodes.id = '.intval($search).' OR ' : '')
-			.'    INET_NTOA(ipaddr) LIKE \'%'.$search.'%\''
-			.' OR INET_NTOA(ipaddr_pub) LIKE \'%'.$search.'%\''
-			.' OR UPPER(mac) LIKE UPPER(\'%'.$search.'%\')'
-			.' OR UPPER(location) LIKE UPPER(\'%'.$search.'%\')'
-			.' OR UPPER(nodes.name) LIKE UPPER(\'%'.$search.'%\')) ';
+			.'    INET_NTOA(ipaddr) LIKE '.$DB->Escape('%'.$search.'%')
+			.' OR INET_NTOA(ipaddr_pub) LIKE '.$DB->Escape('%'.$search.'%')
+			.' OR UPPER(mac) LIKE UPPER('.$DB->Escape('%'.$search.'%').')'
+			.' OR UPPER(location) LIKE UPPER('.$DB->Escape('%'.$search.'%').')'
+			.' OR UPPER(nodes.name) LIKE UPPER('.$DB->Escape('%'.$search.'%').')) ';
 	
 	$SMARTY->assign('searchnode', $search);
 }
