@@ -162,7 +162,7 @@ if(isset($_POST['document']))
 		else
 			require_once(DOC_DIR.'/templates/default/engine.php');
 
-		if($output)
+		if(!empty($output))
 		{
 			$file = DOC_DIR.'/tmp.file';
 			$fh = fopen($file, 'w');
