@@ -55,7 +55,7 @@
 			<IMG SRC="img/nodegroup.gif" ALT="{t}Node group:{/t}">
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
-			<SELECT SIZE="1" NAME="nodedata[nodegroup]" {tip text="Select group to attribute to node"} trigger="nodegroup"} style="max-width:250px;">
+			<SELECT SIZE="1" NAME="nodedata[nodegroup]" {tip text="Select group to attribute to node" trigger="nodegroup"} style="max-width:250px;">
 				<OPTION VALUE="0">{t}... select group ...{/t}</OPTION>
 				{foreach from=$allnodegroups item=group}
 				<OPTION VALUE="{$group.id}" {if $group.id==$nodedata.nodegroup} SELECTED{/if}>{$group.name} ({$group.id|string_format:"%04d"})</OPTION>
@@ -63,7 +63,6 @@
 			</SELECT>
 		</TD>
 	</TR>
-
 	{if $netdevices}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
