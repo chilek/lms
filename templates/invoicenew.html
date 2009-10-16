@@ -32,7 +32,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 			e.tariffid.value = '';
 			e.count.value = 1
 		}
-}
+	}
 	
 	function saveheader()
 	{
@@ -42,7 +42,13 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 	
 	        document.setcustomer.submit();
 	}															
-
+	
+	function reset_customer()
+        {
+	        if (document.setcustomer.customerid.value)
+	                document.setcustomer.customer.value = document.setcustomer.customerid.value;
+	}
+	
 	function CheckAll()
 	{
 		for (var i=0; i<document.additemlist.elements.length; i++)
@@ -148,7 +154,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 			</SELECT>
 			{t}or Customer ID:{/t}
 			{/if}
-			<INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{else}{$invoice.customerid}{/if}" SIZE="5"{if $customers} onChange="document.setcustomer.customer.value=document.setcustomer.customerid.value"{/if} {tip text="Enter customer ID"}>
+			<INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{else}{$invoice.customerid}{/if}" SIZE="5"{if $customers} onfocus="reset_customer()" onchange="reset_customer()"{/if} {tip text="Enter customer ID"}>
 			<a href="javascript: void(0);" onClick="return customerchoosewin(document.setcustomer.customerid);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
