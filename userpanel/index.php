@@ -33,6 +33,7 @@ $CONFIG_FILE = (is_readable('lms.ini')) ? 'lms.ini' : '/etc/lms/lms.ini';
 // *******************************************************************
 
 ini_set('session.name','LMSSESSIONID');
+ini_set('error_reporting', E_ALL&~E_NOTICE);
 
 // Parse configuration file
 $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
