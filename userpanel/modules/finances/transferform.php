@@ -25,13 +25,25 @@
  */
 
 global $LMS,$CONFIG,$SESSION;
+
 $customer = $LMS->GetCustomer($SESSION->id);
+$division = $LMS->DB->GetRow('SELECT account, name, address, zip, city
+	FROM divisions WHERE id = ?', array($customer['divisionid']));
 
 //  NRB 26 cyfr: 2 kontrolne, 8 nr banku, 16 nr konta 
-$KONTO_DO = bankaccount($customer['id']);
+$KONTO_DO = bankaccount($customer['id'], $division['account']);
 
-$ISP1_DO = (!isset($CONFIG['finances']['line_1']) ? 'LINIA1xxxxxxxxxxxxxxxxxxxyz' : iconv('UTF-8','ISO-8859-2',$CONFIG['finances']['line_1']));
-$ISP2_DO = (!isset($CONFIG['finances']['line_2']) ? 'linia2xxxxxxxxxxxxxxxxxxxyz' : iconv('UTF-8','ISO-8859-2',$CONFIG['finances']['line_2']));
+if ($division) {
+	list($division['name']) = explode("\n", $division['name']);
+	$ISP1_DO = $division['name'];
+	$ISP2_DO = trim($division['zip'].' '.$division['city'].' '.$division['address']);
+} else {
+	if (!empty($CONFIG['finances']['line_1']))
+		$ISP1_DO = $CONFIG['finances']['line_1'];
+	if (!empty($CONFIG['finances']['line_2']))
+		$ISP2_DO = $CONFIG['finances']['line_2'];
+}
+
 $USER_T1 = (!isset($CONFIG['finances']['pay_title']) ? 'Abonament - ID:%CID% %LongCID%' : iconv('UTF-8','ISO-8859-2',$CONFIG['finances']['pay_title']));
 $CURR = 'PLN';
 $SHORT_TO_WORDS = chkconfig($CONFIG['phpui']['to_words_short_version']);
@@ -40,6 +52,8 @@ $Before = array ("%CID%", "%LongCID%");
 $After = array ($customer['id'], sprintf('%04d',$customer['id']));
 $USER_TY = str_replace($Before,$After,$USER_T1);
 $KWOTA = trim($customer['balance']*-1);
+$ISP1_DO = iconv('UTF-8','ISO-8859-2',$ISP1_DO);
+$ISP2_DO = iconv('UTF-8','ISO-8859-2',$ISP2_DO);
 $USER_OD = trim(iconv('UTF-8','ISO-8859-2', $customer['customername']));
 $USER_ADDR = trim(iconv('UTF-8','ISO-8859-2', $customer['zip'].' '.$customer['city'].' '.$customer['address']));
 $KWOTA_NR = str_replace(',','.',$KWOTA);  // na wszelki wypadek
