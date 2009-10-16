@@ -64,6 +64,13 @@
 	{
 		document.getElementById(type).checked = true;
 	}
+
+	function reset_customer()
+	{	
+		if (document.setcustomer.customerid.value)
+			document.setcustomer.customer.value = document.setcustomer.customerid.value;
+	}
+	
 	
 //--></SCRIPT>
 {/literal}
@@ -152,7 +159,7 @@
 				</SELECT>
 				{t}or Customer ID:{/t}
 			    {/if}
-			    <INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{elseif $receipt.customerid}{$receipt.customerid}{/if}" SIZE="5"{if $customerlist} onChange="document.setcustomer.customer.value=document.setcustomer.customerid.value;"{/if} onclick="document.getElementById('radio_customer').checked=true;" {tip text="Enter customer ID" trigger="customerid"}>
+			    <INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{elseif $receipt.customerid}{$receipt.customerid}{/if}" SIZE="5"{if $customerlist} onchange="reset_customer()" onfocus="reset_customer()"{/if} onclick="document.getElementById('radio_customer').checked=true;" {tip text="Enter customer ID" trigger="customerid"}>
 			    <A href="javascript: void(0);" onclick="document.getElementById('radio_customer').checked=true;return customerchoosewin(document.setcustomer.customerid);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
 			    </TD>
 			</TR>

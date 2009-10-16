@@ -1,4 +1,13 @@
 <!-- $Id$ -->
+<script type="text/javascript">
+{literal}
+        function reset_customer()
+        {
+                if (document.forms['ticket'].elements['ticket[custid]'].value)
+                	document.forms['ticket'].elements['ticket[customerid]'].value = document.forms['ticket'].elements['ticket[custid]'].value;
+        }
+{/literal}
+</script>
 <P><FORM method="POST" name="ticket" action="?m=rtticketedit&id={$ticket.ticketid}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
@@ -47,7 +56,7 @@
 			{else}
 			{if $ticket.customername}<A href="?m=customerinfo&id={$ticket.customerid}">{$ticket.customername|truncate:"45":"...":true}</A>{/if}
 			{/if}
-			<INPUT TYPE="TEXT" NAME="ticket[custid]" VALUE="{if $ticket.customerid}{$ticket.customerid}{/if}" SIZE="5"{if $customerlist} onChange="document.forms['ticket'].elements['ticket[customerid]'].value=document.forms['ticket'].elements['ticket[custid]'].value"{/if} {tip text="Enter customer ID" trigger="custid"}>
+			<INPUT TYPE="TEXT" NAME="ticket[custid]" VALUE="{if $ticket.customerid}{$ticket.customerid}{/if}" SIZE="5"{if $customerlist} onChange="reset_customer()" onfocus="reset_customer()"{/if} {tip text="Enter customer ID" trigger="custid"}>
 			<a href="javascript: void(0);" onClick="return customerchoosewin(document.ticket.elements['ticket[custid]']);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
 			</NOBR>
 		    </TD>

@@ -13,12 +13,18 @@ window.open('?m=note&id={$newnoteid}');
 	function saveheader()
 	{
 	        if(document.setcustomer.customer)
-	                if(document.setcustomer.customer.value != 0)
-	                        document.setcustomer.customerid.value = document.setcustomer.customer.value;
+			if(document.setcustomer.customer.value != 0)
+                                document.setcustomer.customerid.value = document.setcustomer.customer.value;
 	
 	        document.setcustomer.submit();
-	}															
-
+	}
+																
+	function reset_customer()
+        {
+	        if (document.setcustomer.customerid.value)
+	                document.setcustomer.customer.value = document.setcustomer.customerid.value;
+	}
+							    
 	function CheckAll()
 	{
 		for (var i=0; i<document.additemlist.elements.length; i++)

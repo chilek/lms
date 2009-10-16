@@ -19,6 +19,12 @@
 			end.value = start.options[start.selectedIndex].value;
 		}
 	}
+	
+	function reset_customer()
+        {
+	        if (document.forms['event'].elements['event[custid]'].value)
+	                    document.forms['event'].elements['event[customerid]'].value = document.forms['event'].elements['event[custid]'].value;
+	}
 {/literal}
 </SCRIPT>
 <H1>{$layout.pagetitle}</H1>
@@ -98,7 +104,7 @@
 			</SELECT>
 			{t}or Customer ID:{/t}
 			{else}{t}ID:{/t}{/if}
-            		<INPUT TYPE="TEXT" NAME="event[custid]" VALUE="{if $event.customerid}{$event.customerid}{/if}" SIZE="5"{if $customerlist} onChange="document.forms['event'].elements['event[customerid]'].value=document.forms['event'].elements['event[custid]'].value"{/if} {tip text="Enter customer ID" trigger="custid"}>
+            		<INPUT TYPE="TEXT" NAME="event[custid]" VALUE="{if $event.customerid}{$event.customerid}{/if}" SIZE="5"{if $customerlist} onChange="reset_customer()" onfocus="reset_customer()"{/if} {tip text="Enter customer ID" trigger="custid"}>
 			<a href="javascript: void(0);" onClick="return customerchoosewin(document.forms['event'].elements['event[custid]']);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
