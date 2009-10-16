@@ -6249,6 +6249,12 @@ Rozdział 7. Dla dociekliwych
    downceil - maksymalny download
    climit - limit połączeń
    plimit - limit pakietów w jednostce czasu
+   uprate_n - gwarantowany upload w nocy
+   upceil_n - maksymalny upload w nocy
+   downrate_n - gwarantowany download w nocy
+   downceil_n - maksymalny download w nocy
+   climit_n - limit połączeń w nocy
+   plimit_n - limit pakietów w jednostce czasu w nocy
    plimit - limit danych w jednostce czasu
    domain_limit - limit liczby domen
    alias_limit - limit liczby aliasów

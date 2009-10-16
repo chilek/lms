@@ -73,8 +73,9 @@ function GetTariffList($order='name,asc', $type=NULL, $customergroupid=NULL)
 
 	if($tarifflist = $DB->GetAll('SELECT t.id AS id, t.name, t.value AS value, 
 			taxes.label AS tax, taxes.value AS taxvalue, prodid, 
-			t.description AS description, uprate, downrate, 
-			upceil, downceil, climit, plimit,
+			t.description AS description,
+			uprate, downrate, upceil, downceil, climit, plimit,
+			uprate_n, downrate_n, upceil_n, downceil_n, climit_n, plimit_n,
 			a.customerscount, a.count, a.value AS sumval
 			FROM tariffs t 
 			LEFT JOIN (SELECT tariffid, COUNT(*) AS count,

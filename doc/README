@@ -5495,6 +5495,12 @@ Chapter 7. For curious
    downceil - download boundary
    climit - limit of concurrent connections
    plimit - limit of packets per second
+   uprate_n - upload warranty at night
+   upceil_n - upload boundary at night
+   downrate_n - download warranty at night
+   downceil_n - download boundary at night
+   climit_n - limit of concurrent connections at night
+   plimit_n - limit of packets per second at night
    dlimit - limit of data per time unit
    domain_limit - limit of domains
    alias_limit - limit of aliases

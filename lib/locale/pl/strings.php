@@ -2256,5 +2256,7 @@ $_LANG['Debit Note Edit: $0'] = 'Edycja noty: $0';
 $_LANG['default'] = 'domyślny';
 $_LANG['Enter invoices payment type (leave this field empty to use default)'] = 'Wprowadź typ płatności faktur (pozostaw to pole puste aby zastosować typ domyślny)';
 $_LANG['(domain alias)'] = '(alias domenowy)';
+$_LANG['night:'] = 'noc:';
+$_LANG['not defined'] = 'brak';
 
 ?>
