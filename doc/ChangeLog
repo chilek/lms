@@ -41,6 +41,7 @@ version ? (????-??-??):
   - we can add domain aliases (Tomasz Chilinski, Chilan)
   - prevent SQL Injection in some queries using proper values escaping (alec)
   - fixed customer ID selection in forms with customerchoosewin() (alec)
+  - added tariff traffic limits for night-time (alec)
 
 version 1.11.8 Belus (2009-05-19):
 

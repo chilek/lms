@@ -39,6 +39,19 @@ if(isset($_POST['tariff']))
 
 	$tariff['value'] = str_replace(',','.',$tariff['value']);
 	
+	if($tariff['value'] == '')
+		$error['value'] = trans('Value required!');
+	elseif(!preg_match('/^[-]?[0-9.,]+$/', $tariff['value']))
+		$error['value'] = trans('Incorrect value!');
+
+	if($tariff['name'] == '')
+		$error['name'] = trans('Subscription name required!');
+	elseif($LMS->GetTariffIDByName($tariff['name']) 
+		&& $tariff['name'] != $DB->GetOne('SELECT name FROM tariffs WHERE id=?', array($_GET['id'])))
+	{
+		$error['name'] = trans('Subscription with specified name already exists!');
+	}
+
 	$items = array('uprate', 'downrate', 'upceil', 'downceil', 'climit', 'plimit', 'dlimit');
 	
 	foreach($items as $item)
@@ -48,19 +61,6 @@ if(isset($_POST['tariff']))
 	        elseif(!preg_match('/^[0-9]+$/', $tariff[$item]))
 	                $error[$item] = trans('Integer value expected!');
 	}
-
-	if($tariff['name'] == '')
-		$error['name'] = trans('Subscription name required!');
-	elseif($LMS->GetTariffIDByName($tariff['name']) 
-		&& $tariff['name'] != $DB->GetOne('SELECT name FROM tariffs WHERE id=?', array($_GET['id'])))
-	{
-		$error['name'] = trans('Subscription with specified name already exists!');
-	}
-	
-	if($tariff['value'] == '')
-		$error['value'] = trans('Value required!');
-	elseif(!preg_match('/^[-]?[0-9.,]+$/', $tariff['value']))
-		$error['value'] = trans('Incorrect value!');
 	
 	if(($tariff['uprate'] < 8 || $tariff['uprate'] > 100000) && $tariff['uprate'] != 0)
 		$error['uprate'] = trans('This field must be within range 8 - 100000');
@@ -71,6 +71,25 @@ if(isset($_POST['tariff']))
 	if(($tariff['downceil'] < 8 || $tariff['downceil'] < $tariff['downrate']) && $tariff['downceil'] != 0)
 		$error['downceil'] = trans('This field must be greater than 8 and greater than download rate');
 
+	$items = array('uprate_n', 'downrate_n', 'upceil_n', 'downceil_n', 'climit_n', 'plimit_n');
+
+        foreach($items as $item)
+	{
+	        if($tariff[$item]=='')
+	                $tariff[$item] = NULL;
+	        elseif(!preg_match('/^[0-9]+$/', $tariff[$item]))
+	                $error[$item] = trans('Integer value expected!');
+	}
+	
+	if(($tariff['uprate_n'] < 8 || $tariff['uprate_n'] > 100000) && $tariff['uprate_n'])
+	        $error['uprate_n'] = trans('This field must be within range 8 - 100000');
+	if(($tariff['downrate_n'] < 8 || $tariff['downrate_n'] > 100000) && $tariff['downrate_n'])
+	        $error['downrate_n'] = trans('This field must be within range 8 - 100000');
+	if(($tariff['upceil_n'] < 8 || $tariff['upceil_n'] < $tariff['uprate']) && $tariff['upceil_n'])
+	        $error['upceil_n'] = trans('This field must contain number greater than 8 and greater than upload rate');
+	if(($tariff['downceil_n'] < 8 || $tariff['downceil_n'] < $tariff['downrate']) && $tariff['downceil_n'])
+	        $error['downceil_n'] = trans('This field must contain number greater than 8 and greater than download rate');
+	
 	if(!isset($tariff['taxid']))
 		$tariff['taxid'] = 0;
 

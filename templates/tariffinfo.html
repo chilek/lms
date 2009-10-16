@@ -92,16 +92,18 @@
 				    <IMG SRC="img/uprate.gif" ALT="">
 				</TD>
 				<TD WIDTH="1%" NOWRAP><B>{t}Upload rate:{/t}</B></TD>
-				<TD WIDTH="98%">
+				<TD WIDTH="98%" NOWRAP>
 				    {if $tariff.uprate}{$tariff.uprate} kbit/s{else}{t}no limits{/t}{/if}
+				    ({t}night:{/t} {if $tariff.uprate_n}{$tariff.uprate_n|default:0} kbit/s{else}{t}not defined{/t}{/if})
 				</TD>
 			    </TR>
 			    <TR CLASS="LIGHT">
 				<TD WIDTH="1%">
 				</TD>
 				<TD WIDTH="1%" NOWRAP><B>{t}Upload ceil:{/t}</B></TD>
-				<TD WIDTH="98%">
+				<TD WIDTH="98%" NOWRAP>
 				    {if $tariff.upceil}{$tariff.upceil} kbit/s{else}{t}no limits{/t}{/if}
+				    ({t}night:{/t} {if $tariff.upceil_n}{$tariff.upceil_n|default:0} kbit/s{else}{t}not defined{/t}{/if})
 				</TD>
 			    </TR>
 			    <TR CLASS="light">
@@ -109,16 +111,18 @@
 				    <IMG SRC="img/downrate.gif" ALT="">
 				</TD>
 				<TD WIDTH="1%" NOWRAP><B>{t}Download rate:{/t}</B></TD>
-				<TD WIDTH="98%">
+				<TD WIDTH="98%" NOWRAP>
 				    {if $tariff.downrate}{$tariff.downrate} kbit/s{else}{t}no limits{/t}{/if}
+				    ({t}night:{/t} {if $tariff.downrate_n}{$tariff.downrate_n|default:0} kbit/s{else}{t}not defined{/t}{/if})
 				</TD>
 			    </TR>
 			    <TR CLASS="light">
 				<TD WIDTH="1%">
 				</TD>
 				<TD WIDTH="1%" NOWRAP><B>{t}Download ceil:{/t}</B></TD>
-				<TD WIDTH="98%">
+				<TD WIDTH="98%" NOWRAP>
 				    {if $tariff.downceil}{$tariff.downceil} kbit/s{else}{t}no limits{/t}{/if}
+				    ({t}night:{/t} {if $tariff.downceil_n}{$tariff.downceil_n|default:0} kbit/s{else}{t}not defined{/t}{/if})
 				</TD>
 			    </TR>
 			    <TR CLASS="light">
@@ -126,16 +130,18 @@
 				    <IMG SRC="img/options.gif" ALT="">
 				</TD>
 				<TD WIDTH="1%" NOWRAP><B>{t}Connection limit:{/t}</B></TD>
-				<TD WIDTH="98%">
+				<TD WIDTH="98%" NOWRAP>
 				    {if $tariff.climit}{$tariff.climit}{else}{t}no limits{/t}{/if}
+				    ({t}night:{/t} {if $tariff.climit_n}{$tariff.climit_n|default:0}{else}{t}not defined{/t}{/if})
 				</TD>
 			    </TR>
 			    <TR CLASS="light">
 				<TD WIDTH="1%">
 				</TD>
 				<TD WIDTH="1%" NOWRAP><B>{t}Packet limit:{/t}</B></TD>
-				<TD WIDTH="98%">
+				<TD WIDTH="98%" NOWRAP>
 				    {if $tariff.plimit}{$tariff.plimit}{else}{t}no limits{/t}{/if}
+				    ({t}night:{/t} {if $tariff.climit_n}{$tariff.climit_n|default:0}{else}{t}not defined{/t}{/if})
 				</TD>
 			    </TR>
 			    <TR CLASS="light">
@@ -226,6 +232,7 @@
 	<TR CLASS="light">
 	        <TD ALIGN="RIGHT" CLASS="fbottomu" COLSPAN="2">
 			    <A HREF="?m=tariffedit&id={$tariff.id}" ACCESSKEY="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT=""></A>
+			    <A HREF="?m=tarifflist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A>
 			    {if $tariff.count eq 0}
 			    <A HREF="?m=tariffdel&id={$tariff.id}" onClick="return confirmLink(this,'{t}Are you sure, you want to delete that tariff?{/t}');">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT=""></A>
 			    {/if}

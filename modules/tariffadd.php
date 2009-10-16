@@ -42,6 +42,12 @@ if(isset($_POST['tariff']))
 	if(!preg_match('/^[-]?[0-9.,]+$/', $tariff['value']))
 		$error['value'] = trans('Incorrect subscription value!');
 
+	if($tariff['name'] == '')
+		$error['name'] = trans('Subscription name required!');
+	else
+		if($LMS->GetTariffIDByName($tariff['name']))
+			$error['name'] = trans('Subscription $0 already exists!',$tariff['name']);
+
 	$items = array('uprate', 'downrate', 'upceil', 'downceil', 'climit', 'plimit', 'dlimit');
 
 	foreach($items as $item)
@@ -61,11 +67,24 @@ if(isset($_POST['tariff']))
 	if(($tariff['downceil'] < 8 || $tariff['downceil'] < $tariff['downrate']) && $tariff['downceil'] != 0)
 		$error['downceil'] = trans('This field must contain number greater than 8 and greater than download rate');
 
-	if($tariff['name'] == '')
-		$error['name'] = trans('Subscription name required!');
-	else
-		if($LMS->GetTariffIDByName($tariff['name']))
-			$error['name'] = trans('Subscription $0 already exists!',$tariff['name']);
+	$items = array('uprate_n', 'downrate_n', 'upceil_n', 'downceil_n', 'climit_n', 'plimit_n');
+
+	foreach($items as $item)
+	{
+		if($tariff[$item]=='')
+			$tariff[$item] = NULL;
+		elseif(!preg_match('/^[0-9]+$/', $tariff[$item]))
+			$error[$item] = trans('Integer value expected!');
+	}
+	
+	if(($tariff['uprate_n'] < 8 || $tariff['uprate_n'] > 100000) && $tariff['uprate_n'])
+		$error['uprate_n'] = trans('This field must be within range 8 - 100000');
+	if(($tariff['downrate_n'] < 8 || $tariff['downrate_n'] > 100000) && $tariff['downrate_n'])
+		$error['downrate_n'] = trans('This field must be within range 8 - 100000');
+	if(($tariff['upceil_n'] < 8 || $tariff['upceil_n'] < $tariff['uprate']) && $tariff['upceil_n'])
+		$error['upceil_n'] = trans('This field must contain number greater than 8 and greater than upload rate');
+	if(($tariff['downceil_n'] < 8 || $tariff['downceil_n'] < $tariff['downrate']) && $tariff['downceil_n'])
+		$error['downceil_n'] = trans('This field must contain number greater than 8 and greater than download rate');
 
 	if(!isset($tariff['taxid']))
 		$tariff['taxid'] = 0;
@@ -98,19 +117,18 @@ elseif(isset($_GET['id']))
 }
 else
 {
-
-	$tariff['domain_limit'] = 0;	
-	$tariff['alias_limit'] = 0;	
-	$tariff['sh_limit'] = 0;	
-	$tariff['www_limit'] = 0;	
-	$tariff['mail_limit'] = 0;	
-	$tariff['ftp_limit'] = 0;	
-	$tariff['sql_limit'] = 0;	
-	$tariff['quota_sh_limit'] = 0;	
-	$tariff['quota_www_limit'] = 0;	
-	$tariff['quota_mail_limit'] = 0;	
-	$tariff['quota_ftp_limit'] = 0;	
-	$tariff['quota_sql_limit'] = 0;	
+	$tariff['domain_limit'] = 0;
+	$tariff['alias_limit'] = 0;
+	$tariff['sh_limit'] = 0;
+	$tariff['www_limit'] = 0;
+	$tariff['mail_limit'] = 0;
+	$tariff['ftp_limit'] = 0;
+	$tariff['sql_limit'] = 0;
+	$tariff['quota_sh_limit'] = 0;
+	$tariff['quota_www_limit'] = 0;
+	$tariff['quota_mail_limit'] = 0;
+	$tariff['quota_ftp_limit'] = 0;
+	$tariff['quota_sql_limit'] = 0;
 }
 
 $layout['pagetitle'] = trans('New Subscription');

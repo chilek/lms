@@ -70,14 +70,18 @@
 		</TD>
 		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
 			<NOBR>
-			{if $tarifflist[tariffs].downrate}{$tarifflist[tariffs].downrate} kbit{else}-{/if}<BR>
-			{if $tarifflist[tariffs].uprate}{$tarifflist[tariffs].uprate} kbit{else}-{/if}
+			{if $tarifflist[tariffs].downrate}{$tarifflist[tariffs].downrate}{else}-{/if}
+			{if $tarifflist[tariffs].downrate_n}({$tarifflist[tariffs].downrate_n}){/if}<BR>
+			{if $tarifflist[tariffs].uprate}{$tarifflist[tariffs].uprate}{else}-{/if}
+			{if $tarifflist[tariffs].uprate_n}({$tarifflist[tariffs].uprate_n}){/if}
 			</NOBR>
 		</TD>
 		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
 			<NOBR>
-			{if $tarifflist[tariffs].downceil}{$tarifflist[tariffs].downceil} kbit{else}-{/if}<BR>
-			{if $tarifflist[tariffs].upceil}{$tarifflist[tariffs].upceil} kbit{else}-{/if}
+			{if $tarifflist[tariffs].downceil}{$tarifflist[tariffs].downceil}{else}-{/if}
+			{if $tarifflist[tariffs].downceil_n}({$tarifflist[tariffs].downceil_n}){/if}<BR>
+			{if $tarifflist[tariffs].upceil}{$tarifflist[tariffs].upceil}{else}-{/if}
+			{if $tarifflist[tariffs].upceil_n}({$tarifflist[tariffs].upceil_n}){/if}
 			</NOBR>
 		</TD>
 		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">

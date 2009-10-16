@@ -305,6 +305,12 @@
                     <member>downceil - download boundary</member>
                     <member>climit - limit of concurrent connections</member>
                     <member>plimit - limit of packets per second</member>
+                    <member>uprate_n - upload warranty at night</member>
+                    <member>upceil_n - upload boundary at night</member>
+                    <member>downrate_n - download warranty at night</member>
+                    <member>downceil_n - download boundary at night</member>
+                    <member>climit_n - limit of concurrent connections at night</member>
+                    <member>plimit_n - limit of packets per second at night</member>
                     <member>dlimit - limit of data per time unit</member>
                     <member>domain_limit - limit of domains</member>
                     <member>alias_limit - limit of aliases</member>

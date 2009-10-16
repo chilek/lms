@@ -319,6 +319,12 @@
                     <member>downceil - maksymalny download</member>
                     <member>climit - limit po³±czeñ</member>
                     <member>plimit - limit pakietów w jednostce czasu</member>
+                    <member>uprate_n - gwarantowany upload w nocy</member>
+                    <member>upceil_n - maksymalny upload w nocy</member>
+                    <member>downrate_n - gwarantowany download w nocy</member>
+                    <member>downceil_n - maksymalny download w nocy</member>
+                    <member>climit_n - limit po³±czeñ w nocy</member>
+                    <member>plimit_n - limit pakietów w jednostce czasu w nocy</member>
                     <member>plimit - limit danych w jednostce czasu</member>
                     <member>domain_limit - limit liczby domen</member>
 		    <member>alias_limit - limit liczby aliasów</member>
