@@ -584,6 +584,7 @@
 		<member>id - identyfikator rekordu</member>
 		<member>aliasid - indentyfikator aliasu</member>
 		<member>accountid - identyfikator konta</member>
+		<member>mail_forward - adres przekierowania</member>
 		</simplelist>
         </sect2>
 	<sect2 id="voipaccounts">
