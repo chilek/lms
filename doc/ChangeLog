@@ -32,7 +32,8 @@ version ? (????-??-??):
     with customer name sorting (alec)
   - unified order of action icons on lists (alec)
   - BTS#0000749: allow selecting gateway address for devices (alec)
-  - added display of IP address for DHCP, BROADCAST, NETWORK and netdevices entries on IP list (Grzegorz Chwesewicz, Chilan)
+  - added display of IP address for DHCP, BROADCAST, NETWORK and netdevices entries
+    on IP list (Grzegorz Chwesewicz, Chilan)
   - lms-notify(-sms): added debit notes notifications (alec)
   - added networks description functionality (Grzegorz Chwesewicz, Chilan)
   - extended description size of netdevices (Grzegorz Chwesewicz, Chilan)
@@ -42,6 +43,8 @@ version ? (????-??-??):
   - prevent SQL Injection in some queries using proper values escaping (alec)
   - fixed customer ID selection in forms with customerchoosewin() (alec)
   - added tariff traffic limits for night-time (alec)
+  - Userpanel: use division name/address on transfer forms instead of line_1/line_2
+    options (alec)
 
 version 1.11.8 Belus (2009-05-19):
 
