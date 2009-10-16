@@ -34,6 +34,7 @@ $CONFIG_FILE = '/etc/lms/lms.ini';
 
 define('START_TIME', microtime());
 define('LMS-UI', true);
+ini_set('error_reporting', E_ALL&~E_NOTICE);
 
 // find alternative config files:
 if(is_readable('lms.ini'))
