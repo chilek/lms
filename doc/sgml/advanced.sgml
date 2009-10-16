@@ -581,6 +581,7 @@
                     <member>id - serial number</member>
                     <member>aliasid - alias serial number</member>
                     <member>accountid - account serial number</member>
+                    <member>mail_forward - forward address</member>
                </simplelist>
           </sect2>
           <sect2 id="voipaccounts">

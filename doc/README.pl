@@ -6498,6 +6498,7 @@ Rozdział 7. Dla dociekliwych
    id - identyfikator rekordu
    aliasid - indentyfikator aliasu
    accountid - identyfikator konta
+   mail_forward - adres przekierowania
      __________________________________________________________________
 
 7.2.39. Konta VoIP ('voipaccounts')

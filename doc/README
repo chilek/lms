@@ -5752,6 +5752,7 @@ Chapter 7. For curious
    id - serial number
    aliasid - alias serial number
    accountid - account serial number
+   mail_forward - forward address
      __________________________________________________________________
 
 7.2.39. VoIP Accounts ('voipaccounts')
