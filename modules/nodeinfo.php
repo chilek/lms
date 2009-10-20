@@ -53,11 +53,15 @@ if(!preg_match('/^[0-9]+$/',$_GET['id']))
 {
 	$SESSION->redirect('?m=nodelist');
 }
+else
+	$nodeid = $_GET['id'];
 
-if(!$LMS->NodeExists($_GET['id']))
+if(!$LMS->NodeExists($nodeid))
 {
 	if(isset($_GET['ownerid']))
 		$SESSION->redirect('?m=customerinfo&id='.$_GET['ownerid']);
+	else if($DB->GetOne('SELECT 1 FROM nodes WHERE id = ? AND ownerid = 0', array($nodeid)))
+                $SESSION->redirect('?m=netdevinfo&ip='.$nodeid.'&id='.$LMS->GetNetDevIDByNode($nodeid));
 	else
 		$SESSION->redirect('?m=nodelist');
 }
@@ -69,7 +73,6 @@ if(isset($_GET['devid']))
 	$SMARTY->assign('netdevice', $_GET['devid']);
 }
 
-$nodeid = $_GET['id'];
 $nodeinfo = $LMS->GetNode($nodeid);
 $nodegroups = $LMS->GetNodeGroupNamesByNode($nodeid);
 $othernodegroups = $LMS->GetNodeGroupNamesWithoutNode($nodeid);
