@@ -32,9 +32,11 @@ use File::Copy;
 use MIME::Parser;
 use MIME::Words qw(:all);
 use MIME::QuotedPrint;
+use MIME::Base64;
 use Sys::Hostname;
 use Text::Iconv;
 use Mail::Sender;
+use Encode;
 
 $ENV{'PATH'}='/sbin:/usr/sbin:/usr/local/sbin:/bin:/usr/bin:/usr/local/bin';
 
@@ -132,13 +134,30 @@ if(! $autoreply_body)
 }
 $autoreply_body =~ s/\\n/\n/g;
 
+sub lms_decode_mime
+{
+	my $str = shift;
+	my $default_encoding = shift || 'UTF-8';
+	my $res = '';
+	foreach my $part (decode_mimewords($str)) {
+		my $charset = $part->[1] || $default_encoding;
+		if ($charset !~ /UTF-*8/i) {
+			my $converter = Text::Iconv->new($charset, 'UTF-8//TRANSLIT');
+			$res .= $converter->convert($part->[0]);
+		} else {
+			$res .= $part->[0];
+		}
+	}
+	return $res;
+}
+
 # very ugly code, but we really need tempdir..
 # TODO - FIXME - better handling of temporary dir - we should use sth simillar to mktemp();
 my $tmpdir = $tmp_dir || ((defined $ENV{'TMP'} && ! ($ENV{'TMP'} eq '')) ? $ENV{'TMP'} : '/tmp');
 
 my $parser = new MIME::Parser;
 
-$parser->decode_headers(1);
+$parser->decode_headers(0);
 $parser->extract_uuencode(1);
 $parser->output_dir($tmpdir);
 
@@ -174,6 +193,10 @@ if($entity->mime_type =~ m|multipart/|i) # if we deal with multipart message...
 			{
 				$mailbody = decode_qp($mailbody);
 			}
+			elsif($tmp_body =~ m|Content-Transfer-Encoding: base64|i)
+			{
+				$mailbody = decode_base64($mailbody);
+			}
 		}
 		elsif(($body->mime_type =~ m/multipart\/alternative/i) && $mailbody eq '')
 		{
@@ -188,6 +211,10 @@ if($entity->mime_type =~ m|multipart/|i) # if we deal with multipart message...
 			if($tmp_body =~ m|Content-Transfer-Encoding: quoted-printable|i)
 			{
 				$mailbody = decode_qp($mailbody);
+			}
+			elsif($tmp_body =~ m|Content-Transfer-Encoding: base64|i)
+			{
+				$mailbody = decode_base64($mailbody);
 			}
 		}
 		else
@@ -217,9 +244,6 @@ if($mh_subject eq '')
 {
 	$mh_subject = '(no subject)';
 }
-
-my $mail_mh_subject = $mh_subject;
-my $orig_mailbody = $mailbody;
 
 my $dbase;
 my $utsfmt;
@@ -258,6 +282,7 @@ my $prev_tid = 0;
 my $inreplytoid = 0;
 my @reftab = split(' ', $mh_references);
 my $lastref = $reftab[scalar(@reftab)-1];
+my $charset;
 
 # check 'References'
 if($lastref)
@@ -286,7 +311,7 @@ if( !$prev_tid && ($mh_subject =~ /RT#[0-9]{6,}/) )
 	}
 }
 
-# let's convert message to proper encoding (if needed)
+# find message charset
 if(my $tmp_body = $entity->parts(0)) #if multipart message, read encoding from first part, not from headers
 {
 	$_ = $tmp_body->as_string;
@@ -295,21 +320,28 @@ if(my $tmp_body = $entity->parts(0)) #if multipart message, read encoding from f
 }
 if(/charset\=\"([a-zA-Z0-9-]*)\"/i || /charset\=([a-zA-Z0-9-]*)/i )
 {
-	my $charset = uc($1);
-
-	if($charset ne 'UTF-8')
-	{
-		my $converter = Text::Iconv->new($charset, 'UTF-8');
-		$mailbody = $converter->convert($mailbody);
-		$orig_mailbody = $converter->convert($orig_mailbody);
-		$mailheaders = $converter->convert($mailheaders);
-		$mh_subject = $converter->convert($mh_subject);
-		$mh_from = $converter->convert($mh_from);
-		$mh_replyto = $converter->convert($mh_replyto);
-		$mail_mh_subject = $converter->convert($mail_mh_subject);
-	}
+	$charset = uc($1);
+} else {
+	$charset = 'UTF-8';
 }
 
+# convert body charset
+if($charset ne 'UTF-8')
+{
+		my $converter = Text::Iconv->new($charset, 'UTF-8//TRANSLIT');
+		$mailbody = $converter->convert($mailbody);
+}
+# convert headers charset (+ decode MIME)
+$mailheaders = lms_decode_mime($mailheaders, $charset);
+$mh_subject = lms_decode_mime($mh_subject, $charset);
+$mh_from = lms_decode_mime($mh_from, $charset);
+$mh_replyto = lms_decode_mime($mh_replyto, $charset);
+$mh_to = lms_decode_mime($mh_to, $charset);
+$mh_cc = lms_decode_mime($mh_cc, $charset);
+$mh_msgid = lms_decode_mime($mh_msgid, $charset);
+$mh_references = lms_decode_mime($mh_references, $charset); 
+
+my $mail_mh_subject = $mh_subject;
 my $ticket_id;
 my $ticketid;
 my $rt_msgid;
@@ -380,12 +412,19 @@ if(! $prev_tid) # generate new ticket if previous not found
 	$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, replyto, 
 			customerid, subject, messageid, headers, body, createtime) 
 			VALUES ($ticket_id, ?, ?, $reqcustid, ?, ?, ?, ?, $timestamp)");
-	$dbq->execute($mh_from, $mh_replyto, $mh_subject, $mh_msgid, $mailheaders, $mailbody);
+	$dbq->execute(
+		decode('UTF-8', $mh_from),
+		decode('UTF-8', $mh_replyto),
+		decode('UTF-8', $mh_subject),
+		decode('UTF-8', $mh_msgid),
+		decode('UTF-8', $mailheaders),
+		decode('UTF-8', $mailbody)
+	);
 
 	# i think that this expr should be enought to fetch id of previously inserted message
 	$dbq = $dbase->prepare("SELECT id FROM rtmessages WHERE ticketid = $ticket_id 
 			AND messageid = ? AND createtime = $timestamp");
-	$dbq->execute($mh_msgid);
+	$dbq->execute(decode('UTF-8', $mh_msgid));
 	$row = $dbq->fetchrow_hashref();
 	$rt_msgid = $row->{'id'};	
 
@@ -458,10 +497,17 @@ else
 	$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, customerid, 
 			userid, subject, messageid, replyto, headers, body, inreplyto, createtime) 
 			VALUES ($prev_tid, ?, $reqcustid, $requserid, ?, ?, ?, ?, ?, $inreplytoid, $timestamp)");
-	$dbq->execute($mh_from, $mh_subject, $mh_msgid, $mh_replyto, $mailheaders, $mailbody);
+	$dbq->execute(
+		decode('UTF-8', $mh_from),
+		decode('UTF-8', $mh_subject),
+		decode('UTF-8', $mh_msgid),
+		decode('UTF-8', $mh_replyto),
+		decode('UTF-8', $mailheaders),
+		decode('UTF-8', $mailbody)
+	);
 	$dbq = $dbase->prepare("SELECT id FROM rtmessages WHERE ticketid = $prev_tid 
 			AND messageid = ? AND createtime = $timestamp");
-	$dbq->execute($mh_msgid);
+	$dbq->execute(decode('UTF-8', $mh_msgid));
 	$row = $dbq->fetchrow_hashref();
 	$rt_msgid = $row->{'id'};
 	
@@ -549,8 +595,8 @@ if(scalar @attachments && $save_path)
 		move($filename, $save_path.'/'.sprintf('%06d',$ticket_id).'/'.sprintf('%06d',$rt_msgid));
 		
 		$dbq = $dbase->prepare("INSERT INTO rtattachments (messageid, filename, 
-				contenttype) VALUES ($rt_msgid, '".basename($filename)."', '$content_type')");
-		$dbq->execute();
+				contenttype) VALUES (?, ?, ?)");
+		$dbq->execute($rt_msgid, basename($filename), $content_type);
 	}
 }
 
