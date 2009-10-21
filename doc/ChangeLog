@@ -45,6 +45,7 @@ version ? (????-??-??):
   - added tariff traffic limits for night-time (alec)
   - Userpanel: use division name/address on transfer forms instead of line_1/line_2
     options (alec)
+  - lmsd/tc-new: added 'night_hours' option with night-time tariffs support (alec)
 
 version 1.11.8 Belus (2009-05-19):
 

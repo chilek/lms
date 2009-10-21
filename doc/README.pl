@@ -5082,6 +5082,13 @@ $IPT -t filter -I FORWARD -s %i -m limit --limit %plimit/s -j ACCEPT
        Lista nazw grup klientów, które mają być brane pod uwagę. Wielkość
        liter nie ma znaczenia. Domyślnie: pusta (wszystkie grupy).
        Przykład: customergroups = "grupa1 grupa2"
+     * night_hours
+       Zakres godzin nocnych w formacie 24-godzinnym. Np. "22-5" oznacza,
+       że podczas uruchomienia modułu w godzinach od 22:00 do 4:59 brane
+       będą wartości taryf dla godzin nocnych. Obowiązują następujące
+       ograniczenia dla formatu zakresu: nie może zawierać spacji, okres
+       nie może zaczynać się przed godziną 18. Domyślnie: pusta.
+       Przykład: night_hours = "24-6"
      __________________________________________________________________
 
 6.2.12. Dns

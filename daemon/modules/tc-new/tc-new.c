@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <syslog.h>
 #include <string.h>
+#include <time.h>
 #include <netinet/in.h>
 
 #include "lmsd.h"
@@ -51,8 +52,12 @@ void reload(GLOBAL *g, struct tc_module *tc)
 {
 	FILE *fh;
 	QueryHandle *res;
-	int i, j, k=2, n=2, cc=0, nc=0;
+	int i, j, k=2, n=2, cc=0, nc=0, night=0;
 	char *query;
+	
+	// get current date
+	time_t t = time(NULL);
+	struct tm *tt = localtime(&t);
 		
 	struct channel *channels = (struct channel *) malloc(sizeof(struct channel));
 
@@ -128,10 +133,32 @@ void reload(GLOBAL *g, struct tc_module *tc)
 		g->db_free(&res);
 	}
 
+	// handle night-time tariffs
+	if (strlen(tc->night_hours))
+	{
+		int start_h, end_h;
+		
+		if (sscanf(tc->night_hours, "%d-%d", &start_h, &end_h) == 2)
+		{
+			int hour = tt->tm_hour;
+
+			if (end_h < 18) end_h += 24; 
+			if (start_h < 18) start_h += 24; 
+			if (hour < 18) hour += 24; 
+
+			if (start_h >= end_h)
+				syslog(LOG_ERR, "[%s/tc-new] Wrong 'night_hours' format: %s", tc->base.instance, tc->night_hours);
+			else if (hour >= start_h && hour < end_h)
+				night = 1;
+		}
+		else
+	    		syslog(LOG_ERR, "[%s/tc-new] Wrong 'night_hours' format: %s", tc->base.instance, tc->night_hours);
+	}
+	
 	// nodes
-	query = strdup("SELECT t.downrate, t.downceil, t.uprate, t.upceil, t.climit, "
-			"t.plimit, n.id, n.ownerid, "
-			"n.name, INET_NTOA(n.ipaddr) AS ip, n.mac, "
+	query = strdup("SELECT t.downrate AS downrate, t.downceil AS downceil, t.uprate AS uprate, "
+			"t.upceil AS upceil, t.climit AS climit, t.plimit AS plimit, "
+			"n.id, n.ownerid, n.name, INET_NTOA(n.ipaddr) AS ip, n.mac, "
 			"na.assignmentid, " 
 #ifdef USE_PGSQL
 			"TRIM(c.lastname || ' ' || c.name) AS customer "
@@ -151,6 +178,15 @@ void reload(GLOBAL *g, struct tc_module *tc)
 			"%groups"
 		"ORDER BY customer");
 	
+	if (night)
+	{
+		g->str_replace(&query, "t.downrate", "(CASE WHEN t.downrate_n > 0 THEN t.downrate_n ELSE t.downrate END)");
+		g->str_replace(&query, "t.downceil", "(CASE WHEN t.downceil_n > 0 THEN t.downceil_n ELSE t.downceil END)");
+		g->str_replace(&query, "t.uprate", "(CASE WHEN t.uprate_n > 0 THEN t.uprate_n ELSE t.uprate END)");
+		g->str_replace(&query, "t.upceil", "(CASE WHEN t.upceil_n > 0 THEN t.upceil_n ELSE t.upceil END)");
+		g->str_replace(&query, "t.climit", "(CASE WHEN t.climit_n IS NOT NULL THEN t.climit_n ELSE t.climit END)");
+		g->str_replace(&query, "t.plimit", "(CASE WHEN t.plimit_n IS NOT NULL THEN t.plimit_n ELSE t.plimit END)");
+	}
 	g->str_replace(&query, "%groups", strlen(groupsql) ? groups : "");
 
 	res = g->db_query(g->conn, query);
@@ -454,6 +490,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 	free(tc->plimit);
 	free(tc->networks);
 	free(tc->customergroups);
+	free(tc->night_hours);
 }
 
 struct tc_module * init(GLOBAL *g, MODULE *m)
@@ -589,6 +626,7 @@ esac\n\
 	
 	tc->networks = strdup(g->config_getstring(tc->base.ini, tc->base.instance, "networks", ""));
 	tc->customergroups = strdup(g->config_getstring(tc->base.ini, tc->base.instance, "customergroups", ""));
+	tc->night_hours = strdup(g->config_getstring(tc->base.ini, tc->base.instance, "night_hours", ""));
 #ifdef DEBUG1
 	syslog(LOG_INFO, "DEBUG: [%s/tc-new] initialized", tc->base.instance);
 #endif
