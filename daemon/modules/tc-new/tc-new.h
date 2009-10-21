@@ -45,6 +45,7 @@ struct tc_module
 	char *end;
 	char *networks;
 	char *customergroups;
+	char *night_hours;
 
 	char *class_up;
 	char *class_down;
