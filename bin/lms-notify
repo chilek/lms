@@ -97,10 +97,10 @@ my $dbuser = $ini->val('database', 'user') || 'root';
 my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
 
-my $smtp_host = $ini->val('sendinvoices', 'smtp_host') || 'localhost';
-my $smtp_user = $ini->val('sendinvoices', 'smtp_user') || '';
-my $smtp_pass = $ini->val('sendinvoices', 'smtp_pass') || '';
-my $smtp_auth = $ini->val('sendinvoices', 'smtp_auth') || ''; # 'LOGIN', 'PLAIN', 'CRAM-MD5', 'NTLM'
+my $smtp_host = $ini->val('notify', 'smtp_host') || 'localhost';
+my $smtp_user = $ini->val('notify', 'smtp_user') || '';
+my $smtp_pass = $ini->val('notify', 'smtp_pass') || '';
+my $smtp_auth = $ini->val('notify', 'smtp_auth') || ''; # 'LOGIN', 'PLAIN', 'CRAM-MD5', 'NTLM'
 my $debugemail = $ini->val('notify', 'debug_email') || '';
 my $mailfrom = $ini->val('notify', 'mailfrom') || '';
 my $mailfname = $ini->val('notify', 'mailfname') || '';
