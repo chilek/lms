@@ -50,6 +50,7 @@ version ? (????-??-??):
     prevent database inserts issues, fixed problem when message contains many
     character sets (alec)
   - invoicepaid.php: fixed SQL query (Grzegorz Chwesewicz)
+  - lms-notify-messages: new script for notifying with http notices (alec)
 
 version 1.11.8 Belus (2009-05-19):
 

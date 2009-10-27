@@ -41,7 +41,11 @@
 			</row>
 			<row>
 			<entry><xref linkend="lms-notify-sms"></entry>
-			<entry>Powiadamianie klientów SMS'em o zaleg³o¶ciach, wystawionych fakturach, przekroczeniu terminu p³atno¶ci</entry>
+			<entry>Odpowiednik lms-notify do wysy³ania smsów</entry>
+			</row>
+			<row>
+			<entry><xref linkend="lms-notify-messages"></entry>
+			<entry>Odpowiednik lms-notify do ustawiania powiadomieñ http</entry>
 			</row>
 			<row>
 			<entry><xref linkend="lms-cutoff"></entry>
@@ -228,8 +232,8 @@ http://www.naszasiec.pl/</screen></example>
 		<title>Konfiguracja</title>
 			<para>Konfiguracjê dla lms-notify mo¿na ustaliæ w pliku 
 			<filename>lms.ini</filename> w sekcji <emphasis>[notify]</emphasis>. 
-			Mo¿esz tam ustawiæ nastêpuj±ce parametry, które dotycz± równie¿
-			skryptu <xref linkend="lms-notify-sms">:</para>
+			Mo¿esz tam ustawiæ nastêpuj±ce parametry, które maj± zastosowanie
+			równie¿ dla skryptów <xref linkend="lms-notify-sms"> i <xref linkend="lms-notify-messages">:</para>
 		<itemizedlist>
 			<listitem>
 				<para>debtors_template (opcjonalny)</para>
@@ -354,6 +358,17 @@ http://www.naszasiec.pl/</screen></example>
 			<para>Przyk³ad:	<prompt>service = smstools</prompt></para>
 		</listitem>
 		</itemizedlist>
+		</para>
+	</sect2> 
+	<sect2 id="lms-notify-messages" xreflabel="lms-notify-messages">
+		<title>lms-notify-messages</title>
+		<para>lms-notify-messages to odpowiednik <xref linkend="lms-notify">,
+		s³u¿±cy do ustawiania powiadomieñ, które bêd± pojawiaæ siê
+		w przegl±darkach internetowych klientów. Skrypt jest 
+		wielofunkcyjny, w³±czenie okre¶lonego zadania nastêpuje poprzez
+		zdefiniowanie lokalizacji pliku z szablonem wiadomo¶ci.</para>
+		<para>Konfiguracjê dla lms-notify-messages przeprowadza siê w pliku 
+		<filename>lms.ini</filename> w sekcji <emphasis>[notify-messages]</emphasis>.
 		</para>
 	</sect2> 
 	<sect2 id="lms-cutoff" xreflabel="lms-cutoff">
