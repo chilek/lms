@@ -756,25 +756,38 @@ password = has³o
 hosts = localhost
 dbname = lms
 # MySQL
-#query = SELECT CASE WHEN mail_forward != '' THEN mail_forward ELSE CONCAT(p.login, '@', pd.name) END
-#       FROM passwd p
+#query = SELECT mail_forward
+#	FROM passwd p
 #	JOIN domains pd ON (p.domainid = pd.id)
-#	WHERE p.id IN (SELECT aa.accountid
-#		FROM aliases a
-#		JOIN domains ad ON (a.domainid = ad.id)
-#		JOIN aliasassignments aa ON (aa.aliasid = a.id)
-#		WHERE a.login = '%u' AND ad.name = '%d')
-#	OR (p.login = '%u' AND pd.name = '%d' AND type & 2 = 2)
-# PostgreSQL
-query = SELECT CASE WHEN mail_forward != '' THEN mail_forward ELSE p.login || '@' || pd.name END
-        FROM passwd p
+#	WHERE p.login = '%u' AND pd.name = '%d'
+#		AND type & 2 = 2 AND mail_forward != ''
+#		AND (expdate = 0 OR expdate &gt; UNIX_TIMESTAMP())
+#	UNION
+#       SELECT CASE WHEN aa.mail_forward != '' THEN aa.mail_forward ELSE CONCAT(p.login, '@', pd.name) END
+#	FROM aliases a
+#	JOIN domains ad ON (a.domainid = ad.id)
+#	JOIN aliasassignments aa ON (aa.aliasid = a.id)
+#	LEFT JOIN passwd p ON (aa.accountid = p.id AND (expdate = 0 OR expdate &gt; UNIX_TIMESTAMP()))
+#	LEFT JOIN domains pd ON (p.domainid = pd.id)
+#	WHERE a.login = '%u' AND ad.name = '%d'
+#		AND (aa.mail_forward != '' OR p.id IS NOT NULL)
+# PostgreSQL	
+query = SELECT mail_forward
+	FROM passwd p
 	JOIN domains pd ON (p.domainid = pd.id)
-	WHERE p.id IN (SELECT aa.accountid
-		FROM aliases a
-		JOIN domains ad ON (a.domainid = ad.id)
-		JOIN aliasassignments aa ON (aa.aliasid = a.id)
-		WHERE a.login = '%u' AND ad.name = '%d')
-	OR (p.login = '%u' AND pd.name = '%d' AND type & 2 = 2)
+	WHERE p.login = '%u' AND pd.name = '%d'
+		AND type & 2 = 2 AND mail_forward != ''
+		AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
+	UNION
+	SELECT CASE WHEN aa.mail_forward != '' THEN aa.mail_forward ELSE p.login || '@' || pd.name END
+	FROM aliases a
+	JOIN domains ad ON (a.domainid = ad.id)
+	JOIN aliasassignments aa ON (aa.aliasid = a.id)
+	LEFT JOIN passwd p ON (aa.accountid = p.id
+		AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))))
+	LEFT JOIN domains pd ON (p.domainid = pd.id)
+	WHERE a.login = '%u' AND ad.name = '%d'
+		AND (aa.mail_forward != '' OR p.id IS NOT NULL)
 
 # recipient_bcc_maps.cf (Postfix):
 
