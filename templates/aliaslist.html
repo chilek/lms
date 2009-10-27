@@ -64,14 +64,14 @@
 	{section name=aliaslist loop=$aliaslist start=$start max=$pagelimit}
 	<TR class="{cycle}{if $aliaslist[aliaslist].expdate != 0 && $aliaslist[aliaslist].expdate < $smarty.now} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD class="fleft" nowrap onclick="return self.location.href='?m=aliasinfo&id={$aliaslist[aliaslist].id}';">
-			<IMG src="img/alias.gif" ALT="" > <B>{if $aliaslist[aliaslist].login eq ""}{t}(domain alias){/t}&nbsp;{else}{$aliaslist[aliaslist].login}@{/if}{$aliaslist[aliaslist].domain}</B>
+			<IMG src="img/alias.gif" ALT="" > <B>{$aliaslist[aliaslist].login}@{$aliaslist[aliaslist].domain}</B>
 		</TD>
 		<TD align="right" onclick="return self.location.href='?m=aliasinfo&id={$aliaslist[aliaslist].id}';">
 			({$aliaslist[aliaslist].id|string_format:"%04d"})
 		</TD>
 		<TD onclick="return self.location.href='?m=aliasinfo&id={$aliaslist[aliaslist].id}';">
 			<IMG src="img/account.gif" alt="">
-			{$aliaslist[aliaslist].dest}{if $aliaslist[aliaslist].cnt>1},...{/if}
+			{if $aliaslist[aliaslist].dest}{$aliaslist[aliaslist].dest}{else}{$aliaslist[aliaslist].forward}{/if}{if $aliaslist[aliaslist].cnt>1},...{/if}
 		</TD>
 		<TD class="fright" align="right" NOWRAP>
 			{assign var=alias value="`$aliaslist[aliaslist].login`@`$aliaslist[aliaslist].domain`}

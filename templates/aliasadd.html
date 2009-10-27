@@ -45,12 +45,6 @@ function togglelogin()
 		</TD>
 		<TD width="98%" class="frightu">
 			<INPUT type="text" name="alias[login]" id="login" value="{$alias.login}" {tip text="Enter alias name" trigger="login"} size="20" {if $alias.domainalias}disabled{/if}>
-		</TD>
-	</TR>
-        <TR class="LIGHT">
-		<TD width="2%" colspan="2" class="fleft">
-		</TD>
-		<TD width="98%" class="fright">
 			<INPUT type="checkbox" name="alias[domainalias]" id="domainalias" value="" onClick="javascript:togglelogin()" {if $alias.domainalias}checked{/if}><A href="javascript:checkElement('domainalias');javascript:togglelogin()">{t}domain alias{/t}</A>
 		</TD>
 	</TR>
@@ -95,7 +89,7 @@ function togglelogin()
 		<TD width="1%" class="fleft">
 			<IMG src="img/forward.gif" alt="">
 		</TD>
-		<TD width="1%">
+		<TD width="1%" NOWRAP>
 			<B>{t}Forward e-mail:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
