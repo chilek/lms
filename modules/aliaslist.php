@@ -50,10 +50,11 @@ function GetAliasList($order='login,asc', $customer=NULL, $domain='')
 			FROM passwd p
 			JOIN domains pd ON (p.domainid = pd.id) 
 			WHERE p.id = s.accountid) AS dest,
-		s.cnt
+		s.cnt, s.forward
 		FROM aliases a
 		JOIN domains d ON (d.id = a.domainid)
-		JOIN (SELECT COUNT(*) AS cnt, MIN(accountid) AS accountid, aliasid
+		JOIN (SELECT COUNT(*) AS cnt, MIN(accountid) AS accountid, 
+			MAX(mail_forward) AS forward, aliasid
 			FROM aliasassignments GROUP BY aliasid) s ON (a.id = s.aliasid)
 		WHERE 1=1'
 		.($customer != '' ? ' AND d.ownerid = '.intval($customer) : '')

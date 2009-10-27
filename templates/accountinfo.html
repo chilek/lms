@@ -216,10 +216,10 @@
 					</TD>
 					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
 					    {assign var=name value="`$alias.login`@`$alias.domain`}
-					    <A href="?m=aliasinfo&id={$alias.id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
-					    <A href="?m=aliasedit&id={$alias.id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 					    <A href="?m=aliasedit&id={$alias.id}&delaccount={$account.id}" OnClick="return confirmLink(this, '{t 0=$name}Are you sure, you want to delete assignment with alias: \'$0\'?{/t}')"><IMG src="img/eraser.gif" alt="[ {t}Delete assignment{/t} ]" title="[ {t}Delete assignment{/t} ]"></A>
 					    <A href="?m=aliasdel&id={$alias.id}" OnClick="return confirmLink(this, '{t 0=$name}Are you sure, you want to delete alias: \'$0\'?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+					    <A href="?m=aliasedit&id={$alias.id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+					    <A href="?m=aliasinfo&id={$alias.id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
 					</TD>
 				</TR>
 				{foreachelse}

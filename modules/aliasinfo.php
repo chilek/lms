@@ -45,7 +45,7 @@ if(sizeof($mailforwards))
 	foreach($mailforwards as $mailforward => $idx)
 		$alias['mailforwards'][] = $mailforward;
 
-$layout['pagetitle'] = trans('Alias Info: $0', ($alias['login'] != '' ? $alias['login'].'@' : trans('(domain alias)').' ').$alias['domain']);
+$layout['pagetitle'] = trans('Alias Info: $0', $alias['login'] .'@'. $alias['domain']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
