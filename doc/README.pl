@@ -2758,8 +2758,9 @@ Rozdział 4. Skrypty
    Nazwa Opis
    lms-notify Powiadamianie klientów pocztą internetową o zaległościach,
    wystawionych fakturach, przekroczeniu terminu płatności
-   lms-notify-sms Powiadamianie klientów SMS'em o zaległościach,
-   wystawionych fakturach, przekroczeniu terminu płatności
+   lms-notify-sms Odpowiednik lms-notify do wysyłania smsów
+   lms-notify-messages Odpowiednik lms-notify do ustawiania powiadomień
+   http
    lms-cutoff Odłączanie klientów zadłużonych
    lms-etherdesc Generowanie pliku dla iptraf zawierającego pary MAC adres
    - nazwa hosta
@@ -2869,8 +2870,8 @@ http://www.naszasiec.pl/
 4.3.1.2. Konfiguracja
 
    Konfigurację dla lms-notify można ustalić w pliku lms.ini w sekcji
-   [notify]. Możesz tam ustawić następujące parametry, które dotyczą
-   również skryptu lms-notify-sms:
+   [notify]. Możesz tam ustawić następujące parametry, które mają
+   zastosowanie również dla skryptów lms-notify-sms i lms-notify-messages:
      * debtors_template (opcjonalny)
        Lokalizacja pliku z szablonem wiadomości wysyłanej do zadłużonych
        klientów. Pozostawienie tej opcji pustej wyłączy powiadomienia o
@@ -2963,7 +2964,19 @@ http://www.naszasiec.pl/
        Przykład: service = smstools
      __________________________________________________________________
 
-4.3.3. lms-cutoff
+4.3.3. lms-notify-messages
+
+   lms-notify-messages to odpowiednik lms-notify, służący do ustawiania
+   powiadomień, które będą pojawiać się w przeglądarkach internetowych
+   klientów. Skrypt jest wielofunkcyjny, włączenie określonego zadania
+   następuje poprzez zdefiniowanie lokalizacji pliku z szablonem
+   wiadomości.
+
+   Konfigurację dla lms-notify-messages przeprowadza się w pliku lms.ini w
+   sekcji [notify-messages].
+     __________________________________________________________________
+
+4.3.4. lms-cutoff
 
    Skrypt pozwala na odłączenie (a raczej zmianę w bazie danych stanu
    komputerów na wyłączony) klientów których bilans jest poniżej zadanej
@@ -2986,7 +2999,7 @@ http://www.naszasiec.pl/
        Przykład: message = ''
      __________________________________________________________________
 
-4.3.4. lms-payments
+4.3.5. lms-payments
 
    Skrypt służący do naliczania opłat abonamentowych przypisanych klientom
    oraz opłat stałych. Ponadto zapisuje dane do faktur. Aby działał
@@ -3029,7 +3042,7 @@ http://www.naszasiec.pl/
    --fakedate=2004/10/10.
      __________________________________________________________________
 
-4.3.5. lms-traffic
+4.3.6. lms-traffic
 
    Skrypt służy do logowania informacji o ilości danych pobranych i
    wysłanych przez każdy komputer w sieci lokalnej. W bazie danych
@@ -3043,7 +3056,7 @@ http://www.naszasiec.pl/
    dostępne jest z głównego menu 'Statystyki'.
      __________________________________________________________________
 
-4.3.5.1. Instalacja
+4.3.6.1. Instalacja
 
    Przed uruchomieniem lms-traffic należy zadbać o utworzenie pliku z
    danymi. Zawartość pliku powinna mieć następujący format:
@@ -3072,7 +3085,7 @@ http://www.naszasiec.pl/
    wyświetlenie wyników.
      __________________________________________________________________
 
-4.3.6. lms-traffic-logiptables
+4.3.7. lms-traffic-logiptables
 
    Skrypt służy do logowania informacji o ilości danych pobranych i
    wysłanych przez każdy komputer z sieci lokalnej, na podstawie liczników
@@ -3115,7 +3128,7 @@ http://www.naszasiec.pl/
        Przykład: networks = public-custa public-custb
      __________________________________________________________________
 
-4.3.7. lms-makedhcpconf
+4.3.8. lms-makedhcpconf
 
    Tworzenie pliku konfiguracyjnego serwera DHCP - dhcpd.conf.
    Konfigurację skryptu umieszcza się w sekcji [dhcp]:
@@ -3179,7 +3192,7 @@ dns     = 213.25.209.8
 wins    = 213.25.209.10
      __________________________________________________________________
 
-4.3.8. lms-makeiptables, lms-makeipchains
+4.3.9. lms-makeiptables, lms-makeipchains
 
    Para skryptów służących do generowania plików zawierających reguły
    firewalla. Do utworzonego pliku możesz dołączyć inne wcześniej
@@ -3236,7 +3249,7 @@ wins    = 213.25.209.10
        Przykład: tcp_redirect_ports = 80:3128 25:25
      __________________________________________________________________
 
-4.3.9. lms-etherdesc
+4.3.10. lms-etherdesc
 
    Skrypt służący do generowania pliku zawierającego MAC adresy oraz nazwy
    hostów pobierane z bazy lms'a. Adresy zapisywane są w formacie
@@ -3263,7 +3276,7 @@ wins    = 213.25.209.10
        Przykład: etherdesc_permission = 600
      __________________________________________________________________
 
-4.3.10. lms-sendinvoices
+4.3.11. lms-sendinvoices
 
    Skrypt służy do wysyłania pocztą elektroniczną faktur, jako załączników
    do wiadomości. Faktury generowane są na podstawie szablonu dostępnego w
@@ -3327,7 +3340,7 @@ wins    = 213.25.209.10
    --fakedate=2004/10/10.
      __________________________________________________________________
 
-4.3.11. lms-makemacs
+4.3.12. lms-makemacs
 
    Skrypt służący do generowania pliku zawierającego reguły netfiltra
    filtrujące ruch klientów na bazie testu adresu źródłowego MAC. Dla
@@ -3383,7 +3396,7 @@ wins    = 213.25.209.10
        Przykład: lock_noaccess = 1
      __________________________________________________________________
 
-4.3.12. lms-makehosts
+4.3.13. lms-makehosts
 
    Skrypt służący do generowania pliku /etc/hosts zawierającego
    odwzorowania nazw komputerów na adresy IP.
@@ -3418,7 +3431,7 @@ wins    = 213.25.209.10
        Przykład: config_header = 192.168.1.1 serwer serwer.nasza-siec
      __________________________________________________________________
 
-4.3.13. lms-makewarnings
+4.3.14. lms-makewarnings
 
    Skrypt służący do generowania pliku zawierającego reguły netfiltra
    przekierowujące ruch http i webcache klientów o saldzie mniejszym lub
@@ -3467,7 +3480,7 @@ wins    = 213.25.209.10
        Przykład: limit = -85
      __________________________________________________________________
 
-4.3.14. lms-makemessages
+4.3.15. lms-makemessages
 
    Skrypt służący do generowania pliku zawierającego reguły netfiltra
    przekierowujące ruch http i webcache klientów dla których zostało
@@ -3513,7 +3526,7 @@ wins    = 213.25.209.10
        Przykład: redirect_address = 192.168.1.1:3002
      __________________________________________________________________
 
-4.3.15. lms-fping
+4.3.16. lms-fping
 
    Skrypt zapisuje do bazy informacje o aktywności komputerów. Do
    skanowania wykorzystywany jest szybki program fping (z opcjami -ar1).
@@ -3536,7 +3549,7 @@ wins    = 213.25.209.10
        Przykład: temp_file = /tmp/hosts
      __________________________________________________________________
 
-4.3.16. lms-reminder
+4.3.17. lms-reminder
 
    Skrypt służy do przypominania klientom o zaplanowanych na dany dzień
    zadaniach. Lista zdarzeń przypisanych w Terminarzu danemu klientowi w
@@ -3577,7 +3590,7 @@ wins    = 213.25.209.10
        Przykład: debug_email = alec@domain.pl
      __________________________________________________________________
 
-4.3.17. lms-rtparser
+4.3.18. lms-rtparser
 
    Jest to tzw. backend dla systemu Helpdesk, czyli skrypt który
    współpracując z serwerem pocztowym zapisuje do bazy danych wszystkie

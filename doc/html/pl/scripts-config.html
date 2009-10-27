@@ -240,10 +240,13 @@ CLASS="EMPHASIS"
 >[notify]</I
 ></SPAN
 >. 
-			Możesz tam ustawić następujące parametry, które dotyczą również
-			skryptu <A
+			Możesz tam ustawić następujące parametry, które mają zastosowanie
+			również dla skryptów <A
 HREF="scripts-config.html#LMS-NOTIFY-SMS"
 >lms-notify-sms</A
+> i <A
+HREF="scripts-config.html#LMS-NOTIFY-MESSAGES"
+>lms-notify-messages</A
 >:</P
 ><UL
 ><LI
@@ -515,8 +518,39 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="LMS-NOTIFY-MESSAGES"
+>4.3.3. lms-notify-messages</A
+></H2
+><P
+>lms-notify-messages to odpowiednik <A
+HREF="scripts-config.html#LMS-NOTIFY"
+>lms-notify</A
+>,
+		służący do ustawiania powiadomień, które będą pojawiać się
+		w przeglądarkach internetowych klientów. Skrypt jest 
+		wielofunkcyjny, włączenie określonego zadania następuje poprzez
+		zdefiniowanie lokalizacji pliku z szablonem wiadomości.</P
+><P
+>Konfigurację dla lms-notify-messages przeprowadza się w pliku 
+		<TT
+CLASS="FILENAME"
+>lms.ini</TT
+> w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[notify-messages]</I
+></SPAN
+>.
+		</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="LMS-CUTOFF"
->4.3.3. lms-cutoff</A
+>4.3.4. lms-cutoff</A
 ></H2
 ><P
 >Skrypt pozwala na odłączenie (a raczej zmianę w bazie danych stanu komputerów na wyłączony) klientów których bilans jest poniżej zadanej wartości. Właściwe odłączanie powinno być realizowane przez generator plików konfiguracyjnych.</P
@@ -566,7 +600,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="LMS-PAYMENTS"
->4.3.4. lms-payments</A
+>4.3.5. lms-payments</A
 ></H2
 ><P
 >Skrypt służący do naliczania opłat abonamentowych przypisanych
@@ -687,7 +721,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="LMS-TRAFFIC"
->4.3.5. lms-traffic</A
+>4.3.6. lms-traffic</A
 ></H2
 ><P
 >Skrypt służy do logowania informacji o ilości danych pobranych i wysłanych
@@ -708,7 +742,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="LMS-TRAFFIC-CONFIG"
->4.3.5.1. Instalacja</A
+>4.3.6.1. Instalacja</A
 ></H3
 ><P
 >Przed uruchomieniem lms-traffic należy zadbać o utworzenie
@@ -796,7 +830,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="LMS-TRAFFIC-LOGIPTABLES"
->4.3.6. lms-traffic-logiptables</A
+>4.3.7. lms-traffic-logiptables</A
 ></H2
 ><P
 >Skrypt służy do logowania informacji o ilości danych pobranych i wysłanych
@@ -916,7 +950,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="LMS-MAKEDHCPCONF"
->4.3.7. lms-makedhcpconf</A
+>4.3.8. lms-makedhcpconf</A
 ></H2
 ><P
 >Tworzenie pliku konfiguracyjnego serwera DHCP - dhcpd.conf. Konfigurację
@@ -1090,7 +1124,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="LMS-MAKEIPTABLES"
->4.3.8. lms-makeiptables, lms-makeipchains</A
+>4.3.9. lms-makeiptables, lms-makeipchains</A
 ></H2
 ><P
 >Para skryptów służących do generowania plików zawierających
@@ -1254,7 +1288,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="LMS-ETHERDESC"
->4.3.9. lms-etherdesc</A
+>4.3.10. lms-etherdesc</A
 ></H2
 ><P
 >Skrypt służący do generowania pliku zawierającego MAC adresy oraz
@@ -1344,7 +1378,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="LMS-SENDINVOICES"
->4.3.10. lms-sendinvoices</A
+>4.3.11. lms-sendinvoices</A
 ></H2
 ><P
 >Skrypt służy do wysyłania pocztą elektroniczną faktur, jako załączników
@@ -1531,7 +1565,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="LMS-MAKEMACS"
->4.3.11. lms-makemacs</A
+>4.3.12. lms-makemacs</A
 ></H2
 ><P
 >Skrypt służący do generowania pliku zawierającego reguły netfiltra filtrujące ruch
@@ -1677,7 +1711,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="LMS-MAKEHOSTS"
->4.3.12. lms-makehosts</A
+>4.3.13. lms-makehosts</A
 ></H2
 ><P
 >Skrypt służący do generowania pliku /etc/hosts zawierającego odwzorowania nazw komputerów
@@ -1783,7 +1817,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="LMS-MAKEWARNINGS"
->4.3.13. lms-makewarnings</A
+>4.3.14. lms-makewarnings</A
 ></H2
 ><P
 >Skrypt służący do generowania pliku zawierającego reguły netfiltra przekierowujące ruch http i webcache
@@ -1923,7 +1957,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="LMS-MAKEMESSAGES"
->4.3.14. lms-makemessages</A
+>4.3.15. lms-makemessages</A
 ></H2
 ><P
 >Skrypt służący do generowania pliku zawierającego reguły netfiltra przekierowujące ruch http i webcache
@@ -2052,7 +2086,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="LMS-FPING"
->4.3.15. lms-fping</A
+>4.3.16. lms-fping</A
 ></H2
 ><P
 >Skrypt zapisuje do bazy informacje o aktywności komputerów. 
@@ -2116,7 +2150,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="LMS-REMINDER"
->4.3.16. lms-reminder</A
+>4.3.17. lms-reminder</A
 ></H2
 ><P
 >Skrypt służy do przypominania klientom o zaplanowanych na dany dzień 
@@ -2236,7 +2270,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="LMS-RTPARSER"
->4.3.17. lms-rtparser</A
+>4.3.18. lms-rtparser</A
 ></H2
 ><P
 >Jest to tzw. backend dla systemu Helpdesk, czyli skrypt który współpracując
