@@ -49,6 +49,7 @@ version ? (????-??-??):
   - lms-rtparser: added base64 encoding support, non-unicode characters decoding to
     prevent database inserts issues, fixed problem when message contains many
     character sets (alec)
+  - invoicepaid.php: fixed SQL query (Grzegorz Chwesewicz)
 
 version 1.11.8 Belus (2009-05-19):
 

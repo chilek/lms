@@ -49,7 +49,7 @@ if(sizeof($ids))
 				FROM documents d
 				JOIN invoicecontents a ON (a.docid = d.id)
 				LEFT JOIN invoicecontents b ON (d.reference = b.docid AND a.itemid = b.itemid)
-				WHERE d.id = ?', array($invoiceid));
+				WHERE d.id = ? GROUP BY d.reference', array($invoiceid));
 
 			if ($value != 0)
 				$LMS->AddBalance(array(
