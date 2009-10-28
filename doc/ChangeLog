@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.11.9 Moloc (2009-10-28):
  
   - BTS#0000794: fixed postfix configuration for MySQL (alec)
   - improved performance of bank account fetching (alec)
