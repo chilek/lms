@@ -176,7 +176,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 			"AND n.access = 1 "
 			"AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0) "
 			"%groups"
-		"ORDER BY customer");
+		"ORDER BY a.customerid, a.id");
 	
 	if (night)
 	{
