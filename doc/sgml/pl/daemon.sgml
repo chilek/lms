@@ -1175,7 +1175,7 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 				do ograniczania przep³ywno¶ci i limitowania po³±czeñ klientom. Dzia³a podobnie
 				do modu³u 'tc', lecz obs³uguje funkcjonalno¶æ pozwalaj±c± na powi±zywanie
 				taryf z komputerami. Skrypt tworzy tzw. kana³y dla komputerów klienta
-				przypisanych do tej samej taryfy. Przyk³±dowo: dla klienta z dwoma 
+				przypisanych do tej samej taryfy. Przyk³adowo: dla klienta z dwoma 
 				komputerami przypisanymi do tej samej taryfy zostan± utworzone dwie
 				klasy (upload i download) oraz po dwa filtry dla ka¿dego komputera. 
 				W przypadku gdy klient ma dwie taryfy i do ka¿dej po jednym komputerze 
