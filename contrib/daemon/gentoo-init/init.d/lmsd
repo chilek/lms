@@ -7,20 +7,20 @@ opts="${opts} reload"
 
 start() {
 	ebegin "Starting ${SVCNAME}"
-	start-stop-daemon --start --pidfile ${LMSD_PIDFILE} --exec /usr/bin/lmsd -- -h ${LMSD_DBHOST} \
+	start-stop-daemon --start --pidfile ${LMSD_PIDFILE} --exec ${LMSD_EXEC} -- -h ${LMSD_DBHOST} \
 	    -d ${LMSD_DBNAME} -u ${LMSD_DBUSER} -p ${LMSD_DBPASS} -H ${LMSD_HOSTNAME} -P ${LMSD_PIDFILE} > /dev/null 2>&1
 	eend $?
 }
 
 stop() {
 	ebegin "Stopping ${SVCNAME}"
-	start-stop-daemon --stop  --pidfile /var/run/lmsd.pid
+	start-stop-daemon --stop  --pidfile ${LMSD_PIDFILE}
 	eend $?
 }
 
 reload() {
 	einfo "Reloading all modules ${SVCNAME} ..."
-	/usr/bin/lmsd -h ${LMSD_DBHOST} -d ${LMSD_DBNAME} -u ${LMSD_DBUSER} -p ${LMSD_DBPASS} -H ${LMSD_HOSTNAME} -q
+	${LMSD_EXEC} -h ${LMSD_DBHOST} -d ${LMSD_DBNAME} -u ${LMSD_DBUSER} -p ${LMSD_DBPASS} -H ${LMSD_HOSTNAME} -q
 	einfo "Reloaded all modules ${SVCNAME} ..." 
 	eend $?
 }
