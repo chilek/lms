@@ -1,3 +1,4 @@
+LMSD_EXEC="/usr/local/lms/bin/lmsd"
 LMSD_PIDFILE="/var/run/lmsd.pid"
 LMSD_DBHOST="localhost"
 LMSD_DBNAME="lms"
