@@ -803,7 +803,7 @@ class LMS
 		return $customerlist;
 	}
 
-	function GetCustomerNodes($id)
+	function GetCustomerNodes($id, $count=NULL)
 	{
 		if($result = $this->DB->GetAll('SELECT id, name, mac, ipaddr, 
 				inet_ntoa(ipaddr) AS ip, ipaddr_pub, 
@@ -812,7 +812,7 @@ class LMS
 				(SELECT COUNT(*) FROM nodegroupassignments
 					WHERE nodeid = nodes.id) AS gcount 
 				FROM nodes WHERE ownerid=? 
-				ORDER BY name ASC', array($id)))
+				ORDER BY name ASC '.($count ? 'LIMIT '.$count : ''), array($id)))
 		{
 			// assign network(s) to node record
 			$networks = (array) $this->GetNetworks();
