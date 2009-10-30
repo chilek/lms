@@ -68,9 +68,10 @@ if(isset($_POST['domainadd']))
 	
 	if(!$error)
 	{
-		$DB->Execute('INSERT INTO domains (name, ownerid, description) VALUES (?,?,?)',
+		$DB->Execute('INSERT INTO domains (name, ownerid, type, description) VALUES (?,?,?,?)',
 				    array($domainadd['name'], 
 					    $domainadd['ownerid'], 
+					    $domainadd['type'], 
 					    $domainadd['description']));
 		
 		if(!isset($domainadd['reuse']))

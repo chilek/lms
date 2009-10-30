@@ -2258,5 +2258,13 @@ $_LANG['Enter invoices payment type (leave this field empty to use default)'] = 
 $_LANG['(domain alias)'] = '(alias domenowy)';
 $_LANG['night:'] = 'noc:';
 $_LANG['not defined'] = 'brak';
+$_LANG['Records list'] = 'Lista rekordów';
+$_LANG['New record'] = 'Nowy rekord';
+$_LANG['Content'] = 'Dane';
+$_LANG['Type'] = 'Typ';
+$_LANG['Records'] = 'Rekordy';
+$_LANG['Record Edit'] = 'Edycja Rekordu';
+$_LANG['Record Add'] = 'Dodaj Rekord';
+$_LANG['No such records in database.'] = 'Nie ma rekordów w bazie danych';
 
 ?>

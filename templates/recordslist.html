@@ -1,0 +1,74 @@
+{include file="header.html"}
+<H1>{$layout.pagetitle}</H1>
+<P><TABLE cellpadding="3" WIDTH="100%">
+	<TR class="dark"">
+		<TD width="46%" class="fleftu" NOWRAP>{t}Name{/t}</TD>
+		<TD width="2%" class="fbt" NOWRAP align="right">{t}TTL{/t}</TD>
+		<TD width="2%" class="fbt" align="right" NOWRAP>{t}Type{/t}</TD>
+		<TD width="2%" class="fbt" align="right" NOWRAP>{t}Priority:{/t}</TD>
+		<TD width="46%" class="fbt" align="left" NOWRAP>{t}Content{/t}</TD>
+		<TD width="2%" class="frightu" align="right" NOWRAP><B>{t 0=$listdata.total}Total: $0{/t}</B>&nbsp;</TD>
+	</TR>
+	<TR class="DARK">
+		<TD class="fall" colspan="6">
+			<FORM method="GET" action="?m={$layout.module}" name="filter">
+			   <input type="hidden" name="m" value="{$layout.module}">
+				<NOBR>{t}Domain:{/t}
+				<SELECT size="1" name="d" OnChange="document.filter.submit();">
+					{section name=domainlist loop=$domainlist}
+					    <OPTION value="{$domainlist[domainlist].id}"{if $domainlist[domainlist].id eq $listdata.domain} SELECTED{/if}>{$domainlist[domainlist].name}</OPTION>
+					{/section}
+				</SELECT></NOBR>
+			</FORM>
+		</TD>
+	</TR>		
+	{if $listdata.total != 0}
+	<TR CLASS="DARK">
+		<TD COLSPAN="6" CLASS="FALL">
+			{include file="scroller.html" loop=$recordslist adlink=$suffix}
+		</TD>
+	</TR>
+	{/if}
+	{cycle values="light,lucid" print=false}
+	{section name=recordslist loop=$recordslist start=$start max=$pagelimit}
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD class="fleft"><NOBR>{$recordslist[recordslist].name}</NOBR></TD>
+		<TD align="right" valign="top">{$recordslist[recordslist].ttl}<BR></TD>
+		<TD valign="top" NOWRAP >{$recordslist[recordslist].type}<BR></TD>
+		<TD valign="top" NOWRAP >{$recordslist[recordslist].prio}<BR></TD>
+		<TD align="left" NOWRAP >{$recordslist[recordslist].content}<BR></TD>
+		<TD class="fright" align="right">			
+			<NOBR>
+			<A href="?m=recordedit&id={$recordslist[recordslist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A> 
+			<A href="?m=recorddel&id={$recordslist[recordslist].id}" OnClick="return confirmLink(this, '{t 0=$account}Are you sure you want to delete this record?{/t}')"><IMG src="img/delete.gif" title="[ {t}Delete{/t} ]" alt="[ {t}Delete{/t} ]"></A> 
+			</NOBR>
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD colspan="6" align="center" class="flr">
+			<p>&nbsp;</p>
+			<p><B>{t}No such records in database.{/t}</B></p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/section}
+	{if $listdata.total != 0}
+	<TR CLASS="DARK">
+		<TD COLSPAN="7" CLASS="FALL">
+			{include file="scroller.html" loop=$recordslist adlink=$suffix}
+		</TD>
+	</TR>
+
+
+	{/if}
+ <TR class="light">
+           <TD colspan="3" class="fleftu" align="right" valign="top">
+                </TD>
+                                                    
+		<TD class="frightu" colspan="3" align="right">
+			<A href="?m=recordadd&d={$listdata.domain}">{t}New record{/t} <IMG src="img/save.gif" alt=""></A>
+		</TD>
+	</TR>
+</TABLE></P>
+{include file="footer.html"}

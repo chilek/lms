@@ -11,5 +11,5 @@ rm -v `find .|grep "~$"`
 for i in `cvs up|grep ^M|cut -d\  -f2-`
 do
 	cvs diff -u $i|less
-	cvs ci $i
+#	cvs ci $i
 done

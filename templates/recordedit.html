@@ -1,0 +1,36 @@
+{include file="header.html"}
+<H1>{$layout.pagetitle}</H1>
+<FORM name="recordedit" method="POST" action="?m=recordedit&id={$record.id}">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE cellpadding="3" WIDTH="100%">
+
+    <TR class="dark"">
+        <TD width="46%" class="fleftu" NOWRAP>{t}Name{/t}</TD>
+        <TD width="2%" class="fbt" NOWRAP align="right">{t}TTL{/t}</TD>                              
+        <TD width="2%" class="fbt" align="right" NOWRAP>{t}Type{/t}</TD>
+	<TD width="2%" class="fbt" align="right" NOWRAP>{t}Priority:{/t}</TD>
+        <TD width="46%" class="frightu" align="left" NOWRAP>{t}Content{/t}</TD>
+    </TR>                                                                                                                                                                                                                                                                                                                                                               
+    <TR>
+    </TR>
+    <TR class="light"> 
+	<TD class="fleftu"><input type="text" style="width:100%" value="{$record.name}" name="record[name]"></TD>
+	<TD class="fbt"><input type="text" size="7" value="{$record.ttl}" name="record[ttl]"></TD>
+	<TD class="fbt"><input type="text" size="5" value="{$record.type}" name="record[type]"></TD>
+	<TD class="fbt"><input type="text" size="5" value="{$record.prio}" name="record[prio]"></TD>
+	<TD class="frightu"><input type="text" style="width:100%" value="{$record.content}" name="record[content]"></TD>
+    </TR>
+    <TR class="LIGHT">
+	<TD colspan="5" class="fbottomu" align="right" nowrap>
+	    <A href="javascript: document.recordedit.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+	    <A href="?m=recordslist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
+	</TD>
+    </TR>
+</TABLE>
+</FORM>
+<SCRIPT type="text/javascript">
+<!--//
+document.forms['recordedit'].elements['record[name]'].focus();
+//-->
+</SCRIPT>
+{include file="footer.html"}
