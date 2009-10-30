@@ -43,7 +43,7 @@ if($id && !DomainExists($id))
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
-$domain = $DB->GetRow('SELECT id, name, ownerid, description 
+$domain = $DB->GetRow('SELECT id, name, ownerid, description, master, last_check, type, notified_serial, account
 	FROM domains WHERE id = ?', array($id));
 
 $layout['pagetitle'] = trans('Domain Edit: $0', $domain['name']);
@@ -85,10 +85,15 @@ if(isset($_POST['domain']))
 
 	if(!$error)
 	{
-		$DB->Execute('UPDATE domains SET name = ?, ownerid = ?, description = ? WHERE id = ?', 
+		$DB->Execute('UPDATE domains SET name = ?, ownerid = ?, description = ?, master = ?, last_check = ?, type = ?, notified_serial = ?, account = ?  WHERE id = ?', 
 			array(	$domain['name'],
 				$domain['ownerid'],
 				$domain['description'],
+				$domain['master'],
+				$domain['last_check'],
+				$domain['type'],
+				$domain['notified_serial'],
+				$domain['account'],
 				$domain['id']
 				));
 		
