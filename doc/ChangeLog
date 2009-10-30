@@ -3,6 +3,7 @@ $Id$
 version 1.11.10 ??? (????-??-??)
 
   - contrib/daemon/gentoo-init: small fixes (Mariusz Szulerecki)
+  - lmsd/oident: use lower case'd node names (alec)
 
 version 1.11.9 Moloc (2009-10-28):
  

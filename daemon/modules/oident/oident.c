@@ -79,7 +79,7 @@ void reload(GLOBAL *g, struct oident_module *o)
 	{
 		fprintf(fh, "%s\n", o->prefix);
 
-		res = g->db_query(g->conn, "SELECT name, mac, ipaddr FROM nodes ORDER BY ipaddr");
+		res = g->db_query(g->conn, "SELECT LOWER(name) AS name, mac, ipaddr FROM nodes ORDER BY ipaddr");
 		
 		for(i=0; i<g->db_nrows(res); i++)
 		{
