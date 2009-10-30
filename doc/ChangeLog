@@ -1,5 +1,9 @@
 $Id$
 
+version 1.11.10 ??? (????-??-??)
+
+  - contrib/daemon/gentoo-init: small fixes (Mariusz Szulerecki)
+
 version 1.11.9 Moloc (2009-10-28):
  
   - BTS#0000794: fixed postfix configuration for MySQL (alec)
@@ -53,7 +57,6 @@ version 1.11.9 Moloc (2009-10-28):
   - lms-notify-messages: new script for notifying with http notices (alec)
   - lmsd/tc-new: fixed bug with wrong class generation in some cases when
     customer has many tariffs (alec)
-  - contrib/daemon/gentoo-init: small fixes (Mariusz Szulerecki)
 
 version 1.11.8 Belus (2009-05-19):
 
