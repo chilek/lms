@@ -26,7 +26,7 @@ $DB->BeginTrans();
 
 $DB->Execute("ALTER TABLE domains ADD master varchar(128) DEFAULT NULL");
 $DB->Execute("ALTER TABLE domains ADD last_check integer DEFAULT NULL");
-$DB->Execute("ALTER TABLE domains ADD type    varchar(6) NOT NULL");
+$DB->Execute("ALTER TABLE domains ADD type varchar(6) DEFAULT '' NOT NULL");
 $DB->Execute("ALTER TABLE domains ADD notified_serial integer DEFAULT NULL");
 $DB->Execute("ALTER TABLE domains ADD account varchar(40) DEFAULT NULL");
 
