@@ -44,6 +44,7 @@ $DB->Execute("
 		prio integer		DEFAULT NULL,
 		change_date integer	DEFAULT NULL,
 		PRIMARY KEY (id),
+		CONSTRAINT domain_exists
 		FOREIGN KEY (domain_id) REFERENCES domains (id) ON DELETE CASCADE
 	);
 ");
