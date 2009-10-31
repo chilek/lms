@@ -30,7 +30,13 @@ else
 	$d = $_GET['d'];
 $SESSION->save('ald', $d);
 	    
-$recordslist=$DB->GetAll('select *, FIELD(type,\'TXT\',\'MX\',\'NS\',\'SOA\') AS ord  from records where domain_id='.$d.' ORDER by ord desc');
+$recordslist=$DB->GetAll('SELECT *,
+	(CASE WHEN type=\'TXT\' THEN 1
+		WHEN type=\'MX\' THEN 2
+		WHEN type=\'NS\' THEN 3
+		WHEN type=\'SOA\' THEN 4
+		ELSE 0 END) AS ord
+	FROM records WHERE domain_id='.$d.' ORDER BY ord desc');
 
 $listdata['total'] = count($recordslist);
 $listdata['domain'] = $d;
