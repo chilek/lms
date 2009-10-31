@@ -23,12 +23,12 @@
  */
 
 
-$DB->Execute("alter table domains add master VARCHAR(128) DEFAULT NULL");
-$DB->Execute("alter table domains add last_check INT DEFAULT NULL");
-$DB->Execute("alter table domains add type    VARCHAR(6) NOT NULL");
-$DB->Execute("alter table domains add notified_serial INT DEFAULT NULL");
-$DB->Execute("alter table domains add account VARCHAR(40) DEFAULT NULL");
-$DB->Execute("alter table domains engine=innodb");
+$DB->Execute("ALTER TABLE domains ADD master VARCHAR(128) DEFAULT NULL");
+$DB->Execute("ALTER TABLE domains ADD last_check INT DEFAULT NULL");
+$DB->Execute("ALTER TABLE domains ADD type    VARCHAR(6) NOT NULL");
+$DB->Execute("ALTER TABLE domains ADD notified_serial INT DEFAULT NULL");
+$DB->Execute("ALTER TABLE domains ADD account VARCHAR(40) DEFAULT NULL");
+$DB->Execute("ALTER TABLE domains engine=innodb");
 
 
 $DB->Execute("CREATE UNIQUE INDEX name_index ON domains(name)");
@@ -50,7 +50,7 @@ $DB->Execute("CREATE INDEX rec_name_index ON records(name)");
 $DB->Execute("CREATE INDEX nametype_index ON records(name,type)");
 $DB->Execute("CREATE INDEX domain_id ON records(domain_id)");
 
-$DB->Execute("create table supermasters (
+$DB->Execute("CREATE TABLE supermasters (
   ip VARCHAR(25) NOT NULL,
   nameserver VARCHAR(255) NOT NULL,
   account VARCHAR(40) DEFAULT NULL
