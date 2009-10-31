@@ -29,7 +29,6 @@ $DB->Execute("ALTER TABLE domains ADD last_check integer DEFAULT NULL");
 $DB->Execute("ALTER TABLE domains ADD type    varchar(6) NOT NULL");
 $DB->Execute("ALTER TABLE domains ADD notified_serial integer DEFAULT NULL");
 $DB->Execute("ALTER TABLE domains ADD account varchar(40) DEFAULT NULL");
-$DB->Execute("ALTER TABLE domains engine=innodb");
 
 $DB->Execute("CREATE UNIQUE INDEX domains_name_idx ON domains (name)");
 
