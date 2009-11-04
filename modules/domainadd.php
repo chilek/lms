@@ -44,6 +44,13 @@ if(isset($_POST['domainadd']))
 		$SESSION->redirect('?m=domainlist');
 	}
 	
+        if($domainadd['type'] == 'SLAVE'){
+        if (!check_ip($domainadd['master'])) $error['master'] = trans('IP address of master NS is required!');
+        }
+        else
+                $domainadd['master']="";
+                                        
+
 	if($domainadd['name'] == '')
 		$error['name'] = trans('Domain name is required!');
 	elseif(!preg_match('/^[a-z0-9._-]+$/', $domainadd['name']))
@@ -68,10 +75,11 @@ if(isset($_POST['domainadd']))
 	
 	if(!$error)
 	{
-		$DB->Execute('INSERT INTO domains (name, ownerid, type, description) VALUES (?,?,?,?)',
+		$DB->Execute('INSERT INTO domains (name, ownerid, type, master, description) VALUES (?,?,?,?,?)',
 				    array($domainadd['name'], 
 					    $domainadd['ownerid'], 
 					    $domainadd['type'], 
+					    $domainadd['master'], 
 					    $domainadd['description']));
 		
 		if(!isset($domainadd['reuse']))
