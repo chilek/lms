@@ -26,13 +26,21 @@
 
 $SESSION->restore('conls', $section);
 
+function parse_cfg_val($value)
+{
+	if (is_bool($value))
+		return $value ? 'true' : 'false';
+	else
+		return (string) $value;
+}
+
 $DB->BeginTrans();
 
 if(!empty($CONFIG['phpui']) && (!$section || $section = 'phpui'))
 foreach($CONFIG['phpui'] as $key => $val)
 {
 	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
-			array('phpui', $key, $val)
+			array('phpui', $key, parse_cfg_val($val))
 			);
 }
 
@@ -44,7 +52,7 @@ if(isset($CONFIG['userpanel']))
 	foreach($CONFIG['userpanel'] as $key => $val)
 	{
 		$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
-			array('userpanel', $key, $val)
+			array('userpanel', $key, parse_cfg_val($val))
 			);
 	}
 }
@@ -62,7 +70,7 @@ if(!empty($CONFIG['invoices']) && (!$section || $section = 'invoices'))
 foreach($CONFIG['invoices'] as $key => $val)
 {
 	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
-			array('invoices', $key, $val)
+			array('invoices', $key, parse_cfg_val($val))
 			);
 }
 
@@ -70,7 +78,7 @@ if(!empty($CONFIG['receipts']) && (!$section || $section = 'receipts'))
 foreach($CONFIG['receipts'] as $key => $val)
 {
 	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
-			array('receipts', $key, $val)
+			array('receipts', $key, parse_cfg_val($val))
 			);
 }
 
@@ -78,7 +86,7 @@ if(!empty($CONFIG['finances']) && (!$section || $section = 'finances'))
 foreach($CONFIG['finances'] as $key => $val)
 {
 	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
-			array('finances', $key, $val)
+			array('finances', $key, parse_cfg_val($val))
 			);
 }
 
@@ -86,7 +94,7 @@ if(!empty($CONFIG['sms']) && (!$section || $section = 'sms'))
 foreach($CONFIG['sms'] as $key => $val)
 {
 	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
-			array('sms', $key, $val)
+			array('sms', $key, parse_cfg_val($val))
 			);
 }
 
@@ -94,7 +102,7 @@ if(!empty($CONFIG['mail']) && (!$section || $section = 'mail'))
 foreach($CONFIG['mail'] as $key => $val)
 {
 	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
-			array('mail', $key, $val)
+			array('mail', $key, parse_cfg_val($val))
 			);
 }
 
