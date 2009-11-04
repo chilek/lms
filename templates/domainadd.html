@@ -37,11 +37,18 @@
                 </TD>
                 <TD width="1%" nowrap><B>{t}Type:{/t}</B></TD>
                 <TD width="98%" class="fright">
-                 <SELECT SIZE="1" NAME="domainadd[type]" {tip text="" trigger="type"}>
-                                <OPTION VALUE="NATIVE" >NATIVE</OPTION>
-                                <OPTION VALUE="MASTER" >MASTER</OPTION>
-                                <OPTION VALUE="SLAVE" >SLAVE</OPTION>
-                        </SELECT>
+                <SELECT  SIZE="1" NAME="domainadd[type]" {tip text="" trigger="type"} id="domainadd[type]" style="float:left;" onchange=" if (this.value=='SLAVE') document.getElementById('ipmaster').style.display='block'; else document.getElementById('ipmaster').style.display='none';" >
+                                <OPTION VALUE="NATIVE" {if $domainadd.type == NATIVE} SELECTED{/if}>NATIVE</OPTION>
+                                <OPTION VALUE="MASTER" {if $domainadd.type == MASTER} SELECTED{/if}>MASTER</OPTION>
+                                <OPTION VALUE="SLAVE" {if $domainadd.type == SLAVE} SELECTED{/if}>SLAVE</OPTION>
+                 </SELECT>
+                   <div id="ipmaster" style="display: none; float:left; margin-left:10px;">
+                           {t}IP address of master NS:{/t}
+                   <input type="text" name="domainadd[master]" {tip text="Enter IP address of master NS" trigger="master" bold="1"}>
+	           </div>
+	           <script type="text/javascript">
+                   if (document.getElementById('domainadd[type]').value=='SLAVE')  document.getElementById('ipmaster').style.display='block';
+                   </script>                                                                                                                   
                 </TD>
         </TR>
 	<TR class="LIGHT">

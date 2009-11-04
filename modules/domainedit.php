@@ -63,6 +63,13 @@ if(isset($_POST['domain']))
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}
 	
+	
+        if($domain['type'] == 'SLAVE'){
+        if (!check_ip($domain['master'])) $error['master'] = trans('IP address of master NS is required!');
+        }
+        else
+        $domain['master']="";                                        
+	
 	if($domain['name'] == '')
 		$error['name'] = trans('Domain name is required!');
 	elseif(!preg_match('/^[a-z0-9._-]+$/', $domain['name']))
