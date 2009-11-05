@@ -29,6 +29,7 @@ if (defined('USERPANEL_SETUPMODE'))
     function module_setup()
     {
 	global $SMARTY,$LMS;
+
 	$SMARTY->assign('disable_transferform', $LMS->CONFIG['userpanel']['disable_transferform']);
 	$SMARTY->assign('disable_invoices', $LMS->CONFIG['userpanel']['disable_invoices']);
 	$SMARTY->assign('invoice_duplicate', $LMS->CONFIG['userpanel']['invoice_duplicate']);
@@ -65,6 +66,7 @@ if (defined('USERPANEL_SETUPMODE'))
 	} else {
 	    $DB->Execute('UPDATE uiconfig SET value = \'0\' WHERE section = \'userpanel\' AND var = \'show_speeds\'');
 	}
+
 	header('Location: ?m=userpanel&module=finances');
     }
 }
@@ -83,8 +85,5 @@ function module_main()
 {
     include 'main.php';
 }
-
-require_once(LIB_DIR.'/ezpdf/class.ezpdf.php');
-$pdf =& new Cezpdf('A4','portrait');
 
 ?>
