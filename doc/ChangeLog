@@ -4,7 +4,10 @@ version 1.11.10 ??? (????-??-??)
 
   - contrib/daemon/gentoo-init: small fixes (Mariusz Szulerecki)
   - lmsd/oident: use lower case'd node names (alec)
-  - added powerdns support (Dariusz Kowalczyk/Jan Gancarczyk)  
+  - added powerdns support (Dariusz Kowalczyk/Jan Gancarczyk)
+  - Userpanel: added possibility to print many invoices with one click (alec)
+  - unified pdf invoices in Userpanel and LMS-UI (alec)
+  
 version 1.11.9 Moloc (2009-10-28):
  
   - BTS#0000794: fixed postfix configuration for MySQL (alec)

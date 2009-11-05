@@ -92,5 +92,7 @@ $_LANG['Your balance'] = 'Twoje konto';
 $_LANG['Your subscriptions'] = 'Twoje taryfy';
 $_LANG['monthly ($0)'] = 'miesięcznie ($0)';
 $_LANG['Reason:'] = 'Powód:';
+$_LANG['Check all'] = 'Zaznacz wszystkie';
+$_LANG['Print selected'] = 'Drukuj zaznaczone';
 
 ?>

@@ -24,24 +24,10 @@
  *  $Id$
  */
 
-global $LMS,$SESSION,$CONFIG,$_CONFIG,$SMARTY,$invoice;
-$invoice = $LMS->GetInvoiceContent($_GET['id']);
-
-if($invoice['customerid'] != $SESSION->id)
-{
-	die;
-}
-
-$number = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
-if(!isset($invoice['invoice']))
-	$layout['pagetitle'] = trans('Invoice No. $0', $number);
-else
-	$layout['pagetitle'] = trans('Credit Note No. $0', $number);
+global $LMS,$SESSION,$CONFIG,$_CONFIG,$SMARTY,$invoice, $layout;
 
 $type = chkconfig($CONFIG['userpanel']['invoice_duplicate']) ? trans('DUPLICATE') : trans('ORIGINAL');
-$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
-$invoice['last'] = TRUE;
-$invoice['type'] = $type;
+$service_addr = $LMS->GetCustomerServiceAddress($SESSION->id);
 
 if(strtolower($CONFIG['invoices']['type']) == 'pdf')
 {
@@ -58,13 +44,69 @@ $SMARTY->assign('css', file($CONFIG['directories']['sys_dir'].'/img/style_print.
 // use LMS templates directory
 $SMARTY->template_dir = !isset($CONFIG['directories']['smarty_templates_dir']) ? $CONFIG['directories']['sys_dir'].'/templates' : $CONFIG['directories']['smarty_templates_dir'];
 
+// handle multi-invoices print
+if(!empty($_POST['inv']))
+{
+	$layout['pagetitle'] = trans('Invoices');
+        $SMARTY->display('invoiceheader.html');
+
+	$count = count($_POST['inv']);
+	$i = 0;
+	foreach (array_keys($_POST['inv']) as $key)
+	{
+		$invoice = $LMS->GetInvoiceContent(intval($key));
+		$i++;
+		if($invoice['customerid'] != $SESSION->id)
+		{
+			continue;
+		}
+
+		$invoice['serviceaddr'] = $service_addr;
+		if($i == $count) 	
+			$invoice['last'] = TRUE;
+		$invoice['type'] = $type;
+
+		$SMARTY->assign('invoice', $invoice);
+		$SMARTY->assign('type', $type);
+
+		if(isset($invoice['invoice']))
+			$SMARTY->display($CONFIG['invoices']['cnote_template_file']);
+		else
+			$SMARTY->display($CONFIG['invoices']['template_file']);
+	}
+	
+	$SMARTY->display('clearfooter.html');	
+	die;
+}
+
+$invoice = $LMS->GetInvoiceContent($_GET['id']);
+
+if($invoice['customerid'] != $SESSION->id)
+{
+	die;
+}
+
+$invoice['serviceaddr'] = $service_addr;
+$invoice['last'] = TRUE;
+$invoice['type'] = $type;
+
+$number = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
+
+if(!isset($invoice['invoice']))
+	$layout['pagetitle'] = trans('Invoice No. $0', $number);
+else
+	$layout['pagetitle'] = trans('Credit Note No. $0', $number);
+
+$SMARTY->display('invoiceheader.html');
+
 $SMARTY->assign('invoice', $invoice);
 $SMARTY->assign('type', $type);
-$SMARTY->display('invoiceheader.html');
+
 if(isset($invoice['invoice']))
 	$SMARTY->display($CONFIG['invoices']['cnote_template_file']);
 else
 	$SMARTY->display($CONFIG['invoices']['template_file']);
+
 $SMARTY->display('clearfooter.html');
 
 ?>
