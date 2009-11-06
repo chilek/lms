@@ -30,7 +30,7 @@ else
 	$d = $_GET['d'];
 $SESSION->save('ald', $d);
 	    
-$recordslist=$DB->GetAll('SELECT *,
+$recordslist = $DB->GetAll('SELECT *,
 	(CASE WHEN type=\'TXT\' THEN 1
 		WHEN type=\'MX\' THEN 2
 		WHEN type=\'NS\' THEN 3
@@ -41,7 +41,6 @@ $recordslist=$DB->GetAll('SELECT *,
 $listdata['total'] = count($recordslist);
 $listdata['domain'] = $d;
 
-
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']);
 $pagelimit = (!isset($CONFIG['phpui']['recordslist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['recordslist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
@@ -50,8 +49,6 @@ $SESSION->save('alp', $page);
 
 $layout['pagetitle'] = trans('Records list');
 
-
-
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('pagelimit', $pagelimit);
@@ -59,7 +56,7 @@ $SMARTY->assign('page', $page);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('recordslist',$recordslist);
 $SMARTY->assign('listdata',$listdata);
-$SMARTY->assign('domainlist',$DB->GetAll('SELECT id, name FROM domains  ORDER BY name'));
+$SMARTY->assign('domainlist',$DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
 $SMARTY->display('recordslist.html');
 
 ?>

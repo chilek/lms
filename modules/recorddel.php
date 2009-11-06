@@ -24,11 +24,9 @@
 
 $id = $_GET['id']*1;
 
-if($id )
+if($id)
 {
-	
 	$DB->Execute('DELETE FROM records WHERE id = ?', array($id));
-	
 }
 
 header('Location: ?m=recordslist');

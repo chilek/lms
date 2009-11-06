@@ -22,38 +22,32 @@
  *
  */
 
-
 $DB->Execute("ALTER TABLE domains ADD master VARCHAR(128) DEFAULT NULL");
-$DB->Execute("ALTER TABLE domains ADD last_check INT DEFAULT NULL");
+$DB->Execute("ALTER TABLE domains ADD last_check INT(11) DEFAULT NULL");
 $DB->Execute("ALTER TABLE domains ADD type    VARCHAR(6) NOT NULL");
-$DB->Execute("ALTER TABLE domains ADD notified_serial INT DEFAULT NULL");
+$DB->Execute("ALTER TABLE domains ADD notified_serial INT(11) DEFAULT NULL");
 $DB->Execute("ALTER TABLE domains ADD account VARCHAR(40) DEFAULT NULL");
-$DB->Execute("ALTER TABLE domains engine=innodb");
-
-
-$DB->Execute("CREATE UNIQUE INDEX name_index ON domains(name)");
 
 $DB->Execute("CREATE TABLE records (
-  id              INT auto_increment,
-  domain_id       INT DEFAULT NULL,
+  id              INT(11) auto_increment,
+  domain_id       INT(11) DEFAULT NULL,
   name            VARCHAR(255) DEFAULT NULL,
   type            VARCHAR(6) DEFAULT NULL,
   content         VARCHAR(255) DEFAULT NULL,
-  ttl             INT DEFAULT NULL,
-  prio            INT DEFAULT NULL,
-  change_date     INT DEFAULT NULL,
-  primary key(id),
-  CONSTRAINT `records_ibfk_1` FOREIGN KEY (`domain_id`) REFERENCES `domains` (`id`) ON DELETE CASCADE
-) type=InnoDB");
-
-$DB->Execute("CREATE INDEX rec_name_index ON records(name)");
-$DB->Execute("CREATE INDEX nametype_index ON records(name,type)");
-$DB->Execute("CREATE INDEX domain_id ON records(domain_id)");
+  ttl             INT(11) DEFAULT NULL,
+  prio            INT(11) DEFAULT NULL,
+  change_date     INT(11) DEFAULT NULL,
+  PRIMARY KEY(id),
+  INDEX domain_id (domain_id),
+  INDEX name_type (name, type, domain_id)
+)");
 
 $DB->Execute("CREATE TABLE supermasters (
-  ip VARCHAR(25) NOT NULL,
-  nameserver VARCHAR(255) NOT NULL,
-  account VARCHAR(40) DEFAULT NULL
+  id            INT(11) auto_increment,
+  ip 		VARCHAR(25) NOT NULL,
+  nameserver 	VARCHAR(255) NOT NULL,
+  account 	VARCHAR(40) DEFAULT NULL,
+  PRIMARY KEY (id)
 )");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009103000', 'dbversion'));
