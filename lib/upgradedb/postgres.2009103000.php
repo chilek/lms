@@ -30,36 +30,35 @@ $DB->Execute("ALTER TABLE domains ADD type varchar(6) DEFAULT '' NOT NULL");
 $DB->Execute("ALTER TABLE domains ADD notified_serial integer DEFAULT NULL");
 $DB->Execute("ALTER TABLE domains ADD account varchar(40) DEFAULT NULL");
 
-$DB->Execute("CREATE UNIQUE INDEX domains_name_idx ON domains (name)");
-
 $DB->Execute("
 	CREATE SEQUENCE records_id_seq;
 	CREATE TABLE records (
 		id integer		DEFAULT nextval('records_id_seq'::text) NOT NULL,
-		domain_id integer	DEFAULT NULL,
+		domain_id integer	DEFAULT NULL
+			REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE,
 		name varchar(255)	DEFAULT NULL,
 		type varchar(6)		DEFAULT NULL,
 		content varchar(255)	DEFAULT NULL,
 		ttl integer		DEFAULT NULL,
 		prio integer		DEFAULT NULL,
 		change_date integer	DEFAULT NULL,
-		PRIMARY KEY (id),
-		CONSTRAINT domain_exists
-		FOREIGN KEY (domain_id) REFERENCES domains (id) ON DELETE CASCADE
+		PRIMARY KEY (id)
 	);
 ");
 
-$DB->Execute("CREATE INDEX records_name_idx ON records (name)");
-$DB->Execute("CREATE INDEX records_type_idx ON records (name,type)");
+$DB->Execute("CREATE INDEX records_name_type_idx ON records (name, type, domain_id)");
 $DB->Execute("CREATE INDEX records_domain_id_idx ON records (domain_id)");
 
 $DB->Execute("
+	CREATE SEQUENCE supermasters_id_seq;
 	CREATE TABLE supermasters (
+		id integer		DEFAULT nextval('supermasters_id_seq'::text) NOT NULL,		
 		ip varchar(25)		NOT NULL,
 		nameserver varchar(255)	NOT NULL,
-		account varchar(40)	DEFAULT NULL
-	)"
-);
+		account varchar(40)	DEFAULT NULL,
+		PRIMARY KEY (id)
+	)
+");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009103000', 'dbversion'));
 

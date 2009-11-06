@@ -1,4 +1,5 @@
 <?php
+
 /*
  * LMS version 1.11-cvs
  *
@@ -21,31 +22,33 @@
  *
  */
 
+$id = $_GET['id']*1;
 
-if (isset($_POST[record])){
-    $record=$_POST['record'];
-    $record['id']=$_GET['id']*1;
-    $DB->Execute('UPDATE records SET name = ?, type = ?, content = ?,ttl = ?, prio = ?
-				WHERE id = ?',
-				array( $record['name'],
-				       $record['type'], 
-					$record['content'],
-					$record['ttl'],
-					$record['prio'],					
-					$record['id']));
+if (isset($_POST['record']))
+{
+	$record = $_POST['record'];
+	$record['id'] = $id;
+	
+	$DB->Execute('UPDATE records SET name = ?, type = ?, content = ?,ttl = ?, prio = ?
+		WHERE id = ?',
+		array( $record['name'],
+		        $record['type'], 
+			$record['content'],
+			$record['ttl'],
+			$record['prio'],					
+			$record['id']
+	));
 
-
-    $SESSION->redirect('?m=recordslist');  
+	$SESSION->redirect('?m=recordslist');  
 }
 
-
-$layout['pagetitle'] = trans('Record Edit:' );
+$layout['pagetitle'] = trans('Record Edit:');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$record=$DB->GetRow('SELECT * FROM records WHERE id='.$_GET['id']);
+$record=$DB->GetRow('SELECT * FROM records WHERE id = ?', array($id));
 
-$record['content']=htmlentities($record['content']);
+$record['content'] = htmlentities($record['content']);
 
 $SMARTY->assign('record',$record );
 

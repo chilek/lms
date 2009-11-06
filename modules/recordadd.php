@@ -1,4 +1,5 @@
 <?php
+
 /*
  * LMS version 1.11-cvs
  *
@@ -21,28 +22,27 @@
  *
  */
 
+if (isset($_POST['record']))
+{
+	$record=$_POST['record'];
 
-if (isset($_POST[record])){
-    $record=$_POST['record'];
-
-     $DB->Execute('INSERT INTO records (name, type, content, ttl, prio, domain_id)
+	$DB->Execute('INSERT INTO records (name, type, content, ttl, prio, domain_id)
                   VALUES (?, ?, ?, ?, ?, ?)',
                   array(  
-                  $record['name'],
+                  $record['name'].$x,
                   $record['type'],
                   $record['content'],
-                  $record['ttl'],
+                  $record['ttl']+$x,
                   $record['prio'],
-                  $record['domain_id']                  
-                  ));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+                  $record['domain_id']
+        ));
 
-    $SESSION->redirect('?m=recordslist');  
+	$SESSION->redirect('?m=recordslist');  
 }
 
+$d = $_GET['d']*1;
 
-$d=$_GET['d']*1;
-
-$layout['pagetitle'] = trans('Record Add' );
+$layout['pagetitle'] = trans('Record Add');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
