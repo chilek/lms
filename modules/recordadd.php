@@ -29,10 +29,10 @@ if (isset($_POST['record']))
 	$DB->Execute('INSERT INTO records (name, type, content, ttl, prio, domain_id)
                   VALUES (?, ?, ?, ?, ?, ?)',
                   array(  
-                  $record['name'].$x,
+                  $record['name'],
                   $record['type'],
                   $record['content'],
-                  $record['ttl']+$x,
+                  $record['ttl'],
                   $record['prio'],
                   $record['domain_id']
         ));
