@@ -2824,7 +2824,7 @@ class LMS
 		if($page < 1)
 			$page = 1;
     		$page --;
-		
+
 		while(1)
 		{
 		    $start = $page * $plimit;
@@ -2866,10 +2866,9 @@ class LMS
 
 		    if($firstfree && !isset($freenode))
 		    {
-			if($page+1 > $network['pages']) break;
-			$page++;
-		    }
-		    else
+			    if($page+1 >= $network['pages']) break;
+			    $page++;
+		    } else
 			    break;
 		}
 
