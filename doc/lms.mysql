@@ -23,7 +23,7 @@ CREATE TABLE users (
   deleted tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY  (id),
   UNIQUE KEY login (login)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -46,7 +46,7 @@ CREATE TABLE assignments (
   PRIMARY KEY (id),
   INDEX tariffid (tariffid),
   INDEX customerid (customerid)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -59,7 +59,7 @@ CREATE TABLE nodeassignments (
     assignmentid int(11) NOT NULL DEFAULT '0',
     PRIMARY KEY (id),
     UNIQUE KEY nodeid (nodeid, assignmentid)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -74,7 +74,7 @@ CREATE TABLE taxes (
     validfrom int(11) NOT NULL DEFAULT '0',
     validto int(11) NOT NULL DEFAULT '0',
     PRIMARY KEY (id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -100,7 +100,7 @@ CREATE TABLE cash (
   INDEX time (time),
   INDEX importid (importid),
   INDEX sourceid (sourceid)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -111,7 +111,7 @@ CREATE TABLE dbinfo (
   keytype varchar(255) NOT NULL DEFAULT '',
   keyvalue varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY  (keytype)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -125,7 +125,7 @@ CREATE TABLE numberplans (
 	doctype int(11) NOT NULL DEFAULT '0',
 	isdefault tinyint(1) NOT NULL DEFAULT '0',
 	PRIMARY KEY (id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -139,7 +139,7 @@ CREATE TABLE numberplanassignments (
 	PRIMARY KEY (id),
 	UNIQUE KEY planid (planid, divisionid),
 	INDEX divisionid (divisionid)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -158,7 +158,7 @@ CREATE TABLE invoicecontents (
   description varchar(255) NOT NULL DEFAULT '',
   tariffid int(11) NOT NULL DEFAULT '0',
   INDEX docid (docid)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -173,7 +173,7 @@ CREATE TABLE debitnotecontents (
 	description text NOT NULL DEFAULT '',
 	PRIMARY KEY (id),
 	UNIQUE KEY docid (docid, itemid)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -207,7 +207,7 @@ CREATE TABLE documents (
 	INDEX numberplanid (numberplanid),
 	INDEX customerid (customerid),
 	INDEX closed (closed)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -227,7 +227,7 @@ CREATE TABLE documentcontents (
 	INDEX fromdate (fromdate),
 	INDEX todate (todate),
 	UNIQUE KEY docid (docid)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -242,7 +242,7 @@ CREATE TABLE receiptcontents (
 	regid int(11)		NOT NULL DEFAULT '0',
 	INDEX docid (docid),
 	INDEX regid (regid)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -266,7 +266,7 @@ CREATE TABLE netdevices (
   secret 	varchar(60) 	NOT NULL DEFAULT '',
   community 	varchar(50) 	NOT NULL DEFAULT '',
   PRIMARY KEY  (id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -282,7 +282,7 @@ CREATE TABLE netlinks (
   dstport smallint NOT NULL DEFAULT '0',
   PRIMARY KEY  (id),
   UNIQUE KEY src (src,dst)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -307,7 +307,7 @@ CREATE TABLE networks (
   PRIMARY KEY  (id),
   UNIQUE KEY name (name),
   UNIQUE KEY address (address)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -343,7 +343,7 @@ CREATE TABLE nodes (
   INDEX netdev (netdev),
   INDEX ownerid (ownerid),
   INDEX ipaddr_pub (ipaddr_pub)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -357,7 +357,7 @@ CREATE TABLE nodegroups (
 	description     text            NOT NULL DEFAULT '',
 	PRIMARY KEY (id),
 	UNIQUE KEY name (name)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -370,7 +370,7 @@ CREATE TABLE nodegroupassignments (
 	nodeid          int(11)         NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
 	UNIQUE KEY nodeid (nodeid, nodegroupid)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -386,7 +386,7 @@ CREATE TABLE payments (
   at smallint NOT NULL DEFAULT '0',
   description text NOT NULL,
   PRIMARY KEY  (id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -397,7 +397,7 @@ CREATE TABLE rtattachments (
   messageid int(11) NOT NULL DEFAULT '0',
   filename varchar(255) NOT NULL DEFAULT '',
   contenttype varchar(255) NOT NULL DEFAULT ''
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -419,7 +419,7 @@ CREATE TABLE rtmessages (
   createtime int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY  (id),
   INDEX ticketid (ticketid)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -434,7 +434,7 @@ CREATE TABLE rtnotes (
 	createtime int(11)   NOT NULL DEFAULT '0',
 	PRIMARY KEY (id),
 	INDEX ticketid (ticketid)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -448,7 +448,7 @@ CREATE TABLE rtqueues (
   description text NOT NULL DEFAULT '',
   PRIMARY KEY  (id),
   UNIQUE KEY name (name)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -472,7 +472,7 @@ CREATE TABLE rttickets (
   INDEX customerid (customerid),
   INDEX creatorid (creatorid),
   INDEX createtime (createtime)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -486,7 +486,7 @@ CREATE TABLE rtrights (
     rights INT(11) DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY (userid, queueid)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -500,7 +500,7 @@ CREATE TABLE stats (
   download BIGINT DEFAULT '0',
   UNIQUE KEY nodeid (nodeid,dt),
   INDEX dt (dt)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -543,7 +543,7 @@ CREATE TABLE tariffs (
   PRIMARY KEY  (id),
   UNIQUE KEY name (name),
   INDEX type (type)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -557,7 +557,7 @@ CREATE TABLE liabilities (
     taxid int(11)           NOT NULL DEFAULT '0',
     prodid varchar(255)     NOT NULL DEFAULT '',
     PRIMARY KEY (id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -598,7 +598,7 @@ CREATE TABLE customers (
   PRIMARY KEY  (id),
   INDEX zip (zip),
   INDEX name (lastname, name)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -611,7 +611,7 @@ CREATE TABLE customergroups (
   description text NOT NULL, 
   PRIMARY KEY (id), 
   UNIQUE KEY name (name)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -624,7 +624,7 @@ CREATE TABLE customerassignments (
   customerid int(11) NOT NULL DEFAULT '0', 
   PRIMARY KEY (id),
   UNIQUE KEY customerassignment (customergroupid, customerid)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -655,7 +655,7 @@ CREATE TABLE passwd (
     PRIMARY KEY (id),
     UNIQUE KEY (login, domainid),
     INDEX ownerid (ownerid)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -667,10 +667,15 @@ CREATE TABLE domains (
     ownerid int(11) NOT NULL DEFAULT 0,
     name varchar(255) NOT NULL DEFAULT '',
     description text NOT NULL DEFAULT '',
+    master VARCHAR(128) DEFAULT NULL,
+    last_check INT(11) DEFAULT NULL,
+    type VARCHAR(6) NOT NULL,
+    notified_serial INT(11) DEFAULT NULL,
+    account VARCHAR(40) DEFAULT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY (name),
     INDEX ownerid (ownerid)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -683,7 +688,7 @@ CREATE TABLE aliases (
     domainid int(11) NOT NULL DEFAULT '0',
     PRIMARY KEY (id),
     UNIQUE KEY (login, domainid)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -697,7 +702,7 @@ CREATE TABLE aliasassignments (
     mail_forward    varchar(255)    DEFAULT '' NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY aliasid (aliasid, accountid, mail_forward)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -713,7 +718,7 @@ CREATE TABLE uiconfig (
     disabled tinyint(1) NOT NULL DEFAULT '0',
     PRIMARY KEY (id),
     UNIQUE KEY var (section, var)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -734,7 +739,7 @@ CREATE TABLE events (
     closed tinyint(1) NOT NULL DEFAULT '0',
     PRIMARY KEY (id),
     INDEX date (date)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -745,7 +750,7 @@ CREATE TABLE eventassignments (
     eventid int(11) NOT NULL DEFAULT '0',
     userid int(11) NOT NULL DEFAULT '0',
     UNIQUE (eventid, userid)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -760,7 +765,7 @@ CREATE TABLE sessions (
     vdata text NOT NULL, 
     content text NOT NULL, 
     PRIMARY KEY (id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -779,7 +784,7 @@ CREATE TABLE cashimport (
     sourceid int(11) DEFAULT NULL,
     PRIMARY KEY (id),
     INDEX hash (hash)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -792,7 +797,7 @@ CREATE TABLE cashsources (
     description text		DEFAULT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY name (name)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -807,7 +812,7 @@ CREATE TABLE hosts (
     reload tinyint(1) DEFAULT '0' NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY name (name)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -824,7 +829,7 @@ CREATE TABLE daemoninstances (
     description text 		DEFAULT '' NOT NULL,
     disabled tinyint(1) 	DEFAULT '0' NOT NULL,
     PRIMARY KEY (id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -840,7 +845,7 @@ CREATE TABLE daemonconfig (
     disabled tinyint(1) DEFAULT '0' NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY instanceid (instanceid, var)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -854,7 +859,7 @@ CREATE TABLE docrights (
     rights      int(11)         DEFAULT '0' NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY userid (userid, doctype)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -868,7 +873,7 @@ CREATE TABLE cashrights (
     rights int(11)  DEFAULT '0' NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY userid (userid, regid)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -884,7 +889,7 @@ CREATE TABLE cashregs (
     disabled tinyint(1)     DEFAULT '0' NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY name (name)
-) ENGINE=MyISAM;													
+) ENGINE=InnoDB;													
 
 # --------------------------------------------------------
 #
@@ -901,7 +906,7 @@ CREATE TABLE cashreglog (
     description text		DEFAULT '' NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY regid (regid, time)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -921,7 +926,7 @@ CREATE TABLE ewx_stm_nodes (
 	halfduplex tinyint(1)   DEFAULT '0' NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE KEY nodeid (nodeid)
-    ) ENGINE=MyISAM;
+    ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS ewx_stm_channels;
 CREATE TABLE ewx_stm_channels (
@@ -931,7 +936,7 @@ CREATE TABLE ewx_stm_channels (
 	downceil int(11)        DEFAULT '0' NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE KEY customerid (customerid)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS ewx_pt_config;
 CREATE TABLE ewx_pt_config (
@@ -943,7 +948,7 @@ CREATE TABLE ewx_pt_config (
 	passwd varchar(32)      DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE KEY nodeid (nodeid)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -957,7 +962,7 @@ CREATE TABLE imessengers (
 	type tinyint(1) 	NOT NULL DEFAULT '0',
 	PRIMARY KEY (id),
 	INDEX customerid (customerid)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -972,7 +977,7 @@ CREATE TABLE customercontacts (
 	PRIMARY KEY (id),
 	INDEX customerid (customerid),
 	INDEX phone (phone)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -985,7 +990,7 @@ CREATE TABLE states (
 	description 	text 		NOT NULL DEFAULT '',
 	PRIMARY KEY (id),
 	UNIQUE KEY name (name)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -997,7 +1002,7 @@ CREATE TABLE countries (
 	name 		varchar(255) 	NOT NULL DEFAULT '',
 	PRIMARY KEY (id),
 	UNIQUE KEY name (name)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -1011,7 +1016,7 @@ CREATE TABLE zipcodes (
 	PRIMARY KEY (id),
 	UNIQUE KEY zip (zip),
 	INDEX stateid (stateid)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -1037,7 +1042,7 @@ CREATE TABLE divisions (
 	status 		tinyint(1) 	NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
 	UNIQUE KEY shortname (shortname)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 			
 # --------------------------------------------------------
 #
@@ -1050,7 +1055,7 @@ CREATE TABLE excludedgroups (
 	userid 		int(11) 	NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
 	UNIQUE KEY userid (userid, customergroupid)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -1068,7 +1073,7 @@ CREATE TABLE voipaccounts (
 	creatorid	int(11)		NOT NULL DEFAULT 0,
 	modid		int(11)		NOT NULL DEFAULT 0,
 	PRIMARY KEY (id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -1086,7 +1091,7 @@ CREATE TABLE messages (
         PRIMARY KEY (id),
 	INDEX cdate (cdate, type),
 	INDEX userid (userid)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -1104,7 +1109,7 @@ CREATE TABLE messageitems (
         PRIMARY KEY (id),
 	INDEX messageid (messageid),
 	INDEX customerid (customerid)
-) ENGINE=MyISAM; 
+) ENGINE=InnoDB; 
 
 # --------------------------------------------------------
 #
@@ -1116,7 +1121,7 @@ CREATE TABLE nastypes (
 	name 	varchar(255) 	NOT NULL DEFAULT '',
 	PRIMARY KEY (id),
 	UNIQUE KEY name (name)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 CREATE VIEW nas AS 
         SELECT n.id, inet_ntoa(n.ipaddr) AS nasname, d.shortname, d.nastype AS type,
@@ -1161,7 +1166,7 @@ CREATE TABLE up_rights (
 	description varchar(255) DEFAULT '',
 	setdefault tinyint(1) NOT NULL DEFAULT '0',
 	PRIMARY KEY (id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -1174,7 +1179,7 @@ CREATE TABLE up_rights_assignments (
 	rightid int(11) NOT NULL DEFAULT '0',
 	PRIMARY KEY (id),
 	UNIQUE KEY up_right_assignment (customerid, rightid)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -1190,7 +1195,7 @@ CREATE TABLE up_customers (
 	failedloginip varchar(16) NOT NULL DEFAULT '',
 	enabled int(10) NOT NULL DEFAULT '0',
 	PRIMARY KEY (id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -1203,7 +1208,7 @@ CREATE TABLE up_help (
 	title varchar(128) NOT NULL DEFAULT '',
 	body text NOT NULL DEFAULT '',
 	PRIMARY KEY id (id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -1216,7 +1221,7 @@ CREATE TABLE up_info_changes (
 	fieldname varchar(255) NOT NULL DEFAULT '',
 	fieldvalue varchar(255) NOT NULL DEFAULT '',
 	PRIMARY KEY (id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 		
 INSERT INTO uiconfig (section, var)
 	VALUES ('userpanel', 'data_consent_text');				
@@ -1274,4 +1279,41 @@ INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2009101600');
+#
+# Structure of table records
+#
+DROP TABLE IF EXISTS records;
+CREATE TABLE records (
+  id              INT(11) auto_increment,
+  domain_id       INT(11) DEFAULT NULL,
+  name            VARCHAR(255) DEFAULT NULL,
+  type            VARCHAR(6) DEFAULT NULL,
+  content         VARCHAR(255) DEFAULT NULL,
+  ttl             INT(11) DEFAULT NULL,
+  prio            INT(11) DEFAULT NULL,
+  change_date     INT(11) DEFAULT NULL,
+  CONSTRAINT `records_ibfk_1` FOREIGN KEY (`domain_id`) REFERENCES `domains` (`id`) ON DELETE CASCADE,
+  PRIMARY KEY(id),
+  INDEX domain_id (domain_id),
+  INDEX name_type (name, type, domain_id)
+) ENGINE=InnoDB;
+
+
+
+# --------------------------------------------------------
+#
+# Structure of table supermasters
+#
+
+DROP TABLE IF EXISTS supermasters;
+CREATE TABLE supermasters (
+  id            INT(11) auto_increment,
+  ip            VARCHAR(25) NOT NULL,
+  nameserver    VARCHAR(255) NOT NULL,
+  account       VARCHAR(40) DEFAULT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+
+# --------------------------------------------------------
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2009111001');
