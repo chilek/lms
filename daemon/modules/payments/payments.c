@@ -256,7 +256,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 
 	time_t t;
 	struct tm *tt;
-	char monthday[3], month[3], year[5], quarterday[4], weekday[2], yearday[4], halfday[4];  //odjac jeden?
+	char monthday[3], month[3], year[5], quarterday[4], weekday[2], yearday[4], halfday[4];
 	char monthname[20];
 
 	char *nets = strdup(" AND EXISTS (SELECT 1 FROM nodes, networks n \
@@ -865,14 +865,14 @@ void reload(GLOBAL *g, struct payments_module *p)
 		char *query = strdup(
 			"UPDATE documents SET closed = 1 "
 			"WHERE customerid IN ( "
-			"	SELECT ats.customerid "
-			"	FROM cash ats "
-			"	WHERE ats.time < %NOW% "
-			"	    %nets%enets%groups%egroups "
-			"	GROUP BY ats.customerid "
-			"	HAVING SUM(ats.value) >= 0) "
+				"SELECT ats.customerid "
+				"FROM cash ats "
+				"WHERE ats.time <= %NOW% "
+				"   %nets%enets%groups%egroups "
+				"GROUP BY ats.customerid "
+				"HAVING SUM(ats.value) >= 0) "
 			"AND type IN (1, 3, 5) "
-			"AND cdate < %NOW% "
+			"AND cdate <= %NOW% "
 			"AND closed = 0");
 
 		g->str_replace(&query, "%nets", strlen(netsql) ? nets : "");
