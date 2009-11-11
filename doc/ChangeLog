@@ -9,6 +9,7 @@ version ? (????-??-??)
   - unified pdf invoices in Userpanel and LMS-UI (alec)
   - changed MySQL tables engine to InnoDB (Dariusz Kowalczyk)
   - BTS#0000812: fixed date filter for Cash Import History (alec)
+  - lmsd/payments: fixed buffer overflow in quarterday calculations (alec)
 
 version 1.11.9 Moloc (2009-10-28):
  

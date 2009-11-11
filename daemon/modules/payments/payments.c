@@ -256,7 +256,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 
 	time_t t;
 	struct tm *tt;
-	char monthday[3], month[3], year[5], quarterday[3], weekday[2], yearday[4], halfday[4];  //odjac jeden?
+	char monthday[3], month[3], year[5], quarterday[4], weekday[2], yearday[4], halfday[4];  //odjac jeden?
 	char monthname[20];
 
 	char *nets = strdup(" AND EXISTS (SELECT 1 FROM nodes, networks n \
@@ -384,7 +384,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 
 	if(strlen(egroupsql))
 		g->str_replace(&egroups, "%egroups", egroupsql);
-	
+
 	// get current date
 	t = time(NULL);
 	tt = localtime(&t);
@@ -432,7 +432,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	h_period = get_period(tt, HALFYEARLY, p->up_payments);
 	q_period = get_period(tt, QUARTERLY, p->up_payments);
 	m_period = get_period(tt, MONTHLY, p->up_payments);
- 	w_period = get_period(tt, WEEKLY, p->up_payments);
+	w_period = get_period(tt, WEEKLY, p->up_payments);
 	d_period = get_period(tt, DAILY, p->up_payments);
 
 	// today (for disposable liabilities)
