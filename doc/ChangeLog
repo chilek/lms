@@ -10,6 +10,7 @@ version ? (????-??-??)
   - changed MySQL tables engine to InnoDB (Dariusz Kowalczyk)
   - BTS#0000812: fixed date filter for Cash Import History (alec)
   - lmsd/payments: fixed buffer overflow in quarterday calculations (alec)
+  - lmsd/payments: BTS#0000810 - fixed check_invoices option (alec)
 
 version 1.11.9 Moloc (2009-10-28):
  
