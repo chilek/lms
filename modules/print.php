@@ -324,8 +324,12 @@ switch($type)
 		$source = $_POST['source'];
 
 		// date format 'yyyy/mm/dd'
-		list($year, $month, $day) = explode('/',$from);
-		$date['from'] = mktime(0,0,0, (int)$month, (int)$day, (int)$year);
+		if ($from) {
+			list($year, $month, $day) = explode('/',$from);
+			$date['from'] = mktime(0,0,0, (int)$month, (int)$day, (int)$year);
+		} else {
+			$date['from'] = 0;
+		}
 		
 		if($to) {
 			list($year, $month, $day) = explode('/',$to);
@@ -335,17 +339,16 @@ switch($type)
 			$date['to'] = mktime(23,59,59); // end of today
 		}
 		
-		$layout['pagetitle'] = trans('Cash Import History ($0)', ($from ? $from.' - ' : '').$to);
+		$layout['pagetitle'] = trans('Cash Import History ($0 to $1)', $from, $to);
 		
-		$importlist = $DB->GetAll('SELECT time, value, customerid, '
+		$importlist = $DB->GetAll('SELECT c.time, c.value, c.customerid, '
 			.$DB->Concat('upper(v.lastname)',"' '",'v.name').' AS customername 
 			FROM cash c
 			JOIN customersview v ON (v.id = c.customerid)
-			WHERE '
-			.($source ? 'c.sourceid = '.intval($source).' AND ' : '')
-			.'c.importid IS NOT NULL
-			ORDER BY time',
-			array($date['from'], $date['to']));
+			WHERE c.time >= ? AND c.time <= ?'
+			.($source ? ' AND c.sourceid = '.intval($source).' AND ' : '')
+			.' AND c.importid IS NOT NULL
+			ORDER BY time', array($date['from'], $date['to']));
 
 		if ($source)
 			$SMARTY->assign('source', $DB->GetOne('SELECT name FROM cashsources WHERE id = ?', array($source)));
