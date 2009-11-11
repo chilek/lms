@@ -701,10 +701,51 @@ CREATE TABLE domains (
 	ownerid integer 	DEFAULT 0 NOT NULL,
 	name varchar(255) 	DEFAULT '' NOT NULL,
 	description text 	DEFAULT '' NOT NULL,
+	master varchar(128) 	DEFAULT NULL,
+	last_check integer 	DEFAULT NULL,
+	type varchar(6) 	DEFAULT '' NOT NULL,
+	notified_serial integer DEFAULT NULL,
+	account varchar(40) 	DEFAULT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (name)
 );
 CREATE INDEX domains_ownerid_idx ON domains (ownerid);
+
+/* ---------------------------------------------------
+ Structure of table "records" (DNS)
+------------------------------------------------------*/
+DROP SEQUENCE records_id_seq;
+CREATE SEQUENCE records_id_seq;
+DROP TABLE records;
+CREATE TABLE records (
+	id integer		DEFAULT nextval('records_id_seq'::text) NOT NULL,
+	domain_id integer	DEFAULT NULL
+		REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	name varchar(255)	DEFAULT NULL,
+	type varchar(6)		DEFAULT NULL,
+	content varchar(255)	DEFAULT NULL,
+	ttl integer		DEFAULT NULL,
+	prio integer		DEFAULT NULL,
+	change_date integer	DEFAULT NULL,
+	PRIMARY KEY (id)
+);
+
+CREATE INDEX records_name_type_idx ON records (name, type, domain_id);
+CREATE INDEX records_domain_id_idx ON records (domain_id);
+
+/* ---------------------------------------------------
+ Structure of table "supermasters" (DNS)
+------------------------------------------------------*/
+DROP SEQUENCE supermasters_id_seq;
+CREATE SEQUENCE supermasters_id_seq;
+DROP TABLE supermasters;
+CREATE TABLE supermasters (
+	id integer		DEFAULT nextval('supermasters_id_seq'::text) NOT NULL,
+	ip varchar(25)		NOT NULL,
+	nameserver varchar(255) NOT NULL,
+	account varchar(40)	DEFAULT NULL,
+	PRIMARY KEY (id)
+);
 
 /* ---------------------------------------------------
  Structure of table "aliases"
@@ -1359,4 +1400,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2009101600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2009111001');

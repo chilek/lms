@@ -1292,13 +1292,12 @@ CREATE TABLE records (
   ttl             INT(11) DEFAULT NULL,
   prio            INT(11) DEFAULT NULL,
   change_date     INT(11) DEFAULT NULL,
-  CONSTRAINT `records_ibfk_1` FOREIGN KEY (`domain_id`) REFERENCES `domains` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `records_ibfk_1` FOREIGN KEY (`domain_id`)
+	REFERENCES `domains` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   PRIMARY KEY(id),
   INDEX domain_id (domain_id),
   INDEX name_type (name, type, domain_id)
 ) ENGINE=InnoDB;
-
-
 
 # --------------------------------------------------------
 #
