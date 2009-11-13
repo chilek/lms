@@ -2491,7 +2491,7 @@ class LMS
 						if($row['ipaddr'])
 						{
 							$row['name'] = trim($name);
-							$row['mac'] = str_replace('-', ':', trim($mac));
+							$row['mac'] = strtoupper(str_replace('-', ':', trim($mac)));
 							if($row['mac'] != "00:00:00:00:00:00" && !$this->GetNodeIDByIP($row['ipaddr']))
 								$result[] = $row;
 						}
