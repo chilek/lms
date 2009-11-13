@@ -86,6 +86,17 @@ window.open('?m=note&id={$newnoteid}');
 			{/if}
 		</TD>
 	</TR>
+	<TR CLASS="light">
+                <TD CLASS="fleft" WIDTH="1%" NOWRAP>
+	                <B>{t}Deadline:{/t}</B>
+	        </TD>
+	        <TD CLASS="fright" WIDTH="99%" NOWRAP>
+	                <INPUT TYPE="TEXT" NAME="note[paytime]" VALUE="{$note.paytime}" SIZE="10" {tip text="Enter deadline in days (optional)"}>
+	                {if $note.cdate}
+	                ({$note.cdate+$note.paytime*86400|date_format:"%Y/%m/%d"})
+	                {/if}
+	        </TD>
+	</TR>																								
 {*
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
