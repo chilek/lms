@@ -47,6 +47,29 @@
 			{$domain.aliascnt|default:0}
 	        </TD>
 	</TR>
+       <TR class="light">
+                <TD width="1%" class="fleft">
+                        <img src="img/alias.gif" alt="">
+                </TD>
+                <TD width="1%" nowrap>
+                        <B>{t}Domain type:{/t}</B>
+                </TD>
+                <TD width="98%" class="fright">
+                        {$domain.type|default:0}
+                </TD>
+        </TR>
+        <TR class="light">
+                <TD width="1%" class="fleft">
+                        <img src="img/alias.gif" alt="">
+                </TD>
+                <TD width="1%" nowrap>
+                        <B>{t}Records number:{/t}</B>
+                </TD>
+                <TD width="98%" class="fright">
+                        {$domain.recordscnt|default:0}
+                </TD>
+        </TR>
+
 {if $domain.description}
 	<TR class="light">
 		<TD width="1%" class="fleft">

@@ -2266,5 +2266,7 @@ $_LANG['Records'] = 'Rekordy';
 $_LANG['Record Edit'] = 'Edycja Rekordu';
 $_LANG['Record Add'] = 'Dodaj Rekord';
 $_LANG['No such records in database.'] = 'Nie ma rekordów w bazie danych';
+$_LANG['Domain type:'] = 'Typ domeny:';
+$_LANG['Records number:'] = 'Liczba rekordów:';
 
 ?>
