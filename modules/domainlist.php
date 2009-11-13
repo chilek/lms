@@ -43,9 +43,13 @@ function GetDomainList($order='name,asc', $customer='')
 		case 'customer':
 			$sqlord = " ORDER BY customername $direction";
 		break;
+    		case 'type':
+    			$sqlord = " ORDER BY type $direction";
+                break;
 		default:
 			$sqlord = " ORDER BY d.name $direction";
 		break;
+                        
 	}
 
 	$list = $DB->GetAll('SELECT d.id AS id, d.name AS name, d.description, 
