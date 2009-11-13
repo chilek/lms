@@ -29,6 +29,17 @@ if (isset($_POST['record']))
 	$record = $_POST['record'];
 	$record['id'] = $id;
 	
+	$domain=$DB->GetRow('SELECT domains.name FROM domains,records WHERE records.domain_id=domains.id and records.id = ?', array($id));
+
+	if (trim($record['name'])!='' )
+	   $record['name']=trim($record['name'],'.').'.';	
+	
+	if ($record['type']=="PTR")
+	   $record['name']='';
+	
+	 $record['name'].=$domain['name'];
+        
+
 	$DB->Execute('UPDATE records SET name = ?, type = ?, content = ?,ttl = ?, prio = ?
 		WHERE id = ?',
 		array( $record['name'],
@@ -42,7 +53,8 @@ if (isset($_POST['record']))
 	$SESSION->redirect('?m=recordslist');  
 }
 
-$layout['pagetitle'] = trans('Record Edit:');
+
+$layout['pagetitle'] = trans('Record edit for zone:');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
@@ -50,7 +62,12 @@ $record=$DB->GetRow('SELECT * FROM records WHERE id = ?', array($id));
 
 $record['content'] = htmlentities($record['content']);
 
+$domain=$DB->GetRow('SELECT domains.name FROM domains,records WHERE records.domain_id=domains.id and records.id = ?', array($id));
+$record['name']=substr($record['name'],0,-(strlen($domain['name'])+1));
+
+
 $SMARTY->assign('record',$record );
+$SMARTY->assign('domain',$domain );
 
 $SMARTY->display('recordedit.html');
 

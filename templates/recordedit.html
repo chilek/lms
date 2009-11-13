@@ -1,5 +1,5 @@
 {include file="header.html"}
-<H1>{$layout.pagetitle}</H1>
+<H1>{$layout.pagetitle} {$domain.name}</H1>
 <FORM name="recordedit" method="POST" action="?m=recordedit&id={$record.id}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE cellpadding="3" WIDTH="100%">
@@ -14,7 +14,7 @@
     <TR>
     </TR>
     <TR class="light"> 
-	<TD class="fleftu"><input type="text" style="width:100%" value="{$record.name}" name="record[name]"></TD>
+	<TD class="fleftu"><input type="text" style="width:60%" value="{$record.name}" name="record[name]"> .{$domain.name}</TD>
 	<TD class="fbt"><input type="text" size="7" value="{$record.ttl}" name="record[ttl]"></TD>
 	<TD class="fbt">
 	     <SELECT SIZE="1" NAME="record[type]" >
