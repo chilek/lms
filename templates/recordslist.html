@@ -1,14 +1,6 @@
 {include file="header.html"}
 <H1>{$layout.pagetitle}</H1>
 <P><TABLE cellpadding="3" WIDTH="100%">
-	<TR class="dark"">
-		<TD width="46%" class="fleftu" NOWRAP>{t}Name{/t}</TD>
-		<TD width="2%" class="fbt" NOWRAP align="right">{t}TTL{/t}</TD>
-		<TD width="2%" class="fbt" align="right" NOWRAP>{t}Type{/t}</TD>
-		<TD width="2%" class="fbt" align="right" NOWRAP>{t}Priority:{/t}</TD>
-		<TD width="46%" class="fbt" align="left" NOWRAP>{t}Content{/t}</TD>
-		<TD width="2%" class="frightu" align="right" NOWRAP><B>{t 0=$listdata.total}Total: $0{/t}</B>&nbsp;</TD>
-	</TR>
 	<TR class="DARK">
 		<TD class="fall" colspan="6">
 			<FORM method="GET" action="?m={$layout.module}" name="filter">
@@ -22,6 +14,7 @@
 			</FORM>
 		</TD>
 	</TR>		
+
 	{if $listdata.total != 0}
 	<TR CLASS="DARK">
 		<TD COLSPAN="6" CLASS="FALL">
@@ -29,6 +22,18 @@
 		</TD>
 	</TR>
 	{/if}
+
+	<TR class="dark"">
+		<TD width="46%" class="fleftu" NOWRAP>{t}Name{/t}</TD>
+		<TD width="2%" class="fbt" NOWRAP align="right">{t}TTL{/t}</TD>
+		<TD width="2%" class="fbt" align="right" NOWRAP>{t}Type{/t}</TD>
+		<TD width="2%" class="fbt" align="right" NOWRAP>{t}Priority:{/t}</TD>
+		<TD width="46%" class="fbt" align="left" NOWRAP>{t}Content{/t}</TD>
+		<TD width="2%" class="frightu" align="right" NOWRAP><B>{t 0=$listdata.total}Total: $0{/t}</B>&nbsp;</TD>
+	</TR>
+
+
+
 	{cycle values="light,lucid" print=false}
 	{section name=recordslist loop=$recordslist start=$start max=$pagelimit}
 	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
@@ -38,13 +43,17 @@
 		<TD valign="top" NOWRAP >{$recordslist[recordslist].prio}<BR></TD>
 		<TD align="left" NOWRAP >{$recordslist[recordslist].content}<BR></TD>
 		<TD class="fright" align="right">			
+			{if $showaddedit}
 			<NOBR>
 			<A href="?m=recordedit&id={$recordslist[recordslist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A> 
 			<A href="?m=recorddel&id={$recordslist[recordslist].id}" OnClick="return confirmLink(this, '{t 0=$account}Are you sure you want to delete this record?{/t}')"><IMG src="img/delete.gif" title="[ {t}Delete{/t} ]" alt="[ {t}Delete{/t} ]"></A> 
 			</NOBR>
+			{/if}
 		</TD>
 	</TR>
 	{sectionelse}
+
+
 	<TR>
 		<TD colspan="6" align="center" class="flr">
 			<p>&nbsp;</p>
@@ -67,7 +76,9 @@
                 </TD>
                                                     
 		<TD class="frightu" colspan="3" align="right">
+		{if $showaddedit}
 			<A href="?m=recordadd&d={$listdata.domain}">{t}New record{/t} <IMG src="img/save.gif" alt=""></A>
+		{/if}
 		</TD>
 	</TR>
 </TABLE></P>
