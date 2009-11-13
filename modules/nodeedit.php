@@ -135,12 +135,12 @@ if(isset($_POST['nodeedit']))
 
 	if($nodeedit['name']=='')
 		$error['name'] = trans('Node name is required!');
-	elseif($LMS->GetNodeIDByName($nodeedit['name']) && $LMS->GetNodeIDByName($nodeedit['name']) != $nodeedit['id'])
-		$error['name'] = trans('Specified name is in use!');
 	elseif(!preg_match('/^[_a-z0-9-]+$/i', $nodeedit['name']))
 		$error['name'] = trans('Specified name contains forbidden characters!');
 	elseif(strlen($nodeedit['name'])>32)
 		$error['name'] = trans('Node name is too long (max.32 characters)!');
+	elseif(($tmp_nodeid = $LMS->GetNodeIDByName($nodeedit['name'])) && $tmp_nodeid != $nodeedit['id'])
+		$error['name'] = trans('Specified name is in use!');
 
 	if(strlen($nodeedit['passwd'])>32)
 		$error['passwd'] = trans('Password is too long (max.32 characters)!');
