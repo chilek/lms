@@ -44,10 +44,13 @@ switch($action)
 
 		// get default note's numberplanid and next number
 		$note['cdate'] = time();
+		$note['paytime'] = 14;
 		if(isset($_GET['customerid']) && $_GET['customerid'] != '' && $LMS->CustomerExists($_GET['customerid']))
 		{
 			$customer = $LMS->GetCustomer($_GET['customerid'], true);
-			
+			if($customer['paytime'] != -1)
+		                $note['paytime'] = $customer['paytime'];
+							
 			$note['numberplanid'] = $DB->GetOne('SELECT n.id FROM numberplans n
 				JOIN numberplanassignments a ON (n.id = a.planid)
 				WHERE n.doctype = ? AND n.isdefault = 1 AND a.divisionid = ?',
@@ -91,7 +94,11 @@ switch($action)
 				$note[$key] = $val;
 		
 		$note['customerid'] = $_POST['customerid'];
-		
+		$note['paytime'] = sprintf('%d', $note['paytime']);
+
+                if($note['paytime'] < 0)
+                        $note['paytime'] = 14;
+
 		if($note['cdate'])
 		{
 			list($year, $month, $day) = explode('/', $note['cdate']);
@@ -170,9 +177,9 @@ switch($action)
 			$cdate = !empty($note['cdate']) ? $note['cdate'] : time();
 			
 			$DB->Execute('INSERT INTO documents (number, numberplanid, type,
-		                        cdate, userid, customerid, name, address,
+		                        cdate, userid, customerid, name, address, paytime,
 		                        ten, ssn, zip, city, countryid, divisionid)
-		                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+		                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 		                        array($note['number'],
 		                                !empty($note['numberplanid']) ? $note['numberplanid'] : 0,
 		                                DOC_DNOTE,
@@ -181,6 +188,7 @@ switch($action)
 		                                $customer['id'],
 				                $customer['customername'],
 				                $customer['address'],
+						$note['paytime'],
 				                $customer['ten'],
 				                $customer['ssn'],
 				                $customer['zip'],

@@ -99,7 +99,11 @@ switch($action)
 				$note[$key] = $val;
 		
 		$note['oldcdate'] = $olddate;
-		
+		$note['paytime'] = sprintf('%d', $note['paytime']);
+
+                if($note['paytime'] < 0)
+                        $note['paytime'] = 14;
+
 		if($note['cdate']) // && !$note['cdatewarning'])
 		{
 			list($year, $month, $day) = explode('/',$note['cdate']);
@@ -139,7 +143,7 @@ switch($action)
 			$cdate = !empty($note['cdate']) ? $note['cdate'] : time();
 			
 			$DB->Execute('UPDATE documents SET number = ?, numberplanid = ?,
-                                cdate = ?, customerid = ?, name = ?, address = ?,
+                                cdate = ?, customerid = ?, name = ?, address = ?, paytime = ?,
 				ten = ?, ssn = ?, zip = ?, city = ?, countryid = ?, divisionid = ?
 				WHERE id = ?',
 				array($note['number'],
@@ -148,6 +152,7 @@ switch($action)
 				        $customer['id'],
 				        $customer['customername'],
 				        $customer['address'],
+					$note['paytime'],
 				        $customer['ten'],
 				        $customer['ssn'],
 				        $customer['zip'],
