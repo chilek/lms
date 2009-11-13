@@ -26,6 +26,18 @@ if (isset($_POST['record']))
 {
 	$record=$_POST['record'];
 
+
+	$domain=$DB->GetRow('SELECT name FROM domains WHERE id = ?', array($record['domain_id']));
+
+        if (trim($record['name'])!='' )
+           $record['name']=trim($record['name'],'.').'.';
+                   
+        if ($record['type']=="PTR")
+           $record['name']='';
+  
+       $record['name'].=$domain['name'];                                                                                              
+
+
 	$DB->Execute('INSERT INTO records (name, type, content, ttl, prio, domain_id)
                   VALUES (?, ?, ?, ?, ?, ?)',
                   array(  
@@ -38,16 +50,19 @@ if (isset($_POST['record']))
         ));
 
 	$SESSION->redirect('?m=recordslist');  
-}
+} 
+  else
+  $record['prio']=0;
 
 $d = $_GET['d']*1;
 
-$layout['pagetitle'] = trans('Record Add');
+$layout['pagetitle'] = trans('Record add to zone');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('domain_id', $d);
-
+$SMARTY->assign('record', $record);
+$SMARTY->assign('domain', $DB->GetRow('SELECT name FROM domains WHERE id = ?', array($d)));
 $SMARTY->display('recordadd.html');
 
 ?>
