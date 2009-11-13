@@ -153,7 +153,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 
 	time_t t;
 	struct tm *tt;
-	char monthday[3], month[3], year[5], quarterday[3], weekday[2], yearday[4];  //odjac jeden?
+	char monthday[3], month[3], year[5], quarterday[4], weekday[2], yearday[4];
 	char monthname[20];
 	char start[12], end[12];
 	
