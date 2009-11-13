@@ -107,7 +107,7 @@ function CheckAllN2()
 			    <TD WIDTH="1%" NOWRAP>
 				<A HREF="?m=nodeset&id={$customernodes[customernodes].id}"><IMG src="img/{if ! $customernodes[customernodes].access}no{/if}access.gif" alt="[ {if ! $customernodes[customernodes].access}{t}Connect{/t}{else}{t}Disconnect{/t}{/if} ]" title="[ {if ! $customernodes[customernodes].access}{t}Connect{/t}{else}{t}Disconnect{/t}{/if} ]"></A>
 				<A HREF="?m=nodewarn&id={$customernodes[customernodes].id}"><IMG src="img/warning{if ! $customernodes[customernodes].warning}off{else}on{/if}.gif" alt="[ {if ! $customernodes[customernodes].warning}{t}Enable notice{/t}{else}{t}Disable notice{/t}{/if} ]" title="[ {if ! $customernodes[customernodes].warning}{t}Enable notice{/t}{else}{t}Disable notice{/t}{/if} ]"></A>
-				<A HREF="?m=nodedel&id={$customernodes[customernodes].id}" onClick="return confirmLink(this, '{t 0=$customernodes[customernodes].name|upper}Are you sure, you want to remove node \'$0\' from database?{/t}')"><IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+				<A HREF="?m=nodedel&id={$customernodes[customernodes].id}" onClick="return confirmLink(this, '{t 0=$customernodes[customernodes].name}Are you sure, you want to remove node \'$0\' from database?{/t}')"><IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
 				<A HREF="?m=nodeedit&id={$customernodes[customernodes].id}"><IMG SRC="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 				<A HREF="?m=nodeinfo&id={$customernodes[customernodes].id}"><IMG SRC="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>&nbsp;
 				<INPUT TYPE="checkbox" NAME="marks[{$customernodes[customernodes].id}]" VALUE="{$customernodes[customernodes].id}" CHECKED>

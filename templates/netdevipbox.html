@@ -38,7 +38,7 @@
 			<A href="?m=nodeset&id={$netdevips[list].id}"><IMG src="img/{if ! $netdevips[list].access}no{/if}access.gif" ALT="" {if ! $netdevips[list].access}{tip text="Connect"}{else}{tip text="Disconnect"}{/if}></A>
 			<A HREF="?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}"><IMG SRC="img/info.gif" ALT="" {tip text="Info"}></A>
 			<A HREF="?m=netdevedit&action=editip&id={$netdevinfo.id}&ip={$netdevips[list].id}"><IMG SRC="img/edit.gif" ALT="" {tip text="Edit"}></A>
-			<A HREF="?m=nodedel&id={$netdevips[list].id}" onClick="return confirmLink(this, '{t 0=$netdevips[list].name|upper}Are you sure, you want to delete address \'$0\' from database?{/t}')"><IMG SRC="img/delete.gif" ALT="" {tip text="Delete"}></A>
+			<A HREF="?m=nodedel&id={$netdevips[list].id}" onClick="return confirmLink(this, '{t 0=$netdevips[list].name}Are you sure, you want to delete address \'$0\' from database?{/t}')"><IMG SRC="img/delete.gif" ALT="" {tip text="Delete"}></A>
 		</TD>
 	</TR>
 	{/section}
