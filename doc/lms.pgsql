@@ -76,7 +76,7 @@ CREATE TABLE cash (
 	value numeric(9,2) 	DEFAULT 0 NOT NULL,
 	taxid integer		DEFAULT 0 NOT NULL,
 	customerid integer 	DEFAULT 0 NOT NULL,
-	comment varchar(255) 	DEFAULT '' NOT NULL,
+	comment text 		DEFAULT '' NOT NULL,
 	docid integer 		DEFAULT 0 NOT NULL,
 	itemid smallint		DEFAULT 0 NOT NULL,
 	importid integer	DEFAULT NULL,
@@ -314,14 +314,14 @@ CREATE INDEX documents_closed_idx ON documents(closed);
 -------------------------------------------------------- */
 DROP TABLE documentcontents;
 CREATE TABLE documentcontents (
-	docid integer DEFAULT 0 NOT NULL,
-	title text DEFAULT '' NOT NULL,
-	fromdate integer DEFAULT 0 NOT NULL,
-	todate integer DEFAULT 0 NOT NULL,
-	filename varchar(255) DEFAULT '' NOT NULL,
+	docid integer 		DEFAULT 0 NOT NULL,
+	title text 		DEFAULT '' NOT NULL,
+	fromdate integer 	DEFAULT 0 NOT NULL,
+	todate integer 		DEFAULT 0 NOT NULL,
+	filename varchar(255) 	DEFAULT '' NOT NULL,
 	contenttype varchar(255) DEFAULT '' NOT NULL,
-	md5sum varchar(32) DEFAULT '' NOT NULL,
-	description text DEFAULT '' NOT NULL,
+	md5sum varchar(32) 	DEFAULT '' NOT NULL,
+	description text 	DEFAULT '' NOT NULL,
 	UNIQUE (docid)
 );
 CREATE INDEX documentcontents_md5sum_idx ON documentcontents (md5sum);
@@ -338,7 +338,7 @@ CREATE TABLE receiptcontents (
 	itemid smallint		DEFAULT 0 NOT NULL,
 	value numeric(9,2)	DEFAULT 0 NOT NULL,
 	regid integer		DEFAULT 0 NOT NULL,
-	description varchar(255) DEFAULT '' NOT NULL
+	description text 	DEFAULT '' NOT NULL
 );
 CREATE INDEX receiptcontents_docid_idx ON receiptcontents(docid);
 CREATE INDEX receiptcontents_regid_idx ON receiptcontents(regid);
@@ -355,7 +355,7 @@ CREATE TABLE invoicecontents (
 	prodid varchar(255) 	DEFAULT '' NOT NULL,
 	content varchar(16) 	DEFAULT '' NOT NULL,
 	count numeric(9,2) 	DEFAULT 0 NOT NULL,
-	description varchar(255) DEFAULT '' NOT NULL,
+	description text 	DEFAULT '' NOT NULL,
 	tariffid integer 	DEFAULT 0 NOT NULL,
 	discount numeric(4,2)	DEFAULT 0 NOT NULL
 );	 
@@ -1160,6 +1160,8 @@ CREATE TABLE divisions (
 	inv_footer 	text		NOT NULL DEFAULT '',
 	inv_author	text		NOT NULL DEFAULT '',
 	inv_cplace	text		NOT NULL DEFAULT '',
+	inv_paytime	smallint	DEFAULT NULL,
+	inv_paytype	varchar(255)	DEFAULT NULL, 
 	description 	text		NOT NULL DEFAULT '',
 	status 		smallint 	NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
@@ -1400,4 +1402,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2009111001');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2009111700');

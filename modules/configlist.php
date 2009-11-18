@@ -277,34 +277,6 @@ function GetConfigList($order='var,asc', $section='')
 			} //end: var
 			break;
 
-/*
-	case 'directories':
-    switch($item['var'])
-    {
-     case 'sys_dir':
-         $config[$idx]['description'] = 'Katalog systemowy. Jest to miejsce gdzie jest ca³a zawarto¶æ UI LMS\'a, czyli index.php, grafiki, templejty i reszta. Domy¶lnie index.php stara siê sam odnale¼æ w filesystemie u¿ywaj±c getcwd(), ale lepiej by by³o gdyby mu powiedzieæ gdzie jest';
-         break;
-     case 'modules_dir':
-         $config[$idx]['description'] = 'Katalog z "modu³ami" LMS\'a - kawa³kami kodu które szumnie kto¶ (czyli Baseciq) nazwa³ modu³ami. Domy¶lnie jest to podkatalog modules w sys_dir';
-         break;
-     case 'lib_dir':
-         $config[$idx]['description'] = 'Katalog z "bibliotekami" LMS\'a. Czyli zawarto¶æ katalogu lib. Domy¶lnie to podkatalog lib w sys_dir';
-         break;
-     case 'backup_dir':
-         $config[$idx]['description'] = 'Katalog z backupami SQL\'owymi - miejsce gdzie LMS zapisuje dumpy z bazy. Domy¶lnie jest to podkatalog "backups". Naprawdê dobrze by by³o go przenie¶æ poza miejsce osi±galne przez przegl±darkê';
-         break;
-     case 'smarty_compile_dir':
-         $config[$idx]['description'] = 'Katalog kompilacji Smartyego. Miejsce gdzie Smarty psuje nasze templejty. Domy¶lnie to templates_c w katalogu sysdir';
-         break;
-     case 'smarty_templates_dir':
-         $config[$idx]['description'] = 'Katalog z templejtami którymi karmimy Smartiego. Domy¶lnie to podkatalog templates z sys_dir';
-         break;
-     default:
-         $config[$idx]['description'] = 'Nieznana opcja. Brak opisu';
-         break;
-    }    
-	break;
-*/
 			case 'finances':
 				switch($item['var'])
 				{
@@ -354,7 +326,7 @@ function GetConfigList($order='var,asc', $section='')
 					break;
 						
 					case 'attachment_name':
-						$config[$idx]['description'] = trans('File name for saving document printout. WARNING: Setting attachment_name with default content_type will (in case of MSIE) print document, and prompt for save on disk + bonus browser crash (6.0SP1 on WinXP). Default: empty.');
+						$config[$idx]['description'] = trans('File name for saving document printout. WARNING: Setting attachment_name with default content_type will (in case of MSIE) print document, and prompt for save on disk. Default: empty.');
 					break;
 	
 					case 'type':
@@ -379,6 +351,43 @@ function GetConfigList($order='var,asc', $section='')
 					
 					case 'public_ip':
 						$config[$idx]['description'] = trans('Enable public IP address fields. Default: 1');
+					break;
+
+					case 'paytime':
+						$config[$idx]['description'] = trans('Default documents paytime in days. Default: 14');
+					break;
+
+					case 'paytype':
+						$config[$idx]['description'] = trans('Default invoices paytype. Default: "CASH"');
+					break;
+					
+					default:
+						$config[$idx]['description'] = trans('Unknown option. No description.');
+					break;
+				} //end: var
+			break;
+
+			case 'notes':
+				switch($item['var'])
+				{
+					case 'template_file':
+						$config[$idx]['description'] = trans('Debit note template file. Default: "note.html". Should be placed in templates directory.');
+					break;
+					
+					case 'content_type':
+						$config[$idx]['description'] = trans('Content-type for document. If you enter "application/octet-stream", browser will send file to save on disk, instead of displaying it. It\'s useful if you use your own template which generate e.g. rtf or xls file. Default: "text/html".');
+					break;
+						
+					case 'attachment_name':
+						$config[$idx]['description'] = trans('File name for saving document printout. WARNING: Setting attachment_name with default content_type will (in case of MSIE) print document, and prompt for save on disk. Default: empty.');
+					break;
+	
+					case 'type':
+						$config[$idx]['description'] = trans('Documents type. You can use "html" or "pdf". Default: html.');
+					break;
+
+					case 'paytime':
+						$config[$idx]['description'] = trans('Default documents paytime in days. Default: 14');
 					break;
 					
 					default:

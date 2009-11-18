@@ -163,6 +163,36 @@
 			<INPUT type="text" name="division[inv_cplace]" VALUE="{$division.inv_cplace}" SIZE="45" {tip text="Enter invoices creation place (optional)" trigger="inv_cplace"}>
 		</TD>
 	</TR>
+	<TR CLASS="LIGHT">
+                <TD WIDTH="1%" class="fleft">
+		        <IMG src="img/print.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+		        <B>{t}Payment type:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+		     <INPUT type="text" name="division[inv_paytype]" value="{$division.paytype}" {tip text="Enter invoices payment type (leave this field empty to use default)" trigger="inv_paytype"}>
+	        </TD>
+	</TR>
+	<TR CLASS="LIGHT">
+                <TD WIDTH="1%" class="fleft">
+		        <IMG src="img/print.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+		        <B>{t}Deadline:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<SELECT name="division[inv_paytime]" {tip text="Select default deadline in days" trigger="inv_paytime"}>
+			        <OPTION value=""{if !strlen($division.inv_paytime)} selected{/if}>- {t}default<!paytime>{/t} -</OPTION>
+			        <OPTION value="0"{if $division.inv_paytime=="0"} selected{/if}>0</OPTION>
+			        <OPTION value="7"{if $division.inv_paytime==7} selected{/if}>7</OPTION>
+			        <OPTION value="10"{if $division.inv_paytime==10} selected{/if}>10</OPTION>
+			        <OPTION value="14"{if $division.inv_paytime==14} selected{/if}>14</OPTION>
+			        <OPTION value="21"{if $division.inv_paytime==21} selected{/if}>21</OPTION>
+			        <OPTION value="30"{if $division.inv_paytime==30} selected{/if}>30</OPTION>
+			</SELECT>
+	        </TD>
+	</TR>
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
 			<A href="javascript:document.division.submit();" accesskey="s">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>

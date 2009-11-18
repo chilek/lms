@@ -44,12 +44,10 @@ switch($action)
 
 		// get default note's numberplanid and next number
 		$note['cdate'] = time();
-		$note['paytime'] = 14;
+		$note['paytime'] = $CONFIG['notes']['paytime'];
 		if(isset($_GET['customerid']) && $_GET['customerid'] != '' && $LMS->CustomerExists($_GET['customerid']))
 		{
 			$customer = $LMS->GetCustomer($_GET['customerid'], true);
-			if($customer['paytime'] != -1)
-		                $note['paytime'] = $customer['paytime'];
 							
 			$note['numberplanid'] = $DB->GetOne('SELECT n.id FROM numberplans n
 				JOIN numberplanassignments a ON (n.id = a.planid)
@@ -94,10 +92,6 @@ switch($action)
 				$note[$key] = $val;
 		
 		$note['customerid'] = $_POST['customerid'];
-		$note['paytime'] = sprintf('%d', $note['paytime']);
-
-                if($note['paytime'] < 0)
-                        $note['paytime'] = 14;
 
 		if($note['cdate'])
 		{
@@ -136,7 +130,12 @@ switch($action)
 			elseif($LMS->DocumentExists($note['number'], DOC_DNOTE, $note['numberplanid'], $note['cdate']))
 				$error['number'] = trans('Debit note number $0 already exists!', $note['number']);
 		}
-		
+
+		if(empty($note['paytime_default']) && !preg_match('/^[0-9]+$/', $note['paytime']))
+                {
+		        $error['paytime'] = trans('Integer value required!');
+		}
+
 		if(!isset($error))
 		{
 			$cid = isset($_GET['customerid']) && $_GET['customerid'] != '' ? intval($_GET['customerid']) : intval($_POST['customerid']);
@@ -159,7 +158,7 @@ switch($action)
 		if($contents && $customer)
 		{
 			$DB->BeginTrans();
-			$DB->LockTables(array('documents', 'cash', 'debitnotecontents', 'numberplans'));
+			$DB->LockTables(array('documents', 'cash', 'debitnotecontents', 'numberplans', 'divisions'));
 
 			if(!$note['number'])
 				$note['number'] = $LMS->GetNewDocumentNumber(DOC_DNOTE, $note['numberplanid'], $note['cdate']);
@@ -173,7 +172,19 @@ switch($action)
 				if($error)
 					$note['number'] = $LMS->GetNewDocumentNumber(DOC_DNOTE, $note['numberplanid'], $note['cdate']);
 			}
-				
+			
+			// set paytime
+			if(!empty($note['paytime_default']))
+			{
+			        if($customer['paytime'] != -1)
+			                $note['paytime'] = $customer['paytime'];
+			        elseif(($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions
+			                WHERE id = ?', array($customer['divisionid']))) !== NULL)
+				        $note['paytime'] = $paytime;
+				else
+				        $note['paytime'] = $CONFIG['notes']['paytime'];
+			}
+
 			$cdate = !empty($note['cdate']) ? $note['cdate'] : time();
 			
 			$DB->Execute('INSERT INTO documents (number, numberplanid, type,

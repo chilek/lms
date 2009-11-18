@@ -69,6 +69,22 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 	{
 		document.additem.elements[type].checked = !document.additem.elements[type].checked;
 	}
+
+	function setPayTime(type)
+	{
+		var list = document.setcustomer.elements['invoice[paytime_default]'];
+		list[0].checked = type ? true : false;
+		list[1].checked = type ? false : true;
+		document.setcustomer.elements['invoice[paytime]'].style.visibility = type ? 'hidden' : 'visible';
+	}
+
+	function setPayType(type)
+	{
+		var list = document.setcustomer.elements['invoice[paytype_default]'];
+		list[0].checked = type ? true : false;
+		list[1].checked = type ? false : true;
+		document.setcustomer.elements['invoice[paytype]'].style.visibility = type ? 'hidden' : 'visible';
+	}
 	
 	function printinvoice()
 	{
@@ -126,10 +142,14 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 			<B>{t}Deadline:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="invoice[paytime]" VALUE="{$invoice.paytime}" SIZE="10" {tip text="Enter deadline in days (optional)"}>
-			{if $invoice.cdate}
+			<INPUT type="radio" name="invoice[paytime_default]" value="1" onclick="javascript:setPayTime(1)"{if !isset($invoice.paytime_default) || $invoice.paytime_default} checked{/if}><a href="javascript:setPayTime(1)">{t}default{/t}</a>
+			<INPUT type="radio" name="invoice[paytime_default]" value="0" onclick="javascript:setPayTime(0)"{if isset($invoice.paytime_default) && !$invoice.paytime_default} checked{/if}><a href="javascript:setPayTime(0)">{t}other{/t}</a>
+			<INPUT TYPE="TEXT" NAME="invoice[paytime]" VALUE="{$invoice.paytime}" SIZE="5"
+			{if !isset($invoice.paytime_default) || $invoice.paytime_default} style="visibility: hidden"{/if} {tip text="Enter deadline in days (optional)" trigger="paytime"}>
+			{* if $invoice.cdate && $invoice.paytime}
 				({$invoice.cdate+$invoice.paytime*86400|date_format:"%Y/%m/%d"})
-			{/if}
+			{/if *}
+			
 		</TD>
 	</TR>
 	<TR CLASS="light">
@@ -137,7 +157,10 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 			<B>{t}Payment type (cash/transfer/etc):{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="invoice[paytype]" VALUE="{$invoice.paytype}" SIZE="10" {tip text="Enter payment type"}>
+			<INPUT type="radio" name="invoice[paytype_default]" value="1" onclick="javascript:setPayType(1)"{if !isset($invoice.paytype_default) || $invoice.paytype_default} checked{/if}><a href="javascript:setPayType(1)">{t}default{/t}</a>
+			<INPUT type="radio" name="invoice[paytype_default]" value="0" onclick="javascript:setPayType(0)"{if isset($invoice.paytype_default) && !$invoice.paytype_default} checked{/if}><a href="javascript:setPayType(0)">{t}other{/t}</a>
+			<INPUT TYPE="TEXT" NAME="invoice[paytype]" VALUE="{$invoice.paytype}" SIZE="10"
+			{if !isset($invoice.paytype_default) || $invoice.paytype_default} style="visibility: hidden"{/if}  {tip text="Enter payment type" trigger="paytype"}>
 		</TD>
 	</TR>			
 	<TR CLASS="light">

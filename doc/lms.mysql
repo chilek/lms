@@ -89,7 +89,7 @@ CREATE TABLE cash (
   value decimal(9,2) NOT NULL DEFAULT '0.00',
   taxid int(11) NOT NULL DEFAULT '0',
   customerid int(11) NOT NULL DEFAULT '0',
-  comment varchar(255) NOT NULL DEFAULT '',
+  comment text NOT NULL DEFAULT '',
   docid int(11) NOT NULL DEFAULT '0',
   itemid smallint NOT NULL DEFAULT '0',
   importid int(11) DEFAULT NULL,
@@ -155,7 +155,7 @@ CREATE TABLE invoicecontents (
   prodid varchar(255) NOT NULL DEFAULT '',
   content varchar(16) NOT NULL DEFAULT '',
   count decimal(9,2) NOT NULL DEFAULT '0.00',
-  description varchar(255) NOT NULL DEFAULT '',
+  description text NOT NULL DEFAULT '',
   tariffid int(11) NOT NULL DEFAULT '0',
   INDEX docid (docid)
 ) ENGINE=InnoDB;
@@ -238,7 +238,7 @@ CREATE TABLE receiptcontents (
 	docid int(11) 		NOT NULL DEFAULT '0',
 	itemid 			TINYINT NOT NULL DEFAULT '0',
 	value decimal(9,2) 	NOT NULL DEFAULT '0',
-	description varchar(255) NOT NULL DEFAULT '',
+	description text 	NOT NULL DEFAULT '',
 	regid int(11)		NOT NULL DEFAULT '0',
 	INDEX docid (docid),
 	INDEX regid (regid)
@@ -1038,6 +1038,8 @@ CREATE TABLE divisions (
 	inv_footer      text    	NOT NULL DEFAULT '',
 	inv_author      text    	NOT NULL DEFAULT '',
 	inv_cplace      text    	NOT NULL DEFAULT '',
+	inv_paytime 	tinyint         DEFAULT NULL,
+	inv_paytype 	varchar(255)    DEFAULT NULL,
 	description     text    	NOT NULL DEFAULT '',
 	status 		tinyint(1) 	NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
@@ -1315,4 +1317,4 @@ CREATE TABLE supermasters (
 
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2009111001');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2009111700');
