@@ -7,6 +7,9 @@ version ? (????-??-??)
   - added powerdns support (Dariusz Kowalczyk/Jan Gancarczyk)
   - Userpanel: added possibility to print many invoices with one click (alec)
   - unified pdf invoices in Userpanel and LMS-UI (alec)
+    ------------------------------------------------------
+    WARNING: MySQL database requires InnoDB engine support
+    ------------------------------------------------------
   - changed MySQL tables engine to InnoDB (Dariusz Kowalczyk)
   - BTS#0000812: fixed date filter for Cash Import History (alec)
   - lmsd/payments: fixed buffer overflow in quarterday calculations (alec)
@@ -15,7 +18,9 @@ version ? (????-??-??)
   - added invoices/paytype, invoices/paytime and notes/paytime options (alec)
   - added per-division paytime and paytype (alec)
   - allow finances operation description to be longer than 255 characters (alec)
-  - lib/pdf.php: fixed display of pdf document in IE8 (http://support.microsoft.com/kb/316431) (Grzegorz Chwesewicz)
+  - lib/pdf.php: fixed display of pdf document in IE8
+    (http://support.microsoft.com/kb/316431) (Grzegorz Chwesewicz)
+  - enabled transactions in MySQL database (alec)
 
 version 1.11.9 Moloc (2009-10-28):
  

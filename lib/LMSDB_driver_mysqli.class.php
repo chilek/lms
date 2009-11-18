@@ -155,12 +155,17 @@ class LMSDB_driver_mysqli extends LMSDB_common
 
 	function _driver_begintrans()
 	{
-		return TRUE;
+		return $this->Execute('BEGIN');
 	}
 
 	function _driver_committrans()
 	{
-		return TRUE;
+		return $this->Execute('COMMIT');
+	}
+
+	function _driver_rollbacktrans()
+        {
+	        return $this->Execute('ROLLBACK');
 	}
 
 	function _driver_locktables($table, $locktype=null)
