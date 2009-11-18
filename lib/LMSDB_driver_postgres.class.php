@@ -173,6 +173,11 @@ class LMSDB_driver_postgres extends LMSDB_common
 		return $this->Execute('COMMIT');
 	}
 
+	function _driver_rollbacktrans()
+	{
+		return $this->Execute('ROLLBACK');
+	}
+
 	// @todo: locktype
 	function _driver_locktables($table, $locktype=null)
         {

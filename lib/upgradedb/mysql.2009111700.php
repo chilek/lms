@@ -22,8 +22,6 @@
  *
  */
 
-$DB->BeginTrans();
-
 $DB->Execute("ALTER TABLE divisions ADD inv_paytime tinyint DEFAULT NULL");
 $DB->Execute("ALTER TABLE divisions ADD inv_paytype varchar(255) DEFAULT NULL");
 $DB->Execute("ALTER TABLE invoicecontents CHANGE description description text DEFAULT '' NOT NULL");
@@ -31,7 +29,5 @@ $DB->Execute("ALTER TABLE receiptcontents CHANGE description description text DE
 $DB->Execute("ALTER TABLE cash CHANGE comment comment text DEFAULT '' NOT NULL");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009111700', 'dbversion'));
-
-$DB->CommitTrans();
 
 ?>

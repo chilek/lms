@@ -279,7 +279,7 @@ switch($action)
 		
 			$DB->UnLockTables();
 			$DB->CommitTrans();
-			
+
 			$SESSION->remove('invoicecontents');
 			$SESSION->remove('invoicecustomer');
 			$SESSION->remove('invoice');

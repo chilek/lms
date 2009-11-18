@@ -209,6 +209,11 @@ Class LMSDB_common
 		return $this->_driver_committrans();
 	}
 
+	function RollbackTrans()
+	{
+		return $this->_driver_rollbacktrans();
+	}
+
 	function LockTables($table, $locktype=null)
 	{
 		return $this->_driver_locktables($table, $locktype);
