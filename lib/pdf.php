@@ -149,6 +149,8 @@ function init_pdf($pagesize, $orientation, $title)
 
 function close_pdf(&$pdf)
 {
+	header('Pragma: private');
+	header('Cache-control: private, must-revalidate');
 	$pdf->ezStream();
 }
 
