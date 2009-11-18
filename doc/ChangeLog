@@ -12,6 +12,7 @@ version ? (????-??-??)
   - lmsd/payments: fixed buffer overflow in quarterday calculations (alec)
   - lmsd/payments: BTS#0000810 - fixed check_invoices option (alec)
   - added deadline date for debit notes (alec)
+  - lib/pdf.php: fixed display of pdf document in IE8 (http://support.microsoft.com/kb/316431) (Grzegorz Chwesewicz)
 
 version 1.11.9 Moloc (2009-10-28):
  
