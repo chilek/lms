@@ -117,6 +117,8 @@ $DEFAULTS = array(
 		'default_printpage' => 'original,copy',
 		'type' => 'html',
 		'attachment_name' => '',
+		'paytime' => 14,
+		'paytype' => 'CASH',
 	),
 	'finances' => array(
 		'suspension_percentage' => 0,
@@ -132,6 +134,7 @@ $DEFAULTS = array(
 		'content_type' => 'text/html',
 		'type' => 'html',
 		'attachment_name' => '',
+		'paytime' => 14,
 	),
 	'mail' => array(
 		'debug_email' => '',

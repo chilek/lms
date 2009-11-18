@@ -74,6 +74,14 @@ foreach($CONFIG['invoices'] as $key => $val)
 			);
 }
 
+if(!empty($CONFIG['notes']) && (!$section || $section = 'notes'))
+foreach($CONFIG['notes'] as $key => $val)
+{
+	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
+			array('notes', $key, parse_cfg_val($val))
+			);
+}
+
 if(!empty($CONFIG['receipts']) && (!$section || $section = 'receipts'))
 foreach($CONFIG['receipts'] as $key => $val)
 {

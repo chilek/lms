@@ -64,12 +64,12 @@ switch($action)
 
 		// get default invoice's numberplanid and next number
 		$invoice['cdate'] = time();
-		$invoice['paytime'] = 14;
+		$invoice['paytime'] = $CONFIG['invoices']['paytime'];
+		$invoice['paytype'] = $CONFIG['invoices']['paytype'];
+
 		if(isset($_GET['customerid']) && $_GET['customerid'] != '' && $LMS->CustomerExists($_GET['customerid']))
 		{
 			$customer = $LMS->GetCustomer($_GET['customerid'], true);
-			if($customer['paytime'] != -1)
-				$invoice['paytime'] = $customer['paytime'];
 			
 			$invoice['numberplanid'] = $DB->GetOne('SELECT n.id FROM numberplans n
 				JOIN numberplanassignments a ON (n.id = a.planid)
@@ -158,11 +158,6 @@ switch($action)
 		if($invoice = $_POST['invoice'])
 			foreach($invoice as $key => $val)
 				$invoice[$key] = $val;
-		
-		$invoice['paytime'] = sprintf('%d', $invoice['paytime']);
-		
-		if($invoice['paytime'] < 0)
-			$invoice['paytime'] = 14;
 
 		$invoice['customerid'] = $_POST['customerid'];
 		
@@ -203,6 +198,15 @@ switch($action)
 			elseif($LMS->DocumentExists($invoice['number'], DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']))
 				$error['number'] = trans('Invoice number $0 already exists!', $invoice['number']);
 		}
+
+		if(empty($invoice['paytime_default']) && !preg_match('/^[0-9]+$/', $invoice['paytime']))
+		{
+			$error['paytime'] = trans('Integer value required!');
+		}
+		if(empty($invoice['paytype_default']) && empty($invoice['paytype']))
+		{
+			$error['paytype'] = trans('Invoice\'s paytype is required!');
+		}
 		
 		if(!isset($error))
 		{
@@ -226,7 +230,7 @@ switch($action)
 		if($contents && $customer)
 		{
 			$DB->BeginTrans();
-			$DB->LockTables(array('documents', 'cash', 'invoicecontents', 'numberplans'));
+			$DB->LockTables(array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions'));
 
 			if(!$invoice['number'])
 				$invoice['number'] = $LMS->GetNewDocumentNumber(DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']);
@@ -240,7 +244,30 @@ switch($action)
 				if($error)
 					$invoice['number'] = $LMS->GetNewDocumentNumber(DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']);
 			}
-				
+			
+			// set paytime
+			if(!empty($invoice['paytime_default']))
+			{
+				if($customer['paytime'] != -1)
+					$invoice['paytime'] = $customer['paytime'];
+				elseif(($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions 
+					WHERE id = ?', array($customer['divisionid']))) !== NULL)
+					$invoice['paytime'] = $paytime;
+				else
+					$invoice['paytime'] = $CONFIG['invoices']['paytime'];
+			}
+			// set paytype
+			if(!empty($invoice['paytype_default']))
+			{
+				if($customer['paytype'])
+					$invoice['paytype'] = $customer['paytype'];
+				elseif($paytype = $DB->GetOne('SELECT inv_paytype FROM divisions 
+					WHERE id = ?', array($customer['divisionid'])))
+					$invoice['paytype'] = $paytype;
+				else
+					$invoice['paytype'] = $CONFIG['invoices']['paytype'];
+			}
+
 			$invoice['type'] = DOC_INVOICE;
 			$iid = $LMS->AddInvoice(array('customer' => $customer, 'contents' => $contents, 'invoice' => $invoice));
 
@@ -267,9 +294,6 @@ switch($action)
 		}
 	break;
 }
-
-if(!isset($invoice['paytype']) || $invoice['paytype'] == '')
-	$invoice['paytype'] = trans('CASH');
 
 $SESSION->save('invoice', $invoice);
 $SESSION->save('invoicecontents', isset($contents) ? $contents : NULL);

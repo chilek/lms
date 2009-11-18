@@ -67,11 +67,15 @@ if(!empty($_POST['division']))
 	if($division['account'] != '' && (strlen($division['account'])>48 || !preg_match('/^[0-9]+$/', $division['account'])))
 		$error['account'] = trans('Wrong account number!');
 
+	if($division['inv_paytime'] == '')
+		$division['inv_paytime'] = NULL;
+
 	if(!$error)
 	{
-		$DB->Execute('INSERT INTO divisions (name, shortname, address, city, zip, countryid, ten, regon, 
-			account, inv_header, inv_footer, inv_author, inv_cplace, description) 
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+		$DB->Execute('INSERT INTO divisions (name, shortname, address, city, zip,
+			countryid, ten, regon, account, inv_header, inv_footer, inv_author,
+			inv_cplace, inv_paytime, inv_paytype, description) 
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			array(
 				    $division['name'],
 				    $division['shortname'],
@@ -86,6 +90,8 @@ if(!empty($_POST['division']))
 				    $division['inv_footer'],
 				    $division['inv_author'],
 				    $division['inv_cplace'],
+				    $division['inv_paytime'],
+				    $division['inv_paytype'],
 				    $division['description'],
 			));
 
