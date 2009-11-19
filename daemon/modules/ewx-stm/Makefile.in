@@ -1,7 +1,7 @@
 
 CFLAGS += `net-snmp-config --cflags`
 LDFLAGS += `net-snmp-config --ldflags`
-LIBS += `net-snmp-config --libs`
+LIBS += `net-snmp-config --libs` -lm
 
 SOURCES = ewx-stm.c
 OBJECTS = ${SOURCES:.c=.o}
