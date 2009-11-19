@@ -116,9 +116,9 @@ static QueryHandle * get_query_result(ResultHandle *res)
 /* Parse special sequences query in statement */
 static void parse_query_stmt(char **stmt)
 {
-    str_replace(stmt,"%NOW%","EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))");
-    str_replace(stmt,"LIKE","ILIKE");
-    str_replace(stmt,"like","ILIKE");
+    str_replace(stmt, "%NOW%", "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))");
+    str_replace(stmt, "LIKE", "ILIKE");
+    str_replace(stmt, "like", "ILIKE");
 }
 
 /************************* CONNECTION FUNCTIONS *************************/
@@ -131,7 +131,8 @@ ConnHandle * db_connect(const char *db, const char *user, const char *password,
     
     if( !port ) 
 	port = 5432;
-    snprintf(connect_string,sizeof(connect_string)-1,"host='%s' dbname='%s' user='%s' port='%d' password='%s'",host,db,user,port,password);
+    snprintf(connect_string, sizeof(connect_string)-1, "host='%s' dbname='%s' user='%s' port='%d' password='%s'",
+	host, db, user, port, password);
 
     if(ssl)
 	strcat(connect_string, " sslmode='require'");
@@ -141,12 +142,13 @@ ConnHandle * db_connect(const char *db, const char *user, const char *password,
     conn = PQconnectdb(connect_string);
     
     if( PQstatus(conn) == CONNECTION_BAD ) {
-	syslog(LOG_CRIT,"ERROR: [db_connect] Unable to connect to database. %s",PQerrorMessage(conn));
+	syslog(LOG_CRIT, "ERROR: [db_connect] Unable to connect to database. %s", PQerrorMessage(conn));
 	PQfinish(conn);
         return NULL;
     }
 #ifdef DEBUG0
-	syslog(LOG_INFO, "DEBUG: [lmsd] Connected with params: db='%s' host='%s' user='%s' port='%d' passwd='*'.",db, host, user, port);
+	syslog(LOG_INFO, "DEBUG: [lmsd] Connected with params: db='%s' host='%s' user='%s' port='%d' passwd='*'.",
+	    db, host, user, port);
 #endif
     return conn;
 }
@@ -185,11 +187,11 @@ QueryHandle * db_query(ConnHandle *conn, char *q)
     stmt = strdup(q);
     parse_query_stmt(&stmt);
 #ifdef DEBUG0
-    syslog(LOG_INFO,"DEBUG: [SQL] %s.", stmt);
+    syslog(LOG_INFO, "DEBUG: [SQL] %s", stmt);
 #endif
     res = PQexec(conn,stmt);
     if( res==NULL || PQresultStatus(res)!=PGRES_TUPLES_OK ) {
-	syslog(LOG_ERR,"ERROR: [db_query] Query failed. %s",PQerrorMessage(conn));
+	syslog(LOG_ERR, "ERROR: [db_query] Query failed. %s", PQerrorMessage(conn));
 	PQclear(res);
         free(stmt);
 	return NULL;
@@ -254,12 +256,12 @@ int db_exec(ConnHandle *conn, char *q)
     stmt = strdup(q);
     parse_query_stmt(&stmt);
 #ifdef DEBUG0
-    syslog(LOG_INFO,"DEBUG: [SQL] %s.", stmt);
+    syslog(LOG_INFO, "DEBUG: [SQL] %s", stmt);
 #endif
     res = PQexec(conn,stmt);
     if( res==NULL || (PQresultStatus(res)!=PGRES_COMMAND_OK && PQresultStatus(res)!=PGRES_TUPLES_OK) )
     {
-	syslog(LOG_ERR,"ERROR: [db_exec] Query failed. %s",PQerrorMessage(conn));
+	syslog(LOG_ERR, "ERROR: [db_exec] Query failed. %s", PQerrorMessage(conn));
 	PQclear(res);
 	free(stmt);
         return ERROR;
@@ -340,12 +342,12 @@ int db_begin(ConnHandle *conn)
 	    return ERROR;
     }
     
-    res = PQexec(conn,"BEGIN WORK");
+    res = PQexec(conn, "BEGIN WORK");
 #ifdef DEBUG0
-    syslog(LOG_INFO,"DEBUG: [SQL] BEGIN WORK.");
+    syslog(LOG_INFO, "DEBUG: [SQL] BEGIN WORK");
 #endif
     if( res==NULL || PQresultStatus(res)!=PGRES_COMMAND_OK ) {
-	syslog(LOG_ERR,"ERROR: [db_begin] Query failed. %s",PQerrorMessage(conn));
+	syslog(LOG_ERR, "ERROR: [db_begin] Query failed. %s", PQerrorMessage(conn));
 	PQclear(res);
         return ERROR;
     }
@@ -364,12 +366,12 @@ int db_commit(ConnHandle *conn)
 	    return ERROR;
     }
     
-    res = PQexec(conn,"COMMIT WORK");
+    res = PQexec(conn, "COMMIT WORK");
 #ifdef DEBUG0
-    syslog(LOG_INFO,"DEBUG: [SQL] COMMIT WORK.");
+    syslog(LOG_INFO, "DEBUG: [SQL] COMMIT WORK");
 #endif
     if( res==NULL || PQresultStatus(res)!=PGRES_COMMAND_OK ) {
-	syslog(LOG_ERR,"ERROR: [db_commit] Query failed. %s",PQerrorMessage(conn));
+	syslog(LOG_ERR, "ERROR: [db_commit] Query failed. %s", PQerrorMessage(conn));
 	PQclear(res);
         return ERROR;
     }
@@ -388,12 +390,12 @@ int db_abort(ConnHandle *conn)
 	    return ERROR;
     }
     
-    res = PQexec(conn,"ROLLBACK WORK");
+    res = PQexec(conn, "ROLLBACK WORK");
 #ifdef DEBUG0
-    syslog(LOG_INFO,"DEBUG: [SQL] ROLLBACK WORK.");
+    syslog(LOG_INFO, "DEBUG: [SQL] ROLLBACK WORK");
 #endif    
     if( res==NULL || PQresultStatus(res)!=PGRES_COMMAND_OK ) {
-	syslog(LOG_ERR,"ERROR: [db_abort] Query failed. %s",PQerrorMessage(conn));
+	syslog(LOG_ERR, "ERROR: [db_abort] Query failed. %s", PQerrorMessage(conn));
 	PQclear(res);
         return ERROR;
     }
@@ -440,13 +442,13 @@ char * db_get_data(QueryHandle *query, int row, const char *colname)
 
 	if( i >= db_ncols(query) ) 
 	{
-	    syslog(LOG_ERR,"ERROR: [db_get_data] Column '%s' not found", colname);
+	    syslog(LOG_ERR, "ERROR: [db_get_data] Column '%s' not found", colname);
 	    return "";
 	}
 
 	if( row > db_nrows(query) || !db_nrows(query) ) 
 	{
-	    syslog(LOG_ERR,"ERROR: [db_get_data] Row '%d' not found", row);
+	    syslog(LOG_ERR, "ERROR: [db_get_data] Row '%d' not found", row);
 	    return "";
 	}
     
@@ -482,7 +484,7 @@ char * db_colname(QueryHandle *query, int column)
 
     if( column > db_ncols(query) || !db_ncols(query) ) 
     {
-	    syslog(LOG_CRIT,"ERROR: [db_colname] Column '%d' not found.", column);
+	    syslog(LOG_CRIT, "ERROR: [db_colname] Column '%d' not found.", column);
 	    return "";
     }
     

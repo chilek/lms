@@ -107,7 +107,7 @@ static QueryHandle * get_query_result(ResultHandle *res)
 /* Parse special sequences in query statement */
 static void parse_query_stmt(char **stmt)
 {
-    str_replace(stmt,"%NOW%","UNIX_TIMESTAMP()");
+    str_replace(stmt, "%NOW%", "UNIX_TIMESTAMP()");
 }
 
 /************************* CONNECTION FUNCTIONS *************************/
@@ -117,7 +117,7 @@ ConnHandle * db_connect(const char *db, const char *user, const char *password,
 {
     ConnHandle *c = (ConnHandle *) malloc (sizeof(ConnHandle));
     if( mysql_init(&c->conn)==NULL ) {
-	syslog(LOG_CRIT,"ERROR: [db_connect] Unable to initialize database.");
+	syslog(LOG_CRIT, "ERROR: [db_connect] Unable to initialize database.");
 	free(c);
 	return NULL;
     }
@@ -136,7 +136,8 @@ ConnHandle * db_connect(const char *db, const char *user, const char *password,
     mysql_set_character_set(&c->conn, "utf8");
     
 #ifdef DEBUG0
-	syslog(LOG_INFO, "DEBUG: [lmsd] Connected with params: db='%s' host='%s' user='%s' port='%d' passwd='*'.", db, host, user, port);
+	syslog(LOG_INFO, "DEBUG: [lmsd] Connected with params: db='%s' host='%s' user='%s' port='%d' passwd='*'.",
+	    db, host, user, port);
 #endif
     return c;
 }
@@ -175,16 +176,16 @@ QueryHandle * db_query(ConnHandle *c, char *q)
     stmt = strdup(q);
     parse_query_stmt(&stmt);
 #ifdef DEBUG0
-    syslog(LOG_INFO,"DEBUG: [SQL] %s.", stmt);
+    syslog(LOG_INFO, "DEBUG: [SQL] %s", stmt);
 #endif
     if( mysql_query(&c->conn,stmt) != 0 ) {
-	syslog(LOG_CRIT,"ERROR: [db_query] Query failed. %s",mysql_error(&c->conn));
+	syslog(LOG_CRIT, "ERROR: [db_query] Query failed. %s", mysql_error(&c->conn));
 	free(stmt);
 	return NULL;
     }
 
     if( (res = mysql_store_result(&c->conn)) == NULL ) {
-	syslog(LOG_CRIT,"ERROR: [db_query] Unable to get query result. %s",mysql_error(&c->conn));
+	syslog(LOG_CRIT, "ERROR: [db_query] Unable to get query result. %s", mysql_error(&c->conn));
 	free(stmt);
 	return NULL;
     }
@@ -248,10 +249,10 @@ int db_exec(ConnHandle *c, char *q)
     stmt = strdup(q);
     parse_query_stmt(&stmt);
 #ifdef DEBUG0
-    syslog(LOG_INFO,"DEBUG: [SQL] %s.", stmt);
+    syslog(LOG_INFO, "DEBUG: [SQL] %s", stmt);
 #endif
     if( mysql_query(&c->conn,stmt) != 0 ) {
-	syslog(LOG_CRIT,"ERROR: [db_exec] Query failed. %s", mysql_error(&c->conn));
+	syslog(LOG_CRIT, "ERROR: [db_exec] Query failed. %s", mysql_error(&c->conn));
 	free(stmt);
 	return ERROR;
     }
@@ -326,6 +327,15 @@ int db_begin(ConnHandle *c)
 	syslog(LOG_ERR, "ERROR: [db_begin] Lost connection handle.");
 	return ERROR;
     }
+#ifdef DEBUG0
+    syslog(LOG_INFO, "DEBUG: [SQL] BEGIN");
+#endif
+    if (mysql_autocommit(&c->conn, 0))
+    {
+	syslog(LOG_CRIT, "ERROR: [db_begin] Error. %s", mysql_error(&c->conn));
+	return ERROR;
+    }
+    
     return OK;
 }
 
@@ -337,6 +347,15 @@ int db_commit(ConnHandle *c)
 	syslog(LOG_ERR, "ERROR: [db_commit] Lost connection handle.");
 	return ERROR;
     }
+#ifdef DEBUG0
+    syslog(LOG_INFO, "DEBUG: [SQL] COMMIT");
+#endif
+    if (mysql_commit(&c->conn))
+    {
+	syslog(LOG_CRIT, "ERROR: [db_commit] Error. %s", mysql_error(&c->conn));
+	return ERROR;
+    }
+
     return OK;
 }
 
@@ -348,6 +367,15 @@ int db_abort(ConnHandle *c)
 	syslog(LOG_ERR, "ERROR: [db_abort] Lost connection handle.");
 	return ERROR;
     }
+#ifdef DEBUG0
+    syslog(LOG_INFO, "DEBUG: [SQL] ROLLBACK");
+#endif
+    if (mysql_rollback(&c->conn))
+    {
+	syslog(LOG_CRIT, "ERROR: [db_abort] Error. %s", mysql_error(&c->conn));
+	return ERROR;
+    }
+    
     return OK;
 }
 
@@ -390,13 +418,13 @@ char * db_get_data(QueryHandle *query, int row, const char *colname)
 		
 	if( i>=db_ncols(query) ) 
 	{
-	    syslog(LOG_CRIT,"ERROR: [db_get_data] Column '%s' not found.",colname);
+	    syslog(LOG_CRIT, "ERROR: [db_get_data] Column '%s' not found.",colname);
 	    return "";
 	}
     
 	if( row > db_nrows(query) || !db_nrows(query) ) 
 	{
-	    syslog(LOG_CRIT,"ERROR: [db_get_data] Row '%d' not found.", row);
+	    syslog(LOG_CRIT, "ERROR: [db_get_data] Row '%d' not found.", row);
 	    return "";
 	}
     
@@ -413,7 +441,7 @@ char * db_colname(QueryHandle *query, int column)
     
     if( column > db_ncols(query) || !db_ncols(query) ) 
     {
-	    syslog(LOG_CRIT,"ERROR: [db_colname] Column '%d' not found.", column);
+	    syslog(LOG_CRIT, "ERROR: [db_colname] Column '%d' not found.", column);
 	    return "";
     }
     
