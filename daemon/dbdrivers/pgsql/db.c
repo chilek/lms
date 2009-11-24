@@ -150,6 +150,8 @@ ConnHandle * db_connect(const char *db, const char *user, const char *password,
 	syslog(LOG_INFO, "DEBUG: [lmsd] Connected with params: db='%s' host='%s' user='%s' port='%d' passwd='*'.",
 	    db, host, user, port);
 #endif
+    db_exec(conn, "SET CLIENT_ENCODING TO 'UNICODE'");
+
     return conn;
 }
 

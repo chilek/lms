@@ -21,6 +21,7 @@ version ? (????-??-??)
   - lib/pdf.php: fixed display of pdf document in IE8
     (http://support.microsoft.com/kb/316431) (Grzegorz Chwesewicz)
   - enabled transactions in MySQL database (alec)
+  - lmsd: added client character set setting command after connection (alec)
 
 version 1.11.9 Moloc (2009-10-28):
  
