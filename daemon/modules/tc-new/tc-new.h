@@ -55,6 +55,9 @@ struct tc_module
 
 	char *plimit;
 	char *climit;
+	
+	int night_no_debtors;
+	int night_deadline;
 };
 
 #define XVALUE	100

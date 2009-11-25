@@ -4488,8 +4488,11 @@ Rozdział 6. LMS Daemon
        Włącza ostrzeżenie dla odłączanego klienta i przypisuje mu
        określoną w tej opcji treść. Jeżeli pusta, ostrzeżenie nie będzie
        włączane. Data w ostrzeżeniu ukryta jest pod zmienną '%time'.
-       Domyślnie: 'Blocked automatically due to payment deadline override
-       at %time".
+       Możesz także użyć zmiennych: %B dla rzeczywistego salda klienta
+       oraz %b dla salda bez znaku. Saldo liczone jest w chwili wykonania
+       modułu cutoff, a nie wyświetlenia komunikatu w przeglądarce
+       klienta. Domyślnie: 'Blocked automatically due to payment deadline
+       override at %time".
        Przykład: warning = ""
      * expired_warning
        Włącza ostrzeżenie dla odłączanego klienta i przypisuje mu
@@ -5115,6 +5118,16 @@ $IPT -t filter -I FORWARD -s %i -m limit --limit %plimit/s -j ACCEPT
        ograniczenia dla formatu zakresu: nie może zawierać spacji, okres
        nie może zaczynać się przed godziną 18. Domyślnie: pusta.
        Przykład: night_hours = "24-6"
+     * night_no_debtors
+       Włączenie tej opcji spowoduje sprawdzenie czy klient posiada
+       nierozliczone faktury przeterminowane. Jeśli tak, taryfa nocna nie
+       zostanie zastosowana. Domyślnie: false.
+       Przykład: night_no_debtors = tak
+     * night_deadline
+       Dodatkowy czas (ilość dni) po terminie płatności, zanim faktura
+       zostanie potraktowana jako przeterminowana. Opcja działa w
+       połączeniu z 'night_no_debtors'. Domyślnie: 0.
+       Przykład: night_deadline = 7
      __________________________________________________________________
 
 6.2.12. Dns

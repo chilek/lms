@@ -4048,8 +4048,9 @@ Chapter 6. LMS Daemon
        Enable warning for disconnected customer and write him WWW browser
        message specified in this option. If empty, warning will be not
        enabled. Date in message is substituted providing '%time' variable.
-       Default: 'Blocked automatically due to payment deadline override at
-       %time".
+       You can also use %B for real customer balance and %b for unsigned
+       balance value. Default: 'Blocked automatically due to payment
+       deadline override at %time".
        Example: warning = ""
      * expired_warning
        Sets the message to customer when disabling his computers access

@@ -1303,6 +1303,20 @@ $IPT -t filter -I FORWARD -s %i -m limit --limit %plimit/s -j ACCEPT										</
 					Domy¶lnie: pusta.</para>
 					<para>Przyk³ad: <prompt>night_hours = "24-6"</prompt></para>
 				</listitem>
+				<listitem>
+					<para>night_no_debtors</para>
+					<para>W³±czenie tej opcji spowoduje sprawdzenie czy klient posiada
+					nierozliczone faktury przeterminowane. Je¶li tak, taryfa nocna nie
+					zostanie zastosowana. Domy¶lnie: false.</para>
+					<para>Przyk³ad: <prompt>night_no_debtors = tak</prompt></para>
+				</listitem>
+				<listitem>
+					<para>night_deadline</para>
+					<para>Dodatkowy czas (ilo¶æ dni) po terminie p³atno¶ci,
+					zanim faktura zostanie potraktowana jako przeterminowana. Opcja
+					dzia³a w po³±czeniu z 'night_no_debtors'. Domy¶lnie: 0.</para>
+					<para>Przyk³ad: <prompt>night_deadline = 7</prompt></para>
+				</listitem>
 		    </itemizedlist>
 			</sect3>
 		</sect2>
