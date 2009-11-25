@@ -522,7 +522,10 @@
 			    <para>warning</para>
 			    <para>W³±cza ostrze¿enie dla od³±czanego klienta i przypisuje mu 
 			    okre¶lon± w tej opcji tre¶æ. Je¿eli pusta, ostrze¿enie nie bêdzie w³±czane.
-			    Data w ostrze¿eniu ukryta jest pod zmienn± '%time'.
+			    Data w ostrze¿eniu ukryta jest pod zmienn± '%time'. Mo¿esz tak¿e u¿yæ
+			    zmiennych: %B dla rzeczywistego salda klienta oraz %b dla salda bez znaku.
+			    Saldo liczone jest w chwili wykonania modu³u cutoff, a nie wy¶wietlenia
+			    komunikatu w przegl±darce klienta.
 			    Domy¶lnie: 'Blocked automatically due to payment deadline override at %time".</para>
 			    <para>Przyk³ad: <prompt>warning = ""</prompt></para>
 			</listitem>
