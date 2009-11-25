@@ -491,7 +491,8 @@
                    <para>warning</para>
                    <para>Enable warning for disconnected customer and write him WWW browser message
                    specified in this option. If empty, warning will be not enabled. Date in
-                   message is substituted providing '%time' variable. Default: 'Blocked
+                   message is substituted providing '%time' variable. You can also use %B for real customer
+		   balance and %b for unsigned balance value. Default: 'Blocked
                    automatically due to payment deadline override at %time".</para>
                    <para>Example: <prompt>warning = ""</prompt></para>
                </listitem>

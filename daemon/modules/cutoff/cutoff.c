@@ -379,7 +379,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	// debtors
 	if(plimit)
 		query = strdup(
-			"SELECT c.id "
+			"SELECT c.id, ca.balance "
 			"FROM customers c "
 			// balance
 			"JOIN (SELECT SUM(value) AS balance, customerid "
@@ -408,7 +408,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 		);
 	else
 		query = strdup(
-			"SELECT c.id "
+			"SELECT c.id, SUM(cash.value) AS balance "
 			"FROM customers c "
 			"JOIN cash ON (c.id = cash.customerid) "
 			"WHERE c.deleted = 0 "
@@ -452,8 +452,16 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 			
 		if(*c->warning && !c->nodegroup_only && n)
 		{
-			u = g->db_pexec(g->conn, "UPDATE customers SET message = '?' WHERE id = ?", c->warning, customerid);
+			char *warning = strdup(c->warning);
+			char *balance = g->db_get_data(res,i,"balance");
+
+			g->str_replace(&warning, "%B", balance);
+			g->str_replace(&warning, "%b", balance[0] == '-' ? balance+1 : balance);
+
+			u = g->db_pexec(g->conn, "UPDATE customers SET message = '?' WHERE id = ?", warning, customerid);
 			execu = u ? 1 : execu;
+
+			free(warning);
 		}
 	}	
 	g->db_free(&res);

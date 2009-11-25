@@ -22,6 +22,7 @@ version ? (????-??-??)
     (http://support.microsoft.com/kb/316431) (Grzegorz Chwesewicz)
   - enabled transactions in MySQL database (alec)
   - lmsd: added client character set setting command after connection (alec)
+  - lmsd/cutoff: support %B and %b variables in warning message (alec)
 
 version 1.11.9 Moloc (2009-10-28):
  
