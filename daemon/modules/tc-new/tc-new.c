@@ -170,6 +170,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 		"JOIN tariffs t ON (a.tariffid = t.id) "
 		"JOIN nodes n ON (na.nodeid = n.id) "
 		"JOIN customers c ON (a.customerid = c.id) "
+		"%night_debtors"
 		"WHERE "
 			"(a.datefrom <= %NOW% OR a.datefrom = 0) "
 			"AND (a.dateto >= %NOW% OR a.dateto = 0) "
@@ -177,16 +178,36 @@ void reload(GLOBAL *g, struct tc_module *tc)
 			"AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0) "
 			"%groups"
 		"ORDER BY a.customerid, a.id");
-	
+
 	if (night)
 	{
-		g->str_replace(&query, "t.downrate", "(CASE WHEN t.downrate_n > 0 THEN t.downrate_n ELSE t.downrate END)");
-		g->str_replace(&query, "t.downceil", "(CASE WHEN t.downceil_n > 0 THEN t.downceil_n ELSE t.downceil END)");
-		g->str_replace(&query, "t.uprate", "(CASE WHEN t.uprate_n > 0 THEN t.uprate_n ELSE t.uprate END)");
-		g->str_replace(&query, "t.upceil", "(CASE WHEN t.upceil_n > 0 THEN t.upceil_n ELSE t.upceil END)");
-		g->str_replace(&query, "t.climit", "(CASE WHEN t.climit_n IS NOT NULL THEN t.climit_n ELSE t.climit END)");
-		g->str_replace(&query, "t.plimit", "(CASE WHEN t.plimit_n IS NOT NULL THEN t.plimit_n ELSE t.plimit END)");
+		g->str_replace(&query, "t.downrate", "(CASE WHEN %debtor t.downrate_n > 0 THEN t.downrate_n ELSE t.downrate END)");
+		g->str_replace(&query, "t.downceil", "(CASE WHEN %debtor t.downceil_n > 0 THEN t.downceil_n ELSE t.downceil END)");
+		g->str_replace(&query, "t.uprate", "(CASE WHEN %debtor t.uprate_n > 0 THEN t.uprate_n ELSE t.uprate END)");
+		g->str_replace(&query, "t.upceil", "(CASE WHEN %debtor t.upceil_n > 0 THEN t.upceil_n ELSE t.upceil END)");
+		g->str_replace(&query, "t.climit", "(CASE WHEN %debtor t.climit_n IS NOT NULL THEN t.climit_n ELSE t.climit END)");
+		g->str_replace(&query, "t.plimit", "(CASE WHEN %debtor t.plimit_n IS NOT NULL THEN t.plimit_n ELSE t.plimit END)");
+		g->str_replace(&query, "%debtor", tc->night_no_debtors ? "d.id IS NULL AND" : "");
 	}
+
+	if (night && tc->night_no_debtors)
+	{
+		g->str_replace(&query, "%night_debtors",
+			"LEFT JOIN ("
+				"SELECT DISTINCT d.customerid AS id "
+				"FROM documents d "
+//				"JOIN customers c ON (d.customerid = c.id) "
+				"WHERE d.type = 1 "
+					"AND d.closed = 0 "
+					"AND d.cdate + d.paytime * 86400 < %NOW% - 86400 * %deadline"
+//					" AND c.deleted = 0"
+//					" AND c.cutoffstop < %NOW%"
+			") d ON (n.ownerid = d.id) "
+		);
+		g->str_replace(&query, "%deadline", itoa(tc->night_deadline));
+	}
+	else
+		g->str_replace(&query, "%night_debtors", "");
 	g->str_replace(&query, "%groups", strlen(groupsql) ? groups : "");
 
 	res = g->db_query(g->conn, query);
@@ -627,6 +648,8 @@ esac\n\
 	tc->networks = strdup(g->config_getstring(tc->base.ini, tc->base.instance, "networks", ""));
 	tc->customergroups = strdup(g->config_getstring(tc->base.ini, tc->base.instance, "customergroups", ""));
 	tc->night_hours = strdup(g->config_getstring(tc->base.ini, tc->base.instance, "night_hours", ""));
+	tc->night_no_debtors = g->config_getbool(tc->base.ini, tc->base.instance, "night_no_debtors", 0);
+	tc->night_deadline = g->config_getint(tc->base.ini, tc->base.instance, "night_deadline", 0);
 #ifdef DEBUG1
 	syslog(LOG_INFO, "DEBUG: [%s/tc-new] initialized", tc->base.instance);
 #endif
