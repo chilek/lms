@@ -2037,7 +2037,7 @@ class LMS
 				ds.name AS division_name, ds.shortname AS division_shortname,
 				ds.address AS division_address, ds.zip AS division_zip,
 				ds.city AS division_city, ds.countryid AS division_countryid, 
-				ds.ten AS division_ten, ds.regon AS division_regon, ds.account,
+				ds.ten AS division_ten, ds.regon AS division_regon, ds.account AS account,
 				ds.inv_header AS division_header, ds.inv_footer AS division_footer,
 				ds.inv_author AS division_author, ds.inv_cplace AS division_cplace,
 				c.pin AS customerpin, c.divisionid AS current_divisionid
