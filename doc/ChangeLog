@@ -26,6 +26,7 @@ version ? (????-??-??)
   - lmsd/tc-new: add optional condition to use nightly tariff values only for
     customers without stale invoices - added options 'night_no_debtors' and
     'night_deadline' (alec)
+  - support for 14-characters long REGON identifiers (alec)
 
 version 1.11.9 Moloc (2009-10-28):
  
