@@ -328,25 +328,43 @@
      <para>%PASSWD - has³o komputera</para>
     </listitem>
     <listitem>
-	<para>%PORT - port urz±dzenia, do którego pod³±czony jest komputer</para>
+     <para>%PORT - port urz±dzenia, do którego pod³±czony jest komputer</para>
     </listitem>
     <listitem>
      <para>%UPRATE - gwarantowany transfer dla danych wychodz±cych</para>
     </listitem>
     <listitem>
+     <para>%NUPRATE - gwarantowany transfer dla danych wychodz±cych (dla godzin nocnych)</para>
+    </listitem>
+    <listitem>
      <para>%DOWNRATE - gwarantowany transfer dla danych przychodz±cych</para>
+    </listitem>
+    <listitem>
+     <para>%NDOWNRATE - gwarantowany transfer dla danych przychodz±cych (dla godzin nocnych)</para>
     </listitem>
     <listitem>
      <para>%UPCEIL - maksymalny transfer dla danych wychodz±cych</para>
     </listitem>
     <listitem>
+     <para>%NUPCEIL - maksymalny transfer dla danych wychodz±cych (dla godzin nocnych)</para>
+    </listitem>
+    <listitem>
      <para>%DOWNCEIL - maksymalny transfer dla danych przychodz±cych</para>
+    </listitem>
+    <listitem>
+     <para>%NDOWNCEIL - maksymalny transfer dla danych przychodz±cych (dla godzin nocnych)</para>
     </listitem>
     <listitem>
      <para>%CLIMIT - limit równoczesnych po³±czeñ</para>
     </listitem>
     <listitem>
+     <para>%NCLIMIT - limit równoczesnych po³±czeñ (dla godzin nocnych)</para>
+    </listitem>
+    <listitem>
      <para>%PLIMIT - limit pakietów</para>
+    </listitem>
+    <listitem>
+     <para>%PLIMIT - limit pakietów (dla godzin nocnych)</para>
     </listitem>
     <listitem>
      <para>%1 %2 %3 %4 - kolejne oktety (od lewej) adresu IP</para>

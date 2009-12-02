@@ -468,15 +468,22 @@ sub instance($)
 		}
 		
 		my %uprates;
+		my %uprates_n;
 		my %downrates;
+		my %downrates_n;
 		my %upceils;
+		my %upceils_n;
 		my %downceils;
+		my %downceils_n;
 		my %climits;
+		my %climits_n;
 		my %plimits;
+		my %plimits_n;
 		
-		$dbq = $dbase->prepare("SELECT customerid, SUM(uprate) AS uprate, SUM(downrate) AS downrate, 
-				SUM(upceil) AS upceil, SUM(downceil) AS downceil, SUM(climit) AS climit, 
-				SUM(plimit) AS plimit 
+		$dbq = $dbase->prepare("SELECT customerid, SUM(uprate) AS uprate, SUM(uprate_n) AS uprate_n, 
+				SUM(downrate) AS downrate, SUM(downrate_n) AS downrate_n, SUM(upceil) AS upceil, 
+				SUM(upceil_n) AS upceil_n, SUM(downceil) AS downceil, SUM(downceil_n) AS downceil_n, 
+				SUM(climit) AS climit, SUM(climit_n) AS climit_n, SUM(plimit) AS plimit, SUM(plimit_n) AS plimit_n
 				FROM assignments, customers, tariffs 
 				WHERE customers.id = customerid AND deleted = 0 AND tariffid = tariffs.id 
 					AND (datefrom <= $utsfmt OR datefrom = 0) 
@@ -486,11 +493,17 @@ sub instance($)
 		while(my $row = $dbq->fetchrow_hashref())
 		{
 			$uprates{$row->{'customerid'}} = $row->{'uprate'};
+			$uprates_n{$row->{'customerid'}} = $row->{'uprate_n'};
 			$downrates{$row->{'customerid'}} = $row->{'downrate'};
+			$downrates_n{$row->{'customerid'}} = $row->{'downrate_n'};
 			$upceils{$row->{'customerid'}} = $row->{'upceil'};
+			$upceils_n{$row->{'customerid'}} = $row->{'upceil_n'};
 			$downceils{$row->{'customerid'}} = $row->{'downceil'};
+			$downceils_n{$row->{'customerid'}} = $row->{'downceil_n'};
 			$climits{$row->{'customerid'}} = $row->{'climit'};
+			$climits_n{$row->{'customerid'}} = $row->{'climit_n'};
 			$plimits{$row->{'customerid'}} = $row->{'plimit'};
+			$plimits_n{$row->{'customerid'}} = $row->{'plimit_n'};
 		}
 		$dbq->finish();
 		
@@ -672,11 +685,17 @@ sub instance($)
 			my $pubip = $pubiplist{$ipaddr} || '';
 			my $owner = $ownerlist{$ipaddr} || '';
 			my $uprate = $uprates{$owner} || '';
+			my $uprate_n = $uprates_n{$owner} || '';
 			my $downrate = $downrates{$owner} || '';
+			my $downrate_n = $downrates_n{$owner} || '';
 			my $upceil = $upceils{$owner} || '';
+			my $upceil_n = $upceils_n{$owner} || '';
 			my $downceil = $downceils{$owner} || '';
+			my $downceil_n = $downceils_n{$owner} || '';
 			my $climit = $climits{$owner} || '';
+			my $climit_n = $climits_n{$owner} || '';
 			my $plimit = $plimits{$owner} || '';
+			my $plimit_n = $plimits_n{$owner} || '';
 			my $info = $infolist{$ipaddr} || '';
 			my $pin = $pinlist{$ipaddr} || '';
 			my $port = $portlist{$ipaddr} || '';
@@ -705,11 +724,17 @@ sub instance($)
 			$rule =~ s/\%NDHCPS/$row->{'dhcpstart'}/g;
 			$rule =~ s/\%NDHCPE/$row->{'dhcpend'}/g;
 			$rule =~ s/\%UPRATE/$uprate/g;
+			$rule =~ s/\%NUPRATE/$uprate_n/g;
 			$rule =~ s/\%DOWNRATE/$downrate/g;
+			$rule =~ s/\%NDOWNRATE/$downrate_n/g;
 			$rule =~ s/\%UPCEIL/$upceil/g;
+			$rule =~ s/\%NUPCEIL/$upceil_n/g;
 			$rule =~ s/\%DOWNCEIL/$downceil/g;
+			$rule =~ s/\%NDOWNCEIL/$downceil_n/g;
 			$rule =~ s/\%CLIMIT/$climit/g;
+			$rule =~ s/\%NCLIMIT/$climit_n/g;
 			$rule =~ s/\%PLIMIT/$plimit/g;
+			$rule =~ s/\%NPLIMIT/$plimit_n/g;
 			$rule =~ s/\%ID/$id/g;
 			$rule =~ s/\%PUBIP/$pubip/g;
 			$rule =~ s/\%IP/$ipaddr/g;
