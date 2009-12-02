@@ -321,19 +321,37 @@ include all networks.</para>
      <para>%UPRATE - guaranteed upload rate</para>
     </listitem>
     <listitem>
+     <para>%NUPRATE - guaranteed upload rate (for night hours)</para>
+    </listitem>
+    <listitem>
      <para>%DOWNRATE - guaranteed download rate</para>
+    </listitem>
+    <listitem>
+     <para>%NDOWNRATE - guaranteed download rate (for night hours)</para>
     </listitem>
     <listitem>
      <para>%UPCEIL - maximum upload rate</para>
     </listitem>
     <listitem>
+     <para>%NUPCEIL - maximum upload rate (for night hours)</para>
+    </listitem>
+    <listitem>
      <para>%DOWNCEIL - maximum download rate</para>
+    </listitem>
+    <listitem>
+     <para>%NDOWNCEIL - maximum download rate (for night hours)</para>
     </listitem>
     <listitem>
      <para>%CLIMIT - limit of concurrent connections</para>
     </listitem>
     <listitem>
+     <para>%NCLIMIT - limit of concurrent connections (for night hours)</para>
+    </listitem>
+    <listitem>
      <para>%PLIMIT - maximum number of packets per second</para>
+    </listitem>
+    <listitem>
+     <para>%NPLIMIT - maximum number of packets per second (for night hours)</para>
     </listitem>
     <listitem>
      <para>%1 %2 %3 %4 - consecutive (left to right) decimal octets of IP address</para>
