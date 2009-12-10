@@ -29,6 +29,7 @@ version ? (????-??-??)
   - support for 14-characters long REGON identifiers (alec)
   - lms-mgc: support nightly tariffs (Michał Białozór/alec)
   - lmsd/cutoff: don't disable device IPs when use_nodeassignments is on (alec)
+  - fixed deleting/disabling device IPs (alec)
 
 version 1.11.9 Moloc (2009-10-28):
  

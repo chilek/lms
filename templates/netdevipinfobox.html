@@ -106,7 +106,7 @@ function setCheckbox(id)
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<A HREF="?m=nodeset&id={$nodeipdata.id}"><IMG SRC="img/{if ! $nodeipdata.access}no{/if}access.gif" ALT=""></A>
+			<A HREF="?m=netdevedit&id={$netdevinfo.id}&action=ipset&ip={$nodeipdata.id}"><IMG SRC="img/{if ! $nodeipdata.access}no{/if}access.gif" ALT=""></A>
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			<B>{if $nodeipdata.access}{t}connected<!singular>{/t}{else}{t}disconnected<!singular>{/t}{/if}</B>
@@ -162,7 +162,7 @@ function setCheckbox(id)
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
 			<A HREF="?m=netdevedit&id={$netdevinfo.id}&action=editip&ip={$nodeipdata.id}" ACCESSKEY="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT=""></A>
-			<A HREF="?m=nodedel&id={$nodeipdata.id}" onClick="return confirmLink(this, '{t 0=$nodeipdata.name}Are you sure, you want to delete address \'$0\' from database?{/t}')">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT=""></A>
+			<A HREF="?m=netdevedit&id={$netdevinfo.id}&action=ipdel&ip={$nodeipdata.id}" onClick="return confirmLink(this, '{t 0=$nodeipdata.name}Are you sure, you want to delete address \'$0\' from database?{/t}')">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT=""></A>
 		</TD>
 	</TR>	
 </TABLE>
