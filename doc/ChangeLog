@@ -28,6 +28,7 @@ version ? (????-??-??)
     'night_deadline' (alec)
   - support for 14-characters long REGON identifiers (alec)
   - lms-mgc: support nightly tariffs (Michał Białozór/alec)
+  - lmsd/cutoff: don't disable device IPs when use_nodeassignments is on (alec)
 
 version 1.11.9 Moloc (2009-10-28):
  
