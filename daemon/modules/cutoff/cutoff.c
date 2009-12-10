@@ -54,7 +54,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	if(c->nodeassignments)
 	{
 		res = g->db_pquery(g->conn, "SELECT nodes.id, ownerid FROM nodes "
-        			    "WHERE access = 1 "
+        			    "WHERE ownerid > 0 AND access = 1 "
 	                             "AND NOT EXISTS "
 				            "(SELECT 1 FROM nodeassignments, assignments "
 						    "WHERE nodeid = nodes.id AND assignmentid = assignments.id "
