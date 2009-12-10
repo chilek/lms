@@ -290,6 +290,26 @@ case 'switchnodelinktype':
 	$LMS->SetNodeLinkType($_GET['nodeid'], $_GET['linktype']);
 	$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
 
+case 'ipdel':
+
+	if($_GET['is_sure']=='1' && !empty($_GET['ip']))
+	{
+		$DB->Execute('DELETE FROM nodes WHERE id = ? AND ownerid = 0', array($_GET['ip']));
+	}
+	
+	$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
+
+case 'ipset':
+
+	if (!empty($_GET['ip']))
+		$DB->Execute('UPDATE nodes SET access = (CASE access WHEN 1 THEN 0 ELSE 1 END)
+			WHERE id = ? AND ownerid = 0', array($_GET['ip']));
+	else
+    		$LMS->IPSetU($_GET['id'], $_GET['access']);
+
+	header('Location: ?'.$SESSION->get('backto'));
+	break;							
+
 case 'formaddip':
 
 	$subtitle = trans('New IP address');

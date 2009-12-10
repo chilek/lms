@@ -45,13 +45,6 @@ if($id && $LMS->NodeExists($id))
 	$backid = $id;
 }
 
-if(!empty($_GET['netdev']))
-	if($LMS->NetDevExists($_GET['netdev']))
-	{
-		$LMS->IPSetU($_GET['netdev'], $_GET['access']);
-		$backid = $_GET['netdev'];
-	}
-
 if(!empty($_POST['marks']))
 	foreach($_POST['marks'] as $id)
 		$LMS->NodeSet($id, isset($_GET['access']) ? 1 : 0);
@@ -61,6 +54,6 @@ if(!empty($_GET['shortlist']))
 	header('Location: ?m=nodelistshort&id='.$LMS->GetNodeOwner($id));
 }
 else
-	header('Location: ?'.$SESSION->get('backto').'#'.(isset($backid) ? $backid : ''));
+	header('Location: ?'.$SESSION->get('backto').(isset($backid) ? '#'.$backid : ''));
 
 ?>
