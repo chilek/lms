@@ -235,7 +235,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	{
 		query = strdup(
 			"SELECT n.id, n.ownerid FROM nodes n "
-        		"WHERE n.access = 1 "
+        		"WHERE n.ownerid > 0 AND n.access = 1 "
 	                    	"AND NOT EXISTS "
 				"(SELECT 1 FROM nodeassignments, assignments a "
 					"WHERE nodeid = n.id AND assignmentid = a.id "
