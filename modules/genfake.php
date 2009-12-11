@@ -1839,6 +1839,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	$DB->Execute('DELETE FROM nodes');
 	$DB->Execute('DELETE FROM divisions');
 	$DB->Execute('DELETE FROM customers');
+	$DB->Execute('DELETE FROM customercontacts');
 	$DB->Execute('DELETE FROM cash');
 	$DB->Execute('DELETE FROM assignments');
 	$DB->Execute('DELETE FROM networks');
@@ -1856,6 +1857,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$DB->Execute('DROP SEQUENCE "nodes_id_seq"; CREATE SEQUENCE "nodes_id_seq"');
 		$DB->Execute('DROP SEQUENCE "divisions_id_seq"; CREATE SEQUENCE "divisions_id_seq"');
 		$DB->Execute('DROP SEQUENCE "customers_id_seq"; CREATE SEQUENCE "customers_id_seq"');
+		$DB->Execute('DROP SEQUENCE "customercontacts_id_seq"; CREATE SEQUENCE "customercontacts_id_seq"');
 		$DB->Execute('DROP SEQUENCE "cash_id_seq";  CREATE SEQUENCE "cash_id_seq"');
 		$DB->Execute('DROP SEQUENCE "assignments_id_seq";CREATE SEQUENCE "assignments_id_seq"');
 		$DB->Execute('DROP SEQUENCE "networks_id_seq";   CREATE SEQUENCE "networks_id_seq"');
@@ -1868,6 +1870,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	elseif($CONFIG['database']['type'] == 'mysql' || $CONFIG['database']['type'] == 'mysqli')
 	{
 		$DB->Execute('ALTER TABLE customers auto_increment=0');
+		$DB->Execute('ALTER TABLE customercontacts auto_increment=0');
 		$DB->Execute('ALTER TABLE divisions auto_increment=0');
 		$DB->Execute('ALTER TABLE nodes auto_increment=0');
 		$DB->Execute('ALTER TABLE netdevices auto_increment=0');
