@@ -55,10 +55,6 @@ void reload(GLOBAL *g, struct tc_module *tc)
 	int i, j, k=2, n=2, cc=0, nc=0, night=0;
 	char *query;
 	
-	// get current date
-	time_t t = time(NULL);
-	struct tm *tt = localtime(&t);
-		
 	struct channel *channels = (struct channel *) malloc(sizeof(struct channel));
 
 	struct net *nets = (struct net *) malloc(sizeof(struct net));
@@ -140,6 +136,9 @@ void reload(GLOBAL *g, struct tc_module *tc)
 		
 		if (sscanf(tc->night_hours, "%d-%d", &start_h, &end_h) == 2)
 		{
+			// get current date
+			time_t t = time(NULL);
+			struct tm *tt = localtime(&t);
 			int hour = tt->tm_hour;
 
 			if (end_h < 18) end_h += 24; 
