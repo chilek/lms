@@ -10,6 +10,7 @@ version ? (????-??-??):
   - lmsd/payments: fixed buffer overflow in quarterday calculations (alec)
   - support for 14-characters long REGON identifiers (alec)
   - lmsd/cutoff: don't disable device IPs when use_nodeassignments is on (alec)
+  - #0000815: updated link to Gadu-Gadu status service (alec)
 
 version 1.10.6 Hank (2009-03-27):
 
