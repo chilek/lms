@@ -30,6 +30,9 @@ version ? (????-??-??)
   - lms-mgc: support nightly tariffs (Michał Białozór/alec)
   - lmsd/cutoff: don't disable device IPs when use_nodeassignments is on (alec)
   - fixed deleting/disabling device IPs (alec)
+  - lmsd/ewx-stm: fixed path limits checking (alec)
+  - lmsd/ewx-stm: minimized numer of write operations (alec)
+  - lmsd/ewx-stm: nightly tariffs support (alec)
 
 version 1.11.9 Moloc (2009-10-28):
  

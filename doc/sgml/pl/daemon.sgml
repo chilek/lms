@@ -1761,6 +1761,16 @@ $IPT -t filter -I FORWARD -s %i -m limit --limit %plimit/s -j ACCEPT										</
 						'od³±czony' nie s± brane pod uwagê. Domy¶lnie: w³±czona.</para>
 						<para>Przyk³ad: <prompt>skip_disabled = false</prompt></para>
 					</listitem>
+					<listitem>
+						<para>night_hours</para>
+						<para>Zakres godzin nocnych w formacie 24-godzinnym. Np. "22-5" 
+						oznacza, ¿e podczas uruchomienia modu³u w godzinach od 22:00 do 4:59
+						brane bêd± warto¶ci taryf dla godzin nocnych. Obowi±zuj±
+						nastêpuj±ce ograniczenia dla formatu zakresu: nie mo¿e zawieraæ spacji,
+						okres nie mo¿e zaczynaæ siê przed godzin± 18.
+						Domy¶lnie: pusta.</para>
+						<para>Przyk³ad: <prompt>night_hours = "24-6"</prompt></para>
+					</listitem>
 				</itemizedlist>
 			</sect3>
 		</sect2>
