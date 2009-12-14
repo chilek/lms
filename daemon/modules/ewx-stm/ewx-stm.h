@@ -14,10 +14,13 @@ struct ewx_module
 	char *customergroups;
 	char *community;
 	char *host;
+	char *night_hours;
+
 	u_short port;
 	int path;
 	int offset;
 	int skip_disabled;
+
 };
 
 struct net

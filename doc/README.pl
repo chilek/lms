@@ -5488,6 +5488,13 @@ $IPT -t filter -I FORWARD -s %i -m limit --limit %plimit/s -j ACCEPT
        Przy domyślnym ustawieniu tej opcji (true) komputery o statusie
        'odłączony' nie są brane pod uwagę. Domyślnie: włączona.
        Przykład: skip_disabled = false
+     * night_hours
+       Zakres godzin nocnych w formacie 24-godzinnym. Np. "22-5" oznacza,
+       że podczas uruchomienia modułu w godzinach od 22:00 do 4:59 brane
+       będą wartości taryf dla godzin nocnych. Obowiązują następujące
+       ograniczenia dla formatu zakresu: nie może zawierać spacji, okres
+       nie może zaczynać się przed godziną 18. Domyślnie: pusta.
+       Przykład: night_hours = "24-6"
      __________________________________________________________________
 
 6.3. T-Script
