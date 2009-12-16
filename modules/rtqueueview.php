@@ -46,6 +46,13 @@ if($queuedata['id'] != 0)
 else
 {
 	$queues = $DB->GetCol('SELECT queueid FROM rtrights WHERE userid=?', array($AUTH->id));
+
+	if (!$queues) {
+		$SMARTY->display('noaccess.html');
+		$SESSION->close();
+		die;
+	}
+
 	if(sizeof($queues) != $DB->GetOne('SELECT COUNT(*) FROM rtqueues'))
 		$queuedata['id'] = $queues;
 }
