@@ -33,6 +33,8 @@ version ? (????-??-??)
   - lmsd/ewx-stm: fixed path limits checking (alec)
   - lmsd/ewx-stm: minimized numer of write operations (alec)
   - lmsd/ewx-stm: nightly tariffs support (alec)
+  - rtqueueview: access denied when user doesn't have rights to any
+    queues (alec/chilan)
 
 version 1.11.9 Moloc (2009-10-28):
  
