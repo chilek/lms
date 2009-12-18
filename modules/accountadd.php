@@ -65,7 +65,11 @@ if(isset($_POST['account']))
 	{
 		$error['login'] = trans('Account with that login name exists!');
 	}
-	
+	// if account is of type mail, check if we've got an alias with the same login@domain
+	elseif ($account['domainid'] && ($account['type'] & 2))
+		if ($DB->GetOne('SELECT 1 FROM aliases WHERE login=? AND domainid=?', array($account['login'], $account['domainid'])))
+			$error['login'] = trans('Alias with that login name already exists in that domain!');
+
 	if($account['mail_forward'] != '' && !check_email($account['mail_forward']))
 	        $error['mail_forward'] = trans('Incorrect email!');
 
@@ -96,6 +100,7 @@ if(isset($_POST['account']))
 	foreach($types as $idx => $name)
 		if(!preg_match('/^[0-9]+$/', $quota[$name]))
 	                $error['quota_'.$name] = trans('Integer value expected!');
+
 
 	// finally lets check limits
 	if($account['ownerid'])
