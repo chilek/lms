@@ -35,6 +35,8 @@ version ? (????-??-??)
   - lmsd/ewx-stm: nightly tariffs support (alec)
   - rtqueueview: access denied when user doesn't have rights to any
     queues (alec/chilan)
+  - don't allow to create an account of type mail if alias with specified
+    login@domain already exists (alec)
 
 version 1.11.9 Moloc (2009-10-28):
  

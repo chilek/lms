@@ -65,11 +65,17 @@ if(isset($_POST['account']))
 	elseif(!$account['domainid'])
     		$error['domainid'] = trans('You have to select domain for account!');
 	elseif($account['login'] != $oldlogin)
-		if($DB->GetOne('SELECT id FROM passwd WHERE login = ? AND domainid = ?',
+	{
+		if ($DB->GetOne('SELECT id FROM passwd WHERE login = ? AND domainid = ?',
 			array($account['login'], $account['domainid'])))
 		{
 			$error['login'] = trans('Account with that login name exists!'); 
 		}
+		// if account is of type mail, check if we've got an alias with the same login@domain
+		elseif ($account['domainid'] && ($account['type'] & 2))
+			if ($DB->GetOne('SELECT 1 FROM aliases WHERE login=? AND domainid=?', array($account['login'], $account['domainid'])))
+		    		$error['login'] = trans('Alias with that login name already exists in that domain!');
+	}
 	
 	if($account['mail_forward'] != '' && !check_email($account['mail_forward']))
 	        $error['mail_forward'] = trans('Incorrect email!');
