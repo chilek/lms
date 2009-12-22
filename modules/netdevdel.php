@@ -39,7 +39,7 @@ if($LMS->CountNetDevLinks($_GET['id'])>0)
     if($_GET['is_sure']!=1)
     {
 	    $body = '<P>'.trans('Are you sure, you want to delete that device?').'</P>'; 
-	    $body .= '<P><A HREF="?m=customerdel&id='.$_GET['id'].'&is_sure=1">'.trans('Yes, I am sure.').'</A></P>';
+	    $body .= '<P><A HREF="?m=netdevdel&id='.$_GET['id'].'&is_sure=1">'.trans('Yes, I am sure.').'</A></P>';
     }else{
 	    header('Location: ?m=netdevlist');
 	    $body = '<P>'.trans('Device has been deleted.').'</P>';
