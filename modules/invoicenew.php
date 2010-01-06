@@ -246,7 +246,7 @@ switch($action)
 			}
 			
 			// set paytime
-			if(empty($invoice['paytime_default']) || $invoice['paytime_default'] == 1)
+			if(!empty($invoice['paytime_default']))
 			{
 				if($customer['paytime'] != -1)
 					$invoice['paytime'] = $customer['paytime'];
@@ -257,7 +257,7 @@ switch($action)
 					$invoice['paytime'] = $CONFIG['invoices']['paytime'];
 			}
 			// set paytype
-			if(empty($invoice['paytype_default']) || $invoice['paytype_default'] == 1)
+			if(!empty($invoice['paytype_default']))
 			{
 				if($customer['paytype'])
 					$invoice['paytype'] = $customer['paytype'];
