@@ -29,8 +29,9 @@ function bankaccount($id, $account=NULL)
 	global $DB;
 
 	if($account === NULL)
-		$account = $DB->GetOne('SELECT account FROM divisions WHERE id IN (SELECT divisionid
-                        FROM customers WHERE id = ?)', array($id));	
+		$account = $DB->GetOne('SELECT account FROM divisions
+			WHERE id IN (SELECT divisionid
+                    		FROM customers WHERE id = ?)', array($id));	
 
 	$acclen = strlen($account);
 	
@@ -38,7 +39,8 @@ function bankaccount($id, $account=NULL)
 	{
 		$cc = '2521';	// Kod kraju - Polska
 		$format = '%0'.(24 - $acclen) .'d';
-		return sprintf('%02d',98-bcmod($account.sprintf($format,$id).$cc.'00',97)).$account.sprintf($format,$id);
+		$account .= sprintf($format, $id);
+		return sprintf('%02d', 98-bcmod($account.$cc.'00', 97)).$account;
 	} 
 
 	return $account;
