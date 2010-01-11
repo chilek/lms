@@ -121,7 +121,21 @@ function init_pdf($pagesize, $orientation, $title)
 		188=>'zacute',
 	        172=>'Zacute',
 		191=>'zdot',
-		175=>'Zdot'
+		175=>'Zdot',
+		185=>'Scaron',
+		169=>'Scaron',
+		232=>'ccaron',
+		200=>'Ccaron',
+		236=>'edot',
+		204=>'Edot',
+		231=>'iogonek',
+		199=>'Iogonek',
+		249=>'uogonek',
+		217=>'Uogonek',
+		254=>'umacron',
+		222=>'Umacron',
+		190=>'zcaron',
+		174=>'Zcaron'
 	);
 
 	$tmp = array(
