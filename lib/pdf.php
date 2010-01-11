@@ -122,7 +122,7 @@ function init_pdf($pagesize, $orientation, $title)
 	        172=>'Zacute',
 		191=>'zdot',
 		175=>'Zdot',
-		185=>'Scaron',
+		185=>'scaron',
 		169=>'Scaron',
 		232=>'ccaron',
 		200=>'Ccaron',
