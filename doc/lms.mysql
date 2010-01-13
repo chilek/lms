@@ -50,19 +50,6 @@ CREATE TABLE assignments (
 
 # --------------------------------------------------------
 #
-# Structure of table nodeassignments
-#
-DROP TABLE IF EXISTS nodeassignments;
-CREATE TABLE nodeassignments (
-    id int(11) NOT NULL auto_increment,
-    nodeid int(11) NOT NULL DEFAULT '0',
-    assignmentid int(11) NOT NULL DEFAULT '0',
-    PRIMARY KEY (id),
-    UNIQUE KEY nodeid (nodeid, assignmentid)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
 # Structure of table taxes
 #
 DROP TABLE IF EXISTS taxes;
@@ -371,6 +358,23 @@ CREATE TABLE nodegroupassignments (
 	PRIMARY KEY (id),
 	UNIQUE KEY nodeid (nodeid, nodegroupid)
 ) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table nodeassignments
+#
+DROP TABLE IF EXISTS nodeassignments;
+CREATE TABLE nodeassignments (
+    id int(11) NOT NULL auto_increment,
+    nodeid int(11) NOT NULL
+	REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    assignmentid int(11) NOT NULL
+	REFERENCES assignments (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (id),
+    UNIQUE KEY nodeid (nodeid, assignmentid),
+    INDEX assignmentid (assignmentid)
+) ENGINE=InnoDB;
+
 
 # --------------------------------------------------------
 #
@@ -1317,4 +1321,4 @@ CREATE TABLE supermasters (
 
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2009111700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010011300');

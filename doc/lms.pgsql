@@ -49,20 +49,6 @@ CREATE INDEX assignments_tariffid_idx ON assignments (tariffid);
 CREATE INDEX assignments_customerid_idx ON assignments (customerid);
 
 /* -------------------------------------------------------- 
-  Structure of table "nodeassignments" 
--------------------------------------------------------- */
-DROP SEQUENCE nodeassignments_id_seq;
-CREATE SEQUENCE nodeassignments_id_seq;
-DROP TABLE nodeassignments;
-CREATE TABLE nodeassignments (
-        id integer              DEFAULT nextval('nodeassignments_id_seq'::text) NOT NULL,
-	nodeid integer          DEFAULT 0 NOT NULL,
-	assignmentid integer    DEFAULT 0 NOT NULL,
-	PRIMARY KEY (id),
-	UNIQUE (nodeid, assignmentid)
-);
-
-/* -------------------------------------------------------- 
   Structure of table "cash" 
 -------------------------------------------------------- */
 DROP SEQUENCE cash_id_seq;
@@ -181,6 +167,24 @@ CREATE TABLE nodegroupassignments (
 	PRIMARY KEY (id),
 	UNIQUE (nodeid, nodegroupid)
 );
+
+/* -------------------------------------------------------- 
+  Structure of table "nodeassignments" 
+-------------------------------------------------------- */
+DROP SEQUENCE nodeassignments_id_seq;
+CREATE SEQUENCE nodeassignments_id_seq;
+DROP TABLE nodeassignments;
+CREATE TABLE nodeassignments (
+        id integer              DEFAULT nextval('nodeassignments_id_seq'::text) NOT NULL,
+	nodeid integer          NOT NULL
+		REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	assignmentid integer    NOT NULL
+		REFERENCES assignments (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id),
+	UNIQUE (nodeid, assignmentid)
+);
+
+CREATE INDEX nodeassignments_assignmentid_idx ON nodeassignments (assignmentid);
 
 /* -------------------------------------------------------- 
   Structure of table "tariffs" 
@@ -1402,4 +1406,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2009111700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2010011300');
