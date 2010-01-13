@@ -1142,7 +1142,6 @@ class LMS
 	{
 		$this->DB->BeginTrans();
 		$this->DB->Execute('DELETE FROM nodes WHERE id = ?', array($id));
-		$this->DB->Execute('DELETE FROM nodeassignments WHERE nodeid = ?', array($id));
 		$this->DB->Execute('DELETE FROM nodegroupassignments WHERE nodeid = ?', array($id));
 		$this->DB->CommitTrans();
 	}
@@ -1699,7 +1698,6 @@ class LMS
 		{
 			$this->DB->Execute('DELETE FROM liabilities WHERE id=?', array($lid));
 		}
-		$this->DB->Execute('DELETE FROM nodeassignments WHERE assignmentid=?', array($id));
 		$this->DB->Execute('DELETE FROM assignments WHERE id=?', array($id));
 		
 		$this->DB->CommitTrans();
