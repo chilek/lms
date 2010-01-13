@@ -418,8 +418,6 @@ class LMS
 		$this->DB->Execute('DELETE FROM customerassignments WHERE customerid=?', array($id));
 		$this->DB->Execute('DELETE FROM assignments WHERE customerid=?', array($id));
 		// nodes
-		$this->DB->Execute('DELETE FROM nodeassignments WHERE nodeid IN (
-				SELECT id FROM nodes WHERE ownerid=?)', array($id));
 		$this->DB->Execute('DELETE FROM nodegroupassignments WHERE nodeid IN (
 				SELECT id FROM nodes WHERE ownerid=?)', array($id));
 		$this->DB->Execute('DELETE FROM nodes WHERE ownerid=?', array($id));
