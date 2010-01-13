@@ -30,6 +30,7 @@ if($layout['module'] != 'customeredit')
 	$SMARTY->assign_by_ref('customerinfo', $customerinfo);
 }
 
+$expired = !empty($_GET['expired']) ? true : false;
 $assignments = $LMS->GetCustomerAssignments($customerid, !empty($expired) ? $expired : NULL);
 $customergroups = $LMS->CustomergroupGetForCustomer($customerid);
 $othercustomergroups = $LMS->GetGroupNamesWithoutCustomer($customerid);
@@ -58,7 +59,7 @@ if(isset($CONFIG['phpui']['ewx_support']) && chkconfig($CONFIG['phpui']['ewx_sup
 }
 
 $SMARTY->assign(array(
-	'expired' => isset($_GET['expired']) ? $_GET['expired'] : false,
+	'expired' => $expired, 
 	'time' => $SESSION->get('addbt'),
 	'value' => $SESSION->get('addbv'),
 	'taxid' => $SESSION->get('addbtax'),
