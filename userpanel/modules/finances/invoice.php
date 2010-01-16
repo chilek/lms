@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-global $LMS,$SESSION,$CONFIG,$_CONFIG,$SMARTY,$invoice, $layout;
+global $LMS,$SESSION,$CONFIG,$_CONFIG,$SMARTY,$invoice, $layout, $type;
 
 $type = chkconfig($CONFIG['userpanel']['invoice_duplicate']) ? trans('DUPLICATE') : trans('ORIGINAL');
 $service_addr = $LMS->GetCustomerServiceAddress($SESSION->id);
