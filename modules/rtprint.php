@@ -81,7 +81,8 @@ switch($type)
 		$queue = intval($_POST['queue']);
 		$status = $_POST['status'];
 		$subject = $_POST['subject'];
-		
+		$extended = !empty($_POST['extended']) ? true : false;
+
 		if($queue)
 			$where[] = 'queueid = '.$queue;
 		if($customer)
@@ -99,20 +100,44 @@ switch($type)
     				$where[] = 'rttickets.state = '.intval($status);
 		}
 
+    		$list = $DB->GetAllByKey('SELECT rttickets.id, createtime, customerid, subject, requestor, '
+			.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername '
+			.(isset($_POST['contacts']) ? ', address, (SELECT phone
+				FROM customercontacts
+				WHERE customerid = customers.id LIMIT 1) AS phone ' : '')
+		        .'FROM rttickets
+			LEFT JOIN customers ON (customerid = customers.id)
+			WHERE state != '.RT_RESOLVED
+			.(isset($where) ? ' AND '.implode(' AND ', $where) : '')
+			.' ORDER BY createtime', 'id');
 
-    		$list = $DB->GetAll('SELECT rttickets.id, createtime, customerid, subject, requestor, '
-				    .$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername '
-				    .(isset($_POST['extended']) ? ', address, (SELECT phone FROM customercontacts WHERE customerid = customers.id LIMIT 1) AS phone ' : '')
-		               	    .'FROM rttickets
-				    LEFT JOIN customers ON (customerid = customers.id)
-				    WHERE state != '.RT_RESOLVED
-				    .(isset($where) ? ' AND '.implode(' AND ', $where) : '')
-				    .' ORDER BY createtime');
+		if ($list && $extended)
+		{
+			$tickets = implode(',', array_keys($list));
+			if ($content = $DB->GetAll('(SELECT body, ticketid, createtime, 0 AS note
+				FROM rtmessages
+				WHERE ticketid in ('.$tickets.'))
+				UNION
+				(SELECT body, ticketid, createtime, 1 AS note
+				FROM rtnotes
+				WHERE ticketid in ('.$tickets.'))
+			        ORDER BY createtime'))
+			{
+				foreach ($content as $idx => $row)
+				{
+					$list[$row['ticketid']]['content'][] = array(
+						'body' => trim($row['body']),
+						'note' => $row['note'],
+					);
+					unset($content[$idx]);
+				}
+			}
+		}
 
 		$layout['pagetitle'] = trans('List of Requests');
 
 		$SMARTY->assign('list', $list);
-		$SMARTY->display('rtprinttickets.html');
+		$SMARTY->display($extended ? 'rtprinttickets-ext.html' : 'rtprinttickets.html');
 	break;
 
 	default:
