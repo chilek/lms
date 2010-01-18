@@ -38,6 +38,7 @@ version ? (????-??-??)
   - don't allow to create an account of type mail if alias with specified
     login@domain already exists (alec)
   - fixed deletion of referenced node assignments on assignments deletion (alec)
+  - List of Helpdesk Requests in extended format (alec)
 
 version 1.11.9 Moloc (2009-10-28):
  

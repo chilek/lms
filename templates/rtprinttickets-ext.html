@@ -1,0 +1,87 @@
+{include file="clearheader.html"}
+<!--// $Id$ //-->
+<TABLE WIDTH="100%">
+	<TR>
+		<TD WIDTH="99%" VALIGN="TOP">
+			<H1>{$layout.pagetitle}</H1>
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
+			{$smarty.now|date_format:"%A, %x"}<BR>
+			{t 0=$layout.logname}Prepared by: $0{/t}
+		</TD>
+	</TR>
+</TABLE>
+{foreach from=$list item=request}
+<TABLE WIDTH="640" CELLPADDING="3" ALIGN="CENTER">
+	<TR>
+		<TD CLASS="grey bb fleftu" ALIGN="CENTER" WIDTH="1%" NOWRAP>
+			<IMG src="img/ticket.gif" alt="">
+		</TD>
+		<TD CLASS="grey bb fbt" ALIGN="CENTER" WIDTH="1%" NOWRAP>
+			<B>{$request.id|string_format:"%08d"}:</B>
+		</TD>
+		<TD CLASS="grey bb fbt" WIDTH="97%">
+			<B>{$request.subject|escape}</B>
+		</TD>
+		<TD CLASS="grey bb frightu" ALIGN="CENTER" WIDTH="1%">
+			#{counter}
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN="4" CLASS="flr bb">
+			<TABLE WIDTH="100%">
+			    <TR>
+				<TD WIDTH="1%">{t}Date:{/t}</TD>
+				<TD WIDTH="99%">
+				    {$request.createtime|date_format:"%Y/%m/%d %H:%M"}
+				</TD>
+			    </TR>
+			    <TR>
+				<TD WIDTH="1%">{t}Submitter:{/t}</TD>
+				<TD WIDTH="99%">
+				    {if $request.customerid}
+				    {$request.customername} ({$request.customerid|string_format:"%04d"})
+				    {else}
+				    {$request.requestor}
+				    {/if}
+				</TD>
+			    </TR>
+			    {if $request.address}
+			    <TR>
+				<TD WIDTH="1%">{t}Address:{/t}</TD>
+				<TD WIDTH="99%">
+				    {$request.address}
+				    {if $request.phone}({t}phone:{/t} {$request.phone}){/if}
+				</TD>
+			    </TR>
+			    {/if}
+			</TABLE>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN="4" CLASS="fbottomu bb">
+			<TABLE WIDTH="100%" CELLPADDING="3">
+			    {foreach from=$request.content item=item}
+			    <TR>
+				<TD WIDTH="100%" CLASS="ftop{if $item.note} blend{/if}">
+				    {$item.body|escape|replace:"\n":"<BR>"}
+				</TD>
+			    </TR>
+			    {/foreach}			
+			</TABLE>
+		</TD>
+	</TR>
+</TABLE><BR>
+{foreachelse}
+<TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+	<TR>
+    		<TD ALIGN="center" WIDTH="100%">
+			<P>&nbsp;</P>
+			<P><B>{t}No such requests in database.{/t}</B></P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+</TABLE>
+{/foreach}
+{include file="clearfooter.html"}

@@ -1,7 +1,7 @@
 BODY		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; padding: 0pt; background-color: #FFFFFF; }
 BODY.landscape	{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; padding: 0pt; background-color: #FFFFFF; size: landscape; }
 
-TABLE		{ border-collapse: collapse; border-color: #000000 }
+TABLE		{ border-collapse: collapse; border-color: #000000; }
 TD		{ font-size: 8pt; }
 TD.fleft	{ border-left-width: 1pt; border-left-style: solid; }
 TD.fright	{ border-right-width: 1pt; border-right-style: solid; }
@@ -16,6 +16,7 @@ TD.fbt		{ border-bottom-width: 1pt; border-bottom-style: solid; border-top-width
 TD.flr		{ border-left-width: 1pt; border-left-style: solid; border-right-width: 1pt; border-right-style: solid; }
 TD.head		{ color: white; background-color: black; font-weight: bold; border-width: 1pt; border-style: solid; }
 TD.headgrey	{ color: black; background-color: #A9A9A9; font-weight: bold; border-width: 1pt; border-style: solid; }
+TD.bb		{ border-color: black; }
 
 A		{ text-decoration: none; }
 

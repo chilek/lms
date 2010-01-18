@@ -85,7 +85,6 @@
 						<INPUT TYPE="text" NAME="days" SIZE="3"> {t}days{/t}
 					</TD>
 					<TD width="10%" nowrap>
-						<INPUT TYPE="checkbox" NAME="extended" VALUE="1" CHECKED><A HREF="javascript:checkElement('extended')">{t}include contact info{/t}</A>
 					</TD>
 				</TR>
 			</TABLE>
@@ -93,6 +92,9 @@
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
+			<INPUT TYPE="checkbox" NAME="extended" VALUE="1"><A HREF="javascript:checkElement('extended')">{t}extended format{/t}</A> &nbsp;
+			<INPUT TYPE="checkbox" NAME="contacts" VALUE="1" CHECKED><A HREF="javascript:checkElement('contacts')">{t}include contact info{/t}</A>
+			&nbsp; &nbsp; &nbsp;
 			<A href="javascript:document.ticketslist.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
