@@ -30,9 +30,9 @@ switch($type)
 {
 	case 'stats': /******************************************/
 
-		$days = intval($_POST['days']);
-		$times = intval($_POST['times']);
-		$queue = intval($_POST['queue']);
+		$days  = !empty($_GET['days']) ? intval($_GET['days']) : intval($_POST['days']);
+		$times = !empty($_GET['times']) ? intval($_GET['times']) : intval($_POST['times']);
+		$queue = !empty($_GET['queue']) ? intval($_GET['queue']) : intval($_POST['queue']);
 		
 		if($queue)
 			$where[] = 'queueid = '.$queue;
@@ -76,12 +76,12 @@ switch($type)
 
 	case 'ticketslist': /******************************************/
 
-		$days = intval($_POST['days']);
-		$customer = intval($_POST['customer']);
-		$queue = intval($_POST['queue']);
-		$status = $_POST['status'];
-		$subject = $_POST['subject'];
-		$extended = !empty($_POST['extended']) ? true : false;
+		$days 	  = !empty($_GET['days']) ? intval($_GET['days']) : intval($_POST['days']);
+		$customer = !empty($_GET['customer']) ? intval($_GET['customer']) : intval($_POST['customer']);
+		$queue 	  = !empty($_GET['queue']) ? intval($_GET['queue']) : intval($_POST['queue']);
+		$status   = isset($_GET['status']) ? $_GET['status'] : $_POST['status'];
+		$subject  = !empty($_GET['subject']) ? $_GET['subject'] : $_POST['subject'];
+		$extended = !empty($_GET['extended']) ? true : !empty($_POST['extended']) ? true : false;
 
 		if($queue)
 			$where[] = 'queueid = '.$queue;
@@ -89,8 +89,8 @@ switch($type)
 			$where[] = 'customerid = '.$customer;
 		if($days)
 			$where[] = 'rttickets.createtime < '.mktime(0, 0, 0, date('n'), date('j')-$days);
-		if($subject != '')
-			$where[] = 'rttickets.subject ?LIKE? \'%'.$subject.'%\'';
+		if($subject)
+			$where[] = 'rttickets.subject ?LIKE? '.$DB->Escape("%$subject%");
 
 		if($status != '')
 		{
@@ -102,7 +102,8 @@ switch($type)
 
     		$list = $DB->GetAllByKey('SELECT rttickets.id, createtime, customerid, subject, requestor, '
 			.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername '
-			.(isset($_POST['contacts']) ? ', address, (SELECT phone
+			.(!empty($_POST['contacts']) || !empty($_GET['contacts'])
+				? ', address, (SELECT phone
 				FROM customercontacts
 				WHERE customerid = customers.id LIMIT 1) AS phone ' : '')
 		        .'FROM rttickets
