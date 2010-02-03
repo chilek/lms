@@ -40,6 +40,8 @@ $recordslist = $DB->GetAll('SELECT *,
 
 $listdata['total'] = count($recordslist);
 $listdata['domain'] = $d;
+$domainName=$DB->GetRow('SELECT name FROM domains  where id='.$d);
+$listdata['domainName']=$domainName['name'];
 
 
 $domainType=$DB->GetRow('SELECT type FROM domains  where id='.$d);

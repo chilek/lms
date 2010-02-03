@@ -50,7 +50,15 @@ if (isset($_POST['record']))
 			$record['id']
 	));
 
-	$SESSION->redirect('?m=recordslist');  
+
+include("domainf.php");
+
+$domainid=$DB->GetRow("SELECT domain_id from records WHERE records.id=$id");
+
+update_soa_serial($domainid['domain_id']);
+
+
+$SESSION->redirect('?m=recordslist');  
 }
 
 
