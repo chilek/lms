@@ -141,6 +141,19 @@ $DEFAULTS = array(
 		'smtp_host' => '127.0.0.1',
 		'smtp_port' => '25'
 	),
+	'zones' => array(
+		'hostmaster_mail' => 'hostmaster.localhost',
+		'master_dns' => 'localhost',
+		'slave_dns' => 'localhost',
+		'default_ttl' => '3600',
+		'ttl_refresh' => '28800',
+		'ttl_retry' => '7200',
+		'ttl_expire' => '604800',
+		'ttl_minimum' => '86400',
+		'default_webserver_ip' => '127.0.0.1',
+		'default_mailserver_ip' => '127.0.0.1',
+		'default_mx' => 'localhost'
+	),
 );
 
 foreach($DEFAULTS as $section => $values)

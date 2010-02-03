@@ -114,6 +114,14 @@ foreach($CONFIG['mail'] as $key => $val)
 			);
 }
 
+if(!empty($CONFIG['zones']) && (!$section || $section = 'zones'))
+foreach($CONFIG['zones'] as $key => $val)
+{
+	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
+			array('zones', $key, parse_cfg_val($val))
+			);
+}
+
 $DB->CommitTrans();
 
 header('Location: ?m=configlist');

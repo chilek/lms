@@ -474,7 +474,48 @@ function GetConfigList($order='var,asc', $section='')
 					break;
 				} //end: var
 			break;
-			
+	
+                       case 'zones':                                                                                                                         
+                                switch($item['var'])                                                                                                          
+                                {                                                                                                                             
+                                        case 'hostmaster_mail':                                                                                               
+                                                $config[$idx]['description'] = trans('Domain admin e-mail address.');                                         
+                                        break;                                                                                                                
+                                        case 'master_dns':                                                                                                    
+                                                $config[$idx]['description'] = trans('Primary Name Server name (should be a FQDN).');                         
+                                        break;                                                                                                                
+                                        case 'slave_dns':                                                                                                     
+                                                $config[$idx]['description'] = trans('Secondary Name Server name (should be a FQDN).');                       
+                                        break;                                                                                                                
+                                        case 'default_mx':                                                                                                    
+                                                $config[$idx]['description'] = trans('Mail Exchange (MX) name record which identifies the name of the server that handles mail for domain (should be a FQDN).');                                             
+                                        break;                                                                                                                
+                                        case 'default_ttl':                                                                                                   
+                                                $config[$idx]['description'] = trans('The default expiration time of a resource record. Default 86400.');     
+                                        break;                                                                                                                
+                                        case 'ttl_refresh':                                                                                                   
+                                                $config[$idx]['description'] = trans('Time after slave server refreshes records. Default 28800.');            
+                                        break;                                                                                                                
+                                        case 'ttl_retry':                                                                                                     
+                                                $config[$idx]['description'] = trans('Slave server retry time in case of a problem. Default 7200.');          
+                                        break;                                                                                                                
+                                        case 'ttl_expire':                                                                                                    
+                                                $config[$idx]['description'] = trans('Records expiration time. Default 604800.');                             
+                                        break;                                                                                                                
+                                        case 'ttl_minimum':                                                                                                   
+                                                $config[$idx]['description'] = trans('Minimum caching time in case of failed lookups. Default 86400.');       
+                                        break;                                                                                                                
+                                        case 'default_webserver_ip':                                                                                          
+                                                $config[$idx]['description'] = trans('IP address of webserver.');                                             
+                                        break;                                                                                                                
+                                        case 'default_mailserver_ip':                                                                                         
+                                                $config[$idx]['description'] = trans('IP address of mailserver.');                                            
+                                        break;                                                                                                                
+                                                                                                                                                              
+                                                                                                                                                              
+                                } //end: var                                                                                                                  
+                        break;              
+                                                   		
 			default:
 				$config[$idx]['description'] = trans('Unknown option. No description.');
 			break;
