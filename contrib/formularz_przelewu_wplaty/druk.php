@@ -76,7 +76,7 @@ $USE_ICONV = 1;		// włącza przekodowywanie ciągów z UTF-8 do ISO-8859-2
 
 /************** Koniec konfiguracji ****************/
 
-$KWOTA = trim(isset($_GET['ILE']) ? $_GET['ile'] : 0);
+$KWOTA = trim(isset($_GET['ILE']) ? $_GET['ILE'] : 0);
 $USER_OD = trim(strip_tags(isset($_GET['OD']) ? $_GET['OD'] : ''));
 $USER_OD = $USE_ICONV ? iconv('UTF-8','ISO-8859-2',$USER_OD) : $USER_OD;
 
