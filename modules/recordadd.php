@@ -39,10 +39,10 @@ if (isset($_POST['record'])){
         if ($tlds[count($tlds)-2].$tlds[count($tlds)-1]=="in-addrarpa"){ //domena in-add.arpa            
            
             if (!is_numeric($record['name']))     
-             $error['name']="Wrong record name";        
+             $error['name']=trans("Wrong record name");        
              
             if (!in_array($record['type'],$arpa_record_type_allowed)) 
-             $error['type']="Wrong record type";                    
+             $error['type']=trans("Wrong record type");                    
              
             if (in_array($record['type'],array("PTR","NS"))) {
 	     include('domainf.php');                  
@@ -54,16 +54,19 @@ if (isset($_POST['record'])){
         }
          else {
              if ($record['type']=="PTR")
-               $error['type']="You can't add PTR record to this domain";
+               $error['type']=trans("You can't add PTR record to this domain");
           }
 
 	if ( $record['ttl']*1<=0 || !is_numeric($record['ttl']))
-	   $error['ttl']="Wrong TTL";
+	   $error['ttl']=trans("Wrong TTL");
+	
+	if ( empty ($record['content']))
+           $error['content']=trans("Wrong Content");
 	   
 	if ($record['type']=="SOA") {
 	  $soa=$DB->GetRow('SELECT type from records where domain_id=?', array($record['domain_id']));
 	  if ($soa['type']=="SOA")
-	     $error['type']="Reocrd SOA alredy exist";
+	     $error['type']=trans("Reocrd SOA alredy exist");
 	}
 
               
