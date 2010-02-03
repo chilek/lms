@@ -2270,4 +2270,12 @@ $_LANG['Domain type:'] = 'Typ domeny:';
 $_LANG['Records number:'] = 'Liczba rekordów:';
 $_LANG['Domain type:'] = 'Typ domeny:';
 $_LANG['Show zones beginning with:'] = 'Pokaż domeny zaczynające się od:';
+$_LANG['Wrong Content'] = 'Niewłaściwa zawartość';
+$_LANG['You have invalid characters in your hostname'] = 'Nazwa hosta zawiera nieprawidłowe znaki';
+$_LANG['The hostname is too long'] = 'Nazwa hosta jest zbyt długa';
+$_LANG['A hostname can not start or end with a dash'] = 'Nazwa hosta nie może zaczynać się lub kończyć kreską';
+$_LANG['Invalid hostname'] = 'Nieprawidłowa nazwa hosta';
+$_LANG['Given hostname has too many slashes'] = 'Podana nazwa hosta ma zbyt wiele ukośników';
+$_LANG['You are using an invalid top level domain'] = 'Używasz nieprawidłowej nazwy TLD';
+$_LANG['Given hostname or one of the labels is too short or too long'] = 'Podana nazwa hosta lub etykiety jest zbyt krótka lub zbyt długa';
 ?>
