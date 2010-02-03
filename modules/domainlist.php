@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetDomainList($order='name,asc', $customer='')
+function GetDomainList($order='name,asc', $customer='', $filtr='')
 {
 	global $DB;
 
@@ -57,7 +57,8 @@ function GetDomainList($order='name,asc', $customer='')
 		.$DB->Concat('lastname', "' '",'c.name').' AS customername 
 		FROM domains d
 		LEFT JOIN customers c ON (d.ownerid = c.id) '
-		.($customer != '' ? ' WHERE d.ownerid = '.intval($customer) : '')
+		. ' WHERE d.name '.($filtr==1?' REGEXP "^[0-9]"':' LIKE "'.$filtr.'%" ')
+		.($customer != '' ? ' AND d.ownerid = '.intval($customer) : '')		
 		.($sqlord != '' ? $sqlord : ''));
 	
 	$list['total'] = sizeof($list);
@@ -85,8 +86,29 @@ if ($SESSION->is_set('dlp') && !isset($_GET['page']))
 
 $layout['pagetitle'] = trans('Domains List');
 
-$domainlist = GetDomainList($o, $c);
+if(!isset($_GET['f']))
 
+$SESSION->restore('dfi', $f);
+
+else
+    $f = substr($_GET['f'],0,1);
+	
+$SESSION->save('dfi', $f);
+
+$domainlist = GetDomainList($o, $c, $f);
+
+$domainlistcount = GetDomainList($o, $c);
+$domaincount="";
+ if (is_array($domainlistcount))
+   foreach ($domainlistcount as $line){   
+    if (is_array($line))
+     if (is_numeric(substr($line['name'],0,1)))
+       $domaincount['numeric']+=1;     
+         else
+           $domaincount[substr($line['name'],0,1)]+=1;
+   }
+ 
+ 
 $listdata['total'] = $domainlist['total'];
 $listdata['order'] = $domainlist['order'];
 $listdata['direction'] = $domainlist['direction'];
@@ -99,6 +121,9 @@ unset($domainlist['customer']);
 
 $page = (empty($_GET['page']) ? 1 : $_GET['page']); 
 $pagelimit = (empty($CONFIG['phpui']['domainlist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['domainlist_pagelimit']);
+
+ if ($page > ceil($listdata['total']/$pagelimit)) $page=1;
+
 $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('dlp', $page);
@@ -107,8 +132,10 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('page', $page);
+$SMARTY->assign('f', $f);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('domainlist', $domainlist);
+$SMARTY->assign('domaincount',$domaincount);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->assign('customerlist',$LMS->GetCustomerNames());
 $SMARTY->display('domainlist.html');
