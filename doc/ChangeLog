@@ -4,7 +4,8 @@ version ? (????-??-??)
 
   - contrib/daemon/gentoo-init: small fixes (Mariusz Szulerecki)
   - lmsd/oident: use lower case'd node names (alec)
-  - added powerdns support (Dariusz Kowalczyk/Jan Gancarczyk)
+  - added PowerDNS support, LMS now can directly manage PowerDNS server 
+    with mysql/pqsql backend support (Dariusz Kowalczyk/Jan Gancarczyk)
   - Userpanel: added possibility to print many invoices with one click (alec)
   - unified pdf invoices in Userpanel and LMS-UI (alec)
     ------------------------------------------------------
