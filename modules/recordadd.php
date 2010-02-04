@@ -25,7 +25,7 @@
 
 
 if (isset($_POST['record'])){   
-
+   include("domainf.php");
    $record=$_POST['record'];
    $arpa_record_type_allowed=array("PTR","SOA","NS","TXT");
 
@@ -44,8 +44,7 @@ if (isset($_POST['record'])){
             if (!in_array($record['type'],$arpa_record_type_allowed)) 
              $error['type']=trans("Wrong record type");                    
              
-            if (in_array($record['type'],array("PTR","NS"))) {
-	     include('domainf.php');                  
+            if (in_array($record['type'],array("PTR","NS"))) {	    
 	     $errorcontent=trans(is_not_valid_hostname_fqdn($record['content'],0,1));
              if ($errorcontent) $error['content']=$errorcontent;
            }
@@ -62,9 +61,15 @@ if (isset($_POST['record'])){
 	
 	if ( empty ($record['content']))
            $error['content']=trans("Wrong Content");
+
+	if ( !empty ($record['name'])){	  
+        if ($errorname=trans(is_not_valid_hostname_fqdn($record['name'],1,0)))
+          $error['name']=$errorname;
+	}
+
 	   
 	if ($record['type']=="SOA") {
-	  $soa=$DB->GetRow('SELECT type from records where domain_id=?', array($record['domain_id']));
+	  $soa=$DB->GetRow('SELECT type from records where type="SOA" AND  domain_id=?', array($record['domain_id']));
 	  if ($soa['type']=="SOA")
 	     $error['type']=trans("Reocrd SOA alredy exist");
 	}
@@ -87,7 +92,7 @@ if (isset($_POST['record'])){
                   $record['domain_id']
         ));
         
-   include("domainf.php");
+
    update_soa_serial($record['domain_id']);
 
    $SESSION->redirect('?m=recordslist');  
