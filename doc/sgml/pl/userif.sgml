@@ -348,10 +348,8 @@
 	<sect2 id="menu-invoices-list">
 		<title>Lista faktur</title>
 		<para>Lista wystawionych faktur z mo¿liwo¶ci± wydruku wybranych faktur (ikona [Drukuj])
-		oraz oznaczenia faktur jako rozlicz
-one. Faktury oznaczone jako rozliczone bêd± na li¶cie
-		wyszarzone. Faktury mo¿na filtrowaæ
-	    	wg zadanych kryteriów przy u¿yciu dostêpnego na li¶cie filtra.</para>
+		oraz oznaczenia faktur jako rozliczone. Faktury oznaczone jako rozliczone bêd± na li¶cie
+		wyszarzone. Faktury mo¿na filtrowaæ wg zadanych kryteriów przy u¿yciu dostêpnego na li¶cie filtra.</para>
 	</sect2>
 	<sect2 id="menu-invoices-new">
 		<title>Nowa faktura</title>
@@ -368,8 +366,7 @@ one. Faktury oznaczone jako rozliczone bêd± na li¶cie
 		<title>Lista not obci±¿eniowych</title>
 		<para>Lista wystawionych not obci±¿eniowych (debetowych) z mo¿liwo¶ci± wydruku wybranych (ikona [Drukuj])
 		oraz oznaczenia ich jako rozliczone. Noty oznaczone jako rozliczone bêd± na li¶cie
-		wyszarzone. Noty mo¿na filtrowaæ
-		wg zadanych kryteriów przy u¿yciu dostêpnego na li¶cie filtra.</para>
+		wyszarzone. Noty mo¿na filtrowaæ wg zadanych kryteriów przy u¿yciu dostêpnego na li¶cie filtra.</para>
 	</sect2>
 	<sect2 id="menu-debitnotes-new">
 		<title>Nowa nota obci±¿eniowa</title>
