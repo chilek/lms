@@ -24,22 +24,66 @@
 
 $id = $_GET['id']*1;
 
+$domain=$DB->GetRow('SELECT domains.name FROM domains,records WHERE records.domain_id=domains.id and records.id = ?', array($id));
+
+
 if (isset($_POST['record']))
 {
+        include("domainf.php");
 	$record = $_POST['record'];
 	$record['id'] = $id;
+	$arpa_record_type_allowed=array("PTR","SOA","NS","TXT");
 	
-	$domain=$DB->GetRow('SELECT domains.name FROM domains,records WHERE records.domain_id=domains.id and records.id = ?', array($id));
+
+
+        $tlds=explode(".",$domain['name']);
+
+        if ($tlds[count($tlds)-2].$tlds[count($tlds)-1]=="in-addrarpa"){ //domena in-add.arpa
+
+            if (!is_numeric($record['name']))
+             $error['name']=trans("Wrong record name");
+
+            if (!in_array($record['type'],$arpa_record_type_allowed))
+             $error['type']=trans("Wrong record type");
+
+            if (in_array($record['type'],array("PTR","NS"))) {
+             $errorcontent=trans(is_not_valid_hostname_fqdn($record['content'],0,1));
+             if ($errorcontent) $error['content']=$errorcontent;
+           }
+
+
+        }
+         else {
+             if ($record['type']=="PTR")
+               $error['type']=trans("You can't add PTR record to this domain");
+          }
+
+        if ( $record['ttl']*1<=0 || !is_numeric($record['ttl']))
+           $error['ttl']=trans("Wrong TTL");
+
+        if ( empty ($record['content']))
+           $error['content']=trans("Wrong Content");
+
+        if ( !empty ($record['name'])){
+        if ($errorname=trans(is_not_valid_hostname_fqdn($record['name'],1,0)))
+          $error['name']=$errorname;
+        }
+
+
+        if ($record['type']=="SOA") {
+          $soa=$DB->GetRow('select type from records where type="SOA" AND domain_id=(select domain_id from records where id=? AND type!="SOA")', array($id));
+          if ($soa['type']=="SOA")
+             $error['type']=trans("Reocrd SOA alredy exist");
+        }
+
+
+
+  if (!$error){
 
 	if (trim($record['name'])!='' )
-	   $record['name']=trim($record['name'],'.').'.';	
-	
-	if ($record['type']=="PTR")
-	   $record['name']='';
-	
-	 $record['name'].=$domain['name'];
-        
+	  $record['name']=trim($record['name'],'.').'.';			
 
+	$record['name'].=$domain['name'];        
 	$DB->Execute('UPDATE records SET name = ?, type = ?, content = ?,ttl = ?, prio = ?
 		WHERE id = ?',
 		array( $record['name'],
@@ -50,30 +94,26 @@ if (isset($_POST['record']))
 			$record['id']
 	));
 
-
-include("domainf.php");
-
-$domainid=$DB->GetRow("SELECT domain_id from records WHERE records.id=$id");
-
-update_soa_serial($domainid['domain_id']);
-
-
-$SESSION->redirect('?m=recordslist');  
+    $domainid=$DB->GetRow("SELECT domain_id from records WHERE records.id=$id");
+    update_soa_serial($domainid['domain_id']);
+    $SESSION->redirect('?m=recordslist');  
+ }
 }
+  else {
+    $record=$DB->GetRow('SELECT * FROM records WHERE id = ?', array($id));  
+    $record['name']=substr($record['name'],0,-(strlen($domain['name'])+1));        
+ }
 
 
 $layout['pagetitle'] = trans('Record edit for zone:');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$record=$DB->GetRow('SELECT * FROM records WHERE id = ?', array($id));
 
 $record['content'] = htmlentities($record['content']);
-
 $domain=$DB->GetRow('SELECT domains.name FROM domains,records WHERE records.domain_id=domains.id and records.id = ?', array($id));
-$record['name']=substr($record['name'],0,-(strlen($domain['name'])+1));
 
-
+$SMARTY->assign('error',$error);
 $SMARTY->assign('record',$record );
 $SMARTY->assign('domain',$domain );
 

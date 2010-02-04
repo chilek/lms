@@ -14,10 +14,10 @@
     <TR>
     </TR>
     <TR class="light"> 
-	<TD class="fleftu"><input type="text" style="width:60%" value="{$record.name}" name="record[name]"> .{$domain.name}</TD>
-	<TD class="fbt"><input type="text" size="7" value="{$record.ttl}" name="record[ttl]"></TD>
+	<TD class="fleftu"><input type="text" style="width:60%" value="{$record.name}" name="record[name]" {tip text="Enter record name" trigger="name"}> .{$domain.name}</TD>
+	<TD class="fbt"><input type="text" size="7" value="{$record.ttl}" name="record[ttl]" {tip text="Enter record TTL" trigger="ttl"}></TD>
 	<TD class="fbt">
-	     <SELECT SIZE="1" NAME="record[type]" >
+	     <SELECT SIZE="1" NAME="record[type]" {tip text="Select record type" trigger="type"}>
                      <OPTION VALUE="A" {if $record.type == A} SELECTED{/if}>A</OPTION>
                      <OPTION VALUE="AAAA" {if $record.type == AAAA} SELECTED{/if}>AAAA</OPTION>
                      <OPTION VALUE="CNAME" {if $record.type == CNAME} SELECTED{/if}>CNAME</OPTION>
@@ -33,8 +33,8 @@
                      <OPTION VALUE="TXT" {if $record.type == TXT} SELECTED{/if}>TXT</OPTION>
             </SELECT>
 	</TD>
-	<TD class="fbt"><input type="text" size="5" value="{$record.prio}" name="record[prio]"></TD>
-	<TD class="frightu"><input type="text" style="width:100%" value="{$record.content}" name="record[content]"></TD>
+	<TD class="fbt"><input type="text" size="5" value="{$record.prio}" name="record[prio]" ></TD>
+	<TD class="frightu"><input type="text" style="width:100%" value="{$record.content}" name="record[content]" {tip text="Enter record content" trigger="content"}></TD>
     </TR>
     <TR class="LIGHT">
 	<TD colspan="5" class="fbottomu" align="right" nowrap>
