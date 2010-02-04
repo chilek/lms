@@ -348,7 +348,8 @@
 	<sect2 id="menu-invoices-list">
 		<title>Lista faktur</title>
 		<para>Lista wystawionych faktur z mo¿liwo¶ci± wydruku wybranych faktur (ikona [Drukuj])
-		oraz oznaczenia faktur jako rozliczone. Faktury oznaczone jako rozliczone bêd± na li¶cie
+		oraz oznaczenia faktur jako rozlicz
+one. Faktury oznaczone jako rozliczone bêd± na li¶cie
 		wyszarzone. Faktury mo¿na filtrowaæ
 	    	wg zadanych kryteriów przy u¿yciu dostêpnego na li¶cie filtra.</para>
 	</sect2>
@@ -555,7 +556,7 @@
 </sect1>
 <sect1 id="menu-hosting">
 	<title>Hosting</title>
-	<para>Zarz±dzanie kontami ró¿nych us³ug na serwerze jest teraz
+	<para>Zarz±dzanie ró¿nymi us³uga na serwerze jest teraz
 	mo¿liwe. Funkcjonalno¶æ ta jest przeznaczona dla zaawansowanych 
 	u¿ytkowników. Wymaga znajomo¶ci tych us³ug i ich konfiguracji
 	w celu korzystania z bazy danych.</para>
@@ -603,14 +604,25 @@
 	</sect2>
 	<sect2 id="menu-hosting-domains">
 	    <title>Domeny</title>
-	    <para>Na li¶cie przedstawione s± podstawowe informacje o zdefiniowanych
-	    domenach. Mo¿liwe jest dowolne sortowanie listy poprzez klikniêcie nazwy
-	    kolumny. Mo¿liwa jest edycja danych domeny po wybraniu ikony [Edytuj].</para>
+	    <para>Obecnie LMS mo¿e bezpo¶rednio zarz±dzaæ serwerem PowerDNS z mysql/pqsl backend.
+		LMS teraz posiada pe³ne wsparcie dla wiêkszo¶ci funkcji serwera PowerDNS. Ma pe³nie wsparcie 
+		dla domen typu: master, slave i native. Na li¶cie domen przedstawione s± podstawowe informacje 
+		o zdefiniowanych domenach jak nazwa, typ, w³a¶ciciel. Mo¿liwe jest dowolne sortowanie listy 
+		poprzez klikniêcie nazwy kolumny lub poprzez pierwsz± literê nazwy domeny. Mo¿liwa jest edycja 
+		podstawowych danych domeny po wybraniu ikony [Edytuj]. Zaawansowana edycja rekordów domeny 
+		odbywa siê poprzez wybranie ikony [Informacje] a nastêpnie [Rekordy]. Mo¿liwa wtedy jest pe³na 
+		konfiguracja wszystkich rekordów opisuj±cych dan± domenê. Ka¿da zmiana rekordu zapisana w bazie 
+		danych LMS np.: edycja, dodanie lub usuniêcie rekordu automatycznie zwiêksza licznik domeny o 1.
+		Ka¿da zmiana jest tak¿e automatycznie dostrzegana przez serwer PowerDNS. Aby taka wspópraca by³a 
+		mo¿liwa nale¿y w bazie danych LMS za³o¿yæ dodatkowego u¿ytkownika z uprawieniami SELECT, INSERT,
+		UPDATE, DELETE dla tabel domains, records oraz SELECT dla tabeli supermaster.</para>
 	</sect2>
 	<sect2 id="menu-hosting-new-domain">
 		<title>Nowa domena</title>
-		<para>Dane domeny zawieraj± nazwê oraz opis. Domena mo¿e zostaæ przypisana do 
-		klienta.</para>
+		<para>Dane domeny zawieraj± nazwê, opis, typ (master, slave, native), adres ip serwera www, 
+		adres ip serwera pocztowego, adres ip g³ównego serwera nazw (je¶li wybrano typ slave) i inne
+		parametry, których warto¶ci domy¶lne ustawione s± w sekcji [zones]. Domena mo¿e zostaæ przypisana 
+		do klienta.</para>
 	</sect2>
 	<sect2 id="menu-hosting-search">
 		<title>Szukaj</title>
@@ -618,12 +630,57 @@
 	</sect2>
 	<sect2 id="hosting-examples">
 	    <title>Przyk³ady</title>
+	    <para>Poni¿ej opisano sposób intergracji LMS z serwerem PowerDNS.
+	    <example id="hosting-e0">
+	    <title>Domeny. Konfiguracja PowerDNS.</title>
+<screen>
+Przygotowanie bazy danych na ktorej dzia³a LMS do wspó³pracy z serwerem PowerDNS.  
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON powerdns.domains TO 'powerdns'@'adres-serwera-dns' IDENTIFIED BY 'has³o';
+GRANT SELECT, INSERT, UPDATE, DELETE ON powerdns.records TO 'powerdns'@'adres-serwera-dns' IDENTIFIED BY 'has³o';
+
+Instalujemy pakiety: pdns, pdns-backend, pdns-recursor.
+
+W dystrybucjach Centos, Fedora, RedHat:
+
+yum install pdns pdns-backend pdns-recursor
+
+Edytujemy plik /etc/pdns/pdns.conf dodaj±c:
+
+launch=gmysql
+gmysql-dbname=lms #wpisz w³a¶ciw± nazwê bazy danych na której pracuje lms
+gmysql-host=adres-serwera-sql # podaj adres ip lub nazwê serwera na którym pracuje bazy danych
+gmysql-password=has³o
+gmysql-user=powerdns
+master=yes 
+slave=yes
+recursor=127.0.0.1:5300
+allow-recursion=127.0.0.0/8, 192.168.0.1/24 
+
+Gdzie 192.168.0.1 to przyk³adowa sieæ. Po przecinku nale¿y dodaæ w³asne sieci z których
+serwer ma obs³ugiwaæ zapytania rekurencyjne.
+
+Edytujemy plik /etc/pdns-recursor/recursor.conf	dodaj±c:
+
+allow-from=127.0.0.0/8 
+local-address=127.0.0.1
+local-port=5300
+
+Nastêpnie:
+
+chkconfig --levels 235 pdns-recursor on
+chkconfig --levels 235 pdns on
+
+service pdns-recursor start
+service pdns start
+</screen>
+</example></para>
 	    <para>Poni¿szy listing zawiera istotne fragmenty pliku konfiguracyjnego
 	    demona proftpd (w wersji 1.2.10) umo¿liwiaj±cy przechowywanie danych
 	    o kontach ftp w bazie LMSa. Przyk³ad zawiera konfiguracjê dla bazy
 	    danych PostgreSQL, w komentarzach podano rozwi±zania dla MySQLa:
 	    <example id="hosting-e1">
-		<title>Konta. Konfiguracja proftpd.</title>
+		<title>Hosting. Konfiguracja proftpd.</title>
 <screen>
   ServerName	"LMS FTP Server"
   
