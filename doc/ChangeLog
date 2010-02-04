@@ -39,13 +39,16 @@ version ? (????-??-??)
     login@domain already exists (alec)
   - fixed deletion of referenced node assignments on assignments deletion (alec)
   - List of Helpdesk Requests in extended format (alec)
+  - added first letter sorting in domains list (webvisor)
+  - added validation data in domains (webvisor)
+  - added new section "zones" with default values for some records of domains (webvisor)
 
 version 1.11.9 Moloc (2009-10-28):
  
   - BTS#0000794: fixed postfix configuration for MySQL (alec)
   - improved performance of bank account fetching (alec)
   - added contrib/bin cash-import scripts for BPH, BZ WBK and PEKAO
-    banks (Dariusz Kowalczyk)
+    banks (webvisor)
   - fixed 'nas' view definition (alec)
   - added Configuration -> Import Sources (alec)
   - added import source filter for balance sheet report (alec)
