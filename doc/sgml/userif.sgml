@@ -601,15 +601,20 @@ Administrator (LMS user) is also able to change account passwords.</para>
 	</sect2>
 	<sect2 id="menu-hosting-domains">
 	    <title>Domains</title>
-	    <para>You're able to see basic information about domains on the
-	    list. It's possible to sort
-	    this list by any highlighted column name and to filter list for given criteria.
-	    You can edit domain data by clicking 'Edit' icon. Add new domain at the bottom
-	    of the list.</para>
+	    <para>Currently LMS can directly manage PowerDNS server with mysql/pqsql backend.
+	    LMS now has full support for most of the features of PowerDNS server.
+	    It has full support for zone types: master,  native and  slave.
+	    You're able to see basic information about domains on the list such as: name, type, owner. 
+	    It's possible to sort this list by any highlighted column name and to filter 
+	    list for given criteria and by first letter of domain name. You can edit domain 
+	    data by clicking 'Edit' icon. Add new domain at the bottom and at the top of the list.</para>
 	</sect2>
 	<sect2 id="menu-hosting-new-domain">
 	    <title>New Domain</title>
-	    <para>Domain data consist name and description. Domain can be assigned to customer.</para>
+	    <para>Domain data consists of name, description, type (master,slave,native), IP address of webserver,
+	    IP address of mailserver, IP address of master NS (when type slave is selected) and other 
+	    parameter which have default values stored in "zones" section. 
+	    Domain can be assigned to customer. </para>
 	</sect2>
 	<sect2 id="menu-hosting-search">
 	    <title>Search</title>
