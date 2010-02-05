@@ -635,8 +635,8 @@ Przygotowanie bazy danych na kt鏎ej dzia豉 LMS do wsp馧pracy z serwerem PowerDNS
 
 Dodajemy u篡tkownika powerdns o uprawnieniach ograniczonych do tabel domains i records.
 
-GRANT SELECT, INSERT, UPDATE, DELETE ON powerdns.domains TO 'powerdns'@'adres-serwera-dns' IDENTIFIED BY 'has這';
-GRANT SELECT, INSERT, UPDATE, DELETE ON powerdns.records TO 'powerdns'@'adres-serwera-dns' IDENTIFIED BY 'has這';
+GRANT SELECT, INSERT, UPDATE, DELETE ON lms.domains TO 'powerdns'@'adres-serwera-dns' IDENTIFIED BY 'has這';
+GRANT SELECT, INSERT, UPDATE, DELETE ON lms.records TO 'powerdns'@'adres-serwera-dns' IDENTIFIED BY 'has這';
 
 Instalujemy pakiety: pdns, pdns-backend, pdns-recursor.
 
