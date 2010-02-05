@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Poziomy dostępu</TITLE
+>Poziomy dostÄpu</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -76,24 +76,24 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="DEVEL-RIGHTS"
->7.5. Poziomy dostępu</A
+>7.5. Poziomy dostÄpu</A
 ></H1
 ><P
->W  sumie  tutaj  to  wytłumaczę  bardziej  dla developerów, gdyż osoby
-          korzystające z LMS raczej nie będą zainteresowane.</P
+>W  sumie  tutaj  to  wytĹumaczÄ  bardziej  dla developerĂłw, gdyĹź osoby
+          korzystajÄce z LMS raczej nie bÄdÄ zainteresowane.</P
 ><P
->Oryginalnie poziomy dostępu miały być definiowane poprzez różne litery.
-          Było to  założenie  z  czasów LMS-0.4, lecz nigdy nie wykorzystane. Z
-          racji  tego,  że  weszło  to  do 1.0, długo się głowiłem jak wykorzystać
-          64-znakowego  stringa. Otóż w kolumnie rights jest po prostu 64-znakowa
-          (256-bitowa)  liczba  heksadecymalna.  Każdy jej znak może opisać
-          maksymalnie  cztery bity kombinacji (4*64 = 256 - stąd ilość możliwych
-          poziomów).  Tak  więc  włączenie  jakiegoś  poziomu  dostępu  powoduje
-          ustawienie  w  tej  liczbie  odpowiedniego  bitu.  I tak jeżeli "pełen
-          dostęp"  ma pozycję 0 w lib/accesstable.php, zostanie ustawiony bit 0,
-          czyli  będzie  to liczba 1. Więc poziomy mogą mieć numery od 0 do 255.
-          Nie jest to finalne ograniczenie. Stosując więcej liter i znaków można
-          rozszerzyć ilość możliwych kombinacji do przynajmniej 6 bitów na znak,
+>Oryginalnie poziomy dostÄpu miaĹy byÄ definiowane poprzez rĂłĹźne litery.
+          ByĹo to  zaĹoĹźenie  z  czasĂłw LMS-0.4, lecz nigdy nie wykorzystane. Z
+          racji  tego,  Ĺźe  weszĹo  to  do 1.0, dĹugo siÄ gĹowiĹem jak wykorzystaÄ
+          64-znakowego  stringa. OtĂłĹź w kolumnie rights jest po prostu 64-znakowa
+          (256-bitowa)  liczba  heksadecymalna.  KaĹźdy jej znak moĹźe opisaÄ
+          maksymalnie  cztery bity kombinacji (4*64 = 256 - stÄd iloĹÄ moĹźliwych
+          poziomĂłw).  Tak  wiÄc  wĹÄczenie  jakiegoĹ  poziomu  dostÄpu  powoduje
+          ustawienie  w  tej  liczbie  odpowiedniego  bitu.  I tak jeĹźeli "peĹen
+          dostÄp"  ma pozycjÄ 0 w lib/accesstable.php, zostanie ustawiony bit 0,
+          czyli  bÄdzie  to liczba 1. WiÄc poziomy mogÄ mieÄ numery od 0 do 255.
+          Nie jest to finalne ograniczenie. StosujÄc wiÄcej liter i znakĂłw moĹźna
+          rozszerzyÄ iloĹÄ moĹźliwych kombinacji do przynajmniej 6 bitĂłw na znak,
           co da nam 384 kombinacje.
           </P
 ></DIV

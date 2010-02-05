@@ -13,7 +13,7 @@ REL="UP"
 TITLE="Dodatki"
 HREF="contrib.html"><LINK
 REL="PREVIOUS"
-TITLE="Ostrzeżenia + squid"
+TITLE="OstrzeĹźenia + squid"
 HREF="contrib-squid.html"><LINK
 REL="NEXT"
 TITLE="Userpanel"
@@ -84,19 +84,19 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CONTRIB-ANTYVIR-INTRO"
->8.5.1. Wstęp</A
+>8.5.1. WstÄp</A
 ></H2
 ><P
->Większość z nas miała problemy z zawirusowanymi komputerami.
-               Różni ludzie mają różne podejście do problemu. Skrypt lms-antyvir
-               wykrywa wirusy zagrażające stabilności sieci. Jest oparty na programie
-               tcpdump, przy pomocy którego możemy spróbować wykryć wirusy/trojany
-               same się rozprzestrzeniające jak Mydoom itp. Cechą wspólną prawie wszystkich 
-               tego typu programów jest skanowanie sieci na portach 135 i 445 oraz 
-               dodatkowych w zależności od odmiany wirusa. Oczywiście MS Windows też korzysta 
-               z tych portów, ale nie w takim stopniu. Po wykryciu nadmiernego ruchu
-               wyświetlana jest informacja na standardowe wyjście lub włączane jest 
-               ostrzeżenie ze zdefiniowanym komunikatem.</P
+>WiÄkszoĹÄ z nas miaĹa problemy z zawirusowanymi komputerami.
+               RĂłĹźni ludzie majÄ rĂłĹźne podejĹcie do problemu. Skrypt lms-antyvir
+               wykrywa wirusy zagraĹźajÄce stabilnoĹci sieci. Jest oparty na programie
+               tcpdump, przy pomocy ktĂłrego moĹźemy sprĂłbowaÄ wykryÄ wirusy/trojany
+               same siÄ rozprzestrzeniajÄce jak Mydoom itp. CechÄ wspĂłlnÄ prawie wszystkich 
+               tego typu programĂłw jest skanowanie sieci na portach 135 i 445 oraz 
+               dodatkowych w zaleĹźnoĹci od odmiany wirusa. OczywiĹcie MS Windows teĹź korzysta 
+               z tych portĂłw, ale nie w takim stopniu. Po wykryciu nadmiernego ruchu
+               wyĹwietlana jest informacja na standardowe wyjĹcie lub wĹÄczane jest 
+               ostrzeĹźenie ze zdefiniowanym komunikatem.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -107,7 +107,7 @@ NAME="CONTRIB-ANTYVIR-CONFIG"
 >8.5.2. Konfiguracja</A
 ></H2
 ><P
->Konfigurację lms-antyvir dokonuje się w sekcji <SPAN
+>KonfiguracjÄ lms-antyvir dokonuje siÄ w sekcji <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -117,16 +117,16 @@ CLASS="EMPHASIS"
                <TT
 CLASS="FILENAME"
 >lms.ini</TT
->, a masz do dyspozycji następujące opcje:</P
+>, a masz do dyspozycji nastÄpujÄce opcje:</P
 ><UL
 ><LI
 ><P
 >logfile</P
 ><P
->Lokalizacja tymczasowych pliku(ów) z logami tcpdumpa.
-                         Domyślnie: /tmp/antyvir</P
+>Lokalizacja tymczasowych pliku(Ăłw) z logami tcpdumpa.
+                         DomyĹlnie: /tmp/antyvir</P
 ><P
->Przykład:     <SAMP
+>PrzykĹad:     <SAMP
 CLASS="PROMPT"
 >logfile = /var/log/antyvir</SAMP
 ></P
@@ -135,10 +135,10 @@ CLASS="PROMPT"
 ><P
 >interfaces</P
 ><P
->Lista oddzielonych spacją nazw interfejsów, z których tcpdump ma 
-                         zbierać dane. Domyślnie: eth0</P
+>Lista oddzielonych spacjÄ nazw interfejsĂłw, z ktĂłrych tcpdump ma 
+                         zbieraÄ dane. DomyĹlnie: eth0</P
 ><P
->Przykład:     <SAMP
+>PrzykĹad:     <SAMP
 CLASS="PROMPT"
 >interfaces = eth0 eth1</SAMP
 ></P
@@ -147,10 +147,10 @@ CLASS="PROMPT"
 ><P
 >ports</P
 ><P
->Lista oddzielonych spacją portów, z których tcpdump ma zbierać dane.
-                         Dla każdego tworzony jest osobny proces, więc nie przesadzać. Domyślnie: 135 445</P
+>Lista oddzielonych spacjÄ portĂłw, z ktĂłrych tcpdump ma zbieraÄ dane.
+                         Dla kaĹźdego tworzony jest osobny proces, wiÄc nie przesadzaÄ. DomyĹlnie: 135 445</P
 ><P
->Przykład:     <SAMP
+>PrzykĹad:     <SAMP
 CLASS="PROMPT"
 >ports = 445</SAMP
 ></P
@@ -159,10 +159,10 @@ CLASS="PROMPT"
 ><P
 >packets</P
 ><P
->Określa liczbę pakietów po odebraniu której tcpdump kończy pracę.
-                         Domyślnie: 1000</P
+>OkreĹla liczbÄ pakietĂłw po odebraniu ktĂłrej tcpdump koĹczy pracÄ.
+                         DomyĹlnie: 1000</P
 ><P
->Przykład:     <SAMP
+>PrzykĹad:     <SAMP
 CLASS="PROMPT"
 >packets = 500</SAMP
 ></P
@@ -171,10 +171,10 @@ CLASS="PROMPT"
 ><P
 >threshold</P
 ><P
->Określa liczbę pakietów, po przekroczeniu której program uznaje
-                         ruch w sieci za podejrzany. Domyślnie: 50</P
+>OkreĹla liczbÄ pakietĂłw, po przekroczeniu ktĂłrej program uznaje
+                         ruch w sieci za podejrzany. DomyĹlnie: 50</P
 ><P
->Przykład:     <SAMP
+>PrzykĹad:     <SAMP
 CLASS="PROMPT"
 >threshold = 100</SAMP
 ></P
@@ -183,13 +183,13 @@ CLASS="PROMPT"
 ><P
 >field</P
 ><P
->Ma to związek z tcpdumpem i jego różnymi wersjami. W starszych
-                         wersjach powinno być tu 6. Jak to sprawdzić? tcpdump -i eth1 -enp -c 1
+>Ma to zwiÄzek z tcpdumpem i jego rĂłĹźnymi wersjami. W starszych
+                         wersjach powinno byÄ tu 6. Jak to sprawdziÄ? tcpdump -i eth1 -enp -c 1
                          otrzymujemy 00:03:38.613761 0:40:f4:b3:1c:67 0:30:84:b3:bb:8d 0800 1414:
                          10.100.0.52.4314 &#62; 172.181.172.35.4662: .... interesuje nas pole w tym
-                         wypadku 6 czyli adres IP nadawcy. Domyślnie: 11</P
+                         wypadku 6 czyli adres IP nadawcy. DomyĹlnie: 11</P
 ><P
->Przykład:     <SAMP
+>PrzykĹad:     <SAMP
 CLASS="PROMPT"
 >field = 6</SAMP
 ></P
@@ -198,10 +198,10 @@ CLASS="PROMPT"
 ><P
 >message</P
 ><P
->Treść ostrzeżenia, w którym można zastosować zmienną %DATE dla bieżącej daty
-                         i godziny. Jeśli pusta, ostrzeżenie nie zostanie włączone. Domyślnie: pusta</P
+>TreĹÄ ostrzeĹźenia, w ktĂłrym moĹźna zastosowaÄ zmiennÄ %DATE dla bieĹźÄcej daty
+                         i godziny. JeĹli pusta, ostrzeĹźenie nie zostanie wĹÄczone. DomyĹlnie: pusta</P
 ><P
->Przykład:     <SAMP
+>PrzykĹad:     <SAMP
 CLASS="PROMPT"
 >message = Wykryto wirusa w dniu %DATE</SAMP
 ></P
@@ -253,7 +253,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Ostrzeżenia + squid</TD
+>OstrzeĹźenia + squid</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"

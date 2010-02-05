@@ -79,17 +79,17 @@ NAME="INSTALL-INSTALL"
 >2.3. Instalacja LMS</A
 ></H1
 ><P
->LMS w postaci archiwum tar.gz można pobrać ze strony 
+>LMS w postaci archiwum tar.gz moĹźna pobraÄ ze strony 
         domowej projektu (<A
 HREF="http://www.lms.org.pl"
 TARGET="_top"
 >www.lms.org.pl</A
 >),
-        a następnie rozpakować i umieścić w wybranym katalogu (np. <TT
+        a nastÄpnie rozpakowaÄ i umieĹciÄ w wybranym katalogu (np. <TT
 CLASS="FILENAME"
 >/var/www/lms
         </TT
->) dostępnym dla serwera www:
+>) dostÄpnym dla serwera www:
 <PRE
 CLASS="SCREEN"
 >$ cd /var/www
@@ -99,13 +99,13 @@ $ tar zxf lms-x.x.x.tar.gz</PRE
         </P
 ><P
 >Biblioteka Smarty zawarta jest w paczce z LMSem. Natomiast gdy
-	używasz wersji systemu pobranej wprost z CVSu musisz sam zadbać
-	o jej instalację. Najprościej skorzystać ze skryptu 
+	uĹźywasz wersji systemu pobranej wprost z CVSu musisz sam zadbaÄ
+	o jej instalacjÄ. NajproĹciej skorzystaÄ ze skryptu 
 	<TT
 CLASS="FILENAME"
 >/devel/smarty_install.sh</TT
->, który pobierze
-	bibliotekę Smarty z Internetu i skopiuje zawartość katalogu 
+>, ktĂłry pobierze
+	bibliotekÄ Smarty z Internetu i skopiuje zawartoĹÄ katalogu 
 	<TT
 CLASS="FILENAME"
 >/lib</TT
@@ -134,7 +134,7 @@ ALT="Notatka"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Położenie wszystkich katalogów możesz zmienić w sekcji
+>PoĹoĹźenie wszystkich katalogĂłw moĹźesz zmieniÄ w sekcji
           <SPAN
 CLASS="emphasis"
 ><I
@@ -151,13 +151,13 @@ CLASS="FILENAME"
 ></DIV
 ></P
 ><P
->Pliki z konfiguracją (<TT
+>Pliki z konfiguracjÄ (<TT
 CLASS="FILENAME"
 >sample/lms.ini</TT
 > i <TT
 CLASS="FILENAME"
 >          sample/lms-mgc.ini</TT
->) umieść w katalogu <TT
+>) umieĹÄ w katalogu <TT
 CLASS="FILENAME"
 >/etc/lms</TT
 >.
@@ -167,7 +167,7 @@ CLASS="FILENAME"
 CLASS="FILENAME"
 >bin</TT
 > 
-          najlepiej przenieść do katalogu <TT
+          najlepiej przenieĹÄ do katalogu <TT
 CLASS="FILENAME"
 >/usr/sbin</TT
 >.
@@ -192,7 +192,7 @@ ALT="Ostrze&#380;enie"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Serwer www musi mieć prawo odczytu pliku <TT
+>Serwer www musi mieÄ prawo odczytu pliku <TT
 CLASS="FILENAME"
 >lms.ini</TT
 >
@@ -200,7 +200,7 @@ CLASS="FILENAME"
 CLASS="FILENAME"
 >backup</TT
 >. 
-		Stanowi to potencjalne obniżenie poziomu bezpieczeństwa systemu.
+		Stanowi to potencjalne obniĹźenie poziomu bezpieczeĹstwa systemu.
 		</P
 ></TD
 ></TR
@@ -226,7 +226,7 @@ ALT="Ostrze&#380;enie"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Bezwzględnie LMS wymaga wyłączenia opcji PHP <TT
+>BezwzglÄdnie LMS wymaga wyĹÄczenia opcji PHP <TT
 CLASS="FILENAME"
 >register_globals</TT
 >.
@@ -255,15 +255,15 @@ ALT="Notatka"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Począwszy od wersji 1.6 przechowywanie konfiguracji 
-		interfejsu użytkownika w <TT
+>PoczÄwszy od wersji 1.6 przechowywanie konfiguracji 
+		interfejsu uĹźytkownika w <TT
 CLASS="FILENAME"
 >lms.ini</TT
-> jest przestarzałe. 
-		Jedynymi koniecznymi sekcjami w tym pliku są [database] i [directories]
-		oraz konfiguracja skryptów perlowych. Ustawienia LMS-UI
-	    	przechowywane są w bazie danych i mogą być modyfikowane przez 
-		interfejs użytkownika, mają także wyższy priorytet od tych zawartych
+> jest przestarzaĹe. 
+		Jedynymi koniecznymi sekcjami w tym pliku sÄ [database] i [directories]
+		oraz konfiguracja skryptĂłw perlowych. Ustawienia LMS-UI
+	    	przechowywane sÄ w bazie danych i mogÄ byÄ modyfikowane przez 
+		interfejs uĹźytkownika, majÄ takĹźe wyĹźszy priorytet od tych zawartych
 		w <TT
 CLASS="FILENAME"
 >lms.ini</TT
@@ -286,27 +286,27 @@ memory_limit = 32M ; co najmniej</PRE
 	</P
 ><P
 >Przed pierwszym uruchomieniem LMSa wymagane jest ustawienie opcji
-		konfiguracyjnych bazy danych i katalogów w pliku <TT
+		konfiguracyjnych bazy danych i katalogĂłw w pliku <TT
 CLASS="FILENAME"
 >lms.ini</TT
 >. 
-		Następnie po uruchomieniu <SPAN
+		NastÄpnie po uruchomieniu <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
-> zakładamy konto użytkownika uprzywilejowanego (zaznaczając wszystkie uprawnienia).
-		Po czym możemy przystąpić do konfiguracji podstawowej systemu. W menu Konfiguracja -&#62; Interfejs użytkownika ustawiamy podstawowe opcje
-		odnoszące się do <SPAN
+> zakĹadamy konto uĹźytkownika uprzywilejowanego (zaznaczajÄc wszystkie uprawnienia).
+		Po czym moĹźemy przystÄpiÄ do konfiguracji podstawowej systemu. W menu Konfiguracja -&#62; Interfejs uĹźytkownika ustawiamy podstawowe opcje
+		odnoszÄce siÄ do <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
->. Następnie wymagane jest
-		zdefiniowanie przynajmniej jednej firmy (oddziału) oraz wskazane jest
-		zdefiniowanie stawek podatkowych, planów numeracyjnych, województw oraz hostów.</P
+>. NastÄpnie wymagane jest
+		zdefiniowanie przynajmniej jednej firmy (oddziaĹu) oraz wskazane jest
+		zdefiniowanie stawek podatkowych, planĂłw numeracyjnych, wojewĂłdztw oraz hostĂłw.</P
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"

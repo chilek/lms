@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Ostrzeżenia + squid</TITLE
+>OstrzeĹźenia + squid</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -76,7 +76,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="CONTRIB-SQUID"
->8.4. Ostrzeżenia + squid</A
+>8.4. OstrzeĹźenia + squid</A
 ></H1
 ><DIV
 CLASS="SECT2"
@@ -84,25 +84,25 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="SQUID-REDIRECTOR-INTRO"
->8.4.1. Wstęp</A
+>8.4.1. WstÄp</A
 ></H2
 ><P
->Ten mały zestaw narzędzi pozwala za pomocą squida w dosyć elegancki sposób 
-          wyświetlać wiadomości administracyjne oraz w razie potrzeby blokować dostęp
-          do w3cache. Oczywiście aby to działało w 100%, wszyscy klienci muszą 
-          korzystać ze squida.</P
+>Ten maĹy zestaw narzÄdzi pozwala za pomocÄ squida w dosyÄ elegancki sposĂłb 
+          wyĹwietlaÄ wiadomoĹci administracyjne oraz w razie potrzeby blokowaÄ dostÄp
+          do w3cache. OczywiĹcie aby to dziaĹaĹo w 100%, wszyscy klienci muszÄ 
+          korzystaÄ ze squida.</P
 ><P
 >Kluczowym elementem jest redirector. Odpowiada on za to, 
           aby w momencie ustawienia dla danego komputera flagi warn, 
-          przekierowywał wszystkie żądania wysyłane do serwera proxy na nasz, 
-          ustalony wcześniej adres. Przekierowaniu nie ulegają adresy zawierające 
-          adres naszej winietki, tak aby umożliwić załadowanie się obrazków.
-          Jeśli komputer ma ustawioną flagę warn, to po przekierowaniu użytkownik ma 
-          możliwość oznaczenia wiadomości jako przeczytanej, po czym skrypt automatycznie 
-          kieruje przeglądarkę na pierwotnie wywoływany URL. W przypadku oznaczeniu danego 
-          komputera jako wyłączony, użytkownik będzie zawsze przekierowywany na adres 
-          winietki, bez możliwości oznaczenia wiadomości jako przeczytanej.
-          Więcej informacji znajdziesz w pliku
+          przekierowywaĹ wszystkie ĹźÄdania wysyĹane do serwera proxy na nasz, 
+          ustalony wczeĹniej adres. Przekierowaniu nie ulegajÄ adresy zawierajÄce 
+          adres naszej winietki, tak aby umoĹźliwiÄ zaĹadowanie siÄ obrazkĂłw.
+          JeĹli komputer ma ustawionÄ flagÄ warn, to po przekierowaniu uĹźytkownik ma 
+          moĹźliwoĹÄ oznaczenia wiadomoĹci jako przeczytanej, po czym skrypt automatycznie 
+          kieruje przeglÄdarkÄ na pierwotnie wywoĹywany URL. W przypadku oznaczeniu danego 
+          komputera jako wyĹÄczony, uĹźytkownik bÄdzie zawsze przekierowywany na adres 
+          winietki, bez moĹźliwoĹci oznaczenia wiadomoĹci jako przeczytanej.
+          WiÄcej informacji znajdziesz w pliku
           <TT
 CLASS="FILENAME"
 >README</TT
@@ -129,19 +129,19 @@ redirect_program /sciezka/do/lms-squid
 # wersja 2.6
 url_rewrite_program /sciezka/do/lms-squid</PRE
 >
-          które informują squida aby dla każdego adresu używał naszego 
-          redirectora. Następnie należy skonfigurować redirectora. Otwieramy 
+          ktĂłre informujÄ squida aby dla kaĹźdego adresu uĹźywaĹ naszego 
+          redirectora. NastÄpnie naleĹźy skonfigurowaÄ redirectora. Otwieramy 
           w naszym ulubionym edytorze plik lms-squid i praktycznie
-          wszystko co można w nim ustawić to:
+          wszystko co moĹźna w nim ustawiÄ to:
 <PRE
 CLASS="SCREEN"
 >my $configfile = '/etc/lms/lms.ini';</PRE
 >
-          Czyli położenie pliku konfiguracyjnego. Reszta konfiguracji 
+          Czyli poĹoĹźenie pliku konfiguracyjnego. Reszta konfiguracji 
           ustawiana jest w <TT
 CLASS="FILENAME"
 >lms.ini</TT
->, gdzie dopisujemy sekcję 
+>, gdzie dopisujemy sekcjÄ 
           <TT
 CLASS="FILENAME"
 >[redirector]</TT
@@ -151,11 +151,11 @@ CLASS="SCREEN"
 >[redirector]
 redirect        = http://net-komp.net.pl</PRE
 >
-          Do katalogu gdzie ma być widoczna winietka kopiujemy pliki
+          Do katalogu gdzie ma byÄ widoczna winietka kopiujemy pliki
           <TT
 CLASS="FILENAME"
 >index.php, message.html</TT
-> i zawartość katalogu 
+> i zawartoĹÄ katalogu 
           <TT
 CLASS="FILENAME"
 >img</TT

@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Przykład zastosowania lms-mgc</TITLE
+>PrzykĹad zastosowania lms-mgc</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -10,7 +10,7 @@ REL="HOME"
 TITLE="LMS - LAN Management System 1.11-cvs"
 HREF="index.html"><LINK
 REL="UP"
-TITLE="Generator plików konfiguracyjnych (lms-mgc)"
+TITLE="Generator plikĂłw konfiguracyjnych (lms-mgc)"
 HREF="mgc.html"><LINK
 REL="PREVIOUS"
 TITLE="Konfiguracja"
@@ -55,7 +55,7 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Rozdzia&#322; 5. Generator plików konfiguracyjnych (lms-mgc)</TD
+>Rozdzia&#322; 5. Generator plikĂłw konfiguracyjnych (lms-mgc)</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
@@ -76,11 +76,11 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="MGC-EXAMPLE"
->5.3. Przykład zastosowania lms-mgc</A
+>5.3. PrzykĹad zastosowania lms-mgc</A
 ></H1
 ><P
->Konfiguracja i zasada działania lms-mgc może się wydawać dość zawiła, dlatego
-	posłużymy się przykładem. Poniżej przedstawiono sposób generowania i uruchamiania firewalla
+>Konfiguracja i zasada dziaĹania lms-mgc moĹźe siÄ wydawaÄ doĹÄ zawiĹa, dlatego
+	posĹuĹźymy siÄ przykĹadem. PoniĹźej przedstawiono sposĂłb generowania i uruchamiania firewalla
 	ipchains (bardzo prostego).</P
 ><DIV
 CLASS="EXAMPLE"
@@ -89,14 +89,14 @@ NAME="INSTANCE-EXAMPLE"
 ></A
 ><P
 ><B
->Przyk&#322;ad 5-1. Lms-mgc: Przykład instancji</B
+>Przyk&#322;ad 5-1. Lms-mgc: PrzykĹad instancji</B
 ></P
 ><P
 >Zacznij od utworzenia nowej sekcji mgc w <TT
 CLASS="FILENAME"
 >lms-mgc.ini</TT
 >, 
-	nazywając ją 'ipchains' i stwórz w tej sekcji prostą maskaradę per adres IP z lanu:
+	nazywajÄc jÄ 'ipchains' i stwĂłrz w tej sekcji prostÄ maskaradÄ per adres IP z lanu:
 	<PRE
 CLASS="SCREEN"
 >[mgc:ipchains]
@@ -106,7 +106,7 @@ header            = #!/bin/sh\n/sbin/ipchains -F\n/sbin/ipchains -X\n/sbin/ipcha
 grantednode_priv  = /sbin/ipchains -A forward -s %IP -j MASQ
 post_exec         = /etc/rc.d/rc.masq</PRE
 >
-	Dopiszmy także do sekcji głównej mgc informację żeby mgc uruchamiał tą sekcję:
+	Dopiszmy takĹźe do sekcji gĹĂłwnej mgc informacjÄ Ĺźeby mgc uruchamiaĹ tÄ sekcjÄ:
 	<PRE
 CLASS="SCREEN"
 >[mgc]
@@ -114,7 +114,7 @@ instances         = ipchains</PRE
 >
 	</P
 ><P
->Teraz próba odpalenia lms-mgc powinna zaowocować wygenerowaniem
+>Teraz prĂłba odpalenia lms-mgc powinna zaowocowaÄ wygenerowaniem
 	<TT
 CLASS="FILENAME"
 >/etc/rc.d/rc.masq</TT
