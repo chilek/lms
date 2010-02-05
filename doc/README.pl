@@ -37,7 +37,7 @@ LMS Developers
         3.6. Sieci IP
         3.7. Finanse
         3.8. Dokumenty
-        3.9. Konta
+        3.9. Hosting
         3.10. Wiadomości
         3.11. Przeładowanie
         3.12. Statystyki
@@ -97,9 +97,10 @@ LMS Developers
    7-1. Drzewo katalogów LMS
 
    Spis przykładów
-   3-1. Konta. Konfiguracja proftpd.
-   3-2. Konta. Konfiguracja serwera pocztowego (postfix+sasl+courier).
-   3-3. Konta. Konfiguracja pure-ftpd.
+   3-1. Domeny. Konfiguracja PowerDNS.
+   3-2. Hosting. Konfiguracja proftpd.
+   3-3. Konta. Konfiguracja serwera pocztowego (postfix+sasl+courier).
+   3-4. Konta. Konfiguracja pure-ftpd.
    4-1. Lms-notify: Przykładowy wyciąg 10 ostatnich operacji kasowych
    4-2. Lms-notify: Przykład szablonu
    5-1. Lms-mgc: Przykład instancji
@@ -1764,9 +1765,9 @@ Rozdział 3. Interfejs Użytkownika (LMS-UI)
    dokumentów.
      __________________________________________________________________
 
-3.9. Konta
+3.9. Hosting
 
-   Zarządzanie kontami różnych usług na serwerze jest teraz możliwe.
+   Zarządzanie różnymi usługa na serwerze jest teraz możliwe.
    Funkcjonalność ta jest przeznaczona dla zaawansowanych użytkowników.
    Wymaga znajomości tych usług i ich konfiguracji w celu korzystania z
    bazy danych.
@@ -1823,16 +1824,32 @@ Rozdział 3. Interfejs Użytkownika (LMS-UI)
 
 3.9.5. Domeny
 
-   Na liście przedstawione są podstawowe informacje o zdefiniowanych
-   domenach. Możliwe jest dowolne sortowanie listy poprzez kliknięcie
-   nazwy kolumny. Możliwa jest edycja danych domeny po wybraniu ikony
-   [Edytuj].
+   Obecnie LMS może bezpośrednio zarządzać serwerem PowerDNS z mysql/pqsl
+   backend. LMS teraz posiada pełne wsparcie dla większości funkcji
+   serwera PowerDNS. Ma pełnie wsparcie dla domen typu: master, slave i
+   native. Na liście domen przedstawione są podstawowe informacje o
+   zdefiniowanych domenach jak nazwa, typ, właściciel. Możliwe jest
+   dowolne sortowanie listy poprzez kliknięcie nazwy kolumny lub poprzez
+   pierwszą literę nazwy domeny. Możliwa jest edycja podstawowych danych
+   domeny po wybraniu ikony [Edytuj]. Zaawansowana edycja rekordów domeny
+   odbywa się poprzez wybranie ikony [Informacje] a następnie [Rekordy].
+   Możliwa wtedy jest pełna konfiguracja wszystkich rekordów opisujących
+   daną domenę. Każda zmiana rekordu zapisana w bazie danych LMS np.:
+   edycja, dodanie lub usunięcie rekordu automatycznie zwiększa licznik
+   domeny o 1. Każda zmiana jest także automatycznie dostrzegana przez
+   serwer PowerDNS. Aby taka wspópraca była możliwa należy w bazie danych
+   LMS założyć dodatkowego użytkownika z uprawieniami SELECT, INSERT,
+   UPDATE, DELETE dla tabel domains, records oraz SELECT dla tabeli
+   supermaster.
      __________________________________________________________________
 
 3.9.6. Nowa domena
 
-   Dane domeny zawierają nazwę oraz opis. Domena może zostać przypisana do
-   klienta.
+   Dane domeny zawierają nazwę, opis, typ (master, slave, native), adres
+   ip serwera www, adres ip serwera pocztowego, adres ip głównego serwera
+   nazw (jeśli wybrano typ slave) i inne parametry, których wartości
+   domyślne ustawione są w sekcji [zones]. Domena może zostać przypisana
+   do klienta.
      __________________________________________________________________
 
 3.9.7. Szukaj
@@ -1842,12 +1859,85 @@ Rozdział 3. Interfejs Użytkownika (LMS-UI)
 
 3.9.8. Przykłady
 
+   Poniżej opisano sposób intergracji LMS z serwerem PowerDNS.
+
+   Przykład 3-1. Domeny. Konfiguracja PowerDNS.
+Przygotowanie bazy danych na której działa LMS do współpracy z serwerem PowerDNS.
+
+Dodajemy użytkownika powerdns o uprawnieniach ograniczonych do tabel domains i records.
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON powerdns.domains TO 'powerdns'@'adres-serwera-dns' IDENTIFIED BY 'hasło';
+GRANT SELECT, INSERT, UPDATE, DELETE ON powerdns.records TO 'powerdns'@'adres-serwera-dns' IDENTIFIED BY 'hasło';
+
+Instalujemy pakiety: pdns, pdns-backend, pdns-recursor.
+
+W dystrybucjach Centos, Fedora, RedHat:
+
+yum install pdns pdns-backend pdns-recursor
+
+Edytujemy plik /etc/pdns/pdns.conf dodając:
+
+launch=gmysql
+gmysql-dbname=lms #wpisz właściwą nazwę bazy danych na której pracuje lms
+gmysql-host=adres-serwera-sql #podaj adres ip lub nazwę serwera na którym pracuje bazy danych
+gmysql-password=hasło
+gmysql-user=powerdns
+master=yes
+slave=yes
+recursor=127.0.0.1:5300
+allow-recursion=127.0.0.0/8, 192.168.0.1/24
+
+Gdzie 192.168.0.1 to przykładowa sieć. Po przecinku należy dodać własne sieci zktórych
+serwer ma obsługiwać zapytania rekurencyjne.
+
+Edytujemy plik /etc/pdns-recursor/recursor.conf dodając:
+
+allow-from=127.0.0.0/8
+local-address=127.0.0.1
+local-port=5300
+
+Następnie:
+
+chkconfig --levels 235 pdns-recursor on
+chkconfig --levels 235 pdns on
+
+service pdns-recursor start
+service pdns start
+
+Na Debianie:
+
+apt-get install pdns-server pdns-backend-mysql pdns-recursor
+
+Edytujemy plik  /etc/powerdns/pdns.conf dodając:
+
+launch=gmysql
+
+Edytujemy /etc/powerdns/pdns.d/pdns.local dodając:
+
+gmysql-dbname=lms #wpisz właściwą nazwę bazy danych na której pracuje lms
+gmysql-host=adres-serwera-sql #podaj adres ip lub nazwę serwera na którym pracuje bazy danych
+gmysql-password=hasło
+gmysql-user=powerdns
+master=yes
+slave=yes
+
+Edytujemy plik /etc/powerdns/recursor.conf      dodając:
+
+allow-from=127.0.0.0/8
+local-address=127.0.0.1
+local-port=5300
+
+Następnie
+
+/etc/init.d/pdns start
+/etc/init.d/pdns-recursor start
+
    Poniższy listing zawiera istotne fragmenty pliku konfiguracyjnego
    demona proftpd (w wersji 1.2.10) umożliwiający przechowywanie danych o
    kontach ftp w bazie LMSa. Przykład zawiera konfigurację dla bazy danych
    PostgreSQL, w komentarzach podano rozwiązania dla MySQLa:
 
-   Przykład 3-1. Konta. Konfiguracja proftpd.
+   Przykład 3-2. Hosting. Konfiguracja proftpd.
   ServerName    "LMS FTP Server"
 
   #nazwa_bazy@host:port klient hasło
@@ -1884,7 +1974,7 @@ Rozdział 3. Interfejs Użytkownika (LMS-UI)
    charakterystycznych dla bazy MySQL. Listing zawiera tylko opcje
    bezpośrednio związane z bazą danych:
 
-   Przykład 3-2. Konta. Konfiguracja serwera pocztowego
+   Przykład 3-3. Konta. Konfiguracja serwera pocztowego
    (postfix+sasl+courier).
 # Plik smtpd.conf (Cyrus-SASL):
 
@@ -2037,7 +2127,7 @@ query = SELECT mail_bcc FROM passwd, domains
    konfigurację serwera pure-ftpd w dystrybucji Gentoo z wykorzystaniem
    bazy danych MySQL.
 
-   Przykład 3-3. Konta. Konfiguracja pure-ftpd.
+   Przykład 3-4. Konta. Konfiguracja pure-ftpd.
 
    No to zaczynamy od instalacji serwera pure-ftpd. Pod Gentoo wygląda to
    tak:
