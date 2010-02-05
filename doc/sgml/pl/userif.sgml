@@ -631,7 +631,9 @@
 	    <example id="hosting-e0">
 	    <title>Domeny. Konfiguracja PowerDNS.</title>
 <screen>
-Przygotowanie bazy danych na ktorej dzia³a LMS do wspó³pracy z serwerem PowerDNS.  
+Przygotowanie bazy danych na której dzia³a LMS do wspó³pracy z serwerem PowerDNS.  
+
+Dodajemy u¿ytkownika powerdns o uprawnieniach ograniczonych do tabel domains i records.
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON powerdns.domains TO 'powerdns'@'adres-serwera-dns' IDENTIFIED BY 'has³o';
 GRANT SELECT, INSERT, UPDATE, DELETE ON powerdns.records TO 'powerdns'@'adres-serwera-dns' IDENTIFIED BY 'has³o';
@@ -646,7 +648,7 @@ Edytujemy plik /etc/pdns/pdns.conf dodaj±c:
 
 launch=gmysql
 gmysql-dbname=lms #wpisz w³a¶ciw± nazwê bazy danych na której pracuje lms
-gmysql-host=adres-serwera-sql # podaj adres ip lub nazwê serwera na którym pracuje bazy danych
+gmysql-host=adres-serwera-sql #podaj adres ip lub nazwê serwera na którym pracuje bazy danych
 gmysql-password=has³o
 gmysql-user=powerdns
 master=yes 
@@ -670,6 +672,35 @@ chkconfig --levels 235 pdns on
 
 service pdns-recursor start
 service pdns start
+
+Na Debianie:
+
+apt-get install pdns-server pdns-backend-mysql pdns-recursor
+
+Edytujemy plik  /etc/powerdns/pdns.conf dodaj±c:
+
+launch=gmysql
+
+Edytujemy /etc/powerdns/pdns.d/pdns.local dodaj±c: 
+
+gmysql-dbname=lms #wpisz w³a¶ciw± nazwê bazy danych na której pracuje lms
+gmysql-host=adres-serwera-sql #podaj adres ip lub nazwê serwera na którym pracuje bazy danych
+gmysql-password=has³o
+gmysql-user=powerdns
+master=yes 
+slave=yes
+
+Edytujemy plik /etc/powerdns/recursor.conf	dodaj±c:
+
+allow-from=127.0.0.0/8 
+local-address=127.0.0.1
+local-port=5300
+
+Nastêpnie 
+
+/etc/init.d/pdns start
+/etc/init.d/pdns-recursor start
+
 </screen>
 </example></para>
 	    <para>Poni¿szy listing zawiera istotne fragmenty pliku konfiguracyjnego
