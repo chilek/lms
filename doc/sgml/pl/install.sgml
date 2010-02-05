@@ -621,6 +621,7 @@ AddDefaultCharset Off
 		    <para>cena sumaryczna netto = (2,56 z³ * 1366 m = 3496,96 z³) / 1,22 = 2866,36 z³ </para>
             </listitem>	    
 	    </itemizedlist>
+	    </para>
     </sect2>
     <sect2 id="install-invoices">
      <title>Faktury</title>
