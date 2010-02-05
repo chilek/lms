@@ -83,7 +83,7 @@ NAME="DEVEL-INI"
 CLASS="FILENAME"
 >/etc/lms/lms.ini</TT
 >)
-          można ustawiać parametry <SPAN
+          moĹźna ustawiaÄ parametry <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -96,15 +96,15 @@ CLASS="EMPHASIS"
 >LMS_MGC</I
 ></SPAN
 >
-	  i innych skryptów. Przechowywanie konfiguracji demona <SPAN
+	  i innych skryptĂłw. Przechowywanie konfiguracji demona <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >lmsd</I
 ></SPAN
 >
-	  w pliku konfiguracyjnym nie jest zalecane. Format wartości parametrów dla skryptów 
-	  perlowych podlega większym restrykcjom niż dla UI.</P
+	  w pliku konfiguracyjnym nie jest zalecane. Format wartoĹci parametrĂłw dla skryptĂłw 
+	  perlowych podlega wiÄkszym restrykcjom niĹź dla UI.</P
 ><DIV
 CLASS="SECT2"
 ><H2
@@ -114,9 +114,9 @@ NAME="INI-COMMENTS"
 >7.3.1. Komentarze</A
 ></H2
 ><P
->Programy parsujące plik konfiguracyjny pomijają wszystkie linie
-               zaczynające się znakiem '#' lub ';'. Komentarze poprzedzone jednym z tych
-               znaków można także wstawiać w tej samej linii co sekcje i opcje.</P
+>Programy parsujÄce plik konfiguracyjny pomijajÄ wszystkie linie
+               zaczynajÄce siÄ znakiem '#' lub ';'. Komentarze poprzedzone jednym z tych
+               znakĂłw moĹźna takĹźe wstawiaÄ w tej samej linii co sekcje i opcje.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -124,18 +124,18 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INI-PARAMS"
->7.3.2. Sekcje, klucze, wartości</A
+>7.3.2. Sekcje, klucze, wartoĹci</A
 ></H2
 ><P
->Opcje konfiguracyjne pogrupowane są w sekcje. Nazwę sekcji, składającą
-               się z liter i/lub cyfr należy zamknąć w nawiasy kwadratowe. Ich nazwy
-               powinny być unikalne.</P
+>Opcje konfiguracyjne pogrupowane sÄ w sekcje. NazwÄ sekcji, skĹadajÄcÄ
+               siÄ z liter i/lub cyfr naleĹźy zamknÄÄ w nawiasy kwadratowe. Ich nazwy
+               powinny byÄ unikalne.</P
 ><P
->Sekcje i parametry umieszcza się w osobnych liniach. Parametry
-               składają się z klucza i wartości. Klucz to nazwa parametru konfiguracyjnego
-               składająca się z liter i/lub cyfr. W tej samej linii co klucz, po znaku
-               równości, umieszcza się wartość parametru. Jeśli wartość zawiera znaki specjalne
-               należy ją objąć w apostrofy lub cudzysłów.</P
+>Sekcje i parametry umieszcza siÄ w osobnych liniach. Parametry
+               skĹadajÄ siÄ z klucza i wartoĹci. Klucz to nazwa parametru konfiguracyjnego
+               skĹadajÄca siÄ z liter i/lub cyfr. W tej samej linii co klucz, po znaku
+               rĂłwnoĹci, umieszcza siÄ wartoĹÄ parametru. JeĹli wartoĹÄ zawiera znaki specjalne
+               naleĹźy jÄ objÄÄ w apostrofy lub cudzysĹĂłw.</P
 ><DIV
 CLASS="EXAMPLE"
 ><A
@@ -148,15 +148,15 @@ NAME="CONFIG-FORMAT"
 ><PRE
 CLASS="SCREEN"
 >[sekcja]
-klucz = wartość 
-zmienna1 = "jakiś tekst"
+klucz = wartoĹÄ 
+zmienna1 = "jakiĹ tekst"
 para_metr = 'zmienna "para_metr" w apostrofach'
 
-[sekcja_1]                    #tu można komentować
-klucz = "tekst ze znakami \t i ;"     ; tu też można komentować
-; a to jest komentarz na całą linię
+[sekcja_1]                    #tu moĹźna komentowaÄ
+klucz = "tekst ze znakami \t i ;"     ; tu teĹź moĹźna komentowaÄ
+; a to jest komentarz na caĹÄ liniÄ
 key = "A.L.E.C's LMS Daemon is the best"
-# opcja = wyłączona</PRE
+# opcja = wyĹÄczona</PRE
 ></DIV
 ></DIV
 ><DIV
@@ -165,15 +165,15 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INI-PERL"
->7.3.3. Zmienne dla skryptów perlowych</A
+>7.3.3. Zmienne dla skryptĂłw perlowych</A
 ></H2
 ><P
->Konfiguracja skryptów perlowych, z uwagi na zastosowanie
-               modułu Config::IniFiles, ma pewne ograniczenia. Komentarze mogą
-               być wstawiane tylko i wyłącznie w nowej linii. Wartości
-               zmiennych nie obejmuje się w apostrofy lub cudzysłów, a są
-               one czytane od znaku równości do końca wiersza. Dlatego właśnie 
-               nie można umieszczać komentarzy w jednej linii z parametrami.
+>Konfiguracja skryptĂłw perlowych, z uwagi na zastosowanie
+               moduĹu Config::IniFiles, ma pewne ograniczenia. Komentarze mogÄ
+               byÄ wstawiane tylko i wyĹÄcznie w nowej linii. WartoĹci
+               zmiennych nie obejmuje siÄ w apostrofy lub cudzysĹĂłw, a sÄ
+               one czytane od znaku rĂłwnoĹci do koĹca wiersza. Dlatego wĹaĹnie 
+               nie moĹźna umieszczaÄ komentarzy w jednej linii z parametrami.
                </P
 ></DIV
 ></DIV
