@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->WiadomoĹci</TITLE
+>Wiadomości</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -10,13 +10,13 @@ REL="HOME"
 TITLE="LMS - LAN Management System 1.11-cvs"
 HREF="index.html"><LINK
 REL="UP"
-TITLE="Interfejs UĹźytkownika (LMS-UI)"
+TITLE="Interfejs Użytkownika (LMS-UI)"
 HREF="user.html"><LINK
 REL="PREVIOUS"
 TITLE="Hosting"
 HREF="menu-hosting.html"><LINK
 REL="NEXT"
-TITLE="PrzeĹadowanie"
+TITLE="Przeładowanie"
 HREF="menu-reload.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
@@ -55,7 +55,7 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Rozdzia&#322; 3. Interfejs UĹźytkownika (LMS-UI)</TD
+>Rozdzia&#322; 3. Interfejs Użytkownika (LMS-UI)</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
@@ -76,11 +76,11 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="MENU-MESSAGES"
->3.10. WiadomoĹci</A
+>3.10. Wiadomości</A
 ></H1
 ><P
->WiadomoĹci to miejsce z ktĂłrego moĹźesz rozsyĹaÄ do klientĂłw spam w postaci
-	wiadomoĹci e-mail lub sms. </P
+>Wiadomości to miejsce z którego możesz rozsyłać do klientów spam w postaci
+	wiadomości e-mail lub sms. </P
 ><DIV
 CLASS="SECT2"
 ><H2
@@ -90,11 +90,11 @@ NAME="MENU-MESSAGES-LIST"
 >3.10.1. Lista</A
 ></H2
 ><P
->Lista wiadomoĹci zawiera historiÄ wysĹanych wiadomoĹci. MoĹźesz
-		jÄ dowolnie przeszukiwaÄ korzystajÄc z filtra. KlikniÄcie wiersza
-		wiadomoĹci powoduje przejĹcie do strony ze szczegĂłĹowymi informacjami
-		o wiadomoĹci tj. treĹci, nadawcy. Strona ta zawiera rĂłwnieĹź listÄ
-		odbiorcĂłw wiadomoĹci wraz ze statusem wysyĹki.</P
+>Lista wiadomości zawiera historię wysłanych wiadomości. Możesz
+		ją dowolnie przeszukiwać korzystając z filtra. Kliknięcie wiersza
+		wiadomości powoduje przejście do strony ze szczegółowymi informacjami
+		o wiadomości tj. treści, nadawcy. Strona ta zawiera również listę
+		odbiorców wiadomości wraz ze statusem wysyłki.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -102,15 +102,15 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-MESSAGES-NEW"
->3.10.2. Nowa wiadomoĹÄ</A
+>3.10.2. Nowa wiadomość</A
 ></H2
 ><P
->Aby wysĹaÄ wiadomoĹÄ naleĹźy wybraÄ grupÄ docelowÄ przy pomocy
-		dostÄpnych filtrĂłw okreĹlajÄcych status klienta, sieÄ, grupÄ, typ ĹÄcza, itp. 
-		NaleĹźy rĂłwnieĹź wybraÄ typ wiadomoĹci, podaÄ jej temat (wymagany rĂłwnieĹź dla smsĂłw) i treĹÄ.</P
+>Aby wysłać wiadomość należy wybrać grupę docelową przy pomocy
+		dostępnych filtrów określających status klienta, sieć, grupę, typ łącza, itp. 
+		Należy również wybrać typ wiadomości, podać jej temat (wymagany również dla smsów) i treść.</P
 ><P
->W treĹci wiadomoĹci moĹźna uĹźywaÄ zmiennych, w miejsce ktĂłrych zostanÄ
-		podstawione dane wĹaĹciwe dla kaĹźdego z odbiorcĂłw:
+>W treści wiadomości można używać zmiennych, w miejsce których zostaną
+		podstawione dane właściwe dla każdego z odbiorców:
 		<TABLE
 BORDER="0"
 ><TBODY
@@ -119,7 +119,7 @@ BORDER="0"
 ><SAMP
 CLASS="PROMPT"
 >%customer</SAMP
-> - nazwisko/nazwa i imiÄ klienta</TD
+> - nazwisko/nazwa i imię klienta</TD
 ></TR
 ><TR
 ><TD
@@ -163,12 +163,12 @@ NAME="MENU-MESSAGES-CONF"
 >3.10.3. Konfiguracja</A
 ></H2
 ><P
->Serwer musi byÄ odpowiednio skonfigurowany do uĹźycia PEAR::Mail dla mailingu. 
-		JeĹźeli korzystasz z serwera pocztowego na zdalnym hoĹcie bÄdziesz musiaĹ ustawiÄ 
+>Serwer musi być odpowiednio skonfigurowany do użycia PEAR::Mail dla mailingu. 
+		Jeżeli korzystasz z serwera pocztowego na zdalnym hoście będziesz musiał ustawić 
 		opcje smtp_host, smtp_port, smtp_username, smtp_password.</P
 ><P
->PoniĹźej znajduje siÄ lista opcji konfiguracyjnych zwiÄzanych
-		z wysyĹaniem wiadomoĹci pocztowych. Opcje te umieszczone sÄ w sekcji
+>Poniżej znajduje się lista opcji konfiguracyjnych związanych
+		z wysyłaniem wiadomości pocztowych. Opcje te umieszczone są w sekcji
 		<SPAN
 CLASS="emphasis"
 ><I
@@ -181,10 +181,10 @@ CLASS="EMPHASIS"
 ><P
 >debug_email</P
 ><P
->Adres e-mail do debugowania - pod ten adres bÄdÄ szĹy wiadomoĹci wysyĹane z sekcji 'WiadomoĹci' LMS'a, 
-				zamiast do wĹaĹciwych klientĂłw.</P
+>Adres e-mail do debugowania - pod ten adres będą szły wiadomości wysyłane z sekcji 'Wiadomości' LMS'a, 
+				zamiast do właściwych klientów.</P
 ><P
->PrzykĹad:     <SAMP
+>Przykład:     <SAMP
 CLASS="PROMPT"
 >debug_email = root@localhost</SAMP
 ></P
@@ -193,11 +193,11 @@ CLASS="PROMPT"
 ><P
 >smtp_host, smtp_port, smtp_username, smtp_password</P
 ><P
->Parametry poĹÄczenia SMTP. LMS umoĹźliwia korzystanie ze
-				zdalnego serwera pocztowego z autoryzacjÄ, wykorzystujÄc do tego moduĹ
-				PEAR::Mail. DomyĹlnie: 127.0.0.1:25.</P
+>Parametry połączenia SMTP. LMS umożliwia korzystanie ze
+				zdalnego serwera pocztowego z autoryzacją, wykorzystując do tego moduł
+				PEAR::Mail. Domyślnie: 127.0.0.1:25.</P
 ><P
->PrzykĹad:     <SAMP
+>Przykład:     <SAMP
 CLASS="PROMPT"
 >smtp_host = poczta.domena.pl</SAMP
 ></P
@@ -206,10 +206,10 @@ CLASS="PROMPT"
 ><P
 >smtp_auth_type</P
 ><P
->Metoda autoryzacji SMTP w mailingu. Przy ustawieniach domyĹlnych
-				zostanie uĹźyta najlepsza z dostÄpnych metod. DomyĹlnie: nie ustawiona.</P
+>Metoda autoryzacji SMTP w mailingu. Przy ustawieniach domyślnych
+				zostanie użyta najlepsza z dostępnych metod. Domyślnie: nie ustawiona.</P
 ><P
->PrzykĹad:     <SAMP
+>Przykład:     <SAMP
 CLASS="PROMPT"
 >smtp_auth_type = DIGEST-MD5</SAMP
 ></P
@@ -218,9 +218,9 @@ CLASS="PROMPT"
 >
 		</P
 ><P
->Konfiguracja wiadomoĹci SMS jest bardziej rozbudowana. Przede wszystkim 
-		naleĹźy zdefiniowaÄ z jakiej usĹugi bÄdziemy korzystaÄ. Czy bÄdzie to bramka smsowa,
-		czy jakieĹ oprogramowanie zainstalowane na serwerze (np. gnokii, smstools). Konfiguracji
+>Konfiguracja wiadomości SMS jest bardziej rozbudowana. Przede wszystkim 
+		należy zdefiniować z jakiej usługi będziemy korzystać. Czy będzie to bramka smsowa,
+		czy jakieś oprogramowanie zainstalowane na serwerze (np. gnokii, smstools). Konfiguracji
 		dokonujemy w sekcji <SPAN
 CLASS="emphasis"
 ><I
@@ -233,9 +233,9 @@ CLASS="EMPHASIS"
 ><P
 >service</P
 ><P
->UsĹuga uĹźywana do wysyĹania smsĂłw. Dozwolone wartoĹci to 'smstools' i 'smscenter'</P
+>Usługa używana do wysyłania smsów. Dozwolone wartości to 'smstools' i 'smscenter'</P
 ><P
->PrzykĹad:     <SAMP
+>Przykład:     <SAMP
 CLASS="PROMPT"
 >service = smstools</SAMP
 ></P
@@ -244,9 +244,9 @@ CLASS="PROMPT"
 ><P
 >prefix</P
 ><P
->Telefoniczny prefix kraju. DomyĹlnie: 48 (Polska)</P
+>Telefoniczny prefix kraju. Domyślnie: 48 (Polska)</P
 ><P
->PrzykĹad:     <SAMP
+>Przykład:     <SAMP
 CLASS="PROMPT"
 >prefix = 49</SAMP
 ></P
@@ -255,9 +255,9 @@ CLASS="PROMPT"
 ><P
 >from</P
 ><P
->Nadawca wiadomoĹci. DomyĹlnie: pusta.</P
+>Nadawca wiadomości. Domyślnie: pusta.</P
 ><P
->PrzykĹad:     <SAMP
+>Przykład:     <SAMP
 CLASS="PROMPT"
 >from = ISP Sp. z o.o.</SAMP
 ></P
@@ -266,9 +266,9 @@ CLASS="PROMPT"
 ><P
 >username</P
 ><P
->Nazwa uĹźytkownika bramki smsowej. DomyĹlnie: pusta.</P
+>Nazwa użytkownika bramki smsowej. Domyślnie: pusta.</P
 ><P
->PrzykĹad:     <SAMP
+>Przykład:     <SAMP
 CLASS="PROMPT"
 >username = isp</SAMP
 ></P
@@ -277,9 +277,9 @@ CLASS="PROMPT"
 ><P
 >password</P
 ><P
->HasĹo do bramki smsowej. DomyĹlnie: puste.</P
+>Hasło do bramki smsowej. Domyślnie: puste.</P
 ><P
->PrzykĹad:     <SAMP
+>Przykład:     <SAMP
 CLASS="PROMPT"
 >password = haslo</SAMP
 ></P
@@ -288,10 +288,10 @@ CLASS="PROMPT"
 ><P
 >smscenter_type</P
 ><P
->Typ konta w usĹudze smscenter. JeĹli wybrano 'static' LMS doda nazwÄ
-				nadawcy na koĹcu wiadomoĹci. DomyĹlnie: dynamic.</P
+>Typ konta w usłudze smscenter. Jeśli wybrano 'static' LMS doda nazwę
+				nadawcy na końcu wiadomości. Domyślnie: dynamic.</P
 ><P
->PrzykĹad:     <SAMP
+>Przykład:     <SAMP
 CLASS="PROMPT"
 >smscenter_type = static</SAMP
 ></P
@@ -300,11 +300,11 @@ CLASS="PROMPT"
 ><P
 >smstools_outdir</P
 ><P
->Katalog na pliki wiadomoĹci do wysĹania dla demona smsd z pakietu smstools.
-				Serwer HTTP musi mieÄ prawa do zapisu w tym katalogu.
-				DomyĹlnie: /var/spool/sms/outgoing.</P
+>Katalog na pliki wiadomości do wysłania dla demona smsd z pakietu smstools.
+				Serwer HTTP musi mieć prawa do zapisu w tym katalogu.
+				Domyślnie: /var/spool/sms/outgoing.</P
 ><P
->PrzykĹad:     <SAMP
+>Przykład:     <SAMP
 CLASS="PROMPT"
 >smstools_outdir = /home/smsd/outgoing</SAMP
 ></P
@@ -372,7 +372,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->PrzeĹadowanie</TD
+>Przeładowanie</TD
 ></TR
 ></TABLE
 ></DIV

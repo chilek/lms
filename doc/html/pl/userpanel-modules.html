@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->ModuĹy</TITLE
+>Moduły</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -13,7 +13,7 @@ REL="UP"
 TITLE="Userpanel"
 HREF="userpanel.html"><LINK
 REL="PREVIOUS"
-TITLE="WyglÄd (style)"
+TITLE="Wygląd (style)"
 HREF="userpanel-style.html"><LINK
 REL="NEXT"
 TITLE="FAQ"
@@ -76,11 +76,11 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="USERPANEL-MODULES"
->9.5. ModuĹy</A
+>9.5. Moduły</A
 ></H1
 ><P
->Userpanel posiada budowÄ modularnÄ. KaĹźdy moduĹ, odpowiadajÄcy
-	pozycji w menu, to odrÄbny podkatalog katalogu <SAMP
+>Userpanel posiada budowę modularną. Każdy moduł, odpowiadający
+	pozycji w menu, to odrębny podkatalog katalogu <SAMP
 CLASS="PROMPT"
 >modules</SAMP
 >.
@@ -91,14 +91,14 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MODULE-STRUCTURE"
->9.5.1. Struktura moduĹu</A
+>9.5.1. Struktura modułu</A
 ></H2
 ><P
->Drzewo katalogĂłw typowego moduĹu powinno wyglÄdaÄ
-		nastÄpujÄco:
+>Drzewo katalogów typowego modułu powinno wyglądać
+		następująco:
 <PRE
 CLASS="SCREEN"
->nazwa_moduĹu
+>nazwa_modułu
     |---locale
     |     |---pl
     |          |---strings.php
@@ -116,7 +116,7 @@ CLASS="SCREEN"
 >
 		</P
 ><P
->I kilka sĹĂłw wyjaĹnienia:
+>I kilka słów wyjaśnienia:
 		<UL
 ><LI
 ><P
@@ -124,12 +124,12 @@ CLASS="SCREEN"
 CLASS="PROMPT"
 >locale</SAMP
 > zawiera
-				oczywiĹcie odpowiednie locale. W 
+				oczywiście odpowiednie locale. W 
 				<SAMP
 CLASS="PROMPT"
 >strings.php</SAMP
-> sÄ tylko
-				tĹumaczenia tekstĂłw zwartych w danym module,
+> są tylko
+				tłumaczenia tekstów zwartych w danym module,
 			</P
 ></LI
 ><LI
@@ -137,9 +137,9 @@ CLASS="PROMPT"
 ><SAMP
 CLASS="PROMPT"
 >style</SAMP
-> to oczywiĹcie
-				katalog z obrazkami, zawierajÄcy podkatalogi odpowiadajÄce
-				nazwom styli uĹźywanych w Userpanelu,</P
+> to oczywiście
+				katalog z obrazkami, zawierający podkatalogi odpowiadające
+				nazwom styli używanych w Userpanelu,</P
 ></LI
 ><LI
 ><P
@@ -147,7 +147,7 @@ CLASS="PROMPT"
 CLASS="PROMPT"
 >templates</SAMP
 > to
-				szablony Smarty danego moduĹu,</P
+				szablony Smarty danego modułu,</P
 ></LI
 ><LI
 ><P
@@ -155,12 +155,12 @@ CLASS="PROMPT"
 CLASS="PROMPT"
 >upgradedb</SAMP
 > zawiera pliki
-				auto-upgrade'u bazy danych dla tabel ktĂłrych
-				dany moduĹ uĹźywa. Nazwy tabel tworzonych na
-				potrzeby moduĹĂłw powinny zawieraÄ prefiks
+				auto-upgrade'u bazy danych dla tabel których
+				dany moduł używa. Nazwy tabel tworzonych na
+				potrzeby modułów powinny zawierać prefiks
 				<SAMP
 CLASS="PROMPT"
->up_nazwamoduĹu_</SAMP
+>up_nazwamodułu_</SAMP
 >,</P
 ></LI
 ><LI
@@ -173,7 +173,7 @@ CLASS="PROMPT"
 CLASS="PROMPT"
 >functions.php</SAMP
 > to dwa wymagane
-				pliki. Ich budowa jest opisana poniĹźej.</P
+				pliki. Ich budowa jest opisana poniżej.</P
 ></LI
 ></UL
 >
@@ -185,7 +185,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MODULE-FILES"
->9.5.2. GĹĂłwne pliki</A
+>9.5.2. Główne pliki</A
 ></H2
 ><P
 ></P
@@ -198,14 +198,14 @@ NAME="MODULE-CONFIGURATION"
 >9.5.2.1. configuration.php</A
 ></H3
 ><P
->Ten plik zawiera konfiguracjÄ danego moduĹu, 
+>Ten plik zawiera konfigurację danego modułu, 
 			oraz jest includowany zawsze przy inicjalizacji
-			Userpanela. Typowa zawartoĹÄ:
+			Userpanela. Typowa zawartość:
 <PRE
 CLASS="SCREEN"
 >&lt;?php
-$USERPANEL-&#62;AddModule(trans('Help'),      // Nazwa wyĹwietlana
-                    'help',             // Nazwa moduĹu (musi byÄ taka sama jak nazwa katalogu)
+$USERPANEL-&#62;AddModule(trans('Help'),      // Nazwa wyświetlana
+                    'help',             // Nazwa modułu (musi być taka sama jak nazwa katalogu)
                     trans('Runs problems solving creator'), // Tip
                     5,                  // Priorytet
                     trans('This module shows solving problems creator'), // Opis
@@ -232,13 +232,13 @@ NAME="MODULE-FUNCTIONS"
 >9.5.2.2. functions.php</A
 ></H3
 ><P
->Ten plik zawiera funkcje danego moduĹu. PodstawowÄ
-			funkcjÄ moduĹu jest <SAMP
+>Ten plik zawiera funkcje danego modułu. Podstawową
+			funkcją modułu jest <SAMP
 CLASS="PROMPT"
 >module_main()</SAMP
 >.
-			Funkcja ta jest wykonywana jako pierwsza po wywoĹaniu
-			moduĹu. JeĹli chcemy aby funkcja mogĹa byÄ wywoĹana z
+			Funkcja ta jest wykonywana jako pierwsza po wywołaniu
+			modułu. Jeśli chcemy aby funkcja mogła być wywołana z
 			UI, to dodajemy prefiks <SAMP
 CLASS="PROMPT"
 >module_</SAMP
@@ -246,8 +246,8 @@ CLASS="PROMPT"
 			np. <SAMP
 CLASS="PROMPT"
 >module_funkcja1()</SAMP
->. Funkcja bÄdzie
-			dostÄpna po wpisaniu url'a:
+>. Funkcja będzie
+			dostępna po wpisaniu url'a:
 			<SAMP
 CLASS="PROMPT"
 >http://userpanel/?m=modul&amp;f=funkcja1</SAMP
@@ -255,8 +255,8 @@ CLASS="PROMPT"
 			Funkcja <SAMP
 CLASS="PROMPT"
 >module_setup()</SAMP
-> jest wywoĹywana
-			przez panel konfiguracyjny dostÄpny z LMSa.
+> jest wywoływana
+			przez panel konfiguracyjny dostępny z LMSa.
 			</P
 ></DIV
 ></DIV
@@ -305,7 +305,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->WyglÄd (style)</TD
+>Wygląd (style)</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"

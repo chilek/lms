@@ -13,7 +13,7 @@ REL="UP"
 TITLE="LMS Daemon"
 HREF="daemon.html"><LINK
 REL="PREVIOUS"
-TITLE="ModuĹy"
+TITLE="Moduły"
 HREF="daemon-modules.html"><LINK
 REL="NEXT"
 TITLE="Dla dociekliwych"
@@ -84,19 +84,19 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TSCRIPT-INTRO"
->6.3.1. WstÄp</A
+>6.3.1. Wstęp</A
 ></H2
 ><P
->GĹĂłwnym przeznaczeniem jÄzyka skryptowego <A
+>Głównym przeznaczeniem języka skryptowego <A
 HREF="http://silvercoders.com/index.php?page=T_Script"
 TARGET="_top"
 >T-Script</A
 >,
-		jest generowanie plikĂłw tekstowych. MoĹźe byÄ
-		uĹźywany do przetwarzania szablonĂłw z danymi pobieranymi z rĂłĹźnych
-		ĹşrĂłdeĹ np. baz SQL lub plikĂłw tekstowych.</P
+		jest generowanie plików tekstowych. Może być
+		używany do przetwarzania szablonów z danymi pobieranymi z różnych
+		źródeł np. baz SQL lub plików tekstowych.</P
 ><P
->Przed kompilacjÄ T-Scripta upewnij siÄ, Ĺźe posiadasz w systemie
+>Przed kompilacją T-Scripta upewnij się, że posiadasz w systemie
 		pakiety <TT
 CLASS="FILENAME"
 >bison</TT
@@ -112,48 +112,48 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TSCRIPT-SYNTAX"
->6.3.2. SkĹadnia</A
+>6.3.2. Składnia</A
 ></H2
 ><P
->SkĹadnia jÄzyka T-Script jest podobna do skĹadni innych popularnych
-		jÄzykĂłw takich jak C czy JavaScript, ale dokonano pewnych zmian
-		majÄcych na celu uĹatwienie tworzenia szablonĂłw. 
-		Wszystkie podane polecenia powinny byÄ zapisywane wewnÄtrz klamer { }.
-		Dane poza klamrami zostanÄ zapisane do pliku wyjĹciowego (lub jeĹli go
-		nie zdefiniowano, pominiÄte). WielkoĹÄ liter ma znaczenie. Do oddzielenia
-		poleceĹ sĹuĹźy znak Ĺrednika.</P
+>Składnia języka T-Script jest podobna do składni innych popularnych
+		języków takich jak C czy JavaScript, ale dokonano pewnych zmian
+		mających na celu ułatwienie tworzenia szablonów. 
+		Wszystkie podane polecenia powinny być zapisywane wewnątrz klamer { }.
+		Dane poza klamrami zostaną zapisane do pliku wyjściowego (lub jeśli go
+		nie zdefiniowano, pominięte). Wielkość liter ma znaczenie. Do oddzielenia
+		poleceń służy znak średnika.</P
 ><DIV
 CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
 NAME="EXPR"
->6.3.2.1. WyraĹźenia i operatory</A
+>6.3.2.1. Wyrażenia i operatory</A
 ></H3
 ><UL
 ><LI
 ><P
->CiÄg znakĂłw. ObowiÄzujÄ tutaj zasady jÄzyka C dotyczÄce uĹźycia znakĂłw formatujÄcych (\t, \n, \\). </P
+>Ciąg znaków. Obowiązują tutaj zasady języka C dotyczące użycia znaków formatujących (\t, \n, \\). </P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
->"jakiĹ ciÄg znakĂłw"</SAMP
+>"jakiś ciąg znaków"</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >Liczba.</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
 >1234</SAMP
 ></P
 ></LI
 ><LI
 ><P
->WartoĹÄ zmiannej "var".</P
+>Wartość zmiannej "var".</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
 >var</SAMP
 ></P
@@ -162,7 +162,7 @@ CLASS="PROMPT"
 ><P
 >N-ty element tablicy "var".</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
 >var[n]</SAMP
 ></P
@@ -171,152 +171,152 @@ CLASS="PROMPT"
 ><P
 >Podzmienna "n" zmiennej "var".</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
 >var.n</SAMP
 ></P
 ></LI
 ><LI
 ><P
->WartoĹÄ wyraĹźenia w nawiasach.</P
+>Wartość wyrażenia w nawiasach.</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
->( wyraĹźenie )</SAMP
+>( wyrażenie )</SAMP
 ></P
 ></LI
 ><LI
 ><P
->SĹowo kluczowe "null". OkreĹla wartoĹÄ niezdefiniowanÄ.
-				Przydatne do sprawdzania, czy jakaĹ zmienna (wartoĹÄ) jest
+>Słowo kluczowe "null". Określa wartość niezdefiniowaną.
+				Przydatne do sprawdzania, czy jakaś zmienna (wartość) jest
 				zdefiniowana.</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
 >zmienna = null</SAMP
 ></P
 ></LI
 ><LI
 ><P
->PorĂłwnania. Zwraca wynik logiczny porĂłwnania.</P
+>Porównania. Zwraca wynik logiczny porównania.</P
 ><P
->PrzykĹad: 
+>Przykład: 
 <PRE
 CLASS="SCREEN"
->wyraĹźenie1 == wyraĹźenie2;
-wyraĹźenie1 != wyraĹźenie2;
-wyraĹźenie1 &lt; wyraĹźenie2;
-wyraĹźenie1 &gt; wyraĹźenie2;
-wyraĹźenie1 &lt;= wyraĹźenie2;
-wyraĹźenie1 &gt;= wyraĹźenie2;</PRE
+>wyrażenie1 == wyrażenie2;
+wyrażenie1 != wyrażenie2;
+wyrażenie1 &lt; wyrażenie2;
+wyrażenie1 &gt; wyrażenie2;
+wyrażenie1 &lt;= wyrażenie2;
+wyrażenie1 &gt;= wyrażenie2;</PRE
 ></P
 ></LI
 ><LI
 ><P
 >Operatory binarne. Suma i iloczyn bitowy.</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
->wyraĹźenie1 | wyraĹźenie2</SAMP
+>wyrażenie1 | wyrażenie2</SAMP
 ></P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
->wyraĹźenie1 &#38; wyraĹźenie2</SAMP
+>wyrażenie1 &#38; wyrażenie2</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >Operatory logiczne.</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
->wyraĹźenie1 || wyraĹźenie2</SAMP
+>wyrażenie1 || wyrażenie2</SAMP
 ></P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
->wyraĹźenie1 &#38;&#38; wyraĹźenie2</SAMP
+>wyrażenie1 &#38;&#38; wyrażenie2</SAMP
 ></P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
->! wyraĹźenie1</SAMP
-></P
-></LI
-><LI
-><P
->ĹÄczenie ciÄgĂłw znakĂłw. Gdy oba wyraĹźenia nie sÄ liczbami 
-				traktuje je jako ciÄgi znakĂłw i dokonuje ich poĹÄczenia.</P
-><P
->PrzykĹad: <SAMP
-CLASS="PROMPT"
->wyraĹźenie1 + wyraĹźenie2</SAMP
+>! wyrażenie1</SAMP
 ></P
 ></LI
 ><LI
 ><P
->Operatory arytmetyczne. Zwraca wynik operacji arytmetycznej na dwĂłch wyraĹźeniach.</P
+>Łączenie ciągów znaków. Gdy oba wyrażenia nie są liczbami 
+				traktuje je jako ciągi znaków i dokonuje ich połączenia.</P
 ><P
->PrzykĹad: 
+>Przykład: <SAMP
+CLASS="PROMPT"
+>wyrażenie1 + wyrażenie2</SAMP
+></P
+></LI
+><LI
+><P
+>Operatory arytmetyczne. Zwraca wynik operacji arytmetycznej na dwóch wyrażeniach.</P
+><P
+>Przykład: 
 <PRE
 CLASS="SCREEN"
->wyraĹźenie1 + wyraĹźenie2;
-wyraĹźenie1 - wyraĹźenie2;
-wyraĹźenie1 * wyraĹźenie2;
-wyraĹźenie1 / wyraĹźenie2;
-wyraĹźenie1 % wyraĹźenie2;</PRE
+>wyrażenie1 + wyrażenie2;
+wyrażenie1 - wyrażenie2;
+wyrażenie1 * wyrażenie2;
+wyrażenie1 / wyrażenie2;
+wyrażenie1 % wyrażenie2;</PRE
 ></P
 ></LI
 ><LI
 ><P
 >Jednoargumentowe operatory inkrementacji/dekrementacji.</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
->wyraĹźenie++</SAMP
+>wyrażenie++</SAMP
 ></P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
->wyraĹźenie--</SAMP
+>wyrażenie--</SAMP
 ></P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
->++wyraĹźenie</SAMP
+>++wyrażenie</SAMP
 ></P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
->--wyraĹźenie</SAMP
-></P
-></LI
-><LI
-><P
->PrzesuniÄcie bitowe.</P
-><P
->PrzykĹad: <SAMP
-CLASS="PROMPT"
->wyraĹźenie1 &gt;&gt; wyraĹźenie2</SAMP
-></P
-><P
->PrzykĹad: <SAMP
-CLASS="PROMPT"
->wyraĹźenie1 &lt;&lt; wyraĹźenie2</SAMP
+>--wyrażenie</SAMP
 ></P
 ></LI
 ><LI
 ><P
->PorĂłwnanie ciÄgu do z wyraĹźeniem regularnym. Zwraca 1 gdy <SAMP
+>Przesunięcie bitowe.</P
+><P
+>Przykład: <SAMP
 CLASS="PROMPT"
->wyraĹźenie</SAMP
+>wyrażenie1 &gt;&gt; wyrażenie2</SAMP
+></P
+><P
+>Przykład: <SAMP
+CLASS="PROMPT"
+>wyrażenie1 &lt;&lt; wyrażenie2</SAMP
+></P
+></LI
+><LI
+><P
+>Porównanie ciągu do z wyrażeniem regularnym. Zwraca 1 gdy <SAMP
+CLASS="PROMPT"
+>wyrażenie</SAMP
 >
 				pasuje do wzorca po prawej stronie, w przeciwnym wypadku zwraca 0.</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
->wyraĹźenie =~ wzorzec</SAMP
+>wyrażenie =~ wzorzec</SAMP
 ></P
 ></LI
 ></UL
@@ -332,11 +332,11 @@ NAME="COMMENTS"
 ><UL
 ><LI
 ><P
->Komentarz w stylu jÄzyka C.</P
+>Komentarz w stylu języka C.</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
->/* to jest komentarz - moĹźe byÄ wieloliniowy */</SAMP
+>/* to jest komentarz - może być wieloliniowy */</SAMP
 ></P
 ></LI
 ></UL
@@ -352,69 +352,69 @@ NAME="COMMANDS"
 ><UL
 ><LI
 ><P
->Przypisanie. Przypisanie wartoĹci wyraĹźenia do podanej zmiennej.</P
+>Przypisanie. Przypisanie wartości wyrażenia do podanej zmiennej.</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
->zmienna = wyraĹźenie</SAMP
+>zmienna = wyrażenie</SAMP
 ></P
 ></LI
 ><LI
 ><P
->WyraĹźenie warunkowe. Wykonanie polecenia tylko wtedy gry wyraĹźenie jest prawdÄ. 
-					Druga forma wykonuje polecenie1 gdy wyraĹźenie jest prawdÄ lub polecenie2
-					gdy jest faĹszem.</P
+>Wyrażenie warunkowe. Wykonanie polecenia tylko wtedy gry wyrażenie jest prawdą. 
+					Druga forma wykonuje polecenie1 gdy wyrażenie jest prawdą lub polecenie2
+					gdy jest fałszem.</P
 ><P
->PrzykĹad: <PRE
+>Przykład: <PRE
 CLASS="SCREEN"
->if ( wyraĹźenie ) polecenia /if
-if ( wyraĹźenie ) polecenie1 else polecenie2 /if</PRE
+>if ( wyrażenie ) polecenia /if
+if ( wyrażenie ) polecenie1 else polecenie2 /if</PRE
 ></P
 ><P
->Tekst miÄdzy blokami jest traktowany jako polecenia
-				    	dlatego nastÄpujÄcy przykĹad jest prawidĹowy: <PRE
+>Tekst między blokami jest traktowany jako polecenia
+				    	dlatego następujący przykład jest prawidłowy: <PRE
 CLASS="SCREEN"
->JakiĹ tekst
+>Jakiś tekst
 {if (a==1)} 
-a rĂłwne jest 1
+a równe jest 1
 {else} 
-a nie jest rĂłwne 1
+a nie jest równe 1
 {/if} </PRE
 >
-					MoĹźna wstawiÄ backslash (\) pomiÄdzy poleceniem a koĹcem wiersza aby
-					pozbyÄ siÄ znaku koĹca linii i zachowaÄ normalny (bez zaĹamania linii w tym miejscu)
-					przepĹyw tekstu. Na przykĹad: <PRE
+					Można wstawić backslash (\) pomiędzy poleceniem a końcem wiersza aby
+					pozbyć się znaku końca linii i zachować normalny (bez załamania linii w tym miejscu)
+					przepływ tekstu. Na przykład: <PRE
 CLASS="SCREEN"
->JakiĹ tekst
+>Jakiś tekst
 {if (a==1)}\ 
-a rĂłwna siÄ 1 
+a równa się 1 
 {else}\ 
-a nie rĂłwna siÄ 1 
+a nie równa się 1 
 {/if}\</PRE
 ></P
 ></LI
 ><LI
 ><P
->PÄtla iteracyjna. Wykonuje wyraĹźenie <SAMP
+>Pętla iteracyjna. Wykonuje wyrażenie <SAMP
 CLASS="PROMPT"
->wyraĹźenie1</SAMP
+>wyrażenie1</SAMP
 > jako
-					polecenie inicjalizujÄce pÄtlÄ. NastÄpnie wykonywane jest 
+					polecenie inicjalizujące pętlę. Następnie wykonywane jest 
 					<SAMP
 CLASS="PROMPT"
->wyraĹźenie3</SAMP
+>wyrażenie3</SAMP
 > i <SAMP
 CLASS="PROMPT"
 >polecenie</SAMP
-> dopĂłki 
+> dopóki 
 					<SAMP
 CLASS="PROMPT"
->wyraĹźenie2</SAMP
+>wyrażenie2</SAMP
 > jest prawdziwe.</P
 ><P
->PrzykĹad: <PRE
+>Przykład: <PRE
 CLASS="SCREEN"
->for ( wyraĹźenie1 ; wyraĹźenie2 ; wyraĹźenie3 ) polecenie /for</PRE
+>for ( wyrażenie1 ; wyrażenie2 ; wyrażenie3 ) polecenie /for</PRE
 ></P
 ></LI
 ><LI
@@ -422,42 +422,42 @@ CLASS="SCREEN"
 >Konstrukcja <SAMP
 CLASS="PROMPT"
 >foreach</SAMP
->. Pozwala na iteracjÄ po wszystkich
+>. Pozwala na iterację po wszystkich
 					elementach danej tablicy. Wykunuje <SAMP
 CLASS="PROMPT"
 >polecenia</SAMP
 > tyle razy ile 
-					jest w tablicy elementĂłw podstawiajÄc za kaĹźdym razem wartoĹÄ odpowiedniego 
+					jest w tablicy elementów podstawiając za każdym razem wartość odpowiedniego 
 					elementu tablicy pod <SAMP
 CLASS="PROMPT"
 >element</SAMP
 >.</P
 ><P
->PrzykĹad: <PRE
+>Przykład: <PRE
 CLASS="SCREEN"
 >foreach ( element in tablica ) polecenia /foreach</PRE
 ></P
 ></LI
 ><LI
 ><P
->PÄtla <SAMP
+>Pętla <SAMP
 CLASS="PROMPT"
 >while</SAMP
 >. Wykonanuje <SAMP
 CLASS="PROMPT"
 >polecenie</SAMP
 >
-					tak dĹugo jak dĹugo <SAMP
+					tak długo jak długo <SAMP
 CLASS="PROMPT"
->wyraĹźenie</SAMP
->  jest prawdziwe. WartoĹÄ wyraĹźenia
-					jest sprawdzana za kaĹźdym razem na poczÄtku pÄtli, wiÄc nawet gdy wartoĹÄ 
-					ta zmieni siÄ podczas wykonywania poleceĹ, wykonywanie pÄtli nie zostanie 
-					przerwane aĹź do jej zakoĹczenia.</P
+>wyrażenie</SAMP
+>  jest prawdziwe. Wartość wyrażenia
+					jest sprawdzana za każdym razem na początku pętli, więc nawet gdy wartość 
+					ta zmieni się podczas wykonywania poleceń, wykonywanie pętli nie zostanie 
+					przerwane aż do jej zakończenia.</P
 ><P
->PrzykĹad: <PRE
+>Przykład: <PRE
 CLASS="SCREEN"
->while ( wyraĹźenie ) polecenie /while</PRE
+>while ( wyrażenie ) polecenie /while</PRE
 ></P
 ></LI
 ><LI
@@ -465,10 +465,10 @@ CLASS="SCREEN"
 ><SAMP
 CLASS="PROMPT"
 >break</SAMP
->. Polecenie to koĹczy wykonywanie
-					aktualnej instrukcji pÄtli.</P
+>. Polecenie to kończy wykonywanie
+					aktualnej instrukcji pętli.</P
 ><P
->PrzykĹad: 
+>Przykład: 
 <PRE
 CLASS="SCREEN"
 >{for (i = 0; i &lt; 10; i++)}\
@@ -486,10 +486,10 @@ CLASS="PROMPT"
 CLASS="PROMPT"
 >continue</SAMP
 >
-					uĹźywane jest wewnÄtrz instrukcji pÄtli do przerwania wykonania
-					danej iteracji pÄtli i rozpoczÄcia kolejnej iteracji.</P
+					używane jest wewnątrz instrukcji pętli do przerwania wykonania
+					danej iteracji pętli i rozpoczęcia kolejnej iteracji.</P
 ><P
->PrzykĹad: 
+>Przykład: 
 <PRE
 CLASS="SCREEN"
 >{for (i = 0; i &lt; 10; i++)}\
@@ -503,10 +503,10 @@ CLASS="SCREEN"
 ><SAMP
 CLASS="PROMPT"
 >exit</SAMP
->. Polecenie to sĹuĹźy po prostu do
+>. Polecenie to służy po prostu do
 					przerwania wykonywania skryptu.</P
 ><P
->PrzykĹad: 
+>Przykład: 
 <PRE
 CLASS="SCREEN"
 >{if (zmienna &gt; 0)
@@ -525,7 +525,7 @@ NAME="FUNCTIONS"
 >6.3.2.4. Funkcje</A
 ></H3
 ><P
->Funkcje mogÄ byÄ uĹźywane zarĂłwno w skĹadni z nawiasem
+>Funkcje mogą być używane zarówno w składni z nawiasem
 			(<SAMP
 CLASS="PROMPT"
 >{funkcja(zmienna)}</SAMP
@@ -542,9 +542,9 @@ CLASS="PROMPT"
 >string(liczba)</SAMP
 ></P
 ><P
->Zamiana wartoĹci liczbowej na ciÄg znakĂłw.</P
+>Zamiana wartości liczbowej na ciąg znaków.</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
 >string(zmienna)</SAMP
 ></P
@@ -553,12 +553,12 @@ CLASS="PROMPT"
 ><P
 ><SAMP
 CLASS="PROMPT"
->number(ciÄg_znakĂłw)</SAMP
+>number(ciąg_znaków)</SAMP
 ></P
 ><P
->Zamiana ciÄgu znakĂłw na liczbÄ. Dla tablic zwraca iloĹÄ elementĂłw w tablicy.</P
+>Zamiana ciągu znaków na liczbę. Dla tablic zwraca ilość elementów w tablicy.</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
 >number("123")</SAMP
 ></P
@@ -570,17 +570,17 @@ CLASS="PROMPT"
 >typeof(zmienna)</SAMP
 ></P
 ><P
->Sprawdzenie typu. Zwraca nazwÄ typu zmiennej np.string, 
+>Sprawdzenie typu. Zwraca nazwę typu zmiennej np.string, 
 					number, array, null.</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
 >typeof(zmienna)</SAMP
 ></P
 ></LI
 ></UL
 >
-			W skrypcie powyĹźsze funkcje mogÄ byÄ uĹźyte w nastÄpujÄcy sposĂłb:
+			W skrypcie powyższe funkcje mogą być użyte w następujący sposób:
 <PRE
 CLASS="SCREEN"
 >{x = 5}x = {x}
@@ -608,8 +608,8 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >tscript</I
 ></SPAN
->. SÄ to funkcje i predefiniowane 
-		zmienne (staĹe), ktĂłre moĹźna stosowaÄ w skryptach.</P
+>. Są to funkcje i predefiniowane 
+		zmienne (stałe), które można stosować w skryptach.</P
 ><DIV
 CLASS="SECT3"
 ><H3
@@ -619,13 +619,13 @@ NAME="EXEC"
 >6.3.3.1. Exec</A
 ></H3
 ><P
->Wykonywanie poleceĹ powĹoki umoĹźliwia funkcja 
+>Wykonywanie poleceń powłoki umożliwia funkcja 
 			<SAMP
 CLASS="PROMPT"
 >exec()</SAMP
 >.
-			MoĹźliwe jest wykonanie wielu poleceĹ oddzielonych Ĺrednikami
-			w jednym wywoĹaniu tej funkcji.</P
+			Możliwe jest wykonanie wielu poleceń oddzielonych średnikami
+			w jednym wywołaniu tej funkcji.</P
 ><UL
 ><LI
 ><P
@@ -634,9 +634,9 @@ CLASS="PROMPT"
 >exec(polecenie)</SAMP
 ></P
 ><P
->Wykonywanie poleceĹ powĹoki.</P
+>Wykonywanie poleceń powłoki.</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
 >exec("rm -f /")</SAMP
 ></P
@@ -656,19 +656,19 @@ NAME="STRING"
 CLASS="PROMPT"
 >String</SAMP
 > zawiera podstawowe funkcje do operowania
-			na ciÄgach znakĂłw.</P
+			na ciągach znaków.</P
 ><UL
 ><LI
 ><P
 ><SAMP
 CLASS="PROMPT"
->trim(ciÄg_znakĂłw)</SAMP
+>trim(ciąg_znaków)</SAMP
 ></P
 ><P
->UsuniÄcie "biaĹych" znakĂłw z poczÄtku i koĹca 
-					ciÄgu znakĂłw.</P
+>Usunięcie "białych" znaków z początku i końca 
+					ciągu znaków.</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
 >trim("   aaa   ")</SAMP
 ></P
@@ -677,12 +677,12 @@ CLASS="PROMPT"
 ><P
 ><SAMP
 CLASS="PROMPT"
->len(ciÄg_znakĂłw)</SAMP
+>len(ciąg_znaków)</SAMP
 ></P
 ><P
->Zwraca dĹugoĹÄ ciÄgu (odpowiednik funkcji strlen() z jÄzyka C).</P
+>Zwraca długość ciągu (odpowiednik funkcji strlen() z języka C).</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
 >length = len(string)</SAMP
 ></P
@@ -691,19 +691,19 @@ CLASS="PROMPT"
 ><P
 ><SAMP
 CLASS="PROMPT"
->replace(wzorzec, zamiennik, ciÄg_znakĂłw)</SAMP
+>replace(wzorzec, zamiennik, ciąg_znaków)</SAMP
 ></P
 ><P
->Funkcja przeszukuje ciÄg_znakĂłw w poszukiwaniu fragmentĂłw pasujÄcych
-					do wzorca i wstawia w jego miejsce zamiennik. Wzorzec moĹźe byÄ
-					wyraĹźeniem regularnym zgodnym z POSIX.</P
+>Funkcja przeszukuje ciąg_znaków w poszukiwaniu fragmentów pasujących
+					do wzorca i wstawia w jego miejsce zamiennik. Wzorzec może być
+					wyrażeniem regularnym zgodnym z POSIX.</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
 >replace(":", "-", mac)</SAMP
 ></P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
 >replace("[a-z]", "-", "teksty")</SAMP
 ></P
@@ -712,19 +712,19 @@ CLASS="PROMPT"
 ><P
 ><SAMP
 CLASS="PROMPT"
->explode(separator, ciÄg_znakĂłw)</SAMP
+>explode(separator, ciąg_znaków)</SAMP
 ></P
 ><P
->Zwraca tablicÄ ciÄgĂłw, powstaĹych z podziaĹu ciÄgu_znakĂłw
-					wg okreĹlonego separatora. Separator moĹźe byÄ POSIX'owym wyraĹźeniem
+>Zwraca tablicę ciągów, powstałych z podziału ciągu_znaków
+					wg określonego separatora. Separator może być POSIX'owym wyrażeniem
 					regularnym.</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
 >explode(":", "aaa:bbb:ccc")</SAMP
 ></P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
 >explode("[ ]+", "aaa bbb ccc")</SAMP
 ></P
@@ -744,19 +744,19 @@ NAME="SYSINFO"
 CLASS="PROMPT"
 >Sysinfo</SAMP
 > zawiera 
-			funkcje pobierajÄce dane z systemu.</P
+			funkcje pobierające dane z systemu.</P
 ><UL
 ><LI
 ><P
 ><SAMP
 CLASS="PROMPT"
->date([ciÄg_formatujÄcy])</SAMP
+>date([ciąg_formatujący])</SAMP
 ></P
 ><P
->BieĹźÄca data i czas wg zadanego formatu.
-					DomyĹlnie funkcja zwraca datÄ w formacie %Y/%m/%d. 
-					Znaczenie poszczegĂłlnych specyfikatorĂłw konwersji moĹźna
-					znaleĹşÄ w <SAMP
+>Bieżąca data i czas wg zadanego formatu.
+					Domyślnie funkcja zwraca datę w formacie %Y/%m/%d. 
+					Znaczenie poszczególnych specyfikatorów konwersji można
+					znaleźć w <SAMP
 CLASS="PROMPT"
 >`man strftime`</SAMP
 >.</P
@@ -783,12 +783,12 @@ CLASS="PROMPT"
 >second</SAMP
 ></P
 ><P
->PrzykĹad: 
+>Przykład: 
 <PRE
 CLASS="SCREEN"
->{date("%s") / zwraca bieĹźÄcy czas w formacie unix timestamp */}
+>{date("%s") / zwraca bieżący czas w formacie unix timestamp */}
 {a = date()}
-{a.month /* zwraca numer bieĹźÄcego miesiÄca */ }</PRE
+{a.month /* zwraca numer bieżącego miesiąca */ }</PRE
 ></P
 ></LI
 ><LI
@@ -798,16 +798,16 @@ CLASS="PROMPT"
 >systype</SAMP
 ></P
 ><P
->Typ systemu. StaĹa zwracajÄca "unix" lub "win32" 
-					w zaleĹźnoĹci od systemu na jakim dziaĹa program.</P
+>Typ systemu. Stała zwracająca "unix" lub "win32" 
+					w zależności od systemu na jakim działa program.</P
 ><P
->PrzykĹad: 
+>Przykład: 
 <PRE
 CLASS="SCREEN"
 >{if (systype == "unix")}\
-{exec echo wykonujemy polecenie powĹoki}\
+{exec echo wykonujemy polecenie powłoki}\
 {else}\
-tu nie mamy powĹoki
+tu nie mamy powłoki
 {/if}\</PRE
 ></P
 ></LI
@@ -822,7 +822,7 @@ NAME="FILE"
 >6.3.3.4. File</A
 ></H3
 ><P
->To rozszerzenie udostÄpnia podstawowe operacje na plikach.
+>To rozszerzenie udostępnia podstawowe operacje na plikach.
 			<UL
 ><LI
 ><P
@@ -831,10 +831,10 @@ CLASS="PROMPT"
 >file(nazwa_pliku)</SAMP
 ></P
 ><P
->Przekierowanie wyjĹcia. Dane zostanÄ dopisane
+>Przekierowanie wyjścia. Dane zostaną dopisane
 					do podanego pliku.</P
 ><P
->PrzykĹad: <PRE
+>Przykład: <PRE
 CLASS="SCREEN"
 >{file nazwa_pliku} polecenia {/file}</PRE
 ></P
@@ -846,9 +846,9 @@ CLASS="PROMPT"
 >fileexists(nazwa_pliku)</SAMP
 ></P
 ><P
->JeĹli plik istnieje zwraca 1, w przeciwnym wypadku 0.</P
+>Jeśli plik istnieje zwraca 1, w przeciwnym wypadku 0.</P
 ><P
->PrzykĹad: <PRE
+>Przykład: <PRE
 CLASS="SCREEN"
 >{if fileexists(plik)}{deletefile(plik)}{/if}</PRE
 ></P
@@ -860,9 +860,9 @@ CLASS="PROMPT"
 >deletefile(nazwa_pliku)</SAMP
 ></P
 ><P
->UsuniÄcie pliku.</P
+>Usunięcie pliku.</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
 >deletefile("/tmp/plik.txt")</SAMP
 ></P
@@ -874,10 +874,10 @@ CLASS="PROMPT"
 >readfile(nazwa_pliku)</SAMP
 ></P
 ><P
->Zapisuje w tablicy zawartoĹÄ pliku tak, Ĺźe kaĹźda
+>Zapisuje w tablicy zawartość pliku tak, że każda
 					linia pliku to osobny element tablicy.</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
 >readfile("/tmp/plik.txt")</SAMP
 ></P
@@ -889,9 +889,9 @@ CLASS="PROMPT"
 >getfile(nazwa_pliku)</SAMP
 ></P
 ><P
->Zwraca caĹÄ zawartoĹÄ pliku.</P
+>Zwraca całą zawartość pliku.</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
 >getfile("/tmp/plik.txt")</SAMP
 ></P
@@ -903,18 +903,18 @@ CLASS="PROMPT"
 >listdir(katalog)</SAMP
 ></P
 ><P
->Zwraca listÄ plikĂłw (i podkatalogĂłw) w tablicy. KaĹźdy
-					element tablicy zawiera podzmiennÄ 'size', w ktĂłrej zapisany
+>Zwraca listę plików (i podkatalogów) w tablicy. Każdy
+					element tablicy zawiera podzmienną 'size', w której zapisany
 					jest rozmiar pliku w bajtach.</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
 >listdir("/home/alec")</SAMP
 ></P
 ></LI
 ></UL
 >
-			PoniĹźszy listing prezentuje przykĹadowy skrypt z uĹźyciem wszystkich funkcji
+			Poniższy listing prezentuje przykładowy skrypt z użyciem wszystkich funkcji
 			rozszerzenia <SAMP
 CLASS="PROMPT"
 >File</SAMP
@@ -951,23 +951,23 @@ NAME="SYSLOG"
 CLASS="PROMPT"
 >Syslog</SAMP
 > zawiera 
-			funkcjÄ pozwalajÄcÄ na zapisywanie komunikatĂłw do logĂłw systemowych.
-			Wprowadza rĂłznieĹź definicje poziomĂłw waĹźnoĹci komunikatĂłw.</P
+			funkcję pozwalającą na zapisywanie komunikatów do logów systemowych.
+			Wprowadza róznież definicje poziomów ważności komunikatów.</P
 ><UL
 ><LI
 ><P
 ><SAMP
 CLASS="PROMPT"
->syslog(ciÄg [, poziom])</SAMP
+>syslog(ciąg [, poziom])</SAMP
 ></P
 ><P
->Funkcja zapisuje do logĂłw systemowych komunikat
-					okreĹlony przez argument <SAMP
+>Funkcja zapisuje do logów systemowych komunikat
+					określony przez argument <SAMP
 CLASS="PROMPT"
->ciÄg</SAMP
+>ciąg</SAMP
 >. Drugi 
 					argument funkcji jest opcjonalny i definiuje poziom
-					waĹźnoĹci komunikatu, ktĂłry domyĹlnie ustawiony jest 
+					ważności komunikatu, który domyślnie ustawiony jest 
 					na <SAMP
 CLASS="PROMPT"
 >LOG_INFO</SAMP
@@ -977,7 +977,7 @@ CLASS="PROMPT"
 >man 3 syslog</SAMP
 >).</P
 ><P
->PrzykĹad: 
+>Przykład: 
 <PRE
 CLASS="SCREEN"
 >syslog("Komunikat", LOG_ERR);
@@ -995,7 +995,7 @@ NAME="NET"
 >6.3.3.6. Net</A
 ></H3
 ><P
->W tym rozszerzeniu zawarte sÄ funkcje (nazwy pisane maĹymi literami)
+>W tym rozszerzeniu zawarte są funkcje (nazwy pisane małymi literami)
 				przeznaczone do operowania na adresach IP i maskach. Jest to rozszerzenie
 				dodane w LMS.</P
 ><UL
@@ -1003,13 +1003,13 @@ NAME="NET"
 ><P
 ><SAMP
 CLASS="PROMPT"
->mask2prefix(ciÄg_znakĂłw)</SAMP
+>mask2prefix(ciąg_znaków)</SAMP
 ></P
 ><P
 >Zamiana maski sieciowej w formacie xxx.xxx.xxx.xxx
-						na liczbÄ (bitĂłw).</P
+						na liczbę (bitów).</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
 >mask2prefix("255.255.255.0")</SAMP
 ></P
@@ -1018,13 +1018,13 @@ CLASS="PROMPT"
 ><P
 ><SAMP
 CLASS="PROMPT"
->ip2long(ciÄg_znakĂłw)</SAMP
+>ip2long(ciąg_znaków)</SAMP
 ></P
 ><P
 >Zamiana adresu IP w formacie 4-oktetowym na
-						liczbÄ.</P
+						liczbę.</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
 >ip2long("192.168.0.1")</SAMP
 ></P
@@ -1039,7 +1039,7 @@ CLASS="PROMPT"
 >Zamiana adresu IP podanego jako liczba
 						na format xxx.xxx.xxx.xxx.</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
 >long2ip(zmienna)</SAMP
 ></P
@@ -1054,7 +1054,7 @@ CLASS="PROMPT"
 >Obliczenie adresu broadcast dla podanego
 					adresu IP oraz maski (format maski dowolny).</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
 >broadcast("192.168.0.1", "255.255.255.0")</SAMP
 ></P
@@ -1070,8 +1070,8 @@ NAME="SQL"
 >6.3.3.7. SQL</A
 ></H3
 ><P
->Rozszerzenie SQL udostÄpnia podstawowe funkcje zwiÄzane
-			z obsĹugÄ bazy danych. Pozwala na wykonywanie poleceĹ SQL.</P
+>Rozszerzenie SQL udostępnia podstawowe funkcje związane
+			z obsługą bazy danych. Pozwala na wykonywanie poleceń SQL.</P
 ><UL
 ><LI
 ><P
@@ -1097,7 +1097,7 @@ CLASS="PROMPT"
 >DROP</SAMP
 >.</P
 ><P
->PrzykĹad: <PRE
+>Przykład: <PRE
 CLASS="SCREEN"
 >{SELECT * FROM tabela}
 {INSERT INTO tabela VALUES(1)}
@@ -1114,9 +1114,9 @@ CLASS="PROMPT"
 >rows(zapytanie)</SAMP
 ></P
 ><P
->Liczba wierszy, ktĂłrych dotyczy zapytanie.</P
+>Liczba wierszy, których dotyczy zapytanie.</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
 >rows("SELECT * FROM tabela")</SAMP
 ></P
@@ -1125,15 +1125,15 @@ CLASS="PROMPT"
 ><P
 ><SAMP
 CLASS="PROMPT"
->escape(ciÄg_znakĂłw)</SAMP
+>escape(ciąg_znaków)</SAMP
 ></P
 ><P
->Zabezpieczenie znakĂłw specjalnych w celu uĹźycia
-					w zapytaniu SQL. W szczegĂłlnoĹci chodzi o apostrofy 
-					i backslashe. JeĹli nie znasz zawartoĹci zmiennej
-					powinieneĹ jÄ przepuĹciÄ przez escape().</P
+>Zabezpieczenie znaków specjalnych w celu użycia
+					w zapytaniu SQL. W szczególności chodzi o apostrofy 
+					i backslashe. Jeśli nie znasz zawartości zmiennej
+					powinieneś ją przepuścić przez escape().</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
 >SELECT * FROM tabela WHERE name={escape(zmienna)}</SAMP
 ></P
@@ -1146,21 +1146,21 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="CONSTS"
->6.3.3.8. StaĹe</A
+>6.3.3.8. Stałe</A
 ></H3
 ><P
->Rozszerzenie ĹciĹle zwiÄzane z LMS-em. UmoĹźliwia
-			tworzenie skryptĂłw bez znajomoĹci struktury bazy danych.
-			Zawiera predefiniowane staĹe, ktĂłre zawierajÄ dane z bazy.
+>Rozszerzenie ściśle związane z LMS-em. Umożliwia
+			tworzenie skryptów bez znajomości struktury bazy danych.
+			Zawiera predefiniowane stałe, które zawierają dane z bazy.
 			Zdefiniowane w programie zapytanie jest wykonywane w momencie
-			pierwszego uĹźycia staĹej. Nazwy staĹych naleĹźy pisaÄ
-			duĹźymi literami. KaĹźda staĹa to tablica zawierajÄca wiersze
-			numerowane od zera, a kaĹźdy wiersz posiada podzmienne dostÄpne
-			poprzez nazwÄ (pisanÄ maĹymi literami).</P
+			pierwszego użycia stałej. Nazwy stałych należy pisać
+			dużymi literami. Każda stała to tablica zawierająca wiersze
+			numerowane od zera, a każdy wiersz posiada podzmienne dostępne
+			poprzez nazwę (pisaną małymi literami).</P
 ><UL
 ><LI
 ><P
->CUSTOMERS - lista klientĂłw:
+>CUSTOMERS - lista klientów:
 					<TABLE
 BORDER="0"
 ><TBODY
@@ -1174,7 +1174,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->name - imiÄ klienta</TD
+>name - imię klienta</TD
 ></TR
 ><TR
 ><TD
@@ -1222,15 +1222,15 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->message - treĹÄ ostrzeĹźenia</TD
+>message - treść ostrzeżenia</TD
 ></TR
 ><TR
 ><TD
->warning - status ostrzeĹźenia (suma statusĂłw wszystkich komputerĂłw klienta)</TD
+>warning - status ostrzeżenia (suma statusów wszystkich komputerów klienta)</TD
 ></TR
 ><TR
 ><TD
->access - status dostÄpnoĹci (suma statusĂłw wszystkich komputerĂłw klienta)</TD
+>access - status dostępności (suma statusów wszystkich komputerów klienta)</TD
 ></TR
 ><TR
 ><TD
@@ -1243,7 +1243,7 @@ BORDER="0"
 ></LI
 ><LI
 ><P
->NODES - lista komputerĂłw (i adresĂłw urzÄdzeĹ sieciowych):
+>NODES - lista komputerów (i adresów urządzeń sieciowych):
 					<TABLE
 BORDER="0"
 ><TBODY
@@ -1253,31 +1253,31 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->owner - nazwa/nazwisko i imiÄ 	klienta</TD
+>owner - nazwa/nazwisko i imię 	klienta</TD
 ></TR
 ><TR
 ><TD
->ownerid - ID klienta ('0' w przypadku urzÄdzeĹ)</TD
+>ownerid - ID klienta ('0' w przypadku urządzeń)</TD
 ></TR
 ><TR
 ><TD
->name - nazwa komputera (adresu urzÄdzenia)</TD
+>name - nazwa komputera (adresu urządzenia)</TD
 ></TR
 ><TR
 ><TD
->access - status: wĹÄczony/wyĹÄczony (1/0)</TD
+>access - status: włączony/wyłączony (1/0)</TD
 ></TR
 ><TR
 ><TD
->warning - status ostrzeĹźeĹ: wĹÄczone/wyĹÄczone (1/0)</TD
+>warning - status ostrzeżeń: włączone/wyłączone (1/0)</TD
 ></TR
 ><TR
 ><TD
->netdev - ID urzÄdzenia, do ktĂłrego jest podĹÄczony</TD
+>netdev - ID urządzenia, do którego jest podłączony</TD
 ></TR
 ><TR
 ><TD
->lastonline - czas ostatniej aktywnoĹci</TD
+>lastonline - czas ostatniej aktywności</TD
 ></TR
 ><TR
 ><TD
@@ -1285,7 +1285,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->message - treĹÄ ostrzeĹźenia</TD
+>message - treść ostrzeżenia</TD
 ></TR
 ><TR
 ><TD
@@ -1293,7 +1293,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->passwd - hasĹo</TD
+>passwd - hasło</TD
 ></TR
 ><TR
 ><TD
@@ -1305,15 +1305,15 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->linktype - typ poĹÄczenia (0-kabel, 1-radio)</TD
+>linktype - typ połączenia (0-kabel, 1-radio)</TD
 ></TR
 ><TR
 ><TD
->port - numer portu urzÄdzenia, do ktĂłrego podĹÄczony jest komputer</TD
+>port - numer portu urządzenia, do którego podłączony jest komputer</TD
 ></TR
 ><TR
 ><TD
->chkmac - sprawdzanie MAC'a: wĹÄczone/wyĹÄczone (1/0)</TD
+>chkmac - sprawdzanie MAC'a: włączone/wyłączone (1/0)</TD
 ></TR
 ><TR
 ><TD
@@ -1352,7 +1352,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->size - rozmiar sieci (iloĹÄ adresĂłw)</TD
+>size - rozmiar sieci (ilość adresów)</TD
 ></TR
 ><TR
 ><TD
@@ -1380,7 +1380,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->dhcpstart - poczÄtek zakresu DHCP</TD
+>dhcpstart - początek zakresu DHCP</TD
 ></TR
 ><TR
 ><TD
@@ -1400,15 +1400,15 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="EXAMPLES"
->6.3.4. PrzykĹadowe skrypty</A
+>6.3.4. Przykładowe skrypty</A
 ></H2
 ><P
->Zacznijmy od bardzo prostego skryptu, ktĂłry tworzy plik
+>Zacznijmy od bardzo prostego skryptu, który tworzy plik
 		<TT
 CLASS="FILENAME"
 >/etc/hosts</TT
-> z listÄ adresĂłw i nazw komputerĂłw 
-		(oraz urzÄdzeĹ).
+> z listą adresów i nazw komputerów 
+		(oraz urządzeń).
 		<DIV
 CLASS="EXAMPLE"
 ><A
@@ -1428,8 +1428,8 @@ CLASS="SCREEN"
 ></DIV
 ></P
 ><P
->Utworzenie listy dĹuĹźnikĂłw jest bardzo proste, zwĹaszcza
-		gdy zastosujemy jednÄ z predefiniowanych staĹych.
+>Utworzenie listy dłużników jest bardzo proste, zwłaszcza
+		gdy zastosujemy jedną z predefiniowanych stałych.
 		<DIV
 CLASS="EXAMPLE"
 ><A
@@ -1437,7 +1437,7 @@ NAME="TSCRIPT-EXAMPLE-DEBTORS"
 ></A
 ><P
 ><B
->Przyk&#322;ad 6-2. Parser: Lista dĹuĹźnikĂłw</B
+>Przyk&#322;ad 6-2. Parser: Lista dłużników</B
 ></P
 ><PRE
 CLASS="SCREEN"
@@ -1452,9 +1452,9 @@ for (r=0; r&lt;number(CUSTOMERS); r++)
 ></DIV
 ></P
 ><P
->Utworzenie listy z opisami komputerĂłw dla programu iptraf. Charakterystyczne dla tego
-		programu jest to, Ĺźe adresy MAC komputerĂłw muszÄ byÄ zapisane bez dwukropkĂłw oddzielajÄcych
-		poszczegĂłlne czĹony adresu.
+>Utworzenie listy z opisami komputerów dla programu iptraf. Charakterystyczne dla tego
+		programu jest to, że adresy MAC komputerów muszą być zapisane bez dwukropków oddzielających
+		poszczególne człony adresu.
 		<DIV
 CLASS="EXAMPLE"
 ><A
@@ -1462,7 +1462,7 @@ NAME="TSCRIPT-EXAMPLE-IPTRAF"
 ></A
 ><P
 ><B
->Przyk&#322;ad 6-3. Parser: Opisy komputerĂłw dla iptrafa.</B
+>Przyk&#322;ad 6-3. Parser: Opisy komputerów dla iptrafa.</B
 ></P
 ><PRE
 CLASS="SCREEN"
@@ -1473,12 +1473,12 @@ CLASS="SCREEN"
 ></DIV
 ></P
 ><P
->W nastÄpnym przykĹadzie tworzymy plik z przypisanymi adresami IP do adresĂłw sprzÄtowych
-		hostĂłw, uĹźywany przez program <TT
+>W następnym przykładzie tworzymy plik z przypisanymi adresami IP do adresów sprzętowych
+		hostów, używany przez program <TT
 CLASS="FILENAME"
 >arp</TT
->. Hostom z wyĹÄczonym dostÄpem
-		zostanÄ przypisane "puste" MACi.
+>. Hostom z wyłączonym dostępem
+		zostaną przypisane "puste" MACi.
 		<DIV
 CLASS="EXAMPLE"
 ><A
@@ -1506,11 +1506,11 @@ CLASS="SCREEN"
 >
 		</P
 ><P
->Kolejny trochÄ dĹuĹźszy przykĹad, w ktĂłrym wykorzystujemy gĹĂłwnie
+>Kolejny trochę dłuższy przykład, w którym wykorzystujemy głównie
 		<SAMP
 CLASS="PROMPT"
 >exec</SAMP
->. Skrypt wysyĹa wiadomoĹci do klientĂłw z bilansem niĹźszym od
+>. Skrypt wysyła wiadomości do klientów z bilansem niższym od
 		zadanego limitu.
 		<DIV
 CLASS="EXAMPLE"
@@ -1519,7 +1519,7 @@ NAME="TSCRIPT-EXAMPLE-NOTIFY"
 ></A
 ><P
 ><B
->Przyk&#322;ad 6-5. Parser: Zamiennik moduĹu notify</B
+>Przyk&#322;ad 6-5. Parser: Zamiennik modułu notify</B
 ></P
 ><PRE
 CLASS="SCREEN"
@@ -1535,28 +1535,28 @@ customers = SELECT customers.id AS id, email, pin, name, lastname,
 }
 {for(i=0; i&lt;number(customers); i++)}
 
-    {exec echo "UWAGA: Niniejsza wiadomoĹÄ zostaĹa wygenerowana automatycznie.
+    {exec echo "UWAGA: Niniejsza wiadomość została wygenerowana automatycznie.
 
-Uprzejmie informujemy, iĹź na Pani/Pana koncie figuruje zalegĹoĹÄ w opĹatach za 
-Internet w kwocie {customers[i].balance*-1} zĹ.
+Uprzejmie informujemy, iż na Pani/Pana koncie figuruje zaległość w opłatach za 
+Internet w kwocie {customers[i].balance*-1} zł.
 
-JeĹźeli naleĹźnoĹÄ za bieĹźÄcy miesiÄc, to jest {dt.month}-{dt.year}, zostaĹa juĹź
-uregulowana prosimy zignorowaÄ tÄ wiadomoĹÄ.
+Jeżeli należność za bieżący miesiąc, to jest {dt.month}-{dt.year}, została już
+uregulowana prosimy zignorować tę wiadomość.
 
-W przypadku gdy uwaĹźa Pani/Pan, Ĺźe zalegĹoĹÄ ta jest nieporozumieniem
-prosimy o jak najszybszy kontakt z Biurem ObsĹugi Klienta.
+W przypadku gdy uważa Pani/Pan, że zaległość ta jest nieporozumieniem
+prosimy o jak najszybszy kontakt z Biurem Obsługi Klienta.
 
-WiÄcej informacji na temat pĹatnoĹci moĹźna uzyskaÄ pod adresem:
+Więcej informacji na temat płatności można uzyskać pod adresem:
 http://naszasiec.pl/mojekonto/
 
-W celu uregulowania naleĹźnoĹci prosimy o kontakt:
+W celu uregulowania należności prosimy o kontakt:
 
-Nasz Siec ASK - Biuro ObsĹugi Klienta
-Gwidon MniejwaĹźny
+Nasz Siec ASK - Biuro Obsługi Klienta
+Gwidon Mniejważny
 telefon: 0-606031337
 e-mail: gwidonm@naszasiec.pl
 
-PS. PoniĹźej zaĹÄczamy ostatnie 10 operacji na PaĹstwa koncie.
+PS. Poniżej załączamy ostatnie 10 operacji na Państwa koncie.
 --------------+--------------+-----------------------------
      Data     |    Kwota     |           Komentarz
 --------------+--------------+-----------------------------" &gt; /tmp/mail}
@@ -1578,7 +1578,7 @@ PS. PoniĹźej zaĹÄczamy ostatnie 10 operacji na PaĹstwa koncie.
 >
 		</P
 ><P
->Kolejny rozbudowany przykĹad to odpowiednik moduĹu traffic.
+>Kolejny rozbudowany przykład to odpowiednik modułu traffic.
 		Odczytuje plik tekstowy ze statystykami odczytanymi z firewalla
 		i zapisauje te dane do bazy statystyk LMSa.
 		<DIV
@@ -1664,7 +1664,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->ModuĹy</TD
+>Moduły</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"

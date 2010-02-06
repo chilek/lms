@@ -16,7 +16,7 @@ REL="PREVIOUS"
 TITLE="Instalacja serwera baz danych"
 HREF="install-db.html"><LINK
 REL="NEXT"
-TITLE="Prawa dostÄpu"
+TITLE="Prawa dostępu"
 HREF="install-rights.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
@@ -79,22 +79,22 @@ NAME="INSTALL-CONFIG"
 >2.6. Konfiguracja podstawowa</A
 ></H1
 ><P
->GĹĂłwnym plikiem konfiguracyjnym LMS jest <TT
+>Głównym plikiem konfiguracyjnym LMS jest <TT
 CLASS="FILENAME"
 >lms.ini</TT
 >,
-         ktĂłry naleĹźy umieĹciÄ w katalogu <TT
+         który należy umieścić w katalogu <TT
 CLASS="FILENAME"
 >/etc/lms</TT
 > lub w katalogu
-         gĹĂłwnym LMS'a. Zawiera on zmienne konfiguracyjne <SPAN
+         głównym LMS'a. Zawiera on zmienne konfiguracyjne <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
 > 
-         oraz wszystkich skryptĂłw wykonywalnych z wyjÄtkiem <SPAN
+         oraz wszystkich skryptów wykonywalnych z wyjątkiem <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -121,7 +121,7 @@ ALT="Notatka"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->PamiÄtaj o usuniÄciu ĹrednikĂłw na poczÄtku linii z ustawianym 
+>Pamiętaj o usunięciu średników na początku linii z ustawianym 
          parametrem konfiguracyjnym.</P
 ></TD
 ></TR
@@ -143,9 +143,9 @@ NAME="INSTALL-CONFIG-DB"
 >type</P
 ><P
 >Typ drivera bazy danych. Aktualnie w 100% supportowany jest 'mysql',
-        'mysqli' oraz 'postgres'. DomyĹlnie: mysql</P
+        'mysqli' oraz 'postgres'. Domyślnie: mysql</P
 ><P
->PrzykĹad: <SAMP
+>Przykład: <SAMP
 CLASS="PROMPT"
 >type = mysql</SAMP
 ></P
@@ -154,11 +154,11 @@ CLASS="PROMPT"
 ><P
 >host</P
 ><P
->Host gdzie zainstalowana jest baza danych. NajczÄĹciej, localhost, ale moĹźna tutaj 
-        wstawiÄ cokolwiek (ip, domena, ĹcieĹźka do gniazda w formacie '/path/to/socket'). 
-        DomyĹlnie: localhost</P
+>Host gdzie zainstalowana jest baza danych. Najczęściej, localhost, ale można tutaj 
+        wstawić cokolwiek (ip, domena, ścieżka do gniazda w formacie '/path/to/socket'). 
+        Domyślnie: localhost</P
 ><P
->PrzykĹad:     <SAMP
+>Przykład:     <SAMP
 CLASS="PROMPT"
 >host = localhost</SAMP
 ></P
@@ -167,12 +167,12 @@ CLASS="PROMPT"
 ><P
 >user</P
 ><P
->UĹźytkownik do bazy danych. W wielu wypadkach (jeĹźeli postÄpowaĹeĹ zgodnie ze 
-        wskazĂłwkami w dokumentacji) bÄdzie to 'lms'. JeĹźeli chcesz uĹźywaÄ konta uprzywilejowanego, 
-        prawdopodobnie wpiszesz 'root' (MySQL na wiÄkszoĹci *nixĂłw), 'mysql' (na PLD) bÄdĹş 
-        'postgres' (PostgreSQL). DomyĹlnie: mysql</P
+>Użytkownik do bazy danych. W wielu wypadkach (jeżeli postępowałeś zgodnie ze 
+        wskazówkami w dokumentacji) będzie to 'lms'. Jeżeli chcesz używać konta uprzywilejowanego, 
+        prawdopodobnie wpiszesz 'root' (MySQL na większości *nixów), 'mysql' (na PLD) bądź 
+        'postgres' (PostgreSQL). Domyślnie: mysql</P
 ><P
->PrzykĹad:     <SAMP
+>Przykład:     <SAMP
 CLASS="PROMPT"
 >user = lms</SAMP
 ></P
@@ -181,9 +181,9 @@ CLASS="PROMPT"
 ><P
 >password</P
 ><P
->HasĹo do bazy danych. DomyĹlnie puste.</P
+>Hasło do bazy danych. Domyślnie puste.</P
 ><P
->PrzykĹad:     <SAMP
+>Przykład:     <SAMP
 CLASS="PROMPT"
 >password = password</SAMP
 ></P
@@ -192,9 +192,9 @@ CLASS="PROMPT"
 ><P
 >database</P
 ><P
->Nazwa bazy danych, domyĹlnie lms.</P
+>Nazwa bazy danych, domyślnie lms.</P
 ><P
->PrzykĹad:     <SAMP
+>Przykład:     <SAMP
 CLASS="PROMPT"
 >database = lms</SAMP
 ></P
@@ -209,7 +209,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-CONFIG-DIR"
->2.6.2. Sekcja [directories] - ustawienia katalogĂłw</A
+>2.6.2. Sekcja [directories] - ustawienia katalogów</A
 ></H2
 ><P
 >        
@@ -218,11 +218,11 @@ NAME="INSTALL-CONFIG-DIR"
 ><P
 >sys_dir</P
 ><P
->Katalog systemowy. Jest to miejsce gdzie jest caĹa zawartoĹÄ UI LMS'a, czyli index.php, grafiki, 
-        szablony i reszta. DomyĹlnie, index.php stara siÄ sam odnaleĹşÄ w filesystemie uĹźywajÄc getcwd(), ale 
-        lepiej by byĹo gdyby mu powiedzieÄ gdzie jest:</P
+>Katalog systemowy. Jest to miejsce gdzie jest cała zawartość UI LMS'a, czyli index.php, grafiki, 
+        szablony i reszta. Domyślnie, index.php stara się sam odnaleźć w filesystemie używając getcwd(), ale 
+        lepiej by było gdyby mu powiedzieć gdzie jest:</P
 ><P
->PrzykĹad:     <SAMP
+>Przykład:     <SAMP
 CLASS="PROMPT"
 >sys_dir = /var/www/htdocs/lms/</SAMP
 ></P
@@ -231,10 +231,10 @@ CLASS="PROMPT"
 ><P
 >modules_dir</P
 ><P
->Katalog z "moduĹami" LMS'a. Czyli zawartoĹÄ katalogu modules. DomyĹlnie jest to podkatalog 
+>Katalog z "modułami" LMS'a. Czyli zawartość katalogu modules. Domyślnie jest to podkatalog 
         modules w sys_dir.</P
 ><P
->PrzykĹad:     <SAMP
+>Przykład:     <SAMP
 CLASS="PROMPT"
 >modules_dir = /usr/share/lms/modules/</SAMP
 ></P
@@ -243,9 +243,9 @@ CLASS="PROMPT"
 ><P
 >lib_dir</P
 ><P
->Katalog z "bibliotekami" LMS'a. Czyli zawartoĹÄ katalogu lib. DomyĹlnie to podkatalog lib w sys_dir.</P
+>Katalog z "bibliotekami" LMS'a. Czyli zawartość katalogu lib. Domyślnie to podkatalog lib w sys_dir.</P
 ><P
->PrzykĹad:     <SAMP
+>Przykład:     <SAMP
 CLASS="PROMPT"
 >lib_dir = /usr/share/lms/lib/</SAMP
 ></P
@@ -255,9 +255,9 @@ CLASS="PROMPT"
 >backup_dir</P
 ><P
 >Katalog z kopiami zapasowymi bazy danych - miejsce gdzie LMS zapisuje zrzuty z bazy. 
-        DomyĹlnie jest to podkatalog 'backups'.</P
+        Domyślnie jest to podkatalog 'backups'.</P
 ><P
->PrzykĹad:     <SAMP
+>Przykład:     <SAMP
 CLASS="PROMPT"
 >backup_dir = /var/backup/lms/</SAMP
 ></P
@@ -281,8 +281,8 @@ ALT="Ostrze&#380;enie"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->JeĹli katalog z kopiami zapasowymi bÄdzie osiÄgalny z poziomu WWW, to kaĹźdy 
-        bez autoryzacji bÄdzie miaĹ do nich dostÄp.</P
+>Jeśli katalog z kopiami zapasowymi będzie osiągalny z poziomu WWW, to każdy 
+        bez autoryzacji będzie miał do nich dostęp.</P
 ></TD
 ></TR
 ></TABLE
@@ -293,10 +293,10 @@ VALIGN="TOP"
 ><P
 >doc_dir</P
 ><P
->Katalog na archiwum dokumentĂłw - miejsce gdzie LMS zapisuje pobrane pliki.
-        DomyĹlnie jest to podkatalog 'documents'.</P
+>Katalog na archiwum dokumentów - miejsce gdzie LMS zapisuje pobrane pliki.
+        Domyślnie jest to podkatalog 'documents'.</P
 ><P
->PrzykĹad:     <SAMP
+>Przykład:     <SAMP
 CLASS="PROMPT"
 >doc_dir = /usr/share/documents/</SAMP
 ></P
@@ -320,8 +320,8 @@ ALT="Ostrze&#380;enie"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->JeĹli ten katalog bÄdzie osiÄgalny z poziomu WWW, to kaĹźdy 
-        bez autoryzacji bÄdzie miaĹ do nich dostÄp.</P
+>Jeśli ten katalog będzie osiągalny z poziomu WWW, to każdy 
+        bez autoryzacji będzie miał do nich dostęp.</P
 ></TD
 ></TR
 ></TABLE
@@ -332,13 +332,13 @@ VALIGN="TOP"
 ><P
 >smarty_compile_dir</P
 ><P
->Katalog kompilacji Smarty-ego. Miejsce gdzie Smarty kompiluje szablony. DomyĹlnie to 
+>Katalog kompilacji Smarty-ego. Miejsce gdzie Smarty kompiluje szablony. Domyślnie to 
         <TT
 CLASS="FILENAME"
 >templates_c</TT
 > w katalogu sysdir.</P
 ><P
->PrzykĹad:      <SAMP
+>Przykład:      <SAMP
 CLASS="PROMPT"
 >smarty_compile_dir = /var/smarty/compile/lms</SAMP
 ></P
@@ -347,9 +347,9 @@ CLASS="PROMPT"
 ><P
 >smarty_templates_dir</P
 ><P
->Katalog z szablonami ktĂłrymi Smarty-ego. DomyĹlnie to podkatalog templates z sys_dir'a.</P
+>Katalog z szablonami którymi Smarty-ego. Domyślnie to podkatalog templates z sys_dir'a.</P
 ><P
->PrzykĹad:     <SAMP
+>Przykład:     <SAMP
 CLASS="PROMPT"
 >smarty_templates_dir = /usr/share/lms/templates</SAMP
 ></P
@@ -364,20 +364,20 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-CONFIG-FINANCES"
->2.6.3. Sekcja [finances] - konfiguracja finansĂłw</A
+>2.6.3. Sekcja [finances] - konfiguracja finansów</A
 ></H2
 ><P
->Sekcja ta zawiera opcje dotyczÄce naliczania opĹat, a takĹźe
-     dane do drukĂłw przelewu, ktĂłrych opis znajdziesz w rozdziale o fakturach.
+>Sekcja ta zawiera opcje dotyczące naliczania opłat, a także
+     dane do druków przelewu, których opis znajdziesz w rozdziale o fakturach.
          <UL
 ><LI
 ><P
 >suspension_percentage (opcjonalny)</P
 ><P
->WartoĹÄ procentowa obciÄĹźenia generowana dla obciÄĹźeĹ zawieszonych.
-        DomyĹlnie: '0'</P
+>Wartość procentowa obciążenia generowana dla obciążeń zawieszonych.
+        Domyślnie: '0'</P
 ><P
->PrzykĹad:     <SAMP
+>Przykład:     <SAMP
 CLASS="PROMPT"
 >suspension_percentage = 50</SAMP
 ></P
@@ -445,7 +445,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Prawa dostÄpu</TD
+>Prawa dostępu</TD
 ></TR
 ></TABLE
 ></DIV

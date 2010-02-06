@@ -10,10 +10,10 @@ REL="HOME"
 TITLE="LMS - LAN Management System 1.11-cvs"
 HREF="index.html"><LINK
 REL="UP"
-TITLE="Interfejs UĹźytkownika (LMS-UI)"
+TITLE="Interfejs Użytkownika (LMS-UI)"
 HREF="user.html"><LINK
 REL="PREVIOUS"
-TITLE="PrzeĹadowanie"
+TITLE="Przeładowanie"
 HREF="menu-reload.html"><LINK
 REL="NEXT"
 TITLE="Helpdesk"
@@ -55,7 +55,7 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Rozdzia&#322; 3. Interfejs UĹźytkownika (LMS-UI)</TD
+>Rozdzia&#322; 3. Interfejs Użytkownika (LMS-UI)</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
@@ -79,9 +79,9 @@ NAME="MENU-STATS"
 >3.12. Statystyki</A
 ></H1
 ><P
->Interfejs do przeglÄdania statystyk wykorzystania ĹÄcza w postaci prostych wykresĂłw jest
-	dostÄpny w menu 'Statystyki'. Dane statystyk zawierajÄ iloĹÄ danych wysyĹanych i pobieranych 
-	z Internetu (na danym interfejsie) dla kaĹźdego komputera. KorzystajÄc z gĂłrnego menu moĹźesz szybko wygenerowaÄ statystyki z ostatniej 
+>Interfejs do przeglądania statystyk wykorzystania łącza w postaci prostych wykresów jest
+	dostępny w menu 'Statystyki'. Dane statystyk zawierają ilość danych wysyłanych i pobieranych 
+	z Internetu (na danym interfejsie) dla każdego komputera. Korzystając z górnego menu możesz szybko wygenerować statystyki z ostatniej 
 	godziny, ostatniego dnia, ostatnich 30 dni lub ostatniego roku.</P
 ><P
 > 
@@ -104,7 +104,7 @@ ALT="Notatka"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Zapisem danych do bazy zajmuje siÄ skrypt lms-traffic, albo demon <SPAN
+>Zapisem danych do bazy zajmuje się skrypt lms-traffic, albo demon <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -126,10 +126,10 @@ NAME="MENU-STATS-FILTER"
 >3.12.1. Filtr</A
 ></H2
 ><P
->Przed wygenerowaniem wykresu moĹźesz zdefiniowaÄ parametry
-	    okreĹlajÄce okres jaki ma byÄ brany pod uwagÄ, ograniczyÄ do jednej sieci (jeĹli masz 
-	    ich wiÄcej), iloĹci komputerĂłw oraz posortowaÄ odpowiednio wyniki (na przykĹad 
-	    wedĹug downloadu).</P
+>Przed wygenerowaniem wykresu możesz zdefiniować parametry
+	    określające okres jaki ma być brany pod uwagę, ograniczyć do jednej sieci (jeśli masz 
+	    ich więcej), ilości komputerów oraz posortować odpowiednio wyniki (na przykład 
+	    według downloadu).</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -140,12 +140,12 @@ NAME="MENU-STATS-COMPACT"
 >3.12.2. Kompaktowanie</A
 ></H2
 ><P
->W zaleĹźnoĹci od wybranej przez klienta czÄstotliwoĹci zapisu, moĹźe
-		nastÄpiÄ szybki przyrost danych w bazie, co spowoduje zwiÄkszenie czasu
-		oczekiwania na rysowanie wykresĂłw. Z tego powodu w menu 'Kompaktowanie'
-		udostÄpniono moĹźliwoĹÄ zmniejszenia rozmiarĂłw bazy statystyk bez
-		utraty danych. WybierajÄc poziom dokĹadnoĹci danych, dane zostanÄ uĹrednione
-		w nastÄpujÄcy sposĂłb:
+>W zależności od wybranej przez klienta częstotliwości zapisu, może
+		nastąpić szybki przyrost danych w bazie, co spowoduje zwiększenie czasu
+		oczekiwania na rysowanie wykresów. Z tego powodu w menu 'Kompaktowanie'
+		udostępniono możliwość zmniejszenia rozmiarów bazy statystyk bez
+		utraty danych. Wybierając poziom dokładności danych, dane zostaną uśrednione
+		w następujący sposób:
 		<UL
 ><LI
 ><P
@@ -155,9 +155,9 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >Poziom Niski (low)</I
 ></SPAN
->: dane z poprzedniego dnia i starsze, zostanÄ uĹrednione
-			do jednego dnia, czyli jeĹli do bazy zapisywane byĹy z czÄstotliwoĹciÄ 10 minut,
-			to 6*24 wpisĂłw zostanie zastÄpione jednym.</P
+>: dane z poprzedniego dnia i starsze, zostaną uśrednione
+			do jednego dnia, czyli jeśli do bazy zapisywane były z częstotliwością 10 minut,
+			to 6*24 wpisów zostanie zastąpione jednym.</P
 ></LI
 ><LI
 ><P
@@ -165,9 +165,9 @@ CLASS="EMPHASIS"
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
->Poziom Ĺredni (medium)</I
+>Poziom Średni (medium)</I
 ></SPAN
->: dane starsze niĹź miesiÄc zostanÄ uĹrednione do
+>: dane starsze niż miesiąc zostaną uśrednione do
 			jednego dnia.</P
 ></LI
 ><LI
@@ -178,7 +178,7 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >Poziom Wysoki (high)</I
 ></SPAN
->: dane starsze niĹź miesiÄc zostanÄ uĹrednione do
+>: dane starsze niż miesiąc zostaną uśrednione do
 			jednej godziny.</P
 ></LI
 ></UL
@@ -210,8 +210,8 @@ VALIGN="TOP"
 >
 	    	</P
 ><P
->MoĹźliwe jest kompaktowanie bazy danych z wykorzystaniem cron'a. StronÄ kompaktowania
-		moĹźna wywoĹaÄ (uruchomiÄ) bezpoĹrednio w przeglÄdarce, np. w nastÄpujÄcy sposĂłb:
+>Możliwe jest kompaktowanie bazy danych z wykorzystaniem cron'a. Stronę kompaktowania
+		można wywołać (uruchomić) bezpośrednio w przeglądarce, np. w następujący sposób:
 <PRE
 CLASS="SCREEN"
 >links -dump \
@@ -228,9 +228,9 @@ NAME="MENU-STATS-REPORTS"
 >3.12.3. Raporty</A
 ></H2
 ><P
->Obecnie masz moĹźliwoĹÄ wydruku statystyk klienta z wybranego miesiÄca.
-			Na wydruku bÄdÄ statystyki podane w formie tabelarycznej z podziaĹem na dni wraz
-			z podsumowaniem pobranych/wysĹanych danych i Ĺrednimi prÄdkoĹciami.</P
+>Obecnie masz możliwość wydruku statystyk klienta z wybranego miesiąca.
+			Na wydruku będą statystyki podane w formie tabelarycznej z podziałem na dni wraz
+			z podsumowaniem pobranych/wysłanych danych i średnimi prędkościami.</P
 ></DIV
 ></DIV
 ><DIV
@@ -277,7 +277,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->PrzeĹadowanie</TD
+>Przeładowanie</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"

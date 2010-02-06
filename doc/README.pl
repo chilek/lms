@@ -1767,7 +1767,7 @@ Rozdział 3. Interfejs Użytkownika (LMS-UI)
 
 3.9. Hosting
 
-   Zarządzanie różnymi usługa na serwerze jest teraz możliwe.
+   Zarządzanie różnymi usługami na serwerze jest teraz możliwe.
    Funkcjonalność ta jest przeznaczona dla zaawansowanych użytkowników.
    Wymaga znajomości tych usług i ich konfiguracji w celu korzystania z
    bazy danych.
@@ -1866,8 +1866,8 @@ Przygotowanie bazy danych na której działa LMS do współpracy z serwerem Powe
 
 Dodajemy użytkownika powerdns o uprawnieniach ograniczonych do tabel domains i records.
 
-GRANT SELECT, INSERT, UPDATE, DELETE ON powerdns.domains TO 'powerdns'@'adres-serwera-dns' IDENTIFIED BY 'hasło';
-GRANT SELECT, INSERT, UPDATE, DELETE ON powerdns.records TO 'powerdns'@'adres-serwera-dns' IDENTIFIED BY 'hasło';
+GRANT SELECT, INSERT, UPDATE, DELETE ON lms.domains TO 'powerdns'@'adres-serwera-dns' IDENTIFIED BY 'hasło';
+GRANT SELECT, INSERT, UPDATE, DELETE ON lms.records TO 'powerdns'@'adres-serwera-dns' IDENTIFIED BY 'hasło';
 
 Instalujemy pakiety: pdns, pdns-backend, pdns-recursor.
 
