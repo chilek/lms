@@ -13,7 +13,7 @@ REL="UP"
 TITLE="Instalacja i konfiguracja"
 HREF="install.html"><LINK
 REL="PREVIOUS"
-TITLE="Prawa dostÄpu"
+TITLE="Prawa dostępu"
 HREF="install-rights.html"><LINK
 REL="NEXT"
 TITLE="Dokumenty"
@@ -80,38 +80,38 @@ NAME="INSTALL-UPGRADE"
 ></H1
 ><P
 >Uaktualnienie LMS'a przebiega w kilku etapach. Zacznij od 
-		sprawdzenia wymagaĹ systemu, gdyĹź mogĹy ulec zmianie. JeĹli
-		korzystasz z bazy MySQL powinieneĹ takĹźe zweryfikowaÄ uprawnienia
-		uĹźytkownika, one teĹź ulegaĹy zmianie w przeszĹoĹci.
+		sprawdzenia wymagań systemu, gdyż mogły ulec zmianie. Jeśli
+		korzystasz z bazy MySQL powinieneś także zweryfikować uprawnienia
+		użytkownika, one też ulegały zmianie w przeszłości.
 		</P
 ><P
->Najpierw utwĂłrz katalog z plikami nowej wersji (nie zaleca siÄ nadpisywania starych plikĂłw
-      nowymi) oraz usuĹ zawartoĹÄ katalogu <TT
+>Najpierw utwórz katalog z plikami nowej wersji (nie zaleca się nadpisywania starych plików
+      nowymi) oraz usuń zawartość katalogu <TT
 CLASS="FILENAME"
 >templates_c</TT
 >.</P
 ><P
->NastÄpnie, jeĹli nie masz jeszcze w systemie locali pl_PL.UTF-8, naleĹźy
-      je utworzyÄ komendÄ:
+>Następnie, jeśli nie masz jeszcze w systemie locali pl_PL.UTF-8, należy
+      je utworzyć komendą:
       <PRE
 CLASS="SCREEN"
 ># localedef -v -c -i pl_PL -f UTF-8 /usr/share/locale/pl_PL.UTF-8</PRE
 >
-     JeĹli w interfejsie uĹźytkownika znaki narodowe nie bÄdÄ wyĹwietlane poprawnie
-     moĹźliwe, Ĺźe trzeba bÄdzie w pliku konfiguracyjnym serwera www (httpd.conf)
-     ustawiÄ:
+     Jeśli w interfejsie użytkownika znaki narodowe nie będą wyświetlane poprawnie
+     możliwe, że trzeba będzie w pliku konfiguracyjnym serwera www (httpd.conf)
+     ustawić:
      <PRE
 CLASS="SCREEN"
 >AddDefaultCharset Off</PRE
 >
-     oraz w konfiguracji PHP (php.ini) wyĹÄczyÄ/zakomentowaÄ domyĹlne kodowanie:
+     oraz w konfiguracji PHP (php.ini) wyłączyć/zakomentować domyślne kodowanie:
      <PRE
 CLASS="SCREEN"
 >;default_charset = "iso-8859-1"</PRE
 ></P
 ><P
->Kolejnym krokiem jest dokonanie zmian w bazie. Od wersji 1.3.1 wprowadzono automatycznÄ
-	procedurÄ aktualizacji struktury bazy danych. NastÄpuje ona za kaĹźdym razem podczas
+>Kolejnym krokiem jest dokonanie zmian w bazie. Od wersji 1.3.1 wprowadzono automatyczną
+	procedurę aktualizacji struktury bazy danych. Następuje ona za każdym razem podczas
 	uruchomienia <SPAN
 CLASS="emphasis"
 ><I
@@ -121,25 +121,25 @@ CLASS="EMPHASIS"
 > (jeszcze przed zalogowaniem do systemu).</P
 ><P
 >Ostatni etap - konwersja danych do unicodu.
-      PoczÄwszy od wersji 1.5.4 zaleca siÄ przechowywanie danych zakodowanych w 
-      utf-8 (UNICODE), poniĹźej zostanie przedstawiony przykĹad migracji z kodowania ISO-8859-2
+      Począwszy od wersji 1.5.4 zaleca się przechowywanie danych zakodowanych w 
+      utf-8 (UNICODE), poniżej zostanie przedstawiony przykład migracji z kodowania ISO-8859-2
       do UNICODE na bazie danych PostgreSQL.</P
 ><P
->Zaczynamy od utworzenia backupu danych w LMSie. NastÄpnie przechodzimy do
-      katalogu z backupami i wykonujemy konwersjÄ pliku backupu.
+>Zaczynamy od utworzenia backupu danych w LMSie. Następnie przechodzimy do
+      katalogu z backupami i wykonujemy konwersję pliku backupu.
       <PRE
 CLASS="SCREEN"
 ># iconv --from-code=ISO-8859-2 --to-code=UTF-8 &#60; plik_backupu &#62; nowy_plik</PRE
 >
-     Po czym zmieniamy nazwÄ nowo powstaĹego pliku na lms-xxxxxxx.sql, aby
-     plik ten byĹ widoczny z poziomu <SPAN
+     Po czym zmieniamy nazwę nowo powstałego pliku na lms-xxxxxxx.sql, aby
+     plik ten był widoczny z poziomu <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
 >. Teraz
-     naleĹźy utworzyÄ bazÄ danych z kodowaniem UNICODE (opis w dziale Instalacja).
+     należy utworzyć bazę danych z kodowaniem UNICODE (opis w dziale Instalacja).
      Po czym uruchamiamy <SPAN
 CLASS="emphasis"
 ><I
@@ -168,15 +168,15 @@ ALT="Ostrze&#380;enie"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->JeĹźeli uĹźywasz wersji pobranej z CVSu musisz dodatkowo
-    zadbaÄ o instalacjÄ biblioteki Smarty. Do katalogu <TT
+>Jeżeli używasz wersji pobranej z CVSu musisz dodatkowo
+    zadbać o instalację biblioteki Smarty. Do katalogu <TT
 CLASS="FILENAME"
 >/lib/Smarty</TT
 >
-    wgraj zawartoĹÄ katalogu <TT
+    wgraj zawartość katalogu <TT
 CLASS="FILENAME"
 >/lib</TT
-> z paczki Smarty. CzynnoĹÄ
+> z paczki Smarty. Czynność
     (wraz z pobraniem biblioteki Smarty) automatycznie wykonuje skrypt
     <TT
 CLASS="FILENAME"
@@ -196,9 +196,9 @@ NAME="INSTALL-UPGRADE-COMPAT"
 >2.8.1. Zmiany w konfiguracji</A
 ></H2
 ><P
->PoniĹźej znajduje siÄ lista zmian (oraz numer wersji), ktĂłre zrywajÄ 
-	zgodnoĹÄ z wczeĹniejszymi wydaniami. Zmiany najczeĹÄiej dotyczÄ usuniÄcia
-	jakiejĹ opcji/funkcji, zmiany nazwy opcji konfiguracyjnej, zachowania.</P
+>Poniżej znajduje się lista zmian (oraz numer wersji), które zrywają 
+	zgodność z wcześniejszymi wydaniami. Zmiany najcześćiej dotyczą usunięcia
+	jakiejś opcji/funkcji, zmiany nazwy opcji konfiguracyjnej, zachowania.</P
 ><DIV
 CLASS="TABLE"
 ><A
@@ -206,7 +206,7 @@ NAME="BACKWARD-COMPAT"
 ></A
 ><P
 ><B
->Tabela 2-1. Lista zmian zrywajÄcych zgodnoĹÄ z wczeĹniejszymi wydaniami</B
+>Tabela 2-1. Lista zmian zrywających zgodność z wcześniejszymi wydaniami</B
 ></P
 ><TABLE
 BORDER="1"
@@ -250,11 +250,11 @@ CLASS="EMPHASIS"
 ></LI
 ><LI
 ><P
->lms-notify: opcjÄ mailtemplate zastÄpiono opcjÄ debtors_template, opcjÄ mailsubject zastÄpiono opcjÄ debtors_subject, usuniÄto parametr --template-file (-D)</P
+>lms-notify: opcję mailtemplate zastąpiono opcją debtors_template, opcję mailsubject zastąpiono opcją debtors_subject, usunięto parametr --template-file (-D)</P
 ></LI
 ><LI
 ><P
->lms-notify-sms: opcjÄ smstemplate zastÄpiono opcjÄ debtors_template, usuniÄto parametr --template-file (-D)</P
+>lms-notify-sms: opcję smstemplate zastąpiono opcją debtors_template, usunięto parametr --template-file (-D)</P
 ></LI
 ></UL
 ></TD
@@ -308,7 +308,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Prawa dostÄpu</TD
+>Prawa dostępu</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"

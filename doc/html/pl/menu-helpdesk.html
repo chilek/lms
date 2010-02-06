@@ -10,7 +10,7 @@ REL="HOME"
 TITLE="LMS - LAN Management System 1.11-cvs"
 HREF="index.html"><LINK
 REL="UP"
-TITLE="Interfejs UĹźytkownika (LMS-UI)"
+TITLE="Interfejs Użytkownika (LMS-UI)"
 HREF="user.html"><LINK
 REL="PREVIOUS"
 TITLE="Statystyki"
@@ -55,7 +55,7 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Rozdzia&#322; 3. Interfejs UĹźytkownika (LMS-UI)</TD
+>Rozdzia&#322; 3. Interfejs Użytkownika (LMS-UI)</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
@@ -79,31 +79,31 @@ NAME="MENU-HELPDESK"
 >3.13. Helpdesk</A
 ></H1
 ><P
->Helpdesk (inaczej Request Tracker) to system obsĹugi zgĹoszeĹ.
-	    W systemie moĹźna prowadziÄ bazÄ wszystkich zgĹoszeĹ i zapytaĹ klientĂłw
-	    sieci, ale takĹźe osĂłb ktĂłre nie sÄ wpisane do bazy LMS'a. ZgĹoszenia moĹźna
-	    pogrupowaÄ w kategorie (kolejki) i wyszukiwaÄ wg zadanych kryteriĂłw.
-	    Do kaĹźdej kolejki moĹźna zdefiniowaÄ uprawnienia dla uĹźytkownikĂłw.
+>Helpdesk (inaczej Request Tracker) to system obsługi zgłoszeń.
+	    W systemie można prowadzić bazę wszystkich zgłoszeń i zapytań klientów
+	    sieci, ale także osób które nie są wpisane do bazy LMS'a. Zgłoszenia można
+	    pogrupować w kategorie (kolejki) i wyszukiwać wg zadanych kryteriów.
+	    Do każdej kolejki można zdefiniować uprawnienia dla użytkowników.
 	    </P
 ><P
->W menu po lewej stronie znajduje siÄ pole szybkiego wyszukiwania
-	    zgĹoszenia, w ktĂłrym moĹźna podawaÄ jego ID lub nazwisko zgĹaszajÄcego je
-	    klienta. W drugim przypadku zostanie wyĹwietlona lista wszystkich zgĹoszeĹ
+>W menu po lewej stronie znajduje się pole szybkiego wyszukiwania
+	    zgłoszenia, w którym można podawać jego ID lub nazwisko zgłaszającego je
+	    klienta. W drugim przypadku zostanie wyświetlona lista wszystkich zgłoszeń
 	    danego klienta.</P
 ><P
->KaĹźde zgĹoszenie posiada historiÄ, na ktĂłrÄ skĹadajÄ siÄ wiadomoĹci
-	    od uĹźytkownikĂłw i klientĂłw. Administrator moĹźe wysĹaÄ swojÄ wiadomoĹÄ do 
-	    klienta, klikajÄc 'WyĹlij' podczas dodawania wiadomoĹci. (NaleĹźy podaÄ
-	    e-mail odbiorcy. Adresem nadawcy bÄdzie adres kolejki, a jeĹli jest pusty, adres 
-	    uĹźytkownika). Wszystkie wiadomoĹci takĹźe te wysĹane, zostajÄ zapisane 
-	    w historii zgĹoszenia. ZgĹoszenie moĹźe mieÄ cztery stany: nowy, otwarty, rozwiÄzany 
+>Każde zgłoszenie posiada historię, na którą składają się wiadomości
+	    od użytkowników i klientów. Administrator może wysłać swoją wiadomość do 
+	    klienta, klikając 'Wyślij' podczas dodawania wiadomości. (Należy podać
+	    e-mail odbiorcy. Adresem nadawcy będzie adres kolejki, a jeśli jest pusty, adres 
+	    użytkownika). Wszystkie wiadomości także te wysłane, zostają zapisane 
+	    w historii zgłoszenia. Zgłoszenie może mieć cztery stany: nowy, otwarty, rozwiązany 
 	    i martwy.</P
 ><P
 >Skrypt <A
 HREF="scripts-config.html#LMS-RTPARSER"
 >lms-rtparser</A
-> zostaĹ stworzony aby umoĹźliwiÄ
-	    obsĹugÄ systemu i przesyĹanie zgĹoszeĹ pocztÄ elektronicznÄ.</P
+> został stworzony aby umożliwić
+	    obsługę systemu i przesyłanie zgłoszeń pocztą elektroniczną.</P
 ><DIV
 CLASS="SECT2"
 ><H2
@@ -113,10 +113,10 @@ NAME="MENU-HELPDESK-LIST"
 >3.13.1. Lista kolejek</A
 ></H2
 ><P
->Na liĹcie kolejek znajdujÄ siÄ podstawowe informacje i statystyki zgĹoszeĹ.
-	    KlikniÄcie na wybranej kolejce powoduje wyĹwietlenie listy zgĹoszeĹ. StÄd moĹźna
-	    takĹźe przejĹÄ do informacji szczegĂłĹowych (w tym takĹźe uprawnieniach) o kolejce lub
-	    usunÄÄ wybranÄ kolejkÄ. UsuniÄcie kolejki spowoduje takĹźe usuniÄcie zgĹoszeĹ z bazy
+>Na liście kolejek znajdują się podstawowe informacje i statystyki zgłoszeń.
+	    Kliknięcie na wybranej kolejce powoduje wyświetlenie listy zgłoszeń. Stąd można
+	    także przejść do informacji szczegółowych (w tym także uprawnieniach) o kolejce lub
+	    usunąć wybraną kolejkę. Usunięcie kolejki spowoduje także usunięcie zgłoszeń z bazy
 	    danych przypisanych do niej.
 	    </P
 ></DIV
@@ -129,16 +129,16 @@ NAME="MENU-HELPDESK-NEWQUEUE"
 >3.13.2. Nowa kolejka</A
 ></H2
 ><P
->Kolejka (kategoria) posiada nazwÄ, opcjonalny opis oraz opcjonalny adres
-	    poczty elektronicznej, ktĂłry uĹźywany jest do korespondencji. W tabeli 'Uprawnienia'
-	    definiuje siÄ prawa do danej kolejki, ktĂłre majÄ moc wiÄkszÄ od ogĂłlnych 
-	    uprawnieĹ uĹźytkownikĂłw tzn. jeĹli user nie ma praw do danej kolejki, to nawet
-	    jeĹli ma 'peĹny dostÄp' zgĹoszeĹ w tej kolejce nie zobaczy. Prawo zapisu pozwala na edycjÄ i dodawanie zgĹoszeĹ i wiadomoĹci. Prawo 'Usuwanie'
-	    pozwala na usuwanie wiadomoĹci i zgĹoszeĹ. Prawo 'Powiadomienia'
-	    sĹuĹźy do otrzymywania informacji o nowych zgĹoszeniach. JeĹźeli wĹÄczono opcjÄ 'newticket_notify' 
-	    wszyscy uĹźytkownicy z tym uprawnieniem bÄdÄ otrzymywaÄ emailowe powiadomienia 
-	    o nowych zgĹoszeniach do przedmiotowej kolejki. Wszystkie prawa "wyĹźsze" od
-    	prawa 'Odczyt' zawierajÄ uprawnienie do odczytu wiadomoĹci.</P
+>Kolejka (kategoria) posiada nazwę, opcjonalny opis oraz opcjonalny adres
+	    poczty elektronicznej, który używany jest do korespondencji. W tabeli 'Uprawnienia'
+	    definiuje się prawa do danej kolejki, które mają moc większą od ogólnych 
+	    uprawnień użytkowników tzn. jeśli user nie ma praw do danej kolejki, to nawet
+	    jeśli ma 'pełny dostęp' zgłoszeń w tej kolejce nie zobaczy. Prawo zapisu pozwala na edycję i dodawanie zgłoszeń i wiadomości. Prawo 'Usuwanie'
+	    pozwala na usuwanie wiadomości i zgłoszeń. Prawo 'Powiadomienia'
+	    służy do otrzymywania informacji o nowych zgłoszeniach. Jeżeli włączono opcję 'newticket_notify' 
+	    wszyscy użytkownicy z tym uprawnieniem będą otrzymywać emailowe powiadomienia 
+	    o nowych zgłoszeniach do przedmiotowej kolejki. Wszystkie prawa "wyższe" od
+    	prawa 'Odczyt' zawierają uprawnienie do odczytu wiadomości.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -149,10 +149,10 @@ NAME="MENU-HELPDESK-SEARCH"
 >3.13.3. Wyszukiwanie</A
 ></H2
 ><P
->Wyszukiwanie zgĹoszeĹ polega na wybraniu z bazy zgĹoszeĹ speĹniajÄcych 
-	    wszystkie podane kryteria (warunek AND, nie OR). MoĹźesz podaÄ temat, wĹaĹciciela, 
-	    kolejkÄ, status i zgĹaszajÄcego. KlientĂłw sieci wybieraj z listy, dla pozostaĹych
-	    naleĹźy podaÄ Nazwisko/ImiÄ i/lub e-mail.
+>Wyszukiwanie zgłoszeń polega na wybraniu z bazy zgłoszeń spełniających 
+	    wszystkie podane kryteria (warunek AND, nie OR). Możesz podać temat, właściciela, 
+	    kolejkę, status i zgłaszającego. Klientów sieci wybieraj z listy, dla pozostałych
+	    należy podać Nazwisko/Imię i/lub e-mail.
 	    </P
 ></DIV
 ><DIV
@@ -161,13 +161,13 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-HELPDESK-NEWTICKET"
->3.13.4. Nowe zgĹoszenie</A
+>3.13.4. Nowe zgłoszenie</A
 ></H2
 ><P
->DodajÄc nowe zgĹoszenie naleĹźy okreĹliÄ dla niego temat, treĹÄ, wybraÄ kolejkÄ
-	    oraz zgĹaszajÄcego klienta. Osoby spoza sieci wpisujemy w polach Nazwisko i ImiÄ.
-	    Opcjonalnie, jeĹli wiadomoĹÄ zostaĹa zgĹoszona pocztÄ elektronicznÄ podajemy adres 
-	    e-mail (takĹźe dla klienta zapisanego w bazie).</P
+>Dodając nowe zgłoszenie należy określić dla niego temat, treść, wybrać kolejkę
+	    oraz zgłaszającego klienta. Osoby spoza sieci wpisujemy w polach Nazwisko i Imię.
+	    Opcjonalnie, jeśli wiadomość została zgłoszona pocztą elektroniczną podajemy adres 
+	    e-mail (także dla klienta zapisanego w bazie).</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -178,7 +178,7 @@ NAME="MENU-HELPDESK-REPORTS"
 >3.13.5. Raporty</A
 ></H2
 ><P
->Tutaj mamy moĹźliwoĹÄ wydruku list zgĹoszeĹ lub statystyk helpdesku:
+>Tutaj mamy możliwość wydruku list zgłoszeń lub statystyk helpdesku:
 		<UL
 ><LI
 ><P
@@ -186,9 +186,9 @@ NAME="MENU-HELPDESK-REPORTS"
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
->Lista zgĹoszeĹ</I
+>Lista zgłoszeń</I
 ></SPAN
-> z  filtrami kolejki, statusu i klienta oraz moĹźliwoĹciÄ okreĹlenia granicy dni,</P
+> z  filtrami kolejki, statusu i klienta oraz możliwością określenia granicy dni,</P
 ></LI
 ><LI
 ><P
@@ -196,9 +196,9 @@ CLASS="EMPHASIS"
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
->Statystyki zgĹoszeĹ</I
+>Statystyki zgłoszeń</I
 ></SPAN
-> z moĹźliwoĹciÄ wyboru kolejki oraz wartoĹci granicznych.</P
+> z możliwością wyboru kolejki oraz wartości granicznych.</P
 ></LI
 ></UL
 >
