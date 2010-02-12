@@ -721,20 +721,22 @@ class LMS
 				) b ON (b.customerid = c.id)
 				LEFT JOIN (SELECT customerid, 
 					SUM((CASE suspended
-						WHEN 0 THEN (CASE discount WHEN 0 THEN tariffs.value 
-							ELSE ((100 - discount) * tariffs.value) / 100 END) 
-						ELSE (CASE discount WHEN 0 THEN tariffs.value * '.$suspension_percentage.' / 100 
-							ELSE tariffs.value * discount * '.$suspension_percentage.' / 10000 END) END)
+						WHEN 0 THEN (CASE discount WHEN 0 THEN (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END)
+							ELSE ((100 - discount) * (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END)) / 100 END) 
+						ELSE (CASE discount WHEN 0 THEN (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) * '.$suspension_percentage.' / 100 
+							ELSE (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) * discount * '.$suspension_percentage.' / 10000 END) END)
 					* (CASE period
+						WHEN '.MONTHLY.' THEN 1
 						WHEN '.YEARLY.' THEN 1/12.0
 						WHEN '.HALFYEARLY.' THEN 1/6.0
 						WHEN '.QUARTERLY.' THEN 1/3.0
 						WHEN '.WEEKLY.' THEN 4
 						WHEN '.DAILY.' THEN 30
-						ELSE 1 END)
+						ELSE 0 END)
 					) AS value 
 					FROM assignments
-					JOIN tariffs ON (tariffs.id = tariffid)
+					LEFT JOIN tariffs t ON (t.id = tariffid)
+					LEFT JOIN liabilities l ON (l.id = liabilityid AND period != '.DISPOSABLE.')
 					WHERE (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) 
 					GROUP BY customerid
 				) t ON (t.customerid = c.id)
