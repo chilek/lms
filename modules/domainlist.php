@@ -52,13 +52,24 @@ function GetDomainList($order='name,asc', $customer='', $filtr='')
                         
 	}
 
+	if ($filtr==1) {
+		if ($CONFIG['database']['type'] == 'postgres')
+			$where[] = "d.name ~ '^[0-9]'";
+		else
+			$where[] = "d.name REGEXP '^[0-9]'";
+	} else if ($filtr)
+		$where[] = 'd.name LIKE '.$DB->Escape("$filtr%");
+	if ($customer!='')
+		$where[] = 'd.ownerid = '.intval($customer);		
+
+	$where = !empty($where) ? ' WHERE '.implode(' AND ', $where) : '';
+
 	$list = $DB->GetAll('SELECT d.id AS id, d.name AS name, d.description, 
 		d.ownerid, d.type, (SELECT COUNT(*) FROM passwd WHERE domainid = d.id) AS cnt, '
 		.$DB->Concat('lastname', "' '",'c.name').' AS customername 
 		FROM domains d
-		LEFT JOIN customers c ON (d.ownerid = c.id) '
-		. ' WHERE d.name '.($filtr==1?' REGEXP "^[0-9]"':' LIKE "'.$filtr.'%" ')
-		.($customer != '' ? ' AND d.ownerid = '.intval($customer) : '')		
+		LEFT JOIN customers c ON (d.ownerid = c.id)'
+		.$where
 		.($sqlord != '' ? $sqlord : ''));
 	
 	$list['total'] = sizeof($list);
@@ -66,6 +77,27 @@ function GetDomainList($order='name,asc', $customer='', $filtr='')
 	$list['direction'] = $direction;
 	$list['customer'] = $customer;
 
+	return $list;
+}
+
+function GetDomainFirstLetters($customer='')
+{
+	global $DB;
+
+	if ($customer!='')
+		 'WHERE ownerid = '.intval($customer);		
+
+	if ($list = $DB->GetAllByKey('SELECT DISTINCT SUBSTR(name, 1, 1) AS idx
+		FROM domains'
+		.($customer!='' ? ' WHERE ownerid = '.intval($customer) : ''), 'idx'))
+	{
+		foreach ($list as $idx => $row)
+			if (preg_match('/[0-9]/', $row['idx']))
+			{
+				$list['numeric'] = 1;
+			}
+	}
+	
 	return $list;
 }
 
@@ -81,34 +113,20 @@ else
 	$c = $_GET['c'];
 $SESSION->save('dlc', $c);
 
+if(!isset($_GET['f']))
+	$SESSION->restore('dfi', $f);
+else
+	$f = substr($_GET['f'], 0, 1);
+$SESSION->save('dfi', $f);
+
 if ($SESSION->is_set('dlp') && !isset($_GET['page']))
 	$SESSION->restore('dlp', $_GET['page']);
 
 $layout['pagetitle'] = trans('Domains List');
 
-if(!isset($_GET['f']))
-
-$SESSION->restore('dfi', $f);
-
-else
-    $f = substr($_GET['f'],0,1);
-	
-$SESSION->save('dfi', $f);
-
 $domainlist = GetDomainList($o, $c, $f);
+$domaincount = GetDomainFirstLetters($c);
 
-$domainlistcount = GetDomainList($o, $c);
-$domaincount="";
- if (is_array($domainlistcount))
-   foreach ($domainlistcount as $line){   
-    if (is_array($line))
-     if (is_numeric(substr($line['name'],0,1)))
-       $domaincount['numeric']+=1;     
-         else
-           $domaincount[substr($line['name'],0,1)]+=1;
-   }
- 
- 
 $listdata['total'] = $domainlist['total'];
 $listdata['order'] = $domainlist['order'];
 $listdata['direction'] = $domainlist['direction'];
