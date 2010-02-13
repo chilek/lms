@@ -26,7 +26,7 @@
 
 function GetDomainList($order='name,asc', $customer='', $filtr='')
 {
-	global $DB;
+	global $DB, $CONFIG;
 
 	list($order,$direction) = sscanf($order, '%[^,],%s');
 
