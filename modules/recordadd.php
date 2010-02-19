@@ -27,7 +27,7 @@
 if (isset($_POST['record'])){   
    include("domainf.php");
    $record=$_POST['record'];
-   $arpa_record_type_allowed=array("PTR","SOA","NS","TXT");
+   $arpa_record_type_allowed=array("PTR","SOA","NS","TXT","CNAME","MX","SPF","NAPTR","URL","MBOXFW","CURL","SSHFP");
 
     
                             
@@ -38,7 +38,7 @@ if (isset($_POST['record'])){
          
         if ($tlds[count($tlds)-2].$tlds[count($tlds)-1]=="in-addrarpa"){ //domena in-add.arpa            
            
-            if (!is_numeric($record['name']))     
+            if (!is_numeric($record['name'])  && $record['name']!="")     
              $error['name']=trans("Wrong record name");        
              
             if (!in_array($record['type'],$arpa_record_type_allowed)) 
