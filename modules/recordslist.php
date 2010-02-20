@@ -23,33 +23,32 @@
  *
  */
 
-
 if(!isset($_GET['d']))
 	$SESSION->restore('ald', $d);
 else
 	$d = $_GET['d'];
 $SESSION->save('ald', $d);
-	    
+
 $recordslist = $DB->GetAll('SELECT *,
-    	(CASE WHEN type=\'TXT\' THEN 1
+	(CASE WHEN type=\'TXT\' THEN 1
 		WHEN type=\'MX\' THEN 2
 		WHEN type=\'NS\' THEN 3
 		WHEN type=\'SOA\' THEN 4
 		ELSE 0 END) AS ord
-	FROM records WHERE domain_id='.$d.' ORDER BY ord desc');
+		FROM records WHERE domain_id = ? ORDER BY ord desc',
+		array($d));
 
 $listdata['total'] = count($recordslist);
 $listdata['domain'] = $d;
-$domainName=$DB->GetRow('SELECT name FROM domains  where id='.$d);
-$listdata['domainName']=$domainName['name'];
+$domainName = $DB->GetRow('SELECT name FROM domains WHERE id = ?', array($d));
+$listdata['domainName'] = $domainName['name'];
 
+$domainType=$DB->GetRow('SELECT type FROM domains WHERE id = ?', array($d));
+if ($domainType['type'] == 'SLAVE')
+	$showAddEdit=false;
+else
+	$showAddEdit=true;
 
-$domainType=$DB->GetRow('SELECT type FROM domains  where id='.$d);
-  if ($domainType['type']=='SLAVE')
-     $showAddEdit=false;
-          else
-        $showAddEdit=true;
-                 
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']);
 $pagelimit = (!isset($CONFIG['phpui']['recordslist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['recordslist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
