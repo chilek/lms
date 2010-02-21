@@ -1,48 +1,6 @@
 {include file="header.html"}
-<H1>{$layout.pagetitle} <a href="?m=domaininfo&amp;id={$listdata.domain}">{$listdata.domainName}</a>
-
-<!--
-<H1>{$layout.pagetitle} <a href="?m=domaininfo&amp;id={$listdata.domain}">
-					{section name=domainlist loop=$domainlist}
-					      {if $domainlist[domainlist].id eq $listdata.domain}{$domainlist[domainlist].name} {/if}
-					{/section}</a>
--->
-</H1>
+<H1>{$layout.pagetitle} <a href="?m=domaininfo&amp;id={$listdata.domain}">{$listdata.domainName}</a></H1>
 <P><TABLE cellpadding="3" WIDTH="100%">
-	<TR class="DARK">
-		<TD class="fall" colspan="6">
-			<TABLE cellpadding="0" cellspacing="0" width="100%">
-			<TR>
-                        <TD width="1%" NOWRAP>
-                                        
-			<FORM method="GET" action="?m={$layout.module}" name="filter">
-			   <input type="hidden" name="m" value="{$layout.module}">
-				<NOBR>{t}Domain:{/t}
-				<SELECT size="1" name="d" OnChange="document.filter.submit();">
-					{section name=domainlist loop=$domainlist}
-					    <OPTION value="{$domainlist[domainlist].id}"{if $domainlist[domainlist].id eq $listdata.domain} SELECTED{/if}>{$domainlist[domainlist].name}</OPTION>
-					{/section}
-				</SELECT></NOBR>
-			</FORM>
-		 </TD>
-		 <TD width="99%" align="right" nowrap>
-                            <A href="?m=recordadd&d={$listdata.domain}">{t}New record{/t} <IMG src="img/save.gif" alt=""></A>
-            
-                </TD>
-		</TR>
-		</TABLE>
-		</TD>
-	</TR>		
-		    
-
-	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="6" CLASS="FALL">
-			{include file="scroller.html" loop=$recordslist adlink=$suffix}
-		</TD>
-	</TR>
-	{/if}
-
 	<TR class="dark"">
 		<TD width="46%" class="fleftu" NOWRAP>{t}Name{/t}</TD>
 		<TD width="2%" class="fbt" NOWRAP align="right">{t}TTL{/t}</TD>
@@ -51,9 +9,35 @@
 		<TD width="46%" class="fbt" align="left" NOWRAP>{t}Content{/t}</TD>
 		<TD width="2%" class="frightu" align="right" NOWRAP><B>{t 0=$listdata.total}Total: $0{/t}</B>&nbsp;</TD>
 	</TR>
-
-
-
+	<TR class="DARK">
+		<TD class="fall" colspan="6">
+			<TABLE cellpadding="0" cellspacing="0" width="100%">
+			    <TR>
+                    		<TD width="1%" NOWRAP>
+				<FORM method="GET" action="?m={$layout.module}" name="filter">
+				    <input type="hidden" name="m" value="{$layout.module}">
+				    <NOBR>{t}Domain:{/t}
+				    <SELECT size="1" name="d" OnChange="document.filter.submit();">
+					{section name=domainlist loop=$domainlist}
+					    <OPTION value="{$domainlist[domainlist].id}"{if $domainlist[domainlist].id eq $listdata.domain} SELECTED{/if}>{$domainlist[domainlist].name}</OPTION>
+					{/section}
+				    </SELECT></NOBR>
+				</FORM>
+			    </TD>
+			    <TD width="99%" align="right" nowrap>
+                        	<A href="?m=recordadd&d={$listdata.domain}">{t}New record{/t} <IMG src="img/save.gif" alt=""></A>
+            		    </TD>
+			</TR>
+		    </TABLE>
+		</TD>
+	</TR>
+	{if $listdata.total != 0}
+	<TR CLASS="DARK">
+		<TD COLSPAN="6" CLASS="FALL">
+			{include file="scroller.html" loop=$recordslist adlink=$suffix}
+		</TD>
+	</TR>
+	{/if}
 	{cycle values="light,lucid" print=false}
 	{section name=recordslist loop=$recordslist start=$start max=$pagelimit}
 	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
@@ -74,8 +58,6 @@
 		</TD>
 	</TR>
 	{sectionelse}
-
-
 	<TR>
 		<TD colspan="6" align="center" class="flr">
 			<p>&nbsp;</p>
@@ -90,13 +72,9 @@
 			{include file="scroller.html" loop=$recordslist adlink=$suffix}
 		</TD>
 	</TR>
-
-
 	{/if}
- <TR class="light">
-           <TD colspan="3" class="fleftu" align="right" valign="top">
-                </TD>
-                                                    
+	<TR class="light">
+        	<TD colspan="3" class="fleftu" align="right" valign="top"></TD>
 		<TD class="frightu" colspan="3" align="right">
 		{if $showaddedit}
 			<A href="?m=recordadd&d={$listdata.domain}">{t}New record{/t} <IMG src="img/save.gif" alt=""></A>
