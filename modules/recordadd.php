@@ -67,7 +67,7 @@ if (isset($_POST['record']))
 	{
 		$soa=$DB->GetRow('SELECT type FROM records WHERE type="SOA" AND domain_id=?', array($record['domain_id']));
 		if ($soa['type'] == 'SOA')
-		$error['type'] = trans('SOA record already exists');
+			$error['type'] = trans('SOA record already exists');
 	}
 
 	if (!$error)
@@ -109,7 +109,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('domain_id', $d);
 $SMARTY->assign('record', $record);
 $SMARTY->assign('error',$error);
-$SMARTY->assign('domain', $DB->GetRow('SELECT name FROM domains WHERE id = ?', array($d)));
+$SMARTY->assign('domain', $domain ? $domain : $DB->GetRow('SELECT name FROM domains WHERE id = ?', array($d)));
 $SMARTY->display('recordadd.html');
 
 ?>

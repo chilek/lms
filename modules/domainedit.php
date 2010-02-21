@@ -63,12 +63,13 @@ if(isset($_POST['domain']))
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}
 	
-	
-        if($domain['type'] == 'SLAVE'){
-        if (!check_ip($domain['master'])) $error['master'] = trans('IP address of master NS is required!');
+        if($domain['type'] == 'SLAVE')
+        {
+    		if (!check_ip($domain['master']))
+    			$error['master'] = trans('IP address of master NS is required!');
         }
         else
-        $domain['master']="";                                        
+    		$domain['master'] = '';
 	
 	if($domain['name'] == '')
 		$error['name'] = trans('Domain name is required!');
@@ -92,7 +93,9 @@ if(isset($_POST['domain']))
 
 	if(!$error)
 	{
-		$DB->Execute('UPDATE domains SET name = ?, ownerid = ?, description = ?, master = ?, last_check = ?, type = ?, notified_serial = ?, account = ?  WHERE id = ?', 
+		$DB->Execute('UPDATE domains SET name = ?, ownerid = ?, description = ?,
+			master = ?, last_check = ?, type = ?, notified_serial = ?,
+			account = ? WHERE id = ?', 
 			array(	$domain['name'],
 				$domain['ownerid'],
 				$domain['description'],

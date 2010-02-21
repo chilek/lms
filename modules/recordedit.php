@@ -24,8 +24,9 @@
 
 $id = $_GET['id']*1;
 
-$domain = $DB->GetRow('SELECT domains.name FROM domains,records WHERE records.domain_id=domains.id and records.id = ?', array($id));
-
+$domain = $DB->GetRow('SELECT domains.name, domains.id
+	FROM domains, records
+	WHERE records.domain_id = domains.id and records.id = ?', array($id));
 
 if (isset($_POST['record']))
 {
@@ -67,13 +68,6 @@ if (isset($_POST['record']))
 		if ($errorname = trans(is_not_valid_hostname_fqdn($record['name'],1,0)))
 			$error['name'] = $errorname;
 
-	if ($record['type'] == 'SOA')
-	{
-		$soa = $DB->GetRow('SELECT type FROM records WHERE type="SOA" AND domain_id=(SELECT domain_id FROM records WHERE id=? AND type!="SOA")', array($id));
-		if ($soa['type'] == 'SOA')
-			$error['type'] = trans('SOA record already exists');
-	}
-
 	if (!$error)
 	{
 
@@ -91,8 +85,7 @@ if (isset($_POST['record']))
 				$record['id']
 			));
 
-		$domainid = $DB->GetRow('SELECT domain_id FROM records WHERE records.id = ?', array($id));
-		update_soa_serial($domainid['domain_id']);
+		update_soa_serial($domain['id']);
 		$SESSION->redirect('?m=recordslist');
 	}
 }
@@ -107,11 +100,10 @@ $layout['pagetitle'] = trans('Record edit for zone:');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $record['content'] = htmlentities($record['content']);
-$domain = $DB->GetRow('SELECT domains.name FROM domains, records WHERE records.domain_id = domains.id AND records.id = ?', array($id));
 
 $SMARTY->assign('error',$error);
-$SMARTY->assign('record',$record );
-$SMARTY->assign('domain',$domain );
+$SMARTY->assign('record',$record);
+$SMARTY->assign('domain',$domain);
 
 $SMARTY->display('recordedit.html');
 

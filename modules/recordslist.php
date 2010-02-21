@@ -38,13 +38,13 @@ $recordslist = $DB->GetAll('SELECT *,
 		FROM records WHERE domain_id = ? ORDER BY ord desc',
 		array($d));
 
+$domain = $DB->GetRow('SELECT name, type FROM domains WHERE id = ?', array($d));
+
 $listdata['total'] = count($recordslist);
 $listdata['domain'] = $d;
-$domainName = $DB->GetRow('SELECT name FROM domains WHERE id = ?', array($d));
-$listdata['domainName'] = $domainName['name'];
+$listdata['domainName'] = $domain['name'];
 
-$domainType=$DB->GetRow('SELECT type FROM domains WHERE id = ?', array($d));
-if ($domainType['type'] == 'SLAVE')
+if ($domain['type'] == 'SLAVE')
 	$showAddEdit=false;
 else
 	$showAddEdit=true;

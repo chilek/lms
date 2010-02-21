@@ -98,16 +98,16 @@ function is_not_valid_hostname_fqdn($hostname, $wildcard, $dns_strict_tld_check)
 }
 
 
-function update_soa_serial($did){
+function update_soa_serial($did)
+{
+	global $DB;
 
-GLOBAL $DB;
+	$soarecordq = $DB->GetRow("SELECT * from records where domain_id = ? and type='SOA'", array($did));
 
-$soarecordq=$DB->GetRow("SELECT * from records where domain_id = $did and type='SOA'");
-
-$soa=explode(" ",$soarecordq['content']);
+	$soa = explode(" ", $soarecordq['content']);
 
 
-if ($soa[2] == "0") {
+	if ($soa[2] == "0") {
                 return true;
         } elseif ($soa[2] == date('Ymd') . "99") {
                 return true;
@@ -140,13 +140,8 @@ if ($soa[2] == "0") {
                 }
         }
 
-
- $DB->Execute('UPDATE records SET  content = ?
-                WHERE id = ?',
-                array( $content,
-                        $soarecordq['id'],
-        ));
-
+	$DB->Execute('UPDATE records SET content = ? WHERE id = ?',
+                array($content, $soarecordq['id']));
 }
 
 ?>
