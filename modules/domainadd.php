@@ -39,25 +39,27 @@ if(isset($_POST['domainadd']))
 	$domainadd['name'] = trim($domainadd['name']);
 	$domainadd['description'] = trim($domainadd['description']);
 	$domainadd['master'] = trim($domainadd['master']);
-		
-        if($domainadd['type'] == 'SLAVE'){
-        if (!check_ip($domainadd['master'])) $error['master'] = trans('IP address of master NS is required!');
+
+        if ($domainadd['type'] == 'SLAVE') {
+		if (!check_ip($domainadd['master']))
+			$error['master'] = trans('IP address of master NS is required!');
         }
         else {
-                $domainadd['master']="";
-                if (!check_ip($domainadd['ipwebserver'])) $error['ipwebserwer'] = trans('IP address of webserver is required!');	
-                if (!check_ip($domainadd['ipmailserver'])) $error['ipmailserwer'] = trans('IP address of mailserver is required!');
+                $domainadd['master'] = '';
+                if (!check_ip($domainadd['ipwebserver']))
+            		$error['ipwebserwer'] = trans('IP address of webserver is required!');
+                if (!check_ip($domainadd['ipmailserver']))
+            		$error['ipmailserwer'] = trans('IP address of mailserver is required!');
         }
-        
 
 	include('domainf.php');
-	
-	
-	$errorname=trans(is_not_valid_hostname_fqdn($domainadd['name'],0,1));	  
-         if ($errorname) $error['name']=$errorname;
 
-	if(GetDomainIdByName($domainadd['name']))
-		$error['name'] = trans('Domain with specified name exists!');	
+	$errorname = trans(is_not_valid_hostname_fqdn($domainadd['name'],0,1));
+        if ($errorname)
+    		$error['name'] = $errorname;
+
+	if (GetDomainIdByName($domainadd['name']))
+		$error['name'] = trans('Domain with specified name exists!');
 	
 	if($domainadd['ownerid'])
 	{
@@ -74,33 +76,64 @@ if(isset($_POST['domainadd']))
 		}
 	}
 	
-	
-	
 	if(!$error)
 	{
+		$DB->BeginTrans();
+	
 		$DB->Execute('INSERT INTO domains (name, ownerid, type, master, description) VALUES (?,?,?,?,?)',
-				    array($domainadd['name'], 
-					    $domainadd['ownerid'], 
-					    $domainadd['type'], 
-					    $domainadd['master'], 
-					    $domainadd['description']));
-		$lid=$DB->GetOne('SELECT LAST_INSERT_ID() AS lid' );
+				array($domainadd['name'], 
+					$domainadd['ownerid'], 
+					$domainadd['type'], 
+					$domainadd['master'], 
+					$domainadd['description']));
 
-        if ($domainadd['type']!="SLAVE"){
-                
-                $tlds=explode(".",$domainadd['name']);                                   
-                           
-		$DB->Execute("INSERT INTO records(domain_id,name,ttl,type,prio,content) VALUES ($lid,'$domainadd[name]',".$CONFIG['zones']['default_ttl'].",'SOA',0,'".$CONFIG['zones']['master_dns']." ".$CONFIG['zones']['hostmaster_mail']." ".date('Ymd')."00 ".$CONFIG['zones']['ttl_refresh']." ".$CONFIG['zones']['ttl_retry']." ".$CONFIG['zones']['ttl_expire']." ".$CONFIG['zones']['ttl_minimum']."')");
-		$DB->Execute("INSERT INTO records(domain_id,name,ttl,type,prio,content) VALUES ($lid,'$domainadd[name]',".$CONFIG['zones']['default_ttl'].",'NS',0,'".$CONFIG['zones']['master_dns']."')");
-		$DB->Execute("INSERT INTO records(domain_id,name,ttl,type,prio,content) VALUES ($lid,'$domainadd[name]',".$CONFIG['zones']['default_ttl'].",'NS',0,'".$CONFIG['zones']['slave_dns']."')");
+		$lid = $DB->GetLastInsertID('domains');
+
+		if ($domainadd['type'] != 'SLAVE')
+		{
+			$tlds = explode('.', $domainadd['name']);
+
+			$DB->Execute('INSERT INTO records(domain_id,name,ttl,type,prio,content)
+				VALUES (?, ?, ?, \'SOA\', 0, ?)',
+				array($lid, $domainadd['name'], $CONFIG['zones']['default_ttl'],
+					$CONFIG['zones']['master_dns'].' '.$CONFIG['zones']['hostmaster_mail'].' '
+					.date('Ymd').'00 '.$CONFIG['zones']['ttl_refresh'].' '
+					.$CONFIG['zones']['ttl_retry'].' '.$CONFIG['zones']['ttl_expire'].' '
+					.$CONFIG['zones']['ttl_minimum']));
+
+			$DB->Execute('INSERT INTO records(domain_id,name,ttl,type,prio,content)
+				VALUES (?, ?, ?, \'NS\', 0, ?)',
+				array($lid, $domainadd['name'], $CONFIG['zones']['default_ttl'],
+					$CONFIG['zones']['master_dns']));
+
+			$DB->Execute('INSERT INTO records(domain_id,name,ttl,type,prio,content)
+				VALUES (?, ?, ?, \'NS\', 0, ?)', 
+				array($lid, $domainadd['name'], $CONFIG['zones']['default_ttl'],
+					$CONFIG['zones']['slave_dns']));
 		
-		    if ($tlds[count($tlds)-2].$tlds[count($tlds)-1]!="in-addrarpa"){ 
-			    $DB->Execute("INSERT INTO records(domain_id,name,ttl,type,prio,content) VALUES ($lid,'$domainadd[name]',".$CONFIG['zones']['default_ttl'].",'A',0,'".$domainadd['ipwebserver']."')");
-			    $DB->Execute("INSERT INTO records(domain_id,name,ttl,type,prio,content) VALUES ($lid,'www.$domainadd[name]',".$CONFIG['zones']['default_ttl'].",'A',0,'".$domainadd['ipwebserver']."')");				
-		    	    $DB->Execute("INSERT INTO records(domain_id,name,ttl,type,prio,content) VALUES ($lid,'mail.$domainadd[name]',".$CONFIG['zones']['default_ttl'].",'A',0,'".$domainadd['ipmailserver']."')");
-			    $DB->Execute("INSERT INTO records(domain_id,name,ttl,type,prio,content) VALUES ($lid,'$domainadd[name]',".$CONFIG['zones']['default_ttl'].",'MX',10,'".$CONFIG['zones']['default_mx']."')");				
-		    }
-	}	
+			if ($tlds[count($tlds)-2].$tlds[count($tlds)-1] != 'in-addrarpa')
+			{
+				$DB->Execute('INSERT INTO records(domain_id,name,ttl,type,prio,content)
+					VALUES (?, ?, ?, \'A\', 0, ?)',
+					array($lid, $domainadd['name'], $CONFIG['zones']['default_ttl'],
+						$domainadd['ipwebserver']));
+				$DB->Execute('INSERT INTO records(domain_id,name,ttl,type,prio,content)
+					VALUES (?, ?, ?, \'A\', 0, ?)',
+					array($lid,'www.'.$domainadd['name'], $CONFIG['zones']['default_ttl'],
+						$domainadd['ipwebserver']));
+				$DB->Execute('INSERT INTO records(domain_id,name,ttl,type,prio,content)
+					VALUES (?, ?, ?, \'A\', 0, ?)',
+					array($lid, 'mail.'.$domainadd['name'], $CONFIG['zones']['default_ttl'],
+						$domainadd['ipmailserver']));
+				$DB->Execute('INSERT INTO records(domain_id,name,ttl,type,prio,content)
+					VALUES (?, ?, ?, \'MX\', 10, ?)',
+					array($lid, $domainadd['name'], $CONFIG['zones']['default_ttl'],
+						$CONFIG['zones']['default_mx']));
+			}
+		}
+		
+		$DB->CommitTrans();
+		
 		if(!isset($domainadd['reuse']))
 		{
 			$SESSION->redirect('?m=domainlist');
@@ -109,19 +142,16 @@ if(isset($_POST['domainadd']))
 		unset($domainadd['name']);
 		unset($domainadd['description']);
 	}
-}	
+}
 elseif(isset($_GET['cid']))
 {
         $domainadd['ownerid'] = intval($_GET['cid']);
 }
 
-
-	if (empty($domainadd['ipwebserver']))
-	     $domainadd['ipwebserver']=$CONFIG['zones']['default_webserver_ip'];
-    
-	if (empty($domainadd['ipmailserver']))
-	     $domainadd['ipmailserver']=$CONFIG['zones']['default_mailserver_ip'];
-
+if (empty($domainadd['ipwebserver']))
+	$domainadd['ipwebserver'] = $CONFIG['zones']['default_webserver_ip'];
+if (empty($domainadd['ipmailserver']))
+	$domainadd['ipmailserver'] = $CONFIG['zones']['default_mailserver_ip'];
 
 $layout['pagetitle'] = trans('New Domain');
 
