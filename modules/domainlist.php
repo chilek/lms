@@ -52,13 +52,15 @@ function GetDomainList($order='name,asc', $customer='', $filtr='')
                         
 	}
 
-	if ($filtr==1) {
+	if ($filtr == '0-9') {
 		if ($CONFIG['database']['type'] == 'postgres')
 			$where[] = "d.name ~ '^[0-9]'";
 		else
 			$where[] = "d.name REGEXP '^[0-9]'";
-	} else if ($filtr)
+	} else if ($filtr) {
+		$filtr = substr($filtr, 0, 1);
 		$where[] = 'd.name LIKE '.$DB->Escape("$filtr%");
+	}
 	if ($customer!='')
 		$where[] = 'd.ownerid = '.intval($customer);		
 
@@ -87,14 +89,16 @@ function GetDomainFirstLetters($customer='')
 	if ($customer!='')
 		 'WHERE ownerid = '.intval($customer);		
 
-	if ($list = $DB->GetAllByKey('SELECT DISTINCT SUBSTR(name, 1, 1) AS idx
+	if ($list = $DB->GetAllByKey('SELECT DISTINCT UPPER(SUBSTR(name, 1, 1)) AS idx
 		FROM domains'
-		.($customer!='' ? ' WHERE ownerid = '.intval($customer) : ''), 'idx'))
+		.($customer!='' ? ' WHERE ownerid = '.intval($customer) : '')
+		.' ORDER BY 1', 'idx'))
 	{
 		foreach ($list as $idx => $row)
 			if (preg_match('/[0-9]/', $row['idx']))
 			{
-				$list['numeric'] = 1;
+				$list['0-9'] = 1;
+				unset($list[$idx]);
 			}
 	}
 	
@@ -116,7 +120,7 @@ $SESSION->save('dlc', $c);
 if(!isset($_GET['f']))
 	$SESSION->restore('dfi', $f);
 else
-	$f = substr($_GET['f'], 0, 1);
+	$f = $_GET['f'];
 $SESSION->save('dfi', $f);
 
 if ($SESSION->is_set('dlp') && !isset($_GET['page']))
@@ -131,6 +135,7 @@ $listdata['total'] = $domainlist['total'];
 $listdata['order'] = $domainlist['order'];
 $listdata['direction'] = $domainlist['direction'];
 $listdata['customer'] = $domainlist['customer'];
+$listdata['name'] = $f;
 
 unset($domainlist['total']);
 unset($domainlist['order']);
@@ -150,12 +155,11 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('page', $page);
-$SMARTY->assign('f', $f);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('domainlist', $domainlist);
-$SMARTY->assign('domaincount',$domaincount);
+$SMARTY->assign('domaincount', $domaincount);
 $SMARTY->assign('listdata', $listdata);
-$SMARTY->assign('customerlist',$LMS->GetCustomerNames());
+$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 $SMARTY->display('domainlist.html');
 
 ?>
