@@ -83,7 +83,7 @@ function togglelogin()
 				<OPTION value="{$item.id}"{if $item.id eq $alias.accountid} SELECTED{/if}>{$item.login}@{$item.domain}</OPTION>
 				{/foreach}
 			</SELECT>
-			<A href="javascript:addaccount()"><IMG src="img/save.gif" alt="" {tip text="Add"}></A>
+			<A href="javascript:addaccount()"><IMG src="img/add.gif" alt="" {tip text="Add"}></A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -99,7 +99,7 @@ function togglelogin()
 			<A href="javascript:delmailforward('{$mailforward}')"><IMG src="img/delete.gif" alt="" {tip text="Delete"}></A><BR>
 			{/foreach}
 			<INPUT type="text" name="alias[mailforward]" value="" {tip text="Enter destination e-mail address for redirect (optional)" trigger="mailforward"} size="25">
-			<A href="javascript:addmailforward()"><IMG src="img/save.gif" alt="" {tip text="Add"}></A>
+			<A href="javascript:addmailforward()"><IMG src="img/add.gif" alt="" {tip text="Add"}></A>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
