@@ -180,7 +180,7 @@
 			<IMG SRC="img/mail.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="customerdata[email]" VALUE="{$customerinfo.email}" SIZE="40" {tip text="Enter e-mail address (optional)" trigger="email" }><BR>
+			<INPUT TYPE="TEXT" NAME="customerdata[email]" VALUE="{$customerinfo.email}" SIZE="38" {tip text="Enter e-mail address (optional)" trigger="email" }><BR>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -188,7 +188,7 @@
 			<B><IMG src="img/serialnumber.gif" alt=""></B>
 		</TD>
 		<TD width="99%" COLSPAN="2">
-			<INPUT TYPE="text" VALUE="{$customerinfo.icn}" name="customerdata[icn]" SIZE="40" {tip text="Enter Identity Card Number (optional)" trigger="icn"}>
+			<INPUT TYPE="text" VALUE="{$customerinfo.icn}" name="customerdata[icn]" SIZE="38" {tip text="Enter Identity Card Number (optional)" trigger="icn"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -196,7 +196,7 @@
 			<B>{t}SSN{/t}</B>
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="customerdata[ssn]" VALUE="{$customerinfo.ssn}" SIZE="40" {tip text="Enter Social Security Number (optional)" trigger="ssn"}>
+			<INPUT TYPE="TEXT" NAME="customerdata[ssn]" VALUE="{$customerinfo.ssn}" SIZE="38" {tip text="Enter Social Security Number (optional)" trigger="ssn"}>
 			{if $customerinfo.ssnwarning}
 			<INPUT TYPE="HIDDEN" NAME="customerdata[ssnwarning]" VALUE="1">
 			{/if}
@@ -207,7 +207,7 @@
 			<B>{t}TEN{/t}</B>
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="customerdata[ten]" VALUE="{$customerinfo.ten}" SIZE="40" {tip text="Enter Tax Exempt Number (optional)" trigger="ten"}>
+			<INPUT TYPE="TEXT" NAME="customerdata[ten]" VALUE="{$customerinfo.ten}" SIZE="38" {tip text="Enter Tax Exempt Number (optional)" trigger="ten"}>
 			{if $customerinfo.tenwarning}
 			<INPUT TYPE="HIDDEN" NAME="customerdata[tenwarning]" VALUE="1">
 			{/if}
@@ -218,7 +218,7 @@
 			<B>{t}REGON{/t}</B>
 		</TD>
 		<TD width="99%" COLSPAN="2">
-			<INPUT TYPE="text" value="{$customerinfo.regon}" name="customerdata[regon]" SIZE="40" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
+			<INPUT TYPE="text" value="{$customerinfo.regon}" name="customerdata[regon]" SIZE="38" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -226,7 +226,7 @@
 			<B><IMG src="img/report.gif" alt=""></B>
 		</TD>
 		<TD width="99%" COLSPAN="2">
-			<INPUT TYPE="text" value="{$customerinfo.rbe}" name="customerdata[rbe]" SIZE="40" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
+			<INPUT TYPE="text" value="{$customerinfo.rbe}" name="customerdata[rbe]" SIZE="38" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
