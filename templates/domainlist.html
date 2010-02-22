@@ -36,7 +36,8 @@
 							<INPUT type="HIDDEN" name="m" value="{$layout.module}">
 							{if $suffix}<INPUT type="HIDDEN" name="s" value="1">{/if}
 							<INPUT type="HIDDEN" name="page" value="1">
-							<B>{t}Filter:{/t} </B> {t}Owner:{/t}
+							<B>{t}Filter:{/t} </B>
+							{t}Owner:{/t}
 							<SELECT size="1" name="c" OnChange="document.filter.submit();">
 								<OPTION value=""{if $listdata.customer eq ""} SELECTED{/if}>{t}- all owners -{/t}</OPTION>
 			        				<OPTION value="0"{if $listdata.customer eq "0"} SELECTED{/if}>{t}SYSTEM DOMAIN{/t}</OPTION>
@@ -44,35 +45,13 @@
 				    					<OPTION value="{$customer.id}"{if $customer.id eq $listdata.customer} SELECTED{/if}>{$customer.customername|truncate:40:"...":true}</OPTION>
 								{/foreach}
 							</SELECT>
-			&nbsp;{t}Name:{/t}
-			<a href="?m={$layout.module}&f=" {if  $f==''}style="font-weight:bold;"{/if}>{t}all{/t}</a>&nbsp;
-			<a {if $domaincount.numeric > 0 }href="?m={$layout.module}&f=1" {if $f=='1'}style="font-weight:bold;"{/if}{/if}>0-9</a>&nbsp; 
-			<a {if $domaincount.a > 0 }href="?m={$layout.module}&f=a" {if $f=='a'}style="font-weight:bold;"{/if}{/if}>a</a>&nbsp;
-			<a {if $domaincount.b > 0 }href="?m={$layout.module}&f=b" {if $f=='b'}style="font-weight:bold;"{/if}{/if}>b</a>&nbsp;
-			<a {if $domaincount.c > 0 }href="?m={$layout.module}&f=c" {if $f=='c'}style="font-weight:bold;"{/if}{/if}>c</a>&nbsp;
-			<a {if $domaincount.d > 0 }href="?m={$layout.module}&f=d" {if $f=='d'}style="font-weight:bold;"{/if}{/if}>d</a>&nbsp;
-			<a {if $domaincount.e > 0 }href="?m={$layout.module}&f=e" {if $f=='e'}style="font-weight:bold;"{/if}{/if}>e</a>&nbsp;
-			<a {if $domaincount.f > 0 }href="?m={$layout.module}&f=f" {if $f=='f'}style="font-weight:bold;"{/if}{/if}>f</a>&nbsp;
-			<a {if $domaincount.g > 0 }href="?m={$layout.module}&f=g" {if $f=='g'}style="font-weight:bold;"{/if}{/if}>g</a>&nbsp;
-			<a {if $domaincount.h > 0 }href="?m={$layout.module}&f=h" {if $f=='h'}style="font-weight:bold;"{/if}{/if}>h</a>&nbsp;
-			<a {if $domaincount.i > 0 }href="?m={$layout.module}&f=i" {if $f=='i'}style="font-weight:bold;"{/if}{/if}>i</a>&nbsp;
-			<a {if $domaincount.j > 0 }href="?m={$layout.module}&f=j" {if $f=='j'}style="font-weight:bold;"{/if}{/if}>j</a>&nbsp;
-			<a {if $domaincount.k > 0 }href="?m={$layout.module}&f=k" {if $f=='k'}style="font-weight:bold;"{/if}{/if}>k</a>&nbsp;
-			<a {if $domaincount.l > 0 }href="?m={$layout.module}&f=l" {if $f=='l'}style="font-weight:bold;"{/if}{/if}>l</a>&nbsp;
-			<a {if $domaincount.m > 0 }href="?m={$layout.module}&f=m" {if $f=='m'}style="font-weight:bold;"{/if}{/if}>m</a>&nbsp;
-			<a {if $domaincount.n > 0 }href="?m={$layout.module}&f=n" {if $f=='n'}style="font-weight:bold;"{/if}{/if}>n</a>&nbsp;
-			<a {if $domaincount.o > 0 }href="?m={$layout.module}&f=o" {if $f=='o'}style="font-weight:bold;"{/if}{/if}>o</a>&nbsp;
-			<a {if $domaincount.p > 0 }href="?m={$layout.module}&f=p" {if $f=='p'}style="font-weight:bold;"{/if}{/if}>p</a>&nbsp;
-			<a {if $domaincount.q > 0 }href="?m={$layout.module}&f=q" {if $f=='q'}style="font-weight:bold;"{/if}{/if}>q</a>&nbsp;
-			<a {if $domaincount.r > 0 }href="?m={$layout.module}&f=r" {if $f=='r'}style="font-weight:bold;"{/if}{/if}>r</a>&nbsp;
-			<a {if $domaincount.s > 0 }href="?m={$layout.module}&f=s" {if $f=='s'}style="font-weight:bold;"{/if}{/if}>s</a>&nbsp;
-			<a {if $domaincount.t > 0 }href="?m={$layout.module}&f=t" {if $f=='t'}style="font-weight:bold;"{/if}{/if}>t</a>&nbsp;
-			<a {if $domaincount.u > 0 }href="?m={$layout.module}&f=u" {if $f=='u'}style="font-weight:bold;"{/if}{/if}>u</a>&nbsp;
-			<a {if $domaincount.v > 0 }href="?m={$layout.module}&f=v" {if $f=='v'}style="font-weight:bold;"{/if}{/if}>v</a>&nbsp;
-			<a {if $domaincount.w > 0 }href="?m={$layout.module}&f=w" {if $f=='w'}style="font-weight:bold;"{/if}{/if}>w</a>&nbsp;
-			<a {if $domaincount.x > 0 }href="?m={$layout.module}&f=x" {if $f=='x'}style="font-weight:bold;"{/if}{/if}>x</a>&nbsp;
-			<a {if $domaincount.y > 0 }href="?m={$layout.module}&f=y" {if $f=='y'}style="font-weight:bold;"{/if}{/if}>y</a>&nbsp;
-			<a {if $domaincount.z > 0 }href="?m={$layout.module}&f=z" {if $f=='z'}style="font-weight:bold;"{/if}{/if}>z</a>&nbsp;			
+							&nbsp;{t}Name:{/t}
+							<SELECT size="1" name="f" OnChange="document.filter.submit();">
+								<OPTION value=""{if $listdata.name eq ""} SELECTED{/if}>{t}- all -{/t}</OPTION>
+								{foreach from=$domaincount item=item key=key}
+				    					<OPTION value="{$key}"{if $key eq $listdata.name} SELECTED{/if}>{$key}...</OPTION>
+								{/foreach}
+							</SELECT>
 						</FORM>
 					</TD>
 					<TD width="99%" align="right" nowrap>
