@@ -915,7 +915,8 @@ class LMS
 				    HAVING SUM(value) < 0
 				) a');
 
-		$result = array_merge($result, $tmp);
+		if (is_array($tmp))
+			$result = array_merge($result, $tmp);
 
 		return $result;
 	}
