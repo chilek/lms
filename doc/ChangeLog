@@ -45,7 +45,7 @@ version ? (????-??-??)
   - added new section "zones" with default values for some records of domains (webvisor)
   - fix subscription summary calculation on customers list: exclude disposable
     liabilities, include tariffless liabilities (alec)
-  - fix in Hosting/Domain (webvisor)
+  - BTS#0000819: Fix inconsistent calculations in Sale Registry (alec)
 
 version 1.11.9 Moloc (2009-10-28):
  
