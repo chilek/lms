@@ -11,6 +11,7 @@ version ? (????-??-??):
   - support for 14-characters long REGON identifiers (alec)
   - lmsd/cutoff: don't disable device IPs when use_nodeassignments is on (alec)
   - #0000815: updated link to Gadu-Gadu status service (alec)
+  - BTS#0000819: Fix inconsistent calculations in Sale Registry (alec)
 
 version 1.10.6 Hank (2009-03-27):
 

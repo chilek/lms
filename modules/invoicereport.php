@@ -101,7 +101,7 @@ if($items)
 			$row['count'] += $item['count'];
 			
 			$refitemsum = $item['value'] * $item['count'];
-			$refitemval = round($item['value'] / ($taxes[$item['taxid']]['value']+100) * 100, 2) * $item['count'];
+			$refitemval = round($refitemsum / ($taxes[$item['taxid']]['value']+100) * 100, 2);
 			$refitemtax = $refitemsum - $refitemval;
 
 			$invoicelist[$idx][$item['taxid']]['tax'] -= $refitemtax;
@@ -116,7 +116,7 @@ if($items)
 		}
 		
 		$sum = $row['value'] * $row['count'];
-		$val = round($row['value'] / ($taxes[$taxid]['value']+100) * 100, 2) * $row['count'];
+		$val = round($sum / ($taxes[$taxid]['value']+100) * 100, 2);
 		$tax = $sum - $val;
 
 		$invoicelist[$idx][$taxid]['tax'] += $tax;
