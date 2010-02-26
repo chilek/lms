@@ -163,7 +163,7 @@ header('X-Powered-By: LMS/'.$layout['lmsv']);
 
 if($SESSION->islogged)
 {
-	$module = isset($_GET['m']) ? $_GET['m'] : '';
+	$module = isset($_GET['m']) ? preg_replace('/[^a-zA-Z0-9_-]/', '', $_GET['m']) : '';
 
 	if (isset($USERPANEL->MODULES[$module])) $USERPANEL->MODULES[$module]['selected'] = true;
 
