@@ -44,7 +44,7 @@ fi
 # pobieramy LMSa
 X=$RANDOM
 mkdir -p $TEMPDIR/$X
-wget --proxy=off "http://cvs.lms.org.pl/viewvc/lms.tar.gz?view=tar&pathrev=${CVSTAG}" -O $TEMPDIR/$X/lms.tar.gz
+wget --proxy=off "http://cvs.lms.org.pl/viewvc/Development/lms.tar.gz?view=tar&pathrev=${CVSTAG}" -O $TEMPDIR/$X/lms.tar.gz
 umask 022
 cd $TEMPDIR/$X/
 # ropakowujemy
