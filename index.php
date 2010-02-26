@@ -214,7 +214,7 @@ $layout['popup'] = isset($_GET['popup']) ? true : false;
 
 if($AUTH->islogged)
 {
-	$module = (isset($_GET['m']) ? $_GET['m'] : '');
+	$module = isset($_GET['m']) ? preg_replace('/[^a-zA-Z0-9_-]/', '', $_GET['m']) : '';	
 	$deny = $allow = FALSE;
 
 	if($module == '')
