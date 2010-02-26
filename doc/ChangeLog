@@ -46,6 +46,7 @@ version ? (????-??-??)
   - fix subscription summary calculation on customers list: exclude disposable
     liabilities, include tariffless liabilities (alec)
   - BTS#0000819: Fix inconsistent calculations in Sale Registry (alec)
+  - Security fix: Add module name validation (alec)
 
 version 1.11.9 Moloc (2009-10-28):
  
