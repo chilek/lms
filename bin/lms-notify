@@ -2,7 +2,7 @@
 #
 #  LMS version 1.10-cvs
 #
-#  Copyright (C) 2001-2008 LMS Developers
+#  Copyright (C) 2001-2010 LMS Developers
 #
 #  Please, see the doc/AUTHORS for more information about authors!
 #
@@ -47,7 +47,7 @@ if($help)
 {
 	print STDERR <<EOF;
 lms-notify, version $_version
-(C) 2001-2008 LMS Developers
+(C) 2001-2010 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini	alternate config file (default: /etc/lms/lms.ini);
 -D, --template-file=/etc/lms/other.template.txt	alternate file with message template;
@@ -63,7 +63,7 @@ if($version)
 {
 	print STDERR <<EOF;
 lms-notify, version $_version
-(C) 2001-2008 LMS Developers
+(C) 2001-2010 LMS Developers
 
 EOF
 	exit 0;
@@ -77,7 +77,7 @@ if(!$configfile)
 if(!$quiet)
 {
 	print STDOUT "lms-notify, version $_version\n";
-	print STDOUT "(C) 2001-2008 LMS Developers\n";
+	print STDOUT "(C) 2001-2010 LMS Developers\n";
 	print STDOUT "Using file $configfile as config.\n";
 }
 
