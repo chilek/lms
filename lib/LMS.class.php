@@ -754,8 +754,7 @@ class LMS
 				.($division ? ' AND c.divisionid = '.intval($division) : '')
 				.($online ? ' AND s.online = 1' : '')
 				.($indebted ? ' AND b.value < 0' : '')
-				.($disabled ? ' AND (CASE WHEN s.account = s.acsum THEN 1
-					WHEN s.acsum > 0 THEN 2	ELSE 0 END) != 1' : '')
+				.($disabled ? ' AND s.ownerid IS NOT NULL AND s.account > s.acsum' : '')
 				.($network ? ' AND EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id AND 
 							((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') 
 							OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
