@@ -101,13 +101,13 @@ if(isset($_GET['search']))
 	$listdata['total'] = $customerlist['total'];
 	$listdata['direction'] = $customerlist['direction'];
 	$listdata['order'] = $customerlist['order'];
-	$listdata['state'] = $customerlist['state'];
 	$listdata['below'] = $customerlist['below'];
 	$listdata['over'] = $customerlist['over'];
+	$listdata['state'] = $s;
 	$listdata['network'] = $n;
 	$listdata['customergroup'] = $g;
 	$listdata['nodegroup'] = $ng;
-	
+
 	unset($customerlist['total']);
 	unset($customerlist['state']);
 	unset($customerlist['direction']);

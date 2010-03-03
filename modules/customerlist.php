@@ -78,8 +78,7 @@ $listdata['network'] = $n;
 $listdata['nodegroup'] = $ng;
 $listdata['customergroup'] = $g;
 $listdata['division'] = $d;
-
-$SESSION->restore('cls', $listdata['state']);
+$listdata['state'] = $s;
 
 $page = (! $_GET['page'] ? 1 : $_GET['page']); 
 $pagelimit = (!$CONFIG['phpui']['customerlist_pagelimit'] ? $listdata['total'] : $CONFIG['phpui']['customerlist_pagelimit']);
