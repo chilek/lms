@@ -126,9 +126,9 @@
 			{if $customers}
 			<SELECT size="1" name="customerid" {tip text="Select customer"}>
 				<OPTION VALUE="0">{t}- all customers -{/t}</OPTION>
-				{section name="customers" loop=$customers}
-				<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:40:"...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
-				{/section}
+				{foreach from=$customers item=customer}
+				<OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
+				{/foreach}
 			</SELECT>
 			{else}
 			<INPUT type="text" name="customerid" value="" size="5" {tip text="Enter customer ID"}>
