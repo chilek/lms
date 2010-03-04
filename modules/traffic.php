@@ -216,6 +216,10 @@ switch($bar)
 	default: // set filter window
 		$SMARTY->assign('netlist',$LMS->GetNetworks());
 		$SMARTY->assign('nodelist',$LMS->GetNodeList());
+		if (!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
+		{
+				$SMARTY->assign('customers', $LMS->GetCustomerNames());
+		}
 		$bars = 0;
 	break;
 }
@@ -232,11 +236,6 @@ $starttime = $DB->GetOne('SELECT MIN(dt) FROM stats');
 $endtime = $DB->GetOne('SELECT MAX(dt) FROM stats');
 $startyear = date('Y',$starttime);
 $endyear = date('Y',$endtime);
-
-if (!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
-{
-	$SMARTY->assign('customers', $LMS->GetCustomerNames());
-}
 
 $SMARTY->assign('starttime',$starttime);
 $SMARTY->assign('startyear',$startyear);
