@@ -74,14 +74,13 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached')
 
 	if(isset($_GET['cash']))
 	{
-		foreach($ids as $cashid)
-			if($invoiceid = $DB->GetOne('SELECT docid FROM cash, documents WHERE docid = documents.id AND (documents.type = ? OR documents.type = ?) AND cash.id = ?', array(DOC_INVOICE, DOC_CNOTE, $cashid)))
-				$idsx[] = $invoiceid;
-		
-		$ids = array_unique((array)$idsx);
+		$ids = $DB->GetCol('SELECT DISTINCT docid
+			FROM cash, documents
+			WHERE docid = documents.id AND (documents.type = ? OR documents.type = ?)
+				AND cash.id IN ('.implode(',', $ids).')
+			ORDER BY docid',
+			array(DOC_INVOICE, DOC_CNOTE));
 	}
-
-	sort($ids);
 
 	if(!empty($_GET['original'])) $which[] = trans('ORIGINAL');
         if(!empty($_GET['copy'])) $which[] = trans('COPY');
