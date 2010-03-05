@@ -43,11 +43,13 @@ version ? (????-??-??)
   - added first letter sorting in domains list (webvisor)
   - added validation data in domains (webvisor)
   - added new section "zones" with default values for some records of domains (webvisor)
-  - fix subscription summary calculation on customers list: exclude disposable
+  - fixed subscription summary calculation on customers list: exclude disposable
     liabilities, include tariffless liabilities (alec)
   - BTS#0000819: Fix inconsistent calculations in Sale Registry (alec)
   - Security fix: Add module name validation (alec)
-  - Fix 'disabled' filter on customers list so customers without nodes are skipped (alec)
+  - fixed 'disabled' filter on customers list so customers without nodes
+    are skipped (alec)
+  - BTS#0000821: fixed sorting of printed invoices (alec)
 
 version 1.11.9 Moloc (2009-10-28):
  
