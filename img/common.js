@@ -21,84 +21,74 @@ function confirmForm(formField, message, okValue)
 
 function addClass(theElem, theClass)
 {
-	theElem.className += " " + theClass;
+	theElem.className += ' ' + theClass;
 }
 
 function removeClass(theElem, theClass)
 {
-	regexp = eval("/" + theClass + "/i");
-	str = theElem.className;
-	theElem.className = str.replace(regexp, "");
+	regexp = new RegExp('\\s*' + theClass, 'i');
+	var str = theElem.className;
+	theElem.className = str.replace(regexp, '');
 }
 
-function openSelectWindow(theURL,winName,myWidth, myHeight, isCenter, formfield)
+function openSelectWindow(theURL, winName, myWidth, myHeight, isCenter, formfield)
 {
-	if(window.screen)
-		if(isCenter)
-			var myLeft = 5;
-	var myTop = 5;
-	if(isCenter=="true"){
+	var myLeft = 5, myTop = 5;
+
+	if (isCenter) {
 		myLeft = (screen.width-myWidth)/2;
 		myTop = (screen.height-myHeight)/2;
 	}
 	
 	targetfield = formfield;
 	
-	okno = window.open(theURL,winName,'location=0,directories=0,scrollbars=no,toolbar=0,menubar=0,resizable=0,status=0,width='+myWidth+',height='+myHeight+',left=' + myLeft+ ',top=' + myTop);
+	var okno = window.open(theURL,winName,'location=0,directories=0,scrollbars=no,toolbar=0,menubar=0,resizable=0,status=0,width='+myWidth+',height='+myHeight+',left=' + myLeft+ ',top=' + myTop);
 
 	return false;
 }
 
 function openWindow(theURL,winName,myWidth,myHeight,isCenter)
 {
-	if(window.screen)
-		if(isCenter)
-			var myLeft = 5;
-	var myTop = 5;
-	if(isCenter == "true")
+	var myLeft = 5, myTop = 5;
+
+	if (isCenter)
 	{
 		myLeft = (screen.width-myWidth)/2;
 		myTop = (screen.height-myHeight)/2;
 	}
 
-	okno = window.open(theURL, winName, 'location=0,directories=0,scrollbars=no,toolbar=0,menubar=0,resizable=0,status=0,titlebar=0,width='+myWidth+',height='+myHeight+',left=' + myLeft+ ',top=' + myTop);
+	var okno = window.open(theURL, winName, 'location=0,directories=0,scrollbars=no,toolbar=0,menubar=0,resizable=0,status=0,titlebar=0,width='+myWidth+',height='+myHeight+',left=' + myLeft+ ',top=' + myTop);
 
 	return false;
 }
 
 function ipchoosewin(formfield,netid,device)
 {
-	okno = openSelectWindow('?m=chooseip' +  (netid ? '&netid=' + netid : '') + (device ? '&device=' + device : ''),'chooseip',350,380,'true',formfield)
+	var okno = openSelectWindow('?m=chooseip' +  (netid ? '&netid=' + netid : '') + (device ? '&device=' + device : ''),'chooseip',350,380,'true',formfield);
 	return false;
 }
 
 function macchoosewin(formfield)
 {
-	okno = openSelectWindow('?m=choosemac','choosemac',290,380,'true',formfield)
+	var okno = openSelectWindow('?m=choosemac','choosemac',290,380,'true',formfield);
 	return false;
 }
 
 function customerchoosewin(formfield)
 {
-	okno = openSelectWindow('?m=choosecustomer','choosecustomer',450,250,'true',formfield)
+	var okno = openSelectWindow('?m=choosecustomer','choosecustomer',450,250,'true',formfield);
 	return false;
 }
 
 function nodechoosewin(formfield, customerid)
 {
-	myWidth = 350;
-	myHeight = 200;
-	myLeft = (screen.width-myWidth)/2;
-	myTop = (screen.height-myHeight)/2;
+	var myWidth = 350, myHeight = 200, myLeft = (screen.width-myWidth)/2, myTop = (screen.height-myHeight)/2;
 	
 	targetfield = formfield;
 	
-	okno = window.open('?m=choosenode&id='+customerid,'choosenode','location=0,directories=0,scrollbars=yes,toolbar=0,menubar=0,resizable=0,status=0,width='+myWidth+',height='+myHeight+',left='+myLeft+',top='+myTop);
+	var okno = window.open('?m=choosenode&id='+customerid,'choosenode','location=0,directories=0,scrollbars=yes,toolbar=0,menubar=0,resizable=0,status=0,width='+myWidth+',height='+myHeight+',left='+myLeft+',top='+myTop);
 	
 	return false;
-
-//	okno = openSelectWindow('?m=choosenode&id='+customerid,'choosenode',350,250,'true',formfield)
-//	return false;
 }
 
 function sendvalue(targetfield,value)
@@ -128,7 +118,7 @@ function showOrHide(elementslist)
 		}
 		part_num += 1;
 	}
-};
+}
 
 timer_now = new Date();
 timer_start = timer_now.getTime();
@@ -141,10 +131,10 @@ function getSeconds()
 
 function getCookie(name) 
 {
-        var cookies = document.cookie.split(";");
+        var cookies = document.cookie.split(';');
 	for (var i=0; i<cookies.length; i++) 
 	{
-    		var a = cookies[i].split("=");
+		var a = cookies[i].split('=');
                 if (a.length == 2)
 		{
             		a[0] = a[0].trim();
@@ -160,16 +150,16 @@ function getCookie(name)
 
 function setCookie(name, value)
 {
-        document.cookie = name + "=" + escape(value);
+        document.cookie = name + '=' + escape(value);
 }
 
-if (typeof String.prototype.trim == "undefined") 
+if (typeof String.prototype.trim == 'undefined') 
 {
 	String.prototype.trim = function()
 	{
-        	var s = this.replace(/^\s*/, "");
-	        return s.replace(/\s*$/, "");
-	}
+        	var s = this.replace(/^\s*/, '');
+	        return s.replace(/\s*$/, '');
+	};
 }
 
 function checkElement(id)
@@ -178,12 +168,14 @@ function checkElement(id)
 	
 	if (!elem) {
 		var list = document.getElementsByName(id);
-		if (list.length)
+		if (list.length) {
 			elem = list[0];
+		}
 	}
 	
-	if (elem)
+	if (elem) {
 		elem.checked = !elem.checked;
+	}
 }
 
 function get_object_pos(obj)
@@ -194,7 +186,7 @@ function get_object_pos(obj)
 
 	// calculate select position
 	var elm = obj.offsetParent;
-	while(elm && elm != null) {
+	while(elm && elm !== null) {
 	        x += elm.offsetLeft;
 		y += elm.offsetTop;
 		elm = elm.offsetParent;
@@ -208,7 +200,9 @@ function multiselect(formid, elemid, def)
 	var old_element = document.getElementById(elemid);
 	var form = document.getElementById(formid);
 	
-	if (!old_element || !form) return;
+	if (!old_element || !form) {
+		return;
+	}
 
 	// create new multiselect div
 	var new_element = document.createElement('DIV');
@@ -254,17 +248,20 @@ function multiselect(formid, elemid, def)
 				removeClass(this, 'selected');
 				if(def) {
 					var xlen = this.parentNode.childNodes.length;
-					for(var x=0; x<xlen; x++)
-						if(this.parentNode.childNodes[x].className.match(/selected/))
+					for(var x=0; x<xlen; x++) {
+						if(this.parentNode.childNodes[x].className.match(/selected/)) {
 							break;
-					if(x==xlen)
+						}
+					}
+					if(x==xlen) {
 						new_element.innerHTML = def;
+					}
 				}
 			} else {
 				addClass(this, 'selected');
 				new_element.innerHTML = '';
 			}
-		}
+		};
 		// TODO: keyboard events
 		
 		// add elements
@@ -289,11 +286,12 @@ function multiselect(formid, elemid, def)
 			list.style.top = this.offsetHeight + pos.y + 'px';
 			list.style.display = 'block';
 			// IE max-height hack
-			if(document.all && list.childNodes[1].offsetHeight > 200)
+			if(document.all && list.childNodes[1].offsetHeight > 200) {
 				list.childNodes[1].style.height = '200px';
+			}
 		} else {
 			list.style.display = 'none';
 		}
-	}
+	};
 	// TODO: keyboard events
 }
