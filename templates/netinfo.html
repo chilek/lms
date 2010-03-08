@@ -163,7 +163,7 @@
 				{/if}
 				<A href="javascript:document.netedit.submit()" ACCESSKEY="S">{t}Submit{/t} <IMG src="img/save.gif" ALT="[ {t}Submit{/t} ]"></a>
 				<A href="?m=netdel&id={$network.id}" onClick="return confirmLink(this,'{t 0=$network.name}Are you sure, you want to remove network \'$0\'?{/t}')">{t}Remove{/t} <img src="img/delete.gif" ALT="[ {t}Remove{/t} ]"></A>
-				<A href="?m=netinfo&id={$network.id}">{t}Cancel{/t} <img src="img/cancel.gif" ALT="[ {t}Cancel{/t} ]"></A></TD>
+				<A href="?m=netinfo&id={$network.id}">{t}Cancel{/t} <img src="img/cancel.gif" ALT="[ {t}Cancel{/t} ]"></A></TD> 
 				</form>
 			{else}
 			<A href="?m=netedit&id={$network.id}" ACCESSKEY="E">{t}Edit{/t} <img src="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
