@@ -50,6 +50,8 @@ version ? (????-??-??)
   - fixed 'disabled' filter on customers list so customers without nodes
     are skipped (alec)
   - BTS#0000821: fixed sorting of printed invoices (alec)
+  - Added peak memory usage info in page footer (alec)
+  - Added EtherWerX STM channels management (alec)
 
 version 1.11.9 Moloc (2009-10-28):
  

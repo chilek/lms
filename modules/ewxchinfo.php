@@ -24,25 +24,24 @@
  *  $Id$
  */
 
-if(!$LMS->NetworkExists($_GET['id']))
+if(!($channel = $DB->GetRow(' SELECT * FROM ewx_channels WHERE id = ?', array($_GET['id']))))
 {
-	$SESSION->redirect('?m=netlist');
+	$SESSION->redirect('?m=ewxchlist');
 }
 
-$page = isset($_GET['page']) ? $_GET['page'] : 1;
-
-if($SESSION->is_set('ntlp.'.$_GET['id']) && !isset($_GET['page']))
-	$SESSION->restore('ntlp.'.$_GET['id'], $page);
-
-$SESSION->save('ntlp.'.$_GET['id'], $page);
-
-$network = $LMS->GetNetworkRecord($_GET['id'], $page, $CONFIG['phpui']['networkhosts_pagelimit']);
-
-$layout['pagetitle'] = trans('Info Network: $0', $network['name']);
+$layout['pagetitle'] = trans('Info Channel: $0', $channel['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$SMARTY->assign('network', $network);
-$SMARTY->display('netinfo.html');
+$channel['devices'] = $DB->GetAll('SELECT id, name, location
+	FROM netdevices
+	WHERE channelid = ? ORDER BY name', array($channel['id']));
+
+$channel['freedevices'] = $DB->GetAll('SELECT id, name, location, producer
+	FROM netdevices
+	WHERE channelid IS NULL ORDER BY name');
+
+$SMARTY->assign('channel', $channel);
+$SMARTY->display('ewxchinfo.html');
 
 ?>

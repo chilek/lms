@@ -24,25 +24,12 @@
  *  $Id$
  */
 
-if(!$LMS->NetworkExists($_GET['id']))
+function smarty_function_memory($args, &$SMARTY)
 {
-	$SESSION->redirect('?m=netlist');
+	if (function_exists('memory_get_peak_usage'))
+		return sprintf('(%.2f MB)', memory_get_peak_usage()/1024/1024);
+	else
+		return '';
 }
-
-$page = isset($_GET['page']) ? $_GET['page'] : 1;
-
-if($SESSION->is_set('ntlp.'.$_GET['id']) && !isset($_GET['page']))
-	$SESSION->restore('ntlp.'.$_GET['id'], $page);
-
-$SESSION->save('ntlp.'.$_GET['id'], $page);
-
-$network = $LMS->GetNetworkRecord($_GET['id'], $page, $CONFIG['phpui']['networkhosts_pagelimit']);
-
-$layout['pagetitle'] = trans('Info Network: $0', $network['name']);
-
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-
-$SMARTY->assign('network', $network);
-$SMARTY->display('netinfo.html');
 
 ?>

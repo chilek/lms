@@ -1,0 +1,98 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<TABLE cellpadding="3" width="100%">
+	<TR class="dark">
+		<TD width="100%" class="fall" colspan="2" NOWRAP>
+			<IMG SRC="img/channel.gif" alt=""> <B>{$channel.name} ({$channel.id|string_format:"%04d"})</B>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft" NOWRAP>
+			<IMG SRC="img/download.gif" alt=""> <B>{t}Downceil:{/t}</B>
+		</TD>
+		<TD width="99%" class="fright">
+			{$channel.downceil} kbit/s
+			({t}night:{/t} {if $channel.downceil_n}{$channel.downceil_n|default:0} kbit/s{else}{t}not defined{/t}{/if})
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft" NOWRAP>
+			<IMG SRC="img/upload.gif" alt=""> <B>{t}Upceil:{/t}</B>
+		</TD>
+		<TD width="99%" class="fright">
+			{$channel.upceil} kbit/s
+			({t}night:{/t} {if $channel.upceil_n}{$channel.upceil_n|default:0} kbit/s{else}{t}not defined{/t}{/if})
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+        	<TD width="100%" CLASS="fbottomu" COLSPAN="2" align="right">
+                        <A HREF="?m=ewxchedit&id={$channel.id}" accesskey="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT=""></A>
+			<A HREF="?m=ewxchdel&id={$channel.id}" onclick="return confirmLink(this,'{t}Are you sure, you want to delete this channel?{/t}');">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT=""></A>
+                </TD>
+        </TR>
+</TABLE>
+<BR>
+<TABLE cellpadding="3" width="100%">
+	<TR CLASS="DARK">
+        	<TD width="100%" CLASS="fall">
+			<IMG SRC="img/netdev.gif" alt=""> <B>{t}Devices:{/t}</B>		
+                </TD>
+        </TR>
+	<TR>
+		<TD width="100%" class="fall">
+			<TABLE width="100%" cellpadding="5" cellspacing="0">
+				<TR class="DARK">
+					<TD WIDTH="40%" class="fleftu"><B>{t}Name:{/t}</B></TD>
+			                <TD WIDTH="1%" class="fbt" align="right">{t}ID:{/t}</TD>
+					<TD WIDTH="58%" class="fbt">{t}Location:{/t}</TD>
+					<TD WIDTH="1%" class="frightu">&nbsp;</TD>
+				</TR>
+				{cycle values="light,lucid" print=false}
+				{foreach from=$channel.devices item=item}
+				<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+					<TD onClick="return self.location.href='?m=netdevinfo&id={$item.id}';">
+						<img src="img/netdev.gif" align="left" ALT=""><B>{$item.name}</B>
+					</TD>
+					<TD onClick="return self.location.href='?m=netdevinfo&id={$item.id}';">
+						({$item.id|string_format:"%04d"})
+					</TD>
+					<TD onClick="return self.location.href='?m=netdevinfo&id={$item.id}';">
+						{$item.location}
+					</TD>
+					<TD align="right">
+						<A href="?m=ewxchedit&action=remove&id={$channel.id}&devid={$item.id}" onClick="return confirmLink(this, '{t}Are you sure, you want to remove this assignment?{/t}')"  {tip text="Remove this device from the channel"}><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
+					</TD>
+				</TR>
+				{foreachelse}
+				<TR>
+                        		<TD WIDTH="100%" COLSPAN="4" align="center">
+			                        <P>&nbsp;</P>
+					        <P><B>{t}No devices associated with this channel.{/t}</B></P>
+					        <P>&nbsp;</P>
+					</TD>
+				</TR>
+				{/foreach}
+				{if $channel.freedevices}
+				<FORM METHOD="POST" NAME="device" ACTION="?m=ewxchedit&action=add&id={$channel.id}">
+				<INPUT type="submit" class="hiddenbtn">
+				<TR class="light">
+				        <TD COLSPAN="3" CLASS="ftop">
+						<B>{t}Add:{/t}</B>
+						<SELECT SIZE="1" NAME="devid" {tip text="Select device to associate with the channel"}>
+						        <OPTION VALUE="">- {t}select device{/t} -</OPTION>
+						        {foreach from=$channel.freedevices item=item}
+							<OPTION VALUE="{$item.id}">{$item.name}{if $item.producer} / {$item.producer}{/if}{if $item.location} ({$item.location}){/if}</OPTION>
+			        			{/foreach}
+						</SELECT>
+					<TD ALIGN="RIGHT" CLASS="ftop" ROWSPAN="2" NOWRAP>
+				    		<A HREF="javascript:document.device.submit()" {tip text="Add device to the channel"}>{t}Add{/t} <IMG SRC="img/save.gif" alt="[ {t}Add{/t} ]"></A>
+					</TD>
+				</TR>	   
+				</FORM>
+				{/if}
+			</TABLE>
+		</TD>
+	</TR>
+</TABLE>
+{include file="footer.html"}

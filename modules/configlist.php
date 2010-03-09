@@ -408,7 +408,7 @@ function GetConfigList($order='var,asc', $section='')
 					break;
 						
 					case 'attachment_name':
-						$config[$idx]['description'] = trans('File name for saving document printout. WARNING: Setting attachment_name with default content_type will (in case of MSIE) print document, and prompt for save on disk + bonus browser crash (6.0SP1 on WinXP). Default: empty.');
+						$config[$idx]['description'] = trans('File name for saving document printout. WARNING: Setting attachment_name with default content_type will (in case of MSIE) print document, and prompt for save on disk. Default: empty.');
 					break;
 					
 					case 'type':

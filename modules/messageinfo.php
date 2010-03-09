@@ -168,6 +168,8 @@ $SESSION->save('milp', $page);
 
 $layout['pagetitle'] = trans('Message Info: $0', $subject);
 
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+
 $SMARTY->assign('message', $message);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->assign('pagelimit', $pagelimit);

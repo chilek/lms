@@ -155,6 +155,19 @@
 	</TR>
 	{/if}
 {/if}
+	{if $netdevinfo.channelid}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/channel.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Channel:{/t}</B>
+		</TD>
+		<TD WIDTH="98%">
+		        <a href="?m=ewxchinfo&id={$netdevinfo.channelid}">{$netdevinfo.channel} ({$netdevinfo.channelid|string_format:"%04d"})</a>
+		</TD>
+	</TR>
+	{/if}
 	                        	</TABLE>
 				</TD>
 				<TD WIDTH="50%" style="vertical-align:top;">

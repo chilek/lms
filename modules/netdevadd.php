@@ -94,6 +94,9 @@ $layout['pagetitle'] = trans('New Device');
 
 $SMARTY->assign('nastype', $LMS->GetNAStypes());
 
+if (chkconfig($CONFIG['phpui']['ewx_support']))
+	$SMARTY->assign('channels', $DB->GetAll('SELECT id, name FROM ewx_channels ORDER BY name'));
+
 $SMARTY->display('netdevadd.html');
 
 ?>

@@ -70,7 +70,7 @@ $menu = array(
 			'name' => trans('Customers'),
 			'img' =>'customer.gif',
 			'link' =>'?m=customerlist',
-			'tip' => trans('Customers: list, add, search, groups'),
+			'tip' => trans('Customers Management'),
 			'accesskey' =>'u',
 			'prio' => 5,
 			'submenu' => array(
@@ -123,7 +123,7 @@ $menu = array(
 			'name' => trans('Nodes'),
 			'img' =>'node.gif',
 			'link' =>'?m=nodelist',
-			'tip' => trans('Nodes: list, searching, adding'),
+			'tip' => trans('Nodes Management'),
 			'accesskey' =>'k',
 			'prio' => 10,
 			'submenu' => array(
@@ -175,7 +175,7 @@ $menu = array(
 		'VoIP' => array(
 			'name' => trans('VoIP'),
 			'img' =>'voip.gif',
-			'tip' => trans('VoIP management'),
+			'tip' => trans('VoIP Management'),
 			'accesskey' =>'v',
 			'prio' => 11,
 			'submenu' => array(
@@ -204,7 +204,7 @@ $menu = array(
 			'name' => trans('Net Devices'),
 			'img' =>'netdev.gif',
 			'link' =>'?m=netdevlist',
-			'tip' => trans('Record of Network Devices'),
+			'tip' => trans('Network Devices Management'),
 			'accesskey' =>'o',
 			'prio' => 15,
 			'submenu' => array(
@@ -363,7 +363,7 @@ $menu = array(
 			'name' => trans('Documents'),
 			'img' =>'docum.gif',
 			'link' =>'?m=documentlist',
-			'tip' => trans('Documents: list, searching, adding'),
+			'tip' => trans('Documents Management'),
 			'accesskey' => '',
 			'prio' => 26,
 			'submenu' => array(
@@ -404,7 +404,7 @@ $menu = array(
 			'name' => trans('Hosting'),
 			'img' =>'account.gif',
 			'link' =>'?m=accountlist',
-			'tip' => trans('Domains, Accounts, Aliases Management'),
+			'tip' => trans('Hosting Services Management'),
 			'accesskey' =>'a',
 			'prio' => 30,
 			'submenu' => array(
@@ -457,7 +457,7 @@ $menu = array(
 			'name' => trans('Messages'),
 			'img' =>'mailsms.gif',
 			'link' =>'?m=messageadd',
-			'tip' => trans('Customers messaging'),
+			'tip' => trans('Customers Messaging'),
 			'accesskey' =>'m',
 			'prio' => 35,
 			'submenu' => array(
@@ -621,7 +621,7 @@ $menu = array(
 			'name' => trans('Configuration'),
 			'img' =>'settings.gif',
 			'link' =>'?m=configlist',
-			'tip' => trans('System configuration'),
+			'tip' => trans('System Configuration'),
 			'accesskey' =>'o',
 			'prio' => 60,
 			'submenu' => array(
@@ -687,6 +687,22 @@ $menu = array(
 		),
 
 	);
+
+// menu item for EtherWerX STM channels management
+if (chkconfig($CONFIG['phpui']['ewx_support'])) {
+	$menu['netdevices']['submenu'][] = array(
+		'name' => trans('Channels List'),
+		'link' => '?m=ewxchlist',
+		'tip' => trans('List of STM channels'),
+		'prio' => 50,
+	);
+	$menu['netdevices']['submenu'][] = array(
+		'name' => trans('New Channel'),
+		'link' => '?m=ewxchadd',
+		'tip' => trans('Add new STM channel'),
+		'prio' => 51,
+	);
+}
 
 // Adding Userpanel menu items
 if(!empty($CONFIG['directories']['userpanel_dir']))

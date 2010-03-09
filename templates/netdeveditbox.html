@@ -96,7 +96,7 @@
 		</TD>
 		<TD WIDTH="98%">
 			<SELECT NAME="netdev[nastype]" {tip text="Select type (optional)" trigger="nastype"}>
-			<OPTION VALUE="0"</OPTION>
+			<OPTION VALUE="0"></OPTION>
 			{foreach from=$nastype item=item key=key}
 			<OPTION VALUE="{$key}" {if $key==$netdevinfo.nastype} SELECTED{/if}>{$item.name}</OPTION>
 			{/foreach}
@@ -134,6 +134,24 @@
 		</TD>
 		<TD WIDTH="98%">
 			<INPUT TYPE="TEXT" NAME="netdev[community]" VALUE="{$netdevinfo.community}" {tip text="Enter community (optional)"}>
+		</TD>
+	</TR>
+{/if}
+{if isset($channels)}
+        <TR CLASS="LIGHT">
+	        <TD WIDTH="1%">
+		        <IMG SRC="img/channel.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+		        <B>{t}Channel:{/t}</B>
+		</TD>
+		<TD WIDTH="98%">
+		        <SELECT NAME="netdev[channelid]" {tip text="Select channel (optional)" trigger="channelid"}>
+		        	<OPTION VALUE="">- {t}none{/t} -</OPTION>
+		        	{foreach from=$channels item=item}
+			        <OPTION VALUE="{$item.id}" {if $item.id == $netdevinfo.channelid} SELECTED{/if}>{$item.name}</OPTION>
+			        {/foreach}
+		        </SELECT>
 		</TD>
 	</TR>
 {/if}

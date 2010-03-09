@@ -588,6 +588,9 @@ $SMARTY->assign('nastype', $LMS->GetNAStypes());
 switch($edit)
 {
     case 'data':
+	if (chkconfig($CONFIG['phpui']['ewx_support']))
+    		$SMARTY->assign('channels', $DB->GetAll('SELECT id, name FROM ewx_channels ORDER BY name'));
+	
 	$SMARTY->display('netdevedit.html');
     break;
     case 'ip':
