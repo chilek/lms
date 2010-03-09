@@ -2329,5 +2329,12 @@ $_LANG['No such channels in database.'] = 'Brak kanałów w bazie danych.';
 $_LANG['Removing channel $0'] = 'Usuwanie kanału $0';
 $_LANG['This field must contain number greater than 8!'] = 'To pole musi zawierać liczbę większą od 8!';
 $_LANG['TTL'] = 'TTL';
+$_LANG['Add device to the channel'] = 'Dodaj urządzenie do kanału';
+$_LANG['Are you sure, you want to remove this assignment?'] = 'Czy na pewno chcesz usunąć to powiązanie?';
+$_LANG['No devices associated with this channel.'] = 'Brak urządzeń w tym kanale.';
+$_LANG['Remove this device from the channel'] = 'Usuń to urządzenie z kanału';
+$_LANG['Select channel (optional)'] = 'Wybierz kanał (opcjonalnie)';
+$_LANG['select device'] = 'wybierz urządzenie';
+$_LANG['Select device to associate with the channel'] = 'Wybierz urządzenie aby przypisać je do kanału';
 
 ?>
