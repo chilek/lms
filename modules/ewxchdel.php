@@ -24,25 +24,21 @@
  *  $Id$
  */
 
-if(!$LMS->NetworkExists($_GET['id']))
+if(!empty($_GET['is_sure']))
 {
-	$SESSION->redirect('?m=netlist');
+	$DB->Execute('DELETE FROM ewx_channels WHERE id = ?', array(intval($_GET['id'])));
+	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
-
-$page = isset($_GET['page']) ? $_GET['page'] : 1;
-
-if($SESSION->is_set('ntlp.'.$_GET['id']) && !isset($_GET['page']))
-	$SESSION->restore('ntlp.'.$_GET['id'], $page);
-
-$SESSION->save('ntlp.'.$_GET['id'], $page);
-
-$network = $LMS->GetNetworkRecord($_GET['id'], $page, $CONFIG['phpui']['networkhosts_pagelimit']);
-
-$layout['pagetitle'] = trans('Info Network: $0', $network['name']);
-
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-
-$SMARTY->assign('network', $network);
-$SMARTY->display('netinfo.html');
+else if ($channel = $DB->GetRow('SELECT id, name FROM ewx_channels WHERE id = ?', array(intval($_GET['id']))))
+{
+	$layout['pagetitle'] = trans('Removing channel $0', strtoupper($channel['name']));
+	$SMARTY->display('header.html');
+	echo '<H1>'.$layout['pagetitle'].'</H1>';
+	echo '<P>'.trans('Are you sure, you want to delete this channel?').'</P>';
+	echo '<A href="?m=ewxchdel&id='.$channel['id'].'&is_sure=1">'.trans('Yes, I am sure.').'</A>';
+	$SMARTY->display('footer.html');
+}
+else
+	$SESSION->redirect('?m=ewxchlist');
 
 ?>

@@ -517,9 +517,13 @@ CREATE TABLE netdevices (
 	nastype integer 	DEFAULT 0 NOT NULL,
 	clients integer 	DEFAULT 0 NOT NULL,
 	secret varchar(60) 	DEFAULT '' NOT NULL,
-	community varchar(50) 	DEFAULT '' NOT NULL,	
+	community varchar(50) 	DEFAULT '' NOT NULL,
+	channelid integer 	DEFAULT NULL
+	    REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id)
 );
+
+CREATE INDEX netdevices_channelid_idx ON netdevices (channelid);
 
 /* ---------------------------------------------------
  Structure of table "netlinks"
@@ -1044,6 +1048,23 @@ CREATE TABLE ewx_stm_channels (
     downceil 	integer        	DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
     UNIQUE (customerid)
+);
+
+/* ---------------------------------------------------
+ Structure of table "ewx_channels" (EtherWerX(R))
+------------------------------------------------------*/
+DROP SEQUENCE ewx_channels_id_seq;
+CREATE SEQUENCE ewx_channels_id_seq;
+DROP TABLE ewx_channels;
+CREATE TABLE ewx_channels (
+    id 		integer 	DEFAULT nextval('ewx_channels_id_seq'::text) NOT NULL,
+    name 	varchar(32)     DEFAULT '' NOT NULL,
+    upceil 	integer         DEFAULT 0 NOT NULL,
+    downceil 	integer        	DEFAULT 0 NOT NULL,
+    upceil_n 	integer         DEFAULT NULL,
+    downceil_n 	integer        	DEFAULT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (name)
 );
 
 /* ---------------------------------------------------

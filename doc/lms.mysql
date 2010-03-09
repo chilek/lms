@@ -252,7 +252,10 @@ CREATE TABLE netdevices (
   clients 	int(11) 	NOT NULL DEFAULT '0',
   secret 	varchar(60) 	NOT NULL DEFAULT '',
   community 	varchar(50) 	NOT NULL DEFAULT '',
-  PRIMARY KEY  (id)
+  channelid 	int(11) 	DEFAULT NULL
+    REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  PRIMARY KEY  (id),
+  INDEX channelid (channelid)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -952,6 +955,18 @@ CREATE TABLE ewx_pt_config (
 	passwd varchar(32)      DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE KEY nodeid (nodeid)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS ewx_channels;
+CREATE TABLE ewx_channels (
+	id int(11)              NOT NULL auto_increment,
+	name varchar(32)        DEFAULT '' NOT NULL,
+	upceil int(11)          DEFAULT '0' NOT NULL,
+	downceil int(11)        DEFAULT '0' NOT NULL,
+	upceil_n int(11)        DEFAULT NULL,
+	downceil_n int(11)      DEFAULT NULL,
+	PRIMARY KEY (id),
+	UNIQUE KEY name (name)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------

@@ -41,8 +41,6 @@ else
 	}
 	else
 	{
-		//$body = "<H1>".$layout['pagetitle']."</H1>";
-		//$body .= "<P>Kolejka ".$LMS->GetQueueName($_GET['id'])." zosta³a usuniêta.</P>";
 		$queue = intval($_GET['id']);
 		
                 $DB->Execute('DELETE FROM rtqueues WHERE id=?', array($queue));

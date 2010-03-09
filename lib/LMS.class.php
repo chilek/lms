@@ -2994,9 +2994,10 @@ class LMS
 
 	function GetNetDev($id)
 	{
-		$result = $this->DB->GetRow('SELECT d.*, t.name AS nastypename
+		$result = $this->DB->GetRow('SELECT d.*, t.name AS nastypename, c.name AS channel
 			FROM netdevices d
 			LEFT JOIN nastypes t ON (t.id = d.nastype)
+			LEFT JOIN ewx_channels c ON (d.channelid = c.id)
 			WHERE d.id = ?', array($id));
 
 		$result['takenports'] = $this->CountNetDevLinks($id);
@@ -3030,8 +3031,8 @@ class LMS
 		if($this->DB->Execute('INSERT INTO netdevices (name, location, 
 				description, producer, model, serialnumber, 
 				ports, purchasetime, guaranteeperiod, shortname,
-				nastype, clients, secret, community) 
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+				nastype, clients, secret, community, channelid) 
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
 				array($netdevdata['name'],
 					$netdevdata['location'],
 					$netdevdata['description'],
@@ -3045,7 +3046,8 @@ class LMS
 					$netdevdata['nastype'],
 					$netdevdata['clients'],
 					$netdevdata['secret'],
-					$netdevdata['community']
+					$netdevdata['community'],
+					!empty($netdevdata['channelid']) ? $netdevdata['channelid'] : NULL,
 		)))
 			return $this->DB->GetLastInsertID('netdevices');
 		else
@@ -3056,7 +3058,7 @@ class LMS
 	{
 		$this->DB->Execute('UPDATE netdevices SET name=?, location=?, description=?, producer=?, 
 				model=?, serialnumber=?, ports=?, purchasetime=?, guaranteeperiod=?, shortname=?,
-				nastype=?, clients=?, secret=?, community=? 
+				nastype=?, clients=?, secret=?, community=?, channelid=?
 				WHERE id=?', 
 				array( $netdevdata['name'], 
 					$netdevdata['location'], 
@@ -3072,6 +3074,7 @@ class LMS
 					$netdevdata['clients'],
 					$netdevdata['secret'],
 					$netdevdata['community'],
+					!empty($netdevdata['channelid']) ? $netdevdata['channelid'] : NULL,
 					$netdevdata['id']
 				));
 	}
