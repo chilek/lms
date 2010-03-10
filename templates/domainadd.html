@@ -6,7 +6,7 @@
 <TABLE cellpadding="3" WIDTH="100%">
 	<TR class="DARK">
 		<TD width="1%" class="fleftu">
-			<IMG src="img/network.gif" alt="">
+			<IMG src="img/domain.gif" alt="">
 		</TD>
 		<TD width="150" class="fbt" align="left" NOWRAP>
 			<B>{t}Domain:{/t}</b>
@@ -33,7 +33,7 @@
 	</TR>
 	<TR class="light">
                 <TD width="1%" class="fleft">
-                        <img src="img/info.gif" alt="">
+                        <img src="img/dns.gif" alt="">
                 </TD>
                 <TD width="1%" nowrap><B>{t}Type:{/t}</B></TD>
                 <TD width="98%" class="fright">
@@ -48,30 +48,26 @@
 	           </div>
                 </TD>
         </TR>
-
 	<TR class="light" id="ipwebserver">
                 <TD width="1%" class="fleft">
-                        <img src="img/info.gif" alt="">
+                        <img src="img/dns.gif" alt="">
                 </TD>
-                <TD width="1%" nowrap><B>{t}IP address of webserver:{/t}</B></TD>
+                <TD width="1%" nowrap><B>{t}IP address of webserver{/t}:</B></TD>
                 <TD width="98%" class="fright">
 		<INPUT type="text"   name="domainadd[ipwebserver]" value="{$domainadd.ipwebserver}" {tip text="Enter IP address of webserver" trigger="ipwebserwer"} size="20">
 
                 </TD>
         </TR>
-
-
 	<TR class="light" id="ipmailserver">
                 <TD width="1%" class="fleft">
-                        <img src="img/info.gif" alt="">
+                        <img src="img/dns.gif" alt="">
                 </TD>
-                <TD width="1%" nowrap><B>{t}IP address of mailserver:{/t}</B></TD>
+                <TD width="1%" nowrap><B>{t}IP address of mailserver{/t}:</B></TD>
                 <TD width="98%" class="fright">
 		<INPUT type="text"   name="domainadd[ipmailserver]" value="{$domainadd.ipmailserver}" {tip text="Enter IP address of mailserver" trigger="ipmailserwer"} size="20">
 
                 </TD>
         </TR>
-
 	<TR class="LIGHT">
 		<TD width="1%" class="fleft">
 			<IMG src="img/info.gif" alt="">
@@ -92,29 +88,23 @@
 	</TR>
 </TABLE>
 </FORM></P>
-	           {literal}
-	           <script type="text/javascript">
-                   
-                   function showslave(){                    
-                       document.getElementById('ipmaster').style.display="block";
-                       document.getElementById('ipwebserver').style.display="none";
-                       document.getElementById('ipmailserver').style.display="none";                                                                                            
-                   }                                                                        
+{literal}
+<script type="text/javascript">
+function showslave() {
+	document.getElementById('ipmaster').style.display="block";
+	document.getElementById('ipwebserver').style.display="none";
+	document.getElementById('ipmailserver').style.display="none";                                                                                            
+}
+function hideslave() {
+        document.getElementById('ipmaster').style.display="none";
+        document.getElementById('ipwebserver').style.display='';
+        document.getElementById('ipmailserver').style.display='';                                                                     
+}
 
-                   function hideslave(){                    
-                       document.getElementById('ipmaster').style.display="none";
-                       document.getElementById('ipwebserver').style.display='';
-                       document.getElementById('ipmailserver').style.display='';                                                                     
-                   }                                                                        
-
-                   if (document.getElementById('domainadd[type]').value=='SLAVE')  showslave();
-                                          
-                   </script>                                                                                                                   
-                       {/literal}
-
-<SCRIPT type="text/javascript">
-<!--//
 document.forms['domainadd'].elements['domainadd[name]'].focus();
-//-->
-</SCRIPT>
+
+if (document.getElementById('domainadd[type]').value=='SLAVE')
+	showslave();
+</script>
+{/literal}
 {include file="footer.html"}

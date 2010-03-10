@@ -38,34 +38,32 @@ $recordslist = $DB->GetAll('SELECT *,
 		FROM records WHERE domain_id = ? ORDER BY ord desc',
 		array($d));
 
-$domain = $DB->GetRow('SELECT name, type FROM domains WHERE id = ?', array($d));
-
 $listdata['total'] = count($recordslist);
 $listdata['domain'] = $d;
 $listdata['domainName'] = $domain['name'];
 
 if ($domain['type'] == 'SLAVE')
-	$showAddEdit=false;
+	$showAddEdit = false;
 else
-	$showAddEdit=true;
+	$showAddEdit = true;
 
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']);
-$pagelimit = (!isset($CONFIG['phpui']['recordslist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['recordslist_pagelimit']);
+$pagelimit = (!isset($CONFIG['phpui']['recordlist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['recordlist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('alp', $page);
 
-$layout['pagetitle'] = trans('Records list');
+$layout['pagetitle'] = trans('DNS Records List');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('page', $page);
 $SMARTY->assign('start', $start);
-$SMARTY->assign('recordslist',$recordslist);
-$SMARTY->assign('listdata',$listdata);
-$SMARTY->assign('showaddedit',$showAddEdit);
-$SMARTY->assign('domainlist',$DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
-$SMARTY->display('recordslist.html');
+$SMARTY->assign('recordslist', $recordslist);
+$SMARTY->assign('listdata', $listdata);
+$SMARTY->assign('showaddedit', $showAddEdit);
+$SMARTY->assign('domainlist', $DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
+$SMARTY->display('recordlist.html');
 
 ?>

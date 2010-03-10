@@ -1,47 +1,52 @@
 {include file="header.html"}
-<H1>{$layout.pagetitle} {$domain.name}</H1>
+<H1>{$layout.pagetitle}</H1>
 <FORM name="recordedit" method="POST" action="?m=recordedit&id={$record.id}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE cellpadding="3" WIDTH="100%">
-
-    <TR class="dark"">
-        <TD width="46%" class="fleftu" NOWRAP>{t}Name{/t}</TD>
-        <TD width="2%" class="fbt" NOWRAP align="right">{t}TTL{/t}</TD>                              
-        <TD width="2%" class="fbt" align="right" NOWRAP>{t}Type{/t}</TD>
-	<TD width="2%" class="fbt" align="right" NOWRAP>{t}Priority:{/t}</TD>
-        <TD width="46%" class="frightu" align="left" NOWRAP>{t}Content{/t}</TD>
-    </TR>                                                                                                                                                                                                                                                                                                                                                               
-    <TR>
-    </TR>
-    <TR class="light"> 
-	<TD class="fleftu"><input type="text" style="width:60%" value="{$record.name}" name="record[name]" {tip text="Enter record name" trigger="name"}> .{$domain.name}</TD>
-	<TD class="fbt"><input type="text" size="7" value="{$record.ttl}" name="record[ttl]" {tip text="Enter record TTL" trigger="ttl"}></TD>
-	<TD class="fbt">
-	     <SELECT SIZE="1" NAME="record[type]" {tip text="Select record type" trigger="type"}>
-                     <OPTION VALUE="A" {if $record.type == A} SELECTED{/if}>A</OPTION>
-                     <OPTION VALUE="AAAA" {if $record.type == AAAA} SELECTED{/if}>AAAA</OPTION>
-                     <OPTION VALUE="CNAME" {if $record.type == CNAME} SELECTED{/if}>CNAME</OPTION>
-                     <OPTION VALUE="HINFO" {if $record.type == HINFO} SELECTED{/if}>HINFO</OPTION>
-                     <OPTION VALUE="MX" {if $record.type == MX} SELECTED{/if}>MX</OPTION>
-                     <OPTION VALUE="NAPTR" {if $record.type == NAPTR} SELECTED{/if}>NAPTR</OPTION>
-                     <OPTION VALUE="NS" {if $record.type == NS} SELECTED{/if}>NS</OPTION>
-                     <OPTION VALUE="PTR" {if $record.type == PTR} SELECTED{/if}>PTR</OPTION>
-                     <OPTION VALUE="SOA" {if $record.type == SOA} SELECTED{/if}>SOA</OPTION>
-                     <OPTION VALUE="SPF" {if $record.type == SPF} SELECTED{/if}>SPF</OPTION>
-                     <OPTION VALUE="SRV" {if $record.type == SRV} SELECTED{/if}>SRV</OPTION>
-                     <OPTION VALUE="SSHFP" {if $record.type == SSHFP} SELECTED{/if}>SSHFP</OPTION>
-                     <OPTION VALUE="TXT" {if $record.type == TXT} SELECTED{/if}>TXT</OPTION>
-            </SELECT>
-	</TD>
-	<TD class="fbt"><input type="text" size="5" value="{$record.prio}" name="record[prio]" ></TD>
-	<TD class="frightu"><input type="text" style="width:100%" value="{$record.content}" name="record[content]" {tip text="Enter record content" trigger="content"}></TD>
-    </TR>
-    <TR class="LIGHT">
-	<TD colspan="5" class="fbottomu" align="right" nowrap>
-	    <A href="javascript: document.recordedit.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
-	    <A href="?m=recordslist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
-	</TD>
-    </TR>
+	<TR class="dark"">
+    		<TD width="46%" class="fleftu" NOWRAP>{t}Name:{/t}</TD>
+    		<TD width="2%" class="fbt" NOWRAP>{t}TTL{/t}:</TD>
+    		<TD width="2%" class="fbt" NOWRAP>{t}Type{/t}:</TD>
+		<TD width="2%" class="fbt" NOWRAP>{t}Priority:{/t}</TD>
+    		<TD width="46%" class="frightu" NOWRAP>{t}Content{/t}:</TD>
+	</TR>
+	<TR class="light"> 
+		<TD class="fleftu" NOWRAP>
+			<input type="text" style="width:60%" value="{$record.name}" name="record[name]" {tip text="Enter record name" trigger="name"}> .{$domain.name}
+		</TD>
+		<TD class="fbt">
+			<input type="text" size="7" value="{$record.ttl}" name="record[ttl]" {tip text="Enter record TTL" trigger="ttl"}>
+		</TD>
+		<TD class="fbt">
+	    		<SELECT SIZE="1" NAME="record[type]" {tip text="Select record type" trigger="type"}>
+                    	    <OPTION VALUE="A" {if $record.type == A} SELECTED{/if}>A</OPTION>
+                    	    <OPTION VALUE="AAAA" {if $record.type == AAAA} SELECTED{/if}>AAAA</OPTION>
+                    	    <OPTION VALUE="CNAME" {if $record.type == CNAME} SELECTED{/if}>CNAME</OPTION>
+                    	    <OPTION VALUE="HINFO" {if $record.type == HINFO} SELECTED{/if}>HINFO</OPTION>
+                    	    <OPTION VALUE="MX" {if $record.type == MX} SELECTED{/if}>MX</OPTION>
+                    	    <OPTION VALUE="NAPTR" {if $record.type == NAPTR} SELECTED{/if}>NAPTR</OPTION>
+                    	    <OPTION VALUE="NS" {if $record.type == NS} SELECTED{/if}>NS</OPTION>
+                    	    <OPTION VALUE="PTR" {if $record.type == PTR} SELECTED{/if}>PTR</OPTION>
+                    	    <OPTION VALUE="SOA" {if $record.type == SOA} SELECTED{/if}>SOA</OPTION>
+                    	    <OPTION VALUE="SPF" {if $record.type == SPF} SELECTED{/if}>SPF</OPTION>
+                    	    <OPTION VALUE="SRV" {if $record.type == SRV} SELECTED{/if}>SRV</OPTION>
+                    	    <OPTION VALUE="SSHFP" {if $record.type == SSHFP} SELECTED{/if}>SSHFP</OPTION>
+                    	    <OPTION VALUE="TXT" {if $record.type == TXT} SELECTED{/if}>TXT</OPTION>
+        		</SELECT>
+		</TD>
+		<TD class="fbt">
+			<input type="text" size="5" value="{$record.prio}" name="record[prio]" >
+		</TD>
+		<TD class="frightu">
+			<input type="text" style="width:100%" value="{$record.content}" name="record[content]" {tip text="Enter record content" trigger="content"}>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD colspan="5" class="fbottomu" align="right" nowrap>
+			<A href="javascript: document.recordedit.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+			<A href="?m=recordlist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
+		</TD>
+	</TR>
 </TABLE>
 </FORM>
 <SCRIPT type="text/javascript">

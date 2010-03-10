@@ -30,11 +30,11 @@ if (isset($_POST['record']))
 
 	$domain = $DB->GetRow('SELECT name FROM domains WHERE id = ?', array($record['domain_id']));
 
-	$tlds=explode(".",$domain['name']);
+	$tlds = explode(".", $domain['name']);
 
+	//domena in-add.arpa
 	if ($tlds[count($tlds)-2].$tlds[count($tlds)-1] == 'in-addrarpa')
-	{ //domena in-add.arpa            
-
+	{
 		if (!is_numeric($record['name']) && $record['name'] != '')
 			$error['name'] = trans('Wrong record name');
 
@@ -49,9 +49,8 @@ if (isset($_POST['record']))
 		}
 
 	}
-	else
-		if ($record['type'] == 'PTR')
-			$error['type'] = trans('You can\'t add PTR record to this domain');
+	else if ($record['type'] == 'PTR')
+		$error['type'] = trans('You can\'t add PTR record to this domain');
 
 	if ($record['ttl']*1 <= 0 || !is_numeric($record['ttl']))
 		$error['ttl'] = trans('Wrong TTL');
@@ -75,6 +74,7 @@ if (isset($_POST['record']))
 		if (trim($record['name']) != '')
 			$record['name'] = trim($record['name'],'.').'.';
 		$record['name'] .= $domain['name'];
+
 		$DB->Execute('INSERT INTO records (name, type, content, ttl, prio, domain_id)
 			VALUES (?, ?, ?, ?, ?, ?)',
 			array(
@@ -88,7 +88,7 @@ if (isset($_POST['record']))
 
 		update_soa_serial($record['domain_id']);
 
-		$SESSION->redirect('?m=recordslist');
+		$SESSION->redirect('?m=recordlist');
 	}
 }
 else
@@ -96,7 +96,7 @@ else
 
 $d = $_GET['d']*1;
 
-$layout['pagetitle'] = trans('Record add to zone');
+$layout['pagetitle'] = trans('New DNS Record');
 
 if (empty($record['ttl']))
 {
@@ -108,7 +108,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('domain_id', $d);
 $SMARTY->assign('record', $record);
-$SMARTY->assign('error',$error);
+$SMARTY->assign('error', $error);
 $SMARTY->assign('domain', $domain ? $domain : $DB->GetRow('SELECT name FROM domains WHERE id = ?', array($d)));
 $SMARTY->display('recordadd.html');
 

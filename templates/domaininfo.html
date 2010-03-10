@@ -4,7 +4,7 @@
 <TABLE width="100%" cellpadding="3">
 	<TR class="dark">
 		<TD width="1%" class="fleftu">
-			<img src="img/network.gif" alt="">
+			<img src="img/domain.gif" alt="">
 		</TD>
 		<TD width="1%" class="fbt">
 			<B>{t}Name:{/t}</B>
@@ -60,7 +60,7 @@
 	</TR>
         <TR class="light">
                 <TD width="1%" class="fleft">
-                        <img src="img/alias.gif" alt="">
+                        <img src="img/dns.gif" alt="">
                 </TD>
                 <TD width="1%" nowrap>
                         <B>{t}Records number:{/t}</B>
@@ -69,7 +69,6 @@
                         {$domain.recordscnt|default:0}
                 </TD>
         </TR>
-
 {if $domain.description}
 	<TR class="light">
 		<TD width="1%" class="fleft">
@@ -91,7 +90,7 @@
 {/if}
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
-			<A href="?m=recordslist&d={$domain.id}">{t}Records{/t} <IMG src="img/cancel.gif" alt="[ {t}Records{/t} ]"></A>
+			<A href="?m=recordlist&d={$domain.id}">{t}Records{/t} <IMG src="img/dns.gif" alt="[ {t}Records{/t} ]"></A>
 			<A href="?m=accountlist&d={$domain.id}">{t}Accounts{/t} <IMG src="img/account.gif" alt="[ {t}Accounts{/t} ]"></A>
 			<A href="?m=aliaslist&d={$domain.id}">{t}Aliases{/t} <IMG src="img/alias.gif" alt="[ {t}Aliases{/t} ]"></A>
 			<A href="?m=domainedit&id={$domain.id}" accesskey="e">{t}Edit{/t} <img src="img/save.gif" alt=""></A>
