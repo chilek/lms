@@ -506,10 +506,10 @@ function GetConfigList($order='var,asc', $section='')
                                                 $config[$idx]['description'] = trans('Minimum caching time in case of failed lookups. Default 86400.');       
                                         break;                                                                                                                
                                         case 'default_webserver_ip':                                                                                          
-                                                $config[$idx]['description'] = trans('IP address of webserver.');                                             
+                                                $config[$idx]['description'] = trans('IP address of webserver');                                             
                                         break;                                                                                                                
                                         case 'default_mailserver_ip':                                                                                         
-                                                $config[$idx]['description'] = trans('IP address of mailserver.');                                            
+                                                $config[$idx]['description'] = trans('IP address of mailserver');                                            
                                         break;                                                                                                                
                                                                                                                                                               
                                                                                                                                                               

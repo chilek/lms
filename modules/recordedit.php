@@ -37,9 +37,9 @@ if (isset($_POST['record']))
 
 	$tlds = explode(".",$domain['name']);
 
+	//domena in-add.arpa
 	if ($tlds[count($tlds)-2].$tlds[count($tlds)-1] == 'in-addrarpa')
-	{ //domena in-add.arpa
-
+	{
 		if (!is_numeric($record['name']) && $record['name'] != '')
 			$error['name'] = trans('Wrong record name');
 
@@ -52,11 +52,9 @@ if (isset($_POST['record']))
 			if ($errorcontent)
 				$error['content'] = $errorcontent;
 		}
-
 	}
-	else
-		if ($record['type'] == 'PTR')
-			$error['type'] = trans('You can\'t add PTR record to this domain');
+	else if ($record['type'] == 'PTR')
+		$error['type'] = trans('You can\'t add PTR record to this domain');
 
 	if ($record['ttl']*1 <= 0 || !is_numeric($record['ttl']))
 		$error['ttl'] = trans('Wrong TTL');
@@ -70,11 +68,10 @@ if (isset($_POST['record']))
 
 	if (!$error)
 	{
-
 		if (trim($record['name']) !='')
 			$record['name'] = trim($record['name'],'.').'.';
-
 		$record['name'] .= $domain['name'];
+
 		$DB->Execute('UPDATE records SET name = ?, type = ?, content = ?, ttl = ?, prio = ?
 			WHERE id = ?',
 			array($record['name'],
@@ -86,7 +83,8 @@ if (isset($_POST['record']))
 			));
 
 		update_soa_serial($domain['id']);
-		$SESSION->redirect('?m=recordslist');
+
+		$SESSION->redirect('?m=recordlist');
 	}
 }
 else
@@ -95,15 +93,15 @@ else
 	$record['name'] = substr($record['name'],0,-(strlen($domain['name']) + 1));
 }
 
-$layout['pagetitle'] = trans('Record edit for zone:');
+$layout['pagetitle'] = trans('DNS Record Edit');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $record['content'] = htmlentities($record['content']);
 
-$SMARTY->assign('error',$error);
-$SMARTY->assign('record',$record);
-$SMARTY->assign('domain',$domain);
+$SMARTY->assign('error', $error);
+$SMARTY->assign('record', $record);
+$SMARTY->assign('domain', $domain);
 
 $SMARTY->display('recordedit.html');
 

@@ -33,6 +33,6 @@ if($id)
 	update_soa_serial($domainid['domain_id']);
 }
 
-$SESSION->redirect('?m=recordslist');
+$SESSION->redirect('?m=recordlist');
 
 ?>

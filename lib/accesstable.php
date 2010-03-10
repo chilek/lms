@@ -32,7 +32,7 @@ $access['table'][0]['name']		= trans('full access');
 $access['table'][0]['allow_reg']	= '^.*$';
 
 $access['table'][1]['name']		= trans('read only (excluding helpdesk)');
-$access['table'][1]['allow_reg']	= '^((user|balance|db|net|node|netdev|tariff|payment|invoice|note|customer|customergroup|nodegroup|account|voipaccount|alias|domain|config|event|taxrate|document|numberplan|state|host|division|message|ewxch)(list|info|view|search|balance|infoshort)|netdevmap|eventprint|nodelistshort|number|cashsourcelist)$';
+$access['table'][1]['allow_reg']	= '^((user|balance|db|net|node|netdev|tariff|payment|invoice|note|customer|customergroup|nodegroup|account|voipaccount|alias|domain|record|config|event|taxrate|document|numberplan|state|host|division|message|ewxch)(list|info|view|search|balance|infoshort)|netdevmap|eventprint|nodelistshort|number|cashsourcelist)$';
 
 $access['table'][2]['name']		= trans('nodes connection/disconnection');
 $access['table'][2]['allow_reg']	= '^nodeset$';
@@ -62,7 +62,7 @@ $access['table'][10]['name']        	= trans('Helpdesk (RT) operation');
 $access['table'][10]['allow_reg']   	= '^(rtsearch|rtqueue(list|info|view)|(rtticket|rtmessage|rtnote)(add|edit|info|view|del|print))$';
 
 $access['table'][11]['name']        	= trans('hosting management');
-$access['table'][11]['allow_reg']   	= '^(accountpasswd|(account|domain|alias)(list|edit|add|del|info|search))$';
+$access['table'][11]['allow_reg']   	= '^(accountpasswd|(account|domain|alias|record)(list|edit|add|del|info|search))$';
 
 $access['table'][12]['name']        	= trans('configuration');
 $access['table'][12]['allow_reg']   	= '^((host|config|numberplan|taxrate|state|division|cashsource)(list|edit|add|del|load))$';
