@@ -1043,11 +1043,11 @@ CREATE SEQUENCE ewx_stm_channels_id_seq;
 DROP TABLE ewx_stm_channels;
 CREATE TABLE ewx_stm_channels (
     id 		integer 	DEFAULT nextval('ewx_stm_channels_id_seq'::text) NOT NULL,
-    customerid 	integer      	DEFAULT 0 NOT NULL,
+    cid 	integer      	DEFAULT 0 NOT NULL,
     upceil 	integer         DEFAULT 0 NOT NULL,
     downceil 	integer        	DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
-    UNIQUE (customerid)
+    UNIQUE (cid)
 );
 
 /* ---------------------------------------------------
@@ -1427,4 +1427,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2010011300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010031100');

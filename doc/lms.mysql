@@ -938,11 +938,11 @@ CREATE TABLE ewx_stm_nodes (
 DROP TABLE IF EXISTS ewx_stm_channels;
 CREATE TABLE ewx_stm_channels (
 	id int(11)              NOT NULL auto_increment,
-	customerid int(11)      DEFAULT '0' NOT NULL,
+	cid int(11)             DEFAULT '0' NOT NULL,
 	upceil int(11)          DEFAULT '0' NOT NULL,
 	downceil int(11)        DEFAULT '0' NOT NULL,
 	PRIMARY KEY (id),
-	UNIQUE KEY customerid (customerid)
+	UNIQUE KEY cid (cid)
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS ewx_pt_config;
@@ -1336,4 +1336,4 @@ CREATE TABLE supermasters (
 
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010011300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010031100');
