@@ -42,14 +42,12 @@ function CheckAllN2()
 	CheckAllN();
 }
 </SCRIPT>{/literal}
+{if $_config.phpui.ewx_support|chkconfig}{assign var=ewx value=1}{else}{assign var=ewx value=0}{/if}
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD width="99%" class="fleftu hand" onclick="showOrHide('nodespanel-{$layout.module}');">
 			<IMG SRC="img/node.gif" alt="">
 			<B>{t 0=$customernodes.total|default:"0"}Customer Nodes ($0):{/t}</B>
-			{if $ewx_channelid}
-			<B class="brown">[{t}Channel:{/t} {$ewx_channelid|string_format:"%05d"}]</B> 
-			{/if}
 		</TD>
 		<TD width="1%" class="frightu" align="right" nowrap>
 			{if $customerinfo.status neq "1" and ! $customerinfo.deleted}<A HREF="?m=nodeadd&ownerid={$customerinfo.id}">{t}New Node{/t} &raquo;</A>&nbsp;{/if}
@@ -60,8 +58,11 @@ function CheckAllN2()
 		    <FORM method="post" action="" name="custnodeslist">
 		    <TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
 		        <TR class="dark">
-	                    <TD WIDTH="95%" class="fleftu"><B>{t}Name:{/t}</B></TD>
+	                    <TD WIDTH="{math equation="x-y" x=95 y=$ewx}%" class="fleftu"><B>{t}Name:{/t}</B></TD>
 		    	    <TD WIDTH="1%" class="fbt" align="right">{t}ID:{/t}</TD>
+			    {if $ewx}
+		    	    <TD WIDTH="1%" class="fbt" align="right">{t}Channel:{/t}</TD>
+			    {/if}
 		    	    <TD WIDTH="1%" class="fbt" align="right">{t}Address:{/t}</TD>
 		    	    <TD WIDTH="1%" class="fbt" align="right">{t}Groups:{/t}</TD>
 		    	    <TD WIDTH="1%" class="fbt" align="right">{t}Network:{/t}</TD>
@@ -72,7 +73,7 @@ function CheckAllN2()
 			{section name=customernodes loop=$customernodes}
 			{if $customernodes[customernodes].id}
     			<TR class="{cycle name=nodes}{if ! $customernodes[customernodes].access} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-			    <TD WIDTH="95%" onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';">
+			    <TD onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';">
 				{if $customernodes[customernodes].lastonline}
 				    {if ($smarty.now-$customernodes[customernodes].lastonline) > $_config.phpui.lastonline_limit}
 					<img src="img/node_off.gif" ALT="" {tip 0=$customernodes[customernodes].lastonlinedate text="Last online: \$0"}>
@@ -90,21 +91,29 @@ function CheckAllN2()
 				<NOBR>{$customernodes[customernodes].info|truncate:60:"...":true}</NOBR>
 				{/if}
 			    </TD>
-			    <TD WIDTH="1%" onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';" align="right">
+			    <TD onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';" align="right">
 				({$customernodes[customernodes].id|string_format:"%04d"})
 			    </TD>
-			    <TD WIDTH="1%" onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';" align="right" NOWRAP>
+			    {if $ewx}
+		    	    <TD onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';">
+				{if $customernodes[customernodes].channelname}
+				<a href="?m=ewxchinfo&id={$customernodes[customernodes].channelid}"><b>{$customernodes[customernodes].channelname|truncate:20:"...":true}</b></a>
+				{elseif $customernodes[customernodes].channelid}<b>[{$customernodes[customernodes].channelid|string_format:"%04d"}]</b>
+				{/if}
+			    </TD>
+			    {/if}
+			    <TD onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';" align="right" NOWRAP>
 				{$customernodes[customernodes].ip} {if $customernodes[customernodes].ip_pub != "0.0.0.0"} ({$customernodes[customernodes].ip_pub}){/if} / {$customernodes[customernodes].mac}
 			    </TD>
-			    <TD WIDTH="1%" align="right" NOWRAP>
+			    <TD align="right" NOWRAP>
 				{if $customernodes[customernodes].gcount}
 				<img src="img/nodegroup.gif" alt="" {tip 0=$customernodes[customernodes].id dynpopup='?m=nodeinfo&id=$0&nodegroups=1' sticky=1}>
 				{/if}
 			    </TD>
-			    <TD WIDTH="1%" align="right" NOWRAP>
+			    <TD align="right" NOWRAP>
 				<B><A HREF="?m=netinfo&id={$customernodes[customernodes].network.id}">{$customernodes[customernodes].network.name|truncate:"20":"...":true}</A></B> {if $customernodes[customernodes].network_pub} (<B><A HREF="?m=netinfo&id={$customernodes[customernodes].network_pub.id}">{$customernodes[customernodes].network_pub.name|truncate:"20":"...":true}</A></B>){/if}
 			    </TD>
-			    <TD WIDTH="1%" NOWRAP>
+			    <TD NOWRAP>
 				<A HREF="?m=nodeset&id={$customernodes[customernodes].id}"><IMG src="img/{if ! $customernodes[customernodes].access}no{/if}access.gif" alt="[ {if ! $customernodes[customernodes].access}{t}Connect{/t}{else}{t}Disconnect{/t}{/if} ]" title="[ {if ! $customernodes[customernodes].access}{t}Connect{/t}{else}{t}Disconnect{/t}{/if} ]"></A>
 				<A HREF="?m=nodewarn&id={$customernodes[customernodes].id}"><IMG src="img/warning{if ! $customernodes[customernodes].warning}off{else}on{/if}.gif" alt="[ {if ! $customernodes[customernodes].warning}{t}Enable notice{/t}{else}{t}Disable notice{/t}{/if} ]" title="[ {if ! $customernodes[customernodes].warning}{t}Enable notice{/t}{else}{t}Disable notice{/t}{/if} ]"></A>
 				<A HREF="?m=nodedel&id={$customernodes[customernodes].id}" onClick="return confirmLink(this, '{t 0=$customernodes[customernodes].name}Are you sure, you want to remove node \'$0\' from database?{/t}')"><IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
@@ -117,7 +126,7 @@ function CheckAllN2()
 			{/section}
 			{else}
 			<TR>
-			    <TD WIDTH="100%" COLSPAN="6" align="center">
+			    <TD WIDTH="100%" COLSPAN="{math equation="x+y" x=6 y=$ewx}" align="center">
 				<P>&nbsp;</P>
 				<P><B>{if $customerinfo.deleted}<FONT class="red">{t}That customer has been deleted.{/t}</FONT>{else}{t}That customer hasn't got any node.{/t}{/if}</B></P>
 				<P>&nbsp;</P>
@@ -125,7 +134,7 @@ function CheckAllN2()
 			</TR>
 			{/if}
 			<TR CLASS="LIGHT">
-			    <TD WIDTH="100%" COLSPAN="4" CLASS="FTOP">
+			    <TD COLSPAN="{math equation="x+y" x=4 y=$ewx}" CLASS="FTOP">
 				<IMG SRC="img/access.gif">
 				<A HREF="javascript: setstatus(1)"> {t}Connect{/t}</A>/<A HREF="javascript: setstatus(0)">{t}Disconnect{/t}</A>
 				<IMG SRC="img/warningon.gif">

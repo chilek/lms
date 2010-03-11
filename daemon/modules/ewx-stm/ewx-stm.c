@@ -674,7 +674,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	// Reading hosts/channels definitions from ewx_stm_* tables
 	// NOTE: to re-create device configuration do DELETE FROM ewx_stm_nodes; DELETE FROM ewx_stm_channels;
 	query = strdup("SELECT nodeid, mac, INET_NTOA(ipaddr) AS ip, channelid, halfduplex, "
-				"n.uprate, n.upceil, n.downrate, n.downceil, customerid, "
+				"n.uprate, n.upceil, n.downrate, n.downceil, cid, "
 				"c.upceil AS cupceil, c.downceil AS cdownceil "
 			"FROM ewx_stm_nodes n "
 			"LEFT JOIN ewx_stm_channels c ON (c.id = n.channelid) "
@@ -715,7 +715,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		{
 			channels = (struct channel *) realloc(channels, (sizeof(struct channel) * (sc+1)));
 			channels[sc].id = channelid;
-			channels[sc].customerid = atoi(g->db_get_data(res,i,"customerid"));
+			channels[sc].customerid = atoi(g->db_get_data(res,i,"cid"));
 			channels[sc].upceil = atoi(g->db_get_data(res,i,"cupceil"));
 			channels[sc].downceil = atoi(g->db_get_data(res,i,"cdownceil"));
                         channels[sc].no = 0;
@@ -1137,10 +1137,10 @@ int add_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, stru
 	if(!sh) return result;
 
 	// Adding channel to database
-	g->db_pexec(g->conn, "INSERT INTO ewx_stm_channels (customerid, upceil, downceil) "
+	g->db_pexec(g->conn, "INSERT INTO ewx_stm_channels (cid, upceil, downceil) "
 			    "VALUES(?, ?, ?)", itoa(c.id), upceil, downceil);
 
-	res = g->db_pquery(g->conn, "SELECT id FROM ewx_stm_channels WHERE customerid = ?", itoa(c.id));
+	res = g->db_pquery(g->conn, "SELECT id FROM ewx_stm_channels WHERE cid = ?", itoa(c.id));
 
 	channelid = atoi(g->db_get_data(res, 0, "id"));
 	g->db_free(&res);
