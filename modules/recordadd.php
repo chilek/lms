@@ -64,7 +64,7 @@ if (isset($_POST['record']))
 
 	if ($record['type'] == 'SOA')
 	{
-		$soa=$DB->GetRow('SELECT type FROM records WHERE type="SOA" AND domain_id=?', array($record['domain_id']));
+		$soa=$DB->GetRow('SELECT type FROM records WHERE type=\'SOA\' AND domain_id=?', array($record['domain_id']));
 		if ($soa['type'] == 'SOA')
 			$error['type'] = trans('SOA record already exists');
 	}
