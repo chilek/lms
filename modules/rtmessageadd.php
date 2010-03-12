@@ -246,7 +246,6 @@ if(isset($_POST['message']))
 
 			$mailfrom = $user['email'] ? $user['email'] : $queue['email'];
 				
-			$headers['Date'] = date('r');
 		        $headers['From'] = $mailfname.' <'.$mailfrom.'>';
 			$headers['Subject'] = sprintf("[RT#%06d] %s", $message['ticketid'], $DB->GetOne('SELECT subject FROM rttickets WHERE id = ?', array($message['ticketid'])));
 			$headers['Reply-To'] = $headers['From'];

@@ -3752,6 +3752,9 @@ class LMS
 		$headers['Mime-Version'] = '1.0';
 		$headers['Subject'] = qp_encode($headers['Subject']);
 
+		if (empty($headers['Date']))
+			$headers['Date'] = date('r');
+
 		if ($files)
 		{
 			$boundary = '-LMS-'.str_replace(' ', '.', microtime());

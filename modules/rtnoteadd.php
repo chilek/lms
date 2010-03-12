@@ -79,7 +79,6 @@ elseif(isset($_POST['note']))
 
 			$mailfrom = $user['email'] ? $user['email'] : $queue['email'];
 				
-			$headers['Date'] = date('r');
 		        $headers['From'] = $mailfname.' <'.$mailfrom.'>';
 			$headers['Subject'] = sprintf("[RT#%06d] %s", $note['ticketid'], $DB->GetOne('SELECT subject FROM rttickets WHERE id = ?', array($note['ticketid'])));
 			$headers['Reply-To'] = $headers['From'];
