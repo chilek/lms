@@ -296,7 +296,6 @@ if(isset($_POST['message']))
 			if(!empty($CONFIG['mail']['debug_email']))
 				echo '<B>'.trans('Warning! Debug mode (using address $0).',$CONFIG['mail']['debug_email']).'</B><BR>';
 			
-			$headers['Date'] = date('r');
 			$headers['From'] = '"'.$message['from'].'" <'.$message['sender'].'>';
 			$headers['Subject'] = $message['subject'];
 			$headers['Reply-To'] = $headers['From'];

@@ -129,7 +129,6 @@ if(isset($_POST['ticket']))
 
 			$mailfrom = $user['email'] ? $user['email'] : $queue['email'];
 				
-			$headers['Date'] = date('r');
 		        $headers['From'] = $mailfname.' <'.$mailfrom.'>';
 			$headers['Subject'] = sprintf("[RT#%06d] %s", $ticket['ticketid'], $ticket['subject']);
 			$headers['Reply-To'] = $headers['From'];

@@ -90,7 +90,6 @@ if(isset($_POST['ticket']))
 			else
 				$mailfrom =  $ticket['mailfrom'];
 				
-			$headers['Date'] = date('r');
 		        $headers['From'] = $mailfname.' <'.$mailfrom.'>';
 			$headers['Subject'] = sprintf("[RT#%06d] %s", $id, $ticket['subject']);
 			$headers['Reply-To'] = $headers['From'];
