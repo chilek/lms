@@ -12,7 +12,7 @@
 			<B>{t}Name:{/t}</B>
 		</TD>
 		<TD width="98%" class="frightu">
-			<INPUT name="config[name]" value="{$config.name}" {tip text="Enter option name" trigger="name" bold=1}>&nbsp;
+			<INPUT type="text" name="config[name]" value="{$config.name}" {tip text="Enter option name" trigger="name" bold=1}>&nbsp;
 			<B>{t}Section:{/t}</B>
 			<SELECT size="1" name="config[section]" {tip text="Select section" trigger="section"}>
 			    <OPTION value="phpui"{if $config.section eq "phpui"} SELECTED{/if}>phpui</OPTION>
