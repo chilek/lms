@@ -1,6 +1,27 @@
 {include file="header.html}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
+<script type="text/javascript">
+	<!--
+	{literal}
+	function createBackup(gzip)
+	{
+		var add = "";
+
+		if(gzip)
+			add += "&gz=1";
+
+		if(document.statsitem.attachstats.checked)
+			add += "&stats=1";
+
+		document.statsitem.action = "?m=dbnew" + add;
+		document.statsitem.submit();
+	}
+	{/literal}
+	//-->
+</script>
+<FORM METHOD="POST" ACTION="?m=dbnew" name="statsitem">
+<INPUT type="submit" class="hiddenbtn">
 <TABLE width="100%" cellpadding="3">
 <TR CLASS="dark">
 	<TD class="fleftu" width="98%">
@@ -47,9 +68,12 @@
 {/section}
 <TR class="light">
 	<TD colspan="3" width="100%" align="right" class="fall">
+		<INPUT type="checkbox" name="attachstats"> <A HREF="javascript:checkElement('attachstats');">{t}Attach stats{/t}</A>&nbsp;
 		{t}Create new{/t}
-		<a href="?m=dbnew">{t}uncompressed{/t} <img src="img/dbnew.gif" alt=""></A> / 
-		<a href="?m=dbnew&gz=1">{t}compressed{/t} <img src="img/zipped.gif" alt=""></A>
+		<A HREF="javascript:createBackup(false);">{t}uncompressed{/t} <img src="img/dbnew.gif" alt=""></A> / 
+		<A HREF="javascript:createBackup(true);">{t}compressed{/t} <img src="img/zipped.gif" alt=""></A>
 	</TD>
+</TR>
 </TABLE>
+</FORM>
 {include file="footer.html}

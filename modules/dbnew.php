@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-cvs
  *
- *  (C) Copyright 2001-2010 LMS Developers
+ *  (C) Copyright 2001-2009 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,10 +26,10 @@
 
 set_time_limit(0);
 
-if (isset($_GET['gz']))
-	$LMS->DatabaseCreate(TRUE);
-else
-	$LMS->DatabaseCreate();
+$gz = isset($_GET['gz']);
+$stats = isset($_GET['stats']);
+
+$LMS->DatabaseCreate($gz, $stats);
 
 header('Location: ?m=dblist');
 
