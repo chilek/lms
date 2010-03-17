@@ -166,6 +166,7 @@ $_LANG['Are you sure, you want to restore this database backup?'] = 'Jesteś pew
 $_LANG['ascending'] = 'rosnąco';
 $_LANG['Assigned:'] = 'Korzysta:';
 $_LANG['Assign node to customer'] = 'Przypisz komputer klientowi';
+$_LANG['Attach stats'] = 'Dołącz statystyki';
 $_LANG['Attachment:'] = 'Załącznik:';
 $_LANG['Attachments:'] = 'Załączniki:';
 $_LANG['Assign subscription to customer'] = 'Przypisz tą taryfę użytkownikowi';

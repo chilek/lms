@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-cvs
  *
- *  (C) Copyright 2001-2010 LMS Developers
+ *  (C) Copyright 2001-2009 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -84,9 +84,9 @@ if(isset($_GET['is_sure']))
 	set_time_limit(0);
 
 	if (!empty($_GET['gz']))
-		$LMS->DatabaseCreate(TRUE);
+		$LMS->DatabaseCreate(TRUE, FALSE);
 	else
-		$LMS->DatabaseCreate();
+		$LMS->DatabaseCreate(FALSE, FALSE);
 
 	$db = $_GET['db'];
 

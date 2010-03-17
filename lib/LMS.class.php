@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-cvs
  *
- *  (C) Copyright 2001-2010 LMS Developers
+ *  (C) Copyright 2001-2009 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -73,7 +73,7 @@ class LMS
 	 *  Database functions (backups)
 	 */
 
-	function DBDump($filename=NULL,$gzipped=FALSE) // dump database to file
+	function DBDump($filename=NULL,$gzipped=FALSE,$stats=FALSE) // dump database to file
 	{
 		if(! $filename)
 			return FALSE;
@@ -87,7 +87,7 @@ class LMS
 			foreach($this->DB->ListTables() as $tablename)
 			{
 				// skip sessions table for security 
-				if($tablename == 'sessions')
+				if($tablename == 'sessions' || ($tablename == 'stats' && $stats == FALSE))
 					continue;
 					
 				fputs($dumpfile,"DELETE FROM $tablename;\n");
@@ -120,13 +120,13 @@ class LMS
 			return FALSE;
 	}
 
-	function DatabaseCreate($gzipped=FALSE) // create database backup
+	function DatabaseCreate($gzipped=FALSE, $stats=FALSE) // create database backup
 	{
 		$basename = 'lms-'.time().'-'.DBVERSION;
 		if (($gzipped)&&(extension_loaded('zlib')))
-			return $this->DBDump($this->CONFIG['directories']['backup_dir'].'/'.$basename.'.sql.gz',TRUE);
+			return $this->DBDump($this->CONFIG['directories']['backup_dir'].'/'.$basename.'.sql.gz',TRUE,$stats);
 		else
-			return $this->DBDump($this->CONFIG['directories']['backup_dir'].'/'.$basename.'.sql');
+			return $this->DBDump($this->CONFIG['directories']['backup_dir'].'/'.$basename.'.sql',FALSE,$stats);
 	}
 
 	/*
@@ -810,15 +810,14 @@ class LMS
 				warning, info, ownerid, location, lastonline,
 				(SELECT COUNT(*) FROM nodegroupassignments
 					WHERE nodeid = nodes.id) AS gcount 
-				FROM nodes WHERE ownerid=?
+				FROM nodes WHERE ownerid=? 
 				ORDER BY name ASC '.($count ? 'LIMIT '.$count : ''), array($id)))
 		{
 			// assign network(s) to node record
 			$networks = (array) $this->GetNetworks();
-			
+
 			foreach($result as $idx => $node)
 			{
-				$ids[$node['id']] = $idx;
 				$delta = time()-$node['lastonline'];
 				if($delta>$this->CONFIG['phpui']['lastonline_limit'])
 				{
@@ -844,21 +843,6 @@ class LMS
 							$result[$idx]['network_pub'] = $net;
 							break;
 						}
-			}
-
-			// get EtherWerX channels
-			if (chkconfig($this->CONFIG['phpui']['ewx_support']))
-			{
-				$channels = $this->DB->GetAllByKey('SELECT nodeid, channelid, c.name
-					FROM ewx_stm_nodes
-					LEFT JOIN ewx_channels c ON (c.id = channelid)
-					WHERE channelid != 0
-						AND nodeid IN ('.implode(',', $ids).')', 'nodeid');
-
-				if ($channels) foreach($channels as $channel) {
-					$result[$ids[$channel['nodeid']]]['channelid'] = $channel['channelid'];
-					$result[$ids[$channel['nodeid']]]['channelname'] = $channel['name'];
-				}
 			}
 			
 			$result['total'] = sizeof($result);
@@ -1439,7 +1423,8 @@ class LMS
 			
 			// EtherWerX support (devices have some limits)
 			// We must to replace big ID with smaller (first free)
-			if($id > 99999 && chkconfig($this->CONFIG['phpui']['ewx_support']))
+			if($id > 99999 && isset($this->CONFIG['phpui']['ewx_support']) 
+				&& chkconfig($this->CONFIG['phpui']['ewx_support']))
 			{
 				$this->DB->BeginTrans();
 				$this->DB->LockTables('nodes');
@@ -3043,7 +3028,7 @@ class LMS
 	}
 	function NetDevAdd($netdevdata)
 	{
-		if ($this->DB->Execute('INSERT INTO netdevices (name, location, 
+		if($this->DB->Execute('INSERT INTO netdevices (name, location, 
 				description, producer, model, serialnumber, 
 				ports, purchasetime, guaranteeperiod, shortname,
 				nastype, clients, secret, community, channelid) 
@@ -3063,32 +3048,8 @@ class LMS
 					$netdevdata['secret'],
 					$netdevdata['community'],
 					!empty($netdevdata['channelid']) ? $netdevdata['channelid'] : NULL,
-		))) {
-		
-			$id = $this->DB->GetLastInsertID('netdevices');
-
-			// EtherWerX support (devices have some limits)
-			// We must to replace big ID with smaller (first free)
-			if($id > 99999 && chkconfig($this->CONFIG['phpui']['ewx_support']))
-			{
-				$this->DB->BeginTrans();
-				$this->DB->LockTables('ewx_channels');
-				
-				if($newid = $this->DB->GetOne('SELECT n.id + 1 FROM ewx_channels n 
-						LEFT OUTER JOIN ewx_channels n2 ON n.id + 1 = n2.id
-						WHERE n2.id IS NULL AND n.id <= 99999
-						ORDER BY n.id ASC LIMIT 1'))
-				{
-					$this->DB->Execute('UPDATE ewx_channels SET id = ? WHERE id = ?', array($newid, $id));
-					$id = $newid;
-				}
-				
-				$this->DB->UnLockTables();
-				$this->DB->CommitTrans();
-			}
-			
-			return $id;
-		}
+		)))
+			return $this->DB->GetLastInsertID('netdevices');
 		else
 			return FALSE;
 	}
@@ -3751,9 +3712,6 @@ class LMS
 		$headers['X-HTTP-User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
 		$headers['Mime-Version'] = '1.0';
 		$headers['Subject'] = qp_encode($headers['Subject']);
-
-		if (empty($headers['Date']))
-			$headers['Date'] = date('r');
 
 		if ($files)
 		{
