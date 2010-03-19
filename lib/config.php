@@ -73,6 +73,7 @@ $DEFAULTS = array(
 		'networkhosts_pagelimit' => 256,
 		'messagelist_pagelimit' => 100,
 		'recordlist_pagelimit' => 100,
+		'cashreglog_pagelimit' => 100,
 		'reload_type' => 'sql',
 		'reload_execcmd' => '/bin/true',
 		'reload_sqlquery' => '',
