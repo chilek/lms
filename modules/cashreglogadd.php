@@ -59,7 +59,7 @@ if(isset($_POST['reglog']))
 
 	if($reglog['time'])
 	{
-		if(preg_match('/^([0-9]{4}/[0-9]{2}/[0-9]{2})\s+([0-9]{2}:[0-9]{2})$/', $reglog['time'], $matches))
+		if(preg_match('/^([0-9]{4}\/[0-9]{2}\/[0-9]{2})\s+([0-9]{2}:[0-9]{2})$/', $reglog['time'], $matches))
 		{
 	    		// date format 'yyyy/mm/dd hh:mm'
 			$date = explode('/', $matches[1]);
