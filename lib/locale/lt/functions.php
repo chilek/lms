@@ -38,7 +38,7 @@ function bankaccount($id, $account=NULL)
 	{
 		$cc = '2129';	// Country Code - Lithuania
 		$format = '%0'.(16 - $acclen) .'d';
-		return sprintf('%02d',98-bcmod($account.sprintf($format,$id).$cc.'00',97)).$account.sprintf($format,$id);
+		return 'LT'.sprintf('%02d',98-bcmod($account.sprintf($format,$id).$cc.'00',97)).$account.sprintf($format,$id);
 	}
 
 	return $account;
