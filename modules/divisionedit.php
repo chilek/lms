@@ -78,7 +78,7 @@ if(!empty($_POST['division']))
         if($division['regon'] != '' && !check_regon($division['regon']))
                 $error['regon'] = trans('Incorrect Business Registration Number!');
 
-	if($division['account'] != '' && (strlen($division['account'])>48 || !preg_match('/^[0-9]+$/', $division['account'])))
+	if($division['account'] != '' && (strlen($division['account'])>48 || !preg_match('/^([A-Z][A-Z])?[0-9]+$/', $division['account'])))
 		$error['account'] = trans('Wrong account number!');
 
 	if($division['inv_paytime'] == '')
