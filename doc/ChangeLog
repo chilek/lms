@@ -53,6 +53,7 @@ version ? (????-??-??)
   - Added peak memory usage info in page footer (alec)
   - Added EtherWerX STM channels management (alec)
   - we can omit stats data in database backup (chilan)
+  - fix encoding of mail messages sent by perl scripts (alec)
   
 version 1.11.9 Moloc (2009-10-28):
  

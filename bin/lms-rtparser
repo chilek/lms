@@ -151,6 +151,15 @@ sub lms_decode_mime
 	return $res;
 }
 
+sub encode_header
+{
+        my $subject = shift;
+        $subject = encode_qp($subject, '');
+        $subject =~ s/ /_/g;
+        # @TODO: split long lines
+        return "=?UTF-8?Q?$subject?=";
+}
+
 # very ugly code, but we really need tempdir..
 # TODO - FIXME - better handling of temporary dir - we should use sth simillar to mktemp();
 my $tmpdir = $tmp_dir || ((defined $ENV{'TMP'} && ! ($ENV{'TMP'} eq '')) ? $ENV{'TMP'} : '/tmp');
@@ -201,7 +210,7 @@ if($entity->mime_type =~ m|multipart/|i) # if we deal with multipart message...
 		elsif(($body->mime_type =~ m/multipart\/alternative/i) && $mailbody eq '')
 		{
 			# Outlook's nasty multipart/alternative message
-			my $newbody = join " ", @{$body->body};
+			my $newbody = join '', @{$body->body};
 			my @newbody = split /------=_NextPart_\S*\n/, $newbody;
 			$newbody = $newbody[1]; # text message part
 			my $tmp_body = $newbody;
@@ -436,10 +445,10 @@ if(! $prev_tid) # generate new ticket if previous not found
 
 	# encode confirmation headers
 	my $mailto;
-	my $c_subject = encode_mimeword($autoreply_subject,'q','UTF-8');
-	$autoreply_name = encode_mimeword($autoreply_name,'q','UTF-8');
-	$replytoname = encode_mimeword($replytoname,'q','UTF-8');
-	$fromname = encode_mimeword($fromname,'q','UTF-8');
+	$autoreply_subject = encode_header($autoreply_subject);
+	$autoreply_name = encode_header($autoreply_name);
+	$replytoname = encode_header($replytoname);
+	$fromname = encode_header($fromname);
 
 	if($autoreply)
 	{
@@ -461,11 +470,11 @@ if(! $prev_tid) # generate new ticket if previous not found
 			on_errors => undef,
 #			debug_level => 4,
 #			debug => './log.txt',
-			subject => $c_subject,
-			fake_from => "\"$autoreply_name\" <$autoreply_from>",
+			subject => $autoreply_subject,
+			fake_from => "$autoreply_name <$autoreply_from>",
 			to => $replytoemail || $fromemail,
 			fake_to => $mailto,
-			encoding => '8bit',
+			encoding => 'quoted-printable',
 			charset => 'UTF-8',
 			messageid => "<confirm.$ticket_id.$queue.$timestamp\@rtsystem.$hostname>",
 			headers => 

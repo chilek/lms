@@ -349,7 +349,7 @@ sub create_message
 if ($debtors_file)
 {
 	open(SMSFILE, "$debtors_file");
-	my $template = join(' ', <SMSFILE>);
+	my $template = join('', <SMSFILE>);
 	close SMSFILE;
 
 	# @TODO: check 'messages' table and don't send notifies to often
@@ -394,7 +394,7 @@ if ($debtors_file)
 if ($invoices_file)
 {
 	open(SMSFILE, "$invoices_file");
-	my $template = join(' ', <SMSFILE>);
+	my $template = join('', <SMSFILE>);
 	close SMSFILE;
 
 	my $dbq = $dbase->prepare("SELECT d.id AS docid, c.id, c.pin, d.name,
@@ -453,7 +453,7 @@ if ($invoices_file)
 if ($deadline_file)
 {
 	open(SMSFILE, "$deadline_file");
-	my $template = join(' ', <SMSFILE>);
+	my $template = join('', <SMSFILE>);
 	close SMSFILE;
 
 	my $dbq = $dbase->prepare("SELECT d.id AS docid, c.id, c.pin, d.name,
@@ -513,7 +513,7 @@ if ($deadline_file)
 if ($notes_file)
 {
 	open(SMSFILE, "$notes_file");
-	my $template = join(' ', <SMSFILE>);
+	my $template = join('', <SMSFILE>);
 	close SMSFILE;
 
 	my $dbq = $dbase->prepare("SELECT d.id AS docid, c.id, c.pin, d.name,

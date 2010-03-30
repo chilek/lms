@@ -31,6 +31,7 @@ use POSIX qw(strftime mktime);
 use MIME::QuotedPrint;
 use Mail::Sender;
 
+
 my $_version = '1.11-cvs';
 
 my %options = (
@@ -172,12 +173,21 @@ else
 	exit 1;
 }
 
+sub encode_header
+{
+	my $subject = shift;
+	$subject = encode_qp($subject, '');
+	$subject =~ s/ /_/g;
+	# @TODO: split long lines
+	return "=?UTF-8?Q?$subject?=";
+}
+
 my $from = $mailfrom;
 
 if($mailfname)
 {
-        $mailfname = '=?UTF-8?Q?'.encode_qp($mailfname, '').'?=';
-	$from = '"'.$mailfname.'"'.' <'.$from.'>';
+        $mailfname = encode_header($mailfname);
+	$from = "$mailfname <$from>";
 }
 
 $Mail::Sender::NO_X_MAILER = 1;
@@ -276,13 +286,13 @@ sub send_mail
 		on_errors => undef,
 #		debug_level => 4,
 #		debug => './log.txt',
-                subject => '=?UTF-8?Q?'.encode_qp($subject, '').'?=',
+                subject => encode_header($subject),
 		fake_from => $from,
 		to => $rmail,
-		fake_to => '"=?UTF-8?Q?'.encode_qp($rname, '').'?="'.' <'.$rmail.'>',
+		fake_to => encode_header($rname).' <'.$rmail.'>',
 		replyto => $mailfrom,
 		ctype => 'text/plain',
-    		encoding => '8bit',
+    		encoding => 'quoted-printable',
 		charset => 'UTF-8',
 		msg => "$body\n",
 	}) or return $Mail::Sender::Error;
@@ -339,7 +349,7 @@ sub create_message
 if ($debtors_file)
 {
 	open(MAILFILE, "$debtors_file");
-	my $template = join(' ', <MAILFILE>);
+	my $template = join('', <MAILFILE>);
 	close MAILFILE;
 
 	# @TODO: check 'messages' table and don't send notifies to often
@@ -381,7 +391,7 @@ if ($debtors_file)
 if ($invoices_file)
 {
 	open(MAILFILE, "$invoices_file");
-	my $template = join(' ', <MAILFILE>);
+	my $template = join('', <MAILFILE>);
 	close MAILFILE;
 
 	my $dbq = $dbase->prepare("SELECT d.id AS docid, c.id, c.pin, d.name,
@@ -437,7 +447,7 @@ if ($invoices_file)
 if ($deadline_file)
 {
 	open(MAILFILE, "$deadline_file");
-	my $template = join(' ', <MAILFILE>);
+	my $template = join('', <MAILFILE>);
 	close MAILFILE;
 
 	my $dbq = $dbase->prepare("SELECT d.id AS docid, c.id, c.pin, d.name,
@@ -495,7 +505,7 @@ if ($deadline_file)
 if ($notes_file)
 {
 	open(MAILFILE, "$notes_file");
-	my $template = join(' ', <MAILFILE>);
+	my $template = join('', <MAILFILE>);
 	close MAILFILE;
 
 	my $dbq = $dbase->prepare("SELECT d.id AS docid, c.id, c.pin, d.name,
