@@ -149,6 +149,28 @@ else
 	exit 1;
 }
 
+sub localtime2()
+{
+	if($fakedate)
+	{
+		my @fakedate = split(/\//, $fakedate);
+		return localtime(timelocal(0,0,0,$fakedate[2],$fakedate[1]-1,$fakedate[0]));
+	}
+	else
+	{
+		return localtime();
+	}
+}
+
+sub encode_header
+{
+        my $subject = shift;
+        $subject = encode_qp($subject, '');
+        $subject =~ s/ /_/g;
+        # @TODO: split long lines
+        return "=?UTF-8?Q?$subject?=";
+}
+
 $Mail::Sender::NO_X_MAILER = 1;
 $Mail::Sender::SITE_HEADERS = "X-Mailer: lms-sendinvoices v.$_version";
 
@@ -171,19 +193,6 @@ if($filetype eq 'pdf')
 	$fext = 'pdf';
 }
 
-sub localtime2()
-{
-	if($fakedate)
-	{
-		my @fakedate = split(/\//, $fakedate);
-		return localtime(timelocal(0,0,0,$fakedate[2],$fakedate[1]-1,$fakedate[0]));
-	}
-	else
-	{
-		return localtime();
-	}
-}
-
 my $month = sprintf("%d",strftime("%m",localtime2()));
 my $day = strftime("%e",localtime2());
 my $year = strftime("%Y",localtime2());
@@ -193,8 +202,8 @@ my $from = $sender_email;
 
 if($sender_name)
 {
-	$sender_name = '=?UTF-8?Q?'.encode_qp($sender_name, '').'?=';
-	$from = '"'.$sender_name.'"'.' <'.$from.'>';
+	$sender_name = encode_header($sender_name);
+	$from = "$sender_name <$from>";
 }
 
 my $groupwhere = '';
@@ -251,10 +260,10 @@ while(my $row = $dbq->fetchrow_hashref())
 #			debug => './log.txt',
 	        })) {
 			if( ref ($sender->OpenMultipart ({
-		                subject => '=?UTF-8?Q?'.encode_qp($subject, '').'?=',
+		                subject => encode_header($subject),
 				fake_from => $from,
 				to => $custemail,
-				fake_to => '"=?UTF-8?Q?'.encode_qp($row->{'name'}, '').'?="'.' <'.$custemail.'>',
+				fake_to => encode_header($row->{'name'}).' <'.$custemail.'>',
 				replyto => $sender_email,
 				messageid => '<lms.sendinvoice.'.$row->{'id'}.'.'.$row->{'customerid'}.'@lms>',
 			}))) {

@@ -237,7 +237,7 @@ my $set_warn = $dbase->prepare('UPDATE nodes SET warning = 1 WHERE ownerid = ?')
 if ($debtors_file)
 {
 	open(MAILFILE, "$debtors_file");
-	my $template = join(' ', <MAILFILE>);
+	my $template = join('', <MAILFILE>);
 	close MAILFILE;
 
 	my $dbq = $dbase->prepare("SELECT c.id, c.pin, c.lastname, c.name,
@@ -272,7 +272,7 @@ if ($debtors_file)
 if ($invoices_file)
 {
 	open(MAILFILE, "$invoices_file");
-	my $template = join(' ', <MAILFILE>);
+	my $template = join('', <MAILFILE>);
 	close MAILFILE;
 
 	my $dbq = $dbase->prepare("SELECT d.id AS docid, c.id, c.pin, d.name,
@@ -321,7 +321,7 @@ if ($invoices_file)
 if ($deadline_file)
 {
 	open(MAILFILE, "$deadline_file");
-	my $template = join(' ', <MAILFILE>);
+	my $template = join('', <MAILFILE>);
 	close MAILFILE;
 
 	my $dbq = $dbase->prepare("SELECT d.id AS docid, c.id, c.pin, d.name,
@@ -372,7 +372,7 @@ if ($deadline_file)
 if ($notes_file)
 {
 	open(MAILFILE, "$notes_file");
-	my $template = join(' ', <MAILFILE>);
+	my $template = join('', <MAILFILE>);
 	close MAILFILE;
 
 	my $dbq = $dbase->prepare("SELECT d.id AS docid, c.id, c.pin, d.name,

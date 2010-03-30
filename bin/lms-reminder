@@ -146,6 +146,15 @@ else
 	exit 1;
 }
 
+sub encode_header
+{
+        my $subject = shift;
+        $subject = encode_qp($subject, '');
+        $subject =~ s/ /_/g;
+        # @TODO: split long lines
+        return "=?UTF-8?Q?$subject?=";
+}
+
 $Mail::Sender::NO_X_MAILER = 1;
 $Mail::Sender::SITE_HEADERS = "X-Mailer: lms-reminder v.$_version";
 
@@ -222,13 +231,13 @@ while (my $row = $dbq->fetchrow_hashref())
 			on_errors => undef,
 			#debug_level => 4,
 			#debug => './log.txt',
-			subject => '=?UTF-8?Q?'.encode_qp($mailsubject, '').'?=',
+			subject => encode_header($mailsubject),
 			fake_from => $mailfname || $mailfrom,
 			to => $recipient,
-			fake_to => '"=?UTF-8?Q?'.encode_qp($row->{'name'}).'?="'.' <'.$recipient.'>',
+			fake_to => encode_header($row->{'name'}).' <'.$recipient.'>',
 			replyto => $mailfrom,
 			ctype => 'text/plain',
-			encoding => '8bit',
+			encoding => 'quoted-printable',
 			charset => 'UTF-8',
 			msg => "$contents\n",
 		}) or print STDERR "Error sending mail: $Mail::Sender::Error\n";
