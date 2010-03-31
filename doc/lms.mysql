@@ -252,9 +252,9 @@ CREATE TABLE netdevices (
   clients 	int(11) 	NOT NULL DEFAULT '0',
   secret 	varchar(60) 	NOT NULL DEFAULT '',
   community 	varchar(50) 	NOT NULL DEFAULT '',
-  channelid 	int(11) 	DEFAULT NULL
-    REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  PRIMARY KEY  (id),
+  channelid 	int(11) 	DEFAULT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (channelid) REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE,
   INDEX channelid (channelid)
 ) ENGINE=InnoDB;
 
@@ -369,11 +369,11 @@ CREATE TABLE nodegroupassignments (
 DROP TABLE IF EXISTS nodeassignments;
 CREATE TABLE nodeassignments (
     id int(11) NOT NULL auto_increment,
-    nodeid int(11) NOT NULL
-	REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    assignmentid int(11) NOT NULL
-	REFERENCES assignments (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    nodeid int(11) NOT NULL,
+    assignmentid int(11) NOT NULL,
     PRIMARY KEY (id),
+    FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (assignmentid) REFERENCES assignments (id) ON DELETE CASCADE ON UPDATE CASCADE,
     UNIQUE KEY nodeid (nodeid, assignmentid),
     INDEX assignmentid (assignmentid)
 ) ENGINE=InnoDB;
@@ -1313,9 +1313,8 @@ CREATE TABLE records (
   ttl             INT(11) DEFAULT NULL,
   prio            INT(11) DEFAULT NULL,
   change_date     INT(11) DEFAULT NULL,
-  CONSTRAINT `records_ibfk_1` FOREIGN KEY (`domain_id`)
-	REFERENCES `domains` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   PRIMARY KEY(id),
+  FOREIGN KEY (domain_id) REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE,
   INDEX domain_id (domain_id),
   INDEX name_type (name, type, domain_id)
 ) ENGINE=InnoDB;
