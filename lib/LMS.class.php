@@ -849,11 +849,11 @@ class LMS
 			// get EtherWerX channels
 			if (chkconfig($this->CONFIG['phpui']['ewx_support']))
 			{
-				$channels = $this->DB->GetAllByKey('SELECT nodeid, channelid, c.name, c.id
+				$channels = $this->DB->GetAllByKey('SELECT nodeid, channelid, c.name, c.id, cid
 					FROM ewx_stm_nodes
 					JOIN ewx_stm_channels nc ON (channelid = nc.id)
 					LEFT JOIN ewx_channels c ON (c.id = nc.cid)
-					WHERE nodeid IN ('.implode(',', $ids).')', 'nodeid');
+					WHERE nodeid IN ('.implode(',', array_keys($ids)).')', 'nodeid');
 
 				if ($channels) foreach($channels as $channel) {
 					$result[$ids[$channel['nodeid']]]['channelid'] = $channel['id'] ? $channel['id'] : $channel['channelid'];
