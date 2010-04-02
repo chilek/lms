@@ -534,6 +534,32 @@
                     <member>name - contact name/description</member>
                </simplelist>
           </sect2>
+          <sect2 id="domains">
+               <title>Domains ('domains')</title>
+               <simplelist>
+                    <member>id - serial number</member>
+                    <member>name - domain name</member>
+                    <member>description - comments</member>
+                    <member>type - DNS type ('MASTER', 'SLAVE', 'NATIVE')</member>
+                    <member>master - master DNS server</member>
+                    <member>account - email address of DNS administrator</member>
+                    <member>last_check - timestamp</member>
+                    <member>notified_serial - timestamp</member>
+               </simplelist>
+          </sect2>
+          <sect2 id="records">
+                <title>DNS Records ('records')</title>
+                <simplelist>
+                        <member>id - serial number</member>
+                        <member>domain_id - domain serial number</member>
+                        <member>name - name</member>
+                        <member>type - record type (MX, SOA, A, AAAA, etc.)</member>
+                        <member>content - data</member>
+                        <member>ttl - TTL</member>
+                        <member>prio - priority</member>
+                        <member>change_date - last change timestamp</member>
+                </simplelist>
+          </sect2>
           <sect2 id="passwd">
                <title>Accounts ('passwd')</title>
                <simplelist>
@@ -557,14 +583,6 @@
 		    <member>mail_forward - account for mail forwarding</member>
 		    <member>mail_bcc - account for blind carbon copy mail</member>
 		    <member>description - additional information</member>
-               </simplelist>
-          </sect2>
-          <sect2 id="domains">
-               <title>Domains ('domains')</title>
-               <simplelist>
-                    <member>id - serial number</member>
-                    <member>name - domain name</member>
-                    <member>description - comments</member>
                </simplelist>
           </sect2>
           <sect2 id="aliases">
@@ -796,6 +814,8 @@
                     <member>inv_footer - invoice footer</member>
                     <member>inv_author - invoice default author</member>
                     <member>inv_cplace - invoice creation place</member>
+                    <member>inv_paytime - invoice deadline</member>
+                    <member>inv_paytype - invoice type of payment</member>
                </simplelist>
           </sect2>
           <sect2 id="messages">

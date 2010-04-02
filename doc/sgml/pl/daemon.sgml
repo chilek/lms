@@ -251,6 +251,10 @@
 				<entry><xref linkend="daemon-ewx-stm"></entry>
 				<entry>Konfiguracja EtherWerX Standalone Traffic Managera</entry>
 				</row>
+				<row>
+				<entry><xref linkend="daemon-ewx-stm-channels"></entry>
+				<entry>Konfiguracja EtherWerX Standalone Traffic Managera (ze rozszerzon± obs³ug± kana³ów)</entry>
+				</row>
 				</tbody>
 			</tgroup>
 			</table>
@@ -1770,6 +1774,39 @@ $IPT -t filter -I FORWARD -s %i -m limit --limit %plimit/s -j ACCEPT										</
 						okres nie mo¿e zaczynaæ siê przed godzin± 18.
 						Domy¶lnie: pusta.</para>
 						<para>Przyk³ad: <prompt>night_hours = "24-6"</prompt></para>
+					</listitem>
+				</itemizedlist>
+			</sect3>
+		</sect2>
+		<sect2 id="daemon-ewx-stm-channels" xreflabel="ewx-stm-channels">
+			<title>Ewx-stm-channels</title>
+			<sect3 id="daemon-ewx-stm-channels-intro">
+				<title>Wstêp</title>
+				<para>Modu³ ewx-stm-channels to odpowiednik modu³u ewx-stm (s³u¿±cego do zarz±dzania urz±dzeniem Standalone Traffic
+				Manager marki <ulink url="http://etherwerx.com">EtherWerX</ulink>) zawieraj±cy rozbudowan± obs³ugê kana³ów.
+				</para>
+				<para>Ró¿nica w pracy tych modu³ów jest nastêpuj±ca. Modu³ ewx-stm tworzy kana³y
+				automatycznie w zale¿no¶ci od ustawieñ zobowi±zañ klientów i ich przypisania
+				do komputerów. Nie obs³uguje kana³ów zdefiniowanych w LMS-UI. Z kolei modu³ ewx-stm-channels pracuje wy³±cznie z kana³ami zdefiniowanymi w LMS-UI. Komputery
+				powinny byæ przypisane do urz±dzeñ sieciowych, a te z kolei do kana³ów o zdefiniowanych
+				parametrach. Komputery nie przypisane do ¿adnego kana³u s± pomijane. Mo¿na to zmieniæ
+				definiuj±c parametry domy¶lnego kana³u w konfiguracji modu³u, do którego trafi±
+				wszystkie komputery bez powi±zania.
+				</para>
+			</sect3>
+			<sect3 id="daemon-ewx-stm-channels-config">
+				<title>Konfiguracja</title>
+				<para>Modu³ ewx-stm-channels oprócz opcji dostêpnych dla modu³u ewx-stm udostêpnia nastêpuj±ce opcje:</para>
+				<itemizedlist>
+					<listitem>
+						<para>default_upceil</para>
+						<para>Warto¶æ upceil dla domy¶lnego kana³u. Domy¶lnie: 0.</para>
+						<para>Przyk³ad: <prompt>default_upceil = 10000</prompt></para>
+					</listitem>
+					<listitem>
+						<para>default_downceil</para>
+						<para>Warto¶æ downceil dla domy¶lnego kana³u. Domy¶lnie: 0</para>
+						<para>Przyk³ad: <prompt>default_downceil = 20000</prompt></para>
 					</listitem>
 				</itemizedlist>
 			</sect3>

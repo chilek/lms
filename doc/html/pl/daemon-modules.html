@@ -269,6 +269,15 @@ HREF="daemon-modules.html#DAEMON-EWX-STM"
 ><TD
 >Konfiguracja EtherWerX Standalone Traffic Managera</TD
 ></TR
+><TR
+><TD
+><A
+HREF="daemon-modules.html#DAEMON-EWX-STM-CHANNELS"
+>ewx-stm-channels</A
+></TD
+><TD
+>Konfiguracja EtherWerX Standalone Traffic Managera (ze rozszerzoną obsługą kanałów)</TD
+></TR
 ></TBODY
 ></TABLE
 ></DIV
@@ -3371,6 +3380,76 @@ CLASS="PROMPT"
 >Przykład: <SAMP
 CLASS="PROMPT"
 >night_hours = "24-6"</SAMP
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMON-EWX-STM-CHANNELS"
+>6.2.19. Ewx-stm-channels</A
+></H2
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="DAEMON-EWX-STM-CHANNELS-INTRO"
+>6.2.19.1. Wstęp</A
+></H3
+><P
+>Moduł ewx-stm-channels to odpowiednik modułu ewx-stm (służącego do zarządzania urządzeniem Standalone Traffic
+				Manager marki <A
+HREF="http://etherwerx.com"
+TARGET="_top"
+>EtherWerX</A
+>) zawierający rozbudowaną obsługę kanałów.
+				</P
+><P
+>Różnica w pracy tych modułów jest następująca. Moduł ewx-stm tworzy kanały
+				automatycznie w zależności od ustawień zobowiązań klientów i ich przypisania
+				do komputerów. Nie obsługuje kanałów zdefiniowanych w LMS-UI. Z kolei moduł ewx-stm-channels pracuje wyłącznie z kanałami zdefiniowanymi w LMS-UI. Komputery
+				powinny być przypisane do urządzeń sieciowych, a te z kolei do kanałów o zdefiniowanych
+				parametrach. Komputery nie przypisane do żadnego kanału są pomijane. Można to zmienić
+				definiując parametry domyślnego kanału w konfiguracji modułu, do którego trafią
+				wszystkie komputery bez powiązania.
+				</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="DAEMON-EWX-STM-CHANNELS-CONFIG"
+>6.2.19.2. Konfiguracja</A
+></H3
+><P
+>Moduł ewx-stm-channels oprócz opcji dostępnych dla modułu ewx-stm udostępnia następujące opcje:</P
+><UL
+><LI
+><P
+>default_upceil</P
+><P
+>Wartość upceil dla domyślnego kanału. Domyślnie: 0.</P
+><P
+>Przykład: <SAMP
+CLASS="PROMPT"
+>default_upceil = 10000</SAMP
+></P
+></LI
+><LI
+><P
+>default_downceil</P
+><P
+>Wartość downceil dla domyślnego kanału. Domyślnie: 0</P
+><P
+>Przykład: <SAMP
+CLASS="PROMPT"
+>default_downceil = 20000</SAMP
 ></P
 ></LI
 ></UL

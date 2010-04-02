@@ -5736,7 +5736,31 @@ Chapter 7. For curious
    name - contact name/description
      __________________________________________________________________
 
-7.2.35. Accounts ('passwd')
+7.2.35. Domains ('domains')
+
+   id - serial number
+   name - domain name
+   description - comments
+   type - DNS type ('MASTER', 'SLAVE', 'NATIVE')
+   master - master DNS server
+   account - email address of DNS administrator
+   last_check - timestamp
+   notified_serial - timestamp
+     __________________________________________________________________
+
+7.2.36. DNS Records ('records')
+
+   id - serial number
+   domain_id - domain serial number
+   name - name
+   type - record type (MX, SOA, A, AAAA, etc.)
+   content - data
+   ttl - TTL
+   prio - priority
+   change_date - last change timestamp
+     __________________________________________________________________
+
+7.2.37. Accounts ('passwd')
 
    id - serial number
    ownerid - customer serial number (0 - "system" account)
@@ -5760,21 +5784,14 @@ Chapter 7. For curious
    description - additional information
      __________________________________________________________________
 
-7.2.36. Domains ('domains')
-
-   id - serial number
-   name - domain name
-   description - comments
-     __________________________________________________________________
-
-7.2.37. Aliases ('aliases')
+7.2.38. Aliases ('aliases')
 
    id - serial number
    login - account name (without domain)
    domainid - account serial number
      __________________________________________________________________
 
-7.2.38. Alias-to-account assignments ('aliasassignments')
+7.2.39. Alias-to-account assignments ('aliasassignments')
 
    id - serial number
    aliasid - alias serial number
@@ -5782,7 +5799,7 @@ Chapter 7. For curious
    mail_forward - forward address
      __________________________________________________________________
 
-7.2.39. VoIP Accounts ('voipaccounts')
+7.2.40. VoIP Accounts ('voipaccounts')
 
    id - serial number
    ownerid - customer identifier
@@ -5795,7 +5812,7 @@ Chapter 7. For curious
    modid - last change (user) identifier
      __________________________________________________________________
 
-7.2.40. Bandwidth consumption statistics ('stats')
+7.2.41. Bandwidth consumption statistics ('stats')
 
    nodeid - node serial number
    dt - timestamp
@@ -5803,7 +5820,7 @@ Chapter 7. For curious
    download - number of bytes received
      __________________________________________________________________
 
-7.2.41. Helpdesk - Request Tracking ('rtqueues')
+7.2.42. Helpdesk - Request Tracking ('rtqueues')
 
    id - serial number
    name - queue name
@@ -5811,7 +5828,7 @@ Chapter 7. For curious
    description - main description for the queue
      __________________________________________________________________
 
-7.2.42. Helpdesk - Request Tracking - continued... ('rttickets')
+7.2.43. Helpdesk - Request Tracking - continued... ('rttickets')
 
    id - serial number
    queueid - queue serial number
@@ -5825,7 +5842,7 @@ Chapter 7. For curious
    createtime - timestamp of report
      __________________________________________________________________
 
-7.2.43. Helpdesk - Request Tracking - continued... ('rtmessages')
+7.2.44. Helpdesk - Request Tracking - continued... ('rtmessages')
 
    id - serial number
    ticketid - ticket serial number
@@ -5841,14 +5858,14 @@ Chapter 7. For curious
    createtime - date of creation/send/delivery
      __________________________________________________________________
 
-7.2.44. Helpdesk - Request Tracking - continued... ('rtattachments')
+7.2.45. Helpdesk - Request Tracking - continued... ('rtattachments')
 
    messageid - message serial number
    filename - name of file attachment
    contenttype - type of file
      __________________________________________________________________
 
-7.2.45. Helpdesk - Request Tracking - continued... ('rtnotes')
+7.2.46. Helpdesk - Request Tracking - continued... ('rtnotes')
 
    id - serial number
    ticketid - ticket serial number
@@ -5857,7 +5874,7 @@ Chapter 7. For curious
    createtime - date of creation
      __________________________________________________________________
 
-7.2.46. Helpdesk - Request Tracking - continued... ('rtrights')
+7.2.47. Helpdesk - Request Tracking - continued... ('rtrights')
 
    id - serial number
    queueid - queue serial number
@@ -5865,7 +5882,7 @@ Chapter 7. For curious
    rights - permissions (1-read, 2-write)
      __________________________________________________________________
 
-7.2.47. LMS-UI Online Configuration ('uiconfig')
+7.2.48. LMS-UI Online Configuration ('uiconfig')
 
    id - serial number
    section - config section name
@@ -5875,7 +5892,7 @@ Chapter 7. For curious
    disabled - is option disabled? (0-active, 1-disabled/default)
      __________________________________________________________________
 
-7.2.48. Timetable - events ('events')
+7.2.49. Timetable - events ('events')
 
    id - identifier
    title - title
@@ -5890,13 +5907,13 @@ Chapter 7. For curious
    closed - is event closed? (1-yes/0-no)
      __________________________________________________________________
 
-7.2.49. Timetable - assignments ('eventassignments')
+7.2.50. Timetable - assignments ('eventassignments')
 
    eventid - event identifier
    userid - user identifier
      __________________________________________________________________
 
-7.2.50. Sessions ('sessions')
+7.2.51. Sessions ('sessions')
 
    id - session identifier
    ctime - create time
@@ -5906,7 +5923,7 @@ Chapter 7. For curious
    content - data
      __________________________________________________________________
 
-7.2.51. Hosts ('hosts')
+7.2.52. Hosts ('hosts')
 
    id - identifier
    name - host name
@@ -5915,7 +5932,7 @@ Chapter 7. For curious
    reload - reload order
      __________________________________________________________________
 
-7.2.52. Daemon configuration - instances ('daemoninstances')
+7.2.53. Daemon configuration - instances ('daemoninstances')
 
    id - identifier
    name - instance name
@@ -5927,7 +5944,7 @@ Chapter 7. For curious
    disabled - status (enabled/disabled)
      __________________________________________________________________
 
-7.2.53. Daemon configuration - options ('daemonconfig')
+7.2.54. Daemon configuration - options ('daemonconfig')
 
    id - identifier
    instanceid - instance identifier
@@ -5937,27 +5954,27 @@ Chapter 7. For curious
    disabled - status (enabled/disabled)
      __________________________________________________________________
 
-7.2.54. States ('states')
+7.2.55. States ('states')
 
    id - identifier
    name - state name
    description - additional information
      __________________________________________________________________
 
-7.2.55. Zip codes ('zipcodes')
+7.2.56. Zip codes ('zipcodes')
 
    id - identifier
    zip - zip code
    stateid - state identifier
      __________________________________________________________________
 
-7.2.56. Countries ('countries')
+7.2.57. Countries ('countries')
 
    id - identifier
    name - country name
      __________________________________________________________________
 
-7.2.57. Companies/Divisions ('divisions')
+7.2.58. Companies/Divisions ('divisions')
 
    id - identifier
    shortname - division short name
@@ -5975,9 +5992,11 @@ Chapter 7. For curious
    inv_footer - invoice footer
    inv_author - invoice default author
    inv_cplace - invoice creation place
+   inv_paytime - invoice deadline
+   inv_paytype - invoice type of payment
      __________________________________________________________________
 
-7.2.58. Messages - list ('messages')
+7.2.59. Messages - list ('messages')
 
    id - serial number
    subject - message subject
@@ -5988,7 +6007,7 @@ Chapter 7. For curious
    sender - e-mail 'From' header
      __________________________________________________________________
 
-7.2.59. Messages - items ('messageitems')
+7.2.60. Messages - items ('messageitems')
 
    id - serial number
    messageid - message identifier
@@ -5999,7 +6018,7 @@ Chapter 7. For curious
    error - error message
      __________________________________________________________________
 
-7.2.60. Database information ('dbinfo')
+7.2.61. Database information ('dbinfo')
 
    keytype - type
    keyvalue - value
