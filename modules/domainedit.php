@@ -80,6 +80,8 @@ if(isset($_POST['domain']))
 
 	if($domain['ownerid'] && $domain['ownerid'] != $oldowner)
         {
+                $limits = $LMS->GetHostingLimits($domain['ownerid']);
+        
 		if($limits['domain_limit'] !== NULL)
                 {
 			if($limits['domain_limit'] > 0)
