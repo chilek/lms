@@ -1,0 +1,22 @@
+
+CFLAGS += `net-snmp-config --cflags`
+LDFLAGS += `net-snmp-config --ldflags`
+LIBS += `net-snmp-config --libs`
+
+SOURCES = ewx-stm-channels.c
+OBJECTS = ${SOURCES:.c=.o}
+
+OUT = ewx-stm-channels.so
+
+all: $(OUT)
+
+$(OUT): ${OBJECTS}
+	gcc -shared $(OBJECTS) -o $(OUT) $(LDFLAGS) $(LIBS)
+	rm -rf $(OBJECTS)
+
+clean:
+	rm -rf $(OUT) $(OBJECTS)
+
+install:
+	install -c -m 755 $(OUT) $(MODULESDIR)
+	strip $(MODULESDIR)/$(OUT)

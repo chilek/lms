@@ -1738,8 +1738,100 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="DOMAINS"
+>7.2.35. Domains ('domains')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>name - domain name</TD
+></TR
+><TR
+><TD
+>description - comments</TD
+></TR
+><TR
+><TD
+>type - DNS type ('MASTER', 'SLAVE', 'NATIVE')</TD
+></TR
+><TR
+><TD
+>master - master DNS server</TD
+></TR
+><TR
+><TD
+>account - email address of DNS administrator</TD
+></TR
+><TR
+><TD
+>last_check - timestamp</TD
+></TR
+><TR
+><TD
+>notified_serial - timestamp</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="RECORDS"
+>7.2.36. DNS Records ('records')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>domain_id - domain serial number</TD
+></TR
+><TR
+><TD
+>name - name</TD
+></TR
+><TR
+><TD
+>type - record type (MX, SOA, A, AAAA, etc.)</TD
+></TR
+><TR
+><TD
+>content - data</TD
+></TR
+><TR
+><TD
+>ttl - TTL</TD
+></TR
+><TR
+><TD
+>prio - priority</TD
+></TR
+><TR
+><TD
+>change_date - last change timestamp</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="PASSWD"
->7.2.35. Accounts ('passwd')</A
+>7.2.37. Accounts ('passwd')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1832,34 +1924,8 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="DOMAINS"
->7.2.36. Domains ('domains')</A
-></H2
-><TABLE
-BORDER="0"
-><TBODY
-><TR
-><TD
->id - serial number</TD
-></TR
-><TR
-><TD
->name - domain name</TD
-></TR
-><TR
-><TD
->description - comments</TD
-></TR
-></TBODY
-></TABLE
-></DIV
-><DIV
-CLASS="SECT2"
-><H2
-CLASS="SECT2"
-><A
 NAME="ALIASES"
->7.2.37. Aliases ('aliases')</A
+>7.2.38. Aliases ('aliases')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1885,7 +1951,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ALIASASSIGNMENTS"
->7.2.38. Alias-to-account assignments ('aliasassignments')</A
+>7.2.39. Alias-to-account assignments ('aliasassignments')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1915,7 +1981,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="VOIPACCOUNTS"
->7.2.39. VoIP Accounts ('voipaccounts')</A
+>7.2.40. VoIP Accounts ('voipaccounts')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1965,7 +2031,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="STATS"
->7.2.40. Bandwidth consumption statistics ('stats')</A
+>7.2.41. Bandwidth consumption statistics ('stats')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1995,7 +2061,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTQUEUES"
->7.2.41. Helpdesk - Request Tracking ('rtqueues')</A
+>7.2.42. Helpdesk - Request Tracking ('rtqueues')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2025,7 +2091,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTTICKETS"
->7.2.42. Helpdesk - Request Tracking - continued... ('rttickets')</A
+>7.2.43. Helpdesk - Request Tracking - continued... ('rttickets')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2079,7 +2145,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTMESSAGES"
->7.2.43. Helpdesk - Request Tracking - continued... ('rtmessages')</A
+>7.2.44. Helpdesk - Request Tracking - continued... ('rtmessages')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2141,7 +2207,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTATTACHMENTS"
->7.2.44. Helpdesk - Request Tracking - continued... ('rtattachments')</A
+>7.2.45. Helpdesk - Request Tracking - continued... ('rtattachments')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2167,7 +2233,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTNOTES"
->7.2.45. Helpdesk - Request Tracking - continued... ('rtnotes')</A
+>7.2.46. Helpdesk - Request Tracking - continued... ('rtnotes')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2201,7 +2267,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTRIGHTS"
->7.2.46. Helpdesk - Request Tracking - continued... ('rtrights')</A
+>7.2.47. Helpdesk - Request Tracking - continued... ('rtrights')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2231,7 +2297,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="UICONFIG"
->7.2.47. LMS-UI Online Configuration ('uiconfig')</A
+>7.2.48. LMS-UI Online Configuration ('uiconfig')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2269,7 +2335,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="EVENTS"
->7.2.48. Timetable - events ('events')</A
+>7.2.49. Timetable - events ('events')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2327,7 +2393,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="EVENTASSIGNMENTS"
->7.2.49. Timetable - assignments ('eventassignments')</A
+>7.2.50. Timetable - assignments ('eventassignments')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2349,7 +2415,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="SESSIONS"
->7.2.50. Sessions ('sessions')</A
+>7.2.51. Sessions ('sessions')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2387,7 +2453,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="HOSTS"
->7.2.51. Hosts ('hosts')</A
+>7.2.52. Hosts ('hosts')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2421,7 +2487,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMONINSTANCES"
->7.2.52. Daemon configuration - instances ('daemoninstances')</A
+>7.2.53. Daemon configuration - instances ('daemoninstances')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2467,7 +2533,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMONCONFIG"
->7.2.53. Daemon configuration - options ('daemonconfig')</A
+>7.2.54. Daemon configuration - options ('daemonconfig')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2505,7 +2571,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="STATES"
->7.2.54. States ('states')</A
+>7.2.55. States ('states')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2531,7 +2597,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ZIPCODES"
->7.2.55. Zip codes ('zipcodes')</A
+>7.2.56. Zip codes ('zipcodes')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2557,7 +2623,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="COUNTRIES"
->7.2.56. Countries ('countries')</A
+>7.2.57. Countries ('countries')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2579,7 +2645,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DIVISIONS"
->7.2.57. Companies/Divisions ('divisions')</A
+>7.2.58. Companies/Divisions ('divisions')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2648,6 +2714,14 @@ BORDER="0"
 ><TD
 >inv_cplace - invoice creation place</TD
 ></TR
+><TR
+><TD
+>inv_paytime - invoice deadline</TD
+></TR
+><TR
+><TD
+>inv_paytype - invoice type of payment</TD
+></TR
 ></TBODY
 ></TABLE
 ></DIV
@@ -2657,7 +2731,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MESSAGES"
->7.2.58. Messages - list ('messages')</A
+>7.2.59. Messages - list ('messages')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2699,7 +2773,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MESSAGESITEMS"
->7.2.59. Messages - items ('messageitems')</A
+>7.2.60. Messages - items ('messageitems')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2741,7 +2815,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DBINFO"
->7.2.60. Database information ('dbinfo')</A
+>7.2.61. Database information ('dbinfo')</A
 ></H2
 ><TABLE
 BORDER="0"

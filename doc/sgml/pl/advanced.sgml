@@ -537,6 +537,31 @@
 			<member>name - nazwa/opis kontaktu</member>
 		</simplelist>
 	</sect2>
+	<sect2 id="domains">
+		<title>Domeny ('domains')</title>
+		<simplelist>
+			<member>id - identyfikator rekordu</member>
+			<member>name - nazwa domeny</member>
+			<member>type - typ DNS ('MASTER', 'SLAVE', 'NATIVE')</member>
+			<member>master - adres g³ównego serwera DNS</member>
+			<member>account - adres e-mail administratora DNS</member>
+			<member>last_check - znacznik czasu</member>
+			<member>notified_serial - znacznik czasu</member>
+		</simplelist>
+	</sect2>
+	<sect2 id="records">
+		<title>Rekordy DNS ('records')</title>
+		<simplelist>
+			<member>id - identyfikator rekordu</member>
+			<member>domain_id - identyfikator domeny</member>
+			<member>name - nazwa</member>
+			<member>type - typ rekordu (MX, SOA, A, AAAA, itd.)</member>
+			<member>content - dane</member>
+			<member>ttl - TTL</member>
+			<member>prio - priorytet</member>
+			<member>change_date - znacznik czasu ostatniej zmiany</member>
+		</simplelist>
+	</sect2>
           <sect2 id="passwd">
                <title>Konta ('passwd')</title>
                <simplelist>
@@ -560,14 +585,6 @@
 		    <member>mail_forward - adres email przekierowania</member>
 		    <member>mail_bcc - adres email kopii BCC</member>
 		    <member>description - dodatkowe informacje</member>
-               </simplelist>
-          </sect2>
-          <sect2 id="domains">
-               <title>Domeny ('domains')</title>
-               <simplelist>
-                    <member>id - identyfikator rekordu</member>
-                    <member>name - nazwa domeny</member>
-                    <member>description - opis</member>
                </simplelist>
           </sect2>
           <sect2 id="aliases">
@@ -799,6 +816,8 @@
 			<member>inv_footer - stopka faktury</member>
 			<member>inv_author - wystawca faktury</member>
 			<member>inv_cplace - miejsce wystawienia faktury</member>
+			<member>inv_paytime - termin p³atno¶ci faktury</member>
+			<member>inv_paytype - sposób p³atno¶ci faktury</member>
 		</simplelist>
 	</sect2>
 	<sect2 id="messages">

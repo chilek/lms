@@ -4364,26 +4364,28 @@ Rozdział 6. LMS Daemon
 6.2.1. Lista dostępnych modułów
 
    Tabela 6-1. Lista modułów demona lmsd
-    Nazwa                               Opis
-    system                   Wywoływanie poleceń powłoki
-    parser             Parser uniwersalnych skryptów T-Script
-     dhcp                    Konfiguracja serwera dhcpd
-    cutoff         Odłączanie klientów z zaległościami w opłatach
-     dns                      Konfiguracja serwera dns
-    ethers                   Tworzenie pliku /etc/ethers
-   hostfile       Moduł uniwersalny (np. tworzenie reguł iptables)
-    notify  Powiadamianie klientów o zaległościach w opłatach pocztą
-                                    elektroniczną
-   ggnotify  Powiadamianie klientów o zaległościach w opłatach przez
-                                      gadu-gadu
-   payments                Naliczanie opłat abonamentowych
-    oident                       Konfiguracja oident
-      tc                         Tworzenie reguł TC
-    tc-new      Tworzenie reguł TC (powiązania komputerów z taryfami)
-   traffic                 Statystyki wykorzystania łącza
-    pinger                   Badanie aktywności klientów
-    ewx-pt            Konfiguracja EtherWerX PPPoE Terminatora
-   ewx-stm       Konfiguracja EtherWerX Standalone Traffic Managera
+        Nazwa                                   Opis
+        system                       Wywoływanie poleceń powłoki
+        parser                 Parser uniwersalnych skryptów T-Script
+         dhcp                        Konfiguracja serwera dhcpd
+        cutoff             Odłączanie klientów z zaległościami w opłatach
+         dns                          Konfiguracja serwera dns
+        ethers                       Tworzenie pliku /etc/ethers
+       hostfile           Moduł uniwersalny (np. tworzenie reguł iptables)
+        notify      Powiadamianie klientów o zaległościach w opłatach pocztą
+                                            elektroniczną
+       ggnotify      Powiadamianie klientów o zaległościach w opłatach przez
+                                              gadu-gadu
+       payments                    Naliczanie opłat abonamentowych
+        oident                           Konfiguracja oident
+          tc                             Tworzenie reguł TC
+        tc-new          Tworzenie reguł TC (powiązania komputerów z taryfami)
+       traffic                     Statystyki wykorzystania łącza
+        pinger                       Badanie aktywności klientów
+        ewx-pt                Konfiguracja EtherWerX PPPoE Terminatora
+       ewx-stm           Konfiguracja EtherWerX Standalone Traffic Managera
+   ewx-stm-channels    Konfiguracja EtherWerX Standalone Traffic Managera (ze
+                                    rozszerzoną obsługą kanałów)
      __________________________________________________________________
 
 6.2.2. System
@@ -5587,6 +5589,37 @@ $IPT -t filter -I FORWARD -s %i -m limit --limit %plimit/s -j ACCEPT
        Przykład: night_hours = "24-6"
      __________________________________________________________________
 
+6.2.19. Ewx-stm-channels
+
+6.2.19.1. Wstęp
+
+   Moduł ewx-stm-channels to odpowiednik modułu ewx-stm (służącego do
+   zarządzania urządzeniem Standalone Traffic Manager marki EtherWerX)
+   zawierający rozbudowaną obsługę kanałów.
+
+   Różnica w pracy tych modułów jest następująca. Moduł ewx-stm tworzy
+   kanały automatycznie w zależności od ustawień zobowiązań klientów i ich
+   przypisania do komputerów. Nie obsługuje kanałów zdefiniowanych w
+   LMS-UI. Z kolei moduł ewx-stm-channels pracuje wyłącznie z kanałami
+   zdefiniowanymi w LMS-UI. Komputery powinny być przypisane do urządzeń
+   sieciowych, a te z kolei do kanałów o zdefiniowanych parametrach.
+   Komputery nie przypisane do żadnego kanału są pomijane. Można to
+   zmienić definiując parametry domyślnego kanału w konfiguracji modułu,
+   do którego trafią wszystkie komputery bez powiązania.
+     __________________________________________________________________
+
+6.2.19.2. Konfiguracja
+
+   Moduł ewx-stm-channels oprócz opcji dostępnych dla modułu ewx-stm
+   udostępnia następujące opcje:
+     * default_upceil
+       Wartość upceil dla domyślnego kanału. Domyślnie: 0.
+       Przykład: default_upceil = 10000
+     * default_downceil
+       Wartość downceil dla domyślnego kanału. Domyślnie: 0
+       Przykład: default_downceil = 20000
+     __________________________________________________________________
+
 6.3. T-Script
 
 6.3.1. Wstęp
@@ -6608,7 +6641,30 @@ Rozdział 7. Dla dociekliwych
    name - nazwa/opis kontaktu
      __________________________________________________________________
 
-7.2.35. Konta ('passwd')
+7.2.35. Domeny ('domains')
+
+   id - identyfikator rekordu
+   name - nazwa domeny
+   type - typ DNS ('MASTER', 'SLAVE', 'NATIVE')
+   master - adres głównego serwera DNS
+   account - adres e-mail administratora DNS
+   last_check - znacznik czasu
+   notified_serial - znacznik czasu
+     __________________________________________________________________
+
+7.2.36. Rekordy DNS ('records')
+
+   id - identyfikator rekordu
+   domain_id - identyfikator domeny
+   name - nazwa
+   type - typ rekordu (MX, SOA, A, AAAA, itd.)
+   content - dane
+   ttl - TTL
+   prio - priorytet
+   change_date - znacznik czasu ostatniej zmiany
+     __________________________________________________________________
+
+7.2.37. Konta ('passwd')
 
    id - identyfikator rekordu
    ownerid - identyfikator klienta (0 - konto "systemowe")
@@ -6632,21 +6688,14 @@ Rozdział 7. Dla dociekliwych
    description - dodatkowe informacje
      __________________________________________________________________
 
-7.2.36. Domeny ('domains')
-
-   id - identyfikator rekordu
-   name - nazwa domeny
-   description - opis
-     __________________________________________________________________
-
-7.2.37. Aliasy ('aliases')
+7.2.38. Aliasy ('aliases')
 
    id - identyfikator rekordu
    login - nazwa konta (bez domeny)
    domainid - identyfikator domeny
      __________________________________________________________________
 
-7.2.38. Powiązania aliasów z kontami ('aliasassignments')
+7.2.39. Powiązania aliasów z kontami ('aliasassignments')
 
    id - identyfikator rekordu
    aliasid - indentyfikator aliasu
@@ -6654,7 +6703,7 @@ Rozdział 7. Dla dociekliwych
    mail_forward - adres przekierowania
      __________________________________________________________________
 
-7.2.39. Konta VoIP ('voipaccounts')
+7.2.40. Konta VoIP ('voipaccounts')
 
    id - identyfikator rekordu
    ownerid - identyfikator właściciela (klienta)
@@ -6667,7 +6716,7 @@ Rozdział 7. Dla dociekliwych
    modid - identyfikator użytkownika
      __________________________________________________________________
 
-7.2.40. Statystyki wykorzystania łącza ('stats')
+7.2.41. Statystyki wykorzystania łącza ('stats')
 
    nodeid - numer komputera
    dt - znacznik czasu
@@ -6675,7 +6724,7 @@ Rozdział 7. Dla dociekliwych
    download - ilość danych odebranych, w bajtach
      __________________________________________________________________
 
-7.2.41. Helpdesk - kolejki ('rtqueues')
+7.2.42. Helpdesk - kolejki ('rtqueues')
 
    id - identyfikator
    name - nazwa
@@ -6683,7 +6732,7 @@ Rozdział 7. Dla dociekliwych
    description - opis dodatkowy
      __________________________________________________________________
 
-7.2.42. Helpdesk - zgłoszenia ('rttickets')
+7.2.43. Helpdesk - zgłoszenia ('rttickets')
 
    id - identyfikator
    queueid - identyfikator kolejki
@@ -6697,7 +6746,7 @@ Rozdział 7. Dla dociekliwych
    createtime - data zgłoszenia
      __________________________________________________________________
 
-7.2.43. Helpdesk - wiadomości ('rtmessages')
+7.2.44. Helpdesk - wiadomości ('rtmessages')
 
    id - identyfikator
    ticketid - identyfikator zgłoszenia
@@ -6713,14 +6762,14 @@ Rozdział 7. Dla dociekliwych
    createtime - data utworzenia/wysłania/odebrania
      __________________________________________________________________
 
-7.2.44. Helpdesk - załączniki ('rtattachments')
+7.2.45. Helpdesk - załączniki ('rtattachments')
 
    messageid - identyfikator wiadomości
    filename - nazwa pliku
    contenttype - typ pliku
      __________________________________________________________________
 
-7.2.45. Helpdesk - notatki ('rtnotes')
+7.2.46. Helpdesk - notatki ('rtnotes')
 
    id - identyfikator
    ticketid - identyfikator zgłoszenia
@@ -6729,7 +6778,7 @@ Rozdział 7. Dla dociekliwych
    createtime - data utworzenia
      __________________________________________________________________
 
-7.2.46. Helpdesk - uprawnienia ('rtrights')
+7.2.47. Helpdesk - uprawnienia ('rtrights')
 
    id - identyfikator
    queueid - identyfikator kolejki
@@ -6737,7 +6786,7 @@ Rozdział 7. Dla dociekliwych
    rights - (1-odczyt, 2-zapis, 3-powiadomienia)
      __________________________________________________________________
 
-7.2.47. Konfiguracja LMS-UI ('uiconfig')
+7.2.48. Konfiguracja LMS-UI ('uiconfig')
 
    id - identyfikator
    section - nazwa sekcji
@@ -6747,7 +6796,7 @@ Rozdział 7. Dla dociekliwych
    disabled - wyłączenie opcji (0-wł., 1-wył.)
      __________________________________________________________________
 
-7.2.48. Terminarz - zdarzenia ('events')
+7.2.49. Terminarz - zdarzenia ('events')
 
    id - identyfikator
    title - tytuł
@@ -6762,13 +6811,13 @@ Rozdział 7. Dla dociekliwych
    closed - status zamknięcia
      __________________________________________________________________
 
-7.2.49. Terminarz - powiązania ('eventassignments')
+7.2.50. Terminarz - powiązania ('eventassignments')
 
    eventid - identyfikator zdarzenia
    userid - identyfikator użytkownika
      __________________________________________________________________
 
-7.2.50. Hosty ('hosts')
+7.2.51. Hosty ('hosts')
 
    id - identyfikator
    name - nazwa hosta
@@ -6777,7 +6826,7 @@ Rozdział 7. Dla dociekliwych
    reload - żądanie przeładowania
      __________________________________________________________________
 
-7.2.51. Konfiguracja demona - instancje ('daemoninstances')
+7.2.52. Konfiguracja demona - instancje ('daemoninstances')
 
    id - identyfikator
    name - nazwa instancji
@@ -6789,7 +6838,7 @@ Rozdział 7. Dla dociekliwych
    disabled - status (włączona/wyłączona)
      __________________________________________________________________
 
-7.2.52. Konfiguracja demona - opcje ('daemonconfig')
+7.2.53. Konfiguracja demona - opcje ('daemonconfig')
 
    id - identyfikator
    instanceid - identyfikator instancji
@@ -6799,7 +6848,7 @@ Rozdział 7. Dla dociekliwych
    disabled - status (włączona/wyłączona)
      __________________________________________________________________
 
-7.2.53. Sesje ('sessions')
+7.2.54. Sesje ('sessions')
 
    id - identyfikator sesji
    ctime - czas utworzenia
@@ -6809,27 +6858,27 @@ Rozdział 7. Dla dociekliwych
    content - dane
      __________________________________________________________________
 
-7.2.54. Województwa ('states')
+7.2.55. Województwa ('states')
 
    id - identyfikator
    name - nazwa województwa
    description - informacje dodatkowe
      __________________________________________________________________
 
-7.2.55. Kody pocztowe ('zipcodes')
+7.2.56. Kody pocztowe ('zipcodes')
 
    id - identyfikator
    zip - kod pocztowy
    stateid - identyfikator województwa
      __________________________________________________________________
 
-7.2.56. Kraje ('countries')
+7.2.57. Kraje ('countries')
 
    id - identyfikator
    name - nazwa kraju
      __________________________________________________________________
 
-7.2.57. Firmy/Oddziały ('divisions')
+7.2.58. Firmy/Oddziały ('divisions')
 
    id - identyfikator
    shortname - nazwa skrócona firmy
@@ -6847,9 +6896,11 @@ Rozdział 7. Dla dociekliwych
    inv_footer - stopka faktury
    inv_author - wystawca faktury
    inv_cplace - miejsce wystawienia faktury
+   inv_paytime - termin płatności faktury
+   inv_paytype - sposób płatności faktury
      __________________________________________________________________
 
-7.2.58. Wiadomości - lista ('messages')
+7.2.59. Wiadomości - lista ('messages')
 
    id - identyfikator
    subject - temat wiadomości
@@ -6860,7 +6911,7 @@ Rozdział 7. Dla dociekliwych
    sender - nagłówek 'From' wiadomości e-mail
      __________________________________________________________________
 
-7.2.59. Wiadomości - szczegóły ('messageitems')
+7.2.60. Wiadomości - szczegóły ('messageitems')
 
    id - identyfikator
    messageid - identyfikator wiadomości
@@ -6871,7 +6922,7 @@ Rozdział 7. Dla dociekliwych
    error - komunikat błędu
      __________________________________________________________________
 
-7.2.60. Informacje o bazie danych ('dbinfo')
+7.2.61. Informacje o bazie danych ('dbinfo')
 
    keytype - typ
    keyvalue - wartość
