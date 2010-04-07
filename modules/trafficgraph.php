@@ -287,9 +287,12 @@ function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=
 	}
 
 	// title
-	if($nodeid)
-		$title = $node['name'].' - '.$node['ip'];
-	else
+	if ($nodeid) {
+		if ($node)
+			$title = $node['name'].' - '.$node['ip'];
+		else
+			$title = iconv('UTF-8','ISO-8859-2//TRANSLIT', trans('unknown')).' (ID: '.$nodeid.')';
+	} else
 		$title =  iconv('UTF-8','ISO-8859-2//TRANSLIT', trans('Network Statistics'));
 		
 	$center = ceil((imagesx($img) - (imagefontwidth(3) * strlen($title)))/2); 
