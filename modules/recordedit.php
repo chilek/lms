@@ -22,6 +22,8 @@
  *
  */
 
+include(LIB_DIR.'/dns.php');
+
 $id = $_GET['id']*1;
 
 $domain = $DB->GetRow('SELECT domains.name, domains.id
@@ -30,7 +32,6 @@ $domain = $DB->GetRow('SELECT domains.name, domains.id
 
 if (isset($_POST['record']))
 {
-	include('domainf.php');
 	$record = $_POST['record'];
 	$record['id'] = $id;
 	$arpa_record_type_allowed = array('PTR','SOA','NS','TXT','CNAME','MX','SPF','NAPTR','URL','MBOXFW','CURL','SSHFP');
@@ -48,8 +49,7 @@ if (isset($_POST['record']))
 
 		if (in_array($record['type'], array('PTR','NS')))
 		{
-			$errorcontent = trans(is_not_valid_hostname_fqdn($record['content'],0,1));
-			if ($errorcontent)
+			if ($errorcontent = check_hostname_fqdn($record['content'], false, true))
 				$error['content'] = $errorcontent;
 		}
 	}
@@ -63,7 +63,7 @@ if (isset($_POST['record']))
 		$error['content'] = trans('Wrong Content');
 
 	if (!empty($record['name']))
-		if ($errorname = trans(is_not_valid_hostname_fqdn($record['name'],1,0)))
+		if ($errorname = check_hostname_fqdn($record['name'], true, false))
 			$error['name'] = $errorname;
 
 	if (!$error)
