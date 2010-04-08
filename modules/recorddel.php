@@ -29,7 +29,8 @@ if($id)
 	$domainid = $DB->GetRow('SELECT domain_id FROM records WHERE records.id = ?', array($id));
 	$DB->Execute('DELETE FROM records WHERE id = ?', array($id));
 
-	include('domainf.php');
+	include(LIB_DIR.'/dns.php');
+
 	update_soa_serial($domainid['domain_id']);
 }
 

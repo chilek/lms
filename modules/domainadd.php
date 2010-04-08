@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+include(LIB_DIR.'/dns.php');
+
 function GetDomainIdByName($name)
 {
 	global $DB;
@@ -52,13 +54,11 @@ if(isset($_POST['domainadd']))
             		$error['ipmailserwer'] = trans('IP address of mailserver is required!');
         }
 
-	include('domainf.php');
-
-	$errorname = trans(is_not_valid_hostname_fqdn($domainadd['name'],0,1));
-        if ($errorname)
+	if ($domainadd['name'] == '')
+                $error['name'] = trans('Domain name is required!');
+	else if ($errorname = check_hostname_fqdn($domainadd['name'], false, true))
     		$error['name'] = $errorname;
-
-	if (GetDomainIdByName($domainadd['name']))
+	else if (GetDomainIdByName($domainadd['name']))
 		$error['name'] = trans('Domain with specified name exists!');
 	
 	if($domainadd['ownerid'])

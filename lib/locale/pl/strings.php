@@ -2334,5 +2334,12 @@ $_LANG['Remove this device from the channel'] = 'Usuń to urządzenie z kanału'
 $_LANG['Select channel (optional)'] = 'Wybierz kanał (opcjonalnie)';
 $_LANG['select device'] = 'wybierz urządzenie';
 $_LANG['Select device to associate with the channel'] = 'Wybierz urządzenie aby przypisać je do kanału';
+$_LANG['A hostname can not start or end with a dash!'] = 'Nazwa hosta nie może zaczynać lub kończyć się znakiem myślnika!';
+$_LANG['Given hostname has too many slashes!'] = 'Nazwa hosta nie może zawierać ukośników!';
+$_LANG['Given hostname or one of the labels is too short or too long!'] = 'Nazwa hosta lub jej element jest zbyt krótki!';
+$_LANG['Invalid hostname!'] = 'Błędna nazwa hosta!';
+$_LANG['The hostname is too long!'] = 'Nazwa hosta jest za długa!';
+$_LANG['You are using an invalid top level domain!'] = 'Użycie błędnej domeny najwyższego poziomu!';
+$_LANG['You have invalid characters in your hostname!'] = 'Nazwa hosta zawiera niedozwolone znaki!';
 
 ?>

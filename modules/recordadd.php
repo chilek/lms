@@ -22,9 +22,10 @@
  *
  */
 
+include(LIB_DIR.'/dns.php');
+
 if (isset($_POST['record']))
 {
-	include('domainf.php');
 	$record = $_POST['record'];
 	$arpa_record_type_allowed = array('PTR','SOA','NS','TXT','CNAME','MX','SPF','NAPTR','URL','MBOXFW','CURL','SSHFP');
 
@@ -43,8 +44,7 @@ if (isset($_POST['record']))
 
 		if (in_array($record['type'],array('PTR','NS')))
 		{
-			$errorcontent = trans(is_not_valid_hostname_fqdn($record['content'],0,1));
-			if ($errorcontent)
+			if ($errorcontent = check_hostname_fqdn($record['content'], false, true))
 				$error['content'] = $errorcontent;
 		}
 
@@ -59,13 +59,12 @@ if (isset($_POST['record']))
 		$error['content'] = trans('Wrong Content');
 
 	if (!empty($record['name']))
-		if ($errorname = trans(is_not_valid_hostname_fqdn($record['name'], 1, 0)))
+		if ($errorname = check_hostname_fqdn($record['name'], true, false))
 			$error['name'] = $errorname;
 
 	if ($record['type'] == 'SOA')
 	{
-		$soa=$DB->GetRow('SELECT type FROM records WHERE type=\'SOA\' AND domain_id=?', array($record['domain_id']));
-		if ($soa['type'] == 'SOA')
+		if ($DB->GetOne('SELECT 1 FROM records WHERE type=\'SOA\' AND domain_id=?', array($record['domain_id'])))
 			$error['type'] = trans('SOA record already exists');
 	}
 
