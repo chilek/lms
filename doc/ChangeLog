@@ -56,6 +56,7 @@ version ? (????-??-??)
   - fixed encoding of mail messages sent by perl scripts (alec)
   - BTS#0000825: fixed tariff limits checking in domain edition (alec)
   - lmsd/ewx-stm-channels: EtherWerX STM manager with extended channels support (alec)
+  - Extended DNS records add/edit form (alec)
   
 version 1.11.9 Moloc (2009-10-28):
  
