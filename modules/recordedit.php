@@ -26,51 +26,31 @@ include(LIB_DIR.'/dns.php');
 
 $id = $_GET['id']*1;
 
-$domain = $DB->GetRow('SELECT domains.name, domains.id
-	FROM domains, records
-	WHERE records.domain_id = domains.id and records.id = ?', array($id));
+$record = $DB->GetRow('SELECT d.name AS domainname, r.*
+	FROM domains d, records r
+	WHERE r.domain_id = d.id AND r.id = ?', array($id));
 
 if (isset($_POST['record']))
 {
-	$record = $_POST['record'];
-	$record['id'] = $id;
-	$arpa_record_type_allowed = array('PTR','SOA','NS','TXT','CNAME','MX','SPF','NAPTR','URL','MBOXFW','CURL','SSHFP');
-
-	$tlds = explode(".",$domain['name']);
-
-	//domena in-add.arpa
-	if ($tlds[count($tlds)-2].$tlds[count($tlds)-1] == 'in-addrarpa')
-	{
-		if (!is_numeric($record['name']) && $record['name'] != '')
-			$error['name'] = trans('Wrong record name');
-
-		if (!in_array($record['type'], $arpa_record_type_allowed))
-			$error['type'] = trans('Wrong record type');
-
-		if (in_array($record['type'], array('PTR','NS')))
-		{
-			if ($errorcontent = check_hostname_fqdn($record['content'], false, true))
-				$error['content'] = $errorcontent;
-		}
-	}
-	else if ($record['type'] == 'PTR')
-		$error['type'] = trans('You can\'t add PTR record to this domain');
+	$rec = $_POST['record'];
+	
+	foreach ($rec as $idx => $val)
+		$rec[$idx] = trim(strip_tags($val));
+	
+	$record = array_merge($record, $rec);
 
 	if ($record['ttl']*1 <= 0 || !is_numeric($record['ttl']))
 		$error['ttl'] = trans('Wrong TTL');
 
-	if (empty($record['content']))
-		$error['content'] = trans('Wrong Content');
-
-	if (!empty($record['name']))
-		if ($errorname = check_hostname_fqdn($record['name'], true, false))
-			$error['name'] = $errorname;
+	// call validate... after all checks
+	if (!$error)
+		validate_dns_record($record, $error);
 
 	if (!$error)
 	{
-		if (trim($record['name']) !='')
+		if (!empty($record['name']))
 			$record['name'] = trim($record['name'],'.').'.';
-		$record['name'] .= $domain['name'];
+		$record['name'] .= $record['domainname'];
 
 		$DB->Execute('UPDATE records SET name = ?, type = ?, content = ?, ttl = ?, prio = ?
 			WHERE id = ?',
@@ -84,13 +64,14 @@ if (isset($_POST['record']))
 
 		update_soa_serial($domain['id']);
 
-		$SESSION->redirect('?m=recordlist');
+		$SESSION->redirect('?m=recordlist&d='.$record['domain_id']);
 	}
+	
+	$SMARTY->assign('error', $error);
 }
 else
 {
-	$record = $DB->GetRow('SELECT * FROM records WHERE id = ?', array($id));
-	$record['name'] = substr($record['name'],0,-(strlen($domain['name']) + 1));
+	parse_dns_record($record);
 }
 
 $layout['pagetitle'] = trans('DNS Record Edit');
@@ -99,10 +80,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $record['content'] = htmlentities($record['content']);
 
-$SMARTY->assign('error', $error);
 $SMARTY->assign('record', $record);
-$SMARTY->assign('domain', $domain);
-
 $SMARTY->display('recordedit.html');
 
 ?>

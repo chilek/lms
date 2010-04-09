@@ -24,55 +24,37 @@
 
 include(LIB_DIR.'/dns.php');
 
+$d = $_GET['d']*1;
+
+$record = $DB->GetRow('SELECT name AS domainname, id AS domain_id FROM domains WHERE id = ?', array($d));
+
 if (isset($_POST['record']))
 {
-	$record = $_POST['record'];
-	$arpa_record_type_allowed = array('PTR','SOA','NS','TXT','CNAME','MX','SPF','NAPTR','URL','MBOXFW','CURL','SSHFP');
+	$rec = $_POST['record'];
 
-	$domain = $DB->GetRow('SELECT name FROM domains WHERE id = ?', array($record['domain_id']));
-
-	$tlds = explode(".", $domain['name']);
-
-	//domena in-add.arpa
-	if ($tlds[count($tlds)-2].$tlds[count($tlds)-1] == 'in-addrarpa')
-	{
-		if (!is_numeric($record['name']) && $record['name'] != '')
-			$error['name'] = trans('Wrong record name');
-
-		if (!in_array($record['type'], $arpa_record_type_allowed))
-			$error['type'] = trans('Wrong record type');
-
-		if (in_array($record['type'],array('PTR','NS')))
-		{
-			if ($errorcontent = check_hostname_fqdn($record['content'], false, true))
-				$error['content'] = $errorcontent;
-		}
-
-	}
-	else if ($record['type'] == 'PTR')
-		$error['type'] = trans('You can\'t add PTR record to this domain');
-
-	if ($record['ttl']*1 <= 0 || !is_numeric($record['ttl']))
-		$error['ttl'] = trans('Wrong TTL');
-
-	if (empty($record['content']))
-		$error['content'] = trans('Wrong Content');
-
-	if (!empty($record['name']))
-		if ($errorname = check_hostname_fqdn($record['name'], true, false))
-			$error['name'] = $errorname;
+	foreach ($rec as $idx => $val)
+                $rec[$idx] = trim(strip_tags($val));
+	
+	$record = array_merge($record, $rec);
 
 	if ($record['type'] == 'SOA')
 	{
 		if ($DB->GetOne('SELECT 1 FROM records WHERE type=\'SOA\' AND domain_id=?', array($record['domain_id'])))
 			$error['type'] = trans('SOA record already exists');
 	}
+	
+	if ($record['ttl']*1 <= 0 || !is_numeric($record['ttl']))
+		$error['ttl'] = trans('Wrong TTL');
+	
+	// call validate... after all checks
+	if (!$error)
+	        validate_dns_record($record, $error);
 
 	if (!$error)
 	{
-		if (trim($record['name']) != '')
-			$record['name'] = trim($record['name'],'.').'.';
-		$record['name'] .= $domain['name'];
+		if (!empty($record['name']))
+			$record['name'] = trim($record['name'], '.').'.';
+		$record['name'] .= $record['domainname'];
 
 		$DB->Execute('INSERT INTO records (name, type, content, ttl, prio, domain_id)
 			VALUES (?, ?, ?, ?, ?, ?)',
@@ -87,13 +69,13 @@ if (isset($_POST['record']))
 
 		update_soa_serial($record['domain_id']);
 
-		$SESSION->redirect('?m=recordlist');
+		$SESSION->redirect('?m=recordlist&d='.$record['domain_id']);
 	}
 }
 else
+{
 	$record['prio'] = 0;
-
-$d = $_GET['d']*1;
+}
 
 $layout['pagetitle'] = trans('New DNS Record');
 
@@ -105,10 +87,8 @@ if (empty($record['ttl']))
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$SMARTY->assign('domain_id', $d);
 $SMARTY->assign('record', $record);
 $SMARTY->assign('error', $error);
-$SMARTY->assign('domain', $domain ? $domain : $DB->GetRow('SELECT name FROM domains WHERE id = ?', array($d)));
-$SMARTY->display('recordadd.html');
+$SMARTY->display('recordedit.html');
 
 ?>

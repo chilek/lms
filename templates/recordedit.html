@@ -1,57 +1,223 @@
 {include file="header.html"}
 <H1>{$layout.pagetitle}</H1>
-<FORM name="recordedit" method="POST" action="?m=recordedit&id={$record.id}">
+<FORM name="record" method="POST" action="{if $layout.module == 'recordedit'}?m=recordedit&id={$record.id}{else}?m=recordadd&d={$record.domain_id}{/if}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE cellpadding="3" WIDTH="100%">
-	<TR class="dark"">
-    		<TD width="46%" class="fleftu" NOWRAP>{t}Host:{/t}</TD>
-    		<TD width="2%" class="fbt" NOWRAP>{t}TTL{/t}:</TD>
-    		<TD width="2%" class="fbt" NOWRAP>{t}Type{/t}:</TD>
-		<TD width="2%" class="fbt" NOWRAP>{t}Priority:{/t}</TD>
-    		<TD width="46%" class="frightu" NOWRAP>{t}Content{/t}:</TD>
-	</TR>
-	<TR class="light"> 
-		<TD class="fleftu" NOWRAP>
-			<input type="text" style="width:60%" value="{$record.name}" name="record[name]" {tip text="Enter record name" trigger="name"}> .{$domain.name}
+	<TR class="dark">
+                <TD width="1%" class="fleftu">
+	                <IMG src="img/dns.gif" alt="">
+	        </TD>
+	        <TD width="1%" class="fbt" nowrap>
+		        <B>{t}Type{/t}:</B>
 		</TD>
-		<TD class="fbt">
-			<input type="text" size="7" value="{$record.ttl}" name="record[ttl]" {tip text="Enter record TTL" trigger="ttl"}>
-		</TD>
-		<TD class="fbt">
-	    		<SELECT SIZE="1" NAME="record[type]" {tip text="Select record type" trigger="type"}>
-                    	    <OPTION VALUE="A" {if $record.type == A} SELECTED{/if}>A</OPTION>
-                    	    <OPTION VALUE="AAAA" {if $record.type == AAAA} SELECTED{/if}>AAAA</OPTION>
-                    	    <OPTION VALUE="CNAME" {if $record.type == CNAME} SELECTED{/if}>CNAME</OPTION>
-                    	    <OPTION VALUE="HINFO" {if $record.type == HINFO} SELECTED{/if}>HINFO</OPTION>
-                    	    <OPTION VALUE="MX" {if $record.type == MX} SELECTED{/if}>MX</OPTION>
-                    	    <OPTION VALUE="NAPTR" {if $record.type == NAPTR} SELECTED{/if}>NAPTR</OPTION>
-                    	    <OPTION VALUE="NS" {if $record.type == NS} SELECTED{/if}>NS</OPTION>
-                    	    <OPTION VALUE="PTR" {if $record.type == PTR} SELECTED{/if}>PTR</OPTION>
-                    	    <OPTION VALUE="SOA" {if $record.type == SOA} SELECTED{/if}>SOA</OPTION>
-                    	    <OPTION VALUE="SPF" {if $record.type == SPF} SELECTED{/if}>SPF</OPTION>
-                    	    <OPTION VALUE="SRV" {if $record.type == SRV} SELECTED{/if}>SRV</OPTION>
-                    	    <OPTION VALUE="SSHFP" {if $record.type == SSHFP} SELECTED{/if}>SSHFP</OPTION>
-                    	    <OPTION VALUE="TXT" {if $record.type == TXT} SELECTED{/if}>TXT</OPTION>
+		<TD width="98%" class="frightu">
+	    		<SELECT SIZE="1" NAME="record[type]" {tip text="Select record type" trigger="type"} onchange="change_rec_type(this)">
+                    	    <OPTION VALUE="A" {if $record.type == 'A'} SELECTED{/if}>A</OPTION>
+                    	    <OPTION VALUE="AAAA" {if $record.type == 'AAAA'} SELECTED{/if}>AAAA</OPTION>
+                    	    <OPTION VALUE="CNAME" {if $record.type == 'CNAME'} SELECTED{/if}>CNAME</OPTION>
+                    	    <OPTION VALUE="HINFO" {if $record.type == 'HINFO'} SELECTED{/if}>HINFO</OPTION>
+                    	    <OPTION VALUE="MX" {if $record.type == 'MX'} SELECTED{/if}>MX</OPTION>
+                    	    <OPTION VALUE="NAPTR" {if $record.type == 'NAPTR'} SELECTED{/if}>NAPTR</OPTION>
+                    	    <OPTION VALUE="NS" {if $record.type == 'NS'} SELECTED{/if}>NS</OPTION>
+                    	    <OPTION VALUE="PTR" {if $record.type == 'PTR'} SELECTED{/if}>PTR</OPTION>
+                    	    <OPTION VALUE="SOA" {if $record.type == 'SOA'} SELECTED{/if}>SOA</OPTION>
+                    	    <OPTION VALUE="SPF" {if $record.type == 'SPF'} SELECTED{/if}>SPF</OPTION>
+                    	    <OPTION VALUE="SRV" {if $record.type == 'SRV'} SELECTED{/if}>SRV</OPTION>
+                    	    <OPTION VALUE="SSHFP" {if $record.type == 'SSHFP'} SELECTED{/if}>SSHFP</OPTION>
+                    	    <OPTION VALUE="TXT" {if $record.type == 'TXT'} SELECTED{/if}>TXT</OPTION>
         		</SELECT>
 		</TD>
-		<TD class="fbt">
-			<input type="text" size="5" value="{$record.prio}" name="record[prio]" >
-		</TD>
-		<TD class="frightu">
-			<input type="text" style="width:100%" value="{$record.content}" name="record[content]" {tip text="Enter record content" trigger="content"}>
-		</TD>
 	</TR>
-	<TR class="LIGHT">
-		<TD colspan="5" class="fbottomu" align="right" nowrap>
-			<A href="javascript: document.recordedit.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+	<TR class="light">
+                <TD width="1%" class="fleft">
+	                <IMG src="img/time.gif" alt="">
+	        </TD>
+	        <TD width="1%" nowrap>
+		        {t}TTL{/t}:
+		</TD>
+		<TD width="98%" class="fright">
+			<input type="text" size="7" value="{$record.ttl}" name="record[ttl]" {tip text="Enter record TTL" trigger="ttl"}>	
+		</TD>
+	</TD>
+	<TR class="light" id="name" style="display: none">
+                <TD width="1%" class="fleft"><IMG src="img/domain.gif" alt=""></TD>
+	        <TD width="1%" nowrap>{t}Domain:{/t}</TD>
+		<TD width="98%" class="fright"><input type="text" value="{$record.name}" name="record[name]" size="30" {tip text="Enter domain name" trigger="name"}> .{$record.domainname}.</TD>
+	</TD>
+	<TR class="light" id="alias" style="display: none">
+                <TD width="1%" class="fleft"><IMG src="img/domain.gif" alt=""></TD>
+		<TD width="1%" nowrap>{t}Alias:{/t}</TD>
+		<TD width="98%" class="fright"><input type="text" value="{$record.alias}" name="record[alias]" size="30" {tip text="Enter alias name" trigger="alias"}> .{$record.domainname}.</TD>
+	</TD>
+	<TR class="light" id="ipdst" style="display: none">
+                <TD width="1%" class="fleft"><IMG src="img/ip.gif" alt=""></TD>
+	        <TD width="1%" nowrap>{t}IP Address:{/t}</TD>
+		<TD width="98%" class="fright"><input type="text" value="{$record.ipdst}" name="record[ipdst]" size="30" {tip text="Enter IP address" trigger="ipdst"}></TD>
+	</TD>
+	<TR class="light" id="ns" style="display: none">
+                <TD width="1%" class="fleft"><IMG src="img/dns.gif" alt=""></TD>
+	        <TD width="1%" nowrap>{t}DNS Server:{/t}</TD>
+		<TD width="98%" class="fright"><input type="text" value="{$record.ns}" name="record[ns]" size="40" {tip text="Enter DNS server name" trigger="ns"}> .</TD>
+	</TD>
+	<TR class="light" id="mailserver" style="display: none">
+                <TD width="1%" class="fleft"><IMG src="img/email.gif" alt=""></TD>
+	        <TD width="1%" nowrap>{t}Mail Server:{/t}</TD>
+		<TD width="98%" class="fright"><input type="text" value="{$record.mailserver}" name="record[mailserver]" size="40" {tip text="Enter mail server name" trigger="mailserver"}> .</TD>
+	</TD>
+	<TR class="light" id="weight" style="display: none">
+                <TD width="1%" class="fleft"><IMG src="img/id.gif" alt=""></TD>
+	        <TD width="1%" nowrap>{t}Weight:{/t}</TD>
+		<TD width="98%" class="fright"><input type="text" value="{$record.weight}" name="record[weight]" size="10" {tip text="Enter record relative weight" trigger="weight"}></TD>
+	</TD>
+	<TR class="light" id="port" style="display: none">
+                <TD width="1%" class="fleft"><IMG src="img/port.gif" alt=""></TD>
+	        <TD width="1%" nowrap>{t}Port:{/t}</TD>
+		<TD width="98%" class="fright"><input type="text" value="{$record.port}" name="record[port]" size="10" {tip text="Enter port number" trigger="port"}></TD>
+	</TD>
+	<TR class="light" id="domain" style="display: none">
+                <TD width="1%" class="fleft"><IMG src="img/domain.gif" alt=""></TD>
+	        <TD width="1%" nowrap>{t}Domain:{/t}</TD>
+		<TD width="98%" class="fright"><input type="text" value="{$record.domain}" name="record[domain]" size="40" {tip text="Enter domain name" trigger="domain"}> .</TD>
+	</TR>
+	<TR class="light" id="host" style="display: none">
+                <TD width="1%" class="fleft"><IMG src="img/domain.gif" alt=""></TD>
+	        <TD width="1%" nowrap>{t}Domain:{/t}</TD>
+		<TD width="98%" class="fright"><input type="text" value="{$record.host}" name="record[host]" size="30" {tip text="Enter host name" trigger="host"}> .{$record.domainname}.</TD>
+	</TR>
+	<TR class="light" id="desc" style="display: none">
+                <TD width="1%" class="fleft"><IMG src="img/info.gif" alt=""></TD>
+	        <TD width="1%" nowrap>{t}Description:{/t}</TD>
+		<TD width="98%" class="fright"><input type="text" value="{$record.desc}" name="record[desc]" size="60" {tip text="Enter description" trigger="desc"}></TD>
+	</TR>
+	<TR class="light" id="prio" style="display: none">
+                <TD width="1%" class="fleft"><IMG src="img/id.gif" alt=""></TD>
+	        <TD width="1%" nowrap>{t}Priority:{/t}</TD>
+		<TD width="98%" class="fright"><input type="text" size="5" value="{$record.prio}" name="record[prio]" {tip text="Enter record priority" trigger="prio"}></TD>
+	</TD>
+	<TR class="light" id="email" style="display: none">
+                <TD width="1%" class="fleft"><IMG src="img/mail.gif" alt=""></TD>
+	        <TD width="1%" nowrap>{t}E-mail address:{/t}</TD>
+		<TD width="98%" class="fright"><input type="text" value="{$record.email}" name="record[email]" size="40" {tip text="Enter e-mail address" trigger="email"}></TD>
+	</TD>
+	<TR class="light" id="serial" style="display: none">
+                <TD width="1%" class="fleft"><IMG src="img/serialnumber.gif" alt=""></TD>
+	        <TD width="1%" nowrap>{t}Serial number:{/t}</TD>
+		<TD width="98%" class="fright"><input type="text" value="{$record.serial}" name="record[serial]" size="10" {tip text="Enter zone serial number" trigger="serial"}></TD>
+	</TD>
+	<TR class="light" id="refresh" style="display: none">
+                <TD width="1%" class="fleft"><IMG src="img/time.gif" alt=""></TD>
+	        <TD width="1%" nowrap>{t}Refresh interval:{/t}</TD>
+		<TD width="98%" class="fright"><input type="text" value="{$record.refresh}" name="record[refresh]" size="10" {tip text="Enter zone refresh interval" trigger="refresh"}></TD>
+	</TD>
+	<TR class="light" id="retry" style="display: none">
+                <TD width="1%" class="fleft"><IMG src="img/time.gif" alt=""></TD>
+	        <TD width="1%" nowrap>{t}Retry interval:{/t}</TD>
+		<TD width="98%" class="fright"><input type="text" value="{$record.retry}" name="record[retry]" size="10" {tip text="Enter zone retry interval" trigger="retry"}></TD>
+	</TD>
+	<TR class="light" id="expiry" style="display: none">
+                <TD width="1%" class="fleft"><IMG src="img/time.gif" alt=""></TD>
+	        <TD width="1%" nowrap>{t}Expire time:{/t}</TD>
+		<TD width="98%" class="fright"><input type="text" value="{$record.expire}" name="record[expire]" size="10" {tip text="Enter zone expiration time" trigger="expire"}></TD>
+	</TD>
+	<TR class="light" id="minttl" style="display: none">
+                <TD width="1%" class="fleft"><IMG src="img/time.gif" alt=""></TD>
+	        <TD width="1%" nowrap>{t}Default TTL:{/t}</TD>
+		<TD width="98%" class="fright"><input type="text" value="{$record.minttl}" name="record[minttl]" size="10" {tip text="Enter default TTL value" trigger="minttl"}></TD>
+	</TD>
+	<TR class="light" id="algo" style="display: none">
+                <TD width="1%" class="fleft"><IMG src="img/pass.gif" alt=""></TD>
+	        <TD width="1%" nowrap>{t}Algorithm:{/t}</TD>
+		<TD width="98%" class="fright">
+		    <select name="record[algo]" {tip text="Select algorithm of the public key" trigger="algo"}>
+			<option value="1"{if $record.algo=='1'} selected{/if}>RSA</option>
+			<option value="2"{if $record.algo=='2'} selected{/if}>DSS</option>
+		    </select>
+		</TD>
+	</TD>
+	<TR class="light" id="ftype" style="display: none">
+                <TD width="1%" class="fleft"><IMG src="img/pass.gif" alt=""></TD>
+	        <TD width="1%" nowrap>{t}Type:{/t}</TD>
+		<TD width="98%" class="fright">
+		    <select name="record[ftype]" {tip text="Select algorithm used to generate the fingerprint" trigger="ftype"}>
+			<option value="1">SHA-1</option>
+		    </select>
+		</TD>
+	</TD>
+	<TR class="light" id="fingerprint" style="display: none">
+                <TD width="1%" class="fleft"><IMG src="img/pass.gif" alt=""></TD>
+	        <TD width="1%" nowrap>{t}Fingerprint:{/t}</TD>
+		<TD width="98%" class="fright"><input type="text" value="{$record.fingerprint}" name="record[fingerprint]" size="80" {tip text="Enter public key fingerprint" trigger="fingerprint"}></TD>
+	</TR>
+	<TR class="light" id="content" style="display: none">
+                <TD width="1%" class="fleft"><IMG src="img/info.gif" alt=""></TD>
+	        <TD width="1%" nowrap>{t}Content:{/t}</TD>
+		<TD width="98%" class="fright"><input type="text" value="{$record.content}" name="record[content]" size="80" {tip text="Enter record contents" trigger="content"}></TD>
+	</TR>
+	<TR class="light" id="cpu" style="display: none">
+                <TD width="1%" class="fleft"><IMG src="img/node.gif" alt=""></TD>
+	        <TD width="1%" nowrap>{t}CPU Type:{/t}</TD>
+		<TD width="98%" class="fright"><input type="text" value="{$record.cpu}" name="record[cpu]" size="40" {tip text="Enter CPU type" trigger="cpu"}></TD>
+	</TR>
+	<TR class="light" id="os" style="display: none">
+                <TD width="1%" class="fleft"><IMG src="img/node.gif" alt=""></TD>
+	        <TD width="1%" nowrap>{t}Operating System Type:{/t}</TD>
+		<TD width="98%" class="fright"><input type="text" value="{$record.os}" name="record[os]" size="40" {tip text="Enter operating system type" trigger="os"}></TD>
+	</TR>
+	<TR class="light">
+		<TD colspan="3" class="fbottomu" align="right" nowrap>
+			<A href="javascript: document.record.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
 			<A href="?m=recordlist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>
 </FORM>
+{literal}
 <SCRIPT type="text/javascript">
-<!--//
-document.forms['recordedit'].elements['record[name]'].focus();
-//-->
+
+function change_rec_type(select)
+{
+	var i, j,
+		rows = document.forms['record'].getElementsByTagName('TR'),
+		type = select.value,
+		records = {
+			'A': 	['name', 'ipdst'],
+			'AAAA':	['name', 'ipdst'],
+			'NS': 	['name', 'ns'],
+			'MX':	['name', 'mailserver', 'prio'],
+			'CNAME':['alias', 'domain'],
+			'TXT':  ['name', 'desc'],
+			'SPF':  ['name', 'desc'],
+			'PTR':  ['name', 'domain'],
+			'SOA':  ['ns', 'email', 'serial', 'refresh', 'retry', 'expiry', 'minttl'],
+			'SRV':  ['name', 'weight', 'port', 'domain'],
+			'SSHFP':['name', 'algo', 'ftype', 'fingerprint'],
+			'HINFO':['name', 'cpu', 'os'],
+			'NAPTR':['name', 'content'] // @TODO
+		};
+
+	if (!records[type])
+		return;
+
+	for (i=0; i<rows.length; i++) {
+		if (!rows[i].id)
+			continue;
+		for (j=0; j<records[type].length; j++) {
+			if (rows[i].id == records[type][j]) {
+				rows[i].style.display = '';
+				break;
+			}
+		}
+		
+		if (j == records[type].length) {
+			rows[i].style.display = 'none';
+		}
+	}
+}
+
+var elem = document.forms['record'].elements['record[type]'];
+elem.focus();
+change_rec_type(elem);
+
 </SCRIPT>
+{/literal}
 {include file="footer.html"}
