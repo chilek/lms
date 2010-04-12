@@ -19,7 +19,7 @@
                     	    <OPTION VALUE="MX" {if $record.type == 'MX'} SELECTED{/if}>MX</OPTION>
                     	    <OPTION VALUE="NAPTR" {if $record.type == 'NAPTR'} SELECTED{/if}>NAPTR</OPTION>
                     	    <OPTION VALUE="NS" {if $record.type == 'NS'} SELECTED{/if}>NS</OPTION>
-                    	    <OPTION VALUE="PTR" {if $record.type == 'PTR'} SELECTED{/if}>PTR</OPTION>
+                    	    <OPTION VALUE="PTR" {if $record.type == 'PTR' || (!$record.type && preg_match('/in-addr\.arpa$/', $record.domainname))} SELECTED{/if}>PTR</OPTION>
                     	    <OPTION VALUE="SOA" {if $record.type == 'SOA'} SELECTED{/if}>SOA</OPTION>
                     	    <OPTION VALUE="SPF" {if $record.type == 'SPF'} SELECTED{/if}>SPF</OPTION>
                     	    <OPTION VALUE="SRV" {if $record.type == 'SRV'} SELECTED{/if}>SRV</OPTION>
