@@ -82,8 +82,7 @@ function check_hostname_fqdn($hostname, $wildcard=false, $dns_strict_tld_check=f
 			return trans('Given hostname or one of the labels is too short or too long!');
 		}
         }
-/*
-tego fragmentu nie rozumiem, slashe w nazwie???
+
         if ($hostname_labels[$label_count-1] == 'arpa'
 		&& (substr_count($hostname_labels[0], '/') == 1 XOR substr_count($hostname_labels[1], '/') == 1)
 	) {
@@ -106,7 +105,7 @@ tego fragmentu nie rozumiem, slashe w nazwie???
 			return trans('Given hostname has too many slashes!');
 		}
         }
-*/
+
         if ($dns_strict_tld_check && !in_array($hostname_labels[$label_count-1], $valid_tlds)) {
                return trans('You are using an invalid top level domain!');
         }
