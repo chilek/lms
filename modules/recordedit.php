@@ -78,8 +78,6 @@ $layout['pagetitle'] = trans('DNS Record Edit');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$record['content'] = htmlentities($record['content']);
-
 $SMARTY->assign('record', $record);
 $SMARTY->display('recordedit.html');
 
