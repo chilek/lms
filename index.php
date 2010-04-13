@@ -87,10 +87,8 @@ if(!$DB)
 	die();
 }
 
-// Enable/disable data encoding conversion
 // Call any of upgrade process before anything else
 
-require_once(LIB_DIR.'/dbencoding.php');
 require_once(LIB_DIR.'/upgradedb.php');
 
 // Initialize templates engine (must be before locale settings)

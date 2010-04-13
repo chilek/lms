@@ -229,6 +229,11 @@ Class LMSDB_common
 		return $this->_driver_dbversion();
 	}
 
+	function SetEncoding($name)
+	{
+		return $this->_driver_setencoding($name);
+	}
+
 	function GetLastInsertID($table = NULL)
 	{
 		return $this->_driver_lastinsertid($table);
@@ -286,6 +291,11 @@ Class LMSDB_common
 	function _driver_like()
 	{
 		return 'LIKE';
+	}
+
+	function _driver_setencoding($name)
+	{
+		$this->Execute('SET NAMES ?', array($name));
 	}
 
 }
