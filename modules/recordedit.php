@@ -62,7 +62,7 @@ if (isset($_POST['record']))
 				$record['id']
 			));
 
-		update_soa_serial($domain['id']);
+		update_soa_serial($record['domain_id']);
 
 		$SESSION->redirect('?m=recordlist&d='.$record['domain_id']);
 	}
