@@ -75,8 +75,6 @@ $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 
 if (!$DB) die;
 
-require_once(LIB_DIR.'/dbencoding.php');
-
 // Initialize templates engine (must be before locale settings)
 
 require_once(LIB_DIR.'/Smarty/Smarty.class.php');

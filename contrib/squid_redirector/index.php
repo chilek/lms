@@ -65,10 +65,6 @@ require_once(LIB_DIR.'/LMSDB.php');
 
 $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 
-// Enable data encoding conversion if needed
-
-require_once(LIB_DIR.'/dbencoding.php');
-
 // Initialize templates engine
 
 require_once(LIB_DIR.'/Smarty/Smarty.class.php');
