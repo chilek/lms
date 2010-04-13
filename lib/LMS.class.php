@@ -51,6 +51,22 @@ class LMS
 		return TRUE;
 	}
 
+        function InitUI()
+        {
+                // set current user
+                switch ($this->CONFIG['database']['type'])
+                {
+                        case 'postgres':
+                                $this->DB->Execute('SELECT set_config(\'lms.current_user\', ?, false)',
+                                        array($this->AUTH->id));
+                        break;
+                        case 'mysql':
+                        case 'mysqli':
+                                $this->DB->Execute('SET @lms_current_user=?', array($this->AUTH->id));
+                        break;
+                }
+        }                    
+
 	/*
 	 *  Logging
 	 *	0 - disabled
