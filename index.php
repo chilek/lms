@@ -208,7 +208,7 @@ if($AUTH->islogged)
 		if($allow && ! $deny)
 		{
 			$layout['module'] = $module;
-			include(LIB_DIR.'/views.php');
+			$LMS->InitUI();
 			include(MODULES_DIR.'/'.$module.'.php');
 		}
 		else
