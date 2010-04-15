@@ -4141,7 +4141,7 @@ Rozdział 5. Generator plików konfiguracyjnych (lms-mgc)
      * %CLIMIT - limit równoczesnych połączeń
      * %NCLIMIT - limit równoczesnych połączeń (dla godzin nocnych)
      * %PLIMIT - limit pakietów
-     * %PLIMIT - limit pakietów (dla godzin nocnych)
+     * %NPLIMIT - limit pakietów (dla godzin nocnych)
      * %1 %2 %3 %4 - kolejne oktety (od lewej) adresu IP
      * %NID - ID sieci, do której należy komputer
      * %NNAME - nazwa sieci dużymi znakami

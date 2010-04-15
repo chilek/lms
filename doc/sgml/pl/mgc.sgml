@@ -364,7 +364,7 @@
      <para>%PLIMIT - limit pakietów</para>
     </listitem>
     <listitem>
-     <para>%PLIMIT - limit pakietów (dla godzin nocnych)</para>
+     <para>%NPLIMIT - limit pakietów (dla godzin nocnych)</para>
     </listitem>
     <listitem>
      <para>%1 %2 %3 %4 - kolejne oktety (od lewej) adresu IP</para>
