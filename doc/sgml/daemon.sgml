@@ -277,7 +277,8 @@
                    <para>comment</para>
                    <para>Description of operation. '%period' will be replaced by start and end
                    date of subscription, e.g. '2003/10/10 - 2003/11/09', '%tariff' by name of
-                   liability, %month by full name of current month and %year by current year. 
+                   liability, %month by full name of current month and %year by current year, 
+		   %next_mon by next month in YYYY/MM format. 
 		   Default: 'Subscription: '%tariff' for period: %period'.</para>
                    <para>Example: <prompt>comment = 'Subscription %tariff' </prompt></para>
                </listitem>

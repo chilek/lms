@@ -4431,8 +4431,9 @@ Rozdział 6. LMS Daemon
        Komentarz do operacji. '%period' zostanie zamienione na daty od-do
        należnego abonamentu, np. '2003/10/10 - 2003/11/09', '%tariff' na
        nazwę odpowiedniej taryfy/zobowiązania, %month na pełną nazwę
-       bieżącego miesiąca, a %year na bieżący rok. Domyślnie:
-       'Subscription: '%tariff' for period: %period'.
+       bieżącego miesiąca, %year na bieżący rok, a %next_mon na następny
+       miesiąc w formacie RRRR/MM. Domyślnie: 'Subscription: '%tariff' for
+       period: %period'.
        Przykład: comment = 'Abonament miesięczny za okres %period'
      * settlement_comment
        Komentarz do operacji wyrównania. '%period' zostanie zamienione na
