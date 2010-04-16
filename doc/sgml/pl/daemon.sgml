@@ -308,7 +308,8 @@
 			    <para>Komentarz do operacji. '%period' zostanie zamienione na daty od-do 
 			    nale¿nego abonamentu, np. '2003/10/10 - 2003/11/09', '%tariff' na nazwê
 			    odpowiedniej taryfy/zobowi±zania, %month na pe³n± nazwê bie¿±cego
-			    miesi±ca, a %year na bie¿±cy rok. Domy¶lnie: 'Subscription: '%tariff' for period: %period'.</para>
+			    miesi±ca, %year na bie¿±cy rok, a %next_mon na nastêpny miesi±c w formacie RRRR/MM. 
+			    Domy¶lnie: 'Subscription: '%tariff' for period: %period'.</para>
 			    <para>Przyk³ad: <prompt>comment = 'Abonament miesiêczny za okres %period' </prompt></para>
 			</listitem>
 			<listitem>

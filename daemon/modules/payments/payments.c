@@ -257,7 +257,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	time_t t;
 	struct tm *tt;
 	char monthday[3], month[3], year[5], quarterday[4], weekday[2], yearday[4], halfday[4];
-	char monthname[20];
+	char monthname[20], nextmon[8];
 
 	char *nets = strdup(" AND EXISTS (SELECT 1 FROM nodes, networks n \
 				WHERE ownerid = ats.customerid \
@@ -428,6 +428,13 @@ void reload(GLOBAL *g, struct payments_module *p)
 			break;
 	}
 
+	// next month in YYYY/MM format
+	if (imonth == 12)
+		snprintf(nextmon, sizeof(nextmon), "%04d/%02d", tt->tm_year+1901, 1);
+	else
+		snprintf(nextmon, sizeof(nextmon), "%04d/%02d", tt->tm_year+1900, imonth+1);
+
+	// time periods
 	y_period = get_period(tt, YEARLY, p->up_payments);
 	h_period = get_period(tt, HALFYEARLY, p->up_payments);
 	q_period = get_period(tt, QUARTERLY, p->up_payments);
@@ -598,6 +605,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 				case YEARLY: g->str_replace(&description, "%period", y_period); break;
 			}
 			g->str_replace(&description, "%tariff", g->db_get_data(res,i,"name"));
+			g->str_replace(&description, "%next_mon", nextmon);
 			g->str_replace(&description, "%month", monthname);
 			g->str_replace(&description, "%year", year);
 			
