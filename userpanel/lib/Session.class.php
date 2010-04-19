@@ -41,7 +41,7 @@ class Session {
 	{
 		session_start();
 		$this->DB = &$DB;
-		$this->_revision = eregi_replace('^.Revision: ([0-9.]+).*','\1', $this->_revision);
+		$this->_revision = preg_replace('/^.Revision: ([0-9.]+).*/i', '\1', $this->_revision);
 		$this->ip = str_replace('::ffff:', '', $_SERVER['REMOTE_ADDR']);
 
 		if(isset($_GET['override']))

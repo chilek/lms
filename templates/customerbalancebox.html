@@ -182,9 +182,9 @@
 						<A href="javascript:print_doc('invoice');">{t}invoices{/t} <IMG src="img/print.gif" alt=""></A>&nbsp;
 						<A href="javascript:printr();">{t}cash receipts{/t} <IMG src="img/printr.gif" alt=""></A>&nbsp;
 						<A href="javascript:print_doc('note');">{t}debit notes{/t} <IMG src="img/printd.gif" alt=""></A>&nbsp;
-						<INPUT type="checkbox" name="original" id="inv-original"{if eregi('original',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:checkElement('inv-original')">{t}original{/t}&nbsp;</a>
-						<INPUT type="checkbox" name="copy" id="inv-copy"{if eregi('copy',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:checkElement('inv-copy')">{t}copy{/t}</a>
-						<INPUT type="checkbox" name="duplicate" id="inv-duplicate"{if eregi('duplicate',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:checkElement('inv-duplicate')">{t}duplicate{/t}</a>
+						<INPUT type="checkbox" name="original" id="inv-original"{if preg_match('/original/i',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:checkElement('inv-original')">{t}original{/t}&nbsp;</a>
+						<INPUT type="checkbox" name="copy" id="inv-copy"{if preg_match('/copy/i',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:checkElement('inv-copy')">{t}copy{/t}</a>
+						<INPUT type="checkbox" name="duplicate" id="inv-duplicate"{if preg_match('/duplicate/i',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:checkElement('inv-duplicate')">{t}duplicate{/t}</a>
 						</TD><TD width="1%" align="right" NOWRAP>
 						<A href="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes">
 						</TD></TR>

@@ -27,7 +27,7 @@
 function GetCustomerIDByPhoneAndPIN($phone, $pin)
 {
 	global $DB;
-	if(!ereg('^[0-9]+$', $pin))
+	if(!preg_match('/^[0-9]+$/', $pin))
 		return NULL;
 	return $DB->GetOne('SELECT id FROM customers, customercontacts 
 		    WHERE customerid = customers.id AND pin=? AND phone=? LIMIT 1', 
@@ -37,7 +37,7 @@ function GetCustomerIDByPhoneAndPIN($phone, $pin)
 function GetCustomerIDByIDAndPIN($id, $pin)
 {
 	global $DB;
-	if(!ereg('^[0-9]+$', $pin) || !ereg('^[0-9]+$', $id))
+	if(!preg_match('/^[0-9]+$/', $pin) || !preg_match('/^[0-9]+$/', $id))
 		return NULL;
 	return $DB->GetOne('SELECT id from customers WHERE pin=? AND id=?', array($pin, $id));
 }
@@ -46,7 +46,7 @@ function GetCustomerIDByIDAndPIN($id, $pin)
 function GetCustomerIDByContractAndPIN($contract, $pin)
 {
 	global $DB;
-	if(!ereg('^[0-9]+$', $pin))
+	if(!preg_match('/^[0-9]+$/', $pin))
 		return NULL;
 	return $DB->GetOne('SELECT id FROM customers WHERE pin=? AND contract=?', array($pin, $contract));
 }

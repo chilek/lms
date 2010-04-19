@@ -35,7 +35,7 @@ class USERPANEL
 			
 	function USERPANEL(&$DB, &$SESSION, &$CONFIG) // ustawia zmienne klasy
 	{
-	        $this->_revision = eregi_replace('^.Revision: ([0-9.]+).*','\1',$this->_revision);
+	        $this->_revision = preg_replace('/^.Revision: ([0-9.]+).*/i', '\1', $this->_revision);
 		$this->DB = &$DB;
 		$this->SESSION = &$SESSION;
 		$this->CONFIG = &$CONFIG;

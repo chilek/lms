@@ -10,4 +10,4 @@
 {foreach from=$css item=line}{$line}{/foreach}
 --></style>
 </head>
-<body{if ereg('invoice', $_config.phpui.printer_window)} onload="window.print()"{/if}>
+<body{if preg_match('/invoice/i', $_config.phpui.printer_window)} onload="window.print()"{/if}>
