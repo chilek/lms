@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??)
+version 1.11.10 Kri (2010-04-19)
 
   - contrib/daemon/gentoo-init: small fixes (Mariusz Szulerecki)
   - lmsd/oident: use lower case'd node names (alec)
@@ -58,6 +58,7 @@ version ? (????-??-??)
   - lmsd/ewx-stm-channels: EtherWerX STM manager with extended channels support (alec)
   - Extended DNS records add/edit form (alec)
   - lmsd/payments: added %next_mon variable for next month in YYYY/MM format (alec)
+  - more PHP-5.3 compat. fixes (alec)
 
 version 1.11.9 Moloc (2009-10-28):
  
