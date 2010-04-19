@@ -212,7 +212,7 @@ function module_main()
 
     if(isset($_GET['op']) && $_GET['op'] == 'view')
     {
-	if(ereg('^[0-9]+$',$_GET['id']))
+	if(preg_match('/^[0-9]+$/',$_GET['id']))
 		$ticket = $LMS->GetTicketContents($_GET['id']);
 
 	$ticket['id'] = $_GET['id'];
@@ -228,12 +228,12 @@ function module_main()
     }
     elseif(isset($_GET['op']) && $_GET['op'] == 'message')
     {
-        if(ereg('^[0-9]+$',$_GET['id']))
+        if(preg_match('/^[0-9]+$/',$_GET['id']))
 		$ticket = $LMS->GetTicketContents($_GET['id']);
 	
 	$ticket['id'] = $_GET['id'];
 	
-	if(isset($_GET['msgid']) && ereg('^[0-9]+$', $_GET['msgid']))
+	if(isset($_GET['msgid']) && preg_match('/^[0-9]+$/', $_GET['msgid']))
 	{
 	        $helpdesk['subject'] = $DB->GetOne('SELECT subject FROM rtmessages
 	                	WHERE ticketid = ? AND id = ?', array($ticket['id'], $_GET['msgid']));

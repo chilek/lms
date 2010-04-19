@@ -720,9 +720,9 @@ cal13.time_comp = false;
 						<IMG src="img/info.gif" alt="">
 					</TD>
 					<TD width="94%" nowrap>
-						<INPUT TYPE="checkbox" NAME="invoiceorg" ID="invoiceorg"{if eregi('original',$_config.invoices.default_printpage)} CHECKED{/if}>&nbsp;<A HREF="javascript:checkElement('invoiceorg')">{t}original{/t}</a>&nbsp;
-						<INPUT TYPE="checkbox" NAME="invoicecopy" ID="invoicecopy"{if eregi('copy',$_config.invoices.default_printpage)}  CHECKED{/if}>&nbsp;<A HREF="javascript:checkElement('invoicecopy')">{t}copy{/t}</a>&nbsp;
-						<INPUT TYPE="checkbox" NAME="invoicedup" ID="invoicedup"{if eregi('duplicate',$_config.invoices.default_printpage)} CHECKED{/if}>&nbsp;<A HREF="javascript:checkElement('invoicedup')">{t}duplicate{/t}</a>
+						<INPUT TYPE="checkbox" NAME="invoiceorg" ID="invoiceorg"{if preg_match('/original/i',$_config.invoices.default_printpage)} CHECKED{/if}>&nbsp;<A HREF="javascript:checkElement('invoiceorg')">{t}original{/t}</a>&nbsp;
+						<INPUT TYPE="checkbox" NAME="invoicecopy" ID="invoicecopy"{if preg_match('/copy/i',$_config.invoices.default_printpage)}  CHECKED{/if}>&nbsp;<A HREF="javascript:checkElement('invoicecopy')">{t}copy{/t}</a>&nbsp;
+						<INPUT TYPE="checkbox" NAME="invoicedup" ID="invoicedup"{if preg_match('/duplicate/i',$_config.invoices.default_printpage)} CHECKED{/if}>&nbsp;<A HREF="javascript:checkElement('invoicedup')">{t}duplicate{/t}</a>
 					</TD>
 				</TR>
 			</TABLE>

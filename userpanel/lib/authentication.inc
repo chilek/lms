@@ -29,7 +29,7 @@ global $LMS;
 function GetCustomerIDByPhoneAndPIN($phone, $pin)
 {
 	global $DB;
-	if(!ereg('^[0-9]+$', $pin))
+	if(!preg_match('/^[0-9]+$/', $pin))
 		return NULL;
 
 	$authinfo['id'] = $DB->GetOne('SELECT id FROM customers, customercontacts
@@ -50,7 +50,7 @@ function GetCustomerIDByPhoneAndPIN($phone, $pin)
 function GetCustomerIDByIDAndPIN($id, $pin)
 {
 	global $DB;
-	if(!ereg('^[0-9]+$', $pin) || !ereg('^[0-9]+$', $id))
+	if(!preg_match('/^[0-9]+$/', $pin) || !preg_match('/^[0-9]+$/', $id))
 		return NULL;
 
 	$authinfo['id'] = $DB->GetOne('SELECT id from customers
@@ -68,7 +68,7 @@ function GetCustomerIDByIDAndPIN($id, $pin)
 function GetCustomerIDByContractAndPIN($contract, $pin)
 {
 	global $DB;
-	if(!ereg('^[0-9]+$', $pin))
+	if(!preg_match('/^[0-9]+$/', $pin))
 		return NULL;
 	
 	$authinfo['id'] = $DB->GetOne('SELECT id FROM customers

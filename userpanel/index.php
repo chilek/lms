@@ -131,7 +131,7 @@ $LMS->lang = $_language;
 
 $dh  = opendir(USERPANEL_MODULES_DIR);
 while (false !== ($filename = readdir($dh))) {
-    if ((ereg("^[a-zA-Z0-9]",$filename)) && (is_dir(USERPANEL_MODULES_DIR.$filename)) && file_exists(USERPANEL_MODULES_DIR.$filename.'/configuration.php'))
+    if ((preg_match('/^[a-zA-Z0-9]/',$filename)) && (is_dir(USERPANEL_MODULES_DIR.$filename)) && file_exists(USERPANEL_MODULES_DIR.$filename.'/configuration.php'))
     {
 	@include(USERPANEL_MODULES_DIR.$filename.'/locale/'.$_language.'/strings.php');
 	include(USERPANEL_MODULES_DIR.$filename.'/configuration.php');

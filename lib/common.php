@@ -61,7 +61,7 @@ function execute_program ($program, $args = '')
 
 	if ($args)
 	{
-		$args_list = split(' ', $args);
+		$args_list = preg_split('/ /', $args);
 		for ($i = 0; $i < count($args_list); $i++)
 		{
 			if ($args_list[$i] == '|')
@@ -345,20 +345,12 @@ function writesyslog($message,$type)
 	{
 		case 'OpenBSD':
 		case 'Linux':
-			define_syslog_variables();
-			// Taken from PHP manual. On my WinXP box with Easy PHP it's fuck's up
-			// system
-
+			$access = date('Y/m/d H:i:s');
 			// open syslog, include the process ID and also send
 			// the log to standard error, and use a user defined
 			// logging mechanism
-
 			openlog('lms-php', LOG_PID | LOG_NDELAY, LOG_AUTH);
-
-			$access = date('Y/m/d H:i:s');
-
 			syslog($type,$message.' (at '.$access.' from '.$_SERVER['REMOTE_ADDR'].' ('.$_SERVER['HTTP_USER_AGENT'].'))');
-
 			closelog();
 		break;
 		default:
