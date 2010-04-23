@@ -1987,14 +1987,14 @@ sql_hostnames: localhost
 sql_database: lms
 # MySQL
 #sql_engine: mysql
-#sql_select: SELECT password FROM passwd, domains WHERE domainid = domains.id
-#       AND login='%u' AND domains.name ='%r' AND type & 2 = 2
-#       AND (expdate = 0 OR expdate > UNIX_TIMESTAMP())
+#sql_select: SELECT p.password FROM passwd p, domains d WHERE p.domainid = d.id
+#       AND p.login='%u' AND d.name ='%r' AND p.type & 2 = 2
+#       AND (p.expdate = 0 OR p.expdate > UNIX_TIMESTAMP())
 # PostgreSQL
 sql_engine: pgsql
-sql_select: SELECT password FROM passwd, domains WHERE domainid = domains.id
-        AND login='%u' AND domains.name ='%r' AND type & 2 = 2
-        AND (expdate = 0 OR expdate > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
+sql_select: SELECT p.password FROM passwd p, domains d WHERE p.domainid = d.id
+        AND p.login='%u' AND d.name ='%r' AND p.type & 2 = 2
+        AND (p.expdate = 0 OR p.expdate > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
 
 # authpgsqlrc (lub authmysqlrc) (Courier):
 
@@ -2012,19 +2012,19 @@ PGSQL_USERNAME          lms
 PGSQL_PASSWORD          hasło
 #MYSQL_DATABASE         lms
 PGSQL_DATABASE          lms
-#MYSQL_SELECT_CLAUSE SELECT login, \
-#       password, '', 104, 104, '/var/spool/mail/virtual', \
-#       CONCAT(domains.name,'/',login,'/'), '', login, '' \
-#       FROM passwd, domains WHERE domainid = domains.id \
-#       AND login = '$(local_part)' AND domains.name = '$(domain)' \
-#       AND type & 2 = 2 AND (expdate = 0 OR expdate > UNIX_TIMESTAMP())
-PGSQL_SELECT_CLAUSE SELECT login, \
-        password, '', 104, 104, '/var/spool/mail/virtual', \
-        domains.name || '/' || login ||'/', '', login, '' \
-        FROM passwd, domains WHERE domainid = domains.id
-        AND login = '$(local_part)' AND domains.name = '$(domain)' \
-        AND type & 2 = 2 \
-        AND (expdate = 0 OR expdate > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
+#MYSQL_SELECT_CLAUSE SELECT p.login, \
+#       p.password, '', 104, 104, '/var/spool/mail/virtual', \
+#       CONCAT(d.name,'/', p.login, '/'), '', p.login, '' \
+#       FROM passwd p, domains d WHERE p.domainid = d.id \
+#       AND p.login = '$(local_part)' AND d.name = '$(domain)' \
+#       AND p.type & 2 = 2 AND (p.expdate = 0 OR p.expdate > UNIX_TIMESTAMP())
+PGSQL_SELECT_CLAUSE SELECT p.login, \
+        p.password, '', 104, 104, '/var/spool/mail/virtual', \
+        d.name || '/' || p.login ||'/', '', p.login, '' \
+        FROM passwd p, domains d WHERE p.domainid = d.id
+        AND p.login = '$(local_part)' AND d.name = '$(domain)' \
+        AND p.type & 2 = 2 \
+        AND (p.expdate = 0 OR p.expdate > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
 
 # main.cf (Postfix):
 
@@ -2051,16 +2051,16 @@ hosts = localhost
 dbname = lms
 
 # MySQL
-#query = SELECT CONCAT(domains.name,'/',login,'/')
-#       FROM passwd, domains WHERE domainid = domains.id
-#       AND login = '%u' AND domains.name = '%d'
-#       AND type & 2 = 2 AND (expdate = 0 OR expdate > UNIX_TIMESTAMP())
+#query = SELECT CONCAT(d.name,'/', p.login, '/')
+#       FROM passwd p, domains d WHERE p.domainid = d.id
+#       AND p.login = '%u' AND d.name = '%d'
+#       AND p.type & 2 = 2 AND (p.expdate = 0 OR p.expdate > UNIX_TIMESTAMP())
 # PostgresSQL
-query = SELECT domains.name || '/' || login || '/'
-        FROM passwd, domains WHERE domainid = domains.id
-        AND login = '%u' AND domains.name = '%d'
-        AND type & 2 = 2
-        AND (expdate = 0 OR expdate > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
+query = SELECT d.name || '/' || p.login || '/'
+        FROM passwd p, domains d WHERE p.domainid = d.id
+        AND p.login = '%u' AND d.name = '%d'
+        AND p.type & 2 = 2
+        AND (p.expdate = 0 OR p.expdate > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
 
 # virtual_alias_maps.cf (Postfix):
 
@@ -2069,35 +2069,35 @@ password = hasło
 hosts = localhost
 dbname = lms
 # MySQL
-#query = SELECT mail_forward
+#query = SELECT p.mail_forward
 #       FROM passwd p
-#       JOIN domains pd ON (p.domainid = pd.id)
-#       WHERE p.login = '%u' AND pd.name = '%d'
-#               AND type & 2 = 2 AND mail_forward != ''
-#               AND (expdate = 0 OR expdate > UNIX_TIMESTAMP())
+#       JOIN domains d ON (p.domainid = d.id)
+#       WHERE p.login = '%u' AND d.name = '%d'
+#               AND p.type & 2 = 2 AND p.mail_forward != ''
+#               AND (p.expdate = 0 OR p.expdate > UNIX_TIMESTAMP())
 #       UNION
 #       SELECT CASE WHEN aa.mail_forward != '' THEN aa.mail_forward ELSE CONCAT(p.login, '@', pd.name) END
 #       FROM aliases a
 #       JOIN domains ad ON (a.domainid = ad.id)
 #       JOIN aliasassignments aa ON (aa.aliasid = a.id)
-#       LEFT JOIN passwd p ON (aa.accountid = p.id AND (expdate = 0 OR expdate > UNIX_TIMESTAMP()))
+#       LEFT JOIN passwd p ON (aa.accountid = p.id AND (p.expdate = 0 OR p.expdate > UNIX_TIMESTAMP()))
 #       LEFT JOIN domains pd ON (p.domainid = pd.id)
 #       WHERE a.login = '%u' AND ad.name = '%d'
 #               AND (aa.mail_forward != '' OR p.id IS NOT NULL)
 # PostgreSQL
-query = SELECT mail_forward
+query = SELECT p.mail_forward
         FROM passwd p
-        JOIN domains pd ON (p.domainid = pd.id)
-        WHERE p.login = '%u' AND pd.name = '%d'
-                AND type & 2 = 2 AND mail_forward != ''
-                AND (expdate = 0 OR expdate > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
+        JOIN domains d ON (p.domainid = d.id)
+        WHERE p.login = '%u' AND d.name = '%d'
+                AND p.type & 2 = 2 AND p.mail_forward != ''
+                AND (p.expdate = 0 OR p.expdate > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
         UNION
         SELECT CASE WHEN aa.mail_forward != '' THEN aa.mail_forward ELSE p.login || '@' || pd.name END
         FROM aliases a
         JOIN domains ad ON (a.domainid = ad.id)
         JOIN aliasassignments aa ON (aa.aliasid = a.id)
         LEFT JOIN passwd p ON (aa.accountid = p.id
-                AND (expdate = 0 OR expdate > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))))
+                AND (p.expdate = 0 OR p.expdate > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))))
         LEFT JOIN domains pd ON (p.domainid = pd.id)
         WHERE a.login = '%u' AND ad.name = '%d'
                 AND (aa.mail_forward != '' OR p.id IS NOT NULL)
@@ -2109,19 +2109,19 @@ password = hasło
 hosts = localhost
 dbname = lms
 # MySQL
-#query = SELECT mail_bcc FROM passwd, domains
-#       WHERE domainid = domains.id
-#               AND login = '%u' AND domains.name = '%d'
-#               AND type & 2 = 2
-#               AND mail_bcc != ''
-#               AND (expdate = 0 OR expdate > UNIX_TIMESTAMP())
+#query = SELECT p.mail_bcc FROM passwd p, domains d
+#       WHERE p.domainid = d.id
+#           AND p.login = '%u' AND d.name = '%d'
+#               AND p.type & 2 = 2
+#               AND p.mail_bcc != ''
+#               AND (p.expdate = 0 OR p.expdate > UNIX_TIMESTAMP())
 # PostgreSQL
-query = SELECT mail_bcc FROM passwd, domains
-        WHERE domainid = domains.id
-                AND login = '%u' AND domains.name = '%d'
-                AND type & 2 = 2
-                AND mail_bcc != ''
-                AND (expdate = 0 OR expdate > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
+query = SELECT p.mail_bcc FROM passwd p, domains d
+        WHERE p.domainid = d.id
+                AND p.login = '%u' AND d.name = '%d'
+                AND p.type & 2 = 2
+                AND p.mail_bcc != ''
+                AND (p.expdate = 0 OR p.expdate > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
 
    Następny przykład podesłany przez bart'a przedstawia instalację i
    konfigurację serwera pure-ftpd w dystrybucji Gentoo z wykorzystaniem

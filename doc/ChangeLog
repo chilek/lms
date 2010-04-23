@@ -1,5 +1,9 @@
 $Id$
 
+version ? (????-??-??)
+
+  - fixed SQL queries in postfix configuration manual (alec)
+
 version 1.11.10 Kri (2010-04-19)
 
   - contrib/daemon/gentoo-init: small fixes (Mariusz Szulerecki)
