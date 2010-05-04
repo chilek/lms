@@ -3,6 +3,7 @@ $Id$
 version ? (????-??-??)
 
   - fixed SQL queries in postfix configuration manual (alec)
+  - BTS#0000832: fixed stats compacting (alec)
 
 version 1.11.10 Kri (2010-04-19)
 

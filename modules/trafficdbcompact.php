@@ -79,7 +79,6 @@ if(isset($_GET['level']))
 	    $maxtime = $period;
 	    $timeoffset = date('Z');
 	    $dtdivider = 'FLOOR((dt+'.$timeoffset.')/'.$step.')';
-	    
 
 	    $data = $DB->GetAll('SELECT SUM(download) AS download, SUM(upload) AS upload,
 			    COUNT(dt) AS count, MIN(dt) AS mintime, MAX(dt) AS maxtime
@@ -92,13 +91,13 @@ if(isset($_GET['level']))
 
 		    $DB->Execute('DELETE FROM stats WHERE nodeid = ? AND dt >= ? AND dt <= ?',
 	    		    array($node['id'], $mintime, $maxtime));
-	    
+
 		    foreach($data as $record)
 		    {
 			$deleted += $record['count'];
 			if($record['download'] || $record['upload'])
 				$inserted += $DB->Execute('INSERT INTO stats
-					(nodeid, dt, download, upload)
+					(nodeid, dt, upload, download)
 					VALUES (?, ?, ?, ?)',
 					array($node['id'], $record['maxtime'],
 					$record['upload'], $record['download']));
