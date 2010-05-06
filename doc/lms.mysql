@@ -307,7 +307,6 @@ DROP TABLE IF EXISTS nodes;
 CREATE TABLE nodes (
   id int(11) NOT NULL auto_increment,
   name varchar(32) NOT NULL DEFAULT '',
-  mac varchar(20) NOT NULL DEFAULT '',
   ipaddr int(16) unsigned NOT NULL DEFAULT '0',
   ipaddr_pub int(16) unsigned NOT NULL DEFAULT '0',
   passwd varchar(32) NOT NULL DEFAULT '',
@@ -333,6 +332,20 @@ CREATE TABLE nodes (
   INDEX netdev (netdev),
   INDEX ownerid (ownerid),
   INDEX ipaddr_pub (ipaddr_pub)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table macs
+#
+DROP TABLE IF EXISTS macs;
+CREATE TABLE macs (
+  id int(11) NOT NULL auto_increment,
+  mac varchar(17) NOT NULL DEFAULT '',
+  nodeid int(11) NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  UNIQUE KEY mac (mac, nodeid)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1335,4 +1348,4 @@ CREATE TABLE supermasters (
 
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010031100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010050600');

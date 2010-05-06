@@ -62,6 +62,11 @@ $nodeid = intval($_GET['id']);
 $customerid = $LMS->GetNodeOwner($nodeid);
 $nodeinfo = $LMS->GetNode($nodeid);
 
+$macs = array();
+foreach($nodeinfo['macs'] as $key => $value)
+	$macs[] = $nodeinfo['macs'][$key]['mac'];
+$nodeinfo['macs'] = $macs;
+
 if(!isset($_GET['ownerid']))
 	$SESSION->save('backto', $SESSION->get('backto') . '&ownerid='.$customerid);
 else
@@ -69,18 +74,21 @@ else
 							
 $layout['pagetitle'] = trans('Node Edit: $0', $nodeinfo['name']);
 
-if(isset($_POST['nodeedit']))
+if(isset($_POST['nodeedit']) && !isset($_GET['newmac']))
 {
 	$nodeedit = $_POST['nodeedit'];
 	
 	$nodeedit['ipaddr'] = $_POST['nodeeditipaddr'];
 	$nodeedit['ipaddr_pub'] = $_POST['nodeeditipaddrpub'];
-	$nodeedit['mac'] = $_POST['nodeeditmac'];
-	$nodeedit['mac'] = str_replace('-',':',$nodeedit['mac']);
+	$nodeedit['macs'] = $_POST['nodeedit']['macs'];
+	foreach($nodeedit['macs'] as $key => $value)
+		$nodeedit['macs'][$key] = str_replace('-',':',$value);
+
 	foreach($nodeedit as $key => $value)
-		$nodeedit[$key] = trim($value);
-	
-	if($nodeedit['ipaddr']=='' && $nodeedit['ipaddr_pub']=='' && $nodeedit['mac']=='' && $nodeedit['name']=='' && $nodeedit['info']=='' && $nodeedit['passwd']=='')
+		if($key != 'macs')
+			$nodeedit[$key] = trim($value);
+
+	if($nodeedit['ipaddr']=='' && $nodeedit['ipaddr_pub']=='' && empty($nodeedit['macs']) && $nodeedit['name']=='' && $nodeedit['info']=='' && $nodeedit['passwd']=='')
 	{
 		$SESSION->redirect('?m=nodeinfo&id='.$nodeedit['id']);
 	}
@@ -122,16 +130,22 @@ if(isset($_POST['nodeedit']))
 	else
 		$nodeedit['ipaddr_pub'] = '0.0.0.0';
 
-	if(check_mac($nodeedit['mac']))
-	{
-		if($nodeedit['mac']!='00:00:00:00:00:00' && (!isset($CONFIG['phpui']['allow_mac_sharing']) || !chkconfig($CONFIG['phpui']['allow_mac_sharing'])))
+	$macs = array();
+	foreach($nodeedit['macs'] as $key => $value)
+		if(check_mac($value))
 		{
-			if($nodeinfo['mac'] != $nodeedit['mac'] && $LMS->GetNodeIDByMAC($nodeedit['mac']))
-				$error['mac'] = trans('Specified MAC address is in use!');
+			if($value!='00:00:00:00:00:00' && (!isset($CONFIG['phpui']['allow_mac_sharing']) || !chkconfig($CONFIG['phpui']['allow_mac_sharing'])))
+			{
+				if(($nodeid = $LMS->GetNodeIDByMAC($value)) != NULL && $nodeid != $nodeinfo['id'])
+					$error['mac'.$key] = trans('Specified MAC address is in use!');
+			}
+			$macs[] = $value;
 		}
-	}
-	else
-		$error['mac'] = trans('Incorrect MAC address!');
+		elseif($value!='')
+			$error['mac'.$key] = trans('Incorrect MAC address!');
+	if(empty($macs))
+		$error['mac0'] = trans('MAC address is required!');
+	$nodeedit['macs'] = $macs;
 
 	if($nodeedit['name']=='')
 		$error['name'] = trans('Node name is required!');
@@ -189,11 +203,10 @@ if(isset($_POST['nodeedit']))
 	{
 		$LMS->NodeUpdate($nodeedit, ($customerid != $nodeedit['ownerid']));
 		$SESSION->redirect('?m=nodeinfo&id='.$nodeedit['id']);
-		die;
 	}
 
 	$nodeinfo['name'] = $nodeedit['name'];
-	$nodeinfo['mac'] = $nodeedit['mac'];
+	$nodeinfo['macs'] = $nodeedit['macs'];
 	$nodeinfo['ip'] = $nodeedit['ipaddr'];
 	$nodeinfo['ip_pub'] = $nodeedit['ipaddr_pub'];
 	$nodeinfo['passwd'] = $nodeedit['passwd'];
@@ -205,6 +218,18 @@ if(isset($_POST['nodeedit']))
 
 	if($nodeedit['ipaddr_pub']=='0.0.0.0')
 		$nodeinfo['ipaddr_pub'] = '';
+}
+else
+{
+//	print_r($nodeinfo['macs']);die;
+	if(isset($_POST['nodeedit']) && isset($_GET['newmac']))
+	{
+		$nodeedit = $_POST['nodeedit'];
+		$nodeedit['macs'][] = '';
+		$nodeinfo = array_merge($nodeinfo, $nodeedit);
+	}
+	elseif(empty($nodeinfo['macs']))
+		$nodeinfo['macs'][] = '';
 }
 
 include(MODULES_DIR.'/customer.inc.php');

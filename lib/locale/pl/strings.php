@@ -2369,5 +2369,6 @@ $_LANG['Retry interval:'] = 'Czas odmowy:';
 $_LANG['Select algorithm used to generate the fingerprint'] = 'Wybierz algorytm użyty do wygenerowania odcisku klucza';
 $_LANG['Select algorithm of the public key'] = 'Wybierz algorytm klucza publicznego';
 $_LANG['Weight:'] = 'Ważność:';
+$_LANG['Add MAC address'] = 'Dodaj adres MAC';
 
 ?>
