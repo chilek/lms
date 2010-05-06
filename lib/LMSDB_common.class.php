@@ -298,6 +298,10 @@ Class LMSDB_common
 		$this->Execute('SET NAMES ?', array($name));
 	}
 
+	function GroupConcat($field, $separator)
+	{
+		return $this->_driver_groupconcat($field, $separator);
+	}
 }
 
 ?>

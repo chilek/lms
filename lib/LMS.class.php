@@ -820,13 +820,17 @@ class LMS
 
 	function GetCustomerNodes($id, $count=NULL)
 	{
-		if($result = $this->DB->GetAll('SELECT id, name, mac, ipaddr, 
+		if($result = $this->DB->GetAll('SELECT id, name, m.mac AS mac, ipaddr, 
 				inet_ntoa(ipaddr) AS ip, ipaddr_pub, 
 				inet_ntoa(ipaddr_pub) AS ip_pub, passwd, access, 
 				warning, info, ownerid, location, lastonline,
 				(SELECT COUNT(*) FROM nodegroupassignments
 					WHERE nodeid = nodes.id) AS gcount 
-				FROM nodes WHERE ownerid=?
+				FROM nodes 
+				LEFT JOIN (
+					SELECT nodeid, '.$this->DB->GroupConcat('mac', ',').' AS mac FROM macs GROUP BY nodeid
+				) m ON (nodes.id = m.nodeid) 
+				WHERE ownerid=?
 				ORDER BY name ASC '.($count ? 'LIMIT '.$count : ''), array($id)))
 		{
 			// assign network(s) to node record
@@ -1142,14 +1146,13 @@ class LMS
 	function NodeUpdate($nodedata, $deleteassignments=FALSE)
 	{
 		$this->DB->Execute('UPDATE nodes SET name=UPPER(?), ipaddr_pub=inet_aton(?), 
-				ipaddr=inet_aton(?), mac=UPPER(?), passwd=?, netdev=?, moddate=?NOW?, 
+				ipaddr=inet_aton(?), passwd=?, netdev=?, moddate=?NOW?, 
 				modid=?, access=?, warning=?, ownerid=?, info=?, 
 				location=?, chkmac=?, halfduplex=?, linktype=?, port=?, nas=? 
 				WHERE id=?', 
 				array($nodedata['name'], 
 				    $nodedata['ipaddr_pub'], 
 				    $nodedata['ipaddr'], 
-				    $nodedata['mac'], 
 				    $nodedata['passwd'], 
 				    $nodedata['netdev'], 
 				    $this->AUTH->id, 
@@ -1165,7 +1168,13 @@ class LMS
 				    isset($nodedata['nas']) ? $nodedata['nas'] : 0,
 				    $nodedata['id']
 			    ));
-		
+		$this->DB->Execute('DELETE FROM macs WHERE nodeid=?', array($nodedata['id']));
+		foreach($nodedata['macs'] as $mac)
+		{
+			$this->DB->Execute('INSERT INTO macs (mac, nodeid) VALUES(?, ?)',
+				array(strtoupper($mac), $nodedata['id']));
+		}
+
 		if($deleteassignments)
 			$this->DB->Execute('DELETE FROM nodeassignments WHERE nodeid = ?', array($nodedata['id']));
 	}
@@ -1175,12 +1184,13 @@ class LMS
 		$this->DB->BeginTrans();
 		$this->DB->Execute('DELETE FROM nodes WHERE id = ?', array($id));
 		$this->DB->Execute('DELETE FROM nodegroupassignments WHERE nodeid = ?', array($id));
+		$this->DB->Execute('DELETE FROM macs WHERE nodeid = ?', array($id));
 		$this->DB->CommitTrans();
 	}
 
 	function GetNodeNameByMAC($mac)
 	{
-		return $this->DB->GetOne('SELECT name FROM nodes WHERE mac=UPPER(?)', array($mac));
+		return $this->DB->GetOne('SELECT name FROM nodes LEFT JOIN macs ON nodes.id = macs.nodeid WHERE mac=UPPER(?)', array($mac));
 	}
 
 	function GetNodeIDByIP($ipaddr)
@@ -1191,7 +1201,7 @@ class LMS
 
 	function GetNodeIDByMAC($mac)
 	{
-		return $this->DB->GetOne('SELECT id FROM nodes WHERE mac=UPPER(?)', array($mac));
+		return $this->DB->GetOne('SELECT nodeid FROM macs WHERE mac=UPPER(?)', array($mac));
 	}
 
 	function GetNodeIDByName($name)
@@ -1211,7 +1221,7 @@ class LMS
 
 	function GetNodeMACByID($id)
 	{
-		return $this->DB->GetOne('SELECT mac FROM nodes WHERE id=?', array($id));
+		return $this->DB->GetOne('SELECT '.$this->DB->GroupConcat('mac', ',').' AS mac FROM macs GROUP BY nodeid WHERE nodeid=?', array($id));
 	}
 
 	function GetNodeName($id)
@@ -1227,17 +1237,23 @@ class LMS
 	function GetNode($id)
 	{
 		if($result = $this->DB->GetRow('SELECT id, name, ownerid, ipaddr, inet_ntoa(ipaddr) AS ip, 
-			ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, mac, passwd, access, 
+			ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, m.mac AS mac, passwd, access, 
 			warning, creationdate, moddate, creatorid, modid, netdev, lastonline, 
-			info, location, chkmac, halfduplex, linktype, port, nas
-			FROM nodes WHERE id = ?', array($id)))
+			info, location, chkmac, halfduplex, linktype, port, nas 
+			FROM nodes 
+			LEFT JOIN (
+				SELECT nodeid, '.$this->DB->GroupConcat('mac', ',').' AS mac FROM macs GROUP BY nodeid
+			) m ON (nodes.id = m.nodeid) WHERE id = ?', array($id)))
 		{
 			$result['owner'] = $this->GetCustomerName($result['ownerid']);
 			$result['createdby'] = $this->GetUserName($result['creatorid']);
 			$result['modifiedby'] = $this->GetUserName($result['modid']);
 			$result['creationdateh'] = date('Y/m/d, H:i',$result['creationdate']);
 			$result['moddateh'] = date('Y/m/d, H:i',$result['moddate']);
-			$result['producer'] = get_producer($result['mac']);
+			$result['mac'] = split(',', $result['mac']);
+			foreach($result['mac'] as $mac)
+				$result['macs'][] = array('mac' => $mac, 'producer' => get_producer($mac));
+			unset($result['mac']);
 
 			$delta = time()-$result['lastonline'];
 			if($delta>$this->CONFIG['phpui']['lastonline_limit'])
@@ -1280,7 +1296,7 @@ class LMS
 				$sqlord = ' ORDER BY id';
 			break;
 			case 'mac':
-				$sqlord = ' ORDER BY mac';
+				$sqlord = ' ORDER BY m.mac';
 			break;
 			case 'ip':
 				$sqlord = ' ORDER BY ipaddr';
@@ -1329,10 +1345,13 @@ class LMS
 			$net = $this->GetNetworkParams($network);
 
 		if($nodelist = $this->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, 
-				inet_ntoa(ipaddr_pub) AS ip_pub, mac, nodes.name AS name, ownerid, access, warning, 
+				inet_ntoa(ipaddr_pub) AS ip_pub, m.mac AS mac, nodes.name AS name, ownerid, access, warning, 
 				netdev, lastonline, nodes.info AS info, '
-				.$this->DB->Concat('c.lastname',"' '",'c.name').' AS owner
+				.$this->DB->Concat('c.lastname',"' '",'c.name').' AS owner 
 				FROM nodes 
+				LEFT JOIN (
+					SELECT nodeid, '.$this->DB->GroupConcat('mac', ',').' AS mac FROM macs GROUP BY nodeid
+				) m ON (nodes.id = m.nodeid) 
 				JOIN customersview c ON (nodes.ownerid = c.id) '
 				.($customergroup ? 'JOIN customerassignments ON (customerid = c.id) ' : '')
 				.($nodegroup ? 'JOIN nodegroupassignments ON (nodeid = nodes.id) ' : '')
@@ -1427,13 +1446,12 @@ class LMS
 
 	function NodeAdd($nodedata)
 	{
-		if($this->DB->Execute('INSERT INTO nodes (name, mac, ipaddr, ipaddr_pub, ownerid, 
+		if($this->DB->Execute('INSERT INTO nodes (name, ipaddr, ipaddr_pub, ownerid, 
 			passwd, creatorid, creationdate, access, warning, info, netdev, 
 			linktype, port, location, chkmac, halfduplex, nas) 
-			VALUES (?, ?, inet_aton(?),inet_aton(?), ?, ?, ?, 
+			VALUES (?, inet_aton(?),inet_aton(?), ?, ?, ?, 
 			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			array(strtoupper($nodedata['name']),
-				strtoupper($nodedata['mac']),
 				$nodedata['ipaddr'],
 				$nodedata['ipaddr_pub'],
 				$nodedata['ownerid'],
@@ -1452,7 +1470,11 @@ class LMS
 				)))
 		{
 			$id = $this->DB->GetLastInsertID('nodes');
-			
+
+			foreach($nodedata['macs'] as $mac)
+				$this->DB->Execute('INSERT INTO macs (mac, nodeid) VALUES(?, ?)',
+					array(strtoupper($mac), $id));
+
 			// EtherWerX support (devices have some limits)
 			// We must to replace big ID with smaller (first free)
 			if($id > 99999 && chkconfig($this->CONFIG['phpui']['ewx_support']))
@@ -3168,9 +3190,13 @@ class LMS
 
 	function GetNetDevIPs($id)
 	{
-		return $this->DB->GetAll('SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, 
+		return $this->DB->GetAll('SELECT id, name, m.mac AS mac, ipaddr, inet_ntoa(ipaddr) AS ip, 
 			ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, access, info, port 
-			FROM nodes WHERE ownerid = 0 AND netdev = ?', array($id));
+			FROM nodes 
+			LEFT JOIN (
+				SELECT nodeid, '.$this->DB->GroupConcat('mac', ',').' AS mac FROM macs GROUP BY nodeid
+			) m ON (nodes.id = m.nodeid)
+			WHERE ownerid = 0 AND netdev = ?', array($id));
 	}
 
 	/*

@@ -43,22 +43,24 @@ if(isset($_GET['preip']))
 	$nodedata['ipaddr'] = $_GET['preip'];
 
 if(isset($_GET['premac']))
-	$nodedata['mac'] = $_GET['premac'];
+	$nodedata['macs'][] = $_GET['premac'];
 
 if(isset($_GET['prename']))
 	$nodedata['name'] = $_GET['prename'];
 
-if(isset($_POST['nodedata']))
+if(isset($_POST['nodedata']) && !isset($_GET['newmac']))
 {
 	$nodedata = $_POST['nodedata'];
 
 	$nodedata['ipaddr'] = $_POST['nodedataipaddr'];
 	$nodedata['ipaddr_pub'] = $_POST['nodedataipaddr_pub'];
-	$nodedata['mac'] = $_POST['nodedatamac'];
-	$nodedata['mac'] = str_replace('-',':',$nodedata['mac']);
+	$nodedata['macs'] = $_POST['nodedata']['macs'];
+	foreach($nodedata['macs'] as $key => $value)
+		$nodedata['macs'][$key] = str_replace('-',':',$value);
 
 	foreach($nodedata as $key => $value)
-		$nodedata[$key] = trim($value);
+		if($key != 'macs')
+			$nodedata[$key] = trim($value);
 
 	if($nodedata['ipaddr']=='' && $nodedata['ipaddr_pub'] && $nodedata['mac']=='' && $nodedata['name']=='')
 		if($_GET['ownerid'])
@@ -102,13 +104,22 @@ if(isset($_POST['nodedata']))
 	else
     		$nodedata['ipaddr_pub'] = '0.0.0.0';
 
-	if(!$nodedata['mac'])
+	$macs = array();
+	foreach($nodedata['macs'] as $key => $value)
+		if(check_mac($value))
+		{
+			if($value!='00:00:00:00:00:00' && (!isset($CONFIG['phpui']['allow_mac_sharing']) || !chkconfig($CONFIG['phpui']['allow_mac_sharing'])))
+			{
+				if($LMS->GetNodeIDByMAC($value))
+					$error['mac'.$key] = trans('Specified MAC address is in use!');
+			}
+			$macs[] = $value;
+		}
+		elseif($value!='')
+			$error['mac'.$key] = trans('Incorrect MAC address!');
+	if(empty($macs))
 		$error['mac'] = trans('MAC address is required!');
-	elseif(!check_mac($nodedata['mac']))
-		$error['mac'] = trans('Incorrect MAC address!');
-	elseif($nodedata['mac']!='00:00:00:00:00:00' && (!isset($CONFIG['phpui']['allow_mac_sharing']) || !chkconfig($CONFIG['phpui']['allow_mac_sharing'])))
-		if($LMS->GetNodeIDByMAC($nodedata['mac']))
-			$error['mac'] = trans('Specified MAC address is in use!');
+	$nodedata['macs'] = $macs;
 
 	if(strlen($nodedata['passwd']) > 32)
 		$error['passwd'] = trans('Password is too long (max.32 characters)!');
@@ -178,6 +189,18 @@ if(isset($_POST['nodedata']))
 	else
 		if($nodedata['ipaddr_pub']=='0.0.0.0')
 			$nodedata['ipaddr_pub'] = '';
+}
+else
+{
+	if(isset($_POST['nodedata']) && isset($_GET['newmac']))
+	{
+		$nodedata = $_POST['nodedata'];
+		$nodedata['ipaddr'] = $_POST['nodedataipaddr'];
+		$nodedata['ipaddr_pub'] = $_POST['nodedataipaddr_pub'];
+		$nodedata['macs'][] = '';
+	}
+	elseif(empty($nodedata['macs']))
+		$nodedata['macs'][] = '';
 }
 
 $layout['pagetitle'] = trans('New Node');

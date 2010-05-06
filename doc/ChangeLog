@@ -4,6 +4,7 @@ version ? (????-??-??)
 
   - fixed SQL queries in postfix configuration manual (alec)
   - BTS#0000832: fixed stats compacting (alec)
+  - we can bind many macs to one node (chilan)
 
 version 1.11.10 Kri (2010-04-19)
 

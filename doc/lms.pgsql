@@ -110,7 +110,6 @@ DROP TABLE nodes;
 CREATE TABLE nodes (
 	id integer DEFAULT nextval('nodes_id_seq'::text) NOT NULL,
 	name varchar(32) 	DEFAULT '' NOT NULL,
-	mac varchar(20) 	DEFAULT '' NOT NULL,
 	ipaddr bigint 		DEFAULT 0 NOT NULL,
 	ipaddr_pub bigint 	DEFAULT 0 NOT NULL,
 	passwd varchar(32)	DEFAULT '' NOT NULL,
@@ -138,6 +137,21 @@ CREATE INDEX nodes_netdev_idx ON nodes (netdev);
 CREATE INDEX nodes_ownerid_idx ON nodes (ownerid);
 CREATE INDEX nodes_ipaddr_pub_idx ON nodes (ipaddr_pub);
 CREATE SEQUENCE nodegroups_id_seq;
+
+/* -------------------------------------------------------- 
+  Structure of table "macs" 
+-------------------------------------------------------- */
+DROP SEQUENCE macs_id_seq;
+CREATE SEQUENCE macs_id_seq;
+DROP TABLE macs;
+CREATE TABLE macs (
+	id integer		DEFAULT nextval('macs_id_seq'::text) NOT NULL,
+	mac varchar(17)		DEFAULT '' NOT NULL,
+	nodeid integer		NOT NULL
+		REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id),
+	UNIQUE (mac, nodeid)
+);
 
 /* -------------------------------------------------------- 
   Structure of table "nodegroups" 
@@ -1370,6 +1384,15 @@ SELECT n.id, inet_ntoa(n.ipaddr) AS nasname, d.shortname, d.nastype AS type,
 	WHERE n.nas = 1;
 
 /* ---------------------------------------------------
+ Aggregates
+------------------------------------------------------*/
+CREATE AGGREGATE array_agg(anyelement) (
+	SFUNC=array_append,
+	STYPE=anyarray,
+	INITCOND='{}'
+);
+
+/* ---------------------------------------------------
  Data records
 ------------------------------------------------------*/
 INSERT INTO uiconfig (section, var)
@@ -1427,4 +1450,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010031100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010050600');
