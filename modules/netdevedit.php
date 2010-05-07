@@ -267,6 +267,7 @@ case 'addip':
 
 	$subtitle = trans('New IP address');
 	$nodeipdata['access'] = 1;
+	$nodeipdata['macs'] = array(0 => '');
 	$SMARTY->assign('nodeipdata', $nodeipdata);
 	$edit = 'addip';
 	break;
@@ -276,6 +277,10 @@ case 'editip':
 	$nodeipdata = $LMS->GetNode($_GET['ip']);
 	$subtitle = trans('IP address edit');
 	$nodeipdata['ipaddr'] = $nodeipdata['ip'];
+	$macs = array();
+	foreach($nodeipdata['macs'] as $key => $value)
+		$macs[] = $nodeipdata['macs'][$key]['mac'];
+	$nodeipdata['macs'] = $macs;
 	$SMARTY->assign('nodeipdata',$nodeipdata);
 	$edit = 'ip';
 	break;
@@ -315,71 +320,86 @@ case 'formaddip':
 	$subtitle = trans('New IP address');
 	$nodeipdata = $_POST['ipadd'];
 	$nodeipdata['ownerid'] = 0;
-	$nodeipdata['mac'] = str_replace('-',':',$nodeipdata['mac']);
+	foreach($nodeipdata['macs'] as $key => $value)
+		$nodeipdata['macs'][$key] = str_replace('-',':',$value);
 
 	foreach($nodeipdata as $key => $value)
-		$nodeipdata[$key] = trim($value);
+		if($key != 'macs')
+			$nodeipdata[$key] = trim($value);
 	
-	if($nodeipdata['ipaddr']=='' && $nodeipdata['mac']=='' && $nodeipdata['name']=='' && $nodeipdata['passwd']=='')
+	if(!isset($_GET['newmac']))
 	{
-		$SESSION->redirect('?m=netdevedit&action=addip&id='.$_GET['id']);
-        }
-	
-	if($nodeipdata['name']=='')
-		$error['ipname'] = trans('Address field is required!');
-	elseif(strlen($nodeipdata['name']) > 32)
-		$error['ipname'] = trans('Specified name is too long (max.$0 characters)!','32');
-	elseif($LMS->GetNodeIDByName($nodeipdata['name']))
-		$error['ipname'] = trans('Specified name is in use!');
-	elseif(!preg_match('/^[_a-z0-9-]+$/i', $nodeipdata['name']))
-		$error['ipname'] = trans('Name contains forbidden characters!');
+		if($nodeipdata['ipaddr']=='' && empty($nodeipdata['macs']) && $nodeipdata['name']=='' && $nodeipdata['passwd']=='')
+		{
+			$SESSION->redirect('?m=netdevedit&action=addip&id='.$_GET['id']);
+		}
 
-	if($nodeipdata['ipaddr']=='')
-		$error['ipaddr'] = trans('IP address is required!');
-	elseif(!check_ip($nodeipdata['ipaddr']))
-		$error['ipaddr'] = trans('Incorrect IP address!');
-	elseif(!$LMS->IsIPValid($nodeipdata['ipaddr']))
-		$error['ipaddr'] = trans('Specified address does not belongs to any network!');
-	elseif(!$LMS->IsIPFree($nodeipdata['ipaddr']))
-		$error['ipaddr'] = trans('Specified IP address is in use!');
-	
-	if($nodeipdata['ipaddr_pub']!='0.0.0.0' && $nodeipdata['ipaddr_pub']!='')
-	{
-		if(!check_ip($nodeipdata['ipaddr_pub']))
-	            	$error['ipaddr_pub'] = trans('Incorrect IP address!');
-	    	elseif(!$LMS->IsIPValid($nodeipdata['ipaddr_pub']))
-	            	$error['ipaddr_pub'] = trans('Specified address does not belongs to any network!');
-		elseif(!$LMS->IsIPFree($nodeipdata['ipaddr_pub']))
-			$error['ipaddr_pub'] = trans('Specified IP address is in use!');
+		if($nodeipdata['name']=='')
+			$error['ipname'] = trans('Address field is required!');
+		elseif(strlen($nodeipdata['name']) > 32)
+			$error['ipname'] = trans('Specified name is too long (max.$0 characters)!','32');
+		elseif($LMS->GetNodeIDByName($nodeipdata['name']))
+			$error['ipname'] = trans('Specified name is in use!');
+		elseif(!preg_match('/^[_a-z0-9-]+$/i', $nodeipdata['name']))
+			$error['ipname'] = trans('Name contains forbidden characters!');
+
+		if($nodeipdata['ipaddr']=='')
+			$error['ipaddr'] = trans('IP address is required!');
+		elseif(!check_ip($nodeipdata['ipaddr']))
+			$error['ipaddr'] = trans('Incorrect IP address!');
+		elseif(!$LMS->IsIPValid($nodeipdata['ipaddr']))
+			$error['ipaddr'] = trans('Specified address does not belongs to any network!');
+		elseif(!$LMS->IsIPFree($nodeipdata['ipaddr']))
+			$error['ipaddr'] = trans('Specified IP address is in use!');
+
+		if($nodeipdata['ipaddr_pub']!='0.0.0.0' && $nodeipdata['ipaddr_pub']!='')
+		{
+			if(!check_ip($nodeipdata['ipaddr_pub']))
+				$error['ipaddr_pub'] = trans('Incorrect IP address!');
+			elseif(!$LMS->IsIPValid($nodeipdata['ipaddr_pub']))
+				$error['ipaddr_pub'] = trans('Specified address does not belongs to any network!');
+			elseif(!$LMS->IsIPFree($nodeipdata['ipaddr_pub']))
+				$error['ipaddr_pub'] = trans('Specified IP address is in use!');
+		}
+		else
+			$nodeipdata['ipaddr_pub'] = '0.0.0.0';
+
+		$macs = array();
+		foreach($nodeipdata['macs'] as $key => $value)
+			if(check_mac($value))
+			{
+				if($value!='00:00:00:00:00:00' && !chkconfig($CONFIG['phpui']['allow_mac_sharing']))
+					if($LMS->GetNodeIDByMAC($value))
+						$error['mac'.$key] = trans('MAC address is in use!');
+				$macs[] = $value;
+			}
+			elseif($value!='')
+				$error['mac'.$key] = trans('Incorrect MAC address!');
+		if(empty($macs))
+			$error['mac0'] = trans('MAC address is required!');
+
+		if(strlen($nodeipdata['passwd']) > 32)
+			$error['passwd'] = trans('Password is too long (max.32 characters)!');
+
+		if(!isset($nodeipdata['chkmac'])) $nodeipdata['chkmac'] = 0;
+		if(!isset($nodeipdata['halfduplex'])) $nodeipdata['halfduplex'] = 0;
+		if(!isset($nodeipdata['nas'])) $nodeipdata['nas'] = 0;
+
+		if(!$error)
+		{
+			$nodeipdata['warning'] = 0;
+			$nodeipdata['location'] = '';
+			$nodeipdata['netdev'] = $_GET['id'];
+
+			$LMS->NodeAdd($nodeipdata);
+			$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
+		}
 	}
 	else
-		$nodeipdata['ipaddr_pub'] = '0.0.0.0';
-
-	if($nodeipdata['mac']=='')
-		$error['mac'] = trans('MAC address is required!');
-	elseif(!check_mac($nodeipdata['mac']))
-		$error['mac'] = trans('Incorrect MAC address!');
-	elseif($nodeipdata['mac']!='00:00:00:00:00:00' && !chkconfig($CONFIG['phpui']['allow_mac_sharing']))
-		if($LMS->GetNodeIDByMAC($nodeipdata['mac']))
-			$error['mac'] = trans('MAC address is in use!');
-
-	if(strlen($nodeipdata['passwd']) > 32)
-                $error['passwd'] = trans('Password is too long (max.32 characters)!');
-
-	if(!isset($nodeipdata['chkmac'])) $nodeipdata['chkmac'] = 0;
-	if(!isset($nodeipdata['halfduplex'])) $nodeipdata['halfduplex'] = 0;
-	if(!isset($nodeipdata['nas'])) $nodeipdata['nas'] = 0;
-
-	if(!$error)
 	{
-		$nodeipdata['warning'] = 0;
-		$nodeipdata['location'] = '';
-		$nodeipdata['netdev'] = $_GET['id'];
-		
-		$LMS->NodeAdd($nodeipdata);
-		$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
+		$nodeipdata['macs'][] = '';
 	}
-	
+
 	$SMARTY->assign('nodeipdata',$nodeipdata); 
 	$edit='addip';
 	break;
@@ -389,83 +409,96 @@ case 'formeditip':
 	$subtitle = trans('IP address edit');
 	$nodeipdata = $_POST['ipadd'];
 	$nodeipdata['ownerid']=0;
-	$nodeipdata['mac'] = str_replace('-',':',$nodeipdata['mac']);
+	foreach($nodeipdata['macs'] as $key => $value)
+		$nodeipdata['macs'][$key] = str_replace('-',':',$value);
 
 	foreach($nodeipdata as $key => $value)
-		$nodeipdata[$key] = trim($value);
-	
-	if($nodeipdata['ipaddr']=='' && $nodeipdata['mac']=='' && $nodeipdata['name']=='' && $nodeipdata['passwd']=='')
-	{
-		$SESSION->redirect('?m=netdevedit&action=editip&id='.$_GET['id'].'&ip='.$_GET['ip']);
-        }
-	
-	if($nodeipdata['name']=='')
-		$error['ipname'] = trans('Address field is required!');
-	elseif(strlen($nodeipdata['name']) > 32)
-		$error['ipname'] = trans('Specified name is too long (max.$0 characters)!','32');
-	elseif(
-		$LMS->GetNodeIDByName($nodeipdata['name']) &&
-		$LMS->GetNodeName($_GET['ip'])!=$nodeipdata['name']
-		)
-		$error['ipname'] = trans('Specified name is in use!');
-	elseif(!preg_match('/^[_a-z0-9-]+$/i', $nodeipdata['name']))
-		$error['ipname'] = trans('Name contains forbidden characters!');	
+		if($key != 'macs')
+			$nodeipdata[$key] = trim($value);
 
-	if($nodeipdata['ipaddr']=='')
-		$error['ipaddr'] = trans('IP address is required!');
-	elseif(!check_ip($nodeipdata['ipaddr']))
-		$error['ipaddr'] = trans('Incorrect IP address!');
-	elseif(!$LMS->IsIPValid($nodeipdata['ipaddr']))
-		$error['ipaddr'] =  trans('Specified address does not belongs to any network!');
-	elseif(
-		!$LMS->IsIPFree($nodeipdata['ipaddr']) &&
-		$LMS->GetNodeIPByID($_GET['ip'])!=$nodeipdata['ipaddr']
-		)
-		$error['ipaddr'] = trans('IP address is in use!');
-
-	if($nodeipdata['ipaddr_pub']!='0.0.0.0' && $nodeipdata['ipaddr_pub']!='')
+	if(!isset($_GET['newmac']))
 	{
-		if(check_ip($nodeipdata['ipaddr_pub']))
+		if($nodeipdata['ipaddr']=='' && empty($nodeipdata['macs']) && $nodeipdata['name']=='' && $nodeipdata['passwd']=='')
 		{
-		        if($LMS->IsIPValid($nodeipdata['ipaddr_pub']))
-		        {
-		                $ip = $LMS->GetNodePubIPByID($nodeipdata['id']);
-		                if($ip!=$nodeipdata['ipaddr_pub'] && !$LMS->IsIPFree($nodeipdata['ipaddr_pub']))
-		                        $error['ipaddr_pub'] = trans('Specified IP address is in use!');
-		        }
-		        else
-		                $error['ipaddr_pub'] = trans('Specified IP address doesn\'t overlap with any network!');
+			$SESSION->redirect('?m=netdevedit&action=editip&id='.$_GET['id'].'&ip='.$_GET['ip']);
+	        }
+
+		if($nodeipdata['name']=='')
+			$error['ipname'] = trans('Address field is required!');
+		elseif(strlen($nodeipdata['name']) > 32)
+			$error['ipname'] = trans('Specified name is too long (max.$0 characters)!','32');
+		elseif(
+			$LMS->GetNodeIDByName($nodeipdata['name']) &&
+			$LMS->GetNodeName($_GET['ip'])!=$nodeipdata['name']
+			)
+			$error['ipname'] = trans('Specified name is in use!');
+		elseif(!preg_match('/^[_a-z0-9-]+$/i', $nodeipdata['name']))
+			$error['ipname'] = trans('Name contains forbidden characters!');	
+
+		if($nodeipdata['ipaddr']=='')
+			$error['ipaddr'] = trans('IP address is required!');
+		elseif(!check_ip($nodeipdata['ipaddr']))
+			$error['ipaddr'] = trans('Incorrect IP address!');
+		elseif(!$LMS->IsIPValid($nodeipdata['ipaddr']))
+			$error['ipaddr'] =  trans('Specified address does not belongs to any network!');
+		elseif(!$LMS->IsIPFree($nodeipdata['ipaddr']) &&
+			$LMS->GetNodeIPByID($_GET['ip'])!=$nodeipdata['ipaddr'])
+			$error['ipaddr'] = trans('IP address is in use!');
+
+		if($nodeipdata['ipaddr_pub']!='0.0.0.0' && $nodeipdata['ipaddr_pub']!='')
+		{
+			if(check_ip($nodeipdata['ipaddr_pub']))
+			{
+				if($LMS->IsIPValid($nodeipdata['ipaddr_pub']))
+				{
+					$ip = $LMS->GetNodePubIPByID($nodeipdata['id']);
+					if($ip!=$nodeipdata['ipaddr_pub'] && !$LMS->IsIPFree($nodeipdata['ipaddr_pub']))
+						$error['ipaddr_pub'] = trans('Specified IP address is in use!');
+				}
+				else
+					$error['ipaddr_pub'] = trans('Specified IP address doesn\'t overlap with any network!');
+			}
+			else
+				$error['ipaddr_pub'] = trans('Incorrect IP address!');
 		}
 		else
-	    		$error['ipaddr_pub'] = trans('Incorrect IP address!');
+			$nodeipdata['ipaddr_pub'] = '0.0.0.0';
+
+		$macs = array();
+		foreach($nodeipdata['macs'] as $key => $value)
+			if(check_mac($value))
+			{
+				if($value!='00:00:00:00:00:00' && isset($CONFIG['phpui']['allow_mac_sharing']) && !chkconfig($CONFIG['phpui']['allow_mac_sharing']))
+					if(($nodeid = $LMS->GetNodeIDByMAC($value)) != NULL && $nodeid != $_GET['ip'])
+						$error['mac'.$key] = trans('MAC address is in use!');
+				$macs[] = $value;
+			}
+			elseif($value!='')
+				$error['mac'.$key] = trans('Incorrect MAC address!');
+		if(empty($macs))
+			$error['mac0'] = trans('MAC address is required!');
+		$nodeipdata['macs'] = $macs;
+
+		if(strlen($nodeipdata['passwd']) > 32)
+	                $error['passwd'] = trans('Password is too long (max.32 characters)!');
+
+		if(!isset($nodeipdata['chkmac'])) $nodeipdata['chkmac'] = 0;
+		if(!isset($nodeipdata['halfduplex'])) $nodeipdata['halfduplex'] = 0;
+		if(!isset($nodeipdata['nas'])) $nodeipdata['nas'] = 0;
+
+		if(!$error)
+		{
+			$nodeipdata['warning'] = 0;
+			$nodeipdata['location'] = '';
+			$nodeipdata['netdev'] = $_GET['id'];
+
+			$LMS->NodeUpdate($nodeipdata);
+			$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
+		}
 	}
 	else
-		$nodeipdata['ipaddr_pub'] = '0.0.0.0';
-	
-	if($nodeipdata['mac']=='')
-		$error['mac'] =  trans('MAC address is required!');
-	elseif(!check_mac($nodeipdata['mac']))
-		$error['mac'] = trans('Incorrect MAC address!');
-	elseif($nodeipdata['mac']!='00:00:00:00:00:00' && isset($CONFIG['phpui']['allow_mac_sharing']) &&
-		!chkconfig($CONFIG['phpui']['allow_mac_sharing']))
-		if($LMS->GetNodeIDByMAC($nodeipdata['mac']) && $LMS->GetNodeMACByID($_GET['ip'])!=$nodeipdata['mac'])
-			$error['mac'] = trans('MAC address is in use!');
-
-	if(strlen($nodeipdata['passwd']) > 32)
-                $error['passwd'] = trans('Password is too long (max.32 characters)!');
-		
-	if(!isset($nodeipdata['chkmac'])) $nodeipdata['chkmac'] = 0;
-	if(!isset($nodeipdata['halfduplex'])) $nodeipdata['halfduplex'] = 0;
-	if(!isset($nodeipdata['nas'])) $nodeipdata['nas'] = 0;
-	
-	if(!$error)
 	{
-		$nodeipdata['warning'] = 0;
-		$nodeipdata['location'] = '';
-		$nodeipdata['netdev'] = $_GET['id'];
-
-		$LMS->NodeUpdate($nodeipdata);	
-		$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
+		$nodeipdata['macs'][] = '';
 	}
 
 	$nodeipdata['ip_pub'] = $nodeipdata['ipaddr_pub'];
