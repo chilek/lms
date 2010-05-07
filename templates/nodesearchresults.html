@@ -52,7 +52,7 @@
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';" valign="top" nowrap>
 			<img src="img/ip.gif" ALT="">&nbsp;{$nodelist[nodelist].ip}{if $nodelist[nodelist].ip_pub != "0.0.0.0"} ({$nodelist[nodelist].ip_pub}){/if}<BR>
-			<img src="img/mac.gif" ALT="">&nbsp;{$nodelist[nodelist].mac}
+			<img src="img/mac.gif" ALT="">&nbsp;{$nodelist[nodelist].mac|replace:",":"<BR><img src=\"img/mac.gif\" ALT=\"\">&nbsp;"}
 		</TD>
 		<TD class="fright" width="1%">
 			<nobr>
