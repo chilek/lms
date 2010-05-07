@@ -1184,7 +1184,6 @@ class LMS
 		$this->DB->BeginTrans();
 		$this->DB->Execute('DELETE FROM nodes WHERE id = ?', array($id));
 		$this->DB->Execute('DELETE FROM nodegroupassignments WHERE nodeid = ?', array($id));
-		$this->DB->Execute('DELETE FROM macs WHERE nodeid = ?', array($id));
 		$this->DB->CommitTrans();
 	}
 
@@ -1481,7 +1480,7 @@ class LMS
 			{
 				$this->DB->BeginTrans();
 				$this->DB->LockTables('nodes');
-				
+
 				if($newid = $this->DB->GetOne('SELECT n.id + 1 FROM nodes n 
 						LEFT OUTER JOIN nodes n2 ON n.id + 1 = n2.id
 						WHERE n2.id IS NULL AND n.id <= 99999
@@ -1490,7 +1489,7 @@ class LMS
 					$this->DB->Execute('UPDATE nodes SET id = ? WHERE id = ?', array($newid, $id));
 					$id = $newid;
 				}
-				
+
 				$this->DB->UnLockTables();
 				$this->DB->CommitTrans();
 			}
@@ -3591,7 +3590,7 @@ class LMS
 						$result[$idx] += $val;
 					}
 		}
-		
+
 		return $result;
 	}
 
@@ -3599,7 +3598,7 @@ class LMS
 	{
 		$inputbuf = '';
 		$result = array();
-		
+
 		if($socket = socket_create (AF_INET, SOCK_STREAM, 0))
 			if(@socket_connect ($socket, $host, $port))
 			{
@@ -3682,7 +3681,7 @@ class LMS
 					}
 					break;
 			}
-		
+
 		return $result;
 	}
 
