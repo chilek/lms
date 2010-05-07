@@ -64,6 +64,7 @@ function CheckAllN2()
 		    	    <TD WIDTH="1%" class="fbt" align="right">{t}Channel:{/t}</TD>
 			    {/if}
 		    	    <TD WIDTH="1%" class="fbt" align="right">{t}Address:{/t}</TD>
+		    	    <TD WIDTH="1%" class="fbt" align="right">{t}MAC:{/t}</TD>
 		    	    <TD WIDTH="1%" class="fbt" align="right">{t}Groups:{/t}</TD>
 		    	    <TD WIDTH="1%" class="fbt" align="right">{t}Network:{/t}</TD>
 		    	    <TD WIDTH="1%" class="frightu">&nbsp;</TD>
@@ -103,7 +104,10 @@ function CheckAllN2()
 			    </TD>
 			    {/if}
 			    <TD onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';" align="right" NOWRAP>
-				{$customernodes[customernodes].ip} {if $customernodes[customernodes].ip_pub != "0.0.0.0"} ({$customernodes[customernodes].ip_pub}){/if} / {$customernodes[customernodes].mac}
+				{$customernodes[customernodes].ip} {if $customernodes[customernodes].ip_pub != "0.0.0.0"} ({$customernodes[customernodes].ip_pub}){/if}
+			    </TD>
+		    	    <TD onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';">
+				{$customernodes[customernodes].mac|replace:",":"<BR>"}
 			    </TD>
 			    <TD align="right" NOWRAP>
 				{if $customernodes[customernodes].gcount}
@@ -149,7 +153,7 @@ function CheckAllN2()
 				</SELECT>
 				{/if}
 			    </TD>
-			    <TD CLASS="ftop" ALIGN="right" COLSPAN="2">
+			    <TD CLASS="ftop" ALIGN="right" COLSPAN="3">
 			        <NOBR><A href="javascript:CheckAllN2();">{t}Check All{/t}</A><INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAllN();" VALUE="Check All Boxes" CHECKED></NOBR>
                             </TD>
 			</TR>
