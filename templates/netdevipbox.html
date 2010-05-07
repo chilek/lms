@@ -13,16 +13,17 @@
 	        <TD WIDTH="100%" class="fall" colspan="2">
 		        <TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
 	<TR class="dark">
-	        <TD WIDTH="97%" class="fleftu"><B>{t}Name:{/t}</B></TD>
+	        <TD WIDTH="96%" class="fleftu"><B>{t}Name:{/t}</B></TD>
 		<TD WIDTH="1%" class="fbt" align="right">{t}ID:{/t}</TD>
 		<TD WIDTH="1%" class="fbt" align="right">{t}Address:{/t}</TD>
+		<TD WIDTH="1%" class="fbt" align="right">{t}MAC:{/t}</TD>
 		<TD WIDTH="1%" class="frightu">&nbsp;</TD>
 	</TR>
 	{if $netdevips}
 	{cycle values="light,lucid" print=false}
 	{section name=list loop=$netdevips}
 	<TR class="{cycle}{if ! $netdevips[list].access} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD WIDTH="97%" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
+		<TD WIDTH="96%" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
 			<B>{$netdevips[list].name}</B>
 			{if $netdevips[list].location}<BR>
 			<NOBR>{$netdevips[list].info|truncate:50:"...":true}</NOBR>
@@ -32,7 +33,10 @@
 			({$netdevips[list].id|string_format:"%04d"})
 		</TD>
 		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';" NOWRAP>
-			{$netdevips[list].ip}{if $netdevips[list].ip_pub!="0.0.0.0"} ({$netdevips[list].ip_pub}){/if} / {$netdevips[list].mac}<BR>
+			{$netdevips[list].ip}{if $netdevips[list].ip_pub!="0.0.0.0"} ({$netdevips[list].ip_pub}){/if}<BR>
+		</TD>
+		<TD WIDTH="1%" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
+			{$netdevips[list].mac|replace:",":"<BR>"}
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<A href="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset&ip={$netdevips[list].id}"><IMG src="img/{if ! $netdevips[list].access}no{/if}access.gif" ALT="" {if ! $netdevips[list].access}{tip text="Connect"}{else}{tip text="Disconnect"}{/if}></A>
@@ -44,7 +48,7 @@
 	{/section}
 	{else}
         <TR>
-    		<TD colspan="4" align="center">
+    		<TD colspan="5" align="center">
 			<p>&nbsp;</p>
 			<p><B>{t}No IP addresses on device.{/t}</b></p>
 			<p>&nbsp;</p>
@@ -52,7 +56,7 @@
 	</TR>
 	{/if}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" COLSPAN="4" CLASS="ftop">
+		<TD WIDTH="100%" COLSPAN="5" CLASS="ftop">
 			<IMG SRC="img/access.gif">
 			<A HREF="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset&access=1">{t}Connect{/t}</A>/<A HREF="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset">{t}Disconnect{/t}</A>
 		</TD>

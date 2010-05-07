@@ -72,7 +72,9 @@ function setCheckbox(id)
 			<IMG SRC="img/mac.gif" ALT="{t}MAC address:{/t}">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
-			{$nodeipdata.mac} {if $nodeipdata.producer}({$nodeipdata.producer}){/if}
+			{foreach from=$nodeipdata.macs item=item}
+				{$item.mac} {if $item.producer}({$item.producer}){/if}<BR>
+			{/foreach}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
