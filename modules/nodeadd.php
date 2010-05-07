@@ -54,7 +54,6 @@ if(isset($_POST['nodedata']) && !isset($_GET['newmac']))
 
 	$nodedata['ipaddr'] = $_POST['nodedataipaddr'];
 	$nodedata['ipaddr_pub'] = $_POST['nodedataipaddr_pub'];
-	$nodedata['macs'] = $_POST['nodedata']['macs'];
 	foreach($nodedata['macs'] as $key => $value)
 		$nodedata['macs'][$key] = str_replace('-',':',$value);
 

@@ -80,7 +80,6 @@ if(isset($_POST['nodeedit']) && !isset($_GET['newmac']))
 	
 	$nodeedit['ipaddr'] = $_POST['nodeeditipaddr'];
 	$nodeedit['ipaddr_pub'] = $_POST['nodeeditipaddrpub'];
-	$nodeedit['macs'] = $_POST['nodeedit']['macs'];
 	foreach($nodeedit['macs'] as $key => $value)
 		$nodeedit['macs'][$key] = str_replace('-',':',$value);
 
