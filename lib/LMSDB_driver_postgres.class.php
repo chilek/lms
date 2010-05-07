@@ -191,11 +191,11 @@ class LMSDB_driver_postgres extends LMSDB_common
 	{
 		return TRUE;
 	}
-																		
+
 	function _driver_lastinsertid($table)
 	{
                return $this->GetOne('SELECT currval(\''.$table.'_id_seq\')');
-	}       
+	}
 
 	function _driver_groupconcat($field, $separator)
 	{
@@ -204,3 +204,4 @@ class LMSDB_driver_postgres extends LMSDB_common
 }
 
 ?>
+

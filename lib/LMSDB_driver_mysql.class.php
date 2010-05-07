@@ -41,11 +41,11 @@ class LMSDB_driver_mysql extends LMSDB_common
 			$this->_loaded = FALSE;
 	                return;
 	        }
-	                                        
-		$this->_version .= ' ('.preg_replace('/^.Revision: ([0-9.]+).*/','\1',$this->_revision).'/'.preg_replace('/^.Revision: ([0-9.]+).*/','\1','$Revision$').')';
+
+	    $this->_version .= ' ('.preg_replace('/^.Revision: ([0-9.]+).*/','\1',$this->_revision).'/'.preg_replace('/^.Revision: ([0-9.]+).*/','\1','$Revision$').')';
 		$this->Connect($dbhost, $dbuser, $dbpasswd, $dbname);
 	}
-	
+
 	function _driver_dbversion()
 	{
 		return mysql_get_server_info();
@@ -179,7 +179,7 @@ class LMSDB_driver_mysql extends LMSDB_common
 	function _driver_locktables($table, $locktype=null)
 	{
 		$locktype = $locktype ? strtoupper($locktype) : 'WRITE';
-	
+
 		if(is_array($table))
 			$this->Execute('LOCK TABLES '.implode(' '.$locktype.', ', $table).' '.$locktype);
 		else
@@ -190,7 +190,7 @@ class LMSDB_driver_mysql extends LMSDB_common
 	{
 		$this->Execute('UNLOCK TABLES');
 	}
-        
+
 	function _driver_lastinsertid($table = NULL)
         {
 	        return $this->GetOne('SELECT LAST_INSERT_ID()');
@@ -198,7 +198,7 @@ class LMSDB_driver_mysql extends LMSDB_common
 
 	function _driver_groupconcat($field, $separator)
 	{
-		return 'GROUP_CONCAT('.$field.' SEPARATOR \''.$field.'\')';
+		return 'GROUP_CONCAT('.$field.' SEPARATOR \''.$separator.'\')';
 	}
 }
 
