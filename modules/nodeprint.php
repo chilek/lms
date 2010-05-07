@@ -63,7 +63,7 @@ switch($type)
 						$sqlord = ' ORDER BY id';
 					break;
 					case 'mac':
-						$sqlord = ' ORDER BY mac';
+						$sqlord = ' ORDER BY m.mac';
 					break;
 				    	case 'ip':
 						$sqlord = ' ORDER BY ipaddr';
@@ -81,13 +81,14 @@ switch($type)
 				
 				$group = $_POST['customergroup'];
 
-				$nodelist = $DB->GetAll('SELECT nodes.id AS id, inet_ntoa(ipaddr) AS ip, mac, 
+				$nodelist = $DB->GetAll('SELECT nodes.id AS id, inet_ntoa(ipaddr) AS ip, m.mac AS mac, 
 					    nodes.name AS name, nodes.info AS info, 
 					    COALESCE(SUM(value), 0.00)/(CASE COUNT(DISTINCT nodes.id) WHEN 0 THEN 1 ELSE COUNT(DISTINCT nodes.id) END) AS balance, '
 					    .$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS owner
 					    FROM nodes 
 					    LEFT JOIN customers ON (ownerid = customers.id)
 					    LEFT JOIN cash ON (cash.customerid = customers.id) 
+					    LEFT JOIN (SELECT nodeid, '.$DB->GroupConcat('mac').' AS mac FROM macs GROUP BY nodeid) m ON (nodes.id = m.nodeid) 
 					    WHERE 1=1 '
 					    .($net ? ' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
 					    .($group ? ' AND EXISTS (SELECT 1 FROM customerassignments WHERE customerid = ownerid)' : '')
