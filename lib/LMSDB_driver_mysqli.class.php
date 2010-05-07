@@ -195,4 +195,3 @@ class LMSDB_driver_mysqli extends LMSDB_common
 }
 
 ?>
-
