@@ -41,11 +41,11 @@ class LMSDB_driver_mysqli extends LMSDB_common
 		        $this->_loaded = FALSE;
 		        return;
                 }
-	
+
 		$this->_version .= ' ('.preg_replace('/^.Revision: ([0-9.]+).*/','\1',$this->_revision).'/'.preg_replace('/^.Revision: ([0-9.]+).*/','\1','$Revision$').'-mysqli)';
 		$this->Connect($dbhost, $dbuser, $dbpasswd, $dbname);
 	}
-	
+
 	function _driver_dbversion()
 	{
 		return @mysqli_get_server_info($this->_dblink);
@@ -71,7 +71,7 @@ class LMSDB_driver_mysqli extends LMSDB_common
 		$this->_loaded = FALSE;
 		@mysqli_close($this->_dblink); // apparently, mysqli_close() is automagicly called after end of the script...
 	}
-	
+
 	function _driver_geterror()
 	{
 		if($this->_dblink)
@@ -171,7 +171,7 @@ class LMSDB_driver_mysqli extends LMSDB_common
 	function _driver_locktables($table, $locktype=null)
 	{
 		$locktype = $locktype ? strtoupper($locktype) : 'WRITE';
-	
+
 		if(is_array($table))
 			$this->Execute('LOCK TABLES '.implode(' '.$locktype.', ', $table).' '.$locktype);
 		else
@@ -182,16 +182,17 @@ class LMSDB_driver_mysqli extends LMSDB_common
 	{
 		$this->Execute('UNLOCK TABLES');
 	}
-        
+
 	function _driver_lastinsertid($table = NULL)
         {
 	        return $this->GetOne('SELECT LAST_INSERT_ID()');
 	}
 
-	function _driver_groupconcat($field, $separator)
+	function _driver_groupconcat($field, $separator = ',')
 	{
-		return 'GROUP_CONCAT('.$field.' SEPARATOR \''.$field.'\')';
+		return 'GROUP_CONCAT('.$field.' SEPARATOR \''.$separator.'\')';
 	}
 }
 
 ?>
+
