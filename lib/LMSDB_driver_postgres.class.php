@@ -197,7 +197,7 @@ class LMSDB_driver_postgres extends LMSDB_common
                return $this->GetOne('SELECT currval(\''.$table.'_id_seq\')');
 	}
 
-	function _driver_groupconcat($field, $separator)
+	function _driver_groupconcat($field, $separator = ',')
 	{
 		return 'array_to_string(array_agg('.$field.'), \''.$separator.'\')';
 	}

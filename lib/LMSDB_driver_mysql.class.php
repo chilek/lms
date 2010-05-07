@@ -196,7 +196,7 @@ class LMSDB_driver_mysql extends LMSDB_common
 	        return $this->GetOne('SELECT LAST_INSERT_ID()');
 	}
 
-	function _driver_groupconcat($field, $separator)
+	function _driver_groupconcat($field, $separator = ',')
 	{
 		return 'GROUP_CONCAT('.$field.' SEPARATOR \''.$separator.'\')';
 	}

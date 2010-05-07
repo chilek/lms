@@ -63,10 +63,10 @@ Class LMSDB_common
 	{
 		if(method_exists($this, '_driver_shutdown'))
 			register_shutdown_function(array($this, '_driver_shutdown'));
-		
+
 		// Inicjuje połączenie do bazy danych, nie musimy zwracać
 		// dblinka na zewnątrz gdyż jest to niepotrzebne.
-		
+
 		if($this->_driver_connect($dbhost,$dbuser,$dbpasswd,$dbname))
 			return $this->_dblink;
 		else
@@ -298,10 +298,11 @@ Class LMSDB_common
 		$this->Execute('SET NAMES ?', array($name));
 	}
 
-	function GroupConcat($field, $separator)
+	function GroupConcat($field, $separator = ',')
 	{
 		return $this->_driver_groupconcat($field, $separator);
 	}
 }
 
 ?>
+
