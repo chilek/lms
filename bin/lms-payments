@@ -160,9 +160,8 @@ use constant DISPOSABLE	=> 0;
 my @customergroupslist = split ' ', $customergroups;
 
 my $currtime = strftime("%s",localtime2());
-my $month = sprintf("%d",strftime("%m",localtime2()));
-my $day = strftime("%e",localtime2());
-my $dom = sprintf("%d",strftime("%d",localtime2()));
+my $month = int strftime("%m",localtime2());
+my $dom = int strftime("%d",localtime2());
 my $year = strftime("%Y",localtime2());
 my $weekday = strftime("%u",localtime2());
 my $yearday = strftime("%j",localtime2());
@@ -181,27 +180,27 @@ if($fakedate) {
 
 my $quarter;
 if($month==1 || $month==4 || $month==7 || $month==10) {
-	$quarter = $day;
+	$quarter = $dom;
 } elsif ($month==2 || $month==5 || $month==8 || $month==11) {
-	$quarter = $day + 100;
+	$quarter = $dom + 100;
 } else {
-	$quarter = $day + 200;
+	$quarter = $dom + 200;
 }
 
 my $halfyear;
 if($month > 6) {
-       $halfyear = $day + ($month - 7) * 100;
+       $halfyear = $dom + ($month - 7) * 100;
 } else {
-       $halfyear = $day + ($month - 1) * 100;
+       $halfyear = $dom + ($month - 1) * 100;
 }
 
 my %txts;
-$txts{+DAY} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900);
-$txts{+WEEK} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day + 7, $month - 1, $year - 1900);
-$txts{+MONTH} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day - 1, $month, $year - 1900);
-$txts{+QUARTER} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day - 1, $month + 2, $year - 1900);
-$txts{+HALFYEAR} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day - 1, $month + 5, $year - 1900);
-$txts{+YEAR} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day - 1, $month - 1, $year - 1900 + 1);
+$txts{+DAY} = strftime("%Y/%m/%d", 0, 0, 12, $dom, $month - 1, $year - 1900);
+$txts{+WEEK} = strftime("%Y/%m/%d", 0, 0, 12, $dom, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $dom + 7, $month - 1, $year - 1900);
+$txts{+MONTH} = strftime("%Y/%m/%d", 0, 0, 12, $dom, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $dom - 1, $month, $year - 1900);
+$txts{+QUARTER} = strftime("%Y/%m/%d", 0, 0, 12, $dom, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $dom - 1, $month + 2, $year - 1900);
+$txts{+HALFYEAR} = strftime("%Y/%m/%d", 0, 0, 12, $dom, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $dom - 1, $month + 5, $year - 1900);
+$txts{+YEAR} = strftime("%Y/%m/%d", 0, 0, 12, $dom, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $dom - 1, $month - 1, $year - 1900 + 1);
 
 # special case, ie. you have 01.01.2005-01.31.2005 on invoice, but invoice/
 # assignment is made not January, the 1st:
@@ -220,8 +219,8 @@ sub get_period($)
 	for($period)
 	{
 		/@{[DAY]}/ && do {
-			$start = strftime("%s", 0, 0, 0, $day, $month - 1, $year - 1900);
-			$end = strftime("%s", 0, 0, 0, $day + 1, $month - 1, $year - 1900);
+			$start = strftime("%s", 0, 0, 0, $dom, $month - 1, $year - 1900);
+			$end = strftime("%s", 0, 0, 0, $dom + 1, $month - 1, $year - 1900);
 			last;
 		};
 		/@{[WEEK]}/ && do {
@@ -263,7 +262,7 @@ sub get_period($)
 		};
 		/@{[CONTINUOUS]}/ && do {
 			$start = strftime("%s", 0, 0, 0, 1, 0, 70);
-			$end = strftime("%s", 0, 0, 0, $day + 1, $month - 1, $year - 1900);
+			$end = strftime("%s", 0, 0, 0, $dom + 1, $month - 1, $year - 1900);
 			last;
 		};
 		# /@{[YEAR]}/ && do 
@@ -342,7 +341,7 @@ $dbq = $dbase->prepare("SELECT tariffid, liabilityid, customerid, period, at, su
 	WHERE c.status = 3
 		AND (period = ".DAY." 
 			OR (period = ".WEEK." AND at = $weekday) 
-			OR (period = ".MONTH." AND at = $day) 
+			OR (period = ".MONTH." AND at = $dom) 
 			OR (period = ".QUARTER." AND at = $quarter) 
 			OR (period = ".HALFYEAR." AND at = $halfyear) 
 			OR (period = ".YEAR." AND at = $yearday) 
@@ -542,7 +541,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 		{
 			my $alldays = 1;
 			my $diffdays = sprintf("%d", ($today - $assign->{'datefrom'})/86400);
-			my $period = strftime("%Y/%m/%d", 0, 0, 0, $day - $diffdays, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 0, $day - 1, $month - 1, $year - 1900);
+			my $period = strftime("%Y/%m/%d", 0, 0, 0, $dom - $diffdays, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 0, $dom - 1, $month - 1, $year - 1900);
 			
 			for ($assign->{'period'})
 	                {
@@ -630,7 +629,7 @@ $dbq->finish();
 $dbq = $dbase->prepare("SELECT * FROM payments WHERE value <> 0
 		AND (period = ".DAY."
 			OR (period = ".WEEK." AND at=$weekday)
-			OR (period = ".MONTH." AND at=$day)
+			OR (period = ".MONTH." AND at=$dom)
 			OR (period = ".QUARTER." AND at = $quarter)
 			OR (period = ".HALFYEAR." AND at = $halfyear) 
 			OR (period = ".YEAR." AND at = $yearday))");

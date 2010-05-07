@@ -158,8 +158,8 @@ sub encode_header
 $Mail::Sender::NO_X_MAILER = 1;
 $Mail::Sender::SITE_HEADERS = "X-Mailer: lms-reminder v.$_version";
 
-my $date = mktime(0, 0, 0, strftime("%e",localtime()), strftime("%m",localtime())-1, strftime("%Y",localtime())-1900, 0, 0, -1);
-my $day = strftime("%x", 0, 0, 0, strftime("%e",localtime()), strftime("%m",localtime())-1, strftime("%Y",localtime())-1900, 0, 0, -1);
+my $date = mktime(0, 0, 0, int strftime("%d",localtime()), strftime("%m",localtime())-1, strftime("%Y",localtime())-1900, 0, 0, -1);
+my $day = strftime("%x", 0, 0, 0, int strftime("%d",localtime()), strftime("%m",localtime())-1, strftime("%Y",localtime())-1900, 0, 0, -1);
 
 my $dbq = $dbase->prepare("SELECT id, name, email FROM users WHERE deleted = 0 AND email != ''");
 $dbq->execute();

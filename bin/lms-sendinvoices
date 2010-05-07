@@ -61,7 +61,7 @@ lms-sendinvoices, version $_version
 
 EOF
 	exit 0;
-}							
+}
 
 if($version)
 {
@@ -193,8 +193,8 @@ if($filetype eq 'pdf')
 	$fext = 'pdf';
 }
 
-my $month = sprintf("%d",strftime("%m",localtime2()));
-my $day = strftime("%e",localtime2());
+my $month =  int strftime("%m",localtime2());
+my $day = int strftime("%d",localtime2());
 my $year = strftime("%Y",localtime2());
 my $daystart = strftime("%s", 0, 0, 0, $day, $month - 1, $year - 1900);
 my $dayend = strftime("%s", 59, 59, 23, $day, $month - 1, $year - 1900);
