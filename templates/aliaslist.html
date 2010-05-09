@@ -70,8 +70,7 @@
 			({$aliaslist[aliaslist].id|string_format:"%04d"})
 		</TD>
 		<TD onclick="return self.location.href='?m=aliasinfo&id={$aliaslist[aliaslist].id}';">
-			<IMG src="img/account.gif" alt="">
-			{if $aliaslist[aliaslist].dest}{$aliaslist[aliaslist].dest}{else}{$aliaslist[aliaslist].forward}{/if}{if $aliaslist[aliaslist].cnt>1},...{/if}
+			<IMG src="img/account.gif" alt="">{if $aliaslist[aliaslist].dest}{$aliaslist[aliaslist].dest|replace:",":"<BR><IMG src=\"img/account.gif\" alt=\"\">"}{/if}
 		</TD>
 		<TD class="fright" align="right" NOWRAP>
 			{assign var=alias value="`$aliaslist[aliaslist].login`@`$aliaslist[aliaslist].domain`}
