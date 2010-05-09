@@ -45,13 +45,15 @@ function GetAliasList($order='login,asc', $customer=NULL, $domain='')
 		break;
 	}
 
-	$list = $DB->GetAll('SELECT a.id, a.login, d.name AS domain, domainid, s.dest, s.cnt 
+	$list = $DB->GetAll('SELECT a.id, a.login, d.name AS domain, domainid, s.accounts, s.forwards, s.cnt 
 		FROM aliases a
 		JOIN domains d ON (d.id = a.domainid)
-		JOIN (SELECT COUNT(*) AS cnt, '.$DB->GroupConcat('CASE WHEN mail_forward <> \'\' THEN mail_forward ELSE (SELECT '.$DB->Concat('p.login', "'@'", 'pd.name').' 
+		JOIN (SELECT COUNT(*) AS cnt, '.$DB->GroupConcat('(SELECT '.$DB->Concat('p.login', "'@'", 'pd.name').' 
 			FROM passwd p 
 			JOIN domains pd ON (p.domainid = pd.id) 
-			WHERE p.id = aliasassignments.accountid) END').' AS dest, aliasid 
+			WHERE p.id = aliasassignments.accountid)').' AS accounts, '
+			.$DB->GroupConcat('CASE WHEN mail_forward <> \'\' THEN mail_forward ELSE NULL END').' AS forwards, 
+			aliasid 
 			FROM aliasassignments GROUP BY aliasid) s ON (a.id = s.aliasid)
 		WHERE 1=1'
 		.($customer != '' ? ' AND d.ownerid = '.intval($customer) : '')
