@@ -70,7 +70,7 @@ function text_wrap($x,$y,$width,$size,$text,$justify)
 function getWrapTextWidth($font_size,$txt)
 {
     global $pdf, $margin;
-    
+
     $long = '';
     if($words = explode(' ', $txt))
     {
@@ -80,7 +80,7 @@ function getWrapTextWidth($font_size,$txt)
     }
     else
 	    $long = $txt;
-    
+
     return $pdf->getTextWidth($font_size, $long)+2*$margin+1;
 }
 
@@ -104,7 +104,7 @@ require_once(LIB_DIR.'/ezpdf/class.ezpdf.php');
 function init_pdf($pagesize, $orientation, $title)
 {
 	global $layout;
-	
+
 	$diff = array(
 		177=>'aogonek',
 		161=>'Aogonek',
@@ -142,7 +142,7 @@ function init_pdf($pagesize, $orientation, $title)
 	    'b'=>'arialbd.afm',
 	);
 
-	$pdf =& new Cezpdf($pagesize, $orientation); //landscape/portrait
+	$pdf = new Cezpdf($pagesize, $orientation); //landscape/portrait
 
 	$pdf->addInfo('Producer','LMS Developers');
 	$pdf->addInfo('Title',iconv("UTF-8","ISO-8859-2//TRANSLIT",$title));
@@ -157,7 +157,7 @@ function init_pdf($pagesize, $orientation, $title)
 	$pdf->selectFont(LIB_DIR.'/ezpdf/arial.afm',
 			array('encoding'=>'WinAnsiEncoding',
 				'differences'=>$diff));
-	
+
 	return $pdf;
 }
 
