@@ -1249,7 +1249,7 @@ class LMS
 			$result['modifiedby'] = $this->GetUserName($result['modid']);
 			$result['creationdateh'] = date('Y/m/d, H:i',$result['creationdate']);
 			$result['moddateh'] = date('Y/m/d, H:i',$result['moddate']);
-			$result['mac'] = split(',', $result['mac']);
+			$result['mac'] = preg_split('/,/', $result['mac']);
 			foreach($result['mac'] as $mac)
 				$result['macs'][] = array('mac' => $mac, 'producer' => get_producer($mac));
 			unset($result['mac']);
