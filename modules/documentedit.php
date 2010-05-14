@@ -56,10 +56,10 @@ if(isset($_POST['document']))
 {
 	$documentedit = $_POST['document'];
 	$documentedit['id'] = $_GET['id'];
-	
+
 	$oldfdate = $documentedit['fromdate'];
 	$oldtdate = $documentedit['todate'];
-	
+
 	if(!$documentedit['title'])
 		$error['title'] = trans('Document title is required!');
 
@@ -106,9 +106,9 @@ if(isset($_POST['document']))
 		else
 			$error['todate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
 	}
-	else 
+	else
 		$documentedit['todate'] = 0;
-	
+
 	if($documentedit['fromdate'] > $documentedit['todate'] && $documentedit['todate']!=0)
 		$error['todate'] = trans('Start date can\'t be greater than end date!');
 
@@ -124,13 +124,13 @@ if(isset($_POST['document']))
 		else // upload errors
 			switch($_FILES['file']['error'])
 			{
-				case 1: 			
+				case 1:
 				case 2: $error['file'] = trans('File is too large.'); break;
 				case 3: $error['file'] = trans('File upload has finished prematurely.'); break;
 				case 4: $error['file'] = trans('Path to file was not specified.'); break;
 				default: $error['file'] = trans('Problem during file upload.'); break;
 			}
-	}	
+	}
 	elseif($documentedit['template'])
 	{
 		include(DOC_DIR.'/templates/'.$documentedit['template'].'/info.php');
@@ -145,7 +145,7 @@ if(isset($_POST['document']))
 			$fh = fopen($file, 'w');
 			fwrite($fh, $output);
 			fclose($fh);
-			
+
 			$documentedit['md5sum'] = md5_file($file);
 			$documentedit['contenttype'] = $engine['content_type'];
 			$documentedit['filename'] = $engine['output'];
@@ -169,13 +169,13 @@ if(isset($_POST['document']))
 		else
 			$error['file'] = trans('Specified file exists in database!');
 	}
-*/	
+*/
 	$documentedit['closed'] = isset($documentedit['closed']) ? 1 : 0;
 
 	if(!$error)
 	{
 		$DB->BeginTrans();
-		
+
 		$DB->Execute('UPDATE documents SET type=?, closed=?, number=?, numberplanid=?
 				WHERE id=?',
 				array(	$documentedit['type'],
@@ -184,7 +184,7 @@ if(isset($_POST['document']))
 					$documentedit['numberplanid'],
 					$documentedit['id'],
 					));
-		
+
 		$DB->Execute('UPDATE documentcontents SET title=?, fromdate=?, todate=?, description=?
 				WHERE docid=?',
 				array(	$documentedit['title'],
@@ -193,9 +193,9 @@ if(isset($_POST['document']))
 					$documentedit['description'],
 					$documentedit['id']
 					));
-		
+
 		$DB->CommitTrans();
-		
+
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}
 	else

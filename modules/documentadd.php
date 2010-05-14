@@ -145,7 +145,7 @@ if(isset($_POST['document']))
 				case 4: $error['file'] = trans('Path to file was not specified.'); break;
 				default: $error['file'] = trans('Problem during file upload.'); break;
 			}
-	}	
+	}
 	elseif($document['templ'])
 	{
 		$result = '';
@@ -176,7 +176,7 @@ if(isset($_POST['document']))
 			$document['contenttype'] = $engine['content_type'];
 			$document['filename'] = $engine['output'];
 		}
-		else
+		else if (empty($error))
 			$error['template'] = trans('Problem during file generation!');
 	}
 	else
