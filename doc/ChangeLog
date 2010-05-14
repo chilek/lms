@@ -7,6 +7,7 @@ version ? (????-??-??)
   - we can bind many macs to one node (chilan)
   - show all accounts and mail forwards in aliaslist (chilan)
   - added vnodes sql view for simpler nodes mac processing (chilan)
+  - xajaxResponse object can be used in document plugins (alec)
 
 version 1.11.10 Kri (2010-04-19)
 
