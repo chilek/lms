@@ -155,7 +155,7 @@ if($excluded_networks_list)
 my %maclist;
 my %namelist;
 
-$dbq = $dbase->prepare("SELECT name, mac, ipaddr FROM nodes");
+$dbq = $dbase->prepare("SELECT name, mac, ipaddr FROM vnodes");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref()) {
 	$maclist{$row->{'ipaddr'}} = $row->{'mac'};
@@ -177,7 +177,7 @@ foreach my $key (@networks)
 		{
 			if($maclist{$i})
 			{
-				my $mac  = lc($maclist{$i});
+				my $mac  = lc((split ',', $maclist{$i})[0]);
 				my $name = lc($namelist{$i});
 			
 				$mac =~ s/://g;

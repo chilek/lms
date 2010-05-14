@@ -147,17 +147,14 @@ my $dbname = $ini->val('database', 'database') || 'lms';
 my $dbtype = $ini->val('database', 'type') || 'mysql';
 
 my $dbase;
-my $macgroupconcat;
 
 if($dbtype =~ /mysql/)
 {
 	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
-	$macgroupconcat = "GROUP_CONCAT(mac SEPARATOR ',')";
 }
 elsif($dbtype eq "postgres")
 {
 	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
-	$macgroupconcat = "array_to_string(array_agg(mac), ',')";
 }
 else
 {
@@ -337,9 +334,7 @@ while (my $row = $dbq->fetchrow_hashref())
 
 	print DHCPDCONF "\n";
 
-	my $dbq2 = $dbase->prepare("SELECT id, name, ipaddr, m.mac AS mac, ownerid FROM nodes 
-					LEFT JOIN (SELECT nodeid, $macgroupconcat AS mac FROM macs GROUP BY nodeid) m ON nodes.id = m.nodeid 
-					ORDER BY ipaddr");
+	my $dbq2 = $dbase->prepare("SELECT id, name, ipaddr, mac, ownerid FROM vnodes ORDER BY ipaddr");
 	$dbq2->execute();
 	while (my $row2 = $dbq2->fetchrow_hashref())
 	{
