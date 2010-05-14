@@ -1318,7 +1318,7 @@ class LMS
 							.' OR inet_ntoa(ipaddr_pub) ?LIKE? '.$this->DB->Escape('%'.trim($value).'%').')';
 					break;
 					case 'name' :
-						$searchargs[] = 'nodes.name ?LIKE? '.$this->DB->Escape("%$value%");
+						$searchargs[] = 'vnodes.name ?LIKE? '.$this->DB->Escape("%$value%");
 					break;
 					case 'info' :
 						// UPPER here is a postgresql ILIKE bug workaround
