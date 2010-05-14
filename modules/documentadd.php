@@ -35,6 +35,9 @@ function plugin($template, $customer)
 
 	$result = '';
 
+	// xajax response object, can be used in the plugin
+	$JSResponse = new xajaxResponse();
+
 	// read template information
 	if (file_exists($file = DOC_DIR.'/templates/'.$template.'/info.php'))
 	    include($file);
@@ -42,10 +45,8 @@ function plugin($template, $customer)
 	if (!empty($engine['plugin']) && file_exists($file = DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['plugin'].'.php'))
 	    include($file);
 
-	// xajax response
-	$objResponse = new xajaxResponse();
-	$objResponse->addAssign('plugin', 'innerHTML', $result);
-	return $objResponse;
+	$JSResponse->addAssign('plugin', 'innerHTML', $result);
+	return $JSResponse;
 }
 
 $xajax = new xajax();

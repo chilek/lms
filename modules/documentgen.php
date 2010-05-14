@@ -34,23 +34,24 @@ function plugin($template, $customer)
 	global $_DOC_DIR;
 
 	$result = '';
-	
+
+	// xajax response
+	$JSResponse = new xajaxResponse();
+
 	// read template information
 	@include(DOC_DIR.'/templates/'.$template.'/info.php');
 	// call plugin
 	@include(DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['plugin'].'.php');
-	
-	// xajax response
-	$objResponse = new xajaxResponse();
-	$objResponse->addAssign("plugin", "innerHTML", $result);
-	return $objResponse;
+
+	$JSResponse->addAssign("plugin", "innerHTML", $result);
+	return $JSResponse;
 }
 
 $xajax = new xajax();
 //$xajax->debugOn();
 $xajax->errorHandlerOn();
 $xajax->registerFunction("plugin");
-$xajax->processRequests();						
+$xajax->processRequests();
 
 $SMARTY->assign('xajax', $xajax->getJavascript('img/', 'xajax.js'));
 /* end AJAX plugin stuff */
