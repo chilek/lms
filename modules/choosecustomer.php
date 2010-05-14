@@ -57,7 +57,7 @@ if(isset($_POST['searchnode']) && $_POST['searchnode'])
 	$where_node = 'AND ('.(intval($search) ? 'nodes.id = '.intval($search).' OR ' : '')
 			.'    INET_NTOA(ipaddr) LIKE '.$DB->Escape('%'.$search.'%')
 			.' OR INET_NTOA(ipaddr_pub) LIKE '.$DB->Escape('%'.$search.'%')
-			.' OR UPPER(m.mac) LIKE UPPER('.$DB->Escape('%'.$search.'%').')'
+			.' OR UPPER(mac) LIKE UPPER('.$DB->Escape('%'.$search.'%').')'
 			.' OR UPPER(location) LIKE UPPER('.$DB->Escape('%'.$search.'%').')'
 			.' OR UPPER(nodes.name) LIKE UPPER('.$DB->Escape('%'.$search.'%').')) ';
 	
@@ -77,8 +77,7 @@ if(isset($where_node) || isset($where_cust))
 				.'ORDER BY customername LIMIT 15) c'))
 	{
 		foreach($customerlist as $idx => $row)
-			$customerlist[$idx]['nodes'] = $DB->GetAll('SELECT id, name, m.mac AS mac, inet_ntoa(ipaddr) AS ip, inet_ntoa(ipaddr_pub) AS ip_pub FROM nodes 
-									LEFT JOIN (SELECT nodeid, '.$DB->GroupConcat('mac').' AS mac FROM macs GROUP BY nodeid) m ON nodes.id = m.nodeid 
+			$customerlist[$idx]['nodes'] = $DB->GetAll('SELECT id, name, mac, inet_ntoa(ipaddr) AS ip, inet_ntoa(ipaddr_pub) AS ip_pub FROM vnodes 
 									WHERE ownerid=? ORDER BY name',array($row['id']));
 	}
 
