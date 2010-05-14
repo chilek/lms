@@ -820,16 +820,13 @@ class LMS
 
 	function GetCustomerNodes($id, $count=NULL)
 	{
-		if($result = $this->DB->GetAll('SELECT id, name, m.mac AS mac, ipaddr, 
+		if($result = $this->DB->GetAll('SELECT id, name, mac, ipaddr, 
 				inet_ntoa(ipaddr) AS ip, ipaddr_pub, 
 				inet_ntoa(ipaddr_pub) AS ip_pub, passwd, access, 
 				warning, info, ownerid, location, lastonline,
 				(SELECT COUNT(*) FROM nodegroupassignments
-					WHERE nodeid = nodes.id) AS gcount 
-				FROM nodes 
-				LEFT JOIN (
-					SELECT nodeid, '.$this->DB->GroupConcat('mac', ',').' AS mac FROM macs GROUP BY nodeid
-				) m ON (nodes.id = m.nodeid) 
+					WHERE nodeid = vnodes.id) AS gcount 
+				FROM vnodes 
 				WHERE ownerid=?
 				ORDER BY name ASC '.($count ? 'LIMIT '.$count : ''), array($id)))
 		{
@@ -1189,7 +1186,7 @@ class LMS
 
 	function GetNodeNameByMAC($mac)
 	{
-		return $this->DB->GetOne('SELECT name FROM nodes LEFT JOIN macs ON nodes.id = macs.nodeid WHERE mac=UPPER(?)', array($mac));
+		return $this->DB->GetOne('SELECT name FROM vnodes WHERE mac=UPPER(?)', array($mac));
 	}
 
 	function GetNodeIDByIP($ipaddr)
@@ -1220,7 +1217,7 @@ class LMS
 
 	function GetNodeMACByID($id)
 	{
-		return $this->DB->GetOne('SELECT '.$this->DB->GroupConcat('mac', ',').' AS mac FROM macs GROUP BY nodeid WHERE nodeid=?', array($id));
+		return $this->DB->GetOne('SELECT mac FROM vnodes WHERE nodeid=?', array($id));
 	}
 
 	function GetNodeName($id)
@@ -1236,13 +1233,11 @@ class LMS
 	function GetNode($id)
 	{
 		if($result = $this->DB->GetRow('SELECT id, name, ownerid, ipaddr, inet_ntoa(ipaddr) AS ip, 
-			ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, m.mac AS mac, passwd, access, 
+			ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, mac, passwd, access, 
 			warning, creationdate, moddate, creatorid, modid, netdev, lastonline, 
 			info, location, chkmac, halfduplex, linktype, port, nas 
-			FROM nodes 
-			LEFT JOIN (
-				SELECT nodeid, '.$this->DB->GroupConcat('mac', ',').' AS mac FROM macs GROUP BY nodeid
-			) m ON (nodes.id = m.nodeid) WHERE id = ?', array($id)))
+			FROM vnodes 
+			WHERE id = ?', array($id)))
 		{
 			$result['owner'] = $this->GetCustomerName($result['ownerid']);
 			$result['createdby'] = $this->GetUserName($result['creatorid']);
@@ -1289,13 +1284,13 @@ class LMS
 		switch($order)
 		{
 			case 'name':
-				$sqlord = ' ORDER BY nodes.name';
+				$sqlord = ' ORDER BY vnodes.name';
 			break;
 			case 'id':
 				$sqlord = ' ORDER BY id';
 			break;
 			case 'mac':
-				$sqlord = ' ORDER BY m.mac';
+				$sqlord = ' ORDER BY mac';
 			break;
 			case 'ip':
 				$sqlord = ' ORDER BY ipaddr';
@@ -1343,17 +1338,14 @@ class LMS
 		if($network)
 			$net = $this->GetNetworkParams($network);
 
-		if($nodelist = $this->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, 
-				inet_ntoa(ipaddr_pub) AS ip_pub, m.mac AS mac, nodes.name AS name, ownerid, access, warning, 
-				netdev, lastonline, nodes.info AS info, '
+		if($nodelist = $this->DB->GetAll('SELECT vnodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, 
+				inet_ntoa(ipaddr_pub) AS ip_pub, mac, vnodes.name AS name, ownerid, access, warning, 
+				netdev, lastonline, vnodes.info AS info, '
 				.$this->DB->Concat('c.lastname',"' '",'c.name').' AS owner 
-				FROM nodes 
-				LEFT JOIN (
-					SELECT nodeid, '.$this->DB->GroupConcat('mac', ',').' AS mac FROM macs GROUP BY nodeid
-				) m ON (nodes.id = m.nodeid) 
-				JOIN customersview c ON (nodes.ownerid = c.id) '
+				FROM vnodes 
+				JOIN customersview c ON (vnodes.ownerid = c.id) '
 				.($customergroup ? 'JOIN customerassignments ON (customerid = c.id) ' : '')
-				.($nodegroup ? 'JOIN nodegroupassignments ON (nodeid = nodes.id) ' : '')
+				.($nodegroup ? 'JOIN nodegroupassignments ON (nodeid = vnodes.id) ' : '')
 				.' WHERE 1=1 '
 				.($network ? ' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR ( ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
 				.($status==1 ? ' AND access = 1' : '') //connected
@@ -3189,12 +3181,9 @@ class LMS
 
 	function GetNetDevIPs($id)
 	{
-		return $this->DB->GetAll('SELECT id, name, m.mac AS mac, ipaddr, inet_ntoa(ipaddr) AS ip, 
+		return $this->DB->GetAll('SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, 
 			ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, access, info, port 
-			FROM nodes 
-			LEFT JOIN (
-				SELECT nodeid, '.$this->DB->GroupConcat('mac', ',').' AS mac FROM macs GROUP BY nodeid
-			) m ON (nodes.id = m.nodeid)
+			FROM vnodes 
 			WHERE ownerid = 0 AND netdev = ?', array($id));
 	}
 
