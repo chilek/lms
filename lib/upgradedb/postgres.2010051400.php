@@ -31,7 +31,7 @@ CREATE VIEW vnodes AS
 SELECT n.*, m.mac 
 	FROM nodes n 
 	LEFT JOIN (SELECT nodeid, array_to_string(array_agg(mac), ',') AS mac 
-		FROM macs GROUP BY nodeid) m ON (n.id = m.nodeid);
+		FROM (SELECT * FROM macs ORDER BY id) macs GROUP BY nodeid) m ON (n.id = m.nodeid);
 ");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010051400', 'dbversion'));
