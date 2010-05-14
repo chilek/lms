@@ -94,15 +94,7 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 	fh = fopen(dhcp->file, "w");
 	if(fh)
 	{
-		res = g->db_query(g->conn, "SELECT name, m.mac AS mac, ipaddr, ipaddr_pub, ownerid FROM nodes "
-						"LEFT JOIN (SELECT nodeid, "
-#ifdef USE_PGSQL
-						"array_to_string(array_agg(mac), ',') "
-#else
-						"GROUP_CONCAT(mac SEPARATOR ',') "
-#endif
-						"AS mac FROM macs GROUP BY nodeid) m ON (nodes.id = m.nodeid) "
-						"ORDER BY ipaddr");
+		res = g->db_query(g->conn, "SELECT name, mac, ipaddr, ipaddr_pub, ownerid FROM vnodes ORDER BY ipaddr");
 
 		for(i=0; i<g->db_nrows(res); i++)
 		{

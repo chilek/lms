@@ -139,16 +139,13 @@ switch($mode)
 	case 'node':
 		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
-			$candidates = $DB->GetAll('SELECT n.id, n.name, INET_NTOA(ipaddr) as ip, INET_NTOA(ipaddr_pub) AS ip_pub, m.mac AS mac 
-				FROM nodes n 
-				LEFT JOIN (
-					SELECT nodeid, '.$DB->GroupConcat('mac', ',').' AS mac FROM macs GROUP BY nodeid
-				) m ON (n.id = m.nodeid) 
+			$candidates = $DB->GetAll('SELECT n.id, n.name, INET_NTOA(ipaddr) as ip, INET_NTOA(ipaddr_pub) AS ip_pub, mac 
+				FROM vnodes n 
 				WHERE ('.(preg_match('/^[0-9]+$/',$search) ? 'n.id = '.intval($search).' OR ' : '').' 
 					LOWER(n.name) ?LIKE? LOWER(\'%'.$search.'%\') 
 					OR INET_NTOA(ipaddr) ?LIKE? \'%'.$search.'%\' 
 					OR INET_NTOA(ipaddr_pub) ?LIKE? \'%'.$search.'%\' 
-					OR LOWER(m.mac) ?LIKE? LOWER(\'%'.macformat($search).'%\')
+					OR LOWER(mac) ?LIKE? LOWER(\'%'.macformat($search).'%\')
 					) 
 					AND NOT EXISTS (
                     			    SELECT 1 FROM customerassignments a
