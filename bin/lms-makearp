@@ -206,7 +206,7 @@ my %accesslist;
 # Buil nodes list
 #
 
-$dbq = $dbase->prepare("SELECT ipaddr, mac, access FROM nodes");
+$dbq = $dbase->prepare("SELECT ipaddr, mac, access FROM vnodes");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
@@ -234,7 +234,7 @@ foreach my $key (@networks)
 				{
 					print ETHERSFILE "00:00:00:00:00:00\t".$ipaddr."\n";
 				}else{
-					print ETHERSFILE $maclist{$ipaddr}."\t".$ipaddr."\n";
+					print ETHERSFILE (split ',', $maclist{$ipaddr})[0]."\t".$ipaddr."\n";
 				}
 			}else{
 				if($lock_fip)

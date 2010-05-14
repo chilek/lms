@@ -159,17 +159,14 @@ my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
 
 my $dbase;
-my $macgroupconcat;
 
 if($dbtype =~ /mysql/)
 {
 	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
-	$macgroupconcat = "GROUP_CONCAT(mac SEPARATOR ',')";
 }
 elsif($dbtype eq "postgres")
 {
 	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
-	$macgroupconcat = "array_to_string(array_agg(mac), ',')";
 }
 else
 {
@@ -254,8 +251,7 @@ while (my $row = $dbq->fetchrow_hashref())
 
 $dbq->finish();
 
-$dbq = $dbase->prepare("SELECT ipaddr, m.mac AS mac, access, ownerid FROM nodes 
-				LEFT JOIN (SELECT nodeid, $macgroupconcat AS mac FROM macs GROUP BY nodeid) m ON nodes.id = m.nodeid");
+$dbq = $dbase->prepare("SELECT ipaddr, mac, access, ownerid FROM vnodes");
 $dbq->execute();
 my %maclist;
 my %accesslist;

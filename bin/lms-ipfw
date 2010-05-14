@@ -235,7 +235,7 @@ $dbq->finish();
 
 # Build nodes table:
 
-$dbq = $dbase->prepare("SELECT ownerid, ipaddr, mac, access FROM nodes WHERE access = '1'");
+$dbq = $dbase->prepare("SELECT ownerid, ipaddr, mac, access FROM vnodes WHERE access = '1'");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
