@@ -27,11 +27,14 @@
 $DB->BeginTrans();
 
 $DB->Execute("
-CREATE VIEW vnodes AS 
-SELECT n.*, m.mac 
-	FROM nodes n 
-	LEFT JOIN (SELECT nodeid, GROUP_CONCAT(mac SEPARATOR ',') AS mac 
-	FROM macs GROUP BY nodeid) m ON (n.nodeid = m.nodeid)
+CREATE VIEW vnodes_mac AS
+SELECT nodeid, GROUP_CONCAT(mac SEPARATOR ',') AS mac
+	FROM macs GROUP BY nodeid
+
+CREATE VIEW vnodes AS
+SELECT n.*, m.mac
+	FROM nodes n
+	LEFT JOIN vnodes_mac m ON (n.id = m.nodeid)
 ");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010051400', 'dbversion'));
