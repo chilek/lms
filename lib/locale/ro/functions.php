@@ -79,51 +79,6 @@ function uptimef($ts)
 	return trim($result);
 }
 
-function check_ten($ten)
-{
-	return TRUE;
-}
-
-function check_ssn($ssn)
-{
-	$ssn = str_replace(array('-','/',' ',"\t","\n"), '', $ssn);
-	
-	if(!is_numeric($ssn) || strlen($ssn) < 13)
-		return FALSE;
-	
-	return TRUE;
-}
-
-function check_zip($zip)
-{
-	return preg_match('/^[0-9]{6}$/', $zip);
-}
-
-function check_gg($im) //check_im for polish gadu gadu -zet
-{
-	return preg_match('/^[0-9]{0,32}$/', $im);
-}
-
-function check_yahoo($im) 
-{
-	return preg_match('/^[-_.a-z0-9]{0,32}$/i', $im);
-}
-
-function check_skype($im) 
-{
-	return preg_match('/^[-_.a-z0-9]{0,32}$/i', $im);
-}
-
-function check_regon($regon) // business registration number
-{
-	return true;
-}
-
-function check_icn($icn) // identity card number
-{
-	return true;
-}
-
 function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
 {
 	// Extracted from lang.pl.php by Piotr Klaban <makler at man dot torun dot pl>

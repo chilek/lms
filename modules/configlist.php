@@ -271,6 +271,10 @@ function GetConfigList($order='var,asc', $section='')
 					$config[$idx]['description'] = trans('Command which returns IP-MAC bindings. Default: internal backend');
 				break;
 
+				case 'validator_lang':
+					$config[$idx]['description'] = trans('Validating functions language code. If not set, language will be the same as for user interface. Default: empty.');
+				break;
+
 				default:
 					$config[$idx]['description'] = trans('Unknown option. No description.');
 				break;

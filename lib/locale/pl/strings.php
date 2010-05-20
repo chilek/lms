@@ -1362,6 +1362,7 @@ $_LANG['users edition and addition forbidden'] = ' brak dostępu do edycji i dod
 $_LANG['Users List'] = 'Lista użytkowników';
 $_LANG['Users logged in:'] = 'Użytkownicy zalogowani:';
 $_LANG['User with specified login exists or that login was used in the past!'] = 'Użytkownik o podanym loginie istnieje lub login ten był wykorzystany w przeszłości!';
+$_LANG['Validating functions language code. If not set, language will be the same as for user interface. Default: empty.'] = 'Kod językowy funkcji weryfikujących poprawność danych. Jeżeli nie jest wybrany to język będzie taki sam jak interfejsu użytkownika. Domyślnie: pusta.';
 $_LANG['value'] = 'wartość';
 $_LANG['Value'] = 'Wartość';
 $_LANG['Value:'] = 'Wartość:';

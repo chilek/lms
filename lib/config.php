@@ -108,6 +108,7 @@ $DEFAULTS = array(
 		'note_check_payment' => false,
 		'radius' => 1,
 		'public_ip' => 1,
+		'validator_lang' => '',
 	),
 	'invoices' => array(
 		'template_file' => 'invoice.html',
