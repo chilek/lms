@@ -123,12 +123,19 @@ foreach ($langs as $val)
 	}
 }
 
+if(!empty($CONFIG['phpui']['validator_lang']))
+	$_validator_lang = $CONFIG['phpui']['validator_lang'];
+else
+	$_validator_lang = $_language;
+
 $_LANG = array();
 
 if (@is_readable(LIB_DIR.'/locale/'.$_language.'/strings.php'))
 	include(LIB_DIR.'/locale/'.$_language.'/strings.php');
 if (@is_readable(LIB_DIR.'/locale/'.$_language.'/functions.php'))
 	include(LIB_DIR.'/locale/'.$_language.'/functions.php');
+if (@is_readable(LIB_DIR.'/locale/'.$_validator_lang.'/validators.php'))
+	include(LIB_DIR.'/locale/'.$_validator_lang.'/validators.php');
 
 setlocale(LC_COLLATE, $LANGDEFS[$_language]['locale']);
 setlocale(LC_CTYPE, $LANGDEFS[$_language]['locale']);

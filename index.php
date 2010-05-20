@@ -136,6 +136,7 @@ $SESSION = new Session($DB, $CONFIG['phpui']['timeout']);
 $AUTH = new Auth($DB, $SESSION);
 $LMS = new LMS($DB, $AUTH, $CONFIG);
 $LMS->lang = $_language;
+$LMS->validator_lang = $_validator_lang;
 
 // Set some template and layout variables
 
