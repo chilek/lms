@@ -8,6 +8,7 @@ version ? (????-??-??)
   - show all accounts and mail forwards in aliaslist (chilan)
   - added vnodes sql view for simpler nodes mac processing (chilan)
   - xajaxResponse object can be used in document plugins (alec)
+  - separated setting for validating functions locales (chilan)
 
 version 1.11.10 Kri (2010-04-19)
 
