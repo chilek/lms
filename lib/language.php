@@ -130,10 +130,10 @@ $_LANG = array();
 
 if (@is_readable(LIB_DIR.'/locale/'.$_ui_language.'/strings.php'))
 	include(LIB_DIR.'/locale/'.$_ui_language.'/strings.php');
-if (@is_readable(LIB_DIR.'/locale/'.$_language.'/functions.php'))
-	include(LIB_DIR.'/locale/'.$_language.'/functions.php');
-if (@is_readable(LIB_DIR.'/locale/'.$_language.'/validators.php'))
-	include(LIB_DIR.'/locale/'.$_language.'/validators.php');
+if (@is_readable(LIB_DIR.'/locale/'.$_ui_language.'/ui.php'))
+	include(LIB_DIR.'/locale/'.$_ui_language.'/ui.php');
+if (@is_readable(LIB_DIR.'/locale/'.$_language.'/system.php'))
+	include(LIB_DIR.'/locale/'.$_language.'/system.php');
 
 setlocale(LC_COLLATE, $LANGDEFS[$_language]['locale']);
 setlocale(LC_CTYPE, $LANGDEFS[$_language]['locale']);

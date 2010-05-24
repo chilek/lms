@@ -24,28 +24,6 @@
  *  $Id$
  */
 
-function bankaccount($id, $account=NULL)
-{
-	global $DB;
-
-	if($account === NULL)
-		$account = $DB->GetOne('SELECT account FROM divisions
-			WHERE id IN (SELECT divisionid
-                    		FROM customers WHERE id = ?)', array($id));	
-
-	$acclen = strlen($account);
-	
-	if(!empty($account) && $acclen < 21 && $acclen >= 8)
-	{
-		$cc = '2521';	// Kod kraju - Polska
-		$format = '%0'.(24 - $acclen) .'d';
-		$account .= sprintf($format, $id);
-		return sprintf('%02d', 98-bcmod($account.$cc.'00', 97)).$account;
-	} 
-
-	return $account;
-}
-		
 function uptimef($ts)
 {
 	if($ts==0)

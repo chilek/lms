@@ -24,23 +24,6 @@
  *  $Id$
  */
 
-function bankaccount($id, $account=NULL)
-{
-	global $DB;
-	
-	if($account === NULL)
-		$account = $DB->GetOne('SELECT account FROM divisions WHERE id IN (SELECT divisionid
-                        FROM customers WHERE id = ?)', array($id));
-	
-	if(!empty($account) && strlen($account) < 21 && strlen($account) >= 8)
-	{
-	        $cc = '3028';	// Country code - RO ?
-		$account = 'RO'.sprintf('%02d',98-bcmod($account.sprintf('%08d',$id).$cc.'00',97)).$account.sprintf('%012d', $id);
-	} 
-
-	return $account;
-}
-
 function uptimef($ts)
 {
 	if($ts==0)
@@ -56,25 +39,25 @@ function uptimef($ts)
 	{
 		$result = $days;
 		if($days==1)
-			$result .= ' zi ';
+			$result .= ' day ';
 		else
-			$result .= ' zile ';
+			$result .= ' days ';
 	}
 	if ($hours != 0) 
 	{
 		$result .= $hours;
 		if($hours==1)
-			$result .= ' ora ';
+			$result .= ' hour ';
 		else
-			$result .= ' ore ';
+			$result .= ' hours ';
 	}
 	if($min != 0)
 	{
 		$result .= $min;
 		if($min==1)
-			$result .= ' minut ';
-		else
 			$result .= ' minute ';
+		else
+			$result .= ' minutes ';
 	}
 	return trim($result);
 }
@@ -97,15 +80,15 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
                 $patterns[9] = "/9/";
 
                 $replacements[0] = 'zer ';
-                $replacements[1] = 'unu ';
-                $replacements[2] = 'doi ';
-                $replacements[3] = 'tre ';
-                $replacements[4] = 'pat ';
-                $replacements[5] = 'cin ';
-                $replacements[6] = 'şas ';
-                $replacements[7] = 'şap ';
-                $replacements[8] = 'opt ';
-                $replacements[9] = 'nou ';
+                $replacements[1] = 'one ';
+                $replacements[2] = 'two ';
+                $replacements[3] = 'thr ';
+                $replacements[4] = 'fou ';
+                $replacements[5] = 'fiv ';
+                $replacements[6] = 'six ';
+                $replacements[7] = 'sev ';
+                $replacements[8] = 'eig ';
+                $replacements[9] = 'nin ';
 
                 return trim(preg_replace($patterns, $replacements, $num));
         }
@@ -113,13 +96,13 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
 	$ret = '';
         $_sep = ' ';
         $_minus = 'minus';
-        $_digits = array(0 => 'zero', 'unu', 'doi', 'trei', 'patru', 'cinci', 'şase', 'şapte', 'opt', 'nouă');
+        $_digits = array(0 => 'zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine');
 	$_exponent = array(
     	    0 => array(''),
-    	    3 => array('mii'),
-    	    6 => array('milioane'),
-    	    9 => array('bilioane'),
-    	    12 => array('trillioane'),
+    	    3 => array('thousand'),
+    	    6 => array('million'),
+    	    9 => array('billion'),
+    	    12 => array('trillion'),
     	    15 => array('quadrillion'),
     	    18 => array('quintillion'),
     	    21 => array('sextillion'),
@@ -310,41 +293,51 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
         switch ($t) 
 	{
     	    case 9:
-    	    case 8:
-    	    case 7:			
+    	    case 7:
+    	    case 6:
+        	$ret .= $_sep . $_digits[$t] . 'ty';
+        	break;
+	    case 8:
+    		$ret .= $_sep . 'eighty';
+        	break;
     	    case 5:
-    	    case 4:
-    	    case 3:						
-        	$ret .= $_sep . $_digits[$t] . 'zeci';
-        	break;
-	    case 6:
-    		$ret .= $_sep . 'şaizeci';
-        	break;
-		case 2:
-        	$ret .= $_sep . 'douăzeci';
+        	$ret .= $_sep . 'fifty';
     		break;
+	    case 4:
+        	$ret .= $_sep . 'forty';
+        	break;
+	    case 3:
+        	$ret .= $_sep . 'thirty';
+    		break;
+	    case 2:
+        	$ret .= $_sep . 'twenty';
+        	break;
 	    case 1:
         	switch ($d) 
 		{
-        	case 0:
-            		$ret .= $_sep . 'zece';
+        	    case 0:
+            		$ret .= $_sep . 'ten';
             		break;
 		    case 1:
-            		$ret .= $_sep . 'unsprezece';
+            		$ret .= $_sep . 'eleven';
             		break;
-			case 9:
-		    case 8:
-			case 7:
-       	    case 5:
-       	    case 3:
-       	    case 2:
-            		$ret .= $_sep . $_digits[$d] . 'sprezece';
+		    case 2:
+            		$ret .= $_sep . 'twelve';
             		break;
-		    case 6:
-            		$ret .= $_sep . 'şaisprezece';
+        	    case 3:
+            		$ret .= $_sep . 'thirteen';
             		break;
-        	case 4:
-            		$ret .= $_sep . 'paisprezece';
+		    case 4:
+        	    case 6:
+        	    case 7:
+        	    case 9:
+            		$ret .= $_sep . $_digits[$d] . 'teen';
+            		break;
+		    case 5:
+            		$ret .= $_sep . 'fifteen';
+            		break;
+        	    case 8:
+            		$ret .= $_sep . 'eighteen';
             		break;
         	}
         	break; 
