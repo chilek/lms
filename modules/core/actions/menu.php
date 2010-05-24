@@ -23,7 +23,7 @@
 
 // execstack lacks language info so gain it from LMS object:
 
-$lang = $LMS->lang;
+$lang = $LMS->ui_lang;
 
 foreach($ExecStack->_MODINFO as $modulename => $modinfo)
 {

@@ -150,7 +150,7 @@ function BodyVars(&$body, $data)
 			foreach($last10_array as $r)
 			{
 				$last10 .= date("Y/m/d | ", $r['time']);
-				$last10 .= sprintf("%20s | ", sprintf($LANGDEFS[$LMS->lang][money_format],$r['value']));
+				$last10 .= sprintf("%20s | ", sprintf($LANGDEFS[$LMS->ui_lang][money_format],$r['value']));
 				$last10 .= $r['comment']."\n";
 			}
 		}

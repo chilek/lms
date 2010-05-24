@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-switch($LMS->lang)
+switch($LMS->ui_lang)
 {
      case 'pl':
           $_LANG['Administration message'] = 'Wiadomość administracyjna';

@@ -74,7 +74,7 @@ $SMARTY->register_resource('module', array('module_get_template',
                                        'module_get_trusted'));
 
 // Include locale file (main)
-@include(USERPANEL_DIR.'/lib/locale/'.$_language.'/strings.php');
+@include(USERPANEL_DIR.'/lib/locale/'.$_ui_language.'/strings.php');
 
 // Include userpanel.class
 require_once(USERPANEL_DIR.'/lib/Userpanel.class.php');
@@ -86,7 +86,7 @@ while (false !== ($filename = readdir($dh)))
 {
     if ((preg_match('/^[a-zA-Z0-9]/',$filename)) && (is_dir(USERPANEL_MODULES_DIR.$filename)) && file_exists(USERPANEL_MODULES_DIR.$filename.'/configuration.php'))
     {
-	@include(USERPANEL_MODULES_DIR.$filename.'/locale/'.$_language.'/strings.php');
+	@include(USERPANEL_MODULES_DIR.$filename.'/locale/'.$_ui_language.'/strings.php');
 	include(USERPANEL_MODULES_DIR.$filename.'/configuration.php');
     }
 };		

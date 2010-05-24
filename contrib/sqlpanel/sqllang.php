@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-switch($LMS->lang)
+switch($LMS->ui_lang)
 {
 	case 'pl':
 	    $_LANG['Enter contents of SQL query'] = 'Wprowadź treść zapytania SQL';
