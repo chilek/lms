@@ -65,6 +65,7 @@ require_once($CONFIG['directories']['lib_dir'].'/LMS.class.php');
 $AUTH = NULL;
 
 $LMS = new LMS($DB, $AUTH, $CONFIG);
+$LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
 ?>
