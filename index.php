@@ -135,8 +135,8 @@ require_once(LIB_DIR.'/Session.class.php');
 $SESSION = new Session($DB, $CONFIG['phpui']['timeout']);
 $AUTH = new Auth($DB, $SESSION);
 $LMS = new LMS($DB, $AUTH, $CONFIG);
+$LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
-$LMS->validator_lang = $_validator_lang;
 
 // Set some template and layout variables
 
