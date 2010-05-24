@@ -118,13 +118,14 @@ $LMS = new LMS($DB, $AUTH, $CONFIG);
 require_once(USERPANEL_LIB_DIR.'/Session.class.php');
 require_once(USERPANEL_LIB_DIR.'/Userpanel.class.php');
 require_once(USERPANEL_LIB_DIR.'/ULMS.class.php');
-@include(USERPANEL_DIR.'/lib/locale/'.$_language.'/strings.php');
+@include(USERPANEL_DIR.'/lib/locale/'.$_ui_language.'/strings.php');
 
 unset($LMS); // reset LMS class to enable wrappers for LMS older versions
 
 $LMS = new ULMS($DB, $AUTH, $CONFIG);
 $SESSION = new Session($DB, $_TIMEOUT);
 $USERPANEL = new USERPANEL($DB, $SESSION, $CONFIG);
+$LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
 // Initialize modules
@@ -133,7 +134,7 @@ $dh  = opendir(USERPANEL_MODULES_DIR);
 while (false !== ($filename = readdir($dh))) {
     if ((preg_match('/^[a-zA-Z0-9]/',$filename)) && (is_dir(USERPANEL_MODULES_DIR.$filename)) && file_exists(USERPANEL_MODULES_DIR.$filename.'/configuration.php'))
     {
-	@include(USERPANEL_MODULES_DIR.$filename.'/locale/'.$_language.'/strings.php');
+	@include(USERPANEL_MODULES_DIR.$filename.'/locale/'.$_ui_language.'/strings.php');
 	include(USERPANEL_MODULES_DIR.$filename.'/configuration.php');
     }
 };																						    
@@ -141,6 +142,7 @@ while (false !== ($filename = readdir($dh))) {
 $SMARTY->assign('_config',$CONFIG);
 $SMARTY->assign_by_ref('_LANG', $_LANG);
 $SMARTY->assign_by_ref('LANGDEFS', $LANGDEFS);
+$SMARTY->assign_by_ref('_ui_language', $LMS->ui_lang);
 $SMARTY->assign_by_ref('_language', $LMS->lang);
 $SMARTY->template_dir = USERPANEL_DIR.'/templates/';
 $SMARTY->compile_dir = SMARTY_COMPILE_DIR;

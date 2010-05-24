@@ -98,6 +98,7 @@ $LMS->lang = $_language;
 
 $SMARTY->assign_by_ref('_LANG', $_LANG);
 $SMARTY->assign_by_ref('LANGDEFS', $LANGDEFS);
+$SMARTY->assign_by_ref('_ui_language', $LMS->ui_lang);
 $SMARTY->assign_by_ref('_language', $LMS->lang);
 $SMARTY->template_dir = getcwd();
 $SMARTY->compile_dir = SMARTY_COMPILE_DIR;

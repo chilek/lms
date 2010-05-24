@@ -29,7 +29,7 @@ define('USERPANEL_DIR', $LMS->CONFIG['directories']['userpanel_dir']);
 define('USERPANEL_MODULES_DIR', USERPANEL_DIR.'/modules/');
 define('USERPANEL_LIB_DIR', USERPANEL_DIR.'/lib/');
 
-@include(USERPANEL_DIR.'/lib/locale/'.$_language.'/strings.php');
+@include(USERPANEL_DIR.'/lib/locale/'.$_ui_language.'/strings.php');
 
 // Clear submenu array
 $submenu = NULL;
@@ -62,7 +62,7 @@ $dh  = opendir(USERPANEL_MODULES_DIR);
 while (false !== ($filename = readdir($dh)))
 	if ((preg_match('/^[a-zA-Z0-9]/',$filename)) && (is_dir(USERPANEL_MODULES_DIR.$filename)) && file_exists(USERPANEL_MODULES_DIR.$filename."/configuration.php"))
 	{
-        	@include(USERPANEL_MODULES_DIR.$filename.'/locale/'.$_language.'/strings.php');
+        	@include(USERPANEL_MODULES_DIR.$filename.'/locale/'.$_ui_language.'/strings.php');
 	        include(USERPANEL_MODULES_DIR.$filename.'/configuration.php');
 	}
 
