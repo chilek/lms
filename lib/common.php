@@ -449,6 +449,10 @@ function check_email( $email )
 function get_producer($mac)
 {
 	$mac = strtoupper(str_replace(':','-',substr($mac,0,8)));
+
+	if (!$mac)
+	    return '';
+
 	if($macfile = fopen(LIB_DIR.'/ethercodes.txt','r'))
 		while(!feof($macfile))
 		{

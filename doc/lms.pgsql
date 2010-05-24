@@ -511,35 +511,6 @@ CREATE INDEX stats_nodeid_idx ON stats(nodeid);
 CREATE INDEX stats_dt_idx ON stats(dt);
 
 /* ---------------------------------------------------
- Structure of table "netdevices"
-----------------------------------------------------*/
-DROP SEQUENCE netdevices_id_seq;
-CREATE SEQUENCE netdevices_id_seq;
-DROP TABLE netdevices;
-CREATE TABLE netdevices (
-	id integer default nextval('netdevices_id_seq'::text) NOT NULL,
-	name varchar(32) 	DEFAULT '' NOT NULL,
-	location varchar(255) 	DEFAULT '' NOT NULL,
-	description text 	DEFAULT '' NOT NULL,
-	producer varchar(64) 	DEFAULT '' NOT NULL,
-	model varchar(32) 	DEFAULT '' NOT NULL,
-	serialnumber varchar(32) DEFAULT '' NOT NULL,
-	ports integer 		DEFAULT 0 NOT NULL,
-	purchasetime integer	DEFAULT 0 NOT NULL,
-	guaranteeperiod smallint DEFAULT 0,
-	shortname varchar(32) 	DEFAULT '' NOT NULL,
-	nastype integer 	DEFAULT 0 NOT NULL,
-	clients integer 	DEFAULT 0 NOT NULL,
-	secret varchar(60) 	DEFAULT '' NOT NULL,
-	community varchar(50) 	DEFAULT '' NOT NULL,
-	channelid integer 	DEFAULT NULL
-	    REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	PRIMARY KEY (id)
-);
-
-CREATE INDEX netdevices_channelid_idx ON netdevices (channelid);
-
-/* ---------------------------------------------------
  Structure of table "netlinks"
 ----------------------------------------------------*/
 DROP SEQUENCE netlinks_id_seq;
@@ -1082,6 +1053,35 @@ CREATE TABLE ewx_channels (
 );
 
 /* ---------------------------------------------------
+ Structure of table "netdevices"
+----------------------------------------------------*/
+DROP SEQUENCE netdevices_id_seq;
+CREATE SEQUENCE netdevices_id_seq;
+DROP TABLE netdevices;
+CREATE TABLE netdevices (
+	id integer default nextval('netdevices_id_seq'::text) NOT NULL,
+	name varchar(32) 	DEFAULT '' NOT NULL,
+	location varchar(255) 	DEFAULT '' NOT NULL,
+	description text 	DEFAULT '' NOT NULL,
+	producer varchar(64) 	DEFAULT '' NOT NULL,
+	model varchar(32) 	DEFAULT '' NOT NULL,
+	serialnumber varchar(32) DEFAULT '' NOT NULL,
+	ports integer 		DEFAULT 0 NOT NULL,
+	purchasetime integer	DEFAULT 0 NOT NULL,
+	guaranteeperiod smallint DEFAULT 0,
+	shortname varchar(32) 	DEFAULT '' NOT NULL,
+	nastype integer 	DEFAULT 0 NOT NULL,
+	clients integer 	DEFAULT 0 NOT NULL,
+	secret varchar(60) 	DEFAULT '' NOT NULL,
+	community varchar(50) 	DEFAULT '' NOT NULL,
+	channelid integer 	DEFAULT NULL
+	    REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	PRIMARY KEY (id)
+);
+
+CREATE INDEX netdevices_channelid_idx ON netdevices (channelid);
+
+/* ---------------------------------------------------
  Structure of table "dbinfo"
 ------------------------------------------------------*/
 DROP TABLE dbinfo;
@@ -1392,6 +1392,7 @@ SELECT n.*, m.mac
 /* ---------------------------------------------------
  Aggregates
 ------------------------------------------------------*/
+DROP AGGREGATE IF EXISTS array_agg(anyelement);
 CREATE AGGREGATE array_agg(anyelement) (
 	SFUNC=array_append,
 	STYPE=anyarray,
