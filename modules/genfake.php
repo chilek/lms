@@ -1999,7 +1999,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			$startip++;
 			$nodedata['ipaddr'] = long2ip($startip);
 			$nodedata['ipaddr_pub'] = '0.0.0.0';
-			$nodedata['mac'] = makemac();
+			$nodedata['macs'] = (array) makemac();
 			$nodedata['ownerid'] = $id;
 			$nodedata['access'] = 1;
 			$nodedata['warning'] = 0;
@@ -2048,10 +2048,11 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			$LMS->NetDevLinkNode($nodes,$i);
 			$nodes--;
 		}
+/*
 		$ip['ownerid'] = 0;
 		$ip['ipaddr'] = long2ip($startip);
 		$ip['ipaddr_pub'] = '0.0.0.0';
-		$ip['mac'] = makemac();
+		$ip['macs'] = (array) makemac();
 		$ip['name'] = 'SWITCH_'.$i;
 		$ip['access'] = 1;
 		$ip['warning'] = 0;
@@ -2059,6 +2060,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$ip['passwd'] = '';
 		$ip['netdev'] = $i;
 		$startip++;
+*/
 		if($i>1)
 			$LMS->NetDevLink($i,$i-1);
 	}
