@@ -62,7 +62,7 @@ function GetConfigList($order='var,asc', $section='')
 				break;
 				
 				case 'lang':
-					$config[$idx]['description'] = trans('User interface language code. If not set, language will be determined on browser settings. Default: en.');
+					$config[$idx]['description'] = trans('System language code. If not set, language will be determined on browser settings. Default: en.');
 				break;
 				
 				case 'timeout':
