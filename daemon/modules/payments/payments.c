@@ -480,7 +480,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	char *query = strdup("\
 			SELECT tariffid, liabilityid, customerid, period, at, suspended, invoice, c.paytype, \
 			    UPPER(c.lastname) AS lastname, c.name AS custname, address, zip, city, ten, ssn, \
-			    ats.id AS assignmentid, settlement, datefrom, discount, divisionid, paytime, \
+			    ats.id AS assignmentid, settlement, datefrom, discount, countryid, divisionid, paytime, \
 			    (CASE liabilityid WHEN 0 THEN tariffs.name ELSE liabilities.name END) AS name, \
 			    (CASE liabilityid WHEN 0 THEN tariffs.taxid ELSE liabilities.taxid END) AS taxid, \
 			    (CASE liabilityid WHEN 0 THEN tariffs.prodid ELSE liabilities.prodid END) AS prodid, \
@@ -613,6 +613,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 			{
 				if( last_customerid != uid ) 
 				{
+					char *countryid = g->db_get_data(res,i,"countryid");
 					char *divisionid = g->db_get_data(res,i,"divisionid");
 					char *paytype = g->db_get_data(res,i,"paytype");
 					int divid = atoi(divisionid);
@@ -676,11 +677,12 @@ void reload(GLOBAL *g, struct payments_module *p)
 						paytype = p->paytype;
 
 					// prepare insert to 'invoices' table
-					g->db_pexec(g->conn, "INSERT INTO documents (number, numberplanid, type, divisionid, "
+					g->db_pexec(g->conn, "INSERT INTO documents (number, numberplanid, type, countryid, divisionid, "
 						"customerid, name, address, zip, city, ten, ssn, cdate, paytime, paytype) "
-						"VALUES (?, ?, 1, ?, ?, '? ?', '?', '?', '?', '?', '?', ?, ?, '?')",
+						"VALUES (?, ?, 1, ?, ?, ?, '? ?', '?', '?', '?', '?', '?', ?, ?, '?')",
 						itoa(number),
 						numberplanid,
+						countryid,
 						divisionid,
 						g->db_get_data(res,i,"customerid"),
 						g->db_get_data(res,i,"lastname"),

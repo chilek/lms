@@ -472,7 +472,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 
 				my $idbq = $dbase->prepare("INSERT INTO documents (number, numberplanid, type, countryid, divisionid,
 						customerid, name, address, zip, city, ten, ssn, cdate, paytime, paytype)
-						VALUES (?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+						VALUES (?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 				$idbq->execute($numbers{$plan}, $plan, $urow->{'countryid'}, $urow->{'divisionid'}, $uid,
 						$urow->{'lastname'}.' '.$urow->{'name'}, $urow->{'address'}, $urow->{'zip'},
 						$urow->{'city'}, $urow->{'ten'}, $urow->{'ssn'}, $currtime, $paytime, $inv_paytype);
