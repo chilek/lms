@@ -462,7 +462,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 				$itemid = 0;
 				$numbers{$plan}++;
 				
-				my $udbq = $dbase->prepare("SELECT lastname, name, address, city, zip, ssn, ten, divisionid, paytime
+				my $udbq = $dbase->prepare("SELECT lastname, name, address, city, zip, ssn, ten, countryid, divisionid, paytime
 						FROM customers WHERE id = ?");
 				$udbq->execute($uid);
 				my $urow = $udbq->fetchrow_hashref();
@@ -470,10 +470,10 @@ while(my $assign = $dbq->fetchrow_hashref())
 				my $paytime = $urow->{'paytime'};
 				if($paytime eq -1) { $paytime = $deadline; }
 
-				my $idbq = $dbase->prepare("INSERT INTO documents (number, numberplanid, type, divisionid,
+				my $idbq = $dbase->prepare("INSERT INTO documents (number, numberplanid, type, countryid, divisionid,
 						customerid, name, address, zip, city, ten, ssn, cdate, paytime, paytype)
 						VALUES (?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-				$idbq->execute($numbers{$plan}, $plan, $urow->{'divisionid'}, $uid,
+				$idbq->execute($numbers{$plan}, $plan, $urow->{'countryid'}, $urow->{'divisionid'}, $uid,
 						$urow->{'lastname'}.' '.$urow->{'name'}, $urow->{'address'}, $urow->{'zip'},
 						$urow->{'city'}, $urow->{'ten'}, $urow->{'ssn'}, $currtime, $paytime, $inv_paytype);
 
