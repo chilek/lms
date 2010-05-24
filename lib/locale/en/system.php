@@ -69,4 +69,22 @@ function check_icn($icn) // identity card number
 	return true;
 }
 
+function bankaccount($id, $account=NULL)
+{
+	global $DB;
+	
+	if($account === NULL)
+		$account = $DB->GetOne('SELECT account FROM divisions WHERE id IN (SELECT divisionid
+			FROM customers WHERE id = ?)', array($id));
+
+	// This function is for demonstration only, coz US don't support IBAN
+	if(!empty($account) && strlen($account) < 21 && strlen($account) >= 8) // mass-payments IBAN
+	{
+	        $cc = '3028';	// Country code - US
+		$account = 'US'.sprintf('%02d',98-bcmod($account.sprintf('%012d',$id).$cc.'00',97)).$account.sprintf('%012d', $id);
+	} 
+
+	return $account;
+}
+
 ?>

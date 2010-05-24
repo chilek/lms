@@ -132,4 +132,24 @@ function check_icn($icn)
 	return preg_match('/^[0-9]{8}$/i', $icn);
 }
 
+function bankaccount($id, $account=NULL)
+{
+	global $DB;
+
+	if($account === NULL)
+		$account = $DB->GetOne('SELECT account FROM divisions WHERE id IN (SELECT divisionid
+                        FROM customers WHERE id = ?)', array($id));	
+	
+	$acclen = strlen($account);
+	
+	if(!empty($account) && $acclen < 13 && $acclen >= 5)
+	{
+		$cc = '2129';	// Country Code - Lithuania
+		$format = '%0'.(16 - $acclen) .'d';
+		return 'LT'.sprintf('%02d',98-bcmod($account.sprintf($format,$id).$cc.'00',97)).$account.sprintf($format,$id);
+	}
+
+	return $account;
+}
+
 ?>
