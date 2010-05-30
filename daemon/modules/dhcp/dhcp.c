@@ -259,6 +259,7 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 			
 			for(j=0; j<nh; j++) 
 			{
+				char *mac;
 				if( (hosts[j].ipaddr & netmask) == network ) {
 					for(mac = strtok(hosts[j].mac, ","), m = 0; mac != NULL; mac = strtok(NULL, ","), m++)
 					{
