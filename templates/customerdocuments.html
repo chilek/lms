@@ -14,28 +14,27 @@
 		<TD WIDTH="100%" class="fall" colspan="2">
 			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
 				<TR class="dark">
-					<TD WIDTH="1%" NOWRAP class="fleftu">{t}Number:{/t}</TD>
+					<TD WIDTH="1%" NOWRAP class="fleftu"><B>{t}Number:{/t}</B></TD>
+					<TD WIDTH="1%" NOWRAP class="fbt">{t}Created:{/t}</TD>
 					<TD WIDTH="1%" NOWRAP class="fbt"><B>{t}Type:{/t}</B></TD>
-					<TD WIDTH="1%" NOWRAP class="fbt">{t}Title:{/t}</TD>
+					<TD WIDTH="95%" NOWRAP class="fbt">{t}Title:{/t}</TD>
 					<TD WIDTH="1%" NOWRAP class="fbt">{t}Period:{/t}</TD>
-					<TD WIDTH="96%" NOWRAP class="frightu" COLSPAN="2">{t}Description:{/t}</TD>
+					<TD WIDTH="1%" NOWRAP class="frightu"></TD>
 				</TR>
 				{cycle values="light,lucid" print=false name=doc}
 				{foreach from=$documents item=doc}
 				<TR class="{cycle name=doc}{if $doc.closed} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-					<TD WIDTH="1%" NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');">
-						{if $doc.number}
-							{number number=$doc.number template=$doc.template time=$doc.cdate}
-						{/if}
+					<TD NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');"{if $doc.description} {tip text=$doc.description}{/if}>
+						<B>{number number=$doc.number template=$doc.template time=$doc.cdate}</B>
 					</TD>
-					<TD WIDTH="1%" NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');"><B>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</B></TD>
-					<TD WIDTH="1%" NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');">{$doc.title|truncate:40:"...":true}</TD>
-					<TD WIDTH="1%" NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');">
+					<TD NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');">{$doc.cdate|date_format:"%Y/%m/%d"}</TD>
+					<TD NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');"><B>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</B></TD>
+					<TD NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');">{$doc.title|truncate:40:"...":true}</TD>
+					<TD NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');">
 						{if $doc.fromdate}{t}from{/t} {$doc.fromdate|date_format:"%Y/%m/%d"}{/if}
 						{if $doc.todate}{t}to{/t} {$doc.todate|date_format:"%Y/%m/%d"}{/if}
 					</TD>
-					<TD WIDTH="95%" onclick="window.open('?m=documentview&id={$doc.docid}');">{$doc.description}</TD>
-					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+					<TD ALIGN="RIGHT" NOWRAP>
 						{assign var=type value=$doc.type}
 						<a href="?m=documentview&id={$doc.docid}&save=1"><img src="img/save.gif" alt="[ {t}Save{/t} ]" title="[ {t}Save{/t} ]"></a>
 						{if ! $doc.closed && ($docrights.$type.rights & 4)}
