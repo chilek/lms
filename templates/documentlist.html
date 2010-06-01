@@ -125,7 +125,7 @@
 			{if ($docrights.$type.rights & 8)}
 			<a href="?m=documentedit&id={$doc.docid}"><img src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></a>
 			{/if}
-			<a href="?m=documentview&id={$doc.docid}" target="_blank"><img src="img/{if preg_match('/pdf/',$doc.contenttype)}pdf{else}view{/if}.gif" alt="[ {t}View{/t} ]" title="[ {t}View{/t} ]"></a>
+			<a href="?m=documentview&id={$doc.docid}" target="_blank"><img src="img/{if preg_match('/pdf/',$doc.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$doc.contenttype)}xls{else}view{/if}.gif" alt="[ {t}View{/t} ]" title="[ {t}View{/t} ]"></a>
 			<INPUT TYPE="checkbox" NAME="marks[{$docid}]" VALUE="{$docid}"{if $marks.$docid}CHECKED{/if}>
 		</TD>
 	</TR>
