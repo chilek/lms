@@ -43,7 +43,8 @@ $DB->Execute("
 	ALTER TABLE nodes DROP mac;
 ");
 
-if($DB->GetOne("SELECT COUNT(*) FROM pg_aggregate WHERE aggfnoid='array_agg'::regproc;") == NULL)
+if(!$DB->GetOne("SELECT COUNT(*) FROM pg_aggregate a JOIN pg_proc p ON (p.oid = a.aggfnoid)
+    WHERE p.proname='array_agg'"))
 	$DB->Execute("
 		CREATE AGGREGATE array_agg(anyelement) (
 			SFUNC=array_append,
