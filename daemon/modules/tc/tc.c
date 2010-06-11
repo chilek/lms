@@ -58,7 +58,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 	char *netname = strdup(netnames);
 
 	struct group *ugps = (struct group *) malloc(sizeof(struct group));
-	char *groupnames = strdup(tc->customergroups);	
+	char *groupnames = strdup(tc->customergroups);
 	char *groupname = strdup(groupnames);
 
 	// get table of networks
@@ -79,7 +79,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 				nc++;
 			}
     			g->db_free(&res);
-		}				
+		}
 	}
 	free(netname); free(netnames);
 
@@ -105,8 +105,8 @@ void reload(GLOBAL *g, struct tc_module *tc)
 
 		if( strlen(groupname) )
 		{
-			res = g->db_pquery(g->conn, "SELECT name, id FROM customergroups WHERE UPPER(name)=UPPER('?')",groupname);
-			if( g->db_nrows(res) ) 
+			res = g->db_pquery(g->conn, "SELECT name, id FROM customergroups WHERE UPPER(name)=UPPER('?')", groupname);
+			if( g->db_nrows(res) )
 			{
 				ugps = (struct group *) realloc(ugps, (sizeof(struct group) * (gc+1)));
 				ugps[gc].name = strdup(g->db_get_data(res,0,"name"));
@@ -114,11 +114,11 @@ void reload(GLOBAL *g, struct tc_module *tc)
 				gc++;
 			}
     			g->db_free(&res);
-		}				
+		}
 	}
 	free(groupname); free(groupnames);
 
-	// open temporary file	
+	// open temporary file
 	fh = fopen(tc->file, "w");
 	if(fh) 
 	{
@@ -126,6 +126,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 		// we need customer ID and average data values for nodes
 		ures = g->db_query(g->conn, "\
 			SELECT customerid AS id, \
+			    COUNT(DISTINCT nodes.id) AS cnt, \
 				ROUND(SUM(uprate)/COUNT(DISTINCT nodes.id)) AS uprate, \
 				ROUND(SUM(downrate)/COUNT(DISTINCT nodes.id)) AS downrate, \
 				ROUND(SUM(upceil)/COUNT(DISTINCT nodes.id)) AS upceil, \
@@ -144,7 +145,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 			fprintf(fh, "%s", tc->begin);
 		
 			for(i=0; i<g->db_nrows(ures); i++) 
-			{	
+			{
 				// test customer's membership in customergroups
 				if(gc)
 				{
@@ -160,7 +161,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 					g->db_free(&res);
 				}
 					
-				if( !gc || m!=gc ) 
+				if( !gc || m!=gc )
 				{
 					char *uprate = g->db_get_data(ures,i,"uprate");
 					char *downrate = g->db_get_data(ures,i,"downrate");
@@ -168,23 +169,24 @@ void reload(GLOBAL *g, struct tc_module *tc)
 					char *downceil = g->db_get_data(ures,i,"downceil");
 					char *climit = g->db_get_data(ures,i,"climit");
 					char *plimit = g->db_get_data(ures,i,"plimit");
-					int n_upceil = atoi(upceil);					
-					int n_downceil = atoi(downceil);					
-					int n_uprate = atoi(uprate);					
-					int n_downrate = atoi(downrate);					
+					int n_upceil = atoi(upceil);
+					int n_downceil = atoi(downceil);
+					int n_uprate = atoi(uprate);
+					int n_downrate = atoi(downrate);
 					int n_climit = atoi(climit);
 					int n_plimit = atoi(plimit);
+					int cnt = atoi(g->db_get_data(ures,i,"cnt"));
 					
 					int got_node = 0;
 
 					nres = g->db_pquery(g->conn, " \
 						SELECT INET_NTOA(ipaddr) AS ip, mac, name \
-						FROM nodes \
+						FROM vmacs \
 						WHERE ownerid = ? AND access = 1 \
 						ORDER BY ipaddr", g->db_get_data(ures,i,"id"));
 					
 					for(j=0; j<g->db_nrows(nres); j++) 
-					{	
+					{
 						char *ipaddr = g->db_get_data(nres,j,"ip");
 						char *mac = g->db_get_data(nres,j,"mac");
 						char *name = g->db_get_data(nres,j,"name");
@@ -194,12 +196,12 @@ void reload(GLOBAL *g, struct tc_module *tc)
 						char *htb_down = strdup(tc->host_htb_down);
 						char *cl = strdup(tc->host_climit);
 						char *pl = strdup(tc->host_plimit);
-						int h_uprate = (int) n_uprate/nres->nrows;
-						int h_upceil = (int) n_upceil/nres->nrows;
-						int h_downrate = (int) n_downrate/nres->nrows;
-						int h_downceil = (int) n_downceil/nres->nrows;  
-						int h_plimit = (int) n_plimit/nres->nrows;
-						int h_climit = (int) n_climit/nres->nrows;
+						int h_uprate = (int) n_uprate/cnt;
+						int h_upceil = (int) n_upceil/cnt;
+						int h_downrate = (int) n_downrate/cnt;
+						int h_downceil = (int) n_downceil/cnt;
+						int h_plimit = (int) n_plimit/cnt;
+						int h_climit = (int) n_climit/cnt;
 						
 						unsigned long iplong = inet_addr(ipaddr);
 						unsigned int hostip = ntohl(iplong);
@@ -214,7 +216,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 						for(v=0; v<nc; v++)
 							if(nets[v].address == (iplong & nets[v].mask)) 
 								break;
-															
+
 						if(v!=nc)
 						{
 							got_node = 1;
@@ -268,7 +270,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 									g->str_replace(&htb_down, "%downrate", itoa(h_downrate));
 									if(!h_downceil)
 										g->str_replace(&htb_down, "%downceil", itoa(h_downrate));
-									else						
+									else
 										g->str_replace(&htb_down, "%downceil", itoa(h_downceil));
 						
 									// write to file
@@ -362,7 +364,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 							g->str_replace(&htb_down, "%downrate", downrate);
 							if(!n_downceil)
 								g->str_replace(&htb_down, "%downceil", downrate);
-							else						
+							else
 								g->str_replace(&htb_down, "%downceil", downceil);
 						
 							// write to file
@@ -408,9 +410,9 @@ void reload(GLOBAL *g, struct tc_module *tc)
 	free(ugps);
 	
 	free(tc->file);
-	free(tc->command);	
+	free(tc->command);
 	free(tc->begin);
-	free(tc->end);	
+	free(tc->end);
 	free(tc->host_htb_up);
 	free(tc->host_htb_down);
 	free(tc->host_mark_up);

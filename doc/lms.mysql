@@ -1171,7 +1171,12 @@ CREATE VIEW vnodes_mac AS
 CREATE VIEW vnodes AS
 	SELECT n.*, m.mac
 	FROM nodes n
-		LEFT JOIN vnodes_mac m ON (n.id = m.nodeid);
+    LEFT JOIN vnodes_mac m ON (n.id = m.nodeid);
+
+CREATE VIEW vmacs AS
+SELECT n.*, m.mac, m.id AS macid
+    FROM nodes n
+    JOIN macs m ON (n.id = m.nodeid);
 
 DROP FUNCTION IF EXISTS lms_current_user;
 CREATE FUNCTION lms_current_user() RETURNS int(11) NO SQL
