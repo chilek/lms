@@ -1362,4 +1362,4 @@ CREATE TABLE supermasters (
 
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010051400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010061100');
