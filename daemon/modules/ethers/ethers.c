@@ -102,7 +102,7 @@ void reload(GLOBAL *g, struct ethers_module *fm)
 	fh = fopen(fm->file, "w");
 	if(fh)
 	{
-		res = g->db_query(g->conn, "SELECT mac, ipaddr, access, ownerid FROM nodes ORDER BY ipaddr");
+		res = g->db_query(g->conn, "SELECT mac, ipaddr, access, ownerid FROM vmacs ORDER BY ipaddr");
 	
 		for(i=0; i<g->db_nrows(res); i++)
 		{

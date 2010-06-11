@@ -471,8 +471,9 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	}
 
 	// hosts
-	query = strdup("SELECT t.downrate, t.downceil, t.uprate, t.upceil, n.mac, n.chkmac, "
-			"n.id, n.ownerid, INET_NTOA(n.ipaddr) AS ip, n.halfduplex, cn.cnt " 
+	query = strdup("SELECT t.downrate, t.downceil, t.uprate, t.upceil, n.chkmac, "
+			"n.id, n.ownerid, INET_NTOA(n.ipaddr) AS ip, n.halfduplex, cn.cnt, "
+			"(SELECT m.mac FROM macs m WHERE m.nodeid = n.id ORDER BY m.id LIMIT 1) AS mac "
 		"FROM nodeassignments na "
 		"JOIN assignments a ON (na.assignmentid = a.id)"
 		"JOIN tariffs t ON (a.tariffid = t.id) "
@@ -502,7 +503,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	        g->str_replace(&query, "t.downceil", "(CASE WHEN t.downceil_n > 0 THEN t.downceil_n ELSE t.downceil END) AS downceil");
 	        g->str_replace(&query, "t.uprate", "(CASE WHEN t.uprate_n > 0 THEN t.uprate_n ELSE t.uprate END) AS uprate");
 	        g->str_replace(&query, "t.upceil", "(CASE WHEN t.upceil_n > 0 THEN t.upceil_n ELSE t.upceil END) AS upceil");
-	}				
+	}
 
 	res = g->db_query(g->conn,  query);
 

@@ -58,7 +58,7 @@ void reload(GLOBAL *g, struct oident_module *o)
 				nc++;
 			}
     			g->db_free(&res);
-		}				
+		}
 	}
 	free(netname); free(netnames);
 
@@ -79,7 +79,7 @@ void reload(GLOBAL *g, struct oident_module *o)
 	{
 		fprintf(fh, "%s\n", o->prefix);
 
-		res = g->db_query(g->conn, "SELECT LOWER(name) AS name, mac, ipaddr FROM nodes ORDER BY ipaddr");
+		res = g->db_query(g->conn, "SELECT LOWER(name) AS name, mac, ipaddr FROM vmacs ORDER BY ipaddr");
 		
 		for(i=0; i<g->db_nrows(res); i++)
 		{
@@ -111,7 +111,7 @@ void reload(GLOBAL *g, struct oident_module *o)
 					g->str_replace(&s, "%n", name);
 					g->str_replace(&s, "%m", my_mac);
 					g->str_replace(&s, "%i", inet_ntoa(inet));
-					fprintf(fh, "%s\n", s);						
+					fprintf(fh, "%s\n", s);
 					free(s);
 				}
 			}

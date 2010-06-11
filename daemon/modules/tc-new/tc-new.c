@@ -85,8 +85,8 @@ void reload(GLOBAL *g, struct tc_module *tc)
 			
 			strcat(groupsql, groupname);
 			strcat(groupsql, "')");
-		}		
-	}		
+		}
+	}
 	free(groupname); free(groupnames);
 
 	if(strlen(groupsql))
@@ -100,7 +100,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 		if( strlen(netname) ) 
 		{
 			res = g->db_pquery(g->conn, "SELECT name, address, INET_ATON(mask) AS mask, interface FROM networks WHERE UPPER(name)=UPPER('?')",netname);
-			if( g->db_nrows(res) ) 
+			if( g->db_nrows(res) )
 			{
 		    		nets = (struct net *) realloc(nets, (sizeof(struct net) * (nc+1)));
 				nets[nc].name = strdup(g->db_get_data(res,0,"name"));
@@ -110,7 +110,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 				nc++;
 			}
     			g->db_free(&res);
-		}				
+		}
 	}
 	free(netname); free(netnames);
 
