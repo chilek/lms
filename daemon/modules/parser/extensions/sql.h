@@ -39,7 +39,7 @@ void tscript_ext_sql_close(tscript_context *);
 		    customers.message AS message, mac, passwd, linktype, \
 		    INET_NTOA(ipaddr) AS ip, INET_NTOA(ipaddr_pub) AS ip_pub, \
 		    chkmac, halfduplex \
-		    FROM nodes \
+		    FROM vnodes \
 		    LEFT JOIN customers ON (customers.id = ownerid)"
 #else
 #define NODES "SELECT nodes.id AS id, nodes.name AS name, ownerid, access, \
@@ -48,7 +48,7 @@ void tscript_ext_sql_close(tscript_context *);
 		    customers.message AS message, mac, passwd, linktype, \
 		    INET_NTOA(ipaddr) AS ip, INET_NTOA(ipaddr_pub) AS ip_pub, \
 		    chkmac, halfduplex \
-		    FROM nodes \
+		    FROM vnodes \
 		    LEFT JOIN customers ON (customers.id = ownerid)"
 #endif
 

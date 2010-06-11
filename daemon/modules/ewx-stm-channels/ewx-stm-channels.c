@@ -448,8 +448,9 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	free(query);
 
 	// hosts
-	query = strdup("SELECT t.downrate, t.downceil, t.uprate, t.upceil, n.mac, n.chkmac, "
-			"n.id, INET_NTOA(n.ipaddr) AS ip, n.halfduplex, d.channelid "
+	query = strdup("SELECT t.downrate, t.downceil, t.uprate, t.upceil, n.chkmac, "
+			"n.id, INET_NTOA(n.ipaddr) AS ip, n.halfduplex, d.channelid, "
+			"(SELECT m.mac FROM macs m WHERE m.nodeid = n.id ORDER BY m.id LIMIT 1) AS mac "
 		"FROM nodeassignments na "
 		"JOIN assignments a ON (na.assignmentid = a.id)"
 		"JOIN tariffs t ON (a.tariffid = t.id) "

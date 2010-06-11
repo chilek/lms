@@ -159,7 +159,9 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	// NOTE: to re-create terminator's configuration do DELETE FROM ewx_pt_config;
 
 				    // first query: existing nodes with current config for insert, update or delete (if access=0)
-	query = strdup("SELECT n.id, n.mac, INET_NTOA(n.ipaddr) AS ip, LOWER(n.name) AS name, n.passwd, n.chkmac, "
+	query = strdup("SELECT n.id, "
+	        "(SELECT m.mac FROM macs m WHERE m.nodeid = n.id ORDER BY m.id LIMIT 1) AS mac, "
+	        "INET_NTOA(n.ipaddr) AS ip, LOWER(n.name) AS name, n.passwd, n.chkmac, "
 			"e.nodeid, e.mac AS oldmac, INET_NTOA(e.ipaddr) AS oldip, "
 			"e.name AS oldname, e.passwd AS oldpasswd, n.ipaddr, n.access "
 		"FROM nodes n "
@@ -170,9 +172,11 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		"UNION ALL "
 		// second query: nodes existing in config 
 		// but not existing in nodes table (for delete)
-		"SELECT n.id, n.mac, INET_NTOA(n.ipaddr) AS ip, LOWER(n.name) AS name, n.passwd, n.chkmac, "
+		"SELECT n.id, "
+	        "(SELECT m.mac FROM macs m WHERE m.nodeid = n.id ORDER BY m.id LIMIT 1) AS mac, "
+		    "INET_NTOA(n.ipaddr) AS ip, LOWER(n.name) AS name, n.passwd, n.chkmac, "
 			"e.nodeid, e.mac AS oldmac, INET_NTOA(e.ipaddr) AS oldip, "
-			"e.name AS oldname, e.passwd AS oldpasswd, e.ipaddr, n.access "    
+			"e.name AS oldname, e.passwd AS oldpasswd, e.ipaddr, n.access "
 		"FROM ewx_pt_config e "
 		"LEFT JOIN nodes n ON (n.id = e.nodeid) "
 		"WHERE n.id IS NULL"
