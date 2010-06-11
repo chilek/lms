@@ -1383,11 +1383,16 @@ SELECT n.id, inet_ntoa(n.ipaddr) AS nasname, d.shortname, d.nastype AS type,
 	JOIN netdevices d ON (n.netdev = d.id) 
 	WHERE n.nas = 1;
 
-CREATE VIEW vnodes AS 
-SELECT n.*, m.mac 
-	FROM nodes n 
-	LEFT JOIN (SELECT nodeid, array_to_string(array_agg(mac), ',') AS mac 
+CREATE VIEW vnodes AS
+SELECT n.*, m.mac
+	FROM nodes n
+	LEFT JOIN (SELECT nodeid, array_to_string(array_agg(mac), ',') AS mac
 		FROM macs GROUP BY nodeid) m ON (n.id = m.nodeid);
+
+CREATE VIEW vmacs AS
+SELECT n.*, m.mac, m.id AS macid
+    FROM nodes n
+    JOIN macs m ON (n.id = m.nodeid);
 
 /* ---------------------------------------------------
  Aggregates

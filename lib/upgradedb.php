@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-define('DBVERSION', '2010051400'); // here should be always the newest version of database!
+define('DBVERSION', '2010061100'); // here should be always the newest version of database!
 				 // it placed here to avoid read disk every time when we call this file.
 
 /*
@@ -64,7 +64,7 @@ if($dbversion = $DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype = ?',arra
 		{
 			sort($pendingupgrades);
 			foreach($pendingupgrades as $upgrade)
-			{	
+			{
 				include(LIB_DIR.'/upgradedb/'.$_dbtype.'.'.$upgrade.'.php');
 				if(!sizeof($DB->errors))
 					$lastupgrade = $upgrade;
