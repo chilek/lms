@@ -9,6 +9,7 @@ version ? (????-??-??)
   - added vnodes sql view for simpler nodes mac processing (chilan)
   - xajaxResponse object can be used in document plugins (alec)
   - separated setting for validating functions locales (chilan)
+  - fixed displaying of assignments with 'HALFYEARLY' period (ceho)
 
 version 1.11.10 Kri (2010-04-19)
 
