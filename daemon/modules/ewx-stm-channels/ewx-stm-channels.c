@@ -135,10 +135,15 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		struct variable_list *vars;
 		char buf[MAX_OID_LEN];
 
+#ifdef LMS_SNMP_DEBUG
+   		for(vars = response->variables; vars; vars = vars->next_variable)
+   			print_variable(vars->name, vars->name_length, vars);
+#endif
+
 		for(vars = response->variables; vars; vars = vars->next_variable)
 		{
 			snprint_objid(buf, MAX_OID_LEN, vars->name, vars->name_length);
-		
+
 			if(vars->name[STM_OID_LEN-2]==3)
 			{
 				snprint_value(buf, MAX_OID_LEN, vars->name, vars->name_length, vars);
@@ -166,7 +171,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 
 	// Clean up
 	if(response)
-		snmp_free_pdu(response);	
+		snmp_free_pdu(response);
 
 	snmp_close(sh);
 
@@ -183,7 +188,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	// get all networks params
         res = g->db_pquery(g->conn, "SELECT UPPER(name) AS name, address, "
 			"INET_ATON(mask) AS mask, interface FROM networks");
-	
+
 	for(anc=0; anc<g->db_nrows(res); anc++)
 	{
 	        all_nets = (struct net*) realloc(all_nets, (sizeof(struct net) * (anc+1)));
@@ -192,11 +197,11 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	        all_nets[anc].mask = inet_addr(g->db_get_data(res, anc, "mask"));
 	}
 	g->db_free(&res);
-	
-	n = 2;																							 
+
+	n = 2;
 	netnames = strdup(ewx->networks);
 	netname = strdup(netnames);
-	
+
 	// get networks for filter if any specified in 'networks' option
 	while( n>1 )
 	{
@@ -282,7 +287,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 			for(i=0; i<anc; i++)
 	            		if(strcmp(all_nets[i].name, g->str_upc(netname))==0)
 	                    		break;
-		
+
 			if(i != anc)
 			{
 				// same networks can't be included in both dummy_* options
@@ -364,12 +369,12 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	                "AND ((n.ipaddr > net.address AND n.ipaddr < broadcast(net.address, inet_aton(net.mask))) "
 			"OR (n.ipaddr_pub > net.address AND n.ipaddr_pub < broadcast(net.address, inet_aton(net.mask)))) "
 			")");
-				
+
 	netnames = strdup(ewx->excluded_networks);
 	netname = strdup(netnames);
 	enetsql = strdup("");
 	o = 2;
-			
+
 	while( o>1 )
 	{
     		o = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
@@ -423,7 +428,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
         {
 	        g->str_replace(&query, "downceil", "(CASE WHEN downceil_n > 0 THEN downceil_n ELSE downceil END)");
 	        g->str_replace(&query, "upceil", "(CASE WHEN upceil_n > 0 THEN upceil_n ELSE upceil END)");
-	}				
+	}
 	
 	res = g->db_query(g->conn, query);
 	
@@ -509,14 +514,14 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		
 		// Networks test
 		if(nc)
-		{	
+		{
 			for(n=0; n<nc; n++)
 	            		if(nets[n].address == (inet & nets[n].mask))
 	                    		break;
-		
+
 			if(n == nc) continue;
 		}
-		
+
 		int uprate 	= atoi(g->db_get_data(res,i,"uprate"));
 		int downrate 	= atoi(g->db_get_data(res,i,"downrate"));
 		int upceil 	= atoi(g->db_get_data(res,i,"upceil"));
@@ -526,7 +531,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		for(k=0; k<customers[j].no; k++)
 			if(customers[j].hosts[k].id == hostid)
 				break;
-		
+
 		if(k == customers[j].no) // host not exists
 		{
 	        	int dummy_ip = 0;
@@ -534,45 +539,44 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 
 			// Networks test for dummy_mac
 			if(mnc)
-			{	
+			{
 				for(n=0; n<mnc; n++)
-	            			if(mac_nets[n].address == (inet & mac_nets[n].mask))
+           			if(mac_nets[n].address == (inet & mac_nets[n].mask))
 						break;
 
 				if(n != mnc) dummy_mac = 1;
 			}
 
 			if(dummy_mac && emnc)
-			{	
+			{
 				for(n=0; n<emnc; n++)
-	            			if(emac_nets[n].address == (inet & emac_nets[n].mask))
+           			if(emac_nets[n].address == (inet & emac_nets[n].mask))
 						break;
 
 				if(n != emnc) dummy_mac = 0;
 			}
-			
-			if(!dummy_mac && !atoi(g->db_get_data(res,i,"chkmac")))
-			{
-				dummy_mac = 1;
-			}
 
 			// Networks test for dummy_ip
 			if(inc && !dummy_mac)
-			{	
+			{
 				for(n=0; n<inc; n++)
-	            			if(ip_nets[n].address == (inet & ip_nets[n].mask))
-	                    			break;
-		
+            		if(ip_nets[n].address == (inet & ip_nets[n].mask))
+                    	break;
+
 				if(n != inc) dummy_ip = 1;
 			}
 
 			if(dummy_ip && einc && !dummy_mac)
-			{	
+			{
 				for(n=0; n<einc; n++)
-	            			if(eip_nets[n].address == (inet & eip_nets[n].mask))
-	                    			break;
-		
+	            	if(eip_nets[n].address == (inet & eip_nets[n].mask))
+	                	break;
+
 				if(n != einc) dummy_ip = 0;
+			}
+
+			if(!dummy_mac && !dummy_ip && !atoi(g->db_get_data(res,i,"chkmac"))) {
+				dummy_mac = 1;
 			}
 
 			customers[j].hosts = (struct host *) realloc(customers[j].hosts, (sizeof(struct host) * (k+1)));
@@ -583,17 +587,17 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 			customers[j].hosts[k].downceil = downceil;
 			customers[j].hosts[k].status = UNKNOWN;
 			customers[j].hosts[k].halfduplex = atoi(g->db_get_data(res,i,"halfduplex"));
-			
+
 			if(!dummy_ip)
 				customers[j].hosts[k].ip = strdup(ip);
 			else
 				customers[j].hosts[k].ip = strdup(DUMMY_IP);
-			
+
 			if(!dummy_mac)
 				customers[j].hosts[k].mac = strdup(g->db_get_data(res,i,"mac"));
 			else
 				customers[j].hosts[k].mac = strdup(DUMMY_MAC);
-			
+
 			customers[j].downratesum += downrate;
 			customers[j].upratesum += uprate;
 			customers[j].no++;
@@ -645,7 +649,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 
 //printf("SUMMARY: %d/%d (%d/%d)\n", globaldownrate, globaluprate, pathdownlink, pathuplink);
 //printf("SUMMARY: %d/%d (%d/%d)\n", maxdownceil, maxupceil, pathdownlink, pathuplink);
-	
+
 	// path limits checking
 	if(globaluprate>pathuplink || globaldownrate>pathdownlink)
 	{
@@ -666,7 +670,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	res = g->db_query(g->conn, query);
 	
 	for(i=0; i<g->db_nrows(res); i++) 
-	{	
+	{
 		int id 		= atoi(g->db_get_data(res,i,"id"));
 		int cid 	= atoi(g->db_get_data(res,i,"cid"));
 		int upceil 	= atoi(g->db_get_data(res,i,"upceil"));
@@ -1007,7 +1011,7 @@ struct ewx_module * init(GLOBAL *g, MODULE *m)
 	// ustawienie któregoś z nich na zero, spowoduje pominięcie komputerów bez przypisanego kanału
 	ewx->default_upceil = g->config_getint(ewx->base.ini, ewx->base.instance, "default_upceil", 0);
 	ewx->default_downceil = g->config_getint(ewx->base.ini, ewx->base.instance, "default_downceil", 0);
-	
+
 	// node/channel ID's offset, e.g. for testing
 	ewx->offset = g->config_getint(ewx->base.ini, ewx->base.instance, "offset", 0);
 
@@ -1020,7 +1024,7 @@ struct ewx_module * init(GLOBAL *g, MODULE *m)
 	ewx->path = g->config_getint(ewx->base.ini, ewx->base.instance, "path", 0);
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [%s/ewx-stm-channels] initialized", ewx->base.instance);
-#endif	
+#endif
 	return(ewx);
 }
 
@@ -1031,8 +1035,9 @@ int del_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, stru
 	int i, status, result = STATUS_ERROR;
 	struct channel c = *ch;
 
-//printf("[DELETE CHANNEL] %d\n", c.id);
-
+#ifdef LMS_SNMP_DEBUG
+    printf("[DELETE CHANNEL] %d\n", c.id);
+#endif
 	// First we must delete all nodes in channel
 	for(i=0; i<c.no; i++)
 		if(c.hosts[i].status == UNKNOWN)
@@ -1054,10 +1059,11 @@ int del_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, stru
 	// Process the response
 	if(status == STAT_SUCCESS && response->errstat == SNMP_ERR_NOERROR)
 	{
-//		struct variable_list 	*vars;
-//    		for(vars = response->variables; vars; vars = vars->next_variable)
-//    			print_variable(vars->name, vars->name_length, vars);
-
+#ifdef LMS_SNMP_DEBUG
+		struct variable_list *vars;
+    	for(vars = response->variables; vars; vars = vars->next_variable)
+    		print_variable(vars->name, vars->name_length, vars);
+#endif
 		g->db_pexec(g->conn, "DELETE FROM ewx_stm_channels WHERE id = ?", itoa(c.id));
 #ifdef DEBUG1
 		syslog(LOG_INFO, "DEBUG: [%s/ewx-stm-channels] Deleted channel %d", ewx->base.instance, c.id);
@@ -1090,12 +1096,13 @@ int add_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, stru
 	int i, status, channelid, result = STATUS_ERROR;
 	QueryHandle *res;
 	struct channel c = *cust;
-	
+
 	char *upceil = strdup(itoa(c.upceil));
 	char *downceil = strdup(itoa(c.downceil));
 
-//printf("[ADD CHANNEL] %d\n", c.cid);
-
+#ifdef LMS_SNMP_DEBUG
+    printf("[ADD CHANNEL] %d\n", c.cid);
+#endif
 	if(!sh) return result;
 
 	// Adding channel to database
@@ -1111,21 +1118,21 @@ int add_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, stru
 	// @TODO: na postgresie mozna uzyc generate_series() i zalatwic to jednym zapytaniem
 	if(channelid > MAX_ID)
 	{
-                int lastid = 0;
+        int lastid = 0;
 		int newid = 0;
 		int row = 0;
-		
+
 		while(newid==0)
 		{
 			res = g->db_pquery(g->conn, "SELECT id FROM ewx_stm_channels ORDER BY id LIMIT 100 OFFSET ?", itoa(row));
-		
+
 			// break loop when there're no rows
 			if(!g->db_nrows(res))
 			{
 				g->db_free(&res);
 				break;
 			}
-			
+
 			for(i=0; i<g->db_nrows(res); i++)
     			{
         			int cid = atoi(g->db_get_data(res,i,"id"));
@@ -1143,7 +1150,7 @@ int add_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, stru
 			}
 			g->db_free(&res);
 		}
-		
+
 		if(newid)
 		{
 			char *nid = strdup(itoa(newid));
@@ -1154,7 +1161,7 @@ int add_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, stru
 		else
 		{
     			syslog(LOG_ERR, "[%s/ewx-stm-channels] ERROR: Cannot add channel %d. ID is too big.", ewx->base.instance, channelid);
-			return result;		
+			return result;
 		}
 	}
 
@@ -1180,9 +1187,11 @@ int add_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, stru
 	// Process the response
 	if(status == STAT_SUCCESS && response->errstat == SNMP_ERR_NOERROR)
 	{
-//		struct variable_list 	*vars;
-//    		for(vars = response->variables; vars; vars = vars->next_variable)
-//    			print_variable(vars->name, vars->name_length, vars);
+#ifdef LMS_SNMP_DEBUG
+	    struct variable_list *vars;
+   		for(vars = response->variables; vars; vars = vars->next_variable)
+   			print_variable(vars->name, vars->name_length, vars);
+#endif
 #ifdef DEBUG1
 		syslog(LOG_INFO, "DEBUG: [%s/ewx-stm-channels] Added channel %d", ewx->base.instance, channelid);
 #endif
@@ -1223,11 +1232,9 @@ int update_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, s
 	struct channel c = *ch;
 	struct channel cu = *cust;
 
-	char *upceil = strdup(itoa(cu.upceil));
-	char *downceil = strdup(itoa(cu.downceil));
-
-//printf("[UPDATE CHANNEL] %d\n", c.id);
-
+#ifdef LMS_SNMP_DEBUG
+    printf("[UPDATE CHANNEL] %d\n", c.id);
+#endif
 	// First we must delete all nodes in channel
 	for(i=0; i<c.no; i++)
 		if(c.hosts[i].status != DELETED)
@@ -1235,100 +1242,111 @@ int update_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, s
 
 	if(!sh) return result;
 
-	// Create OIDs
-	ChannelUplink[STM_OID_LEN-1] = c.id + ewx->offset;
-	ChannelDownlink[STM_OID_LEN-1] = c.id + ewx->offset;
-//	ChannelPathNo[STM_OID_LEN-1] = c.id + ewx->offset;
-//	ChannelHalfDuplex[STM_OID_LEN-1] = c.id + ewx->offset;
-	ChannelStatus[STM_OID_LEN-1] = c.id + ewx->offset;
+    // Update channel limits if we need to
+    if (cu.upceil != c.upceil || cu.downceil != c.downceil)
+    {
+	    char *upceil = strdup(itoa(cu.upceil));
+	    char *downceil = strdup(itoa(cu.downceil));
 
-	// Create the PDU 
-	pdu = snmp_pdu_create(SNMP_MSG_SET);
+	    // Create OIDs
+	    ChannelUplink[STM_OID_LEN-1] = c.id + ewx->offset;
+	    ChannelDownlink[STM_OID_LEN-1] = c.id + ewx->offset;
+        // ChannelPathNo[STM_OID_LEN-1] = c.id + ewx->offset;
+        // ChannelHalfDuplex[STM_OID_LEN-1] = c.id + ewx->offset;
+	    ChannelStatus[STM_OID_LEN-1] = c.id + ewx->offset;
 
-	// NOTINSERVICE we must send in separate packet
+	    // Create the PDU 
+	    pdu = snmp_pdu_create(SNMP_MSG_SET);
+
+	    // NOTINSERVICE we must send in separate packet
         snmp_add_var(pdu, ChannelStatus, STM_OID_LEN, 'i', NOTINSERVICE);
-	
-	// Send the Request out
-	status = snmp_synch_response(sh, pdu, &response);
-					
-	// Process the response
-	if(status == STAT_SUCCESS && response->errstat == SNMP_ERR_NOERROR)
-	{
-//		struct variable_list 	*vars;
-//    		for(vars = response->variables; vars; vars = vars->next_variable)
-//    			print_variable(vars->name, vars->name_length, vars);
-	} 
-	else // failure
-	{
-		if(status == STAT_SUCCESS)
+
+	    // Send the Request out
+	    status = snmp_synch_response(sh, pdu, &response);
+
+	    // Process the response
+	    if(status == STAT_SUCCESS && response->errstat == SNMP_ERR_NOERROR)
+	    {
+#ifdef LMS_SNMP_DEBUG
+	        struct variable_list *vars;
+   		    for(vars = response->variables; vars; vars = vars->next_variable)
+   			    print_variable(vars->name, vars->name_length, vars);
+#endif
+	    }
+	    else // failure
+	    {
+		    if(status == STAT_SUCCESS)
     			syslog(LOG_ERR, "[%s/ewx-stm-channels] ERROR: Cannot update channel %d: %s", ewx->base.instance, c.id, snmp_errstring(response->errstat));
-		else
-		{
-			snmp_error(sh, NULL, NULL, &errstr);
+		    else
+		    {
+			    snmp_error(sh, NULL, NULL, &errstr);
     			syslog(LOG_ERR, "[%s/ewx-stm-channels] ERROR: Cannot update channel %d: %s", ewx->base.instance, c.id, errstr);
-			free(errstr);
-		}
-		
-		free(upceil);
-		free(downceil);
-		return result;
-	}
+			    free(errstr);
+		    }
 
-	// Clean up
-	if(response)
-		snmp_free_pdu(response);
+    		free(upceil);
+	    	free(downceil);
+		    return result;
+	    }
 
-	// Create the PDU 
-	pdu = snmp_pdu_create(SNMP_MSG_SET);
+	    // Clean up
+	    if(response)
+		    snmp_free_pdu(response);
 
-	snmp_add_var(pdu, ChannelUplink, STM_OID_LEN, 'u', upceil);
-	snmp_add_var(pdu, ChannelDownlink, STM_OID_LEN, 'u', downceil);
-//	snmp_add_var(pdu, ChannelPathNo, STM_OID_LEN, 'u', itoa(ewx->path));
-//	snmp_add_var(pdu, ChannelHalfDuplex, STM_OID_LEN, 'i', "2");
-	snmp_add_var(pdu, ChannelStatus, STM_OID_LEN, 'i', ACTIVE);
+	    // Create the PDU 
+	    pdu = snmp_pdu_create(SNMP_MSG_SET);
 
-	// Send the Request out
-	status = snmp_synch_response(sh, pdu, &response);
+	    snmp_add_var(pdu, ChannelUplink, STM_OID_LEN, 'u', upceil);
+	    snmp_add_var(pdu, ChannelDownlink, STM_OID_LEN, 'u', downceil);
+        // snmp_add_var(pdu, ChannelPathNo, STM_OID_LEN, 'u', itoa(ewx->path));
+        // snmp_add_var(pdu, ChannelHalfDuplex, STM_OID_LEN, 'i', "2");
+	    snmp_add_var(pdu, ChannelStatus, STM_OID_LEN, 'i', ACTIVE);
 
-	// Process the response
-	if(status == STAT_SUCCESS && response->errstat == SNMP_ERR_NOERROR)
-	{
-//		struct variable_list 	*vars;
-//		for(vars = response->variables; vars; vars = vars->next_variable)
-//    			print_variable(vars->name, vars->name_length, vars);
-		
-		g->db_pexec(g->conn, "UPDATE ewx_stm_channels SET upceil = ?, downceil = ? "
+	    // Send the Request out
+	    status = snmp_synch_response(sh, pdu, &response);
+
+	    // Process the response
+	    if(status == STAT_SUCCESS && response->errstat == SNMP_ERR_NOERROR)
+	    {
+#ifdef LMS_SNMP_DEBUG
+	        struct variable_list *vars;
+	        for(vars = response->variables; vars; vars = vars->next_variable)
+   			    print_variable(vars->name, vars->name_length, vars);
+#endif
+		    g->db_pexec(g->conn, "UPDATE ewx_stm_channels SET upceil = ?, downceil = ? "
 			    "WHERE id = ?", upceil, downceil, itoa(c.id));
 #ifdef DEBUG1
-		syslog(LOG_INFO, "DEBUG: [%s/ewx-stm-channels] Updated channel %d", ewx->base.instance, c.id);
+		    syslog(LOG_INFO, "DEBUG: [%s/ewx-stm-channels] Updated channel %d", ewx->base.instance, c.id);
 #endif
-		(*ch).status = (*cust).status = result = STATUS_OK;
-	} 
-	else // failure
-	{
-		if(status == STAT_SUCCESS)
+		    (*ch).status = (*cust).status = result = STATUS_OK;
+	    }
+	    else // failure
+	    {
+		    if(status == STAT_SUCCESS)
     			syslog(LOG_ERR, "[%s/ewx-stm-channels] ERROR: Cannot update channel %d: %s", ewx->base.instance, c.id, snmp_errstring(response->errstat));
-		else
-		{
-			snmp_error(sh, NULL, NULL, &errstr);
+		    else
+		    {
+			    snmp_error(sh, NULL, NULL, &errstr);
     			syslog(LOG_ERR, "[%s/ewx-stm-channels] ERROR: Cannot update channel %d: %s", ewx->base.instance, c.id, errstr);
-			free(errstr);
-		}
-	}
+			    free(errstr);
+		    }
+	    }
 
-	// Clean up
-	if(response)
-		snmp_free_pdu(response);
+	    // Clean up
+	    if(response)
+		    snmp_free_pdu(response);
+
+        free(upceil);
+	    free(downceil);
+    }
+    else
+        result = STATUS_OK;
 
 	// Adding nodes to the channel
 	if(result == STATUS_OK)
-		for(i=0; i<cu.no; i++)
-		{
+		for(i=0; i<cu.no; i++) {
 			add_node(g, ewx, sh, &cu.hosts[i], c.id + ewx->offset);
 		}
-
-	free(upceil);
-	free(downceil);
 
 	return result;
 }
@@ -1342,8 +1360,9 @@ int mod_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, int 
 	char *upceil = strdup(itoa(up));
 	char *downceil = strdup(itoa(down));
 
-//printf("[MODIFY CHANNEL] %d [%d:%d]\n", id, up, down);
-
+#ifdef LMS_SNMP_DEBUG
+        printf("[MODIFY CHANNEL] %d [%d:%d]\n", id, up, down);
+#endif
 	// Create OIDs
 	ChannelUplink[STM_OID_LEN-1] = id + ewx->offset;
 	ChannelDownlink[STM_OID_LEN-1] = id + ewx->offset;
@@ -1353,18 +1372,20 @@ int mod_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, int 
 	pdu = snmp_pdu_create(SNMP_MSG_SET);
 
 	// NOTINSERVICE we must send in separate packet
-        snmp_add_var(pdu, ChannelStatus, STM_OID_LEN, 'i', NOTINSERVICE);
-	
+    snmp_add_var(pdu, ChannelStatus, STM_OID_LEN, 'i', NOTINSERVICE);
+
 	// Send the Request out
 	status = snmp_synch_response(sh, pdu, &response);
-					
+
 	// Process the response
 	if(status == STAT_SUCCESS && response->errstat == SNMP_ERR_NOERROR)
 	{
-//		struct variable_list 	*vars;
-//    		for(vars = response->variables; vars; vars = vars->next_variable)
-//    			print_variable(vars->name, vars->name_length, vars);
-	} 
+#ifdef LMS_SNMP_DEBUG
+	    struct variable_list *vars;
+   		for(vars = response->variables; vars; vars = vars->next_variable)
+   			print_variable(vars->name, vars->name_length, vars);
+#endif
+	}
 	else // failure
 	{
 		if(status == STAT_SUCCESS)
@@ -1375,7 +1396,7 @@ int mod_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, int 
     			syslog(LOG_ERR, "[%s/ewx-stm-channels] ERROR: Cannot modify channel %d: %s", ewx->base.instance, id, errstr);
 			free(errstr);
 		}
-		
+
 		free(upceil);
 		free(downceil);
 		return result;
@@ -1398,10 +1419,11 @@ int mod_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, int 
 	// Process the response
 	if(status == STAT_SUCCESS && response->errstat == SNMP_ERR_NOERROR)
 	{
-//		struct variable_list 	*vars;
-//		for(vars = response->variables; vars; vars = vars->next_variable)
-//    			print_variable(vars->name, vars->name_length, vars);
-		
+#ifdef LMS_SNMP_DEBUG
+	    struct variable_list *vars;
+	    for(vars = response->variables; vars; vars = vars->next_variable)
+   			print_variable(vars->name, vars->name_length, vars);
+#endif
 		g->db_pexec(g->conn, "UPDATE ewx_stm_channels SET upceil = ?, downceil = ? "
 			    "WHERE id = ?", upceil, downceil, itoa(id));
 #ifdef DEBUG1
@@ -1437,8 +1459,9 @@ int del_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, struct 
 	int status, result = STATUS_ERROR;
 	struct host h = *ht;
 
-//printf("[DELETE NODE] %d\n", h.id);
-
+#ifdef LMS_SNMP_DEBUG
+    printf("[DELETE NODE] %d\n", h.id);
+#endif
 	if(!sh) return result;
 
 	// Create OID
@@ -1455,10 +1478,11 @@ int del_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, struct 
 	// Process the response
 	if(status == STAT_SUCCESS && response->errstat == SNMP_ERR_NOERROR)
 	{
-//		struct variable_list 	*vars;
-//    		for(vars = response->variables; vars; vars = vars->next_variable)
-//    			print_variable(vars->name, vars->name_length, vars);
-
+#ifdef LMS_SNMP_DEBUG
+	    struct variable_list *vars;
+   		for(vars = response->variables; vars; vars = vars->next_variable)
+   			print_variable(vars->name, vars->name_length, vars);
+#endif
 		g->db_pexec(g->conn, "DELETE FROM ewx_stm_nodes WHERE nodeid = ?", itoa(h.id));
 #ifdef DEBUG1
 		syslog(LOG_INFO, "DEBUG: [%s/ewx-stm-channels] Deleted node %s (%05d)", ewx->base.instance, h.ip, h.id);
@@ -1491,10 +1515,11 @@ int add_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, struct 
 	int status, result = STATUS_ERROR;
 	struct host h = *ht;
 
-//printf("[ADD NODE] %d %s-%s: %d\n", h.id, h.mac, h.ip, chid);
-
+#ifdef LMS_SNMP_DEBUG
+    printf("[ADD NODE] %d %s-%s: %d\n", h.id, h.mac, h.ip, chid);
+#endif
 	if(!sh) return result;
-	
+
 	// Create OIDs
 //	CustomerNo[STM_OID_LEN-1] = h.id + ewx->offset;
 	CustomerPathNo[STM_OID_LEN-1] = h.id + ewx->offset;
@@ -1531,10 +1556,11 @@ int add_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, struct 
 	// Process the response
 	if(status == STAT_SUCCESS && response->errstat == SNMP_ERR_NOERROR)
 	{
-//		struct variable_list 	*vars;
-//    		for(vars = response->variables; vars; vars = vars->next_variable)
-//    			print_variable(vars->name, vars->name_length, vars);
-
+#ifdef LMS_SNMP_DEBUG
+	    struct variable_list *vars;
+   		for(vars = response->variables; vars; vars = vars->next_variable)
+   			print_variable(vars->name, vars->name_length, vars);
+#endif
 		char *uprate = strdup(itoa(h.uprate));
 		char *upceil = strdup(itoa(h.upceil));
 		char *downrate = strdup(itoa(h.downrate));
@@ -1583,10 +1609,11 @@ int update_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, stru
 	int status, result = STATUS_ERROR;
 	struct host h = *ht;
 
-//printf("[UPDATE NODE] %d\n", h.id);
-
+#ifdef LMS_SNMP_DEBUG
+    printf("[UPDATE NODE] %d\n", h.id);
+#endif
 	if(!sh) return result;
-	
+
 	// Create OIDs
 //	CustomerNo[STM_OID_LEN-1] = h.id + ewx->offset;
 //	CustomerPathNo[STM_OID_LEN-1] = h.id + ewx->offset;
@@ -1605,17 +1632,19 @@ int update_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, stru
 
 	// NOTINSERVICE we must send in separate packet
         snmp_add_var(pdu, CustomerStatus, STM_OID_LEN, 'i', NOTINSERVICE);
-	
+
 	// Send the Request out
 	status = snmp_synch_response(sh, pdu, &response);
-					
+
 	// Process the response
 	if(status == STAT_SUCCESS && response->errstat == SNMP_ERR_NOERROR)
 	{
-//		struct variable_list 	*vars;
-//    		for(vars = response->variables; vars; vars = vars->next_variable)
-//    			print_variable(vars->name, vars->name_length, vars);
-	} 
+#ifdef LMS_SNMP_DEBUG
+   		struct variable_list *vars;
+   		for(vars = response->variables; vars; vars = vars->next_variable)
+   			print_variable(vars->name, vars->name_length, vars);
+#endif
+	}
 	else // failure
 	{
 		if(status == STAT_SUCCESS)
@@ -1626,7 +1655,7 @@ int update_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, stru
     			syslog(LOG_ERR, "[%s/ewx-stm-channels] ERROR: Cannot update node %s (%05d): %s", ewx->base.instance, h.ip, h.id, errstr);
 			free(errstr);
 		}
-		
+
 		return result;
 	}
 
@@ -1666,10 +1695,11 @@ int update_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, stru
 	// Process the response
 	if(status == STAT_SUCCESS && response->errstat == SNMP_ERR_NOERROR)
 	{
-//		struct variable_list 	*vars;
-//    		for(vars = response->variables; vars; vars = vars->next_variable)
-//    			print_variable(vars->name, vars->name_length, vars);
-
+#ifdef LMS_SNMP_DEBUG
+	    struct variable_list *vars;
+   		for(vars = response->variables; vars; vars = vars->next_variable)
+   			print_variable(vars->name, vars->name_length, vars);
+#endif
 		char *uprate = strdup(itoa(h.uprate));
 		char *upceil = strdup(itoa(h.upceil));
 		char *downrate = strdup(itoa(h.downrate));
@@ -1716,8 +1746,9 @@ int save_tables(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh)
 	char *errstr;
 	int status, result = STATUS_ERROR;
 
-//printf("[SAVE TABLES]\n");
-
+#ifdef LMS_SNMP_DEBUG
+    printf("[SAVE TABLES]\n");
+#endif
 	if(!sh) return result;
 
 	// Create the PDU 
@@ -1732,9 +1763,11 @@ int save_tables(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh)
 	// Process the response
 	if(status == STAT_SUCCESS && response->errstat == SNMP_ERR_NOERROR)
 	{
-//		struct variable_list 	*vars;
-//    		for(vars = response->variables; vars; vars = vars->next_variable)
-//    			print_variable(vars->name, vars->name_length, vars);
+#ifdef LMS_SNMP_DEBUG
+	    struct variable_list *vars;
+   		for(vars = response->variables; vars; vars = vars->next_variable)
+   			print_variable(vars->name, vars->name_length, vars);
+#endif
 #ifdef DEBUG1
 		syslog(LOG_INFO, "DEBUG: [%s/ewx-stm-channels] Device configuration tables saved", ewx->base.instance);
 #endif

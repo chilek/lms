@@ -152,3 +152,6 @@ oid ChannelsTableSave[]		= {SNMP_OID_ENTERPRISES,20656,1,2,1,6,2,0};
 #define STATUS_OK	1
 #define STATUS_ERROR	0
 #define DELETED		2
+
+//#define LMS_SNMP_DEBUG 1
+
