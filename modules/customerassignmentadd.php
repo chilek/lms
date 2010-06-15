@@ -24,30 +24,24 @@
  *  $Id$
  */
 
-if($LMS->CustomerExists($_GET['id']) !== TRUE)
+// get customer name and check privileges using customersview
+$customer = $DB->GetRow('SELECT id, '
+    .$DB->Concat('lastname',"' '",'name').' AS name
+    FROM customersview WHERE id = ?', array($_GET['id']));
+
+if(!$customer)
 {
-	$SESSION->redirect('?m=customerlist');
+    $SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
-if($_GET['action'] == 'delete')
-{
-	$LMS->DeleteAssignment($_GET['aid']);
-	$SESSION->redirect('?'.$SESSION->get('backto'));
-}
-
-if($_GET['action'] == 'suspend')
-{
-	$LMS->SuspendAssignment($_GET['aid'], $_GET['suspend']);
-	$SESSION->redirect('?'.$SESSION->get('backto'));
-}
-
-if($_GET['action'] == 'add' && isset($_POST['assignment']))
+if(isset($_POST['assignment']))
 {
 	$a = $_POST['assignment'];
 
 	foreach($a as $key => $val)
-		$a[$key] = trim($val);
-	
+	    if(!is_array($val))
+		    $a[$key] = trim($val);
+
 	$period = sprintf('%d',$a['period']);
 
 	switch($period)
@@ -55,22 +49,22 @@ if($_GET['action'] == 'add' && isset($_POST['assignment']))
 		case DAILY:
 			$at = 0;
 		break;
-		
+
 		case WEEKLY:
 			$at = sprintf('%d',$a['at']);
-			
+
 			if(chkconfig($CONFIG['phpui']['use_current_payday']) && $at==0)
 			{
 				$at = strftime('%u', time());
 			}
-			
+
 			if($at < 1 || $at > 7)
 				$error['at'] = trans('Incorrect day of week (1-7)!');
 		break;
 
 		case MONTHLY:
 			$at = sprintf('%d',$a['at']);
-			
+
 			if(chkconfig($CONFIG['phpui']['use_current_payday']) && $at==0)
 				$at = date('j', time());
 
@@ -79,9 +73,9 @@ if($_GET['action'] == 'add' && isset($_POST['assignment']))
 			{
 				$at = $CONFIG['phpui']['default_monthly_payday'];
 			}
-			
+
 			$a['at'] = $at;
-			
+
 			if($at > 28 || $at < 1)
 				$error['at'] = trans('Incorrect day of month (1-28)!');
 		break;
@@ -101,7 +95,7 @@ if($_GET['action'] == 'add' && isset($_POST['assignment']))
 			{
 				list($d,$m) = explode('/',$a['at']);
 			}
-			
+
 			if(!$error)
 			{
 				if($d>30 || $d<1 || ($d>28 && $m==2))
@@ -128,7 +122,7 @@ if($_GET['action'] == 'add' && isset($_POST['assignment']))
 			{
 				list($d,$m) = explode('/',$a['at']);
 			}
-			
+
 			if(!$error)
 			{
 				if($d>30 || $d<1 || ($d>28 && $m==2))
@@ -155,14 +149,14 @@ if($_GET['action'] == 'add' && isset($_POST['assignment']))
 			{
 				list($d,$m) = explode('/',$a['at']);
 			}
-			
+
 			if(!$error)
 			{
 				if($d>30 || $d<1 || ($d>28 && $m==2))
 					$error['at'] = trans('This month doesn\'t contain specified number of days');
 				if($m>12 || $m<1)
 					$error['at'] = trans('Incorrect month number');
-			
+
 				$ttime = mktime(12, 0, 0, $m, $d, 1990);
 				$at = date('z',$ttime) + 1;
 			}
@@ -170,20 +164,20 @@ if($_GET['action'] == 'add' && isset($_POST['assignment']))
 
 		default: // DISPOSABLE
 			$period = DISPOSABLE;
-			
-			if($a['tariffid']!='0')
+
+			if($a['tariffid'] != -1)
 			{
-				$a['dateto'] = 0;
-				$a['datefrom'] = 0;
+				$a['dateto'] = '';
+				$a['datefrom'] = '';
 			}
-			
+
 			if(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['at']))
 			{
 				list($y, $m, $d) = explode('/', $a['at']);
 				if(checkdate($m, $d, $y))
 				{
 					$at = mktime(0, 0, 0, $m, $d, $y);
-					
+
 					if($at < mktime(0,0,0))
 						$error['at'] = trans('Incorrect date!');
 				}
@@ -224,68 +218,77 @@ if($_GET['action'] == 'add' && isset($_POST['assignment']))
 	if($to < $from && $to != 0 && $from != 0)
 		$error['dateto'] = trans('Incorrect date range!');
 
-	if($a['tariffid']=='' && $a['value']=='')
-	{
-		$error['tariffid'] = trans('Subscription not selected!');
-		$error['value'] = trans('Liability value not specified!');
-	}
-
 	$a['discount'] = str_replace(',','.',$a['discount']);
-	if($a['discount']=='')
+	if($a['discount'] == '')
 		$a['discount'] = 0;
 	elseif($a['discount']<0 || $a['discount']>99.99 || !is_numeric($a['discount']))
 		$error['discount'] = trans('Wrong discount value!');
 
-	if($a['tariffid'] == '0')
+	if($a['tariffid'] == -1)  // suspending
 	{
 		unset($error['at']);
 		$at = 0;
 	}
-	elseif(!$a['name'] && $a['value'])
-		$error['name'] = trans('Liability name is required!');
+	else if (!$a['tariffid']) { // tariffless
+	    if (!$a['name'])
+		    $error['name'] = trans('Liability name is required!');
+	    if (!$a['value'])
+		    $error['value'] = trans('Liability value is required!');
+		else if(!preg_match('/^[-]?[0-9.,]+$/', $a['value']))
+		    $error['value'] = trans('Incorrect value!');
+    }
 
-	if($a['tariffid'] != '') 
-		$a['value'] = 0;
-
-	$nodes = array();
-	if($tmp = explode(',', $a['nodes']))
-		foreach($tmp as $node)
-			if($node)
-				$nodes[] = $node;
-
-	if(!$error) 
+	if(!$error)
 	{
-		$LMS->AddAssignment(array('tariffid' => intval($a['tariffid']), 
-					    'customerid' => $_GET['id'], 
-					    'period' => $period, 
-					    'at' => $at, 
-					    'invoice' => isset($a['invoice']) ? 1 : 0, 
-					    'settlement' => isset($a['settlement']) ? 1 : 0, 
-					    'datefrom' => $from, 
-					    'dateto' => $to, 
-					    'discount' => $a['discount'],
-					    'value' => str_replace(',','.',$a['value']),
-					    'name' => $a['name'],
-					    'taxid' => $a['taxid'],
-					    'prodid' => $a['prodid'],
-					    'nodes' => $nodes,
-					    ));
+	    if ($a['tariffid'] == -1) {
+	        $a['tariffid'] = 0;
+	        $a['discount'] = 0;
+	        unset($a['invoice']);
+	        unset($a['settlement']);
+        }
+        if ($a['tariffid'])
+		    $a['value'] = 0;
+
+		$LMS->AddAssignment(array(
+		    'tariffid' => intval($a['tariffid']),
+			'customerid' => $customer['id'],
+			'period' => $period,
+			'at' => $at,
+			'invoice' => isset($a['invoice']) ? 1 : 0,
+			'settlement' => isset($a['settlement']) ? 1 : 0,
+			'datefrom' => $from,
+			'dateto' => $to,
+			'discount' => $a['discount'],
+			'value' => str_replace(',','.',$a['value']),
+			'name' => $a['name'],
+			'taxid' => $a['taxid'],
+			'prodid' => $a['prodid'],
+			'nodes' => $a['nodes'],
+		));
+
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}
 
 	$SMARTY->assign('assignment', $a);
+    $SMARTY->assign('error', $error);
 }
 
-$customerid = $_GET['id'];
+$expired = isset($_GET['expired']) ? $_GET['expired'] : false;
 
-include(MODULES_DIR.'/customer.inc.php');
-
-$layout['pagetitle'] = trans('Customer Information: $0', $customerinfo['customername']);
+$layout['pagetitle'] = trans('New Liability: $0', '<A href="?m=customerinfo&id='.$customer['id'].'">'.$customer['name'].'</A>');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$SMARTY->assign('recover',($_GET['action'] == 'recover' ? 1 : 0));
-$SMARTY->assign('error', $error);
-$SMARTY->display('customerinfo.html');
+$customernodes = $LMS->GetCustomerNodes($customer['id']);
+unset($customernodes['total']);
+
+$SMARTY->assign('customernodes', $customernodes);
+$SMARTY->assign('tariffs', $LMS->GetTariffs());
+$SMARTY->assign('taxeslist', $LMS->GetTaxes());
+$SMARTY->assign('expired', $expired);
+$SMARTY->assign('assignments', $LMS->GetCustomerAssignments($customer['id'], $expired));
+$SMARTY->assign('customerinfo', $customer);
+
+$SMARTY->display('customerassignmentsedit.html');
 
 ?>

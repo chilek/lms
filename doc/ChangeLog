@@ -10,6 +10,7 @@ version ? (????-??-??)
   - xajaxResponse object can be used in document plugins (alec)
   - separated setting for validating functions locales (chilan)
   - fixed displaying of assignments with 'HALFYEARLY' period (ceho)
+  - re-designed customer assignments forms (alec)
 
 version 1.11.10 Kri (2010-04-19)
 
