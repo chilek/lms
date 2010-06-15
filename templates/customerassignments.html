@@ -7,10 +7,11 @@
 			<B>{t}Customer Liabilities:{/t}</B>
 		</TD>
 		<TD width="1%" class="frightu" align="right" nowrap>
-			{if $layout.module == 'customerassignmentsedit'}
-		        <A href="?m=customerassignmentsedit&expired={if $expired}0{else}1{/if}&id={$assignmentedit.id}">{if $expired}{t}Hide expired{/t}{else}{t}Show expired{/t}{/if} &raquo;</A>&nbsp;
+		    <A href="?m=customerassignmentadd&id={$customerinfo.id}">{t}New Liability{/t} &raquo;</A>
+			{if $layout.module == 'customerassignmentedit'}
+		        <A href="?m={$layout.module}&expired={if $expired}0{else}1{/if}&id={$assignment.id}">{if $expired}{t}Hide expired{/t}{else}{t}Show expired{/t}{/if} &raquo;</A>&nbsp;
 			{else}
-			<A href="?m=customerinfo&expired={if $expired}0{else}1{/if}&id={$balancelist.customerid}">{if $expired}{t}Hide expired{/t}{else}{t}Show expired{/t}{/if} &raquo;</A>&nbsp;
+			    <A href="?m={$layout.module}&expired={if $expired}0{else}1{/if}&id={$customerinfo.id}">{if $expired}{t}Hide expired{/t}{else}{t}Show expired{/t}{/if} &raquo;</A>&nbsp;
 			{/if}
 		</TD>
 	</TR>
@@ -34,9 +35,9 @@
 				    {if ($a.dateto < $today && $a.dateto) || ($a.liabilityid && $a.at < $today && $a.at > 365)} blend{elseif ($a.datefrom > $today && $a.datefrom && $a.period) && !($a.suspended)} alertblend{elseif ($a.suspended)}suspended{/if}"
 				    onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')" >
 					{if !$a.tariffid && !$a.liabilityid}
-					<TD WIDTH="98%" COLSPAN="7" OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'"><B>{t}Suspending of all liabilities{/t}</B></TD>
+					<TD WIDTH="98%" COLSPAN="7" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'"><B>{t}Suspending of all liabilities{/t}</B></TD>
 					{else}
-					<TD WIDTH="92%" OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'">
+					<TD WIDTH="92%" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
 						{if $a.tariffid}
 							<A HREF="?m=tariffinfo&id={$a.tariffid}"><B>{$a.name}</B></A>
 						{else}
@@ -44,25 +45,23 @@
 						{/if}
 						{if $a.nodes}({foreach from=$a.nodes item=item key=key}{$item.name}{if $key+1<sizeof($a.nodes)}, {/if}{/foreach}){/if}
 					</TD>
-					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'">{$a.value|money_format}</TD>
-					<TD WIDTH="1%" NOWRAP OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'">{$a.payday}</TD>
-					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'">{$a.downrate|default:"-"}({$a.downceil|default:"-"}) kbit/s</TD>
-					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'">{$a.uprate|default:"-"}({$a.upceil|default:"-"}) kbit/s</TD>
-					<TD WIDTH="1%" OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'">{if $a.invoice}{t}yes{/t}{else}{t}no{/t}{/if}/{if $a.settlement}{t}yes{/t}{else}{t}no{/t}{/if}</TD>
-					<TD WIDTH="1%" OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'">{if $a.discount!=0}{$a.discount}%{else}-{/if}</TD>
+					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">{$a.value|money_format}</TD>
+					<TD WIDTH="1%" NOWRAP OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">{$a.payday}</TD>
+					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">{$a.downrate|default:"-"}({$a.downceil|default:"-"}) kbit/s</TD>
+					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">{$a.uprate|default:"-"}({$a.upceil|default:"-"}) kbit/s</TD>
+					<TD WIDTH="1%" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">{if $a.invoice}{t}yes{/t}{else}{t}no{/t}{/if}/{if $a.settlement}{t}yes{/t}{else}{t}no{/t}{/if}</TD>
+					<TD WIDTH="1%" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">{if $a.discount!=0}{$a.discount}%{else}-{/if}</TD>
 					{/if}
-					<TD WIDTH="1%" NOWRAP OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'">
+					<TD WIDTH="1%" NOWRAP OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
 						{if $a.datefrom}{t}from{/t} {$a.datefrom|date_format:"%Y/%m/%d"}{/if}
 						{if $a.dateto}{t}to{/t} {$a.dateto|date_format:"%Y/%m/%d"}{/if}
 					</TD>
 					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
 						{if ($a.tariffid || $a.liabilityid) && (($a.dateto > $today || !$a.dateto) || ($a.liabilityid && $a.at > $today))}
-						<A href="?m=customerassignments&action=suspend&id={$balancelist.customerid}&aid={$a.id}&suspend={if $a.suspended}0{else}1{/if}" {tip text="Enable/disable accounting of selected liability"}><IMG SRC="img/wait.gif" alt="[ {if $a.suspended}{t}Restore{/t}{else}{t}Suspend{/t}{/if} ]"></A>
+						<A href="?m=customerassignmentedit&action=suspend&id={$a.id}&suspend={if $a.suspended}0{else}1{/if}" {tip text="Enable/disable accounting of selected liability"}><IMG SRC="img/wait.gif" alt="[ {if $a.suspended}{t}Restore{/t}{else}{t}Suspend{/t}{/if} ]"></A>
 						{/if}
-						{if $a.id != $assignmentedit.id}
-						<A onClick="return confirmLink(this, '{t}Are you sure, you want to delete this liability?{/t}')" HREF="?m=customerassignments&action=delete&aid={$a.id}&id={$balancelist.customerid}" {tip text="Delete customer's liability"}><IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
-						{/if}
-						<A HREF="?m=customerassignmentsedit&id={$a.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+						<A onClick="return confirmLink(this, '{t}Are you sure, you want to delete this liability?{/t}')" HREF="?m=customerassignmentdel&id={$a.id}" {tip text="Delete customer's liability"}><IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+						<A HREF="?m=customerassignmentedit&id={$a.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 					</TD>
 				</TR>
 				{foreachelse}
@@ -83,112 +82,15 @@
 					<TD CLASS="ftop">&nbsp;</TD>
 					<TD CLASS="ftop" COLSPAN="3">&nbsp;</TD>
 				</TR>
-				<FORM METHOD="POST" NAME="assignment" ACTION="?m=customerassignments&action=add&id={$balancelist.customerid}">
-				<INPUT type="submit" class="hiddenbtn">
-				<TR class="light"">
-					<TD COLSPAN="8">
-					    <TABLE>
-						<TR>
-						    <TD>
-							<B>{t}Name:{/t}</B>
-						    </TD>
-						    <TD nowrap>
-							<INPUT type="text" name="assignment[name]" value="{$assignment.name}" SIZE="40" {tip text="Enter liability name/description (tariffless liabilities only)" trigger="name"}>
-							{t}or{/t}
-							<SELECT size="1" name="assignment[tariffid]" {tip text="Select subscription to assign to customer or suspend accounting of all liabilities in choosen time" trigger="tariffid"}>
-							    <OPTION value="" SELECTED>{t}... select subscription ...{/t}</OPTION>
-							    <OPTION value="0">{t}- all liabilities suspended -{/t}</OPTION>
-							    {section name=t loop=$tariffs}
-								<OPTION VALUE="{$tariffs[t].id}" {if $tariffs[t].id==$assignment.tariffid}SELECTED{/if}>
-								{$tariffs[t].name|truncate:"45":"...":true} ({$tariffs[t].value|money_format}{if $tariffs[t].downceil || $tariffs[t].upceil}, {$tariffs[t].downceil|default:"-"}/{$tariffs[t].upceil|default:"-"}{/if})
-								</OPTION>
-							    {/section}
-							</SELECT>
-						    </TD>
-						    <TD></TD>
-						</TR>
-						<TR>
-						    <TD>
-							<B>{t}Value:{/t}</B> 
-						    </TD>
-						    <TD nowrap>
-							<INPUT type="text" name="assignment[value]" value="{if $assignment.value}{$assignment.value}{/if}" SIZE="8" {tip text="Enter liability value (tariffless liabilities only)" trigger="value"}>&nbsp;
-							<B>{t}Tax:{/t}</B> 
-							<SELECT SIZE="1" name="assignment[taxid]" {tip text="Select Tax value"}>
-							    {foreach item=tax from=$taxeslist}
-							    <OPTION value="{$tax.id}"{if $tax.value==$_config.phpui.default_taxrate} selected{/if}>{$tax.label}</OPTION>
-							    {/foreach}
-							</SELECT>&nbsp;
-							<B>{t}Product ID:{/t}</B> <INPUT type="text" name="assignment[prodid]" value="{$assignment.prodid}" SIZE="10" {tip text="Enter liability Product ID (tariffless liabilities only)" trigger="prodid"}>&nbsp;
-							<B>{t}Discount:{/t}</B> <INPUT type="TEXT" name="assignment[discount]" value="{if $assignment.discount!=0}{$assignment.discount}{/if}" size="3" {tip text="Enter discount percentage" trigger="discount"}>&nbsp;
-							<B>{t}Nodes:{/t}</B>
-							<a href="javascript: void(0);" onClick="return nodechoosewin(document.forms['assignment'].elements['assignment[nodes]'], {$balancelist.customerid});" {tip text="Click for nodes selection"}>&nbsp;&raquo;&raquo;&raquo;</A>
-							<INPUT type="hidden" name="assignment[nodes]" value="">
-						    </TD>
-						    <TD></TD>	
-						</TR>
-						<TR>	
-						    <TD>	
-							<B>{t}Period:{/t}</B>
-						    </TD>
-						    <TD>
-							<SELECT size="1" NAME="assignment[period]" {tip text="Select time period to account liability"}>
-							    {foreach from=$_PERIODS key=key item=item}
-								{if $assignment.period eq ''}<OPTION VALUE="{$key}"{if $key == $_config.phpui.default_assignment_period} SELECTED{/if}>{$item}</OPTION>
-								{else}<OPTION VALUE="{$key}"{if $assignment.period == $key} SELECTED{/if}>{$item}</OPTION>{/if} 
-							    {/foreach}
-							</SELECT>
-							<B>{t}When:{/t}</B> <INPUT type="TEXT" name="assignment[at]" value="{if $assignment.at}{$assignment.at}{/if}" {tip text="Enter accounting time. For disposable accounting enter date in format YYYY/MM/DD, for weekly accounting enter day of week (Monday = 1), for monthly accounting enter day of month (1 to 28), for yearly accounting enter day and month in format DD/MM (15/09 means September 15th), for half-yearly DD/MM (MM <=6) and for quarterly DD/MM (MM <= 3)" trigger="at"} SIZE="8">&nbsp;
-							{t}from:{/t} <INPUT type="TEXT" name="assignment[datefrom]" value="{if $assignment.datefrom}{$assignment.datefrom}{elseif !isset($assignment.datefrom)}{$smarty.now|date_format:"%Y/%m/%d"}{/if}" OnClick="cal1.popup();" {tip text="Enter accounting start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="datefrom"} SIZE="10">&nbsp;
-							{t}to:{/t} <INPUT type="TEXT" name="assignment[dateto]" value="{if $assignment.dateto}{$assignment.dateto}{/if}" OnClick="cal2.popup();" {tip text="Enter accounting end date in YYYY/MM/DD format. Leave this field empty if you don't want to set expiration date" trigger="dateto"} SIZE="10">
-						    </TD>
-						    <TD></TD>	
-						</TR>
-						<TR>	
-						    <TD>	
-							<B>{t}Options:{/t}</B>
-						    </TD>
-						    <TD colspan="2">
-							<INPUT TYPE="checkbox" NAME="assignment[invoice]" VALUE="1" {if $assignment.invoice || (!isset($assignment.invoice) && $_config.phpui.use_invoices|chkconfig)}CHECKED{/if}> <A HREF="javascript:setWithInvoice()">{t}with invoice{/t}&nbsp;</a>
-							<INPUT TYPE="checkbox" NAME="assignment[settlement]" VALUE="1" {if $assignment.settlement}CHECKED{/if}> <A HREF="javascript:setWithSettlement()">{t}with settlement of first deficient period{/t}</a>
-						    </TD>
-						</TR>
-					    </TABLE>
-					</TD>
-					<TD ALIGN="RIGHT" VALIGN="bottom" NOWRAP>
-						<A HREF="javascript:document.assignment.submit()" {tip text="Assign subscription to customer"}>{t}Add{/t} <IMG SRC="img/save.gif" ALT=""></A>
-					</TD>
-				</TR>
-				</FORM>
 			</TABLE>
 		</TD>
 	</TR>
 </TABLE>
 {literal}
 <SCRIPT type="text/javascript">
-<!--
-var cal1 = new calendar(document.forms['assignment'].elements['assignment[datefrom]']);
-cal1.time_comp = false;
-var cal2 = new calendar(document.forms['assignment'].elements['assignment[dateto]']);
-cal2.time_comp = false;
-
 if(getCookie('customerassignments')=='1')
 {
 	document.getElementById('customerassignments').style.display = '';
 }
-
-function setWithInvoice()
-{
-	document.forms['assignment'].elements['assignment[invoice]'].checked =
-		!document.forms['assignment'].elements['assignment[invoice]'].checked;
-}
-
-function setWithSettlement()
-{
-	document.forms['assignment'].elements['assignment[settlement]'].checked =
-		!document.forms['assignment'].elements['assignment[settlement]'].checked;
-}
-
-//-->
 </SCRIPT>
 {/literal}
