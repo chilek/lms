@@ -679,7 +679,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 					// prepare insert to 'invoices' table
 					g->db_pexec(g->conn, "INSERT INTO documents (number, numberplanid, type, countryid, divisionid, "
 						"customerid, name, address, zip, city, ten, ssn, cdate, paytime, paytype) "
-						"VALUES (?, ?, 1, ?, ?, ?, '? ?', '?', '?', '?', '?', '?', ?, ?, '?')",
+						"VALUES (?, ?, 1, ?, ?, ?, '? ?', '?', '?', '?', '?', '?', ?, ?, ?)",
 						itoa(number),
 						numberplanid,
 						countryid,
@@ -939,7 +939,7 @@ struct payments_module * init(GLOBAL *g, MODULE *m)
 	p->comment = strdup(g->config_getstring(p->base.ini, p->base.instance, "comment", "Subscription: %tariff for period: %period"));
 	p->s_comment = strdup(g->config_getstring(p->base.ini, p->base.instance, "settlement_comment", p->comment));
 	p->deadline = strdup(g->config_getstring(p->base.ini, p->base.instance, "deadline", "14"));
-	p->paytype = strdup(g->config_getstring(p->base.ini, p->base.instance, "paytype", "TRANSFER"));
+	p->paytype = strdup(itoa(g->config_getint(p->base.ini, p->base.instance, "paytype", 2)));
 	p->up_payments = g->config_getbool(p->base.ini, p->base.instance, "up_payments", 1);
 	p->expiry_days = g->config_getint(p->base.ini, p->base.instance, "expiry_days", 30);
 	p->networks = strdup(g->config_getstring(p->base.ini, p->base.instance, "networks", ""));

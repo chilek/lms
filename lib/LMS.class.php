@@ -479,7 +479,7 @@ class LMS
 				$customerdata['consentdate'],
 				$customerdata['divisionid'],
 				$customerdata['paytime'],
-				$customerdata['paytype'],
+				$customerdata['paytype'] ? $customerdata['paytype'] : null,
 				$customerdata['id'],
 				));
 	}
@@ -1796,7 +1796,7 @@ class LMS
 		$cdate = $invoice['invoice']['cdate'] ? $invoice['invoice']['cdate'] : time();
 		$number = $invoice['invoice']['number'];
 		$type = $invoice['invoice']['type'];
-		
+
 		$this->DB->Execute('INSERT INTO documents (number, numberplanid, type,
 			cdate, paytime, paytype, userid, customerid, name, address, 
 			ten, ssn, zip, city, countryid, divisionid)
@@ -1806,7 +1806,7 @@ class LMS
 				$type, 
 				$cdate, 
 				$invoice['invoice']['paytime'], 
-				$invoice['invoice']['paytype'], 
+				$invoice['invoice']['paytype'],
 				$this->AUTH->id, 
 				$invoice['customer']['id'], 
 				$invoice['customer']['customername'], 
@@ -1865,7 +1865,7 @@ class LMS
 		$iid = $invoice['invoice']['id'];
 
 		$this->DB->BeginTrans();
-		
+
 		$this->DB->Execute('UPDATE documents SET cdate = ?, paytime = ?, paytype = ?, customerid = ?,
 				name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, divisionid = ?
 				WHERE id = ?',
@@ -1952,6 +1952,8 @@ class LMS
 
 	function GetInvoiceContent($invoiceid)
 	{
+        global $PAYTYPES;
+
 		if($result = $this->DB->GetRow('SELECT d.id, d.number, d.name, d.customerid,
 				d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
 				d.ten, d.ssn, d.cdate, d.paytime, d.paytype, d.numberplanid,
@@ -1976,10 +1978,10 @@ class LMS
 			$result['totalbase'] = 0;
 			$result['totaltax'] = 0;
 			$result['total'] = 0;
-			
+
 			if($result['reference'])
 				$result['invoice'] = $this->GetInvoiceContent($result['reference']);
-			
+
 			if(!$result['division_header'])
 				$result['division_header'] = $result['division_name']."\n"
 					.$result['division_address']."\n".$result['division_zip'].' '.$result['division_city']
@@ -1987,7 +1989,7 @@ class LMS
 						&& $result['division_countryid'] != $result['countryid']
 						? "\n".trans($this->GetCountryName($result['division_countryid'])) : '')
 					.($result['division_ten'] != '' ? "\n".trans('TEN').' '.$result['division_ten'] : '');
-			
+
 			if($result['content'] = $this->DB->GetAll('SELECT invoicecontents.value AS value, 
 						itemid, taxid, taxes.value AS taxvalue, taxes.label AS taxlabel, 
 						prodid, content, count, invoicecontents.description AS description, 
@@ -2004,7 +2006,7 @@ class LMS
 						$row['value'] += $result['invoice']['content'][$idx]['value'];
 						$row['count'] += $result['invoice']['content'][$idx]['count'];
 					}
-					
+
 					$result['content'][$idx]['basevalue'] = round(($row['value'] / (100 + $row['taxvalue']) * 100),2);
 					$result['content'][$idx]['total'] = round($row['value'] * $row['count'], 2);
 					$result['content'][$idx]['totalbase'] = round($result['content'][$idx]['total'] / (100 + $row['taxvalue']) * 100, 2);
@@ -2029,17 +2031,17 @@ class LMS
 					$result['totalbase'] += $result['content'][$idx]['totalbase'];
 					$result['totaltax'] += $result['content'][$idx]['totaltax'];
 					$result['total'] += $result['content'][$idx]['total'];
-    
+
 					// for backward compatybility
 					$result['taxest'][$row['taxvalue']]['taxvalue'] = $row['taxvalue'];
 					$result['content'][$idx]['pkwiu'] = $row['prodid'];
-					
+
 					$result['discount'] += $row['discount'];
 				}
 
 			$result['pdate'] = $result['cdate'] + ($result['paytime'] * 86400);
 			$result['value'] = $result['total'] - (isset($result['invoice']) ? $result['invoice']['value'] : 0);
-			
+
 			if($result['value'] < 0)
 			{
 				$result['value'] = abs($result['value']);
@@ -2057,13 +2059,15 @@ class LMS
 				$result['customerbalancelistlimit'] = $this->CONFIG['invoices']['print_balance_history_limit'];
 			}
 
+            $result['paytypename'] = $PAYTYPES[$result['paytype']];
+
 			// for backward compat.
 			$result['totalg'] = round( ($result['value'] - floor($result['value'])) * 100);
 			$result['year'] = date('Y',$result['cdate']);
 			$result['month'] = date('m',$result['cdate']);
 			$result['pesel'] = $result['ssn'];
 			$result['nip'] = $result['ten'];
-			
+
 			return $result;
 		}
 		else

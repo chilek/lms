@@ -120,7 +120,7 @@ $DEFAULTS = array(
 		'type' => 'html',
 		'attachment_name' => '',
 		'paytime' => 14,
-		'paytype' => 'CASH',
+		'paytype' => 1, // cash
 	),
 	'finances' => array(
 		'suspension_percentage' => 0,

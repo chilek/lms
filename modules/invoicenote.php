@@ -131,18 +131,16 @@ switch($action)
 			elseif($LMS->DocumentExists($cnote['number'], DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']))
 			        $error['number'] = trans('Credit note number $0 already exists!', $cnote['number']);
 		}
-                
+
 		// finally check if selected customer can use selected numberplan
 		$divisionid = !empty($cnote['use_current_division']) ? $invoice['current_divisionid'] : $invoice['divisionid'];
-		
+
 		if($cnote['numberplanid'] && !$DB->GetOne('SELECT 1 FROM numberplanassignments
 			WHERE planid = ? AND divisionid = ?', array($cnote['numberplanid'], $divisionid)))
 		{
 		        $error['number'] = trans('Selected numbering plan doesn\'t match customer\'s division!');
 		}
 
-		if(!isset($cnote['paytype']) || $cnote['paytype'] == '')
-			$cnote['paytype'] = trans('TRANSFER');
 	break;
 
 	case 'save':
@@ -189,7 +187,7 @@ switch($action)
 				{
 					$contents[$idx]['cash'] = round($item['valuebrutto'] * $item['count'],2) - round($contents[$idx]['valuebrutto'] * $contents[$idx]['count'],2);
 				}
-								
+
 				$contents[$idx]['valuebrutto'] = $contents[$idx]['valuebrutto'] - $item['valuebrutto'];
 				$contents[$idx]['count'] = $contents[$idx]['count'] - $item['count'];
 			}

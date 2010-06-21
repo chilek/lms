@@ -17,7 +17,7 @@
 		<TD WIDTH="1%">
 			{if $customerinfo.status eq "3"}<IMG src="img/customer.gif" alt="">{/if}
 			{if $customerinfo.status eq "2"}<IMG src="img/wait.gif" alt="">{/if}
-			{if $customerinfo.status eq "1"}<IMG src="img/unk.gif" alt="">{/if}			
+			{if $customerinfo.status eq "1"}<IMG src="img/unk.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			{if $customerinfo.status eq "3"}<B>{t}connected<!singular>{/t}</B>{/if}
@@ -187,7 +187,7 @@
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
-			{t}Deadline:{/t} {if $customerinfo.paytime eq -1}{t}default<!paytime>{/t}{else}{$customerinfo.paytime}&nbsp;{t}days{/t}{/if}
+			{t}Deadline:{/t} {if $customerinfo.paytime eq -1}{t}default{/t}{else}{$customerinfo.paytime}&nbsp;{t}days{/t}{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -195,7 +195,7 @@
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
-			{t}Payment type:{/t} {if !$customerinfo.paytype}{t}default{/t}{else}{$customerinfo.paytype}{/if}
+			{t}Payment type:{/t} {assign var=paytype value=$customerinfo.paytype}{if $_PAYTYPES.$paytype}{$_PAYTYPES.$paytype}{else}{t}default{/t}{/if}
 		</TD>
 	</TR>
 {if $customerinfo.cutoffstop > $smarty.now}

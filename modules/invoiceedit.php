@@ -171,14 +171,11 @@ switch($action)
 					'original' => !empty($_GET['original']) ? 1 : 0,
 			        	'copy' => !empty($_GET['copy']) ? 1 : 0,
 					'duplicate' => !empty($_GET['duplicate']) ? 1 : 0));
-				
+
 			$SESSION->redirect('?m=invoicelist');
 		}
 	break;
 }
-
-if($invoice['paytype'] == '')
-	$invoice['paytype'] = trans('CASH');
 
 $SESSION->save('invoice', $invoice);
 $SESSION->save('invoicecontents', $contents);

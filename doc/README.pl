@@ -3114,8 +3114,10 @@ http://www.naszasiec.pl/
        Pozwala na ustalenie terminu płatności w dniach. Domyślnie: 14
        Przykład: deadline = 7
      * paytype (opcjonalny)
-       Określa rodzaj płatności. Domyślnie: 'TRANSFER'
-       Przykład: paytype = 'PRZELEW'
+       Identyfikator rodzaju płatności (1-gotówka, 2-przelew,
+       3-przelew/gotówka, 4-karta, 5-kompensata, 6-barter, 7-umowa).
+       Domyślnie: 2 (przelew)
+       Przykład: paytype = 1
      * comment (opcjonalny)
        Opis pozycji na fakturze za naliczane zobowiązanie
        Domyślnie: 'Tariff %tariff subscription for period %period'
@@ -4456,8 +4458,9 @@ Rozdział 6. LMS Daemon
        Termin płatności podany w dniach. Domyślnie: 14.
        Przykład: deadline = 21
      * paytype
-       Rodzaj płatności. Domyślnie: 'TRANSFER'.
-       Przykład: paytype = 'GOTÓWKA'
+       Rodzaj płatności (1-gotówka, 2-przelew, 3-przelew/gotówka, 4-karta,
+       5-kompensata, 6-barter, 7-umowa). Domyślnie: 2 (przelew).
+       Przykład: paytype = 1
      * numberplan
        ID planu numeracyjnego faktur. Domyślnie: 0 (plan domyślny).
        Przykład: numberplan = 0
@@ -6256,7 +6259,7 @@ Rozdział 7. Dla dociekliwych
    cutoffstop - data, do której blokowanie klientów zadłużonych jest
    wyłączone
    paytime - termin płatności faktur
-   paytype - typ płatności faktur
+   paytype - typ płatności faktur (zobacz tabela documents)
      __________________________________________________________________
 
 7.2.3. Grupy klientów ('customergroups')
@@ -6316,6 +6319,7 @@ Rozdział 7. Dla dociekliwych
    clients - liczba klientów (radius)
    secret - hasło (radius)
    community - community SNMP
+   channelid - identyfikator kanału STM (tabela ewx_channels)
      __________________________________________________________________
 
 7.2.8. Połączenia sieciowe ('netlinks')
@@ -6332,7 +6336,6 @@ Rozdział 7. Dla dociekliwych
 
    id - identyfikator
    name - nazwa
-   mac - adres MAC
    ipaddr - adres IP
    passwd - hasło np. pppoe
    ownerid - identyfikator właściciela ('0' - dla adresu urządzenia)
@@ -6354,7 +6357,14 @@ Rozdział 7. Dla dociekliwych
    nas - flaga NAS (0/1)
      __________________________________________________________________
 
-7.2.10. Grupy komputerów ('nodegroups')
+7.2.10. Adresy MAC ('macs')
+
+   id - identyfikator
+   mac - adres MAC
+   nodeid - identyfikator adresu IP (tabela nodes)
+     __________________________________________________________________
+
+7.2.11. Grupy komputerów ('nodegroups')
 
    id - identyfikator
    name - nazwa
@@ -6362,20 +6372,20 @@ Rozdział 7. Dla dociekliwych
    description - opis
      __________________________________________________________________
 
-7.2.11. Grupy komputerów - powiązania ('nodegroupassignments')
+7.2.12. Grupy komputerów - powiązania ('nodegroupassignments')
 
    id - identyfikator rekordu
    nodegroupid - identyfikator grupy
    nodeid - identyfikator komputera
      __________________________________________________________________
 
-7.2.12. Typy NAS ('nastypes')
+7.2.13. Typy NAS ('nastypes')
 
    id - identyfikator rekordu
    name - nazwa typu urządzenia
      __________________________________________________________________
 
-7.2.13. Operacje finansowe ('cash')
+7.2.14. Operacje finansowe ('cash')
 
    id - identyfikator
    time - znacznik czasu zaksięgowania operacji
@@ -6392,7 +6402,7 @@ Rozdział 7. Dla dociekliwych
    comment - opis operacji
      __________________________________________________________________
 
-7.2.14. Import operacji finansowych ('cashimport')
+7.2.15. Import operacji finansowych ('cashimport')
 
    id - identyfikator
    date - znacznik czasu operacji
@@ -6405,14 +6415,14 @@ Rozdział 7. Dla dociekliwych
    closed - status operacji
      __________________________________________________________________
 
-7.2.15. Żródła importu ('cashsources')
+7.2.16. Żródła importu ('cashsources')
 
    id - identyfikator
    name - nazwa
    description - opis
      __________________________________________________________________
 
-7.2.16. Stawki podatkowe ('taxes')
+7.2.17. Stawki podatkowe ('taxes')
 
    id - identyfikator
    value - wartość procentowa stawki
@@ -6422,7 +6432,7 @@ Rozdział 7. Dla dociekliwych
    taxed - status opodatkowania (1-tak, 0-nie)
      __________________________________________________________________
 
-7.2.17. Taryfy ('tariffs')
+7.2.18. Taryfy ('tariffs')
 
    id - identyfikator
    name - nazwa taryfy
@@ -6458,7 +6468,7 @@ Rozdział 7. Dla dociekliwych
    description - opis
      __________________________________________________________________
 
-7.2.18. Zobowiązania ('liabilities')
+7.2.19. Zobowiązania ('liabilities')
 
    id - identyfikator
    name - nazwa (opis) zobowiązania
@@ -6467,7 +6477,7 @@ Rozdział 7. Dla dociekliwych
    prodid - numer PKWiU
      __________________________________________________________________
 
-7.2.19. Opłaty stałe ('payments')
+7.2.20. Opłaty stałe ('payments')
 
    id - identyfikator
    name - nazwa
@@ -6479,7 +6489,7 @@ Rozdział 7. Dla dociekliwych
    description - opis
      __________________________________________________________________
 
-7.2.20. Powiązania ('assignments')
+7.2.21. Powiązania ('assignments')
 
    id - identyfikator
    tariffid - identyfikator taryfy
@@ -6496,14 +6506,14 @@ Rozdział 7. Dla dociekliwych
    settlement - rozliczenie okresu niepełnego (1 - tak, 0 - nie)
      __________________________________________________________________
 
-7.2.21. Powiązania komputer-taryfa ('nodeassignments')
+7.2.22. Powiązania komputer-taryfa ('nodeassignments')
 
    id - identyfikator
    assignmentid - identyfikator zobowiązania
    nodeid - identyfikator komputera
      __________________________________________________________________
 
-7.2.22. Plany (szablony) numeracyjne dokumentów ('numberplans')
+7.2.23. Plany (szablony) numeracyjne dokumentów ('numberplans')
 
    id - identyfikator
    template - szablon (wzorzec) numeru
@@ -6513,14 +6523,14 @@ Rozdział 7. Dla dociekliwych
    dokumentów, '0' - jeśli nie
      __________________________________________________________________
 
-7.2.23. Powiązania planów num. z firmami ('numberplanassignments')
+7.2.24. Powiązania planów num. z firmami ('numberplanassignments')
 
    id - identyfikator
    planid - identyfikator planu
    divisionid - identyfikator firmy
      __________________________________________________________________
 
-7.2.24. Rejestry kasowe ('cashregs')
+7.2.25. Rejestry kasowe ('cashregs')
 
    id - identyfikator
    name - nazwa rejestru
@@ -6531,7 +6541,7 @@ Rozdział 7. Dla dociekliwych
    disabled - wyłączenie sumowania (0/1)
      __________________________________________________________________
 
-7.2.25. Rejestry kasowe - uprawnienia ('cashrights')
+7.2.26. Rejestry kasowe - uprawnienia ('cashrights')
 
    id - identyfikator
    regid - identyfikator rejestru
@@ -6539,7 +6549,7 @@ Rozdział 7. Dla dociekliwych
    rights - (1-odczyt, 2-zapis, 3-zaawansowane)
      __________________________________________________________________
 
-7.2.26. Cash registries - cash history ('cashreglog')
+7.2.27. Cash registries - cash history ('cashreglog')
 
    id - identyfikator
    regid - identyfikator rejestru
@@ -6550,7 +6560,7 @@ Rozdział 7. Dla dociekliwych
    description - dodatkowe informacje
      __________________________________________________________________
 
-7.2.27. Dokumenty: faktury, KP, umowy, etc. ('documents')
+7.2.28. Dokumenty: faktury, KP, umowy, etc. ('documents')
 
    id - identyfikator
    number - numer dokumentu (%N)
@@ -6559,7 +6569,8 @@ Rozdział 7. Dla dociekliwych
    type - typ dokumentu (1-faktura, 2-KP)
    cdate - data wystawienia
    paytime - termin płatności (ilość dni)
-   paytype - rodzaj płatności (przelew/gotówka/etc.)
+   paytype - rodzaj płatności (1-gotówka, 2-przelew, 3-przelew/gotówka,
+   4-karta, 5-kompensata, 6-barter, 7-umowa)
    customerid - identyfikator klienta-nabywcy
    userid - identyfikator użytkownika wystawiającego dokument
    divisionid - identyfikator firmy (oddziału)
@@ -6575,7 +6586,7 @@ Rozdział 7. Dla dociekliwych
    reason - np. powód korekty faktury
      __________________________________________________________________
 
-7.2.28. Dokumenty niefinansowe ('documentcontents')
+7.2.29. Dokumenty niefinansowe ('documentcontents')
 
    docid - identyfikator dokumentu
    title - tytuł dokumentu
@@ -6587,7 +6598,7 @@ Rozdział 7. Dla dociekliwych
    description - dodatkowy opis
      __________________________________________________________________
 
-7.2.29. Faktury ('invoicecontents')
+7.2.30. Faktury ('invoicecontents')
 
    docid - identyfikator faktury
    itemid - nr pozycji
@@ -6601,7 +6612,7 @@ Rozdział 7. Dla dociekliwych
    tariffid - identyfikator taryfy
      __________________________________________________________________
 
-7.2.30. Noty obciążeniowe ('debitnotecontents')
+7.2.31. Noty obciążeniowe ('debitnotecontents')
 
    docid - identyfikator noty
    itemid - nr pozycji
@@ -6609,7 +6620,7 @@ Rozdział 7. Dla dociekliwych
    description - opis
      __________________________________________________________________
 
-7.2.31. Potwierdzenia wpłaty - KP ('receiptcontents')
+7.2.32. Potwierdzenia wpłaty - KP ('receiptcontents')
 
    docid - identyfikator faktury
    itemid - nr pozycji
@@ -6618,7 +6629,7 @@ Rozdział 7. Dla dociekliwych
    description - opis pozycji
      __________________________________________________________________
 
-7.2.32. Dokumenty - uprawnienia ('docrights')
+7.2.33. Dokumenty - uprawnienia ('docrights')
 
    userid - identyfikator użytkownika
    doctype - id typu dokumentu (zobacz lib/definitions.php)
@@ -6626,7 +6637,7 @@ Rozdział 7. Dla dociekliwych
    5-usuwanie)
      __________________________________________________________________
 
-7.2.33. Identyfikatory internetowe ('imessengers')
+7.2.34. Identyfikatory internetowe ('imessengers')
 
    id - identyfikator rekordu
    customerid - identyfikator klienta
@@ -6634,7 +6645,7 @@ Rozdział 7. Dla dociekliwych
    type - typ komunikatora (0-gadu-gadu, 1-yahoo, 2-skype)
      __________________________________________________________________
 
-7.2.34. Kontakty ('customercontacts')
+7.2.35. Kontakty ('customercontacts')
 
    id - identyfikator rekordu
    customerid - identyfikator klienta
@@ -6642,7 +6653,7 @@ Rozdział 7. Dla dociekliwych
    name - nazwa/opis kontaktu
      __________________________________________________________________
 
-7.2.35. Domeny ('domains')
+7.2.36. Domeny ('domains')
 
    id - identyfikator rekordu
    name - nazwa domeny
@@ -6653,7 +6664,7 @@ Rozdział 7. Dla dociekliwych
    notified_serial - znacznik czasu
      __________________________________________________________________
 
-7.2.36. Rekordy DNS ('records')
+7.2.37. Rekordy DNS ('records')
 
    id - identyfikator rekordu
    domain_id - identyfikator domeny
@@ -6665,7 +6676,7 @@ Rozdział 7. Dla dociekliwych
    change_date - znacznik czasu ostatniej zmiany
      __________________________________________________________________
 
-7.2.37. Konta ('passwd')
+7.2.38. Konta ('passwd')
 
    id - identyfikator rekordu
    ownerid - identyfikator klienta (0 - konto "systemowe")
@@ -6689,14 +6700,14 @@ Rozdział 7. Dla dociekliwych
    description - dodatkowe informacje
      __________________________________________________________________
 
-7.2.38. Aliasy ('aliases')
+7.2.39. Aliasy ('aliases')
 
    id - identyfikator rekordu
    login - nazwa konta (bez domeny)
    domainid - identyfikator domeny
      __________________________________________________________________
 
-7.2.39. Powiązania aliasów z kontami ('aliasassignments')
+7.2.40. Powiązania aliasów z kontami ('aliasassignments')
 
    id - identyfikator rekordu
    aliasid - indentyfikator aliasu
@@ -6704,7 +6715,7 @@ Rozdział 7. Dla dociekliwych
    mail_forward - adres przekierowania
      __________________________________________________________________
 
-7.2.40. Konta VoIP ('voipaccounts')
+7.2.41. Konta VoIP ('voipaccounts')
 
    id - identyfikator rekordu
    ownerid - identyfikator właściciela (klienta)
@@ -6717,7 +6728,7 @@ Rozdział 7. Dla dociekliwych
    modid - identyfikator użytkownika
      __________________________________________________________________
 
-7.2.41. Statystyki wykorzystania łącza ('stats')
+7.2.42. Statystyki wykorzystania łącza ('stats')
 
    nodeid - numer komputera
    dt - znacznik czasu
@@ -6725,7 +6736,7 @@ Rozdział 7. Dla dociekliwych
    download - ilość danych odebranych, w bajtach
      __________________________________________________________________
 
-7.2.42. Helpdesk - kolejki ('rtqueues')
+7.2.43. Helpdesk - kolejki ('rtqueues')
 
    id - identyfikator
    name - nazwa
@@ -6733,7 +6744,7 @@ Rozdział 7. Dla dociekliwych
    description - opis dodatkowy
      __________________________________________________________________
 
-7.2.43. Helpdesk - zgłoszenia ('rttickets')
+7.2.44. Helpdesk - zgłoszenia ('rttickets')
 
    id - identyfikator
    queueid - identyfikator kolejki
@@ -6747,7 +6758,7 @@ Rozdział 7. Dla dociekliwych
    createtime - data zgłoszenia
      __________________________________________________________________
 
-7.2.44. Helpdesk - wiadomości ('rtmessages')
+7.2.45. Helpdesk - wiadomości ('rtmessages')
 
    id - identyfikator
    ticketid - identyfikator zgłoszenia
@@ -6763,14 +6774,14 @@ Rozdział 7. Dla dociekliwych
    createtime - data utworzenia/wysłania/odebrania
      __________________________________________________________________
 
-7.2.45. Helpdesk - załączniki ('rtattachments')
+7.2.46. Helpdesk - załączniki ('rtattachments')
 
    messageid - identyfikator wiadomości
    filename - nazwa pliku
    contenttype - typ pliku
      __________________________________________________________________
 
-7.2.46. Helpdesk - notatki ('rtnotes')
+7.2.47. Helpdesk - notatki ('rtnotes')
 
    id - identyfikator
    ticketid - identyfikator zgłoszenia
@@ -6779,7 +6790,7 @@ Rozdział 7. Dla dociekliwych
    createtime - data utworzenia
      __________________________________________________________________
 
-7.2.47. Helpdesk - uprawnienia ('rtrights')
+7.2.48. Helpdesk - uprawnienia ('rtrights')
 
    id - identyfikator
    queueid - identyfikator kolejki
@@ -6787,7 +6798,7 @@ Rozdział 7. Dla dociekliwych
    rights - (1-odczyt, 2-zapis, 3-powiadomienia)
      __________________________________________________________________
 
-7.2.48. Konfiguracja LMS-UI ('uiconfig')
+7.2.49. Konfiguracja LMS-UI ('uiconfig')
 
    id - identyfikator
    section - nazwa sekcji
@@ -6797,7 +6808,7 @@ Rozdział 7. Dla dociekliwych
    disabled - wyłączenie opcji (0-wł., 1-wył.)
      __________________________________________________________________
 
-7.2.49. Terminarz - zdarzenia ('events')
+7.2.50. Terminarz - zdarzenia ('events')
 
    id - identyfikator
    title - tytuł
@@ -6812,13 +6823,13 @@ Rozdział 7. Dla dociekliwych
    closed - status zamknięcia
      __________________________________________________________________
 
-7.2.50. Terminarz - powiązania ('eventassignments')
+7.2.51. Terminarz - powiązania ('eventassignments')
 
    eventid - identyfikator zdarzenia
    userid - identyfikator użytkownika
      __________________________________________________________________
 
-7.2.51. Hosty ('hosts')
+7.2.52. Hosty ('hosts')
 
    id - identyfikator
    name - nazwa hosta
@@ -6827,7 +6838,7 @@ Rozdział 7. Dla dociekliwych
    reload - żądanie przeładowania
      __________________________________________________________________
 
-7.2.52. Konfiguracja demona - instancje ('daemoninstances')
+7.2.53. Konfiguracja demona - instancje ('daemoninstances')
 
    id - identyfikator
    name - nazwa instancji
@@ -6839,7 +6850,7 @@ Rozdział 7. Dla dociekliwych
    disabled - status (włączona/wyłączona)
      __________________________________________________________________
 
-7.2.53. Konfiguracja demona - opcje ('daemonconfig')
+7.2.54. Konfiguracja demona - opcje ('daemonconfig')
 
    id - identyfikator
    instanceid - identyfikator instancji
@@ -6849,7 +6860,7 @@ Rozdział 7. Dla dociekliwych
    disabled - status (włączona/wyłączona)
      __________________________________________________________________
 
-7.2.54. Sesje ('sessions')
+7.2.55. Sesje ('sessions')
 
    id - identyfikator sesji
    ctime - czas utworzenia
@@ -6859,27 +6870,27 @@ Rozdział 7. Dla dociekliwych
    content - dane
      __________________________________________________________________
 
-7.2.55. Województwa ('states')
+7.2.56. Województwa ('states')
 
    id - identyfikator
    name - nazwa województwa
    description - informacje dodatkowe
      __________________________________________________________________
 
-7.2.56. Kody pocztowe ('zipcodes')
+7.2.57. Kody pocztowe ('zipcodes')
 
    id - identyfikator
    zip - kod pocztowy
    stateid - identyfikator województwa
      __________________________________________________________________
 
-7.2.57. Kraje ('countries')
+7.2.58. Kraje ('countries')
 
    id - identyfikator
    name - nazwa kraju
      __________________________________________________________________
 
-7.2.58. Firmy/Oddziały ('divisions')
+7.2.59. Firmy/Oddziały ('divisions')
 
    id - identyfikator
    shortname - nazwa skrócona firmy
@@ -6898,10 +6909,10 @@ Rozdział 7. Dla dociekliwych
    inv_author - wystawca faktury
    inv_cplace - miejsce wystawienia faktury
    inv_paytime - termin płatności faktury
-   inv_paytype - sposób płatności faktury
+   inv_paytype - sposób płatności faktury (zobacz tabela documents)
      __________________________________________________________________
 
-7.2.59. Wiadomości - lista ('messages')
+7.2.60. Wiadomości - lista ('messages')
 
    id - identyfikator
    subject - temat wiadomości
@@ -6912,7 +6923,7 @@ Rozdział 7. Dla dociekliwych
    sender - nagłówek 'From' wiadomości e-mail
      __________________________________________________________________
 
-7.2.60. Wiadomości - szczegóły ('messageitems')
+7.2.61. Wiadomości - szczegóły ('messageitems')
 
    id - identyfikator
    messageid - identyfikator wiadomości
@@ -6923,7 +6934,7 @@ Rozdział 7. Dla dociekliwych
    error - komunikat błędu
      __________________________________________________________________
 
-7.2.61. Informacje o bazie danych ('dbinfo')
+7.2.62. Informacje o bazie danych ('dbinfo')
 
    keytype - typ
    keyvalue - wartość

@@ -11,6 +11,17 @@ version ? (????-??-??)
   - separated setting for validating functions locales (chilan)
   - fixed displaying of assignments with 'HALFYEARLY' period (ceho)
   - re-designed customer assignments forms (alec)
+  - invoices payment type field replaced with selection list (alec)
+    -----------------------------------------------------------------
+    WARNING: Database upgrade procedure may eat your data.
+        Make sure you have no unsupported payment types in
+        database with SQL query:
+        SELECT LOWER(paytype) FROM documents GROUP BY LOWER(paytype);
+
+        Supported values are: cash, transfer, transfer/cash, card,
+        compensation, barter, contract (and its Polish translations)
+        or empty string.
+   ------------------------------------------------------------------
 
 version 1.11.10 Kri (2010-04-19)
 

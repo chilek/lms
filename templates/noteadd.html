@@ -15,16 +15,16 @@ window.open('?m=note&id={$newnoteid}');
 	        if(document.setcustomer.customer)
 			if(document.setcustomer.customer.value != 0)
                                 document.setcustomer.customerid.value = document.setcustomer.customer.value;
-	
+
 	        document.setcustomer.submit();
 	}
-																
+
 	function reset_customer()
         {
 	        if (document.setcustomer.customerid.value)
 	                document.setcustomer.customer.value = document.setcustomer.customerid.value;
 	}
-	
+
 	function setPayTime(type)
         {
                 var list = document.setcustomer.elements['note[paytime_default]'];
@@ -56,7 +56,7 @@ window.open('?m=note&id={$newnoteid}');
         }
 	//-->
 {/literal}
-</script>		
+</script>
 <FORM NAME="setcustomer" METHOD="POST" ACTION="?m=noteadd&action=setcustomer">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
@@ -107,17 +107,7 @@ window.open('?m=note&id={$newnoteid}');
 	                ({$note.cdate+$note.paytime*86400|date_format:"%Y/%m/%d"})
 	                {/if *}
 	        </TD>
-	</TR>																								
-{*
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<B>{t}Payment type (cash/transfer/etc):{/t}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="note[paytype]" VALUE="{$note.paytype}" SIZE="10" {tip text="Enter payment type"}>
-		</TD>
-	</TR>			
-*}
+	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
 			<B>{t}Customer:{/t}</B>
@@ -189,7 +179,7 @@ window.open('?m=note&id={$newnoteid}');
 		</TD>
 		<TD NOWRAP CLASS="fright">
 			<A HREF="?m=noteadd&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
-		</TD>			
+		</TD>
 	</TR>
 	{foreachelse}
 	<TR>
