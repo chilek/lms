@@ -250,13 +250,13 @@
 					</TD>
 					<TD width="99%">
 						{t}Deadline:{/t} <SELECT name="customeradd[paytime]" {tip text="Select default deadline in days" trigger="paytime"}>
-							<OPTION value="-1" selected>- {t}default<!paytime>{/t} -</OPTION>
-							<OPTION value="0">0</OPTION>
-							<OPTION value="7">7</OPTION>
-							<OPTION value="10">10</OPTION>
-							<OPTION value="14">14</OPTION>
-							<OPTION value="21">21</OPTION>
-							<OPTION value="30">30</OPTION>
+							<OPTION value="-1"{if !isset($customeradd.paytime) || $customeradd.paytime==-1} selected{/if}>- {t}default{/t} -</OPTION>
+							<OPTION value="0"{if isset($customeradd.paytime) && $customeradd.paytime==0} selected{/if}>0</OPTION>
+							<OPTION value="7"{if $customeradd.paytime==7} selected{/if}>7</OPTION>
+							<OPTION value="10"{if $customeradd.paytime==10} selected{/if}>10</OPTION>
+							<OPTION value="14"{if $customeradd.paytime==14} selected{/if}>14</OPTION>
+							<OPTION value="21"{if $customeradd.paytime==21} selected{/if}>21</OPTION>
+							<OPTION value="30"{if $customeradd.paytime==30} selected{/if}>30</OPTION>
 						</SELECT>
 					</TD>
 				</TR>
@@ -265,7 +265,12 @@
 						<IMG src="img/options.gif" alt="">
 					</TD>
 					<TD width="99%">
-						{t}Payment type:{/t} <INPUT type="text" name="customeradd[paytype]" value="{$customeradd.paytype}" {tip text="Enter invoices payment type (leave this field empty to use default)" trigger="paytype"}>
+						{t}Payment type:{/t} <SELECT name="customeradd[paytype]" {tip text="Select default invoices payment type" trigger="paytype"}>
+							<OPTION value=""{if !$customeradd.paytype} selected{/if}>- {t}default{/t} -</OPTION>
+							{foreach from=$_PAYTYPES item=item key=key}
+							<OPTION value="{$key}"{if $customeradd.paytype==$key} selected{/if}>{$item}</OPTION>
+							{/foreach}
+						</SELECT>
 					</TD>
 				</TR>
 				<TR>

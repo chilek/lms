@@ -150,6 +150,16 @@ define('TARIFF_OTHER', -1);
 
 define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');
 
+$PAYTYPES = array(
+    1   => trans('cash'),
+    2   => trans('transfer'),
+    3   => trans('transfer/cash'),
+    4   => trans('card'),
+    5   => trans('compensation'),
+    6   => trans('barter'),
+    7   => trans('contract'),
+);
+
 if(isset($SMARTY))
 {
 	$SMARTY->assign('_DOCTYPES', $DOCTYPES);
@@ -159,6 +169,7 @@ if(isset($SMARTY))
 	$SMARTY->assign('_RT_STATES', $RT_STATES);
 	$SMARTY->assign('_MESSENGERS', $MESSENGERS);
 	$SMARTY->assign('_TARIFFTYPES', $TARIFFTYPES);
+	$SMARTY->assign('_PAYTYPES', $PAYTYPES);
 }
 
 ?>

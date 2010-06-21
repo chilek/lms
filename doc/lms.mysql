@@ -185,7 +185,7 @@ CREATE TABLE documents (
 	ten varchar(16) NOT NULL DEFAULT '',
 	ssn varchar(11) NOT NULL DEFAULT '',
 	paytime tinyint NOT NULL DEFAULT '0',
-	paytype varchar(255) NOT NULL DEFAULT '',
+	paytype smallint DEFAULT NULL,
 	closed tinyint(1) NOT NULL DEFAULT '0',
 	reference int(11) NOT NULL DEFAULT '0',
 	reason varchar(255) NOT NULL DEFAULT '',
@@ -614,7 +614,7 @@ CREATE TABLE customers (
   consentdate int(11)   NOT NULL DEFAULT '0',
   divisionid int(11)   	NOT NULL DEFAULT '0',
   paytime tinyint	NOT NULL DEFAULT '-1',
-  paytype varchar(255)  DEFAULT NULL,
+  paytype smallint  DEFAULT NULL,
   PRIMARY KEY  (id),
   INDEX zip (zip),
   INDEX name (lastname, name)
@@ -1071,13 +1071,13 @@ CREATE TABLE divisions (
 	inv_author      text    	NOT NULL DEFAULT '',
 	inv_cplace      text    	NOT NULL DEFAULT '',
 	inv_paytime 	tinyint         DEFAULT NULL,
-	inv_paytype 	varchar(255)    DEFAULT NULL,
+	inv_paytype 	smallint    DEFAULT NULL,
 	description     text    	NOT NULL DEFAULT '',
 	status 		tinyint(1) 	NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
 	UNIQUE KEY shortname (shortname)
 ) ENGINE=InnoDB;
-			
+
 # --------------------------------------------------------
 #
 # Structure of table excludedgroups
@@ -1362,4 +1362,4 @@ CREATE TABLE supermasters (
 
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010061100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010061800');

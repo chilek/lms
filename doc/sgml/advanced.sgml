@@ -123,7 +123,7 @@
                     <member>message - message to be displayed if warnings enabled</member>
                     <member>cutoffstop - date to which customers cutting off is disabled</member>
                     <member>paytime - invoices deadline in days</member>
-                    <member>paytype - invoices payment type</member>
+                    <member>paytype - invoices payment type identifier (see documents table)</member>
                </simplelist>
           </sect2>
           <sect2 id="customergroups">
@@ -187,6 +187,7 @@
 		    <member>clients - max. number of clients (radius)</member>
 		    <member>secret - password (radius)</member>
 		    <member>community - SNMP community</member>
+		    <member>channelid - STM channel identifier (ewx_channels table)</member>
                </simplelist>
           </sect2>
           <sect2 id="netlinks">
@@ -205,7 +206,6 @@
                <simplelist>
                     <member>id - serial number</member>
                     <member>name - device name</member>
-                    <member>mac - MAC address</member>
                     <member>ipaddr - IP address</member>
                     <member>passwd - computer password for radius/pppoe login</member>
                     <member>ownerid - serial number of the owner ('0' if network device)</member>
@@ -224,6 +224,14 @@
                     <member>info - additional information</member>
 		    <member>location - location (address)</member>
 		    <member>nas - NAS flag (1/0)</member>
+               </simplelist>
+          </sect2>
+          <sect2 id="macs">
+               <title>MAC addresses ('macs')</title>
+               <simplelist>
+                    <member>id - serial number</member>
+                    <member>mac - MAC address</member>
+                    <member>nodeid - IP address identifier (nodes table)</member>
                </simplelist>
           </sect2>
           <sect2 id="nodegroups">
@@ -445,7 +453,7 @@
 		    <member>type - document type (1 - invoice, 2 - cash receipt)</member>
                     <member>cdate - date of write out</member>
                     <member>paytime - deadline in days</member>
-                    <member>paytype - payment method (cash/transfer/etc.)</member>
+                    <member>paytype - payment type (1-cash, 2-transfer, 3-transfer/cash, 4-card, 5-compensation, 6-barter, 7-contract)</member>
                     <member>customerid - customer (buyer) serial number</member>
 		    <member>userid - user serial number</member>
                     <member>divisionid - identifier of company/division</member>
@@ -815,7 +823,7 @@
                     <member>inv_author - invoice default author</member>
                     <member>inv_cplace - invoice creation place</member>
                     <member>inv_paytime - invoice deadline</member>
-                    <member>inv_paytype - invoice type of payment</member>
+                    <member>inv_paytype - invoice payment type (see documents table)</member>
                </simplelist>
           </sect2>
           <sect2 id="messages">

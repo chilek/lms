@@ -171,8 +171,13 @@
 		        <B>{t}Payment type:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
-		     <INPUT type="text" name="division[inv_paytype]" value="{$division.inv_paytype}" {tip text="Enter invoices payment type (leave this field empty to use default)" trigger="inv_paytype"}>
-	        </TD>
+			<SELECT name="division[inv_paytype]" {tip text="Select default invoices payment type" trigger="paytype"}>
+				<OPTION value=""{if !$division.inv_paytype} selected{/if}>- {t}default{/t} -</OPTION>
+				{foreach from=$_PAYTYPES item=item key=key}
+				<OPTION value="{$key}"{if $division.inv_paytype==$key} selected{/if}>{$item}</OPTION>
+				{/foreach}
+			</SELECT>
+	    </TD>
 	</TR>
 	<TR CLASS="LIGHT">
                 <TD WIDTH="1%" class="fleft">
@@ -206,3 +211,4 @@ document.forms['division'].elements['division[shortname]'].focus();
 //-->
 </SCRIPT>
 {include file="footer.html"}
+

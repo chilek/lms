@@ -21,7 +21,7 @@
 	}
 	{/literal}
 	//-->
-</script>		
+</script>
 <FORM NAME="setheader" METHOD="POST" ACTION="?m=invoicenote&action=setheader">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
@@ -75,7 +75,11 @@
 			<B>{t}Payment type (cash/transfer/etc):{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="cnote[paytype]" VALUE="{$cnote.paytype}" SIZE="10" {tip text="Enter payment type"}>
+			<SELECT name="cnote[paytype]" {tip text="Select payment type" trigger="paytype"}>
+				{foreach from=$_PAYTYPES item=item key=key}
+				<OPTION value="{$key}"{if $cnote.paytype==$key} selected{/if}>{$item}</OPTION>
+				{/foreach}
+			</SELECT>
 		</TD>
 	</TR>
 	{if $invoice.divisionid != $invoice.current_divisionid}
@@ -251,3 +255,4 @@ document.forms['setheader'].elements['cnote[number]'].focus();
 //-->
 </SCRIPT>
 {include file="footer.html"}
+

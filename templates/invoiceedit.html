@@ -114,9 +114,13 @@
 			<B>{t}Payment type (cash/transfer/etc):{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="invoice[paytype]" VALUE="{$invoice.paytype}" SIZE="10" {tip text="Enter payment type"}>
+			<SELECT name="invoice[paytype]" {tip text="Select payment type" trigger="paytype"}>
+				{foreach from=$_PAYTYPES item=item key=key}
+				<OPTION value="{$key}"{if $invoice.paytype==$key} selected{/if}>{$item}</OPTION>
+				{/foreach}
+			</SELECT>
 		</TD>
-	</TR>			
+	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
 			<B>{t}Customer:{/t}</B>
@@ -326,3 +330,4 @@ document.forms['setcustomer'].elements['invoice[cdate]'].focus();
 //-->
 </SCRIPT>
 {include file="footer.html"}
+

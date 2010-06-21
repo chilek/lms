@@ -41,7 +41,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 	                        document.setcustomer.customerid.value = document.setcustomer.customer.value;
 	
 	        document.setcustomer.submit();
-	}															
+	}
 	
 	function reset_customer()
         {
@@ -78,14 +78,6 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 		document.setcustomer.elements['invoice[paytime]'].style.visibility = type ? 'hidden' : 'visible';
 	}
 
-	function setPayType(type)
-	{
-		var list = document.setcustomer.elements['invoice[paytype_default]'];
-		list[0].checked = type ? true : false;
-		list[1].checked = type ? false : true;
-		document.setcustomer.elements['invoice[paytype]'].style.visibility = type ? 'hidden' : 'visible';
-	}
-	
 	function printinvoice()
 	{
 		var add = "";
@@ -99,7 +91,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
         }
 	//-->
 {/literal}
-</script>		
+</script>
 <FORM NAME="setcustomer" METHOD="POST" ACTION="?m=invoicenew&action=setcustomer">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
@@ -149,20 +141,21 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 			{* if $invoice.cdate && $invoice.paytime}
 				({$invoice.cdate+$invoice.paytime*86400|date_format:"%Y/%m/%d"})
 			{/if *}
-			
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<B>{t}Payment type (cash/transfer/etc):{/t}</B>
+			<B>{t}Payment type:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT type="radio" name="invoice[paytype_default]" value="1" onclick="javascript:setPayType(1)"{if !isset($invoice.paytype_default) || $invoice.paytype_default} checked{/if}><a href="javascript:setPayType(1)">{t}default{/t}</a>
-			<INPUT type="radio" name="invoice[paytype_default]" value="0" onclick="javascript:setPayType(0)"{if isset($invoice.paytype_default) && !$invoice.paytype_default} checked{/if}><a href="javascript:setPayType(0)">{t}other{/t}</a>
-			<INPUT TYPE="TEXT" NAME="invoice[paytype]" VALUE="{$invoice.paytype}" SIZE="10"
-			{if !isset($invoice.paytype_default) || $invoice.paytype_default} style="visibility: hidden"{/if}  {tip text="Enter payment type" trigger="paytype"}>
+			<SELECT name="invoice[paytype]" {tip text="Select payment type" trigger="paytype"}>
+				<OPTION value=""{if !$invoice.paytype} selected{/if}>- {t}default{/t} -</OPTION>
+				{foreach from=$_PAYTYPES item=item key=key}
+				<OPTION value="{$key}"{if $invoice.paytype==$key} selected{/if}>{$item}</OPTION>
+				{/foreach}
+			</SELECT>
 		</TD>
-	</TR>			
+	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
 			<B>{t}Customer:{/t}</B>
@@ -429,3 +422,4 @@ document.forms['setcustomer'].elements['invoice[number]'].focus();
 //-->
 </SCRIPT>
 {include file="footer.html"}
+

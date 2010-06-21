@@ -127,7 +127,7 @@
                     <member>message - komunikat do wy¶wietlenia przy w³±czonych ostrze¿eniach</member>
 		    <member>cutoffstop - data, do której blokowanie klientów zad³u¿onych jest wy³±czone</member>
 		    <member>paytime - termin p³atno¶ci faktur</member>
-		    <member>paytype - typ p³atno¶ci faktur</member>
+		    <member>paytype - typ p³atno¶ci faktur (zobacz tabela documents)</member>
                </simplelist>
           </sect2>
           <sect2 id="customergroups">
@@ -191,6 +191,7 @@
 		    <member>clients - liczba klientów (radius)</member>
 		    <member>secret - has³o (radius)</member>
 		    <member>community - community SNMP</member>
+		    <member>channelid - identyfikator kana³u STM (tabela ewx_channels)</member>
 	    </simplelist>
           </sect2>
           <sect2 id="netlinks">
@@ -209,7 +210,6 @@
                <simplelist>
                     <member>id - identyfikator</member>
                     <member>name - nazwa</member>
-                    <member>mac - adres MAC</member>
                     <member>ipaddr - adres IP</member>
                     <member>passwd - has³o np. pppoe</member>
                     <member>ownerid - identyfikator w³a¶ciciela ('0' - dla adresu urz±dzenia)</member>
@@ -228,6 +228,14 @@
                     <member>info - informacje dodatkowe</member>
 		    <member>location - lokalizacja (adres)</member>
 		    <member>nas - flaga NAS (0/1)</member>
+               </simplelist>
+          </sect2>
+          <sect2 id="macs">
+               <title>Adresy MAC ('macs')</title>
+               <simplelist>
+                    <member>id - identyfikator</member>
+                    <member>mac - adres MAC</member>
+                    <member>nodeid - identyfikator adresu IP (tabela nodes)</member>
                </simplelist>
           </sect2>
 	    <sect2 id="nodegroups">
@@ -448,7 +456,7 @@
 		    <member>type - typ dokumentu (1-faktura, 2-KP)</member>
                     <member>cdate - data wystawienia</member>
                     <member>paytime - termin p³atno¶ci (ilo¶æ dni)</member>
-                    <member>paytype - rodzaj p³atno¶ci (przelew/gotówka/etc.)</member>
+                    <member>paytype - rodzaj p³atno¶ci (1-gotówka, 2-przelew, 3-przelew/gotówka, 4-karta, 5-kompensata, 6-barter, 7-umowa)</member>
                     <member>customerid - identyfikator klienta-nabywcy</member>
 		    <member>userid - identyfikator u¿ytkownika wystawiaj±cego dokument</member>
 		    <member>divisionid - identyfikator firmy (oddzia³u)</member>
@@ -817,7 +825,7 @@
 			<member>inv_author - wystawca faktury</member>
 			<member>inv_cplace - miejsce wystawienia faktury</member>
 			<member>inv_paytime - termin p³atno¶ci faktury</member>
-			<member>inv_paytype - sposób p³atno¶ci faktury</member>
+			<member>inv_paytype - sposób p³atno¶ci faktury (zobacz tabela documents)</member>
 		</simplelist>
 	</sect2>
 	<sect2 id="messages">

@@ -339,8 +339,9 @@
 			</listitem>
 			<listitem>
 			    <para>paytype</para>
-			    <para>Rodzaj p³atno¶ci. Domy¶lnie: 'TRANSFER'.</para>
-			    <para>Przyk³ad: <prompt>paytype = 'GOTÓWKA'</prompt></para>
+			    <para>Rodzaj p³atno¶ci (1-gotówka, 2-przelew, 3-przelew/gotówka,
+            4-karta, 5-kompensata, 6-barter, 7-umowa). Domy¶lnie: 2 (przelew).</para>
+			    <para>Przyk³ad: <prompt>paytype = 1</prompt></para>
 			</listitem>
 			<listitem>
 				<para>numberplan</para>

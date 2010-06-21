@@ -407,8 +407,9 @@ http://www.naszasiec.pl/</screen></example>
          </listitem>
 	  <listitem>
 	   <para>paytype (opcjonalny)</para>
-	   <para>Okre¶la rodzaj p³atno¶ci. Domy¶lnie: 'TRANSFER'</para>
-	   <para>Przyk³ad:	<prompt>paytype = 'PRZELEW'</prompt></para>
+	   <para>Identyfikator rodzaju p³atno¶ci (1-gotówka, 2-przelew, 3-przelew/gotówka,
+	   4-karta, 5-kompensata, 6-barter, 7-umowa). Domy¶lnie: 2 (przelew)</para>
+	   <para>Przyk³ad:	<prompt>paytype = 1</prompt></para>
 	  </listitem>
 	 <listitem>
           <para>comment (opcjonalny)</para>

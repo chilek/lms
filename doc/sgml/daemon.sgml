@@ -309,8 +309,9 @@
                </listitem>
                <listitem>
                    <para>paytype</para>
-                   <para>Payment type. Default: 'TRANSFER'.</para>
-                   <para>Example: <prompt>paytype = 'CASH'</prompt></para>
+                   <para>Payment type identifier (1-cash, 2-transfer, 3-transfer/cash,
+                        4-card, 5-compensation, 6-barter, 7-contract). Default: 2 (transfer).</para>
+                   <para>Example: <prompt>paytype = 1</prompt></para>
                </listitem>
                <listitem>
                    <para>numberplan</para>

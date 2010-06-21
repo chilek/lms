@@ -316,7 +316,7 @@ CREATE TABLE documents (
 	ten varchar(16) 	DEFAULT '' NOT NULL,
 	ssn varchar(11) 	DEFAULT '' NOT NULL,
     	paytime smallint 	DEFAULT 0 NOT NULL,
-	paytype varchar(255) 	DEFAULT '' NOT NULL,
+	paytype smallint 	DEFAULT NULL,
 	closed smallint		DEFAULT 0 NOT NULL,
 	reference integer	DEFAULT 0 NOT NULL,
 	reason varchar(255)	DEFAULT '' NOT NULL,
@@ -461,7 +461,7 @@ CREATE TABLE customers (
 	consentdate integer	DEFAULT 0 NOT NULL,
 	divisionid integer	DEFAULT 0 NOT NULL,
     	paytime smallint 	DEFAULT -1 NOT NULL,
-    	paytype varchar(255) 	DEFAULT NULL,
+    	paytype smallint 	DEFAULT NULL,
 	PRIMARY KEY (id)
 );
 
@@ -1200,7 +1200,7 @@ CREATE TABLE divisions (
 	inv_author	text		NOT NULL DEFAULT '',
 	inv_cplace	text		NOT NULL DEFAULT '',
 	inv_paytime	smallint	DEFAULT NULL,
-	inv_paytype	varchar(255)	DEFAULT NULL, 
+	inv_paytype	smallint	DEFAULT NULL,
 	description 	text		NOT NULL DEFAULT '',
 	status 		smallint 	NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
@@ -1462,4 +1462,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010061100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010061800');

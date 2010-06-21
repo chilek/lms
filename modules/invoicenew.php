@@ -65,18 +65,18 @@ switch($action)
 		// get default invoice's numberplanid and next number
 		$invoice['cdate'] = time();
 		$invoice['paytime'] = $CONFIG['invoices']['paytime'];
-		$invoice['paytype'] = $CONFIG['invoices']['paytype'];
+//		$invoice['paytype'] = $CONFIG['invoices']['paytype'];
 
 		if(isset($_GET['customerid']) && $_GET['customerid'] != '' && $LMS->CustomerExists($_GET['customerid']))
 		{
 			$customer = $LMS->GetCustomer($_GET['customerid'], true);
-			
+
 			$invoice['numberplanid'] = $DB->GetOne('SELECT n.id FROM numberplans n
 				JOIN numberplanassignments a ON (n.id = a.planid)
 				WHERE n.doctype = ? AND n.isdefault = 1 AND a.divisionid = ?',
 				array(DOC_INVOICE, $customer['divisionid']));
 		}
-	
+
 		if(empty($invoice['numberplanid']))
 			$invoice['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans
 				WHERE doctype = ? AND isdefault = 1', array(DOC_INVOICE));
@@ -86,7 +86,7 @@ switch($action)
 
 		foreach(array('count', 'discount', 'valuenetto', 'valuebrutto') as $key)
 			$itemdata[$key] = f_round($itemdata[$key]);
-		
+
 		if($itemdata['count'] > 0 && $itemdata['name'] != '')
 		{
 			$taxvalue = isset($itemdata['taxid']) ? $taxeslist[$itemdata['taxid']]['value'] : 0;
@@ -100,7 +100,7 @@ switch($action)
 				$itemdata['valuebrutto'] = f_round($itemdata['valuebrutto'] - $itemdata['valuebrutto'] * f_round($itemdata['discount'])/100);
 				$itemdata['valuenetto'] = round($itemdata['valuebrutto'] / ($taxvalue / 100 + 1), 2);
 			}
-			
+
 			// str_replace->f_round here is needed because of bug in some PHP versions
 			$itemdata['s_valuebrutto'] = f_round($itemdata['valuebrutto'] * $itemdata['count']);
 			$itemdata['s_valuenetto'] = f_round($itemdata['s_valuebrutto'] /  ($taxvalue / 100 + 1));
@@ -122,7 +122,7 @@ switch($action)
 			{
 				$cash = $DB->GetRow('SELECT value, comment, taxid 
 						    FROM cash WHERE id = ?', array($id));
-			
+
 				$itemdata['cashid'] = $id;
 				$itemdata['name'] = $cash['comment'];
 				$itemdata['taxid'] = $cash['taxid'];
@@ -181,7 +181,7 @@ switch($action)
 		{
 			$maxdate = $DB->GetOne('SELECT MAX(cdate) FROM documents WHERE type = ? AND numberplanid = ?', 
 					array(DOC_INVOICE, $invoice['numberplanid']));
-	
+
 			if($invoice['cdate'] < $maxdate)
 			{
 				$error['cdate'] = trans('Last date of invoice settlement is $0. If sure, you want to write invoice with date of $1, then click "Submit" again.',date('Y/m/d H:i', $maxdate), date('Y/m/d H:i', $invoice['cdate']));
@@ -203,14 +203,11 @@ switch($action)
 		{
 			$error['paytime'] = trans('Integer value required!');
 		}
-		if(empty($invoice['paytype_default']) && empty($invoice['paytype']))
-		{
-			$error['paytype'] = trans('Invoice\'s paytype is required!');
-		}
-		
+
 		if(!isset($error))
 		{
-			$cid = isset($_GET['customerid']) && $_GET['customerid'] != '' ? intval($_GET['customerid']) : intval($_POST['customerid']);
+    		$cid = isset($_GET['customerid']) && $_GET['customerid'] != '' ? intval($_GET['customerid']) : intval($_POST['customerid']);
+
 			if($LMS->CustomerExists($cid))
 				$customer = $LMS->GetCustomer($cid, true);
 
@@ -240,11 +237,13 @@ switch($action)
 					$error['number'] = trans('Invoice number must be integer!');
 				elseif($LMS->DocumentExists($invoice['number'], DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']))
 					$error['number'] = trans('Invoice number $0 already exists!', $invoice['number']);
-				
-				if($error)
+
+				if($error) {
 					$invoice['number'] = $LMS->GetNewDocumentNumber(DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']);
+					$error = null;
+			    }
 			}
-			
+
 			// set paytime
 			if(!empty($invoice['paytime_default']))
 			{
@@ -257,16 +256,21 @@ switch($action)
 					$invoice['paytime'] = $CONFIG['invoices']['paytime'];
 			}
 			// set paytype
-			if(!empty($invoice['paytype_default']))
+			if(empty($invoice['paytype']))
 			{
 				if($customer['paytype'])
 					$invoice['paytype'] = $customer['paytype'];
 				elseif($paytype = $DB->GetOne('SELECT inv_paytype FROM divisions 
 					WHERE id = ?', array($customer['divisionid'])))
 					$invoice['paytype'] = $paytype;
-				else
+				else if ($CONFIG['invoices']['paytype'])
 					$invoice['paytype'] = $CONFIG['invoices']['paytype'];
+			    else
+			        $error['paytype'] = trans('Default payment type not defined!');
 			}
+
+            if ($error)
+                break;
 
 			$invoice['type'] = DOC_INVOICE;
 			$iid = $LMS->AddInvoice(array('customer' => $customer, 'contents' => $contents, 'invoice' => $invoice));
@@ -276,7 +280,7 @@ switch($action)
 			foreach($contents as $item)
 				if(isset($item['cashid']))
 					$DB->Execute('DELETE FROM cash WHERE id = ?', array($item['cashid']));
-		
+
 			$DB->UnLockTables();
 			$DB->CommitTrans();
 
@@ -284,7 +288,7 @@ switch($action)
 			$SESSION->remove('invoicecustomer');
 			$SESSION->remove('invoice');
 			$SESSION->remove('invoicenewerror');
-			
+
 			if(isset($_GET['print']))
 				$SESSION->save('invoiceprint', array('invoice' => $iid,
 					'original' => !empty($_GET['original']) ? 1 : 0,

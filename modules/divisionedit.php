@@ -106,7 +106,7 @@ if(!empty($_POST['division']))
 				    $division['inv_author'],
 				    $division['inv_cplace'],
 				    $division['inv_paytime'],
-				    $division['inv_paytype'],
+				    $division['inv_paytype'] ? $division['inv_paytype'] : null,
 				    $division['description'],
 				    !empty($division['status']) ? 1 : 0,
 				    $division['id']

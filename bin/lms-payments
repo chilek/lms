@@ -99,7 +99,7 @@ my $dbname = $ini->val('database', 'database') || 'lms';
 
 my $customergroups = $ini->val('payments', 'customergroups') || '';
 my $deadline = $ini->val('payments', 'deadline') || '14';
-my $paytype = $ini->val('payments', 'paytype') || 'TRANSFER';
+my $paytype = $ini->val('payments', 'paytype') || 2; # TRANSFER
 my $comment = $ini->val('payments', 'comment') || 'Tariff %tariff subscription for period %period';
 my $s_comment = $ini->val('payments', 'settlement_comment') || $comment;
 my $suspension_description = $ini->val('payments', 'suspension_description') || '';

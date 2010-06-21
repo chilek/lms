@@ -29,7 +29,7 @@ function GetConfigList($order='var,asc', $section='')
 	global $DB;
 
 	list($order, $direction) = sscanf($order, '%[^,],%s');
-	
+
 	$direction = ($direction != 'desc') ? 'asc' : 'desc';
 
 	switch($order)
@@ -60,48 +60,48 @@ function GetConfigList($order='var,asc', $section='')
 				case 'allow_from':
 					$config[$idx]['description'] = trans('List of networks and IP addresses, with access to LMS. If empty, every IP address has access to LMS. When you write list of addresses or address pools here, LMS will dismiss every unwanted user with HTTP 403 error.');
 				break;
-				
+
 				case 'lang':
 					$config[$idx]['description'] = trans('System language code. If not set, language will be determined on browser settings. Default: en.');
 				break;
-				
+
 				case 'timeout':
 					$config[$idx]['description'] = trans('WWW session timeout. After that time (in seconds) user will be logged out if action has been made. Default: 600.');
 				break;
-				
+
 				case 'customerlist_pagelimit':
 					$config[$idx]['description'] = trans('Limit of records displayed on one page in customers list. Default: 100.');
 				break;
-				
+
 				case 'nodelist_pagelimit':
 					$config[$idx]['description'] = trans('Limit of records displayed on one page in nodes list. Default: 100.');
 				break;
-				
+
 				case 'balancelist_pagelimit':
 					$config[$idx]['description'] = trans('Limit of records displayed on one page in customer\'s balance. Default: 100.');
 				break;
-				
+
 				case 'configlist_pagelimit':
 					$config[$idx]['description'] = trans('Limit of records displayed on one page in UI config options list. Default: 100.');
 				break;
-				
+
 				case 'invoicelist_pagelimit':
 					$config[$idx]['description'] = trans('Limit of records displayed on one page in invoices list. Default: 100.');
 				break;
-				
+
 				case 'ticketlist_pagelimit':
 					$config[$idx]['description'] = trans('Limit of records displayed on one page in tickets (requests) list. Default: 100.');
 				break;
-				
+
 				case 'accountlist_pagelimit':
 					$config[$idx]['description'] = trans('Limit of records displayed on one page in accounts list. Default: 100.');
 				break;
-				
+
 				case 'domainlist_pagelimit':
 					$config[$idx]['description'] = trans('Limit of records displayed on one page in domains list. Default: 100.');
 				break;
-				
-				case 'aliaslist_pagelimit':
+
+    			case 'aliaslist_pagelimit':
 					$config[$idx]['description'] = trans('Limit of records displayed on one page in aliases list. Default: 100.');
 				break;
 
@@ -197,7 +197,7 @@ function GetConfigList($order='var,asc', $section='')
 
 				case 'gd_translate_to':
 					$config[$idx]['description'] = trans('Charset of data gd library expects (useful if gd library needs ISO-8859-2 instead of UTF-8 to feed imagetext() function).');
-				break;					
+				break;
 
 				case 'nodepassword_length':
 					$config[$idx]['description'] = trans('Length of (auto-generated) node password. Max.32. Default: 16.');
@@ -221,35 +221,35 @@ function GetConfigList($order='var,asc', $section='')
 
 				case 'default_taxrate':
 					$config[$idx]['description'] = trans('Value of tax rate which will be selected by default on tax rates lists. Default: 22.0');
-				break;					
-			
+				break;
+
 				case 'helpdesk_reply_body':
 					$config[$idx]['description'] = trans('Adds body of message in ticket reply. Default: false');
-				break;					
+				break;
 
 				case 'big_networks':
 					$config[$idx]['description'] = trans('Support for big ISPs e.g. hidding long customers selection dropdowns. Default: false');
-				break;					
+				break;
 
 				case 'short_pagescroller':
 					$config[$idx]['description'] = trans('Enables page scroller designed for lists with very big number of pages. Default: false');
-				break;					
+				break;
 
 				case 'ewx_support':
 					$config[$idx]['description'] = trans('Support for EtherWerX devices. Default: false');
-				break;					
+				break;
 
 				case 'helpdesk_stats':
 					$config[$idx]['description'] = trans('Adds helpdesk requests causes stats on ticket view and print pages. Default: true');
-				break;					
+				break;
 
 				case 'helpdesk_customerinfo':
 					$config[$idx]['description'] = trans('Adds customer basic information on ticket view and in notifications. Default: true');
-				break;					
+				break;
 
 				case 'ticket_template_file':
 					$config[$idx]['description'] = trans('Helpdesk ticket printout template file. Default: rtticketprint.html');
-				break;					
+				break;
 			
 				case 'ticketlist_status':
 					$config[$idx]['description'] = trans('Default status filter setting on tickets list. For allowed values see html source code. Default: not set');
@@ -291,8 +291,8 @@ function GetConfigList($order='var,asc', $section='')
 					case 'cashimport_checkinvoices':
 						$config[$idx]['description'] = trans('Check invoices as accounted when importing cash operations. Default: false');
 					break;
-				
-					default:
+
+    				default:
 						$config[$idx]['description'] = trans('Unknown option. No description.');
 					break;
 				} //end: var
@@ -304,19 +304,19 @@ function GetConfigList($order='var,asc', $section='')
 					case 'header':
 						$config[$idx]['description'] = trans('This is a seller data. A new line replacement is "\n" sign, e.g. SuperNet ISP\n00-950 Warsaw\nWiosenna 52\n0 49 3883838\n\naccounting@supernet.pl\n\nNIP: 123-123-12-23');
 					break;
-					
+
 					case 'footer':
 						$config[$idx]['description'] = trans('Small font text appearing in selected (in template) place of the invoice, e.g. Our Bank: SNETISP, 828823917293871928371\nPhone number 555 123 123');
 					break;
-					
+
 					case 'default_author':
 						$config[$idx]['description'] = trans('Default invoice issuer');
 					break;
-					
+
 					case 'cplace':
 						$config[$idx]['description'] = trans('Invoice draw-up place.');
 					break;
-					
+
 					case 'template_file':
 						$config[$idx]['description'] = trans('Invoice template file. Default: "invoice.html". Should be placed in templates directory.');
 					break;
@@ -324,15 +324,15 @@ function GetConfigList($order='var,asc', $section='')
 					case 'cnote_template_file':
 						$config[$idx]['description'] = trans('Credit note template file. Default: "invoice.html". Should be placed in templates directory.');
 					break;
-					
+
 					case 'content_type':
 						$config[$idx]['description'] = trans('Content-type for document. If you enter "application/octet-stream", browser will send file to save on disk, instead of displaying it. It\'s useful if you use your own template which generate e.g. rtf or xls file. Default: "text/html".');
 					break;
-						
+
 					case 'attachment_name':
 						$config[$idx]['description'] = trans('File name for saving document printout. WARNING: Setting attachment_name with default content_type will (in case of MSIE) print document, and prompt for save on disk. Default: empty.');
 					break;
-	
+
 					case 'type':
 						$config[$idx]['description'] = trans('Documents type. You can use "html" or "pdf". Default: html.');
 					break;
@@ -340,7 +340,7 @@ function GetConfigList($order='var,asc', $section='')
 					case 'print_balance_history':
 						$config[$idx]['description'] = trans('If true on invoice (html) will be printed history of financial operations on customer account. Default: not set.');
 					break;
-					
+
 					case 'print_balance_history_limit':
 						$config[$idx]['description'] = trans('Number of Records on customer balance list on invoice. Specify last x records. Default: 10.');
 					break;
@@ -352,7 +352,7 @@ function GetConfigList($order='var,asc', $section='')
 					case 'radius':
 						$config[$idx]['description'] = trans('Enable RADIUS support. Default: 1');
 					break;
-					
+
 					case 'public_ip':
 						$config[$idx]['description'] = trans('Enable public IP address fields. Default: 1');
 					break;
@@ -362,9 +362,9 @@ function GetConfigList($order='var,asc', $section='')
 					break;
 
 					case 'paytype':
-						$config[$idx]['description'] = trans('Default invoices paytype. Default: "CASH"');
+						$config[$idx]['description'] = trans('Default invoices paytype. Default: "1" (cash)');
 					break;
-					
+
 					default:
 						$config[$idx]['description'] = trans('Unknown option. No description.');
 					break;
@@ -377,15 +377,15 @@ function GetConfigList($order='var,asc', $section='')
 					case 'template_file':
 						$config[$idx]['description'] = trans('Debit note template file. Default: "note.html". Should be placed in templates directory.');
 					break;
-					
+
 					case 'content_type':
 						$config[$idx]['description'] = trans('Content-type for document. If you enter "application/octet-stream", browser will send file to save on disk, instead of displaying it. It\'s useful if you use your own template which generate e.g. rtf or xls file. Default: "text/html".');
 					break;
-						
+
 					case 'attachment_name':
 						$config[$idx]['description'] = trans('File name for saving document printout. WARNING: Setting attachment_name with default content_type will (in case of MSIE) print document, and prompt for save on disk. Default: empty.');
 					break;
-	
+
 					case 'type':
 						$config[$idx]['description'] = trans('Documents type. You can use "html" or "pdf". Default: html.');
 					break;
@@ -393,7 +393,7 @@ function GetConfigList($order='var,asc', $section='')
 					case 'paytime':
 						$config[$idx]['description'] = trans('Default documents paytime in days. Default: 14');
 					break;
-					
+
 					default:
 						$config[$idx]['description'] = trans('Unknown option. No description.');
 					break;
@@ -406,19 +406,19 @@ function GetConfigList($order='var,asc', $section='')
 					case 'template_file':
 						$config[$idx]['description'] = trans('Cash receipt template file. Default: "receipt.html". Should be placed in templates directory.');
 					break;
-					
+
 					case 'content_type':
 						$config[$idx]['description'] = trans('Content-type for document. If you enter "application/octet-stream", browser will send file to save on disk, instead of displaying it. It\'s useful if you use your own template which generate e.g. rtf or xls file. Default: "text/html".');
 					break;
-						
+
 					case 'attachment_name':
 						$config[$idx]['description'] = trans('File name for saving document printout. WARNING: Setting attachment_name with default content_type will (in case of MSIE) print document, and prompt for save on disk. Default: empty.');
 					break;
-					
+
 					case 'type':
 						$config[$idx]['description'] = trans('Documents type. You can use "html" or "pdf". Default: html.');
 					break;
-		
+
 					default:
 						$config[$idx]['description'] = trans('Unknown option. No description.');
 					break;
@@ -437,7 +437,7 @@ function GetConfigList($order='var,asc', $section='')
 					case 'smtp_password':
 					case 'smtp_auth_type':
 						$config[$idx]['description'] = trans('SMTP settings.');
-					break;					
+					break;
 
 					default:
 						$config[$idx]['description'] = trans('Unknown option. No description.');
@@ -445,7 +445,7 @@ function GetConfigList($order='var,asc', $section='')
 
 				} //end: var
 			break;
-			
+
 			case 'sms':
 				switch($item['var'])
 				{
@@ -460,67 +460,64 @@ function GetConfigList($order='var,asc', $section='')
 					case 'from':
 						$config[$idx]['description'] = trans('Default sender of a text message.');
 					break;
-					
+
 					case 'username':
 						$config[$idx]['description'] = trans('Username for smscenter service');
 					break;
-					
+
 					case 'password':
 						$config[$idx]['description'] = trans('Password for smscenter service');
 					break;
-						
+
 					case 'smscenter_type':
 						$config[$idx]['description'] = trans('Type of account you have at smscenter service. LMS will add sender at the end of message, when static type has been set. Correct values are: static and dynamic');
 					break;
-					
+
 					default:
 						$config[$idx]['description'] = trans('Unknown option. No description.');
 					break;
 				} //end: var
 			break;
-	
-                       case 'zones':                                                                                                                         
-                                switch($item['var'])                                                                                                          
-                                {                                                                                                                             
-                                        case 'hostmaster_mail':                                                                                               
-                                                $config[$idx]['description'] = trans('Domain admin e-mail address.');                                         
-                                        break;                                                                                                                
-                                        case 'master_dns':                                                                                                    
-                                                $config[$idx]['description'] = trans('Primary Name Server name (should be a FQDN).');                         
-                                        break;                                                                                                                
-                                        case 'slave_dns':                                                                                                     
-                                                $config[$idx]['description'] = trans('Secondary Name Server name (should be a FQDN).');                       
-                                        break;                                                                                                                
-                                        case 'default_mx':                                                                                                    
-                                                $config[$idx]['description'] = trans('Mail Exchange (MX) name record which identifies the name of the server that handles mail for domain (should be a FQDN).');                                             
-                                        break;                                                                                                                
-                                        case 'default_ttl':                                                                                                   
-                                                $config[$idx]['description'] = trans('The default expiration time of a resource record. Default 86400.');     
-                                        break;                                                                                                                
-                                        case 'ttl_refresh':                                                                                                   
-                                                $config[$idx]['description'] = trans('Time after slave server refreshes records. Default 28800.');            
-                                        break;                                                                                                                
-                                        case 'ttl_retry':                                                                                                     
-                                                $config[$idx]['description'] = trans('Slave server retry time in case of a problem. Default 7200.');          
-                                        break;                                                                                                                
-                                        case 'ttl_expire':                                                                                                    
-                                                $config[$idx]['description'] = trans('Records expiration time. Default 604800.');                             
-                                        break;                                                                                                                
-                                        case 'ttl_minimum':                                                                                                   
-                                                $config[$idx]['description'] = trans('Minimum caching time in case of failed lookups. Default 86400.');       
-                                        break;                                                                                                                
-                                        case 'default_webserver_ip':                                                                                          
-                                                $config[$idx]['description'] = trans('IP address of webserver');                                             
-                                        break;                                                                                                                
-                                        case 'default_mailserver_ip':                                                                                         
-                                                $config[$idx]['description'] = trans('IP address of mailserver');                                            
-                                        break;                                                                                                                
-                                                                                                                                                              
-                                                                                                                                                              
-                                } //end: var                                                                                                                  
-                        break;              
-                                                   		
-			default:
+                       case 'zones':
+                                switch($item['var'])
+                                {
+                                        case 'hostmaster_mail':
+                                                $config[$idx]['description'] = trans('Domain admin e-mail address.');
+                                        break;
+                                        case 'master_dns':
+                                                $config[$idx]['description'] = trans('Primary Name Server name (should be a FQDN).');
+                                        break;
+                                        case 'slave_dns':
+                                                $config[$idx]['description'] = trans('Secondary Name Server name (should be a FQDN).');
+                                        break;
+                                        case 'default_mx':
+                                                $config[$idx]['description'] = trans('Mail Exchange (MX) name record which identifies the name of the server that handles mail for domain (should be a FQDN).');
+                                        break;
+                                        case 'default_ttl':
+                                                $config[$idx]['description'] = trans('The default expiration time of a resource record. Default 86400.');
+                                        break;
+                                        case 'ttl_refresh':
+                                                $config[$idx]['description'] = trans('Time after slave server refreshes records. Default 28800.');
+                                        break;
+                                        case 'ttl_retry':
+                                                $config[$idx]['description'] = trans('Slave server retry time in case of a problem. Default 7200.');
+                                        break;
+                                        case 'ttl_expire':
+                                                $config[$idx]['description'] = trans('Records expiration time. Default 604800.');
+                                        break;
+                                        case 'ttl_minimum':
+                                                $config[$idx]['description'] = trans('Minimum caching time in case of failed lookups. Default 86400.');
+                                        break;
+                                        case 'default_webserver_ip':
+                                                $config[$idx]['description'] = trans('IP address of webserver');
+                                        break;
+                                        case 'default_mailserver_ip':
+                                                $config[$idx]['description'] = trans('IP address of mailserver');
+                                        break;
+
+                                } //end: var
+                        break;
+		    default:
 				$config[$idx]['description'] = trans('Unknown option. No description.');
 			break;
 		} //end: section
@@ -547,7 +544,7 @@ if(!isset($_GET['s']))
 else
 	$s = $_GET['s'];
 $SESSION->save('conls', $s);
-		
+
 if ($SESSION->is_set('conlp') && !isset($_GET['page']))
 	$SESSION->restore('conlp', $_GET['page']);
 
@@ -562,7 +559,7 @@ unset($configlist['total']);
 unset($configlist['order']);
 unset($configlist['direction']);
 unset($configlist['section']);
-	    
+
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
 $pagelimit = (! $LMS->CONFIG['phpui']['configlist_pagelimit'] ? $listdata['total'] : $LMS->CONFIG['phpui']['configlist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
