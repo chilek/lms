@@ -1466,7 +1466,6 @@ $_LANG['Tax rate value is not numeric!'] = 'Mokesčio tarifo vertė nėra skaič
 $_LANG['annex'] = 'priedas';
 $_LANG['Are you sure, you want to remove that document?'] = 'Esi tikras, kad nori pašalinti šį dokumentą?';
 $_LANG['Can\'t save file in "$0" directory!'] = 'Negalima įrašyti failo į katalogą "$0"!';
-$_LANG['contract'] = 'sutartis';
 $_LANG['Customer\'s Documents:'] = 'Kliento dokumentai:';
 $_LANG['Display this form again, when that document is saved'] = 'Parodyk šią formą dar kartą po dokumento pridėjimo';
 $_LANG['Document number must be an integer!'] = 'Dokumento numeris turei būti sveikas skaičius!';
@@ -2061,4 +2060,12 @@ $_LANG['Select division'] = 'Pasirink įmonę';
 $_LANG['Unlock'] = 'Atblokuok';
 $_LANG['Wrong account number!'] = 'Neteisingas sąsaktos formatas!';
 $_LANG['Zip code is required!'] = 'Reikia pašto kodo!';
+$_LANG['contract'] = 'sutartis';
+$_LANG['barter'] = 'barteris';
+$_LANG['card'] = 'kortelė';
+$_LANG['cash'] = 'grynieji';
+$_LANG['compensation'] = 'kompensacija';
+$_LANG['transfer'] = 'pavedimas';
+$_LANG['transfer/cash'] = 'pavedimas/grynieji';
+
 ?>
