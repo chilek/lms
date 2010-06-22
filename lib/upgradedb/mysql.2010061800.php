@@ -48,7 +48,7 @@ foreach ($tables as $tab => $col)
 
     $types = $DB->GetCol("SELECT LOWER($col) AS paytype FROM $tab GROUP BY LOWER($col)");
 
-    foreach ($types as $type) {
+    if (!empty($types)) foreach ($types as $type) {
         foreach ($paytypes as $pid => $pname)
             if (in_array($type, $pname)) {
                 $DB->Execute("UPDATE $tab SET paytype2 = $pid WHERE LOWER($col) = ?", array($type));

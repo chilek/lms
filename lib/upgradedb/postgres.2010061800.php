@@ -43,13 +43,15 @@ $paytypes = array(
     7   => array('contract', 'umowa', 'sutartis'),
 );
 
+$DB->Execute("DROP VIEW customersview");
+
 foreach ($tables as $tab => $col)
 {
     $DB->Execute("ALTER TABLE $tab ADD paytype2 smallint DEFAULT NULL");
 
     $types = $DB->GetCol("SELECT LOWER($col) AS paytype FROM $tab GROUP BY LOWER($col)");
 
-    foreach ($types as $type) {
+    if (!empty($types)) foreach ($types as $type) {
         foreach ($paytypes as $pid => $pname)
             if (in_array($type, $pname)) {
                 $DB->Execute("UPDATE $tab SET paytype2 = $pid WHERE LOWER($col) = ?", array($type));
@@ -60,6 +62,15 @@ foreach ($tables as $tab => $col)
     $DB->Execute("ALTER TABLE $tab DROP $col");
     $DB->Execute("ALTER TABLE $tab RENAME paytype2 TO $col");
 }
+
+$DB->Execute("
+    CREATE VIEW customersview AS
+    SELECT c.* FROM customers c
+        WHERE NOT EXISTS (
+            SELECT 1 FROM customerassignments a
+            JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+            WHERE e.userid = lms_current_user() AND a.customerid = c.id)
+");
 
 $cfg = $DB->GetOne("SELECT value FROM uiconfig WHERE var = 'paytype' AND section = 'invoices'");
 
