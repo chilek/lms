@@ -34,13 +34,13 @@ $tables = array(
 
 // we cannot use trans() here
 $paytypes = array(
-    1   => array('cash', 'gotówka'),
-    2   => array('transfer', 'przelew'),
-    3   => array('transfer/cash', 'przelew/karta'),
-    4   => array('card', 'karta'),
-    5   => array('compensation','kompensata'),
-    6   => array('barter'),
-    7   => array('contract', 'umowa'),
+    1   => array('cash', 'gotówka', 'grynieji'),
+    2   => array('transfer', 'przelew', 'pavedimas'),
+    3   => array('transfer/cash', 'przelew/karta', 'pavedimas/grynieji'),
+    4   => array('card', 'karta', 'kortelė'),
+    5   => array('compensation', 'kompensata', 'kompensacija'),
+    6   => array('barter', 'barteris'),
+    7   => array('contract', 'umowa', 'sutartis'),
 );
 
 foreach ($tables as $tab => $col)
