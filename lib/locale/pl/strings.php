@@ -2360,8 +2360,8 @@ $_LANG['check all<!items>'] = 'zaznacz wszystkie';
 $_LANG['Liability Edit: $0'] = 'Edycja zobowiązania: $0';
 $_LANG['New Liability'] = 'Nowe zobowiązanie';
 $_LANG['New Liability: $0'] = 'Nowe zobowiązanie: $0';
-$_LANG['Numbering Plan:'] = 'Plan numeracyjny';
-$_LANG['Payment Type:'] = 'Typ płatności';
+$_LANG['Numbering Plan:'] = 'Plan numeracyjny:';
+$_LANG['Payment Type:'] = 'Typ płatności:';
 $_LANG['Select liability type'] = 'Wybierz typ zobowiązania';
 $_LANG['tariffless liability'] = 'zobowiązanie beztaryfowe';
 $_LANG['barter'] = 'barter';
@@ -2370,5 +2370,7 @@ $_LANG['cash'] = 'gotówka';
 $_LANG['compensation'] = 'kompensata';
 $_LANG['transfer'] = 'przelew';
 $_LANG['transfer/cash'] = 'przelew/gotówka';
+$_LANG['with settlement'] = 'z wyrównaniem';
+$_LANG['Liability\'s Options:'] = 'Opcje zobowiązania:';
 
 ?>

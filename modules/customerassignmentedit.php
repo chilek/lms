@@ -25,7 +25,7 @@
  */
 
 // get customer name and check privileges using customersview
-$customer = $DB->GetRow('SELECT a.customerid AS id, '
+$customer = $DB->GetRow('SELECT a.customerid AS id, c.divisionid, '
     .$DB->Concat('c.lastname',"' '",'c.name').' AS name
     FROM assignments a
     JOIN customersview c ON (c.id = a.customerid)
@@ -290,7 +290,8 @@ if(isset($_POST['assignment']))
 		}
 
 		$DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, period=?, at=?,
-		        invoice=?, settlement=?, datefrom=?, dateto=?, discount=?, liabilityid=?
+		        invoice=?, settlement=?, datefrom=?, dateto=?, discount=?, liabilityid=?,
+		        numberplanid=?, paytype=?
 		        WHERE id=?',
 			    array(intval($a['tariffid']),
 				    $customer['id'],
@@ -302,6 +303,8 @@ if(isset($_POST['assignment']))
 				    $to,
 				    $a['discount'],
 				    $a['liabilityid'],
+				    !empty($a['numberplanid']) ? $a['numberplanid'] : NULL,
+				    !empty($a['paytype']) ? $a['paytype'] : NULL,
 				    $a['id'],
 				));
 
@@ -323,14 +326,15 @@ if(isset($_POST['assignment']))
 }
 else
 {
-	$a = $DB->GetRow('SELECT assignments.id AS id, customerid, tariffid, period, at, datefrom, dateto, 
-				invoice, settlement, discount, liabilityid, 
+	$a = $DB->GetRow('SELECT a.id AS id, a.customerid, a.tariffid, a.period,
+	            a.at, a.datefrom, a.dateto, a.numberplanid, a.paytype,
+				a.invoice, a.settlement, a.discount, a.liabilityid, 
 				(CASE liabilityid WHEN 0 THEN tariffs.name ELSE liabilities.name END) AS name, 
 				liabilities.value AS value, liabilities.prodid AS prodid, liabilities.taxid AS taxid
-				FROM assignments
-				LEFT JOIN tariffs ON (tariffs.id = tariffid)
-				LEFT JOIN liabilities ON (liabilities.id = liabilityid)
-				WHERE assignments.id = ?',array($_GET['id']));
+				FROM assignments a
+				LEFT JOIN tariffs ON (tariffs.id = a.tariffid)
+				LEFT JOIN liabilities ON (liabilities.id = a.liabilityid)
+				WHERE a.id = ?', array($_GET['id']));
 
 	if($a['dateto']) 
 		$a['dateto'] = date('Y/m/d', $a['dateto']);
@@ -376,6 +380,7 @@ $SMARTY->assign('taxeslist', $LMS->GetTaxes());
 $SMARTY->assign('expired', $expired);
 $SMARTY->assign('assignment', $a);
 $SMARTY->assign('assignments', $LMS->GetCustomerAssignments($customer['id'], $expired));
+$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_INVOICE, NULL, $customer['divisionid'], false));
 $SMARTY->assign('customerinfo', $customer);
 $SMARTY->display('customerassignmentsedit.html');
 

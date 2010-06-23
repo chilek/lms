@@ -6504,6 +6504,8 @@ Rozdział 7. Dla dociekliwych
    discount - wartość procentowa rabatu
    suspended - zawieszenie płatności (1 - tak, 0 - nie)
    settlement - rozliczenie okresu niepełnego (1 - tak, 0 - nie)
+   paytype - identyfikator typu płatności faktury
+   numberplanid - identyfikator planu numeracyjnego
      __________________________________________________________________
 
 7.2.22. Powiązania komputer-taryfa ('nodeassignments')

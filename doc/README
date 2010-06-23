@@ -5590,6 +5590,8 @@ Chapter 7. For curious
    discount - discount percentage
    suspended - is this payment suspended? (1 - yes, 0 - no)
    settlement - do deficient period settlement? (1 - yes, 0 - no)
+   paytype - invoice payment type identifier
+   numberplanid - numbering plan identifier
      __________________________________________________________________
 
 7.2.21. Nodes-tariffs assignments ('nodeassignments')

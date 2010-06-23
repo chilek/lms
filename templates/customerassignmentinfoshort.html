@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!--// $Id$ //-->
+<html><head>
+<meta name="GENERATOR" content="LMS {$layout.lmsv}">
+<meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
+<meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
+<title>::: LMS :::</title>
+<link href="img/style.css" rel="stylesheet" type="text/css">
+<SCRIPT TYPE="text/javascript" SRC="img/autoiframe.js"></SCRIPT>
+<SCRIPT TYPE="text/javascript" SRC="img/common.js"></SCRIPT>
+</head>
+<body>
+<TABLE WIDTH="100%" CELLPADDING="3" id="table">
+	<TR class="DARK">
+		<TD width="1%">
+			<IMG SRC="img/money.gif" alt="">
+		</TD>
+		<TD width="99%" NOWRAP colspan="2">
+			<B>{t}Liability's Options:{/t}</B>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD><IMG src="img/id.gif" ALT=""></TD>
+		<TD width="1%" NOWRAP><B>{t}Numbering Plan:{/t}</B></TD>
+		<TD nowrap>{if $assignment.numberplan}{$assignment.numberplan}{else}{t}default{/t}{/if}</TD>
+	</TR>
+	<TR class="light">
+		<TD><IMG src="img/print.gif" ALT=""></TD>
+		<TD width="1%" NOWRAP><B>{t}Payment Type:{/t}</B></TD>
+		<TD nowrap>{if $assignment.paytypename}{$assignment.paytypename}{else}{t}default{/t}{/if}</TD>
+	</TR>
+	<TR class="light">
+		<TD><IMG src="img/options.gif" ALT=""></TD>
+		<TD width="1%" NOWRAP>{t}with invoice{/t}:</TD>
+		<TD>{if $assignment.invoice}{t}yes{/t}{else}{t}no{/t}{/if}</TD>
+	</TR>
+	<TR class="light">
+		<TD><IMG src="img/options.gif" ALT=""></TD>
+		<TD width="1%" NOWRAP>{t}with settlement{/t}:</TD>
+		<TD>{if $assignment.settlement}{t}yes{/t}{else}{t}no{/t}{/if}</TD>
+	</TR>
+</TABLE>
+<SCRIPT TYPE="text/javascript">
+<!--
+parent.document.getElementById('autoiframe').width = document.getElementById('table').offsetWidth;
+//-->
+</SCRIPT>
+</BODY>
+</HTML>

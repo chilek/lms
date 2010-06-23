@@ -386,6 +386,8 @@
                     <member>discount - warto¶æ procentowa rabatu</member>
                     <member>suspended - zawieszenie p³atno¶ci (1 - tak, 0 - nie)</member>
 		    <member>settlement - rozliczenie okresu niepe³nego (1 - tak, 0 - nie)</member>
+		    <member>paytype - identyfikator typu p³atno¶ci faktury</member>
+		    <member>numberplanid - identyfikator planu numeracyjnego</member>
                </simplelist>
           </sect2>
 	<sect2 id="nodeassignments">
