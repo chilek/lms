@@ -40,7 +40,7 @@
 			<IMG src="img/money.gif" alt="">
 		</TD>
 		<TD class="fbt" width="1%">
-			<B>{t}Type:{/t}</B>
+			<B>{t}Type{/t}/{t}Tariff{/t}:</B>
 		</TD>
 		<TD class="frightu" width="98%">
 		    <SELECT size="1" name="assignment[tariffid]" {tip text="Select liability type" trigger="tariffid"} onchange="set_tariff()">
@@ -94,7 +94,7 @@
 		<TD width="1%" nowrap>
 			<B>{t}Period:{/t}</B>
 		</TD>
-		<TD width="98%">
+		<TD width="98%" nowrap>
 			{t}from:{/t} <INPUT type="TEXT" name="assignment[datefrom]" value="{if $assignment.datefrom}{$assignment.datefrom}{/if}" OnClick="cal3.popup();" {tip text="Enter accounting start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="datefrom"} SIZE="10"> 
 			{t}to:{/t} <INPUT type="TEXT" name="assignment[dateto]" value="{if $assignment.dateto}{$assignment.dateto}{/if}" OnClick="cal4.popup();" {tip text="Enter accounting end date in YYYY/MM/DD format. Leave this field empty if you don't want to set expiration date" trigger="dateto"} SIZE="10">
 		</TD>
@@ -147,7 +147,6 @@
 			<INPUT type="text" name="assignment[prodid]" value="{$assignment.prodid}" size="10" {tip text="Enter liability Product ID (tariffless liabilities only)"}>
 		</TD>
 	</TR>
-{*
 	<TR id="a_numberplan">
 		<TD width="1%">
 			<IMG src="img/id.gif" alt="">
@@ -156,6 +155,13 @@
 			<B>{t}Numbering Plan:{/t}</B>
 		</TD>
 		<TD width="98%">
+		    <SELECT name="assignment[numberplanid]" {tip text="Select numbering plan"}>
+		        <OPTION value=""{if !$assignment.numberplanid} selected{/if}>- {t}default{/t} -</OPTION>
+		        {foreach item=plan from=$numberplanlist}
+		        {assign var=period value=$plan.period}
+		        <OPTION value="{$plan.id}"{if $plan.id==$assignment.numberplanid} SELECTED{/if}>{$plan.template} ({$_NUM_PERIODS.$period})</OPTION>
+		        {/foreach}
+            </SELECT>
 		</TD>
 	</TR>
 	<TR id="a_paytype">
@@ -166,9 +172,14 @@
 			<B>{t}Payment Type:{/t}</B>
 		</TD>
 		<TD width="98%">
+		    <SELECT name="assignment[paytype]" {tip text="Select payment type" trigger="paytype"}>
+		        <OPTION value=""{if !$assignment.paytype} selected{/if}>- {t}default{/t} -</OPTION>
+		        {foreach from=$_PAYTYPES item=item key=key}
+		        <OPTION value="{$key}"{if $assignment.paytype==$key} selected{/if}>{$item}</OPTION>
+		        {/foreach}
+		    </SELECT>
 		</TD>
 	</TR>
-*}
 	                    </TABLE>
                     </TD>
 	                <TD width="50%" style="vertical-align:top;">

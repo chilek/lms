@@ -2,15 +2,15 @@
 struct payments_module
 {
 	MODULE base;
-	
+
 	char *comment;
 	char *s_comment;
-	char *paytype;
 	char *deadline;
 	char *networks;
-	char *customergroups;	
+	char *customergroups;
 	char *excluded_networks;
-	char *excluded_customergroups;	
+	char *excluded_customergroups;
+	int paytype;
 	int numberplanid;
 	int up_payments;
 	int expiry_days;

@@ -43,10 +43,14 @@ CREATE TABLE assignments (
 	suspended smallint	DEFAULT 0 NOT NULL,
 	settlement smallint	DEFAULT 0 NOT NULL,
 	discount numeric(4,2)	DEFAULT 0 NOT NULL,
+	paytype smallint    DEFAULT NULL,
+	numberplanid int(11) DEFAULT NULL
+	    REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id)
 );
 CREATE INDEX assignments_tariffid_idx ON assignments (tariffid);
 CREATE INDEX assignments_customerid_idx ON assignments (customerid);
+CREATE INDEX assignments_numberplanid_idx ON assignments (numberplanid);
 
 /* -------------------------------------------------------- 
   Structure of table "cash" 
@@ -1462,4 +1466,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010061800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010062200');

@@ -21,7 +21,8 @@ version ? (????-??-??)
         Supported values are: cash, transfer, transfer/cash, card,
         compensation, barter, contract (and its Polish translations)
         or empty string.
-   ------------------------------------------------------------------
+    -----------------------------------------------------------------
+  - Per-assignment payment type and numbering plan (alec)
 
 version 1.11.10 Kri (2010-04-19)
 

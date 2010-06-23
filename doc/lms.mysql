@@ -43,9 +43,13 @@ CREATE TABLE assignments (
   suspended tinyint(1) NOT NULL DEFAULT '0',
   settlement tinyint(1) NOT NULL DEFAULT '0',
   discount decimal(4,2) NOT NULL DEFAULT '0',
+  paytype smallint DEFAULT NULL,
+  numberplanid int(11) DEFAULT NULL
+    REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
   PRIMARY KEY (id),
   INDEX tariffid (tariffid),
-  INDEX customerid (customerid)
+  INDEX customerid (customerid),
+  INDEX numberplanid (numberplanid)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1362,4 +1366,4 @@ CREATE TABLE supermasters (
 
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010061800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010062200');

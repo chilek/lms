@@ -21,11 +21,11 @@
 				<TR class="dark">
 					<TD WIDTH="92%" NOWRAP class="fleftu"><B>{t}Liability:{/t}</B></TD>
 					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">{t}Value:{/t}</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt">{t}Accounting day:{/t}</TD>
+					<TD WIDTH="1%" NOWRAP class="fbt"ALIGN="RIGHT">{t}Discount:{/t}</TD>
+					<TD WIDTH="1%" NOWRAP class="fbt">{t}Accounting:{/t}</TD>
 					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">{t}Downrate (ceil):{/t}</TD>
 					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">{t}Uprate (ceil):{/t}</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt">{t}Inv./Settl.:{/t}</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt">{t}Discount:{/t}</TD>
+					<TD WIDTH="1%" NOWRAP class="fbt">{t}Options:{/t}</TD>
 					<TD WIDTH="1%" NOWRAP class="fbt">{t}Period:{/t}</TD>
 					<TD WIDTH="1%" class="frightu">&nbsp;</TD>
 				</TR>
@@ -35,9 +35,9 @@
 				    {if ($a.dateto < $today && $a.dateto) || ($a.liabilityid && $a.at < $today && $a.at > 365)} blend{elseif ($a.datefrom > $today && $a.datefrom && $a.period) && !($a.suspended)} alertblend{elseif ($a.suspended)}suspended{/if}"
 				    onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')" >
 					{if !$a.tariffid && !$a.liabilityid}
-					<TD WIDTH="98%" COLSPAN="7" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'"><B>{t}Suspending of all liabilities{/t}</B></TD>
+					<TD COLSPAN="7" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'"><B>{t}Suspending of all liabilities{/t}</B></TD>
 					{else}
-					<TD WIDTH="92%" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
+					<TD OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
 						{if $a.tariffid}
 							<A HREF="?m=tariffinfo&id={$a.tariffid}"><B>{$a.name}</B></A>
 						{else}
@@ -45,18 +45,26 @@
 						{/if}
 						{if $a.nodes}({foreach from=$a.nodes item=item key=key}{$item.name}{if $key+1<sizeof($a.nodes)}, {/if}{/foreach}){/if}
 					</TD>
-					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">{$a.value|money_format}</TD>
-					<TD WIDTH="1%" NOWRAP OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">{$a.payday}</TD>
-					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">{$a.downrate|default:"-"}({$a.downceil|default:"-"}) kbit/s</TD>
-					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">{$a.uprate|default:"-"}({$a.upceil|default:"-"}) kbit/s</TD>
-					<TD WIDTH="1%" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">{if $a.invoice}{t}yes{/t}{else}{t}no{/t}{/if}/{if $a.settlement}{t}yes{/t}{else}{t}no{/t}{/if}</TD>
-					<TD WIDTH="1%" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">{if $a.discount!=0}{$a.discount}%{else}-{/if}</TD>
+					<TD NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
+					    {$a.value|money_format}
+					</TD>
+					<TD ALIGN="RIGHT" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
+					    {if $a.discount!=0}{$a.discount}%{else}-{/if}
+					</TD>
+					<TD NOWRAP OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">{$a.payday}</TD>
+					<TD NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
+					    {$a.downrate|default:"-"}({$a.downceil|default:"-"}) kbit/s
+					</TD>
+					<TD NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">{$a.uprate|default:"-"}({$a.upceil|default:"-"}) kbit/s</TD>
+					<TD NOWRAP ALIGN="RIGHT">
+					    <img src="img/options.gif" alt="" {tip 0=$a.id dynpopup='?m=customerassignmentinfo&id=$0'}>
+					</TD>
 					{/if}
-					<TD WIDTH="1%" NOWRAP OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
+					<TD NOWRAP OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
 						{if $a.datefrom}{t}from{/t} {$a.datefrom|date_format:"%Y/%m/%d"}{/if}
 						{if $a.dateto}{t}to{/t} {$a.dateto|date_format:"%Y/%m/%d"}{/if}
 					</TD>
-					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+					<TD ALIGN="RIGHT" NOWRAP>
 						{if ($a.tariffid || $a.liabilityid) && (($a.dateto > $today || !$a.dateto) || ($a.liabilityid && $a.at > $today))}
 						<A href="?m=customerassignmentedit&action=suspend&id={$a.id}&suspend={if $a.suspended}0{else}1{/if}" {tip text="Enable/disable accounting of selected liability"}><IMG SRC="img/wait.gif" alt="[ {if $a.suspended}{t}Restore{/t}{else}{t}Suspend{/t}{/if} ]"></A>
 						{/if}
@@ -77,9 +85,9 @@
 					<TD CLASS="ftop" ALIGN="RIGHT"><B>{t}Total:{/t}</B></TD>
 					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="real_value" string_format=$LANGDEFS.$_language.money_format}</TD>
 					<TD CLASS="ftop" NOWRAP ALIGN="LEFT">({sum array=$assignments column="real_disc_value" string_format=$LANGDEFS.$_language.money_format})</TD>
+					<TD CLASS="FTOP">&nbsp;</TD>
 					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="real_downrate" default="-"}({sum array=$assignments column="real_downceil" default="-"}) kbit/s</TD>
 					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="real_uprate" default="-"}({sum array=$assignments column="real_upceil" default="-"}) kbit/s</TD>
-					<TD CLASS="ftop">&nbsp;</TD>
 					<TD CLASS="ftop" COLSPAN="3">&nbsp;</TD>
 				</TR>
 			</TABLE>

@@ -291,7 +291,9 @@ if(! $suspension_percentage)
 my %periods;
 my %plans;
 my %numbers;
-my %gotinv;
+my %invoices;
+my %paytypes;
+my %numberplans;
 my $icdbq;
 my $icrow;
 my $cdbq;
@@ -301,54 +303,60 @@ my $tested = 0;
 my $itemid;
 
 # get IDs and periods of default invoices numbering plans
-$dbq = $dbase->prepare("SELECT n.id, n.period, COALESCE(a.divisionid, 0) AS divid
+$dbq = $dbase->prepare("SELECT n.id, n.period,
+        COALESCE(a.divisionid, 0) AS divid, isdefault
 	FROM numberplans n
 	LEFT JOIN numberplanassignments a ON (a.planid = n.id)
-	WHERE doctype = 1 AND isdefault = 1");
+	WHERE doctype = 1");
 $dbq->execute();
 while(my $row = $dbq->fetchrow_hashref())
 {
-	$periods{$row->{'divid'}} = $row->{'period'} || YEAR;
-	$plans{$row->{'divid'}} = $row->{'id'} || 0;
+    if ($row->{'isdefault'}) {
+	    $plans{$row->{'divid'}} = $row->{'id'};
+    }
+   	$periods{$row->{'id'}} = $row->{'period'} || YEAR;
 }
 
 # let's go, fetch *ALL* assignments in given day
-$dbq = $dbase->prepare("SELECT tariffid, liabilityid, customerid, period, at, suspended, 
-	invoice, t.description AS description, a.id AS assignmentid,
-	settlement, datefrom, discount, divisionid, c.paytype,
-	(CASE liabilityid WHEN 0 THEN t.name ELSE l.name END) AS name, 
-	(CASE liabilityid WHEN 0 THEN t.taxid ELSE l.taxid END) AS taxid, 
-	(CASE liabilityid WHEN 0 THEN t.prodid ELSE l.prodid END) AS prodid, 
-	(CASE liabilityid WHEN 0 
-		THEN (CASE suspended WHEN 0 
-			THEN ROUND(CASE discount WHEN 0 THEN t.value
-				ELSE ((100-discount)*t.value)/100 END, 2) 
-			ELSE ROUND(ROUND(CASE discount WHEN 0 THEN t.value
-				ELSE ((100-discount)*t.value)/100 END, 2) * $suspension_percentage/100, 2) 
+$dbq = $dbase->prepare("SELECT a.tariffid, a.liabilityid, a.customerid,
+    a.period, a.at, a.suspended, a.settlement, a.datefrom, a.discount,
+	a.invoice, t.description AS description, a.id AS assignmentid,
+	c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid,
+	d.inv_paytype AS d_paytype,
+	(CASE a.liabilityid WHEN 0 THEN t.name ELSE l.name END) AS name,
+	(CASE a.liabilityid WHEN 0 THEN t.taxid ELSE l.taxid END) AS taxid,
+	(CASE a.liabilityid WHEN 0 THEN t.prodid ELSE l.prodid END) AS prodid,
+	(CASE a.liabilityid WHEN 0 
+		THEN (CASE a.suspended WHEN 0 
+			THEN ROUND(CASE a.discount WHEN 0 THEN t.value
+				ELSE ((100-a.discount)*t.value)/100 END, 2)
+			ELSE ROUND(ROUND(CASE a.discount WHEN 0 THEN t.value
+				ELSE ((100-a.discount)*t.value)/100 END, 2) * $suspension_percentage/100, 2)
 			END)
 		ELSE
-		    (CASE suspended WHEN 0 
-			THEN ROUND(CASE discount WHEN 0 THEN l.value
-				ELSE ((100-discount)*l.value)/100 END, 2) 
-			ELSE ROUND(ROUND(CASE discount WHEN 0 THEN l.value
-				ELSE ((100-discount)*l.value)/100 END, 2) * $suspension_percentage/100, 2) 
+		    (CASE a.suspended WHEN 0
+			THEN ROUND(CASE a.discount WHEN 0 THEN l.value
+				ELSE ((100-a.discount)*l.value)/100 END, 2)
+			ELSE ROUND(ROUND(CASE a.discount WHEN 0 THEN l.value
+				ELSE ((100-a.discount)*l.value)/100 END, 2) * $suspension_percentage/100, 2)
 			END)
 		END) AS value
 	FROM assignments a
 	JOIN customers c ON (a.customerid = c.id)
 	LEFT JOIN tariffs t ON (a.tariffid = t.id)
 	LEFT JOIN liabilities l ON (a.liabilityid = l.id)
+	LEFT JOIN divisions d ON (d.id = c.divisionid)
 	WHERE c.status = 3
-		AND (period = ".DAY." 
-			OR (period = ".WEEK." AND at = $weekday) 
-			OR (period = ".MONTH." AND at = $dom) 
-			OR (period = ".QUARTER." AND at = $quarter) 
-			OR (period = ".HALFYEAR." AND at = $halfyear) 
-			OR (period = ".YEAR." AND at = $yearday) 
-			OR (period = ".DISPOSABLE." AND at = $today)) 
-		AND (datefrom <= $currtime OR datefrom = 0)
-		AND (dateto > $currtime OR dateto = 0)
-	ORDER BY a.customerid, a.invoice, value DESC");
+		AND (a.period = ".DAY." 
+			OR (a.period = ".WEEK." AND at = $weekday) 
+			OR (a.period = ".MONTH." AND at = $dom) 
+			OR (a.period = ".QUARTER." AND at = $quarter) 
+			OR (a.period = ".HALFYEAR." AND at = $halfyear) 
+			OR (a.period = ".YEAR." AND at = $yearday) 
+			OR (a.period = ".DISPOSABLE." AND at = $today)) 
+		AND (a.datefrom <= $currtime OR a.datefrom = 0)
+		AND (a.dateto > $currtime OR a.dateto = 0)
+	ORDER BY a.customerid, a.invoice, a.paytype, a.numberplanid, value DESC");
 $dbq->execute();
 
 while(my $assign = $dbq->fetchrow_hashref())
@@ -368,7 +376,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 			my $found = 0;
 	    		my $sdbq = $dbase->prepare("SELECT UPPER(name) AS name FROM customerassignments, customergroups WHERE customergroups.id = customergroupid AND customerid = $uid GROUP BY name");
 		        $sdbq->execute();
-			
+
 			while (my $srow = $sdbq->fetchrow_hashref())
 			{
 				foreach my $group (@customergroupslist)
@@ -430,24 +438,43 @@ while(my $assign = $dbq->fetchrow_hashref())
 	$desc =~ s/\%current_month/$current_month/g;
 	$desc =~ s/\%current_period/$current_period/g;
 	$desc =~ s/\%next_period/$next_period/g;
-	
+
 	if ($suspension_percentage && ($assign->{'suspended'} || $suspended == $uid))
 	{
 		$desc .= " ".$suspension_description;
 	}
 
-	$gotinv{$uid} = 0 if not defined $gotinv{$uid};
+	$invoices{$uid} = 0 if not defined $invoices{$uid};
+	$paytypes{$uid} = 0 if not defined $paytypes{$uid};
+	$numberplans{$uid} = 0 if not defined $numberplans{$uid};
+
 	if($assign->{'value'} != 0)
 	{
 		if($assign->{'invoice'})
 		{
-			if($gotinv{$uid} eq 0)
-			{
-				my $plan = $plans{$divid} || 0;
+		    my ($inv_paytype, $numberplan, $plan);
 
+		    if ($assign->{'a_paytype'}) {
+		        $inv_paytype = $assign->{'a_paytype'};
+		    } elsif ($assign->{'paytype'}) {
+		        $inv_paytype = $assign->{'paytype'};
+		    } elsif ($assign->{'d_paytype'}) {
+		        $inv_paytype = $assign->{'d_paytype'};
+		    } else {
+		        $inv_paytype = $paytype;
+            }
+
+		    if ($assign->{'numberplanid'}) {
+		        $plan = $assign->{'numberplanid'};
+		    } else {
+			    $plan = $plans{$divid} || 0;
+            }
+
+			if($invoices{$uid} eq 0 || $paytypes{$uid} != $inv_paytype || $numberplans{$uid} != $plan)
+			{
 				if(!$numbers{$plan})
 				{
-					my %period = get_period($periods{$divid});
+					my %period = get_period($periods{$plan});
 
 					my $dbqn = $dbase->prepare("SELECT MAX(number) AS number FROM documents
 						WHERE cdate >= ? AND cdate < ? AND type = 1 AND numberplanid = ?");
@@ -455,18 +482,16 @@ while(my $assign = $dbq->fetchrow_hashref())
 
 					$row = $dbqn->fetchrow_hashref();
 					$numbers{$plan} = $row->{'number'} || 0;
-					$plans{$divid} = $plan;
 					$dbqn->finish();
 				}
-				
+
 				$itemid = 0;
 				$numbers{$plan}++;
-				
+
 				my $udbq = $dbase->prepare("SELECT lastname, name, address, city, zip, ssn, ten, countryid, divisionid, paytime
 						FROM customers WHERE id = ?");
 				$udbq->execute($uid);
 				my $urow = $udbq->fetchrow_hashref();
-				my $inv_paytype = $assign->{'paytype'} || $paytype;
 				my $paytime = $urow->{'paytime'};
 				if($paytime eq -1) { $paytime = $deadline; }
 
@@ -481,15 +506,18 @@ while(my $assign = $dbq->fetchrow_hashref())
 						WHERE cdate = ? AND number = ? AND type = 1 AND customerid = ?");
 				$idbq->execute($currtime, $numbers{$plan}, $uid);
 				my $irow = $idbq->fetchrow_hashref();
-				$gotinv{$uid} = $irow->{'id'};
-				
+
+				$invoices{$uid} = $irow->{'id'};
+				$paytypes{$uid} = $inv_paytype;
+				$numberplans{$uid} = $plan;
+
 				$udbq->finish();
 				$idbq->finish();
 			}
 
 			$icdbq = $dbase->prepare("SELECT itemid FROM invoicecontents
 					WHERE tariffid=$assign->{'tariffid'} AND value=$assign->{'value'}
-					AND docid=$gotinv{$uid} AND description=? AND discount=$assign->{'discount'}");
+					AND docid=$invoices{$uid} AND description=? AND discount=$assign->{'discount'}");
 			$icdbq->execute($desc);
 
 			if($icrow = $icdbq->fetchrow_hashref())
@@ -497,12 +525,12 @@ while(my $assign = $dbq->fetchrow_hashref())
 				my $tmp_itemid = $icrow->{'itemid'};
 
 				$icdbq = $dbase->prepare("UPDATE invoicecontents SET count=count+1
-						WHERE tariffid=$assign->{'tariffid'} AND docid=$gotinv{$uid}
+						WHERE tariffid=$assign->{'tariffid'} AND docid=$invoices{$uid}
 						AND description=? AND discount=$assign->{'discount'}");
 				$icdbq->execute($desc);
 
 				$cdbq = $dbase->prepare("UPDATE cash SET value = value+($assign->{'value'}*-1)
-						WHERE docid = $gotinv{$uid} AND itemid = $tmp_itemid");
+						WHERE docid = $invoices{$uid} AND itemid = $tmp_itemid");
 				$cdbq->execute();
 			}
 			else
@@ -511,12 +539,12 @@ while(my $assign = $dbq->fetchrow_hashref())
 
 				$icdbq = $dbase->prepare("INSERT INTO invoicecontents (docid, value, taxid, prodid,
 						content, count, description, tariffid, itemid, discount)
-						VALUES ($gotinv{$uid}, $assign->{'value'}, $assign->{'taxid'}, '$assign->{'prodid'}',
+						VALUES ($invoices{$uid}, $assign->{'value'}, $assign->{'taxid'}, '$assign->{'prodid'}',
 						'szt.', 1, ?, $assign->{'tariffid'}, $itemid, $assign->{'discount'})");
 				$icdbq->execute($desc);
 
 				$cdbq = $dbase->prepare("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid)
-						VALUES ($currtime, $assign->{'value'} * -1, $assign->{'taxid'}, $uid, ?, $gotinv{$uid}, $itemid)");
+						VALUES ($currtime, $assign->{'value'} * -1, $assign->{'taxid'}, $uid, ?, $invoices{$uid}, $itemid)");
 				$cdbq->execute($desc);
 			}
 
@@ -535,14 +563,14 @@ while(my $assign = $dbq->fetchrow_hashref())
 		{
 			$dbase->do("DELETE FROM liabilities WHERE id = $assign->{'liabilityid'}");
 		}
-		
+
 		# settlements accounting
 		if ($assign->{'settlement'} && $assign->{'datefrom'})
 		{
 			my $alldays = 1;
 			my $diffdays = sprintf("%d", ($today - $assign->{'datefrom'})/86400);
 			my $period = strftime("%Y/%m/%d", 0, 0, 0, $dom - $diffdays, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 0, $dom - 1, $month - 1, $year - 1900);
-			
+
 			for ($assign->{'period'})
 	                {
 			        # there are no disposable or daily liabilities with settlement
@@ -562,47 +590,47 @@ while(my $assign = $dbq->fetchrow_hashref())
 					$alldays = 365;	last;
 				};
 			}
-			
+
 			my $value = sprintf("%.2f", $diffdays * $assign->{'value'}/$alldays);
 
 			#print "value: ".$assign->{'value'}." diffdays: $diffdays alldays: $alldays settl_value: $value\n";
-			
+
 			my $sdesc = $s_comment;
 			$sdesc =~ s/\%tariff/$assign->{'name'}/g;
 			$sdesc =~ s/\%desc/$assign->{'description'}/g;
 			$sdesc =~ s/\%period/$period/g;
 			$sdesc =~ s/\%current_month/$current_month/g;
-	
+
 	    		if($assign->{'invoice'})
 		    	{
 				$icdbq = $dbase->prepare("SELECT itemid FROM invoicecontents
-						WHERE tariffid=$assign->{'tariffid'} AND value=$value AND docid=$gotinv{$uid} AND description=?");
-				$icdbq->execute($sdesc);
-			
+						WHERE tariffid=? AND value=? AND docid=? AND description=?");
+				$icdbq->execute($assign->{'tariffid'}, $value, $invoices{$uid}, $sdesc);
+
 				if($icrow = $icdbq->fetchrow_hashref())
 				{
 					my $tmp_itemid = $icrow->{'itemid'};
-					
+
 					$icdbq = $dbase->prepare("UPDATE invoicecontents SET count=count+1
-							WHERE tariffid=$assign->{'tariffid'} AND docid=$gotinv{$uid} AND description=?");
-					$icdbq->execute($sdesc);
+							WHERE tariffid=? AND docid=? AND description=?");
+					$icdbq->execute($assign->{'tariffid'}, $invoices{$uid}, $sdesc);
 
 					$cdbq = $dbase->prepare("UPDATE cash SET value = value+($value*-1)
-							WHERE docid = $gotinv{$uid} AND itemid = $tmp_itemid");
-					$cdbq->execute();
+							WHERE docid = ? AND itemid = ?");
+					$cdbq->execute($invoices{$uid}, $tmp_itemid);
 				}
 				else
 				{
 					$itemid++;
-	
+
 					$icdbq = $dbase->prepare("INSERT INTO invoicecontents (docid, value, taxid, prodid,
 							content, count, description, tariffid, itemid, discount)
-							VALUES ($gotinv{$uid}, $value, $assign->{'taxid'}, '$assign->{'prodid'}',
+							VALUES ($invoices{$uid}, $value, $assign->{'taxid'}, '$assign->{'prodid'}',
 							'szt.', 1, ?, $assign->{'tariffid'}, $itemid, $assign->{'discount'})");
 					$icdbq->execute($sdesc);
-				
+
 					$cdbq = $dbase->prepare("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid)
-							VALUES ($currtime, $value * -1, $assign->{'taxid'}, $uid, ?, $gotinv{$uid}, $itemid)");
+							VALUES ($currtime, $value * -1, $assign->{'taxid'}, $uid, ?, $invoices{$uid}, $itemid)");
 					$cdbq->execute($sdesc);
 				}
 				$icdbq->finish();
@@ -622,7 +650,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 		}
 		$cdbq->finish();
 	}
-}	
+}
 $dbq->finish();
 
 # solid payments

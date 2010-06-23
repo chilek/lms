@@ -362,7 +362,7 @@
                   <simplelist>
                     <member>id - serial number</member>
                     <member>tariffid - subscription serial number</member>
-		    <member>liabilityid - liability serial number</member>
+		            <member>liabilityid - liability serial number</member>
                     <member>customerid - customer serial number</member>
                     <member>period - interval of operation: daily/weekly/monthly/quarterly/annually (1/2/3/4/5)</member>
                     <member>at - pay day</member>
@@ -371,7 +371,9 @@
                     <member>invoice - invoice writeout? (1 - yes, 0 - no)</member>
                     <member>discount - discount percentage</member>
                     <member>suspended - is this payment suspended? (1 - yes, 0 - no)</member>
-		    <member>settlement - do deficient period settlement? (1 - yes, 0 - no)</member>
+		            <member>settlement - do deficient period settlement? (1 - yes, 0 - no)</member>
+		            <member>paytype - invoice payment type identifier</member>
+		            <member>numberplanid - numbering plan identifier</member>
                </simplelist>
           </sect2>
           <sect2 id="nodeassignments">

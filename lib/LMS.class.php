@@ -1747,42 +1747,44 @@ class LMS
 		$this->DB->CommitTrans();
 	}
 
-	function AddAssignment($assignmentdata)
+	function AddAssignment($data)
 	{
-		if(isset($assignmentdata['value']) && $assignmentdata['value']!=0)
+		if(!empty($data['value']))
 		{
 			$this->DB->Execute('INSERT INTO liabilities (name, value, taxid, prodid) 
 					    VALUES (?, ?, ?, ?)', 
-					    array($assignmentdata['name'],
-						    $assignmentdata['value'],
-						    intval($assignmentdata['taxid']),
-						    $assignmentdata['prodid']
+					    array($data['name'],
+						    str_replace(',', '.', $data['value']),
+						    intval($data['taxid']),
+						    $data['prodid']
 					    ));
 			$lid = $this->DB->GetLastInsertID('liabilities');
 		}
-		
+
 		$this->DB->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice, 
-					    settlement, datefrom, dateto, discount, liabilityid) 
-					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
-					    array($assignmentdata['tariffid'], 
-						    $assignmentdata['customerid'], 
-						    $assignmentdata['period'], 
-						    $assignmentdata['at'], 
-						    $assignmentdata['invoice'], 
-						    $assignmentdata['settlement'], 
-						    $assignmentdata['datefrom'], 
-						    $assignmentdata['dateto'], 
-						    $assignmentdata['discount'],
+					    settlement, numberplanid, paytype, datefrom, dateto, discount, liabilityid) 
+					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+					    array(intval($data['tariffid']),
+						    $data['customerid'],
+						    $data['period'],
+						    $data['at'],
+						    !empty($data['invoice']) ? 1 : 0,
+						    !empty($data['settlement']) ? 1 : 0,
+						    !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
+						    !empty($data['paytype']) ? $data['paytype'] : NULL,
+						    $data['datefrom'],
+						    $data['dateto'],
+						    $data['discount'],
 						    isset($lid) ? $lid : 0,
 						    ));
 
 		$result = $this->DB->GetLastInsertID('assignments');
 
-		if(sizeof($assignmentdata['nodes']))
-			foreach($assignmentdata['nodes'] as $node)
+		if(!empty($data['nodes']))
+			foreach((array)$data['nodes'] as $node)
 				$this->DB->Execute('INSERT INTO nodeassignments (nodeid, assignmentid) VALUES (?,?)',
 					array($node, $result));
-		
+
 		return $result;
 	}
 
@@ -4054,25 +4056,27 @@ class LMS
 				return $list;
 		}
 	}
-	
-	function GetNumberPlans($doctype=NULL, $cdate=NULL)
+
+	function GetNumberPlans($doctype=NULL, $cdate=NULL, $division=NULL, $next=true)
 	{
 		if(is_array($doctype))
-			$list = $this->DB->GetAllByKey('
-				SELECT id, template, isdefault, period, doctype 
-				FROM numberplans WHERE doctype IN ('.implode(',',$doctype).') 
+			$where[] = 'doctype IN ('.implode(',',$doctype).')';
+		else if($doctype)
+			$where[] = 'doctype = '.intval($doctype);
+
+        if ($division)
+            $where[] = 'id IN (SELECT planid FROM numberplanassignments
+                WHERE divisionid = '.intval($division).')';
+
+        if (!empty($where))
+            $where = ' WHERE '. implode(' AND ', $where);
+
+	    $list = $this->DB->GetAllByKey('
+				SELECT id, template, isdefault, period, doctype
+				FROM numberplans'.$where.'
 				ORDER BY id', 'id');
-		elseif($doctype)
-			$list = $this->DB->GetAllByKey('
-				SELECT id, template, isdefault, period, doctype 
-				FROM numberplans WHERE doctype = ? ORDER BY id', 
-				'id', array($doctype));
-		else
-			$list = $this->DB->GetAllByKey('
-				SELECT id, template, isdefault, period, doctype 
-				FROM numberplans ORDER BY id', 'id');
-		
-		if($list)
+
+		if($list && $next)
 		{
 			if($cdate)
 				list($curryear, $currmonth) = explode('/', $cdate);
@@ -4088,7 +4092,7 @@ class LMS
 				case 7: case 8: case 9: $startq = 7; $starthy = 7; break;
 				case 10: case 11: case 12: $startq = 10; $starthy = 7; break;
 			}
-	
+
 			$yearstart = mktime(0,0,0,1,1,$curryear);
 			$yearend = mktime(0,0,0,1,1,$curryear+1);
 			$halfyearstart = mktime(0,0,0,$starthy,1);

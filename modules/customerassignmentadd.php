@@ -25,7 +25,7 @@
  */
 
 // get customer name and check privileges using customersview
-$customer = $DB->GetRow('SELECT id, '
+$customer = $DB->GetRow('SELECT id, divisionid, '
     .$DB->Concat('lastname',"' '",'name').' AS name
     FROM customersview WHERE id = ?', array($_GET['id']));
 
@@ -249,22 +249,13 @@ if(isset($_POST['assignment']))
         if ($a['tariffid'])
 		    $a['value'] = 0;
 
-		$LMS->AddAssignment(array(
-		    'tariffid' => intval($a['tariffid']),
-			'customerid' => $customer['id'],
-			'period' => $period,
-			'at' => $at,
-			'invoice' => isset($a['invoice']) ? 1 : 0,
-			'settlement' => isset($a['settlement']) ? 1 : 0,
-			'datefrom' => $from,
-			'dateto' => $to,
-			'discount' => $a['discount'],
-			'value' => str_replace(',','.',$a['value']),
-			'name' => $a['name'],
-			'taxid' => $a['taxid'],
-			'prodid' => $a['prodid'],
-			'nodes' => $a['nodes'],
-		));
+        $a['customerid'] = $customer['id'];
+        $a['period']     = $period;
+        $a['at']         = $at;
+		$a['datefrom']   = $from;
+		$a['dateto']     = $to;
+
+		$LMS->AddAssignment($a);
 
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}
@@ -287,6 +278,7 @@ $SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->assign('taxeslist', $LMS->GetTaxes());
 $SMARTY->assign('expired', $expired);
 $SMARTY->assign('assignments', $LMS->GetCustomerAssignments($customer['id'], $expired));
+$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_INVOICE, NULL, $customer['divisionid'], false));
 $SMARTY->assign('customerinfo', $customer);
 
 $SMARTY->display('customerassignmentsedit.html');
