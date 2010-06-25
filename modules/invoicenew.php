@@ -226,23 +226,7 @@ switch($action)
 
 		if($contents && $customer)
 		{
-			$DB->BeginTrans();
-			$DB->LockTables(array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions'));
-
-			if(!$invoice['number'])
-				$invoice['number'] = $LMS->GetNewDocumentNumber(DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']);
-			else
-			{
-				if(!preg_match('/^[0-9]+$/', $invoice['number']))
-					$error['number'] = trans('Invoice number must be integer!');
-				elseif($LMS->DocumentExists($invoice['number'], DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']))
-					$error['number'] = trans('Invoice number $0 already exists!', $invoice['number']);
-
-				if($error) {
-					$invoice['number'] = $LMS->GetNewDocumentNumber(DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']);
-					$error = null;
-			    }
-			}
+            unset($error);
 
 			// set paytime
 			if(!empty($invoice['paytime_default']))
@@ -263,14 +247,32 @@ switch($action)
 				elseif($paytype = $DB->GetOne('SELECT inv_paytype FROM divisions 
 					WHERE id = ?', array($customer['divisionid'])))
 					$invoice['paytype'] = $paytype;
-				else if ($CONFIG['invoices']['paytype'])
-					$invoice['paytype'] = $CONFIG['invoices']['paytype'];
+				else if (($paytype = intval($CONFIG['invoices']['paytype'])) && isset($PAYTYPES[$paytype]))
+					$invoice['paytype'] = $paytype;
 			    else
 			        $error['paytype'] = trans('Default payment type not defined!');
 			}
 
             if ($error)
                 break;
+
+			$DB->BeginTrans();
+			$DB->LockTables(array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions'));
+
+			if(!$invoice['number'])
+				$invoice['number'] = $LMS->GetNewDocumentNumber(DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']);
+			else
+			{
+				if(!preg_match('/^[0-9]+$/', $invoice['number']))
+					$error['number'] = trans('Invoice number must be integer!');
+				elseif($LMS->DocumentExists($invoice['number'], DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']))
+					$error['number'] = trans('Invoice number $0 already exists!', $invoice['number']);
+
+				if($error) {
+					$invoice['number'] = $LMS->GetNewDocumentNumber(DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']);
+					$error = null;
+			    }
+			}
 
 			$invoice['type'] = DOC_INVOICE;
 			$iid = $LMS->AddInvoice(array('customer' => $customer, 'contents' => $contents, 'invoice' => $invoice));
@@ -303,6 +305,7 @@ $SESSION->save('invoice', $invoice);
 $SESSION->save('invoicecontents', isset($contents) ? $contents : NULL);
 $SESSION->save('invoicecustomer', isset($customer) ? $customer : NULL);
 $SESSION->save('invoicenewerror', isset($error) ? $error : NULL);
+
 
 if($action)
 {
