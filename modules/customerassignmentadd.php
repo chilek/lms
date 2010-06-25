@@ -260,8 +260,14 @@ if(isset($_POST['assignment']))
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}
 
-	$SMARTY->assign('assignment', $a);
     $SMARTY->assign('error', $error);
+}
+else
+{
+    if (!empty($CONFIG['phpui']['default_assignment_invoice']))
+        $a['invoice'] = true;
+    if (!empty($CONFIG['phpui']['default_assignment_settlement']))
+        $a['settlement'] = true;
 }
 
 $expired = isset($_GET['expired']) ? $_GET['expired'] : false;
@@ -273,6 +279,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $customernodes = $LMS->GetCustomerNodes($customer['id']);
 unset($customernodes['total']);
 
+$SMARTY->assign('assignment', $a);
 $SMARTY->assign('customernodes', $customernodes);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->assign('taxeslist', $LMS->GetTaxes());
