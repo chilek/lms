@@ -268,6 +268,8 @@ else
         $a['invoice'] = true;
     if (!empty($CONFIG['phpui']['default_assignment_settlement']))
         $a['settlement'] = true;
+    if (!empty($CONFIG['phpui']['default_assignment_period']))
+        $a['period'] = $CONFIG['phpui']['default_assignment_period'];
 }
 
 $expired = isset($_GET['expired']) ? $_GET['expired'] : false;
