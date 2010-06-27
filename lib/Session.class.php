@@ -97,7 +97,7 @@ class Session {
 		if(isset($this->_content[$variable]))
 			$content = $this->_content[$variable];
 		else
-			return NULL;
+			$content = NULL;
 	}
 
 	function get($variable)
