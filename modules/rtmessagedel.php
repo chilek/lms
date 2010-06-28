@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$msg = intval($_GET['id']); 
+$msg = intval($_GET['id']);
 $ticket = $DB->GetOne('SELECT ticketid FROM rtmessages WHERE id = ?', array($msg));
 $rights = $LMS->GetUserRightsRT($AUTH->id, 0, $ticket);
 
@@ -37,18 +37,10 @@ if(($rights & 4) != 4)
 
 if($DB->GetOne('SELECT MIN(id) FROM rtmessages WHERE ticketid = ?', array($ticket)) != $msg)
 {
-	if(isset($CONFIG['rt']['mail_dir']))
-	{
-		if($attachments = $DB->GetCol('SELECT filename FROM rtattachments WHERE messageid = ?', array($msg)))
-			foreach($attachments as $file)
-			{
-				@unlink($CONFIG['rt']['mail_dir'].sprintf('/%06d/%06d/%s',$ticket, $msg, $file));
-			}
-	
-		@rmdir($CONFIG['rt']['mail_dir'].sprintf('/%06d/%06d', $ticket, $msg));
+	if(isset($CONFIG['rt']['mail_dir'])) {
+		rrmdir($CONFIG['rt']['mail_dir'].sprintf('/%06d/%06d', $ticket, $msg));
 	}
 
-	$DB->Execute('DELETE FROM rtattachments WHERE messageid = ?', array($msg));
 	$DB->Execute('DELETE FROM rtmessages WHERE id = ?', array($msg));
 }
 

@@ -128,8 +128,8 @@ if(isset($_POST['ticket']))
 			}
 
 			$mailfrom = $user['email'] ? $user['email'] : $queue['email'];
-				
-		        $headers['From'] = $mailfname.' <'.$mailfrom.'>';
+
+	        $headers['From'] = $mailfname.' <'.$mailfrom.'>';
 			$headers['Subject'] = sprintf("[RT#%06d] %s", $ticket['ticketid'], $ticket['subject']);
 			$headers['Reply-To'] = $headers['From'];
 
@@ -140,12 +140,12 @@ if(isset($_POST['ticket']))
 				.'?m=rtticketview&id='.$ticket['ticketid'];
 
 			if(chkconfig($CONFIG['phpui']['helpdesk_customerinfo']) && $ticketedit['customerid'])
-			{	
+			{
 				$info = $DB->GetRow('SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
 						email, address, zip, city, (SELECT phone FROM customercontacts 
 							WHERE customerid = customers.id ORDER BY id LIMIT 1) AS phone
 						FROM customers WHERE id = ?', array($ticketedit['customerid']));
-				
+
 				$body .= "\n\n-- \n";
 				$body .= trans('Customer:').' '.$info['customername']."\n";
 				$body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
@@ -165,8 +165,8 @@ if(isset($_POST['ticket']))
 
 				foreach($recipients as $email)
 				{
-					if(in_array($email, (array)$oldrecipients)) continue;					
-				
+					if(in_array($email, (array)$oldrecipients)) continue;
+
 					if(!empty($CONFIG['mail']['debug_email']))
 						$recip = $CONFIG['mail']['debug_email'];
 					else

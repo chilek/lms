@@ -50,15 +50,15 @@ if(isset($_POST['queue']))
 	{
                 $DB->Execute('INSERT INTO rtqueues (name, email, description) VALUES (?, ?, ?)',
 		                array($queue['name'], $queue['email'], $queue['description']));
-				
-		$id = $DB->GetOne('SELECT id FROM rtqueues WHERE name=?', array($queue['name']));
-			
+
+		$id = $DB->GetLastInsertId('rtqueues');
+
 		if($queue['rights'] && $id)
 			foreach($queue['rights'] as $right)
 			        if($right['rights'])
 					$DB->Execute('INSERT INTO rtrights(queueid, userid, rights) VALUES(?, ?, ?)', 
 						array($id, $right['id'], $right['rights']));
-		
+
 		$SESSION->redirect('?m=rtqueueinfo&id='.$id);
 	}
 }

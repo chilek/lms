@@ -35,29 +35,10 @@ if(($right & 4) != 4)
 	die;
 }
 
-if($messages = $DB->GetCol('SELECT id FROM rtmessages WHERE ticketid = ?', array($ticket)))
-	foreach($messages as $msg)
-	{
-		if(isset($CONFIG['rt']['mail_dir']))
-		{
-			if($attachments = $DB->GetCol('SELECT filename FROM rtattachments WHERE messageid = ?', array($msg)))
-				foreach($attachments as $file)
-				{
-					@unlink($CONFIG['rt']['mail_dir'].sprintf('/%06d/%06d/%s',$ticket, $msg, $file));
-				}
-			
-			@rmdir($CONFIG['rt']['mail_dir'].sprintf('/%06d/%06d',$ticket, $msg));
-		}
-		
-		$DB->Execute('DELETE FROM rtattachments WHERE messageid = ?', array($msg));
-	}
-
-$DB->Execute('DELETE FROM rtmessages WHERE ticketid = ?', array($ticket));
-$DB->Execute('DELETE FROM rtnotes WHERE ticketid = ?', array($ticket));
 $DB->Execute('DELETE FROM rttickets WHERE id = ?', array($ticket));
 
-if(isset($CONFIG['rt']['mail_dir']))
-	@rmdir($CONFIG['rt']['mail_dir'].sprintf('/%06d', $ticket));
+if (isset($CONFIG['rt']['mail_dir']))
+	rrmdir($CONFIG['rt']['mail_dir'].sprintf('/%06d', $ticket));
 
 header('Location: ?m=rtqueueview&id='.$queue);
 

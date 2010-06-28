@@ -544,20 +544,20 @@ SELECT
 	||'.'||
 	($1 - $1/256*256)::text;
 $$ LANGUAGE SQL IMMUTABLE;
-				   
+
 CREATE OR REPLACE FUNCTION inet_aton(text) RETURNS bigint AS $$
 SELECT
 	split_part($1,'.',1)::int8*(256*256*256)+
 	split_part($1,'.',2)::int8*(256*256)+
 	split_part($1,'.',3)::int8*256+
 	split_part($1,'.',4)::int8;
-$$ LANGUAGE SQL IMMUTABLE;			       
+$$ LANGUAGE SQL IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION mask2prefix(bigint) RETURNS smallint AS $$
 SELECT
 	length(replace(ltrim(textin(bit_out($1::bit(32))), '0'), '0', ''))::smallint;
 $$ LANGUAGE SQL IMMUTABLE;
-    
+
 CREATE OR REPLACE FUNCTION broadcast(bigint, bigint) RETURNS bigint AS $$
 SELECT
 	($1::bit(32) |  ~($2::bit(32)))::bigint;
@@ -566,12 +566,15 @@ $$ LANGUAGE SQL IMMUTABLE;
 /* --------------------------------------------------
  Tables for RT (Helpdesk)
 -----------------------------------------------------*/
-DROP TABLE rtattachments;  
+DROP TABLE rtattachments;
 CREATE TABLE rtattachments (
-	messageid integer 	DEFAULT 0 NOT NULL, 
-	filename varchar(255) 	DEFAULT '' NOT NULL, 
+	messageid integer 	    NOT NULL
+	    REFERENCES rtmessages (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	filename varchar(255) 	DEFAULT '' NOT NULL,
 	contenttype varchar(255) DEFAULT '' NOT NULL
 );
+
+CREATE INDEX rtattachments_message_idx ON rtattachments (messageid);
 
 DROP SEQUENCE rtqueues_id_seq;
 CREATE SEQUENCE rtqueues_id_seq;
@@ -589,8 +592,9 @@ DROP SEQUENCE rttickets_id_seq;
 CREATE SEQUENCE rttickets_id_seq;
 DROP TABLE rttickets;
 CREATE TABLE rttickets (
-  id integer default nextval('rttickets_id_seq'::text) NOT NULL,  
-  queueid integer 	DEFAULT 0 NOT NULL,
+  id integer default nextval('rttickets_id_seq'::text) NOT NULL,
+  queueid integer 	NOT NULL
+    REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE,
   requestor varchar(255) DEFAULT '' NOT NULL,
   subject varchar(255) 	DEFAULT '' NOT NULL,
   state smallint 	DEFAULT 0 NOT NULL,
@@ -613,7 +617,8 @@ CREATE SEQUENCE rtmessages_id_seq;
 DROP TABLE rtmessages;
 CREATE TABLE rtmessages (
   id integer default nextval('rtmessages_id_seq'::text) NOT NULL,
-  ticketid integer 	DEFAULT 0 NOT NULL,
+  ticketid integer 	NOT NULL
+    REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE,
   userid integer 	DEFAULT 0 NOT NULL,
   customerid integer 	DEFAULT 0 NOT NULL,
   mailfrom varchar(255) DEFAULT '' NOT NULL,
@@ -634,22 +639,27 @@ CREATE SEQUENCE rtnotes_id_seq;
 DROP TABLE rtnotes;
 CREATE TABLE rtnotes (
 	id integer default nextval('rtnotes_id_seq'::text) NOT NULL,
-	ticketid integer      DEFAULT 0 NOT NULL,
-        userid integer        DEFAULT 0 NOT NULL,
+	ticketid integer      NOT NULL
+	    REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    userid integer        NOT NULL
+        REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	body text             DEFAULT '' NOT NULL,
 	createtime integer    DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
-			  
+
 CREATE INDEX rtnotes_ticketid_idx ON rtnotes (ticketid);
+CREATE INDEX rtnotes_userid_idx ON rtnotes (userid);
 
 DROP SEQUENCE rtrights_id_seq;
 CREATE SEQUENCE rtrights_id_seq;
 DROP TABLE rtrights;
 CREATE TABLE rtrights (
     id integer DEFAULT nextval('rtrights_id_seq'::text) NOT NULL, 
-    userid integer DEFAULT 0 NOT NULL,
-    queueid integer DEFAULT 0 NOT NULL,
+    userid integer NOT NULL
+        REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    queueid integer NOT NULL
+        REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE,
     rights integer DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
     UNIQUE (userid, queueid)
@@ -1466,4 +1476,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010062200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010062800');

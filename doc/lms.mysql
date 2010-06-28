@@ -418,9 +418,11 @@ CREATE TABLE payments (
 #
 DROP TABLE IF EXISTS rtattachments;
 CREATE TABLE rtattachments (
-  messageid int(11) NOT NULL DEFAULT '0',
+  messageid int(11)     NOT NULL
+    REFERENCES rtmessages (id) ON DELETE CASCADE ON UPDATE CASCADE,
   filename varchar(255) NOT NULL DEFAULT '',
-  contenttype varchar(255) NOT NULL DEFAULT ''
+  contenttype varchar(255) NOT NULL DEFAULT '',
+  INDEX messageid (messageid)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -430,7 +432,8 @@ CREATE TABLE rtattachments (
 DROP TABLE IF EXISTS rtmessages;
 CREATE TABLE rtmessages (
   id int(11) NOT NULL auto_increment,
-  ticketid int(11) NOT NULL DEFAULT '0',
+  ticketid int(11) NOT NULL
+    REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE,
   userid int(11) NOT NULL DEFAULT '0',
   customerid int(11) NOT NULL DEFAULT '0',
   mailfrom varchar(255) NOT NULL DEFAULT '',
@@ -452,12 +455,15 @@ CREATE TABLE rtmessages (
 DROP TABLE IF EXISTS rtnotes;
 CREATE TABLE rtnotes (
 	id int(11) 	     NOT NULL auto_increment,
-	ticketid int(11)     NOT NULL DEFAULT '0',
-        userid int(11)       NOT NULL DEFAULT '0',
+	ticketid int(11)     NOT NULL
+	    REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    userid int(11)       NOT NULL
+        REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	body text            NOT NULL DEFAULT '',
 	createtime int(11)   NOT NULL DEFAULT '0',
 	PRIMARY KEY (id),
-	INDEX ticketid (ticketid)
+	INDEX ticketid (ticketid),
+	INDEX userid (userid)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -481,7 +487,8 @@ CREATE TABLE rtqueues (
 DROP TABLE IF EXISTS rttickets;
 CREATE TABLE rttickets (
   id int(11) NOT NULL auto_increment,
-  queueid int(11) NOT NULL DEFAULT '0',
+  queueid int(11) NOT NULL
+    REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE,
   requestor varchar(255) NOT NULL DEFAULT '',
   subject varchar(255) NOT NULL DEFAULT '',
   state tinyint(4) NOT NULL DEFAULT '0',
@@ -505,8 +512,10 @@ CREATE TABLE rttickets (
 DROP TABLE IF EXISTS rtrights;
 CREATE TABLE rtrights (
     id INT(11) NOT NULL auto_increment, 
-    userid INT(11) DEFAULT 0 NOT NULL,
-    queueid INT(11) DEFAULT 0 NOT NULL,
+    userid INT(11) NOT NULL
+        REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    queueid INT(11) NOT NULL
+        REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE,
     rights INT(11) DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY (userid, queueid)
@@ -1366,4 +1375,4 @@ CREATE TABLE supermasters (
 
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010062200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010062800');
