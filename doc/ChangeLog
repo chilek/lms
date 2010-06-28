@@ -23,6 +23,7 @@ version ? (????-??-??)
         or empty string.
     -----------------------------------------------------------------
   - Per-assignment payment type and numbering plan (alec)
+  - fixed removal of helpdesk attachments + added foreign keys (alec)
 
 version 1.11.10 Kri (2010-04-19)
 

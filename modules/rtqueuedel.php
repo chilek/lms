@@ -42,19 +42,19 @@ else
 	else
 	{
 		$queue = intval($_GET['id']);
-		
-                $DB->Execute('DELETE FROM rtqueues WHERE id=?', array($queue));
-		
-		$DB->Execute('DELETE FROM rtrights WHERE queueid=?', array($queue));
-		
-		if($tickets = $DB->GetCol('SELECT id FROM rttickets WHERE queueid=?', array($queue)))
-		{
-		        foreach($tickets as $id)
-		                $DB->Execute('DELETE FROM rtmessages WHERE ticketid=?', array($id));
-		        
-			$DB->Execute('DELETE FROM rttickets WHERE queueid=?', array($queue));
-		}
-		
+
+        if (isset($CONFIG['rt']['mail_dir'])) {
+            // remove attachment files
+            if ($tickets = $DB->GetCol('SELECT id FROM rttickets WHERE queueid = ?', array($queue)))
+            {
+                foreach ($tickets as $ticket) {
+                    rrmdir($CONFIG['rt']['mail_dir'].sprintf('/%06d', $ticket));
+                }
+            }
+        }
+
+        $DB->Execute('DELETE FROM rtqueues WHERE id=?', array($queue));
+
 		$SESSION->redirect('?m=rtqueuelist');
 	}
 }

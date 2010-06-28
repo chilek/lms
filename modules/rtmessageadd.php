@@ -51,7 +51,7 @@ function MessageAdd($msg, $headers, $file=NULL)
 
 	if(isset($file['name']) && isset($CONFIG['rt']['mail_dir']))
 	{
-		$id = $DB->GetOne('SELECT id FROM rtmessages WHERE ticketid=? AND userid=? AND customerid=? AND createtime=?', array($msg['ticketid'], $msg['userid'], $msg['customerid'], $time));
+		$id = $DB->GetLastInsertId('rtmessages');
 		$dir = $CONFIG['rt']['mail_dir'].sprintf('/%06d/%06d',$msg['ticketid'],$id);
 		@mkdir($CONFIG['rt']['mail_dir'].sprintf('/%06d',$msg['ticketid']), 0700);
 		@mkdir($dir, 0700);
@@ -94,13 +94,13 @@ if(isset($_POST['message']))
 		else // upload errors
 			switch($_FILES['file']['error'])
 			{
-				case 1: 			
+				case 1:
 				case 2: $error['file'] = trans('File is too large.'); break;
 				case 3: $error['file'] = trans('File upload has finished prematurely.'); break;
 				case 4: $error['file'] = trans('Path to file was not specified.'); break;
 				default: $error['file'] = trans('Problem during file upload.'); break;
 			}
-	}	
+	}
 
 	if(!$error)
 	{
@@ -179,7 +179,7 @@ if(isset($_POST['message']))
 				$message['headers'] = '';
 			    	$message['replyto'] = '';
 			}
-				
+
 			MessageAdd($message, $headers, $_FILES['file']);
 		}
 		else //sending to backend
@@ -258,12 +258,12 @@ if(isset($_POST['message']))
 
 			if(chkconfig($CONFIG['phpui']['helpdesk_customerinfo']) 
 				&& ($cid = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($message['ticketid']))))
-			{	
+			{
 				$info = $DB->GetRow('SELECT '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
 						email, address, zip, city, (SELECT phone FROM customercontacts 
 							WHERE customerid = customers.id ORDER BY id LIMIT 1) AS phone
 						FROM customers WHERE id = ?', array($cid));
-				
+
 				$body .= "\n\n-- \n";
 				$body .= trans('Customer:').' '.$info['customername']."\n";
 				$body .= trans('ID:').' '.sprintf('%04d', $cid)."\n";
@@ -284,7 +284,7 @@ if(isset($_POST['message']))
 					else
 						$recip = $email;
 					$headers['To'] = '<'.$recip.'>';
-		        
+
 					$LMS->SendMail($recip, $headers, $body);
 				}
 			}

@@ -138,7 +138,7 @@ function check_ipv6($ip)
 		$lastcolon = strrpos($ip, ':');
 		if (!($lastcolon && check_ip(substr($ip, $lastcolon + 1))))
 		        return false;
-							    
+
 		// replace IPv4 part with dummy
 		$ip = substr($ip, 0, $lastcolon) . ':0:0';
 	}
@@ -200,7 +200,7 @@ function getnetaddr($ip,$mask)
 	{
 		$ip = ip2long($ip);
 		$mask = ip2long($mask);
-		
+
 		return long2ip($ip & $mask);
 	}
 	else
@@ -361,6 +361,7 @@ function writesyslog($message,$type)
 	return TRUE;
 }
 
+// Creates directories tree
 function rmkdir($dir)
 {
 	if($dir[0]!='/')
@@ -382,6 +383,20 @@ function rmkdir($dir)
 		return $result;
 	else
 		return $makedirs;
+}
+
+// Deletes directory and all subdirs and files in it
+function rrmdir($dir)
+{
+    $files = glob($dir . '/*', GLOB_MARK);
+    foreach ($files as $file) {
+        if (is_dir($file))
+            rrmdir($file);
+        else
+            unlink($file);
+    }
+    if (is_dir($dir))
+        rmdir($dir);
 }
 
 function striphtml($text)
