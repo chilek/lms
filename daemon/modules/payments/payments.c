@@ -67,7 +67,7 @@ char * get_period(struct tm *today, int period, int up_payments)
 	t->tm_mon  = today->tm_mon;
 	
 	old_time = mktime(today);
-	
+
 	if( up_payments )
 		switch(period) {
 			case WEEKLY:
@@ -75,19 +75,27 @@ char * get_period(struct tm *today, int period, int up_payments)
 				break;
 			case MONTHLY:
 				t->tm_mon += 1;
-				t->tm_mday -= 1; 
+				t->tm_mday -= 1;
 				break;
 			case QUARTERLY:
 				t->tm_mon += 3;
 				t->tm_mday -= 1;
+				if (t->tm_mon > 11) {
+				    t->tm_mon -= 12;
+				    t->tm_year += 1;
+				}
 				break;
 			case HALFYEARLY:
 				t->tm_mon += 6;
-				t->tm_mday -= 1; 
+				t->tm_mday -= 1;
+				if (t->tm_mon > 11) {
+				    t->tm_mon -= 12;
+				    t->tm_year += 1;
+				}
 				break;
 			case YEARLY:
 				t->tm_mon += 12;
-				t->tm_mday -= 1; 
+				t->tm_mday -= 1;
 				break;
 		}
 	else
