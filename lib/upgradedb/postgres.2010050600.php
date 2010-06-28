@@ -46,7 +46,8 @@ $DB->Execute("
 if(!$DB->GetOne("SELECT COUNT(*) FROM pg_aggregate a JOIN pg_proc p ON (p.oid = a.aggfnoid)
     WHERE p.proname='array_agg'"))
 	$DB->Execute("
-		CREATE AGGREGATE array_agg(anyelement) (
+		CREATE AGGREGATE array_agg (
+		    BASETYPE=anyelement,
 			SFUNC=array_append,
 			STYPE=anyarray,
 			INITCOND='{}'
