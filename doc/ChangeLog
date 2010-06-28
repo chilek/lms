@@ -24,7 +24,8 @@ version ? (????-??-??)
     -----------------------------------------------------------------
   - Per-assignment payment type and numbering plan (alec)
   - fixed removal of helpdesk attachments + added foreign keys (alec)
-  - fix array_agg definition for Postgresql 8.1 (alec)
+  - fixed array_agg definition for Postgresql 8.1 (alec)
+  - fixed accounting and period description of quarterly payments
 
 version 1.11.10 Kri (2010-04-19)
 
