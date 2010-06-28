@@ -259,43 +259,39 @@ void reload(GLOBAL *g, struct payments_module *p)
 	char monthday[3], month[3], year[5], quarterday[4], weekday[2], yearday[4], halfday[4];
 	char monthname[20], nextmon[8];
 
-	char *nets = strdup(" AND EXISTS (SELECT 1 FROM nodes, networks n \
-				WHERE ownerid = ats.customerid \
-				AND (%nets) \
-	                        AND ((ipaddr > address AND ipaddr < ("BROADCAST")) \
-				OR (ipaddr_pub > address AND ipaddr_pub < ("BROADCAST"))) \
-				)");
+	char *nets = strdup(" AND EXISTS (SELECT 1 FROM nodes, networks n "
+				"WHERE ownerid = ats.customerid "
+				    "AND (%nets) "
+	                 "AND ((ipaddr > address AND ipaddr < ("BROADCAST")) "
+				        "OR (ipaddr_pub > address AND ipaddr_pub < ("BROADCAST"))) )");
 
 	char *netnames = strdup(p->networks);
 	char *netname = strdup(netnames);
 	char *netsql = strdup("");
 
-	char *enets = strdup(" AND NOT EXISTS (SELECT 1 FROM nodes, networks n \
-				WHERE ownerid = ats.customerid \
-				AND (%enets) \
-	                        AND ((ipaddr > address AND ipaddr < ("BROADCAST")) \
-				OR (ipaddr_pub > address AND ipaddr_pub < ("BROADCAST"))) \
-				)");
+	char *enets = strdup(" AND NOT EXISTS (SELECT 1 FROM nodes, networks n "
+				"WHERE ownerid = ats.customerid "
+				    "AND (%enets) "
+	                "AND ((ipaddr > address AND ipaddr < ("BROADCAST")) "
+				        "OR (ipaddr_pub > address AND ipaddr_pub < ("BROADCAST"))) )");
 
 	char *enetnames = strdup(p->excluded_networks);
 	char *enetname = strdup(enetnames);
 	char *enetsql = strdup("");
 
-	char *groups = strdup(" AND EXISTS (SELECT 1 FROM customergroups g, customerassignments a \
-				WHERE a.customerid = ats.customerid \
-				AND g.id = a.customergroupid \
-				AND (%groups)) \
-				");
+	char *groups = strdup(" AND EXISTS (SELECT 1 FROM customergroups g, customerassignments a "
+				"WHERE a.customerid = ats.customerid "
+				"AND g.id = a.customergroupid "
+				"AND (%groups)) ");
 
 	char *groupnames = strdup(p->customergroups);
 	char *groupname = strdup(groupnames);
 	char *groupsql = strdup("");
 
-	char *egroups = strdup(" AND NOT EXISTS (SELECT 1 FROM customergroups g, customerassignments a \
-				WHERE a.customerid = ats.customerid \
-				AND g.id = a.customergroupid \
-				AND (%egroups)) \
-				");
+	char *egroups = strdup(" AND NOT EXISTS (SELECT 1 FROM customergroups g, customerassignments a "
+				"WHERE a.customerid = ats.customerid "
+				"AND g.id = a.customergroupid "
+				"AND (%egroups)) ");
 
 	char *egroupnames = strdup(p->excluded_customergroups);
 	char *egroupname = strdup(egroupnames);
@@ -403,8 +399,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 		strncpy(yearday, itoa(tt->tm_yday), sizeof(yearday));
 	else
 		strncpy(yearday, itoa(tt->tm_yday+1), sizeof(yearday));
-	
-	// halfyear 
+
+	// halfyear
 	if(imonth > 6)
 		strncpy(halfday, itoa(imday + (imonth - 7) * 100), sizeof(halfday));
 	else
@@ -420,7 +416,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 		case 2:
 		case 5:
 		case 8:
-		case 12:
+		case 11:
 			sprintf(quarterday, "%d", imday+100);
 			break;
 		default:
@@ -477,39 +473,37 @@ void reload(GLOBAL *g, struct payments_module *p)
 
 	/****** customer payments *******/
 	// let's create main query
-	char *query = strdup("\
-			SELECT a.tariffid, a.liabilityid, a.customerid, a.period, a.at, a.suspended, a.invoice, \
-			    c.paytype, a.paytype AS a_paytype, a.numberplanid, d.inv_paytype AS d_paytype, \
-			    UPPER(c.lastname) AS lastname, c.name AS custname, c.address, c.zip, c.city, c.ten, c.ssn, \
-			    a.id AS assignmentid, a.settlement, a.datefrom, a.discount, c.countryid, c.divisionid, c.paytime, \
-			    (CASE a.liabilityid WHEN 0 THEN t.name ELSE li.name END) AS name, \
-			    (CASE a.liabilityid WHEN 0 THEN t.taxid ELSE li.taxid END) AS taxid, \
-			    (CASE a.liabilityid WHEN 0 THEN t.prodid ELSE li.prodid END) AS prodid, \
-			    (CASE a.liabilityid WHEN 0 THEN \
-				ROUND(CASE a.discount WHEN 0 THEN t.value ELSE t.value-t.value*discount/100 END, 2) \
-			    ELSE \
-				ROUND(CASE a.discount WHEN 0 THEN li.value ELSE li.value-li.value*a.discount/100 END, 2) \
-			    END) AS value \
-			FROM assignments a \
-			JOIN customers c ON (a.customerid = c.id) \
-			LEFT JOIN tariffs t ON (a.tariffid = t.id) \
-			LEFT JOIN liabilities li ON (a.liabilityid = li.id) \
-			LEFT JOIN divisions d ON (d.id = c.divisionid) \
-			WHERE c.status = 3 AND c.deleted = 0 \
-			    AND (a.period="_DAILY_" \
-				    OR (a.period="_WEEKLY_" AND at=?) \
-				    OR (a.period="_MONTHLY_" AND at=?) \
-				    OR (a.period="_QUARTERLY_" AND at=?) \
-				    OR (a.period="_HALFYEARLY_" AND at=?) \
-				    OR (a.period="_YEARLY_" AND at=?) \
-				    OR (a.period="_DISPOSABLE_" AND at=?)) \
-			    AND (a.datefrom <= ? OR a.datefrom = 0) AND (a.dateto >= ? OR a.dateto = 0) \
-			    %nets \
-			    %enets \
-			    %groups \
-			    %egroups \
-			ORDER BY a.customerid, a.invoice DESC, a.paytype, a.numberplanid, value DESC\
-			");
+	char *query = strdup("SELECT a.tariffid, a.liabilityid, a.customerid, a.period, "
+	    "a.at, a.suspended, a.invoice, a.id AS assignmentid, a.settlement, a.datefrom, a.discount, "
+		"c.paytype, a.paytype AS a_paytype, a.numberplanid, d.inv_paytype AS d_paytype, "
+		"UPPER(c.lastname) AS lastname, c.name AS custname, c.address, c.zip, c.city, c.ten, c.ssn, "
+		" c.countryid, c.divisionid, c.paytime, "
+		"(CASE a.liabilityid WHEN 0 THEN t.name ELSE li.name END) AS name, "
+		"(CASE a.liabilityid WHEN 0 THEN t.taxid ELSE li.taxid END) AS taxid, "
+		"(CASE a.liabilityid WHEN 0 THEN t.prodid ELSE li.prodid END) AS prodid, "
+		"(CASE a.liabilityid WHEN 0 THEN "
+		    "ROUND(CASE a.discount WHEN 0 THEN t.value ELSE t.value-t.value*discount/100 END, 2) "
+			"ELSE ROUND(CASE a.discount WHEN 0 THEN li.value ELSE li.value-li.value*a.discount/100 END, 2) "
+			"END) AS value "
+		"FROM assignments a "
+		"JOIN customers c ON (a.customerid = c.id) "
+		"LEFT JOIN tariffs t ON (a.tariffid = t.id) "
+		"LEFT JOIN liabilities li ON (a.liabilityid = li.id) "
+		"LEFT JOIN divisions d ON (d.id = c.divisionid) "
+		"WHERE c.status = 3 AND c.deleted = 0 "
+		    "AND (a.period="_DAILY_" "
+			    "OR (a.period="_WEEKLY_" AND at=?) "
+			    "OR (a.period="_MONTHLY_" AND at=?) "
+			    "OR (a.period="_QUARTERLY_" AND at=?) "
+			    "OR (a.period="_HALFYEARLY_" AND at=?) "
+			    "OR (a.period="_YEARLY_" AND at=?) "
+			    "OR (a.period="_DISPOSABLE_" AND at=?)) "
+		    "AND (a.datefrom <= ? OR a.datefrom = 0) AND (a.dateto >= ? OR a.dateto = 0) "
+		    "%nets"
+		    "%enets"
+		    "%groups"
+		    "%egroups"
+		"ORDER BY a.customerid, a.invoice DESC, a.paytype, a.numberplanid, value DESC");
 
 	g->str_replace(&query, "%nets", strlen(netsql) ? nets : "");
 	g->str_replace(&query, "%enets", strlen(enetsql) ? enets : "");
@@ -729,7 +723,9 @@ void reload(GLOBAL *g, struct payments_module *p)
 
 				invoiceid = strdup(itoa(docid));
 
-				result = g->db_pquery(g->conn, "SELECT itemid FROM invoicecontents WHERE tariffid = ? AND docid = ? AND description = '?' AND value = ? AND discount = ?", g->db_get_data(res,i,"tariffid"), invoiceid, description, value, discount);
+				result = g->db_pquery(g->conn, "SELECT itemid FROM invoicecontents "
+				    "WHERE tariffid = ? AND docid = ? AND description = '?' AND value = ? AND discount = ?",
+				    g->db_get_data(res,i,"tariffid"), invoiceid, description, value, discount);
 
 				if( g->db_nrows(result) ) 
 				{
@@ -738,13 +734,17 @@ void reload(GLOBAL *g, struct payments_module *p)
 						g->db_get_data(result,0,"itemid")
 						);
 
-					exec = g->db_pexec(g->conn, "UPDATE cash SET value = value + (? * -1) WHERE docid = ? AND itemid = ?", value, invoiceid, g->db_get_data(result,0,"itemid"));
+					exec = g->db_pexec(g->conn, "UPDATE cash SET value = value + (? * -1) "
+					    "WHERE docid = ? AND itemid = ?",
+					    value, invoiceid, g->db_get_data(result,0,"itemid"));
 				}
 				else 
 				{
 					itemid++;
 
-					g->db_pexec(g->conn,"INSERT INTO invoicecontents (docid, itemid, value, taxid, prodid, content, count, description, tariffid, discount) VALUES (?, ?, ?, ?, '?', 'szt.', 1, '?', ?, ?)",
+					g->db_pexec(g->conn,"INSERT INTO invoicecontents (docid, itemid, value, "
+					        "taxid, prodid, content, count, description, tariffid, discount) "
+					        "VALUES (?, ?, ?, ?, '?', 'szt.', 1, '?', ?, ?)",
 						invoiceid,
 						itoa(itemid),
 						value,
