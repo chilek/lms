@@ -1485,18 +1485,21 @@ int del_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, struct 
 #endif
 		g->db_pexec(g->conn, "DELETE FROM ewx_stm_nodes WHERE nodeid = ?", itoa(h.id));
 #ifdef DEBUG1
-		syslog(LOG_INFO, "DEBUG: [%s/ewx-stm-channels] Deleted node %s (%05d)", ewx->base.instance, h.ip, h.id);
+		syslog(LOG_INFO, "DEBUG: [%s/ewx-stm-channels] Deleted node %s/%s (%05d)",
+		    ewx->base.instance, h.ip, h.mac, h.id);
 #endif
 		(*ht).status = result = DELETED;
 	} 
 	else // failure
 	{
 		if(status == STAT_SUCCESS)
-    			syslog(LOG_ERR, "[%s/ewx-stm-channels] ERROR: Cannot delete node %s (%05d): %s", ewx->base.instance, h.ip, h.id, snmp_errstring(response->errstat));
+    			syslog(LOG_ERR, "[%s/ewx-stm-channels] ERROR: Cannot delete node %s/%s (%05d): %s",
+    			    ewx->base.instance, h.ip, h.mac, h.id, snmp_errstring(response->errstat));
 		else
 		{
 			snmp_error(sh, NULL, NULL, &errstr);
-    			syslog(LOG_ERR, "[%s/ewx-stm-channels] ERROR: Cannot delete node %s (%05d): %s", ewx->base.instance, h.ip, h.id, errstr);
+    			syslog(LOG_ERR, "[%s/ewx-stm-channels] ERROR: Cannot delete node %s/%s (%05d): %s",
+    			    ewx->base.instance, h.ip, h.mac, h.id, errstr);
 			free(errstr);
 		}
 	}
@@ -1516,7 +1519,7 @@ int add_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, struct 
 	struct host h = *ht;
 
 #ifdef LMS_SNMP_DEBUG
-    printf("[ADD NODE] %d %s-%s: %d\n", h.id, h.mac, h.ip, chid);
+    printf("[ADD NODE] %d %s/%s: %d\n", h.id, h.ip, h.mac, chid);
 #endif
 	if(!sh) return result;
 
@@ -1568,9 +1571,10 @@ int add_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, struct 
 		char *halfduplex = strdup(itoa(h.halfduplex));
 		char *channelid = strdup(itoa(chid));
 
-		g->db_pexec(g->conn, "INSERT INTO ewx_stm_nodes (nodeid, mac, ipaddr, channelid, uprate, upceil, downrate, downceil, halfduplex) "
-				    "VALUES (?, '?', INET_ATON('?'), ?, ?, ?, ?, ?, ?)", 
-				    itoa(h.id), h.mac, h.ip, channelid, uprate, upceil, downrate, downceil, halfduplex);
+		g->db_pexec(g->conn, "INSERT INTO ewx_stm_nodes (nodeid, mac, ipaddr, "
+		        "channelid, uprate, upceil, downrate, downceil, halfduplex) "
+				"VALUES (?, '?', INET_ATON('?'), ?, ?, ?, ?, ?, ?)", 
+				itoa(h.id), h.mac, h.ip, channelid, uprate, upceil, downrate, downceil, halfduplex);
 
 		free(uprate);
 		free(upceil);
@@ -1579,18 +1583,21 @@ int add_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, struct 
 		free(halfduplex);
 		free(channelid);
 #ifdef DEBUG1
-		syslog(LOG_INFO, "DEBUG: [%s/ewx-stm-channels] Added node %s (%05d)", ewx->base.instance, h.ip, h.id);
+		syslog(LOG_INFO, "DEBUG: [%s/ewx-stm-channels] Added node %s/%s (%05d)",
+		    ewx->base.instance, h.ip, h.mac, h.id);
 #endif
 		(*ht).status = result = STATUS_OK;
 	} 
 	else // failure
 	{
 		if(status == STAT_SUCCESS)
-    			syslog(LOG_ERR, "[%s/ewx-stm-channels] ERROR: Cannot add node %s (%05d): %s", ewx->base.instance, h.ip, h.id, snmp_errstring(response->errstat));
+    			syslog(LOG_ERR, "[%s/ewx-stm-channels] ERROR: Cannot add node %s/%s (%05d): %s",
+    			    ewx->base.instance, h.ip, h.mac, h.id, snmp_errstring(response->errstat));
 		else
 		{
 			snmp_error(sh, NULL, NULL, &errstr);
-    			syslog(LOG_ERR, "[%s/ewx-stm-channels] ERROR: Cannot add node %s (%05d): %s", ewx->base.instance, h.ip, h.id, errstr);
+    			syslog(LOG_ERR, "[%s/ewx-stm-channels] ERROR: Cannot add node %s/%s (%05d): %s",
+    			    ewx->base.instance, h.ip, h.mac, h.id, errstr);
 			free(errstr);
 		}
 	}
@@ -1648,11 +1655,13 @@ int update_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, stru
 	else // failure
 	{
 		if(status == STAT_SUCCESS)
-    			syslog(LOG_ERR, "[%s/ewx-stm-channels] ERROR: Cannot update node %s (%05d): %s", ewx->base.instance, h.ip, h.id, snmp_errstring(response->errstat));
+    			syslog(LOG_ERR, "[%s/ewx-stm-channels] ERROR: Cannot update node %s/%s (%05d): %s",
+    			    ewx->base.instance, h.ip, h.mac, h.id, snmp_errstring(response->errstat));
 		else
 		{
 			snmp_error(sh, NULL, NULL, &errstr);
-    			syslog(LOG_ERR, "[%s/ewx-stm-channels] ERROR: Cannot update node %s (%05d): %s", ewx->base.instance, h.ip, h.id, errstr);
+    			syslog(LOG_ERR, "[%s/ewx-stm-channels] ERROR: Cannot update node %s/%s (%05d): %s",
+    			    ewx->base.instance, h.ip, h.mac, h.id, errstr);
 			free(errstr);
 		}
 
@@ -1717,18 +1726,21 @@ int update_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, stru
 		free(downceil);
 		free(halfduplex);
 #ifdef DEBUG1
-		syslog(LOG_INFO, "DEBUG: [%s/ewx-stm-channels] Updated node %s (%05d)", ewx->base.instance, h.ip, h.id);
+		syslog(LOG_INFO, "DEBUG: [%s/ewx-stm-channels] Updated node %s/%s (%05d)",
+		    ewx->base.instance, h.ip, h.mac, h.id);
 #endif
 		(*ht).status = result = STATUS_OK;
 	} 
 	else // failure
 	{
 		if(status == STAT_SUCCESS)
-    			syslog(LOG_ERR, "[%s/ewx-stm-channels] ERROR: Cannot update node %s (%05d): %s", ewx->base.instance, h.ip, h.id, snmp_errstring(response->errstat));
+    			syslog(LOG_ERR, "[%s/ewx-stm-channels] ERROR: Cannot update node %s/%s (%05d): %s",
+    			    ewx->base.instance, h.ip, h.mac, h.id, snmp_errstring(response->errstat));
 		else
 		{
 			snmp_error(sh, NULL, NULL, &errstr);
-    			syslog(LOG_ERR, "[%s/ewx-stm-channels] ERROR: Cannot update node %s (%05d): %s", ewx->base.instance, h.ip, h.id, errstr);
+    			syslog(LOG_ERR, "[%s/ewx-stm-channels] ERROR: Cannot update node %s/%s (%05d): %s",
+    			    ewx->base.instance, h.ip, h.mac, h.id, errstr);
 			free(errstr);
 		}
 	}
