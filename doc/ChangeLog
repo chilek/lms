@@ -25,7 +25,8 @@ version ? (????-??-??)
   - Per-assignment payment type and numbering plan (alec)
   - fixed removal of helpdesk attachments + added foreign keys (alec)
   - fixed array_agg definition for Postgresql 8.1 (alec)
-  - fixed accounting and period description of quarterly payments
+  - fixed accounting and period description of quarterly payments (alec)
+  - lmsd/ewx-stm-channels: include node's MAC in syslog messages (alec)
 
 version 1.11.10 Kri (2010-04-19)
 
