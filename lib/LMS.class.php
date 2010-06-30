@@ -417,7 +417,7 @@ class LMS
 					    $customeradd['consentdate'],
 					    $customeradd['divisionid'],
 					    $customeradd['paytime'],
-					    isset($customeradd['paytype']) ? $customeradd['paytype'] : NULL,
+					    !empty($customeradd['paytype']) ? $customeradd['paytype'] : NULL,
 					    )))
 		{
 			return $this->DB->GetLastInsertID('customers');
