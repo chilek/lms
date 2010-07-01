@@ -43,7 +43,7 @@ int save_tables(GLOBAL *, struct ewx_module*, struct snmp_session*);
 
 char * itoa(int i)
 {
-        static char string[15];
+    static char string[15];
 	sprintf(string, "%d", i);
 	return string;
 }
@@ -51,11 +51,11 @@ char * itoa(int i)
 int find_asterisk(const char *str)
 {
 	int i, len;
-	
+
 	for(i=0, len = strlen(str); i<len; i++)
 		if(str[i] == '*')
 			return 1;
-	
+
 	return 0;
 }
 
@@ -65,28 +65,29 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	struct snmp_pdu 	*pdu, *response;
 
 	int	pathuplink=0, pathdownlink=0;
-	int 	globaluprate=0, globaldownrate=0; 
+	int globaluprate=0, globaldownrate=0; 
 	int	maxupceil=0, maxdownceil=0, savetables=0;
-	int 	status, i, j, n, o, k=0, cc=0, sc=0, night=0;
-	int	nc=0, anc=0, mnc=0, inc=0, emnc=0, einc=0;
-	char 	*errstr, *query;
-	char 	*netnames, *netname;
-	char 	*enets, *enetsql;
-	
+	int status, i, j, n, o, k=0, cc=0, sc=0, night=0;
+	int	nc=0, anc=0, mnc=0, inc=0, emnc=0, einc=0, macs_cnt=0;
+	char *errstr, *query;
+	char *netnames, *netname;
+	char *enets, *enetsql;
+	char **macs = NULL;
+
 	QueryHandle *res;
-	
-        struct channel *customers;
-        struct channel *channels;
+
+    struct channel *customers;
+    struct channel *channels;
 	struct net *nets;
-        struct net *all_nets;
-        struct net *mac_nets;
-        struct net *ip_nets;
-        struct net *emac_nets;
-        struct net *eip_nets;
+    struct net *all_nets;
+    struct net *mac_nets;
+    struct net *ip_nets;
+    struct net *emac_nets;
+    struct net *eip_nets;
 
 	if(!ewx->path)
 	{
-	        syslog(LOG_ERR, "[%s/ewx-stm-channels] Option 'path' not specified", ewx->base.instance);
+        syslog(LOG_ERR, "[%s/ewx-stm-channels] Option 'path' not specified", ewx->base.instance);
 		return;
 	}
 
@@ -227,13 +228,13 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	n = 2;
 	netnames = strdup(ewx->dummy_mac_networks);
 	netname = strdup(netnames);
-	
+
 	// get networks for filter if any specified in 'dummy_mac_networks' 
 	// option, use '*' for all networks
 	if(find_asterisk(ewx->dummy_mac_networks))
 	{
 		for(i=0; i<anc; i++)
-	        {
+	    {
 			mac_nets = (struct net *) realloc(mac_nets, (sizeof(struct net) * (mnc+1)));
 			mac_nets[mnc].address = all_nets[i].address;
 			mac_nets[mnc].mask = all_nets[i].mask;
@@ -243,13 +244,13 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	}
 	else while( n>1 )
 	{
-        	n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
-	        if(strlen(netname))
+        n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
+	    if(strlen(netname))
 		{
 			for(i=0; i<anc; i++)
 	            		if(strcmp(all_nets[i].name, g->str_upc(netname))==0)
 	                    		break;
-		
+
 			if(i != anc)
 			{
 				mac_nets = (struct net *) realloc(mac_nets, (sizeof(struct net) * (mnc+1)));
@@ -265,13 +266,13 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	n = 2;
 	netnames = strdup(ewx->dummy_ip_networks);
 	netname = strdup(netnames);
-	
+
 	// get networks for filter if any specified in 'dummy_ip_networks'
 	// option, use '*' for all networks
 	if(find_asterisk(ewx->dummy_ip_networks))
 	{
 		for(i=0; i<anc; i++)
-	        {
+	    {
 			ip_nets = (struct net *) realloc(ip_nets, (sizeof(struct net) * (inc+1)));
 			ip_nets[inc].address = all_nets[i].address;
 			ip_nets[inc].mask = all_nets[i].mask;
@@ -281,23 +282,23 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	}
 	else while( n>1 )
 	{
-        	n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
-	        if(strlen(netname))
+        n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
+	    if(strlen(netname))
 		{
 			for(i=0; i<anc; i++)
-	            		if(strcmp(all_nets[i].name, g->str_upc(netname))==0)
-	                    		break;
+	            if(strcmp(all_nets[i].name, g->str_upc(netname))==0)
+	                break;
 
 			if(i != anc)
 			{
 				// same networks can't be included in both dummy_* options
 				for(j=0; j<mnc; j++)
-	            			if(mac_nets[j].address == all_nets[i].address)
-	                    			break;
+	            	if(mac_nets[j].address == all_nets[i].address)
+	                	break;
 
 				if(j != mnc)
 				{
-	    				syslog(LOG_ERR, "[%s/ewx-stm-channels] Network %s already included in 'dummy_mac_networks' option. Skipping.", all_nets[i].name, ewx->base.instance);
+	    			syslog(LOG_ERR, "[%s/ewx-stm-channels] Network %s already included in 'dummy_mac_networks' option. Skipping.", all_nets[i].name, ewx->base.instance);
 					continue;
 				}
 
@@ -318,13 +319,13 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	// get networks for filter if any specified in 'excluded_dummy_ip_networks'
 	while( n>1 )
 	{
-        	n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
-	        if(strlen(netname))
+       	n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
+        if(strlen(netname))
 		{
 			for(i=0; i<anc; i++)
-	            		if(strcmp(all_nets[i].name, g->str_upc(netname))==0)
-	                    		break;
-		
+           		if(strcmp(all_nets[i].name, g->str_upc(netname))==0)
+               		break;
+
 			if(i != anc)
 			{
 				eip_nets = (struct net *) realloc(eip_nets, (sizeof(struct net) * (einc+1)));
@@ -348,9 +349,9 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	        if(strlen(netname))
 		{
 			for(i=0; i<anc; i++)
-	            		if(strcmp(all_nets[i].name, g->str_upc(netname))==0)
-	                    		break;
-		
+           		if(strcmp(all_nets[i].name, g->str_upc(netname))==0)
+               		break;
+
 			if(i != anc)
 			{
 				emac_nets = (struct net *) realloc(emac_nets, (sizeof(struct net) * (emnc+1)));
@@ -433,7 +434,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	res = g->db_query(g->conn, query);
 	
 	for(i=0; i<g->db_nrows(res); i++)
-	{	
+	{
 		int cid 	= atoi(g->db_get_data(res,i,"id"));
 		int upceil 	= atoi(g->db_get_data(res,i,"upceil"));
 		int downceil 	= atoi(g->db_get_data(res,i,"downceil"));
@@ -442,10 +443,10 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		customers[cc].cid = cid;
 		customers[cc].upceil = upceil;
 		customers[cc].downceil = downceil;
-                customers[cc].no = 0;
-                customers[cc].downratesum = 0;
+        customers[cc].no = 0;
+        customers[cc].downratesum = 0;
 		customers[cc].upratesum = 0;
-                customers[cc].hosts = NULL;
+        customers[cc].hosts = NULL;
 		customers[cc].status = UNKNOWN;
 		cc++;
 	}
@@ -471,71 +472,72 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	g->str_replace(&query, "%enets", strlen(enetsql) ? enets : "");	
 
 	if (night)
-        {
-	        g->str_replace(&query, "t.downrate", "(CASE WHEN t.downrate_n > 0 THEN t.downrate_n ELSE t.downrate END) AS downrate");
-	        g->str_replace(&query, "t.downceil", "(CASE WHEN t.downceil_n > 0 THEN t.downceil_n ELSE t.downceil END) AS downceil");
-	        g->str_replace(&query, "t.uprate", "(CASE WHEN t.uprate_n > 0 THEN t.uprate_n ELSE t.uprate END) AS uprate");
-	        g->str_replace(&query, "t.upceil", "(CASE WHEN t.upceil_n > 0 THEN t.upceil_n ELSE t.upceil END) AS upceil");
+    {
+	    g->str_replace(&query, "t.downrate", "(CASE WHEN t.downrate_n > 0 THEN t.downrate_n ELSE t.downrate END) AS downrate");
+	    g->str_replace(&query, "t.downceil", "(CASE WHEN t.downceil_n > 0 THEN t.downceil_n ELSE t.downceil END) AS downceil");
+	    g->str_replace(&query, "t.uprate", "(CASE WHEN t.uprate_n > 0 THEN t.uprate_n ELSE t.uprate END) AS uprate");
+	    g->str_replace(&query, "t.upceil", "(CASE WHEN t.upceil_n > 0 THEN t.upceil_n ELSE t.upceil END) AS upceil");
 	}
 
 	res = g->db_query(g->conn,  query);
 
 	// adding hosts to customers array
-	for(i=0; i<g->db_nrows(res); i++)
-        {
-		int channelid = atoi(g->db_get_data(res,i,"channelid"));
-        	int hostid = atoi(g->db_get_data(res,i,"id"));
-		char *ip = g->db_get_data(res,i,"ip");
+	for (i=0; i<g->db_nrows(res); i++)
+    {
+		int channelid   = atoi(g->db_get_data(res,i,"channelid"));
+        int hostid      = atoi(g->db_get_data(res,i,"id"));
+		char *ip        = g->db_get_data(res,i,"ip");
 		unsigned long inet = inet_addr(ip);
 
 		// looking for a channel
-		for(j=0; j<cc; j++)
-			if(customers[j].cid == channelid)
+		for (j=0; j<cc; j++)
+			if (customers[j].cid == channelid)
 				break;
-		
-		if(j == cc) {
+
+		if (j == cc) {
 			// hosts without channel, create default channel or skip
-			if(!channelid && ewx->default_upceil && ewx->default_downceil)
+			if (!channelid && ewx->default_upceil && ewx->default_downceil)
 			{
 				customers = (struct channel *) realloc(customers, (sizeof(struct channel) * (cc+1)));
 				customers[cc].cid = 0;
 				customers[cc].upceil = ewx->default_upceil;
 				customers[cc].downceil = ewx->default_downceil;
-            			customers[cc].no = 0;
-            			customers[cc].downratesum = 0;
+            	customers[cc].no = 0;
+            	customers[cc].downratesum = 0;
 				customers[cc].upratesum = 0;
-            			customers[cc].hosts = NULL;
+            	customers[cc].hosts = NULL;
 				customers[cc].status = UNKNOWN;
 				cc++;
 			}
 			else
 				continue;
 		}
-		
+
 		// Networks test
 		if(nc)
 		{
 			for(n=0; n<nc; n++)
-	            		if(nets[n].address == (inet & nets[n].mask))
-	                    		break;
+	            if(nets[n].address == (inet & nets[n].mask))
+	                break;
 
 			if(n == nc) continue;
 		}
 
-		int uprate 	= atoi(g->db_get_data(res,i,"uprate"));
+		int uprate 	    = atoi(g->db_get_data(res,i,"uprate"));
 		int downrate 	= atoi(g->db_get_data(res,i,"downrate"));
-		int upceil 	= atoi(g->db_get_data(res,i,"upceil"));
+		int upceil 	    = atoi(g->db_get_data(res,i,"upceil"));
 		int downceil 	= atoi(g->db_get_data(res,i,"downceil"));
 
 		// looking for host
-		for(k=0; k<customers[j].no; k++)
-			if(customers[j].hosts[k].id == hostid)
+		for (k=0; k<customers[j].no; k++)
+			if (customers[j].hosts[k].id == hostid)
 				break;
 
-		if(k == customers[j].no) // host not exists
+		if (k == customers[j].no) // host not exists
 		{
-	        	int dummy_ip = 0;
+	        int dummy_ip = 0;
 			int dummy_mac = 0;
+			char *mac = g->db_get_data(res,i,"mac");
 
 			// Networks test for dummy_mac
 			if(mnc)
@@ -579,6 +581,28 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 				dummy_mac = 1;
 			}
 
+			// data checking (MAC duplicates)
+			if (!dummy_mac && strcmp(mac, "00:00:00:00:00:00")) {
+			    for (n=0; n<macs_cnt; n++) {
+			        if (!strcmp(mac, macs[n]))
+			            break;
+			    }
+			    if (n<macs_cnt) {
+    	            syslog(LOG_ERR, "[%s/ewx-stm-channels] Duplicated MAC %s (%05d). Skipped.",
+	                    ewx->base.instance, mac, hostid);
+		    	    continue;
+			    }
+			    macs = (char **) realloc(macs, (sizeof(char *) * (macs_cnt+1)));
+			    macs[macs_cnt++] = strdup(mac);
+			}
+			// data checking ("empty" IP/MAC pairs)
+			else if (dummy_ip) {
+	            syslog(LOG_ERR, "[%s/ewx-stm-channels] Wrong node data 0.0.0.0/00:00:00:00:00:00 (%05d). Skipped.",
+	                ewx->base.instance, hostid);
+			    continue;
+			}
+
+            // add to hosts table
 			customers[j].hosts = (struct host *) realloc(customers[j].hosts, (sizeof(struct host) * (k+1)));
 			customers[j].hosts[k].id = hostid;
 			customers[j].hosts[k].uprate = uprate;
@@ -594,7 +618,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 				customers[j].hosts[k].ip = strdup(DUMMY_IP);
 
 			if(!dummy_mac)
-				customers[j].hosts[k].mac = strdup(g->db_get_data(res,i,"mac"));
+				customers[j].hosts[k].mac = strdup(mac);
 			else
 				customers[j].hosts[k].mac = strdup(DUMMY_MAC);
 
@@ -618,27 +642,39 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	// Przelecmy po wszystkich kanalach i komputerach, zliczajac sumy rate i ceil
 	// aby nie przekroczyc wartosci ustawionych dla sciezek na urzadzeniu.
 	// Dodatkowo zmniejszymy rate komputerow w kanalach, jesli suma rate przekracza ceil kanalu
-	for(i=0; i<cc; i++)
-        {
+	for (i=0; i<cc; i++)
+    {
 		struct channel c = customers[i];
 
-		if(!c.no) continue;
+		if (!c.no) continue;
+
+		if (c.upratesum > c.upceil) {
+            syslog(LOG_WARNING, "[%s/ewx-stm-channels] The sum of nodes upload rate is too big for channel (%05d) [sum: %d, ceil: %d]. Reduced nodes rates.",
+                ewx->base.instance, c.cid, c.upratesum, c.upceil);
+        }
+		if (c.downratesum > c.downceil) {
+            syslog(LOG_WARNING, "[%s/ewx-stm-channels] The sum of nodes download rate is too big for channel (%05d) [sum: %d, ceil: %d]. Reduced nodes rates.",
+                ewx->base.instance, c.cid, c.downratesum, c.downceil);
+        }
 
 		// Summary hosts limits
 		for(k=0; k<c.no; k++)
 		{
 			// decrease (balance) node rates if sum of nodes rates
 			// is greater than channel's ceil
-			if(c.upratesum > c.upceil)
+			if(c.upratesum > c.upceil) {
 				c.hosts[k].uprate = c.hosts[k].uprate / (double) c.upratesum * c.upceil;
-			if(c.downratesum > c.downceil)
+			}
+			if(c.downratesum > c.downceil) {
 				c.hosts[k].downrate = c.hosts[k].downrate / (double) c.downratesum * c.downceil;
-			// make sure node ceil is not greater tham channel ceil
-			if(c.upceil < c.hosts[k].upceil)
+			}
+			// make sure node ceil is not greater than channel ceil
+			if (c.upceil < c.hosts[k].upceil) {
 				c.hosts[k].upceil = c.upceil;
-			if(c.downceil < c.hosts[k].downceil)
+			}
+			if (c.downceil < c.hosts[k].downceil) {
 				c.hosts[k].downceil = c.downceil;
-
+            }
 			globaluprate += c.hosts[k].uprate;
 			globaldownrate += c.hosts[k].downrate;
 		}
@@ -653,13 +689,13 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	// path limits checking
 	if(globaluprate>pathuplink || globaldownrate>pathdownlink)
 	{
-	        syslog(LOG_ERR, "[%s/ewx-stm-channels] Path is too small. Need Uplink: %d, Downlink: %d. Exiting.", ewx->base.instance, globaluprate, globaldownrate);
+        syslog(LOG_ERR, "[%s/ewx-stm-channels] Path is too small. Need Uplink: %d, Downlink: %d. Exiting.", ewx->base.instance, globaluprate, globaldownrate);
 		return;
 	}
 
 	if(maxupceil>pathuplink || maxdownceil>pathdownlink)
 	{
-	        syslog(LOG_ERR, "[%s/ewx-stm-channels] Path is too small. Need Uplink: %d, Downlink: %d. Exiting.", ewx->base.instance, maxupceil, maxdownceil);
+        syslog(LOG_ERR, "[%s/ewx-stm-channels] Path is too small. Need Uplink: %d, Downlink: %d. Exiting.", ewx->base.instance, maxupceil, maxdownceil);
 		return;
 	}
 
@@ -699,7 +735,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	);
 
 	res = g->db_query(g->conn, query);
-        
+
 	// Creating current config array
 	for(i=0; i<g->db_nrows(res); i++)
         {
@@ -911,64 +947,59 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	syslog(LOG_INFO, "DEBUG: [%s/ewx-stm-channels] reloaded", ewx->base.instance);
 #endif
 
-        for(i=0; i<sc; i++)
-	{
-		for(j=0; j<channels[i].no; j++)
-		{
+    for (i=0; i<sc; i++) {
+		for (j=0; j<channels[i].no; j++) {
 			free(channels[i].hosts[j].ip);
 			free(channels[i].hosts[j].mac);
 		}
-	        free(channels[i].hosts);
+        free(channels[i].hosts);
 	}
-        free(channels);
+    free(channels);
 
-        for(i=0; i<cc; i++)
-	{
-		for(j=0; j<customers[i].no; j++)
-		{
+    for (i=0; i<cc; i++) {
+		for (j=0; j<customers[i].no; j++) {
 			free(customers[i].hosts[j].ip);
 			free(customers[i].hosts[j].mac);
 		}
-	        free(customers[i].hosts);
+        free(customers[i].hosts);
 	}
-        free(customers);
+    free(customers);
 
-	for(i=0;i<nc;i++)
-        {
+	for (i=0;i<nc;i++) {
 		free(nets[i].name);
 	}
 	free(nets);
 
-	for(i=0;i<anc;i++)
-        {
+	for (i=0;i<anc;i++) {
 		free(all_nets[i].name);
 	}
 	free(all_nets);
 
-	for(i=0;i<mnc;i++)
-        {
+	for(i=0;i<mnc;i++) {
 		free(mac_nets[i].name);
 	}
 	free(mac_nets);
 
-	for(i=0;i<inc;i++)
-        {
+	for(i=0;i<inc;i++) {
 		free(ip_nets[i].name);
 	}
 	free(ip_nets);
 
-	for(i=0;i<emnc;i++)
-        {
+	for(i=0;i<emnc;i++) {
 		free(emac_nets[i].name);
 	}
 	free(emac_nets);
 
-	for(i=0;i<einc;i++)
-        {
+	for(i=0;i<einc;i++) {
 		free(eip_nets[i].name);
 	}
 	free(eip_nets);
-		
+
+	for(i=0;i<macs_cnt;i++) {
+		free(macs[i]);
+	}
+	free(macs);
+
 	free(enets);
 	free(enetsql);
 	free(ewx->community);

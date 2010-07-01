@@ -27,6 +27,9 @@ version ? (????-??-??)
   - fixed array_agg definition for Postgresql 8.1 (alec)
   - fixed accounting and period description of quarterly payments (alec)
   - lmsd/ewx-stm-channels: include node's MAC in syslog messages (alec)
+  - lmsd/ewx-stm-channels: added MAC duplicate prevention (alec)
+  - lmsd/ewx-stm-channels: added "empty" IP/MAC pair prevention (alec)
+  - lmsd/ewx-stm-channels: added warnings about channel limits exceeding (alec)
 
 version 1.11.10 Kri (2010-04-19)
 
