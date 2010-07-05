@@ -75,53 +75,58 @@ function GetDocumentList($order='cdate,asc', $type=NULL, $customer=NULL, $from=0
 	return $list;
 }
 
-if(!isset($_GET['o']))
-	$SESSION->restore('doclo', $o);
-else
-	$o = $_GET['o'];
-$SESSION->save('doclo', $o);
-
-if(!isset($_GET['t']))
-	$SESSION->restore('doclt', $t);
-else
-	$t = $_GET['t'];
-$SESSION->save('doclt', $t);
-
-if(!isset($_GET['c']))
-	$SESSION->restore('doclc', $c);
-else
-	$c = $_GET['c'];
-$SESSION->save('doclc', $c);
-
-if(isset($_GET['from']))
+if (empty($_GET['init']))
 {
+    if(!isset($_GET['o']))
+	    $SESSION->restore('doclo', $o);
+    else
+	    $o = $_GET['o'];
+    $SESSION->save('doclo', $o);
+
+    if(!isset($_GET['t']))
+	    $SESSION->restore('doclt', $t);
+    else
+	    $t = $_GET['t'];
+    $SESSION->save('doclt', $t);
+
+    if(!isset($_GET['c']))
+	    $SESSION->restore('doclc', $c);
+    else
+	    $c = $_GET['c'];
+    $SESSION->save('doclc', $c);
+
+    if(isset($_GET['from']))
+    {
         if($_GET['from'] != '')
         {
-                list($year, $month, $day) = explode('/', $_GET['from']);
-                $from = mktime(0,0,0, $month, $day, $year);
-        } else
-		$from = 0;
-}
-elseif($SESSION->is_set('doclfrom'))
-	$SESSION->restore('doclfrom', $from);
-else
+            list($year, $month, $day) = explode('/', $_GET['from']);
+            $from = mktime(0,0,0, $month, $day, $year);
+        }
+        else
+		    $from = 0;
+    }
+    elseif($SESSION->is_set('doclfrom'))
+	    $SESSION->restore('doclfrom', $from);
+    else
         $from = 0;
-$SESSION->save('doclfrom', $from);
+    $SESSION->save('doclfrom', $from);
 
-if(isset($_GET['to']))
-{
+    if(isset($_GET['to']))
+    {
         if($_GET['to'] != '')
         {
-                list($year, $month, $day) = explode('/', $_GET['to']);
-                $to = mktime(23,59,59, $month, $day, $year);
-        } else
-		$to = 0;
-}
-elseif($SESSION->is_set('doclto'))
-	$SESSION->restore('doclto', $to);
-else
+            list($year, $month, $day) = explode('/', $_GET['to']);
+            $to = mktime(23,59,59, $month, $day, $year);
+        }
+        else
+		    $to = 0;
+    }
+    elseif($SESSION->is_set('doclto'))
+	    $SESSION->restore('doclto', $to);
+    else
         $to = 0;
-$SESSION->save('doclto', $to);
+    $SESSION->save('doclto', $to);
+}
 
 $documentlist = GetDocumentList($o, $t, $c, $from, $to);
 
@@ -157,7 +162,11 @@ if($listdata['total'])
 			FROM docrights WHERE userid = ? AND rights > 1', 'doctype', array($AUTH->id)));
 }
 
-$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
+if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
+{
+    $SMARTY->assign('customers', $LMS->GetCustomerNames());
+}
+
 $SMARTY->assign('documentlist', $documentlist);
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('page', $page);
