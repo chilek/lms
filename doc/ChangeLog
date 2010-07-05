@@ -30,6 +30,8 @@ version ? (????-??-??)
   - lmsd/ewx-stm-channels: added MAC duplicate prevention (alec)
   - lmsd/ewx-stm-channels: added "empty" IP/MAC pair prevention (alec)
   - lmsd/ewx-stm-channels: added warnings about channel limits exceeding (alec)
+  - support big_networks with owner popup selector in nodeadd and nodeedit
+    templates (alec/W.Dymkiewicz)
 
 version 1.11.10 Kri (2010-04-19)
 

@@ -71,13 +71,13 @@ if(!isset($_GET['ownerid']))
 	$SESSION->save('backto', $SESSION->get('backto') . '&ownerid='.$customerid);
 else
 	$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-							
+
 $layout['pagetitle'] = trans('Node Edit: $0', $nodeinfo['name']);
 
 if(isset($_POST['nodeedit']) && !isset($_GET['newmac']))
 {
 	$nodeedit = $_POST['nodeedit'];
-	
+
 	$nodeedit['ipaddr'] = $_POST['nodeeditipaddr'];
 	$nodeedit['ipaddr_pub'] = $_POST['nodeeditipaddrpub'];
 	foreach($nodeedit['macs'] as $key => $value)
@@ -159,7 +159,7 @@ if(isset($_POST['nodeedit']) && !isset($_GET['newmac']))
 		$error['passwd'] = trans('Password is too long (max.32 characters)!');
 
 	if(!isset($nodeedit['access']))	$nodeedit['access'] = 0;
-        if(!isset($nodeedit['warning'])) $nodeedit['warning'] = 0;	
+    if(!isset($nodeedit['warning'])) $nodeedit['warning'] = 0;
 	if(!isset($nodeedit['chkmac']))	$nodeedit['chkmac'] = 0;
 	if(!isset($nodeedit['halfduplex'])) $nodeedit['halfduplex'] = 0;
 
@@ -194,8 +194,10 @@ if(isset($_POST['nodeedit']) && !isset($_GET['newmac']))
 			}
 		}
 	}
-	
-	if($nodeedit['access'] && $LMS->GetCustomerStatus($nodeedit['ownerid']) < 3)
+
+    if (!$nodeedit['ownerid'])
+        $error['ownerid'] = trans('Customer not selected!');
+	else if($nodeedit['access'] && $LMS->GetCustomerStatus($nodeedit['ownerid']) < 3)
 		$error['access'] = trans('Node owner is not connected!');
 
 	if(!$error)
@@ -233,10 +235,14 @@ else
 
 include(MODULES_DIR.'/customer.inc.php');
 
+if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
+{
+    $SMARTY->assign('customers', $LMS->GetCustomerNames());
+}
+
 $SMARTY->assign('netdevices', $LMS->GetNetDevNames());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNamesByNode($nodeid));
 $SMARTY->assign('othernodegroups', $LMS->GetNodeGroupNamesWithoutNode($nodeid));
-$SMARTY->assign('customers', $LMS->GetCustomerNames());
 $SMARTY->assign('error',$error);
 $SMARTY->assign('nodeinfo',$nodeinfo);
 $SMARTY->display('nodeedit.html');

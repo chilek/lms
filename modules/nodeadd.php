@@ -74,7 +74,7 @@ if(isset($_POST['nodedata']) && !isset($_GET['newmac']))
 	elseif(strlen($nodedata['name']) > 32)
 		$error['name'] = trans('Node name is too long (max.32 characters)!');
 	elseif(!preg_match('/^[_a-z0-9-]+$/i', $nodedata['name']))
-		$error['name'] = trans('Specified name contains forbidden characters!');		
+		$error['name'] = trans('Specified name contains forbidden characters!');
 	elseif($LMS->GetNodeIDByName($nodedata['name']))
 		$error['name'] = trans('Specified name is in use!');
 
@@ -123,13 +123,15 @@ if(isset($_POST['nodedata']) && !isset($_GET['newmac']))
 	if(strlen($nodedata['passwd']) > 32)
 		$error['passwd'] = trans('Password is too long (max.32 characters)!');
 
+    if (!$nodedata['ownerid'])
+        $error['ownerid'] = trans('Customer not selected!');
 	if(! $LMS->CustomerExists($nodedata['ownerid']))
-		$error['customer'] = trans('You have to select owner!');
+		$error['ownerid'] = trans('You have to select owner!');
 	else
 	{
 		$status = $LMS->GetCustomerStatus($nodedata['ownerid']);
 		if($status == 1) // unknown (interested)
-			$error['customer'] = trans('Selected customer is not connected!');
+			$error['ownerid'] = trans('Selected customer is not connected!');
 		elseif($status == 2 && $nodedata['access']) // awaiting
 	                $error['access'] = trans('Node owner is not connected!');
 	}
@@ -211,8 +213,12 @@ if($customerid = $nodedata['ownerid'])
 else
 	$SMARTY->assign('allnodegroups', $LMS->GetNodeGroupNames());
 
+if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
+{
+    $SMARTY->assign('customers', $LMS->GetCustomerNames());
+}
+
 $SMARTY->assign('netdevices', $LMS->GetNetDevNames());
-$SMARTY->assign('customers', $LMS->GetCustomerNames());
 $SMARTY->assign('error', $error);
 $SMARTY->assign('nodedata', $nodedata);
 $SMARTY->display('nodeadd.html');

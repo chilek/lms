@@ -114,10 +114,15 @@
 			<IMG SRC="img/customer.gif" ALT="{t}Customer:{/t}">
 		</TD>
 		<TD WIDTH="99%">
-			<SELECT SIZE="1" NAME="nodedata[ownerid]" {tip text="Assign node to customer" trigger="customer"} style="max-width:250px;">
+		{if $customers}
+			<SELECT SIZE="1" NAME="nodedata[ownerid]" {tip text="Assign node to customer" trigger="ownerid"} style="max-width:250px;">
 				{foreach from=$customers item=c}
 				<OPTION VALUE="{$c.id}"{if $nodedata.ownerid == $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
 				{/foreach}
+		{else}
+			<INPUT TYPE="TEXT" NAME="nodedata[ownerid]" VALUE="{if $nodedata.ownerid}{$nodedata.ownerid}{/if}" SIZE="5"{if $customers} onChange="reset_customer()" onfocus="reset_customer()"{/if} {tip text="Enter customer ID" trigger="ownerid"}>
+			<a href="javascript: void(0);" onClick="return customerchoosewin(document.nodeadd.elements['nodedata[ownerid]']);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+		{/if}
 			</SELECT>
 		</TD>
 	</TR>
@@ -182,7 +187,7 @@
 		var items = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 		var length = {/literal}{$_config.phpui.nodepassword_length|default:"16"}{literal};
 		if(length > 32) length = 32;
-		
+
 		for(var i=0; i<length; i++)
 		{
 			n = Math.floor(Math.random() * items.length);
@@ -190,13 +195,19 @@
 		}
 
 		document.forms['nodeadd'].elements['nodedata[passwd]'].value = passwd.join("");
-	}	
+	}
 
 	function newmac()
 	{
 		document.nodeadd.action += '&newmac=1';
 		document.nodeadd.submit();
 	}
+
+    function reset_customer()
+    {
+        if (document.forms['editnode'].elements['nodeedit[ownerid]'].value)
+            document.forms['editnode'].elements['nodeedit[customerid]'].value = document.forms['editnode'].elements['nodeedit[ownerid]'].value;
+    }
 //-->
 </SCRIPT>
 {/literal}
