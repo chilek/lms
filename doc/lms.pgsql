@@ -44,7 +44,7 @@ CREATE TABLE assignments (
 	settlement smallint	DEFAULT 0 NOT NULL,
 	discount numeric(4,2)	DEFAULT 0 NOT NULL,
 	paytype smallint    DEFAULT NULL,
-	numberplanid int(11) DEFAULT NULL
+	numberplanid integer DEFAULT NULL
 	    REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id)
 );
