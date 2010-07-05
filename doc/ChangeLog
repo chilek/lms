@@ -30,6 +30,7 @@ version ? (????-??-??)
   - lmsd/ewx-stm-channels: added MAC duplicate prevention (alec)
   - lmsd/ewx-stm-channels: added "empty" IP/MAC pair prevention (alec)
   - lmsd/ewx-stm-channels: added warnings about channel limits exceeding (alec)
+  - lmsd/ewx-stm-channels: improved performance of default channel handling (alec)
   - support big_networks with owner popup selector in nodeadd, nodeedit and
     documentlist templates (alec/W.Dymkiewicz)
 

@@ -4,7 +4,7 @@
 struct ewx_module
 {
 	MODULE base;
-	
+
 	char *networks;
 	char *excluded_networks;
 	char *dummy_mac_networks;
@@ -33,7 +33,7 @@ struct net
 
 struct host
 {
-        int id;
+    int id;
 	int status;
 	int uprate;
 	int upceil;
@@ -53,7 +53,7 @@ struct channel
 	int downceil;
 	int upratesum;
 	int downratesum;
-        int no;
+    int no;
 	struct host *hosts;
 };
 
@@ -90,7 +90,7 @@ struct channel
     L2tmChannelUplink           4	Unsigned32
     L2tmChannelDownlink         5	Unsigned32
     L2tmChannelHalfDuplex       6	INTEGER
-		    
+
 */
 
 // nodes OIDs (last element (zero) will be changed to node ID)

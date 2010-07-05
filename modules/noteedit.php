@@ -174,7 +174,7 @@ switch($action)
                                 $DB->Execute('INSERT INTO debitnotecontents (docid, itemid, value, description)
                                         VALUES (?, ?, ?, ?)',
 					array($note['id'], $itemid, $item['value'], $item['description']));
-	                        
+
 				$LMS->AddBalance(array(
                                         'time' => $cdate,
                                         'value' => $item['value']*-1,
@@ -188,15 +188,15 @@ switch($action)
 
                         $DB->UnLockTables();
                         $DB->CommitTrans();
-			
+
 			$SESSION->remove('notecontents');
 			$SESSION->remove('notecustomer');
 			$SESSION->remove('note');
 			$SESSION->remove('notenewerror');
-												
+
 			if(isset($_GET['print']))
 			        $SESSION->save('noteprint', $note['id']);
-				
+
 			$SESSION->redirect('?m=notelist');
 		}
 	break;
@@ -222,7 +222,6 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('note', $note);
-//$SMARTY->assign('taxeslist', $taxeslist);
 $SMARTY->display('noteedit.html');
 
 ?>

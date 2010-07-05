@@ -738,9 +738,9 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 
 	// Creating current config array
 	for(i=0; i<g->db_nrows(res); i++)
-        {
-        	int channelid = atoi(g->db_get_data(res,i,"channelid"));
-        	int hostid = atoi(g->db_get_data(res,i,"nodeid"));
+    {
+      	int channelid = atoi(g->db_get_data(res,i,"channelid"));
+       	int hostid = atoi(g->db_get_data(res,i,"nodeid"));
 		char *ip = g->db_get_data(res,i,"ip");
 		unsigned long inet = inet_addr(ip);
 
@@ -748,23 +748,23 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		if(nc && inet)
 		{
 			for(j=0; j<nc; j++)
-		                if(nets[j].address == (inet & nets[j].mask))
-		                        break;
+                if(nets[j].address == (inet & nets[j].mask))
+                    break;
 			if(j == nc)
 				continue;
 		}
-		
+
 		// looking for the channel
 		for(j=0; j<sc; j++)
 			if(channels[j].id == channelid)
 				break;
-		
+
 		// this will happen if we've got nodes without a channel
 		if(j == sc)
 		{
 			int cupceil = atoi(g->db_get_data(res,i,"cupceil"));
 			int cdownceil = atoi(g->db_get_data(res,i,"cdownceil"));
-			
+
 			channels = (struct channel *) realloc(channels, (sizeof(struct channel) * (sc+1)));
 			channels[sc].id = channelid;
 			channels[sc].cid = atoi(g->db_get_data(res,i,"cid"));
@@ -772,8 +772,8 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 			channels[sc].downceil = cdownceil ? cdownceil : ewx->default_downceil;
 			channels[sc].upratesum = 0;
 			channels[sc].downratesum = 0;
-                        channels[sc].no = 0;
-                        channels[sc].hosts = NULL;
+            channels[sc].no = 0;
+            channels[sc].hosts = NULL;
 			channels[sc].status = UNKNOWN;
 			sc++;
 		}
@@ -796,21 +796,21 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	}
 	g->db_free(&res);
 	free(query);
-	
+
 	// Open the session again
 	sh = snmp_open(&session);
 
 	if(!sh)
 	{
-	        snmp_error(&session, NULL, NULL, &errstr);
-	        syslog(LOG_ERR, "[%s/ewx-stm-channels] SNMP ERROR: %s", ewx->base.instance, errstr);
+        snmp_error(&session, NULL, NULL, &errstr);
+        syslog(LOG_ERR, "[%s/ewx-stm-channels] SNMP ERROR: %s", ewx->base.instance, errstr);
 		free(errstr);
 		return;
 	}
 
 	// Main loop ****************************************************************
 	for(i=0; i<cc; i++)
-        {
+    {
 		int needupdate=0, found=0, x;
 		struct channel c = customers[i];
 
@@ -832,12 +832,12 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 					continue;
 
 				struct host old = channels[j].hosts[k];
-			
+
 				for(n=0; n<c.no; n++)
 				{
 					struct host new = c.hosts[n];
-				
-					if(	
+
+					if(
 						old.id == new.id
 						||
 						(inet_addr(old.ip) == inet_addr(new.ip) && inet_addr(new.ip) != inet_addr(DUMMY_IP)) 
@@ -853,7 +853,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 							needupdate = 1;
 							continue;
 						}
-						
+
 						// kanal sie zgadza, ID tez, sprawdzamy jeszcze...
 						if( // adres IP
 							strcmp(old.ip, new.ip)
@@ -866,33 +866,33 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 							strcmp(old.mac, new.mac)
 						) {
 							// zwiekszenie limitow, trzeba podniesc parametry kanalu
-                            	    	        	if (new.upceil > channels[x].upceil || new.downceil > c.downceil)
+       	    	        	if (new.upceil > channels[x].upceil || new.downceil > c.downceil)
 							{
 								mod_channel(g, ewx, sh, channels[x].id, c.upceil, c.downceil);
 								channels[x].upceil = c.upceil;
 								channels[x].downceil = c.downceil;
 								channels[x].status = STATUS_OK;
 							}
-							
+
 							// moze wystapic (chwilowe) przekroczenie sumy rate
 							if (old.uprate != new.uprate || old.downrate != new.downrate)
 							{
 								channels[x].upratesum += new.uprate - old.uprate;
 								channels[x].downratesum += new.downrate - old.downrate;
-								
+
 								if (channels[x].upceil < channels[x].upratesum || channels[x].downceil < channels[x].downratesum)
 								{
 									mod_channel(g, ewx, sh, channels[x].id, channels[x].upratesum, channels[x].downratesum);
 									channels[x].upceil = channels[x].upratesum;
 									channels[x].downceil = channels[x].downratesum;
-							    		channels[x].status = STATUS_OK;
+							    	channels[x].status = STATUS_OK;
 								}
 							}
-	
+
 							update_node(g, ewx, sh, &c.hosts[n], channels[j].hosts[k]);
 							savetables = 1;
 						}
-						
+
 						// wszystko sie zgadza, zmieniamy status
 						channels[j].hosts[k].status = STATUS_OK;
 						found++;
@@ -900,7 +900,59 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 				}
 			}
 		}
-		
+
+//printf("id:%d, x:%d, sc::%d, need:%d, found:%d, no:%d-%d\n", c.cid, x, sc, needupdate, found, c.no, channels[x].no);
+        // dodajemy nowe hosty/usuwamy z/do kanału domyślnego
+        // dla lepszej wydajności robimy to tutaj (z pominięciem update_channel)
+        if (!c.cid && x != sc && !needupdate && (found != c.no || found != channels[x].no)) {
+            // szukamy komputerów do usunięcia
+			for (k=0; k<channels[x].no; k++) {
+			    if (channels[x].hosts[k].status == DELETED)
+			        continue;
+
+				struct host old = channels[x].hosts[k];
+
+			    for (n=0; n<c.no; n++) {
+                    if (old.id == c.hosts[n].id)
+                        break;
+                }
+
+                // komputer (old) nie znaleziony - do usunięcia
+                if (n == c.no) {
+					del_node(g, ewx, sh, &channels[x].hosts[k]);
+				    channels[x].upratesum -= old.uprate;
+				    channels[x].downratesum -= old.downrate;
+                }
+            }
+            // szukamy komputerów do dodania
+			for (k=0; k<c.no; k++) {
+
+				struct host new = c.hosts[k];
+
+			    for (n=0; n<channels[x].no; n++) {
+                    if (new.id == channels[x].hosts[n].id)
+                        break;
+                }
+
+                // komputer (new) nie znaleziony
+                if (n == channels[x].no) {
+				    if (channels[x].upratesum + new.uprate <= channels[x].upceil &&
+				        channels[x].downratesum + new.downrate <= channels[x].downceil)
+				    {
+				        channels[x].upratesum += new.uprate;
+				        channels[x].downratesum += new.downrate;
+			            add_node(g, ewx, sh, &c.hosts[k], channels[x].id + ewx->offset);
+			            found++;
+				    }
+				    else {
+				        // potrzeba zmienić parametry kanału
+				        needupdate = 1;
+				        break;
+				    }
+				}
+            }
+        }
+
 		if(needupdate || found != c.no)
 		{
 			savetables = 1;
@@ -913,7 +965,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		}
 		else if (channels[x].upceil != c.upceil || channels[x].downceil != c.downceil) {
 			savetables = 1;
-                        mod_channel(g, ewx, sh, channels[x].id, c.upceil, c.downceil);
+            mod_channel(g, ewx, sh, channels[x].id, c.upceil, c.downceil);
 		}
 
 	} // End of main loop **********************************************************
@@ -936,7 +988,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 				del_channel(g, ewx, sh, &channels[i]);
 			}
 		}
-	
+
 	// Save device configuration changes
 	if (savetables)
 		save_tables(g, ewx, sh);
