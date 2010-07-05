@@ -107,10 +107,15 @@
 			<IMG SRC="img/customer.gif" ALT="{t}Customer:{/t}">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
+			{if $customers}
 			<SELECT SIZE="1" NAME="nodeedit[ownerid]" {tip text="Assign node to customer"} style="max-width:250px;">
 				{foreach from=$customers item=c}
 				<OPTION VALUE="{$c.id}"{if $nodeinfo.ownerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
 				{/foreach}
+			{else}
+				<INPUT TYPE="TEXT" NAME="nodeedit[ownerid]" VALUE="{$nodeinfo.ownerid}" SIZE="5"{if $customers} onChange="reset_customer()" onfocus="reset_customer()"{/if} {tip text="Enter customer ID" trigger="ownerid"}>
+				<a href="javascript: void(0);" onClick="return customerchoosewin(document.editnode.elements['nodeedit[ownerid]']);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+			{/if}
 			</SELECT>
 		</TD>
 	</TR>
@@ -167,24 +172,24 @@
 			<A HREF="javascript:document.editnode.submit();" ACCESSKEY="s">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
 			<A HREF="?m=nodeinfo&id={$nodeinfo.id}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A>
 		</TD>
-	</TR>	
+	</TR>
 </TABLE>
 </FORM>
 {literal}
 <SCRIPT type="text/javascript">
 <!--
 	document.forms['editnode'].elements['nodeedit[name]'].focus();
-	
+
 	function GenPasswd()
 	{
 		if(! confirm('{/literal}{t}Are you sure, you want to generate new password?{/t}{literal}'))
 			return;
-	    
+
 		var passwd = new Array();
 		var items = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 		var length = {/literal}{$_config.phpui.nodepassword_length|default:"16"}{literal};
 		if(length > 32) length = 32;
-		
+
 		for(var i=0; i<length; i++)
 		{
 			n = Math.floor(Math.random() * items.length);
@@ -198,6 +203,12 @@
 	{
 		document.editnode.action += '&newmac=1';
 		document.editnode.submit();
+	}
+
+	function reset_customer()
+    {
+        if (document.forms['editnode'].elements['nodeedit[ownerid]'].value)
+	        document.forms['editnode'].elements['nodeedit[customerid]'].value = document.forms['editnode'].elements['nodeedit[ownerid]'].value;
 	}
 //-->
 </SCRIPT>
