@@ -106,17 +106,17 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/customer.gif" ALT="{t}Customer:{/t}">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
+		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
 			{if $customers}
-			<SELECT SIZE="1" NAME="nodeedit[ownerid]" {tip text="Assign node to customer"} style="max-width:250px;">
+			<SELECT SIZE="1" NAME="nodeedit[customerid]" {tip text="Assign node to customer"} style="max-width:160px;" onChange="document.editnode.elements['nodeedit[ownerid]'].value=this.value">
 				{foreach from=$customers item=c}
 				<OPTION VALUE="{$c.id}"{if $nodeinfo.ownerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
 				{/foreach}
-			{else}
-				<INPUT TYPE="TEXT" NAME="nodeedit[ownerid]" VALUE="{$nodeinfo.ownerid}" SIZE="5"{if $customers} onChange="reset_customer()" onfocus="reset_customer()"{/if} {tip text="Enter customer ID" trigger="ownerid"}>
-				<a href="javascript: void(0);" onClick="return customerchoosewin(document.editnode.elements['nodeedit[ownerid]']);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
-			{/if}
 			</SELECT>
+			{t}or Customer ID:{/t}
+			{/if}
+			<INPUT TYPE="TEXT" NAME="nodeedit[ownerid]" VALUE="{$nodeinfo.ownerid}" SIZE="5"{if $customers} onChange="reset_customer()" onfocus="reset_customer()"{/if} {tip text="Enter customer ID" trigger="ownerid"}>
+			<A href="javascript: void(0);" onClick="return customerchoosewin(document.editnode.elements['nodeedit[ownerid]']);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -207,8 +207,9 @@
 
 	function reset_customer()
     {
-        if (document.forms['editnode'].elements['nodeedit[ownerid]'].value)
-	        document.forms['editnode'].elements['nodeedit[customerid]'].value = document.forms['editnode'].elements['nodeedit[ownerid]'].value;
+        var val;
+        if (val = document.forms['editnode'].elements['nodeedit[ownerid]'].value)
+	        document.forms['editnode'].elements['nodeedit[customerid]'].value = val;
 	}
 //-->
 </SCRIPT>

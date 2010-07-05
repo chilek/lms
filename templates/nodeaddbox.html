@@ -113,17 +113,17 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/customer.gif" ALT="{t}Customer:{/t}">
 		</TD>
-		<TD WIDTH="99%">
+		<TD WIDTH="99%" NOWRAP>
 		{if $customers}
-			<SELECT SIZE="1" NAME="nodedata[ownerid]" {tip text="Assign node to customer" trigger="ownerid"} style="max-width:250px;">
+			<SELECT SIZE="1" NAME="nodedata[customerid]" {tip text="Assign node to customer" trigger="ownerid"} style="max-width:160px;" onChange="document.nodeadd.elements['nodedata[ownerid]'].value=this.value">
 				{foreach from=$customers item=c}
 				<OPTION VALUE="{$c.id}"{if $nodedata.ownerid == $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
 				{/foreach}
-		{else}
-			<INPUT TYPE="TEXT" NAME="nodedata[ownerid]" VALUE="{if $nodedata.ownerid}{$nodedata.ownerid}{/if}" SIZE="5"{if $customers} onChange="reset_customer()" onfocus="reset_customer()"{/if} {tip text="Enter customer ID" trigger="ownerid"}>
-			<a href="javascript: void(0);" onClick="return customerchoosewin(document.nodeadd.elements['nodedata[ownerid]']);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
-		{/if}
 			</SELECT>
+			{t}or Customer ID:{/t}
+		{/if}
+		<INPUT TYPE="TEXT" NAME="nodedata[ownerid]" VALUE="{if $nodedata.ownerid}{$nodedata.ownerid}{/if}" SIZE="5"{if $customers} onChange="reset_customer()" onfocus="reset_customer()"{/if} {tip text="Enter customer ID" trigger="ownerid"}>
+		<A href="javascript: void(0);" onClick="return customerchoosewin(document.nodeadd.elements['nodedata[ownerid]']);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -205,8 +205,9 @@
 
     function reset_customer()
     {
-        if (document.forms['editnode'].elements['nodeedit[ownerid]'].value)
-            document.forms['editnode'].elements['nodeedit[customerid]'].value = document.forms['editnode'].elements['nodeedit[ownerid]'].value;
+        var val;
+        if (val = document.forms['nodeadd'].elements['nodedata[ownerid]'].value)
+            document.forms['nodeadd'].elements['nodedata[customerid]'].value = val;
     }
 //-->
 </SCRIPT>

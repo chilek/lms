@@ -369,7 +369,7 @@ $menu = array(
 			'submenu' => array(
 				array(
 					'name' => trans('List'),
-					'link' => '?m=documentlist',
+					'link' => '?m=documentlist&init=1',
 					'tip' => trans('List of documents'),
 					'prio' => 10,
 				),
