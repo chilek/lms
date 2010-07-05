@@ -111,6 +111,7 @@
 			{else}
 			{if $netdevices}
 			<SELECT SIZE="1" style="width:300px" NAME="devid" {tip trigger="netdev"}>
+				<OPTION VALUE="0" {if !$netdevice}SELECTED{/if}>- {t}no device{/t} -</OPTION>
 				{section name=netdev loop=$netdevices}
 				{assign var=netdevname value=$netdevices[netdev].name}
 				{if $netdevices[netdev].producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$netdevices[netdev].producer}{/if}

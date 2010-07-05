@@ -35,9 +35,11 @@ if(!$LMS->NodeExists($_GET['id']))
 switch($action)
 {
 	case 'link':
-		$netdev = $LMS->GetNetDev($_GET['devid']); 
-
-		if($netdev['ports'] > $netdev['takenports']) 
+		if (empty($_GET['devid']) || !($netdev = $LMS->GetNetDev($_GET['devid'])))
+		{
+			$SESSION->redirect('?m=nodeinfo&id='.$_GET['id']);
+		}
+		else if($netdev['ports'] > $netdev['takenports'])
 		{
 			$LMS->NetDevLinkNode($_GET['id'],$_GET['devid'],
 				empty($_GET['linktype']) ? 0 : 1, intval($_GET['port']));
