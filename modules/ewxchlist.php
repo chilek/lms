@@ -29,34 +29,49 @@ function GetChannelsList($order='name,asc')
 	global $DB, $LMS;
 
 	if($order=='')
-                $order='name,asc';
-	
+        $order='name,asc';
+
 	list($order,$direction) = sscanf($order, '%[^,],%s');
-	
+
 	($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
-	
+
 	switch($order)
 	{
 		case 'id':
-			$sqlord = ' ORDER BY id';
-		break;
 		case 'devcnt':
-		        $sqlord = ' ORDER BY devcnt';
-		break;
+		case 'nodecnt':
 		case 'downceil':
 		case 'upceil':
 		case 'downceil_n':
 		case 'upceil_n':
-		        $sqlord = ' ORDER BY '.$order;
+		case 'cid':
+	        $sqlord = ' ORDER BY '.$order;
 		break;
 		default:
-	                $sqlord = ' ORDER BY name';
+            $sqlord = ' ORDER BY name';
 		break;
 	}
-	
-	$channels = $DB->GetAll('SELECT c.*, 
-		(SELECT COUNT(*) FROM netdevices WHERE channelid = c.id) AS devcnt 
-		FROM ewx_channels c'
+
+	$channels = $DB->GetAll('('
+	    .'SELECT c.id, c.name, c.upceil, c.downceil,
+	    c.upceil_n, c.downceil_n, c2.id AS cid,
+		(SELECT COUNT(*) FROM netdevices WHERE channelid = c.id) AS devcnt,
+		(SELECT COUNT(*) FROM ewx_stm_nodes n
+		    JOIN ewx_stm_channels ch ON (n.channelid = ch.id)
+		    WHERE ch.cid = c.id) AS nodecnt
+		FROM ewx_channels c
+		LEFT JOIN ewx_stm_channels c2 ON (c.id = c2.cid)
+		)
+		UNION
+		(
+		SELECT 0 AS id, \''.trans('default').'\' AS name,
+		    ch.upceil, ch.downceil, 0 AS upceil_n, 0 AS downceil_n, ch.id AS cid,
+		    (SELECT COUNT(DISTINCT netdev) FROM nodes WHERE netdev > 0 AND id IN (
+		        SELECT nodeid FROM ewx_stm_nodes WHERE channelid = ch.id)) AS devcnt,
+		    (SELECT COUNT(*) FROM ewx_stm_nodes WHERE channelid = ch.id) AS nodecnt
+		    FROM ewx_stm_channels ch
+		    WHERE ch.cid = 0
+		)'
 		.($sqlord != '' ? $sqlord.' '.$direction : ''));
 
 	$channels['total'] = sizeof($channels);
@@ -74,7 +89,7 @@ $SESSION->save('eclo', $o);
 
 if ($SESSION->is_set('eclp') && !isset($_GET['page']))
         $SESSION->restore('eclp', $_GET['page']);
-	
+
 $channels = GetChannelsList($o);
 
 $listdata['total'] = $channels['total'];

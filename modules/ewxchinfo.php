@@ -24,7 +24,19 @@
  *  $Id$
  */
 
-if(!($channel = $DB->GetRow(' SELECT * FROM ewx_channels WHERE id = ?', array($_GET['id']))))
+$cid = intval($_GET['id']);
+
+if ($cid)
+    $channel = $DB->GetRow('SELECT c.*, c2.id AS cid
+        FROM ewx_channels c
+        LEFT JOIN ewx_stm_channels c2 ON (c.id = c2.cid)
+        WHERE c.id = ?', array($cid));
+else
+    $channel = $DB->GetRow('SELECT 0 AS id, ch.upceil, ch.downceil, ch.id AS cid
+        FROM ewx_stm_channels ch
+        WHERE ch.cid = 0');
+
+if(!$channel)
 {
 	$SESSION->redirect('?m=ewxchlist');
 }
@@ -33,13 +45,25 @@ $layout['pagetitle'] = trans('Info Channel: $0', $channel['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$channel['devices'] = $DB->GetAll('SELECT id, name, location
-	FROM netdevices
-	WHERE channelid = ? ORDER BY name', array($channel['id']));
+if ($channel['id']) {
+    $channel['devices'] = $DB->GetAll('SELECT id, name, location
+	    FROM netdevices
+    	WHERE channelid = ? ORDER BY name', array($channel['id']));
 
-$channel['freedevices'] = $DB->GetAll('SELECT id, name, location, producer
-	FROM netdevices
-	WHERE channelid IS NULL ORDER BY name');
+    $channel['freedevices'] = $DB->GetAll('SELECT id, name, location, producer
+	    FROM netdevices
+    	WHERE channelid IS NULL ORDER BY name');
+} else {
+    // default channel
+    $channel['devices'] = $DB->GetAll('SELECT id, name, location
+	    FROM netdevices WHERE id IN (
+	        SELECT nodeid FROM ewx_stm_nodes WHERE channelid = ?)
+	    ORDER BY name', array($channel['id']));
+}
+
+$channel['devcnt'] = count($channel['devices']);
+$channel['nodecnt'] = $DB->GetOne('SELECT COUNT(*) FROM ewx_stm_nodes n
+    WHERE channelid = ?', array($channel['cid']));
 
 $SMARTY->assign('channel', $channel);
 $SMARTY->display('ewxchinfo.html');

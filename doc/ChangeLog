@@ -35,6 +35,7 @@ version ? (????-??-??)
     documentlist templates (alec/W.Dymkiewicz)
   - added period moving links in node's traffic graph (alec)
   - BTS#0000837: fixed values on traffic graphs (alec)
+  - added info about default channel and about nodes on channels list (alec)
 
 version 1.11.10 Kri (2010-04-19)
 

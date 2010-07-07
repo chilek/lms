@@ -96,10 +96,15 @@ function CheckAllN2()
 				({$customernodes[customernodes].id|string_format:"%04d"})
 			    </TD>
 			    {if $ewx}
-		    	    <TD onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';">
+		    	    <TD onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';" align="right" NOWRAP>
 				{if $customernodes[customernodes].channelname}
-				<a href="?m=ewxchinfo&id={$customernodes[customernodes].channelid}"><b>{$customernodes[customernodes].channelname|truncate:20:"...":true}</b></a>
-				{elseif $customernodes[customernodes].channelid}<b>[{$customernodes[customernodes].channelid|string_format:"%04d"}]</b>
+				    <a href="?m=ewxchinfo&id={$customernodes[customernodes].channelid}">{$customernodes[customernodes].channelname|truncate:30:"...":true}</a>
+				{elseif $customernodes[customernodes].channelid}
+				    {if !$customernodes[customernodes].cid}
+				    - {t}default{/t} -
+				    {else}
+				    [{$customernodes[customernodes].channelid|string_format:"%04d"}]
+				    {/if}
 				{/if}
 			    </TD>
 			    {/if}
