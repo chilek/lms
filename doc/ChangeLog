@@ -34,6 +34,7 @@ version ? (????-??-??)
   - support big_networks with owner popup selector in nodeadd, nodeedit and
     documentlist templates (alec/W.Dymkiewicz)
   - added period moving links in node's traffic graph (alec)
+  - BTS#0000837: fixed values on traffic graphs (alec)
 
 version 1.11.10 Kri (2010-04-19)
 
