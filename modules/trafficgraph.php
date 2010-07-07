@@ -260,14 +260,14 @@ function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=
 //	imageline($img,$movx-2,$movy+1,$movx+$graph_width+3,$movy+1,$textcolor);
 //	imageline($img,$movx-2,10,$movx+$graph_width+3,10,$textcolor);
 
-	if ($stats_max/(1024*1024) > 10)
+	if ($stats_max/(1000*1000) > 10)
 	{
-		$vdiv = 1024*1024;
+		$vdiv = 1000*1000;
 		$suffix = 'Mbit/s';
 	}
-	else if ($stats_max/1024 > 1)
+	else if ($stats_max/1000 > 1)
 	{
-		$vdiv = 1024;
+		$vdiv = 1000;
 		$suffix = 'kbit/s';
 	}
 	else
