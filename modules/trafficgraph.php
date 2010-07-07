@@ -86,9 +86,9 @@ function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=
 				$divisor = 200;
 			else
 				$divisor = 400;
-		break;	
+		break;
 	}
-	
+
 	$div = 10;
 	$qdivisor = (int) ($quantum/$divisor);
 
@@ -97,9 +97,9 @@ function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=
 		$node = $LMS->DB->GetRow('SELECT name, INET_NTOA(ipaddr) AS ip
 			FROM nodes WHERE id = ?', array($nodeid));
 
-		$stats = $LMS->DB->GetAll('SELECT SUM(upload) AS upload,
-				SUM(download) AS download,
-				CEIL(dt/?) AS dts, COUNT(*) AS cnt
+		$stats = $LMS->DB->GetAll('SELECT SUM(upload)/COUNT(*) AS upload,
+				SUM(download)/COUNT(*) AS download,
+				CEIL(dt/?) AS dts
 			FROM stats WHERE nodeid = ? AND dt >= ? AND dt <= ?
 			GROUP BY CEIL(dt/?) ORDER BY dts ASC',
 			array($qdivisor, $nodeid, $fromdate, $todate, $qdivisor));
@@ -121,19 +121,22 @@ function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=
 		}
 		else
 			$net = '';
-	
+
 		$stats = $LMS->DB->GetAll('SELECT SUM(upload) AS upload,
-			SUM(download) AS download,
-			CEIL(dt/?) AS dts, COUNT(*) AS cnt
-			FROM stats '
-			.($customer || $net ? 'JOIN nodes ON stats.nodeid = nodes.id ' : '')
-			.'WHERE dt >= ? AND dt <= ? '
-			.($customer ? ' AND ownerid = '.intval($customer) : '')
-			.$net
-			.'GROUP BY CEIL(dt/?) ORDER BY dts ASC',
+			SUM(download) AS download, dts
+			FROM (
+			    SELECT SUM(upload)/COUNT(*) AS upload, SUM(download)/COUNT(*) AS download,
+			    CEIL(dt/?) AS dts
+			    FROM stats '
+			    .($customer || $net ? 'JOIN nodes ON stats.nodeid = nodes.id ' : '')
+			    .'WHERE dt >= ? AND dt <= ? '
+			    .($customer ? ' AND ownerid = '.intval($customer) : '')
+			    .$net
+			    .'GROUP BY CEIL(dt/?), nodeid) x
+			GROUP BY dts ORDER BY dts',
 			array($qdivisor, $fromdate, $todate, $qdivisor));
 	}
-	
+
 	$down_max = $up_max = 0;
 	$last_up = $last_down = 0;
 	$avg_up = $avg_down = 0;
@@ -143,8 +146,8 @@ function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=
 	if ($stats) foreach($stats as $idx => $row)
 	{
 		$i = $row['dts'] - $dstart;
-		$vstats[$i]['download'] = $row['download']/$row['cnt'];
-		$vstats[$i]['upload'] = $row['upload']/$row['cnt'];
+		$vstats[$i]['download'] = $row['download']*8/$divisor;
+		$vstats[$i]['upload'] = $row['upload']*8/$divisor;
 
 		if($vstats[$i]['download'] > $down_max)
 			$down_max = $vstats[$i]['download'];
@@ -168,13 +171,13 @@ function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=
 
 	imagesetthickness($img, 1);
 
-	// image borders    
+	// image borders
 	imageline($img,0,0,$xmax,0,$textcolor);
 	imageline($img,0,$ymax-1,$xmax,$ymax-1,$textcolor);
 	imageline($img,0,0,0,$ymax,$textcolor);
 	imageline($img,$xmax-1,0,$xmax-1,$ymax,$textcolor);
 
-	$styleline = array($textcolor,IMG_COLOR_TRANSPARENT,IMG_COLOR_TRANSPARENT);	
+	$styleline = array($textcolor,IMG_COLOR_TRANSPARENT,IMG_COLOR_TRANSPARENT);
 	imagesetstyle($img, $styleline);
 
 	$downx = $upx = $movx;
@@ -190,10 +193,10 @@ function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=
 			$upload = round($graph_height*($up/$stats_max));
 		}
 		else
-		{	
+		{
 			$down = $up = $download = $upload = 0;
 		}
-		
+
 		$posx = ceil($x * $graph_width/$divisor);
 
 		// download
@@ -204,13 +207,13 @@ function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=
 		$downx = $upx = $movx+$posx;
 		$downy = $movy-$download;
 		$upy = $movy-$upload;
-		
+
 		$last_down = $down;
 		$last_up = $up;
 		$sum_down += $last_down;
 		$sum_up += $last_up;
 	}
-	
+
 	$avg_down = $sum_down/$divisor;
 	$avg_up = $sum_up/$divisor;
 
@@ -218,7 +221,7 @@ function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=
 	for($i=0; $i<$div+1; $i++)
 	{
 		$posx = ceil($i * $graph_width/$div);
-		
+
 		switch($bar)
 		{
 			case 'week':
@@ -294,7 +297,7 @@ function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=
 			$title = iconv('UTF-8','ISO-8859-2//TRANSLIT', trans('unknown')).' (ID: '.$nodeid.')';
 	} else
 		$title =  iconv('UTF-8','ISO-8859-2//TRANSLIT', trans('Network Statistics'));
-		
+
 	$center = ceil((imagesx($img) - (imagefontwidth(3) * strlen($title)))/2); 
 	imagestring($img, 3, $center, 8, $title, $textcolor);
 	// summaries
