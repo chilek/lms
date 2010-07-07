@@ -30,7 +30,7 @@ if(!function_exists('imagecreate'))
 define('GRAPH_HEIGHT', 180);
 define('GRAPH_WIDTH', 500);
 
-function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=NULL, $todate=NULL)
+function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=NULL, $todate=NULL, $add=NULL)
 {
 	global $LMS;
 
@@ -45,7 +45,7 @@ function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=
 	$graph_width = 400;
 
 	$todate = $todate ? $todate : time();
-	
+
 	switch($bar)
 	{
 		case 'hour':
@@ -88,6 +88,11 @@ function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=
 				$divisor = 400;
 		break;
 	}
+
+    if ($add) {
+        $fromdate += $add;
+        $todate += $add;
+    }
 
 	$div = 10;
 	$qdivisor = (int) ($quantum/$divisor);
@@ -298,8 +303,14 @@ function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=
 	} else
 		$title =  iconv('UTF-8','ISO-8859-2//TRANSLIT', trans('Network Statistics'));
 
-	$center = ceil((imagesx($img) - (imagefontwidth(3) * strlen($title)))/2); 
+	$center = ceil((imagesx($img) - (imagefontwidth(3) * strlen($title)))/2);
 	imagestring($img, 3, $center, 8, $title, $textcolor);
+
+    // time period title
+    $title = date('Y/m/d H:i', $fromdate).' - '.date('Y/m/d H:i', $todate);
+	$center = ceil((imagesx($img) - (imagefontwidth(1) * strlen($title)))/2);
+	imagestring($img, 1, $center, 23, $title, $textcolor);
+
 	// summaries
 	imagestring($img, 2, 10, $ymax-30, iconv('UTF-8','ISO-8859-2//TRANSLIT', trans('DOWNLOAD')), $downloadcolor);
 	imagestring($img, 2, 10, $ymax-18, iconv('UTF-8','ISO-8859-2//TRANSLIT', trans('UPLOAD')), $uploadcolor);
@@ -320,11 +331,12 @@ $from = isset($_GET['from']) ? $_GET['from'] : NULL;
 $to = isset($_GET['to']) ? $_GET['to'] : NULL;
 $customer = isset($_GET['customer']) ? $_GET['customer'] : NULL;
 $net = isset($_GET['net']) ? $_GET['net'] : NULL;
+$add = isset($_GET['add']) ? $_GET['add'] : NULL;
 
 if(empty($_GET['popup']))
 {
 	header('Content-type: image/png');
-	TrafficGraph($nodeid, $net, $customer, $bar, $from, $to);
+	TrafficGraph($nodeid, $net, $customer, $bar, $from, $to, $add);
 	die;
 }
 
@@ -332,6 +344,7 @@ $SMARTY->assign('nodeid', $nodeid);
 $SMARTY->assign('bar', $bar);
 $SMARTY->assign('to', $to);
 $SMARTY->assign('from', $from);
+$SMARTY->assign('add', $add);
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('net', $net);
 $SMARTY->display('trafficgraph.html');

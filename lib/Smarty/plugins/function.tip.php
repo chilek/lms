@@ -31,7 +31,10 @@ function smarty_function_tip($args, &$SMARTY)
 		if(is_array($args))
 			foreach($args as $argid => $argval)
 				$popup = str_replace('$'.$argid, $argval, $popup);
-		$text = "onmouseover=\"return overlib('<iframe id=&quot;autoiframe&quot; width=100 height=10 frameborder=0 scrolling=no src=&quot;".$popup."&popup=1&quot;></iframe>',HAUTO,VAUTO,OFFSETX,30,OFFSETY,15".($args['sticky'] ? ',STICKY, MOUSEOFF' : '').");\" onmouseout=\"nd();\"";
+
+		$text = " onmouseover=\"return overlib('<iframe id=&quot;autoiframe&quot; width=100 height=10 frameborder=0 scrolling=no src=&quot;"
+		    .$popup."&popup=1&quot;></iframe>',HAUTO,VAUTO,OFFSETX,30,OFFSETY,15"
+		    .($args['sticky'] ? ',STICKY, MOUSEOFF' : '').");\" onmouseout=\"nd();\"";
 //		global $SESSION;
 //		$text = 'onmouseover="if(getSeconds() < '.$SESSION->timeout.'){ return overlib(\'<iframe id=&quot;autoiframe&quot; frameborder=0 scrolling=no width=220 height=150 src=&quot;'.$popup.'&quot;></iframe>\',HAUTO,VAUTO,OFFSETX,85,OFFSETY,15); }" onmouseout="nd();"';
 		return $text;
@@ -41,7 +44,10 @@ function smarty_function_tip($args, &$SMARTY)
 		if(is_array($args))
 			foreach($args as $argid => $argval)
 				$popup = str_replace('$'.$argid, $argval, $popup);
-		$text = " onclick=\"return overlib('<iframe id=&quot;autoiframe&quot; width=100 height=10 frameborder=0 scrolling=no src=&quot;".$popup."&popup=1&quot;></iframe>',HAUTO,VAUTO,OFFSETX,10,OFFSETY,10);\" onmouseout=\"nd();\" ";
+
+		$text = " onclick=\"return overlib('<iframe id=&quot;autoiframe&quot; width=100 height=10 frameborder=0 scrolling=no src=&quot;"
+		    .$popup."&popup=1&quot;></iframe>',HAUTO,VAUTO,OFFSETX,10,OFFSETY,10"
+		    .($args['sticky'] ? ',STICKY, MOUSEOFF' : '').");\" onmouseout=\"nd();\"";
 		return $text;
 	} 
 	else 
@@ -52,7 +58,7 @@ function smarty_function_tip($args, &$SMARTY)
 		    $error = str_replace('"','&quot;',$error);
 		    $error = str_replace("\r",'',$error);
 		    $error = str_replace("\n",'<BR>',$error);
-		    
+
 		    $result = ' onmouseover="return overlib(\'<b><font color=red>'.$error.'</font></b>\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onmouseout="nd();" ';
 		    $result .= $args['bold'] ? ' CLASS="alert bold" ' : ' CLASS="alert" ';
 	    }
