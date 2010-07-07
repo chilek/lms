@@ -6,12 +6,11 @@ function auto_iframe(margines)
 {
    if (parent != self && document.body && (document.body.scrollHeight || document.body.offsetHeight))
    {
-      var undefined;
       if (isNaN(parseInt(margines))) var margines = 0;
 
-      if (parent.document.getElementById) parent.document.getElementById('autoiframe').height = 1;
-      else if (parent.document.all) parent.document.all['autoiframe'].height = 1;
-      var wysokosc = document.body.scrollHeight != undefined ? document.body.scrollHeight : document.body.offsetHeight;
+//      if (parent.document.getElementById) parent.document.getElementById('autoiframe').height = 1;
+//      else if (parent.document.all) parent.document.all['autoiframe'].height = 1;
+      var wysokosc = document.body.offsetHeight;
       if (wysokosc)
       {
         if (parent.document.getElementById)
