@@ -102,8 +102,8 @@ function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=
 		$node = $LMS->DB->GetRow('SELECT name, INET_NTOA(ipaddr) AS ip
 			FROM nodes WHERE id = ?', array($nodeid));
 
-		$stats = $LMS->DB->GetAll('SELECT SUM(upload)/COUNT(*) AS upload,
-				SUM(download)/COUNT(*) AS download,
+		$stats = $LMS->DB->GetAll('SELECT SUM(upload) AS upload,
+				SUM(download) AS download,
 				CEIL(dt/?) AS dts
 			FROM stats WHERE nodeid = ? AND dt >= ? AND dt <= ?
 			GROUP BY CEIL(dt/?) ORDER BY dts ASC',
@@ -130,7 +130,7 @@ function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=
 		$stats = $LMS->DB->GetAll('SELECT SUM(upload) AS upload,
 			SUM(download) AS download, dts
 			FROM (
-			    SELECT SUM(upload)/COUNT(*) AS upload, SUM(download)/COUNT(*) AS download,
+			    SELECT SUM(upload) AS upload, SUM(download) AS download,
 			    CEIL(dt/?) AS dts
 			    FROM stats '
 			    .($customer || $net ? 'JOIN nodes ON stats.nodeid = nodes.id ' : '')
@@ -151,17 +151,22 @@ function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=
 	if ($stats) foreach($stats as $idx => $row)
 	{
 		$i = $row['dts'] - $dstart;
-		$vstats[$i]['download'] = $row['download']*8/$divisor;
-		$vstats[$i]['upload'] = $row['upload']*8/$divisor;
+		$vstats[$i]['download'] = $row['download']*8/($quantum/$divisor);
+		$vstats[$i]['upload'] = $row['upload']*8/($quantum/$divisor);
 
 		if($vstats[$i]['download'] > $down_max)
 			$down_max = $vstats[$i]['download'];
 		if($vstats[$i]['upload'] > $up_max)
 			$up_max = $vstats[$i]['upload'];
 
+   		$sum_down += $row['download']*8;
+    	$sum_up += $row['upload']*8;
+
 		unset($stats[$idx]);
 	}
 
+	$avg_down = $sum_down/$quantum;
+	$avg_up = $sum_up/$quantum;
 	$stats_max = max($down_max, $up_max);
 
 	// create image
@@ -215,12 +220,7 @@ function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=
 
 		$last_down = $down;
 		$last_up = $up;
-		$sum_down += $last_down;
-		$sum_up += $last_up;
 	}
-
-	$avg_down = $sum_down/$divisor;
-	$avg_up = $sum_up/$divisor;
 
 	// horizontal scale
 	for($i=0; $i<$div+1; $i++)
@@ -248,7 +248,7 @@ function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=
 
 		imageline($img,$movx+$posx,$movy-$graph_height,$movx+$posx,$movy, IMG_COLOR_STYLED);
 		imageline($img,$movx+$posx,$movy-1,$movx+$posx,$movy+2,$textcolor);
-		$posx -= ceil(imagefontwidth(1) * strlen($str)/2); 
+		$posx -= ceil(imagefontwidth(1) * strlen($str)/2);
 		imagestring($img, 1, $movx+$posx+1, $movy+5, iconv('UTF-8','ISO-8859-2//TRANSLIT', $str), $textcolor);
 	}
 
@@ -316,8 +316,8 @@ function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=
 	imagestring($img, 2, 10, $ymax-18, iconv('UTF-8','ISO-8859-2//TRANSLIT', trans('UPLOAD')), $uploadcolor);
 	imagestring($img, 2, 70, $ymax-30, iconv('UTF-8','ISO-8859-2//TRANSLIT', trans('MAX:')).' '.str_pad(round($down_max/$vdiv),7,' ',STR_PAD_LEFT).' '.$suffix, $downloadcolor);
 	imagestring($img, 2, 70, $ymax-18, iconv('UTF-8','ISO-8859-2//TRANSLIT', trans('MAX:')).' '.str_pad(round($up_max/$vdiv),7,' ',STR_PAD_LEFT).' '.$suffix, $uploadcolor);
-	imagestring($img, 2, 195, $ymax-30, iconv('UTF-8','ISO-8859-2//TRANSLIT', trans('AVG:')).' '.str_pad(round($avg_down/$vdiv),7,' ',STR_PAD_LEFT).' '.$suffix, $downloadcolor);
-	imagestring($img, 2, 195, $ymax-18, iconv('UTF-8','ISO-8859-2//TRANSLIT', trans('AVG:')).' '.str_pad(round($avg_up/$vdiv),7,' ',STR_PAD_LEFT).' '.$suffix, $uploadcolor);
+	imagestring($img, 2, 195, $ymax-30, iconv('UTF-8','ISO-8859-2//TRANSLIT', trans('AVG:')).' '.str_pad(floor($avg_down/$vdiv),7,' ',STR_PAD_LEFT).' '.$suffix, $downloadcolor);
+	imagestring($img, 2, 195, $ymax-18, iconv('UTF-8','ISO-8859-2//TRANSLIT', trans('AVG:')).' '.str_pad(floor($avg_up/$vdiv),7,' ',STR_PAD_LEFT).' '.$suffix, $uploadcolor);
 	imagestring($img, 2, 345, $ymax-30, iconv('UTF-8','ISO-8859-2//TRANSLIT', trans('LAST:')).' '.str_pad(round($last_down/$vdiv),7,' ',STR_PAD_LEFT).' '.$suffix, $downloadcolor);
 	imagestring($img, 2, 345, $ymax-18, iconv('UTF-8','ISO-8859-2//TRANSLIT', trans('LAST:')).' '.str_pad(round($last_up/$vdiv),7,' ',STR_PAD_LEFT).' '.$suffix, $uploadcolor);
 
