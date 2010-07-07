@@ -875,6 +875,7 @@ class LMS
 				if ($channels) foreach($channels as $channel) {
 					$result[$ids[$channel['nodeid']]]['channelid'] = $channel['id'] ? $channel['id'] : $channel['channelid'];
 					$result[$ids[$channel['nodeid']]]['channelname'] = $channel['name'];
+					$result[$ids[$channel['nodeid']]]['cid'] = $channel['cid'];
 				}
 			}
 			

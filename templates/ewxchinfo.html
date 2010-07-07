@@ -4,7 +4,12 @@
 <TABLE cellpadding="3" width="100%">
 	<TR class="dark">
 		<TD width="100%" class="fall" colspan="2" NOWRAP>
-			<IMG SRC="img/channel.gif" alt=""> <B>{$channel.name} ({$channel.id|string_format:"%04d"})</B>
+			<IMG SRC="img/channel.gif" alt="">
+			{if $channel.id}
+			    <B>{$channel.name} ({$channel.id|string_format:"%04d"})</B>
+			{else}
+			    {t}default{/t}
+			{/if}
 		</TD>
 	</TR>
 	<TR class="light">
@@ -25,18 +30,44 @@
 			({t}night:{/t} {if $channel.upceil_n}{$channel.upceil_n|default:0} kbit/s{else}{t}not defined{/t}{/if})
 		</TD>
 	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft" NOWRAP>
+			<IMG SRC="img/netdev.gif" alt=""> <B>{t}Devices:{/t}</B>
+		</TD>
+		<TD width="99%" class="fright">
+		    {$channel.devcnt|default:0}
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft" NOWRAP>
+			<IMG SRC="img/node.gif" alt=""> <B>{t}Nodes:{/t}</B>
+		</TD>
+		<TD width="99%" class="fright">
+		    {$channel.nodecnt|default:0}
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft" NOWRAP>
+			<IMG SRC="img/channel.gif" alt=""> <B>STMID:</B>
+		</TD>
+		<TD width="99%" class="fright">
+		    {if $channel.cid}[{$channel.cid|string_format:"%04d"}]{else}-{/if}
+		</TD>
+	</TR>
 	<TR CLASS="LIGHT">
-        	<TD width="100%" CLASS="fbottomu" COLSPAN="2" align="right">
-                        <A HREF="?m=ewxchedit&id={$channel.id}" accesskey="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT=""></A>
+        <TD width="100%" CLASS="fbottomu" COLSPAN="2" align="right">
+            {if $channel.id}
+            <A HREF="?m=ewxchedit&id={$channel.id}" accesskey="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT=""></A>
 			<A HREF="?m=ewxchdel&id={$channel.id}" onclick="return confirmLink(this,'{t}Are you sure, you want to delete this channel?{/t}');">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT=""></A>
-                </TD>
-        </TR>
+            {/if}
+        </TD>
+    </TR>
 </TABLE>
 <BR>
 <TABLE cellpadding="3" width="100%">
 	<TR CLASS="DARK">
         	<TD width="100%" CLASS="fall">
-			<IMG SRC="img/netdev.gif" alt=""> <B>{t}Devices:{/t}</B>		
+			<IMG SRC="img/netdev.gif" alt=""> <B>{t}Devices:{/t}</B>
                 </TD>
         </TR>
 	<TR>
@@ -61,7 +92,9 @@
 						{$item.location}
 					</TD>
 					<TD align="right">
+					    {if $channel.id}
 						<A href="?m=ewxchedit&action=remove&id={$channel.id}&devid={$item.id}" onClick="return confirmLink(this, '{t}Are you sure, you want to remove this assignment?{/t}')"  {tip text="Remove this device from the channel"}><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
+					    {/if}
 					</TD>
 				</TR>
 				{foreachelse}
@@ -88,7 +121,7 @@
 					<TD ALIGN="RIGHT" CLASS="ftop" ROWSPAN="2" NOWRAP>
 				    		<A HREF="javascript:document.device.submit()" {tip text="Add device to the channel"}>{t}Add{/t} <IMG SRC="img/save.gif" alt="[ {t}Add{/t} ]"></A>
 					</TD>
-				</TR>	   
+				</TR>
 				</FORM>
 				{/if}
 			</TABLE>
