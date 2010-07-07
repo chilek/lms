@@ -2388,10 +2388,10 @@ class LMS
 
 	function DelBalance($id)
 	{
-		$row = $this->DB->GetRow('SELECT docid, itemid, documents.type AS doctype
+		$row = $this->DB->GetRow('SELECT docid, itemid, documents.type AS doctype, importid
 					FROM cash
 					LEFT JOIN documents ON (docid = documents.id)
-					WHERE cash.id=?', array($id));
+					WHERE cash.id = ?', array($id));
 
 		if($row['doctype']==DOC_INVOICE || $row['doctype']==DOC_CNOTE)
 			$this->InvoiceContentDelete($row['docid'], $row['itemid']);
@@ -2399,8 +2399,11 @@ class LMS
 			$this->ReceiptContentDelete($row['docid'], $row['itemid']);
 		elseif($row['doctype']==DOC_DNOTE)
 			$this->DebitNoteContentDelete($row['docid'], $row['itemid']);
-		else
-			$this->DB->Execute('DELETE FROM cash WHERE id=?', array($id));
+		else {
+			$this->DB->Execute('DELETE FROM cash WHERE id = ?', array($id));
+            if ($row['importid'])
+                $this->DB->Execute('UPDATE cashimport SET closed = 0 WHERE id = ?', array($row['importid']));
+	    }
 	}
 
 	/*
