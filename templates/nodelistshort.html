@@ -16,7 +16,11 @@
 			<IMG SRC="img/node.gif" alt="">
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
+		    {if $layout.module == 'ewxnodelist'}
+		    <B>{t 0=$customernodes.total|default:"0"}Channel Nodes ($0):{/t}</B>
+		    {else}
 			<B>{t 0=$customernodes.total|default:"0"}Customer Nodes ($0):{/t}</B>
+			{/if}
 		</TD>
 	</TR>
 	{cycle values="light,lucid" print=false}
@@ -49,7 +53,7 @@
 	<TR>
 		<TD WIDTH="100%" COLSPAN="2" align="center">
 			<P>&nbsp;</P>
-			<P>{if $customerinfo.deleted}<FONT class="alert">{t}That customer has been deleted.{/t}</FONT>{else}<B>{t}That customer hasn't got any node.{/t}{/if}</B></P>
+			<P><B>{t}No nodes found in database.{/t}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>

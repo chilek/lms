@@ -820,33 +820,24 @@ class LMS
 
 	function GetCustomerNodes($id, $count=NULL)
 	{
-		if($result = $this->DB->GetAll('SELECT id, name, mac, ipaddr, 
-				inet_ntoa(ipaddr) AS ip, ipaddr_pub, 
-				inet_ntoa(ipaddr_pub) AS ip_pub, passwd, access, 
+		if($result = $this->DB->GetAll('SELECT id, name, mac, ipaddr,
+				inet_ntoa(ipaddr) AS ip, ipaddr_pub,
+				inet_ntoa(ipaddr_pub) AS ip_pub, passwd, access,
 				warning, info, ownerid, location, lastonline,
 				(SELECT COUNT(*) FROM nodegroupassignments
-					WHERE nodeid = vnodes.id) AS gcount 
-				FROM vnodes 
+					WHERE nodeid = vnodes.id) AS gcount
+				FROM vnodes
 				WHERE ownerid=?
 				ORDER BY name ASC '.($count ? 'LIMIT '.$count : ''), array($id)))
 		{
 			// assign network(s) to node record
 			$networks = (array) $this->GetNetworks();
-			
+
 			foreach($result as $idx => $node)
 			{
 				$ids[$node['id']] = $idx;
-				$delta = time()-$node['lastonline'];
-				if($delta>$this->CONFIG['phpui']['lastonline_limit'])
-				{
-					if($delta>59)
-						$result[$idx]['lastonlinedate'] = trans('$0 ago ($1)', uptimef($delta), date('Y/m/d, H:i',$node['lastonline']));
-					else
-						$result[$idx]['lastonlinedate'] = '('.date('Y/m/d, H:i',$node['lastonline']).')';
-				}
-				else
-					$result[$idx]['lastonlinedate'] = trans('online');
-					
+				$result[$idx]['lastonlinedate'] = lastonline_date($node['lastonline']);
+
 				foreach($networks as $net)
 					if(isipin($node['ip'], $net['address'], $net['mask']))
 					{
@@ -1245,29 +1236,20 @@ class LMS
 			$result['modifiedby'] = $this->GetUserName($result['modid']);
 			$result['creationdateh'] = date('Y/m/d, H:i',$result['creationdate']);
 			$result['moddateh'] = date('Y/m/d, H:i',$result['moddate']);
+			$result['lastonlinedate'] = lastonline_date($result['lastonline']);
+
 			$result['mac'] = preg_split('/,/', $result['mac']);
 			foreach($result['mac'] as $mac)
 				$result['macs'][] = array('mac' => $mac, 'producer' => get_producer($mac));
 			unset($result['mac']);
 
-			$delta = time()-$result['lastonline'];
-			if($delta>$this->CONFIG['phpui']['lastonline_limit'])
-			{
-				if($delta>59)
-					$result['lastonlinedate'] = trans('$0 ago ($1)', uptimef($delta), date('Y/m/d, H:i',$result['lastonline']));
-				else
-					$result['lastonlinedate'] = '('.date('Y/m/d, H:i',$result['lastonline']).')';
-			}
-			else
-				$result['lastonlinedate'] = trans('online');
-			
 			if($net = $this->DB->GetRow('SELECT id, name FROM networks
 				WHERE address = (inet_aton(?) & inet_aton(mask))', array($result['ip'])))
 			{
 				$result['netid'] = $net['id'];
 				$result['netname'] = $net['name'];
 			}
-			
+
 			return $result;
 		} else
 			return FALSE;

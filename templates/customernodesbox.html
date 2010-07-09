@@ -101,7 +101,7 @@ function CheckAllN2()
 				    <a href="?m=ewxchinfo&id={$customernodes[customernodes].channelid}">{$customernodes[customernodes].channelname|truncate:30:"...":true}</a>
 				{elseif $customernodes[customernodes].channelid}
 				    {if !$customernodes[customernodes].cid}
-				    - {t}default{/t} -
+				    <a href="?m=ewxchinfo&id=0">[{t}default{/t}]</a>
 				    {else}
 				    [{$customernodes[customernodes].channelid|string_format:"%04d"}]
 				    {/if}
