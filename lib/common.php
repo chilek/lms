@@ -649,10 +649,29 @@ function clear_utf($str)
 	return $r;
 }
 
+function lastonline_date($timestamp)
+{
+    global $CONFIG;
+
+    if (!$timestamp)
+        return null;
+
+    $delta = time()-$timestamp;
+    if ($delta > $CONFIG['phpui']['lastonline_limit']) {
+        if($delta>59)
+            return trans('$0 ago ($1)', uptimef($delta), date('Y/m/d, H:i', $timestamp));
+        else
+            return date('(Y/m/d, H:i)', $timestamp);
+    }
+
+    return trans('online');
+}
+
+/* Functions for modularized LMS */
 function plugin_handle($name)
 {
-        global $PLUGINS;
-	
+    global $PLUGINS;
+
 	if(isset($PLUGINS[$name]))
 		foreach($PLUGINS[$name] as $plugin)
 			include($plugin);
@@ -660,8 +679,8 @@ function plugin_handle($name)
 
 function clearheader()
 {
-        global $ExecStack, $layout;
-	
+    global $ExecStack, $layout;
+
 	$ExecStack->replaceTemplate('core', 'header', 'core', 'clearheader');
 	//$ExecStack->dropTemplate('core', 'menu');
 }
@@ -670,13 +689,13 @@ function clearheader()
 	Registering "plugin" function is for use in actions.
 	$handle - handle name
 	$plugin - template or action for including in handle. Example of use:
-	    
+
 	register_plugin('nodeinfobox-end', '/path/sometemplate.html');
 */
 function register_plugin($handle, $plugin)
 {
         global $PLUGINS;
-	
+
         $PLUGINS[$handle][] = $plugin;
 }
 
