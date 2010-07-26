@@ -168,7 +168,7 @@ $dbq = $dbase->prepare("SELECT address, mask FROM networks WHERE name = UPPER(?)
 foreach my $key (@networks)
 {
 	$dbq->execute($key);
-	
+
 	while (my $row = $dbq->fetchrow_hashref()) 
 	{
 		my $longip = $row->{'address'};
@@ -177,12 +177,13 @@ foreach my $key (@networks)
 		{
 			if($maclist{$i})
 			{
-				my $mac  = lc((split ',', $maclist{$i})[0]);
 				my $name = lc($namelist{$i});
-			
-				$mac =~ s/://g;
+				my $macs = lc($maclist{$i});
+				$macs =~ s/://g;
 
-				print ETHERSFILE "$mac:$name\n";
+                foreach my $mac (split ',', $macs) {
+				    print ETHERSFILE "$mac:$name\n";
+				}
 			}
 		}
 	}
