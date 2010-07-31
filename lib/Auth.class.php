@@ -83,8 +83,11 @@ class Auth {
 
 		if($this->islogged || ($this->login && $this->VerifyUser()))
 		{
-			$this->SESSION->restore('session_last', $this->last);
-			$this->SESSION->restore('session_lastip', $this->lastip);
+			if(empty($this->last))
+			{
+				$this->SESSION->restore('session_last', $this->last);
+				$this->SESSION->restore('session_lastip', $this->lastip);
+			}
 			$this->logname = $this->logname ? $this->logname : $this->SESSION->get('session_logname');
 			$this->id = $this->id ? $this->id : $this->SESSION->get('session_id');
 
