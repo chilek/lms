@@ -7,14 +7,14 @@
 <!--
 	function CheckAll()
 	{
-                for (var i=0; i<document.page.elements.length; i++)
-                {
-                        var e = document.page.elements[i];
-                        if (e.name != 'allbox')
-	    			e.checked = document.page.allbox.checked;
+        for (var i=0; i<document.page.elements.length; i++)
+        {
+            var e = document.page.elements[i];
+            if (e.type == 'checkbox' && e.name != 'allbox')
+	    	    e.checked = document.page.allbox.checked;
 		}
 	}
-	
+
 	function CheckAll2()
 	{
 	        document.page.allbox.checked = !document.page.allbox.checked;
@@ -30,7 +30,7 @@
         	document.page.target="";
 		document.page.submit();
 	}
-	
+
 	function print_docs()
 	{
 	    document.page.action="?m=documentview";
@@ -44,10 +44,28 @@
             document.page.target="";
             document.page.submit();
 	}
+
+    function filter()
+    {
+        // uncheck checkboxes, we don't need them in GET
+        for (var i=0; i<document.page.elements.length; i++)
+        {
+            var e = document.page.elements[i];
+            if (e.type == 'checkbox')
+	    	    e.checked = "";
+		}
+        document.page.action="";
+        document.page.target="";
+        document.page.method="get";
+        document.page.submit();
+    }
 //-->
 </SCRIPT>
 {/literal}
 {include file="calendar_js.html"}
+<FORM METHOD="POST" NAME="page" ACTION="?m=documentedit&action=confirm">
+<INPUT type="hidden" name="m" value="documentlist">
+<INPUT type="hidden" name="page" value="1">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" NOWRAP class="fleftu"> <A href="?m=documentlist&o=cdate{if $listdata.direction eq "asc" && $listdata.order eq "cdate"},desc{/if}">{t}Date:{/t}</A>{if $listdata.order eq "cdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR><B>{t}Number:{/t}</B></TD>
@@ -60,13 +78,9 @@
 	</TR>
 	<TR class="DARK">
 		<TD class="fall" colspan="5">
-			    <FORM method="GET" action="?m=documentlist" name="filter">
-				<INPUT type="submit" class="hiddenbtn">
-				<INPUT type="HIDDEN" name="m" value="documentlist">
-				<INPUT type="HIDDEN" name="page" value="1">
 				<B>{t}Filter:{/t} </B> {t}Customer:{/t}
                 {if $customerlist}
-				    <SELECT size="1" name="c" OnChange="document.filter.submit();">
+				    <SELECT size="1" name="c" OnChange="filter()">
 					<OPTION value="0"{if $listdata.customer eq ""} SELECTED{/if}>{t}- all customers -{/t}</OPTION>
 					{foreach from=$customerlist item=customer}
 					<OPTION value="{$customer.id}"{if $customer.id eq $listdata.customer} SELECTED{/if}>{$customer.customername|truncate:40:"...":true}</OPTION>
@@ -74,10 +88,10 @@
 				    </SELECT>
 				{else}
 				    <INPUT TYPE="TEXT" NAME="c" VALUE="{if $listdata.customer}{$listdata.customer}{/if}" SIZE="5">
-				    <A href="javascript: void(0);" onClick="return customerchoosewin(document.filter.elements['c']);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+				    <A href="javascript: void(0);" onClick="return customerchoosewin(document.page.elements['c']);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
                 {/if}&nbsp;
 				{t}Type:{/t}
-				<SELECT size="1" name="t" ONCHANGE="document.filter.submit();">
+				<SELECT size="1" name="t" ONCHANGE="filter()">
 					<OPTION value="0"{if !$listdata.type} SELECTED {/if}>{t}- all -{/t}</OPTION>
 					{foreach from=$_DOCTYPES key=key item=item}{if $key < 0}
 					<OPTION VALUE="{$key}"{if $listdata.type==$key} SELECTED{/if}>{$item}</OPTION>
@@ -86,8 +100,7 @@
 				<B>{t}Period:{/t}</B>&nbsp;
 				{t}from{/t}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
 				{t}to{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal2.popup();"  {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
-				<A href="javascript: document.filter.submit();">&raquo;&raquo;&raquo;</A>&nbsp;
-			    </FORM>
+				<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>&nbsp;
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
@@ -102,7 +115,6 @@
 	{assign var=doc value=$documentlist[documentlist]}
 	{assign var=docid value=$doc.docid}
 	<TR class="{cycle}{if $doc.closed} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-	<FORM METHOD="POST" NAME="page" ACTION="?m=documentedit&action=confirm">
 		<TD CLASS="fleft" NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');"{if $doc.description} {tip text=$doc.description}{/if}>
 			{$doc.cdate|date_format:"%Y/%m/%d"}
 			{if $doc.number}<BR>
@@ -123,7 +135,7 @@
 			<a href="?m=documentview&id={$doc.docid}&save=1"><img src="img/save.gif" alt="[ {t}Save{/t} ]" title="[ {t}Save{/t} ]"></a>
 			{if ! $doc.closed && ($docrights.$type.rights & 4)}
 			<a href="?m=documentedit&id={$doc.docid}&action=confirm"><img src="img/confirm.gif" alt="[ {t}Confirm{/t} ]" title="[ {t}Confirm{/t} ]"></a>
-			{/if}      
+			{/if}
 			{if ($docrights.$type.rights & 16)}
 			<a onclick="return confirmLink(this, '{t}Are you sure, you want to remove that document?{/t}')" HREF="?m=documentdel&id={$doc.docid}"><img src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></a>
 			{/if}
@@ -156,8 +168,8 @@
 				<TR>
 					<TD ALIGN="left">
 						<NOBR>
-						<A HREF="javascript:print_docs();">{t}Print{/t} <IMG SRC="img/print.gif" ALT=""{t}Print{/t}"></A>&nbsp;
-						<A HREF="javascript:mark_docs();">{t}Confirm{/t} <IMG SRC="img/confirm.gif" ALT=""{t}Confirm{/t}"></A>&nbsp;
+						<A HREF="javascript:print_docs();">{t}Print{/t} <IMG SRC="img/print.gif" ALT="{t}Print{/t}"></A>&nbsp;
+						<A HREF="javascript:mark_docs();">{t}Confirm{/t} <IMG SRC="img/confirm.gif" ALT="{t}Confirm{/t}"></A>&nbsp;
 						<A HREF="javascript:delete_docs();">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT="{t}Delete{/t}"></A>
 						</NOBR>
 					</TD>
@@ -168,13 +180,13 @@
 			</TABLE>
 		</TD>
 	</TR>
-	</FORM>
 </TABLE>
+</FORM>
 <SCRIPT type="text/javascript">
 <!--
-var cal1 = new calendar(document.filter.elements['from']);
+var cal1 = new calendar(document.page.elements['from']);
 cal1.time_comp = false;
-var cal2 = new calendar(document.filter.elements['to']);
+var cal2 = new calendar(document.page.elements['to']);
 cal2.time_comp = false;
 //-->
 </SCRIPT>
