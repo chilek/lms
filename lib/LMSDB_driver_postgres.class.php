@@ -145,7 +145,7 @@ class LMSDB_driver_postgres extends LMSDB_common
 */	
 	function _driver_now()
 	{
-		return 'EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))';
+		return 'EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer';
 	}
 
 	function _driver_like()

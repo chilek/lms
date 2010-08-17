@@ -116,7 +116,7 @@ static QueryHandle * get_query_result(ResultHandle *res)
 /* Parse special sequences query in statement */
 static void parse_query_stmt(char **stmt)
 {
-    str_replace(stmt, "%NOW%", "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))");
+    str_replace(stmt, "%NOW%", "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer");
     str_replace(stmt, "LIKE", "ILIKE");
     str_replace(stmt, "like", "ILIKE");
 }
