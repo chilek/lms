@@ -511,7 +511,6 @@ CREATE TABLE stats (
 	download bigint 	DEFAULT 0,
 	PRIMARY KEY (nodeid, dt)
 );
-CREATE INDEX stats_nodeid_idx ON stats(nodeid);
 CREATE INDEX stats_dt_idx ON stats(dt);
 
 /* ---------------------------------------------------
