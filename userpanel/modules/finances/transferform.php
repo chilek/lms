@@ -68,8 +68,8 @@ if($SHORT_TO_WORDS)
 else
 {
 	$KWOTA_ZL = to_words(floor($KWOTA_NR));
-	$KWOTA_ZL = iconv('UTF-8','ISO-8859-2',$KWOTA_ZL);
-	$KWOTA_X = $KWOTA_ZL .' '. $KWOTA_GR. '/100 z³otych';
+	$KWOTA_GR = to_words($KWOTA_GR);
+	$KWOTA_X = iconv('UTF-8', 'ISO-8859-2', trans('$0 dollars $1 cents', $KWOTA_ZL, $KWOTA_GR));
 }
 
 ?>
