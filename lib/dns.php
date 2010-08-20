@@ -273,7 +273,7 @@ function validate_dns_record(&$record, &$error)
 				$error['prio'] = trans('Invalid format!');
 		break;
 		case 'CNAME':
-            		if ($errorname = check_hostname_fqdn($record['alias'], true, false))
+            		if (!empty($record['alias']) && $errorname = check_hostname_fqdn($record['alias'], true, false))
 		    		$error['alias'] = $errorname;
 		break;
 		case 'TXT':
