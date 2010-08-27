@@ -146,7 +146,7 @@ function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=
 	$last_up = $last_down = 0;
 	$avg_up = $avg_down = 0;
 	$sum_up = $sum_down = 0;
-	$dstart = ceil($fromdate/$qdivisor);
+	$dstart = (int) ($fromdate/$qdivisor);
 
 	if ($stats) foreach($stats as $idx => $row)
 	{
