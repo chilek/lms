@@ -37,6 +37,9 @@ version ? (????-??-??)
   - BTS#0000837: fixed values on traffic graphs (alec)
   - added info about default channel and about nodes on channels list (alec)
   - added devices and nodes lists (popups) on channels list (alec)
+  - traffic stats: increased daily graph precision (alec)
+  - traffic stats: fixed zero values on utter bars (alec)
+  - traffic stats: added option phpui/stat_freq for better hourly graph precision (alec)
 
 version 1.11.10 Kri (2010-04-19)
 

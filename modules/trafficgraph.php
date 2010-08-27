@@ -50,7 +50,12 @@ function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=
 	{
 		case 'hour':
 			$quantum = 60*60;
-			$divisor = 5;
+			$divisor = $LMS->CONFIG['phpui']['stat_freq'] ? (int) (60/$LMS->CONFIG['phpui']['stat_freq']) : 5;
+			$fromdate = $todate - $quantum;
+		break;
+		case 'day':
+			$quantum = 60*60*24;
+			$divisor = 100;
 			$fromdate = $todate - $quantum;
 		break;
 		case 'week':
@@ -66,11 +71,6 @@ function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=
 		case 'year': 
 			$quantum = 60*60*24*365;
 			$divisor = 400;
-			$fromdate = $todate - $quantum;
-		break;
-		case 'day':
-			$quantum = 60*60*24;
-			$divisor = 50;
 			$fromdate = $todate - $quantum;
 		break;
 		default: 
@@ -107,7 +107,7 @@ function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=
 				CEIL(dt/?) AS dts
 			FROM stats WHERE nodeid = ? AND dt >= ? AND dt <= ?
 			GROUP BY CEIL(dt/?) ORDER BY dts ASC',
-			array($qdivisor, $nodeid, $fromdate, $todate, $qdivisor));
+			array($qdivisor, $nodeid, $fromdate-$qdivisor, $todate+$qdivisor, $qdivisor));
 	}
 	else
 	{
@@ -139,7 +139,7 @@ function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=
 			    .$net
 			    .'GROUP BY CEIL(dt/?), nodeid) x
 			GROUP BY dts ORDER BY dts',
-			array($qdivisor, $fromdate, $todate, $qdivisor));
+			array($qdivisor, $fromdate-$qdivisor, $todate+$qdivisor, $qdivisor));
 	}
 
 	$down_max = $up_max = 0;
