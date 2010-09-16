@@ -200,9 +200,10 @@ else
 		$nodedata['ipaddr_pub'] = $_POST['nodedataipaddr_pub'];
 		$nodedata['macs'][] = '';
 	}
-	elseif(empty($nodedata['macs']))
-		$nodedata['macs'][] = '';
 }
+
+if(empty($nodedata['macs']))
+    $nodedata['macs'][] = '';
 
 $layout['pagetitle'] = trans('New Node');
 
