@@ -116,6 +116,7 @@
 		<TD WIDTH="99%" NOWRAP>
 		{if $customers}
 			<SELECT SIZE="1" NAME="nodedata[customerid]" {tip text="Assign node to customer" trigger="ownerid"} style="max-width:160px;" onChange="document.nodeadd.elements['nodedata[ownerid]'].value=this.value">
+				<OPTION VALUE="0">{t}... select customer ...{/t}</OPTION>
 				{foreach from=$customers item=c}
 				<OPTION VALUE="{$c.id}"{if $nodedata.ownerid == $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
 				{/foreach}
