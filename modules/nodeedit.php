@@ -224,16 +224,16 @@ if(isset($_POST['nodeedit']) && !isset($_GET['newmac']))
 }
 else
 {
-//	print_r($nodeinfo['macs']);die;
 	if(isset($_POST['nodeedit']) && isset($_GET['newmac']))
 	{
 		$nodeedit = $_POST['nodeedit'];
 		$nodeedit['macs'][] = '';
 		$nodeinfo = array_merge($nodeinfo, $nodeedit);
 	}
-	elseif(empty($nodeinfo['macs']))
-		$nodeinfo['macs'][] = '';
 }
+
+if(empty($nodeinfo['macs']))
+	$nodeinfo['macs'][] = '';
 
 include(MODULES_DIR.'/customer.inc.php');
 
