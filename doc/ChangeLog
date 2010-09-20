@@ -40,6 +40,9 @@ version ? (????-??-??)
   - traffic stats: increased daily graph precision (alec)
   - traffic stats: fixed zero values on utter bars (alec)
   - traffic stats: added option phpui/stat_freq for better hourly graph precision (alec)
+  - lmsd/dns: fix for situation when database contains subnetworks of a network,
+    so reverse entries in named.conf are not duplicated and hosts entries are
+    placed in one file for all subnetworks (alec)
 
 version 1.11.10 Kri (2010-04-19)
 

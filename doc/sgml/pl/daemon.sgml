@@ -1408,8 +1408,8 @@ $IPT -t filter -I FORWARD -s %i -m limit --limit %plimit/s -j ACCEPT										</
 			<listitem>
 			    <para>conf-reverse-entry</para>
 			    <para>Wpis dla ka¿dej strefy odwr. w g³ównym pliku konfiguracyjnym.
-			    Domy¶lnie: 'zone "%c.in-addr.arpa" { \ntype master; \nfile "reverse/%i"; \nnotify yes; \n}; \n'.</para>
-			    <para>Przyk³ad: <prompt>conf-revers-entry = 'zone "%c.in-addr.arpa" { \n\ttype master; \n\tfile "reverse/%i"; \n\tnotify yes; \n}; \n'</prompt></para>
+			    Domy¶lnie: 'zone "%c.in-addr.arpa" { \ntype master; \nfile "reverse/%c"; \nnotify yes; \n}; \n'.</para>
+			    <para>Przyk³ad: <prompt>conf-revers-entry = 'zone "%c.in-addr.arpa" { \n\ttype master; \n\tfile "reverse/%c"; \n\tnotify yes; \n}; \n'</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>command</para>
