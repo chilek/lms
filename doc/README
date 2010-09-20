@@ -4598,10 +4598,10 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
        \n\tfile "forward/%n"; \n\tnotify yes; \n}; \n'
      * conf-reverse-entry
        Entry for each reverse zone in main configuration file. Default:
-       'zone "%c.in-addr.arpa" { \ntype master; \nfile "reverse/%i";
+       'zone "%c.in-addr.arpa" { \ntype master; \nfile "reverse/%c";
        \nnotify yes; \n}; \n'.
        Example: conf-revers-entry = 'zone "%c.in-addr.arpa" { \n\ttype
-       master; \n\tfile "reverse/%i"; \n\tnotify yes; \n}; \n'
+       master; \n\tfile "reverse/%c"; \n\tnotify yes; \n}; \n'
      * command
        Shell command executed after files creation. Default: empty.
        Example: command = "killall -HUP named"

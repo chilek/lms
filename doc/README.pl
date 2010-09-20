@@ -5297,9 +5297,9 @@ $IPT -t filter -I FORWARD -s %i -m limit --limit %plimit/s -j ACCEPT
      * conf-reverse-entry
        Wpis dla każdej strefy odwr. w głównym pliku konfiguracyjnym.
        Domyślnie: 'zone "%c.in-addr.arpa" { \ntype master; \nfile
-       "reverse/%i"; \nnotify yes; \n}; \n'.
+       "reverse/%c"; \nnotify yes; \n}; \n'.
        Przykład: conf-revers-entry = 'zone "%c.in-addr.arpa" { \n\ttype
-       master; \n\tfile "reverse/%i"; \n\tnotify yes; \n}; \n'
+       master; \n\tfile "reverse/%c"; \n\tnotify yes; \n}; \n'
      * command
        Polecenie wykonywane po utworzeniu plików konf. Domyślnie: puste.
        Przykład: command = ""
