@@ -360,15 +360,15 @@ $dbq = $dbase->prepare("SELECT a.tariffid, a.liabilityid, a.customerid,
 	LEFT JOIN liabilities l ON (a.liabilityid = l.id)
 	LEFT JOIN divisions d ON (d.id = c.divisionid)
 	WHERE c.status = 3
-		AND (a.period = ".DAY." 
-			OR (a.period = ".WEEK." AND at = $weekday) 
-			OR (a.period = ".MONTH." AND at = $dom) 
-			OR (a.period = ".QUARTER." AND at = $quarter) 
-			OR (a.period = ".HALFYEAR." AND at = $halfyear) 
-			OR (a.period = ".YEAR." AND at = $yearday) 
-			OR (a.period = ".DISPOSABLE." AND at = $today)) 
-		AND (a.datefrom <= $currtime OR a.datefrom = 0)
-		AND (a.dateto > $currtime OR a.dateto = 0)
+		AND ((a.period = ".DISPOSABLE." AND at = $today)
+		    OR ((a.period = ".DAY."
+			    OR (a.period = ".WEEK." AND at = $weekday)
+    			OR (a.period = ".MONTH." AND at = $dom)
+	    		OR (a.period = ".QUARTER." AND at = $quarter)
+		    	OR (a.period = ".HALFYEAR." AND at = $halfyear)
+			    OR (a.period = ".YEAR." AND at = $yearday))
+		        AND (a.datefrom <= $currtime OR a.datefrom = 0)
+		        AND (a.dateto > $currtime OR a.dateto = 0)))
 	ORDER BY a.customerid, a.invoice, a.paytype, a.numberplanid, value DESC");
 $dbq->execute();
 
@@ -572,11 +572,6 @@ while(my $assign = $dbq->fetchrow_hashref())
 
 		print STDERR "CID:$uid\tVAL:$assign->{'value'}\tDESC:$desc\n" if not $quiet;
 
-		if ($assign->{'liabilityid'} && $assign->{'period'} == DISPOSABLE) #remove liability
-		{
-			$dbase->do("DELETE FROM liabilities WHERE id = $assign->{'liabilityid'}");
-		}
-
 		# settlements accounting
 		if ($assign->{'settlement'} && $assign->{'datefrom'})
 		{
@@ -685,16 +680,12 @@ while(my $assign = $dbq->fetchrow_hashref())
 }
 $dbq->finish();
 
-$dbq = $dbase->prepare("SELECT liabilityid AS id FROM assignments
-		WHERE dateto < $utsfmt - 86400 * 30 AND dateto != 0 AND liabilityid != 0");
-$dbq->execute();
-while(my $row = $dbq->fetchrow_hashref())
-{
-	$dbase->do("DELETE FROM liabilities WHERE id = $row->{'id'}");
-}
-$dbq->finish();
-
-$dbase->do("DELETE FROM assignments WHERE dateto < $utsfmt - 86400 * 30 AND dateto != 0");
-$dbase->do("DELETE FROM assignments WHERE at = $today");
+# delete old assignments
+$dbase->do("DELETE FROM liabilities WHERE id IN (
+    SELECT liabilityid FROM assignments
+    WHERE dateto < $utsfmt - 86400 * 30 AND dateto != 0 AND at < $today - 86400 * 30
+	    AND liabilityid != 0)");
+$dbase->do("DELETE FROM assignments
+    WHERE dateto < $utsfmt - 86400 * 30 AND dateto != 0 AND at < $today - 86400 * 30");
 
 $dbase->disconnect();

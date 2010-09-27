@@ -43,6 +43,7 @@ version ? (????-??-??)
   - lmsd/dns: fix for situation when database contains subnetworks of a network,
     so reverse entries in named.conf are not duplicated and hosts entries are
     placed in one file for all subnetworks (alec)
+  - allow setting assignment period for disposable liabilities (alec)
 
 version 1.11.10 Kri (2010-04-19)
 
