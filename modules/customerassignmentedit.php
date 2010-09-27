@@ -178,12 +178,6 @@ if(isset($_POST['assignment']))
 		default: // DISPOSABLE
             $period = DISPOSABLE;
 
-			if($a['tariffid'] != -1)
-			{
-    			$a['dateto'] = '';
-	            $a['datefrom'] = '';
-			}
-
 	        if(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['at']))
 			{
 				list($y, $m, $d) = explode('/', $a['at']);

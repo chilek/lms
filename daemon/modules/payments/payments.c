@@ -481,7 +481,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 
 	/****** customer payments *******/
 	// let's create main query
-	char *query = strdup("SELECT a.tariffid, a.liabilityid, a.customerid, a.period, "
+	char *query = strdup("SELECT a.tariffid, a.customerid, a.period, "
 	    "a.at, a.suspended, a.invoice, a.id AS assignmentid, a.settlement, a.datefrom, a.discount, "
 		"c.paytype, a.paytype AS a_paytype, a.numberplanid, d.inv_paytype AS d_paytype, "
 		"UPPER(c.lastname) AS lastname, c.name AS custname, c.address, c.zip, c.city, c.ten, c.ssn, "
@@ -499,14 +499,15 @@ void reload(GLOBAL *g, struct payments_module *p)
 		"LEFT JOIN liabilities li ON (a.liabilityid = li.id) "
 		"LEFT JOIN divisions d ON (d.id = c.divisionid) "
 		"WHERE c.status = 3 AND c.deleted = 0 "
-		    "AND (a.period="_DAILY_" "
-			    "OR (a.period="_WEEKLY_" AND at=?) "
-			    "OR (a.period="_MONTHLY_" AND at=?) "
-			    "OR (a.period="_QUARTERLY_" AND at=?) "
-			    "OR (a.period="_HALFYEARLY_" AND at=?) "
-			    "OR (a.period="_YEARLY_" AND at=?) "
-			    "OR (a.period="_DISPOSABLE_" AND at=?)) "
-		    "AND (a.datefrom <= ? OR a.datefrom = 0) AND (a.dateto >= ? OR a.dateto = 0) "
+		    "AND ((a.period="_DISPOSABLE_" AND at=?) "
+		        "OR ((a.period="_DAILY_" "
+			        "OR (a.period="_WEEKLY_" AND at=?) "
+			        "OR (a.period="_MONTHLY_" AND at=?) "
+			        "OR (a.period="_QUARTERLY_" AND at=?) "
+			        "OR (a.period="_HALFYEARLY_" AND at=?) "
+			        "OR (a.period="_YEARLY_" AND at=?)) "
+			        "AND (a.datefrom <= ? OR a.datefrom = 0) "
+			        "AND (a.dateto >= ? OR a.dateto = 0))) "
 		    "%nets"
 		    "%enets"
 		    "%groups"
@@ -519,7 +520,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	g->str_replace(&query, "%egroups", strlen(egroupsql) ? egroups : "");
 
 	if( (res = g->db_pquery(g->conn, query,
-		weekday, monthday, quarterday, halfday, yearday, itoa(today), currtime, currtime)) != NULL)
+		itoa(today), weekday, monthday, quarterday, halfday, yearday,  currtime, currtime)) != NULL)
 	{
 		struct plan *plans = (struct plan *) malloc(sizeof(struct plan));
 		int invoice_number = 0;
@@ -556,7 +557,6 @@ void reload(GLOBAL *g, struct payments_module *p)
 			int uid = atoi(g->db_get_data(res,i,"customerid"));
 			int s_state = atoi(g->db_get_data(res,i,"suspended"));
 			int period = atoi(g->db_get_data(res,i,"period"));
-			int liabilityid = atoi(g->db_get_data(res,i,"liabilityid"));
 			int settlement = atoi(g->db_get_data(res,i,"settlement"));
 			int datefrom = atoi(g->db_get_data(res,i,"datefrom"));
 			char *discount = g->db_get_data(res,i,"discount");
@@ -781,12 +781,6 @@ void reload(GLOBAL *g, struct payments_module *p)
 			free(insert);
 			free(description);
 
-			// remove disposable liabilities
-			if( liabilityid && !period )
-			{
-				g->db_pexec(g->conn, "DELETE FROM liabilities WHERE id=?", itoa(liabilityid));
-			}
-
 			// settlements accounting has sense only for up payments
 			if( settlement && datefrom && p->up_payments)
 			{
@@ -936,15 +930,20 @@ void reload(GLOBAL *g, struct payments_module *p)
 	// remove old assignments
 	if(p->expiry_days<0) p->expiry_days *= -1; // number of expiry days can't be negative
 
-	g->db_pexec(g->conn, "DELETE FROM liabilities WHERE id IN ("
-		"SELECT liabilityid FROM assignments "
-		"WHERE dateto < ? - 86400 * ? AND dateto != 0 AND liabilityid != 0)",
-		currtime, itoa(p->expiry_days));
-	g->db_pexec(g->conn, "DELETE FROM assignments WHERE dateto < ? - 86400 * ? AND dateto != 0 ",
-		currtime, itoa(p->expiry_days));
-	g->db_pexec(g->conn, "DELETE FROM assignments WHERE at = ?", itoa(today));
+    char *exp_days = strdup(itoa(p->expiry_days));
+
+	g->db_pexec(g->conn, "DELETE FROM liabilities "
+	    "WHERE id IN ("
+		    "SELECT liabilityid FROM assignments "
+	        "WHERE dateto < ? - 86400 * ? AND dateto != 0 AND at < ? - 86400 * ? "
+		        "AND liabilityid != 0)",
+	    currtime, exp_days, itoa(today), exp_days);
+	g->db_pexec(g->conn, "DELETE FROM assignments "
+	    "WHERE dateto < ? - 86400 * ? AND dateto != 0 AND at < ? - 86400 * ?",
+	    currtime, exp_days, itoa(today), exp_days);
 
 	// clean up
+	free(exp_days);
 	free(currtime);
 	free(nets); free(enets);
 	free(groups); free(egroups);
