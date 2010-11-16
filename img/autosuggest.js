@@ -39,7 +39,7 @@ function AutoSuggest(form,elem,uri,autosubmit) {
 	var ESC = 27;
 	var KEYUP = 38;
 	var KEYDN = 40;
-	
+
 	//The browsers' own autocomplete feature can be problematic, since it will 
 	//be making suggestions from the users' past input.
 	//Setting this attribute should turn it off.
@@ -94,7 +94,7 @@ function AutoSuggest(form,elem,uri,autosubmit) {
 
 	/********************************************************
 	onkeyup handler for the elem
-	If the text is of sufficient length, and has been changed, 
+	If the text is of sufficient length, and has been changed,
 	then display a list of eligible suggestions.
 	********************************************************/
 	elem.onkeyup = function(ev) {
@@ -119,7 +119,7 @@ function AutoSuggest(form,elem,uri,autosubmit) {
 	};
 
 	this.HTTPloaded = function () {
-		if ((xmlhttp)&&(xmlhttp.readyState == 4)) {
+		if ((xmlhttp) && (xmlhttp.readyState == 4)) {
 			me.inputText = this.value;
 			me.getEligible();
 			if (me.eligible.length>0) {
@@ -173,7 +173,7 @@ function AutoSuggest(form,elem,uri,autosubmit) {
 	********************************************************/
 	this.changeHighlight = function() {
 		var lis = this.div.getElementsByTagName('LI');
-		for (i in lis) {
+		for (var i=0, len=lis.length; i<len; i++) {
 			var li = lis[i];
 
 			if (this.highlighted == i) {
@@ -191,7 +191,7 @@ function AutoSuggest(form,elem,uri,autosubmit) {
 		var el = this.elem;
 		var x = 0;
 		var y = el.offsetHeight;
-	
+
 		//Walk up the DOM and add up all of the offset positions.
 		while (el.offsetParent && el.tagName.toUpperCase() != 'BODY') {
 			x += el.offsetLeft;
@@ -211,37 +211,37 @@ function AutoSuggest(form,elem,uri,autosubmit) {
 	********************************************************/
 	this.createDiv = function() {
 		var ul = document.createElement('ul');
-	
+
 		//Create an array of LI's for the words.
 		for (i in this.eligible) {
 			var word = this.eligible[i];
 			var desc = (this.descriptions[i])?this.descriptions[i]:'';
 			var dest = (this.actions[i])?this.actions[i]:'';
-	
+
 			var ds = document.createElement('span');
 			var li = document.createElement('li');
 			var a = document.createElement('a');
 			if ((dest)&&(this.autosubmit)) {
 				a.href = dest;
-				a.innerHTML = word; 
+				a.innerHTML = word;
 				li.onclick = function() { me.useSuggestion(); }
-				li.appendChild(a); 
+				li.appendChild(a);
 			} else {
 				li.innerHTML = word;
 				li.onclick = function() { me.useSuggestion(); }
 			}
 			ds.innerHTML = desc;
-			li.appendChild(ds); 
-	
+			li.appendChild(ds);
+
 			if (me.highlighted == i) {
 				li.className = "selected";
 			}
-	
+
 			ul.appendChild(li);
 		}
-	
+
 		this.div.replaceChild(ul,this.div.childNodes[0]);
-	
+
 
 		/********************************************************
 		mouseover handler for the dropdown ul
@@ -253,11 +253,10 @@ function AutoSuggest(form,elem,uri,autosubmit) {
 			while (target.parentNode && target.tagName.toUpperCase() != 'LI') {
 				target = target.parentNode;
 			}
-		
+
 			var lis = me.div.getElementsByTagName('LI');
-			
-	
-			for (i in lis) {
+
+		    for (var i=0, len=lis.length; i<len; i++) {
 				var li = lis[i];
 				if(li == target) {
 					me.highlighted = i;
@@ -267,7 +266,7 @@ function AutoSuggest(form,elem,uri,autosubmit) {
 			me.changeHighlight();
 		};
 
-		this.div.className="suggestion_list";
+		this.div.className = "suggestion_list";
 		this.div.style.position = 'absolute';
 
 	};
@@ -277,16 +276,16 @@ function AutoSuggest(form,elem,uri,autosubmit) {
 	********************************************************/
 	//Construct XMLHTTP handler.
 	this.setXMLHTTP = function () {
-  		var x=null;
-		try { x=new ActiveXObject("Msxml2.XMLHTTP") }
+  		var x = null;
+		try { x = new ActiveXObject("Msxml2.XMLHTTP") }
   		  catch(e) {
-			try { x=new ActiveXObject("Microsoft.XMLHTTP") } 
-			  catch(ee) { x=null }
+			try { x = new ActiveXObject("Microsoft.XMLHTTP") }
+			  catch(ee) { x = null; }
 		  }
 		if(!x && typeof XMLHttpRequest != "undefined") {
-			x=new XMLHttpRequest()
+			x = new XMLHttpRequest();
   		}
-		return x
+		return x;
 	}
 
 	this.HTTPpreload = function() {
@@ -306,9 +305,9 @@ function AutoSuggest(form,elem,uri,autosubmit) {
 
 		for (i in this.suggestions) {
 			var suggestion = this.suggestions[i];
-			
+
 			if(suggestion.toLowerCase().indexOf(this.inputText.toLowerCase()) == "0") {
-				this.eligible[this.eligible.length]=suggestion;
+				this.eligible[this.eligible.length] = suggestion;
 			}
 		}
 	};
@@ -327,7 +326,7 @@ function AutoSuggest(form,elem,uri,autosubmit) {
 	};
 
 	/********************************************************
-	Helper function to determine the event source element in a 
+	Helper function to determine the event source element in a
 	browser-independent manner.
 	********************************************************/
 	this.getEventSource = function(ev) {
