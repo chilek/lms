@@ -59,15 +59,15 @@ if(isset($_POST['customergroup']))
 		$customergroupedit[$key] = trim($value);
 
 	$customergroupedit['id'] = $_GET['id'];
-	
+
 	if($customergroupedit['name'] == '')
 		$error['name'] = trans('Group name required!');
 	elseif(strlen($customergroupedit['name']) > 16)
 		$error['name'] = trans('Group name is too long!');
-	elseif( ($id = $LMS->CustomergroupGetId($customergroupedit['name'])) && $id != $customergroupedit['id'])
-		$error['name'] = trans('Group with name $0 already exists!',$customergroupedit['name']);
 	elseif(!preg_match('/^[._a-z0-9-]+$/i', $customergroupedit['name']))
 		$error['name'] = trans('Invalid chars in group name!');
+	elseif(($id = $LMS->CustomergroupGetId($customergroupedit['name'])) && $id != $customergroupedit['id'])
+		$error['name'] = trans('Group with name $0 already exists!',$customergroupedit['name']);
 
 	if(!$error)
 	{

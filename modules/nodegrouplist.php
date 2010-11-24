@@ -43,7 +43,7 @@ function GroupList()
 	        	$nodegrouplist['nodestotal'] += $row['nodescount'];
 	        }
 	}
-	
+
         return $nodegrouplist;
 }
 
