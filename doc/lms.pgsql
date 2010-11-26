@@ -5,7 +5,7 @@
 -------------------------------------------------------- */
 DROP SEQUENCE users_id_seq;
 CREATE SEQUENCE users_id_seq;
-DROP TABLE users;
+DROP TABLE users CASCADE;
 CREATE TABLE users (
 	id integer DEFAULT nextval('users_id_seq'::text) NOT NULL,
 	login varchar(32) 	DEFAULT '' NOT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE users (
 ---------------------------------------------------*/
 DROP SEQUENCE assignments_id_seq;
 CREATE SEQUENCE assignments_id_seq;
-DROP TABLE assignments;
+DROP TABLE assignments CASCADE;
 CREATE TABLE assignments (
 	id integer default nextval('assignments_id_seq'::text) NOT NULL,
 	tariffid integer 	DEFAULT 0 NOT NULL,
@@ -57,7 +57,7 @@ CREATE INDEX assignments_numberplanid_idx ON assignments (numberplanid);
 -------------------------------------------------------- */
 DROP SEQUENCE cash_id_seq;
 CREATE SEQUENCE cash_id_seq;
-DROP TABLE cash;
+DROP TABLE cash CASCADE;
 CREATE TABLE cash (
 	id integer 		DEFAULT nextval('cash_id_seq'::text) NOT NULL,
 	time integer 		DEFAULT 0 NOT NULL,
@@ -84,7 +84,7 @@ CREATE INDEX cash_time_idx ON cash (time);
 -------------------------------------------------------- */
 DROP SEQUENCE networks_id_seq;
 CREATE SEQUENCE networks_id_seq;
-DROP TABLE networks;
+DROP TABLE networks CASCADE;
 CREATE TABLE networks (
 	id integer DEFAULT nextval('networks_id_seq'::text) NOT NULL,
 	name varchar(255) 	DEFAULT '' NOT NULL,
@@ -110,7 +110,7 @@ CREATE TABLE networks (
 -------------------------------------------------------- */
 DROP SEQUENCE nodes_id_seq;
 CREATE SEQUENCE nodes_id_seq;
-DROP TABLE nodes;
+DROP TABLE nodes CASCADE;
 CREATE TABLE nodes (
 	id integer DEFAULT nextval('nodes_id_seq'::text) NOT NULL,
 	name varchar(32) 	DEFAULT '' NOT NULL,
@@ -140,14 +140,13 @@ CREATE TABLE nodes (
 CREATE INDEX nodes_netdev_idx ON nodes (netdev);
 CREATE INDEX nodes_ownerid_idx ON nodes (ownerid);
 CREATE INDEX nodes_ipaddr_pub_idx ON nodes (ipaddr_pub);
-CREATE SEQUENCE nodegroups_id_seq;
 
 /* -------------------------------------------------------- 
   Structure of table "macs" 
 -------------------------------------------------------- */
 DROP SEQUENCE macs_id_seq;
 CREATE SEQUENCE macs_id_seq;
-DROP TABLE macs;
+DROP TABLE macs CASCADE;
 CREATE TABLE macs (
 	id integer		DEFAULT nextval('macs_id_seq'::text) NOT NULL,
 	mac varchar(17)		DEFAULT '' NOT NULL,
@@ -162,7 +161,7 @@ CREATE TABLE macs (
 -------------------------------------------------------- */
 DROP SEQUENCE nodegroups_id_seq;
 CREATE SEQUENCE nodegroups_id_seq;
-DROP TABLE nodegroups;
+DROP TABLE nodegroups CASCADE;
 CREATE TABLE nodegroups (
         id              integer         NOT NULL DEFAULT nextval('nodegroups_id_seq'::text),
 	name            varchar(255)    NOT NULL DEFAULT '',
@@ -177,7 +176,7 @@ CREATE TABLE nodegroups (
 -------------------------------------------------------- */
 DROP SEQUENCE nodegroupassignments_id_seq;
 CREATE SEQUENCE nodegroupassignments_id_seq;
-DROP TABLE nodegroupassignments;
+DROP TABLE nodegroupassignments CASCADE;
 CREATE TABLE nodegroupassignments (
         id              integer         NOT NULL DEFAULT nextval('nodegroupassignments_id_seq'::text),
 	nodegroupid     integer         NOT NULL DEFAULT 0,
@@ -191,7 +190,7 @@ CREATE TABLE nodegroupassignments (
 -------------------------------------------------------- */
 DROP SEQUENCE nodeassignments_id_seq;
 CREATE SEQUENCE nodeassignments_id_seq;
-DROP TABLE nodeassignments;
+DROP TABLE nodeassignments CASCADE;
 CREATE TABLE nodeassignments (
         id integer              DEFAULT nextval('nodeassignments_id_seq'::text) NOT NULL,
 	nodeid integer          NOT NULL
@@ -209,7 +208,7 @@ CREATE INDEX nodeassignments_assignmentid_idx ON nodeassignments (assignmentid);
 -------------------------------------------------------- */
 DROP SEQUENCE tariffs_id_seq;
 CREATE SEQUENCE tariffs_id_seq; 
-DROP TABLE tariffs;
+DROP TABLE tariffs CASCADE;
 CREATE TABLE tariffs (
 	id integer DEFAULT nextval('tariffs_id_seq'::text) NOT NULL,
 	name varchar(255) 	DEFAULT '' NOT NULL,
@@ -229,7 +228,7 @@ CREATE TABLE tariffs (
 	downrate_n integer      DEFAULT NULL,
 	downceil_n integer      DEFAULT NULL,
 	climit_n integer        DEFAULT NULL,
-	plimit_n integer        DEFAULT NULL,			
+	plimit_n integer        DEFAULT NULL,
 	domain_limit integer	DEFAULT NULL,
 	alias_limit integer	DEFAULT NULL,
 	sh_limit integer	DEFAULT NULL,
@@ -253,7 +252,7 @@ CREATE INDEX tariffs_type_idx ON tariffs (type);
 -------------------------------------------------------- */
 DROP SEQUENCE liabilities_id_seq;
 CREATE SEQUENCE liabilities_id_seq;
-DROP TABLE liabilities;
+DROP TABLE liabilities CASCADE;
 CREATE TABLE liabilities (
 	id integer DEFAULT nextval('liabilities_id_seq'::text) NOT NULL,
 	value numeric(9,2)  	DEFAULT 0 NOT NULL,
@@ -262,13 +261,13 @@ CREATE TABLE liabilities (
 	prodid varchar(255) 	DEFAULT '' NOT NULL,
 	PRIMARY KEY (id)
 );
-										   
+
 /* ---------------------------------------------------------
   Structure of table "payments"
 --------------------------------------------------------- */
 DROP SEQUENCE payments_id_seq;
 CREATE SEQUENCE payments_id_seq;
-DROP TABLE payments;
+DROP TABLE payments CASCADE;
 CREATE TABLE payments (
 	id integer DEFAULT nextval('payments_id_seq'::text) NOT NULL,
 	name varchar(255) 	DEFAULT '' NOT NULL,
@@ -285,7 +284,7 @@ CREATE TABLE payments (
 -------------------------------------------------------- */
 DROP SEQUENCE taxes_id_seq;
 CREATE SEQUENCE taxes_id_seq;
-DROP TABLE taxes;
+DROP TABLE taxes CASCADE;
 CREATE TABLE taxes (
     id integer DEFAULT nextval('taxes_id_seq'::text) NOT NULL,
     value numeric(4,2) DEFAULT 0 NOT NULL,
@@ -301,7 +300,7 @@ CREATE TABLE taxes (
 -------------------------------------------------------- */
 DROP SEQUENCE documents_id_seq;
 CREATE SEQUENCE documents_id_seq;
-DROP TABLE documents;
+DROP TABLE documents CASCADE;
 CREATE TABLE documents (
 	id integer DEFAULT nextval('documents_id_seq'::text) NOT NULL,
 	type smallint		DEFAULT 0 NOT NULL,
@@ -310,8 +309,8 @@ CREATE TABLE documents (
 	extnumber varchar(255) 	DEFAULT '' NOT NULL,
 	cdate integer 		DEFAULT 0 NOT NULL,
 	customerid integer 	DEFAULT 0 NOT NULL,
-	userid integer		DEFAULT 0 NOT NULL,		
-	divisionid integer	DEFAULT 0 NOT NULL,		
+	userid integer		DEFAULT 0 NOT NULL,
+	divisionid integer	DEFAULT 0 NOT NULL,
     	name varchar(255) 	DEFAULT '' NOT NULL,
     	address varchar(255) 	DEFAULT '' NOT NULL,
 	zip varchar(10)		DEFAULT '' NOT NULL,
@@ -334,7 +333,7 @@ CREATE INDEX documents_closed_idx ON documents(closed);
 /* -------------------------------------------------------- 
   Structure of table "documentcontents" 
 -------------------------------------------------------- */
-DROP TABLE documentcontents;
+DROP TABLE documentcontents CASCADE;
 CREATE TABLE documentcontents (
 	docid integer 		DEFAULT 0 NOT NULL,
 	title text 		DEFAULT '' NOT NULL,
@@ -354,7 +353,7 @@ CREATE INDEX documentcontents_fromdate_idx ON documentcontents (fromdate);
 /* -------------------------------------------------------- 
   Structure of table "receiptcontents" 
 -------------------------------------------------------- */
-DROP TABLE receiptcontents;
+DROP TABLE receiptcontents CASCADE;
 CREATE TABLE receiptcontents (
 	docid integer		DEFAULT 0 NOT NULL,
 	itemid smallint		DEFAULT 0 NOT NULL,
@@ -368,7 +367,7 @@ CREATE INDEX receiptcontents_regid_idx ON receiptcontents(regid);
 /* -------------------------------------------------------- 
   Structure of table "invoicecontents" 
 -------------------------------------------------------- */
-DROP TABLE invoicecontents;
+DROP TABLE invoicecontents CASCADE;
 CREATE TABLE invoicecontents (
 	docid integer 		DEFAULT 0 NOT NULL,
 	itemid smallint		DEFAULT 0 NOT NULL,
@@ -386,7 +385,7 @@ CREATE INDEX invoicecontents_docid_idx ON invoicecontents (docid);
 /* -------------------------------------------------------- 
   Structure of table "debitnotecontents" 
 -------------------------------------------------------- */
-DROP TABLE debitnotecontents;
+DROP TABLE debitnotecontents CASCADE;
 DROP SEQUENCE debitnotecontents_id_seq;
 CREATE SEQUENCE debitnotecontents_id_seq;
 CREATE TABLE debitnotecontents (
@@ -404,7 +403,7 @@ CREATE TABLE debitnotecontents (
 -------------------------------------------------------- */
 DROP SEQUENCE numberplans_id_seq;
 CREATE SEQUENCE numberplans_id_seq;
-DROP TABLE numberplans;
+DROP TABLE numberplans CASCADE;
 CREATE TABLE numberplans (
 	id integer DEFAULT nextval('numberplans_id_seq'::text) NOT NULL,
 	template varchar(255) DEFAULT '' NOT NULL,
@@ -419,7 +418,7 @@ CREATE TABLE numberplans (
 -------------------------------------------------------- */
 DROP SEQUENCE numberplanassignments_id_seq;
 CREATE SEQUENCE numberplanassignments_id_seq;
-DROP TABLE numberplanassignments;
+DROP TABLE numberplanassignments CASCADE;
 CREATE TABLE numberplanassignments (
 	id integer DEFAULT nextval('numberplanassignments_id_seq'::text) NOT NULL,
 	planid integer DEFAULT 0 NOT NULL,
@@ -434,7 +433,7 @@ CREATE INDEX numberplanassignments_divisionid_idx ON numberplanassignments (divi
 -------------------------------------------------------- */
 DROP SEQUENCE customers_id_seq;
 CREATE SEQUENCE customers_id_seq;
-DROP TABLE customers;
+DROP TABLE customers CASCADE;
 CREATE TABLE customers (
 	id integer DEFAULT nextval('customers_id_seq'::text) NOT NULL,
 	lastname varchar(128)	DEFAULT '' NOT NULL,
@@ -477,7 +476,7 @@ CREATE INDEX customers_lastname_idx ON customers (lastname, name);
 -------------------------------------------------------- */
 DROP SEQUENCE customergroups_id_seq;
 CREATE SEQUENCE customergroups_id_seq;
-DROP TABLE customergroups;
+DROP TABLE customergroups CASCADE;
 CREATE TABLE customergroups (
 	id integer DEFAULT nextval('customergroups_id_seq'::text) NOT NULL, 
 	name varchar(255) DEFAULT '' NOT NULL, 
@@ -491,7 +490,7 @@ CREATE TABLE customergroups (
 -------------------------------------------------------- */
 DROP SEQUENCE customerassignments_id_seq;
 CREATE SEQUENCE customerassignments_id_seq;
-DROP TABLE customerassignments;
+DROP TABLE customerassignments CASCADE;
 CREATE TABLE customerassignments (
 	id integer DEFAULT nextval('customerassignments_id_seq'::text) NOT NULL, 
 	customergroupid integer DEFAULT 0 NOT NULL, 
@@ -503,7 +502,7 @@ CREATE TABLE customerassignments (
 /* -------------------------------------------------------- 
   Structure of table "stats" 
 -------------------------------------------------------- */
-DROP TABLE stats;
+DROP TABLE stats CASCADE;
 CREATE TABLE stats (
 	nodeid integer 		DEFAULT 0 NOT NULL,
 	dt integer 		DEFAULT 0 NOT NULL,
@@ -518,7 +517,7 @@ CREATE INDEX stats_dt_idx ON stats(dt);
 ----------------------------------------------------*/
 DROP SEQUENCE netlinks_id_seq;
 CREATE SEQUENCE netlinks_id_seq;
-DROP TABLE netlinks;
+DROP TABLE netlinks CASCADE;
 CREATE TABLE netlinks (
 	id integer default nextval('netlinks_id_seq'::text) NOT NULL,
 	src integer 		DEFAULT 0 NOT NULL,
@@ -565,7 +564,7 @@ $$ LANGUAGE SQL IMMUTABLE;
 /* --------------------------------------------------
  Tables for RT (Helpdesk)
 -----------------------------------------------------*/
-DROP TABLE rtattachments;
+DROP TABLE rtattachments CASCADE;
 CREATE TABLE rtattachments (
 	messageid integer 	    NOT NULL
 	    REFERENCES rtmessages (id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -577,7 +576,7 @@ CREATE INDEX rtattachments_message_idx ON rtattachments (messageid);
 
 DROP SEQUENCE rtqueues_id_seq;
 CREATE SEQUENCE rtqueues_id_seq;
-DROP TABLE rtqueues;
+DROP TABLE rtqueues CASCADE;
 CREATE TABLE rtqueues (
   id integer default nextval('rtqueues_id_seq'::text) NOT NULL,
   name varchar(255) 	DEFAULT '' NOT NULL,
@@ -589,7 +588,7 @@ CREATE TABLE rtqueues (
 
 DROP SEQUENCE rttickets_id_seq;
 CREATE SEQUENCE rttickets_id_seq;
-DROP TABLE rttickets;
+DROP TABLE rttickets CASCADE;
 CREATE TABLE rttickets (
   id integer default nextval('rttickets_id_seq'::text) NOT NULL,
   queueid integer 	NOT NULL
@@ -613,7 +612,7 @@ CREATE INDEX rttickets_createtime_idx ON rttickets (createtime);
 
 DROP SEQUENCE rtmessages_id_seq;
 CREATE SEQUENCE rtmessages_id_seq;
-DROP TABLE rtmessages;
+DROP TABLE rtmessages CASCADE;
 CREATE TABLE rtmessages (
   id integer default nextval('rtmessages_id_seq'::text) NOT NULL,
   ticketid integer 	NOT NULL
@@ -635,7 +634,7 @@ CREATE INDEX rtmessages_ticketid_idx ON rtmessages (ticketid);
 
 DROP SEQUENCE rtnotes_id_seq;
 CREATE SEQUENCE rtnotes_id_seq;
-DROP TABLE rtnotes;
+DROP TABLE rtnotes CASCADE;
 CREATE TABLE rtnotes (
 	id integer default nextval('rtnotes_id_seq'::text) NOT NULL,
 	ticketid integer      NOT NULL
@@ -652,7 +651,7 @@ CREATE INDEX rtnotes_userid_idx ON rtnotes (userid);
 
 DROP SEQUENCE rtrights_id_seq;
 CREATE SEQUENCE rtrights_id_seq;
-DROP TABLE rtrights;
+DROP TABLE rtrights CASCADE;
 CREATE TABLE rtrights (
     id integer DEFAULT nextval('rtrights_id_seq'::text) NOT NULL, 
     userid integer NOT NULL
@@ -669,7 +668,7 @@ CREATE TABLE rtrights (
 ------------------------------------------------------*/
 DROP SEQUENCE passwd_id_seq;
 CREATE SEQUENCE passwd_id_seq;
-DROP TABLE passwd;
+DROP TABLE passwd CASCADE;
 CREATE TABLE passwd (
         id integer DEFAULT nextval('passwd_id_seq'::text) NOT NULL,
 	ownerid integer 	DEFAULT 0 NOT NULL,
@@ -701,7 +700,7 @@ CREATE INDEX passwd_ownerid_idx ON passwd (ownerid);
 ------------------------------------------------------*/
 DROP SEQUENCE domains_id_seq;
 CREATE SEQUENCE domains_id_seq;
-DROP TABLE domains;
+DROP TABLE domains CASCADE;
 CREATE TABLE domains (
 	id integer DEFAULT nextval('domains_id_seq'::text) NOT NULL,
 	ownerid integer 	DEFAULT 0 NOT NULL,
@@ -722,7 +721,7 @@ CREATE INDEX domains_ownerid_idx ON domains (ownerid);
 ------------------------------------------------------*/
 DROP SEQUENCE records_id_seq;
 CREATE SEQUENCE records_id_seq;
-DROP TABLE records;
+DROP TABLE records CASCADE;
 CREATE TABLE records (
 	id integer		DEFAULT nextval('records_id_seq'::text) NOT NULL,
 	domain_id integer	DEFAULT NULL
@@ -744,7 +743,7 @@ CREATE INDEX records_domain_id_idx ON records (domain_id);
 ------------------------------------------------------*/
 DROP SEQUENCE supermasters_id_seq;
 CREATE SEQUENCE supermasters_id_seq;
-DROP TABLE supermasters;
+DROP TABLE supermasters CASCADE;
 CREATE TABLE supermasters (
 	id integer		DEFAULT nextval('supermasters_id_seq'::text) NOT NULL,
 	ip varchar(25)		NOT NULL,
@@ -758,7 +757,7 @@ CREATE TABLE supermasters (
 ------------------------------------------------------*/
 DROP SEQUENCE aliases_id_seq;
 CREATE SEQUENCE aliases_id_seq;
-DROP TABLE aliases;
+DROP TABLE aliases CASCADE;
 CREATE TABLE aliases (
 	id 		integer 	DEFAULT nextval('aliases_id_seq'::text) NOT NULL,
 	login 		varchar(255) 	DEFAULT '' NOT NULL,
@@ -772,7 +771,7 @@ CREATE TABLE aliases (
 ------------------------------------------------------*/
 DROP SEQUENCE aliasassignments_id_seq;
 CREATE SEQUENCE aliasassignments_id_seq;
-DROP TABLE aliasassignments;
+DROP TABLE aliasassignments CASCADE;
 CREATE TABLE aliasassignments (
 	id              integer         DEFAULT nextval('passwd_id_seq'::text) NOT NULL,
 	aliasid         integer         DEFAULT 0 NOT NULL,
@@ -787,7 +786,7 @@ CREATE TABLE aliasassignments (
 ------------------------------------------------------*/
 DROP SEQUENCE uiconfig_id_seq;
 CREATE SEQUENCE uiconfig_id_seq;
-DROP TABLE uiconfig;
+DROP TABLE uiconfig CASCADE;
 CREATE TABLE uiconfig (
     id 		integer 	DEFAULT nextval('uiconfig_id_seq'::text) NOT NULL,
     section 	varchar(64) 	NOT NULL DEFAULT '',
@@ -804,7 +803,7 @@ CREATE TABLE uiconfig (
 ------------------------------------------------------*/
 DROP SEQUENCE events_id_seq;
 CREATE SEQUENCE events_id_seq;
-DROP TABLE events;
+DROP TABLE events CASCADE;
 CREATE TABLE events (
 	id 		integer 	DEFAULT nextval('events_id_seq'::text) NOT NULL,
 	title 		varchar(255) 	DEFAULT '' NOT NULL,
@@ -824,7 +823,7 @@ CREATE INDEX events_date_idx ON events(date);
 /* ---------------------------------------------------
  Structure of table "events" (Timetable)
 ------------------------------------------------------*/
-DROP TABLE eventassignments;
+DROP TABLE eventassignments CASCADE;
 CREATE TABLE eventassignments (
 	eventid 	integer 	DEFAULT 0 NOT NULL,
 	userid 		integer 	DEFAULT 0 NOT NULL,
@@ -834,7 +833,7 @@ CREATE TABLE eventassignments (
 /* ---------------------------------------------------
  Structure of table "sessions"
 ------------------------------------------------------*/
-DROP TABLE sessions;
+DROP TABLE sessions CASCADE;
 CREATE TABLE sessions (
     id 		varchar(50) 	NOT NULL DEFAULT '', 
     ctime 	integer 	NOT NULL DEFAULT 0, 
@@ -850,7 +849,7 @@ CREATE TABLE sessions (
 ------------------------------------------------------*/
 DROP SEQUENCE cashimport_id_seq;
 CREATE SEQUENCE cashimport_id_seq;
-DROP TABLE cashimport;
+DROP TABLE cashimport CASCADE;
 CREATE TABLE cashimport (
     id integer 			DEFAULT nextval('cashimport_id_seq'::text) NOT NULL,
     date integer 		DEFAULT 0 NOT NULL,
@@ -870,7 +869,7 @@ CREATE INDEX cashimport_hash_idx ON cashimport (hash);
 ------------------------------------------------------*/
 DROP SEQUENCE cashsources_id_seq;
 CREATE SEQUENCE cashsources_id_seq;
-DROP TABLE cashsources;
+DROP TABLE cashsources CASCADE;
 CREATE TABLE cashsources (
     id integer      	DEFAULT nextval('cashsources_id_seq'::text) NOT NULL,
     name varchar(32)    DEFAULT '' NOT NULL,
@@ -884,7 +883,7 @@ CREATE TABLE cashsources (
 ------------------------------------------------------*/
 DROP SEQUENCE hosts_id_seq;
 CREATE SEQUENCE hosts_id_seq;
-DROP TABLE hosts;
+DROP TABLE hosts CASCADE;
 CREATE TABLE hosts (
     id integer DEFAULT nextval('hosts_id_seq'::text) NOT NULL,
     name varchar(255) 		DEFAULT '' NOT NULL,
@@ -900,7 +899,7 @@ CREATE TABLE hosts (
 ------------------------------------------------------*/
 DROP SEQUENCE daemoninstances_id_seq;
 CREATE SEQUENCE daemoninstances_id_seq;
-DROP TABLE daemoninstances;
+DROP TABLE daemoninstances CASCADE;
 CREATE TABLE daemoninstances (
     id integer DEFAULT nextval('daemoninstances_id_seq'::text) NOT NULL,
     name varchar(255) 		DEFAULT '' NOT NULL,
@@ -918,7 +917,7 @@ CREATE TABLE daemoninstances (
 ------------------------------------------------------*/
 DROP SEQUENCE daemonconfig_id_seq;
 CREATE SEQUENCE daemonconfig_id_seq;
-DROP TABLE daemonconfig;
+DROP TABLE daemonconfig CASCADE;
 CREATE TABLE daemonconfig (
     id 		integer 	DEFAULT nextval('daemonconfig_id_seq'::text) NOT NULL,
     instanceid 	integer 	DEFAULT 0 NOT NULL,
@@ -935,7 +934,7 @@ CREATE TABLE daemonconfig (
 ------------------------------------------------------*/
 DROP SEQUENCE docrights_id_seq;
 CREATE SEQUENCE docrights_id_seq;
-DROP TABLE docrights;
+DROP TABLE docrights CASCADE;
 CREATE TABLE docrights (
     id          integer         DEFAULT nextval('docrights_id_seq'::text) NOT NULL,
     userid      integer         DEFAULT 0 NOT NULL,
@@ -950,7 +949,7 @@ CREATE TABLE docrights (
 ------------------------------------------------------*/
 DROP SEQUENCE cashrights_id_seq;
 CREATE SEQUENCE cashrights_id_seq;
-DROP TABLE cashrights;
+DROP TABLE cashrights CASCADE;
 CREATE TABLE cashrights (
     id 		integer 	DEFAULT nextval('cashrights_id_seq'::text) NOT NULL,
     userid 	integer 	DEFAULT 0 NOT NULL,
@@ -959,13 +958,13 @@ CREATE TABLE cashrights (
     PRIMARY KEY (id),
     UNIQUE (userid, regid)
 );
-							    
+
 /* ---------------------------------------------------
  Structure of table "cashregs"
 ------------------------------------------------------*/
 DROP SEQUENCE cashregs_id_seq;
 CREATE SEQUENCE cashregs_id_seq;
-DROP TABLE cashregs;
+DROP TABLE cashregs CASCADE;
 CREATE TABLE cashregs (
     id 			integer 	DEFAULT nextval('cashregs_id_seq'::text) NOT NULL,
     name 		varchar(255) 	DEFAULT '' NOT NULL,
@@ -982,7 +981,7 @@ CREATE TABLE cashregs (
 ------------------------------------------------------*/
 DROP SEQUENCE cashreglog_id_seq;
 CREATE SEQUENCE cashreglog_id_seq;
-DROP TABLE cashreglog;
+DROP TABLE cashreglog CASCADE;
 CREATE TABLE cashreglog (
     id 		integer 	DEFAULT nextval('cashreglog_id_seq'::text) NOT NULL,
     regid 	integer         DEFAULT 0 NOT NULL,
@@ -1000,7 +999,7 @@ CREATE TABLE cashreglog (
 ------------------------------------------------------*/
 DROP SEQUENCE ewx_pt_config_id_seq;
 CREATE SEQUENCE ewx_pt_config_id_seq;
-DROP TABLE ewx_pt_config;
+DROP TABLE ewx_pt_config CASCADE;
 CREATE TABLE ewx_pt_config (
     id 		integer 	DEFAULT nextval('ewx_pt_config_id_seq'::text) NOT NULL,
     nodeid 	integer         DEFAULT 0 NOT NULL,
@@ -1017,7 +1016,7 @@ CREATE TABLE ewx_pt_config (
 ------------------------------------------------------*/
 DROP SEQUENCE ewx_stm_nodes_id_seq;
 CREATE SEQUENCE ewx_stm_nodes_id_seq;
-DROP TABLE ewx_stm_nodes;
+DROP TABLE ewx_stm_nodes CASCADE;
 CREATE TABLE ewx_stm_nodes (
         id 		integer		DEFAULT nextval('ewx_stm_nodes_id_seq'::text) NOT NULL,
 	nodeid 		integer         DEFAULT 0 NOT NULL,
@@ -1038,7 +1037,7 @@ CREATE TABLE ewx_stm_nodes (
 ------------------------------------------------------*/
 DROP SEQUENCE ewx_stm_channels_id_seq;
 CREATE SEQUENCE ewx_stm_channels_id_seq;
-DROP TABLE ewx_stm_channels;
+DROP TABLE ewx_stm_channels CASCADE;
 CREATE TABLE ewx_stm_channels (
     id 		integer 	DEFAULT nextval('ewx_stm_channels_id_seq'::text) NOT NULL,
     cid 	integer      	DEFAULT 0 NOT NULL,
@@ -1053,7 +1052,7 @@ CREATE TABLE ewx_stm_channels (
 ------------------------------------------------------*/
 DROP SEQUENCE ewx_channels_id_seq;
 CREATE SEQUENCE ewx_channels_id_seq;
-DROP TABLE ewx_channels;
+DROP TABLE ewx_channels CASCADE;
 CREATE TABLE ewx_channels (
     id 		integer 	DEFAULT nextval('ewx_channels_id_seq'::text) NOT NULL,
     name 	varchar(32)     DEFAULT '' NOT NULL,
@@ -1070,7 +1069,7 @@ CREATE TABLE ewx_channels (
 ----------------------------------------------------*/
 DROP SEQUENCE netdevices_id_seq;
 CREATE SEQUENCE netdevices_id_seq;
-DROP TABLE netdevices;
+DROP TABLE netdevices CASCADE;
 CREATE TABLE netdevices (
 	id integer default nextval('netdevices_id_seq'::text) NOT NULL,
 	name varchar(32) 	DEFAULT '' NOT NULL,
@@ -1097,7 +1096,7 @@ CREATE INDEX netdevices_channelid_idx ON netdevices (channelid);
 /* ---------------------------------------------------
  Structure of table "dbinfo"
 ------------------------------------------------------*/
-DROP TABLE dbinfo;
+DROP TABLE dbinfo CASCADE;
 CREATE TABLE dbinfo (
     keytype 	varchar(255) 	DEFAULT '' NOT NULL,
     keyvalue 	varchar(255) 	DEFAULT '' NOT NULL,
@@ -1109,7 +1108,7 @@ CREATE TABLE dbinfo (
 ------------------------------------------------------*/
 DROP SEQUENCE imessengers_id_seq;
 CREATE SEQUENCE imessengers_id_seq;
-DROP TABLE imessengers;
+DROP TABLE imessengers CASCADE;
 CREATE TABLE imessengers (
     id 		integer         DEFAULT nextval('imessengers_id_seq'::text) NOT NULL,
     customerid 	integer    	DEFAULT 0 NOT NULL,
@@ -1124,7 +1123,7 @@ CREATE INDEX imessengers_customerid_idx ON imessengers (customerid);
 ------------------------------------------------------*/
 DROP SEQUENCE customercontacts_id_seq;
 CREATE SEQUENCE customercontacts_id_seq;
-DROP TABLE customercontacts;
+DROP TABLE customercontacts CASCADE;
 CREATE TABLE customercontacts (
     id 		integer 	DEFAULT nextval('customercontacts_id_seq'::text) NOT NULL,
     customerid 	integer 	NOT NULL DEFAULT 0,
@@ -1140,7 +1139,7 @@ CREATE INDEX customercontacts_phone_idx ON customercontacts (phone);
 ------------------------------------------------------*/
 DROP SEQUENCE excludedgroups_id_seq;
 CREATE SEQUENCE excludedgroups_id_seq;
-DROP TABLE excludedgroups;
+DROP TABLE excludedgroups CASCADE;
 CREATE TABLE excludedgroups (
 	id 		integer NOT NULL DEFAULT nextval('excludedgroups_id_seq'::text),
 	customergroupid integer NOT NULL DEFAULT 0,
@@ -1154,7 +1153,7 @@ CREATE TABLE excludedgroups (
 ------------------------------------------------------*/
 DROP SEQUENCE states_id_seq;
 CREATE SEQUENCE states_id_seq;
-DROP TABLE states;
+DROP TABLE states CASCADE;
 CREATE TABLE states (
     	id 		integer 	DEFAULT nextval('states_id_seq'::text) NOT NULL,
 	name 		varchar(255) 	NOT NULL DEFAULT '',
@@ -1168,7 +1167,7 @@ CREATE TABLE states (
 ------------------------------------------------------*/
 DROP SEQUENCE countries_id_seq;
 CREATE SEQUENCE countries_id_seq;
-DROP TABLE countries;
+DROP TABLE countries CASCADE;
 CREATE TABLE countries (
 	id      integer DEFAULT nextval('countries_id_seq'::text) NOT NULL,
 	name    varchar(255) NOT NULL DEFAULT '',
@@ -1181,7 +1180,7 @@ CREATE TABLE countries (
 ------------------------------------------------------*/
 DROP SEQUENCE zipcodes_id_seq;
 CREATE SEQUENCE zipcodes_id_seq;
-DROP TABLE zipcodes;
+DROP TABLE zipcodes CASCADE;
 CREATE TABLE zipcodes (
     	id 		integer 	DEFAULT nextval('customerassignments_id_seq'::text) NOT NULL,
 	zip 		varchar(10) 	NOT NULL DEFAULT '',
@@ -1196,7 +1195,7 @@ CREATE INDEX zipcodes_stateid_idx ON zipcodes (stateid);
 ------------------------------------------------------*/
 DROP SEQUENCE divisions_id_seq;
 CREATE SEQUENCE divisions_id_seq;
-DROP TABLE divisions;
+DROP TABLE divisions CASCADE;
 CREATE TABLE divisions (
     	id 		integer 	NOT NULL DEFAULT nextval('divisions_id_seq'::text),
 	shortname 	varchar(255) 	NOT NULL DEFAULT '',
@@ -1225,7 +1224,7 @@ CREATE TABLE divisions (
 ------------------------------------------------------*/
 DROP SEQUENCE voipaccounts_id_seq;
 CREATE SEQUENCE voipaccounts_id_seq;
-DROP TABLE voipaccounts;
+DROP TABLE voipaccounts CASCADE;
 CREATE TABLE voipaccounts (
 	id		integer		NOT NULL DEFAULT nextval('voipaccounts_id_seq'::text),
 	ownerid		integer		NOT NULL DEFAULT 0,
@@ -1243,7 +1242,7 @@ CREATE TABLE voipaccounts (
  Structure of table "messages"
 ------------------------------------------------------*/
 DROP SEQUENCE messages_id_seq;
-DROP TABLE messages;
+DROP TABLE messages CASCADE;
 CREATE SEQUENCE messages_id_seq;
 CREATE TABLE messages (
         id 	integer 	DEFAULT nextval('messages_id_seq'::text) NOT NULL,
@@ -1263,7 +1262,7 @@ CREATE INDEX messages_userid_idx ON messages (userid);
  Structure of table "messageitems"
 ------------------------------------------------------*/
 DROP SEQUENCE messageitems_id_seq;
-DROP TABLE messageitems;
+DROP TABLE messageitems CASCADE;
 CREATE SEQUENCE messageitems_id_seq;
 CREATE TABLE messageitems (
         id 		integer 	DEFAULT nextval('messageitems_id_seq'::text) NOT NULL,
@@ -1284,7 +1283,7 @@ CREATE INDEX messageitems_customerid_idx ON messageitems (customerid);
 ------------------------------------------------------*/
 DROP SEQUENCE nastypes_id_seq;
 CREATE SEQUENCE nastypes_id_seq;
-DROP TABLE nastypes;
+DROP TABLE nastypes CASCADE;
 CREATE TABLE nastypes (
     	id 	integer 	DEFAULT nextval('nastypes_id_seq'::text) NOT NULL,
 	name 	varchar(255) 	NOT NULL,
@@ -1297,7 +1296,7 @@ CREATE TABLE nastypes (
 ------------------------------------------------------*/
 DROP SEQUENCE up_rights_id_seq;
 CREATE SEQUENCE up_rights_id_seq;
-DROP TABLE up_rights;
+DROP TABLE up_rights CASCADE;
 CREATE TABLE up_rights (
 	id integer 		DEFAULT nextval('up_rights_id_seq'::text) NOT NULL,
         module varchar(255) 	DEFAULT 0 NOT NULL,
@@ -1312,21 +1311,21 @@ CREATE TABLE up_rights (
 ------------------------------------------------------*/
 DROP SEQUENCE up_rights_assignments_id_seq;
 CREATE SEQUENCE up_rights_assignments_id_seq;
-DROP TABLE up_rights_assignments;
+DROP TABLE up_rights_assignments CASCADE;
 CREATE TABLE up_rights_assignments (
 	id integer 		DEFAULT nextval('up_rights_assignments_id_seq'::text) NOT NULL,
 	customerid integer 	DEFAULT 0 NOT NULL,
         rightid integer 	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (customerid, rightid)
-);	  
+);
 
 /* ---------------------------------------------------
  Structure of table "up_customers" (Userpanel)
 ------------------------------------------------------*/
 DROP SEQUENCE up_customers_id_seq;
 CREATE SEQUENCE up_customers_id_seq;
-DROP TABLE up_customers;
+DROP TABLE up_customers CASCADE;
 CREATE TABLE up_customers (
 	id integer 		DEFAULT nextval('up_customers_id_seq'::text) NOT NULL,
         customerid integer 	DEFAULT 0 NOT NULL,
@@ -1336,14 +1335,14 @@ CREATE TABLE up_customers (
 	failedloginip varchar(16) DEFAULT '' NOT NULL,
 	enabled smallint 	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
-);	  
+);
 
 /* ---------------------------------------------------
  Structure of table "up_help" (Userpanel)
 ------------------------------------------------------*/
 DROP SEQUENCE up_help_id_seq;
 CREATE SEQUENCE up_help_id_seq;
-DROP TABLE up_help;
+DROP TABLE up_help CASCADE;
 CREATE TABLE up_help (
         id integer 		DEFAULT nextval('up_help_id_seq'::text) NOT NULL,
 	reference integer 	DEFAULT 0 NOT NULL,
@@ -1357,7 +1356,7 @@ CREATE TABLE up_help (
 ------------------------------------------------------*/
 DROP SEQUENCE up_info_changes_id_seq;
 CREATE SEQUENCE up_info_changes_id_seq;
-DROP TABLE up_info_changes;
+DROP TABLE up_info_changes CASCADE;
 CREATE TABLE up_info_changes (
 	id integer 		DEFAULT nextval('up_info_changes_id_seq'::text) NOT NULL,
 	customerid integer 	DEFAULT 0 NOT NULL,
