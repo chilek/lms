@@ -37,9 +37,8 @@ $DB->Execute("
 	) ENGINE=InnoDB
 ");
 
-$DB->Execute("INSERT INTO macs (mac, nodeid) 
-		SELECT mac, id FROM nodes");
-	
+$DB->Execute("INSERT INTO macs (mac, nodeid) SELECT mac, id FROM nodes");
+
 $DB->Execute("ALTER TABLE nodes DROP mac");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010050600', 'dbversion'));
