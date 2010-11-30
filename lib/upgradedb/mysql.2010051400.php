@@ -30,7 +30,8 @@ $DB->Execute("
 CREATE VIEW vnodes_mac AS
 SELECT nodeid, GROUP_CONCAT(mac ORDER BY id SEPARATOR ',') AS mac
 	FROM macs GROUP BY nodeid
-
+");
+$DB->Execute("
 CREATE VIEW vnodes AS
 SELECT n.*, m.mac
 	FROM nodes n

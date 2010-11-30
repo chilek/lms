@@ -64,51 +64,92 @@ if(isset($_GET['level']))
     $time = time();
     switch($_GET['level'])
     {
-	case 'medium' : $period = $time-30*24*60*60; $step = 24*60*60; break;//month, day
-	case 'high' : $period = $time-365*24*60*60; $step = 60*60; break; //month, hour
-	default: $period = $time-24*60*60; $step = 24*60*60; break; //1 day, day
+        case 'medium' : $period = $time-30*24*60*60; $step = 24*60*60; break;//month, day
+        case 'high' : $period = $time-365*24*60*60; $step = 60*60; break; //month, hour
+        default: $period = $time-24*60*60; $step = 24*60*60; break; //1 day, day
     }
 
-    if($mintime = $DB->GetOne('SELECT MIN(dt) FROM stats'))
+    if ($mintime = $DB->GetOne('SELECT MIN(dt) FROM stats'))
     {
-	$nodes = $DB->GetAll('SELECT id, name FROM nodes ORDER BY name');
-	foreach($nodes as $node)
-	{
-	    $deleted = 0;
-	    $inserted = 0;
-	    $maxtime = $period;
-	    $timeoffset = date('Z');
-	    $dtdivider = 'FLOOR((dt+'.$timeoffset.')/'.$step.')';
+	    if ($CONFIG['database']['type'] != 'postgres')
+    	    $multi_insert = true;
+	    else if (version_compare($DB->GetDBVersion(), '8.2') >= 0)
+	        $multi_insert = true;
+	    else
+	        $multi_insert = false;
 
-	    $data = $DB->GetAll('SELECT SUM(download) AS download, SUM(upload) AS upload,
-			    COUNT(dt) AS count, MIN(dt) AS mintime, MAX(dt) AS maxtime
-		    FROM stats WHERE nodeid = ? AND dt >= ? AND dt < ? 
-		    GROUP BY nodeid, '.$dtdivider, array($node['id'], $mintime, $maxtime));
+	    $nodes = $DB->GetAll('SELECT id, name FROM nodes ORDER BY name');
 
-	    if($data)
-	    {
-		    $DB->BeginTrans();
+        foreach ($nodes as $node)
+        {
+            $deleted = 0;
+            $inserted = 0;
+            $maxtime = $period;
+            $timeoffset = date('Z');
+            $dtdivider = 'FLOOR((dt+'.$timeoffset.')/'.$step.')';
 
-		    $DB->Execute('DELETE FROM stats WHERE nodeid = ? AND dt >= ? AND dt <= ?',
-	    		    array($node['id'], $mintime, $maxtime));
+            $data = $DB->GetAll('SELECT SUM(download) AS download, SUM(upload) AS upload,
+                    COUNT(dt) AS count, MIN(dt) AS mintime, MAX(dt) AS maxtime
+                FROM stats WHERE nodeid = ? AND dt >= ? AND dt < ? 
+                GROUP BY nodeid, '.$dtdivider.'
+                ORDER BY mintime', array($node['id'], $mintime, $maxtime));
 
-		    foreach($data as $record)
-		    {
-			$deleted += $record['count'];
-			if($record['download'] || $record['upload'])
-				$inserted += $DB->Execute('INSERT INTO stats
-					(nodeid, dt, upload, download)
-					VALUES (?, ?, ?, ?)',
-					array($node['id'], $record['maxtime'],
-					$record['upload'], $record['download']));
-		    }
+            if ($data) {
+                // If divider-record contains only one record we can skip it
+                // This way we'll minimize delete-insert operations count
+                // e.g. in situation when some records has been already compacted
+                foreach($data as $rid => $record) {
+                    if ($record['count'] == 1)
+                        unset($data[$rid]);
+                    else
+                        break;
+                }
 
-		    $DB->CommitTrans();
+                // all records for this node has been already compacted
+                if (empty($data)) {
+                    echo $node['name'].': '.trans('$0 - removed, $1 - inserted<BR>', 0, 0);
+                    flush();
+                    continue;
+                }
 
-		    echo $node['name'].': '.trans('$0 - removed, $1 - inserted<BR>', $deleted, $inserted);
-		    flush();
-	    }
-	}
+                $values = array();
+                // set start datetime of the period
+                $data = array_values($data);
+                $nodemintime = $data[0]['mintime'];
+
+                $DB->BeginTrans();
+
+                // delete old records
+                $DB->Execute('DELETE FROM stats WHERE nodeid = ? AND dt >= ? AND dt <= ?',
+                    array($node['id'], $nodemintime, $maxtime));
+
+                // insert new (summary) records
+                foreach ($data as $record) {
+    			    $deleted += $record['count'];
+
+                    if (!$record['download'] && !$record['upload'])
+                        continue;
+
+                    if ($multi_insert)
+                        $values[] = sprintf('(%d, %d, %d, %d)',
+                            $node['id'], $record['maxtime'], $record['upload'], $record['download']);
+                    else
+                        $inserted += $DB->Execute('INSERT INTO stats
+                            (nodeid, dt, upload, download) VALUES (?, ?, ?, ?)',
+                            array($node['id'], $record['maxtime'],
+                                $record['upload'], $record['download']));
+                }
+
+                if (!empty($values))
+                    $inserted = $DB->Execute('INSERT INTO stats
+                        (nodeid, dt, upload, download) VALUES ' . implode(', ', $values));
+
+                $DB->CommitTrans();
+
+                echo $node['name'].': '.trans('$0 - removed, $1 - inserted<BR>', $deleted, $inserted);
+                flush();
+            }
+        }
     }
 }
 
