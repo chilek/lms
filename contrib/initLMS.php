@@ -33,8 +33,15 @@ $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 // Check for configuration vars and set default values
 $CONFIG['directories']['sys_dir'] = (! $CONFIG['directories']['sys_dir'] ? getcwd() : $CONFIG['directories']['sys_dir']);
 $CONFIG['directories']['lib_dir'] = (! $CONFIG['directories']['lib_dir'] ? $CONFIG['directories']['sys_dir'].'/lib' : $CONFIG['directories']['lib_dir']);
+$CONFIG['directories']['doc_dir'] = (!isset($CONFIG['directories']['doc_dir']) ? $CONFIG['directories']['sys_dir'].'/documents' : $CONFIG['directories']['doc_dir']);
+$CONFIG['directories']['modules_dir'] = (!isset($CONFIG['directories']['modules_dir']) ? $CONFIG['directories']['sys_dir'].'/modules' : $CONFIG['directories']['modules_dir']);
 
-require_once($CONFIG['directories']['lib_dir'].'/config.php');
+define('SYS_DIR', $CONFIG['directories']['sys_dir']);
+define('LIB_DIR', $CONFIG['directories']['lib_dir']);
+define('DOC_DIR', $CONFIG['directories']['doc_dir']);
+define('MODULES_DIR', $CONFIG['directories']['modules_dir']);
+
+require_once(LIB_DIR.'/config.php');
 
 // Init database 
 $_DBTYPE = $CONFIG['database']['type'];
@@ -43,7 +50,7 @@ $_DBUSER = $CONFIG['database']['user'];
 $_DBPASS = $CONFIG['database']['password'];
 $_DBNAME = $CONFIG['database']['database'];
 
-require_once($CONFIG['directories']['lib_dir'].'/LMSDB.php');
+require_once(LIB_DIR.'/LMSDB.php');
 
 $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 
@@ -57,10 +64,10 @@ if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0
 
 // Include required files (including sequence is important)
 
-require_once($CONFIG['directories']['lib_dir'].'/language.php');
-require_once($CONFIG['directories']['lib_dir'].'/definitions.php');
-require_once($CONFIG['directories']['lib_dir'].'/common.php');
-require_once($CONFIG['directories']['lib_dir'].'/LMS.class.php');
+require_once(LIB_DIR.'/language.php');
+require_once(LIB_DIR.'/definitions.php');
+require_once(LIB_DIR.'/common.php');
+require_once(LIB_DIR.'/LMS.class.php');
 
 $AUTH = NULL;
 
