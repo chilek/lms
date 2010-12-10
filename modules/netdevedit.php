@@ -377,6 +377,7 @@ case 'formaddip':
 				$error['mac'.$key] = trans('Incorrect MAC address!');
 		if(empty($macs))
 			$error['mac0'] = trans('MAC address is required!');
+		$nodeipdata['macs'] = $macs;
 
 		if(strlen($nodeipdata['passwd']) > 32)
 			$error['passwd'] = trans('Password is too long (max.32 characters)!');
