@@ -106,7 +106,7 @@ echo -e "\n?>" >> strings.php
 rm tmp_strings
 echo "done."
 
-if [ $diff == 1 ] 
+if [ "$diff" = "1" ]
 then
 	echo -n "Creating diff... "
 	# parse new and old strings.php files
@@ -124,7 +124,7 @@ then
 	rm strings.new 2>/dev/null
 	rm strings.old 2>/dev/null
 	DIFFLINESNUM=`cat strings.diff | wc -l`
-	if [ $DIFFLINESNUM == 0 ]
+	if [ "$DIFFLINESNUM" = "0" ]
 	then
 		rm strings.diff
 	fi
