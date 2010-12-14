@@ -34,7 +34,8 @@ CREATE TABLE assignments (
   id int(11) NOT NULL auto_increment,
   tariffid int(11) NOT NULL DEFAULT '0',
   liabilityid int(11) NOT NULL DEFAULT '0',
-  customerid int(11) NOT NULL DEFAULT '0',
+  customerid int(11) NOT NULL
+    REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
   period smallint NOT NULL DEFAULT '0',
   at int(11) NOT NULL DEFAULT '0',
   datefrom int(11) NOT NULL DEFAULT '0',
@@ -625,6 +626,9 @@ CREATE TABLE customers (
   pin int(6) 		NOT NULL DEFAULT '0',
   cutoffstop int(11) 	NOT NULL DEFAULT '0',
   consentdate int(11)   NOT NULL DEFAULT '0',
+  einvoice tinyint(1)   DEFAULT NULL,
+  invoicenotice tinyint(1)   DEFAULT NULL,
+  mailingnotice tinyint(1)   DEFAULT NULL,
   divisionid int(11)   	NOT NULL DEFAULT '0',
   paytime tinyint	NOT NULL DEFAULT '-1',
   paytype smallint  DEFAULT NULL,
@@ -653,10 +657,13 @@ CREATE TABLE customergroups (
 DROP TABLE IF EXISTS customerassignments;
 CREATE TABLE customerassignments (
   id int(11) NOT NULL auto_increment, 
-  customergroupid int(11) NOT NULL DEFAULT '0', 
-  customerid int(11) NOT NULL DEFAULT '0', 
+  customergroupid int(11) NOT NULL
+    REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  customerid int(11) NOT NULL
+    REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
   PRIMARY KEY (id),
-  UNIQUE KEY customerassignment (customergroupid, customerid)
+  UNIQUE KEY customerassignment (customergroupid, customerid),
+  INDEX customerid (customerid)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1098,10 +1105,12 @@ CREATE TABLE divisions (
 DROP TABLE IF EXISTS excludedgroups;
 CREATE TABLE excludedgroups (
 	id 		int(11) 	NOT NULL auto_increment,
-        customergroupid int(11) 	NOT NULL DEFAULT 0,
+    customergroupid int(11) 	NOT NULL,
+        REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	userid 		int(11) 	NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
-	UNIQUE KEY userid (userid, customergroupid)
+	UNIQUE KEY userid (userid, customergroupid),
+	KEY customergroupid (customergroupid)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1375,4 +1384,4 @@ CREATE TABLE supermasters (
 
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010062800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010121000');

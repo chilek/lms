@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-define('DBVERSION', '2010081700'); // here should be always the newest version of database!
+define('DBVERSION', '2010121000'); // here should be always the newest version of database!
 				 // it placed here to avoid read disk every time when we call this file.
 
 /*
@@ -43,23 +43,23 @@ function getdir($pwd = './', $pattern = '^.*$')
 	return $files;
 }
 
-if($dbversion = $DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype = ?',array('dbversion')))
+if($dbversion = $DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype = ?',array('dbversion'))) {
 	if(DBVERSION > $dbversion)
 	{
 		set_time_limit(0);
 		$lastupgrade = $dbversion;
 		$_dbtype = $CONFIG['database']['type'] == 'mysqli' ? 'mysql' : $CONFIG['database']['type'];
-		
+
 		$upgradelist = getdir(LIB_DIR.'/upgradedb/', '^'.$_dbtype.'.[0-9]{10}.php$');
 		if(sizeof($upgradelist))
 			foreach($upgradelist as $upgrade)
 			{
 				$upgradeversion = preg_replace('/^'.$_dbtype.'\.([0-9]{10})\.php$/','\1',$upgrade);
-				
+
 				if($upgradeversion > $dbversion && $upgradeversion <= DBVERSION)
 					$pendingupgrades[] = $upgradeversion;
 			}
-			
+
 		if(sizeof($pendingupgrades))
 		{
 			sort($pendingupgrades);
@@ -73,6 +73,7 @@ if($dbversion = $DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype = ?',arra
 			}
 		}
 	}
+}
 
 $layout['dbschversion'] = isset($lastupgrade) ? $lastupgrade : DBVERSION;
 

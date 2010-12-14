@@ -5357,6 +5357,9 @@ Chapter 7. For curious
    cutoffstop - date to which customers cutting off is disabled
    paytime - invoices deadline in days
    paytype - invoices payment type identifier (see documents table)
+   einvoice - enables e-invoices
+   invoicenotice - enables invoices delivery via e-mail
+   mailingnotice - enables messages delivery via e-mail or sms
      __________________________________________________________________
 
 7.2.3. Customer groups ('customergroups')

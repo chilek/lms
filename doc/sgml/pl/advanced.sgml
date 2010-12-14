@@ -128,6 +128,9 @@
 		    <member>cutoffstop - data, do której blokowanie klientów zad³u¿onych jest wy³±czone</member>
 		    <member>paytime - termin p³atno¶ci faktur</member>
 		    <member>paytype - typ p³atno¶ci faktur (zobacz tabela documents)</member>
+		    <member>einvoice - zezwolenie na faktury elektroniczne</member>
+		    <member>invoicenotice - zezwolenie na dostarczanie faktur poczt± elektroniczn±</member>
+		    <member>mailingnotice - zezwolenie na dostarczanie informacji poczt± elektroniczn± lub smsem</member>
                </simplelist>
           </sect2>
           <sect2 id="customergroups">
