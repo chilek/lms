@@ -387,37 +387,41 @@ class LMS
 
 	function CustomerAdd($customeradd)
 	{
-		if($this->DB->Execute('INSERT INTO customers (name, lastname, type,  
-				    address, zip, city, countryid, email, ten, ssn, status, creationdate, 
-				    creatorid, info, notes, serviceaddr, message, pin, regon, rbe, 
-				    icn, cutoffstop, consentdate, divisionid, paytime, paytype) 
-				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, 
-				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
-				    array(lms_ucwords($customeradd['name']),  
-					    $customeradd['lastname'], 
+		if($this->DB->Execute('INSERT INTO customers (name, lastname, type,
+				    address, zip, city, countryid, email, ten, ssn, status, creationdate,
+				    creatorid, info, notes, serviceaddr, message, pin, regon, rbe,
+				    icn, cutoffstop, consentdate, einvoice, divisionid, paytime, paytype,
+				    invoicenotice, mailingnotice)
+				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?,
+				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				    array(lms_ucwords($customeradd['name']),
+					    $customeradd['lastname'],
 					    empty($customeradd['type']) ? 0 : 1,
-					    $customeradd['address'], 
-					    $customeradd['zip'], 
-					    $customeradd['city'], 
-					    $customeradd['countryid'], 
-					    $customeradd['email'], 
-					    $customeradd['ten'], 
-					    $customeradd['ssn'], 
-					    $customeradd['status'], 
-					    $this->AUTH->id, 
-					    $customeradd['info'], 
+					    $customeradd['address'],
+					    $customeradd['zip'],
+					    $customeradd['city'],
+					    $customeradd['countryid'],
+					    $customeradd['email'],
+					    $customeradd['ten'],
+					    $customeradd['ssn'],
+					    $customeradd['status'],
+					    $this->AUTH->id,
+					    $customeradd['info'],
 					    $customeradd['notes'],
-					    $customeradd['serviceaddr'], 
-					    $customeradd['message'], 
+					    $customeradd['serviceaddr'],
+					    $customeradd['message'],
 					    $customeradd['pin'],
 					    $customeradd['regon'],
 					    $customeradd['rbe'],
 					    $customeradd['icn'],
 					    $customeradd['cutoffstop'],
 					    $customeradd['consentdate'],
+					    $customeradd['einvoice'],
 					    $customeradd['divisionid'],
 					    $customeradd['paytime'],
 					    !empty($customeradd['paytype']) ? $customeradd['paytype'] : NULL,
+					    $customeradd['invoicenotice'],
+					    $customeradd['mailingnotice'],
 					    )))
 		{
 			return $this->DB->GetLastInsertID('customers');
@@ -428,7 +432,7 @@ class LMS
 	function DeleteCustomer($id)
 	{
 		$this->DB->BeginTrans();
-		
+
 		$this->DB->Execute('UPDATE customers SET deleted=1, moddate=?NOW?, modid=? 
 				WHERE id=?', array($this->AUTH->id, $id));
 		$this->DB->Execute('DELETE FROM customerassignments WHERE customerid=?', array($id));
@@ -443,7 +447,7 @@ class LMS
 		// Remove Userpanel rights
 		if(!empty($this->CONFIG['directories']['userpanel_dir']))
 			$this->DB->Execute('DELETE FROM up_rights_assignments WHERE customerid=?', array($id));
-		
+
 		$this->DB->CommitTrans();
 	}
 
@@ -453,7 +457,8 @@ class LMS
 				zip=?, city=?, countryid=?, email=?, ten=?, ssn=?, moddate=?NOW?, modid=?, 
 				info=?, notes=?, serviceaddr=?, lastname=UPPER(?), name=?, 
 				deleted=0, message=?, pin=?, regon=?, icn=?, rbe=?, 
-				cutoffstop=?, consentdate=?, divisionid=?, paytime=?, paytype=? 
+				cutoffstop=?, consentdate=?, einvoice=?, invoicenotice=?, mailingnotice=?,
+				divisionid=?, paytime=?, paytype=? 
 				WHERE id=?', 
 			array( $customerdata['status'], 
 				empty($customerdata['type']) ? 0 : 1,
@@ -477,6 +482,9 @@ class LMS
 				$customerdata['rbe'], 
 				$customerdata['cutoffstop'],
 				$customerdata['consentdate'],
+				$customerdata['einvoice'],
+				$customerdata['invoicenotice'],
+				$customerdata['mailingnotice'],
 				$customerdata['divisionid'],
 				$customerdata['paytime'],
 				$customerdata['paytype'] ? $customerdata['paytype'] : null,
@@ -527,7 +535,7 @@ class LMS
 				$result['up_logins'] = $this->DB->GetRow('SELECT lastlogindate, lastloginip, 
 					failedlogindate, failedloginip
 		                        FROM up_customers WHERE customerid = ?', array($result['id']));
-			
+
 				if($cstate = $this->DB->GetRow('SELECT s.id, s.name FROM states s, zipcodes
 					WHERE zip = ? AND stateid = s.id', array($result['zip'])))
 				{
@@ -544,7 +552,7 @@ class LMS
 			$result['contacts'] = $this->DB->GetAll('SELECT phone, name
 					FROM customercontacts WHERE customerid = ? ORDER BY id',
 					array($result['id']));
-				     
+
 			return $result;
 		}
 		else
@@ -977,15 +985,12 @@ class LMS
 
 	function CustomergroupDelete($id)
 	{
-		 if (!$this->CustomergroupWithCustomerGet($id))
-		 {
-			$this->DB->BeginTrans();
+		if (!$this->CustomergroupWithCustomerGet($id))
+		{
 			$this->DB->Execute('DELETE FROM customergroups WHERE id=?', array($id));
-			$this->DB->Execute('DELETE FROM excludedgroups WHERE customergroupid=?', array($id));
-			$this->DB->CommitTrans();
 			return TRUE;
-		 } 
-		 else
+		}
+		else
 			return FALSE;
 	}
 

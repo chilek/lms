@@ -6260,6 +6260,10 @@ Rozdział 7. Dla dociekliwych
    wyłączone
    paytime - termin płatności faktur
    paytype - typ płatności faktur (zobacz tabela documents)
+   einvoice - zezwolenie na faktury elektroniczne
+   invoicenotice - zezwolenie na dostarczanie faktur pocztą elektroniczną
+   mailingnotice - zezwolenie na dostarczanie informacji pocztą
+   elektroniczną lub smsem
      __________________________________________________________________
 
 7.2.3. Grupy klientów ('customergroups')

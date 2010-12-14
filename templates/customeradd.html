@@ -20,7 +20,7 @@
 {/literal}
 <P>
 <FORM name="customeradd" id="customeradd" method="POST" action="?m=customeradd">
-<INPUT type="submit" class="hiddenbtn">		
+<INPUT type="submit" class="hiddenbtn">
 <TABLE cellpadding="4" cellspacing="0" width="100%">
 	<TR class="dark">
 		<TD class="fall" width="100%" colspan="2">
@@ -87,7 +87,7 @@
 					</TD>
 				</TR>
 				<TR>
-					<TD width="1%">
+					<TD width="1%" style="vertical-align: top">
 						<IMG src="img/home.gif" alt="">
 					</TD>
 					<TD width="99%" nowrap>
@@ -139,19 +139,20 @@
 						</script>
 					</TD>
 				</TR>
-    				<TR>
+				{foreach from=$customeradd.contacts item=item key=key}
+    			<TR>
 					<TD width="1%">
 						<IMG src="img/phone.gif" alt="">
 					</TD>
 					<TD width="99%" NOWRAP>
-						<TABLE width="100%" cellpadding="2" cellspacing="0">
-						{foreach from=$customeradd.contacts item=item key=key}
-						    <TR>
-							<TD width="1%"><INPUT TYPE="text" size="15" value="{$item.phone}" name="customeradd[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}></TD>
-							<TD width="99%" align="left"><INPUT TYPE="text" size="20" value="{$item.name}" name="customeradd[contacts][{$key}][name]" {tip text="Enter contact name/description (optional)"}></TD>
-						    </TR>
-						{/foreach}
-						</TABLE>
+						<INPUT TYPE="text" size="15" value="{$item.phone}" name="customeradd[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}>
+						<INPUT TYPE="text" size="20" value="{$item.name}" name="customeradd[contacts][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
+					</TD>
+				</TR>
+				{/foreach}
+    			<TR>
+					<TD width="1%"></TD>
+					<TD width="99%" NOWRAP>
 						<A href="javascript: newcontact()">{t}Add contact field{/t} &raquo;&raquo;&raquo;</A>
 					</TD>
 				</TR>
@@ -245,11 +246,17 @@
 					</TD>
 				</TR>
 				<TR>
-					<TD width="1%">
+					<TD width="1%" style="vertical-align: top">
 						<IMG src="img/options.gif" alt="">
 					</TD>
 					<TD width="99%">
-						{t}Deadline:{/t} <SELECT name="customeradd[paytime]" {tip text="Select default deadline in days" trigger="paytime"}>
+					    <TABLE>
+					        <TR>
+					            <TD>
+						{t}Deadline:{/t}
+						        </TD>
+						        <TD>
+						<SELECT name="customeradd[paytime]" {tip text="Select default deadline in days" trigger="paytime"}>
 							<OPTION value="-1"{if !isset($customeradd.paytime) || $customeradd.paytime==-1} selected{/if}>- {t}default{/t} -</OPTION>
 							<OPTION value="0"{if isset($customeradd.paytime) && $customeradd.paytime==0} selected{/if}>0</OPTION>
 							<OPTION value="7"{if $customeradd.paytime==7} selected{/if}>7</OPTION>
@@ -258,27 +265,27 @@
 							<OPTION value="21"{if $customeradd.paytime==21} selected{/if}>21</OPTION>
 							<OPTION value="30"{if $customeradd.paytime==30} selected{/if}>30</OPTION>
 						</SELECT>
-					</TD>
-				</TR>
-				<TR>
-					<TD width="1%">
-						<IMG src="img/options.gif" alt="">
-					</TD>
-					<TD width="99%">
-						{t}Payment type:{/t} <SELECT name="customeradd[paytype]" {tip text="Select default invoices payment type" trigger="paytype"}>
+					            </TD>
+				            </TR>
+				            <TR>
+					            <TD>
+						{t}Payment type:{/t}
+						        </TD>
+						        <TD>
+						<SELECT name="customeradd[paytype]" {tip text="Select default invoices payment type" trigger="paytype"}>
 							<OPTION value=""{if !$customeradd.paytype} selected{/if}>- {t}default{/t} -</OPTION>
 							{foreach from=$_PAYTYPES item=item key=key}
 							<OPTION value="{$key}"{if $customeradd.paytype==$key} selected{/if}>{$item}</OPTION>
 							{/foreach}
 						</SELECT>
-					</TD>
-				</TR>
-				<TR>
-					<TD width="1%">
-						<IMG src="img/options.gif" alt="">
-					</TD>
-					<TD width="99%">
-						{t}Cutoff suspending:{/t} <SELECT name="customeradd[cutoffstop]" {tip text="Select days number of cutoff suspending (optional)" trigger="cutoffstop"}>
+					            </TD>
+				            </TR>
+				            <TR>
+				                <TD>
+						{t}Cutoff suspending:{/t}
+						        </TD>
+						        <TD>
+						<SELECT name="customeradd[cutoffstop]" {tip text="Select days number of cutoff suspending (optional)" trigger="cutoffstop"}>
 						    <OPTION value="0"{if !$customeradd.cutoffstop} selected{/if}>0</OPTION>
 						    <OPTION value="1"{if $customeradd.cutoffstop==1} selected{/if}>1</OPTION>
 						    <OPTION value="2"{if $customeradd.cutoffstop==2} selected{/if}>2</OPTION>
@@ -291,17 +298,51 @@
 						    <OPTION value="21"{if $customeradd.cutoffstop==21} selected{/if}>21</OPTION>
 						    <OPTION value="30"{if $customeradd.cutoffstop==30} selected{/if}>30</OPTION>
 						</SELECT>
-					</TD>
-				</TR>
+					            </TD>
+				            </TR>
+				        </TABLE>
+				    </TD>
 				<TR>
-					<TD width="1%">
+					<TD width="1%" style="vertical-align: top">
 						<IMG src="img/options.gif" alt="">
 					</TD>
 					<TD width="99%">
-						<A HREF="javascript:checkElement('chkconsent')">{t}Consent for personal data processing:{/t}</A>
-						<INPUT TYPE="checkbox" NAME="customeradd[consentdate]" VALUE="{$smarty.now}" ID="chkconsent"{if $customeradd.consentdate} checked{/if}>
-					</TD>
-				</TR>
+                        <TABLE cellpadding="0">
+                            <TR>
+                                <TD>
+            						<A HREF="javascript:checkElement('chkconsent')">{t}Consent to personal data processing:{/t}</A>
+                                </TD>
+                                <TD>
+			            			<INPUT TYPE="checkbox" NAME="customeradd[consentdate]" VALUE="{$smarty.now}" ID="chkconsent"{if $customeradd.consentdate} checked{/if}>
+                                </TD>
+                            </TR>
+                            <TR>
+					            <TD>
+				            		<A HREF="javascript:checkElement('chkeinvoice')">{t}Consent to electronic invoices:{/t}</A>
+                                </TD>
+                                <TD>
+                					<INPUT TYPE="checkbox" NAME="customeradd[einvoice]" VALUE="1" ID="chkeinvoice"{if $customeradd.einvoice} checked{/if}>
+					            </TD>
+				            </TR>
+				            <TR>
+					            <TD>
+						            <A HREF="javascript:checkElement('chkinvoicenotice')">{t}Consent to invoices delivery via e-mail:{/t}</A>
+                                </TD>
+                                <TD>
+			            			<INPUT TYPE="checkbox" NAME="customeradd[invoicenotice]" VALUE="1" ID="chkinvoicenotice"{if $customeradd.invoicenotice} checked{/if}>
+					            </TD>
+				            </TR>
+				            <TR>
+					            <TD>
+            						<A HREF="javascript:checkElement('chkmailingnotice')">{t}Consent to messages delivery via e-mail or sms:{/t}</A>
+                                </TD>
+                                <TD>
+   						            <INPUT TYPE="checkbox" NAME="customeradd[mailingnotice]" VALUE="1" ID="chkmailingnotice"{if $customeradd.mailingnotice} checked{/if}>
+            					</TD>
+			            	</TR>
+			            </TABLE>
+			        </TD>
+			    </TR>
 			</TABLE>
 		</TD>
 		<TD width="50%" class="fright" STYLE="vertical-align: top;">

@@ -34,7 +34,8 @@ CREATE TABLE assignments (
 	id integer default nextval('assignments_id_seq'::text) NOT NULL,
 	tariffid integer 	DEFAULT 0 NOT NULL,
 	liabilityid integer 	DEFAULT 0 NOT NULL,
-	customerid integer	DEFAULT 0 NOT NULL,
+	customerid integer	NOT NULL
+	    REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	period smallint 	DEFAULT 0 NOT NULL,
 	at integer 		DEFAULT 0 NOT NULL,
 	datefrom integer	DEFAULT 0 NOT NULL,
@@ -462,9 +463,12 @@ CREATE TABLE customers (
 	pin integer		DEFAULT 0 NOT NULL,
 	cutoffstop integer	DEFAULT 0 NOT NULL,
 	consentdate integer	DEFAULT 0 NOT NULL,
+	einvoice smallint 	DEFAULT NULL,
+	invoicenotice smallint 	DEFAULT NULL,
+	mailingnotice smallint 	DEFAULT NULL,
 	divisionid integer	DEFAULT 0 NOT NULL,
-    	paytime smallint 	DEFAULT -1 NOT NULL,
-    	paytype smallint 	DEFAULT NULL,
+    paytime smallint 	DEFAULT -1 NOT NULL,
+    paytype smallint 	DEFAULT NULL,
 	PRIMARY KEY (id)
 );
 
@@ -493,11 +497,15 @@ CREATE SEQUENCE customerassignments_id_seq;
 DROP TABLE customerassignments CASCADE;
 CREATE TABLE customerassignments (
 	id integer DEFAULT nextval('customerassignments_id_seq'::text) NOT NULL, 
-	customergroupid integer DEFAULT 0 NOT NULL, 
-	customerid integer DEFAULT 0 NOT NULL, 
+	customergroupid integer NOT NULL,
+	    REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	customerid integer NOT NULL
+	    REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id),
 	UNIQUE (customergroupid, customerid)
 );
+
+CREATE INDEX customerassignments_customerid_idx ON customerassignments (customerid);
 
 /* -------------------------------------------------------- 
   Structure of table "stats" 
@@ -1142,11 +1150,13 @@ CREATE SEQUENCE excludedgroups_id_seq;
 DROP TABLE excludedgroups CASCADE;
 CREATE TABLE excludedgroups (
 	id 		integer NOT NULL DEFAULT nextval('excludedgroups_id_seq'::text),
-	customergroupid integer NOT NULL DEFAULT 0,
+	customergroupid integer NOT NULL,
+	    REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	userid 		integer NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
 	UNIQUE (userid, customergroupid)
 );
+CREATE INDEX excludedgroups_customergroupid_idx ON excludedgroups (customergroupid);
 
 /* ---------------------------------------------------
  Structure of table "states"
@@ -1475,4 +1485,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010081700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010121000');

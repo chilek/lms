@@ -22,7 +22,7 @@
 		<TD WIDTH="1%">
 			{if $customerinfo.status eq "3"}<IMG src="img/customer.gif" alt="">{/if}
 			{if $customerinfo.status eq "2"}<IMG src="img/wait.gif" alt="">{/if}
-			{if $customerinfo.status eq "1"}<IMG src="img/unk.gif" alt="">{/if}			
+			{if $customerinfo.status eq "1"}<IMG src="img/unk.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			{if $customerinfo.status eq "3"}<B>{t}connected<!singular>{/t}</B>{/if}
@@ -40,18 +40,16 @@
 			{t}{$customerinfo.country}{/t}
 		</TD>
 	</TR>
-{if $customerinfo.contacts}
+{foreach from=$customerinfo.contacts item=item}
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/phone.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
-			{foreach from=$customerinfo.contacts item=item}
-		              {if $item.phone}{$item.phone}{if $item.name} ({$item.name|truncate:"40":"...":true}){/if}<BR>{/if}
-			{/foreach}
+		    {if $item.phone}{$item.phone}{if $item.name} ({$item.name|truncate:"40":"...":true}){/if}<BR>{/if}
 		</TD>
 	</TR>
-{/if}
+{/foreach}
 {if $customerinfo.serviceaddr neq ""}
 	<TR>
 		<TD WIDTH="1%" >

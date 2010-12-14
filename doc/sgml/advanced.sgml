@@ -124,6 +124,9 @@
                     <member>cutoffstop - date to which customers cutting off is disabled</member>
                     <member>paytime - invoices deadline in days</member>
                     <member>paytype - invoices payment type identifier (see documents table)</member>
+                    <member>einvoice - enables e-invoices</member>
+                    <member>invoicenotice - enables invoices delivery via e-mail</member>
+                    <member>mailingnotice - enables messages delivery via e-mail or sms</member>
                </simplelist>
           </sect2>
           <sect2 id="customergroups">

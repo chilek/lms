@@ -44,7 +44,7 @@
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
+		<TD WIDTH="1%" style="vertical-align: top">
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
@@ -54,18 +54,16 @@
 			{if $customerinfo.country}<BR>{t}{$customerinfo.country}{/t}{/if}
 		</TD>
 	</TR>
-{if $customerinfo.contacts}
+{foreach from=$customerinfo.contacts item=item}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
 			<IMG SRC="img/phone.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
-			{foreach from=$customerinfo.contacts item=item}
-			    {if $item.phone}{$item.phone}{if $item.name} ({$item.name|truncate:"40":"...":true}){/if}<BR>{/if}
-			{/foreach}
+			{if $item.phone}{$item.phone}{if $item.name} ({$item.name|truncate:"40":"...":true}){/if}<BR>{/if}
 		</TD>
 	</TR>
-{/if}
+{/foreach}
 {if $customerinfo.serviceaddr neq ""}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
@@ -181,43 +179,82 @@
 			{$customerinfo.bankaccount}
 		</TD>
 	</TR>
-{/if}	
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/options.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			{t}Deadline:{/t} {if $customerinfo.paytime eq -1}{t}default{/t}{else}{$customerinfo.paytime}&nbsp;{t}days{/t}{/if}
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/options.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			{t}Payment type:{/t} {assign var=paytype value=$customerinfo.paytype}{if $_PAYTYPES.$paytype}{$_PAYTYPES.$paytype}{else}{t}default{/t}{/if}
-		</TD>
-	</TR>
-{if $customerinfo.cutoffstop > $smarty.now}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/options.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
-			<FONT class="alert">
-			{t 0=$customerinfo.cutoffstop|date_format:"%Y/%m/%d"}Cutoff suspended to $0{/t}
-			</FONT>
-		</TD>
-	</TR>
 {/if}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
+		<TD WIDTH="1%" style="vertical-align: top">
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
-			{t}Consent for personal data processing:{/t} {if $customerinfo.consentdate}{$customerinfo.consentdate}{else}{t}no consent{/t}{/if}
+		    <TABLE cellpadding="2">
+		        <TR>
+		            <TD>
+			            {t}Deadline:{/t}
+			        </TD>
+			        <TD>
+			            {if $customerinfo.paytime eq -1}{t}default{/t}{else}{$customerinfo.paytime}&nbsp;{t}days{/t}{/if}
+		            </TD>
+	            </TR>
+                <TR>
+                    <TD>
+			            {t}Payment type:{/t}
+			        </TD>
+			        <TD>
+			            {assign var=paytype value=$customerinfo.paytype}{if $_PAYTYPES.$paytype}{$_PAYTYPES.$paytype}{else}{t}default{/t}{/if}
+		            </TD>
+	            </TR>
+                {if $customerinfo.cutoffstop > $smarty.now}
+			    <TR>
+			        <TD colspan="2">
+			            <FONT class="alert">
+			            {t 0=$customerinfo.cutoffstop|date_format:"%Y/%m/%d"}Cutoff suspended to $0{/t}
+			            </FONT>
+			        </TD>
+			    </TR>
+                {/if}
+            </TABLE>
 		</TD>
 	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" style="vertical-align: top">
+			<IMG SRC="img/options.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+		    <TABLE cellpadding="2">
+		        <TR>
+		            <TD>
+			            {t}Consent to personal data processing:{/t}
+		            </TD>
+		            <TD>
+		                {if $customerinfo.consentdate}{$customerinfo.consentdate}{else}{t}no{/t}{/if}
+	                </TD>
+	            </TR>
+	            <TR>
+	                <TD>
+			            {t}Consent to electronic invoices:{/t}
+            		</TD>
+            		<TD>
+            		    {if $customerinfo.einvoice}{t}yes{/t}{else}{t}no{/t}{/if}
+	                </TD>
+	            </TR>
+	            <TR>
+	                <TD>
+            			{t}Consent to invoices delivery via e-mail:{/t}
+            		</TD>
+            		<TD>
+            		    {if $customerinfo.invoicenotice}{t}yes{/t}{else}{t}no{/t}{/if}
+	                </TD>
+	            </TR>
+                <TR>
+                    <TD>
+			            {t}Consent to messages delivery via e-mail or sms:{/t}
+		            </TD>
+		            <TD>
+		                {if $customerinfo.mailingnotice}{t}yes{/t}{else}{t}no{/t}{/if}
+	                </TD>
+	            </TR>
+            </TABLE>
+        </TD>
+    </TR>
 
                                         </TABLE>
 				</TD>
@@ -332,7 +369,7 @@
 				<A href="?m=customerdel&id={$customerinfo.id}" onClick="return confirmLink(this, '{t}Are you sure, you want to remove that customer from database?\n\nIf that customer have any computers, they will be automatically removed from database too, and information about them irreversible losed!{/t}')">{t}Delete{/t} <img src="img/delete.gif" alt="[ {t}Delete{/t} ]"></A>
 				</NOBR>
 			{/if}
-			{if $info_link}		    
+			{if $info_link}
 				<A href="?m=customerinfo&id={$customerinfo.id}">{t}Info{/t} <img src="img/info.gif" alt="[ {t}Info{/t} ]"></A>
 			{/if}
 		</TD>
