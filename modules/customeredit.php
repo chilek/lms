@@ -105,14 +105,17 @@ elseif(isset($_POST['customerdata']) && !isset($_GET['newcontact']))
 	}
 
 	foreach($customerdata['contacts'] as $idx => $val)
-        {
+    {
 	        $phone = trim($val['phone']);
 	        $name = trim($val['name']);
-					
+            $type = !empty($val['type']) ? array_sum($val['type']) : NULL;
+
+            $customerdata['contacts'][$idx]['type'] = $type;
+
 	        if($name && !$phone)
 	                $error['contact'.$idx] = trans('Phone number is required!');
 	        elseif($phone)
-	                $contacts[] = array('name' => $name, 'phone' => $phone);
+	                $contacts[] = array('name' => $name, 'phone' => $phone, 'type' => $type);
 	}
 
 	if(!$error)
@@ -141,8 +144,8 @@ elseif(isset($_POST['customerdata']) && !isset($_GET['newcontact']))
 		$DB->Execute('DELETE FROM customercontacts WHERE customerid = ?', array($customerdata['id']));
 		if(isset($contacts))
 			foreach($contacts as $contact)
-				$DB->Execute('INSERT INTO customercontacts (customerid, phone, name)
-					VALUES(?, ?, ?)', array($customerdata['id'], $contact['phone'], $contact['name']));
+				$DB->Execute('INSERT INTO customercontacts (customerid, phone, name, type)
+					VALUES(?, ?, ?, ?)', array($customerdata['id'], $contact['phone'], $contact['name'], $contact['type']));
 		
 		if($customerdata['zip'] && $customerdata['stateid'])
 		{

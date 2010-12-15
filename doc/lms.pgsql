@@ -1119,7 +1119,8 @@ CREATE SEQUENCE imessengers_id_seq;
 DROP TABLE imessengers CASCADE;
 CREATE TABLE imessengers (
     id 		integer         DEFAULT nextval('imessengers_id_seq'::text) NOT NULL,
-    customerid 	integer    	DEFAULT 0 NOT NULL,
+    customerid 	integer    	NOT NULL
+	    REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
     uid 	varchar(32)     DEFAULT '' NOT NULL,
     type 	smallint        DEFAULT 0 NOT NULL,
     PRIMARY KEY (id)
@@ -1134,9 +1135,11 @@ CREATE SEQUENCE customercontacts_id_seq;
 DROP TABLE customercontacts CASCADE;
 CREATE TABLE customercontacts (
     id 		integer 	DEFAULT nextval('customercontacts_id_seq'::text) NOT NULL,
-    customerid 	integer 	NOT NULL DEFAULT 0,
+    customerid 	integer 	NOT NULL
+	    REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
     name 	varchar(255) 	NOT NULL DEFAULT '',
     phone 	varchar(255) 	NOT NULL DEFAULT '',
+    type    smallint        DEFAULT NULL,
     PRIMARY KEY (id)
 );
 CREATE INDEX customercontacts_customerid_idx ON customercontacts (customerid);
@@ -1485,4 +1488,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010121000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010121400');

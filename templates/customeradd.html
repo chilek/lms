@@ -120,6 +120,7 @@
 							</TD>
 						    </TR>
 						{/if}
+						{if $countrieslist}
 						    <TR>
 						        <TD width="1%" NOWRAP>{t}Country:{/t}</TD>
 						        <TD width="99%">
@@ -129,9 +130,10 @@
 						                <OPTION value="{$key}"{if $key==$customeradd.countryid} SELECTED{/if}>{t}{$item.name}{/t}</OPTION>
 								{/foreach}
 						            </SELECT>
-							</TD>
+							    </TD>
 						    </TR>
-						</TABLE>    
+						{/if}
+						</TABLE>
 						<script type="text/javascript">
 							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('address'),'?m=customeradd&ajax=1&mode=address&what=',0);
 							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('zip'),'?m=customeradd&ajax=1&mode=zip&what=',0);
@@ -141,12 +143,15 @@
 				</TR>
 				{foreach from=$customeradd.contacts item=item key=key}
     			<TR>
-					<TD width="1%">
+					<TD width="1%" style="vertical-align: top">
 						<IMG src="img/phone.gif" alt="">
 					</TD>
 					<TD width="99%" NOWRAP>
 						<INPUT TYPE="text" size="15" value="{$item.phone}" name="customeradd[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}>
-						<INPUT TYPE="text" size="20" value="{$item.name}" name="customeradd[contacts][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
+						<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_MOBILE}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & CONTACT_MOBILE)} checked{/if}>{t}mobile{/t}
+						<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_FAX}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & CONTACT_FAX)} checked{/if}>{t}fax{/t}
+						<BR>
+						<INPUT TYPE="text" size="38" value="{$item.name}" name="customeradd[contacts][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
 					</TD>
 				</TR>
 				{/foreach}
@@ -349,19 +354,19 @@
 			<TABLE WIDTH="100%" CELLPADDING="3">
 		    		<TR>
 			            <TD WIDTH="1%"><IMG src="img/post.gif" alt=""></TD>
-				    <TD WIDTH="99%"><TEXTAREA rows="7" cols="60" name="customeradd[serviceaddr]" {tip text="Enter service address (optional)"}>{$customeradd.serviceaddr}</TEXTAREA></TD>
+				    <TD WIDTH="99%"><TEXTAREA rows="5" cols="60" name="customeradd[serviceaddr]" {tip text="Enter service address (optional)"}>{$customeradd.serviceaddr}</TEXTAREA></TD>
 				</TR>
 		    		<TR>
 			            <TD WIDTH="1%"><IMG src="img/info1.gif" alt=""></TD>
-				    <TD WIDTH="99%"><TEXTAREA rows="7" cols="60" name="customeradd[info]" {tip text="Enter additional information (optional)"}>{$customeradd.info|escape}</TEXTAREA></TD>
+				    <TD WIDTH="99%"><TEXTAREA rows="10" cols="60" name="customeradd[info]" {tip text="Enter additional information (optional)"}>{$customeradd.info|escape}</TEXTAREA></TD>
 		    		</TR>
 				<TR>
 			            <TD WIDTH="1%"><IMG src="img/warningon.gif" alt=""></TD>
-				    <TD WIDTH="99%"><TEXTAREA rows="7" cols="60" name="customeradd[message]" {tip text="Enter notice contents (optional)"}>{$customeradd.message|escape}</TEXTAREA></TD>
+				    <TD WIDTH="99%"><TEXTAREA rows="10" cols="60" name="customeradd[message]" {tip text="Enter notice contents (optional)"}>{$customeradd.message|escape}</TEXTAREA></TD>
 		    		</TR>
 				<TR>
 			            <TD WIDTH="1%"><IMG src="img/note.gif" alt=""></TD>
-				    <TD WIDTH="99%"><TEXTAREA rows="7" cols="60" name="customeradd[notes]" {tip text="Enter notes (optional)"}>{$customeradd.notes|escape}</TEXTAREA></TD>
+				    <TD WIDTH="99%"><TEXTAREA rows="10" cols="60" name="customeradd[notes]" {tip text="Enter notes (optional)"}>{$customeradd.notes|escape}</TEXTAREA></TD>
 				</TR>
 			</TABLE>
 		</TD>

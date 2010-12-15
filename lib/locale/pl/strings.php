@@ -1964,7 +1964,6 @@ $_LANG['Consent to personal data processing:'] = 'Zgoda na przetwarzanie danych 
 $_LANG['Consent to electronic invoices:'] = 'Zgoda na faktury elektroniczne:';
 $_LANG['Consent to invoices delivery via e-mail:'] = 'Zgoda na dostarczanie faktur pocztą elektroniczną:';
 $_LANG['Consent to messages delivery via e-mail or sms:'] = 'Zgoda na dostarczanie informacji pocztą elektr. lub smsem:';
-$_LANG['no consent'] = 'brak zgody';
 $_LANG['Rows: $0'] = 'Liczba wierszy: $0';
 $_LANG['private person'] = 'osoba fizyczna';
 $_LANG['legal entity'] = 'osoba prawna / firma';
@@ -2378,5 +2377,8 @@ $_LANG['No nodes found in database.'] = 'Nie znaleziono komputerów w bazie dany
 $_LANG['Select default invoices payment type'] = 'Wybierz domyślny typ płatności faktury';
 $_LANG['Select payment type'] = 'Wybierz typ płatności';
 $_LANG['Tariff'] = 'Taryfa';
+$_LANG['mobile'] = 'tel.kom.';
+$_LANG['fax'] = 'fax';
+$_LANG['Select domain type'] = 'Wybierz typ domeny';
 
 ?>

@@ -141,7 +141,7 @@ elseif(isset($_POST['customeradd']))
 					$error['skype'] = trans('Incorrect IM uin!');
 			break;
 		}
-		
+
 		if($val) $im[$idx] = $val;
 	}
 
@@ -149,11 +149,14 @@ elseif(isset($_POST['customeradd']))
 	{
 		$phone = trim($val['phone']);
 		$name = trim($val['name']);
-		
+		$type = !empty($val['type']) ? array_sum($val['type']) : NULL;
+
+		$customeradd['contacts'][$idx]['type'] = $type;
+
 		if($name && !$phone)
 			$error['contact'.$idx] = trans('Phone number is required!');
-		elseif($phone) 
-			$contacts[] = array('name' => $name, 'phone' => $phone);
+		elseif ($phone)
+			$contacts[] = array('name' => $name, 'phone' => $phone, 'type' => $type);
 	}
 
 	if(!$error)
@@ -175,8 +178,8 @@ elseif(isset($_POST['customeradd']))
 
 		if(isset($contacts) && $id)
 			foreach($contacts as $contact)
-				$DB->Execute('INSERT INTO customercontacts (customerid, phone, name)
-					VALUES(?, ?, ?)', array($id, $contact['phone'], $contact['name']));
+				$DB->Execute('INSERT INTO customercontacts (customerid, phone, name, type)
+					VALUES(?, ?, ?, ?)', array($id, $contact['phone'], $contact['name'], $contact['type']));
 
 		if($customeradd['zip'] && $customeradd['stateid'])
                 {

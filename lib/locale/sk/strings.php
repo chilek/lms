@@ -1997,7 +1997,6 @@ $_LANG['Enter warning message contents'] = 'Zadajte text varovania';
 $_LANG['Select days number of cutoff suspending'] = 'Vyberte počet dní od pozastavenia blokovania';
 $_LANG['Open attachment'] = 'Otvoriť prílohu';
 $_LANG['Consent to personal data processing:'] = 'Súhlas na spracovanie osobných údajov:';
-$_LANG['no consent'] = 'bez dohody';
 $_LANG['TRANSFER'] = 'TRANSFER';
 $_LANG['Rows: $0'] = 'Počet riadkov: $0';
 $_LANG['private person'] = 'Súkromná osoba';

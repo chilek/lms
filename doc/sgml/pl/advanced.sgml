@@ -548,6 +548,7 @@
 			<member>customerid - identyfikator klienta</member>
 			<member>phone - numer telefoniczny</member>
 			<member>name - nazwa/opis kontaktu</member>
+			<member>type - typ kontaktu (suma flag: 1-komórka, 2-fax)</member>
 		</simplelist>
 	</sect2>
 	<sect2 id="domains">

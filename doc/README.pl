@@ -6657,6 +6657,7 @@ Rozdział 7. Dla dociekliwych
    customerid - identyfikator klienta
    phone - numer telefoniczny
    name - nazwa/opis kontaktu
+   type - typ kontaktu (suma flag: 1-komórka, 2-fax)
      __________________________________________________________________
 
 7.2.36. Domeny ('domains')

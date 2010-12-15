@@ -545,6 +545,7 @@
                     <member>customerid - customer serial number</member>
                     <member>phone - phone number</member>
                     <member>name - contact name/description</member>
+                    <member>type - contact type (sum of: 1-mobile, 2-fax)</member>
                </simplelist>
           </sect2>
           <sect2 id="domains">

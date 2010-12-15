@@ -45,8 +45,10 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/phone.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-		    {if $item.phone}{$item.phone}{if $item.name} ({$item.name|truncate:"40":"...":true}){/if}<BR>{/if}
+		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
+		    {$item.phone}
+		    {if $item.typestr}[{$item.typestr}]{/if}
+		    {if $item.name} ({$item.name|truncate:"40":"...":true}){/if}
 		</TD>
 	</TR>
 {/foreach}
