@@ -433,7 +433,7 @@ class LMS
 	{
 		$this->DB->BeginTrans();
 
-		$this->DB->Execute('UPDATE customers SET deleted=1, moddate=?NOW?, modid=? 
+		$this->DB->Execute('UPDATE customers SET deleted=1, moddate=?NOW?, modid=?
 				WHERE id=?', array($this->AUTH->id, $id));
 		$this->DB->Execute('DELETE FROM customerassignments WHERE customerid=?', array($id));
 		$this->DB->Execute('DELETE FROM assignments WHERE customerid=?', array($id));
@@ -517,6 +517,8 @@ class LMS
 
 	function GetCustomer($id, $short=false)
 	{
+	    global $CONTACTTYPES;
+	
 		if($result = $this->DB->GetRow('SELECT c.*, '
 			.$this->DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername,
 			d.shortname AS division, d.account, co.name AS country
@@ -549,9 +551,20 @@ class LMS
 			$result['messengers'] = $this->DB->GetAllByKey('SELECT uid, type 
 					FROM imessengers WHERE customerid = ? ORDER BY type', 'type',
 					array($result['id']));
-			$result['contacts'] = $this->DB->GetAll('SELECT phone, name
+			$result['contacts'] = $this->DB->GetAll('SELECT phone, name, type
 					FROM customercontacts WHERE customerid = ? ORDER BY id',
 					array($result['id']));
+
+            if (is_array($result['contacts']))
+                foreach ($result['contacts'] as $idx => $row) {
+                    $types = array();
+                    foreach ($CONTACTTYPES as $tidx => $tname)
+                        if ($row['type'] & $tidx)
+                            $types[] = $tname;
+
+                    if ($types)
+                        $result['contacts'][$idx]['typestr'] = implode('/', $types);
+                }
 
 			return $result;
 		}
@@ -634,7 +647,7 @@ class LMS
 		$groupless = ($state == 8) ? 1 : 0;
 		$tariffless = ($state == 9) ? 1 : 0;
 		$suspended = ($state == 10) ? 1 : 0;
-		
+
 		if($state>3)
 			$state = 0;
 

@@ -37,7 +37,7 @@
                 </TD>
                 <TD width="1%" nowrap><B>{t}Type:{/t}</B></TD>
                 <TD width="98%" class="fright">
-                <SELECT  SIZE="1" NAME="domainadd[type]" {tip text="" trigger="type"} id="domainadd[type]" style="float:left;" onchange=" if (this.value=='SLAVE') showslave(); else hideslave();" >
+                <SELECT  SIZE="1" NAME="domainadd[type]" {tip text="Select domain type" trigger="type"} id="domainadd[type]" style="float:left;" onchange=" if (this.value=='SLAVE') showslave(); else hideslave();" >
                                 <OPTION VALUE="NATIVE" {if $domainadd.type == NATIVE} SELECTED{/if}>NATIVE</OPTION>
                                 <OPTION VALUE="MASTER" {if $domainadd.type == MASTER} SELECTED{/if}>MASTER</OPTION>
                                 <OPTION VALUE="SLAVE" {if $domainadd.type == SLAVE} SELECTED{/if}>SLAVE</OPTION>

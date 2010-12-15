@@ -929,12 +929,12 @@ CREATE TABLE cashregs (
     disabled tinyint(1)     DEFAULT '0' NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY name (name)
-) ENGINE=InnoDB;													
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
 # Structure of table cashreglog
-#			
+#
 DROP TABLE IF EXISTS cashreglog;
 CREATE TABLE cashreglog (
     id int(11) 			NOT NULL auto_increment,
@@ -1009,7 +1009,8 @@ CREATE TABLE ewx_channels (
 DROP TABLE IF EXISTS imessengers;
 CREATE TABLE imessengers (
 	id int(11) 		NOT NULL auto_increment,
-        customerid int(11) 	NOT NULL DEFAULT '0',
+    customerid int(11) 	NOT NULL
+        REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	uid varchar(32) 	NOT NULL DEFAULT '',
 	type tinyint(1) 	NOT NULL DEFAULT '0',
 	PRIMARY KEY (id),
@@ -1023,9 +1024,11 @@ CREATE TABLE imessengers (
 DROP TABLE IF EXISTS customercontacts;
 CREATE TABLE customercontacts (
 	id 		int(11) 	NOT NULL auto_increment,
-        customerid 	int(11) 	NOT NULL DEFAULT 0,
+    customerid 	int(11) 	NOT NULL
+        REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	name 		varchar(255) 	NOT NULL DEFAULT '',
 	phone 		varchar(255) 	NOT NULL DEFAULT '',
+	type        smallint        DEFAULT NULL,
 	PRIMARY KEY (id),
 	INDEX customerid (customerid),
 	INDEX phone (phone)
@@ -1292,9 +1295,9 @@ CREATE TABLE up_info_changes (
 	fieldvalue varchar(255) NOT NULL DEFAULT '',
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB;
-		
+
 INSERT INTO uiconfig (section, var)
-	VALUES ('userpanel', 'data_consent_text');				
+	VALUES ('userpanel', 'data_consent_text');
 INSERT INTO uiconfig (section, var, value, description, disabled) 
 	VALUES ('userpanel', 'disable_transferform', '0', '', 0);
 INSERT INTO uiconfig (section, var, value, description, disabled)
@@ -1384,4 +1387,4 @@ CREATE TABLE supermasters (
 
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010121000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010121400');

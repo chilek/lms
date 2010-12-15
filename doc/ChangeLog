@@ -48,6 +48,7 @@ version ? (????-??-??)
   - added "consent to e-invoices" switch in customer data (alec)
   - added "consent to invoices delivery via e-mail" switch in customer data (alec)
   - added "consent to messages delivery via e-mail or sms" switch in customer data (alec)
+  - added possibility to set type (mobile/fax) of customer contact (alec)
 
 version 1.11.10 Kri (2010-04-19)
 

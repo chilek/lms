@@ -87,19 +87,19 @@
 		<TD WIDTH="99%" COLSPAN="2">
 			<TABLE width="100%" cellpadding="2" cellspacing="0">
 			    <TR>
-				<TD width="1%" NOWRAP>{t}Address:{/t}</TD>
-				<TD width="99%"><INPUT TYPE="TEXT" NAME="customerdata[address]" id="address" VALUE="{$customerinfo.address}" SIZE="30" {tip text="Enter address" trigger="address"}></TD>
+    				<TD width="1%" NOWRAP>{t}Address:{/t}</TD>
+	    			<TD width="99%"><INPUT TYPE="TEXT" NAME="customerdata[address]" id="address" VALUE="{$customerinfo.address}" SIZE="30" {tip text="Enter address" trigger="address"}></TD>
 			    </TR>
 			    <TR>
-				<TD width="1%" NOWRAP>{t}City:{/t}</TD>
-				<TD width="99%"><INPUT TYPE="TEXT" NAME="customerdata[city]" id="city" VALUE="{$customerinfo.city}" SIZE="30" {tip text="Enter city"}></TD>
+		    		<TD width="1%" NOWRAP>{t}City:{/t}</TD>
+			    	<TD width="99%"><INPUT TYPE="TEXT" NAME="customerdata[city]" id="city" VALUE="{$customerinfo.city}" SIZE="30" {tip text="Enter city"}></TD>
 			    </TR>
 			    <TR>
-				<TD width="1%" NOWRAP>{t}Zip:{/t}</TD>
-				<TD width="99%"><INPUT TYPE="TEXT" NAME="customerdata[zip]" id="zip" VALUE="{$customerinfo.zip}" SIZE="10" {tip text="Enter zip code" trigger="zip"}></TD>
-				{if $customerinfo.zipwarning}
-				<INPUT TYPE="HIDDEN" NAME="customerdata[zipwarning]" VALUE="1">
-				{/if}
+    				<TD width="1%" NOWRAP>{t}Zip:{/t}</TD>
+	    			<TD width="99%"><INPUT TYPE="TEXT" NAME="customerdata[zip]" id="zip" VALUE="{$customerinfo.zip}" SIZE="10" {tip text="Enter zip code" trigger="zip"}></TD>
+    				{if $customerinfo.zipwarning}
+	    			<INPUT TYPE="HIDDEN" NAME="customerdata[zipwarning]" VALUE="1">
+		    		{/if}
 			    </TR>
 			    {if $cstateslist}
 			    <TR>
@@ -113,7 +113,8 @@
 			            </SELECT>
 				</TD>
 			    </TR>
-                            {/if}
+                {/if}
+                {if $countrieslist}
 			    <TR>
 			        <TD width="1%" NOWRAP>{t}Country:{/t}</TD>
 			        <TD width="99%">
@@ -123,8 +124,9 @@
 			                <OPTION value="{$key}"{if $key==$customerinfo.countryid} SELECTED{/if}>{t}{$item.name}{/t}</OPTION>
 					{/foreach}
 			            </SELECT>
-				</TD>
+    				</TD>
 			    </TR>
+			    {/if}
 			</TABLE>
 		<script type="text/javascript">
 		new AutoSuggest(document.getElementById('customeredit'),document.getElementById('address'),'?m=customeradd&ajax=1&mode=address&what=',0);
@@ -134,12 +136,15 @@
 	</TR>
 	{foreach from=$customerinfo.contacts item=item key=key}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
+		<TD WIDTH="1%" style="vertical-align: top">
 			<IMG SRC="img/phone.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
 			<INPUT TYPE="text" size="15" value="{$item.phone}" name="customerdata[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}>
-			<INPUT TYPE="text" size="20" value="{$item.name}" name="customerdata[contacts][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
+            <INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_MOBILE}" name="customerdata[contacts][{$key}][type][]"{if ($item.type & CONTACT_MOBILE)} checked{/if}>{t}mobile{/t}
+            <INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_FAX}" name="customerdata[contacts][{$key}][type][]"{if ($item.type & CONTACT_FAX)} checked{/if}>{t}fax{/t}
+            <BR>
+			<INPUT TYPE="text" size="38" value="{$item.name}" name="customerdata[contacts][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
 		</TD>
 	</TR>
 	{/foreach}
@@ -347,7 +352,7 @@
 			<IMG SRC="img/post.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%">
-			<TEXTAREA NAME="customerdata[serviceaddr]" COLS="60" ROWS="7" {tip text="Enter service address (optional)"}>{$customerinfo.serviceaddr|escape}</TEXTAREA>
+			<TEXTAREA NAME="customerdata[serviceaddr]" COLS="60" ROWS="5" {tip text="Enter service address (optional)"}>{$customerinfo.serviceaddr|escape}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -355,7 +360,7 @@
 			<IMG SRC="img/info1.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%">
-			<TEXTAREA NAME="customerdata[info]" COLS="60" ROWS="7" {tip text="Enter additional information (optional)"}>{$customerinfo.info|escape}</TEXTAREA>
+			<TEXTAREA NAME="customerdata[info]" COLS="60" ROWS="10" {tip text="Enter additional information (optional)"}>{$customerinfo.info|escape}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -363,7 +368,7 @@
 			<IMG SRC="img/warningon.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%">
-			<TEXTAREA NAME="customerdata[message]" COLS="60" ROWS="7" {tip text="Enter notice contents (optional)"}>{$customerinfo.message|escape}</TEXTAREA>
+			<TEXTAREA NAME="customerdata[message]" COLS="60" ROWS="10" {tip text="Enter notice contents (optional)"}>{$customerinfo.message|escape}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -371,7 +376,7 @@
 			<IMG SRC="img/note.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%">
-			<TEXTAREA NAME="customerdata[notes]" COLS="60" ROWS="7" {tip text="Enter notes (optional)"}>{$customerinfo.notes|escape}</TEXTAREA>
+			<TEXTAREA NAME="customerdata[notes]" COLS="60" ROWS="10" {tip text="Enter notes (optional)"}>{$customerinfo.notes|escape}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

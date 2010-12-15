@@ -54,15 +54,9 @@ function GetRecipients($filter, $type=MSG_MAIL)
 	
 	if($type == MSG_SMS)
 	{
-		if ($CONFIG['database']['type'] == 'postgres')
-			$smswhere = "WHERE regexp_replace(phone, '[^0-9]', '') ~ '^([0-9]{2}|0|)"
-				.$LANGDEFS[$_language]['mobile'].'$\'';
-		else
-			$smswhere = "WHERE REPLACE(REPLACE(phone, '-', ''), ' ', '') REGEXP '^(\\\\+[0-9]{2}|0)?"
-				.$LANGDEFS[$_language]['mobile'].'$\'';
-	
 		$smstable = 'JOIN (SELECT MIN(phone) AS phone, customerid
-				FROM customercontacts '.$smswhere.'
+				FROM customercontacts
+				WHERE (type & '.CONTACT_MOBILE.') = '.CONTACT_MOBILE.'
 				GROUP BY customerid
 			) x ON (x.customerid = c.id)';
 	}
@@ -102,27 +96,17 @@ function GetRecipients($filter, $type=MSG_MAIL)
 function GetRecipient($customerid, $type=MSG_MAIL)
 {
 	global $DB, $LMS, $CONFIG, $LANGDEFS, $_language;
-	
+
 	if($type == MSG_SMS)
 	{
-		if ($CONFIG['database']['type'] == 'postgres')
-		{
-			$smswhere = " AND regexp_replace(phone, '[^0-9]', '') ~ '^([0-9]{2}|0|)"
-				.$LANGDEFS[$_language]['mobile'].'$\'';
-		}
-		else
-		{
-			$smswhere = " AND REPLACE(REPLACE(phone, '-', ''), ' ', '') REGEXP '^(\\\\+[0-9]{2}|0)?"
-				.$LANGDEFS[$_language]['mobile'].'$\'';
-		}
-		
 		$smstable = 'JOIN (SELECT phone, customerid
 				FROM customercontacts 
-				WHERE customerid = '.$customerid . $smswhere
-				.' ORDER BY phone LIMIT 1
+				WHERE customerid = '.$customerid.'
+				    AND (type & '.CONTACT_MOBILE.') = '.CONTACT_MOBILE.'
+				ORDER BY phone LIMIT 1
 			) x ON (x.customerid = c.id)';
 	}
-	
+
 	return $DB->GetAll('SELECT c.id, email, pin, '
 		.($type==MSG_SMS ? 'x.phone, ': '')
 		.$DB->Concat('c.lastname', "' '", 'c.name').' AS customername,

@@ -5750,6 +5750,7 @@ Chapter 7. For curious
    customerid - customer serial number
    phone - phone number
    name - contact name/description
+   type - contact type (sum of: 1-mobile, 2-fax)
      __________________________________________________________________
 
 7.2.36. Domains ('domains')

@@ -137,21 +137,17 @@ if($deadline_file && ! -r $deadline_file)
 
 my $dbase;
 my $utsfmt;
-my $regexp;
 
 if($dbtype =~ /mysql/)
 {
 	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	$dbase->do("SET NAMES utf8");
 	$utsfmt = "UNIX_TIMESTAMP()";
-	
-	$regexp = "REPLACE(REPLACE(phone, '-', ''), ' ', '') REGEXP '^(\\\\+%prefix|0)?(88[0-9]|5[01][0-9]|6[069][0-9]|7[2789][0-9])[0-9]{6}\$'";
 }
 elsif($dbtype eq "postgres")
 {
 	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	$utsfmt = "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";
-	$regexp = "regexp_replace(phone, '[^0-9]', '') ~ '^(%prefix|0|)(88[0-9]|5[01][0-9]|6[069][0-9]|7[2789][0-9])[0-9]{6}$'";
 }
 else
 {
@@ -176,7 +172,6 @@ while(my $row = $query->fetchrow_hashref())
 $query->finish();
 
 $cfg{'prefix'} = sprintf("%d", $cfg{'prefix'});
-$regexp =~ s/\%prefix/$cfg{'prefix'}/;
 
 if ($script_service) {
 	$cfg{'service'} = $script_service;
@@ -253,7 +248,7 @@ sub parse_data
 	}
 	if ($data =~ /\%number/) {
                 $data =~ s/\%number/$row->{'doc_number'}/g;
-	}		
+	}
 	if ($data =~ /\%value/) {
 		$data =~ s/\%value/$row->{'value'}/g;
 	}
@@ -274,7 +269,7 @@ sub send_sms
 	if ($p != $cfg{'prefix'}) {
 		$phone = $cfg{'prefix'} . $phone;
 	}
-				
+
 	if ($cfg{'service'} eq 'gnokii') {
 		system("echo $sms | gnokii --sendsms $phone");
 		return 2; # MSG_SENT
@@ -289,11 +284,11 @@ sub send_sms
 		}
                 my $filename = $dir.'/lms-'.$msgid.'-'.$phone;
 		$sms = asciize(decode('utf-8', $sms));
-		
+
 		open(SMSFILE, ">$filename") or return 'Unable to create file '.$filename.'!';
 		printf(SMSFILE "To: %s\n\n%s", $phone, $sms);
 		close(SMSFILE);
-		
+
 		return 1; #MSG_NEW
 	} else {
 		return 'Unknown SMS service!';
@@ -308,14 +303,14 @@ sub send_message
 		(messageid, customerid, destination, status)
 		VALUES (?, ?, ?, ?)");
 	$dbqi->execute($msgid, $cid, $phone, 1);
-	
+
 	my $result = send_sms($phone, $data, $msgid);
 	my $time = mktime(localtime());
 
 	$dbqi = $dbase->prepare("UPDATE messageitems
 		SET status = ?, lastdate = ?, error = ?
 		WHERE messageid = ? AND customerid = ?");
-			
+
 	if ($result =~ /[^0-9]/) {
 		$dbqi->execute(3, $time, $result, $msgid, $cid);
 	} elsif ($result == 2) { # MSG_SENT
@@ -359,7 +354,7 @@ if ($debtors_file)
 		JOIN cash ON (c.id = cash.customerid)
 		JOIN (SELECT MIN(phone) AS phone, customerid
 		        FROM customercontacts
-			WHERE $regexp
+			WHERE (type & 1) = 1
 			GROUP BY customerid
 		) x ON (x.customerid = c.id)
 		GROUP BY c.id, c.pin, c.lastname, c.name, x.phone
@@ -404,7 +399,7 @@ if ($invoices_file)
 		JOIN customers c ON (c.id = d.customerid)
 		JOIN (SELECT MIN(phone) AS phone, customerid
 		        FROM customercontacts
-			WHERE $regexp
+			WHERE (type & 1) = 1
 			GROUP BY customerid
 		) x ON (x.customerid = d.customerid)
 		JOIN (SELECT SUM(value) * -1 AS value, docid
@@ -463,7 +458,7 @@ if ($deadline_file)
 		JOIN customers c ON (c.id = d.customerid)
 		JOIN (SELECT MIN(phone) AS phone, customerid
 		        FROM customercontacts
-			WHERE $regexp
+			WHERE (type & 1) = 1
 			GROUP BY customerid
 		) x ON (x.customerid = d.customerid)
 		JOIN (SELECT SUM(value) * -1 AS value, docid
@@ -523,7 +518,7 @@ if ($notes_file)
 		JOIN customers c ON (c.id = d.customerid)
 		JOIN (SELECT MIN(phone) AS phone, customerid
 		        FROM customercontacts
-			WHERE $regexp
+			WHERE (type & 1) = 1
 			GROUP BY customerid
 		) x ON (x.customerid = d.customerid)
 		JOIN (SELECT SUM(value) * -1 AS value, docid
