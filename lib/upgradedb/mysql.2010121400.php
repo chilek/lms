@@ -42,7 +42,7 @@ if (!$lang)
 
 if ($lang == 'pl') {
     $DB->Execute("UPDATE customercontacts SET type = COALESCE(type, 0) + 1
-        WHERE REPLACE(REPLACE(phone, '-', ''), ' ', '') REGEXP '^(\\\\+[0-9]{2}|0)?(88[0-9]|5[01][0-9]|6[069][0-9]|7[2789][0-9])[0-9]{6}$'");
+        WHERE REPLACE(REPLACE(phone, '-', ''), ' ', '') REGEXP '^(\\\\+?[0-9]{2}|0)?(88[0-9]|5[01][0-9]|6[069][0-9]|7[2789][0-9])[0-9]{6}$'");
 }
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010121400', 'dbversion'));
