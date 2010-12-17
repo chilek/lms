@@ -181,7 +181,7 @@ if(isset($_POST['nodeedit']) && !isset($_GET['newmac']))
 		{
 			if(!isset($ports))
 				$ports = $DB->GetOne('SELECT ports FROM netdevices WHERE id = ?', array($nodeedit['netdev']));
-		
+
 		        if(!preg_match('/^[0-9]+$/', $nodeedit['port']) || $nodeedit['port'] > $ports)
 		        {
 		                $error['port'] = trans('Incorrect port number!');
@@ -202,6 +202,12 @@ if(isset($_POST['nodeedit']) && !isset($_GET['newmac']))
 	else if($nodeedit['access'] && $LMS->GetCustomerStatus($nodeedit['ownerid']) < 3)
 		$error['access'] = trans('Node owner is not connected!');
 
+    if($nodeedit['location_zip'] !='' && !check_zip($nodeedit['location_zip']) && !isset($nodeedit['zipwarning']))
+    {
+        $error['location_zip'] = trans('Incorrect ZIP code! If you are sure you want to accept it, then click "Submit" again.');
+        $zipwarning = 1;
+    }
+
 	if(!$error)
 	{
 		$LMS->NodeUpdate($nodeedit, ($customerid != $nodeedit['ownerid']));
@@ -218,6 +224,11 @@ if(isset($_POST['nodeedit']) && !isset($_GET['newmac']))
 	$nodeinfo['chkmac'] = $nodeedit['chkmac'];
 	$nodeinfo['halfduplex'] = $nodeedit['halfduplex'];
 	$nodeinfo['port'] = $nodeedit['port'];
+	$nodeinfo['zipwarning'] = empty($zipwarning) ? 0 : 1;
+	$nodeinfo['location_zip'] = $nodeedit['location_zip'];
+	$nodeinfo['location_address'] = $nodeedit['location_address'];
+	$nodeinfo['location_city'] = $nodeedit['location_city'];
+	$nodeinfo['stateid'] = $nodeedit['stateid'];
 
 	if($nodeedit['ipaddr_pub']=='0.0.0.0')
 		$nodeinfo['ipaddr_pub'] = '';
@@ -242,6 +253,7 @@ if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_
     $SMARTY->assign('customers', $LMS->GetCustomerNames());
 }
 
+$SMARTY->assign('cstateslist',$LMS->GetCountryStates());
 $SMARTY->assign('netdevices', $LMS->GetNetDevNames());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNamesByNode($nodeid));
 $SMARTY->assign('othernodegroups', $LMS->GetNodeGroupNamesWithoutNode($nodeid));

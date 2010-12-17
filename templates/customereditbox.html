@@ -134,6 +134,60 @@
 		new AutoSuggest(document.getElementById('customeredit'),document.getElementById('city'),'?m=customeradd&ajax=1&mode=city&what=',0);
 		</script>
 	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" style="vertical-align: top">
+			<IMG SRC="img/post.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			<TABLE width="100%" cellpadding="2" cellspacing="0">
+			    <TR>
+    				<TD width="1%" NOWRAP>{t}Address:{/t}</TD>
+	    			<TD width="99%"><INPUT TYPE="TEXT" NAME="customerdata[post_address]" id="post_address" VALUE="{$customerinfo.post_address}" SIZE="30" {tip text="Enter service address (optional)" trigger="post_address"}></TD>
+			    </TR>
+			    <TR>
+		    		<TD width="1%" NOWRAP>{t}City:{/t}</TD>
+			    	<TD width="99%"><INPUT TYPE="TEXT" NAME="customerdata[post_city]" id="post_city" VALUE="{$customerinfo.post_city}" SIZE="30" {tip text="Enter city of service address (optional)" trigger="post_city"}></TD>
+			    </TR>
+			    <TR>
+    				<TD width="1%" NOWRAP>{t}Zip:{/t}</TD>
+	    			<TD width="99%"><INPUT TYPE="TEXT" NAME="customerdata[post_zip]" id="post_zip" VALUE="{$customerinfo.post_zip}" SIZE="10" {tip text="Enter zip code of service address (optional)" trigger="post_zip"}></TD>
+    				{if $customerinfo.post_zipwarning}
+	    			<INPUT TYPE="HIDDEN" NAME="customerdata[post_zipwarning]" VALUE="1">
+		    		{/if}
+			    </TR>
+			    {if $cstateslist}
+			    <TR>
+			        <TD width="1%" NOWRAP>{t}State:{/t}</TD>
+			        <TD width="99%">
+			            <SELECT NAME="customerdata[post_stateid]" {tip text="Select country state (optional)" trigger="post_stateid"}>
+			                <OPTION value="0"></OPTION>
+			                {foreach from=$cstateslist item=item key=key}
+			                <OPTION value="{$key}"{if $key==$customerinfo.post_stateid} SELECTED{/if}>{$item.name}</OPTION>
+			                {/foreach}
+			            </SELECT>
+				</TD>
+			    </TR>
+                {/if}
+                {if $countrieslist}
+			    <TR>
+			        <TD width="1%" NOWRAP>{t}Country:{/t}</TD>
+			        <TD width="99%">
+			            <SELECT NAME="customerdata[post_countryid]" {tip text="Select country (optional)" trigger="post_countryid"}>
+			                <OPTION value="0"></OPTION>
+					{foreach from=$countrieslist item=item key=key}
+			                <OPTION value="{$key}"{if $key==$customerinfo.post_countryid} SELECTED{/if}>{t}{$item.name}{/t}</OPTION>
+					{/foreach}
+			            </SELECT>
+    				</TD>
+			    </TR>
+			    {/if}
+			</TABLE>
+		<script type="text/javascript">
+		new AutoSuggest(document.getElementById('customeredit'),document.getElementById('post_address'),'?m=customeradd&ajax=1&mode=address&what=',0);
+		new AutoSuggest(document.getElementById('customeredit'),document.getElementById('post_zip'),'?m=customeradd&ajax=1&mode=zip&what=',0);
+		new AutoSuggest(document.getElementById('customeredit'),document.getElementById('post_city'),'?m=customeradd&ajax=1&mode=city&what=',0);
+		</script>
+	</TR>
 	{foreach from=$customerinfo.contacts item=item key=key}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" style="vertical-align: top">
@@ -347,14 +401,6 @@
 					</TD>
 					<TD WIDTH="50%" style="vertical-align:top;">
 						<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/post.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%">
-			<TEXTAREA NAME="customerdata[serviceaddr]" COLS="60" ROWS="5" {tip text="Enter service address (optional)"}>{$customerinfo.serviceaddr|escape}</TEXTAREA>
-		</TD>
-	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
 			<IMG SRC="img/info1.gif" ALT="">

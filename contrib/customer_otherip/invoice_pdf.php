@@ -168,12 +168,12 @@ function invoice_address_box($x,$y)
     global $invoice,$pdf;
     $font_size=12;
     $y=$y-text_align_left($x,$y,$font_size,"<b>".iconv("UTF-8","ISO-8859-2",$invoice['name'])."</b>");
-    if ($invoice['serviceaddr']) {
-	$tmp = explode("\n",iconv("UTF-8","ISO-8859-2",$invoice['serviceaddr']));
-	foreach ($tmp as $line) $y=$y-text_align_left($x,$y,$font_size,"<b>".$line."</b>");
+    if ($invoice['post_address']) {
+	    $y=$y-text_align_left($x,$y,$font_size,"<b>".iconv("UTF-8","ISO-8859-2",$invoice['post_address'])."</b>");
+	    $y=$y-text_align_left($x,$y,$font_size,"<b>".iconv("UTF-8","ISO-8859-2",$invoice['post_zip']." ".$invoice['post_city'])."</b>");
     } else {
-	$y=$y-text_align_left($x,$y,$font_size,"<b>".iconv("UTF-8","ISO-8859-2",$invoice['address'])."</b>");
-	$y=$y-text_align_left($x,$y,$font_size,"<b>".iconv("UTF-8","ISO-8859-2",$invoice['zip']." ".$invoice['city'])."</b>");
+	    $y=$y-text_align_left($x,$y,$font_size,"<b>".iconv("UTF-8","ISO-8859-2",$invoice['address'])."</b>");
+	    $y=$y-text_align_left($x,$y,$font_size,"<b>".iconv("UTF-8","ISO-8859-2",$invoice['zip']." ".$invoice['city'])."</b>");
     }
     return $y;
 }
@@ -386,7 +386,6 @@ $id = $pdf->getFirstPageId();
 
 $invoice = $LMS->GetInvoiceContent($_GET['id']);
 
-$invoice['serviceaddr'] = $LMS->GetUserServiceAddress($invoice['customerid']);
 $invoice['last'] = TRUE;
 $type = trans('ORIGINAL');
 invoice_body();

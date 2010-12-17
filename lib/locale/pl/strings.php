@@ -2380,5 +2380,9 @@ $_LANG['Tariff'] = 'Taryfa';
 $_LANG['mobile'] = 'tel.kom.';
 $_LANG['fax'] = 'fax';
 $_LANG['Select domain type'] = 'Wybierz typ domeny';
+$_LANG['Enter city of service address (optional)'] = 'Wprowadź nazwę miasta dla adresu dodoręczeń (opcjonalnie)';
+$_LANG['Enter city (optional)'] = 'Wprowadź nazwę miasta (opcjonalnie)';
+$_LANG['Enter zip code of service address (optional)'] = 'Wprowadź kod pocztowy dla adresu do doręczeń (opcjonalnie)';
+$_LANG['Enter zip code (optional)'] = 'Wprowadź kod pocztowy (opcjonalnie)';
 
 ?>

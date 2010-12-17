@@ -55,11 +55,12 @@
 			<BR>
 			<BR>
 			<B>{$invoice.name}<BR>
-			{if $invoice.serviceaddr neq ""}
-				{$invoice.serviceaddr|replace:"\n":"<BR>"}<BR>
+			{if $invoice.post_address}
+    			{$invoice.post_address}<BR>
+	    		{$invoice.post_zip} {$invoice.post_city}
 			{else}
-			{$invoice.address}<BR>
-			{$invoice.zip} {$invoice.city}<BR>
+    			{$invoice.address}<BR>
+	    		{$invoice.zip} {$invoice.city}
 			{/if}</B>
 		</TD>
 	</TR>

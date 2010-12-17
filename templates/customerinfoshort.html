@@ -36,10 +36,20 @@
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
 			{$customerinfo.address}<BR>
-			{$customerinfo.zip} {$customerinfo.city}<BR>
-			{t}{$customerinfo.country}{/t}
+			{$customerinfo.zip} {$customerinfo.city}
 		</TD>
 	</TR>
+{if $customerinfo.post_address neq ""}
+	<TR>
+		<TD WIDTH="1%" >
+			<IMG SRC="img/post.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
+			{$customerinfo.post_address}<BR>
+			{$customerinfo.post_zip} {$customerinfo.post_city}
+		</TD>
+	</TR>
+{/if}
 {foreach from=$customerinfo.contacts item=item}
 	<TR>
 		<TD WIDTH="1%">
@@ -52,16 +62,6 @@
 		</TD>
 	</TR>
 {/foreach}
-{if $customerinfo.serviceaddr neq ""}
-	<TR>
-		<TD WIDTH="1%" >
-			<IMG SRC="img/post.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
-			{$customerinfo.serviceaddr|replace:"\n":"<BR>"}
-		</TD>
-	</TR>
-{/if}
 {if $customerinfo.email neq ""}
 	<TR>
 		<TD WIDTH="1%" >

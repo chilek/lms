@@ -1,5 +1,5 @@
 <!--// $Id$ //-->
-<FORM NAME="editnode" METHOD="POST" ACTION="?m=nodeedit&id={$nodeinfo.id}">
+<FORM NAME="editnode" ID="editnode" METHOD="POST" ACTION="?m=nodeedit&id={$nodeinfo.id}">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT TYPE="hidden" NAME="nodeedit[id]" VALUE="{$nodeinfo.id}">
 <TABLE WIDTH="100%" CELLPADDING="3">
@@ -59,12 +59,56 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
+			<IMG SRC="img/home.gif" ALT="{t}Location:{/t}">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
+						<TABLE width="100%" cellpadding="2" cellspacing="0">
+						    <TR>
+							<TD width="1%" NOWRAP>{t}Address:{/t}</TD>
+							<TD width="99%"><INPUT TYPE="text" size="30" value="{$nodeinfo.location_address}" name="nodeedit[location_address]" id="location_address" {tip text="Enter node location (optional)" trigger="location_address"}></TD>
+						    </TR>
+						    <TR>
+							<TD width="1%" NOWRAP>{t}City:{/t}</TD>
+							<TD width="99%"><INPUT TYPE="TEXT" SIZE="30" VALUE="{$nodeinfo.location_city}" NAME="nodeedit[location_city]" id="location_city" {tip text="Enter city (optional)" trigger="location_city"}></TD>
+						    </TR>
+						    <TR>
+							<TD width="1%" NOWRAP>{t}Zip:{/t}</TD>
+							<TD width="99%"><INPUT TYPE="text" SIZE="10" VALUE="{$nodeinfo.location_zip}" NAME="nodeedit[location_zip]" id="location_zip" {tip text="Enter zip code (optional)" trigger="location_zip"}></TD>
+							{if $nodeinfo.zipwarning}
+							<INPUT TYPE="HIDDEN" NAME="nodeedit[zipwarning]" VALUE="1">
+							{/if}
+						    </TR>
+						{if $cstateslist}
+						    <TR>
+							<TD width="1%" NOWRAP>{t}State:{/t}</TD>
+							<TD width="99%">
+							    <SELECT NAME="nodeedit[stateid]" {tip text="Select country state (optional)" trigger="stateid"}>
+								<OPTION value="0"></OPTION>
+								{foreach from=$cstateslist item=item key=key}
+								<OPTION value="{$key}"{if $key==$nodeinfo.stateid} SELECTED{/if}>{$item.name}</OPTION>
+								{/foreach}
+							    </SELECT>
+							</TD>
+						    </TR>
+						{/if}
+						</TABLE>
+						<script type="text/javascript">
+							new AutoSuggest(document.forms['editnode'],document.getElementById('location_address'),'?m=nodeadd&ajax=1&mode=address&what=',0);
+							new AutoSuggest(document.forms['editnode'],document.getElementById('location_zip'),'?m=nodeadd&ajax=1&mode=zip&what=',0);
+							new AutoSuggest(document.forms['editnode'],document.getElementById('location_city'),'?m=nodeadd&ajax=1&mode=city&what=',0);
+						</script>
+		</TD>
+	</TR>
+{*
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/network.gif" ALT="{t}Network:{/t}">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			<B><A HREF="?m=netinfo&id={$nodeinfo.netid}">{$nodeinfo.netname}</A></B>
 		</TD>
 	</TR>
+*}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
 			<IMG SRC="img/netdev.gif" ALT="{t}Net devices:{/t}">
@@ -78,28 +122,6 @@
 			</SELECT>
 			<INPUT type="text" name="nodeedit[port]" value="{if $nodeinfo.port}{$nodeinfo.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
 			<INPUT type="checkbox" name="nodeedit[linktype]" id="linktype" value="1"{if $nodeinfo.linktype} CHECKED{/if}><A HREF="javascript:checkElement('linktype')"><IMG src="img/wireless.gif" alt="{t}wireless{/t}" {tip text="wireless"}></A>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/{if ! $nodeinfo.access}no{/if}access.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			<SELECT SIZE="1" NAME="nodeedit[access]" {tip text="Select node status" trigger="access"}>
-				<OPTION VALUE="1"{if $nodeinfo.access} SELECTED{/if}>{t}connected<!singular>{/t}</OPTION>
-				<OPTION VALUE="0"{if ! $nodeinfo.access} SELECTED{/if}>{t}disconnected<!singular>{/t}</OPTION>
-			</SELECT>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/warning{if !$nodeinfo.warning}off{else}on{/if}.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			<SELECT SIZE="1" NAME="nodeedit[warning]" {tip text="Set notice for node"}>
-				<OPTION VALUE="1"{if $nodeinfo.warning} SELECTED{/if}>{t}enabled{/t}</OPTION>
-				<OPTION VALUE="0"{if ! $nodeinfo.warning} SELECTED{/if}>{t}disabled{/t}</OPTION>
-			</SELECT>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -134,18 +156,32 @@
 					<TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/home.gif" ALT="{t}Location:{/t}">
-		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-                       <TEXTAREA NAME="nodeedit[location]" COLS="50" ROWS="5" {tip text="Enter node location (optional)"}>{$nodeinfo.location}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
 			<IMG SRC="img/info1.gif" ALT="{t}Description:{/t}">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
                        <TEXTAREA NAME="nodeedit[info]" COLS="50" ROWS="5" {tip text="Enter additional information (optional)"}>{$nodeinfo.info}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/{if ! $nodeinfo.access}no{/if}access.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			<SELECT SIZE="1" NAME="nodeedit[access]" {tip text="Select node status" trigger="access"}>
+				<OPTION VALUE="1"{if $nodeinfo.access} SELECTED{/if}>{t}connected<!singular>{/t}</OPTION>
+				<OPTION VALUE="0"{if ! $nodeinfo.access} SELECTED{/if}>{t}disconnected<!singular>{/t}</OPTION>
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/warning{if !$nodeinfo.warning}off{else}on{/if}.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			<SELECT SIZE="1" NAME="nodeedit[warning]" {tip text="Set notice for node"}>
+				<OPTION VALUE="1"{if $nodeinfo.warning} SELECTED{/if}>{t}enabled{/t}</OPTION>
+				<OPTION VALUE="0"{if ! $nodeinfo.warning} SELECTED{/if}>{t}disabled{/t}</OPTION>
+			</SELECT>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -214,3 +250,4 @@
 //-->
 </SCRIPT>
 {/literal}
+

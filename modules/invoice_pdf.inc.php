@@ -182,12 +182,12 @@ function invoice_address_box($x,$y)
     foreach ($tmp as $line) $y=$y-text_align_left($x,$y,$font_size,"<b>".$line."</b>");
 */
     $y = text_wrap($x, $y, 160, $font_size, '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",$invoice['name'].'</b>'), 'left');
-    if ($invoice['serviceaddr']) {
-	$tmp = preg_split('/\r?\n/', iconv("UTF-8","ISO-8859-2//TRANSLIT",$invoice['serviceaddr']));
-	foreach ($tmp as $line) $y=$y-text_align_left($x,$y,$font_size,'<b>'.$line.'</b>');
+    if ($invoice['post_address']) {
+	    $y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv('UTF-8','ISO-8859-2//TRANSLIT',$invoice['post_address']).'</b>');
+    	$y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv('UTF-8','ISO-8859-2//TRANSLIT',$invoice['post_zip']." ".$invoice['post_city']).'</b>');
     } else {
-	$y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv('UTF-8','ISO-8859-2//TRANSLIT',$invoice['address']).'</b>');
-	$y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv('UTF-8','ISO-8859-2//TRANSLIT',$invoice['zip']." ".$invoice['city']).'</b>');
+	    $y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv('UTF-8','ISO-8859-2//TRANSLIT',$invoice['address']).'</b>');
+    	$y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv('UTF-8','ISO-8859-2//TRANSLIT',$invoice['zip']." ".$invoice['city']).'</b>');
     }
     return $y;
 }
@@ -195,7 +195,7 @@ function invoice_address_box($x,$y)
 function invoice_data_row($x,$y,$width,$font_size,$margin,$data,$t_width,$t_justify) 
 {
     global $pdf;
-    $fy=$y-$margin-$pdf->GetFontHeight($font_size);    
+    $fy=$y-$margin-$pdf->GetFontHeight($font_size);
     $left = $x+$margin;
     $ny = $fy;
     $cols = sizeof($data);

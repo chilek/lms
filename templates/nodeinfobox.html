@@ -91,6 +91,18 @@
 			<B><A HREF="?m=netinfo&id={$nodeinfo.netid}">{$nodeinfo.netname}</A></B>
 		</TD>
 	</TR>
+{if $nodeinfo.location_address}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/home.gif" ALT="{t}Location:{/t}">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+		    {$nodeinfo.location_address}<BR>
+		    {$nodeinfo.location_zip} {$nodeinfo.location_city}
+            {if $nodeinfo.cstate}<BR>{$nodeinfo.cstate}{/if}
+		</TD>
+	</TR>
+{/if}
 {if $nodeinfo.netdev || $netdevices}
 {if !$nodeinfo.netdev && $netdevices}
 	<FORM METHOD="GET" ACTION="?m=nodeedit" NAME="nodelink">
@@ -139,6 +151,26 @@
 			<A HREF="javascript:setCheckbox('duplex')">{t}Half duplex{/t}:</A><INPUT TYPE="checkbox" NAME="duplex" ID="duplex" VALUE="1" {if $nodeinfo.halfduplex} checked{/if} onclick="duplex_change();">
 		</TD>
 	</TR>
+                                	</TABLE>
+				</TD>
+				<TD WIDTH="50%" style="vertical-align:top;">
+					<TABLE WIDTH="100%" CELLPADDING="3">
+{if $nodeinfo.info}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/info1.gif" ALT="{t}Description:{/t}">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			<TABLE width="100%" cellpadding="5">
+				<TR>
+					<TD class="fall superlight">
+						{$nodeinfo.info|replace:"\n":"<BR>"}
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
 			<A HREF="?m=nodeset&id={$nodeinfo.id}"><IMG SRC="img/{if ! $nodeinfo.access}no{/if}access.gif" ALT=""></A>
@@ -166,42 +198,6 @@
 			{if $nodeinfo.lastonline}{$nodeinfo.lastonlinedate}{else}-{/if}
 		</TD>
 	</TR>
-                                	</TABLE>
-				</TD>
-				<TD WIDTH="50%" style="vertical-align:top;">
-					<TABLE WIDTH="100%" CELLPADDING="3">
-{if $nodeinfo.location}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/home.gif" ALT="{t}Location:{/t}">
-		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			<TABLE width="100%" cellpadding="5">
-				<TR>
-					<TD class="fall superlight">
-						{$nodeinfo.location|replace:"\n":"<BR>"}
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-{/if}
-{if $nodeinfo.info}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/info1.gif" ALT="{t}Description:{/t}">
-		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			<TABLE width="100%" cellpadding="5">
-				<TR>
-					<TD class="fall superlight">
-						{$nodeinfo.info|replace:"\n":"<BR>"}
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
 			<IMG SRC="img/users.gif" ALT="">

@@ -24,6 +24,55 @@ CREATE TABLE users (
 	UNIQUE (login)
 );
 
+/* --------------------------------------------------------
+  Structure of table "customers" (customers)
+-------------------------------------------------------- */
+DROP SEQUENCE customers_id_seq;
+CREATE SEQUENCE customers_id_seq;
+DROP TABLE customers CASCADE;
+CREATE TABLE customers (
+	id integer DEFAULT nextval('customers_id_seq'::text) NOT NULL,
+	lastname varchar(128)	DEFAULT '' NOT NULL,
+	name varchar(128)	DEFAULT '' NOT NULL,
+	status smallint 	DEFAULT 0 NOT NULL,
+	type smallint		DEFAULT 0 NOT NULL,
+	email varchar(255) 	DEFAULT '' NOT NULL,
+	address varchar(255) 	DEFAULT '' NOT NULL,
+	zip varchar(10)		DEFAULT '' NOT NULL,
+	city varchar(32) 	DEFAULT '' NOT NULL,
+	countryid integer	DEFAULT NULL,
+	post_address varchar(255) DEFAULT NULL,
+	post_zip varchar(10)	DEFAULT NULL,
+	post_city varchar(32) 	DEFAULT NULL,
+	post_countryid integer	DEFAULT NULL,
+	ten varchar(16) 	DEFAULT '' NOT NULL,
+	ssn varchar(11) 	DEFAULT '' NOT NULL,
+	regon varchar(255) 	DEFAULT '' NOT NULL,
+	rbe varchar(255) 	DEFAULT '' NOT NULL, -- EDG/KRS
+	icn varchar(255) 	DEFAULT '' NOT NULL, -- dow.os.
+	info text		DEFAULT '' NOT NULL,
+	notes text		DEFAULT '' NOT NULL,
+	creationdate integer 	DEFAULT 0 NOT NULL,
+	moddate integer 	DEFAULT 0 NOT NULL,
+	creatorid integer 	DEFAULT 0 NOT NULL,
+	modid integer 		DEFAULT 0 NOT NULL,
+	deleted smallint 	DEFAULT 0 NOT NULL,
+	message text		DEFAULT '' NOT NULL,
+	pin integer		DEFAULT 0 NOT NULL,
+	cutoffstop integer	DEFAULT 0 NOT NULL,
+	consentdate integer	DEFAULT 0 NOT NULL,
+	einvoice smallint 	DEFAULT NULL,
+	invoicenotice smallint 	DEFAULT NULL,
+	mailingnotice smallint 	DEFAULT NULL,
+	divisionid integer	DEFAULT 0 NOT NULL,
+    paytime smallint 	DEFAULT -1 NOT NULL,
+    paytype smallint 	DEFAULT NULL,
+	PRIMARY KEY (id)
+);
+
+CREATE INDEX customers_zip_idx ON customers (zip);
+CREATE INDEX customers_lastname_idx ON customers (lastname, name);
+
 /* ----------------------------------------------------
  Structure of table "assignments"
 ---------------------------------------------------*/
@@ -131,8 +180,10 @@ CREATE TABLE nodes (
 	chkmac smallint 	DEFAULT 1 NOT NULL,
 	halfduplex smallint	DEFAULT 0 NOT NULL,
 	lastonline integer	DEFAULT 0 NOT NULL,
-	info text		DEFAULT '' NOT NULL,
-	location text		DEFAULT '' NOT NULL,
+	info text		    DEFAULT '' NOT NULL,
+	location_address varchar(255) DEFAULT NULL,
+	location_zip varchar(10)	DEFAULT NULL,
+	location_city varchar(32) 	DEFAULT NULL,
 	nas smallint 		DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (name),
@@ -428,52 +479,6 @@ CREATE TABLE numberplanassignments (
 	UNIQUE (planid, divisionid)
 );
 CREATE INDEX numberplanassignments_divisionid_idx ON numberplanassignments (divisionid);
-
-/* -------------------------------------------------------- 
-  Structure of table "customers" (customers)
--------------------------------------------------------- */
-DROP SEQUENCE customers_id_seq;
-CREATE SEQUENCE customers_id_seq;
-DROP TABLE customers CASCADE;
-CREATE TABLE customers (
-	id integer DEFAULT nextval('customers_id_seq'::text) NOT NULL,
-	lastname varchar(128)	DEFAULT '' NOT NULL,
-	name varchar(128)	DEFAULT '' NOT NULL,
-	status smallint 	DEFAULT 0 NOT NULL,
-	type smallint		DEFAULT 0 NOT NULL,
-	email varchar(255) 	DEFAULT '' NOT NULL,
-	address varchar(255) 	DEFAULT '' NOT NULL,
-	zip varchar(10)		DEFAULT '' NOT NULL,
-	city varchar(32) 	DEFAULT '' NOT NULL,
-	countryid integer	DEFAULT 0 NOT NULL,
-	ten varchar(16) 	DEFAULT '' NOT NULL,
-	ssn varchar(11) 	DEFAULT '' NOT NULL,
-	regon varchar(255) 	DEFAULT '' NOT NULL,
-	rbe varchar(255) 	DEFAULT '' NOT NULL, -- EDG/KRS
-	icn varchar(255) 	DEFAULT '' NOT NULL, -- dow.os.
-	info text		DEFAULT '' NOT NULL,
-	notes text		DEFAULT '' NOT NULL,
-	serviceaddr text	DEFAULT '' NOT NULL,
-	creationdate integer 	DEFAULT 0 NOT NULL,
-	moddate integer 	DEFAULT 0 NOT NULL,
-	creatorid integer 	DEFAULT 0 NOT NULL,
-	modid integer 		DEFAULT 0 NOT NULL,
-	deleted smallint 	DEFAULT 0 NOT NULL,
-	message text		DEFAULT '' NOT NULL,
-	pin integer		DEFAULT 0 NOT NULL,
-	cutoffstop integer	DEFAULT 0 NOT NULL,
-	consentdate integer	DEFAULT 0 NOT NULL,
-	einvoice smallint 	DEFAULT NULL,
-	invoicenotice smallint 	DEFAULT NULL,
-	mailingnotice smallint 	DEFAULT NULL,
-	divisionid integer	DEFAULT 0 NOT NULL,
-    paytime smallint 	DEFAULT -1 NOT NULL,
-    paytype smallint 	DEFAULT NULL,
-	PRIMARY KEY (id)
-);
-
-CREATE INDEX customers_zip_idx ON customers (zip);
-CREATE INDEX customers_lastname_idx ON customers (lastname, name);
 
 /* -------------------------------------------------------- 
   Structure of table "customergroups" 
@@ -1412,11 +1417,11 @@ CREATE OR REPLACE FUNCTION int2txt(bigint) RETURNS text AS $$
 SELECT $1::text;
 $$ LANGUAGE SQL IMMUTABLE;
 
-CREATE VIEW nas AS 
+CREATE VIEW nas AS
 SELECT n.id, inet_ntoa(n.ipaddr) AS nasname, d.shortname, d.nastype AS type,
-	d.clients AS ports, d.secret, d.community, d.description 
-	FROM nodes n 
-	JOIN netdevices d ON (n.netdev = d.id) 
+	d.clients AS ports, d.secret, d.community, d.description
+	FROM nodes n
+	JOIN netdevices d ON (n.netdev = d.id)
 	WHERE n.nas = 1;
 
 CREATE VIEW vnodes AS
@@ -1488,4 +1493,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010121400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010121600');
