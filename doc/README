@@ -5340,6 +5340,10 @@ Chapter 7. For curious
    zip - zip code
    city - location (city)
    countryid - country identifier
+   post_address - correspondence address - street, apartment, flat, etc
+   post_zip - correspondence address - zip code
+   post_city - correspondence address - location (city)
+   post_countryid - correspondence address - country identifier
    ten - tax exempt number
    ssn - social security number
    regon - business registration number
@@ -5347,7 +5351,6 @@ Chapter 7. For curious
    icn - identity card number
    info - additional information
    notes - notes
-   serviceaddr - correspondence address
    creationdate - record creation date
    moddate - record modification date
    creatorid - serial of LMS user who created this record
@@ -5451,7 +5454,9 @@ Chapter 7. For curious
    halfduplex - half/full duplex mode (0/1)
    lastonline - last network activity timestamp
    info - additional information
-   location - location (address)
+   location_address - address - street, apartment, flat, etc
+   location_zip - address - zip code
+   location_city - address - location (city)
    nas - NAS flag (1/0)
      __________________________________________________________________
 

@@ -363,11 +363,6 @@ class LMS
 		return $this->DB->GetOne('SELECT email FROM customers WHERE id=?', array($id));
 	}
 
-	function GetCustomerServiceAddress($id)
-	{
-		return $this->DB->GetOne('SELECT serviceaddr FROM customers WHERE id=?', array($id));
-	}
-
 	function CustomerExists($id)
 	{
 		switch($this->DB->GetOne('SELECT deleted FROM customersview WHERE id=?', array($id)))
@@ -389,11 +384,12 @@ class LMS
 	{
 		if($this->DB->Execute('INSERT INTO customers (name, lastname, type,
 				    address, zip, city, countryid, email, ten, ssn, status, creationdate,
-				    creatorid, info, notes, serviceaddr, message, pin, regon, rbe,
+				    post_address, post_zip, post_city, post_countryid,
+				    creatorid, info, notes, message, pin, regon, rbe,
 				    icn, cutoffstop, consentdate, einvoice, divisionid, paytime, paytype,
 				    invoicenotice, mailingnotice)
 				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?,
-				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				    array(lms_ucwords($customeradd['name']),
 					    $customeradd['lastname'],
 					    empty($customeradd['type']) ? 0 : 1,
@@ -405,10 +401,13 @@ class LMS
 					    $customeradd['ten'],
 					    $customeradd['ssn'],
 					    $customeradd['status'],
+					    $customeradd['post_address'],
+					    $customeradd['post_zip'],
+					    $customeradd['post_city'],
+					    $customeradd['post_countryid'],
 					    $this->AUTH->id,
 					    $customeradd['info'],
 					    $customeradd['notes'],
-					    $customeradd['serviceaddr'],
 					    $customeradd['message'],
 					    $customeradd['pin'],
 					    $customeradd['regon'],
@@ -422,8 +421,12 @@ class LMS
 					    !empty($customeradd['paytype']) ? $customeradd['paytype'] : NULL,
 					    $customeradd['invoicenotice'],
 					    $customeradd['mailingnotice'],
-					    )))
-		{
+					    ))
+		) {
+		    $this->UpdateCountryState($customeradd['zip'], $customeradd['stateid']);
+		    if ($customeradd['post_zip'] != $customeradd['zip']) {
+		        $this->UpdateCountryState($customeradd['post_zip'], $customeradd['post_stateid']);
+            }
 			return $this->DB->GetLastInsertID('customers');
 		} else
 			return FALSE;
@@ -453,33 +456,37 @@ class LMS
 
 	function CustomerUpdate($customerdata)
 	{
-		return $this->DB->Execute('UPDATE customers SET status=?, type=?, address=?, 
-				zip=?, city=?, countryid=?, email=?, ten=?, ssn=?, moddate=?NOW?, modid=?, 
-				info=?, notes=?, serviceaddr=?, lastname=UPPER(?), name=?, 
-				deleted=0, message=?, pin=?, regon=?, icn=?, rbe=?, 
+		$res = $this->DB->Execute('UPDATE customers SET status=?, type=?, address=?,
+				zip=?, city=?, countryid=?, email=?, ten=?, ssn=?, moddate=?NOW?, modid=?,
+				post_address=?, post_zip=?, post_city=?, post_countryid=?,
+				info=?, notes=?, lastname=UPPER(?), name=?,
+				deleted=0, message=?, pin=?, regon=?, icn=?, rbe=?,
 				cutoffstop=?, consentdate=?, einvoice=?, invoicenotice=?, mailingnotice=?,
-				divisionid=?, paytime=?, paytype=? 
-				WHERE id=?', 
-			array( $customerdata['status'], 
+				divisionid=?, paytime=?, paytype=?
+				WHERE id=?',
+			array( $customerdata['status'],
 				empty($customerdata['type']) ? 0 : 1,
-				$customerdata['address'], 
-				$customerdata['zip'], 
-				$customerdata['city'], 
+				$customerdata['address'],
+				$customerdata['zip'],
+				$customerdata['city'],
 				$customerdata['countryid'],
-				$customerdata['email'], 
-				$customerdata['ten'], 
-				$customerdata['ssn'], 
+				$customerdata['email'],
+				$customerdata['ten'],
+				$customerdata['ssn'],
 				isset($this->AUTH->id) ? $this->AUTH->id : 0,
-				$customerdata['info'], 
+				$customerdata['post_address'],
+				$customerdata['post_zip'],
+				$customerdata['post_city'],
+				$customerdata['post_countryid'],
+				$customerdata['info'],
 				$customerdata['notes'],
-				$customerdata['serviceaddr'], 
-				$customerdata['lastname'], 
-				lms_ucwords($customerdata['name']), 
+				$customerdata['lastname'],
+				lms_ucwords($customerdata['name']),
 				$customerdata['message'],
 				$customerdata['pin'],
-				$customerdata['regon'], 
-				$customerdata['icn'], 
-				$customerdata['rbe'], 
+				$customerdata['regon'],
+				$customerdata['icn'],
+				$customerdata['rbe'],
 				$customerdata['cutoffstop'],
 				$customerdata['consentdate'],
 				$customerdata['einvoice'],
@@ -490,6 +497,15 @@ class LMS
 				$customerdata['paytype'] ? $customerdata['paytype'] : null,
 				$customerdata['id'],
 				));
+
+        if ($res) {
+		    $this->UpdateCountryState($customerdata['zip'], $customerdata['stateid']);
+		    if ($customerdata['post_zip'] != $customerdata['zip']) {
+		        $this->UpdateCountryState($customerdata['post_zip'], $customerdata['post_stateid']);
+            }
+        }
+
+	    return $res;
 	}
 
 	function GetCustomerNodesNo($id)
@@ -518,13 +534,12 @@ class LMS
 	function GetCustomer($id, $short=false)
 	{
 	    global $CONTACTTYPES;
-	
+
 		if($result = $this->DB->GetRow('SELECT c.*, '
 			.$this->DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername,
-			d.shortname AS division, d.account, co.name AS country
+			d.shortname AS division, d.account
 			FROM customers'.(defined('LMS-UI') ? 'view' : '').' c 
 			LEFT JOIN divisions d ON (d.id = c.divisionid)
-			LEFT JOIN countries co ON (co.id = c.countryid)
 			WHERE c.id = ?', array($id)))
 		{
 			if(!$short)
@@ -538,11 +553,37 @@ class LMS
 					failedlogindate, failedloginip
 		                        FROM up_customers WHERE customerid = ?', array($result['id']));
 
-				if($cstate = $this->DB->GetRow('SELECT s.id, s.name FROM states s, zipcodes
-					WHERE zip = ? AND stateid = s.id', array($result['zip'])))
-				{
+                // Get country name
+                if ($result['countryid']) {
+    				$result['country'] = $this->DB->GetOne('SELECT name FROM countries WHERE id = ?',
+	    			    array($result['countryid']));
+                }
+				if ($result['countryid'] == $result['post_countryid']) {
+				    $result['post_country'] = $result['country'];
+				}
+				else if ($result['post_countryid']) {
+    				$result['country'] = $this->DB->GetOne('SELECT name FROM countries WHERE id = ?',
+	    			    array($result['post_countryid']));
+                }
+
+                // Get state name
+				if ($cstate = $this->DB->GetRow('SELECT s.id, s.name
+				    FROM states s, zipcodes
+					WHERE zip = ? AND stateid = s.id', array($result['zip']))
+			    ) {
 					$result['stateid'] = $cstate['id'];
 					$result['cstate'] = $cstate['name'];
+				}
+				if ($result['zip'] == $result['post_zip']) {
+					$result['post_stateid'] = $result['stateid'];
+					$result['post_cstate'] = $result['cstate'];
+				}
+				else if ($result['post_zip'] && ($cstate = $this->DB->GetRow('SELECT s.id, s.name
+				    FROM states s, zipcodes
+				    WHERE zip = ? AND stateid = s.id', array($result['post_zip'])))
+			    ) {
+					$result['post_stateid'] = $cstate['id'];
+					$result['post_cstate'] = $cstate['name'];
 				}
 			}
 			$result['balance'] = $this->GetCustomerBalance($result['id']);
@@ -673,7 +714,7 @@ class LMS
 						case 'address':
 							// UPPER here is a workaround for postgresql ILIKE bug
 							$searchargs[] = "(UPPER($key) ?LIKE? UPPER(".$this->DB->Escape("%$value%").')
-								OR UPPER(serviceaddr) ?LIKE? UPPER('.$this->DB->Escape("%$value%").'))';
+								OR UPPER(post_$key) ?LIKE? UPPER('.$this->DB->Escape("%$value%").'))';
 						break;
 						case 'customername':
 							// UPPER here is a workaround for postgresql ILIKE bug
@@ -844,7 +885,8 @@ class LMS
 		if($result = $this->DB->GetAll('SELECT id, name, mac, ipaddr,
 				inet_ntoa(ipaddr) AS ip, ipaddr_pub,
 				inet_ntoa(ipaddr_pub) AS ip_pub, passwd, access,
-				warning, info, ownerid, location, lastonline,
+				warning, info, ownerid, lastonline,
+				location_address, location_zip, location_city,
 				(SELECT COUNT(*) FROM nodegroupassignments
 					WHERE nodeid = vnodes.id) AS gcount
 				FROM vnodes
@@ -1152,22 +1194,25 @@ class LMS
 
 	function NodeUpdate($nodedata, $deleteassignments=FALSE)
 	{
-		$this->DB->Execute('UPDATE nodes SET name=UPPER(?), ipaddr_pub=inet_aton(?), 
-				ipaddr=inet_aton(?), passwd=?, netdev=?, moddate=?NOW?, 
-				modid=?, access=?, warning=?, ownerid=?, info=?, 
-				location=?, chkmac=?, halfduplex=?, linktype=?, port=?, nas=? 
-				WHERE id=?', 
-				array($nodedata['name'], 
-				    $nodedata['ipaddr_pub'], 
-				    $nodedata['ipaddr'], 
-				    $nodedata['passwd'], 
-				    $nodedata['netdev'], 
-				    $this->AUTH->id, 
-				    $nodedata['access'], 
-				    $nodedata['warning'], 
-				    $nodedata['ownerid'], 
-				    $nodedata['info'], 
-				    $nodedata['location'],
+		$this->DB->Execute('UPDATE nodes SET name=UPPER(?), ipaddr_pub=inet_aton(?),
+				ipaddr=inet_aton(?), passwd=?, netdev=?, moddate=?NOW?,
+				modid=?, access=?, warning=?, ownerid=?, info=?,
+				location_address=?, location_zip=?, location_city=?,
+				chkmac=?, halfduplex=?, linktype=?, port=?, nas=?
+				WHERE id=?',
+				array($nodedata['name'],
+				    $nodedata['ipaddr_pub'],
+				    $nodedata['ipaddr'],
+				    $nodedata['passwd'],
+				    $nodedata['netdev'],
+				    $this->AUTH->id,
+				    $nodedata['access'],
+				    $nodedata['warning'],
+				    $nodedata['ownerid'],
+				    $nodedata['info'],
+				    $nodedata['location_address'],
+				    $nodedata['location_zip'],
+				    $nodedata['location_city'],
 				    $nodedata['chkmac'],
 				    $nodedata['halfduplex'],
 				    isset($nodedata['linktype']) ? 1 : 0,
@@ -1175,15 +1220,18 @@ class LMS
 				    isset($nodedata['nas']) ? $nodedata['nas'] : 0,
 				    $nodedata['id']
 			    ));
+
+        $this->UpdateCountryState($nodedata['location_zip'], $nodedata['stateid']);
+
 		$this->DB->Execute('DELETE FROM macs WHERE nodeid=?', array($nodedata['id']));
-		foreach($nodedata['macs'] as $mac)
-		{
+		foreach($nodedata['macs'] as $mac) {
 			$this->DB->Execute('INSERT INTO macs (mac, nodeid) VALUES(?, ?)',
 				array(strtoupper($mac), $nodedata['id']));
 		}
 
-		if($deleteassignments)
+		if($deleteassignments) {
 			$this->DB->Execute('DELETE FROM nodeassignments WHERE nodeid = ?', array($nodedata['id']));
+	    }
 	}
 
 	function DeleteNode($id)
@@ -1242,11 +1290,9 @@ class LMS
 
 	function GetNode($id)
 	{
-		if($result = $this->DB->GetRow('SELECT id, name, ownerid, ipaddr, inet_ntoa(ipaddr) AS ip, 
-			ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, mac, passwd, access, 
-			warning, creationdate, moddate, creatorid, modid, netdev, lastonline, 
-			info, location, chkmac, halfduplex, linktype, port, nas 
-			FROM vnodes 
+		if($result = $this->DB->GetRow('SELECT vnodes.*,
+		    inet_ntoa(ipaddr) AS ip, inet_ntoa(ipaddr_pub) AS ip_pub
+			FROM vnodes
 			WHERE id = ?', array($id)))
 		{
 			$result['owner'] = $this->GetCustomerName($result['ownerid']);
@@ -1266,6 +1312,15 @@ class LMS
 			{
 				$result['netid'] = $net['id'];
 				$result['netname'] = $net['name'];
+			}
+
+            // Get state name
+	        if ($result['location_zip'] && ($cstate = $this->DB->GetRow('SELECT s.id, s.name
+			    FROM states s, zipcodes
+				WHERE zip = ? AND stateid = s.id', array($result['location_zip'])))
+			) {
+				$result['stateid'] = $cstate['id'];
+				$result['cstate'] = $cstate['name'];
 			}
 
 			return $result;
@@ -1438,11 +1493,12 @@ class LMS
 
 	function NodeAdd($nodedata)
 	{
-		if($this->DB->Execute('INSERT INTO nodes (name, ipaddr, ipaddr_pub, ownerid, 
-			passwd, creatorid, creationdate, access, warning, info, netdev, 
-			linktype, port, location, chkmac, halfduplex, nas) 
-			VALUES (?, inet_aton(?),inet_aton(?), ?, ?, ?, 
-			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+		if($this->DB->Execute('INSERT INTO nodes (name, ipaddr, ipaddr_pub, ownerid,
+			passwd, creatorid, creationdate, access, warning, info, netdev,
+			location_address, location_zip, location_city,
+			linktype, port, chkmac, halfduplex, nas)
+			VALUES (?, inet_aton(?),inet_aton(?), ?, ?, ?,
+			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			array(strtoupper($nodedata['name']),
 				$nodedata['ipaddr'],
 				$nodedata['ipaddr_pub'],
@@ -1453,15 +1509,19 @@ class LMS
 				$nodedata['warning'],
 				$nodedata['info'],
 				$nodedata['netdev'],
+				$nodedata['location_address'],
+				$nodedata['location_zip'],
+				$nodedata['location_city'],
 				isset($nodedata['linktype']) ? 1 : 0,
 				isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
-				$nodedata['location'],
 				$nodedata['chkmac'],
 				$nodedata['halfduplex'],
 				isset($nodedata['nas']) ? $nodedata['nas'] : 0,
 				)))
 		{
 			$id = $this->DB->GetLastInsertID('nodes');
+
+            $this->UpdateCountryState($nodedata['location_zip'], $nodedata['stateid']);
 
 			foreach($nodedata['macs'] as $mac)
 				$this->DB->Execute('INSERT INTO macs (mac, nodeid) VALUES(?, ?)',
@@ -1960,7 +2020,7 @@ class LMS
 		if($result = $this->DB->GetRow('SELECT d.id, d.number, d.name, d.customerid,
 				d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
 				d.ten, d.ssn, d.cdate, d.paytime, d.paytype, d.numberplanid,
-				d.closed, d.reference, d.reason, d.divisionid, 
+				d.closed, d.reference, d.reason, d.divisionid,
 				(SELECT name FROM users WHERE id = d.userid) AS user, n.template,
 				ds.name AS division_name, ds.shortname AS division_shortname,
 				ds.address AS division_address, ds.zip AS division_zip,
@@ -1968,13 +2028,14 @@ class LMS
 				ds.ten AS division_ten, ds.regon AS division_regon, ds.account AS account,
 				ds.inv_header AS division_header, ds.inv_footer AS division_footer,
 				ds.inv_author AS division_author, ds.inv_cplace AS division_cplace,
-				c.pin AS customerpin, c.divisionid AS current_divisionid
+				c.pin AS customerpin, c.divisionid AS current_divisionid,
+				c.post_address, c.post_zip, c.post_city, c.post_countryid
 				FROM documents d
 				JOIN customers c ON (c.id = d.customerid)
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
 				LEFT JOIN divisions ds ON (ds.id = d.divisionid)
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
-				WHERE d.id = ? AND (d.type = ? OR d.type = ?)', 
+				WHERE d.id = ? AND (d.type = ? OR d.type = ?)',
 				array($invoiceid, DOC_INVOICE, DOC_CNOTE)))
 		{
 			$result['discount'] = 0;
@@ -2070,6 +2131,12 @@ class LMS
 			$result['month'] = date('m',$result['cdate']);
 			$result['pesel'] = $result['ssn'];
 			$result['nip'] = $result['ten'];
+			if ($result['post_address']) {
+                $result['serviceaddr'] = $result['post_address'];
+                if ($result['post_zip'] && $result['post_city']) {
+                    $result['serviceaddr'] .= "\n".$result['post_zip'].' '.$result['post_city'];
+                }
+            }
 
 			return $result;
 		}
@@ -2089,17 +2156,18 @@ class LMS
 				ds.ten AS division_ten, ds.regon AS division_regon, ds.account AS account,
 				ds.inv_header AS division_header, ds.inv_footer AS division_footer,
 				ds.inv_author AS division_author, ds.inv_cplace AS division_cplace,
-				c.pin AS customerpin, c.divisionid AS current_divisionid
+				c.pin AS customerpin, c.divisionid AS current_divisionid,
+				c.post_address, c.post_zip, c.post_city, c.post_countryid
 				FROM documents d
 				JOIN customers c ON (c.id = d.customerid)
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
 				LEFT JOIN divisions ds ON (ds.id = d.divisionid)
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
-				WHERE d.id = ? AND d.type = ?', 
+				WHERE d.id = ? AND d.type = ?',
 				array($id, DOC_DNOTE)))
 		{
 			$result['value'] = 0;
-			
+
 			if(!$result['division_header'])
 				$result['division_header'] = $result['division_name']."\n"
 					.$result['division_address']."\n".$result['division_zip'].' '.$result['division_city']
@@ -2107,7 +2175,7 @@ class LMS
 						&& $result['division_countryid'] != $result['countryid']
 						? "\n".trans($this->GetCountryName($result['division_countryid'])) : '')
 					.($result['division_ten'] != '' ? "\n".trans('TEN').' '.$result['division_ten'] : '');
-			
+
 			if($result['content'] = $this->DB->GetAll('SELECT
 				value, itemid, description 
 				FROM debitnotecontents 
@@ -2132,6 +2200,14 @@ class LMS
 					$result['customerbalancelist'] = $this->GetCustomerBalanceList($result['customerid']);
 				$result['customerbalancelistlimit'] = $this->CONFIG['notes']['print_balance_history_limit'];
 			}
+
+            // for backward compatibility
+			if ($result['post_address']) {
+                $result['serviceaddr'] = $result['post_address'];
+                if ($result['post_zip'] && $result['post_city']) {
+                    $result['serviceaddr'] .= "\n".$result['post_zip'].' '.$result['post_city'];
+                }
+            }
 
 			return $result;
 		}
@@ -3011,7 +3087,7 @@ class LMS
 				$sqlord = ' ORDER BY name';
 			break;
 		}
-		
+
 		$netdevlist = $this->DB->GetAll('SELECT d.id, d.name, d.location, 
 			d.description, d.producer, d.model, d.serialnumber, d.ports, 
 			(SELECT COUNT(*) FROM nodes WHERE netdev=d.id AND ownerid > 0)
@@ -4194,17 +4270,17 @@ class LMS
 			case CONTINUOUS:
 				$number = $this->DB->GetOne('SELECT MAX(number) FROM documents 
 						WHERE type = ? AND numberplanid = ?', array($doctype, $planid));
-						
+
 				return $number ? ++$number : 1;
 			break;
 		}
-	
+
 		$number = $this->DB->GetOne('
 				SELECT MAX(number) 
 				FROM documents 
 				WHERE cdate >= ? AND cdate < ? AND type = ? AND numberplanid = ?', 
 				array($start, $end, $doctype, $planid));
-				
+
 		return $number ? ++$number : 1;
 	}
 
@@ -4212,10 +4288,10 @@ class LMS
 	{
 		if($planid)
 			$period = $this->DB->GetOne('SELECT period FROM numberplans WHERE id=?', array($planid));
-		
+
 		$period = isset($period) ? $period : YEARLY;
 		$cdate = $cdate ? $cdate : time();
-		
+
 		switch($period)
 		{
 			case DAILY:
@@ -4263,7 +4339,7 @@ class LMS
 						array($doctype, $number, $planid)) ? TRUE : FALSE;
 			break;
 		}
-	
+
 		return $this->DB->GetOne('SELECT number FROM documents 
 				WHERE cdate >= ? AND cdate < ? AND type = ? AND number = ? AND numberplanid = ?', 
 				array($start, $end, $doctype, $number, $planid)) ? TRUE : FALSE;
@@ -4283,6 +4359,24 @@ class LMS
 	{
 		return $this->DB->GetOne('SELECT name FROM countries WHERE id = ?', array($id));
 	}
+
+    function UpdateCountryState($zip, $stateid)
+    {
+        if (empty($zip) || empty($stateid)) {
+            return;
+        }
+
+        $cstate = $this->DB->GetOne('SELECT stateid FROM zipcodes WHERE zip = ?', array($zip));
+
+        if ($cstate === NULL) {
+            $this->DB->Execute('INSERT INTO zipcodes (stateid, zip) VALUES (?, ?)',
+                array($stateid, $zip));
+        }
+        else if ($cstate != $stateid) {
+            $this->DB->Execute('UPDATE zipcodes SET stateid = ? WHERE zip = ?',
+                array($stateid, $zip));
+        }
+    }
 
 	function GetNAStypes()
 	{

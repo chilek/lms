@@ -70,14 +70,13 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached')
 
 
 	sort($ids);
-	
+
 	$count = sizeof($ids);
 	$i=0;
 	foreach($ids as $idx => $noteid)
 	{
 		$note = $LMS->GetNoteContent($noteid);
-		$note['serviceaddr'] = $LMS->GetCustomerServiceAddress($note['customerid']);
-		
+
 		$i++;
 		if($i == $count) $note['last'] = TRUE;
 		$SMARTY->assign('note', $note);
@@ -119,7 +118,6 @@ elseif(isset($_GET['fetchallnotes']))
 	foreach($ids as $idx => $noteid)
 	{
 		$note = $LMS->GetNoteContent($noteid);
-		$note['serviceaddr'] = $LMS->GetCustomerServiceAddress($note['customerid']);
 
 		$SMARTY->assign('note',$note);
 		$SMARTY->display($CONFIG['notes']['template_file']);
@@ -130,8 +128,6 @@ elseif($note = $LMS->GetNoteContent($_GET['id']))
 {
 	$number = docnumber($note['number'], $note['template'], $note['cdate']);
 	$layout['pagetitle'] = trans('Debit Note No. $0', $number);
-
-	$note['serviceaddr'] = $LMS->GetCustomerServiceAddress($note['customerid']);
 
 	$SMARTY->display('noteheader.html');
 

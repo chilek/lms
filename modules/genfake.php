@@ -1966,7 +1966,6 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$customeradd['rbe'] = '';
 		$customeradd['icn'] = '';
 		$customeradd['notes'] = '';
-		$customeradd['serviceaddr'] = '';
 		$customeradd['info'] = '';
 		$customeradd['message'] = '';
 		$customeradd['pin'] = mt_rand(10000,99999);

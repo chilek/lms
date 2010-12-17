@@ -6242,6 +6242,10 @@ Rozdział 7. Dla dociekliwych
    zip - kod pocztowy
    city - nazwa miasta
    countryid - identyfikator kraju
+   post_address - adres korespondencyjny (ulica, nr domu, nr lokalu)
+   post_zip - adres korespondencyjny - kod pocztowy
+   post_city - adres korespondencyjny - nazwa miasta
+   post_countryid - adres korespondencyjny - identyfikator kraju
    ten - numer identyfikacji podatkowej NIP
    ssn - numer PESEL
    regon - numer REGON
@@ -6249,7 +6253,6 @@ Rozdział 7. Dla dociekliwych
    icn - numer dowodu osobistego
    info - dodatkowe informacje
    notes - notatki
-   serviceaddr - adres do doręczeń (np. na faktury)
    creationdate - czas utworzenia wpisu
    moddate - czas modyfikacji
    creatorid - identyfikator użytkownika tworzącego wpis
@@ -6357,7 +6360,9 @@ Rozdział 7. Dla dociekliwych
    warning - ostrzegaj/nie ostrzegaj (1/0)
    lastonline - znacznik czasu ostatniej obecności w sieci
    info - informacje dodatkowe
-   location - lokalizacja (adres)
+   location_address - adres lokalizacji - ulica, nr domu, nr lokalu
+   location_zip - adres lokalizacji - kod pocztowy
+   location_city - adres lokalizacji - miasto
    nas - flaga NAS (0/1)
      __________________________________________________________________
 

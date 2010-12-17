@@ -94,7 +94,6 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached')
 	foreach($ids as $idx => $invoiceid)
 	{
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
-		$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
 
 		foreach($which as $type)
 		{
@@ -139,7 +138,6 @@ elseif(isset($_GET['fetchallinvoices']))
 	foreach($ids as $idx => $invoiceid)
 	{
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
-		$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
 
 		foreach($which as $type)
 		{
@@ -151,14 +149,12 @@ elseif(isset($_GET['fetchallinvoices']))
 }
 elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 {
-	$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
-
 	$which = array();
 
 	if(!empty($_GET['original'])) $which[] = trans('ORIGINAL');
         if(!empty($_GET['copy'])) $which[] = trans('COPY');
         if(!empty($_GET['duplicate'])) $which[] = trans('DUPLICATE');
-	
+
 	if(!sizeof($which))
 	{
 		$tmp = explode(',', $CONFIG['invoices']['default_printpage']);

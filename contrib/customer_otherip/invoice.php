@@ -51,7 +51,6 @@ $invoice = $LMS->GetInvoiceContent($_GET['id']);
 
 $ntempl = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
 $layout['pagetitle'] = trans('Invoice No. $0', $ntempl);
-$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
 $invoice['last'] = TRUE;
 $SMARTY->assign('invoice',$invoice);
 $SMARTY->display(SMARTY_TEMPLATES_DIR.'/clearheader.html');

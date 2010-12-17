@@ -27,6 +27,53 @@ CREATE TABLE users (
 
 # --------------------------------------------------------
 #
+# Structure of table customers (customers)
+#
+DROP TABLE IF EXISTS customers;
+CREATE TABLE customers (
+  id int(11) 		NOT NULL auto_increment,
+  lastname varchar(128) NOT NULL DEFAULT '',
+  name varchar(128) 	NOT NULL DEFAULT '',
+  status smallint 	NOT NULL DEFAULT '0',
+  type smallint		NOT NULL DEFAULT '0',
+  email varchar(255) 	NOT NULL DEFAULT '',
+  address varchar(255) 	NOT NULL DEFAULT '',
+  zip varchar(10) 	NOT NULL DEFAULT '',
+  city varchar(32) 	NOT NULL DEFAULT '',
+  countryid int(11)	DEFAULT NULL,
+  post_address varchar(255) DEFAULT NULL,
+  post_zip varchar(10) 	    DEFAULT NULL,
+  post_city varchar(32) 	DEFAULT NULL,
+  post_countryid int(11)	DEFAULT NULL,
+  ten varchar(16) 	NOT NULL DEFAULT '',
+  ssn varchar(11) 	NOT NULL DEFAULT '',
+  regon varchar(255) 	NOT NULL DEFAULT '',
+  rbe varchar(255) 	NOT NULL DEFAULT '',
+  icn varchar(255) 	NOT NULL DEFAULT '',
+  info text 		NOT NULL,
+  notes text 		NOT NULL DEFAULT '',
+  creationdate int(11) 	NOT NULL DEFAULT '0',
+  moddate int(11) 	NOT NULL DEFAULT '0',
+  creatorid int(11) 	NOT NULL DEFAULT '0',
+  modid int(11) 	NOT NULL DEFAULT '0',
+  deleted tinyint(1) 	NOT NULL DEFAULT '0',
+  message text 		NOT NULL,
+  pin int(6) 		NOT NULL DEFAULT '0',
+  cutoffstop int(11) 	NOT NULL DEFAULT '0',
+  consentdate int(11)   NOT NULL DEFAULT '0',
+  einvoice tinyint(1)   DEFAULT NULL,
+  invoicenotice tinyint(1)   DEFAULT NULL,
+  mailingnotice tinyint(1)   DEFAULT NULL,
+  divisionid int(11)   	NOT NULL DEFAULT '0',
+  paytime tinyint	NOT NULL DEFAULT '-1',
+  paytype smallint  DEFAULT NULL,
+  PRIMARY KEY  (id),
+  INDEX zip (zip),
+  INDEX name (lastname, name)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
 # Structure of table  assignments
 #
 DROP TABLE IF EXISTS assignments;
@@ -329,7 +376,9 @@ CREATE TABLE nodes (
   halfduplex tinyint(1) NOT NULL DEFAULT '0',
   lastonline int(11) NOT NULL DEFAULT '0',
   info text NOT NULL DEFAULT '',
-  location text NOT NULL DEFAULT '',
+  location_address varchar(255) DEFAULT NULL,
+  location_zip varchar(10) 	    DEFAULT NULL,
+  location_city varchar(32) 	DEFAULT NULL,
   nas tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY  (id),
   UNIQUE KEY name (name),
@@ -345,9 +394,9 @@ CREATE TABLE nodes (
 #
 DROP TABLE IF EXISTS macs;
 CREATE TABLE macs (
-  id int(11) NOT NULL auto_increment,
-  mac varchar(17) NOT NULL DEFAULT '',
-  nodeid int(11) NOT NULL,
+  id int(11)        NOT NULL auto_increment,
+  mac varchar(17)   NOT NULL DEFAULT '',
+  nodeid int(11)    NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
   UNIQUE KEY mac (mac, nodeid)
@@ -591,50 +640,6 @@ CREATE TABLE liabilities (
     taxid int(11)           NOT NULL DEFAULT '0',
     prodid varchar(255)     NOT NULL DEFAULT '',
     PRIMARY KEY (id)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table customers (customers)
-#
-DROP TABLE IF EXISTS customers;
-CREATE TABLE customers (
-  id int(11) 		NOT NULL auto_increment,
-  lastname varchar(128) NOT NULL DEFAULT '',
-  name varchar(128) 	NOT NULL DEFAULT '',
-  status smallint 	NOT NULL DEFAULT '0',
-  type smallint		NOT NULL DEFAULT '0',
-  email varchar(255) 	NOT NULL DEFAULT '',
-  address varchar(255) 	NOT NULL DEFAULT '',
-  zip varchar(10) 	NOT NULL DEFAULT '',
-  city varchar(32) 	NOT NULL DEFAULT '',
-  countryid int(11)	NOT NULL DEFAULT '0',
-  ten varchar(16) 	NOT NULL DEFAULT '',
-  ssn varchar(11) 	NOT NULL DEFAULT '',
-  regon varchar(255) 	NOT NULL DEFAULT '',
-  rbe varchar(255) 	NOT NULL DEFAULT '',
-  icn varchar(255) 	NOT NULL DEFAULT '',
-  info text 		NOT NULL,
-  notes text 		NOT NULL DEFAULT '',
-  serviceaddr text 	NOT NULL DEFAULT '',
-  creationdate int(11) 	NOT NULL DEFAULT '0',
-  moddate int(11) 	NOT NULL DEFAULT '0',
-  creatorid int(11) 	NOT NULL DEFAULT '0',
-  modid int(11) 	NOT NULL DEFAULT '0',
-  deleted tinyint(1) 	NOT NULL DEFAULT '0',
-  message text 		NOT NULL,
-  pin int(6) 		NOT NULL DEFAULT '0',
-  cutoffstop int(11) 	NOT NULL DEFAULT '0',
-  consentdate int(11)   NOT NULL DEFAULT '0',
-  einvoice tinyint(1)   DEFAULT NULL,
-  invoicenotice tinyint(1)   DEFAULT NULL,
-  mailingnotice tinyint(1)   DEFAULT NULL,
-  divisionid int(11)   	NOT NULL DEFAULT '0',
-  paytime tinyint	NOT NULL DEFAULT '-1',
-  paytype smallint  DEFAULT NULL,
-  PRIMARY KEY  (id),
-  INDEX zip (zip),
-  INDEX name (lastname, name)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1387,4 +1392,4 @@ CREATE TABLE supermasters (
 
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010121400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010121600');

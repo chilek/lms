@@ -47,14 +47,20 @@ if(isset($_GET['ajax']))
 	}
 
 	if (!isset($mode)) { print 'false;'; exit; }
-	$candidates = $DB->GetAll('SELECT '.$mode.' as item, count(id) as entries FROM customers WHERE '.$mode.' != \'\' AND lower('.$mode.') ?LIKE? lower(\'%'.$search.'%\') GROUP BY item ORDER BY entries desc, item asc');
+
+	$candidates = $DB->GetAll('SELECT '.$mode.' as item, count(id) as entries
+	    FROM customers
+	    WHERE '.$mode.' != \'\' AND lower('.$mode.') ?LIKE? lower(\'%'.$search.'%\')
+	    GROUP BY item
+	    ORDER BY entries desc, item asc
+	    LIMIT 15');
+
 	$eglible=array(); $descriptions=array();
 	if ($candidates)
 	foreach($candidates as $idx => $row) {
 		$eglible[$row['item']] = escape_js($row['item']);
 		$descriptions[$row['item']] = escape_js($row['entries'].' '.trans('entries'));
 	}
-	header('Content-type: text/plain');
 	if ($eglible) {
 		print preg_replace('/$/',"\");\n","this.eligible = new Array(\"".implode('","',$eglible));
 		print preg_replace('/$/',"\");\n","this.descriptions = new Array(\"".implode('","',$descriptions));
@@ -108,11 +114,16 @@ elseif(isset($_POST['customeradd']))
 
 	if($customeradd['regon'] != '' && !check_regon($customeradd['regon']))
 		$error['regon'] = trans('Incorrect Business Registration Number!');
-		
+
 	if($customeradd['zip'] !='' && !check_zip($customeradd['zip']) && !isset($customeradd['zipwarning']))
 	{
 		$error['zip'] = trans('Incorrect ZIP code! If you are sure you want to accept it, then click "Submit" again.');
 		$customeradd['zipwarning'] = 1;
+	}
+	if($customeradd['post_zip'] !='' && !check_zip($customeradd['post_zip']) && !isset($customeradd['post_zipwarning']))
+	{
+		$error['post_zip'] = trans('Incorrect ZIP code! If you are sure you want to accept it, then click "Submit" again.');
+		$customeradd['post_zipwarning'] = 1;
 	}
 
 	if($customeradd['pin'] == '')
@@ -168,7 +179,7 @@ elseif(isset($_POST['customeradd']))
 			$customeradd['consentdate'] = 0;
 		if(!isset($customeradd['divisionid']))
 			$customeradd['divisionid'] = 0;
-		
+
 		$id = $LMS->CustomerAdd($customeradd);
 
 		if(isset($im) && $id)
@@ -181,23 +192,11 @@ elseif(isset($_POST['customeradd']))
 				$DB->Execute('INSERT INTO customercontacts (customerid, phone, name, type)
 					VALUES(?, ?, ?, ?)', array($id, $contact['phone'], $contact['name'], $contact['type']));
 
-		if($customeradd['zip'] && $customeradd['stateid'])
-                {
-		        $cstate = $DB->GetOne('SELECT stateid FROM zipcodes WHERE zip = ?', array($customeradd['zip']));
-		
-		        if($cstate === NULL)
-		        	$DB->Execute('INSERT INTO zipcodes (stateid, zip) VALUES (?, ?)',
-			                array($customeradd['stateid'], $customeradd['zip']));
-			elseif($cstate != $customeradd['stateid'])
-			        $DB->Execute('UPDATE zipcodes SET stateid = ? WHERE zip = ?',
-			                array($customeradd['stateid'], $customeradd['zip']));
-                }
-
 		if(!isset($customeradd['reuse']))
 		{
 			$SESSION->redirect('?m=customerinfo&id='.$id);
 		}
-		
+
 		$reuse['status'] = $customeradd['status'];
 		$reuse['contacts'][] = array();
 		unset($customeradd);

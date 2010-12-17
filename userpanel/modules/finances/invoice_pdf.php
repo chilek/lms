@@ -27,7 +27,7 @@
 function invoice_body() 
 {
     global $invoice,$pdf,$CONFIG;
-    
+
     if(isset($invoice['invoice']))
 	    $template = $CONFIG['invoices']['cnote_template_file'];
     else
@@ -45,7 +45,7 @@ function invoice_body()
 	    if(file_exists($template))
                     require($template);
 	    else //go to LMS modules directory
-	            require(MODULES_DIR.'/'.$template);			    
+	            require(MODULES_DIR.'/'.$template);
     }
 
     if(!isset($invoice['last'])) $pdf->ezNewPage();
@@ -67,10 +67,9 @@ if(!empty($_POST['inv']))
 	foreach (array_keys($_POST['inv']) as $key)
 	{
 		$invoice = $LMS->GetInvoiceContent(intval($key));
-		$invoice['serviceaddr'] = $service_addr;
 		$invoice['type'] = $type;
 		$i++;
-		
+
 		if($invoice['customerid'] != $SESSION->id)
 		{
     			continue;
@@ -101,7 +100,6 @@ else
 
 $pdf =& init_pdf('A4', 'portrait', $title);
 
-$invoice['serviceaddr'] = $service_addr;
 $invoice['last'] = TRUE;
 $invoice['type'] = $type;
 

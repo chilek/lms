@@ -49,6 +49,8 @@ version ? (????-??-??)
   - added "consent to invoices delivery via e-mail" switch in customer data (alec)
   - added "consent to messages delivery via e-mail or sms" switch in customer data (alec)
   - added possibility to set type (mobile/fax) of customer contact (alec)
+  - customer service address split into separate fields: address, zip, city, country (alec)
+  - node location address split into separate fields: address, zip, city (alec)
 
 version 1.11.10 Kri (2010-04-19)
 

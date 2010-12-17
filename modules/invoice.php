@@ -73,14 +73,13 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached')
 	if(!empty($_GET['duplicate'])) $which[] = trans('DUPLICATE');
 
 	if(!sizeof($which)) $which[] = trans('ORIGINAL');
-	
+
 	$count = sizeof($ids) * sizeof($which);
 	$i=0;
 	foreach($ids as $idx => $invoiceid)
 	{
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
-		$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
-		
+
 		foreach($which as $type)
 		{
 			$i++;
@@ -125,8 +124,8 @@ elseif(isset($_GET['fetchallinvoices']))
 	if(!empty($_GET['original'])) $which[] = trans('ORIGINAL');
 	if(!empty($_GET['copy'])) $which[] = trans('COPY');
 	if(!empty($_GET['duplicate'])) $which[] = trans('DUPLICATE');
-	
-	if(!sizeof($which)) $which[] = trans('ORIGINAL');
+
+    if(!sizeof($which)) $which[] = trans('ORIGINAL');
 
 	$count = sizeof($ids) * sizeof($which);
 	$i=0;
@@ -136,7 +135,6 @@ elseif(isset($_GET['fetchallinvoices']))
 	foreach($ids as $idx => $invoiceid)
 	{
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
-		$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
 
 		foreach($which as $type)
 		{
@@ -157,8 +155,6 @@ elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 		$layout['pagetitle'] = trans('Invoice No. $0', $number);
 	else
 		$layout['pagetitle'] = trans('Credit Note No. $0', $number);
-
-	$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
 
 	$which = array();
 

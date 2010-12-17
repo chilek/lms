@@ -43,7 +43,7 @@ elseif(isset($_POST['customerdata']) && !isset($_GET['newcontact']))
 
 	if($customerdata['lastname']=='')
 		$error['customername'] = trans('\'Last/Company Name\' and \'First Name\' fields cannot be empty!');
-	
+
 	if($customerdata['address']=='')
 		$error['address'] = trans('Address required!');
 
@@ -69,6 +69,11 @@ elseif(isset($_POST['customerdata']) && !isset($_GET['newcontact']))
 	{
 		$error['zip'] = trans('Incorrect ZIP code! If you are sure you want to accept it, then click "Submit" again.');
 		$zipwarning = 1;
+	}
+	if($customerdata['post_zip'] !='' && !check_zip($customerdata['post_zip']) && !isset($customerdata['post_zipwarning']))
+	{
+		$error['post_zip'] = trans('Incorrect ZIP code! If you are sure you want to accept it, then click "Submit" again.');
+		$post_zipwarning = 1;
 	}
 
 	if($customerdata['email']!='' && !check_email($customerdata['email']))
@@ -122,9 +127,9 @@ elseif(isset($_POST['customerdata']) && !isset($_GET['newcontact']))
 	{
 		if($customerdata['cutoffstop'])
 			$customerdata['cutoffstop'] = mktime(23,59,59,date('m'), date('d') + $customerdata['cutoffstop']);
-		
+
 		$consent = $DB->GetOne('SELECT consentdate FROM customers WHERE id = ?', array($customerdata['id']));
-		
+
 		if(!isset($customerdata['consentdate']))
 			$customerdata['consentdate'] = 0;
 		elseif($consent)
@@ -132,9 +137,9 @@ elseif(isset($_POST['customerdata']) && !isset($_GET['newcontact']))
 
 		if(!isset($customerdata['divisionid']))
 			$customerdata['divisionid'] = 0;
-		
+
 		$LMS->CustomerUpdate($customerdata);
-		
+
 		$DB->Execute('DELETE FROM imessengers WHERE customerid = ?', array($customerdata['id']));
 		if(isset($im))
 			foreach($im as $idx => $val)
@@ -146,18 +151,6 @@ elseif(isset($_POST['customerdata']) && !isset($_GET['newcontact']))
 			foreach($contacts as $contact)
 				$DB->Execute('INSERT INTO customercontacts (customerid, phone, name, type)
 					VALUES(?, ?, ?, ?)', array($customerdata['id'], $contact['phone'], $contact['name'], $contact['type']));
-		
-		if($customerdata['zip'] && $customerdata['stateid'])
-		{
-			$cstate = $DB->GetOne('SELECT stateid FROM zipcodes WHERE zip = ?', array($customerdata['zip']));
-			
-			if($cstate === NULL)
-				$DB->Execute('INSERT INTO zipcodes (stateid, zip) VALUES (?, ?)',
-					array($customerdata['stateid'], $customerdata['zip']));
-			elseif($cstate != $customerdata['stateid'])
-				$DB->Execute('UPDATE zipcodes SET stateid = ? WHERE zip = ?',
-					array($customerdata['stateid'], $customerdata['zip']));
-		}
 
 		$SESSION->redirect('?m=customerinfo&id='.$customerdata['id']);
 	}
@@ -173,7 +166,9 @@ elseif(isset($_POST['customerdata']) && !isset($_GET['newcontact']))
 		$customerinfo['customername'] = $olddata['customername'];
 		$customerinfo['balance'] = $olddata['balance'];
 		$customerinfo['stateid'] = isset($olddata['stateid']) ? $olddata['stateid'] : 0;
+		$customerinfo['post_stateid'] = isset($olddata['post_stateid']) ? $olddata['post_stateid'] : 0;
 		$customerinfo['zipwarning'] = empty($zipwarning) ? 0 : 1;
+		$customerinfo['post_zipwarning'] = empty($post_zipwarning) ? 0 : 1;
 		$customerinfo['tenwarning'] = empty($tenwarning) ? 0 : 1;
 		$customerinfo['ssnwarning'] = empty($ssnwarning) ? 0 : 1;
 

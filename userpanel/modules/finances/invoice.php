@@ -27,7 +27,6 @@
 global $LMS,$SESSION,$CONFIG,$_CONFIG,$SMARTY,$invoice, $layout, $type;
 
 $type = chkconfig($CONFIG['userpanel']['invoice_duplicate']) ? trans('DUPLICATE') : trans('ORIGINAL');
-$service_addr = $LMS->GetCustomerServiceAddress($SESSION->id);
 
 if(strtolower($CONFIG['invoices']['type']) == 'pdf')
 {
@@ -61,8 +60,7 @@ if(!empty($_POST['inv']))
 			continue;
 		}
 
-		$invoice['serviceaddr'] = $service_addr;
-		if($i == $count) 	
+		if($i == $count)
 			$invoice['last'] = TRUE;
 		$invoice['type'] = $type;
 
@@ -74,8 +72,8 @@ if(!empty($_POST['inv']))
 		else
 			$SMARTY->display($CONFIG['invoices']['template_file']);
 	}
-	
-	$SMARTY->display('clearfooter.html');	
+
+	$SMARTY->display('clearfooter.html');
 	die;
 }
 
@@ -86,7 +84,6 @@ if($invoice['customerid'] != $SESSION->id)
 	die;
 }
 
-$invoice['serviceaddr'] = $service_addr;
 $invoice['last'] = TRUE;
 $invoice['type'] = $type;
 

@@ -106,7 +106,11 @@
                     <member>address - street address (street, apartment, flat, etc)</member>
                     <member>zip - zip code</member>
                     <member>city - location (city)</member>
-		    <member>countryid - country identifier</member>
+                    <member>countryid - country identifier</member>
+                    <member>post_address - correspondence address - street, apartment, flat, etc</member>
+                    <member>post_zip - correspondence address - zip code</member>
+                    <member>post_city - correspondence address - location (city)</member>
+                    <member>post_countryid - correspondence address - country identifier</member>
                     <member>ten - tax exempt number</member>
                     <member>ssn - social security number</member>
 		    <member>regon - business registration number</member>
@@ -114,7 +118,6 @@
 		    <member>icn - identity card number</member>
                     <member>info - additional information</member>
 		    <member>notes - notes</member>
-                    <member>serviceaddr - correspondence address</member>
                     <member>creationdate - record creation date</member>
                     <member>moddate - record modification date</member>
                     <member>creatorid - serial of LMS user who created this record</member>
@@ -225,8 +228,10 @@
                     <member>halfduplex - half/full duplex mode (0/1)</member>
                     <member>lastonline - last network activity timestamp</member>
                     <member>info - additional information</member>
-		    <member>location - location (address)</member>
-		    <member>nas - NAS flag (1/0)</member>
+                    <member>location_address - address - street, apartment, flat, etc</member>
+                    <member>location_zip - address - zip code</member>
+                    <member>location_city - address - location (city)</member>
+                    <member>nas - NAS flag (1/0)</member>
                </simplelist>
           </sect2>
           <sect2 id="macs">
@@ -397,7 +402,7 @@
                     <member>validfrom - binding period start</member>
 		    <member>validto - binding period end</member>
 		  </simplelist>
-	  </sect2>    
+	  </sect2>
 	  <sect2 id="numberplans">
                <title>Documents numbering plans ('numberplans')</title>
                   <simplelist>
