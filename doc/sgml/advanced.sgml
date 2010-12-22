@@ -294,18 +294,28 @@
                     <member>customerid - customer's serial number</member>
                     <member>description - operation description</member>
                     <member>hash - unique operation identifier</member>
-		    <member>sourceid - import source identifier</member>
+		            <member>sourceid - import source identifier</member>
+		            <member>sourcefileid - import file identifier</member>
                     <member>closed - yes (1), if operation was moved to cash table</member>
                </simplelist>
           </sect2>
-	  <sect2 id="cashsources">
-               <title>Cash import sources ('cashsources')</title>
-               <simplelist>
-                    <member>id - serial number</member>
-                    <member>name - name</member>
-                    <member>description - additional information</member>
-               </simplelist>
-          </sect2>
+	    <sect2 id="cashsources">
+            <title>Cash import sources ('cashsources')</title>
+            <simplelist>
+                <member>id - serial number</member>
+                <member>name - name</member>
+                <member>description - additional information</member>
+           </simplelist>
+        </sect2>
+	    <sect2 id="sourcefiles">
+            <title>Cash import packages ('sourcefiles')</title>
+            <simplelist>
+                <member>id - serial number</member>
+                <member>name - filename</member>
+                <member>idate - date/time of import</member>
+                <member>userid - user identifier</member>
+           </simplelist>
+        </sect2>
           <sect2 id="tariffs">
                <title>Subscription fees ('tariffs')</title>
                <simplelist>

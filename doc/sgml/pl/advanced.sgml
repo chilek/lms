@@ -298,6 +298,7 @@
                     <member>customerid - identyfikator klienta</member>
                     <member>hash - unikalny skrót danych operacji</member>
 		    <member>sourceid - identyfikator ¼ród³a importu</member>
+		    <member>sourcefileid - identyfikator pliku importu</member>
                     <member>closed - status operacji</member>
                </simplelist>
           </sect2>
@@ -307,6 +308,15 @@
                     <member>id - identyfikator</member>
                     <member>name - nazwa</member>
                     <member>description - opis</member>
+               </simplelist>
+          </sect2>
+          <sect2 id="sourcefiles">
+               <title>Paczki importu ('sourcefiles')</title>
+               <simplelist>
+                    <member>id - identyfikator</member>
+                    <member>name - nazwa pliku</member>
+                    <member>idate - data/czas importu</member>
+                    <member>userid - identyfikator u¿ytkownika</member>
                </simplelist>
           </sect2>
           <sect2 id="taxes">

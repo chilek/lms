@@ -51,6 +51,8 @@ version ? (????-??-??)
   - added possibility to set type (mobile/fax) of customer contact (alec)
   - customer service address split into separate fields: address, zip, city, country (alec)
   - node location address split into separate fields: address, zip, city (alec)
+  - added cash import packages/files handling (alec)
+  - added more foreign key constraints in DB structure (alec)
 
 version 1.11.10 Kri (2010-04-19)
 
