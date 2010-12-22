@@ -501,8 +501,8 @@ DROP SEQUENCE customerassignments_id_seq;
 CREATE SEQUENCE customerassignments_id_seq;
 DROP TABLE customerassignments CASCADE;
 CREATE TABLE customerassignments (
-	id integer DEFAULT nextval('customerassignments_id_seq'::text) NOT NULL, 
-	customergroupid integer NOT NULL,
+	id integer DEFAULT nextval('customerassignments_id_seq'::text) NOT NULL,
+	customergroupid integer NOT NULL
 	    REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	customerid integer NOT NULL
 	    REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -858,26 +858,6 @@ CREATE TABLE sessions (
 );
 
 /* ---------------------------------------------------
- Structure of table "cashimport"
-------------------------------------------------------*/
-DROP SEQUENCE cashimport_id_seq;
-CREATE SEQUENCE cashimport_id_seq;
-DROP TABLE cashimport CASCADE;
-CREATE TABLE cashimport (
-    id integer 			DEFAULT nextval('cashimport_id_seq'::text) NOT NULL,
-    date integer 		DEFAULT 0 NOT NULL,
-    value numeric(9,2) 		DEFAULT 0 NOT NULL,
-    customer varchar(150) 	DEFAULT '' NOT NULL,
-    description varchar(150) 	DEFAULT '' NOT NULL,
-    customerid integer 		DEFAULT 0 NOT NULL,
-    hash varchar(50) 		DEFAULT '' NOT NULL,
-    closed smallint 		DEFAULT 0 NOT NULL,
-    sourceid integer		DEFAULT NULL,
-    PRIMARY KEY (id)
-);
-CREATE INDEX cashimport_hash_idx ON cashimport (hash);
-
-/* ---------------------------------------------------
  Structure of table "cashsources"
 ------------------------------------------------------*/
 DROP SEQUENCE cashsources_id_seq;
@@ -890,6 +870,52 @@ CREATE TABLE cashsources (
     PRIMARY KEY (id),
     UNIQUE (name)
 );
+
+/* ---------------------------------------------------
+ Structure of table "sourcefiles"
+------------------------------------------------------*/
+DROP SEQUENCE sourcefiles_id_seq;
+CREATE SEQUENCE sourcefiles_id_seq;
+DROP TABLE sourcefiles CASCADE;
+CREATE TABLE sourcefiles (
+    id integer      	DEFAULT nextval('sourcefiles_id_seq'::text) NOT NULL,
+    userid integer     DEFAULT NULL
+        REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    name varchar(255)   NOT NULL,
+    idate integer	    NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (idate, name)
+);
+
+CREATE INDEX sourcefiles_userid_idx ON sourcefiles (userid);
+
+/* ---------------------------------------------------
+ Structure of table "cashimport"
+------------------------------------------------------*/
+DROP SEQUENCE cashimport_id_seq;
+CREATE SEQUENCE cashimport_id_seq;
+DROP TABLE cashimport CASCADE;
+CREATE TABLE cashimport (
+    id integer 			DEFAULT nextval('cashimport_id_seq'::text) NOT NULL,
+    date integer 		DEFAULT 0 NOT NULL,
+    value numeric(9,2) 		DEFAULT 0 NOT NULL,
+    customer varchar(150) 	DEFAULT '' NOT NULL,
+    description varchar(150) 	DEFAULT '' NOT NULL,
+    customerid integer 		DEFAULT NULL
+	    REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    hash varchar(50) 		DEFAULT '' NOT NULL,
+    closed smallint 		DEFAULT 0 NOT NULL,
+    sourceid integer		DEFAULT NULL
+	    REFERENCES cashsources (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    sourcefileid integer    DEFAULT NULL
+	    REFERENCES sourcefiles (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    PRIMARY KEY (id)
+);
+
+CREATE INDEX cashimport_hash_idx ON cashimport (hash);
+CREATE INDEX cashimport_customerid_idx ON cashimport (customerid);
+CREATE INDEX cashimport_sourcefileid_idx ON cashimport (sourcefileid);
+CREATE INDEX cashimport_sourceid_idx ON cashimport (sourceid);
 
 /* ---------------------------------------------------
  Structure of table "hosts"
@@ -1158,7 +1184,7 @@ CREATE SEQUENCE excludedgroups_id_seq;
 DROP TABLE excludedgroups CASCADE;
 CREATE TABLE excludedgroups (
 	id 		integer NOT NULL DEFAULT nextval('excludedgroups_id_seq'::text),
-	customergroupid integer NOT NULL,
+	customergroupid integer NOT NULL
 	    REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	userid 		integer NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
@@ -1493,4 +1519,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010121600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010122000');

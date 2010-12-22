@@ -32,25 +32,26 @@ if(!isset($patterns) || !is_array($patterns))
 }
 elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
 {
-	$file = file($_FILES['file']['tmp_name']);
+	$file         = file($_FILES['file']['tmp_name']);
+	$filename     = $_FILES['file']['name'];
 	$patterns_cnt = isset($patterns) ? sizeof($patterns) : 0;
-	$ln = 0;
-	
+	$ln           = 0;
+
 	foreach($file as $line)
 	{
-		$id = 0;
+		$id = NULL;
 		$count = 0;
 		$ln++;
 
 		if($patterns_cnt) foreach($patterns as $idx => $pattern)
 		{
 			$theline = $line;
-		
+
 			if(strtoupper($pattern['encoding']) != 'UTF-8')
 			{
 				$theline = @iconv($pattern['encoding'], 'UTF-8//TRANSLIT', $theline);
 			}
-			
+
 			if(!preg_match($pattern['pattern'], $theline, $matches))
 				$count++;
 			else
@@ -82,8 +83,8 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 				$id = $matches[1];
 		}
 		else
-			$id = isset($matches[$pattern['pid']]) ? intval($matches[$pattern['pid']]) : 0;
-		
+			$id = isset($matches[$pattern['pid']]) ? intval($matches[$pattern['pid']]) : NULL;
+
 		// seek invoice number
 		if(!$id && !empty($pattern['invoice_regexp']))
 		{
@@ -92,7 +93,7 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 				$invid = $matches[$pattern['pinvoice_number']];
 				$invyear = $matches[$pattern['pinvoice_year']];
 				$invmonth = !empty($pattern['pinvoice_month']) && $pattern['pinvoice_month'] > 0 ? intval($matches[$pattern['pinvoice_month']]) : 1;
-				
+
 				if($invid && $invyear)
 				{
 					$from = mktime(0,0,0, $invmonth, 1, $invyear);
@@ -118,9 +119,9 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 				$name = $tmp['name'];
 			}
 			else
-				$id = 0;
+				$id = NULL;
 		}
-		
+
 		if($time)
 		{
 			if(preg_match($pattern['date_regexp'], $time, $date))
@@ -135,38 +136,57 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 		}
 		else
 			$time = time();
-			
+
 		if(!empty($pattern['comment_replace']))
 			$comment = preg_replace($pattern['comment_replace']['from'], $pattern['comment_replace']['to'], $comment);
 
 		$customer = trim($lastname.' '.$name);
 		$comment = trim($comment);
-		
+
 		if(!empty($pattern['use_line_hash']))
 			$hash = md5($theline.(!empty($pattern['line_idx_hash']) ? $ln : ''));
 		else
 			$hash = md5($time.$value.$customer.$comment.(!empty($pattern['line_idx_hash']) ? $ln : ''));
-		
+
 		if(is_numeric($value))
 		{
 			if(isset($pattern['modvalue']) && $pattern['modvalue'])
 			{
 				$value = str_replace(',','.', $value * $pattern['modvalue']);
 			}
-		
+
 			if(!$DB->GetOne('SELECT id FROM cashimport WHERE hash = ?', array($hash)))
 			{
+                // Add file
+                if (!$sourcefileid) {
+                    $DB->Execute('INSERT INTO sourcefiles (name, idate, userid)
+                        VALUES (?, ?NOW?, ?)',
+                        array($filename, $AUTH->id));
+
+                    $sourcefileid = $DB->GetLastInsertId('sourcefiles');
+                }
+
 				if(!empty($_POST['source']))
 					$sourceid = intval($_POST['source']);
 				elseif(!empty($pattern['id']))
 					$sourceid = intval($pattern['id']);
 				else
 					$sourceid = NULL;
-				
-				$DB->Execute('INSERT INTO cashimport (date, value, customer, 
-					customerid, description, hash, sourceid) VALUES (?,?,?,?,?,?,?)',
-					array($time, $value, $customer, $id, $comment, $hash, $sourceid));
-			} else
+
+				$DB->Execute('INSERT INTO cashimport (date, value, customer,
+					customerid, description, hash, sourceid, sourcefileid)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+					array(
+					    $time,
+					    $value,
+					    $customer,
+					    $id,
+					    $comment,
+					    $hash,
+					    $sourceid,
+					    $sourcefileid,
+					));
+			} else {
 				$error['lines'][$ln] = array(
 					'customer' => $customer,
 					'customerid' => $id,
@@ -174,12 +194,13 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 					'value' => $value,
 					'comment' => $comment
 				);
+		    }
 		}
 	}
 
 	include(MODULES_DIR.'/cashimport.php');
 	die;
-} 
+}
 elseif(isset($_FILES['file'])) // upload errors
 	switch($_FILES['file']['error'])
 	{
@@ -194,9 +215,16 @@ $layout['pagetitle'] = trans('Cash Operations Import');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
+$sourcefiles = $DB->GetAll('SELECT s.*, u.name AS username,
+    (SELECT COUNT(*) FROM cashimport WHERE sourcefileid = s.id) AS count
+    FROM sourcefiles s
+    LEFT JOIN users u ON (u.id = s.userid)
+    ORDER BY s.idate DESC LIMIT 10');
+
 $SMARTY->assign('error', $error);
 $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 $SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources ORDER BY name'));
+$SMARTY->assign('sourcefiles', $sourcefiles);
 $SMARTY->display('cashimport.html');
 
 ?>

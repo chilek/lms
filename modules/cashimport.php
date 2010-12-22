@@ -70,11 +70,11 @@ if(isset($_GET['action']) && $_GET['action'] == 'csv')
 elseif(isset($_GET['action']) && $_GET['action'] == 'txt')
 {
 	$filename = 'import-'.date('Y-m-d').'.txt';
-	
+
 	header('Content-Type: text/plain');
         header('Content-Disposition: attachment; filename='.$filename);
 	header('Pragma: public');
-	
+
 	if($importlist = $DB->GetAll('SELECT i.date, i.value, i.customer, i.description,
 		i.customerid, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername
 		FROM cashimport i
@@ -202,9 +202,16 @@ if($importlist = $DB->GetAll('SELECT i.*, c.divisionid
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
+$sourcefiles = $DB->GetAll('SELECT s.*, u.name AS username,
+    (SELECT COUNT(*) FROM cashimport WHERE sourcefileid = s.id) AS count
+    FROM sourcefiles s
+    LEFT JOIN users u ON (u.id = s.userid)
+    ORDER BY s.idate DESC LIMIT 10');
+
 $SMARTY->assign('divisions', $divisions);
 $SMARTY->assign('listdata', isset($listdata) ? $listdata : NULL);
 $SMARTY->assign('error', $error);
+$SMARTY->assign('sourcefiles', $sourcefiles);
 $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 $SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources ORDER BY name'));
 $SMARTY->display('cashimport.html');

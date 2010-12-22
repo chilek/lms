@@ -142,9 +142,9 @@
 	<TR>
 		<TD class="fall" width="100%">
 			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
-                                <TR class="dark">
-				    <TD width="1%"><B>{t}Line:{/t}</B></TD>
-				    <TD width="99%"><B>{t}Content:{/t}</B></TD>
+                <TR class="dark">
+				    <TD width="1%" class="fleftu"><B>{t}Line:{/t}</B></TD>
+				    <TD width="99%" class="frightu"><B>{t}Content:{/t}</B></TD>
 				</TR>
 				{cycle name=err values="light,lucid" print=false}
 				{foreach from=$error.lines key=key item=item}
@@ -175,7 +175,7 @@
 <TABLE width="100%" CELLPADDING="3">
 	<TR class="DARK">
 		<TD class="fall" width="100%" colspan="2">
-			<B>{t}Import from file{/t}</B>
+			<B>{t}Import from file{/t}:</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -208,4 +208,48 @@
 	</TR>
 </TABLE>
 </FORM></P>
+<P>
+<TABLE width="100%" CELLPADDING="3">
+	<TR class="DARK">
+		<TD class="fall" width="100%">
+		    <IMG src="img/attach.gif" alt="">
+			<B>{t}Packages:{/t}</B> ({t 0=10}last $0 packages{/t})
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%" class="fall">
+			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
+				<TR class="dark">
+					<TD WIDTH="1%" NOWRAP class="fleftu"><B>{t}Date:{/t}</B></TD>
+					<TD WIDTH="96%" NOWRAP class="fbt">{t}Filename:{/t}</TD>
+					<TD WIDTH="1%" NOWRAP class="fbt">{t}User:{/t}</TD>
+					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">{t}Records:{/t}</TD>
+					<TD WIDTH="1%" class="frightu">&nbsp;</TD>
+				</TR>
+				{cycle name=files values="light,lucid" print=false}
+				{foreach from=$sourcefiles item=item}
+				<TR class="{cycle name=files}">
+					<TD NOWRAP><B>{$item.idate|date_format:"%Y/%m/%d %H:%M"}</B></TD>
+					<TD NOWRAP>{$item.name}</TD>
+					<TD NOWRAP>{$item.username}</TD>
+					<TD align="right">{$item.count|default:0}</TD>
+					<TD>
+					    <A onclick="return confirmLink(this, '{t}Are you sure, you want to delete this package and related operations?{/t}')" href="?m=cashpackagedel&id={$item.id}"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+					</TD>
+				</TR>
+				{foreachelse}
+				<TR>
+					<TD align="center" WIDTH="100%" colspan="4">
+						<P>&nbsp;</P>
+						<P><B>{t}There are no packages in database.{/t}</B></P>
+						<P>&nbsp;</P>
+					</TD>
+				</TR>
+				{/foreach}
+			</TABLE>
+		</TD>
+	</TR>
+</TABLE>
+</P>
 {include file="footer.html"}
+

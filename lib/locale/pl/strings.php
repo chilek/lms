@@ -2384,5 +2384,14 @@ $_LANG['Enter city of service address (optional)'] = 'Wprowadź nazwę miasta dl
 $_LANG['Enter city (optional)'] = 'Wprowadź nazwę miasta (opcjonalnie)';
 $_LANG['Enter zip code of service address (optional)'] = 'Wprowadź kod pocztowy dla adresu do doręczeń (opcjonalnie)';
 $_LANG['Enter zip code (optional)'] = 'Wprowadź kod pocztowy (opcjonalnie)';
+$_LANG['All cash operations from that package will be lost.'] = 'Wszystkie operacje kasowe z tego pakietu zostaną usunięte.';
+$_LANG['Are you sure, you want to delete this package and related operations?'] = 'Czy na pewno chcesz usunąć tą paczkę i powiązane operacje?';
+$_LANG['Do you want to remove package "$0"?'] = 'Czy chesz usunąć paczkę "$0"?';
+$_LANG['Filename:'] = 'Nazwa pliku:';
+$_LANG['last $0 packages'] = 'ostatnie $0 paczek';
+$_LANG['Packages:'] = 'Paczki:';
+$_LANG['Records:'] = 'Rekordy:';
+$_LANG['Removing package "$0"'] = 'Usuwanie paczki "$0"';
+$_LANG['There are no packages in database.'] = 'Brak paczek w bazie danych.';
 
 ?>

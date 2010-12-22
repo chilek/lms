@@ -713,8 +713,8 @@ class LMS
 						case 'city':
 						case 'address':
 							// UPPER here is a workaround for postgresql ILIKE bug
-							$searchargs[] = "(UPPER($key) ?LIKE? UPPER(".$this->DB->Escape("%$value%").')
-								OR UPPER(post_$key) ?LIKE? UPPER('.$this->DB->Escape("%$value%").'))';
+							$searchargs[] = "(UPPER($key) ?LIKE? UPPER(".$this->DB->Escape("%$value%").")
+								OR UPPER(post_$key) ?LIKE? UPPER(".$this->DB->Escape("%$value%").'))';
 						break;
 						case 'customername':
 							// UPPER here is a workaround for postgresql ILIKE bug
