@@ -183,9 +183,8 @@ if($AUTH->islogged)
 	if($module == '')
 	{
 		$module = $CONFIG['phpui']['default_module'];
-		$SMARTY->assign('warning', isset($CONFIG['phpui']['disable_devel_warning']) ? !chkconfig($CONFIG['phpui']['disable_devel_warning']) : true);
 	}
-	
+
 	if(file_exists(MODULES_DIR.'/'.$module.'.php'))
 	{
 		$allow = !$AUTH->id || (!empty($access['allow']) && preg_match('/'.$access['allow'].'/i', $module));

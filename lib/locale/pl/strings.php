@@ -1366,7 +1366,6 @@ $_LANG['Waiting:'] = 'Oczekujący:';
 $_LANG['Warning! Debug mode (using address $0).'] = 'UWAGA! Tryb debugowania (używam adresu $0).';
 $_LANG['Warning! This is example document (default template). You can create your own template in documents/templates/ directory.'] = 'Uwaga to jest przykładowy dokument (domyślny szablon). Możesz utworzyć własne szablony w katalogu documents/templates/.';
 $_LANG['WARNING! It will backup current database content automatically'] = 'UWAGA! Spowoduje to automatyczne utworzenie kopii zapasowej obecnej bazy danych';
-$_LANG['Warning! This version of LMS is under development! Remember that it might work unstable and certainly has still many bugs! If you need stability try 1.10 version!'] = 'Ostrzeżenie! Ta wersja LMSa jest w trakcie rozbudowy! Pamiętaj, że może być niestabilna i na pewno posiada jakieś błędy! Jeśli potrzebujesz stabilności wypróbuj wersję z linii 1.10!';
 $_LANG['WARNING! THIS WILL DELETE ALL DATA FROM DATABASE!!!'] = 'UWAGA! TO USUNIE WSZELKIE DANE Z BAZY!!!';
 $_LANG['weekly'] = 'tygodniowo';
 $_LANG['weekly ($0)'] = 'tygodniowo ($0)';
