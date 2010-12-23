@@ -1,5 +1,5 @@
 //\/////
-//\  overLIB 4.17 - You may not remove or change this notice.
+//\  overLIB 4.21 - You may not remove or change this notice.
 //\  Copyright Erik Bosrup 1998-2004. All rights reserved.
 //\
 //\  Contributors are listed on the homepage.
@@ -14,7 +14,7 @@
 //\  license agreement at the link above. Please give credit on sites that
 //\  use overLIB and submit changes of the script so other people can use
 //\  them as well.
-//   $Revision: 1.112 $                $Date: 2005/03/08 19:22:53 $
+//   $Revision: 1.119 $                $Date: 2005/07/02 23:41:44 $
 //\/////
 //\mini
 
@@ -22,11 +22,13 @@
 // PRE-INIT
 // Ignore these lines, configuration is below.
 ////////
-var olLoaded = 0;var pmStart = 10000000; var pmUpper = 10001000; var pmCount = pmStart+1; var pmt=''; var pms = new Array(); var olInfo = new Info('4.17', 1);
+var olLoaded = 0;var pmStart = 10000000; var pmUpper = 10001000; var pmCount = pmStart+1; var pmt=''; var pms = new Array(); var olInfo = new Info('4.21', 1);
 var FREPLACE = 0; var FBEFORE = 1; var FAFTER = 2; var FALTERNATE = 3; var FCHAIN=4;
 var olHideForm=0;  // parameter for hiding SELECT and ActiveX elements in IE5.5+ 
 var olHautoFlag = 0;  // flags for over-riding VAUTO and HAUTO if corresponding
 var olVautoFlag = 0;  // positioning commands are used on the command line
+var hookPts = new Array(), postParse = new Array(), cmdLine = new Array(), runTime = new Array();
+// for plugins
 registerCommands('donothing,inarray,caparray,sticky,background,noclose,caption,left,right,center,offsetx,offsety,fgcolor,bgcolor,textcolor,capcolor,closecolor,width,border,cellpad,status,autostatus,autostatuscap,height,closetext,snapx,snapy,fixx,fixy,relx,rely,fgbackground,bgbackground,padx,pady,fullhtml,above,below,capicon,textfont,captionfont,closefont,textsize,captionsize,closesize,timeout,function,delay,hauto,vauto,closeclick,wrap,followmouse,mouseoff,closetitle,cssoff,compatmode,cssclass,fgclass,bgclass,textfontclass,captionfontclass,closefontclass');
 
 ////////
@@ -89,7 +91,7 @@ if (typeof ol_closetitle=='undefined') var ol_closetitle='Close';
 if (typeof ol_compatmode=='undefined') var ol_compatmode=0;
 if (typeof ol_css=='undefined') var ol_css=CSSOFF;
 if (typeof ol_fgclass=='undefined') var ol_fgclass="";
-if (typeof ol_bgclass=='undefined') var ol_bgclass="";
+if (typeof ol_bgclass=='undefined') var ol_bgclass="overlib";
 if (typeof ol_textfontclass=='undefined') var ol_textfontclass="";
 if (typeof ol_captionfontclass=='undefined') var ol_captionfontclass="";
 if (typeof ol_closefontclass=='undefined') var ol_closefontclass="";
@@ -230,16 +232,7 @@ if (document.compatMode && document.compatMode == 'CSS1Compat') {
 if(window.addEventListener) window.addEventListener("load",OLonLoad_handler,false);
 else if (window.attachEvent) window.attachEvent("onload",OLonLoad_handler);
 
-// Capture events, alt. diffuses the overlib function.
-var olCheckMouseCapture = true;
-if ((olNs4 || olNs6 || olIe4)) {
-	olMouseCapture();
-} else {
-	overlib = no_overlib;
-	nd = no_overlib;
-	ver3fix = true;
-}
-
+var capExtent;
 
 ////////
 // PUBLIC FUNCTIONS
@@ -437,7 +430,7 @@ function olMain() {
 	o3_allowmove = 0;
 
 	// Initiate a timer for timeout
-	if (o3_timeout > 0) {          
+	if (o3_timeout > 0) {
 		if (o3_timerid > 0) clearTimeout(o3_timerid);
 		o3_timerid = setTimeout("cClick()", o3_timeout);
 	}
@@ -456,7 +449,10 @@ function olMain() {
 
 // Makes simple table without caption
 function ol_content_simple(text) {
-	txt='<table width="'+o3_width+ '" border="0" cellpadding="'+o3_border+'" cellspacing="0" '+(o3_bgclass ? 'class="'+o3_bgclass+'"' : o3_bgcolor+' '+o3_height)+'><tr><td><table width="100%" border="0" cellpadding="' + o3_cellpad + '" cellspacing="0" '+(o3_fgclass ? 'class="'+o3_fgclass+'"' : o3_fgcolor+' '+o3_fgbackground+' '+o3_height)+'><tr><td valign="TOP"'+(o3_textfontclass ? ' class="'+o3_textfontclass+'">' : '>')+(o3_textfontclass ? '' : wrapStr(0,o3_textsize,'text'))+text+(o3_textfontclass ? '' : wrapStr(1,o3_textsize))+'</td></tr></table></td></tr></table>';
+	var cpIsMultiple = /,/.test(o3_cellpad);
+//	var txt = '<table width="'+o3_width+ '" border="0" cellpadding="'+o3_border+'" cellspacing="0" '+(o3_bgclass ? 'class="'+o3_bgclass+'"' : o3_bgcolor+' '+o3_height)+'><tr><td><table width="100%" border="0" '+((olNs4||!cpIsMultiple) ? 'cellpadding="'+o3_cellpad+'" ' : '')+'cellspacing="0" '+(o3_fgclass ? 'class="'+o3_fgclass+'"' : o3_fgcolor+' '+o3_fgbackground+' '+o3_height)+'><tr><td valign="TOP"'+(o3_textfontclass ? ' class="'+o3_textfontclass+'">' : ((!olNs4&&cpIsMultiple) ? ' style="'+setCellPadStr(o3_cellpad)+'">' : '>'))+(o3_textfontclass ? '' : wrapStr(0,o3_textsize,'text'))+text+(o3_textfontclass ? '' : wrapStr(1,o3_textsize))+'</td></tr></table></td></tr></table>';
+// LMS-mod
+	var txt = '<div '+(o3_bgclass ? 'class="'+o3_bgclass+'"' : o3_bgcolor+' '+o3_height)+'>'+text+'</div>';
 
 	set_background("");
 	return txt;
@@ -464,19 +460,21 @@ function ol_content_simple(text) {
 
 // Makes table with caption and optional close link
 function ol_content_caption(text,title,close) {
-	var nameId;
-	closing="";
-	closeevent="onmouseover";
-	if (o3_closeclick==1) closeevent= (o3_closetitle ? "title='" + o3_closetitle +"'" : "") + " onclick";
-	if (o3_capicon!="") {
-		nameId=' hspace=\"5\"'+' align=\"middle\" alt=\"\"';
-		if (typeof o3_dragimg!='undefined'&&o3_dragimg) nameId=' hspace=\"5\"'+' name=\"'+o3_dragimg+'\" id=\"'+o3_dragimg+'\" align=\"middle\" alt=\"Drag Enabled\" title=\"Drag Enabled\"';
-		o3_capicon='<img src=\"'+o3_capicon+'\"'+nameId+' />';
+	var nameId, txt, cpIsMultiple = /,/.test(o3_cellpad);
+	var closing, closeevent;
+
+	closing = "";
+	closeevent = "onmouseover";
+	if (o3_closeclick == 1) closeevent = (o3_closetitle ? "title='" + o3_closetitle +"'" : "") + " onclick";
+	if (o3_capicon != "") {
+	  nameId = ' hspace = \"5\"'+' align = \"middle\" alt = \"\"';
+	  if (typeof o3_dragimg != 'undefined' && o3_dragimg) nameId =' hspace=\"5\"'+' name=\"'+o3_dragimg+'\" id=\"'+o3_dragimg+'\" align=\"middle\" alt=\"Drag Enabled\" title=\"Drag Enabled\"';
+	  o3_capicon = '<img src=\"'+o3_capicon+'\"'+nameId+' />';
 	}
 
-	if (close != "") 
-		closing='<td '+(!o3_compatmode && o3_closefontclass ? 'class="'+o3_closefontclass : 'align="RIGHT')+'"><a href="javascript:return '+fnRef+'cClick();"'+((o3_compatmode && o3_closefontclass) ? ' class="' + o3_closefontclass + '" ' : ' ')+closeevent+'="return '+fnRef+'cClick();">'+(o3_closefontclass ? '' : wrapStr(0,o3_closesize,'close'))+close+(o3_closefontclass ? '' : wrapStr(1,o3_closesize,'close'))+'</a></td>';
-	txt='<table width="'+o3_width+ '" border="0" cellpadding="'+o3_border+'" cellspacing="0" '+(o3_bgclass ? 'class="'+o3_bgclass+'"' : o3_bgcolor+' '+o3_bgbackground+' '+o3_height)+'><tr><td><table width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td'+(o3_captionfontclass ? ' class="'+o3_captionfontclass+'">' : '>')+(o3_captionfontclass ? '' : '<b>'+wrapStr(0,o3_captionsize,'caption'))+o3_capicon+title+(o3_captionfontclass ? '' : wrapStr(1,o3_captionsize)+'</b>')+'</td>'+closing+'</tr></table><table width="100%" border="0" cellpadding="' + o3_cellpad + '" cellspacing="0" '+(o3_fgclass ? 'class="'+o3_fgclass+'"' : o3_fgcolor+' '+o3_fgbackground+' '+o3_height)+'><tr><td valign="TOP"'+(o3_textfontclass ? ' class="'+o3_textfontclass+'">' :'>')+(o3_textfontclass ? '' : wrapStr(0,o3_textsize,'text'))+text+(o3_textfontclass ? '' : wrapStr(1,o3_textsize)) + '</td></tr></table></td></tr></table>';
+	if (close != "")
+		closing = '<td '+(!o3_compatmode && o3_closefontclass ? 'class="'+o3_closefontclass : 'align="RIGHT')+'"><a href="javascript:return '+fnRef+'cClick();"'+((o3_compatmode && o3_closefontclass) ? ' class="' + o3_closefontclass + '" ' : ' ')+closeevent+'="return '+fnRef+'cClick();">'+(o3_closefontclass ? '' : wrapStr(0,o3_closesize,'close'))+close+(o3_closefontclass ? '' : wrapStr(1,o3_closesize,'close'))+'</a></td>';
+	txt = '<table width="'+o3_width+ '" border="0" cellpadding="'+o3_border+'" cellspacing="0" '+(o3_bgclass ? 'class="'+o3_bgclass+'"' : o3_bgcolor+' '+o3_bgbackground+' '+o3_height)+'><tr><td><table width="100%" border="0" cellpadding="2" cellspacing="0"><tr><td'+(o3_captionfontclass ? ' class="'+o3_captionfontclass+'">' : '>')+(o3_captionfontclass ? '' : '<b>'+wrapStr(0,o3_captionsize,'caption'))+o3_capicon+title+(o3_captionfontclass ? '' : wrapStr(1,o3_captionsize)+'</b>')+'</td>'+closing+'</tr></table><table width="100%" border="0" '+((olNs4||!cpIsMultiple) ? 'cellpadding="'+o3_cellpad+'" ' : '')+'cellspacing="0" '+(o3_fgclass ? 'class="'+o3_fgclass+'"' : o3_fgcolor+' '+o3_fgbackground+' '+o3_height)+'><tr><td valign="TOP"'+(o3_textfontclass ? ' class="'+o3_textfontclass+'">' :((!olNs4&&cpIsMultiple) ? ' style="'+setCellPadStr(o3_cellpad)+'">' : '>'))+(o3_textfontclass ? '' : wrapStr(0,o3_textsize,'text'))+text+(o3_textfontclass ? '' : wrapStr(1,o3_textsize)) + '</td></tr></table></td></tr></table>';
 
 	set_background("");
 	return txt;
@@ -661,7 +659,7 @@ function olMouseCapture() {
 // Does the actual command parsing.
 function parseTokens(pf, ar) {
 	// What the next argument is expected to be.
-	var v, mode=-1, par = (pf != 'ol_');	
+	var v, i, mode=-1, par = (pf != 'ol_');	
 	var fnMark = (par && !ar.length ? 1 : 0);
 
 	for (i = 0; i < ar.length; i++) {
@@ -815,7 +813,7 @@ function hideObject(obj) {
 	o3_delayid = 0;
 	self.status = "";
 
-	if (obj.onmouseout || obj.onmouseover) {
+	if (obj.onmouseout||obj.onmouseover) {
 		if (olNs4) obj.releaseEvents(Event.MOUSEOUT || Event.MOUSEOVER);
 		obj.onmouseout = obj.onmouseover = null;
 	}
@@ -958,6 +956,36 @@ function quoteMultiNameFonts(theFont) {
 // dummy function which will be overridden 
 function isExclusive(args) {
 	return false;
+}
+
+// Sets cellpadding style string value
+function setCellPadStr(parameter) {
+	var Str='', j=0, ary = new Array(), top, bottom, left, right;
+
+	Str+='padding: ';
+	ary=parameter.replace(/\s+/g,'').split(',');
+
+	switch(ary.length) {
+		case 2:
+			top=bottom=ary[j];
+			left=right=ary[++j];
+			break;
+		case 3:
+			top=ary[j];
+			left=right=ary[++j];
+			bottom=ary[++j];
+			break;
+		case 4:
+			top=ary[j];
+			right=ary[++j];
+			bottom=ary[++j];
+			left=ary[++j];
+			break;
+	}
+
+	Str+= ((ary.length==1) ? ary[0] + 'px;' : top + 'px ' + right + 'px ' + bottom + 'px ' + left + 'px;');
+
+	return Str;
 }
 
 // function will delay close by time milliseconds
@@ -1109,12 +1137,11 @@ function createDivContainer(id,frm,zValue) {
 			objRef = divContainer.style;
 		}
 
-		with (objRef) {
-			position = 'absolute';
-			visibility = 'hidden';
-			top = left = -10000 + (!olNs4) ? 'px' : 0;
-			zIndex = zValue;
-		}
+		objRef.position = 'absolute';
+		objRef.visibility = 'hidden';
+		objRef.zIndex = zValue;
+		if (olIe4&&!olOp) objRef.left = objRef.top = '0px';
+		else objRef.left = objRef.top =  -10000 + (!olNs4 ? 'px' : 0);
 	}
 
 	return divContainer;
@@ -1124,182 +1151,6 @@ function createDivContainer(id,frm,zValue) {
 function layerReference(id) {
 	return (olNs4 ? o3_frame.document.layers[id] : (document.all ? o3_frame.document.all[id] : o3_frame.document.getElementById(id)));
 }
-////////
-//  PLUGIN ACTIVATION FUNCTIONS
-////////
-
-// Runs plugin functions to set runtime variables.
-function setRunTimeVariables(){
-	if (typeof runTime != 'undefined' && runTime.length) {
-		for (var k = 0; k < runTime.length; k++) {
-			runTime[k]();
-		}
-	}
-}
-
-// Runs plugin functions to parse commands.
-function parseCmdLine(pf, i, args) {
-	if (typeof cmdLine != 'undefined' && cmdLine.length) { 
-		for (var k = 0; k < cmdLine.length; k++) { 
-			var j = cmdLine[k](pf, i, args);
-			if (j >- 1) {
-				i = j;
-				break;
-			}
-		}
-	}
-
-	return i;
-}
-
-// Runs plugin functions to do things after parse.
-function postParseChecks(){
-	if (typeof postParse != 'undefined' && postParse.length) {
-		for (var k = 0; k < postParse.length; k++) {
-			if (postParse[k]()) continue;
-			return false;  // end now since have an error
-		}
-	}
-	return true;
-}
-
-
-////////
-//  PLUGIN REGISTRATION FUNCTIONS
-////////
-
-// Registers commands and creates constants.
-function registerCommands(cmdStr) {
-	if (typeof cmdStr!='string') return;
-
-	var pM = cmdStr.split(',');
-	pms = pms.concat(pM);
-
-	for (var i = 0; i< pM.length; i++) {
-		eval(pM[i].toUpperCase()+'='+pmCount++);
-	}
-}
-
-// Registers no-parameter commands
-function registerNoParameterCommands(cmdStr) {
-	if (!cmdStr && typeof cmdStr!='string') return;
-	pmt=(!pmt) ? cmdStr : pmt + ',' + cmdStr;
-}
-
-// Register a function to hook at a certain point.
-function registerHook(fnHookTo, fnRef, hookType, optPm) {
-	var hookPt, last = typeof optPm;
-	
-	if (fnHookTo == 'plgIn'||fnHookTo == 'postParse') return;
-	if (typeof hookPts == 'undefined') hookPts = new Array();
-	if (typeof hookPts[fnHookTo] == 'undefined') hookPts[fnHookTo] = new FunctionReference();
-
-	hookPt = hookPts[fnHookTo];
-
-	if (hookType != null) {
-		if (hookType == FREPLACE) {
-			hookPt.ovload = fnRef;  // replace normal overlib routine
-			if (fnHookTo.indexOf('ol_content_') > -1) hookPt.alt[pms[CSSOFF-1-pmStart]]=fnRef; 
-
-		} else if (hookType == FBEFORE || hookType == FAFTER) {
-			var hookPt=(hookType == 1 ? hookPt.before : hookPt.after);
-
-			if (typeof fnRef == 'object') {
-				hookPt = hookPt.concat(fnRef);
-			} else {
-				hookPt[hookPt.length++] = fnRef;
-			}
-
-			if (optPm) hookPt = reOrder(hookPt, fnRef, optPm);
-
-		} else if (hookType == FALTERNATE) {
-			if (last=='number') hookPt.alt[pms[optPm-1-pmStart]] = fnRef;
-		} else if (hookType == FCHAIN) {
-			hookPt = hookPt.chain; 
-			if (typeof fnRef=='object') hookPt=hookPt.concat(fnRef); // add other functions 
-			else hookPt[hookPt.length++]=fnRef;
-		}
-
-		return;
-	}
-}
-
-// Register a function that will set runtime variables.
-function registerRunTimeFunction(fn) {
-	if (isFunction(fn)) {
-		if (typeof runTime == 'undefined') runTime = new Array();
-		if (typeof fn == 'object') {
-			runTime = runTime.concat(fn);
-		} else {
-			runTime[runTime.length++] = fn;
-		}
-	}
-}
-
-// Register a function that will handle command parsing.
-function registerCmdLineFunction(fn){
-	if (isFunction(fn)) {
-		if (typeof cmdLine == 'undefined') cmdLine = new Array();
-		if (typeof fn == 'object') {
-			cmdLine = cmdLine.concat(fn);
-		} else {
-			cmdLine[cmdLine.length++] = fn;
-		}
-	}
-}
-
-// Register a function that does things after command parsing. 
-function registerPostParseFunction(fn){
-	if (isFunction(fn)) {
-		if (typeof postParse == 'undefined') postParse = new Array();
-		if (typeof fn == 'object') {
-			postParse = postParse.concat(fn);
-		} else {
-			postParse[postParse.length++] = fn;
-		}
-	}
-}
-
-////////
-//  PLUGIN REGISTRATION FUNCTIONS
-////////
-
-// Runs any hooks registered.
-function runHook(fnHookTo, hookType) {
-	var l = hookPts[fnHookTo], k, rtnVal, optPm, arS, ar = runHook.arguments;
-
-	if (hookType == FREPLACE) {
-		arS = argToString(ar, 2);
-
-		if (typeof l == 'undefined' || !(l = l.ovload)) return eval(fnHookTo+'('+arS+')');
-		else return eval('l('+arS+')');
-
-	} else if (hookType == FBEFORE || hookType == FAFTER) {
-		if (typeof l == 'undefined') return;
-		l=(hookType == 1 ? l.before : l.after);
-
-		if (!l.length) return;
-
-		arS = argToString(ar, 2);
-		for (var k = 0; k < l.length; k++) eval('l[k]('+arS+')'); 
-
-	} else if (hookType == FALTERNATE) {
-		optPm = ar[2];
-		arS = argToString(ar, 3);
-
-		if (typeof l == 'undefined' || (l = l.alt[pms[optPm-1-pmStart]]) == 'undefined') {
-			return eval(fnHookTo+'('+arS+')');
-		} else {
-			return eval('l('+arS+')');
-		}
-	} else if (hookType == FCHAIN) {
-		arS=argToString(ar,2);
-		l=l.chain;
-
-		for (k=l.length; k > 0; k--) if((rtnVal=eval('l[k-1]('+arS+')'))!=void(0)) return rtnVal;
-	}
-}
-
 ////////
 //  UTILITY FUNCTIONS
 ////////
@@ -1336,10 +1187,10 @@ function argToString(array, strtInd, argName) {
 
 // Places a hook in the correct position in a hook point.
 function reOrder(hookPt, fnRef, order) {
-	if (!order || typeof order == 'undefined' || typeof order == 'number') return;
-	
-	var newPt = new Array(), match;
+	var newPt = new Array(), match, i, j;
 
+	if (!order || typeof order == 'undefined' || typeof order == 'number') return hookPt;
+	
 	if (typeof order=='function') {
 		if (typeof fnRef=='object') {
 			newPt = newPt.concat(fnRef);
@@ -1347,12 +1198,12 @@ function reOrder(hookPt, fnRef, order) {
 			newPt[newPt.length++]=fnRef;
 		}
 		
-		for (var i = 0; i < hookPt.length; i++) {
+		for (i = 0; i < hookPt.length; i++) {
 			match = false;
 			if (typeof fnRef == 'function' && hookPt[i] == fnRef) {
 				continue;
 			} else {
-				for(var j = 0; j < fnRef.length; j++) if (hookPt[i] == fnRef[j]) {
+				for(j = 0; j < fnRef.length; j++) if (hookPt[i] == fnRef[j]) {
 					match = true;
 					break;
 				}
@@ -1369,12 +1220,12 @@ function reOrder(hookPt, fnRef, order) {
 			newPt[newPt.length++] = fnRef;
 		}
 		
-		for (var j = 0; j < hookPt.length; j++) {
+		for (j = 0; j < hookPt.length; j++) {
 			match = false;
 			if (typeof fnRef == 'function' && hookPt[j] == fnRef) {
 				continue;
 			} else {
-				for (var i = 0; i < fnRef.length; i++) if (hookPt[j] == fnRef[i]) {
+				for (i = 0; i < fnRef.length; i++) if (hookPt[j] == fnRef[i]) {
 					match = true;
 					break;
 				}
@@ -1385,9 +1236,9 @@ function reOrder(hookPt, fnRef, order) {
 		for (i = 0; i < newPt.length; i++) hookPt[i] = newPt[i];
 		newPt.length = 0;
 		
-		for (var j = 0; j < hookPt.length; j++) {
+		for (j = 0; j < hookPt.length; j++) {
 			match = false;
-			for (var i = 0; i < order.length; i++) {
+			for (i = 0; i < order.length; i++) {
 				if (hookPt[j] == order[i]) {
 					match = true;
 					break;
@@ -1398,9 +1249,183 @@ function reOrder(hookPt, fnRef, order) {
 		newPt = newPt.concat(order);
 	}
 
-	for(i = 0; i < newPt.length; i++) hookPt[i] = newPt[i];
+	hookPt = newPt;
 
 	return hookPt;
+}
+
+////////
+//  PLUGIN ACTIVATION FUNCTIONS
+////////
+
+// Runs plugin functions to set runtime variables.
+function setRunTimeVariables(){
+	if (typeof runTime != 'undefined' && runTime.length) {
+		for (var k = 0; k < runTime.length; k++) {
+			runTime[k]();
+		}
+	}
+}
+
+// Runs plugin functions to parse commands.
+function parseCmdLine(pf, i, args) {
+	if (typeof cmdLine != 'undefined' && cmdLine.length) { 
+		for (var k = 0; k < cmdLine.length; k++) { 
+			var j = cmdLine[k](pf, i, args);
+			if (j >- 1) {
+				i = j;
+				break;
+			}
+		}
+	}
+
+	return i;
+}
+
+// Runs plugin functions to do things after parse.
+function postParseChecks(pf,args){
+	if (typeof postParse != 'undefined' && postParse.length) {
+		for (var k = 0; k < postParse.length; k++) {
+			if (postParse[k](pf,args)) continue;
+			return false;  // end now since have an error
+		}
+	}
+	return true;
+}
+
+
+////////
+//  PLUGIN REGISTRATION FUNCTIONS
+////////
+
+// Registers commands and creates constants.
+function registerCommands(cmdStr) {
+	if (typeof cmdStr!='string') return;
+
+	var pM = cmdStr.split(',');
+	pms = pms.concat(pM);
+
+	for (var i = 0; i< pM.length; i++) {
+		eval(pM[i].toUpperCase()+'='+pmCount++);
+	}
+}
+
+// Registers no-parameter commands
+function registerNoParameterCommands(cmdStr) {
+	if (!cmdStr && typeof cmdStr != 'string') return;
+	pmt=(!pmt) ? cmdStr : pmt + ',' + cmdStr;
+}
+
+// Register a function to hook at a certain point.
+function registerHook(fnHookTo, fnRef, hookType, optPm) {
+	var hookPt, last = typeof optPm;
+	
+	if (fnHookTo == 'plgIn'||fnHookTo == 'postParse') return;
+	if (typeof hookPts[fnHookTo] == 'undefined') hookPts[fnHookTo] = new FunctionReference();
+
+	hookPt = hookPts[fnHookTo];
+
+	if (hookType != null) {
+		if (hookType == FREPLACE) {
+			hookPt.ovload = fnRef;  // replace normal overlib routine
+			if (fnHookTo.indexOf('ol_content_') > -1) hookPt.alt[pms[CSSOFF-1-pmStart]]=fnRef; 
+
+		} else if (hookType == FBEFORE || hookType == FAFTER) {
+			var hookPt=(hookType == 1 ? hookPt.before : hookPt.after);
+
+			if (typeof fnRef == 'object') {
+				hookPt = hookPt.concat(fnRef);
+			} else {
+				hookPt[hookPt.length++] = fnRef;
+			}
+
+			if (optPm) hookPt = reOrder(hookPt, fnRef, optPm);
+
+		} else if (hookType == FALTERNATE) {
+			if (last=='number') hookPt.alt[pms[optPm-1-pmStart]] = fnRef;
+		} else if (hookType == FCHAIN) {
+			hookPt = hookPt.chain; 
+			if (typeof fnRef=='object') hookPt=hookPt.concat(fnRef); // add other functions 
+			else hookPt[hookPt.length++]=fnRef;
+		}
+
+		return;
+	}
+}
+
+// Register a function that will set runtime variables.
+function registerRunTimeFunction(fn) {
+	if (isFunction(fn)) {
+		if (typeof fn == 'object') {
+			runTime = runTime.concat(fn);
+		} else {
+			runTime[runTime.length++] = fn;
+		}
+	}
+}
+
+// Register a function that will handle command parsing.
+function registerCmdLineFunction(fn){
+	if (isFunction(fn)) {
+		if (typeof fn == 'object') {
+			cmdLine = cmdLine.concat(fn);
+		} else {
+			cmdLine[cmdLine.length++] = fn;
+		}
+	}
+}
+
+// Register a function that does things after command parsing. 
+function registerPostParseFunction(fn){
+	if (isFunction(fn)) {
+		if (typeof fn == 'object') {
+			postParse = postParse.concat(fn);
+		} else {
+			postParse[postParse.length++] = fn;
+		}
+	}
+}
+
+////////
+//  PLUGIN REGISTRATION FUNCTIONS
+////////
+
+// Runs any hooks registered.
+function runHook(fnHookTo, hookType) {
+	var l = hookPts[fnHookTo], k, rtnVal = null, optPm, arS, ar = runHook.arguments;
+
+	if (hookType == FREPLACE) {
+		arS = argToString(ar, 2);
+
+		if (typeof l == 'undefined' || !(l = l.ovload)) rtnVal = eval(fnHookTo+'('+arS+')');
+		else rtnVal = eval('l('+arS+')');
+
+	} else if (hookType == FBEFORE || hookType == FAFTER) {
+		if (typeof l != 'undefined') {
+			l=(hookType == 1 ? l.before : l.after);
+	
+			if (l.length) {
+				arS = argToString(ar, 2);
+				for (var k = 0; k < l.length; k++) eval('l[k]('+arS+')');
+			}
+		}
+	} else if (hookType == FALTERNATE) {
+		optPm = ar[2];
+		arS = argToString(ar, 3);
+
+		if (typeof l == 'undefined' || (l = l.alt[pms[optPm-1-pmStart]]) == 'undefined') {
+			rtnVal = eval(fnHookTo+'('+arS+')');
+		} else {
+			rtnVal = eval('l('+arS+')');
+		}
+	} else if (hookType == FCHAIN) {
+		arS=argToString(ar,2);
+		l=l.chain;
+
+		for (k=l.length; k > 0; k--) if((rtnVal=eval('l[k-1]('+arS+')'))!=void(0)) break;
+	}
+
+	return rtnVal;
 }
 
 ////////
@@ -1450,3 +1475,16 @@ registerHook("horizontalPlacement", horizontalPlacement, FCHAIN);
 registerHook("verticalPlacement", verticalPlacement, FCHAIN);
 if (olNs4||(olIe5&&isMac)||olKq) olLoaded=1;
 registerNoParameterCommands('sticky,autostatus,autostatuscap,fullhtml,hauto,vauto,closeclick,wrap,followmouse,mouseoff,compatmode');
+///////
+// ESTABLISH MOUSECAPTURING
+///////
+
+// Capture events, alt. diffuses the overlib function.
+var olCheckMouseCapture=true;
+if ((olNs4 || olNs6 || olIe4)) {
+	olMouseCapture();
+} else {
+	overlib = no_overlib;
+	nd = no_overlib;
+	ver3fix = true;
+}

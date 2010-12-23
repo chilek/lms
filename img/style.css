@@ -165,6 +165,19 @@ div.multiselectlayer ul li input { border: none; }
 .suggestion_list ul { padding: 0; margin: 0; list-style-type: none; } 
 .suggestion_list span { position: absolute; right: 0; font-size: 9px; margin-right: 2px; color: brown; }
 .suggestion_list a { text-decoration: none; padding-left: 2px; color: black; }
-.suggestion_list .selected { background-color: #CCFFCC; } 
+.suggestion_list .selected { background-color: #CCFFCC; }
 .suggestion_list .selected a { color: black; }
 #autosuggest { display: none; }
+
+.overlib {
+    width: 150px;
+    font-family: Tahoma, Verdana, Arial, Helvetica;
+    background-color: #F4F0EC;
+    padding: 2px 4px;
+    border: 1px solid #333;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-box-shadow: 1px 1px 12px #333;
+    -webkit-box-shadow: #333 1px 1px 12px;
+}

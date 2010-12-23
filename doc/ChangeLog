@@ -53,6 +53,8 @@ version ? (????-??-??)
   - node location address split into separate fields: address, zip, city (alec)
   - added cash import packages/files handling (alec)
   - added more foreign key constraints in DB structure (alec)
+  - improved style of popups (alec)
+  - calendar popups doesn't use a new window (alec)
 
 version 1.11.10 Kri (2010-04-19)
 

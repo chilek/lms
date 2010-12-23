@@ -7,6 +7,7 @@
 <title>::: LMS : {t}Select Date{/t} :::</title>
 {literal}
 <link href="img/style.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="img/autoiframe.js"></script>
 <!--
 Title: Tigra Calendar
 URL: http://www.softcomplex.com/products/tigra_calendar/
@@ -42,7 +43,8 @@ var dt_current = (re_url.exec(String(window.location))
 var re_id = new RegExp('id=(\\d+)');
 var num_id = (re_id.exec(String(window.location))
 	? new Number(RegExp.$1) : 0);
-var obj_caller = (window.opener ? window.opener.calendars[num_id] : null);
+//var obj_caller = (window.opener ? window.opener.calendars[num_id] : null);
+var obj_caller = (window.parent ? window.parent.calendars[num_id] : null);
 
 if (obj_caller && obj_caller.year_scroll) {
 	// get same date in the previous year
@@ -86,19 +88,20 @@ function set_datetime(n_datetime, b_close) {
 
 	if (!dt_datetime) return;
 	if (b_close) {
-		window.close();
+//		window.close();
+        window.parent.nd();
 		obj_caller.target.value = (document.cal
 			? obj_caller.gen_tsmp(dt_datetime)
 			: obj_caller.gen_date(dt_datetime)
 		);
 	}
-	else obj_caller.popup(dt_datetime.valueOf());
+	else obj_caller.popup(dt_datetime.valueOf(), true);
 }
 
 </script>
 </head>
 <body class="calendar">
-<table cellspacing="0" width="100%">
+<table cellspacing="0" width="210" id="table">
 <tr><td class="blendbg">
 <table cellspacing="1" cellpadding="3" width="100%">
 <tr><td colspan="7"><table cellspacing="0" cellpadding="0" width="100%">
@@ -146,7 +149,7 @@ while (dt_current_day.getMonth() == dt_current.getMonth() ||
 		else 
 			// print days of other months
 			document.write('<font class="blend">');
-			
+
 		document.write(dt_current_day.getDate()+'</font></a></td>');
 		dt_current_day.setDate(dt_current_day.getDate()+1);
 	}
@@ -154,11 +157,15 @@ while (dt_current_day.getMonth() == dt_current.getMonth() ||
 	document.write('</tr>');
 }
 if (obj_caller && obj_caller.time_comp)
-	document.write('<form onsubmit="javascript:set_datetime('+dt_current.valueOf()+', true)" name="cal"><tr><td colspan="7" class="dark">Godzina: <INPUT type="text" name="time" value="'+obj_caller.gen_time(this.dt_current)+'" size="5" maxlength="5"></td></tr></form>');
+	document.write('<form onsubmit="javascript:set_datetime('+dt_current.valueOf()+', true)" name="cal"><tr><td colspan="7" class="dark" align="center">Godzina: <INPUT type="text" name="time" value="'+obj_caller.gen_time(this.dt_current)+'" size="5" maxlength="5"></td></tr></form>');
 </script>
 {/literal}
 </table></tr></td>
 </table>
+<script type="text/javascript">
+<!--
+autoiframe_setsize(220, document.getElementById('table').offsetHeight + 10);
+//-->
+</script>
 </body>
 </html>
-

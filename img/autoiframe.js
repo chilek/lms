@@ -50,4 +50,19 @@ function auto_iframe(margines)
    }
 }
 
+// LMS: function to autoresize iframe and parent div container (overlib)
+autoiframe_setsize = function(width, height)
+{
+    var frame = parent.document.getElementById('autoiframe');
+
+    if (width) {
+        frame.style.width = width + 'px';
+        frame.parentNode.style.width = width + 'px';
+    }
+    if (height) {
+        frame.style.height = height + 'px';
+        frame.parentNode.style.height = height + 'px';
+    }
+}
+
 window.onload = auto_iframe;
