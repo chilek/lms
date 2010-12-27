@@ -123,8 +123,8 @@ $PERIODS = array(
     HALFYEARLY  =>      trans('half-yearly'),
     QUARTERLY	=>	trans('quarterly'),
     MONTHLY	=>	trans('monthly'),
-    WEEKLY	=>	trans('weekly'),
-    DAILY	=>	trans('daily'),
+//    WEEKLY	=>	trans('weekly'),
+//    DAILY	=>	trans('daily'),
     DISPOSABLE	=>	trans('disposable')
 );
 
@@ -135,7 +135,7 @@ $NUM_PERIODS = array(
     HALFYEARLY	=>	trans('half-yearly'),
     QUARTERLY	=>	trans('quarterly'),
     MONTHLY	=>	trans('monthly'),
-    WEEKLY	=>	trans('weekly'),
+//    WEEKLY	=>	trans('weekly'),
     DAILY	=>	trans('daily'),
 );
 

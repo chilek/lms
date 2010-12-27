@@ -55,6 +55,9 @@ version ? (????-??-??)
   - added more foreign key constraints in DB structure (alec)
   - improved style of popups (alec)
   - calendar popups doesn't use a new window (alec)
+  - added payment period setting for tariffs, so now when mmonthly tariff is assigned
+    to a customer with yearly period, payment will be accounted once a year with tariff
+    value multiplied by 12 (alec)
 
 version 1.11.10 Kri (2010-04-19)
 

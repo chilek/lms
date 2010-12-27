@@ -28,7 +28,7 @@ if(isset($_POST['tariff']))
 {
 	$tariff = $_POST['tariff'];
 	$limit = isset($_POST['limit']) ? $_POST['limit'] : array();
-	
+
 	foreach($tariff as $key => $value)
 		$tariff[$key] = trim($value);
 
@@ -57,7 +57,7 @@ if(isset($_POST['tariff']))
 		elseif(!preg_match('/^[0-9]+$/', $tariff[$item]))
 			$error[$item] = trans('Integer value expected!');
 	}
-	
+
 	if(($tariff['uprate'] < 8 || $tariff['uprate'] > 100000) && $tariff['uprate'] != 0)
 		$error['uprate'] = trans('This field must be within range 8 - 100000');
 	if(($tariff['downrate'] < 8 || $tariff['downrate'] > 100000) && $tariff['downrate'] != 0)
@@ -76,7 +76,7 @@ if(isset($_POST['tariff']))
 		elseif(!preg_match('/^[0-9]+$/', $tariff[$item]))
 			$error[$item] = trans('Integer value expected!');
 	}
-	
+
 	if(($tariff['uprate_n'] < 8 || $tariff['uprate_n'] > 100000) && $tariff['uprate_n'])
 		$error['uprate_n'] = trans('This field must be within range 8 - 100000');
 	if(($tariff['downrate_n'] < 8 || $tariff['downrate_n'] > 100000) && $tariff['downrate_n'])
@@ -94,7 +94,7 @@ if(isset($_POST['tariff']))
 			'quota_sh_limit', 'quota_mail_limit', 'quota_www_limit', 
 			'quota_ftp_limit', 'quota_sql_limit', 
 	);
-	
+
 	foreach($items as $item)
 	{
 		if(isset($limit[$item])) 
@@ -129,6 +129,9 @@ else
 	$tariff['quota_mail_limit'] = 0;
 	$tariff['quota_ftp_limit'] = 0;
 	$tariff['quota_sql_limit'] = 0;
+
+    if (!empty($CONFIG['phpui']['default_assignment_period']))
+        $tariff['period'] = $CONFIG['phpui']['default_assignment_period'];
 }
 
 $layout['pagetitle'] = trans('New Subscription');

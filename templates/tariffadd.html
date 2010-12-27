@@ -45,8 +45,14 @@
 					<IMG SRC="img/value.gif" ALT="">
 				    </TD>
 				    <TD WIDTH="1%" NOWRAP><B>{t}Value:{/t}</B></TD>
-				    <TD WIDTH="98%">
+				    <TD WIDTH="98%" NOWRAP>
 					    <INPUT TYPE="TEXT" SIZE="8" NAME="tariff[value]" VALUE="{$tariff.value}" {tip text="Enter value" trigger="value"}>
+			            <SELECT size="1" name="tariff[period]" {tip text="Select time period of tariff accounting"}>
+            				<OPTION value=""{if $tariff.period == $key} SELECTED{/if}>{t}undefined{/t}</OPTION>
+				            {foreach from=$_PERIODS key=key item=item}{if $key != $smarty.const.DISPOSABLE}
+            				<OPTION value="{$key}"{if $tariff.period == $key} SELECTED{/if}>{$item}</OPTION>
+			            	{/if}{/foreach}
+			            </SELECT>
 				    </TD>
 				</TR>
 				<TR CLASS="LIGHT">
@@ -61,7 +67,7 @@
 					{/foreach}
 					</SELECT>
 				    </TD>
-				</TR>												
+				</TR>
 				<TR CLASS="LIGHT">
 				    <TD WIDTH="1%">
 					<IMG SRC="img/money.gif" alt="">

@@ -650,6 +650,7 @@ CREATE TABLE tariffs (
   type tinyint 		NOT NULL DEFAULT '1',
   value decimal(9,2) 	NOT NULL DEFAULT '0.00',
   taxid int(11) 	NOT NULL DEFAULT '0',
+  period smallint   DEFAULT NULL,
   prodid varchar(255) 	NOT NULL DEFAULT '',
   uprate int(11) 	NOT NULL DEFAULT '0',
   upceil int(11) 	NOT NULL DEFAULT '0',
@@ -1421,4 +1422,4 @@ CREATE TABLE supermasters (
 
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010122000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010122700');

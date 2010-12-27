@@ -338,6 +338,7 @@
                     <member>type - typ taryfy (zobacz lib/definitions.php)</member>
                     <member>value - kwota</member>
                     <member>taxid - identyfikator stawki podatkowej</member>
+                    <member>period - okres p³atno¶ci (dla podanej kwoty taryfy)</member>
                     <member>prodid - numer PKWiU</member>
                     <member>uprate - gwarantowany upload</member>
                     <member>upceil - maksymalny upload</member>
