@@ -255,8 +255,8 @@ CREATE TABLE nodeassignments (
 
 CREATE INDEX nodeassignments_assignmentid_idx ON nodeassignments (assignmentid);
 
-/* -------------------------------------------------------- 
-  Structure of table "tariffs" 
+/* --------------------------------------------------------
+  Structure of table "tariffs"
 -------------------------------------------------------- */
 DROP SEQUENCE tariffs_id_seq;
 CREATE SEQUENCE tariffs_id_seq; 
@@ -266,6 +266,7 @@ CREATE TABLE tariffs (
 	name varchar(255) 	DEFAULT '' NOT NULL,
 	type smallint		DEFAULT 1 NOT NULL,
 	value numeric(9,2) 	DEFAULT 0 NOT NULL,
+	period smallint 	DEFAULT NULL,
 	taxid integer 		DEFAULT 0 NOT NULL,
 	prodid varchar(255) 	DEFAULT '' NOT NULL,
 	uprate integer		DEFAULT 0 NOT NULL,
@@ -1519,4 +1520,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010122000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010122700');

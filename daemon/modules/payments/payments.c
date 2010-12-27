@@ -481,11 +481,11 @@ void reload(GLOBAL *g, struct payments_module *p)
 
 	/****** customer payments *******/
 	// let's create main query
-	char *query = strdup("SELECT a.tariffid, a.customerid, a.period, "
+	char *query = strdup("SELECT a.tariffid, a.customerid, a.period, t.period AS t_period, "
 	    "a.at, a.suspended, a.invoice, a.id AS assignmentid, a.settlement, a.datefrom, a.discount, "
 		"c.paytype, a.paytype AS a_paytype, a.numberplanid, d.inv_paytype AS d_paytype, "
 		"UPPER(c.lastname) AS lastname, c.name AS custname, c.address, c.zip, c.city, c.ten, c.ssn, "
-		" c.countryid, c.divisionid, c.paytime, "
+		"c.countryid, c.divisionid, c.paytime, "
 		"(CASE a.liabilityid WHEN 0 THEN t.name ELSE li.name END) AS name, "
 		"(CASE a.liabilityid WHEN 0 THEN t.taxid ELSE li.taxid END) AS taxid, "
 		"(CASE a.liabilityid WHEN 0 THEN t.prodid ELSE li.prodid END) AS prodid, "
@@ -499,20 +499,25 @@ void reload(GLOBAL *g, struct payments_module *p)
 		"LEFT JOIN liabilities li ON (a.liabilityid = li.id) "
 		"LEFT JOIN divisions d ON (d.id = c.divisionid) "
 		"WHERE c.status = 3 AND c.deleted = 0 "
-		    "AND ((a.period="_DISPOSABLE_" AND at=?) "
-		        "OR ((a.period="_DAILY_" "
+		    "AND ("
+		        "(a.period="_DISPOSABLE_" AND at=?) "
+		        "OR (("
+		            "(a.period="_DAILY_") "
 			        "OR (a.period="_WEEKLY_" AND at=?) "
 			        "OR (a.period="_MONTHLY_" AND at=?) "
 			        "OR (a.period="_QUARTERLY_" AND at=?) "
 			        "OR (a.period="_HALFYEARLY_" AND at=?) "
-			        "OR (a.period="_YEARLY_" AND at=?)) "
+			        "OR (a.period="_YEARLY_" AND at=?) "
+			        ") "
 			        "AND (a.datefrom <= ? OR a.datefrom = 0) "
-			        "AND (a.dateto >= ? OR a.dateto = 0))) "
+			        "AND (a.dateto >= ? OR a.dateto = 0)"
+			    ")"
+			")"
 		    "%nets"
 		    "%enets"
 		    "%groups"
 		    "%egroups"
-		"ORDER BY a.customerid, a.invoice DESC, a.paytype, a.numberplanid, value DESC");
+		" ORDER BY a.customerid, a.invoice DESC, a.paytype, a.numberplanid, value DESC");
 
 	g->str_replace(&query, "%nets", strlen(netsql) ? nets : "");
 	g->str_replace(&query, "%enets", strlen(enetsql) ? enets : "");
@@ -552,13 +557,14 @@ void reload(GLOBAL *g, struct payments_module *p)
 			syslog(LOG_INFO, "DEBUG: [%s/payments] Customer assignments not found", p->base.instance);
 #endif
 		// payments accounting and invoices writing
-		for(i=0; i<g->db_nrows(res); i++) 
+		for(i=0; i<g->db_nrows(res); i++)
 		{
 			int uid = atoi(g->db_get_data(res,i,"customerid"));
 			int s_state = atoi(g->db_get_data(res,i,"suspended"));
 			int period = atoi(g->db_get_data(res,i,"period"));
 			int settlement = atoi(g->db_get_data(res,i,"settlement"));
 			int datefrom = atoi(g->db_get_data(res,i,"datefrom"));
+			int t_period = atoi(g->db_get_data(res,i,"t_period"));
 			char *discount = g->db_get_data(res,i,"discount");
 			double val = atof(g->db_get_data(res,i,"value"));
 
@@ -572,7 +578,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 					"AND (datefrom <= ? OR datefrom = 0) AND (dateto >= ? OR dateto = 0) "
 					"AND customerid = ?", currtime, currtime, g->db_get_data(res,i,"customerid"));
 
-				if( g->db_nrows(result) ) 
+				if( g->db_nrows(result) )
 				{
 					suspended = uid;
 				}
@@ -583,6 +589,28 @@ void reload(GLOBAL *g, struct payments_module *p)
 				val = val * p->suspension_percentage / 100;
 
 			if( !val ) continue;
+
+            // calculate assignment value according to tariff's period
+            if (t_period && period != DISPOSABLE && t_period != period) {
+
+                if (t_period == YEARLY)
+                    val = val / 12.0;
+                else if (t_period == HALFYEARLY)
+                    val = val / 6.0;
+                else if (t_period == QUARTERLY)
+                    val = val / 3.0;
+
+                if (period == YEARLY)
+                    val = val * 12.0;
+                else if (period == HALFYEARLY)
+                    val = val * 6.0;
+                else if (period == QUARTERLY)
+                    val = val * 3.0;
+                else if (period == WEEKLY)
+                    val = val / 4.0;
+                else if (period == DAILY)
+                    val = val / 30.0;
+            }
 
 			value = ftoa(val);
 			taxid = g->db_get_data(res,i,"taxid");

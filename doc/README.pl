@@ -6457,6 +6457,7 @@ Rozdział 7. Dla dociekliwych
    type - typ taryfy (zobacz lib/definitions.php)
    value - kwota
    taxid - identyfikator stawki podatkowej
+   period - okres płatności (dla podanej kwoty taryfy)
    prodid - numer PKWiU
    uprate - gwarantowany upload
    upceil - maksymalny upload

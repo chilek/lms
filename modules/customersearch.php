@@ -123,13 +123,13 @@ if(isset($_GET['search']))
 	$start = ($page - 1) * $pagelimit;
 
 	$SESSION->save('cslp', $page);
-		
+
 	$SMARTY->assign('customerlist',$customerlist);
 	$SMARTY->assign('listdata',$listdata);
 	$SMARTY->assign('pagelimit',$pagelimit);
 	$SMARTY->assign('page',$page);
 	$SMARTY->assign('start',$start);
-	
+
 	if(isset($_GET['print']))
 	{
 		$SMARTY->display('printcustomerlist.html');

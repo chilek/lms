@@ -30,11 +30,11 @@ function GetTariffList($order='name,asc', $type=NULL, $customergroupid=NULL)
 
 	if($order=='')
                 $order='name,asc';
-	
+
 	list($order,$direction) = sscanf($order, '%[^,],%s');
-	
+
 	($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
-	
+
 	switch($order)
 	{
 		case 'id':
@@ -71,40 +71,52 @@ function GetTariffList($order='name,asc', $type=NULL, $customergroupid=NULL)
 	$totalcount = 0;
 	$totalactivecount = 0;
 
-	if($tarifflist = $DB->GetAll('SELECT t.id AS id, t.name, t.value AS value, 
-			taxes.label AS tax, taxes.value AS taxvalue, prodid, 
-			t.description AS description,
+	if($tarifflist = $DB->GetAll('SELECT t.id AS id, t.name, t.value AS value,
+			taxes.label AS tax, taxes.value AS taxvalue, prodid,
+			t.description AS description, t.period,
 			uprate, downrate, upceil, downceil, climit, plimit,
 			uprate_n, downrate_n, upceil_n, downceil_n, climit_n, plimit_n,
 			a.customerscount, a.count, a.value AS sumval
-			FROM tariffs t 
-			LEFT JOIN (SELECT tariffid, COUNT(*) AS count,
-				COUNT(DISTINCT assignments.customerid) AS customerscount,
-				SUM(CASE period 
-					WHEN '.DAILY.' THEN ((tt.value * (100 - assignments.discount)) / 100) * 30 
-					WHEN '.WEEKLY.' THEN ((tt.value * (100 - assignments.discount)) / 100) * 4 
-					WHEN '.MONTHLY.' THEN ((tt.value * (100 - assignments.discount)) / 100)
-					WHEN '.QUARTERLY.' THEN ((tt.value * (100 - assignments.discount)) / 100) / 3 
-					WHEN '.YEARLY.' THEN ((tt.value * (100 - assignments.discount)) / 100) / 12 END) AS value
-				FROM assignments
+			FROM tariffs t
+			LEFT JOIN (SELECT a.tariffid, COUNT(*) AS count,
+				COUNT(DISTINCT a.customerid) AS customerscount,
+				SUM(CASE tt.period
+					WHEN '.MONTHLY.' THEN ((tt.value * (100 - a.discount)) / 100.0)
+					WHEN '.QUARTERLY.' THEN ((tt.value * (100 - a.discount)) / 100.0) / 3
+					WHEN '.YEARLY.' THEN ((tt.value * (100 - a.discount)) / 100.0) / 12
+					WHEN '.HALFYEARLY.' THEN ((tt.value * (100 - a.discount)) / 100.0) / 6
+					ELSE ((tt.value * (100 - a.discount)) / 100.0) * (CASE a.period
+					    WHEN '.MONTHLY.' THEN 1
+					    WHEN '.QUARTERLY.' THEN 1.0 / 3
+					    WHEN '.YEARLY.' THEN 1.0 / 12
+					    WHEN '.HALFYEARLY.' THEN 1.0 / 6
+					    ELSE 0 END)
+				END) AS value
+				FROM assignments a
 				JOIN tariffs tt ON (tt.id = tariffid)'
-				.($customergroupid ? ' JOIN customerassignments cc ON (cc.customerid = assignments.customerid)
+				.($customergroupid ? ' JOIN customerassignments cc ON (cc.customerid = a.customerid)
 				WHERE cc.customergroupid = '.intval($customergroupid) : '')
-				.' GROUP BY tariffid
+				.' GROUP BY a.tariffid
 			) a ON (a.tariffid = t.id)
 			LEFT JOIN taxes ON (t.taxid = taxes.id)'
 			.($type ? ' WHERE t.type = '.intval($type) : '')
 			.($sqlord != '' ? $sqlord.' '.$direction : '')))
 	{
-		$unactive = $DB->GetAllByKey('SELECT tariffid, COUNT(*) AS count, 
-			SUM(CASE x.period 
-				WHEN '.DAILY.' THEN ((x.value * (100 - x.discount)) / 100) * 30 
-				WHEN '.WEEKLY.' THEN ((x.value * (100 - x.discount)) / 100) * 4 
-				WHEN '.MONTHLY.' THEN ((x.value * (100 - x.discount)) / 100)
-				WHEN '.QUARTERLY.' THEN ((x.value * (100 - x.discount)) / 100) / 3 
-				WHEN '.YEARLY.' THEN ((x.value * (100 - x.discount)) / 100) / 12 END) AS value
-			FROM (SELECT a.tariffid, a.period, a.discount, t.value
-				FROM assignments a 
+		$unactive = $DB->GetAllByKey('SELECT tariffid, COUNT(*) AS count,
+			SUM(CASE x.period
+				WHEN '.MONTHLY.' THEN ((x.value * (100 - x.discount)) / 100.0)
+				WHEN '.QUARTERLY.' THEN ((x.value * (100 - x.discount)) / 100.0) / 3
+				WHEN '.YEARLY.' THEN ((x.value * (100 - x.discount)) / 100.0) / 12
+				WHEN '.HALFYEARLY.' THEN ((x.value * (100 - x.discount)) / 100.0) / 6
+				ELSE ((x.value * (100 - x.discount)) / 100.0) * (CASE x.aperiod
+					    WHEN '.MONTHLY.' THEN 1
+					    WHEN '.QUARTERLY.' THEN 1.0 / 3
+					    WHEN '.YEARLY.' THEN 1.0 / 12
+					    WHEN '.HALFYEARLY.' THEN 1.0 / 6
+					    ELSE 0 END)
+			    END) AS value
+			FROM (SELECT a.tariffid, t.period, a.period AS aperiod, a.discount, t.value
+				FROM assignments a
 				JOIN tariffs t ON (t.id = a.tariffid)'
 				.($customergroupid ? ' JOIN customerassignments cc ON (cc.customerid = a.customerid)' : '')
 				.' WHERE (
@@ -112,8 +124,8 @@ function GetTariffList($order='name,asc', $type=NULL, $customergroupid=NULL)
 				        OR a.datefrom > ?NOW?
 				        OR (a.dateto <= ?NOW? AND a.dateto != 0)
 					OR EXISTS (
-					        SELECT 1 FROM assignments b 
-						WHERE b.customerid = a.customerid 
+					        SELECT 1 FROM assignments b
+						WHERE b.customerid = a.customerid
 							AND liabilityid = 0 AND tariffid = 0
 						        AND (b.datefrom <= ?NOW? OR b.datefrom = 0)
 							AND (b.dateto > ?NOW? OR b.dateto = 0)

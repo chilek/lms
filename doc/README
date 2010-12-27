@@ -5542,6 +5542,7 @@ Chapter 7. For curious
    type - subscription type (see lib/definitions.php)
    value - amount
    taxid - tax rate identifier
+   period - payment period (for specified tariff value)
    prodid - product/service classification number
    uprate - upload warranty
    upceil - upload boundary

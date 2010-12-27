@@ -324,6 +324,7 @@
                     <member>type - subscription type (see lib/definitions.php)</member>
                     <member>value - amount</member>
                     <member>taxid - tax rate identifier</member>
+                    <member>period - payment period (for specified tariff value)</member>
                     <member>prodid - product/service classification number</member>
                     <member>uprate - upload warranty</member>
                     <member>upceil - upload boundary</member>

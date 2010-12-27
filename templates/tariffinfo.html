@@ -38,8 +38,10 @@
 				    <IMG SRC="img/value.gif" ALT="">
 				</TD>
 				<TD WIDTH="1%"><B>{t}Value:{/t}</B></TD>
-				<TD WIDTH="98%">
-				    {$tariff.value|money_format} 
+				<TD WIDTH="98%" NOWRAP>
+				    {$tariff.value|money_format}
+				    {if $tariff.period}{assign var=tperiod value=$tariff.period}({$_PERIODS.$tperiod})
+				    {else}<font class="blend">({t}period undefined{/t})</font>{/if}
 				</TD>
 			    </TR>
 			    <TR class="LIGHT">

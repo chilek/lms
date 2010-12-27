@@ -154,7 +154,7 @@ switch($type)
 				$saldolist['after'][$i] = $saldolist['balance'] + $saldolist['value'][$i];
 				$saldolist['balance'] += $saldolist['value'][$i];
 			        $saldolist['date'][$i] = date('Y/m/d H:i', $saldolist['time'][$i]);
-				    
+
 				if($saldolist['time'][$i]>=$date['from'] && $saldolist['time'][$i]<=$date['to'])
 				{
 					$list['id'][] = $saldolist['id'][$i];
@@ -168,22 +168,22 @@ switch($type)
 					$list['summary'] += $saldolist['value'][$i];
 				}
 			}
-			
+
 			$list['total'] = sizeof($list['id']);
 
 		} else
 			$list['balance'] = 0;
 
 		$list['customerid'] = $id;
-		
+
 		$SMARTY->assign('balancelist', $list);
 		$SMARTY->display('printcustomerbalance.html');
-	break;	
-	
+	break;
+
 	default: /*******************************************************/
-	
+
 		$layout['pagetitle'] = trans('Reports');
-    		
+
 		$yearstart = date('Y', (int) $DB->GetOne('SELECT MIN(dt) FROM stats'));
 	        $yearend = date('Y', (int) $DB->GetOne('SELECT MAX(dt) FROM stats'));
 		for($i=$yearstart; $i<$yearend+1; $i++)

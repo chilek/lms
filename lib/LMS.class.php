@@ -797,26 +797,30 @@ class LMS
 					.($time ? ' WHERE time < '.$time : '').'
 					GROUP BY customerid
 				) b ON (b.customerid = c.id)
-				LEFT JOIN (SELECT customerid, 
-					SUM((CASE suspended
+				LEFT JOIN (SELECT a.customerid,
+					SUM((CASE a.suspended
 						WHEN 0 THEN (CASE discount WHEN 0 THEN (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END)
-							ELSE ((100 - discount) * (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END)) / 100 END) 
-						ELSE (CASE discount WHEN 0 THEN (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) * '.$suspension_percentage.' / 100 
+							ELSE ((100 - discount) * (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END)) / 100 END)
+						ELSE (CASE discount WHEN 0 THEN (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) * '.$suspension_percentage.' / 100
 							ELSE (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) * discount * '.$suspension_percentage.' / 10000 END) END)
-					* (CASE period
+					* (CASE t.period
 						WHEN '.MONTHLY.' THEN 1
 						WHEN '.YEARLY.' THEN 1/12.0
 						WHEN '.HALFYEARLY.' THEN 1/6.0
 						WHEN '.QUARTERLY.' THEN 1/3.0
-						WHEN '.WEEKLY.' THEN 4
-						WHEN '.DAILY.' THEN 30
-						ELSE 0 END)
+						ELSE (CASE a.period
+						    WHEN '.MONTHLY.' THEN 1
+						    WHEN '.YEARLY.' THEN 1/12.0
+						    WHEN '.HALFYEARLY.' THEN 1/6.0
+						    WHEN '.QUARTERLY.' THEN 1/3.0
+						    ELSE 0 END)
+						END)
 					) AS value 
-					FROM assignments
-					LEFT JOIN tariffs t ON (t.id = tariffid)
-					LEFT JOIN liabilities l ON (l.id = liabilityid AND period != '.DISPOSABLE.')
-					WHERE (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) 
-					GROUP BY customerid
+					FROM assignments a
+					LEFT JOIN tariffs t ON (t.id = a.tariffid)
+					LEFT JOIN liabilities l ON (l.id = a.liabilityid AND a.period != '.DISPOSABLE.')
+					WHERE (a.datefrom <= ?NOW? OR a.datefrom = 0) AND (a.dateto > ?NOW? OR a.dateto = 0) 
+					GROUP BY a.customerid
 				) t ON (t.customerid = c.id)
 				LEFT JOIN (SELECT ownerid,
 					SUM(access) AS acsum, COUNT(access) AS account,
@@ -932,7 +936,7 @@ class LMS
 					$result[$ids[$channel['nodeid']]]['cid'] = $channel['cid'];
 				}
 			}
-			
+
 			$result['total'] = sizeof($result);
 		}
 		return $result;
@@ -1697,27 +1701,30 @@ class LMS
 
 	function GetCustomerTariffsValue($id)
 	{
-		return $this->DB->GetOne('SELECT sum(tariffs.value) FROM assignments, tariffs 
-				WHERE tariffid = tariffs.id AND customerid=? AND suspended = 0 
-				AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0)', 
-				array($id));
+		return $this->DB->GetOne('SELECT SUM(tariffs.value)
+		    FROM assignments, tariffs
+			WHERE tariffid = tariffs.id AND customerid = ? AND suspended = 0
+			    AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0)',
+			array($id));
 	}
 
 	function GetCustomerAssignments($id, $show_expired=false)
 	{
 		$now = mktime(0, 0, 0, date('n'), date('d'), date('Y'));
-		
-		if($assignments = $this->DB->GetAll('SELECT assignments.id AS id, tariffid,
-			assignments.customerid, period, at, suspended, uprate, upceil, downceil, downrate,
-			invoice, settlement, datefrom, dateto, discount, liabilityid, 
-			(CASE WHEN tariffs.value IS NULL THEN liabilities.value ELSE tariffs.value END) AS value,
-			(CASE WHEN tariffs.name IS NULL THEN liabilities.name ELSE tariffs.name END) AS name
-			FROM assignments 
-			LEFT JOIN tariffs ON (tariffid=tariffs.id) 
-			LEFT JOIN liabilities ON (liabilityid=liabilities.id) 
-			WHERE assignments.customerid=? '
-			.(!$show_expired ? 'AND (dateto > '.$now.' OR dateto = 0) AND (liabilityid = 0 OR (liabilityid != 0 AND (at >= '.$now.' OR at < 531)))' : '')
-			.' ORDER BY datefrom, value', array($id)))
+
+		if($assignments = $this->DB->GetAll('SELECT a.id AS id, a.tariffid,
+			a.customerid, a.period, a.at, a.suspended, a.invoice, a.settlement,
+			a.datefrom, a.dateto, a.discount, a.liabilityid,
+			t.uprate, t.upceil, t.downceil, t.downrate,
+			(CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) AS value,
+			(CASE WHEN t.name IS NULL THEN l.name ELSE t.name END) AS name
+			FROM assignments a
+			LEFT JOIN tariffs t ON (a.tariffid = t.id)
+			LEFT JOIN liabilities l ON (a.liabilityid = l.id)
+			WHERE a.customerid=? '
+			.(!$show_expired ? 'AND (a.dateto > '.$now.' OR a.dateto = 0)
+			    AND (a.liabilityid = 0 OR (a.liabilityid != 0 AND (a.at >= '.$now.' OR a.at < 531)))' : '')
+			.' ORDER BY a.datefrom, value', array($id)))
 		{
 			foreach($assignments as $idx => $row)
 			{
@@ -2222,17 +2229,18 @@ class LMS
 
 	function TariffAdd($tariff)
 	{
-		$result = $this->DB->Execute('INSERT INTO tariffs (name, description, value, 
-				taxid, prodid, uprate, downrate, upceil, downceil, climit, 
-				plimit, uprate_n, downrate_n, upceil_n, downceil_n, climit_n, 
+		$result = $this->DB->Execute('INSERT INTO tariffs (name, description, value,
+				period, taxid, prodid, uprate, downrate, upceil, downceil, climit,
+				plimit, uprate_n, downrate_n, upceil_n, downceil_n, climit_n,
 				plimit_n, dlimit, type, sh_limit, www_limit, mail_limit, sql_limit,
 				ftp_limit, quota_sh_limit, quota_www_limit, quota_mail_limit,
 				quota_sql_limit, quota_ftp_limit, domain_limit, alias_limit)
-				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
 				array(
 					$tariff['name'],
 					$tariff['description'],
 					$tariff['value'],
+					$tariff['period'] ? $tariff['period'] : null,
 					$tariff['taxid'],
 					$tariff['prodid'],
 					$tariff['uprate'],
@@ -2270,16 +2278,17 @@ class LMS
 
 	function TariffUpdate($tariff)
 	{
-		return $this->DB->Execute('UPDATE tariffs SET name=?, description=?, value=?, 
-				taxid=?, prodid=?, uprate=?, downrate=?, upceil=?, downceil=?, 
-				climit=?, plimit=?, uprate_n=?, downrate_n=?, upceil_n=?, downceil_n=?, 
+		return $this->DB->Execute('UPDATE tariffs SET name=?, description=?, value=?,
+				period=?, taxid=?, prodid=?, uprate=?, downrate=?, upceil=?, downceil=?,
+				climit=?, plimit=?, uprate_n=?, downrate_n=?, upceil_n=?, downceil_n=?,
 				climit_n=?, plimit_n=?, dlimit=?, sh_limit=?, www_limit=?, mail_limit=?,
-				sql_limit=?, ftp_limit=?, quota_sh_limit=?, quota_www_limit=?, 
-				quota_mail_limit=?, quota_sql_limit=?, quota_ftp_limit=?, 
-				domain_limit=?, alias_limit=?, type=? WHERE id=?', 
-				array($tariff['name'], 
+				sql_limit=?, ftp_limit=?, quota_sh_limit=?, quota_www_limit=?,
+				quota_mail_limit=?, quota_sql_limit=?, quota_ftp_limit=?,
+				domain_limit=?, alias_limit=?, type=? WHERE id=?',
+				array($tariff['name'],
 					$tariff['description'],
 					$tariff['value'],
+					$tariff['period'] ? $tariff['period'] : null,
 					$tariff['taxid'],
 					$tariff['prodid'],
 					$tariff['uprate'],
@@ -2338,13 +2347,19 @@ class LMS
 			.'GROUP BY c.id, c.lastname, c.name ORDER BY c.lastname, c.name', array($id));
 
 		$unactive = $this->DB->GetRow('SELECT COUNT(*) AS count,
-                        SUM(CASE a.period
-				WHEN '.DAILY.' THEN t.value*30
-				WHEN '.WEEKLY.' THEN t.value*4
+            SUM(CASE t.period
 				WHEN '.MONTHLY.' THEN t.value
 				WHEN '.QUARTERLY.' THEN t.value/3
 				WHEN '.HALFYEARLY.' THEN t.value/6
-				WHEN '.YEARLY.' THEN t.value/12 END) AS value
+				WHEN '.YEARLY.' THEN t.value/12
+				ELSE (CASE a.period
+				    WHEN '.MONTHLY.' THEN t.value
+				    WHEN '.QUARTERLY.' THEN t.value/3
+				    WHEN '.HALFYEARLY.' THEN t.value/6
+				    WHEN '.YEARLY.' THEN t.value/12
+				    ELSE 0
+				    END)
+				END) AS value
 			FROM assignments a
 			JOIN tariffs t ON (t.id = a.tariffid)
 			WHERE t.id = ? AND (
@@ -2359,15 +2374,21 @@ class LMS
 						    AND (b.dateto > ?NOW? OR b.dateto = 0)
 				    )
 			)', array($id));
-		
-		$all = $this->DB->GetRow('SELECT COUNT(*) AS count, 
-			SUM(CASE a.period 
-				WHEN '.DAILY.' THEN t.value*30 
-				WHEN '.WEEKLY.' THEN t.value*4 
-				WHEN '.MONTHLY.' THEN t.value 
-				WHEN '.QUARTERLY.' THEN t.value/3 
-				WHEN '.HALFYEARLY.' THEN t.value/6 
-				WHEN '.YEARLY.' THEN t.value/12 END) AS value
+
+		$all = $this->DB->GetRow('SELECT COUNT(*) AS count,
+			SUM(CASE t.period
+				WHEN '.MONTHLY.' THEN t.value
+				WHEN '.QUARTERLY.' THEN t.value/3
+				WHEN '.HALFYEARLY.' THEN t.value/6
+				WHEN '.YEARLY.' THEN t.value/12
+				ELSE (CASE a.period
+				    WHEN '.MONTHLY.' THEN t.value
+				    WHEN '.QUARTERLY.' THEN t.value/3
+				    WHEN '.HALFYEARLY.' THEN t.value/6
+				    WHEN '.YEARLY.' THEN t.value/12
+				    ELSE 0
+				    END)
+				 END) AS value
 			FROM assignments a
 			JOIN tariffs t ON (t.id = a.tariffid)
 			WHERE tariffid = ?', array($id));
@@ -2388,9 +2409,9 @@ class LMS
 	function GetTariffs()
 	{
 		return $this->DB->GetAll('SELECT t.id, t.name, t.value, uprate, taxid, prodid,
-				downrate, upceil, downceil, climit, plimit, taxes.value AS taxvalue, 
-				taxes.label AS tax
-				FROM tariffs t 
+				downrate, upceil, downceil, climit, plimit, taxes.value AS taxvalue,
+				taxes.label AS tax, t.period
+				FROM tariffs t
 				LEFT JOIN taxes ON t.taxid = taxes.id
 				ORDER BY t.value DESC');
 	}
@@ -3645,7 +3666,7 @@ class LMS
 			'quota_mail_limit' => 0,
 			'quota_sql_limit' => 0,	
 		);
-		
+
 		if($limits = $this->DB->GetAll('SELECT alias_limit, domain_limit, sh_limit,
 			www_limit, mail_limit, sql_limit, ftp_limit, quota_sh_limit,
 			quota_www_limit, quota_mail_limit, quota_sql_limit, quota_ftp_limit
@@ -3782,7 +3803,7 @@ class LMS
 		if($lastcheck + $this->CONFIG['phpui']['check_for_updates_period'] < $time)
 		{
 			list($v, ) = explode(' ', $this->_version);
-			
+
 			if($content = fetch_url('http://register.lms.org.pl/update.php?uiid='.$uiid.'&v='.$v))
 			{
 				if($lastcheck == 0)

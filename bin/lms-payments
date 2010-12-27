@@ -335,7 +335,7 @@ $dbq = $dbase->prepare("SELECT a.tariffid, a.liabilityid, a.customerid,
     a.period, a.at, a.suspended, a.settlement, a.datefrom, a.discount,
 	a.invoice, t.description AS description, a.id AS assignmentid,
 	c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid,
-	d.inv_paytype AS d_paytype,
+	d.inv_paytype AS d_paytype, t.period AS t_period,
 	(CASE a.liabilityid WHEN 0 THEN t.name ELSE l.name END) AS name,
 	(CASE a.liabilityid WHEN 0 THEN t.taxid ELSE l.taxid END) AS taxid,
 	(CASE a.liabilityid WHEN 0 THEN t.prodid ELSE l.prodid END) AS prodid,
@@ -429,14 +429,14 @@ while(my $assign = $dbq->fetchrow_hashref())
 			$suspended = $uid;
 			if (!$assign->{'suspended'})
 			{
-				$assign->{'value'} = sprintf("%.2f", $assign->{'value'} * $suspension_percentage / 100);
+				$assign->{'value'} = $assign->{'value'} * $suspension_percentage / 100;
 			}
 		}
 		$xdbq->finish();
 	} else {
 		if (!$assign->{'suspended'})
 		{
-			$assign->{'value'} = sprintf("%.2f", $assign->{'value'} * $suspension_percentage / 100);
+			$assign->{'value'} = $assign->{'value'} * $suspension_percentage / 100;
 		}
 	}
 
@@ -463,6 +463,35 @@ while(my $assign = $dbq->fetchrow_hashref())
 
 	if($assign->{'value'} != 0)
 	{
+	    my $val = $assign->{'value'};
+        # calculate assignment value according to tariff's period
+        if ($assign->{'t_period'} && $assign->{'period'} != DISPOSABLE
+            && $assign->{'t_period'} != $assign->{'period'}
+        ) {
+            if ($assign->{'t_period'} == YEAR) {
+                $val = $val / 12.0;
+            } elsif ($assign->{'t_period'} == HALFYEAR) {
+                $val = $val / 6.0;
+            } elsif ($assign->{'t_period'} == QUARTER) {
+                $val = $val / 3.0;
+            }
+
+            if ($assign->{'period'} == YEAR) {
+                $val = $val * 12.0;
+            } elsif ($assign->{'period'} == HALFYEAR) {
+                $val = $val * 6.0;
+            } elsif ($assign->{'period'} == QUARTER) {
+                $val = $val * 3.0;
+            } elsif ($assign->{'period'} == WEEK) {
+                $val = $val / 4.0;
+            } elsif ($assign->{'period'} == DAY) {
+                $val = $val / 30.0;
+            }
+
+        }
+
+        $val = sprintf("%.2f", $val);
+
 		if($assign->{'invoice'})
 		{
 		    my ($inv_paytype, $numberplan, $plan);
@@ -529,7 +558,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 			}
 
 			$icdbq = $dbase->prepare("SELECT itemid FROM invoicecontents
-					WHERE tariffid=$assign->{'tariffid'} AND value=$assign->{'value'}
+					WHERE tariffid=$assign->{'tariffid'} AND value=$val
 					AND docid=$invoices{$uid} AND description=? AND discount=$assign->{'discount'}");
 			$icdbq->execute($desc);
 
@@ -542,7 +571,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 						AND description=? AND discount=$assign->{'discount'}");
 				$icdbq->execute($desc);
 
-				$cdbq = $dbase->prepare("UPDATE cash SET value = value+($assign->{'value'}*-1)
+				$cdbq = $dbase->prepare("UPDATE cash SET value = value+($val*-1)
 						WHERE docid = $invoices{$uid} AND itemid = $tmp_itemid");
 				$cdbq->execute();
 			}
@@ -552,12 +581,12 @@ while(my $assign = $dbq->fetchrow_hashref())
 
 				$icdbq = $dbase->prepare("INSERT INTO invoicecontents (docid, value, taxid, prodid,
 						content, count, description, tariffid, itemid, discount)
-						VALUES ($invoices{$uid}, $assign->{'value'}, $assign->{'taxid'}, '$assign->{'prodid'}',
+						VALUES ($invoices{$uid}, $val, $assign->{'taxid'}, '$assign->{'prodid'}',
 						'szt.', 1, ?, $assign->{'tariffid'}, $itemid, $assign->{'discount'})");
 				$icdbq->execute($desc);
 
 				$cdbq = $dbase->prepare("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid)
-						VALUES ($currtime, $assign->{'value'} * -1, $assign->{'taxid'}, $uid, ?, $invoices{$uid}, $itemid)");
+						VALUES ($currtime, $val * -1, $assign->{'taxid'}, $uid, ?, $invoices{$uid}, $itemid)");
 				$cdbq->execute($desc);
 			}
 
@@ -566,11 +595,11 @@ while(my $assign = $dbq->fetchrow_hashref())
 		else
 		{
 			$cdbq = $dbase->prepare("INSERT INTO cash (time, value, taxid, customerid, comment)
-					VALUES ($currtime, $assign->{'value'} * -1, $assign->{'taxid'}, $uid, ?)");
+					VALUES ($currtime, $val * -1, $assign->{'taxid'}, $uid, ?)");
 			$cdbq->execute($desc);
 		}
 
-		print STDERR "CID:$uid\tVAL:$assign->{'value'}\tDESC:$desc\n" if not $quiet;
+		print STDERR "CID:$uid\tVAL:$val\tDESC:$desc\n" if not $quiet;
 
 		# settlements accounting
 		if ($assign->{'settlement'} && $assign->{'datefrom'})
@@ -599,9 +628,9 @@ while(my $assign = $dbq->fetchrow_hashref())
 				};
 			}
 
-			my $value = sprintf("%.2f", $diffdays * $assign->{'value'}/$alldays);
+			my $value = sprintf("%.2f", $diffdays * $val/$alldays);
 
-			#print "value: ".$assign->{'value'}." diffdays: $diffdays alldays: $alldays settl_value: $value\n";
+			#print "value: ".$val." diffdays: $diffdays alldays: $alldays settl_value: $value\n";
 
 			my $sdesc = $s_comment;
 			$sdesc =~ s/\%tariff/$assign->{'name'}/g;

@@ -108,6 +108,7 @@ $DEFAULTS = array(
 		'note_check_payment' => false,
 		'radius' => 1,
 		'public_ip' => 1,
+		'default_assignment_period' => 3,
 	),
 	'invoices' => array(
 		'template_file' => 'invoice.html',
