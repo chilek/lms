@@ -31,33 +31,32 @@
  * This file include required files and do some nasty things ;>
  */
 
-define('LMSDB_DIR',dirname(__FILE__));
+define('LMSDB_DIR', dirname(__FILE__));
 
 require_once(LMSDB_DIR.'/LMSDB_common.class.php');
 
-function DBInit($dbtype,$dbhost,$dbuser,$dbpasswd,$dbname)
+function DBInit($dbtype, $dbhost, $dbuser, $dbpasswd, $dbname)
 {
-        $dbtype = strtolower($dbtype);
+    $dbtype = strtolower($dbtype);
 
-	if (!file_exists(LMSDB_DIR.'/LMSDB_driver_'.$dbtype.'.class.php') )
+	if (!file_exists(LMSDB_DIR."/LMSDB_driver_$dbtype.class.php") )
 		trigger_error('Unable to load driver for "'.$dbtype.'" database!', E_USER_WARNING);
-	else
-	{
-		require_once(LMSDB_DIR.'/LMSDB_driver_'.strtolower($dbtype).'.class.php');
-		$drvname = 'LMSDB_driver_'.strtolower($dbtype);
-		$DB = new $drvname($dbhost,$dbuser,$dbpasswd,$dbname);
-		
+	else {
+		require_once(LMSDB_DIR."/LMSDB_driver_$dbtype.class.php");
+		$drvname = "LMSDB_driver_$dbtype";
+		$DB = new $drvname($dbhost, $dbuser, $dbpasswd, $dbname);
+
 		if (!$DB->_loaded)
 			trigger_error('PHP Driver for "'.$dbtype.'" database doesn\'t seems to be loaded.', E_USER_WARNING);
 		else if (!$DB->_dblink)
 			trigger_error('Unable to connect to database!', E_USER_WARNING);
 		else {
-                        // set client encoding
-                        $DB->SetEncoding('UTF8');
+            // set client encoding
+            $DB->SetEncoding('UTF8');
 
 			return $DB;
-	        }
-        }
+	    }
+    }
 
 	return FALSE;
 }
