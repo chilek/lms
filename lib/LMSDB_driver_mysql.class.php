@@ -53,7 +53,7 @@ class LMSDB_driver_mysql extends LMSDB_common
 
 	function _driver_connect($dbhost, $dbuser, $dbpasswd, $dbname)
 	{
-		if($this->_dblink = @mysql_connect($dbhost,$dbuser,$dbpasswd))
+		if($this->_dblink = @mysql_connect($dbhost, $dbuser, $dbpasswd, true))
 		{
 			$this->_dbhost = $dbhost;
 			$this->_dbuser = $dbuser;

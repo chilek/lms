@@ -60,7 +60,7 @@ class LMSDB_driver_postgres extends LMSDB_common
 			($dbname != '' ? 'dbname='.$dbname : '')
 		));
 
-		if($this->_dblink = @pg_connect($cstring))
+		if($this->_dblink = @pg_connect($cstring, PGSQL_CONNECT_FORCE_NEW))
 		{
 			$this->_dbhost = $dbhost;
 			$this->_dbuser = $dbuser;
