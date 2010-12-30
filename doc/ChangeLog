@@ -58,6 +58,7 @@ version ? (????-??-??)
   - added payment period setting for tariffs, so now when mmonthly tariff is assigned
     to a customer with yearly period, payment will be accounted once a year with tariff
     value multiplied by 12 (alec)
+  - BTS#0000844: fixed traffic graph when using customer filter (alec)
 
 version 1.11.10 Kri (2010-04-19)
 
