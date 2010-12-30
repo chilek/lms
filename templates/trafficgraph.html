@@ -9,7 +9,7 @@
 <script type="text/javascript" src="img/autoiframe.js"></script>
 </head>
 <body style="text-align: center; margin: 0">
-<img src="?m=trafficgraph&nodeid={$nodeid}&bar={$bar}{if $from}&from={$from}{/if}{if $to}&to={$to}{/if}{if $add}&add={$add}{/if}&ts={$smarty.now}" height="{$smarty.const.GRAPH_HEIGHT}" width="{$smarty.const.GRAPH_WIDTH}" alt="">
+<img id="table" src="?m=trafficgraph&nodeid={$nodeid}&bar={$bar}{if $from}&from={$from}{/if}{if $to}&to={$to}{/if}{if $add}&add={$add}{/if}&ts={$smarty.now}" height="{$smarty.const.GRAPH_HEIGHT}" width="{$smarty.const.GRAPH_WIDTH}" alt="">
 <div style="height: 16px; margin-top: 3px">
 &laquo;&nbsp;
 <a href="?m=trafficgraph&nodeid={$nodeid}&bar={$bar}{if $from}&from={$from}{/if}{if $to}&to={$to}{/if}&popup=1&ts={$smarty.now}&add={$add+-2592000}">1m</a>&nbsp;
@@ -27,5 +27,8 @@
 <a href="?m=trafficgraph&nodeid={$nodeid}&bar={$bar}{if $from}&from={$from}{/if}{if $to}&to={$to}{/if}&popup=1&ts={$smarty.now}&add={$add+2592000}">1m</a>&nbsp;
 &raquo;
 </div>
+<SCRIPT TYPE="text/javascript">
+autoiframe_setsize(document.getElementById('table').offsetWidth);
+</SCRIPT>
 </body>
 </html>
