@@ -73,6 +73,21 @@ CREATE TABLE customers (
 CREATE INDEX customers_zip_idx ON customers (zip);
 CREATE INDEX customers_lastname_idx ON customers (lastname, name);
 
+/* -------------------------------------------------------- 
+  Structure of table "numberplans" 
+-------------------------------------------------------- */
+DROP SEQUENCE numberplans_id_seq;
+CREATE SEQUENCE numberplans_id_seq;
+DROP TABLE numberplans CASCADE;
+CREATE TABLE numberplans (
+	id integer DEFAULT nextval('numberplans_id_seq'::text) NOT NULL,
+	template varchar(255) DEFAULT '' NOT NULL,
+	period smallint DEFAULT 0 NOT NULL,
+	doctype integer DEFAULT 0 NOT NULL,
+	isdefault smallint DEFAULT 0 NOT NULL,
+	PRIMARY KEY (id)
+);
+
 /* ----------------------------------------------------
  Structure of table "assignments"
 ---------------------------------------------------*/
@@ -450,22 +465,6 @@ CREATE TABLE debitnotecontents (
 	PRIMARY KEY (id),
 	UNIQUE (docid, itemid)
 );
-
-/* -------------------------------------------------------- 
-  Structure of table "numberplans" 
--------------------------------------------------------- */
-DROP SEQUENCE numberplans_id_seq;
-CREATE SEQUENCE numberplans_id_seq;
-DROP TABLE numberplans CASCADE;
-CREATE TABLE numberplans (
-	id integer DEFAULT nextval('numberplans_id_seq'::text) NOT NULL,
-	template varchar(255) DEFAULT '' NOT NULL,
-	period smallint DEFAULT 0 NOT NULL,
-	doctype integer DEFAULT 0 NOT NULL,
-	isdefault smallint DEFAULT 0 NOT NULL,
-	PRIMARY KEY (id)
-);
-
 /* -------------------------------------------------------- 
   Structure of table "numberplanassignments" 
 -------------------------------------------------------- */
