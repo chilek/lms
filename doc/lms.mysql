@@ -2,11 +2,93 @@
 # $Id$
 # --------------------------------------------------------
 
+# -- Drop tables first, MySQL doesn't support CASCADE
+
+DROP VIEW IF EXISTS nas;
+DROP VIEW IF EXISTS vnodes_mac;
+DROP VIEW IF EXISTS vnodes;
+DROP VIEW IF EXISTS vmacs;
+DROP VIEW IF EXISTS customersview;
+
+DROP TABLE IF EXISTS ewx_stm_nodes;
+DROP TABLE IF EXISTS ewx_stm_channels;
+DROP TABLE IF EXISTS ewx_pt_config;
+DROP TABLE IF EXISTS ewx_channels;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS customers;
+DROP TABLE IF EXISTS numberplans;
+DROP TABLE IF EXISTS nodeassignments;
+DROP TABLE IF EXISTS assignments;
+DROP TABLE IF EXISTS taxes;
+DROP TABLE IF EXISTS cash;
+DROP TABLE IF EXISTS dbinfo;
+DROP TABLE IF EXISTS numberplanassignments;
+DROP TABLE IF EXISTS invoicecontents;
+DROP TABLE IF EXISTS debitnotecontents;
+DROP TABLE IF EXISTS documents;
+DROP TABLE IF EXISTS documentcontents;
+DROP TABLE IF EXISTS receiptcontents;
+DROP TABLE IF EXISTS netdevices;
+DROP TABLE IF EXISTS netlinks;
+DROP TABLE IF EXISTS networks;
+DROP TABLE IF EXISTS macs;
+DROP TABLE IF EXISTS nodes;
+DROP TABLE IF EXISTS nodegroups;
+DROP TABLE IF EXISTS nodegroupassignments;
+DROP TABLE IF EXISTS payments;
+DROP TABLE IF EXISTS rtattachments;
+DROP TABLE IF EXISTS rtmessages;
+DROP TABLE IF EXISTS rtnotes;
+DROP TABLE IF EXISTS rtqueues;
+DROP TABLE IF EXISTS rttickets;
+DROP TABLE IF EXISTS rtrights;
+DROP TABLE IF EXISTS stats;
+DROP TABLE IF EXISTS tariffs;
+DROP TABLE IF EXISTS liabilities;
+DROP TABLE IF EXISTS customergroups;
+DROP TABLE IF EXISTS customerassignments;
+DROP TABLE IF EXISTS records;
+DROP TABLE IF EXISTS passwd;
+DROP TABLE IF EXISTS domains;
+DROP TABLE IF EXISTS aliases;
+DROP TABLE IF EXISTS aliasassignments;
+DROP TABLE IF EXISTS uiconfig;
+DROP TABLE IF EXISTS events;
+DROP TABLE IF EXISTS eventassignments;
+DROP TABLE IF EXISTS sessions;
+DROP TABLE IF EXISTS cashsources;
+DROP TABLE IF EXISTS sourcefiles;
+DROP TABLE IF EXISTS cashimport;
+DROP TABLE IF EXISTS hosts;
+DROP TABLE IF EXISTS daemoninstances;
+DROP TABLE IF EXISTS daemonconfig;
+DROP TABLE IF EXISTS docrights;
+DROP TABLE IF EXISTS cashrights;
+DROP TABLE IF EXISTS cashregs;
+DROP TABLE IF EXISTS cashreglog;
+DROP TABLE IF EXISTS imessengers;
+DROP TABLE IF EXISTS customercontacts;
+DROP TABLE IF EXISTS states;
+DROP TABLE IF EXISTS countries;
+DROP TABLE IF EXISTS zipcodes;
+DROP TABLE IF EXISTS divisions;
+DROP TABLE IF EXISTS excludedgroups;
+DROP TABLE IF EXISTS voipaccounts;
+DROP TABLE IF EXISTS messages;
+DROP TABLE IF EXISTS messageitems;
+DROP TABLE IF EXISTS nastypes;
+DROP TABLE IF EXISTS up_rights;
+DROP TABLE IF EXISTS up_rights_assignments;
+DROP TABLE IF EXISTS up_customers;
+DROP TABLE IF EXISTS up_help;
+DROP TABLE IF EXISTS up_info_changes;
+DROP TABLE IF EXISTS supermasters;
+
+# --------------------------------------------------------
 #
 # Structure of table  users
 #
 
-DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE users (
   id int(11) NOT NULL auto_increment,
   login varchar(32) NOT NULL DEFAULT '',
@@ -29,7 +111,6 @@ CREATE TABLE users (
 #
 # Structure of table customers (customers)
 #
-DROP TABLE IF EXISTS customers CASCADE;
 CREATE TABLE customers (
   id int(11) 		NOT NULL auto_increment,
   lastname varchar(128) NOT NULL DEFAULT '',
@@ -76,7 +157,6 @@ CREATE TABLE customers (
 #
 # Structure of table numberplans
 #
-DROP TABLE IF EXISTS numberplans CASCADE;
 CREATE TABLE numberplans (
 	id int(11) NOT NULL auto_increment,
 	template varchar(255) NOT NULL DEFAULT '',
@@ -90,7 +170,6 @@ CREATE TABLE numberplans (
 #
 # Structure of table  assignments
 #
-DROP TABLE IF EXISTS assignments CASCADE;
 CREATE TABLE assignments (
   id int(11) NOT NULL auto_increment,
   tariffid int(11) NOT NULL DEFAULT '0',
@@ -118,7 +197,6 @@ CREATE TABLE assignments (
 #
 # Structure of table taxes
 #
-DROP TABLE IF EXISTS taxes CASCADE;
 CREATE TABLE taxes (
     id int(11) NOT NULL auto_increment,
     value decimal(4,2) NOT NULL DEFAULT '0',
@@ -133,7 +211,6 @@ CREATE TABLE taxes (
 #
 # Structure of table  cash
 #
-DROP TABLE IF EXISTS cash CASCADE;
 CREATE TABLE cash (
   id int(11) NOT NULL auto_increment,
   time int(11) NOT NULL DEFAULT '0',
@@ -159,7 +236,6 @@ CREATE TABLE cash (
 #
 # Structure of table  dbinfo
 #
-DROP TABLE IF EXISTS dbinfo CASCADE;
 CREATE TABLE dbinfo (
   keytype varchar(255) NOT NULL DEFAULT '',
   keyvalue varchar(255) NOT NULL DEFAULT '',
@@ -170,7 +246,6 @@ CREATE TABLE dbinfo (
 #
 # Structure of table numberplanassignments
 #
-DROP TABLE IF EXISTS numberplanassignments CASCADE;
 CREATE TABLE numberplanassignments (
 	id int(11) NOT NULL auto_increment,
 	planid int(11) NOT NULL DEFAULT '0',
@@ -184,7 +259,6 @@ CREATE TABLE numberplanassignments (
 #
 # Structure of table  invoicecontents
 #
-DROP TABLE IF EXISTS invoicecontents CASCADE;
 CREATE TABLE invoicecontents (
   docid int(11) NOT NULL DEFAULT '0',
   itemid smallint NOT NULL DEFAULT '0',
@@ -203,7 +277,6 @@ CREATE TABLE invoicecontents (
 #
 # Structure of table debitnotecontents
 #
-DROP TABLE IF EXISTS debitnotecontents CASCADE;
 CREATE TABLE debitnotecontents (
 	id int(11) NOT NULL auto_increment,
 	docid int(11) NOT NULL DEFAULT '0',
@@ -218,7 +291,6 @@ CREATE TABLE debitnotecontents (
 #
 # Structure of table documents
 #
-DROP TABLE IF EXISTS documents CASCADE;
 CREATE TABLE documents (
 	id int(11) NOT NULL auto_increment,
 	type tinyint NOT NULL DEFAULT '0',
@@ -252,7 +324,6 @@ CREATE TABLE documents (
 #
 # Structure of table documentcontents
 #
-DROP TABLE IF EXISTS documentcontents CASCADE;
 CREATE TABLE documentcontents (
         docid int(11) DEFAULT '0' NOT NULL,
 	title text DEFAULT '' NOT NULL,
@@ -272,7 +343,6 @@ CREATE TABLE documentcontents (
 #
 # Structure of table receiptcontents
 #
-DROP TABLE IF EXISTS receiptcontents CASCADE;
 CREATE TABLE receiptcontents (
 	docid int(11) 		NOT NULL DEFAULT '0',
 	itemid 			TINYINT NOT NULL DEFAULT '0',
@@ -287,7 +357,6 @@ CREATE TABLE receiptcontents (
 #
 # Structure of tables ewx_* (EtherWerX(R))
 #
-DROP TABLE IF EXISTS ewx_stm_nodes CASCADE;
 CREATE TABLE ewx_stm_nodes (
 	id int(11)              NOT NULL auto_increment,
 	nodeid int(11)          DEFAULT '0' NOT NULL,
@@ -303,7 +372,6 @@ CREATE TABLE ewx_stm_nodes (
 	UNIQUE KEY nodeid (nodeid)
     ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS ewx_stm_channels CASCADE;
 CREATE TABLE ewx_stm_channels (
 	id int(11)              NOT NULL auto_increment,
 	cid int(11)             DEFAULT '0' NOT NULL,
@@ -313,7 +381,6 @@ CREATE TABLE ewx_stm_channels (
 	UNIQUE KEY cid (cid)
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS ewx_pt_config CASCADE;
 CREATE TABLE ewx_pt_config (
         id int(11)              NOT NULL auto_increment,
 	nodeid int(11)          DEFAULT '0' NOT NULL,
@@ -325,7 +392,6 @@ CREATE TABLE ewx_pt_config (
 	UNIQUE KEY nodeid (nodeid)
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS ewx_channels CASCADE;
 CREATE TABLE ewx_channels (
 	id int(11)              NOT NULL auto_increment,
 	name varchar(32)        DEFAULT '' NOT NULL,
@@ -341,7 +407,6 @@ CREATE TABLE ewx_channels (
 #
 # Structure of table  netdevices
 #
-DROP TABLE IF EXISTS netdevices CASCADE;
 CREATE TABLE netdevices (
   id 		int(11) 	NOT NULL auto_increment,
   name 		varchar(32) 	NOT NULL DEFAULT '',
@@ -368,7 +433,6 @@ CREATE TABLE netdevices (
 #
 # Structure of table  netlinks
 #
-DROP TABLE IF EXISTS netlinks CASCADE;
 CREATE TABLE netlinks (
   id int(11) NOT NULL auto_increment,
   src int(11) NOT NULL DEFAULT '0',
@@ -384,7 +448,6 @@ CREATE TABLE netlinks (
 #
 # Structure of table  networks
 #
-DROP TABLE IF EXISTS networks CASCADE;
 CREATE TABLE networks (
   id int(11) NOT NULL auto_increment,
   name varchar(128) NOT NULL DEFAULT '',
@@ -409,7 +472,6 @@ CREATE TABLE networks (
 #
 # Structure of table  nodes
 #
-DROP TABLE IF EXISTS nodes CASCADE;
 CREATE TABLE nodes (
   id int(11) NOT NULL auto_increment,
   name varchar(32) NOT NULL DEFAULT '',
@@ -446,7 +508,6 @@ CREATE TABLE nodes (
 #
 # Structure of table macs
 #
-DROP TABLE IF EXISTS macs CASCADE;
 CREATE TABLE macs (
   id int(11)        NOT NULL auto_increment,
   mac varchar(17)   NOT NULL DEFAULT '',
@@ -460,7 +521,6 @@ CREATE TABLE macs (
 #
 # Structure of table nodegroups
 #
-DROP TABLE IF EXISTS nodegroups CASCADE;
 CREATE TABLE nodegroups (
         id              int(11)         NOT NULL auto_increment,
 	name            varchar(255)    NOT NULL DEFAULT '',
@@ -474,7 +534,6 @@ CREATE TABLE nodegroups (
 #
 # Structure of table nodegroupassignments
 #
-DROP TABLE IF EXISTS nodegroupassignments CASCADE;
 CREATE TABLE nodegroupassignments (
         id              int(11)         NOT NULL auto_increment,
         nodegroupid     int(11)         NOT NULL DEFAULT 0,
@@ -487,7 +546,6 @@ CREATE TABLE nodegroupassignments (
 #
 # Structure of table nodeassignments
 #
-DROP TABLE IF EXISTS nodeassignments CASCADE;
 CREATE TABLE nodeassignments (
     id int(11) NOT NULL auto_increment,
     nodeid int(11) NOT NULL,
@@ -504,7 +562,6 @@ CREATE TABLE nodeassignments (
 #
 # Structure of table  payments
 #
-DROP TABLE IF EXISTS payments CASCADE;
 CREATE TABLE payments (
   id int(11) NOT NULL auto_increment,
   name varchar(255) NOT NULL DEFAULT '',
@@ -520,7 +577,6 @@ CREATE TABLE payments (
 #
 # Structure of table  rtattachments
 #
-DROP TABLE IF EXISTS rtattachments CASCADE;
 CREATE TABLE rtattachments (
   messageid int(11)     NOT NULL
     REFERENCES rtmessages (id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -533,7 +589,6 @@ CREATE TABLE rtattachments (
 #
 # Structure of table  rtmessages
 #
-DROP TABLE IF EXISTS rtmessages CASCADE;
 CREATE TABLE rtmessages (
   id int(11) NOT NULL auto_increment,
   ticketid int(11) NOT NULL
@@ -556,7 +611,6 @@ CREATE TABLE rtmessages (
 #
 # Structure of table  rtnotes
 #
-DROP TABLE IF EXISTS rtnotes CASCADE;
 CREATE TABLE rtnotes (
 	id int(11) 	     NOT NULL auto_increment,
 	ticketid int(11)     NOT NULL
@@ -574,7 +628,6 @@ CREATE TABLE rtnotes (
 #
 # Structure of table  rtqueues
 #
-DROP TABLE IF EXISTS rtqueues CASCADE;
 CREATE TABLE rtqueues (
   id int(11) NOT NULL auto_increment,
   name varchar(255) NOT NULL DEFAULT '',
@@ -588,7 +641,6 @@ CREATE TABLE rtqueues (
 #
 # Structure of table  rttickets
 #
-DROP TABLE IF EXISTS rttickets CASCADE;
 CREATE TABLE rttickets (
   id int(11) NOT NULL auto_increment,
   queueid int(11) NOT NULL
@@ -613,7 +665,6 @@ CREATE TABLE rttickets (
 #
 # Structure of table  rtrights
 #
-DROP TABLE IF EXISTS rtrights CASCADE;
 CREATE TABLE rtrights (
     id INT(11) NOT NULL auto_increment, 
     userid INT(11) NOT NULL
@@ -629,7 +680,6 @@ CREATE TABLE rtrights (
 #
 # Structure of table stats
 #
-DROP TABLE IF EXISTS stats CASCADE;
 CREATE TABLE stats (
   nodeid int(11) NOT NULL DEFAULT '0',
   dt int(11) NOT NULL DEFAULT '0',
@@ -643,7 +693,6 @@ CREATE TABLE stats (
 #
 # Structure of table tariffs
 #
-DROP TABLE IF EXISTS tariffs CASCADE;
 CREATE TABLE tariffs (
   id int(11) 		NOT NULL auto_increment,
   name varchar(255) 	NOT NULL DEFAULT '',
@@ -687,7 +736,6 @@ CREATE TABLE tariffs (
 #
 # Structure of table liabilities
 #
-DROP TABLE IF EXISTS liabilities CASCADE;
 CREATE TABLE liabilities (
     id int(11)              NOT NULL auto_increment,
     value decimal(9,2)      NOT NULL DEFAULT '0',
@@ -701,7 +749,6 @@ CREATE TABLE liabilities (
 #
 # Structure of table customergroups
 #
-DROP TABLE IF EXISTS customergroups CASCADE;
 CREATE TABLE customergroups (
   id int(11) NOT NULL auto_increment, 
   name varchar(255) NOT NULL DEFAULT '', 
@@ -714,7 +761,6 @@ CREATE TABLE customergroups (
 #
 # Structure of table customerassignments
 #
-DROP TABLE IF EXISTS customerassignments CASCADE;
 CREATE TABLE customerassignments (
   id int(11) NOT NULL auto_increment, 
   customergroupid int(11) NOT NULL
@@ -730,7 +776,6 @@ CREATE TABLE customerassignments (
 #
 # Structure of table passwd
 #
-DROP TABLE IF EXISTS passwd CASCADE;
 CREATE TABLE passwd (
     id int(11) NOT NULL auto_increment,
     ownerid int(11) NOT NULL DEFAULT 0,
@@ -761,7 +806,6 @@ CREATE TABLE passwd (
 #
 # Structure of table domains
 #
-DROP TABLE IF EXISTS domains CASCADE;
 CREATE TABLE domains (
     id int(11) NOT NULL auto_increment,
     ownerid int(11) NOT NULL DEFAULT 0,
@@ -781,7 +825,6 @@ CREATE TABLE domains (
 #
 # Structure of table aliases
 #
-DROP TABLE IF EXISTS aliases CASCADE;
 CREATE TABLE aliases (
     id int(11) NOT NULL auto_increment,
     login varchar(255) NOT NULL DEFAULT '',
@@ -794,7 +837,6 @@ CREATE TABLE aliases (
 #
 # Structure of table aliasassignments
 #
-DROP TABLE IF EXISTS aliasassignments CASCADE;
 CREATE TABLE aliasassignments (
     id              int(11)         NOT NULL auto_increment,
     aliasid         int(11)         DEFAULT '0' NOT NULL,
@@ -808,7 +850,6 @@ CREATE TABLE aliasassignments (
 #
 # Structure of table uiconfig
 #
-DROP TABLE IF EXISTS uiconfig CASCADE;
 CREATE TABLE uiconfig (
     id int(11) NOT NULL auto_increment,
     section varchar(64) NOT NULL DEFAULT '',
@@ -824,7 +865,6 @@ CREATE TABLE uiconfig (
 #
 # Structure of table events
 #
-DROP TABLE IF EXISTS events CASCADE;
 CREATE TABLE events (
     id int(11) NOT NULL auto_increment,
     title varchar(255) NOT NULL DEFAULT '',
@@ -845,7 +885,6 @@ CREATE TABLE events (
 #
 # Structure of table eventassignments
 #
-DROP TABLE IF EXISTS eventassignments CASCADE;
 CREATE TABLE eventassignments (
     eventid int(11) NOT NULL DEFAULT '0',
     userid int(11) NOT NULL DEFAULT '0',
@@ -856,7 +895,6 @@ CREATE TABLE eventassignments (
 #
 # Structure of table sessions
 #
-DROP TABLE IF EXISTS sessions CASCADE;
 CREATE TABLE sessions (
     id varchar(50) NOT NULL DEFAULT '', 
     ctime int(11) NOT NULL DEFAULT 0, 
@@ -871,7 +909,6 @@ CREATE TABLE sessions (
 #
 # Structure of table cashsources
 #
-DROP TABLE IF EXISTS cashsources CASCADE;
 CREATE TABLE cashsources (
     id      int(11)         NOT NULL auto_increment,
     name	varchar(32)     DEFAULT '' NOT NULL,
@@ -884,7 +921,6 @@ CREATE TABLE cashsources (
 #
 # Structure of table sourcefiles
 #
-DROP TABLE IF EXISTS sourcefiles CASCADE;
 CREATE TABLE sourcefiles (
     id      int(11)         NOT NULL auto_increment,
     userid integer     DEFAULT NULL
@@ -900,7 +936,6 @@ CREATE TABLE sourcefiles (
 #
 # Structure of table cashimport
 #
-DROP TABLE IF EXISTS cashimport CASCADE;
 CREATE TABLE cashimport (
     id int(11) NOT NULL auto_increment,
     date int(11) NOT NULL DEFAULT '0',
@@ -927,7 +962,6 @@ CREATE TABLE cashimport (
 #
 # Structure of table hosts
 #
-DROP TABLE IF EXISTS hosts CASCADE;
 CREATE TABLE hosts (
     id int(11) NOT NULL auto_increment,
     name varchar(255) DEFAULT '' NOT NULL,
@@ -942,7 +976,6 @@ CREATE TABLE hosts (
 #
 # Structure of table daemoninstances (lmsd configuration)
 #
-DROP TABLE IF EXISTS daemoninstances CASCADE;
 CREATE TABLE daemoninstances (
     id int(11) 			NOT NULL auto_increment,
     name varchar(255) 		DEFAULT '' NOT NULL,
@@ -959,7 +992,6 @@ CREATE TABLE daemoninstances (
 #
 # Structure of table daemonconfig (lmsd configuration)
 #
-DROP TABLE IF EXISTS daemonconfig CASCADE;
 CREATE TABLE daemonconfig (
     id int(11) 		NOT NULL auto_increment,
     instanceid int(11) 	DEFAULT '0' NOT NULL,
@@ -975,7 +1007,6 @@ CREATE TABLE daemonconfig (
 #
 # Structure of table docrights
 #
-DROP TABLE IF EXISTS docrights CASCADE;
 CREATE TABLE docrights (
     id          int(11)         NOT NULL auto_increment,
     userid      int(11)         DEFAULT '0' NOT NULL,
@@ -989,7 +1020,6 @@ CREATE TABLE docrights (
 #
 # Structure of table cashrights
 #
-DROP TABLE IF EXISTS cashrights CASCADE;
 CREATE TABLE cashrights (
     id int(11)      NOT NULL auto_increment,
     userid int(11)  DEFAULT '0' NOT NULL,
@@ -1003,7 +1033,6 @@ CREATE TABLE cashrights (
 #
 # Structure of table cashregs
 #
-DROP TABLE IF EXISTS cashregs CASCADE;
 CREATE TABLE cashregs (
     id int(11)              NOT NULL auto_increment,
     name varchar(255)       DEFAULT '' NOT NULL,
@@ -1019,7 +1048,6 @@ CREATE TABLE cashregs (
 #
 # Structure of table cashreglog
 #
-DROP TABLE IF EXISTS cashreglog CASCADE;
 CREATE TABLE cashreglog (
     id int(11) 			NOT NULL auto_increment,
     regid int(11)          	DEFAULT '0' NOT NULL,
@@ -1036,7 +1064,6 @@ CREATE TABLE cashreglog (
 #
 # Structure of table imessengers
 #
-DROP TABLE IF EXISTS imessengers CASCADE;
 CREATE TABLE imessengers (
 	id int(11) 		NOT NULL auto_increment,
     customerid int(11) 	NOT NULL
@@ -1051,7 +1078,6 @@ CREATE TABLE imessengers (
 #
 # Structure of table customercontacts
 #
-DROP TABLE IF EXISTS customercontacts CASCADE;
 CREATE TABLE customercontacts (
 	id 		int(11) 	NOT NULL auto_increment,
     customerid 	int(11) 	NOT NULL
@@ -1068,7 +1094,6 @@ CREATE TABLE customercontacts (
 #
 # Structure of table states
 #
-DROP TABLE IF EXISTS states CASCADE;
 CREATE TABLE states (
     	id 		int(11) 	NOT NULL auto_increment,
 	name 		varchar(255) 	NOT NULL DEFAULT '',
@@ -1081,7 +1106,6 @@ CREATE TABLE states (
 #
 # Structure of table countries
 #
-DROP TABLE IF EXISTS countries CASCADE;
 CREATE TABLE countries (
     	id 		int(11) 	NOT NULL auto_increment,
 	name 		varchar(255) 	NOT NULL DEFAULT '',
@@ -1093,7 +1117,6 @@ CREATE TABLE countries (
 #
 # Structure of table zipcodes
 #
-DROP TABLE IF EXISTS zipcodes CASCADE;
 CREATE TABLE zipcodes (
     	id 		int(11) 	NOT NULL auto_increment,
 	zip 		varchar(10) 	NOT NULL DEFAULT '',
@@ -1107,7 +1130,6 @@ CREATE TABLE zipcodes (
 #
 # Structure of table divisions
 #
-DROP TABLE IF EXISTS divisions CASCADE;
 CREATE TABLE divisions (
     	id 		int(11) 	NOT NULL auto_increment,
 	shortname       varchar(255) 	NOT NULL DEFAULT '',
@@ -1135,7 +1157,6 @@ CREATE TABLE divisions (
 #
 # Structure of table excludedgroups
 #
-DROP TABLE IF EXISTS excludedgroups CASCADE;
 CREATE TABLE excludedgroups (
 	id 		int(11) 	NOT NULL auto_increment,
     customergroupid int(11) 	NOT NULL
@@ -1150,7 +1171,6 @@ CREATE TABLE excludedgroups (
 #
 # Structure of table voipaccounts
 #
-DROP TABLE IF EXISTS voipaccounts CASCADE;
 CREATE TABLE voipaccounts (
 	id 		int(11) 	NOT NULL auto_increment,
 	ownerid 	int(11) 	NOT NULL DEFAULT 0,
@@ -1168,7 +1188,6 @@ CREATE TABLE voipaccounts (
 #
 # Structure of table messages
 #
-DROP TABLE IF EXISTS messages CASCADE;
 CREATE TABLE messages (
         id 	int(11) 	NOT NULL auto_increment,
         subject varchar(255)	DEFAULT '' NOT NULL,
@@ -1186,7 +1205,6 @@ CREATE TABLE messages (
 #
 # Structure of table messageitems
 #
-DROP TABLE IF EXISTS messageitems CASCADE;
 CREATE TABLE messageitems (
         id 		int(11) 	NOT NULL auto_increment,
 	messageid 	int(11)		DEFAULT '0' NOT NULL,
@@ -1204,7 +1222,6 @@ CREATE TABLE messageitems (
 #
 # Structure of table nastypes
 #
-DROP TABLE IF EXISTS nastypes CASCADE;
 CREATE TABLE nastypes (
     	id 	int(11) 	NOT NULL auto_increment,
 	name 	varchar(255) 	NOT NULL DEFAULT '',
@@ -1212,26 +1229,22 @@ CREATE TABLE nastypes (
 	UNIQUE KEY name (name)
 ) ENGINE=InnoDB;
 
-DROP VIEW IF EXISTS nas;
-CREATE VIEW nas AS 
-        SELECT n.id, inet_ntoa(n.ipaddr) AS nasname, d.shortname, d.nastype AS type,
+CREATE VIEW nas AS
+    SELECT n.id, inet_ntoa(n.ipaddr) AS nasname, d.shortname, d.nastype AS type,
 	d.clients AS ports, d.secret, d.community, d.description 
         FROM nodes n 
         JOIN netdevices d ON (n.netdev = d.id) 
         WHERE n.nas = 1;
 
-DROP VIEW IF EXISTS vnodes_mac;
 CREATE VIEW vnodes_mac AS
 	SELECT nodeid, GROUP_CONCAT(mac SEPARATOR ',') AS mac
 	FROM macs GROUP BY nodeid;
 
-DROP VIEW IF EXISTS vnodes;
 CREATE VIEW vnodes AS
 	SELECT n.*, m.mac
 	FROM nodes n
     LEFT JOIN vnodes_mac m ON (n.id = m.nodeid);
 
-DROP VIEW IF EXISTS vmacs;
 CREATE VIEW vmacs AS
 SELECT n.*, m.mac, m.id AS macid
     FROM nodes n
@@ -1241,14 +1254,12 @@ DROP FUNCTION IF EXISTS lms_current_user;
 CREATE FUNCTION lms_current_user() RETURNS int(11) NO SQL
 RETURN @lms_current_user;
 
-DROP VIEW IF EXISTS customersview;
 CREATE VIEW customersview AS
 	SELECT c.* FROM customers c
 	WHERE NOT EXISTS (
 	    	SELECT 1 FROM customerassignments a
 		JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 		WHERE e.userid = lms_current_user() AND a.customerid = c.id);
-
 
 DROP FUNCTION IF EXISTS mask2prefix;
 CREATE FUNCTION mask2prefix(mask bigint) RETURNS smallint DETERMINISTIC
@@ -1266,7 +1277,6 @@ RETURN CAST(num AS char(20));
 #
 # Structure of table up_rights (Userpanel)
 #
-DROP TABLE IF EXISTS up_rights CASCADE;
 CREATE TABLE up_rights (
     	id int(11) NOT NULL auto_increment,
 	module varchar(255) NOT NULL DEFAULT '',
@@ -1280,7 +1290,6 @@ CREATE TABLE up_rights (
 #
 # Structure of table up_rights_assignments (Userpanel)
 #
-DROP TABLE IF EXISTS up_rights_assignments CASCADE;
 CREATE TABLE up_rights_assignments (
 	id int(11) NOT NULL auto_increment,
 	customerid int(11) NOT NULL DEFAULT '0',
@@ -1293,7 +1302,6 @@ CREATE TABLE up_rights_assignments (
 #
 # Structure of table up_customers (Userpanel)
 #
-DROP TABLE IF EXISTS up_customers CASCADE;
 CREATE TABLE up_customers (
         id int(11) NOT NULL auto_increment,
 	customerid int(11) NOT NULL DEFAULT '0',
@@ -1309,7 +1317,6 @@ CREATE TABLE up_customers (
 #
 # Structure of table up_help (Userpanel)
 #
-DROP TABLE IF EXISTS up_help CASCADE;
 CREATE TABLE up_help (
         id int(11) NOT NULL auto_increment,
 	reference int(11) NOT NULL DEFAULT '0',
@@ -1322,7 +1329,6 @@ CREATE TABLE up_help (
 #
 # Structure of table up_info_changes (Userpanel)
 #
-DROP TABLE IF EXISTS up_info_changes CASCADE;
 CREATE TABLE up_info_changes (
         id int(11) NOT NULL auto_increment,
 	customerid int(11) NOT NULL,
@@ -1390,7 +1396,6 @@ INSERT INTO nastypes (name) VALUES ('other');
 #
 # Structure of table records
 #
-DROP TABLE IF EXISTS records CASCADE;
 CREATE TABLE records (
   id              INT(11) auto_increment,
   domain_id       INT(11) DEFAULT NULL,
@@ -1410,8 +1415,6 @@ CREATE TABLE records (
 #
 # Structure of table supermasters
 #
-
-DROP TABLE IF EXISTS supermasters CASCADE;
 CREATE TABLE supermasters (
   id            INT(11) auto_increment,
   ip            VARCHAR(25) NOT NULL,
