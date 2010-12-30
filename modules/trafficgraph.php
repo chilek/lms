@@ -135,7 +135,7 @@ function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=
 			    FROM stats '
 			    .($customer || $net ? 'JOIN nodes ON stats.nodeid = nodes.id ' : '')
 			    .'WHERE dt >= ? AND dt <= ? '
-			    .($customer ? ' AND ownerid = '.intval($customer) : '')
+			    .($customer ? ' AND ownerid = '.intval($customer).' ' : '')
 			    .$net
 			    .'GROUP BY CEIL(dt/?), nodeid) x
 			GROUP BY dts ORDER BY dts',
@@ -329,9 +329,9 @@ $nodeid = isset($_GET['nodeid']) ? $_GET['nodeid'] : 0;
 $bar = isset($_GET['bar']) ? $_GET['bar'] : NULL;
 $from = isset($_GET['from']) ? $_GET['from'] : NULL;
 $to = isset($_GET['to']) ? $_GET['to'] : NULL;
-$customer = isset($_GET['customer']) ? $_GET['customer'] : NULL;
-$net = isset($_GET['net']) ? $_GET['net'] : NULL;
-$add = isset($_GET['add']) ? $_GET['add'] : NULL;
+$customer = !empty($_GET['customer']) ? $_GET['customer'] : NULL;
+$net = !empty($_GET['net']) ? $_GET['net'] : NULL;
+$add = !empty($_GET['add']) ? $_GET['add'] : NULL;
 
 if(empty($_GET['popup']))
 {
