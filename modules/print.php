@@ -471,70 +471,82 @@ switch($type)
 		    case 11: $quarterday = $monthday + 100; break;
 		    default: $quarterday = $monthday + 200; break;
 		}
-		
+
 		$suspension_percentage = $CONFIG['finances']['suspension_percentage'];
-		
+
 		if($taxes = $LMS->GetTaxes($reportday, $reportday))
 		{
 			foreach($taxes as $tax)
 			{
-				$list1 =  $DB->GetAllByKey('SELECT customerid AS id, '.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername, '
+				$list1 =  $DB->GetAllByKey('SELECT a.customerid AS id, '.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername, '
 					.$DB->Concat('city',"' '",'address').' AS address, ten, 
-					SUM(CASE suspended 
-					    WHEN 0 THEN 
-						(CASE discount 
-						    WHEN 0 THEN tariffs.value 
-						    ELSE ((100 - discount) * tariffs.value) / 100 
-						END) 
-					    ELSE 
-						(CASE discount 
-						    WHEN 0 THEN tariffs.value * '.$suspension_percentage.' / 100 
-						    ELSE tariffs.value * discount * '.$suspension_percentage.' / 10000 
-						END) 
-					    END) AS value
-						
-					FROM assignments, tariffs, customersview c
-					WHERE customerid = c.id 
-					AND tariffid = tariffs.id AND taxid=?
-					AND deleted=0 
-					AND (datefrom<=? OR datefrom=0) AND (dateto>=? OR dateto=0) 
-					AND ((period='.DISPOSABLE.' AND at=?)
-					    OR (period='.WEEKLY.'. AND at=?) 
-					    OR (period='.MONTHLY.' AND at=?) 
-					    OR (period='.QUARTERLY.' AND at=?) 
-					    OR (period='.YEARLY.' AND at=?)) '
-					.($customerid ? 'AND customerid='.$customerid : ''). 
-					' GROUP BY customerid, lastname, c.name, city, address, ten ', 'id',
+					SUM((CASE a.suspended
+					    WHEN 0 THEN
+						(CASE a.discount
+						    WHEN 0 THEN t.value
+						    ELSE ((100 - a.discount) * t.value) / 100 
+						END)
+					    ELSE
+						(CASE a.discount
+						    WHEN 0 THEN t.value * '.$suspension_percentage.' / 100
+						    ELSE t.value * a.discount * '.$suspension_percentage.' / 10000
+						END)
+					END)
+					* (CASE a.period
+					        WHEN '.YEARLY.' THEN 12
+					        WHEN '.HALFYEARLY.' THEN 6
+					        WHEN '.QUARTERLY.' THEN 3
+					        WHEN '.WEEKLY.' THEN 1.0/4
+					        WHEN '.DAILY.' THEN 1.0/30
+					        ELSE 1 END)
+					* (CASE t.period
+					        WHEN '.YEARLY.' THEN 1.0/12
+					        WHEN '.HALFYEARLY.' THEN 1.0/6
+					        WHEN '.QUARTERLY.' THEN 1.0/3
+					        ELSE 1 END)
+        		    ) AS value
+					FROM assignments a, tariffs t, customersview c
+					WHERE a.customerid = c.id 
+					AND a.tariffid = t.id AND t.taxid=?
+					AND c.deleted=0 
+					AND (a.datefrom<=? OR a.datefrom=0) AND (a.dateto>=? OR a.dateto=0) 
+					AND ((a.period='.DISPOSABLE.' AND a.at=?)
+					    OR (a.period='.WEEKLY.'. AND a.at=?)
+					    OR (a.period='.MONTHLY.' AND a.at=?)
+					    OR (a.period='.QUARTERLY.' AND a.at=?)
+					    OR (a.period='.YEARLY.' AND a.at=?)) '
+					.($customerid ? 'AND a.customerid='.$customerid : '').
+					' GROUP BY a.customerid, lastname, c.name, city, address, ten ', 'id',
 					array($tax['id'], $reportday, $reportday, $today, $weekday, $monthday, $quarterday, $yearday));
 
-				$list2 =  $DB->GetAllByKey('SELECT customerid AS id, '.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername, '
-					.$DB->Concat('city',"' '",'address').' AS address, ten, 
-					SUM(CASE suspended 
-					    WHEN 0 THEN 
-						(CASE discount 
-						    WHEN 0 THEN liabilities.value 
-						    ELSE ((100 - discount) * liabilities.value) / 100 
-						END) 
-					    ELSE 
-						(CASE discount 
-						    WHEN 0 THEN liabilities.value * '.$suspension_percentage.' / 100 
-						    ELSE liabilities.value * discount * '.$suspension_percentage.' / 10000 
+				$list2 =  $DB->GetAllByKey('SELECT a.customerid AS id, '.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername, '
+					.$DB->Concat('city',"' '",'address').' AS address, ten,
+					SUM(CASE a.suspended
+					    WHEN 0 THEN
+						(CASE a.discount
+						    WHEN 0 THEN l.value
+						    ELSE ((100 - a.discount) * l.value) / 100
+						END)
+					    ELSE
+						(CASE discount
+						    WHEN 0 THEN l.value * '.$suspension_percentage.' / 100
+						    ELSE l.value * a.discount * '.$suspension_percentage.' / 10000 
 						END) 
 					    END) AS value
-					FROM assignments, liabilities, customersview c
-					WHERE customerid = c.id 
-					AND liabilityid = liabilities.id AND taxid=?
-					AND deleted=0 
-					AND (datefrom<=? OR datefrom=0) AND (dateto>=? OR dateto=0) 
-					AND ((period='.DISPOSABLE.' AND at=?)
-					    OR (period='.WEEKLY.'. AND at=?) 
-					    OR (period='.MONTHLY.' AND at=?) 
-					    OR (period='.QUARTERLY.' AND at=?) 
-					    OR (period='.YEARLY.' AND at=?)) '
-					.($customerid ? 'AND customerid='.$customerid : ''). 
-					' GROUP BY customerid, lastname, c.name, city, address, ten ', 'id',
+					FROM assignments a, liabilities l, customersview c
+					WHERE a.customerid = c.id 
+					AND a.liabilityid = l.id AND l.taxid=?
+					AND c.deleted=0
+					AND (a.datefrom<=? OR a.datefrom=0) AND (a.dateto>=? OR a.dateto=0) 
+					AND ((a.period='.DISPOSABLE.' AND a.at=?)
+					    OR (a.period='.WEEKLY.'. AND a.at=?) 
+					    OR (a.period='.MONTHLY.' AND a.at=?) 
+					    OR (a.period='.QUARTERLY.' AND a.at=?) 
+					    OR (a.period='.YEARLY.' AND a.at=?)) '
+					.($customerid ? 'AND a.customerid='.$customerid : ''). 
+					' GROUP BY a.customerid, lastname, c.name, city, address, ten ', 'id',
 					array($tax['id'], $reportday, $reportday, $today, $weekday, $monthday, $quarterday, $yearday));
-				
+
 				$list = array_merge((array) $list1, (array) $list2);
 
 				if($list)
@@ -556,7 +568,7 @@ switch($type)
 						$total['netto'][$tax['id']] += $reportlist[$idx][$tax['id']]['netto'];
 						$total['tax'][$tax['id']] += $reportlist[$idx][$tax['id']]['tax'];
 					}
-					
+
 					switch($order)
 					{
 						case 'customername':
@@ -571,7 +583,7 @@ switch($type)
 					        		foreach($table['idx'] as $idx)
 					        			$tmplist[] = $reportlist[$idx];
 							}
-							$reportlist = $tmplist;		
+							$reportlist = $tmplist;
 						break;
 						default:
 							foreach($reportlist as $idx => $row)
@@ -585,7 +597,7 @@ switch($type)
 					    	    		foreach($table['idx'] as $idx)
 									$tmplist[] = $reportlist[$idx];
 							}
-							$reportlist = $tmplist;				
+							$reportlist = $tmplist;
 						break;
 					}
 
