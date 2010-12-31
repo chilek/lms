@@ -2413,7 +2413,7 @@ class LMS
 				taxes.label AS tax, t.period
 				FROM tariffs t
 				LEFT JOIN taxes ON t.taxid = taxes.id
-				ORDER BY t.value DESC');
+				ORDER BY t.name, t.value DESC');
 	}
 
 	function TariffExists($id)
