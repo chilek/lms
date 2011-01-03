@@ -454,12 +454,13 @@ switch($type)
 		$direction = $_POST['direction'];
 		$customerid = (isset($_POST['customer']) ? $_POST['customer'] : 0);
 
-		$yearday = date('z', $reportday);
+        $year = date('Y', $reportday);
+		$yearday = date('z', $reportday) + 1;
 		$month = date('n', $reportday);
 		$monthday = date('j', $reportday);
 		$weekday = date('w', $reportday);
-		
-		switch($month) 
+
+		switch($month)
 		{
 		    case 1:
 		    case 4:
@@ -471,6 +472,14 @@ switch($type)
 		    case 11: $quarterday = $monthday + 100; break;
 		    default: $quarterday = $monthday + 200; break;
 		}
+
+        if ($month > 6)
+            $halfyear = $monthday + ($month - 7) * 100;
+        else
+            $halfyear = $monthday + ($month - 1) * 100;
+
+        if (is_leap_year($year) && $yearday > 31+28)
+            $yearday -= 1;
 
 		$suspension_percentage = $CONFIG['finances']['suspension_percentage'];
 
@@ -514,10 +523,11 @@ switch($type)
 					    OR (a.period='.WEEKLY.'. AND a.at=?)
 					    OR (a.period='.MONTHLY.' AND a.at=?)
 					    OR (a.period='.QUARTERLY.' AND a.at=?)
+					    OR (a.period='.HALFYEARLY.' AND a.at=?)
 					    OR (a.period='.YEARLY.' AND a.at=?)) '
 					.($customerid ? 'AND a.customerid='.$customerid : '').
 					' GROUP BY a.customerid, lastname, c.name, city, address, ten ', 'id',
-					array($tax['id'], $reportday, $reportday, $today, $weekday, $monthday, $quarterday, $yearday));
+					array($tax['id'], $reportday, $reportday, $today, $weekday, $monthday, $quarterday, $halfyear, $yearday));
 
 				$list2 =  $DB->GetAllByKey('SELECT a.customerid AS id, '.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername, '
 					.$DB->Concat('city',"' '",'address').' AS address, ten,
@@ -542,10 +552,11 @@ switch($type)
 					    OR (a.period='.WEEKLY.'. AND a.at=?) 
 					    OR (a.period='.MONTHLY.' AND a.at=?) 
 					    OR (a.period='.QUARTERLY.' AND a.at=?) 
+					    OR (a.period='.HALFYEARLY.' AND a.at=?)
 					    OR (a.period='.YEARLY.' AND a.at=?)) '
 					.($customerid ? 'AND a.customerid='.$customerid : ''). 
 					' GROUP BY a.customerid, lastname, c.name, city, address, ten ', 'id',
-					array($tax['id'], $reportday, $reportday, $today, $weekday, $monthday, $quarterday, $yearday));
+					array($tax['id'], $reportday, $reportday, $today, $weekday, $monthday, $quarterday, $halfyear, $yearday));
 
 				$list = array_merge((array) $list1, (array) $list2);
 
