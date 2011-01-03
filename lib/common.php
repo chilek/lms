@@ -667,6 +667,14 @@ function lastonline_date($timestamp)
     return trans('online');
 }
 
+function is_leap_year($year)
+{
+    if ($year % 4) return false;
+    if ($year % 100) return true;
+    if ($year % 400) return false;
+    return true;
+}
+
 /* Functions for modularized LMS */
 function plugin_handle($name)
 {
