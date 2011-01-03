@@ -754,13 +754,15 @@ function invoice_to_pay($x,$y)
     return $y;
 }
 
-function invoice_expositor ($x,$y) 
+function invoice_expositor ($x,$y)
 {
     global $pdf, $invoice;
-    
+
     $expositor = isset($invoice['user']) ? $invoice['user'] : $invoice['division_author'];
-	    
-    $y = $y - text_align_left($x,$y,10,iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Expositor:')).' '.iconv("UTF-8","ISO-8859-2//TRANSLIT",$expositor));
+
+    if ($expositor) {
+        $y = $y - text_align_left($x,$y,10,iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Expositor:')).' '.iconv("UTF-8","ISO-8859-2//TRANSLIT",$expositor));
+    }
     return $y;
 }
 

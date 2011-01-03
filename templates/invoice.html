@@ -328,7 +328,9 @@
 	</TR>
 	<TR>
 		<TD WIDTH="50%" ALIGN="CENTER" ROWSPAN="2">
+	        {if $invoice.user || $invoice.division_author}
 			{t}Expositor:{/t} {if $invoice.user}{$invoice.user}{else}{$invoice.division_author}{/if}
+        	{/if}
 		</TD>
 		<TD WIDTH="50%" ALIGN="RIGHT" CLASS="hdf">
 			{if $invoice.rebate}
