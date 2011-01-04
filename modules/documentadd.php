@@ -184,16 +184,25 @@ if(isset($_POST['document']))
 
 	if(!$error)
 	{
-		$path = DOC_DIR.'/'.substr($document['md5sum'],0,2);
-		@mkdir($path, 0700);
-		$newfile = $path.'/'.$document['md5sum'];
-		if(!file_exists($newfile))
-		{
+        if ($DB->GetOne('SELECT id FROM documentcontents WHERE md5sum = ?',
+            array($document['md5sum']))
+        ) {
+			$error['file'] = trans('Specified file exists in database!');
+        }
+        else {
+    		$path = DOC_DIR.'/'.substr($document['md5sum'],0,2);
+	    	@mkdir($path, 0700);
+		    $newfile = $path.'/'.$document['md5sum'];
+
+            // If we have a file with specified md5sum, we assume
+            // it's here because of some error. We can replace it with
+            // the new document file
+		    if (file_exists($newfile)) {
+		        @unlink($newfile);
+		    }
 			if(!@rename($file, $newfile))
 				$error['file'] = trans('Can\'t save file in "$0" directory!', $path);
 		}
-		else
-			$error['file'] = trans('Specified file exists in database!');
 	}
 
 	if(!$error)
