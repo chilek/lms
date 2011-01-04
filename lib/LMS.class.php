@@ -167,7 +167,7 @@ class LMS
 	}
 
 	/*
-	 *  Users (Useristrators)
+	 * Users
 	 */
 
 	function SetUserPassword($id, $passwd)
@@ -175,10 +175,10 @@ class LMS
 		$this->DB->Execute('UPDATE users SET passwd=? WHERE id=?', array(crypt($passwd), $id));
 	}
 
-	function GetUserName($id) // returns user name
+	function GetUserName($id=NULL) // returns user name
 	{
 		if (!$id)
-			return NULL;
+			$id = $this->AUTH->id;
 
 		if(!($name = $this->GetCache('users', $id, 'name')))
 		{
