@@ -30,10 +30,8 @@ $networks = $LMS->GetNetworks(true);
 
 $p = isset($_GET['p']) ? $_GET['p'] : '';
 
-if($p=='')
-	$js = 'var targetfield = window.opener.targetfield;';
-elseif($p == 'main')
-	$js = 'var targetfield = parent.targetfield;';
+if(!$p || $p == 'main')
+	$js = 'var targetfield = window.parent.targetfield;';
 else
 	$js = '';
 

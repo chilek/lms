@@ -28,10 +28,8 @@ $layout['pagetitle'] = trans('Select customer');
 
 $p = isset($_GET['p']) ? $_GET['p'] : '';
 
-if(!$p)
-	$SMARTY->assign('js', 'var targetfield = window.opener.targetfield;');
-elseif($p == 'main')
-	$SMARTY->assign('js', 'var targetfield = parent.targetfield;');
+if(!$p || $p == 'main')
+	$SMARTY->assign('js', 'var targetfield = window.parent.targetfield;');
 
 if(isset($_POST['searchcustomer']) && $_POST['searchcustomer'])
 {

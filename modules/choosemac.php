@@ -30,10 +30,10 @@ $p = isset($_GET['p']) ? $_GET['p'] : '';
 $js = '';
 
 if(!$p)
-	$js = 'var targetfield = window.opener.targetfield;';
+	$js = 'var targetfield = window.parent.targetfield;';
 elseif($p == 'main')
 {
-	$js = 'var targetfield = parent.targetfield;';
+	$js = 'var targetfield = window.parent.targetfield;';
 
 	$maclist = $LMS->GetMACs();
 
@@ -45,15 +45,15 @@ elseif($p == 'main')
 			$res = explode(':', $server);
 			if(!isset($res[1]) || $res[1] == '')
 				$res[1] = 1029;
-			
+
 			$remote = $LMS->GetRemoteMACs($res[0], $res[1]);
 			$maclist = array_merge($maclist, $remote);
 		}
 	}
-	
+
 	if(sizeof($maclist))
 		array_multisort($maclist['longip'],$maclist['mac'],$maclist['ip'],$maclist['nodename']);
-				
+
 	$SMARTY->assign('maclist',$maclist);
 }
 
