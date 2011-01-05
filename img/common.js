@@ -31,71 +31,58 @@ function removeClass(theElem, theClass)
 	theElem.className = str.replace(regexp, '');
 }
 
+// LMS: function to autoresize iframe and parent div container (overlib)
+function autoiframe_setsize(width, height)
+{
+    var doc = window.parent ? parent.document : document,
+        frame = doc.getElementById('autoiframe');
+
+    if (width) {
+        frame.style.width = width + 'px';
+        frame.parentNode.style.width = width + 'px';
+    }
+    if (height) {
+        frame.style.height = height + 'px';
+        frame.parentNode.style.height = height + 'px';
+    }
+}
+
 function openSelectWindow(theURL, winName, myWidth, myHeight, isCenter, formfield)
 {
-	var myLeft = 5, myTop = 5;
-
-	if (isCenter) {
-		myLeft = (screen.width-myWidth)/2;
-		myTop = (screen.height-myHeight)/2;
-	}
-	
 	targetfield = formfield;
-	
-	var okno = window.open(theURL,winName,'location=0,directories=0,scrollbars=no,toolbar=0,menubar=0,resizable=0,status=0,width='+myWidth+',height='+myHeight+',left=' + myLeft+ ',top=' + myTop);
+    overlib('<iframe id="autoiframe" frameborder=0 scrolling=no src="' + theURL + '">',
+            HAUTO,VAUTO,OFFSETX,30,OFFSETY,15,STICKY,MOUSEOFF);
+    autoiframe_setsize(myWidth, myHeight);
 
 	return false;
 }
 
-function openWindow(theURL,winName,myWidth,myHeight,isCenter)
+function ipchoosewin(formfield, netid, device)
 {
-	var myLeft = 5, myTop = 5;
-
-	if (isCenter)
-	{
-		myLeft = (screen.width-myWidth)/2;
-		myTop = (screen.height-myHeight)/2;
-	}
-
-	var okno = window.open(theURL, winName, 'location=0,directories=0,scrollbars=no,toolbar=0,menubar=0,resizable=0,status=0,titlebar=0,width='+myWidth+',height='+myHeight+',left=' + myLeft+ ',top=' + myTop);
-
-	return false;
-}
-
-function ipchoosewin(formfield,netid,device)
-{
-	var okno = openSelectWindow('?m=chooseip' +  (netid ? '&netid=' + netid : '') + (device ? '&device=' + device : ''),'chooseip',350,380,'true',formfield);
-	return false;
+    var url = '?m=chooseip' +  (netid ? '&netid=' + netid : '') + (device ? '&device=' + device : '');
+	return openSelectWindow(url,'chooseip',350,380,'true',formfield);
 }
 
 function macchoosewin(formfield)
 {
-	var okno = openSelectWindow('?m=choosemac','choosemac',290,380,'true',formfield);
-	return false;
+	return openSelectWindow('?m=choosemac','choosemac',290,380,'true',formfield);
 }
 
 function customerchoosewin(formfield)
 {
-	var okno = openSelectWindow('?m=choosecustomer','choosecustomer',450,250,'true',formfield);
-	return false;
+	return openSelectWindow('?m=choosecustomer','choosecustomer',450,250,'true',formfield);
 }
 
 function nodechoosewin(formfield, customerid)
 {
-	var myWidth = 350, myHeight = 200, myLeft = (screen.width-myWidth)/2, myTop = (screen.height-myHeight)/2;
-	
-	targetfield = formfield;
-	
-	var okno = window.open('?m=choosenode&id='+customerid,'choosenode','location=0,directories=0,scrollbars=yes,toolbar=0,menubar=0,resizable=0,status=0,width='+myWidth+',height='+myHeight+',left='+myLeft+',top='+myTop);
-	
-	return false;
+	return openSelectWindow('?m=choosenode&id='+customerid,'choosenode',350,200,'true',formfield);
 }
 
-function sendvalue(targetfield,value)
+function sendvalue(targetfield, value)
 {
 	targetfield.value = value;
-	window.close();
-	parent.window.close();
+    // close popup
+    window.parent.parent.nd();
 	targetfield.focus();
 }
 
@@ -129,10 +116,10 @@ function getSeconds()
 	return Math.round((timer_now2.getTime() - timer_start)/1000);
 }
 
-function getCookie(name) 
+function getCookie(name)
 {
         var cookies = document.cookie.split(';');
-	for (var i=0; i<cookies.length; i++) 
+	for (var i=0; i<cookies.length; i++)
 	{
 		var a = cookies[i].split('=');
                 if (a.length == 2)
@@ -165,14 +152,14 @@ if (typeof String.prototype.trim == 'undefined')
 function checkElement(id)
 {
 	var elem = document.getElementById(id);
-	
+
 	if (!elem) {
 		var list = document.getElementsByName(id);
 		if (list.length) {
 			elem = list[0];
 		}
 	}
-	
+
 	if (elem) {
 		elem.checked = !elem.checked;
 	}
@@ -199,7 +186,7 @@ function multiselect(formid, elemid, def)
 {
 	var old_element = document.getElementById(elemid);
 	var form = document.getElementById(formid);
-	
+
 	if (!old_element || !form) {
 		return;
 	}
@@ -231,19 +218,19 @@ function multiselect(formid, elemid, def)
 		var li = document.createElement('LI');
 		var box = document.createElement('INPUT');
 		var span = document.createElement('SPAN');
-		
+
 		box.type = 'checkbox';
 		box.name = old_element.name;
 		box.value = old_element.options[i].value;
 
 		span.innerHTML = old_element.options[i].text;
-		
+
 		// add some mouse/key events handlers
 		li.onclick = function() {
 			var box = this.childNodes[0];
 			var selected = this.className.match(/selected/);
 			box.checked = selected ? false : true;
-			
+
 			if(selected) {
 				removeClass(this, 'selected');
 				if(def) {
@@ -263,13 +250,13 @@ function multiselect(formid, elemid, def)
 			}
 		};
 		// TODO: keyboard events
-		
+
 		// add elements
 		li.appendChild(box);
 		li.appendChild(span);
 		ul.appendChild(li);
-	}	
-	
+	}
+
 	// add list
 	div.appendChild(iframe);
 	div.appendChild(ul);

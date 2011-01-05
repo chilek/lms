@@ -7,6 +7,7 @@
 <link href="{if $_config.phpui.style}{$_config.phpui.style}{else}img/style.css{/if}" rel="stylesheet" type="text/css">
 <title>::: LMS :::</title>
 <script type="text/javascript" src="img/autoiframe.js"></script>
+<script type="text/javascript" src="img/common.js"></script>
 </head>
 <body style="text-align: center; margin: 0">
 <img id="table" src="?m=trafficgraph&nodeid={$nodeid}&bar={$bar}{if $from}&from={$from}{/if}{if $to}&to={$to}{/if}{if $add}&add={$add}{/if}&ts={$smarty.now}" height="{$smarty.const.GRAPH_HEIGHT}" width="{$smarty.const.GRAPH_WIDTH}" alt="">
