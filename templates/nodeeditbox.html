@@ -109,6 +109,7 @@
 		</TD>
 	</TR>
 *}
+{if $netdevices}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
 			<IMG SRC="img/netdev.gif" ALT="{t}Net devices:{/t}">
@@ -124,6 +125,7 @@
 			<INPUT type="checkbox" name="nodeedit[linktype]" id="linktype" value="1"{if $nodeinfo.linktype} CHECKED{/if}><A HREF="javascript:checkElement('linktype')"><IMG src="img/wireless.gif" alt="{t}wireless{/t}" {tip text="wireless"}></A>
 		</TD>
 	</TR>
+{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
 			<IMG SRC="img/customer.gif" ALT="{t}Customer:{/t}">
