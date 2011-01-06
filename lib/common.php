@@ -675,6 +675,19 @@ function is_leap_year($year)
     return true;
 }
 
+function truncate_str($string, $length, $etc='...')
+{
+    if ($length == 0)
+        return '';
+
+    if (mb_strlen($string) > $length) {
+        $length -= min($length, mb_strlen($etc));
+        return mb_substr($string, 0, $length) . $etc;
+    } else {
+        return $string;
+    }
+}
+
 /* Functions for modularized LMS */
 function plugin_handle($name)
 {
