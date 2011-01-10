@@ -184,7 +184,7 @@ if(isset($_POST['document']))
 
 	if(!$error)
 	{
-        if ($DB->GetOne('SELECT id FROM documentcontents WHERE md5sum = ?',
+        if ($DB->GetOne('SELECT docid FROM documentcontents WHERE md5sum = ?',
             array($document['md5sum']))
         ) {
 			$error['file'] = trans('Specified file exists in database!');
