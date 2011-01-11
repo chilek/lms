@@ -59,7 +59,7 @@ grep -air '1\.11-cvs' .|cut -d: -f1|sort|uniq|xargs perl -pi -e "s/1\.11-cvs/$LM
 chmod 777 templates_c backups documents userpanel/templates_c
 cd lib
 #pobieramy Smarty i wlaczamy do paczki LMSa
-wget http://www.smarty.net/distributions/Smarty-$SMARTYVER.tar.gz
+wget http://www.smarty.net/files/Smarty-$SMARTYVER.tar.gz
 tar -xzf Smarty-$SMARTYVER.tar.gz
 mv Smarty-$SMARTYVER/libs/* Smarty/
 mv Smarty-$SMARTYVER/libs/plugins/* Smarty/plugins/
