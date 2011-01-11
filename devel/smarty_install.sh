@@ -3,12 +3,12 @@
 # Smarty templates library quick installation (with sources download)
 #
 
-SMARTYVER="2.6.25"
+SMARTYVER="2.6.26"
 
 cd ../lib
 # download
 echo -n "Downloading Smarty sources... "
-wget http://www.smarty.net/distributions/Smarty-$SMARTYVER.tar.gz
+wget http://www.smarty.net/files/Smarty-$SMARTYVER.tar.gz
 echo "done."
 
 # extracting package
