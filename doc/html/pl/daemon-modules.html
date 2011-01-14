@@ -1257,7 +1257,11 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->%m - mac adres,</TD
+>%m - adres MAC,</TD
+></TR
+><TR
+><TD
+>%ms - lista adresów MAC hosta (oddzielonych przecinkiem),</TD
 ></TR
 ><TR
 ><TD
@@ -1636,6 +1640,20 @@ CLASS="PROMPT"
 >Przykład: <SAMP
 CLASS="PROMPT"
 >skip_host_ips = tak</SAMP
+></P
+></LI
+><LI
+><P
+>multi_mac</P
+><P
+>Jeśli ustawiona na tak (yes, true) utworzony zostanie osobny rekord
+				dla każdego adresu MAC. Tzn. jeśli komputer ma przypisanych
+				kilka adresów MAC, będzie utworzone tyle wpisów ile tych adresów.
+				Domyślnie: nie</P
+><P
+>Przykład: <SAMP
+CLASS="PROMPT"
+>multi_mac = tak</SAMP
 ></P
 ></LI
 ><LI
