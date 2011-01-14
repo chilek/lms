@@ -61,6 +61,7 @@ version ? (????-??-??)
     value multiplied by 12 (alec)
   - BTS#0000844: fixed traffic graph when using customer filter (alec)
   - Added device nodes count on devices list in channel info (alec)
+  - Added channel limits on customer nodes list (alec)
 
 version 1.11.10 Kri (2010-04-19)
 
