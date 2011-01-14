@@ -46,7 +46,8 @@ $layout['pagetitle'] = trans('Info Channel: $0', $channel['name']);
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if ($channel['id']) {
-    $channel['devices'] = $DB->GetAll('SELECT id, name, location
+    $channel['devices'] = $DB->GetAll('SELECT id, name, location,
+        (SELECT COUNT(*) FROM nodes WHERE netdev = netdevices.id AND ownerid > 0) AS nodes
 	    FROM netdevices
     	WHERE channelid = ? ORDER BY name', array($channel['id']));
 
@@ -55,7 +56,8 @@ if ($channel['id']) {
     	WHERE channelid IS NULL ORDER BY name');
 } else {
     // default channel
-    $channel['devices'] = $DB->GetAll('SELECT id, name, location
+    $channel['devices'] = $DB->GetAll('SELECT id, name, location,
+        (SELECT COUNT(*) FROM nodes WHERE netdev = netdevices.id AND ownerid > 0) AS nodes
 	    FROM netdevices WHERE id IN (
 	        SELECT nodeid FROM ewx_stm_nodes WHERE channelid = ?)
 	    ORDER BY name', array($channel['id']));
