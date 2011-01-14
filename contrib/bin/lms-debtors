@@ -92,14 +92,12 @@ if($dbtype =~ /mysql/)
 	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	$utsfmt = "UNIX_TIMESTAMP()";
 	$ownerq = "CONCAT(UPPER(customers.lastname), ' ', customers.name) AS owner";
-		
 }
 elsif($dbtype eq "postgres")
 {
 	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	$utsfmt = "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";
 	$ownerq = "UPPER(customers.lastname) || ' ' || customers.name AS owner";
-	     
 }
 else
 {
@@ -126,11 +124,18 @@ while(my $row = $dbq->fetchrow_hashref())
 {
 	my $cid = $row->{'customerid'};
 	my $customer = sprintf("%04d",$cid);
-	
+
 	if($cid != $lastid)
 	{
-		my $dbqi = $dbase->prepare("SELECT SUM(value) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND period = 3 AND suspended = 0 AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto >= $utsfmt OR dateto = 0) AND customerid = $cid GROUP BY customerid HAVING SUM(value) > 0");
+		my $dbqi = $dbase->prepare("SELECT SUM(t.value) AS value
+		    FROM assignments a, tariffs t
+		    WHERE a.tariffid = t.id AND a.period = 3 AND a.suspended = 0
+		        AND (a.datefrom <= $utsfmt OR a.datefrom = 0)
+		        AND (a.dateto >= $utsfmt OR a.dateto = 0)
+		        AND a.customerid = $cid
+		    GROUP BY a.customerid HAVING SUM(t.value) > 0");
 		$dbqi->execute();
+
 		if(my $rowi = $dbqi->fetchrow_hashref())
 		{
 			$percent = sprintf("%0.2f", $row->{'balance'}*-1/$rowi->{'value'});
@@ -140,9 +145,9 @@ while(my $row = $dbq->fetchrow_hashref())
 			$percent = "";
 		}
 	}
-		
+
 	print "$row->{'owner'} ($customer)|$row->{'ip'}|$row->{'balance'}|$percent\n";
 	$lastid = $cid;
-}	
+}
 
 $dbase->disconnect();
