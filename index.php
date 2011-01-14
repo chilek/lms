@@ -200,8 +200,8 @@ if($AUTH->islogged)
 						$allow = (bool) preg_match('/'.$access['table'][$level]['allow_reg'].'/i', $module);
 				}
 
-				if(isset($access['table'][$level]['privillege']))
-					$CONFIG['phpui'][$access['table'][$level]['privillege']] = TRUE;
+				if(isset($access['table'][$level]['privilege']))
+					$CONFIG['phpui'][$access['table'][$level]['privilege']] = TRUE;
 			}
 
 		if($allow && ! $deny)
