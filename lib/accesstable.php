@@ -92,7 +92,7 @@ $access['table'][20]['name']		= trans('nodes to groups assignment');
 $access['table'][20]['allow_reg']	= '^nodegroup$';
 
 $access['table'][21]['name']		= trans('summaries hiding');
-$access['table'][21]['privillege']	= 'hide_summaries';
+$access['table'][21]['privilege']	= 'hide_summaries';
 
 $access['table'][22]['name']		= trans('voip accounts management');
 $access['table'][22]['allow_reg']	= '^(voipimport|voipaccount(list|search|info|add|del|edit))$';

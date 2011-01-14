@@ -217,9 +217,9 @@ version 1.11.8 Belus (2009-05-19):
     option, added *_template and *_subject options (alec)
   - added creation date filter on documents list (alec)
   - fixed networks selection in customergroup forms (chilan)
-  - added user privilleges framework: you can define privilleges in access table
+  - added user privileges framework: you can define privileges in access table
     and then use them as $_config.phpui.* in templates (chilan)
-  - hide_summaries privillege introduced. For now it lets us show/hide
+  - hide_summaries privilege introduced. For now it lets us show/hide
     customer and node summaries (chilan)
   - added possibility to print many (text/html) documents from documents list (alec)
   - added access rights for (non-financial) documents (alec)
