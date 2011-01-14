@@ -6,7 +6,7 @@ function setstatus(access)
 		document.custnodeslist.action = '?m=nodeset&access=1';
 	else
 		document.custnodeslist.action = '?m=nodeset';
-	
+
 	document.custnodeslist.submit();
 }
 function setwarning(warning)
@@ -15,7 +15,7 @@ function setwarning(warning)
 		document.custnodeslist.action = '?m=nodewarn&warning=1';
 	else
 		document.custnodeslist.action = '?m=nodewarn';
-	
+
 	document.custnodeslist.submit();
 }
 function setgroup(act)
@@ -58,7 +58,7 @@ function CheckAllN2()
 		    <FORM method="post" action="" name="custnodeslist">
 		    <TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
 		        <TR class="dark">
-	                    <TD WIDTH="{math equation="x-y" x=95 y=$ewx}%" class="fleftu"><B>{t}Name:{/t}</B></TD>
+	                <TD WIDTH="{math equation="x-y" x=95 y=$ewx}%" class="fleftu"><B>{t}Name:{/t}</B></TD>
 		    	    <TD WIDTH="1%" class="fbt" align="right">{t}ID:{/t}</TD>
 			    {if $ewx}
 		    	    <TD WIDTH="1%" class="fbt" align="right">{t}Channel:{/t}</TD>
@@ -83,7 +83,7 @@ function CheckAllN2()
 				    {/if}
 				{else}
 				<img src="img/node_unk.gif" alt="">
-				{/if}	
+				{/if}
 				<B>{$customernodes[customernodes].name}</B>
 				{if $customernodes[customernodes].location}<BR>
 				<NOBR>{$customernodes[customernodes].location|truncate:60:"...":true}</NOBR>
@@ -97,16 +97,17 @@ function CheckAllN2()
 			    </TD>
 			    {if $ewx}
 		    	    <TD onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';" align="right" NOWRAP>
-				{if $customernodes[customernodes].channelname}
-				    <a href="?m=ewxchinfo&id={$customernodes[customernodes].channelid}">{$customernodes[customernodes].channelname|truncate:30:"...":true}</a>
-				{elseif $customernodes[customernodes].channelid}
-				    {if !$customernodes[customernodes].cid}
-				    <a href="?m=ewxchinfo&id=0">[{t}default{/t}]</a>
-				    {else}
-				    [{$customernodes[customernodes].channelid|string_format:"%04d"}]
+    				{if $customernodes[customernodes].channelname}
+	        	    <a href="?m=ewxchinfo&id={$customernodes[customernodes].channelid}">{$customernodes[customernodes].channelname|truncate:30:"...":true}</a>
+			    	{elseif $customernodes[customernodes].channelid}
+				        {if !$customernodes[customernodes].cid}
+    				    <a href="?m=ewxchinfo&id=0">[{t}default{/t}]</a>
+	    			    {else}
+		    		    [{$customernodes[customernodes].channelid|string_format:"%04d"}]
+				        {/if}
 				    {/if}
-				{/if}
-			    </TD>
+				    {if $customernodes[customernodes].downceil}({$customernodes[customernodes].downceil}/{$customernodes[customernodes].upceil|default:0} kbit/s){/if}
+			        </TD>
 			    {/if}
 			    <TD onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';" align="right" NOWRAP>
 				{$customernodes[customernodes].ip} {if $customernodes[customernodes].ip_pub != "0.0.0.0"} ({$customernodes[customernodes].ip_pub}){/if}

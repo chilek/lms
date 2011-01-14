@@ -886,7 +886,7 @@ class LMS
 
 	function GetCustomerNodes($id, $count=NULL)
 	{
-		if($result = $this->DB->GetAll('SELECT id, name, mac, ipaddr,
+		if ($result = $this->DB->GetAll('SELECT id, name, mac, ipaddr,
 				inet_ntoa(ipaddr) AS ip, ipaddr_pub,
 				inet_ntoa(ipaddr_pub) AS ip_pub, passwd, access,
 				warning, info, ownerid, lastonline,
@@ -894,7 +894,7 @@ class LMS
 				(SELECT COUNT(*) FROM nodegroupassignments
 					WHERE nodeid = vnodes.id) AS gcount
 				FROM vnodes
-				WHERE ownerid=?
+				WHERE ownerid = ?
 				ORDER BY name ASC '.($count ? 'LIMIT '.$count : ''), array($id)))
 		{
 			// assign network(s) to node record
@@ -924,16 +924,20 @@ class LMS
 			// get EtherWerX channels
 			if (chkconfig($this->CONFIG['phpui']['ewx_support']))
 			{
-				$channels = $this->DB->GetAllByKey('SELECT nodeid, channelid, c.name, c.id, cid
+				$channels = $this->DB->GetAllByKey('SELECT nodeid, channelid, c.name, c.id, cid,
+				        nc.upceil, nc.downceil
 					FROM ewx_stm_nodes
 					JOIN ewx_stm_channels nc ON (channelid = nc.id)
 					LEFT JOIN ewx_channels c ON (c.id = nc.cid)
 					WHERE nodeid IN ('.implode(',', array_keys($ids)).')', 'nodeid');
 
-				if ($channels) foreach($channels as $channel) {
-					$result[$ids[$channel['nodeid']]]['channelid'] = $channel['id'] ? $channel['id'] : $channel['channelid'];
-					$result[$ids[$channel['nodeid']]]['channelname'] = $channel['name'];
-					$result[$ids[$channel['nodeid']]]['cid'] = $channel['cid'];
+				if ($channels) foreach ($channels as $channel) {
+				    $idx = $ids[$channel['nodeid']];
+					$result[$idx]['channelid']   = $channel['id'] ? $channel['id'] : $channel['channelid'];
+					$result[$idx]['channelname'] = $channel['name'];
+					$result[$idx]['cid']         = $channel['cid'];
+					$result[$idx]['downceil']    = $channel['downceil'];
+					$result[$idx]['upceil']      = $channel['upceil'];
 				}
 			}
 
