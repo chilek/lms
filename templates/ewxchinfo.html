@@ -74,9 +74,10 @@
 		<TD width="100%" class="fall">
 			<TABLE width="100%" cellpadding="5" cellspacing="0">
 				<TR class="DARK">
-					<TD WIDTH="40%" class="fleftu"><B>{t}Name:{/t}</B></TD>
-			                <TD WIDTH="1%" class="fbt" align="right">{t}ID:{/t}</TD>
-					<TD WIDTH="58%" class="fbt">{t}Location:{/t}</TD>
+					<TD WIDTH="30%" class="fleftu"><B>{t}Name:{/t}</B></TD>
+	                <TD WIDTH="1%" class="fbt" align="right">{t}ID:{/t}</TD>
+					<TD WIDTH="1%" class="fbt" align="right">{t}Nodes:{/t}</TD>
+					<TD WIDTH="67%" class="fbt">{t}Location:{/t}</TD>
 					<TD WIDTH="1%" class="frightu">&nbsp;</TD>
 				</TR>
 				{cycle values="light,lucid" print=false}
@@ -87,6 +88,9 @@
 					</TD>
 					<TD onClick="return self.location.href='?m=netdevinfo&id={$item.id}';">
 						({$item.id|string_format:"%04d"})
+					</TD>
+					<TD onClick="return self.location.href='?m=netdevinfo&id={$item.id}';" align="right">
+						{$item.nodes|default:0}
 					</TD>
 					<TD onClick="return self.location.href='?m=netdevinfo&id={$item.id}';">
 						{$item.location}
@@ -99,8 +103,8 @@
 				</TR>
 				{foreachelse}
 				<TR>
-                        		<TD WIDTH="100%" COLSPAN="4" align="center">
-			                        <P>&nbsp;</P>
+                    <TD WIDTH="100%" COLSPAN="5" align="center">
+			                <P>&nbsp;</P>
 					        <P><B>{t}No devices associated with this channel.{/t}</B></P>
 					        <P>&nbsp;</P>
 					</TD>
