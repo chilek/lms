@@ -1344,22 +1344,22 @@ class LMS
 		switch($order)
 		{
 			case 'name':
-				$sqlord = ' ORDER BY vnodes.name';
+				$sqlord = ' ORDER BY n.name';
 			break;
 			case 'id':
-				$sqlord = ' ORDER BY id';
+				$sqlord = ' ORDER BY n.id';
 			break;
 			case 'mac':
-				$sqlord = ' ORDER BY mac';
+				$sqlord = ' ORDER BY n.mac';
 			break;
 			case 'ip':
-				$sqlord = ' ORDER BY ipaddr';
+				$sqlord = ' ORDER BY n.ipaddr';
 			break;
 			case 'ip_pub':
-				$sqlord = ' ORDER BY ipaddr_pub';
+				$sqlord = ' ORDER BY n.ipaddr_pub';
 			break;
 			case 'ownerid':
-				$sqlord = ' ORDER BY ownerid';
+				$sqlord = ' ORDER BY n.ownerid';
 			break;
 			case 'owner':
 				$sqlord = ' ORDER BY owner';
@@ -1373,19 +1373,12 @@ class LMS
 			{
 				switch($idx)
 				{
-					case 'ipaddr' :
-						$searchargs[] = '(inet_ntoa(ipaddr) ?LIKE? '.$this->DB->Escape('%'.trim($value).'%')
-							.' OR inet_ntoa(ipaddr_pub) ?LIKE? '.$this->DB->Escape('%'.trim($value).'%').')';
+					case 'ipaddr':
+						$searchargs[] = '(inet_ntoa(n.ipaddr) ?LIKE? '.$this->DB->Escape('%'.trim($value).'%')
+							.' OR inet_ntoa(n.ipaddr_pub) ?LIKE? '.$this->DB->Escape('%'.trim($value).'%').')';
 					break;
-					case 'name' :
-						$searchargs[] = 'vnodes.name ?LIKE? '.$this->DB->Escape("%$value%");
-					break;
-					case 'info' :
-						// UPPER here is a postgresql ILIKE bug workaround
-						$searchargs[] = 'UPPER(nodes.info) ?LIKE? UPPER('.$this->DB->Escape("%$value%").')';
-					break;
-					default :
-						$searchargs[] = $idx.' ?LIKE? '.$this->DB->Escape("%$value%");
+					default:
+						$searchargs[] = 'n.'.$idx.' ?LIKE? '.$this->DB->Escape("%$value%");
 				}
 			}
 		}
@@ -1398,19 +1391,20 @@ class LMS
 		if($network)
 			$net = $this->GetNetworkParams($network);
 
-		if($nodelist = $this->DB->GetAll('SELECT vnodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, 
-				inet_ntoa(ipaddr_pub) AS ip_pub, mac, vnodes.name AS name, ownerid, access, warning, 
-				netdev, lastonline, vnodes.info AS info, '
-				.$this->DB->Concat('c.lastname',"' '",'c.name').' AS owner 
-				FROM vnodes 
-				JOIN customersview c ON (vnodes.ownerid = c.id) '
+		if($nodelist = $this->DB->GetAll('SELECT n.id AS id, n.ipaddr, inet_ntoa(n.ipaddr) AS ip, ipaddr_pub,
+				inet_ntoa(n.ipaddr_pub) AS ip_pub, n.mac, n.name, n.ownerid, n.access, n.warning,
+				n.netdev, n.lastonline, n.info, '
+				.$this->DB->Concat('c.lastname',"' '",'c.name').' AS owner
+				FROM vnodes n
+				JOIN customersview c ON (n.ownerid = c.id) '
 				.($customergroup ? 'JOIN customerassignments ON (customerid = c.id) ' : '')
-				.($nodegroup ? 'JOIN nodegroupassignments ON (nodeid = vnodes.id) ' : '')
+				.($nodegroup ? 'JOIN nodegroupassignments ON (nodeid = n.id) ' : '')
 				.' WHERE 1=1 '
-				.($network ? ' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR ( ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
-				.($status==1 ? ' AND access = 1' : '') //connected
-				.($status==2 ? ' AND access = 0' : '') //disconnected
-				.($status==3 ? ' AND lastonline > ?NOW? - '.$this->CONFIG['phpui']['lastonline_limit'] : '') //online
+				.($network ? ' AND ((n.ipaddr > '.$net['address'].' AND n.ipaddr < '.$net['broadcast'].')
+				    OR (n.ipaddr_pub > '.$net['address'].' AND n.ipaddr_pub < '.$net['broadcast'].'))' : '')
+				.($status==1 ? ' AND n.access = 1' : '') //connected
+				.($status==2 ? ' AND n.access = 0' : '') //disconnected
+				.($status==3 ? ' AND n.lastonline > ?NOW? - '.$this->CONFIG['phpui']['lastonline_limit'] : '') //online
 				.($customergroup ? ' AND customergroupid = '.$customergroup : '')
 				.($nodegroup ? ' AND nodegroupid = '.$nodegroup : '')
 				.(isset($searchargs) ? $searchargs : '')
