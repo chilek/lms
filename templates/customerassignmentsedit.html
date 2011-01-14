@@ -48,7 +48,7 @@
 			    <OPTION value="-1"{if $assignment.tariffid == -1} SELECTED{/if}>{t}- all liabilities suspended -{/t}</OPTION>
 			    {section name=t loop=$tariffs}
 			    <OPTION value="{$tariffs[t].id}" {if $tariffs[t].id==$assignment.tariffid}SELECTED{/if}>
-			    {$tariffs[t].name} ({$tariffs[t].value|money_format}{if $tariffs[t].downrate || $tariffs[t].downceil}, {$tariffs[t].downrate}-{$tariffs[t].downceil} down{/if}{if $tariffs[t].uprate || $tariffs[t].upceil}, {$tariffs[t].uprate}-{$tariffs[t].upceil} up{/if})
+			    {$tariffs[t].name} ({$tariffs[t].value|money_format}{if $tariffs[t].upceil || $tariffs[t].downceil}, {$tariffs[t].downceil}/{$tariffs[t].upceil} kbit/s{/if})
 			    </OPTION>
 		        {/section}
 		    </SELECT>
