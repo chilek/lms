@@ -740,7 +740,8 @@
 			<member>%i - adres IP,</member>
 			<member>%ipub - publiczny adres IP,</member>
 			<member>%id - ID komputera,</member>
-			<member>%m - mac adres,</member>
+			<member>%m - adres MAC,</member>
+			<member>%ms - lista adresów MAC hosta (oddzielonych przecinkiem),</member>
 			<member>%n - nazwa komputera,</member>
 			<member>%p - has³o,</member>
 			<member>%port - nr portu w urz±dzeniu, do którego jest pod³±czony komputer,</member>
@@ -894,6 +895,14 @@
 				<para>skip_host_ips</para>
 				<para>Je¶li ustawiona na tak (yes, true) pominiête zostan± adresy komputerów. Uwaga: w³±czenie obu opcji 'skip_*_ips' spowoduje ich zignorowanie. Domy¶lnie: nie</para>
 				<para>Przyk³ad: <prompt>skip_host_ips = tak</prompt></para>
+			</listitem>
+			<listitem>
+				<para>multi_mac</para>
+				<para>Je¶li ustawiona na tak (yes, true) utworzony zostanie osobny rekord
+				dla ka¿dego adresu MAC. Tzn. je¶li komputer ma przypisanych
+				kilka adresów MAC, bêdzie utworzone tyle wpisów ile tych adresów.
+				Domy¶lnie: nie</para>
+				<para>Przyk³ad: <prompt>multi_mac = tak</prompt></para>
 			</listitem>
 			<listitem>
 				<para>share_netdev_pubip</para>

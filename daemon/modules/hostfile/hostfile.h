@@ -22,6 +22,7 @@ struct host
 	char *access;
 	char *info;
 	char *mac;
+	char *macs;
 	char *port;
 	char *id;
 	char *cid;
@@ -66,4 +67,5 @@ struct hostfile_module
 	int join_customers;
 	int join_devices;
 	int share_netdev_pubip;
+	int multi_mac;
 };

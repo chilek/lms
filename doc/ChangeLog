@@ -62,6 +62,7 @@ version ? (????-??-??)
   - BTS#0000844: fixed traffic graph when using customer filter (alec)
   - Added device nodes count on devices list in channel info (alec)
   - Added channel limits on customer nodes list (alec)
+  - lmsd/hostfile: added 'multi_mac' option and %ms variable (alec)
 
 version 1.11.10 Kri (2010-04-19)
 

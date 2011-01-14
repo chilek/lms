@@ -688,6 +688,7 @@
 			<member>%ipub - public IP address,</member>
 			<member>%id - node ID,</member>
 			<member>%m - MAC address,</member>
+			<member>%ms - comma-separated list of node MACs</member>
 			<member>%n - host name,</member>
 			<member>%p - node (computer) password,</member>
 			<member>%port - device's port to which computer is connected,</member>
@@ -843,9 +844,14 @@
                    <para>If enabled (yes, true) hosts IPs (customers nodes) will be ignored (omitted). Default: no</para>
                    <para>Example: <prompt>skip_host_ips = yes</prompt></para>
                </listitem>
+               <listitem>
+                   <para>multi_mac</para>
+                   <para>If enabled (yes, true) each IP-MAC pair will be listed. Default: no</para>
+                   <para>Example: <prompt>multi_mac = yes</prompt></para>
+               </listitem>
               </itemizedlist>
               </sect3>
-          </sect2>         
+          </sect2>
           <sect2 id="daemon-traffic" xreflabel="traffic">
           <title>Traffic</title>
               <sect3 id="traffic-desc">

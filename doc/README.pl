@@ -4759,7 +4759,8 @@ Rozdział 6. LMS Daemon
    %i - adres IP,
    %ipub - publiczny adres IP,
    %id - ID komputera,
-   %m - mac adres,
+   %m - adres MAC,
+   %ms - lista adresów MAC hosta (oddzielonych przecinkiem),
    %n - nazwa komputera,
    %p - hasło,
    %port - nr portu w urządzeniu, do którego jest podłączony komputer,
@@ -4887,6 +4888,12 @@ Rozdział 6. LMS Daemon
        komputerów. Uwaga: włączenie obu opcji 'skip_*_ips' spowoduje ich
        zignorowanie. Domyślnie: nie
        Przykład: skip_host_ips = tak
+     * multi_mac
+       Jeśli ustawiona na tak (yes, true) utworzony zostanie osobny rekord
+       dla każdego adresu MAC. Tzn. jeśli komputer ma przypisanych kilka
+       adresów MAC, będzie utworzone tyle wpisów ile tych adresów.
+       Domyślnie: nie
+       Przykład: multi_mac = tak
      * share_netdev_pubip
        Włączenie tej opcji (yes, true, 1) spowoduje, że wszystkim adresom
        urządzenia sieciowego, które nie posiadają zdefiniowanego adresu
