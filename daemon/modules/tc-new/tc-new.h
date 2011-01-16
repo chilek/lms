@@ -8,7 +8,7 @@ struct net
 
 struct node
 {
-        int id;
+    int id;
 	int network;
 	char *ip;
 	char *name;
@@ -17,7 +17,7 @@ struct node
 
 struct channel
 {
-        int id;
+    int id;
 	int uprate;
 	int upceil;
 	int downrate;
@@ -55,9 +55,10 @@ struct tc_module
 
 	char *plimit;
 	char *climit;
-	
+
 	int night_no_debtors;
 	int night_deadline;
+	int multi_mac;
 };
 
 #define XVALUE	100

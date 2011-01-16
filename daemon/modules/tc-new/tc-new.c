@@ -54,7 +54,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 	QueryHandle *res;
 	int i, j, k=2, n=2, cc=0, nc=0, night=0;
 	char *query;
-	
+
 	struct channel *channels = (struct channel *) malloc(sizeof(struct channel));
 
 	struct net *nets = (struct net *) malloc(sizeof(struct net));
@@ -66,7 +66,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 				"AND g.id = ca.customergroupid "
 				"AND (%groups)) "
 				);
-	
+
 	char *groupnames = strdup(tc->customergroups);
 	char *groupname = strdup(groupnames);
 	char *groupsql = strdup("");
@@ -82,7 +82,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 				strcat(groupsql, " OR UPPER(g.name) = UPPER('");
 			else
 				strcat(groupsql, "UPPER(g.name) = UPPER('");
-			
+
 			strcat(groupsql, groupname);
 			strcat(groupsql, "')");
 		}
@@ -91,13 +91,13 @@ void reload(GLOBAL *g, struct tc_module *tc)
 
 	if(strlen(groupsql))
 		g->str_replace(&groups, "%groups", groupsql);
-	
+
 	// get table of networks
-	while( n>1 ) 
+	while( n>1 )
 	{
 		n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
 
-		if( strlen(netname) ) 
+		if( strlen(netname) )
 		{
 			res = g->db_pquery(g->conn, "SELECT name, address, INET_ATON(mask) AS mask, interface FROM networks WHERE UPPER(name)=UPPER('?')",netname);
 			if( g->db_nrows(res) )
@@ -133,7 +133,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 	if (strlen(tc->night_hours))
 	{
 		int start_h, end_h;
-		
+
 		if (sscanf(tc->night_hours, "%d-%d", &start_h, &end_h) == 2)
 		{
 			// get current date
@@ -153,12 +153,12 @@ void reload(GLOBAL *g, struct tc_module *tc)
 		else
 	    		syslog(LOG_ERR, "[%s/tc-new] Wrong 'night_hours' format: %s", tc->base.instance, tc->night_hours);
 	}
-	
+
 	// nodes
 	query = strdup("SELECT t.downrate AS downrate, t.downceil AS downceil, t.uprate AS uprate, "
 			"t.upceil AS upceil, t.climit AS climit, t.plimit AS plimit, "
 			"n.id, n.ownerid, n.name, INET_NTOA(n.ipaddr) AS ip, n.mac, "
-			"na.assignmentid, " 
+			"na.assignmentid, "
 #ifdef USE_PGSQL
 			"TRIM(c.lastname || ' ' || c.name) AS customer "
 #else
@@ -167,7 +167,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 		"FROM nodeassignments na "
 		"JOIN assignments a ON (na.assignmentid = a.id) "
 		"JOIN tariffs t ON (a.tariffid = t.id) "
-		"JOIN nodes n ON (na.nodeid = n.id) "
+		"JOIN %nodes n ON (na.nodeid = n.id) "
 		"JOIN customers c ON (a.customerid = c.id) "
 		"%night_debtors"
 		"WHERE "
@@ -207,60 +207,62 @@ void reload(GLOBAL *g, struct tc_module *tc)
 	}
 	else
 		g->str_replace(&query, "%night_debtors", "");
+
+    g->str_replace(&query, "%nodes", tc->multi_mac ? "vmacs" : "vnodes");
 	g->str_replace(&query, "%groups", strlen(groupsql) ? groups : "");
 
 	res = g->db_query(g->conn, query);
 	free(query);
-	
+
 	if(!g->db_nrows(res))
 	{
-	        syslog(LOG_ERR, "[%s/tc-new] Unable to read database or assignments table is empty", tc->base.instance);
+        syslog(LOG_ERR, "[%s/tc-new] Unable to read database or assignments table is empty", tc->base.instance);
 		return;
 	}
 
 	// adding nodes to channels array
 	for(i=0; i<g->db_nrows(res); i++)
-        {
+    {
 		int assignmentid 	= atoi(g->db_get_data(res,i,"assignmentid"));
 		char *ip 		= g->db_get_data(res,i,"ip");
 		unsigned long inet 	= inet_addr(ip);
 
 		// Networks test
 		for(n=0; n<nc; n++)
-	                if(nets[n].address == (inet & nets[n].mask))
-	                        break;
-		
+            if(nets[n].address == (inet & nets[n].mask))
+                break;
+
 		if(n == nc) continue;
-		
+
 		// looking for channel
 		for(j=0; j<cc; j++)
 			if(channels[j].id == assignmentid)
 				break;
 
-        	int nodeid 	= atoi(g->db_get_data(res,i,"id"));
-		int uprate 	= atoi(g->db_get_data(res,i,"uprate"));
-		int downrate 	= atoi(g->db_get_data(res,i,"downrate"));
-		int upceil 	= atoi(g->db_get_data(res,i,"upceil"));
-		int downceil 	= atoi(g->db_get_data(res,i,"downceil"));
-		int climit 	= atoi(g->db_get_data(res,i,"climit"));
-		int plimit 	= atoi(g->db_get_data(res,i,"plimit"));
-		
+       	int nodeid 	 = atoi(g->db_get_data(res,i,"id"));
+		int uprate 	 = atoi(g->db_get_data(res,i,"uprate"));
+		int downrate = atoi(g->db_get_data(res,i,"downrate"));
+		int upceil 	 = atoi(g->db_get_data(res,i,"upceil"));
+		int downceil = atoi(g->db_get_data(res,i,"downceil"));
+		int climit 	 = atoi(g->db_get_data(res,i,"climit"));
+		int plimit 	 = atoi(g->db_get_data(res,i,"plimit"));
+
 		if(j == cc) // channel (assignment) not found
 		{
 			int x, y;
-			
+
 			// mozliwe ze komputer jest juz przypisany do innego
 			// zobowiazania, uwzgledniamy to...
 			for(j=0; j<cc; j++)
 			{
 				for(x=0; x<channels[j].no; x++)
-		            		if(channels[j].nodes[x].id == nodeid)
-	        	            		break;
-						
+		            if(channels[j].nodes[x].id == nodeid)
+	        	        break;
+
 				if(x != channels[j].no)
 					break;
 			}
-			
+
 			// ...komputer znaleziony, sprawdzmy czy kanal nie
 			// zawiera juz tego zobowiazania
 			if(j != cc)
@@ -268,7 +270,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 				for(y=0; y<channels[j].subno; y++)
 		            		if(channels[j].subs[y] == assignmentid)
 	        	            		break;
-			
+
 				// zobowiazanie nie znalezione, zwiekszamy kanal
 				if(y == channels[j].subno)
 				{
@@ -278,12 +280,12 @@ void reload(GLOBAL *g, struct tc_module *tc)
 					channels[j].downceil += downceil;
 					channels[j].climit += climit;
 					channels[j].plimit += plimit;
-					
+
 					channels[j].subs = (int *) realloc(channels[j].subs, sizeof(int) * channels[j].subno + 1);
 					channels[j].subs[channels[j].subno] = assignmentid;
 					channels[j].subno++;
 				}
-				
+
 				continue;
 			}
 
@@ -318,7 +320,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 	}
 	g->db_free(&res);
 
-	// open file	
+	// open file
 	fh = fopen(tc->file, "w");
 	if(fh) 
 	{
@@ -326,12 +328,12 @@ void reload(GLOBAL *g, struct tc_module *tc)
 		int dx = XVALUE;
 		int umark = XVALUE;
 		int dmark = XVALUE+1;
-		
+
 		fprintf(fh, "%s", tc->begin);
-		
+
 		// channels loop
 		for(i=0; i<cc; i++)
-		{	
+		{
 			struct channel c = channels[i];
 
 			char *c_up = strdup(tc->class_up);
@@ -347,12 +349,12 @@ void reload(GLOBAL *g, struct tc_module *tc)
 				g->str_replace(&c_up, "%upceil", itoa(c.uprate));
 			else
 				g->str_replace(&c_up, "%upceil", itoa(c.upceil));
-			
+
 			g->str_replace(&c_down, "%cid", itoa(c.cid));
 			g->str_replace(&c_down, "%cname", c.customer);
 			g->str_replace(&c_down, "%h", itoa(dx));
 			g->str_replace(&c_down, "%downrate", itoa(c.downrate));
-			
+
 			if(!c.downceil)
 				g->str_replace(&c_down, "%downceil", itoa(c.downrate));
 			else
@@ -361,10 +363,10 @@ void reload(GLOBAL *g, struct tc_module *tc)
 			// ... and write to file
 			fprintf(fh, "%s", c_up);
 			fprintf(fh, "%s", c_down);
-		
+
 			free(c_up);
 			free(c_down);
-			
+
 			for(j=0; j<c.no; j++)
 			{
 				struct node host = c.nodes[j];
@@ -376,28 +378,36 @@ void reload(GLOBAL *g, struct tc_module *tc)
 				char *o3 = strdup(itoa((hostip >> 8) & 0xff)); // third octet
 				char *o4 = strdup(itoa(hostip & 0xff)); // last octet
 				char *i16 = strdup(itoha(hostip & 0xff));  // last octet in hex
-			
+
 				char *h_up = strdup(tc->filter_up);
 				char *h_down = strdup(tc->filter_down);
-				
-				// make rules...				
+
+				// get first mac from the list
+				char *mac = strdup(host.mac);
+				if (!tc->multi_mac) {
+				    mac = strtok(mac, ",");
+				}
+
+				// make rules...
 				g->str_replace(&h_up, "%n", host.name);
 				g->str_replace(&h_up, "%if", nets[host.network].interface);
 				g->str_replace(&h_up, "%i16", i16);
 				g->str_replace(&h_up, "%i", host.ip);
-				g->str_replace(&h_up, "%m", host.mac);
+				g->str_replace(&h_up, "%ms", host.mac);
+				g->str_replace(&h_up, "%m", mac);
 				g->str_replace(&h_up, "%x", itoa(umark));
 				g->str_replace(&h_up, "%o1", o1);
 				g->str_replace(&h_up, "%o2", o2);
 				g->str_replace(&h_up, "%o3", o3);
 				g->str_replace(&h_up, "%o4", o4);
 				g->str_replace(&h_up, "%h", itoa(ux));
-				
+
 				g->str_replace(&h_down, "%n", host.name);
 				g->str_replace(&h_down, "%if", nets[host.network].interface);
 				g->str_replace(&h_down, "%i16", i16);
 				g->str_replace(&h_down, "%i", host.ip);
-				g->str_replace(&h_down, "%m", host.mac);
+				g->str_replace(&h_down, "%ms", host.mac);
+				g->str_replace(&h_down, "%m", mac);
 				g->str_replace(&h_down, "%x", itoa(dmark));
 				g->str_replace(&h_down, "%o1", o1);
 				g->str_replace(&h_down, "%o2", o2);
@@ -408,20 +418,21 @@ void reload(GLOBAL *g, struct tc_module *tc)
 				// ...write to file
 				fprintf(fh, "%s", h_up);
 				fprintf(fh, "%s", h_down);
-				
+
 				free(h_up);
 				free(h_down);
 
 				if(c.climit)
 				{
 					char *cl = strdup(tc->climit);
-	
+
 					g->str_replace(&cl, "%climit", itoa(c.climit));
 					g->str_replace(&cl, "%n", host.name);
 					g->str_replace(&cl, "%if", nets[host.network].interface);
-	    				g->str_replace(&cl, "%i16", i16);
-	    				g->str_replace(&cl, "%i", host.ip);
-	    				g->str_replace(&cl, "%m", host.mac);
+    				g->str_replace(&cl, "%i16", i16);
+    				g->str_replace(&cl, "%i", host.ip);
+    				g->str_replace(&cl, "%ms", host.mac);
+    				g->str_replace(&cl, "%m", mac);
 					g->str_replace(&cl, "%o1", o1);
 					g->str_replace(&cl, "%o2", o2);
 					g->str_replace(&cl, "%o3", o3);
@@ -430,17 +441,18 @@ void reload(GLOBAL *g, struct tc_module *tc)
 					fprintf(fh, "%s", cl);
 					free(cl);
 				}
-							
+
 				if(c.plimit)
 				{
 					char *pl = strdup(tc->plimit);
-	
+
 					g->str_replace(&pl, "%plimit", itoa(c.plimit));
 					g->str_replace(&pl, "%n", host.name);
 					g->str_replace(&pl, "%if", nets[host.network].interface);
 					g->str_replace(&pl, "%i16", i16);
 					g->str_replace(&pl, "%i", host.ip);
-					g->str_replace(&pl, "%m", host.mac);
+					g->str_replace(&pl, "%ms", host.mac);
+					g->str_replace(&pl, "%m", mac);
 					g->str_replace(&pl, "%o1", o1);
 					g->str_replace(&pl, "%o2", o2);
 					g->str_replace(&pl, "%o3", o3);
@@ -448,7 +460,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 
 					fprintf(fh, "%s", pl);
 					free(pl);
-				}	
+				}
 
 				dmark += 2;
 				umark += 2;
@@ -458,15 +470,16 @@ void reload(GLOBAL *g, struct tc_module *tc)
 				free(o3);
 				free(o4);
 				free(i16);
+				free(mac);
 			}
-			
+
 			ux += 2;
 			dx += 2;
 		}
 
-		// file footer		
+		// file footer
 		fprintf(fh, "%s", tc->end);
-		
+
 		fclose(fh);
 		system(tc->command);
 #ifdef DEBUG1
@@ -482,7 +495,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 		free(nets[i].interface);
 	}
 	free(nets);
-	
+
 	for(i=0; i<cc; i++)
 	{
 		for(j=0; j<channels[i].no; j++)
@@ -496,12 +509,12 @@ void reload(GLOBAL *g, struct tc_module *tc)
 		free(channels[i].customer);
 	}
 	free(channels);
-	
+
 	free(groupsql);
 	free(tc->file);
-	free(tc->command);	
+	free(tc->command);
 	free(tc->begin);
-	free(tc->end);	
+	free(tc->end);
 	free(tc->class_up);
 	free(tc->class_down);
 	free(tc->filter_up);
@@ -516,16 +529,16 @@ void reload(GLOBAL *g, struct tc_module *tc)
 struct tc_module * init(GLOBAL *g, MODULE *m)
 {
 	struct tc_module *tc;
-	
+
 	if(g->api_version != APIVERSION)
 	{
 		return (NULL);
 	}
-	
+
 	tc = (struct tc_module*) realloc(m, sizeof(struct tc_module));
-	
+
 	tc->base.reload = (void (*)(GLOBAL *, MODULE *)) &reload;
-	
+
 	tc->file = strdup(g->config_getstring(tc->base.ini, tc->base.instance, "file", "/etc/rc.d/rc.htb"));
 	tc->command = strdup(g->config_getstring(tc->base.ini, tc->base.instance, "command", "sh /etc/rc.d/rc.htb start"));
 	tc->begin = strdup(g->config_getstring(tc->base.ini, tc->base.instance, "begin", "\
@@ -629,7 +642,7 @@ esac\n\
 	"$IPT -t mangle -A LIMITS -s %i -j MARK --set-mark %x\n"
 	"$TC filter add dev $WAN parent 2:0 protocol ip prio 5 handle %x fw flowid 2:%h\n"
 	));
-	
+
 	tc->filter_down = strdup(g->config_getstring(tc->base.ini, tc->base.instance, "filter_down",
 	"$IPT -t mangle -A LIMITS -d %i -j MARK --set-mark %x\n"
 	"$TC filter add dev $LAN parent 1:0 protocol ip prio 5 handle %x fw flowid 1:%h\n"
@@ -638,17 +651,18 @@ esac\n\
 	tc->climit = strdup(g->config_getstring(tc->base.ini, tc->base.instance, "climit",
 	"$IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above %climit -j REJECT\n"
 	));
-	
+
 	tc->plimit = strdup(g->config_getstring(tc->base.ini, tc->base.instance, "plimit",
 	"$IPT -t filter -I FORWARD -p tcp -d %i -m limit --limit %plimit/s -j ACCEPT\n"
 	"$IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -j ACCEPT\n"
 	));
-	
+
 	tc->networks = strdup(g->config_getstring(tc->base.ini, tc->base.instance, "networks", ""));
 	tc->customergroups = strdup(g->config_getstring(tc->base.ini, tc->base.instance, "customergroups", ""));
 	tc->night_hours = strdup(g->config_getstring(tc->base.ini, tc->base.instance, "night_hours", ""));
 	tc->night_no_debtors = g->config_getbool(tc->base.ini, tc->base.instance, "night_no_debtors", 0);
 	tc->night_deadline = g->config_getint(tc->base.ini, tc->base.instance, "night_deadline", 0);
+    tc->multi_mac = g->config_getbool(tc->base.ini, tc->base.instance, "multi_mac", 0);
 #ifdef DEBUG1
 	syslog(LOG_INFO, "DEBUG: [%s/tc-new] initialized", tc->base.instance);
 #endif

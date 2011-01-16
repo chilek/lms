@@ -2232,7 +2232,8 @@ CLASS="PROMPT"
 ><P
 >Definicja filtrów dla ruchu w kierunku od hosta. Dozwolone zmienne:
 					%n - nazwa hosta, %if - nazwa interfejsu sieci, %i16 - ostatni oktet adresu szesnastkowo, 
-					%i - adres, %m - mac, %o1, %o2, %o3, %o4 - oktety adresu dziesiętnie, %h - uchwyt klasy, %x - uchwyt filtra (unikalny numer reguły). Domyślnie: 
+					%i - adres, %m - mac, %ms - lista adresów MAC hosta (oddzielonych przecinkiem),
+					%o1, %o2, %o3, %o4 - oktety adresu dziesiętnie, %h - uchwyt klasy, %x - uchwyt filtra (unikalny numer reguły). Domyślnie: 
 					<PRE
 CLASS="SCREEN"
 ># %n
@@ -2251,7 +2252,8 @@ CLASS="PROMPT"
 ><P
 >Definicja filtrów dla ruchu w kierunku do hosta. Dozwolone zmienne:
 					%n - nazwa hosta, %if - nazwa interfejsu sieci, %i16 - ostatni 
-					oktet adresu szesnastkowo, %i - adres, %m - mac, %o1, %o2, %o3, 
+					oktet adresu szesnastkowo, %i - adres, %m - mac, 
+					%ms - lista adresów MAC hosta (oddzielonych przecinkiem), %o1, %o2, %o3, 
 					%o4 - oktety adresu dziesiętnie, %h - uchwyt klasy, %x - uchwyt
 					filtra (unikalny numer reguły). Domyślnie: 
 					<PRE
@@ -2271,9 +2273,10 @@ CLASS="PROMPT"
 ><P
 >Definicja reguły dla limitu połączeń hosta. Dozwolone 
 					zmienne: %n - nazwa hosta, %if - nazwa interfejsu sieci, 
-					%i16 - ostatni oktet adresu szesnastkowo, %i - adres, %m - mac, 
+					%i16 - ostatni oktet adresu szesnastkowo, %i - adres, %m - mac,
+					%ms - lista adresów MAC hosta (oddzielonych przecinkiem),
 					%o1, %o2, %o3, %o4 - oktety adresu dziesiętnie, %climit - limit
-					połączeń. Domyślnie: 
+					połączeń. Domyślnie:
 					<PRE
 CLASS="SCREEN"
 >$IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above %climit -j REJECT
@@ -2291,9 +2294,10 @@ CLASS="PROMPT"
 ><P
 >Definicja reguły dla limitu pakietów dla hosta. Dozwolone 
 					zmienne: %n - nazwa hosta, %if - nazwa interfejsu sieci, 
-					%i16 - ostatni oktet adresu szesnastkowo, %i - adres, %m - mac, 
+					%i16 - ostatni oktet adresu szesnastkowo, %i - adres, %m - mac,
+					%ms - lista adresów MAC hosta (oddzielonych przecinkiem),
 					%o1, %o2, %o3, %o4 - oktety adresu dziesiętnie, %plimit - limit
-					pakietów. Domyślnie: 
+					pakietów. Domyślnie:
 					<PRE
 CLASS="SCREEN"
 >$IPT -t filter -I FORWARD -d %i -m limit --limit %plimit/s -j ACCEPT
@@ -2369,6 +2373,20 @@ CLASS="PROMPT"
 >Przykład: <SAMP
 CLASS="PROMPT"
 >night_deadline = 7</SAMP
+></P
+></LI
+><LI
+><P
+>multi_mac</P
+><P
+>Jeśli ustawiona na tak (yes, true) utworzony zostanie osobny rekord
+				    dla każdego adresu MAC. Tzn. jeśli komputer ma przypisanych
+				    kilka adresów MAC, będzie utworzone tyle wpisów ile tych adresów.
+				    Domyślnie: nie</P
+><P
+>Przykład: <SAMP
+CLASS="PROMPT"
+>multi_mac = tak</SAMP
 ></P
 ></LI
 ></UL
