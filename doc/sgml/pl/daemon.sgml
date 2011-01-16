@@ -1219,7 +1219,7 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 					<para>begin</para>
 					<para>Nag³ówek skryptu. Domy¶lnie: jak w module tc</para>
 					<para>Przyk³ad: <prompt>begin = "#!/bin/bash\n$TC=/usr/local/sbin/tc\n"</prompt></para>
-				</listitem>    
+				</listitem>
 				<listitem>
 					<para>end</para>
 					<para>Stopka skryptu. Domy¶lnie: jak w module tc</para>
@@ -1251,7 +1251,8 @@ $TC qdisc add dev $LAN parent 1:%h esfq perturb 10 hash dst						</screen></para
 					<para>filter_up</para>
 					<para>Definicja filtrów dla ruchu w kierunku od hosta. Dozwolone zmienne:
 					%n - nazwa hosta, %if - nazwa interfejsu sieci, %i16 - ostatni oktet adresu szesnastkowo, 
-					%i - adres, %m - mac, %o1, %o2, %o3, %o4 - oktety adresu dziesiêtnie, %h - uchwyt klasy, %x - uchwyt filtra (unikalny numer regu³y). Domy¶lnie: 
+					%i - adres, %m - mac, %ms - lista adresów MAC hosta (oddzielonych przecinkiem),
+					%o1, %o2, %o3, %o4 - oktety adresu dziesiêtnie, %h - uchwyt klasy, %x - uchwyt filtra (unikalny numer regu³y). Domy¶lnie: 
 					<screen>
 # %n
 $IPT -t mangle -A LIMITS -s %i -j MARK --set-mark %x
@@ -1263,7 +1264,8 @@ $TC filter add dev $WAN parent 2:0 protocol ip prio 5 handle %x fw flowid 2:%h
 					<para>filter_down</para>
 					<para>Definicja filtrów dla ruchu w kierunku do hosta. Dozwolone zmienne:
 					%n - nazwa hosta, %if - nazwa interfejsu sieci, %i16 - ostatni 
-					oktet adresu szesnastkowo, %i - adres, %m - mac, %o1, %o2, %o3, 
+					oktet adresu szesnastkowo, %i - adres, %m - mac, 
+					%ms - lista adresów MAC hosta (oddzielonych przecinkiem), %o1, %o2, %o3, 
 					%o4 - oktety adresu dziesiêtnie, %h - uchwyt klasy, %x - uchwyt
 					filtra (unikalny numer regu³y). Domy¶lnie: 
 					<screen>
@@ -1276,9 +1278,10 @@ $TC filter add dev $LAN parent 1:0 protocol ip prio 5 handle %x fw flowid 1:%h
 					<para>climit</para>
 					<para>Definicja regu³y dla limitu po³±czeñ hosta. Dozwolone 
 					zmienne: %n - nazwa hosta, %if - nazwa interfejsu sieci, 
-					%i16 - ostatni oktet adresu szesnastkowo, %i - adres, %m - mac, 
+					%i16 - ostatni oktet adresu szesnastkowo, %i - adres, %m - mac,
+					%ms - lista adresów MAC hosta (oddzielonych przecinkiem),
 					%o1, %o2, %o3, %o4 - oktety adresu dziesiêtnie, %climit - limit
-					po³±czeñ. Domy¶lnie: 
+					po³±czeñ. Domy¶lnie:
 					<screen>
 $IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above %climit -j REJECT
 					</screen></para>
@@ -1288,9 +1291,10 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above %climit -j
 					<para>plimit</para>
 					<para>Definicja regu³y dla limitu pakietów dla hosta. Dozwolone 
 					zmienne: %n - nazwa hosta, %if - nazwa interfejsu sieci, 
-					%i16 - ostatni oktet adresu szesnastkowo, %i - adres, %m - mac, 
+					%i16 - ostatni oktet adresu szesnastkowo, %i - adres, %m - mac,
+					%ms - lista adresów MAC hosta (oddzielonych przecinkiem),
 					%o1, %o2, %o3, %o4 - oktety adresu dziesiêtnie, %plimit - limit
-					pakietów. Domy¶lnie: 
+					pakietów. Domy¶lnie:
 					<screen>
 $IPT -t filter -I FORWARD -d %i -m limit --limit %plimit/s -j ACCEPT
 $IPT -t filter -I FORWARD -s %i -m limit --limit %plimit/s -j ACCEPT										</screen></para>
@@ -1332,6 +1336,14 @@ $IPT -t filter -I FORWARD -s %i -m limit --limit %plimit/s -j ACCEPT										</
 					dzia³a w po³±czeniu z 'night_no_debtors'. Domy¶lnie: 0.</para>
 					<para>Przyk³ad: <prompt>night_deadline = 7</prompt></para>
 				</listitem>
+			    <listitem>
+				    <para>multi_mac</para>
+				    <para>Je¶li ustawiona na tak (yes, true) utworzony zostanie osobny rekord
+				    dla ka¿dego adresu MAC. Tzn. je¶li komputer ma przypisanych
+				    kilka adresów MAC, bêdzie utworzone tyle wpisów ile tych adresów.
+				    Domy¶lnie: nie</para>
+				    <para>Przyk³ad: <prompt>multi_mac = tak</prompt></para>
+			    </listitem>
 		    </itemizedlist>
 			</sect3>
 		</sect2>

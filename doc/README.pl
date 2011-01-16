@@ -5181,8 +5181,9 @@ $TC qdisc add dev $LAN parent 1:%h esfq perturb 10 hash dst
      * filter_up
        Definicja filtrów dla ruchu w kierunku od hosta. Dozwolone zmienne:
        %n - nazwa hosta, %if - nazwa interfejsu sieci, %i16 - ostatni
-       oktet adresu szesnastkowo, %i - adres, %m - mac, %o1, %o2, %o3, %o4
-       - oktety adresu dziesiętnie, %h - uchwyt klasy, %x - uchwyt filtra
+       oktet adresu szesnastkowo, %i - adres, %m - mac, %ms - lista
+       adresów MAC hosta (oddzielonych przecinkiem), %o1, %o2, %o3, %o4 -
+       oktety adresu dziesiętnie, %h - uchwyt klasy, %x - uchwyt filtra
        (unikalny numer reguły). Domyślnie:
 # %n
 $IPT -t mangle -A LIMITS -s %i -j MARK --set-mark %x
@@ -5192,8 +5193,9 @@ $TC filter add dev $WAN parent 2:0 protocol ip prio 5 handle %x fw flowid 2:%h
      * filter_down
        Definicja filtrów dla ruchu w kierunku do hosta. Dozwolone zmienne:
        %n - nazwa hosta, %if - nazwa interfejsu sieci, %i16 - ostatni
-       oktet adresu szesnastkowo, %i - adres, %m - mac, %o1, %o2, %o3, %o4
-       - oktety adresu dziesiętnie, %h - uchwyt klasy, %x - uchwyt filtra
+       oktet adresu szesnastkowo, %i - adres, %m - mac, %ms - lista
+       adresów MAC hosta (oddzielonych przecinkiem), %o1, %o2, %o3, %o4 -
+       oktety adresu dziesiętnie, %h - uchwyt klasy, %x - uchwyt filtra
        (unikalny numer reguły). Domyślnie:
 $IPT -t mangle -A LIMITS -d %i -j MARK --set-mark %x
 $TC filter add dev $LAN parent 1:0 protocol ip prio 5 handle %x fw flowid 1:%h
@@ -5202,16 +5204,18 @@ $TC filter add dev $LAN parent 1:0 protocol ip prio 5 handle %x fw flowid 1:%h
      * climit
        Definicja reguły dla limitu połączeń hosta. Dozwolone zmienne: %n -
        nazwa hosta, %if - nazwa interfejsu sieci, %i16 - ostatni oktet
-       adresu szesnastkowo, %i - adres, %m - mac, %o1, %o2, %o3, %o4 -
-       oktety adresu dziesiętnie, %climit - limit połączeń. Domyślnie:
+       adresu szesnastkowo, %i - adres, %m - mac, %ms - lista adresów MAC
+       hosta (oddzielonych przecinkiem), %o1, %o2, %o3, %o4 - oktety
+       adresu dziesiętnie, %climit - limit połączeń. Domyślnie:
 $IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above %climit -j REJECT
 
        Przykład: climit = ""
      * plimit
        Definicja reguły dla limitu pakietów dla hosta. Dozwolone zmienne:
        %n - nazwa hosta, %if - nazwa interfejsu sieci, %i16 - ostatni
-       oktet adresu szesnastkowo, %i - adres, %m - mac, %o1, %o2, %o3, %o4
-       - oktety adresu dziesiętnie, %plimit - limit pakietów. Domyślnie:
+       oktet adresu szesnastkowo, %i - adres, %m - mac, %ms - lista
+       adresów MAC hosta (oddzielonych przecinkiem), %o1, %o2, %o3, %o4 -
+       oktety adresu dziesiętnie, %plimit - limit pakietów. Domyślnie:
 $IPT -t filter -I FORWARD -d %i -m limit --limit %plimit/s -j ACCEPT
 $IPT -t filter -I FORWARD -s %i -m limit --limit %plimit/s -j ACCEPT
 
@@ -5241,6 +5245,12 @@ $IPT -t filter -I FORWARD -s %i -m limit --limit %plimit/s -j ACCEPT
        zostanie potraktowana jako przeterminowana. Opcja działa w
        połączeniu z 'night_no_debtors'. Domyślnie: 0.
        Przykład: night_deadline = 7
+     * multi_mac
+       Jeśli ustawiona na tak (yes, true) utworzony zostanie osobny rekord
+       dla każdego adresu MAC. Tzn. jeśli komputer ma przypisanych kilka
+       adresów MAC, będzie utworzone tyle wpisów ile tych adresów.
+       Domyślnie: nie
+       Przykład: multi_mac = tak
      __________________________________________________________________
 
 6.2.12. Dns
