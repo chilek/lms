@@ -485,7 +485,7 @@ switch($type)
 
 		if($taxes = $LMS->GetTaxes($reportday, $reportday))
 		{
-			foreach($taxes as $tax)
+			foreach($taxes as $taxidx => $tax)
 			{
 				$list1 =  $DB->GetAllByKey('SELECT a.customerid AS id, '.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername, '
 					.$DB->Concat('city',"' '",'address').' AS address, ten, 
@@ -557,6 +557,10 @@ switch($type)
 					.($customerid ? 'AND a.customerid='.$customerid : ''). 
 					' GROUP BY a.customerid, lastname, c.name, city, address, ten ', 'id',
 					array($tax['id'], $reportday, $reportday, $today, $weekday, $monthday, $quarterday, $halfyear, $yearday));
+
+                if (empty($list1) && empty($list2)) {
+                    unset($taxes[$taxidx]);
+                }
 
 				$list = array_merge((array) $list1, (array) $list2);
 
