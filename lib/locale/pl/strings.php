@@ -395,7 +395,6 @@ $_LANG['Download'] = 'Download';
 $_LANG['Download ceil:'] = 'Download ceil:';
 $_LANG['Download rate:'] = 'Download rate:';
 $_LANG['Downrate:'] = 'Downrate:';
-$_LANG['Downrate (ceil):'] = 'Downrate (ceil):';
 $_LANG['Do you want to remove $0 customer?'] = 'Czy chcesz usunąć klienta $0?';
 $_LANG['Do you want to remove queue called $0?'] = 'Czy chcesz usunąć kolejkę $0?';
 $_LANG['Draw-up date'] = 'Data wystawienia';
@@ -1331,7 +1330,6 @@ $_LANG['Upload'] = 'Upload';
 $_LANG['Upload ceil:'] = 'Upload ceil:';
 $_LANG['Upload rate:'] = 'Upload rate:';
 $_LANG['Uprate'] = 'Uprate';
-$_LANG['Uprate (ceil):'] = 'Uprate (ceil):';
 $_LANG['Uptime:'] = 'Uptime:';
 $_LANG['URL:'] = 'Adres URL:';
 $_LANG['URL of your homepage:'] = 'Adres twojej strony domowej:';
@@ -2392,5 +2390,8 @@ $_LANG['Packages:'] = 'Paczki:';
 $_LANG['Records:'] = 'Rekordy:';
 $_LANG['Removing package "$0"'] = 'Usuwanie paczki "$0"';
 $_LANG['There are no packages in database.'] = 'Brak paczek w bazie danych.';
+$_LANG['period undefined'] = 'okres niezdefiniowany';
+$_LANG['Select time period of tariff accounting'] = 'Wybierz okres naliczania taryfy';
+$_LANG['undefined'] = 'niezdefiniowany';
 
 ?>
