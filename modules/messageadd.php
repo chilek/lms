@@ -26,8 +26,8 @@
 
 function GetRecipients($filter, $type=MSG_MAIL)
 {
-	global $DB, $LMS, $CONFIG, $LANGDEFS, $_language;
-	
+	global $LMS;
+
 	$group = $filter['group'];
 	$network = $filter['network'];
 	$customergroup = $filter['customergroup'];
@@ -61,9 +61,9 @@ function GetRecipients($filter, $type=MSG_MAIL)
 			) x ON (x.customerid = c.id)';
 	}
 	
-	$recipients = $DB->GetAll('SELECT c.id, email, pin, '
+	$recipients = $LMS->DB->GetAll('SELECT c.id, email, pin, '
 		.($type==MSG_SMS ? 'x.phone, ': '')
-		.$DB->Concat('c.lastname', "' '", 'c.name').' AS customername,
+		.$LMS->DB->Concat('c.lastname', "' '", 'c.name').' AS customername,
 		COALESCE(b.value, 0) AS balance
 		FROM customersview c 
 		LEFT JOIN (
@@ -95,7 +95,7 @@ function GetRecipients($filter, $type=MSG_MAIL)
 
 function GetRecipient($customerid, $type=MSG_MAIL)
 {
-	global $DB, $LMS, $CONFIG, $LANGDEFS, $_language;
+	global $LMS;
 
 	if($type == MSG_SMS)
 	{
@@ -107,9 +107,9 @@ function GetRecipient($customerid, $type=MSG_MAIL)
 			) x ON (x.customerid = c.id)';
 	}
 
-	return $DB->GetAll('SELECT c.id, email, pin, '
+	return $LMS->DB->GetAll('SELECT c.id, email, pin, '
 		.($type==MSG_SMS ? 'x.phone, ': '')
-		.$DB->Concat('c.lastname', "' '", 'c.name').' AS customername,
+		.$LMS->DB->Concat('c.lastname', "' '", 'c.name').' AS customername,
 		COALESCE((SELECT SUM(value) FROM cash WHERE customerid = c.id), 0) AS balance
 		FROM customersview c '
 		.(!empty($smstable) ? $smstable : '')
@@ -119,6 +119,8 @@ function GetRecipient($customerid, $type=MSG_MAIL)
 
 function BodyVars(&$body, $data)
 {
+    global $LMS, $LANGDEFS;
+
 	$body = str_replace('%customer', $data['customername'], $body);
 	$body = str_replace('%balance', $data['balance'], $body);
 	$body = str_replace('%cid', $data['id'], $body);
@@ -127,14 +129,14 @@ function BodyVars(&$body, $data)
 	if(!(strpos($body, '%last_10_in_a_table') === FALSE))
 	{
 		$last10 = '';
-		if($last10_array = $DB->GetAll('SELECT comment, time, value 
+		if($last10_array = $LMS->DB->GetAll('SELECT comment, time, value 
 			FROM cash WHERE customerid = ?
 			ORDER BY time DESC LIMIT 10', array($data['id'])))
 		{
 			foreach($last10_array as $r)
 			{
 				$last10 .= date("Y/m/d | ", $r['time']);
-				$last10 .= sprintf("%20s | ", sprintf($LANGDEFS[$LMS->ui_lang][money_format],$r['value']));
+				$last10 .= sprintf("%20s | ", sprintf($LANGDEFS[$LMS->ui_lang]['money_format'], $r['value']));
 				$last10 .= $r['comment']."\n";
 			}
 		}
