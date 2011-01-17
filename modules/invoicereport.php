@@ -24,10 +24,19 @@
  *  $Id$
  */
 
+function set_taxes($taxid)
+{
+    global $taxes, $DB;
+
+    if (empty($taxes[$taxid]))
+        $taxes[$taxid] = $DB->GetRow('SELECT id, value, label, taxed
+            FROM taxes WHERE id = ?', array($taxid));
+}
+
 $from = $_POST['from'];
 $to = $_POST['to'];
 
-// date format 'yyyy/mm/dd'	
+// date format 'yyyy/mm/dd'
 if($from) {
 	list($year, $month, $day) = explode('/',$from);
 	$unixfrom = mktime(0,0,0,$month,$day,$year);
@@ -48,6 +57,7 @@ $layout['pagetitle'] = trans('Sale Registry for period $0 - $1', $from, $to);
 $listdata = array('tax' => 0, 'brutto' => 0);
 $invoicelist = array();
 $taxeslist = array();
+$taxes = array();
 
 if(!empty($_POST['group']))
 {
@@ -55,18 +65,18 @@ if(!empty($_POST['group']))
 		$groups = implode(',', $_POST['group']);
 	else
 		$groups = intval($_POST['group']);
-	
+
 	$groupwhere = ' AND '.(isset($_POST['groupexclude']) ? 'NOT' : '').' 
 		EXISTS (SELECT 1 FROM customerassignments a
 			WHERE a.customergroupid IN ('.$groups.')
 			AND a.customerid = d.customerid)';
 
         $names = $DB->GetAll('SELECT name FROM customergroups WHERE id IN ('.$groups.')');
-	
+
 	$groupnames = '';
 	foreach($names as $idx => $row)
 		$groupnames .= ($idx ? ', ' : '') . $row['name'];
-	
+
 	if(isset($_POST['groupexclude']))
 	        $layout['group'] = trans('Group: all excluding $0', $groupnames);
 	else
@@ -79,7 +89,7 @@ if(!empty($_POST['division']))
 
         $divname = $DB->GetOne('SELECT name FROM divisions WHERE id = ?', 
 			array(intval($_POST['division'])));
-	
+
         $layout['division'] = $divname;
 }
 
@@ -111,15 +121,14 @@ $docs = $DB->GetAllByKey('SELECT d.id AS id, number, cdate, customerid, name, ad
 
 if($items)
 {
-	// get taxes for calculations
-	$taxes = $LMS->GetTaxes();
-
 	foreach($items as $row)
 	{
 		$idx = $row['docid'];
 		$doc = $docs[$idx];
 		$taxid = $row['taxid'];
-		
+
+        set_taxes($taxid);
+
 		$invoicelist[$idx]['custname'] = $doc['name'];
 		$invoicelist[$idx]['custaddress'] = $doc['zip'].' '.$doc['city'].', '.$doc['address'];
 		$invoicelist[$idx]['ten'] = ($doc['ten'] ? trans('TEN').' '.$doc['ten'] : ($doc['ssn'] ? trans('SSN').' '.$doc['ssn'] : ''));
@@ -132,10 +141,10 @@ if($items)
 			$invoicelist[$idx][$taxid]['tax'] = 0;
 			$invoicelist[$idx][$taxid]['val'] = 0;
 		}
-		
+
 		if(!isset($invoicelist[$idx]['tax'])) $invoicelist[$idx]['tax'] = 0;
 		if(!isset($invoicelist[$idx]['brutto'])) $invoicelist[$idx]['brutto'] = 0;
-		
+
 		if($doc['reference'])
 		{
 			// I think we can simply do query here instead of building
@@ -147,7 +156,9 @@ if($items)
 
 			$row['value'] += $item['value'];
 			$row['count'] += $item['count'];
-			
+
+            set_taxes($item['taxid']);
+
 			$refitemsum = $item['value'] * $item['count'];
 			$refitemval = round($refitemsum / ($taxes[$item['taxid']]['value']+100) * 100, 2);
 			$refitemtax = $refitemsum - $refitemval;
@@ -162,7 +173,7 @@ if($items)
 			$listdata['tax'] -= $refitemtax;
 			$listdata['brutto'] -= $refitemsum;
 		}
-		
+
 		$sum = $row['value'] * $row['count'];
 		$val = round($sum / ($taxes[$taxid]['value']+100) * 100, 2);
 		$tax = $sum - $val;
@@ -171,19 +182,19 @@ if($items)
 		$invoicelist[$idx][$taxid]['val'] += $val;
 		$invoicelist[$idx]['tax'] += $tax;
 		$invoicelist[$idx]['brutto'] += $sum;
-		
+
 		if(!isset($listdata[$taxid]))
 		{
 			$listdata[$taxid]['tax'] = 0;
 			$listdata[$taxid]['val'] = 0;
 		}
-		
+
 		$listdata[$taxid]['tax'] += $tax;
 		$listdata[$taxid]['val'] += $val;
 		$listdata['tax'] += $tax;
 		$listdata['brutto'] += $sum;
 	}
-	
+
 	// get used tax rates for building report table
 	foreach($listdata as $idx => $val)
 		if(is_int($idx))
@@ -201,29 +212,29 @@ if(isset($_POST['extended']))
 	$pages = array();
 	$totals = array();
 	$reccount = sizeof($invoicelist);
-	
+
 	// hidden option: records count for one page of printout
 	// I thinks 20 records is fine, but someone needs 19.
 	$rows = isset($CONFIG['phpui']['printout_pagelimit']) ? $CONFIG['phpui']['printout_pagelimit'] : 20;
-	
+
 	// create a new array for use with {section}
 	// and do some calculations (summaries)
 	$i=1;
 	foreach($invoicelist as $row)
 	{
 		$invoicelist2[] = $row;
-		
+
 		$page = ceil($i/$rows);
-		
+
 		$totals[$page]['total'] += $row['brutto'];
 		$totals[$page]['sumtax'] += $row['tax'];
-	
+
 		foreach($taxeslist as $idx => $tax)
 		{
 			$totals[$page]['val'][$idx] += $row[$idx]['val'];
 			$totals[$page]['tax'][$idx] += $row[$idx]['tax'];
 		}
-		
+
 		$i++;
 	}
 
@@ -249,7 +260,8 @@ if(isset($_POST['extended']))
 	$SMARTY->assign('reccount', $reccount);
 	$SMARTY->display('invoicereport-ext.html');
 }
-else
+else {
 	$SMARTY->display('invoicereport.html');
+}
 
 ?>
