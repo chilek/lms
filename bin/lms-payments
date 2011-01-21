@@ -214,6 +214,7 @@ $txts{+MONTH} = strftime("%Y/%m/%d", 0, 0, 12, $dom, $month - 1, $year - 1900)."
 $txts{+QUARTER} = strftime("%Y/%m/%d", 0, 0, 12, $dom, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $dom - 1, $q_month, $q_year - 1900);
 $txts{+HALFYEAR} = strftime("%Y/%m/%d", 0, 0, 12, $dom, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $dom - 1, $y_month, $y_year - 1900);
 $txts{+YEAR} = strftime("%Y/%m/%d", 0, 0, 12, $dom, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $dom - 1, $month - 1, $year - 1900 + 1);
+$txts{+DISPOSABLE} = strftime("%Y/%m/%d", 0, 0, 12, $dom, $month - 1, $year - 1900);
 
 # special case, ie. you have 01.01.2005-01.31.2005 on invoice, but invoice/
 # assignment is made not January, the 1st:
