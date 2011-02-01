@@ -1,5 +1,9 @@
 $Id$
 
+version ? (????-??-??)
+
+  - Don't send mail to deleted users (alec)
+
 version 1.11.11 Bray (2011-01-17)
 
   - fixed SQL queries in postfix configuration manual (alec)
