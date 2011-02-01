@@ -3,6 +3,7 @@ $Id$
 version ? (????-??-??)
 
   - Don't send mail to deleted users (alec)
+  - BTS#0000847: Fixed UI language setting when HTTP_ACCEPT_LANGUAGE is not set (alec)
 
 version 1.11.11 Bray (2011-01-17)
 

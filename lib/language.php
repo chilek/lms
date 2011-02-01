@@ -90,8 +90,7 @@ $LANGDEFS = array(
 			),
 		);
 
-$_ui_language = 'en'; // default language
-
+// UI language
 if(!empty($_SERVER['HTTP_ACCEPT_LANGUAGE']))
 	$langs = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
 else
@@ -99,32 +98,33 @@ else
 
 $langs = explode(',', $langs);
 
-foreach ($langs as $val) 
+foreach ($langs as $val)
 {
-	switch (substr($val, 0, 2))
+    $val = substr($val, 0, 2);
+	switch ($val)
 	{
 		case 'pl':
-			$_ui_language = 'pl';
-    			break 2;
 		case 'lt':
-			$_ui_language = 'lt';
-    			break 2;
 		case 'sk':
-			$_ui_language = 'sk';
-			break 2;
 		case 'ro':
-			$_ui_language = 'ro';
-			break 2;
 		case 'en':
-			$_ui_language = 'en';
-			break 2;
+			$_ui_language = $val;
+    	    break 2;
 	}
 }
 
+// System language
 if(!empty($CONFIG['phpui']['lang']))
 	$_language = $CONFIG['phpui']['lang'];
-else
+else if (!empty($_ui_language))
 	$_language = $_ui_language;
+else
+    $_language = 'en'; // default language
+
+// Use system lang for UI if any of browser langs isn't supported
+// or browser langs aren't set
+if (empty($_ui_language))
+	$_ui_language = $_language;
 
 $_LANG = array();
 
