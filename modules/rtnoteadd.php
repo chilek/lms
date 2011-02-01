@@ -96,7 +96,7 @@ elseif(isset($_POST['note']))
 						email, address, zip, city, (SELECT phone FROM customercontacts 
 							WHERE customerid = customers.id ORDER BY id LIMIT 1) AS phone
 						FROM customers WHERE id = ?', array($cid));
-				
+
 				$body .= "\n\n-- \n";
 				$body .= trans('Customer:').' '.$info['customername']."\n";
 				$body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
@@ -106,7 +106,7 @@ elseif(isset($_POST['note']))
 
 			if($recipients = $DB->GetCol('SELECT email FROM users, rtrights 
 						WHERE users.id=userid AND queueid = ? AND email != \'\' 
-							AND (rtrights.rights & 8) = 8 AND users.id != ?', 
+							AND (rtrights.rights & 8) = 8 AND users.id != ? AND deleted = 0',
 							array($queue['id'], $AUTH->id)))
 			{
 				foreach($recipients as $email)
@@ -121,7 +121,7 @@ elseif(isset($_POST['note']))
 				}
 			}
 		}
-				
+
 		$SESSION->redirect('?m=rtticketview&id='.$note['ticketid']);
 	}
 }

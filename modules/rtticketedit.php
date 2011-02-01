@@ -155,12 +155,12 @@ if(isset($_POST['ticket']))
 
 			if($recipients = $DB->GetCol('SELECT email FROM users, rtrights 
 						WHERE users.id=userid AND queueid = ? AND email != \'\' 
-							AND (rtrights.rights & 8) = 8 AND users.id != ?', 
+							AND (rtrights.rights & 8) = 8 AND users.id != ? AND deleted = 0',
 							array($ticketedit['queueid'], $AUTH->id)))
 			{
 				$oldrecipients = $DB->GetCol('SELECT email FROM users, rtrights 
 						WHERE users.id=userid AND queueid = ? AND email != \'\' 
-							AND (rtrights.rights & 8) = 8', 
+							AND (rtrights.rights & 8) = 8 AND deleted = 0',
 							array($ticket['queueid']));
 
 				foreach($recipients as $email)
@@ -179,7 +179,7 @@ if(isset($_POST['ticket']))
 
 		$SESSION->redirect('?m=rtticketview&id='.$id);
 	}
-	
+
 	$ticket['subject'] = $ticketedit['subject'];
 	$ticket['queueid'] = $ticketedit['queueid'];
 	$ticket['state'] = $ticketedit['state'];
