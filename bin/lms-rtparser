@@ -537,7 +537,8 @@ if($notify)
 	# find users emails
 	$dbq = $dbase->prepare("SELECT name, email FROM users, rtrights 
 			WHERE users.id = userid AND queueid = $queue 
-			AND email != '' AND (rtrights.rights & 8) = 8");
+			AND email != '' AND (rtrights.rights & 8) = 8
+			AND deleted = 0");
 	$dbq->execute();
 
 	if($dbq->rows() && $reqcustid && $customerinfo)
