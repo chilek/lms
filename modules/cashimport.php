@@ -110,26 +110,46 @@ elseif(isset($_GET['action']) && $_GET['action'] == 'save')
 }
 elseif(isset($_POST['marks']))
 {
-	$marks = $_POST['marks'];
+	$marks = (array) $_POST['marks'];
 	$customers = $_POST['customer'];
-	foreach($marks as $id)
+
+	foreach ($marks as $idx => $id)
 	{
-		if(!empty($customers[$id]))
-		{
+		if (empty($customers[$id])) {
+			$error[$id] = trans('Customer not selected!');
+			unset($marks[$idx]);
+        }
+        else {
+            $marks[$idx] = intval($id);
+        }
+    }
+
+    if (!empty($marks)) {
+        $imports = $DB->GetAll('SELECT i.*, f.idate
+            FROM cashimport i
+            LEFT JOIN sourcefiles f ON (f.id = i.sourcefileid)
+            WHERE i.id IN ('.implode(',', $marks).')');
+    }
+
+    if (!empty($imports)) {
+        $idate  = isset($CONFIG['finances']['cashimport_use_idate'])
+	    	&& chkconfig($CONFIG['finances']['cashimport_use_idate']);
+        $icheck = isset($CONFIG['finances']['cashimport_checkinvoices'])
+	    	&& chkconfig($CONFIG['finances']['cashimport_checkinvoices']);
+
+        foreach ($imports as $import) {
+
 			$DB->BeginTrans();
 
-			$import = $DB->GetRow('SELECT * FROM cashimport WHERE id = ?', array($id));
-
-			$balance['time'] = $import['date'];
+			$balance['time'] = $idate ? $import['idate'] : $import['date'];
 			$balance['type'] = 1;
 			$balance['value'] = $import['value'];
-			$balance['customerid'] = $customers[$id];
+			$balance['customerid'] = $customers[$import['id']];
 			$balance['comment'] = $import['description'];
 			$balance['importid'] = $import['id'];
 			$balance['sourceid'] = $import['sourceid'];
 
-			if($import['value'] > 0 && isset($CONFIG['finances']['cashimport_checkinvoices'])
-				&& chkconfig($CONFIG['finances']['cashimport_checkinvoices']))
+			if ($import['value'] > 0 && $icheck)
 			{
 				if($invoices = $DB->GetAll('SELECT d.id,
 						(SELECT SUM(value*count) FROM invoicecontents WHERE docid = d.id) +
@@ -142,12 +162,12 @@ elseif(isset($_POST['marks']))
 					FROM documents d
 					WHERE d.customerid = ? AND d.type = ? AND d.closed = 0
 					GROUP BY d.id, d.cdate ORDER BY d.cdate',
-					array($customers[$id], DOC_INVOICE)))
+					array($balance['customerid'], DOC_INVOICE)))
 				{
 					foreach($invoices as $inv)
 						$sum += $inv['value'];
 
-					$bval = $LMS->GetCustomerBalance($customers[$id]);
+					$bval = $LMS->GetCustomerBalance($balance['customerid']);
 					$value = f_round($bval + $import['value'] + $sum);
 
 					foreach($invoices as $inv) {
@@ -167,13 +187,11 @@ elseif(isset($_POST['marks']))
 				}
 			}
 
-			$DB->Execute('UPDATE cashimport SET closed = 1 WHERE id = ?', array($id));
+			$DB->Execute('UPDATE cashimport SET closed = 1 WHERE id = ?', array($import['id']));
 			$LMS->AddBalance($balance);
 
 			$DB->CommitTrans();
 		}
-		else
-			$error[$id] = trans('Customer not selected!');
 	}
 }
 
