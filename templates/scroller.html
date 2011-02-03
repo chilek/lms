@@ -28,7 +28,7 @@
     {if $scrollerno}
     {t 0="<input class=\"scroller\" type=\"text\" name=\"page`$scrollerno`\" value=\"\" size=\"3\">"}Go to $0 page{/t} <a href="javascript: pagechange{$scrollerno}();">&raquo;&raquo;&raquo;</a>
     {else}
-    {t 0="<input class=\"scroller\" type=\"text\" name=\"page\" value=\"\" size=\"3\">"}Go to $0 page{/t} <a href="javascript: void(0);" onclick="{if $submit_function}{$submit_function}(){else}document.forms['scroller'].submit(){/if};">&raquo;&raquo;&raquo;</a>
+    {t 0="<input class=\"scroller\" type=\"text\" name=\"page\" value=\"\" size=\"3\">"}Go to $0 page{/t} <a href="javascript: void(0);" onclick="{if $submit_function}{$submit_function}(){else}this.parentNode.submit(){/if};">&raquo;&raquo;&raquo;</a>
     </form>
     {/if}
     {/if}
