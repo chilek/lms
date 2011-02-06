@@ -346,7 +346,7 @@ switch($type)
 			FROM cash c
 			JOIN customersview v ON (v.id = c.customerid)
 			WHERE c.time >= ? AND c.time <= ?'
-			.($source ? ' AND c.sourceid = '.intval($source).' AND ' : '')
+			.($source ? ' AND c.sourceid = '.intval($source) : '')
 			.' AND c.importid IS NOT NULL
 			ORDER BY time', array($date['from'], $date['to']));
 
