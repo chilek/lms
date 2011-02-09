@@ -203,8 +203,8 @@
 					</TD>
 					<TD width="99%" NOWRAP>
 						<INPUT TYPE="text" size="15" value="{$item.phone}" name="customeradd[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}>
-						<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_MOBILE}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & CONTACT_MOBILE)} checked{/if}>{t}mobile{/t}
-						<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_FAX}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & CONTACT_FAX)} checked{/if}>{t}fax{/t}
+						<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_MOBILE}" ID="chkmobile{$key}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & CONTACT_MOBILE)} checked{/if}><A HREF="javascript:checkElement('chkmobile{$key}')">{t}mobile{/t}</A>
+						<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_FAX}" ID="chkfax{$key}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & CONTACT_FAX)} checked{/if}><A HREF="javascript:checkElement('chkfax{$key}')">{t}fax{/t}</A>
 						<BR>
 						<INPUT TYPE="text" size="38" value="{$item.name}" name="customeradd[contacts][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
 					</TD>
