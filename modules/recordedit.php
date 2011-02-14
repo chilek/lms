@@ -48,7 +48,7 @@ if (isset($_POST['record']))
 
 	if (!$error)
 	{
-		if (!empty($record['name']))
+		if (strlen($record['name']))
 			$record['name'] = trim($record['name'],'.').'.';
 		$record['name'] .= $record['domainname'];
 
