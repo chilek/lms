@@ -283,7 +283,15 @@ while (my $row = $dbq->fetchrow_hashref())
 	if($customergroupscount || !$inicustomergroups)
 	{
 		my $balance = $row->{'balance'};
-		my $sdbq = $dbase->prepare("SELECT MAX(at) AS at, SUM((value * (100 - discount)) / 100) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND period = ".MONTH." AND (datefrom <= $currtime OR datefrom = 0) AND (dateto >= $currtime OR dateto = 0) AND customerid = $row->{'id'} GROUP BY customerid HAVING SUM(value * ((100 - discount) / 100)) > 0");
+		my $sdbq = $dbase->prepare("SELECT MAX(a.at) AS at, SUM((t.value * (100 - a.discount)) / 100) AS value
+		    FROM assignments a, tariffs t
+		    WHERE a.tariffid = t.id
+		        AND a.customerid = $row->{'id'}
+		        AND a.period = ".MONTH."
+		        AND (a.datefrom <= $currtime OR a.datefrom = 0)
+		        AND (a.dateto >= $currtime OR a.dateto = 0)
+		        GROUP BY a.customerid
+		        HAVING SUM(t.value * ((100 - t.discount) / 100)) > 0");
 		$sdbq->execute();
 		$srow = $sdbq->fetchrow_hashref();
 		$sdbq->finish();
