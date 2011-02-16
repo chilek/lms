@@ -9,6 +9,8 @@ version ? (????-??-??)
   - Fixed goto feature of the second scroller on the page (alec)
   - BTS#0000848: Fixed cash import history report when source is selected (alec)
   - Fixed SQL query in lms-makewarnings (alec)
+  - Fixed order of tables in database backup (alec)
+  - Fixed printing of DB errors while recovering database backup (alec)
 
 version 1.11.11 Bray (2011-01-17)
 

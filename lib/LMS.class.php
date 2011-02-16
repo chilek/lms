@@ -65,7 +65,7 @@ class LMS
                                 $this->DB->Execute('SET @lms_current_user=?', array($this->AUTH->id));
                         break;
                 }
-        }                    
+        }
 
 	/*
 	 *  Logging
@@ -91,26 +91,51 @@ class LMS
 
 	function DBDump($filename=NULL, $gzipped=FALSE, $stats=FALSE) // dump database to file
 	{
-		if(! $filename)
+		if (!$filename)
 			return FALSE;
-		if (($gzipped)&&(extension_loaded('zlib')))
+
+		if ($gzipped && extension_loaded('zlib'))
 			$dumpfile = gzopen($filename,'w');
 		else
 			$dumpfile = fopen($filename,'w');
 
 		if($dumpfile)
 		{
-			foreach($this->DB->ListTables() as $tablename)
+		    $tables = $this->DB->ListTables();
+
+			foreach ($tables as $tablename)
 			{
-				// skip sessions table for security 
+				// skip sessions table for security
 				if($tablename == 'sessions' || ($tablename == 'stats' && $stats == FALSE))
 					continue;
-					
-				fputs($dumpfile,"DELETE FROM $tablename;\n");
+
+				fputs($dumpfile, "DELETE FROM $tablename;\n");
+            }
+
+            // Since we're using foreign keys, order of tables is important
+            // Note: add all referenced tables to the list
+            $order = array('users', 'customers', 'customergroups', 'nodes', 'numberplans',
+                'assignments', 'rtqueues', 'rttickets', 'rtmessages', 'domains',
+                'cashsources', 'sourcefiles', 'ewx_channels');
+
+            foreach ($tables as $idx => $table) {
+                if (in_array($table, $order)) {
+                    unset($tables[$idx]);
+                }
+            }
+
+            $tables = array_merge($order, $tables);
+
+			foreach ($tables as $tablename)
+			{
+				// skip sessions table for security
+				if($tablename == 'sessions' || ($tablename == 'stats' && $stats == FALSE))
+					continue;
+
 				$this->DB->Execute('SELECT * FROM '.$tablename);
 				while($row = $this->DB->_driver_fetchrow_assoc())
 				{
-					fputs($dumpfile,"INSERT INTO $tablename (");
+					fputs($dumpfile, "INSERT INTO $tablename (");
 					foreach($row as $field => $value)
 					{
 						$fields[] = $field;
@@ -127,7 +152,8 @@ class LMS
 					unset($values);
 				}
 			}
-			if (($gzipped)&&(extension_loaded('zlib')))
+
+			if ($gzipped && extension_loaded('zlib'))
 				gzclose($dumpfile);
 			else
 				fclose($dumpfile);
