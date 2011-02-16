@@ -8,6 +8,7 @@ version ? (????-??-??)
     instead of cash operation date (alec)
   - Fixed goto feature of the second scroller on the page (alec)
   - BTS#0000848: Fixed cash import history report when source is selected (alec)
+  - Fixed SQL query in lms-makewarnings (alec)
 
 version 1.11.11 Bray (2011-01-17)
 
