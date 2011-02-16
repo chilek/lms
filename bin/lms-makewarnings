@@ -291,7 +291,7 @@ while (my $row = $dbq->fetchrow_hashref())
 		        AND (a.datefrom <= $currtime OR a.datefrom = 0)
 		        AND (a.dateto >= $currtime OR a.dateto = 0)
 		        GROUP BY a.customerid
-		        HAVING SUM(t.value * ((100 - t.discount) / 100)) > 0");
+		        HAVING SUM(t.value * ((100 - a.discount) / 100)) > 0");
 		$sdbq->execute();
 		$srow = $sdbq->fetchrow_hashref();
 		$sdbq->finish();
