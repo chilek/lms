@@ -33,12 +33,12 @@ function DBLoad($filename=NULL)
 	$finfo = pathinfo($filename);
 	$ext = $finfo['extension'];
 
-	if ((extension_loaded('zlib'))&&($ext=='gz'))
+	if ($ext == 'gz' && extension_loaded('zlib'))
 		$file = gzopen($filename,'r'); //jezeli chcemy gz to plik najpierw trzeba rozpakowac
 	else
 		$file = fopen($filename,'r');
 
-	$DB->BeginTrans(); // przyspieszmy dzia³anie je¿eli baza danych obs³uguje transakcje
+	$DB->BeginTrans(); // przyspieszmy dziaÅ‚anie jeÅ¼eli baza danych obsÅ‚uguje transakcje
 	while(!feof($file))
 	{
 		$line = fgets($file, 8192);
@@ -55,9 +55,9 @@ function DBLoad($filename=NULL)
 	else
 		fclose($file);
 
-	// Okej, zróbmy parê bzdurek db depend :S
+	// Okej, zrÃ³bmy parÄ™ bzdurek db depend :S
 	// Postgres sux ! (warden)
-	// Tak, a ³y¿ka na to 'niemo¿liwe' i polecia³a za wann± potr±caj±c bannanem musztardê (lukasz)
+	// Tak, a Å‚yÅ¼ka na to 'niemoÅ¼liwe' i poleciaÅ‚a za wannÄ… potrÄ…cajÄ…c bannanem musztardÄ™ (lukasz)
 
 	switch($CONFIG['database']['type'])
 	{
@@ -94,13 +94,15 @@ if(isset($_GET['is_sure']))
 	{
 		DBLoad($CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql');
 	}
-	elseif ((extension_loaded('zlib'))&&(file_exists($CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz')))
+	elseif (extension_loaded('zlib') && file_exists($CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz'))
 	{
 		DBLoad($CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz');
 	}
-	
-	$SESSION->redirect('?m='.$SESSION->get('lastmodule'));
-}else{
+
+    include(MODULES_DIR . '/dblist.php');
+//	$SESSION->redirect('?m='.$SESSION->get('lastmodule'));
+}
+else {
 	$layout['pagetitle'] = trans('Database Backup Recovery');
 	$SMARTY->display('header.html');
 	echo '<H1>'.trans('Database Backup Recovery').'</H1>';
