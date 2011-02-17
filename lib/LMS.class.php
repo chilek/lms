@@ -2246,9 +2246,10 @@ class LMS
 			return FALSE;
 	}
 
-	function GetTariffIDByName($name)
+	function GetTariffIDByNameAndValue($name, $value)
 	{
-		return $this->DB->GetOne('SELECT id FROM tariffs WHERE name=?', array($name));
+		return $this->DB->GetOne('SELECT id FROM tariffs WHERE name = ? AND value = ?',
+		    array($name, str_replace(',', '.', $value)));
 	}
 
 	function TariffAdd($tariff)

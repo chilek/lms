@@ -38,31 +38,31 @@ function GetTariffList($order='name,asc', $type=NULL, $customergroupid=NULL)
 	switch($order)
 	{
 		case 'id':
-			$sqlord = ' ORDER BY id';
+			$sqlord = " ORDER BY id $direction";
 		break;
 		case 'description':
-		        $sqlord = ' ORDER BY t.description';
+		        $sqlord = " ORDER BY t.description $direction, t.name";
 		break;
 		case 'value':
-		        $sqlord = ' ORDER BY t.value';
+		        $sqlord = " ORDER BY t.value $direction, t.name";
 		break;
 		case 'downrate':
-		        $sqlord = ' ORDER BY t.downrate';
+		        $sqlord = " ORDER BY t.downrate $direction, t.name";
 		break;
 		case 'downceil':
-		        $sqlord = ' ORDER BY t.downceil';
+		        $sqlord = " ORDER BY t.downceil $direction, t.name";
 		break;
 		case 'uprate':
-		        $sqlord = ' ORDER BY t.uprate';
+		        $sqlord = " ORDER BY t.uprate $direction, t.name";
 		break;
 		case 'upceil':
-		        $sqlord = ' ORDER BY t.upceil';
+		        $sqlord = " ORDER BY t.upceil $direction, t.name";
 		break;
 		case 'count':
-		        $sqlord = ' ORDER BY customerscount';
+		        $sqlord = " ORDER BY customerscount $direction, t.name";
 		break;
 		default:
-	                $sqlord = ' ORDER BY t.name';
+                $sqlord = " ORDER BY t.name, t.value DESC";
 		break;
 	}
 	
@@ -100,7 +100,7 @@ function GetTariffList($order='name,asc', $type=NULL, $customergroupid=NULL)
 			) a ON (a.tariffid = t.id)
 			LEFT JOIN taxes ON (t.taxid = taxes.id)'
 			.($type ? ' WHERE t.type = '.intval($type) : '')
-			.($sqlord != '' ? $sqlord.' '.$direction : '')))
+			.($sqlord != '' ? $sqlord : '')))
 	{
 		$unactive = $DB->GetAllByKey('SELECT tariffid, COUNT(*) AS count,
 			SUM(CASE x.period

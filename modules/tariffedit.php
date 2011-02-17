@@ -37,23 +37,23 @@ if(isset($_POST['tariff']))
 	foreach($tariff as $key => $value)
 		$tariff[$key] = trim($value);
 
+	$tariff['id'] = $_GET['id'];
 	$tariff['value'] = str_replace(',','.',$tariff['value']);
-	
-	if($tariff['value'] == '')
-		$error['value'] = trans('Value required!');
-	elseif(!preg_match('/^[-]?[0-9.,]+$/', $tariff['value']))
+
+	if (!preg_match('/^[-]?[0-9.,]+$/', $tariff['value']))
 		$error['value'] = trans('Incorrect value!');
 
-	if($tariff['name'] == '')
+	if ($tariff['name'] == '')
 		$error['name'] = trans('Subscription name required!');
-	elseif($LMS->GetTariffIDByName($tariff['name']) 
-		&& $tariff['name'] != $DB->GetOne('SELECT name FROM tariffs WHERE id=?', array($_GET['id'])))
-	{
-		$error['name'] = trans('Subscription with specified name already exists!');
+	else if (!$error
+	    && ($found_id = $LMS->GetTariffIDByNameAndValue($tariff['name'], $tariff['value']))
+		&& $found_id != $tariff['id']
+    ) {
+	    $error['name'] = trans('Subscription with specified name and value already exists!');
 	}
 
 	$items = array('uprate', 'downrate', 'upceil', 'downceil', 'climit', 'plimit', 'dlimit');
-	
+
 	foreach($items as $item)
 	{
 	        if($tariff[$item]=='')
@@ -98,7 +98,7 @@ if(isset($_POST['tariff']))
 	                'quota_sh_limit', 'quota_mail_limit', 'quota_www_limit',
 	                'quota_ftp_limit', 'quota_sql_limit',
 	);
-										
+
 	foreach($items as $item)
 	{
 	        if(isset($limit[$item]))
@@ -106,8 +106,6 @@ if(isset($_POST['tariff']))
 	        elseif(!preg_match('/^[0-9]+$/', $tariff[$item]))
 	                $error[$item] = trans('Integer value expected!');
 	}
-
-	$tariff['id'] = $_GET['id'];
 
 	if(!$error)
 	{
@@ -117,7 +115,7 @@ if(isset($_POST['tariff']))
 }
 else
 	$tariff = $LMS->GetTariff($_GET['id']);
-	
+
 $layout['pagetitle'] = trans('Subscription Edit: $0',$tariff['name']);
 
 $SMARTY->assign('tariff',$tariff);
