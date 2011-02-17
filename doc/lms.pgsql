@@ -311,7 +311,7 @@ CREATE TABLE tariffs (
 	quota_sql_limit integer	DEFAULT NULL,
 	description text	DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
-	UNIQUE (name)
+	UNIQUE (name, value)
 );
 CREATE INDEX tariffs_type_idx ON tariffs (type);
 
@@ -1519,4 +1519,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010122700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2011021700');

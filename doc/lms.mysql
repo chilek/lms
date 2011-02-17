@@ -728,7 +728,7 @@ CREATE TABLE tariffs (
   quota_sql_limit int(11) 	DEFAULT NULL,
   description text 	NOT NULL,
   PRIMARY KEY  (id),
-  UNIQUE KEY name (name),
+  UNIQUE KEY name (name, value),
   INDEX type (type)
 ) ENGINE=InnoDB;
 
@@ -1425,4 +1425,4 @@ CREATE TABLE supermasters (
 
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2010122700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2011021700');

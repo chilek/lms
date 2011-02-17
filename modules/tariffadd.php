@@ -39,14 +39,15 @@ if(isset($_POST['tariff']))
 
 	$tariff['value'] = str_replace(',','.',$tariff['value']);
 
-	if(!preg_match('/^[-]?[0-9.,]+$/', $tariff['value']))
+	if (!preg_match('/^[-]?[0-9.,]+$/', $tariff['value']))
 		$error['value'] = trans('Incorrect subscription value!');
 
-	if($tariff['name'] == '')
+	if ($tariff['name'] == '')
 		$error['name'] = trans('Subscription name required!');
-	else
-		if($LMS->GetTariffIDByName($tariff['name']))
-			$error['name'] = trans('Subscription $0 already exists!',$tariff['name']);
+	else if (!$error) {
+		if ($LMS->GetTariffIDByNameAndValue($tariff['name'], $tariff['value']))
+			$error['name'] = trans('Subscription with specified name and value already exists!');
+    }
 
 	$items = array('uprate', 'downrate', 'upceil', 'downceil', 'climit', 'plimit', 'dlimit');
 
