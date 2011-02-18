@@ -174,7 +174,6 @@ if(!$layout['popup'])
 header('X-Powered-By: LMS/'.$layout['lmsv']);
 
 // Check privileges and execute modules
-
 if($AUTH->islogged)
 {
 	$module = isset($_GET['m']) ? preg_replace('/[^a-zA-Z0-9_-]/', '', $_GET['m']) : '';
@@ -184,6 +183,14 @@ if($AUTH->islogged)
 	{
 		$module = $CONFIG['phpui']['default_module'];
 	}
+
+    // Load plugin files and register hook callbacks
+    $plugins = preg_split('/[;,\s\t\n]+/', $CONFIG['phpui']['plugins'], -1, PREG_SPLIT_NO_EMPTY);
+    if (!empty($plugins)) {
+        foreach ($plugins as $plugin_name) {
+            require LIB_DIR . '/plugins/' . $plugin_name . '.php';
+        }
+    }
 
 	if(file_exists(MODULES_DIR.'/'.$module.'.php'))
 	{

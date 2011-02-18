@@ -35,19 +35,29 @@ else if ($_GET['is_sure']!=1)
 	$nodename = $LMS->GetNodeName($nodeid);
 
 	$layout['pagetitle'] = trans('Delete Node $0', $nodename);
-		
+
 	$body = '<P>'.trans('Are you sure, you want to delete node $0?', $nodename).'</P>'; 
 	$body .= '<P><A HREF="?m=nodedel&id='.$nodeid.'&is_sure=1">'.trans('Yes, I am sure.').'</A></P>';
-	
+
 	$SMARTY->assign('body',$body);
 	$SMARTY->display('dialog.html');
 }
 else
 {
 	$owner = $LMS->GetNodeOwner($nodeid);
+
+    $plugin_data = array(
+        'id'      => $nodeid,
+        'ownerid' => $owner,
+    );
+
+    $LMS->ExecHook('node_del_before', $plugin_data);
+
 	$LMS->DeleteNode($nodeid);
 
-	if($SESSION->is_set('backto'))
+    $LMS->ExecHook('node_del_after', $plugin_data);
+
+	if ($SESSION->is_set('backto'))
 		header('Location: ?'.$SESSION->get('backto'));
 	else
 		header('Location: ?m=customerinfo&id='.$owner);

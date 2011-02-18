@@ -96,11 +96,13 @@ else
 
 $layout['pagetitle'] = trans('Node Info: $0',$nodeinfo['name']);
 
+$nodeinfo = $LMS->ExecHook('node_info_init', $nodeinfo);
+
 $SMARTY->assign('netdevices',$netdevices);
-$SMARTY->assign('nodeinfo',$nodeinfo);
 $SMARTY->assign('nodestats',$nodestats);
 $SMARTY->assign('nodegroups',$nodegroups);
 $SMARTY->assign('othernodegroups',$othernodegroups);
+$SMARTY->assign('nodeinfo',$nodeinfo);
 $SMARTY->display('nodeinfo.html');
 
 ?>

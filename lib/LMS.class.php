@@ -33,6 +33,7 @@ class LMS
 	var $AUTH;			// object from Session.class.php (session management)
 	var $CONFIG;			// table including lms.ini options
 	var $cache = array();		// internal cache
+	var $hooks = array();       // registered plugin hooks
 	var $_version = '1.11-cvs';	// class version
 	var $_revision = '$Revision$';
 
@@ -85,6 +86,31 @@ class LMS
 		}
 	}
 */
+
+    /*
+     * Plugins
+     */
+
+    function RegisterHook($hook_name, $callback)
+    {
+        $this->hooks[] = array(
+            'name'     => $hook_name,
+            'callback' => $callback,
+        );
+    }
+
+    function ExecHook($hook_name, $vars=null)
+    {
+        foreach ($this->hooks as $hook) {
+            if ($hook['name'] == $hook_name) {
+                $vars = call_user_func($hook['callback'], $vars);
+            }
+        }
+
+        return $vars;
+    }
+
+
 	/*
 	 *  Database functions (backups)
 	 */

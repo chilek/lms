@@ -12,6 +12,7 @@ version ? (????-??-??)
   - Fixed order of tables in database backup (alec)
   - Fixed printing of DB errors while recovering database backup (alec)
   - Use tariff name+value as a unique key instead of just a name (alec)
+  - Added simple plugin API with some hooks on node actions (alec)
 
 version 1.11.11 Bray (2011-01-17)
 
