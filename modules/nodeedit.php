@@ -210,7 +210,12 @@ if(isset($_POST['nodeedit']) && !isset($_GET['newmac']))
 
 	if(!$error)
 	{
+        $nodeedit = $LMS->ExecHook('node_edit_before', $nodeedit);
+
 		$LMS->NodeUpdate($nodeedit, ($customerid != $nodeedit['ownerid']));
+
+        $nodeedit = $LMS->ExecHook('node_edit_after', $nodeedit);
+
 		$SESSION->redirect('?m=nodeinfo&id='.$nodeedit['id']);
 	}
 
@@ -252,6 +257,8 @@ if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_
 {
     $SMARTY->assign('customers', $LMS->GetCustomerNames());
 }
+
+$nodeinfo = $LMS->ExecHook('node_edit_init', $nodeinfo);
 
 $SMARTY->assign('cstateslist',$LMS->GetCountryStates());
 $SMARTY->assign('netdevices', $LMS->GetNetDevNames());
