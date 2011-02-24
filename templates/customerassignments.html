@@ -11,7 +11,7 @@
 			{if $layout.module == 'customerassignmentedit'}
 		        <A href="?m={$layout.module}&expired={if $expired}0{else}1{/if}&id={$assignment.id}">{if $expired}{t}Hide expired{/t}{else}{t}Show expired{/t}{/if} &raquo;</A>&nbsp;
 			{else}
-			    <A href="?m={$layout.module}&expired={if $expired}0{else}1{/if}&id={$customerinfo.id}">{if $expired}{t}Hide expired{/t}{else}{t}Show expired{/t}{/if} &raquo;</A>&nbsp;
+			    <A href="?m={$layout.module}&expired={if $expired}0{else}1{/if}&id={if $nodeinfo}{$nodeinfo.id}{else}{$customerinfo.id}{/if}">{if $expired}{t}Hide expired{/t}{else}{t}Show expired{/t}{/if} &raquo;</A>&nbsp;
 			{/if}
 		</TD>
 	</TR>
