@@ -268,9 +268,9 @@ void reload(GLOBAL *g, struct payments_module *p)
 	char monthname[20], nextmon[8];
 
 	char *nets = strdup(" AND EXISTS (SELECT 1 FROM nodes, networks n "
-				"WHERE ownerid = ats.customerid "
+				"WHERE ownerid = a.customerid "
 				    "AND (%nets) "
-	                 "AND ((ipaddr > address AND ipaddr < ("BROADCAST")) "
+	                "AND ((ipaddr > address AND ipaddr < ("BROADCAST")) "
 				        "OR (ipaddr_pub > address AND ipaddr_pub < ("BROADCAST"))) )");
 
 	char *netnames = strdup(p->networks);
@@ -278,7 +278,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	char *netsql = strdup("");
 
 	char *enets = strdup(" AND NOT EXISTS (SELECT 1 FROM nodes, networks n "
-				"WHERE ownerid = ats.customerid "
+				"WHERE ownerid = a.customerid "
 				    "AND (%enets) "
 	                "AND ((ipaddr > address AND ipaddr < ("BROADCAST")) "
 				        "OR (ipaddr_pub > address AND ipaddr_pub < ("BROADCAST"))) )");
@@ -287,19 +287,19 @@ void reload(GLOBAL *g, struct payments_module *p)
 	char *enetname = strdup(enetnames);
 	char *enetsql = strdup("");
 
-	char *groups = strdup(" AND EXISTS (SELECT 1 FROM customergroups g, customerassignments a "
-				"WHERE a.customerid = ats.customerid "
-				"AND g.id = a.customergroupid "
-				"AND (%groups)) ");
+	char *groups = strdup(" AND EXISTS (SELECT 1 FROM customergroups g, customerassignments ca "
+				"WHERE ca.customerid = a.customerid "
+				    "AND g.id = ca.customergroupid "
+				    "AND (%groups)) ");
 
 	char *groupnames = strdup(p->customergroups);
 	char *groupname = strdup(groupnames);
 	char *groupsql = strdup("");
 
-	char *egroups = strdup(" AND NOT EXISTS (SELECT 1 FROM customergroups g, customerassignments a "
-				"WHERE a.customerid = ats.customerid "
-				"AND g.id = a.customergroupid "
-				"AND (%egroups)) ");
+	char *egroups = strdup(" AND NOT EXISTS (SELECT 1 FROM customergroups g, customerassignments ca "
+				"WHERE ca.customerid = a.customerid "
+				    "AND g.id = ca.customergroupid "
+				    "AND (%egroups)) ");
 
 	char *egroupnames = strdup(p->excluded_customergroups);
 	char *egroupname = strdup(egroupnames);
@@ -935,12 +935,12 @@ void reload(GLOBAL *g, struct payments_module *p)
 		char *query = strdup(
 			"UPDATE documents SET closed = 1 "
 			"WHERE customerid IN ( "
-				"SELECT ats.customerid "
-				"FROM cash ats "
-				"WHERE ats.time <= %NOW% "
+				"SELECT a.customerid "
+				"FROM cash a "
+				"WHERE a.time <= %NOW% "
 				"   %nets%enets%groups%egroups "
-				"GROUP BY ats.customerid "
-				"HAVING SUM(ats.value) >= 0) "
+				"GROUP BY a.customerid "
+				"HAVING SUM(a.value) >= 0) "
 			"AND type IN (1, 3, 5) "
 			"AND cdate <= %NOW% "
 			"AND closed = 0");
