@@ -2434,5 +2434,12 @@ $_LANG['This promotion has no assigned tariffs.'] = 'Ta promocja nie posiada prz
 $_LANG['This schema has no assigned tariffs.'] = 'Ten schemat nie posiada przypisanych taryf.';
 $_LANG['Unable to edit two rows at once!'] = 'Nie można edytować dwóch rekordów jednocześnie!';
 $_LANG['unlimited'] = 'nieokreślony';
+$_LANG['Activation payment'] = 'Opłata aktywacyjna';
+$_LANG['Not possible to use this period here!'] = 'Nie można zastosować wybranego okresu!';
+$_LANG['Promotion start date is required!'] = 'Wymagana jest data początku promocji!';
+$_LANG['Schema'] = 'Schemat';
+$_LANG['Select accounting period (optional) - overwrites customer liability\'s period'] = 'Wybierz okres rozliczeniowy (opcjonalnie) - zastępuje okres zobowiązania klienta';
+$_LANG['Select promotion schema'] = 'Wybierz schemat promocji';
+$_LANG['per promotion schema'] = 'wg schematu promocji';
 
 ?>
