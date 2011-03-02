@@ -17,6 +17,7 @@ version ? (????-??-??)
   - Added Promotions with assignments shedule schemas (alec)
   - Use tariff name+value+period as a unique key instead of just a name (alec)
   - Now PostgreSQL 8.2 is required because of multi-value INSERT usage (alec)
+  - Fixed netdevices searching by MAC address (alec)
 
 version 1.11.11 Bray (2011-01-17)
 

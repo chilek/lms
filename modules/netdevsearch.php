@@ -27,9 +27,9 @@
 function NetDevSearch($order='name,asc', $search=NULL, $sqlskey='AND')
 {
 	global $DB;
-	
+
 	list($order,$direction) = sscanf($order, '%[^,],%s');
-	
+
 	($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
 
         switch($order)
@@ -91,31 +91,31 @@ function NetDevSearch($order='name,asc', $search=NULL, $sqlskey='AND')
 			}
 		}
 	}
-	
+
 	if(isset($searchargs))
                 $searchargs = ' WHERE ('.implode(' '.$sqlskey.' ',$searchargs).')';
-			
+
 	$netdevlist = $DB->GetAll('SELECT DISTINCT d.id, d.name, d.location, d.description, d.producer, 
 				d.model, d.serialnumber, d.ports,
                 		(SELECT COUNT(*) FROM nodes WHERE netdev = d.id AND ownerid > 0)
 	            		+ (SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id) AS takenports
 	        		FROM netdevices d'
-				.(isset($nodes) ? ' LEFT JOIN nodes n ON (netdev = d.id AND ownerid = 0)' : '')
+				.(isset($nodes) ? ' LEFT JOIN vnodes n ON (netdev = d.id AND ownerid = 0)' : '')
 				.(isset($searchargs) ? $searchargs : '')
 				.($sqlord != '' ? $sqlord.' '.$direction : ''));
 
 	$netdevlist['total'] = sizeof($netdevlist);
 	$netdevlist['order'] = $order;
 	$netdevlist['direction'] = $direction;
-	
+
 	return $netdevlist;
 }
-	
+
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if(isset($_POST['search']))
         $netdevsearch = $_POST['search'];
-	
+
 if(!isset($netdevsearch))
         $SESSION->restore('netdevsearch', $netdevsearch);
 else
