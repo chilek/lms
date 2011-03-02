@@ -57,7 +57,7 @@
            <title>Database Server</title>
            <para>MySQL server in version 5.x is supported. Probably LMS won't work correctly
            with older versions.</para>
-           <para>PostgreSQL in version 8.1.x or higher is supported.</para>
+           <para>PostgreSQL in version 8.2.x or higher is supported.</para>
          </sect2>
          <sect2 id="install-req-smarty">
              <title>Smarty Library</title>
@@ -223,7 +223,7 @@ password = your_password</screen>
           <title>PostgreSQL</title>
           <sect3 id="install-pgsql-intro">
           <title>Intro</title>
-               <para>LMS require PostgreSQL 8.1 or higher. If you have not installed PostgreSQL server, 
+               <para>LMS require PostgreSQL 8.2 or higher. If you have not installed PostgreSQL server, 
 	       you can compile it yourself from sources available on <ulink url="http://www.postgresql.org">
                www.postgresql.org</ulink>.</para>
           </sect3>
@@ -268,7 +268,7 @@ password = password_entered_with_lms_user_creation</screen>
                <para><note><para>The need for password actually depends
                on Postgres users authentication configuration found in
                <filename>/usr/local/pgsql/data/pg_hba.conf</filename> (refer to <ulink
-               url="http://www.postgresql.org/docs/8.1/interactive/client-authentication.html#EXAMPLE-PG-HBA.CONF">
+               url="http://www.postgresql.org/docs/current/interactive/auth-pg-hba-conf.html">
                Postgresql documentation</ulink>). By default password is not
                required and you can comment it with semicolon.</para></note></para>
                <para>After this step you should be able to enter your system without any problems.

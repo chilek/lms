@@ -33,6 +33,13 @@ if(!$LMS->TariffExists($_GET['id']) || ($netid != 0 && !$LMS->NetworkExists($net
 
 $tariff = $LMS->GetTariff($_GET['id'], $netid);
 
+$tariff['promotions'] = $DB->GetAll('SELECT DISTINCT p.name, p.id
+    FROM promotionassignments a
+    JOIN promotionschemas s ON (s.id = a.promotionschemaid)
+    JOIN promotions p ON (p.id = s.promotionid)
+    WHERE a.tariffid = ?
+    ORDER BY p.name', array($tariff['id']));
+
 $layout['pagetitle'] = trans('Subscription Info: $0',$tariff['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);

@@ -140,13 +140,26 @@ function setCookie(name, value)
         document.cookie = name + '=' + escape(value);
 }
 
-if (typeof String.prototype.trim == 'undefined') 
+if (typeof String.prototype.trim == 'undefined')
 {
 	String.prototype.trim = function()
 	{
         	var s = this.replace(/^\s*/, '');
 	        return s.replace(/\s*$/, '');
 	};
+}
+
+if (typeof Array.prototype.inArray == 'undefined')
+{
+    Array.prototype.inArray = function(v)
+    {
+        for (var i in this) {
+            if (this[i] == v) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
 function checkElement(id)

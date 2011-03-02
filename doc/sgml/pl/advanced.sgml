@@ -368,6 +368,35 @@
 		    <member>description - opis</member>
                </simplelist>
           </sect2>
+          <sect2 id="promotions">
+               <title>Promocje ('promotions')</title>
+               <simplelist>
+                    <member>id - identyfikator</member>
+                    <member>name - nazwa promocji</member>
+                    <member>description - opis</member>
+                    <member>disabled - status</member>
+               </simplelist>
+          </sect2>
+          <sect2 id="promotionschemas">
+               <title>Schematy promocji ('promotionschemas')</title>
+               <simplelist>
+                    <member>id - identyfikator</member>
+                    <member>name - nazwa schematu</member>
+                    <member>description - opis</member>
+                    <member>promotionid - identyfikator promocji</member>
+                    <member>data - definicja okresów schematu</member>
+                    <member>disabled - status</member>
+               </simplelist>
+          </sect2>
+          <sect2 id="promotionassignments">
+               <title>Powi±zania schematów z taryfami ('promotionassignments')</title>
+               <simplelist>
+                    <member>id - identyfikator</member>
+                    <member>promotionschemaid - identyfikator schematu</member>
+                    <member>tariffid - identyfikator taryfy</member>
+                    <member>data - definicje kwot abonamentu</member>
+               </simplelist>
+          </sect2>
         <sect2 id="liabilities">
 		<title>Zobowi±zania ('liabilities')</title>
 		<simplelist>

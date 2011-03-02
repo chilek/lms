@@ -218,38 +218,55 @@ if(isset($_POST['assignment']))
 	elseif($a['discount']<0 || $a['discount']>99.99 || !is_numeric($a['discount']))
 		$error['discount'] = trans('Wrong discount value!');
 
-	if($a['tariffid'] == -1)  // suspending
+    // suspending
+	if($a['tariffid'] == -1)
 	{
+        $a['tariffid'] = 0;
+        $a['discount'] = 0;
+	    $a['value'] = 0;
+        unset($a['schemaid']);
+        unset($a['invoice']);
+        unset($a['settlement']);
 		unset($error['at']);
 		$at = 0;
 	}
-	else if (!$a['tariffid']) { // tariffless
+    // promotion schema
+    else if ($a['tariffid'] == -2) {
+        if (!$from) {
+            $error['datefrom'] = trans('Promotion start date is required!');
+        }
+        else {
+            $a['promotiontariffid'] = $a['stariffid'];
+	        $a['value'] = 0;
+	        $a['discount'] = 0;
+	        // @TODO: handle other period/at values
+	        $a['period'] = MONTHLY;
+	        $a['at'] = 1;
+        }
+    }
+	// tariffless
+	else if (!$a['tariffid']) {
 	    if (!$a['name'])
 		    $error['name'] = trans('Liability name is required!');
 	    if (!$a['value'])
 		    $error['value'] = trans('Liability value is required!');
 		else if(!preg_match('/^[-]?[0-9.,]+$/', $a['value']))
 		    $error['value'] = trans('Incorrect value!');
+
+        unset($a['schemaid']);
     }
 
 	if(!$error)
 	{
-	    if ($a['tariffid'] == -1) {
-	        $a['tariffid'] = 0;
-	        $a['discount'] = 0;
-	        unset($a['invoice']);
-	        unset($a['settlement']);
-        }
-        if ($a['tariffid'])
-		    $a['value'] = 0;
-
         $a['customerid'] = $customer['id'];
         $a['period']     = $period;
         $a['at']         = $at;
 		$a['datefrom']   = $from;
 		$a['dateto']     = $to;
 
+        $DB->BeginTrans();
 		$LMS->AddAssignment($a);
+        $DB->CommitTrans();
 
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}
@@ -275,8 +292,20 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $customernodes = $LMS->GetCustomerNodes($customer['id']);
 unset($customernodes['total']);
 
+$schemas = $DB->GetAll('SELECT p.name AS promotion, s.name, s.id,
+    (SELECT '.$DB->GroupConcat('tariffid', ',').'
+        FROM promotionassignments WHERE promotionschemaid = s.id
+    ) AS tariffs
+    FROM promotions p
+    JOIN promotionschemas s ON (p.id = s.promotionid)
+    WHERE p.disabled <> 1 AND s.disabled <> 1
+        AND EXISTS (SELECT 1 FROM promotionassignments
+            WHERE promotionschemaid = s.id LIMIT 1)
+    ORDER BY p.name, s.name');
+
 $SMARTY->assign('assignment', $a);
 $SMARTY->assign('customernodes', $customernodes);
+$SMARTY->assign('promotionschemas', $schemas);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->assign('taxeslist', $LMS->GetTaxes());
 $SMARTY->assign('expired', $expired);

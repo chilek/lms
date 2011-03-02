@@ -354,6 +354,35 @@
                     <member>description - description for subscription</member>
                </simplelist>
           </sect2>
+          <sect2 id="promotions">
+               <title>Promotions ('promotions')</title>
+               <simplelist>
+                    <member>id - serial number</member>
+                    <member>name - promotion name</member>
+                    <member>description - additional information</member>
+                    <member>disabled - status</member>
+               </simplelist>
+          </sect2>
+          <sect2 id="promotionschemas">
+               <title>Promotion Schemas ('promotionschemas')</title>
+               <simplelist>
+                    <member>id - serial number</member>
+                    <member>name - schema name</member>
+                    <member>description - additional information</member>
+                    <member>promotionid - promotion identifier</member>
+                    <member>data - schema periods definition</member>
+                    <member>disabled - status</member>
+               </simplelist>
+          </sect2>
+          <sect2 id="promotionassignments">
+               <title>Schema-To-Tariff assignments ('promotionassignments')</title>
+               <simplelist>
+                    <member>id - serial number</member>
+                    <member>promotionschemaid - schema identifier</member>
+                    <member>tariffid - subscription identifier</member>
+                    <member>data - schema values definition</member>
+               </simplelist>
+          </sect2>
           <sect2 id="liabilities">
                <title>Custom liabilities ('liabilities')</title>
                <simplelist>

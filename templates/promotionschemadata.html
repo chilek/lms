@@ -1,0 +1,217 @@
+<!--// $Id$ //-->
+<TABLE WIDTH="100%" CELLPADDING="3">
+    <TR CLASS="DARK">
+	    <TD width="100%" class="fall hand" align="left" nowrap="nowrap" onClick="showOrHide('promotionschemadata');">
+	        <IMG SRC="img/money.gif" ALT="">
+			<B>{t 0=$schema.tariffs|@count}Schema's Tariffs ($0):{/t}</B>
+        </TD>
+    </TR>
+    {assign value=$schema.periods|@count var=periodcnt}
+	<TR id="promotionschemadata" style="display:none;">
+	    <TD WIDTH="100%" class="fall">
+			<FORM METHOD="POST" NAME="tariffs" ACTION="?m=promotionschemaedit&id={$schema.id}&action=tariff">
+            <INPUT type="submit" class="hiddenbtn">
+	        <TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
+				<TR class="dark">
+					<TD CLASS="fleftu" width="{math equation="98-x" x=$periodcnt}%" NOWRAP><B>{t}Name:{/t}</B></TD>
+					<TD CLASS="fbt" width="1%" align="right" NOWRAP><B>{t}Value{/t}:</B></TD>
+					{foreach from=$schema.periods item=period}
+					<TD CLASS="fbt" width="1%" align="right" NOWRAP>{$period}:</TD>
+					{/foreach}
+					<TD CLASS="frightu" width="1%">&nbsp;</TD>
+			    </TR>
+				{cycle values="light,lucid" print=false name=tariffs}
+				{foreach from=$schema.tariffs item=tariff}
+				<TR id="row{$tariff.id}" class="{cycle name=tariffs}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+					<TD style="vertical-align: top">
+						<A href="?m=tariffinfo&id={$tariff.tariffid}"><B>{$tariff.name}</B></A>
+					</TD>
+					<TD align="right" NOWRAP style="vertical-align: top">
+					    <B>{$tariff.value|string_format:"%.2f"}</B>
+					</TD>
+					{foreach from=$schema.periods item=period key=key}
+					<TD align="right" NOWRAP style="vertical-align: top">
+					    <SPAN ID="tariffval{$tariff.id}_{$key}"{if $error && $formdata.aid == $tariff.id} style="display:none"{/if}>
+					        {$tariff.data.value.$key|string_format:"%.2f"}
+					        {if $tariff.data.period.$key}{assign var=pkey value=$tariff.data.period.$key}({$_PERIODS.$pkey}){/if}
+					    </SPAN>
+					    {if $error && $formdata.aid == $tariff.id}
+					    {textformat assign=fkey}tariffval{$key}{/textformat}
+					    <INPUT type="text" size="8" id="tariffval{$key}" name="form[tariffval{$key}]" value="{$formdata.$fkey}" {if $key}{tip text="Enter subscription value for specified period" trigger="tariffval`$key`"}{else}{tip text="Enter activation value" trigger="tariffval`$key`"}{/if}>
+                            {if $key}
+    					    {textformat assign=fkey}tariffperiod{$key}{/textformat}
+    					    {if $formdata.$fkey}{assign var=period value=$formdata.$fkey}{else}{assign var=period value=0}{/if}
+                            <BR><SELECT name="form[tariffperiod{$key}]" id="tariffperiod{$key}" {tip text="Select accounting period (optional) - overwrites customer liability's period" trigger="tariffperiod`$key`"}>
+					            <OPTION value="0" {if !$period}SELECTED{/if}>-</OPTION>
+				                {foreach from=$_PERIODS item=p key=pkey}{if $pkey}
+                                <OPTION value="{$pkey}" {if $pkey == $period}SELECTED{/if}>{$p}</OPTION>
+                                {/if}{/foreach}
+					        </SELECT>
+                            {/if}
+					    {/if}
+					</TD>
+					{/foreach}
+					<TD NOWRAP>
+						<A id="del{$tariff.id}" HREF="?m=promotionschemaedit&action=tariffdel&id={$schema.id}&aid={$tariff.id}" OnClick="return confirmLink(this, '{t}Are you sure, you want to delete this assignment?{/t}');"><IMG src="img/delete.gif" alt="[ {t}Delete assignment{/t} ]" title="[ {t}Delete assignment{/t} ]"></A>
+						<A id="edit{$tariff.id}" HREF="javascript:edit_tariff({$tariff.id})"><IMG src="img/edit.gif" alt="[ {t}Edit assignment{/t} ]" title="[ {t}Edit assignment{/t} ]"></A>
+                        <A id="cancel{$tariff.id}" HREF="javascript:cancel_tariff({$tariff.id})" style="display:none"><IMG src="img/cancel.gif" alt="[ {t}Cancel{/t} ]" title="[ {t}Cancel{/t} ]"></A>
+                        <A id="save{$tariff.id}" HREF="javascript:save_tariff({$tariff.id})" style="display:none"><IMG src="img/save.gif" alt="[ {t}Save{/t} ]" title="[ {t}Save{/t} ]"></A>
+                    </TD>
+				</TR>
+				{foreachelse}
+				<TR>
+					<TD colspan="{$periodcnt+3}" align="center">
+						<p>&nbsp;</p>
+						<p><B>{t}This schema has no assigned tariffs.{/t}</b></p>
+						<p>&nbsp;</p>
+					</TD>
+				</TR>
+				{/foreach}
+				{if $tariffs}
+                <TR class="light">
+					<TD colspan="2" class="ftop" style="vertical-align: top">
+					    <SELECT name="form[tariffid]" {tip text="Select subscription" trigger="tariffid"}>
+				        {foreach from=$tariffs item=t}
+                            <OPTION value="{$t.id}" {if $t.id == $formdata.tariffid}SELECTED{/if}>
+                            {$t.name|truncate:40:"...":true} ({$t.value|money_format}{if $t.upceil || $t.downceil}, {$t.downceil}/{$t.upceil} kbit/s{/if})
+                            </OPTION>
+                        {/foreach}
+					    </SELECT>
+					</TD>
+					{foreach from=$schema.periods item=period key=key}
+					<TD CLASS="ftop" align="right" NOWRAP style="vertical-align: top">
+					    {textformat assign=fkey}value{$key}{/textformat}
+					    <INPUT type="text" size="8" name="form[value{$key}]" value="{$formdata.$fkey}" {if $key}{tip text="Enter subscription value for specified period" trigger="value`$key`"}{else}{tip text="Enter activation value" trigger="value`$key`"}{/if}>
+					    {if $key}
+					    {textformat assign=fkey}period{$key}{/textformat}
+					    {if $formdata.$fkey}{assign var=period value=$formdata.$fkey}{else}{assign var=period value=0}{/if}
+					    <BR>
+					    <SELECT name="form[period{$key}]" {tip text="Select accounting period (optional) - overwrites customer liability's period" trigger="period`$key`"}>
+					        <OPTION value="0" {if !$period}SELECTED{/if}>-</OPTION>
+				            {foreach from=$_PERIODS item=p key=pkey}{if $pkey}
+                            <OPTION value="{$pkey}" {if $pkey == $period}SELECTED{/if}>{$p}</OPTION>
+                            {/if}{/foreach}
+					    </SELECT>
+					    {/if}
+					</TD>
+					{/foreach}
+                    <TD class="ftop" align="right" style="vertical-align: top">
+						<A HREF="javascript:document.tariffs.submit()"><IMG src="img/save.gif" alt="[ {t}Add assignment{/t} ]" title="[ {t}Add assignment{/t} ]"></A>
+                    </TD>
+                </TR>
+                {/if}
+			</TABLE>
+            </FORM>
+		</TD>
+	</TR>
+</TABLE>
+{literal}
+<SCRIPT type="text/javascript">
+var edited_row = 0;
+if(getCookie('promotionschemadata')=='1')
+{
+    document.getElementById('promotionschemadata').style.display = '';
+}
+function edit_tariff(id)
+{
+    if (edited_row) {
+        alert('{/literal}{t}Unable to edit two rows at once!{/t}{literal}');
+        return;
+    }
+
+    var tr = document.getElementById('row'+id),
+        tds = tr.getElementsByTagName('SPAN'),
+        i, j, n, v, period, input, sel, opt, pn,
+        periods = {{/literal}{strip}
+        "-":0
+        {foreach name=periods from=$_PERIODS item=item key=key}
+            {if $key},"{$item}":{$key}{/if}
+        {/foreach}
+        {/strip}{literal}};
+
+    edited_row = id;
+
+    for (i=0; i<tds.length; i++) {
+        n  = tds[i].id.replace(/^tariffval[0-9]+_/, '');
+        pn = tds[i].parentNode;
+        v  = tds[i].innerHTML.replace(/^\s+/, '').replace(/\s+$/, '');
+
+        if (v.match(/^([0-9,.+-]+)\s+\(([^)]+)\)/)) {
+            v = RegExp.$1;
+            period = periods[RegExp.$2];
+        } else {
+            period = 0;
+        }
+
+        input = document.createElement('INPUT');
+        input.setAttribute('type', 'text');
+        input.setAttribute('size', '8');
+        input.name  = 'form[tariffval'+n+']';
+        input.id    = 'tariffval'+n;
+        input.value = v;
+        pn.appendChild(input);
+        // move cursor to activation field
+        if (!i) {
+            input.focus(); input.select();
+        // add period selector
+        } else {
+            sel = document.createElement('BR');
+            pn.appendChild(sel);
+            sel = document.createElement('SELECT');
+            sel.name = 'form[tariffperiod'+n+']';
+            sel.id   = 'tariffperiod'+n;
+
+            for (j in periods) {
+                opt = document.createElement('OPTION');
+                opt.value = periods[j];
+                opt.innerHTML = j;
+                sel.appendChild(opt);
+            }
+            sel.value = period;
+            pn.appendChild(sel);
+        }
+        tds[i].style.display = 'none';
+    }
+
+    document.getElementById('cancel'+id).style.display = '';
+    document.getElementById('save'+id).style.display = '';
+    document.getElementById('edit'+id).style.display = 'none';
+    document.getElementById('del'+id).style.display = 'none';
+}
+function save_tariff(id)
+{
+    document.tariffs.action += '&aid='+id;
+    document.tariffs.submit();
+}
+function cancel_tariff(id)
+{
+    var i, n, v, tr = document.getElementById('row'+id),
+        tds = tr.getElementsByTagName('SPAN');
+
+    edited_row = 0;
+
+    for (i=0; i<tds.length; i++) {
+        tds[i].style.display = '';
+        n = tds[i].id.replace(/^tariffval[0-9]+_/, '');
+        v = document.getElementById('tariffval'+n);
+        v.parentNode.removeChild(v);
+        if (i) {
+            v = document.getElementById('tariffperiod'+n);
+            v.parentNode.removeChild(v.previousSibling); // BR
+            v.parentNode.removeChild(v);
+        }
+    }
+
+    document.getElementById('cancel'+id).style.display = 'none';
+    document.getElementById('save'+id).style.display = 'none';
+    document.getElementById('edit'+id).style.display = '';
+    document.getElementById('del'+id).style.display = '';
+}
+{/literal}
+{if $error && $formdata.aid}
+document.getElementById('cancel{$formdata.aid}').style.display = '';
+document.getElementById('save{$formdata.aid}').style.display = '';
+document.getElementById('edit{$formdata.aid}').style.display = 'none';
+document.getElementById('del{$formdata.aid}').style.display = 'none';
+{/if}
+</SCRIPT>

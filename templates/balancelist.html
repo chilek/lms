@@ -59,12 +59,12 @@
 			add += "&copy=1";
 		if(document.page.duplicate.checked)
 			add += "&duplicate=1";
-														       
+
 		document.page.action="?m=invoice&print=cached&cash=1" + add;
 		document.page.target="_blank";
 		document.page.submit();
 	}
-        
+
 	function filter()
 	{
 	        document.page.action="?m=balancelist";
@@ -93,35 +93,31 @@
 <TABLE width="100%" cellpadding="3">
 	<TR class="dark">
 		<TD width="1%" class="fleftu">
-			<B>{t}Date:{/t}</B>
+			{t}Date:{/t}
 		</TD>
 		<TD width="1%" class="fbt">
-			<B>{t}User:{/t}</B>
+			{t}User:{/t}
 		</TD>
 		<TD width="1%" class="fbt" align="right">
-			<B>{t}Liability:{/t}</B>
+			{t}Liability:{/t}
 		</TD>
 		<TD width="1%" class="fbt" align="right">
-			<B>{t}Income:{/t}</B>
+			{t}Income:{/t}
 		</TD>
 		<TD width="1%" class="fbt" align="right">
-			<B>{t}Expense:{/t}</B>
+			{t}Expense:{/t}
 		</TD>
-		<TD width="1%" class="fbt" align="center">
-			<B>&raquo;</B>
-		</TD>
+		<TD width="1%" class="fbt" align="center">&raquo;</TD>
 		<TD width="1%" class="fbt" align="right">
-			<B>{t}After:{/t}</B>
+			{t}After:{/t}
 		</TD>
 		<TD width="1%" class="fbt">
-			<B>{t}Customer:{/t}</B>
+			{t}Customer:{/t}
 		</TD>
 		<TD width="91%" class="fbt">
-			<B>{t}Description:{/t}</B>
+			{t}Description:{/t}
 		</TD>
-		<TD width="1%" CLASS="frightu">&nbsp;
-			
-		</TD>
+		<TD width="1%" CLASS="frightu">&nbsp;</TD>
 	</TR>
 	<TR class="DARK">
     		<TD class="fall" colspan="10">

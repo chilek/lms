@@ -1855,32 +1855,155 @@ class LMS
 	function DeleteAssignment($id)
 	{
 		$this->DB->BeginTrans();
-		
+
 		if($lid = $this->DB->GetOne('SELECT liabilityid FROM assignments WHERE id=?', array($id)))
 		{
 			$this->DB->Execute('DELETE FROM liabilities WHERE id=?', array($lid));
 		}
 		$this->DB->Execute('DELETE FROM assignments WHERE id=?', array($id));
-		
+
 		$this->DB->CommitTrans();
 	}
 
 	function AddAssignment($data)
 	{
-		if(!empty($data['value']))
-		{
-			$this->DB->Execute('INSERT INTO liabilities (name, value, taxid, prodid) 
+	    $result = array();
+
+        // Create assignments according to promotion schema
+        if (!empty($data['promotiontariffid']) && !empty($data['schemaid'])) {
+            $data['tariffid'] = $data['promotiontariffid'];
+            $tariff = $this->DB->GetRow('SELECT a.data, s.data AS schema,
+                    t.name, t.value, t.period, t.id, t.prodid, t.taxid
+                    FROM promotionassignments a
+                    JOIN promotionschemas s ON (s.id = a.promotionschemaid)
+                    JOIN tariffs t ON (t.id = a.tariffid)
+                    WHERE a.promotionschemaid = ? AND a.tariffid = ?',
+                    array($data['schemaid'], $data['promotiontariffid']));
+            $data_schema = explode(';', $tariff['schema']);
+            $data_tariff = explode(';', $tariff['data']);
+
+            foreach ($data_tariff as $idx => $dt) {
+                list($value, $period) = explode(':', $dt);
+                // Activation
+                if (!$idx) {
+                    $start_day = date('d', $data['datefrom']);
+                    $start_month = date('n', $data['datefrom']);
+                    $start_year = date('Y', $data['datefrom']);
+                    // payday is before the start of the period
+                    // set activation payday to next month's payday
+                    if ($start_day > $data['at']) {
+                        $_datefrom = $data['datefrom'];
+                        $datefrom  = mktime(0,0,0, $start_month+1, $data['at'], $start_year);
+                    } else {
+                        $datefrom = $data['datefrom'];
+                    }
+
+                    // if activation value specified, create disposable liability
+                    if (f_round($value)) {
+        	    		$this->DB->Execute('INSERT INTO liabilities (name, value, taxid, prodid)
+		    			    VALUES (?, ?, ?, ?)', 
+			    		    array(trans('Activation payment'),
+				    		    str_replace(',', '.', $value),
+					    	    intval($tariff['taxid']),
+						        $tariff['prodid']
+					        ));
+		    	        $lid = $this->DB->GetLastInsertID('liabilities');
+		    	        $tariffid = 0;
+		    	        $period = DISPOSABLE;
+		    	        $at = $datefrom;
+		    	        $datefrom = $dateto = 0;
+                    } else {
+                        continue;
+                    }
+                }
+                // promotion period (or after promotion)
+                else {
+                    $lid = 0;
+                    if (!$period)
+                        $period = $data['period'];
+                    $datefrom = $_datefrom ? $_datefrom : $datefrom;
+                    $_datefrom = 0;
+                    $at = $this->CalcAt($period, $datefrom);
+                    $length = $data_schema[$idx-1];
+                    if ($length) {
+                        $month = date('n', $datefrom);
+                        $year = date('Y', $datefrom);
+                        // assume $data['at'] == 1, set last day of the specified month
+                        $dateto = mktime(23,59,59, $month+$length, 0, $year);
+                    }
+                    else {
+                        $dateto = 0;
+                    }
+
+                    // Find tariff with specified name+value+period...
+                    $tariffid = $this->DB->GetOne('SELECT id FROM tariffs
+                        WHERE name = ? AND value = ? AND period = ?
+                        LIMIT 1', array(
+                            $tariff['name'],
+                            str_replace(',', '.', $value),
+                            $tariff['period'],
+                    ));
+
+                    // ... if not found clone tariff
+                    if (!$tariffid) {
+                        $this->DB->Execute('INSERT INTO tariffs (name, value, period,
+                            taxid, type, upceil, downceil, uprate, downrate,
+                            prodid, plimit, climit, dlimit, upceil_n, downceil_n, uprate_n, downrate_n,
+                            domain_limit, alias_limit, sh_limit, www_limit, ftp_limit, mail_limit, sql_limit,
+                            quota_sh_limit, quota_www_limit, quota_ftp_limit, quota_mail_limit, quota_sql_limit)
+                            SELECT ?, ?, ?, taxid, type, upceil, downceil, uprate, downrate,
+                            prodid, plimit, climit, dlimit, upceil_n, downceil_n, uprate_n, downrate_n,
+                            domain_limit, alias_limit, sh_limit, www_limit, ftp_limit, mail_limit, sql_limit,
+                            quota_sh_limit, quota_www_limit, quota_ftp_limit, quota_mail_limit, quota_sql_limit
+                            FROM tariffs WHERE id = ?',
+                            array(
+                                $tariff['name'],
+                                str_replace(',', '.', $value),
+                                $tariff['period'],
+                                $tariff['id'],
+                        ));
+                        $tariffid = $this->DB->GetLastInsertId('tariffs');
+                    }
+                }
+
+                // Create assignment
+    		    $this->DB->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice,
+					    settlement, numberplanid, paytype, datefrom, dateto, discount, liabilityid)
+					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+					    array($tariffid,
+						    $data['customerid'],
+						    $period,
+						    $at,
+						    !empty($data['invoice']) ? 1 : 0,
+						    !empty($data['settlement']) ? 1 : 0,
+						    !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
+						    !empty($data['paytype']) ? $data['paytype'] : NULL,
+						    $datefrom,
+						    $dateto,
+						    0,
+						    $lid,
+						    ));
+
+		        $result[] = $this->DB->GetLastInsertID('assignments');
+		        if ($idx)
+		            $datefrom = $dateto+1;
+            }
+        }
+        // Create one assignment record
+        else {
+    		if(!empty($data['value'])) {
+	    		$this->DB->Execute('INSERT INTO liabilities (name, value, taxid, prodid)
 					    VALUES (?, ?, ?, ?)', 
 					    array($data['name'],
 						    str_replace(',', '.', $data['value']),
 						    intval($data['taxid']),
 						    $data['prodid']
 					    ));
-			$lid = $this->DB->GetLastInsertID('liabilities');
-		}
+		    	$lid = $this->DB->GetLastInsertID('liabilities');
+		    }
 
-		$this->DB->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice, 
-					    settlement, numberplanid, paytype, datefrom, dateto, discount, liabilityid) 
+    		$this->DB->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice,
+					    settlement, numberplanid, paytype, datefrom, dateto, discount, liabilityid)
 					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 					    array(intval($data['tariffid']),
 						    $data['customerid'],
@@ -1896,12 +2019,21 @@ class LMS
 						    isset($lid) ? $lid : 0,
 						    ));
 
-		$result = $this->DB->GetLastInsertID('assignments');
+		    $result[] = $this->DB->GetLastInsertID('assignments');
+        }
 
-		if(!empty($data['nodes']))
-			foreach((array)$data['nodes'] as $node)
-				$this->DB->Execute('INSERT INTO nodeassignments (nodeid, assignmentid) VALUES (?,?)',
-					array($node, $result));
+		if (!empty($data['nodes']) && !empty($result)) {
+		    // Use multi-value INSERT query
+		    $values = array();
+			foreach ((array)$data['nodes'] as $nodeid) {
+			    foreach ($result as $aid) {
+			        $values[] = sprintf('(%d, %d)', $nodeid, $aid);
+			    }
+			}
+
+			$this->DB->Execute('INSERT INTO nodeassignments (nodeid, assignmentid)
+			    VALUES ' . implode(', ', $values));
+        }
 
 		return $result;
 	}
@@ -2270,12 +2402,6 @@ class LMS
 		}
 		else
 			return FALSE;
-	}
-
-	function GetTariffIDByNameAndValue($name, $value)
-	{
-		return $this->DB->GetOne('SELECT id FROM tariffs WHERE name = ? AND value = ?',
-		    array($name, str_replace(',', '.', $value)));
 	}
 
 	function TariffAdd($tariff)
@@ -4453,8 +4579,40 @@ class LMS
 	{
 		return $this->DB->GetAllByKey('SELECT id, name FROM nastypes ORDER BY name', 'id');
 	}
-	
-	//VoIP functions
+
+    function CalcAt($period, $date)
+    {
+        $m = date('n', $date);
+
+        if ($period == YEARLY) {
+            if ($m) {
+                $ttime = mktime(12,0,0,$m,1,1990);
+                return date('z', $ttime) + 1;
+            }
+            else {
+                return 1;
+            }
+        } else if ($period == HALFYEARLY) {
+            if ($m > 6)
+                $m -= 6;
+            return ($m-1) * 100 + 1;
+        } else if ($period == QUARTERLY) {
+            if ($m > 9)
+                $m -= 9;
+            else if ($m > 6)
+                $m -= 6;
+            else if ($m > 3)
+                $m -= 3;
+            return ($m-1) * 100 + 1;
+        } else {
+            return 1;
+        }
+    }
+
+	/**
+	 * VoIP functions
+	 */
+
 	function GetVoipAccountList($order='login,asc', $search=NULL, $sqlskey='AND')
 	{
 		if($order=='')
@@ -4622,6 +4780,7 @@ class LMS
 		}
 		return $result;
 	}
+
 }
 
 ?>

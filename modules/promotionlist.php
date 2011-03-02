@@ -24,14 +24,25 @@
  *  $Id$
  */
 
-$id = intval($_GET['id']);
+$layout['pagetitle'] = trans('Promotions List');
 
-if($id && $_GET['is_sure']=="1" && $LMS->TariffExists($id))
-{
-	if(!$DB->GetOne('SELECT 1 FROM assignments WHERE tariffid = ? LIMIT 1', array($id)))
-		$LMS->TariffDelete($id);
-}
+$promolist = $DB->GetAll('SELECT p.id, p.name, p.description, disabled,
+			(SELECT COUNT(*) FROM promotionschemas
+				WHERE p.id = promotionid) AS schemas,
+			(SELECT COUNT(DISTINCT a.tariffid)
+			    FROM promotionassignments a
+				JOIN promotionschemas s ON (s.id = a.promotionschemaid)
+				WHERE p.id = s.promotionid
+		    ) AS tariffs
+		FROM promotions p
+		ORDER BY p.name');
 
-$SESSION->redirect('?m=tarifflist');
+$listdata['total'] = count($promolist);
+
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+
+$SMARTY->assign('promotionlist', $promolist);
+$SMARTY->assign('listdata', $listdata);
+$SMARTY->display('promotionlist.html');
 
 ?>

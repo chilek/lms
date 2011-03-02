@@ -48,7 +48,7 @@
 		</TD>
 		<TD class="fright">
 			<nobr>
-			<A href="?m=netedit&networkset&id={$netlist[netlist].id}"><IMG src="img/{if $netlist[netlist].disabled == 1}no{/if}access.gif" alt="[ {t}Disable{/t} ]" title="[ {t}Disable{/t} ]"></A>
+			<A href="?m=netedit&networkset&id={$netlist[netlist].id}">{if $netlist[netlist].disabled}<IMG src="img/noaccess.gif" alt="[ {t}Enable{/t} ]" title="[ {t}Enable{/t} ]">{else}<IMG src="img/access.gif" alt="[ {t}Disable{/t} ]" title="[ {t}Disable{/t} ]">{/if}</A>
 			<a href="?m=netdel&id={$netlist[netlist].id}" onClick="return confirmLink(this,'{t 0=$netlist[netlist].name}Are you sure, you want to remove network \'$0\'?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Remove{/t} ]" title="[ {t}Remove{/t} ]"></A>
 			<A href="?m=netedit&id={$netlist[netlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 			<A href="?m=netinfo&id={$netlist[netlist].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>

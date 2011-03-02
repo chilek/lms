@@ -1,0 +1,86 @@
+{include file="header.html"}
+<!-- $Id$ -->
+<H1>{$layout.pagetitle}</H1>
+<FORM METHOD="POST" NAME="schemaedit" ACTION="?m=promotionschemaedit&id={$schema.id}">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD WIDTH="1%" CLASS="fleftu">
+			<IMG SRC="img/promoschema.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt">
+			<B>{t}Name:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="frightu">
+			<INPUT TYPE="TEXT" NAME="schema[name]" VALUE="{$schema.name}" SIZE="40" {tip text="Enter schema name" trigger="name" bold=1}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="img/calendar.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+			<B>{t}Periods:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="fright" ID="periodcont">
+		    {foreach from=$schema.periods item=period key=key}
+			<SELECT NAME="schema[periods][]" {tip text="Select length of the period (in months)"}>
+			    <OPTION value="0"{if $period == 0} selected{/if}>{t}unlimited{/t}</OPTION>
+			    {foreach from=$schema.selection item=item}
+			    <OPTION value="{$item}"{if $period == $item} selected{/if}>{$item}</OPTION>
+			    {/foreach}
+			</SELECT>
+			{/foreach}
+			<A href="javascript:del_period_item()" ID="perioddel"{if count($schema.periods) < 2} style="display:none"{/if}><IMG src="img/delete.gif" alt="" {tip text="Delete"}></A>
+			<A href="javascript:add_period_item()"><IMG src="img/add.gif" alt="" {tip text="Add"}></A>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="img/info1.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+			<B>{t}Description:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="fright">
+			<TEXTAREA NAME="schema[description]" COLS="50" ROWS="5" {tip text="Enter additional information (optional)"}>{$schema.description}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT"> 
+			<A HREF="javascript:document.schemaedit.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
+			<A HREF="?m=promotionschemainfo&id={$schema.id}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A><BR>
+		</TD>
+	</TR>
+</TABLE></FORM>
+</P>
+<SCRIPT type="text/javascript">
+{literal}
+<!--
+document.forms['schemaedit'].elements['schema[name]'].focus();
+
+function add_period_item()
+{
+    var cont = document.getElementById('periodcont'),
+        items = cont.getElementsByTagName('SELECT'),
+        last = items[items.length-1],
+        item = last.cloneNode(true),
+        del = document.getElementById('perioddel');
+
+    last.parentNode.insertBefore(item, del);
+    item.value = 0;
+    del.style.display = items.length > 1 ? '' : 'none';
+}
+function del_period_item()
+{
+    var cont = document.getElementById('periodcont'),
+        items = cont.getElementsByTagName('SELECT'),
+        last = items[items.length-1];
+
+    last.parentNode.removeChild(last);
+    document.getElementById('perioddel').style.display = items.length > 1 ? '' : 'none';
+}
+//-->
+{/literal}
+</SCRIPT>
+{include file="footer.html"}
