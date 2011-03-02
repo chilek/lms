@@ -76,7 +76,7 @@
 			    <OPTION value=""{if !$assignment.tariffid} SELECTED{/if}>- {t}tariffless liability{/t} -</OPTION>
 			    <OPTION value="-1"{if $assignment.tariffid == -1} SELECTED{/if}>{t}- all liabilities suspended -{/t}</OPTION>
 			    {if $promotionschemas}
-			    <OPTION value="-2"{if $assignment.tariffid == -2} SELECTED{/if}>{t}- per promotion schema -{/t}</OPTION>
+			    <OPTION value="-2"{if $assignment.tariffid == -2} SELECTED{/if}>- {t}per promotion schema{/t} -</OPTION>
                 {/if}
 			    {section name=t loop=$tariffs}
 			    <OPTION value="{$tariffs[t].id}" {if $tariffs[t].id==$assignment.tariffid}SELECTED{/if}>
