@@ -20,6 +20,10 @@
     {
         var val = document.forms['assignment'].elements['assignment[tariffid]'].value;
 
+{/literal}{if $promotionschemas}
+        document.getElementById('a_schema').style.display = val == -2 ? '' : 'none';
+        document.getElementById('a_schematariff').style.display = val == -2 ? '' : 'none';
+{/if}{literal}
         document.getElementById('a_tax').style.display = val == '' ? '' : 'none';
         document.getElementById('a_value').style.display = val == '' ? '' : 'none';
         document.getElementById('a_productid').style.display = val == '' ? '' : 'none';
@@ -28,8 +32,33 @@
         document.getElementById('a_options').style.display = val == -1 ? 'none' : '';
         document.getElementById('a_nodes').style.display = val == -1 ? 'none' : '';
         document.getElementById('a_day').style.display = val == -1 ? 'none' : '';
-        document.getElementById('a_discount').style.display = val == -1 ? 'none' : '';
+        document.getElementById('a_discount').style.display = val < -1 ? 'none' : '';
     }
+{/literal}{if $promotionschemas}{literal}
+    function set_schema()
+    {
+        var sid = document.forms['assignment'].elements['assignment[schemaid]'].value,
+            assignments = {{/literal}{strip}
+                {foreach name=fps from=$promotionschemas item=schema}
+                {if $smarty.foreach.fps.index},{/if}"{$schema.id}": [{$schema.tariffs}]
+                {/foreach}
+            {/strip}{literal}},
+            select = document.forms['assignment'].elements['assignment[stariffid]'],
+            t_select = document.forms['assignment'].elements['assignment[tariffid]'],
+            options = t_select.getElementsByTagName('OPTION'),
+            selected = select.value,
+            i, len;
+
+        // remove old options
+        select.innerHTML = '';
+        // copy options from t_select element
+        for (i=0, len=options.length; i<len; i++)
+            if (assignments[sid].inArray(options[i].value))
+                select.appendChild(options[i].cloneNode(true));
+
+        select.value = selected;
+    }
+{/literal}{/if}{literal}
 </SCRIPT>
 {/literal}
 <FORM method="POST" name="assignment" action="?m={$layout.module}{if $assignment.id}&id={$assignment.id}{if $assignment.liabilityid}&lid={$assignment.liabilityid}{/if}{else}&id={$customerinfo.id}{/if}">
@@ -46,6 +75,9 @@
 		    <SELECT size="1" name="assignment[tariffid]" {tip text="Select liability type" trigger="tariffid"} onchange="set_tariff()">
 			    <OPTION value=""{if !$assignment.tariffid} SELECTED{/if}>- {t}tariffless liability{/t} -</OPTION>
 			    <OPTION value="-1"{if $assignment.tariffid == -1} SELECTED{/if}>{t}- all liabilities suspended -{/t}</OPTION>
+			    {if $promotionschemas}
+			    <OPTION value="-2"{if $assignment.tariffid == -2} SELECTED{/if}>{t}- per promotion schema -{/t}</OPTION>
+                {/if}
 			    {section name=t loop=$tariffs}
 			    <OPTION value="{$tariffs[t].id}" {if $tariffs[t].id==$assignment.tariffid}SELECTED{/if}>
 			    {$tariffs[t].name} ({$tariffs[t].value|money_format}{if $tariffs[t].upceil || $tariffs[t].downceil}, {$tariffs[t].downceil}/{$tariffs[t].upceil} kbit/s{/if})
@@ -54,6 +86,40 @@
 		    </SELECT>
 		</TD>
 	</TR>
+{if $promotionschemas}
+	<TR class="LIGHT" id="a_schema">
+		<TD class="fleft" width="1%">
+			<IMG src="img/promoschema.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Schema{/t}:</B>
+		</TD>
+		<TD class="fright" width="98%">
+			<SELECT size="1" name="assignment[schemaid]" {tip text="Select promotion schema"} onchange="set_schema()">
+				{foreach from=$promotionschemas item=schema}
+				<OPTION value="{$schema.id}"{if $assignment.schemaid == $schema.id} SELECTED{/if}>{$schema.promotion|truncate:40:"...":true} / {$schema.name|truncate:40:"...":true}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR class="LIGHT" id="a_schematariff">
+		<TD class="fleft" width="1%">
+			<IMG src="img/money.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Tariff{/t}:</B>
+		</TD>
+		<TD class="fright" width="98%">
+		    <SELECT size="1" name="assignment[stariffid]" {tip text="Select subscription" trigger="stariffid"}>
+			    {section name=t loop=$tariffs}
+			    <OPTION value="{$tariffs[t].id}" {if $tariffs[t].id==$assignment.stariffid}SELECTED{/if}>
+			    {$tariffs[t].name} ({$tariffs[t].value|money_format}{if $tariffs[t].upceil || $tariffs[t].downceil}, {$tariffs[t].downceil}/{$tariffs[t].upceil} kbit/s{/if})
+			    </OPTION>
+		        {/section}
+		    </SELECT>
+		</TD>
+	</TR>
+{/if}
 	<TR class="LIGHT">
 	    <TD width="100%" colspan="3" class="flr">
 	        <TABLE width="100%" cellpadding="0">
@@ -239,6 +305,7 @@ cal3.time_comp = false;
 var cal4 = new calendar(document.forms['assignment'].elements['assignment[dateto]']);
 cal4.time_comp = false;
 set_tariff();
+{if $promotionschemas}set_schema();{/if}
 {literal}
 function setCheckbox(id)
 {

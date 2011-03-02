@@ -45,11 +45,14 @@ if(isset($_POST['tariff']))
 
 	if ($tariff['name'] == '')
 		$error['name'] = trans('Subscription name required!');
-	else if (!$error
-	    && ($found_id = $LMS->GetTariffIDByNameAndValue($tariff['name'], $tariff['value']))
-		&& $found_id != $tariff['id']
-    ) {
-	    $error['name'] = trans('Subscription with specified name and value already exists!');
+	else if (!$error) {
+	     if ($DB->GetOne('SELECT id FROM tariffs WHERE name = ? AND value = ?
+	        AND period = ? AND id <> ?',
+            array($tariff['name'], str_replace(',', '.', $tariff['value']),
+                $tariff['period'], $tariff['id']))
+        ) {
+	        $error['name'] = trans('Subscription with specified name and value already exists!');
+	    }
 	}
 
 	$items = array('uprate', 'downrate', 'upceil', 'downceil', 'climit', 'plimit', 'dlimit');
@@ -61,7 +64,7 @@ if(isset($_POST['tariff']))
 	        elseif(!preg_match('/^[0-9]+$/', $tariff[$item]))
 	                $error[$item] = trans('Integer value expected!');
 	}
-	
+
 	if(($tariff['uprate'] < 8 || $tariff['uprate'] > 100000) && $tariff['uprate'] != 0)
 		$error['uprate'] = trans('This field must be within range 8 - 100000');
 	if(($tariff['downrate'] < 8 || $tariff['downrate'] > 100000) && $tariff['downrate'] != 0)
@@ -80,7 +83,7 @@ if(isset($_POST['tariff']))
 	        elseif(!preg_match('/^[0-9]+$/', $tariff[$item]))
 	                $error[$item] = trans('Integer value expected!');
 	}
-	
+
 	if(($tariff['uprate_n'] < 8 || $tariff['uprate_n'] > 100000) && $tariff['uprate_n'])
 	        $error['uprate_n'] = trans('This field must be within range 8 - 100000');
 	if(($tariff['downrate_n'] < 8 || $tariff['downrate_n'] > 100000) && $tariff['downrate_n'])
@@ -89,7 +92,7 @@ if(isset($_POST['tariff']))
 	        $error['upceil_n'] = trans('This field must contain number greater than 8 and greater than upload rate');
 	if(($tariff['downceil_n'] < 8 || $tariff['downceil_n'] < $tariff['downrate']) && $tariff['downceil_n'])
 	        $error['downceil_n'] = trans('This field must contain number greater than 8 and greater than download rate');
-	
+
 	if(!isset($tariff['taxid']))
 		$tariff['taxid'] = 0;
 

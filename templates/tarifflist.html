@@ -48,6 +48,13 @@
 					<OPTION value="{$key}" {if $listdata.type eq $key} SELECTED {/if}>{$item}</OPTION>
 					{/foreach}
 				</SELECT>
+				{t}Promotion:{/t}
+				<SELECT SIZE="1" NAME="p" ONCHANGE="document.choosefilter.submit();">
+					<OPTION value="0"{if !$listdata.promotionid} SELECTED{/if}>{t}- all -{/t}</OPTION>
+					{section name=promotions loop=$promotions}
+					<OPTION value="{$promotions[promotions].id}" {if $listdata.promotionid eq $promotions[promotions].id} SELECTED {/if}>{$promotions[promotions].name|truncate:50:"...":true}</OPTION>
+					{/section}
+				</SELECT>
 				{t}Group:{/t}
 				<SELECT SIZE="1" NAME="g" ONCHANGE="document.choosefilter.submit();">
 					<OPTION value="0"{if !$listdata.customergroupid} SELECTED{/if}>{t}- all -{/t}</OPTION>
@@ -57,7 +64,7 @@
 				</SELECT>
 			</FORM>
 		</TD>
-	</TR>		
+	</TR>
 	{cycle values="light,lucid" print=false}
 	{section name=tariffs loop=$tarifflist}
 	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">

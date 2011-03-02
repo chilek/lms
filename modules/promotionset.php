@@ -24,14 +24,14 @@
  *  $Id$
  */
 
-$id = intval($_GET['id']);
+$id = isset($_GET['id']) ? $_GET['id'] : 0;
 
-if($id && $_GET['is_sure']=="1" && $LMS->TariffExists($id))
+if($id)
 {
-	if(!$DB->GetOne('SELECT 1 FROM assignments WHERE tariffid = ? LIMIT 1', array($id)))
-		$LMS->TariffDelete($id);
+	$DB->Execute('UPDATE promotions SET disabled = ? WHERE id = ?',
+	    array(!empty($_GET['access']) ? 0 : 1, $id));
 }
 
-$SESSION->redirect('?m=tarifflist');
+header('Location: ?'.$SESSION->get('backto'));
 
 ?>

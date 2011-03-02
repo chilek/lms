@@ -161,7 +161,7 @@
 	    </TD>
 	</TR>
 	{if $tariff.description}
-	<TR CLASS="light">	
+	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft">
 			<IMG SRC="img/info1.gif" ALT="">
 		</TD>
@@ -174,7 +174,19 @@
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="light">	
+	{if $tariff.promotions}
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="img/promo.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" CLASS="fright">
+		    {foreach from=$tariff.promotions item=promo}
+		    <NOBR><A href="?m=promotioninfo&id={$promo.id}">{$promo.name}</A></NOBR>&nbsp;
+		    {/foreach}
+		</TD>
+	</TR>
+	{/if}
+	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft">
 			<IMG SRC="img/account.gif" ALT="">
 		</TD>

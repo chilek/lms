@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetTariffList($order='name,asc', $type=NULL, $customergroupid=NULL)
+function GetTariffList($order='name,asc', $type=NULL, $customergroupid=NULL, $promotionid=NULL)
 {
 	global $DB, $LMS;
 
@@ -65,18 +65,17 @@ function GetTariffList($order='name,asc', $type=NULL, $customergroupid=NULL)
                 $sqlord = " ORDER BY t.name, t.value DESC";
 		break;
 	}
-	
+
 	$totalincome = 0;
 	$totalcustomers = 0;
 	$totalcount = 0;
 	$totalactivecount = 0;
 
-	if($tarifflist = $DB->GetAll('SELECT t.id AS id, t.name, t.value AS value,
+	if($tarifflist = $DB->GetAll('SELECT t.id, t.name, t.value,
 			taxes.label AS tax, taxes.value AS taxvalue, prodid,
-			t.description AS description, t.period,
-			uprate, downrate, upceil, downceil, climit, plimit,
-			uprate_n, downrate_n, upceil_n, downceil_n, climit_n, plimit_n,
-			a.customerscount, a.count, a.value AS sumval
+			t.uprate, t.downrate, t.upceil, t.downceil, t.climit, t.plimit,
+			t.uprate_n, t.downrate_n, t.upceil_n, t.downceil_n, t.climit_n, t.plimit_n,
+			t.description, t.period, a.customerscount, a.count, a.value AS sumval
 			FROM tariffs t
 			LEFT JOIN (SELECT a.tariffid, COUNT(*) AS count,
 				COUNT(DISTINCT a.customerid) AS customerscount,
@@ -95,11 +94,20 @@ function GetTariffList($order='name,asc', $type=NULL, $customergroupid=NULL)
 				FROM assignments a
 				JOIN tariffs tt ON (tt.id = tariffid)'
 				.($customergroupid ? ' JOIN customerassignments cc ON (cc.customerid = a.customerid)
-				WHERE cc.customergroupid = '.intval($customergroupid) : '')
+	    			WHERE cc.customergroupid = '.intval($customergroupid) : '')
+    			.($promotionid ? ' AND tt.id IN (SELECT pa.tariffid
+    			    FROM promotionassignments pa
+    			    JOIN promotionschemas ps ON (ps.id = pa.promotionschemaid)
+			        WHERE ps.promotionid = ' .intval($promotionid).')' : '')
 				.' GROUP BY a.tariffid
 			) a ON (a.tariffid = t.id)
-			LEFT JOIN taxes ON (t.taxid = taxes.id)'
-			.($type ? ' WHERE t.type = '.intval($type) : '')
+			LEFT JOIN taxes ON (t.taxid = taxes.id)
+			WHERE 1=1'
+			.($type ? ' AND t.type = '.intval($type) : '')
+   			.($promotionid ? ' AND t.id IN (SELECT pa.tariffid
+   			    FROM promotionassignments pa
+    			JOIN promotionschemas ps ON (ps.id = pa.promotionschemaid)
+		        WHERE ps.promotionid = ' .intval($promotionid).')' : '')
 			.($sqlord != '' ? $sqlord : '')))
 	{
 		$unactive = $DB->GetAllByKey('SELECT tariffid, COUNT(*) AS count,
@@ -133,6 +141,10 @@ function GetTariffList($order='name,asc', $type=NULL, $customergroupid=NULL)
 				)'
 				.($type ? ' AND t.type = '.intval($type) : '')
 				.($customergroupid ? ' AND cc.customergroupid = '.intval($customergroupid) : '')
+				.($promotionid ? ' AND t.id IN (SELECT pa.tariffid
+				    FROM promotionassignments pa
+    			    JOIN promotionschemas ps ON (ps.id = pa.promotionschemaid)
+			        WHERE ps.promotionid = ' .intval($promotionid).')' : '')
 			.') x GROUP BY tariffid', 'tariffid');
 
 		foreach($tarifflist as $idx => $row)
@@ -173,8 +185,6 @@ function GetTariffList($order='name,asc', $type=NULL, $customergroupid=NULL)
 	$tarifflist['totalcustomers'] = $totalcustomers;
 	$tarifflist['totalcount'] = $totalcount;
 	$tarifflist['totalactivecount'] = $totalactivecount;
-	$tarifflist['type'] = $type;
-	$tarifflist['customergroupid'] = $customergroupid;
 	$tarifflist['order'] = $order;
 	$tarifflist['direction'] = $direction;
 
@@ -199,16 +209,24 @@ else
         $g = $_GET['g'];
 $SESSION->save('tlg', $g);
 
-$tarifflist = GetTariffList($o, $t, $g);
+if(!isset($_GET['p']))
+        $SESSION->restore('tlp', $p);
+else
+        $p = $_GET['p'];
+$SESSION->save('tlp', $p);
+
+$tarifflist = GetTariffList($o, $t, $g, $p);
 $customergroups = $LMS->CustomergroupGetAll();
+$promotions = $DB->GetAll('SELECT id, name FROM promotions ORDER BY name');
 
 $listdata['total'] = $tarifflist['total'];
 $listdata['totalincome'] = $tarifflist['totalincome'];
 $listdata['totalcustomers'] = $tarifflist['totalcustomers'];
 $listdata['totalcount'] = $tarifflist['totalcount'];
 $listdata['totalactivecount'] = $tarifflist['totalactivecount'];
-$listdata['type'] = $tarifflist['type'];
-$listdata['customergroupid'] = $tarifflist['customergroupid'];
+$listdata['type'] = $t;
+$listdata['customergroupid'] = $g;
+$listdata['promotionid'] = $p;
 $listdata['order'] = $tarifflist['order'];
 $listdata['direction'] = $tarifflist['direction'];
 
@@ -217,8 +235,6 @@ unset($tarifflist['totalincome']);
 unset($tarifflist['totalcustomers']);
 unset($tarifflist['totalcount']);
 unset($tarifflist['totalactivecount']);
-unset($tarifflist['type']);
-unset($tarifflist['customergroupid']);
 unset($tarifflist['order']);
 unset($tarifflist['direction']);
 
@@ -226,9 +242,11 @@ $layout['pagetitle'] = trans('Subscription List');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$SMARTY->assign('tarifflist',$tarifflist);
-$SMARTY->assign('customergroups',$customergroups);
-$SMARTY->assign('listdata',$listdata);
+$SMARTY->assign('tarifflist', $tarifflist);
+$SMARTY->assign('customergroups', $customergroups);
+$SMARTY->assign('promotions', $promotions);
+$SMARTY->assign('listdata', $listdata);
+
 $SMARTY->display('tarifflist.html');
 
 ?>

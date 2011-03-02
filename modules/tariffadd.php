@@ -45,8 +45,11 @@ if(isset($_POST['tariff']))
 	if ($tariff['name'] == '')
 		$error['name'] = trans('Subscription name required!');
 	else if (!$error) {
-		if ($LMS->GetTariffIDByNameAndValue($tariff['name'], $tariff['value']))
+		if ($DB->GetOne('SELECT id FROM tariffs WHERE name = ? AND value = ? AND period = ?',
+            array($tariff['name'], str_replace(',', '.', $tariff['value']), $tariff['period']))
+        ) {
 			$error['name'] = trans('Subscription with specified name and value already exists!');
+        }
     }
 
 	$items = array('uprate', 'downrate', 'upceil', 'downceil', 'climit', 'plimit', 'dlimit');
