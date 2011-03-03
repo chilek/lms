@@ -534,7 +534,7 @@ sub instance($)
 		while (my $row = $dbq->fetchrow_hashref())
 		{
 			$pubiplist{$row->{'ipaddr'}} = $row->{'ipaddr_pub'};
-			$maclist{$row->{'ipaddr'}} = (split ',', $row->{'mac'})[0];
+			$maclist{$row->{'ipaddr'}} = (split ',', $row->{'mac'} || '')[0];
 			$passlist{$row->{'ipaddr'}} = $row->{'passwd'};
 			$accesslist{$row->{'ipaddr'}} = $row->{'access'};
 			$warninglist{$row->{'ipaddr'}} = $row->{'warning'};
