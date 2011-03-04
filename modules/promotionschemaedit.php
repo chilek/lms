@@ -42,7 +42,7 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
 
         if (preg_match($regexp, $key, $m)) {
             // periods
-            if (strpos($m[1], 'period')) {
+            if (strpos($m[1], 'period') !== false) {
                 $val = intval($form[$key]);
                 $skey = $m[2]-1;
 
