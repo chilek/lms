@@ -22,12 +22,12 @@
 // PRE-INIT
 // Ignore these lines, configuration is below.
 ////////
-var olLoaded = 0;var pmStart = 10000000; var pmUpper = 10001000; var pmCount = pmStart+1; var pmt=''; var pms = new Array(); var olInfo = new Info('4.21', 1);
+var olLoaded = 0;var pmStart = 10000000; var pmUpper = 10001000; var pmCount = pmStart+1; var pmt=''; var pms = []; var olInfo = new Info('4.21', 1);
 var FREPLACE = 0; var FBEFORE = 1; var FAFTER = 2; var FALTERNATE = 3; var FCHAIN=4;
 var olHideForm=0;  // parameter for hiding SELECT and ActiveX elements in IE5.5+ 
 var olHautoFlag = 0;  // flags for over-riding VAUTO and HAUTO if corresponding
 var olVautoFlag = 0;  // positioning commands are used on the command line
-var hookPts = new Array(), postParse = new Array(), cmdLine = new Array(), runTime = new Array();
+var hookPts = [], postParse = [], cmdLine = [], runTime = [];
 // for plugins
 registerCommands('donothing,inarray,caparray,sticky,background,noclose,caption,left,right,center,offsetx,offsety,fgcolor,bgcolor,textcolor,capcolor,closecolor,width,border,cellpad,status,autostatus,autostatuscap,height,closetext,snapx,snapy,fixx,fixy,relx,rely,fgbackground,bgbackground,padx,pady,fullhtml,above,below,capicon,textfont,captionfont,closefont,textsize,captionsize,closesize,timeout,function,delay,hauto,vauto,closeclick,wrap,followmouse,mouseoff,closetitle,cssoff,compatmode,cssclass,fgclass,bgclass,textfontclass,captionfontclass,closefontclass');
 
@@ -960,7 +960,7 @@ function isExclusive(args) {
 
 // Sets cellpadding style string value
 function setCellPadStr(parameter) {
-	var Str='', j=0, ary = new Array(), top, bottom, left, right;
+	var Str='', j=0, ary = [], top, bottom, left, right;
 
 	Str+='padding: ';
 	ary=parameter.replace(/\s+/g,'').split(',');
@@ -1187,7 +1187,7 @@ function argToString(array, strtInd, argName) {
 
 // Places a hook in the correct position in a hook point.
 function reOrder(hookPt, fnRef, order) {
-	var newPt = new Array(), match, i, j;
+	var newPt = [], match, i, j;
 
 	if (!order || typeof order == 'undefined' || typeof order == 'number') return hookPt;
 	
@@ -1435,10 +1435,10 @@ function runHook(fnHookTo, hookType) {
 // Object for handling hooks.
 function FunctionReference() {
 	this.ovload = null;
-	this.before = new Array();
-	this.after = new Array();
-	this.alt = new Array();
-	this.chain = new Array();
+	this.before = [];
+	this.after = [];
+	this.alt = [];
+	this.chain = [];
 }
 
 // Object for simple access to the overLIB version used.
