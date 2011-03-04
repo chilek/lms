@@ -21,7 +21,7 @@ function AutoSuggest(form,elem,uri,autosubmit) {
 	this.autosubmit = autosubmit;
 
 	//Arrow to store a subset of eligible suggestions that match the user's input
-	this.eligible = new Array();
+	this.eligible = [];
 
 	//The text input by the user.
 	this.inputText = null;
@@ -213,7 +213,7 @@ function AutoSuggest(form,elem,uri,autosubmit) {
 		var ul = document.createElement('ul');
 
 		//Create an array of LI's for the words.
-		for (i in this.eligible) {
+		for (var i=0, len=this.eligible.length; i<len; i++) {
 			var word = this.eligible[i];
 			var desc = (this.descriptions[i])?this.descriptions[i]:'';
 			var dest = (this.actions[i])?this.actions[i]:'';
@@ -303,12 +303,14 @@ function AutoSuggest(form,elem,uri,autosubmit) {
 		try { eval(xmlhttp.responseText); }
 		  catch(x) { this.eligible = Array(); }
 
-		for (i in this.suggestions) {
-			var suggestion = this.suggestions[i];
+        if (this.suggestions) {
+    		for (var i=0, len=this.suggestions.length; i<len; i++) {
+	    		var suggestion = this.suggestions[i];
 
-			if(suggestion.toLowerCase().indexOf(this.inputText.toLowerCase()) == "0") {
-				this.eligible[this.eligible.length] = suggestion;
-			}
+		    	if(suggestion.toLowerCase().indexOf(this.inputText.toLowerCase()) == "0") {
+			    	this.eligible[this.eligible.length] = suggestion;
+			    }
+		    }
 		}
 	};
 

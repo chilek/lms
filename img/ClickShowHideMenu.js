@@ -35,7 +35,7 @@ function ClickShowHideMenu(id) {
             if (nodes[i].className) {
                 if ("box1" == nodes[i].className.substr(0, 4)) {
                     nodes[i].id = id + "-" + tree.length;
-                    tree[tree.length] = new Array();
+                    tree[tree.length] = [];
                     eval('nodes[i].onmouseover = function() { self.box1over("'+nodes[i].id+'"); }');
                     eval('nodes[i].onmouseout = function() { self.box1out("'+nodes[i].id+'"); }');
                     eval('nodes[i].onclick = function() { self.box1click("'+nodes[i].id+'"); }');
@@ -47,7 +47,7 @@ function ClickShowHideMenu(id) {
                 }
                 if ("box2" == nodes[i].className.substr(0, 4)) {
                     nodes[i].id = id + "-" + tree.length;
-                    tree[tree.length] = new Array();
+                    tree[tree.length] = [];
                     eval('nodes[i].onmouseover = function() { self.box2over("'+nodes[i].id+'", "'+nodes[i].className+'"); }');
                     eval('nodes[i].onmouseout = function() { self.box2out("'+nodes[i].id+'", "'+nodes[i].className+'"); }');
                 }
@@ -172,14 +172,8 @@ function ClickShowHideMenu(id) {
 
     var self = this;
     this.id = id;
-    this.tree = new Array();
+    this.tree = [];
     this.cookie = new Cookie();
     this.id_openbox = "";
 }
 
-if (typeof String.prototype.trim == "undefined") {
-    String.prototype.trim = function() {
-        var s = this.replace(/^\s*/, "");
-        return s.replace(/\s*$/, "");
-    }
-}

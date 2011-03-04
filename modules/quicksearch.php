@@ -117,9 +117,9 @@ switch($mode)
 			}
 			header('Content-type: text/plain');
 			if ($eglible) {
-				print preg_replace('/$/',"\");\n","this.eligible = new Array(\"".implode('","',$eglible));
-				print preg_replace('/$/',"\");\n","this.descriptions = new Array(\"".implode('","',$descriptions));
-				print preg_replace('/$/',"\");\n","this.actions = new Array(\"".implode('","',$actions));
+				print "this.eligible = [\"".implode('","',$eglible)."\"];\n";
+				print "this.descriptions = [\"".implode('","',$descriptions)."\"];\n";
+				print "this.actions = [\"".implode('","',$actions)."\"];\n";
 			} else {
 				print "false;\n";
 			}
@@ -209,9 +209,9 @@ switch($mode)
 			}
 			header('Content-type: text/plain');
 			if ($eglible) {
-				print preg_replace('/$/',"\");\n","this.eligible = new Array(\"".implode('","',$eglible));
-				print preg_replace('/$/',"\");\n","this.descriptions = new Array(\"".implode('","',$descriptions));
-				print preg_replace('/$/',"\");\n","this.actions = new Array(\"".implode('","',$actions));
+				print "this.eligible = [\"".implode('","',$eglible)."\"];\n";
+				print "this.descriptions = [\"".implode('","',$descriptions)."\"];\n";
+				print "this.actions = [\"".implode('","',$actions)."\"];\n";
 			} else {
 				print "false;\n";
 			}
@@ -268,9 +268,9 @@ switch($mode)
 			}
 			header('Content-type: text/plain');
 			if ($eglible) {
-				print preg_replace('/$/',"\");\n","this.eligible = new Array(\"".implode('","',$eglible));
-				print preg_replace('/$/',"\");\n","this.descriptions = new Array(\"".implode('","',$descriptions));
-				print preg_replace('/$/',"\");\n","this.actions = new Array(\"".implode('","',$actions));
+				print "this.eligible = [\"".implode('","',$eglible)."\"];\n";
+				print "this.descriptions = [\"".implode('","',$descriptions)."\"];\n";
+				print "this.actions = [\"".implode('","',$actions)."\"];\n";
 			} else {
 				print "false;\n";
 			}
@@ -322,9 +322,9 @@ switch($mode)
 			}
 			header('Content-type: text/plain');
 			if ($eglible) {
-				print preg_replace('/$/',"\");\n","this.eligible = new Array(\"".implode('","',$eglible));
-				print preg_replace('/$/',"\");\n","this.descriptions = new Array(\"".implode('","',$descriptions));
-				print preg_replace('/$/',"\");\n","this.actions = new Array(\"".implode('","',$actions));
+				print "this.eligible = [\"".implode('","',$eglible)."\"];\n";
+				print "this.descriptions = [\"".implode('","',$descriptions)."\"];\n";
+				print "this.actions = [\"".implode('","',$actions)."\"];\n";
 			} else {
 				print "false;\n";
 			}

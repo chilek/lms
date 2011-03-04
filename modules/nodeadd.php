@@ -62,8 +62,8 @@ if(isset($_GET['ajax']))
 		$descriptions[$row['item']] = escape_js($row['entries'].' '.trans('entries'));
 	}
 	if ($eglible) {
-		print preg_replace('/$/',"\");\n","this.eligible = new Array(\"".implode('","',$eglible));
-		print preg_replace('/$/',"\");\n","this.descriptions = new Array(\"".implode('","',$descriptions));
+		print "this.eligible = [\"".implode('","',$eglible)."\"];\n";
+		print "this.descriptions = [\"".implode('","',$descriptions)."\"];\n";
 	} else {
 		print "false;\n";
 	}
