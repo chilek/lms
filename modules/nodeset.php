@@ -25,11 +25,18 @@
  */
 
 $ownerid = isset($_GET['ownerid']) ? $_GET['ownerid'] : 0;
-$id = isset($_GET['id']) ? $_GET['id'] : 0;
+$access  = isset($_GET['access']) ? 1 : 0;
+$id      = isset($_GET['id']) ? $_GET['id'] : 0;
 
+// All customer's nodes
 if($ownerid && $LMS->CustomerExists($ownerid))
 {
-	$LMS->NodeSetU($ownerid, isset($_GET['access']) ? 1 : 0);
+	$res = $LMS->NodeSetU($ownerid, $access);
+
+    if ($res) {
+        $data = array('ownerid' => $ownerid, 'access' => $access);
+        $LMS->ExecHook('node_set_after', $data);
+    }
 
 	$backid = $ownerid;
 	$redir = $SESSION->get('backto');
@@ -39,15 +46,30 @@ if($ownerid && $LMS->CustomerExists($ownerid))
 	$SESSION->redirect('?'.$redir.'#'.$backid);
 }
 
+// One node
 if($id && $LMS->NodeExists($id))
 {
-	$LMS->NodeSet($id);
+	$res = $LMS->NodeSet($id);
 	$backid = $id;
-}
 
-if(!empty($_POST['marks']))
-	foreach($_POST['marks'] as $id)
-		$LMS->NodeSet($id, isset($_GET['access']) ? 1 : 0);
+    if ($res) {
+        $data = array('nodeid' => $id);
+        $LMS->ExecHook('node_set_after', $data);
+    }
+}
+// Selected nodes
+else if(!empty($_POST['marks'])) {
+    $nodes = array();
+	foreach($_POST['marks'] as $id) {
+		if ($LMS->NodeSet($id, $access)) {
+		    $nodes[] = $id;
+		}
+	}
+    if (!empty($nodes)) {
+        $data = array('nodes' => $nodes);
+        $LMS->ExecHook('node_set_after', $data);
+    }
+}
 
 if(!empty($_GET['shortlist']))
 {

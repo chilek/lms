@@ -29,65 +29,88 @@ $setwarnings = isset($_POST['setwarnings']) ? $_POST['setwarnings'] : array();
 if(isset($setwarnings['mnodeid']))
 {
 	$message = isset($setwarnings['message']) ? $setwarnings['message'] : '';
-	$warnon = isset($setwarnings['warnon']) ? $setwarnings['warnon'] : FALSE;
+	$warnon  = isset($setwarnings['warnon']) ? $setwarnings['warnon'] : FALSE;
 	$warnoff = isset($setwarnings['warnoff']) ? $setwarnings['warnoff'] : FALSE;
+    $nodes   = array();
 
 	foreach($setwarnings['mnodeid'] as $value)
 	{
-		if($warnon)
-			$LMS->NodeSetWarn($value, TRUE);
-		if($warnoff) 
-			$LMS->NodeSetWarn($value, FALSE);
-		
+		if ($warnon) {
+			if ($LMS->NodeSetWarn($value, TRUE))
+			    $nodes[] = $value;
+	    }
+		else if ($warnoff) {
+			if ($LMS->NodeSetWarn($value, FALSE))
+			    $nodes[] = $value;
+        }
 		if($message)
 			$DB->Execute('UPDATE customers SET message=? WHERE id=?', array($message,$LMS->GetNodeOwner($value)));
 	}
 
+    if (!empty($nodes)) {
+        $data = array('nodes' => $nodes);
+        $LMS->ExecHook('node_warn_after', $data);
+    }
+
 	$SESSION->save('warnmessage', $message);
 	$SESSION->save('warnon', $warnon);
 	$SESSION->save('warnoff', $warnoff);
-	
+
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
+$warning = isset($_GET['warning']) ? 1 : 0;
+
 if(!empty($_POST['marks']))
 {
-        foreach($_POST['marks'] as $id)
-	        $LMS->NodeSetWarn($id, isset($_GET['warning']) ? 1 : 0);
+    $nodes = array();
+    foreach($_POST['marks'] as $id) {
+        $LMS->NodeSetWarn($id, $warning);
+    }
+
+    if (!empty($nodes)) {
+        $data = array('nodes' => $nodes, 'warning' => $warning);
+        $LMS->ExecHook('node_warn_after', $data);
+    }
 
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
 $backid = isset($_GET['ownerid']) ? $_GET['ownerid'] : 0;
 
-if($backid)
+if($backid && $LMS->CustomerExists($backid))
 {
-	if($LMS->CustomerExists($backid))
-	{
-		$LMS->NodeSetWarnU($backid, $_GET['warning']);
-		
-		$redir = $SESSION->get('backto');
-		if($SESSION->get('lastmodule')=='customersearch')
-			$redir .= '&search=1';
-			
-		$SESSION->redirect('?'.$redir.'#'.$backid);
-	}
+	$res = $LMS->NodeSetWarnU($backid, $warning);
+
+    if ($res) {
+        $data = array('ownerid' => $backid, 'warning' => $warning);
+        $LMS->ExecHook('node_warn_after', $data);
+    }
+
+	$redir = $SESSION->get('backto');
+	if($SESSION->get('lastmodule')=='customersearch')
+		$redir .= '&search=1';
+
+	$SESSION->redirect('?'.$redir.'#'.$backid);
 }
 
 $backid = isset($_GET['id']) ? $_GET['id'] : 0;
 
-if($backid)
+if($backid && $LMS->NodeExists($backid))
 {
-	if($LMS->NodeExists($backid))
-	{
-		$LMS->NodeSwitchWarn($backid);
-		if(!empty($_GET['shortlist']))
-		{
-		        header('Location: ?m=nodelistshort&id='.$LMS->GetNodeOwner($backid));
-			die;
-		}
-		else	
-			$SESSION->redirect('?'.$SESSION->get('backto').'#'.$backid);
+    $res = $LMS->NodeSwitchWarn($backid);
+
+    if ($res) {
+        $data = array('nodeid' => $backid);
+        $LMS->ExecHook('node_warn_after', $data);
+    }
+
+	if(!empty($_GET['shortlist'])) {
+	    header('Location: ?m=nodelistshort&id='.$LMS->GetNodeOwner($backid));
+		die;
+	}
+	else {
+		$SESSION->redirect('?'.$SESSION->get('backto').'#'.$backid);
 	}
 }
 

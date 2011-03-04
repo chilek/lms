@@ -82,4 +82,7 @@ $LMS->RegisterHook('node_del_after', array($example_plugin, 'node_after'));
  node_del_before - Before node deletion (just before executing SQL delete queries)
  node_del_after  - After node deletion
 
+ node_set_after  - After changing node status
+ node_warn_after - After changing a warning flag
+
 */
