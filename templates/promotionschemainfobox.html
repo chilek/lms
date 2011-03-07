@@ -13,7 +13,7 @@
 			<IMG SRC="img/calendar.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="fright" NOWRAP colspan="2">
-			{$schema.data}
+			{if $schema.data}{$schema.data}{else}{t}unlimited{/t}{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

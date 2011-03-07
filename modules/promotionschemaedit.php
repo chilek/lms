@@ -146,7 +146,10 @@ if (isset($_POST['schema']))
 	{
         $data = array();
         foreach ($schema['periods'] as $period) {
-            $data[] = intval($period);
+            if ($period = intval($period))
+                $data[] = $period;
+            else
+                break;
         }
 
 	    $DB->BeginTrans();
@@ -164,8 +167,10 @@ if (isset($_POST['schema']))
 
         // re-check promotionassignments data, check the number of periods
         // and remove excessive data or add data for additional periods
-        $tariffs = $DB->GetAll('SELECT id, data FROM promotionassignments
-            WHERE promotionschemaid = ?', array($schema['id']));
+        $tariffs = $DB->GetAll('SELECT a.id, a.data, t.value
+            FROM promotionassignments a
+            JOIN tariffs t ON (t.id = a.tariffid)
+            WHERE a.promotionschemaid = ?', array($schema['id']));
 
         if (!empty($tariffs)) {
             $data_cnt = count($data)+1; // +1 for activation item
@@ -178,9 +183,8 @@ if (isset($_POST['schema']))
                 }
                 // added periods
                 if ($data_cnt > $tdata_cnt) {
-                    $last = $tdata[$tdata_cnt-1];
                     for ($i=0; $i<$data_cnt-$tdata_cnt; $i++) {
-                        $tdata[] = $last;
+                        $tdata[] = str_replace(',', '.', $tariff['value']);
                     }
                 }
                 // removed periods

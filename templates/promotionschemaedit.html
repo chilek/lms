@@ -24,7 +24,10 @@
 		</TD>
 		<TD WIDTH="98%" CLASS="fright" ID="periodcont">
 		    {foreach from=$schema.periods item=period key=key}
-			<SELECT NAME="schema[periods][]" {tip text="Select length of the period (in months)"}>
+			<SELECT NAME="schema[periods][]" {tip text="Select length of the period (in months)"} onchange="period_change(this)">
+			    {if !$key}
+			    <OPTION value="0"{if !$period} selected{/if}>- {t}unlimited{/t} -</OPTION>
+			    {/if}
 			    {foreach from=$schema.selection item=item}
 			    <OPTION value="{$item}"{if $period == $item} selected{/if}>{$item}</OPTION>
 			    {/foreach}
@@ -96,6 +99,9 @@ function add_period_item()
         last = items[items.length-1],
         item = last.cloneNode(true),
         del = document.getElementById('perioddel');
+
+    if (item.options[0].value == "0")
+        item.removeChild(item.options[0]);
 
     last.parentNode.insertBefore(item, del);
     del.style.display = items.length > 1 ? '' : 'none';

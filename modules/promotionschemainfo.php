@@ -44,7 +44,11 @@ $schema['periods'] = array(0 => trans('Activation'));
 $mon = 1;
 foreach ($schema['data'] as $idx => $data) {
     $period = '';
-    if ($data == 1) {
+    if (!$data) {
+        // unlimited
+        break;
+    }
+    else if ($data == 1) {
         $period = trans('Month $0', $data);
         $mon++;
     }
@@ -55,7 +59,7 @@ foreach ($schema['data'] as $idx => $data) {
     $schema['periods'][] = $period;
 }
 
-$schema['data'] = implode(' &raquo; ', $schema['data']);
+$schema['data'] = implode(' &raquo; ', (array)$schema['data']);
 
 $schema['tariffs'] = $DB->GetAll('SELECT t.name, t.value,
     a.tariffid, a.id, a.data
