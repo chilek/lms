@@ -760,8 +760,12 @@ CREATE TABLE promotionschemas (
     promotionid int(11) DEFAULT NULL
         REFERENCES promotions (id) ON DELETE CASCADE ON UPDATE CASCADE,
     disabled tinyint(1) DEFAULT '0' NOT NULL,
+    continuation tinyint(1) DEFAULT NULL,
+    ctariffid int(11) DEFAULT NULL
+        REFERENCES tariffs (id) ON DELETE RESTRICT ON UPDATE CASCADE,
     PRIMARY KEY (id),
-    UNIQUE KEY promotionid (promotionid, name)
+    UNIQUE KEY promotionid (promotionid, name),
+    INDEX ctariffid (ctariffid)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1473,4 +1477,4 @@ CREATE TABLE supermasters (
 
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2011022000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2011030700');

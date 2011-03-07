@@ -372,6 +372,8 @@
                     <member>promotionid - promotion identifier</member>
                     <member>data - schema periods definition</member>
                     <member>disabled - status</member>
+                    <member>continuation - contract continuation option</member>
+                    <member>ctariffid - additional continuation tariff identifier</member>
                </simplelist>
           </sect2>
           <sect2 id="promotionassignments">

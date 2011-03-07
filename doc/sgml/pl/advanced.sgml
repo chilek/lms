@@ -386,6 +386,8 @@
                     <member>promotionid - identyfikator promocji</member>
                     <member>data - definicja okresów schematu</member>
                     <member>disabled - status</member>
+                    <member>continuation - w³±czenie przed³u¿enia umowy</member>
+                    <member>ctariffid - identyfikator taryfy dodatkowej w okresie po promocji</member>
                </simplelist>
           </sect2>
           <sect2 id="promotionassignments">

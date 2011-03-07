@@ -1682,5 +1682,21 @@ links -dump \
 		wzorca w konfiguracji importu.
 		</para>
 	</sect2>
+	<sect2 id="config-promotions">
+		<title>Promocje</title>
+		<para>W tym miejscu mamy mo¿liwo¶æ definiowania schematów promocji.
+		Schemat okre¶la kwotê oraz sposób p³atno¶ci abonamentu przez ca³y okres
+		trwania promocji. Definiujemy tutaj jeden lub wiele okresów o dowolnej d³ugo¶ci
+		i mamy mo¿liwo¶æ okre¶lenia kwoty abonamentu oraz sposobu naliczania.
+		Po okresie promocyjnym abonament bêdzie naliczany w normalnej (okre¶lonej
+		w taryfie) kwocie. Ponadto mo¿emy okre¶liæ kwotê op³aty aktywacyjnej oraz
+		dodatkowej taryfy doliczanej do abonamentu po okresie promocyjnym.
+		</para>
+		<para>Zdefiniowane schematy/promocje bêd± widoczne na li¶cie wyboru
+		w formularzu nowego zobowi±zania. Wybranie schematu i taryfy spowoduje
+		utworzenie odpowiedniej liczby zobowi±zañ wynikaj±cej ze zdefiniowanych
+		w schemacie okresów.
+		</para>
+	</sect2>
     </sect1>
 </chapter>

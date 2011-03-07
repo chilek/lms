@@ -25,9 +25,11 @@
  */
 
 
-$schema = $DB->GetRow('SELECT s.*, p.id AS pid, p.name AS promotion
+$schema = $DB->GetRow('SELECT s.*, p.id AS pid, p.name AS promotion,
+    t.name AS tariff, t.value
     FROM promotionschemas s
     JOIN promotions p ON (p.id = s.promotionid)
+    LEFT JOIN tariffs t ON (t.id = s.ctariffid)
     WHERE s.id = ?',
     array(intval($_GET['id'])));
 
@@ -42,11 +44,7 @@ $schema['periods'] = array(0 => trans('Activation'));
 $mon = 1;
 foreach ($schema['data'] as $idx => $data) {
     $period = '';
-    if (!$data) {
-        $schema['data'][$idx] = trans('unlimited');
-        $period = trans('Months $0-$1', $mon, '&#8734;');
-    }
-    else if ($data == 1) {
+    if ($data == 1) {
         $period = trans('Month $0', $data);
         $mon++;
     }

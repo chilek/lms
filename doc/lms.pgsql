@@ -344,9 +344,13 @@ CREATE TABLE promotionschemas (
     promotionid integer DEFAULT NULL
         REFERENCES promotions (id) ON DELETE CASCADE ON UPDATE CASCADE,
     disabled smallint   DEFAULT 0 NOT NULL,
+    continuation smallint   DEFAULT NULL,
+    ctariffid integer DEFAULT NULL
+        REFERENCES tariffs (id) ON DELETE RESTRICT ON UPDATE CASCADE,
     PRIMARY KEY (id),
     UNIQUE (promotionid, name)
 );
+CREATE INDEX promotionschemas_ctariffid_idx ON promotionschemas (ctariffid);
 
 /* --------------------------------------------------------
   Structure of table "promotionassignments"
@@ -1570,4 +1574,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2011022000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2011030700');

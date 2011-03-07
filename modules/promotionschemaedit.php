@@ -139,23 +139,26 @@ if (isset($_POST['schema']))
 		$error['name'] = trans('Specified name is in use!');
     }
 
-    $data = array();
-    foreach ($schema['periods'] as $period) {
-        $data[] = intval($period);
-        if (!$period) {
-            break;
-        }
-    }
+    if (empty($schema['continuation']) && !empty($schema['ctariffid']))
+        $error['ctariffid'] = trans('Additional subscription is useless when contract prolongation is not set!');
 
 	if (!$error)
 	{
+        $data = array();
+        foreach ($schema['periods'] as $period) {
+            $data[] = intval($period);
+        }
+
 	    $DB->BeginTrans();
 
-        $DB->Execute('UPDATE promotionschemas SET name = ?, description = ?, data = ?
+        $DB->Execute('UPDATE promotionschemas SET name = ?, description = ?, data = ?,
+                continuation = ?, ctariffid = ?
             WHERE id = ?',
             array($schema['name'],
                 $schema['description'],
                 implode(';', $data),
+                !empty($schema['continuation']) ? 1 : 0,
+                !empty($schema['ctariffid']) ? $schema['ctariffid'] : null,
                 $schema['id'],
             ));
 
@@ -207,6 +210,7 @@ $layout['pagetitle'] = trans('Schema Edit: $0', $oldschema['name']);
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('schema', $schema);
+$SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->display('promotionschemaedit.html');
 
 ?>
