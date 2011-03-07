@@ -54,7 +54,10 @@ if ($schema)
 	{
         $data = array();
         foreach ($schema['periods'] as $period) {
-            $data[] = intval($period);
+            if ($period = intval($period))
+                $data[] = $period;
+            else
+                break;
         }
         $data = implode(';', $data);
 

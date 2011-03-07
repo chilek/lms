@@ -29,7 +29,7 @@ if ($schemas) foreach ($schemas as $schema) {
     $data = explode(';', $schema['data']);
     $cnt  = count($data);
 
-    if ($cnt > 1 && $data[$cnt-1] == 0) {
+    if ($data[$cnt-1] == 0) {
         $s_arr[] = $schema['id'];
         array_pop($data);
         $data = implode(';', $data);

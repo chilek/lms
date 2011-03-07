@@ -1915,7 +1915,7 @@ class LMS
                         continue;
                     }
                 }
-                // promotion period (or after promotion)
+                // promotion period
                 else {
                     $lid = 0;
                     if (!$period)
@@ -1984,10 +1984,10 @@ class LMS
                 }
             }
 
-            // add period "after promotion"
-            if ($tariff['continuation']) {
+            // add "after promotion" tariff(s)
+            if ($tariff['continuation'] || !$data_schema[0]) {
                 $tariffs[] = $tariff['id'];
-                if ($tariff['ctariffid']) {
+                if ($tariff['ctariffid'] && $data_schema[0] != 0) {
                     $tariffs[] = $tariff['ctariffid'];
                 }
 
