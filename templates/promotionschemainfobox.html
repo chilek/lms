@@ -18,6 +18,26 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="img/options.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" class="fright">
+		    <TABLE width="100%">
+		        <TR>
+		            <TD width="1%" NOWRAP>{t}Contract prolongation after promotion period:{/t}</TD>
+		            <TD width="99%">{if $schema.continuation}{t}yes{/t}{else}{t}no{/t}{/if}</TD>
+		        </TR>
+		        <TR>
+		            <TD NOWRAP>{t}Additional subscription after promotion period:{/t}</TD>
+		            <TD>
+		                {if $schema.tariff}<A href="?m=tariffinfo&id={$schema.ctariffid}">{$schema.tariff} ({$schema.value|string_format:"%.2f"})</A>
+		                {else}{t}none{/t}{/if}
+		            </TD>
+		        </TR>
+		    </TABLE>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft">
 			<A HREF="?m=promotionschemaset&id={$schema.id}&access={$schema.disabled}"><IMG SRC="img/{if $schema.disabled}no{/if}access.gif" ALT=""></A>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright" NOWRAP colspan="2">

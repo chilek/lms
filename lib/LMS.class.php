@@ -1873,7 +1873,8 @@ class LMS
         if (!empty($data['promotiontariffid']) && !empty($data['schemaid'])) {
             $data['tariffid'] = $data['promotiontariffid'];
             $tariff = $this->DB->GetRow('SELECT a.data, s.data AS schema,
-                    t.name, t.value, t.period, t.id, t.prodid, t.taxid
+                    t.name, t.value, t.period, t.id, t.prodid, t.taxid,
+                    s.continuation, s.ctariffid
                     FROM promotionassignments a
                     JOIN promotionschemas s ON (s.id = a.promotionschemaid)
                     JOIN tariffs t ON (t.id = a.tariffid)
@@ -1881,25 +1882,24 @@ class LMS
                     array($data['schemaid'], $data['promotiontariffid']));
             $data_schema = explode(';', $tariff['schema']);
             $data_tariff = explode(';', $tariff['data']);
+            $datefrom = $data['datefrom'];
 
             foreach ($data_tariff as $idx => $dt) {
                 list($value, $period) = explode(':', $dt);
                 // Activation
                 if (!$idx) {
-                    $start_day = date('d', $data['datefrom']);
-                    $start_month = date('n', $data['datefrom']);
-                    $start_year = date('Y', $data['datefrom']);
-                    // payday is before the start of the period
-                    // set activation payday to next month's payday
-                    if ($start_day > $data['at']) {
-                        $_datefrom = $data['datefrom'];
-                        $datefrom  = mktime(0,0,0, $start_month+1, $data['at'], $start_year);
-                    } else {
-                        $datefrom = $data['datefrom'];
-                    }
-
                     // if activation value specified, create disposable liability
                     if (f_round($value)) {
+                        $start_day = date('d', $data['datefrom']);
+                        $start_month = date('n', $data['datefrom']);
+                        $start_year = date('Y', $data['datefrom']);
+                        // payday is before the start of the period
+                        // set activation payday to next month's payday
+                        if ($start_day > $data['at']) {
+                            $_datefrom = $data['datefrom'];
+                            $datefrom  = mktime(0,0,0, $start_month+1, $data['at'], $start_year);
+                        }
+
         	    		$this->DB->Execute('INSERT INTO liabilities (name, value, taxid, prodid)
 		    			    VALUES (?, ?, ?, ?)', 
 			    		    array(trans('Activation payment'),
@@ -1911,7 +1911,6 @@ class LMS
 		    	        $tariffid = 0;
 		    	        $period = DISPOSABLE;
 		    	        $at = $datefrom;
-		    	        $datefrom = $dateto = 0;
                     } else {
                         continue;
                     }
@@ -1925,15 +1924,10 @@ class LMS
                     $_datefrom = 0;
                     $at = $this->CalcAt($period, $datefrom);
                     $length = $data_schema[$idx-1];
-                    if ($length) {
-                        $month = date('n', $datefrom);
-                        $year = date('Y', $datefrom);
-                        // assume $data['at'] == 1, set last day of the specified month
-                        $dateto = mktime(23,59,59, $month+$length, 0, $year);
-                    }
-                    else {
-                        $dateto = 0;
-                    }
+                    $month = date('n', $datefrom);
+                    $year = date('Y', $datefrom);
+                    // assume $data['at'] == 1, set last day of the specified month
+                    $dateto = mktime(23,59,59, $month+$length, 0, $year);
 
                     // Find tariff with specified name+value+period...
                     $tariffid = $this->DB->GetOne('SELECT id FROM tariffs
@@ -1978,15 +1972,41 @@ class LMS
 						    !empty($data['settlement']) ? 1 : 0,
 						    !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
 						    !empty($data['paytype']) ? $data['paytype'] : NULL,
-						    $datefrom,
-						    $dateto,
+						    $idx ? $datefrom : 0,
+						    $idx ? $dateto : 0,
 						    0,
 						    $lid,
 						    ));
 
 		        $result[] = $this->DB->GetLastInsertID('assignments');
-		        if ($idx)
+		        if ($idx) {
 		            $datefrom = $dateto+1;
+                }
+            }
+
+            // add period "after promotion"
+            if ($tariff['continuation']) {
+                $tariffs[] = $tariff['id'];
+                if ($tariff['ctariffid']) {
+                    $tariffs[] = $tariff['ctariffid'];
+                }
+
+                // Create assignments
+                foreach ($tariffs as $t) {
+    		        $this->DB->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice,
+					    settlement, numberplanid, paytype, datefrom, dateto, discount, liabilityid)
+					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+					    array($t,
+						    $data['customerid'],
+						    $data['period'],
+						    $this->CalcAt($data['period'], $datefrom),
+						    !empty($data['invoice']) ? 1 : 0,
+						    !empty($data['settlement']) ? 1 : 0,
+						    !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
+						    !empty($data['paytype']) ? $data['paytype'] : NULL,
+						    $datefrom, 0, 0, 0,
+						    ));
+                }
             }
         }
         // Create one assignment record
