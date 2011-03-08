@@ -295,3 +295,16 @@ function multiselect(formid, elemid, def)
 	};
 	// TODO: keyboard events
 }
+
+function start_login_timeout(sec)
+{
+    if (!sec) sec = 600;
+    lms_login_timeout_value = sec;
+    lms_login_timeout = window.setTimeout('window.location.reload(true)', (sec + 5) * 1000);
+}
+
+function reset_login_timeout()
+{
+    window.clearTimeout(lms_login_timeout);
+    start_login_timeout(lms_login_timeout_value);
+}

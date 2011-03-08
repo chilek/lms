@@ -1013,7 +1013,7 @@ function horizontalPlacement(browserWidth, horizontalScrollAmount, widthFix) {
 			} else {
 				o3_hpos = RIGHT;
 			}
-		}  		
+		} 
 
 		// From mouse
 		if (o3_hpos == CENTER) { // Center
@@ -1048,7 +1048,7 @@ function horizontalPlacement(browserWidth, horizontalScrollAmount, widthFix) {
 
 			if (placeX < winoffset) placeX = winoffset;
 		}
-	}	
+	}
 
 	return placeX;
 }
@@ -1084,13 +1084,13 @@ function verticalPlacement(browserHeight,verticalScrollAmount) {
 
 		// Snapping!
 		if (o3_snapy > 1) {
-			var snapping = placeY % o3_snapy;  			
+			var snapping = placeY % o3_snapy;
 
 			if (o3_aboveheight > 0 && o3_vpos == ABOVE) {
 				placeY = placeY - (o3_snapy+snapping);
 			} else {
 				placeY = placeY+(o3_snapy - snapping);
-			} 			
+			}
 
 			if (placeY < scrolloffset) placeY = scrolloffset;
 		}
@@ -1112,7 +1112,7 @@ function windowWidth() {
 	if (o3_frame.innerWidth) w=o3_frame.innerWidth;
 	else if (eval('o3_frame.'+docRoot)&&eval("typeof o3_frame."+docRoot+".clientWidth=='number'")&&eval('o3_frame.'+docRoot+'.clientWidth')) 
 		w=eval('o3_frame.'+docRoot+'.clientWidth');
-	return w;			
+	return w;
 }
 
 // create the div container for popup content if it doesn't exist
