@@ -66,9 +66,9 @@ function cal_popup1 (str_datetime, obj) {
     if (obj) {
         document.getElementById('autoiframe').src = src;
     }
-    else
-        overlib('<iframe id="autoiframe" frameborder=0 scrolling=no src="' + src + '">',
-            HAUTO,VAUTO,OFFSETX,30,OFFSETY,15,STICKY,MOUSEOFF);
+    else {
+        popup(src, 1, 1, 30, 15);
+    }
 }
 
 // timestamp generating function
@@ -101,7 +101,7 @@ function cal_prs_tsmp1 (str_datetime) {
 	// if positive integer treat as milliseconds from epoch
 	if (RE_NUM.exec(str_datetime))
 		return new Date(str_datetime);
-		
+
 	// else treat as date in string format
 	var arr_datetime = str_datetime.split(' ');
 	return this.prs_time(arr_datetime[1], this.prs_date(arr_datetime[0]));
@@ -125,7 +125,7 @@ function cal_prs_date1 (str_date) {
 
 	if (arr_date[1] < 1 || arr_date[1] > 12) return cal_error ("{/literal}{t 0="'\" + arr_date[1] + \"'"}Invalid month value: $0.\nAllowed range is 01-12.{/t}{literal}");
 	dt_date.setMonth(arr_date[1]-1);
-	 
+
 	if (arr_date[0] < 100) arr_date[0] = Number(arr_date[0]) + (arr_date[0] < NUM_CENTYEAR ? 2000 : 1900);
 	dt_date.setFullYear(arr_date[0]);
 
@@ -147,7 +147,7 @@ function cal_prs_time1 (str_time, dt_date) {
 		if (arr_time[0] < 24) dt_date.setHours(arr_time[0]);
 		else return cal_error ("{/literal}{t 0="'\" + arr_time[0] + \"'"}Invalid hour value: $0.\nAllowed range is 00-23.{/t}{literal}");
 	else return cal_error ("{/literal}{t 0="'\" + arr_time[0] + \"'"}Invalid hour value: $0.\nAllowed values are unsigned integers.{/t}{literal}");
-	
+
 	if (!arr_time[1]) dt_date.setMinutes(0);
 	else if (RE_NUM.exec(arr_time[1]))
 		if (arr_time[1] < 60) dt_date.setMinutes(arr_time[1]);

@@ -26,31 +26,25 @@
 
 function smarty_function_tip($args, &$SMARTY)
 {
-	if ($popup = $args['dynpopup']) 
+	if ($popup = $args['dynpopup'])
 	{
 		if(is_array($args))
 			foreach($args as $argid => $argval)
 				$popup = str_replace('$'.$argid, $argval, $popup);
 
-		$text = " onmouseover=\"return overlib('<iframe id=&quot;autoiframe&quot; width=100 height=10 frameborder=0 scrolling=no src=&quot;"
-		    .$popup."&popup=1&quot;></iframe>',HAUTO,VAUTO,OFFSETX,30,OFFSETY,15"
-		    .($args['sticky'] ? ',STICKY, MOUSEOFF' : '').");\" onmouseout=\"nd();\"";
-//		global $SESSION;
-//		$text = 'onmouseover="if(getSeconds() < '.$SESSION->timeout.'){ return overlib(\'<iframe id=&quot;autoiframe&quot; frameborder=0 scrolling=no width=220 height=150 src=&quot;'.$popup.'&quot;></iframe>\',HAUTO,VAUTO,OFFSETX,85,OFFSETY,15); }" onmouseout="nd();"';
+		$text = " onmouseover=\"popup('$popup',1,".((int)$args['sticky']).",30,15)\" onmouseout=\"pophide()\"";
 		return $text;
-	} 
-	else if ($popup = $args['popup']) 
+	}
+	else if ($popup = $args['popup'])
 	{
 		if(is_array($args))
 			foreach($args as $argid => $argval)
 				$popup = str_replace('$'.$argid, $argval, $popup);
 
-		$text = " onclick=\"return overlib('<iframe id=&quot;autoiframe&quot; width=100 height=10 frameborder=0 scrolling=no src=&quot;"
-		    .$popup."&popup=1&quot;></iframe>',HAUTO,VAUTO,OFFSETX,10,OFFSETY,10"
-		    .($args['sticky'] ? ',STICKY, MOUSEOFF' : '').");\" onmouseout=\"nd();\"";
+		$text = " onclick=\"popup('$popup',1,".((int)$args['sticky']).",10,10)\" onmouseout=\"pophide();\"";
 		return $text;
-	} 
-	else 
+	}
+	else
 	{
 	    if($SMARTY->_tpl_vars['error'][$args['trigger']])
 	    {
@@ -59,10 +53,10 @@ function smarty_function_tip($args, &$SMARTY)
 		    $error = str_replace("\r",'',$error);
 		    $error = str_replace("\n",'<BR>',$error);
 
-		    $result = ' onmouseover="return overlib(\'<b><font color=red>'.$error.'</font></b>\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onmouseout="nd();" ';
-		    $result .= $args['bold'] ? ' CLASS="alert bold" ' : ' CLASS="alert" ';
+		    $result = ' onmouseover="popup(\'<b><font color=red>'.$error.'</font></b>\')" onmouseout="pophide()" ';
+		    $result .= $args['bold'] ? 'CLASS="alert bold" ' : ' CLASS="alert" ';
 	    }
-	    elseif($args['text'] != '') 
+	    elseif($args['text'] != '')
 	    {
 		    $text = $args['text'];
     		    if($SMARTY->_tpl_vars['_LANG'][$text])
@@ -77,10 +71,10 @@ function smarty_function_tip($args, &$SMARTY)
 		    $text = str_replace("\r",'',$text);
 		    $text = str_replace("\n",'<BR>',$text);
 
-		    $result .= 'onmouseover="return overlib(\''.$text.'\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onmouseout="nd();"';
-		    $result .= $args['bold'] ? ' CLASS="bold" ' : '';
+		    $result .= 'onmouseover="popup(\''.$text.'\')" onmouseout="pophide()" ';
+		    $result .= $args['bold'] ? 'CLASS="bold" ' : '';
 	    }
-	    
+
 	    return $result;
 	}
 }
