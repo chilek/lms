@@ -350,6 +350,8 @@ function nd(time) {
 // The Close onMouseOver function for stickies
 function cClick() {
 	if (olLoaded) {
+// LMS-mod
+        lms_sticky_popup = 0;
 		runHook("hideObject", FREPLACE, over);
 		o3_showingsticky = 0;	
 	}	
