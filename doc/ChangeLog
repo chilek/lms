@@ -19,6 +19,7 @@ version ? (????-??-??)
   - Now PostgreSQL 8.2 is required because of multi-value INSERT usage (alec)
   - Fixed netdevices searching by MAC address (alec)
   - BTS#0000860: Fixed sticky popups (alec)
+  - Added send_sms_before plugin hook (alec)
 
 version 1.11.11 Bray (2011-01-17)
 
