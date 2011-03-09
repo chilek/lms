@@ -75,7 +75,7 @@ if(isset($_POST['ticket']))
 			if(!empty($CONFIG['phpui']['helpdesk_sender_name']))
 			{
 				$mailfname = $CONFIG['phpui']['helpdesk_sender_name'];
-				
+
 				if($mailfname == 'queue') $mailfname = $LMS->GetQueueName($queue);
 				elseif($mailfname == 'user') $mailfname = $user['name'];
 				$mailfname = '"'.$mailfname.'"';
@@ -115,10 +115,11 @@ if(isset($_POST['ticket']))
 				$body .= trans('E-mail:').' '.$info['email'];
 			}
 
-			if($recipients = $DB->GetCol('SELECT email FROM users, rtrights 
-						WHERE users.id = userid AND queueid = ? AND email != \'\' 
-							AND (rtrights.rights & 8) = 8 AND deleted = 0',
-					    array($queue)))
+			if($recipients = $DB->GetCol('SELECT DISTINCT email
+			        FROM users, rtrights
+					WHERE users.id = userid AND queueid = ? AND email != \'\'
+						AND (rtrights.rights & 8) = 8 AND deleted = 0',
+				    array($queue)))
 			{
 				foreach($recipients as $email)
 				{
@@ -132,13 +133,13 @@ if(isset($_POST['ticket']))
 				}
 			}
 		}
-		
+
 		$SESSION->redirect('?m=rtticketview&id='.$id);
 	}
 	$SMARTY->assign('ticket', $ticket);
 	$SMARTY->assign('error', $error);
 }
-	
+
 $layout['pagetitle'] = trans('New Ticket');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);

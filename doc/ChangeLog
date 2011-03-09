@@ -20,6 +20,8 @@ version ? (????-??-??)
   - Fixed netdevices searching by MAC address (alec)
   - BTS#0000860: Fixed sticky popups (alec)
   - Added send_sms_before plugin hook (alec)
+  - Don't send deplicated notifications to the users when they are using
+    the same e-mail address (alec)
 
 version 1.11.11 Bray (2011-01-17)
 
