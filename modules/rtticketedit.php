@@ -153,15 +153,17 @@ if(isset($_POST['ticket']))
 				$body .= trans('E-mail:').' '.$info['email'];
 			}
 
-			if($recipients = $DB->GetCol('SELECT email FROM users, rtrights 
-						WHERE users.id=userid AND queueid = ? AND email != \'\' 
-							AND (rtrights.rights & 8) = 8 AND users.id != ? AND deleted = 0',
-							array($ticketedit['queueid'], $AUTH->id)))
+			if($recipients = $DB->GetCol('SELECT DISTINCT email
+			        FROM users, rtrights
+					WHERE users.id=userid AND queueid = ? AND email != \'\'
+						AND (rtrights.rights & 8) = 8 AND users.id != ? AND deleted = 0',
+					array($ticketedit['queueid'], $AUTH->id)))
 			{
-				$oldrecipients = $DB->GetCol('SELECT email FROM users, rtrights 
-						WHERE users.id=userid AND queueid = ? AND email != \'\' 
-							AND (rtrights.rights & 8) = 8 AND deleted = 0',
-							array($ticket['queueid']));
+				$oldrecipients = $DB->GetCol('SELECT DISTINCT email
+				    FROM users, rtrights
+					WHERE users.id=userid AND queueid = ? AND email != \'\'
+						AND (rtrights.rights & 8) = 8 AND deleted = 0',
+					array($ticket['queueid']));
 
 				foreach($recipients as $email)
 				{

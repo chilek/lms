@@ -272,10 +272,11 @@ if(isset($_POST['message']))
 				$body .= trans('E-mail:').' '.$info['email'];
 			}
 
-			if($recipients = $DB->GetCol('SELECT email FROM users, rtrights 
-						WHERE users.id=userid AND queueid = ? AND email != \'\' 
-							AND (rtrights.rights & 8) = 8 AND users.id != ? AND deleted = 0',
-							array($queue['id'], $AUTH->id)))
+			if($recipients = $DB->GetCol('SELECT DISTINCT email
+			        FROM users, rtrights 
+					WHERE users.id=userid AND queueid = ? AND email != \'\' 
+						AND (rtrights.rights & 8) = 8 AND users.id != ? AND deleted = 0',
+					array($queue['id'], $AUTH->id)))
 			{
 				foreach($recipients as $email)
 				{
