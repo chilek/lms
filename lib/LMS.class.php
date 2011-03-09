@@ -4126,19 +4126,32 @@ class LMS
 
 	function SendSMS($number, $message, $messageid=0)
 	{
+		$prefix = !empty($this->CONFIG['sms']['prefix']) ? $this->CONFIG['sms']['prefix'] : '';
+		$number = preg_replace('/[^0-9]/', '', $number);
+		$number = preg_replace('/^0+/', '', $number);
+
+        // add prefix to the number if needed
+		if ($prefix && substr($number, 0, strlen($prefix)) != $prefix)
+			$number = $prefix . $number;
+
+        $data = array(
+            'number'    => $number,
+            'message'   => $message,
+            'messageid' => $messageid
+        );
+
+        // call external SMS handler(s)
+        $data = $this->ExecHook('send_sms_before', $data);
+
+        if ($data['abort']) {
+            return $data['result'];
+        }
+
 		if(empty($this->CONFIG['sms']['service']))
 			return trans('SMS "service" not set!');
 		else
 			$service = $this->CONFIG['sms']['service'];
 
-		$prefix = !empty($this->CONFIG['sms']['prefix']) ? $this->CONFIG['sms']['prefix'] : '';
-
-		$number = preg_replace('/[^0-9]/', '', $number);
-		$number = preg_replace('/^0+/', '', $number);
-
-		if ($prefix && substr($number, 0, strlen($prefix)) != $prefix)
-			$number = $prefix . $number;
-		
 		switch($service)
 		{
 			case 'smscenter':
@@ -4157,7 +4170,7 @@ class LMS
 					return trans('SMS Message too long!');
 				if(strlen($number) > 16 || strlen($number) < 4)
 					return trans('Wrong phone number format!');
-				
+
 				$type = !empty($this->CONFIG['sms']['smscenter_type']) ? $this->CONFIG['sms']['smscenter_type'] : 'dynamic';
 				$message .= ($type == 'static') ? "\n\n" . $from : '';
 
@@ -4169,7 +4182,7 @@ class LMS
 					'text'      => $message,
 					'from'      => $from
 				);
-			    		
+
 				$encodedargs = array();
 				foreach (array_keys($args) as $thiskey)
 		    			array_push($encodedargs, urlencode($thiskey) ."=". urlencode($args[$thiskey]));
@@ -4181,7 +4194,7 @@ class LMS
 				curl_setopt($curl, CURLOPT_POST, 1);
 				curl_setopt($curl, CURLOPT_POSTFIELDS, $encodedargs);
 				curl_setopt($curl, CURLOPT_TIMEOUT, 10);
-			    
+
 				$page = curl_exec($curl);
 				if(curl_error($curl))
 					return 'SMS communication error. ' . curl_error($curl);
@@ -4233,11 +4246,11 @@ class LMS
 					return trans('SMSTools outgoing directory not exists ($0)!', $dir);
 				if(!is_writable($dir))
 					return trans('Unable to write to SMSTools outgoing directory ($0)!', $dir);
-				
+
 				$filename = $dir.'/lms-'.$messageid.'-'.$number;
 				$message = clear_utf($message);
 				$file = sprintf("To: %s\n\n%s", $number, $message);
-				
+
 				if($fp = fopen($filename, 'w'))
 				{
 					fwrite($fp, $file);
@@ -4245,14 +4258,14 @@ class LMS
 				}
 				else
 					return trans('Unable to create file $0!', $filename);
-		
+
 				return MSG_NEW;
 			break;
 			default:
 				return trans('Unknown SMS service!');
 		}
 	}
-	
+
 	function GetMessages($customerid, $limit=NULL)
 	{
 		return $this->DB->GetAll('SELECT i.messageid AS id, i.status, i.error,

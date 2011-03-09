@@ -85,4 +85,5 @@ $LMS->RegisterHook('node_del_after', array($example_plugin, 'node_after'));
  node_set_after  - After changing node status
  node_warn_after - After changing a warning flag
 
+ send_sms_before - Called just before sending SMS, using this you can add your own service handlers
 */
