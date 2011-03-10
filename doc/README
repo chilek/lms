@@ -5319,10 +5319,12 @@ Chapter 7. For curious
    login - login
    name - first and last name
    email - user's email address
+   phone - user's phone number
    position - user's position name
    rights - binary access rights
    hosts - list of hosts allowed to login
    passwd - password to login
+   ntype - supported notofication types
    lastlogindate - date of last login
    lastloginip - IP of last login
    failedlogindate - date of last failed login attempt
