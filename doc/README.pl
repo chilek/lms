@@ -1199,15 +1199,18 @@ Rozdział 3. Interfejs Użytkownika (LMS-UI)
 
 3.2.3. Nowy użytkownik
 
-   Aby dodać nowe konto użytkownika należy podać login oraz hasło, które
-   nie może być puste. Podanie imienia, nazwiska i adresu poczty
-   elektronicznej nie jest wymagane. "Dozwolone hosty" to lista adresów IP
-   hostów lub sieci oddzielonych przecinkiem, z których dany użytkownik
-   może się logować do systemu (podobnie do opcji konfiguracyjnej
-   'allow_from'). Jeśli lista ta jest pusta system nie dokonuje
-   sprawdzenia adresu IP. Poniżej można zaznaczyć uprawnienia dostępu do
-   systemu. Jeżeli wszystkie pola pozostawisz puste, użytkownikowi
-   przypisany zostanie 'Pełen dostęp'.
+   Aby dodać nowe konto użytkownika należy podać login, nazwisko/imię oraz
+   hasło, które nie może być puste. Pozostałe dane nie są wymagane.
+   "Dozwolone hosty" to lista adresów IP hostów lub sieci oddzielonych
+   przecinkiem, z których dany użytkownik może się logować do systemu
+   (podobnie do opcji konfiguracyjnej 'allow_from'). Jeśli lista ta jest
+   pusta system nie dokonuje sprawdzenia adresu IP. Poniżej można
+   zaznaczyć uprawnienia dostępu do systemu. Jeżeli wszystkie pola
+   pozostawisz puste, użytkownikowi przypisany zostanie 'Pełen dostęp'.
+
+   Pole "Powiadomienia" określa jakiego typu powiadomienia (np. z
+   helpdesku) mają być wysyłane do użytkownika. Aby skorzystać z
+   powiadomień należy też podać adres e-mail i/lub numer telefonu.
      __________________________________________________________________
 
 3.2.4. Kopie zapasowe
@@ -2666,8 +2669,8 @@ links -dump \
        Przykład: helpdesk_sender_name = Helpdesk
      * newticket_notify
        Włączenie tej opcji spowoduje, że wszyscy użytkownicy z prawami do
-       kolejki dostaną powiadomienie mailem o dodaniu do niej nowego
-       zgłoszenia. Domyślnie: wyłączona.
+       kolejki dostaną powiadomienie (mailem i/lub smsem) o dodaniu do
+       niej nowego zgłoszenia. Domyślnie: wyłączona.
        Przykład: newticket_notify = 1
      * helpdesk_stats
        Dodaje statystyki przyczyn zgłoszeń na stronie informacji o
@@ -6250,11 +6253,13 @@ Rozdział 7. Dla dociekliwych
    id - identyfikator
    login - login
    name - nazwa (nazwisko i imię)
-   email - adres admina
-   position - nazwa stanowiska admina
+   email - adres e-mail użytkownika
+   phone - numer telefonu użytkownika
+   position - nazwa stanowiska
    rights - prawa dostępu
    hosts - lista hostów z prawem do logowania
    passwd - hasło logowania
+   ntype - obsługiwane typy powiadomień
    lastlogindate - data ostatniego logowania
    lastloginip - adres IP, z którego nastąpiło ostatnie logowanie
    failedlogindate - data ostatniej nieudanej próby logowania
