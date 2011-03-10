@@ -161,9 +161,10 @@ if(isset($_POST['nodeedit']) && !isset($_GET['newmac']))
 		$error['passwd'] = trans('Password is too long (max.32 characters)!');
 
 	if(!isset($nodeedit['access']))	$nodeedit['access'] = 0;
-    if(!isset($nodeedit['warning'])) $nodeedit['warning'] = 0;
+	if(!isset($nodeedit['warning'])) $nodeedit['warning'] = 0;
 	if(!isset($nodeedit['chkmac']))	$nodeedit['chkmac'] = 0;
 	if(!isset($nodeedit['halfduplex'])) $nodeedit['halfduplex'] = 0;
+	if(!isset($nodeedit['netdev'])) $nodeedit['netdev'] = 0;
 
 	if($nodeinfo['netdev'] != $nodeedit['netdev'] && $nodeedit['netdev'] != 0)
 	{
