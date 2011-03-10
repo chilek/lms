@@ -36,9 +36,9 @@ CREATE TABLE debitnotecontents (
 	value numeric(9,2)      DEFAULT 0 NOT NULL,
         description text 	DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
-	UNIQUE (docid, itemid)
+	CONSTRAINT debitnotecontents_docid_key UNIQUE (docid, itemid)
 );
-										
+
 ");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009062300', 'dbversion'));

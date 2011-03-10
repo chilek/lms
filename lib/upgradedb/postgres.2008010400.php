@@ -42,7 +42,7 @@ $DB->Execute("
         nodegroupid	integer 	NOT NULL DEFAULT 0,
 	nodeid		integer		NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
-	UNIQUE (nodeid, nodegroupid)
+	CONSTRAINT nodegroupassignments_nodeid_key UNIQUE (nodeid, nodegroupid)
     );
 ");
 

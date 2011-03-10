@@ -24,7 +24,7 @@
 $DB->BeginTrans();
 
 $DB->Execute("ALTER TABLE tariffs DROP CONSTRAINT tariffs_name_key");
-$DB->Execute("ALTER TABLE tariffs ADD UNIQUE(name, value)");
+$DB->Execute("ALTER TABLE tariffs ADD CONSTRAINT tariffs_name_key UNIQUE(name, value)");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011021700', 'dbversion'));
 

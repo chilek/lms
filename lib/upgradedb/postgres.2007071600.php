@@ -33,7 +33,7 @@ $DB->Execute("
         customergroupid integer NOT NULL DEFAULT 0,
 	userid 		integer NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
-	UNIQUE (userid, customergroupid)
+	CONSTRAINT excludedgroups_userid_key UNIQUE (userid, customergroupid)
     );
 ");
 

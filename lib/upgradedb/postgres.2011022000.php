@@ -60,8 +60,8 @@ CREATE TABLE promotionassignments (
 );
 CREATE INDEX promotionassignments_tariffid_idx ON promotionassignments (tariffid);
 
-ALTER TABLE tariffs DROP CONSTRAINT tariffs_name_value_key;
-ALTER TABLE tariffs ADD UNIQUE(name, value, period);
+ALTER TABLE tariffs DROP CONSTRAINT tariffs_name_key;
+ALTER TABLE tariffs ADD CONSTRAINT tariffs_name_key UNIQUE(name, value, period);
 ");
 
 
