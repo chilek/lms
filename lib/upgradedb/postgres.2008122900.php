@@ -33,7 +33,7 @@ CREATE TABLE numberplanassignments (
         planid integer DEFAULT 0 NOT NULL,
         divisionid integer DEFAULT 0 NOT NULL,
         PRIMARY KEY (id),
-        UNIQUE (planid, divisionid)
+        CONSTRAINT numberplanassignments_planid_key UNIQUE (planid, divisionid)
 );
 CREATE INDEX numberplanassignments_divisionid_idx ON numberplanassignments (divisionid);
 ");

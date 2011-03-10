@@ -32,7 +32,7 @@ $DB->Execute("
         name varchar(255)   NOT NULL,
         idate integer       NOT NULL,
         PRIMARY KEY (id),
-        UNIQUE (idate, name)
+        CONSTRAINT sourcefiles_idate_key UNIQUE (idate, name)
     );
 
     CREATE INDEX sourcefiles_userid_idx ON sourcefiles (userid);

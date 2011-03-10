@@ -50,7 +50,7 @@ if (!in_array('up_rights_assignments', $tables)) $DB->Execute("
 	customerid integer DEFAULT 0 NOT NULL,
         rightid integer DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
-	UNIQUE (customerid, rightid)
+	CONSTRAINT up_rights_assignments_customerid_key UNIQUE (customerid, rightid)
     )
 ");	  
 

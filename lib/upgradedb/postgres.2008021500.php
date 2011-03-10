@@ -33,7 +33,7 @@ $DB->Execute("
 		aliasid		integer		DEFAULT 0 NOT NULL,
 		accountid	integer		DEFAULT 0 NOT NULL,
 		PRIMARY KEY (id),
-		UNIQUE (aliasid, accountid)
+		CONSTRAINT aliasassignments_aliasid_key UNIQUE (aliasid, accountid)
 	);
 
 	ALTER TABLE aliases ADD domainid integer NOT NULL DEFAULT 0;
@@ -44,7 +44,7 @@ $DB->Execute("
 		SELECT id, accountid FROM aliases;
 	
 	ALTER TABLE aliases DROP accountid;
-	ALTER TABLE aliases ADD UNIQUE (login, domainid);
+	ALTER TABLE aliases ADD CONSTRAINT aliases_login_key UNIQUE (login, domainid);
 ");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008021500', 'dbversion'));

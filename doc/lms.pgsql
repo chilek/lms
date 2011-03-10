@@ -222,7 +222,7 @@ CREATE TABLE macs (
 	nodeid integer		NOT NULL
 		REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id),
-	UNIQUE (mac, nodeid)
+	CONSTRAINT macs_mac_key UNIQUE (mac, nodeid)
 );
 
 /* -------------------------------------------------------- 
@@ -251,7 +251,7 @@ CREATE TABLE nodegroupassignments (
 	nodegroupid     integer         NOT NULL DEFAULT 0,
 	nodeid          integer         NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
-	UNIQUE (nodeid, nodegroupid)
+	CONSTRAINT nodegroupassignments_nodeid_key UNIQUE (nodeid, nodegroupid)
 );
 
 /* -------------------------------------------------------- 
@@ -267,7 +267,7 @@ CREATE TABLE nodeassignments (
 	assignmentid integer    NOT NULL
 		REFERENCES assignments (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id),
-	UNIQUE (nodeid, assignmentid)
+	CONSTRAINT nodeassignments_nodeid_key UNIQUE (nodeid, assignmentid)
 );
 
 CREATE INDEX nodeassignments_assignmentid_idx ON nodeassignments (assignmentid);
@@ -313,7 +313,7 @@ CREATE TABLE tariffs (
 	quota_sql_limit integer	DEFAULT NULL,
 	description text	DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
-	UNIQUE (name, value, period)
+	CONSTRAINT tariffs_name_key UNIQUE (name, value, period)
 );
 CREATE INDEX tariffs_type_idx ON tariffs (type);
 
@@ -350,7 +350,7 @@ CREATE TABLE promotionschemas (
     ctariffid integer DEFAULT NULL
         REFERENCES tariffs (id) ON DELETE RESTRICT ON UPDATE CASCADE,
     PRIMARY KEY (id),
-    UNIQUE (promotionid, name)
+    CONSTRAINT promotionschemas_promotionid_key UNIQUE (promotionid, name)
 );
 CREATE INDEX promotionschemas_ctariffid_idx ON promotionschemas (ctariffid);
 
@@ -368,7 +368,7 @@ CREATE TABLE promotionassignments (
         REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
     data text           DEFAULT NULL,
     PRIMARY KEY (id),
-    UNIQUE (promotionschemaid, tariffid)
+    CONSTRAINT promotionassignments_promotionschemaid_key UNIQUE (promotionschemaid, tariffid)
 );
 CREATE INDEX promotionassignments_tariffid_idx ON promotionassignments (tariffid);
 
@@ -520,7 +520,7 @@ CREATE TABLE debitnotecontents (
 	value numeric(9,2)      DEFAULT 0 NOT NULL,
         description text 	DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
-	UNIQUE (docid, itemid)
+	CONSTRAINT debitnotecontents_docid_key UNIQUE (docid, itemid)
 );
 /* -------------------------------------------------------- 
   Structure of table "numberplanassignments" 
@@ -533,7 +533,7 @@ CREATE TABLE numberplanassignments (
 	planid integer DEFAULT 0 NOT NULL,
 	divisionid integer DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
-	UNIQUE (planid, divisionid)
+	CONSTRAINT numberplanassignments_planid_key UNIQUE (planid, divisionid)
 );
 CREATE INDEX numberplanassignments_divisionid_idx ON numberplanassignments (divisionid);
 
@@ -564,7 +564,7 @@ CREATE TABLE customerassignments (
 	customerid integer NOT NULL
 	    REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id),
-	UNIQUE (customergroupid, customerid)
+	CONSTRAINT customerassignments_customergroupid_key UNIQUE (customergroupid, customerid)
 );
 
 CREATE INDEX customerassignments_customerid_idx ON customerassignments (customerid);
@@ -596,7 +596,7 @@ CREATE TABLE netlinks (
 	srcport smallint	DEFAULT 0 NOT NULL,
 	dstport smallint	DEFAULT 0 NOT NULL,
 	PRIMARY KEY  (id),
-	UNIQUE (src, dst)
+	CONSTRAINT netlinks_src_key UNIQUE (src, dst)
 );
 
 /* ---------------------------------------------------
@@ -730,7 +730,7 @@ CREATE TABLE rtrights (
         REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE,
     rights integer DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
-    UNIQUE (userid, queueid)
+    CONSTRAINT rtrights_userid_key UNIQUE (userid, queueid)
 );
 
 /* ---------------------------------------------------
@@ -761,7 +761,7 @@ CREATE TABLE passwd (
 	mail_bcc varchar(255) 	DEFAULT '' NOT NULL,
 	description text	DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
-	UNIQUE (login, domainid)
+	CONSTRAINT passwd_login_key UNIQUE (login, domainid)
 );
 CREATE INDEX passwd_ownerid_idx ON passwd (ownerid);
 
@@ -833,7 +833,7 @@ CREATE TABLE aliases (
 	login 		varchar(255) 	DEFAULT '' NOT NULL,
 	domainid 	integer 	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
-	UNIQUE (login, domainid)
+	CONSTRAINT aliases_login_key UNIQUE (login, domainid)
 );
 
 /* ---------------------------------------------------
@@ -848,7 +848,7 @@ CREATE TABLE aliasassignments (
 	accountid       integer         DEFAULT 0 NOT NULL,
 	mail_forward    varchar(255)    DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
-	UNIQUE (aliasid, accountid, mail_forward)
+	CONSTRAINT aliasassignments_aliasid_key UNIQUE (aliasid, accountid, mail_forward)
 );
 
 /* ---------------------------------------------------
@@ -865,7 +865,7 @@ CREATE TABLE uiconfig (
     description text 		NOT NULL DEFAULT '',
     disabled 	smallint 	NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
-    UNIQUE (section, var)
+    CONSTRAINT uiconfig_section_key UNIQUE (section, var)
 );
 
 /* ---------------------------------------------------
@@ -897,7 +897,7 @@ DROP TABLE eventassignments CASCADE;
 CREATE TABLE eventassignments (
 	eventid 	integer 	DEFAULT 0 NOT NULL,
 	userid 		integer 	DEFAULT 0 NOT NULL,
-	UNIQUE (eventid, userid)
+	CONSTRAINT eventassignments_eventid_key UNIQUE (eventid, userid)
 );
 
 /* ---------------------------------------------------
@@ -941,7 +941,7 @@ CREATE TABLE sourcefiles (
     name varchar(255)   NOT NULL,
     idate integer	    NOT NULL,
     PRIMARY KEY (id),
-    UNIQUE (idate, name)
+    CONSTRAINT sourcefiles_idate_key UNIQUE (idate, name)
 );
 
 CREATE INDEX sourcefiles_userid_idx ON sourcefiles (userid);
@@ -1022,7 +1022,7 @@ CREATE TABLE daemonconfig (
     description text 		DEFAULT '' NOT NULL,
     disabled 	smallint 	DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
-    UNIQUE(instanceid, var)
+    CONSTRAINT daemonconfig_instanceid_key UNIQUE(instanceid, var)
 );
 
 /* ---------------------------------------------------
@@ -1037,7 +1037,7 @@ CREATE TABLE docrights (
     doctype     integer         DEFAULT 0 NOT NULL,
     rights      integer         DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
-    UNIQUE (userid, doctype)
+    CONSTRAINT docrights_userid_key UNIQUE (userid, doctype)
 );
 
 /* ---------------------------------------------------
@@ -1052,7 +1052,7 @@ CREATE TABLE cashrights (
     regid 	integer 	DEFAULT 0 NOT NULL,
     rights 	integer 	DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
-    UNIQUE (userid, regid)
+    CONSTRAINT cashrights_userid_key UNIQUE (userid, regid)
 );
 
 /* ---------------------------------------------------
@@ -1087,7 +1087,7 @@ CREATE TABLE cashreglog (
     snapshot 	numeric(9,2)    DEFAULT 0 NOT NULL,
     description text		DEFAULT '' NOT NULL,
     PRIMARY KEY (id),
-    UNIQUE (regid, time)
+    CONSTRAINT cashreglog_regid_key UNIQUE (regid, time)
 );
 
 /* ---------------------------------------------------
@@ -1245,7 +1245,7 @@ CREATE TABLE excludedgroups (
 	    REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	userid 		integer NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
-	UNIQUE (userid, customergroupid)
+	CONSTRAINT excludedgroups_userid_key UNIQUE (userid, customergroupid)
 );
 CREATE INDEX excludedgroups_customergroupid_idx ON excludedgroups (customergroupid);
 
@@ -1418,7 +1418,7 @@ CREATE TABLE up_rights_assignments (
 	customerid integer 	DEFAULT 0 NOT NULL,
         rightid integer 	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
-	UNIQUE (customerid, rightid)
+	CONSTRAINT up_rights_assignments_customerid_key UNIQUE (customerid, rightid)
 );
 
 /* ---------------------------------------------------

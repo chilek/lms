@@ -26,6 +26,7 @@ version ? (????-??-??)
   - Added sms/debug_phone option (alec)
   - Added SMS notifications from helpdesk (alec)
   - BTS#0000843: Support SMS messages up to 459 chars using smscenter setvice (alec)
+  - Force names of multicolumn unique constraints in PostgreSQL (alec)
 
 version 1.11.11 Bray (2011-01-17)
 

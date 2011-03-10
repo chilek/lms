@@ -35,7 +35,7 @@ CREATE TABLE docrights (
     doctype     integer         DEFAULT 0 NOT NULL,
     rights      integer         DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
-    UNIQUE (userid, doctype)
+    CONSTRAINT docrights_userid_key UNIQUE (userid, doctype)
 );
 
 ");

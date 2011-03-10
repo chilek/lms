@@ -34,7 +34,7 @@ $DB->Execute("
 		nodeid		integer		NOT NULL
 			REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
 		PRIMARY KEY (id),
-		UNIQUE (mac, nodeid)
+		CONSTRAINT macs_mac_key UNIQUE (mac, nodeid)
 	);
 
 	INSERT INTO macs (mac, nodeid) 
