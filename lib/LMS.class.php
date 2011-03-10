@@ -282,34 +282,40 @@ class LMS
 		return $userslist;
 	}
 
-	function GetUserIDByLogin($login) 
+	function GetUserIDByLogin($login)
 	{
 		return $this->DB->GetOne('SELECT id FROM users WHERE login=?', array($login));
 	}
 
-	function UserAdd($useradd) 
+	function UserAdd($user)
 	{
-		if($this->DB->Execute('INSERT INTO users (login, name, email, passwd, rights, 
-				hosts, position) VALUES (?, ?, ?, ?, ?, ?, ?)', 
-				array($useradd['login'], 
-					$useradd['name'], 
-					$useradd['email'], 
-					crypt($useradd['password']),
-					$useradd['rights'], 
-					$useradd['hosts'],
-					$useradd['position']
+		if($this->DB->Execute('INSERT INTO users (login, name, email, passwd, rights,
+				hosts, position, ntype, phone)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				array($user['login'],
+					$user['name'],
+					$user['email'],
+					crypt($user['password']),
+					$user['rights'],
+					$user['hosts'],
+					$user['position'],
+					!empty($user['ntype']) ? $user['ntype'] : null,
+					!empty($user['phone']) ? $user['phone'] : null,
 		)))
-			return $this->DB->GetOne('SELECT id FROM users WHERE login=?', array($useradd['login']));
+			return $this->DB->GetOne('SELECT id FROM users WHERE login=?', array($user['login']));
 		else
 			return FALSE;
 	}
 
-	function UserDelete($id) 
+	function UserDelete($id)
 	{
-		return $this->DB->Execute('UPDATE users SET deleted=1 WHERE id=?', array($id));
+	    if ($this->DB->Execute('UPDATE users SET deleted=1 WHERE id=?', array($id))) {
+	        $this->cache['users'][$id]['deleted'] = 1;
+		    return true;
+	    }
 	}
 
-	function UserExists($id) 
+	function UserExists($id)
 	{
 		switch($this->DB->GetOne('SELECT deleted FROM users WHERE id=?', array($id)))
 		{
@@ -326,12 +332,12 @@ class LMS
 		}
 	}
 
-	function GetUserInfo($id) // zwraca pe�ne info o podanym userie
+	function GetUserInfo($id)
 	{
-		if($userinfo = $this->DB->GetRow('SELECT id, login, name, email, hosts, lastlogindate, 
-				lastloginip, failedlogindate, failedloginip, deleted, position 
-				FROM users WHERE id=?', array($id)))
+		if($userinfo = $this->DB->GetRow('SELECT * FROM users WHERE id = ?', array($id)))
 		{
+			$this->cache['users'][$id] = $userinfo;
+
 			if($userinfo['id']==$this->AUTH->id)
 			{
 				$userinfo['lastlogindate'] = $this->AUTH->last;
@@ -367,23 +373,27 @@ class LMS
 		return $userinfo;
 	}
 
-	function UserUpdate($userinfo) 
+	function UserUpdate($user)
 	{
-		return $this->DB->Execute('UPDATE users SET login=?, name=?, email=?, rights=?, 
-				hosts=?, position=? WHERE id=?', 
-				array($userinfo['login'],
-					$userinfo['name'],
-					$userinfo['email'],
-					$userinfo['rights'],
-					$userinfo['hosts'],
-					$userinfo['position'],
-					$userinfo['id']
+		return $this->DB->Execute('UPDATE users SET login=?, name=?, email=?, rights=?,
+				hosts=?, position=?, ntype=?, phone=? WHERE id=?',
+				array($user['login'],
+					$user['name'],
+					$user['email'],
+					$user['rights'],
+					$user['hosts'],
+					$user['position'],
+					!empty($user['ntype']) ? $user['ntype'] : null,
+					!empty($user['phone']) ? $user['phone'] : null,
+					$user['id']
 				));
 	}
 
 	function GetUserRights($id)
 	{
-		$mask = $this->DB->GetOne('SELECT rights FROM users WHERE id = ?', array($id));
+		if (!($mask = $this->GetCache('users', $id, 'rights'))) {
+    		$mask = $this->DB->GetOne('SELECT rights FROM users WHERE id = ?', array($id));
+        }
 
 		$len = strlen($mask);
 		$bin = '';
@@ -4085,6 +4095,11 @@ class LMS
 		$headers['Mime-Version'] = '1.0';
 		$headers['Subject'] = qp_encode($headers['Subject']);
 
+        if (!empty($this->CONFIG['mail']['debug_email'])) {
+            $recipients = $this->CONFIG['mail']['debug_email'];
+            $headers['To'] = '<'.$recipients.'>';
+        }
+
 		if (empty($headers['Date']))
 			$headers['Date'] = date('r');
 
@@ -4126,6 +4141,16 @@ class LMS
 
 	function SendSMS($number, $message, $messageid=0)
 	{
+        $msg_len = mb_strlen($message);
+
+        if (!$msg_len) {
+            return trans('SMS message is empty!');
+        }
+
+        if (!empty($this->CONFIG['sms']['debug_phone'])) {
+            $number = $this->CONFIG['sms']['debug_phone'];
+        }
+
 		$prefix = !empty($this->CONFIG['sms']['prefix']) ? $this->CONFIG['sms']['prefix'] : '';
 		$number = preg_replace('/[^0-9]/', '', $number);
 		$number = preg_replace('/^0+/', '', $number);
@@ -4133,6 +4158,11 @@ class LMS
         // add prefix to the number if needed
 		if ($prefix && substr($number, 0, strlen($prefix)) != $prefix)
 			$number = $prefix . $number;
+
+        // message ID must be unique
+        if (!$messageid) {
+            $messageid = '0.'.time();
+        }
 
         $data = array(
             'number'    => $number,
@@ -4166,8 +4196,13 @@ class LMS
 				else
 					$from = $this->CONFIG['sms']['from'];
 
-				if(strlen($message) > 159 || strlen($message) == 0)
+				if ($msg_len < 160)
+                    $type_sms = 'sms';
+                else if ($msg_len <= 459)
+                    $type_sms = 'concat';
+                else
 					return trans('SMS Message too long!');
+
 				if(strlen($number) > 16 || strlen($number) < 4)
 					return trans('Wrong phone number format!');
 
@@ -4177,7 +4212,7 @@ class LMS
 				$args = array (
 					'user'      => $this->CONFIG['sms']['username'],
 					'pass'      => $this->CONFIG['sms']['password'],
-					'type'      => 'sms',
+					'type'      => $type_sms,
 					'number'    => $number,
 					'text'      => $message,
 					'from'      => $from

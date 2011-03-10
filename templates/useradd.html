@@ -9,7 +9,7 @@
 			<IMG SRC="img/pass.gif" ALT=""> <B>{t}Login:{/t}</B>
 		</TD>
 		<TD CLASS="FRIGHTU" WIDTH="99%">
-			<INPUT TYPE="TEXT" NAME="useradd[login]" VALUE="{$useradd.login}" {tip trigger="login" bold=1}>
+			<INPUT TYPE="TEXT" NAME="useradd[login]" VALUE="{$useradd.login}" {tip text="Enter user login" trigger="login" bold=1}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -17,7 +17,7 @@
 			<IMG SRC="img/users.gif" ALT=""> <B>{t}First/last name:{/t}</B>
 		</TD>
 		<TD CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" NAME="useradd[name]" VALUE="{$useradd.name}" SIZE="40" {tip trigger="name"}>
+			<INPUT TYPE="TEXT" NAME="useradd[name]" VALUE="{$useradd.name}" SIZE="40" {tip text="Enter user name" trigger="name"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -25,7 +25,7 @@
 			<IMG SRC="img/info.gif" ALT=""> <B>{t}Position:{/t}</B>
 		</TD>
 		<TD CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" NAME="useradd[position]" VALUE="{$useradd.position}" SIZE="40" {tip trigger="position"}>
+			<INPUT TYPE="TEXT" NAME="useradd[position]" VALUE="{$useradd.position}" SIZE="40" {tip text="Enter user position (optional)" trigger="position"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -33,7 +33,24 @@
 			<IMG SRC="img/mail.gif" ALT=""> <B>{t}E-mail:{/t}</B>
 		</TD>
 		<TD CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" NAME="useradd[email]" VALUE="{$useradd.email}" SIZE="40" {tip trigger="email"}>
+			<INPUT TYPE="TEXT" NAME="useradd[email]" VALUE="{$useradd.email}" SIZE="40" {tip text="Enter e-mail address (optional)" trigger="email"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="FLEFT" NOWRAP>
+			<IMG SRC="img/sms.gif" ALT=""> <B>{t}Phone:{/t}</B>
+		</TD>
+		<TD CLASS="FRIGHT">
+			<INPUT TYPE="TEXT" NAME="useradd[phone]" VALUE="{$useradd.phone}" SIZE="40" {tip text="Enter phone number for SMS notification (optional)" trigger="phone"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="FLEFT" NOWRAP>
+			<IMG SRC="img/options.gif" ALT=""> <B>{t}Notification:{/t}</B>
+		</TD>
+		<TD CLASS="FRIGHT">
+			<INPUT TYPE="checkbox" NAME="useradd[ntype][]" VALUE="{$smarty.const.MSG_MAIL}" ID="ntypemail"{if ($useradd.ntype & $smarty.const.MSG_MAIL)} checked{/if}><A HREF="javascript:checkElement('ntypemail')">{t}email{/t}</A>
+			<INPUT TYPE="checkbox" NAME="useradd[ntype][]" VALUE="{$smarty.const.MSG_SMS}" ID="ntypesms"{if ($useradd.ntype & $smarty.const.MSG_SMS)} checked{/if}><A HREF="javascript:checkElement('ntypesms')">{t}sms{/t}</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -41,7 +58,7 @@
 			<IMG SRC="img/pass.gif" ALT=""> <B>{t}Password:{/t}</B>
 		</TD>
 		<TD CLASS="FRIGHT">
-			<INPUT TYPE="PASSWORD" NAME="useradd[password]" {tip trigger="password"}>
+			<INPUT TYPE="PASSWORD" NAME="useradd[password]" {tip text="Enter password" trigger="password"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -49,7 +66,7 @@
 			<IMG SRC="img/pass.gif" ALT=""> <B>{t}Repeat password:{/t}</B>
 		</TD>
 		<TD CLASS="FRIGHT">
-			<INPUT TYPE="PASSWORD" NAME="useradd[confirm]" {tip trigger="password"}>
+			<INPUT TYPE="PASSWORD" NAME="useradd[confirm]" {tip text="Confirm password" trigger="password"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -57,7 +74,7 @@
 			<IMG SRC="img/ip.gif" ALT=""> <B>{t}Allowed hosts:{/t}</B>
 		</TD>
 		<TD CLASS="fright" NOWRAP>
-			<INPUT TYPE="TEXT" SIZE="40" NAME="useradd[hosts]" VALUE="{$useradd.hosts}" {tip text="Enter coma separated list of hosts or networks" trigger="hosts"}>
+			<INPUT TYPE="TEXT" SIZE="40" NAME="useradd[hosts]" VALUE="{$useradd.hosts}" {tip text="Enter comma-separated list of hosts or networks (optional)" trigger="hosts"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -79,7 +96,7 @@
 			{/if}
 			{/section}
 			</td>
-			</tr></table>			
+			</tr></table>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

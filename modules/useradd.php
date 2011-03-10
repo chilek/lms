@@ -29,23 +29,22 @@ $useradd = isset($_POST['useradd']) ? $_POST['useradd'] : array();
 
 if(sizeof($useradd))
 {
-	
-	
 	foreach($useradd as $key => $value)
-		$useradd[$key] = trim($value);
-	
+	    if (!is_array($value))
+		    $useradd[$key] = trim($value);
+
 	if($useradd['login']=='' && $useradd['name']=='' && $useradd['password']=='' && $useradd['confirm']=='')
 	{
 		$SESSION->redirect('?m=useradd');
 	}
-	
+
 	if($useradd['login']=='')
 		$error['login'] = trans('Login can\'t be empty!');
 	elseif(!preg_match('/^[a-z0-9.-_]+$/i', $useradd['login']))
 		$error['login'] = trans('Login contains forbidden characters!');
 	elseif($LMS->GetUserIDByLogin($useradd['login']))
 		$error['login'] = trans('User with specified login exists or that login was used in the past!');
-	
+
 	if($useradd['email']!='' && !check_email($useradd['email']))
 		$error['email'] = trans('E-mail isn\'t correct!');
 
@@ -57,11 +56,10 @@ if(sizeof($useradd))
 	elseif($useradd['password']!=$useradd['confirm'])
 		$error['password'] = trans('Passwords does not match!');
 
-	// zróbmy maskê ACL...
-
+	// ACL mask...
 	$mask = '';
 	$outmask = '';
-	
+
 	for($i=0;$i<256;$i++)
 		$mask .= '0';
 
@@ -75,15 +73,19 @@ if(sizeof($useradd))
 
 	$useradd['rights'] = preg_replace('/^[0]*(.*)$/','\1',$outmask);
 
+    if (!empty($useradd['ntype'])) {
+        $useradd['ntype'] = array_sum(array_map('intval', $useradd['ntype']));
+    }
+
 	if(!$error)
 	{
 		$id = $LMS->UserAdd($useradd);
-		
+
                 if(isset($_POST['selected']))
                         foreach($_POST['selected'] as $idx => $name)
                                 $DB->Execute('INSERT INTO excludedgroups (customergroupid, userid)
                                             VALUES(?, ?)', array($idx, $id));
-		
+
 		$SESSION->redirect('?m=userinfo&id='.$id);
 	}
 	elseif(isset($_POST['selected']))
@@ -92,6 +94,9 @@ if(sizeof($useradd))
 	                $useradd['selected'][$idx]['id'] = $idx;
 	                $useradd['selected'][$idx]['name'] = $name;
 	        }
+}
+else {
+    $useradd['ntype'] = MSG_MAIL | MSG_SMS;
 }
 
 foreach($access['table'] as $idx => $row)

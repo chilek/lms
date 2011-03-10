@@ -84,11 +84,13 @@
                     <member>id - identyfikator</member>
                     <member>login - login</member>
                     <member>name - nazwa (nazwisko i imiê)</member>
-                    <member>email - adres admina</member>
-                    <member>position - nazwa stanowiska admina</member>
+                    <member>email - adres e-mail u¿ytkownika</member>
+                    <member>phone - numer telefonu u¿ytkownika</member>
+                    <member>position - nazwa stanowiska</member>
                     <member>rights - prawa dostêpu</member>
                     <member>hosts - lista hostów z prawem do logowania</member>
                     <member>passwd - has³o logowania</member>
+                    <member>ntype - obs³ugiwane typy powiadomieñ</member>
                     <member>lastlogindate - data ostatniego logowania</member>
                     <member>lastloginip - adres IP, z którego nast±pi³o ostatnie logowanie</member>
                     <member>failedlogindate - data ostatniej nieudanej próby logowania</member>

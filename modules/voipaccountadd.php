@@ -116,7 +116,7 @@ if($customerid = $voipaccountdata['ownerid'])
 {
 	include(MODULES_DIR.'/customer.inc.php');
 }
-																				
+
 $SMARTY->assign('customers', $customers);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('voipaccountdata', $voipaccountdata);

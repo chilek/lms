@@ -22,6 +22,10 @@ version ? (????-??-??)
   - Added send_sms_before plugin hook (alec)
   - Don't send deplicated notifications to the users when they are using
     the same e-mail address (alec)
+  - Removed userpanel/debug_email option, use mail/debug_email instead (alec)
+  - Added sms/debug_phone option (alec)
+  - Added SMS notifications from helpdesk (alec)
+  - BTS#0000843: Support SMS messages up to 459 chars using smscenter setvice (alec)
 
 version 1.11.11 Bray (2011-01-17)
 

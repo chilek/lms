@@ -143,9 +143,6 @@ if(isset($_POST['message']))
 				&& ($user['email'] || $queue['email'])
 				&& $message['destination'] != $queue['email'])
 			{
-				if(!empty($CONFIG['mail']['debug_email']))
-					$message['destination'] = $CONFIG['mail']['debug_email'];
-
 				$recipients = $message['destination'];
 				$message['mailfrom'] = $user['email'] ? $user['email'] : $queue['email'];
 
@@ -171,7 +168,7 @@ if(isset($_POST['message']))
 	
 				$LMS->SendMail($recipients, $headers, $body, $files);
 			}
-			else 
+			else
 			{
 				$message['messageid'] = '';
 				if($message['customerid'] || $message['userid'])
@@ -186,8 +183,6 @@ if(isset($_POST['message']))
 		{
 			($message['destination']!='' ? $addmsg = 1 : $addmsg = 0);
 			
-			if(!empty($CONFIG['mail']['debug_email']))
-				$message['destination'] = $CONFIG['mail']['debug_email'];
 			if($message['destination']=='') 
 				$message['destination'] = $queue['email'];
 			$recipients = $message['destination'];
@@ -228,6 +223,18 @@ if(isset($_POST['message']))
 				MessageAdd($message, $headers, $_FILES['file']);
 		}
 
+		// setting status and the ticket owner
+		if (isset($message['state']))
+            $LMS->SetTicketState($message['ticketid'], RT_RESOLVED);
+		else if (!$DB->GetOne('SELECT state FROM rttickets WHERE id = ?', array($message['ticketid'])))
+		    $LMS->SetTicketState($message['ticketid'], RT_OPEN);
+
+		$DB->Execute('UPDATE rttickets SET cause = ? WHERE id = ?', array($message['cause'], $message['ticketid']));
+
+		if(!$DB->GetOne('SELECT owner FROM rttickets WHERE id = ?', array($message['ticketid'])))
+			$DB->Execute('UPDATE rttickets SET owner = ? WHERE id = ?', array($AUTH->id, $message['ticketid']));
+
+        // Users notification
 		if(isset($message['notify']) && ($user['email'] || $queue['email']))
 		{
 			$mailfname = '';
@@ -245,18 +252,19 @@ if(isset($_POST['message']))
 			}
 
 			$mailfrom = $user['email'] ? $user['email'] : $queue['email'];
-				
-		        $headers['From'] = $mailfname.' <'.$mailfrom.'>';
+
+	        $headers['From'] = $mailfname.' <'.$mailfrom.'>';
 			$headers['Subject'] = sprintf("[RT#%06d] %s", $message['ticketid'], $DB->GetOne('SELECT subject FROM rttickets WHERE id = ?', array($message['ticketid'])));
 			$headers['Reply-To'] = $headers['From'];
 
+            $sms_body = $headers['Subject']."\n".$message['body'];
 			$body = $message['body']."\n\nhttp"
 				.(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
 				.$_SERVER['HTTP_HOST']
 				.substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 				.'?m=rtticketview&id='.$message['ticketid'];
 
-			if(chkconfig($CONFIG['phpui']['helpdesk_customerinfo']) 
+			if(chkconfig($CONFIG['phpui']['helpdesk_customerinfo'])
 				&& ($cid = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($message['ticketid']))))
 			{
 				$info = $DB->GetRow('SELECT '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
@@ -270,37 +278,42 @@ if(isset($_POST['message']))
 				$body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
 				$body .= trans('Phone:').' '.$info['phone']."\n";
 				$body .= trans('E-mail:').' '.$info['email'];
+
+                $sms_body .= "\n";
+                $sms_body .= trans('Customer:').' '.$info['customername'];
+                $sms_body .= ' '.sprintf('(%04d)', $ticket['customerid']).'. ';
+                $sms_body .= $info['address'].', '.$info['zip'].' '.$info['city'].'. ';
+                $sms_body .= $info['phone'];
 			}
 
+            // send email
 			if($recipients = $DB->GetCol('SELECT DISTINCT email
 			        FROM users, rtrights 
 					WHERE users.id=userid AND queueid = ? AND email != \'\' 
-						AND (rtrights.rights & 8) = 8 AND users.id != ? AND deleted = 0',
-					array($queue['id'], $AUTH->id)))
-			{
-				foreach($recipients as $email)
-				{
-					if(!empty($CONFIG['mail']['debug_email']))
-						$recip = $CONFIG['mail']['debug_email'];
-					else
-						$recip = $email;
-					$headers['To'] = '<'.$recip.'>';
+						AND (rtrights.rights & 8) = 8 AND users.id != ?
+						AND deleted = 0 AND (ntype & ?) = ?',
+					array($queue['id'], $AUTH->id, MSG_MAIL, MSG_MAIL))
+			) {
+				foreach($recipients as $email) {
+					$headers['To'] = '<'.$email.'>';
 
-					$LMS->SendMail($recip, $headers, $body);
+					$LMS->SendMail($email, $headers, $body);
+				}
+			}
+
+            // send sms
+			if(!empty($CONFIG['sms']['service']) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
+			        FROM users, rtrights
+					WHERE users.id=userid AND queueid = ? AND phone != \'\'
+						AND (rtrights.rights & 8) = 8 AND users.id != ?
+						AND deleted = 0 AND (ntype & ?) = ?',
+					array($queue['id'], $AUTH->id, MSG_SMS, MSG_SMS)))
+			) {
+				foreach($recipients as $phone) {
+					$LMS->SendSMS($phone, $sms_body);
 				}
 			}
 		}
-
-		// setting status and ticket owner
-		if(isset($message['state']))
-                        $LMS->SetTicketState($message['ticketid'], RT_RESOLVED);
-		elseif(!$DB->GetOne('SELECT state FROM rttickets WHERE id = ?', array($message['ticketid'])))
-		        $LMS->SetTicketState($message['ticketid'], RT_OPEN);
-		
-		$DB->Execute('UPDATE rttickets SET cause = ? WHERE id = ?', array($message['cause'], $message['ticketid']));
-
-		if(!$DB->GetOne('SELECT owner FROM rttickets WHERE id = ?', array($message['ticketid'])))
-			$DB->Execute('UPDATE rttickets SET owner = ? WHERE id = ?', array($AUTH->id, $message['ticketid']));
 
 		$SESSION->redirect('?m=rtticketview&id='.$message['ticketid']);
 	}

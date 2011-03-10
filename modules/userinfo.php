@@ -24,18 +24,26 @@
  *  $Id$
  */
 
-if(!$LMS->UserExists($_GET['id']))
+$userinfo = $LMS->GetUserInfo($_GET['id']);
+
+if (!$userinfo || $userinfo['deleted'])
 {
 	$SESSION->redirect('?m=userlist');
 }
-
-$userinfo = $LMS->GetUserInfo($_GET['id']);
-$layout['pagetitle'] = trans('User Info: $0', $userinfo['login']);
 
 $rights = $LMS->GetUserRights($_GET['id']);
 foreach($rights as $right)
 	if($access['table'][$right]['name'])
 		$accesslist[] = $access['table'][$right]['name'];
+
+$ntype = array();
+if ($userinfo['ntype'] & MSG_MAIL)
+    $ntype[] = trans('email');
+if ($userinfo['ntype'] & MSG_SMS)
+    $ntype[] = trans('sms');
+$userinfo['ntype'] = implode(', ', $ntype);
+
+$layout['pagetitle'] = trans('User Info: $0', $userinfo['login']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

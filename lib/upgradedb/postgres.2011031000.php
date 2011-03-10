@@ -5,8 +5,6 @@
  *
  *  (C) Copyright 2001-2011 LMS Developers
  *
- *  Please, see the doc/AUTHORS for more information about authors!
- *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
  *  published by the Free Software Foundation.
@@ -21,20 +19,16 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id$
  */
 
-$customerid = intval($_GET['id']);
+$DB->BeginTrans();
 
-include(MODULES_DIR.'/customer.inc.php');
+$DB->Execute("ALTER TABLE users ADD phone varchar(32) DEFAULT NULL");
+$DB->Execute("ALTER TABLE users ADD ntype smallint DEFAULT NULL");
+$DB->Execute("UPDATE users SET ntype = 1"); // MSG_MAIL
 
-if($customerinfo['cutoffstop'] > mktime(0,0,0))
-        $customerinfo['cutoffstopnum'] = floor(($customerinfo['cutoffstop'] - mktime(23,59,59))/86400);
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011031000', 'dbversion'));
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-
-$layout['pagetitle'] = trans('Customer Info: $0',$customerinfo['customername']);
-
-$SMARTY->display('customerinfo.html');
+$DB->CommitTrans();
 
 ?>

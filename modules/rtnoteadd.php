@@ -34,13 +34,13 @@ if(isset($_GET['ticketid']))
 	        $SESSION->close();
 	        die;
 	}
-	
+
 	$note = $DB->GetRow('SELECT id AS ticketid, state, cause FROM rttickets WHERE id = ?', array($note['ticketid']));
 }
 elseif(isset($_POST['note']))
 {
 	$note = $_POST['note'];
-	
+
 	if($note['body'] == '')
 		$error['body'] = trans('Note body not specified!');
 
@@ -58,13 +58,13 @@ elseif(isset($_POST['note']))
 		$LMS->SetTicketState($note['ticketid'], $note['state']);
 
 		$DB->Execute('UPDATE rttickets SET cause = ? WHERE id = ?', array($note['cause'], $note['ticketid']));
-		
+
 		if(isset($note['notify']))
 		{
 			$user = $LMS->GetUserInfo($AUTH->id);
 			$queue = $LMS->GetQueueByTicketId($note['ticketid']);
 			$mailfname = '';
-			
+
 			if(!empty($CONFIG['phpui']['helpdesk_sender_name']))
 			{
 				$mailfname = $CONFIG['phpui']['helpdesk_sender_name'];
@@ -73,16 +73,17 @@ elseif(isset($_POST['note']))
 					$mailfname = $queue['name'];
 				elseif($mailfname == 'user')
 					$mailfname = $user['name'];
-				
+
 				$mailfname = '"'.$mailfname.'"';
 			}
 
 			$mailfrom = $user['email'] ? $user['email'] : $queue['email'];
-				
-		        $headers['From'] = $mailfname.' <'.$mailfrom.'>';
+
+	        $headers['From'] = $mailfname.' <'.$mailfrom.'>';
 			$headers['Subject'] = sprintf("[RT#%06d] %s", $note['ticketid'], $DB->GetOne('SELECT subject FROM rttickets WHERE id = ?', array($note['ticketid'])));
 			$headers['Reply-To'] = $headers['From'];
 
+            $sms_body = $headers['Subject']."\n".$note['body'];
 			$body = $note['body']."\n\nhttp"
 				.(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
 				.$_SERVER['HTTP_HOST']
@@ -91,7 +92,7 @@ elseif(isset($_POST['note']))
 
 			if(chkconfig($CONFIG['phpui']['helpdesk_customerinfo']) 
 				&& ($cid = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($note['ticketid']))))
-			{	
+			{
 				$info = $DB->GetRow('SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
 						email, address, zip, city, (SELECT phone FROM customercontacts 
 							WHERE customerid = customers.id ORDER BY id LIMIT 1) AS phone
@@ -102,23 +103,39 @@ elseif(isset($_POST['note']))
 				$body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
 				$body .= trans('Phone:').' '.$info['phone']."\n";
 				$body .= trans('E-mail:').' '.$info['email'];
+
+				$sms_body .= "\n";
+                $sms_body .= trans('Customer:').' '.$info['customername'];
+                $sms_body .= ' '.sprintf('(%04d)', $ticket['customerid']).'. ';
+                $sms_body .= $info['address'].', '.$info['zip'].' '.$info['city'].'. ';
+                $sms_body .= $info['phone'];
 			}
 
+            // send email
 			if($recipients = $DB->GetCol('SELECT DISTINCT email
 			        FROM users, rtrights
 					WHERE users.id=userid AND queueid = ? AND email != \'\'
-						AND (rtrights.rights & 8) = 8 AND users.id != ? AND deleted = 0',
-					array($queue['id'], $AUTH->id)))
-			{
-				foreach($recipients as $email)
-				{
-					if(!empty($CONFIG['mail']['debug_email']))
-						$recip = $CONFIG['mail']['debug_email'];
-					else
-						$recip = $email;
-					$headers['To'] = '<'.$recip.'>';
+						AND (rtrights.rights & 8) = 8 AND users.id != ?
+						AND deleted = 0 AND (ntype & ?) = ?',
+					array($queue['id'], $AUTH->id, MSG_MAIL, MSG_MAIL))
+			) {
+				foreach ($recipients as $email) {
+					$headers['To'] = '<'.$email.'>';
 
-					$LMS->SendMail($recip, $headers, $body);
+					$LMS->SendMail($email, $headers, $body);
+				}
+			}
+
+            // send sms
+			if (!empty($CONFIG['sms']['service']) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
+			        FROM users, rtrights
+					WHERE users.id=userid AND queueid = ? AND phone != \'\'
+						AND (rtrights.rights & 8) = 8 AND users.id != ?
+						AND deleted = 0 AND (ntype & ?) = ?',
+					array($queue['id'], $AUTH->id, MSG_SMS, MSG_SMS)))
+			) {
+				foreach ($recipients as $phone) {
+					$LMS->SendSMS($phone, $sms_body);
 				}
 			}
 		}

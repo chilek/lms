@@ -123,7 +123,7 @@ if(isset($_POST['ticket']))
 				{
 					$mailfname = $user['name'];
 				}
-				
+
 				$mailfname = '"'.$mailfname.'"';
 			}
 
@@ -135,6 +135,7 @@ if(isset($_POST['ticket']))
 
 			$body = $ticket['messages'][0]['body'];
 
+            $sms_body = $headers['Subject']."\n".$body;
 			$body .= "\n\nhttp".(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
 				.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 				.'?m=rtticketview&id='.$ticket['ticketid'];
@@ -151,30 +152,56 @@ if(isset($_POST['ticket']))
 				$body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
 				$body .= trans('Phone:').' '.$info['phone']."\n";
 				$body .= trans('E-mail:').' '.$info['email'];
+
+				$sms_body .= "\n";
+                $sms_body .= trans('Customer:').' '.$info['customername'];
+                $sms_body .= ' '.sprintf('(%04d)', $ticket['customerid']).'. ';
+                $sms_body .= $info['address'].', '.$info['zip'].' '.$info['city'].'. ';
+                $sms_body .= $info['phone'];
 			}
 
+            // send email
 			if($recipients = $DB->GetCol('SELECT DISTINCT email
 			        FROM users, rtrights
 					WHERE users.id=userid AND queueid = ? AND email != \'\'
-						AND (rtrights.rights & 8) = 8 AND users.id != ? AND deleted = 0',
-					array($ticketedit['queueid'], $AUTH->id)))
-			{
+						AND (rtrights.rights & 8) = 8 AND users.id != ?
+						AND deleted = 0 AND (ntype & ?) = ?',
+					array($ticketedit['queueid'], $AUTH->id, MSG_MAIL, MSG_MAIL))
+			) {
 				$oldrecipients = $DB->GetCol('SELECT DISTINCT email
 				    FROM users, rtrights
 					WHERE users.id=userid AND queueid = ? AND email != \'\'
-						AND (rtrights.rights & 8) = 8 AND deleted = 0',
-					array($ticket['queueid']));
+						AND (rtrights.rights & 8) = 8 AND deleted = 0
+						AND (ntype & ?) = ?',
+					array($ticket['queueid'], MSG_MAIL, MSG_MAIL));
 
-				foreach($recipients as $email)
-				{
+				foreach($recipients as $email) {
 					if(in_array($email, (array)$oldrecipients)) continue;
 
-					if(!empty($CONFIG['mail']['debug_email']))
-						$recip = $CONFIG['mail']['debug_email'];
-					else
-						$recip = $email;
-					$headers['To'] = '<'.$recip.'>';
-					$LMS->SendMail($recip, $headers, $body);
+					$headers['To'] = '<'.$email.'>';
+					$LMS->SendMail($email, $headers, $body);
+				}
+			}
+
+            // send sms
+			if (!empty($CONFIG['sms']['service']) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
+			        FROM users, rtrights
+					WHERE users.id = userid AND queueid = ? AND phone != \'\'
+						AND (rtrights.rights & 8) = 8 AND users.id != ?
+						AND deleted = 0 AND (ntype & ?) = ?',
+					array($ticketedit['queueid'], $AUTH->id, MSG_SMS, MSG_SMS)))
+			) {
+				$oldrecipients = $DB->GetCol('SELECT DISTINCT phone
+				    FROM users, rtrights
+					WHERE users.id=userid AND queueid = ? AND phone != \'\'
+						AND (rtrights.rights & 8) = 8 AND deleted = 0
+						AND (ntype & ?) = ?',
+					array($ticket['queueid'], MSG_SMS, MSG_SMS));
+
+				foreach ($recipients as $phone) {
+					if (in_array($phone, (array)$oldrecipients)) continue;
+
+					$LMS->SendSMS($phone, $sms_body);
 				}
 			}
 		}

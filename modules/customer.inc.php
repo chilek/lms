@@ -27,7 +27,14 @@
 if($layout['module'] != 'customeredit')
 {
 	$customerinfo = $LMS->GetCustomer($customerid);
+
+    if(!$customerinfo || $customerinfo['deleted'])
+    {
+        $SESSION->redirect('?m=customerlist');
+    }
+
 	$SMARTY->assign_by_ref('customerinfo', $customerinfo);
+
 }
 
 $expired = !empty($_GET['expired']) ? true : false;

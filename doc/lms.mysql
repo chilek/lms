@@ -93,19 +93,21 @@ DROP TABLE IF EXISTS supermasters;
 #
 
 CREATE TABLE users (
-  id int(11) NOT NULL auto_increment,
-  login varchar(32) NOT NULL DEFAULT '',
-  name varchar(64) NOT NULL DEFAULT '',
-  email varchar(255) NOT NULL DEFAULT '',
+  id int(11)            NOT NULL auto_increment,
+  login varchar(32)     NOT NULL DEFAULT '',
+  name varchar(64)      NOT NULL DEFAULT '',
+  email varchar(255)    NOT NULL DEFAULT '',
+  phone varchar(32)     DEFAULT NULL,
   position varchar(255) NOT NULL DEFAULT '',
-  rights varchar(64) NOT NULL DEFAULT '',
-  hosts varchar(255) NOT NULL DEFAULT '',
-  passwd varchar(255) NOT NULL DEFAULT '',
+  rights varchar(64)    NOT NULL DEFAULT '',
+  hosts varchar(255)    NOT NULL DEFAULT '',
+  passwd varchar(255)   NOT NULL DEFAULT '',
+  ntype smallint        DEFAULT NULL,
   lastlogindate int(11) NOT NULL DEFAULT '0',
   lastloginip varchar(16) NOT NULL DEFAULT '',
   failedlogindate int(11) NOT NULL DEFAULT '0',
   failedloginip varchar(16) NOT NULL DEFAULT '',
-  deleted tinyint(1) NOT NULL DEFAULT '0',
+  deleted tinyint(1)    NOT NULL DEFAULT '0',
   PRIMARY KEY  (id),
   UNIQUE KEY login (login)
 ) ENGINE=InnoDB;
@@ -1477,4 +1479,4 @@ CREATE TABLE supermasters (
 
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2011030700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2011031000');

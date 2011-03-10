@@ -1,7 +1,7 @@
-/* $Id$ */ 
+/* $Id$ */
 
-/* -------------------------------------------------------- 
-  Structure of table "users" 
+/* --------------------------------------------------------
+  Structure of table "users"
 -------------------------------------------------------- */
 DROP SEQUENCE users_id_seq;
 CREATE SEQUENCE users_id_seq;
@@ -11,10 +11,12 @@ CREATE TABLE users (
 	login varchar(32) 	DEFAULT '' NOT NULL,
 	name varchar(64) 	DEFAULT '' NOT NULL,
 	email varchar(255) 	DEFAULT '' NOT NULL,
+	phone varchar(32)   DEFAULT NULL,
 	position varchar(255) 	DEFAULT '' NOT NULL,
 	rights varchar(64) 	DEFAULT '' NOT NULL,
 	hosts varchar(255) 	DEFAULT '' NOT NULL,
 	passwd varchar(255) 	DEFAULT '' NOT NULL,
+	ntype smallint      DEFAULT NULL,
 	lastlogindate integer 	DEFAULT 0  NOT NULL,
 	lastloginip varchar(16) DEFAULT '' NOT NULL,
 	failedlogindate integer DEFAULT 0  NOT NULL,
@@ -1574,4 +1576,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2011030700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2011031000');

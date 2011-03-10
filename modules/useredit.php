@@ -35,9 +35,10 @@ if($userinfo)
 {
 	$acl = $_POST['acl'];
 	$userinfo['id'] = $_GET['id'];
-	
+
 	foreach($userinfo as $key => $value)
-		$userinfo[$key] = trim($value);
+	    if (!is_array($value))
+    		$userinfo[$key] = trim($value);
 
 	if($userinfo['login'] == '')
 		$error['login'] = trans('Login can\'t be empty!');
@@ -51,12 +52,11 @@ if($userinfo)
 
 	if($userinfo['email']!='' && !check_email($userinfo['email']))
 		$error['email'] = trans('E-mail isn\'t correct!');
-				
-	// let's make an ACL mask...
 
+	// let's make an ACL mask...
 	$mask = '';
 	$outmask = '';
-	
+
 	for($i=0;$i<256;$i++)
 		$mask .= '0';
 
@@ -69,11 +69,15 @@ if($userinfo)
 
 	$userinfo['rights'] = preg_replace('/^[0]*(.*)$/','\1',$outmask);
 
+    if (!empty($userinfo['ntype'])) {
+        $userinfo['ntype'] = array_sum(array_map('intval', $userinfo['ntype']));
+    }
+
 	if(!$error)
 	{
 		$LMS->UserUpdate($userinfo);
-	
-		$DB->Execute('DELETE FROM excludedgroups WHERE userid = ?', array($userinfo['id']));	
+
+		$DB->Execute('DELETE FROM excludedgroups WHERE userid = ?', array($userinfo['id']));
 		if(isset($_POST['selected']))
 		        foreach($_POST['selected'] as $idx => $name)
 				$DB->Execute('INSERT INTO excludedgroups (customergroupid, userid)
@@ -98,7 +102,7 @@ if($userinfo)
 			$row['id'] = $idx;
 			if(isset($acl[$idx]))
 				$row['enabled'] = TRUE;
-			
+
 			$accesslist[] = $row;
 		}
 	}
@@ -106,7 +110,7 @@ if($userinfo)
 else
 {
 	$rights = $LMS->GetUserRights($_GET['id']);
-	
+
 	foreach($access['table'] as $idx => $row)
 	{
 		$row['id'] = $idx;
