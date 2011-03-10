@@ -89,11 +89,12 @@ if(isset($_POST['ticket']))
 				$mailfrom = $qemail;
 			else
 				$mailfrom =  $ticket['mailfrom'];
-				
+
 		        $headers['From'] = $mailfname.' <'.$mailfrom.'>';
 			$headers['Subject'] = sprintf("[RT#%06d] %s", $id, $ticket['subject']);
 			$headers['Reply-To'] = $headers['From'];
 
+            $sms_body = $headers['Subject']."\n".$ticket['body'];
 			$body = $ticket['body']."\n\nhttp"
 				.(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
 				.$_SERVER['HTTP_HOST']
@@ -113,23 +114,39 @@ if(isset($_POST['ticket']))
 				$body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
 				$body .= trans('Phone:').' '.$info['phone']."\n";
 				$body .= trans('E-mail:').' '.$info['email'];
+
+				$sms_body .= "\n";
+				$sms_body .= trans('Customer:').' '.$info['customername'];
+				$sms_body .= ' '.sprintf('(%04d)', $ticket['customerid']).'. ';
+				$sms_body .= $info['address'].', '.$info['zip'].' '.$info['city'].'. ';
+				$sms_body .= $info['phone'];
 			}
 
+            // send email
 			if($recipients = $DB->GetCol('SELECT DISTINCT email
 			        FROM users, rtrights
 					WHERE users.id = userid AND queueid = ? AND email != \'\'
-						AND (rtrights.rights & 8) = 8 AND deleted = 0',
-				    array($queue)))
-			{
-				foreach($recipients as $email)
-				{
-					if(!empty($CONFIG['mail']['debug_email']))
-						$recip = $CONFIG['mail']['debug_email'];
-					else
-						$recip = $email;
-					$headers['To'] = '<'.$recip.'>';
+						AND (rtrights.rights & 8) = 8 AND deleted = 0
+						AND (ntype & ?) = ?',
+				    array($queue, MSG_MAIL, MSG_MAIL))
+		    ) {
+				foreach($recipients as $email) {
+					$headers['To'] = '<'.$email.'>';
 
-					$LMS->SendMail($recip, $headers, $body);
+					$LMS->SendMail($email, $headers, $body);
+				}
+			}
+
+            // send sms
+			if (!empty($CONFIG['sms']['service']) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
+			        FROM users, rtrights
+					WHERE users.id = userid AND queueid = ? AND phone != \'\'
+						AND (rtrights.rights & 8) = 8 AND deleted = 0
+						AND (ntype & ?) = ?',
+				    array($queue, MSG_SMS, MSG_SMS)))
+		    ) {
+				foreach ($recipients as $phone) {
+					$LMS->SendSMS($phone, $sms_body);
 				}
 			}
 		}

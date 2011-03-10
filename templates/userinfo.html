@@ -30,13 +30,35 @@
 		</TD>
 	</TR>
 {/if}
+{if $userinfo.email}
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
 			<IMG SRC="img/mail.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%"><B>{t}E-mail:{/t}</B></TD>
 		<TD WIDTH="98%" CLASS="fright">
-			{if $userinfo.email}<A HREF="mailto:{$userinfo.email}">{$userinfo.email}</A>{else}-{/if}
+			<A HREF="mailto:{$userinfo.email}">{$userinfo.email}</A>
+		</TD>
+	</TR>
+{/if}
+{if $userinfo.phone}
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/sms.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%"><B>{t}Phone:{/t}</B></TD>
+		<TD WIDTH="98%" CLASS="fright">
+			{$userinfo.phone}
+		</TD>
+	</TR>
+{/if}
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/options.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%"><B>{t}Notification:{/t}</B></TD>
+		<TD WIDTH="98%" CLASS="fright">
+			{if !$userinfo.ntype}{t}none{/t}{else}{$userinfo.ntype}{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -55,7 +77,7 @@
 			<IMG SRC="img/pass.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP><B>{t}Access rights:{/t}</B></TD>
-		<TD WIDTH="98%" CLASS="fright">		
+		<TD WIDTH="98%" CLASS="fright">
 			{section name=acl loop=$accesslist}
 			<li type="square">{$accesslist[acl]}</li>
 			{/section}
@@ -66,7 +88,7 @@
 			<IMG SRC="img/group.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP><B>{t}Excluded groups:{/t}</B></TD>
-		<TD WIDTH="98%" CLASS="fright">		
+		<TD WIDTH="98%" CLASS="fright">
 			{foreach from=$excludedgroups item=item}
 			<li type="square"><a href="?m=customergroupinfo&id={$item.id}">{$item.name}</a></li>
 			{foreachelse}

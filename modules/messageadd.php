@@ -196,13 +196,13 @@ if(isset($_POST['message']))
 		else // upload errors
 			switch($_FILES['file']['error'])
 			{
-				case 1: 			
+				case 1:
 				case 2: $error['file'] = trans('File is too large.'); break;
 				case 3: $error['file'] = trans('File upload has finished prematurely.'); break;
 				case 4: $error['file'] = trans('Path to file was not specified.'); break;
 				default: $error['file'] = trans('Problem during file upload.'); break;
 			}
-	}	
+	}
 
 	if(!$error)
 	{
@@ -240,20 +240,12 @@ if(isset($_POST['message']))
 			));
 		
 		$msgid = $DB->GetLastInsertID('messages');
-		$prefix = !empty($CONFIG['sms']['prefix']) ? $CONFIG['sms']['prefix'] : '';
 
 		foreach($recipients as $key => $row)
 		{
 			if($message['type'] == MSG_MAIL)
-				$recipients[$key]['destination'] = !empty($CONFIG['mail']['debug_email']) ? $CONFIG['mail']['debug_email'] : $row['email'];
+				$recipients[$key]['destination'] = $row['email'];
 			else {
-				$number = !empty($CONFIG['mail']['debug_sms']) ? $CONFIG['mail']['debug_sms'] : $row['phone'];
-
-				$number = preg_replace('/[^0-9]/', '', $number);
-				$number = preg_replace('/^0+/', '', $number);
-				if ($prefix && substr($number, 0, strlen($prefix)) != $prefix)
-				        $number = $prefix . $number;
-
 				$recipients[$key]['destination'] = $number;
 			}
 			
@@ -281,16 +273,20 @@ if(isset($_POST['message']))
 
 			if(!empty($CONFIG['mail']['debug_email']))
 				echo '<B>'.trans('Warning! Debug mode (using address $0).',$CONFIG['mail']['debug_email']).'</B><BR>';
-			
+
 			$headers['From'] = '"'.$message['from'].'" <'.$message['sender'].'>';
 			$headers['Subject'] = $message['subject'];
 			$headers['Reply-To'] = $headers['From'];
 		}
-			
+		else {
+			if (!empty($CONFIG['sms']['debug_phone']))
+				echo '<B>'.trans('Warning! Debug mode (using phone $0).',$CONFIG['sms']['debug_phone']).'</B><BR>';
+		}
+
 		foreach($recipients as $key => $row)
 		{
 			$body = $message['body'];
-				
+
 			BodyVars($body, $row);
 			
 			if($message['type'] == MSG_MAIL)

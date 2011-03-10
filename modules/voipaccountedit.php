@@ -31,14 +31,14 @@ if(!$LMS->VoipAccountExists($_GET['id']))
 		header('Location: ?m=voipaccountlist');
 
 $voipaccountid = intval($_GET['id']);
-$customerid = $LMS->GetVoipAccountOwner($voipaccountid);
 $voipaccountinfo = $LMS->GetVoipAccount($voipaccountid);
+$customerid = $voipaccountinfo['ownerid'];
 
 if(!isset($_GET['ownerid']))
 	$SESSION->save('backto', $SESSION->get('backto') . '&ownerid='.$customerid);
 else
 	$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-							
+
 $layout['pagetitle'] = trans('Voip Account Edit: $0', $voipaccountinfo['login']);
 
 if(isset($_POST['voipaccountedit']))

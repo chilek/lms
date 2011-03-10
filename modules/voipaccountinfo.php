@@ -40,8 +40,8 @@ if(!$LMS->VoipAccountExists($_GET['id']))
 	}
 
 $voipaccountid = $_GET['id'];
-$customerid = $LMS->GetVoipAccountOwner($voipaccountid);
 $voipaccountinfo = $LMS->GetVoipAccount($voipaccountid);
+$customerid = $voipaccountinfo['ownerid'];
 
 include(MODULES_DIR.'/customer.inc.php');
 
