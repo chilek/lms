@@ -269,11 +269,11 @@ elseif(isset($_GET['type']) && $_GET['type'] == 'invoices')
 			{
 				$line = $record ? $record : $inv_record;
 				$i++;
-			
+
 				$clariondate = intval($doc['cdate']/86400)+61731;
 				$date = date($date_format, $doc['cdate']);
 				$number = docnumber($doc['number'], $doc['template'], $doc['cdate'], $doc['extnumber']);
-				
+
 				$line = str_replace('%CLARION_DATE', $clariondate, $line);
 				$line = str_replace('%NUMBER', $number, $line);
 				$line = str_replace('%DATE', $date, $line);
@@ -300,9 +300,9 @@ elseif(isset($_GET['type']) && $_GET['type'] == 'invoices')
 					$line = str_replace('%TAXED'.$v, form_num($taxes[$id]['taxed']), $line);
 					$line = str_replace('%VAT'.$v, form_num($tax['tax']), $line);
 					$line = str_replace('%NETTO'.$v, form_num($tax['val']), $line);
-					
-					$netto_v += $tax['tax'];
-					$tax_v += $tax['val'];
+
+					$netto_v += $tax['val'];
+					$tax_v += $tax['tax'];
 				}
 				for($x=$v+1; $x<=8; $x++)
 				{
@@ -311,7 +311,7 @@ elseif(isset($_GET['type']) && $_GET['type'] == 'invoices')
 					$line = str_replace('%NETTO'.$x, '0.00', $line);
 					$line = str_replace('%TAXED'.$x, '0.00', $line);
 				}
-				
+
 				$line = str_replace('%VAT', form_num($tax_v), $line);
 				$line = str_replace('%NETTO', form_num($netto_v), $line);
 
@@ -327,14 +327,14 @@ elseif(isset($_GET['type']) && $_GET['type'] == 'invoices')
 					else
 						$line = str_replace('%SUFFIX', '', $line);
 				}
-	
+
 				if(strpos($line,'%TYPE')!==FALSE)
 				{
 					if($doc['reference'])
 						$type = $cnote_type;
 					else
 						$type = $invoice_type;
-					
+
 					$line = str_replace('%TYPE', $type, $line);
 				}
 
@@ -353,9 +353,9 @@ elseif(isset($_GET['type']) && $_GET['type'] == 'invoices')
 
 				$line = str_replace('%N', $doc['number'], $line);
 				$line = str_replace('%I', $i, $line);
-		    	
+
 				print $line.$endln;
-				
+
 				unset($rec);
 				unset($rectax);
 			}
