@@ -2,33 +2,33 @@ $Id$
 
 version ? (????-??-??)
 
-  - Don't send mail to deleted users (alec)
-  - BTS#0000847: Fixed UI language setting when HTTP_ACCEPT_LANGUAGE is not set (alec)
+  - Don't send mail to deleted users [alec]
+  - BTS#0000847: Fixed UI language setting when HTTP_ACCEPT_LANGUAGE is not set [alec]
   - Added option finances/cashimport_use_idate to use file import date
-    instead of cash operation date (alec)
-  - Fixed goto feature of the second scroller on the page (alec)
-  - BTS#0000848: Fixed cash import history report when source is selected (alec)
-  - Fixed SQL query in lms-makewarnings (alec)
-  - Fixed order of tables in database backup (alec)
-  - Fixed printing of DB errors while recovering database backup (alec)
-  - Added simple plugin API with some hooks on node actions (alec)
-  - BTS#0000856: Fixed "Hide/Show expired" link on node* pages (alec)
-  - lmsd/payments: Fixed error "Unknown column 'ats.customerid' in 'where clause'" (alec)
-  - Added Promotions with assignments shedule schemas (alec)
-  - Use tariff name+value+period as a unique key instead of just a name (alec)
-  - Now PostgreSQL 8.2 is required because of multi-value INSERT usage (alec)
-  - Fixed netdevices searching by MAC address (alec)
-  - BTS#0000860: Fixed sticky popups (alec)
-  - Added send_sms_before plugin hook (alec)
+    instead of cash operation date [alec]
+  - Fixed goto feature of the second scroller on the page [alec]
+  - BTS#0000848: Fixed cash import history report when source is selected [alec]
+  - Fixed SQL query in lms-makewarnings [alec]
+  - Fixed order of tables in database backup [alec]
+  - Fixed printing of DB errors while recovering database backup [alec]
+  - Added simple plugin API with some hooks on node actions [alec]
+  - BTS#0000856: Fixed "Hide/Show expired" link on node* pages [alec]
+  - lmsd/payments: Fixed error "Unknown column 'ats.customerid' in 'where clause'" [alec]
+  - Added Promotions with assignments shedule schemas [alec]
+  - Use tariff name+value+period as a unique key instead of just a name [alec]
+  - Now PostgreSQL 8.2 is required because of multi-value INSERT usage [alec]
+  - Fixed netdevices searching by MAC address [alec]
+  - BTS#0000860: Fixed sticky popups [alec]
+  - Added send_sms_before plugin hook [alec]
   - Don't send deplicated notifications to the users when they are using
-    the same e-mail address (alec)
-  - Removed userpanel/debug_email option, use mail/debug_email instead (alec)
-  - Added sms/debug_phone option (alec)
-  - Added SMS notifications from helpdesk (alec)
-  - BTS#0000843: Support SMS messages up to 459 chars using smscenter setvice (alec)
-  - Force names of multicolumn unique constraints in PostgreSQL (alec)
-  - lmsd/payments: improved performance of assignment suspension check (alec)
-  - Fixed mixed %NETTO and %VAT variables values in export file (alec)
+    the same e-mail address [alec]
+  - Removed userpanel/debug_email option, use mail/debug_email instead [alec]
+  - Added sms/debug_phone option [alec]
+  - Added SMS notifications from helpdesk [alec]
+  - BTS#0000843: Support SMS messages up to 459 chars using smscenter setvice [alec]
+  - Force names of multicolumn unique constraints in PostgreSQL [alec]
+  - lmsd/payments: improved performance of assignment suspension check [alec]
+  - Fixed mixed %NETTO and %VAT variables values in export file [alec]
 
 version 1.11.11 Bray (2011-01-17)
 
