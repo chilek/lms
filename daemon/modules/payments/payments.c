@@ -260,7 +260,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	char *insert, *description, *invoiceid, *value, *taxid, *currtime;
 	char *d_period, *w_period, *m_period, *q_period, *y_period, *h_period;
 	int i, imonth, imday, today, n=2, k=2, m=2, o=2, pl=0;
-	int docid=0, last_customerid=0, last_paytype=0, last_plan=0, exec=0, suspended=0, itemid=0;
+	int docid=0, last_cid=0, last_paytype=0, last_plan=0, exec=0, suspended=0, itemid=0;
 
 	time_t t;
 	struct tm *tt;
@@ -559,33 +559,31 @@ void reload(GLOBAL *g, struct payments_module *p)
 		// payments accounting and invoices writing
 		for(i=0; i<g->db_nrows(res); i++)
 		{
-			int uid = atoi(g->db_get_data(res,i,"customerid"));
-			int s_state = atoi(g->db_get_data(res,i,"suspended"));
-			int period = atoi(g->db_get_data(res,i,"period"));
-			int settlement = atoi(g->db_get_data(res,i,"settlement"));
-			int datefrom = atoi(g->db_get_data(res,i,"datefrom"));
-			int t_period = atoi(g->db_get_data(res,i,"t_period"));
+			char *cid_c    = g->db_get_data(res,i,"customerid");
 			char *discount = g->db_get_data(res,i,"discount");
-			double val = atof(g->db_get_data(res,i,"value"));
+			int cid        = atoi(cid_c);
+			int s_state    = atoi(g->db_get_data(res,i,"suspended"));
+			int period     = atoi(g->db_get_data(res,i,"period"));
+			int settlement = atoi(g->db_get_data(res,i,"settlement"));
+			int datefrom   = atoi(g->db_get_data(res,i,"datefrom"));
+			int t_period   = atoi(g->db_get_data(res,i,"t_period"));
+			double val     = atof(g->db_get_data(res,i,"value"));
 
 			if( !val ) continue;
 
 			// assignments suspending check
-			if( suspended != uid )
+			if( last_cid != cid )
 			{
-				result = g->db_pquery(g->conn, "SELECT 1 FROM assignments, customers "
-					"WHERE customerid = customers.id AND tariffid = 0 AND liabilityid = 0 "
-					"AND (datefrom <= ? OR datefrom = 0) AND (dateto >= ? OR dateto = 0) "
-					"AND customerid = ?", currtime, currtime, g->db_get_data(res,i,"customerid"));
+				result = g->db_pquery(g->conn, "SELECT 1 FROM assignments "
+					"WHERE customerid = ? AND tariffid = 0 AND liabilityid = 0 "
+					    "AND (datefrom <= ? OR datefrom = 0) AND (dateto >= ? OR dateto = 0)",
+					cid_c, currtime, currtime);
 
-				if( g->db_nrows(result) )
-				{
-					suspended = uid;
-				}
+				suspended = g->db_nrows(result) ? 1 : 0;
 				g->db_free(&result);
 			}
 
-			if( suspended == uid || s_state )
+			if( suspended || s_state )
 				val = val * p->suspension_percentage / 100;
 
 			if( !val ) continue;
@@ -618,7 +616,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 			// prepare insert to 'cash' table
 			insert = strdup("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid) "
 				"VALUES (?, %value * -1, %taxid, %customerid, '?', %docid, %itemid)");
-			g->str_replace(&insert, "%customerid", g->db_get_data(res,i,"customerid"));
+			g->str_replace(&insert, "%customerid", cid_c);
 			g->str_replace(&insert, "%value", value);
 			g->str_replace(&insert, "%taxid", taxid);
 
@@ -673,7 +671,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 
                 numberplan = (n < pl) ? n : -1;
 
-				if ( last_customerid != uid || last_paytype != paytype || last_plan != numberplan)
+				if ( last_cid != cid || last_paytype != paytype || last_plan != numberplan)
 				{
 					char *countryid = g->db_get_data(res,i,"countryid");
 					char *numberplanid, *paytime, *paytype_str = strdup(itoa(paytype));
@@ -737,7 +735,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 						numberplanid,
 						countryid,
 						divisionid,
-						g->db_get_data(res,i,"customerid"),
+						cid_c,
 						g->db_get_data(res,i,"lastname"),
 						g->db_get_data(res,i,"custname"),
 						g->db_get_data(res,i,"address"),
@@ -837,7 +835,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 				insert = strdup("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid) "
 					"VALUES (?, %value * -1, %taxid, %customerid, '?', %docid, %itemid)");
 
-				g->str_replace(&insert, "%customerid", g->db_get_data(res,i,"customerid"));
+				g->str_replace(&insert, "%customerid", cid_c);
 				g->str_replace(&insert, "%value", value);
 				g->str_replace(&insert, "%taxid", taxid);
 
@@ -908,7 +906,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 				free(description);
 			}
 
-			last_customerid = uid;
+			last_cid = cid;
 		}
 
 		g->db_free(&res);
