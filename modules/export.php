@@ -229,7 +229,7 @@ elseif(isset($_GET['type']) && $_GET['type'] == 'invoices')
 		if(is_array($inv_record))
 			foreach($inv_record as $r)
 				$record .= $r;
-		
+
 		foreach($items as $idx => $row)
 		{
 			$docid = $row['docid'];
@@ -256,13 +256,13 @@ elseif(isset($_GET['type']) && $_GET['type'] == 'invoices')
 				$rectax[$item['taxid']]['val'] -= $refitemval;
 				$rec['brutto'] -= $refitemsum;
 			}
-		
+
 			$sum = $row['value'] * $row['count'];
 			$val = round($row['value'] / ($taxes[$taxid]['value']+100) * 100, 2) * $row['count'];
 			$tax = $sum - $val;
-			
+
 			$rectax[$taxid]['tax'] += $tax;
-            		$rectax[$taxid]['val'] += $val;
+            $rectax[$taxid]['val'] += $val;
 			$rec['brutto'] += $sum;
 
 			if($row['docid'] != $items[$idx+1]['docid'])
@@ -293,6 +293,9 @@ elseif(isset($_GET['type']) && $_GET['type'] == 'invoices')
 				$line = str_replace('%ABSVALUE', str_replace('-','',form_num($rec['brutto'])), $line);
 
 				$v = 0;
+				$netto_v = 0;
+				$tax_v = 0;
+
 				foreach($rectax as $id => $tax)
 				{
 					$v++;
@@ -304,6 +307,7 @@ elseif(isset($_GET['type']) && $_GET['type'] == 'invoices')
 					$netto_v += $tax['val'];
 					$tax_v += $tax['tax'];
 				}
+
 				for($x=$v+1; $x<=8; $x++)
 				{
 					$line = str_replace('%VATP'.$x, '0.00', $line);
