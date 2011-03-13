@@ -29,6 +29,7 @@
 
 #include "lmsd.h"
 #include "payments.h"
+#include "defs.h"
 
 char * itoa(int i)
 {

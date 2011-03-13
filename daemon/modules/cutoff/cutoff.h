@@ -2,7 +2,7 @@
 struct cutoff_module
 {
 	MODULE base;
-	
+
 	int warn_only;
 	int nodegroup_only;
 	int nodeassignments;
@@ -17,7 +17,7 @@ struct cutoff_module
 	char *expwarning;
 
 	char *customergroups;
-	char *excluded_customergroups;	
+	char *excluded_customergroups;
 	char *networks;
 	char *excluded_networks;
 };
