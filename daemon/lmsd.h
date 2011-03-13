@@ -16,11 +16,11 @@
 #define APIVERSION 5
 #define PROGNAME "lmsd"
 
-struct global 
+struct global
 {
 	int api_version;
 	ConnHandle *conn;
-	
+
 	// db functions
 	ConnHandle * (*db_connect)(const char *, const char *, const char *, const char *, int, int);
 	int (*db_disconnect)(ConnHandle *);
@@ -42,7 +42,7 @@ struct global
 	int (*config_getint)(Config *, char *, char *, int);
 	int (*config_getbool)(Config *, char *, char *, int);
 	double (*config_getdouble)(Config *, char *, char *, double);
-	
+
 	// util functions
 	int (*str_replace)(char **, const char *, const char *);
 	char * (*str_save)(char *, const char *);

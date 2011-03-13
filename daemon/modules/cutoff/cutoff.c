@@ -30,6 +30,7 @@
 
 #include "lmsd.h"
 #include "cutoff.h"
+#include "defs.h"
 
 char * itoa(int i)
 {
@@ -375,7 +376,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 
 		free(query);
 	}
-	
+
 	// debtors
 	if(plimit)
 		query = strdup(
@@ -386,17 +387,22 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 				"FROM cash "
 				"GROUP BY customerid "
 				"HAVING SUM(value) < 0 "
-				") ca ON (c.id = ca.customerid) "
+			") ca ON (c.id = ca.customerid) "
 			// monthly assignments sum
-			"JOIN (SELECT SUM(value) AS tariff, customerid "
-				"FROM assignments, tariffs "
-				"WHERE tariffid = tariffs.id "
-					"AND period = 3 "
-					"AND suspended = 0 "
-					"AND (datefrom <= %NOW% OR datefrom = 0) "
-					"AND (dateto >= %NOW% OR dateto = 0) "
-				"GROUP BY customerid "
-				") t ON (t.customerid = c.id) "	
+			"JOIN (SELECT "
+			    "SUM(t.value * (CASE t.period "
+			        "WHEN " _YEARLY_ " THEN 1/12.0 "
+			        "WHEN " _HALFYEARLY_ " THEN 1/6.0 "
+			        "WHEN " _QUARTERLY_ " THEN 1/3.0 "
+			        "ELSE 1 END)) AS tariff, a.customerid "
+				"FROM assignments a "
+				"JOIN tariffs t ON (a.tariffid = t.id) "
+				"WHERE a.period = 3 "
+					"AND a.suspended = 0 "
+					"AND (a.datefrom <= %NOW% OR a.datefrom = 0) "
+					"AND (a.dateto >= %NOW% OR a.dateto = 0) "
+				"GROUP BY a.customerid "
+			") t ON (t.customerid = c.id) "
 			"WHERE c.deleted = 0 "
 				"AND c.cutoffstop < %NOW% "
 #ifdef USE_PGSQL

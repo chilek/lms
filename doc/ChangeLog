@@ -29,6 +29,7 @@ version ? (????-??-??)
   - Force names of multicolumn unique constraints in PostgreSQL [alec]
   - lmsd/payments: improved performance of assignment suspension check [alec]
   - Fixed mixed %NETTO and %VAT variables values in export file [alec]
+  - lmsd/cutoff: Fixed "Column 'period' in where clause is ambiguous" [alec]
 
 version 1.11.11 Bray (2011-01-17)
 
