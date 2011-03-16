@@ -31,7 +31,7 @@ CREATE TABLE promotions (
     disabled tinyint(1) DEFAULT '0' NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY name (name)
-) ENGINE=InnoDB")
+) ENGINE=InnoDB");
 
 $DB->Execute("
 CREATE TABLE promotionschemas (
