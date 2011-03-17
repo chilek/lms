@@ -34,8 +34,8 @@
 
 char * itoha(int i)
 {
-        static char string[8];
-	sprintf(string, "%x", i);
+    static char string[8];
+	sprintf(string, "%02X", i);
 	return string;
 }
 

@@ -2231,9 +2231,11 @@ CLASS="PROMPT"
 >filter_up</P
 ><P
 >Definicja filtrów dla ruchu w kierunku od hosta. Dozwolone zmienne:
-					%n - nazwa hosta, %if - nazwa interfejsu sieci, %i16 - ostatni oktet adresu szesnastkowo, 
+					%n - nazwa hosta, %if - nazwa interfejsu sieci,
 					%i - adres, %m - mac, %ms - lista adresów MAC hosta (oddzielonych przecinkiem),
-					%o1, %o2, %o3, %o4 - oktety adresu dziesiętnie, %h - uchwyt klasy, %x - uchwyt filtra (unikalny numer reguły). Domyślnie: 
+					%o1, %o2, %o3, %o4 - oktety adresu dziesiętnie, %h1, %h2, %h3, %h4 - oktety adresu
+					w zapisie szesnastkowym, %h - uchwyt klasy, %x - uchwyt filtra (unikalny numer reguły).
+					Domyślnie:
 					<PRE
 CLASS="SCREEN"
 ># %n
@@ -2251,10 +2253,11 @@ CLASS="PROMPT"
 >filter_down</P
 ><P
 >Definicja filtrów dla ruchu w kierunku do hosta. Dozwolone zmienne:
-					%n - nazwa hosta, %if - nazwa interfejsu sieci, %i16 - ostatni 
-					oktet adresu szesnastkowo, %i - adres, %m - mac, 
-					%ms - lista adresów MAC hosta (oddzielonych przecinkiem), %o1, %o2, %o3, 
-					%o4 - oktety adresu dziesiętnie, %h - uchwyt klasy, %x - uchwyt
+					%n - nazwa hosta, %if - nazwa interfejsu sieci, %i - adres, %m - mac, 
+					%ms - lista adresów MAC hosta (oddzielonych przecinkiem),
+					%o1, %o2, %o3, %o4 - oktety adresu dziesiętnie,
+					%h1, %h2, %h3, %h4 - oktety adresu w zapisie szesnastkowym,
+					%h - uchwyt klasy, %x - uchwyt
 					filtra (unikalny numer reguły). Domyślnie: 
 					<PRE
 CLASS="SCREEN"
@@ -2273,10 +2276,10 @@ CLASS="PROMPT"
 ><P
 >Definicja reguły dla limitu połączeń hosta. Dozwolone 
 					zmienne: %n - nazwa hosta, %if - nazwa interfejsu sieci, 
-					%i16 - ostatni oktet adresu szesnastkowo, %i - adres, %m - mac,
-					%ms - lista adresów MAC hosta (oddzielonych przecinkiem),
-					%o1, %o2, %o3, %o4 - oktety adresu dziesiętnie, %climit - limit
-					połączeń. Domyślnie:
+					%i - adres, %m - mac, %ms - lista adresów MAC hosta (oddzielonych przecinkiem),
+					%o1, %o2, %o3, %o4 - oktety adresu dziesiętnie,
+					%h1, %h2, %h3, %h4 - oktety adresu w zapisie szesnastkowym,
+					%climit - limit połączeń. Domyślnie:
 					<PRE
 CLASS="SCREEN"
 >$IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above %climit -j REJECT
@@ -2294,10 +2297,10 @@ CLASS="PROMPT"
 ><P
 >Definicja reguły dla limitu pakietów dla hosta. Dozwolone 
 					zmienne: %n - nazwa hosta, %if - nazwa interfejsu sieci, 
-					%i16 - ostatni oktet adresu szesnastkowo, %i - adres, %m - mac,
-					%ms - lista adresów MAC hosta (oddzielonych przecinkiem),
-					%o1, %o2, %o3, %o4 - oktety adresu dziesiętnie, %plimit - limit
-					pakietów. Domyślnie:
+				    %i - adres, %m - mac, %ms - lista adresów MAC hosta (oddzielonych przecinkiem),
+					%o1, %o2, %o3, %o4 - oktety adresu dziesiętnie,
+					%h1, %h2, %h3, %h4 - oktety adresu w zapisie szesnastkowym,
+					%plimit - limit	pakietów. Domyślnie:
 					<PRE
 CLASS="SCREEN"
 >$IPT -t filter -I FORWARD -d %i -m limit --limit %plimit/s -j ACCEPT

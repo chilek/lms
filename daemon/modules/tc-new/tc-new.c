@@ -44,7 +44,7 @@ char * itoa(int i)
 char * itoha(int i)
 {
 	static char string[8];
-	sprintf(string, "%x", i);
+	sprintf(string, "%02X", i);
 	return string;
 }
 
@@ -373,11 +373,21 @@ void reload(GLOBAL *g, struct tc_module *tc)
 
 				// octal parts of IP
 				unsigned int hostip = ntohl(inet_addr(host.ip));
-				char *o1 = strdup(itoa((hostip >> 24) & 0xff)); // first octet
-				char *o2 = strdup(itoa((hostip >> 16) & 0xff)); // second octet
-				char *o3 = strdup(itoa((hostip >> 8) & 0xff)); // third octet
-				char *o4 = strdup(itoa(hostip & 0xff)); // last octet
-				char *i16 = strdup(itoha(hostip & 0xff));  // last octet in hex
+
+				int d1 = (hostip >> 24) & 0xff; // first octet
+				int d2 = (hostip >> 16) & 0xff; // second octet
+				int d3 = (hostip >> 8) & 0xff;  // third octet
+				int d4 = hostip & 0xff;         // last octet
+
+				char *o1 = strdup(itoa(d1));
+				char *o2 = strdup(itoa(d2));
+				char *o3 = strdup(itoa(d3));
+				char *o4 = strdup(itoa(d4));
+
+				char *h1 = strdup(itoha(d1));
+				char *h2 = strdup(itoha(d2));
+				char *h3 = strdup(itoha(d3));
+				char *h4 = strdup(itoha(d4));
 
 				char *h_up = strdup(tc->filter_up);
 				char *h_down = strdup(tc->filter_down);
@@ -391,7 +401,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 				// make rules...
 				g->str_replace(&h_up, "%n", host.name);
 				g->str_replace(&h_up, "%if", nets[host.network].interface);
-				g->str_replace(&h_up, "%i16", i16);
+				g->str_replace(&h_up, "%i16", h4);
 				g->str_replace(&h_up, "%i", host.ip);
 				g->str_replace(&h_up, "%ms", host.mac);
 				g->str_replace(&h_up, "%m", mac);
@@ -400,11 +410,15 @@ void reload(GLOBAL *g, struct tc_module *tc)
 				g->str_replace(&h_up, "%o2", o2);
 				g->str_replace(&h_up, "%o3", o3);
 				g->str_replace(&h_up, "%o4", o4);
+				g->str_replace(&h_up, "%h1", h1);
+				g->str_replace(&h_up, "%h2", h2);
+				g->str_replace(&h_up, "%h3", h3);
+				g->str_replace(&h_up, "%h4", h4);
 				g->str_replace(&h_up, "%h", itoa(ux));
 
 				g->str_replace(&h_down, "%n", host.name);
 				g->str_replace(&h_down, "%if", nets[host.network].interface);
-				g->str_replace(&h_down, "%i16", i16);
+				g->str_replace(&h_down, "%i16", h4);
 				g->str_replace(&h_down, "%i", host.ip);
 				g->str_replace(&h_down, "%ms", host.mac);
 				g->str_replace(&h_down, "%m", mac);
@@ -413,6 +427,10 @@ void reload(GLOBAL *g, struct tc_module *tc)
 				g->str_replace(&h_down, "%o2", o2);
 				g->str_replace(&h_down, "%o3", o3);
 				g->str_replace(&h_down, "%o4", o4);
+				g->str_replace(&h_down, "%h1", h1);
+				g->str_replace(&h_down, "%h2", h2);
+				g->str_replace(&h_down, "%h3", h3);
+				g->str_replace(&h_down, "%h4", h4);
 				g->str_replace(&h_down, "%h", itoa(dx));
 
 				// ...write to file
@@ -429,7 +447,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 					g->str_replace(&cl, "%climit", itoa(c.climit));
 					g->str_replace(&cl, "%n", host.name);
 					g->str_replace(&cl, "%if", nets[host.network].interface);
-    				g->str_replace(&cl, "%i16", i16);
+    				g->str_replace(&cl, "%i16", h4);
     				g->str_replace(&cl, "%i", host.ip);
     				g->str_replace(&cl, "%ms", host.mac);
     				g->str_replace(&cl, "%m", mac);
@@ -437,6 +455,10 @@ void reload(GLOBAL *g, struct tc_module *tc)
 					g->str_replace(&cl, "%o2", o2);
 					g->str_replace(&cl, "%o3", o3);
 					g->str_replace(&cl, "%o4", o4);
+					g->str_replace(&cl, "%h1", h1);
+					g->str_replace(&cl, "%h2", h2);
+					g->str_replace(&cl, "%h3", h3);
+					g->str_replace(&cl, "%h4", h4);
 
 					fprintf(fh, "%s", cl);
 					free(cl);
@@ -449,7 +471,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 					g->str_replace(&pl, "%plimit", itoa(c.plimit));
 					g->str_replace(&pl, "%n", host.name);
 					g->str_replace(&pl, "%if", nets[host.network].interface);
-					g->str_replace(&pl, "%i16", i16);
+					g->str_replace(&pl, "%i16", h4);
 					g->str_replace(&pl, "%i", host.ip);
 					g->str_replace(&pl, "%ms", host.mac);
 					g->str_replace(&pl, "%m", mac);
@@ -457,6 +479,10 @@ void reload(GLOBAL *g, struct tc_module *tc)
 					g->str_replace(&pl, "%o2", o2);
 					g->str_replace(&pl, "%o3", o3);
 					g->str_replace(&pl, "%o4", o4);
+					g->str_replace(&pl, "%h1", h1);
+					g->str_replace(&pl, "%h2", h2);
+					g->str_replace(&pl, "%h3", h3);
+					g->str_replace(&pl, "%h4", h4);
 
 					fprintf(fh, "%s", pl);
 					free(pl);
@@ -469,7 +495,10 @@ void reload(GLOBAL *g, struct tc_module *tc)
 				free(o2);
 				free(o3);
 				free(o4);
-				free(i16);
+				free(h1);
+				free(h2);
+				free(h3);
+				free(h4);
 				free(mac);
 			}
 
