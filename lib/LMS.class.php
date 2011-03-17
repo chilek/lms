@@ -733,28 +733,28 @@ class LMS
 			break;
 		}
 
-		if($state == 4) {
-			$deleted = 1;
-			// don't use customergroup and network filtering
-			// when customer is deleted because we drop group assignments and nodes
-			// in DeleteCustomer()
-			$network=NULL;
-			$customergroup=NULL;
-		}
-		else
-			$deleted = 0;
+		switch ($state) {
+		    case 4:
+    			// When customer is deleted we have no assigned groups or nodes, see DeleteCustomer().
+	    		// Return empty list in this case
+		    	if (!empty($network) || !empty($customergroup) || !empty($nodegroup)) {
+        	    	$customerlist['total'] = 0;
+		            $customerlist['state'] = 0;
+            		$customerlist['order'] = $order;
+	    	        $customerlist['direction'] = $direction;
+    		        return $customerlist;
+                }
+		    	$deleted = 1;
+                break;
+            case 5:  $disabled   = 1; break;
+		    case 6:  $indebted   = 1; break;
+		    case 7:  $online     = 1; break;
+		    case 8:  $groupless  = 1; break;
+		    case 9:  $tariffless = 1; break;
+		    case 10: $suspended  = 1; break;
+        }
 
-		$disabled = ($state == 5) ? 1 : 0;
-		$indebted = ($state == 6) ? 1 : 0;
-		$online = ($state == 7) ? 1 : 0;
-		$groupless = ($state == 8) ? 1 : 0;
-		$tariffless = ($state == 9) ? 1 : 0;
-		$suspended = ($state == 10) ? 1 : 0;
-
-		if($state>3)
-			$state = 0;
-
-		if($network)
+		if ($network)
 			$net = $this->GetNetworkParams($network);
 
 		$over = 0; $below = 0;
@@ -893,8 +893,8 @@ class LMS
 					WHERE ownerid > 0
 					GROUP BY ownerid
 				) s ON (s.ownerid = c.id)
-				WHERE deleted = '.$deleted
-				.($state ? ' AND c.status = '.intval($state) : '')
+				WHERE deleted = '.intval($deleted)
+				.($state <= 3 ? ' AND c.status = '.intval($state) : '')
 				.($division ? ' AND c.divisionid = '.intval($division) : '')
 				.($online ? ' AND s.online = 1' : '')
 				.($indebted ? ' AND b.value < 0' : '')
