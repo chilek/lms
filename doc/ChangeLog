@@ -30,6 +30,8 @@ version ? (????-??-??)
   - lmsd/payments: improved performance of assignment suspension check [alec]
   - Fixed mixed %NETTO and %VAT variables values in export file [alec]
   - lmsd/cutoff: Fixed "Column 'period' in where clause is ambiguous" [alec]
+  - Fixed customers listing so, when using group/network filter together
+    with "deleted" status, the list is empty [alec]
 
 version 1.11.11 Bray (2011-01-17)
 

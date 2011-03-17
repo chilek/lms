@@ -136,74 +136,6 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/empty.gif" width="16" alt=""> <B>{t}Qualification operator:{/t}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%">
-			<INPUT class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} CHECKED{/if}><A HREF="javascript:setOperator('operator0')"> {t}AND{/t} </A>
-			<INPUT class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} CHECKED{/if}><A HREF="javascript:setOperator('operator1')"> {t}OR{/t} </A>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/network.gif" alt=""> <B>{t}Network:{/t}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%">
-			<SELECT SIZE="1" NAME="n">
-				<OPTION value="0" {if !$listdata.network} SELECTED {/if}>{t}- all networks -{/t}</OPTION>
-				{section name=networks loop=$networks}
-				<OPTION value="{$networks[networks].id}" {if $listdata.network eq $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:50:"...":true}</OPTION>
-				{/section}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/group.gif" alt=""> <B>{t}Group:{/t}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%">
-			<SELECT SIZE="1" NAME="g">
-				<OPTION value="" {if !$listdata.customergroup} SELECTED {/if}>{t}- all groups -{/t}</OPTION>
-				{section name=customergroups loop=$customergroups}
-				<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroup eq $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"...":true}</OPTION>
-				{/section}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/nodegroup.gif" alt=""> <B>{t}Nodes Group:{/t}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%">
-			<SELECT SIZE="1" NAME="ng">
-    			    <OPTION value="" {if !$listdata.nodegroup} SELECTED {/if}>{t}- all groups -{/t}</OPTION>
-	        	    {foreach from=$nodegroups item=nodegroup}
-		            <OPTION value="{$nodegroup.id}" {if $listdata.nodegroup eq $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
-			    {/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/access.gif" width="16" alt=""> <B>{t}Status:{/t}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%">
-			<SELECT SIZE="1" NAME="s">
-				<OPTION VALUE="0">{t}- all -{/t}</OPTION>
-				<OPTION VALUE="3">{t}connected<!plural>{/t}</OPTION>
-				<OPTION VALUE="2">{t}waiting{/t}</OPTION>
-				<OPTION VALUE="1">{t}interested<!plural>{/t}</OPTION>
-				<OPTION VALUE="4">{t}deleted<!plural>{/t}</OPTION>
-				<OPTION VALUE="5">{t}disconnected<!plural>{/t}</OPTION>
-				<OPTION VALUE="6">{t}in debt{/t}</OPTION>
-				<OPTION VALUE="7">{t}online{/t}</OPTION>
-				<OPTION VALUE="8">{t}without group{/t}</OPTION>
-				<OPTION VALUE="9">{t}without tariff{/t}</OPTION>
-				<OPTION VALUE="10">{t}suspended<!plural>{/t}</OPTION>
-			</SELECT>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
 			<IMG src="img/folder.gif" alt=""> <B>{t}Legal personality:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
@@ -257,11 +189,82 @@
 			{t}to{/t} <INPUT type="text" value="" name="search[deletedto]" size="10" OnClick="javascript:cal4.popup();">
 		</TD>
 	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/empty.gif" width="16" alt=""> <B>{t}Qualification operator:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<INPUT class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} CHECKED{/if}><A HREF="javascript:setOperator('operator0')"> {t}AND{/t} </A>
+			<INPUT class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} CHECKED{/if}><A HREF="javascript:setOperator('operator1')"> {t}OR{/t} </A>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="flr" WIDTH="100%" COLSPAN="2">&nbsp;</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/access.gif" width="16" alt=""> <B>{t}Status:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<SELECT SIZE="1" NAME="s">
+				<OPTION VALUE="0">{t}- all -{/t}</OPTION>
+				<OPTION VALUE="3">{t}connected<!plural>{/t}</OPTION>
+				<OPTION VALUE="2">{t}waiting{/t}</OPTION>
+				<OPTION VALUE="1">{t}interested<!plural>{/t}</OPTION>
+				<OPTION VALUE="4">{t}deleted<!plural>{/t}</OPTION>
+				<OPTION VALUE="5">{t}disconnected<!plural>{/t}</OPTION>
+				<OPTION VALUE="6">{t}in debt{/t}</OPTION>
+				<OPTION VALUE="7">{t}online{/t}</OPTION>
+				<OPTION VALUE="8">{t}without group{/t}</OPTION>
+				<OPTION VALUE="9">{t}without tariff{/t}</OPTION>
+				<OPTION VALUE="10">{t}suspended<!plural>{/t}</OPTION>
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/network.gif" alt=""> <B>{t}Network:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<SELECT SIZE="1" NAME="n">
+				<OPTION value="0" {if !$listdata.network} SELECTED {/if}>{t}- all networks -{/t}</OPTION>
+				{section name=networks loop=$networks}
+				<OPTION value="{$networks[networks].id}" {if $listdata.network eq $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:50:"...":true}</OPTION>
+				{/section}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/group.gif" alt=""> <B>{t}Group:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<SELECT SIZE="1" NAME="g">
+				<OPTION value="" {if !$listdata.customergroup} SELECTED {/if}>{t}- all groups -{/t}</OPTION>
+				{section name=customergroups loop=$customergroups}
+				<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroup eq $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"...":true}</OPTION>
+				{/section}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/nodegroup.gif" alt=""> <B>{t}Nodes Group:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<SELECT SIZE="1" NAME="ng">
+    			    <OPTION value="" {if !$listdata.nodegroup} SELECTED {/if}>{t}- all groups -{/t}</OPTION>
+	        	    {foreach from=$nodegroups item=nodegroup}
+		            <OPTION value="{$nodegroup.id}" {if $listdata.nodegroup eq $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
+			    {/foreach}
+			</SELECT>
+		</TD>
+	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fbottomu" WIDTH="100%" COLSPAN="2" ALIGN="right">
 			<A ACCESSKEY="S" href="javascript:Search();">{t}Search{/t} <IMG SRC="img/search.gif" alt=""></A>&nbsp;
 			<A href="javascript:PrintList();">{t}Print{/t} <IMG SRC="img/print.gif" alt=""></A>
-		</TD>	
+		</TD>
 	</TR>
 </TABLE>
 </FORM>
@@ -279,4 +282,4 @@ var cal4 = new calendar(document.customersearch.elements['search[deletedto]']);
 cal4.time_comp = false;
 //-->
 </SCRIPT>
-{include file="footer.html"}			
+{include file="footer.html"}
