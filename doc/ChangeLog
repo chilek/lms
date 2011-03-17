@@ -32,6 +32,7 @@ version ? (????-??-??)
   - lmsd/cutoff: Fixed "Column 'period' in where clause is ambiguous" [alec]
   - Fixed customers listing so, when using group/network filter together
     with "deleted" status, the list is empty [alec]
+  - lmsd/tc: Added %h1, %h2, %h3, %h4 variables [alec]
 
 version 1.11.11 Bray (2011-01-17)
 

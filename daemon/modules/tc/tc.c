@@ -43,7 +43,7 @@ char * itoa(int i)
 char * itoha(int i)
 {
 	static char string[8];
-	sprintf(string, "%x", i);
+	sprintf(string, "%02X", i);
 	return string;
 }
 
@@ -202,15 +202,24 @@ void reload(GLOBAL *g, struct tc_module *tc)
 						int h_downceil = (int) n_downceil/cnt;
 						int h_plimit = (int) n_plimit/cnt;
 						int h_climit = (int) n_climit/cnt;
-						
+
 						unsigned long iplong = inet_addr(ipaddr);
 						unsigned int hostip = ntohl(iplong);
-						
-						char *o1 = strdup(itoa((hostip >> 24) & 0xff)); // 1st octet
-						char *o2 = strdup(itoa((hostip >> 16) & 0xff)); // 2nd octet
-						char *o3 = strdup(itoa((hostip >> 8) & 0xff)); // 3rd octet
-						char *o4 = strdup(itoa(hostip & 0xff)); // 4th octet
-						char *i16 = strdup(itoha(hostip & 0xff)); // 4th octet in hex
+
+                        int d1 = (hostip >> 24) & 0xff; // 1st octet
+                        int d2 = (hostip >> 16) & 0xff; // 2nd octet
+                        int d3 = (hostip >> 8) & 0xff;  // 3rd octet
+                        int d4 = hostip & 0xff;         // 4th octet
+
+						char *o1 = strdup(itoa(d1));
+						char *o2 = strdup(itoa(d2));
+						char *o3 = strdup(itoa(d3));
+						char *o4 = strdup(itoa(d4));
+
+						char *h1 = strdup(itoha(d1)); // 1st octet in hex
+						char *h2 = strdup(itoha(d2)); // 2nd octet in hex
+						char *h3 = strdup(itoha(d3)); // 3rd octet in hex
+						char *h4 = strdup(itoha(d4)); // 4th octet in hex
 
 						// test node's membership in networks
 						for(v=0; v<nc; v++)
@@ -220,12 +229,16 @@ void reload(GLOBAL *g, struct tc_module *tc)
 						if(v!=nc)
 						{
 							got_node = 1;
-						
+
 							if(h_uprate && h_downrate)
 							{
 								g->str_replace(&mark_up, "%n", name);
 								g->str_replace(&mark_up, "%if", nets[v].interface);
-								g->str_replace(&mark_up, "%i16", i16);
+								g->str_replace(&mark_up, "%h1", h1);
+								g->str_replace(&mark_up, "%h2", h2);
+								g->str_replace(&mark_up, "%h3", h3);
+								g->str_replace(&mark_up, "%h4", h4);
+								g->str_replace(&mark_up, "%i16", h4); // for backward compat.
 								g->str_replace(&mark_up, "%i", ipaddr);
 								g->str_replace(&mark_up, "%m", mac);
 								g->str_replace(&mark_up, "%o1", o1);
@@ -234,10 +247,14 @@ void reload(GLOBAL *g, struct tc_module *tc)
 								g->str_replace(&mark_up, "%o4", o4);
 								g->str_replace(&mark_up, "%x", itoa(x));
 								fprintf(fh, "%s", mark_up);
-								
+
 								g->str_replace(&mark_down, "%n", name);
 								g->str_replace(&mark_down, "%if", nets[v].interface);
-								g->str_replace(&mark_down, "%i16", i16);
+								g->str_replace(&mark_down, "%h1", h1);
+								g->str_replace(&mark_down, "%h2", h2);
+								g->str_replace(&mark_down, "%h3", h3);
+								g->str_replace(&mark_down, "%h4", h4);
+								g->str_replace(&mark_down, "%i16", h4); // for backward comapt.
 								g->str_replace(&mark_down, "%i", ipaddr);
 								g->str_replace(&mark_down, "%m", mac);
 								g->str_replace(&mark_down, "%o1", o1);
@@ -251,9 +268,17 @@ void reload(GLOBAL *g, struct tc_module *tc)
 								{
 									g->str_replace(&htb_up, "%n", name);
 									g->str_replace(&htb_up, "%if", nets[v].interface);
-									g->str_replace(&htb_up, "%i16", i16);
+    								g->str_replace(&htb_up, "%h1", h1);
+	    							g->str_replace(&htb_up, "%h2", h2);
+		    						g->str_replace(&htb_up, "%h3", h3);
+			    					g->str_replace(&htb_up, "%h4", h4);
+									g->str_replace(&htb_up, "%i16", h4); // for backard compat.
 									g->str_replace(&htb_up, "%i", ipaddr);
 									g->str_replace(&htb_up, "%m", mac);
+    								g->str_replace(&htb_up, "%o1", o1);
+	    							g->str_replace(&htb_up, "%o2", o2);
+		    						g->str_replace(&htb_up, "%o3", o3);
+			    					g->str_replace(&htb_up, "%o4", o4);
 									g->str_replace(&htb_up, "%x", itoa(x));
 									g->str_replace(&htb_up, "%uprate", itoa(h_uprate));
 									if(!h_upceil)
@@ -263,9 +288,17 @@ void reload(GLOBAL *g, struct tc_module *tc)
 								
 									g->str_replace(&htb_down, "%n", name);
 									g->str_replace(&htb_down, "%if", nets[v].interface);
-									g->str_replace(&htb_down, "%i16", i16);
+    								g->str_replace(&htb_down, "%h1", h1);
+	    							g->str_replace(&htb_down, "%h2", h2);
+		    						g->str_replace(&htb_down, "%h3", h3);
+			    					g->str_replace(&htb_down, "%h4", h4);
+									g->str_replace(&htb_down, "%i16", h4); // for backward compat.
 									g->str_replace(&htb_down, "%i", ipaddr);
 									g->str_replace(&htb_down, "%m", mac);
+    								g->str_replace(&htb_down, "%o1", o1);
+	    							g->str_replace(&htb_down, "%o2", o2);
+		    						g->str_replace(&htb_down, "%o3", o3);
+			    					g->str_replace(&htb_down, "%o4", o4);
 									g->str_replace(&htb_down, "%x", itoa(x));
 									g->str_replace(&htb_down, "%downrate", itoa(h_downrate));
 									if(!h_downceil)
@@ -286,7 +319,11 @@ void reload(GLOBAL *g, struct tc_module *tc)
 								g->str_replace(&cl, "%climit", itoa(h_climit));
 								g->str_replace(&cl, "%n", name);
 								g->str_replace(&cl, "%if", nets[v].interface);
-    								g->str_replace(&cl, "%i16", i16);
+								g->str_replace(&cl, "%h1", h1);
+								g->str_replace(&cl, "%h2", h2);
+								g->str_replace(&cl, "%h3", h3);
+								g->str_replace(&cl, "%h4", h4);
+   								g->str_replace(&cl, "%i16", h4); // for backward compat.
 								g->str_replace(&cl, "%i", ipaddr);
 								g->str_replace(&cl, "%m", mac);
 								g->str_replace(&cl, "%o1", o1);
@@ -296,13 +333,17 @@ void reload(GLOBAL *g, struct tc_module *tc)
 								g->str_replace(&cl, "%x", itoa(x));
 								fprintf(fh, "%s", cl);
 							    }
-							
+
 							    if(h_plimit)
 							    {
 								g->str_replace(&pl, "%plimit", itoa(h_plimit));
 								g->str_replace(&pl, "%n", name);
 								g->str_replace(&pl, "%if", nets[v].interface);
-								g->str_replace(&pl, "%i16", i16);
+								g->str_replace(&pl, "%h1", h1);
+								g->str_replace(&pl, "%h2", h2);
+								g->str_replace(&pl, "%h3", h3);
+								g->str_replace(&pl, "%h4", h4);
+								g->str_replace(&pl, "%i16", h4); // for backward compat.
 								g->str_replace(&pl, "%i", ipaddr);
 								g->str_replace(&pl, "%m", mac);
 								g->str_replace(&pl, "%o1", o1);
@@ -319,8 +360,12 @@ void reload(GLOBAL *g, struct tc_module *tc)
 								g->str_replace(&cl, "%climit", itoa(n_climit));
 								g->str_replace(&cl, "%n", name);
 								g->str_replace(&cl, "%if", nets[v].interface);
-    								g->str_replace(&cl, "%i16", i16);
-								g->str_replace(&cl, "%i", ipaddr);
+								g->str_replace(&cl, "%h1", h1);
+								g->str_replace(&cl, "%h2", h2);
+								g->str_replace(&cl, "%h3", h3);
+								g->str_replace(&cl, "%h4", h4);
+    							g->str_replace(&cl, "%i16", h4); // for backward compat.
+    							g->str_replace(&cl, "%i", ipaddr);
 								g->str_replace(&cl, "%m", mac);
 								g->str_replace(&cl, "%o1", o1);
 								g->str_replace(&cl, "%o2", o2);
@@ -329,13 +374,17 @@ void reload(GLOBAL *g, struct tc_module *tc)
 								g->str_replace(&cl, "%x", itoa(x));
 								fprintf(fh, "%s", cl);
 							    }
-							
+
 							    if(n_plimit)
 							    {
 								g->str_replace(&pl, "%plimit", itoa(n_plimit));
 								g->str_replace(&pl, "%n", name);
 								g->str_replace(&pl, "%if", nets[v].interface);
-								g->str_replace(&pl, "%i16", i16);
+								g->str_replace(&pl, "%h1", h1);
+								g->str_replace(&pl, "%h2", h2);
+								g->str_replace(&pl, "%h3", h3);
+								g->str_replace(&pl, "%h4", h4);
+								g->str_replace(&pl, "%i16", h4); // for backward compat.
 								g->str_replace(&pl, "%i", ipaddr);
 								g->str_replace(&pl, "%m", mac);
 								g->str_replace(&pl, "%o1", o1);
@@ -346,10 +395,10 @@ void reload(GLOBAL *g, struct tc_module *tc)
 								fprintf(fh, "%s", pl);
 							    }
 							}
-					
+
 							if(tc->one_class_per_host) x++;
 						}
-						
+
 						if(!tc->one_class_per_host && j==g->db_nrows(nres)-1 && got_node && n_downrate && n_uprate)
 						{
 							g->str_replace(&htb_up, "%n", name);
@@ -377,7 +426,8 @@ void reload(GLOBAL *g, struct tc_module *tc)
 						free(cl); free(pl); 
 						free(mark_up); free(mark_down);
 						free(htb_up); free(htb_down);
-						free(o1); free(o2); free(o3); free(o4); free(i16);
+						free(o1); free(o2); free(o3); free(o4);
+						free(h1); free(h2); free(h3); free(h4);
 					}
 					g->db_free(&nres);
 				}
