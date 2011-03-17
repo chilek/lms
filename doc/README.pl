@@ -5200,11 +5200,11 @@ $TC qdisc add dev $LAN parent 1:%h esfq perturb 10 hash dst
        quantum 1500"
      * filter_up
        Definicja filtrów dla ruchu w kierunku od hosta. Dozwolone zmienne:
-       %n - nazwa hosta, %if - nazwa interfejsu sieci, %i16 - ostatni
-       oktet adresu szesnastkowo, %i - adres, %m - mac, %ms - lista
-       adresów MAC hosta (oddzielonych przecinkiem), %o1, %o2, %o3, %o4 -
-       oktety adresu dziesiętnie, %h - uchwyt klasy, %x - uchwyt filtra
-       (unikalny numer reguły). Domyślnie:
+       %n - nazwa hosta, %if - nazwa interfejsu sieci, %i - adres, %m -
+       mac, %ms - lista adresów MAC hosta (oddzielonych przecinkiem), %o1,
+       %o2, %o3, %o4 - oktety adresu dziesiętnie, %h1, %h2, %h3, %h4 -
+       oktety adresu w zapisie szesnastkowym, %h - uchwyt klasy, %x -
+       uchwyt filtra (unikalny numer reguły). Domyślnie:
 # %n
 $IPT -t mangle -A LIMITS -s %i -j MARK --set-mark %x
 $TC filter add dev $WAN parent 2:0 protocol ip prio 5 handle %x fw flowid 2:%h
@@ -5212,30 +5212,32 @@ $TC filter add dev $WAN parent 2:0 protocol ip prio 5 handle %x fw flowid 2:%h
        --set-class 2:%h\n"
      * filter_down
        Definicja filtrów dla ruchu w kierunku do hosta. Dozwolone zmienne:
-       %n - nazwa hosta, %if - nazwa interfejsu sieci, %i16 - ostatni
-       oktet adresu szesnastkowo, %i - adres, %m - mac, %ms - lista
-       adresów MAC hosta (oddzielonych przecinkiem), %o1, %o2, %o3, %o4 -
-       oktety adresu dziesiętnie, %h - uchwyt klasy, %x - uchwyt filtra
-       (unikalny numer reguły). Domyślnie:
+       %n - nazwa hosta, %if - nazwa interfejsu sieci, %i - adres, %m -
+       mac, %ms - lista adresów MAC hosta (oddzielonych przecinkiem), %o1,
+       %o2, %o3, %o4 - oktety adresu dziesiętnie, %h1, %h2, %h3, %h4 -
+       oktety adresu w zapisie szesnastkowym, %h - uchwyt klasy, %x -
+       uchwyt filtra (unikalny numer reguły). Domyślnie:
 $IPT -t mangle -A LIMITS -d %i -j MARK --set-mark %x
 $TC filter add dev $LAN parent 1:0 protocol ip prio 5 handle %x fw flowid 1:%h
        Przykład: class_down = "%n\n$IPT -A dst%o3 -d %i -j CLASSIFY
        --set-class 1:%h\n"
      * climit
        Definicja reguły dla limitu połączeń hosta. Dozwolone zmienne: %n -
-       nazwa hosta, %if - nazwa interfejsu sieci, %i16 - ostatni oktet
-       adresu szesnastkowo, %i - adres, %m - mac, %ms - lista adresów MAC
-       hosta (oddzielonych przecinkiem), %o1, %o2, %o3, %o4 - oktety
-       adresu dziesiętnie, %climit - limit połączeń. Domyślnie:
+       nazwa hosta, %if - nazwa interfejsu sieci, %i - adres, %m - mac,
+       %ms - lista adresów MAC hosta (oddzielonych przecinkiem), %o1, %o2,
+       %o3, %o4 - oktety adresu dziesiętnie, %h1, %h2, %h3, %h4 - oktety
+       adresu w zapisie szesnastkowym, %climit - limit połączeń.
+       Domyślnie:
 $IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above %climit -j REJECT
 
        Przykład: climit = ""
      * plimit
        Definicja reguły dla limitu pakietów dla hosta. Dozwolone zmienne:
-       %n - nazwa hosta, %if - nazwa interfejsu sieci, %i16 - ostatni
-       oktet adresu szesnastkowo, %i - adres, %m - mac, %ms - lista
-       adresów MAC hosta (oddzielonych przecinkiem), %o1, %o2, %o3, %o4 -
-       oktety adresu dziesiętnie, %plimit - limit pakietów. Domyślnie:
+       %n - nazwa hosta, %if - nazwa interfejsu sieci, %i - adres, %m -
+       mac, %ms - lista adresów MAC hosta (oddzielonych przecinkiem), %o1,
+       %o2, %o3, %o4 - oktety adresu dziesiętnie, %h1, %h2, %h3, %h4 -
+       oktety adresu w zapisie szesnastkowym, %plimit - limit pakietów.
+       Domyślnie:
 $IPT -t filter -I FORWARD -d %i -m limit --limit %plimit/s -j ACCEPT
 $IPT -t filter -I FORWARD -s %i -m limit --limit %plimit/s -j ACCEPT
 
