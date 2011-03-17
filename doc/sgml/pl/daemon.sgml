@@ -959,9 +959,9 @@
 		    Nastêpnie wykonywana jest pêtla ze sprawdzeniem przynale¿no¶ci do grupy klientów
 		    i sieci (je¶li okre¶lono). Je¶li warto¶ci ograniczeñ s± ró¿ne od zera nastêpuje
 		    zapis regu³ do pliku z podmian± zmiennych. W regu³kach mo¿na stosowaæ nastêpuj±ce
-		    zmienne: %name - nazwa hosta, %i - adres IP, %m - MAC, %if - interfejs, %uprate, %downrate, %upceil, 
-		    %downceil, %plimit, %climit, %i16 - ostatni oktet adresu IP w formacie
-		    szesnastkowym, %o1, %o2, %o3, %o4 - kolejne oktety adresu IP oraz %x - licznik o warto¶ci pocz±tkowej 100 
+		    zmienne: %name - nazwa hosta, %i - adres IP, %m - MAC, %if - interfejs, %uprate, %downrate, %upceil,
+		    %downceil, %plimit, %climit, %o1, %o2, %o3, %o4 - kolejne oktety adresu IP,
+		    %h1, %h2, %h3, %h4 - kolejne oktety adresu IP w zapisie szesnastkowym oraz %x - licznik o warto¶ci pocz±tkowej 100
 		    zwiêkszany o jeden dla ka¿dego komputera (lub klienta, w zale¿no¶ci od ustawienia
 		    opcji <prompt>one_class_per_host</prompt>).</para>
 		    <para>Domy¶lna polityka tworzenia klas htb zak³ada utworzenie jednej klasy dla

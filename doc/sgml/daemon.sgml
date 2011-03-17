@@ -884,9 +884,9 @@
               downceil, connection limit) are being calculated for each customer. Then, loop is performed
               to check networks and groups (if specified). If limit values are not zeroes rules are written
               to file with variables replacement. The following variables can be used in rules: %name - host
-              name, %i - IP address, %m - MAC, %if - network interface, %uprate, %downrate, %upceil, %downceil, 
-	      %plimit, %climit, %i16 - IP's last octet heximal representation, %o1, %o2, %o3, %o4 - IP's octets
-              and %x - integer counter with initial value of 100 incremented by one for each node (or customer).</para>
+              name, %i - IP address, %m - MAC, %if - network interface, %uprate, %downrate, %upceil, %downceil,
+	          %plimit, %climit, %o1, %o2, %o3, %o4 - IP's octets, %h1, %h2, %h3, %h4 - IP's octets in hex
+	          and %x - integer counter with initial value of 100 incremented by one for each node (or customer).</para>
               <para>Default policy for creating HTB class is one class per all nodes belonging to
               each customer. It can be changed with 'one_class_per_host' option.</para>
               <para>Default configuration assumes that your system supports HTB and iptables with
