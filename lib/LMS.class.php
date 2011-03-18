@@ -893,8 +893,8 @@ class LMS
 					WHERE ownerid > 0
 					GROUP BY ownerid
 				) s ON (s.ownerid = c.id)
-				WHERE deleted = '.intval($deleted)
-				.($state <= 3 ? ' AND c.status = '.intval($state) : '')
+				WHERE c.deleted = '.intval($deleted)
+				.($state <= 3 && $state > 0 ? ' AND c.status = '.intval($state) : '')
 				.($division ? ' AND c.divisionid = '.intval($division) : '')
 				.($online ? ' AND s.online = 1' : '')
 				.($indebted ? ' AND b.value < 0' : '')
