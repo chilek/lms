@@ -156,8 +156,9 @@ if(isset($_POST['ticket']))
 				$sms_body .= "\n";
                 $sms_body .= trans('Customer:').' '.$info['customername'];
                 $sms_body .= ' '.sprintf('(%04d)', $ticket['customerid']).'. ';
-                $sms_body .= $info['address'].', '.$info['zip'].' '.$info['city'].'. ';
-                $sms_body .= $info['phone'];
+                $sms_body .= $info['address'].', '.$info['zip'].' '.$info['city'];
+                if ($info['phone'])
+                    $sms_body .= '. '.trans('Phone:').' '.$info['phone'];
 			}
 
             // send email
