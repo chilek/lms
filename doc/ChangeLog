@@ -33,6 +33,7 @@ version ? (????-??-??)
   - Fixed customers listing so, when using group/network filter together
     with "deleted" status, the list is empty [alec]
   - lmsd/tc,tc-new: Added %h1, %h2, %h3, %h4 variables [alec]
+  - fixed "Check All" checkbox on Cash Operations Import list [alec]
 
 version 1.11.11 Bray (2011-01-17)
 
