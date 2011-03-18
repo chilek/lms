@@ -227,10 +227,12 @@ class LMS
 		$this->DB->Execute('UPDATE users SET passwd=? WHERE id=?', array(crypt($passwd), $id));
 	}
 
-	function GetUserName($id=NULL) // returns user name
+	function GetUserName($id=null) // returns user name
 	{
-		if (!$id)
+		if ($id === null)
 			$id = $this->AUTH->id;
+        else if (!$id)
+            return '';
 
 		if(!($name = $this->GetCache('users', $id, 'name')))
 		{
