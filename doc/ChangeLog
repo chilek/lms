@@ -1,5 +1,9 @@
 $Id$
 
+version ? (????-??-??)
+
+  - contrib/cutoff2: Fixed "Column 'period' in where clause is ambiguous" [alec]
+
 version 1.11.12 Aris (2011-03-18)
 
   - Don't send mail to deleted users [alec]
