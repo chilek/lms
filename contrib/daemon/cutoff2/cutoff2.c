@@ -83,8 +83,16 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 			int at = 0;
 			float value = 0;
 			
-			if( (result = g->db_pquery(g->conn, "SELECT MAX(at) AS at, SUM(value) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND period = 3 AND suspended = 0 AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) AND customerid = ? GROUP BY customerid HAVING SUM(value) > 0", customerid))!=NULL)
-			{
+			if( (result = g->db_pquery(g->conn,
+			    "SELECT MAX(a.at) AS at, SUM(t.value) AS value "
+			    "FROM assignments a, tariffs t "
+			    "WHERE a.tariffid = t.id "
+			        "AND a.customerid = ? AND a.period = 3 AND a.suspended = 0 "
+			        "AND (a.datefrom <= %NOW% OR a.datefrom = 0) "
+			        "AND (a.dateto >= %NOW% OR a.dateto = 0) "
+			    "GROUP BY a.customerid HAVING SUM(t.value) > 0",
+			    customerid)) != NULL
+			) {
 				if( g->db_nrows(result) )
 				{
 					at = atoi(g->db_get_data(result,0,"at"));
