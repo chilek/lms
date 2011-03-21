@@ -4179,6 +4179,10 @@ class LMS
             return $data['result'];
         }
 
+        $number    = $data['number'];
+        $message   = $data['message'];
+        $messageid = $data['messageid'];
+
 		if(empty($this->CONFIG['sms']['service']))
 			return trans('SMS "service" not set!');
 		else
