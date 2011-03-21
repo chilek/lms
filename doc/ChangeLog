@@ -3,6 +3,7 @@ $Id$
 version ? (????-??-??)
 
   - contrib/cutoff2: Fixed "Column 'period' in where clause is ambiguous" [alec]
+  - BTS#0000862: Fixed bug in SQL query on MySQL [alec]
 
 version 1.11.12 Aris (2011-03-18)
 
