@@ -7,7 +7,9 @@
 <table align="center" width="580" cellpadding="3">
 	<tr>
 		<td width="34%" colspan="2" class="ftopu" valign="top">
-			{t}Stamp:{/t}
+			{$receipt.d_name}<br>
+			{$receipt.d_address}<br>
+			{$receipt.d_zip} {$receipt.d_city}
 		</td>
 		<td colspan="2" width="34%" class="headgrey hdf" align="center" nowrap>
 			{if $receipt.type == "out"}
@@ -150,7 +152,9 @@
 <table align="center" width="580" cellpadding="3">
 	<tr>
 		<td width="34%" colspan="2" class="ftopu" valign="top">
-			{t}Stamp:{/t}
+			{$receipt.d_name}<br>
+			{$receipt.d_address}<br>
+			{$receipt.d_zip} {$receipt.d_city}
 		</td>
 		<td colspan="2" width="34%" class="headgrey hdf" align="center" nowrap>
 			{if $receipt.type == "out"}

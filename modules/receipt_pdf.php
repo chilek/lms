@@ -24,39 +24,43 @@
  *  $Id$
  */
 
-function receipt_header($x,$y)
+function receipt_header($x, $y)
 {
-    global $receipt,$pdf;
-    
-    $font_size = 12;
-    $yy = $y;
-    $xmax = $x + 420;
-    $pdf->line($x, $y, $xmax, $y);
-    $y -= $font_size;
-    
-    text_align_left($x+2,$y+2,$font_size-4,iconv("UTF-8","ISO-8859-2",trans('Stamp:')));
-    
-    if($receipt['type'] == 'out')
-	    text_align_center($xmax-70,$y-10,$font_size+4,'<b>'.iconv("UTF-8","ISO-8859-2",trans('CR-out')).'</b>');
-    else
-	    text_align_center($xmax-70,$y-10,$font_size+4,'<b>'.iconv("UTF-8","ISO-8859-2",trans('CR-in')).'</b>');
-    text_align_center($xmax-70,$y-30,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2",trans('No. $0',$receipt['number'])).'</b>');
-    
-    if($receipt['type'] == 'out')
-	    $y -= text_align_center($x+210,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2",trans('Proof of Pay-out')).'</b>');
-    else
-	    $y -= text_align_center($x+210,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2",trans('Proof of Payment')).'</b>');
-    $y -= text_align_center($x+210,$y,$font_size+4,'<b>'.iconv("UTF-8","ISO-8859-2",trans('Receipt')).'</b>');
-    $y -= text_align_center($x+210,$y,$font_size,iconv("UTF-8","ISO-8859-2",trans('Date:')).' '.date("Y/m/d",$receipt['cdate']));
-    
-    $y += $font_size/2;
-    $pdf->line($x, $yy, $x, $y);
-    $pdf->line($x+140, $yy, $x+140, $y);
-    $pdf->line($x+280, $yy, $x+280, $y);
-    $pdf->line($xmax, $yy, $xmax, $y);
-    $pdf->line($x, $y, $xmax, $y);
-    
-    return $y;
+	global $receipt, $pdf;
+
+	$font_size = 12;
+	$yy = $y;
+	$xmax = $x + 420;
+	$pdf->line($x, $y, $xmax, $y);
+	$y -= $font_size;
+
+//	text_align_left($x + 2,$y + 2,$font_size - 4, iconv("UTF-8", "ISO-8859-2", trans('Stamp:')));
+	$y = text_wrap($x + 2, $y, 170, $font_size - 2, '<b>'.iconv("UTF-8", "ISO-8859-2", $receipt['d_name']).'</b>', NULL);
+	$y = text_wrap($x + 2, $y, 170, $font_size - 2, '<b>'.iconv("UTF-8", "ISO-8859-2", $receipt['d_address']).'</b>', NULL);
+	text_wrap($x + 2, $y, 170, $font_size - 2,'<b>'.iconv("UTF-8", "ISO-8859-2", $receipt['d_zip'].' '.$receipt['d_city']).'</b>', NULL);
+	$y = $yy - $font_size;
+
+	if($receipt['type'] == 'out')
+		text_align_center($xmax - 70, $y - 10, $font_size + 4, '<b>'.iconv("UTF-8", "ISO-8859-2", trans('CR-out')).'</b>');
+	else
+		text_align_center($xmax - 70, $y - 10, $font_size + 4, '<b>'.iconv("UTF-8", "ISO-8859-2", trans('CR-in')).'</b>');
+	text_align_center($xmax - 70, $y - 30, $font_size, '<b>'.iconv("UTF-8", "ISO-8859-2", trans('No. $0',$receipt['number'])).'</b>');
+
+	if($receipt['type'] == 'out')
+		$y -= text_align_center($x + 210, $y, $font_size, '<b>'.iconv("UTF-8", "ISO-8859-2", trans('Proof of Pay-out')).'</b>');
+	else
+		$y -= text_align_center($x + 210, $y, $font_size, '<b>'.iconv("UTF-8", "ISO-8859-2", trans('Proof of Payment')).'</b>');
+	$y -= text_align_center($x + 210, $y, $font_size + 4,'<b>'.iconv("UTF-8", "ISO-8859-2", trans('Receipt')).'</b>');
+	$y -= text_align_center($x + 210, $y, $font_size, iconv("UTF-8", "ISO-8859-2", trans('Date:')).' '.date("Y/m/d", $receipt['cdate']));
+
+	$y += $font_size / 2;
+	$pdf->line($x, $yy, $x, $y);
+	$pdf->line($x + 140, $yy, $x + 140, $y);
+	$pdf->line($x + 280, $yy, $x + 280, $y);
+	$pdf->line($xmax, $yy, $xmax, $y);
+	$pdf->line($x, $y, $xmax, $y);
+
+	return $y;
 }
 
 function receipt_buyer($x,$y)
