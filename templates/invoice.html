@@ -54,12 +54,14 @@
 			<BR>
 			<BR>
 			<BR>
-			<B>{$invoice.name}<BR>
-			{if $invoice.post_address}
+			<B>
+			{if $invoice.post_name || $invoice.post_address}
+    			{if $invoice.post_name}{$invoice.post_name}{else}{$invoice.name}{/if}<BR>
     			{$invoice.post_address}<BR>
 	    		{$invoice.post_zip} {$invoice.post_city}
 			{else}
-    			{$invoice.address}<BR>
+			{$invoice.name}<BR>
+			{$invoice.address}<BR>
 	    		{$invoice.zip} {$invoice.city}
 			{/if}</B>
 		</TD>

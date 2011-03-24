@@ -43,6 +43,7 @@ CREATE TABLE customers (
 	zip varchar(10)		DEFAULT '' NOT NULL,
 	city varchar(32) 	DEFAULT '' NOT NULL,
 	countryid integer	DEFAULT NULL,
+	post_name varchar(255) DEFAULT NULL,
 	post_address varchar(255) DEFAULT NULL,
 	post_zip varchar(10)	DEFAULT NULL,
 	post_city varchar(32) 	DEFAULT NULL,

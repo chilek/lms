@@ -448,7 +448,7 @@ class LMS
 	{
 		if($this->DB->Execute('INSERT INTO customers (name, lastname, type,
 				    address, zip, city, countryid, email, ten, ssn, status, creationdate,
-				    post_address, post_zip, post_city, post_countryid,
+				    post_name, post_address, post_zip, post_city, post_countryid,
 				    creatorid, info, notes, message, pin, regon, rbe,
 				    icn, cutoffstop, consentdate, einvoice, divisionid, paytime, paytype,
 				    invoicenotice, mailingnotice)
@@ -465,6 +465,7 @@ class LMS
 					    $customeradd['ten'],
 					    $customeradd['ssn'],
 					    $customeradd['status'],
+					    $customeradd['post_name'],
 					    $customeradd['post_address'],
 					    $customeradd['post_zip'],
 					    $customeradd['post_city'],
@@ -522,7 +523,7 @@ class LMS
 	{
 		$res = $this->DB->Execute('UPDATE customers SET status=?, type=?, address=?,
 				zip=?, city=?, countryid=?, email=?, ten=?, ssn=?, moddate=?NOW?, modid=?,
-				post_address=?, post_zip=?, post_city=?, post_countryid=?,
+				post_name=?, post_address=?, post_zip=?, post_city=?, post_countryid=?,
 				info=?, notes=?, lastname=UPPER(?), name=?,
 				deleted=0, message=?, pin=?, regon=?, icn=?, rbe=?,
 				cutoffstop=?, consentdate=?, einvoice=?, invoicenotice=?, mailingnotice=?,
@@ -538,6 +539,7 @@ class LMS
 				$customerdata['ten'],
 				$customerdata['ssn'],
 				isset($this->AUTH->id) ? $this->AUTH->id : 0,
+				$customerdata['post_name'],
 				$customerdata['post_address'],
 				$customerdata['post_zip'],
 				$customerdata['post_city'],
@@ -2250,7 +2252,7 @@ class LMS
 				ds.inv_header AS division_header, ds.inv_footer AS division_footer,
 				ds.inv_author AS division_author, ds.inv_cplace AS division_cplace,
 				c.pin AS customerpin, c.divisionid AS current_divisionid,
-				c.post_address, c.post_zip, c.post_city, c.post_countryid
+				c.post_name, c.post_address, c.post_zip, c.post_city, c.post_countryid
 				FROM documents d
 				JOIN customers c ON (c.id = d.customerid)
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
@@ -2352,12 +2354,13 @@ class LMS
 			$result['month'] = date('m',$result['cdate']);
 			$result['pesel'] = $result['ssn'];
 			$result['nip'] = $result['ten'];
-			if ($result['post_address']) {
-                $result['serviceaddr'] = $result['post_address'];
-                if ($result['post_zip'] && $result['post_city']) {
-                    $result['serviceaddr'] .= "\n".$result['post_zip'].' '.$result['post_city'];
-                }
-            }
+			if ($result['post_name'] || $result['post_address']) {
+				$reulst['serviceaddr'] = $result['post_name'];
+				if ($result['post_address'])
+					$result['serviceaddr'] .= "\n".$result['post_address'];
+				if ($result['post_zip'] && $result['post_city'])
+					$result['serviceaddr'] .= "\n".$result['post_zip'].' '.$result['post_city'];
+			}
 
 			return $result;
 		}
@@ -2378,7 +2381,7 @@ class LMS
 				ds.inv_header AS division_header, ds.inv_footer AS division_footer,
 				ds.inv_author AS division_author, ds.inv_cplace AS division_cplace,
 				c.pin AS customerpin, c.divisionid AS current_divisionid,
-				c.post_address, c.post_zip, c.post_city, c.post_countryid
+				c.post_name, c.post_address, c.post_zip, c.post_city, c.post_countryid
 				FROM documents d
 				JOIN customers c ON (c.id = d.customerid)
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
@@ -2423,12 +2426,13 @@ class LMS
 			}
 
             // for backward compatibility
-			if ($result['post_address']) {
-                $result['serviceaddr'] = $result['post_address'];
-                if ($result['post_zip'] && $result['post_city']) {
-                    $result['serviceaddr'] .= "\n".$result['post_zip'].' '.$result['post_city'];
-                }
-            }
+			if ($result['post_name'] || $result['post_address']) {
+				$result['serviceaddr'] = $result['post_name'];
+				if ($result['post_address'])
+					$result['serviceaddr'] .= "\n".$result['post_address'];
+				if ($result['post_zip'] && $result['post_city'])
+					$result['serviceaddr'] .= "\n".$result['post_zip'].' '.$result['post_city'];
+			}
 
 			return $result;
 		}
