@@ -5,6 +5,7 @@ version ? (????-??-??)
   - contrib/cutoff2: Fixed "Column 'period' in where clause is ambiguous" [alec]
   - BTS#0000862: Fixed bug in SQL query on MySQL [alec]
   - customers: add post name [chilan]
+  - receipts: replaced stamp by division/company data [chilan]
 
 version 1.11.12 Aris (2011-03-18)
 
