@@ -523,6 +523,7 @@ $_LANG['Enter secondary DNS address (optional)'] = 'Wprowadź zapasowy adres DNS
 $_LANG['Enter sender e-mail address'] = 'Wprowadź adres e-mail nadawcy';
 $_LANG['Enter sender name'] = 'Wprowadź nazwę nadawcy';
 $_LANG['Enter serial number (optional)'] = 'Wprowadź numer seryjny (opcjonalnie)';
+$_LANG['Enter service name (optional)'] = 'Wprowadź nazwę odbiorcy (opcjonalnie)';
 $_LANG['Enter service address (optional)'] = 'Wprowadź adres do doręczeń (opcjonalnie)';
 $_LANG['Enter short description of transaction'] = 'Wprowadź krótki opis operacji';
 $_LANG['Enter Social Security Number (optional)'] = 'Wprowadź PESEL (opcjonalnie)';
