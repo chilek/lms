@@ -141,6 +141,10 @@
 		<TD WIDTH="99%" COLSPAN="2">
 			<TABLE width="100%" cellpadding="2" cellspacing="0">
 			    <TR>
+				<TD width="1%" NOWRAP>{t}Name:{/t}</TD>
+				<TD width="99%"><INPUT TYPE="TEXT" NAME="customerdata[post_name]" id="post_name" VALUE="{$customerinfo.post_name}" SIZE="30" {tip text="Enter service name (optional)" trigger="post_name"}></TD>
+			    </TR>
+			    <TR>
     				<TD width="1%" NOWRAP>{t}Address:{/t}</TD>
 	    			<TD width="99%"><INPUT TYPE="TEXT" NAME="customerdata[post_address]" id="post_address" VALUE="{$customerinfo.post_address}" SIZE="30" {tip text="Enter service address (optional)" trigger="post_address"}></TD>
 			    </TR>

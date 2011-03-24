@@ -40,14 +40,15 @@
 			{$customerinfo.zip} {$customerinfo.city}
 		</TD>
 	</TR>
-{if $customerinfo.post_address neq ""}
+{if $customerinfo.post_name neq "" || $customerinfo.post_address neq ""}
 	<TR>
 		<TD WIDTH="1%" >
 			<IMG SRC="img/post.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
-			{$customerinfo.post_address}<BR>
-			{$customerinfo.post_zip} {$customerinfo.post_city}
+			{if $customerinfo.post_name neq ""}{$customerinfo.post_name}{/if}
+			{if $customerinfo_post_address neq ""}<BR>{$customerinfo.post_address}{/if}
+			<BR>{$customerinfo.post_zip} {$customerinfo.post_city}
 		</TD>
 	</TR>
 {/if}
