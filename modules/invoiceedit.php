@@ -27,37 +27,38 @@
 $taxeslist = $LMS->GetTaxes();
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
-if(isset($_GET['id']) && $action=='edit')
+if(isset($_GET['id']) && $action == 'edit')
 {
-    $invoice = $LMS->GetInvoiceContent($_GET['id']);
+	$invoice = $LMS->GetInvoiceContent($_GET['id']);
 
-    $SESSION->remove('invoicecontents');
-    $SESSION->remove('invoicecustomer');
+	$SESSION->remove('invoicecontents');
+	$SESSION->remove('invoicecustomer');
 
-    $i = 0;
-    foreach ($invoice['content'] as $item) {
-	$i++;
-        $nitem['tariffid']	= $item['tariffid'];
-	$nitem['name']		= $item['description'];
-	$nitem['prodid']	= $item['prodid'];
-        $nitem['count']		= str_replace(',','.',$item['count']);
-	$nitem['discount']	= str_replace(',','.',$item['discount']);
-	$nitem['jm']		= str_replace(',','.',$item['content']);
-        $nitem['valuenetto']	= str_replace(',','.',$item['basevalue']);
-        $nitem['valuebrutto']	= str_replace(',','.',$item['value']);
-	$nitem['s_valuenetto']	= str_replace(',','.',$item['totalbase']);
-        $nitem['s_valuebrutto']	= str_replace(',','.',$item['total']);
-	$nitem['tax']		= isset($taxeslist[$item['taxid']]) ? $taxeslist[$item['taxid']]['label'] : '';
-	$nitem['taxid']		= $item['taxid'];
-	$nitem['posuid']	= $i;
-	$SESSION->restore('invoicecontents', $invoicecontents);
-	$invoicecontents[] = $nitem;
-	$SESSION->save('invoicecontents', $invoicecontents);
-    }
-    $SESSION->save('invoicecustomer', $LMS->GetCustomer($invoice['customerid'], true));
-    $invoice['oldcdate'] = $invoice['cdate'];
-    $SESSION->save('invoice', $invoice);
-    $SESSION->save('invoiceid', $invoice['id']);
+	$i = 0;
+	foreach ($invoice['content'] as $item) {
+		$i++;
+		$nitem['tariffid']	= $item['tariffid'];
+		$nitem['name']		= $item['description'];
+		$nitem['prodid']	= $item['prodid'];
+		$nitem['count']		= str_replace(',' ,'.', $item['count']);
+		$nitem['discount']	= str_replace(',' ,'.', $item['discount']);
+		$nitem['jm']		= str_replace(',' ,'.', $item['content']);
+		$nitem['valuenetto']	= str_replace(',' ,'.', $item['basevalue']);
+		$nitem['valuebrutto']	= str_replace(',' ,'.', $item['value']);
+		$nitem['s_valuenetto']	= str_replace(',' ,'.', $item['totalbase']);
+		$nitem['s_valuebrutto']	= str_replace(',' ,'.', $item['total']);
+		$nitem['tax']		= isset($taxeslist[$item['taxid']]) ? $taxeslist[$item['taxid']]['label'] : '';
+		$nitem['taxid']		= $item['taxid'];
+		$nitem['posuid']	= $i;
+		$SESSION->restore('invoicecontents', $invoicecontents);
+		$invoicecontents[] = $nitem;
+		$SESSION->save('invoicecontents', $invoicecontents);
+	}
+	$SESSION->save('invoicecustomer', $LMS->GetCustomer($invoice['customerid'], true));
+	$invoice['oldcdate'] = $invoice['cdate'];
+	$invoice['oldsdate'] = $invoice['sdate'];
+	$SESSION->save('invoice', $invoice);
+	$SESSION->save('invoiceid', $invoice['id']);
 }
 
 $SESSION->restore('invoicecontents', $contents);
@@ -113,36 +114,38 @@ switch($action)
 	break;
 
 	case 'setcustomer':
-		
-		$olddate = $invoice['oldcdate'];
-		
+
+		$oldcdate = $invoice['oldcdate'];
+		$oldsdate = $invoice['oldsdate'];
+
 		unset($invoice); 
 		unset($customer);
 		unset($error);
 		$error = NULL;
-		
+
 		if($invoice = $_POST['invoice'])
 			foreach($invoice as $key => $val)
 				$invoice[$key] = $val;
-		
+
 		$invoice['paytime'] = sprintf('%d', $invoice['paytime']);
-		$invoice['oldcdate'] = $olddate;
-		
+		$invoice['oldcdate'] = $oldcdate;
+		$invoice['oldsdate'] = $oldsdate;
+
 		if($invoice['paytime'] < 0)
 			$invoice['paytime'] = 14;
 
 		if($invoice['cdate']) // && !$invoice['cdatewarning'])
 		{
-			list($year, $month, $day) = explode('/',$invoice['cdate']);
+			list($year, $month, $day) = explode('/', $invoice['cdate']);
 			if(checkdate($month, $day, $year))
 			{
 				$oldday = date('d', $invoice['oldcdate']);
 				$oldmonth = date('m', $invoice['oldcdate']);
-			        $oldyear = date('Y', $invoice['oldcdate']);
-				
+				$oldyear = date('Y', $invoice['oldcdate']);
+
 				if($oldday != $day || $oldmonth != $month || $oldyear != $year)
 				{
-					$invoice['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);
+					$invoice['cdate'] = mktime(date('G', time()), date('i', time()), date('s', time()), $month, $day, $year);
 				}
 				else // save hour/min/sec value if date is the same
 					$invoice['cdate'] = $invoice['oldcdate'];
@@ -150,9 +153,29 @@ switch($action)
 			else
 				$error['cdate'] = trans('Incorrect date format!');
 		}
-		
+
+		if($invoice['sdate'])
+		{
+			list($syear, $smonth, $sday) = explode('/', $invoice['sdate']);
+			if(checkdate($smonth, $sday, $syear))
+			{
+				$oldsday = date('d', $invoice['oldsdate']);
+				$oldsmonth = date('m', $invoice['oldsdate']);
+				$oldsyear = date('Y', $invoice['oldsdate']);
+
+				if($oldsday != $sday || $oldsmonth != $smonth || $oldsyear != $syear)
+				{
+					$invoice['sdate'] = mktime(date('G', time()), date('i', time()), date('s', time()), $smonth, $sday, $syear);
+				}
+				else // save hour/min/sec value if date is the same
+					$invoice['sdate'] = $invoice['oldsdate'];
+			}
+			else
+				$error['sdate'] = trans('Incorrect date format!');
+		}
+
 		$invoice['customerid'] = $_POST['customerid'];
-		
+
 		if(!$error)
 			if($LMS->CustomerExists($invoice['customerid']))
 				$customer = $LMS->GetCustomer($invoice['customerid'], true);
