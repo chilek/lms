@@ -170,7 +170,7 @@ switch($action)
 			list($syear, $smonth, $sday) = explode('/', $invoice['sdate']);
 			if(checkdate($smonth, $sday, $syear)) 
 			{
-				$invoice['sdate'] = mktime(date('G', time()), date('i',time()), date('s', time()), $smonth, $sday, $syear);
+				$invoice['sdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $smonth, $sday, $syear);
 				$scurrmonth = $smonth;
 			}
 			else
@@ -186,7 +186,7 @@ switch($action)
 			list($year, $month, $day) = explode('/', $invoice['cdate']);
 			if(checkdate($month, $day, $year)) 
 			{
-				$invoice['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);
+				$invoice['cdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $month, $day, $year);
 				$currmonth = $month;
 			}
 			else

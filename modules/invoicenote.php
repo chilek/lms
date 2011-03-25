@@ -35,35 +35,37 @@ if(isset($_GET['id']) && $action=='init')
 
 	foreach ($invoice['content'] as $item)
 	{
-    		$nitem['tariffid']	= $item['tariffid'];
+		$nitem['tariffid']	= $item['tariffid'];
 		$nitem['name']		= $item['description'];
 		$nitem['prodid']	= $item['prodid'];
-    		$nitem['count']		= str_replace(',','.',$item['count']);
-		$nitem['discount']	= str_replace(',','.',$item['discount']);
-		$nitem['jm']		= str_replace(',','.',$item['content']);
-    		$nitem['valuenetto']	= str_replace(',','.',$item['basevalue']);
-    		$nitem['valuebrutto']	= str_replace(',','.',$item['value']);
-		$nitem['s_valuenetto']	= str_replace(',','.',$item['totalbase']);
-    		$nitem['s_valuebrutto']	= str_replace(',','.',$item['total']);
+		$nitem['count']		= str_replace(',', '.', $item['count']);
+		$nitem['discount']	= str_replace(',', '.', $item['discount']);
+		$nitem['jm']		= str_replace(',', '.', $item['content']);
+		$nitem['valuenetto']	= str_replace(',', '.', $item['basevalue']);
+		$nitem['valuebrutto']	= str_replace(',', '.', $item['value']);
+		$nitem['s_valuenetto']	= str_replace(',', '.', $item['totalbase']);
+		$nitem['s_valuebrutto']	= str_replace(',', '.', $item['total']);
 		$nitem['tax']		= isset($taxeslist[$item['taxid']]) ? $taxeslist[$item['taxid']]['label'] : 0;
 		$nitem['taxid']		= $item['taxid'];
 		$nitem['itemid']	= $item['itemid'];
 		$invoicecontents[$nitem['itemid']] = $nitem;
 	}
-    
+
 	$cnote['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans WHERE doctype = ? AND isdefault = 1', array(DOC_CNOTE));
-	$cnote['cdate'] = time();
+	$currtime = time();
+	$cnote['cdate'] = $currtime;
+	$cnote['sdate'] = $currtime;
 	$cnote['reason'] = '';
 	$cnote['paytype'] = $invoice['paytype'];
 
-	$t = $invoice['cdate'] + $invoice['paytime']*86400;
+	$t = $invoice['cdate'] + $invoice['paytime'] * 86400;
 	$deadline = mktime(23, 59, 59, date('m',$t), date('d',$t), date('Y',$t));
-	
+
 	if($cnote['cdate'] > $deadline)
 		$cnote['paytime'] = 0;
 	else
-		$cnote['paytime'] = floor(($deadline - $cnote['cdate'])/86400);
-    
+		$cnote['paytime'] = floor(($deadline - $cnote['cdate']) / 86400);
+
 	$cnote['use_current_division'] = true;
 
 	$SESSION->save('cnote', $cnote);
@@ -104,12 +106,34 @@ switch($action)
 		if($cnote['paytime'] < 0)
 			$cnote['paytime'] = 14;
 
+		$currtime = time();
+
+		if($cnote['sdate'])
+		{
+			list($syear, $smonth, $sday) = explode('/', $cnote['sdate']);
+			if(checkdate($smonth, $sday, $syear))
+			{
+				$cnote['sdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $smonth, $sday, $syear);
+				if($cnote['sdate'] < $invoice['cdate'])
+				{
+					$error['sdate'] = trans('Credit note date cannot be earlier than invoice date!');
+				}
+			}
+			else
+			{
+				$error['sdate'] = trans('Incorrect date format! Using current date.');
+				$cnote['sdate'] = $currtime;
+			}
+		}
+		else
+			$cnote['sdate'] = $currtime;
+
 		if($cnote['cdate'])
 		{
-			list($year, $month, $day) = explode('/',$cnote['cdate']);
+			list($year, $month, $day) = explode('/', $cnote['cdate']);
 			if(checkdate($month, $day, $year))
 			{
-				$cnote['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);
+				$cnote['cdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $month, $day, $year);
 				if($cnote['cdate'] < $invoice['cdate'])
 				{
 					$error['cdate'] = trans('Credit note date cannot be earlier than invoice date!');
@@ -118,12 +142,15 @@ switch($action)
 			else
 			{
 				$error['cdate'] = trans('Incorrect date format! Using current date.');
-				$cnote['cdate'] = time();
+				$cnote['cdate'] = $currtime;
 			}
 		}
 		else
-			$cnote['cdate'] = time();
-		
+			$cnote['cdate'] = $currtime;
+
+		if($cnote['sdate'] > $cnote['cdate'])
+			$error['sdate'] = trans('Sale date of credit note shouldn\'t be later than settlement date!');
+
 		if($cnote['number'])
 		{
 			if(!preg_match('/^[0-9]+$/', $cnote['number']))
