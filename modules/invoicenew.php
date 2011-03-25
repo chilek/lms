@@ -57,13 +57,15 @@ switch($action)
 {
 	case 'init':
 
-    		unset($invoice);
-    		unset($contents);
-    		unset($customer);
-    		unset($error);
+		unset($invoice);
+		unset($contents);
+		unset($customer);
+		unset($error);
 
 		// get default invoice's numberplanid and next number
-		$invoice['cdate'] = time();
+		$currtime = time();
+		$invoice['cdate'] = $currtime;
+		$invoice['sdate'] = $currtime;
 		$invoice['paytime'] = $CONFIG['invoices']['paytime'];
 //		$invoice['paytype'] = $CONFIG['invoices']['paytype'];
 
@@ -160,7 +162,25 @@ switch($action)
 				$invoice[$key] = $val;
 
 		$invoice['customerid'] = $_POST['customerid'];
-		
+
+		$currtime = time();
+
+		if($invoice['sdate'])
+		{
+			list($syear, $smonth, $sday) = explode('/', $invoice['sdate']);
+			if(checkdate($smonth, $sday, $syear)) 
+			{
+				$invoice['sdate'] = mktime(date('G', time()), date('i',time()), date('s', time()), $smonth, $sday, $syear);
+				$scurrmonth = $smonth;
+			}
+			else
+			{
+				$error['sdate'] = trans('Incorrect date format!');
+				$invoice['sdate'] = $currtime;
+				break;
+			}
+		}
+
 		if($invoice['cdate'])
 		{
 			list($year, $month, $day) = explode('/', $invoice['cdate']);
@@ -172,10 +192,22 @@ switch($action)
 			else
 			{
 				$error['cdate'] = trans('Incorrect date format!');
-				$invoice['cdate'] = time();
+				$invoice['cdate'] = $currtime;
 				break;
 			}
 		}
+
+		if($invoice['sdate'] && !isset($invoice['sdatewarning']))
+		{
+			if($invoice['sdate'] > $invoice['cdate'])
+			{
+				$error['sdate'] = trans('Sale date of invoice shouldn\'t be later than settlement date. If sure, you want to write invoice with sale date of $0, then click "Submit" again.',
+					date('Y/m/d H:i', $invoice['sdate']));
+				$invoice['sdatewarning'] = 1;
+			}
+		}
+		elseif(!$invoice['sdate'])
+			$invoice['sdate'] = $currtime;
 
 		if($invoice['cdate'] && !isset($invoice['cdatewarning']))
 		{
@@ -184,12 +216,13 @@ switch($action)
 
 			if($invoice['cdate'] < $maxdate)
 			{
-				$error['cdate'] = trans('Last date of invoice settlement is $0. If sure, you want to write invoice with date of $1, then click "Submit" again.',date('Y/m/d H:i', $maxdate), date('Y/m/d H:i', $invoice['cdate']));
+				$error['cdate'] = trans('Last date of invoice settlement is $0. If sure, you want to write invoice with date of $1, then click "Submit" again.',
+					date('Y/m/d H:i', $maxdate), date('Y/m/d H:i', $invoice['cdate']));
 				$invoice['cdatewarning'] = 1;
 			}
 		}
 		elseif(!$invoice['cdate'])
-			$invoice['cdate'] = time();
+			$invoice['cdate'] = $currtime;
 
 		if($invoice['number'])
 		{

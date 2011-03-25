@@ -2079,18 +2079,21 @@ class LMS
 
 	function AddInvoice($invoice)
 	{
-		$cdate = $invoice['invoice']['cdate'] ? $invoice['invoice']['cdate'] : time();
+		$currtime = time();
+		$cdate = $invoice['invoice']['cdate'] ? $invoice['invoice']['cdate'] : $currtime;
+		$sdate = $invoice['invoice']['sdate'] ? $invoice['invoice']['sdate'] : $currtime;
 		$number = $invoice['invoice']['number'];
 		$type = $invoice['invoice']['type'];
 
 		$this->DB->Execute('INSERT INTO documents (number, numberplanid, type,
-			cdate, paytime, paytype, userid, customerid, name, address, 
+			cdate, sdate, paytime, paytype, userid, customerid, name, address, 
 			ten, ssn, zip, city, countryid, divisionid)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			array($number, 
 				$invoice['invoice']['numberplanid'] ? $invoice['invoice']['numberplanid'] : 0, 
 				$type, 
 				$cdate, 
+				$sdate, 
 				$invoice['invoice']['paytime'], 
 				$invoice['invoice']['paytype'],
 				$this->AUTH->id, 
@@ -2147,15 +2150,18 @@ class LMS
 
 	function InvoiceUpdate($invoice)
 	{
-		$cdate = $invoice['invoice']['cdate'] ? $invoice['invoice']['cdate'] : time();
+		$currtime = time();
+		$cdate = $invoice['invoice']['cdate'] ? $invoice['invoice']['cdate'] : $currtime;
+		$sdate = $invoice['invoice']['sdate'] ? $invoice['invoice']['sdate'] : $currtime;
 		$iid = $invoice['invoice']['id'];
 
 		$this->DB->BeginTrans();
 
-		$this->DB->Execute('UPDATE documents SET cdate = ?, paytime = ?, paytype = ?, customerid = ?,
+		$this->DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, customerid = ?,
 				name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, divisionid = ?
 				WHERE id = ?',
 				array($cdate, 
+					$sdate, 
 					$invoice['invoice']['paytime'],
 					$invoice['invoice']['paytype'],
 					$invoice['customer']['id'],
@@ -2242,7 +2248,7 @@ class LMS
 
 		if($result = $this->DB->GetRow('SELECT d.id, d.number, d.name, d.customerid,
 				d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
-				d.ten, d.ssn, d.cdate, d.paytime, d.paytype, d.numberplanid,
+				d.ten, d.ssn, d.cdate, d.sdate, d.paytime, d.paytype, d.numberplanid,
 				d.closed, d.reference, d.reason, d.divisionid,
 				(SELECT name FROM users WHERE id = d.userid) AS user, n.template,
 				ds.name AS division_name, ds.shortname AS division_shortname,

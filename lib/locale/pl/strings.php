@@ -449,6 +449,7 @@ $_LANG['Enter date in \'yyyy/mm/dd\' format or click to choose it from calendar'
 $_LANG['Enter date in YYYY/MM/DD format or click to choose it from calendar'] = 'Podaj datę w formacie \'rrrr/mm/dd\' (puste pole oznacza aktualną datę) lub kliknij żeby wybrać z kalendarza';
 $_LANG['Enter accounting start date in YYYY/MM/DD format. If you don\'t want to define \'From\' date leave this field empty'] = 'Podaj datę od której taryfa powinna obowiązywać lub zostaw to pole puste. Data powinna być w formacie RRRR/MM/DD';
 $_LANG['Enter accounting end date in YYYY/MM/DD format. Leave this field empty if you don\'t want to set expiration date'] = 'Wprowadź datę w formacie RRRR/MM/DD kiedy zakończyć naliczanie. Zostaw to pole puste, jeśli nie chcesz ustawiać daty wygaśnięcia zobowiązania';
+$_LANG['Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar'] = 'Wprowadź datę sprzedaży w formacie RRRR/MM/DD lub kliknij by wybrać ją z kalendarza. Puste pole oznacza datę dzisiejszą';
 $_LANG['Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar'] = 'Wprowadź datę wystawienia w formacie RRRR/MM/DD lub kliknij by wybrać ją z kalendarza. Puste pole oznacza datę dzisiejszą';
 $_LANG['Enter deadline in days (optional)'] = 'Wprowadź termin zapłaty w dniach (opcjonalnie)';
 $_LANG['Enter description (optional)'] = 'Wprowadź opis (opcjonalnie)';
@@ -741,6 +742,7 @@ $_LANG['Last:'] = 'Ostatni:';
 $_LANG['last $0 transactions'] = 'ostatnie $0 transakcji';
 $_LANG['Last 30 Days'] = 'Ostatnie 30 dni';
 $_LANG['Last date of invoice settlement is $0. If sure, you want to write invoice with date of $1, then click "Submit" again.'] = 'Ostatnia data wystawienia faktury to $0. Jeżeli jesteś pewien, że chcesz zapisać fakturę z datą $1, to ponownie kliknij "Zapisz".';
+$_LANG['Sale date of invoice shouldn\'t be later than settlement date. If sure, you want to write invoice with sale date of $0, then click "Submit" again.'] = 'Data sprzedaży na fakturze nie powinna być późniejsza niż data wystawienia faktury. Jeżeli jesteś pewien, że chcesz zapisać fakturę z datą sprzedaży $0, to ponownie kliknij "Zapisz".';
 $_LANG['Last Day'] = 'Ostatni dzień';
 $_LANG['Last day stats for all networks'] = 'Statystyki z ostatniego dnia dla wszystkich sieci';
 $_LANG['Last date of receipt settlement is $0. If sure, you want to write receipt with date of $1, then click "Submit" again.'] = 'Ostatnia data wystawienia pokwitowania to $0. Jeśli na pewno chcesz wystawić dowód wpłaty z datą $1 kliknij ponownie "Zapisz".';
