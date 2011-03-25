@@ -730,7 +730,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 
 					// prepare insert to 'invoices' table
 					g->db_pexec(g->conn, "INSERT INTO documents (number, numberplanid, type, countryid, divisionid, "
-						"customerid, name, address, zip, city, ten, ssn, cdate, paytime, paytype) "
+						"customerid, name, address, zip, city, ten, ssn, cdate, sdate, paytime, paytype) "
 						"VALUES (?, ?, 1, ?, ?, ?, '? ?', '?', '?', '?', '?', '?', ?, ?, ?)",
 						itoa(number),
 						numberplanid,
@@ -744,6 +744,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 						g->db_get_data(res,i,"city"),
 						g->db_get_data(res,i,"ten"),
 						g->db_get_data(res,i,"ssn"),
+						currtime,
 						currtime,
 						paytime,
 						paytype_str
