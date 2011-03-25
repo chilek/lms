@@ -149,7 +149,7 @@ switch($action)
 			$cnote['cdate'] = $currtime;
 
 		if($cnote['sdate'] > $cnote['cdate'])
-			$error['sdate'] = trans('Sale date of credit note shouldn\'t be later than settlement date!');
+			$error['sdate'] = trans('Sale date of credit note shouldn\'t be later than credit note settlement date!');
 
 		if($cnote['number'])
 		{
