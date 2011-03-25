@@ -50,6 +50,17 @@
 	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<B>{t}Sale date:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+			<INPUT TYPE="TEXT" NAME="cnote[sdate]" VALUE="{$cnote.sdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"} OnClick="javascript:cal2.popup();" >
+			{if $cnote.sdatewarning}
+			<INPUT TYPE="HIDDEN" NAME="cnote[sdatewarning]" VALUE="1">
+			{/if}
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
 			<B>{t}Settlement date:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
@@ -251,6 +262,8 @@
 <!--
 var cal1 = new calendar(document.forms['setheader'].elements['cnote[cdate]']);
 cal1.time_comp = false;
+var cal2 = new calendar(document.forms['setheader'].elements['cnote[sdate]']);
+cal2.time_comp = false;
 document.forms['setheader'].elements['cnote[number]'].focus();
 //-->
 </SCRIPT>
