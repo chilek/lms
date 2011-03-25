@@ -124,9 +124,6 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
 			<INPUT TYPE="TEXT" NAME="invoice[sdate]" VALUE="{$invoice.sdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"} OnClick="javascript:cal2.popup();" >
-			{if $invoice.sdatewarning}
-			<INPUT TYPE="HIDDEN" NAME="invoice[sdatewarning]" VALUE="1">
-			{/if}
 		</TD>
 	</TR>
 	<TR CLASS="light">

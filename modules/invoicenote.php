@@ -148,9 +148,6 @@ switch($action)
 		else
 			$cnote['cdate'] = $currtime;
 
-		if($cnote['sdate'] > $cnote['cdate'])
-			$error['sdate'] = trans('Sale date of credit note shouldn\'t be later than credit note settlement date!');
-
 		if($cnote['number'])
 		{
 			if(!preg_match('/^[0-9]+$/', $cnote['number']))

@@ -180,6 +180,8 @@ switch($action)
 				break;
 			}
 		}
+		else
+			$invoice['sdate'] = $currtime;
 
 		if($invoice['cdate'])
 		{
@@ -196,18 +198,6 @@ switch($action)
 				break;
 			}
 		}
-
-		if($invoice['sdate'] && !isset($invoice['sdatewarning']))
-		{
-			if($invoice['sdate'] > $invoice['cdate'])
-			{
-				$error['sdate'] = trans('Sale date of invoice shouldn\'t be later than settlement date. If sure, you want to write invoice with sale date of $0, then click "Submit" again.',
-					date('Y/m/d H:i', $invoice['sdate']));
-				$invoice['sdatewarning'] = 1;
-			}
-		}
-		elseif(!$invoice['sdate'])
-			$invoice['sdate'] = $currtime;
 
 		if($invoice['cdate'] && !isset($invoice['cdatewarning']))
 		{
