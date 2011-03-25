@@ -539,11 +539,11 @@ while(my $assign = $dbq->fetchrow_hashref())
 				if($paytime eq -1) { $paytime = $deadline; }
 
 				my $idbq = $dbase->prepare("INSERT INTO documents (number, numberplanid, type, countryid, divisionid,
-						customerid, name, address, zip, city, ten, ssn, cdate, paytime, paytype)
+						customerid, name, address, zip, city, ten, ssn, cdate, sdate, paytime, paytype)
 						VALUES (?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 				$idbq->execute($numbers{$plan}, $plan, $urow->{'countryid'}, $urow->{'divisionid'}, $uid,
 						$urow->{'lastname'}.' '.$urow->{'name'}, $urow->{'address'}, $urow->{'zip'},
-						$urow->{'city'}, $urow->{'ten'}, $urow->{'ssn'}, $currtime, $paytime, $inv_paytype);
+						$urow->{'city'}, $urow->{'ten'}, $urow->{'ssn'}, $currtime, $currtime, $paytime, $inv_paytype);
 
 				$idbq = $dbase->prepare("SELECT id FROM documents
 						WHERE cdate = ? AND number = ? AND type = 1 AND customerid = ?");
