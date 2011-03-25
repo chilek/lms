@@ -246,7 +246,7 @@ if(isset($_POST['message']))
 			if($message['type'] == MSG_MAIL)
 				$recipients[$key]['destination'] = $row['email'];
 			else {
-				$recipients[$key]['destination'] = $number;
+				$recipients[$key]['destination'] = $row['phone'];
 			}
 			
 			$DB->Execute('INSERT INTO messageitems (messageid, customerid,
