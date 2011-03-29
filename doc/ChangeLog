@@ -8,6 +8,7 @@ version ? (????-??-??)
   - receipts: replaced stamp by division/company data [chilan]
   - documents: added sale date [chilan]
   - BTS#0000863: changed temporary referenced $number variable to actual variable [chilan]
+  - Fixed performance of nodes quick-searching on MySQL [alec]
 
 version 1.11.12 Aris (2011-03-18)
 
