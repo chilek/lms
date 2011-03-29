@@ -161,20 +161,37 @@ switch($mode)
 	case 'node':
 		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
-			$candidates = $DB->GetAll('SELECT n.id, n.name, INET_NTOA(ipaddr) as ip,
-			    INET_NTOA(ipaddr_pub) AS ip_pub, mac
-				FROM vnodes n
-				WHERE ('.(preg_match('/^[0-9]+$/',$search) ? 'n.id = '.intval($search).' OR ' : '').' 
-					LOWER(n.name) ?LIKE? LOWER(\'%'.$search.'%\')
-					OR INET_NTOA(ipaddr) ?LIKE? \'%'.$search.'%\'
-					OR INET_NTOA(ipaddr_pub) ?LIKE? \'%'.$search.'%\'
-					OR LOWER(mac) ?LIKE? LOWER(\'%'.macformat($search).'%\')
-					)
-					AND NOT EXISTS (
-                        SELECT 1 FROM customerassignments a
-			            JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-					    WHERE e.userid = lms_current_user() AND a.customerid = n.ownerid)
-				ORDER BY n.name LIMIT 15');
+		    // Build different query for each database engine,
+		    // MySQL is slow here when vnodes view is used
+		    if ($CONFIG['database']['type'] == 'postgres')
+			    $sql_query = 'SELECT n.id, n.name, INET_NTOA(ipaddr) as ip,
+			        INET_NTOA(ipaddr_pub) AS ip_pub, mac
+				    FROM vnodes n
+				    WHERE %where
+    				ORDER BY n.name LIMIT 15';
+            else
+			    $sql_query = 'SELECT n.id, n.name, INET_NTOA(ipaddr) as ip,
+			        INET_NTOA(ipaddr_pub) AS ip_pub, mac
+				    FROM nodes n
+				    JOIN (
+                        SELECT nodeid, GROUP_CONCAT(mac SEPARATOR \',\') AS mac
+                        FROM macs
+                        GROUP BY nodeid
+                    ) m ON (n.id = m.nodeid)
+				    WHERE %where
+    				ORDER BY n.name LIMIT 15';
+
+            $sql_where = '('.(preg_match('/^[0-9]+$/',$search) ? 'n.id = '.intval($search).' OR ' : '').'
+				LOWER(n.name) ?LIKE? LOWER(\'%'.$search.'%\')
+				OR INET_NTOA(ipaddr) ?LIKE? \'%'.$search.'%\'
+				OR INET_NTOA(ipaddr_pub) ?LIKE? \'%'.$search.'%\'
+				OR LOWER(mac) ?LIKE? LOWER(\'%'.macformat($search).'%\'))
+			    AND NOT EXISTS (
+                    SELECT 1 FROM customerassignments a
+                    JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+			        WHERE e.userid = lms_current_user() AND a.customerid = n.ownerid)';
+
+			$candidates = $DB->GetAll(str_replace('%where', $sql_where,	$sql_query));
 
 			$eglible=array(); $actions=array(); $descriptions=array();
 			if ($candidates)
