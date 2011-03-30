@@ -1006,8 +1006,6 @@ class LMS
 					$result[$idx]['upceil']      = $channel['upceil'];
 				}
 			}
-
-			$result['total'] = sizeof($result);
 		}
 		return $result;
 	}
