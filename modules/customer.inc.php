@@ -49,7 +49,6 @@ $allnodegroups = $LMS->GetNodeGroupNames();
 $messagelist = $LMS->GetMessages($customerid, 10);
 $eventlist = $LMS->EventSearch(array('customerid' => $customerid), 'date,desc', true);
 $customernodes = $LMS->GetCustomerNodes($customerid);
-$customernodes['ownerid'] = $customerid;
 
 if(!empty($documents))
 {

@@ -17,16 +17,14 @@
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
 		    {if $layout.module == 'ewxnodelist'}
-		    <B>{t 0=$customernodes.total|default:"0"}Channel Nodes ($0):{/t}</B>
+		    <B>{t 0=$customernodes|@count|default:"0"}Channel Nodes ($0):{/t}</B>
 		    {else}
-			<B>{t 0=$customernodes.total|default:"0"}Customer Nodes ($0):{/t}</B>
+			<B>{t 0=$customernodes|@count|default:"0"}Customer Nodes ($0):{/t}</B>
 			{/if}
 		</TD>
 	</TR>
 	{cycle values="light,lucid" print=false}
-	{if $customernodes.total > 0}
 	{section name=customernodes loop=$customernodes}
-	{if $customernodes[customernodes].id}
 	<tr class="{cycle}{if ! $customernodes[customernodes].access} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD WIDTH="1%">
 			<a href="?m=nodeset&id={$customernodes[customernodes].id}&shortlist=1&popup=1"><IMG src="img/{if ! $customernodes[customernodes].access}no{/if}access.gif" ALT="[ {if ! $customernodes[customernodes].access}{t}Connect{/t}{else}{t}Disconnect{/t}{/if} ]"></a>
@@ -47,9 +45,7 @@
 			<NOBR>{$customernodes[customernodes].info|truncate:40:"...":true}</NOBR>
 		</TD>
 	</TR>
-	{/if}
-	{/section}
-	{else}
+	{sectionelse}
 	<TR>
 		<TD WIDTH="100%" COLSPAN="2" align="center">
 			<P>&nbsp;</P>
@@ -57,7 +53,7 @@
 			<P>&nbsp;</P>
 		</TD>
 	</TR>
-	{/if}
+	{/section}
 </TABLE>
 <SCRIPT TYPE="text/javascript">
 <!--

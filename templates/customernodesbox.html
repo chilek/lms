@@ -47,7 +47,7 @@ function CheckAllN2()
 	<TR CLASS="DARK">
 		<TD width="99%" class="fleftu hand" onclick="showOrHide('nodespanel-{$layout.module}');">
 			<IMG SRC="img/node.gif" alt="">
-			<B>{t 0=$customernodes.total|default:"0"}Customer Nodes ($0):{/t}</B>
+			<B>{t 0=$customernodes|@count|default:"0"}Customer Nodes ($0):{/t}</B>
 		</TD>
 		<TD width="1%" class="frightu" align="right" nowrap>
 			{if $customerinfo.status neq "1" and ! $customerinfo.deleted}<A HREF="?m=nodeadd&ownerid={$customerinfo.id}">{t}New Node{/t} &raquo;</A>&nbsp;{/if}
@@ -70,9 +70,7 @@ function CheckAllN2()
 		    	    <TD WIDTH="1%" class="frightu">&nbsp;</TD>
 			</TR>
 			{cycle values="light,lucid" print=false name=nodes}
-			{if $customernodes.total > 0}
 			{section name=customernodes loop=$customernodes}
-			{if $customernodes[customernodes].id}
     			<TR class="{cycle name=nodes}{if ! $customernodes[customernodes].access} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 			    <TD onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';">
 				{if $customernodes[customernodes].lastonline}
@@ -132,9 +130,7 @@ function CheckAllN2()
 				<INPUT TYPE="checkbox" NAME="marks[{$customernodes[customernodes].id}]" VALUE="{$customernodes[customernodes].id}" CHECKED>
 			    </TD>
 			</TR>
-			{/if}
-			{/section}
-			{else}
+			{sectionelse}
 			<TR>
 			    <TD WIDTH="100%" COLSPAN="{math equation="x+y" x=6 y=$ewx}" align="center">
 				<P>&nbsp;</P>
@@ -142,7 +138,7 @@ function CheckAllN2()
 				<P>&nbsp;</P>
 			    </TD>
 			</TR>
-			{/if}
+			{/section}
 			<TR CLASS="LIGHT">
 			    <TD COLSPAN="{math equation="x+y" x=4 y=$ewx}" CLASS="FTOP">
 				<IMG SRC="img/access.gif">
