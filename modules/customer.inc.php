@@ -28,7 +28,7 @@ if($layout['module'] != 'customeredit')
 {
 	$customerinfo = $LMS->GetCustomer($customerid);
 
-    if(!$customerinfo || $customerinfo['deleted'])
+    if(!$customerinfo)
     {
         $SESSION->redirect('?m=customerlist');
     }
