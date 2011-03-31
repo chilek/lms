@@ -1,14 +1,14 @@
 <!--// $Id$ //-->
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR{if $customerpanel} class="dark hand" onClick="showOrHide('customerpanel');"{else} class="dark"{/if}>
-		<TD WIDTH="1%" CLASS="FALL" COLSPAN="3">
+		<TD WIDTH="1%" CLASS="FALL">
 			<IMG SRC="img/customer.gif" ALT="">
 			{if $customerpanel}<B>{t}Owner:{/t}</B>{/if}
 			<B>{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}){if $customerinfo.deleted} <FONT COLOR="RED">({t}deleted customer{/t})</FONT>{/if}</B>
 		</TD>
 	</TR>
         <TR class="LIGHT"{if $customerpanel} id="customerpanel" style="display:none;"{/if}>
-	        <TD WIDTH="100%" COLSPAN="3"{if $customerpanel} CLASS="fall" ALIGN="RIGHT"{else}CLASS="flr"{/if}>
+	        <TD WIDTH="100%" {if $customerpanel} CLASS="fall" ALIGN="RIGHT"{else}CLASS="flr"{/if}>
 			<TABLE WIDTH="100%" CELLPADDING="0">
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" style="vertical-align:top;">
@@ -19,7 +19,7 @@
 			{if $customerinfo.status eq "2"}<IMG src="img/wait.gif" alt="">{/if}
 			{if $customerinfo.status eq "1"}<IMG src="img/unk.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
+		<TD WIDTH="99%">
 			{if $customerinfo.status eq "3"}<B>{t}connected<!singular>{/t}</B>{/if}
 			{if $customerinfo.status eq "2"}<B>{t}waiting{/t}</B>{/if}
 			{if $customerinfo.status eq "1"}<B>{t}interested<!singular>{/t}</B>{/if}
@@ -30,7 +30,7 @@
 		<TD WIDTH="1%">
 			<IMG src="img/division.gif" alt="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
+		<TD WIDTH="99%">
 			{$customerinfo.division}
 		</TD>
 	</TR>
@@ -39,7 +39,7 @@
 		<TD WIDTH="1%">
 			<IMG src="img/folder.gif" alt="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
+		<TD WIDTH="99%">
 			{if $customerinfo.type}{t}legal entity{/t}{else}{t}private person{/t}{/if}
 		</TD>
 	</TR>
@@ -47,7 +47,7 @@
 		<TD WIDTH="1%" style="vertical-align: top">
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
+		<TD WIDTH="99%">
 			{$customerinfo.address}<BR>
 			{$customerinfo.zip} {$customerinfo.city}
 			{if $customerinfo.cstate}<BR>{$customerinfo.cstate}{/if}
@@ -59,7 +59,7 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/post.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
+		<TD WIDTH="99%">
 			{if $customerinfo.post_name neq ""}{$customerinfo.post_name}{/if}
 			{if $customerinfo.post_address neq ""}<BR>{$customerinfo.post_address}{/if}
 			{$customerinfo.post_zip} {$customerinfo.post_city}
@@ -73,7 +73,7 @@
 		<TD WIDTH="1%" style="vertical-align: top">
 			<IMG SRC="img/phone.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
+		<TD WIDTH="99%">
 			{$item.phone}
 			{if $item.typestr}[{$item.typestr}]{/if}
 			{if $item.name} ({$item.name|truncate:"40":"...":true}){/if}
@@ -85,7 +85,7 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/mail.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
+		<TD WIDTH="99%">
 			<A HREF="mailto:{$customerinfo.email}">{$customerinfo.email}</A>
 		</TD>
 	</TR>
@@ -103,7 +103,7 @@
 			<IMG src="img/gg.gif" alt="">
 			{/if}
 		</TD>
-		<TD colspan="2">
+		<TD>
 			{if $item.type == $smarty.const.IM_GG}
 			<A HREF="gg:{$item.uid}">{$item.uid}</A>
 			{elseif $item.type == $smarty.const.IM_YAHOO}
@@ -116,63 +116,63 @@
 		</TD>
 	</TR>
 {/foreach}
+{if $customerinfo.pin neq 0}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/pin.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%">
+			{$customerinfo.pin}
+		</TD>
+	</TR>
+{/if}
 {if $customerinfo.icn neq ""}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
 			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			{$customerinfo.icn}
+		<TD WIDTH="99%">
+			{t}ICN{/t}: {$customerinfo.icn}
 		</TD>
 	</TR>
 {/if}
 {if $customerinfo.ssn neq ""}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<B>{t}SSN:{/t}</B>
+			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			{$customerinfo.ssn}
+		<TD WIDTH="99%">
+			{t}SSN{/t}: {$customerinfo.ssn}
 		</TD>
 	</TR>
 {/if}
 {if $customerinfo.ten neq ""}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<B>{t}TEN:{/t}</B>
+			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			{$customerinfo.ten}
+		<TD WIDTH="99%">
+			{t}TEN{/t}: {$customerinfo.ten}
 		</TD>
 	</TR>
 {/if}
 {if $customerinfo.regon neq ""}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<B>{t}REGON:{/t}</B>
+			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			{$customerinfo.regon}
+		<TD WIDTH="99%">
+			{t}REGON{/t}: {$customerinfo.regon}
 		</TD>
 	</TR>
 {/if}
 {if $customerinfo.rbe neq ""}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/report.gif" ALT="">
+			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			{$customerinfo.rbe}
-		</TD>
-	</TR>
-{/if}
-{if $customerinfo.pin neq 0}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/pin.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			{$customerinfo.pin}
+		<TD WIDTH="99%" NOWRAP>
+			{t}RBE{/t}: {$customerinfo.rbe}
 		</TD>
 	</TR>
 {/if}
@@ -181,7 +181,7 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/card.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
+		<TD WIDTH="99%" NOWRAP>
 			{$customerinfo.bankaccount}
 		</TD>
 	</TR>
@@ -190,7 +190,7 @@
 		<TD WIDTH="1%" style="vertical-align: top">
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
+		<TD WIDTH="99%">
 		    <TABLE cellpadding="2">
 		        <TR>
 		            <TD>
@@ -224,7 +224,7 @@
 		<TD WIDTH="1%" style="vertical-align: top">
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
+		<TD WIDTH="99%">
 		    <TABLE cellpadding="2">
 		        <TR>
 		            <TD>
@@ -359,7 +359,7 @@
 		</TD>
         </TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
+		<TD WIDTH="100%" CLASS="FBOTTOMU" ALIGN="RIGHT">
 {/if}
 			{if $customerinfo.deleted}
 				<A HREF="?m=customeredit&id={$customerinfo.id}&action=recover">{t}Restore{/t} <IMG SRC="img/recover.gif" ALT="[ {t}Restore{/t} ]"></A>

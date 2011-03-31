@@ -148,17 +148,14 @@ if (typeof String.prototype.trim == 'undefined')
 	};
 }
 
-if (typeof Array.prototype.inArray == 'undefined')
+function inArray(a, v)
 {
-    Array.prototype.inArray = function(v)
-    {
-        for (var i in this) {
-            if (this[i] == v) {
-                return true;
-            }
+    for (var i in a) {
+        if (a[i] == v) {
+            return true;
         }
-        return false;
     }
+    return false;
 }
 
 function checkElement(id)

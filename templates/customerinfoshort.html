@@ -15,7 +15,7 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/customer.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
+		<TD WIDTH="99%">
 			<B>{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}){if $customerinfo.deleted} <FONT COLOR="RED">({t}deleted customer{/t})</FONT>{/if}</B>
 		</TD>
 	</TR>
@@ -25,7 +25,7 @@
 			{if $customerinfo.status eq "2"}<IMG src="img/wait.gif" alt="">{/if}
 			{if $customerinfo.status eq "1"}<IMG src="img/unk.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
+		<TD WIDTH="99%">
 			{if $customerinfo.status eq "3"}<B>{t}connected<!singular>{/t}</B>{/if}
 			{if $customerinfo.status eq "2"}<B>{t}waiting{/t}</B>{/if}
 			{if $customerinfo.status eq "1"}<B>{t}interested<!singular>{/t}</B>{/if}
@@ -35,7 +35,7 @@
 		<TD WIDTH="1%" >
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
+		<TD WIDTH="99%" NOWRAP>
 			{$customerinfo.address}<BR>
 			{$customerinfo.zip} {$customerinfo.city}
 		</TD>
@@ -45,7 +45,7 @@
 		<TD WIDTH="1%" >
 			<IMG SRC="img/post.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
+		<TD WIDTH="99%" NOWRAP>
 			{if $customerinfo.post_name neq ""}{$customerinfo.post_name}{/if}
 			{if $customerinfo_post_address neq ""}<BR>{$customerinfo.post_address}{/if}
 			<BR>{$customerinfo.post_zip} {$customerinfo.post_city}
@@ -57,7 +57,7 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/phone.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
+		<TD WIDTH="99%" NOWRAP>
 		    {$item.phone}
 		    {if $item.typestr}[{$item.typestr}]{/if}
 		    {if $item.name} ({$item.name|truncate:"40":"...":true}){/if}
@@ -69,7 +69,7 @@
 		<TD WIDTH="1%" >
 			<IMG SRC="img/mail.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
+		<TD WIDTH="99%">
 			<A HREF="mailto:{$customerinfo.email}">{$customerinfo.email}</A>
 		</TD>
 	</TR>
@@ -87,7 +87,7 @@
 			<IMG src="img/gg.gif" alt="">
 			{/if}
 		</TD>
-		<TD colspan="2">
+		<TD>
 			{if $item.type == $smarty.const.IM_GG}
 			<A HREF="gg:{$item.uid}">{$item.uid}</A>
 			{elseif $item.type == $smarty.const.IM_YAHOO}
@@ -105,48 +105,48 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			{$customerinfo.icn}
+		<TD WIDTH="99%" NOWRAP>
+			{t}ICN{/t}: {$customerinfo.icn}
 		</TD>
 	</TR>
 {/if}
 {if $customerinfo.ssn neq ""}
 	<TR">
 		<TD WIDTH="1%">
-			<B>{t}SSN:{/t}</B>
+			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			{$customerinfo.ssn}
+		<TD WIDTH="99%" NOWRAP>
+			{t}SSN{/t}: {$customerinfo.ssn}
 		</TD>
 	</TR>
 {/if}
 {if $customerinfo.ten neq ""}
 	<TR>
 		<TD WIDTH="1%">
-			<B>{t}TEN:{/t}</B>
+			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			{$customerinfo.ten}
+		<TD WIDTH="99%" NOWRAP>
+			{t}TEN{/t}: {$customerinfo.ten}
 		</TD>
 	</TR>
 {/if}
 {if $customerinfo.regon neq ""}
 	<TR>
 		<TD WIDTH="1%">
-			<B>{t}REGON:{/t}</B>
+			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			{$customerinfo.regon}
+		<TD WIDTH="99%" NOWRAP>
+			{t}REGON{/t}: {$customerinfo.regon}
 		</TD>
 	</TR>
 {/if}
 {if $customerinfo.rbe neq ""}
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/report.gif" ALT="">
+			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			{$customerinfo.rbe}
+		<TD WIDTH="99%" NOWRAP>
+			{t}RBE{/t}: {$customerinfo.rbe}
 		</TD>
 	</TR>
 {/if}
@@ -155,7 +155,7 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/group.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
+		<TD WIDTH="99%">
 			{foreach from=$customergroups item=customergroup name=customergroup}
 				{$customergroup.name}{if !$smarty.foreach.customergroup.last},{/if} 
 			{/foreach}
@@ -166,10 +166,8 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/money.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%">
+		<TD WIDTH="99%" NOWRAP>
 			<B>{t}Balance:{/t}</B>
-		</TD>
-		<TD WIDTH="98%" NOWRAP>
 			{if $customerinfo.balance < 0}<FONT class="alert">{$customerinfo.balance|money_format}</FONT>{else}{$customerinfo.balance|default:"0"|money_format}{/if}
 		</TD>
 	</TR>

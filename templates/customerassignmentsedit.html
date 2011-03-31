@@ -53,7 +53,7 @@
         select.innerHTML = '';
         // copy options from t_select element
         for (i=0, len=options.length; i<len; i++)
-            if (assignments[sid].inArray(options[i].value))
+            if (inArray(assignments[sid], options[i].value))
                 select.appendChild(options[i].cloneNode(true));
 
         select.value = selected;

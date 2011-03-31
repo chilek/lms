@@ -343,7 +343,7 @@ function nd(time) {
 			o3_removecounter++;
 		}
 	}
-	
+
 	return true;
 }
 
@@ -353,8 +353,8 @@ function cClick() {
 // LMS-mod
         lms_sticky_popup = 0;
 		runHook("hideObject", FREPLACE, over);
-		o3_showingsticky = 0;	
-	}	
+		o3_showingsticky = 0;
+	}
 	return false;
 }
 

@@ -257,56 +257,55 @@
 				</TR>
 				<TR>
 					<TD width="1%">
-						<B><IMG src="img/serialnumber.gif" alt=""></B>
-					</TD>
-					<TD width="99%">
-						<INPUT TYPE="text" size="38" value="{$customeradd.icn}" name="customeradd[icn]" {tip text="Enter Identity Card Number (optional)" trigger="icn"}>
-					</TD>
-				</TR>
-				<TR>
-					<TD width="1%">
-						<B>{t}SSN{/t}</B>
-					</TD>
-					<TD width="99%">
-						<INPUT TYPE="text" size="38" value="{$customeradd.ssn}" name="customeradd[ssn]" {tip text="Enter customer Social Security Number (optional)" trigger="ssn"}>
-						{if $customeradd.ssnwarning}
-						<INPUT TYPE="HIDDEN" NAME="customeradd[ssnwarning]" VALUE="1">
-						{/if}
-					</TD>
-				</TR>
-				<TR>
-					<TD width="1%">
-						<B>{t}TEN{/t}</B>
-					</TD>
-					<TD width="99%">
-						<INPUT TYPE="text" size="38" value="{$customeradd.ten}" name="customeradd[ten]" {tip text="Enter customer Tax Exempt Number (optional)" trigger="ten"}>
-						{if $customeradd.tenwarning}
-						<INPUT TYPE="HIDDEN" NAME="customeradd[tenwarning]" VALUE="1">
-						{/if}
-					</TD>
-				</TR>
-				<TR>
-					<TD width="1%">
-						<B>{t}REGON{/t}</B>
-					</TD>
-					<TD width="99%">
-						<INPUT TYPE="text" size="38" value="{$customeradd.regon}" name="customeradd[regon]" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
-					</TD>
-				</TR>
-				<TR>
-					<TD width="1%">
-						<B><IMG src="img/report.gif" alt=""></B>
-					</TD>
-					<TD width="99%">
-						<INPUT TYPE="text" size="38" value="{$customeradd.rbe}" name="customeradd[rbe]" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
-					</TD>
-				</TR>
-				<TR>
-					<TD width="1%">
 						<IMG src="img/pin.gif" alt="">
 					</TD>
 					<TD width="99%">
 						<INPUT TYPE="text" size="6" value="{if $customeradd.pin}{$customeradd.pin}{/if}" name="customeradd[pin]" {tip text="Enter 4 to 6 digits PIN number (optional)" trigger="pin"}>&nbsp;<A href="javascript: randomize()" {tip text="Generate random PIN"}>&raquo;&raquo;&raquo;</A>
+					</TD>
+				</TR>
+				<TR>
+					<TD width="1%" style="vertical-align: top">
+						<IMG src="img/serialnumber.gif" alt="">
+					</TD>
+					<TD width="99%">
+					    <TABLE WIDTH="100%">
+					        <TR>
+					            <TD width="1%" NOWRAP>{t}ICN{/t}:</TD>
+					            <TD width="99%">
+						<INPUT TYPE="text" size="30" value="{$customeradd.icn}" name="customeradd[icn]" {tip text="Enter Identity Card Number (optional)" trigger="icn"}>
+					            </TD>
+				            </TR>
+				            <TR>
+					            <TD width="1%" NOWRAP>{t}SSN{/t}:</TD>
+					            <TD width="99%">
+						<INPUT TYPE="text" size="30" value="{$customeradd.ssn}" name="customeradd[ssn]" {tip text="Enter customer Social Security Number (optional)" trigger="ssn"}>
+						{if $customeradd.ssnwarning}
+						<INPUT TYPE="HIDDEN" NAME="customeradd[ssnwarning]" VALUE="1">
+						{/if}
+					            </TD>
+				            </TR>
+				            <TR>
+					            <TD width="1%" NOWRAP>{t}TEN{/t}:</TD>
+					            <TD width="99%">
+						<INPUT TYPE="text" size="30" value="{$customeradd.ten}" name="customeradd[ten]" {tip text="Enter customer Tax Exempt Number (optional)" trigger="ten"}>
+						{if $customeradd.tenwarning}
+						<INPUT TYPE="HIDDEN" NAME="customeradd[tenwarning]" VALUE="1">
+						{/if}
+					            </TD>
+				            </TR>
+				            <TR>
+					            <TD width="1%" NOWRAP>{t}REGON{/t}:</TD>
+					            <TD width="99%">
+						<INPUT TYPE="text" size="30" value="{$customeradd.regon}" name="customeradd[regon]" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
+					            </TD>
+				            </TR>
+				            <TR>
+					            <TD width="1%" NOWRAP>{t}RBE{/t}:</TD>
+					            <TD width="99%">
+						<INPUT TYPE="text" size="30" value="{$customeradd.rbe}" name="customeradd[rbe]" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
+					            </TD>
+				            </TR>
+				        </TABLE>
 					</TD>
 				</TR>
 				<TR>
