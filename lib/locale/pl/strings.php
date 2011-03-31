@@ -1238,7 +1238,6 @@ $_LANG['Submit/Send'] = 'Wyślij';
 $_LANG['Submitter:'] = 'Zgłaszający:';
 $_LANG['Subscription'] = 'Abonament';
 $_LANG['Subscription:'] = 'Abonament:';
-$_LANG['\'Last/Company Name\' and \'First Name\' fields cannot be empty!'] = '\'Nazwa/Nazwisko\' i \'Imię\' nie mogą być puste!';
 $_LANG['Suspend'] = 'Zawieś';
 $_LANG['Suspending of all liabilities'] = 'Zawieszenie wszystkich zobowiązań';
 $_LANG['SYSTEM ACCOUNT'] = 'KONTO SYSTEMOWE';
@@ -2451,5 +2450,8 @@ $_LANG['Enter user name'] = 'Wprowadź nazwisko i imię użytkownika';
 $_LANG['Enter user position (optional)'] = 'Wprowadź stanowisko użytkownika (optional)';
 $_LANG['Notification:'] = 'Powiadomienia:';
 $_LANG['SMS message is empty!'] = 'Wiadomość SMS jest pusta!';
+$_LANG['First name cannot be empty!'] = 'Pole Imię nie może być puste!';
+$_LANG['Last/Company name cannot be empty!'] = 'Pole Nazwisko/Nazwa firmy nie może być puste!';
+$_LANG['Warning! Debug mode (using phone $0).'] = 'UWAGA! Tryb debugowania (używam numeru $0).';
 
 ?>

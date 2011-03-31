@@ -92,7 +92,10 @@ elseif(isset($_POST['customeradd']))
 	}
 
 	if($customeradd['lastname'] == '')
-		$error['customername'] = trans('\'Last/Company Name\' and \'First Name\' fields cannot be empty!');
+		$error['lastname'] = trans('Last/Company name cannot be empty!');
+
+	if($customeradd['name'] == '' && !$customeradd['type'])
+		$error['name'] = trans('First name cannot be empty!');
 	
 	if($customeradd['address'] == '')
 		$error['address'] = trans('Address required!');
