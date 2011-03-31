@@ -17,36 +17,35 @@
 		document.forms['documentadd'].action += '&print=1';
 		document.forms['documentadd'].submit();
 	}
-	
+
 	function setnumberplans()
 	{
-		var type = document.forms['documentadd'].elements['document[type]'].value;
-		
+		var type = document.forms['documentadd'].elements['document[type]'].value,
+		    plans = document.getElementById('numberplans');
+
 		if(type==0)
 		{
-			document.getElementById('numberplans').style.display = 'none';
-			document.getElementById('numberplans').innerHTML = '<INPUT type="hidden" name="document[numberplanid]" value="0">';
+			plans.style.display = 'none';
+			plans.innerHTML = '<INPUT type="hidden" name="document[numberplanid]" value="0">';
 		}
 		else
 		{
-			var p = new Array();
-			var pr = new Array();
+			var p = [], pr = [];
 		{/literal}
 			var s = {$document.numberplanid|default:0};
 			{foreach from=$_DOCTYPES key=key item=item}{if $key < 0}
-			    p[{$key}] = new Array();
-			    pr[{$key}] = new Array();
+			    p[{$key}] = [];
+			    pr[{$key}] = [];
 			    {foreach from=$allnumberplans item=plan}{if $plan.doctype == $key}{assign var=period value=$plan.period}
 				p[{$key}][{$plan.id}] = '{number number=$plan.next template=$plan.template time=$document.cdate}';
 				pr[{$key}][{$plan.id}] = '{$_NUM_PERIODS.$period}';
 			    {/if}{/foreach}
 			{/if}{/foreach}
-		{literal}	
+		{literal}
 			if(p[type].length)
 			{
-				var result = '<SELECT name="document[numberplanid]">';
-				for(key in p[type])
-				{
+				var key, result = '<SELECT name="document[numberplanid]">';
+				for (key in p[type]) {
 					result = result + '<OPTION value="' + key + '"';
 					if(key == s)
 						result += ' SELECTED';
@@ -54,19 +53,19 @@
 				}
 				result += '</SELECT>';
 
-				document.getElementById('numberplans').innerHTML = result;
+				plans.innerHTML = result;
 			}
 			else
-				document.getElementById('numberplans').innerHTML = '<INPUT type="hidden" name="document[numberplanid]" value="0">';
-				
-			document.getElementById('numberplans').style.display = 'inline';
+				plans.innerHTML = '<INPUT type="hidden" name="document[numberplanid]" value="0">';
+
+			plans.style.display = 'inline';
 		}
 	}
 	function reset_customer()
         {
 	        if (document.documentadd.customerid.value)
 	                document.documentadd.customer.value = document.documentadd.customerid.value;
-	}						    
+	}
 //-->
 </script>
 {/literal}

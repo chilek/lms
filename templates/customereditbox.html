@@ -24,7 +24,7 @@
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
-		<TD WIDTH="100%" COLSPAN="2" CLASS="FALL" NOWRAP>
+		<TD WIDTH="100%" CLASS="FALL" NOWRAP>
 		        <TABLE WIDTH="100%" CELLPADDING="1">
 				<TR>
 					<TD WIDTH="1%"><B>{t}Name/Surname:{/t}</B></TD>
@@ -38,7 +38,7 @@
 		</TD>
 	</TR>
         <TR class="LIGHT">
-                <TD WIDTH="100%" COLSPAN="3" CLASS="flr">
+                <TD WIDTH="100%" CLASS="flr">
 		        <TABLE WIDTH="100%" CELLPADDING="0">
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" style="vertical-align:top;">
@@ -49,7 +49,7 @@
 			{if $customerinfo.status eq "2"}<IMG SRC="img/wait.gif" ALT="">{/if}
 			{if $customerinfo.status eq "1"}<IMG SRC="img/unk.gif" ALT="">{/if}
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
+		<TD WIDTH="99%">
 			<SELECT SIZE="1" NAME="customerdata[status]" {tip text="Select customer state" trigger="status"}>
 				<OPTION VALUE="3"{if $customerinfo.status eq "3"} SELECTED{/if}>{t}connected<!singular>{/t}</OPTION>
 				<OPTION VALUE="2"{if $customerinfo.status eq "2"} SELECTED{/if}>{t}waiting{/t}</OPTION>
@@ -62,7 +62,7 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/division.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
+		<TD WIDTH="99%" NOWRAP>
 			<SELECT size="1" name="customerdata[divisionid]" {tip text="Select division" trigger="divisionid"}>
     			{foreach from=$divisions item=item}{if !$item.status || $item.id == $customerinfo.divisionid}
 	    			<OPTION VALUE="{$item.id}"{if $customerinfo.divisionid == $item.id} SELECTED{/if}>{$item.shortname}</OPTION>
@@ -75,7 +75,7 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/folder.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
+		<TD WIDTH="99%" NOWRAP>
 			<INPUT TYPE="radio" NAME="customerdata[type]" VALUE="0" ID="private" {tip text="Select legal personality type" trigger="type"}{if !$customerinfo.type} CHECKED{/if}><A HREF="javascript:checkElement('private')">{t}private person{/t}</A>
 			<INPUT TYPE="radio" NAME="customerdata[type]" VALUE="1" ID="company" {tip text="Select legal personality type" trigger="type"}{if $customerinfo.type} CHECKED{/if}><A HREF="javascript:checkElement('company')">{t}legal entity{/t}</A>
 		</TD>
@@ -84,7 +84,7 @@
 		<TD WIDTH="1%" style="vertical-align: top">
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
+		<TD WIDTH="99%">
 			<TABLE width="100%" cellpadding="2" cellspacing="0">
 			    <TR>
     				<TD width="1%" NOWRAP>{t}Address:{/t}</TD>
@@ -138,7 +138,7 @@
 		<TD WIDTH="1%" style="vertical-align: top">
 			<IMG SRC="img/post.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
+		<TD WIDTH="99%">
 			<TABLE width="100%" cellpadding="2" cellspacing="0">
 			    <TR>
 				<TD width="1%" NOWRAP>{t}Name:{/t}</TD>
@@ -208,7 +208,7 @@
 	{/foreach}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%"></TD>
-		<TD WIDTH="99%" colspan="2">
+		<TD WIDTH="99%">
 			<A href="javascript: newcontact()">{t}Add contact field{/t} &raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
@@ -216,7 +216,7 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/gg.gif" alt="Gadu-Gadu">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
+		<TD WIDTH="99%">
 			{assign var=gg value=$smarty.const.IM_GG}
 			<INPUT TYPE="TEXT" NAME="customerdata[uid][{$gg}]" VALUE="{if $customerinfo.uid.$gg}{$customerinfo.uid.$gg}{/if}" SIZE="20" {tip text="Enter Gadu-Gadu ID (optional)" trigger="gg"}>
 		</TD>
@@ -225,7 +225,7 @@
 		<TD WIDTH="1%">
 			<IMG src="img/yim.gif" alt="Yahoo">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
+		<TD WIDTH="99%">
 			{assign var=yahoo value=$smarty.const.IM_YAHOO}
 			<INPUT TYPE="TEXT" NAME="customerdata[uid][{$yahoo}]" VALUE="{if $customerinfo.uid.$yahoo}{$customerinfo.uid.$yahoo}{/if}" SIZE="20" {tip text="Enter Yahoo Messenger ID (optional)" trigger="yahoo"}>
 		</TD>
@@ -234,7 +234,7 @@
 		<TD WIDTH="1%">
 			<IMG src="img/skype.gif" alt="Skype">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
+		<TD WIDTH="99%">
 			{assign var=skype value=$smarty.const.IM_SKYPE}
 			<INPUT TYPE="TEXT" NAME="customerdata[uid][{$skype}]" VALUE="{if $customerinfo.uid.$skype}{$customerinfo.uid.$skype}{/if}" SIZE="20" {tip text="Enter Skype ID (optional)" trigger="skype"}>
 		</TD>
@@ -243,70 +243,69 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/mail.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
+		<TD WIDTH="99%">
 			<INPUT TYPE="TEXT" NAME="customerdata[email]" VALUE="{$customerinfo.email}" SIZE="38" {tip text="Enter e-mail address (optional)" trigger="email" }><BR>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD width="1%">
-			<B><IMG src="img/serialnumber.gif" alt=""></B>
-		</TD>
-		<TD width="99%" COLSPAN="2">
-			<INPUT TYPE="text" VALUE="{$customerinfo.icn}" name="customerdata[icn]" SIZE="38" {tip text="Enter Identity Card Number (optional)" trigger="icn"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<B>{t}SSN{/t}</B>
-		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="customerdata[ssn]" VALUE="{$customerinfo.ssn}" SIZE="38" {tip text="Enter Social Security Number (optional)" trigger="ssn"}>
-			{if $customerinfo.ssnwarning}
-			<INPUT TYPE="HIDDEN" NAME="customerdata[ssnwarning]" VALUE="1">
-			{/if}
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<B>{t}TEN{/t}</B>
-		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="customerdata[ten]" VALUE="{$customerinfo.ten}" SIZE="38" {tip text="Enter Tax Exempt Number (optional)" trigger="ten"}>
-			{if $customerinfo.tenwarning}
-			<INPUT TYPE="HIDDEN" NAME="customerdata[tenwarning]" VALUE="1">
-			{/if}
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD width="1%">
-			<B>{t}REGON{/t}</B>
-		</TD>
-		<TD width="99%" COLSPAN="2">
-			<INPUT TYPE="text" value="{$customerinfo.regon}" name="customerdata[regon]" SIZE="38" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD width="1%">
-			<B><IMG src="img/report.gif" alt=""></B>
-		</TD>
-		<TD width="99%" COLSPAN="2">
-			<INPUT TYPE="text" value="{$customerinfo.rbe}" name="customerdata[rbe]" SIZE="38" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
 			<IMG SRC="img/pin.gif" ALT="">
 		</TD>
-		<TD WIDTH="98%" COLSPAN="2">
+		<TD WIDTH="98%">
 			<INPUT TYPE="TEXT" NAME="customerdata[pin]" VALUE="{if $customerinfo.pin}{$customerinfo.pin}{/if}" SIZE="6" {tip text="Enter 4 to 6 digits PIN number (optional)" trigger="pin"}>&nbsp;
 			<A href="javascript: randomize()" {tip text="Generate PIN"}>&raquo;&raquo;&raquo;</A>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD width="1%" style="vertical-align: top">
+			<IMG src="img/serialnumber.gif" alt="">
+		</TD>
+		<TD width="99%">
+		    <TABLE width="100%">
+		        <TR>
+		            <TD width="1%" NOWRAP>{t}ICN{/t}:</TD>
+		            <TD width="99%">
+			<INPUT TYPE="text" VALUE="{$customerinfo.icn}" name="customerdata[icn]" SIZE="30" {tip text="Enter Identity Card Number (optional)" trigger="icn"}>
+			        </TD>
+			    </TR>
+		        <TR>
+		            <TD width="1%" NOWRAP>{t}SSN{/t}:</TD>
+		            <TD width="99%">
+			<INPUT TYPE="TEXT" NAME="customerdata[ssn]" VALUE="{$customerinfo.ssn}" SIZE="30" {tip text="Enter Social Security Number (optional)" trigger="ssn"}>
+			{if $customerinfo.ssnwarning}
+			<INPUT TYPE="HIDDEN" NAME="customerdata[ssnwarning]" VALUE="1">
+			{/if}
+			        </TD>
+			    </TR>
+		        <TR>
+		            <TD width="1%" NOWRAP>{t}TEN{/t}:</TD>
+		            <TD width="99%">
+			<INPUT TYPE="TEXT" NAME="customerdata[ten]" VALUE="{$customerinfo.ten}" SIZE="30" {tip text="Enter Tax Exempt Number (optional)" trigger="ten"}>
+			{if $customerinfo.tenwarning}
+			<INPUT TYPE="HIDDEN" NAME="customerdata[tenwarning]" VALUE="1">
+			{/if}
+			        </TD>
+			    </TR>
+		        <TR>
+		            <TD width="1%" NOWRAP>{t}REGON{/t}:</TD>
+		            <TD width="99%">
+			<INPUT TYPE="text" value="{$customerinfo.regon}" name="customerdata[regon]" SIZE="30" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
+			        </TD>
+			    </TR>
+		        <TR>
+		            <TD width="1%" NOWRAP>{t}RBE{/t}:</TD>
+		            <TD width="99%">
+			<INPUT TYPE="text" value="{$customerinfo.rbe}" name="customerdata[rbe]" SIZE="30" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
+			        </TD>
+			    </TR>
+            </TABLE>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" style="vertical-align: top">
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
-		<TD WIDTH="98%" COLSPAN="2">
+		<TD WIDTH="98%">
 		    <TABLE>
 		        <TR>
 		            <TD>
@@ -364,7 +363,7 @@
 		<TD width="1%" style="vertical-align: top">
 			<IMG src="img/options.gif" alt="">
 		</TD>
-		<TD width="99%" COLSPAN="2">
+		<TD width="99%">
 		    <TABLE cellpadding="0">
 		        <TR>
 		            <TD>
@@ -454,7 +453,7 @@
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
+		<TD WIDTH="100%" CLASS="FBOTTOMU" ALIGN="RIGHT">
 			<A HREF="javascript:document.customeredit.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
 			<A HREF="?m=customerinfo&id={$customerinfo.id}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A>
 		</TD>

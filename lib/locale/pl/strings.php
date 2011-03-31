@@ -2453,5 +2453,7 @@ $_LANG['SMS message is empty!'] = 'Wiadomość SMS jest pusta!';
 $_LANG['First name cannot be empty!'] = 'Pole Imię nie może być puste!';
 $_LANG['Last/Company name cannot be empty!'] = 'Pole Nazwisko/Nazwa firmy nie może być puste!';
 $_LANG['Warning! Debug mode (using phone $0).'] = 'UWAGA! Tryb debugowania (używam numeru $0).';
+$_LANG['RBE'] = 'EDG/KRS';
+$_LANG['ICN'] = 'Dow. os.';
 
 ?>
