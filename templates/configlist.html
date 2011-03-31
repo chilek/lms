@@ -22,6 +22,7 @@
 			<FORM method="GET" action="?m=configlist" name="filter">
 				<INPUT type="submit" class="hiddenbtn">
 				<INPUT type="HIDDEN" name="m" value="configlist">
+				<INPUT type="HIDDEN" name="page" value="1">
 				<B>{t}Filter:{/t} </B> {t}Section:{/t}
 				<SELECT size="1" name="s" OnChange="document.filter.submit();">
 					<OPTION value=""{if !$listdata.section} SELECTED{/if}>{t}- all -{/t}</OPTION>
@@ -33,9 +34,12 @@
 					<OPTION value="sms"{if $listdata.section eq "sms"} SELECTED{/if}>sms</OPTION>
 					 <OPTION value="zones"{if $listdata.section eq "zones"} SELECTED{/if}>zones</OPTION>
 				</SELECT>
+				{t}Option{/t}:
+				<INPUT type="text" name="n" value="{$listdata.search}" size="15" {tip text="Enter option name"}>
+				&nbsp;<A href="javascript: document.filter.submit();">&raquo;&raquo;&raquo;</A>
 			</FORM>
 		</TD>
-	</TR>		
+	</TR>
 	{if $listdata.total != 0}
 	<TR CLASS="DARK">
 		<TD COLSPAN="4" CLASS="FALL">
@@ -67,7 +71,13 @@
 	<TR>
 		<TD colspan="4" align="center" class="fall">
 			<p>&nbsp;</p>
-			<p><B>{t}No configuration options in database. Click <A href="?m=configload">here</A> to import them from lms.ini.{/t}</B></p>
+			<p><B>
+			    {if $listdata.search}
+			        {t}No configuration options in database.{/t}
+			    {else}
+			        {t}No configuration options in database.{/t} {t}Click <A href="?m=configload">here</A> to import them from lms.ini.{/t}
+			    {/if}
+			    </B></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
