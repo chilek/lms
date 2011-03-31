@@ -8,7 +8,6 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 {/if}
 {include file="calendar_js.html"}
 <script type="text/javascript">
-	<!--
 	function setItem(index)
 	{literal}{{/literal}
 		var e = document.additem;
@@ -75,7 +74,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 		var list = document.setcustomer.elements['invoice[paytime_default]'];
 		list[0].checked = type ? true : false;
 		list[1].checked = type ? false : true;
-		document.setcustomer.elements['invoice[paytime]'].style.visibility = type ? 'hidden' : 'visible';
+		document.getElementById('paytime').style.visibility = type ? 'hidden' : 'visible';
 	}
 
 	function printinvoice()
@@ -85,11 +84,30 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 		        add += "&original=1";
 		if(document.additem.copy.checked)
 			add += "&copy=1";
-		
+
 		document.additem.action="?m=invoicenew&action=save&print=1" + add;
 		document.additem.submit();
-        }
-	//-->
+    }
+
+    function deadline_calendar(elem)
+    {
+        var ts = get_cdate(), deadline = parseInt(elem.value);
+
+        // add paytime days to settlement date
+        ts.setDate(ts.getDate()+(deadline || 0));
+        // display calendar
+        cal3.popup(cal3.gen_date(ts));
+    }
+
+    function get_cdate()
+    {
+        var ts = document.setcustomer.elements['invoice[cdate]'].value;
+
+        if (!ts.match(/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/))
+            ts = '{/literal}{$smarty.now|date_format:"%Y/%m/%d"}{literal}';
+
+        return cal3.prs_date(ts);
+    }
 {/literal}
 </script>
 <FORM NAME="setcustomer" METHOD="POST" ACTION="?m=invoicenew&action=setcustomer">
@@ -120,18 +138,10 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<B>{t}Sale date:{/t}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="invoice[sdate]" VALUE="{$invoice.sdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"} OnClick="javascript:cal2.popup();" >
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
 			<B>{t}Settlement date:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="invoice[cdate]" VALUE="{$invoice.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} OnClick="javascript:cal1.popup();" >
+			<INPUT TYPE="TEXT" NAME="invoice[cdate]" VALUE="{$invoice.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} OnClick="cal1.popup();" >
 			{if $invoice.cdatewarning}
 			<INPUT TYPE="HIDDEN" NAME="invoice[cdatewarning]" VALUE="1">
 			{/if}
@@ -139,16 +149,21 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<B>{t}Sale date:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+			<INPUT TYPE="TEXT" NAME="invoice[sdate]" VALUE="{$invoice.sdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"} OnClick="cal2.popup();">
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
 			<B>{t}Deadline:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT type="radio" name="invoice[paytime_default]" value="1" onclick="javascript:setPayTime(1)"{if !isset($invoice.paytime_default) || $invoice.paytime_default} checked{/if}><a href="javascript:setPayTime(1)">{t}default{/t}</a>
-			<INPUT type="radio" name="invoice[paytime_default]" value="0" onclick="javascript:setPayTime(0)"{if isset($invoice.paytime_default) && !$invoice.paytime_default} checked{/if}><a href="javascript:setPayTime(0)">{t}other{/t}</a>
-			<INPUT TYPE="TEXT" NAME="invoice[paytime]" VALUE="{$invoice.paytime}" SIZE="5"
+			<INPUT type="radio" name="invoice[paytime_default]" value="1" onclick="setPayTime(1)"{if !isset($invoice.paytime_default) || $invoice.paytime_default} checked{/if}><a href="javascript:setPayTime(1)">{t}default{/t}</a>
+			<INPUT type="radio" name="invoice[paytime_default]" value="0" onclick="setPayTime(0)"{if isset($invoice.paytime_default) && !$invoice.paytime_default} checked{/if}><a href="javascript:setPayTime(0)">{t}other{/t}</a>
+			<INPUT TYPE="TEXT" NAME="invoice[paytime]" VALUE="{$invoice.paytime}" SIZE="5" ID="paytime" onclick="deadline_calendar(this)"
 			{if !isset($invoice.paytime_default) || $invoice.paytime_default} style="visibility: hidden"{/if} {tip text="Enter deadline in days (optional)" trigger="paytime"}>
-			{* if $invoice.cdate && $invoice.paytime}
-				({$invoice.cdate+$invoice.paytime*86400|date_format:"%Y/%m/%d"})
-			{/if *}
 		</TD>
 	</TR>
 	<TR CLASS="light">
@@ -190,7 +205,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 </TABLE>
 </FORM>
 {if $customer}
-<P>
+<BR>
 <TABLE WIDTH="100%" CELLPADDING="3">
         <TR CLASS="dark">
                 <TD CLASS="fleftu" WIDTH="1%" nowrap>
@@ -203,9 +218,8 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
                 </TD>
         </TR>
 </TABLE>
-</P>
 {/if}
-<P>	
+<BR>
 <TABLE WIDTH="100%" CELLPADDING="3">
 {if $covenantlist}
 	<FORM name="additemlist" method="POST" action="?m=invoicenew&action=additemlist">
@@ -329,7 +343,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 		</TD>
 		<TD WIDTH="1%" NOWRAP CLASS="fright">
 			<A HREF="?m=invoicenew&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
-		</TD>			
+		</TD>
 	</TR>
 	{foreachelse}
 	<TR>
@@ -423,13 +437,21 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 	</FORM>
 </TABLE>
 <SCRIPT type="text/javascript">
-<!--
+{literal}
+deadline_callback = function(val)
+{
+    var ts = get_cdate(), deadline = cal3.prs_date(val);
+    deadline = parseInt((deadline - ts) / 86400000);
+    document.getElementById('paytime').value = deadline <= 0 ? '' : deadline;
+}
 var cal1 = new calendar(document.forms['setcustomer'].elements['invoice[cdate]']);
 cal1.time_comp = false;
 var cal2 = new calendar(document.forms['setcustomer'].elements['invoice[sdate]']);
 cal2.time_comp = false;
+var cal3 = new calendar(deadline_callback);
+cal3.time_comp = false;
 document.forms['setcustomer'].elements['invoice[number]'].focus();
-//-->
+{/literal}
 </SCRIPT>
 {include file="footer.html"}
 

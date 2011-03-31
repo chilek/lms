@@ -3,8 +3,7 @@
 <H1>{$layout.pagetitle}</H1>
 {include file="calendar_js.html"}
 <script type="text/javascript">
-	<!--
-	{literal}
+{literal}
 	function setType(type)
 	{
 	        document.save.elements[type].checked = !document.save.elements[type].checked;
@@ -19,8 +18,25 @@
 		document.save.action = "?m=invoicenote&action=save&print=1" + add;
 		document.save.submit();
 	}
-	{/literal}
-	//-->
+    function deadline_calendar(elem)
+    {
+         var ts = get_cdate(), deadline = parseInt(elem.value);
+
+         // add paytime days to settlement date
+         ts.setDate(ts.getDate()+(deadline || 0));
+         // display calendar
+         cal3.popup(cal3.gen_date(ts));
+    }
+    function get_cdate()
+    {
+        var ts = document.setheader.elements['cnote[cdate]'].value;
+
+        if (!ts.match(/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/))
+            ts = '{/literal}{$smarty.now|date_format:"%Y/%m/%d"}{literal}';
+
+        return cal3.prs_date(ts);
+    }
+{/literal}
 </script>
 <FORM NAME="setheader" METHOD="POST" ACTION="?m=invoicenote&action=setheader">
 <INPUT type="submit" class="hiddenbtn">
@@ -50,14 +66,6 @@
 	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<B>{t}Sale date:{/t}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="cnote[sdate]" VALUE="{$cnote.sdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"} OnClick="javascript:cal2.popup();" >
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
 			<B>{t}Settlement date:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
@@ -69,13 +77,18 @@
 	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<B>{t}Sale date:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+			<INPUT TYPE="TEXT" NAME="cnote[sdate]" VALUE="{$cnote.sdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"} OnClick="javascript:cal2.popup();" >
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
 			<B>{t}Deadline:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="cnote[paytime]" VALUE="{$cnote.paytime}" SIZE="10" {tip text="Enter deadline in days (optional)"}>
-			{if $cnote.cdate}
-				({$cnote.cdate+$cnote.paytime*86400|date_format:"%Y/%m/%d"})
-			{/if}
+			<INPUT TYPE="TEXT" NAME="cnote[paytime]" VALUE="{$cnote.paytime}" SIZE="5" ID="paytime" onclick="deadline_calendar(this)" {tip text="Enter deadline in days (optional)"}>
 		</TD>
 	</TR>
         <TR CLASS="light">
@@ -115,7 +128,7 @@
 	</TR>
 </TABLE>
 </FORM>
-<P>
+<BR>
 <FORM NAME="save" METHOD="POST" ACTION="?m=invoicenote&action=save">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
@@ -159,7 +172,7 @@
 			{if $item.deleted}
 			<INPUT TYPE="hidden" VALUE="{$item.name|escape}" NAME="name[{$item.itemid}]">{$item.name}
 			{else}
-			<INPUT TYPE="text" VALUE="{$item.name|escape}" NAME="name[{$item.itemid}]" SIZE="48">
+			<INPUT TYPE="text" VALUE="{$item.name|escape}" NAME="name[{$item.itemid}]" SIZE="48" style="width: 100%">
 			{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
@@ -217,7 +230,7 @@
 			{else}
 			<A HREF="?m=invoicenote&action=deletepos&itemid={$item.itemid}"><IMG SRC="img/delete.gif" {tip text="Remove this item"}></A>
 			{/if}
-		</TD>			
+		</TD>
 	</TR>
 	{/foreach}
 	{if $contents}
@@ -256,13 +269,21 @@
 </TABLE>
 </FORM>
 <SCRIPT type="text/javascript">
-<!--
+{literal}
+deadline_callback = function(val)
+{
+    var ts = get_cdate(), deadline = cal3.prs_date(val);
+    deadline = parseInt((deadline - ts) / 86400000);
+    document.getElementById('paytime').value = deadline <= 0 ? '' : deadline;
+}
 var cal1 = new calendar(document.forms['setheader'].elements['cnote[cdate]']);
 cal1.time_comp = false;
 var cal2 = new calendar(document.forms['setheader'].elements['cnote[sdate]']);
 cal2.time_comp = false;
+var cal3 = new calendar(deadline_callback);
+cal3.time_comp = false;
 document.forms['setheader'].elements['cnote[number]'].focus();
-//-->
+{/literal}
 </SCRIPT>
 {include file="footer.html"}
 
