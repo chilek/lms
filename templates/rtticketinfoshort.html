@@ -68,7 +68,8 @@
 </TABLE>
 <SCRIPT TYPE="text/javascript">
 <!--
-autoiframe_setsize(document.getElementById('table').offsetWidth < 450 ? document.getElementById('table').offsetWidth : 450);
+var table = document.getElementById('table');
+autoiframe_setsize(table.offsetWidth < 450 ? table.offsetWidth : 450, table.offsetHeight);
 //-->
 </SCRIPT>
 </BODY>

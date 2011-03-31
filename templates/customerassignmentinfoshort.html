@@ -40,10 +40,9 @@
 		<TD>{if $assignment.settlement}{t}yes{/t}{else}{t}no{/t}{/if}</TD>
 	</TR>
 </TABLE>
-<SCRIPT TYPE="text/javascript">
-<!--
-autoiframe_setsize(document.getElementById('table').offsetWidth);
-//-->
+<SCRIPT type="text/javascript">
+var table = document.getElementById('table');
+autoiframe_setsize(table.offsetWidth, table.offsetHeight);
 </SCRIPT>
 </BODY>
 </HTML>

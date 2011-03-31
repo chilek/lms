@@ -14,7 +14,8 @@
 <span id="content">{$content}</span>
 <script type="text/javascript">
 <!--
-autoiframe_setsize(document.getElementById('content').offsetWidth);
+var content = document.getElementById('content');
+autoiframe_setsize(content.offsetWidth, content.offsetHeight);
 //-->
 </script>
 </body>

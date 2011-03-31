@@ -24,8 +24,8 @@ var BUL_YEARSCROLL = true;
 var calendars = [];
 var RE_NUM = /^\-?\d+$/;
 
-function calendar(obj_target) {
-
+function calendar(obj_target)
+{
 	// assing methods
 	this.gen_date = cal_gen_date1;
 	this.gen_time = cal_gen_time1;
@@ -38,12 +38,16 @@ function calendar(obj_target) {
 	// validate input parameters
 	if (!obj_target)
 		return cal_error("Error calling the calendar: no target control specified");
-	if (obj_target.value == null)
+
+    if (typeof(obj_target) == 'function') {
+    }
+	else if (obj_target.value == null)
 		return cal_error("Error calling the calendar: parameter specified is not valid target control");
+
 	this.target = obj_target;
 	this.time_comp = BUL_TIMECOMPONENT;
 	this.year_scroll = BUL_YEARSCROLL;
-	
+
 	// register in global collections
 	this.id = calendars.length;
 	calendars[this.id] = this;
@@ -52,15 +56,7 @@ function calendar(obj_target) {
 function cal_popup1 (str_datetime, obj) {
 	this.dt_current = this.prs_tsmp(str_datetime ? str_datetime : this.target.value);
 	if (!this.dt_current) return;
-/*
-	var obj_calwindow = window.open(
-		'?m=calendar&datetime=' + this.dt_current.valueOf()+ '&id=' + this.id,
-		'Calendar', 'width=210,height='+(this.time_comp ? 215 : 190)+
-		',status=no,resizable=no,top=200,left=200,dependent=yes,alwaysRaised=yes'
-	);
-	obj_calwindow.opener = window;
-	obj_calwindow.focus();
-*/
+
     var src = '?m=calendar&datetime=' + this.dt_current.valueOf() + '&id=' + this.id;
 
     if (obj) {

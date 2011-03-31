@@ -44,7 +44,6 @@ var dt_current = (re_url.exec(String(window.location))
 var re_id = new RegExp('id=(\\d+)');
 var num_id = (re_id.exec(String(window.location))
 	? new Number(RegExp.$1) : 0);
-//var obj_caller = (window.opener ? window.opener.calendars[num_id] : null);
 var obj_caller = (window.parent ? window.parent.calendars[num_id] : null);
 
 if (obj_caller && obj_caller.year_scroll) {
@@ -89,12 +88,16 @@ function set_datetime(n_datetime, b_close) {
 
 	if (!dt_datetime) return;
 	if (b_close) {
-//		window.close();
         window.parent.popclick();
-		obj_caller.target.value = (document.cal
+
+        var value = (document.cal
 			? obj_caller.gen_tsmp(dt_datetime)
 			: obj_caller.gen_date(dt_datetime)
 		);
+        if (typeof (obj_caller.target) == 'function')
+            obj_caller.target(value);
+        else
+		    obj_caller.target.value = value;
 	}
 	else obj_caller.popup(dt_datetime.valueOf(), true);
 }
@@ -121,7 +124,7 @@ document.write(
 
 // print weekdays titles
 for (var n=0; n<7; n++)
-	document.write('<td class="dark" align="center"><font class="white">'+ARR_WEEKDAYS[(NUM_WEEKSTART+n)%7]+'</font></td>');
+	document.write('<td class="light" align="center"><font class="white">'+ARR_WEEKDAYS[(NUM_WEEKSTART+n)%7]+'</font></td>');
 document.write('</tr>');
 
 // print calendar table
@@ -134,10 +137,10 @@ while (dt_current_day.getMonth() == dt_current.getMonth() ||
 		if (dt_current_day.getDate() == dt_current.getDate() &&
 			dt_current_day.getMonth() == dt_current.getMonth())
 			// print current date
-			document.write('<td class="lucid" align="center" width="14%">');
+			document.write('<td class="dark" align="center" width="14%">');
 		else if (dt_current_day.getDay() == 0 || dt_current_day.getDay() == 6)
 			// weekend days
-			document.write('<td class="dark" align="center" width="14%">');
+			document.write('<td class="light" align="center" width="14%">');
 		else
 			// print working days of current month
 			document.write('<td class="superlight" align="center" width="14%">');
