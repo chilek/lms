@@ -6,7 +6,7 @@
 		if(document.customeredit.elements['customerdata[pin]'].value != '')
 			if(! confirm('{/literal}{t}Are you sure, you want to generate new PIN?{/t}{literal}'))
 				return;
-	
+
 		var r = 0;
 		do
 			r = Math.floor(Math.random()*1000000-1);
@@ -28,11 +28,11 @@
 		        <TABLE WIDTH="100%" CELLPADDING="1">
 				<TR>
 					<TD WIDTH="1%"><B>{t}Name/Surname:{/t}</B></TD>
-					<TD WIDTH="99%"><INPUT TYPE="TEXT" SIZE="50" NAME="customerdata[lastname]" VALUE="{$customerinfo.lastname|escape}" {tip text="Enter first/lastname of customer" trigger="customername" bold=1}></TD>
+					<TD WIDTH="99%"><INPUT TYPE="TEXT" SIZE="50" NAME="customerdata[lastname]" VALUE="{$customerinfo.lastname|escape}" {tip text="Enter first/lastname of customer" trigger="lastname" bold=1}></TD>
 				</TR>
 				<TR>
 					<TD WIDTH="1%"><B>{t}First name:{/t}</B></TD>
-					<TD WIDTH="99%"><INPUT TYPE="TEXT" SIZE="50" NAME="customerdata[name]" VALUE="{$customerinfo.name|escape}" {tip text="Enter first name of customer (optional)" trigger="customername" bold=1}></TD>
+					<TD WIDTH="99%"><INPUT TYPE="TEXT" SIZE="50" NAME="customerdata[name]" VALUE="{$customerinfo.name|escape}" {tip text="Enter first name of customer (optional)" trigger="name" bold=1}></TD>
 				</TR>
 			</TABLE>
 		</TD>

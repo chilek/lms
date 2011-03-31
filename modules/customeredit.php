@@ -41,8 +41,11 @@ elseif(isset($_POST['customerdata']) && !isset($_GET['newcontact']))
 		if($key != 'uid' && $key != 'contacts')
 			$customerdata[$key] = trim($value);
 
-	if($customerdata['lastname']=='')
-		$error['customername'] = trans('\'Last/Company Name\' and \'First Name\' fields cannot be empty!');
+	if($customerdata['lastname'] == '')
+		$error['lastname'] = trans('Last/Company name cannot be empty!');
+
+    if($customerdata['name'] == '' && !$customerdata['type'])
+        $error['name'] = trans('First name cannot be empty!');
 
 	if($customerdata['address']=='')
 		$error['address'] = trans('Address required!');
