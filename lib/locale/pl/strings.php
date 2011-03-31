@@ -905,7 +905,8 @@ $_LANG['No. $0'] = 'Nr $0';
 $_LANG['no access'] = 'brak dostępu';
 $_LANG['No cash operations to import.'] = 'Brak operacji kasowych do zaimportowania.';
 $_LANG['No computers were found, either exists in the database or nbtscan binary not found.'] = 'Nie znaleziono żadnych komputerów bądź wszystkie komputery są już w bazie danych lub program nbtscan nie jest dostępny w systemie.';
-$_LANG['No configuration options in database. Click <A href="?m=configload">here</A> to import them from lms.ini.'] = 'Brak opcji konfiguracyjnych w bazie danych. Kliknij <A href="?m=configload">tutaj</A> aby je zaimportować do bazy.';
+$_LANG['No configuration options in database.'] = 'Brak opcji konfiguracyjnych w bazie danych.';
+$_LANG['Click <A href="?m=configload">here</A> to import them from lms.ini.'] = 'Kliknij <A href="?m=configload">tutaj</A> aby je zaimportować do bazy.';
 $_LANG['Node ID:'] = 'ID komputera:';
 $_LANG['Node Info: $0'] = 'Informacje o komputerze: $0';
 $_LANG['Node IP address'] = 'Adres IP komputera';
@@ -2455,5 +2456,6 @@ $_LANG['Last/Company name cannot be empty!'] = 'Pole Nazwisko/Nazwa firmy nie mo
 $_LANG['Warning! Debug mode (using phone $0).'] = 'UWAGA! Tryb debugowania (używam numeru $0).';
 $_LANG['RBE'] = 'EDG/KRS';
 $_LANG['ICN'] = 'Dow. os.';
+$_LANG['Option'] = 'Opcja';
 
 ?>
