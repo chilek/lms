@@ -25,7 +25,7 @@ $DB->BeginTrans();
 
 $DB->Execute("ALTER TABLE documents ADD sdate integer DEFAULT 0 NOT NULL");
 
-$DB->Execute("UPDATE documents SET sdate = cdate WHERE type IN (?, ?)", array(DOC_INVOICE, DOC_CNOTE));
+$DB->Execute("UPDATE documents SET sdate = cdate WHERE type IN (1, 3)"); // DOC_INVOICE/DOC_CNOTE
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011032500', 'dbversion'));
 
