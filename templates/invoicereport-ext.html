@@ -22,7 +22,7 @@
 			{t}Invoice No.{/t}<BR>
 			{t}Draw-up date{/t}
 		</TD>
-		<TD WIDTH="{math equation="96-x*2" x=$taxescount}%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
+		<TD WIDTH="{math equation="96-x" x=$taxescount}%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
 			{t}Contractor{/t}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
@@ -32,9 +32,11 @@
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
 			{t}Net value{/t}<BR><NOBR>{$tax.label}</NOBR>
 		</TD>
+		{if $tax.value}
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
 			{t}Tax value{/t}<BR><NOBR>{$tax.label}</NOBR>
 		</TD>
+		{/if}
 		{/foreach}
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
 			{t}Total Tax{/t}
@@ -64,9 +66,11 @@
 		<TD ALIGN="RIGHT" class="small">
 			{$invoicelist[invoicelist].$taxid.val|string_format:"%01.2f"}
 		</TD>
+		{if $tax.value}
 		<TD ALIGN="RIGHT" class="small">
-			{$invoicelist[invoicelist].$taxid.tax|string_format:"%01.2f"}		
+			{$invoicelist[invoicelist].$taxid.tax|string_format:"%01.2f"}
 		</TD>
+		{/if}
 		{/foreach}
 		<TD ALIGN="RIGHT" class="small">
 			{$invoicelist[invoicelist].tax|string_format:"%01.2f"}
@@ -85,9 +89,11 @@
 		<TD ALIGN="RIGHT" class="small">
 			<B>{$totals.$item.val.$taxid|string_format:"%01.2f"}</B>
 		</TD>
+		{if $tax.value}
 		<TD ALIGN="RIGHT" class="small">
 			<B>{$totals.$item.tax.$taxid|string_format:"%01.2f"}</B>
 		</TD>
+		{/if}
 		{/foreach}
 		<TD ALIGN="RIGHT" class="small">
 			<B>{$totals.$item.sumtax|string_format:"%01.2f"}</B>
@@ -105,9 +111,11 @@
 		<TD ALIGN="RIGHT" class="small">
 			<B>{$totals.$previtem.allval.$taxid|string_format:"%01.2f"}</B>
 		</TD>
+		{if $tax.value}
 		<TD ALIGN="RIGHT" class="small">
 			<B>{$totals.$previtem.alltax.$taxid|string_format:"%01.2f"}</B>
 		</TD>
+		{/if}
 		{/foreach}
 		<TD ALIGN="RIGHT" class="small">
 			<B>{$totals.$previtem.allsumtax|string_format:"%01.2f"}</B>
@@ -125,9 +133,11 @@
 		<TD ALIGN="RIGHT" class="small">
 			<B>{$totals.$item.allval.$taxid|string_format:"%01.2f"}</B>
 		</TD>
+		{if $tax.value}
 		<TD ALIGN="RIGHT" class="small">
 			<B>{$totals.$item.alltax.$taxid|string_format:"%01.2f"}</B>
 		</TD>
+		{/if}
 		{/foreach}
 		<TD ALIGN="RIGHT" class="small">
 			<B>{$totals.$item.allsumtax|string_format:"%01.2f"}</B>
@@ -156,7 +166,7 @@
 			{t}Invoice No.{/t}<BR>
 			{t}Draw-up date{/t}
 		</TD>
-		<TD WIDTH="{math equation="96-x*2" x=$taxescount}%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
+		<TD WIDTH="{math equation="96-x" x=$taxescount}%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
 			{t}Contractor{/t}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
@@ -166,16 +176,18 @@
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
 			{t}Net value{/t}<BR><NOBR>{$tax.label}</NOBR>
 		</TD>
+		{if $tax.value}
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
 			{t}Tax value{/t}<BR><NOBR>{$tax.label}</NOBR>
 		</TD>
+		{/if}
 		{/foreach}
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
 			{t}Total Tax{/t}
 		</TD>
 	</TR>
 	<TR>
-		<TD ALIGN="center" COLSPAN="{math equation="5+x*2" x=$taxescount}">
+		<TD ALIGN="center" COLSPAN="{math equation="5+x" x=$taxescount}">
 			<P>&nbsp;</P>
 			<P><B>{t}No such invoices in selected time period.{/t}</B></P>
 			<P>&nbsp;</P>

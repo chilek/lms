@@ -24,7 +24,7 @@
 			{t}Invoice No.{/t}<BR>
 			{t}Draw-up date{/t}
 		</TD>
-		<TD WIDTH="{math equation="96-x*2" x=$taxescount}%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+		<TD WIDTH="{math equation="96-x" x=$taxescount}%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
 			{t}Contractor{/t}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
@@ -34,9 +34,11 @@
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
 			{t}Net value{/t}<BR><NOBR>{$tax.label}</NOBR>
 		</TD>
+        {if $tax.value}
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
 			{t}Tax value{/t}<BR><NOBR>{$tax.label}</NOBR>
 		</TD>
+		{/if}
 		{/foreach}
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
 			{t}Total Tax{/t}
@@ -65,9 +67,11 @@
 		<TD ALIGN="RIGHT">
 			{$invoice.$taxid.val|string_format:"%01.2f"}
 		</TD>
+        {if $tax.value}
 		<TD ALIGN="RIGHT">
-			{$invoice.$taxid.tax|string_format:"%01.2f"}		
+			{$invoice.$taxid.tax|string_format:"%01.2f"}
 		</TD>
+        {/if}
 		{/foreach}
 		<TD ALIGN="RIGHT">
 			{$invoice.tax|string_format:"%01.2f"}
@@ -75,7 +79,7 @@
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD ALIGN="center" COLSPAN="{math equation="5+x*2" x=$taxescount}">
+		<TD ALIGN="center" COLSPAN="{math equation="5+x" x=$taxescount}">
 			<P>&nbsp;</P>
 			<P><B>{t}No such invoices in selected time period.{/t}</B></P>
 			<P>&nbsp;</P>
@@ -94,9 +98,11 @@
 		<TD ALIGN="RIGHT">
 			<B>{$listdata.$taxid.val|string_format:"%01.2f"}</B>
 		</TD>
+        {if $tax.value}
 		<TD ALIGN="RIGHT">
 			<B>{$listdata.$taxid.tax|string_format:"%01.2f"}</B>
 		</TD>
+        {/if}
 		{/foreach}
 		<TD ALIGN="RIGHT">
 			<B>{$listdata.tax|string_format:"%01.2f"}</B>
