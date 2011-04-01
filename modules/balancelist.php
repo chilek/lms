@@ -42,7 +42,7 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL, $pagelimit=100, $p
 				$where = ' AND documents.number = '.intval($search);
 			break;
 			case 'cdate':
-				$where = ' AND cash.time >= '.$search.' AND cash.time < '.($search+86400);
+				$where = ' AND cash.time >= '.intval($search).' AND cash.time < '.(intval($search)+86400);
 			break;
 			case 'ten':
 				$where = ' AND c.ten = '.$DB->Escape($search);
@@ -68,9 +68,9 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL, $pagelimit=100, $p
 	}
 
 	if($from)
-        	$where .= ' AND cash.time >= '.$from;
+        	$where .= ' AND cash.time >= '.intval($from);
 	if($to)
-		$where .= ' AND cash.time <= '.$to;
+		$where .= ' AND cash.time <= '.intval($to);
 
 	if($res = $DB->Exec('SELECT cash.id AS id, time, cash.userid AS userid, cash.value AS value, 
 				cash.customerid AS customerid, comment, docid, cash.type AS type,

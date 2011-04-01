@@ -59,13 +59,14 @@ if(isset($_POST['registry']))
 					isset($registry['disabled']) ? 1 : 0,
 					$registry['id']
 				));
-		
+
 		$DB->Execute('DELETE FROM cashrights WHERE regid=?', array($registry['id']));
 		if($registry['rights'])
 			foreach($registry['rights'] as $right)
-			        if($right['rights'])
-			                  $DB->Execute('INSERT INTO cashrights (regid, userid, rights) VALUES(?, ?, ?)', array($id, $right['id'], $right['rights']));
-		
+			    if($right['rights'])
+			        $DB->Execute('INSERT INTO cashrights (regid, userid, rights) VALUES(?, ?, ?)',
+			            array($id, $right['id'], $right['rights']));
+
 		$DB->CommitTrans();
 		$SESSION->redirect('?m=cashreginfo&id='.$id);
 	}

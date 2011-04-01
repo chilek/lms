@@ -49,8 +49,7 @@ function GetDomainList($order='name,asc', $customer='', $filtr='')
 		default:
 			$sqlord = " ORDER BY d.name $direction";
 		break;
-                        
-	}
+    }
 
 	if ($filtr == '0-9') {
 		if ($CONFIG['database']['type'] == 'postgres')
@@ -62,7 +61,7 @@ function GetDomainList($order='name,asc', $customer='', $filtr='')
 		$where[] = 'd.name LIKE '.$DB->Escape("$filtr%");
 	}
 	if ($customer!='')
-		$where[] = 'd.ownerid = '.intval($customer);		
+		$where[] = 'd.ownerid = '.intval($customer);
 
 	$where = !empty($where) ? ' WHERE '.implode(' AND ', $where) : '';
 
@@ -73,7 +72,7 @@ function GetDomainList($order='name,asc', $customer='', $filtr='')
 		LEFT JOIN customers c ON (d.ownerid = c.id)'
 		.$where
 		.($sqlord != '' ? $sqlord : ''));
-	
+
 	$list['total'] = sizeof($list);
 	$list['order'] = $order;
 	$list['direction'] = $direction;
@@ -85,9 +84,6 @@ function GetDomainList($order='name,asc', $customer='', $filtr='')
 function GetDomainFirstLetters($customer='')
 {
 	global $DB;
-
-	if ($customer!='')
-		 'WHERE ownerid = '.intval($customer);		
 
 	if ($list = $DB->GetAllByKey('SELECT DISTINCT UPPER(SUBSTR(name, 1, 1)) AS idx
 		FROM domains'
@@ -101,7 +97,7 @@ function GetDomainFirstLetters($customer='')
 				unset($list[$idx]);
 			}
 	}
-	
+
 	return $list;
 }
 

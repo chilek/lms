@@ -78,7 +78,7 @@ switch($type)
 			foreach($tslist as $row)
 				foreach($row as $column => $value)
 					$saldolist[$column][] = $value;
-			
+
 			$saldolist['balance'] = 0;
 
 			foreach($saldolist['id'] as $i => $v)
@@ -86,7 +86,7 @@ switch($type)
 				$saldolist['after'][$i] = $saldolist['balance'] + $saldolist['value'][$i];
 				$saldolist['balance'] += $saldolist['value'][$i];
 			        $saldolist['date'][$i] = date('Y/m/d H:i', $saldolist['time'][$i]);
-				    
+
 				if($saldolist['time'][$i]>=$date['from'] && $saldolist['time'][$i]<=$date['to'])
 				{
 					$list['id'][] = $saldolist['id'][$i];
@@ -280,7 +280,7 @@ switch($type)
 			$SMARTY->assign('division', $DB->GetOne('SELECT name FROM divisions WHERE id = ?', array($division)));
 		if($source)
 			$SMARTY->assign('source', $DB->GetOne('SELECT name FROM cashsources WHERE id = ?', array($source)));
-								
+
 		$SMARTY->display('printbalancelist.html');
 	break;
 
@@ -330,7 +330,7 @@ switch($type)
 		} else {
 			$date['from'] = 0;
 		}
-		
+
 		if($to) {
 			list($year, $month, $day) = explode('/',$to);
 			$date['to'] = mktime(23,59,59,$month,$day,$year);
@@ -338,9 +338,9 @@ switch($type)
 			$to = date("Y/m/d",time());
 			$date['to'] = mktime(23,59,59); // end of today
 		}
-		
+
 		$layout['pagetitle'] = trans('Cash Import History ($0 to $1)', $from, $to);
-		
+
 		$importlist = $DB->GetAll('SELECT c.time, c.value, c.customerid, '
 			.$DB->Concat('upper(v.lastname)',"' '",'v.name').' AS customername 
 			FROM cash c
@@ -357,11 +357,11 @@ switch($type)
 	break;
 
 	case 'invoices': /********************************************/
-	
+
 		$from = $_POST['invoicefrom'];
 		$to = $_POST['invoiceto'];
 
-		// date format 'yyyy/mm/dd'	
+		// date format 'yyyy/mm/dd'
 		if($to) {
 			list($year, $month, $day) = explode('/',$to);
 			$date['to'] = mktime(23,59,59,$month,$day,$year);
@@ -452,7 +452,7 @@ switch($type)
 
 		$order = $_POST['order'];
 		$direction = $_POST['direction'];
-		$customerid = (isset($_POST['customer']) ? $_POST['customer'] : 0);
+		$customerid = (isset($_POST['customer']) ? intval($_POST['customer']) : 0);
 
         $year = date('Y', $reportday);
 		$yearday = date('z', $reportday) + 1;
@@ -667,7 +667,7 @@ switch($type)
 					    AND a.customerid = d.customerid)';
 			$where .= $groupwhere;
 		}
-											
+
 		if($from > 0)
 			$listdata['startbalance'] = $DB->GetOne('SELECT SUM(value) FROM receiptcontents
 						LEFT JOIN documents d ON (docid = d.id AND type = ?) 
@@ -708,18 +708,18 @@ switch($type)
 
 				if($row['posnumber'] > 1) 
 					$list[$idx]['title'] = $DB->GetCol('SELECT description FROM receiptcontents WHERE docid=? ORDER BY itemid', array($list[$idx]['id']));
-					
+
 				// summary
 				if($row['value'] > 0)
 					$listdata['totalincome'] += $row['value'];
 				else
 					$listdata['totalexpense'] += -$row['value'];
-				
+
 				if($idx==0) 
 					$list[$idx]['after'] = $listdata['startbalance'] + $row['value'];
 				else
 					$list[$idx]['after'] = $list[$idx-1]['after'] + $row['value'];
-				
+
 				if(!$row['closed'])
 					$listdata['advances'] -= $row['value'];
 			}
@@ -757,7 +757,7 @@ switch($type)
 		{
 		        $pages = array();
 			$totals = array();
-					
+
 			// hidden option: max records count for one page of printout
 			// I think 20 records is fine, but someone needs 19.
 			$rows = isset($CONFIG['phpui']['printout_pagelimit']) ? $CONFIG['phpui']['printout_pagelimit'] : 20;
@@ -785,24 +785,24 @@ switch($type)
 
 				$rows++;
 			        $page = $x;
-			        
+
 				if($row['value']>0)
 					$totals[$page]['income'] += $row['value'];
 				else
 					$totals[$page]['expense'] += -$row['value'];
-					
+
 				$totals[$page]['rows'] = $rows; 
 			}
 
 			foreach($totals as $page => $t)
 			{
 				$pages[] = $page;
-			       
+
 			        $totals[$page]['totalincome'] = $totals[$page-1]['totalincome'] + $t['income'];
 				$totals[$page]['totalexpense'] = $totals[$page-1]['totalexpense'] + $t['expense'];
 				$totals[$page]['rowstart'] = $totals[$page-1]['rowstart'] + $totals[$page-1]['rows'];
 			}
-			
+
 			$SMARTY->assign('pages', $pages);
 			$SMARTY->assign('totals', $totals);
 			$SMARTY->assign('pagescount', sizeof($pages));
@@ -810,7 +810,7 @@ switch($type)
 			$SMARTY->display('printreceiptlist-ext.html');
 		}
 		else
-		{		
+		{
 			$SMARTY->display('printreceiptlist.html');
 		}
 	break;

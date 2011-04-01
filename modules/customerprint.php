@@ -133,11 +133,13 @@ switch($type)
 			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
 		}
 
-		$layout['pagetitle'] = trans('Customer $0 Balance Sheet ($1 to $2)',$LMS->GetCustomerName($_POST['customer']), ($from ? $from : ''), $to);
-		
+		$layout['pagetitle'] = trans('Customer $0 Balance Sheet ($1 to $2)',
+		    $LMS->GetCustomerName($_POST['customer']), ($from ? $from : ''), $to);
+
 		$id = $_POST['customer'];
 
-		if($tslist = $DB->GetAll('SELECT cash.id AS id, time, cash.value AS value, taxes.label AS taxlabel, customerid, comment, name AS username 
+		if($tslist = $DB->GetAll('SELECT cash.id AS id, time, cash.value AS value,
+		        taxes.label AS taxlabel, customerid, comment, name AS username 
 				    FROM cash 
 				    LEFT JOIN taxes ON (taxid = taxes.id)
 				    LEFT JOIN users ON users.id=userid 

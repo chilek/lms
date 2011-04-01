@@ -64,7 +64,7 @@ if(isset($_POST['reglog']))
 	    		// date format 'yyyy/mm/dd hh:mm'
 			$date = explode('/', $matches[1]);
 			$time = explode(':', $matches[2]);
-					
+
 			if(checkdate($date[1],$date[2],(int)$date[0]))
 			{
 		    		if (!strlen($time[0]) || !strlen($time[1]))
@@ -72,10 +72,10 @@ if(isset($_POST['reglog']))
 				$time = mktime($time[0],$time[1],0,$date[1],$date[2],$date[0]);
 			}
 			else
-				$error['time'] = trans('Wrong datetime format!');    
+				$error['time'] = trans('Wrong datetime format!');
 		}
 		else
-			$error['time'] = trans('Wrong datetime format!');    
+			$error['time'] = trans('Wrong datetime format!');
 	}
 	else
 		$time = time();
@@ -86,7 +86,7 @@ if(isset($_POST['reglog']))
 		                        LEFT JOIN documents ON (docid = documents.id)
 					WHERE cdate <= ? AND regid = ?',
 					array($time, $regid));
-		
+
 		$DB->Execute('INSERT INTO cashreglog (time, description, value, regid, userid, snapshot)
 				VALUES(?, ?, ?, ?, ?, ?)',
 				array($time,

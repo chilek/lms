@@ -102,23 +102,23 @@ function GetReceiptList($registry, $order='', $search=NULL, $cat=NULL, $from=0, 
 	{
 		$totalincome = 0;
 		$totalexpense = 0;
-		
+
 		foreach($list as $idx => $row)
 		{
 			$list[$idx]['number'] = docnumber($row['number'], $row['template'], $row['cdate'], $row['extnumber']);
 			$list[$idx]['customer'] = $row['customer'].' '.$row['address'].' '.$row['zip'].' '.$row['city'];
-			
+
 			// don't retrive descriptions of all items to not decrease speed
 			// but we want to know that there is something hidden ;)
 			if($row['posnumber'] > 1) $list[$idx]['title'] .= ' ...';
-			
+
 			// summary
 			if($row['value'] > 0)
 				$totalincome += $row['value'];
 			else
 				$totalexpense += -$row['value'];
 		}
-		
+
 		$list['totalincome'] = $totalincome;
 		$list['totalexpense'] = $totalexpense;
 		$list['order'] = $order;

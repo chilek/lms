@@ -68,10 +68,10 @@ function Traffic($from = 0, $to = 0, $net = 0, $customerid = 0, $order = '', $li
 
 	// limits
 	if($limit > 0)
-		$limit = ' LIMIT '.$limit;
+		$limit = ' LIMIT '.intval($limit);
 	else
 		$limit = '';
-		
+
 	// join query from parts
 	$query = 'SELECT nodeid, name, inet_ntoa(ipaddr) AS ip, 
 			    sum(upload) as upload, sum(download) as download 

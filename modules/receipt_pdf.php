@@ -261,22 +261,21 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached' && sizeof($_POST['marks']
                         $rlm[$idx] = $mark;
 	if(sizeof($rlm))
 	        foreach($rlm as $mark)
-		        $ids[] = $mark;
-	
-	if(!$ids)
+		        $ids[] = intval($mark);
+
+	if(empty($ids))
 	{
 	        $SESSION->close();
 	        die;
 	}
-	
+
 	if(!empty($_GET['cash']))
 	{
-	        foreach($ids as $cashid)
-	                if($rid = $DB->GetOne('SELECT docid FROM cash, documents WHERE docid = documents.id AND documents.type = 2 AND cash.id = ?', array($cashid)))
-			        $idsx[] = $rid;
-		$ids = array_unique((array)$idsx);
+        $ids = $DB->GetCol('SELECT DISTINCT docid FROM cash, documents
+            WHERE docid = documents.id AND documents.type = 2
+                AND cash.id IN ('.implode(',', $ids).')');
 	}
-	
+
 	sort($ids);
 
         $i = 0;
@@ -304,7 +303,7 @@ else
 {
 	$SESSION->redirect('?m=receiptlist');
 }
-	
+
 close_pdf($pdf);
 
 ?>
