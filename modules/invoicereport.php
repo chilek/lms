@@ -114,7 +114,8 @@ $items = $DB->GetAll('SELECT docid, itemid, taxid, value, count
 	    ORDER BY CEIL(cdate/86400), d.id', array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto));
 
 // get documents data
-$docs = $DB->GetAllByKey('SELECT d.id AS id, number, cdate, customerid, name, address, zip, city, ten, ssn, template, reference
+$docs = $DB->GetAllByKey('SELECT d.id AS id, number, cdate, sdate, customerid,
+        name, address, zip, city, ten, ssn, template, reference
 	    FROM documents d
 	    LEFT JOIN numberplans ON d.numberplanid = numberplans.id
 	    WHERE (d.type = ? OR d.type = ?) AND (d.cdate BETWEEN ? AND ?) '
