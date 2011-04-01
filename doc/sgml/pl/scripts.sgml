@@ -436,6 +436,13 @@ http://www.naszasiec.pl/</screen></example>
 	   Domy¶lnie: ''</para>
 	   <para>Przyk³ad:	<prompt>suspension_description = (zawieszenie)</prompt></para>
 	  </listitem>
+	  <listitem>
+	   <para>saledate_next_month (opcjonalny)</para>
+	   <para>W³±czenie tej opcji spowoduje, ¿e data sprzeda¿y na fakturze zostanie ustawiona
+	   na pierwszy dzieñ nastêpnego miesi±ca. 
+	   Domy¶lnie: 0</para>
+	   <para>Przyk³ad:	<prompt>saledate_next_month = 1</prompt></para>
+	  </listitem>
 	 </itemizedlist>
 	 </para>
 	 <para>Ponadto mamy do dyspozycji jeden przydatny parametr wiersza poleceñ

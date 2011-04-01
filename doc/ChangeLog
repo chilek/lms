@@ -13,6 +13,7 @@ version ? (????-??-??)
   - Added searching by option name in configuration options list [alec]
   - Fixed popups height on Internet Explorer [alec]
   - Added possibility to select invoices paytime from calendar popup [alec]
+  - lms-payments: Added option for setting sale date to the 1st day of next month [alec]
 
 version 1.11.12 Aris (2011-03-18)
 

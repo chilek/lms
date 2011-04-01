@@ -3160,6 +3160,11 @@ http://www.naszasiec.pl/
        Tekst dodawany na końcu opisu operacji dla obciążeń zawieszonych.
        Domyślnie: ''
        Przykład: suspension_description = (zawieszenie)
+     * saledate_next_month (opcjonalny)
+       Włączenie tej opcji spowoduje, że data sprzedaży na fakturze
+       zostanie ustawiona na pierwszy dzień następnego miesiąca.
+       Domyślnie: 0
+       Przykład: saledate_next_month = 1
 
    Ponadto mamy do dyspozycji jeden przydatny parametr wiersza poleceń
    --fakedate (-f). Przy jego użyciu można sprawić, aby skrypt działał z
