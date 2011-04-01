@@ -74,7 +74,7 @@ foreach($iteration as $idx => $element)
 		$prev_ticketid = isset($iteration[$idx-1]) ? $iteration[$idx-1]['id'] : 0;
 		break;
 	}
-}		
+}
 
 $ticket['next_ticketid'] = $next_ticketid;
 $ticket['prev_ticketid'] = $prev_ticketid;

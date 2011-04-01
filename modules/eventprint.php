@@ -35,7 +35,7 @@ function GetEvents($date=NULL, $userid=0, $customerid=0)
 		 (SELECT phone FROM customercontacts WHERE customerid = customers.id ORDER BY id LIMIT 1) AS customerphone 
 		 FROM events LEFT JOIN customers ON (customerid = customers.id)
 		 WHERE date = ? AND (private = 0 OR (private = 1 AND userid = ?)) '
-		 .($customerid ? 'AND customerid = '.$customerid : '')
+		 .($customerid ? 'AND customerid = '.intval($customerid) : '')
 		 .' ORDER BY begintime',
 		 array($date, $AUTH->id));
 
@@ -57,8 +57,8 @@ function GetEvents($date=NULL, $userid=0, $customerid=0)
 		}
 
 	if($userid)
-		return $list2;	
-	else	
+		return $list2;
+	else
 		return $list;
 }
 

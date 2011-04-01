@@ -30,10 +30,10 @@ function GetDocumentList($order='cdate,asc', $type=NULL, $customer=NULL, $from=0
 
 	if($order=='')
 		$order='cdate,asc';
-	
+
 	list($order,$direction) = sscanf($order, '%[^,],%s');
 	($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
-	
+
 	switch($order)
 	{
 		case 'type':

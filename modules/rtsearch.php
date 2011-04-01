@@ -168,14 +168,14 @@ if(isset($search) || isset($_GET['s']))
 	if(!$error)
 	{
 		$queue = RTSearch($search, $o);
-		
+
 		$queuedata['total'] = $queue['total'];
-		$queuedata['order'] = $queue['order'];		
-		$queuedata['direction'] = $queue['direction'];		
+		$queuedata['order'] = $queue['order'];
+		$queuedata['direction'] = $queue['direction'];
 		$queuedata['queue'] = isset($search['queue']) ? $search['queue'] : 0;
-		
+
 		unset($queue['total']);
-		unset($queue['order']);		
+		unset($queue['order']);
 		unset($queue['direction']);
 
 		$page = (! isset($_GET['page']) ? 1 : $_GET['page']); 

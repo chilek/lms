@@ -44,7 +44,7 @@ if(isset($_POST['searchcustomer']) && $_POST['searchcustomer'])
 			.' OR UPPER(email) LIKE UPPER('.$DB->Escape('%'.$search.'%').')'
 			.' OR UPPER('.$DB->Concat('lastname',"' '",'c.name').') LIKE UPPER('.$DB->Escape('%'.$search.'%').')'
 			.' OR UPPER(address) LIKE UPPER('.$DB->Escape('%'.$search.'%').')) ';
-	
+
 	$SMARTY->assign('searchcustomer', $search);
 }
 
@@ -58,7 +58,7 @@ if(isset($_POST['searchnode']) && $_POST['searchnode'])
 			.' OR UPPER(mac) LIKE UPPER('.$DB->Escape('%'.$search.'%').')'
 			.' OR UPPER(location) LIKE UPPER('.$DB->Escape('%'.$search.'%').')'
 			.' OR UPPER(nodes.name) LIKE UPPER('.$DB->Escape('%'.$search.'%').')) ';
-	
+
 	$SMARTY->assign('searchnode', $search);
 }
 

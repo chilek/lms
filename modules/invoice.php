@@ -47,7 +47,7 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached')
 			$ilm[$id] = $mark;
 	if(sizeof($ilm))
 		foreach($ilm as $mark)
-			$ids[] = $mark;
+			$ids[] = intval($mark);
 
 	if(empty($ids))
 	{

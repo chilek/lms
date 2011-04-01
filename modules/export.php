@@ -51,15 +51,15 @@ if(isset($_GET['type']) && $_GET['type'] == 'cash')
 	$registry = intval($_POST['registry']);
 	$user = intval($_POST['user']);
 	$where = '';
-	
+
 	if($registry)
-		$where .= ' AND regid = '.$registry;
+		$where .= ' AND regid = '.intval($registry);
 	if($from)
 		$where .= ' AND cdate >= '.$from;
 	if($to)
 		$where .= ' AND cdate <= '.$to;
 	if($user)
-		$where .= ' AND userid = '.$user;
+		$where .= ' AND userid = '.intval($user);
 
     	// wysy³amy ...
 	header('Content-Type: application/octetstream');
@@ -96,7 +96,7 @@ if(isset($_GET['type']) && $_GET['type'] == 'cash')
 		{
 			$line = $record ? $record : $cash_record;
 			$i++;
-			
+
 			$clariondate = intval($row['cdate']/86400)+61731;
 			$date = date($date_format, $row['cdate']);
 			$number = docnumber($row['number'], $row['template'], $row['cdate'], $row['extnumber']);

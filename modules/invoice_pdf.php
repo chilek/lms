@@ -60,7 +60,7 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached')
 
 	if(isset($_POST['marks']))
 		foreach($_POST['marks'] as $idx => $mark)
-			$ilm[$idx] = $mark;
+			$ilm[$idx] = intval($mark);
 
 	if(sizeof($ilm))
 		foreach($ilm as $mark)

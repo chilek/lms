@@ -61,8 +61,10 @@ $taxes = array();
 
 if(!empty($_POST['group']))
 {
-	if(is_array($_POST['group']))
-		$groups = implode(',', $_POST['group']);
+	if(is_array($_POST['group'])) {
+	    $groups = array_map('intval', $_POST['group']);
+		$groups = implode(',', $groups);
+    }
 	else
 		$groups = intval($_POST['group']);
 

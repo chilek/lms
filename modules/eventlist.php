@@ -31,10 +31,10 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 	if(!$year) $year = date('Y',time());
 	if(!$month) $month = date('n',time());
 	if(!$day) $day = date('j',time());
-	
+
 	$startdate = mktime(0,0,0, $month, $day, $year);
 	$enddate = mktime(0,0,0, $month, $day+$forward, $year);
-	
+
 	$list = $DB->GetAll(
 	        'SELECT events.id AS id, title, description, date, begintime, endtime, customerid, closed, '
 		.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername,

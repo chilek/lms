@@ -93,7 +93,7 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL,
 			break;
 		}
 	}
-        
+
 	if($hideclosed)
 		$where .= ' AND closed = 0';
 
@@ -153,7 +153,7 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL,
 
 	$result['order'] = $order;
 	$result['direction'] = $direction;
-			
+
 	return $result;
 }
 

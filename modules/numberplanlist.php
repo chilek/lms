@@ -48,7 +48,7 @@ function GetNumberPlanList()
 		$count = $DB->GetAllByKey('SELECT numberplanid AS id, COUNT(numberplanid) AS count
 					    FROM documents 
 					    GROUP BY numberplanid','id');
-					    
+
 		$max = $DB->GetAllByKey('SELECT numberplanid AS id, MAX(number) AS max 
 					    FROM documents LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 					    WHERE cdate >= (CASE period
@@ -58,7 +58,7 @@ function GetNumberPlanList()
 						WHEN '.WEEKLY.' THEN '.$weekstart.'
 						WHEN '.DAILY.' THEN '.$daystart.' ELSE 0 END)
 					    GROUP BY numberplanid','id');
-					    
+
 		foreach ($list as $idx => $item)
 		{
 			$list[$idx]['next'] = isset($max[$item['id']]['max']) ? $max[$item['id']]['max']+1 : 1;
@@ -71,7 +71,7 @@ function GetNumberPlanList()
 
 if ($SESSION->is_set('nplp') && !isset($_GET['page']))
 	$SESSION->restore('nplp', $_GET['page']);
-	    
+
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
 $pagelimit = (!isset($CONFIG['phpui']['numberplanlist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['numberplanlist_pagelimit']);
 $start = ($page - 1) * $pagelimit;

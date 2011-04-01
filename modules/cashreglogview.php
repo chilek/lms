@@ -103,7 +103,7 @@ unset($cashreglog['direction']);
 
 if ($SESSION->is_set('crlp') && !isset($_GET['page']))
 	$SESSION->restore('crlp', $_GET['page']);
-	    
+
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
 $pagelimit = (!isset($CONFIG['phpui']['cashreglog_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['cashreglog_pagelimit']);
 $start = ($page - 1) * $pagelimit;

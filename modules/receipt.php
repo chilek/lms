@@ -78,26 +78,25 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached' && sizeof($_POST['marks']
 {
         $SESSION->restore('rlm', $rlm);
 	$SESSION->remove('rlm');
-		
+
 	if(sizeof($_POST['marks']))
 	        foreach($_POST['marks'] as $id => $mark)
 	                $rlm[$id] = $mark;
 	if(sizeof($rlm))
 		foreach($rlm as $mark)
-			$ids[] = $mark;
+			$ids[] = intval($mark);
 
-	if(!$ids)
+	if(empty($ids))
 	{
 		$SESSION->close();
 		die;
 	}
-								
+
 	if(!empty($_GET['cash']))
 	{
-		foreach($ids as $cashid)
-			if($rid = $DB->GetOne('SELECT docid FROM cash, documents WHERE docid = documents.id AND documents.type = 2 AND cash.id = ?', array($cashid)))
-				$idsx[] = $rid;
-		$ids = array_unique((array)$idsx);
+		$ids = $DB->GetCol('SELECT DISTINCT docid FROM cash, documents
+			WHERE docid = documents.id AND documents.type = 2
+			    AND cash.id IN ('.implode(',', $ids).')');
 	}
 
 	sort($ids);

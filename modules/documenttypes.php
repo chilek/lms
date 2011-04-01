@@ -34,7 +34,7 @@ if ($SESSION->is_set('dtlp') && !isset($_GET['page']))
 	$SESSION->restore('dtlp', $_GET['page']);
 
 $listdata['total'] = sizeof($typelist);
-	    
+
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
 $pagelimit = (!isset($CONFIG['phpui']['documenttypes_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['documenttypes_pagelimit']);
 $start = ($page - 1) * $pagelimit;

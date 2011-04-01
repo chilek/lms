@@ -766,7 +766,6 @@ class LMS
 		if(sizeof($search))
 			foreach($search as $key => $value)
 			{
-				$value = str_replace(' ','%',trim($value));
 				if($value!='')
 				{
 					switch($key)
@@ -787,31 +786,32 @@ class LMS
 							$searchargs[] = $this->DB->Concat('UPPER(c.lastname)',"' '",'UPPER(c.name)').' ?LIKE? UPPER('.$this->DB->Escape("%$value%").')';
 						break;
 						case 'createdfrom':
-							if($search['createdto'])
-							{
-								$searchargs['createdfrom'] = "(creationdate >= $value AND creationdate <= ".$search['createdto'].')';
+							if($search['createdto']) {
+								$searchargs['createdfrom'] = '(creationdate >= '.intval($value)
+								    .' AND creationdate <= '.intval($search['createdto']).')';
 								unset($search['createdto']);
 							}
 							else
-								$searchargs[] = "creationdate >= $value";
+								$searchargs[] = 'creationdate >= '.intval($value);
 						break;
 						case 'createdto':
 							if(!isset($searchargs['createdfrom']))
-								$searchargs[] = "creationdate <= $value";
+								$searchargs[] = 'creationdate <= '.intval($value);
 						break;
 						case 'deletedfrom':
 							if($search['deletedto'])
 							{
-								$searchargs['deletedfrom'] = "(moddate >= $value AND moddate <= ".$search['deletedto'].')';
+								$searchargs['deletedfrom'] = '(moddate >= '.intval($value)
+								    .' AND moddate <= '.intval($search['deletedto']).')';
 								unset($search['deletedto']);
 							}
 							else
-								$searchargs[] = "moddate >= $value";
+								$searchargs[] = 'moddate >= '.intval($value);
 							$deleted = 1;
 						break;
 						case 'deletedto':
 							if(!isset($searchargs['deletedfrom']))
-								$searchargs[] = "moddate <= $value";
+								$searchargs[] = 'moddate <= '.intval($value);
 							$deleted = 1;
 						break;
 						case 'type':
@@ -843,7 +843,7 @@ class LMS
 		if(isset($searchargs))
 			$sqlsarg = implode(' '.$sqlskey.' ',$searchargs);
 
-		$suspension_percentage = $this->CONFIG['finances']['suspension_percentage'];
+		$suspension_percentage = f_round($this->CONFIG['finances']['suspension_percentage']);
 
 		if($customerlist = $this->DB->GetAll(
 				'SELECT c.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername, 
@@ -906,7 +906,7 @@ class LMS
 				.($network ? ' AND EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id AND 
 							((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') 
 							OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
-				.($customergroup ? ' AND customergroupid='.$customergroup : '')
+				.($customergroup ? ' AND customergroupid='.intval($customergroup) : '')
 				.($nodegroup ? ' AND EXISTS (SELECT 1 FROM nodegroupassignments na
 							JOIN nodes n ON (n.id = na.nodeid) 
 							WHERE n.ownerid = c.id AND na.nodegroupid = '.intval($nodegroup).')' : '')
@@ -1020,7 +1020,7 @@ class LMS
 		($direction == 'ASC' || $direction == 'asc') ? $direction == 'ASC' : $direction == 'DESC';
 
 		$saldolist = array();
-		
+
 		if($tslist = $this->DB->GetAll('SELECT cash.id AS id, time, cash.type AS type, 
 					cash.value AS value, taxes.label AS tax, cash.customerid AS customerid, 
 					comment, docid, users.name AS username,
@@ -1029,8 +1029,8 @@ class LMS
 					LEFT JOIN users ON users.id = cash.userid
 					LEFT JOIN documents ON documents.id = docid
 					LEFT JOIN taxes ON cash.taxid = taxes.id
-					WHERE cash.customerid=? '
-					.($totime ? ' AND time <= '.$totime : '')
+					WHERE cash.customerid = ?'
+					.($totime ? ' AND time <= '.intval($totime) : '')
 					.' ORDER BY time ' . $direction, array($id)))
 		{
 			$saldolist['balance'] = 0;
@@ -1042,14 +1042,14 @@ class LMS
 				// old format wrapper
 				foreach($row as $column => $value)
 					$saldolist[$column][$i] = $value;
-				
+
 				$saldolist['after'][$i] = round($saldolist['balance'] + $row['value'], 2);
 				$saldolist['balance'] += $row['value'];
 				$saldolist['date'][$i] = date('Y/m/d H:i', $row['time']);
-				
+
 				$i++;
 			}
-			
+
 			$saldolist['total'] = sizeof($tslist);
 		}
 
@@ -1472,9 +1472,9 @@ class LMS
 				    OR (n.ipaddr_pub > '.$net['address'].' AND n.ipaddr_pub < '.$net['broadcast'].'))' : '')
 				.($status==1 ? ' AND n.access = 1' : '') //connected
 				.($status==2 ? ' AND n.access = 0' : '') //disconnected
-				.($status==3 ? ' AND n.lastonline > ?NOW? - '.$this->CONFIG['phpui']['lastonline_limit'] : '') //online
-				.($customergroup ? ' AND customergroupid = '.$customergroup : '')
-				.($nodegroup ? ' AND nodegroupid = '.$nodegroup : '')
+				.($status==3 ? ' AND n.lastonline > ?NOW? - '.intval($this->CONFIG['phpui']['lastonline_limit']) : '') //online
+				.($customergroup ? ' AND customergroupid = '.intval($customergroup) : '')
+				.($nodegroup ? ' AND nodegroupid = '.intval($nodegroup) : '')
 				.(isset($searchargs) ? $searchargs : '')
 				.($sqlord != '' ? $sqlord.' '.$direction : '')))
 		{
@@ -3009,7 +3009,7 @@ class LMS
 				$assigned += $row['assigned'];
 				$online += $row['online'];
 			}
-			
+
 			$networks['size'] = $size;
 			$networks['assigned'] = $assigned;
 			$networks['online'] = $online;
@@ -3626,10 +3626,10 @@ class LMS
 			if(!($queue = $this->GetCache('rttickets', $ticket, 'queueid')))
 				$queue = $this->DB->GetOne('SELECT queueid FROM rttickets WHERE id=?', array($ticket));
 		}
-		
+
 		if (!$queue)
 			return 0;
-		
+
 		$rights = $this->DB->GetOne('SELECT rights FROM rtrights WHERE userid=? AND queueid=?',
 			array($user, $queue));
 
@@ -3785,7 +3785,7 @@ class LMS
 //		$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
 		$ticket['status'] = $RT_STATES[$ticket['state']];
 		$ticket['uptime'] = uptimef($ticket['resolvetime'] ? $ticket['resolvetime'] - $ticket['createtime'] : time() - $ticket['createtime']);
-		
+
 		return $ticket;
 	}
 
@@ -3878,10 +3878,10 @@ class LMS
 			'mail_limit' => 0,
 			'sql_limit' => 0,
 			'quota_sh_limit' => 0,
-			'quota_www_limit' => 0,	
-			'quota_ftp_limit' => 0,	
+			'quota_www_limit' => 0,
+			'quota_ftp_limit' => 0,
 			'quota_mail_limit' => 0,
-			'quota_sql_limit' => 0,	
+			'quota_sql_limit' => 0,
 		);
 
 		if($limits = $this->DB->GetAll('SELECT alias_limit, domain_limit, sh_limit,
@@ -4032,11 +4032,11 @@ class LMS
 
 				$content = unserialize((string)$content);
 				$content['regdata'] = unserialize((string)$content['regdata']);
-			
+
 				if(is_array($content['regdata']))
 				{
 					$this->DB->Execute('DELETE FROM dbinfo WHERE keytype LIKE ?', array('regdata_%'));
-			
+
 					foreach(array('id', 'name', 'url', 'hidden') as $key)
 						$this->DB->Execute('INSERT INTO dbinfo (keytype, keyvalue) VALUES (?, ?)', 
 							array('regdata_'.$key, $content['regdata'][$key]));
@@ -4491,20 +4491,20 @@ class LMS
 				else
 					$list[$idx]['next'] = 1;
 		}
-		
+
 		return $list;
 	}
-	
+
 	function GetNewDocumentNumber($doctype=NULL, $planid=NULL, $cdate=NULL)
 	{
 		if($planid)
 			$period = $this->DB->GetOne('SELECT period FROM numberplans WHERE id=?', array($planid));
 		else
 			$planid = 0;
-		
+
 		$period = isset($period) ? $period : YEARLY;
 		$cdate = $cdate ? $cdate : time();
-		
+
 		switch($period)
 		{
 			case DAILY:
@@ -4749,14 +4749,13 @@ class LMS
 		}
 
 		if(isset($searchargs))
-			$searchargs = ' AND ('.implode(' '.$sqlskey.' ',$searchargs).')';
+			$searchargs = ' WHERE '.implode(' '.$sqlskey.' ',$searchargs);
 
 		$voipaccountlist =
 			$this->DB->GetAll('SELECT v.id, v.login, v.passwd, v.phone, v.ownerid, '
 				.$this->DB->Concat('c.lastname',"' '",'c.name').' AS owner
 				FROM voipaccounts v 
 				JOIN customersview c ON (v.ownerid = c.id) '
-				.' WHERE 1=1 '
 				.(isset($searchargs) ? $searchargs : '')
 				.($sqlord != '' ? $sqlord.' '.$direction : ''));
 

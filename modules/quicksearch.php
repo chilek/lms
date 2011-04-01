@@ -24,9 +24,12 @@
  *  $Id$
  */
 
-function macformat($mac)
+function macformat($mac, $escape=false)
 {
+    global $DB;
+
 	$res = str_replace('-', ':', $mac);
+
 	// allow eg. format "::ab:3::12", only whole addresses
 	if(preg_match('/^([0-9a-f]{0,2}):([0-9a-f]{0,2}):([0-9a-f]{0,2}):([0-9a-f]{0,2}):([0-9a-f]{0,2}):([0-9a-f]{0,2})$/i', $mac, $arr))
 	{
@@ -45,8 +48,11 @@ function macformat($mac)
 		$tmp = preg_replace('/[^0-9a-f]/i', '', $mac);
 
 		if(strlen($tmp) == 12) // we've the whole address
-			if(check_mac($tmp)) 
+			if(check_mac($tmp))
 				$res = $tmp;
+
+        if ($escape)
+            $res = $DB->Escape("%$res%");
 	}
 	return $res;
 }
@@ -70,22 +76,24 @@ if(!empty($_POST['qscustomer'])) {
 	$mode = $_GET['mode'];
 }
 
+$sql_search = $DB->Escape("%$search%");
+
 switch($mode)
 {
 	case 'customer':
 		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
-			$candidates = $DB->GetAll('SELECT id, email, address, post_name, post_address, deleted,
-			    '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS username
+			$candidates = $DB->GetAll("SELECT id, email, address, post_name, post_address, deleted,
+			    ".$DB->Concat('UPPER(lastname)',"' '",'name')." AS username
 				FROM customersview
-				WHERE '.(preg_match('/^[0-9]+$/', $search) ? 'id = '.intval($search).' OR ' : '').'
-					LOWER('.$DB->Concat('lastname',"' '",'name').') ?LIKE? LOWER(\'%'.$search.'%\')
-					OR LOWER(address) ?LIKE? LOWER(\'%'.$search.'%\')
-					OR LOWER(post_name) ?LIKE? LOWER(\'%'.$search.'%\')
-					OR LOWER(post_address) ?LIKE? LOWER(\'%'.$search.'%\')
-					OR LOWER(email) ?LIKE? LOWER(\'%'.$search.'%\')
+				WHERE ".(preg_match('/^[0-9]+$/', $search) ? 'id = '.intval($search).' OR ' : '')."
+					LOWER(".$DB->Concat('lastname',"' '",'name').") ?LIKE? LOWER($sql_search)
+					OR LOWER(address) ?LIKE? LOWER($sql_search)
+					OR LOWER(post_name) ?LIKE? LOWER($sql_search)
+					OR LOWER(post_address) ?LIKE? LOWER($sql_search)
+					OR LOWER(email) ?LIKE? LOWER($sql_search)
 				ORDER by deleted, username, email, address
-				LIMIT 15');
+				LIMIT 15");
 
 			$eglible=array(); $actions=array(); $descriptions=array();
 			if ($candidates)
@@ -181,15 +189,15 @@ switch($mode)
 				    WHERE %where
     				ORDER BY n.name LIMIT 15';
 
-            $sql_where = '('.(preg_match('/^[0-9]+$/',$search) ? 'n.id = '.intval($search).' OR ' : '').'
-				LOWER(n.name) ?LIKE? LOWER(\'%'.$search.'%\')
-				OR INET_NTOA(ipaddr) ?LIKE? \'%'.$search.'%\'
-				OR INET_NTOA(ipaddr_pub) ?LIKE? \'%'.$search.'%\'
-				OR LOWER(mac) ?LIKE? LOWER(\'%'.macformat($search).'%\'))
+            $sql_where = '('.(preg_match('/^[0-9]+$/',$search) ? "n.id = $search OR " : '')."
+				LOWER(n.name) ?LIKE? LOWER($sql_search)
+				OR INET_NTOA(ipaddr) ?LIKE? $sql_search
+				OR INET_NTOA(ipaddr_pub) ?LIKE? $sql_search
+				OR LOWER(mac) ?LIKE? LOWER(".macformat($search, true)."))
 			    AND NOT EXISTS (
                     SELECT 1 FROM customerassignments a
                     JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-			        WHERE e.userid = lms_current_user() AND a.customerid = n.ownerid)';
+			        WHERE e.userid = lms_current_user() AND a.customerid = n.ownerid)";
 
 			$candidates = $DB->GetAll(str_replace('%where', $sql_where,	$sql_query));
 
@@ -253,7 +261,7 @@ switch($mode)
 		$s['name'] = $search;
 		$s['mac'] = $search;
 		$s['ipaddr'] = $search;
-		
+
 		$SESSION->save('nodesearch', $s);
 		$SESSION->save('nslk', 'OR');
 
@@ -261,21 +269,21 @@ switch($mode)
 
 		$target = '?m=nodesearch&search';
 	break;
-	
+
 	case 'ticket':
 		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
-			$candidates = $DB->GetAll('SELECT t.id, t.subject, t.requestor, c.name, c.lastname 
+			$candidates = $DB->GetAll("SELECT t.id, t.subject, t.requestor, c.name, c.lastname 
 				FROM rttickets t
 				LEFT JOIN customersview c on (t.customerid = c.id)
-				WHERE  '.(preg_match('/^[0-9]+$/',$search) ? 't.id = '.intval($search).' OR ' : '').' 
-					lower(t.subject) ?LIKE? lower(\'%'.$search.'%\') 
-					OR lower(t.requestor) ?LIKE? lower(\'%'.$search.'%\') 
-					OR lower(c.name) ?LIKE? lower(\''.$search.'%\') 
-					OR lower(c.lastname) ?LIKE? lower(\''.$search.'%\')
+				WHERE ".(preg_match('/^[0-9]+$/',$search) ? 't.id = '.intval($search).' OR ' : '')."
+					LOWER(t.subject) ?LIKE? LOWER($sql_search)
+					OR LOWER(t.requestor) ?LIKE? LOWER($sql_search)
+					OR LOWER(c.name) ?LIKE? LOWER($sql_search)
+					OR LOWER(c.lastname) ?LIKE? LOWER($sql_search)
 					ORDER BY t.subject, t.id, c.lastname, c.name, t.requestor
-					LIMIT 15');
-		
+					LIMIT 15");
+
 			$eglible=array(); $actions=array(); $descriptions=array();
 			if ($candidates)
 			foreach($candidates as $idx => $row) {
@@ -306,7 +314,7 @@ switch($mode)
 			$SESSION->save('rtsearch', array('name' => $search, 
 					'subject' => $search,
 					'operator' => 'OR'));
-			
+
 			$target = '?m=rtsearch&s=1';
 		}
 	break;
@@ -316,29 +324,32 @@ switch($mode)
 
 		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
-			$candidates = $DB->GetAll('(SELECT p.id, p.login, d.name AS domain, 0 AS type 
+		    $username = $DB->Escape('%'.$ac[0].'%');
+		    $domain   = $DB->Escape('%'.$ac[1].'%');
+
+			$candidates = $DB->GetAll("(SELECT p.id, p.login, d.name AS domain, 0 AS type
 					FROM passwd p
 					JOIN domains d ON (p.domainid = d.id)
-					WHERE p.login ?LIKE? LOWER(\'%'.$ac[0].'%\')
-					'.(!empty($ac[1]) ? 'AND d.name ?LIKE? LOWER(\''.$ac[1].'%\')' : '').')
+					WHERE p.login ?LIKE? LOWER($username)
+					".($domain ? "AND d.name ?LIKE? LOWER($domain)" : '').")
 					UNION 
 					(SELECT a.id, a.login, d.name AS domain, 1 AS type 
 					FROM aliases a
 					JOIN domains d ON (a.domainid = d.id)
-					WHERE a.login ?LIKE? LOWER(\'%'.$ac[0].'%\')
-					'.(!empty($ac[1]) ? 'AND d.name ?LIKE? LOWER(\''.$ac[1].'%\')' : '').')
+					WHERE a.login ?LIKE? LOWER($username)
+					".($domain ? "AND d.name ?LIKE? LOWER($domain)" : '').")
 					ORDER BY login, domain
-					LIMIT 15');
-		
+					LIMIT 15");
+
 			$eglible=array(); $actions=array(); $descriptions=array();
-			
+
 			if ($candidates) foreach($candidates as $idx => $row)
 			{
 				if($row['type'])
 					$actions[$row['id']] = '?m=aliasinfo&id='.$row['id'];
 				else
-					$actions[$row['id']] = '?m=accountinfo&id='.$row['id'];				
-			
+					$actions[$row['id']] = '?m=accountinfo&id='.$row['id'];
+
 				$eglible[$row['id']] = escape_js($row['login'].'@'.$row['domain']);
 				$descriptions[$row['id']] = '';
 			}
@@ -352,7 +363,7 @@ switch($mode)
 			}
 			exit;
 		}
-		
+
 		$search = array();
 		$search['login'] = $ac[0];
 		if(!empty($ac[1])) $search['domain'] = $ac[1];

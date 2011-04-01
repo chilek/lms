@@ -32,14 +32,14 @@ if(isset($_GET['is_sure']))
 	{
     		$SESSION->redirect('?m=cashreglist');
 	}
-	
+
 	if($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $regid))<256)
 	{
 	        $SMARTY->display('noaccess.html');
 		$SESSION->close();
 		die;
 	}
-				
+
 	$DB->Execute('DELETE FROM cashreglog WHERE id = ?', array(intval($_GET['id'])));
 }
 
