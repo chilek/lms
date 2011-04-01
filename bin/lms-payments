@@ -100,6 +100,7 @@ my $dbname = $ini->val('database', 'database') || 'lms';
 my $customergroups = $ini->val('payments', 'customergroups') || '';
 my $deadline = $ini->val('payments', 'deadline') || '14';
 my $paytype = $ini->val('payments', 'paytype') || 2; # TRANSFER
+my $sdate_next = $ini->val('payments', 'saledate_next_month') || 0;
 my $comment = $ini->val('payments', 'comment') || 'Tariff %tariff subscription for period %period';
 my $s_comment = $ini->val('payments', 'settlement_comment') || $comment;
 my $suspension_description = $ini->val('payments', 'suspension_description') || '';
@@ -222,6 +223,12 @@ $txts{+DISPOSABLE} = strftime("%Y/%m/%d", 0, 0, 12, $dom, $month - 1, $year - 19
 my $current_month = strftime("%Y/%m/%d", 0, 0, 12, 1, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, 0, $month, $year - 1900);
 my $current_period = strftime("%m/%Y", 0, 0, 12, 1, $month - 1, $year - 1900);
 my $next_period = strftime("%m/%Y", 0, 0, 12, 1, $month, $year - 1900);
+
+# sale date setting
+my $saledate = $currtime;
+if ($sdate_next) {
+    $saledate = strftime("%s", 0, 0, 12, 1, $month, $year - 1900);
+}
 
 # calculate start and end of numbering period
 sub get_period($)
@@ -543,7 +550,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 						VALUES (?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 				$idbq->execute($numbers{$plan}, $plan, $urow->{'countryid'}, $urow->{'divisionid'}, $uid,
 						$urow->{'lastname'}.' '.$urow->{'name'}, $urow->{'address'}, $urow->{'zip'},
-						$urow->{'city'}, $urow->{'ten'}, $urow->{'ssn'}, $currtime, $currtime, $paytime, $inv_paytype);
+						$urow->{'city'}, $urow->{'ten'}, $urow->{'ssn'}, $currtime, $saledate, $paytime, $inv_paytype);
 
 				$idbq = $dbase->prepare("SELECT id FROM documents
 						WHERE cdate = ? AND number = ? AND type = 1 AND customerid = ?");
