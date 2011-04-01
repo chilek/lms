@@ -774,7 +774,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 					    "WHERE docid = ? AND itemid = ?",
 					    value, invoiceid, g->db_get_data(result,0,"itemid"));
 				}
-				else 
+				else if (docid)
 				{
 					itemid++;
 
@@ -865,7 +865,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 						    "WHERE docid = ? AND itemid = ?",
 						    value, invoiceid, g->db_get_data(result,0,"itemid"));
 					}
-					else
+					else if (docid)
 					{
 						itemid++;
 
