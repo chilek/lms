@@ -22,7 +22,8 @@
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP" NOWRAP>
 			{t}Invoice No.{/t}<BR>
-			{t}Draw-up date{/t}
+			{t}Draw-up date{/t}<BR>
+			{t}Sale date{/t}
 		</TD>
 		<TD WIDTH="{math equation="96-x" x=$taxescount}%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
 			{t}Contractor{/t}
@@ -53,6 +54,7 @@
 		<TD ALIGN="RIGHT">
 			{$invoice.number}<BR>
 			{$invoice.cdate|date_format:"%Y/%m/%d"}
+			{if $invoice.sdate}{$invoice.sdate|date_format:"%Y/%m/%d"}{else}{$invoice.cdate|date_format:"%Y/%m/%d"}{/if}
 		</TD>
 		<TD>
 			{$invoice.custname} ({$invoice.customerid|string_format:"%04d"})<BR>

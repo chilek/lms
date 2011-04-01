@@ -19,10 +19,13 @@
 			{t}No.{/t}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP" NOWRAP>
-			{t}Invoice No.{/t}<BR>
-			{t}Draw-up date{/t}
+			{t}Invoice No.{/t}
 		</TD>
-		<TD WIDTH="{math equation="96-x" x=$taxescount}%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
+		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP" NOWRAP>
+			{t}Draw-up date{/t}<BR>
+			{t}Sale date{/t}
+		</TD>
+		<TD WIDTH="{math equation="95-x" x=$taxescount}%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
 			{t}Contractor{/t}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
@@ -50,8 +53,11 @@
 			{counter}
 		</TD>
 		<TD ALIGN="RIGHT" class="small">
-			{$invoicelist[invoicelist].number}<BR>
-			{$invoicelist[invoicelist].cdate|date_format:"%Y/%m/%d"}
+			{$invoicelist[invoicelist].number}
+		</TD>
+		<TD ALIGN="RIGHT" class="small">
+			{$invoicelist[invoicelist].cdate|date_format:"%Y/%m/%d"}<BR>
+			{if $invoicelist[invoicelist].sdate}{$invoicelist[invoicelist].sdate|date_format:"%Y/%m/%d"}{else}{$invoicelist[invoicelist].cdate|date_format:"%Y/%m/%d"}{/if}
 		</TD>
 		<TD class="small">
 			{$invoicelist[invoicelist].custname} ({$invoicelist[invoicelist].customerid|string_format:"%04d"})
@@ -78,7 +84,7 @@
 	</TR>
 	{/section}
 	<TR>
-		<TD COLSPAN="3" ALIGN="RIGHT" class="small">
+		<TD COLSPAN="4" ALIGN="RIGHT" class="small">
 			<B>{t}Page total:{/t}</B>
 		</TD>
 		<TD ALIGN="RIGHT" class="small">
@@ -100,7 +106,7 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD COLSPAN="3" ALIGN="RIGHT" class="small">
+		<TD COLSPAN="4" ALIGN="RIGHT" class="small">
 			<B>{t}Transfered from previous page:{/t}</B>
 		</TD>
 		<TD ALIGN="RIGHT" class="small">
@@ -122,7 +128,7 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD COLSPAN="3" ALIGN="RIGHT" class="small">
+		<TD COLSPAN="4" ALIGN="RIGHT" class="small">
 			<B>{t}Total from start of period:{/t}</B>
 		</TD>
 		<TD ALIGN="RIGHT" class="small">
@@ -163,10 +169,13 @@
 			{t}No.{/t}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP" NOWRAP>
-			{t}Invoice No.{/t}<BR>
-			{t}Draw-up date{/t}
+			{t}Invoice No.{/t}
 		</TD>
-		<TD WIDTH="{math equation="96-x" x=$taxescount}%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
+		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP" NOWRAP>
+			{t}Draw-up date{/t}<BR>
+			{t}Sale date{/t}
+		</TD>
+		<TD WIDTH="{math equation="95-x" x=$taxescount}%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
 			{t}Contractor{/t}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
@@ -187,7 +196,7 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD ALIGN="center" COLSPAN="{math equation="5+x" x=$taxescount}">
+		<TD ALIGN="center" COLSPAN="{math equation="6+x" x=$taxescount}">
 			<P>&nbsp;</P>
 			<P><B>{t}No such invoices in selected time period.{/t}</B></P>
 			<P>&nbsp;</P>

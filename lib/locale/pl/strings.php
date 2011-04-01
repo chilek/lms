@@ -1105,6 +1105,7 @@ $_LANG['Resolved:'] = 'Rozwiązane:';
 $_LANG['Restore'] = 'Odtwórz';
 $_LANG['Romania'] = 'Rumunia';
 $_LANG['Sale date:'] = 'Data sprzedaży:';
+$_LANG['Sale date'] = 'Data sprzedaży';
 $_LANG['Sale Registry'] = 'Rejestr sprzedaży';
 $_LANG['Sale Registry for period $0 - $1'] = 'Rejestr sprzedaży za okres $0 - $1';
 $_LANG['Save'] = 'Zapisz';
