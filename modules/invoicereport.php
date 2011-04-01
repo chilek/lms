@@ -58,6 +58,7 @@ $listdata = array('tax' => 0, 'brutto' => 0);
 $invoicelist = array();
 $taxeslist = array();
 $taxes = array();
+$taxescount = 0;
 
 if(!empty($_POST['group']))
 {
@@ -199,13 +200,17 @@ if($items)
 
 	// get used tax rates for building report table
 	foreach($listdata as $idx => $val)
-		if(is_int($idx))
-			$taxeslist[$idx] = $taxes[$idx];
+		if(is_int($idx)) {
+		    $tax = $taxes[$idx];
+		    $tax['value'] = f_round($tax['value']);
+			$taxeslist[$idx] = $tax;
+			$taxescount += $tax['value'] ? 2 : 1;
+        }
 }
 
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->assign('taxes', $taxeslist);
-$SMARTY->assign('taxescount', sizeof($taxeslist));
+$SMARTY->assign('taxescount', $taxescount);
 $SMARTY->assign('layout', $layout);
 $SMARTY->assign('invoicelist', $invoicelist);
 
