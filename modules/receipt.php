@@ -27,25 +27,25 @@
 function GetReceipt($id)
 {
 	global $CONFIG, $DB;
-	
-	if($receipt = $DB->GetRow('SELECT documents.*, users.name AS user, template,
-					div.name AS d_name, div.address AS d_address,
-					div.zip AS d_zip, div.city AS d_city
-				FROM documents 
-				LEFT JOIN users ON (userid = users.id)
-				LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-				LEFT JOIN customers c ON (documents.customerid = c.id)
-				LEFT JOIN divisions div ON (div.id = c.divisionid)
-				WHERE documents.type = 2 AND documents.id = ?', array($id)))
+
+	if ($receipt = $DB->GetRow('SELECT d.*, u.name AS user, n.template,
+					ds.name AS d_name, ds.address AS d_address,
+					ds.zip AS d_zip, ds.city AS d_city
+				FROM documents d
+				LEFT JOIN users u ON (d.userid = u.id)
+				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+				LEFT JOIN customers c ON (d.customerid = c.id)
+				LEFT JOIN divisions ds ON (ds.id = c.divisionid)
+				WHERE d.type = 2 AND d.id = ?', array($id)))
 	{
 		$receipt['contents'] = $DB->GetAll('SELECT * FROM receiptcontents WHERE docid = ? ORDER BY itemid', array($id));
 		$receipt['total'] = 0;
-		
+
 		foreach($receipt['contents'] as $row)
 			$receipt['total'] += $row['value'];
-			
+
 		$receipt['number'] = docnumber($receipt['number'], $receipt['template'], $receipt['cdate'], $receipt['extnumber']);
-		
+
 		if($receipt['total'] < 0)
 		{
 			$receipt['type'] = 'out';
@@ -58,7 +58,7 @@ function GetReceipt($id)
 			$receipt['type'] = 'in';
 
 		$receipt['totalg'] = round($receipt['total']*100 - ((int) $receipt['total'])*100);
-		
+
 		return $receipt;
 	}
 }
@@ -104,7 +104,7 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached' && sizeof($_POST['marks']
 	$layout['pagetitle'] = trans('Cash Receipts');
 	$SMARTY->display('receiptheader.html');
 	$SMARTY->assign('type', !empty($_GET['which']) ? $_GET['which'] : '');
-	
+
 	$i = 0;
 	$count = sizeof($ids);
 	foreach($ids as $idx => $receiptid)
@@ -129,10 +129,10 @@ elseif($receipt = GetReceipt($_GET['id']))
     		$SMARTY->display('noaccess.html');
 	        $SESSION->close();
 		die;
-	}	
+	}
 
 	$layout['pagetitle'] = trans('Cash Receipt No. $0', $receipt['number']);
-	
+
 	$receipt['last'] = TRUE;
 	$receipt['first'] = TRUE;
 	$SMARTY->assign('type', isset($_GET['which']) ? $_GET['which'] : NULL);
