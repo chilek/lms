@@ -169,21 +169,27 @@
 			<B>{$item.itemid}.</B>
 		</TD>
 		<TD WIDTH="92%">
-			{if $item.deleted}
+		    {if $invoice.closed}
+		    {$item.name}
+			{elseif $item.deleted}
 			<INPUT TYPE="hidden" VALUE="{$item.name|escape}" NAME="name[{$item.itemid}]">{$item.name}
 			{else}
 			<INPUT TYPE="text" VALUE="{$item.name|escape}" NAME="name[{$item.itemid}]" SIZE="48" style="width: 100%">
 			{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			{if $item.deleted}
+		    {if $invoice.closed}
+		    {$item.prodid}
+			{elseif $item.deleted}
 			<INPUT TYPE="hidden" VALUE="{$item.prodid}" NAME="prodid[{$item.itemid}]">{$item.prodid}
 			{else}
 			<INPUT TYPE="text" VALUE="{$item.prodid}" NAME="prodid[{$item.itemid}]" SIZE="6">
 			{/if}
 		</TD>
 		<TD WIDTH="1%">
-			{if $item.deleted}
+		    {if $invoice.closed}
+		    {$item.count|string_format:"%.2f"}<BR>{$item.jm}
+			{elseif $item.deleted}
 			<INPUT TYPE="hidden" VALUE="{$item.count}" NAME="count[{$item.itemid}]">{$item.count|string_format:"%.2f"}
 			<INPUT TYPE="hidden" VALUE="{$item.jm}" NAME="jm[{$item.itemid}]">{$item.jm}
 			{else}
@@ -192,23 +198,28 @@
 			{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{if $item.deleted}
+		    {if $invoice.closed}
+		    {$item.discount|string_format:"%.2f"}
+			{elseif $item.deleted}
 			<INPUT TYPE="hidden" VALUE="{$item.discount}" NAME="discount[{$item.itemid}]">{$item.discount|string_format:"%.2f"}
 			{else}
 			<INPUT TYPE="text" VALUE="{$item.discount|string_format:"%.2f"}" NAME="discount[{$item.itemid}]" SIZE="6" {tip text="Enter discount percentage"}>
 			{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{if $item.deleted}
+		    {if $invoice.closed}
+		    {$item.valuenetto|money_format}
+			{elseif $item.deleted}
 			<INPUT TYPE="hidden" VALUE="{$item.valuenetto}" NAME="valuenetto[{$item.itemid}]">{$item.valuenetto|money_format}
 			{else}
 			<INPUT TYPE="text" VALUE="{$item.valuenetto|string_format:"%.2f"}" NAME="valuenetto[{$item.itemid}]" SIZE="6">
 			{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{if $item.deleted}
-			{assign var=taxid value=$item.taxid}
-			<INPUT TYPE="hidden" VALUE="{$item.taxid}" NAME="taxid[{$item.itemid}]">{$taxeslist.name.$taxid}
+		    {if $invoice.closed}
+		    {$item.tax}
+			{elseif $item.deleted}
+			<INPUT TYPE="hidden" VALUE="{$item.taxid}" NAME="taxid[{$item.itemid}]">{$item.tax}
 			{else}
 			<SELECT size="1" name="taxid[{$item.itemid}]" {tip text="Select Tax rate"}>
 			{foreach item=tax from=$taxeslist}
@@ -218,14 +229,17 @@
 			{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{if $item.deleted}
+		    {if $invoice.closed}
+		    {$item.valuebrutto|money_format}
+			{elseif $item.deleted}
 			<INPUT TYPE="hidden" VALUE="{$item.valuebrutto}" NAME="valuebrutto[{$item.itemid}]">{$item.valuebrutto|money_format}
 			{else}
 			<INPUT TYPE="text" VALUE="{$item.valuebrutto|string_format:"%.2f"}" NAME="valuebrutto[{$item.itemid}]" SIZE="6"><BR>
 			{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP CLASS="fright">
-			{if $item.deleted}
+		    {if $invoice.closed}
+			{elseif $item.deleted}
 			<A HREF="?m=invoicenote&action=recoverpos&itemid={$item.itemid}"><IMG SRC="img/recover.gif" {tip text="Recover this item"}></A>
 			{else}
 			<A HREF="?m=invoicenote&action=deletepos&itemid={$item.itemid}"><IMG SRC="img/delete.gif" {tip text="Remove this item"}></A>
@@ -255,7 +269,7 @@
 	<TR CLASS="light">
 		<TD COLSPAN="9" CLASS="fbottomu" ALIGN="RIGHT">
 			<INPUT type="checkbox" name="original"{if preg_match('/original/i',$_config.invoices.default_printpage)}  checked{/if}> <A HREF="javascript:setType('original');">{t}original{/t}</A>
-            		<INPUT type="checkbox" name="copy"{if preg_match('/copy/i',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:setType('copy');">{t}copy{/t}</A>&nbsp;
+            <INPUT type="checkbox" name="copy"{if preg_match('/copy/i',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:setType('copy');">{t}copy{/t}</A>&nbsp;
 			<A HREF="?m=invoicelist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A>
 			{if $error}
 			<A HREF="javascript:alert('{t}There are errors in credit note main information!{/t}');">{t}Save{/t} <IMG src="img/save.gif" alt=""></A>
@@ -286,4 +300,3 @@ document.forms['setheader'].elements['cnote[number]'].focus();
 {/literal}
 </SCRIPT>
 {include file="footer.html"}
-
