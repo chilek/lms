@@ -325,6 +325,7 @@ $_LANG['date (YYYY/MM/DD)'] = 'data (RRRR/MM/DD)';
 $_LANG['Day:'] = 'Dzień:';
 $_LANG['dead'] = 'martwy';
 $_LANG['Dead:'] = 'Martwe:';
+$_LANG['Deadline'] = 'Termin płatności';
 $_LANG['Deadline:'] = 'Termin płatności:';
 $_LANG['Default invoice issuer'] = 'Domyślna osoba tworząca fakturę';
 $_LANG['Default zip code, city, street, used while inserting new customer. Useful if you add majority of customers with the same street.'] = 'Domyślny kod pocztowy, miasto, ulica pod czas dodawania nowego klienta. Przydatne kiedy mamy wielu klientów na tej samej ulicy.';

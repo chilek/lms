@@ -114,7 +114,7 @@ $items = $DB->GetAll('SELECT docid, itemid, taxid, value, count
 	    ORDER BY CEIL(cdate/86400), d.id', array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto));
 
 // get documents data
-$docs = $DB->GetAllByKey('SELECT d.id AS id, number, cdate, sdate, customerid,
+$docs = $DB->GetAllByKey('SELECT d.id AS id, number, cdate, sdate, paytime, customerid,
         name, address, zip, city, ten, ssn, template, reference
 	    FROM documents d
 	    LEFT JOIN numberplans ON d.numberplanid = numberplans.id
@@ -186,6 +186,9 @@ if($items)
 		$invoicelist[$idx][$taxid]['val'] += $val;
 		$invoicelist[$idx]['tax'] += $tax;
 		$invoicelist[$idx]['brutto'] += $sum;
+
+        // deadline
+        $invoicelist[$idx]['pdate'] = $doc['cdate'] + ($doc['paytime'] * 86400);
 
 		if(!isset($listdata[$taxid]))
 		{

@@ -14,7 +14,7 @@ version ? (????-??-??)
   - Fixed popups height on Internet Explorer [alec]
   - Added possibility to select invoices paytime from calendar popup [alec]
   - lms-payments: Added option for setting sale date to the 1st day of next month [alec]
-  - Added sale date on Sale Registry printouts [alec]
+  - Added sale date and deadline date on Sale Registry printouts [alec]
 
 version 1.11.12 Aris (2011-03-18)
 
