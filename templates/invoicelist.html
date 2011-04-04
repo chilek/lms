@@ -173,15 +173,15 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright">
 			<NOBR>
-			{if ! $invoice.closed}
-			    {if $invoice.type == $smarty.const.DOC_INVOICE}
+			{if $invoice.type == $smarty.const.DOC_INVOICE}
 			    <A HREF="?m=invoicenote&id={$invoice.id}&action=init"><IMG src="img/eraser.gif" alt="[ {t}Revise{/t} ]" title="[ {t}Revise{/t} ]"></A>
+			    {if ! $invoice.closed}
 			    <A onClick="return confirmLink(this, '{t 0=$number}Are you sure, you want to remove invoice \'$0\' from database?{/t}')" HREF="?m=invoicedel&id={$invoice.id}"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
-			    <A HREF="?m=invoiceedit&id={$invoice.id}&action=edit"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 			    {/if}
-			    {if $invoice.type == $smarty.const.DOC_CNOTE}
+		        <A HREF="?m=invoiceedit&id={$invoice.id}&action=edit"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+		    {/if}
+			{if $invoice.type == $smarty.const.DOC_CNOTE && !$invoice.closed}
 			    <A onClick="return confirmLink(this, '{t 0=$number}Are you sure, you want to remove credit note \'$0\' from database?{/t}')" HREF="?m=invoicedel&id={$invoice.id}"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
-			    {/if}
 			{/if}
 			{if $invoice.type == $smarty.const.DOC_INVOICE}
 			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG src="img/print.gif" alt="[ {t}Print{/t} ]" title="[ {t}Print{/t} ]"></A>

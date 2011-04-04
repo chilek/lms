@@ -76,9 +76,13 @@ if(isset($_GET['customerid']) && $_GET['customerid'] != '' && $LMS->CustomerExis
 switch($action)
 {
 	case 'additem':
+        if ($invoice['closed'])
+            break;
+
 		$itemdata = r_trim($_POST);
 		foreach(array('count', 'discount', 'valuenetto', 'valuebrutto') as $key)
 			$itemdata[$key] = round((float) str_replace(',','.',$itemdata[$key]),2);
+
 		if($itemdata['count'] > 0 && $itemdata['name'] != '')
 		{
 			$taxvalue = $taxeslist[$itemdata['taxid']]['value'];
@@ -92,7 +96,7 @@ switch($action)
 			    	$itemdata['valuebrutto'] = f_round($itemdata['valuebrutto'] - $itemdata['valuebrutto'] * f_round($itemdata['discount'])/100);
 				$itemdata['valuenetto'] = round($itemdata['valuebrutto'] / ($taxvalue / 100 + 1),2);
 			}
-			
+
 			// str_replace here is needed because of bug in some PHP versions (4.3.10)
 			$itemdata['s_valuebrutto'] = str_replace(',','.',$itemdata['valuebrutto'] * $itemdata['count']);
 			$itemdata['s_valuenetto'] = str_replace(',','.',$itemdata['s_valuebrutto'] / ($taxvalue / 100 + 1));
@@ -107,6 +111,9 @@ switch($action)
 	break;
 
 	case 'deletepos':
+        if ($invoice['closed'])
+            break;
+
 		if(sizeof($contents))
 			foreach($contents as $idx => $row)
 				if($row['posuid'] == $_GET['posuid']) 
@@ -117,8 +124,9 @@ switch($action)
 
 		$oldcdate = $invoice['oldcdate'];
 		$oldsdate = $invoice['oldsdate'];
+		$closed   = $invoice['closed'];
 
-		unset($invoice); 
+		unset($invoice);
 		unset($customer);
 		unset($error);
 		$error = NULL;
@@ -175,6 +183,7 @@ switch($action)
 		}
 
 		$invoice['customerid'] = $_POST['customerid'];
+		$invoice['closed']     = $closed;
 
 		if(!$error)
 			if($LMS->CustomerExists($invoice['customerid']))
@@ -182,21 +191,82 @@ switch($action)
 	break;
 
 	case 'save':
+		if (empty($contents) || empty($customer))
+		    break;
 
-		if($contents && $customer)
-		{
-			$SESSION->restore('invoiceid', $invoice['id']);
-			$invoice['type'] = DOC_INVOICE;
-			$LMS->InvoiceUpdate(array('customer' => $customer, 'contents' => $contents, 'invoice' => $invoice));
-			
-			if(isset($_GET['print']))
-				$SESSION->save('invoiceprint', array('invoice' => $invoice['id'],
-					'original' => !empty($_GET['original']) ? 1 : 0,
-			        	'copy' => !empty($_GET['copy']) ? 1 : 0,
-					'duplicate' => !empty($_GET['duplicate']) ? 1 : 0));
+		$SESSION->restore('invoiceid', $invoice['id']);
+		$invoice['type'] = DOC_INVOICE;
 
-			$SESSION->redirect('?m=invoicelist');
-		}
+	    $currtime = time();
+   		$cdate = $invoice['cdate'] ? $invoice['cdate'] : $currtime;
+    	$sdate = $invoice['sdate'] ? $invoice['sdate'] : $currtime;
+	    $iid   = $invoice['id'];
+
+   		$DB->BeginTrans();
+
+	    $DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, customerid = ?,
+				name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, divisionid = ?
+				WHERE id = ?',
+				array($cdate,
+					$sdate,
+					$invoice['paytime'],
+					$invoice['paytype'],
+					$customer['id'],
+					$customer['customername'],
+					$customer['address'],
+					$customer['ten'],
+					$customer['ssn'],
+					$customer['zip'],
+					$customer['city'],
+					$customer['divisionid'],
+					$iid
+				));
+
+        if (!$invoice['closed']) {
+  		    $DB->Execute('DELETE FROM invoicecontents WHERE docid = ?', array($iid));
+    	    $DB->Execute('DELETE FROM cash WHERE docid = ?', array($iid));
+
+	        $itemid=0;
+	        foreach ($contents as $idx => $item) {
+		        $itemid++;
+
+		        $DB->Execute('INSERT INTO invoicecontents (docid, itemid, value,
+    				    taxid, prodid, content, count, discount, description, tariffid)
+	    			    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+		    		    array(
+			    		    $iid,
+    			    		$itemid,
+	    			    	$item['valuebrutto'],
+		    			    $item['taxid'],
+    			    		$item['prodid'],
+	    			    	$item['jm'],
+		    			    $item['count'],
+    		    			$item['discount'],
+	    		    		$item['name'],
+		    		    	$item['tariffid']
+			        ));
+
+	    	    $LMS->AddBalance(array(
+        				'time' => $cdate,
+    	    			'value' => $item['valuebrutto']*$item['count']*-1,
+		    	        'taxid' => $item['taxid'],
+			        	'customerid' => $customer['id'],
+		    		    'comment' => $item['name'],
+        				'docid' => $iid,
+    	    			'itemid' => $itemid
+		    	    ));
+	        }
+	    }
+
+	    $DB->CommitTrans();
+
+		if (isset($_GET['print']))
+			$SESSION->save('invoiceprint', array('invoice' => $invoice['id'],
+				'original' => !empty($_GET['original']) ? 1 : 0,
+		       	'copy' => !empty($_GET['copy']) ? 1 : 0,
+				'duplicate' => !empty($_GET['duplicate']) ? 1 : 0));
+
+		$SESSION->redirect('?m=invoicelist');
 	break;
 }
 

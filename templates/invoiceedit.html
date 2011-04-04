@@ -65,14 +65,16 @@
 
 	function setProduct(name, prodid, count, jm, discount, valuenetto, taxid, valuebrutto)
 	{
-		document.additem.name.value = name;
-		document.additem.prodid.value = prodid;
-		document.additem.count.value = count;
-		document.additem.jm.value = jm;
-		document.additem.discount.value = discount;
-		document.additem.valuenetto.value = valuenetto;
-		document.additem.taxid.value = taxid;
-		document.additem.valuebrutto.value = valuebrutto;
+	    var form = document.additem;
+
+		form.name.value = name;
+		form.prodid.value = prodid;
+		form.count.value = count;
+		form.jm.value = jm;
+		form.discount.value = discount;
+		form.valuenetto.value = valuenetto;
+		form.taxid.value = taxid;
+		form.valuebrutto.value = valuebrutto;
 	}
 
     function deadline_calendar(elem)
@@ -219,10 +221,9 @@
 			&nbsp;
 		</TD>
 	</TR>
-	{*{counter print=false}*}
 	{cycle values="light,lucid" print=false}
 	{foreach from=$contents item=item}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')" onclick="setProduct('{$item.name}', '{$item.prodid}', '{$item.count|string_format:"%.2f"}', '{$item.jm}', '{$item.discount|string_format:"%.2f"}', '{$item.valuenetto|string_format:"%.2f"}', {foreach item=tax from=$taxeslist}{if $tax.label eq $item.tax}{$tax.id}{/if}{/foreach}, '{$item.valuebrutto|string_format:"%.2f"}');">
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')"{if !$invoice.closed} onclick="setProduct('{$item.name}', '{$item.prodid}', '{$item.count|string_format:"%.2f"}', '{$item.jm}', '{$item.discount|string_format:"%.2f"}', '{$item.valuenetto|string_format:"%.2f"}', {foreach item=tax from=$taxeslist}{if $tax.label eq $item.tax}{$tax.id}{/if}{/foreach}, '{$item.valuebrutto|string_format:"%.2f"}');"{/if}>
 		<TD CLASS="fleft" WIDTH="1%">
 			<B>{counter}.</B>
 		</TD>
@@ -251,7 +252,9 @@
 			{$item.s_valuebrutto|money_format}
 		</TD>
 		<TD WIDTH="1%" NOWRAP CLASS="fright">
+            {if !$invoice.closed}
 			<A HREF="?m=invoiceedit&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
+		    {/if}
 		</TD>
 	</TR>
 	{foreachelse}
@@ -285,6 +288,7 @@
 	<FORM METHOD="POST" ACTION="?m=invoiceedit&action=additem" NAME="additem">
 	<INPUT type="submit" class="hiddenbtn">
 	<INPUT TYPE="HIDDEN" NAME="tariffid" VALUE="0">
+    {if !$invoice.closed}
 	<TR CLASS="light">
 		<TD CLASS="ftl" WIDTH="1%" NOWRAP>
 			<B>{counter}.</B>
@@ -325,10 +329,11 @@
 			<A HREF="javascript:document.additem.submit(); "><IMG SRC="img/save.gif" ALT="" {tip text="Add item"}></A>
 		</TD>
 	</TR>
+    {/if}
 	<TR CLASS="light">
 		<TD COLSPAN="9" CLASS="fbottomu" ALIGN="RIGHT">
 			<INPUT type="checkbox" name="original"{if preg_match('/original/i',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:setType('original');">{t}original{/t}</A>
-		        <INPUT type="checkbox" name="copy"{if preg_match('/copy/i',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:setType('copy');">{t}copy{/t}</A>
+	        <INPUT type="checkbox" name="copy"{if preg_match('/copy/i',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:setType('copy');">{t}copy{/t}</A>
 			<INPUT type="checkbox" name="duplicate"{if preg_match('/duplicate/i',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:setType('duplicate');">{t}duplicate{/t}</A>&nbsp;
 			<A HREF="?m=invoicelist">{t}Cancel{/t} <IMG src="img/cancel.gif"></A> 
 			{if !$customer}
