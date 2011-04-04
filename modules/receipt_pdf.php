@@ -66,13 +66,13 @@ function receipt_header($x, $y)
 function receipt_buyer($x,$y)
 {
     global $receipt,$pdf;
-    
+
     $font_size=12;
     $yy = $y;
     $xmax = $x + 420;
     $pdf->line($x, $y, $xmax, $y);
     $y -= $font_size;
-    
+
     if($receipt['type'] == 'out')
     {
 	    text_align_center($x+315,$y-4,$font_size+4,'<b>'.iconv("UTF-8","ISO-8859-2",trans('Has')).'</b>');
@@ -100,7 +100,7 @@ function receipt_buyer($x,$y)
     $pdf->line($x+350, $yy, $x+350, $y);
     $pdf->line($xmax, $yy, $xmax, $y);
     $pdf->line($x, $y, $xmax, $y);
-    
+
     return $y;
 }
 
@@ -120,13 +120,13 @@ function receipt_footer($x,$y)
     text_align_center($x+245,$y,$font_size,iconv("UTF-8","ISO-8859-2",trans('Cash Report')));
     if($receipt['type'] == 'out')
 	    text_align_center($x+350,$y,$font_size,iconv("UTF-8","ISO-8859-2",trans('Above amount')));
-    	    
+
     else
 	    text_align_center($x+350,$y,$font_size,iconv("UTF-8","ISO-8859-2",trans('I confirm receipt of above amount')));
-    
+
     $y -= 2;
     $pdf->line($x, $y, $xmax, $y);
-    
+
     if($receipt['type'] == 'out')
     {
 	    text_align_center($x+315,$y-8,$font_size,iconv("UTF-8","ISO-8859-2",trans('payed out')));
@@ -139,7 +139,7 @@ function receipt_footer($x,$y)
 	    $pdf->line($x+300, $y, $xmax-20, $y);
 	    $y -= text_align_center($x+350,$y-8,$font_size,iconv("UTF-8","ISO-8859-2",trans('Signature of cashier')));
     }
-    
+
     $pdf->line($x, $yy, $x, $y);
     $pdf->line($x+70, $yy, $x+70, $y);
     $pdf->line($x+140, $yy, $x+140, $y);
@@ -148,7 +148,7 @@ function receipt_footer($x,$y)
     if($receipt['type'] == 'out') $pdf->line($x+350, $yy-8, $x+350, $y);
     $pdf->line($xmax, $yy, $xmax, $y);
     $pdf->line($x, $y, $xmax, $y);
-    
+
     $y -= text_align_right($xmax,$y-6,$font_size/2,iconv("UTF-8","ISO-8859-2",'Copyright (C) 2001-2011 LMS Developers'));
     $y -= 15;
     $pdf->setLineStyle(0.5, NULL, NULL, array(2,2));
@@ -167,7 +167,7 @@ function receipt_data($x,$y)
     $xmax = $x + 420;
     $pdf->line($x, $y, $xmax, $y);
     $y -= 8;
-    
+
     text_align_center($x+140,$y,8,iconv("UTF-8","ISO-8859-2",trans('For what')));
     text_align_center($x+315,$y,8,iconv("UTF-8","ISO-8859-2",trans('Value')));
     text_align_center($x+385,$y,8,iconv("UTF-8","ISO-8859-2",trans('Number')));
@@ -184,7 +184,7 @@ function receipt_data($x,$y)
 	    text_align_left($x+2,$y,$font_size-2,'<b>'.$i.'.</b>');
 	    $y = text_wrap($x+15,$y,270,$font_size-2,iconv("UTF-8","ISO-8859-2",$item['description']),'');
 	    text_align_right($x+345,$y+$font_size,$font_size-2,iconv("UTF-8","ISO-8859-2",moneyf($item['value'])));
-	}    
+	}
 
     $y += $font_size/2;
     $pdf->line($x, $y, $xmax, $y);
@@ -215,10 +215,10 @@ function receipt_data($x,$y)
     return $y;
 }
 
-function receipt_body() 
+function receipt_body()
 {
 	global $receipt,$pdf,$id,$CONFIG, $type;
-    
+
 	$template = $CONFIG['receipts']['template_file'];
 
 	switch ($template)
