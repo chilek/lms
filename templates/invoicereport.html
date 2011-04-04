@@ -22,15 +22,20 @@
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP" NOWRAP>
 			{t}Invoice No.{/t}<BR>
-			{t}Draw-up date{/t}<BR>
-			{t}Sale date{/t}
+			{t}Draw-up date{/t}
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP" NOWRAP>
+			{t}Sale date{/t}<BR>
+			{t}Deadline{/t}
 		</TD>
 		<TD WIDTH="{math equation="96-x" x=$taxescount}%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
 			{t}Contractor{/t}
 		</TD>
+{*
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
 			{t}Gross value{/t}
 		</TD>
+*}
 		{foreach item=tax from=$taxes}
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
 			{t}Net value{/t}<BR><NOBR>{$tax.label}</NOBR>
@@ -54,16 +59,21 @@
 		<TD ALIGN="RIGHT">
 			{$invoice.number}<BR>
 			{$invoice.cdate|date_format:"%Y/%m/%d"}
-			{if $invoice.sdate}{$invoice.sdate|date_format:"%Y/%m/%d"}{else}{$invoice.cdate|date_format:"%Y/%m/%d"}{/if}
+		</TD>
+		<TD ALIGN="RIGHT">
+			{if $invoice.sdate}{$invoice.sdate|date_format:"%Y/%m/%d"}{else}{$invoice.cdate|date_format:"%Y/%m/%d"}{/if}<BR>
+			{$invoice.pdate|date_format:"%Y/%m/%d"}
 		</TD>
 		<TD>
 			{$invoice.custname} ({$invoice.customerid|string_format:"%04d"})<BR>
 			{$invoice.custaddress}<BR>
 			{$invoice.ten}
 		</TD>
+{*
 		<TD ALIGN="RIGHT">
 			{$invoice.brutto|string_format:"%01.2f"}
 		</TD>
+*}
 		{foreach item=tax from=$taxes}
 		{assign var=taxid value=$tax.id}
 		<TD ALIGN="RIGHT">
@@ -89,12 +99,14 @@
 	</TR>
 	{/foreach}
 	<TR class="grey">
-		<TD COLSPAN="3" ALIGN="RIGHT">
+		<TD COLSPAN="4" ALIGN="RIGHT">
 			<B>{t}Total:{/t}</B>
 		</TD>
+{*
 		<TD ALIGN="RIGHT">
 			<B>{$listdata.brutto|string_format:"%01.2f"}</B>
 		</TD>
+*}
 		{foreach item=tax from=$taxes}
 		{assign var=taxid value=$tax.id}
 		<TD ALIGN="RIGHT">

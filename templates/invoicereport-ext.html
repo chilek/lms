@@ -19,11 +19,12 @@
 			{t}No.{/t}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP" NOWRAP>
-			{t}Invoice No.{/t}
+			{t}Invoice No.{/t}<BR>
+			{t}Draw-up date{/t}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP" NOWRAP>
-			{t}Draw-up date{/t}<BR>
-			{t}Sale date{/t}
+			{t}Sale date{/t}<BR>
+			{t}Deadline{/t}
 		</TD>
 		<TD WIDTH="{math equation="95-x" x=$taxescount}%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
 			{t}Contractor{/t}
@@ -53,11 +54,12 @@
 			{counter}
 		</TD>
 		<TD ALIGN="RIGHT" class="small">
-			{$invoicelist[invoicelist].number}
+			{$invoicelist[invoicelist].number}<BR>
+			{$invoicelist[invoicelist].cdate|date_format:"%Y/%m/%d"}
 		</TD>
 		<TD ALIGN="RIGHT" class="small">
-			{$invoicelist[invoicelist].cdate|date_format:"%Y/%m/%d"}<BR>
-			{if $invoicelist[invoicelist].sdate}{$invoicelist[invoicelist].sdate|date_format:"%Y/%m/%d"}{else}{$invoicelist[invoicelist].cdate|date_format:"%Y/%m/%d"}{/if}
+			{if $invoicelist[invoicelist].sdate}{$invoicelist[invoicelist].sdate|date_format:"%Y/%m/%d"}{else}{$invoicelist[invoicelist].cdate|date_format:"%Y/%m/%d"}{/if}<BR>
+			{$invoicelist[invoicelist].pdate|date_format:"%Y/%m/%d"}
 		</TD>
 		<TD class="small">
 			{$invoicelist[invoicelist].custname} ({$invoicelist[invoicelist].customerid|string_format:"%04d"})
@@ -169,11 +171,12 @@
 			{t}No.{/t}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP" NOWRAP>
-			{t}Invoice No.{/t}
+			{t}Invoice No.{/t}<BR>
+			{t}Draw-up date{/t}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP" NOWRAP>
-			{t}Draw-up date{/t}<BR>
-			{t}Sale date{/t}
+			{t}Sale date{/t}<BR>
+			{t}Deadline{/t}
 		</TD>
 		<TD WIDTH="{math equation="95-x" x=$taxescount}%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
 			{t}Contractor{/t}
