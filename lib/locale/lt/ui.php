@@ -110,7 +110,7 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
 					$cursuffix = $_exponent[$power][count($_exponent[$power])-1];
 					if ($powsuffix != '')
 						$cursuffix .= $_sep . $powsuffix;
-					$ret .= toWords($snum, $p, $cursuffix);
+					$ret .= to_words($snum, $p, $cursuffix);
 				}
 				$curp = $p - 1;
 				continue;
