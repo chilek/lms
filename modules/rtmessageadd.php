@@ -28,19 +28,19 @@ function MessageAdd($msg, $headers, $file=NULL)
 {
 	global $DB, $LMS, $CONFIG;
 	$time = time();
-	
+
 	$head = '';
 	if($headers)
 		foreach($headers as $idx => $header)
 			$head .= $idx.": ".$header."\n";
-	
+
 	$DB->Execute('INSERT INTO rtmessages (ticketid, createtime, subject, body, userid, customerid, mailfrom, inreplyto, messageid, replyto, headers)
-			    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
-			    array(
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+			array(
 				$msg['ticketid'],
 				$time,
 				$msg['subject'],
-				$msg['body'],
+				preg_replace("/\r/", "", $msg['body']),
 				$msg['userid'],
 				$msg['customerid'],
 				$msg['mailfrom'],

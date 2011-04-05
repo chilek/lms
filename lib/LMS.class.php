@@ -3674,7 +3674,7 @@ class LMS
 					$ticket['customerid'],
 					$ts,
 					$ticket['subject'],
-					$ticket['body'],
+					preg_replace("/\r/", "", $ticket['body']),
 					$ticket['mailfrom']));
 		
 		return $id;
@@ -4086,45 +4086,47 @@ class LMS
 
 	function SendSMS($number, $message, $messageid=0)
 	{
-        $msg_len = mb_strlen($message);
+		$msg_len = mb_strlen($message);
 
-        if (!$msg_len) {
-            return trans('SMS message is empty!');
-        }
+		if (!$msg_len) {
+			return trans('SMS message is empty!');
+		}
 
-        if (!empty($this->CONFIG['sms']['debug_phone'])) {
-            $number = $this->CONFIG['sms']['debug_phone'];
-        }
+		if (!empty($this->CONFIG['sms']['debug_phone'])) {
+			$number = $this->CONFIG['sms']['debug_phone'];
+		}
 
 		$prefix = !empty($this->CONFIG['sms']['prefix']) ? $this->CONFIG['sms']['prefix'] : '';
 		$number = preg_replace('/[^0-9]/', '', $number);
 		$number = preg_replace('/^0+/', '', $number);
 
-        // add prefix to the number if needed
+		// add prefix to the number if needed
 		if ($prefix && substr($number, 0, strlen($prefix)) != $prefix)
 			$number = $prefix . $number;
 
-        // message ID must be unique
-        if (!$messageid) {
-            $messageid = '0.'.time();
-        }
+		// message ID must be unique
+		if (!$messageid) {
+			$messageid = '0.'.time();
+		}
 
-        $data = array(
-            'number'    => $number,
-            'message'   => $message,
-            'messageid' => $messageid
-        );
+		$message = preg_replace("/\r/", "", $message);
 
-        // call external SMS handler(s)
-        $data = $this->ExecHook('send_sms_before', $data);
+		$data = array(
+			'number'	=> $number,
+			'message'	=> $message,
+			'messageid'	=> $messageid
+		);
 
-        if ($data['abort']) {
-            return $data['result'];
-        }
+		// call external SMS handler(s)
+		$data = $this->ExecHook('send_sms_before', $data);
 
-        $number    = $data['number'];
-        $message   = $data['message'];
-        $messageid = $data['messageid'];
+		if ($data['abort']) {
+			return $data['result'];
+		}
+
+		$number		= $data['number'];
+		$message	= $data['message'];
+		$messageid	= $data['messageid'];
 
 		if(empty($this->CONFIG['sms']['service']))
 			return trans('SMS "service" not set!');
@@ -4146,10 +4148,10 @@ class LMS
 					$from = $this->CONFIG['sms']['from'];
 
 				if ($msg_len < 160)
-                    $type_sms = 'sms';
-                else if ($msg_len <= 459)
-                    $type_sms = 'concat';
-                else
+					$type_sms = 'sms';
+				else if ($msg_len <= 459)
+					$type_sms = 'concat';
+				else
 					return trans('SMS Message too long!');
 
 				if(strlen($number) > 16 || strlen($number) < 4)
@@ -4169,11 +4171,11 @@ class LMS
 
 				$encodedargs = array();
 				foreach (array_keys($args) as $thiskey)
-		    			array_push($encodedargs, urlencode($thiskey) ."=". urlencode($args[$thiskey]));
+					array_push($encodedargs, urlencode($thiskey) ."=". urlencode($args[$thiskey]));
 				$encodedargs = implode('&', $encodedargs);
 
-		    		$curl = curl_init();
-		    		curl_setopt($curl, CURLOPT_URL, 'http://api.statsms.net/send.php');
+				$curl = curl_init();
+				curl_setopt($curl, CURLOPT_URL, 'http://api.statsms.net/send.php');
 				curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 				curl_setopt($curl, CURLOPT_POST, 1);
 				curl_setopt($curl, CURLOPT_POSTFIELDS, $encodedargs);
