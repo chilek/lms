@@ -440,7 +440,7 @@ cal4.time_comp = false;
                     					{foreach from=$divisions item=item}
 			                            	    <OPTION VALUE="{$item.id}">{$item.shortname}</OPTION>
 							{/foreach}
-							</SELECT>					
+							</SELECT>
 						    </TD>
 						</TR>
 						<TR>
@@ -481,18 +481,35 @@ cal4.time_comp = false;
 					    </TABLE>
 					</TD>
 					<TD width="1%">
-						<IMG src="img/calendar.gif" alt="">
+					    <TABLE width="100%">
+						    <TR>
+						        <TD width="1%">
+						            <IMG src="img/calendar.gif" alt="">
+					            </TD>
+					            <TD width="1%">
+						            <B>{t}Period:{/t}</B>
+					            </TD>
+					            <TD width="1%" nowrap>
+						            {t}From{/t}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal8.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+					            </TD>
+					            <TD width="98%" nowrap>
+						            {t}To{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal9.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+					            </TD>
+					        </TR>
+						    <TR>
+						        <TD colspan="2"></TD>
+					            <TD colspan="2" nowrap>
+					                {t}by date{/t}:
+					                <SELECT name="datetype" {tip text="Select date type"}>
+					                    <OPTION value="cdate">{t}Draw-up date{/t}</OPTION>
+					                    <OPTION value="sdate">{t}Sale date{/t}</OPTION>
+					                    <OPTION value="pdate">{t}Deadline{/t}</OPTION>
+					                </SELECT>
+					            </TD>
+					        </TR>
+					    </TABLE>
 					</TD>
-					<TD width="1%">
-						<B>{t}Period:{/t}&nbsp;</B>
-					</TD>
-					<TD width="1%" nowrap>
-						{t}From{/t}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal8.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-					</TD>
-					<TD width="1%" nowrap>
-						{t}To{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal9.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
-					</TD>
-					<TD width="95%" nowrap>
+					<TD width="98%" nowrap>
 						<input type="checkbox" name="extended" value="1" id="invoicereport-extended"> <A HREF="javascript:checkElement('invoicereport-extended')">{t}extended format{/t}</a>
 					</TD>
 				</TR>
