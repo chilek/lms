@@ -4,7 +4,7 @@
 # Aktualizuje lib/ethercodes.txt
 #
 
-wget http://standards.ieee.org/regauth/oui/oui.txt
+wget http://standards.ieee.org/develop/regauth/oui/oui.txt
 
 if [ ! -e oui.txt ]; then
 	echo Brak pliku oui.txt
