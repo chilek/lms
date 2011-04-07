@@ -96,14 +96,30 @@ if(!empty($_POST['division']))
         $layout['division'] = $divname;
 }
 
+// Sorting
+switch ($_POST['datetype']) {
+    case 'sdate':
+        $sortcol = 'COALESCE(d.sdate, d.cdate)';
+        break;
+    case 'pdate':
+        $sortcol = '(d.cdate + (d.paytime * 86400))';
+        break;
+    case 'cdate':
+    default:
+        $sortcol = 'd.cdate';
+}
+
 // we can't simply get documents with SUM(value*count)
 // because we need here incoices-like round-off
 
 // get documents items numeric values for calculations
-$items = $DB->GetAll('SELECT docid, itemid, taxid, value, count
+$items = $DB->GetAll('SELECT c.docid, c.itemid, c.taxid, c.value, c.count,
+        d.number, d.cdate, d.sdate, d.paytime, d.customerid, d.reference,
+        d.name, d.address, d.zip, d.city, d.ten, d.ssn, n.template
 	    FROM documents d
-	    LEFT JOIN invoicecontents ON docid = d.id 
-	    WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?) '
+	    LEFT JOIN invoicecontents c ON c.docid = d.id
+	    LEFT JOIN numberplans n ON d.numberplanid = n.id
+	    WHERE (d.type = ? OR d.type = ?) AND ('.$sortcol.' BETWEEN ? AND ?) '
 	    .($_POST['numberplanid'] ? 'AND d.numberplanid = '.intval($_POST['numberplanid']) : '')
 	    .(isset($divwhere) ? $divwhere : '')
 	    .(isset($groupwhere) ? $groupwhere : '')
@@ -111,36 +127,27 @@ $items = $DB->GetAll('SELECT docid, itemid, taxid, value, count
                 	    SELECT 1 FROM customerassignments a
 			    JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 			    WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)
-	    ORDER BY CEIL(cdate/86400), d.id', array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto));
-
-// get documents data
-$docs = $DB->GetAllByKey('SELECT d.id AS id, number, cdate, sdate, paytime, customerid,
-        name, address, zip, city, ten, ssn, template, reference
-	    FROM documents d
-	    LEFT JOIN numberplans ON d.numberplanid = numberplans.id
-	    WHERE (d.type = ? OR d.type = ?) AND (d.cdate BETWEEN ? AND ?) '
-	    .($_POST['numberplanid'] ? 'AND d.numberplanid = '.intval($_POST['numberplanid']) : '')
-	    .(isset($groupwhere) ? $groupwhere : '')
-	    , 'id', array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto));
+	    ORDER BY CEIL('.$sortcol.'/86400), d.id',
+	    array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto));
+print_r($DB);
 
 if($items)
 {
 	foreach($items as $row)
 	{
 		$idx = $row['docid'];
-		$doc = $docs[$idx];
 		$taxid = $row['taxid'];
 
         set_taxes($taxid);
 
-		$invoicelist[$idx]['custname'] = $doc['name'];
-		$invoicelist[$idx]['custaddress'] = $doc['zip'].' '.$doc['city'].', '.$doc['address'];
-		$invoicelist[$idx]['ten'] = ($doc['ten'] ? trans('TEN').' '.$doc['ten'] : ($doc['ssn'] ? trans('SSN').' '.$doc['ssn'] : ''));
-		$invoicelist[$idx]['number'] = docnumber($doc['number'], $doc['template'], $doc['cdate']);
-		$invoicelist[$idx]['cdate'] = $doc['cdate'];
-		$invoicelist[$idx]['sdate'] = $doc['sdate'];
-        $invoicelist[$idx]['pdate'] = $doc['cdate'] + ($doc['paytime'] * 86400);
-		$invoicelist[$idx]['customerid'] = $doc['customerid'];
+		$invoicelist[$idx]['custname'] = $row['name'];
+		$invoicelist[$idx]['custaddress'] = $row['zip'].' '.$row['city'].', '.$row['address'];
+		$invoicelist[$idx]['ten'] = ($row['ten'] ? trans('TEN').' '.$row['ten'] : ($row['ssn'] ? trans('SSN').' '.$row['ssn'] : ''));
+		$invoicelist[$idx]['number'] = docnumber($row['number'], $row['template'], $row['cdate']);
+		$invoicelist[$idx]['cdate'] = $row['cdate'];
+		$invoicelist[$idx]['sdate'] = $row['sdate'];
+        $invoicelist[$idx]['pdate'] = $row['cdate'] + ($row['paytime'] * 86400);
+		$invoicelist[$idx]['customerid'] = $row['customerid'];
 
 		if(!isset($invoicelist[$idx][$taxid]))
 		{
@@ -151,14 +158,14 @@ if($items)
 		if(!isset($invoicelist[$idx]['tax'])) $invoicelist[$idx]['tax'] = 0;
 		if(!isset($invoicelist[$idx]['brutto'])) $invoicelist[$idx]['brutto'] = 0;
 
-		if($doc['reference'])
+		if($row['reference'])
 		{
 			// I think we can simply do query here instead of building
 			// big sql join in $items query, we've got so many credit notes?
 			$item = $DB->GetRow('SELECT taxid, value, count
 						FROM invoicecontents 
 						WHERE docid=? AND itemid=?', 
-						array($doc['reference'], $row['itemid']));
+						array($row['reference'], $row['itemid']));
 
 			$row['value'] += $item['value'];
 			$row['count'] += $item['count'];

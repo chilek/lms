@@ -2459,5 +2459,7 @@ $_LANG['Warning! Debug mode (using phone $0).'] = 'UWAGA! Tryb debugowania (uży
 $_LANG['RBE'] = 'EDG/KRS';
 $_LANG['ICN'] = 'Dow. os.';
 $_LANG['Option'] = 'Opcja';
+$_LANG['by date'] = 'wg daty';
+$_LANG['Select date type'] = 'Wybierz typ daty';
 
 ?>
