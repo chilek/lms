@@ -17,6 +17,7 @@ version ? (????-??-??)
   - Added sale date and deadline date on Sale Registry printouts with possibility
     to choose which date will be used to sort the list [alec]
   - Enable possibility to edit/note of accounted invoices [alec]
+  - Added 'in debt above 100%' filter on customer list [alec]
 
 version 1.11.12 Aris (2011-03-18)
 
