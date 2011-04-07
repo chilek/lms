@@ -138,6 +138,8 @@ if($items)
 		$invoicelist[$idx]['ten'] = ($doc['ten'] ? trans('TEN').' '.$doc['ten'] : ($doc['ssn'] ? trans('SSN').' '.$doc['ssn'] : ''));
 		$invoicelist[$idx]['number'] = docnumber($doc['number'], $doc['template'], $doc['cdate']);
 		$invoicelist[$idx]['cdate'] = $doc['cdate'];
+		$invoicelist[$idx]['sdate'] = $doc['sdate'];
+        $invoicelist[$idx]['pdate'] = $doc['cdate'] + ($doc['paytime'] * 86400);
 		$invoicelist[$idx]['customerid'] = $doc['customerid'];
 
 		if(!isset($invoicelist[$idx][$taxid]))
@@ -186,9 +188,6 @@ if($items)
 		$invoicelist[$idx][$taxid]['val'] += $val;
 		$invoicelist[$idx]['tax'] += $tax;
 		$invoicelist[$idx]['brutto'] += $sum;
-
-        // deadline
-        $invoicelist[$idx]['pdate'] = $doc['cdate'] + ($doc['paytime'] * 86400);
 
 		if(!isset($listdata[$taxid]))
 		{
