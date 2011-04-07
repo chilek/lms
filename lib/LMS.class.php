@@ -756,6 +756,7 @@ class LMS
 		    case 8:  $groupless  = 1; break;
 		    case 9:  $tariffless = 1; break;
 		    case 10: $suspended  = 1; break;
+		    case 11: $indebted2  = 1; break;
         }
 
 		if ($network)
@@ -902,6 +903,7 @@ class LMS
 				.($division ? ' AND c.divisionid = '.intval($division) : '')
 				.($online ? ' AND s.online = 1' : '')
 				.($indebted ? ' AND b.value < 0' : '')
+				.($indebted2 ? ' AND b.value < t.value*-2' : '')
 				.($disabled ? ' AND s.ownerid IS NOT NULL AND s.account > s.acsum' : '')
 				.($network ? ' AND EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id AND 
 							((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') 
@@ -3621,7 +3623,7 @@ class LMS
 		}
 		$stats['lastticket'] = $this->DB->GetOne('SELECT createtime FROM rttickets 
 			WHERE queueid = ? ORDER BY createtime DESC', array($id));
-		
+
 		return $stats;
 	}
 
@@ -3664,9 +3666,9 @@ class LMS
 					isset($ticket['cause']) ? $ticket['cause'] : 0,
 					isset($this->AUTH->id) ? $this->AUTH->id : 0
 					));
-		
+
 		$id = $this->DB->GetLastInsertID('rttickets');
-		
+
 		$this->DB->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime, 
 				subject, body, mailfrom)
 				VALUES (?, ?, ?, ?, ?, ?)', 
@@ -3676,14 +3678,14 @@ class LMS
 					$ticket['subject'],
 					preg_replace("/\r/", "", $ticket['body']),
 					$ticket['mailfrom']));
-		
+
 		return $id;
 	}
 
 	function GetTicketContents($id)
 	{
  		global $RT_STATES;
-		
+
 		$ticket = $this->DB->GetRow('SELECT t.id AS ticketid, t.queueid, rtqueues.name AS queuename, 
 				    t.requestor, t.state, t.owner, t.customerid, t.cause, t.creatorid, c.name AS creator, '
 				    .$this->DB->Concat('customers.lastname',"' '",'customers.name').' AS customername, 
@@ -3694,7 +3696,7 @@ class LMS
 				LEFT JOIN users c ON (t.creatorid = c.id)
 				LEFT JOIN customers ON (customers.id = t.customerid)
 				WHERE t.id = ?', array($id));
-		
+
 		$ticket['messages'] = $this->DB->GetAll(
 				'(SELECT rtmessages.id AS id, mailfrom, subject, body, createtime, '
 				    .$this->DB->Concat('customers.lastname',"' '",'customers.name').' AS customername, 
