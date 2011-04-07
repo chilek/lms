@@ -129,7 +129,6 @@ $items = $DB->GetAll('SELECT c.docid, c.itemid, c.taxid, c.value, c.count,
 			    WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)
 	    ORDER BY CEIL('.$sortcol.'/86400), d.id',
 	    array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto));
-print_r($DB);
 
 if($items)
 {
