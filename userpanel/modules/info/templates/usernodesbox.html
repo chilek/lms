@@ -1,7 +1,6 @@
 <!--// $Id$ //-->
 {box title="Your computers"}
 <table width="100%" cellpadding="3" class="light">
-	{if $usernodes.total > 0}
 	{section name=usernodes loop=$usernodes}
 	{if $usernodes[usernodes].id}
 	<tr class="dark{if ! $usernodes[usernodes].access} blend{/if}">
@@ -39,8 +38,7 @@
 		</td>
 	</tr>
 	{/if}
-	{/section}
-	{else}
+	{sectionelse}
 	<tr>
 		<td width="100%" colspan="2" align="center">
 			<p>&nbsp;</p>
@@ -48,7 +46,7 @@
 			<p>&nbsp;</p>
 		</td>
 	</tr>
-	{/if}
+	{/section}
 {*	<tr>
 		<td width="100%" colspan="2" align="right">
 			<p>{t}Add computer{/t}</p>
