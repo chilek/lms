@@ -114,7 +114,7 @@
 				<FORM METHOD="POST" NAME="device" ACTION="?m=ewxchedit&action=add&id={$channel.id}">
 				<INPUT type="submit" class="hiddenbtn">
 				<TR class="light">
-				        <TD COLSPAN="3" CLASS="ftop">
+				    <TD COLSPAN="3" CLASS="ftop">
 						<B>{t}Add:{/t}</B>
 						<SELECT SIZE="1" NAME="devid" {tip text="Select device to associate with the channel"}>
 						        <OPTION VALUE="">- {t}select device{/t} -</OPTION>
@@ -122,7 +122,7 @@
 							<OPTION VALUE="{$item.id}">{$item.name}{if $item.producer} / {$item.producer}{/if}{if $item.location} ({$item.location}){/if}</OPTION>
 			        			{/foreach}
 						</SELECT>
-					<TD ALIGN="RIGHT" CLASS="ftop" ROWSPAN="2" NOWRAP>
+					<TD ALIGN="RIGHT" CLASS="ftop" COLSPAN="2" NOWRAP>
 				    		<A HREF="javascript:document.device.submit()" {tip text="Add device to the channel"}>{t}Add{/t} <IMG SRC="img/save.gif" alt="[ {t}Add{/t} ]"></A>
 					</TD>
 				</TR>
