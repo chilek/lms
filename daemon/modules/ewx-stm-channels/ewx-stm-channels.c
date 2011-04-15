@@ -1381,7 +1381,7 @@ int update_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, s
 	if(!sh) return result;
 
     // Update channel limits if we need to
-    if (cu.upceil != c.upceil || cu.downceil != c.downceil)
+    if (cu.upceil != c.upceil || cu.downceil != c.downceil || cu.halfduplex != c.halfduplex)
     {
 	    char *upceil = strdup(itoa(cu.upceil));
 	    char *downceil = strdup(itoa(cu.downceil));
