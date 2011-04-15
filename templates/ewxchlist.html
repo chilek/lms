@@ -3,7 +3,7 @@
 <H1>{$layout.pagetitle}</H1>
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR class="dark" {tip text="Click on column name to change sorting order"}>
-		<TD WIDTH="91%" CLASS="fleftu" NOWRAP>
+		<TD WIDTH="92%" CLASS="fleftu" NOWRAP>
 			<IMG SRC="img/channel.gif" ALT=""> <A href="?m=ewxchlist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{t}Name:{/t}</B></A> {if $listdata.order eq "name"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt" align="right" NOWRAP>
@@ -13,16 +13,15 @@
 			<A href="?m=ewxchlist&o=cid{if $listdata.direction eq "asc" && $listdata.order eq "cid"},desc{/if}">STMID:</A> {if $listdata.order eq "cid"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt" align="right" NOWRAP>
-			<A href="?m=ewxchlist&o=downceil{if $listdata.direction eq "asc" && $listdata.order eq "downceil"},desc{/if}">{t}Downceil:{/t}</A> {if $listdata.order eq "downceil"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-		</TD>
-		<TD WIDTH="1%" CLASS="fbt" align="right" NOWRAP>
+			<A href="?m=ewxchlist&o=downceil{if $listdata.direction eq "asc" && $listdata.order eq "downceil"},desc{/if}">{t}Downceil:{/t}</A> {if $listdata.order eq "downceil"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<A href="?m=ewxchlist&o=upceil{if $listdata.direction eq "asc" && $listdata.order eq "upceil"},desc{/if}">{t}Upceil:{/t}</A> {if $listdata.order eq "upceil"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt" align="right" NOWRAP>
-			<A href="?m=ewxchlist&o=downceil_n{if $listdata.direction eq "asc" && $listdata.order eq "downceil_n"},desc{/if}">{t}Night Downceil:{/t}</A> {if $listdata.order eq "downceil_n"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=ewxchlist&o=downceil_n{if $listdata.direction eq "asc" && $listdata.order eq "downceil_n"},desc{/if}">{t}Night Downceil:{/t}</A> {if $listdata.order eq "downceil_n"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<A href="?m=ewxchlist&o=upceil_n{if $listdata.direction eq "asc" && $listdata.order eq "upceil_n"},desc{/if}">{t}Night Upceil:{/t}</A> {if $listdata.order eq "upceil_n"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt" align="right" NOWRAP>
-			<A href="?m=ewxchlist&o=upceil_n{if $listdata.direction eq "asc" && $listdata.order eq "upceil_n"},desc{/if}">{t}Night Upceil:{/t}</A> {if $listdata.order eq "upceil_n"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=ewxchlist&o=halfduplex{if $listdata.direction eq "asc" && $listdata.order eq "halfduplex"},desc{/if}">{t}Half duplex{/t}:</A> {if $listdata.order eq "halfduplex"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt" align="right" NOWRAP>
 			<A href="?m=ewxchlist&o=devcnt{if $listdata.direction eq "asc" && $listdata.order eq "devcnt"},desc{/if}">{t}Devices:{/t}</A> {if $listdata.order eq "devcnt"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
@@ -36,7 +35,7 @@
 	</TR>
 	{if $listdata.total != 0}
         <TR CLASS="DARK">
-	        <TD COLSPAN="10" CLASS="FALL">
+	        <TD COLSPAN="9" CLASS="FALL">
 	                {include file="scroller.html" loop=$channels}
 	        </TD>
 	</TR>
@@ -54,16 +53,15 @@
 			{if $channels[channels].cid}[{$channels[channels].cid|string_format:"%04d"}]{else}-{/if}
 		</TD>
 		<TD align="right" onClick="return self.location.href='?m=ewxchinfo&id={$channels[channels].id}'">
-			{$channels[channels].downceil}
-		</TD>
-		<TD align="right" onClick="return self.location.href='?m=ewxchinfo&id={$channels[channels].id}'">
+			{$channels[channels].downceil}<BR>
 			{$channels[channels].upceil}
 		</TD>
 		<TD align="right" onClick="return self.location.href='?m=ewxchinfo&id={$channels[channels].id}'">
-			{if $channels[channels].downceil_n}{$channels[channels].downceil_n}{else}-{/if}
+			{if $channels[channels].downceil_n}{$channels[channels].downceil_n}{else}-{/if}<BR>
+			{if $channels[channels].upceil_n}{$channels[channels].upceil_n}{else}-{/if}
 		</TD>
 		<TD align="right" onClick="return self.location.href='?m=ewxchinfo&id={$channels[channels].id}'">
-			{if $channels[channels].upceil_n}{$channels[channels].upceil_n}{else}-{/if}
+		    {if $channels[channels].halfduplex}{t}yes{/t}{else}{t}no{/t}{/if}
 		</TD>
 		<TD align="right" onClick="return self.location.href='?m=ewxchinfo&id={$channels[channels].id}'">
 			{$channels[channels].devcnt|default:0}
@@ -89,7 +87,7 @@
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD COLSPAN="10" ALIGN="center" CLASS="fall">
+		<TD COLSPAN="9" ALIGN="center" CLASS="fall">
 			<p>&nbsp;</p>
 			<p><B>{t}No such channels in database.{/t}</B></p>
 			<p>&nbsp;</p>
@@ -98,7 +96,7 @@
 	{/section}
 	{if $listdata.total != 0}
         <TR CLASS="DARK">
-	        <TD COLSPAN="10" CLASS="FALL">
+	        <TD COLSPAN="9" CLASS="FALL">
 	                {include file="scroller.html" loop=$channels}
 	        </TD>
 	</TR>
@@ -107,7 +105,7 @@
 		<TD CLASS="fleftu" COLSPAN="2" ALIGN="right">
 			<IMG SRC="img/info2.gif" ALT="">&nbsp;<B>{t 0=$listdata.total}Total: $0{/t}</B>
 		</TD>
-		<TD CLASS="frightu" COLSPAN="8">
+		<TD CLASS="frightu" COLSPAN="7">
 			&nbsp;
 		</TD>
 	</TR>

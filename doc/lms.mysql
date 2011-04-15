@@ -384,6 +384,7 @@ CREATE TABLE ewx_stm_channels (
 	cid int(11)             DEFAULT '0' NOT NULL,
 	upceil int(11)          DEFAULT '0' NOT NULL,
 	downceil int(11)        DEFAULT '0' NOT NULL,
+	halfduplex tinyint(1)   DEFAULT NULL,
 	PRIMARY KEY (id),
 	UNIQUE KEY cid (cid)
 ) ENGINE=InnoDB;
@@ -406,6 +407,7 @@ CREATE TABLE ewx_channels (
 	downceil int(11)        DEFAULT '0' NOT NULL,
 	upceil_n int(11)        DEFAULT NULL,
 	downceil_n int(11)      DEFAULT NULL,
+	halfduplex tinyint(1)   DEFAULT NULL,
 	PRIMARY KEY (id),
 	UNIQUE KEY name (name)
 ) ENGINE=InnoDB;
@@ -1481,4 +1483,4 @@ CREATE TABLE supermasters (
 
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2011031000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2011041500');

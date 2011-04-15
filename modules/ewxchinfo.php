@@ -32,7 +32,8 @@ if ($cid)
         LEFT JOIN ewx_stm_channels c2 ON (c.id = c2.cid)
         WHERE c.id = ?', array($cid));
 else
-    $channel = $DB->GetRow('SELECT 0 AS id, ch.upceil, ch.downceil, ch.id AS cid
+    $channel = $DB->GetRow('SELECT 0 AS id, ch.upceil, ch.downceil,
+        ch.halfduplex, ch.id AS cid
         FROM ewx_stm_channels ch
         WHERE ch.cid = 0');
 

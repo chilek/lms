@@ -69,7 +69,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	        all_nets[anc].mask = inet_addr(g->db_get_data(res, anc, "mask"));
 	}
 	g->db_free(&res);
-																												 
+
 	netnames = strdup(ewx->networks);
 	netname = strdup(netnames);
 	// get networks for filter if any specified in 'networks' option
@@ -304,7 +304,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 
 			snmp_add_var(pdu, UserStatus, PT_OID_LEN, 'i', CREATEANDGO);
 		}
-		else if(!access) // || !n_id
+		else if(!access || !n_id)
 		{
 			// deleted node
 			type = "delete";
@@ -411,7 +411,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 				syslog(LOG_INFO, "DEBUG: [%s/ewx-pt] Added node %s (%05d)", ewx->base.instance, nodename, node);
 #endif
 			}
-			else if(!access)
+			else if(!access || !n_id)
 			{
 				// delete config
 				g->db_pexec(g->conn, "DELETE FROM ewx_pt_config WHERE nodeid = ?", nodeid);

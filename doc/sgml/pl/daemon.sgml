@@ -1834,6 +1834,11 @@ $IPT -t filter -I FORWARD -s %i -m limit --limit %plimit/s -j ACCEPT										</
 						<para>Warto¶æ downceil dla domy¶lnego kana³u. Domy¶lnie: 0</para>
 						<para>Przyk³ad: <prompt>default_downceil = 20000</prompt></para>
 					</listitem>
+					<listitem>
+						<para>default_halfduplex</para>
+						<para>Okre¶la czy domy¶lny kana³ ma pracowaæ w trybie half duplex. Domy¶lnie: nie</para>
+						<para>Przyk³ad: <prompt>default_halfduplex = tak</prompt></para>
+					</listitem>
 				</itemizedlist>
 			</sect3>
 		</sect2>

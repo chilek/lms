@@ -5666,6 +5666,10 @@ $IPT -t filter -I FORWARD -s %i -m limit --limit %plimit/s -j ACCEPT
      * default_downceil
        Wartość downceil dla domyślnego kanału. Domyślnie: 0
        Przykład: default_downceil = 20000
+     * default_halfduplex
+       Określa czy domyślny kanał ma pracować w trybie half duplex.
+       Domyślnie: nie
+       Przykład: default_halfduplex = tak
      __________________________________________________________________
 
 6.3. T-Script
@@ -6288,6 +6292,7 @@ Rozdział 7. Dla dociekliwych
    zip - kod pocztowy
    city - nazwa miasta
    countryid - identyfikator kraju
+   post_name - adres korespondencyjny (adresat)
    post_address - adres korespondencyjny (ulica, nr domu, nr lokalu)
    post_zip - adres korespondencyjny - kod pocztowy
    post_city - adres korespondencyjny - nazwa miasta
@@ -6663,6 +6668,7 @@ Rozdział 7. Dla dociekliwych
    numberplanid - identyfikator planu numeracyjnego
    type - typ dokumentu (1-faktura, 2-KP)
    cdate - data wystawienia
+   sdate - data sprzedaży (dla faktur)
    paytime - termin płatności (ilość dni)
    paytype - rodzaj płatności (1-gotówka, 2-przelew, 3-przelew/gotówka,
    4-karta, 5-kompensata, 6-barter, 7-umowa)

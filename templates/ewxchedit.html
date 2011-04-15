@@ -26,6 +26,13 @@
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/options.gif" ALT=""> <B>{t}Options:{/t}</B></TD>
+		<TD CLASS="fright" NOWRAP>
+		    <A HREF="javascript:checkElement('halfduplex');">{t}Half duplex{/t}:</A>
+            <INPUT TYPE="checkbox" NAME="channel[halfduplex]" VALUE="1" id="halfduplex" {if $channel.halfduplex} checked{/if} {tip text="Select transmission mode"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
 		<TD width="100%" CLASS="fbottomu" COLSPAN="2" align="right">
 			<A HREF="javascript:document.channel.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
 			<A HREF="?m=ewxchlist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>

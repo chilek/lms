@@ -109,6 +109,7 @@
                     <member>zip - zip code</member>
                     <member>city - location (city)</member>
                     <member>countryid - country identifier</member>
+                    <member>post_name - correspondence address - name</member>
                     <member>post_address - correspondence address - street, apartment, flat, etc</member>
                     <member>post_zip - correspondence address - zip code</member>
                     <member>post_city - correspondence address - location (city)</member>
@@ -506,6 +507,7 @@
 		    <member>numberplanid - numbering plan identifier</member>
 		    <member>type - document type (1 - invoice, 2 - cash receipt)</member>
                     <member>cdate - date of write out</member>
+                    <member>sdate - sale date (for invoices)</member>
                     <member>paytime - deadline in days</member>
                     <member>paytype - payment type (1-cash, 2-transfer, 3-transfer/cash, 4-card, 5-compensation, 6-barter, 7-contract)</member>
                     <member>customerid - customer (buyer) serial number</member>

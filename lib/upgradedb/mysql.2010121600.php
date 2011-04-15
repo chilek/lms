@@ -110,4 +110,3 @@ $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('20101216
 $DB->CommitTrans();
 
 ?>
-

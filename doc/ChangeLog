@@ -3,6 +3,10 @@ $Id$
 version ? (????-??-??):
 
   - Fixed nodes list in Userpanel [alec]
+  - lmsd/ewx-pt: Fixed issues on nodes deletion [alec]
+  - lmsd/ewx-stm-channels: Fixed issues on nodes deletion, improved performance [alec]
+  - lmsd/ewx-stm_channels: Added channel/customer limits checking [alec]
+  - lmsd/ewx-stm_channels: Added channel half duplex setting [alec]
 
 version 1.11.13 Dira (2011-04-07)
 

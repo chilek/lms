@@ -15,13 +15,20 @@
 		<TD CLASS="fright">
 			<INPUT TYPE="TEXT" SIZE="10" NAME="channel[downceil]" VALUE="{if $channel.downceil}{$channel.downceil}{/if}" {tip text="Enter maximal download value" trigger="downceil"}>
 			{t}night:{/t} <INPUT TYPE="TEXT" SIZE="10" NAME="channel[downceil_n]" VALUE="{if $channel.downceil_n}{$channel.downceil_n}{/if}" {tip text="Enter maximal download value (optional)" trigger="downceil_n"}> kbit/s
-		</TD> 
+		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/uprate.gif" ALT=""> <B>{t}Upceil:{/t}</B></TD>
 		<TD CLASS="fright">
 			<INPUT TYPE="TEXT" SIZE="10" NAME="channel[upceil]" VALUE="{if $channel.upceil}{$channel.upceil}{/if}" {tip text="Enter maximal upload value" trigger="upceil"}>
 			{t}night:{/t} <INPUT TYPE="TEXT" SIZE="10" NAME="channel[upceil_n]" VALUE="{if $channel.upceil_n}{$channel.upceil_n}{/if}" {tip text="Enter maximal upload value (optional)" trigger="upceil_n"}> kbit/s
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/options.gif" ALT=""> <B>{t}Options:{/t}</B></TD>
+		<TD CLASS="fright" NOWRAP>
+		    <A HREF="javascript:checkElement('halfduplex');">{t}Half duplex{/t}:</A>
+            <INPUT TYPE="checkbox" NAME="channel[halfduplex]" VALUE="1" id="halfduplex" {if $channel.halfduplex} checked{/if} {tip text="Select transmission mode"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
