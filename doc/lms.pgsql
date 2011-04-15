@@ -1141,6 +1141,7 @@ CREATE TABLE ewx_stm_channels (
     cid 	integer      	DEFAULT 0 NOT NULL,
     upceil 	integer         DEFAULT 0 NOT NULL,
     downceil 	integer        	DEFAULT 0 NOT NULL,
+    halfduplex  smallint    DEFAULT NULL,
     PRIMARY KEY (id),
     UNIQUE (cid)
 );
@@ -1158,6 +1159,7 @@ CREATE TABLE ewx_channels (
     downceil 	integer        	DEFAULT 0 NOT NULL,
     upceil_n 	integer         DEFAULT NULL,
     downceil_n 	integer        	DEFAULT NULL,
+    halfduplex  smallint    DEFAULT NULL,
     PRIMARY KEY (id),
     UNIQUE (name)
 );
@@ -1578,4 +1580,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2011031000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2011041500');

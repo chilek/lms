@@ -113,6 +113,7 @@
                     <member>zip - kod pocztowy</member>
                     <member>city - nazwa miasta</member>
 		    <member>countryid - identyfikator kraju</member>
+		    <member>post_name - adres korespondencyjny (adresat)</member>
 		    <member>post_address - adres korespondencyjny (ulica, nr domu, nr lokalu)</member>
                     <member>post_zip - adres korespondencyjny - kod pocztowy</member>
                     <member>post_city - adres korespondencyjny - nazwa miasta</member>
@@ -509,6 +510,7 @@
 		    <member>numberplanid - identyfikator planu numeracyjnego</member>
 		    <member>type - typ dokumentu (1-faktura, 2-KP)</member>
                     <member>cdate - data wystawienia</member>
+                    <member>sdate - data sprzeda¿y (dla faktur)</member>
                     <member>paytime - termin p³atno¶ci (ilo¶æ dni)</member>
                     <member>paytype - rodzaj p³atno¶ci (1-gotówka, 2-przelew, 3-przelew/gotówka, 4-karta, 5-kompensata, 6-barter, 7-umowa)</member>
                     <member>customerid - identyfikator klienta-nabywcy</member>

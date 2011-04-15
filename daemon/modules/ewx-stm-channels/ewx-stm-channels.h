@@ -22,6 +22,7 @@ struct ewx_module
 	int skip_disabled;
 	int default_upceil;
 	int default_downceil;
+	int default_halfduplex;
 };
 
 struct net
@@ -53,6 +54,7 @@ struct channel
 	int downceil;
 	int upratesum;
 	int downratesum;
+	int halfduplex;
     int no;
 	struct host *hosts;
 };
@@ -121,6 +123,10 @@ oid ChannelHalfDuplex[] 	= {SNMP_OID_ENTERPRISES,20656,1,2,1,6,1,6,0};
 oid PathUplink[]		= {SNMP_OID_ENTERPRISES,20656,1,2,1,2,1,3,0};
 oid PathDownlink[]		= {SNMP_OID_ENTERPRISES,20656,1,2,1,2,1,4,0};
 
+// Licences
+oid MaxCustomers[]		= {SNMP_OID_ENTERPRISES,20656,1,2,1,1,2,4,0};
+oid MaxChannels[]		= {SNMP_OID_ENTERPRISES,20656,1,2,1,1,2,9,0};
+
 // number of elements in above OIDs
 #define STM_OID_LEN	14
 
@@ -132,6 +138,9 @@ oid PathDownlink[]		= {SNMP_OID_ENTERPRISES,20656,1,2,1,2,1,4,0};
 #define CREATEANDWAIT	"5"
 #define DESTROY		"6"
 #define TABLESAVE	"2"
+// HalfDuplex field values
+#define HALFDUPLEX	"1"
+#define FULLDUPLEX	"2"
 
 // Customers/Channels tables status
 oid CustomersTableSave[]	= {SNMP_OID_ENTERPRISES,20656,1,2,1,4,2,0};
@@ -154,4 +163,3 @@ oid ChannelsTableSave[]		= {SNMP_OID_ENTERPRISES,20656,1,2,1,6,2,0};
 #define DELETED		2
 
 //#define LMS_SNMP_DEBUG 1
-

@@ -54,7 +54,7 @@ function GetChannelsList($order='name,asc')
 
 	$channels = $DB->GetAll('('
 	    .'SELECT c.id, c.name, c.upceil, c.downceil,
-	    c.upceil_n, c.downceil_n, c2.id AS cid,
+	    c.upceil_n, c.downceil_n, c.halfduplex, c2.id AS cid,
 		(SELECT COUNT(*) FROM netdevices WHERE channelid = c.id) AS devcnt,
 		(SELECT COUNT(*) FROM ewx_stm_nodes n
 		    JOIN ewx_stm_channels ch ON (n.channelid = ch.id)
@@ -65,7 +65,7 @@ function GetChannelsList($order='name,asc')
 		UNION
 		(
 		SELECT 0 AS id, \''.trans('default').'\' AS name,
-		    ch.upceil, ch.downceil, 0 AS upceil_n, 0 AS downceil_n, ch.id AS cid,
+		    ch.upceil, ch.downceil, 0 AS upceil_n, 0 AS downceil_n, 0, ch.id AS cid,
 		    (SELECT COUNT(DISTINCT netdev) FROM nodes WHERE netdev > 0 AND id IN (
 		        SELECT nodeid FROM ewx_stm_nodes WHERE channelid = ch.id)) AS devcnt,
 		    (SELECT COUNT(*) FROM ewx_stm_nodes WHERE channelid = ch.id) AS nodecnt

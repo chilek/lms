@@ -23,18 +23,12 @@
 
 $DB->BeginTrans();
 
-$DB->Execute("DROP VIEW customersview");
+$DB->Execute("
+    ALTER TABLE ewx_channels ADD halfduplex smallint DEFAULT NULL;
+    ALTER TABLE ewx_stm_channels ADD halfduplex smallint DEFAULT NULL;
+");
 
-$DB->Execute("ALTER TABLE customers ADD post_name varchar(255) DEFAULT NULL");
-
-$DB->Execute("CREATE VIEW customersview AS
-    SELECT c.* FROM customers c
-    WHERE NOT EXISTS (
-        SELECT 1 FROM customerassignments a
-        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-        WHERE e.userid = lms_current_user() AND a.customerid = c.id)");
-
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011032400', 'dbversion'));
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011041500', 'dbversion'));
 
 $DB->CommitTrans();
 

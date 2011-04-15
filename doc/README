@@ -5345,6 +5345,7 @@ Chapter 7. For curious
    zip - zip code
    city - location (city)
    countryid - country identifier
+   post_name - correspondence address - name
    post_address - correspondence address - street, apartment, flat, etc
    post_zip - correspondence address - zip code
    post_city - correspondence address - location (city)
@@ -5716,6 +5717,7 @@ Chapter 7. For curious
    numberplanid - numbering plan identifier
    type - document type (1 - invoice, 2 - cash receipt)
    cdate - date of write out
+   sdate - sale date (for invoices)
    paytime - deadline in days
    paytype - payment type (1-cash, 2-transfer, 3-transfer/cash, 4-card,
    5-compensation, 6-barter, 7-contract)

@@ -75,17 +75,18 @@ if(isset($_POST['channel']))
 
 	if(!$error)
 	{
-		$DB->Execute('INSERT INTO ewx_channels (name, upceil, downceil, upceil_n, downceil_n)
-			VALUES (?, ?, ?, ?, ?)',
+		$DB->Execute('INSERT INTO ewx_channels (name, upceil, downceil, upceil_n, downceil_n, halfduplex)
+			VALUES (?, ?, ?, ?, ?, ?)',
 			array($channel['name'],
 				$channel['upceil'],
 				$channel['downceil'],
 				!empty($channel['upceil_n']) ? $channel['upceil_n'] : NULL,
 				!empty($channel['downceil_n']) ? $channel['downceil_n'] : NULL,
+				!empty($channel['halfduplex']) ? 1 : NULL,
 		));
-		
+
 		$id = $DB->GetLastInsertId('ewx_channels');
-	
+
 		$SESSION->redirect('?m=ewxchinfo&id='.$id);
 	}
 
