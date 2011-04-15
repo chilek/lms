@@ -421,27 +421,28 @@ static void parse_command_line(int argc, char **argv)
 {
 	int opt, option_index = 0;
 	char revision[10];
-      
+
 	static struct option options[] = {
-    	    { "dbhost", 1, 0, 'h' },
+   	    { "dbhost", 1, 0, 'h' },
 	    { "dbname", 1, 0, 'd' },
-            { "dbuser", 1, 0, 'u' },
-    	    { "dbpass", 1, 0, 'p' },
+        { "dbuser", 1, 0, 'u' },
+  	    { "dbpass", 1, 0, 'p' },
 	    { "hostname", 1, 0, 'H' },
-    	    { "pidfile", 1, 0, 'P' },
-    	    { "command", 2, 0, 'c' },
-    	    { "reload", 0, 0, 'q' },
+   	    { "pidfile", 1, 0, 'P' },
+   	    { "command", 2, 0, 'c' },
+   	    { "reload", 0, 0, 'q' },
 	    { "reload-all", 0, 0, 'r' },
 	    { "foreground", 0, 0, 'f' },
-            { "instance", 2, 0, 'i' },
-    	    { "version", 0, 0, 'v' },
-    	    { "ssl", 0, 0, 's' },
-    	    { 0, 0, 0, 0 }
+        { "instance", 2, 0, 'i' },
+  	    { "version", 0, 0, 'v' },
+   	    { "ssl", 0, 0, 's' },
+   	    { "help", 0, 0, 'x' },
+   	    { 0, 0, 0, 0 }
 	};
-	
+
 	sscanf(REVISION, "$Id: lmsd.c,v %s", revision);
-	
-	while( (opt = getopt_long(argc, argv, "sqrfvi:h:p:d:u:H:c:P:", options, &option_index)) != -1 )
+
+	while( (opt = getopt_long(argc, argv, "xsqrfvi:h:p:d:u:H:c:P:", options, &option_index)) != -1 )
 	{
 		switch(opt) 
 		{
@@ -485,24 +486,25 @@ static void parse_command_line(int argc, char **argv)
 		case 'P':
 			pidfile = strdup(optarg);
 			break;
-        	default:
+		case 'x':
+        default:
 			printf("LMS Daemon version 1.11-cvs (%s). Command line options:\n", revision);
-        		printf(" --dbhost -h host[:port]\tdatabase host (default: 'localhost')\n");
-        		printf(" --dbname -d db_name\t\tdatabase name (default: 'lms')\n");
-        		printf(" --dbuser -u db_user\t\tdatabase user (default: 'lms')\n");
-        		printf(" --dbpass -p password\t\tdatabase password (default: '')\n");
-        		printf(" --ssl -s\t\t\tuse SSL connection (default: disabled)\n");
-        		printf(" --hostname -H daemon_host\thost name where runs daemon (default: `hostname`)\n");
-        		printf(" --pidfile -P pid_file\t\tpidfile where daemon write pid (default: none)\n");
-        		printf(" --command -c command\t\tshell command to run before database connecting\n\t\t\t\t(default: empty)\n");
-        		printf(" --reload -q \t\t\tdo a reload and quit\n");
+        	printf(" --dbhost -h host[:port]\tdatabase host (default: 'localhost')\n");
+        	printf(" --dbname -d db_name\t\tdatabase name (default: 'lms')\n");
+        	printf(" --dbuser -u db_user\t\tdatabase user (default: 'lms')\n");
+        	printf(" --dbpass -p password\t\tdatabase password (default: '')\n");
+        	printf(" --ssl -s\t\t\tuse SSL connection (default: disabled)\n");
+        	printf(" --hostname -H daemon_host\thost name where runs daemon (default: `hostname`)\n");
+        	printf(" --pidfile -P pid_file\t\tpidfile where daemon write pid (default: none)\n");
+        	printf(" --command -c command\t\tshell command to run before database connecting\n\t\t\t\t(default: empty)\n");
+        	printf(" --reload -q \t\t\tdo a reload and quit\n");
 			printf(" --reload-all -r \t\tdo a reload of all instances and quit\n");
-        		printf(" --foreground -f \t\trun in foreground (don't fork)\n");
-        		printf(" --instance -i \"instance[ ...]\"\tlist of instances to reload\n");
-        		printf(" --version -v \t\t\tprint version and copyright info\n");
-            		exit(1);
+        	printf(" --foreground -f \t\trun in foreground (don't fork)\n");
+        	printf(" --instance -i \"instance[ ...]\"\tlist of instances to reload\n");
+        	printf(" --version -v \t\t\tprint version and copyright info\n");
+        	exit(1);
 		}
-    	}
+    }
 }
 
 static void free_module(MODULE *mod)
