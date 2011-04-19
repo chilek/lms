@@ -29,20 +29,6 @@ if( !($id = $DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array(intval($
 	$SESSION->redirect('?m=nodegrouplist');
 }
 
-if(isset($_POST['nodeassignments']))
-{
-	$oper = $_POST['oper'];
-	$nodeassignments = $_POST['nodeassignments'];
-	if (isset($nodeassignments['membersnetid']) && $oper=='2')
-	{
-		$SESSION->redirect('?'.preg_replace('/&membersnetid=[0-9]+/', '', $SESSION->get('backto')).'&membersnetid='.$nodeassignments['membersnetid']);
-	}
-	if (isset($nodeassignments['othersnetid']) && $oper=='3')
-	{
-		$SESSION->redirect('?'.preg_replace('/&othersnetid=[0-9]+/', '', $SESSION->get('backto')).'&othersnetid='.$nodeassignments['othersnetid']);
-	}
-}
-
 $membersnetid = isset($_GET['membersnetid']) ? $_GET['membersnetid'] : 0;
 $othersnetid =  isset($_GET['othersnetid']) ? $_GET['othersnetid'] : 0;
 

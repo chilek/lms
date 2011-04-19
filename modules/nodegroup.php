@@ -77,6 +77,14 @@ elseif(isset($_POST['nodeassignments']) && $DB->GetOne('SELECT id FROM nodegroup
 				VALUES (?, ?)', array($_GET['id'], $nodeid));
 		}
 	}
+	elseif (isset($nodeassignments['membersnetid']) && $oper=='2')
+	{
+		$SESSION->redirect('?'.preg_replace('/&membersnetid=[0-9]+/', '', $SESSION->get('backto')).'&membersnetid='.$nodeassignments['membersnetid']);
+	}
+	elseif (isset($nodeassignments['othersnetid']) && $oper=='3')
+	{
+		$SESSION->redirect('?'.preg_replace('/&othersnetid=[0-9]+/', '', $SESSION->get('backto')).'&othersnetid='.$nodeassignments['othersnetid']);
+	}
 }
 
 $SESSION->redirect('?'.$SESSION->get('backto'));
