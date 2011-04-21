@@ -27,7 +27,7 @@
 if($temp = $DB->GetOne('SELECT value FROM uiconfig WHERE section=? AND var=? AND disabled=0', 
 		array('invoices', 'number_template')))
 	$CONFIG['invoices']['number_template'] = $temp;
-	
+
 if($temp = $DB->GetOne('SELECT value FROM uiconfig WHERE section=? AND var=? AND disabled=0', 
 		array('receipts', 'number_template')))
 	$CONFIG['receipts']['number_template'] = $temp;

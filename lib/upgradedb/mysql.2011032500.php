@@ -32,4 +32,3 @@ $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('20110325
 $DB->CommitTrans();
 
 ?>
-

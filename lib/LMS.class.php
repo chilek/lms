@@ -1886,7 +1886,7 @@ class LMS
         // Create assignments according to promotion schema
         if (!empty($data['promotiontariffid']) && !empty($data['schemaid'])) {
             $data['tariffid'] = $data['promotiontariffid'];
-            $tariff = $this->DB->GetRow('SELECT a.data, s.data AS schema,
+            $tariff = $this->DB->GetRow('SELECT a.data, s.data AS sdata,
                     t.name, t.value, t.period, t.id, t.prodid, t.taxid,
                     s.continuation, s.ctariffid
                     FROM promotionassignments a
@@ -1894,7 +1894,7 @@ class LMS
                     JOIN tariffs t ON (t.id = a.tariffid)
                     WHERE a.promotionschemaid = ? AND a.tariffid = ?',
                     array($data['schemaid'], $data['promotiontariffid']));
-            $data_schema = explode(';', $tariff['schema']);
+            $data_schema = explode(';', $tariff['sdata']);
             $data_tariff = explode(';', $tariff['data']);
             $datefrom = $data['datefrom'];
 
