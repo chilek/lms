@@ -183,7 +183,7 @@
 						    <TR>
 						        <TD width="1%" NOWRAP>{t}Country:{/t}</TD>
 						        <TD width="99%">
-						            <SELECT NAME="customeradd[countryid]" {tip text="Select country (optional)" trigger="post_countryid"}>
+						            <SELECT NAME="customeradd[post_countryid]" {tip text="Select country (optional)" trigger="post_countryid"}>
 						                <OPTION value="0"></OPTION>
 								{foreach from=$countrieslist item=item key=key}
 						                <OPTION value="{$key}"{if $key==$customeradd.post_countryid} SELECTED{/if}>{t}{$item.name}{/t}</OPTION>
