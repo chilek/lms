@@ -35,7 +35,7 @@
 int del_channel(GLOBAL *, struct ewx_module*, struct snmp_session*, struct channel*);
 int add_channel(GLOBAL *, struct ewx_module*, struct snmp_session*, struct channel*);
 int update_channel(GLOBAL *, struct ewx_module*, struct snmp_session*, struct channel*, struct channel*);
-int mod_channel(GLOBAL *, struct ewx_module*, struct snmp_session*, int, int, int);
+int mod_channel(GLOBAL *, struct ewx_module*, struct snmp_session*, int, int, int, int);
 int del_node(GLOBAL *, struct ewx_module*, struct snmp_session*, struct host*);
 int add_node(GLOBAL *, struct ewx_module*, struct snmp_session*, struct host*, int);
 int update_node(GLOBAL *, struct ewx_module*, struct snmp_session*, struct host*, struct host);
@@ -914,7 +914,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 							// zwiekszenie limitow, trzeba podniesc parametry kanalu
        	    	        	if (new.upceil > channels[x].upceil || new.downceil > channels[x].downceil)
 							{
-								mod_channel(g, ewx, sh, channels[x].id, c.upceil, c.downceil);
+								mod_channel(g, ewx, sh, channels[x].id, c.upceil, c.downceil, c.halfduplex);
 								channels[x].upceil = c.upceil;
 								channels[x].downceil = c.downceil;
 								channels[x].status = STATUS_OK;
@@ -928,7 +928,8 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 
 								if (channels[x].upceil < channels[x].upratesum || channels[x].downceil < channels[x].downratesum)
 								{
-									mod_channel(g, ewx, sh, channels[x].id, channels[x].upratesum, channels[x].downratesum);
+									mod_channel(g, ewx, sh, channels[x].id,
+									    channels[x].upratesum, channels[x].downratesum, channels[x].halfduplex);
 									channels[x].upceil = channels[x].upratesum;
 									channels[x].downceil = channels[x].downratesum;
 							    	channels[x].status = STATUS_OK;
@@ -952,7 +953,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 				// zwiekszenie limitow, trzeba podniesc parametry kanalu
                 if (new.upceil > channels[x].upceil || new.downceil > c.downceil)
 				{
-					mod_channel(g, ewx, sh, channels[x].id, c.upceil, c.downceil);
+					mod_channel(g, ewx, sh, channels[x].id, c.upceil, c.downceil, c.halfduplex);
 					channels[x].upceil = c.upceil;
 					channels[x].downceil = c.downceil;
 					channels[x].status = STATUS_OK;
@@ -964,7 +965,8 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 				// moze wystapic (chwilowe) przekroczenie sumy rate
 				if (channels[x].upceil < channels[x].upratesum || channels[x].downceil < channels[x].downratesum)
 				{
-					mod_channel(g, ewx, sh, channels[x].id, channels[x].upratesum, channels[x].downratesum);
+					mod_channel(g, ewx, sh, channels[x].id,
+					    channels[x].upratesum, channels[x].downratesum, channels[x].halfduplex);
 					channels[x].upceil = channels[x].upratesum;
 					channels[x].downceil = channels[x].downratesum;
 					channels[x].status = STATUS_OK;
@@ -1018,7 +1020,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		    || channels[x].halfduplex != c.halfduplex
 		) {
 			savetables = 1;
-            mod_channel(g, ewx, sh, channels[x].id, c.upceil, c.downceil);
+            mod_channel(g, ewx, sh, channels[x].id, c.upceil, c.downceil, c.halfduplex);
 		}
 
 	} // End of main loop **********************************************************
@@ -1383,8 +1385,8 @@ int update_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, s
     // Update channel limits if we need to
     if (cu.upceil != c.upceil || cu.downceil != c.downceil || cu.halfduplex != c.halfduplex)
     {
-	    char *upceil = strdup(itoa(cu.upceil));
-	    char *downceil = strdup(itoa(cu.downceil));
+   	    char *upceil = strdup(itoa(cu.upceil));
+        char *downceil = strdup(itoa(cu.downceil));
 
 	    // Create OIDs
 	    ChannelUplink[STM_OID_LEN-1] = c.id + ewx->offset;
@@ -1422,8 +1424,9 @@ int update_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, s
 			    free(errstr);
 		    }
 
-    		free(upceil);
-	    	free(downceil);
+            free(upceil);
+            free(downceil);
+
 		    return result;
 	    }
 
@@ -1449,6 +1452,7 @@ int update_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, s
 	    // Process the response
 	    if(status == STAT_SUCCESS && response->errstat == SNMP_ERR_NOERROR)
 	    {
+
 #ifdef LMS_SNMP_DEBUG
 	        struct variable_list *vars;
 	        for(vars = response->variables; vars; vars = vars->next_variable)
@@ -1478,7 +1482,7 @@ int update_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, s
 		    snmp_free_pdu(response);
 
         free(upceil);
-	    free(downceil);
+        free(downceil);
     }
     else
         result = STATUS_OK;
@@ -1492,7 +1496,7 @@ int update_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, s
 	return result;
 }
 
-int mod_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, int id, int up, int down)
+int mod_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, int id, int up, int down, int halfduplex)
 {
 	struct snmp_pdu 	*pdu, *response;
 	char *errstr;
@@ -1502,11 +1506,12 @@ int mod_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, int 
 	char *downceil = strdup(itoa(down));
 
 #ifdef LMS_SNMP_DEBUG
-        printf("[MODIFY CHANNEL] %d [%d:%d]\n", id, up, down);
+    printf("[MODIFY CHANNEL] %d [%d:%d:%d]\n", id, up, down, halfduplex);
 #endif
 	// Create OIDs
 	ChannelUplink[STM_OID_LEN-1] = id + ewx->offset;
 	ChannelDownlink[STM_OID_LEN-1] = id + ewx->offset;
+    ChannelHalfDuplex[STM_OID_LEN-1] = id + ewx->offset;
 	ChannelStatus[STM_OID_LEN-1] = id + ewx->offset;
 
 	// Create the PDU 
@@ -1552,6 +1557,7 @@ int mod_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, int 
 
 	snmp_add_var(pdu, ChannelUplink, STM_OID_LEN, 'u', upceil);
 	snmp_add_var(pdu, ChannelDownlink, STM_OID_LEN, 'u', downceil);
+    snmp_add_var(pdu, ChannelHalfDuplex, STM_OID_LEN, 'i', halfduplex ? HALFDUPLEX : FULLDUPLEX);
 	snmp_add_var(pdu, ChannelStatus, STM_OID_LEN, 'i', ACTIVE);
 
 	// Send the Request out
@@ -1565,8 +1571,8 @@ int mod_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, int 
 	    for(vars = response->variables; vars; vars = vars->next_variable)
    			print_variable(vars->name, vars->name_length, vars);
 #endif
-		g->db_pexec(g->conn, "UPDATE ewx_stm_channels SET upceil = ?, downceil = ? "
-			    "WHERE id = ?", upceil, downceil, itoa(id));
+		g->db_pexec(g->conn, "UPDATE ewx_stm_channels SET upceil = ?, downceil = ?, halfduplex = ? "
+			    "WHERE id = ?", upceil, downceil, halfduplex ? "1" : "NULL", itoa(id));
 #ifdef DEBUG1
 		syslog(LOG_INFO, "DEBUG: [%s/ewx-stm-channels] Modified channel %d", ewx->base.instance, id);
 #endif
