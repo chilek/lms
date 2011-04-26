@@ -65,7 +65,8 @@ if(!empty($_POST['marks']))
 {
     $nodes = array();
     foreach($_POST['marks'] as $id) {
-        $LMS->NodeSetWarn($id, $warning);
+        if ($LMS->NodeSetWarn($id, $warning))
+			$nodes[] = $id;
     }
 
     if (!empty($nodes)) {
