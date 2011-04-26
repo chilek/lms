@@ -60,7 +60,13 @@ if ($channel['id']) {
     $channel['devices'] = $DB->GetAll('SELECT id, name, location,
         (SELECT COUNT(*) FROM nodes WHERE netdev = netdevices.id AND ownerid > 0) AS nodes
 	    FROM netdevices WHERE id IN (
-	        SELECT nodeid FROM ewx_stm_nodes WHERE channelid = ?)
+            SELECT netdev
+            FROM nodes
+            WHERE netdev > 0 AND id IN (
+                SELECT nodeid
+                FROM ewx_stm_nodes
+                WHERE channelid IN (SELECT id FROM ewx_stm_channels
+                    WHERE cid = 0)))
 	    ORDER BY name', array($channel['id']));
 }
 
