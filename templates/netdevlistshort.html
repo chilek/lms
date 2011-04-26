@@ -17,9 +17,9 @@
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
 		    {if $layout.module == 'ewxdevlist'}
-		    <B>{t 0=$devices.total|default:"0"}Channel Devices ($0):{/t}</B>
+		    <B>{t 0=$devices|@count|default:"0"}Channel Devices ($0):{/t}</B>
 		    {else}
-			<B>{t 0=$devices.total|default:"0"}Devices ($0):{/t}</B>
+			<B>{t 0=$devices|@count|default:"0"}Devices ($0):{/t}</B>
 			{/if}
 		</TD>
 	</TR>
