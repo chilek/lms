@@ -35,8 +35,6 @@ $nodes = $DB->GetAll('SELECT n.id, n.name, n.mac,
 if ($nodes) foreach($nodes as $idx => $row)
     $nodes[$idx]['lastonlinedate'] = lastonline_date($row['lastonline']);
 
-$nodes['total'] = count($nodes);
-
 $SMARTY->assign('customernodes', $nodes);
 $SMARTY->display('nodelistshort.html');
 
