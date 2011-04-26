@@ -99,8 +99,8 @@ $SMARTY = new Smarty;
 
 // test for proper version of Smarty
 
-if(version_compare('2.6.0', $SMARTY->_version) > 0)
-	die('<B>Old version of Smarty engine! You must get newest from <A HREF="http://www.smarty.net/distributions">http://www.smarty.net</A></B>');
+if (version_compare('2.6.0', $SMARTY->_version) > 0)
+	die('<B>Wrong version of Smarty engine! We support only Smarty-2.x greater than 2.6.0.</B>');
 
 // Read configuration of LMS-UI from database
 
