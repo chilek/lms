@@ -29,7 +29,7 @@ function check_ten($ten)
 	$steps = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4);
 	$sum_nb = 0;
 
-	$ten = strtoupper(preg_replace('/[^[:alnum:]\?]/', '', $ten));
+	$ten = strtoupper(preg_replace('/[^[:digit:]\?]/', '', $ten));
 	if (!preg_match('/(^[0-9]{11})([0-9]{1}$|\?{1}$)/', $ten, $regs))
 		if (!preg_match('/(^[0-9]{8})([0-9]{1}$|\?{1}$)/', $ten, $regs))
 			return FALSE;
@@ -93,6 +93,9 @@ function check_regon($regon)
 {
 	$regon = str_replace('-', '', $regon);
 	$regon = str_replace(' ', '', $regon);
+
+	return check_ten($regon);
+
 	$sum_nb = 0;
 
         if(strlen($regon) == 9)
