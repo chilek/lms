@@ -9,6 +9,7 @@ version ? (????-??-??):
   - lmsd/ewx-stm_channels: Added channel half duplex setting [alec]
   - Fixed promotion assignments creation on MySQL [alec]
   - BTS#0000868: Fixed bug where country wasn't saved when adding customer [alec]
+  - fixed bug in dbview bound to inproper Content-Length header [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
