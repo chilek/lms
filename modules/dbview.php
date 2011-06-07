@@ -57,7 +57,7 @@ if ((extension_loaded('zlib')) && (strstr($_GET['file'],"sql.gz")))
 else
 	header('Content-Disposition: attachment; filename=lms-backup-'.date('Ymd-His',$_GET['db']).'.sql');
 header('Pragma: public');
-header('Content-Length: '.$filename);
+header('Content-Length: '.filesize($filename));
 set_time_limit(0);
 readfile_chunked($filename, false);
 
