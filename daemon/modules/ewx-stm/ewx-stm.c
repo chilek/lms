@@ -674,7 +674,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 
 	// Reading hosts/channels definitions from ewx_stm_* tables
 	// NOTE: to re-create device configuration do DELETE FROM ewx_stm_nodes; DELETE FROM ewx_stm_channels;
-	query = strdup("SELECT nodeid, mac, INET_NTOA(ipaddr) AS ip, channelid, halfduplex, "
+	query = strdup("SELECT nodeid, mac, INET_NTOA(ipaddr) AS ip, channelid, n.halfduplex, "
 				"n.uprate, n.upceil, n.downrate, n.downceil, cid, "
 				"c.upceil AS cupceil, c.downceil AS cdownceil "
 			"FROM ewx_stm_nodes n "
