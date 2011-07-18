@@ -41,6 +41,8 @@ $_DBPASS = $CONFIG['database']['password'];
 $_DBNAME = $CONFIG['database']['database'];
 
 require_once(LIB_DIR.'/LMSDB.php');
+// funkcja to_words()
+require_once(LIB_DIR.'/locale/pl/ui.php');
 
 $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 
@@ -49,9 +51,6 @@ $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0'))
         foreach($cfg as $row)
                 $CONFIG[$row['section']][$row['var']] = $row['value'];
-
-// funkcja to_words()
-require_once($CONFIG['directories']['lib_dir'].'/locale/pl/functions.php');
 
 $ISP1_DO = (!isset($CONFIG['finances']['line_1']) ? 'LINIA1xxxxxxxxxxxxxxxxxxxyz' : $CONFIG['finances']['line_1']);
 $ISP2_DO = (!isset($CONFIG['finances']['line_2']) ? 'linia2xxxxxxxxxxxxxxxxxxxyz' : $CONFIG['finances']['line_2']);
