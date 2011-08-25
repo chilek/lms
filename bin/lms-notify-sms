@@ -171,7 +171,9 @@ while(my $row = $query->fetchrow_hashref())
 }
 $query->finish();
 
-$cfg{'prefix'} = sprintf("%d", $cfg{'prefix'});
+if ($cfg{'prefix'} ne '') {
+    $cfg{'prefix'} = sprintf("%d", $cfg{'prefix'});
+}
 
 if ($script_service) {
 	$cfg{'service'} = $script_service;
