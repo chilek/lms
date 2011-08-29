@@ -636,15 +636,6 @@ $$ LANGUAGE SQL IMMUTABLE;
 /* --------------------------------------------------
  Tables for RT (Helpdesk)
 -----------------------------------------------------*/
-DROP TABLE IF EXISTS rtattachments CASCADE;
-CREATE TABLE rtattachments (
-	messageid integer 	    NOT NULL
-	    REFERENCES rtmessages (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	filename varchar(255) 	DEFAULT '' NOT NULL,
-	contenttype varchar(255) DEFAULT '' NOT NULL
-);
-
-CREATE INDEX rtattachments_message_idx ON rtattachments (messageid);
 
 DROP SEQUENCE IF EXISTS rtqueues_id_seq;
 CREATE SEQUENCE rtqueues_id_seq;
@@ -734,6 +725,16 @@ CREATE TABLE rtrights (
     PRIMARY KEY (id),
     CONSTRAINT rtrights_userid_key UNIQUE (userid, queueid)
 );
+
+DROP TABLE IF EXISTS rtattachments CASCADE;
+CREATE TABLE rtattachments (
+	messageid integer 	    NOT NULL
+	    REFERENCES rtmessages (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	filename varchar(255) 	DEFAULT '' NOT NULL,
+	contenttype varchar(255) DEFAULT '' NOT NULL
+);
+
+CREATE INDEX rtattachments_message_idx ON rtattachments (messageid);
 
 /* ---------------------------------------------------
  Structure of table "passwd" (accounts)
