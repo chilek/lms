@@ -82,6 +82,7 @@ $SMARTY = new Smarty;
 
 require_once(LIB_DIR.'/unstrip.php');
 require_once(LIB_DIR.'/language.php');
+require_once(LIB_DIR.'/definitions.php');
 require_once(LIB_DIR.'/common.php');
 require_once(LIB_DIR.'/LMS.class.php');
 
@@ -114,6 +115,8 @@ if($customerid = $LMS->GetNodeOwner($LMS->GetNodeIDByIP($_SERVER['REMOTE_ADDR'])
 {
 	$balance = $LMS->GetCustomerBalanceList($customerid);
 	$customerinfo = $LMS->GetCustomer($customerid);
+
+    $customerinfo['tariffsvalue'] = $LMS->GetCustomerTariffsValue($customerid);
 }
 
 $SMARTY->assign('customerinfo', $customerinfo);

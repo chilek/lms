@@ -236,7 +236,7 @@ class LMS
 
 		if(!($name = $this->GetCache('users', $id, 'name')))
 		{
-			if($this->AUTH->id == $id)
+			if($this->AUTH && $this->AUTH->id == $id)
 				$name = $this->AUTH->logname;
 			else
 				$name = $this->DB->GetOne('SELECT name FROM users WHERE id=?', array($id));

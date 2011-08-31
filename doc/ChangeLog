@@ -23,6 +23,7 @@ version ? (????-??-??):
   - RT: fixed replys to tickets created from userpanel with backend enabled [maniac]
   - BTS#0000880: Fixed transfer forms report printing [alec]
   - BTS#0000877: Fixed node assignments for all promotion periods [alec]
+  - BTS#0000876: contrib/customer: Fixed customer tariff is always zero [alec]
 
 version 1.11.13 Dira (2011-04-07)
 
