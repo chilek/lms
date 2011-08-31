@@ -92,7 +92,7 @@ function address_box($x,$y,$scale)
 
     $font_size=30;
     while ($pdf->getTextWidth($font_size*$scale, iconv('UTF-8', 'ISO-8859-2',$invoice['name']))>240)
-	$font_size=$font_size-1;    
+	$font_size=$font_size-1;
     $pdf->addtext(5*$scale+$x,310*$scale+$y,$font_size*$scale, iconv('UTF-8', 'ISO-8859-2',$invoice['name']));
     $pdf->addtext(5*$scale+$x,275*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',$invoice['address']));
     $pdf->addtext(5*$scale+$x,240*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',$invoice['zip']." ".$invoice['city']));
@@ -131,7 +131,7 @@ if(!$ids)
 }
 
 $DIVISIONS = $DB->GetAllByKey('SELECT * FROM divisions', 'id');
-										
+
 $count = (strstr($which, '+') ? sizeof($ids)*2 : sizeof($ids));
 $i=0;
 
