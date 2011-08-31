@@ -65,10 +65,10 @@ function MessageAdd($msg, $headers, $file=NULL)
 if(isset($_POST['message']))
 {
 	$message = $_POST['message'];
-	
+
 	if($message['subject'] == '')
 		$error['subject'] = trans('Message subject not specified!');
-	
+
 	if($message['body'] == '')
 		$error['body'] = trans('Message body not specified!');
 
@@ -106,7 +106,7 @@ if(isset($_POST['message']))
 	{
 		$queue = $LMS->GetQueueByTicketId($message['ticketid']);
 		$user = $LMS->GetUserInfo($AUTH->id);
-		
+
 		$message['messageid'] = '<msg.'.$message['ticketid'].'.'.$queue['id'].'.'.time().'@rtsystem.'.gethostbyaddr(gethostbyname($_SERVER['SERVER_NAME'])).'>';
 
 		if($message['sender']=='user')
@@ -127,18 +127,19 @@ if(isset($_POST['message']))
 		}
 
 		$mailfname = '';
-		
+
 		if(isset($CONFIG['phpui']['helpdesk_sender_name']) && ($mailfname = $CONFIG['phpui']['helpdesk_sender_name']))
 		{
 			if($mailfname == 'queue') $mailfname = $queue['name'];
 			if($mailfname == 'customer') $mailfname = $user['name'];
 			$mailfname = '"'.$mailfname.'"';
 		}
-	
-		if(!isset($CONFIG['phpui']['helpdesk_backend_mode']) || !chkconfig($CONFIG['phpui']['helpdesk_backend_mode']))
-		{
+
+		if(!isset($CONFIG['phpui']['helpdesk_backend_mode']) || !chkconfig($CONFIG['phpui']['helpdesk_backend_mode'])
+		    || $message['destination'] == ''
+		) {
 			$headers = array();
-			
+
 			if($message['destination'] && $message['userid']
 				&& ($user['email'] || $queue['email'])
 				&& $message['destination'] != $queue['email'])
@@ -152,7 +153,7 @@ if(isset($_POST['message']))
 				$headers['Subject'] = $message['subject'];
 				$headers['Message-Id'] = $message['messageid'];
 				$headers['Reply-To'] = $headers['From'];
-				
+
 				if ($message['references'])
 					$headers['References'] = $message['references'];
 
@@ -165,7 +166,7 @@ if(isset($_POST['message']))
 					$files[0]['filename'] = $filename;
 					$files[0]['data'] = $file;
 				}
-	
+
 				$LMS->SendMail($recipients, $headers, $body, $files);
 			}
 			else
@@ -182,7 +183,7 @@ if(isset($_POST['message']))
 		else //sending to backend
 		{
 			($message['destination']!='' ? $addmsg = 1 : $addmsg = 0);
-			
+
 			if($message['destination']=='') 
 				$message['destination'] = $queue['email'];
 			$recipients = $message['destination'];
@@ -191,7 +192,7 @@ if(isset($_POST['message']))
 				$message['mailfrom'] = $queue['email'] ? $queue['email'] : $user['email'];
 			if($message['userid'] && !$addmsg)
 				$message['mailfrom'] = $user['email'] ? $user['email'] : $queue['email'];
-			
+
 			if($message['customerid'])
 				$message['mailfrom'] = $LMS->GetCustomerEmail($message['customerid']);
 
@@ -203,7 +204,7 @@ if(isset($_POST['message']))
 				$headers['References'] = $message['references'];
 			$headers['Message-Id'] = $message['messageid'];
 			$headers['Reply-To'] = $headers['From'];
-			
+
 			$body = $message['body'];
 			if ($message['destination'] == $queue['email'] || $message['destination'] == $user['email'])
 				$body .= "\n\nhttp".($_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
@@ -238,16 +239,16 @@ if(isset($_POST['message']))
 		if(isset($message['notify']) && ($user['email'] || $queue['email']))
 		{
 			$mailfname = '';
-			
+
 			if(!empty($CONFIG['phpui']['helpdesk_sender_name']))
 			{
 				$mailfname = $CONFIG['phpui']['helpdesk_sender_name'];
-				
+
 				if($mailfname == 'queue')
 					$mailfname = $queue['name'];
 				elseif($mailfname == 'user')
 					$mailfname = $user['name'];
-				
+
 				$mailfname = '"'.$mailfname.'"';
 			}
 
