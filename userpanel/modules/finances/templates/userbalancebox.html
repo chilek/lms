@@ -30,7 +30,7 @@ function CheckAll2()
 		<td width="1%" align="right"></td>
 		{/if}
 	</tr>
-	{section name=balancelist loop=$balancelist.id start=$limit}
+	{section name=balancelist loop=$balancelist.id step=-1}
 	<tr class="dark">
 		<td width="1%" class="nobr">{$balancelist.date[balancelist]}</td>
 		<td width="1%" align="right" class="nobr">{if $balancelist.value[balancelist] > 0 && $balancelist.type[balancelist] != 4}+{/if}{if $balancelist.type[balancelist] == 4}-{/if}{$balancelist.value[balancelist]|money_format}</td>

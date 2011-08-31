@@ -4,7 +4,7 @@
 struct ewx_module
 {
 	MODULE base;
-	
+
 	char * community;
 	char * host;
 	char * networks;
@@ -13,6 +13,7 @@ struct ewx_module
 	u_short port;
 	int offset;
 	int skip_disabled;
+	int skip_noa;
 };
 
 struct net
@@ -20,6 +21,18 @@ struct net
 	unsigned long address;
 	unsigned long mask;
 	char *name;
+};
+
+struct host
+{
+    int id;
+    int nodeid;
+    int status;
+    unsigned long ipaddr;
+    char *mac;
+    char *name;
+    char *ip;
+    char *passwd;
 };
 
 /*  
@@ -63,3 +76,11 @@ oid UsersTableSave[]		= {SNMP_OID_ENTERPRISES,20656,1,2,2,2,2,0};
 
 // we don't need to load MIB definitions
 #define DISABLE_MIB_LOADING 1
+
+// some helper constants
+#define UNKNOWN     0
+#define STATUS_OK   1
+#define DELETED     2
+#define STATUS_ERROR    0
+
+//#define LMS_SNMP_DEBUG 1

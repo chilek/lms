@@ -14,6 +14,11 @@ version ? (????-??-??):
   - daemon: disambiguation of halfduplex field usage in ewx-stm module [chilan]
   - Implemented nodes/devices localization database [alec]
   - lms-teryt: Script for Polish TERYT localization database import [alec]
+  - Userpanel: added bank account to userinfobox [maniac]
+  - Userpanel: reversed sorting of finance history [maniac]
+  - Added bank account number to default invoice template [maniac]
+  - lms-cutoff: added options to include only due payments and to extend paytime [maniac]
+  - Userpanel: allow lms.ini to be virtual host dependend (like in UI) [maniac]
 
 version 1.11.13 Dira (2011-04-07)
 
