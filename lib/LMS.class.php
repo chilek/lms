@@ -2014,6 +2014,8 @@ class LMS
 						    !empty($data['paytype']) ? $data['paytype'] : NULL,
 						    $datefrom, 0, 0, 0,
 						    ));
+
+        		    $result[] = $this->DB->GetLastInsertID('assignments');
                 }
             }
         }
@@ -2050,12 +2052,12 @@ class LMS
 		    $result[] = $this->DB->GetLastInsertID('assignments');
         }
 
-		if (!empty($data['nodes']) && !empty($result)) {
+		if (!empty($data['nodes']) && !empty($result) && count($result = array_filter($result))) {
 		    // Use multi-value INSERT query
 		    $values = array();
 			foreach ((array)$data['nodes'] as $nodeid) {
 			    foreach ($result as $aid) {
-			        $values[] = sprintf('(%d, %d)', $nodeid, $aid);
+  			        $values[] = sprintf('(%d, %d)', $nodeid, $aid);
 			    }
 			}
 
