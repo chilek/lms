@@ -312,7 +312,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 				"SELECT n.id, LOWER(n.name) AS name, n.mac, INET_NTOA(n.ipaddr) AS ip, "
 				"(CASE WHEN n.ipaddr_pub != 0 THEN INET_NTOA(n.ipaddr_pub) "
 					"ELSE INET_NTOA(COALESCE(s.ipaddr_pub, 0)) END) AS ip_pub, " 
-				"n.port, n.passwd, n.access, n.info, n.warning, n.location_address, "
+				"n.port, n.passwd, n.access, n.info, n.warning, n.location, "
 				"%devloc AS devlocation %custcols"
 				"FROM %nodes n "
 				"LEFT JOIN (SELECT netdev, MIN(ipaddr_pub) AS ipaddr_pub "
@@ -329,7 +329,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 			query = strdup(
 				"SELECT n.id, LOWER(n.name) AS name, n.mac, INET_NTOA(n.ipaddr) AS ip, "
 				"INET_NTOA(n.ipaddr_pub) AS ip_pub, n.passwd, n.access, n.info, n.warning, "
-				"n.port, n.location_address, %devloc AS devlocation %custcols"
+				"n.port, n.location, %devloc AS devlocation %custcols"
 				"FROM %nodes n "
 				"%custjoin"
 				"%devjoin"
@@ -407,7 +407,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 			h.id  		= g->db_get_data(res,i,"id");
 			h.macs 		= g->db_get_data(res,i,"mac");
 			h.port 		= g->db_get_data(res,i,"port");
-			h.location 	= g->db_get_data(res,i,"location_address");
+			h.location 	= g->db_get_data(res,i,"location");
 			h.devlocation 	= g->db_get_data(res,i,"devlocation");
 			h.customer	= hm->join_customers ? g->db_get_data(res,i,"customer") : "";
 			h.cid  		= hm->join_customers ? g->db_get_data(res,i,"cid") : "0";
