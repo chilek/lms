@@ -21,6 +21,7 @@ version ? (????-??-??):
   - Userpanel: allow lms.ini to be virtual host dependend (like in UI) [maniac]
   - lmsd/ewx-pt: code rewrite, some improvements, added debug [alec]
   - RT: fixed replys to tickets created from userpanel with backend enabled [maniac]
+  - BTS#0000880: Fixed transfer forms report printing [alec]
 
 version 1.11.13 Dira (2011-04-07)
 
