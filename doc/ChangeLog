@@ -19,6 +19,8 @@ version ? (????-??-??):
   - Added bank account number to default invoice template [maniac]
   - lms-cutoff: added options to include only due payments and to extend paytime [maniac]
   - Userpanel: allow lms.ini to be virtual host dependend (like in UI) [maniac]
+  - lmsd/ewx-pt: code rewrite, some improvements, added debug [alec]
+  - RT: fixed replys to tickets created from userpanel with backend enabled [maniac]
 
 version 1.11.13 Dira (2011-04-07)
 
