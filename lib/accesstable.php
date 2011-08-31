@@ -47,7 +47,7 @@ $access['table'][5]['name']		= trans('customers management');
 $access['table'][5]['allow_reg']	= '^((customer|document)(add|edit|info|infoshort|list|del|print|search|warn|cutoffstop|group)|documentgen|documentview|nodewarn|choosenode)$';
 
 $access['table'][6]['name'] 		= trans('nodes management');
-$access['table'][6]['allow_reg']  	= '^(node(add|info|infoshort|list|listshort|scan|search|del|edit|print|warn)|choose(mac|ip))$';
+$access['table'][6]['allow_reg']  	= '^(node(add|info|infoshort|list|listshort|scan|search|del|edit|print|warn)|choose(mac|ip|location))$';
 
 $access['table'][7]['name']    	     	= trans('traffic stats');
 $access['table'][7]['allow_reg']	= '^(traffic|traffic(print|graph))$';
@@ -68,7 +68,7 @@ $access['table'][12]['name']        	= trans('configuration');
 $access['table'][12]['allow_reg']   	= '^(((host|config|numberplan|taxrate|state|division|cashsource)(list|edit|add|del|load))|((promotion|promotionschema)(list|edit|add|del|set|info)))$';
 
 $access['table'][13]['name']        	= trans('networks and devices management');
-$access['table'][13]['allow_reg']   	= '^((net|netdev|ewxch)(info|list|edit|add|del|cmp|map|remap|search)|choose(mac|ip)|ewxnodelist|ewxdevlist)$';
+$access['table'][13]['allow_reg']   	= '^((net|netdev|ewxch)(info|list|edit|add|del|cmp|map|remap|search)|choose(mac|ip)|ewxnodelist|ewxdevlist|chooselocation)$';
 
 $access['table'][14]['name']        	= trans('timetable management');
 $access['table'][14]['allow_reg']   	= '^(event(list|edit|add|del|info|print|search)|choosecustomer)$';

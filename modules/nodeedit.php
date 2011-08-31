@@ -203,14 +203,15 @@ if(isset($_POST['nodeedit']) && !isset($_GET['newmac']))
 	else if($nodeedit['access'] && $LMS->GetCustomerStatus($nodeedit['ownerid']) < 3)
 		$error['access'] = trans('Node owner is not connected!');
 
-    if($nodeedit['location_zip'] !='' && !check_zip($nodeedit['location_zip']) && !isset($nodeedit['zipwarning']))
-    {
-        $error['location_zip'] = trans('Incorrect ZIP code! If you are sure you want to accept it, then click "Submit" again.');
-        $zipwarning = 1;
-    }
-
 	if(!$error)
 	{
+        if (empty($nodeedit['teryt'])) {
+            $nodeedit['location_city'] = null;
+            $nodeedit['location_street'] = null;
+            $nodeedit['location_house'] = null;
+            $nodeedit['location_flat'] = null;
+        }
+
         $nodeedit = $LMS->ExecHook('node_edit_before', $nodeedit);
 
 		$LMS->NodeUpdate($nodeedit, ($customerid != $nodeedit['ownerid']));
@@ -231,9 +232,12 @@ if(isset($_POST['nodeedit']) && !isset($_GET['newmac']))
 	$nodeinfo['halfduplex'] = $nodeedit['halfduplex'];
 	$nodeinfo['port'] = $nodeedit['port'];
 	$nodeinfo['zipwarning'] = empty($zipwarning) ? 0 : 1;
-	$nodeinfo['location_zip'] = $nodeedit['location_zip'];
-	$nodeinfo['location_address'] = $nodeedit['location_address'];
+	$nodeinfo['location'] = $nodeedit['location'];
 	$nodeinfo['location_city'] = $nodeedit['location_city'];
+	$nodeinfo['location_street'] = $nodeedit['location_street'];
+	$nodeinfo['location_house'] = $nodeedit['location_house'];
+	$nodeinfo['location_flat'] = $nodeedit['location_flat'];
+	$nodeinfo['teryt'] = empty($nodeedit['teryt']) ? 0 : 1;
 	$nodeinfo['stateid'] = $nodeedit['stateid'];
 
 	if($nodeedit['ipaddr_pub']=='0.0.0.0')
@@ -247,6 +251,11 @@ else
 		$nodeedit['macs'][] = '';
 		$nodeinfo = array_merge($nodeinfo, $nodeedit);
 	}
+
+    if ($nodeinfo['city_name'] || $nodeinfo['street_name']) {
+        $nodeinfo['teryt'] = true;
+        $nodeinfo['location'] = location_str($nodeinfo);
+    }
 }
 
 if(empty($nodeinfo['macs']))
@@ -261,7 +270,6 @@ if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_
 
 $nodeinfo = $LMS->ExecHook('node_edit_init', $nodeinfo);
 
-$SMARTY->assign('cstateslist',$LMS->GetCountryStates());
 $SMARTY->assign('netdevices', $LMS->GetNetDevNames());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNamesByNode($nodeid));
 $SMARTY->assign('othernodegroups', $LMS->GetNodeGroupNamesWithoutNode($nodeid));

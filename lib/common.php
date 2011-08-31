@@ -688,6 +688,30 @@ function truncate_str($string, $length, $etc='...')
     }
 }
 
+function location_str($data)
+{
+    $location = $data['city_name'];
+
+    if ($data['location_flat']) {
+        $h = $CONFIG['phpui']['house_template'] ? $CONFIG['phpui']['house_template'] : '%h/%f';
+        $h = str_replace('%h', $data['location_house'], $h);
+        $h = str_replace('%f', $data['location_flat'], $h);
+    }
+    else
+        $h = $data['location_house'];
+
+    if ($data['street_name']) {
+        $street = $data['street_type'] .' '. $data['street_name'];
+        $location .= ($location ? ', ' : '') . $street;
+    }
+
+    if ($h)
+        $location .= ' ' . $h;
+
+    return $location;
+}
+
+
 /* Functions for modularized LMS */
 function plugin_handle($name)
 {

@@ -27,7 +27,7 @@
 if(! $LMS->NetDevExists($_GET['id']))
 {
 	$SESSION->redirect('?m=netdevlist');
-}		
+}
 
 $action = !empty($_GET['action']) ? $_GET['action'] : '';
 $edit = '';
@@ -47,9 +47,9 @@ case 'replace':
 	elseif ($dev2['ports'] < $dev1['takenports']) 
 	{
 	    $error['replace'] = trans('It scans for ports in destination device!');
-	} 
-	
-	if(!$error) 
+	}
+
+	if(!$error)
 	{
 		$links1 = $DB->GetAll('(SELECT type, 
                         (CASE src WHEN ? THEN dst ELSE src END) AS id,
@@ -75,7 +75,7 @@ case 'replace':
 				$dev2['id'], $dev2['id'], $dev2['id']));
 
 		$DB->BeginTrans();
-		
+
 		$DB->Execute('UPDATE netdevices SET location = ? WHERE id = ?', 
 				array($dev1['location'], $dev2['id']));
 		$DB->Execute('UPDATE netdevices SET location = ? WHERE id = ?', 
@@ -83,7 +83,7 @@ case 'replace':
 
 		$LMS->NetDevDelLinks($dev1['id']);
 		$LMS->NetDevDelLinks($dev2['id']);
-		
+
 		$ports = array();
 		// przypisujemy urzadzenia/komputer, probujac zachowac numeracje portow
 		if ($links1) foreach($links1 as $row)
@@ -98,10 +98,10 @@ case 'replace':
 							$sport = $i;
 							break;
 		    				}
-				
+
 				$ports[$sport] = $sport;
 			}
-			
+
 			if(isset($row['dstport'])) // device
 				$LMS->NetDevLink($dev2['id'], $row['id'], $row['type'], $sport, $row['dstport']);
 			else // node
@@ -121,23 +121,23 @@ case 'replace':
 							$sport = $i;
 							break;
 		    				}
-				
+
 				$ports[$sport] = $sport;
 			}
-			
+
 			if(isset($row['dstport'])) // device
 				$LMS->NetDevLink($dev1['id'], $row['id'], $row['type'], $sport, $row['dstport']);
 			else // node
 				$LMS->NetDevLinkNode($row['id'], $dev1['id'], $row['type'], $sport);
 		}
-		
+
 		$DB->CommitTrans();
 
 	    $SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
 	}
-	
+
 	break;
-	
+
 case 'disconnect':
 
 	$LMS->NetDevUnLink($_GET['id'],$_GET['devid']);
@@ -161,7 +161,7 @@ case 'duplex':
 case 'nas':
 	$DB->Execute('UPDATE nodes SET nas=? WHERE id=?', array($_GET['nas'], $_GET['ip']));
 	$SESSION->redirect('?m=netdevinfo&id='.$_GET['id'].'&ip='.$_GET['ip']);
-	
+
 case 'connect':
 
 	$linktype = !empty($_GET['linktype']) ? intval($_GET['linktype']) : '0';
@@ -213,7 +213,7 @@ case 'connect':
 	}
 
 	$SESSION->save('devlinktype', $linktype);
-	
+
 	if(!$error)
 	{
 		$LMS->NetDevLink($dev['id'], $_GET['id'], $linktype, $dev['srcport'], $dev['dstport']);
@@ -223,7 +223,7 @@ case 'connect':
 	$SMARTY->assign('connect', $dev);
 
 	break;
-    
+
 case 'connectnode':
 
 	$linktype = !empty($_GET['linktype']) ? intval($_GET['linktype']) : '0';
@@ -239,9 +239,9 @@ case 'connectnode':
 	{
 		if(!preg_match('/^[0-9]+$/', $node['port']) || $node['port'] > $ports)
 		{
-			$error['port'] = trans('Incorrect port number!');	
+			$error['port'] = trans('Incorrect port number!');
 		}
-		elseif($DB->GetOne('SELECT id FROM nodes WHERE netdev=? AND port=? AND ownerid>0', 
+		elseif($DB->GetOne('SELECT id FROM nodes WHERE netdev=? AND port=? AND ownerid>0',
 				array($_GET['id'], $node['port']))
 			|| $DB->GetOne('SELECT 1 FROM netlinks WHERE (src = ? OR dst = ?)
 				AND (CASE src WHEN ? THEN srcport ELSE dstport END) = ?',
@@ -252,8 +252,8 @@ case 'connectnode':
 	}
 
 	$SESSION->save('nodelinktype', $linktype);
-	
-	if(!$error) 
+
+	if(!$error)
 	{
 		$LMS->NetDevLinkNode($node['id'], $_GET['id'], $linktype, $node['port']);
 		$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
@@ -301,7 +301,7 @@ case 'ipdel':
 	{
 		$DB->Execute('DELETE FROM nodes WHERE id = ? AND ownerid = 0', array($_GET['ip']));
 	}
-	
+
 	$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
 
 case 'ipset':
@@ -313,7 +313,7 @@ case 'ipset':
     		$LMS->IPSetU($_GET['id'], $_GET['access']);
 
 	header('Location: ?'.$SESSION->get('backto'));
-	break;							
+	break;
 
 case 'formaddip':
 
@@ -326,7 +326,7 @@ case 'formaddip':
 	foreach($nodeipdata as $key => $value)
 		if($key != 'macs')
 			$nodeipdata[$key] = trim($value);
-	
+
 	if(!isset($_GET['newmac']))
 	{
 		if($nodeipdata['ipaddr']=='' && empty($nodeipdata['macs']) && $nodeipdata['name']=='' && $nodeipdata['passwd']=='')
@@ -404,7 +404,7 @@ case 'formaddip':
 	$SMARTY->assign('nodeipdata',$nodeipdata); 
 	$edit='addip';
 	break;
-		
+
 case 'formeditip':
 
 	$subtitle = trans('IP address edit');
@@ -523,7 +523,7 @@ if(isset($_POST['netdev']))
 		$error['name'] =  trans('Specified name is too long (max.$0 characters)!','32');
 
 	$netdevdata['ports'] = intval($netdevdata['ports']);
-	
+
 	if($netdevdata['ports'] < $LMS->CountNetDevLinks($_GET['id']))
 		$error['ports'] = trans('Connected devices number exceeds number of ports!');
 
@@ -531,7 +531,7 @@ if(isset($_POST['netdev']))
                 $netdevdata['clients'] = 0;
 	else
 	        $netdevdata['clients'] = intval($netdevdata['clients']);
-						
+
 	$netdevdata['purchasetime'] = 0;
 	if($netdevdata['purchasedate'] != '')
 	{
@@ -567,20 +567,32 @@ if(isset($_POST['netdev']))
 			$netdevdata['guaranteeperiod'] = NULL;
 
 		if(!isset($netdevdata['shortname'])) $netdevdata['shortname'] = '';
-	        if(!isset($netdevdata['secret'])) $netdevdata['secret'] = '';
-	        if(!isset($netdevdata['community'])) $netdevdata['community'] = '';
-	        if(!isset($netdevdata['nastype'])) $netdevdata['nastype'] = 0;
+	    if(!isset($netdevdata['secret'])) $netdevdata['secret'] = '';
+	    if(!isset($netdevdata['community'])) $netdevdata['community'] = '';
+	    if(!isset($netdevdata['nastype'])) $netdevdata['nastype'] = 0;
+
+        if (empty($netdevdata['teryt'])) {
+            $netdevdata['location_city'] = null;
+            $netdevdata['location_street'] = null;
+            $netdevdata['location_house'] = null;
+            $netdevdata['location_flat'] = null;
+        }
 
 		$LMS->NetDevUpdate($netdevdata);
 		$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
 	}
 }
-else 
+else
 {
 	$netdevdata = $LMS->GetNetDev($_GET['id']);
-	
+
 	if($netdevdata['purchasetime'])
 		$netdevdata['purchasedate'] = date('Y/m/d', $netdevdata['purchasetime']);
+
+    if ($netdevdata['city_name'] || $netdevdata['street_name']) {
+        $netdevdata['teryt'] = true;
+        $netdevdata['location'] = location_str($netdevdata);
+    }
 }
 
 $netdevdata['id'] = $_GET['id'];

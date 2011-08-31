@@ -9,8 +9,11 @@ version ? (????-??-??):
   - lmsd/ewx-stm_channels: Added channel half duplex setting [alec]
   - Fixed promotion assignments creation on MySQL [alec]
   - BTS#0000868: Fixed bug where country wasn't saved when adding customer [alec]
+  - lms-notify-sms: Fixed wrong number prefix, when prefix was set to empty string [alec]
   - fixed bug in dbview bound to inproper Content-Length header [chilan]
   - daemon: disambiguation of halfduplex field usage in ewx-stm module [chilan]
+  - Implemented nodes/devices localization database [alec]
+  - lms-teryt: Script for Polish TERYT localization database import [alec]
 
 version 1.11.13 Dira (2011-04-07)
 

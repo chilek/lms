@@ -23,7 +23,7 @@
  *
  *  $Id$
  */
-
+/*
 if(isset($_GET['ajax'])) 
 {
 	header('Content-type: text/plain');
@@ -31,17 +31,14 @@ if(isset($_GET['ajax']))
 
 	switch($_GET['mode'])
 	{
-	        case 'address':
+	    case 'address':
 			$mode='location_address';
 			if ($CONFIG['database']['type'] == 'mysql' || $CONFIG['database']['type'] == 'mysqli') 
 				$mode = 'substring(location_address from 1 for length(location_address)-locate(\' \',reverse(location_address))+1)';
 			elseif($CONFIG['database']['type'] == 'postgres')
 				$mode = 'substring(location_address from \'^.* \')';
 		break;
-	        case 'zip':
-			$mode='location_zip';
-		break;
-	        case 'city':
+	    case 'city':
 			$mode='location_city';
 		break;
 	}
@@ -69,7 +66,7 @@ if(isset($_GET['ajax']))
 	}
 	exit;
 }
-
+*/
 
 $nodedata['access'] = 1;
 $nodedata['ownerid'] = 0;
@@ -115,7 +112,7 @@ if(isset($_POST['nodedata']) && !isset($_GET['newmac']))
 		}else{
 			$SESSION->redirect('?m=nodelist');
 		}
-	
+
 	if($nodedata['name']=='')
 		$error['name'] = trans('Node name is required!');
 	elseif(strlen($nodedata['name']) > 32)
@@ -164,7 +161,7 @@ if(isset($_POST['nodedata']) && !isset($_GET['newmac']))
 		elseif($value!='')
 			$error['mac'.$key] = trans('Incorrect MAC address!');
 	if(empty($macs))
-		$error['mac'] = trans('MAC address is required!');
+		$error['mac0'] = trans('MAC address is required!');
 	$nodedata['macs'] = $macs;
 
 	if(strlen($nodedata['passwd']) > 32)
@@ -172,7 +169,7 @@ if(isset($_POST['nodedata']) && !isset($_GET['newmac']))
 
     if (!$nodedata['ownerid'])
         $error['ownerid'] = trans('Customer not selected!');
-	if(! $LMS->CustomerExists($nodedata['ownerid']))
+	else if(! $LMS->CustomerExists($nodedata['ownerid']))
 		$error['ownerid'] = trans('You have to select owner!');
 	else
 	{
@@ -209,17 +206,18 @@ if(isset($_POST['nodedata']) && !isset($_GET['newmac']))
 	else
 		$nodedata['netdev'] = 0;
 
-    if($nodedata['location_zip'] !='' && !check_zip($nodedata['location_zip']) && !isset($nodedata['zipwarning']))
-    {
-        $error['location_zip'] = trans('Incorrect ZIP code! If you are sure you want to accept it, then click "Submit" again.');
-        $nodedata['zipwarning'] = 1;
-    }
-
 	if(!isset($nodedata['chkmac']))	$nodedata['chkmac'] = 0;
 	if(!isset($nodedata['halfduplex'])) $nodedata['halfduplex'] = 0;
 
 	if(!$error)
 	{
+        if (empty($nodedata['teryt'])) {
+            $nodedata['location_city'] = null;
+            $nodedata['location_street'] = null;
+            $nodedata['location_house'] = null;
+            $nodedata['location_flat'] = null;
+        }
+
         $nodedata = $LMS->ExecHook('node_add_before', $nodedata);
 
 		$nodeid = $LMS->NodeAdd($nodedata);
@@ -279,7 +277,6 @@ if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_
 
 $nodedata = $LMS->ExecHook('node_add_init', $nodedata);
 
-$SMARTY->assign('cstateslist',$LMS->GetCountryStates());
 $SMARTY->assign('netdevices', $LMS->GetNetDevNames());
 $SMARTY->assign('error', $error);
 $SMARTY->assign('nodedata', $nodedata);

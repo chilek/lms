@@ -37,7 +37,7 @@ if(isset($_POST['netdev']))
 		$netdevdata['clients'] = 0;
 	else
 		$netdevdata['clients'] = intval($netdevdata['clients']);
-			
+
 	if($netdevdata['name'] == '')
 		$error['name'] = trans('Device name is required!');
 	elseif(strlen($netdevdata['name'])>32)
@@ -72,20 +72,28 @@ if(isset($_POST['netdev']))
 		$error['purchasedate'] = trans('Purchase date cannot be empty when guarantee period is set!');
 	}
 
-        if(!$error)
-        {
+    if(!$error)
+    {
 		if($netdevdata['guaranteeperiod'] == -1)
 			$netdevdata['guaranteeperiod'] = NULL;
-		
+
 		if(!isset($netdevdata['shortname'])) $netdevdata['shortname'] = '';
-                if(!isset($netdevdata['secret'])) $netdevdata['secret'] = '';
-                if(!isset($netdevdata['community'])) $netdevdata['community'] = '';
-                if(!isset($netdevdata['nastype'])) $netdevdata['nastype'] = 0;
-		
-		$netdevid = $LMS->NetDevAdd($netdevdata);
-		$SESSION->redirect('?m=netdevinfo&id='.$netdevid);
+        if(!isset($netdevdata['secret'])) $netdevdata['secret'] = '';
+        if(!isset($netdevdata['community'])) $netdevdata['community'] = '';
+        if(!isset($netdevdata['nastype'])) $netdevdata['nastype'] = 0;
+
+        if (empty($netdevdata['teryt'])) {
+            $netdevdata['location_city'] = null;
+            $netdevdata['location_street'] = null;
+            $netdevdata['location_house'] = null;
+            $netdevdata['location_flat'] = null;
         }
-	
+
+		$netdevid = $LMS->NetDevAdd($netdevdata);
+
+		$SESSION->redirect('?m=netdevinfo&id='.$netdevid);
+    }
+
 	$SMARTY->assign('error', $error);
 	$SMARTY->assign('netdev', $netdevdata);
 }

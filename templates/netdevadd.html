@@ -72,8 +72,15 @@
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Location:{/t}</B>
 		</TD>
-		<TD WIDTH="98%">
-			<INPUT TYPE="TEXT" NAME="netdev[location]" VALUE="{$netdev.location}" {tip text="Enter device location (optional)"}>
+		<TD WIDTH="98%" NOWRAP>
+		    <INPUT TYPE="TEXT" SIZE="30" VALUE="{$netdev.location}" id="location" NAME="netdev[location]"  {tip text="Enter location (optional)" trigger="location"}>
+			<A href="javascript: void(0);" onclick="if (check_teryt()) return locationchoosewin('netdev', 'netdevadd', document.forms['netdevadd'].elements['netdev[location_city]'].value,  document.forms['netdevadd'].elements['netdev[location_street]'].value)" {tip text="Click to select location"}>&raquo;&raquo;&raquo;</A>
+			<BR>
+		    <INPUT type="hidden" name="netdev[location_city]" value="{$netdev.location_city}">
+		    <INPUT type="hidden" name="netdev[location_street]" value="{$netdev.location_street}">
+		    <INPUT type="hidden" name="netdev[location_house]" value="{$netdev.location_house}">
+		    <INPUT type="hidden" name="netdev[location_flat]" value="{$netdev.location_flat}">
+			<INPUT TYPE="checkbox" name="netdev[teryt]" id="teryt" onchange="check_teryt('location')"{if $netdev.teryt} checked{/if}>{t}TERRIT-DB{/t}
 		</TD>
 	</TR>
 {if $_config.phpui.radius|chkconfig}
@@ -216,6 +223,7 @@
 document.forms['netdevadd'].elements['netdev[name]'].focus();
 BUL_TIMECOMPONENT = false;
 var cal1 = new calendar(document.forms['netdevadd'].elements['netdev[purchasedate]']);
+check_teryt('location', true);
 //-->
 </SCRIPT>
 {include file="footer.html"}

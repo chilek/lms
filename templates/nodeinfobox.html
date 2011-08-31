@@ -91,15 +91,13 @@
 			<B><A HREF="?m=netinfo&id={$nodeinfo.netid}">{$nodeinfo.netname}</A></B>
 		</TD>
 	</TR>
-{if $nodeinfo.location_address}
+{if $nodeinfo.location}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
 			<IMG SRC="img/home.gif" ALT="{t}Location:{/t}">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
-		    {$nodeinfo.location_address}<BR>
-		    {$nodeinfo.location_zip} {$nodeinfo.location_city}
-            {if $nodeinfo.cstate}<BR>{$nodeinfo.cstate}{/if}
+		    {$nodeinfo.location}
 		</TD>
 	</TR>
 {/if}
