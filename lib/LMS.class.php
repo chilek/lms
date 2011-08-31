@@ -957,8 +957,7 @@ class LMS
 		if ($result = $this->DB->GetAll('SELECT id, name, mac, ipaddr,
 				inet_ntoa(ipaddr) AS ip, ipaddr_pub,
 				inet_ntoa(ipaddr_pub) AS ip_pub, passwd, access,
-				warning, info, ownerid, lastonline,
-				location_address, location_zip, location_city,
+				warning, info, ownerid, lastonline, location,
 				(SELECT COUNT(*) FROM nodegroupassignments
 					WHERE nodeid = vnodes.id) AS gcount
 				FROM vnodes
@@ -1270,8 +1269,8 @@ class LMS
 	{
 		$this->DB->Execute('UPDATE nodes SET name=UPPER(?), ipaddr_pub=inet_aton(?),
 				ipaddr=inet_aton(?), passwd=?, netdev=?, moddate=?NOW?,
-				modid=?, access=?, warning=?, ownerid=?, info=?,
-				location_address=?, location_zip=?, location_city=?,
+				modid=?, access=?, warning=?, ownerid=?, info=?, location=?,
+				location_city=?, location_street=?, location_house=?, location_flat=?,
 				chkmac=?, halfduplex=?, linktype=?, port=?, nas=?
 				WHERE id=?',
 				array($nodedata['name'],
@@ -1284,9 +1283,11 @@ class LMS
 				    $nodedata['warning'],
 				    $nodedata['ownerid'],
 				    $nodedata['info'],
-				    $nodedata['location_address'],
-				    $nodedata['location_zip'],
-				    $nodedata['location_city'],
+				    $nodedata['location'],
+				    $nodedata['location_city'] ? $nodedata['location_city'] : null,
+				    $nodedata['location_street'] ? $nodedata['location_street'] : null,
+				    $nodedata['location_house'] ? $nodedata['location_house'] : null,
+				    $nodedata['location_flat'] ? $nodedata['location_flat'] : null,
 				    $nodedata['chkmac'],
 				    $nodedata['halfduplex'],
 				    isset($nodedata['linktype']) ? 1 : 0,
@@ -1294,8 +1295,6 @@ class LMS
 				    isset($nodedata['nas']) ? $nodedata['nas'] : 0,
 				    $nodedata['id']
 			    ));
-
-        $this->UpdateCountryState($nodedata['location_zip'], $nodedata['stateid']);
 
 		$this->DB->Execute('DELETE FROM macs WHERE nodeid=?', array($nodedata['id']));
 		foreach($nodedata['macs'] as $mac) {
@@ -1364,11 +1363,15 @@ class LMS
 
 	function GetNode($id)
 	{
-		if($result = $this->DB->GetRow('SELECT vnodes.*,
-		    inet_ntoa(ipaddr) AS ip, inet_ntoa(ipaddr_pub) AS ip_pub
-			FROM vnodes
-			WHERE id = ?', array($id)))
-		{
+		if ($result = $this->DB->GetRow('SELECT n.*,
+		    inet_ntoa(n.ipaddr) AS ip, inet_ntoa(n.ipaddr_pub) AS ip_pub,
+		    lc.name AS city_name, ls.name AS street_name, lt.name AS street_type
+			FROM vnodes n
+			LEFT JOIN location_cities lc ON (lc.id = n.location_city)
+			LEFT JOIN location_streets ls ON (ls.id = n.location_street)
+			LEFT JOIN location_street_types lt ON (lt.id = ls.typeid)
+			WHERE n.id = ?', array($id))
+	    ) {
 			$result['owner'] = $this->GetCustomerName($result['ownerid']);
 			$result['createdby'] = $this->GetUserName($result['creatorid']);
 			$result['modifiedby'] = $this->GetUserName($result['modid']);
@@ -1386,15 +1389,6 @@ class LMS
 			{
 				$result['netid'] = $net['id'];
 				$result['netname'] = $net['name'];
-			}
-
-            // Get state name
-	        if ($result['location_zip'] && ($cstate = $this->DB->GetRow('SELECT s.id, s.name
-			    FROM states s, zipcodes
-				WHERE zip = ? AND stateid = s.id', array($result['location_zip'])))
-			) {
-				$result['stateid'] = $cstate['id'];
-				$result['cstate'] = $cstate['name'];
 			}
 
 			return $result;
@@ -1563,10 +1557,10 @@ class LMS
 	{
 		if($this->DB->Execute('INSERT INTO nodes (name, ipaddr, ipaddr_pub, ownerid,
 			passwd, creatorid, creationdate, access, warning, info, netdev,
-			location_address, location_zip, location_city,
+			location, location_city, location_street, location_house, location_flat,
 			linktype, port, chkmac, halfduplex, nas)
-			VALUES (?, inet_aton(?),inet_aton(?), ?, ?, ?,
-			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			VALUES (?, inet_aton(?), inet_aton(?), ?, ?, ?,
+			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			array(strtoupper($nodedata['name']),
 				$nodedata['ipaddr'],
 				$nodedata['ipaddr_pub'],
@@ -1577,9 +1571,11 @@ class LMS
 				$nodedata['warning'],
 				$nodedata['info'],
 				$nodedata['netdev'],
-				$nodedata['location_address'],
-				$nodedata['location_zip'],
-				$nodedata['location_city'],
+				$nodedata['location'],
+				$nodedata['location_city'] ? $nodedata['location_city'] : null,
+				$nodedata['location_street'] ? $nodedata['location_street'] : null,
+				$nodedata['location_house'] ? $nodedata['location_house'] : null,
+				$nodedata['location_flat'] ? $nodedata['location_flat'] : null,
 				isset($nodedata['linktype']) ? 1 : 0,
 				isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
 				$nodedata['chkmac'],
@@ -1588,8 +1584,6 @@ class LMS
 				)))
 		{
 			$id = $this->DB->GetLastInsertID('nodes');
-
-            $this->UpdateCountryState($nodedata['location_zip'], $nodedata['stateid']);
 
 			foreach($nodedata['macs'] as $mac)
 				$this->DB->Execute('INSERT INTO macs (mac, nodeid) VALUES(?, ?)',
@@ -3263,10 +3257,10 @@ class LMS
 			break;
 		}
 
-		$netdevlist = $this->DB->GetAll('SELECT d.id, d.name, d.location, 
-			d.description, d.producer, d.model, d.serialnumber, d.ports, 
+		$netdevlist = $this->DB->GetAll('SELECT d.id, d.name, d.location,
+			d.description, d.producer, d.model, d.serialnumber, d.ports,
 			(SELECT COUNT(*) FROM nodes WHERE netdev=d.id AND ownerid > 0)
-			+ (SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id) 
+			+ (SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id)
 			AS takenports
 			FROM netdevices d '
 			.($sqlord != '' ? $sqlord.' '.$direction : ''));
@@ -3299,10 +3293,14 @@ class LMS
 
 	function GetNetDev($id)
 	{
-		$result = $this->DB->GetRow('SELECT d.*, t.name AS nastypename, c.name AS channel
+		$result = $this->DB->GetRow('SELECT d.*, t.name AS nastypename, c.name AS channel,
+		        lc.name AS city_name, ls.name AS street_name, lt.name AS street_type
 			FROM netdevices d
 			LEFT JOIN nastypes t ON (t.id = d.nastype)
 			LEFT JOIN ewx_channels c ON (d.channelid = c.id)
+			LEFT JOIN location_cities lc ON (lc.id = d.location_city)
+			LEFT JOIN location_streets ls ON (ls.id = d.location_street)
+			LEFT JOIN location_street_types lt ON (lt.id = ls.typeid)
 			WHERE d.id = ?', array($id));
 
 		$result['takenports'] = $this->CountNetDevLinks($id);
@@ -3331,30 +3329,34 @@ class LMS
 		$this->DB->Execute('DELETE FROM netdevices WHERE id=?', array($id));
 		$this->DB->CommitTrans();
 	}
-	function NetDevAdd($netdevdata)
+	function NetDevAdd($data)
 	{
-		if ($this->DB->Execute('INSERT INTO netdevices (name, location, 
-				description, producer, model, serialnumber, 
+		if ($this->DB->Execute('INSERT INTO netdevices (name, location,
+		        location_city, location_street, location_house, location_flat,
+				description, producer, model, serialnumber,
 				ports, purchasetime, guaranteeperiod, shortname,
-				nastype, clients, secret, community, channelid) 
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
-				array($netdevdata['name'],
-					$netdevdata['location'],
-					$netdevdata['description'],
-					$netdevdata['producer'],
-					$netdevdata['model'],
-					$netdevdata['serialnumber'],
-					$netdevdata['ports'],
-					$netdevdata['purchasetime'],
-					$netdevdata['guaranteeperiod'],
-					$netdevdata['shortname'],
-					$netdevdata['nastype'],
-					$netdevdata['clients'],
-					$netdevdata['secret'],
-					$netdevdata['community'],
-					!empty($netdevdata['channelid']) ? $netdevdata['channelid'] : NULL,
+				nastype, clients, secret, community, channelid)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				array($data['name'],
+					$data['location'],
+					$data['location_city'] ? $data['location_city'] : null,
+					$data['location_street'] ? $data['location_street'] : null,
+					$data['location_house'] ? $data['location_house'] : null,
+					$data['location_flat'] ? $data['location_flat'] : null,
+					$data['description'],
+					$data['producer'],
+					$data['model'],
+					$data['serialnumber'],
+					$data['ports'],
+					$data['purchasetime'],
+					$data['guaranteeperiod'],
+					$data['shortname'],
+					$data['nastype'],
+					$data['clients'],
+					$data['secret'],
+					$data['community'],
+					!empty($data['channelid']) ? $data['channelid'] : NULL,
 		))) {
-		
 			$id = $this->DB->GetLastInsertID('netdevices');
 
 			// EtherWerX support (devices have some limits)
@@ -3363,7 +3365,7 @@ class LMS
 			{
 				$this->DB->BeginTrans();
 				$this->DB->LockTables('ewx_channels');
-				
+
 				if($newid = $this->DB->GetOne('SELECT n.id + 1 FROM ewx_channels n 
 						LEFT OUTER JOIN ewx_channels n2 ON n.id + 1 = n2.id
 						WHERE n2.id IS NULL AND n.id <= 99999
@@ -3372,39 +3374,44 @@ class LMS
 					$this->DB->Execute('UPDATE ewx_channels SET id = ? WHERE id = ?', array($newid, $id));
 					$id = $newid;
 				}
-				
+
 				$this->DB->UnLockTables();
 				$this->DB->CommitTrans();
 			}
-			
+
 			return $id;
 		}
 		else
 			return FALSE;
 	}
 
-	function NetDevUpdate($netdevdata)
+	function NetDevUpdate($data)
 	{
-		$this->DB->Execute('UPDATE netdevices SET name=?, location=?, description=?, producer=?, 
+		$this->DB->Execute('UPDATE netdevices SET name=?, description=?, producer=?, location=?,
+		        location_city=?, location_street=?, location_house=?, location_flat=?,
 				model=?, serialnumber=?, ports=?, purchasetime=?, guaranteeperiod=?, shortname=?,
 				nastype=?, clients=?, secret=?, community=?, channelid=?
 				WHERE id=?', 
-				array( $netdevdata['name'], 
-					$netdevdata['location'], 
-					$netdevdata['description'], 
-					$netdevdata['producer'], 
-					$netdevdata['model'], 
-					$netdevdata['serialnumber'], 
-					$netdevdata['ports'], 
-					$netdevdata['purchasetime'], 
-					$netdevdata['guaranteeperiod'], 
-					$netdevdata['shortname'],
-					$netdevdata['nastype'],
-					$netdevdata['clients'],
-					$netdevdata['secret'],
-					$netdevdata['community'],
-					!empty($netdevdata['channelid']) ? $netdevdata['channelid'] : NULL,
-					$netdevdata['id']
+				array($data['name'],
+					$data['description'],
+					$data['producer'],
+					$data['location'],
+					$data['location_city'] ? $data['location_city'] : null,
+					$data['location_street'] ? $data['location_street'] : null,
+					$data['location_house'] ? $data['location_house'] : null,
+					$data['location_flat'] ? $data['location_flat'] : null,
+					$data['model'],
+					$data['serialnumber'], 
+					$data['ports'], 
+					$data['purchasetime'], 
+					$data['guaranteeperiod'], 
+					$data['shortname'],
+					$data['nastype'],
+					$data['clients'],
+					$data['secret'],
+					$data['community'],
+					!empty($data['channelid']) ? $data['channelid'] : NULL,
+					$data['id']
 				));
 	}
 

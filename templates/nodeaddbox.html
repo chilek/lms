@@ -58,45 +58,18 @@
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
+		<TD WIDTH="1%" style="vertical-align: top">
 			<IMG SRC="img/home.gif" ALT="{t}Location:{/t}">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
-						<TABLE width="100%" cellpadding="2" cellspacing="0">
-						    <TR>
-							<TD width="1%" NOWRAP>{t}Address:{/t}</TD>
-							<TD width="99%"><INPUT TYPE="text" size="30" value="{$nodedata.location_address}" name="nodedata[location_address]" id="location_address" {tip text="Enter node location (optional)" trigger="location_address"}></TD>
-						    </TR>
-						    <TR>
-							<TD width="1%" NOWRAP>{t}City:{/t}</TD>
-							<TD width="99%"><INPUT TYPE="TEXT" SIZE="30" VALUE="{$nodedata.location_city}" NAME="nodedata[location_city]" id="location_city" {tip text="Enter city (optional)" trigger="location_city"}></TD>
-						    </TR>
-						    <TR>
-							<TD width="1%" NOWRAP>{t}Zip:{/t}</TD>
-							<TD width="99%"><INPUT TYPE="text" SIZE="10" VALUE="{$nodedata.location_zip}" NAME="nodedata[location_zip]" id="location_zip" {tip text="Enter zip code (optional)" trigger="location_zip"}></TD>
-							{if $nodedata.zipwarning}
-							<INPUT TYPE="HIDDEN" NAME="nodedata[zipwarning]" VALUE="1">
-							{/if}
-						    </TR>
-						{if $cstateslist}
-						    <TR>
-							<TD width="1%" NOWRAP>{t}State:{/t}</TD>
-							<TD width="99%">
-							    <SELECT NAME="nodedata[stateid]" {tip text="Select country state (optional)" trigger="stateid"}>
-								<OPTION value="0"></OPTION>
-								{foreach from=$cstateslist item=item key=key}
-								<OPTION value="{$key}"{if $key==$nodedata.stateid} SELECTED{/if}>{$item.name}</OPTION>
-								{/foreach}
-							    </SELECT>
-							</TD>
-						    </TR>
-						{/if}
-						</TABLE>
-						<script type="text/javascript">
-							new AutoSuggest(document.getElementById('nodeadd'),document.getElementById('location_address'),'?m=nodeadd&ajax=1&mode=address&what=',0);
-							new AutoSuggest(document.getElementById('nodeadd'),document.getElementById('location_zip'),'?m=nodeadd&ajax=1&mode=zip&what=',0);
-							new AutoSuggest(document.getElementById('nodeadd'),document.getElementById('location_city'),'?m=nodeadd&ajax=1&mode=city&what=',0);
-						</script>
+		    <INPUT TYPE="TEXT" SIZE="40" VALUE="{$nodedata.location}" id="location" NAME="nodedata[location]"  {tip text="Enter location (optional)" trigger="location"}>
+			<A href="javascript: void(0);" onclick="if (check_teryt()) return locationchoosewin('nodedata', 'nodeadd', document.forms['nodeadd'].elements['nodedata[location_city]'].value,  document.forms['nodeadd'].elements['nodedata[location_street]'].value)" {tip text="Click to select location"}>&raquo;&raquo;&raquo;</A>
+			<BR>
+		    <INPUT type="hidden" name="nodedata[location_city]" value="{$nodedata.location_city}">
+		    <INPUT type="hidden" name="nodedata[location_street]" value="{$nodedata.location_street}">
+		    <INPUT type="hidden" name="nodedata[location_house]" value="{$nodedata.location_house}">
+		    <INPUT type="hidden" name="nodedata[location_flat]" value="{$nodedata.location_flat}">
+			<INPUT TYPE="checkbox" name="nodedata[teryt]" id="teryt" onchange="check_teryt('location')"{if $nodedata.teryt} checked{/if}>{t}TERRIT-DB{/t}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -152,8 +125,8 @@
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
-			<A HREF="javascript:checkElement('chkmac');">{t}MAC checking{/t}:</A><INPUT TYPE="checkbox" NAME="nodedata[chkmac]" VALUE="1" id="chkmac" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if !isset($nodeinfo.chkmac) || $nodeinfo.chkmac} checked{/if}>&nbsp;
-			<A HREF="javascript:checkElement('halfduplex');">{t}Half duplex{/t}:</A><INPUT TYPE="checkbox" NAME="nodedata[halfduplex]" VALUE="1" id="halfduplex" {if $nodeinfo.halfduplex} checked{/if} {tip text="Select transmission mode"}> 
+			<A HREF="javascript:checkElement('chkmac');">{t}MAC checking{/t}:</A><INPUT TYPE="checkbox" NAME="nodedata[chkmac]" VALUE="1" id="chkmac" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if !isset($nodedata.chkmac) || $nodedata.chkmac} checked{/if}>&nbsp;
+			<A HREF="javascript:checkElement('halfduplex');">{t}Half duplex{/t}:</A><INPUT TYPE="checkbox" NAME="nodedata[halfduplex]" VALUE="1" id="halfduplex" {if $nodedata.halfduplex} checked{/if} {tip text="Select transmission mode"}> 
 		</TD>
 	</TR>
     					</TABLE>
@@ -238,7 +211,8 @@
         if (val = document.forms['nodeadd'].elements['nodedata[ownerid]'].value)
             document.forms['nodeadd'].elements['nodedata[customerid]'].value = val;
     }
+
+    check_teryt('location', true);
 //-->
 </SCRIPT>
 {/literal}
-

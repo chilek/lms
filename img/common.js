@@ -77,6 +77,11 @@ function nodechoosewin(formfield, customerid)
 	return openSelectWindow('?m=choosenode&id='+customerid,'choosenode',350,200,'true',formfield);
 }
 
+function locationchoosewin(varname, formname, city, street)
+{
+	return openSelectWindow('?m=chooselocation&name='+varname+'&form='+formname+'&city='+city+'&street='+street,'chooselocation',350,200,'true');
+}
+
 function sendvalue(targetfield, value)
 {
 	targetfield.value = value;
@@ -350,4 +355,23 @@ function popclick()
     lms_sticky_popup = 0;
     o3_removecounter++;
     return nd();
+}
+
+function check_teryt(locid, init)
+{
+    var checked = document.getElementById('teryt').checked;
+
+    if (locid) {
+        var loc = document.getElementById(locid);
+        if (checked) {
+            if (!init)
+                loc.value = '';
+            loc.setAttribute('readonly', true);
+        }
+        else {
+            loc.removeAttribute('readonly');
+        }
+    }
+
+    return checked;
 }
