@@ -1891,6 +1891,7 @@ class LMS
             $data_schema = explode(';', $tariff['sdata']);
             $data_tariff = explode(';', $tariff['data']);
             $datefrom = $data['datefrom'];
+            $cday = date('d', $datefrom);
 
             foreach ($data_tariff as $idx => $dt) {
                 list($value, $period) = explode(':', $dt);
@@ -1935,7 +1936,8 @@ class LMS
                     $month = date('n', $datefrom);
                     $year = date('Y', $datefrom);
                     // assume $data['at'] == 1, set last day of the specified month
-                    $dateto = mktime(23,59,59, $month+$length, 0, $year);
+                    $dateto = mktime(23,59,59, $month+$length+($cday && $cday != 1 ? 1 : 0), 0, $year);
+                    $cday = 0;
 
                     // Find tariff with specified name+value+period...
                     $tariffid = $this->DB->GetOne('SELECT id FROM tariffs
