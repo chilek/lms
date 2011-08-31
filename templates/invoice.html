@@ -40,7 +40,8 @@
 		<TD WIDTH="66%" VALIGN="TOP">
 			<B>{t}Seller:{/t}</B><BR>
 			<BR>
-			{$invoice.division_header|replace:"\n":"<BR>"}
+			{$invoice.division_header|replace:"\n":"<BR>"}<BR>
+			{t}Bank account:{/t} {bankaccount id=$invoice.customerid account=$invoice.account}
 			<BR><BR>
 			<B>{t}Purchaser:{/t}</B><BR>
 			<BR>
