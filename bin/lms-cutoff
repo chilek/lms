@@ -134,12 +134,12 @@ if ($only_due) {
 my $dbq = $dbase->prepare("
     SELECT customers.id AS id, UPPER(lastname) AS lastname,
     name, SUM(cash.value) AS balance
-    FROM customers 
+    FROM customers
     JOIN cash ON customers.id = cash.customerid
-    JOIN documents ON cash.docid=documents.id
+    LEFT JOIN documents ON cash.docid=documents.id
     WHERE $filter
     GROUP BY customers.id, lastname, name
-    HAVING SUM(cash.value) < $limit 
+    HAVING SUM(cash.value) < $limit
     ORDER BY lastname, name
 ");
 
