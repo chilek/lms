@@ -133,7 +133,7 @@ if ($only_due) {
 
 my $dbq = $dbase->prepare("
     SELECT customers.id AS id, UPPER(lastname) AS lastname,
-    name, SUM(cash.value) AS balance
+    customers.name AS name, SUM(cash.value) AS balance
     FROM customers
     JOIN cash ON customers.id = cash.customerid
     LEFT JOIN documents ON cash.docid=documents.id
