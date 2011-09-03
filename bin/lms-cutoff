@@ -96,7 +96,9 @@ my $dbname = $ini->val('database', 'database') || 'lms';
 my $limit = $ini->val('cutoff', 'limit') || 0;
 my $message = $ini->val('cutoff', 'message') || 'Automatic cutoff caused by exceeding of liabilities limit on %now';
 my $only_due = $ini->val('cutoff', 'only_due') || '1';
-my $extend_deadline = $ini->val('cutoff', '$extend_deadline') || '7';
+my $extend_deadline = $ini->val('cutoff', 'extend_deadline') || '7';
+my $excluded_customergroups = $ini->val('cutoff', 'excluded_customergroups') || '';
+my $customergroups = $ini->val('cutoff', 'customergroups') || '';
 
 my $dbase;
 my $utsfmt;
@@ -129,6 +131,18 @@ if ($only_due) {
     $filter = $filter . " AND ((documents.paytime > 0 AND cdate + ((documents.paytime + $extend_deadline) * 86400) < $utsfmt)
                            OR documents.paytime = 0
                            OR documents.paytime IS NULL)";
+}
+
+if ($excluded_customergroups ne '') {
+    $filter = $filter . " AND (SELECT count(*) FROM customerassignments
+                                WHERE customerassignments.customerid = customers.id
+                                  AND customerassignments.customergroupid IN ($excluded_customergroups)) = 0";
+}
+
+if ($customergroups ne '') {
+    $filter = $filter . " AND (SELECT count(*) FROM customerassignments
+                                WHERE customerassignments.customerid = customers.id
+                                  AND customerassignments.customergroupid IN ($customergroups)) = 0";
 }
 
 my $dbq = $dbase->prepare("
