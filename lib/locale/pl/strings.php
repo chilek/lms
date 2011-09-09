@@ -2482,5 +2482,7 @@ $_LANG['City has not been selected!'] = 'Nie wybrano miasta!';
 $_LANG['Flat number is too long (max. 8 characters)!'] = 'Numer mieszkania jest za długi (max. 8 znaków)!';
 $_LANG['House number is required!'] = 'Numer domu jest wymagany!';
 $_LANG['House number is too long (max. 8 characters)!'] = 'Numer domu jest za długi (max. 8 znaków)!';
+$_LANG['links hiding'] = 'ukrywanie użytecznych linków';
+$_LANG['system information hiding'] = 'ukrywanie informacji systemowych';
 
 ?>

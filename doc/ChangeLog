@@ -26,6 +26,7 @@ version ? (????-??-??):
   - BTS#0000876: contrib/customer: Fixed customer tariff is always zero [alec]
   - BTS#0000878: Fixed calculation of first promotion period length [alec]
   - lms-cutoff: added 'customergroups' & 'excluded_customergroups' opts [maniac]
+  - welcome: added posibility of hiding links, system information and registration info [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 

@@ -4,6 +4,7 @@
 <P>
 <TABLE width="100%" cellpadding="3">
 	<TR>
+		{if !$_config.phpui.hide_sysinfo|chkconfig}
 		<TD WIDTH="50%" style="vertical-align: top;">
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
@@ -107,6 +108,7 @@
 				</TR>
 			</TABLE>
 		</TD>					
+		{/if}
 	</TR>
 	<TR>
 		{if !$_config.phpui.hide_summaries|chkconfig}
@@ -254,6 +256,7 @@
 				</TR>
 			</TABLE>
 		</TD>
+		{if !$_config.phpui.hide_links|chkconfig}
 		<TD WIDTH="50%" style="vertical-align: top;">
 		    <TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
@@ -274,8 +277,10 @@
 				</TR>
 			</TABLE>
 		</TD>
+		{/if}
 	</TR>
 	<TR>
+		{if $adminuser}
 		<TD WIDTH="50%" style="vertical-align: top;">
 		</TD>
 		<TD WIDTH="50%" style="vertical-align: top;">
@@ -300,6 +305,7 @@
 				</TR>
 			</TABLE>
 		</TD>
+		{/if}
 	</TR>
 </TABLE>
 </P>
