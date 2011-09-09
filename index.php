@@ -196,9 +196,12 @@ if($AUTH->islogged)
 	{
 		$allow = !$AUTH->id || (!empty($access['allow']) && preg_match('/'.$access['allow'].'/i', $module));
 
+		$adminuser = FALSE;
 		if($AUTH->id && ($rights = $LMS->GetUserRights($AUTH->id)))
 			foreach($rights as $level)
 			{
+				if($level === 0)
+					$adminuser = TRUE;
 				if(!$allow)
 				{
 					if(isset($access['table'][$level]['deny_reg']))
@@ -215,6 +218,7 @@ if($AUTH->islogged)
 		{
 			$layout['module'] = $module;
 			$LMS->InitUI();
+			$SMARTY->assign('adminuser', $adminuser);
 			include(MODULES_DIR.'/'.$module.'.php');
 		}
 		else

@@ -45,11 +45,16 @@ if(isset($content['newer_version']))
 }
 
 $SMARTY->assign('_dochref', is_dir('doc/html/'.$LMS->ui_lang) ? 'doc/html/'.$LMS->ui_lang.'/' : 'doc/html/en/');
-$SMARTY->assign('regdata', $LMS->GetRegisterData());
+if ($adminuser)
+	$SMARTY->assign('regdata', $LMS->GetRegisterData());
 $SMARTY->assign('rtstats', $LMS->RTStats());
-$SMARTY->assign('sysinfo',$SI->get_sysinfo());
-$SMARTY->assign('customerstats',$LMS->CustomerStats());
-$SMARTY->assign('nodestats',$LMS->NodeStats());
+if (!$CONFIG['phpui']['hide_sysinfo'])
+	$SMARTY->assign('sysinfo',$SI->get_sysinfo());
+if (!$CONFIG['phpui']['hide_summaries'])
+{
+	$SMARTY->assign('customerstats',$LMS->CustomerStats());
+	$SMARTY->assign('nodestats',$LMS->NodeStats());
+}
 $SMARTY->display('welcome.html');
 
 ?>

@@ -100,6 +100,12 @@ $access['table'][22]['allow_reg']	= '^(voipimport|voipaccount(list|search|info|a
 $access['table'][23]['name']		= trans('Userpanel management');
 $access['table'][23]['allow_reg']	= '^userpanel$';
 
+$access['table'][24]['name']		= trans('system information hiding');
+$access['table'][24]['privilege']	= 'hide_sysinfo';
+
+$access['table'][25]['name']		= trans('links hiding');
+$access['table'][25]['privilege']	= 'hide_links';
+
 $access['table'][253]['name']		= trans('users edition and addition forbidden');
 $access['table'][253]['deny_reg']	= '^(user(add|del|edit|passwd))$';
 
