@@ -25,6 +25,8 @@
 
 $DB->BeginTrans();
 
+$DB->Execute("DROP VIEW vnodes");
+
 // wojewodztwa
 $DB->Execute("
     CREATE TABLE location_states (
@@ -172,8 +174,7 @@ $DB->Execute("
     CREATE VIEW vnodes AS
     SELECT n.*, m.mac
     FROM nodes n
-    LEFT JOIN (SELECT nodeid, array_to_string(array_agg(mac), ',') AS mac
-        FROM macs GROUP BY nodeid) m ON (n.id = m.nodeid);
+    LEFT JOIN vnodes_mac m ON (n.id = m.nodeid);
 ");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011082800', 'dbversion'));
