@@ -38,9 +38,9 @@ $DB->Execute("
 $DB->Execute("
     CREATE TABLE location_districts (
         id int(11)          NOT NULL auto_increment,
-        name varchar(64)    NOT NULL, --TERYT: NAZWA
-        ident varchar(8)    NOT NULL, --TERYT: POW
-        stateid int(11)     NOT NULL  --TERYT: WOJ
+        name varchar(64)    NOT NULL, -- TERYT: NAZWA
+        ident varchar(8)    NOT NULL, -- TERYT: POW
+        stateid int(11)     NOT NULL  -- TERYT: WOJ
             REFERENCES location_states (id) ON DELETE CASCADE ON UPDATE CASCADE,
         PRIMARY KEY (id),
         UNIQUE KEY stateid (stateid, name)
@@ -63,12 +63,12 @@ $DB->Execute("
         id int(11)          NOT NULL auto_increment,
         ident varchar(8)    NOT NULL, -- TERYT: SYM / SYMPOD
         name varchar(64)    NOT NULL, -- TERYT: NAZWA
-        cityid int(11)      DEFAULT NULL
+        cityid int(11)      DEFAULT NULL,
         boroughid int(11)   DEFAULT NULL
             REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE,
         PRIMARY KEY (id),
-        INDEX cityid (cityid);
-        INDEX boroughid (boroughid, name);
+        INDEX cityid (cityid),
+        INDEX boroughid (boroughid, name)
     ) ENGINE=INNODB");
 // cechy ulic
 $DB->Execute("
