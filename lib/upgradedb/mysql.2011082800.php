@@ -176,7 +176,7 @@ $DB->Execute("
         FROM macs GROUP BY nodeid) m ON (n.id = m.nodeid);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011060100', 'dbversion'));
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011082800', 'dbversion'));
 
 $DB->CommitTrans();
 
