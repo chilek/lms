@@ -66,7 +66,7 @@ function RTSearch($search, $order='createtime,desc')
 		$where[] = 't.customerid = '.intval($search['customerid']);
 	if(!empty($search['subject']))
 		$where[] = 't.subject ?LIKE? '.$DB->Escape('%'.$search['subject'].'%');
-	if(isset($search['state']))
+	if(!empty($search['state']))
 	{
 		if($search['state'] == '-1')
 			$where[] = 'state != '.RT_RESOLVED;
@@ -162,8 +162,16 @@ if(isset($search) || isset($_GET['s']))
 		if(sizeof($queues) != $DB->GetOne('SELECT COUNT(*) FROM rtqueues'))
 			$search['queue'] = $queues;
 	}
-	elseif(!$LMS->GetUserRightsRT($AUTH->id, $search['queue']))
-		$error['queue'] = trans('You have no privileges to review this queue!');
+	else
+		if(is_array($search['queue']))
+			foreach($search['queue'] as $queue)
+			{
+				if(!$LMS->GetUserRightsRT($AUTH->id, $queue))
+					$error['queue'] = trans('You have no privileges to review this queue!');
+			}
+		else
+			if(!$LMS->GetUserRightsRT($AUTH->id, $search['queue']))
+				$error['queue'] = trans('You have no privileges to review this queue!');
 
 	if(!$error)
 	{
