@@ -36,6 +36,17 @@
 			{$voipaccountinfo.phone}
 		</TD>
 	</TR>
+        <TR CLASS="LIGHT">
+                <TD WIDTH="1%">
+                        <A HREF="?m=voipaccountset&id={$voipaccountinfo.id}"><IMG SRC="img/{if ! $voipaccountinfo.access}no{/if}access.gif" ALT=""></A>
+                </TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Status:{/t}</B>
+		</TD>
+                <TD WIDTH="1%" COLSPAN="1">
+                        <B>{if $voipaccountinfo.access}{t}connected<!singular>{/t}{else}{t}disconnected<!singular>{/t}{/if}</B>
+                </TD>
+        </TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
 			<IMG SRC="img/users.gif" ALT="">

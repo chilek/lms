@@ -24,6 +24,7 @@
  *  $Id$
  */
 
+$voipaccountdata['access'] = 1;
 $voipaccountdata['ownerid'] = 0;
 
 if(isset($_GET['ownerid']))
