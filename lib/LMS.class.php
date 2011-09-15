@@ -4703,7 +4703,7 @@ class LMS
 
 		$voipaccountlist =
 			$this->DB->GetAll('SELECT v.id, v.login, v.passwd, v.phone, v.ownerid, '
-				.$this->DB->Concat('c.lastname',"' '",'c.name').' AS owner
+				.$this->DB->Concat('c.lastname',"' '",'c.name').' AS owner, v.access
 				FROM voipaccounts v 
 				JOIN customersview c ON (v.ownerid = c.id) '
 				.(isset($searchargs) ? $searchargs : '')
@@ -4716,15 +4716,50 @@ class LMS
 		return $voipaccountlist;
 	}
 
+	function VoipAccountSet($id, $access=-1)
+	{
+		if($access != -1)
+		{
+			if($access)
+				return $this->DB->Execute('UPDATE voipaccounts SET access = 1 WHERE id = ?
+					AND EXISTS (SELECT 1 FROM customers WHERE id = ownerid 
+						AND status = 3)', array($id));
+			else
+				return $this->DB->Execute('UPDATE voipaccounts SET access = 0 WHERE id = ?',
+					array($id));
+		}
+		elseif($this->DB->GetOne('SELECT access FROM voipaccounts WHERE id = ?', array($id)) == 1 )
+			return $this->DB->Execute('UPDATE voipaccounts SET access=0 WHERE id = ?', array($id));
+		else
+			return $this->DB->Execute('UPDATE voipaccounts SET access = 1 WHERE id = ?
+					AND EXISTS (SELECT 1 FROM customers WHERE id = ownerid 
+						AND status = 3)', array($id));
+	}
+
+	function VoipAccountSetU($id,$access=FALSE)
+	{
+		if($access)
+		{
+			if($this->DB->GetOne('SELECT status FROM customers WHERE id = ?', array($id)) == 3)
+			{
+				return $this->DB->Execute('UPDATE voipaccounts SET access=1 WHERE ownerid=?', array($id));
+			}
+		}
+		else
+			return $this->DB->Execute('UPDATE voipaccounts SET access=0 WHERE ownerid=?', array($id));
+	}
+
+
 	function VoipAccountAdd($voipaccountdata)
 	{
-		if($this->DB->Execute('INSERT INTO voipaccounts (ownerid, login, passwd, phone, creatorid, creationdate)
-					VALUES (?, ?, ?, ?, ?, ?NOW?)',
+		if($this->DB->Execute('INSERT INTO voipaccounts (ownerid, login, passwd, phone, creatorid, creationdate, access)
+					VALUES (?, ?, ?, ?, ?, ?NOW?, ?)',
 				array($voipaccountdata['ownerid'],
 				    $voipaccountdata['login'],
 				    $voipaccountdata['passwd'],
 				    $voipaccountdata['phone'],
-				    $this->AUTH->id
+				    $this->AUTH->id,
+				    $voipaccountdata['access']
 				    )))
 		{
 			$id = $this->DB->GetLastInsertID('voipaccounts');
@@ -4752,7 +4787,7 @@ class LMS
 	function GetVoipAccount($id)
 	{
 		if($result = $this->DB->GetRow('SELECT id, ownerid, login, passwd, phone,
-					creationdate, moddate, creatorid, modid
+					creationdate, moddate, creatorid, modid, access
 					FROM voipaccounts WHERE id = ?', array($id)))
 		{
 			$result['createdby'] = $this->GetUserName($result['creatorid']);
@@ -4790,20 +4825,21 @@ class LMS
 
 	function VoipAccountUpdate($voipaccountdata)
 	{
-		$this->DB->Execute('UPDATE voipaccounts SET login=?, passwd=?, phone=?, moddate=?NOW?, 
+		$this->DB->Execute('UPDATE voipaccounts SET login=?, passwd=?, phone=?, moddate=?NOW?, access=?
 				modid=?, ownerid=? WHERE id=?', 
 				array($voipaccountdata['login'],
 				    $voipaccountdata['passwd'],
 				    $voipaccountdata['phone'],
 				    $this->AUTH->id,
 				    $voipaccountdata['ownerid'],
-				    $voipaccountdata['id']
+				    $voipaccountdata['id'],
+				    $voipaccountdata['access']
 			    ));
 	}
 
 	function GetCustomerVoipAccounts($id)
 	{
-		if($result['accounts'] = $this->DB->GetAll('SELECT id, login, passwd, phone, ownerid
+		if($result['accounts'] = $this->DB->GetAll('SELECT id, login, passwd, phone, ownerid, access
 				FROM voipaccounts WHERE ownerid=? 
 				ORDER BY login ASC', array($id)))
 		{

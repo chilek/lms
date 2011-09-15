@@ -35,6 +35,20 @@
 			<INPUT TYPE="TEXT" NAME="voipaccountdata[phone]" VALUE="{$voipaccountdata.phone}" {tip text="Enter phone number" trigger="phone"}>
 		</TD>
 	</TR>
+        <TR CLASS="LIGHT">
+                <TD WIDTH="1%" CLASS="FLEFT">
+                        <IMG SRC="img/{if ! $voipaccountdata.access}no{/if}access.gif" ALT="">
+                </TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Status:{/t}</B>
+		</TD>
+                <TD WIDTH="1%" CLASS="FRIGHT">
+                        <SELECT SIZE="1" NAME="voipaccountdata[access]" {tip text="Select status" trigger="access"}>
+                                <OPTION VALUE="1"{if $voipaccountdata.access} SELECTED{/if}>{t}connected<!singular>{/t}</OPTION>
+                                <OPTION VALUE="0"{if ! $voipaccountdata.access} SELECTED{/if}>{t}disconnected<!singular>{/t}</OPTION>
+                        </SELECT>
+                </TD>
+        </TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
 			<IMG SRC="img/customer.gif" ALT="{t}Customer:{/t}">

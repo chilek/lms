@@ -65,6 +65,7 @@
 		</TD>
 		<TD width="1%" class="fright" align="right">
 			<nobr>
+			<a href="?m=voipaccountset&id={$voipaccountlist[voipaccountlist].id}"><img src="img/{if ! $voipaccountlist[voipaccountlist].access}no{/if}access.gif" alt="[ {if ! $voipaccountlist[voipaccountlist].access}{t}Connect{/t}{else}{t}Disconnect{/t}{/if} ]" title="[ {if ! $voipaccountlist[voipaccountlist].access}{t}Connect{/t}{else}{t}Disconnect{/t}{/if} ]"></A>
 			<a onClick="return confirmLink(this, '{t 0=$voipaccountlist[voipaccountlist].login}Are you sure, you want to remove voip account \'$0\' from database?{/t}')" href="?m=voipaccountdel&id={$voipaccountlist[voipaccountlist].id}"><img src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
 			<a href="?m=voipaccountedit&id={$voipaccountlist[voipaccountlist].id}"><img src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 			<a href="?m=voipaccountinfo&id={$voipaccountlist[voipaccountlist].id}"><img src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>

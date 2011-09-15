@@ -37,6 +37,20 @@
 			<INPUT TYPE="TEXT" NAME="voipaccountedit[phone]" VALUE="{$voipaccountinfo.phone}" {tip text="Enter phone number" trigger="phone"}>
 		</TD>
 	</TR>
+        <TR CLASS="LIGHT">
+                <TD WIDTH="1%" CLASS="FLEFT">
+                        <IMG SRC="img/{if ! $voipaccountinfo.access}no{/if}access.gif" ALT="">
+                </TD>
+		<TD WIDTH="1%">
+			<B>{t}Status:{/t}</B>
+		</TD>
+                <TD WIDTH="99%" CLASS="FRIGHT">
+                        <SELECT SIZE="1" NAME="voipaccountedit[access]" {tip text="Select node status" trigger="access"}>
+                                <OPTION VALUE="1"{if $voipaccountinfo.access} SELECTED{/if}>{t}connected<!singular>{/t}</OPTION>
+                                <OPTION VALUE="0"{if ! $voipaccountinfo.access} SELECTED{/if}>{t}disconnected<!singular>{/t}</OPTION>
+                        </SELECT>
+                </TD>
+        </TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
 			<IMG SRC="img/customer.gif" ALT="{t}Customer:{/t}">
