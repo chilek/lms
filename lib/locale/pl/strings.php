@@ -2485,4 +2485,23 @@ $_LANG['House number is too long (max. 8 characters)!'] = 'Numer domu jest za d�
 $_LANG['links hiding'] = 'ukrywanie użytecznych linków';
 $_LANG['system information hiding'] = 'ukrywanie informacji systemowych';
 
+$_LANG['Enter category name'] = 'Podaj nazwę kategorii';
+$_LANG['Owners:'] = 'Właściciele:';
+$_LANG['Are you sure, you want to remove category \\\'$0\\\'?'] = 'Jesteś pewien, że chcesz usunąć kategorię \\\'$0\\\'?';
+$_LANG['Categories:'] = 'Kategorie:';
+$_LANG['Category'] = 'Kategoria';
+$_LANG['Category:'] = 'Kategoria';
+$_LANG['Owners'] = 'Właściciele';
+$_LANG['There are no categories.'] = 'Nie ma kategorii';
+$_LANG['Category name must be defined!'] = 'Kategoria musi posiadać swoją nazwę!';
+$_LANG['Category with specified name already exists!'] = 'Kategoria o podanej nazwie już istnieje!';
+$_LANG['New Category'] = 'Nowa kategoria';
+$_LANG['Remove category ID: $0'] = 'Usuń kategorię: $0';
+$_LANG['Do you want to remove category called $0?'] = 'Czy chcesz usunąć kategorię $0?';
+$_LANG['Category Edit: $0'] = 'Edycja kategorii: $0';
+$_LANG['Category Info: $0'] = 'Informacje o kategorii: $0';
+$_LANG['Categories List'] = 'Lista kategorii';
+$_LANG['List of categories'] = 'Lista kategorii';
+$_LANG['Add new category'] = 'Utworzenie nowej kategorii';
+
 ?>

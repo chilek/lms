@@ -56,7 +56,7 @@ $access['table'][8]['name']         	= trans('messaging (email, sms)');
 $access['table'][8]['allow_reg']    	= '^message(add|list|info)$';
 
 $access['table'][9]['name']         	= trans('Helpdesk (RT) administration');
-$access['table'][9]['allow_reg']    	= '^(rtsearch|rtprint|(rtqueue|rtticket|rtmessage|rtnote)(add|del|edit|info|view|list|print))$';
+$access['table'][9]['allow_reg']    	= '^(rtsearch|rtprint|(rtqueue|rtticket|rtmessage|rtnote|rtcategory)(add|del|edit|info|view|list|print))$';
 
 $access['table'][10]['name']        	= trans('Helpdesk (RT) operation');
 $access['table'][10]['allow_reg']   	= '^(rtsearch|rtqueue(list|info|view)|(rtticket|rtmessage|rtnote)(add|edit|info|view|del|print))$';

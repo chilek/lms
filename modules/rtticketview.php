@@ -30,8 +30,9 @@ if(! $LMS->TicketExists($_GET['id']))
 }
 
 $rights = $LMS->GetUserRightsRT($AUTH->id, 0, $_GET['id']);
+$catrights = $LMS->GetUserRightsToCategory($AUTH->id, 0, $_GET['id']);
 
-if(!$rights)
+if(!$rights || !$catrights)
 {
 	$SMARTY->display('noaccess.html');
 	$SESSION->close();
@@ -39,6 +40,7 @@ if(!$rights)
 }
 
 $ticket = $LMS->GetTicketContents($_GET['id']);
+$categories = $LMS->GetCategoryListByUser($AUTH->id);
 
 if($ticket['customerid'] && isset($CONFIG['phpui']['helpdesk_stats']) && chkconfig($CONFIG['phpui']['helpdesk_stats']))
 {
@@ -65,7 +67,9 @@ if($ticket['customerid'] && chkconfig($CONFIG['phpui']['helpdesk_customerinfo'])
 	$SMARTY->assign('allnodegroups', $allnodegroups);
 }
 
-$iteration = $LMS->GetQueueContents($ticket['queueid'], $order='createtime,desc', $state=-1);
+foreach($categories as $category)
+	$catids[] = $category['id'];
+$iteration = $LMS->GetQueueContents($ticket['queueid'], $order='createtime,desc', $state=-1, 0, $catids);
 foreach($iteration as $idx => $element)
 {
 	if (intval($element['id']) == intval($_GET['id']))
@@ -79,11 +83,19 @@ foreach($iteration as $idx => $element)
 $ticket['next_ticketid'] = $next_ticketid;
 $ticket['prev_ticketid'] = $prev_ticketid;
 
+foreach ($categories as $category)
+{
+	$category['checked'] = isset($ticket['categories'][$category['id']]);
+	$ncategories[] = $category;
+}
+$categories = $ncategories;
+
 $layout['pagetitle'] = trans('Ticket Review: $0',sprintf("%06d", $ticket['ticketid']));
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('ticket', $ticket);
+$SMARTY->assign('categories', $categories);
 $SMARTY->display('rtticketview.html');
 
 ?>

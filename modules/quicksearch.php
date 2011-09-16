@@ -273,14 +273,19 @@ switch($mode)
 	case 'ticket':
 		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
+			$categories = $LMS->GetCategoryListByUser($AUTH->id);
+			foreach($categories as $category)
+				$catids[] = $category['id'];
 			$candidates = $DB->GetAll("SELECT t.id, t.subject, t.requestor, c.name, c.lastname 
 				FROM rttickets t
+				LEFT JOIN rtticketcategories tc ON t.id = tc.ticketid
 				LEFT JOIN customersview c on (t.customerid = c.id)
-				WHERE ".(preg_match('/^[0-9]+$/',$search) ? 't.id = '.intval($search).' OR ' : '')."
+				WHERE ".(is_array($catids) ? "tc.categoryid IN (".implode(',', $catids).")" : "tc.categoryid IS NULL")
+					." AND (".(preg_match('/^[0-9]+$/',$search) ? 't.id = '.intval($search).' OR ' : '')."
 					LOWER(t.subject) ?LIKE? LOWER($sql_search)
 					OR LOWER(t.requestor) ?LIKE? LOWER($sql_search)
 					OR LOWER(c.name) ?LIKE? LOWER($sql_search)
-					OR LOWER(c.lastname) ?LIKE? LOWER($sql_search)
+					OR LOWER(c.lastname) ?LIKE? LOWER($sql_search))
 					ORDER BY t.subject, t.id, c.lastname, c.name, t.requestor
 					LIMIT 15");
 

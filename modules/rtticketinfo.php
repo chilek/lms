@@ -32,8 +32,8 @@ if(! $LMS->TicketExists($id))
 }
 
 $rights = $LMS->GetUserRightsRT($AUTH->id, 0, $id);
-
-if(!$rights)
+$catrights = $LMS->GetUserRightsToCategory($AUTH->id, 0, $id);
+if(!$rights || !$catrights)
 {
 	$SMARTY->display('noaccess.html');
 	$SESSION->close();

@@ -37,6 +37,9 @@ if(isset($_POST['ticket']))
 		$SESSION->redirect('?m=rtticketadd&id='.$queue);
 	}
 
+	if(empty($ticket['categories']))
+		$error = true;
+
 	if(($LMS->GetUserRightsRT($AUTH->id, $queue) & 2) != 2)
 		$error['queue'] = trans('You have no privileges to this queue!');
 
@@ -158,6 +161,15 @@ if(isset($_POST['ticket']))
 	$SMARTY->assign('error', $error);
 }
 
+$categories = $LMS->GetCategoryListByUser($AUTH->id);
+
+foreach ($categories as $category)
+{
+	$category['checked'] = isset($ticket['categories'][$category['id']]) || count($categories) == 1;
+	$ncategories[] = $category;
+}
+$categories = $ncategories;
+
 $layout['pagetitle'] = trans('New Ticket');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
@@ -174,6 +186,7 @@ if(isset($ticket['customerid']) && $ticket['customerid'])
 
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());
+$SMARTY->assign('categories', $categories);
 $SMARTY->assign('customerid', $ticket['customerid']);
 $SMARTY->display('rtticketadd.html');
 

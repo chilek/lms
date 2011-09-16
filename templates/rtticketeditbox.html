@@ -79,6 +79,18 @@
 			{$ticket.uptime}
 		    </TD>
 		</TR>
+		    <TD WIDTH="1%" style="vertical-align:top" NOWRAP>
+			<IMG src="img/queue.gif" alt="">
+			<B>{t}Categories:{/t}</B>
+		    </TD>
+		    <TD WIDTH="99%" NOWRAP>
+			{foreach from=$categories item=category}
+				<INPUT type="checkbox" name="ticket[categories][{$category.id}]" ID="cat{$category.id}" value="1" {if $category.checked > 0}CHECKED{/if}>
+				<A href="javascript:checkElement('cat{$category.id}');">{$category.name}</A><BR />
+			{/foreach}
+		    </TD>
+		<TR>
+		</TR>
 	    </TABLE>
 	</TD>
 	<TD width="50%" style="vertical-align:top">	

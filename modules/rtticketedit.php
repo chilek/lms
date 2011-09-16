@@ -26,7 +26,7 @@
 
 if(($id = $_GET['id']) && !isset($_POST['ticket']))
 {
-	if(($LMS->GetUserRightsRT($AUTH->id, 0, $id) & 2) != 2)
+	if(($LMS->GetUserRightsRT($AUTH->id, 0, $id) & 2) != 2 || !$LMS->GetUserRightsToCategory($AUTH->id, 0, $id))
 	{
 		$SMARTY->display('noaccess.html');
 		$SESSION->close();
@@ -41,11 +41,15 @@ if(($id = $_GET['id']) && !isset($_POST['ticket']))
 }
 
 $ticket = $LMS->GetTicketContents($id);
+$categories = $LMS->GetCategoryListByUser($AUTH->id);
 
 if(isset($_POST['ticket']))
 {
 	$ticketedit = $_POST['ticket'];
 	$ticketedit['ticketid'] = $ticket['ticketid'];
+
+	if(!count($ticketedit['categories']))
+		$error = true;
 
 	if(($LMS->GetUserRightsRT($AUTH->id, $ticketedit['queueid']) & 2) != 2)
 		$error['queue'] = trans('You have no privileges to this queue!');
@@ -60,7 +64,7 @@ if(isset($_POST['ticket']))
 		$ticketedit['state'] = 1;
 
 	$ticketedit['customerid'] = ($ticketedit['custid'] ? $ticketedit['custid'] : 0);
-		
+
 	if(!$error)
 	{
 		if($ticketedit['state'] == 2)
@@ -103,6 +107,11 @@ if(isset($_POST['ticket']))
 						));
 			}
 		}
+
+		$DB->Execute('DELETE FROM rtticketcategories WHERE ticketid = ?', array($id));
+		foreach($ticketedit['categories'] as $categoryid => $val)
+			$DB->Execute('INSERT INTO rtticketcategories (ticketid, categoryid) VALUES(?, ?)',
+				array($id, $categoryid));
 
 		// przy zmianie kolejki powiadamiamy o "nowym" zgloszeniu
 		if(	$ticket['queueid'] != $ticketedit['queueid']
@@ -215,6 +224,15 @@ if(isset($_POST['ticket']))
 	$ticket['state'] = $ticketedit['state'];
 	$ticket['owner'] = $ticketedit['owner'];
 }
+else
+	$ticketedit['categories'] = $ticket['categories'];
+
+foreach ($categories as $category)
+{
+	$category['checked'] = isset($ticketedit['categories'][$category['id']]);
+	$ncategories[] = $category;
+}
+$categories = $ncategories;
 
 $layout['pagetitle'] = trans('Ticket Edit: $0',sprintf("%06d",$ticket['ticketid']));
 
@@ -227,6 +245,7 @@ if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_
 
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());
+$SMARTY->assign('categories', $categories);
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('error', $error);
 $SMARTY->display('rtticketedit.html');
