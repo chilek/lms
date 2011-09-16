@@ -62,4 +62,6 @@ $_LANG['Ticket must have its body!'] = 'Musisz podać treść zgłoszenia!';
 $_LANG['Ticket must have its title!'] = 'Zgłoszenie musi mieć tytuł!';
 $_LANG['Message'] = 'Wiadomość';
 
+$_LANG['Default categories:'] = 'Domyślne kategorie:';
+
 ?>

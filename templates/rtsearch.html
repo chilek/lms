@@ -108,6 +108,18 @@
 		</TD>
 	</TR>
 	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" style="vertical-align:top" NOWRAP>
+			<IMG src="img/queue.gif" alt="">
+			<B>{t}Categories:{/t}</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="fright" NOWRAP>
+			{foreach from=$categories item=category}
+				<INPUT type="checkbox" name="search[categories][{$category.id}]" ID="cat{$category.id}" value="1" {if $category.checked > 0}CHECKED{/if}>
+				<A href="javascript:checkElement('cat{$category.id}');">{$category.name}</A><BR />
+			{/foreach}
+		</TD>
+	</TR>
+	<TR CLASS="light">
 		<TD WIDTH="100%" CLASS="fbottomu" colspan="2" align="right">
 			<A href="javascript: document.search.submit();" accesskey="s">{t}Search{/t}<IMG src="img/search.gif" alt=""></A>
 		</TD>

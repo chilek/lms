@@ -3479,7 +3479,7 @@ class LMS
 		    return NULL;
 	}
 
-	function GetQueueContents($ids, $order='createtime,desc', $state=NULL, $owner=0)
+	function GetQueueContents($ids, $order='createtime,desc', $state=NULL, $owner=0, $catids=NULL)
 	{
 		if(!$order)
 			$order = 'createtime,desc';
@@ -3530,18 +3530,20 @@ class LMS
 		}
 
 		if($result = $this->DB->GetAll(
-		    'SELECT t.id, t.customerid, c.address, users.name AS ownername,
+		    'SELECT DISTINCT t.id, t.customerid, c.address, users.name AS ownername,
 			    t.subject, state, owner AS ownerid, t.requestor AS req,
 			    CASE WHEN customerid = 0 THEN t.requestor ELSE '
 			    .$this->DB->Concat('c.lastname',"' '",'c.name').' END AS requestor, 
 			    t.createtime AS createtime, u.name AS creatorname,
 			    (SELECT MAX(createtime) FROM rtmessages WHERE ticketid = t.id) AS lastmodified
 		    FROM rttickets t 
+		    LEFT JOIN rtticketcategories tc ON (t.id = tc.ticketid)
 		    LEFT JOIN users ON (owner = users.id)
 		    LEFT JOIN customers c ON (t.customerid = c.id)
 		    LEFT JOIN users u ON (t.creatorid = u.id)
 		    WHERE 1=1 '
-		    .(is_array($ids) ? ' AND queueid IN ('.implode(',', $ids).')' : ($ids != 0 ? ' AND queueid = '.$ids : ''))
+		    .(is_array($ids) ? ' AND t.queueid IN ('.implode(',', $ids).')' : ($ids != 0 ? ' AND t.queueid = '.$ids : ''))
+		    .(is_array($catids) ? ' AND tc.categoryid IN ('.implode(',', $catids).')' : ($catids != 0 ? ' AND tc.categoryid = '.$catids : ''))
 		    .$statefilter
 		    .($owner ? ' AND t.owner = '.intval($owner) : '')
 		    .($sqlord !='' ? $sqlord.' '.$direction:'')))
@@ -3583,6 +3585,8 @@ class LMS
 
 		return ($rights ? $rights : 0);
 	}
+
+
 
 	function GetQueueList($stats=true)
 	{
@@ -3638,14 +3642,111 @@ class LMS
 		return $stats;
 	}
 
+	function GetCategory($id)
+	{
+		if($category = $this->DB->GetRow('SELECT * FROM rtcategories WHERE id=?', array($id)))
+		{
+		    $users = $this->DB->GetAll('SELECT id, name FROM users WHERE deleted=0 ORDER BY login asc');
+		    foreach($users as $user)
+		    {
+			$user['owner'] = $this->DB->GetOne('SELECT 1 FROM rtcategoryusers WHERE userid = ? AND categoryid = ?',
+				array($user['id'], $id));
+			$category['owners'][] = $user;
+		    }
+		    return $category;
+		}
+		else
+		    return NULL;
+	}
+
+	function GetUserRightsToCategory($user, $category, $ticket=NULL)
+	{
+		if(!$category && $ticket)
+		{
+			if(!($category = $this->GetCache('rttickets', $ticket, 'categoryid')))
+				$category = $this->DB->GetCol('SELECT categoryid FROM rtticketcategories WHERE ticketid=?', array($ticket));
+		}
+
+		// grant access to ticket when no categories assigned to this ticket
+		if (!$category)
+			return 1;
+
+		$owner = $this->DB->GetOne('SELECT 1 FROM rtcategoryusers WHERE userid=? AND categoryid '.
+			(is_array($category) ? 'IN ('.implode(',', $category).')' : '= '.$category),
+			array($user));
+
+		return ($owner === '1');
+	}
+
+	function GetCategoryList($stats = true)
+	{
+		if($result = $this->DB->GetAll('SELECT id, name, description 
+				FROM rtcategories ORDER BY name'))
+		{
+			if($stats)
+				foreach($result as $idx => $row)
+					foreach($this->GetCategoryStats($row['id']) as $sidx => $row)
+						$result[$idx][$sidx] = $row;
+			foreach($result as $idx => $category)
+				$result[$idx]['owners'] = $this->DB->GetAll('SELECT u.id, name FROM rtcategoryusers cu 
+				LEFT JOIN users u ON cu.userid = u.id 
+				WHERE categoryid = ?',
+					array($category['id']));
+		}
+		return $result;
+	}
+
+	function GetCategoryStats($id)
+	{
+		if($result = $this->DB->GetAll('SELECT state, COUNT(state) AS scount 
+			FROM rttickets LEFT JOIN rtticketcategories ON rttickets.id = rtticketcategories.ticketid 
+			WHERE rtticketcategories.categoryid = ? GROUP BY state ORDER BY state ASC', array($id)))
+		{
+			foreach($result as $row)
+				$stats[$row['state']] = $row['scount'];
+			foreach(array('new', 'open', 'resolved', 'dead') as $idx => $value)
+				$stats[$value] = isset($stats[$idx]) ? $stats[$idx] : 0;
+		}
+		$stats['lastticket'] = $this->DB->GetOne('SELECT createtime FROM rttickets 
+			LEFT JOIN rtticketcategories ON rttickets.id = rtticketcategories.ticketid 
+			WHERE rtticketcategories.categoryid = ? ORDER BY createtime DESC', array($id));
+
+		return $stats;
+	}
+
+	function CategoryExists($id)
+	{
+		return ($this->DB->GetOne('SELECT * FROM rtcategories WHERE id=?', array($id)) ? TRUE : FALSE);
+	}
+
+	function GetCategoryIdByName($category)
+	{
+		return $this->DB->GetOne('SELECT id FROM rtcategories WHERE name=?', array($category));
+	}
+
+	function GetCategoryListByUser($userid=NULL)
+	{
+		return $this->DB->GetAll('SELECT c.id, name FROM rtcategories c LEFT JOIN rtcategoryusers cu 
+			ON c.id = cu.categoryid '.($userid ? 'WHERE userid = '.$userid : '' ).' ORDER BY name');
+	}
+
 	function RTStats()
 	{
-		return $this->DB->GetRow('SELECT COUNT(CASE state WHEN '.RT_NEW.' THEN 1 END) AS new,
+		$categories = $this->GetCategoryListByUser($this->AUTH->id);
+		foreach ($categories as $category)
+			$catids[] = $category['id'];
+		return $this->DB->GetAll('SELECT tc.categoryid AS id, c.name,
+				    COUNT(CASE state WHEN '.RT_NEW.' THEN 1 END) AS new,
 				    COUNT(CASE state WHEN '.RT_OPEN.' THEN 1 END) AS opened,
 				    COUNT(CASE state WHEN '.RT_RESOLVED.' THEN 1 END) AS resolved,
 				    COUNT(CASE state WHEN '.RT_DEAD.' THEN 1 END) AS dead,
 				    COUNT(CASE WHEN state != '.RT_RESOLVED.' THEN 1 END) AS unresolved
-				    FROM rttickets');
+				    FROM rttickets t
+				    LEFT JOIN rtticketcategories tc ON t.id = tc.ticketid
+				    LEFT JOIN rtcategories c ON c.id = tc.categoryid
+				    WHERE tc.categoryid IN ('.implode(',', $catids).')
+				    GROUP BY tc.categoryid, c.name
+				    ORDER BY c.name');
 	}
 
 	function GetQueueByTicketId($id)
@@ -3690,6 +3791,11 @@ class LMS
 					preg_replace("/\r/", "", $ticket['body']),
 					$ticket['mailfrom']));
 
+		foreach(array_keys($ticket['categories']) as $catid)
+			$this->DB->Execute('INSERT INTO rtticketcategories (ticketid, categoryid) 
+				VALUES (?, ?)',
+				array($id, $catid));
+
 		return $id;
 	}
 
@@ -3707,6 +3813,8 @@ class LMS
 				LEFT JOIN users c ON (t.creatorid = c.id)
 				LEFT JOIN customers ON (customers.id = t.customerid)
 				WHERE t.id = ?', array($id));
+
+		$ticket['categories'] = $this->DB->GetAllByKey('SELECT categoryid AS id FROM rtticketcategories WHERE ticketid = ?', 'id', array($id));
 
 		$ticket['messages'] = $this->DB->GetAll(
 				'(SELECT rtmessages.id AS id, mailfrom, subject, body, createtime, '

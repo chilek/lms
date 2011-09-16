@@ -87,6 +87,25 @@
 					<TD width="10%" nowrap>
 					</TD>
 				</TR>
+				<TR>
+					<TD width="1%" COLSPAN="2" NOWRAP>
+						<IMG src="img/queue.gif" alt=""><B>{t}Categories:{/t}</B>
+					</TD>
+					<TD width="1%">
+						<TABLE>
+						{foreach from=$categories item=category}
+							<TR>
+								<TD width="1%" align="center">
+									<INPUT type="checkbox" name="categories[{$category.id}]" ID="cat1{$category.id}" value="1" CHECKED>
+								</TD>
+								<TD width="1%">
+									<A href="javascript:checkElement('cat1{$category.id}');">{$category.name}</A>
+								</TD>
+							</TR>
+						{/foreach}
+						</TABLE>
+					</TD>
+				</TR>
 			</TABLE>
 		</TD>
 	</TR>
@@ -135,6 +154,25 @@
 					</TD>
 					<TD width="96%" nowrap>
 						<B>{t 0="<INPUT TYPE=\"text\" NAME=\"times\" SIZE=\"3\">" 1="<INPUT TYPE=\"text\" NAME=\"days\" SIZE=\"3\">"}Customers requesting more than $0 times in last $1 days{/t}</B>
+					</TD>
+				</TR>
+				<TR>
+					<TD width="1%" COLSPAN="2" NOWRAP>
+						<IMG src="img/queue.gif" alt=""><B>{t}Categories:{/t}</B>
+					</TD>
+					<TD width="1%">
+						<TABLE>
+						{foreach from=$categories item=category}
+							<TR>
+								<TD width="1%" align="center">
+									<INPUT type="checkbox" name="categories[{$category.id}]" ID="cat2{$category.id}" value="1" CHECKED>
+								</TD>
+								<TD width="1%">
+									<A href="javascript:checkElement('cat2{$category.id}');">{$category.name}</A>
+								</TD>
+							</TR>
+						{/foreach}
+						</TABLE>
 					</TD>
 				</TR>
 			</TABLE>

@@ -66,6 +66,19 @@
 			{$ticket.uptime}
 		    </TD>
 		</TR>
+		<TR>
+		    <TD WIDTH="1%" style="vertical-align:top" NOWRAP>
+			<IMG src="img/queue.gif" alt="">
+			<B>{t}Categories:{/t}</B>
+		    </TD>
+		    <TD WIDTH="99%" NOWRAP>
+			{foreach from=$categories item=category}
+			{if $category.checked > 0}
+				<A href="?m=rtcategoryinfo&id={$category.id}">{$category.name}</A><BR>
+			{/if}
+			{/foreach}
+		    </TD>
+		</TR>
 	    </TABLE>
 	</TD>
 	<TD width="50%" style="vertical-align:top;">	

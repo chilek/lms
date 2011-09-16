@@ -1,0 +1,85 @@
+{include file="header.html"}
+<!-- $Id$ -->
+<H1><B>{$layout.pagetitle}</B></H1>
+<TABLE cellpadding="5" WIDTH="100%">
+	<TR CLASS="dark">
+		<TD CLASS="fleftu" WIDTH="20%" COLSPAN="2" NOWRAP>
+			<IMG src="img/queue.gif" ALT="">
+			<B>{t}Category{/t}:</B><BR>
+			<IMG src="img/info1.gif" ALT="">
+			{t}Description{/t}:
+		</TD>
+		<TD CLASS="fbt" WIDTH="76%" NOWRAP>
+			<IMG src="img/users.gif" ALT="">
+			<B>{t}Owners{/t}:</B>
+		</TD>
+		<TD CLASS="fbt" align="right"  WIDTH="1%">
+			{t}New:{/t}
+		</TD>
+		<TD CLASS="fbt" align="right" WIDTH="1%">
+			{t}Opened:{/t}
+		</TD>
+		<TD CLASS="fbt" align="right" WIDTH="1%" ALIGN="CENTER">
+			{t}Last:{/t}
+		</TD>
+		<TD CLASS="frightu" WIDTH="1%">
+			&nbsp;
+		</TD>
+	</TR>
+	{cycle values="light,lucid" print=false}
+	{foreach from=$categories item=category}
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD CLASS="fleft" onClick="return self.location.href='?m=rtqueueview&catid={$category.id}';" COLSPAN="2">
+			<IMG src="img/queue.gif" ALT="">
+			<B>{$category.name}</B><BR>
+			{if $category.description}
+				<IMG src="img/info1.gif" ALT=""> {$category.description}
+			{/if}
+		</TD>
+		<TD>
+			{foreach from=$category.owners item=owner key=key}
+				<A HREF="?m=userinfo&id={$owner.id}">{$owner.name}</A>{if $key+1<sizeof($category.owners)}, {/if}
+			{/foreach}
+		</TD>
+		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&catid={$category.id}';">
+			{$category.new|default:0}
+		</TD>
+		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&catid={$category.id}';">
+			{$category.open|default:0}
+		</TD>
+		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&catid={$category.id}';" NOWRAP>
+			{if $category.lastticket}{$category.lastticket|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
+		</TD>
+		<TD CLASS="fright" NOWRAP>
+			<A HREF="?m=rtqueueview&catid={$category.id}"><IMG SRC="img/view.gif" alt="[ {t}Browse{/t} ]" title="[ {t}Browse{/t} ]"></A>
+			<A HREF="?m=rtcategorydel&id={$category.id}" OnClick="return confirmLink(this, '{t 0=$category.name}Are you sure, you want to remove category \'$0\'?{/t}');"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+			<A HREF="?m=rtcategoryedit&id={$category.id}"><IMG SRC="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+			<A HREF="?m=rtcategoryinfo&id={$category.id}"><IMG SRC="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
+		</TD>
+	</TR>
+	{foreachelse}
+	<TR>
+		<TD colspan="7" align="center" class="flr">
+			<p>&nbsp;</p>
+			<p><B>{t}There are no categories.{/t}<B></p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/foreach}
+	<TR CLASS="light">
+		<TD COLSPAN="3" ALIGN="RIGHT" CLASS="fleftu">
+			<IMG src="img/info2.gif" ALT="">
+			<B>{t}Total:{/t}</B>
+		</TD>
+		<TD ALIGN="CENTER" CLASS="fbt">
+			<B>{sum array=$categories column=new}</B>
+		</TD>
+		<TD ALIGN="CENTER" CLASS="fbt">
+			<B>{sum array=$categories column=open}</B>
+		</TD>
+		<TD CLASS="frightu" COLSPAN="2">
+			&nbsp;
+		</TD>
+	</TR>
+</TABLE>
+{include file="footer.html"}

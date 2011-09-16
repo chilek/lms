@@ -36,6 +36,13 @@
 					<OPTION value="{$q.id}"{if $queuedata.id == $q.id} SELECTED{/if}>{$q.name}</OPTION>
 					{/foreach}
 				</SELECT>&nbsp;
+				{t}Category:{/t}
+				<SELECT size="1" name="catid" OnChange="document.filter.submit();">
+					<OPTION value="">- {t}all{/t} -</OPTION>
+					{foreach from=$categories item=q}
+					<OPTION value="{$q.id}"{if $queuedata.catid == $q.id} SELECTED{/if}>{$q.name}</OPTION>
+					{/foreach}
+				</SELECT>&nbsp;
 				{t}Status:{/t}
 				<SELECT size="1" name="s" OnChange="document.filter.submit();">
 					<OPTION value=""{if $queuedata.state eq ""} SELECTED{/if}>- {t}all{/t} -</OPTION>
@@ -100,7 +107,7 @@
 			{/if}
 			<B>{$queue[ticket].subject|escape|truncate:"60":"..."|default:"&nbsp;"}</B><BR>
 			{if $queue[ticket].customerid}
-				<span {tip 0=$queue[ticket].customerid dynpopup='?m=nodelistshort&id=$0' sticky=1}>
+				<span {tip 0=$queue[ticket].customerid dynpopup='?m=nodelistshort&id=$0'}>
 				{$queue[ticket].requestor|escape|truncate:"60":"..."}
 				({$queue[ticket].address})
 				</span>

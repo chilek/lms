@@ -26,6 +26,8 @@
 
 if(isset($_GET['id']))
 	$queuedata['id'] = ($_GET['id'] == '' ? 0 : $_GET['id']);
+if(isset($_GET['catid']))
+	$queuedata['catid'] = ($_GET['catid'] == '' ? 0 : $_GET['catid']);
 
 if(! $LMS->QueueExists($queuedata['id']) && $queuedata['id'] != 0)
 {
@@ -57,6 +59,31 @@ else
 		$queuedata['id'] = $queues;
 }
 
+if($queuedata['catid'] != 0)
+{
+	$catrights = $LMS->GetUserRightsToCategory($AUTH->id, $queuedata['catid']);
+
+	if(!$catrights)
+	{
+		$SMARTY->display('noaccess.html');
+		$SESSION->close();
+		die;
+	}
+}
+else
+{
+	$categories = $DB->GetCol('SELECT categoryid FROM rtcategoryusers WHERE userid=?', array($AUTH->id));
+
+	if (!$categories) {
+		$SMARTY->display('noaccess.html');
+		$SESSION->close();
+		die;
+	}
+
+	if(sizeof($categories) != $DB->GetOne('SELECT COUNT(*) FROM rtcategories'))
+		$queuedata['catid'] = $categories;
+}
+
 if(!isset($_GET['o']))
 	$SESSION->restore('rto', $o);
 else
@@ -80,7 +107,7 @@ else
 $SESSION->save('rts', $s);
 
 $layout['pagetitle'] = trans('Tickets List');
-$queue = $LMS->GetQueueContents($queuedata['id'], $o, $s, $owner);
+$queue = $LMS->GetQueueContents($queuedata['id'], $o, $s, $owner, $queuedata['catid']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
@@ -106,8 +133,10 @@ $start = ($page - 1) * $pagelimit;
 $SESSION->save('rtp', $page);
 
 $queues = $LMS->GetQueueList(false);
+$categories = $LMS->GetCategoryList(false);
 
 $SMARTY->assign('queues', $queues);
+$SMARTY->assign('categories', $categories);
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('queuedata', $queuedata);
 $SMARTY->assign('pagelimit',$pagelimit);

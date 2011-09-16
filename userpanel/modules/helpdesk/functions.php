@@ -28,13 +28,24 @@ if (defined('USERPANEL_SETUPMODE'))
 {
     function module_setup()
     {
-	global $SMARTY, $LMS;
+	global $SMARTY, $LMS, $AUTH;
+
+	$default_categories = explode(',', $LMS->CONFIG['userpanel']['default_categories']);
+	$categories = $LMS->GetCategoryListByUser($AUTH->id);
+	foreach($categories as $category)
+	{
+		if (in_array($category['id'], $default_categories))
+			$category['checked'] = true;
+		$ncategories[] = $category;
+	}
+	$categories = $ncategories;
 
 	$SMARTY->assign('userlist', $LMS->GetUserNames());
 	$SMARTY->assign('queuelist', $LMS->GetQueueNames());
 	$SMARTY->assign('default_queue', $LMS->CONFIG['userpanel']['default_queue']);
         $SMARTY->assign('default_userid', $LMS->CONFIG['userpanel']['default_userid']);
         $SMARTY->assign('lms_url', $LMS->CONFIG['userpanel']['lms_url']);
+        $SMARTY->assign('categories', $categories);
 	$SMARTY->display('module:helpdesk:setup.html');
     }
 
@@ -44,6 +55,8 @@ if (defined('USERPANEL_SETUPMODE'))
         $DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'default_queue\'',array($_POST['default_queue']));
 	$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'default_userid\'',array($_POST['default_userid']));
 	$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'lms_url\'',array($_POST['lms_url']));
+	$categories = array_keys((isset($_POST['lms_categories']) ? $_POST['lms_categories'] : array()));
+	$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'default_categories\'', array(implode(',', $categories)));
         header('Location: ?m=userpanel&module=helpdesk');
     }
 }
@@ -59,10 +72,11 @@ function module_main()
         $ticket = $_POST['helpdesk'];
 
 	$ticket['queue'] = $CONFIG['userpanel']['default_queue'];
+	$ticket['categories'] = $CONFIG['userpanel']['default_categories'];
 	$ticket['subject'] = strip_tags($ticket['subject']);
 	$ticket['body'] = strip_tags($ticket['body']);
 
-	if(!$ticket['queue'])
+	if(!$ticket['queue'] || !$ticket['categories'])
 	{
 		header('Location: ?m=helpdesk');
 		die;
@@ -105,6 +119,10 @@ function module_main()
 					$ticket['body'],
 					$ticket['mailfrom']
 				));
+
+		foreach(explode(',', $ticket['categories']) as $catid)
+			$DB->Execute('INSERT INTO rtticketcategories (ticketid, categoryid) VALUES (?, ?)',
+				array($id, $catid));
 
 		if(isset($CONFIG['phpui']['newticket_notify']) && chkconfig($CONFIG['phpui']['newticket_notify']))
 		{

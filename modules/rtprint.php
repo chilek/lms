@@ -33,15 +33,22 @@ switch($type)
 		$days  = !empty($_GET['days']) ? intval($_GET['days']) : intval($_POST['days']);
 		$times = !empty($_GET['times']) ? intval($_GET['times']) : intval($_POST['times']);
 		$queue = !empty($_GET['queue']) ? intval($_GET['queue']) : intval($_POST['queue']);
+		$categories = !empty($_GET['categories']) ? $_GET['categories'] : $_POST['categories'];
 		
 		if($queue)
 			$where[] = 'queueid = '.$queue;
 		if($days)
 			$where[] = 'rttickets.createtime > '.mktime(0, 0, 0, date('n'), date('j')-$days);
+		$catids = (is_array($categories) ? array_keys($categories) : NULL);
+		if (!empty($catids))
+			$where[] = 'tc.categoryid IN ('.implode(',', $catids).')';
+		else
+			$where[] = 'tc.categoryid IS NULL';
 	
     		if($list = $DB->GetAll('SELECT COUNT(*) AS total, customerid, '
 				    .$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername
 		               	    FROM rttickets
+		               	    LEFT JOIN rtticketcategories tc ON tc.ticketid = rttickets.id
 				    LEFT JOIN customers ON (customerid = customers.id)
 				    WHERE customerid != 0'
 				    .(isset($where) ? ' AND '.implode(' AND ', $where) : '')
@@ -51,11 +58,13 @@ switch($type)
 		{
     			$customer = $DB->GetAllByKey('SELECT COUNT(*) AS total, customerid
 		               	    FROM rttickets 
+		               	    LEFT JOIN rtticketcategories tc ON tc.ticketid = rttickets.id
 				    WHERE cause = 1'
 				    .(isset($where) ? ' AND '.implode(' AND ', $where) : '')
 				    .' GROUP BY customerid', 'customerid');
     			$company = $DB->GetAllByKey('SELECT COUNT(*) AS total, customerid
 		               	    FROM rttickets 
+		               	    LEFT JOIN rtticketcategories tc ON tc.ticketid = rttickets.id
 				    WHERE cause = 2'
 				    .(isset($where) ? ' AND '.implode(' AND ', $where) : '')
 				    .' GROUP BY customerid', 'customerid');
@@ -82,6 +91,7 @@ switch($type)
 		$status   = isset($_GET['status']) ? $_GET['status'] : $_POST['status'];
 		$subject  = !empty($_GET['subject']) ? $_GET['subject'] : $_POST['subject'];
 		$extended = !empty($_GET['extended']) ? true : !empty($_POST['extended']) ? true : false;
+		$categories = !empty($_GET['categories']) ? $_GET['categories'] : $_POST['categories'];
 
 		if($queue)
 			$where[] = 'queueid = '.$queue;
@@ -91,6 +101,11 @@ switch($type)
 			$where[] = 'rttickets.createtime < '.mktime(0, 0, 0, date('n'), date('j')-$days);
 		if($subject)
 			$where[] = 'rttickets.subject ?LIKE? '.$DB->Escape("%$subject%");
+		$catids = (is_array($categories) ? array_keys($categories) : NULL);
+		if (!empty($catids))
+			$where[] = 'tc.categoryid IN ('.implode(',', $catids).')';
+		else
+			$where[] = 'tc.categoryid IS NULL';
 
 		if($status != '')
 		{
@@ -107,6 +122,7 @@ switch($type)
 				FROM customercontacts
 				WHERE customerid = customers.id LIMIT 1) AS phone ' : '')
 		        .'FROM rttickets
+			LEFT JOIN rtticketcategories tc ON tc.ticketid = rttickets.id
 			LEFT JOIN customers ON (customerid = customers.id)
 			WHERE state != '.RT_RESOLVED
 			.(isset($where) ? ' AND '.implode(' AND ', $where) : '')
@@ -142,6 +158,8 @@ switch($type)
 	break;
 
 	default:
+		$categories = $LMS->GetCategoryListByUser($AUTH->id);
+
 		$layout['pagetitle'] = trans('Reports');
 		
 		if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
@@ -149,6 +167,7 @@ switch($type)
 			$SMARTY->assign('customers', $LMS->GetCustomerNames());
 		}
 		$SMARTY->assign('queues', $LMS->GetQueueList());
+		$SMARTY->assign('categories', $categories);
 		$SMARTY->display('rtprintindex.html');
 	break;
 }

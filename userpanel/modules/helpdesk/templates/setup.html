@@ -40,6 +40,17 @@
 		    <INPUT TYPE="TEXT" NAME="lms_url" VALUE="{$lms_url}" SIZE="50" {tip text="LMS address needed to build link to new ticket in notification message"}> 
     		</TD>
 	    </TR>
+	    <TR>
+		<TD WIDTH="1%" style="vertical-align:top" NOWRAP>
+		    {t}Default categories:{/t}
+		</TD>
+		<TD WIDTH="99%" NOWRAP>
+			{foreach from=$categories item=category}
+			<INPUT type="checkbox" name="lms_categories[{$category.id}]" ID="cat{$category.id}" value="1" {if $category.checked > 0}CHECKED{/if}>
+			<A href="javascript:checkElement('cat{$category.id}');">{$category.name}</A><BR>
+			{/foreach}
+    		</TD>
+	    </TR>
 	</TABLE>
 	</FORM>
 	<p align="right">
