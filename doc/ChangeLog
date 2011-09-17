@@ -29,6 +29,7 @@ version ? (????-??-??):
   - welcome: added posibility of hiding links, system information and registration info [chilan]
   - helpdesk: ticket categories introduced [chilan]
   - documents: fixed aliases sql query in default template [chilan]
+  - userpanel/helpdesk: missed customer id in footer of the notification mail [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
