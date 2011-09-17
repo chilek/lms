@@ -28,6 +28,7 @@ version ? (????-??-??):
   - lms-cutoff: added 'customergroups' & 'excluded_customergroups' opts [maniac]
   - welcome: added posibility of hiding links, system information and registration info [chilan]
   - helpdesk: ticket categories introduced [chilan]
+  - documents: fixed aliases sql query in default template [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
