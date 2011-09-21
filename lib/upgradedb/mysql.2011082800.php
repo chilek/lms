@@ -83,7 +83,7 @@ $DB->Execute("
 $DB->Execute("
     CREATE TABLE location_streets (
         id int(11)          NOT NULL auto_increment,
-        name varchar(64)    NOT NULL, -- TERYT: NAZWA_1
+        name varchar(128)   NOT NULL, -- TERYT: NAZWA_1
         ident varchar(8)    NOT NULL, -- TERYT: SYM_UL
         typeid int(11)      DEFAULT NULL
             REFERENCES location_street_types (id) ON DELETE SET NULL ON UPDATE CASCADE,

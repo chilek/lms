@@ -85,7 +85,7 @@ $DB->Execute("
     CREATE SEQUENCE location_streets_id_seq;
     CREATE TABLE location_streets (
         id integer          DEFAULT nextval('location_streets_id_seq'::text) NOT NULL,
-        name varchar(64)    NOT NULL, -- TERYT: NAZWA_1
+        name varchar(128)   NOT NULL, -- TERYT: NAZWA_1
         ident varchar(8)    NOT NULL, -- TERYT: SYM_UL
         typeid integer      DEFAULT NULL
             REFERENCES location_street_types (id) ON DELETE SET NULL ON UPDATE CASCADE,
