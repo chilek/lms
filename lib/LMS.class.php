@@ -3733,6 +3733,8 @@ class LMS
 	function RTStats()
 	{
 		$categories = $this->GetCategoryListByUser($this->AUTH->id);
+		if (empty($categories))
+			return NULL;
 		foreach ($categories as $category)
 			$catids[] = $category['id'];
 		return $this->DB->GetAll('SELECT tc.categoryid AS id, c.name,
