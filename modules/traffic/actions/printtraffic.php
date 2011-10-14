@@ -28,7 +28,7 @@ $month = $_POST['month'] ? $_POST['month'] : date('n');
 $year = $_POST['year'] ? $_POST['year'] : date('Y');
 $customer = $_POST['customer'] ? $_POST['customer'] : $_GET['customer'];
 
-$layout['pagetitle'] = trans('Stats of Customer $0 in month $1', $LMS->GetCustomerName($customer), strftime('%B %Y', mktime(0,0,0,$month,1,$year)));
+$layout['pagetitle'] = trans('Stats of Customer $a in month $b', $LMS->GetCustomerName($customer), strftime('%B %Y', mktime(0,0,0,$month,1,$year)));
 	
 $from = mktime(0,0,0,$month,1,$year);
 $to = mktime(0,0,0,$month+1,1,$year);

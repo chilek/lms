@@ -72,7 +72,7 @@ if(isset($_POST['domainadd']))
 					array($domainadd['ownerid']));
 
 			if($limits['domain_limit'] == 0 || $limits['domain_limit'] <= $cnt)
-				$error['ownerid'] = trans('Exceeded domains limit of selected customer ($0)!', $limits['domain_limit']);
+				$error['ownerid'] = trans('Exceeded domains limit of selected customer ($a)!', $limits['domain_limit']);
 		}
 	}
 	

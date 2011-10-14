@@ -43,7 +43,7 @@ if ($userinfo['ntype'] & MSG_SMS)
     $ntype[] = trans('sms');
 $userinfo['ntype'] = implode(', ', $ntype);
 
-$layout['pagetitle'] = trans('User Info: $0', $userinfo['login']);
+$layout['pagetitle'] = trans('User Info: $a', $userinfo['login']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

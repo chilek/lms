@@ -31,7 +31,7 @@ if(!$LMS->UserExists($_GET['id']))
 
 $userinfo = $LMS->GetUserInfo($_GET['id']);
 
-$layout['pagetitle'] = trans('User Info: $0', $userinfo['login']);
+$layout['pagetitle'] = trans('User Info: $a', $userinfo['login']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

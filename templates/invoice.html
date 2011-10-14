@@ -6,10 +6,10 @@
 			{number number=$invoice.number template=$invoice.template time=$invoice.cdate assign=number}
 			{if $invoice.invoice}
 			    {number number=$invoice.invoice.number template=$invoice.invoice.template time=$invoice.invoice.cdate assign=number_ref}
-			    <B>{t 0=$number}Credit Note No. $0{/t}</B><BR>
-			    <B class="mdf">{t 0=$number_ref}for Invoice No. $0{/t}</B><BR>
+			    <B>{t a=$number}Credit Note No. $a{/t}</B><BR>
+			    <B class="mdf">{t a=$number_ref}for Invoice No. $a{/t}</B><BR>
 			{else}
-			    <B>{t 0=$number}Invoice No. $0{/t}</B><BR>
+			    <B>{t a=$number}Invoice No. $a{/t}</B><BR>
 			{/if}
 			<B>{$type}</B>
 			{if $duplicate}
@@ -349,7 +349,7 @@
 			{if $_config.phpui.to_words_short_version|chkconfig}
 				{$invoice.value|string_format:"%d"|to_words:0:"":1} {$invoice.valuep|string_format:"%02d"}/100
 			{else}
-				{t 0=$invoice.value|string_format:"%d"|to_words 1=$invoice.valuep|to_words}$0 dollars $1 cents{/t}
+				{t a=$invoice.value|string_format:"%d"|to_words b=$invoice.valuep|to_words}$a dollars $b cents{/t}
 			{/if}
 		</TD>
 	</TR>

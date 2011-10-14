@@ -8,7 +8,7 @@
 		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
 			{$smarty.now|date_format:"%A, %x"}<BR>
-			{t 0=$layout.logname}Prepared by: $0{/t}
+			{t a=$layout.logname}Prepared by: $a{/t}
 		</TD>
 	</TR>
 </TABLE>
@@ -46,13 +46,13 @@
 			{$balancelist.date[balancelist]}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{if !$balancelist.type[balancelist]}{$balancelist.value[balancelist]*-1|money_format}{else}-{/if}
+			{if !$balancelist.type[balancelist]}{($balancelist.value[balancelist]*-1)|money_format}{else}-{/if}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			{if $balancelist.type[balancelist] && $balancelist.value[balancelist] > 0}{$balancelist.value[balancelist]|money_format}{else}-{/if}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{if $balancelist.type[balancelist] && $balancelist.value[balancelist] < 0}{$balancelist.value[balancelist]*-1|money_format}{else}-{/if}
+			{if $balancelist.type[balancelist] && $balancelist.value[balancelist] < 0}{($balancelist.value[balancelist]*-1)|money_format}{else}-{/if}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			{$balancelist.after[balancelist]|money_format}

@@ -14,7 +14,7 @@
 	<TR CLASS="dark">
 		<TD width="100%" CLASS="fall">
 			<IMG src="img/ticket.gif" alt="">
-			<B>{t 0=$ticket.ticketid|string_format:"%06d"}Ticket No. $0{/t}</B>
+			<B>{t a=$ticket.ticketid|string_format:"%06d"}Ticket No. $a{/t}</B>
 		</TD>
 	</TR>
 	<TR CLASS="light">
@@ -105,8 +105,8 @@
 			{if $ticket.owner==0}
 				<OPTION value="0" SELECTED>- {t}select user{/t} -</OPTION>
 			{/if}
-			{foreach from=$userlist item=userlist}
-				<OPTION value="{$userlist.id}" {if $userlist.id == $ticket.owner}SELECTED{/if}>{$userlist.name}</OPTION>
+			{foreach from=$userlist item=item}
+				<OPTION value="{$item.id}" {if $item.id == $ticket.owner}SELECTED{/if}>{$item.name}</OPTION>
 			{/foreach}
 			</SELECT>
 		    </TD>
@@ -118,8 +118,8 @@
 		    </TD>
 		    <TD WIDTH="99%">
 			<SELECT size="1" name="ticket[queueid]" {tip text="Select queue" trigger="queue"}>
-			{foreach from=$queuelist item=queuelist}
-				<OPTION value="{$queuelist.id}" {if $queuelist.id == $ticket.queueid}SELECTED{/if}>{$queuelist.name}</OPTION>
+			{foreach from=$queuelist item=item}
+				<OPTION value="{$item.id}" {if $item.id == $ticket.queueid}SELECTED{/if}>{$item.name}</OPTION>
 			{/foreach}
 			</SELECT>
 		    </TD>

@@ -202,7 +202,7 @@ else
 		$customerinfo['contacts'][] = array();
 }
 
-$layout['pagetitle'] = trans('Customer Edit: $0',$customerinfo['customername']);
+$layout['pagetitle'] = trans('Customer Edit: $a',$customerinfo['customername']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

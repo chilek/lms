@@ -49,11 +49,11 @@ foreach ($schema['data'] as $idx => $data) {
         break;
     }
     else if ($data == 1) {
-        $period = trans('Month $0', $data);
+        $period = trans('Month $a', $data);
         $mon++;
     }
     else {
-        $period = trans('Months $0-$1', $mon, $mon + $data-1);
+        $period = trans('Months $a-$b', $mon, $mon + $data-1);
         $mon += $data;
     }
     $schema['periods'][] = $period;
@@ -86,7 +86,7 @@ $tariffs = $DB->GetAll('SELECT t.name, t.value, t.id, t.upceil, t.downceil
         WHERE promotionschemaid = ?)
     ORDER BY t.name, t.value DESC', array($schema['id']));
 
-$layout['pagetitle'] = trans('Schema Info: $0', $schema['name']);
+$layout['pagetitle'] = trans('Schema Info: $a', $schema['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

@@ -43,10 +43,10 @@ $LMS = new LMS($DB, $AUTH, $CONFIG);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
-$SMARTY->assign_by_ref('_LANG', $_LANG);
-$SMARTY->assign_by_ref('LANGDEFS', $LANGDEFS);
-$SMARTY->assign_by_ref('_ui_language', $LMS->ui_lang);
-$SMARTY->assign_by_ref('_language', $LMS->lang);
+$SMARTY->assignByRef('_LANG', $_LANG);
+$SMARTY->assignByRef('LANGDEFS', $LANGDEFS);
+$SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
+$SMARTY->assignByRef('_language', $LMS->lang);
 $SMARTY->assign('_dochref', is_dir('doc/html/'.$LMS->ui_lang) ? 'doc/html/'.$LMS->ui_lang.'/' : 'doc/html/en/');
 $SMARTY->assign('_config',$CONFIG);
 
@@ -59,7 +59,7 @@ $layout['lmsvr'] = $LMS->_revision;
 $layout['dberrors'] =& $DB->errors;
 $layout['popup'] = isset($_GET['popup']) ? true : false;
 
-$SMARTY->assign_by_ref('layout', $layout);
+$SMARTY->assignByRef('layout', $layout);
 $SMARTY->assign('_module', $ExecStack->module);
 $SMARTY->assign('_action', $ExecStack->action);
 

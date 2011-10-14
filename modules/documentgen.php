@@ -188,7 +188,7 @@ if(isset($_POST['document']))
 				if(!file_exists($newfile))
 				{
 					if(!@rename($file, $newfile))
-						$error = trans('Can\'t save file in "$0" directory!', $path);
+						$error = trans('Can\'t save file in "$a" directory!', $path);
 				}
 			}
 			else

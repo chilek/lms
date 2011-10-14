@@ -46,7 +46,7 @@
 		</TD>
 		<TD CLASS="fright" align="right" NOWRAP>
 			<A HREF="?m=receiptlist&regid={$reg.id}"><IMG SRC="img/view.gif" alt="[ {t}Browse{/t} ]" title="[ {t}Browse{/t} ]"></A>
-			<A HREF="?m=cashregdel&id={$reg.id}" OnClick="return confirmLink(this, '{t 0=$reg.name}Are you sure, you want to remove registry \'$0\' and all assigned receipts?{/t}');"><IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+			<A HREF="?m=cashregdel&id={$reg.id}" OnClick="return confirmLink(this, '{t a=$reg.name}Are you sure, you want to remove registry \'$a\' and all assigned receipts?{/t}');"><IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
 			<A HREF="?m=cashregedit&id={$reg.id}"><IMG SRC="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 			<A HREF="?m=cashreginfo&id={$reg.id}"><IMG SRC="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
 		</TD>

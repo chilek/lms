@@ -53,7 +53,7 @@ switch($type)
 
 		$id = intval($_POST['customer']);
 
-		$layout['pagetitle'] = trans('Customer $0 Balance Sheet ($1 to $2)',$LMS->GetCustomerName($id), ($from ? $from : ''), $to);
+		$layout['pagetitle'] = trans('Customer $a Balance Sheet ($b to $c)',$LMS->GetCustomerName($id), ($from ? $from : ''), $to);
 
 		$list['balance'] = 0;
 		$list['income'] = 0;
@@ -151,9 +151,9 @@ switch($type)
 		        $net = $LMS->GetNetworkParams($net);
 
 		if($user = $_POST['user'])
-			$layout['pagetitle'] = trans('Balance Sheet of User: $0 ($1 to $2)', $LMS->GetUserName($user), ($from ? $from : ''), $to);
+			$layout['pagetitle'] = trans('Balance Sheet of User: $a ($b to $c)', $LMS->GetUserName($user), ($from ? $from : ''), $to);
 		else
-			$layout['pagetitle'] = trans('Balance Sheet ($0 to $1)', ($from ? $from : ''), $to);
+			$layout['pagetitle'] = trans('Balance Sheet ($a to $b)', ($from ? $from : ''), $to);
 	
 		if($types)
 		{
@@ -301,7 +301,7 @@ switch($type)
 			$date['to'] = mktime(23,59,59); // end of today
 		}
 		
-		$layout['pagetitle'] = trans('Total Invoiceless Income ($0 to $1)',($from ? $from : ''), $to);
+		$layout['pagetitle'] = trans('Total Invoiceless Income ($a to $b)',($from ? $from : ''), $to);
 		
 		$incomelist = $DB->GetAll('SELECT floor(time/86400)*86400 AS date, SUM(value) AS value
 			FROM cash c
@@ -339,7 +339,7 @@ switch($type)
 			$date['to'] = mktime(23,59,59); // end of today
 		}
 
-		$layout['pagetitle'] = trans('Cash Import History ($0 to $1)', $from, $to);
+		$layout['pagetitle'] = trans('Cash Import History ($a to $b)', $from, $to);
 
 		$importlist = $DB->GetAll('SELECT c.time, c.value, c.customerid, '
 			.$DB->Concat('upper(v.lastname)',"' '",'v.name').' AS customername 
@@ -448,7 +448,7 @@ switch($type)
 			$today = mktime(0,0,0);
 		}
 
-		$layout['pagetitle'] = trans('Liability Report on $0',date('Y/m/d', $reportday));
+		$layout['pagetitle'] = trans('Liability Report on $a',date('Y/m/d', $reportday));
 
 		$order = $_POST['order'];
 		$direction = $_POST['direction'];
@@ -738,17 +738,17 @@ switch($type)
 		$layout['pagetitle'] = trans('Cash Report').' '.$period;
 		
 		if($registry)
-			$layout['registry'] = trans('Registry: $0', ($registry ? $DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($registry)) : trans('all')));
+			$layout['registry'] = trans('Registry: $a', ($registry ? $DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($registry)) : trans('all')));
 		if($user)
-			$layout['username'] = trans('Cashier: $0', $DB->GetOne('SELECT name FROM users WHERE id=?', array($user)));
+			$layout['username'] = trans('Cashier: $a', $DB->GetOne('SELECT name FROM users WHERE id=?', array($user)));
 		if($group)
 		{
 			$groupname = $DB->GetOne('SELECT name FROM customergroups WHERE id=?', array($group));
 	
 			if(isset($_POST['groupexclude']))
-				$layout['group'] = trans('Group: all excluding $0', $groupname);
+				$layout['group'] = trans('Group: all excluding $a', $groupname);
 			else	
-				$layout['group'] = trans('Group: $0', $groupname);
+				$layout['group'] = trans('Group: $a', $groupname);
 		}
 		$SMARTY->assign('receiptlist', $list);
 		$SMARTY->assign('listdata', $listdata);

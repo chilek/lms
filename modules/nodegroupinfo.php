@@ -49,7 +49,7 @@ $nodegroup = $LMS->GetNodeGroup($id, isset($membersnetid) ? $membersnetid : 0);
 $nodes = $LMS->GetNodesWithoutGroup($id, isset($othersnetid) ? $othersnetid : 0);
 $nodescount = sizeof($nodes);
 
-$layout['pagetitle'] = trans('Group Info: $0',$nodegroup['name']);
+$layout['pagetitle'] = trans('Group Info: $a',$nodegroup['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

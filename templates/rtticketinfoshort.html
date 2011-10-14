@@ -14,7 +14,7 @@
 	<TR CLASS="dark">
 		<TD COLSPAN="2" width="100%" CLASS="fall" NOWRAP>
 			<IMG src="img/ticket.gif" alt="">
-			<B>{t 0=$ticket.id|string_format:"%06d"}Ticket No. $0{/t}</B>
+			<B>{t a=$ticket.id|string_format:"%06d"}Ticket No. $a{/t}</B>
 		</TD>
 	</TR>
 	{if $ticket.creatorid}

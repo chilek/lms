@@ -24,16 +24,20 @@
  *  $Id$
  */
 
-function smarty_block_t($args, $content, &$SMARTY)
+function smarty_block_t($params, $content, &$template, &$repeat)
 {
-    if($SMARTY->_tpl_vars['_LANG'][$content])
-	    $content = trim($SMARTY->_tpl_vars['_LANG'][$content]);
-    
-    if(is_array($args))
-	    foreach($args as $argid => $argval)
-		    $content = str_replace('$'.$argid, $argval, $content);
+	if (!empty($content))
+	{
+		$lang = $template->getTemplateVars('_LANG');
+		if($lang[$content])
+			$content = trim($lang[$content]);
 
-    return trim($content);
+		if(is_array($params))
+			foreach($params as $paramid => $paramval)
+				$content = str_replace('$'.$paramid, $paramval, $content);
+
+		return trim($content);
+	}
 }
 
 ?>

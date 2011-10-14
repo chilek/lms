@@ -62,7 +62,7 @@ if(isset($_POST['networkdata']))
 	{
 		if(getnetaddr($networkdata['address'],prefix2mask($networkdata['prefix']))!=$networkdata['address'])
 		{
-			$error['address'] = trans('Specified address is not a network address, setting $0',getnetaddr($networkdata['address'],prefix2mask($networkdata['prefix'])));
+			$error['address'] = trans('Specified address is not a network address, setting $a',getnetaddr($networkdata['address'],prefix2mask($networkdata['prefix'])));
 			$networkdata['address'] = getnetaddr($networkdata['address'],prefix2mask($networkdata['prefix']));
 		}
 		else
@@ -178,7 +178,7 @@ if(isset($_POST['networkdata']))
 
 $networks = $LMS->GetNetworks();
 
-$layout['pagetitle'] = trans('Network Edit: $0',$network['name']);
+$layout['pagetitle'] = trans('Network Edit: $a',$network['name']);
 
 $SMARTY->assign('unlockedit',TRUE);
 $SMARTY->assign('network',$network);

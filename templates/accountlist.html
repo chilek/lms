@@ -22,7 +22,7 @@
 			<A href="?m={$layout.module}{$suffix}&o=expdate{if $listdata.direction eq "asc" && $listdata.order eq "expdate"},desc{/if}">{t}Expiration date:{/t}</A>{if $listdata.order eq "expdate"} <IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="frightu" align="right" NOWRAP>
-			 <B>{t 0=$listdata.total}Total: $0{/t}</B>&nbsp;
+			 <B>{t a=$listdata.total}Total: $a{/t}</B>&nbsp;
 		</TD>
 	</TR>
 	<TR class="DARK">
@@ -109,7 +109,7 @@
 			<NOBR>
 			<A href="?m=accountpasswd&id={$accountlist[accountlist].id}"><IMG src="img/pass.gif" alt="[ {t}Change password{/t} ]" title="[ {t}Change password{/t} ]"></A> 
 			<A href="?m=aliasadd&accountid={$accountlist[accountlist].id}"><IMG src="img/alias.gif" alt="[ {t}Create alias{/t} ]" title="[ {t}Create alias{/t} ]"></A> 
-			<A href="?m=accountdel&id={$accountlist[accountlist].id}" OnClick="return confirmLink(this, '{t 0=$account}Are you sure, you want to delete account \'$0\' and all assigned to them aliases?{/t}')"><IMG src="img/delete.gif" title="[ {t}Delete{/t} ]" alt="[ {t}Delete{/t} ]"></A> 
+			<A href="?m=accountdel&id={$accountlist[accountlist].id}" OnClick="return confirmLink(this, '{t a=$account}Are you sure, you want to delete account \'$a\' and all assigned to them aliases?{/t}')"><IMG src="img/delete.gif" title="[ {t}Delete{/t} ]" alt="[ {t}Delete{/t} ]"></A> 
 			<A href="?m=accountedit&id={$accountlist[accountlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A> 
 			<A href="?m=accountinfo&id={$accountlist[accountlist].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A> 
 			</NOBR>

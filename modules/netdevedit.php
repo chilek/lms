@@ -337,7 +337,7 @@ case 'formaddip':
 		if($nodeipdata['name']=='')
 			$error['ipname'] = trans('Address field is required!');
 		elseif(strlen($nodeipdata['name']) > 32)
-			$error['ipname'] = trans('Specified name is too long (max.$0 characters)!','32');
+			$error['ipname'] = trans('Specified name is too long (max.$a characters)!','32');
 		elseif($LMS->GetNodeIDByName($nodeipdata['name']))
 			$error['ipname'] = trans('Specified name is in use!');
 		elseif(!preg_match('/^[_a-z0-9-]+$/i', $nodeipdata['name']))
@@ -427,7 +427,7 @@ case 'formeditip':
 		if($nodeipdata['name']=='')
 			$error['ipname'] = trans('Address field is required!');
 		elseif(strlen($nodeipdata['name']) > 32)
-			$error['ipname'] = trans('Specified name is too long (max.$0 characters)!','32');
+			$error['ipname'] = trans('Specified name is too long (max.$a characters)!','32');
 		elseif(
 			$LMS->GetNodeIDByName($nodeipdata['name']) &&
 			$LMS->GetNodeName($_GET['ip'])!=$nodeipdata['name']
@@ -520,7 +520,7 @@ if(isset($_POST['netdev']))
 	if($netdevdata['name'] == '')
 		$error['name'] = trans('Device name is required!');
 	elseif(strlen($netdevdata['name']) > 32)
-		$error['name'] =  trans('Specified name is too long (max.$0 characters)!','32');
+		$error['name'] =  trans('Specified name is too long (max.$a characters)!','32');
 
 	$netdevdata['ports'] = intval($netdevdata['ports']);
 
@@ -614,7 +614,7 @@ unset($replacelist['order']);
 unset($replacelist['total']);
 unset($replacelist['direction']);
 
-$layout['pagetitle'] = trans('Device Edit: $0 ($1)', $netdevdata['name'], $netdevdata['producer']);
+$layout['pagetitle'] = trans('Device Edit: $a ($b)', $netdevdata['name'], $netdevdata['producer']);
 
 if($subtitle) $layout['pagetitle'] .= ' - '.$subtitle;
 

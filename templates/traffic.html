@@ -22,7 +22,7 @@
 						<B><A HREF="?m=nodeinfo&id={$download.nodeid[download]}">{if $showips}{$download.ipaddr[download]}{else}{$download.name[download]|truncate:25:"...":true}{/if}</A></B>
 					</TD>
 					<TD CLASS="fright hand" WIDTH="99%" NOWRAP>
-						<IMG SRC="img/redpx.gif" HEIGHT="12" WIDTH="{$download.bar[download]}" BORDER="1" ALT="" {tip 0=$download.nodeid[download] 1=$bar 2=$datefrom 3=$dateto sticky=1 popup='?m=trafficgraph&nodeid=$0&bar=$1&from=$2&to=$3'}>
+						<IMG SRC="img/redpx.gif" HEIGHT="12" WIDTH="{$download.bar[download]}" BORDER="1" ALT="" {tip a=$download.nodeid[download] 1=$bar 2=$datefrom 3=$dateto sticky=1 popup='?m=trafficgraph&nodeid=$a&bar=$1&from=$2&to=$3'}>
 						{$download.data[download]|string_format:"%.2f"}&nbsp;{$download.unit[download]} ({$download.avg[download]|string_format:"%d"}&nbsp;kbit/s) 
 					</TD>
 				</TR>
@@ -47,7 +47,7 @@
 						<B><A HREF="?m=nodeinfo&id={$upload.nodeid[upload]}">{if $showips}{$upload.ipaddr[upload]}{else}{$upload.name[upload]|truncate:25:"...":true}{/if}</A></B>
 					</TD>
 					<TD CLASS="fright hand" WIDTH="99%" NOWRAP>
-						<IMG SRC="img/bluepx.gif" HEIGHT="12" WIDTH="{$upload.bar[upload]}" BORDER="1" ALT="" {tip 0=$upload.nodeid[upload] 1=$bar 2=$datefrom 3=$dateto sticky=1 popup='?m=trafficgraph&nodeid=$0&bar=$1&from=$2&to=$3'}>
+						<IMG SRC="img/bluepx.gif" HEIGHT="12" WIDTH="{$upload.bar[upload]}" BORDER="1" ALT="" {tip a=$upload.nodeid[upload] 1=$bar 2=$datefrom 3=$dateto sticky=1 popup='?m=trafficgraph&nodeid=$a&bar=$1&from=$2&to=$3'}>
 						{$upload.data[upload]|string_format:"%.2f"}&nbsp;{$upload.unit[upload]} ({$upload.avg[upload]|string_format:"%d"}&nbsp;kbit/s) 
 					</TD>
 				</TR>
@@ -61,7 +61,7 @@
 		</TD>
 	</TR>
 	{if $smarty.section.download.index_next}
-	<TR><TD WIDTH="100%" COLSPAN="2" ALIGN="center">{t 0= $smarty.section.download.index_next}Rows: $0{/t}</TD></TR>
+	<TR><TD WIDTH="100%" COLSPAN="2" ALIGN="center">{t a=$smarty.section.download.index_next}Rows: $a{/t}</TD></TR>
 	{/if}
 </TABLE>
 {else}

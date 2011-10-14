@@ -32,7 +32,7 @@ if(!$LMS->CustomerExists($_GET['id']))
 $customername = $LMS->GetCustomerName($_GET['id']);
 $id = $_GET['id'];
 
-$layout['pagetitle'] = trans('Customer Balance: $0', '<A HREF="?m=customerinfo&id='.$_GET['id'].'">'.$customername.'</A>');
+$layout['pagetitle'] = trans('Customer Balance: $a', '<A HREF="?m=customerinfo&id='.$_GET['id'].'">'.$customername.'</A>');
 
 $SMARTY->assign('balancelist', $LMS->GetCustomerBalanceList($_GET['id']));
 $SMARTY->assign('taxeslist', $LMS->GetTaxes());

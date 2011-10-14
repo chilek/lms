@@ -131,7 +131,7 @@ if(!isset($userinfo['selected']))
 	        WHERE customergroupid = g.id AND userid = ?
 		ORDER BY name', 'id', array($userinfo['id']));
 
-$layout['pagetitle'] = trans('User Edit: $0', $userinfo['login']);
+$layout['pagetitle'] = trans('User Edit: $a', $userinfo['login']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

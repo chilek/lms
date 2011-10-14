@@ -113,7 +113,7 @@ class Sysinfo {
 				$hostname=$return[0];
 				break;
 			default:
-				$return = trans('unknown OS ($0)',PHP_OS);
+				$return = trans('unknown OS ($a)',PHP_OS);
 		}
 		if($hostname=='')
 			$hostname='N.A.';
@@ -153,7 +153,7 @@ class Sysinfo {
 				$result = uptimef($sys_ticks);
 			break;
 			default:
-				$result = trans('unknown OS ($0)',PHP_OS);
+				$result = trans('unknown OS ($a)',PHP_OS);
 			break;
 		}
 		return $result;

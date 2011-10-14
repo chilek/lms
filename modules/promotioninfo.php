@@ -52,7 +52,7 @@ if (!empty($promotion['schemas'])) {
         array($promotion['id']));
 }
 
-$layout['pagetitle'] = trans('Promotion Info: $0', $promotion['name']);
+$layout['pagetitle'] = trans('Promotion Info: $a', $promotion['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

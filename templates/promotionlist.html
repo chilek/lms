@@ -42,7 +42,7 @@
 		</TD>
 		<TD CLASS="fright" align="right" NOWRAP>
 			<A HREF="?m=promotionset&id={$promo.id}&access={$promo.disabled}">{if $promo.disabled}<IMG src="img/noaccess.gif" alt="[ {t}Enable{/t} ]" title="[ {t}Enable{/t} ]">{else}<IMG src="img/access.gif" alt="[ {t}Disable{/t} ]" title="[ {t}Disable{/t} ]">{/if}</A>
-			<A HREF="?m=promotiondel&id={$promo.id}" OnClick="return confirmLink(this, '{t 0=$promo.name}Are you sure, you want to remove promotion \'$0\'?{/t}');"><IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+			<A HREF="?m=promotiondel&id={$promo.id}" OnClick="return confirmLink(this, '{t a=$promo.name}Are you sure, you want to remove promotion \'$a\'?{/t}');"><IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
 			<A HREF="?m=promotionedit&id={$promo.id}"><IMG SRC="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 			<A HREF="?m=promotioninfo&id={$promo.id}"><IMG SRC="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
 		</TD>

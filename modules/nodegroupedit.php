@@ -35,7 +35,7 @@ $othersnetid =  isset($_GET['othersnetid']) ? $_GET['othersnetid'] : 0;
 $nodegroup = $LMS->GetNodeGroup($id, $membersnetid);
 $nodes = $LMS->GetNodesWithoutGroup($id, $othersnetid);
 
-$layout['pagetitle'] = trans('Group Edit: $0', $nodegroup['name']);
+$layout['pagetitle'] = trans('Group Edit: $a', $nodegroup['name']);
 
 if(isset($_POST['nodegroup']))
 {
@@ -53,7 +53,7 @@ if(isset($_POST['nodegroup']))
 	elseif(!preg_match('/^[._a-z0-9-]+$/i', $nodegroupedit['name']))
 		$error['name'] = trans('Invalid chars in group name!');
 	elseif( $id != $nodegroupedit['id'])
-		$error['name'] = trans('Group with name $0 already exists!',$nodegroupedit['name']);
+		$error['name'] = trans('Group with name $a already exists!',$nodegroupedit['name']);
 
 	if(!$error)
 	{

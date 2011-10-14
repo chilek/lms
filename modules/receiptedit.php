@@ -115,7 +115,7 @@ if(isset($_GET['id']))
 			        if(!empty($CONFIG['receipts']['nodegroups_warning']))
 			                $customer['nodegroupswarning'] = $CONFIG['receipts']['nodegroups_warning'];
 			        else
-			        	$customer['nodegroupswarning'] = trans('Customer has got nodes in groups: <b>$0</b>!',
+			        	$customer['nodegroupswarning'] = trans('Customer has got nodes in groups: <b>$a</b>!',
 			                            $CONFIG['receipts']['show_nodegroups_warning']);
 			}
 		}
@@ -157,9 +157,9 @@ $receipt['titlenumber'] = docnumber($receipt['number'], $receipt['template'], $r
 			    isset($receipt['extnumber']) ? $receipt['extnumber'] : '');
 
 if($receipt['type']=='in')
-	$layout['pagetitle'] = trans('Cash-in Receipt Edit: $0', $receipt['titlenumber']);
+	$layout['pagetitle'] = trans('Cash-in Receipt Edit: $a', $receipt['titlenumber']);
 else
-	$layout['pagetitle'] = trans('Cash-out Receipt Edit: $0', $receipt['titlenumber']);
+	$layout['pagetitle'] = trans('Cash-out Receipt Edit: $a', $receipt['titlenumber']);
 
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
@@ -240,7 +240,7 @@ switch($action)
 				$maxdate = $DB->GetOne('SELECT MAX(cdate) FROM documents WHERE type = ? AND numberplanid = ?', array(DOC_RECEIPT, $receipt['numberplanid']));
 				if($receipt['cdate'] < $maxdate)
 				{
-					$error['cdate'] = trans('Last date of receipt settlement is $0. If sure, you want to write receipt with date of $1, then click "Submit" again.',date('Y/m/d H:i', $maxdate), date('Y/m/d H:i', $receipt['cdate']));
+					$error['cdate'] = trans('Last date of receipt settlement is $a. If sure, you want to write receipt with date of $b, then click "Submit" again.',date('Y/m/d H:i', $maxdate), date('Y/m/d H:i', $receipt['cdate']));
 					$receipt['cdatewarning'] = 1;
 				}
 			}
@@ -256,7 +256,7 @@ switch($action)
 				$error['number'] = trans('Receipt number must be integer!');
 			elseif($receipt['number']!=$oldnumber)
 				if($LMS->DocumentExists($receipt['number'], DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']))
-					$error['number'] = trans('Receipt number $0 already exists!', $receipt['number']);
+					$error['number'] = trans('Receipt number $a already exists!', $receipt['number']);
 		}
 
 		if($receipt['numberplanid'] && !$receipt['extnumber'])
@@ -337,7 +337,7 @@ switch($action)
 					        if(!empty($CONFIG['receipts']['nodegroups_warning']))
 					                $customer['nodegroupswarning'] = $CONFIG['receipts']['nodegroups_warning'];
 					        else
-					        	$customer['nodegroupswarning'] = trans('Customer has got nodes in groups: <b>$0</b>!',
+					        	$customer['nodegroupswarning'] = trans('Customer has got nodes in groups: <b>$a</b>!',
 					                            $CONFIG['receipts']['show_nodegroups_warning']);
 					}
 				}

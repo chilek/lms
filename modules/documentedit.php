@@ -164,7 +164,7 @@ if(isset($_POST['document']))
 		if(!file_exists($newfile))
 		{
 			if(!@rename($file, $newfile))
-				$error['file'] = trans('Can\'t save file in "$0" directory!', $path);
+				$error['file'] = trans('Can\'t save file in "$a" directory!', $path);
 		}
 		else
 			$error['file'] = trans('Specified file exists in database!');
@@ -260,7 +260,7 @@ if($dirs = getdir(DOC_DIR.'/templates', '^[a-z0-9_-]+$'))
 if($docengines) ksort($docengines);
 */
 
-$layout['pagetitle'] = trans('Edit Document: $0', docnumber($document['number'], $document['template'], $document['cdate']));
+$layout['pagetitle'] = trans('Edit Document: $a', docnumber($document['number'], $document['template'], $document['cdate']));
 
 //$SMARTY->assign('docengines', $docengines);
 $SMARTY->assign('numberplans', $numberplans);

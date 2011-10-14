@@ -5,7 +5,7 @@
 <TABLE WIDTH="960" CELLPADDING="3" ALIGN="CENTER">
         <TR{if $item > 1} style="page-break-before: always; border-style: none;"{/if}>
 	        <TD WIDTH="99%" ALIGN="LEFT">
-			<B><font class="sdr">{$layout.pagetitle}{if $pagescount} ({t 0=$item 1=$pagescount}Page $0 from $1{/t}){/if}</font></B><BR>
+			<B><font class="sdr">{$layout.pagetitle}{if $pagescount} ({t a=$item b=$pagescount}Page $a from $b{/t}){/if}</font></B><BR>
 			{if $layout.username} <B>{$layout.username}</B>{/if}
 			{if $layout.registry} <B>{$layout.registry}</B>{/if}
 			{if $layout.group} <B>{$layout.group}</B>{/if}
@@ -13,7 +13,7 @@
 		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
 			{$smarty.now|date_format:"%A, %x"}<BR>
-			{t 0=$layout.logname}Created by: $0{/t}
+			{t a=$layout.logname}Created by: $a{/t}
 		</TD>
 	</TR>
 </TABLE>
@@ -65,7 +65,7 @@
 			{if $receiptlist[receiptlist].value > 0}{$receiptlist[receiptlist].value|string_format:"%.2f"}{else}-{/if}
 		</TD>
 		<TD ALIGN="RIGHT" CLASS="small" NOWRAP>
-			{if $receiptlist[receiptlist].value < 0}{$receiptlist[receiptlist].value*-1|string_format:"%.2f"}{else}-{/if}
+			{if $receiptlist[receiptlist].value < 0}{($receiptlist[receiptlist].value*-1)|string_format:"%.2f"}{else}-{/if}
 		</TD>
 		<TD ALIGN="RIGHT" CLASS="small" NOWRAP>
 			{$receiptlist[receiptlist].after|string_format:"%.2f"}
@@ -120,7 +120,7 @@
 		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
 			{$smarty.now|date_format:"%A, %x"}<BR>
-			{t 0=$layout.logname}Created by: $0{/t}
+			{t a=$layout.logname}Created by: $a{/t}
 		</TD>
 	</TR>
 </TABLE>

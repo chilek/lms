@@ -31,7 +31,7 @@ if(! $LMS->QueueExists($_GET['id']))
 
 $queue = $LMS->GetQueue($_GET['id']);
 
-$layout['pagetitle'] = trans('Queue Info: $0',$queue['name']);
+$layout['pagetitle'] = trans('Queue Info: $a',$queue['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

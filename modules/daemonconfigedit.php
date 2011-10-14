@@ -68,7 +68,7 @@ elseif(isset($_GET['statuschange']))
 
 $instance = $DB->GetRow('SELECT daemoninstances.name AS name, hosts.name AS hostname FROM daemoninstances, hosts WHERE hosts.id=hostid AND daemoninstances.id=?', array($config['instanceid']));
 
-$layout['pagetitle'] = trans('Option Edit: $0/$1/$2', $config['var'], $instance['name'], $instance['hostname']);
+$layout['pagetitle'] = trans('Option Edit: $a/$b/$c', $config['var'], $instance['name'], $instance['hostname']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

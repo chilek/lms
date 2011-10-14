@@ -49,7 +49,7 @@ if($LMS->UserExists($id))
 
 	$passwd['realname'] = $LMS->GetUserName($id);
 	$passwd['id'] = $id;
-	$layout['pagetitle'] = trans('Password Change for User $0',$passwd['realname']);
+	$layout['pagetitle'] = trans('Password Change for User $a',$passwd['realname']);
 	$SMARTY->assign('error', $error);
 	$SMARTY->assign('passwd', $passwd);
 }

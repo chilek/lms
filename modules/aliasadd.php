@@ -112,7 +112,7 @@ if($alias)
 							SELECT id FROM domains WHERE ownerid = ?)', array($ownerid));
 				
 					if($limits['alias_limit'] == 0 || $limits['alias_limit'] <= $cnt)
-				    		$error['domainid'] = trans('Exceeded aliases limit of selected customer ($0)!', $limits['alias_limit']);
+				    		$error['domainid'] = trans('Exceeded aliases limit of selected customer ($a)!', $limits['alias_limit']);
             			}
 			}
 		}

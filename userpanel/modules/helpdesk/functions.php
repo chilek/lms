@@ -266,7 +266,7 @@ function module_main()
 
 	$ticket['id'] = $_GET['id'];
 
-	$SMARTY->assign('title', trans('Request No. $0', sprintf('%06d',$ticket['ticketid'])));
+	$SMARTY->assign('title', trans('Request No. $a', sprintf('%06d',$ticket['ticketid'])));
 	
 	if($ticket['customerid'] == $SESSION->id)
 	{
@@ -292,7 +292,7 @@ function module_main()
 	        $SMARTY->assign('helpdesk', $helpdesk);
 	}
 
-        $SMARTY->assign('title', trans('Request No. $0', sprintf('%06d',$ticket['ticketid'])));
+        $SMARTY->assign('title', trans('Request No. $a', sprintf('%06d',$ticket['ticketid'])));
         if($ticket['customerid'] == $SESSION->id)
         {
         	$SMARTY->assign('ticket', $ticket);

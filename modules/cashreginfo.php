@@ -46,7 +46,7 @@ foreach($users as $user)
         $registry['rights'][] = $user;
 }
 
-$layout['pagetitle'] = trans('Cash Registry Info: $0', $registry['name']);
+$layout['pagetitle'] = trans('Cash Registry Info: $a', $registry['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

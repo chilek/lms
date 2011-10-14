@@ -7,7 +7,7 @@
 		<TD width="2%" class="fbt" NOWRAP>{t}Type{/t}:</TD>
 		<TD width="2%" class="fbt" NOWRAP>{t}Priority:{/t}</TD>
 		<TD width="46%" class="fbt" NOWRAP>{t}Content{/t}:</TD>
-		<TD width="2%" class="frightu" align="right" NOWRAP><B>{t 0=$listdata.total}Total: $0{/t}</B>&nbsp;</TD>
+		<TD width="2%" class="frightu" align="right" NOWRAP><B>{t a=$listdata.total}Total: $a{/t}</B>&nbsp;</TD>
 	</TR>
 	<TR class="DARK">
 		<TD class="fall" colspan="6">
@@ -51,7 +51,7 @@
 			<NOBR>
 			<A href="?m=recordedit&id={$recordslist[recordslist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A> 
 			{if $recordslist[recordslist].type != "SOA"}
-			<A href="?m=recorddel&id={$recordslist[recordslist].id}" OnClick="return confirmLink(this, '{t 0=$account}Are you sure you want to delete this record?{/t}')"><IMG src="img/delete.gif" title="[ {t}Delete{/t} ]" alt="[ {t}Delete{/t} ]"></A> 
+			<A href="?m=recorddel&id={$recordslist[recordslist].id}" OnClick="return confirmLink(this, '{t a=$account}Are you sure you want to delete this record?{/t}')"><IMG src="img/delete.gif" title="[ {t}Delete{/t} ]" alt="[ {t}Delete{/t} ]"></A> 
 			{/if}
 			</NOBR>
 			{/if}

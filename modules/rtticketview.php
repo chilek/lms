@@ -90,7 +90,7 @@ foreach ($categories as $category)
 }
 $categories = $ncategories;
 
-$layout['pagetitle'] = trans('Ticket Review: $0',sprintf("%06d", $ticket['ticketid']));
+$layout['pagetitle'] = trans('Ticket Review: $a',sprintf("%06d", $ticket['ticketid']));
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

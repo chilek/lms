@@ -74,7 +74,7 @@ else
         array(intval($_GET['id'])));
 }
 
-$layout['pagetitle'] = trans('Promotion Edit: $0', $promotion['name']);
+$layout['pagetitle'] = trans('Promotion Edit: $a', $promotion['name']);
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('promotion', $promotion);

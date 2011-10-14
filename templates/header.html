@@ -13,7 +13,8 @@
     <script type="text/javascript" src="img/autosuggest.js"> </script>
 </head>
 <body onload="start_login_timeout({$_config.phpui.timeout})">
-{popup_init src="img/overlib.js"}
+<div id="overDiv" style="position:absolute; visibility:hidden; z-index:100;"></div>
+<script type="text/javascript" language="JavaScript" src="img/overlib.js"></script>
 {if !$layout.popup}
 <div id="pagecontainer">
     <div id="pageleftbar">
@@ -31,13 +32,13 @@
 		{foreach from=$newmenu item=menuitem name=menu}
 		<tr>
 			<td class="click-menu">
-				<div class="tip"{if $menuitem.tip} {tip text="<B>\$0</B>" 0=$menuitem.tip}{/if}{if ! $menuitem.submenu} onClick="{if $menuitem.windowopen}window.open('{$menuitem.link}');{else}return self.location.href='{$menuitem.link}';{/if}"{/if}>
+				<div class="tip"{if $menuitem.tip} {tip text="<B>\$a</B>" a=$menuitem.tip}{/if}{if ! $menuitem.submenu} onClick="{if $menuitem.windowopen}window.open('{$menuitem.link}');{else}return self.location.href='{$menuitem.link}';{/if}"{/if}>
 					<div class="box1"><img src="img/{$menuitem.img}" alt="*" style="position: absolute"><font style="margin-left: 21px">{$menuitem.name}</font></div>
 				</div>
 				<div class="section">
 				{if $menuitem.submenu}
 				{foreach from=$menuitem.submenu item=submenuitem}
-					<div class="tip"{if $submenuitem.tip} {tip text="<B>\$0</B>" 0=$submenuitem.tip}{/if}>
+					<div class="tip"{if $submenuitem.tip} {tip text="<B>\$a</B>" a=$submenuitem.tip}{/if}>
 						<div class="box2" onClick="return self.location.href='{$submenuitem.link}';">&raquo;&nbsp;<a href="{$submenuitem.link}">{$submenuitem.name}</a></div>
 					</div>
 				{/foreach}

@@ -31,7 +31,7 @@ if(! $LMS->CategoryExists($_GET['id']))
 
 $category = $LMS->GetCategory($_GET['id']);
 
-$layout['pagetitle'] = trans('Category Info: $0',$category['name']);
+$layout['pagetitle'] = trans('Category Info: $a',$category['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

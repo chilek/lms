@@ -35,7 +35,7 @@ if(isset($balance['docid']))
 		if($balance['doctype'][$idx] == 1)
 		{
 			if($number = $LMS->docnumber($val))
-				$balance['number'][$idx] = trans('Invoice No. $0', $number);
+				$balance['number'][$idx] = trans('Invoice No. $a', $number);
 		}
 	}
 

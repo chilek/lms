@@ -39,7 +39,7 @@ if(!isset($_GET['ownerid']))
 else
 	$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$layout['pagetitle'] = trans('Voip Account Edit: $0', $voipaccountinfo['login']);
+$layout['pagetitle'] = trans('Voip Account Edit: $a', $voipaccountinfo['login']);
 
 if(isset($_POST['voipaccountedit']))
 {

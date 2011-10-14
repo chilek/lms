@@ -60,7 +60,7 @@ if(isset($_GET['id']))
 }
 
 $titlenumber = docnumber($record['number'], $record['template'], $record['cdate'], $record['extnumber']);
-$layout['pagetitle'] = trans('Advance settlement: $0', $titlenumber);
+$layout['pagetitle'] = trans('Advance settlement: $a', $titlenumber);
 
 if(isset($_POST['receipt']))
 {
@@ -114,7 +114,7 @@ if(isset($_POST['receipt']))
 			{
 				$sum = $DB->GetOne('SELECT SUM(value) FROM receiptcontents WHERE regid = ?', array($regid));
 				if($sum < $diff)
-                            		$error['value'] = trans('There is only $0 in registry!', money_format($sum));
+                            		$error['value'] = trans('There is only $a in registry!', money_format($sum));
 			}
 		}
 		
@@ -123,7 +123,7 @@ if(isset($_POST['receipt']))
 	    		if(!preg_match('/^[0-9]+$/', $receipt['in_number']))
 	            		$error['in_number'] = trans('Receipt number must be integer!');
 			elseif($LMS->DocumentExists($receipt['in_number'], DOC_RECEIPT, $in_plan, $receipt['cdate']))
-		    		$error['in_number'] = trans('Receipt number $0 already exists!', $receipt['in_number']);
+		    		$error['in_number'] = trans('Receipt number $a already exists!', $receipt['in_number']);
 		}
 
 		if($receipt['out_number'])
@@ -131,7 +131,7 @@ if(isset($_POST['receipt']))
 	    		if(!preg_match('/^[0-9]+$/', $receipt['out_number']))
 	            		$error['out_number'] = trans('Receipt number must be integer!');
 			elseif($LMS->DocumentExists($receipt['out_number'], DOC_RECEIPT, $record['numberplanid'], $receipt['cdate']))
-		    		$error['out_number'] = trans('Receipt number $0 already exists!', $receipt['out_number']);
+		    		$error['out_number'] = trans('Receipt number $a already exists!', $receipt['out_number']);
 		}
 	}
 	else
@@ -141,7 +141,7 @@ if(isset($_POST['receipt']))
 	    		if(!preg_match('/^[0-9]+$/', $receipt['number']))
 	            		$error['number'] = trans('Receipt number must be integer!');
 			elseif($LMS->DocumentExists($receipt['number'], DOC_RECEIPT, $in_plan, $receipt['cdate']))
-		    		$error['number'] = trans('Receipt number $0 already exists!', $receipt['number']);
+		    		$error['number'] = trans('Receipt number $a already exists!', $receipt['number']);
 		}
 	}
 	

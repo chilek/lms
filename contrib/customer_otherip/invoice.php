@@ -50,7 +50,7 @@ if($LMS->CONFIG['invoices']['attachment_name'] != '')
 $invoice = $LMS->GetInvoiceContent($_GET['id']);
 
 $ntempl = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
-$layout['pagetitle'] = trans('Invoice No. $0', $ntempl);
+$layout['pagetitle'] = trans('Invoice No. $a', $ntempl);
 $invoice['last'] = TRUE;
 $SMARTY->assign('invoice',$invoice);
 $SMARTY->display(SMARTY_TEMPLATES_DIR.'/clearheader.html');

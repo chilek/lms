@@ -51,7 +51,7 @@ $customergroup = $LMS->CustomergroupGet($id, isset($membersnetid) ? $membersneti
 $customers = $LMS->GetCustomerWithoutGroupNames($id, isset($othersnetid) ? $othersnetid : 0);
 $customerscount = sizeof($customers);
 
-$layout['pagetitle'] = trans('Group Info: $0',$customergroup['name']);
+$layout['pagetitle'] = trans('Group Info: $a',$customergroup['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

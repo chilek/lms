@@ -3,7 +3,7 @@
         <TR CLASS="DARK">
 	        <TD width="100%" class="fall hand" align="left" nowrap="nowrap" onClick="showOrHide('devicenodes');">
 			<IMG SRC="img/node.gif" ALT="">
-			<B>{t 0=$netcomplist|@count}Connected nodes ($0):{/t}</B>
+			<B>{t a=$netcomplist|@count}Connected nodes ($a):{/t}</B>
                 </TD>
         </TR>
 	<TR id="devicenodes" style="display:none;">
@@ -29,7 +29,7 @@
 				<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 					<TD width="97%" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';">
 						<IMG SRC="img/node.gif" ALT=""> <B>{$netcomplist[netcomplist].name}</B><BR>
-						<IMG SRC="img/customer.gif" ALT=""> <A href="?m=customerinfo&id={$netcomplist[netcomplist].ownerid}" {tip 0=$netcomplist[netcomplist].ownerid dynpopup='?m=customerinfoshort&id=$0'}>{$netcomplist[netcomplist].owner}</A>
+						<IMG SRC="img/customer.gif" ALT=""> <A href="?m=customerinfo&id={$netcomplist[netcomplist].ownerid}" {tip a=$netcomplist[netcomplist].ownerid dynpopup='?m=customerinfoshort&id=$a'}>{$netcomplist[netcomplist].owner}</A>
 					</TD>
 					<TD width="1%" align="right" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';" NOWRAP>
 						({$netcomplist[netcomplist].id|string_format:"%04d"})<BR>

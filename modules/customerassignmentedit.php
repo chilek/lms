@@ -361,7 +361,7 @@ else
 
 $expired = isset($_GET['expired']) ? $_GET['expired'] : false;
 
-$layout['pagetitle'] = trans('Liability Edit: $0', '<A href="?m=customerinfo&id='.$customer['id'].'">'.$customer['name'].'</A>');
+$layout['pagetitle'] = trans('Liability Edit: $a', '<A href="?m=customerinfo&id='.$customer['id'].'">'.$customer['name'].'</A>');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

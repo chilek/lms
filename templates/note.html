@@ -8,7 +8,7 @@
 
 <H2 align="center" class="hdf">
 {number number=$note.number template=$note.template time=$note.cdate assign=number}
-<B>{t 0=$number}Debit Note No. $0{/t}</B>
+<B>{t a=$number}Debit Note No. $a{/t}</B>
 </H2>
 <BR>
 
@@ -82,7 +82,7 @@ Niniejszym, zgodnie z zawartą Umową, obciążamy Państwa należnościami wg p
 			{if $_config.phpui.to_words_short_version|chkconfig}
 				{$note.value|string_format:"%d"|to_words:0:"":1} {$note.valuep|string_format:"%02d"}/100
 			{else}
-				{t 0=$note.value|string_format:"%d"|to_words 1=$note.valuep|to_words}$0 dollars $1 cents{/t}
+				{t a=$note.value|string_format:"%d"|to_words b=$note.valuep|to_words}$a dollars $b cents{/t}
 			{/if}
 		</TD>
 	</TR>

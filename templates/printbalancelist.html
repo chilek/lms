@@ -14,7 +14,7 @@
 		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
 			{$smarty.now|date_format:"%A, %x"}<BR>
-			{t 0=$layout.logname}Created by: $0{/t}
+			{t a=$layout.logname}Created by: $a{/t}
 		</TD>
 	</TR>
 </TABLE>
@@ -55,13 +55,13 @@
 			{$balancelist[balancelist].time|date_format:"%Y/%m/%d"}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{if $balancelist[balancelist].covenant}{$balancelist[balancelist].value*-1|money_format}{else}-{/if}
+			{if $balancelist[balancelist].covenant}{($balancelist[balancelist].value*-1)|money_format}{else}-{/if}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			{if !$balancelist[balancelist].covenant && $balancelist[balancelist].value > 0}{$balancelist[balancelist].value|money_format}{else}-{/if}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{if !$balancelist[balancelist].covenant && $balancelist[balancelist].value < 0}{$balancelist[balancelist].value*-1|money_format}{else}-{/if}
+			{if !$balancelist[balancelist].covenant && $balancelist[balancelist].value < 0}{($balancelist[balancelist].value*-1)|money_format}{else}-{/if}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			{if $balancelist[balancelist].covenant}

@@ -38,7 +38,7 @@ $SESSION->save('ntlp.'.$_GET['id'], $page);
 
 $network = $LMS->GetNetworkRecord($_GET['id'], $page, $CONFIG['phpui']['networkhosts_pagelimit']);
 
-$layout['pagetitle'] = trans('Info Network: $0', $network['name']);
+$layout['pagetitle'] = trans('Info Network: $a', $network['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

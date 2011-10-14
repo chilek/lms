@@ -99,8 +99,17 @@ $SMARTY = new Smarty;
 
 // test for proper version of Smarty
 
-if (version_compare('2.6.0', $SMARTY->_version) > 0)
-	die('<B>Wrong version of Smarty engine! We support only Smarty-2.x greater than 2.6.0.</B>');
+if (constant('Smarty::SMARTY_VERSION'))
+	$ver_chunks = preg_split('/-/', Smarty::SMARTY_VERSION);
+else
+	$ver_chunks = NULL;
+if (count($ver_chunks) != 2 || version_compare('3.0', $ver_chunks[1]) > 0)
+	die('<B>Wrong version of Smarty engine! We support only Smarty-3.x greater than 3.0.</B>');
+
+define('SMARTY_VERSION', $ver_chunks[1]);
+
+// uncomment this line if you're not gonna change template files no more
+//$SMARTY->compile_check = false;
 
 // Read configuration of LMS-UI from database
 
@@ -147,19 +156,19 @@ $SMARTY->debugging = (isset($CONFIG['phpui']['smarty_debug']) ? chkconfig($CONFI
 $layout['logname'] = $AUTH->logname;
 $layout['logid'] = $AUTH->id;
 $layout['lmsdbv'] = $DB->_version;
-$layout['smarty_version'] = $SMARTY->_version;
+$layout['smarty_version'] = SMARTY_VERSION;
 $layout['hostname'] = hostname();
 $layout['lmsv'] = '1.11-cvs';
 $layout['lmsvr'] = $LMS->_revision.'/'.$AUTH->_revision;
 $layout['dberrors'] =& $DB->errors;
 $layout['popup'] = isset($_GET['popup']) ? true : false;
 
-$SMARTY->assign_by_ref('layout', $layout);
-$SMARTY->assign_by_ref('_LANG', $_LANG);
-$SMARTY->assign_by_ref('LANGDEFS', $LANGDEFS);
-$SMARTY->assign_by_ref('_ui_language', $LMS->ui_lang);
-$SMARTY->assign_by_ref('_language', $LMS->lang);
-$SMARTY->assign_by_ref('_config',$CONFIG);
+$SMARTY->assignByRef('layout', $layout);
+$SMARTY->assignByRef('_LANG', $_LANG);
+$SMARTY->assignByRef('LANGDEFS', $LANGDEFS);
+$SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
+$SMARTY->assignByRef('_language', $LMS->lang);
+$SMARTY->assignByRef('_config',$CONFIG);
 
 $error = NULL; // initialize error variable needed for (almost) all modules
 

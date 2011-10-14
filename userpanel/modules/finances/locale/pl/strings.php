@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$_LANG['$0 dollars $1 cents'] = '$0 zł $1 gr';
+$_LANG['$a dollars $b cents'] = '$a zł $b gr';
 $_LANG['Accounting day:'] = 'Dzień naliczania:';
 $_LANG['Admin:'] = 'Administrator:';
 $_LANG['After:'] = 'Po:';
@@ -33,7 +33,7 @@ $_LANG['Amount:'] = 'Ilość:';
 $_LANG['Balance'] = 'Saldo';
 $_LANG['Cancel'] = 'Anuluj';
 $_LANG['Click here to print payment form'] = 'Kliknij tutaj by wydrukować formularz wpłaty';
-$_LANG['Customer No.: $0'] = 'Numer klienta: $0';
+$_LANG['Customer No.: $a'] = 'Numer klienta: $a';
 $_LANG['Date:'] = 'Data:';
 $_LANG['Deadline:'] = 'Termin płatności:';
 $_LANG['Description:'] = 'Opis:';
@@ -46,7 +46,7 @@ $_LANG['from'] = 'od';
 $_LANG['Gross Value:'] = 'Wartość brutto:';
 $_LANG['in it:'] = 'w tym:';
 $_LANG['Invoice:'] = 'Faktura:';
-$_LANG['Invoice No. $0'] = 'Faktura VAT Nr $0';
+$_LANG['Invoice No. $a'] = 'Faktura VAT Nr $a';
 $_LANG['Invoices'] = 'Faktury';
 $_LANG['In words:'] = 'Słownie:';
 $_LANG['Module Configuration:'] = 'Konfiguracja modułu:';
@@ -56,7 +56,7 @@ $_LANG['No.'] = 'Lp.';
 $_LANG['No such transactions on your account.'] = 'Nie ma żadnych transakcji na Twoim koncie.';
 $_LANG['Notes:'] = 'Notatki:';
 $_LANG['ORIGINAL'] = 'ORYGINAŁ';
-$_LANG['Payment for invoice No. $0'] = 'Zapłata za fakturę nr $0';
+$_LANG['Payment for invoice No. $a'] = 'Zapłata za fakturę nr $a';
 $_LANG['Payment type:'] = 'Typ płatności:';
 $_LANG['Period:'] = 'Okres:';
 $_LANG['[ Print ]'] = '[ Drukuj ]';
@@ -90,7 +90,7 @@ $_LANG['yes'] = 'tak';
 $_LANG['You haven\'t got any assigned subscriptions.'] = 'Nie posiadasz żadnych przypisanych taryf';
 $_LANG['Your balance'] = 'Twoje konto';
 $_LANG['Your subscriptions'] = 'Twoje taryfy';
-$_LANG['monthly ($0)'] = 'miesięcznie ($0)';
+$_LANG['monthly ($a)'] = 'miesięcznie ($a)';
 $_LANG['Reason:'] = 'Powód:';
 $_LANG['Check all'] = 'Zaznacz wszystkie';
 $_LANG['Print selected'] = 'Drukuj zaznaczone';

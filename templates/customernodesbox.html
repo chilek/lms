@@ -47,7 +47,7 @@ function CheckAllN2()
 	<TR CLASS="DARK">
 		<TD width="99%" class="fleftu hand" onclick="showOrHide('nodespanel-{$layout.module}');">
 			<IMG SRC="img/node.gif" alt="">
-			<B>{t 0=$customernodes|@count|default:"0"}Customer Nodes ($0):{/t}</B>
+			<B>{t a=$customernodes|@count|default:"0"}Customer Nodes ($a):{/t}</B>
 		</TD>
 		<TD width="1%" class="frightu" align="right" nowrap>
 			{if $customerinfo.status neq "1" and ! $customerinfo.deleted}<A HREF="?m=nodeadd&ownerid={$customerinfo.id}">{t}New Node{/t} &raquo;</A>&nbsp;{/if}
@@ -75,9 +75,9 @@ function CheckAllN2()
 			    <TD onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';">
 				{if $customernodes[customernodes].lastonline}
 				    {if ($smarty.now-$customernodes[customernodes].lastonline) > $_config.phpui.lastonline_limit}
-					<img src="img/node_off.gif" ALT="" {tip 0=$customernodes[customernodes].lastonlinedate text="Last online: \$0"}>
+					<img src="img/node_off.gif" ALT="" {tip a=$customernodes[customernodes].lastonlinedate text="Last online: \$a"}>
 				    {else}
-				        <img src="img/node_on.gif" ALT="" {tip 0="on-line" text="Last online: \$0"}>
+				        <img src="img/node_on.gif" ALT="" {tip a="on-line" text="Last online: \$a"}>
 				    {/if}
 				{else}
 				<img src="img/node_unk.gif" alt="">
@@ -115,7 +115,7 @@ function CheckAllN2()
 			    </TD>
 			    <TD align="right" NOWRAP>
 				{if $customernodes[customernodes].gcount}
-				<img src="img/nodegroup.gif" alt="" {tip 0=$customernodes[customernodes].id dynpopup='?m=nodeinfo&id=$0&nodegroups=1' sticky=1}>
+				<img src="img/nodegroup.gif" alt="" {tip a=$customernodes[customernodes].id dynpopup='?m=nodeinfo&id=$a&nodegroups=1' sticky=1}>
 				{/if}
 			    </TD>
 			    <TD align="right" NOWRAP>
@@ -124,7 +124,7 @@ function CheckAllN2()
 			    <TD NOWRAP>
 				<A HREF="?m=nodeset&id={$customernodes[customernodes].id}"><IMG src="img/{if ! $customernodes[customernodes].access}no{/if}access.gif" alt="[ {if ! $customernodes[customernodes].access}{t}Connect{/t}{else}{t}Disconnect{/t}{/if} ]" title="[ {if ! $customernodes[customernodes].access}{t}Connect{/t}{else}{t}Disconnect{/t}{/if} ]"></A>
 				<A HREF="?m=nodewarn&id={$customernodes[customernodes].id}"><IMG src="img/warning{if ! $customernodes[customernodes].warning}off{else}on{/if}.gif" alt="[ {if ! $customernodes[customernodes].warning}{t}Enable notice{/t}{else}{t}Disable notice{/t}{/if} ]" title="[ {if ! $customernodes[customernodes].warning}{t}Enable notice{/t}{else}{t}Disable notice{/t}{/if} ]"></A>
-				<A HREF="?m=nodedel&id={$customernodes[customernodes].id}" onClick="return confirmLink(this, '{t 0=$customernodes[customernodes].name}Are you sure, you want to remove node \'$0\' from database?{/t}')"><IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+				<A HREF="?m=nodedel&id={$customernodes[customernodes].id}" onClick="return confirmLink(this, '{t a=$customernodes[customernodes].name}Are you sure, you want to remove node \'$a\' from database?{/t}')"><IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
 				<A HREF="?m=nodeedit&id={$customernodes[customernodes].id}"><IMG SRC="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 				<A HREF="?m=nodeinfo&id={$customernodes[customernodes].id}"><IMG SRC="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>&nbsp;
 				<INPUT TYPE="checkbox" NAME="marks[{$customernodes[customernodes].id}]" VALUE="{$customernodes[customernodes].id}" CHECKED>

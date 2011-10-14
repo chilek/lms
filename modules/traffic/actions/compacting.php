@@ -28,12 +28,12 @@ $layout['pagetitle'] = trans('Network Statistics Compacting');
 $layout['nomenu'] =  TRUE;
 
 echo '<BR><BLOCKQUOTE><H1>'.trans('Compacting Database').'</H1><PRE>';
-echo trans('$0 records before compacting.<BR>',$DB->GetOne('SELECT COUNT(*) FROM stats'));
+echo trans('$a records before compacting.<BR>',$DB->GetOne('SELECT COUNT(*) FROM stats'));
 
 if(isset($_POST['delete']))
 {
     $yeardeleted = $DB->Execute('DELETE FROM stats where dt < ?NOW? - 365*24*60*60');
-    echo trans('$0 at least one year old records have been removed.<BR>',$yeardeleted);
+    echo trans('$a at least one year old records have been removed.<BR>',$yeardeleted);
 }
 
 if(isset($_POST['removedeleted']))
@@ -45,7 +45,7 @@ if(isset($_POST['removedeleted']))
 	{
 	    if(!in_array($node,$nodes))
 		if($DB->Execute('DELETE FROM stats WHERE nodeid = '.$node))
-		    echo trans('Statistics for computer $0 has been removed<BR>',$node);
+		    echo trans('Statistics for computer $a has been removed<BR>',$node);
 	}
     }
 }
@@ -80,12 +80,12 @@ if(isset($_POST['level']))
 		$maxtime -= $step;
 	    }
 	    $DB->CommitTrans();
-	    echo trans('$0 - removed, $1 - inserted<BR>', $deleted, $inserted);
+	    echo trans('$a - removed, $b - inserted<BR>', $deleted, $inserted);
 	}
     }
 }
 
-echo trans('$0 records after compacting.<BR>',$DB->GetOne("SELECT COUNT(*) FROM stats"));
+echo trans('$a records after compacting.<BR>',$DB->GetOne("SELECT COUNT(*) FROM stats"));
 echo '<P><BR><B><A HREF="javascript:window.close();">'.trans('You can close this window now.').'</A></B></BLOCKQUOTE>';
 
 ?>

@@ -135,7 +135,7 @@ switch($_RELOAD_TYPE)
 	break;
 
 	default:
-		echo '<P><B><FONT COLOR="RED">'.trans('Error: Unknown reload type: "$0"!', $_RELOAD_TYPE).'</FONT></B></P>';
+		echo '<P><B><FONT COLOR="RED">'.trans('Error: Unknown reload type: "$a"!', $_RELOAD_TYPE).'</FONT></B></P>';
 	break;
 }
 

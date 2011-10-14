@@ -1,4 +1,4 @@
-{include file="header.html}
+{include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <script type="text/javascript">
@@ -31,7 +31,7 @@
 		<IMG src="img/plain.gif" alt=""> {t}Size:{/t}
 	</TD>
 	<TD class="frightu" width="1%" align="right" nowrap>
-		<IMG src="img/empty.gif" alt="" height="16" width="1"><B> {t 0=$dblist.total}Total: $0{/t}</B>&nbsp;
+		<IMG src="img/empty.gif" alt="" height="16" width="1"><B> {t a=$dblist.total}Total: $a{/t}</B>&nbsp;
 	</TD>
 </TR>
 {cycle values="light,lucid" print=false}
@@ -76,4 +76,4 @@
 </TR>
 </TABLE>
 </FORM>
-{include file="footer.html}
+{include file="footer.html"}

@@ -92,7 +92,7 @@ if(isset($_POST['config']))
 	$config = $cfg;
 }
 
-$layout['pagetitle'] = trans('Option Edit: $0',$option);
+$layout['pagetitle'] = trans('Option Edit: $a',$option);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

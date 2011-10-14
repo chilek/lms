@@ -44,7 +44,7 @@ $account['aliases'] = $DB->GetAll('SELECT a.id, a.login, d.name AS domain
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
     
-$layout['pagetitle'] = trans('Account Info: $0', $account['login'].'@'.$account['domain']);
+$layout['pagetitle'] = trans('Account Info: $a', $account['login'].'@'.$account['domain']);
 
 $SMARTY->assign('account', $account);
 $SMARTY->display('accountinfo.html');

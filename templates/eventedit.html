@@ -122,7 +122,7 @@
 				{/section}
 			</SELECT><BR>
 			{foreach item=user from=$event.userlist}	
-				<NOBR><A href="?m=userinfo&id={$user.id}">{$user.name}</A>&nbsp;<A href="?m=eventedit&action=dropuser&eid={$event.id}&aid={$user.id}"><IMG src="img/delete.gif" ALT="[ {t}Delete{/t} ]" OnClick="return confirm('{t 0=$user.name}Are you sure, you want to drop user $0 from that event?{/t}')"></A></NOBR><BR>
+				<NOBR><A href="?m=userinfo&id={$user.id}">{$user.name}</A>&nbsp;<A href="?m=eventedit&action=dropuser&eid={$event.id}&aid={$user.id}"><IMG src="img/delete.gif" ALT="[ {t}Delete{/t} ]" OnClick="return confirm('{t a=$user.name}Are you sure, you want to drop user $a from that event?{/t}')"></A></NOBR><BR>
 			{/foreach}
 		</TD>
 	</TR>

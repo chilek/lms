@@ -16,7 +16,7 @@
 			<img src="img/mac.gif" ALT="">&nbsp;<A href="?m=nodesearch&search&o=mac{if $listdata.direction eq "asc" && $listdata.order eq "mac"},desc{/if}">{t}MAC address:{/t}</A> {if $listdata.order eq "mac"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD CLASS="frightu" width="1%" align="right">
-			<NOBR><B>{t 0=$listdata.total}Total: $0{/t}</B></NOBR>
+			<NOBR><B>{t a=$listdata.total}Total: $a{/t}</B></NOBR>
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
@@ -44,7 +44,7 @@
 			    <IMG src="img/info1.gif" alt="" {tip text=$nodelist[nodelist].info}>
 			{/if}
 			<B>{$nodelist[nodelist].name}</B></A><BR>
-			<img src="img/customer.gif" ALT="">&nbsp;<A href="?m=customerinfo&id={$nodelist[nodelist].ownerid}" {tip 0=$nodelist[nodelist].ownerid dynpopup='?m=customerinfoshort&id=$0'}>{if ! $nodelist[nodelist].access}<font class="blend">{/if}{$nodelist[nodelist].owner|truncate:60:" ..."|replace:" ":"&nbsp;"}{if ! $nodelist[nodelist].access}</FONT>{/if}</A>
+			<img src="img/customer.gif" ALT="">&nbsp;<A href="?m=customerinfo&id={$nodelist[nodelist].ownerid}" {tip a=$nodelist[nodelist].ownerid dynpopup='?m=customerinfoshort&id=$a'}>{if ! $nodelist[nodelist].access}<font class="blend">{/if}{$nodelist[nodelist].owner|truncate:60:" ..."|replace:" ":"&nbsp;"}{if ! $nodelist[nodelist].access}</FONT>{/if}</A>
 		</TD>
 		<TD align="right" width="1%" onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';" valign="top">
 			<img src="img/empty.gif" ALT="" width="1" height="16">({$nodelist[nodelist].id|string_format:"%04d"})<BR>
@@ -58,7 +58,7 @@
 			<nobr>
 			<a href="?m=nodeset&id={$nodelist[nodelist].id}"><img src="img/{if ! $nodelist[nodelist].access}no{/if}access.gif" ALT="{if ! $nodelist[nodelist].access}[ {t}Disconnect{/t} ]{else}[ {t}Connect{/t} ]{/if}"></A>
 			<a href="?m=nodewarn&id={$nodelist[nodelist].id}"><img src="img/warning{if ! $nodelist[nodelist].warning}off{else}on{/if}.gif" ALT="{if ! $nodelist[nodelist].warning}[ {t}Enable notices{/t} ]{else}[ {t}Disable notices{/t} ]{/if}"></A>
-			<a href="?m=nodedel&id={$nodelist[nodelist].id}" onClick="return confirmLink(this, '{t 0=$nodelist[nodelist].name}Are you sure, you want to delete node \'$0\' from database?{/t}')"><img src="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
+			<a href="?m=nodedel&id={$nodelist[nodelist].id}" onClick="return confirmLink(this, '{t a=$nodelist[nodelist].name}Are you sure, you want to delete node \'$a\' from database?{/t}')"><img src="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
 			<a href="?m=nodeedit&id={$nodelist[nodelist].id}"><img src="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
 			<a href="?m=nodeinfo&id={$nodelist[nodelist].id}"><img src="img/info.gif" ALT="[ {t}Info{/t} ]"></A>
 			</nobr>

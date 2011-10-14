@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-function smarty_function_size($args, &$SMARTY)
+function smarty_function_size($params, $template)
 {
-	$array = $args['of'];
+	$array = $params['of'];
 	return sizeof($array);
 }
 

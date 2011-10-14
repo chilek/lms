@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = trans('Remove category ID: $0',sprintf("%04d",$_GET['id']));
+$layout['pagetitle'] = trans('Remove category ID: $a',sprintf("%04d",$_GET['id']));
 
 if(!$LMS->CategoryExists($_GET['id']))
 {
@@ -34,7 +34,7 @@ else
 {
 	if($_GET['is_sure'] != 1)
 	{
-		$body = '<P>'.trans('Do you want to remove category called $0?',$LMS->GetQueueName($_GET['id'])).'</P>'; 
+		$body = '<P>'.trans('Do you want to remove category called $a?',$LMS->GetQueueName($_GET['id'])).'</P>'; 
 		$body .= '<P><A HREF="?m=rtcategorydel&id='.$_GET['id'].'&is_sure=1">'.trans('Yes, I know what I do.').'</A>&nbsp;';
 		$body .= '<A HREF="?'.$SESSION->get('backto').'">'.trans('No, I\'ve changed my mind.').'</A></P>';
 	}

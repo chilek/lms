@@ -102,7 +102,7 @@ function hostname()
 			$hostname=$return[0];
 			break;
 		default:
-			$return = trans('unknown OS ($0)', PHP_OS);
+			$return = trans('unknown OS ($a)', PHP_OS);
 	}
 	
 	if(!$hostname)
@@ -524,7 +524,7 @@ function isboolean($value)
 function moneyf($value)
 {
 	global $LANGDEFS, $_language;
-	return sprintf($LANGDEFS[$_language]['money_format'],$value);
+	return sprintf($LANGDEFS[$_language]['money_format'], $value);
 }
 
 if (!function_exists('bcmod'))
@@ -659,7 +659,7 @@ function lastonline_date($timestamp)
     $delta = time()-$timestamp;
     if ($delta > $CONFIG['phpui']['lastonline_limit']) {
         if($delta>59)
-            return trans('$0 ago ($1)', uptimef($delta), date('Y/m/d, H:i', $timestamp));
+            return trans('$a ago ($1)', uptimef($delta), date('Y/m/d, H:i', $timestamp));
         else
             return date('(Y/m/d, H:i)', $timestamp);
     }

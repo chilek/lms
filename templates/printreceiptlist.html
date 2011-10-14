@@ -12,7 +12,7 @@
 		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
 			{$smarty.now|date_format:"%A, %x"}<BR>
-			{t 0=$layout.logname}Prepared by: $0{/t}
+			{t a=$layout.logname}Prepared by: $a{/t}
 		</TD>
 	</TR>
 </TABLE>
@@ -67,7 +67,7 @@
 			{if $receiptlist[receiptlist].value > 0}{$receiptlist[receiptlist].value|money_format}{else}-{/if}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{if $receiptlist[receiptlist].value < 0}{$receiptlist[receiptlist].value*-1|money_format}{else}-{/if}
+			{if $receiptlist[receiptlist].value < 0}{($receiptlist[receiptlist].value*-1)|money_format}{else}-{/if}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			{$receiptlist[receiptlist].after|money_format}

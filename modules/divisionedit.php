@@ -116,7 +116,7 @@ if(!empty($_POST['division']))
 	}
 }	
 
-$layout['pagetitle'] = trans('Edit Division: $0', $olddiv['shortname']);
+$layout['pagetitle'] = trans('Edit Division: $a', $olddiv['shortname']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

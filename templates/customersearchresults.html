@@ -51,7 +51,7 @@
 			<a href="?m=customersearch&search=1&o=tariff{if $listdata.direction eq "asc" && $listdata.order eq "tariff"},desc{/if}">{t}Subscription:{/t}</A>&nbsp;{if $listdata.order eq "tariff"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="frightu" align="right" nowrap>
-			<B>{t 0=$listdata.total|default:"0"}Total: $0{/t}</B>&nbsp;
+			<B>{t a=$listdata.total|default:"0"}Total: $a{/t}</B>&nbsp;
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
@@ -70,13 +70,13 @@
 	{section name=customerlist loop=$customerlist start=$start max=$pagelimit}
 	<TR class="{cycle}{if $customerlist[customerlist].account && !$customerlist[customerlist].nodeac} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD onClick="return self.location.href='?m=customerinfo&id={$customerlist[customerlist].id}';" class="fleft" valign="top">
-			<IMG src="img/{if $customerlist[customerlist].status eq 1}unk{/if}{if $customerlist[customerlist].status eq 2}wait{/if}{if $customerlist[customerlist].status eq 3}customer{/if}.gif" alt="">{if $customerlist[customerlist].info} <img src="img/info1.gif" ALT="" {tip text=$customerlist[customerlist].info}>{/if} <A name="{$customerlist[customerlist].id}" {tip 0=$customerlist[customerlist].id dynpopup='?m=customerinfoshort&id=$0'}><B>{$customerlist[customerlist].customername}</B>{if $customerlist[customerlist].deleted} (<FONT class="red">{t}deleted customer{/t}</FONT>){/if}</A><BR>
+			<IMG src="img/{if $customerlist[customerlist].status eq 1}unk{/if}{if $customerlist[customerlist].status eq 2}wait{/if}{if $customerlist[customerlist].status eq 3}customer{/if}.gif" alt="">{if $customerlist[customerlist].info} <img src="img/info1.gif" ALT="" {tip text=$customerlist[customerlist].info}>{/if} <A name="{$customerlist[customerlist].id}" {tip a=$customerlist[customerlist].id dynpopup='?m=customerinfoshort&id=$a'}><B>{$customerlist[customerlist].customername}</B>{if $customerlist[customerlist].deleted} (<FONT class="red">{t}deleted customer{/t}</FONT>){/if}</A><BR>
 			<IMG src="img/home.gif" alt="">&nbsp;{$customerlist[customerlist].address}{if $customerlist[customerlist].city neq ""},{/if} {$customerlist[customerlist].zip} {$customerlist[customerlist].city}{if $customerlist[customerlist].country neq ""}, {t}{$customerlist[customerlist].country}{/t}{/if}
 		</TD>
 		<TD valign="top" align="right" NOWRAP>
 			({$customerlist[customerlist].id|string_format:"%04d"})<BR>
 			{if $customerlist[customerlist].account}
-				<IMG SRC="img/node{if !$customerlist[customerlist].online}_off{/if}.gif" alt="" {tip 0=$customerlist[customerlist].id dynpopup='?m=nodelistshort&id=$0'}></A>
+				<IMG SRC="img/node{if !$customerlist[customerlist].online}_off{/if}.gif" alt="" {tip a=$customerlist[customerlist].id dynpopup='?m=nodelistshort&id=$a'}></A>
 			{/if}
 		</TD>
 		<TD align="right" valign="top" NOWRAP>
@@ -85,7 +85,7 @@
 		<TD class="fright" align="right">
 			<NOBR>
 			{if $customerlist[customerlist].balance < 0}
-				<A href="?m=customerbalanceok&id={$customerlist[customerlist].id}" OnClick="return confirmLink(this, '{t 0=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$0\'?{/t}');"><IMG src="img/pay.gif" alt="[ {t}Account{/t} ]" title="[ {t}Account{/t} ]"></A>
+				<A href="?m=customerbalanceok&id={$customerlist[customerlist].id}" OnClick="return confirmLink(this, '{t a=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$a\'?{/t}');"><IMG src="img/pay.gif" alt="[ {t}Account{/t} ]" title="[ {t}Account{/t} ]"></A>
 			{/if}
 			{if $customerlist[customerlist].account}
 				{if $customerlist[customerlist].status eq 3}
@@ -114,7 +114,7 @@
 			{if $listdata.state eq 4}
 			<A href="?m=customeredit&id={$customerlist[customerlist].id}&action=recover"><IMG src="img/recover.gif" alt="[ {t}Recover{/t} ]" title="[ {t}Recover{/t} ]"></A>
 			{else}
-			<A href="?m=customerdel&id={$customerlist[customerlist].id}" OnClick="return confirmLink(this, '{t 0=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to remove customer \'$0\' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!{/t}');"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+			<A href="?m=customerdel&id={$customerlist[customerlist].id}" OnClick="return confirmLink(this, '{t a=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to remove customer \'$a\' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!{/t}');"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
 			<A href="?m=customeredit&id={$customerlist[customerlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 			{/if} 
 			<A href="?m=customerinfo&id={$customerlist[customerlist].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>

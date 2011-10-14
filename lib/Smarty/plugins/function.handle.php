@@ -30,13 +30,13 @@
     
     {handle name="nodeinfobox-end"}
 */
-function smarty_function_handle($args, &$SMARTY)
+function smarty_function_handle($params, $template)
 {
 	global $PLUGINS;  // or maybe $SMARTY->_tpl_vars['PLUGINS'] assigned by ref.
 	
 	$result = '';
-	if(isset($PLUGINS[$args['name']]))
-		foreach($PLUGINS[$args['name']] as $plugin)
+	if(isset($PLUGINS[$params['name']]))
+		foreach($PLUGINS[$params['name']] as $plugin)
 			$result .= $SMARTY->fetch($plugin);
 
 	return $result;

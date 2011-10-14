@@ -54,7 +54,7 @@ if(sizeof($stateedit))
 	$state = $stateedit;
 }	
 
-$layout['pagetitle'] = trans('State Edit: $0', $name);
+$layout['pagetitle'] = trans('State Edit: $a', $name);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

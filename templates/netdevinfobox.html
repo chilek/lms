@@ -250,7 +250,7 @@
 			</FORM>
 			{/if}
 			<A href="?m=netdevedit&id={$netdevinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG src="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
-			<A href="?m=netdevdel&id={$netdevinfo.id}" OnClick="return confirmLink(this, '{t 0=$netdevinfo.name}Are you sure, you want to remove device \'$0\' from database?{/t}');">{t}Delete{/t} <img src="img/delete.gif" ALT=""></A>
+			<A href="?m=netdevdel&id={$netdevinfo.id}" OnClick="return confirmLink(this, '{t a=$netdevinfo.name}Are you sure, you want to remove device \'$a\' from database?{/t}');">{t}Delete{/t} <img src="img/delete.gif" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>

@@ -43,7 +43,7 @@ if(isset($_POST['customergroupadd']))
 	elseif(!preg_match('/^[._a-z0-9-]+$/i', $customergroupadd['name']))
 		$error['name'] = trans('Invalid chars in group name!');
 	elseif($LMS->CustomergroupGetId($customergroupadd['name']))
-		$error['name'] = trans('Group with name $0 already exists!',$customergroupadd['name']);
+		$error['name'] = trans('Group with name $a already exists!',$customergroupadd['name']);
 
 	if(!$error)
 	{

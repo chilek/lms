@@ -84,7 +84,7 @@ $type = array(
 	'id' => $id
 );
 
-$layout['pagetitle'] = trans('Document Type Edit: $0', $type['name']);
+$layout['pagetitle'] = trans('Document Type Edit: $a', $type['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

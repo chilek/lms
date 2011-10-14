@@ -61,7 +61,7 @@
 					    {if $a.upceil}{$a.upceil} kbit/s{else}-{/if}
 					</TD>
 					<TD NOWRAP ALIGN="RIGHT">
-					    <img src="img/options.gif" alt="" {tip 0=$a.id dynpopup='?m=customerassignmentinfo&id=$0'}>
+					    <img src="img/options.gif" alt="" {tip a=$a.id dynpopup='?m=customerassignmentinfo&id=$a'}>
 					</TD>
 					{/if}
 					<TD NOWRAP OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">

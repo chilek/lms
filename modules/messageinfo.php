@@ -166,7 +166,7 @@ $page = (empty($_GET['page']) ? 1 : $_GET['page']);
 $pagelimit = (empty($CONFIG['phpui']['messagelist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['messagelist_pagelimit']);
 $SESSION->save('milp', $page);
 
-$layout['pagetitle'] = trans('Message Info: $0', $subject);
+$layout['pagetitle'] = trans('Message Info: $a', $subject);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

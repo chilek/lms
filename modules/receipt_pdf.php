@@ -44,7 +44,7 @@ function receipt_header($x, $y)
 		text_align_center($xmax - 70, $y - 10, $font_size + 4, '<b>'.iconv("UTF-8", "ISO-8859-2", trans('CR-out')).'</b>');
 	else
 		text_align_center($xmax - 70, $y - 10, $font_size + 4, '<b>'.iconv("UTF-8", "ISO-8859-2", trans('CR-in')).'</b>');
-	text_align_center($xmax - 70, $y - 30, $font_size, '<b>'.iconv("UTF-8", "ISO-8859-2", trans('No. $0',$receipt['number'])).'</b>');
+	text_align_center($xmax - 70, $y - 30, $font_size, '<b>'.iconv("UTF-8", "ISO-8859-2", trans('No. $a',$receipt['number'])).'</b>');
 
 	if($receipt['type'] == 'out')
 		$y -= text_align_center($x + 210, $y, $font_size, '<b>'.iconv("UTF-8", "ISO-8859-2", trans('Proof of Pay-out')).'</b>');
@@ -203,7 +203,7 @@ function receipt_data($x,$y)
     $y -= 16;
     
     text_align_left($x+2,$y,8,iconv("UTF-8","ISO-8859-2",trans('In words:')));
-    $y = text_wrap($x+40,$y,300,$font_size-2,iconv("UTF-8","ISO-8859-2",trans('$0 dollars $1 cents',to_words(floor($receipt['total'])),to_words($receipt['totalg']))),'');
+    $y = text_wrap($x+40,$y,300,$font_size-2,iconv("UTF-8","ISO-8859-2",trans('$a dollars $b cents',to_words(floor($receipt['total'])),to_words($receipt['totalg']))),'');
     $y -= 8;
 
     $y += $font_size/2;

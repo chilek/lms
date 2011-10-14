@@ -27,7 +27,7 @@
 $voipaccountid = intval($_GET['id']);
 $voipaccountlogin = $LMS->GetVoipAccountLogin($voipaccountid);
 
-$layout['pagetitle'] = trans('Delete Voip Account $0', $voipaccountlogin);
+$layout['pagetitle'] = trans('Delete Voip Account $a', $voipaccountlogin);
 
 if (!$LMS->VoipAccountExists($voipaccountid))
 {
@@ -36,7 +36,7 @@ if (!$LMS->VoipAccountExists($voipaccountid))
 
 	if($_GET['is_sure']!=1)
 	{
-		$body = '<P>'.trans('Are you sure, you want to remove voip account \'$0\' from database?', $voipaccountlogin).'</P>'; 
+		$body = '<P>'.trans('Are you sure, you want to remove voip account \'$a\' from database?', $voipaccountlogin).'</P>'; 
 		$body .= '<P><A HREF="?m=voipaccountdel&id='.$voipaccountid.'&is_sure=1">'.trans('Yes, I am sure.').'</A></P>';
 	}else{
 		$owner = $LMS->GetVoipAccountOwner($voipaccountid);
@@ -46,7 +46,7 @@ if (!$LMS->VoipAccountExists($voipaccountid))
 		else
 			header('Location: ?m=customerinfo&id='.$owner);
 
-		$body = '<P>'.trans('Voip account $0 was deleted', $voipaccountname).'</P>';
+		$body = '<P>'.trans('Voip account $a was deleted', $voipaccountname).'</P>';
 	}
 }
 

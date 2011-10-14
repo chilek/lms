@@ -272,7 +272,7 @@ if(isset($_POST['message']))
 			}
 
 			if(!empty($CONFIG['mail']['debug_email']))
-				echo '<B>'.trans('Warning! Debug mode (using address $0).',$CONFIG['mail']['debug_email']).'</B><BR>';
+				echo '<B>'.trans('Warning! Debug mode (using address $a).',$CONFIG['mail']['debug_email']).'</B><BR>';
 
 			$headers['From'] = '"'.$message['from'].'" <'.$message['sender'].'>';
 			$headers['Subject'] = $message['subject'];
@@ -280,7 +280,7 @@ if(isset($_POST['message']))
 		}
 		else {
 			if (!empty($CONFIG['sms']['debug_phone']))
-				echo '<B>'.trans('Warning! Debug mode (using phone $0).',$CONFIG['sms']['debug_phone']).'</B><BR>';
+				echo '<B>'.trans('Warning! Debug mode (using phone $a).',$CONFIG['sms']['debug_phone']).'</B><BR>';
 		}
 
 		foreach($recipients as $key => $row)
@@ -300,7 +300,7 @@ if(isset($_POST['message']))
 				echo '<img src="img/sms.gif" border="0" align="absmiddle" alt=""> ';
 			}
 			
-			echo trans('$0 of $1 ($2) $3:', ($key+1), sizeof($recipients),
+			echo trans('$a of $b ($c) $d:', ($key+1), sizeof($recipients),
 				sprintf('%02.1f%%',round((100/sizeof($recipients))*($key+1),1)),
 				$row['customername'].' &lt;'.$row['destination'].'&gt;');
 			flush();

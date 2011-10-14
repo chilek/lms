@@ -43,8 +43,8 @@
 				    {if $customerlist}
 				    <SELECT size="1" name="ticket[customerid]" {if !$ticket.customerid}{tip trigger="requestor"}{/if} {tip text="Select customer from list or enter his data if is not a customer"} onChange="document.forms['ticket'].elements['ticket[custid]'].value=document.forms['ticket'].elements['ticket[customerid]'].value">
 					<OPTION value="0">- {t}select customer{/t} -</OPTION>
-					{foreach from=$customerlist item=customerlist}
-					    <OPTION value="{$customerlist.id}" {if $customerlist.id == $customerid}SELECTED{/if}>{$customerlist.customername|truncate:"40":"...":true} ({$customerlist.id|string_format:"%04d"})</OPTION>
+					{foreach from=$customerlist item=item}
+					    <OPTION value="{$item.id}" {if $item.id == $customerid}SELECTED{/if}>{$item.customername|truncate:"40":"...":true} ({$item.id|string_format:"%04d"})</OPTION>
 					{/foreach}
 				    </SELECT>
 				    <NOBR>{t}or Customer ID:{/t}
@@ -78,8 +78,8 @@
 		</TD>
 		<TD WIDTH="99%">
 			<SELECT size="1" name="ticket[queue]" {tip text="Select queue" trigger="queue"}>
-			{foreach from=$queuelist item=queuelist}
-				<OPTION value="{$queuelist.id}" {if $queuelist.id == $queue}SELECTED{/if}>{$queuelist.name}</OPTION>
+			{foreach from=$queuelist item=item}
+				<OPTION value="{$item.id}" {if $item.id == $queue}SELECTED{/if}>{$item.name}</OPTION>
 			{/foreach}
 			</SELECT>
 		</TD>
@@ -149,4 +149,4 @@
 document.forms['ticket'].elements['ticket[subject]'].focus();
 //-->
 </SCRIPT>
-{include file="footer.html}
+{include file="footer.html"}

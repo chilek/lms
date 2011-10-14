@@ -1798,26 +1798,26 @@ class LMS
 					break;
 					case WEEKLY:
 						$row['at'] = strftime("%a",mktime(0,0,0,0,$row['at']+5,0));
-						$row['payday'] = trans('weekly ($0)', $row['at']);
+						$row['payday'] = trans('weekly ($a)', $row['at']);
 						$row['period'] = trans('weekly');
 					break;
 					case MONTHLY:
-						$row['payday'] = trans('monthly ($0)', $row['at']);
+						$row['payday'] = trans('monthly ($a)', $row['at']);
 						$row['period'] = trans('monthly');
 					break;
 					case QUARTERLY:
 						$row['at'] = sprintf('%02d/%02d', $row['at']%100, $row['at']/100+1);
-						$row['payday'] = trans('quarterly ($0)', $row['at']);
+						$row['payday'] = trans('quarterly ($a)', $row['at']);
 						$row['period'] = trans('quarterly');
 					break;
 					case HALFYEARLY:
 						$row['at'] = sprintf('%02d/%02d', $row['at']%100, $row['at']/100+1);
-						$row['payday'] = trans('half-yearly ($0)', $row['at']);
+						$row['payday'] = trans('half-yearly ($a)', $row['at']);
 						$row['period'] = trans('half-yearly');
 					break;
 					case YEARLY:
 						$row['at'] = date('d/m',($row['at']-1)*86400);
-						$row['payday'] = trans('yearly ($0)', $row['at']);
+						$row['payday'] = trans('yearly ($a)', $row['at']);
 						$row['period'] = trans('yearly');
 					break;
 				}
@@ -2671,19 +2671,19 @@ class LMS
 						$row['payday'] = trans('daily');
 					break;
 					case WEEKLY:
-						$row['payday'] = trans('weekly ($0)', strftime("%a",mktime(0,0,0,0,$row['at']+5,0)));
+						$row['payday'] = trans('weekly ($a)', strftime("%a",mktime(0,0,0,0,$row['at']+5,0)));
 					break;
 					case MONTHLY:
-						$row['payday'] = trans('monthly ($0)',$row['at']);
+						$row['payday'] = trans('monthly ($a)',$row['at']);
 					break;
 					case QUARTERLY:
-						$row['payday'] = trans('quarterly ($0)', sprintf('%02d/%02d', $row['at']%100, $row['at']/100+1));
+						$row['payday'] = trans('quarterly ($a)', sprintf('%02d/%02d', $row['at']%100, $row['at']/100+1));
 					break;
 					case HALFYEARLY:
-						$row['payday'] = trans('half-yearly ($0)', sprintf('%02d/%02d', $row['at']%100, $row['at']/100+1));
+						$row['payday'] = trans('half-yearly ($a)', sprintf('%02d/%02d', $row['at']%100, $row['at']/100+1));
 					break;
 					case YEARLY:
-						$row['payday'] = trans('yearly ($0)', date('d/m',($row['at']-1)*86400));
+						$row['payday'] = trans('yearly ($a)', date('d/m',($row['at']-1)*86400));
 					break;
 				}
 
@@ -2705,19 +2705,19 @@ class LMS
 				$payment['payday'] = trans('daily');
 			break;
 			case WEEKLY:
-				$payment['payday'] = trans('weekly ($0)', strftime("%a",mktime(0,0,0,0,$payment['at']+5,0)));
+				$payment['payday'] = trans('weekly ($a)', strftime("%a",mktime(0,0,0,0,$payment['at']+5,0)));
 			break;
 			case MONTHLY:
-				$payment['payday'] = trans('monthly ($0)',$payment['at']);
+				$payment['payday'] = trans('monthly ($a)',$payment['at']);
 			break;
 			case QUARTERLY:
-				$payment['payday'] = trans('quarterly ($0)', sprintf('%02d/%02d', $payment['at']%100, $payment['at']/100+1));
+				$payment['payday'] = trans('quarterly ($a)', sprintf('%02d/%02d', $payment['at']%100, $payment['at']/100+1));
 			break;
 			case HALFYEARLY:
-				$payment['payday'] = trans('half-yearly ($0)', sprintf('%02d/%02d', $payment['at']%100, $payment['at']/100+1));
+				$payment['payday'] = trans('half-yearly ($a)', sprintf('%02d/%02d', $payment['at']%100, $payment['at']/100+1));
 			break;
 			case YEARLY:
-				$payment['payday'] = trans('yearly ($0)', date('d/m',($payment['at']-1)*86400));
+				$payment['payday'] = trans('yearly ($a)', date('d/m',($payment['at']-1)*86400));
 			break;
 		}
 		return $payment;
@@ -2846,7 +2846,7 @@ class LMS
 		for($i=30;$i>15;$i--)
 		{
 			$prefixlist['id'][] = $i;
-			$prefixlist['value'][] = trans('$0 ($1 addresses)', $i, pow(2,32-$i));
+			$prefixlist['value'][] = trans('$a ($b addresses)', $i, pow(2,32-$i));
 		}
 
 		return $prefixlist;
@@ -3891,7 +3891,7 @@ class LMS
 			case 'print_balance_list_limit':
 			case 'networkhosts_pagelimit':
 				if($value<=0)
-					return trans('Value of option "$0" must be a number grater than zero!' ,$var);
+					return trans('Value of option "$a" must be a number grater than zero!' ,$var);
 			break;
 		        case 'reload_type':
 				if($value != 'sql' && $value != 'exec')
@@ -4352,9 +4352,9 @@ class LMS
 				$dir = !empty($this->CONFIG['sms']['smstools_outdir']) ? $this->CONFIG['sms']['smstools_outdir'] : '/var/spool/sms/outgoing';
 
 				if(!file_exists($dir))
-					return trans('SMSTools outgoing directory not exists ($0)!', $dir);
+					return trans('SMSTools outgoing directory not exists ($a)!', $dir);
 				if(!is_writable($dir))
-					return trans('Unable to write to SMSTools outgoing directory ($0)!', $dir);
+					return trans('Unable to write to SMSTools outgoing directory ($a)!', $dir);
 
 				$filename = $dir.'/lms-'.$messageid.'-'.$number;
 				$message = clear_utf($message);
@@ -4366,7 +4366,7 @@ class LMS
 					fclose($fp);
 				}
 				else
-					return trans('Unable to create file $0!', $filename);
+					return trans('Unable to create file $a!', $filename);
 
 				return MSG_NEW;
 			break;

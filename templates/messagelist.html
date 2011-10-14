@@ -15,7 +15,7 @@
 			<A href="?m=messagelist&o=cnt{if $listdata.direction eq "asc" && $listdata.order eq "cnt"},desc{/if}">{t}Recipients:{/t}</A> {if $listdata.order eq "cnt"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" CLASS="frightu" nowrap>
-			<B>{t 0=$listdata.total}Total: $0{/t}</B>&nbsp;
+			<B>{t a=$listdata.total}Total: $a{/t}</B>&nbsp;
 		</TD>
 	</TR>
 	<TR class="DARK">
@@ -104,7 +104,7 @@
 		<TD WIDTH="2%" CLASS="fleftu" colspan="2" NOWRAP>
 		</TD>
 		<TD CLASS="frightu" COLSPAN="3">
-			<B>{t 0=$listdata.total}Total: $0{/t}</B>
+			<B>{t a=$listdata.total}Total: $a{/t}</B>
 		</TD>
 	</TR>
 </TABLE>

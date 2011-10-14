@@ -31,7 +31,7 @@ if(!$LMS->PaymentExists($_GET['id']))
 
 $payment = $LMS->GetPayment($_GET['id']);
 
-$layout['pagetitle'] = trans('Payment Info: $0',$payment['name']);
+$layout['pagetitle'] = trans('Payment Info: $a',$payment['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

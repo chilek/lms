@@ -17,9 +17,9 @@
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
 		    {if $layout.module == 'ewxnodelist'}
-		    <B>{t 0=$customernodes|@count|default:"0"}Channel Nodes ($0):{/t}</B>
+		    <B>{t a=$customernodes|@count|default:"0"}Channel Nodes ($a):{/t}</B>
 		    {else}
-			<B>{t 0=$customernodes|@count|default:"0"}Customer Nodes ($0):{/t}</B>
+			<B>{t a=$customernodes|@count|default:"0"}Customer Nodes ($a):{/t}</B>
 			{/if}
 		</TD>
 	</TR>
@@ -33,9 +33,9 @@
 		<TD WIDTH="99%" onClick="parent.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';">
 			{if $customernodes[customernodes].lastonline}
                                 {if ($smarty.now-$customernodes[customernodes].lastonline) > $_config.phpui.lastonline_limit}
-				<img src="img/node_off.gif" ALT="" title="{t 0=$customernodes[customernodes].lastonlinedate}Last online: $0{/t}">
+				<img src="img/node_off.gif" ALT="" title="{t a=$customernodes[customernodes].lastonlinedate}Last online: $a{/t}">
 				{else}
-				<img src="img/node_on.gif" ALT="" title="{t 0="on-line"}Last online: $0{/t}">
+				<img src="img/node_on.gif" ALT="" title="{t a="on-line"}Last online: $a{/t}">
 			        {/if}
 			{else}
 			<img src="img/node_unk.gif" alt="">

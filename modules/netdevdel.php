@@ -29,7 +29,7 @@ if(! $LMS->NetDevExists($_GET['id']))
 	$SESSION->redirect('?m=netdevlist');
 }		
 
-$layout['pagetitle'] = trans('Deletion of Device with ID: $0',sprintf('%04d',$_GET['id']));
+$layout['pagetitle'] = trans('Deletion of Device with ID: $a',sprintf('%04d',$_GET['id']));
 $SMARTY->assign('netdevid',$_GET['id']);
 
 if($LMS->CountNetDevLinks($_GET['id'])>0)

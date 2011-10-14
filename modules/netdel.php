@@ -43,7 +43,7 @@ if(!$error)
 	}
 	else
 	{
-		$layout['pagetitle'] = trans('Removing network $0', strtoupper($network['name']));
+		$layout['pagetitle'] = trans('Removing network $a', strtoupper($network['name']));
 		$SMARTY->display('header.html');
 		echo '<H1>'.$layout['pagetitle'].'</H1>';
 		echo '<P>'.trans('Are you sure, you want to delete that network?').'</P>';
@@ -53,7 +53,7 @@ if(!$error)
 }
 else
 {
-	$layout['pagetitle'] = trans('Info Network: $0', $network['name']);
+	$layout['pagetitle'] = trans('Info Network: $a', $network['name']);
 	$SMARTY->assign('network',$network);
 	$SMARTY->assign('networks', $LMS->GetNetworks());
 	$SMARTY->assign('error',$error);
