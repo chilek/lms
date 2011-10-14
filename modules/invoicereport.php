@@ -52,7 +52,7 @@ if($to) {
 	$unixto = mktime(23,59,59); //today
 }
 
-$layout['pagetitle'] = trans('Sale Registry for period $0 - $1', $from, $to);
+$layout['pagetitle'] = trans('Sale Registry for period $a - $b', $from, $to);
 
 $listdata = array('tax' => 0, 'brutto' => 0);
 $invoicelist = array();
@@ -81,9 +81,9 @@ if(!empty($_POST['group']))
 		$groupnames .= ($idx ? ', ' : '') . $row['name'];
 
 	if(isset($_POST['groupexclude']))
-	        $layout['group'] = trans('Group: all excluding $0', $groupnames);
+	        $layout['group'] = trans('Group: all excluding $a', $groupnames);
 	else
-	        $layout['group'] = trans('Group: $0', $groupnames);
+	        $layout['group'] = trans('Group: $a', $groupnames);
 }
 
 if(!empty($_POST['division']))

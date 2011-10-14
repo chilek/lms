@@ -42,7 +42,7 @@ if(!$channel)
 	$SESSION->redirect('?m=ewxchlist');
 }
 
-$layout['pagetitle'] = trans('Info Channel: $0', $channel['name']);
+$layout['pagetitle'] = trans('Info Channel: $a', $channel['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

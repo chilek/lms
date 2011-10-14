@@ -108,18 +108,18 @@ function cal_prs_date1 (str_date) {
 
 	var arr_date = str_date.split('/');
 
-	if (arr_date.length != 3) return cal_error ("{/literal}{t 0="'\" + str_date + \"'"}Invalid date format: $0.\nFormat accepted is 'YYYY/MM/DD hh:mm'.{/t}{literal}");
-	if (!arr_date[0]) return cal_error ("{/literal}{t 0="'\" + str_date + \"'"}Invalid date format: $0.\nNo year value can be found.{/t}{literal}");
-	if (!RE_NUM.exec(arr_date[0])) return cal_error ("{/literal}{t 0="'\" + arr_date[0] + \"'"}Invalid year value: $0.\nAllowed values are unsigned integers.{/t}{literal}");
-	if (!arr_date[1]) return cal_error ("{/literal}{t 0="'\" + str_date + \"'"}Invalid date format: $0.\nNo month value can be found.{/t}{literal}");
-	if (!RE_NUM.exec(arr_date[1])) return cal_error ("{/literal}{t 0="'\" + arr_date[1] + \"'"}Invalid month value: $0.\nAllowed values are unsigned integers.{/t}{literal}");
-	if (!arr_date[2]) return cal_error ("{/literal}{t 0="'\" + str_date + \"'"}Invalid date format: $0.\nNo day of month value can be found.{/t}{literal}");
-	if (!RE_NUM.exec(arr_date[2])) return cal_error ("{/literal}{t 0="'\" + arr_date[2] + \"'"}Invalid day of month value: $0.\nAllowed values are unsigned integers.{/t}{literal}");
+	if (arr_date.length != 3) return cal_error ("{/literal}{t a="'\" + str_date + \"'"}Invalid date format: $a.\nFormat accepted is 'YYYY/MM/DD hh:mm'.{/t}{literal}");
+	if (!arr_date[0]) return cal_error ("{/literal}{t a="'\" + str_date + \"'"}Invalid date format: $a.\nNo year value can be found.{/t}{literal}");
+	if (!RE_NUM.exec(arr_date[0])) return cal_error ("{/literal}{t a="'\" + arr_date[0] + \"'"}Invalid year value: $a.\nAllowed values are unsigned integers.{/t}{literal}");
+	if (!arr_date[1]) return cal_error ("{/literal}{t a="'\" + str_date + \"'"}Invalid date format: $a.\nNo month value can be found.{/t}{literal}");
+	if (!RE_NUM.exec(arr_date[1])) return cal_error ("{/literal}{t a="'\" + arr_date[1] + \"'"}Invalid month value: $a.\nAllowed values are unsigned integers.{/t}{literal}");
+	if (!arr_date[2]) return cal_error ("{/literal}{t a="'\" + str_date + \"'"}Invalid date format: $a.\nNo day of month value can be found.{/t}{literal}");
+	if (!RE_NUM.exec(arr_date[2])) return cal_error ("{/literal}{t a="'\" + arr_date[2] + \"'"}Invalid day of month value: $a.\nAllowed values are unsigned integers.{/t}{literal}");
 
 	var dt_date = new Date();
 	dt_date.setDate(1);
 
-	if (arr_date[1] < 1 || arr_date[1] > 12) return cal_error ("{/literal}{t 0="'\" + arr_date[1] + \"'"}Invalid month value: $0.\nAllowed range is 01-12.{/t}{literal}");
+	if (arr_date[1] < 1 || arr_date[1] > 12) return cal_error ("{/literal}{t a="'\" + arr_date[1] + \"'"}Invalid month value: $a.\nAllowed range is 01-12.{/t}{literal}");
 	dt_date.setMonth(arr_date[1]-1);
 
 	if (arr_date[0] < 100) arr_date[0] = Number(arr_date[0]) + (arr_date[0] < NUM_CENTYEAR ? 2000 : 1900);
@@ -127,7 +127,7 @@ function cal_prs_date1 (str_date) {
 
 	var dt_numdays = new Date(arr_date[0], arr_date[1], 0);
 	dt_date.setDate(arr_date[2]);
-	if (dt_date.getMonth() != (arr_date[1]-1)) return cal_error ("{/literal}{t 0="'\" + arr_date[2] + \"'" 1="\"+dt_numdays.getDate()+\""}Invalid day of month value: $0.\nAllowed range is 01-$1.{/t}{literal}");
+	if (dt_date.getMonth() != (arr_date[1]-1)) return cal_error ("{/literal}{t a="'\" + arr_date[2] + \"'" b="\"+dt_numdays.getDate()+\""}Invalid day of month value: $a.\nAllowed range is 01-$b.{/t}{literal}");
 
 	return (dt_date)
 }
@@ -141,14 +141,14 @@ function cal_prs_time1 (str_time, dt_date) {
 	if (!arr_time[0]) dt_date.setHours(0);
 	else if (RE_NUM.exec(arr_time[0])) 
 		if (arr_time[0] < 24) dt_date.setHours(arr_time[0]);
-		else return cal_error ("{/literal}{t 0="'\" + arr_time[0] + \"'"}Invalid hour value: $0.\nAllowed range is 00-23.{/t}{literal}");
-	else return cal_error ("{/literal}{t 0="'\" + arr_time[0] + \"'"}Invalid hour value: $0.\nAllowed values are unsigned integers.{/t}{literal}");
+		else return cal_error ("{/literal}{t a="'\" + arr_time[0] + \"'"}Invalid hour value: $a.\nAllowed range is 00-23.{/t}{literal}");
+	else return cal_error ("{/literal}{t a="'\" + arr_time[0] + \"'"}Invalid hour value: $a.\nAllowed values are unsigned integers.{/t}{literal}");
 
 	if (!arr_time[1]) dt_date.setMinutes(0);
 	else if (RE_NUM.exec(arr_time[1]))
 		if (arr_time[1] < 60) dt_date.setMinutes(arr_time[1]);
-		else return cal_error ("{/literal}{t 0="'\" + arr_time[1] + \"'"}Invalid minutes value: $0.\nAllowed range is 00-59.{/t}{literal}");
-	else return cal_error ("{/literal}{t 0="'\" + arr_time[1] + \"'"}Invalid minutes value: $0.\nAllowed values are unsigned integers.{/t}{literal}");
+		else return cal_error ("{/literal}{t a="'\" + arr_time[1] + \"'"}Invalid minutes value: $a.\nAllowed range is 00-59.{/t}{literal}");
+	else return cal_error ("{/literal}{t a="'\" + arr_time[1] + \"'"}Invalid minutes value: $a.\nAllowed values are unsigned integers.{/t}{literal}");
 
 	dt_date.setMilliseconds(0);
 	return dt_date;

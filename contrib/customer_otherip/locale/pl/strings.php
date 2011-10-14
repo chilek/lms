@@ -28,15 +28,15 @@ $_LANG['All payments send on account:'] = 'Wszystkie płatności prosimy przesy�
 $_LANG['Bank:'] = 'Bank:';
 $_LANG['Customer Information:'] = 'Informacje o kliencie:';
 $_LANG['Customer Logon'] = 'Panel Klienta';
-$_LANG['Customer Logon: $0'] = 'Panel Klienta: $0';
+$_LANG['Customer Logon: $a'] = 'Panel Klienta: $a';
 $_LANG['Errornous data was entered!'] = 'Wprowadzono niepoprawne dane!';
 $_LANG['Form Printout'] = 'Wydruk formularza';
 $_LANG['home page'] = 'strona domowa';
 $_LANG['Payments:'] = 'Płatności:';
 $_LANG['Please to fill following form with customer ID and PIN which was sent to your email.'] = 'Proszę wypełnić formularz podając ID klienta oraz PIN, który był wysłany e-mailem.';
 $_LANG['Print<BR>Payment<BR>Form'] = 'Wydruk<BR>Formularza<BR>Wpłaty';
-$_LANG['We are please for punctual payment in value: <B>$0</B> with comment: $1'] = 'Prosimy o terminową wpłatę w wysokości: <B>$0</B> z dopiskiem: $1';
+$_LANG['We are please for punctual payment in value: <B>$a</B> with comment: $b'] = 'Prosimy o terminową wpłatę w wysokości: <B>$a</B> z dopiskiem: $b';
 $_LANG['You have no outstandings towards as.'] = 'Nie posiadasz zaległości wobec nas.';
-$_LANG['You have overpayments on value: $0, they will be moved as payments for future subscriptions or services.'] = 'Posiadasz nadpłaty w wysokości: $0, zostaną one rozliczone jako płatności za przyszły abonament lub usługę.';
+$_LANG['You have overpayments on value: $a, they will be moved as payments for future subscriptions or services.'] = 'Posiadasz nadpłaty w wysokości: $a, zostaną one rozliczone jako płatności za przyszły abonament lub usługę.';
 
 ?>

@@ -34,16 +34,16 @@ if($doc = $DB->GetRow('SELECT number, cdate, type, template, extnumber
 	switch($doc['type'])
 	{
 		case DOC_INVOICE:
-			$ntempl = trans('Invoice No. $0',$ntempl);
+			$ntempl = trans('Invoice No. $a',$ntempl);
 		break;
 		case DOC_RECEIPT:
-			$ntempl = trans('Cash Receipt No. $0',$ntempl);
+			$ntempl = trans('Cash Receipt No. $a',$ntempl);
 		break;
 		case DOC_CNOTE:
-			$ntempl = trans('Credit Note No. $0',$ntempl);
+			$ntempl = trans('Credit Note No. $a',$ntempl);
 		break;
 		case DOC_DNOTE:
-			$ntempl = trans('Debit Note No. $0',$ntempl);
+			$ntempl = trans('Debit Note No. $a',$ntempl);
 		break;
 	}
 	

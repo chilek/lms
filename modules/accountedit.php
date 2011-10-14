@@ -37,7 +37,7 @@ if(!$account)
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
-$layout['pagetitle'] = trans('Account Edit: $0', $account['login'].'@'.$account['domain']);
+$layout['pagetitle'] = trans('Account Edit: $a', $account['login'].'@'.$account['domain']);
 
 $types = array(1 => 'sh', 2 => 'mail', 4 => 'www', 8 => 'ftp', 16 => 'sql');
 
@@ -117,7 +117,7 @@ if(isset($_POST['account']))
 			{
 				if($quota[$name] > $limits[$limitidx])
 				{
-					$error['quota_'.$name] = trans('Exceeded \'$0\' account quota limit of selected customer ($1)!',
+					$error['quota_'.$name] = trans('Exceeded \'$a\' account quota limit of selected customer ($b)!',
 						$name, $limits[$limitidx]);
 				}
 			}
@@ -135,7 +135,7 @@ if(isset($_POST['account']))
 
 			        if(!$error && ($limits[$limitidx] == 0 || $limits[$limitidx] <= $cnt))
 				{
-    		                	$error['ownerid'] = trans('Exceeded \'$0\' accounts limit of selected customer ($1)!', 
+    		                	$error['ownerid'] = trans('Exceeded \'$a\' accounts limit of selected customer ($b)!', 
 							$name, $limits[$limitidx]);
 				}
 			}

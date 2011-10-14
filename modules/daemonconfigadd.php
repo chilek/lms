@@ -66,7 +66,7 @@ if($config)
 
 $instance = $DB->GetRow('SELECT daemoninstances.name AS name, hosts.name AS hostname FROM daemoninstances, hosts WHERE hosts.id=hostid AND daemoninstances.id=?', array($_GET['id']));
 
-$layout['pagetitle'] = trans('New Option for Instance: $0/$1', $instance['name'], $instance['hostname']);
+$layout['pagetitle'] = trans('New Option for Instance: $a/$b', $instance['name'], $instance['hostname']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

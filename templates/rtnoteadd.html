@@ -8,7 +8,7 @@
 	<TR CLASS="dark">
 		<TD WIDTH="1%" CLASS="fall" colspan="2" NOWRAP>
 			<IMG src="img/ticket.gif" alt="">
-			<B>{t 0=$note.ticketid|string_format:"%06d"}Ticket No. $0{/t}</B>
+			<B>{t a=$note.ticketid|string_format:"%06d"}Ticket No. $a{/t}</B>
 		</TD>
 	</TR>
 	<TR CLASS="light">
@@ -72,4 +72,4 @@
 document.forms['note'].elements['note[body]'].focus();
 //-->
 </SCRIPT>
-{include file="footer.html}
+{include file="footer.html"}

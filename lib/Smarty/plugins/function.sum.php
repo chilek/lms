@@ -24,20 +24,20 @@
  *  $Id$
  */
 
-function smarty_function_sum($args, &$SMARTY)
+function smarty_function_sum($params, $template)
 {
-	$array = $args['array'];
-	$format = (isset($args['string_format']) ? $args['string_format'] : '%d');
-	$default = (isset($args['default']) ? $args['default'] : 0);
+	$array = $params['array'];
+	$format = (isset($params['string_format']) ? $params['string_format'] : '%d');
+	$default = (isset($params['default']) ? $params['default'] : 0);
 	if($array)
 		foreach($array as $row)
 			if(is_array($row))
-				$result += $row[$args['column']];
+				$result += $row[$params['column']];
 
 	$result = isset($result) ? $result : $default;
 
-	if(isset($args['assign']))
-		$SMARTY->assign($args['assign'], $result);
+	if(isset($params['assign']))
+		$template->assign($params['assign'], $result);
 	else
 		return sprintf($format, $result);
 }

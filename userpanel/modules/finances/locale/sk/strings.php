@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$_LANG['$0 dollars $1 cents'] = '$0 EUR $1 cents';
+$_LANG['$a dollars $b cents'] = '$a EUR $b cents';
 $_LANG['Accounting day:'] = 'Ďen zaúčtovania:';
 $_LANG['Admin:'] = 'Administrátor:';
 $_LANG['After:'] = 'Po:';
@@ -33,7 +33,7 @@ $_LANG['Amount:'] = 'Suma:';
 $_LANG['Balance'] = 'Stav';
 $_LANG['Cancel'] = 'Zrušiť';
 $_LANG['Click here to print payment form'] = 'Klikni sem pre tlač platby z';
-$_LANG['Customer No.: $0'] = 'Zákaznícke číslo: $0';
+$_LANG['Customer No.: $a'] = 'Zákaznícke číslo: $a';
 $_LANG['Date:'] = 'Dátum:';
 $_LANG['Deadline:'] = 'Termin platnosti:';
 $_LANG['Description:'] = 'Popis:';
@@ -46,7 +46,7 @@ $_LANG['from'] = 'od';
 $_LANG['Gross Value:'] = 'Hrubá hodnota:';
 $_LANG['in it:'] = 'V ňom:';
 $_LANG['Invoice:'] = 'Faktúra:';
-$_LANG['Invoice No. $0'] = 'Faktúra bez DPH Č $0';
+$_LANG['Invoice No. $a'] = 'Faktúra bez DPH Č $a';
 $_LANG['Invoices'] = 'Faktúry';
 $_LANG['In words:'] = 'Slovami:';
 $_LANG['Module Configuration:'] = 'Konfigurácia modulu:';
@@ -56,7 +56,7 @@ $_LANG['No.'] = 'Nie.';
 $_LANG['No such transactions on your account.'] = 'Nie sú k dispozícii žiadne transakcie na vašom účte.';
 $_LANG['Notes:'] = 'Poznámky:';
 $_LANG['ORIGINAL'] = 'ORIGINAL';
-$_LANG['Payment for invoice No. $0'] = 'Platba za faktúru č $0';
+$_LANG['Payment for invoice No. $a'] = 'Platba za faktúru č $a';
 $_LANG['Payment type:'] = 'Typ platby:';
 $_LANG['Period:'] = 'Obdobie:';
 $_LANG['[ Print ]'] = '[ Tlač ]';
@@ -90,7 +90,7 @@ $_LANG['yes'] = 'áno';
 $_LANG['You haven\'t got any assigned subscriptions.'] = 'Nemáte žiadne priradené predplatné';
 $_LANG['Your balance'] = 'Váš zostatok';
 $_LANG['Your subscriptions'] = 'Vaša tarify';
-$_LANG['monthly ($0)'] = 'mesačne ($0)';
+$_LANG['monthly ($a)'] = 'mesačne ($a)';
 $_LANG['Reason:'] = 'Dôvod:';
 
 ?>

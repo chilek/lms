@@ -3,7 +3,7 @@
 	<TR CLASS="DARK">
 		<TD width="99%" class="fleftu hand" onclick="showOrHide('promotionschemas');">
 			<IMG SRC="img/promoschema.gif" alt="">
-			<B>{t 0=$promotion.schemas|@count}Promotion's Schemas ($0):{/t}</B>
+			<B>{t a=$promotion.schemas|@count}Promotion's Schemas ($a):{/t}</B>
 		</TD>
 		<TD width="1%" class="frightu" align="right" nowrap>
 			<A HREF="?m=promotionschemaadd&id={$promotion.id}">{t}New Schema{/t} &raquo;</A>&nbsp;
@@ -28,7 +28,7 @@
 			    </TD>
 			    <TD NOWRAP>
 				<A HREF="?m=promotionschemaset&id={$schema.id}&access={$schema.disabled}">{if $schema.disabled}<IMG src="img/noaccess.gif" alt="[ {t}Enable{/t} ]" title="[ {t}Enable{/t} ]">{else}<IMG src="img/access.gif" alt="[ {t}Disable{/t} ]" title="[ {t}Disable{/t} ]">{/if}</A>
-				<A HREF="?m=promotionschemadel&id={$schema.id}" onClick="return confirmLink(this, '{t 0=$schema.name}Are you sure, you want to remove schema \'$0\'?{/t}')"><IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+				<A HREF="?m=promotionschemadel&id={$schema.id}" onClick="return confirmLink(this, '{t a=$schema.name}Are you sure, you want to remove schema \'$a\'?{/t}')"><IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
 				<A HREF="?m=promotionschemaedit&id={$schema.id}"><IMG SRC="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 				<A HREF="?m=promotionschemainfo&id={$schema.id}"><IMG SRC="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
 			    </TD>

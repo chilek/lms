@@ -86,7 +86,7 @@
 			<A href="?m=messageinfo&id={$message.id}&o=status{if $listdata.direction eq "asc" && $listdata.order eq "status"},desc{/if}">{t}Status:{/t} ({t}Error message{/t})</A> {if $listdata.order eq "status"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" CLASS="frightu" nowrap>
-			<B>{t 0=$listdata.total}Total: $0{/t}</B>&nbsp;
+			<B>{t a=$listdata.total}Total: $a{/t}</B>&nbsp;
 		</TD>
 	</TR>
 	<TR class="DARK">
@@ -163,7 +163,7 @@
 		<TD WIDTH="2%" CLASS="fleftu" colspan="2" NOWRAP>
 		</TD>
 		<TD CLASS="frightu" COLSPAN="2">
-			<B>{t 0=$listdata.total}Total: $0{/t}</B>
+			<B>{t a=$listdata.total}Total: $a{/t}</B>
 		</TD>
 	</TR>
 </TABLE>

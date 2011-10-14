@@ -31,7 +31,7 @@ if(!$source)
 	$SESSION->redirect('?m=cashsourcelist');
 }
 
-$layout['pagetitle'] = trans('Cash Import Source Edit: $0', $source['name']);
+$layout['pagetitle'] = trans('Cash Import Source Edit: $a', $source['name']);
 
 if(isset($_POST['sourceedit']))
 {

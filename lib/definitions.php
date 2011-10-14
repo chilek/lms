@@ -90,11 +90,11 @@ $DOCTYPES = array(
 $GUARANTEEPERIODS = array(
     -1 => trans('lifetime'),
     0  => trans('none'),
-    12 => trans('$0 months', 12),
+    12 => trans('$a months', 12),
     24 => trans('24 months', 24),
-    36 => trans('$0 months', 36),
-    48 => trans('$0 months', 48),
-    60 => trans('$0 months', 60)
+    36 => trans('$a months', 36),
+    48 => trans('$a months', 48),
+    60 => trans('$a months', 60)
 );
 
 // Internet Messengers

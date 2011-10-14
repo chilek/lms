@@ -33,7 +33,7 @@ if($layout['module'] != 'customeredit')
         $SESSION->redirect('?m=customerlist');
     }
 
-	$SMARTY->assign_by_ref('customerinfo', $customerinfo);
+	$SMARTY->assignByRef('customerinfo', $customerinfo);
 
 }
 
@@ -66,16 +66,16 @@ $SMARTY->assign(array(
 ));
 
 $SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources ORDER BY name'));
-$SMARTY->assign_by_ref('customernodes', $customernodes);
-$SMARTY->assign_by_ref('assignments', $assignments);
-$SMARTY->assign_by_ref('customergroups', $customergroups);
-$SMARTY->assign_by_ref('othercustomergroups', $othercustomergroups);
-$SMARTY->assign_by_ref('balancelist', $balancelist);
-$SMARTY->assign_by_ref('customervoipaccounts', $customervoipaccounts);
-$SMARTY->assign_by_ref('documents', $documents);
-$SMARTY->assign_by_ref('taxeslist', $taxeslist);
-$SMARTY->assign_by_ref('allnodegroups', $allnodegroups);
-$SMARTY->assign_by_ref('messagelist', $messagelist);
-$SMARTY->assign_by_ref('eventlist', $eventlist);
+$SMARTY->assignByRef('customernodes', $customernodes);
+$SMARTY->assignByRef('assignments', $assignments);
+$SMARTY->assignByRef('customergroups', $customergroups);
+$SMARTY->assignByRef('othercustomergroups', $othercustomergroups);
+$SMARTY->assignByRef('balancelist', $balancelist);
+$SMARTY->assignByRef('customervoipaccounts', $customervoipaccounts);
+$SMARTY->assignByRef('documents', $documents);
+$SMARTY->assignByRef('taxeslist', $taxeslist);
+$SMARTY->assignByRef('allnodegroups', $allnodegroups);
+$SMARTY->assignByRef('messagelist', $messagelist);
+$SMARTY->assignByRef('eventlist', $eventlist);
 
 ?>

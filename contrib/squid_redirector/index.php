@@ -86,15 +86,15 @@ $LMS->lang = $_language;
 
 // set some template and layout variables
 
-$SMARTY->assign_by_ref('_LANG', $_LANG);
-$SMARTY->assign_by_ref('LANGDEFS', $LANGDEFS);
-$SMARTY->assign_by_ref('_ui_language', $LMS->ui_lang);
-$SMARTY->assign_by_ref('_language', $LMS->lang);
+$SMARTY->assignByRef('_LANG', $_LANG);
+$SMARTY->assignByRef('LANGDEFS', $LANGDEFS);
+$SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
+$SMARTY->assignByRef('_language', $LMS->lang);
 $SMARTY->template_dir = getcwd();
 $SMARTY->compile_dir = SMARTY_COMPILE_DIR;
 include('lang.php');
 
-$SMARTY->assign_by_ref('layout', $layout);
+$SMARTY->assignByRef('layout', $layout);
 
 if (isset($_SERVER['HTTP_X_FORWARDED_FOR']))
 {

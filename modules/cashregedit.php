@@ -84,7 +84,7 @@ else
 	}
 }
 
-$layout['pagetitle'] = trans('Edit Cash Registry: $0', $registry['name']);
+$layout['pagetitle'] = trans('Edit Cash Registry: $a', $registry['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

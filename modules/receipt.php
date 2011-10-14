@@ -131,7 +131,7 @@ elseif($receipt = GetReceipt($_GET['id']))
 		die;
 	}
 
-	$layout['pagetitle'] = trans('Cash Receipt No. $0', $receipt['number']);
+	$layout['pagetitle'] = trans('Cash Receipt No. $a', $receipt['number']);
 
 	$receipt['last'] = TRUE;
 	$receipt['first'] = TRUE;

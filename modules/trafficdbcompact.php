@@ -38,14 +38,14 @@ set_time_limit(0);
 $SMARTY->display('header.html');
 
 echo '<H1>'.trans('Compacting Database').'</H1><PRE>';
-echo trans('$0 records before compacting.<BR>',$DB->GetOne('SELECT COUNT(*) FROM stats'));
+echo trans('$a records before compacting.<BR>',$DB->GetOne('SELECT COUNT(*) FROM stats'));
 flush();
 
 if(isset($_GET['removeold']))
 {
     if($deleted = $DB->Execute('DELETE FROM stats where dt < ?NOW? - 365*24*60*60'))
     {
-	echo trans('$0 at least one year old records have been removed.<BR>', $deleted);
+	echo trans('$a at least one year old records have been removed.<BR>', $deleted);
         flush();
     }
 }
@@ -54,7 +54,7 @@ if(isset($_GET['removedeleted']))
 {
     if($deleted = $DB->Execute('DELETE FROM stats WHERE nodeid NOT IN (SELECT id FROM nodes)'))
     {
-    	echo trans('$0 records for deleted nodes has been removed.<BR>', $deleted);
+    	echo trans('$a records for deleted nodes has been removed.<BR>', $deleted);
 	flush();
     }
 }
@@ -107,7 +107,7 @@ if(isset($_GET['level']))
 
                 // all records for this node has been already compacted
                 if (empty($data)) {
-                    echo $node['name'].': '.trans('$0 - removed, $1 - inserted<BR>', 0, 0);
+                    echo $node['name'].': '.trans('$a - removed, $b - inserted<BR>', 0, 0);
                     flush();
                     continue;
                 }
@@ -146,14 +146,14 @@ if(isset($_GET['level']))
 
                 $DB->CommitTrans();
 
-                echo $node['name'].': '.trans('$0 - removed, $1 - inserted<BR>', $deleted, $inserted);
+                echo $node['name'].': '.trans('$a - removed, $b - inserted<BR>', $deleted, $inserted);
                 flush();
             }
         }
     }
 }
 
-echo trans('$0 records after compacting.',$DB->GetOne('SELECT COUNT(*) FROM stats'));
+echo trans('$a records after compacting.',$DB->GetOne('SELECT COUNT(*) FROM stats'));
 echo '</PRE>';
 flush();
 

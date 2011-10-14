@@ -28,7 +28,7 @@
 			{$statelist[statelist].description|replace:"\n":"<BR>"}
 		</TD>
 		<TD class="fright" align="right" NOWRAP>
-			<A href="?m=statedel&id={$statelist[statelist].id}" OnClick="return confirmLink(this, '{t 0=$statelist[statelist].name}Are you sure, you want to delete state \'$0\'?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+			<A href="?m=statedel&id={$statelist[statelist].id}" OnClick="return confirmLink(this, '{t a=$statelist[statelist].name}Are you sure, you want to delete state \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
 			<A href="?m=stateedit&id={$statelist[statelist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 		</TD>
 	</TR>

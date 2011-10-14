@@ -80,7 +80,7 @@ $SESSION->restore('cnote', $cnote);
 $SESSION->restore('cnoteerror', $error);
 
 $ntempl = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
-$layout['pagetitle'] = trans('Credit Note for Invoice: $0', $ntempl);
+$layout['pagetitle'] = trans('Credit Note for Invoice: $a', $ntempl);
 
 switch($action)
 {
@@ -157,7 +157,7 @@ switch($action)
 			if(!preg_match('/^[0-9]+$/', $cnote['number']))
 			        $error['number'] = trans('Credit note number must be integer!');
 			elseif($LMS->DocumentExists($cnote['number'], DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']))
-			        $error['number'] = trans('Credit note number $0 already exists!', $cnote['number']);
+			        $error['number'] = trans('Credit note number $a already exists!', $cnote['number']);
 		}
 
 		// finally check if selected customer can use selected numberplan
@@ -224,7 +224,7 @@ switch($action)
 			if(!preg_match('/^[0-9]+$/', $cnote['number']))
 			        $error['number'] = trans('Credit note number must be integer!');
 			elseif($LMS->DocumentExists($cnote['number'], DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']))
-			        $error['number'] = trans('Credit note number $0 already exists!', $cnote['number']);
+			        $error['number'] = trans('Credit note number $a already exists!', $cnote['number']);
 
 			if($error)
 				$cnote['number'] = $LMS->GetNewDocumentNumber(DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']);

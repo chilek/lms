@@ -30,7 +30,7 @@
 			<A href="?m=ewxchlist&o=nodecnt{if $listdata.direction eq "asc" && $listdata.order eq "nodecnt"},desc{/if}">{t}Nodes:{/t}</A> {if $listdata.order eq "nodecnt"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" CLASS="frightu" ALIGN="RIGHT">
-			<NOBR><B>{t 0=$listdata.total}Total: $0{/t}</B></NOBR>
+			<NOBR><B>{t a=$listdata.total}Total: $a{/t}</B></NOBR>
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
@@ -66,13 +66,13 @@
 		<TD align="right" onClick="return self.location.href='?m=ewxchinfo&id={$channels[channels].id}'">
 			{$channels[channels].devcnt|default:0}
 			{if $channels[channels].devcnt}
-			<IMG SRC="img/netdev.gif" ALT="" {tip 0=$channels[channels].id dynpopup='?m=ewxdevlist&id=$0' sticky=1}></A>
+			<IMG SRC="img/netdev.gif" ALT="" {tip a=$channels[channels].id dynpopup='?m=ewxdevlist&id=$a' sticky=1}></A>
 			{/if}
 		</TD>
 		<TD align="right" onClick="return self.location.href='?m=ewxchinfo&id={$channels[channels].id}'">
 			{$channels[channels].nodecnt|default:0}
 			{if $channels[channels].nodecnt}
-			<IMG SRC="img/node.gif" ALT="" {tip 0=$channels[channels].id dynpopup='?m=ewxnodelist&id=$0' sticky=1}></A>
+			<IMG SRC="img/node.gif" ALT="" {tip a=$channels[channels].id dynpopup='?m=ewxnodelist&id=$a' sticky=1}></A>
 			{/if}
 		</TD>
 		<TD CLASS="fright" ALIGN="right">
@@ -103,7 +103,7 @@
         {/if}
 	<TR CLASS="light">
 		<TD CLASS="fleftu" COLSPAN="2" ALIGN="right">
-			<IMG SRC="img/info2.gif" ALT="">&nbsp;<B>{t 0=$listdata.total}Total: $0{/t}</B>
+			<IMG SRC="img/info2.gif" ALT="">&nbsp;<B>{t a=$listdata.total}Total: $a{/t}</B>
 		</TD>
 		<TD CLASS="frightu" COLSPAN="7">
 			&nbsp;

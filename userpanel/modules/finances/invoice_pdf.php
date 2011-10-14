@@ -94,9 +94,9 @@ if($invoice['customerid'] != $SESSION->id)
 $number = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
 
 if(!isset($invoice['invoice']))
-        $title = trans('Invoice No. $0', $number);
+        $title = trans('Invoice No. $a', $number);
 else
-        $title = trans('Credit Note No. $0', $number);
+        $title = trans('Credit Note No. $a', $number);
 
 $pdf =& init_pdf('A4', 'portrait', $title);
 

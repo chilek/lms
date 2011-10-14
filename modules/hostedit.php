@@ -32,7 +32,7 @@ function GetHostIdByName($name)
 
 $host = $DB->GetRow('SELECT id, name, description FROM hosts WHERE id=?', array($_GET['id']));
 
-$layout['pagetitle'] = trans('Host Edit: $0', $host['name']);
+$layout['pagetitle'] = trans('Host Edit: $a', $host['name']);
 
 if(isset($_POST['hostedit']))
 {

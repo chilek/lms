@@ -55,7 +55,7 @@ function invoice_simple_form_fill($x,$y,$scale)
     text_autosize(15*$scale+$x,322*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2",$invoice['zip']." ".$invoice['city']),350*$scale);
 
     $tmp = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
-    text_autosize(15*$scale+$x,215*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2",trans('Payment for invoice No. $0',$tmp)),350*$scale);
+    text_autosize(15*$scale+$x,215*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2",trans('Payment for invoice No. $a',$tmp)),350*$scale);
 
 }
 
@@ -77,12 +77,12 @@ function invoice_main_form_fill($x,$y,$scale)
     text_autosize(15*$scale+$x,555*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2",$finances['account']),950*$scale);
     $pdf->addtext(330*$scale+$x,495*$scale+$y,30*$scale,'X');
     text_autosize(550*$scale+$x,495*$scale+$y,30*$scale,"*".number_format($invoice['total'],2,',','')."*",400*$scale);
-    text_autosize(15*$scale+$x,434*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2",trans('$0 dollars $1 cents',to_words(floor($invoice['total'])),to_words(round(($invoice['total']-floor($invoice['total']))*100)))),950*$scale);
+    text_autosize(15*$scale+$x,434*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2",trans('$a dollars $b cents',to_words(floor($invoice['total'])),to_words(round(($invoice['total']-floor($invoice['total']))*100)))),950*$scale);
     text_autosize(15*$scale+$x,372*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2",$invoice['name']),950*$scale);
     text_autosize(15*$scale+$x,312*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2",$invoice['address']." ".$invoice['zip']." ".$invoice['city']),950*$scale);
 
     $tmp = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
-    text_autosize(15*$scale+$x,250*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2",trans('Payment for invoice No. $0',$tmp)),950*$scale);
+    text_autosize(15*$scale+$x,250*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2",trans('Payment for invoice No. $a',$tmp)),950*$scale);
 }
 
 function text_align_right($x,$y,$size,$text) 
@@ -136,7 +136,7 @@ function invoice_buyer($x,$y)
 	$y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",trans('TEN:')).' '.$invoice['ten']);
     else if ($invoice['ssn']) 
 	$y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",trans('SSN:')).' '.$invoice['ssn']);
-    $y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2",trans('Customer No.: $0',sprintf('%04d',$invoice['customerid']))).'</b>');
+    $y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2",trans('Customer No.: $a',sprintf('%04d',$invoice['customerid']))).'</b>');
     return $y;
 }
 
@@ -158,7 +158,7 @@ function invoice_title($x,$y)
     global $invoice,$pdf,$CONFIG,$type;
     $font_size=16;
     $tmp = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
-    $y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2",trans('Invoice No. $0',$tmp)).'</b>');
+    $y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2",trans('Invoice No. $a',$tmp)).'</b>');
     $y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",$type));
     return $y;
 }
@@ -310,7 +310,7 @@ function invoice_to_pay($x,$y)
 {
     global $pdf, $invoice;
     $y = $y - text_align_left($x,$y,14,iconv("UTF-8","ISO-8859-2",trans('To pay:')).' '.iconv("UTF-8","ISO-8859-2",moneyf($invoice['total'])));
-    $y = $y - text_align_left($x,$y,10,iconv("UTF-8","ISO-8859-2",trans('In words:')).' '.iconv("UTF-8","ISO-8859-2",trans('$0 dollars $1 cents',to_words(floor($invoice['total'])),to_words(round(($invoice['total']-floor($invoice['total']))*100)))));
+    $y = $y - text_align_left($x,$y,10,iconv("UTF-8","ISO-8859-2",trans('In words:')).' '.iconv("UTF-8","ISO-8859-2",trans('$a dollars $b cents',to_words(floor($invoice['total'])),to_words(round(($invoice['total']-floor($invoice['total']))*100)))));
     return $y;
 }
 

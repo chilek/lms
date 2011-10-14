@@ -74,7 +74,7 @@ if(!isset($_GET['ownerid']))
 else
 	$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$layout['pagetitle'] = trans('Node Edit: $0', $nodeinfo['name']);
+$layout['pagetitle'] = trans('Node Edit: $a', $nodeinfo['name']);
 
 if(isset($_POST['nodeedit']) && !isset($_GET['newmac']))
 {

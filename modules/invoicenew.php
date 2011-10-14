@@ -206,7 +206,7 @@ switch($action)
 
 			if($invoice['cdate'] < $maxdate)
 			{
-				$error['cdate'] = trans('Last date of invoice settlement is $0. If sure, you want to write invoice with date of $1, then click "Submit" again.',
+				$error['cdate'] = trans('Last date of invoice settlement is $a. If sure, you want to write invoice with date of $b, then click "Submit" again.',
 					date('Y/m/d H:i', $maxdate), date('Y/m/d H:i', $invoice['cdate']));
 				$invoice['cdatewarning'] = 1;
 			}
@@ -219,7 +219,7 @@ switch($action)
 			if(!preg_match('/^[0-9]+$/', $invoice['number']))
 				$error['number'] = trans('Invoice number must be integer!');
 			elseif($LMS->DocumentExists($invoice['number'], DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']))
-				$error['number'] = trans('Invoice number $0 already exists!', $invoice['number']);
+				$error['number'] = trans('Invoice number $a already exists!', $invoice['number']);
 		}
 
 		if(empty($invoice['paytime_default']) && !preg_match('/^[0-9]+$/', $invoice['paytime']))
@@ -289,7 +289,7 @@ switch($action)
 			if(!preg_match('/^[0-9]+$/', $invoice['number']))
 				$error['number'] = trans('Invoice number must be integer!');
 			elseif($LMS->DocumentExists($invoice['number'], DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']))
-				$error['number'] = trans('Invoice number $0 already exists!', $invoice['number']);
+				$error['number'] = trans('Invoice number $a already exists!', $invoice['number']);
 
 			if($error) {
 				$invoice['number'] = $LMS->GetNewDocumentNumber(DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']);

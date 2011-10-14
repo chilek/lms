@@ -96,10 +96,10 @@ $LMS->lang = $_language;
 
 // set some template and layout variables
 
-$SMARTY->assign_by_ref('_LANG', $_LANG);
-$SMARTY->assign_by_ref('LANGDEFS', $LANGDEFS);
-$SMARTY->assign_by_ref('_ui_language', $LMS->ui_lang);
-$SMARTY->assign_by_ref('_language', $LMS->lang);
+$SMARTY->assignByRef('_LANG', $_LANG);
+$SMARTY->assignByRef('LANGDEFS', $LANGDEFS);
+$SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
+$SMARTY->assignByRef('_language', $LMS->lang);
 $SMARTY->template_dir = getcwd();
 $SMARTY->compile_dir = SMARTY_COMPILE_DIR;
 
@@ -107,7 +107,7 @@ $SMARTY->compile_dir = SMARTY_COMPILE_DIR;
 
 $layout['lmsv'] = '1.11-cvs';
 
-$SMARTY->assign_by_ref('layout', $layout);
-$SMARTY->assign_by_ref('_config', $CONFIG);
+$SMARTY->assignByRef('layout', $layout);
+$SMARTY->assignByRef('_config', $CONFIG);
 
 ?>

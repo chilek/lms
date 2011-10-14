@@ -25,14 +25,14 @@
  */
 
 $name = $DB->GetOne('SELECT name FROM sourcefiles WHERE id = ?', array($_GET['id']));
-$layout['pagetitle'] = trans('Removing package "$0"', $name);
+$layout['pagetitle'] = trans('Removing package "$a"', $name);
 
 if (!$name)
 {
 	$body = '<P>'.trans('Specified ID is not proper or does not exist!').'</P>';
 }
 else if ($_GET['is_sure'] != 1) {
-    $body = '<P>'.trans('Do you want to remove package "$0"?', $name).'</P>'; 
+    $body = '<P>'.trans('Do you want to remove package "$a"?', $name).'</P>'; 
 	$body .= '<P>'.trans('All cash operations from that package will be lost.').'</P>';
 	$body .= '<P><A HREF="?m=cashpackagedel&id='.$_GET['id'].'&is_sure=1">'.trans('Yes, I know what I do.').'</A>&nbsp;';
 	$body .= '<A HREF="?'.$SESSION->get('backto').'">'.trans('No, I\'ve changed my mind.').'</A></P>';

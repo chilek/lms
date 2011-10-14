@@ -86,7 +86,7 @@
 
 			{if $network.page > 1}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x - 1" x=$network.page}'; return false;">&laquo;</A>{else}<FONT CLASS="BLEND">&laquo;</FONT>{/if}
 
-			{t 0=$network.page 1=$network.pages}Page $0 of $1{/t}
+			{t a=$network.page b=$network.pages}Page $a of $b{/t}
 			
 			{if $network.page < $network.pages}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x + 1" x=$network.page}'; return false;">&raquo;</A>{else}<FONT CLASS="BLEND">&raquo;<FONT>{/if}</B>
 

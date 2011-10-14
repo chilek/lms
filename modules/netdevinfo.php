@@ -45,7 +45,7 @@ $netdevips = $LMS->GetNetDevIPs($_GET['id']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$layout['pagetitle'] = trans('Device Info: $0 $1 $2', $netdevinfo['name'], $netdevinfo['producer'], $netdevinfo['model']);
+$layout['pagetitle'] = trans('Device Info: $a $b $c', $netdevinfo['name'], $netdevinfo['producer'], $netdevinfo['model']);
 
 $netdevinfo['id'] = $_GET['id'];
 

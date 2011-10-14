@@ -49,7 +49,7 @@ $othersnetid =  isset($_GET['othersnetid']) ? $_GET['othersnetid'] : 0;
 $customergroup = $LMS->CustomergroupGet($_GET['id'], $membersnetid);
 $customers = $LMS->GetCustomerWithoutGroupNames($_GET['id'], $othersnetid);
 
-$layout['pagetitle'] = trans('Group Edit: $0', $customergroup['name']);
+$layout['pagetitle'] = trans('Group Edit: $a', $customergroup['name']);
 
 if(isset($_POST['customergroup']))
 {
@@ -67,7 +67,7 @@ if(isset($_POST['customergroup']))
 	elseif(!preg_match('/^[._a-z0-9-]+$/i', $customergroupedit['name']))
 		$error['name'] = trans('Invalid chars in group name!');
 	elseif(($id = $LMS->CustomergroupGetId($customergroupedit['name'])) && $id != $customergroupedit['id'])
-		$error['name'] = trans('Group with name $0 already exists!',$customergroupedit['name']);
+		$error['name'] = trans('Group with name $a already exists!',$customergroupedit['name']);
 
 	if(!$error)
 	{

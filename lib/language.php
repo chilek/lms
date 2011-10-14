@@ -37,7 +37,7 @@ function trans()
 	for($i = 1; $i < $argc; $i++)
 	{
 		$arg = func_get_arg($i);
-		$content = str_replace('$'.($i-1), $arg, $content);
+		$content = str_replace('$'.chr(97+$i-1), $arg, $content);
 	}
 	return $content;
 }

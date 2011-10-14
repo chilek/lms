@@ -3,7 +3,7 @@
         <TR CLASS="DARK">
 	        <TD width="99%" class="fleftu hand" align="left" nowrap="nowrap" onClick="showOrHide('deviceips');">
 			<IMG SRC="img/ip.gif" ALT="">
-			<B>{t 0=$netdevips|@count}IP addresses ($0):{/t}</B>
+			<B>{t a=$netdevips|@count}IP addresses ($a):{/t}</B>
 		</TD>
 	        <TD width="1%" class="frightu" align="right">
 			<NOBR><A HREF="?m=netdevedit&action=addip&id={$netdevinfo.id}">{t}New address{/t} &raquo;</A></NOBR>
@@ -40,7 +40,7 @@
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<A href="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset&ip={$netdevips[list].id}"><IMG src="img/{if ! $netdevips[list].access}no{/if}access.gif" ALT="" {if ! $netdevips[list].access}{tip text="Connect"}{else}{tip text="Disconnect"}{/if}></A>
-			<A HREF="?m=netdevedit&action=ipdel&id={$netdevinfo.id}&ip={$netdevips[list].id}" onClick="return confirmLink(this, '{t 0=$netdevips[list].name}Are you sure, you want to delete address \'$0\' from database?{/t}')"><IMG SRC="img/delete.gif" ALT="" {tip text="Delete"}></A>
+			<A HREF="?m=netdevedit&action=ipdel&id={$netdevinfo.id}&ip={$netdevips[list].id}" onClick="return confirmLink(this, '{t a=$netdevips[list].name}Are you sure, you want to delete address \'$a\' from database?{/t}')"><IMG SRC="img/delete.gif" ALT="" {tip text="Delete"}></A>
 			<A HREF="?m=netdevedit&action=editip&id={$netdevinfo.id}&ip={$netdevips[list].id}"><IMG SRC="img/edit.gif" ALT="" {tip text="Edit"}></A>
 			<A HREF="?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}"><IMG SRC="img/info.gif" ALT="" {tip text="Info"}></A>
 		</TD>

@@ -69,7 +69,7 @@ else
 {
 	$KWOTA_ZL = to_words(floor($KWOTA_NR));
 	$KWOTA_GR = to_words($KWOTA_GR);
-	$KWOTA_X = iconv('UTF-8', 'ISO-8859-2', trans('$0 dollars $1 cents', $KWOTA_ZL, $KWOTA_GR));
+	$KWOTA_X = iconv('UTF-8', 'ISO-8859-2', trans('$a dollars $b cents', $KWOTA_ZL, $KWOTA_GR));
 }
 
 ?>

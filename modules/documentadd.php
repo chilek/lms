@@ -152,7 +152,7 @@ if(isset($_POST['document']))
 		// read template information
 		include(DOC_DIR.'/templates/'.$document['templ'].'/info.php');
 		// set some variables (needed in e.g. plugin)
-		$SMARTY->assign_by_ref('document', $document);
+		$SMARTY->assignByRef('document', $document);
 		// call plugin
 		if(!empty($engine['plugin']) && file_exists(DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['plugin'].'.php'))
 			include(DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['plugin'].'.php');
@@ -201,7 +201,7 @@ if(isset($_POST['document']))
 		        @unlink($newfile);
 		    }
 			if(!@rename($file, $newfile))
-				$error['file'] = trans('Can\'t save file in "$0" directory!', $path);
+				$error['file'] = trans('Can\'t save file in "$a" directory!', $path);
 		}
 	}
 

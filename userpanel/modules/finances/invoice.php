@@ -90,9 +90,9 @@ $invoice['type'] = $type;
 $number = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
 
 if(!isset($invoice['invoice']))
-	$layout['pagetitle'] = trans('Invoice No. $0', $number);
+	$layout['pagetitle'] = trans('Invoice No. $a', $number);
 else
-	$layout['pagetitle'] = trans('Credit Note No. $0', $number);
+	$layout['pagetitle'] = trans('Credit Note No. $a', $number);
 
 $SMARTY->display('invoiceheader.html');
 

@@ -213,7 +213,7 @@ switch($action)
 					if(!empty($CONFIG['receipts']['nodegroups_warning']))
 						$customer['nodegroupswarning'] = $CONFIG['receipts']['nodegroups_warning'];
 					else
-						$customer['nodegroupswarning'] = trans('Customer has got nodes in groups: <b>$0</b>!', 
+						$customer['nodegroupswarning'] = trans('Customer has got nodes in groups: <b>$a</b>!', 
 							$CONFIG['receipts']['show_nodegroups_warning']);
 				}
 			}
@@ -277,7 +277,7 @@ switch($action)
 			$sum += $itemdata['value'];
 			
 			if( $cash < $sum )
-				$error['nocash'] = trans('There is no cash in selected registry! You can expense only $0.', moneyf($cash));
+				$error['nocash'] = trans('There is no cash in selected registry! You can expense only $a.', moneyf($cash));
 		}
 	
 		if(!$error && $itemdata['value'] && $itemdata['description'])
@@ -307,9 +307,9 @@ switch($action)
 				$itemdata['posuid'] = (string) (getmicrotime()+$id);
 		
 				if($row['type']==DOC_INVOICE)
-					$itemdata['description'] = trans('Invoice No. $0', docnumber($row['number'], $row['template'], $row['cdate']));
+					$itemdata['description'] = trans('Invoice No. $a', docnumber($row['number'], $row['template'], $row['cdate']));
 				else
-					$itemdata['description'] = trans('Credit Note No. $0', docnumber($row['number'], $row['template'], $row['cdate']));
+					$itemdata['description'] = trans('Credit Note No. $a', docnumber($row['number'], $row['template'], $row['cdate']));
 
 				if($row['reference'] && $receipt['type']=='in')
 				{
@@ -346,7 +346,7 @@ switch($action)
 									
 					if( $cash < $sum )
 					{
-						$error['nocash'] = trans('There is no cash in selected registry! You can expense only $0.', moneyf($cash));
+						$error['nocash'] = trans('There is no cash in selected registry! You can expense only $a.', moneyf($cash));
 						break;
 					}
 				}
@@ -411,7 +411,7 @@ switch($action)
 
 			if($receipt['cdate'] < $maxdate)
 			{
-				$error['cdate'] = trans('Last date of receipt settlement is $0. If sure, you want to write receipt with date of $1, then click "Submit" again.',date('Y/m/d H:i', $maxdate), date('Y/m/d H:i', $receipt['cdate']));
+				$error['cdate'] = trans('Last date of receipt settlement is $a. If sure, you want to write receipt with date of $b, then click "Submit" again.',date('Y/m/d H:i', $maxdate), date('Y/m/d H:i', $receipt['cdate']));
 				$receipt['cdatewarning'] = 1;
 			}
 		}
@@ -421,7 +421,7 @@ switch($action)
 			if(!preg_match('/^[0-9]+$/', $receipt['number']))
 				$error['number'] = trans('Receipt number must be integer!');
 			elseif($LMS->DocumentExists($receipt['number'], DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']))
-				$error['number'] = trans('Receipt number $0 already exists!', $receipt['number']);
+				$error['number'] = trans('Receipt number $a already exists!', $receipt['number']);
 		}
 
 		if($receipt['numberplanid'] && !isset($receipt['extnumber']))
@@ -480,7 +480,7 @@ switch($action)
 				{
 					$balance = $LMS->GetCustomerBalance($cid);
 					if( $balance<0 )
-						$error['customerid'] = trans('Selected customer is in debt for $0!', moneyf($balance*-1));
+						$error['customerid'] = trans('Selected customer is in debt for $a!', moneyf($balance*-1));
 				}
 
 				if(!isset($error))
@@ -527,7 +527,7 @@ switch($action)
 							if(!empty($CONFIG['receipts']['nodegroups_warning']))
 								$customer['nodegroupswarning'] = $CONFIG['receipts']['nodegroups_warning'];
 							else
-								$customer['nodegroupswarning'] = trans('Customer has got nodes in group(s): <b>$0</b>!', $CONFIG['receipts']['show_nodegroups_warning']);
+								$customer['nodegroupswarning'] = trans('Customer has got nodes in group(s): <b>$a</b>!', $CONFIG['receipts']['show_nodegroups_warning']);
 						}
 					}
 
@@ -555,7 +555,7 @@ switch($action)
 				if(!preg_match('/^[0-9]+$/', $receipt['number']))
 					$error['number'] = trans('Receipt number must be integer!');
 				elseif($LMS->DocumentExists($receipt['number'], DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']))
-					$error['number'] = trans('Receipt number $0 already exists!', $receipt['number']);
+					$error['number'] = trans('Receipt number $a already exists!', $receipt['number']);
 
 				if($error)
 					$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
@@ -632,7 +632,7 @@ switch($action)
 				if(!preg_match('/^[0-9]+$/', $receipt['number']))
 					$error['number'] = trans('Receipt number must be integer!');
 				elseif($LMS->DocumentExists($receipt['number'], DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']))
-					$error['number'] = trans('Receipt number $0 already exists!', $receipt['number']);
+					$error['number'] = trans('Receipt number $a already exists!', $receipt['number']);
 				
 				if($error)
 					$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
@@ -714,7 +714,7 @@ switch($action)
 			
 			if( $cash < $value )
 			{
-				$error['nocash'] = trans('There is no cash in selected registry! You can expense only $0.', moneyf($cash));
+				$error['nocash'] = trans('There is no cash in selected registry! You can expense only $a.', moneyf($cash));
 				break;
 			}
 		
@@ -727,14 +727,14 @@ switch($action)
 				if(!preg_match('/^[0-9]+$/', $receipt['number']))
 					$error['number'] = trans('Receipt number must be integer!');
 				elseif($LMS->DocumentExists($receipt['number'], DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']))
-					$error['number'] = trans('Receipt number $0 already exists!', $receipt['number']);
+					$error['number'] = trans('Receipt number $a already exists!', $receipt['number']);
 				
 				if($error)
 					$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
 			}
 			
 			// cash-out
-			$description = trans('Moving assets to registry $0',$DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($dest)));
+			$description = trans('Moving assets to registry $a',$DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($dest)));
 			
 			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed)
 					VALUES(?, ?, ?, ?, ?, ?, \'\', 1)',
@@ -762,7 +762,7 @@ switch($action)
 			$r_number = docnumber($receipt['number'], $template, $receipt['cdate']);
 
 			// cash-in
-			$description = trans('Moving assets from registry $0 ($1)',$DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($receipt['regid'])), $r_number);
+			$description = trans('Moving assets from registry $a ($b)',$DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($receipt['regid'])), $r_number);
 			$numberplan = $DB->GetOne('SELECT in_numberplanid FROM cashregs WHERE id=?', array($dest));
 			$number = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $numberplan, $receipt['cdate']);
 

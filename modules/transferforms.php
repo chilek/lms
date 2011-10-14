@@ -44,7 +44,7 @@ function main_fill($x,$y,$scale)
     $pdf->addtext(550*$scale+$x,497*$scale+$y,30*$scale,number_format($invoice['total'],2,',',''));
     $pdf->addtext(15*$scale+$x,375*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',$invoice['name']));
     $pdf->addtext(15*$scale+$x,315*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',$invoice['address']."; ".$invoice['zip']." ".$invoice['city']));
-    $pdf->addtext(15*$scale+$x,250*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',trans('Payment for invoice No. $0', $invoice['t_number'])));
+    $pdf->addtext(15*$scale+$x,250*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',trans('Payment for invoice No. $a', $invoice['t_number'])));
 }
 
 function simple_fill_mip($x,$y,$scale)
@@ -80,9 +80,9 @@ function simple_fill_mip($x,$y,$scale)
     $pdf->addtext(15*$scale+$x,240*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',$invoice['zip']." ".$invoice['city']));
 
     $font_size=30;
-    while ($pdf->getTextWidth($font_size*$scale,trans('Invoice No. $0', $invoice['t_number']))>135)
+    while ($pdf->getTextWidth($font_size*$scale,trans('Invoice No. $a', $invoice['t_number']))>135)
 	$font_size=$font_size-1;    
-    $pdf->addtext(15*$scale+$x,385*$scale+$y,$font_size*$scale,trans('Invoice No. $0', $invoice['t_number']));
+    $pdf->addtext(15*$scale+$x,385*$scale+$y,$font_size*$scale,trans('Invoice No. $a', $invoice['t_number']));
 
 }
 

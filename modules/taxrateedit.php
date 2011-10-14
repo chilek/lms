@@ -114,7 +114,7 @@ if(sizeof($taxrateedit))
 		$taxrate = $taxrateedit;
 }	
 
-$layout['pagetitle'] = trans('Tax Rate Edit: $0', $label);
+$layout['pagetitle'] = trans('Tax Rate Edit: $a', $label);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

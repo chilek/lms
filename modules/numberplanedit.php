@@ -108,7 +108,7 @@ else
 		WHERE d.id = divisionid AND planid = ?', 'id', array($numberplan['id']));
 }
 
-$layout['pagetitle'] = trans('Numbering Plan Edit: $0', $template);
+$layout['pagetitle'] = trans('Numbering Plan Edit: $a', $template);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

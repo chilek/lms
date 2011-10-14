@@ -33,7 +33,7 @@ if($customerinfo['cutoffstop'] > mktime(0,0,0))
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$layout['pagetitle'] = trans('Customer Info: $0',$customerinfo['customername']);
+$layout['pagetitle'] = trans('Customer Info: $a',$customerinfo['customername']);
 
 $SMARTY->display('customerinfo.html');
 

@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function smarty_function_memory($args, &$SMARTY)
+function smarty_function_memory($params, $template)
 {
 	if (function_exists('memory_get_peak_usage'))
 		return sprintf('(%.2f MB)', memory_get_peak_usage()/1024/1024);

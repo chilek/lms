@@ -45,7 +45,7 @@ if(!$aliasold)
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
-$layout['pagetitle'] = trans('Alias Edit: $0', $aliasold['login'] .'@'. $aliasold['domain']);
+$layout['pagetitle'] = trans('Alias Edit: $a', $aliasold['login'] .'@'. $aliasold['domain']);
 
 if(isset($_POST['alias']))
 {

@@ -39,7 +39,7 @@ $instance = $DB->GetRow('SELECT i.id, hosts.id AS hostid, i.name, hosts.name AS 
 	WHERE hosts.id = i.hostid AND i.id = ?',
 	array($_GET['id']));
 
-$layout['pagetitle'] = trans('Configuration of Instance: $0/$1', $instance['name'],
+$layout['pagetitle'] = trans('Configuration of Instance: $a/$b', $instance['name'],
 	'<A href="?m=daemoninstancelist&id='.$instance['hostid'].'">'.$instance['hostname'].'</A>');
 
 $optionlist = GetOptionList($instance['id']);

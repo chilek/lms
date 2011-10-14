@@ -94,7 +94,7 @@ if($nodeinfo['netdev'] == 0)
 else
 	$netdevices = $LMS->GetNetDev($nodeinfo['netdev']);
 
-$layout['pagetitle'] = trans('Node Info: $0',$nodeinfo['name']);
+$layout['pagetitle'] = trans('Node Info: $a',$nodeinfo['name']);
 
 $nodeinfo = $LMS->ExecHook('node_info_init', $nodeinfo);
 

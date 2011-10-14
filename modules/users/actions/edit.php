@@ -66,7 +66,7 @@ foreach($LMS->GetUserInfo($_GET['id']) as $key => $value)
 	if(!isset($userinfo[$key]))
 		$userinfo[$key] = $value;
 
-$layout['pagetitle'] = trans('User Edit: $0', $userinfo['login']);
+$layout['pagetitle'] = trans('User Edit: $a', $userinfo['login']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

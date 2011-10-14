@@ -31,7 +31,7 @@ if(!empty($_GET['is_sure']))
 }
 else if ($channel = $DB->GetRow('SELECT id, name FROM ewx_channels WHERE id = ?', array(intval($_GET['id']))))
 {
-	$layout['pagetitle'] = trans('Removing channel $0', strtoupper($channel['name']));
+	$layout['pagetitle'] = trans('Removing channel $a', strtoupper($channel['name']));
 	$SMARTY->display('header.html');
 	echo '<H1>'.$layout['pagetitle'].'</H1>';
 	echo '<P>'.trans('Are you sure, you want to delete this channel?').'</P>';

@@ -26,7 +26,7 @@
 
 $instance = $DB->GetRow('SELECT id, name, hostid, description, module, crontab, priority, disabled FROM daemoninstances WHERE id=?', array($_GET['id']));
 
-$layout['pagetitle'] = trans('Instance Edit: $0', $instance['name']);
+$layout['pagetitle'] = trans('Instance Edit: $a', $instance['name']);
 
 if(isset($_POST['instance']))
 {

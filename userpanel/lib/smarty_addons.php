@@ -26,25 +26,29 @@
 
 // Smarty extensions
 
-function _smarty_block_box($args, $content, &$SMARTY)
+function _smarty_block_box($params, $content, &$template, &$repeat)
 {
 	global $CONFIG;
 
-	$title = smarty_block_t($args, $args['title'], $SMARTY);
-	
-	$style = $CONFIG['userpanel']['style'] ? $CONFIG['userpanel']['style'] : 'default';
+	if (!empty($content))
+	{
+		$title = smarty_block_t($params, $params['title'], $template, $repeat);
 
-        if(file_exists('style/'.$style.'/box.html'))
-	        $file = 'style/'.$style.'/box.html';
-        elseif(file_exists('style/default/box.html'))
-	        $file = 'style/default/box.html';
+		$style = $CONFIG['userpanel']['style'] ? $CONFIG['userpanel']['style'] : 'default';
 
-	$SMARTY->assign('boxtitle', $title);
-	$SMARTY->assign('boxcontent', $content);
-	return $SMARTY->fetch('../'.$file);	
+		if(file_exists('style/'.$style.'/box.html'))
+			$file = 'style/'.$style.'/box.html';
+		elseif(file_exists('style/default/box.html'))
+			$file = 'style/default/box.html';
+
+		$template->assignGlobal('boxtitle', $title);
+		$template->assignGlobal('boxcontent', $content);
+
+		return $template->fetch($CONFIG['directories']['userpanel_dir'].'/'.$file);
+	}
 }
 
-function _smarty_function_stylefile($args, &$SMARTY)
+function _smarty_function_stylefile($params, $template)
 {
 	global $CONFIG;
 	
@@ -57,7 +61,7 @@ function _smarty_function_stylefile($args, &$SMARTY)
 	        return 'style/default/style.css';
 }
 
-function _smarty_function_body($args, &$SMARTY)
+function _smarty_function_body($params, $template)
 {
 	global $CONFIG;
 	
@@ -68,32 +72,34 @@ function _smarty_function_body($args, &$SMARTY)
         elseif(file_exists('style/default/body.html'))
 	        $file = 'style/default/body.html';
 
-	return $SMARTY->fetch('../'.$file);	
+	return $template->fetch($CONFIG['directories']['userpanel_dir'].'/'.$file);
 }
 
-function _smarty_function_userpaneltip($args, &$SMARTY)
+function _smarty_function_userpaneltip($params, $template)
 {
     global $CONFIG;
 
-    $text = smarty_block_t($args, $args['text'], $SMARTY);
+    $repeat = FALSE;
+    $text = smarty_block_t($params, $params['text'], $template, $repeat);
     
-    $error = str_replace("'",'\\\'',$SMARTY->_tpl_vars['error'][$args['trigger']]);
-    $error = str_replace('"','&quot;',$error);
-    $error = str_replace("\r",'',$error);
-    $error = str_replace("\n",'<BR>',$error);
+    $tpl = $template->getTemplateVars('error');
+    $error = str_replace("'", '\\\'', $tpl[$params['trigger']]);
+    $error = str_replace('"', '&quot;', $error);
+    $error = str_replace("\r", '', $error);
+    $error = str_replace("\n", '<BR>', $error);
 	
-    $text = str_replace('\'','\\\'',$text);
-    $text = str_replace('"','&quot;',$text);
-    $text = str_replace("\r",'',$text);
-    $text = str_replace("\n",'<BR>',$text);
+    $text = str_replace('\'', '\\\'', $text);
+    $text = str_replace('"', '&quot;', $text);
+    $text = str_replace("\r", '', $text);
+    $text = str_replace("\n", '<BR>', $text);
 	
     if ($CONFIG['userpanel']['hint']=='classic')
     {
-	if($SMARTY->_tpl_vars['error'][$args['trigger']])
+	if($tpl[$params['trigger']])
 	    $result = ' onmouseover="return overlib(\'<b><font color=red>'.$error.'</font></b>\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onmouseout="nd();" ';
-	elseif($args['text'] != '')
+	elseif($params['text'] != '')
 	    $result = 'onmouseover="return overlib(\''.$text.'\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onmouseout="nd();"';
-	$result .= ($SMARTY->_tpl_vars['error'][$args['trigger']] ? ($args['bold'] ? ' CLASS="alert bold" ' : ' CLASS="alert" ') : ($args['bold'] ? ' CLASS="bold" ' : ''));
+	$result .= ($tpl[$params['trigger']] ? ($params['bold'] ? ' CLASS="alert bold" ' : ' CLASS="alert" ') : ($params['bold'] ? ' CLASS="bold" ' : ''));
     } 
     elseif ($CONFIG['userpanel']['hint']=='none')
     {
@@ -101,59 +107,61 @@ function _smarty_function_userpaneltip($args, &$SMARTY)
     }
     else
     {
-    	if($SMARTY->_tpl_vars['error'][$args['trigger']])
+    	if($tpl[$params['trigger']])
 		$result = "onmouseover=\"javascript:displayhint('<font style=&quot;color: red&quot;>".$error."</font>')\" onmouseout=\"javascript:hidehint()\" ";
 	else
 		$result = "onmouseover=\"javascript:displayhint('".$text."')\" onmouseout=\"javascript:hidehint()\" ";
-	$result .= ($SMARTY->_tpl_vars['error'][$args['trigger']] ? ($args['bold'] ? ' class="alert bold" ' : ' class="alert" ') : ($args['bold'] ? ' class="bold" ' : ''));
+	$result .= ($tpl[$params['trigger']] ? ($params['bold'] ? ' class="alert bold" ' : ' class="alert" ') : ($params['bold'] ? ' class="bold" ' : ''));
     }
     return $result;
 }
 
-function _smarty_function_img($args, &$SMARTY)
+function _smarty_function_img($params, $template)
 {
     global $CONFIG, $_GET;
 
     $style = $CONFIG['userpanel']['style'] ? $CONFIG['userpanel']['style'] : 'default';
 
-    if(file_exists('modules/'.$_GET['m'].'/style/'.$style.'/'.$args['src']))
-	    $file = 'modules/'.$_GET['m'].'/style/'.$style.'/'.$args['src'];
-    elseif(file_exists('modules/'.$_GET['m'].'/style/default/'.$args['src']))
-    	    $file = 'modules/'.$_GET['m'].'/style/default/'.$args['src'];
-    elseif(file_exists('style/'.$style.'/'.$args['src']))
-	    $file = 'style/'.$style.'/'.$args['src'];
-    elseif(file_exists('style/default/'.$args['src']))
-    	    $file = 'style/default/'.$args['src'];
+    if(file_exists('modules/'.$_GET['m'].'/style/'.$style.'/'.$params['src']))
+	    $file = 'modules/'.$_GET['m'].'/style/'.$style.'/'.$params['src'];
+    elseif(file_exists('modules/'.$_GET['m'].'/style/default/'.$params['src']))
+    	    $file = 'modules/'.$_GET['m'].'/style/default/'.$params['src'];
+    elseif(file_exists('style/'.$style.'/'.$params['src']))
+	    $file = 'style/'.$style.'/'.$params['src'];
+    elseif(file_exists('style/default/'.$params['src']))
+    	    $file = 'style/default/'.$params['src'];
 
     $result  = '<img ';
     $result .= 'src="'.$file.'" ';
     
-    if($alt = $args['alt'])
-	    $result .= 'alt="'.smarty_block_t(NULL, $alt, $SMARTY).'" ';
+    $repeat = FALSE;
+    if($alt = $params['alt'])
+	    $result .= 'alt="'.smarty_block_t(NULL, $alt, $template, $repeat).'" ';
     else
 	    $result .= 'alt="" ';
 	    
-    if($text = $args['text'])
+    if($text = $params['text'])
     {
-	    $text = smarty_block_t($args, $text, $SMARTY);
+	    $text = smarty_block_t($params, $text, $template, $repeat);
 	    
-	    $error = str_replace("'",'\\\'',$SMARTY->_tpl_vars['error'][$args['trigger']]);
-	    $error = str_replace('"','&quot;',$error);
-	    $error = str_replace("\r",'',$error);
-	    $error = str_replace("\n",'<BR>',$error);
+	    $tpl = $template->getTemplateVars('error');
+	    $error = str_replace("'", '\\\'', $tpl[$params['trigger']]);
+	    $error = str_replace('"', '&quot;', $error);
+	    $error = str_replace("\r", '', $error);
+	    $error = str_replace("\n", '<BR>', $error);
 	
-	    $text = str_replace('\'','\\\'',$text);
-	    $text = str_replace('"','&quot;',$text);
-	    $text = str_replace("\r",'',$text);
-	    $text = str_replace("\n",'<BR>',$text);
+	    $text = str_replace('\'', '\\\'', $text);
+	    $text = str_replace('"', '&quot;', $text);
+	    $text = str_replace("\r", '', $text);
+	    $text = str_replace("\n", '<BR>', $text);
 	
 	    if ($CONFIG['userpanel']['hint']=='classic')
 	    {
-		if($SMARTY->_tpl_vars['error'][$args['trigger']])
+		if($tpl[$params['trigger']])
 		    $result .= 'onmouseover="return overlib(\'<b><font color=red>'.$error.'</font></b>\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onmouseout="nd();" ';
-		elseif($args['text'] != '')
+		elseif($params['text'] != '')
 		    $result .= 'onmouseover="return overlib(\''.$text.'\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onmouseout="nd();" ';
-		$result .= ($SMARTY->_tpl_vars['error'][$args['trigger']] ? ($args['bold'] ? ' class="alert bold" ' : ' class="alert" ') : ($args['bold'] ? ' class="bold" ' : ''));
+		$result .= ($tpl[$params['trigger']] ? ($params['bold'] ? ' class="alert bold" ' : ' class="alert" ') : ($params['bold'] ? ' class="bold" ' : ''));
 	    } 
 	    elseif ($CONFIG['userpanel']['hint']=='none')
 	    {
@@ -165,65 +173,63 @@ function _smarty_function_img($args, &$SMARTY)
 	    }
     }
     
-    if($args['width']) $result .= 'width="'.$args['width'].'" ';
-    if($args['height']) $result .= 'height="'.$args['height'].'" ';
-    if($args['style']) $result .= 'style="'.$args['style'].'" ';
-    if($args['border']) $result .= 'border="'.$args['border'].'" ';
+    if($params['width']) $result .= 'width="'.$params['width'].'" ';
+    if($params['height']) $result .= 'height="'.$params['height'].'" ';
+    if($params['style']) $result .= 'style="'.$params['style'].'" ';
+    if($params['border']) $result .= 'border="'.$params['border'].'" ';
     
     $result .= '/>';
 
     return $result;
 }
 
-function module_get_template($tpl_name, &$tpl_source, &$smarty_obj)
+function module_get_template($tpl_name, &$tpl_source, $template)
 {
-    global $CONFIG;
-    $module = $_GET['m'];
-    $template_path = $CONFIG["directories"]["userpanel_dir"]."/modules/".$module."/templates/".$tpl_name;
-    if (file_exists($template_path))
-    {    
-	$tpl_source = file_get_contents($template_path);
-        return true;
-    } else {
-        return false;
-    }
+	global $CONFIG;
+	$module = $_GET['m'];
+	$template_path = $CONFIG['directories']['userpanel_dir'].'/modules/'.$module.'/templates/'.$tpl_name;
+	if (file_exists($template_path))
+	{
+		$tpl_source = file_get_contents($template_path);
+		return true;
+	} else
+		return false;
 }
 
-function module_get_timestamp($tpl_name, &$tpl_timestamp, &$smarty_obj)
+function module_get_timestamp($tpl_name, &$tpl_timestamp, $template)
 {
-    global $CONFIG;
-    $module = $_GET['m'];
-    $template_path = $CONFIG["directories"]["userpanel_dir"]."/modules/".$module."/templates/".$tpl_name;
-    if (file_exists($template_path))
-    {    
-	$tpl_timestamp = filectime($template_path);
-        return true;
-    } else {
-        return false;
-    }
+	global $CONFIG;
+	$module = $_GET['m'];
+	$template_path = $CONFIG['directories']['userpanel_dir'].'/modules/'.$module.'/templates/'.$tpl_name;
+	if (file_exists($template_path))
+	{    
+		$tpl_timestamp = filectime($template_path);
+		return true;
+	} else
+		return false;
 }
 
-function module_get_secure($tpl_name, &$smarty_obj)
+function module_get_secure($tpl_name, $template)
 {
-    // assume all templates are secure
-    return true;
+	// assume all templates are secure
+	return true;
 }
 
-function module_get_trusted($tpl_name, &$smarty_obj)
+function module_get_trusted($tpl_name, $template)
 {
-    // not used for templates
+	// not used for templates
 }
 
 // register the resource name "module"
-$SMARTY->register_resource("module", array("module_get_template",
-                                       "module_get_timestamp",
-                                       "module_get_secure",
-                                       "module_get_trusted"));
+$SMARTY->registerResource("module", array("module_get_template",
+					"module_get_timestamp",
+					"module_get_secure",
+					"module_get_trusted"));
  
-$SMARTY->register_block('box', '_smarty_block_box');
-$SMARTY->register_function('userpaneltip','_smarty_function_userpaneltip');
-$SMARTY->register_function('img','_smarty_function_img');
-$SMARTY->register_function('body','_smarty_function_body');
-$SMARTY->register_function('stylefile','_smarty_function_stylefile');
+$SMARTY->registerPlugin('block', 'box', '_smarty_block_box');
+$SMARTY->registerPlugin('function', 'userpaneltip','_smarty_function_userpaneltip');
+$SMARTY->registerPlugin('function', 'img','_smarty_function_img');
+$SMARTY->registerPlugin('function', 'body','_smarty_function_body');
+$SMARTY->registerPlugin('function', 'stylefile','_smarty_function_stylefile');
 
 ?>

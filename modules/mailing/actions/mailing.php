@@ -147,7 +147,7 @@ if(isset($_POST['mailing']))
 			}
 
 			if(!empty($CONFIG['mail']['debug_email']))
-				echo '<B>'.trans('Warning! Debug mode (using address $0).',$CONFIG['mail']['debug_email']).'</B><BR>';
+				echo '<B>'.trans('Warning! Debug mode (using address $a).',$CONFIG['mail']['debug_email']).'</B><BR>';
 			
 			$headers['Date'] = date('D, d F Y H:i:s T');
 			$headers['From'] = '"'.$mailing['from'].'" <'.$mailing['sender'].'>';
@@ -183,7 +183,7 @@ if(isset($_POST['mailing']))
 				
 				$headers['To'] = '<'.$row['email'].'>';
 				
-				echo '<img src="img/mail.gif" border="0" align="absmiddle" alt=""> '.trans('$0 of $1 ($2): $3 &lt;$4&gt;', ($key+1), sizeof($emails), sprintf('%02.1f%%',round((100/sizeof($emails))*($key+1),1)), $row['customername'], $row['email']);
+				echo '<img src="img/mail.gif" border="0" align="absmiddle" alt=""> '.trans('$a of $b ($c): $d &lt;$4&gt;', ($key+1), sizeof($emails), sprintf('%02.1f%%',round((100/sizeof($emails))*($key+1),1)), $row['customername'], $row['email']);
 				echo '<font color=red> '.$LMS->SendMail($row['email'], $headers, $body, $files)."</font><BR>\n";
 			}
 		}

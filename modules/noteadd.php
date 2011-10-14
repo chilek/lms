@@ -116,7 +116,7 @@ switch($action)
 	
 			if($note['cdate'] < $maxdate)
 			{
-				$error['cdate'] = trans('Last date of debit note settlement is $0. If sure, you want to write note with date of $1, then click "Submit" again.', date('Y/m/d H:i', $maxdate), date('Y/m/d H:i', $note['cdate']));
+				$error['cdate'] = trans('Last date of debit note settlement is $a. If sure, you want to write note with date of $b, then click "Submit" again.', date('Y/m/d H:i', $maxdate), date('Y/m/d H:i', $note['cdate']));
 				$note['cdatewarning'] = 1;
 			}
 		}
@@ -128,7 +128,7 @@ switch($action)
 			if(!preg_match('/^[0-9]+$/', $note['number']))
 				$error['number'] = trans('Debit note number must be integer!');
 			elseif($LMS->DocumentExists($note['number'], DOC_DNOTE, $note['numberplanid'], $note['cdate']))
-				$error['number'] = trans('Debit note number $0 already exists!', $note['number']);
+				$error['number'] = trans('Debit note number $a already exists!', $note['number']);
 		}
 
 		if(empty($note['paytime_default']) && !preg_match('/^[0-9]+$/', $note['paytime']))
@@ -167,7 +167,7 @@ switch($action)
 				if(!preg_match('/^[0-9]+$/', $note['number']))
 					$error['number'] = trans('Debit note number must be integer!');
 				elseif($LMS->DocumentExists($note['number'], DOC_DNOTE, $note['numberplanid'], $note['cdate']))
-					$error['number'] = trans('Debit note number $0 already exists!', $note['number']);
+					$error['number'] = trans('Debit note number $a already exists!', $note['number']);
 				
 				if($error)
 					$note['number'] = $LMS->GetNewDocumentNumber(DOC_DNOTE, $note['numberplanid'], $note['cdate']);

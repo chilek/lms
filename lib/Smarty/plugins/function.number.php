@@ -24,11 +24,11 @@
  *  $Id$
  */
 
-function smarty_function_number($args,&$SMARTY)
+function smarty_function_number($params, $template)
 {
-	$result = docnumber($args['number'], $args['template'], $args['time']);
-	if(isset($args['assign']))
-		$SMARTY->assign($args['assign'], $result);
+	$result = docnumber($params['number'], $params['template'], $params['time']);
+	if(isset($params['assign']))
+		$template->assign($params['assign'], $result);
 	else
 		return $result;
 }

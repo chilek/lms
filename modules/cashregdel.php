@@ -25,7 +25,7 @@
  */
 
 $name = $DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($_GET['id']));
-$layout['pagetitle'] = trans('Removing registry "$0"', $name);
+$layout['pagetitle'] = trans('Removing registry "$a"', $name);
 
 if (!$name)
 {
@@ -34,7 +34,7 @@ if (!$name)
 
 	if($_GET['is_sure']!=1)
 	{
-		$body = '<P>'.trans('Do you want to remove registry "$0"?', $name).'</P>'; 
+		$body = '<P>'.trans('Do you want to remove registry "$a"?', $name).'</P>'; 
 		$body .= '<P>'.trans('All receipts in that registry will be lost.').'</P>';
 		$body .= '<P><A HREF="?m=cashregdel&id='.$_GET['id'].'&is_sure=1">'.trans('Yes, I know what I do.').'</A>&nbsp;';
 		$body .= '<A HREF="?'.$SESSION->get('backto').'">'.trans('No, I\'ve changed my mind.').'</A></P>';

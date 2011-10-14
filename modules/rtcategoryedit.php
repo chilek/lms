@@ -71,7 +71,7 @@ if(isset($_POST['category']))
 else
 	$category = $LMS->GetCategory($_GET['id']);
 
-$layout['pagetitle'] = trans('Category Edit: $0', $category['name']);
+$layout['pagetitle'] = trans('Category Edit: $a', $category['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

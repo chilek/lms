@@ -60,7 +60,7 @@ function invoice_simple_form_fill($x,$y,$scale)
     text_autosize(15*$scale+$x,322*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2//TRANSLIT",$invoice['zip'].' '.$invoice['city']),350*$scale);
 
     $tmp = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
-    text_autosize(15*$scale+$x,215*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Payment for invoice No. $0', $tmp)),350*$scale);
+    text_autosize(15*$scale+$x,215*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Payment for invoice No. $a', $tmp)),350*$scale);
 }
 
 function invoice_main_form_fill($x,$y,$scale)	
@@ -86,11 +86,11 @@ function invoice_main_form_fill($x,$y,$scale)
     text_autosize(15*$scale+$x,555*$scale+$y,30*$scale,$account,950*$scale);
     $pdf->addtext(330*$scale+$x,495*$scale+$y,30*$scale,'X');
     text_autosize(550*$scale+$x,495*$scale+$y,30*$scale,"*".number_format($invoice['total'],2,',','')."*",400*$scale);
-    text_autosize(15*$scale+$x,434*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('$0 dollars $1 cents',to_words(floor($invoice['total'])),to_words(round(($invoice['total']-floor($invoice['total']))*100)))),950*$scale);
+    text_autosize(15*$scale+$x,434*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('$a dollars $b cents',to_words(floor($invoice['total'])),to_words(round(($invoice['total']-floor($invoice['total']))*100)))),950*$scale);
     text_autosize(15*$scale+$x,372*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2//TRANSLIT",$invoice['name']),950*$scale);
     text_autosize(15*$scale+$x,312*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2//TRANSLIT",$invoice['address']." ".$invoice['zip']." ".$invoice['city']),950*$scale);
     $tmp = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
-    text_autosize(15*$scale+$x,250*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Payment for invoice No. $0',$tmp)),950*$scale);
+    text_autosize(15*$scale+$x,250*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Payment for invoice No. $a',$tmp)),950*$scale);
 }
 
 function invoice_dates($x,$y)
@@ -122,7 +122,7 @@ function invoice_buyer($x,$y)
 	$y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('TEN')).' '.$invoice['ten']);
     else if ($invoice['ssn']) 
 	$y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('SSN')).' '.$invoice['ssn']);
-    $y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Customer No.: $0',sprintf('%04d',$invoice['customerid']))).'</b>');
+    $y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Customer No.: $a',sprintf('%04d',$invoice['customerid']))).'</b>');
     return $y;
 }
 
@@ -144,15 +144,15 @@ function invoice_title($x,$y)
     $font_size = 16;
     $tmp = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
     if(isset($invoice['invoice']))
-    	$y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Credit Note No. $0',$tmp)).'</b>');
+    	$y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Credit Note No. $a',$tmp)).'</b>');
     else
-	$y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Invoice No. $0',$tmp)).'</b>');
+	$y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Invoice No. $a',$tmp)).'</b>');
     
     if(isset($invoice['invoice']))
     {
 	$font_size = 12; $y += 8;
 	$tmp = docnumber($invoice['invoice']['number'], $invoice['invoice']['template'], $invoice['invoice']['cdate']);
-	$y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('for Invoice No. $0',$tmp)).'</b>');
+	$y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('for Invoice No. $a',$tmp)).'</b>');
 	$y -= 5;
     }
     
@@ -177,7 +177,7 @@ function invoice_address_box($x,$y)
 /*
 	$invoice_name = $invoice['name'];
 	if (strlen($invoice_name)>25) 
-		$invoice_name = preg_replace('/(.{25})/',"$1<i>&gt;</i>\n",$invoice_name);
+		$invoice_name = preg_replace('/(.{25})/',"$b<i>&gt;</i>\n",$invoice_name);
 	$tmp = preg_split('/\r?\n/', iconv("UTF-8","ISO-8859-2",$invoice_name));
 	foreach ($tmp as $line) $y=$y-text_align_left($x,$y,$font_size,"<b>".$line."</b>");
 */
@@ -754,7 +754,7 @@ function invoice_to_pay($x,$y)
 	    $y = $y - text_align_left($x,$y,14,iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('To repay:')).' '.iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($invoice['value'])));
     else
 	    $y = $y - text_align_left($x,$y,14,iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('To pay:')).' '.iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($invoice['value'])));
-    $y = $y - text_align_left($x,$y,10,iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('In words:')).' '.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('$0 dollars $1 cents',to_words(floor($invoice['value'])),to_words(round(($invoice['value']-floor($invoice['value']))*100)))));
+    $y = $y - text_align_left($x,$y,10,iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('In words:')).' '.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('$a dollars $b cents',to_words(floor($invoice['value'])),to_words(round(($invoice['value']-floor($invoice['value']))*100)))));
     return $y;
 }
 
@@ -787,7 +787,7 @@ function invoice_footnote($x, $y, $width, $font_size)
 function invoice_body_standard()
 {
 	global $pdf;
-	$page = $pdf->ezStartPageNumbers($pdf->ez['pageWidth']-50,20,8,'right',trans('Page $0 of $1', '{PAGENUM}','{TOTALPAGENUM}'),1);
+	$page = $pdf->ezStartPageNumbers($pdf->ez['pageWidth']-50,20,8,'right',trans('Page $a of $b', '{PAGENUM}','{TOTALPAGENUM}'),1);
 	$top=800;
 	invoice_dates(500,800);    
     	invoice_address_box(400,700);
@@ -810,7 +810,7 @@ function invoice_body_ft0100()
 {
 	global $pdf;
 	
-	$page = $pdf->ezStartPageNumbers($pdf->ez['pageWidth']/2+10,$pdf->ez['pageHeight']-30,8,'',trans('Page $0 of $1', '{PAGENUM}','{TOTALPAGENUM}'),1);
+	$page = $pdf->ezStartPageNumbers($pdf->ez['pageWidth']/2+10,$pdf->ez['pageHeight']-30,8,'',trans('Page $a of $b', '{PAGENUM}','{TOTALPAGENUM}'),1);
 	$top=$pdf->ez['pageHeight']-50;
 	invoice_dates(500,$top);    
     	invoice_address_box(400,700);

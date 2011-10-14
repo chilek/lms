@@ -50,7 +50,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 if(!isset($_GET['ownerid']))
 	$SESSION->save('backto', $SESSION->get('backto').'&ownerid='.$customerid);
 
-$layout['pagetitle'] = trans('Voip Account Info: $0', $voipaccountinfo['login']);
+$layout['pagetitle'] = trans('Voip Account Info: $a', $voipaccountinfo['login']);
 
 $SMARTY->assign('voipaccountinfo',$voipaccountinfo);
 $SMARTY->display('voipaccountinfo.html');

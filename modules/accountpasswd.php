@@ -56,7 +56,7 @@ if(isset($_POST['passwd']))
 	}
 }
 
-$layout['pagetitle'] = trans('Password Change for Account: $0',$account['login'].'@'.$account['domain']);
+$layout['pagetitle'] = trans('Password Change for Account: $a',$account['login'].'@'.$account['domain']);
 		
 $SMARTY->assign('error', $error);
 $SMARTY->assign('account', $account);

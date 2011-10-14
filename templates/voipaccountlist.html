@@ -17,7 +17,7 @@
 			<A href="?m=voipaccountlist&o=passwd{if $listdata.direction eq "asc" && $listdata.order eq "passwd"},desc{/if}">{t}Password:{/t}</A> {if $listdata.order eq "passwd"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD CLASS="frightu" width="1%" align="right">
-			<NOBR><B>{t 0=$listdata.total}Total: $0{/t}</B></NOBR>
+			<NOBR><B>{t a=$listdata.total}Total: $a{/t}</B></NOBR>
 		</TD>
 	</TR>
 {*
@@ -52,7 +52,7 @@
 		<TD width="96%" class="fleft" onClick="return self.location.href='?m=voipaccountinfo&id={$voipaccountlist[voipaccountlist].id}';" nowrap>
 			<img src="img/voip.gif" ALT="">
 			<B>{$voipaccountlist[voipaccountlist].login}</B><BR>
-			<img src="img/customer.gif" ALT="">&nbsp;<A href="?m=customerinfo&id={$voipaccountlist[voipaccountlist].ownerid}" {tip 0=$voipaccountlist[voipaccountlist].ownerid dynpopup='?m=customerinfoshort&id=$0'}>{$voipaccountlist[voipaccountlist].owner|truncate:40:"...":true|replace:" ":"&nbsp;"} ({$voipaccountlist[voipaccountlist].ownerid|string_format:"%04d"})</A>
+			<img src="img/customer.gif" ALT="">&nbsp;<A href="?m=customerinfo&id={$voipaccountlist[voipaccountlist].ownerid}" {tip a=$voipaccountlist[voipaccountlist].ownerid dynpopup='?m=customerinfoshort&id=$a'}>{$voipaccountlist[voipaccountlist].owner|truncate:40:"...":true|replace:" ":"&nbsp;"} ({$voipaccountlist[voipaccountlist].ownerid|string_format:"%04d"})</A>
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=voipaccountinfo&id={$voipaccountlist[voipaccountlist].id}';" valign="top" nowrap>
 			({$voipaccountlist[voipaccountlist].id|string_format:"%04d"})
@@ -66,7 +66,7 @@
 		<TD width="1%" class="fright" align="right">
 			<nobr>
 			<a href="?m=voipaccountset&id={$voipaccountlist[voipaccountlist].id}"><img src="img/{if ! $voipaccountlist[voipaccountlist].access}no{/if}access.gif" alt="[ {if ! $voipaccountlist[voipaccountlist].access}{t}Connect{/t}{else}{t}Disconnect{/t}{/if} ]" title="[ {if ! $voipaccountlist[voipaccountlist].access}{t}Connect{/t}{else}{t}Disconnect{/t}{/if} ]"></A>
-			<a onClick="return confirmLink(this, '{t 0=$voipaccountlist[voipaccountlist].login}Are you sure, you want to remove voip account \'$0\' from database?{/t}')" href="?m=voipaccountdel&id={$voipaccountlist[voipaccountlist].id}"><img src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+			<a onClick="return confirmLink(this, '{t a=$voipaccountlist[voipaccountlist].login}Are you sure, you want to remove voip account \'$a\' from database?{/t}')" href="?m=voipaccountdel&id={$voipaccountlist[voipaccountlist].id}"><img src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
 			<a href="?m=voipaccountedit&id={$voipaccountlist[voipaccountlist].id}"><img src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 			<a href="?m=voipaccountinfo&id={$voipaccountlist[voipaccountlist].id}"><img src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
 			</nobr>

@@ -40,7 +40,7 @@ if(!$domain)
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
-$layout['pagetitle'] = trans('Domain Info: $0', $domain['name']);
+$layout['pagetitle'] = trans('Domain Info: $a', $domain['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

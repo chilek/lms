@@ -68,7 +68,7 @@ $SESSION->restore('invoiceediterror', $error);
 $itemdata = r_trim($_POST);
 
 $ntempl = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
-$layout['pagetitle'] = trans('Invoice Edit: $0', $ntempl);
+$layout['pagetitle'] = trans('Invoice Edit: $a', $ntempl);
 
 if(isset($_GET['customerid']) && $_GET['customerid'] != '' && $LMS->CustomerExists($_GET['customerid']))
 	$action = 'setcustomer';

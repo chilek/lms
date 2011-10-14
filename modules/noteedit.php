@@ -57,7 +57,7 @@ $SESSION->restore('note', $note);
 $SESSION->restore('noteediterror', $error);
 
 $ntempl = docnumber($note['number'], $note['template'], $note['cdate']);
-$layout['pagetitle'] = trans('Debit Note Edit: $0', $ntempl);
+$layout['pagetitle'] = trans('Debit Note Edit: $a', $ntempl);
 
 if(!empty($_GET['customerid']) && $LMS->CustomerExists($_GET['customerid']))
 	$action = 'setcustomer';

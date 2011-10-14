@@ -51,7 +51,7 @@
 			<nobr><img src="img/cmp.gif" alt=""> <B>{t}Network size:{/t}</B>
 		</TD>
 		<TD width="49%">
-			{t 0=$network.size}$0 addresses{/t}
+			{t a=$network.size}$a addresses{/t}
 		</TD>
 	</TR>
 	{/if}
@@ -152,7 +152,7 @@
 				<input type="hidden" name="m" value="netremap">
 				<input type="hidden" name="id" value="{$network.id}">
 				{if $netlistsize > 1}
-				<a href="javascript:document.remap.submit()" onClick="return confirm('{t 0=$network.name}Are you sure, you want to change network $0 to network '+getText(document.remap.mapto.value)+'?{/t}');">{t}Reassign to network:{/t}</A> 
+				<a href="javascript:document.remap.submit()" onClick="return confirm('{t a=$network.name}Are you sure, you want to change network $a to network '+getText(document.remap.mapto.value)+'?{/t}');">{t}Reassign to network:{/t}</A> 
 					<select size="1" name="mapto" {tip text="Select network to which you want to move computers"}>
 						{section name=networks loop=$networks}
 						{if $networks[networks].id neq $network.id}
@@ -162,12 +162,12 @@
 					</select>
 				{/if}
 				<A href="javascript:document.netedit.submit()" ACCESSKEY="S">{t}Submit{/t} <IMG src="img/save.gif" ALT="[ {t}Submit{/t} ]"></a>
-				<A href="?m=netdel&id={$network.id}" onClick="return confirmLink(this,'{t 0=$network.name}Are you sure, you want to remove network \'$0\'?{/t}')">{t}Remove{/t} <img src="img/delete.gif" ALT="[ {t}Remove{/t} ]"></A>
+				<A href="?m=netdel&id={$network.id}" onClick="return confirmLink(this,'{t a=$network.name}Are you sure, you want to remove network \'$a\'?{/t}')">{t}Remove{/t} <img src="img/delete.gif" ALT="[ {t}Remove{/t} ]"></A>
 				<A href="?m=netinfo&id={$network.id}">{t}Cancel{/t} <img src="img/cancel.gif" ALT="[ {t}Cancel{/t} ]"></A></TD> 
 				</form>
 			{else}
 			<A href="?m=netedit&id={$network.id}" ACCESSKEY="E">{t}Edit{/t} <img src="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
-			<A href="?m=netdel&id={$network.id}" onClick="return confirmLink(this,'{t 0=$network.name}Are you sure, you want to remove network \'$0\'?{/t}')">{t}Remove{/t} <img src="img/delete.gif" ALT="[ {t}Remove{/t} ]"></A>
+			<A href="?m=netdel&id={$network.id}" onClick="return confirmLink(this,'{t a=$network.name}Are you sure, you want to remove network \'$a\'?{/t}')">{t}Remove{/t} <img src="img/delete.gif" ALT="[ {t}Remove{/t} ]"></A>
 		</TD>
 			{/if}
 	</TR>
@@ -178,7 +178,7 @@
 		</TD>
 		<TD WIDTH="50%" CLASS="frightu" COLSPAN="2" ALIGN="RIGHT">
 			<B>{if $network.page > 1}<A HREF="?m=net{if $unlockedit}edit{else}info{/if}&id={$network.id}&page={math equation="x - 1" x=$network.page}">&laquo;&laquo;&laquo;</A>{else}<FONT CLASS="BLEND">&laquo;&laquo;&laquo;</FONT>{/if}
-			 {t 0=$network.page 1=$network.pages}Page $0 of $1{/t} {if $network.page < $network.pages}<A HREF="?m=net{if $unlockedit}edit{else}info{/if}&id={$network.id}&page={math equation="x + 1" x=$network.page}">&raquo;&raquo;&raquo;</A>{else}<FONT CLASS="BLEND">&raquo;&raquo;&raquo;</FONT>{/if}</B>
+			 {t a=$network.page b=$network.pages}Page $a of $b{/t} {if $network.page < $network.pages}<A HREF="?m=net{if $unlockedit}edit{else}info{/if}&id={$network.id}&page={math equation="x + 1" x=$network.page}">&raquo;&raquo;&raquo;</A>{else}<FONT CLASS="BLEND">&raquo;&raquo;&raquo;</FONT>{/if}</B>
 		</TD>		
 	</TR>
 	<TR>
@@ -210,10 +210,10 @@
 				<TR class="light">
 					<TD CLASS="fleftu" COLSPAN="2">
 						<B>{if $network.page > 1}<A HREF="?m=net{if $unlockedit}edit{else}info{/if}&id={$network.id}&page={math equation="x - 1" x=$network.page}">&laquo;&laquo;&laquo;</A>{else}<FONT CLASS="BLEND">&laquo;&laquo;&laquo;</FONT>{/if} 
-						{t 0=$network.page 1=$network.pages}Page $0 of $1{/t} {if $network.page < $network.pages}<A HREF="?m=net{if $unlockedit}edit{else}info{/if}&id={$network.id}&page={math equation="x + 1" x=$network.page}">&raquo;&raquo;&raquo;</A>{else}<FONT CLASS="BLEND">&raquo;&raquo;&raquo;</FONT>{/if}</B>
+						{t a=$network.page b=$network.pages}Page $a of $b{/t} {if $network.page < $network.pages}<A HREF="?m=net{if $unlockedit}edit{else}info{/if}&id={$network.id}&page={math equation="x + 1" x=$network.page}">&raquo;&raquo;&raquo;</A>{else}<FONT CLASS="BLEND">&raquo;&raquo;&raquo;</FONT>{/if}</B>
 					</TD>
 					<TD ALIGN="RIGHT" CLASS="frightu" COLSPAN="2">
-						<B>{t 0=$network.assigned}Total: $0{/t} ({t}this page:{/t} {$network.pageassigned|default:"0"}, {t}free:{/t} {$network.free})</B>
+						<B>{t a=$network.assigned}Total: $a{/t} ({t}this page:{/t} {$network.pageassigned|default:"0"}, {t}free:{/t} {$network.free})</B>
 					</TD>
 				</TR>
 			</table>

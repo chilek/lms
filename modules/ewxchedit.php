@@ -41,7 +41,7 @@ if(!($channel = $DB->GetRow('SELECT * FROM ewx_channels WHERE id = ?', array($_G
         $SESSION->redirect('?m=ewxchlist');
 }
 
-$layout['pagetitle'] = trans('Channel Edit: $0', $channel['name']);
+$layout['pagetitle'] = trans('Channel Edit: $a', $channel['name']);
 
 if(isset($_POST['channel']))
 {

@@ -67,7 +67,7 @@ if(isset($_POST['queue']))
 else
 	$queue = $LMS->GetQueue($_GET['id']);
 
-$layout['pagetitle'] = trans('Queue Edit: $0', $queue['name']);
+$layout['pagetitle'] = trans('Queue Edit: $a', $queue['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

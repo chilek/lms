@@ -46,7 +46,7 @@ if($id && !DomainExists($id))
 $domain = $DB->GetRow('SELECT id, name, ownerid, description, master, last_check, type, notified_serial, account
 	FROM domains WHERE id = ?', array($id));
 
-$layout['pagetitle'] = trans('Domain Edit: $0', $domain['name']);
+$layout['pagetitle'] = trans('Domain Edit: $a', $domain['name']);
 
 if(isset($_POST['domain']))
 {
@@ -89,7 +89,7 @@ if(isset($_POST['domain']))
 		        		array($domainadd['ownerid']));
 		
 			if($limits['domain_limit'] == 0 || $limits['domain_limit'] <= $cnt)
-			        $error['ownerid'] = trans('Exceeded domains limit of selected customer ($0)!', $limits['domain_limit']);
+			        $error['ownerid'] = trans('Exceeded domains limit of selected customer ($a)!', $limits['domain_limit']);
 		}
 	}
 

@@ -43,7 +43,7 @@ if(isset($_POST['nodegroupadd']))
 	elseif(!preg_match('/^[._a-z0-9-]+$/i', $nodegroupadd['name']))
 		$error['name'] = trans('Invalid chars in group name!');
 	elseif($DB->GetOne('SELECT 1 FROM nodegroups WHERE name = ?', array($nodegroupadd['name'])))
-		$error['name'] = trans('Group with name $0 already exists!',$nodegroupadd['name']);
+		$error['name'] = trans('Group with name $a already exists!',$nodegroupadd['name']);
 
 	if(!$error)
 	{

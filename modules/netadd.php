@@ -61,7 +61,7 @@ if(isset($_POST['netadd']))
 	{
 		if(getnetaddr($netadd['address'], prefix2mask($netadd['prefix'])) != $netadd['address'])
 		{
-			$error['address'] = trans('Specified address is not a network address, setting $0',getnetaddr($netadd['address'], prefix2mask($netadd['prefix'])));
+			$error['address'] = trans('Specified address is not a network address, setting $a',getnetaddr($netadd['address'], prefix2mask($netadd['prefix'])));
 			$netadd['address'] = getnetaddr($netadd['address'], prefix2mask($netadd['prefix']));
 		}
 		else
