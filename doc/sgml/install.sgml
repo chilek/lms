@@ -27,7 +27,7 @@
         </sect2>
         <sect2 id="install-req-php">
            <title>PHP Interpreter</title>
-    	    <para>Interpreter version should be 4.2.x or higher.
+    	    <para>Interpreter version should be 5.2.x or higher.
             PHP can be downloaded from <ulink url="http://www.php.net">www.php.net</ulink>.
             At least following PHP modules needs to be installed (look for "extension" in
             php.ini or in output of phpinfo function):
@@ -62,8 +62,8 @@
          <sect2 id="install-req-smarty">
              <title>Smarty Library</title>
             <para><emphasis>LMS-UI</emphasis> requires Smarty library (<ulink
-            url="http://www.smarty.net">http://www.smarty.net</ulink>) in version 2.6.0
-            or higher (don't use 2.6.4 version). Newer versions of Smarty requires that
+            url="http://www.smarty.net">http://www.smarty.net</ulink>) in version 3.0
+            or higher. Newer versions of Smarty requires that
             you have not enabled "magic_quotes_runtime" (set to Off) option in <ulink
             url="http://www.php.net/manual/en/configuration.php">PHP configuration</ulink>.</para>
             </sect2>
