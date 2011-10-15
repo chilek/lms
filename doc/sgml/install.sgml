@@ -532,6 +532,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
 				    <para>total netto price = ($2.56 * 1366 m = $3496.96) / 1,22 = $2866.36</para>
 			    </listitem>
 		    </itemizedlist>
+	    </para>
     </sect2>
     <sect2 id="install-invoices">
      <title>Invoices</title>
