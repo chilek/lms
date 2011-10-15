@@ -659,7 +659,7 @@ function lastonline_date($timestamp)
     $delta = time()-$timestamp;
     if ($delta > $CONFIG['phpui']['lastonline_limit']) {
         if($delta>59)
-            return trans('$a ago ($1)', uptimef($delta), date('Y/m/d, H:i', $timestamp));
+            return trans('$a ago ($b)', uptimef($delta), date('Y/m/d, H:i', $timestamp));
         else
             return date('(Y/m/d, H:i)', $timestamp);
     }
