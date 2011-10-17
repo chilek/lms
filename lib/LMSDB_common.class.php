@@ -274,7 +274,7 @@ Class LMSDB_common
 
 		if($input === NULL)
 			return 'NULL';
-		elseif(gettype($input) == 'string')
+		elseif(is_string($input))
 			return '\''.addcslashes($input,"'\\\0").'\'';
 		else
 			return $input;
