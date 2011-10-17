@@ -506,9 +506,17 @@ class LMS
 		$this->DB->Execute('DELETE FROM customerassignments WHERE customerid=?', array($id));
 		$this->DB->Execute('DELETE FROM assignments WHERE customerid=?', array($id));
 		// nodes
-		$this->DB->Execute('DELETE FROM nodegroupassignments WHERE nodeid IN (
-				SELECT id FROM nodes WHERE ownerid=?)', array($id));
-		$this->DB->Execute('DELETE FROM nodes WHERE ownerid=?', array($id));
+		$nodes = $this->DB->GetCol('SELECT id FROM nodes WHERE ownerid=?', array(id));
+		if ($nodes)
+		{
+			$this->DB->Execute('DELETE FROM nodegroupassignments WHERE nodeid IN ('.join(',', $nodes).')');
+			$plugin_data = array();
+			foreach ($nodes as $node)
+				$plugin_data[] = array('id' => $node, 'ownerid' => $id);
+			$this->ExecHook('node_del_before', $plugin_data);
+			$this->DB->Execute('DELETE FROM nodes WHERE ownerid=?', array($id));
+			$this->ExecHook('node_del_after', $plugin_data);
+		}
 		// hosting
 		$this->DB->Execute('UPDATE passwd SET ownerid=0 WHERE ownerid=?', array($id));
 		$this->DB->Execute('UPDATE domains SET ownerid=0 WHERE ownerid=?', array($id));

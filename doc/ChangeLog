@@ -36,7 +36,8 @@ version ? (????-??-??):
     		It was quite strongly tested with Smarty 3.1.3
     -----------------------------------------------------------------
   - quicksearch: fixed search for hosts when exact mac address was entered [chilan]
-  
+  - BTS#0000867: execution node_del_{before,after} hooks while deleting owner [chilan]
+   
 version 1.11.13 Dira (2011-04-07)
 
   - contrib/cutoff2: Fixed "Column 'period' in where clause is ambiguous" [alec]
