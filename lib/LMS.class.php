@@ -506,7 +506,7 @@ class LMS
 		$this->DB->Execute('DELETE FROM customerassignments WHERE customerid=?', array($id));
 		$this->DB->Execute('DELETE FROM assignments WHERE customerid=?', array($id));
 		// nodes
-		$nodes = $this->DB->GetCol('SELECT id FROM nodes WHERE ownerid=?', array(id));
+		$nodes = $this->DB->GetCol('SELECT id FROM nodes WHERE ownerid=?', array($id));
 		if ($nodes)
 		{
 			$this->DB->Execute('DELETE FROM nodegroupassignments WHERE nodeid IN ('.join(',', $nodes).')');
