@@ -12,7 +12,8 @@
     {$xajax}
 </head>
 <body class="light">
-{popup_init src="img/overlib.js"}
+<div id="overDiv" style="position:absolute; visibility:hidden; z-index:100;"></div>
+<script type="text/javascript" language="JavaScript" src="img/overlib.js"></script>
     {if !empty($states)}
     <div id="autosuggest"><ul></ul></div>
     <form name="search" id="search" method="post" action="?m=chooselocation">
