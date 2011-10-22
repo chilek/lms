@@ -99,7 +99,7 @@ $SMARTY = new Smarty;
 
 // test for proper version of Smarty
 
-if (constant('Smarty::SMARTY_VERSION'))
+if (defined('Smarty::SMARTY_VERSION'))
 	$ver_chunks = preg_split('/[- ]/', Smarty::SMARTY_VERSION);
 else
 	$ver_chunks = NULL;
@@ -241,7 +241,7 @@ if($AUTH->islogged)
 		$SMARTY->assign('server', $_SERVER);
 		$SMARTY->display('notfound.html');
 	}
-	
+
 	if($SESSION->get('lastmodule') != $module)
 		$SESSION->save('lastmodule', $module);
 }
