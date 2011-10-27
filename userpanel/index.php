@@ -92,7 +92,7 @@ $SMARTY = new Smarty;
 // test for proper version of Smarty
 
 if (constant('Smarty::SMARTY_VERSION'))
-	$ver_chunks = preg_split('/-/', Smarty::SMARTY_VERSION);
+	$ver_chunks = preg_split('/[- ]/', Smarty::SMARTY_VERSION);
 else
 	$ver_chunks = NULL;
 if (count($ver_chunks) != 2 || version_compare('3.0', $ver_chunks[1]) > 0)
