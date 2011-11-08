@@ -239,6 +239,8 @@ if(isset($_POST['nodeedit']) && !isset($_GET['newmac']))
 	$nodeinfo['location_flat'] = $nodeedit['location_flat'];
 	$nodeinfo['teryt'] = empty($nodeedit['teryt']) ? 0 : 1;
 	$nodeinfo['stateid'] = $nodeedit['stateid'];
+	$nodeinfo['latitude'] = $nodeedit['latitude'];
+	$nodeinfo['longitude'] = $nodeedit['longitude'];
 
 	if($nodeedit['ipaddr_pub']=='0.0.0.0')
 		$nodeinfo['ipaddr_pub'] = '';
