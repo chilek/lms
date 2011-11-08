@@ -1279,7 +1279,8 @@ class LMS
 				ipaddr=inet_aton(?), passwd=?, netdev=?, moddate=?NOW?,
 				modid=?, access=?, warning=?, ownerid=?, info=?, location=?,
 				location_city=?, location_street=?, location_house=?, location_flat=?,
-				chkmac=?, halfduplex=?, linktype=?, port=?, nas=?
+				chkmac=?, halfduplex=?, linktype=?, port=?, nas=?,
+				longitude=?, latitude=? 
 				WHERE id=?',
 				array($nodedata['name'],
 				    $nodedata['ipaddr_pub'],
@@ -1301,6 +1302,8 @@ class LMS
 				    isset($nodedata['linktype']) ? 1 : 0,
 				    isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
 				    isset($nodedata['nas']) ? $nodedata['nas'] : 0,
+				    !empty($nodedata['latitude']) ? $nodedata['latitude'] : NULL,
+				    !empty($nodedata['longitude']) ? $nodedata['longitude'] : NULL,
 				    $nodedata['id']
 			    ));
 
@@ -1566,9 +1569,9 @@ class LMS
 		if($this->DB->Execute('INSERT INTO nodes (name, ipaddr, ipaddr_pub, ownerid,
 			passwd, creatorid, creationdate, access, warning, info, netdev,
 			location, location_city, location_street, location_house, location_flat,
-			linktype, port, chkmac, halfduplex, nas)
+			linktype, port, chkmac, halfduplex, nas, latitude, longitude)
 			VALUES (?, inet_aton(?), inet_aton(?), ?, ?, ?,
-			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			array(strtoupper($nodedata['name']),
 				$nodedata['ipaddr'],
 				$nodedata['ipaddr_pub'],
@@ -1589,6 +1592,8 @@ class LMS
 				$nodedata['chkmac'],
 				$nodedata['halfduplex'],
 				isset($nodedata['nas']) ? $nodedata['nas'] : 0,
+				isset($nodedata['latitude']) ? $nodedata['latitude'] : NULL,
+				isset($nodedata['longitude']) ? $nodedata['longitude'] : NULL
 				)))
 		{
 			$id = $this->DB->GetLastInsertID('nodes');
@@ -3347,8 +3352,9 @@ class LMS
 		        location_city, location_street, location_house, location_flat,
 				description, producer, model, serialnumber,
 				ports, purchasetime, guaranteeperiod, shortname,
-				nastype, clients, secret, community, channelid)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				nastype, clients, secret, community, channelid,
+				latitude, longitude)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				array($data['name'],
 					$data['location'],
 					$data['location_city'] ? $data['location_city'] : null,
@@ -3368,6 +3374,8 @@ class LMS
 					$data['secret'],
 					$data['community'],
 					!empty($data['channelid']) ? $data['channelid'] : NULL,
+					!empty($netdevdata['latitude']) ? $netdevdata['latitude'] : NULL,
+					!empty($netdevdata['longitude']) ? $netdevdata['longitude'] : NULL
 		))) {
 			$id = $this->DB->GetLastInsertID('netdevices');
 
@@ -3402,7 +3410,7 @@ class LMS
 		$this->DB->Execute('UPDATE netdevices SET name=?, description=?, producer=?, location=?,
 		        location_city=?, location_street=?, location_house=?, location_flat=?,
 				model=?, serialnumber=?, ports=?, purchasetime=?, guaranteeperiod=?, shortname=?,
-				nastype=?, clients=?, secret=?, community=?, channelid=?
+				nastype=?, clients=?, secret=?, community=?, channelid=?, latitude=?, longitude=? 
 				WHERE id=?', 
 				array($data['name'],
 					$data['description'],
@@ -3423,6 +3431,8 @@ class LMS
 					$data['secret'],
 					$data['community'],
 					!empty($data['channelid']) ? $data['channelid'] : NULL,
+					!empty($netdevdata['latitude']) ? $netdevdata['latitude'] : NULL,
+					!empty($netdevdata['longitude']) ? $netdevdata['longitude'] : NULL,
 					$data['id']
 				));
 	}

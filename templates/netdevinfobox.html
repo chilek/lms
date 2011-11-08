@@ -88,6 +88,30 @@
 		</TD>
 	</TR>
 	{/if}
+	{if $netdevinfo.latitude || $netdevinfo.longitude}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+		</TD>
+		<TD WIDTH="1%">
+			<B>{t}GPS latitude:{/t}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT ID="latitude" TYPE="hidden" VALUE="{$netdevinfo.latitude}">
+			{$netdevinfo.latitude}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+		</TD>
+		<TD WIDTH="1%">
+			<B>{t}GPS longitude:{/t}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT ID="longitude" TYPE="hidden" VALUE="{$netdevinfo.longitude}">
+			{$netdevinfo.longitude}
+		</TD>
+	</TR>
+	{/if}
 {if $_config.phpui.radius|chkconfig}
 	{if $netdevinfo.shortname}
 	<TR CLASS="LIGHT">

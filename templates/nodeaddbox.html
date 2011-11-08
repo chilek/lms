@@ -135,6 +135,28 @@
 					<TABLE WIDTH="100%" CELLPADDING="3">
 	<TR>
 		<TD WIDTH="1%">
+			<IMG SRC="img/home.gif" ALT="{t}Location:{/t}">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}GPS latitude:{/t}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT ID="latitude" TYPE="text" NAME="nodedata[latitude]" VALUE="{if $nodeinfo.latitude}{$nodeinfo.latitude}{else}{/if}" {tip text="Enter device latitude (optional)"} trigger="latitude">
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/home.gif" ALT="{t}Location:{/t}">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}GPS longitude:{/t}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT ID="longitude" TYPE="text" NAME="nodedata[longitude]" VALUE="{if $nodeinfo.longitude}{$nodeinfo.longitude}{else}{/if}" {tip text="Enter device longitude (optional)"} trigger="longitude">
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
 			<IMG SRC="img/info1.gif" ALT="{t}Description:{/t}">
 		</TD>
 		<TD WIDTH="98%">

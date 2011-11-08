@@ -2504,4 +2504,10 @@ $_LANG['Categories List'] = 'Lista kategorii';
 $_LANG['List of categories'] = 'Lista kategorii';
 $_LANG['Add new category'] = 'Utworzenie nowej kategorii';
 
+$_LANG['Enter device latitude (optional)'] = 'Podaj szerokość geograficzną dla urządzenia (opcjonalne)';
+$_LANG['Enter device longitude (optional)'] = 'Podaj długość geograficzną dla urząðzenia (opcjonalne)';
+$_LANG['GPS coordinates:'] = 'Współrzędne geograficzne:';
+$_LANG['GPS latitude:'] = 'Szerokość geograficzna:';
+$_LANG['GPS longitude:'] = 'Długość geograficzna:';
+
 ?>

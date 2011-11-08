@@ -82,6 +82,26 @@
 			<INPUT TYPE="checkbox" name="netdev[teryt]" id="teryt" onchange="check_teryt('location')"{if $netdevinfo.teryt} checked{/if}>{t}TERRIT-DB{/t}
 		</TD>
 	</TR>
+	<TR>
+		<TD WIDTH="1%">
+		</TD>
+		<TD WIDTH="1%">
+			<B>{t}GPS latitude:{/t}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT ID="latitude" TYPE="text" NAME="netdev[latitude]" VALUE="{$netdev.latitude}" {tip text="Enter device latitude (optional)" trigger="latitude"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+		</TD>
+		<TD WIDTH="1%">
+			<B>{t}GPS longitude:{/t}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT ID="longitude" TYPE="text" NAME="netdev[longitude]" VALUE="{$netdev.longitude}" {tip text="Enter device longitude (optional)" trigger="longitude"}>
+		</TD>
+	</TR>
 {if $_config.phpui.radius|chkconfig}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
