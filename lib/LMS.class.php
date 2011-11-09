@@ -1302,8 +1302,8 @@ class LMS
 				    isset($nodedata['linktype']) ? 1 : 0,
 				    isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
 				    isset($nodedata['nas']) ? $nodedata['nas'] : 0,
-				    !empty($nodedata['latitude']) ? $nodedata['latitude'] : NULL,
-				    !empty($nodedata['longitude']) ? $nodedata['longitude'] : NULL,
+				    !empty($nodedata['latitude']) ? $nodedata['latitude'] : null,
+				    !empty($nodedata['longitude']) ? $nodedata['longitude'] : null,
 				    $nodedata['id']
 			    ));
 
@@ -1592,8 +1592,8 @@ class LMS
 				$nodedata['chkmac'],
 				$nodedata['halfduplex'],
 				isset($nodedata['nas']) ? $nodedata['nas'] : 0,
-				isset($nodedata['latitude']) ? $nodedata['latitude'] : NULL,
-				isset($nodedata['longitude']) ? $nodedata['longitude'] : NULL
+				!empty($nodedata['latitude']) ? $nodedata['latitude'] : null,
+				!empty($nodedata['longitude']) ? $nodedata['longitude'] : null
 				)))
 		{
 			$id = $this->DB->GetLastInsertID('nodes');
@@ -3431,8 +3431,8 @@ class LMS
 					$data['secret'],
 					$data['community'],
 					!empty($data['channelid']) ? $data['channelid'] : NULL,
-					!empty($data['latitude']) ? $data['latitude'] : NULL,
-					!empty($data['longitude']) ? $data['longitude'] : NULL,
+					!empty($data['latitude']) ? $data['latitude'] : null,
+					!empty($data['longitude']) ? $data['longitude'] : null,
 					$data['id']
 				));
 	}
