@@ -29,6 +29,21 @@ $DB->BeginTrans();
 $DB->Execute("ALTER TABLE nodes ADD longitude numeric(10, 6) DEFAULT NULL");
 $DB->Execute("ALTER TABLE nodes ADD latitude numeric(10, 6) DEFAULT NULL");
 
+$DB->Execute("
+	DROP VIEW vnodes;
+	CREATE VIEW vnodes AS
+	SELECT n.*, m.mac
+		FROM nodes n
+		LEFT JOIN (SELECT nodeid, array_to_string(array_agg(mac), ',') AS mac
+			FROM macs GROUP BY nodeid) m ON (n.id = m.nodeid);
+
+	DROP VIEW vmacs;
+	CREATE VIEW vmacs AS
+	SELECT n.*, m.mac, m.id AS macid
+		FROM nodes n
+		JOIN macs m ON (n.id = m.nodeid);
+");
+
 $DB->Execute("ALTER TABLE netdevices ADD longitude numeric(10, 6) DEFAULT NULL");
 $DB->Execute("ALTER TABLE netdevices ADD latitude numeric(10, 6) DEFAULT NULL");
 
