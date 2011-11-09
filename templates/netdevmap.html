@@ -20,6 +20,66 @@
   TYPE="application/x-shockwave-flash" PLUGINSPAGE="http://www.macromedia.com/go/getflashplayer"></EMBED>
 </OBJECT>
 </P>
+{elseif $type=='osm'}
+<script type="text/javascript" language="JavaScript" src="img/OpenLayers/OpenLayers.js"></script>
+<div id="osm-map"></div>
+<script type="text/javascript" language="JavaScript">
+
+	map = new OpenLayers.Map("osm-map");
+	var mapbase = new OpenLayers.Layer.OSM();
+	map.addLayer(mapbase);
+	var markers = new OpenLayers.Layer.Markers("Markers");
+	map.addLayer(markers);
+
+	var area = new OpenLayers.Bounds();
+	{foreach from=$devices item=device}
+		var lonLat = new OpenLayers.LonLat({$device.longitude}, {$device.latitude})
+			.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+		var size = new OpenLayers.Size(16,16);
+		var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+		var icon = new OpenLayers.Icon("{$device.img}", size, offset);
+		markers.addMarker(new OpenLayers.Marker(lonLat,icon));
+		markers.addMarker(new OpenLayers.Marker(lonLat,icon.clone()));
+		area.extend(lonLat);
+	{/foreach}
+
+	var lineLayer = new OpenLayers.Layer.Vector("Line Layer");
+	map.addLayer(lineLayer);
+	map.addControl(new OpenLayers.Control.DrawFeature(lineLayer, OpenLayers.Handler.Path));
+
+	{foreach from=$links item=link}
+		var points = new Array
+			new OpenLayers.Geometry.Point({$link.srclon}, {$link.srclat})
+				.transform(
+					new OpenLayers.Projection("EPSG:4326"),
+					map.getProjectionObject()
+				),
+			new OpenLayers.Geometry.Point({$link.dstlon}, {$link.dstlat})
+				.transform(
+					new OpenLayers.Projection("EPSG:4326"),
+					map.getProjectionObject()
+				)
+			);
+		var line = new OpenLayers.Geometry.LineString(points);
+		{if !$link.type}
+			var style = { strokeColor: '#00ff00',
+		{else}
+			{if $link.type == 2}
+				var style = { strokeColor: '#ff0000',
+			{else}
+				var style = { strokeColor: '#0000ff',
+			{/if}
+		{/if}
+				strokeOpacity: 0.5,
+				strokeWidth: 5
+			};
+		var lineFeature = new OpenLayers.Feature.Vector(line, null, style);
+		lineLayer.addFeatures([lineFeature]);
+	{/foreach}
+
+	map.zoomToExtent(area);
+
+</script>
 {elseif $gd} {* default if $type is not set or not 'flash' *}
 <P ALIGN="CENTER">
 <IMG SRC="?m=netdevmap&graph=true&start={$start}{if $mini}&mini=1{/if}" ALT="" USEMAP="#devices">
