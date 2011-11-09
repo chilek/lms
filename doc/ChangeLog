@@ -41,6 +41,7 @@ version ? (????-??-??):
   - BTS#0000867: execution node_del_{before,after} hooks while deleting owner [chilan]
   - gps coordinates support for nodes and netdevices [chilan]
   - netdevmap: first version of OpenStreetMap map type support thanks to Grzegorz Cichowski [chilan]
+  - netdevmap: show info about netdevices for OpenStreetMap map type [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 

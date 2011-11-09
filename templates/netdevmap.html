@@ -24,12 +24,47 @@
 <script type="text/javascript" language="JavaScript" src="img/OpenLayers/OpenLayers.js"></script>
 <div id="osm-map"></div>
 <script type="text/javascript" language="JavaScript">
+	var map, popup = null, netdevs = new Array();
+
+	function show_netdevinfo(e)
+	{
+		var i;
+		for (i in netdevs)
+			if (this.lonlat.toString() == i)
+				break;
+		if (i)
+			document.location = "?m=netdevinfo&id="+netdevs[i]["id"];
+		OpenLayers.Event.stop(e);
+	}
+
+	function open_netdevinfo(e)
+	{
+		var i;
+		for (i in netdevs)
+			if (this.lonlat.toString() == i)
+				break;
+		popup = new OpenLayers.Popup(null, this.lonlat, new OpenLayers.Size(150, 50), (i ? netdevs[i]["name"] : ""));
+		popup.setOpacity(0.7);
+		popup.closeOnMove = true;
+		map.addPopup(popup);
+		OpenLayers.Event.stop(e);
+	}
+
+	function close_netdevinfo(e)
+	{
+		if (popup != null)
+		{
+			map.removePopup(popup);
+			popup.destroy();
+			popup = null;
+		}
+		OpenLayers.Event.stop(e);
+	}
 
 	map = new OpenLayers.Map("osm-map");
 	var mapbase = new OpenLayers.Layer.OSM();
 	map.addLayer(mapbase);
 	var markers = new OpenLayers.Layer.Markers("Markers");
-	map.addLayer(markers);
 
 	var area = new OpenLayers.Bounds();
 	{foreach from=$devices item=device}
@@ -38,17 +73,20 @@
 		var size = new OpenLayers.Size(16,16);
 		var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
 		var icon = new OpenLayers.Icon("{$device.img}", size, offset);
-		markers.addMarker(new OpenLayers.Marker(lonLat,icon));
-		markers.addMarker(new OpenLayers.Marker(lonLat,icon.clone()));
+
+		var marker = new OpenLayers.Marker(lonLat, icon);
+		netdevs[lonLat.toString()] = { name: "{$device.name}", id: "{$device.id}" };
+		markers.addMarker(marker);
+		marker.events.register("mousedown", marker, show_netdevinfo);
+		marker.events.register("mouseover", marker, open_netdevinfo);
+		marker.events.register("mouseout", marker, close_netdevinfo);
+
 		area.extend(lonLat);
 	{/foreach}
 
-	var lineLayer = new OpenLayers.Layer.Vector("Line Layer");
-	map.addLayer(lineLayer);
-	map.addControl(new OpenLayers.Control.DrawFeature(lineLayer, OpenLayers.Handler.Path));
-
+	var lineLayer = new OpenLayers.Layer.Vector("Lines");
 	{foreach from=$links item=link}
-		var points = new Array
+		var points = new Array(
 			new OpenLayers.Geometry.Point({$link.srclon}, {$link.srclat})
 				.transform(
 					new OpenLayers.Projection("EPSG:4326"),
@@ -76,6 +114,11 @@
 		var lineFeature = new OpenLayers.Feature.Vector(line, null, style);
 		lineLayer.addFeatures([lineFeature]);
 	{/foreach}
+
+	map.addLayer(lineLayer);
+	map.addLayer(markers);
+
+	map.addControl(new OpenLayers.Control.LayerSwitcher());
 
 	map.zoomToExtent(area);
 
