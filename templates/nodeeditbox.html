@@ -133,18 +133,19 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/home.gif" ALT="{t}GPS coordinates:{/t}">
 		</TD>
-		<TD WIDTH="1%">
+		<TD WIDTH="1%" NOWRAP>
 			<B>{t}GPS latitude:{/t}</B>
 		</TD>
 		<TD WIDTH="98%">
-			<B>{t}GPS longitude:{/t}</B>
+			<INPUT ID="latitude" TYPE="text" NAME="nodeedit[latitude]" VALUE="{if $nodeinfo.latitude}{$nodeinfo.latitude}{else}{/if}" {tip text="Enter device latitude (optional)" trigger="latitude"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
+			<IMG SRC="img/home.gif" ALT="{t}GPS coordinates:{/t}">
 		</TD>
-		<TD WIDTH="1%">
-			<INPUT ID="latitude" TYPE="text" NAME="nodeedit[latitude]" VALUE="{if $nodeinfo.latitude}{$nodeinfo.latitude}{else}{/if}" {tip text="Enter device latitude (optional)" trigger="latitude"}>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}GPS longitude:{/t}</B>
 		</TD>
 		<TD WIDTH="98%">
 			<INPUT ID="longitude" TYPE="text" NAME="nodeedit[longitude]" VALUE="{if $nodeinfo.longitude}{$nodeinfo.longitude}{else}{/if}" {tip text="Enter device longitude (optional)" trigger="longitude"}>
