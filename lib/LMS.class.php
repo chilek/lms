@@ -3374,8 +3374,8 @@ class LMS
 					$data['secret'],
 					$data['community'],
 					!empty($data['channelid']) ? $data['channelid'] : NULL,
-					!empty($netdevdata['latitude']) ? $netdevdata['latitude'] : NULL,
-					!empty($netdevdata['longitude']) ? $netdevdata['longitude'] : NULL
+					!empty($data['latitude']) ? $data['latitude'] : NULL,
+					!empty($data['longitude']) ? $data['longitude'] : NULL
 		))) {
 			$id = $this->DB->GetLastInsertID('netdevices');
 
@@ -3431,8 +3431,8 @@ class LMS
 					$data['secret'],
 					$data['community'],
 					!empty($data['channelid']) ? $data['channelid'] : NULL,
-					!empty($netdevdata['latitude']) ? $netdevdata['latitude'] : NULL,
-					!empty($netdevdata['longitude']) ? $netdevdata['longitude'] : NULL,
+					!empty($data['latitude']) ? $data['latitude'] : NULL,
+					!empty($data['longitude']) ? $data['longitude'] : NULL,
 					$data['id']
 				));
 	}
