@@ -318,11 +318,11 @@ if($links = $DB->GetAll('SELECT src, dst FROM netlinks'))
 
 $type = strtolower(isset($CONFIG['phpui']['map_type']) ? $CONFIG['phpui']['map_type'] : '');
 
-if ($type == 'osm')
+if ($type == 'openlayers')
 {
 	$devices = $DB->GetAllByKey('SELECT n.id, n.name, n.location, MAX(lastonline) AS lastonline, n.latitude, n.longitude 
 					FROM netdevices n 
-					LEFT JOIN nodes ON (n.id = netdev)
+					LEFT JOIN nodes ON (n.id = netdev) 
 					WHERE n.latitude IS NOT NULL AND n.longitude IS NOT NULL 
 					GROUP BY n.id, n.name, n.location, n.latitude, n.longitude', 'id');
 
