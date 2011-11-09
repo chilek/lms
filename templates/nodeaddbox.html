@@ -159,7 +159,7 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/info1.gif" ALT="{t}Description:{/t}">
 		</TD>
-		<TD WIDTH="98%">
+		<TD WIDTH="99%" COLSPAN="2">
 			<TEXTAREA NAME="nodedata[info]" COLS="50" ROWS="5" {tip text="Enter additional information (optional)"}>{$nodedata.info}</TEXTAREA>
 		</TD>
 	</TR>
@@ -167,7 +167,7 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/{if ! $nodedata.access}no{/if}access.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%">
+		<TD WIDTH="99%" COLSPAN="2">
 			<SELECT SIZE="1" NAME="nodedata[access]" {tip text="Select node status" trigger="access"}>
 				<OPTION VALUE="1"{if $nodedata.access} SELECTED{/if}>{t}connected<!singular>{/t}</OPTION>
 				<OPTION VALUE="0"{if ! $nodedata.access} SELECTED{/if}>{t}disconnected<!singular>{/t}</OPTION>
@@ -178,7 +178,7 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/warning{if !$nodedata.warning}off{else}on{/if}.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%">
+		<TD WIDTH="99%" COLSPAN="2">
 			<SELECT SIZE="1" NAME="nodedata[warning]" {tip text="Set notice for node"}>
 				<OPTION VALUE="1"{if $nodedata.warning} SELECTED{/if}>{t}enabled{/t}</OPTION>
 				<OPTION VALUE="0"{if ! $nodedata.warning} SELECTED{/if}>{t}disabled{/t}</OPTION>
