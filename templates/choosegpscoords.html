@@ -17,7 +17,7 @@
 <script type="text/javascript" language="JavaScript" src="http://maps.google.com/maps/api/js?v=3.2&sensor=false"></script>
 <script type="text/javascript" language="JavaScript">
 <!--
-	var map;
+	var map, popup = null, netdevs = new Array();
 
 	function click(e)
 	{
@@ -25,6 +25,30 @@
 			.transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));
 		sendvalue(targetfield1, lonlat.lon);
 		sendvalue(targetfield2, lonlat.lat);
+		OpenLayers.Event.stop(e);
+	}
+
+	function open_netdevinfo(e)
+	{
+		var i;
+		for (i in netdevs)
+			if (this.lonlat.toString() == i)
+				break;
+		popup = new OpenLayers.Popup(null, this.lonlat, new OpenLayers.Size(150, 50), (i ? netdevs[i]["name"] : ""));
+		popup.setOpacity(0.7);
+		popup.closeOnMove = true;
+		map.addPopup(popup);
+		OpenLayers.Event.stop(e);
+	}
+
+	function close_netdevinfo(e)
+	{
+		if (popup != null)
+		{
+			map.removePopup(popup);
+			popup.destroy();
+			popup = null;
+		}
 		OpenLayers.Event.stop(e);
 	}
 
@@ -36,13 +60,70 @@
 		map.addLayer(gmap);
 		map.addLayer(osmap);
 
+		var markers = new OpenLayers.Layer.Markers("Devices");
+
+		var area = new OpenLayers.Bounds();
+		{foreach from=$devices item=device}
+			var lonLat = new OpenLayers.LonLat({$device.longitude}, {$device.latitude})
+				.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+			var size = new OpenLayers.Size(16,16);
+			var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+			var icon = new OpenLayers.Icon("{$device.img}", size, offset);
+
+			var marker = new OpenLayers.Marker(lonLat, icon);
+			netdevs[lonLat.toString()] = { name: "{$device.name}", id: "{$device.id}" };
+			markers.addMarker(marker);
+			marker.events.register("mouseover", marker, open_netdevinfo);
+			marker.events.register("mouseout", marker, close_netdevinfo);
+
+			area.extend(lonLat);
+		{/foreach}
+
+		var lineLayer = new OpenLayers.Layer.Vector("Links");
+		{foreach from=$links item=link}
+			var points = new Array(
+				new OpenLayers.Geometry.Point({$link.srclon}, {$link.srclat})
+					.transform(
+						new OpenLayers.Projection("EPSG:4326"),
+						map.getProjectionObject()
+					),
+				new OpenLayers.Geometry.Point({$link.dstlon}, {$link.dstlat})
+					.transform(
+						new OpenLayers.Projection("EPSG:4326"),
+						map.getProjectionObject()
+					)
+				);
+			var line = new OpenLayers.Geometry.LineString(points);
+			{if !$link.type}
+				var style = { strokeColor: '#00ff00',
+			{else}
+				{if $link.type == 2}
+					var style = { strokeColor: '#ff0000',
+				{else}
+					var style = { strokeColor: '#0000ff',
+				{/if}
+			{/if}
+					strokeOpacity: 0.5,
+					strokeWidth: 3
+				};
+			var lineFeature = new OpenLayers.Feature.Vector(line, null, style);
+			lineLayer.addFeatures([lineFeature]);
+		{/foreach}
+
+		map.addLayer(lineLayer);
+		map.addLayer(markers);
+
 		map.addControl(new OpenLayers.Control.ScaleLine());
 		map.addControl(new OpenLayers.Control.LayerSwitcher());
 		map.addControl(new OpenLayers.Control.MousePosition({ displayProjection: new OpenLayers.Projection("EPSG:4326") }));
 
-		map.events.register("click", map, click);
+		{if $devices}
+			map.zoomToExtent(area);
+		{else}
+			map.zoomToMaxExtent();
+		{/if}
 
-		if (!map.getCenter()) map.zoomToMaxExtent();
+		map.events.register("click", map, click);
 	}
 //-->
 </script>
