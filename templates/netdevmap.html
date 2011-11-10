@@ -136,6 +136,7 @@
 
 	var area = new OpenLayers.Bounds();
 	var devices = [];
+	{if $devices}
 	{foreach from=$devices item=device}
 		var lonLat = new OpenLayers.LonLat({$device.longitude}, {$device.latitude})
 			.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
@@ -152,6 +153,7 @@
 			}
 		));
 	{/foreach}
+	{/if}
 
 	var devicelayer = new OpenLayers.Layer.Vector("Devices", {
 		styleMap: new OpenLayers.StyleMap(devicestyle)
@@ -160,6 +162,7 @@
 	map.addLayer(devicelayer);
 
 	var devlinks = [];
+	{if $links}
 	{foreach from=$links item=link}
 		var points = new Array(
 			new OpenLayers.Geometry.Point({$link.srclon}, {$link.srclat})
@@ -189,12 +192,13 @@
 		var devlink = new OpenLayers.Feature.Vector(line, null, style);
 		devlinks.push(devlink);
 	{/foreach}
+	{/if}
 
 	var devlinklayer = new OpenLayers.Layer.Vector("Device Links");
 	devlinklayer.addFeatures(devlinks);
 	map.addLayer(devlinklayer);
 
-	highlightdevicelayer = new OpenLayers.Control.SelectFeature(devicelayer, {
+	var highlightdevicelayer = new OpenLayers.Control.SelectFeature(devicelayer, {
 		hover: true,
 		highlightOnly: true,
 		clickout: false,
@@ -219,7 +223,7 @@
 			}
 		}
 	});
-	selectdevicelayer = new OpenLayers.Control.SelectFeature(devicelayer, {
+	var selectdevicelayer = new OpenLayers.Control.SelectFeature(devicelayer, {
 		clickout: true, toggle: false,
 		multiple: false, hover: false,
 		toggleKey: "ctrlKey", // ctrl key removes from selection
@@ -236,6 +240,7 @@
 	selectdevicelayer.activate();
 
 	var nodes = [];
+	{if $nodes}
 	{foreach from=$nodes item=node}
 		var lonLat = new OpenLayers.LonLat({$node.longitude}, {$node.latitude})
 			.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
@@ -252,6 +257,7 @@
 			}
 		));
 	{/foreach}
+	{/if}
 
 	var nodelayer = new OpenLayers.Layer.Vector("Nodes", {
 		styleMap: new OpenLayers.StyleMap(nodestyle)
@@ -260,6 +266,7 @@
 	map.addLayer(nodelayer);
 
 	var nodelinks = [];
+	{if $nodelinks}
 	{foreach from=$nodelinks item=link}
 		var points = new Array(
 			new OpenLayers.Geometry.Point({$link.nodelon}, {$link.nodelat})
@@ -289,12 +296,13 @@
 		var nodelink = new OpenLayers.Feature.Vector(line, null, style);
 		nodelinks.push(nodelink);
 	{/foreach}
+	{/if}
 
 	var nodelinklayer = new OpenLayers.Layer.Vector("Node Links");
 	nodelinklayer.addFeatures(nodelinks);
 	map.addLayer(nodelinklayer);
 
-	highlightnodelayer = new OpenLayers.Control.SelectFeature(nodelayer, {
+	var highlightnodelayer = new OpenLayers.Control.SelectFeature(nodelayer, {
 		hover: true,
 		highlightOnly: true,
 		clickout: false,
@@ -319,7 +327,7 @@
 			}
 		}
 	});
-	selectnodelayer = new OpenLayers.Control.SelectFeature(nodelayer, {
+	var selectnodelayer = new OpenLayers.Control.SelectFeature(nodelayer, {
 		clickout: true, toggle: false,
 		multiple: false, hover: false,
 		toggleKey: "ctrlKey", // ctrl key removes from selection
