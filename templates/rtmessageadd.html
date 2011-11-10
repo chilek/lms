@@ -97,17 +97,13 @@
 </TABLE>
 </FORM></P>
 {include file="footer.html"}
-{literal}
 <SCRIPT type="text/javascript">
 <!--
-
 	function setSubmitter(id)
 	{
 		document.forms['message'].elements[id].checked = true;
 	}
 
-	document.forms['message'].elements['message[subject]'].focus();
-
+document.forms['message'].elements['message[subject]'].focus();
 //-->
 </SCRIPT>
-{/literal}

@@ -1,25 +1,26 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <SCRIPT type="text/javascript">
-<!--{literal}
+<!--
 	function checklimit(name)
-        {
-	        if(document.getElementById(name).checked) {
-	                document.forms['tariff'].elements['tariff['+name+']'].style.display = 'none';
-	        } else {
-	                document.forms['tariff'].elements['tariff['+name+']'].style.display = '';
+	{
+		if (document.getElementById(name).checked) {
+			document.forms['tariff'].elements['tariff[' + name + ']'].style.display = 'none';
+		} else {
+			document.forms['tariff'].elements['tariff[' + name + ']'].style.display = '';
 		}
 	}
+
 	function checklimit2(name)
-        {
-	        if(document.getElementById(name).checked) {
-	                document.forms['tariff'].elements['tariff['+name+']'].style.display = '';
-	        } else {
-	                document.forms['tariff'].elements['tariff['+name+']'].style.display = 'none';
+	{
+		if (document.getElementById(name).checked) {
+			document.forms['tariff'].elements['tariff[' + name + ']'].style.display = '';
+		} else {
+			document.forms['tariff'].elements['tariff[' + name + ']'].style.display = 'none';
 		}
 		checkElement(name);
 	}
-//-->{/literal}
+//-->
 </SCRIPT>
 <H1>{$layout.pagetitle}</H1>
 <FORM METHOD="POST" NAME="tariff" ACTION="?m=tariffadd">

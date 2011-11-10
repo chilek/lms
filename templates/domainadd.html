@@ -88,23 +88,24 @@
 	</TR>
 </TABLE>
 </FORM></P>
-{literal}
 <script type="text/javascript">
+<!--
 function showslave() {
-	document.getElementById('ipmaster').style.display="block";
-	document.getElementById('ipwebserver').style.display="none";
-	document.getElementById('ipmailserver').style.display="none";                                                                                            
+	document.getElementById('ipmaster').style.display = "block";
+	document.getElementById('ipwebserver').style.display = "none";
+	document.getElementById('ipmailserver').style.display = "none";
 }
+
 function hideslave() {
-        document.getElementById('ipmaster').style.display="none";
-        document.getElementById('ipwebserver').style.display='';
-        document.getElementById('ipmailserver').style.display='';                                                                     
+	document.getElementById('ipmaster').style.display = "none";
+	document.getElementById('ipwebserver').style.display = '';
+	document.getElementById('ipmailserver').style.display = '';
 }
 
 document.forms['domainadd'].elements['domainadd[name]'].focus();
 
-if (document.getElementById('domainadd[type]').value=='SLAVE')
+if (document.getElementById('domainadd[type]').value == 'SLAVE')
 	showslave();
+//-->
 </script>
-{/literal}
 {include file="footer.html"}

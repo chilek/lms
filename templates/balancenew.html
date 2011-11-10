@@ -2,7 +2,6 @@
 <!--// $Id$ //-->
 {include file="calendar_js.html"}
 <SCRIPT type="text/javascript">
-{literal}
 <!--
 	function CountSelectedCustomers()
 	{
@@ -18,16 +17,15 @@
 	{
 		document.forms['addbalance'].elements['type'+id].checked = true;
 	}
-	
+
 	function del(id)
 	{
-		if(confirm({/literal}'{t}Are you sure, you want to delete last operation?{/t}'{literal}))
+		if(confirm('{t}Are you sure, you want to delete last operation?{/t}'))
 		{
 			location.href = '?m=balancedel&id=' + id;
 		}
 	}
 //-->
-{/literal}
 </SCRIPT>
 <H1>{$layout.pagetitle}</H1>
 <P><FORM NAME="addbalance" METHOD="POST" ACTION="?m=balanceadd">

@@ -1,7 +1,6 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-{literal}
 <SCRIPT type="text/javascript">
 <!--
 	function CheckAll()
@@ -13,13 +12,13 @@
 			e.checked = document.cashimport.allbox.checked;
 		}
 	}
-	
+
 	function CheckAll2()
 	{
 		document.cashimport.allbox.checked = !document.cashimport.allbox.checked;
 		CheckAll();
 	}
-	
+
 	function Delete()
 	{
 		document.cashimport.action += '&action=delete';
@@ -33,7 +32,6 @@
 	}
 //-->
 </SCRIPT>
-{/literal}
 <P><FORM NAME="cashimport" ACTION="?m=cashimport" METHOD="post">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">

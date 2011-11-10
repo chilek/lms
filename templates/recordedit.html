@@ -171,9 +171,8 @@
 	</TR>
 </TABLE>
 </FORM>
-{literal}
 <SCRIPT type="text/javascript">
-
+<!--
 function change_rec_type(select)
 {
 	var i, j,
@@ -207,7 +206,7 @@ function change_rec_type(select)
 				break;
 			}
 		}
-		
+
 		if (j == records[type].length) {
 			rows[i].style.display = 'none';
 		}
@@ -217,7 +216,6 @@ function change_rec_type(select)
 var elem = document.forms['record'].elements['record[type]'];
 elem.focus();
 change_rec_type(elem);
-
+//-->
 </SCRIPT>
-{/literal}
 {include file="footer.html"}

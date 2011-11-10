@@ -2,21 +2,19 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <script type="text/javascript">
-	<!--
+<!--
 	function getText(index)
-	{literal}{{/literal}
+	{
 		{section name=lt loop=$tariffs}
-		if(index=={$tariffs[lt].id}) return '{$tariffs[lt].name|escape} ({$tariffs[lt].value|money_format})';
+		if (index == {$tariffs[lt].id}) return '{$tariffs[lt].name|escape} ({$tariffs[lt].value|money_format})';
 		{/section}
-	{literal}}{/literal}
+	}
 
-{literal}
 	function changeNetwork()
 	{
 		document.tinfo.submit();
 	}
-{/literal}
-	//-->
+//-->
 </script>
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">

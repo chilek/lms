@@ -107,161 +107,159 @@
         </tr>
 	{/if}
 	</table>
-{literal}
 <script type="text/javascript">
+<!--
 function change_selection(elem)
 {
-    var district = document.getElementById('district'),
-        city = document.getElementById('city'),
-        street = document.getElementById('street'),
-        house = document.getElementById('house'),
-        flat = document.getElementById('flat');
+	var district = document.getElementById('district'),
+		city = document.getElementById('city'),
+		street = document.getElementById('street'),
+		house = document.getElementById('house'),
+		flat = document.getElementById('flat');
 
-    if (elem.name == 'state') {
-        district.style.display = 'none';
-        city.style.display = 'none';
-    }
-    else if (elem.name == 'district') {
-        city.style.display = 'none';
-    }
+	if (elem.name == 'state') {
+		district.style.display = 'none';
+		city.style.display = 'none';
+	}
+	else if (elem.name == 'district') {
+		city.style.display = 'none';
+	}
 
-    street.style.display = 'none';
-    house.style.display = 'none';
-    flat.style.display = 'none';
+	street.style.display = 'none';
+	house.style.display = 'none';
+	flat.style.display = 'none';
 
-    if (elem.value != 0)
-        xajax_select_location(elem.name, elem.value);
+	if (elem.value != 0)
+	xajax_select_location(elem.name, elem.value);
 }
 
 function update_selection(type, data, selected)
 {
-    var i, len, elem = document.getElementById(type),
-        select = document.getElementById(type+'_sel');
+	var i, len, elem = document.getElementById(type),
+		select = document.getElementById(type+'_sel');
 
-    select.options.length = 0;
-    if (type != 'street')
-        select.options[0] = new Option('', 0);
-    for (i=0, len=data.length; i<len; i++) {
-        select.options[select.options.length] = new Option(data[i].name, data[i].id);
-    }
+	select.options.length = 0;
+	if (type != 'street')
+		select.options[0] = new Option('', 0);
+	for (i=0, len=data.length; i<len; i++) {
+		select.options[select.options.length] = new Option(data[i].name, data[i].id);
+	}
 
-    if (i > 0)
-        elem.style.display = '';
-    select.value = selected ? selected : 0;
-    select.focus();
+	if (i > 0)
+		elem.style.display = '';
+	select.value = selected ? selected : 0;
+	select.focus();
 
-    if (type == 'street') {
-        var house = document.getElementById('house_input');
+	if (type == 'street') {
+		var house = document.getElementById('house_input');
 
-        document.getElementById('house').style.display = '';
-        document.getElementById('flat').style.display = '';
+		document.getElementById('house').style.display = '';
+		document.getElementById('flat').style.display = '';
 
-        if (!i) {
-            house.focus();
-            house.select();
-        }
-    }
+		if (!i) {
+			house.focus();
+			house.select();
+		}
+	}
 
-    resize_frame();
+	resize_frame();
 }
 
 function search_update(cityid, districtid, stateid)
 {
-    document.getElementById('state_sel').value = stateid;
-    document.getElementById('district').style.display = 'none';
-    document.getElementById('city').style.display = 'none';
-    document.getElementById('street').style.display = 'none';
-    document.getElementById('house').style.display = 'none';
-    document.getElementById('flat').style.display = 'none';
+	document.getElementById('state_sel').value = stateid;
+	document.getElementById('district').style.display = 'none';
+	document.getElementById('city').style.display = 'none';
+	document.getElementById('street').style.display = 'none';
+	document.getElementById('house').style.display = 'none';
+	document.getElementById('flat').style.display = 'none';
 
-    xajax_select_location('', cityid+':'+districtid+':'+stateid);
+	xajax_select_location('', cityid+':'+districtid+':'+stateid);
 }
 
 function submit_location()
 {
-    var city = document.getElementById('city_sel'),
-        street = document.getElementById('street_sel'),
-        house = document.getElementById('house_input'),
-        flat = document.getElementById('flat_input'),
-        cr = document.getElementById('city'),
-        loc = window.parent.document.getElementById('location');
+	var city = document.getElementById('city_sel'),
+		street = document.getElementById('street_sel'),
+		house = document.getElementById('house_input'),
+		flat = document.getElementById('flat_input'),
+		cr = document.getElementById('city'),
+		loc = window.parent.document.getElementById('location');
 
-    if (cr.style.display == 'none' || city.value == 0) {
-        alert('{/literal}{t}City has not been selected!{/t}{literal}');
-        return;
-    }
-    if (house.value == '') {
-        alert('{/literal}{t}House number is required!{/t}{literal}');
-        return;
-    }
-    if (house.length > 8) {
-        alert('{/literal}{t}House number is too long (max. 8 characters)!{/t}{literal}');
-        return;
-    }
-    if (flat.length > 8) {
-        alert('{/literal}{t}Flat number is too long (max. 8 characters)!{/t}{literal}');
-        return;
-    }
+	if (cr.style.display == 'none' || city.value == 0) {
+		alert('{t}City has not been selected!{/t}');
+		return;
+	}
+	if (house.value == '') {
+		alert('{t}House number is required!{/t}');
+		return;
+	}
+	if (house.length > 8) {
+		alert('{t}House number is too long (max. 8 characters)!{/t}');
+		return;
+	}
+	if (flat.length > 8) {
+		alert('{t}Flat number is too long (max. 8 characters)!{/t}');
+		return;
+	}
 
-    locform.elements[varname+'[location_city]'].value = city.value;
-    locform.elements[varname+'[location_street]'].value = street.value;
-    locform.elements[varname+'[location_house]'].value = house.value;
-    locform.elements[varname+'[location_flat]'].value = flat.value;
+	locform.elements[varname+'[location_city]'].value = city.value;
+	locform.elements[varname+'[location_street]'].value = street.value;
+	locform.elements[varname+'[location_house]'].value = house.value;
+	locform.elements[varname+'[location_flat]'].value = flat.value;
 
-    if (loc) {
-        loc.value = build_location_str(
-            city.value ? city.options[city.selectedIndex].text : '',
-            street.value ? street.options[street.selectedIndex].text : '',
-            house.value, flat.value);
-    }
+	if (loc) {
+		 loc.value = build_location_str(
+			city.value ? city.options[city.selectedIndex].text : '',
+			street.value ? street.options[street.selectedIndex].text : '',
+			house.value, flat.value);
+	}
 
-    window.parent.popclick();
+	window.parent.popclick();
 }
 
 function build_location_str(city, street, house, flat)
 {
-    var h, location = city;
+	var h, location = city;
 
-    if (city && /^([^(]+)/.test(city))
-        location = RegExp.$1.replace(/\s+$/, '');
+	if (city && /^([^(]+)/.test(city))
+		location = RegExp.$1.replace(/\s+$/, '');
 
-    if (flat) {
-        h = "{/literal}{$data.house_template|default:'%h/%f'}{literal}";
-        h = h.replace('%h', house);
-        h = h.replace('%f', flat);
-    }
-    else
-        h = house;
+	if (flat) {
+		h = "{$data.house_template|default:'%h/%f'}";
+		h = h.replace('%h', house);
+		h = h.replace('%f', flat);
+	}
+	else
+		h = house;
 
-    if (street && /^([^,]+),\s*(.*)/.test(street))
-        location += ', ' + RegExp.$2 + ' ' + RegExp.$1 + ' ' + h;
-    else
-        location += ' ' + h;
+	if (street && /^([^,]+),\s*(.*)/.test(street))
+		location += ', ' + RegExp.$2 + ' ' + RegExp.$1 + ' ' + h;
+	else
+		location += ' ' + h;
 
-    return location;
+	return location;
 }
 
 function resize_frame()
 {
-    var st = document.getElementById('searchtable'),
-        lt = document.getElementById('locationtable'),
-        h = (st ? st.offsetHeight : 0) + lt.offsetHeight;
+	var st = document.getElementById('searchtable'),
+		lt = document.getElementById('locationtable'),
+		h = (st ? st.offsetHeight : 0) + lt.offsetHeight;
 
-    autoiframe_setsize(350, Math.max(h, 160));
+	autoiframe_setsize(350, Math.max(h, 160));
 }
 
-{/literal}
 var win = window.parent, varname = '{$data.varname}', formname = '{$data.formname}',
-    locform = win.document.forms[formname];
+	locform = win.document.forms[formname];
 {if !empty($states)}
 document.getElementById('house_input').value = locform.elements[varname+'[location_house]'].value;
 document.getElementById('flat_input').value = locform.elements[varname+'[location_flat]'].value;
 document.search.searchcity.focus();
 {/if}
-{literal}
 
 resize_frame();
+//-->
 </script>
-{/literal}
 </body>
 </html>

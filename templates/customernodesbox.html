@@ -1,5 +1,6 @@
 <!--// $Id$ //-->
-{literal}<SCRIPT type="text/javascript">
+<SCRIPT type="text/javascript">
+<!--
 function setstatus(access)
 {
 	if(access)
@@ -9,6 +10,7 @@ function setstatus(access)
 
 	document.custnodeslist.submit();
 }
+
 function setwarning(warning)
 {
 	if(warning)
@@ -18,6 +20,7 @@ function setwarning(warning)
 
 	document.custnodeslist.submit();
 }
+
 function setgroup(act)
 {
 	document.custnodeslist.action = '?m=nodegroup&action=' + act + '&groupid=' + document.getElementById('groupselect').value;
@@ -28,20 +31,21 @@ function CheckAllN()
 {
 	for (var i=0; i<document.custnodeslist.elements.length; i++)
 	{
-	        var e = document.custnodeslist.elements[i];
-	        if (e.type == 'checkbox' && e.name != 'allbox')
-	        {
-	                e.checked = document.custnodeslist.allbox.checked;
-	        }
+		var e = document.custnodeslist.elements[i];
+		if (e.type == 'checkbox' && e.name != 'allbox')
+		{
+			e.checked = document.custnodeslist.allbox.checked;
+		}
 	}
 }
 
 function CheckAllN2()
 {
-        document.custnodeslist.allbox.checked = !document.custnodeslist.allbox.checked;
+	document.custnodeslist.allbox.checked = !document.custnodeslist.allbox.checked;
 	CheckAllN();
 }
-</SCRIPT>{/literal}
+//-->
+</SCRIPT>
 {if $_config.phpui.ewx_support|chkconfig}{assign var=ewx value=1}{else}{assign var=ewx value=0}{/if}
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
@@ -165,8 +169,10 @@ function CheckAllN2()
 	</TR>
 </TABLE>
 <SCRIPT type="text/javascript">
-if(getCookie('nodespanel-{$layout.module}')=='1')
-{literal}{{/literal}
-        document.getElementById('nodespanel-{$layout.module}').style.display = '';
-{literal}}{/literal}
+<!--
+if (getCookie('nodespanel-{$layout.module}') == '1')
+{
+	document.getElementById('nodespanel-{$layout.module}').style.display = '';
+}
+//-->
 </SCRIPT>

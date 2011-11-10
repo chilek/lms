@@ -9,42 +9,41 @@
 <script type="text/javascript" src="img/common.js"></SCRIPT>
 </head>
 <body>
-{literal}
 <script type="text/javascript">
 <!--
 	var targetfield = window.opener.targetfield;
-        function CheckAll()
-        {
-                for (var i=0; i<document.nodelist.elements.length; i++)
-                {
-                	var e = document.nodelist.elements[i];
-                	if(e.name != 'allbox')
-	            		e.checked = document.nodelist.allbox.checked;
+
+	function CheckAll()
+	{
+		for (var i=0; i<document.nodelist.elements.length; i++)
+		{
+			var e = document.nodelist.elements[i];
+			if (e.name != 'allbox')
+				e.checked = document.nodelist.allbox.checked;
 		}
 	}
-	
+
 	function CheckAll2()
 	{
-	        document.nodelist.allbox.checked = !document.nodelist.allbox.checked;
-	        CheckAll();
+		document.nodelist.allbox.checked = !document.nodelist.allbox.checked;
+		CheckAll();
 	}
-																																													
+
 	function SaveForm()
 	{
 		var result = '';
-		
-                for (var i=0; i<document.nodelist.elements.length; i++)
-                {
-                	var e = document.nodelist.elements[i];
-                	if(e.name != 'allbox' && e.checked)
-	            		result += e.value + ',';
+
+		for (var i=0; i<document.nodelist.elements.length; i++)
+		{
+			var e = document.nodelist.elements[i];
+			if (e.name != 'allbox' && e.checked)
+				result += e.value + ',';
 		}
-		
+
 		sendvalue(targetfield, result);
 		window.close();
 	}
 //-->
-{/literal}
 </script>
 <form name="nodelist">
 <table width="100%" cellpadding="3" id="table">

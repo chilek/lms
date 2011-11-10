@@ -2,7 +2,7 @@
 <!--// $Id$ //-->
 {include file="calendar_js.html"}
 <SCRIPT type="text/javascript">
-{literal}
+<!--
 	function SetEndtime()
 	{
 		box = document.forms['event'].elements['event[begintime]'];
@@ -13,19 +13,19 @@
 	{
 		start = document.forms['event'].elements['event[begintime]'];
 		end = document.forms['event'].elements['event[endtime]'];
-		if(Number(start.options[start.selectedIndex].value) > Number(end.options[end.selectedIndex].value))
+		if (Number(start.options[start.selectedIndex].value) > Number(end.options[end.selectedIndex].value))
 		{
-			alert('{/literal}{t}End time must not precede start time!{/t}{literal}');
+			alert('{t}End time must not precede start time!{/t}');
 			end.value = start.options[start.selectedIndex].value;
 		}
 	}
 	
 	function reset_customer()
-        {
-	        if (document.forms['event'].elements['event[custid]'].value)
-	                    document.forms['event'].elements['event[customerid]'].value = document.forms['event'].elements['event[custid]'].value;
+	{
+		if (document.forms['event'].elements['event[custid]'].value)
+			document.forms['event'].elements['event[customerid]'].value = document.forms['event'].elements['event[custid]'].value;
 	}
-{/literal}
+//-->
 </SCRIPT>
 <H1>{$layout.pagetitle}</H1>
 <P align="CENTER">

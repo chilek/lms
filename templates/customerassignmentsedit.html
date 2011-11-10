@@ -2,65 +2,69 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {include file="calendar_js.html"}
-{literal}
 <SCRIPT type="text/javascript">
+<!--
 	function CheckAll()
 	{
-	    var inputs = document.getElementById('nodeslist').getElementsByTagName('INPUT');
-	    for (var i=0; i<inputs.length; i++) {
-            inputs[i].checked = document.assignment.allbox.checked;
-        }
-    }
-    function CheckAll2()
-    {
-        document.assignment.allbox.checked = !document.assignment.allbox.checked;
-        CheckAll();
-    }
-    function set_tariff()
-    {
-        var val = document.forms['assignment'].elements['assignment[tariffid]'].value;
+		var inputs = document.getElementById('nodeslist').getElementsByTagName('INPUT');
+		for (var i=0; i<inputs.length; i++) {
+			inputs[i].checked = document.assignment.allbox.checked;
+		}
+	}
 
-{/literal}{if $promotionschemas}
-        document.getElementById('a_schema').style.display = val == -2 ? '' : 'none';
-        document.getElementById('a_schematariff').style.display = val == -2 ? '' : 'none';
-{/if}{literal}
-        document.getElementById('a_tax').style.display = val == '' ? '' : 'none';
-        document.getElementById('a_value').style.display = val == '' ? '' : 'none';
-        document.getElementById('a_productid').style.display = val == '' ? '' : 'none';
-        document.getElementById('a_name').style.display = val == '' ? '' : 'none';
+	function CheckAll2()
+	{
+		document.assignment.allbox.checked = !document.assignment.allbox.checked;
+		CheckAll();
+	}
 
-        document.getElementById('a_options').style.display = val == -1 ? 'none' : '';
-        document.getElementById('a_nodes').style.display = val == -1 ? 'none' : '';
-        document.getElementById('a_day').style.display = val == -1 ? 'none' : '';
-        document.getElementById('a_discount').style.display = val < -1 ? 'none' : '';
-    }
-{/literal}{if $promotionschemas}{literal}
-    function set_schema()
-    {
-        var sid = document.forms['assignment'].elements['assignment[schemaid]'].value,
-            assignments = {{/literal}{strip}
-                {foreach name=fps from=$promotionschemas item=schema}
-                {if $smarty.foreach.fps.index},{/if}"{$schema.id}": [{$schema.tariffs}]
-                {/foreach}
-            {/strip}{literal}},
-            select = document.forms['assignment'].elements['assignment[stariffid]'],
-            t_select = document.forms['assignment'].elements['assignment[tariffid]'],
-            options = t_select.getElementsByTagName('OPTION'),
-            selected = select.value,
-            i, len;
+	function set_tariff()
+	{
+		var val = document.forms['assignment'].elements['assignment[tariffid]'].value;
 
-        // remove old options
-        select.innerHTML = '';
-        // copy options from t_select element
-        for (i=0, len=options.length; i<len; i++)
-            if (inArray(assignments[sid], options[i].value))
-                select.appendChild(options[i].cloneNode(true));
+		{if $promotionschemas}
+		document.getElementById('a_schema').style.display = val == -2 ? '' : 'none';
+		document.getElementById('a_schematariff').style.display = val == -2 ? '' : 'none';
+		{/if}
 
-        select.value = selected;
-    }
-{/literal}{/if}{literal}
+		document.getElementById('a_tax').style.display = val == '' ? '' : 'none';
+		document.getElementById('a_value').style.display = val == '' ? '' : 'none';
+		document.getElementById('a_productid').style.display = val == '' ? '' : 'none';
+		document.getElementById('a_name').style.display = val == '' ? '' : 'none';
+
+		document.getElementById('a_options').style.display = val == -1 ? 'none' : '';
+		document.getElementById('a_nodes').style.display = val == -1 ? 'none' : '';
+		document.getElementById('a_day').style.display = val == -1 ? 'none' : '';
+		document.getElementById('a_discount').style.display = val < -1 ? 'none' : '';
+	}
+
+{if $promotionschemas}
+	function set_schema()
+	{
+		var sid = document.forms['assignment'].elements['assignment[schemaid]'].value,
+			assignments = { {strip}
+			{foreach name=fps from=$promotionschemas item=schema}
+				{if $smarty.foreach.fps.index},{/if}"{$schema.id}": [{$schema.tariffs}]
+			{/foreach}
+			{/strip} },
+			select = document.forms['assignment'].elements['assignment[stariffid]'],
+			t_select = document.forms['assignment'].elements['assignment[tariffid]'],
+			options = t_select.getElementsByTagName('OPTION'),
+			selected = select.value,
+			i, len;
+
+		// remove old options
+		select.innerHTML = '';
+		// copy options from t_select element
+		for (i=0, len=options.length; i<len; i++)
+			if (inArray(assignments[sid], options[i].value))
+				select.appendChild(options[i].cloneNode(true));
+
+		select.value = selected;
+	}
+{/if}
+//-->
 </SCRIPT>
-{/literal}
 <FORM method="POST" name="assignment" action="?m={$layout.module}{if $assignment.id}&id={$assignment.id}{if $assignment.liabilityid}&lid={$assignment.liabilityid}{/if}{else}&id={$customerinfo.id}{/if}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE width="100%" cellpadding="3">
@@ -300,17 +304,17 @@
 <BR>
 {include file="customerassignments.html"}
 <SCRIPT type="text/javascript">
+<!--
 var cal3 = new calendar(document.forms['assignment'].elements['assignment[datefrom]']);
 cal3.time_comp = false;
 var cal4 = new calendar(document.forms['assignment'].elements['assignment[dateto]']);
 cal4.time_comp = false;
 set_tariff();
 {if $promotionschemas}set_schema();{/if}
-{literal}
 function setCheckbox(id)
 {
 	document.forms['assignment'].elements[id].checked = !document.forms['assignment'].elements[id].checked;
 }
-{/literal}
+//-->
 </SCRIPT>
 {include file="footer.html"}

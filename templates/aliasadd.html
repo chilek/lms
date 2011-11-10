@@ -1,7 +1,7 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-{literal}
 <SCRIPT type="text/javascript">
+<!--
 function addaccount()
 {
 	document.aliasadd.action += '&addaccount=1';
@@ -30,8 +30,8 @@ function togglelogin()
 	document.aliasadd.login.disabled =
 		!document.aliasadd.login.disabled;
 }
+//-->
 </SCRIPT>
-{/literal}
 <H1>{$layout.pagetitle}</H1>
 <FORM name="aliasadd" method="POST" action="?m=aliasadd">
 <INPUT type="submit" class="hiddenbtn">

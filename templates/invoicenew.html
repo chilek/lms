@@ -8,12 +8,13 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 {/if}
 {include file="calendar_js.html"}
 <script type="text/javascript">
+<!--
 	function setItem(index)
-	{literal}{{/literal}
+	{
 		var e = document.additem;
 		{foreach from=$tariffs item=tariff}
-		if(index=={$tariff.id})
-		{literal}{{/literal}
+		if (index == {$tariff.id})
+		{
 			e.name.value = '{$tariff.name|escape}';
 			e.taxid.value = '{$tariff.taxid}';
 			e.valuebrutto.value = '{$tariff.value}';
@@ -21,9 +22,9 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 			e.tariffid.value = '{$tariff.id}';
 			e.count.value = 1;
 			return;
-		{literal}}{/literal}
+		}
 		{/foreach}
-{literal}	if(index==0)
+		if (index == 0)
 		{
 			e.name.value = '';
 			e.valuebrutto.value = '';
@@ -32,14 +33,14 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 			e.count.value = 1
 		}
 	}
-	
+
 	function saveheader()
 	{
-	        if(document.setcustomer.customer)
-	                if(document.setcustomer.customer.value != 0)
-	                        document.setcustomer.customerid.value = document.setcustomer.customer.value;
-	
-	        document.setcustomer.submit();
+		if (document.setcustomer.customer)
+			if (document.setcustomer.customer.value != 0)
+				document.setcustomer.customerid.value = document.setcustomer.customer.value;
+
+		document.setcustomer.submit();
 	}
 	
 	function reset_customer()
@@ -63,7 +64,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 		document.additemlist.allbox.checked = !document.additemlist.allbox.checked;
 		CheckAll();
 	}
-	
+
 	function setType(type)
 	{
 		document.additem.elements[type].checked = !document.additem.elements[type].checked;
@@ -80,35 +81,35 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 	function printinvoice()
 	{
 		var add = "";
-		if(document.additem.original.checked)
-		        add += "&original=1";
-		if(document.additem.copy.checked)
+		if (document.additem.original.checked)
+			add += "&original=1";
+		if (document.additem.copy.checked)
 			add += "&copy=1";
 
 		document.additem.action="?m=invoicenew&action=save&print=1" + add;
 		document.additem.submit();
-    }
+	}
 
-    function deadline_calendar(elem)
-    {
-        var ts = get_cdate(), deadline = parseInt(elem.value);
+	function deadline_calendar(elem)
+	{
+		var ts = get_cdate(), deadline = parseInt(elem.value);
 
-        // add paytime days to settlement date
-        ts.setDate(ts.getDate()+(deadline || 0));
-        // display calendar
-        cal3.popup(cal3.gen_date(ts));
-    }
+		// add paytime days to settlement date
+		ts.setDate(ts.getDate()+(deadline || 0));
+		// display calendar
+		cal3.popup(cal3.gen_date(ts));
+	}
 
-    function get_cdate()
-    {
-        var ts = document.setcustomer.elements['invoice[cdate]'].value;
+	function get_cdate()
+	{
+		var ts = document.setcustomer.elements['invoice[cdate]'].value;
 
-        if (!ts.match(/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/))
-            ts = '{/literal}{$smarty.now|date_format:"%Y/%m/%d"}{literal}';
+		if (!ts.match(/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/))
+			ts = '{$smarty.now|date_format:"%Y/%m/%d"}';
 
-        return cal3.prs_date(ts);
-    }
-{/literal}
+		return cal3.prs_date(ts);
+	}
+//-->
 </script>
 <FORM NAME="setcustomer" METHOD="POST" ACTION="?m=invoicenew&action=setcustomer">
 <INPUT type="submit" class="hiddenbtn">
@@ -437,12 +438,12 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 	</FORM>
 </TABLE>
 <SCRIPT type="text/javascript">
-{literal}
+<!--
 deadline_callback = function(val)
 {
-    var ts = get_cdate(), deadline = cal3.prs_date(val);
-    deadline = parseInt((deadline - ts) / 86400000);
-    document.getElementById('paytime').value = deadline <= 0 ? '' : deadline;
+	var ts = get_cdate(), deadline = cal3.prs_date(val);
+	deadline = parseInt((deadline - ts) / 86400000);
+	document.getElementById('paytime').value = deadline <= 0 ? '' : deadline;
 }
 var cal1 = new calendar(document.forms['setcustomer'].elements['invoice[cdate]']);
 cal1.time_comp = false;
@@ -451,7 +452,6 @@ cal2.time_comp = false;
 var cal3 = new calendar(deadline_callback);
 cal3.time_comp = false;
 document.forms['setcustomer'].elements['invoice[number]'].focus();
-{/literal}
+//-->
 </SCRIPT>
 {include file="footer.html"}
-

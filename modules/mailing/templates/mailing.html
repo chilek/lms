@@ -2,23 +2,20 @@
 <H1>{$layout.pagetitle}</H1>
 <FORM name="mailing" method="post" action="?m=mailing" enctype="multipart/form-data" target="_blank" >
 <INPUT type="submit" class="hiddenbtn">
-{literal}
 <SCRIPT LANGUAGE="JavaScript">
-	<!--
+<!--
 	function Send()
 	{
-		
-		if( document.mailing["mailing[sender]"].value=="" ||
-		    document.mailing["mailing[from]"].value=="" ||
-		    document.mailing["mailing[subject]"].value=="" ||
-		    document.mailing["mailing[body]"].value=="" ||
-		    !checkaddr(document.mailing["mailing[sender]"].value)
-		    )
+		if (document.mailing["mailing[sender]"].value == "" ||
+			document.mailing["mailing[from]"].value == "" ||
+			document.mailing["mailing[subject]"].value == "" ||
+			document.mailing["mailing[body]"].value == "" ||
+			!checkaddr(document.mailing["mailing[sender]"].value))
 			document.mailing.target="";
-		
+
 		document.mailing.submit();
-        }
-	
+	}
+
 	function checkaddr(email)
 	{
 		var filter=/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i
@@ -27,9 +24,8 @@
 		else
 			return 0;
 	}
-	-->
+//-->
 </SCRIPT>
-{/literal}
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD CLASS="FLEFTU" WIDTH="1%">

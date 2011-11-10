@@ -1,23 +1,24 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-{literal}
 <SCRIPT type="text/javascript">
+<!--
 	function randomize()
 	{
 		var r = 0;
 		do
 			r = Math.floor(Math.random()*1000000-1);
-		while (r<1000);	
+		while (r<1000);
 		document.customeradd.elements['customeradd[pin]'].value = r;
 	}
+
 	function newcontact()
 	{
 		document.customeradd.action += '&newcontact=1';
 		document.customeradd.submit();
 	}
+//-->
 </SCRIPT>
-{/literal}
 <P>
 <FORM name="customeradd" id="customeradd" method="POST" action="?m=customeradd">
 <INPUT type="submit" class="hiddenbtn">
@@ -435,10 +436,10 @@
 </TABLE>
 </FORM>
 </P>
-{literal}
 <SCRIPT type="text/javascript">
+<!--
 	document.forms['customeradd'].elements['customeradd[lastname]'].focus();
 	if(document.forms['customeradd'].elements['customeradd[pin]'].value == '') randomize();
+//-->
 </SCRIPT>
-{/literal}
 {include file="footer.html"}

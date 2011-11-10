@@ -2,22 +2,21 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {include file="calendar_js.html"}
-{literal}
 <SCRIPT type="text/javascript">
 <!--
 	function savereceipt(print)
-	{	
+	{
 		var add = "";
-		if(document.additem.original.checked && document.additem.copy.checked)
+		if (document.additem.original.checked && document.additem.copy.checked)
 			add = "";
-		else if(document.additem.original.checked && !document.additem.copy.checked)
+		else if (document.additem.original.checked && !document.additem.copy.checked)
 			add = "&which=original";
-		else if(!document.additem.original.checked && document.additem.copy.checked)
+		else if (!document.additem.original.checked && document.additem.copy.checked)
 			add = "&which=copy";
 
 		document.additem.action = "?m=receiptedit&action=save" + add;
-		
-		if(print == 1) {
+
+		if (print == 1) {
 			document.additem.action += "&print=1";
 		}
 		document.additem.submit();
@@ -32,10 +31,10 @@
 	
 	function saveheader()
 	{
-	        if(document.setcustomer.customer)
-		        if(document.setcustomer.customer.value != 0)
-			        document.setcustomer.customerid.value = document.setcustomer.customer.value;
-	        document.setcustomer.submit();
+		if (document.setcustomer.customer)
+			if (document.setcustomer.customer.value != 0)
+				document.setcustomer.customerid.value = document.setcustomer.customer.value;
+		document.setcustomer.submit();
 	}
 
 	function setType(type)
@@ -49,12 +48,12 @@
 	}
 
 	function reset_customer()
-        {
-	        if (document.setcustomer.customerid.value)
-	                    document.setcustomer.customer.value = document.setcustomer.customerid.value;
+	{
+		if (document.setcustomer.customerid.value)
+			document.setcustomer.customer.value = document.setcustomer.customerid.value;
 	}
-//--></SCRIPT>
-{/literal}
+//-->
+</SCRIPT>
 <FORM NAME="setcustomer" METHOD="POST" ACTION="?m=receiptedit&action=setcustomer">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="receipt[type]" value="{$receipt.type}">

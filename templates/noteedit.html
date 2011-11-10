@@ -3,31 +3,29 @@
 <H1>{$layout.pagetitle}</H1>
 {include file="calendar_js.html"}
 <script type="text/javascript">
-	<!--
-	{literal}
+<!--
 	function saveheader()
 	{
-	        if(document.setcustomer.customer)
-			if(document.setcustomer.customer.value != 0)
-			        document.setcustomer.customerid.value = document.setcustomer.customer.value;
-	
-	        document.setcustomer.submit();
+		if (document.setcustomer.customer)
+			if (document.setcustomer.customer.value != 0)
+				document.setcustomer.customerid.value = document.setcustomer.customer.value;
+
+		document.setcustomer.submit();
 	}
 
 	function reset_customer()
-        {
-	        if (document.setcustomer.customerid.value)
-	                document.setcustomer.customer.value = document.setcustomer.customerid.value;
+	{
+		if (document.setcustomer.customerid.value)
+			document.setcustomer.customer.value = document.setcustomer.customerid.value;
 	}
-	
+
 	function printnote()
 	{
 		document.additem.action = '?m=noteedit&action=save&print=1';
 		document.additem.submit();
 	}
-	{/literal}
-	//-->
-</script>		
+//-->
+</script>
 <FORM NAME="setcustomer" METHOD="POST" ACTION="?m=noteedit&action=setcustomer">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="HIDDEN" name="note[number]" value="{$note.number}">

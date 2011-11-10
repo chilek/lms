@@ -1,8 +1,8 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 {include file="calendar_js.html"}
-{literal}
 <SCRIPT type="text/javascript">
+<!--
 	function SetEndtime()
 	{
 		box = document.forms['event'].elements['event[begintime]'];
@@ -13,14 +13,14 @@
 	{
 		start = document.forms['event'].elements['event[begintime]'];
 		end = document.forms['event'].elements['event[endtime]'];
-		if(Number(start.options[start.selectedIndex].value) > Number(end.options[end.selectedIndex].value))
+		if (Number(start.options[start.selectedIndex].value) > Number(end.options[end.selectedIndex].value))
 		{
-			alert('{/literal}{t}End time must not precede start time!{/t}{literal}');
+			alert('{t}End time must not precede start time!{/t}');
 			end.value = start.options[start.selectedIndex].value;
 		}
 	}
+//-->
 </SCRIPT>
-{/literal}
 <H1>{$layout.pagetitle}</H1>
 <P align="CENTER">
 <FORM method="POST" action="?m=eventedit&id={$event.id}" name="event">

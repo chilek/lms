@@ -638,22 +638,21 @@ cal13.time_comp = false;
 {if $printmenu=="finances"}
 <P><FORM method="post" name="printinvoices" id="printinvoices" action="?m=print&type=invoices" target="_blank">
 <INPUT type="submit" class="hiddenbtn">
-{literal}
 <SCRIPT type="text/javascript">
-    <!--
-    function print()
-    {
-        document.printinvoices.action="?m=print&type=invoices";
-	document.printinvoices.submit();
-    }
-    function print_forms()
-    {
-        document.printinvoices.action="?m=print&type=transferforms";
-	document.printinvoices.submit();
-    }
-    //-->
+<!--
+	function print()
+	{
+		document.printinvoices.action="?m=print&type=invoices";
+		document.printinvoices.submit();
+	}
+
+	function print_forms()
+	{
+		document.printinvoices.action="?m=print&type=transferforms";
+		document.printinvoices.submit();
+	}
+//-->
 </SCRIPT>
-{/literal}					    
 <TABLE width="100%" CELLPADDING="3">
 	<TR class="DARK">
 		<TD class="fleftu" width="1%">

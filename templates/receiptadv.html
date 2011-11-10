@@ -2,12 +2,12 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {include file="calendar_js.html"}
-{literal}
 <SCRIPT type="text/javascript">
+<!--
 	function show(n)
 	{
 		document.getElementById(n).style.display = '';
-		if(n == 'tab_return')
+		if (n == 'tab_return')
 		{
 			document.getElementById('tab_settle').style.display = 'none';
 		}
@@ -16,18 +16,18 @@
 			document.getElementById('tab_return').style.display = 'none';
 		}
 	}
-	
+
 	function savereceipt(print)
 	{
-		document.receipt.action = "?m=receiptadv&id={/literal}{$receipt.id}{literal}";
-		
+		document.receipt.action = "?m=receiptadv&id={$receipt.id}";
+
 		if(print == 1) {
 			document.receipt.action += "&print=1";
 		}
 		document.receipt.submit();
 	}
+//-->
 </SCRIPT>
-{/literal}
 <FORM NAME="receipt" METHOD="POST" ACTION="?m=receiptadv&id={$receipt.id}">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="receipt[id]" value="{$receipt.id}">

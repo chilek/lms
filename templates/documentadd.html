@@ -3,7 +3,6 @@
 <H1>{$layout.pagetitle}</H1>
 {include file="calendar_js.html"}
 {$xajax}
-{literal}
 <script type="text/javascript">
 <!--
 	function getplugin()
@@ -31,18 +30,18 @@
 		else
 		{
 			var p = [], pr = [];
-		{/literal}
 			var s = {$document.numberplanid|default:0};
 			{foreach from=$_DOCTYPES key=key item=item}{if $key < 0}
-			    p[{$key}] = [];
-			    pr[{$key}] = [];
-			    {foreach from=$allnumberplans item=plan}{if $plan.doctype == $key}{assign var=period value=$plan.period}
-				p[{$key}][{$plan.id}] = '{number number=$plan.next template=$plan.template time=$document.cdate}';
-				pr[{$key}][{$plan.id}] = '{$_NUM_PERIODS.$period}';
-			    {/if}{/foreach}
+				p[{$key}] = [];
+				pr[{$key}] = [];
+				{foreach from=$allnumberplans item=plan}
+					{if $plan.doctype == $key}{assign var=period value=$plan.period}
+					p[{$key}][{$plan.id}] = '{number number=$plan.next template=$plan.template time=$document.cdate}';
+					pr[{$key}][{$plan.id}] = '{$_NUM_PERIODS.$period}';
+					{/if}
+				{/foreach}
 			{/if}{/foreach}
-		{literal}
-			if(p[type].length)
+			if (p[type].length)
 			{
 				var key, result = '<SELECT name="document[numberplanid]">';
 				for (key in p[type]) {
@@ -61,14 +60,14 @@
 			plans.style.display = 'inline';
 		}
 	}
+
 	function reset_customer()
-        {
-	        if (document.documentadd.customerid.value)
-	                document.documentadd.customer.value = document.documentadd.customerid.value;
+	{
+		if (document.documentadd.customerid.value)
+			document.documentadd.customer.value = document.documentadd.customerid.value;
 	}
 //-->
 </script>
-{/literal}
 <FORM name="documentadd" method="POST" action="?m=documentadd" enctype="multipart/form-data">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE cellpadding="3" WIDTH="100%">

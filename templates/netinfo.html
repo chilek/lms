@@ -1,15 +1,18 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-{if $unlockedit}<script type="text/javascript">
-	<!--
-		function getText(index)
-		{literal}{{/literal}
-			{section name=networks loop=$networks}
-			if(index=={$networks[networks].id}) return '{$networks[networks].name} ({$networks[networks].address}/{$networks[networks].prefix})';
-			{/section}
-		{literal}}{/literal}	
-	//-->
-</script>{/if}
+{if $unlockedit}
+<script type="text/javascript">
+<!--
+	function getText(index)
+	{
+		{section name=networks loop=$networks}
+		if (index == {$networks[networks].id})
+			return '{$networks[networks].name} ({$networks[networks].address}/{$networks[networks].prefix})';
+		{/section}
+	}
+//-->
+</script>
+{/if}
 <H1>{$layout.pagetitle}</H1>
 <TABLE cellpadding="3" width="100%">
 	{if $unlockedit}<FORM METHOD="POST" ACTION="?m=netedit&id={$network.id}" NAME="netedit"><INPUT type="submit" class="hiddenbtn">{/if}

@@ -43,6 +43,7 @@ version ? (????-??-??):
   - netdevmap: first version of OpenStreetMap map type support thanks to Grzegorz Cichowski [chilan]
   - netdevmap: show info about netdevices for OpenStreetMap map type [chilan]
   - selection of gps coordinates from popup map [chilan]
+  - javascript smarty literal cleanup [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 

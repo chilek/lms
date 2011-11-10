@@ -1,38 +1,41 @@
 <!-- $Id$ -->
 <SCRIPT type="text/javascript">
+<!--
         function chkmac_change()
-{literal}{{/literal}
-                if(document.getElementById('chkmac').checked)
-                        location.href = '?m=netdevedit&id={$netdevinfo.id}&ip={$nodeipdata.id}&action=chkmac&chkmac=1';
-                else
-                        location.href = '?m=netdevedit&id={$netdevinfo.id}&ip={$nodeipdata.id}&action=chkmac&chkmac=0';
-{literal}}{/literal}
+	{
+		if (document.getElementById('chkmac').checked)
+			location.href = '?m=netdevedit&id={$netdevinfo.id}&ip={$nodeipdata.id}&action=chkmac&chkmac=1';
+		else
+			location.href = '?m=netdevedit&id={$netdevinfo.id}&ip={$nodeipdata.id}&action=chkmac&chkmac=0';
+	}
 
-        function duplex_change()
-{literal}{{/literal}
-                if(document.getElementById('chkduplex').checked)
-                        location.href = '?m=netdevedit&id={$netdevinfo.id}&ip={$nodeipdata.id}&action=duplex&duplex=1';
-                else
-                        location.href = '?m=netdevedit&id={$netdevinfo.id}&ip={$nodeipdata.id}&action=duplex&duplex=0';
-{literal}}{/literal}
+	function duplex_change()
+	{
+		if (document.getElementById('chkduplex').checked)
+			location.href = '?m=netdevedit&id={$netdevinfo.id}&ip={$nodeipdata.id}&action=duplex&duplex=1';
+		else
+			location.href = '?m=netdevedit&id={$netdevinfo.id}&ip={$nodeipdata.id}&action=duplex&duplex=0';
+	}
 
-        function nas_change()
-{literal}{{/literal}
-                if(document.getElementById('chknas').checked)
-                        location.href = '?m=netdevedit&id={$netdevinfo.id}&ip={$nodeipdata.id}&action=nas&nas=1';
-                else
-                        location.href = '?m=netdevedit&id={$netdevinfo.id}&ip={$nodeipdata.id}&action=nas&nas=0';
-{literal}}{/literal}
-function setCheckbox(id)
-{literal}{{/literal}
-                document.getElementById(id).checked = !document.getElementById(id).checked;
-        	if (id == 'chkmac')
-	                chkmac_change();
-	        else if (id == 'chkduplex')
-	        	duplex_change();
+	function nas_change()
+	{
+		if(document.getElementById('chknas').checked)
+			location.href = '?m=netdevedit&id={$netdevinfo.id}&ip={$nodeipdata.id}&action=nas&nas=1';
+		else
+			location.href = '?m=netdevedit&id={$netdevinfo.id}&ip={$nodeipdata.id}&action=nas&nas=0';
+	}
+
+	function setCheckbox(id)
+	{
+		document.getElementById(id).checked = !document.getElementById(id).checked;
+		if (id == 'chkmac')
+			chkmac_change();
+		else if (id == 'chkduplex')
+			duplex_change();
 		else
 			nas_change();
-{literal}}{/literal}
+	}
+//-->
 </SCRIPT>
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">

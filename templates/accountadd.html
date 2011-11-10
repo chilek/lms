@@ -1,15 +1,13 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 {include file="calendar_js.html"}
-{literal}
 <SCRIPT type="text/javascript">
 <!--
 	function update_homedir()
 	{
-		var prefix = "{/literal}{$_config.phpui.homedir_prefix}{literal}";
+		var prefix = "{$_config.phpui.homedir_prefix}";
 		document.forms['account'].elements['account[home]'].value = prefix + document.forms['account'].elements['account[login]'].value;
 	}
-{/literal}
 //-->
 </SCRIPT>
 <H1>{$layout.pagetitle}</H1>
