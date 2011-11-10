@@ -8,16 +8,15 @@
 <SCRIPT type="text/javascript">window.open('?m=receipt&id={$receipt.receipt2}&which={$receipt.which}');</SCRIPT>
 {/if}
 {include file="calendar_js.html"}
-{literal}
 <SCRIPT type="text/javascript">
-	<!--
+<!--
 	function CheckAll()
 	{
 		for (var i=0; i<document.page.elements.length; i++)
 		{
 			var e = document.page.elements[i];
 			if (e.name != 'allbox' && e.name != 'original' && e.name != 'copy')
-			e.checked = document.page.allbox.checked;
+				e.checked = document.page.allbox.checked;
 		}
 	}
 
@@ -30,11 +29,11 @@
 	function prints()
 	{
 		var add = "";
-		if(document.page.original.checked && document.page.copy.checked)
+		if (document.page.original.checked && document.page.copy.checked)
 			add = "";
-		else if(document.page.original.checked && !document.page.copy.checked)
+		else if (document.page.original.checked && !document.page.copy.checked)
 			add = "&which=original";
-		else if(!document.page.original.checked && document.page.copy.checked)
+		else if (!document.page.original.checked && document.page.copy.checked)
 			add = "&which=copy";
 		
 		document.page.action = "?m=receipt&print=cached" + add;
@@ -48,29 +47,29 @@
 		document.page.target="";
 		document.page.submit();
 	}
-{/literal}{if $_config.phpui.short_pagescroller|chkconfig}{literal}
-        function pagechange1()
+
+{if $_config.phpui.short_pagescroller|chkconfig}
+	function pagechange1()
 	{
 		document.page.action="?m=receiptlist&page=" + document.forms['page'].elements['page1'].value;
 		document.page.target="";
 		document.page.submit();
 	}
+
 	function pagechange2()
 	{
 		document.page.action="?m=receiptlist&page=" + document.forms['page'].elements['page2'].value;
 		document.page.target="";
 		document.page.submit();
 	}
-{/literal}{/if}{literal}
+{/if}
 
 	function setType(type)
 	{
 		document.page.elements[type].checked = !document.page.elements[type].checked;
 	}
-
-	//-->
+//-->
 </SCRIPT>
-{/literal}
 <FORM METHOD="POST" NAME="page">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">

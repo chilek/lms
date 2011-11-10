@@ -1,22 +1,23 @@
 <!--// $Id$ //-->
 {box title="Your balance"}
 <script type="text/javascript">
-{literal}
+<!--
 function CheckAll()
 {
-    for (var i=0; i<document.invoices.elements.length; i++)
-    {
-        var e = document.invoices.elements[i];
-        if (e.name != 'allbox')
-            e.checked = document.invoices.allbox.checked;
-    }
+	for (var i=0; i<document.invoices.elements.length; i++)
+	{
+		var e = document.invoices.elements[i];
+		if (e.name != 'allbox')
+			e.checked = document.invoices.allbox.checked;
+	}
 }
+
 function CheckAll2()
 {
-        document.invoices.allbox.checked = !document.invoices.allbox.checked;
-        CheckAll();
+	document.invoices.allbox.checked = !document.invoices.allbox.checked;
+	CheckAll();
 }
-{/literal}
+//-->
 </script>
 <form name="invoices" action="?m=finances&f=invoice" method="POST" target="_blank">
 <table style="width: 100%;" cellpadding="3">

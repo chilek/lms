@@ -2,7 +2,6 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {include file="calendar_js.html"}
-{literal}
 <SCRIPT type="text/javascript">
 	<!--
 	function CheckAll()
@@ -11,11 +10,10 @@
 		{
 			var e = document.page.elements[i];
 			if (e.name != 'allbox' &&
-			    e.name != 'original' &&
-                            e.name != 'duplicate' &&
-                            e.name != 'copy'
-			)
-				e.checked = document.page.allbox.checked;
+				e.name != 'original' &&
+				e.name != 'duplicate' &&
+				e.name != 'copy')
+			e.checked = document.page.allbox.checked;
 		}
 	}
 
@@ -27,7 +25,7 @@
 
 	function DeleteMarked()
 	{
-		if(! confirm('{/literal}{t}Are you sure, you want to delete selected operation(s) and/or document item(s)?{/t}{literal}'))
+		if(!confirm('{t}Are you sure, you want to delete selected operation(s) and/or document item(s)?{/t}'))
 			return;
 
 		document.page.action="?m=balancedel";
@@ -44,7 +42,7 @@
 			add = "&which=original";
 		else if(!document.page.original.checked && document.page.copy.checked)
 			add = "&which=copy";
-		
+
 		document.page.action = "?m=receipt&print=cached&cash=1" + add;
 		document.page.target = "_blank";
 		document.page.submit();
@@ -54,7 +52,7 @@
 	{
 		var add = "";
 		if(document.page.original.checked)
-	    		add = "&original=1";
+			add = "&original=1";
 		if(document.page.copy.checked)
 			add += "&copy=1";
 		if(document.page.duplicate.checked)
@@ -67,27 +65,27 @@
 
 	function filter()
 	{
-	        document.page.action="?m=balancelist";
-	        document.page.target="";
-	        document.page.submit();
+		document.page.action="?m=balancelist";
+		document.page.target="";
+		document.page.submit();
 	}
-{/literal}{if $_config.phpui.short_pagescroller|chkconfig}{literal}
-        function pagechange1()
+
+	{if $_config.phpui.short_pagescroller|chkconfig}
+	function pagechange1()
 	{
-	        document.page.action="?m=balancelist&page=" + document.forms['page'].elements['page1'].value;
+		document.page.action="?m=balancelist&page=" + document.forms['page'].elements['page1'].value;
 		document.page.target="";
 		document.page.submit();
 	}
 	function pagechange2()
 	{
-	        document.page.action="?m=balancelist&page=" + document.forms['page'].elements['page2'].value;
-	        document.page.target="";
-	        document.page.submit();
+		document.page.action="?m=balancelist&page=" + document.forms['page'].elements['page2'].value;
+		document.page.target="";
+		document.page.submit();
 	}
-{/literal}{/if}{literal}
+	{/if}
 	//-->
 </SCRIPT>
-{/literal}
 <FORM METHOD="POST" NAME="page">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE width="100%" cellpadding="3">

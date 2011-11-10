@@ -3,7 +3,6 @@
 <H1>{$layout.pagetitle}</H1>
 {include file="calendar_js.html"}
 <SCRIPT type="text/javascript">
-{literal}
 <!-- 
 	function PrintList()
 	{
@@ -24,7 +23,6 @@
 		document.customersearch.elements[id].checked = true;
 	}
 //-->	
-{/literal}
 </SCRIPT>
 <P><FORM METHOD="POST" ACTION="?m=customersearch&search=1" NAME="customersearch">
 <INPUT type="submit" class="hiddenbtn">

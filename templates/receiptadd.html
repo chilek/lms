@@ -2,7 +2,6 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {include file="calendar_js.html"}
-{literal}
 <SCRIPT type="text/javascript">
 <!--
 	function CheckAll()
@@ -10,7 +9,7 @@
 		for (var i=0; i<document.additemlist.elements.length; i++)
 		{
 			var e = document.additemlist.elements[i];
-		        if (e.name != 'allbox')
+			if (e.name != 'allbox')
 				e.checked = document.additemlist.allbox.checked;
 		}
 	}
@@ -22,32 +21,32 @@
 	}
 
 	function savereceipt(print)
-	{	
+	{
 		var add = "";
-		if(document.additem.original.checked && document.additem.copy.checked)
+		if (document.additem.original.checked && document.additem.copy.checked)
 			add = "";
-		else if(document.additem.original.checked && !document.additem.copy.checked)
+		else if (document.additem.original.checked && !document.additem.copy.checked)
 			add = "&which=original";
-		else if(!document.additem.original.checked && document.additem.copy.checked)
+		else if (!document.additem.original.checked && document.additem.copy.checked)
 			add = "&which=copy";
 
 		document.additem.action = "?m=receiptadd&action=save" + add;
-		
-		if(print == 1) {
+
+		if (print == 1) {
 			document.additem.action += "&print=1";
 		}
 		document.additem.submit();
 	}
 
 	function saveheader()
-	{	
-		if(document.setcustomer.customer)
-			if(document.setcustomer.customer.value != 0)
+	{
+		if (document.setcustomer.customer)
+			if (document.setcustomer.customer.value != 0)
 				document.setcustomer.customerid.value = document.setcustomer.customer.value;
 
 		document.setcustomer.submit();
 	}
-	
+
 	function additem()
 	{
 		document.additem.action = "?m=receiptadd&action=additem";
@@ -66,14 +65,12 @@
 	}
 
 	function reset_customer()
-	{	
+	{
 		if (document.setcustomer.customerid.value)
 			document.setcustomer.customer.value = document.setcustomer.customerid.value;
 	}
-	
-	
-//--></SCRIPT>
-{/literal}
+//-->
+</SCRIPT>
 <FORM NAME="setcustomer" METHOD="POST" ACTION="?m=receiptadd{if $receipt.type}&type={$receipt.type}{/if}&action={if $receipt.regid && !$error.regid}setcustomer{else}setreg{/if}">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="receipt[type]" value="{$receipt.type}">

@@ -3,21 +3,21 @@
 <H1>{$layout.pagetitle}</H1>
 {if $note}
 <SCRIPT type="text/javascript">
+<!--
 window.open('?m=note&id={$note}');
+//-->
 </SCRIPT>
 {/if}
-{literal}
 <SCRIPT type="text/javascript">
-	<!--
+<!--
 	function CheckAll()
 	{
 		for (var i=0; i<document.page.elements.length; i++)
 		{
 			var e = document.page.elements[i];
 			if (e.name != 'allbox' &&
-			    e.name != 'groupexclude' &&
-			    e.name != 'hideclosed'
-			)
+				e.name != 'groupexclude' &&
+				e.name != 'hideclosed')
 				e.checked = document.page.allbox.checked;
 		}
 	}
@@ -27,10 +27,10 @@ window.open('?m=note&id={$note}');
 		document.page.allbox.checked = !document.page.allbox.checked;
 		CheckAll();
 	}
-	
+
 	function pays()
 	{
-		if(! confirm('{/literal}{t}Are you sure, you want to check/uncheck selected debit notes as accounted?{/t}{literal}'))
+		if(! confirm('{t}Are you sure, you want to check/uncheck selected debit notes as accounted?{/t}'))
 			return;
 		document.page.action="?m=notepaid";
 		document.page.target="";
@@ -55,23 +55,24 @@ window.open('?m=note&id={$note}');
 		document.page.target="";
 		document.page.submit();
 	}
-{/literal}{if $_config.phpui.short_pagescroller|chkconfig}{literal}
+
+{if $_config.phpui.short_pagescroller|chkconfig}
 	function pagechange1()
 	{
 		document.page.action="?m=notelist&page=" + document.forms['page'].elements['page1'].value;
 		document.page.target="";
 		document.page.submit();
 	}
+
 	function pagechange2()
 	{
 		document.page.action="?m=notelist&page=" + document.forms['page'].elements['page2'].value;
 		document.page.target="";
 		document.page.submit();
 	}
-{/literal}{/if}{literal}
-	//-->
+{/if}
+//-->
 </SCRIPT>
-{/literal}
 <FORM METHOD="POST" NAME="page">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">

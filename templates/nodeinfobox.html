@@ -1,23 +1,20 @@
 <!--// $Id$ //-->
 <SCRIPT type="text/javascript">
-{literal}
+<!--
 	function chkmac_change()
 	{
-{/literal}
-		if(document.getElementById('chkmac').checked)
+		if (document.getElementById('chkmac').checked)
 			location.href = '?m=nodeedit&id={$nodeinfo.id}&action=chkmac&chkmac=1';
 		else
 			location.href = '?m=nodeedit&id={$nodeinfo.id}&action=chkmac&chkmac=0';
-{literal}
 	}
+
 	function duplex_change()
 	{
-{/literal}
-		if(document.getElementById('duplex').checked)
+		if (document.getElementById('duplex').checked)
 			location.href = '?m=nodeedit&id={$nodeinfo.id}&action=duplex&duplex=1';
 		else
 			location.href = '?m=nodeedit&id={$nodeinfo.id}&action=duplex&duplex=0';
-{literal}
 	}
 
 	function setCheckbox(id)
@@ -28,7 +25,7 @@
 		else
 			duplex_change();
 	}
-{/literal}
+//-->
 </SCRIPT>
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">

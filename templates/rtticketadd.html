@@ -1,13 +1,13 @@
 {include file="header.html"}
 <!-- $Id$ -->
 <script type="text/javascript">
-{literal}
+<!--
 	function reset_customer()
-        {
-	        if (document.forms['ticket'].elements['ticket[custid]'].value)
-	                document.forms['ticket'].elements['ticket[customerid]'].value = document.forms['ticket'].elements['ticket[custid]'].value;
-	}						
-{/literal}
+	{
+		if (document.forms['ticket'].elements['ticket[custid]'].value)
+			document.forms['ticket'].elements['ticket[customerid]'].value = document.forms['ticket'].elements['ticket[custid]'].value;
+	}
+//-->
 </script>
 <H1><B>{$layout.pagetitle}</B></H1>
 <P><FORM method="POST" name="ticket" action="?m=rtticketadd">

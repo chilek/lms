@@ -3,13 +3,12 @@
 <H1>{$layout.pagetitle}</H1>
 {include file="calendar_js.html"}
 {$xajax}
-{literal}
 <script type="text/javascript">
 <!--
-    function getplugin()
+	function getplugin()
 	{
-        reset_login_timeout();
-        xajax_plugin(document.forms['documentgen'].elements['document[templ]'].value, 0);
+		reset_login_timeout();
+		xajax_plugin(document.forms['documentgen'].elements['document[templ]'].value, 0);
 	}
 
 	function printdoc()
@@ -20,7 +19,6 @@
 	}
 //-->
 </SCRIPT>
-{/literal}
 <FORM name="documentgen" method="POST" action="?m=documentgen">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE cellpadding="3" WIDTH="100%">

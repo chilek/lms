@@ -105,113 +105,117 @@
 		</TD>
 	</TR>
 </TABLE>
-{literal}
 <SCRIPT type="text/javascript">
+<!--
 var edited_row = 0;
-if(getCookie('promotionschemadata')=='1')
+if (getCookie('promotionschemadata') == '1')
 {
-    document.getElementById('promotionschemadata').style.display = '';
+	document.getElementById('promotionschemadata').style.display = '';
 }
+
 function edit_tariff(id)
 {
-    if (edited_row) {
-        alert('{/literal}{t}Unable to edit two rows at once!{/t}{literal}');
-        return;
-    }
+	if (edited_row) {
+		alert('{t}Unable to edit two rows at once!{/t}');
+		return;
+	}
 
-    var tr = document.getElementById('row'+id),
-        tds = tr.getElementsByTagName('SPAN'),
-        i, j, n, v, period, input, sel, opt, pn,
-        periods = {{/literal}{strip}
-        "-":0
-        {foreach name=periods from=$_PERIODS item=item key=key}
-            {if $key},"{$item}":{$key}{/if}
-        {/foreach}
-        {/strip}{literal}};
+	var tr = document.getElementById('row'+id),
+		tds = tr.getElementsByTagName('SPAN'),
+		i, j, n, v, period, input, sel, opt, pn,
+		periods = { {strip}
+			"-":0
+			{foreach name=periods from=$_PERIODS item=item key=key}
+				{if $key},"{$item}":{$ey}{/if}
+			{/foreach}
+		{/strip} };
 
-    edited_row = id;
+	edited_row = id;
 
-    for (i=0; i<tds.length; i++) {
-        n  = tds[i].id.replace(/^tariffval[0-9]+_/, '');
-        pn = tds[i].parentNode;
-        v  = tds[i].innerHTML.replace(/^\s+/, '').replace(/\s+$/, '');
+	for (i=0; i<tds.length; i++) {
+		n  = tds[i].id.replace(/^tariffval[0-9]+_/, '');
+		pn = tds[i].parentNode;
+		v  = tds[i].innerHTML.replace(/^\s+/, '').replace(/\s+$/, '');
 
-        if (v.match(/^([0-9,.+-]+)\s+\(([^)]+)\)/)) {
-            v = RegExp.$1;
-            period = periods[RegExp.$2];
-        } else {
-            period = 0;
-        }
+		if (v.match(/^([0-9,.+-]+)\s+\(([^)]+)\)/)) {
+			v = RegExp.$1;
+			period = periods[RegExp.$2];
+		} else {
+			period = 0;
+		}
 
-        input = document.createElement('INPUT');
-        input.setAttribute('type', 'text');
-        input.setAttribute('size', '8');
-        input.name  = 'form[tariffval'+n+']';
-        input.id    = 'tariffval'+n;
-        input.value = v;
-        pn.appendChild(input);
-        // move cursor to activation field
-        if (!i) {
-            input.focus(); input.select();
-        // add period selector
-        } else {
-            sel = document.createElement('BR');
-            pn.appendChild(sel);
-            sel = document.createElement('SELECT');
-            sel.name = 'form[tariffperiod'+n+']';
-            sel.id   = 'tariffperiod'+n;
+		input = document.createElement('INPUT');
+		input.setAttribute('type', 'text');
+		input.setAttribute('size', '8');
+		input.name = 'form[tariffval' + n + ']';
+		input.id = 'tariffval' + n;
+		input.value = v;
+		pn.appendChild(input);
+		// move cursor to activation field
+		if (!i) {
+			input.focus(); input.select();
+		// add period selector
+		} else {
+			sel = document.createElement('BR');
+			pn.appendChild(sel);
+			sel = document.createElement('SELECT');
+			sel.name = 'form[tariffperiod' + n + ']';
+			sel.id = 'tariffperiod' + n;
 
-            for (j in periods) {
-                opt = document.createElement('OPTION');
-                opt.value = periods[j];
-                opt.innerHTML = j;
-                sel.appendChild(opt);
-            }
-            sel.value = period;
-            pn.appendChild(sel);
-        }
-        tds[i].style.display = 'none';
-    }
+			for (j in periods) {
+				opt = document.createElement('OPTION');
+				opt.value = periods[j];
+				opt.innerHTML = j;
+				sel.appendChild(opt);
+			}
+			sel.value = period;
+			pn.appendChild(sel);
+		}
+		tds[i].style.display = 'none';
+	}
 
-    document.getElementById('cancel'+id).style.display = '';
-    document.getElementById('save'+id).style.display = '';
-    document.getElementById('edit'+id).style.display = 'none';
-    document.getElementById('del'+id).style.display = 'none';
+	document.getElementById('cancel' + id).style.display = '';
+	document.getElementById('save' + id).style.display = '';
+	document.getElementById('edit' + id).style.display = 'none';
+	document.getElementById('del' + id).style.display = 'none';
 }
+
 function save_tariff(id)
 {
-    document.tariffs.action += '&aid='+id;
-    document.tariffs.submit();
+	document.tariffs.action += '&aid=' + id;
+	document.tariffs.submit();
 }
+
 function cancel_tariff(id)
 {
-    var i, n, v, tr = document.getElementById('row'+id),
-        tds = tr.getElementsByTagName('SPAN');
+	var i, n, v, tr = document.getElementById('row'+id),
+		tds = tr.getElementsByTagName('SPAN');
 
-    edited_row = 0;
+	edited_row = 0;
 
-    for (i=0; i<tds.length; i++) {
-        tds[i].style.display = '';
-        n = tds[i].id.replace(/^tariffval[0-9]+_/, '');
-        v = document.getElementById('tariffval'+n);
-        v.parentNode.removeChild(v);
-        if (i) {
-            v = document.getElementById('tariffperiod'+n);
-            v.parentNode.removeChild(v.previousSibling); // BR
-            v.parentNode.removeChild(v);
-        }
-    }
+	for (i=0; i<tds.length; i++) {
+		tds[i].style.display = '';
+		n = tds[i].id.replace(/^tariffval[0-9]+_/, '');
+		v = document.getElementById('tariffval'+n);
+		v.parentNode.removeChild(v);
+		if (i) {
+			v = document.getElementById('tariffperiod'+n);
+			v.parentNode.removeChild(v.previousSibling); // BR
+			v.parentNode.removeChild(v);
+		}
+	}
 
-    document.getElementById('cancel'+id).style.display = 'none';
-    document.getElementById('save'+id).style.display = 'none';
-    document.getElementById('edit'+id).style.display = '';
-    document.getElementById('del'+id).style.display = '';
+	document.getElementById('cancel' + id).style.display = 'none';
+	document.getElementById('save' + id).style.display = 'none';
+	document.getElementById('edit' + id).style.display = '';
+	document.getElementById('del' + id).style.display = '';
 }
-{/literal}
+
 {if $error && $formdata.aid}
 document.getElementById('cancel{$formdata.aid}').style.display = '';
 document.getElementById('save{$formdata.aid}').style.display = '';
 document.getElementById('edit{$formdata.aid}').style.display = 'none';
 document.getElementById('del{$formdata.aid}').style.display = 'none';
 {/if}
+//-->
 </SCRIPT>

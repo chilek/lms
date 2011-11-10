@@ -1,10 +1,10 @@
 <!--// $Id$ //-->
-{literal}
 <SCRIPT type="text/javascript">
+<!--
 	function randomize()
 	{
-		if(document.customeredit.elements['customerdata[pin]'].value != '')
-			if(! confirm('{/literal}{t}Are you sure, you want to generate new PIN?{/t}{literal}'))
+		if (document.customeredit.elements['customerdata[pin]'].value != '')
+			if (!confirm('{t}Are you sure, you want to generate new PIN?{/t}'))
 				return;
 
 		var r = 0;
@@ -18,8 +18,8 @@
 		document.customeredit.action += '&newcontact=1';
 		document.customeredit.submit();
 	}
+//-->
 </SCRIPT>
-{/literal}
 <FORM NAME="customeredit" id="customeredit" METHOD="POST" ACTION="?m=customeredit&id={$customerinfo.id}{if $recover}&action=recover{/if}"><INPUT TYPE="HIDDEN" NAME="customerdata[id]" VALUE="{$customerinfo.id}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
@@ -461,6 +461,8 @@
 </TABLE>
 </FORM>
 <SCRIPT type="text/javascript">
+<!--
 document.forms['customeredit'].elements['customerdata[lastname]'].focus();
+//-->
 </SCRIPT>
 

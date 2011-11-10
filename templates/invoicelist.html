@@ -6,21 +6,19 @@
 window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy={$invoice.copy}&duplicate={$invoice.duplicate}');
 </SCRIPT>
 {/if}
-{literal}
 <SCRIPT type="text/javascript">
-	<!--
+<!--
 	function CheckAll()
 	{
 		for (var i=0; i<document.page.elements.length; i++)
 		{
 			var e = document.page.elements[i];
 			if (e.name != 'allbox' &&
-			    e.name != 'groupexclude' &&
-			    e.name != 'hideclosed' &&
-			    e.name != 'original' &&
-			    e.name != 'duplicate' &&
-			    e.name != 'copy'
-			)
+				e.name != 'groupexclude' &&
+				e.name != 'hideclosed' &&
+				e.name != 'original' &&
+				e.name != 'duplicate' &&
+				e.name != 'copy')
 				e.checked = document.page.allbox.checked;
 		}
 	}
@@ -33,7 +31,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 
 	function pays()
 	{
-		if(! confirm('{/literal}{t}Are you sure, you want to check/uncheck selected invoices as accounted?{/t}{literal}'))
+		if (!confirm('{t}Are you sure, you want to check/uncheck selected invoices as accounted?{/t}'))
 			return;
 		document.page.action="?m=invoicepaid";
 		document.page.target="";
@@ -43,11 +41,11 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 	function prints()
 	{
 		var add = "";
-    		if(document.page.original.checked)
-	        	add = "&original=1";
-		if(document.page.copy.checked)
+		if (document.page.original.checked)
+			add = "&original=1";
+		if (document.page.copy.checked)
 			add += "&copy=1";
-		if(document.page.duplicate.checked)
+		if (document.page.duplicate.checked)
 			add += "&duplicate=1";
 
 		document.page.action="?m=invoice&print=cached" + add;
@@ -66,7 +64,8 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 		document.page.target="";
 		document.page.submit();
 	}
-{/literal}{if $_config.phpui.short_pagescroller|chkconfig}{literal}
+
+{if $_config.phpui.short_pagescroller|chkconfig}
 	function pagechange1()
 	{
 		document.page.action="?m=invoicelist&page=" + document.forms['page'].elements['page1'].value;
@@ -79,10 +78,9 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 		document.page.target="";
 		document.page.submit();
 	}
-{/literal}{/if}{literal}
-	//-->
+{/if}
+//-->
 </SCRIPT>
-{/literal}
 <FORM METHOD="POST" NAME="page">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">

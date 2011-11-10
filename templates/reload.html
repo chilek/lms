@@ -1,9 +1,7 @@
 <!--// $Id$ //-->
 <H1><B>{$layout.pagetitle}</B></H1>
-{literal}
 <SCRIPT type="text/javascript">
-	<!--
-
+<!--
 	function CheckAll()
 	{
 		for (var i=0; i<document.reload.elements.length; i++)
@@ -19,10 +17,8 @@
 		document.reload.allbox.checked = !document.reload.allbox.checked;
 		CheckAll();
 	}
-
-	//-->
+//-->
 </SCRIPT>
-{/literal}
 <P><FORM name="reload" method="POST" action="?m=reload&setreloads">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">

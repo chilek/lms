@@ -2,66 +2,64 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {if $docid}<SCRIPT type="text/javascript">window.open('?m=documentview&id={$docid}');</SCRIPT>{/if}
-{literal}
 <SCRIPT type="text/javascript">
 <!--
 	function CheckAll()
 	{
-        for (var i=0; i<document.page.elements.length; i++)
-        {
-            var e = document.page.elements[i];
-            if (e.type == 'checkbox' && e.name != 'allbox')
-	    	    e.checked = document.page.allbox.checked;
+		for (var i=0; i<document.page.elements.length; i++)
+		{
+			var e = document.page.elements[i];
+			if (e.type == 'checkbox' && e.name != 'allbox')
+				e.checked = document.page.allbox.checked;
 		}
 	}
 
 	function CheckAll2()
 	{
-	        document.page.allbox.checked = !document.page.allbox.checked;
+		 document.page.allbox.checked = !document.page.allbox.checked;
 		CheckAll();
 	}
 
 	function delete_docs()
 	{
-		if(! confirm('{/literal}{t}Are you sure, you want to delete selected documents?{/t}{literal}'))
+		if (!confirm('{t}Are you sure, you want to delete selected documents?{/t}'))
 			return;
 
 		document.page.action="?m=documentdel&is_sure=1";
-        	document.page.target="";
+		document.page.target="";
 		document.page.submit();
 	}
 
 	function print_docs()
 	{
-	    document.page.action="?m=documentview";
-            document.page.target="_blank";
-            document.page.submit();
+		document.page.action="?m=documentview";
+		document.page.target="_blank";
+		document.page.submit();
 	}
 
 	function mark_docs()
 	{
-	    document.page.action="?m=documentedit&action=confirm";
-            document.page.target="";
-            document.page.submit();
+		document.page.action="?m=documentedit&action=confirm";
+		document.page.target="";
+		document.page.submit();
 	}
 
-    function filter()
-    {
-        // uncheck checkboxes, we don't need them in GET
-        for (var i=0; i<document.page.elements.length; i++)
-        {
-            var e = document.page.elements[i];
-            if (e.type == 'checkbox')
-	    	    e.checked = "";
+	function filter()
+	{
+		// uncheck checkboxes, we don't need them in GET
+		for (var i=0; i<document.page.elements.length; i++)
+		{
+			var e = document.page.elements[i];
+			if (e.type == 'checkbox')
+				e.checked = "";
 		}
-        document.page.action="";
-        document.page.target="";
-        document.page.method="get";
-        document.page.submit();
-    }
+		document.page.action="";
+		document.page.target="";
+		document.page.method="get";
+		document.page.submit();
+	}
 //-->
 </SCRIPT>
-{/literal}
 {include file="calendar_js.html"}
 <FORM METHOD="POST" NAME="page" ACTION="?m=documentedit&action=confirm">
 <INPUT type="hidden" name="m" value="documentlist">

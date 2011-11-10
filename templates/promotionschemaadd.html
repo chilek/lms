@@ -89,34 +89,33 @@
 </TABLE></FORM>
 </P>
 <SCRIPT type="text/javascript">
-{literal}
 <!--
 document.forms['schemaadd'].elements['schema[name]'].focus();
 
 function add_period_item()
 {
-    var cont = document.getElementById('periodcont'),
-        items = cont.getElementsByTagName('SELECT'),
-        last = items[items.length-1],
-        item = last.cloneNode(true),
-        del = document.getElementById('perioddel');
+	var cont = document.getElementById('periodcont'),
+		items = cont.getElementsByTagName('SELECT'),
+		last = items[items.length-1],
+		item = last.cloneNode(true),
+		del = document.getElementById('perioddel');
 
-    if (item.options[0].value == "0")
-        item.removeChild(item.options[0]); 
+	if (item.options[0].value == "0")
+		item.removeChild(item.options[0]);
 
-    last.parentNode.insertBefore(item, del);
-    del.style.display = items.length > 1 ? '' : 'none';
+	last.parentNode.insertBefore(item, del);
+	del.style.display = items.length > 1 ? '' : 'none';
 }
+
 function del_period_item()
 {
-    var cont = document.getElementById('periodcont'),
-        items = cont.getElementsByTagName('SELECT'),
-        last = items[items.length-1];
+	var cont = document.getElementById('periodcont'),
+		items = cont.getElementsByTagName('SELECT'),
+		last = items[items.length-1];
 
-    last.parentNode.removeChild(last);
-    document.getElementById('perioddel').style.display = items.length > 1 ? '' : 'none';
+	last.parentNode.removeChild(last);
+	document.getElementById('perioddel').style.display = items.length > 1 ? '' : 'none';
 }
 //-->
-{/literal}
 </SCRIPT>
 {include file="footer.html"}

@@ -131,7 +131,6 @@
 	</TR>	
 </TABLE>
 </FORM>
-{literal}
 <SCRIPT type="text/javascript">
 <!--
 	document.forms['editipaddr'].elements['ipadd[name]'].focus();
@@ -140,10 +139,10 @@
 	{
 		var passwd = new Array();
 		var items = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-		var length = {/literal}{$_config.phpui.nodepassword_length|default:"16"}{literal};
-		if(length > 32) length = 32;
+		var length = {$_config.phpui.nodepassword_length|default:"16"};
+		if (length > 32) length = 32;
 		
-		for(var i=0; i<length; i++)
+		for (var i=0; i<length; i++)
 		{
 			n = Math.floor(Math.random() * items.length);
 			passwd[i] = items.substring(n, n+1);

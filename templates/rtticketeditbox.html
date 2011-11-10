@@ -1,12 +1,12 @@
 <!-- $Id$ -->
 <script type="text/javascript">
-{literal}
-        function reset_customer()
-        {
-                if (document.forms['ticket'].elements['ticket[custid]'].value)
-                	document.forms['ticket'].elements['ticket[customerid]'].value = document.forms['ticket'].elements['ticket[custid]'].value;
-        }
-{/literal}
+<!--
+	function reset_customer()
+	{
+		if (document.forms['ticket'].elements['ticket[custid]'].value)
+			document.forms['ticket'].elements['ticket[customerid]'].value = document.forms['ticket'].elements['ticket[custid]'].value;
+	}
+//-->
 </script>
 <P><FORM method="POST" name="ticket" action="?m=rtticketedit&id={$ticket.ticketid}">
 <INPUT type="submit" class="hiddenbtn">

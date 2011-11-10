@@ -1,11 +1,10 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-{literal}
 <SCRIPT TYPE="text/javascript">
 <!--
 	function SelectAllNodes()
 	{
-		if(document.setwarnings.nodes.checked) 
+		if (document.setwarnings.nodes.checked)
 			for (var i = 0; i < document.getElementById('nodeslist').length; i++)
 				document.getElementById('nodeslist').options[i].selected = true;
 		else
@@ -21,9 +20,9 @@
 
 	function switchbox(id)
 	{
-		if((id.name == 'setwarnings[warnon]') && id.checked ) 
+		if ((id.name == 'setwarnings[warnon]') && id.checked)
 			document.setwarnings.elements['setwarnings[warnoff]'].checked = false;
-		if((id.name == 'setwarnings[warnoff]') && id.checked ) 
+		if ((id.name == 'setwarnings[warnoff]') && id.checked)
 			document.setwarnings.elements['setwarnings[warnon]'].checked = false;
 	}
 

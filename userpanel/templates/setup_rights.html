@@ -1,11 +1,10 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-{literal}
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
 <!--
 	function SelectAllCustomers()
 	{
-		if(document.setrights.customers.checked) 
+		if(document.setrights.customers.checked)
 			for (var i = 0; i < document.setrights.elements[0].length; i++)
 				document.setrights.elements[0].options[i].selected = true;
 		else
@@ -20,7 +19,6 @@
 	}
 //-->
 </SCRIPT>
-{/literal}
 <H1>{$layout.pagetitle}</H1>
 <TABLE width="100%" cellpadding="3">
 	<TR>
