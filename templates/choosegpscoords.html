@@ -186,7 +186,7 @@
 				{/if}
 			{/if}
 					strokeOpacity: 0.5,
-					strokeWidth: 3
+					strokeWidth: 2
 				};
 			var devlink = new OpenLayers.Feature.Vector(line, null, style);
 			devlinks.push(devlink);
@@ -196,7 +196,7 @@
 		devlinklayer.addFeatures(devlinks);
 		map.addLayer(devlinklayer);
 
-		highlightdevicelayer = new OpenLayers.Control.SelectFeature(devicelayer, {
+		var highlightdevicelayer = new OpenLayers.Control.SelectFeature(devicelayer, {
 			hover: true,
 			highlightOnly: true,
 			clickout: false,
@@ -274,7 +274,7 @@
 				{/if}
 			{/if}
 					strokeOpacity: 0.5,
-					strokeWidth: 3
+					strokeWidth: 2
 				};
 			var nodelink = new OpenLayers.Feature.Vector(line, null, style);
 			nodelinks.push(nodelink);
@@ -284,7 +284,7 @@
 		nodelinklayer.addFeatures(nodelinks);
 		map.addLayer(nodelinklayer);
 
-		highlightnodelayer = new OpenLayers.Control.SelectFeature(nodelayer, {
+		var highlightnodelayer = new OpenLayers.Control.SelectFeature(nodelayer, {
 			hover: true,
 			highlightOnly: true,
 			clickout: false,
