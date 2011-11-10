@@ -124,9 +124,9 @@
 
 	map.addControl(new OpenLayers.Control.ScaleLine());
 	map.addControl(new OpenLayers.Control.LayerSwitcher());
+	map.addControl(new OpenLayers.Control.MousePosition({ displayProjection: new OpenLayers.Projection("EPSG:4326") }));
 
 	map.zoomToExtent(area);
-
 </script>
 {elseif $gd} {* default if $type is not set or not 'flash' *}
 <P ALIGN="CENTER">
@@ -145,7 +145,7 @@
 	<BR><BR><FONT class="alert">{t}Your PHP does not support GD library required for map generation!{/t}</FONT>
     </TD></TR></TABLE>
 {/if}
-{if !$emptydb}
+{if !$emptydb && $type != 'openlayers'}
 <P ALIGN="CENTER">
 <FORM METHOD="GET" ACTION="?m=netdevmap" NAME="x">
 	<INPUT type="submit" class="hiddenbtn">
