@@ -127,7 +127,11 @@
 	map.addControl(new OpenLayers.Control.LayerSwitcher());
 	map.addControl(new OpenLayers.Control.MousePosition({ displayProjection: new OpenLayers.Projection("EPSG:4326") }));
 
-	map.zoomToExtent(area);
+	{if $devices}
+		map.zoomToExtent(area);
+	{else}
+		map.zoomToMaxExtent();
+	{/if}
 //-->
 </script>
 {elseif $gd} {* default if $type is not set or not 'flash' *}

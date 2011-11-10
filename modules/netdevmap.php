@@ -326,18 +326,21 @@ if ($type == 'openlayers')
 					WHERE n.latitude IS NOT NULL AND n.longitude IS NOT NULL 
 					GROUP BY n.id, n.name, n.location, n.latitude, n.longitude', 'id');
 
-	foreach ($devices as $devidx => $device)
-		if ($device['lastonline'])
-			if (time() - $device['lastonline'] > $CONFIG['phpui']['lastonline_limit'])
-				$devices[$devidx]['img'] = 'img/netdev_off.png';
+	if ($devices)
+	{
+		foreach ($devices as $devidx => $device)
+			if ($device['lastonline'])
+				if (time() - $device['lastonline'] > $CONFIG['phpui']['lastonline_limit'])
+					$devices[$devidx]['img'] = 'img/netdev_off.png';
+				else
+					$devices[$devidx]['img'] = 'img/netdev_on.png';
 			else
-				$devices[$devidx]['img'] = 'img/netdev_on.png';
-		else
-			$devices[$devidx]['img'] = 'img/netdev_unk.png';
+				$devices[$devidx]['img'] = 'img/netdev_unk.png';
 
-	$devids = implode(',', array_keys($devices));
+		$devids = implode(',', array_keys($devices));
 
-	$links = $DB->GetAll('SELECT src, dst, type FROM netlinks WHERE src IN ('.$devids.') AND dst IN ('.$devids.')');
+		$links = $DB->GetAll('SELECT src, dst, type FROM netlinks WHERE src IN ('.$devids.') AND dst IN ('.$devids.')');
+	}
 
 	if ($links)
 		foreach ($links as $linkidx => $link)
