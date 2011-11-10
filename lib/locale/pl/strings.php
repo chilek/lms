@@ -2509,5 +2509,8 @@ $_LANG['Enter device longitude (optional)'] = 'Podaj długość geograficzną dl
 $_LANG['GPS coordinates:'] = 'Współrzędne geograficzne:';
 $_LANG['GPS latitude:'] = 'Szerokość geograficzna:';
 $_LANG['GPS longitude:'] = 'Długość geograficzna:';
+$_LANG['Click to select gps coordinates from map'] = 'Kliknij w celu wybrania współrzędnych geograficznych z mapy';
+$_LANG['Select gps coordinates'] = 'Wybierz współrzędne geograficzne';
+$_LANG['Select gps coordinates:'] = 'Wybierz współprzędne geograficzne:';
 
 ?>
