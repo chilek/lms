@@ -105,14 +105,15 @@ elseif($p == 'main')
 
 		$nodeids = implode(',', array_keys($nodes));
 
-		$nodelinks = $DB->GetAll('SELECT n.id AS nodeid, netdev, linktype AS type FROM nodes n WHERE netdev > 0 AND ownerid > 0 AND netdev IN ('.$devids.')');
+		$nodelinks = $DB->GetAll('SELECT n.id AS nodeid, netdev, linktype AS type FROM nodes n WHERE netdev > 0 AND ownerid > 0 
+			AND n.id IN ('.$nodeids.') AND netdev IN ('.$devids.')');
 		if ($nodelinks)
 			foreach ($nodelinks as $nodelinkidx => $nodelink)
 			{
-				$nodelinks[$linkidx]['nodelat'] = $nodes[$nodelink['nodeid']]['latitude'];
-				$nodelinks[$linkidx]['nodelon'] = $nodes[$nodelink['nodeid']]['longitude'];
-				$nodelinks[$linkidx]['netdevlat'] = $devices[$nodelink['netdev']]['latitude'];
-				$nodelinks[$linkidx]['netdevlon'] = $devices[$nodelink['netdev']]['longitude'];
+				$nodelinks[$nodelinkidx]['nodelat'] = $nodes[$nodelink['nodeid']]['latitude'];
+				$nodelinks[$nodelinkidx]['nodelon'] = $nodes[$nodelink['nodeid']]['longitude'];
+				$nodelinks[$nodelinkidx]['netdevlat'] = $devices[$nodelink['netdev']]['latitude'];
+				$nodelinks[$nodelinkidx]['netdevlon'] = $devices[$nodelink['netdev']]['longitude'];
 			}
 	}
 
