@@ -138,6 +138,7 @@
 
 		var area = new OpenLayers.Bounds();
 		var devices = [];
+		{if $devices}
 		{foreach from=$devices item=device}
 			var lonLat = new OpenLayers.LonLat({$device.longitude}, {$device.latitude})
 				.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
@@ -154,6 +155,7 @@
 				}
 			));
 		{/foreach}
+		{/if}
 
 		var devicelayer = new OpenLayers.Layer.Vector("Devices", {
 			styleMap: new OpenLayers.StyleMap(devicestyle)
@@ -162,6 +164,7 @@
 		map.addLayer(devicelayer);
 
 		var devlinks = [];
+		{if $links}
 		{foreach from=$links item=link}
 			var points = new Array(
 				new OpenLayers.Geometry.Point({$link.srclon}, {$link.srclat})
@@ -191,6 +194,7 @@
 			var devlink = new OpenLayers.Feature.Vector(line, null, style);
 			devlinks.push(devlink);
 		{/foreach}
+		{/if}
 
 		var devlinklayer = new OpenLayers.Layer.Vector("Device Links");
 		devlinklayer.addFeatures(devlinks);
@@ -226,6 +230,7 @@
 		highlightdevicelayer.activate();
 
 		var nodes = [];
+		{if $nodes}
 		{foreach from=$nodes item=node}
 			var lonLat = new OpenLayers.LonLat({$node.longitude}, {$node.latitude})
 				.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
@@ -242,6 +247,7 @@
 				}
 			));
 		{/foreach}
+		{/if}
 
 		var nodelayer = new OpenLayers.Layer.Vector("Nodes", {
 			styleMap: new OpenLayers.StyleMap(nodestyle)
@@ -250,6 +256,7 @@
 		map.addLayer(nodelayer);
 
 		var nodelinks = [];
+		{if $nodelins}
 		{foreach from=$nodelinks item=link}
 			var points = new Array(
 				new OpenLayers.Geometry.Point({$link.nodelon}, {$link.nodelat})
@@ -279,6 +286,7 @@
 			var nodelink = new OpenLayers.Feature.Vector(line, null, style);
 			nodelinks.push(nodelink);
 		{/foreach}
+		{/if}
 
 		var nodelinklayer = new OpenLayers.Layer.Vector("Node Links");
 		nodelinklayer.addFeatures(nodelinks);
