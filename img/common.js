@@ -50,8 +50,18 @@ function autoiframe_setsize(width, height)
 function openSelectWindow(theURL, winName, myWidth, myHeight, isCenter, formfield)
 {
 	targetfield = formfield;
-    popup(theURL, 1, 1, 30, 15);
-    autoiframe_setsize(myWidth, myHeight);
+	popup(theURL, 1, 1, 30, 15);
+	autoiframe_setsize(myWidth, myHeight);
+
+	return false;
+}
+
+function openSelectWindow2(theURL, winName, myWidth, myHeight, isCenter, formfield1, formfield2)
+{
+	targetfield1 = formfield1;
+	targetfield2 = formfield2;
+	popup(theURL, 1, 1, 30, 15);
+	autoiframe_setsize(myWidth, myHeight);
 
 	return false;
 }
@@ -82,11 +92,16 @@ function locationchoosewin(varname, formname, city, street)
 	return openSelectWindow('?m=chooselocation&name='+varname+'&form='+formname+'&city='+city+'&street='+street,'chooselocation',350,200,'true');
 }
 
+function gpscoordschoosewin(formfield1, formfield2)
+{
+	return openSelectWindow2('?m=choosegpscoords', 'choosegpscoords', 450, 300, 'true', formfield1, formfield2);
+}
+
 function sendvalue(targetfield, value)
 {
 	targetfield.value = value;
-    // close popup
-    window.parent.parent.popclick();
+	// close popup
+	window.parent.parent.popclick();
 	targetfield.focus();
 }
 

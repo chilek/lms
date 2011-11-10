@@ -140,8 +140,9 @@
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}GPS latitude:{/t}</B>
 		</TD>
-		<TD WIDTH="98%">
+		<TD WIDTH="98%" NOWRAP>
 			<INPUT ID="latitude" TYPE="text" NAME="nodedata[latitude]" VALUE="{if $nodeinfo.latitude}{$nodeinfo.latitude}{else}{/if}" {tip text="Enter device latitude (optional)"} trigger="latitude">
+			<a href="javascript: void(0);" onClick="return gpscoordschoosewin(document.nodeadd.elements['nodedata[latitude]'], document.nodeadd.elements['nodedata[longitude]']);" {tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR>
@@ -151,8 +152,9 @@
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}GPS longitude:{/t}</B>
 		</TD>
-		<TD WIDTH="98%">
+		<TD WIDTH="98%" NOWRAP>
 			<INPUT ID="longitude" TYPE="text" NAME="nodedata[longitude]" VALUE="{if $nodeinfo.longitude}{$nodeinfo.longitude}{else}{/if}" {tip text="Enter device longitude (optional)"} trigger="longitude">
+			<a href="javascript: void(0);" onClick="return gpscoordschoosewin(document.nodeadd.elements['nodedata[latitude]'], document.nodeadd.elements['nodedata[longitude]']);" {tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR>

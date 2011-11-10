@@ -136,8 +136,9 @@
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}GPS latitude:{/t}</B>
 		</TD>
-		<TD WIDTH="98%">
+		<TD WIDTH="98%" NOWRAP>
 			<INPUT ID="latitude" TYPE="text" NAME="nodeedit[latitude]" VALUE="{if $nodeinfo.latitude}{$nodeinfo.latitude}{else}{/if}" {tip text="Enter device latitude (optional)" trigger="latitude"}>
+			<a href="javascript: void(0);" onClick="return gpscoordschoosewin(document.editnode.elements['nodeedit[latitude]'], document.editnode.elements['nodeedit[longitude]']);" {tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -147,8 +148,9 @@
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}GPS longitude:{/t}</B>
 		</TD>
-		<TD WIDTH="98%">
+		<TD WIDTH="98%" NOWRAP>
 			<INPUT ID="longitude" TYPE="text" NAME="nodeedit[longitude]" VALUE="{if $nodeinfo.longitude}{$nodeinfo.longitude}{else}{/if}" {tip text="Enter device longitude (optional)" trigger="longitude"}>
+			<a href="javascript: void(0);" onClick="return gpscoordschoosewin(document.editnode.elements['nodeedit[latitude]'], document.editnode.elements['nodeedit[longitude]']);" {tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -239,13 +241,22 @@
 	}
 
 	function reset_customer()
-    {
-        var val;
-        if (val = document.forms['editnode'].elements['nodeedit[ownerid]'].value)
-	        document.forms['editnode'].elements['nodeedit[customerid]'].value = val;
+	{
+		var val;
+		if (val = document.forms['editnode'].elements['nodeedit[ownerid]'].value)
+		document.forms['editnode'].elements['nodeedit[customerid]'].value = val;
 	}
 
-    check_teryt('location', true);
+	function parseGpsCoords()
+	{
+		alert('ala');
+		var lonlat = documents.forms['editnode'].elements['nodeedit[lonlat]'].value;
+		alert(lonlat);
+		document.forms['editnode'].elements['nodeedit[latitude]'].value = '';
+		document.forms['editnode'].elements['nodeedit[longitude]'].value = '';
+	}
+
+	check_teryt('location', true);
 //-->
 </SCRIPT>
 {/literal}
