@@ -24,334 +24,68 @@
 <script type="text/javascript" language="JavaScript" src="img/OpenLayers/OpenLayers.js"></script>
 <script type="text/javascript" language="JavaScript" src="http://maps.google.com/maps/api/js?v=3.2&sensor=false"></script>
 <div id="map"></div>
+<script type="text/javascript" language="Javascript" src="img/map.js"></script>
 <script type="text/javascript" language="JavaScript">
 <!--
-	var map, devpopup = null, nodepopup = null;
+	var map;
 
-	map = new OpenLayers.Map("map");
-	var osmap = new OpenLayers.Layer.OSM();
-	var gmap = new OpenLayers.Layer.Google("Google Maps");
-	map.addLayer(gmap);
-	map.addLayer(osmap);
-
-//	var renderer = OpenLayers.Layer.Vector.prototype.renderers;
-
-	var devicestyle = new OpenLayers.Style(
-		{
-			graphicWidth: 16,
-			graphicHeight: 16,
-			graphicXOffset: -8,
-			graphicYOffset: -8
-		},
-		{
-			rules: [
-				new OpenLayers.Rule({
-					filter: new OpenLayers.Filter.Comparison({
-						type: OpenLayers.Filter.Comparison.EQUAL_TO,
-						property: "state",
-						value: 0
-					}),
-					symbolizer: {
-						externalGraphic: "img/netdev_unk.png"
-					}
-				}),
-				new OpenLayers.Rule({
-					filter: new OpenLayers.Filter.Comparison({
-						type: OpenLayers.Filter.Comparison.EQUAL_TO,
-						property: "state",
-						value: 1
-					}),
-					symbolizer: {
-						externalGraphic: "img/netdev_on.png"
-					}
-				}),
-				new OpenLayers.Rule({
-					filter: new OpenLayers.Filter.Comparison({
-						type: OpenLayers.Filter.Comparison.EQUAL_TO,
-						property: "state",
-						value: 2
-					}),
-					symbolizer: {
-						externalGraphic: "img/netdev_off.png"
-					}
-				}),
-				new OpenLayers.Rule({
-					elseFilter: true,
-					symbolizer: {
-						externalGraphic: "img/netdev.png"
-					}
-				})
-			]
-		}
-	);
-
-	var nodestyle = new OpenLayers.Style(
-		{
-			graphicWidth: 16,
-			graphicHeight: 16,
-			graphicXOffset: -8,
-			graphicYOffset: -8
-		},
-		{
-			rules: [
-				new OpenLayers.Rule({
-					filter: new OpenLayers.Filter.Comparison({
-						type: OpenLayers.Filter.Comparison.EQUAL_TO,
-						property: "state",
-						value: 0
-					}),
-					symbolizer: {
-						externalGraphic: "img/node_unk.png"
-					}
-				}),
-				new OpenLayers.Rule({
-					filter: new OpenLayers.Filter.Comparison({
-						type: OpenLayers.Filter.Comparison.EQUAL_TO,
-						property: "state",
-						value: 1
-					}),
-					symbolizer: {
-						externalGraphic: "img/node_on.png"
-					}
-				}),
-				new OpenLayers.Rule({
-					filter: new OpenLayers.Filter.Comparison({
-						type: OpenLayers.Filter.Comparison.EQUAL_TO,
-						property: "state",
-						value: 2
-					}),
-					symbolizer: {
-						externalGraphic: "img/node_off.png"
-					}
-				}),
-				new OpenLayers.Rule({
-					elseFilter: true,
-					symbolizer: {
-						externalGraphic: "img/node.png"
-					}
-				})
-			]
-		}
-	);
-
-	var area = new OpenLayers.Bounds();
 	var devices = [];
 	{if $devices}
-	{foreach from=$devices item=device}
-		var lonLat = new OpenLayers.LonLat({$device.longitude}, {$device.latitude})
-			.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
-		area.extend(lonLat);
-		devices.push(new OpenLayers.Feature.Vector(
-			new OpenLayers.Geometry.Point(
-				lonLat.lon,
-				lonLat.lat
-			), {
+		{foreach from=$devices item=device}
+			devices.push({
+				lon: {$device.longitude},
+				lat: {$device.latitude},
 				state: {$device.state},
 				name: "{$device.name}",
-				lonlat: lonLat,
-				id: {$device.id}
-			}
-		));
-	{/foreach}
+				ipaddr: "{$device.ipaddr}",
+				id: {$device.id},
+				type: "netdevinfo"
+			});
+		{/foreach}
 	{/if}
-
-	var devicelayer = new OpenLayers.Layer.Vector("Devices", {
-		styleMap: new OpenLayers.StyleMap(devicestyle)
-	});
-	devicelayer.addFeatures(devices);
-	map.addLayer(devicelayer);
 
 	var devlinks = [];
-	{if $links}
-	{foreach from=$links item=link}
-		var points = new Array(
-			new OpenLayers.Geometry.Point({$link.srclon}, {$link.srclat})
-				.transform(
-					new OpenLayers.Projection("EPSG:4326"),
-					map.getProjectionObject()
-				),
-			new OpenLayers.Geometry.Point({$link.dstlon}, {$link.dstlat})
-				.transform(
-					new OpenLayers.Projection("EPSG:4326"),
-					map.getProjectionObject()
-				)
-			);
-		var line = new OpenLayers.Geometry.LineString(points);
-		{if !$link.type}
-			var style = { strokeColor: '#00ff00',
-		{else}
-			{if $link.type == 2}
-				var style = { strokeColor: '#ff0000',
-			{else}
-				var style = { strokeColor: '#0000ff',
-			{/if}
-		{/if}
-				strokeOpacity: 0.5,
-				strokeWidth: 2
-			};
-		var devlink = new OpenLayers.Feature.Vector(line, null, style);
-		devlinks.push(devlink);
-	{/foreach}
+	{if $devlinks}
+		{foreach from=$devlinks item=devlink}
+			devlinks.push({
+				srclon: {$devlink.srclon},
+				srclat: {$devlink.srclat},
+				dstlon: {$devlink.dstlon},
+				dstlat: {$devlink.dstlat},
+				type: {$devlink.type}
+			});
+		{/foreach}
 	{/if}
-
-	var devlinklayer = new OpenLayers.Layer.Vector("Device Links");
-	devlinklayer.addFeatures(devlinks);
-	map.addLayer(devlinklayer);
-
-	var highlightdevicelayer = new OpenLayers.Control.SelectFeature(devicelayer, {
-		hover: true,
-		highlightOnly: true,
-		clickout: false,
-		toggle: false,
-		multiple: false,
-		eventListeners: {
-			"featurehighlighted": function(e) {
-				devpopup = new OpenLayers.Popup(null, e.feature.data.lonlat, new OpenLayers.Size(150, 50), e.feature.data.name);
-				devpopup.setOpacity(0.8);
-				devpopup.closeOnMove = true;
-				map.addPopup(devpopup);
-				OpenLayers.Event.stop(e);
-			},
-			"featureunhighlighted": function(e) {
-				if (devpopup != null)
-				{
-					map.removePopup(devpopup);
-					devpopup.destroy();
-					devpopup = null;
-				}
-				OpenLayers.Event.stop(e);
-			}
-		}
-	});
-	var selectdevicelayer = new OpenLayers.Control.SelectFeature(devicelayer, {
-		clickout: true, toggle: false,
-		multiple: false, hover: false,
-		toggleKey: "ctrlKey", // ctrl key removes from selection
-		multipleKey: "shiftKey", // shift key adds to selection
-		onSelect: function(e) {
-			document.location = "?m=netdevinfo&id=" + e.data.id;
-			OpenLayers.Event.stop(e);
-		}
-	});
-	map.addControl(highlightdevicelayer);
-	map.addControl(selectdevicelayer);
-
-	highlightdevicelayer.activate();
-	selectdevicelayer.activate();
 
 	var nodes = [];
 	{if $nodes}
-	{foreach from=$nodes item=node}
-		var lonLat = new OpenLayers.LonLat({$node.longitude}, {$node.latitude})
-			.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
-		area.extend(lonLat);
-		nodes.push(new OpenLayers.Feature.Vector(
-			new OpenLayers.Geometry.Point(
-				lonLat.lon,
-				lonLat.lat
-			), {
+		{foreach from=$nodes item=node}
+			nodes.push({
+				lon: {$node.longitude},
+				lat: {$node.latitude},
 				state: {$node.state},
 				name: "{$node.name}",
-				lonlat: lonLat,
-				id: {$node.id}
-			}
-		));
-	{/foreach}
+				ipaddr: "{$node.ipaddr}",
+				id: {$node.id},
+				type: "nodeinfo"
+			});
+		{/foreach}
 	{/if}
-
-	var nodelayer = new OpenLayers.Layer.Vector("Nodes", {
-		styleMap: new OpenLayers.StyleMap(nodestyle)
-	});
-	nodelayer.addFeatures(nodes);
-	map.addLayer(nodelayer);
 
 	var nodelinks = [];
 	{if $nodelinks}
-	{foreach from=$nodelinks item=link}
-		var points = new Array(
-			new OpenLayers.Geometry.Point({$link.nodelon}, {$link.nodelat})
-				.transform(
-					new OpenLayers.Projection("EPSG:4326"),
-					map.getProjectionObject()
-				),
-			new OpenLayers.Geometry.Point({$link.netdevlon}, {$link.netdevlat})
-				.transform(
-					new OpenLayers.Projection("EPSG:4326"),
-					map.getProjectionObject()
-				)
-			);
-		var line = new OpenLayers.Geometry.LineString(points);
-		{if !$link.type}
-			var style = { strokeColor: '#00ff00',
-		{else}
-			{if $link.type == 2}
-				var style = { strokeColor: '#ff0000',
-			{else}
-				var style = { strokeColor: '#0000ff',
-			{/if}
-		{/if}
-				strokeOpacity: 0.5,
-				strokeWidth: 2
-			};
-		var nodelink = new OpenLayers.Feature.Vector(line, null, style);
-		nodelinks.push(nodelink);
-	{/foreach}
+		{foreach from=$nodelinks item=nodelink}
+			nodelinks.push({
+				nodelon: {$nodelink.nodelon},
+				nodelat: {$nodelink.nodelat},
+				netdevlon: {$nodelink.netdevlon},
+				netdevlat: {$nodelink.netdevlat},
+				type: {$nodelink.type}
+			});
+		{/foreach}
 	{/if}
 
-	var nodelinklayer = new OpenLayers.Layer.Vector("Node Links");
-	nodelinklayer.addFeatures(nodelinks);
-	map.addLayer(nodelinklayer);
-
-	var highlightnodelayer = new OpenLayers.Control.SelectFeature(nodelayer, {
-		hover: true,
-		highlightOnly: true,
-		clickout: false,
-		toggle: false,
-		multiple: false,
-		eventListeners: {
-			"featurehighlighted": function(e) {
-				nodepopup = new OpenLayers.Popup(null, e.feature.data.lonlat, new OpenLayers.Size(150, 50), e.feature.data.name);
-				nodepopup.setOpacity(0.8);
-				nodepopup.closeOnMove = true;
-				map.addPopup(nodepopup);
-				OpenLayers.Event.stop(e);
-			},
-			"featureunhighlighted": function(e) {
-				if (nodepopup != null)
-				{
-					map.removePopup(nodepopup);
-					nodepopup.destroy();
-					nodepopup = null;
-				}
-				OpenLayers.Event.stop(e);
-			}
-		}
-	});
-	var selectnodelayer = new OpenLayers.Control.SelectFeature(nodelayer, {
-		clickout: true, toggle: false,
-		multiple: false, hover: false,
-		toggleKey: "ctrlKey", // ctrl key removes from selection
-		multipleKey: "shiftKey", // shift key adds to selection
-		onSelect: function(e) {
-			document.location = "?m=nodeinfo&id=" + e.data.id;
-			OpenLayers.Event.stop(e);
-		}
-	});
-	map.addControl(highlightnodelayer);
-	map.addControl(selectnodelayer);
-
-	highlightnodelayer.activate();
-	selectnodelayer.activate();
-
-	map.addControl(new OpenLayers.Control.ScaleLine());
-	map.addControl(new OpenLayers.Control.LayerSwitcher());
-	map.addControl(new OpenLayers.Control.MousePosition({ displayProjection: new OpenLayers.Projection("EPSG:4326") }));
-
-	{if $devices || $nodes}
-		map.zoomToExtent(area);
-	{else}
-		map.zoomToMaxExtent();
-	{/if}
+	map = createMap(devices, devlinks, nodes, nodelinks, true);
 //-->
 </script>
 {elseif $gd} {* default if $type is not set or not 'flash' *}

@@ -45,6 +45,7 @@ version ? (????-??-??):
   - selection of gps coordinates from popup map [chilan]
   - javascript smarty literal cleanup [chilan]
   - network maps show nodes and node links & switched map creation from markers to features [chilan]
+  - separated js and php files created for map support [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
