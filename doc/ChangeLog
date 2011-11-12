@@ -46,6 +46,10 @@ version ? (????-??-??):
   - javascript smarty literal cleanup [chilan]
   - network maps show nodes and node links & switched map creation from markers to features [chilan]
   - separated js and php files created for map support [chilan]
+  - livemap(tm) in LMS ;-) network state is updated asynchronously in real time 
+    in phpui->lastonline_limit time periods [chilan]
+  - we can ping nodes and devices watching results in popups [chilan]
+  - 5 default base layers for maps [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 

@@ -24,8 +24,9 @@
  *  $Id$
  */
 
-$devices = $DB->GetAllByKey('SELECT n.id, n.name, n.location, '.$DB->GroupConcat('INET_NTOA(nodes.ipaddr)')
-				.' AS ipaddr, MAX(lastonline) AS lastonline, n.latitude, n.longitude 
+$devices = $DB->GetAllByKey('SELECT n.id, n.name, n.location, '.$DB->GroupConcat('INET_NTOA(CASE WHEN nodes.ownerid = 0 THEN nodes.ipaddr ELSE NULL END)')
+				.' AS ipaddr, '.$DB->GroupConcat('CASE WHEN nodes.ownerid = 0 THEN nodes.id ELSE NULL END').' AS nodeid, 
+				MAX(lastonline) AS lastonline, n.latitude AS lat, n.longitude AS lon 
 				FROM netdevices n 
 				LEFT JOIN nodes ON (n.id = netdev) 
 				WHERE n.latitude IS NOT NULL AND n.longitude IS NOT NULL 
@@ -57,14 +58,14 @@ if ($devices)
 	if ($devlinks)
 		foreach ($devlinks as $devlinkidx => $devlink)
 		{
-			$devlinks[$devlinkidx]['srclat'] = $devices[$devlink['src']]['latitude'];
-			$devlinks[$devlinkidx]['srclon'] = $devices[$devlink['src']]['longitude'];
-			$devlinks[$devlinkidx]['dstlat'] = $devices[$devlink['dst']]['latitude'];
-			$devlinks[$devlinkidx]['dstlon'] = $devices[$devlink['dst']]['longitude'];
+			$devlinks[$devlinkidx]['srclat'] = $devices[$devlink['src']]['lat'];
+			$devlinks[$devlinkidx]['srclon'] = $devices[$devlink['src']]['lon'];
+			$devlinks[$devlinkidx]['dstlat'] = $devices[$devlink['dst']]['lat'];
+			$devlinks[$devlinkidx]['dstlon'] = $devices[$devlink['dst']]['lon'];
 		}
 }
 
-$nodes = $DB->GetAllByKey('SELECT n.id, n.name, INET_NTOA(n.ipaddr) AS ipaddr, n.location, n.lastonline, n.latitude, n.longitude 
+$nodes = $DB->GetAllByKey('SELECT n.id, n.name, INET_NTOA(n.ipaddr) AS ipaddr, n.location, n.lastonline, n.latitude AS lat, n.longitude AS lon 
 				FROM nodes n 
 				WHERE n.latitude IS NOT NULL AND n.longitude IS NOT NULL', 'id');
 
@@ -95,10 +96,10 @@ if ($nodes)
 	if ($nodelinks)
 		foreach ($nodelinks as $nodelinkidx => $nodelink)
 		{
-			$nodelinks[$nodelinkidx]['nodelat'] = $nodes[$nodelink['nodeid']]['latitude'];
-			$nodelinks[$nodelinkidx]['nodelon'] = $nodes[$nodelink['nodeid']]['longitude'];
-			$nodelinks[$nodelinkidx]['netdevlat'] = $devices[$nodelink['netdev']]['latitude'];
-			$nodelinks[$nodelinkidx]['netdevlon'] = $devices[$nodelink['netdev']]['longitude'];
+			$nodelinks[$nodelinkidx]['nodelat'] = $nodes[$nodelink['nodeid']]['lat'];
+			$nodelinks[$nodelinkidx]['nodelon'] = $nodes[$nodelink['nodeid']]['lon'];
+			$nodelinks[$nodelinkidx]['netdevlat'] = $devices[$nodelink['netdev']]['lat'];
+			$nodelinks[$nodelinkidx]['netdevlon'] = $devices[$nodelink['netdev']]['lon'];
 		}
 }
 

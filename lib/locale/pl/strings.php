@@ -2513,4 +2513,9 @@ $_LANG['Click to select gps coordinates from map'] = 'Kliknij w celu wybrania ws
 $_LANG['Select gps coordinates'] = 'Wybierz współrzędne geograficzne';
 $_LANG['Select gps coordinates:'] = 'Wybierz współprzędne geograficzne:';
 
+$_LANG['$a bytes from $b: icmp_req=$c ttl=$d time=$e ms'] = '$a bajtów od $b: icmp_req=$c ttl=$d czas=$e ms';
+$_LANG['Destination Host Unreachable'] = 'Urządzenie docelowe jest nieosiągalne';
+$_LANG['Total: $a% ($b/$c)'] = 'Razem: $a% ($b/$c)';
+$_LANG['Auto Scroll'] = 'Automatyczne przewijanie';
+
 ?>

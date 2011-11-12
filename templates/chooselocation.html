@@ -247,7 +247,7 @@ function resize_frame()
 		lt = document.getElementById('locationtable'),
 		h = (st ? st.offsetHeight : 0) + lt.offsetHeight;
 
-	autoiframe_setsize(350, Math.max(h, 160));
+	autoiframe_setsize('autoiframe', 350, Math.max(h, 160));
 }
 
 var win = window.parent, varname = '{$data.varname}', formname = '{$data.formname}',
