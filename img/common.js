@@ -32,26 +32,26 @@ function removeClass(theElem, theClass)
 }
 
 // LMS: function to autoresize iframe and parent div container (overlib)
-function autoiframe_setsize(width, height)
+function autoiframe_setsize(id, width, height)
 {
-    var doc = window.parent ? parent.document : document,
-        frame = doc.getElementById('autoiframe');
+	var doc = window.parent ? parent.document : document,
+		frame = doc.getElementById(id);
 
-    if (width) {
-        frame.style.width = width + 'px';
-        frame.parentNode.style.width = width + 'px';
-    }
-    if (height) {
-        frame.style.height = height + 'px';
-        frame.parentNode.style.height = height + 'px';
-    }
+	if (width) {
+		frame.style.width = width + 'px';
+		frame.parentNode.style.width = width + 'px';
+	}
+	if (height) {
+		frame.style.height = height + 'px';
+		frame.parentNode.style.height = height + 'px';
+	}
 }
 
 function openSelectWindow(theURL, winName, myWidth, myHeight, isCenter, formfield)
 {
 	targetfield = formfield;
 	popup(theURL, 1, 1, 30, 15);
-	autoiframe_setsize(myWidth, myHeight);
+	autoiframe_setsize('autoiframe', myWidth, myHeight);
 
 	return false;
 }
@@ -61,7 +61,7 @@ function openSelectWindow2(theURL, winName, myWidth, myHeight, isCenter, formfie
 	targetfield1 = formfield1;
 	targetfield2 = formfield2;
 	popup(theURL, 1, 1, 30, 15);
-	autoiframe_setsize(myWidth, myHeight);
+	autoiframe_setsize('autoiframe', myWidth, myHeight);
 
 	return false;
 }
@@ -389,4 +389,10 @@ function check_teryt(locid, init)
     }
 
     return checked;
+}
+
+function ping_popup(id)
+{
+	popup('?m=ping&id=' + id, 1, 1, 30, 30);
+	autoiframe_setsize('autoiframe', 400, 300);
 }

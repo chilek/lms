@@ -18,19 +18,18 @@
 <script type="text/javascript" language="JavaScript" src="img/map.js"></script>
 <script type="text/javascript" language="JavaScript">
 <!--
-	var map;
-
 	function init()
 	{
 		var devices = [];
 		{if $devices}
 			{foreach from=$devices item=device}
 				devices.push({
-					lon: {$device.longitude},
-					lat: {$device.latitude},
+					lon: {$device.lon},
+					lat: {$device.lat},
 					state: {$device.state},
 					name: "{$device.name}",
 					ipaddr: "{$device.ipaddr}",
+					nodeid: "{$device.nodeid}",
 					id: {$device.id},
 					type: "netdevinfo"
 				});
@@ -54,8 +53,8 @@
 		{if $nodes}
 			{foreach from=$nodes item=node}
 				nodes.push({
-					lon: {$node.longitude},
-					lat: {$node.latitude},
+					lon: {$node.lon},
+					lat: {$node.lat},
 					state: {$node.state},
 					name: "{$node.name}",
 					ipaddr: "{$node.ipaddr}",
@@ -79,6 +78,7 @@
 		{/if}
 
 		map = createMap(devices, devlinks, nodes, nodelinks, false);
+
 		map.events.register("click", map,
 			function(e) {
 				var lonlat = map.getLonLatFromViewPortPx(e.xy)
@@ -88,6 +88,9 @@
 				OpenLayers.Event.stop(e);
 			}
 		);
+
+		set_lastonline_limit({$_config.phpui.lastonline_limit});
+		setTimeout("netdevmap_refresh()", lastonline_limit * 1000);
 	}
 //-->
 </script>
