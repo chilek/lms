@@ -87,11 +87,11 @@
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}GPS latitude:{/t}</B>
+			<B>{t}GPS longitude:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" NOWRAP>
-			<INPUT ID="latitude" TYPE="text" NAME="netdev[latitude]" VALUE="{$netdevinfo.latitude}" {tip text="Enter device latitude (optional)" trigger="latitude"}>
-			<a href="javascript: void(0);" onClick="return gpscoordschoosewin(document.netdevedit.elements['netdev[latitude]'], document.netdevedit.elements['netdev[longitude]']);" {tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
+			<INPUT ID="longitude" TYPE="text" NAME="netdev[longitude]" VALUE="{$netdevinfo.longitude}" {tip text="Enter device longitude (optional)" trigger="longitude"}>
+			<a href="javascript: void(0);" onClick="return gpscoordschoosewin(document.netdevedit.elements['netdev[longitude]'], document.netdevedit.elements['netdev[latitude]']);" {tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR>
@@ -99,11 +99,11 @@
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}GPS longitude:{/t}</B>
+			<B>{t}GPS latitude:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" NOWRAP>
-			<INPUT ID="longitude" TYPE="text" NAME="netdev[longitude]" VALUE="{$netdevinfo.longitude}" {tip text="Enter device longitude (optional)" trigger="longitude"}>
-			<a href="javascript: void(0);" onClick="return gpscoordschoosewin(document.netdevedit.elements['netdev[latitude]'], document.netdevedit.elements['netdev[longitude]']);" {tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
+			<INPUT ID="latitude" TYPE="text" NAME="netdev[latitude]" VALUE="{$netdevinfo.latitude}" {tip text="Enter device latitude (optional)" trigger="latitude"}>
+			<a href="javascript: void(0);" onClick="return gpscoordschoosewin(document.netdevedit.elements['netdev[longitude]'], document.netdevedit.elements['netdev[latitude]']);" {tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 {if $_config.phpui.radius|chkconfig}
