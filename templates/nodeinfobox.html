@@ -166,19 +166,7 @@
 		</TD>
 	</TR>
 {/if}
-{if $nodeinfo.latitude || $nodeinfo.longitude}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/home.gif" ALT="{t}GPS coordinates:{/t}">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{t}GPS latitude:{/t}</B>
-		</TD>
-		<TD WIDTH="98%" NOWRAP>
-			{if $nodeinfo.latitude}{$nodeinfo.latitude}{else}{/if}
-			<INPUT TYPE="hidden" ID="latitude" NAME="latitude" VALUE="{$nodeinfo.latitude}"> 
-		</TD>
-	</TR>
+{if $nodeinfo.longitude || $nodeinfo.latitude}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
 			<IMG SRC="img/home.gif" ALT="{t}GPS coordinates:{/t}">
@@ -189,6 +177,18 @@
 		<TD WIDTH="98%" NOWRAP>
 			{if $nodeinfo.longitude}{$nodeinfo.longitude}{else}{/if}
 			<INPUT TYPE="hidden" ID="longitude" NAME="longitude" VALUE="{$nodeinfo.longitude}">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/home.gif" ALT="{t}GPS coordinates:{/t}">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}GPS latitude:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" NOWRAP>
+			{if $nodeinfo.latitude}{$nodeinfo.latitude}{else}{/if}
+			<INPUT TYPE="hidden" ID="latitude" NAME="latitude" VALUE="{$nodeinfo.latitude}"> 
 		</TD>
 	</TR>
 {/if}
