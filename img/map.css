@@ -1,0 +1,33 @@
+div.olControlPanel {
+	position: absolute;
+	top: 5px;
+	left: 60px;
+}
+
+.olControlPanel div {
+	display: block;
+	float: left;
+	width: 18px;
+	height: 18px;
+	border: thin solid black;
+	margin: 1px;
+	background-color: white;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+.olPingButtonItemActive {
+	background-image: url("ip.gif");
+}
+
+.olPingButtonItemInactive {
+	background-image: url("ip.gif");
+}
+
+.olping2buttonItemActive {
+	background-image: url("ip.gif");
+}
+
+.olping2buttonItemInactive {
+	background-image: url("ip.gif");
+}

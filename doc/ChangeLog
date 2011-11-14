@@ -51,6 +51,7 @@ version ? (????-??-??):
   - we can ping nodes and devices watching results in popups [chilan]
   - 5 default base layers for maps [chilan]
   - ported to xajax 0.5 [chilan]
+  - toolbar on netdevmap and possibility to ping any host (event not included in database) [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 

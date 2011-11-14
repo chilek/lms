@@ -56,8 +56,31 @@ function refresh($params)
 
 $layout['pagetitle'] = trans('Ping');
 
-if (!isset($_GET['id']) || !$DB->GetOne('SELECT id FROM nodes WHERE id=?', array(intval($_GET['id']))))
-	$SESSION->redirect('?m=nodelist');
+if (!isset($_GET['id']))
+{
+	if (isset($_GET['p']) && $_GET['p'] == 'main')
+	{
+		/* Using AJAX for template plugins */
+		require(LIB_DIR.'/xajax/xajax_core/xajax.inc.php');
+
+		$xajax = new xajax();
+		$xajax->configure('errorHandler', true);
+		$xajax->configure('javascript URI', 'img');
+		$xajax->register(XAJAX_FUNCTION, 'refresh');
+		$xajax->processRequest();
+
+		$SMARTY->assign('xajax', $xajax->getJavascript());
+		$SMARTY->assign('part', $_GET['p']);
+	}
+
+	if (isset($_GET['ip']))
+		$SMARTY->assign('ipaddr', $_GET['ip']);
+	$SMARTY->display('ping.html');
+	die;
+}
+else
+	if (!$DB->GetOne('SELECT id FROM nodes WHERE id=?', array(intval($_GET['id']))))
+		$SESSION->redirect('?m=nodelist');
 
 $nodeid = $_GET['id'];
 
