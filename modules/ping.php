@@ -38,17 +38,18 @@ function refresh($params)
 	if (count($reply))
 	{
 		$received++;
-		$output = preg_replace('/^([0-9]+).+ttl=([0-9]+).+time=([0-9\.]+.+)$/',
-			trans('\1 bytes from $a: icmp_req=$b ttl=\2 time=\3', $ipaddr, $transmitted), current($reply));
+		if (preg_match('/^([0-9]+).+ttl=([0-9]+).+time=([0-9\.]+.+)$/', current($reply), $matches))
+			$output = trans('$a bytes from $b: icmp_req=$c ttl=$d time=$e',
+				$matches[1], $ipaddr, $transmitted, $matches[2], $matches[3]);
 	}
 	else
 		$output = trans('Destination Host Unreachable');
 	if (empty($received))
 		$received = '0';
-	$objResponse->addAppend('data', 'innerHTML', $output.'<br>');
-	$objResponse->addAssign('transmitted', 'value', $transmitted);
-	$objResponse->addAssign('received', 'value', $received);
-	$objResponse->addAssign('summary', 'innerHTML', '<b>'.trans('Total: $a% ($b/$c)', 
+	$objResponse->append('data', 'innerHTML', $output.'<br>');
+	$objResponse->assign('transmitted', 'value', $transmitted);
+	$objResponse->assign('received', 'value', $received);
+	$objResponse->assign('summary', 'innerHTML', '<b>'.trans('Total: $a% ($b/$c)', 
 		round(($received / $transmitted) * 100), $received, $transmitted).'</b>');
 	return $objResponse;
 }
@@ -63,14 +64,15 @@ $nodeid = $_GET['id'];
 if (isset($_GET['p']) && $_GET['p'] == 'main')
 {
 	/* Using AJAX for template plugins */
-	require(LIB_DIR.'/xajax/xajax.inc.php');
+	require(LIB_DIR.'/xajax/xajax_core/xajax.inc.php');
 
 	$xajax = new xajax();
-	$xajax->errorHandlerOn();
-	$xajax->registerFunction("refresh");
-	$xajax->processRequests();
+	$xajax->configure('errorHandler', true);
+	$xajax->configure('javascript URI', 'img');
+	$xajax->register(XAJAX_FUNCTION, 'refresh');
+	$xajax->processRequest();
 
-	$SMARTY->assign('xajax', $xajax->getJavascript('img/', 'xajax.js'));
+	$SMARTY->assign('xajax', $xajax->getJavascript());
 	$SMARTY->assign('part', $_GET['p']);
 }
 
