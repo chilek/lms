@@ -10,7 +10,7 @@
 </head>
 {if !$part}
 <frameset name="all" frameborder="0" framespacing="0" ROWS="*">
-	<frame scrolling="always" frameborder="0" marginheight="0" marginwidth="0" name="m" noresize src="?m=ping&p=main&id={$nodeid}">
+	<frame scrolling="always" frameborder="0" marginheight="0" marginwidth="0" name="m" noresize src="?m=ping&p=main&{if $nodeid}id={$nodeid}{else}ip={$ipaddr}{/if}">
 </frameset>
 {else}
 <script type="text/javascript" src="img/common.js"></script>
@@ -22,6 +22,7 @@
 		if (elem && document.getElementById('autoscroll').checked)
 			elem.scrollTop += 1000;
 		xajax_refresh(xajax.getFormValues('params'));
+
 		setTimeout("ping_refresh()", 1000);
 	}
 

@@ -2,7 +2,17 @@ var map = null;
 var maprequest = null;
 var mappopup = null;
 var featurepopup = null;
+var pingpopup = null;
 var lastonline_limit;
+
+function removeInvisiblePopups()
+{
+	// OpenLayers doesn't destroy closed popups, so
+	// we search for them here and destroy if there are ...
+	for (var i in map.popups)
+		if (!map.popups[i].visible())
+			map.removePopup(map.popups[i]);
+}
 
 function set_lastonline_limit(sec)
 {
@@ -60,10 +70,26 @@ function netdevmap_refresh()
 function ping_from_map(id)
 {
 	featurepopup.setContentHTML(
-		'<iframe id="autoiframe' + id + '" width=100 height=10 frameborder=0 scrolling=no src="/lms/?m=ping&id=' + id + '&popup=1"></iframe>'
+		'<iframe id="autoiframe' + id + '" width=100 height=10 frameborder=0 scrolling=no src="/lms/?m=ping&id=' + id + '"></iframe>'
 	);
 	autoiframe_setsize('autoiframe' + id, 400, 300);
 	featurepopup.updateSize();
+}
+
+function ping_from_popup()
+{
+	var ip = document.forms['ipform'].ip.value;
+	if (!ip.match(/^([0-9]{1,3}\.){3}[0-9]{1,3}$/))
+		return false;
+	pingpopup.setContentHTML(
+		'<iframe id="autoiframe' + ip.replace('.', '_') + '" width=100 height=10 frameborder=0 scrolling=no src="/lms/?m=ping&ip=' + ip + '"></iframe>'
+	);
+
+	removeInvisiblePopups();
+
+	autoiframe_setsize('autoiframe' + ip.replace('.', '_'), 400, 300);
+	pingpopup.updateSize();
+	return false;
 }
 
 function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selection)
@@ -330,12 +356,12 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 					new OpenLayers.LonLat(feature.data.lon, feature.data.lat)
 						.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()),
 					new OpenLayers.Size(600, 400), 
-					null,
-					null,
-					false,
+					null, null, false,
 					function(e) {
 						selectlayer.unselect(selectedFeature);
 					});
+				featurepopup.keepInMap = true;
+				featurepopup.panMapIfOutOfView = true;
 				var content = '<b>' + feature.data.name + '</b><br>';
 				if (feature.data.type == 'netdevinfo')
 				{
@@ -367,6 +393,46 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		selectlayer.activate();
 	}
 
+	var pingbutton = new OpenLayers.Control.Button({
+		displayClass: "olPingButton", 
+		title: "Ping a host ...",
+		command: 'ping'});
+
+//	var ping2button = new OpenLayers.Control.Button({
+//		displayClass: "olPing2Button", 
+//		title: "Ping2 a host ...",
+//		command: "ping2"});
+
+	var panel = new OpenLayers.Control.Panel({
+		type: OpenLayers.Control.TYPE_BUTTON,
+		title: "Toolbar",
+		activateControl: function(control) {
+			if (control.command == 'ping') {
+				pingpopup = new OpenLayers.Popup(null,
+						map.getLonLatFromPixel(new OpenLayers.Pixel(60, 23)).clone(),
+						new OpenLayers.Size(600, 400),
+						'<form name="ipform" id="ipform" method="GET" action="?m=ping" onsubmit="return ping_from_popup();">'
+						+ '<table><tr class="light"><td class="ftopu">Enter IP address:</td><tr class="light"><td class="fbottomu"><input type="text" name="ip"><input type="submit" class="hiddenbtn"></td></tr></table></form>',
+						null,
+						function() {
+							alert('close')
+						});
+				pingpopup.setOpacity(0.8);
+				pingpopup.closeOnMove = true;
+				pingpopup.autoSize = true;
+				//pingpopup.keepInMap = true;
+				//pingpopup.panMapIfOutOfView = true;
+				map.addPopup(pingpopup);
+				pingpopup.updateSize();
+				document.forms['ipform'].ip.focus();
+			} else {
+			}
+		}
+	});
+//	panel.addControls([pingbutton, ping2button]);
+	panel.addControls([pingbutton]);
+	map.addControl(panel);
+
 	map.addControl(new OpenLayers.Control.ScaleLine());
 	map.addControl(new OpenLayers.Control.LayerSwitcher());
 	map.addControl(new OpenLayers.Control.MousePosition({ displayProjection: new OpenLayers.Projection("EPSG:4326") }));
@@ -375,6 +441,10 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		map.zoomToExtent(area);
 	else
 		map.zoomToMaxExtent();
+
+	map.events.register('mousemove', map, function(e) {
+		removeInvisiblePopups();
+	});
 
 	return map;
 }
