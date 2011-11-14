@@ -50,6 +50,7 @@ version ? (????-??-??):
     in phpui->lastonline_limit time periods [chilan]
   - we can ping nodes and devices watching results in popups [chilan]
   - 5 default base layers for maps [chilan]
+  - ported to xajax 0.5 [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 

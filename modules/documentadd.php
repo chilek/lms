@@ -26,9 +26,6 @@
 
 $_DOC_DIR = DOC_DIR;
 
-/* Using AJAX for template plugins */
-require(LIB_DIR.'/xajax/xajax.inc.php');
-
 function plugin($template, $customer)
 {
 	global $_DOC_DIR;
@@ -45,17 +42,20 @@ function plugin($template, $customer)
 	if (!empty($engine['plugin']) && file_exists($file = DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['plugin'].'.php'))
 	    include($file);
 
-	$JSResponse->addAssign('plugin', 'innerHTML', $result);
+	$JSResponse->assign('plugin', 'innerHTML', $result);
 	return $JSResponse;
 }
 
-$xajax = new xajax();
-//$xajax->debugOn();
-$xajax->errorHandlerOn();
-$xajax->registerFunction("plugin");
-$xajax->processRequests();
+/* Using AJAX for template plugins */
+require(LIB_DIR.'/xajax/xajax_core/xajax.inc.php');
 
-$SMARTY->assign('xajax', $xajax->getJavascript('img/', 'xajax.js'));
+$xajax = new xajax();
+$xajax->configure('errorHandler', true);
+$xajax->configure('javascript URI', 'img');
+$xajax->register(XAJAX_FUNCTION, 'plugin');
+$xajax->processRequest();
+
+$SMARTY->assign('xajax', $xajax->getJavascript());
 /* end AJAX plugin stuff */
 
 if(isset($_POST['document']))

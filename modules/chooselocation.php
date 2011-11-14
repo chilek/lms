@@ -110,8 +110,6 @@ if (isset($_GET['ajax']) && isset($_GET['what']))
     die;
 }
 
-require(LIB_DIR.'/xajax/xajax.inc.php');
-
 function select_location($what, $id)
 {
     global $DB;
@@ -135,31 +133,33 @@ function select_location($what, $id)
             FROM location_districts WHERE stateid = ?
             ORDER BY name', array($stateid));
 
-        $JSResponse->addScriptCall('update_selection', 'district',
+        $JSResponse->call('update_selection', 'district',
             $list ? $list : array(), !$what ? $districtid : 0);
     }
 
     if ($districtid) {
         $list = get_loc_cities($districtid);
-        $JSResponse->addScriptCall('update_selection', 'city',
+        $JSResponse->call('update_selection', 'city',
             $list ? $list : array(), !$what ? $cityid : 0);
     }
 
     if ($cityid) {
         $list = get_loc_streets($cityid);
-        $JSResponse->addScriptCall('update_selection', 'street', $list ? $list : array());
+        $JSResponse->call('update_selection', 'street', $list ? $list : array());
     }
 
     return $JSResponse;
 }
 
-$xajax = new xajax();
-//$xajax->debugOn();
-$xajax->errorHandlerOn();
-$xajax->registerFunction('select_location');
-$xajax->processRequests();
+require(LIB_DIR.'/xajax/xajax_core/xajax.inc.php');
 
-$SMARTY->assign('xajax', $xajax->getJavascript('img/', 'xajax.js'));
+$xajax = new xajax();
+$xajax->configure('errorHandler', true);
+$xajax->configure('javascript URI', 'img');
+$xajax->register(XAJAX_FUNCTION, 'select_location');
+$xajax->processRequest();
+
+$SMARTY->assign('xajax', $xajax->getJavascript());
 
 $layout['pagetitle'] = trans('Select location');
 
