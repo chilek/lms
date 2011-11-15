@@ -381,7 +381,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 					}
 				} else
 					content += '<div class="infoPopupPing"><a href="javascript:ping_host(\''
-						+ featurepopup.id + '\',' + feature.data.id + ')"><img src="img/ip.gif" alt="">&nbsp;'
+						+ featurepopup.id + '\', \'' + feature.data.ipaddr + '\')"><img src="img/ip.gif" alt="">&nbsp;'
 						+ feature.data.ipaddr + '</a></div>';
 				content += '<div class="infoPopupInfo"><a href="/m=' + feature.data.type + '&id=' + feature.data.id + '">'
 					+ '<img src="img/info1.gif" alt="">&nbsp;Info</a></div></div>';
