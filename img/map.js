@@ -1,7 +1,6 @@
 var map = null;
 var maprequest = null;
 var mappopup = null;
-var featurepopup = null;
 var lastonline_limit;
 
 function removeInvisiblePopups()
@@ -66,12 +65,11 @@ function netdevmap_refresh()
 	setTimeout("netdevmap_refresh()", lastonline_limit * 1000);
 }
 
-function ping_from_map(id, nodeid)
+function ping_host(id, ip)
 {
-	var i;
-	for (i = 0; i < map.popups.length, map.popups[i].id != id; i++);
-	map.popups[i].setContentHTML(
-		'<iframe id="autoiframe_' + id.replace('.', '_') + '" width=100 height=10 frameborder=0 scrolling=no src="?m=ping&id=' + nodeid + '"></iframe>');
+	for (var i = 0; i < map.popups.length, map.popups[i].id != id; i++);
+	map.popups[i].setContentHTML('<div class="popupTitleBar">Ping to ' + ip + '</div>'
+		+ '<iframe id="autoiframe_' + id.replace('.', '_') + '" width=100 height=10 frameborder=0 scrolling=no src="?m=ping&ip=' + ip + '"></iframe>');
 
 	removeInvisiblePopups();
 
@@ -79,20 +77,14 @@ function ping_from_map(id, nodeid)
 	map.popups[i].updateSize();
 }
 
-function ping_from_popup(id)
+function ping_any_host(id)
 {
 	var ip = document.forms['ipform'].ip.value;
 	if (!ip.match(/^([0-9]{1,3}\.){3}[0-9]{1,3}$/))
 		return false;
-	var i;
-	for (i = 0; i < map.popups.length, map.popups[i].id != id; i++);
-	map.popups[i].setContentHTML(
-		'<iframe id="autoiframe_' + id.replace('.', '_') + '" width=100 height=10 frameborder=0 scrolling=no src="?m=ping&ip=' + ip + '"></iframe>');
 
-	removeInvisiblePopups();
+	ping_host(id, ip);
 
-	autoiframe_setsize('autoiframe_' + id.replace('.', '_'), 400, 300);
-	map.popups[i].updateSize();
 	return false;
 }
 
@@ -383,18 +375,23 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 						var ips = feature.data.ipaddr.split(',');
 						var nodeids = feature.data.nodeid.split(',');
 						for (i in nodeids)
-							content += '<div class="infoPopupPing"><a href="javascript:ping_from_map(\''
-								+ featurepopup.id + '\',' + nodeids[i] + ')"><img src="img/ip.gif" alt="">&nbsp;'
+							content += '<div class="infoPopupPing"><a href="javascript:ping_host(\''
+								+ featurepopup.id + '\', \'' + ips[i] + '\')"><img src="img/ip.gif" alt="">&nbsp;'
 								+ ips[i] + '</a></div>';
 					}
 				} else
-					content += '<div class="infoPopupPing"><a href="javascript:ping_from_map(\''
+					content += '<div class="infoPopupPing"><a href="javascript:ping_host(\''
 						+ featurepopup.id + '\',' + feature.data.id + ')"><img src="img/ip.gif" alt="">&nbsp;'
 						+ feature.data.ipaddr + '</a></div>';
 				content += '<div class="infoPopupInfo"><a href="/m=' + feature.data.type + '&id=' + feature.data.id + '">'
 					+ '<img src="img/info1.gif" alt="">&nbsp;Info</a></div></div>';
 				featurepopup.setContentHTML(content);
+
 				map.addPopup(featurepopup);
+
+				var dragpopup = new OpenLayers.Control.DragPopup(featurepopup);
+				map.addControl(dragpopup);
+
 				featurepopup.div.style.overflow = 'visible';
 				featurepopup.div.style.width = 'auto';
 				featurepopup.div.style.height = 'auto';
@@ -413,50 +410,63 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		});
 		map.addControl(selectlayer);
 		selectlayer.activate();
-	}
 
-	var pingbutton = new OpenLayers.Control.Button({
-		displayClass: "olPingButton", 
-		title: "Ping a host ...",
-		command: 'ping'});
+		var pingbutton = new OpenLayers.Control.Button({
+			displayClass: "olPingButton", 
+			title: "Ping a host ...",
+			command: 'ping'});
 
-//	var ping2button = new OpenLayers.Control.Button({
-//		displayClass: "olPing2Button", 
-//		title: "Ping2 a host ...",
-//		command: "ping2"});
+//		var ping2button = new OpenLayers.Control.Button({
+//			displayClass: "olPing2Button", 
+//			title: "Ping2 a host ...",
+//			command: "ping2"});
 
-	var panel = new OpenLayers.Control.Panel({
-		type: OpenLayers.Control.TYPE_BUTTON,
-		title: "Toolbar",
-		activateControl: function(control) {
-			if (control.command == 'ping') {
-				var pingpopup = new OpenLayers.Popup(null,
-						map.getLonLatFromPixel(new OpenLayers.Pixel(60, 27)).clone(),
-						new OpenLayers.Size(600, 400));
-				pingpopup.setOpacity(0.8);
-				pingpopup.closeOnMove = true;
-				pingpopup.autoSize = true;
-				pingpopup.keepInMap = true;
-				pingpopup.panMapIfOutOfView = true;
-				pingpopup.setContentHTML('<div class="ipPopupTable"><div class="ipPopupLabel">Enter IP address:</div>'
-						+ '<div class="ipPopupForm">'
-						+ '<form name="ipform" id="ipform" method="GET" action="?m=ping" onsubmit="return ping_from_popup(\'' + pingpopup.id +'\');">'
-						+ '<input type="text" name="ip">'
-						+ '<input type="submit" class="hiddenbtn"></form></div></div>');
-				map.addPopup(pingpopup);
-				pingpopup.updateSize();
-				document.forms['ipform'].ip.focus();
-			} else {
+		var panel = new OpenLayers.Control.Panel({
+			type: OpenLayers.Control.TYPE_BUTTON,
+			title: "Toolbar",
+			activateControl: function(control) {
+				if (control.command == 'ping') {
+					var pingpopup = new OpenLayers.Popup(null,
+							map.getLonLatFromPixel(new OpenLayers.Pixel(60, 27)).clone(),
+							new OpenLayers.Size(10, 10));
+					pingpopup.setOpacity(0.8);
+					pingpopup.closeOnMove = true;
+					pingpopup.keepInMap = true;
+					pingpopup.panMapIfOutOfView = true;
+					pingpopup.setContentHTML('<div class="ipPopupTable"><div class="ipPopupLabel">Enter IP address:</div>'
+							+ '<div class="ipPopupForm">'
+							+ '<form name="ipform" id="ipform" method="GET" action="?m=ping" onsubmit="return ping_any_host(\'' + pingpopup.id +'\');">'
+							+ '<input type="text" name="ip">'
+							+ '<input type="submit" class="hiddenbtn"></form></div></div>');
+					map.addPopup(pingpopup);
+
+					var dragpopup = new OpenLayers.Control.DragPopup(pingpopup);
+					map.addControl(dragpopup);
+
+					pingpopup.div.style.overflow = 'visible';
+					pingpopup.div.style.width = 'auto';
+					pingpopup.div.style.height = 'auto';
+					pingpopup.groupDiv.style.overflow = 'visible';
+					pingpopup.groupDiv.style.width = 'auto';
+					pingpopup.groupDiv.style.height = 'auto';
+					pingpopup.contentDiv.style.width = 'auto';
+					pingpopup.contentDiv.style.heigh = 'auto';
+					//pingpopup.updateSize();
+					document.forms['ipform'].ip.focus();
+				} else {
+				}
 			}
-		}
-	});
-//	panel.addControls([pingbutton, ping2button]);
-	panel.addControls([pingbutton]);
-	map.addControl(panel);
+		});
+//		panel.addControls([pingbutton, ping2button]);
+		panel.addControls([pingbutton]);
+		map.addControl(panel);
+	}
 
 	map.addControl(new OpenLayers.Control.ScaleLine());
 	map.addControl(new OpenLayers.Control.LayerSwitcher());
 	map.addControl(new OpenLayers.Control.MousePosition({ displayProjection: new OpenLayers.Projection("EPSG:4326") }));
+
+	//map.events.register('mousemove', null, popupmouse_movefunction(event) { alert('map mousemove'); }, true);
 
 	if (deviceArray || nodeArray)
 		map.zoomToExtent(area);
