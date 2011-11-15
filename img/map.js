@@ -320,14 +320,24 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 					mappopup = new OpenLayers.Popup.Anchored(null,
 						new OpenLayers.LonLat(e.feature.data.lon, e.feature.data.lat)
 							.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()),
-						new OpenLayers.Size(600, 400),
-						'<table><tr class="light"><td class="fall" nowrap><span style="font-weight:bold;">' + e.feature.data.name
-							+ "</span>" + (e.feature.data.ipaddr.length ? '<br>' + e.feature.data.ipaddr.replace(/,/g, "<br>") : '')
-							+ '</td></tr></table>');
+						new OpenLayers.Size(10, 10),
+						'<div class="mapPopupTable"><div class="mapPopupName">' + e.feature.data.name + '</div>'
+							+ (e.feature.data.ipaddr.length ? 
+								'<div class="mapPopupIp">' + e.feature.data.ipaddr.replace(/,/g, '<div class="mapPopupIp">') + '</div>'
+								: '')
+							+ '</div>');
 					mappopup.setOpacity(0.8);
 					mappopup.closeOnMove = true;
 					map.addPopup(mappopup);
-					mappopup.updateSize();
+					mappopup.div.style.overflow = 'visible';
+					mappopup.div.style.width = 'auto';
+					mappopup.div.style.height = 'auto';
+					mappopup.groupDiv.style.overflow = 'visible';
+					mappopup.groupDiv.style.width = 'auto';
+					mappopup.groupDiv.style.height = 'auto';
+					mappopup.contentDiv.style.width = 'auto';
+					mappopup.contentDiv.style.heigh = 'auto';
+					//mappopup.updateSize();
 				}
 				OpenLayers.Event.stop(e);
 			},
@@ -361,35 +371,39 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				var featurepopup = new OpenLayers.Popup(null,
 					new OpenLayers.LonLat(feature.data.lon, feature.data.lat)
 						.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()),
-					new OpenLayers.Size(600, 400));
+					new OpenLayers.Size(10, 10));
 				featurepopup.setOpacity(0.8);
 				featurepopup.closeOnMove = true;
-				featurepopup.autoSize = true;
-				featurepopup.keepInMap = true;
-				featurepopup.panMapIfOutOfView = true;
-				var content = '<table><tr class="light"><td class="ftopu" style="font-weight:bold" nowrap>' + feature.data.name + '</td></tr>';
+				//featurepopup.keepInMap = true;
+				//featurepopup.panMapIfOutOfView = true;
+				var content = '<div class="infoPopupTable"><div class="infoPopupName">' + feature.data.name + '</div>';
 				if (feature.data.type == 'netdevinfo')
 				{
 					if (feature.data.ipaddr.length) {
 						var ips = feature.data.ipaddr.split(',');
 						var nodeids = feature.data.nodeid.split(',');
 						for (i in nodeids)
-							content += '<tr class="light"><td class="flr" nowrap><a href="javascript:ping_from_map(\''
+							content += '<div class="infoPopupPing"><a href="javascript:ping_from_map(\''
 								+ featurepopup.id + '\',' + nodeids[i] + ')"><img src="img/ip.gif" alt="">&nbsp;'
-								+ ips[i] + '</a></td></tr>';
+								+ ips[i] + '</a></div>';
 					}
 				} else
-					content += '<tr class="light"><td class="flr" nowrap><a href="javascript:ping_from_map(\''
+					content += '<div class="infoPopupPing"><a href="javascript:ping_from_map(\''
 						+ featurepopup.id + '\',' + feature.data.id + ')"><img src="img/ip.gif" alt="">&nbsp;'
-						+ feature.data.ipaddr + '</a></td></tr>';
-				content += '<tr class="light"><td class="fbottomu" nowrap><a href="?m=' + feature.data.type + '&id=' + feature.data.id + '">'
-					+ '<img src="img/info1.gif" alt="">&nbsp;Info</a>'
-					+ '</td></tr></table>';
+						+ feature.data.ipaddr + '</a></div>';
+				content += '<div class="infoPopupInfo"><a href="/m=' + feature.data.type + '&id=' + feature.data.id + '">'
+					+ '<img src="img/info1.gif" alt="">&nbsp;Info</a></div></div>';
 				featurepopup.setContentHTML(content);
 				map.addPopup(featurepopup);
-				featurepopup.updateSize();
-				cursize = featurepopup.size;
-				featurepopup.setSize(new OpenLayers.Size(cursize.w + 20, cursize.h + 20));
+				featurepopup.div.style.overflow = 'visible';
+				featurepopup.div.style.width = 'auto';
+				featurepopup.div.style.height = 'auto';
+				featurepopup.groupDiv.style.overflow = 'visible';
+				featurepopup.groupDiv.style.width = 'auto';
+				featurepopup.groupDiv.style.height = 'auto';
+				featurepopup.contentDiv.style.width = 'auto';
+				featurepopup.contentDiv.style.heigh = 'auto';
+				//featurepopup.updateSize();
 				feature.popup = featurepopup;
 			},
 			onUnselect: function(feature) {
@@ -424,13 +438,11 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				pingpopup.autoSize = true;
 				pingpopup.keepInMap = true;
 				pingpopup.panMapIfOutOfView = true;
-				pingpopup.setContentHTML('<form name="ipform" id="ipform" method="GET" action="?m=ping" onsubmit="return ping_from_popup(\''
-						+ pingpopup.id +'\');">'
-						+ '<table><tr class="light"><td class="ftopu" nowrap>Enter IP address:</td>'
-						+ '<tr class="light"><td class="fbottomu"><input type="text" name="ip">'
-						+ '<input type="submit" class="hiddenbtn"></td></tr></table></form>');
-				//pingpopup.keepInMap = true;
-				//pingpopup.panMapIfOutOfView = true;
+				pingpopup.setContentHTML('<div class="ipPopupTable"><div class="ipPopupLabel">Enter IP address:</div>'
+						+ '<div class="ipPopupForm">'
+						+ '<form name="ipform" id="ipform" method="GET" action="?m=ping" onsubmit="return ping_from_popup(\'' + pingpopup.id +'\');">'
+						+ '<input type="text" name="ip">'
+						+ '<input type="submit" class="hiddenbtn"></form></div></div>');
 				map.addPopup(pingpopup);
 				pingpopup.updateSize();
 				document.forms['ipform'].ip.focus();
