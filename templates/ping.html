@@ -29,19 +29,21 @@
 	setTimeout("ping_refresh()", 1000);
 //-->
 </script>
-<body>
-	<div id="data" style="overflow:auto;height:270px"></div>
+<body style="border-style:solid; border-width:1pt;">
+	<div id="data" style="overflow:auto; height:270px; padding:2px;"></div>
 	<div id="wrapper" style="position:relative">
-		<div id="summary" style="position:absolute;left:0;top:5px;width:220px"><b>{t a="0" b="0" c="0"}Total: $a% ($b/$c){/t}</b></div>
-		<div id="onright" style="position:absolute;right:0;top:5px;width:180px" nowrap>
-		<form id="params">
-			<input type="hidden" name="ipaddr" value="{$ipaddr}">
-			<input type="hidden" id="transmitted" name="transmitted" value="0">
-			<input type="hidden" id="received" name="received" value="0">
-			<input type="hidden" id="minimum" name="minimum" value="1000.0">
-			<input type="hidden" id="maximum" name="maximum" value="0.0">
-			<input type="checkbox" id="autoscroll" name="autoscroll" checked><a href="javascript:checkElement('autoscroll');">{t}Auto Scroll{/t}</a>
-		</form>
+		<div id="summary" style="position:absolute; left:4px; top:7px; width:220px; font-weight:bold;">
+			{t a="0" b="0" c="0"}Total: $a% ($b/$c){/t}
+		</div>
+		<div id="onright" style="position:absolute; right:5px; top:5px; width:180px;" nowrap>
+			<form id="params">
+				<input type="hidden" name="ipaddr" value="{$ipaddr}">
+				<input type="hidden" id="transmitted" name="transmitted" value="0">
+				<input type="hidden" id="received" name="received" value="0">
+				<input type="hidden" id="minimum" name="minimum" value="1000.0">
+				<input type="hidden" id="maximum" name="maximum" value="0.0">
+				<input type="checkbox" id="autoscroll" name="autoscroll" checked><a href="javascript:checkElement('autoscroll');">{t}Auto Scroll{/t}</a>
+			</form>
 		</div>
 	</div>
 </body>

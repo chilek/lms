@@ -16,6 +16,10 @@ div.olControlPanel {
 	background-repeat: no-repeat;
 }
 
+div.olPopupContent {
+	padding: 0px;
+}
+
 .olPingButtonItemActive {
 	background-image: url("ip.gif");
 }
