@@ -3410,7 +3410,7 @@ class LMS
 		$this->DB->Execute('UPDATE netdevices SET name=?, description=?, producer=?, location=?,
 		        location_city=?, location_street=?, location_house=?, location_flat=?,
 				model=?, serialnumber=?, ports=?, purchasetime=?, guaranteeperiod=?, shortname=?,
-				nastype=?, clients=?, secret=?, community=?, channelid=?, longitude=? latitude=? 
+				nastype=?, clients=?, secret=?, community=?, channelid=?, longitude=?, latitude=? 
 				WHERE id=?', 
 				array($data['name'],
 					$data['description'],
