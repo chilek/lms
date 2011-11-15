@@ -2,7 +2,6 @@ var map = null;
 var maprequest = null;
 var mappopup = null;
 var featurepopup = null;
-var pingpopup = null;
 var lastonline_limit;
 
 function removeInvisiblePopups()
@@ -67,28 +66,33 @@ function netdevmap_refresh()
 	setTimeout("netdevmap_refresh()", lastonline_limit * 1000);
 }
 
-function ping_from_map(id)
+function ping_from_map(id, nodeid)
 {
-	featurepopup.setContentHTML(
-		'<iframe id="autoiframe' + id + '" width=100 height=10 frameborder=0 scrolling=no src="/lms/?m=ping&id=' + id + '"></iframe>'
-	);
-	autoiframe_setsize('autoiframe' + id, 400, 300);
-	featurepopup.updateSize();
+	var i;
+	for (i = 0; i < map.popups.length, map.popups[i].id != id; i++);
+	map.popups[i].setContentHTML(
+		'<iframe id="autoiframe_' + id.replace('.', '_') + '" width=100 height=10 frameborder=0 scrolling=no src="?m=ping&id=' + nodeid + '"></iframe>');
+
+	removeInvisiblePopups();
+
+	autoiframe_setsize('autoiframe_' + id.replace('.', '_'), 400, 300);
+	map.popups[i].updateSize();
 }
 
-function ping_from_popup()
+function ping_from_popup(id)
 {
 	var ip = document.forms['ipform'].ip.value;
 	if (!ip.match(/^([0-9]{1,3}\.){3}[0-9]{1,3}$/))
 		return false;
-	pingpopup.setContentHTML(
-		'<iframe id="autoiframe' + ip.replace('.', '_') + '" width=100 height=10 frameborder=0 scrolling=no src="/lms/?m=ping&ip=' + ip + '"></iframe>'
-	);
+	var i;
+	for (i = 0; i < map.popups.length, map.popups[i].id != id; i++);
+	map.popups[i].setContentHTML(
+		'<iframe id="autoiframe_' + id.replace('.', '_') + '" width=100 height=10 frameborder=0 scrolling=no src="?m=ping&ip=' + ip + '"></iframe>');
 
 	removeInvisiblePopups();
 
-	autoiframe_setsize('autoiframe' + ip.replace('.', '_'), 400, 300);
-	pingpopup.updateSize();
+	autoiframe_setsize('autoiframe_' + id.replace('.', '_'), 400, 300);
+	map.popups[i].updateSize();
 	return false;
 }
 
@@ -317,7 +321,9 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 						new OpenLayers.LonLat(e.feature.data.lon, e.feature.data.lat)
 							.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()),
 						new OpenLayers.Size(600, 400),
-						'<B>' + e.feature.data.name + '</B>' + (e.feature.data.ipaddr.length ? '<BR>' + e.feature.data.ipaddr.replace(/,/g, "<BR>") : ''));
+						'<table><tr class="light"><td class="fall" nowrap><span style="font-weight:bold;">' + e.feature.data.name
+							+ "</span>" + (e.feature.data.ipaddr.length ? '<br>' + e.feature.data.ipaddr.replace(/,/g, "<br>") : '')
+							+ '</td></tr></table>');
 					mappopup.setOpacity(0.8);
 					mappopup.closeOnMove = true;
 					map.addPopup(mappopup);
@@ -352,36 +358,38 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 					mappopup = null;
 				}
 				selectedFeature = feature;
-				featurepopup = new OpenLayers.Popup(null,
+				var featurepopup = new OpenLayers.Popup(null,
 					new OpenLayers.LonLat(feature.data.lon, feature.data.lat)
 						.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()),
-					new OpenLayers.Size(600, 400), 
-					null, null, false,
-					function(e) {
-						selectlayer.unselect(selectedFeature);
-					});
+					new OpenLayers.Size(600, 400));
+				featurepopup.setOpacity(0.8);
+				featurepopup.closeOnMove = true;
+				featurepopup.autoSize = true;
 				featurepopup.keepInMap = true;
 				featurepopup.panMapIfOutOfView = true;
-				var content = '<b>' + feature.data.name + '</b><br>';
+				var content = '<table><tr class="light"><td class="ftopu" style="font-weight:bold" nowrap>' + feature.data.name + '</td></tr>';
 				if (feature.data.type == 'netdevinfo')
 				{
 					if (feature.data.ipaddr.length) {
 						var ips = feature.data.ipaddr.split(',');
 						var nodeids = feature.data.nodeid.split(',');
 						for (i in nodeids)
-							content += '<a href="javascript:ping_from_map(' + nodeids[i] + ')" nowrap><img src="img/ip.gif" alt="">&nbsp;'
-								+ ips[i] + '</a><br>';
+							content += '<tr class="light"><td class="flr" nowrap><a href="javascript:ping_from_map(\''
+								+ featurepopup.id + '\',' + nodeids[i] + ')"><img src="img/ip.gif" alt="">&nbsp;'
+								+ ips[i] + '</a></td></tr>';
 					}
 				} else
-					content += '<a href="javascript:ping_from_map(' + feature.data.id + ')" nowrap><img src="img/ip.gif" alt="">&nbsp;'
-						+ feature.data.ipaddr + '</a><br>';
-				content += '<a href="?m=' + feature.data.type + '&id=' + feature.data.id + '" nowrap><img src="img/info1.gif" alt="">&nbsp;Info</a>&nbsp;';
+					content += '<tr class="light"><td class="flr" nowrap><a href="javascript:ping_from_map(\''
+						+ featurepopup.id + '\',' + feature.data.id + ')"><img src="img/ip.gif" alt="">&nbsp;'
+						+ feature.data.ipaddr + '</a></td></tr>';
+				content += '<tr class="light"><td class="fbottomu" nowrap><a href="?m=' + feature.data.type + '&id=' + feature.data.id + '">'
+					+ '<img src="img/info1.gif" alt="">&nbsp;Info</a>'
+					+ '</td></tr></table>';
 				featurepopup.setContentHTML(content);
-				featurepopup.setOpacity(0.8);
 				map.addPopup(featurepopup);
 				featurepopup.updateSize();
 				cursize = featurepopup.size;
-				featurepopup.setSize(new OpenLayers.Size(cursize.w + 20, cursize + 20));
+				featurepopup.setSize(new OpenLayers.Size(cursize.w + 20, cursize.h + 20));
 				feature.popup = featurepopup;
 			},
 			onUnselect: function(feature) {
@@ -408,18 +416,19 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		title: "Toolbar",
 		activateControl: function(control) {
 			if (control.command == 'ping') {
-				pingpopup = new OpenLayers.Popup(null,
-						map.getLonLatFromPixel(new OpenLayers.Pixel(60, 23)).clone(),
-						new OpenLayers.Size(600, 400),
-						'<form name="ipform" id="ipform" method="GET" action="?m=ping" onsubmit="return ping_from_popup();">'
-						+ '<table><tr class="light"><td class="ftopu">Enter IP address:</td><tr class="light"><td class="fbottomu"><input type="text" name="ip"><input type="submit" class="hiddenbtn"></td></tr></table></form>',
-						null,
-						function() {
-							alert('close')
-						});
+				var pingpopup = new OpenLayers.Popup(null,
+						map.getLonLatFromPixel(new OpenLayers.Pixel(60, 27)).clone(),
+						new OpenLayers.Size(600, 400));
 				pingpopup.setOpacity(0.8);
 				pingpopup.closeOnMove = true;
 				pingpopup.autoSize = true;
+				pingpopup.keepInMap = true;
+				pingpopup.panMapIfOutOfView = true;
+				pingpopup.setContentHTML('<form name="ipform" id="ipform" method="GET" action="?m=ping" onsubmit="return ping_from_popup(\''
+						+ pingpopup.id +'\');">'
+						+ '<table><tr class="light"><td class="ftopu" nowrap>Enter IP address:</td>'
+						+ '<tr class="light"><td class="fbottomu"><input type="text" name="ip">'
+						+ '<input type="submit" class="hiddenbtn"></td></tr></table></form>');
 				//pingpopup.keepInMap = true;
 				//pingpopup.panMapIfOutOfView = true;
 				map.addPopup(pingpopup);
