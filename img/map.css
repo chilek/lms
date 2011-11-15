@@ -28,8 +28,7 @@ div.olPopupContent {
 div.infoPopupTable {
 	border: thin solid black;
 	background-color: #DFD5BD;
-	width: auto;
-	height: auto;
+	width: auto; height: auto;
 	white-space: nowrap;
 	overflow: visible;
 }
@@ -37,30 +36,26 @@ div.infoPopupTable {
 div.infoPopupName {
 	padding: 2px;
 	font-weight: bold;
-	width: auto;
-	height: auto;
+	width: auto; height: auto;
 	white-space: nowrap;
 }
 
 div.infoPopupPing {
 	padding: 2px;
-	width: auto;
-	height: auto;
+	width: auto; height: auto;
 	white-space: nowrap;
 }
 
 div.infoPopupInfo {
 	padding: 2px;
-	width: auto;
-	height: auto;
+	width: auto; height: auto;
 	white-space: nowrap;
 }
 
 div.mapPopupTable {
 	border: thin solid black;
 	background-color: #DFD5BD;
-	width: auto;
-	height: auto;
+	width: auto; height: auto;
 	white-space: nowrap;
 	overflow: visible;
 }
@@ -68,23 +63,20 @@ div.mapPopupTable {
 div.mapPopupName {
 	padding: 2px;
 	font-weight: bold;
-	width: auto;
-	height: auto;
+	width: auto; height: auto;
 	white-space: nowrap;
 }
 
 div.mapPopupIp {
 	padding: 2px;
-	width: auto;
-	height: auto;
+	width: auto; height: auto;
 	white-space: nowrap;
 }
 
 div.ipPopupTable {
 	border: thin solid black;
 	background-color: #DFD5BD;
-	width: auto;
-	height: auto;
+	width: auto; height: auto;
 	padding: 2px;
 	white-space: nowrap;
 	overflow: visible;
@@ -92,6 +84,15 @@ div.ipPopupTable {
 
 div.ipPopupLabel {
 	font-weight: bold;
+}
+
+div.popupTitleBar {
+	border: thin solid black;
+	background-color: #CEBD9B;
+	border-top-width: 1pt; border-top-style: solid; border-left-width: 1pt; border-left-style: solid; border-right-width: 1pt; border-right-style: solid;
+	font-weight: bold;
+	white-space: nowrap;
+	overflow: hidden;
 }
 
 .olPingButtonItemActive {
