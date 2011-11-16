@@ -30,6 +30,7 @@ OpenLayers.Control.DragPopup = OpenLayers.Class(OpenLayers.Control, {
         this.popup.events.register('mousedown', this, this.mouseDown);
         this.popup.events.register('mouseup', this, this.mouseUp);
         this.popup.events.register('mousemove', this, this.mouseMove);
+        this.popup.events.register('click', this, this.click);
         // Define a function bound to this used to listen for
         // document mouseout events
         this.docMouseUpProxy = OpenLayers.Function.bind(this.mouseUp, this);
@@ -60,6 +61,17 @@ OpenLayers.Control.DragPopup = OpenLayers.Class(OpenLayers.Control, {
         this.down = false;
         OpenLayers.Event.stopObserving(document, 'mouseup', this.docMouseUpProxy);
         OpenLayers.Event.stop(evt);
+    },
+
+    click: function(evt) {
+        var closeElem = document.getElementById(this.popup.div.id + '_' + 'popupCloseBox');
+        if (closeElem != null)
+        {
+            var clickPnt = this.popup.events.getMousePosition(evt);
+            if (clickPnt.x >= closeElem.offsetLeft && clickPnt.x <= closeElem.offsetLeft + closeElem.offsetWidth
+                && clickPnt.y >= closeElem.offsetTop && clickPnt.y <= closeElem.offsetTop + closeElem.offsetHeight)
+                this.map.removePopup(this.popup);
+        }
     },
 
     mouseOut: function(evt) {

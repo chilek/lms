@@ -57,7 +57,8 @@ function refresh($params)
 $layout['pagetitle'] = trans('Ping');
 
 if (isset($_GET['p']))
- 	$SMARTY->assign('part', $_GET['p']);
+{
+	$SMARTY->assign('part', $_GET['p']);
 	switch ($_GET['p']) {
 		case 'main':
 			/* Using AJAX for template plugins */
@@ -67,7 +68,7 @@ if (isset($_GET['p']))
 			$xajax->configure('errorHandler', true);
 			$xajax->configure('javascript URI', 'img');
 			$xajax->register(XAJAX_FUNCTION, 'refresh');
-			$xajax->processRequests();
+			$xajax->processRequest();
 
 			$SMARTY->assign('xajax', $xajax->getJavascript());
 			break;
