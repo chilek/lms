@@ -23,8 +23,39 @@ div.olPopupContent {
 	padding: 0px;
 }
 
-div.lmsInfoPopupContents {
+div.lmsPopupTitleBar {
 	background-color: #CEBD9B;
+	white-space: nowrap;
+	width: auto; height: auto;
+	overflow: visible;
+	border-left-width: 1pt; border-left-style: solid; border-top-width: 1pt; border-top-style: solid; border-right-width: 1pt; border-right-style: solid;
+}
+
+div.lmsPopupTitle {
+	background-color: #CEBD9B;
+	font-weight: bold;
+	float: left;
+	width: auto; height: auto;
+	overflow: visible;
+}
+
+div.lmsPopupCloseBox {
+	background-color: #CEBD9B;
+	float: right;
+	width: 16px; height: 16px;
+	padding: 1px;
+	overflow: visible;
+}
+
+div.lmsPopupTitleBarBottom {
+	clear: both;
+	width: auto; height: auto;
+	overflow: visible;
+}
+
+div.lmsInfoPopupContents {
+	background-color: #DFD5BD;
+	padding: 6px;
 	border-color: black;
 	border: thin solid black;
 	width: auto; height: auto;
@@ -72,11 +103,11 @@ div.lmsMapPopupAddress {
 	overflow: visible;
 }
 
-div.lmsIpPopupTable {
+div.lmsIpPopupContents {
 	border: thin solid black;
 	background-color: #DFD5BD;
 	width: auto; height: auto;
-	padding: 2px;
+	padding: 6px;
 	white-space: nowrap;
 	overflow: visible;
 }
@@ -85,33 +116,31 @@ div.lmsIpPopupLabel {
 	font-weight: bold;
 }
 
-div.lmsPopupTitleBar {
-	background-color: #CEBD9B;
-	white-space: nowrap;
-	width: auto; height: auto;
-	overflow: visible;
-	border-left-width: 1pt; border-left-style: solid; border-top-width: 1pt; border-top-style: solid; border-right-width: 1pt; border-right-style: solid;
+div.lmsPingContentsFrame {
+	border: thin solid black;
 }
 
-div.lmsPopupTitle {
-	background-color: #CEBD9B;
+div.lmsPingContents {
+	overflow: auto;
+	height: 270px;
+	padding: 2px;
+}
+
+div.lmsPingBottom {
+	position: relative;
+}
+
+div.lmsPingSummary {
+	position: absolute;
+	left: 4px; top: 7px; width: 220px;
 	font-weight: bold;
-	float: left;
-	width: auto; height: auto;
+	white-space: nowrap;
 	overflow: visible;
 }
-
-div.lmsPopupCloseBox {
-	background-color: #CEBD9B;
-	float: right;
-	width: 16px; height: 16px;
-	padding: 1px;
-	overflow: visible;
-}
-
-div.lmsPopupTitleBarBottom {
-	clear: both;
-	width: auto; height: auto;
+div.lmsPingAutoScroll {
+	position: absolute;
+	right: 5px; top: 5px; width: 180px;
+	white-space: nowrap;
 	overflow: visible;
 }
 

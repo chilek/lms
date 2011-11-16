@@ -19,7 +19,7 @@ function set_lastonline_limit(sec)
 
 function netdevmap_updater()
 {
-	if (maprequest.status = 200) {
+	if (maprequest.status == 200) {
 		data = eval('(' + maprequest.responseText + ')');
 		devices = data.devices;
 		nodes = data.nodes;
@@ -65,7 +65,6 @@ function netdevmap_refresh()
 
 function close_popup(id)
 {
-	//for (var i = 0; i < map.popups.length, map.popups[i].id != id; i++);
 	map.removePopup(id)
 }
 
@@ -74,13 +73,12 @@ function ping_host(id, ip)
 	removeInvisiblePopups();
 
 	for (var i = 0; i < map.popups.length, map.popups[i].id != id; i++);
-	//var popupid = id.replace('.', '_');
 	var popupid = id;
 	var pingContentsRequest = OpenLayers.Request.issue({
-		url: '?m=ping&p=titlebar&popupid=' + popupid + '&ip=' + ip,
+		url: '?m=ping&p=titlebar&popupid=' + id + '&ip=' + ip,
 		async: false
 	});
-	if (pingContentsRequest.status = 200) {
+	if (pingContentsRequest.status == 200) {
 		map.popups[i].setContentHTML(pingContentsRequest.responseText);
 		autoiframe_setsize('autoiframe_' + popupid, 400, 300);
 		map.popups[i].updateSize();
@@ -450,7 +448,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 						url: '?m=ping&p=ipform&popupid=' + pingpopup.id,
 						async: false
 					});
-					if (pingPopupRequest.status = 200)
+					if (pingPopupRequest.status == 200)
 						pingpopup.setContentHTML(pingPopupRequest.responseText);
 					map.addPopup(pingpopup);
 
@@ -479,8 +477,6 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 	map.addControl(new OpenLayers.Control.ScaleLine());
 	map.addControl(new OpenLayers.Control.LayerSwitcher());
 	map.addControl(new OpenLayers.Control.MousePosition({ displayProjection: new OpenLayers.Projection("EPSG:4326") }));
-
-	//map.events.register('mousemove', null, popupmouse_movefunction(event) { alert('map mousemove'); }, true);
 
 	if (deviceArray || nodeArray)
 		map.zoomToExtent(area);
