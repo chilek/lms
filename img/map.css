@@ -116,7 +116,7 @@ div.lmsIpPopupLabel {
 	font-weight: bold;
 }
 
-div.lmsPingContentsFrame {
+body.lmsPingContentsFrame {
 	border: thin solid black;
 }
 
