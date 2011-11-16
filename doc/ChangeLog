@@ -53,6 +53,7 @@ version ? (????-??-??):
   - ported to xajax 0.5 [chilan]
   - toolbar on netdevmap and possibility to ping any host (event not included in database) [chilan]
   - netmap popups are draggable thanks to DragPopup class written by Matt Walker [chilan]
+  - we can close netmap popups by close box; also some map css cleanups [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 

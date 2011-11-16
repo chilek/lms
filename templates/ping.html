@@ -1,3 +1,23 @@
+{if $part eq "titlebar"}
+<div class="lmsPopupTitleBar">
+	<div class="lmsPopupTitleBox">
+		<div class="lmsPopupTitle">{t 0=$ipaddr}Ping to $0{/t}</div>
+		<div id="{$popupid}_popupCloseBox" class="olPopupCloseBox lmsPopupCloseBox"></div>
+	</div>
+	<div class="lmsPopupTitleBarBottom"></div>
+</div>
+<iframe id="autoiframe_{$popupid}" width=100 height=10 frameborder=0 scrolling=no src="?m=ping&ip={$ipaddr}"></iframe>
+{elseif $part eq "ipform"}
+<div class="lmsIpPopupTable">
+	<div class="lmsIpPopupLabel">{t}Enter IP address:{/t}</div>
+	<div class="lmsIpPopupForm">
+		<form name="ipform" id="ipform" method="GET" action="?m=ping" onsubmit="return ping_any_host('{$popupid}');">
+			<input type="text" name="ip">
+			<input type="submit" class="hiddenbtn">
+		</form>
+	</div>
+</div>
+{else}
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <!--// $Id$ //-->
 <html><head>
@@ -49,3 +69,4 @@
 </body>
 {/if}
 </html>
+{/if}
