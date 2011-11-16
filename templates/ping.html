@@ -8,7 +8,14 @@
 </div>
 <iframe id="autoiframe_{$popupid}" width=100 height=10 frameborder=0 scrolling=no src="?m=ping&ip={$ipaddr}"></iframe>
 {elseif $part eq "ipform"}
-<div class="lmsIpPopupTable">
+<div class="lmsPopupTitleBar">
+	<div class="lmsPopupTitleBox">
+		<div class="lmsPopupTitle"></div>
+		<div id="{$popupid}_popupCloseBox" class="olPopupCloseBox lmsPopupCloseBox"></div>
+	</div>
+	<div class="lmsPopupTitleBarBottom"></div>
+</div>
+<div class="lmsIpPopupContents">
 	<div class="lmsIpPopupLabel">{t}Enter IP address:{/t}</div>
 	<div class="lmsIpPopupForm">
 		<form name="ipform" id="ipform" method="GET" action="?m=ping" onsubmit="return ping_any_host('{$popupid}');">
@@ -26,6 +33,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.html}">
 <title>::: LMS :{if $layout.pagetitle neq ""} {$layout.pagetitle} :{/if}::</title>
 <link href="img/style.css" rel="stylesheet" type="text/css">
+<link href="img/map.css" rel="stylesheet" type="text/css">
 {$xajax}
 </head>
 {if !$part}
@@ -34,14 +42,14 @@
 </frameset>
 {else}
 <script type="text/javascript" src="img/common.js"></script>
-<body style="border-style:solid; border-width:1pt;">
-	<div id="data" style="overflow:auto; height:270px; padding:2px;"></div>
-	<div id="wrapper" style="position:relative">
-		<div id="summary" style="position:absolute; left:4px; top:7px; width:220px; font-weight:bold;">
+<body class="lmsPingContentsFrame">
+	<div id="data" class="lmsPingContents"></div>
+	<div class="lmsPingBottom">
+		<div id="summery" class="lmsPingSummary">
 			{t a="0" b="0" c="0"}Total: $a% ($b/$c){/t}
 		</div>
-		<div id="onright" style="position:absolute; right:5px; top:5px; width:180px;" nowrap>
-			<form name="params" id="params">
+		<div class="lmsPingAutoScroll">
+			<form id="params">
 				<input type="hidden" name="ipaddr" value="{$ipaddr}">
 				<input type="hidden" id="transmitted" name="transmitted" value="0">
 				<input type="hidden" id="received" name="received" value="0">
