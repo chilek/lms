@@ -19,8 +19,7 @@ function set_lastonline_limit(sec)
 
 function netdevmap_updater()
 {
-	if (maprequest.status = 200)
-	{
+	if (maprequest.status = 200) {
 		data = eval('(' + maprequest.responseText + ')');
 		devices = data.devices;
 		nodes = data.nodes;
@@ -52,7 +51,6 @@ function netdevmap_updater()
 				nodelayer.addFeatures([newfeature]);
 			}
 		}
-
 	}
 }
 
@@ -65,16 +63,28 @@ function netdevmap_refresh()
 	setTimeout("netdevmap_refresh()", lastonline_limit * 1000);
 }
 
+function close_popup(id)
+{
+	//for (var i = 0; i < map.popups.length, map.popups[i].id != id; i++);
+	map.removePopup(id)
+}
+
 function ping_host(id, ip)
 {
-	for (var i = 0; i < map.popups.length, map.popups[i].id != id; i++);
-	map.popups[i].setContentHTML('<div class="popupTitleBar">Ping to ' + ip + '</div>'
-		+ '<iframe id="autoiframe_' + id.replace('.', '_') + '" width=100 height=10 frameborder=0 scrolling=no src="?m=ping&ip=' + ip + '"></iframe>');
-
 	removeInvisiblePopups();
 
-	autoiframe_setsize('autoiframe_' + id.replace('.', '_'), 400, 300);
-	map.popups[i].updateSize();
+	for (var i = 0; i < map.popups.length, map.popups[i].id != id; i++);
+	//var popupid = id.replace('.', '_');
+	var popupid = id;
+	var pingContentsRequest = OpenLayers.Request.issue({
+		url: '?m=ping&p=titlebar&popupid=' + popupid + '&ip=' + ip,
+		async: false
+	});
+	if (pingContentsRequest.status = 200) {
+		map.popups[i].setContentHTML(pingContentsRequest.responseText);
+		autoiframe_setsize('autoiframe_' + popupid, 400, 300);
+		map.popups[i].updateSize();
+	}
 }
 
 function ping_any_host(id)
@@ -313,9 +323,10 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 						new OpenLayers.LonLat(e.feature.data.lon, e.feature.data.lat)
 							.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()),
 						new OpenLayers.Size(10, 10),
-						'<div class="mapPopupTable"><div class="mapPopupName">' + e.feature.data.name + '</div>'
+						'<div class="lmsMapPopupContents"><div class="lmsMapPopupName">' + e.feature.data.name + '</div>'
 							+ (e.feature.data.ipaddr.length ? 
-								'<div class="mapPopupIp">' + e.feature.data.ipaddr.replace(/,/g, '<div class="mapPopupIp">') + '</div>'
+								'<div class="lmsMapPopupAddress">' + e.feature.data.ipaddr.replace(/,/g, 
+									'<div class="lmsMapPopupAddress">') + '</div>'
 								: '')
 							+ '</div>');
 					mappopup.setOpacity(0.8);
@@ -365,25 +376,27 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 						.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()),
 					new OpenLayers.Size(10, 10));
 				featurepopup.setOpacity(0.8);
-				featurepopup.closeOnMove = true;
+				//featurepopup.closeOnMove = true;
 				//featurepopup.keepInMap = true;
 				//featurepopup.panMapIfOutOfView = true;
-				var content = '<div class="infoPopupTable"><div class="infoPopupName">' + feature.data.name + '</div>';
+				var content = '<div class="lmsPopupTitleBar"><div class="lmsPopupTitleBox"><div class="lmsPopupTitle">' + feature.data.name + '</div>'
+					+ '<div id="' + featurepopup.id + '_popupCloseBox" class="olPopupCloseBox lmsPopupCloseBox"></div></div><div class="lmsPopupTitleBarBottom"></div></div>';
+				content += '<div class="lmsInfoPopupContents">';
 				if (feature.data.type == 'netdevinfo')
 				{
 					if (feature.data.ipaddr.length) {
 						var ips = feature.data.ipaddr.split(',');
 						var nodeids = feature.data.nodeid.split(',');
 						for (i in nodeids)
-							content += '<div class="infoPopupPing"><a href="javascript:ping_host(\''
+							content += '<div class="lmsInfoPopupAddress"><a href="javascript:ping_host(\''
 								+ featurepopup.id + '\', \'' + ips[i] + '\')"><img src="img/ip.gif" alt="">&nbsp;'
 								+ ips[i] + '</a></div>';
 					}
 				} else
-					content += '<div class="infoPopupPing"><a href="javascript:ping_host(\''
+					content += '<div class="lmsInfoPopupAddress"><a href="javascript:ping_host(\''
 						+ featurepopup.id + '\', \'' + feature.data.ipaddr + '\')"><img src="img/ip.gif" alt="">&nbsp;'
 						+ feature.data.ipaddr + '</a></div>';
-				content += '<div class="infoPopupInfo"><a href="/m=' + feature.data.type + '&id=' + feature.data.id + '">'
+				content += '<div class="lmsInfoPopupDetails"><a href="?m=' + feature.data.type + '&id=' + feature.data.id + '">'
 					+ '<img src="img/info1.gif" alt="">&nbsp;Info</a></div></div>';
 				featurepopup.setContentHTML(content);
 
@@ -404,8 +417,8 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				feature.popup = featurepopup;
 			},
 			onUnselect: function(feature) {
-				map.removePopup(feature.popup);
-				feature.popup = null;
+				//map.removePopup(feature.popup);
+				//feature.popup = null;
 			}
 		});
 		map.addControl(selectlayer);
@@ -430,14 +443,15 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 							map.getLonLatFromPixel(new OpenLayers.Pixel(60, 27)).clone(),
 							new OpenLayers.Size(10, 10));
 					pingpopup.setOpacity(0.8);
-					pingpopup.closeOnMove = true;
+					//pingpopup.closeOnMove = true;
 					pingpopup.keepInMap = true;
 					pingpopup.panMapIfOutOfView = true;
-					pingpopup.setContentHTML('<div class="ipPopupTable"><div class="ipPopupLabel">Enter IP address:</div>'
-							+ '<div class="ipPopupForm">'
-							+ '<form name="ipform" id="ipform" method="GET" action="?m=ping" onsubmit="return ping_any_host(\'' + pingpopup.id +'\');">'
-							+ '<input type="text" name="ip">'
-							+ '<input type="submit" class="hiddenbtn"></form></div></div>');
+					var pingPopupRequest = OpenLayers.Request.issue({
+						url: '?m=ping&p=ipform&popupid=' + pingpopup.id,
+						async: false
+					});
+					if (pingPopupRequest.status = 200)
+						pingpopup.setContentHTML(pingPopupRequest.responseText);
 					map.addPopup(pingpopup);
 
 					var dragpopup = new OpenLayers.Control.DragPopup(pingpopup);
