@@ -30,8 +30,8 @@ function refresh($params)
 	$objResponse = new xajaxResponse();
 
 	$ipaddr = $params['ipaddr'];
-	$received = $params['received'];
-	$transmitted = $params['transmitted'];
+	$received = intval($params['received']);
+	$transmitted = intval($params['transmitted']);
 	exec('sudo ping '.$ipaddr.' -c 1 -s 1450 -w 1.0', $output);
 	$transmitted++;
 	$reply = preg_grep('/icmp_[rs]eq/', $output);
@@ -51,6 +51,7 @@ function refresh($params)
 	$objResponse->assign('received', 'value', $received);
 	$objResponse->assign('summary', 'innerHTML', '<b>'.trans('Total: $a% ($b/$c)', 
 		round(($received / $transmitted) * 100), $received, $transmitted).'</b>');
+	$objResponse->call('ping_reply');
 	return $objResponse;
 }
 

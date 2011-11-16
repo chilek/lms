@@ -34,21 +34,6 @@
 </frameset>
 {else}
 <script type="text/javascript" src="img/common.js"></script>
-<script type="text/javascript">
-<!--
-	function ping_refresh()
-	{
-		elem = document.getElementById('data');
-		if (elem && document.getElementById('autoscroll').checked)
-			elem.scrollTop += 1000;
-		xajax_refresh(xajax.getFormValues('params'));
-
-		setTimeout("ping_refresh()", 1000);
-	}
-
-	setTimeout("ping_refresh()", 1000);
-//-->
-</script>
 <body style="border-style:solid; border-width:1pt;">
 	<div id="data" style="overflow:auto; height:270px; padding:2px;"></div>
 	<div id="wrapper" style="position:relative">
@@ -56,7 +41,7 @@
 			{t a="0" b="0" c="0"}Total: $a% ($b/$c){/t}
 		</div>
 		<div id="onright" style="position:absolute; right:5px; top:5px; width:180px;" nowrap>
-			<form id="params">
+			<form name="params" id="params">
 				<input type="hidden" name="ipaddr" value="{$ipaddr}">
 				<input type="hidden" id="transmitted" name="transmitted" value="0">
 				<input type="hidden" id="received" name="received" value="0">
@@ -67,6 +52,34 @@
 		</div>
 	</div>
 </body>
+<script type="text/javascript">
+<!--
+	var reqTime = 0;
+
+	function ping_reply()
+	{
+		var d = new Date();
+		var waitTime = 1000 - d.getTime() + reqTime;
+		if (waitTime < 10)
+			ping_refresh();
+		else
+			setTimeout("ping_refresh()", waitTime);
+	}
+
+	function ping_refresh()
+	{
+		elem = document.getElementById('data');
+		if (elem && document.getElementById('autoscroll').checked)
+			elem.scrollTop += 1000;
+		xajax_refresh(xajax.getFormValues('params'));
+
+		var d = new Date();
+		reqTime = d.getTime();
+	}
+
+	ping_refresh();
+//-->
+</script>
 {/if}
 </html>
 {/if}
