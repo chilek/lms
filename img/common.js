@@ -137,26 +137,28 @@ function getSeconds()
 
 function getCookie(name)
 {
-        var cookies = document.cookie.split(';');
-	for (var i=0; i<cookies.length; i++)
-	{
+	var cookies = document.cookie.split(';');
+	for (var i=0; i<cookies.length; i++) {
 		var a = cookies[i].split('=');
-                if (a.length == 2)
-		{
-            		a[0] = a[0].trim();
-                	a[1] = a[1].trim();
-                	if (a[0] == name)
-			{
-                    		return unescape(a[1]);
-			}
-                }
-        }
-        return null;
+		if (a.length == 2) {
+			a[0] = a[0].trim();
+			a[1] = a[1].trim();
+			if (a[0] == name)
+				return unescape(a[1]);
+		}
+	}
+	return null;
 }
 
-function setCookie(name, value)
+function setCookie(name, value, permanent)
 {
-        document.cookie = name + '=' + escape(value);
+	var cookie = name + '=' + escape(value);
+	if (permanent != null) {
+		var d = new Date();
+		d.setTime(d.getTime() + 365 * 24 * 3600 * 1000);
+		cookie += '; expires=' + d.toUTCString();
+	}
+	document.cookie = cookie;
 }
 
 if (typeof String.prototype.trim == 'undefined')
@@ -393,6 +395,6 @@ function check_teryt(locid, init)
 
 function ping_popup(id)
 {
-	popup('?m=ping&id=' + id, 1, 1, 30, 30);
+	popup('?m=ping&ip=' + id, 1, 1, 30, 30);
 	autoiframe_setsize('autoiframe', 400, 300);
 }

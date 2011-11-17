@@ -1,4 +1,5 @@
 var map = null;
+var layerSwitcher = null;
 var maprequest = null;
 var mappopup = null;
 var lastonline_limit;
@@ -80,7 +81,7 @@ function ping_host(id, ip)
 	});
 	if (pingContentsRequest.status == 200) {
 		map.popups[i].setContentHTML(pingContentsRequest.responseText);
-		autoiframe_setsize('autoiframe_' + popupid, 400, 300);
+		autoiframe_setsize('autoiframe_' + popupid, 450, 300);
 		map.popups[i].updateSize();
 	}
 }
@@ -116,8 +117,6 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 	var osm = new OpenLayers.Layer.OSM();
 
 	map.addLayers([gsat, gphy, gmap, ghyb, osm]);
-	map.setBaseLayer(gmap);
-
 	var devicestyle = new OpenLayers.Style(
 		{
 			graphicWidth: 16,
@@ -235,7 +234,6 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		styleMap: new OpenLayers.StyleMap(devicestyle)
 	});
 	devicelayer.addFeatures(devices);
-	map.addLayer(devicelayer);
 
 	var devlinks = [];
 	if (devlinkArray)
@@ -260,7 +258,6 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 
 	var devlinklayer = new OpenLayers.Layer.Vector("Device Links");
 	devlinklayer.addFeatures(devlinks);
-	map.addLayer(devlinklayer);
 
 	var nodes = [];
 	if (nodeArray)
@@ -280,7 +277,6 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		styleMap: new OpenLayers.StyleMap(nodestyle)
 	});
 	nodelayer.addFeatures(nodes);
-	map.addLayer(nodelayer);
 
 	var nodelinks = [];
 	if (nodelinkArray)
@@ -305,6 +301,10 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 
 	var nodelinklayer = new OpenLayers.Layer.Vector("Node Links");
 	nodelinklayer.addFeatures(nodelinks);
+
+	map.addLayer(devicelayer);
+	map.addLayer(devlinklayer);
+	map.addLayer(nodelayer);
 	map.addLayer(nodelinklayer);
 
 	var highlightlayer = new OpenLayers.Control.SelectFeature([devicelayer, nodelayer], {
@@ -423,65 +423,129 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		selectlayer.activate();
 
 		var pingbutton = new OpenLayers.Control.Button({
-			displayClass: "olPingButton", 
+			displayClass: "lmsPingButton", 
 			title: "Ping a host ...",
 			command: 'ping'});
 
-//		var ping2button = new OpenLayers.Control.Button({
-//			displayClass: "olPing2Button", 
-//			title: "Ping2 a host ...",
-//			command: "ping2"});
+		var centerbutton = new OpenLayers.Control.Button({
+			displayClass: "lmsCenterButton", 
+			title: "Cetner map around network elements ...",
+			command: 'center'});
 
 		var panel = new OpenLayers.Control.Panel({
 			type: OpenLayers.Control.TYPE_BUTTON,
 			title: "Toolbar",
 			activateControl: function(control) {
-				if (control.command == 'ping') {
-					var pingpopup = new OpenLayers.Popup(null,
+				switch (control.command) {
+					case 'ping':
+						var pingpopup = new OpenLayers.Popup(null,
 							map.getLonLatFromPixel(new OpenLayers.Pixel(60, 27)).clone(),
 							new OpenLayers.Size(10, 10));
-					pingpopup.setOpacity(0.8);
-					//pingpopup.closeOnMove = true;
-					pingpopup.keepInMap = true;
-					pingpopup.panMapIfOutOfView = true;
-					var pingPopupRequest = OpenLayers.Request.issue({
-						url: '?m=ping&p=ipform&popupid=' + pingpopup.id,
-						async: false
-					});
-					if (pingPopupRequest.status == 200)
-						pingpopup.setContentHTML(pingPopupRequest.responseText);
-					map.addPopup(pingpopup);
+						pingpopup.setOpacity(0.8);
+						//pingpopup.closeOnMove = true;
+						pingpopup.keepInMap = true;
+						pingpopup.panMapIfOutOfView = true;
+						var pingPopupRequest = OpenLayers.Request.issue({
+							url: '?m=ping&p=ipform&popupid=' + pingpopup.id,
+							async: false
+						});
+						if (pingPopupRequest.status == 200)
+							pingpopup.setContentHTML(pingPopupRequest.responseText);
+						map.addPopup(pingpopup);
 
-					var dragpopup = new OpenLayers.Control.DragPopup(pingpopup);
-					map.addControl(dragpopup);
+						var dragpopup = new OpenLayers.Control.DragPopup(pingpopup);
+						map.addControl(dragpopup);
 
-					pingpopup.div.style.overflow = 'visible';
-					pingpopup.div.style.width = 'auto';
-					pingpopup.div.style.height = 'auto';
-					pingpopup.groupDiv.style.overflow = 'visible';
-					pingpopup.groupDiv.style.width = 'auto';
-					pingpopup.groupDiv.style.height = 'auto';
-					pingpopup.contentDiv.style.width = 'auto';
-					pingpopup.contentDiv.style.heigh = 'auto';
-					//pingpopup.updateSize();
-					document.forms['ipform'].ip.focus();
-				} else {
+						pingpopup.div.style.overflow = 'visible';
+						pingpopup.div.style.width = 'auto';
+						pingpopup.div.style.height = 'auto';
+						pingpopup.groupDiv.style.overflow = 'visible';
+						pingpopup.groupDiv.style.width = 'auto';
+						pingpopup.groupDiv.style.height = 'auto';
+						pingpopup.contentDiv.style.width = 'auto';
+						pingpopup.contentDiv.style.heigh = 'auto';
+						//pingpopup.updateSize();
+						document.forms[pingpopup.id + '_ipform'].ip.focus();
+						break;
+					case 'center':
+						var area = new OpenLayers.Bounds();
+						for (var i = 0; i < map.layers.length; i++) {
+							if (!map.layers[i].isBaseLayer)
+								for (var j = 0; j < map.layers[i].features.length; j++) {
+									var feature = map.layers[i].features[j];
+									area.extend(feature.geometry.bounds);
+								}
+						}
+						if (area.left != null)
+							map.zoomToExtent(area);
+						else
+							map.zoomToMaxExtent();
+						break;
 				}
 			}
 		});
-//		panel.addControls([pingbutton, ping2button]);
-		panel.addControls([pingbutton]);
+		panel.addControls([pingbutton, centerbutton]);
 		map.addControl(panel);
 	}
 
 	map.addControl(new OpenLayers.Control.ScaleLine());
-	map.addControl(new OpenLayers.Control.LayerSwitcher());
+	layerSwitcher = new OpenLayers.Control.LayerSwitcher();
+	map.addControl(layerSwitcher);
 	map.addControl(new OpenLayers.Control.MousePosition({ displayProjection: new OpenLayers.Projection("EPSG:4326") }));
 
-	if (deviceArray || nodeArray)
-		map.zoomToExtent(area);
+	// load saved map settings from cookies
+	var mapBaseLayer = getCookie('mapBaseLayer');
+	if (mapBaseLayer != null)
+		map.setBaseLayer(map.layers[mapBaseLayer]);
 	else
-		map.zoomToMaxExtent();
+		map.setBaseLayer(gmap);
+
+	var mapLayers = getCookie('mapLayers');
+	if (mapLayers != null) {
+		var visibleLayers = mapLayers.split(';');
+		for (var i = 0; i < visibleLayers.length; i++) {
+			for (var j = 0; j < layerSwitcher.dataLayers.length, layerSwitcher.layerStates[j].id != layerSwitcher.dataLayers[i].layer.id; j++);
+			layerSwitcher.dataLayers[i].layer.setVisibility((visibleLayers[i] == '1' ? true : false));
+		}
+	}
+
+	var loadedSettings = false;
+	var mapSettings = getCookie('mapSettings');
+	if (mapSettings != null) {
+		var mapData = mapSettings.split(';');
+		if (mapData.length == 3) {
+			var lon = parseFloat(mapData[0]);
+			var lat = parseFloat(mapData[1]);
+			var zoom = parseInt(mapData[2]);
+			map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+			loadedSettings = true;
+		}
+	}
+
+	if (!loadedSettings)
+		if (deviceArray || nodeArray)
+			map.zoomToExtent(area);
+		else
+			map.zoomToMaxExtent();
+
+	// register events to save map settings to cookies
+	map.events.register('changelayer', map, function(e) {
+		if (!e.layer.isBaseLayer) {
+			var visibleLayers = [];
+			for (i = 0; i < layerSwitcher.dataLayers.length; i++) {
+				for (var j = 0; j < layerSwitcher.layerStates.length, layerSwitcher.layerStates[j].id != layerSwitcher.dataLayers[i].layer.id; j++);
+				visibleLayers.push(layerSwitcher.layerStates[j].visibility ? '1' : '0');
+			}
+			setCookie('mapLayers', visibleLayers.join(';'), true);
+		}
+	});
+	map.events.register('changebaselayer', map, function(e) {
+		for (var i = 0; i < layerSwitcher.baseLayers.length, layerSwitcher.baseLayers[i].layer.id != e.layer.id; i++);
+		setCookie('mapBaseLayer', i, true);
+	});
+	map.events.register('moveend', map, function(e) {
+		setCookie('mapSettings',  map.getCenter().lon + ';' + map.getCenter().lat + ';' + map.getZoom(), true);
+	});
 
 	map.events.register('mousemove', map, function(e) {
 		removeInvisiblePopups();
