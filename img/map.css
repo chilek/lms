@@ -144,18 +144,18 @@ div.lmsPingAutoScroll {
 	overflow: visible;
 }
 
-.olPingButtonItemActive {
+.lmsPingButtonItemActive {
 	background-image: url("ip.gif");
 }
 
-.olPingButtonItemInactive {
+.lmsPingButtonItemInactive {
 	background-image: url("ip.gif");
 }
 
-.olping2buttonItemActive {
-	background-image: url("ip.gif");
+.lmsCenterButtonItemActive {
+	background-image: url("network.gif");
 }
 
-.olping2buttonItemInactive {
-	background-image: url("ip.gif");
+.lmsCenterButtonItemInactive {
+	background-image: url("network.gif");
 }
