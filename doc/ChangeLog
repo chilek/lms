@@ -55,6 +55,7 @@ version ? (????-??-??):
   - netmap popups are draggable thanks to DragPopup class written by Matt Walker [chilan]
   - we can close netmap popups by close box; also some map css cleanups [chilan]
   - netdevmap: remember position, zoom, base layer and visible data layers between netdevmap visits [chilan]
+  - netdevmap: refresh network state on demand - added new button [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 

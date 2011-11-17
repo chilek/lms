@@ -37,20 +37,11 @@ if ($devices)
 	foreach ($devices as $devidx => $device)
 		if ($device['lastonline'])
 			if (time() - $device['lastonline'] > $CONFIG['phpui']['lastonline_limit'])
-			{
-				$devices[$devidx]['img'] = 'img/netdev_off.png';
 				$devices[$devidx]['state'] = 2;
-			}
 			else
-			{
-				$devices[$devidx]['img'] = 'img/netdev_on.png';
 				$devices[$devidx]['state'] = 1;
-			}
 		else
-		{
-			$devices[$devidx]['img'] = 'img/netdev_unk.png';
 			$devices[$devidx]['state'] = 0;
-		}
 
 	$devids = implode(',', array_keys($devices));
 
@@ -74,20 +65,11 @@ if ($nodes)
 	foreach ($nodes as $nodeidx => $node)
 		if ($node['lastonline'])
 			if (time() - $node['lastonline'] > $CONFIG['phpui']['lastonline_limit'])
-			{
-				$nodes[$nodeidx]['img'] = 'img/node_off.png';
 				$nodes[$nodeidx]['state'] = 2;
-			}
 			else
-			{
-				$nodes[$nodeidx]['img'] = 'img/node_on.png';
 				$nodes[$nodeidx]['state'] = 1;
-			}
 		else
-		{
-			$nodes[$nodeidx]['img'] = 'img/node_unk.png';
 			$nodes[$nodeidx]['state'] = 0;
-		}
 
 	$nodeids = implode(',', array_keys($nodes));
 

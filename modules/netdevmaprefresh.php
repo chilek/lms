@@ -24,13 +24,25 @@
  *  $Id$
  */
 
+if (isset($_GET['live'])) {
+	if (empty($CONFIG['phpui']['netdevmaprefresh_helper']))
+		$cmd = 'sudo /sbin/pinger-addresses';
+	else
+		$cmd = $CONFIG['phpui']['netdevmaprefresh_helper'];
+	exec($cmd, $output);
+	if (count($output)) {
+		$curtime = time();
+		foreach ($output as $ip)
+			if (check_ip($ip))
+				$DB->Execute('UPDATE nodes SET lastonline = ? WHERE ipaddr = INET_ATON(?)',
+					array($curtime, $ip));
+	}
+	$CONFIG['phpui']['lastonline_limit'] = 20;
+}
+
 include(MODULES_DIR.'/map.inc.php');
 
 header('Content-Type: text/plain');
-
-//foreach($nodes as $nodeidx => $node)
-//	if ($node['id'] == '2534')
-//		$nodes[$nodeidx]['state'] = 2;
 
 echo '{"devices":'.json_encode($devices).',"nodes":'.json_encode($nodes).'}';
 

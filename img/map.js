@@ -21,16 +21,17 @@ function set_lastonline_limit(sec)
 function netdevmap_updater()
 {
 	if (maprequest.status == 200) {
-		data = eval('(' + maprequest.responseText + ')');
-		devices = data.devices;
-		nodes = data.nodes;
+		var data = eval('(' + maprequest.responseText + ')');
+		var devices = data.devices;
+		var nodes = data.nodes;
 
-		devicelayer = map.getLayersByName('Devices')[0];
+		var devicelayer = map.getLayersByName('Devices')[0];
 		for (i in devices)
 		{
 			var features = devicelayer.getFeaturesByAttribute('id', parseInt(devices[i].id));
 			if (features.length && features[0].attributes.state != devices[i].state)
 			{
+				devices[i].id = parseInt(devices[i].id);
 				var newfeature = new OpenLayers.Feature.Vector(
 					features[0].geometry.clone(),
 					devices[i]);
@@ -39,12 +40,13 @@ function netdevmap_updater()
 			}
 		}
 
-		nodelayer = map.getLayersByName('Nodes')[0];
+		var nodelayer = map.getLayersByName('Nodes')[0];
 		for (i in nodes)
 		{
 			var features = nodelayer.getFeaturesByAttribute('id', parseInt(nodes[i].id));
 			if (features.length && features[0].attributes.state != nodes[i].state)
 			{
+				nodes[i].id = parseInt(nodes[i].id);
 				var newfeature = new OpenLayers.Feature.Vector(
 					features[0].geometry.clone(),
 					nodes[i]);
@@ -53,15 +55,17 @@ function netdevmap_updater()
 			}
 		}
 	}
+	map.getControlsBy('displayClass', 'lmsRefreshButton')[0].deactivate();
 }
 
-function netdevmap_refresh()
+function netdevmap_refresh(live)
 {
 	maprequest = OpenLayers.Request.issue({
-		url: '?m=netdevmaprefresh',
+		url: '?m=netdevmaprefresh' + (live ? '&live=1' : ''),
 		callback: netdevmap_updater
 	});
-	setTimeout("netdevmap_refresh()", lastonline_limit * 1000);
+	if (!live)
+		setTimeout("netdevmap_refresh()", lastonline_limit * 1000);
 }
 
 function close_popup(id)
@@ -122,101 +126,44 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 			graphicWidth: 16,
 			graphicHeight: 16,
 			graphicXOffset: -8,
-			graphicYOffset: -8
-		},
-		{
-			rules: [
-				new OpenLayers.Rule({
-					filter: new OpenLayers.Filter.Comparison({
-						type: OpenLayers.Filter.Comparison.EQUAL_TO,
-						property: "state",
-						value: 0
-					}),
-					symbolizer: {
-						externalGraphic: "img/netdev_unk.png"
+			graphicYOffset: -8,
+			externalGraphic: "${img}"
+		}, {
+			context: {
+				img: function(feature) {
+					switch (feature.attributes.state) {
+						case 0: return "img/netdev_unk.png";
+						case 1: return "img/netdev_on.png";
+						case 2: return "img/netdev_off.png";
+						default: return "img/netdev.png";
 					}
-				}),
-				new OpenLayers.Rule({
-					filter: new OpenLayers.Filter.Comparison({
-						type: OpenLayers.Filter.Comparison.EQUAL_TO,
-						property: "state",
-						value: 1
-					}),
-					symbolizer: {
-						externalGraphic: "img/netdev_on.png"
-					}
-				}),
-				new OpenLayers.Rule({
-					filter: new OpenLayers.Filter.Comparison({
-						type: OpenLayers.Filter.Comparison.EQUAL_TO,
-						property: "state",
-						value: 2
-					}),
-					symbolizer: {
-						externalGraphic: "img/netdev_off.png"
-					}
-				}),
-				new OpenLayers.Rule({
-					elseFilter: true,
-					symbolizer: {
-						externalGraphic: "img/netdev.png"
-					}
-				})
-			]
-		}
-	);
+				}
+			}
+		});
 
 	var nodestyle = new OpenLayers.Style(
 		{
 			graphicWidth: 16,
 			graphicHeight: 16,
 			graphicXOffset: -8,
-			graphicYOffset: -8
-		},
-		{
-			rules: [
-				new OpenLayers.Rule({
-					filter: new OpenLayers.Filter.Comparison({
-						type: OpenLayers.Filter.Comparison.EQUAL_TO,
-						property: "state",
-						value: 0
-					}),
-					symbolizer: {
-						externalGraphic: "img/node_unk.png"
+			graphicYOffset: -8,
+			externalGraphic: "${img}"
+		}, {
+			context: {
+				img: function(feature) {
+					switch (feature.attributes.state) {
+						case 0: return "img/node_unk.png";
+						case 1: return "img/node_on.png";
+						case 2: return "img/node_off.png";
+						default: return "img/node.png";
 					}
-				}),
-				new OpenLayers.Rule({
-					filter: new OpenLayers.Filter.Comparison({
-						type: OpenLayers.Filter.Comparison.EQUAL_TO,
-						property: "state",
-						value: 1
-					}),
-					symbolizer: {
-						externalGraphic: "img/node_on.png"
-					}
-				}),
-				new OpenLayers.Rule({
-					filter: new OpenLayers.Filter.Comparison({
-						type: OpenLayers.Filter.Comparison.EQUAL_TO,
-						property: "state",
-						value: 2
-					}),
-					symbolizer: {
-						externalGraphic: "img/node_off.png"
-					}
-				}),
-				new OpenLayers.Rule({
-					elseFilter: true,
-					symbolizer: {
-						externalGraphic: "img/node.png"
-					}
-				})
-			]
-		}
-	);
+				}
+			}
+		});
 
 	var area = new OpenLayers.Bounds();
 	var devices = [];
+	//var dane = '';
 	if (deviceArray)
 		for (i in deviceArray)
 		{
@@ -228,7 +175,9 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 					lonLat.lon,
 					lonLat.lat
 				), deviceArray[i]));
+			//dane += devices[i].attributes.state + ' ';
 		}
+	//alert(dane);
 
 	var devicelayer = new OpenLayers.Layer.Vector("Devices", {
 		styleMap: new OpenLayers.StyleMap(devicestyle)
@@ -432,6 +381,11 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 			title: "Cetner map around network elements ...",
 			command: 'center'});
 
+		var refreshbutton = new OpenLayers.Control.Button({
+			displayClass: "lmsRefreshButton", 
+			title: "Refesh network state ...",
+			command: 'refresh'});
+
 		var panel = new OpenLayers.Control.Panel({
 			type: OpenLayers.Control.TYPE_BUTTON,
 			title: "Toolbar",
@@ -481,10 +435,16 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 						else
 							map.zoomToMaxExtent();
 						break;
+					case 'refresh':
+						if (!control.active) {
+							control.activate();
+							netdevmap_refresh(true);
+						}
+						break;
 				}
 			}
 		});
-		panel.addControls([pingbutton, centerbutton]);
+		panel.addControls([pingbutton, centerbutton, refreshbutton]);
 		map.addControl(panel);
 	}
 

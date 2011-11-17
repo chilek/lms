@@ -30,9 +30,14 @@ function refresh($params)
 	$objResponse = new xajaxResponse();
 
 	$ipaddr = $params['ipaddr'];
-	$received = intval($params['received']);
-	$transmitted = intval($params['transmitted']);
-	exec('sudo ping '.$ipaddr.' -c 1 -s 1450 -w 1.0', $output);
+	$received = $params['received'];
+	$transmitted = $params['transmitted'];
+	if (empty($CONFIG['phpui']['ping_helper']))
+		$cmd = 'sudo ping %i -c 1 -s 1450 -w 1.0';
+	else
+		$cmd = $CONFIG['phpui']['ping_helper'];
+	$cmd = preg_replace('/%i/', $ipaddr, $cmd);
+	exec($cmd, $output);
 	$transmitted++;
 	$reply = preg_grep('/icmp_[rs]eq/', $output);
 	if (count($reply))
