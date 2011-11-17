@@ -82,7 +82,7 @@ if (isset($_GET['p']))
 	}
 }
 
-if (isset($_GET['ip']))
+if (isset($_GET['ip']) && check_ip($_GET['ip']))
 	$SMARTY->assign('ipaddr', $_GET['ip']);
 
 $SMARTY->display('ping.html');
