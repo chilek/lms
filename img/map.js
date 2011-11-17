@@ -163,7 +163,6 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 
 	var area = new OpenLayers.Bounds();
 	var devices = [];
-	//var dane = '';
 	if (deviceArray)
 		for (i in deviceArray)
 		{
@@ -175,9 +174,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 					lonLat.lon,
 					lonLat.lat
 				), deviceArray[i]));
-			//dane += devices[i].attributes.state + ' ';
 		}
-	//alert(dane);
 
 	var devicelayer = new OpenLayers.Layer.Vector("Devices", {
 		styleMap: new OpenLayers.StyleMap(devicestyle)
