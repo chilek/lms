@@ -18,7 +18,7 @@
 <div class="lmsIpPopupContents">
 	<div class="lmsIpPopupLabel">{t}Enter IP address:{/t}</div>
 	<div class="lmsIpPopupForm">
-		<form name="ipform" id="ipform" method="GET" action="?m=ping" onsubmit="return ping_any_host('{$popupid}');">
+		<form name="{$popupid}_ipform" id="ipform" method="GET" action="?m=ping" onsubmit="return ping_any_host('{$popupid}');">
 			<input type="text" name="ip">
 			<input type="submit" class="hiddenbtn">
 		</form>
