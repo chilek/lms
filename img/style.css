@@ -167,7 +167,7 @@ div.multiselectlayer ul li input { border: none; }
 .suggestion_list a { text-decoration: none; padding-left: 2px; color: black; }
 .suggestion_list .selected { background-color: #CCFFCC; }
 .suggestion_list .selected a { color: black; }
-#autosuggest { display: none; }
+#autosuggest { display: none; z-index: 10000; }
 
 .overlib {
     width: 150px;
