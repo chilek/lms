@@ -6,7 +6,9 @@
 	</div>
 	<div class="lmsPopupTitleBarBottom"></div>
 </div>
-<iframe id="autoiframe_{$popupid}" width=100 height=10 frameborder=0 scrolling=no src="?m=ping&ip={$ipaddr}"></iframe>
+<div class="lmsPingContentsFrame">
+	<iframe id="autoiframe_{$popupid}" width=100 height=10 frameborder=0 scrolling=no src="?m=ping&ip={$ipaddr}"></iframe>
+</div>
 {elseif $part eq "ipform"}
 <div class="lmsPopupTitleBar">
 	<div class="lmsPopupTitleBox">
@@ -42,7 +44,7 @@
 </frameset>
 {else}
 <script type="text/javascript" src="img/common.js"></script>
-<body class="lmsPingContentsFrame">
+<body>
 	<div id="data" class="lmsPingContents"></div>
 	<div class="lmsPingBottom">
 		<div id="summary" class="lmsPingSummary">
