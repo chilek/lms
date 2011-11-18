@@ -100,8 +100,8 @@ div.lmsIpPopupLabel {
 	font-weight: bold;
 }
 
-body.lmsPingContentsFrame {
-	border: thin solid black;
+div.lmsPingContentsFrame {
+	border: 1pt solid black;
 }
 
 div.lmsPingContents {
@@ -112,6 +112,8 @@ div.lmsPingContents {
 
 div.lmsPingBottom {
 	position: relative;
+	width: auto; height: auto;
+	overflow: visible;
 }
 
 div.lmsPingSummary {

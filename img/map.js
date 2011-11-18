@@ -163,6 +163,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 
 	var area = new OpenLayers.Bounds();
 	var devices = [];
+	//var dane = '';
 	if (deviceArray)
 		for (i in deviceArray)
 		{
@@ -174,7 +175,9 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 					lonLat.lon,
 					lonLat.lat
 				), deviceArray[i]));
+			//dane += devices[i].attributes.state + ' ';
 		}
+	//alert(dane);
 
 	var devicelayer = new OpenLayers.Layer.Vector("Devices", {
 		styleMap: new OpenLayers.StyleMap(devicestyle)
@@ -390,7 +393,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				switch (control.command) {
 					case 'ping':
 						var pingpopup = new OpenLayers.Popup(null,
-							map.getLonLatFromPixel(new OpenLayers.Pixel(60, 27)).clone(),
+							map.getLonLatFromPixel(new OpenLayers.Pixel(61, 32)).clone(),
 							new OpenLayers.Size(10, 10));
 						pingpopup.setOpacity(0.8);
 						//pingpopup.closeOnMove = true;
