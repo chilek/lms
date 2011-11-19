@@ -70,6 +70,15 @@
 	var reqTime = 0;
 	var minTime = 1000.0, maxTime = 0.0, sumTime = 0.0;
 
+	function time_to_fixed(time)
+	{
+		if (time < 1.0)
+			return time.toFixed(3);
+		if (time < 10.0)
+			return time.toFixed(2);
+		return time.toFixed(1);
+	}
+
 	function ping_reply()
 	{
 		elem = document.getElementById('data');
@@ -88,7 +97,7 @@
 			}
 			var avgTime = sumTime / parseFloat(document.getElementById('received').value);
 			document.getElementById('summary').innerHTML = 'min/avg/max = '
-				+ [minTime.toFixed(3), avgTime.toFixed(3), maxTime.toFixed(3)].join('/') + ' ms';
+				+ [time_to_fixed(minTime), time_to_fixed(avgTime), time_to_fixed(maxTime)].join('/') + ' ms';
 		} catch(e) {}
 		if (document.getElementById('enabled').checked) {
 			var d = new Date();
