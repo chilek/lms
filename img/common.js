@@ -393,8 +393,8 @@ function check_teryt(locid, init)
     return checked;
 }
 
-function ping_popup(id)
+function ping_popup(ip)
 {
-	popup('?m=ping&ip=' + id, 1, 1, 30, 30);
+	popup('?m=ping&ip=' + ip, 1, 1, 30, 30);
 	autoiframe_setsize('autoiframe', 400, 300);
 }

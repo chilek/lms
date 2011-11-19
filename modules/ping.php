@@ -26,6 +26,7 @@
 
 function refresh($params)
 {
+	global $CONFIG;
 	// xajax response
 	$objResponse = new xajaxResponse();
 
@@ -38,20 +39,34 @@ function refresh($params)
 		$cmd = $CONFIG['phpui']['ping_helper'];
 	$cmd = preg_replace('/%i/', $ipaddr, $cmd);
 	exec($cmd, $output);
-	$transmitted++;
-	$reply = preg_grep('/icmp_[rs]eq/', $output);
-	if (count($reply))
+	$sent = preg_grep('/^[0-9]+[[:blank:]]+packets[[:blank:]]+transmitted/i', $output);
+	if (count($sent) && preg_match('/^([0-9]+)/', current($sent), $matches))
+		$transmitted += $matches[1];
+	else
+		$transmitted++;
+	$replies = preg_grep('/icmp_[rs]eq/', $output);
+	if (count($replies))
 	{
-		$received++;
-		if (preg_match('/^([0-9]+).+ttl=([0-9]+).+time=([0-9\.]+.+)$/', current($reply), $matches))
-			$output = trans('$a bytes from $b: icmp_req=$c ttl=$d time=$e',
-				$matches[1], $ipaddr, $transmitted, $matches[2], $matches[3]);
+		$output = '';
+		$seqs = array();
+		$oldreceived = $received;
+		foreach ($replies as $reply)
+			if (preg_match('/^([0-9]+).+icmp_[rs]eq=([0-9]+).+ttl=([0-9]+).+time=([0-9\.]+.+)$/', $reply, $matches))
+			{
+				if (!isset($seqs[$matches[2]]))
+				{
+					$seqs[$matches[2]] = true;
+					$received++;
+				}
+				$output .= trans('$a bytes from $b: icmp_req=$c ttl=$d time=$e',
+					$matches[1], $ipaddr, $oldreceived + $matches[2], $matches[3], $matches[4]).'<br>';
+			}
 	}
 	else
-		$output = trans('Destination Host Unreachable');
+		$output = trans('Destination Host Unreachable').'<br>';
 	if (empty($received))
 		$received = '0';
-	$objResponse->append('data', 'innerHTML', $output.'<br>');
+	$objResponse->append('data', 'innerHTML', $output);
 	$objResponse->assign('transmitted', 'value', $transmitted);
 	$objResponse->assign('received', 'value', $received);
 	$objResponse->assign('summary', 'innerHTML', '<b>'.trans('Total: $a% ($b/$c)', 
@@ -59,8 +74,6 @@ function refresh($params)
 	$objResponse->call('ping_reply');
 	return $objResponse;
 }
-
-$layout['pagetitle'] = trans('Ping');
 
 if (isset($_GET['p']))
 {
@@ -86,6 +99,8 @@ if (isset($_GET['p']))
 			break;
 	}
 }
+
+$layout['pagetitle'] = trans('Ping');
 
 if (isset($_GET['ip']) && check_ip($_GET['ip']))
 	$SMARTY->assign('ipaddr', $_GET['ip']);
