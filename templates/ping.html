@@ -86,18 +86,20 @@
 			elem.scrollTop = elem.scrollHeight;
 		try {
 			var times = JSON.parse(document.getElementById('times').value);
-			for (var i in times) {
-				var chunks = times[i].split(' ');
-				var currentTime = parseFloat(chunks[0]);
-				sumTime += currentTime;
-				if (currentTime > maxTime)
-					maxTime = currentTime;
-				if (currentTime < minTime)
-					minTime = currentTime;
+			if (times.length) {
+				for (var i in times) {
+					var chunks = times[i].split(' ');
+					var currentTime = parseFloat(chunks[0]);
+					sumTime += currentTime;
+					if (currentTime > maxTime)
+						maxTime = currentTime;
+					if (currentTime < minTime)
+						minTime = currentTime;
+				}
+				var avgTime = sumTime / parseFloat(document.getElementById('received').value);
+				document.getElementById('summary').innerHTML = 'min/avg/max = '
+					+ [time_to_fixed(minTime), time_to_fixed(avgTime), time_to_fixed(maxTime)].join('/') + ' ms';
 			}
-			var avgTime = sumTime / parseFloat(document.getElementById('received').value);
-			document.getElementById('summary').innerHTML = 'min/avg/max = '
-				+ [time_to_fixed(minTime), time_to_fixed(avgTime), time_to_fixed(maxTime)].join('/') + ' ms';
 		} catch(e) {}
 		if (document.getElementById('enabled').checked) {
 			var d = new Date();
