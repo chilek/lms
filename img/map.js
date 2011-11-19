@@ -350,7 +350,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 					new OpenLayers.LonLat(feature.data.lon, feature.data.lat)
 						.transform(lmsProjection, map.getProjectionObject()),
 					new OpenLayers.Size(10, 10));
-				featurepopup.setOpacity(0.8);
+				featurepopup.setOpacity(0.9);
 				//featurepopup.closeOnMove = true;
 				//featurepopup.keepInMap = true;
 				//featurepopup.panMapIfOutOfView = true;
@@ -428,7 +428,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 						var pingpopup = new OpenLayers.Popup(null,
 							map.getLonLatFromPixel(new OpenLayers.Pixel(61, 32)).clone(),
 							new OpenLayers.Size(10, 10));
-						pingpopup.setOpacity(0.8);
+						pingpopup.setOpacity(0.9);
 						//pingpopup.closeOnMove = true;
 						pingpopup.keepInMap = true;
 						pingpopup.panMapIfOutOfView = true;

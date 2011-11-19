@@ -63,6 +63,8 @@ version ? (????-??-??):
     probes on server [chilan]
   - when network elements are covered too dense then we show these elements info
     in one, common popup window [chilan]
+  - it's able to pause ping [chilan]
+  - display summary times in ping popup [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
