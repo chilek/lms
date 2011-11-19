@@ -41,44 +41,83 @@
 <body>
 	<div id="data" class="lmsPingContents"></div>
 	<div class="lmsPingBottom">
-		<div id="summary" class="lmsPingSummary">
-			{t a="0" b="0" c="0"}Total: $a% ($b/$c){/t}
+		<div class="lmsPingTotalSummary">
+			<div id="total" class="lmsPingTotal">
+				{t a="0" b="0" c="0"}Total: $a% ($b/$c){/t}
+			</div>
+			<div id="summary" class="lmsPingSummary">
+				mix/avg/max = -/-/- ms
+			</div>
 		</div>
-		<div class="lmsPingAutoScroll">
+		<div class="lmsPingControls">
 			<form id="params">
 				<input type="hidden" name="ipaddr" value="{$ipaddr}">
 				<input type="hidden" id="transmitted" name="transmitted" value="0">
 				<input type="hidden" id="received" name="received" value="0">
-				<input type="hidden" id="minimum" name="minimum" value="1000.0">
-				<input type="hidden" id="maximum" name="maximum" value="0.0">
-				<input type="checkbox" id="autoscroll" name="autoscroll" checked><a href="javascript:checkElement('autoscroll');">{t}Auto Scroll{/t}</a>
+				<input type="hidden" id="times" name="times" value="">
+				<div class="lmsPingEnabled">
+					<input type="checkbox" id="enabled" name="enabled" onclick="javascript:ping_toggle()" checked><a href="javascript:enabled_toggle();">{t}Enabled{/t}</a>
+				</div>
+				<div class="lmsPingAutoScroll">
+					<input type="checkbox" id="autoscroll" name="autoscroll" checked><a href="javascript:checkElement('autoscroll');">{t}Auto Scroll{/t}</a>
+				</div>
 			</form>
 		</div>
-	&nbsp;</div>
+	</div>
 </body>
 <script type="text/javascript">
 <!--
 	var reqTime = 0;
+	var minTime = 1000.0, maxTime = 0.0, sumTime = 0.0;
 
 	function ping_reply()
-	{
-		var d = new Date();
-		var waitTime = 1000 - d.getTime() + reqTime;
-		if (waitTime < 10)
-			ping_refresh();
-		else
-			setTimeout("ping_refresh()", waitTime);
-	}
-
-	function ping_refresh()
 	{
 		elem = document.getElementById('data');
 		if (elem && document.getElementById('autoscroll').checked)
 			elem.scrollTop += 1000;
+		try {
+			var times = JSON.parse(document.getElementById('times').value);
+			for (var i in times) {
+				var chunks = times[i].split(' ');
+				var currentTime = parseFloat(chunks[0]);
+				sumTime += currentTime;
+				if (currentTime > maxTime)
+					maxTime = currentTime;
+				if (currentTime < minTime)
+					minTime = currentTime;
+			}
+			var avgTime = sumTime / parseFloat(document.getElementById('received').value);
+			document.getElementById('summary').innerHTML = 'min/avg/max = '
+				+ [minTime.toFixed(3), avgTime.toFixed(3), maxTime.toFixed(3)].join('/') + ' ms';
+		} catch(e) {}
+		if (document.getElementById('enabled').checked) {
+			var d = new Date();
+			var waitTime = 1000 - d.getTime() + reqTime;
+			if (waitTime < 10)
+				ping_refresh();
+			else
+				setTimeout("ping_refresh()", waitTime);
+		}
+	}
+
+	function ping_refresh()
+	{
 		xajax_refresh(xajax.getFormValues('params'));
 
 		var d = new Date();
 		reqTime = d.getTime();
+	}
+
+	function ping_toggle()
+	{
+		if (document.getElementById('enabled').checked)
+			ping_refresh();
+	}
+
+	function enabled_toggle()
+	{
+		checkElement('enabled');
+		ping_toggle();
 	}
 
 	ping_refresh();

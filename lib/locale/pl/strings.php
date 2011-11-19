@@ -2519,5 +2519,6 @@ $_LANG['Total: $a% ($b/$c)'] = 'Razem: $a% ($b/$c)';
 $_LANG['Auto Scroll'] = 'Automatyczne przewijanie';
 $_LANG['Enter IP address:'] = 'Podaj adres IP:';
 $_LANG['Ping to $a'] = 'Ping do $a';
+$_LANG['Enabled'] = 'Włączony';
 
 ?>

@@ -45,6 +45,7 @@ function refresh($params)
 	else
 		$transmitted++;
 	$replies = preg_grep('/icmp_[rs]eq/', $output);
+	$times = array();
 	if (count($replies))
 	{
 		$output = '';
@@ -60,6 +61,7 @@ function refresh($params)
 				}
 				$output .= trans('$a bytes from $b: icmp_req=$c ttl=$d time=$e',
 					$matches[1], $ipaddr, $oldreceived + $matches[2], $matches[3], $matches[4]).'<br>';
+				$times[] = $matches[4];
 			}
 	}
 	else
@@ -69,8 +71,9 @@ function refresh($params)
 	$objResponse->append('data', 'innerHTML', $output);
 	$objResponse->assign('transmitted', 'value', $transmitted);
 	$objResponse->assign('received', 'value', $received);
-	$objResponse->assign('summary', 'innerHTML', '<b>'.trans('Total: $a% ($b/$c)', 
-		round(($received / $transmitted) * 100), $received, $transmitted).'</b>');
+	$objResponse->assign('total', 'innerHTML', trans('Total: $0% ($1/$2)', 
+		round(($received / $transmitted) * 100), $received, $transmitted));
+	$objResponse->assign('times', 'value', json_encode($times));
 	$objResponse->call('ping_reply');
 	return $objResponse;
 }
