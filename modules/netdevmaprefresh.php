@@ -36,8 +36,8 @@ if (isset($_GET['live'])) {
 			if (check_ip($ip))
 				$DB->Execute('UPDATE nodes SET lastonline = ? WHERE ipaddr = INET_ATON(?)',
 					array($curtime, $ip));
+		$CONFIG['phpui']['lastonline_limit'] = 20;
 	}
-	$CONFIG['phpui']['lastonline_limit'] = 20;
 }
 
 include(MODULES_DIR.'/map.inc.php');
