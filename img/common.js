@@ -396,5 +396,5 @@ function check_teryt(locid, init)
 function ping_popup(ip)
 {
 	popup('?m=ping&ip=' + ip, 1, 1, 30, 30);
-	autoiframe_setsize('autoiframe', 400, 300);
+	autoiframe_setsize('autoiframe', 480, 300);
 }
