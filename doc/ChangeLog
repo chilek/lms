@@ -54,10 +54,15 @@ version ? (????-??-??):
   - toolbar on netdevmap and possibility to ping any host (event not included in database) [chilan]
   - netmap popups are draggable thanks to DragPopup class written by Matt Walker [chilan]
   - we can close netmap popups by close box; also some map css cleanups [chilan]
-  - netdevmap: remember position, zoom, base layer and visible data layers between netdevmap visits [chilan]
+  - netdevmap: remember position, zoom, base layer and visible data layers between
+    netdevmap visits [chilan]
   - netdevmap: refresh network state on demand - added new button [chilan]
   - LMS postgresql driver uses E'..' for escaping backslashes (compatibility with changed default
     value of standard_conforming_strings to on) [chilan]
+  - ping is more smart now - refresh every 1 second, but can make many ping
+    probes on server [chilan]
+  - when network elements are covered too dense then we show these elements info
+    in one, common popup window [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 

@@ -1,21 +1,15 @@
 {if $part eq "titlebar"}
 <div class="lmsPopupTitleBar">
-	<div class="lmsPopupTitleBox">
-		<div class="lmsPopupTitle">{t a=$ipaddr}Ping to $a{/t}</div>
-		<div id="{$popupid}_popupCloseBox" class="olPopupCloseBox lmsPopupCloseBox"></div>
-	</div>
-	<div class="lmsPopupTitleBarBottom"></div>
+	<div class="lmsPopupTitle">{t a=$ipaddr}Ping to $a{/t}</div>
+	<div id="{$popupid}_popupCloseBox" class="olPopupCloseBox lmsPopupCloseBox">&nbsp;</div>
 </div>
 <div class="lmsPingContentsFrame">
 	<iframe id="autoiframe_{$popupid}" width=100 height=10 frameborder=0 scrolling=no src="?m=ping&ip={$ipaddr}"></iframe>
 </div>
 {elseif $part eq "ipform"}
 <div class="lmsPopupTitleBar">
-	<div class="lmsPopupTitleBox">
-		<div class="lmsPopupTitle"></div>
-		<div id="{$popupid}_popupCloseBox" class="olPopupCloseBox lmsPopupCloseBox"></div>
-	</div>
-	<div class="lmsPopupTitleBarBottom"></div>
+	<div class="lmsPopupTitle">&nbsp;</div>
+	<div id="{$popupid}_popupCloseBox" class="olPopupCloseBox lmsPopupCloseBox">&nbsp;</div>
 </div>
 <div class="lmsIpPopupContents">
 	<div class="lmsIpPopupLabel">{t}Enter IP address:{/t}</div>
@@ -60,7 +54,7 @@
 				<input type="checkbox" id="autoscroll" name="autoscroll" checked><a href="javascript:checkElement('autoscroll');">{t}Auto Scroll{/t}</a>
 			</form>
 		</div>
-	</div>
+	&nbsp;</div>
 </body>
 <script type="text/javascript">
 <!--

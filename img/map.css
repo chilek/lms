@@ -10,16 +10,18 @@ div.olPopupContent {
 div.lmsPopupTitleBar {
 	background-color: #CEBD9B;
 	white-space: nowrap;
-	width: auto; height: auto;
+	width: auto; height: 18px;
 	overflow: visible;
 	border-left-width: 1pt; border-left-style: solid; border-top-width: 1pt; border-top-style: solid; border-right-width: 1pt; border-right-style: solid;
+	display: block;
 }
 
 div.lmsPopupTitle {
 	background-color: #CEBD9B;
 	font-weight: bold;
 	float: left;
-	width: auto; height: auto;
+	width: auto; height: 16px;
+	line-height: 16px;
 	overflow: visible;
 }
 
@@ -31,12 +33,6 @@ div.lmsPopupCloseBox {
 	overflow: visible;
 }
 
-div.lmsPopupTitleBarBottom {
-	clear: both;
-	width: auto; height: auto;
-	overflow: visible;
-}
-
 div.lmsInfoPopupContents {
 	background-color: #DFD5BD;
 	padding: 6px;
@@ -45,6 +41,15 @@ div.lmsInfoPopupContents {
 	width: auto; height: auto;
 	white-space: nowrap;
 	overflow: visible;
+}
+
+div.lmsInfoPopupName {
+	background-color: #DFD5BD;
+	font-weight: bold;
+	padding: 2px;
+	width: auto; height: auto;
+	white-space: nowrap;
+	clear: both;
 }
 
 div.lmsInfoPopupAddress {
@@ -82,6 +87,7 @@ div.lmsMapPopupName {
 
 div.lmsMapPopupAddress {
 	padding: 2px;
+	padding-left: 10px;
 	width: auto; height: auto;
 	white-space: nowrap;
 	overflow: visible;
@@ -102,32 +108,46 @@ div.lmsIpPopupLabel {
 
 div.lmsPingContentsFrame {
 	border: 1pt solid black;
+	padding: 2px;
+	background-color: #DFD5BD;
 }
 
 div.lmsPingContents {
-	overflow: auto;
-	height: 270px;
-	padding: 2px;
+	position:absolute;
+	left: 0px; width: 100%;
+	top: 0px; bottom: 30px; 
+	overflow:auto;
+	padding: 0px;
 }
 
 div.lmsPingBottom {
-	position: relative;
-	width: auto; height: auto;
-	overflow: visible;
+	position:absolute;
+	bottom: 0px; height: 30px; width: 100%;
+	left: 0px;
+	overflow: hidden;
+	padding: 0px;
 }
 
 div.lmsPingSummary {
 	position: absolute;
-	left: 4px; top: 7px; width: 220px;
+	left: 0px; bottom: 0px;
+	width: 266px; height: 28px;
 	font-weight: bold;
 	white-space: nowrap;
 	overflow: visible;
+	line-height: 28px;
+	vertical-align: middle;
+	padding: 2px;
 }
 div.lmsPingAutoScroll {
 	position: absolute;
-	right: 5px; top: 5px; width: 180px;
+	right: 0px; bottom: 0px;
+	width: 175px; height: 28px;
 	white-space: nowrap;
 	overflow: visible;
+	line-height: 28px;
+	vertical-align: middle;
+	padding: 2px;
 }
 
 div.olControlPanel {

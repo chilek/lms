@@ -1,8 +1,9 @@
 var map = null;
-var layerSwitcher = null;
+//var layerSwitcher = null;
 var maprequest = null;
 var mappopup = null;
 var lastonline_limit;
+var lmsProjection = new OpenLayers.Projection("EPSG:4326");
 
 function removeInvisiblePopups()
 {
@@ -101,6 +102,29 @@ function ping_any_host(id)
 	return false;
 }
 
+function findFeaturesIntersection(selectFeature, feature)
+{
+	var featureLonLat = new OpenLayers.LonLat(feature.data.lon, feature.data.lat);
+	featureLonLat.transform(lmsProjection, map.getProjectionObject());
+	var featurePixel = map.getPixelFromLonLat(featureLonLat);
+	var features = [];
+	for (var i in selectFeature.layers) {
+		var layer = selectFeature.layers[i];
+		for (var j in layer.features) {
+			var currentFeature = layer.features[j];
+			if (currentFeature.getVisibility() && currentFeature.onScreen()) {
+				var currentLonLat = new OpenLayers.LonLat(
+					currentFeature.geometry.x, currentFeature.geometry.y);
+				var currentPixel = map.getPixelFromLonLat(currentLonLat);
+				if (Math.abs(currentPixel.x - featurePixel.x) < 12 &&
+					Math.abs(currentPixel.y - featurePixel.y) < 12)
+					features.push(currentFeature);
+			}
+		}
+	}
+	return features;
+}
+
 function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selection)
 {
 	var linkstyles = [
@@ -131,6 +155,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		}, {
 			context: {
 				img: function(feature) {
+					//alert(map.zoom);
 					switch (feature.attributes.state) {
 						case 0: return "img/netdev_unk.png";
 						case 1: return "img/netdev_on.png";
@@ -168,7 +193,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		for (i in deviceArray)
 		{
 			var lonLat = new OpenLayers.LonLat(deviceArray[i].lon, deviceArray[i].lat)
-				.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+				.transform(lmsProjection, map.getProjectionObject());
 			area.extend(lonLat);
 			devices.push(new OpenLayers.Feature.Vector(
 				new OpenLayers.Geometry.Point(
@@ -190,15 +215,9 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		{
 			var points = new Array(
 				new OpenLayers.Geometry.Point(devlinkArray[i].srclon, devlinkArray[i].srclat)
-					.transform(
-						new OpenLayers.Projection("EPSG:4326"),
-						map.getProjectionObject()
-					),
+					.transform(lmsProjection, map.getProjectionObject()),
 				new OpenLayers.Geometry.Point(devlinkArray[i].dstlon, devlinkArray[i].dstlat)
-					.transform(
-						new OpenLayers.Projection("EPSG:4326"),
-						map.getProjectionObject()
-					)
+					.transform(lmsProjection, map.getProjectionObject())
 			);
 			devlinks.push(new OpenLayers.Feature.Vector(
 				new OpenLayers.Geometry.LineString(points),
@@ -213,7 +232,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		for (i in nodeArray)
 		{
 			var lonLat = new OpenLayers.LonLat(nodeArray[i].lon, nodeArray[i].lat)
-				.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+				.transform(lmsProjection, map.getProjectionObject());
 			area.extend(lonLat);
 			nodes.push(new OpenLayers.Feature.Vector(
 				new OpenLayers.Geometry.Point(
@@ -233,15 +252,9 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		{
 			var points = new Array(
 				new OpenLayers.Geometry.Point(nodelinkArray[i].nodelon, nodelinkArray[i].nodelat)
-					.transform(
-						new OpenLayers.Projection("EPSG:4326"),
-						map.getProjectionObject()
-					),
+					.transform(lmsProjection, map.getProjectionObject()),
 				new OpenLayers.Geometry.Point(nodelinkArray[i].netdevlon, nodelinkArray[i].netdevlat)
-					.transform(
-						new OpenLayers.Projection("EPSG:4326"),
-						map.getProjectionObject()
-					)
+					.transform(lmsProjection, map.getProjectionObject())
 				);
 			nodelinks.push(new OpenLayers.Feature.Vector(
 				new OpenLayers.Geometry.LineString(points),
@@ -264,18 +277,24 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		multiple: false,
 		eventListeners: {
 			"featurehighlighted": function(e) {
+				var map = this.map;
+				var feature = e.feature;
 				if (mappopup == null)
 				{
-					mappopup = new OpenLayers.Popup.Anchored(null,
-						new OpenLayers.LonLat(e.feature.data.lon, e.feature.data.lat)
-							.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()),
-						new OpenLayers.Size(10, 10),
-						'<div class="lmsMapPopupContents"><div class="lmsMapPopupName">' + e.feature.data.name + '</div>'
-							+ (e.feature.data.ipaddr.length ? 
-								'<div class="lmsMapPopupAddress">' + e.feature.data.ipaddr.replace(/,/g, 
+					var features = findFeaturesIntersection(this, feature);
+					var content = '<div class="lmsMapPopupContents">';
+					for (var i in features) {
+						content += '<div class="lmsMapPopupName">' + features[i].data.name + '</div>'
+							+ (features[i].data.ipaddr.length ? 
+								'<div class="lmsMapPopupAddress">' + features[i].data.ipaddr.replace(/,/g, 
 									'<div class="lmsMapPopupAddress">') + '</div>'
-								: '')
-							+ '</div>');
+								: '');
+					}
+					content += '</div>';
+					mappopup = new OpenLayers.Popup.Anchored(null,
+						new OpenLayers.LonLat(feature.data.lon, feature.data.lat)
+							.transform(lmsProjection, map.getProjectionObject()),
+						new OpenLayers.Size(10, 10), content);
 					mappopup.setOpacity(0.8);
 					mappopup.closeOnMove = true;
 					map.addPopup(mappopup);
@@ -294,6 +313,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 			"featureunhighlighted": function(e) {
 				if (mappopup)
 				{
+					var map = this.map;
 					map.removePopup(mappopup);
 					mappopup = null;
 				}
@@ -312,6 +332,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 			toggleKey: "ctrlKey", // ctrl key removes from selection
 			multipleKey: "shiftKey", // shift key adds to selection
 			onSelect: function(feature) {
+				var map = feature.layer.map;
 				if (mappopup)
 				{
 					map.removePopup(mappopup);
@@ -320,31 +341,35 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				selectedFeature = feature;
 				var featurepopup = new OpenLayers.Popup(null,
 					new OpenLayers.LonLat(feature.data.lon, feature.data.lat)
-						.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()),
+						.transform(lmsProjection, map.getProjectionObject()),
 					new OpenLayers.Size(10, 10));
 				featurepopup.setOpacity(0.8);
 				//featurepopup.closeOnMove = true;
 				//featurepopup.keepInMap = true;
 				//featurepopup.panMapIfOutOfView = true;
-				var content = '<div class="lmsPopupTitleBar"><div class="lmsPopupTitleBox"><div class="lmsPopupTitle">' + feature.data.name + '</div>'
-					+ '<div id="' + featurepopup.id + '_popupCloseBox" class="olPopupCloseBox lmsPopupCloseBox"></div></div><div class="lmsPopupTitleBarBottom"></div></div>';
-				content += '<div class="lmsInfoPopupContents">';
-				if (feature.data.type == 'netdevinfo')
-				{
-					if (feature.data.ipaddr.length) {
-						var ips = feature.data.ipaddr.split(',');
-						var nodeids = feature.data.nodeid.split(',');
-						for (i in nodeids)
-							content += '<div class="lmsInfoPopupAddress"><a href="javascript:ping_host(\''
-								+ featurepopup.id + '\', \'' + ips[i] + '\')"><img src="img/ip.gif" alt="">&nbsp;'
-								+ ips[i] + '</a></div>';
-					}
-				} else
-					content += '<div class="lmsInfoPopupAddress"><a href="javascript:ping_host(\''
-						+ featurepopup.id + '\', \'' + feature.data.ipaddr + '\')"><img src="img/ip.gif" alt="">&nbsp;'
-						+ feature.data.ipaddr + '</a></div>';
-				content += '<div class="lmsInfoPopupDetails"><a href="?m=' + feature.data.type + '&id=' + feature.data.id + '">'
-					+ '<img src="img/info1.gif" alt="">&nbsp;Info</a></div></div>';
+				var content = '<div class="lmsPopupTitleBar"><div class="lmsPopupTitle">Info</div>'
+					+ '<div id="' + featurepopup.id + '_popupCloseBox" class="olPopupCloseBox lmsPopupCloseBox">&nbsp;</div></div>'
+					+ '<div class="lmsInfoPopupContents">';
+				var features = findFeaturesIntersection(this, feature);
+				for (var i in features) {
+					content += '<div class="lmsInfoPopupName">' + features[i].data.name + '</div>';
+					if (features[i].data.type == 'netdevinfo') {
+						if (features[i].data.ipaddr.length) {
+							var ips = features[i].data.ipaddr.split(',');
+							var nodeids = features[i].data.nodeid.split(',');
+							for (var j in nodeids)
+								content += '<div class="lmsInfoPopupAddress"><a href="javascript:ping_host(\''
+								+ featurepopup.id + '\', \'' + ips[j] + '\')"><img src="img/ip.gif" alt="">&nbsp;'
+								+ ips[j] + '</a></div>';
+						}
+					} else
+						content += '<div class="lmsInfoPopupAddress"><a href="javascript:ping_host(\''
+							+ featurepopup.id + '\', \'' + features[i].data.ipaddr + '\')"><img src="img/ip.gif" alt="">&nbsp;'
+							+ features[i].data.ipaddr + '</a></div>';
+					content += '<div class="lmsInfoPopupDetails"><a href="?m=' + features[i].data.type + '&id=' + features[i].data.id + '">'
+						+ '<img src="img/info1.gif" alt="">&nbsp;Info</a></div>';
+				}
+				content += '</div>';
 				featurepopup.setContentHTML(content);
 
 				map.addPopup(featurepopup);
@@ -390,6 +415,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 			type: OpenLayers.Control.TYPE_BUTTON,
 			title: "Toolbar",
 			activateControl: function(control) {
+				var map = control.map;
 				switch (control.command) {
 					case 'ping':
 						var pingpopup = new OpenLayers.Popup(null,
@@ -449,9 +475,9 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 	}
 
 	map.addControl(new OpenLayers.Control.ScaleLine());
-	layerSwitcher = new OpenLayers.Control.LayerSwitcher();
+	var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
 	map.addControl(layerSwitcher);
-	map.addControl(new OpenLayers.Control.MousePosition({ displayProjection: new OpenLayers.Projection("EPSG:4326") }));
+	map.addControl(new OpenLayers.Control.MousePosition({ displayProjection: lmsProjection }));
 
 	// load saved map settings from cookies
 	var mapBaseLayer = getCookie('mapBaseLayer');
