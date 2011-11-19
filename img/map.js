@@ -22,7 +22,14 @@ function set_lastonline_limit(sec)
 function netdevmap_updater()
 {
 	if (maprequest.status == 200) {
-		var data = eval('(' + maprequest.responseText + ')');
+		try {
+			var data = JSON.parse(maprequest.responseText);
+		} catch (e) {
+			alert('Network device map refresh error!');
+			map.getControlsBy('displayClass', 'lmsRefreshButton')[0].deactivate();
+			return 0;
+		}
+		//var data = eval('(' + maprequest.responseText + ')');
 		var devices = data.devices;
 		var nodes = data.nodes;
 
