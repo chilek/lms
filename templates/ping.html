@@ -83,7 +83,7 @@
 	{
 		elem = document.getElementById('data');
 		if (elem && document.getElementById('autoscroll').checked)
-			elem.scrollTop += 1000;
+			elem.scrollTop = elem.scrollHeight;
 		try {
 			var times = JSON.parse(document.getElementById('times').value);
 			for (var i in times) {
