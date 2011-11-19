@@ -23,6 +23,7 @@ div.lmsPopupTitle {
 	width: auto; height: 16px;
 	line-height: 16px;
 	overflow: visible;
+	padding-left: 2px;
 }
 
 div.lmsPopupCloseBox {
@@ -108,7 +109,7 @@ div.lmsIpPopupLabel {
 
 div.lmsPingContentsFrame {
 	border: 1pt solid black;
-	padding: 2px;
+	padding: 0px;
 	background-color: #DFD5BD;
 }
 
