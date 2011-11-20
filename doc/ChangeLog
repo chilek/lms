@@ -66,6 +66,7 @@ version ? (????-??-??):
   - it's able to pause ping [chilan]
   - display summary times in ping popup [chilan]
   - added %bankaccount variable for messages sent from UI [alec]
+  - lms-payments: added 'check_invoices' option [alec]
 
 version 1.11.13 Dira (2011-04-07)
 
