@@ -33,7 +33,7 @@ function GetRecipients($filter, $type=MSG_MAIL)
 	$customergroup = $filter['customergroup'];
 	$nodegroup = $filter['nodegroup'];
 	$linktype = $filter['linktype'];
-	
+
 	if($group == 4)
 	{
 		$deleted = 1;
@@ -42,16 +42,16 @@ function GetRecipients($filter, $type=MSG_MAIL)
 	}
 	else
 		$deleted = 0;
-	
+
 	$disabled = ($group == 5) ? 1 : 0;
 	$indebted = ($group == 6) ? 1 : 0;
 	$notindebted = ($group == 7) ? 1 : 0;
-	
+
 	if($group>3) $group = 0;
-	
-	if($network) 
+
+	if($network)
 		$net = $LMS->GetNetworkParams($network);
-	
+
 	if($type == MSG_SMS)
 	{
 		$smstable = 'JOIN (SELECT MIN(phone) AS phone, customerid
@@ -60,7 +60,7 @@ function GetRecipients($filter, $type=MSG_MAIL)
 				GROUP BY customerid
 			) x ON (x.customerid = c.id)';
 	}
-	
+
 	$recipients = $LMS->DB->GetAll('SELECT c.id, email, pin, '
 		.($type==MSG_SMS ? 'x.phone, ': '')
 		.$LMS->DB->Concat('c.lastname', "' '", 'c.name').' AS customername,
@@ -125,6 +125,9 @@ function BodyVars(&$body, $data)
 	$body = str_replace('%balance', $data['balance'], $body);
 	$body = str_replace('%cid', $data['id'], $body);
 	$body = str_replace('%pin', $data['pin'], $body);
+    if (strpos($body, '%bankaccount') !== false) {
+        $body = str_replace('%bankaccount', bankaccount($data['id']), $body);
+    }
 
 	if(!(strpos($body, '%last_10_in_a_table') === FALSE))
 	{
