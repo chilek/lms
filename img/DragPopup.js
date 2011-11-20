@@ -58,6 +58,7 @@ OpenLayers.Control.DragPopup = OpenLayers.Class(OpenLayers.Control, {
             return true;
         else
             this.down = true;
+        this.moveToFront();
         OpenLayers.Event.observe(document, 'mouseup', this.docMouseUpProxy);
         OpenLayers.Event.stop(evt);
     },
@@ -75,8 +76,14 @@ OpenLayers.Control.DragPopup = OpenLayers.Class(OpenLayers.Control, {
         {
             var clickPnt = this.popup.events.getMousePosition(evt);
             if (clickPnt.x >= closeElem.offsetLeft && clickPnt.x <= closeElem.offsetLeft + closeElem.offsetWidth
-                && clickPnt.y >= closeElem.offsetTop && clickPnt.y <= closeElem.offsetTop + closeElem.offsetHeight)
+                && clickPnt.y >= closeElem.offsetTop && clickPnt.y <= closeElem.offsetTop + closeElem.offsetHeight) {
+                if (this.feature) {
+                    this.feature.popup = null;
+                    for (var i = 0; i < this.map.controls.length, !(this.map.controls[i] instanceof OpenLayers.Control.SelectFeature); i++);
+                    this.map.controls[i].unselect(this.feature);
+                }
                 this.map.removePopup(this.popup);
+            }
         }
     },
 
@@ -108,6 +115,16 @@ OpenLayers.Control.DragPopup = OpenLayers.Class(OpenLayers.Control, {
         this.popPnt = null;
         // allow our superclass to tidy up
         OpenLayers.Control.prototype.destroy.apply(this, []);
+    },
+
+    moveToFront: function() {
+        var popups = this.map.popups;
+        var maxZIndex = 0;
+        for (var i in popups)
+            if (popups[i].id != this.popup.id && popups[i].div.style.zIndex > maxZIndex)
+                maxZIndex = popups[i].div.style.zIndex;
+        if (parseInt(maxZIndex) > parseInt(this.popup.div.style.zIndex))
+            this.popup.div.style.zIndex = parseInt(maxZIndex) + 1;
     },
 
     /** @final @type String */
