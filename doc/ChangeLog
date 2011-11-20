@@ -51,7 +51,7 @@ version ? (????-??-??):
   - we can ping nodes and devices watching results in popups [chilan]
   - 5 default base layers for maps [chilan]
   - ported to xajax 0.5 [chilan]
-  - toolbar on netdevmap and possibility to ping any host (event not included in database) [chilan]
+  - toolbar on netdevmap and possibility to ping any host (even not included in database) [chilan]
   - netmap popups are draggable thanks to DragPopup class written by Matt Walker [chilan]
   - we can close netmap popups by close box; also some map css cleanups [chilan]
   - netdevmap: remember position, zoom, base layer and visible data layers between
@@ -65,6 +65,7 @@ version ? (????-??-??):
     in one, common popup window [chilan]
   - it's able to pause ping [chilan]
   - display summary times in ping popup [chilan]
+  - added %bankaccount variable for messages sent from UI [alec]
 
 version 1.11.13 Dira (2011-04-07)
 
