@@ -298,8 +298,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 					mappopup = new OpenLayers.Popup.Anchored(null,
 						new OpenLayers.LonLat(feature.data.lon, feature.data.lat)
 							.transform(lmsProjection, map.getProjectionObject()),
-						new OpenLayers.Size(10, 10), content,
-						{ size: new OpenLayers.Size(16, 16), offset: new OpenLayers.Pixel(-8, -8) });
+						new OpenLayers.Size(10, 10), content);
 					mappopup.setOpacity(0.8);
 					mappopup.closeOnMove = true;
 					map.addPopup(mappopup);
