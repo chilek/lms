@@ -1,4 +1,4 @@
-#!/usr/bin/perl -Tw
+#!/usr/bin/perl -w
 #
 #  LMS version 1.11-cvs
 #
@@ -28,6 +28,7 @@ use Config::IniFiles;
 use Getopt::Long;
 use vars qw($configfile $quiet $help $version $update $fetch $list $merge);
 use Cwd;
+use LWP::UserAgent;
 
 my $_version = '1.11-cvs';
 
@@ -100,6 +101,9 @@ my $dbuser = $ini->val('database', 'user') || 'root';
 my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
 
+my $url = $ini->val('teryt', 'url') || 'http://www.stat.gov.pl/broker/access/prefile/listPreFiles.jspa';
+my $zip_bin = $ini->val('teryt', 'unzip_binary') || '/usr/bin/unzip';
+
 my $dir = $ini->val('teryt', 'dir') || getcwd;
 if (!$list) {
     $list = $ini->val('teryt', 'state_list') || '';
@@ -108,8 +112,42 @@ if (!$list) {
 ######## Download TERYT files ###################################################
 if ($fetch)
 {
+    my $ua = LWP::UserAgent->new;
+    my $response = $ua->get($url);
 
+    if ($response->is_success)
+    {
+        my $content = $response->content;
+        my $file_url = $url;
 
+        $ua->show_progress(1);
+
+        while ($content =~ m/href="(downloadPreFile\.jspa[^\"]+)"/g) {
+            my $file = $1;
+            $file_url =~ s/[^\/]+$//;
+            $file_url .= $file;
+
+            my $response = $ua->get($file_url);
+            if ($response->is_success) {
+                my $type = $response->filename;
+
+                if ($type !~ /^(SIMC|TERC|ULIC)_[0-9]+\.zip/i) {
+                    next;
+                }
+
+                my $filename = $dir.'/'.$response->filename;
+                # save zip file
+                open (FILE, ">$filename");
+                print FILE $response->content;
+                close (FILE);
+                # extract file (zip -> xml)
+                system("$zip_bin -qd $dir $filename");
+            }
+        }
+    }
+    else {
+        print STDERR "Error: ".$response->status_line."\n";
+    }
 }
 
 if (!$update && !$merge)
