@@ -195,7 +195,6 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 
 	var area = new OpenLayers.Bounds();
 	var devices = [];
-	//var dane = '';
 	if (deviceArray)
 		for (i in deviceArray)
 		{
@@ -207,9 +206,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 					lonLat.lon,
 					lonLat.lat
 				), deviceArray[i]));
-			//dane += devices[i].attributes.state + ' ';
 		}
-	//alert(dane);
 
 	var devicelayer = new OpenLayers.Layer.Vector("Devices", {
 		styleMap: new OpenLayers.StyleMap(devicestyle)
@@ -301,7 +298,8 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 					mappopup = new OpenLayers.Popup.Anchored(null,
 						new OpenLayers.LonLat(feature.data.lon, feature.data.lat)
 							.transform(lmsProjection, map.getProjectionObject()),
-						new OpenLayers.Size(10, 10), content);
+						new OpenLayers.Size(10, 10), content,
+						{ size: new OpenLayers.Size(16, 16), offset: new OpenLayers.Pixel(-8, -8) });
 					mappopup.setOpacity(0.8);
 					mappopup.closeOnMove = true;
 					map.addPopup(mappopup);
@@ -339,6 +337,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 			toggleKey: "ctrlKey", // ctrl key removes from selection
 			multipleKey: "shiftKey", // shift key adds to selection
 			onSelect: function(feature) {
+				//alert(feature);
 				var map = feature.layer.map;
 				if (mappopup)
 				{
@@ -381,7 +380,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 
 				map.addPopup(featurepopup);
 
-				var dragpopup = new OpenLayers.Control.DragPopup(featurepopup);
+				var dragpopup = new OpenLayers.Control.DragPopup(featurepopup, { feature: feature });
 				map.addControl(dragpopup);
 
 				featurepopup.div.style.overflow = 'visible';
