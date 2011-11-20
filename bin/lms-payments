@@ -104,6 +104,7 @@ my $sdate_next = $ini->val('payments', 'saledate_next_month') || 0;
 my $comment = $ini->val('payments', 'comment') || 'Tariff %tariff subscription for period %period';
 my $s_comment = $ini->val('payments', 'settlement_comment') || $comment;
 my $suspension_description = $ini->val('payments', 'suspension_description') || '';
+my $check_invoices = $ini->val('payments', 'check_invoices') || 0;
 
 my $suspension_percentage = $ini->val('finances', 'suspension_percentage') || '0';
 
@@ -698,6 +699,23 @@ while(my $assign = $dbq->fetchrow_hashref())
 }
 $dbq->finish();
 
+# check invoices (autoclose invoices)
+if ($check_invoices)
+{
+    my $dbq = $dbase->prepare("UPDATE documents SET closed = 1
+        WHERE customerid IN (
+            SELECT customerid
+            FROM cash WHERE time <= $currtime
+            GROUP BY customerid
+            HAVING SUM(value) >= 0
+        )
+        AND type IN (1, 3, 5)
+        AND cdate <= $currtime
+        AND closed = 0");
+    $dbq->execute();
+    $dbq->finish();
+}
+
 # solid payments
 $dbq = $dbase->prepare("SELECT * FROM payments WHERE value <> 0
 		AND (period = ".DAY."
@@ -713,7 +731,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 	my $sdbq = $dbase->prepare("INSERT INTO cash (time, type, value, customerid, comment)
 			VALUES ($currtime, 1, $assign->{'value'} * -1, 0, ?)");
 	$sdbq->execute($assign->{'name'}.'/'.$assign->{'creditor'});
-	print STDERR "CID:0\tVAL:$assign->{'value'}\tDESC:$assign->{'name'}/$assign->{'creditor'}\n" if not $quiet;
+	print STDERR "CID:\tVAL:$assign->{'value'}\tDESC:$assign->{'name'}/$assign->{'creditor'}\n" if not $quiet;
 }
 $dbq->finish();
 
