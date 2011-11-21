@@ -65,8 +65,8 @@ version ? (????-??-??):
     in one, common popup window [chilan]
   - it's able to pause ping [chilan]
   - display summary times in ping popup [chilan]
-  - added %bankaccount variable for messages sent from UI [alec]
-  - lms-payments: added 'check_invoices' option [alec]
+  - added %bankaccount variable for messages sent from UI [foxman]
+  - lms-payments: added 'check_invoices' option [foxman]
 
 version 1.11.13 Dira (2011-04-07)
 
