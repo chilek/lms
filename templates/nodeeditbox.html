@@ -69,7 +69,7 @@
 		    <INPUT type="hidden" name="nodeedit[location_street]" value="{$nodeinfo.location_street}">
 		    <INPUT type="hidden" name="nodeedit[location_house]" value="{$nodeinfo.location_house}">
 		    <INPUT type="hidden" name="nodeedit[location_flat]" value="{$nodeinfo.location_flat}">
-			<INPUT TYPE="checkbox" name="nodeedit[teryt]" id="teryt" onchange="check_teryt('location')"{if $nodeinfo.teryt} checked{/if}>{t}TERRIT-DB{/t}
+			<INPUT TYPE="checkbox" name="nodeedit[teryt]" id="teryt" onchange="check_teryt('location')"{if $nodeinfo.teryt} checked{/if}><a href="javascript:checkElement('nodeedit[teryt]');">{t}TERRIT-DB{/t}</a>
 		</TD>
 	</TR>
 {*
