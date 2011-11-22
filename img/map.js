@@ -5,15 +5,6 @@ var mappopup = null;
 var lastonline_limit;
 var lmsProjection = new OpenLayers.Projection("EPSG:4326");
 
-function removeInvisiblePopups()
-{
-	// OpenLayers doesn't destroy closed popups, so
-	// we search for them here and destroy if there are ...
-	for (var i in map.popups)
-		if (!map.popups[i].visible())
-			map.removePopup(map.popups[i]);
-}
-
 function set_lastonline_limit(sec)
 {
 	lastonline_limit = sec;
@@ -83,8 +74,6 @@ function close_popup(id)
 
 function ping_host(id, ip)
 {
-	removeInvisiblePopups();
-
 	for (var i = 0; i < map.popups.length, map.popups[i].id != id; i++);
 	var popupid = id;
 	var pingContentsRequest = OpenLayers.Request.issue({
@@ -536,10 +525,6 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 	});
 	map.events.register('moveend', map, function(e) {
 		setCookie('mapSettings',  map.getCenter().lon + ';' + map.getCenter().lat + ';' + map.getZoom(), true);
-	});
-
-	map.events.register('mousemove', map, function(e) {
-		removeInvisiblePopups();
 	});
 
 	return map;
