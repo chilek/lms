@@ -230,13 +230,14 @@ switch($action)
 				$cnote['number'] = $LMS->GetNewDocumentNumber(DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']);
 		}
 
-		$DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, paytime, paytype,
+		$DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, sdate, paytime, paytype,
 				userid, customerid, name, address, ten, ssn, zip, city, countryid, reference, reason, divisionid)
-		        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+		        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				array($cnote['number'],
 			    		$cnote['numberplanid'] ? $cnote['numberplanid'] : 0,
 						DOC_CNOTE,
 		   				$cnote['cdate'],
+		   				$cnote['sdate'],
 		    			$cnote['paytime'],
 						$cnote['paytype'],
 						$AUTH->id,
