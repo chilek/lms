@@ -65,6 +65,7 @@
 				    {$tariff.prodid}
 				</TD>
 			    </TR>
+			{if !$_config.privileges.hide_summaries|chkconfig || $adminuser}
 			    <TR CLASS="light">
 				<TD WIDTH="1%">
 				    <IMG SRC="img/customers.gif" ALT="">
@@ -83,6 +84,7 @@
 				    {$tariff.totalval|money_format} 
 				</TD>
 			    </TR>
+			{/if}
 			</TABLE>
 		    </TD>
 		    <TD WIDTH="50%" VALIGN="50%">

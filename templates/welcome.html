@@ -4,7 +4,7 @@
 <P>
 <TABLE width="100%" cellpadding="3" COLS="12">
 	<TR>
-		{if !$_config.phpui.hide_sysinfo|chkconfig}
+		{if !$_config.privileges.hide_sysinfo|chkconfig}
 		<TD WIDTH="50%" style="vertical-align: top;" COLSPAN="5">
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
@@ -111,7 +111,7 @@
 		{/if}
 	</TR>
 	<TR>
-		{if !$_config.phpui.hide_summaries|chkconfig}
+		{if !$_config.privileges.hide_summaries|chkconfig}
 		<TD WIDTH="50%" style="vertical-align: top;" COLSPAN="5">
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
@@ -146,11 +146,15 @@
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
 						<B><A HREF="?m=customerlist&s=0">{t}Total:{/t}</A><BR>
-						<A HREF="?m=customerlist&s=6">{t}Total Dues:{/t}</A></B>
+						{if $_config.privileges.finances_management|chkconfig || $adminuser}
+							<A HREF="?m=customerlist&s=6">{t}Total Dues:{/t}</A></B>
+						{/if}
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHTU">
 						{$customerstats.total}<BR>
-						<NOBR>{$customerstats.debt} ({t}amount{/t} {$customerstats.debtvalue|money_format})</NOBR>
+						{if $_config.privileges.finances_management|chkconfig || $adminuser}
+							<NOBR>{$customerstats.debt} ({t}amount{/t} {$customerstats.debtvalue|money_format})</NOBR>
+						{/if}
 					</TD>
 				</TR>
 			</TABLE>
@@ -281,7 +285,7 @@
 			{/if}
 			</TABLE>
 		</TD>
-		{if !$_config.phpui.hide_links|chkconfig}
+		{if !$_config.privileges.hide_links|chkconfig}
 		<TD WIDTH="50%" style="vertical-align: top;" COLSPAN="6">
 		    <TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">

@@ -162,6 +162,7 @@
 		</TD>
 	</TR>
 {/if}
+{if $_config.privileges.finances_management|chkconfig || $adminuser}
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/money.gif" ALT="">
@@ -171,6 +172,7 @@
 			{if $customerinfo.balance < 0}<FONT class="alert">{$customerinfo.balance|money_format}</FONT>{else}{$customerinfo.balance|default:"0"|money_format}{/if}
 		</TD>
 	</TR>
+{/if}
 </TABLE>
 <SCRIPT TYPE="text/javascript">
 <!--

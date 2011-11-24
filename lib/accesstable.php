@@ -39,6 +39,7 @@ $access['table'][2]['allow_reg']	= '^nodeset$';
 
 $access['table'][3]['name']		= trans('finances management');
 $access['table'][3]['allow_reg']	= '^((tariff|customerassignment)(add|info|list|move|edit|del)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list|)|(cashreg(list|add|edit|del|info))|(invoice|invoice(list|new|edit|del|note|report|paid))|(note|note(list|add|edit|del|paid))|number|export|print|cashimport|cashimportparser|cashpackagedel)$';
+$access['table'][3]['privilege']	= 'finances_management';
 
 $access['table'][4]['name']    		= trans('configuration reload');
 $access['table'][4]['allow_reg']    	= '^reload$';
