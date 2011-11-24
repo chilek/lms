@@ -35,7 +35,9 @@
 		document.getElementById('a_options').style.display = val == -1 ? 'none' : '';
 		document.getElementById('a_nodes').style.display = val == -1 ? 'none' : '';
 		document.getElementById('a_day').style.display = val == -1 ? 'none' : '';
+		{if $_config.privileges.finances_management || $adminuser}
 		document.getElementById('a_discount').style.display = val < -1 ? 'none' : '';
+		{/if}
 	}
 
 {if $promotionschemas}
@@ -84,7 +86,7 @@
                 {/if}
 			    {section name=t loop=$tariffs}
 			    <OPTION value="{$tariffs[t].id}" {if $tariffs[t].id==$assignment.tariffid}SELECTED{/if}>
-			    {$tariffs[t].name} ({$tariffs[t].value|money_format}{if $tariffs[t].upceil || $tariffs[t].downceil}, {$tariffs[t].downceil}/{$tariffs[t].upceil} kbit/s{/if})
+			    {$tariffs[t].name} ({if $_config.privileges.finances_management|chkconfig || $adminuser}{$tariffs[t].value|money_format}, {/if}{if $tariffs[t].upceil || $tariffs[t].downceil}{$tariffs[t].downceil}/{$tariffs[t].upceil} kbit/s{/if})
 			    </OPTION>
 		        {/section}
 		    </SELECT>
@@ -181,13 +183,13 @@
 		</TD>
 	</TR>
 	<TR id="a_discount">
-		<TD width="1%">
+		<TD width="1%"{if !$_config.privileges.finances_management|chkconfig && !$adminuser} style="display:none"{/if}>
 			<IMG src="img/value.gif" alt="">
 		</TD>
-		<TD width="1%">
+		<TD width="1%"{if !$_config.privileges.finances_management|chkconfig && !$adminuser} style="display:none"{/if}>
 			<B>{t}Discount:{/t}</B>
 		</TD>
-		<TD width="98%">
+		<TD width="98%"{if !$_config.privileges.finances_management|chkconfig && !$adminuser} style="display:none"{/if}>
 		    <INPUT type="text" size="3" name="assignment[discount]" value="{if $assignment.discount!=0}{$assignment.discount|string_format:"%.2f"}{/if}" {tip text="Enter discount percentage" trigger="discount"}>
 		</TD>
 	</TR>

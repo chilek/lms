@@ -220,7 +220,7 @@ if($AUTH->islogged)
 				}
 
 				if(isset($access['table'][$level]['privilege']))
-					$CONFIG['phpui'][$access['table'][$level]['privilege']] = TRUE;
+					$CONFIG['privileges'][$access['table'][$level]['privilege']] = TRUE;
 			}
 
 		if($allow && ! $deny)

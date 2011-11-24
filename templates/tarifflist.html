@@ -26,7 +26,9 @@
 			<A href="?m=tarifflist&o=count{if $listdata.direction eq "asc" && $listdata.order eq "count"},desc{/if}">{t}Assigned:{/t}</A> {if $listdata.order eq "count"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt" align="right" NOWRAP>
+			{if !$_config.privileges.hide_summaries|chkconfig || $adminuser}
 			<A href="?m=tarifflist&o=income{if $listdata.direction eq "asc" && $listdata.order eq "income"},desc{/if}">{t}Avg. monthly income:{/t}</A> {if $listdata.order eq "income"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			{/if}
 		</TD>
 		<TD WIDTH="1%" CLASS="frightu" ALIGN="RIGHT">
 			<NOBR>
@@ -102,7 +104,9 @@
 			({$tarifflist[tariffs].count|default:0},{$tarifflist[tariffs].activecount|default:0})
 		</TD>
 		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
-			{$tarifflist[tariffs].income|money_format} 
+			{if !$_config.privileges.hide_summaries|chkconfig || $adminuser}
+			{$tarifflist[tariffs].income|money_format}
+			{/if}
 		</TD>
 		<TD WIDTH="1%" CLASS="fright" ALIGN="right">
 			<NOBR>
@@ -130,7 +134,9 @@
 			<B>{$listdata.totalcustomerscount}({$listdata.totalcount},{$listdata.totalactivecount})</B>
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" ALIGN="right" NOWRAP>
+			{if !$_config.privileges.hide_summaries|chkconfig || $adminuser}
 			<B>{$listdata.totalincome|money_format}</B>
+			{/if}
 		</TD>
 		<TD CLASS="frightu" WIDTH="1%">
 			&nbsp;

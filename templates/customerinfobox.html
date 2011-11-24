@@ -314,6 +314,7 @@
 		</TD>
 	</TR>
 	{/if}
+	{if $_config.privileges.finances_management|chkconfig || $adminuser}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
 			<IMG SRC="img/money.gif" ALT="">
@@ -325,6 +326,7 @@
 			{if $customerinfo.balance < 0}<FONT class="alert">{$customerinfo.balance|money_format}</FONT>{else}{$customerinfo.balance|default:"0"|money_format}{/if}
 		</TD>
 	</TR>
+	{/if}
 	<TR CLASS="LIGHT">
                 <TD WIDTH="1%">
 		        <IMG SRC="img/cms.gif" ALT="">

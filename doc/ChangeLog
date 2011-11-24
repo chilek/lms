@@ -67,6 +67,8 @@ version ? (????-??-??):
   - display summary times in ping popup [chilan]
   - added %bankaccount variable for messages sent from UI [foxman]
   - lms-payments: added 'check_invoices' option [foxman]
+  - if user doesn't have finances management privilege then he can't see any
+    financial information [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
