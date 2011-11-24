@@ -137,9 +137,9 @@ if ($fetch)
 
                 my $filename = $dir.'/'.$response->filename;
                 # save zip file
-                open (FILE, ">$filename");
-                print FILE $response->content;
-                close (FILE);
+                open(FILE, ">$filename") or die $!;
+                print FILE $response->content or die $!;
+                close(FILE) or die $!;
                 # extract file (zip -> xml)
                 system("$zip_bin -qd $dir $filename");
             }
