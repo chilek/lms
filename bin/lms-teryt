@@ -241,11 +241,11 @@ if ($update)
 ######### Get current TERC database ##################################################
 my %terc;
 $dbq = $dbase->prepare("
-    SELECT ident AS woj, CAST(0 AS text) AS pow, CAST(0 AS text) AS gmi, 0 AS rodz,
+    SELECT ident AS woj, '0' AS pow, '0' AS gmi, 0 AS rodz,
         UPPER(name) AS nazwa, id, 'WOJ' AS type
     FROM location_states
     UNION
-    SELECT s.ident AS woj, d.ident AS pow, CAST(0 AS text) AS gmi, 0 AS rodz,
+    SELECT s.ident AS woj, d.ident AS pow, '0' AS gmi, 0 AS rodz,
         d.name AS nazwa, d.id, 'POW' AS type
     FROM location_districts d
     JOIN location_states s ON (d.stateid = s.id)
