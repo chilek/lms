@@ -73,16 +73,19 @@ if ($nodes)
 
 	$nodeids = implode(',', array_keys($nodes));
 
-	$nodelinks = $DB->GetAll('SELECT n.id AS nodeid, netdev, linktype AS type FROM nodes n WHERE netdev > 0 AND ownerid > 0 
-		AND n.id IN ('.$nodeids.') AND netdev IN ('.$devids.')');
-	if ($nodelinks)
-		foreach ($nodelinks as $nodelinkidx => $nodelink)
-		{
-			$nodelinks[$nodelinkidx]['nodelat'] = $nodes[$nodelink['nodeid']]['lat'];
-			$nodelinks[$nodelinkidx]['nodelon'] = $nodes[$nodelink['nodeid']]['lon'];
-			$nodelinks[$nodelinkidx]['netdevlat'] = $devices[$nodelink['netdev']]['lat'];
-			$nodelinks[$nodelinkidx]['netdevlon'] = $devices[$nodelink['netdev']]['lon'];
-		}
+	if ($devices)
+	{
+		$nodelinks = $DB->GetAll('SELECT n.id AS nodeid, netdev, linktype AS type FROM nodes n WHERE netdev > 0 AND ownerid > 0 
+			AND n.id IN ('.$nodeids.') AND netdev IN ('.$devids.')');
+		if ($nodelinks)
+			foreach ($nodelinks as $nodelinkidx => $nodelink)
+			{
+				$nodelinks[$nodelinkidx]['nodelat'] = $nodes[$nodelink['nodeid']]['lat'];
+				$nodelinks[$nodelinkidx]['nodelon'] = $nodes[$nodelink['nodeid']]['lon'];
+				$nodelinks[$nodelinkidx]['netdevlat'] = $devices[$nodelink['netdev']]['lat'];
+				$nodelinks[$nodelinkidx]['netdevlon'] = $devices[$nodelink['netdev']]['lon'];
+			}
+	}
 }
 
 $SMARTY->assign('devices', $devices);
