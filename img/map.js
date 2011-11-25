@@ -144,13 +144,13 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 
 	var map = new OpenLayers.Map("map");
 	var gsat = new OpenLayers.Layer.Google("Google Satellite",
-		{type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22, visibility: false});
+		{type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 20, visibility: false});
 	var gphy = new OpenLayers.Layer.Google("Google Physical",
 		{type: google.maps.MapTypeId.TERRAIN, visibility: false});
 	var gmap = new OpenLayers.Layer.Google("Google Streets", // the default
 		{numZoomLevels: 20, visibility: false});
 	var ghyb = new OpenLayers.Layer.Google("Google Hybrid",
-		{type: google.maps.MapTypeId.HYBRID, numZoomLevels: 22, visibility: true});
+		{type: google.maps.MapTypeId.HYBRID, numZoomLevels: 20, visibility: true});
 	var osm = new OpenLayers.Layer.OSM();
 
 	map.addLayers([gsat, gphy, gmap, ghyb, osm]);
