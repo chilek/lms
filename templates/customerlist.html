@@ -103,8 +103,10 @@
 		</TD>		
 		<TD align="right" class="fright">
 			<NOBR>
-			{if $customerlist[customerlist].balance < 0}
-				<A HREF="?m=customerbalanceok&id={$customerlist[customerlist].id}" OnClick="return confirmLink(this, '{t a=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$a\'?{/t}');"><IMG src="img/pay.gif" alt="[ {t}Account{/t} ]" title="[ {t}Account{/t} ]"></A>
+			{if $_config.privileges.finances_management|chkconfig || $adminuser}
+				{if $customerlist[customerlist].balance < 0}
+					<A HREF="?m=customerbalanceok&id={$customerlist[customerlist].id}" OnClick="return confirmLink(this, '{t a=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$a\'?{/t}');"><IMG src="img/pay.gif" alt="[ {t}Account{/t} ]" title="[ {t}Account{/t} ]"></A>
+				{/if}
 			{/if}
 			{if $customerlist[customerlist].account}
 				{if $customerlist[customerlist].status eq 3}
