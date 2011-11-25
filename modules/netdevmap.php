@@ -322,6 +322,20 @@ if ($type == 'openlayers')
 {
 	include(MODULES_DIR.'/map.inc.php');
 
+	if (isset($_GET['netdevid']))
+	{
+		$netdevid = intval($_GET['netdevid']);
+		$SMARTY->assign('lon', $devices[$netdevid]['lon']);
+		$SMARTY->assign('lat', $devices[$netdevid]['lat']);
+	}
+	else
+		if (isset($_GET['nodeid']))
+		{
+			$nodeid = intval($_GET['nodeid']);
+			$SMARTY->assign('lon', $devices[$nodeid]['lon']);
+			$SMARTY->assign('lat', $devices[$nodeid]['lat']);
+		}
+
 	$SMARTY->assign('type', $type);
 	$SMARTY->display('netdevmap.html');
 }

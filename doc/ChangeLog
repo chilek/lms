@@ -69,6 +69,7 @@ version ? (????-??-??):
   - lms-payments: added 'check_invoices' option [foxman]
   - if user doesn't have finances management privilege then he can't see any
     financial information [chilan]
+  - possibility to show selected device or node on map [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 

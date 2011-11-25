@@ -5,6 +5,17 @@ var mappopup = null;
 var lastonline_limit;
 var lmsProjection = new OpenLayers.Projection("EPSG:4326");
 
+function removeInvisiblePopups()
+{
+	// OpenLayers doesn't destroy closed popups, so
+	// we search for them here and destroy if there are ...
+	for (var i in map.popups)
+		if (!map.popups[i].visible()) {
+			alert('Invisible popup ' + map.popups[i].id);
+			map.removePopup(map.popups[i]);
+		}
+}
+
 function set_lastonline_limit(sec)
 {
 	lastonline_limit = sec;
@@ -74,6 +85,8 @@ function close_popup(id)
 
 function ping_host(id, ip)
 {
+	removeInvisiblePopups();
+
 	for (var i = 0; i < map.popups.length, map.popups[i].id != id; i++);
 	var popupid = id;
 	var pingContentsRequest = OpenLayers.Request.issue({
@@ -121,7 +134,7 @@ function findFeaturesIntersection(selectFeature, feature)
 	return features;
 }
 
-function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selection)
+function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selection, startLon, startLat)
 {
 	var linkstyles = [
 		{ strokeColor: '#00ff00', strokeOpacity: 0.5, strokeWidth: 2 },
@@ -491,22 +504,32 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 
 	var loadedSettings = false;
 	var mapSettings = getCookie('mapSettings');
+	var lon = null, lat = null, zoom = null;
 	if (mapSettings != null) {
 		var mapData = mapSettings.split(';');
 		if (mapData.length == 3) {
 			var lon = parseFloat(mapData[0]);
 			var lat = parseFloat(mapData[1]);
 			var zoom = parseInt(mapData[2]);
-			map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
 			loadedSettings = true;
 		}
 	}
 
-	if (!loadedSettings)
-		if (deviceArray || nodeArray)
-			map.zoomToExtent(area);
+	if (startLon != null && startLat != null)
+		if (zoom)
+			map.setCenter(new OpenLayers.LonLat(startLon, startLat)
+					.transform(lmsProjection, map.getProjectionObject()), zoom);
 		else
-			map.zoomToMaxExtent();
+			map.setCenter(new OpenLayers.LonLat(startLon, startLat)
+					.transform(lmsProjection, map.getProjectionObject()));
+	else
+		if (loadedSettings)
+			map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+		else
+			if (deviceArray || nodeArray)
+				map.zoomToExtent(area);
+			else
+				map.zoomToMaxExtent();
 
 	// register events to save map settings to cookies
 	map.events.register('changelayer', map, function(e) {
@@ -525,6 +548,10 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 	});
 	map.events.register('moveend', map, function(e) {
 		setCookie('mapSettings',  map.getCenter().lon + ';' + map.getCenter().lat + ';' + map.getZoom(), true);
+	});
+
+	map.events.register('mousemove', map, function(e) {
+		removeInvisiblePopups();
 	});
 
 	return map;

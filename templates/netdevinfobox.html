@@ -113,6 +113,13 @@
 			{$netdevinfo.latitude}
 		</TD>
 	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="2%" COLSPAN="2">
+		</TD>
+		<TD WIDTH="98%">
+			<a HREF="?m=netdevmap&netdevid={$netdevinfo.id}"><img src="img/network.gif" alt=""> {t}Show on map{/t} &raquo;&raquo;&raquo;</a>
+		</TD>
+	</TR>
 	{/if}
 {if $_config.phpui.radius|chkconfig}
 	{if $netdevinfo.shortname}

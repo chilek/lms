@@ -2512,6 +2512,7 @@ $_LANG['GPS longitude:'] = 'Długość geograficzna:';
 $_LANG['Click to select gps coordinates from map'] = 'Kliknij w celu wybrania współrzędnych geograficznych z mapy';
 $_LANG['Select gps coordinates'] = 'Wybierz współrzędne geograficzne';
 $_LANG['Select gps coordinates:'] = 'Wybierz współprzędne geograficzne:';
+$_LANG['Show on map'] = 'Pokaż na mapie';
 
 $_LANG['$a bytes from $b: icmp_req=$c ttl=$d time=$e'] = '$a bajtów od $b: icmp_req=$c ttl=$d czas=$e';
 $_LANG['Destination Host Unreachable'] = 'Urządzenie docelowe jest nieosiągalne';
@@ -2520,5 +2521,4 @@ $_LANG['Auto Scroll'] = 'Automatyczne przewijanie';
 $_LANG['Enter IP address:'] = 'Podaj adres IP:';
 $_LANG['Ping to $a'] = 'Ping do $a';
 $_LANG['Enabled'] = 'Włączony';
-
 ?>
