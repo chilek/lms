@@ -596,7 +596,7 @@ if ($merge)
 {
     my $node_update = $dbase->prepare("UPDATE nodes SET location_city = ?, location_street = ?,
         location_house = ?, location_flat = ? WHERE id = ?");
-    my $street_get = $dbase->prepare("SELECT s.id, cityid
+    my $street_get = $dbase->prepare("SELECT s.id, s.cityid
         FROM location_streets s
         JOIN location_cities c ON (s.cityid = c.id)
         WHERE s.name = ? AND c.name = ? LIMIT 1");
