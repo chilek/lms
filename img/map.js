@@ -142,7 +142,10 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		{ strokeColor: '#ff0000', strokeOpacity: 0.5, strokeWidth: 2 }
 	];
 
-	var map = new OpenLayers.Map("map");
+	var map = new OpenLayers.Map("map", {
+		controls: [new OpenLayers.Control.KeyboardDefaults(),
+			new OpenLayers.Control.PanZoomBar(),
+			new OpenLayers.Control.Navigation()] });
 	var gsat = new OpenLayers.Layer.Google("Google Satellite",
 		{type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 20, visibility: false});
 	var gphy = new OpenLayers.Layer.Google("Google Physical",
