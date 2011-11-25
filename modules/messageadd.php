@@ -311,7 +311,7 @@ if(isset($_POST['message']))
 			}
 			else
 			{
-				$row['destination'] = preg_replace('/[^\+0-9]/', '', $row['destination']);
+				$row['destination'] = preg_replace('/[^0-9]/', '', $row['destination']);
 				echo '<img src="img/sms.gif" border="0" align="absmiddle" alt=""> ';
 			}
 
