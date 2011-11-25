@@ -2521,4 +2521,9 @@ $_LANG['Auto Scroll'] = 'Automatyczne przewijanie';
 $_LANG['Enter IP address:'] = 'Podaj adres IP:';
 $_LANG['Ping to $a'] = 'Ping do $a';
 $_LANG['Enabled'] = 'Włączony';
+
+$_LANG['any sms'] = 'dowolny sms';
+$_LANG['Enter phone numbers separated by commas'] = 'Podaj numery telefonów oddzielone przecinkami';
+$_LANG['Specified phone number is not correct!'] = 'Podany numer telefonu nie jest poprawny!';
+
 ?>

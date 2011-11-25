@@ -47,6 +47,7 @@ define('MSG_DRAFT', 4);
 
 define('MSG_MAIL', 1);
 define('MSG_SMS', 2);
+define('MSG_ANYSMS', 3);
 
 // Account types
 define('ACCOUNT_SHELL', 1);

@@ -17,17 +17,22 @@
 	}
 	function typesel(elem)
 	{
-		if(elem == 'typesms') {
+		if(elem == 'typesms' || elem == 'typeanysms') {
 			document.getElementById('mailbody').style.display = 'none';
 			document.getElementById('mailfrom').style.display = 'none';
 			document.getElementById('mailsender').style.display = 'none';
 			document.getElementById('attachment').style.display = 'none';
+			if (elem == 'typeanysms')
+				document.getElementById('phonenumber').style.display = 'table-row';
+			else
+				document.getElementById('phonenumber').style.display = 'none';
 			document.getElementById('smsbody').style.display = 'table-row';
 		} else {
 			document.getElementById('mailbody').style.display = '';
 			document.getElementById('mailfrom').style.display = '';
 			document.getElementById('mailsender').style.display = '';
 			document.getElementById('attachment').style.display = '';
+			document.getElementById('phonenumber').style.display = 'none';
 			document.getElementById('smsbody').style.display = 'none';
 		}
 	}
@@ -121,11 +126,12 @@
 			<B>{t}Type:{/t}</B>
 		</TD>
 		<TD CLASS="FRIGHT" WIDTH="98%">
-			<INPUT type="radio" NAME="message[type]" id="typemail" value="{$smarty.const.MSG_MAIL}"{if $message.type != $smarty.const.MSG_SMS} CHECKED{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typemail"><B>{t}email{/t}</B></label>
+			<INPUT type="radio" NAME="message[type]" id="typemail" value="{$smarty.const.MSG_MAIL}"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} CHECKED{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typemail"><B>{t}email{/t}</B></label>
 			<INPUT type="radio" NAME="message[type]" id="typesms" value="{$smarty.const.MSG_SMS}"{if $message.type == $smarty.const.MSG_SMS} CHECKED{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typesms"><B>{t}sms{/t}</B></label>
+			<INPUT type="radio" NAME="message[type]" id="typeanysms" value="{$smarty.const.MSG_ANYSMS}"{if $message.type == $smarty.const.MSG_ANYSMS} CHECKED{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typeanysms"><B>{t}any sms{/t}</B></label>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT" ID="mailsender"{if $message.type == $smarty.const.MSG_SMS} style="display: none"{/if}>
+	<TR CLASS="LIGHT" ID="mailsender"{if $message.type > $smarty.const.MSG_MAIL} style="display: none"{/if}>
 		<TD CLASS="FLEFT" WIDTH="1%">
 			<IMG SRC="img/email.gif" ALT=""> 
 		</TD>
@@ -136,7 +142,7 @@
 			<INPUT type="text" NAME="message[sender]" SIZE="40" value="{if $message.sender}{$message.sender}{elseif $userinfo.email}{$userinfo.email}{/if}" {tip trigger="sender" text="Enter sender e-mail address"}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT" ID="mailfrom"{if $message.type == $smarty.const.MSG_SMS} style="display: none"{/if}>
+	<TR CLASS="LIGHT" ID="mailfrom"{if $message.type > $smarty.const.MSG_MAIL} style="display: none"{/if}>
 		<TD CLASS="FLEFT" WIDTH="1%">
 			<IMG SRC="img/users.gif" ALT=""> 
 		</TD>
@@ -145,6 +151,17 @@
 		</TD>
 		<TD CLASS="FRIGHT" WIDTH="98%">
 			<INPUT type="text" NAME="message[from]" SIZE="40"  VALUE="{if $message.from}{$message.from}{elseif $userinfo.name}{$userinfo.name}{/if}" {tip trigger="from" text="Enter sender name"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT" ID="phonenumber"{if $message.type != $smarty.const.MSG_ANYSMS} style="display: none"{/if}>
+		<TD CLASS="FLEFT" WIDTH="1%">
+			<IMG SRC="img/sms.gif" ALT=""> 
+		</TD>
+		<TD WIDTH="1%">
+			<B>{t}Phone number:{/t}</B>
+		</TD>
+		<TD CLASS="FRIGHT" WIDTH="98%">
+			<INPUT type="text" NAME="message[phonenumber]" SIZE="60" VALUE="{$message.phonenumber}" {tip trigger="phonenumber" text="Enter phone numbers separated by commas"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -158,7 +175,7 @@
 			<INPUT type="text" NAME="message[subject]" SIZE="60" VALUE="{$message.subject}" {tip trigger="subject" text="Enter message subject"}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT" ID="mailbody"{if $message.type == $smarty.const.MSG_SMS} style="display: none"{/if}>
+	<TR CLASS="LIGHT" ID="mailbody"{if $message.type > $smarty.const.MSG_MAIL} style="display: none"{/if}>
 		<TD CLASS="FLEFT" WIDTH="1%">
 			<IMG SRC="img/edit.gif" ALT=""> 
 		</TD>
@@ -169,7 +186,7 @@
 			<TEXTAREA NAME="message[mailbody]" COLS="80" ROWS="20" {tip text="Use carriage return for indentation only. LMS will reformat paragraphs and break long lines." trigger="body"}>{$message.body}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT" ID="smsbody"{if $message.type != $smarty.const.MSG_SMS} style="display: none"{/if}>
+	<TR CLASS="LIGHT" ID="smsbody"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} style="display: none"{/if}>
 		<TD CLASS="FLEFT" WIDTH="1%">
 			<IMG SRC="img/edit.gif" ALT=""> 
 		</TD>
@@ -180,7 +197,7 @@
 			<TEXTAREA NAME="message[smsbody]" COLS="60" ROWS="5" {tip text="Enter message body" trigger="body"}>{$message.body}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT" ID="attachment"{if $message.type == $smarty.const.MSG_SMS} style="display: none"{/if}>
+	<TR CLASS="LIGHT" ID="attachment"{if $message.type > $smarty.const.MSG_MAIL} style="display: none"{/if}>
 		<TD WIDTH="1%" CLASS="fleft">
 			<IMG src="img/attach.gif" alt="">
 		</TD>
