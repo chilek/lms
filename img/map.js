@@ -145,7 +145,8 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 	var map = new OpenLayers.Map("map", {
 		controls: [new OpenLayers.Control.KeyboardDefaults(),
 			new OpenLayers.Control.PanZoomBar(),
-			new OpenLayers.Control.Navigation()] });
+			new OpenLayers.Control.Navigation(),
+			new OpenLayers.Control.Permalink("Permalink")] });
 	var gsat = new OpenLayers.Layer.Google("Google Satellite",
 		{type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 20, visibility: false});
 	var gphy = new OpenLayers.Layer.Google("Google Physical",
