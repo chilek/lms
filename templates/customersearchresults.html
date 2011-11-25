@@ -45,8 +45,8 @@
 			{t}Services:{/t}
 		</TD>
 		<TD width="1%" class="fbt" ALIGN="right" valign="top">
-			<a href="?m=customersearch&search=1&o=balance{if $listdata.direction eq "asc" && $listdata.order eq "balance"},desc{/if}">{t}Balance:{/t}</A>&nbsp;{if $listdata.order eq "balance"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<a href="?m=customersearch&search=1&o=tariff{if $listdata.direction eq "asc" && $listdata.order eq "tariff"},desc{/if}">{t}Subscription:{/t}</A>&nbsp;{if $listdata.order eq "tariff"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			{if $_config.privileges.finances_management|chkconfig || $adminuser}<a href="?m=customersearch&search=1&o=balance{if $listdata.direction eq "asc" && $listdata.order eq "balance"},desc{/if}">{t}Balance:{/t}</A>&nbsp;{if $listdata.order eq "balance"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<a href="?m=customersearch&search=1&o=tariff{if $listdata.direction eq "asc" && $listdata.order eq "tariff"},desc{/if}">{t}Subscription:{/t}</A>&nbsp;{if $listdata.order eq "tariff"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}{/if}
 		</TD>
 		<TD width="1%" class="frightu" align="right" nowrap>
 			<B>{t a=$listdata.total|default:"0"}Total: $a{/t}</B>&nbsp;
@@ -78,7 +78,9 @@
 			{/if}
 		</TD>
 		<TD align="right" valign="top" NOWRAP>
+			{if $_config.privileges.finances_management|chkconfig || $adminuser}
 			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALT="">{if $customerlist[customerlist].balance < 0}<font class="alert">{/if}{$customerlist[customerlist].balance|money_format}{if $customerlist[customerlist].balance < 0}</FONT>{/if}<BR><IMG src="img/empty.gif" width="1" height="16" ALT=""><FONT CLASS="blend">{$customerlist[customerlist].tariffvalue|money_format}</FONT></NOBR>
+			{/if}
 		</TD>
 		<TD class="fright" align="right">
 			<NOBR>
@@ -156,12 +158,16 @@
 			&nbsp;
 		</TD>
 		<TD class="fbt"" align="right">
+			{if ($_config.privileges.finances_management|chkconfig && !$_config.privileges.hide_summaries|chkconfig) || $adminuser}
 			<B>{t}Outstandings{/t}:<BR>
 			{t}Overcharges{/t}:</B>
+			{/if}
 		</TD>
 		<TD class="fbt" align="right" nowrap>
+			{if ($_config.privileges.finances_management|chkconfig && !$_config.privileges.hide_summaries|chkconfig) || $adminuser}
 			<B>{$listdata.below|money_format}<BR>
 			{$listdata.over|money_format}</B>
+			{/if}
 		</TD>
 		<TD class="frightu" align="right" valign="top" nowrap>
 			<B>{t}Total:{/t} {$listdata.total|default:"0"}</B>&nbsp;
