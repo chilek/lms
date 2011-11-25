@@ -26,13 +26,15 @@
 			{t}Phone{/t}
 		</TD>
 		<TD CLASS="HEAD" VALIGN="TOP" ALIGN="RIGHT">
-			{t}Subscription{/t}<BR>
+			{if $_config.privileges.finances_management|chkconfig || $adminuser}{t}Subscription{/t}<BR>{/if}
 			{t}E-mail{/t}<BR>
 			{t}TEN/SSN{/t}
 		</TD>
+		{if $_config.privileges.finances_management|chkconfig || $adminuser}
 		<TD CLASS="HEAD" ALIGN="RIGHT">
 			{t}Balance{/t}
 		</TD>
+		{/if}
 	</TR>
 	{cycle values="white,grey" print=false}
 	{section name=customerlist loop=$customerlist}{if $customerlist[customerlist].id}
@@ -49,19 +51,23 @@
 			{$contactlist.$cid.phone}
 		</TD>
 		<TD ALIGN="RIGHT">
-			{$customerlist[customerlist].tariffvalue|money_format}<BR>
+			{if $_config.privileges.finances_management|chkconfig || $adminuser}{$customerlist[customerlist].tariffvalue|money_format}<BR>{/if}
 			{$customerlist[customerlist].email}<BR>
 			{if $customerlist[customerlist].ten}{$customerlist[customerlist].ten}{else}{$customerlist[customerlist].ssn}{/if}
 		</TD>
+		{if $_config.privileges.finances_management|chkconfig || $adminuser}
 		<TD ALIGN="RIGHT" NOWRAP>
 			{$customerlist[customerlist].balance|money_format} 
 		</TD>
+		{/if}
 	</TR>
 	{/if}{/section}
+	{if ($_config.privileges.finances_management|chkconfig && !$_config.privileges.hide_summaries|chkconfig) || $adminuser}
 	<TR class="grey">
 		<TD COLSPAN="3" ALIGN="RIGHT"><B>{t}Total:{/t}</B></TD>
 		<TD ALIGN="RIGHT" NOWRAP><B>{sum array=$customerlist column="tariffvalue" string_format=$LANGDEFS.$_language.money_format}</B></TD>
 		<TD ALIGN="RIGHT" NOWRAP><B>{sum array=$customerlist column="balance" string_format=$LANGDEFS.$_language.money_format}</B></TD>
 	</TR>
+	{/if}
 </TABLE>
 {include file="clearfooter.html"}
