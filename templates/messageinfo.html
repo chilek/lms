@@ -126,7 +126,11 @@
 	{assign var=item value=$itemlist[itemlist]}
 	<TR class="{cycle}{if $item.status==$smarty.const.MSG_ERROR} alert{elseif $item.status==$smarty.const.MSG_SENT} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
-			<A href="?m=customerinfo&id={$item.customerid}">{$item.customer|truncate:45:"...":true} ({$item.customerid|string_format:"%04d"})</A>
+			{if $item.customerid}
+				<A href="?m=customerinfo&id={$item.customerid}">{$item.customer|truncate:45:"...":true} ({$item.customerid|string_format:"%04d"})</A>
+			{else}
+				{t}none{/t}
+			{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			{$item.destination|escape}

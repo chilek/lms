@@ -70,6 +70,7 @@ version ? (????-??-??):
   - if user doesn't have finances management privilege then he can't see any
     financial information [chilan]
   - possibility to show selected device or node on map [chilan]
+  - we can send sms to any phone number from outside database [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 

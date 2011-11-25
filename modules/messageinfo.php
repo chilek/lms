@@ -27,13 +27,13 @@
 function GetItemList($id, $order='id,desc', $search=NULL, $cat=NULL, $status=NULL)
 {
 	global $DB;
-	
+
 	if($order=='')
 		$order='id,desc';
-	
+
 	list($order,$direction) = sscanf($order, '%[^,],%s');
 	($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
-	
+
 	switch($order)
 	{
 		case 'customer':
@@ -46,10 +46,10 @@ function GetItemList($id, $order='id,desc', $search=NULL, $cat=NULL, $status=NUL
 			$sqlord = ' ORDER BY i.id';
 		break;
 	}
-	
+
 	if($search!='' && $cat)
-        {
-	        switch($cat)
+	{
+		switch($cat)
 		{
 			case 'customerid':
 				$where[] = ' i.customerid = '.intval($search);
@@ -62,7 +62,7 @@ function GetItemList($id, $order='id,desc', $search=NULL, $cat=NULL, $status=NUL
 			break;
 		}
 	}
-	
+
 	if($status)
 	{
 		switch($status)
@@ -73,31 +73,31 @@ function GetItemList($id, $order='id,desc', $search=NULL, $cat=NULL, $status=NUL
 				$where[] = 'i.status = '.$status;
 			break;
 		}
-        }
-	
+	}
+
 	if(!empty($where))
 		$where = ' AND '.implode(' AND ', $where);
-	
+
 	$result = $DB->GetAll('SELECT i.id, i.customerid, i.status, i.error,
 			i.destination, i.lastdate, '
 			.$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customer
-	    	FROM messageitems i
-		JOIN customers c ON (c.id = i.customerid)
+		FROM messageitems i
+		LEFT JOIN customers c ON (c.id = i.customerid)
 		LEFT JOIN (
 			SELECT DISTINCT a.customerid FROM customerassignments a
-			    JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 			WHERE e.userid = lms_current_user()
 		) e ON (e.customerid = c.id) 
 		WHERE e.customerid IS NULL AND i.messageid = '.intval($id)
 		.(!empty($where) ? $where : '')
-    		.$sqlord.' '.$direction);
+		.$sqlord.' '.$direction);
 
 	$result['status'] = $status;
 	$result['order'] = $order;
 	$result['direction'] = $direction;
-			
+
 	return $result;
-}																																																																																																					       
+}
 
 $message = $DB->GetRow('SELECT m.*, u.name
 		FROM messages m
@@ -160,8 +160,8 @@ unset($itemlist['direction']);
 $listdata['total'] = sizeof($itemlist);
 
 if ($SESSION->is_set('milp') && !isset($_GET['page']))
-        $SESSION->restore('milp', $_GET['page']);
-	
+	$SESSION->restore('milp', $_GET['page']);
+
 $page = (empty($_GET['page']) ? 1 : $_GET['page']);
 $pagelimit = (empty($CONFIG['phpui']['messagelist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['messagelist_pagelimit']);
 $SESSION->save('milp', $page);
