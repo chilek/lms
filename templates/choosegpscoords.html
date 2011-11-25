@@ -78,7 +78,10 @@
 			{/foreach}
 		{/if}
 
-		map = createMap(devices, devlinks, nodes, nodelinks, false);
+		if (targetfield1.value.match(/[0-9]+\.[0-9]+/) && targetfield2.value.match(/[0-9]+\.[0-9]+/))
+			map = createMap(devices, devlinks, nodes, nodelinks, false, targetfield1.value, targetfield2.value);
+		else
+			map = createMap(devices, devlinks, nodes, nodelinks, false);
 
 		map.events.register("click", map,
 			function(e) {

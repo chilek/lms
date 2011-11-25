@@ -332,8 +332,8 @@ if ($type == 'openlayers')
 		if (isset($_GET['nodeid']))
 		{
 			$nodeid = intval($_GET['nodeid']);
-			$SMARTY->assign('lon', $devices[$nodeid]['lon']);
-			$SMARTY->assign('lat', $devices[$nodeid]['lat']);
+			$SMARTY->assign('lon', $nodes[$nodeid]['lon']);
+			$SMARTY->assign('lat', $nodes[$nodeid]['lat']);
 		}
 
 	$SMARTY->assign('type', $type);
