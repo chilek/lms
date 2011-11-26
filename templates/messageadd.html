@@ -251,7 +251,12 @@
 <!--
 document.forms['message'].elements['message[sender]'].focus();
 countChars(document.getElementById('smstext'));
-multiselect('message', 'messageusers', '{t}- none -{/t}');
+
+var users = [];
+{foreach $message.users as $phone}
+	users.push('{$phone}');
+{/foreach}
+multiselect('message', 'messageusers', '{t}- none -{/t}', users);
 //-->
 </SCRIPT>
 {include file="footer.html"}
