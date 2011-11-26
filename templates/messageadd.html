@@ -23,6 +23,7 @@
 			document.getElementById('mailfrom').style.display = 'none';
 			document.getElementById('mailsender').style.display = 'none';
 			document.getElementById('attachment').style.display = 'none';
+			{if !$message.customerid}
 			if (elem == 'typeanysms') {
 				document.getElementById('phonenumber').style.display = 'table-row';
 				document.getElementById('users').style.display = 'table-row';
@@ -30,6 +31,7 @@
 				document.getElementById('phonenumber').style.display = 'none';
 				document.getElementById('users').style.display = 'none';
 			}
+			{/if}
 			document.getElementById('smsbody').style.display = 'table-row';
 			document.getElementById('charscount').style.display = 'table-row';
 		} else {
@@ -139,7 +141,9 @@
 		<TD CLASS="FRIGHT" WIDTH="98%">
 			<INPUT type="radio" NAME="message[type]" id="typemail" value="{$smarty.const.MSG_MAIL}"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} CHECKED{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typemail"><B>{t}email{/t}</B></label>
 			<INPUT type="radio" NAME="message[type]" id="typesms" value="{$smarty.const.MSG_SMS}"{if $message.type == $smarty.const.MSG_SMS} CHECKED{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typesms"><B>{t}sms{/t}</B></label>
+			{if !$message.customerid}
 			<INPUT type="radio" NAME="message[type]" id="typeanysms" value="{$smarty.const.MSG_ANYSMS}"{if $message.type == $smarty.const.MSG_ANYSMS} CHECKED{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typeanysms"><B>{t}any sms{/t}</B></label>
+			{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT" ID="mailsender"{if $message.type > $smarty.const.MSG_MAIL} style="display: none"{/if}>
@@ -164,6 +168,7 @@
 			<INPUT type="text" NAME="message[from]" SIZE="40"  VALUE="{if $message.from}{$message.from}{elseif $userinfo.name}{$userinfo.name}{/if}" {tip trigger="from" text="Enter sender name"}>
 		</TD>
 	</TR>
+{if !$message.customerid}
 	<TR CLASS="LIGHT" ID="users"{if $message.type != $smarty.const.MSG_ANYSMS} style="display: none"{/if}>
 		<TD CLASS="FLEFT" WIDTH="1%">
 			<IMG SRC="img/users.gif" ALT=""> 
@@ -189,6 +194,7 @@
 			<INPUT type="text" NAME="message[phonenumber]" SIZE="60" VALUE="{$message.phonenumber}" {tip trigger="phonenumber" text="Enter phone numbers separated by commas"}>
 		</TD>
 	</TR>
+{/if}
 	<TR CLASS="LIGHT">
 		<TD CLASS="FLEFT" WIDTH="1%">
 			<IMG SRC="img/mail.gif" ALT=""> 
