@@ -213,7 +213,7 @@ function get_object_pos(obj)
 	return {x:x, y:y};
 }
 
-function multiselect(formid, elemid, def)
+function multiselect(formid, elemid, def, selected)
 {
 	var old_element = document.getElementById(elemid);
 	var form = document.getElementById(formid);
@@ -222,11 +222,15 @@ function multiselect(formid, elemid, def)
 		return;
 	}
 
+	var selected_elements = null;
+	if (selected)
+		selected_elements = '|' + selected.join('|') + '|';
+
 	// create new multiselect div
 	var new_element = document.createElement('DIV');
 	new_element.className = 'multiselect';
 	new_element.id = elemid;
-	new_element.innerHTML = def ? def : '';
+	new_element.innerHTML = def && !selected ? def : '';
 
 	// save (overlib) popups
 	new_element.onmouseover = old_element.onmouseover;
@@ -253,6 +257,10 @@ function multiselect(formid, elemid, def)
 		box.type = 'checkbox';
 		box.name = old_element.name;
 		box.value = old_element.options[i].value;
+		if (selected_elements && selected_elements.indexOf('|' + old_element.options[i].value + '|') != -1) {
+			box.checked = true;
+			addClass(li, 'selected');
+		}
 
 		span.innerHTML = old_element.options[i].text;
 

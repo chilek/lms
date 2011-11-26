@@ -2525,5 +2525,7 @@ $_LANG['Enabled'] = 'Włączony';
 $_LANG['any sms'] = 'dowolny sms';
 $_LANG['Enter phone numbers separated by commas'] = 'Podaj numery telefonów oddzielone przecinkami';
 $_LANG['Specified phone number is not correct!'] = 'Podany numer telefonu nie jest poprawny!';
+$_LANG['Characters:'] = 'Znaków:';
+$_LANG['Select users'] = 'Wybierz użytkowników';
 
 ?>
