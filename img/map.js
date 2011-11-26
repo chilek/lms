@@ -85,7 +85,7 @@ function close_popup(id)
 
 function ping_host(id, ip)
 {
-	removeInvisiblePopups();
+	//removeInvisiblePopups();
 
 	for (var i = 0; i < map.popups.length, map.popups[i].id != id; i++);
 	var popupid = id;
@@ -554,9 +554,9 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		setCookie('mapSettings',  map.getCenter().lon + ';' + map.getCenter().lat + ';' + map.getZoom(), true);
 	});
 
-	map.events.register('mousemove', map, function(e) {
-		removeInvisiblePopups();
-	});
+	//map.events.register('mousemove', map, function(e) {
+	//	removeInvisiblePopups();
+	//});
 
 	return map;
 }
