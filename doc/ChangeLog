@@ -71,6 +71,7 @@ version ? (????-??-??):
     financial information [chilan]
   - possibility to show selected device or node on map [chilan]
   - we can send sms to any phone number from outside database [chilan]
+  - can send any sms to selected users [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 

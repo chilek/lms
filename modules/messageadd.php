@@ -180,7 +180,9 @@ if(isset($_POST['message']))
 			$message['phonenumber'] = preg_replace('/[ \t]/', '', $message['phonenumber']);
 			if (preg_match('/^[\+]?[0-9]+(,[\+]?[0-9]+)*$/', $message['phonenumber']))
 				$phonenumbers = preg_split('/,/', $message['phonenumber']);
-			else
+			if (count($message['users']))
+				$phonenumbers = array_merge($phonenumbers, $message['users']);
+			if (empty($phonenumbers))
 				$error['phonenumber'] = trans('Specified phone number is not correct!');
 		}
 	}
@@ -374,6 +376,7 @@ $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 $SMARTY->assign('userinfo', $LMS->GetUserInfo($AUTH->id));
+$SMARTY->assign('users', $DB->GetAll('SELECT name, phone FROM users WHERE phone <> \'\' ORDER BY name'));
 $SMARTY->display('messageadd.html');
 
 ?>

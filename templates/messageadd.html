@@ -1,7 +1,7 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<FORM name="message" method="post" action="?m=messageadd" enctype="multipart/form-data">
+<FORM name="message" id="message" method="post" action="?m=messageadd" enctype="multipart/form-data">
 <INPUT type="submit" class="hiddenbtn">
 <SCRIPT type="text/javascript">
 <!--
@@ -15,6 +15,7 @@
 		else
 			return 0;
 	}
+
 	function typesel(elem)
 	{
 		if(elem == 'typesms' || elem == 'typeanysms') {
@@ -22,11 +23,15 @@
 			document.getElementById('mailfrom').style.display = 'none';
 			document.getElementById('mailsender').style.display = 'none';
 			document.getElementById('attachment').style.display = 'none';
-			if (elem == 'typeanysms')
+			if (elem == 'typeanysms') {
 				document.getElementById('phonenumber').style.display = 'table-row';
-			else
+				document.getElementById('users').style.display = 'table-row';
+			} else {
 				document.getElementById('phonenumber').style.display = 'none';
+				document.getElementById('users').style.display = 'none';
+			}
 			document.getElementById('smsbody').style.display = 'table-row';
+			document.getElementById('charscount').style.display = 'table-row';
 		} else {
 			document.getElementById('mailbody').style.display = '';
 			document.getElementById('mailfrom').style.display = '';
@@ -34,7 +39,13 @@
 			document.getElementById('attachment').style.display = '';
 			document.getElementById('phonenumber').style.display = 'none';
 			document.getElementById('smsbody').style.display = 'none';
+			document.getElementById('charscount').style.display = 'none';
 		}
+	}
+
+	function countChars(elem)
+	{
+		document.getElementById('charscounttext').innerHTML = elem.value.length;
 	}
 -->
 </SCRIPT>
@@ -153,6 +164,20 @@
 			<INPUT type="text" NAME="message[from]" SIZE="40"  VALUE="{if $message.from}{$message.from}{elseif $userinfo.name}{$userinfo.name}{/if}" {tip trigger="from" text="Enter sender name"}>
 		</TD>
 	</TR>
+	<TR CLASS="LIGHT" ID="users"{if $message.type != $smarty.const.MSG_ANYSMS} style="display: none"{/if}>
+		<TD CLASS="FLEFT" WIDTH="1%">
+			<IMG SRC="img/users.gif" ALT=""> 
+		</TD>
+		<TD WIDTH="1%">
+			<B>{t}Users:{/t}</B>
+		</TD>
+		<TD CLASS="FRIGHT" WIDTH="98%">
+			<SELECT size="4" name="message[users][]" MULTIPLE id="messageusers" {tip text="Select users"}>
+			{section name="users" loop=$users}
+				<OPTION value="{$users[users].phone}">{$users[users].name|truncate:30:"...":true}</OPTION>
+			{/section}
+		</TD>
+	</TR>
 	<TR CLASS="LIGHT" ID="phonenumber"{if $message.type != $smarty.const.MSG_ANYSMS} style="display: none"{/if}>
 		<TD CLASS="FLEFT" WIDTH="1%">
 			<IMG SRC="img/sms.gif" ALT=""> 
@@ -194,8 +219,15 @@
 			<B>{t}Message body:{/t}</B>
 		</TD>
 		<TD CLASS="FRIGHT" WIDTH="98%">
-			<TEXTAREA NAME="message[smsbody]" COLS="60" ROWS="5" {tip text="Enter message body" trigger="body"}>{$message.body}</TEXTAREA>
+			<TEXTAREA NAME="message[smsbody]" ID="smstext" COLS="60" ROWS="5" onkeydown="countChars(this)" onkeyup="countChars(this)" onmouseout="countChars(this)" {tip text="Enter message body" trigger="body"}>{$message.body}</TEXTAREA>
 		</TD>
+	</TR>
+	<TR CLASS="LIGHT" ID="charscount"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} style="display: none"{/if}>
+		<TD CLASS="FLEFT" WIDTH="1%"></TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Characters:{/t}</B>
+		</TD>
+		<TD CLASS="FRIGHT" WIDTH="98%" ID="charscounttext">0</TD>
 	</TR>
 	<TR CLASS="LIGHT" ID="attachment"{if $message.type > $smarty.const.MSG_MAIL} style="display: none"{/if}>
 		<TD WIDTH="1%" CLASS="fleft">
@@ -204,7 +236,7 @@
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Attachment:{/t}</B>
 		</TD>
-		<TD WIDTH="99%" CLASS="fright">
+		<TD WIDTH="98%" CLASS="fright">
 			<INPUT name="file" type="file" size="60" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
 		</TD>
 	</TR>
@@ -218,6 +250,8 @@
 <SCRIPT type="text/javascript">
 <!--
 document.forms['message'].elements['message[sender]'].focus();
+countChars(document.getElementById('smstext'));
+multiselect('message', 'messageusers', '{t}- none -{/t}');
 //-->
 </SCRIPT>
 {include file="footer.html"}
