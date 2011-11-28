@@ -181,9 +181,9 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	g->db_free(&res);
 
     // existing nodes with current config for insert, update or delete (if access=0)
-	query = strdup("SELECT n.id, n.ipaddr, n.access "
-	        "(SELECT m.mac FROM macs m WHERE m.nodeid = n.id ORDER BY m.id LIMIT 1) AS mac, "
-	        "INET_NTOA(n.ipaddr) AS ip, LOWER(n.name) AS name, n.passwd, n.chkmac "
+	query = strdup("SELECT n.id, n.ipaddr, n.access, "
+		"(SELECT m.mac FROM macs m WHERE m.nodeid = n.id ORDER BY m.id LIMIT 1) AS mac, "
+		"INET_NTOA(n.ipaddr) AS ip, LOWER(n.name) AS name, n.passwd, n.chkmac "
 		"FROM nodes n "
 		"WHERE 1=1 "
 		// skip disabled nodes when aren't in ewx_pt_config
