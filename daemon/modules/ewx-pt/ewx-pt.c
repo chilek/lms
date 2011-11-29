@@ -169,13 +169,13 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	for (hc=0; hc<g->db_nrows(res); hc++)
 	{
 	    hosts = (struct host*) realloc(hosts, (sizeof(struct host) * (hc+1)));
-        hosts[hc].id     = atoi(g->db_get_data(res, anc, "nodeid"));
-        hosts[hc].nodeid = atoi(g->db_get_data(res, anc, "id"));
-		hosts[hc].name   = strdup(g->db_get_data(res, anc, "name"));
-		hosts[hc].mac    = strdup(g->db_get_data(res, anc, "mac"));
-		hosts[hc].passwd = strdup(g->db_get_data(res, anc, "passwd"));
-	    hosts[hc].ip     = strdup(g->db_get_data(res, anc, "ip"));
-	    hosts[hc].ipaddr = inet_addr(g->db_get_data(res, anc, "ipaddr"));
+        hosts[hc].id     = atoi(g->db_get_data(res, hc, "nodeid"));
+        hosts[hc].nodeid = atoi(g->db_get_data(res, hc, "id"));
+		hosts[hc].name   = strdup(g->db_get_data(res, hc, "name"));
+		hosts[hc].mac    = strdup(g->db_get_data(res, hc, "mac"));
+		hosts[hc].passwd = strdup(g->db_get_data(res, hc, "passwd"));
+	    hosts[hc].ip     = strdup(g->db_get_data(res, hc, "ip"));
+	    hosts[hc].ipaddr = inet_addr(g->db_get_data(res, hc, "ipaddr"));
 	    hosts[hc].status = UNKNOWN;
 	}
 	g->db_free(&res);
@@ -304,9 +304,9 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
             }
             // Other node with matching credentials (name, ip, mac)
             else if (hosts[n].status == UNKNOWN) {
-                if (strcmp(hosts[n].name, h.name)
+                if (!strcmp(hosts[n].name, h.name)
                 ) {
-                    del_node(g, ewx, sh, &hosts[i]);
+                    del_node(g, ewx, sh, &hosts[n]);
                     savetables = 1;
                 }
             }
@@ -321,6 +321,8 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
                 update_node(g, ewx, sh, &h, &hosts[found]);
                 savetables = 1;
             }
+            else
+            	hosts[found].status = STATUS_OK;
         }
         else {
             add_node(g, ewx, sh, &h);
