@@ -515,7 +515,7 @@ int add_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, struct 
 
 		g->db_pexec(g->conn, "INSERT INTO ewx_pt_config (nodeid, name, passwd, ipaddr, mac) "
 		    "VALUES (?, '?', '?', INET_ATON('?'), '?')",
-		    h.id, h.name, h.passwd, h.ip, h.mac);
+		    itoa(h.id), h.name, h.passwd, h.ip, h.mac);
 #ifdef DEBUG1
 		syslog(LOG_INFO, "DEBUG: [%s/ewx-pt] Added node %s (%05d)", ewx->base.instance, h.name, h.id);
 #endif
