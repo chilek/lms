@@ -30,6 +30,7 @@ function refresh($params)
 	// xajax response
 	$objResponse = new xajaxResponse();
 
+	$iface = $params['interface'];
 	$ipaddr = $params['ipaddr'];
 	$received = $params['received'];
 	$transmitted = $params['transmitted'];
@@ -37,6 +38,7 @@ function refresh($params)
 		$cmd = 'sudo ping %i -c 1 -s 1450 -w 1.0';
 	else
 		$cmd = $CONFIG['phpui']['ping_helper'];
+	$cmd = preg_replace('/%if/', $iface, $cmd);
 	$cmd = preg_replace('/%i/', $ipaddr, $cmd);
 	exec($cmd, $output);
 	$sent = preg_grep('/^[0-9]+[[:blank:]]+packets[[:blank:]]+transmitted/i', $output);
@@ -106,7 +108,12 @@ if (isset($_GET['p']))
 $layout['pagetitle'] = trans('Ping');
 
 if (isset($_GET['ip']) && check_ip($_GET['ip']))
+{
 	$SMARTY->assign('ipaddr', $_GET['ip']);
+	$netid = $LMS->GetNetIDByIP($_GET['ip']);
+	if ($netid)
+		$SMARTY->assign('interface', $DB->GetOne('SELECT interface FROM networks WHERE id = ?', array($netid)));
+}
 
 $SMARTY->display('ping.html');
 
