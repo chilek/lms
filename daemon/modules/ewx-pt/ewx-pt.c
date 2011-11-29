@@ -146,7 +146,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 
 				if(j != mnc)
 				{
-	    				syslog(LOG_ERR, "[%s/ewx-stm] Network %s already included in 'dummy_mac_networks' option. Skipping.", all_nets[i].name, ewx->base.instance);
+	    				syslog(LOG_ERR, "[%s/ewx-pt] Network %s already included in 'dummy_mac_networks' option. Skipping.", all_nets[i].name, ewx->base.instance);
 					continue;
 				}
 
