@@ -340,10 +340,9 @@ Rozdział 2. Instalacja i konfiguracja
 
 2.2.2. Interpreter PHP
 
-   Interpreter powinien być w wersji 4.2.x lub nowszej (unikać wersji
-   4.2.2). PHP można ściągnąć ze strony www.php.net. W szczególności
-   wymagane są następujące moduły (sprawdź "extension" w php.ini lub
-   wyjście funkcji phpinfo()):
+   Interpreter powinien być w wersji 5.2.x lub nowszej. PHP można ściągnąć
+   ze strony www.php.net. W szczególności wymagane są następujące moduły
+   (sprawdź "extension" w php.ini lub wyjście funkcji phpinfo()):
      * pcre, posix,
      * zlib (dla kompresowanych backupów),
      * gd i/lub ming (tylko dla mapy sieci),
@@ -362,8 +361,7 @@ Rozdział 2. Instalacja i konfiguracja
 2.2.4. Biblioteka Smarty
 
    LMS-UI do pracy wymaga jeszcze biblioteki Smarty
-   (http://www.smarty.net) w wersji 2.6.0 lub wyższej (unikać wersji
-   2.6.4).
+   (http://www.smarty.net) w wersji 3.0 lub wyższej.
      __________________________________________________________________
 
 2.2.5. Perl
@@ -2209,6 +2207,7 @@ MISC_OTHER="-A -x -j"
    %cid - ID klienta
    %pin - PIN klienta
    %last_10_in_a_table - lista ostatnich 10 operacji na koncie klienta
+   %bankaccount - numer konta bankowego
      __________________________________________________________________
 
 3.10.3. Konfiguracja
@@ -2907,6 +2906,7 @@ Rozdział 4. Skrypty
    lms-fping Badanie aktywności komputerów.
    lms-reminder Przypominanie o zaplanowanych zadaniach z Terminarza
    lms-rtparser Backend do Helpdesk'a.
+   lms-teryt Import bazy TERYT
      __________________________________________________________________
 
 4.3. Opis i konfiguracja
@@ -3864,6 +3864,73 @@ endif
        dane klienta, jeżeli został on rozpoznany po adresie mailowym.
        Domyślnie: włączona.
        Przykład: include_customerinfo = 0
+     __________________________________________________________________
+
+4.3.19. lms-teryt
+
+   Skrypt służący do importu i aktualizacji danych bazy TERYT. Zawiera
+   również możliwość pobrania plików bazy z Internetu, a także procedurę
+   przypisywania identyfikatorów TERYT do istniejących komputerów, które
+   mają zdefiniowany adres ale nie mają przypisanego TERYTu.
+
+   Skrypt zawiera następujące opcje uruchomieniowe, które można łączyć:
+     * -f, --fetch
+       Włącza procedurę pobierania (i rozpakowania) plików bazy TERYT z
+       Internetu. Wymagane jest umożliwienie połączenia HTTP z serwerem
+       określonych w opcji 'url' oraz zainstalowanie programu unzip.
+     * -l, --list=<lista>
+       Zawęża działanie opcji importu/aktualizacji do określonych
+       województw. Podobnie jak w opcji konfiguracyjnej 'state_list'
+       podajemy tutaj numeryczne identyfikatory oddzielone przecinkami. Ze
+       względu na duży rozmiar całej bazy, wskazane jest ograniczenie się
+       tylko do wybranych województw. Identyfikatory można znaleźć w pliku
+       TERC.xml.
+
+       2 - dolnośląskie
+       4 - kujawsko-pomorskie
+       6 - lubelskie
+       8 - lubuskie
+       10 - łódzkie
+       12 - małopolskie
+       14 - mazowieckie
+       16 - opolskie
+       18 - podkarpackie
+       20 - podlaskie
+       22 - pomorskie
+       24 - śląskie
+       26 - świętokrzyskie
+       28 - warmiśko-mazurskie
+       30 - wielkopolskie
+       32 - zachodniopomorskie
+     * -u, --update
+       Import danych do bazy LMSa. Jeśli baza była już wcześniej
+       importowana, nastąpi aktualizacja bazy.
+     * -m, --merge
+       Przypisanie identyfikatorów TERYT dla komputerów/urządzeń, które
+       nie zostały jaszcze przypisane, ale posiadają wpisany adres
+       lokalizacji. Algorytm jest dość prosty i nie ma pewności, że
+       wszystkie adresy zostaną rozpoznane.
+
+   Konfigurację tego skryptu zawiera sekcja [teryt] w pliku lms.ini:
+     * url
+       Adres strony pobierania plików bazy TERYT. Domyślnie zawiera
+       poniższy link.
+       Przykład: url =
+       http://www.stat.gov.pl/broker/access/prefile/listPreFiles.jspa
+     * dir
+       Katalog w którym, są przechowywane rozpakowane pliki (xml) bazy
+       TERYT. W tym katalogu zostaną też zapisane pobrane pliki.
+       Domyślnie: katalog uruchomienia skryptu.
+       Przykład: dir = /var/lib/teryt
+     * unzip_binary
+       Lokalizacja programu unzip. Domyślnie: /usr/bin/unzip.
+       Przykład: unzip_binary = /sbin/unzip
+     * state_list
+       Lista identyfikatorów województw, oddzielonych przecinkami, które
+       będą brane pod uwagę podczas importu. W celu minimalizacji rozmiaru
+       bazy danych i czasu działania skryptu najlepiej ograniczyć się do
+       wybranych województw.
+       Przykład: state_list = 2
      __________________________________________________________________
 
 Rozdział 5. Generator plików konfiguracyjnych (lms-mgc)
