@@ -839,6 +839,7 @@ query = SELECT p.mail_bcc
 			<member><prompt>%cid</prompt> - customer ID</member>
 			<member><prompt>%pin</prompt> - customer PIN</member>
 			<member><prompt>%last_10_in_a_table</prompt> - last 10 operations on customer account</member>
+			<member><prompt>%bankaccount</prompt> - bank account number</member>
 		</simplelist>
 		</para>
 	</sect2>

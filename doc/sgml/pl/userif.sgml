@@ -983,6 +983,7 @@ MISC_OTHER="-A -x -j"
 			<member><prompt>%cid</prompt> - ID klienta</member>
 			<member><prompt>%pin</prompt> - PIN klienta</member>
 			<member><prompt>%last_10_in_a_table</prompt> - lista ostatnich 10 operacji na koncie klienta</member>
+			<member><prompt>%bankaccount</prompt> - numer konta bankowego</member>
 		</simplelist>
 		</para>
 	</sect2>
