@@ -483,7 +483,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	/****** customer payments *******/
 	// let's create main query
 	char *query = strdup("SELECT a.tariffid, a.customerid, a.period, t.period AS t_period, "
-	    "a.at, a.suspended, a.invoice, a.id AS assignmentid, a.settlement, a.datefrom, a.discount, "
+	    "a.at, a.suspended, a.invoice, a.id AS assignmentid, a.settlement, a.datefrom, a.pdiscount, a.vdiscount, "
 		"c.paytype, a.paytype AS a_paytype, a.numberplanid, d.inv_paytype AS d_paytype, "
 		"UPPER(c.lastname) AS lastname, c.name AS custname, c.address, c.zip, c.city, c.ten, c.ssn, "
 		"c.countryid, c.divisionid, c.paytime, "
@@ -491,8 +491,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 		"(CASE a.liabilityid WHEN 0 THEN t.taxid ELSE li.taxid END) AS taxid, "
 		"(CASE a.liabilityid WHEN 0 THEN t.prodid ELSE li.prodid END) AS prodid, "
 		"(CASE a.liabilityid WHEN 0 THEN "
-		    "ROUND(CASE a.discount WHEN 0 THEN t.value ELSE t.value-t.value*discount/100 END, 2) "
-			"ELSE ROUND(CASE a.discount WHEN 0 THEN li.value ELSE li.value-li.value*a.discount/100 END, 2) "
+		    "ROUND((t.value - t.value * a.pdiscount / 100) - a.vdiscount, 2) "
+			"ELSE ROUND((li.value - li.value * a.pdiscount / 100) - a.vdiscount, 2) "
 			"END) AS value "
 		"FROM assignments a "
 		"JOIN customers c ON (a.customerid = c.id) "
@@ -560,15 +560,16 @@ void reload(GLOBAL *g, struct payments_module *p)
 		// payments accounting and invoices writing
 		for(i=0; i<g->db_nrows(res); i++)
 		{
-			char *cid_c    = g->db_get_data(res,i,"customerid");
-			char *discount = g->db_get_data(res,i,"discount");
-			int cid        = atoi(cid_c);
-			int s_state    = atoi(g->db_get_data(res,i,"suspended"));
-			int period     = atoi(g->db_get_data(res,i,"period"));
-			int settlement = atoi(g->db_get_data(res,i,"settlement"));
-			int datefrom   = atoi(g->db_get_data(res,i,"datefrom"));
-			int t_period   = atoi(g->db_get_data(res,i,"t_period"));
-			double val     = atof(g->db_get_data(res,i,"value"));
+			char *cid_c         = g->db_get_data(res,i,"customerid");
+			char *pdiscount     = g->db_get_data(res,i,"pdiscount");
+			char *vdiscount     = g->db_get_data(res,i,"vdiscount");
+			int cid             = atoi(cid_c);
+			int s_state         = atoi(g->db_get_data(res,i,"suspended"));
+			int period          = atoi(g->db_get_data(res,i,"period"));
+			int settlement      = atoi(g->db_get_data(res,i,"settlement"));
+			int datefrom        = atoi(g->db_get_data(res,i,"datefrom"));
+			int t_period        = atoi(g->db_get_data(res,i,"t_period"));
+			double val          = atof(g->db_get_data(res,i,"value"));
 
 			if( !val ) continue;
 
@@ -760,8 +761,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 				invoiceid = strdup(itoa(docid));
 
 				result = g->db_pquery(g->conn, "SELECT itemid FROM invoicecontents "
-				    "WHERE tariffid = ? AND docid = ? AND description = '?' AND value = ? AND discount = ?",
-				    g->db_get_data(res,i,"tariffid"), invoiceid, description, value, discount);
+				    "WHERE tariffid = ? AND docid = ? AND description = '?' AND value = ? AND pdiscount = ? AND vdiscount = ?",
+				    g->db_get_data(res,i,"tariffid"), invoiceid, description, value, pdiscount, vdiscount);
 
 				if( g->db_nrows(result) ) 
 				{
@@ -779,8 +780,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 					itemid++;
 
 					g->db_pexec(g->conn,"INSERT INTO invoicecontents (docid, itemid, value, "
-					        "taxid, prodid, content, count, description, tariffid, discount) "
-					        "VALUES (?, ?, ?, ?, '?', 'szt.', 1, '?', ?, ?)",
+					        "taxid, prodid, content, count, description, tariffid, pdiscount, vdiscount) "
+					        "VALUES (?, ?, ?, ?, '?', 'szt.', 1, '?', ?, ?, ?)",
 						invoiceid,
 						itoa(itemid),
 						value,
@@ -788,7 +789,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 						g->db_get_data(res,i,"prodid"),
 						description,
 						g->db_get_data(res,i,"tariffid"),
-						discount
+						pdiscount,
+						vdiscount
 						);
 
 					g->str_replace(&insert, "%docid", invoiceid);
@@ -870,8 +872,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 						itemid++;
 
 						g->db_pexec(g->conn,"INSERT INTO invoicecontents (docid, itemid, value, taxid, prodid, "
-						        "content, count, description, tariffid, discount) "
-						        "VALUES (?, ?, ?, ?, '?', 'szt.', 1, '?', ?, ?)",
+						        "content, count, description, tariffid, pdiscount, vdiscount) "
+						        "VALUES (?, ?, ?, ?, '?', 'szt.', 1, '?', ?, ?, ?)",
 							invoiceid,
 							itoa(itemid),
 							value,
@@ -879,7 +881,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 							g->db_get_data(res,i,"prodid"),
 							description,
 							g->db_get_data(res,i,"tariffid"),
-							discount
+							pdiscount,
+							vdiscount
 							);
 
 						g->str_replace(&insert, "%docid", invoiceid);

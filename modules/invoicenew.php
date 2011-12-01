@@ -86,7 +86,22 @@ switch($action)
 
 	case 'additem':
 
-		foreach(array('count', 'discount', 'valuenetto', 'valuebrutto') as $key)
+		unset($error);
+
+		$itemdata['discount'] = str_replace(',', '.', $itemdata['discount']);
+		$itemdata['pdiscount'] = 0;
+		$itemdata['vdiscount'] = 0;
+		if (preg_match('/^[0-9]+(\.[0-9]+)*$/', $itemdata['discount'])) {
+			$itemdata['pdiscount'] = ($itemdata['discount_type'] == DISCOUNT_PERCENTAGE ? floatval($itemdata['discount']) : 0);
+			$itemdata['vdiscount'] = ($itemdata['discount_type'] == DISCOUNT_AMOUNT ? floatval($itemdata['discount']) : 0);
+		}
+		if ($itemdata['pdiscount'] < 0 || $itemdata['pdiscount'] > 99.9 || $itemdata['vdiscount'] < 0)
+			$error['discount'] = trans('Wrong discount value!');
+
+		if ($error)
+			break;
+
+		foreach(array('count', 'pdiscount', 'vdiscount', 'valuenetto', 'valuebrutto') as $key)
 			$itemdata[$key] = f_round($itemdata[$key]);
 
 		if($itemdata['count'] > 0 && $itemdata['name'] != '')
@@ -94,12 +109,12 @@ switch($action)
 			$taxvalue = isset($itemdata['taxid']) ? $taxeslist[$itemdata['taxid']]['value'] : 0;
 			if($itemdata['valuenetto'] != 0)
 			{
-				$itemdata['valuenetto'] = f_round($itemdata['valuenetto'] - $itemdata['valuenetto'] * f_round($itemdata['discount'])/100);
+				$itemdata['valuenetto'] = f_round(($itemdata['valuenetto'] - $itemdata['valuenetto'] * $itemdata['pdiscount'] / 100) - $itemdata['vdiscount']);
 				$itemdata['valuebrutto'] = round($itemdata['valuenetto'] * ($taxvalue / 100 + 1),2);
 			}
 			elseif($itemdata['valuebrutto'] != 0)
 			{
-				$itemdata['valuebrutto'] = f_round($itemdata['valuebrutto'] - $itemdata['valuebrutto'] * f_round($itemdata['discount'])/100);
+				$itemdata['valuebrutto'] = f_round(($itemdata['valuebrutto'] - $itemdata['valuebrutto'] * $itemdata['pdiscount'] / 100) - $itemdata['vdiscount']);
 				$itemdata['valuenetto'] = round($itemdata['valuebrutto'] / ($taxvalue / 100 + 1), 2);
 			}
 
@@ -110,6 +125,8 @@ switch($action)
 			$itemdata['valuebrutto'] = f_round($itemdata['valuebrutto']);
 			$itemdata['count'] = f_round($itemdata['count']);
 			$itemdata['discount'] = f_round($itemdata['discount']);
+			$itemdata['pdiscount'] = f_round($itemdata['pdiscount']);
+			$itemdata['vdiscount'] = f_round($itemdata['vdiscount']);
 			$itemdata['tax'] = isset($itemdata['taxid']) ? $taxeslist[$itemdata['taxid']]['label'] : '';
 			$itemdata['posuid'] = (string) getmicrotime();
 			$contents[] = $itemdata;
@@ -130,6 +147,8 @@ switch($action)
 				$itemdata['taxid'] = $cash['taxid'];
 				$itemdata['tax'] = isset($taxeslist[$itemdata['taxid']]) ? $taxeslist[$itemdata['taxid']]['label'] : '';
 				$itemdata['discount'] = 0;
+				$itemdata['pdiscount'] = 0;
+				$itemdata['vdiscount'] = 0;
 				$itemdata['count'] = f_round($_POST['l_count'][$id]);
 				$itemdata['valuebrutto'] = f_round((-$cash['value'])/$itemdata['count']);
 				$itemdata['s_valuebrutto'] = f_round(-$cash['value']);

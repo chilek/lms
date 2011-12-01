@@ -874,10 +874,8 @@ class LMS
 				) b ON (b.customerid = c.id)
 				LEFT JOIN (SELECT a.customerid,
 					SUM((CASE a.suspended
-						WHEN 0 THEN (CASE discount WHEN 0 THEN (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END)
-							ELSE ((100 - discount) * (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END)) / 100 END)
-						ELSE (CASE discount WHEN 0 THEN (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) * '.$suspension_percentage.' / 100
-							ELSE (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) * discount * '.$suspension_percentage.' / 10000 END) END)
+						WHEN 0 THEN (((100 - pdiscount) * (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) / 100) - vdiscount)
+						ELSE ((((100 - pdiscount) * (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) / 100) - vdiscount) * '.$suspension_percentage.' / 100) END)
 					* (CASE t.period
 						WHEN '.MONTHLY.' THEN 1
 						WHEN '.YEARLY.' THEN 1/12.0
@@ -1785,7 +1783,7 @@ class LMS
 
 		if($assignments = $this->DB->GetAll('SELECT a.id AS id, a.tariffid,
 			a.customerid, a.period, a.at, a.suspended, a.invoice, a.settlement,
-			a.datefrom, a.dateto, a.discount, a.liabilityid,
+			a.datefrom, a.dateto, a.pdiscount, a.vdiscount, a.liabilityid,
 			t.uprate, t.upceil, t.downceil, t.downrate,
 			(CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) AS value,
 			(CASE WHEN t.name IS NULL THEN l.name ELSE t.name END) AS name
@@ -1840,21 +1838,16 @@ class LMS
 				// assigned nodes
 				$assignments[$idx]['nodes'] = $this->DB->GetAll('SELECT nodes.name, nodes.id FROM nodeassignments, nodes
 						    WHERE nodeid = nodes.id AND assignmentid = ?', array($row['id']));
-				
-				if ($row['discount'] == 0)
-					$assignments[$idx]['discounted_value'] = $row['value'];
-				else
-					$assignments[$idx]['discounted_value'] = ((100 - $row['discount']) * $row['value']) / 100;
-				
+
+				$assignments[$idx]['discounted_value'] = (((100 - $row['pdiscount']) * $row['value']) / 100) - $row['vdiscount'];
+
 				if ($row['suspended'] == 1)
-				{
 					$assignments[$idx]['discounted_value'] = $assignments[$idx]['discounted_value'] * $this->CONFIG['finances']['suspension_percentage'] / 100;
-				}
-				
+
 				$assignments[$idx]['discounted_value'] = round($assignments[$idx]['discounted_value'], 2);
-				
+
 				$now = time();
-				
+
 				if ($row['suspended'] == 0 && 
 				    (($row['datefrom'] == 0 || $row['datefrom'] < $now) &&
 				    ($row['dateto'] == 0 || $row['dateto'] > $now)))
@@ -1984,9 +1977,9 @@ class LMS
                 }
 
                 // Create assignment
-    		    $this->DB->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice,
-					    settlement, numberplanid, paytype, datefrom, dateto, discount, liabilityid)
-					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+		$this->DB->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice,
+					    settlement, numberplanid, paytype, datefrom, dateto, pdiscount, vdiscount, liabilityid)
+					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 					    array($tariffid,
 						    $data['customerid'],
 						    $period,
@@ -1997,6 +1990,7 @@ class LMS
 						    !empty($data['paytype']) ? $data['paytype'] : NULL,
 						    $idx ? $datefrom : 0,
 						    $idx ? $dateto : 0,
+						    0,
 						    0,
 						    $lid,
 						    ));
@@ -2016,9 +2010,9 @@ class LMS
 
                 // Create assignments
                 foreach ($tariffs as $t) {
-    		        $this->DB->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice,
-					    settlement, numberplanid, paytype, datefrom, dateto, discount, liabilityid)
-					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			$this->DB->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice,
+					    settlement, numberplanid, paytype, datefrom, dateto, pdiscount, vdiscount, liabilityid)
+					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 					    array($t,
 						    $data['customerid'],
 						    $data['period'],
@@ -2027,7 +2021,7 @@ class LMS
 						    !empty($data['settlement']) ? 1 : 0,
 						    !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
 						    !empty($data['paytype']) ? $data['paytype'] : NULL,
-						    $datefrom, 0, 0, 0,
+						    $datefrom, 0, 0, 0, 0,
 						    ));
 
         		    $result[] = $this->DB->GetLastInsertID('assignments');
@@ -2036,20 +2030,20 @@ class LMS
         }
         // Create one assignment record
         else {
-    		if(!empty($data['value'])) {
-	    		$this->DB->Execute('INSERT INTO liabilities (name, value, taxid, prodid)
+		if(!empty($data['value'])) {
+			$this->DB->Execute('INSERT INTO liabilities (name, value, taxid, prodid)
 					    VALUES (?, ?, ?, ?)', 
 					    array($data['name'],
 						    str_replace(',', '.', $data['value']),
 						    intval($data['taxid']),
 						    $data['prodid']
 					    ));
-		    	$lid = $this->DB->GetLastInsertID('liabilities');
+			$lid = $this->DB->GetLastInsertID('liabilities');
 		    }
 
-    		$this->DB->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice,
-					    settlement, numberplanid, paytype, datefrom, dateto, discount, liabilityid)
-					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+		$this->DB->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice,
+					    settlement, numberplanid, paytype, datefrom, dateto, pdiscount, vdiscount, liabilityid)
+					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 					    array(intval($data['tariffid']),
 						    $data['customerid'],
 						    $data['period'],
@@ -2060,7 +2054,8 @@ class LMS
 						    !empty($data['paytype']) ? $data['paytype'] : NULL,
 						    $data['datefrom'],
 						    $data['dateto'],
-						    $data['discount'],
+						    $data['pdiscount'],
+						    $data['vdiscount'],
 						    isset($lid) ? $lid : 0,
 						    ));
 
@@ -2130,8 +2125,8 @@ class LMS
 			$item['taxid'] = isset($item['taxid']) ? $item['taxid'] : 0;
 
 			$this->DB->Execute('INSERT INTO invoicecontents (docid, itemid,
-				value, taxid, prodid, content, count, discount, description, tariffid) 
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				value, taxid, prodid, content, count, pdiscount, vdiscount, description, tariffid) 
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				array(
 					$iid,
 					$itemid,
@@ -2140,14 +2135,15 @@ class LMS
 					$item['prodid'],
 					$item['jm'],
 					$item['count'],
-					$item['discount'],
+					$item['pdiscount'],
+					$item['vdiscount'],
 					$item['name'],
 					$item['tariffid']
 			));
 
 			$this->AddBalance(array(
 				'time' => $cdate,
-				'value' => $item['valuebrutto']*$item['count']*-1,
+				'value' => $item['valuebrutto'] * $item['count'] * -1,
 				'taxid' => $item['taxid'],
 				'customerid' => $invoice['customer']['id'],
 				'comment' => $item['name'],
@@ -2213,7 +2209,8 @@ class LMS
 				WHERE d.id = ? AND (d.type = ? OR d.type = ?)',
 				array($invoiceid, DOC_INVOICE, DOC_CNOTE)))
 		{
-			$result['discount'] = 0;
+			$result['pdiscount'] = 0;
+			$result['vdiscount'] = 0;
 			$result['totalbase'] = 0;
 			$result['totaltax'] = 0;
 			$result['total'] = 0;
@@ -2232,7 +2229,7 @@ class LMS
 			if($result['content'] = $this->DB->GetAll('SELECT invoicecontents.value AS value, 
 						itemid, taxid, taxes.value AS taxvalue, taxes.label AS taxlabel, 
 						prodid, content, count, invoicecontents.description AS description, 
-						tariffid, itemid, discount
+						tariffid, itemid, pdiscount, vdiscount 
 						FROM invoicecontents 
 						LEFT JOIN taxes ON taxid = taxes.id 
 						WHERE docid=? 
@@ -2275,7 +2272,8 @@ class LMS
 					$result['taxest'][$row['taxvalue']]['taxvalue'] = $row['taxvalue'];
 					$result['content'][$idx]['pkwiu'] = $row['prodid'];
 
-					$result['discount'] += $row['discount'];
+					$result['pdiscount'] += $row['pdiscount'];
+					$result['vdiscount'] += $row['vdiscount'];
 				}
 
 			$result['pdate'] = $result['cdate'] + ($result['paytime'] * 86400);

@@ -74,6 +74,7 @@ version ? (????-??-??):
   - can send any sms to selected users [chilan]
   - added %if substitution symbol for interface name [chilan]
   - BTS#0000892: Fixed bug where phpui/style wasn't used on login page [alec]
+  - we can use percentage and amount discounts [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 

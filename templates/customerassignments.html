@@ -55,7 +55,7 @@
 					    {if $_config.privileges.finances_management|chkconfig || $adminuser}{$a.value|money_format}{/if}
 					</TD>
 					<TD ALIGN="RIGHT" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
-					    {if $_config.privileges.finances_management|chkconfig || $adminuser}{if $a.discount!=0}{$a.discount}%{else}-{/if}{/if}
+					    {if $_config.privileges.finances_management|chkconfig || $adminuser}{if $a.pdiscount != 0}{$a.pdiscount}%{else}{if $a.vdiscount != 0}{$a.vdiscount|money_format}{else}-{/if}{/if}{/if}
 					</TD>
 					<TD NOWRAP OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">{$a.payday}</TD>
 					<TD NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">

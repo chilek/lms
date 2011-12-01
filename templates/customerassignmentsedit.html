@@ -190,7 +190,12 @@
 			<B>{t}Discount:{/t}</B>
 		</TD>
 		<TD width="98%"{if !$_config.privileges.finances_management|chkconfig && !$adminuser} style="display:none"{/if}>
-		    <INPUT type="text" size="3" name="assignment[discount]" value="{if $assignment.discount!=0}{$assignment.discount|string_format:"%.2f"}{/if}" {tip text="Enter discount percentage" trigger="discount"}>
+			<INPUT type="text" size="8" name="assignment[discount]" value="{if $assignment.pdiscount != 0}{$assignment.pdiscount|string_format:"%.2f"}{else}{if $assignment.vdiscount != 0}{$assignment.vdiscount|string_format:"%.2f"}{/if}{/if}" {tip text="Enter discount percentage or amount" trigger="discount"}>
+			<SELECT name="assignment[discount_type]">
+				{foreach from=$_DISCOUNTTYPES item=item key=key}
+					<OPTION value="{$key}"{if $assignment.discount_type == $key} selected{/if}>{$item}</OPTION>
+				{/foreach}
+			</SELECT>
 		</TD>
 	</TR>
 	<TR id="a_tax">
