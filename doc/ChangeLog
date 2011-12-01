@@ -73,6 +73,7 @@ version ? (????-??-??):
   - we can send sms to any phone number from outside database [chilan]
   - can send any sms to selected users [chilan]
   - added %if substitution symbol for interface name [chilan]
+  - BTS#0000892: Fixed bug where phpui/style wasn't used on login page [alec]
 
 version 1.11.13 Dira (2011-04-07)
 
