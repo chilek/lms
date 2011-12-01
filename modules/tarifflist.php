@@ -85,7 +85,13 @@ function GetTariffList($order = 'name,asc', $type = NULL, $customergroupid = NUL
 						WHEN '.QUARTERLY.' THEN 1.0 / 3
 						WHEN '.YEARLY.' THEN 1.0 / 12
 						WHEN '.HALFYEARLY.' THEN 1.0 / 6
-						ELSE 0 END)
+						ELSE (CASE a.period
+							WHEN '.MONTHLY.' THEN 1
+							WHEN '.QUARTERLY.' THEN 1.0 / 3
+							WHEN '.YEARLY.' THEN 1.0 / 12
+							WHEN '.HALFYEARLY.' THEN 1.0 / 6
+							ELSE 0 END)
+					END)
 				) AS value
 				FROM assignments a
 				JOIN tariffs tt ON (tt.id = tariffid)'
@@ -107,13 +113,19 @@ function GetTariffList($order = 'name,asc', $type = NULL, $customergroupid = NUL
 			.($sqlord != '' ? $sqlord : '')))
 	{
 		$unactive = $DB->GetAllByKey('SELECT tariffid, COUNT(*) AS count,
-				SUM(((((x.value * (100 - x.pdiscount)) / 100.0) - x.vdiscount) *
+				SUM((((x.value * (100 - x.pdiscount)) / 100.0) - x.vdiscount) *
 					(CASE x.period
 						WHEN '.MONTHLY.' THEN 1
 						WHEN '.QUARTERLY.' THEN 1.0 / 3
 						WHEN '.YEARLY.' THEN 1.0 / 12
 						WHEN '.HALFYEARLY.' THEN 1.0 / 6
-						ELSE 0 END)
+						ELSE (CASE x.aperiod
+							WHEN '.MONTHLY.' THEN 1
+							WHEN '.QUARTERLY.' THEN 1.0 / 3
+							WHEN '.YEARLY.' THEN 1.0 / 12
+							WHEN '.HALFYEARLY.' THEN 1.0 / 6
+							ELSE 0 END)
+					END)
 				) AS value
 			FROM (SELECT a.tariffid, t.period, a.period AS aperiod, a.pdiscount, a.vdiscount, t.value
 				FROM assignments a
