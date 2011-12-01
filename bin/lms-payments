@@ -144,8 +144,8 @@ sub localtime2()
 sub is_leap_year($)
 {
 	my $year = shift;
-        return 0 if $year % 4;
-        return 1 if $year % 100;
+	return 0 if $year % 4;
+	return 1 if $year % 100;
 	return 0 if $year % 400;
 	return 1;
 }
@@ -191,9 +191,9 @@ if($month==1 || $month==4 || $month==7 || $month==10) {
 
 my $halfyear;
 if($month > 6) {
-       $halfyear = $dom + ($month - 7) * 100;
+	$halfyear = $dom + ($month - 7) * 100;
 } else {
-       $halfyear = $dom + ($month - 1) * 100;
+	$halfyear = $dom + ($month - 1) * 100;
 }
 
 my $q_month = $month + 2;
@@ -201,12 +201,12 @@ my $q_year  = $year;
 my $y_month = $month + 5;
 my $y_year  = $year;
 if ($q_month > 12) {
-    $q_month -= 12;
-    $q_year += 1;
+	$q_month -= 12;
+	$q_year += 1;
 }
 if ($y_month > 12) {
-    $y_month -= 12;
-    $y_year += 1;
+	$y_month -= 12;
+	$y_year += 1;
 }
 
 my %txts;
@@ -228,7 +228,7 @@ my $next_period = strftime("%m/%Y", 0, 0, 12, 1, $month, $year - 1900);
 # sale date setting
 my $saledate = $currtime;
 if ($sdate_next) {
-    $saledate = strftime("%s", 0, 0, 12, 1, $month, $year - 1900);
+	$saledate = strftime("%s", 0, 0, 12, 1, $month, $year - 1900);
 }
 
 # calculate start and end of numbering period
@@ -273,7 +273,7 @@ sub get_period($)
 		};
 		/@{[HALFYEAR]}/ && do {
 			my $startmonth;
-		    	if($month<=6) {
+			if($month<=6) {
 				$startmonth = 1;
 			} else {
 				$startmonth = 7;
@@ -326,22 +326,22 @@ my $itemid;
 
 # get IDs and periods of default invoices numbering plans
 $dbq = $dbase->prepare("SELECT n.id, n.period,
-        COALESCE(a.divisionid, 0) AS divid, isdefault
+	COALESCE(a.divisionid, 0) AS divid, isdefault
 	FROM numberplans n
 	LEFT JOIN numberplanassignments a ON (a.planid = n.id)
 	WHERE doctype = 1");
 $dbq->execute();
 while(my $row = $dbq->fetchrow_hashref())
 {
-    if ($row->{'isdefault'}) {
-	    $plans{$row->{'divid'}} = $row->{'id'};
-    }
-   	$periods{$row->{'id'}} = $row->{'period'} || YEAR;
+	if ($row->{'isdefault'}) {
+		$plans{$row->{'divid'}} = $row->{'id'};
+	}
+	$periods{$row->{'id'}} = $row->{'period'} || YEAR;
 }
 
 # let's go, fetch *ALL* assignments in given day
 $dbq = $dbase->prepare("SELECT a.tariffid, a.liabilityid, a.customerid,
-    a.period, a.at, a.suspended, a.settlement, a.datefrom, a.discount,
+	a.period, a.at, a.suspended, a.settlement, a.datefrom, a.pdiscount, a.vdiscount, 
 	a.invoice, t.description AS description, a.id AS assignmentid,
 	c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid,
 	d.inv_paytype AS d_paytype, t.period AS t_period,
@@ -349,19 +349,16 @@ $dbq = $dbase->prepare("SELECT a.tariffid, a.liabilityid, a.customerid,
 	(CASE a.liabilityid WHEN 0 THEN t.taxid ELSE l.taxid END) AS taxid,
 	(CASE a.liabilityid WHEN 0 THEN t.prodid ELSE l.prodid END) AS prodid,
 	(CASE a.liabilityid WHEN 0 
-		THEN (CASE a.suspended WHEN 0 
-			THEN ROUND(CASE a.discount WHEN 0 THEN t.value
-				ELSE ((100-a.discount)*t.value)/100 END, 2)
-			ELSE ROUND(ROUND(CASE a.discount WHEN 0 THEN t.value
-				ELSE ((100-a.discount)*t.value)/100 END, 2) * $suspension_percentage/100, 2)
-			END)
-		ELSE
-		    (CASE a.suspended WHEN 0
-			THEN ROUND(CASE a.discount WHEN 0 THEN l.value
-				ELSE ((100-a.discount)*l.value)/100 END, 2)
-			ELSE ROUND(ROUND(CASE a.discount WHEN 0 THEN l.value
-				ELSE ((100-a.discount)*l.value)/100 END, 2) * $suspension_percentage/100, 2)
-			END)
+		THEN ROUND(((((100 - a.pdiscount) * t.value) / 100) - a.vdiscount) *
+			(CASE a.suspended WHEN 0
+				THEN 1.0
+				ELSE $suspension_percentage / 100
+			END), 2)
+		ELSE ROUND(((((100 - a.pdiscount) * l.value) / 100) - a.vdiscount) *
+			(CASE a.suspended WHEN 0
+				THEN 1.0
+				ELSE $suspension_percentage / 100
+			END), 2)
 		END) AS value
 	FROM assignments a
 	JOIN customers c ON (a.customerid = c.id)
@@ -370,14 +367,14 @@ $dbq = $dbase->prepare("SELECT a.tariffid, a.liabilityid, a.customerid,
 	LEFT JOIN divisions d ON (d.id = c.divisionid)
 	WHERE c.status = 3
 		AND ((a.period = ".DISPOSABLE." AND at = $today)
-		    OR ((a.period = ".DAY."
-			    OR (a.period = ".WEEK." AND at = $weekday)
-    			OR (a.period = ".MONTH." AND at = $dom)
-	    		OR (a.period = ".QUARTER." AND at = $quarter)
-		    	OR (a.period = ".HALFYEAR." AND at = $halfyear)
-			    OR (a.period = ".YEAR." AND at = $yearday))
-		        AND (a.datefrom <= $currtime OR a.datefrom = 0)
-		        AND (a.dateto > $currtime OR a.dateto = 0)))
+			OR ((a.period = ".DAY."
+			OR (a.period = ".WEEK." AND at = $weekday)
+			OR (a.period = ".MONTH." AND at = $dom)
+			OR (a.period = ".QUARTER." AND at = $quarter)
+			OR (a.period = ".HALFYEAR." AND at = $halfyear)
+			OR (a.period = ".YEAR." AND at = $yearday))
+			AND (a.datefrom <= $currtime OR a.datefrom = 0)
+			AND (a.dateto > $currtime OR a.dateto = 0)))
 	ORDER BY a.customerid, a.invoice, a.paytype, a.numberplanid, value DESC");
 $dbq->execute();
 
@@ -396,8 +393,8 @@ while(my $assign = $dbq->fetchrow_hashref())
 		if ($skipped != $uid && $tested != $uid)
 		{
 			my $found = 0;
-	    		my $sdbq = $dbase->prepare("SELECT UPPER(name) AS name FROM customerassignments, customergroups WHERE customergroups.id = customergroupid AND customerid = $uid GROUP BY name");
-		        $sdbq->execute();
+			my $sdbq = $dbase->prepare("SELECT UPPER(name) AS name FROM customerassignments, customergroups WHERE customergroups.id = customergroupid AND customerid = $uid GROUP BY name");
+			$sdbq->execute();
 
 			while (my $srow = $sdbq->fetchrow_hashref())
 			{
@@ -472,54 +469,54 @@ while(my $assign = $dbq->fetchrow_hashref())
 
 	if($assign->{'value'} != 0)
 	{
-	    my $val = $assign->{'value'};
-        # calculate assignment value according to tariff's period
-        if ($assign->{'t_period'} && $assign->{'period'} != DISPOSABLE
-            && $assign->{'t_period'} != $assign->{'period'}
-        ) {
-            if ($assign->{'t_period'} == YEAR) {
-                $val = $val / 12.0;
-            } elsif ($assign->{'t_period'} == HALFYEAR) {
-                $val = $val / 6.0;
-            } elsif ($assign->{'t_period'} == QUARTER) {
-                $val = $val / 3.0;
-            }
+		my $val = $assign->{'value'};
+		# calculate assignment value according to tariff's period
+		if ($assign->{'t_period'} && $assign->{'period'} != DISPOSABLE
+			&& $assign->{'t_period'} != $assign->{'period'})
+		{
+			if ($assign->{'t_period'} == YEAR) {
+				$val = $val / 12.0;
+			} elsif ($assign->{'t_period'} == HALFYEAR) {
+				$val = $val / 6.0;
+			} elsif ($assign->{'t_period'} == QUARTER) {
+				$val = $val / 3.0;
+			}
 
-            if ($assign->{'period'} == YEAR) {
-                $val = $val * 12.0;
-            } elsif ($assign->{'period'} == HALFYEAR) {
-                $val = $val * 6.0;
-            } elsif ($assign->{'period'} == QUARTER) {
-                $val = $val * 3.0;
-            } elsif ($assign->{'period'} == WEEK) {
-                $val = $val / 4.0;
-            } elsif ($assign->{'period'} == DAY) {
-                $val = $val / 30.0;
-            }
+			if ($assign->{'period'} == YEAR) {
+				$val = $val * 12.0;
+			} elsif ($assign->{'period'} == HALFYEAR) {
+				$val = $val * 6.0;
+			} elsif ($assign->{'period'} == QUARTER) {
+				$val = $val * 3.0;
+			} elsif ($assign->{'period'} == WEEK) {
+				$val = $val / 4.0;
+			} elsif ($assign->{'period'} == DAY) {
+				$val = $val / 30.0;
+			}
 
-        }
+		}
 
-        $val = sprintf("%.2f", $val);
+		$val = sprintf("%.2f", $val);
 
 		if($assign->{'invoice'})
 		{
-		    my ($inv_paytype, $numberplan, $plan);
+			my ($inv_paytype, $numberplan, $plan);
 
-		    if ($assign->{'a_paytype'}) {
-		        $inv_paytype = $assign->{'a_paytype'};
-		    } elsif ($assign->{'paytype'}) {
-		        $inv_paytype = $assign->{'paytype'};
-		    } elsif ($assign->{'d_paytype'}) {
-		        $inv_paytype = $assign->{'d_paytype'};
-		    } else {
-		        $inv_paytype = $paytype;
-            }
+			if ($assign->{'a_paytype'}) {
+				$inv_paytype = $assign->{'a_paytype'};
+			} elsif ($assign->{'paytype'}) {
+				$inv_paytype = $assign->{'paytype'};
+			} elsif ($assign->{'d_paytype'}) {
+				$inv_paytype = $assign->{'d_paytype'};
+			} else {
+				$inv_paytype = $paytype;
+			}
 
-		    if ($assign->{'numberplanid'}) {
-		        $plan = $assign->{'numberplanid'};
-		    } else {
-			    $plan = $plans{$divid} || 0;
-            }
+			if ($assign->{'numberplanid'}) {
+				$plan = $assign->{'numberplanid'};
+			} else {
+				$plan = $plans{$divid} || 0;
+			}
 
 			if($invoices{$uid} eq 0 || $paytypes{$uid} != $inv_paytype || $numberplans{$uid} != $plan)
 			{
@@ -568,7 +565,8 @@ while(my $assign = $dbq->fetchrow_hashref())
 
 			$icdbq = $dbase->prepare("SELECT itemid FROM invoicecontents
 					WHERE tariffid=$assign->{'tariffid'} AND value=$val
-					AND docid=$invoices{$uid} AND description=? AND discount=$assign->{'discount'}");
+					AND docid=$invoices{$uid} AND description=? AND pdiscount=$assign->{'pdiscount'}
+					AND vdiscount=$assign->{'vdiscount'}");
 			$icdbq->execute($desc);
 
 			if($icrow = $icdbq->fetchrow_hashref())
@@ -577,7 +575,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 
 				$icdbq = $dbase->prepare("UPDATE invoicecontents SET count=count+1
 						WHERE tariffid=$assign->{'tariffid'} AND docid=$invoices{$uid}
-						AND description=? AND discount=$assign->{'discount'}");
+						AND description=? AND pdiscount=$assign->{'pdiscount'} AND vdiscount=$assign->{'vdiscount'}");
 				$icdbq->execute($desc);
 
 				$cdbq = $dbase->prepare("UPDATE cash SET value = value+($val*-1)
@@ -589,9 +587,9 @@ while(my $assign = $dbq->fetchrow_hashref())
 				$itemid++;
 
 				$icdbq = $dbase->prepare("INSERT INTO invoicecontents (docid, value, taxid, prodid,
-						content, count, description, tariffid, itemid, discount)
+						content, count, description, tariffid, itemid, pdiscount, vdiscount)
 						VALUES ($invoices{$uid}, $val, $assign->{'taxid'}, '$assign->{'prodid'}',
-						'szt.', 1, ?, $assign->{'tariffid'}, $itemid, $assign->{'discount'})");
+						'szt.', 1, ?, $assign->{'tariffid'}, $itemid, $assign->{'pdiscount'}, $assign->{'vdiscount'})");
 				$icdbq->execute($desc);
 
 				$cdbq = $dbase->prepare("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid)
@@ -618,8 +616,8 @@ while(my $assign = $dbq->fetchrow_hashref())
 			my $period = strftime("%Y/%m/%d", 0, 0, 0, $dom - $diffdays, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 0, $dom - 1, $month - 1, $year - 1900);
 
 			for ($assign->{'period'})
-	                {
-			        # there are no disposable or daily liabilities with settlement
+			{
+				# there are no disposable or daily liabilities with settlement
 				/@{[WEEK]}/ && do {
 					$alldays = 7; last;
 				};
@@ -647,8 +645,8 @@ while(my $assign = $dbq->fetchrow_hashref())
 			$sdesc =~ s/\%period/$period/g;
 			$sdesc =~ s/\%current_month/$current_month/g;
 
-	    		if($assign->{'invoice'})
-		    	{
+			if($assign->{'invoice'})
+			{
 				$icdbq = $dbase->prepare("SELECT itemid FROM invoicecontents
 						WHERE tariffid=? AND value=? AND docid=? AND description=?");
 				$icdbq->execute($assign->{'tariffid'}, $value, $invoices{$uid}, $sdesc);
@@ -670,9 +668,9 @@ while(my $assign = $dbq->fetchrow_hashref())
 					$itemid++;
 
 					$icdbq = $dbase->prepare("INSERT INTO invoicecontents (docid, value, taxid, prodid,
-							content, count, description, tariffid, itemid, discount)
+							content, count, description, tariffid, itemid, pdiscount, vdiscount)
 							VALUES ($invoices{$uid}, $value, $assign->{'taxid'}, '$assign->{'prodid'}',
-							'szt.', 1, ?, $assign->{'tariffid'}, $itemid, $assign->{'discount'})");
+							'szt.', 1, ?, $assign->{'tariffid'}, $itemid, $assign->{'pdiscount'}, $assign->{'vdiscount'})");
 					$icdbq->execute($sdesc);
 
 					$cdbq = $dbase->prepare("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid)
@@ -702,23 +700,23 @@ $dbq->finish();
 # check invoices (autoclose invoices)
 if ($check_invoices)
 {
-    my $dbq = $dbase->prepare("UPDATE documents SET closed = 1
-        WHERE customerid IN (
-            SELECT customerid
-            FROM cash WHERE time <= $currtime
-            GROUP BY customerid
-            HAVING SUM(value) >= 0
-        )
-        AND type IN (1, 3, 5)
-        AND cdate <= $currtime
-        AND closed = 0");
-    $dbq->execute();
-    $dbq->finish();
+	my $dbq = $dbase->prepare("UPDATE documents SET closed = 1
+		WHERE customerid IN (
+			SELECT customerid
+			FROM cash WHERE time <= $currtime
+			GROUP BY customerid
+			HAVING SUM(value) >= 0
+		)
+		AND type IN (1, 3, 5)
+		AND cdate <= $currtime
+		AND closed = 0");
+	$dbq->execute();
+	$dbq->finish();
 }
 
 # solid payments
 $dbq = $dbase->prepare("SELECT * FROM payments WHERE value <> 0
-		AND (period = ".DAY."
+			AND (period = ".DAY."
 			OR (period = ".WEEK." AND at=$weekday)
 			OR (period = ".MONTH." AND at=$dom)
 			OR (period = ".QUARTER." AND at = $quarter)
@@ -737,10 +735,10 @@ $dbq->finish();
 
 # delete old assignments
 $dbase->do("DELETE FROM liabilities WHERE id IN (
-    SELECT liabilityid FROM assignments
-    WHERE dateto < $utsfmt - 86400 * 30 AND dateto != 0 AND at < $today - 86400 * 30
-	    AND liabilityid != 0)");
+	SELECT liabilityid FROM assignments
+	WHERE dateto < $utsfmt - 86400 * 30 AND dateto != 0 AND at < $today - 86400 * 30
+		AND liabilityid != 0)");
 $dbase->do("DELETE FROM assignments
-    WHERE dateto < $utsfmt - 86400 * 30 AND dateto != 0 AND at < $today - 86400 * 30");
+	WHERE dateto < $utsfmt - 86400 * 30 AND dateto != 0 AND at < $today - 86400 * 30");
 
 $dbase->disconnect();

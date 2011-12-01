@@ -41,7 +41,9 @@ if(isset($_GET['id']) && $action == 'edit')
 		$nitem['name']		= $item['description'];
 		$nitem['prodid']	= $item['prodid'];
 		$nitem['count']		= str_replace(',' ,'.', $item['count']);
-		$nitem['discount']	= str_replace(',' ,'.', $item['discount']);
+		$nitem['discount']	= str_replace(',' ,'.', $item['pdiscount']);
+		$nitem['pdiscount']	= str_replace(',' ,'.', $item['pdiscount']);
+		$nitem['vdiscount']	= str_replace(',' ,'.', $item['vdiscount']);
 		$nitem['jm']		= str_replace(',' ,'.', $item['content']);
 		$nitem['valuenetto']	= str_replace(',' ,'.', $item['basevalue']);
 		$nitem['valuebrutto']	= str_replace(',' ,'.', $item['value']);
@@ -76,34 +78,50 @@ if(isset($_GET['customerid']) && $_GET['customerid'] != '' && $LMS->CustomerExis
 switch($action)
 {
 	case 'additem':
-        if ($invoice['closed'])
-            break;
+		if ($invoice['closed'])
+			break;
 
 		$itemdata = r_trim($_POST);
-		foreach(array('count', 'discount', 'valuenetto', 'valuebrutto') as $key)
-			$itemdata[$key] = round((float) str_replace(',','.',$itemdata[$key]),2);
 
-		if($itemdata['count'] > 0 && $itemdata['name'] != '')
+		unset($error);
+
+		$itemdata['discount'] = str_replace(',', '.', $itemdata['discount']);
+		$itemdata['pdiscount'] = 0;
+		$itemdata['vdiscount'] = 0;
+		if (preg_match('/^[0-9]+(\.[0-9]+)*$/', $itemdata['discount'])) {
+			$itemdata['pdiscount'] = ($itemdata['discount_type'] == DISCOUNT_PERCENTAGE ? floatval($itemdata['discount']) : 0);
+			$itemdata['vdiscount'] = ($itemdata['discount_type'] == DISCOUNT_AMOUNT ? floatval($itemdata['discount']) : 0);
+		}
+		if ($itemdata['pdiscount'] < 0 || $itemdata['pdiscount'] > 99.9 || $itemdata['vdiscount'] < 0)
+			$error['discount'] = trans('Wrong discount value!');
+
+		if ($error)
+			break;
+
+		foreach(array('count', 'discount', 'valuenetto', 'valuebrutto') as $key)
+			$itemdata[$key] = round((float) str_replace(',', '.', $itemdata[$key]), 2);
+
+		if ($itemdata['count'] > 0 && $itemdata['name'] != '')
 		{
 			$taxvalue = $taxeslist[$itemdata['taxid']]['value'];
-			if($itemdata['valuenetto'] != 0)
+			if ($itemdata['valuenetto'] != 0)
 			{
-			    	$itemdata['valuenetto'] = f_round($itemdata['valuenetto'] - $itemdata['valuenetto'] * f_round($itemdata['discount'])/100);
-				$itemdata['valuebrutto'] = round($itemdata['valuenetto'] * ($taxvalue / 100 + 1),2);
+				$itemdata['valuenetto'] = f_round(($itemdata['valuenetto'] - $itemdata['valuenetto'] * f_round($itemdata['pdiscount']) / 100) - $itemdata['vdiscount']);
+				$itemdata['valuebrutto'] = round($itemdata['valuenetto'] * ($taxvalue / 100 + 1), 2);
 			}
-			elseif($itemdata['valuebrutto'] != 0)
+			elseif ($itemdata['valuebrutto'] != 0)
 			{
-			    	$itemdata['valuebrutto'] = f_round($itemdata['valuebrutto'] - $itemdata['valuebrutto'] * f_round($itemdata['discount'])/100);
-				$itemdata['valuenetto'] = round($itemdata['valuebrutto'] / ($taxvalue / 100 + 1),2);
+				$itemdata['valuebrutto'] = f_round(($itemdata['valuebrutto'] - $itemdata['valuebrutto'] * $itemdata['pdiscount'] / 100) - $itemdata['vdiscount']);
+				$itemdata['valuenetto'] = round($itemdata['valuebrutto'] / ($taxvalue / 100 + 1), 2);
 			}
 
 			// str_replace here is needed because of bug in some PHP versions (4.3.10)
-			$itemdata['s_valuebrutto'] = str_replace(',','.',$itemdata['valuebrutto'] * $itemdata['count']);
-			$itemdata['s_valuenetto'] = str_replace(',','.',$itemdata['s_valuebrutto'] / ($taxvalue / 100 + 1));
-			$itemdata['valuenetto'] = str_replace(',','.',$itemdata['valuenetto']);
-			$itemdata['valuebrutto'] = str_replace(',','.',$itemdata['valuebrutto']);
-			$itemdata['count'] = str_replace(',','.',$itemdata['count']);
-			$itemdata['discount'] = str_replace(',','.',$itemdata['discount']);
+			$itemdata['s_valuebrutto'] = str_replace(',', '.', $itemdata['valuebrutto'] * $itemdata['count']);
+			$itemdata['s_valuenetto'] = str_replace(',', '.', $itemdata['s_valuebrutto'] / ($taxvalue / 100 + 1));
+			$itemdata['valuenetto'] = str_replace(',', '.', $itemdata['valuenetto']);
+			$itemdata['valuebrutto'] = str_replace(',', '.', $itemdata['valuebrutto']);
+			$itemdata['count'] = str_replace(',', '.', $itemdata['count']);
+			$itemdata['discount'] = str_replace(',', '.', $itemdata['discount']);
 			$itemdata['tax'] = $taxeslist[$itemdata['taxid']]['label'];
 			$itemdata['posuid'] = (string) getmicrotime();
 			$contents[] = $itemdata;
@@ -111,12 +129,12 @@ switch($action)
 	break;
 
 	case 'deletepos':
-        if ($invoice['closed'])
-            break;
+		if ($invoice['closed'])
+			break;
 
-		if(sizeof($contents))
+		if (sizeof($contents))
 			foreach($contents as $idx => $row)
-				if($row['posuid'] == $_GET['posuid']) 
+				if ($row['posuid'] == $_GET['posuid']) 
 					unset($contents[$idx]);
 	break;
 
@@ -192,19 +210,19 @@ switch($action)
 
 	case 'save':
 		if (empty($contents) || empty($customer))
-		    break;
+			break;
 
 		$SESSION->restore('invoiceid', $invoice['id']);
 		$invoice['type'] = DOC_INVOICE;
 
-	    $currtime = time();
-   		$cdate = $invoice['cdate'] ? $invoice['cdate'] : $currtime;
-    	$sdate = $invoice['sdate'] ? $invoice['sdate'] : $currtime;
-	    $iid   = $invoice['id'];
+		$currtime = time();
+		$cdate = $invoice['cdate'] ? $invoice['cdate'] : $currtime;
+		$sdate = $invoice['sdate'] ? $invoice['sdate'] : $currtime;
+		$iid   = $invoice['id'];
 
-   		$DB->BeginTrans();
+		$DB->BeginTrans();
 
-	    $DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, customerid = ?,
+		$DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, customerid = ?,
 				name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, divisionid = ?
 				WHERE id = ?',
 				array($cdate,
@@ -222,48 +240,49 @@ switch($action)
 					$iid
 				));
 
-        if (!$invoice['closed']) {
-  		    $DB->Execute('DELETE FROM invoicecontents WHERE docid = ?', array($iid));
-    	    $DB->Execute('DELETE FROM cash WHERE docid = ?', array($iid));
+		if (!$invoice['closed']) {
+			$DB->Execute('DELETE FROM invoicecontents WHERE docid = ?', array($iid));
+			$DB->Execute('DELETE FROM cash WHERE docid = ?', array($iid));
 
-	        $itemid=0;
-	        foreach ($contents as $idx => $item) {
-		        $itemid++;
+			$itemid=0;
+			foreach ($contents as $idx => $item) {
+				$itemid++;
 
-		        $DB->Execute('INSERT INTO invoicecontents (docid, itemid, value,
-    				    taxid, prodid, content, count, discount, description, tariffid)
-	    			    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-		    		    array(
-			    		    $iid,
-    			    		$itemid,
-	    			    	$item['valuebrutto'],
-		    			    $item['taxid'],
-    			    		$item['prodid'],
-	    			    	$item['jm'],
-		    			    $item['count'],
-    		    			$item['discount'],
-	    		    		$item['name'],
-		    		    	$item['tariffid']
-			        ));
+				$DB->Execute('INSERT INTO invoicecontents (docid, itemid, value,
+					taxid, prodid, content, count, pdiscount, vdiscount, description, tariffid)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+					array(
+						$iid,
+						$itemid,
+						$item['valuebrutto'],
+						$item['taxid'],
+						$item['prodid'],
+						$item['jm'],
+						$item['count'],
+						$item['pdiscount'],
+						$item['vdiscount'],
+						$item['name'],
+						$item['tariffid']
+					));
 
-	    	    $LMS->AddBalance(array(
-        				'time' => $cdate,
-    	    			'value' => $item['valuebrutto']*$item['count']*-1,
-		    	        'taxid' => $item['taxid'],
-			        	'customerid' => $customer['id'],
-		    		    'comment' => $item['name'],
-        				'docid' => $iid,
-    	    			'itemid' => $itemid
-		    	    ));
-	        }
-	    }
+				$LMS->AddBalance(array(
+					'time' => $cdate,
+					'value' => $item['valuebrutto']*$item['count']*-1,
+					'taxid' => $item['taxid'],
+					'customerid' => $customer['id'],
+					'comment' => $item['name'],
+					'docid' => $iid,
+					'itemid' => $itemid
+					));
+			}
+		}
 
-	    $DB->CommitTrans();
+		$DB->CommitTrans();
 
 		if (isset($_GET['print']))
 			$SESSION->save('invoiceprint', array('invoice' => $invoice['id'],
 				'original' => !empty($_GET['original']) ? 1 : 0,
-		       	'copy' => !empty($_GET['copy']) ? 1 : 0,
+			'copy' => !empty($_GET['copy']) ? 1 : 0,
 				'duplicate' => !empty($_GET['duplicate']) ? 1 : 0));
 
 		$SESSION->redirect('?m=invoicelist');

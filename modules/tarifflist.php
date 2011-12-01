@@ -24,16 +24,16 @@
  *  $Id$
  */
 
-function GetTariffList($order='name,asc', $type=NULL, $customergroupid=NULL, $promotionid=NULL)
+function GetTariffList($order = 'name,asc', $type = NULL, $customergroupid = NULL, $promotionid = NULL)
 {
 	global $DB, $LMS;
 
-	if($order=='')
-                $order='name,asc';
+	if ($order == '')
+		$order = 'name,asc';
 
 	list($order,$direction) = sscanf($order, '%[^,],%s');
 
-	($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
+	($direction == 'desc') ? $direction = 'desc' : $direction = 'asc';
 
 	switch($order)
 	{
@@ -41,28 +41,28 @@ function GetTariffList($order='name,asc', $type=NULL, $customergroupid=NULL, $pr
 			$sqlord = " ORDER BY id $direction";
 		break;
 		case 'description':
-		        $sqlord = " ORDER BY t.description $direction, t.name";
+			$sqlord = " ORDER BY t.description $direction, t.name";
 		break;
 		case 'value':
-		        $sqlord = " ORDER BY t.value $direction, t.name";
+			$sqlord = " ORDER BY t.value $direction, t.name";
 		break;
 		case 'downrate':
-		        $sqlord = " ORDER BY t.downrate $direction, t.name";
+			$sqlord = " ORDER BY t.downrate $direction, t.name";
 		break;
 		case 'downceil':
-		        $sqlord = " ORDER BY t.downceil $direction, t.name";
+			$sqlord = " ORDER BY t.downceil $direction, t.name";
 		break;
 		case 'uprate':
-		        $sqlord = " ORDER BY t.uprate $direction, t.name";
+			$sqlord = " ORDER BY t.uprate $direction, t.name";
 		break;
 		case 'upceil':
-		        $sqlord = " ORDER BY t.upceil $direction, t.name";
+			$sqlord = " ORDER BY t.upceil $direction, t.name";
 		break;
 		case 'count':
-		        $sqlord = " ORDER BY customerscount $direction, t.name";
+			$sqlord = " ORDER BY customerscount $direction, t.name";
 		break;
 		default:
-                $sqlord = " ORDER BY t.name, t.value DESC";
+			$sqlord = " ORDER BY t.name, t.value DESC";
 		break;
 	}
 
@@ -71,7 +71,7 @@ function GetTariffList($order='name,asc', $type=NULL, $customergroupid=NULL, $pr
 	$totalcount = 0;
 	$totalactivecount = 0;
 
-	if($tarifflist = $DB->GetAll('SELECT t.id, t.name, t.value,
+	if ($tarifflist = $DB->GetAll('SELECT t.id, t.name, t.value,
 			taxes.label AS tax, taxes.value AS taxvalue, prodid,
 			t.uprate, t.downrate, t.upceil, t.downceil, t.climit, t.plimit,
 			t.uprate_n, t.downrate_n, t.upceil_n, t.downceil_n, t.climit_n, t.plimit_n,
@@ -79,72 +79,64 @@ function GetTariffList($order='name,asc', $type=NULL, $customergroupid=NULL, $pr
 			FROM tariffs t
 			LEFT JOIN (SELECT a.tariffid, COUNT(*) AS count,
 				COUNT(DISTINCT a.customerid) AS customerscount,
-				SUM(CASE tt.period
-					WHEN '.MONTHLY.' THEN ((tt.value * (100 - a.discount)) / 100.0)
-					WHEN '.QUARTERLY.' THEN ((tt.value * (100 - a.discount)) / 100.0) / 3
-					WHEN '.YEARLY.' THEN ((tt.value * (100 - a.discount)) / 100.0) / 12
-					WHEN '.HALFYEARLY.' THEN ((tt.value * (100 - a.discount)) / 100.0) / 6
-					ELSE ((tt.value * (100 - a.discount)) / 100.0) * (CASE a.period
-					    WHEN '.MONTHLY.' THEN 1
-					    WHEN '.QUARTERLY.' THEN 1.0 / 3
-					    WHEN '.YEARLY.' THEN 1.0 / 12
-					    WHEN '.HALFYEARLY.' THEN 1.0 / 6
-					    ELSE 0 END)
-				END) AS value
+				SUM((((tt.value * (100 - a.pdiscount)) / 100.0) - a.vdiscount) *
+					(CASE tt.period
+						WHEN '.MONTHLY.' THEN 1
+						WHEN '.QUARTERLY.' THEN 1.0 / 3
+						WHEN '.YEARLY.' THEN 1.0 / 12
+						WHEN '.HALFYEARLY.' THEN 1.0 / 6
+						ELSE 0 END)
+				) AS value
 				FROM assignments a
 				JOIN tariffs tt ON (tt.id = tariffid)'
 				.($customergroupid ? ' JOIN customerassignments cc ON (cc.customerid = a.customerid)
-	    			WHERE cc.customergroupid = '.intval($customergroupid) : '')
-    			.($promotionid ? ' AND tt.id IN (SELECT pa.tariffid
-    			    FROM promotionassignments pa
-    			    JOIN promotionschemas ps ON (ps.id = pa.promotionschemaid)
-			        WHERE ps.promotionid = ' .intval($promotionid).')' : '')
+				WHERE cc.customergroupid = '.intval($customergroupid) : '')
+			.($promotionid ? ' AND tt.id IN (SELECT pa.tariffid
+				FROM promotionassignments pa
+				JOIN promotionschemas ps ON (ps.id = pa.promotionschemaid)
+					WHERE ps.promotionid = ' .intval($promotionid).')' : '')
 				.' GROUP BY a.tariffid
 			) a ON (a.tariffid = t.id)
 			LEFT JOIN taxes ON (t.taxid = taxes.id)
 			WHERE 1=1'
 			.($type ? ' AND t.type = '.intval($type) : '')
-   			.($promotionid ? ' AND t.id IN (SELECT pa.tariffid
-   			    FROM promotionassignments pa
-    			JOIN promotionschemas ps ON (ps.id = pa.promotionschemaid)
-		        WHERE ps.promotionid = ' .intval($promotionid).')' : '')
+			.($promotionid ? ' AND t.id IN (SELECT pa.tariffid
+				FROM promotionassignments pa
+			JOIN promotionschemas ps ON (ps.id = pa.promotionschemaid)
+			WHERE ps.promotionid = ' .intval($promotionid).')' : '')
 			.($sqlord != '' ? $sqlord : '')))
 	{
 		$unactive = $DB->GetAllByKey('SELECT tariffid, COUNT(*) AS count,
-			SUM(CASE x.period
-				WHEN '.MONTHLY.' THEN ((x.value * (100 - x.discount)) / 100.0)
-				WHEN '.QUARTERLY.' THEN ((x.value * (100 - x.discount)) / 100.0) / 3
-				WHEN '.YEARLY.' THEN ((x.value * (100 - x.discount)) / 100.0) / 12
-				WHEN '.HALFYEARLY.' THEN ((x.value * (100 - x.discount)) / 100.0) / 6
-				ELSE ((x.value * (100 - x.discount)) / 100.0) * (CASE x.aperiod
-					    WHEN '.MONTHLY.' THEN 1
-					    WHEN '.QUARTERLY.' THEN 1.0 / 3
-					    WHEN '.YEARLY.' THEN 1.0 / 12
-					    WHEN '.HALFYEARLY.' THEN 1.0 / 6
-					    ELSE 0 END)
-			    END) AS value
-			FROM (SELECT a.tariffid, t.period, a.period AS aperiod, a.discount, t.value
+				SUM(((((x.value * (100 - x.pdiscount)) / 100.0) - x.vdiscount) *
+					(CASE x.period
+						WHEN '.MONTHLY.' THEN 1
+						WHEN '.QUARTERLY.' THEN 1.0 / 3
+						WHEN '.YEARLY.' THEN 1.0 / 12
+						WHEN '.HALFYEARLY.' THEN 1.0 / 6
+						ELSE 0 END)
+				) AS value
+			FROM (SELECT a.tariffid, t.period, a.period AS aperiod, a.pdiscount, a.vdiscount, t.value
 				FROM assignments a
 				JOIN tariffs t ON (t.id = a.tariffid)'
 				.($customergroupid ? ' JOIN customerassignments cc ON (cc.customerid = a.customerid)' : '')
 				.' WHERE (
 					a.suspended = 1
-				        OR a.datefrom > ?NOW?
-				        OR (a.dateto <= ?NOW? AND a.dateto != 0)
+					OR a.datefrom > ?NOW?
+					OR (a.dateto <= ?NOW? AND a.dateto != 0)
 					OR EXISTS (
-					        SELECT 1 FROM assignments b
+						SELECT 1 FROM assignments b
 						WHERE b.customerid = a.customerid
 							AND liabilityid = 0 AND tariffid = 0
-						        AND (b.datefrom <= ?NOW? OR b.datefrom = 0)
+							AND (b.datefrom <= ?NOW? OR b.datefrom = 0)
 							AND (b.dateto > ?NOW? OR b.dateto = 0)
 					)
 				)'
 				.($type ? ' AND t.type = '.intval($type) : '')
 				.($customergroupid ? ' AND cc.customergroupid = '.intval($customergroupid) : '')
 				.($promotionid ? ' AND t.id IN (SELECT pa.tariffid
-				    FROM promotionassignments pa
-    			    JOIN promotionschemas ps ON (ps.id = pa.promotionschemaid)
-			        WHERE ps.promotionid = ' .intval($promotionid).')' : '')
+					FROM promotionassignments pa
+				JOIN promotionschemas ps ON (ps.id = pa.promotionschemaid)
+					WHERE ps.promotionid = ' .intval($promotionid).')' : '')
 			.') x GROUP BY tariffid', 'tariffid');
 
 		foreach($tarifflist as $idx => $row)
@@ -162,18 +154,18 @@ function GetTariffList($order='name,asc', $type=NULL, $customergroupid=NULL, $pr
 
 		switch($order)
 		{
-        		case 'income':
-	            		foreach($tarifflist as $idx => $row)
-			        {
-				        $table['idx'][] = $idx;
-				        $table['income'][] = $row['income'];
+			case 'income':
+				foreach($tarifflist as $idx => $row)
+				{
+					$table['idx'][] = $idx;
+					$table['income'][] = $row['income'];
 				}
-				if(isset($table))
+				if (isset($table))
 				{
 					array_multisort($table['income'],($direction == "desc" ? SORT_DESC : SORT_ASC), $table['idx']);
 					foreach($table['idx'] as $idx)
-				                $ntarifflist[] = $tarifflist[$idx];
-	
+						$ntarifflist[] = $tarifflist[$idx];
+
 					$tarifflist = $ntarifflist;
 				}
 			break;
@@ -191,28 +183,28 @@ function GetTariffList($order='name,asc', $type=NULL, $customergroupid=NULL, $pr
 	return $tarifflist;
 }
 
-if(!isset($_GET['o']))
-        $SESSION->restore('tlo', $o);
+if (!isset($_GET['o']))
+	$SESSION->restore('tlo', $o);
 else
-        $o = $_GET['o'];
+	$o = $_GET['o'];
 $SESSION->save('tlo', $o);
 
-if(!isset($_GET['t']))
-        $SESSION->restore('tlt', $t);
+if (!isset($_GET['t']))
+	$SESSION->restore('tlt', $t);
 else
-        $t = $_GET['t'];
+	$t = $_GET['t'];
 $SESSION->save('tlt', $t);
 
-if(!isset($_GET['g']))
-        $SESSION->restore('tlg', $g);
+if (!isset($_GET['g']))
+	$SESSION->restore('tlg', $g);
 else
-        $g = $_GET['g'];
+	$g = $_GET['g'];
 $SESSION->save('tlg', $g);
 
-if(!isset($_GET['p']))
-        $SESSION->restore('tlp', $p);
+if (!isset($_GET['p']))
+	$SESSION->restore('tlp', $p);
 else
-        $p = $_GET['p'];
+	$p = $_GET['p'];
 $SESSION->save('tlp', $p);
 
 $tarifflist = GetTariffList($o, $t, $g, $p);

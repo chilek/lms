@@ -212,75 +212,84 @@ if(isset($_POST['assignment']))
 	if($to < $from && $to != 0 && $from != 0)
 		$error['dateto'] = trans('Incorrect date range!');
 
-	$a['discount'] = str_replace(',','.',$a['discount']);
-	if($a['discount'] == '')
-		$a['discount'] = 0;
-	elseif($a['discount']<0 || $a['discount']>99.99 || !is_numeric($a['discount']))
+	$a['discount'] = str_replace(',', '.', $a['discount']);
+	$a['pdiscount'] = 0;
+	$a['vdiscount'] = 0;
+	if (preg_match('/^[0-9]+(\.[0-9]+)*$/', $a['discount']))
+	{
+		$a['pdiscount'] = ($a['discount_type'] == DISCOUNT_PERCENTAGE ? floatval($a['discount']) : 0);
+		$a['vdiscount'] = ($a['discount_type'] == DISCOUNT_AMOUNT ? floatval($a['discount']) : 0);
+	}
+	if ($a['pdiscount'] < 0 || $a['pdiscount'] > 99.99 || $a['vdiscount'] < 0)
 		$error['discount'] = trans('Wrong discount value!');
 
-    // suspending
-	if($a['tariffid'] == -1)
+	// suspending
+	if ($a['tariffid'] == -1)
 	{
-        $a['tariffid'] = 0;
-        $a['discount'] = 0;
-	    $a['value'] = 0;
-        unset($a['schemaid']);
-        unset($a['invoice']);
-        unset($a['settlement']);
+		$a['tariffid'] = 0;
+		$a['discount'] = 0;
+		$a['pdiscount'] = 0;
+		$a['vdiscount'] = 0;
+		$a['value'] = 0;
+		unset($a['schemaid']);
+		unset($a['invoice']);
+		unset($a['settlement']);
 		unset($error['at']);
 		$at = 0;
 	}
-    // promotion schema
-    else if ($a['tariffid'] == -2) {
-        if (!$from) {
-            $error['datefrom'] = trans('Promotion start date is required!');
-        }
-        else {
-            $a['promotiontariffid'] = $a['stariffid'];
-	        $a['value'] = 0;
-	        $a['discount'] = 0;
-	        // @TODO: handle other period/at values
-	        $a['period'] = MONTHLY;
-	        $a['at'] = 1;
-        }
-    }
+	// promotion schema
+	elseif ($a['tariffid'] == -2) {
+		if (!$from) {
+			$error['datefrom'] = trans('Promotion start date is required!');
+		}
+		else {
+			$a['promotiontariffid'] = $a['stariffid'];
+			$a['value'] = 0;
+			$a['discount'] = 0;
+			$a['pdiscount'] = 0;
+			$a['vdiscount'] = 0;
+			// @TODO: handle other period/at values
+			$a['period'] = MONTHLY;
+			$a['at'] = 1;
+		}
+	}
 	// tariffless
-	else if (!$a['tariffid']) {
-	    if (!$a['name'])
-		    $error['name'] = trans('Liability name is required!');
-	    if (!$a['value'])
-		    $error['value'] = trans('Liability value is required!');
-		else if(!preg_match('/^[-]?[0-9.,]+$/', $a['value']))
-		    $error['value'] = trans('Incorrect value!');
+	elseif (!$a['tariffid']) {
+		if (!$a['name'])
+			$error['name'] = trans('Liability name is required!');
+		if (!$a['value'])
+			$error['value'] = trans('Liability value is required!');
+		elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['value']))
+			$error['value'] = trans('Incorrect value!');
 
-        unset($a['schemaid']);
-    }
+		unset($a['schemaid']);
+	}
 
-	if(!$error)
+	if (!$error)
 	{
-        $a['customerid'] = $customer['id'];
-        $a['period']     = $period;
-        $a['at']         = $at;
+		$a['customerid'] = $customer['id'];
+		$a['period']     = $period;
+		$a['at']         = $at;
 		$a['datefrom']   = $from;
 		$a['dateto']     = $to;
 
-        $DB->BeginTrans();
+		$DB->BeginTrans();
 		$LMS->AddAssignment($a);
-        $DB->CommitTrans();
+		$DB->CommitTrans();
 
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}
 
-    $SMARTY->assign('error', $error);
+	$SMARTY->assign('error', $error);
 }
 else
 {
-    if (!empty($CONFIG['phpui']['default_assignment_invoice']))
-        $a['invoice'] = true;
-    if (!empty($CONFIG['phpui']['default_assignment_settlement']))
-        $a['settlement'] = true;
-    if (!empty($CONFIG['phpui']['default_assignment_period']))
-        $a['period'] = $CONFIG['phpui']['default_assignment_period'];
+	if (!empty($CONFIG['phpui']['default_assignment_invoice']))
+		$a['invoice'] = true;
+	if (!empty($CONFIG['phpui']['default_assignment_settlement']))
+		$a['settlement'] = true;
+	if (!empty($CONFIG['phpui']['default_assignment_period']))
+		$a['period'] = $CONFIG['phpui']['default_assignment_period'];
 }
 
 $expired = isset($_GET['expired']) ? $_GET['expired'] : false;
@@ -293,15 +302,15 @@ $customernodes = $LMS->GetCustomerNodes($customer['id']);
 unset($customernodes['total']);
 
 $schemas = $DB->GetAll('SELECT p.name AS promotion, s.name, s.id,
-    (SELECT '.$DB->GroupConcat('tariffid', ',').'
-        FROM promotionassignments WHERE promotionschemaid = s.id
-    ) AS tariffs
-    FROM promotions p
-    JOIN promotionschemas s ON (p.id = s.promotionid)
-    WHERE p.disabled <> 1 AND s.disabled <> 1
-        AND EXISTS (SELECT 1 FROM promotionassignments
-            WHERE promotionschemaid = s.id LIMIT 1)
-    ORDER BY p.name, s.name');
+	(SELECT '.$DB->GroupConcat('tariffid', ',').'
+		FROM promotionassignments WHERE promotionschemaid = s.id
+	) AS tariffs
+	FROM promotions p
+	JOIN promotionschemas s ON (p.id = s.promotionid)
+	WHERE p.disabled <> 1 AND s.disabled <> 1
+		AND EXISTS (SELECT 1 FROM promotionassignments
+		WHERE promotionschemaid = s.id LIMIT 1)
+	ORDER BY p.name, s.name');
 
 $SMARTY->assign('assignment', $a);
 $SMARTY->assign('customernodes', $customernodes);

@@ -172,6 +172,14 @@ $CONTACTTYPES = array(
     CONTACT_FAX 	=>	trans('fax'),
 );
 
+define('DISCOUNT_PERCENTAGE', 1);
+define('DISCOUNT_AMOUNT', 2);
+
+$DISCOUNTTYPES = array(
+	DISCOUNT_PERCENTAGE	=> '%',
+	DISCOUNT_AMOUNT		=> trans('amount'),
+);
+
 if(isset($SMARTY))
 {
 	$SMARTY->assign('_DOCTYPES', $DOCTYPES);
@@ -183,6 +191,7 @@ if(isset($SMARTY))
 	$SMARTY->assign('_TARIFFTYPES', $TARIFFTYPES);
 	$SMARTY->assign('_PAYTYPES', $PAYTYPES);
 	$SMARTY->assign('_CONTACTTYPES', $CONTACTTYPES);
+	$SMARTY->assign('_DISCOUNTTYPES', $DISCOUNTTYPES);
 }
 
 define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');

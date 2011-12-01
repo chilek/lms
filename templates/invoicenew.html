@@ -329,7 +329,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 			{$item.jm}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{$item.discount|string_format:"%.2f"} %
+			{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f%%"}{else}{if $item.vdiscount != 0}{$item.vdiscount|money_format}{/if}{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
 			{$item.valuenetto|money_format}<BR>
@@ -397,8 +397,13 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 			<INPUT TYPE="text" NAME="count" SIZE="3" VALUE="1">
 			<INPUT TYPE="text" NAME="jm" SIZE="3" VALUE="{t}pcs.{/t}">
 		</TD>
-		<TD CLASS="ftop" ALIGN="RIGHT" NOWRAP>
-			<INPUT TYPE="text" NAME="discount" SIZE="6" {tip text="Enter discount percentage"}>
+		<TD CLASS="ftop" ALIGN="RIGHT">
+			<INPUT TYPE="text" NAME="discount" SIZE="6" {tip text="Enter discount percentage or amount"}>
+			<SELECT name="discount_type">
+				{foreach from=$_DISCOUNTTYPES item=item key=key}
+					<OPTION value="{$key}">{$item}</OPTION>
+				{/foreach}
+			</SELECT>
 		</TD>
 		<TD CLASS="ftop" ALIGN="RIGHT" NOWRAP>
 			<INPUT TYPE="text" NAME="valuenetto" SIZE="6" {tip text="Enter unitary value without discount"}>

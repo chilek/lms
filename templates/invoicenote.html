@@ -202,11 +202,18 @@
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
 		    {if $invoice.closed}
-		    {$item.discount|string_format:"%.2f"}
+		    {if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f%%"}{else}{if $item.vdiscount != 0}{$item.vdiscount|string_format:"%.2f"}{/if}{/if}
 			{elseif $item.deleted}
-			<INPUT TYPE="hidden" VALUE="{$item.discount}" NAME="discount[{$item.itemid}]">{$item.discount|string_format:"%.2f"}
+			<INPUT TYPE="hidden" VALUE="{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f"}{else}{if $item.vdiscount != 0}{$item.vdiscount|string_format:"%.2f"}{/if}{/if}" NAME="discount[{$item.itemid}]">
+			<INPUT TYPE="hidden" VALUE="{if $item.pdiscount != 0}{$smarty.const.DISCOUNT_PERCENTAGE}{else}{if $item.vdiscount != 0}{$smarty.const.DISCOUNT_AMOUNT}{/if}{/if}" NAME="discount_type[{$item.itemid}]">
+				{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f%%"}{else}{if $item.vdiscount != 0}{$item.vdiscount|money_format}{/if}{/if}
 			{else}
-			<INPUT TYPE="text" VALUE="{$item.discount|string_format:"%.2f"}" NAME="discount[{$item.itemid}]" SIZE="6" {tip text="Enter discount percentage"}>
+			<INPUT TYPE="text" VALUE="{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f"}{else}{if $item.vdiscount != 0}{$item.vdiscount|string_format:"%.2f"}{/if}{/if}" NAME="discount[{$item.itemid}]" SIZE="6" {tip text="Enter discount percentage or value"}><BR>
+			<SELECT name="discount_type[{$item.itemid}]">
+				{foreach from=$_DISCOUNTTYPES item=item2 key=key}
+					<OPTION value="{$key}"{if ($item.pdiscount != 0 && $key == $smarty.const.DISCOUNT_PERCENTAGE) || ($item.vdiscount != 0 && $key == $smarty.const.DISCOUNT_AMOUNT)} selected{/if}>{$item2}</OPTION>
+				{/foreach}
+			</SELECT>
 			{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">

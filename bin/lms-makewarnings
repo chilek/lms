@@ -39,7 +39,7 @@ sub mask2prefix($)
 	if ($q =~ /0/) {
 		print " You idiot. error in mask\n";
 	}
-	my $len = length($q) ;
+	my $len = length($q);
 	return $len;
 }
 
@@ -50,7 +50,7 @@ sub prefix2mask
 	my @bytes = unpack "CCCC", pack "N", $net_mask;
 	my $dec_rep = sprintf "%d.%d.%d.%d", @bytes;
 	return $dec_rep;
-}					
+}
 
 sub matchip($$$)
 {
@@ -283,15 +283,15 @@ while (my $row = $dbq->fetchrow_hashref())
 	if($customergroupscount || !$inicustomergroups)
 	{
 		my $balance = $row->{'balance'};
-		my $sdbq = $dbase->prepare("SELECT MAX(a.at) AS at, SUM((t.value * (100 - a.discount)) / 100) AS value
-		    FROM assignments a, tariffs t
-		    WHERE a.tariffid = t.id
-		        AND a.customerid = $row->{'id'}
-		        AND a.period = ".MONTH."
-		        AND (a.datefrom <= $currtime OR a.datefrom = 0)
-		        AND (a.dateto >= $currtime OR a.dateto = 0)
-		        GROUP BY a.customerid
-		        HAVING SUM(t.value * ((100 - a.discount) / 100)) > 0");
+		my $sdbq = $dbase->prepare("SELECT MAX(a.at) AS at, SUM(((t.value * (100 - a.pdiscount)) / 100) - a.vdiscount) AS value
+			FROM assignments a, tariffs t
+			WHERE a.tariffid = t.id
+			AND a.customerid = $row->{'id'}
+			AND a.period = ".MONTH."
+			AND (a.datefrom <= $currtime OR a.datefrom = 0)
+			AND (a.dateto >= $currtime OR a.dateto = 0)
+			GROUP BY a.customerid
+			HAVING SUM(((t.value * (100 - a.pdiscount)) / 100) - a.vdiscount) > 0");
 		$sdbq->execute();
 		$srow = $sdbq->fetchrow_hashref();
 		$sdbq->finish();
@@ -312,8 +312,8 @@ while (my $row = $dbq->fetchrow_hashref())
 			$sdbq->execute();
 			while ($srow = $sdbq->fetchrow_hashref())
 			{
-			        my $tmpname = lc($srow->{'name'});
-			        my $ipaddr = u32todotquad($srow->{'ipaddr'});
+				my $tmpname = lc($srow->{'name'});
+				my $ipaddr = u32todotquad($srow->{'ipaddr'});
 				my $networkscount = 0;
 				foreach my $key (@networks)
 				{
