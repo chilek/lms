@@ -317,7 +317,7 @@ Chapter 2. Installation and configuration
 
 2.2.2. PHP Interpreter
 
-   Interpreter version should be 4.2.x or higher. PHP can be downloaded
+   Interpreter version should be 5.2.x or higher. PHP can be downloaded
    from www.php.net. At least following PHP modules needs to be installed
    (look for "extension" in php.ini or in output of phpinfo function):
      * pcre, posix,
@@ -339,10 +339,9 @@ Chapter 2. Installation and configuration
 
 2.2.4. Smarty Library
 
-   LMS-UI requires Smarty library (http://www.smarty.net) in version 2.6.0
-   or higher (don't use 2.6.4 version). Newer versions of Smarty requires
-   that you have not enabled "magic_quotes_runtime" (set to Off) option in
-   PHP configuration.
+   LMS-UI requires Smarty library (http://www.smarty.net) in version 3.0
+   or higher. Newer versions of Smarty requires that you have not enabled
+   "magic_quotes_runtime" (set to Off) option in PHP configuration.
      __________________________________________________________________
 
 2.2.5. Perl
@@ -1867,6 +1866,7 @@ query = SELECT p.mail_bcc
    %cid - customer ID
    %pin - customer PIN
    %last_10_in_a_table - last 10 operations on customer account
+   %bankaccount - bank account number
      __________________________________________________________________
 
 3.10.3. Configuration

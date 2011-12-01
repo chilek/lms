@@ -123,6 +123,10 @@
 			<entry><xref linkend="lms-rtparser"></entry>
 			<entry>Backend do Helpdesk'a.</entry>
 			</row>
+			<row>
+			<entry><xref linkend="lms-teryt"></entry>
+			<entry>Import bazy TERYT</entry>
+			</row>
 		    </tbody>	
 		</tgroup>
 	    </table>
@@ -1309,6 +1313,87 @@ endif
 			<para>Przyk³ad:	<prompt>include_customerinfo = 0</prompt></para>
 		</listitem>
 	    </itemizedlist>
+    </sect2>
+    <sect2 id="lms-teryt" xreflabel="lms-teryt">
+	<title>lms-teryt</title>
+	<para>Skrypt s³u¿±cy do importu i aktualizacji danych bazy TERYT. Zawiera równie¿ mo¿liwo¶æ
+	pobrania plików bazy z Internetu, a tak¿e procedurê przypisywania identyfikatorów
+	TERYT do istniej±cych komputerów, które maj± zdefiniowany adres ale nie maj± przypisanego TERYTu.
+	</para>
+	<para>Skrypt zawiera nastêpuj±ce opcje uruchomieniowe, które mo¿na ³±czyæ:</para>
+	<itemizedlist>
+		<listitem>
+			<para><prompt>-f, --fetch</prompt></para>
+			<para>W³±cza procedurê pobierania (i rozpakowania) plików bazy TERYT z Internetu.
+			Wymagane jest umo¿liwienie po³±czenia HTTP z serwerem okre¶lonych w opcji 'url'
+			oraz zainstalowanie programu unzip.</para>
+		</listitem>
+		<listitem>
+			<para><prompt>-l, --list=&lt;lista&gt;</prompt></para>
+			<para>Zawê¿a dzia³anie opcji importu/aktualizacji do okre¶lonych województw.
+			Podobnie jak w opcji konfiguracyjnej 'state_list' podajemy tutaj numeryczne identyfikatory
+			oddzielone przecinkami. Ze wzglêdu na du¿y rozmiar ca³ej bazy, wskazane jest ograniczenie siê
+			tylko do wybranych województw. Identyfikatory mo¿na znale¼æ w pliku TERC.xml.
+			<simplelist>
+				<member>2 - dolno¶l±skie</member>
+				<member>4 - kujawsko-pomorskie</member>
+				<member>6 - lubelskie</member>
+				<member>8 - lubuskie</member>
+				<member>10 - ³ódzkie</member>
+				<member>12 - ma³opolskie</member>
+				<member>14 - mazowieckie</member>
+				<member>16 - opolskie</member>
+				<member>18 - podkarpackie</member>
+				<member>20 - podlaskie</member>
+				<member>22 - pomorskie</member>
+				<member>24 - ¶l±skie</member>
+				<member>26 - ¶wiêtokrzyskie</member>
+				<member>28 - warmi¶ko-mazurskie</member>
+				<member>30 - wielkopolskie</member>
+				<member>32 - zachodniopomorskie</member>
+			</simplelist>
+			</para>
+		</listitem>
+		<listitem>
+			<para><prompt>-u, --update</prompt></para>
+			<para>Import danych do bazy LMSa. Je¶li baza by³a ju¿ wcze¶niej importowana,
+			nast±pi aktualizacja bazy.</para>
+		</listitem>
+		<listitem>
+			<para><prompt>-m, --merge</prompt></para>
+			<para>Przypisanie identyfikatorów TERYT dla komputerów/urz±dzeñ, które
+			nie zosta³y jaszcze przypisane, ale posiadaj± wpisany adres lokalizacji.
+			Algorytm jest do¶æ prosty i nie ma pewno¶ci, ¿e wszystkie adresy
+			zostan± rozpoznane.</para>
+		</listitem>
+	</itemizedlist>
+	<para>Konfiguracjê tego skryptu zawiera sekcja <emphasis>[teryt]</emphasis>
+	w pliku <filename>lms.ini</filename>: </para>
+	<itemizedlist>
+        	<listitem>
+			<para>url</para>
+			<para>Adres strony pobierania plików bazy TERYT. Domy¶lnie zawiera poni¿szy link.</para>
+			<para>Przyk³ad:	<prompt>url = http://www.stat.gov.pl/broker/access/prefile/listPreFiles.jspa</prompt></para>
+		</listitem>
+        	<listitem>
+			<para>dir</para>
+			<para>Katalog w którym, s± przechowywane rozpakowane pliki (xml) bazy TERYT.
+			W tym katalogu zostan± te¿ zapisane pobrane pliki. Domy¶lnie: katalog uruchomienia skryptu.</para>
+			<para>Przyk³ad:	<prompt>dir = /var/lib/teryt</prompt></para>
+		</listitem>
+		<listitem>
+			<para>unzip_binary</para>
+			<para>Lokalizacja programu unzip. Domy¶lnie: /usr/bin/unzip.</para>
+			<para>Przyk³ad:	<prompt>unzip_binary = /sbin/unzip</prompt></para>
+		</listitem>
+		<listitem>
+			<para>state_list</para>
+			<para>Lista identyfikatorów województw, oddzielonych przecinkami, które
+			bêd± brane pod uwagê podczas importu. W celu minimalizacji rozmiaru bazy danych i czasu
+			dzia³ania skryptu najlepiej ograniczyæ siê do wybranych województw.</para>
+			<para>Przyk³ad:	<prompt>state_list = 2</prompt></para>
+		</listitem>
+	</itemizedlist>
     </sect2>
     </sect1>
 </chapter>

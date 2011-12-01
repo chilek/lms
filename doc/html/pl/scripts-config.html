@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
 ><TITLE
@@ -2612,6 +2612,201 @@ CLASS="PROMPT"
 >Przykład:	<SAMP
 CLASS="PROMPT"
 >include_customerinfo = 0</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-TERYT"
+>4.3.19. lms-teryt</A
+></H2
+><P
+>Skrypt służący do importu i aktualizacji danych bazy TERYT. Zawiera również możliwość
+	pobrania plików bazy z Internetu, a także procedurę przypisywania identyfikatorów
+	TERYT do istniejących komputerów, które mają zdefiniowany adres ale nie mają przypisanego TERYTu.
+	</P
+><P
+>Skrypt zawiera następujące opcje uruchomieniowe, które można łączyć:</P
+><UL
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>-f, --fetch</SAMP
+></P
+><P
+>Włącza procedurę pobierania (i rozpakowania) plików bazy TERYT z Internetu.
+			Wymagane jest umożliwienie połączenia HTTP z serwerem określonych w opcji 'url'
+			oraz zainstalowanie programu unzip.</P
+></LI
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>-l, --list=&lt;lista&gt;</SAMP
+></P
+><P
+>Zawęża działanie opcji importu/aktualizacji do określonych województw.
+			Podobnie jak w opcji konfiguracyjnej 'state_list' podajemy tutaj numeryczne identyfikatory
+			oddzielone przecinkami. Ze względu na duży rozmiar całej bazy, wskazane jest ograniczenie się
+			tylko do wybranych województw. Identyfikatory można znaleźć w pliku TERC.xml.
+			<TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>2 - dolnośląskie</TD
+></TR
+><TR
+><TD
+>4 - kujawsko-pomorskie</TD
+></TR
+><TR
+><TD
+>6 - lubelskie</TD
+></TR
+><TR
+><TD
+>8 - lubuskie</TD
+></TR
+><TR
+><TD
+>10 - łódzkie</TD
+></TR
+><TR
+><TD
+>12 - małopolskie</TD
+></TR
+><TR
+><TD
+>14 - mazowieckie</TD
+></TR
+><TR
+><TD
+>16 - opolskie</TD
+></TR
+><TR
+><TD
+>18 - podkarpackie</TD
+></TR
+><TR
+><TD
+>20 - podlaskie</TD
+></TR
+><TR
+><TD
+>22 - pomorskie</TD
+></TR
+><TR
+><TD
+>24 - śląskie</TD
+></TR
+><TR
+><TD
+>26 - świętokrzyskie</TD
+></TR
+><TR
+><TD
+>28 - warmiśko-mazurskie</TD
+></TR
+><TR
+><TD
+>30 - wielkopolskie</TD
+></TR
+><TR
+><TD
+>32 - zachodniopomorskie</TD
+></TR
+></TBODY
+></TABLE
+>
+			</P
+></LI
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>-u, --update</SAMP
+></P
+><P
+>Import danych do bazy LMSa. Jeśli baza była już wcześniej importowana,
+			nastąpi aktualizacja bazy.</P
+></LI
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>-m, --merge</SAMP
+></P
+><P
+>Przypisanie identyfikatorów TERYT dla komputerów/urządzeń, które
+			nie zostały jaszcze przypisane, ale posiadają wpisany adres lokalizacji.
+			Algorytm jest dość prosty i nie ma pewności, że wszystkie adresy
+			zostaną rozpoznane.</P
+></LI
+></UL
+><P
+>Konfigurację tego skryptu zawiera sekcja <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[teryt]</I
+></SPAN
+>
+	w pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>: </P
+><UL
+><LI
+><P
+>url</P
+><P
+>Adres strony pobierania plików bazy TERYT. Domyślnie zawiera poniższy link.</P
+><P
+>Przykład:	<SAMP
+CLASS="PROMPT"
+>url = http://www.stat.gov.pl/broker/access/prefile/listPreFiles.jspa</SAMP
+></P
+></LI
+><LI
+><P
+>dir</P
+><P
+>Katalog w którym, są przechowywane rozpakowane pliki (xml) bazy TERYT.
+			W tym katalogu zostaną też zapisane pobrane pliki. Domyślnie: katalog uruchomienia skryptu.</P
+><P
+>Przykład:	<SAMP
+CLASS="PROMPT"
+>dir = /var/lib/teryt</SAMP
+></P
+></LI
+><LI
+><P
+>unzip_binary</P
+><P
+>Lokalizacja programu unzip. Domyślnie: /usr/bin/unzip.</P
+><P
+>Przykład:	<SAMP
+CLASS="PROMPT"
+>unzip_binary = /sbin/unzip</SAMP
+></P
+></LI
+><LI
+><P
+>state_list</P
+><P
+>Lista identyfikatorów województw, oddzielonych przecinkami, które
+			będą brane pod uwagę podczas importu. W celu minimalizacji rozmiaru bazy danych i czasu
+			działania skryptu najlepiej ograniczyć się do wybranych województw.</P
+><P
+>Przykład:	<SAMP
+CLASS="PROMPT"
+>state_list = 2</SAMP
 ></P
 ></LI
 ></UL
