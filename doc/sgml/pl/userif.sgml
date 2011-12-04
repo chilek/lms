@@ -243,7 +243,8 @@
 		biblioteki graficznej GD lub Ming.</para></note>
 		Aby wybraæ typ mapy musisz skorzystaæ z opcji <filename>map_type</filename>
 		z sekcji <emphasis>[phpui]</emphasis>. Ustaw "flash" je¶li u¿ywasz biblioteki
-		Ming lub "gd" je¶li chcesz generowaæ obrazki przy pomocy gdlib. Domy¶lnie
+		Ming, "gd" je¶li chcesz generowaæ obrazki przy pomocy gdlib lub "openlayers" je¶li
+		chcesz u¿ywaæ biblioteki OpenLayers do generowania mapy. Domy¶lnie
 		(opcja nieustawiona) LMS spróbuje wykryæ jak± bibliotekê masz dostêpn± w systemie, przy czym
 		w pierwszej kolejno¶ci szuka mo¿liwo¶ci wygenerowania mapy we flashu, a jak
 		siê to nie uda, to u¿yje GD.
