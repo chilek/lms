@@ -874,8 +874,8 @@ class LMS
 				) b ON (b.customerid = c.id)
 				LEFT JOIN (SELECT a.customerid,
 					SUM((CASE a.suspended
-						WHEN 0 THEN (((100 - pdiscount) * (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) / 100) - vdiscount)
-						ELSE ((((100 - pdiscount) * (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) / 100) - vdiscount) * '.$suspension_percentage.' / 100) END)
+						WHEN 0 THEN (((100 - a.pdiscount) * (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) / 100) - a.vdiscount)
+						ELSE ((((100 - a.pdiscount) * (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) / 100) - a.vdiscount) * '.$suspension_percentage.' / 100) END)
 					* (CASE t.period
 						WHEN '.MONTHLY.' THEN 1
 						WHEN '.YEARLY.' THEN 1/12.0
