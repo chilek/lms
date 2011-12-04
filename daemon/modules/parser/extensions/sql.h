@@ -33,28 +33,28 @@ void tscript_ext_sql_close(tscript_context *);
 		    rbe, icn"
 
 #ifdef USE_MYSQL
-#define NODES "SELECT nodes.id AS id, nodes.name AS name, ownerid, access, \
-		    warning, netdev, lastonline, nodes.info AS info, \
-		    CONCAT(customers.lastname, ' ', customers.name) AS owner, \
-		    customers.message AS message, mac, passwd, linktype, \
-		    INET_NTOA(ipaddr) AS ip, INET_NTOA(ipaddr_pub) AS ip_pub, \
-		    chkmac, halfduplex \
-		    FROM vnodes \
-		    LEFT JOIN customers ON (customers.id = ownerid)"
+#define NODES "SELECT n.id, n.name, n.ownerid, n.access, \
+		    n.warning, n.netdev, n.lastonline, n.info, n.port, \
+		    CONCAT(c.lastname, ' ', c.name) AS owner, \
+		    c.message, n.mac, n.passwd, n.linktype, \
+		    INET_NTOA(n.ipaddr) AS ip, INET_NTOA(n.ipaddr_pub) AS ip_pub, \
+		    n.chkmac, n.halfduplex \
+		    FROM vnodes n \
+		    LEFT JOIN customers c ON (c.id = n.ownerid)"
 #else
-#define NODES "SELECT nodes.id AS id, nodes.name AS name, ownerid, access, \
-		    warning, netdev, lastonline, nodes.info AS info, port, \
-		    customers.lastname || ' ' || customers.name AS owner, \
-		    customers.message AS message, mac, passwd, linktype, \
-		    INET_NTOA(ipaddr) AS ip, INET_NTOA(ipaddr_pub) AS ip_pub, \
-		    chkmac, halfduplex \
-		    FROM vnodes \
-		    LEFT JOIN customers ON (customers.id = ownerid)"
+#define NODES "SELECT n.id, n.name, n.ownerid, n.access, \
+		    n.warning, n.netdev, n.lastonline, n.info, n.port, \
+		    c.lastname || ' ' || c.name AS owner, \
+		    c.message, n.mac, n.passwd, n.linktype, \
+		    INET_NTOA(n.ipaddr) AS ip, INET_NTOA(n.ipaddr_pub) AS ip_pub, \
+		    n.chkmac, n.halfduplex \
+		    FROM vnodes n \
+		    LEFT JOIN customers c ON (c.id = n.ownerid)"
 #endif
 
 #define NETWORKS "SELECT id, name, INET_NTOA(address) AS address, \
 		    mask, interface, gateway, dns, dns2, wins, domain, \
 		    dhcpstart, dhcpend \
-		    FROM networks" 
+		    FROM networks"
 
 #endif
