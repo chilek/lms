@@ -57,7 +57,7 @@ tscript_value * tscript_ext_syslog_syslog(tscript_value *arg)
 		log = tscript_value_convert_to_string(arg);
 	}
 
-	syslog(n, tscript_value_as_string(log));
+	syslog(n, "%s", tscript_value_as_string(log));
 
 	tscript_value_free(log);
 
