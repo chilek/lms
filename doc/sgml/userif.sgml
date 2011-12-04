@@ -256,7 +256,8 @@ screen.</para>
 		to be able to use graphical map.</para></note>
 		Use <filename>'map_type'</filename> option in section <emphasis>[phpui]</emphasis> 
 		section to specify type of map. Set it to "flash" if you've
-		got Ming library or "gd" for graphic images. By default (option
+		got Ming library, "gd" for graphic images or "openlayers" if you want to use
+		map based on this library. By default (option
 		not set) LMS will try to generate flash map, and when this fails, 
 		t will fallback to GD.
 		</para>
