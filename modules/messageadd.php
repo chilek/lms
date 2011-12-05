@@ -221,7 +221,7 @@ if(isset($_POST['message']))
 	{
 		$recipients = array();
 		if(empty($message['customerid']))
-			if ($message['type'] == MSG_SMS)
+			if ($message['type'] == MSG_SMS || $message['type'] == MSG_MAIL)
 				$recipients = GetRecipients($message, $message['type']);
 			else
 				foreach($phonenumbers as $phone)
