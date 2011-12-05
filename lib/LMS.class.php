@@ -1300,8 +1300,8 @@ class LMS
 				    isset($nodedata['linktype']) ? 1 : 0,
 				    isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
 				    isset($nodedata['nas']) ? $nodedata['nas'] : 0,
-				    !empty($nodedata['longitude']) ? $nodedata['longitude'] : null,
-				    !empty($nodedata['latitude']) ? $nodedata['latitude'] : null,
+				    !empty($nodedata['longitude']) ? str_replace(',', '.', $nodedata['longitude']) : null,
+				    !empty($nodedata['latitude']) ? str_replace(',', '.', $nodedata['latitude']) : null,
 				    $nodedata['id']
 			    ));
 
@@ -1590,8 +1590,8 @@ class LMS
 				$nodedata['chkmac'],
 				$nodedata['halfduplex'],
 				isset($nodedata['nas']) ? $nodedata['nas'] : 0,
-				!empty($nodedata['longitude']) ? $nodedata['longitude'] : null,
-				!empty($nodedata['latitude']) ? $nodedata['latitude'] : null
+				!empty($nodedata['longitude']) ? str_replace(',', '.', $nodedata['longitude']) : null,
+				!empty($nodedata['latitude']) ? str_replace(',', '.', $nodedata['latitude']) : null
 				)))
 		{
 			$id = $this->DB->GetLastInsertID('nodes');
@@ -3347,7 +3347,7 @@ class LMS
 	function NetDevAdd($data)
 	{
 		if ($this->DB->Execute('INSERT INTO netdevices (name, location,
-		        location_city, location_street, location_house, location_flat,
+				location_city, location_street, location_house, location_flat,
 				description, producer, model, serialnumber,
 				ports, purchasetime, guaranteeperiod, shortname,
 				nastype, clients, secret, community, channelid,
@@ -3372,8 +3372,8 @@ class LMS
 					$data['secret'],
 					$data['community'],
 					!empty($data['channelid']) ? $data['channelid'] : NULL,
-					!empty($data['longitude']) ? $data['longitude'] : NULL,
-					!empty($data['latitude']) ? $data['latitude'] : NULL
+					!empty($data['longitude']) ? str_replace(',', '.', $data['longitude']) : NULL,
+					!empty($data['latitude']) ? str_replace(',', '.', $data['latitude']) : NULL
 		))) {
 			$id = $this->DB->GetLastInsertID('netdevices');
 
@@ -3406,7 +3406,7 @@ class LMS
 	function NetDevUpdate($data)
 	{
 		$this->DB->Execute('UPDATE netdevices SET name=?, description=?, producer=?, location=?,
-		        location_city=?, location_street=?, location_house=?, location_flat=?,
+				location_city=?, location_street=?, location_house=?, location_flat=?,
 				model=?, serialnumber=?, ports=?, purchasetime=?, guaranteeperiod=?, shortname=?,
 				nastype=?, clients=?, secret=?, community=?, channelid=?, longitude=?, latitude=? 
 				WHERE id=?', 
@@ -3429,8 +3429,8 @@ class LMS
 					$data['secret'],
 					$data['community'],
 					!empty($data['channelid']) ? $data['channelid'] : NULL,
-					!empty($data['longitude']) ? $data['longitude'] : null,
-					!empty($data['latitude']) ? $data['latitude'] : null,
+					!empty($data['longitude']) ? str_replace(',', '.', $data['longitude']) : null,
+					!empty($data['latitude']) ? str_replace(',', '.', $data['latitude']) : null,
 					$data['id']
 				));
 	}
