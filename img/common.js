@@ -342,26 +342,27 @@ function reset_login_timeout()
 // Display overlib popup
 function popup(content, frame, sticky, offset_x, offset_y)
 {
-    if (lms_sticky_popup)
-        return;
+	if (lms_sticky_popup)
+		return;
 
-    if (frame) {
-        content = '<iframe id="autoiframe" width=100 height=10 frameborder=0 scrolling=no '
-            +'src="'+content+'&popup=1"></iframe>';
-    }
+	if (frame)
+		content = '<iframe id="autoiframe" width=100 height=10 frameborder=0 scrolling=no '
+			+'src="'+content+'&popup=1"></iframe>';
 
-    if (!offset_x) offset_x = 15;
-    if (!offset_y) offset_y = 15;
+	if (!offset_x) offset_x = 15;
+	if (!offset_y) offset_y = 15;
 
-    if (sticky) {
-        overlib(content, HAUTO, VAUTO, OFFSETX, offset_x, OFFSETY, offset_y, STICKY, MOUSEOFF);
-        var body = document.getElementsByTagName('BODY')[0];
-        body.onmousedown = function () { popclick(); };
-        lms_sticky_popup = 1;
-    }
-    else {
-        overlib(content, HAUTO, VAUTO, OFFSETX, offset_x, OFFSETY, offset_y);
-    }
+	if (sticky) {
+		// let's check how people will react for this small change ;-)
+		//overlib(content, HAUTO, VAUTO, OFFSETX, offset_x, OFFSETY, offset_y, STICKY, MOUSEOFF);
+		overlib(content, HAUTO, VAUTO, OFFSETX, offset_x, OFFSETY, offset_y, STICKY);
+		var body = document.getElementsByTagName('BODY')[0];
+		body.onmousedown = function () { popclick(); };
+		lms_sticky_popup = 1;
+	}
+	else {
+		 overlib(content, HAUTO, VAUTO, OFFSETX, offset_x, OFFSETY, offset_y);
+	}
 }
 
 // Hide non-sticky popup
