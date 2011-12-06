@@ -215,7 +215,7 @@
 			<TABLE CELLPADDING="2">
 				<TR CLASS="DARK">
 					<TD COLSPAN="2" ALIGN="CENTER" CLASS="FALL" NOWRAP>
-						<IMG SRC="img/ticket.gif"> <B>{t}Helpdesk:{/t}&nbsp;<A href="?m=rtqueueview&catid={$rtcategorystats.id}">{$rtcategorystats.name}</A></B>
+						<B><A href="?m=rtticketadd&catid={$rtcategorystats.id}" {tip text="Add new ticket" trigger="newticket"}><IMG SRC="img/ticket.gif"></A>&nbsp;{t}Helpdesk:{/t}&nbsp;<A href="?m=rtqueueview&catid={$rtcategorystats.id}">{$rtcategorystats.name}</A></B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
