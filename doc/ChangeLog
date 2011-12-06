@@ -65,7 +65,7 @@ version ? (????-??-??):
     in one, common popup window [chilan]
   - it's able to pause ping [chilan]
   - display summary times in ping popup [chilan]
-  - added %bankaccount variable for messages sent from UI [foxman]
+  - added %bankaccount variable for messages sent from UI [Łukasz Rostalski]
   - lms-payments: added 'check_invoices' option [foxman]
   - if user doesn't have finances management privilege then he can't see any
     financial information [chilan]
@@ -76,12 +76,12 @@ version ? (????-??-??):
   - BTS#0000892: Fixed bug where phpui/style wasn't used on login page [alec]
   - we can use percentage and amount discounts [chilan]
   - BTS#0000894: lmsd/parser: Fixed SQL query for NODES variable [alec]
-  - fixed listing of customers who in debt above 100% and 200% [Jaroslaw Dziubek/chilan]
+  - fixed listing of customers who in debt above 100% and 200% [Jarosław Dziubek/chilan]
   - complete rewrite of graph statistics engine. Graphs look like in Cacti [chilan] 
   - we can choose graph statistics from node information form [chilan]
   - rewritten graph navigation panel [chilan]
   - invoicenote: we use tax rates which were current in the day
-    when invoice was issued [Jaroslaw Dziubek/chilan]
+    when invoice was issued [Jarosław Dziubek/chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
