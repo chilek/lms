@@ -248,32 +248,32 @@
 			<B>{t}Traffic stats from last (download/upload):{/t}</B>
 		</TD>
 	</TR>
-        <TR CLASS="LIGHT">
-	        <TD WIDTH="1%"></TD>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%"></TD>
 		<TD WIDTH="99%" COLSPAN="2" nowrap>
-	    		<TABLE width="100%" cellpadding="3">
-	        	        <TR>
-		    		        <TD width="1%" nowrap>
-		            		        <B>{t}hour:{/t}</B>
-			                </TD>
-			        	<TD width="99%" nowrap>
-					        {$nodestats.hour.download.data|string_format:"%.2f"} {$nodestats.hour.download.units} ({$nodestats.hour.downavg|string_format:"%d"} kbit/s) / {$nodestats.hour.upload.data|string_format:"%.2f"} {$nodestats.hour.upload.units} ({$nodestats.hour.upavg|string_format:"%d"} kbit/s) 
+			<TABLE width="100%" cellpadding="3">
+				<TR>
+					<TD width="1%" nowrap>
+						<A HREF="javascript:popup('?m=trafficgraph&nodeid={$nodeinfo.id}&bar=hour',1,1,10,10)"><B>{t}hour:{/t}</B></A>
+					</TD>
+					<TD width="99%" nowrap>
+						{$nodestats.hour.download.data|string_format:"%.2f"} {$nodestats.hour.download.units} ({$nodestats.hour.downavg|string_format:"%d"} kbit/s) / {$nodestats.hour.upload.data|string_format:"%.2f"} {$nodestats.hour.upload.units} ({$nodestats.hour.upavg|string_format:"%d"} kbit/s) 
 					</TD>
 				</TR>
 				<TR>
-		    		        <TD width="1%" nowrap>
-		            		        <B>{t}24 hour:{/t}</B>
-			                </TD>
-			        	<TD width="99%" nowrap>
-					        {$nodestats.day.download.data|string_format:"%.2f"} {$nodestats.day.download.units} ({$nodestats.day.downavg|string_format:"%d"} kbit/s) / {$nodestats.day.upload.data|string_format:"%.2f"} {$nodestats.day.upload.units} ({$nodestats.day.upavg|string_format:"%d"} kbit/s)
+					<TD width="1%" nowrap>
+						<A HREF="javascript:popup('?m=trafficgraph&nodeid={$nodeinfo.id}&bar=day',1,1,10,10)"><B>{t}24 hour:{/t}</B></A>
+					</TD>
+					<TD width="99%" nowrap>
+						{$nodestats.day.download.data|string_format:"%.2f"} {$nodestats.day.download.units} ({$nodestats.day.downavg|string_format:"%d"} kbit/s) / {$nodestats.day.upload.data|string_format:"%.2f"} {$nodestats.day.upload.units} ({$nodestats.day.upavg|string_format:"%d"} kbit/s)
 					</TD>
 				</TR>
 				<TR>
-		    		        <TD width="1%" nowrap>
-		            		        <B>{t}30 days:{/t}</B>
-			                </TD>
-			        	<TD width="99%" nowrap>
-					        {$nodestats.month.download.data|string_format:"%.2f"} {$nodestats.month.download.units} ({$nodestats.month.downavg|string_format:"%d"} kbit/s) / {$nodestats.month.upload.data|string_format:"%.2f"} {$nodestats.month.upload.units} ({$nodestats.month.upavg|string_format:"%d"} kbit/s)
+					<TD width="1%" nowrap>
+						<A HREF="javascript:popup('?m=trafficgraph&nodeid={$nodeinfo.id}&bar=month',1,1,10,10)"><B>{t}30 days:{/t}</B></A>
+					</TD>
+					<TD width="99%" nowrap>
+						{$nodestats.month.download.data|string_format:"%.2f"} {$nodestats.month.download.units} ({$nodestats.month.downavg|string_format:"%d"} kbit/s) / {$nodestats.month.upload.data|string_format:"%.2f"} {$nodestats.month.upload.units} ({$nodestats.month.upavg|string_format:"%d"} kbit/s)
 					</TD>
 				</TR>
 			</TABLE>
