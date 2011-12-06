@@ -2459,6 +2459,7 @@ $_LANG['Option'] = 'Opcja';
 $_LANG['by date'] = 'wg daty';
 $_LANG['Select date type'] = 'Wybierz typ daty';
 $_LANG['in debt above 100%'] = 'zadłużeni ponad 100%';
+$_LANG['in debt above 200%'] = 'zadłużeni ponad 200%';
 $_LANG['<!borough_abbr>'] = 'gm.';
 $_LANG['<!district_abbr>'] = 'pow.';
 $_LANG['City'] = 'Miejscowość';
