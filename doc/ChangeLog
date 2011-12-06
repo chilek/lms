@@ -80,6 +80,8 @@ version ? (????-??-??):
   - complete rewrite of graph statistics engine. Graphs look like in Cacti [chilan] 
   - we can choose graph statistics from node information form [chilan]
   - rewritten graph navigation panel [chilan]
+  - invoicenote: we use tax rates which were current in the day
+    when invoice was issued [Jaroslaw Dziubek/chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
