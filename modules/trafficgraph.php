@@ -27,273 +27,284 @@
 if(!function_exists('imagecreate'))
 	die;
 
-define('GRAPH_HEIGHT', 180);
-define('GRAPH_WIDTH', 500);
+define('GRAPH_HEIGHT', 320);
+define('GRAPH_WIDTH', 750);
 
-function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=NULL, $todate=NULL, $add=NULL)
+function TrafficGraph($nodeid, $net = NULL, $customer = NULL, $bar = NULL, $fromdate = NULL, $todate = NULL, $add = NULL)
 {
+	function imagestringcenter($img, $font, $x, $y, $w, $h, $text, $color)
+	{
+		$text = iconv("UTF-8", "ISO-8859-2//TRANSLIT", $text);
+		$tw = strlen($text) * imagefontwidth($font);
+		$th = imagefontheight($font);
+
+		if ($w == -1) { $x -= ($tw/2); }
+		elseif ($w != 0) { $x += ($w - $tw) / 2; }
+
+		if ($h == -1) { $y -= ($th/2); }
+		elseif ($h != 0) { $y += ($h - $th) / 2; }
+
+		imagestring($img, $font, $x, $y, $text, $color);
+	}
+
+	function value2string($value, $base = 1024)
+	{
+		$units = array('', 'k', 'M', 'G');
+
+		$basek = $base;
+		$baseM = $basek * $basek;
+		$baseG = $baseM * $basek;
+
+		if ($value > $baseG) { $value /= $baseG; $unit = 3; }
+		elseif ($value > $baseM) { $value /= $baseM; $unit = 2; }
+		elseif ($value > $basek) { $value /= $basek; $unit = 1; }
+		else { $unit = 0; }
+
+		if ($value >= 1000) { $value /= $basek; $width = 4; $precision = 2; $unit++; }
+		elseif ($value >= 100) { $width = 3; $precision = 0; }
+		elseif ($value >= 10) { $width = 4; $precision = 1; }
+		else { $width = 4; $precision = 2; }
+
+		$string = sprintf("%".$width.".".$precision."f", $value).$units[$unit];
+
+		return $string;
+	}
+
 	global $LMS;
 
-	// image size
-	$ymax = GRAPH_HEIGHT;
-	$xmax = GRAPH_WIDTH;
-	// graph offset
-	$movx = 80;
-	$movy = 135;
-	// graph size
-	$graph_height = 100;
-	$graph_width = 400;
+	$imgW = GRAPH_WIDTH;
+	$imgH = GRAPH_HEIGHT;
 
-	$todate = $todate ? $todate : time();
+	$tto = ($todate ? $todate : time());
+	$tfrom = $fromdate;
+
+	if ($tfrom > $tto)
+	{
+		$temp = $tfrom;
+		$tfrom = $tto;
+		$tto = $temp;
+	}
 
 	switch($bar)
 	{
 		case 'hour':
-			$quantum = 60*60;
-			$divisor = $LMS->CONFIG['phpui']['stat_freq'] ? (int) (60/$LMS->CONFIG['phpui']['stat_freq']) : 5;
-			$fromdate = $todate - $quantum;
-		break;
+			$tfrom = $tto - 60 * 60;
+			break;
 		case 'day':
-			$quantum = 60*60*24;
-			$divisor = 100;
-			$fromdate = $todate - $quantum;
-		break;
+			$tfrom = $tto - 60 * 60 * 24;
+			break;
 		case 'week':
-			$quantum = 60*60*24*7;
-			$divisor = 100;
-			$fromdate = $todate - $quantum;
-		break;
+			$tfrom = $tto - 60 * 60 * 24 * 7;
+			break;
 		case 'month':
-			$quantum = 60*60*24*30;
-			$divisor = 200;
-			$fromdate = $todate - $quantum;
-		break;
-		case 'year': 
-			$quantum = 60*60*24*365;
-			$divisor = 400;
-			$fromdate = $todate - $quantum;
-		break;
-		default: 
-			$fromdate = $fromdate ? $fromdate : $todate - 60*60*24*30;
-			$quantum = $todate - $fromdate;
-			if($quantum < 60*60)
-				$divisor = 5;
-			elseif($quantum < 60*60*24)
-				$divisor = 50;
-			elseif($quantum < 60*60*24*7)
-				$divisor = 100;
-			elseif($quantum < 60*60*24*30)
-				$divisor = 200;
-			else
-				$divisor = 400;
-		break;
+			$tfrom = $tto - 60 * 60 * 24 * 30;
+			break;
+		case 'year':
+			$tfrom = $tto - 60 * 60 * 24 * 365;
+			break;
+		default:
+			$tfrom = $tfrom ? $tfrom : $tto - 60 * 60 * 24 * 30;
+			break;
 	}
 
-    if ($add) {
-        $fromdate += $add;
-        $todate += $add;
-    }
+	if ($add) {
+		$tfrom += $add;
+		$tto += $add;
+	}
 
-	$div = 10;
-	$qdivisor = (int) ($quantum/$divisor);
+	$freq = $LMS->CONFIG['phpui']['stat_freq'] ? $LMS->CONFIG['phpui']['stat_freq'] : 12;
 
 	if($nodeid)
 	{
 		$node = $LMS->DB->GetRow('SELECT name, INET_NTOA(ipaddr) AS ip
 			FROM nodes WHERE id = ?', array($nodeid));
 
-		$stats = $LMS->DB->GetAll('SELECT SUM(upload) AS upload,
-				SUM(download) AS download,
-				CEIL(dt/?) AS dts
+		$traffic = $LMS->DB->GetAll('SELECT upload, download, dt
 			FROM stats WHERE nodeid = ? AND dt >= ? AND dt <= ?
-			GROUP BY CEIL(dt/?) ORDER BY dts ASC',
-			array($qdivisor, $nodeid, $fromdate-$qdivisor, $todate+$qdivisor, $qdivisor));
+			ORDER BY dt',
+			array($nodeid, $tfrom, $tto));
 	}
 	else
 	{
 		if($net)
-	        {
-	                $params = $LMS->GetNetworkParams($net);
+		{
+			$params = $LMS->GetNetworkParams($net);
 			if($params)
 			{
-	        	        $params['address']++;
-	            		$params['broadcast']--;
-	            		$net = ' AND (( ipaddr > '.$params['address'].' AND ipaddr < '.$params['broadcast'].')
-		            		OR ( ipaddr_pub > '.$params['address'].' AND ipaddr_pub < '.$params['broadcast'].')) ';
-	    		}
+				$params['address']++;
+				$params['broadcast']--;
+				$net = ' AND (( ipaddr > '.$params['address'].' AND ipaddr < '.$params['broadcast'].')
+					OR ( ipaddr_pub > '.$params['address'].' AND ipaddr_pub < '.$params['broadcast'].')) ';
+			}
 			else
 				$net = '';
 		}
 		else
 			$net = '';
 
-		$stats = $LMS->DB->GetAll('SELECT SUM(upload) AS upload,
-			SUM(download) AS download, dts
+		$traffic = $LMS->DB->GetAll('SELECT SUM(x.upload) AS upload,
+			SUM(x.download) AS download, (x.dts * ?) As dt
 			FROM (
-			    SELECT SUM(upload) AS upload, SUM(download) AS download,
-			    CEIL(dt/?) AS dts
-			    FROM stats '
-			    .($customer || $net ? 'JOIN nodes ON stats.nodeid = nodes.id ' : '')
-			    .'WHERE dt >= ? AND dt <= ? '
-			    .($customer ? ' AND ownerid = '.intval($customer).' ' : '')
-			    .$net
-			    .'GROUP BY CEIL(dt/?), nodeid) x
-			GROUP BY dts ORDER BY dts',
-			array($qdivisor, $fromdate-$qdivisor, $todate+$qdivisor, $qdivisor));
+				SELECT SUM(upload) AS upload, SUM(download) AS download, CEIL(dt / ?) AS dts
+				FROM stats '
+				.($customer || $net ? 'JOIN nodes ON stats.nodeid = nodes.id ' : '')
+				.'WHERE dt >= ? AND dt <= ? '
+				.($customer ? ' AND ownerid = '.intval($customer).' ' : '')
+				.$net
+				.'GROUP BY CEIL(dt / ?), nodeid) x
+			GROUP BY dts, x.dts
+			ORDER BY x.dts',
+			array($freq, $freq, $tfrom - $freq, $tto + $freq, $freq));
 	}
 
-	$down_max = $up_max = 0;
-	$last_up = $last_down = 0;
-	$avg_up = $avg_down = 0;
-	$sum_up = $sum_down = 0;
-	$dstart = (int) ($fromdate/$qdivisor);
+	$ftrText['total'] = trans('Total');
+	$ftrText['upload'] = trans('Upload');
+	$ftrText['download'] = trans('Download');
+	$ftrText['t_put'] = trans('Transmitted [B]');
+	$ftrText['average'] = trans('Avg [bit/s]');
+	//$ftrText['min'] = trans('Min [bit/s]');
+	$ftrText['max'] = trans('Max [bit/s]');
+	$ftrText['last'] = trans('Last [bit/s]');
 
-	if ($stats) foreach($stats as $idx => $row)
+	//$str_len = strlen($ftrText['t_put'].$ftrText['average'].$ftrText['min'].$ftrText['max'].$ftrText['last']) + 11;
+	$str_len = strlen($ftrText['t_put'].$ftrText['average'].$ftrText['max'].$ftrText['last']) + 11;
+	$str_len += max(strlen($ftrText['total']), strlen($ftrText['upload']), strlen($ftrText['download']));
+
+	/* DEFINE SIZES, DIMENSIONS AND COORDINATES */
+	/********************************************/
+	/* Fonts */
+	$hdrFont = 3;		/* header */
+	$crtFont = 2;		/* chart (axis legend) */
+	$ftrFont = 3;		/* footer */
+	if ($str_len * imagefontwidth($ftrFont) > $imgW)
 	{
-		$i = $row['dts'] - $dstart;
-		$vstats[$i]['download'] = $row['download']*8/($quantum/$divisor);
-		$vstats[$i]['upload'] = $row['upload']*8/($quantum/$divisor);
-
-		if($vstats[$i]['download'] > $down_max)
-			$down_max = $vstats[$i]['download'];
-		if($vstats[$i]['upload'] > $up_max)
-			$up_max = $vstats[$i]['upload'];
-
-   		$sum_down += $row['download']*8;
-    	$sum_up += $row['upload']*8;
-
-		unset($stats[$idx]);
-	}
-
-	$avg_down = $sum_down/$quantum;
-	$avg_up = $sum_up/$quantum;
-	$stats_max = max($down_max, $up_max);
-
-	// create image
-	$img = imagecreate($xmax, $ymax);
-
-	// color palette
-	$background = imagecolorallocate($img,240,240,240);
-	$textcolor = imagecolorallocate($img,0,0,0);
-	$downloadcolor = imagecolorallocate($img,255,0,0);
-	$uploadcolor = imagecolorallocate($img,0,0,255);
-	$blendcolor = imagecolorallocate($img,192,192,192);
-
-	imagesetthickness($img, 1);
-
-	// image borders
-	imageline($img,0,0,$xmax,0,$textcolor);
-	imageline($img,0,$ymax-1,$xmax,$ymax-1,$textcolor);
-	imageline($img,0,0,0,$ymax,$textcolor);
-	imageline($img,$xmax-1,0,$xmax-1,$ymax,$textcolor);
-
-	$styleline = array($textcolor,IMG_COLOR_TRANSPARENT,IMG_COLOR_TRANSPARENT);
-	imagesetstyle($img, $styleline);
-
-	$downx = $upx = $movx;
-	$downy = $upy = $movy;
-
-	for($x=0; $x<=$divisor; $x++)
-	{
-		if(isset($vstats[$x]))
+		$ftrFont = 2;
+		if ($str_len * imagefontwidth($ftrFont) > $imgW)
 		{
-			$down = $vstats[$x]['download'];
-			$up = $vstats[$x]['upload'];
-			$download = round($graph_height*($down/$stats_max));
-			$upload = round($graph_height*($up/$stats_max));
+			$ftrFont = 1;
 		}
-		else
-		{
-			$down = $up = $download = $upload = 0;
-		}
-
-		$posx = ceil($x * $graph_width/$divisor);
-
-		// download
-		imageline($img,$downx,$downy,$movx+$posx,$movy-$download,$downloadcolor);
-		// upload
-		imageline($img,$upx,$upy,$movx+$posx,$movy-$upload,$uploadcolor);
-
-		$downx = $upx = $movx+$posx;
-		$downy = $movy-$download;
-		$upy = $movy-$upload;
-
-		$last_down = $down;
-		$last_up = $up;
 	}
 
-	// horizontal scale
-	for($i=0; $i<$div+1; $i++)
-	{
-		$posx = ceil($i * $graph_width/$div);
+	/* Inter line spacing and chart padding */
+	$spacing = 1.1;
+	$padding = $imgW / 45;		// 15
+	//$ftrSpacing = $imgW / 60;	// 20
+	$ftrSpacing = 0;		// 20
+	/* Line heights in each section (respect to spacing) */
+	$hdrSPC = $spacing * imagefontheight($hdrFont);
+	$crtSPC = $spacing * imagefontheight($crtFont);
+	$ftrSPC = $spacing * imagefontheight($ftrFont);
+	/* Heights of each section */
+	$hdrH = 2 * $hdrSPC;		/* 2 lines */
+	$ftrH = 4 * $ftrSPC;		/* 4 lines (header plus in, out, total */
+	$crtH = $imgH - $hdrH - $ftrH;	/* what's left - for chart */
+	/* Start Y positions of each section */
+	$crtY = $hdrH;
+	$ftrY = $crtY + $crtH;
+	/* Coordinates of chart section */
+	$crtX1 = $padding + 5 * imagefontwidth($crtFont);
+	$crtX2 = $imgW - $padding;
+	$crtY1 = $crtY + $padding;
+	//$crtY2 = $crtY + $crtH - $padding - $crtSPC;
+	$crtY2 = $crtY + $crtH - $crtSPC;
 
-		switch($bar)
+	$image = imagecreate($imgW, $imgH);	/* create image */
+
+	/* CREATE COLORS OF EACH ELEMENT OF IMAGE */
+	/******************************************/
+	$clrBG = imagecolorallocate($image, 0xEB, 0xE4, 0xD6);	/* image background */
+	$clrCBG = imagecolorallocate($image, 240, 240, 240);	/* chart background */
+	$clrBLK = imagecolorallocate($image, 0, 0, 0);		/* black */
+	$clrTXT = imagecolorallocate($image, 0, 0, 0);		/* text */
+	$clrGRD = imagecolorallocate($image, 128, 128, 128);	/* chart grid */
+	$clrGRM = imagecolorallocate($image, 144, 24, 24);	/* chart grid major */
+	$clrBRD = imagecolorallocate($image, 128, 128, 128);	/* chart border */
+	$clrIN = imagecolorallocate($image, 0, 204, 0);		/* inbound */
+	$clrOUT = imagecolorallocate($image, 0, 0, 255);	/* outbound */
+	$clrTOT = imagecolorallocate($image, 192, 0, 0);	/* total */
+
+	/* PREPARE DATA TO BE PLACED ON THE CHART */
+	$range = $tto - $tfrom;
+
+	$total_up = $total_down = 0;	/* total and max up/down */
+	$max_up = $max_down = 0;
+	//$min_up = $min_down = 1000000000000;
+
+	$upt = $dnt = 0;
+
+	$dtime = $range / ($crtX2 - $crtX1); /* time of 1 pixel */
+	$ctime = $tfrom + $dtime;
+	$dt_prev = $freq;
+
+	$loop_max = ($crtX2 - $crtX1) / ($range / $freq);
+	if ($loop_max < 2) { $loop_max = 2; }
+
+	if (isset($traffic))
+	{
+		foreach($traffic as $idx => $elem)
 		{
-			case 'week':
-			case 'month':
-			case 'year':
-				$str = strftime('%d/%b', $fromdate + $i * ceil($quantum/$div));
-			break;
-			case 'day':
-			case 'hour':
-				$str = date('H:i', $fromdate + $i * ceil($quantum/$div));
-			break;
-			default:
-				if(($quantum) > 60*60*24)
-					$str = strftime('%d/%b', $fromdate + $i * ceil($quantum/$div));
+			$total_up += $elem['upload'];
+			$total_down += $elem['download'];
+
+			if ($elem['dt'] < $ctime)
+			{
+				$upt += $elem['upload'];
+				$dnt += $elem['download'];
+				$dt_prev = $elem['dt'];
+			}
+			else
+			{
+				if ($dtime > $freq) $coeff = ($elem['dt'] - $ctime) / ($elem['dt'] - $dt_prev);
+				else $coeff = 1.0;
+
+				$upt += $elem['upload'] * (1.0 - $coeff);
+				$dnt += $elem['download'] * (1.0 - $coeff);
+
+				$upt *= 8;	/* convert bytes to bits per second */
+				$dnt *= 8;
+				if ($dtime > $freq)
+				{
+					$upt /= $dtime;
+					$dnt /= $dtime;
+				}
 				else
-					$str = date('H:i', $fromdate + $i * ceil($quantum/$div));
-			break;
+				{
+					$upt /= $freq;
+					$dnt /= $freq;
+				}
+
+				if ($max_up < $upt) { $max_up = $upt; }
+				if ($max_down < $dnt) { $max_down = $dnt; }
+
+				//if ($min_up > $upt) { $min_up = $upt; }
+				//if ($min_down > $dnt) { $min_down = $dnt; }
+
+				$loop_i = 0;
+				do {
+					$chart[] = array('upload' => $upt, 'download' => $dnt);
+					//if ($loop_i++ > $loop_max) { $upt = $dnt = 0; $min_up = $min_down = 0; }
+					if ($loop_i++ > $loop_max)
+						$upt = $dnt = 0;
+				} while ($elem['dt'] > ($ctime += $dtime));
+
+				$upt = $elem['upload'] * $coeff;
+				$dnt = $elem['download'] * $coeff;
+				$dt_prev = $elem['dt'];
+			}
 		}
-
-		imageline($img,$movx+$posx,$movy-$graph_height,$movx+$posx,$movy, IMG_COLOR_STYLED);
-		imageline($img,$movx+$posx,$movy-1,$movx+$posx,$movy+2,$textcolor);
-		$posx -= ceil(imagefontwidth(1) * strlen($str)/2);
-		imagestring($img, 1, $movx+$posx+1, $movy+5, iconv('UTF-8','ISO-8859-2//TRANSLIT', $str), $textcolor);
 	}
+	//die;
+	if ($tto - $ctime >= $freq) {
+		//if ($ctime + $dtime <= $tto) $min_up = $min_down = 0;
+		while (($ctime += $dtime) <= $tto)
+			$chart[] = array('upload' => 0, 'download' => 0);
+		} 
+	$last_chart = end($chart);
+	$last_up = $last_chart['upload'];
+	$last_down = $last_chart['download'];
 
-	// graph outlines
-	// vertical
-	imageline($img,$movx,$movy,$movx,$movy-$graph_height,$textcolor);
-	imageline($img,$movx+$graph_width,$movy,$movx+$graph_width,$movy-$graph_height,$textcolor);
-	// horizontal
-//	imageline($img,$movx-2,$movy+1,$movx+$graph_width+3,$movy+1,$textcolor);
-//	imageline($img,$movx-2,10,$movx+$graph_width+3,10,$textcolor);
-
-	if ($stats_max/(1000*1000) > 10)
-	{
-		$vdiv = 1000*1000;
-		$suffix = 'Mbit/s';
-	}
-	else if ($stats_max/1000 > 1)
-	{
-		$vdiv = 1000;
-		$suffix = 'kbit/s';
-	}
-	else
-	{
-		$vdiv = 1;
-		$suffix = 'bit/s';
-	}
-
-	$n=0;
-	$stats_max = round($stats_max/$vdiv);
-
-	// vertical axis labels and graph lines
-	for($i=0; $i<=4; $i++)
-	{
-		$val = round((4-$i) * $stats_max/4);
-		$str = str_pad($val.' '.$suffix, round(($movx-15)/imagefontwidth(1)), ' ', STR_PAD_LEFT);
-		$posy = round(($i * $graph_height)/4);
-		imageline($img,$movx-2,$movy-$graph_height+$posy,$movx+2,$movy-$graph_height+$posy,$textcolor);
-		imageline($img,$movx-2+$graph_width,$movy-$graph_height+$posy,$movx+2+$graph_width,$movy-$graph_height+$posy,$textcolor);
-		if ($i<4)
-			imageline($img,$movx+4,$movy-$graph_height+$posy,$movx-4+$graph_width,$movy-$graph_height+$posy, IMG_COLOR_STYLED);
-		else
-			imageline($img,$movx,$movy-$graph_height+$posy,$movx+$graph_width,$movy-$graph_height+$posy,$textcolor);
-		imagestring($img,1,10,$movy-$graph_height-4+$posy,$str,$textcolor);
-	}
-
+	/* DRAW CHART HEADER */
+	/*********************/
 	// title
 	if ($nodeid) {
 		if ($node)
@@ -303,26 +314,186 @@ function TrafficGraph ($nodeid, $net=NULL, $customer=NULL, $bar=NULL, $fromdate=
 	} else
 		$title =  iconv('UTF-8','ISO-8859-2//TRANSLIT', trans('Network Statistics'));
 
-	$center = ceil((imagesx($img) - (imagefontwidth(3) * strlen($title)))/2);
-	imagestring($img, 3, $center, 8, $title, $textcolor);
+	imagestringcenter($image, $hdrFont, 0, 0, $imgW, $hdrSPC, $title, $clrTXT);
 
-    // time period title
-    $title = date('Y/m/d H:i', $fromdate).' - '.date('Y/m/d H:i', $todate);
-	$center = ceil((imagesx($img) - (imagefontwidth(1) * strlen($title)))/2);
-	imagestring($img, 1, $center, 23, $title, $textcolor);
+	// time period title
+	$title = date('Y/m/d H:i', $tfrom).' - '.date('Y/m/d H:i', $tto);
+	imagestringcenter($image, $hdrFont, 0, $hdrSPC, $imgW, $hdrSPC, $title, $clrTXT);
 
-	// summaries
-	imagestring($img, 2, 10, $ymax-30, iconv('UTF-8','ISO-8859-2//TRANSLIT', trans('DOWNLOAD')), $downloadcolor);
-	imagestring($img, 2, 10, $ymax-18, iconv('UTF-8','ISO-8859-2//TRANSLIT', trans('UPLOAD')), $uploadcolor);
-	imagestring($img, 2, 70, $ymax-30, iconv('UTF-8','ISO-8859-2//TRANSLIT', trans('MAX:')).' '.str_pad(round($down_max/$vdiv),7,' ',STR_PAD_LEFT).' '.$suffix, $downloadcolor);
-	imagestring($img, 2, 70, $ymax-18, iconv('UTF-8','ISO-8859-2//TRANSLIT', trans('MAX:')).' '.str_pad(round($up_max/$vdiv),7,' ',STR_PAD_LEFT).' '.$suffix, $uploadcolor);
-	imagestring($img, 2, 195, $ymax-30, iconv('UTF-8','ISO-8859-2//TRANSLIT', trans('AVG:')).' '.str_pad(floor($avg_down/$vdiv),7,' ',STR_PAD_LEFT).' '.$suffix, $downloadcolor);
-	imagestring($img, 2, 195, $ymax-18, iconv('UTF-8','ISO-8859-2//TRANSLIT', trans('AVG:')).' '.str_pad(floor($avg_up/$vdiv),7,' ',STR_PAD_LEFT).' '.$suffix, $uploadcolor);
-	imagestring($img, 2, 345, $ymax-30, iconv('UTF-8','ISO-8859-2//TRANSLIT', trans('LAST:')).' '.str_pad(round($last_down/$vdiv),7,' ',STR_PAD_LEFT).' '.$suffix, $downloadcolor);
-	imagestring($img, 2, 345, $ymax-18, iconv('UTF-8','ISO-8859-2//TRANSLIT', trans('LAST:')).' '.str_pad(round($last_up/$vdiv),7,' ',STR_PAD_LEFT).' '.$suffix, $uploadcolor);
+	/* DRAW CHART FOOTER */
+	/*********************/
+	$rectSize = $ftrSPC * 0.5;
+	$rectPad = ($ftrSPC - $rectSize) / 2;
 
-	imagepng($img);
-	imagedestroy($img);
+	$start = $padding;
+
+	/* Rectangles of color with respect to graph lines */
+	imagefilledrectangle($image, $start, $ftrY + 1 * $ftrSPC + $rectPad, $start + $rectSize, $ftrY + 1 * $ftrSPC + $rectSize + $rectPad, $clrTOT);
+	imagefilledrectangle($image, $start, $ftrY + 2 * $ftrSPC + $rectPad, $start + $rectSize, $ftrY + 2 * $ftrSPC + $rectSize + $rectPad, $clrIN);
+	imagefilledrectangle($image, $start, $ftrY + 3 * $ftrSPC + $rectPad, $start + $rectSize, $ftrY + 3 * $ftrSPC + $rectSize + $rectPad, $clrOUT);
+
+	for ($i = 1; $i < 4; $i++)
+		imagerectangle($image, $start, $ftrY + $i * $ftrSPC + $rectPad, $start + $rectSize, $ftrY + $i * $ftrSPC + $rectSize + $rectPad, $clrBLK);
+
+	$start += $ftrSPC;
+
+	/* Legend - Total, Input, Output */
+	imagestringcenter($image, $ftrFont, $start, $ftrY + 1 * $ftrSPC, 0, $ftrSPC, $ftrText['total'], $clrTXT);
+	imagestringcenter($image, $ftrFont, $start, $ftrY + 2 * $ftrSPC, 0, $ftrSPC, $ftrText['download'], $clrTXT);
+	imagestringcenter($image, $ftrFont, $start, $ftrY + 3 * $ftrSPC, 0, $ftrSPC, $ftrText['upload'], $clrTXT);
+
+	$start += (max(strlen($ftrText['total']), strlen($ftrText['upload']), strlen($ftrText['download'])) + 1) * imagefontwidth($ftrFont) + $ftrSpacing;
+
+	/* Total transfer */
+	$text = $ftrText['t_put'];
+	$width = (strlen($text) + 1) * imagefontwidth($ftrFont);
+	imagestringcenter($image, $ftrFont, $start, $ftrY, $width, $ftrSPC, $text, $clrTXT);
+	imagestringcenter($image, $ftrFont, $start, $ftrY + $ftrSPC, $width, $ftrSPC, value2string($total_up + $total_down), $clrTXT);
+	imagestringcenter($image, $ftrFont, $start, $ftrY + 2 * $ftrSPC, $width, $ftrSPC, value2string($total_down), $clrTXT);
+	imagestringcenter($image, $ftrFont, $start, $ftrY + 3 * $ftrSPC, $width, $ftrSPC, value2string($total_up), $clrTXT);
+
+	/* Average transfer */
+	$start += $width + $ftrSpacing;
+	$text = $ftrText['average'];
+	$width = (strlen($text) + 1) * imagefontwidth($ftrFont);
+	imagestringcenter($image, $ftrFont, $start, $ftrY, $width, $ftrSPC, $text, $clrTXT);
+	imagestringcenter($image, $ftrFont, $start, $ftrY + $ftrSPC, $width, $ftrSPC, value2string(($total_up + $total_down)*8/$range, 1000), $clrTXT);
+	imagestringcenter($image, $ftrFont, $start, $ftrY + 2 * $ftrSPC, $width, $ftrSPC, value2string($total_down * 8 / $range, 1000), $clrTXT);
+	imagestringcenter($image, $ftrFont, $start, $ftrY + 3 * $ftrSPC, $width, $ftrSPC, value2string($total_up * 8 / $range, 1000), $clrTXT);
+
+	/* Minimum transfer */
+	//$start += $width + $ftrSpacing;
+	//$text = $ftrText['min'];
+	//$width = (strlen($text) + 1) * imagefontwidth($ftrFont);
+	//imagestringcenter($image, $ftrFont, $start, $ftrY, $width, $ftrSPC, $text, $clrTXT);
+	//imagestringcenter($image, $ftrFont, $start, $ftrY + $ftrSPC, $width, $ftrSPC, value2string(($min_up + $min_down), 1000), $clrTXT);
+	//imagestringcenter($image, $ftrFont, $start, $ftrY + 2 * $ftrSPC, $width, $ftrSPC, value2string($min_down, 1000), $clrTXT);
+	//imagestringcenter($image, $ftrFont, $start, $ftrY + 3 * $ftrSPC, $width, $ftrSPC, value2string($min_up, 1000), $clrTXT);
+
+	/* Maximum transfer */
+	$start += $width + $ftrSpacing;
+	$text = $ftrText['max'];
+	$width = (strlen($text) + 1) * imagefontwidth($ftrFont);
+	imagestringcenter($image, $ftrFont, $start, $ftrY, $width, $ftrSPC, $text, $clrTXT);
+	imagestringcenter($image, $ftrFont, $start, $ftrY + $ftrSPC, $width, $ftrSPC, value2string(($max_up + $max_down), 1000), $clrTXT);
+	imagestringcenter($image, $ftrFont, $start, $ftrY + 2 * $ftrSPC, $width, $ftrSPC, value2string($max_down, 1000), $clrTXT);
+	imagestringcenter($image, $ftrFont, $start, $ftrY + 3 * $ftrSPC, $width, $ftrSPC, value2string($max_up, 1000), $clrTXT);
+
+	/* Last transfer */
+	$start += $width + $ftrSpacing;
+	$text = $ftrText['last'];
+	$width = (strlen($text) + 1) * imagefontwidth($ftrFont);
+	imagestringcenter($image, $ftrFont, $start, $ftrY, $width, $ftrSPC, $text, $clrTXT);
+	imagestringcenter($image, $ftrFont, $start, $ftrY + $ftrSPC, $width, $ftrSPC, value2string(($last_up + $last_down), 1000), $clrTXT);
+	imagestringcenter($image, $ftrFont, $start, $ftrY + 2 * $ftrSPC, $width, $ftrSPC, value2string($last_down, 1000), $clrTXT);
+	imagestringcenter($image, $ftrFont, $start, $ftrY + 3 * $ftrSPC, $width, $ftrSPC, value2string($last_up, 1000), $clrTXT);
+
+	/* DRAW CHART */
+	/**************/
+	/* Draw chart border */
+	imagefilledrectangle($image, $crtX1, $crtY1, $crtX2, $crtY2, $clrCBG);
+	imagerectangle($image, $crtX1, $crtY1, $crtX2, $crtY2, $clrBRD);
+
+	$style1 = array($clrGRD, IMG_COLOR_TRANSPARENT, IMG_COLOR_TRANSPARENT, IMG_COLOR_TRANSPARENT);
+	$style2 = array($clrGRD, $clrGRD, IMG_COLOR_TRANSPARENT);
+
+	//$max_val = max($max_up, $max_down, $max_up $max_down);
+	$max_val = max($max_up, $max_down);
+	if ($max_val < 1000) $max_val = 1000;
+	$max_pow = floor(pow(10, floor(log10($max_val))));
+	$max_v = ceil($max_val / $max_pow);
+	$max_step = ($crtY2 - $crtY1) / ($max_v);
+	if ($max_v < 2) { $subs = 20; }
+	elseif ($max_v < 4) { $subs = 5; }
+	elseif ($max_v < 8) { $subs = 2; }
+	else { $subs = 1; }
+	$max_substep = $max_step / $subs;
+
+	/* Draw entire chart */
+	$pixel = ($crtY2 - $crtY1) / ($max_v * $max_pow);
+
+	$Xpos = $crtX1 + 1;
+	foreach ($chart as $elem)
+	{
+		//imagesetthickness($image, 1);
+		//imageline($image, $Xpos, $crtY2-1, $Xpos, $crtY2 - (($elem['upload']+$elem['download'])*$pixel), $clrTOT);
+		imageline($image, $Xpos, $crtY2-1, $Xpos, $crtY2 - ($elem['download'] * $pixel), $clrIN);
+		//imagesetthickness($image, 1);
+		if ($Xpos > ($crtX1 + 1))
+		{
+			//imageline($image, $Xpos-1, $crtY2 - $Ypos_down, $Xpos, $crtY2 - ($elem['download']*$pixel), $clrIN);
+			imageline($image, $Xpos-1, $crtY2 - $Ypos_up, $Xpos, $crtY2 - ($elem['upload'] * $pixel), $clrOUT);
+		}
+		$Ypos_up = $elem['upload'] * $pixel;
+		$Ypos_down = $elem['download'] * $pixel;
+
+		$Xpos++;
+	}
+
+	/* Draw Y-axis grid */
+	for ($i = 1; $i <= $max_v; $i++)
+	{
+		imagesetstyle($image, $style2);
+		if ($i != $max_v) { imageline($image, $crtX1+1, $crtY2 - $i*$max_step, $crtX2-1, $crtY2 - $i * $max_step, IMG_COLOR_STYLED); }
+		imagesetstyle($image, $style1);
+		for ($j = 1; $j < $subs; $j++)
+		{
+			$Ypos = $i * $max_step - $j * $max_substep;
+			imageline($image, $crtX1 + 1, $crtY2 - $Ypos, $crtX2 - 1, $crtY2 - $Ypos, IMG_COLOR_STYLED);
+		}
+		$text = value2string($i * $max_pow, 1000);
+		imagestringcenter($image, $crtFont, $crtX1 - (strlen($text) + 1) * imagefontwidth($crtFont), $crtY2 - $i * $max_step, 0, -1, $text, $clrTXT);
+	}
+
+	/* Draw X-axis grid */
+	/* Calculate one unit - number of seconds between two pixels */
+	$min_unit = 6 * imagefontwidth($crtFont) * $range / ($crtX2 - $crtX1);
+	if ($min_unit < 900) { $unit = 900; $subunits = 3; }
+	elseif ($min_unit < 3600) { $unit = 3600; $subunits = 4; }
+	elseif ($min_unit < 3 * 3600) { $unit = 3 * 3600; $subunits = 3; }
+	elseif ($min_unit < 24 * 3600) { $unit = 24 * 3600; $subunits = 6; }
+	elseif ($min_unit < 7 * 24 * 3600) { $unit = 7 * 24 * 3600; $subunits = 7; }
+	else { $unit = 30 * 24 * 3600; $subunits = 6; }
+
+	$units = floor($range / $unit);
+
+	/* Correction - quarter hour, full hour or day */
+	if ($unit == 900) { $corr = $tto % 900; }
+	elseif ($unit < 24 * 3600) { $corr = $tto % 3600; }
+	else
+	{
+		$result = getdate($tto);
+		$corr = $tto - mktime(0, 0, 0, $result['mon'], $result['mday'], $result['year']);
+	}
+
+	for ($i = 0; $i <= $units + 1; $i++)
+	{
+		imagesetstyle($image, $style1);
+		for ($j = 0; $j < $subunits; $j++)
+		{
+			$Tpos = $tto - $corr - ($i * $unit) + ($j * $unit/$subunits);
+			if (($Tpos < $tto) && ($Tpos > $tfrom))
+			{
+				$Xpos = $crtX1 + ($Tpos - $tfrom) * ($crtX2 - $crtX1) / $range;
+				imageline($image, $Xpos, $crtY1 + 1, $Xpos, $crtY2 - 1, IMG_COLOR_STYLED);
+			}
+		}
+
+		imagesetstyle($image, $style2);
+		$Tpos = $tto - $corr - ($i * $unit);
+		if ($Tpos > $tfrom)
+		{
+			$Xpos = $crtX1 + ($Tpos - $tfrom) * ($crtX2 - $crtX1) / $range;
+			imageline($image, $Xpos, $crtY1+1, $Xpos, $crtY2 - 1, IMG_COLOR_STYLED);
+
+			if ($unit >= 24 * 3600) { $utxt = strftime('%e/%m', $Tpos);}
+			else { $utxt = strftime('%H:%M', $Tpos); }
+			imagestringcenter($image, $crtFont, $Xpos, $crtY2, -1, $crtSPC, $utxt, $clrTXT);
+		}
+	}
+
+	imagepng($image);
+	imagedestroy($image);
 }
 
 $nodeid = isset($_GET['nodeid']) ? $_GET['nodeid'] : 0;

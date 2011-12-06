@@ -77,6 +77,9 @@ version ? (????-??-??):
   - we can use percentage and amount discounts [chilan]
   - BTS#0000894: lmsd/parser: Fixed SQL query for NODES variable [alec]
   - fixed listing of customers who in debt above 100% and 200% [Jaroslaw Dziubek/chilan]
+  - complete rewrite of graph statistics engine. Graphs look like in Cacti [chilan] 
+  - we can choose graph statistics from node information form [chilan]
+  - rewritten graph navigation panel [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
