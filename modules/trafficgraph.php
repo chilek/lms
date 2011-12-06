@@ -248,8 +248,8 @@ function TrafficGraph($nodeid, $net = NULL, $customer = NULL, $bar = NULL, $from
 
 			if ($elem['dt'] < $ctime)
 			{
-				$upt += $elem['upload'];
-				$dnt += $elem['download'];
+				$upt = $elem['upload'];
+				$dnt = $elem['download'];
 				$dt_prev = $elem['dt'];
 			}
 			else
@@ -293,7 +293,6 @@ function TrafficGraph($nodeid, $net = NULL, $customer = NULL, $bar = NULL, $from
 			}
 		}
 	}
-	//die;
 	if ($tto - $ctime >= $freq) {
 		//if ($ctime + $dtime <= $tto) $min_up = $min_down = 0;
 		while (($ctime += $dtime) <= $tto)
