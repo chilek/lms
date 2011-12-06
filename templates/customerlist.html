@@ -39,6 +39,7 @@
 					{if ($_config.privileges.finances_management|chkconfig && !$_config.privileges.hide_summaries|chkconfig) || $adminuser}
 					<OPTION VALUE="6"{if $listdata.state eq 6} SELECTED{/if}>{t}in debt{/t}</OPTION>
 					<OPTION VALUE="11"{if $listdata.state eq 11} SELECTED{/if}>{t}in debt above 100%{/t}</OPTION>
+					<OPTION VALUE="12"{if $listdata.state eq 12} SELECTED{/if}>{t}in debt above 200%{/t}</OPTION>
 					{/if}
 					<OPTION VALUE="7"{if $listdata.state eq 7} SELECTED{/if}>{t}online{/t}</OPTION>
 					<OPTION VALUE="8"{if $listdata.state eq 8} SELECTED{/if}>{t}without group{/t}</OPTION>

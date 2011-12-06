@@ -76,6 +76,7 @@ version ? (????-??-??):
   - BTS#0000892: Fixed bug where phpui/style wasn't used on login page [alec]
   - we can use percentage and amount discounts [chilan]
   - BTS#0000894: lmsd/parser: Fixed SQL query for NODES variable [alec]
+  - fixed listing of customers who in debt above 100% and 200% [Jaroslaw Dziubek/chilan]
 
 version 1.11.13 Dira (2011-04-07)
 

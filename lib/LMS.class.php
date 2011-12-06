@@ -730,42 +730,43 @@ class LMS
 		{
 			case 'id':
 				$sqlord = ' ORDER BY c.id';
-			break;
+				break;
 			case 'address':
 				$sqlord = ' ORDER BY address';
-			break;
+				break;
 			case 'balance':
 				$sqlord = ' ORDER BY balance';
-			break;
+				break;
 			case 'tariff':
 				$sqlord = ' ORDER BY tariffvalue';
-			break;
+				break;
 			default:
 				$sqlord = ' ORDER BY customername';
-			break;
+				break;
 		}
 
 		switch ($state) {
-		    case 4:
-    			// When customer is deleted we have no assigned groups or nodes, see DeleteCustomer().
-	    		// Return empty list in this case
-		    	if (!empty($network) || !empty($customergroup) || !empty($nodegroup)) {
-        	    	$customerlist['total'] = 0;
-		            $customerlist['state'] = 0;
-            		$customerlist['order'] = $order;
-	    	        $customerlist['direction'] = $direction;
-    		        return $customerlist;
-                }
-		    	$deleted = 1;
-                break;
-            case 5:  $disabled   = 1; break;
-		    case 6:  $indebted   = 1; break;
-		    case 7:  $online     = 1; break;
-		    case 8:  $groupless  = 1; break;
-		    case 9:  $tariffless = 1; break;
-		    case 10: $suspended  = 1; break;
-		    case 11: $indebted2  = 1; break;
-        }
+			case 4:
+				// When customer is deleted we have no assigned groups or nodes, see DeleteCustomer().
+				// Return empty list in this case
+				if (!empty($network) || !empty($customergroup) || !empty($nodegroup)) {
+					$customerlist['total'] = 0;
+					$customerlist['state'] = 0;
+					$customerlist['order'] = $order;
+					$customerlist['direction'] = $direction;
+					return $customerlist;
+				}
+				$deleted = 1;
+				break;
+			case 5: $disabled	= 1; break;
+			case 6: $indebted	= 1; break;
+			case 7: $online		= 1; break;
+			case 8: $groupless	= 1; break;
+			case 9: $tariffless	= 1; break;
+			case 10: $suspended	= 1; break;
+			case 11: $indebted2	= 1; break;
+			case 12: $indebted3	= 1; break;
+		}
 
 		if ($network)
 			$net = $this->GetNetworkParams($network);
@@ -909,7 +910,8 @@ class LMS
 				.($division ? ' AND c.divisionid = '.intval($division) : '')
 				.($online ? ' AND s.online = 1' : '')
 				.($indebted ? ' AND b.value < 0' : '')
-				.($indebted2 ? ' AND b.value < t.value*-2' : '')
+				.($indebted2 ? ' AND b.value < -t.value' : '')
+				.($indebted3 ? ' AND b.value < -t.value * 2' : '')
 				.($disabled ? ' AND s.ownerid IS NOT NULL AND s.account > s.acsum' : '')
 				.($network ? ' AND EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id AND 
 							((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') 
