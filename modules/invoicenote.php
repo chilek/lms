@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$taxeslist = $LMS->GetTaxes();
 $numberplanlist = $LMS->GetNumberPlans(DOC_CNOTE);
 
 $action = isset($_GET['action']) ? $_GET['action'] : NULL;
@@ -32,6 +31,8 @@ $action = isset($_GET['action']) ? $_GET['action'] : NULL;
 if (isset($_GET['id']) && $action == 'init')
 {
 	$invoice = $LMS->GetInvoiceContent($_GET['id']);
+
+	$taxeslist = $LMS->GetTaxes($invoice['cdate'],$invoice['cdate']);
 
 	foreach ($invoice['content'] as $item)
 	{
@@ -80,6 +81,8 @@ $SESSION->restore('invoicecontents', $contents);
 $SESSION->restore('invoice', $invoice);
 $SESSION->restore('cnote', $cnote);
 $SESSION->restore('cnoteerror', $error);
+
+$taxeslist = $LMS->GetTaxes($invoice['cdate'],$invoice['cdate']);
 
 $ntempl = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
 $layout['pagetitle'] = trans('Credit Note for Invoice: $a', $ntempl);
