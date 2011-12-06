@@ -72,12 +72,12 @@ switch($type)
 				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['customergroup'], $search, $date, 'AND', $_POST['nodegroup']));
 			break;
 			case 1:
-				$layout['pagetitle'] = trans('Interested Customers List');
-				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], NULL, NULL, $search, $date));
+				$layout['pagetitle'] = trans('Interested Customers List $a', ($_POST['customergroup'] ? trans('(Group: $a)', $LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
+				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], NULL, $_POST['customergroup'], $search, $date));
 			break;
 			case 2:
-				$layout['pagetitle'] = trans('List of awaiting customers');
-				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], NULL, NULL, $search, $date));
+				$layout['pagetitle'] = trans('List of awaiting customers $a', ($_POST['customergroup'] ? trans('(Group: $a)', $LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
+				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], NULL, $_POST['customergroup'], $search, $date));
 			break;
 			case 3:
 				$layout['pagetitle'] = trans('List of Connected Customers $a$b',($_POST['network'] ? trans(' (Net: $a)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['customergroup'] ? trans('(Group: $a)',$LMS->CustomergroupGetName($_POST['customergroup'])) : '')); 

@@ -37,25 +37,28 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL, $pagelimit=100, $p
 			case 'value':
 				$val = intval($search) > 0 ? intval($search) : intval($search)*-1;
 				$where = ' AND ABS(cash.value) = '.$val;
-			break;
+				break;
 			case 'number':
 				$where = ' AND documents.number = '.intval($search);
-			break;
+				break;
 			case 'cdate':
 				$where = ' AND cash.time >= '.intval($search).' AND cash.time < '.(intval($search)+86400);
-			break;
+				break;
 			case 'ten':
 				$where = ' AND c.ten = '.$DB->Escape($search);
-			break;
+				break;
 			case 'customerid':
 				$where = ' AND cash.customerid = '.intval($search);
-			break;
+				break;
 			case 'name':
 				$where = ' AND '.$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' ?LIKE? '.$DB->Escape("%$search%");
-			break;
+				break;
 			case 'address':
 				$where = ' AND c.address ?LIKE? '.$DB->Escape("%$search%");
-			break;
+				break;
+			case 'comment':
+				$where = ' AND cash.comment ?LIKE? '.$DB->Escape("%$search%");
+				break;
 		}
 	}
 	elseif($cat)

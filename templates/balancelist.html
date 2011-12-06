@@ -118,11 +118,12 @@
 		<TD width="1%" CLASS="frightu">&nbsp;</TD>
 	</TR>
 	<TR class="DARK">
-    		<TD class="fall" colspan="10">
-	                <B>{t}Filter:{/t} </B>
+		<TD class="fall" colspan="10">
+			<B>{t}Filter:{/t} </B>
 				<INPUT type="text" name="search" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>
 				<SELECT size="1" name="cat" style="width: 150px">
 					<OPTION value=""{if $listdata.cat eq ""} SELECTED{/if}>{t}- select category -{/t}</OPTION>
+					<OPTION value="comment"{if $listdata.cat eq "comment"} SELECTED{/if}>{t}comment{/t}</OPTION>
 					<OPTION value="cdate"{if $listdata.cat eq "cdate"} SELECTED{/if}>{t}date (YYYY/MM/DD){/t}</OPTION>
 					<OPTION value="number"{if $listdata.cat eq "number"} SELECTED{/if}>{t}document number{/t}</OPTION>
 					<OPTION value="value"{if $listdata.cat eq "value"} SELECTED{/if}>{t}value{/t}</OPTION>
@@ -144,7 +145,7 @@
 				<INPUT type="checkbox" name="groupexclude" {if $listdata.groupexclude} CHECKED{/if}><A HREF="javascript:setCheckbox('groupexclude')">{t}exclude group{/t}</a>
 				</NOBR>
 				<NOBR>
-            			{t}From:{/t}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+				{t}From:{/t}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
 				{t}To:{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal2.popup();"  {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
 				<A href="javascript: filter();">&raquo;&raquo;&raquo;</A><BR>
 				</NOBR>
