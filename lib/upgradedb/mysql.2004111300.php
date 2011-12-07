@@ -34,7 +34,7 @@ $DB->Execute("
 	uid int(11) NOT NULL default '0',
 	home varchar(25) NOT NULL default '',
 	PRIMARY KEY (id)
-    ) TYPE=MyISAM
+    ) ENGINE=MyISAM
 ");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004111300', 'dbversion'));

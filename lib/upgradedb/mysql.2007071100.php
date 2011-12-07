@@ -35,7 +35,7 @@ $DB->Execute("
 	    PRIMARY KEY (id),
 	    INDEX customerid (customerid),
 	    INDEX phone (phone)
-    ) TYPE=MyISAM
+    ) ENGINE=MyISAM
 ");
 
 if($list = $DB->GetAll('SELECT phone1, phone2, phone3, id FROM customers'))

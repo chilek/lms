@@ -33,7 +33,7 @@ $DB->Execute("
 	userid 		int(11) 	NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
 	UNIQUE KEY userid (userid, customergroupid)
-    ) TYPE=MyISAM;
+    ) ENGINE=MyISAM;
 ");
 
 $DB->Execute("
@@ -41,7 +41,7 @@ $DB->Execute("
     RETURN @lms_current_user;
 ");
 
-$DB->Execute("		
+$DB->Execute("
     CREATE VIEW customersview AS
 	    SELECT c.* FROM customers c
 	    WHERE NOT EXISTS (

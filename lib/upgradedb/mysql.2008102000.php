@@ -40,7 +40,7 @@ $DB->Execute("CREATE TABLE divisions (
 	status tinyint(1) NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
 	UNIQUE KEY shortname (shortname)
-) TYPE=MyISAM");
+) ENGINE=MyISAM");
 
 $DB->Execute("ALTER TABLE documents ADD divisionid int(11) NOT NULL DEFAULT '0'");
 $DB->Execute("UPDATE documents SET divisionid = 1");

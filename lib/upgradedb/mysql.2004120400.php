@@ -32,7 +32,7 @@ $DB->Execute("
 	accountid int(11) NOT NULL DEFAULT '0',
 	PRIMARY KEY (id),
 	UNIQUE KEY (login)
-    ) TYPE=MyISAM
+    ) ENGINE=MyISAM
 ");
 $DB->Execute("UPDATE dbinfo SET keyvalue = '2004120400' WHERE keytype = 'dbversion'");
 $DB->CommitTrans();

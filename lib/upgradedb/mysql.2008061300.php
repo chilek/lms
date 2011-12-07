@@ -36,7 +36,7 @@ CREATE TABLE up_rights (
 	description varchar(255) DEFAULT '',
 	setdefault tinyint(1) NOT NULL DEFAULT '0',
 	PRIMARY KEY (id)
-) TYPE=MyISAM");
+) ENGINE=MyISAM");
 
 if (!in_array('up_rights_assignments', $tables)) $DB->Execute("
 
@@ -46,7 +46,7 @@ CREATE TABLE up_rights_assignments (
 	rightid int(11) NOT NULL DEFAULT '0',
 	PRIMARY KEY (id),
 	UNIQUE KEY up_right_assignment (customerid, rightid)
-) TYPE=MyISAM");
+) ENGINE=MyISAM");
 
 if (!in_array('up_customers', $tables)) $DB->Execute("
 
@@ -59,7 +59,7 @@ CREATE TABLE up_customers (
 	failedloginip varchar(16) NOT NULL DEFAULT '',
 	enabled int(10) NOT NULL DEFAULT '0',
 	PRIMARY KEY (id)
-) TYPE=MyISAM");
+) ENGINE=MyISAM");
 
 if (!in_array('up_help', $tables)) $DB->Execute("
 
@@ -69,7 +69,7 @@ CREATE TABLE up_help (
 	title varchar(128) NOT NULL default '',
 	body text NOT NULL default '',
 	PRIMARY KEY id (id)
-) TYPE=MyISAM");
+) ENGINE=MyISAM");
 
 if (!in_array('up_info_changes', $tables)) $DB->Execute("
 
@@ -79,8 +79,8 @@ CREATE TABLE up_info_changes (
 	fieldname varchar(255) NOT NULL DEFAULT '',
 	fieldvalue varchar(255) NOT NULL DEFAULT '',
 	PRIMARY KEY (id)
-) TYPE=MyISAM");
-						
+) ENGINE=MyISAM");
+
 if (empty($versions['up_module_finances']) || $versions['up_module_finances'] < 2005081901)
 {
 	$DB->Execute("INSERT INTO uiconfig (section, var, value, description, disabled) 

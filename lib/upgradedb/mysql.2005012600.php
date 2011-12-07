@@ -37,14 +37,14 @@ $DB->Execute("
 	userid int(11) NOT NULL default '0',
 	private tinyint(1) NOT NULL default '0',
 	closed tinyint(1) NOT NULL default '0',
-	PRIMARY KEY (id)) TYPE=MyISAM
+	PRIMARY KEY (id)) ENGINE=MyISAM
 ");
 
 $DB->Execute("
     CREATE TABLE eventassignments (
 	eventid int(11) NOT NULL default '0',
 	adminid int(11) NOT NULL default '0',
-	UNIQUE (eventid, adminid)) TYPE=MyISAM
+	UNIQUE (eventid, adminid)) ENGINE=MyISAM
 ");
 
 $DB->Execute("CREATE INDEX events_date_idx ON events(date)");

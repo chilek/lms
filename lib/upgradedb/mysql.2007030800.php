@@ -40,7 +40,7 @@ $DB->Execute("
 	halfduplex tinyint(1)   DEFAULT '0' NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE KEY nodeid (nodeid)
-    ) TYPE=MyISAM
+    ) ENGINE=MyISAM
 ");
 
 $DB->Execute("
@@ -51,7 +51,7 @@ $DB->Execute("
 	downceil int(11)        DEFAULT '0' NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE KEY customerid (customerid)
-    ) TYPE=MyISAM
+    ) ENGINE=MyISAM
 ");
 
 $DB->Execute("
@@ -64,7 +64,7 @@ $DB->Execute("
 	passwd varchar(32)      DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE KEY nodeid (nodeid)
-    ) TYPE=MyISAM
+    ) ENGINE=MyISAM
 ");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007030800', 'dbversion'));

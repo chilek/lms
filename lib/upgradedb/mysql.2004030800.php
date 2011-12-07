@@ -31,7 +31,7 @@ $DB->Execute("
 	id int(11) NOT NULL auto_increment, 
 	name varchar(255) NOT NULL default '', 
 	email varchar(255) NOT NULL default '', 
-	PRIMARY KEY (id)) TYPE=MyISAM
+	PRIMARY KEY (id)) ENGINE=MyISAM
 ");
 
 // rttickets - Tickets in RT
@@ -45,7 +45,7 @@ $DB->Execute("
 	state tinyint(4) NOT NULL default '0', 
 	owner int(11) NOT NULL default '0', 
 	createtime int(11) NOT NULL default '0', 
-	PRIMARY KEY (id)) TYPE=MyISAM
+	PRIMARY KEY (id)) ENGINE=MyISAM
 ");
 
 // rtmessages - content of mails in RT
@@ -62,7 +62,7 @@ $DB->Execute("
 	replyto text NOT NULL default '', 
 	headers text NOT NULL default '', 
 	body mediumtext NOT NULL default '', 
-	PRIMARY KEY  (id) ) TYPE=MyISAM
+	PRIMARY KEY  (id) ) ENGINE=MyISAM
 ");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004030800', 'dbversion'));

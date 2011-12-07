@@ -34,7 +34,7 @@ $DB->Execute("CREATE TABLE nodeassignments (
 	assignmentid int(11) NOT NULL DEFAULT '0',
 	PRIMARY KEY (id),
 	UNIQUE KEY nodeid (nodeid, assignmentid)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 ");
 
 if($assign = $DB->GetAll('SELECT id, nodeid FROM assignments WHERE nodeid!=0'))

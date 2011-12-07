@@ -34,7 +34,7 @@ CREATE TABLE imessengers (
     type tinyint(1) NOT NULL DEFAULT '0',
     PRIMARY KEY (id),
     INDEX customerid (customerid)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 ");
 
 $DB->Execute("INSERT INTO imessengers (customerid, uid)
