@@ -3,7 +3,7 @@
 # Smarty templates library quick installation (with sources download)
 #
 
-SMARTYVER="3.1.4"
+SMARTYVER="3.1.6"
 
 cd ../lib
 # download
@@ -19,6 +19,7 @@ echo "done."
 # merging
 echo -n "Merging... "
 mv Smarty-$SMARTYVER/libs/* Smarty/
+mv Smarty-$SMARTYVER/libs/sysplugins/* Smarty/sysplugins/
 mv Smarty-$SMARTYVER/libs/plugins/* Smarty/plugins/
 echo "done."
 
