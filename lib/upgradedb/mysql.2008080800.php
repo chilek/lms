@@ -31,7 +31,7 @@ CREATE TABLE states (
 	description text NOT NULL DEFAULT '',
 	PRIMARY KEY (id),
 	UNIQUE KEY name (name)
-) TYPE=MyISAM");
+) ENGINE=MyISAM");
 
 $DB->Execute("
 CREATE TABLE zipcodes (
@@ -41,7 +41,7 @@ CREATE TABLE zipcodes (
 	PRIMARY KEY (id),
 	UNIQUE KEY zip (zip),
 	INDEX stateid (stateid)
-) TYPE=MyISAM");
+) ENGINE=MyISAM");
 
 $DB->Execute("ALTER TABLE customers ADD INDEX zip (zip)");
 $DB->Execute("INSERT INTO zipcodes (zip) SELECT DISTINCT zip FROM customers");

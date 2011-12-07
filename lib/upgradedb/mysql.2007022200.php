@@ -36,7 +36,7 @@ $DB->Execute("
 	createtime int(11)   NOT NULL DEFAULT '0',
 	PRIMARY KEY (id),
 	INDEX ticketid (ticketid)
-    ) TYPE=MyISAM;
+    ) ENGINE=MyISAM;
 ");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007022200', 'dbversion'));

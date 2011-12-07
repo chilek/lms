@@ -30,7 +30,7 @@ CREATE TABLE nastypes (
 	name varchar(255) NOT NULL DEFAULT '',
 	PRIMARY KEY (id),
 	UNIQUE KEY name (name)
-) TYPE=MyISAM");
+) ENGINE=MyISAM");
 
 $DB->Execute("ALTER TABLE nodes ADD nas tinyint(1) NOT NULL DEFAULT '0'");
 $DB->Execute("ALTER TABLE netdevices ADD shortname varchar(32) NOT NULL DEFAULT ''");

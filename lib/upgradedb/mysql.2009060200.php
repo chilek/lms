@@ -36,7 +36,7 @@ $DB->Execute("CREATE TABLE cashsources (
 	description text	    DEFAULT NULL,
         PRIMARY KEY (id),
         UNIQUE KEY name (name)
-) TYPE=MyISAM");
+) ENGINE=MyISAM");
 $DB->Execute("ALTER TABLE cash ADD importid int(11) DEFAULT NULL");
 $DB->Execute("ALTER TABLE cash ADD sourceid int(11) DEFAULT NULL");
 $DB->Execute("ALTER TABLE cashimport ADD sourceid int(11) DEFAULT NULL");

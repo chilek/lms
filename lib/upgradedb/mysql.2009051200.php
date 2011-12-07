@@ -32,7 +32,7 @@ CREATE TABLE docrights (
     rights      int(11)         DEFAULT '0' NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY userid (userid, doctype)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 ");
 
 foreach(array(-1,-2,-3,-4,-5,-6,-7,-8, -9,-10) as $doctype)

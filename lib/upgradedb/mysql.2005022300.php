@@ -34,7 +34,7 @@ $DB->Execute("
 	customerid int(11) NOT NULL default '0',
 	hash varchar(50) NOT NULL default '',
 	closed tinyint(1) NOT NULL default '0',
-	PRIMARY KEY (id)) TYPE=MyISAM
+	PRIMARY KEY (id)) ENGINE=MyISAM
 ");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005022300', 'dbversion'));

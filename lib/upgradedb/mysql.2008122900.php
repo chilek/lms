@@ -32,7 +32,7 @@ CREATE TABLE numberplanassignments (
 	PRIMARY KEY (id),
 	UNIQUE KEY planid (planid, divisionid),
 	INDEX divisionid (divisionid)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 ");
 
 if($divs = $DB->GetAll('SELECT id FROM divisions'))

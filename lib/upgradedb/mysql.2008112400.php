@@ -30,7 +30,7 @@ CREATE TABLE countries (
 	name varchar(255) NOT NULL DEFAULT '',
 	PRIMARY KEY (id),
 	UNIQUE KEY name (name)
-) TYPE=MyISAM");
+) ENGINE=MyISAM");
 
 $DB->Execute("ALTER TABLE customers ADD countryid int(11) NOT NULL DEFAULT '0'");
 $DB->Execute("DROP VIEW customersview");

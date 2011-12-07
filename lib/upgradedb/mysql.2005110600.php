@@ -34,7 +34,7 @@ $DB->Execute("CREATE TABLE liabilities (
 	taxid int(11)		NOT NULL DEFAULT '0',
 	prodid varchar(255)	NOT NULL DEFAULT '',
 	PRIMARY KEY (id)
-	) TYPE=MyISAM	
+	) ENGINE=MyISAM
 ");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005110600', 'dbversion'));

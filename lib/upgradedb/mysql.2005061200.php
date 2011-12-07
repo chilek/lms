@@ -43,7 +43,7 @@ $DB->Execute("ALTER TABLE invoicecontents ADD taxid int(11) NOT NULL DEFAULT '0'
 //Mysql 3.x hasn't got UNION clause
 //Using 3 tables to be sure that all used tax rates are retrived
 
-$DB->Execute("CREATE TABLE temp_union TYPE=HEAP SELECT taxvalue FROM cash GROUP BY taxvalue"); 
+$DB->Execute("CREATE TABLE temp_union ENGINE=HEAP SELECT taxvalue FROM cash GROUP BY taxvalue"); 
 $DB->Execute("INSERT INTO temp_union SELECT taxvalue FROM tariffs GROUP BY taxvalue");
 $DB->Execute("INSERT INTO temp_union SELECT taxvalue FROM invoicecontents GROUP BY taxvalue");
 
