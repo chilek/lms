@@ -28,12 +28,12 @@ $DB->Execute("DELETE FROM nodeassignments WHERE nodeid NOT IN (SELECT id FROM no
 $DB->Execute("ALTER TABLE nodeassignments ALTER nodeid DROP DEFAULT");
 $DB->Execute("ALTER TABLE nodeassignments ALTER assignmentid DROP DEFAULT");
 
-$DB->Execute("ALTER TABLE nodeassignments ADD FOREIGN KEY (nodeid)
-	        REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE");
-$DB->Execute("ALTER TABLE nodeassignments ADD FOREIGN KEY (assignmentid)
-	        REFERENCES assignments (id) ON DELETE CASCADE ON UPDATE CASCADE");
-
 $DB->Execute("ALTER TABLE nodeassignments ADD INDEX assignmentid (assignmentid)");
+
+$DB->Execute("ALTER TABLE nodeassignments ADD FOREIGN KEY (nodeid)
+		REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE");
+$DB->Execute("ALTER TABLE nodeassignments ADD FOREIGN KEY (assignmentid)
+		REFERENCES assignments (id) ON DELETE CASCADE ON UPDATE CASCADE");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010011300', 'dbversion'));
 
