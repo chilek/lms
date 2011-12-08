@@ -193,6 +193,8 @@ function checkElement(id)
 
 	if (elem) {
 		elem.checked = !elem.checked;
+		if (typeof elem.onchange === 'function')
+    		elem.onchange();
 	}
 }
 
