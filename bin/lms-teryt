@@ -615,6 +615,8 @@ sub location_update
         }
     }
 
+    my $orig_location = $addr;
+
     printf("%s (%04d) %s: ", $row->{'name'}, $row->{'id'}, $addr) if not $quiet;
 
     # get house/flat
@@ -661,7 +663,7 @@ sub location_update
     # update node location
     if ($street_id || $city_id) {
         print "found\n" if not $quiet;
-        $update->execute($city_id, $street_id, $house, $flat, $row->{'id'});
+        $update->execute($city_id, $street_id, $house, $flat, $orig_location, $row->{'id'});
     }
     else {
         print "not found\n" if not $quiet;
@@ -671,9 +673,9 @@ sub location_update
 if ($merge)
 {
     my $node_update = $dbase->prepare("UPDATE nodes SET location_city = ?, location_street = ?,
-        location_house = ?, location_flat = ? WHERE id = ?");
+        location_house = ?, location_flat = ?, location = ? WHERE id = ?");
     my $dev_update = $dbase->prepare("UPDATE netdevices SET location_city = ?, location_street = ?,
-        location_house = ?, location_flat = ? WHERE id = ?");
+        location_house = ?, location_flat = ?, location = ? WHERE id = ?");
     my $street_get = $dbase->prepare("SELECT s.id, s.cityid
         FROM location_streets s
         JOIN location_cities c ON (s.cityid = c.id)
