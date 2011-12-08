@@ -599,12 +599,14 @@ if ($merge)
     my $street_get = $dbase->prepare("SELECT s.id, s.cityid
         FROM location_streets s
         JOIN location_cities c ON (s.cityid = c.id)
-        WHERE s.name = ? AND c.name = ? LIMIT 1");
+        WHERE s.name = ? AND c.name = ?
+        ORDER BY c.cityid LIMIT 1");
     my $city_get = $dbase->prepare("SELECT id
-        JOIN location_cities
-        WHERE name = ? AND cityid IS NULL LIMIT 1");
+        FROM location_cities
+        WHERE name = ?
+        ORDER BY cityid LIMIT 1");
 
-    $dbq = $dbase->prepare("SELECT id, location
+    $dbq = $dbase->prepare("SELECT id, name, location
         FROM nodes WHERE location_city IS NULL AND location_street IS NULL
             AND location <> ''");
     $dbq->execute();
@@ -616,6 +618,8 @@ if ($merge)
         my $city;
         my $street;
         my $addr = $row->{'location'};
+
+        printf("%s (%04d) %s: ", $row->{'name'}, $row->{'id'}, $addr) if not $quiet;
 
         # get house/flat
         if ($addr =~ /\s([0-9]+\s*[a-z]*)$/i) {
@@ -634,12 +638,14 @@ if ($merge)
             $city = $1;
         }
         else {
-            $street = $addr;
+            $city = $addr;
+            $street = ''
         }
 
         # try to remove prefix UL., AL., PL., SKWER, BULW., RONDO, PARK, RYNEK, SZOSA, DROGA, OS., OGRÓD, WYSPA, WYB.
-        $street =~ s/^(((ul\.|pl\.|al\.|bulw\.|os\.|wyb\.)\s*)|((skwer|rondo|park|rynek|szosa|droga|ogród|wyspa)\s+))//i;
+        $street =~ s/^\s*(((ul\.|pl\.|al\.|bulw\.|os\.|wyb\.)\s*)|((skwer|rondo|park|rynek|szosa|droga|ogród|wyspa)\s+))//i;
         $street =~ s/\s+$//;
+        $city =~ s/(^\s+|\s+$)//;
 
         # find location_street and/or location_city IDs
         if ($street && $city) {
@@ -658,7 +664,11 @@ if ($merge)
 
         # update node location
         if ($street_id || $city_id) {
+            print "found\n" if not $quiet;
             $node_update->execute($city_id, $street_id, $house, $flat, $row->{'id'});
+        }
+        else {
+            print "not found\n" if not $quiet;
         }
     }
 
