@@ -61,21 +61,21 @@ if(isset($_POST['ticket']))
 		$error['surname'] = trans('Requester name required!');
 
 	$requestor  = ($ticket['surname'] ? $ticket['surname'].' ' : '');
-	$requestor .= ($ticket['name'] ? $ticket['name'].' ' : '');	    
+	$requestor .= ($ticket['name'] ? $ticket['name'].' ' : '');
 	$requestor .= ($ticket['email'] ? '<'.$ticket['email'].'>' : '');
 	$ticket['requestor'] = trim($requestor);
 	
 	$ticket['mailfrom'] = $ticket['email'] ? $ticket['email'] : '';
 
-	if(!$error)
+	if (!$error)
 	{
 		$id = $LMS->TicketAdd($ticket);
 
-		if(isset($CONFIG['phpui']['newticket_notify']) && chkconfig($CONFIG['phpui']['newticket_notify']))
+		if (isset($CONFIG['phpui']['newticket_notify']) && chkconfig($CONFIG['phpui']['newticket_notify']))
 		{
 			$user = $LMS->GetUserInfo($AUTH->id);
 
-			if(!empty($CONFIG['phpui']['helpdesk_sender_name']))
+			if (!empty($CONFIG['phpui']['helpdesk_sender_name']))
 			{
 				$mailfname = $CONFIG['phpui']['helpdesk_sender_name'];
 
@@ -93,47 +93,55 @@ if(isset($_POST['ticket']))
 			else
 				$mailfrom =  $ticket['mailfrom'];
 
-		        $headers['From'] = $mailfname.' <'.$mailfrom.'>';
+			$headers['From'] = $mailfname.' <'.$mailfrom.'>';
 			$headers['Subject'] = sprintf("[RT#%06d] %s", $id, $ticket['subject']);
 			$headers['Reply-To'] = $headers['From'];
 
-            $sms_body = $headers['Subject']."\n".$ticket['body'];
+			$sms_body = $headers['Subject']."\n".$ticket['body'];
 			$body = $ticket['body']."\n\nhttp"
 				.(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
 				.$_SERVER['HTTP_HOST']
 				.substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 				.'?m=rtticketview&id='.$id;
 
-			if(chkconfig($CONFIG['phpui']['helpdesk_customerinfo']) && $ticket['customerid'])
-			{
-				$info = $DB->GetRow('SELECT '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
-						email, address, zip, city, (SELECT phone FROM customercontacts 
-							WHERE customerid = customers.id ORDER BY id LIMIT 1) AS phone
-						FROM customers WHERE id = ?', array($ticket['customerid']));
+			if (chkconfig($CONFIG['phpui']['helpdesk_customerinfo']))
+				if ($ticket['customerid'])
+				{
+					$info = $DB->GetRow('SELECT '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
+							email, address, zip, city, (SELECT phone FROM customercontacts 
+								WHERE customerid = customers.id ORDER BY id LIMIT 1) AS phone
+							FROM customers WHERE id = ?', array($ticket['customerid']));
 
-				$body .= "\n\n-- \n";
-				$body .= trans('Customer:').' '.$info['customername']."\n";
-				$body .= trans('ID:').' '.sprintf('%04d', $ticket['customerid'])."\n";
-				$body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
-				$body .= trans('Phone:').' '.$info['phone']."\n";
-				$body .= trans('E-mail:').' '.$info['email'];
+					$body .= "\n\n-- \n";
+						$body .= trans('Customer:').' '.$info['customername']."\n";
+						$body .= trans('ID:').' '.sprintf('%04d', $ticket['customerid'])."\n";
+						$body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
+						$body .= trans('Phone:').' '.$info['phone']."\n";
+						$body .= trans('E-mail:').' '.$info['email'];
 
-				$sms_body .= "\n";
-				$sms_body .= trans('Customer:').' '.$info['customername'];
-				$sms_body .= ' '.sprintf('(%04d)', $ticket['customerid']).'. ';
-				$sms_body .= $info['address'].', '.$info['zip'].' '.$info['city'];
-                if ($info['phone'])
-    				$sms_body .= '. '.trans('Phone:').' '.$info['phone'];
-			}
+					$sms_body .= "\n";
+					$sms_body .= trans('Customer:').' '.$info['customername'];
+					$sms_body .= ' '.sprintf('(%04d)', $ticket['customerid']).'. ';
+					$sms_body .= $info['address'].', '.$info['zip'].' '.$info['city'];
+					if ($info['phone'])
+						$sms_body .= '. '.trans('Phone:').' '.$info['phone'];
+				}
+				elseif (!empty($requestor))
+				{
+					$body .= "\n\n-- \n";
+					$body .= trans('Customer:').' '.$requestor;
+					$sms_body .= "\n";
+					$sms_body .= trans('Customer:').' '.$requestor;
+				}
 
-            // send email
-			if($recipients = $DB->GetCol('SELECT DISTINCT email
-			        FROM users, rtrights
+			// send email
+			if ($recipients = $DB->GetCol('SELECT DISTINCT email
+				FROM users, rtrights
 					WHERE users.id = userid AND queueid = ? AND email != \'\'
 						AND (rtrights.rights & 8) = 8 AND deleted = 0
 						AND (ntype & ?) = ?',
-				    array($queue, MSG_MAIL, MSG_MAIL))
-		    ) {
+					array($queue, MSG_MAIL, MSG_MAIL)))
+			{
 				foreach($recipients as $email) {
 					$headers['To'] = '<'.$email.'>';
 
@@ -141,14 +149,14 @@ if(isset($_POST['ticket']))
 				}
 			}
 
-            // send sms
+			// send sms
 			if (!empty($CONFIG['sms']['service']) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
-			        FROM users, rtrights
+				FROM users, rtrights
 					WHERE users.id = userid AND queueid = ? AND phone != \'\'
 						AND (rtrights.rights & 8) = 8 AND deleted = 0
 						AND (ntype & ?) = ?',
-				    array($queue, MSG_SMS, MSG_SMS)))
-		    ) {
+					array($queue, MSG_SMS, MSG_SMS))))
+			{
 				foreach ($recipients as $phone) {
 					$LMS->SendSMS($phone, $sms_body);
 				}
@@ -180,7 +188,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
 {
-        $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
+	$SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
 }
 
 if(isset($ticket['customerid']) && $ticket['customerid'])
