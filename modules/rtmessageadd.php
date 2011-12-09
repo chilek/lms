@@ -226,17 +226,17 @@ if(isset($_POST['message']))
 
 		// setting status and the ticket owner
 		if (isset($message['state']))
-            $LMS->SetTicketState($message['ticketid'], RT_RESOLVED);
+			$LMS->SetTicketState($message['ticketid'], RT_RESOLVED);
 		else if (!$DB->GetOne('SELECT state FROM rttickets WHERE id = ?', array($message['ticketid'])))
-		    $LMS->SetTicketState($message['ticketid'], RT_OPEN);
+			$LMS->SetTicketState($message['ticketid'], RT_OPEN);
 
 		$DB->Execute('UPDATE rttickets SET cause = ? WHERE id = ?', array($message['cause'], $message['ticketid']));
 
-		if(!$DB->GetOne('SELECT owner FROM rttickets WHERE id = ?', array($message['ticketid'])))
+		if (!$DB->GetOne('SELECT owner FROM rttickets WHERE id = ?', array($message['ticketid'])))
 			$DB->Execute('UPDATE rttickets SET owner = ? WHERE id = ?', array($AUTH->id, $message['ticketid']));
 
-        // Users notification
-		if(isset($message['notify']) && ($user['email'] || $queue['email']))
+		// Users notification
+		if (isset($message['notify']) && ($user['email'] || $queue['email']))
 		{
 			$mailfname = '';
 
@@ -254,48 +254,56 @@ if(isset($_POST['message']))
 
 			$mailfrom = $user['email'] ? $user['email'] : $queue['email'];
 
-	        $headers['From'] = $mailfname.' <'.$mailfrom.'>';
+			$headers['From'] = $mailfname.' <'.$mailfrom.'>';
 			$headers['Subject'] = sprintf("[RT#%06d] %s", $message['ticketid'], $DB->GetOne('SELECT subject FROM rttickets WHERE id = ?', array($message['ticketid'])));
 			$headers['Reply-To'] = $headers['From'];
 
-            $sms_body = $headers['Subject']."\n".$message['body'];
+			$sms_body = $headers['Subject']."\n".$message['body'];
 			$body = $message['body']."\n\nhttp"
 				.(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
 				.$_SERVER['HTTP_HOST']
 				.substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 				.'?m=rtticketview&id='.$message['ticketid'];
 
-			if(chkconfig($CONFIG['phpui']['helpdesk_customerinfo'])
-				&& ($cid = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($message['ticketid']))))
-			{
-				$info = $DB->GetRow('SELECT '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
-						email, address, zip, city, (SELECT phone FROM customercontacts 
-							WHERE customerid = customers.id ORDER BY id LIMIT 1) AS phone
-						FROM customers WHERE id = ?', array($cid));
+			if (chkconfig($CONFIG['phpui']['helpdesk_customerinfo']))
+				if ($cid = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($message['ticketid'])))
+				{
+					$info = $DB->GetRow('SELECT '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
+							email, address, zip, city, (SELECT phone FROM customercontacts 
+								WHERE customerid = customers.id ORDER BY id LIMIT 1) AS phone
+							FROM customers WHERE id = ?', array($cid));
 
-				$body .= "\n\n-- \n";
-				$body .= trans('Customer:').' '.$info['customername']."\n";
-				$body .= trans('ID:').' '.sprintf('%04d', $cid)."\n";
-				$body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
-				$body .= trans('Phone:').' '.$info['phone']."\n";
-				$body .= trans('E-mail:').' '.$info['email'];
+					$body .= "\n\n-- \n";
+					$body .= trans('Customer:').' '.$info['customername']."\n";
+					$body .= trans('ID:').' '.sprintf('%04d', $cid)."\n";
+					$body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
+					$body .= trans('Phone:').' '.$info['phone']."\n";
+					$body .= trans('E-mail:').' '.$info['email'];
 
-                $sms_body .= "\n";
-                $sms_body .= trans('Customer:').' '.$info['customername'];
-                $sms_body .= ' '.sprintf('(%04d)', $ticket['customerid']).'. ';
-                $sms_body .= $info['address'].', '.$info['zip'].' '.$info['city'];
-                if ($info['phone'])
-                    $sms_body .= '. '.trans('Phone:').' '.$info['phone'];
-			}
+					$sms_body .= "\n";
+					$sms_body .= trans('Customer:').' '.$info['customername'];
+					$sms_body .= ' '.sprintf('(%04d)', $ticket['customerid']).'. ';
+					$sms_body .= $info['address'].', '.$info['zip'].' '.$info['city'];
+					if ($info['phone'])
+						$sms_body .= '. '.trans('Phone:').' '.$info['phone'];
+				}
+				elseif ($requestor = $DB->GetOne('SELECT requestor FROM rttickets WHERE id = ?', array($message['ticketid'])))
+				{
+					$body .= "\n\n-- \n";
+					$body .= trans('Customer:').' '.$requestor;
 
-            // send email
-			if($recipients = $DB->GetCol('SELECT DISTINCT email
-			        FROM users, rtrights 
+					$sms_body .= "\n";
+					$sms_body .= trans('Customer:').' '.$requestor;
+				}
+
+			// send email
+			if ($recipients = $DB->GetCol('SELECT DISTINCT email
+					FROM users, rtrights 
 					WHERE users.id=userid AND queueid = ? AND email != \'\' 
 						AND (rtrights.rights & 8) = 8 AND users.id != ?
 						AND deleted = 0 AND (ntype & ?) = ?',
-					array($queue['id'], $AUTH->id, MSG_MAIL, MSG_MAIL))
-			) {
+					array($queue['id'], $AUTH->id, MSG_MAIL, MSG_MAIL)))
+			{
 				foreach($recipients as $email) {
 					$headers['To'] = '<'.$email.'>';
 
@@ -303,14 +311,14 @@ if(isset($_POST['message']))
 				}
 			}
 
-            // send sms
-			if(!empty($CONFIG['sms']['service']) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
+			// send sms
+			if (!empty($CONFIG['sms']['service']) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
 			        FROM users, rtrights
 					WHERE users.id=userid AND queueid = ? AND phone != \'\'
 						AND (rtrights.rights & 8) = 8 AND users.id != ?
 						AND deleted = 0 AND (ntype & ?) = ?',
-					array($queue['id'], $AUTH->id, MSG_SMS, MSG_SMS)))
-			) {
+					array($queue['id'], $AUTH->id, MSG_SMS, MSG_SMS))))
+			{
 				foreach($recipients as $phone) {
 					$LMS->SendSMS($phone, $sms_body);
 				}
@@ -344,7 +352,7 @@ else
 
 		if(!$message['destination'] && !$reply['userid'])
 			$message['destination'] = $LMS->GetCustomerEmail($message['customerid']);
-	
+
 		$message['subject'] = 'Re: '.$reply['subject'];
 		$message['inreplyto'] = $reply['id'];
 		$message['references'] = $reply['messageid'];
@@ -355,7 +363,7 @@ else
 			foreach($body as $line)
 				$message['body'] .= '> '.$line."\n";
 		}
-	
+
 		if(!preg_match('/\[RT#[0-9]{6}\]/i', $message['subject'])) 
 			$message['subject'] .= sprintf(' [RT#%06d]', $message['ticketid']); 
 	}
