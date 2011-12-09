@@ -642,8 +642,8 @@ sub location_update
 
     # try to remove prefix UL., AL., PL., SKWER, BULW., RONDO, PARK, RYNEK, SZOSA, DROGA, OS., OGRÓD, WYSPA, WYB.
     $street =~ s/^\s*(((ul\.|pl\.|al\.|bulw\.|os\.|wyb\.)\s*)|((skwer|rondo|park|rynek|szosa|droga|ogród|wyspa)\s+))//i;
-    $street =~ s/(^\s+|\s+$)//;
-    $city =~ s/(^\s+|\s+$)//;
+    $street =~ s/(^\s+|\s+$)//g;
+    $city =~ s/(^\s+|\s+$)//g;
 
     # find location_street and/or location_city IDs
     if ($street && $city) {
