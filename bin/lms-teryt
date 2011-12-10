@@ -620,11 +620,11 @@ sub location_update
     printf("%s (%04d) %s: ", $row->{'name'}, $row->{'id'}, $addr) if not $quiet;
 
     # get house/flat
-    if ($addr =~ /\s([0-9]+\s*[a-z]*)$/i) {
+    if ($addr =~ /\s([0-9-]+\s*[a-z]*)$/i) {
         $addr = substr($addr, 0, -1 * length($1));
         $house = $1;
     }
-    elsif ($addr =~ /\s(([0-9]+\s*[a-z]*)\/([0-9]+))$/i) {
+    elsif ($addr =~ /\s(([0-9-]+\s*[a-z]*)\/([0-9a-z]+))$/i) {
         $addr = substr($addr, 0, -1 * length($1));
         $house = $2;
         $flat = $3;
@@ -651,6 +651,13 @@ sub location_update
         if (my $srow = $street_get->fetchrow_hashref()) {
             $street_id = $srow->{'id'};
             $city_id = $srow->{'cityid'};
+        }
+        else {
+            $city_get->execute($street);
+            if (my $srow = $city_get->fetchrow_hashref()) {
+                $city_id = $srow->{'id'};
+                $orig_location =~ s/$city, //;
+            }
         }
     }
     elsif ($city) {
