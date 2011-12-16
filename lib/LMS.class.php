@@ -2124,6 +2124,8 @@ class LMS
 			$item['valuebrutto'] = str_replace(',','.',$item['valuebrutto']);
 			$item['count'] = str_replace(',','.',$item['count']);
 			$item['discount'] = str_replace(',','.',$item['discount']);
+			$item['pdiscount'] = str_replace(',','.',$item['pdiscount']);
+			$item['vdiscount'] = str_replace(',','.',$item['vdiscount']);
 			$item['taxid'] = isset($item['taxid']) ? $item['taxid'] : 0;
 
 			$this->DB->Execute('INSERT INTO invoicecontents (docid, itemid,

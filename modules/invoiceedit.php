@@ -98,7 +98,7 @@ switch($action)
 		if ($error)
 			break;
 
-		foreach(array('count', 'discount', 'valuenetto', 'valuebrutto') as $key)
+		foreach(array('count', 'discount', 'pdiscount', 'vdiscount', 'valuenetto', 'valuebrutto') as $key)
 			$itemdata[$key] = round((float) str_replace(',', '.', $itemdata[$key]), 2);
 
 		if ($itemdata['count'] > 0 && $itemdata['name'] != '')
@@ -122,6 +122,8 @@ switch($action)
 			$itemdata['valuebrutto'] = str_replace(',', '.', $itemdata['valuebrutto']);
 			$itemdata['count'] = str_replace(',', '.', $itemdata['count']);
 			$itemdata['discount'] = str_replace(',', '.', $itemdata['discount']);
+			$itemdata['pdiscount'] = str_replace(',', '.', $itemdata['pdiscount']);
+			$itemdata['vdiscount'] = str_replace(',', '.', $itemdata['vdiscount']);
 			$itemdata['tax'] = $taxeslist[$itemdata['taxid']]['label'];
 			$itemdata['posuid'] = (string) getmicrotime();
 			$contents[] = $itemdata;
