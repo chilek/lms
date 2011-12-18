@@ -82,6 +82,7 @@ version ? (????-??-??):
   - rewritten graph navigation panel [chilan]
   - invoicenote: we use tax rates which were current in the day
     when invoice was issued [Jarosław Dziubek/chilan]
+  - ping: added selection of ping type thanks to Grzegorz Cichowski [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
