@@ -194,7 +194,7 @@ function checkElement(id)
 	if (elem) {
 		elem.checked = !elem.checked;
 		if (typeof elem.onchange === 'function')
-    		elem.onchange();
+			elem.onchange();
 	}
 }
 
@@ -404,8 +404,10 @@ function check_teryt(locid, init)
     return checked;
 }
 
-function ping_popup(ip)
+function ping_popup(ip, type)
 {
-	popup('?m=ping&ip=' + ip, 1, 1, 30, 30);
+	if (type == null)
+		type = 1;
+	popup('?m=ping&ip=' + ip + '&type=' + type, 1, 1, 30, 30);
 	autoiframe_setsize('autoiframe', 480, 300);
 }

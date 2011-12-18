@@ -34,19 +34,36 @@ function refresh($params)
 	$ipaddr = $params['ipaddr'];
 	$received = $params['received'];
 	$transmitted = $params['transmitted'];
-	if (empty($CONFIG['phpui']['ping_helper']))
-		$cmd = 'sudo ping %i -c 1 -s 1450 -w 1.0';
-	else
-		$cmd = $CONFIG['phpui']['ping_helper'];
+	$type = $params['type'];
+	switch ($type) {
+		case 1:
+			if (empty($CONFIG['phpui']['ping_helper']))
+				$cmd = 'sudo ping %i -c 1 -s 1450 -w 1.0';
+			else
+				$cmd = $CONFIG['phpui']['ping_helper'];
+			$summary_regexp = '/^[0-9]+[[:blank:]]+packets[[:blank:]]+transmitted/i';
+			$reply_regexp = '/icmp_[rs]eq/';
+			$reply_detailed_regexp = '/^([0-9]+).+icmp_[rs]eq=([0-9]+).+ttl=([0-9]+).+time=([0-9\.]+.+)$/';
+			break;
+		case 2:
+			if (empty($CONFIG['phpui']['arping_helper']))
+				$cmd = 'sudo arping %i -c 1 -w 1.0';
+			else
+				$cmd = $CONFIG['phpui']['arping_helper'];
+			$summary_regexp = '/^sent+[[:blank:]]+[0-9]+[[:blank:]]+probes/i';
+			$reply_regexp = '/unicast/i';
+			$reply_detailed_regexp = '/\ \[(.*?)\].+\ ([0-9\.]+.+)$/';
+			break;
+	}
 	$cmd = preg_replace('/%if/', $iface, $cmd);
 	$cmd = preg_replace('/%i/', $ipaddr, $cmd);
 	exec($cmd, $output);
-	$sent = preg_grep('/^[0-9]+[[:blank:]]+packets[[:blank:]]+transmitted/i', $output);
+	$sent = preg_grep($summary_regexp, $output);
 	if (count($sent) && preg_match('/^([0-9]+)/', current($sent), $matches))
 		$transmitted += $matches[1];
 	else
 		$transmitted++;
-	$replies = preg_grep('/icmp_[rs]eq/', $output);
+	$replies = preg_grep($reply_regexp, $output);
 	$times = array();
 	if (count($replies))
 	{
@@ -54,16 +71,23 @@ function refresh($params)
 		$seqs = array();
 		$oldreceived = $received;
 		foreach ($replies as $reply)
-			if (preg_match('/^([0-9]+).+icmp_[rs]eq=([0-9]+).+ttl=([0-9]+).+time=([0-9\.]+.+)$/', $reply, $matches))
+			if (preg_match($reply_detailed_regexp, $reply, $matches))
 			{
 				if (!isset($seqs[$matches[2]]))
 				{
 					$seqs[$matches[2]] = true;
 					$received++;
 				}
-				$output .= trans('$a bytes from $b: icmp_req=$c ttl=$d time=$e',
-					$matches[1], $ipaddr, $oldreceived + $matches[2], $matches[3], $matches[4]).'<br>';
-				$times[] = $matches[4];
+				if ($type == 1) {
+					$output .= trans('$a bytes from $b: icmp_req=$c ttl=$d time=$e',
+						$matches[1], $ipaddr, $oldreceived + $matches[2], $matches[3], $matches[4]).'<br>';
+					$times[] = $matches[4];
+				}
+				elseif ($type == 2) {
+					$output .= trans('Unicast reply from $a [$b]: time=$c',
+						$ipaddr, $matches[1], $matches[2]).'<br>';
+					$times[] = $matches[2];
+				}
 			}
 	}
 	else
@@ -110,6 +134,10 @@ $layout['pagetitle'] = trans('Ping');
 if (isset($_GET['ip']) && check_ip($_GET['ip']))
 {
 	$SMARTY->assign('ipaddr', $_GET['ip']);
+	if (isset($_GET['type']) && intval($_GET['type']))
+		$SMARTY->assign('type', intval($_GET['type']));
+	else
+		$SMARTY->assign('type', 1);
 	$netid = $LMS->GetNetIDByIP($_GET['ip']);
 	if ($netid)
 		$SMARTY->assign('interface', $DB->GetOne('SELECT interface FROM networks WHERE id = ?', array($netid)));

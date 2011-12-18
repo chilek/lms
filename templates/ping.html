@@ -4,7 +4,7 @@
 	<div id="{$popupid}_popupCloseBox" class="olPopupCloseBox lmsPopupCloseBox">&nbsp;</div>
 </div>
 <div class="lmsPingContentsFrame">
-	<iframe id="autoiframe_{$popupid}" width=100 height=10 frameborder=0 scrolling=no src="?m=ping&ip={$ipaddr}"></iframe>
+	<iframe id="autoiframe_{$popupid}" width=100 height=10 frameborder=0 scrolling=no src="?m=ping&ip={$ipaddr}&type={$type}"></iframe>
 </div>
 {elseif $part eq "ipform"}
 <div class="lmsPopupTitleBar">
@@ -15,7 +15,9 @@
 	<div class="lmsIpPopupLabel">{t}Enter IP address:{/t}</div>
 	<div class="lmsIpPopupForm">
 		<form name="{$popupid}_ipform" id="ipform" method="GET" action="?m=ping" onsubmit="return ping_any_host('{$popupid}');">
-			<input type="text" name="ip">
+			<input type="text" name="ip"><br>
+			<input type="radio" id="type1" name="type" value="1" checked><a href="javascript:checkElement('type1')">icmp</a>
+			<input type="radio" id="type2" name="type" value="2"><a href="javascript:checkElement('type2')">arp</a>
 			<input type="submit" class="hiddenbtn">
 		</form>
 	</div>
@@ -34,7 +36,7 @@
 </head>
 {if !$part}
 <frameset name="all" frameborder="0" framespacing="0" ROWS="*">
-	<frame scrolling="always" frameborder="0" marginheight="0" marginwidth="0" name="m" noresize src="?m=ping&p=main&ip={$ipaddr}">
+	<frame scrolling="always" frameborder="0" marginheight="0" marginwidth="0" name="m" noresize src="?m=ping&p=main&ip={$ipaddr}&type={$type}">
 </frameset>
 {else}
 <script type="text/javascript" src="img/common.js"></script>
@@ -51,6 +53,7 @@
 		</div>
 		<div class="lmsPingControls">
 			<form id="params">
+				<input type="hidden" name="type" value="{$type}">
 				<input type="hidden" name="interface" value="{$interface}">
 				<input type="hidden" name="ipaddr" value="{$ipaddr}">
 				<input type="hidden" id="transmitted" name="transmitted" value="0">

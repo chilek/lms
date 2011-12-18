@@ -2516,6 +2516,7 @@ $_LANG['Select gps coordinates:'] = 'Wybierz współprzędne geograficzne:';
 $_LANG['Show on map'] = 'Pokaż na mapie';
 
 $_LANG['$a bytes from $b: icmp_req=$c ttl=$d time=$e'] = '$a bajtów od $b: icmp_req=$c ttl=$d czas=$e';
+$_LANG['Unicast reply from $a [$b]: time=$c'] = 'Odpowiedź unicast od $a [$b]: czas=$c';
 $_LANG['Destination Host Unreachable'] = 'Urządzenie docelowe jest nieosiągalne';
 $_LANG['Total: $a% ($b/$c)'] = 'Razem: $a% ($b/$c)';
 $_LANG['Auto Scroll'] = 'Automatyczne przewijanie';

@@ -83,14 +83,16 @@ function close_popup(id)
 	map.removePopup(id)
 }
 
-function ping_host(id, ip)
+function ping_host(id, ip, type)
 {
 	//removeInvisiblePopups();
 
 	for (var i = 0; i < map.popups.length, map.popups[i].id != id; i++);
 	var popupid = id;
+	if (type == null)
+		type = 1;
 	var pingContentsRequest = OpenLayers.Request.issue({
-		url: '?m=ping&p=titlebar&popupid=' + id + '&ip=' + ip,
+		url: '?m=ping&p=titlebar&popupid=' + id + '&ip=' + ip + '&type=' + type,
 		async: false
 	});
 	if (pingContentsRequest.status == 200) {
@@ -102,13 +104,20 @@ function ping_host(id, ip)
 
 function ping_any_host(id)
 {
-	var ip = document.forms['ipform'].ip.value;
+	var ip = document.forms[id + '_ipform'].ip.value;
 	if (!ip.match(/^([0-9]{1,3}\.){3}[0-9]{1,3}$/))
 		return false;
 
-	ping_host(id, ip);
+	var type = (document.forms[id + '_ipform'].elements[id + '_type1'].checked ? 1 : 2);
+	ping_host(id, ip, type);
 
 	return false;
+}
+
+function check_host(id, ip)
+{
+	var type = (document.getElementById('type1_' + ip).checked ? 1 : 2);
+	ping_host(id, ip, type);
 }
 
 function findFeaturesIntersection(selectFeature, feature)
@@ -372,14 +381,24 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 							var ips = features[i].data.ipaddr.split(',');
 							var nodeids = features[i].data.nodeid.split(',');
 							for (var j in nodeids)
-								content += '<div class="lmsInfoPopupAddress"><a href="javascript:ping_host(\''
+								content += '<div class="lmsInfoPopupAddress"><a href="javascript:check_host(\''
 								+ featurepopup.id + '\', \'' + ips[j] + '\')"><img src="img/ip.gif" alt="">&nbsp;'
-								+ ips[j] + '</a></div>';
+								+ ips[j] + '</a><form name="checktype_' + ips[j] + '">'
+								+ '<input type="radio" id="type1_' + ips[j] + '" name="type" value="1" checked>'
+								+ '<a href="javascript:checkElement(\'type1_' + ips[j] + '\')">icmp</a>'
+								+ '<input type="radio" id="type2_' + ips[j] + '" name="type" value="2">'
+								+ '<a href="javascript:checkElement(\'type2_' + ips[j] + '\')">arp</a>'
+								+ '</form></div>';
 						}
 					} else
-						content += '<div class="lmsInfoPopupAddress"><a href="javascript:ping_host(\''
+						content += '<div class="lmsInfoPopupAddress"><a href="javascript:check_host(\''
 							+ featurepopup.id + '\', \'' + features[i].data.ipaddr + '\')"><img src="img/ip.gif" alt="">&nbsp;'
-							+ features[i].data.ipaddr + '</a></div>';
+							+ features[i].data.ipaddr + '</a><form name="checktype_' + features[i].data.ipaddr + '">'
+							+ '<input type="radio" id="type1_' + features[i].data.ipaddr + '" name="type" value="1" checked>'
+							+ '<a href="javascript:checkElement(\'type1_' + features[i].data.ipaddr + '\')">icmp</a>'
+							+ '<input type="radio" id="type2_' + features[i].data.ipaddr + '" name="type" value="2">'
+							+ '<a href="javascript:checkElement(\'type2_' + features[i].data.ipaddr + '\')">arp</a>'
+							+ '</form></div>';
 					content += '<div class="lmsInfoPopupDetails"><a href="?m=' + features[i].data.type + '&id=' + features[i].data.id + '">'
 						+ '<img src="img/info1.gif" alt="">&nbsp;Info</a></div>';
 				}
@@ -410,10 +429,10 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		map.addControl(selectlayer);
 		selectlayer.activate();
 
-		var pingbutton = new OpenLayers.Control.Button({
-			displayClass: "lmsPingButton", 
-			title: "Ping a host ...",
-			command: 'ping'});
+		var checkbutton = new OpenLayers.Control.Button({
+			displayClass: "lmsCheckButton", 
+			title: "Check a host ...",
+			command: 'check'});
 
 		var centerbutton = new OpenLayers.Control.Button({
 			displayClass: "lmsCenterButton", 
@@ -431,7 +450,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 			activateControl: function(control) {
 				var map = control.map;
 				switch (control.command) {
-					case 'ping':
+					case 'check':
 						var pingpopup = new OpenLayers.Popup(null,
 							map.getLonLatFromPixel(new OpenLayers.Pixel(61, 32)).clone(),
 							new OpenLayers.Size(10, 10));
@@ -484,7 +503,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				}
 			}
 		});
-		panel.addControls([pingbutton, centerbutton, refreshbutton]);
+		panel.addControls([checkbutton, centerbutton, refreshbutton]);
 		map.addControl(panel);
 	}
 

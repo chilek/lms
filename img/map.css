@@ -220,11 +220,11 @@ div.olControlPanel {
 	background-repeat: no-repeat;
 }
 
-.lmsPingButtonItemActive {
+.lmsCheckButtonItemActive {
 	background: white url("ip.gif");
 }
 
-.lmsPingButtonItemInactive {
+.lmsCheckButtonItemInactive {
 	background: white url("ip.gif");
 }
 
