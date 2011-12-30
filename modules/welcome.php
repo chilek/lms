@@ -24,37 +24,40 @@
  *  $Id$
  */
 
-require_once(LIB_DIR.'/Sysinfo.class.php');
 @include(LIB_DIR.'/locale/'.$_language.'/fortunes.php');
-
-$SI = new Sysinfo;
 
 $layout['pagetitle'] = 'LAN Management System';
 
 $layout['dbversion'] = $DB->GetDBVersion();
 $layout['dbtype'] = $CONFIG['database']['type'];
 
-$content = $LMS->CheckUpdates();
+if ($adminuser) {
+    $content = $LMS->CheckUpdates();
 
-if(isset($content['newer_version']))
-{
-	list($v, ) = preg_split('/\s+/', $LMS->_version);
+    if(isset($content['newer_version'])) {
+    	list($v, ) = preg_split('/\s+/', $LMS->_version);
 
-	if(version_compare($content['newer_version'], $v)>0)
-		$SMARTY->assign('newer_version', $content['newer_version']);
+	    if(version_compare($content['newer_version'], $v) > 0)
+		    $SMARTY->assign('newer_version', $content['newer_version']);
+    }
+
+	$SMARTY->assign('regdata', $LMS->GetRegisterData());
 }
 
 $SMARTY->assign('_dochref', is_dir('doc/html/'.$LMS->ui_lang) ? 'doc/html/'.$LMS->ui_lang.'/' : 'doc/html/en/');
-if ($adminuser)
-	$SMARTY->assign('regdata', $LMS->GetRegisterData());
 $SMARTY->assign('rtstats', $LMS->RTStats());
-if (!$CONFIG['phpui']['hide_sysinfo'])
-	$SMARTY->assign('sysinfo',$SI->get_sysinfo());
-if (!$CONFIG['phpui']['hide_summaries'])
-{
-	$SMARTY->assign('customerstats',$LMS->CustomerStats());
-	$SMARTY->assign('nodestats',$LMS->NodeStats());
+
+if (!$CONFIG['phpui']['hide_sysinfo']) {
+    require_once LIB_DIR.'/Sysinfo.class.php';
+    $SI = new Sysinfo;
+	$SMARTY->assign('sysinfo', $SI->get_sysinfo());
 }
+
+if (!$CONFIG['phpui']['hide_summaries']) {
+	$SMARTY->assign('customerstats', $LMS->CustomerStats());
+	$SMARTY->assign('nodestats', $LMS->NodeStats());
+}
+
 $SMARTY->display('welcome.html');
 
 ?>
