@@ -18,22 +18,24 @@
 
 	function typesel(elem)
 	{
+	alert(elem);
 		if(elem == 'typesms' || elem == 'typeanysms') {
 			document.getElementById('mailbody').style.display = 'none';
 			document.getElementById('mailfrom').style.display = 'none';
 			document.getElementById('mailsender').style.display = 'none';
 			document.getElementById('attachment').style.display = 'none';
 			{if !$message.customerid}
+			var users = document.getElementById('users');
 			if (elem == 'typeanysms') {
-				document.getElementById('phonenumber').style.display = 'table-row';
-				document.getElementById('users').style.display = 'table-row';
+				document.getElementById('phonenumber').style.display = '';
+				if (users) users.style.display = '';
 			} else {
 				document.getElementById('phonenumber').style.display = 'none';
-				document.getElementById('users').style.display = 'none';
+				if (users) users.style.display = 'none';
 			}
 			{/if}
-			document.getElementById('smsbody').style.display = 'table-row';
-			document.getElementById('charscount').style.display = 'table-row';
+			document.getElementById('smsbody').style.display = '';
+			document.getElementById('charscount').style.display = '';
 		} else {
 			document.getElementById('mailbody').style.display = '';
 			document.getElementById('mailfrom').style.display = '';
@@ -169,6 +171,7 @@
 		</TD>
 	</TR>
 {if !$message.customerid}
+    {if $users}
 	<TR CLASS="LIGHT" ID="users"{if $message.type != $smarty.const.MSG_ANYSMS} style="display: none"{/if}>
 		<TD CLASS="FLEFT" WIDTH="1%">
 			<IMG SRC="img/users.gif" ALT=""> 
@@ -183,6 +186,7 @@
 			{/section}
 		</TD>
 	</TR>
+	{/if}
 	<TR CLASS="LIGHT" ID="phonenumber"{if $message.type != $smarty.const.MSG_ANYSMS} style="display: none"{/if}>
 		<TD CLASS="FLEFT" WIDTH="1%">
 			<IMG SRC="img/sms.gif" ALT=""> 
