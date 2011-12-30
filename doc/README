@@ -1271,9 +1271,10 @@ Chapter 3. User Interface (LMS-UI)
         You need GD or Ming library compiled in PHP to be able to use graphical
         map.
    Use 'map_type' option in section [phpui] section to specify type of
-   map. Set it to "flash" if you've got Ming library or "gd" for graphic
-   images. By default (option not set) LMS will try to generate flash map,
-   and when this fails, t will fallback to GD.
+   map. Set it to "flash" if you've got Ming library, "gd" for graphic
+   images or "openlayers" if you want to use map based on this library. By
+   default (option not set) LMS will try to generate flash map, and when
+   this fails, t will fallback to GD.
 
    Device status is shown on the map - computers in black are offline.
    Question mark on device icon means that its status is unknown (device
@@ -5414,7 +5415,11 @@ Chapter 7. For curious
 
    id - serial number
    name - name
-   location - physical location
+   location - physical location text
+   location_city - city identifier
+   location_street - street identifier
+   location_house - house number
+   location_flat - flat number
    description - device summary
    producer - manufacturer's name
    model - model number
@@ -5428,6 +5433,8 @@ Chapter 7. For curious
    secret - password (radius)
    community - SNMP community
    channelid - STM channel identifier (ewx_channels table)
+   longitude - geog. longitude
+   latitude - geog latitude
      __________________________________________________________________
 
 7.2.8. Network connections ('netlinks')
@@ -5460,10 +5467,14 @@ Chapter 7. For curious
    halfduplex - half/full duplex mode (0/1)
    lastonline - last network activity timestamp
    info - additional information
-   location_address - address - street, apartment, flat, etc
-   location_zip - address - zip code
-   location_city - address - location (city)
+   location_address - address string
+   location_city - city identifier
+   location_street - street identifier
+   location_house - house number
+   location_flat - flat number
    nas - NAS flag (1/0)
+   longitude - geog. longitude
+   latitude - geog latitude
      __________________________________________________________________
 
 7.2.10. MAC addresses ('macs')
@@ -5639,7 +5650,8 @@ Chapter 7. For curious
    datefrom - start date for assignment
    dateto - end date for assignment
    invoice - invoice writeout? (1 - yes, 0 - no)
-   discount - discount percentage
+   pdiscount - discount percentage
+   vdiscount - discount value
    suspended - is this payment suspended? (1 - yes, 0 - no)
    settlement - do deficient period settlement? (1 - yes, 0 - no)
    paytype - invoice payment type identifier
@@ -5753,7 +5765,8 @@ Chapter 7. For curious
    docid - invoice serial number
    itemid - invoice item identifier
    value - amount
-   discount - discount percentage
+   pdiscount - discount percentage
+   vdiscount - discount value
    taxid - tax rate identifier
    prodid - product/service classification number
    content - used unit (usually 'pc.')
@@ -5873,6 +5886,7 @@ Chapter 7. For curious
    login - login
    passwd - password
    phone - phone number
+   access - enabled/disabled (1/0)
    creationdate - date of account creation
    moddate - date of last account modification
    creatorid - creator (user) identifier

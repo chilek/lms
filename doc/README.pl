@@ -26,6 +26,7 @@ LMS Developers
         2.7. Prawa dostępu
         2.8. Upgrade
         2.9. Dokumenty
+        2.10. Baza podziału terytorialnego (TERYT)
 
    3. Interfejs Użytkownika (LMS-UI)
 
@@ -1129,6 +1130,14 @@ $engine = array(
    dokumencie.
      __________________________________________________________________
 
+2.10. Baza podziału terytorialnego (TERYT)
+
+   LMS obsługuje bazę podziału terytorialnego TERYT w sposób umożliwiający
+   przypisanie adresów zgodnych z zawartością tej bazy do komputerów oraz
+   urządzeń sieciowych. Aby mieć możliwość wyboru adresów z listy należy
+   zaimportować bazę TERYT. Służy do tego skrypt lms-teryt.
+     __________________________________________________________________
+
 Rozdział 3. Interfejs Użytkownika (LMS-UI)
 
    LMS'owy Interfejs Użytkownika to panel administracyjny do tworzenia i
@@ -1422,8 +1431,9 @@ Rozdział 3. Interfejs Użytkownika (LMS-UI)
          Do wygenerowania mapy potrzebna jest wbudowana w PHP obsługa biblioteki
          graficznej GD lub Ming.
    Aby wybrać typ mapy musisz skorzystać z opcji map_type z sekcji
-   [phpui]. Ustaw "flash" jeśli używasz biblioteki Ming lub "gd" jeśli
-   chcesz generować obrazki przy pomocy gdlib. Domyślnie (opcja
+   [phpui]. Ustaw "flash" jeśli używasz biblioteki Ming, "gd" jeśli chcesz
+   generować obrazki przy pomocy gdlib lub "openlayers" jeśli chcesz
+   używać biblioteki OpenLayers do generowania mapy. Domyślnie (opcja
    nieustawiona) LMS spróbuje wykryć jaką bibliotekę masz dostępną w
    systemie, przy czym w pierwszej kolejności szuka możliwości
    wygenerowania mapy we flashu, a jak się to nie uda, to użyje GD.
@@ -6430,7 +6440,11 @@ Rozdział 7. Dla dociekliwych
 
    id - identyfikator
    name - nazwa
-   location - lokalizacja
+   location - lokalizacja, tekst
+   location_city - identyfikator miejscowości (TERYT)
+   location_street - identyfikator ulicy (TERYT)
+   location_house - numer domu
+   location_flat - numer mieszkania
    description - opis
    producer - producent
    model - model
@@ -6445,6 +6459,8 @@ Rozdział 7. Dla dociekliwych
    secret - hasło (radius)
    community - community SNMP
    channelid - identyfikator kanału STM (tabela ewx_channels)
+   longitude - długość geograficzna
+   latitude - szerokość geograficzna
      __________________________________________________________________
 
 7.2.8. Połączenia sieciowe ('netlinks')
@@ -6478,10 +6494,14 @@ Rozdział 7. Dla dociekliwych
    warning - ostrzegaj/nie ostrzegaj (1/0)
    lastonline - znacznik czasu ostatniej obecności w sieci
    info - informacje dodatkowe
-   location_address - adres lokalizacji - ulica, nr domu, nr lokalu
-   location_zip - adres lokalizacji - kod pocztowy
-   location_city - adres lokalizacji - miasto
+   location - adres lokalizacji, tekst
+   location_city - identyfikator miejscowości (TERYT)
+   location_street - identyfikator ulicy (TERYT)
+   location_house - numer domu
+   location_flat - numer mieszkania
    nas - flaga NAS (0/1)
+   longitude - długość geograficzna
+   latitude - szerokość geograficzna
      __________________________________________________________________
 
 7.2.10. Adresy MAC ('macs')
@@ -6666,7 +6686,8 @@ Rozdział 7. Dla dociekliwych
    datefrom - data obowiązywania zobowiązania
    dateto - data obowiązywania zobowiązania
    invoice - określa czy ma być wystawiana faktura (1 - tak, 0 - nie)
-   discount - wartość procentowa rabatu
+   pdiscount - wartość procentowa rabatu
+   vdiscount - wartość kwotowa rabatu
    suspended - zawieszenie płatności (1 - tak, 0 - nie)
    settlement - rozliczenie okresu niepełnego (1 - tak, 0 - nie)
    paytype - identyfikator typu płatności faktury
@@ -6771,7 +6792,8 @@ Rozdział 7. Dla dociekliwych
    docid - identyfikator faktury
    itemid - nr pozycji
    value - kwota pozycji
-   discount - wartość procentowa rabatu
+   pdiscount - wartość procentowa rabatu
+   vdiscount - wartość kwotowa rabatu
    taxid - identyfikator stawki podatkowej
    prodid - numer PKWiU
    content - użyta jednostka (najczęściej 'szt.')
@@ -6891,6 +6913,7 @@ Rozdział 7. Dla dociekliwych
    login - login
    passwd - hasło
    phone - numer telefonu
+   access - włączone/wyłączone (1/0)
    creationdate - data utworzenia
    moddate - date ostatniej zmiany
    creatorid - identyfikator użytkownika

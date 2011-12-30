@@ -498,7 +498,23 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->location - physical location</TD
+>location - physical location text</TD
+></TR
+><TR
+><TD
+>location_city - city identifier</TD
+></TR
+><TR
+><TD
+>location_street - street identifier</TD
+></TR
+><TR
+><TD
+>location_house - house number</TD
+></TR
+><TR
+><TD
+>location_flat - flat number</TD
 ></TR
 ><TR
 ><TD
@@ -551,6 +567,14 @@ BORDER="0"
 ><TR
 ><TD
 >channelid - STM channel identifier (ewx_channels table)</TD
+></TR
+><TR
+><TD
+>longitude - geog. longitude</TD
+></TR
+><TR
+><TD
+>latitude - geog latitude</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -678,19 +702,35 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->location_address - address - street, apartment, flat, etc</TD
+>location_address - address string</TD
 ></TR
 ><TR
 ><TD
->location_zip - address - zip code</TD
+>location_city - city identifier</TD
 ></TR
 ><TR
 ><TD
->location_city - address - location (city)</TD
+>location_street - street identifier</TD
+></TR
+><TR
+><TD
+>location_house - house number</TD
+></TR
+><TR
+><TD
+>location_flat - flat number</TD
 ></TR
 ><TR
 ><TD
 >nas - NAS flag (1/0)</TD
+></TR
+><TR
+><TD
+>longitude - geog. longitude</TD
+></TR
+><TR
+><TD
+>latitude - geog latitude</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1352,7 +1392,11 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->discount - discount percentage</TD
+>pdiscount - discount percentage</TD
+></TR
+><TR
+><TD
+>vdiscount - discount value</TD
 ></TR
 ><TR
 ><TD
@@ -1780,7 +1824,11 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->discount - discount percentage</TD
+>pdiscount - discount percentage</TD
+></TR
+><TR
+><TD
+>vdiscount - discount value</TD
 ></TR
 ><TR
 ><TD
@@ -2235,6 +2283,10 @@ BORDER="0"
 ><TR
 ><TD
 >phone - phone number</TD
+></TR
+><TR
+><TD
+>access - enabled/disabled (1/0)</TD
 ></TR
 ><TR
 ><TD

@@ -183,7 +183,11 @@
                <simplelist>
                     <member>id - serial number</member>
                     <member>name - name</member>
-                    <member>location - physical location</member>
+                    <member>location - physical location text</member>
+                    <member>location_city - city identifier</member>
+                    <member>location_street - street identifier</member>
+                    <member>location_house - house number</member>
+                    <member>location_flat - flat number</member>
                     <member>description - device summary</member>
                     <member>producer - manufacturer's name</member>
                     <member>model - model number</member>
@@ -197,6 +201,8 @@
 		    <member>secret - password (radius)</member>
 		    <member>community - SNMP community</member>
 		    <member>channelid - STM channel identifier (ewx_channels table)</member>
+		    <member>longitude - geog. longitude</member>
+		    <member>latitude - geog latitude</member>
                </simplelist>
           </sect2>
           <sect2 id="netlinks">
@@ -231,10 +237,14 @@
                     <member>halfduplex - half/full duplex mode (0/1)</member>
                     <member>lastonline - last network activity timestamp</member>
                     <member>info - additional information</member>
-                    <member>location_address - address - street, apartment, flat, etc</member>
-                    <member>location_zip - address - zip code</member>
-                    <member>location_city - address - location (city)</member>
+                    <member>location_address - address string</member>
+                    <member>location_city - city identifier</member>
+                    <member>location_street - street identifier</member>
+                    <member>location_house - house number</member>
+                    <member>location_flat - flat number</member>
                     <member>nas - NAS flag (1/0)</member>
+                    <member>longitude - geog. longitude</member>
+		    <member>latitude - geog latitude</member>
                </simplelist>
           </sect2>
           <sect2 id="macs">
@@ -422,7 +432,8 @@
                     <member>datefrom - start date for assignment</member>
                     <member>dateto - end date for assignment</member>
                     <member>invoice - invoice writeout? (1 - yes, 0 - no)</member>
-                    <member>discount - discount percentage</member>
+                    <member>pdiscount - discount percentage</member>
+                    <member>vdiscount - discount value</member>
                     <member>suspended - is this payment suspended? (1 - yes, 0 - no)</member>
 		            <member>settlement - do deficient period settlement? (1 - yes, 0 - no)</member>
 		            <member>paytype - invoice payment type identifier</member>
@@ -544,7 +555,8 @@
                     <member>docid - invoice serial number</member>
                     <member>itemid - invoice item identifier</member>
                     <member>value - amount</member>
-		    <member>discount - discount percentage</member>
+		    <member>pdiscount - discount percentage</member>
+		    <member>vdiscount - discount value</member>
                     <member>taxid - tax rate identifier</member>
                     <member>prodid - product/service classification number</member>
                     <member>content - used unit (usually 'pc.')</member>
@@ -675,6 +687,7 @@
                     <member>login - login</member>
                     <member>passwd - password</member>
                     <member>phone - phone number</member>
+                    <member>access - enabled/disabled (1/0)</member>
                     <member>creationdate - date of account creation</member>
                     <member>moddate - date of last account modification</member>
                     <member>creatorid - creator (user) identifier</member>
