@@ -3746,8 +3746,12 @@ class LMS
 
 	function GetCategoryListByUser($userid=NULL)
 	{
-		return $this->DB->GetAll('SELECT c.id, name FROM rtcategories c LEFT JOIN rtcategoryusers cu 
-			ON c.id = cu.categoryid '.($userid ? 'WHERE userid = '.$userid : '' ).' ORDER BY name');
+		return $this->DB->GetAll('SELECT c.id, name
+		    FROM rtcategories c
+		    LEFT JOIN rtcategoryusers cu 
+			ON c.id = cu.categoryid '
+			.($userid ? 'WHERE userid = '.intval($userid) : '' )
+			.' ORDER BY name');
 	}
 
 	function RTStats()

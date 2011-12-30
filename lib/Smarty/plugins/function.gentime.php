@@ -26,11 +26,7 @@
 
 function smarty_function_gentime($params, $template)
 {
-	$time = microtime();
-	return sprintf('%.4f',((substr($time,0,9))
-				+ (substr($time,-10))
-				- (substr(START_TIME,0,9))
-				- (substr(START_TIME,-10))));
+	return sprintf('%.4f', microtime(true) - START_TIME);
 }
 
 ?>

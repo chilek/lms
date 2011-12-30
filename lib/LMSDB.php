@@ -35,7 +35,7 @@ define('LMSDB_DIR', dirname(__FILE__));
 
 require_once(LMSDB_DIR.'/LMSDB_common.class.php');
 
-function DBInit($dbtype, $dbhost, $dbuser, $dbpasswd, $dbname)
+function DBInit($dbtype, $dbhost, $dbuser, $dbpasswd, $dbname, $debug = false)
 {
     $dbtype = strtolower($dbtype);
 
@@ -51,6 +51,8 @@ function DBInit($dbtype, $dbhost, $dbuser, $dbpasswd, $dbname)
 		else if (!$DB->_dblink)
 			trigger_error('Unable to connect to database!', E_USER_WARNING);
 		else {
+            $DB->debug = $debug;
+
             // set client encoding
             $DB->SetEncoding('UTF8');
 
