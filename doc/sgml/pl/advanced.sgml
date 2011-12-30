@@ -187,7 +187,11 @@
                <simplelist>
                     <member>id - identyfikator</member>
                     <member>name - nazwa</member>
-                    <member>location - lokalizacja</member>
+                    <member>location - lokalizacja, tekst</member>
+                    <member>location_city - identyfikator miejscowo¶ci (TERYT)</member>
+		    <member>location_street - identyfikator ulicy (TERYT)</member>
+		    <member>location_house - numer domu</member>
+		    <member>location_flat - numer mieszkania</member>
                     <member>description - opis</member>
                     <member>producer - producent</member>
                     <member>model - model</member>
@@ -201,6 +205,8 @@
 		    <member>secret - has³o (radius)</member>
 		    <member>community - community SNMP</member>
 		    <member>channelid - identyfikator kana³u STM (tabela ewx_channels)</member>
+		    <member>longitude - d³ugo¶æ geograficzna</member>
+		    <member>latitude - szeroko¶æ geograficzna</member>
 	    </simplelist>
           </sect2>
           <sect2 id="netlinks">
@@ -235,10 +241,14 @@
                     <member>warning - ostrzegaj/nie ostrzegaj (1/0)</member>
                     <member>lastonline - znacznik czasu ostatniej obecno¶ci w sieci</member>
                     <member>info - informacje dodatkowe</member>
-		    <member>location_address - adres lokalizacji - ulica, nr domu, nr lokalu</member>
-		    <member>location_zip - adres lokalizacji - kod pocztowy</member>
-		    <member>location_city - adres lokalizacji - miasto</member>
+		    <member>location - adres lokalizacji, tekst</member>
+		    <member>location_city - identyfikator miejscowo¶ci (TERYT)</member>
+		    <member>location_street - identyfikator ulicy (TERYT)</member>
+		    <member>location_house - numer domu</member>
+		    <member>location_flat - numer mieszkania</member>
 		    <member>nas - flaga NAS (0/1)</member>
+		    <member>longitude - d³ugo¶æ geograficzna</member>
+		    <member>latitude - szeroko¶æ geograficzna</member>
                </simplelist>
           </sect2>
           <sect2 id="macs">
@@ -436,7 +446,8 @@
                     <member>datefrom - data obowi±zywania zobowi±zania</member>
                     <member>dateto - data obowi±zywania zobowi±zania</member>
                     <member>invoice - okre¶la czy ma byæ wystawiana faktura (1 - tak, 0 - nie)</member>
-                    <member>discount - warto¶æ procentowa rabatu</member>
+                    <member>pdiscount - warto¶æ procentowa rabatu</member>
+                    <member>vdiscount - warto¶æ kwotowa rabatu</member>
                     <member>suspended - zawieszenie p³atno¶ci (1 - tak, 0 - nie)</member>
 		    <member>settlement - rozliczenie okresu niepe³nego (1 - tak, 0 - nie)</member>
 		    <member>paytype - identyfikator typu p³atno¶ci faktury</member>
@@ -547,7 +558,8 @@
                     <member>docid - identyfikator faktury</member>
                     <member>itemid - nr pozycji</member>
                     <member>value - kwota pozycji</member>
-		    <member>discount - warto¶æ procentowa rabatu</member>
+		    <member>pdiscount - warto¶æ procentowa rabatu</member>
+		    <member>vdiscount - warto¶æ kwotowa rabatu</member>
                     <member>taxid - identyfikator stawki podatkowej</member>
                     <member>prodid - numer PKWiU</member>
                     <member>content - u¿yta jednostka (najczê¶ciej 'szt.')</member>
@@ -677,6 +689,7 @@
 			<member>login - login</member>
 			<member>passwd - has³o</member>
 			<member>phone - numer telefonu</member>
+			<member>access - w³±czone/wy³±czone (1/0)</member>
 			<member>creationdate - data utworzenia</member>
 			<member>moddate - date ostatniej zmiany</member>
 			<member>creatorid - identyfikator u¿ytkownika</member>

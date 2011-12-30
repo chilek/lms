@@ -894,4 +894,12 @@ $engine = array(
 		domy¶lnym dokumencie.</para>
     	</sect2>
     </sect1>
+    <sect1 id="install-teryt" xreflabel="Baza TERYT">
+	<title>Baza podzia³u terytorialnego (TERYT)</title>
+	<para>LMS obs³uguje bazê podzia³u terytorialnego TERYT w sposób umo¿liwiaj±cy przypisanie
+	adresów zgodnych z zawarto¶ci± tej bazy do komputerów oraz urz±dzeñ sieciowych.
+	Aby mieæ mo¿liwo¶æ wyboru adresów z listy nale¿y zaimportowaæ bazê TERYT.
+	S³u¿y do tego skrypt <xref linkend="lms-teryt">.
+	</para>
+    </sect1>
 </chapter>
