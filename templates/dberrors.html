@@ -8,8 +8,12 @@
 		<TD WIDTH="99%" CLASS="frightu">
 			<FONT class="alert">{t}Database errors occurred!{/t}</FONT><BR>
 			{foreach from=$layout.dberrors item=dberror}
-				<B>{t}Query:{/t}</B> {$dberror.query}<BR>
-				<B>{t}Error:{/t}</B> {$dberror.error}<BR>
+                {if $layout.dbdebug}
+				    <B>({math equation="x*1000" x=$dberror.time format="%.4f"} ms):</B> {$dberror.query}<BR>
+                {else}
+				    <B>{t}Query:{/t}</B> {$dberror.query}<BR>
+    				<B>{t}Error:{/t}</B> {$dberror.error}<BR>
+				{/if}
 			{/foreach}
 		</TD>
 	</TR>

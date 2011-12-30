@@ -32,11 +32,11 @@ Class LMSDB_common
 {
 	var $_version = '1.11-cvs';
 	var $_revision = '$Revision$';
-	
+
 	// Driver powinien nadpisać tą zmienną wartością TRUE, żeby
 	// funkcja inicjująca baze danych wiedziała że driver się poprawnie
 	// załadował
-	
+
 	var $_loaded = FALSE;
 
 	// Wewnętrzne zmienne bazy danych, tj, resource, link, itp.
@@ -58,7 +58,7 @@ Class LMSDB_common
 		// zabezpieczmy się przed inicjowaniem tej klasy samej w sobie
 		die();
 	}
-	
+
 	function Connect($dbhost,$dbuser,$dbpasswd,$dbname)
 	{
 		if(method_exists($this, '_driver_shutdown'))
@@ -86,16 +86,21 @@ Class LMSDB_common
 
 	function Execute($query, $inputarray = NULL)
 	{
-		if(! $this->_driver_execute($this->_query_parser($query, $inputarray)))
+	    if ($this->debug)
+    	    $start = microtime(true);
+
+		if (!$this->_driver_execute($this->_query_parser($query, $inputarray)))
 			$this->errors[] = array(
 					'query' => $this->_query,
-					'error' => $this->_driver_geterror()
+					'error' => $this->_driver_geterror(),
 					);
 		elseif($this->debug)
 			$this->errors[] = array(
 					'query' => $this->_query,
-					'error' => 'DEBUG: NOERROR'
+					'error' => 'DEBUG: NOERROR',
+					'time'  => microtime(true) - $start,
 					);
+
 		return $this->_driver_affected_rows();
 	}
 
@@ -108,7 +113,7 @@ Class LMSDB_common
 
 		while($row = $this->_driver_fetchrow_assoc())
 			$result[] = $row;
-		
+
 		return $result;
 	}
 
@@ -142,7 +147,7 @@ Class LMSDB_common
 
 		while($row = $this->_driver_fetchrow_num())
 			$result[] = $row[0];
-		
+
 		return $result;
 	}
 
@@ -162,6 +167,9 @@ Class LMSDB_common
 	// in less memory consumptive way than using GetAll() & foreach()
 	function Exec($query, $inputarray = NULL)
 	{
+	    if ($this->debug)
+    	    $start = microtime(true);
+
 		if(! $this->_driver_execute($this->_query_parser($query, $inputarray)))
 			$this->errors[] = array(
 					'query' => $this->_query,
@@ -170,9 +178,10 @@ Class LMSDB_common
 		elseif($this->debug)
 			$this->errors[] = array(
 					'query' => $this->_query,
-					'error' => 'DEBUG: NOERROR'
+					'error' => 'DEBUG: NOERROR',
+					'time'  => microtime(true) - $start,
 					);
-		
+
 		if($this->_driver_num_rows())
 			return $this->_result;
 		else
@@ -183,7 +192,7 @@ Class LMSDB_common
 	{
 		return $this->_driver_fetchrow_assoc($result);
 	}
-	
+
 	function Concat()
 	{
 		return $this->_driver_concat(func_get_args());

@@ -158,10 +158,10 @@ $DEFAULTS = array(
 	),
 );
 
-foreach($DEFAULTS as $section => $values)
-        foreach($values as $key => $val)
-	        if(!isset($CONFIG[$section][$key]))
-			$CONFIG[$section][$key] = $val;
+foreach ($DEFAULTS as $section => $values)
+    foreach ($values as $key => $val)
+        if (!isset($CONFIG[$section][$key]))
+            $CONFIG[$section][$key] = $val;
 unset($DEFAULTS);
 
 ?>
