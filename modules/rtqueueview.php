@@ -25,16 +25,17 @@
  */
 
 if(isset($_GET['id']))
-	$queuedata['id'] = ($_GET['id'] == '' ? 0 : $_GET['id']);
+	$queuedata['id'] = intval($_GET['id']);
+
 if(isset($_GET['catid']))
-	$queuedata['catid'] = ($_GET['catid'] == '' ? 0 : $_GET['catid']);
+	$queuedata['catid'] = intval($_GET['catid']);
 
 if(! $LMS->QueueExists($queuedata['id']) && $queuedata['id'] != 0)
 {
 	$SESSION->redirect('?m=rtqueuelist');
 }
 
-if($queuedata['id'] != 0)
+if($queuedata['id'])
 {
 	$right = $LMS->GetUserRightsRT($AUTH->id, $queuedata['id']);
 
@@ -59,7 +60,7 @@ else
 		$queuedata['id'] = $queues;
 }
 
-if($queuedata['catid'] != 0)
+if($queuedata['catid'])
 {
 	$catrights = $LMS->GetUserRightsToCategory($AUTH->id, $queuedata['catid']);
 
@@ -73,14 +74,15 @@ if($queuedata['catid'] != 0)
 else
 {
 	$categories = $DB->GetCol('SELECT categoryid FROM rtcategoryusers WHERE userid=?', array($AUTH->id));
+    $all_cat    = $DB->GetOne('SELECT COUNT(*) FROM rtcategories');
 
-	if (!$categories) {
+	if (!$categories && $all_cat) {
 		$SMARTY->display('noaccess.html');
 		$SESSION->close();
 		die;
 	}
 
-	if(sizeof($categories) != $DB->GetOne('SELECT COUNT(*) FROM rtcategories'))
+	if(sizeof($categories) != $all_cat)
 		$queuedata['catid'] = $categories;
 }
 

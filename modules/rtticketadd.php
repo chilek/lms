@@ -171,11 +171,17 @@ if(isset($_POST['ticket']))
 
 $categories = $LMS->GetCategoryListByUser($AUTH->id);
 
+if (!$categories) {
+    $SMARTY->display('noaccess.html');
+    $SESSION->close();
+    die;
+}
+
 // handle category id got from welcome module so this category will be selected
 if (isset($_GET['catid']) && intval($_GET['catid']))
 	$ticket['categories'][intval($_GET['catid'])] = true;
 
-foreach ($categories as $category)
+if ($categories) foreach ($categories as $category)
 {
 	$category['checked'] = isset($ticket['categories'][$category['id']]) || count($categories) == 1;
 	$ncategories[] = $category;
