@@ -337,9 +337,9 @@
 							{cycle values="light,lucid" print=false}
 							{foreach from=$invoicelist item=item}
 							<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-							        <TD onclick="checkElement('mark'+{$item.id})"><nobr>{$item.cdate|date_format:"%Y/%m/%d"}</nobr></TD>
-								<TD onclick="checkElement('mark'+{$item.id})">{$item.number}</TD>
-							        <TD align="right" onclick="checkElement('mark'+{$item.id})"><nobr>{$item.value|money_format}</nobr></TD>
+							        <TD onclick="checkElement('mark{$item.id}')"><nobr>{$item.cdate|date_format:"%Y/%m/%d"}</nobr></TD>
+								<TD onclick="checkElement('mark{$item.id}')">{$item.number}</TD>
+							        <TD align="right" onclick="checkElement('mark{$item.id}')"><nobr>{$item.value|money_format}</nobr></TD>
 								<TD align="right">
 									<INPUT TYPE="checkbox" ID="mark{$item.id}" NAME="marks[]" VALUE="{$item.id}" CHECKED>
 								</TD>

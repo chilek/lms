@@ -46,7 +46,7 @@ function togglelogin()
 		</TD>
 		<TD width="98%" class="frightu">
 			<INPUT type="text" name="alias[login]" id="login" value="{$alias.login}" {tip text="Enter alias name" trigger="login"} size="20" {if $alias.domainalias}disabled{/if}>
-			<INPUT type="checkbox" name="alias[domainalias]" id="domainalias" value="1" onClick="javascript:togglelogin()" {if $alias.domainalias}checked{/if}><A href="javascript:checkElement('domainalias');javascript:togglelogin()">{trans("domain alias")}</A>
+			<INPUT type="checkbox" name="alias[domainalias]" id="domainalias" value="1" onchange="togglelogin()" {if $alias.domainalias}checked{/if}><label for="domainalias">{trans("domain alias")}</label>
 		</TD>
 	</TR>
 	<TR class="LIGHT">

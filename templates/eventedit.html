@@ -8,7 +8,7 @@
 		box = document.forms['event'].elements['event[begintime]'];
 		document.forms['event'].elements['event[endtime]'].value = box.options[box.selectedIndex].value;
 	}
-	
+
 	function CheckEndtime()
 	{
 		start = document.forms['event'].elements['event[begintime]'];
@@ -77,7 +77,7 @@
 			<B>{trans("Status:")}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
-			<INPUT type="checkbox" name="event[private]" value="1" {tip text="Select event's status"}{if $event.private}CHECKED{/if}><A HREF="javascript:checkElement('event[private]')"> {trans("private")}</A>
+			<INPUT type="checkbox" name="event[private]" id="event_private" value="1" {tip text="Select event's status"}{if $event.private}CHECKED{/if}> <label for="event_private">{trans("private")}</label>
 		</TD>
 	</TR>
 	<TR class="light">

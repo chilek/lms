@@ -73,7 +73,7 @@
 		<TD class="fbottomu" align="right" colspan="3">
 			<A href="javascript:document.numberplanadd.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 			<A href="?m=numberplanlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="numberplanadd[reuse]" ID="reuse" value="ON" {if $numberplanadd.reuse}checked{/if}><A HREF="javascript:checkElement('reuse')"> {trans("Display this form again, when this numbering plan is saved")}</A>
+			<INPUT type="checkbox" name="numberplanadd[reuse]" ID="reuse" value="ON" {if $numberplanadd.reuse}checked{/if}><label for="reuse">{trans("Display this form again, when this numbering plan is saved")}</label>
 		</TD>
 	</TR>
 </TABLE>

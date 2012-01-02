@@ -45,7 +45,7 @@ function togglelogin()
 		</TD>
 		<TD width="98%" class="frightu">
 			<INPUT type="text" name="alias[login]" id="login" value="{$alias.login}" {tip text="Enter alias name" trigger="login"} size="20" {if $alias.domainalias}disabled{/if}>
-			<INPUT type="checkbox" name="alias[domainalias]" id="domainalias" value="" onClick="javascript:togglelogin()" {if $alias.domainalias}checked{/if}><A href="javascript:checkElement('domainalias');javascript:togglelogin()">{trans("domain alias")}</A>
+			<INPUT type="checkbox" name="alias[domainalias]" id="domainalias" value="" onchange="togglelogin()" {if $alias.domainalias}checked{/if}><label for="domainalias">{trans("domain alias")}</label>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -105,7 +105,7 @@ function togglelogin()
 		<TD colspan="3" class="fbottomu" align="right" nowrap>
 			<A href="javascript: document.aliasadd.submit();" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
 			<A href="?m=aliaslist">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A><BR>
-			<INPUT type="checkbox" name="alias[reuse]" id="alias[reuse]" value="ON" {if $alias.reuse}checked{/if}> <A HREF="javascript:checkElement('alias[reuse]')"> {trans("Display this form again, when this alias is saved")}</A>
+			<INPUT type="checkbox" name="alias[reuse]" id="alias_reuse" value="ON" {if $alias.reuse}checked{/if}> <label for="alias_reuse">{trans("Display this form again, when this alias is saved")}</label>
 		</TD>
 	</TR>
 </TABLE>

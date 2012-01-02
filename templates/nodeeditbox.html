@@ -69,7 +69,7 @@
 		    <INPUT type="hidden" name="nodeedit[location_street]" value="{$nodeinfo.location_street}">
 		    <INPUT type="hidden" name="nodeedit[location_house]" value="{$nodeinfo.location_house}">
 		    <INPUT type="hidden" name="nodeedit[location_flat]" value="{$nodeinfo.location_flat}">
-			<INPUT TYPE="checkbox" name="nodeedit[teryt]" id="teryt" onchange="check_teryt('location')"{if $nodeinfo.teryt} checked{/if}><a href="javascript:checkElement('nodeedit[teryt]');">{trans("TERRIT-DB")}</a>
+			<INPUT TYPE="checkbox" name="nodeedit[teryt]" id="teryt" onchange="check_teryt('location')"{if $nodeinfo.teryt} checked{/if}><label for="teryt">{trans("TERRIT-DB")}</label>
 		</TD>
 	</TR>
 {*
@@ -95,7 +95,7 @@
 				{/section}
 			</SELECT>
 			<INPUT type="text" name="nodeedit[port]" value="{if $nodeinfo.port}{$nodeinfo.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
-			<INPUT type="checkbox" name="nodeedit[linktype]" id="linktype" value="1"{if $nodeinfo.linktype} CHECKED{/if}><A HREF="javascript:checkElement('linktype')"><IMG src="img/wireless.gif" alt="{trans("wireless")}" {tip text="wireless"}></A>
+			<INPUT type="checkbox" name="nodeedit[linktype]" id="linktype" value="1"{if $nodeinfo.linktype} CHECKED{/if}><label for="linktype"><IMG src="img/wireless.gif" alt="{trans("wireless")}" title="{trans("wireless")}"></label>
 		</TD>
 	</TR>
 {/if}
@@ -121,8 +121,8 @@
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
 		<TD WIDTH="98%" COLSPAN="2" NOWRAP>
-			<A HREF="javascript:checkElement('chkmac')">{trans("MAC checking")}:</A><INPUT TYPE="checkbox" NAME="nodeedit[chkmac]" VALUE="1" ID="chkmac" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if !isset($nodeinfo.chkmac) || $nodeinfo.chkmac} checked{/if}>&nbsp;
-			<A HREF="javascript:checkElement('duplex')">{trans("Half duplex")}:</A><INPUT TYPE="checkbox" NAME="nodeedit[halfduplex]" VALUE="1" ID="duplex" {if $nodeinfo.halfduplex} checked{/if} {tip text="Select transmission mode"}> 
+			<label for="chkmac">{trans("MAC checking")}:</label><INPUT TYPE="checkbox" NAME="nodeedit[chkmac]" VALUE="1" ID="chkmac" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if !isset($nodeinfo.chkmac) || $nodeinfo.chkmac} checked{/if}>&nbsp;
+			<label for="duplex">{trans("Half duplex")}:</label><INPUT TYPE="checkbox" NAME="nodeedit[halfduplex]" VALUE="1" ID="duplex" {if $nodeinfo.halfduplex} checked{/if} {tip text="Select transmission mode"}> 
 		</TD>
 	</TR>
                                 	</TABLE>

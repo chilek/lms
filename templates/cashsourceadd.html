@@ -30,7 +30,7 @@
 		<TD class="fbottomu" align="right" colspan="3">
 			<A href="javascript:document.sourceadd.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
 			<A href="?m=cashsourcelist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="sourceadd[reuse]" id="sourceadd[reuse]" value="ON" {if $sourceadd.reuse}checked{/if}> <A HREF="javascript:checkElement('sourceadd[reuse]')">{trans("Display this form again, when this source is saved")}</a>
+			<INPUT type="checkbox" name="sourceadd[reuse]" id="reuse" value="ON" {if $sourceadd.reuse}checked{/if}><label for="reuse">{trans("Display this form again, when this source is saved")}</label>
 		</TD>
 	</TR>
 </TABLE>

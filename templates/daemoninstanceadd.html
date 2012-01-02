@@ -80,7 +80,7 @@
 		<TD class="fbottomu" align="right" colspan="3">
 			<A href="javascript:document.instance.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
 			<A href="?m=daemoninstancelist&id={$instance.hostid}">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="instance[reuse]" value="ON" {if $instance.reuse}checked{/if}><A HREF="javascript:checkElement('instance[reuse]')"> {trans("Display this form again, when this instance is saved")}</A>
+			<INPUT type="checkbox" name="instance[reuse]" id="instance_reuse" value="ON" {if $instance.reuse}checked{/if}> <label for="instance_reuse">{trans("Display this form again, when this instance is saved")}</label>
 		</TD>
 	</TR>
 </TABLE>

@@ -460,7 +460,7 @@ cal4.time_comp = false;
 							</SELECT>
 						    </TD>
 						    <TD width="1%" nowrap>
-    							<INPUT type="checkbox" name="groupexclude" id="invoicereport-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><a href="javascript:checkElement('invoicereport-groupexclude')">{trans("exclude group")}</a>
+    							<INPUT type="checkbox" name="groupexclude" id="invoicereport-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><label for="invoicereport-groupexclude">{trans("exclude group")}</label>
 						    </TD>
 						</TR>
 						<TR>
@@ -512,7 +512,7 @@ cal4.time_comp = false;
 					    </TABLE>
 					</TD>
 					<TD width="98%" nowrap>
-						<input type="checkbox" name="extended" value="1" id="invoicereport-extended"> <A HREF="javascript:checkElement('invoicereport-extended')">{trans("extended format")}</a>
+						<input type="checkbox" name="extended" value="1" id="invoicereport-extended"><label for="invoicereport-extended">{trans("extended format")}</label>
 					</TD>
 				</TR>
 			</TABLE>
@@ -584,7 +584,7 @@ multiselect('invoicereport', 'invoicereportgroup', '{trans("- all groups -")}');
 							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
 							    {/section}
 							</SELECT>
-    							<INPUT type="checkbox" name="groupexclude" id="receiptlist-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><a href="javascript:checkElement('receiptlist-groupexclude')">{trans("exclude group")}</a>
+    							<INPUT type="checkbox" name="groupexclude" id="receiptlist-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><label for="receiptlist-groupexclude">{trans("exclude group")}</label>
 						    </TD>
 						</TR>
 						<TR>
@@ -613,7 +613,7 @@ multiselect('invoicereport', 'invoicereportgroup', '{trans("- all groups -")}');
 						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal13.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
 					</TD>
 					<TD width="97%" nowrap>
-						<input type="checkbox" name="extended" value="1" id="receiptlist-extended"> <A HREF="javascript:checkElement('receiptlist-extended')">{trans("extended format")}</a>
+						<input type="checkbox" name="extended" value="1" id="receiptlist-extended"><label for="receiptlist-extended">{trans("extended format")}</label>
 					</TD>
 				</TR>
 			</TABLE>
@@ -704,7 +704,7 @@ cal13.time_comp = false;
 							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
 							    {/section}
 							</SELECT>
-    							<INPUT type="checkbox" name="groupexclude" id="invoices-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><a href="javascript:checkElement('invoices-groupexclude')">{trans("exclude group")}</a>
+    							<INPUT type="checkbox" name="groupexclude" id="invoices-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><label for="invoices-groupexclude">{trans("exclude group")}</label>
 						    </TD>
 						</TR>
 						<TR>
@@ -738,9 +738,9 @@ cal13.time_comp = false;
 						<IMG src="img/info.gif" alt="">
 					</TD>
 					<TD width="94%" nowrap>
-						<INPUT TYPE="checkbox" NAME="invoiceorg" ID="invoiceorg"{if preg_match('/original/i',$_config.invoices.default_printpage)} CHECKED{/if}>&nbsp;<A HREF="javascript:checkElement('invoiceorg')">{trans("original")}</a>&nbsp;
-						<INPUT TYPE="checkbox" NAME="invoicecopy" ID="invoicecopy"{if preg_match('/copy/i',$_config.invoices.default_printpage)}  CHECKED{/if}>&nbsp;<A HREF="javascript:checkElement('invoicecopy')">{trans("copy")}</a>&nbsp;
-						<INPUT TYPE="checkbox" NAME="invoicedup" ID="invoicedup"{if preg_match('/duplicate/i',$_config.invoices.default_printpage)} CHECKED{/if}>&nbsp;<A HREF="javascript:checkElement('invoicedup')">{trans("duplicate")}</a>
+						<INPUT TYPE="checkbox" NAME="invoiceorg" ID="invoiceorg"{if preg_match('/original/i',$_config.invoices.default_printpage)} CHECKED{/if}>&nbsp;<label for="invoiceorg">{trans("original")}</label>&nbsp;
+						<INPUT TYPE="checkbox" NAME="invoicecopy" ID="invoicecopy"{if preg_match('/copy/i',$_config.invoices.default_printpage)}  CHECKED{/if}>&nbsp;<label for="invoicecopy">{trans("copy")}</label>&nbsp;
+						<INPUT TYPE="checkbox" NAME="invoicedup" ID="invoicedup"{if preg_match('/duplicate/i',$_config.invoices.default_printpage)} CHECKED{/if}>&nbsp;<label for="invoicedup">{trans("duplicate")}</label>
 					</TD>
 				</TR>
 			</TABLE>
@@ -817,7 +817,7 @@ cal11.time_comp = false;
 							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
 							    {/section}
 							</SELECT>
-    							<INPUT type="checkbox" name="groupexclude" id="printforms-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><a href="javascript:checkElement('printforms-groupexclude')">{trans("exclude group")}</a>
+    							<INPUT type="checkbox" name="groupexclude" id="printforms-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><label for="printforms-groupexclude">{trans("exclude group")}</label>
 						    </TD>
 						</TR>
 					    </TABLE>
@@ -1055,10 +1055,10 @@ cal24.time_comp = false;
 						<B>{trans("Status:")}</B>
 					</TD>
 					<TD width="1%" {tip text="Select nodes group"}>
-						<NOBR><INPUT class="radio light" type="radio" id="nodelist-all" name="filter" value="0" CHECKED><A HREF="javascript:checkElement('nodelist-all')">{trans("all")}</a></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="nodelist-connected" name="filter" value="1"><A HREF="javascript:checkElement('nodelist-connected')">{trans("connected<!plural:item>")}</a></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="nodelist-disconnected" name="filter" value="2"><A HREF="javascript:checkElement('nodelist-disconnected')">{trans("disconnected<!plural:item>")}</a></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="nodelist-indebt" name="filter" value="3"><A HREF="javascript:checkElement('nodelist-indebt')">{trans("indebted owner")}</a></NOBR>
+						<NOBR><INPUT class="radio light" type="radio" id="nodelist-all" name="filter" value="0" CHECKED><label for="nodelist-all">{trans("all")}</label></NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" id="nodelist-connected" name="filter" value="1"><label for="nodelist-connected">{trans("connected<!plural:item>")}</label></NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" id="nodelist-disconnected" name="filter" value="2"><label for="nodelist-disconnected">{trans("disconnected<!plural:item>")}</label></NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" id="nodelist-indebt" name="filter" value="3"><label for="nodelist-indebt">{trans("indebted owner")}</label></NOBR>
 					</TD>
 					<TD width="1%" nowrap>
 					    <TABLE width="100%">

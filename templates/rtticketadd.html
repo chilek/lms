@@ -123,7 +123,7 @@
 						<INPUT type="checkbox" name="ticket[categories][{$category.id}]" ID="cat{$category.id}" value="1" {if $category.checked > 0}CHECKED{/if}>
 					</TD>
 					<TD width="99%">
-						<A href="javascript:checkElement('cat{$category.id}');">{$category.name}</A>
+						<label for="cat{$category.id}">{$category.name}</label>
 					</TD>
 				</TR>
 				{/foreach}

@@ -16,8 +16,8 @@
 	<div class="lmsIpPopupForm">
 		<form name="{$popupid}_ipform" id="ipform" method="GET" action="?m=ping" onsubmit="return ping_any_host('{$popupid}');">
 			<input type="text" name="ip"><br>
-			<input type="radio" id="type1" name="type" value="1" checked><a href="javascript:checkElement('type1')">icmp</a>
-			<input type="radio" id="type2" name="type" value="2"><a href="javascript:checkElement('type2')">arp</a>
+			<input type="radio" id="type1" name="type" value="1" checked><label for="type1">icmp</label>
+			<input type="radio" id="type2" name="type" value="2"><label for="type2">arp</label>
 			<input type="submit" class="hiddenbtn">
 		</form>
 	</div>
@@ -63,7 +63,7 @@
 					<input type="checkbox" id="enabled" name="enabled" onclick="javascript:ping_toggle()" checked><a href="javascript:enabled_toggle();">{trans("Enabled")}</a>
 				</div>
 				<div class="lmsPingAutoScroll">
-					<input type="checkbox" id="autoscroll" name="autoscroll" checked><a href="javascript:checkElement('autoscroll');">{trans("Auto Scroll")}</a>
+					<input type="checkbox" id="autoscroll" name="autoscroll" checked><label for="autoscroll">{trans("Auto Scroll")}</label>
 				</div>
 			</form>
 		</div>

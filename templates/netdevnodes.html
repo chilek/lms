@@ -79,13 +79,13 @@
 						{/section}
 						</SELECT>
 						{trans("Dest. port")}:<INPUT name="port" value="{if $connectnode.port}{$connectnode.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
-						<A HREF="javascript:checkElement('devnodeslinktype');">{trans("Wireless")}:</A><INPUT type="checkbox" name="linktype" id="devnodeslinktype" value="1" {tip text="wireless"} {if $nodelinktype}CHECKED{/if}>
+						<label for="devnodeslinktype">{trans("Wireless")}:</label><INPUT type="checkbox" name="linktype" id="devnodeslinktype" value="1" {tip text="wireless"} {if $nodelinktype}CHECKED{/if}>
 							</TD>
 							<TD width="1%" align="right">
 								<NOBR><A HREF="javascript:document.connectnode.submit(); ">{trans("Connect")}</A> <IMG src="img/save.gif" alt=""></NOBR>
 							</TD>
 						    </TR>
-						</TABLE>	
+						</TABLE>
 						</FORM>
 						{/if}
 					</TD>

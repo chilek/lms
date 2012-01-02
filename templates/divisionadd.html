@@ -191,7 +191,7 @@
 		<TD class="fbottomu" align="right" colspan="3">
 			<A href="javascript:document.division.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 			<A href="?m=divisionlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="division[reuse]" value="ON" {if $division.reuse}checked{/if}> <A href="javascript:checkElement('division[reuse]')">{trans("Display this form again, when this division is saved")}</A>
+			<INPUT type="checkbox" name="division[reuse]" id="division_reuse" value="ON" {if $division.reuse}checked{/if}> <label for="division_reuse">{trans("Display this form again, when this division is saved")}</label>
 		</TD>
 	</TR>
 </TABLE>

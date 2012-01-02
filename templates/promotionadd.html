@@ -30,7 +30,7 @@
 		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT"> 
 			<A HREF="javascript:document.promotionadd.submit();" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
 			<A HREF="?m=promotionlist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A><BR>
-			<INPUT TYPE="checkbox" NAME="promotion[reuse]" VALUE="ON" {if $promotion.reuse} checked{/if}><A HREF="javascript:checkElement('promotion[reuse]')"> {trans("Display this form again, when this promotion is saved")}</A>
+			<INPUT TYPE="checkbox" NAME="promotion[reuse]" VALUE="ON" id="reuse" {if $promotion.reuse} checked{/if}><label for="reuse">{trans("Display this form again, when this promotion is saved")}</label>
 		</TD>
 	</TR>
 </TABLE></FORM>

@@ -48,8 +48,8 @@
 					<TD width="98%">
 					    {trans("Notice content:")}
 					    <TEXTAREA name="setwarnings[message]" cols="60" rows="5" {tip text="Enter notice contents"}>{$customerinfo.message|escape}</TEXTAREA>
-					    <NOBR><INPUT TYPE="checkbox" NAME="setwarnings[warnon]" ID="warnon" onclick="switchbox('warnon');"><A HREF="javascript:checkElement('warnon'); switchbox('warnon')">{trans("Enable")}</A></INPUT></NOBR>
-					    <NOBR><INPUT TYPE="checkbox" NAME="setwarnings[warnoff]" ID="warnoff" onclick="switchbox('warnoff');"><A HREF="javascript:checkElement('warnoff'); switchbox('warnoff')">{trans("Disable")}</A></INPUT></NOBR>
+					    <NOBR><INPUT TYPE="checkbox" NAME="setwarnings[warnon]" ID="warnon" onchange="switchbox('warnon');"><label for="warnon">{trans("Enable")}</label></INPUT></NOBR>
+					    <NOBR><INPUT TYPE="checkbox" NAME="setwarnings[warnoff]" ID="warnoff" onchange="switchbox('warnoff');"><label for="warnoff">{trans("Disable")}</label></INPUT></NOBR>
 					</TD>
 					<TD width="1%" NOWRAP align="RIGHT">
 						<A href="javascript: document.warningaction.submit()">{trans("Submit")} <img src="img/save.gif" alt=""></a>

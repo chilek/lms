@@ -83,7 +83,7 @@
 		<TD class="fbottomu" colspan="3" align="right" NOWRAP>
 			<A href="javascript: document.domainadd.submit();">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
 			<A href="?m=domainlist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="domainadd[reuse]" id="domainadd[reuse]" value="ON" {if $domainadd.reuse}checked{/if}> <A HREF="javascript:checkElement('domainadd[reuse]')">  {trans("Display this form again, when this domain is saved")}</A>
+			<INPUT type="checkbox" name="domainadd[reuse]" id="reuse" value="ON" {if $domainadd.reuse}checked{/if}> <label for="reuse">{trans("Display this form again, when this domain is saved")}</label>
 		</TD>
 	</TR>
 </TABLE>

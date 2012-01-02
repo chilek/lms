@@ -79,7 +79,7 @@
 		    <INPUT type="hidden" name="netdev[location_street]" value="{$netdevinfo.location_street}">
 		    <INPUT type="hidden" name="netdev[location_house]" value="{$netdevinfo.location_house}">
 		    <INPUT type="hidden" name="netdev[location_flat]" value="{$netdevinfo.location_flat}">
-			<INPUT TYPE="checkbox" name="netdev[teryt]" id="teryt" onchange="check_teryt('location')"{if $netdevinfo.teryt} checked{/if}><a href="javascript:checkElement('netdev[teryt]');">{trans("TERRIT-DB")}</a>
+			<INPUT TYPE="checkbox" name="netdev[teryt]" id="teryt" onchange="check_teryt('location')"{if $netdevinfo.teryt} checked{/if}><label for="teryt">{trans("TERRIT-DB")}</label>
 		</TD>
 	</TR>
 	<TR>

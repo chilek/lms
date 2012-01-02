@@ -194,7 +194,7 @@
 		<TD class="fbottomu" align="right" colspan="3">
 			<A href="javascript:document.account.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
 			<A href="?m=accountlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="account[reuse]" id="account[reuse]" value="ON" {if $account.reuse}checked{/if}><A HREF="javascript:checkElement('account[reuse]')">  {trans("Display this form again, when this account is saved")}</A>
+			<INPUT type="checkbox" name="account[reuse]" id="account_reuse" value="ON" {if $account.reuse}checked{/if}><label for="account_reuse">{trans("Display this form again, when this account is saved")}</label>
 		</TD>
 	</TR>
 </TABLE>

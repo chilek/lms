@@ -28,7 +28,7 @@
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/options.gif" ALT=""> <B>{trans("Options:")}</B></TD>
 		<TD CLASS="fright" NOWRAP>
-		    <A HREF="javascript:checkElement('halfduplex');">{trans("Half duplex")}:</A>
+		    <label for="halfduplex">{trans("Half duplex")}:</label>
             <INPUT TYPE="checkbox" NAME="channel[halfduplex]" VALUE="1" id="halfduplex" {if $channel.halfduplex} checked{/if} {tip text="Select transmission mode"}>
 		</TD>
 	</TR>

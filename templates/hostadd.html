@@ -30,7 +30,7 @@
 		<TD class="fbottomu" align="right" colspan="3">
 			<A href="javascript:document.hostadd.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
 			<A href="?m=hostlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="hostadd[reuse]" id="hostadd[reuse]" value="ON" {if $hostadd.reuse}checked{/if}> <A HREF="javascript:checkElement('hostadd[reuse]')">{trans("Display this form again, when this host is saved")}</a>
+			<INPUT type="checkbox" name="hostadd[reuse]" id="reuse" value="ON" {if $hostadd.reuse}checked{/if}> <label for="reuse">{trans("Display this form again, when this host is saved")}</label>
 		</TD>
 	</TR>
 </TABLE>

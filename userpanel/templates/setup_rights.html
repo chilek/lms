@@ -42,8 +42,8 @@
 							{foreach from=$userpanelrights item=right}
 							<TR class="{cycle advance=false}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 								<TD CLASS="fleft" WIDTH="1%" NOWRAP>{$right.module}</TD>
-								<TD WIDTH="97%" NOWRAP><A HREF="javascript:checkElement('setdefaultrights[{$right.id}]');">{t}{$right.description}{/t}</A></TD>
-								<TD CLASS="fright"><INPUT CLASS="box {cycle}" TYPE="checkbox" NAME="setdefaultrights[{$right.id}]" ID="setdefaultrights[{$right.id}]" VALUE="{$right.id}"{if $right.setdefault} CHECKED{/if}></TD>
+								<TD WIDTH="97%" NOWRAP><label for="setdefaultrights{$right.id}">{t}{$right.description}{/t}</label></TD>
+								<TD CLASS="fright"><INPUT CLASS="box {cycle}" TYPE="checkbox" NAME="setdefaultrights[{$right.id}]" ID="setdefaultrights{$right.id}" VALUE="{$right.id}"{if $right.setdefault} CHECKED{/if}></TD>
 							</TR>
 							{foreachelse}
 							<TR>
@@ -100,8 +100,8 @@
 							{foreach from=$userpanelrights item=right}
 							<TR class="{cycle advance=false}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 								<TD CLASS="fleft" WIDTH="1%" NOWRAP>{$right.module}</TD>
-								<TD WIDTH="97%" NOWRAP><A HREF="javascript:checkElement('setrights[rights][{$right.id}]');">{t}{$right.description}{/t}</A></TD>
-								<TD CLASS="fright"><INPUT CLASS="box {cycle}" TYPE="checkbox" NAME="setrights[rights][{$right.id}]" ID="setrights[rights][{$right.id}]" VALUE="{$right.id}"></TD>
+								<TD WIDTH="97%" NOWRAP><label for="setrightsrights{$right.id}">{t}{$right.description}{/t}</label></TD>
+								<TD CLASS="fright"><INPUT CLASS="box {cycle}" TYPE="checkbox" NAME="setrights[rights][{$right.id}]" ID="setrightsrights{$right.id}" VALUE="{$right.id}"></TD>
 							</TR>
 							{foreachelse}
 							<TR>

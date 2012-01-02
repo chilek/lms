@@ -83,7 +83,7 @@
 		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT"> 
 			<A HREF="javascript:document.schemaadd.submit();" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
 			<A HREF="?m=promotioninfo&id={$schema.promotionid}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A><BR>
-			<INPUT TYPE="checkbox" NAME="schema[reuse]" VALUE="ON" {if $schema.reuse} checked{/if}><A HREF="javascript:checkElement('schema[reuse]')"> {trans("Display this form again, when this schema is saved")}</A>
+			<INPUT TYPE="checkbox" NAME="schema[reuse]" VALUE="ON" id="reuse" {if $schema.reuse} checked{/if}><label for="reuse">{trans("Display this form again, when this schema is saved")}</label>
 		</TD>
 	</TR>
 </TABLE></FORM>

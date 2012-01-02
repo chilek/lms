@@ -68,7 +68,7 @@
 		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
 			<A HREF="javascript:document.voipaccountadd.submit();" ACCESSKEY="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
 			<A HREF="?m={if $customerinfo.id}customerinfo&id={$customerinfo.id}{else}voipaccountlist{/if}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="voipaccountdata[reuse]" id="reuse" value="ON" id="reuse" {if $voipaccountdata.reuse}checked{/if}><A HREF="javascript:checkElement('reuse')"> {trans("Display this form again, when this voip account is saved")}</A>
+			<INPUT type="checkbox" name="voipaccountdata[reuse]" id="reuse" value="ON" id="reuse" {if $voipaccountdata.reuse}checked{/if}><label for="reuse">{trans("Display this form again, when this voip account is saved")}</label>
 		</TD>
 	</TR>	
 </TABLE></FORM>

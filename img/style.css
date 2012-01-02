@@ -25,10 +25,11 @@ TD.loginform	{ border-width: 1pt; border-style: solid; border-color: #888888; }
 TD.hand		{ cursor: pointer; }
 TR.hand		{ cursor: pointer; }
 TD.container { padding: 0; }
-FORM		{ display: inline ;}
+FORM		{ display: inline; }
 
+LABEL       { cursor: pointer; }
 A		{ text-decoration: none; vertical-align: baseline; }
-A:link		{ color: #800000; }
+A:link { color: #800000; }
 A:active	{ color: #336600; }
 A:visited	{ color: #800000; }
 A.blend		{ color: #888888; }

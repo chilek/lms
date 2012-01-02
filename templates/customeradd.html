@@ -83,8 +83,8 @@
 						<IMG SRC="img/folder.gif" ALT="">
 					</TD>
 					<TD WIDTH="99%" COLSPAN="2" NOWRAP>
-						<INPUT TYPE="radio" NAME="customeradd[type]" VALUE="0" ID="private" {tip text="Select legal personality type" trigger="type"}{if !$customeradd.type} CHECKED{/if}><A HREF="javascript:checkElement('private')">{trans("private person")}</A>
-						<INPUT TYPE="radio" NAME="customeradd[type]" VALUE="1" ID="company" {tip text="Select legal personality type" trigger="type"}{if $customeradd.type} CHECKED{/if}><A HREF="javascript:checkElement('company')">{trans("legal entity")}</A>
+						<INPUT TYPE="radio" NAME="customeradd[type]" VALUE="0" ID="private" {tip text="Select legal personality type" trigger="type"}{if !$customeradd.type} CHECKED{/if}><label for="private">{trans("private person")}</label>
+						<INPUT TYPE="radio" NAME="customeradd[type]" VALUE="1" ID="company" {tip text="Select legal personality type" trigger="type"}{if $customeradd.type} CHECKED{/if}><label for="company">{trans("legal entity")}</label>
 					</TD>
 				</TR>
 				<TR>
@@ -208,8 +208,8 @@
 					</TD>
 					<TD width="99%" NOWRAP>
 						<INPUT TYPE="text" size="15" value="{$item.phone}" name="customeradd[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}>
-						<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_MOBILE}" ID="chkmobile{$key}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & CONTACT_MOBILE)} checked{/if}><A HREF="javascript:checkElement('chkmobile{$key}')">{trans("mobile")}</A>
-						<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_FAX}" ID="chkfax{$key}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & CONTACT_FAX)} checked{/if}><A HREF="javascript:checkElement('chkfax{$key}')">{trans("fax")}</A>
+						<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_MOBILE}" ID="chkmobile{$key}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & CONTACT_MOBILE)} checked{/if}><label for="chkmobile{$key}">{trans("mobile")}</label>
+						<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_FAX}" ID="chkfax{$key}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & CONTACT_FAX)} checked{/if}><label for="chkfax{$key}">{trans("fax")}</label>
 						<BR>
 						<INPUT TYPE="text" size="38" value="{$item.name}" name="customeradd[contacts][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
 					</TD>
@@ -374,7 +374,7 @@
                         <TABLE cellpadding="0">
                             <TR>
                                 <TD>
-            						<A HREF="javascript:checkElement('chkconsent')">{trans("Consent to personal data processing:")}</A>
+            						<label for="chkconsent">{trans("Consent to personal data processing:")}</label>
                                 </TD>
                                 <TD>
 			            			<INPUT TYPE="checkbox" NAME="customeradd[consentdate]" VALUE="{$smarty.now}" ID="chkconsent"{if $customeradd.consentdate} checked{/if}>
@@ -382,7 +382,7 @@
                             </TR>
                             <TR>
 					            <TD>
-				            		<A HREF="javascript:checkElement('chkeinvoice')">{trans("Consent to electronic invoices:")}</A>
+				            		<label for="chkeinvoice">{trans("Consent to electronic invoices:")}</label>
                                 </TD>
                                 <TD>
                 					<INPUT TYPE="checkbox" NAME="customeradd[einvoice]" VALUE="1" ID="chkeinvoice"{if $customeradd.einvoice} checked{/if}>
@@ -390,7 +390,7 @@
 				            </TR>
 				            <TR>
 					            <TD>
-						            <A HREF="javascript:checkElement('chkinvoicenotice')">{trans("Consent to invoices delivery via e-mail:")}</A>
+						            <label for="chkinvoicenotice">{trans("Consent to invoices delivery via e-mail:")}</label>
                                 </TD>
                                 <TD>
 			            			<INPUT TYPE="checkbox" NAME="customeradd[invoicenotice]" VALUE="1" ID="chkinvoicenotice"{if $customeradd.invoicenotice} checked{/if}>
@@ -398,7 +398,7 @@
 				            </TR>
 				            <TR>
 					            <TD>
-            						<A HREF="javascript:checkElement('chkmailingnotice')">{trans("Consent to messages delivery via e-mail or sms:")}</A>
+            						<label for="chkmailingnotice">{trans("Consent to messages delivery via e-mail or sms:")}</label>
                                 </TD>
                                 <TD>
    						            <INPUT TYPE="checkbox" NAME="customeradd[mailingnotice]" VALUE="1" ID="chkmailingnotice"{if $customeradd.mailingnotice} checked{/if}>
@@ -430,7 +430,7 @@
 		<TD width="100%" colspan="2" class="fbottomu" align="right">
 			<A href="javascript:document.customeradd.submit();" ACCESSKEY="S">{trans("Submit")} <img src="img/save.gif" alt=""></A>
 			<A href="?m=customerlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="customeradd[reuse]" id="customeradd[reuse]" value="ON" {if $customeradd.reuse}checked{/if}><A HREF="javascript:checkElement('customeradd[reuse]')"> {trans("Display this form again, when this customer is saved")}</A>
+			<INPUT type="checkbox" name="customeradd[reuse]" id="customeradd_reuse" value="ON" {if $customeradd.reuse}checked{/if}><label for="customeradd_reuse"> {trans("Display this form again, when this customer is saved")}</label>
 		</TD>
 	</TR>
 </TABLE>

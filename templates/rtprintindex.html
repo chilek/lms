@@ -99,7 +99,7 @@
 									<INPUT type="checkbox" name="categories[{$category.id}]" ID="cat1{$category.id}" value="1" CHECKED>
 								</TD>
 								<TD width="1%">
-									<A href="javascript:checkElement('cat1{$category.id}');">{$category.name}</A>
+									<label for="cat1{$category.id}">{$category.name}</label>
 								</TD>
 							</TR>
 						{/foreach}
@@ -111,8 +111,8 @@
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<INPUT TYPE="checkbox" NAME="extended" VALUE="1"><A HREF="javascript:checkElement('extended')">{trans("extended format")}</A> &nbsp;
-			<INPUT TYPE="checkbox" NAME="contacts" VALUE="1" CHECKED><A HREF="javascript:checkElement('contacts')">{trans("include contact info")}</A>
+			<INPUT TYPE="checkbox" NAME="extended" VALUE="1" id="extended"><label for="extended">{trans("extended format")}</label>&nbsp;
+			<INPUT TYPE="checkbox" NAME="contacts" VALUE="1" id="contacts" CHECKED><label for="contacts">{trans("include contact info")}</label>
 			&nbsp; &nbsp; &nbsp;
 			<A href="javascript:document.ticketslist.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
@@ -168,7 +168,7 @@
 									<INPUT type="checkbox" name="categories[{$category.id}]" ID="cat2{$category.id}" value="1" CHECKED>
 								</TD>
 								<TD width="1%">
-									<A href="javascript:checkElement('cat2{$category.id}');">{$category.name}</A>
+									<label for="cat2{$category.id}">{$category.name}</label>
 								</TD>
 							</TR>
 						{/foreach}

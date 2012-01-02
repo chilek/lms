@@ -84,7 +84,7 @@
 			<B>{trans("Status:")}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
-			<INPUT type="checkbox" name="event[status]" id="event[status]" value="1" {tip text="Select event's status"}{if $event.status}CHECKED{/if}><A HREF="javascript:checkElement('event[status]')"> {trans("private")}</A>
+			<INPUT type="checkbox" name="event[status]" id="event_status" value="1" {tip text="Select event's status"}{if $event.status}CHECKED{/if}> <label for="event_status">{trans("private")}</label>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -127,7 +127,7 @@
 		<TD class="fbottomu" align="right" colspan="3">
 			<A href="javascript:document.event.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 			<A href="?m=eventlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="event[reuse]" id="event[reuse]" value="ON" {if $event.reuse}checked{/if}><A HREF="javascript:checkElement('event[reuse]')"> {trans("Display this form again, when this event is saved")}</A>
+			<INPUT type="checkbox" name="event[reuse]" id="reuse" value="ON" {if $event.reuse}checked{/if}> <label for="reuse">{trans("Display this form again, when this event is saved")}</label>
 		</TD>
 	</TR>
 </TABLE>
