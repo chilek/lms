@@ -13,7 +13,7 @@
 			<IMG SRC="img/users.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}First/last name:{/t}</B>
+			<B>{trans("First/last name:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
 			<B>{$userinfo.name}</B>
@@ -24,7 +24,7 @@
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
 			<IMG SRC="img/info.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%"><B>{t}Position:{/t}</B></TD>
+		<TD WIDTH="1%"><B>{trans("Position:")}</B></TD>
 		<TD WIDTH="98%" CLASS="fright">
 			{$userinfo.position}
 		</TD>
@@ -35,7 +35,7 @@
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
 			<IMG SRC="img/mail.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%"><B>{t}E-mail:{/t}</B></TD>
+		<TD WIDTH="1%"><B>{trans("E-mail:")}</B></TD>
 		<TD WIDTH="98%" CLASS="fright">
 			<A HREF="mailto:{$userinfo.email}">{$userinfo.email}</A>
 		</TD>
@@ -46,7 +46,7 @@
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
 			<IMG SRC="img/sms.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%"><B>{t}Phone:{/t}</B></TD>
+		<TD WIDTH="1%"><B>{trans("Phone:")}</B></TD>
 		<TD WIDTH="98%" CLASS="fright">
 			{$userinfo.phone}
 		</TD>
@@ -56,9 +56,9 @@
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%"><B>{t}Notification:{/t}</B></TD>
+		<TD WIDTH="1%"><B>{trans("Notification:")}</B></TD>
 		<TD WIDTH="98%" CLASS="fright">
-			{if !$userinfo.ntype}{t}none{/t}{else}{$userinfo.ntype}{/if}
+			{if !$userinfo.ntype}{trans("none")}{else}{$userinfo.ntype}{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -66,17 +66,17 @@
 			<IMG SRC="img/ip.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Allowed hosts:{/t}</B>
+			<B>{trans("Allowed hosts:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright" NOWRAP>
-			{if $userinfo.hosts}{$userinfo.hosts}{else}{t}all{/t}{/if}
+			{if $userinfo.hosts}{$userinfo.hosts}{else}{trans("all")}{/if}
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft">
 			<IMG SRC="img/pass.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" NOWRAP><B>{t}Access rights:{/t}</B></TD>
+		<TD WIDTH="1%" NOWRAP><B>{trans("Access rights:")}</B></TD>
 		<TD WIDTH="98%" CLASS="fright">
 			{section name=acl loop=$accesslist}
 			<li type="square">{$accesslist[acl]}</li>
@@ -87,7 +87,7 @@
 		<TD WIDTH="1%" CLASS="fleft">
 			<IMG SRC="img/group.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" NOWRAP><B>{t}Excluded groups:{/t}</B></TD>
+		<TD WIDTH="1%" NOWRAP><B>{trans("Excluded groups:")}</B></TD>
 		<TD WIDTH="98%" CLASS="fright">
 			{foreach from=$excludedgroups item=item}
 			<li type="square"><a href="?m=customergroupinfo&id={$item.id}">{$item.name}</a></li>
@@ -98,23 +98,23 @@
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft"></TD>
-		<TD WIDTH="1%" NOWRAP><B>{t}Last login:{/t}</B></TD>
+		<TD WIDTH="1%" NOWRAP><B>{trans("Last login:")}</B></TD>
 		<TD WIDTH="98%" CLASS="fright">
 			{$userinfo.lastlogin}, {$userinfo.lastloginip} {if $userinfo.lastloginip neq $userinfo.lastloginhost}({$userinfo.lastloginhost}){/if}
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft"></TD>
-		<TD WIDTH="1%" NOWRAP><B>{t}Last failed login:{/t}</B></TD>
+		<TD WIDTH="1%" NOWRAP><B>{trans("Last failed login:")}</B></TD>
 		<TD WIDTH="98%" CLASS="fright">
 			{$userinfo.faillogin}, {$userinfo.failedloginip} {if $userinfo.failedloginip neq $userinfo.failedloginhost}({$userinfo.failedloginhost}){/if}
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD COLSPAN="3" CLASS="fbottomu" ALIGN="right">
-			<A HREF="?m=useredit&id={$userinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT=""></A>
-			<A HREF="?m=userdel&id={$userinfo.id}" onClick="return confirmLink(this, '{t}Are you sure, you want to irreversibly delete that user account?{/t}');">{t}Delete{/t} <img src="img/delete.gif" alt=""></A>
-			<A HREF="?m=userpasswd&id={$userinfo.id}">{t}Change password{/t} <IMG SRC="img/keys.gif" ALT=""> </A>
+			<A HREF="?m=useredit&id={$userinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG SRC="img/edit.gif" ALT=""></A>
+			<A HREF="?m=userdel&id={$userinfo.id}" onClick="return confirmLink(this, '{trans("Are you sure, you want to irreversibly delete that user account?")}');">{trans("Delete")} <img src="img/delete.gif" alt=""></A>
+			<A HREF="?m=userpasswd&id={$userinfo.id}">{trans("Change password")} <IMG SRC="img/keys.gif" ALT=""> </A>
 		</TD>
 	</TR>
 </TABLE>

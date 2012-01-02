@@ -3,22 +3,22 @@
 	<TR CLASS="DARK">
 		<TD width="99%" class="fleftu hand" onclick="showOrHide('docpanel');">
 			<IMG src="img/docum.gif" alt="">
-			<B>{t}Customer's Documents:{/t}</B> ({t a=$limit}last $a documents{/t})
+			<B>{trans("Customer's Documents:")}</B> ({t a=$limit}last $a documents{/t})
 		</TD>
 		<TD width="1%" class="frightu" align="right" nowrap>
-			<A href="?m=documentadd&cid={$customerinfo.id}">{t}New Document{/t} &raquo;</A>
-			<A href="?m=documentlist&c={$customerinfo.id}">{t}All Documents{/t} &raquo;</A>&nbsp;
+			<A href="?m=documentadd&cid={$customerinfo.id}">{trans("New Document")} &raquo;</A>
+			<A href="?m=documentlist&c={$customerinfo.id}">{trans("All Documents")} &raquo;</A>&nbsp;
 		</TD>
 	</TR>
 	<TR id="docpanel" style="display:none;">
 		<TD WIDTH="100%" class="fall" colspan="2">
 			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
 				<TR class="dark">
-					<TD WIDTH="1%" NOWRAP class="fleftu"><B>{t}Number:{/t}</B></TD>
-					<TD WIDTH="1%" NOWRAP class="fbt">{t}Created:{/t}</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt"><B>{t}Type:{/t}</B></TD>
-					<TD WIDTH="95%" NOWRAP class="fbt">{t}Title:{/t}</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt">{t}Period:{/t}</TD>
+					<TD WIDTH="1%" NOWRAP class="fleftu"><B>{trans("Number:")}</B></TD>
+					<TD WIDTH="1%" NOWRAP class="fbt">{trans("Created:")}</TD>
+					<TD WIDTH="1%" NOWRAP class="fbt"><B>{trans("Type:")}</B></TD>
+					<TD WIDTH="95%" NOWRAP class="fbt">{trans("Title:")}</TD>
+					<TD WIDTH="1%" NOWRAP class="fbt">{trans("Period:")}</TD>
 					<TD WIDTH="1%" NOWRAP class="frightu"></TD>
 				</TR>
 				{cycle values="light,lucid" print=false name=doc}
@@ -31,29 +31,29 @@
 					<TD NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');"><B>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</B></TD>
 					<TD NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');">{$doc.title|truncate:40:"...":true}</TD>
 					<TD NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');">
-						{if $doc.fromdate}{t}from{/t} {$doc.fromdate|date_format:"%Y/%m/%d"}{/if}
-						{if $doc.todate}{t}to{/t} {$doc.todate|date_format:"%Y/%m/%d"}{/if}
+						{if $doc.fromdate}{trans("from")} {$doc.fromdate|date_format:"%Y/%m/%d"}{/if}
+						{if $doc.todate}{trans("to")} {$doc.todate|date_format:"%Y/%m/%d"}{/if}
 					</TD>
 					<TD ALIGN="RIGHT" NOWRAP>
 						{assign var=type value=$doc.type}
-						<a href="?m=documentview&id={$doc.docid}&save=1"><img src="img/save.gif" alt="[ {t}Save{/t} ]" title="[ {t}Save{/t} ]"></a>
+						<a href="?m=documentview&id={$doc.docid}&save=1"><img src="img/save.gif" alt="[ {trans("Save")} ]" title="[ {trans("Save")} ]"></a>
 						{if ! $doc.closed && ($docrights.$type.rights & 4)}
-						<a href="?m=documentedit&id={$doc.docid}&action=confirm"><img src="img/confirm.gif" alt="[ {t}Confirm{/t} ]" title="[ {t}Confirm{/t} ]"></a>
+						<a href="?m=documentedit&id={$doc.docid}&action=confirm"><img src="img/confirm.gif" alt="[ {trans("Confirm")} ]" title="[ {trans("Confirm")} ]"></a>
 						{/if}
 						{if ($docrights.$type.rights & 16)}
-						<a onclick="return confirmLink(this, '{t}Are you sure, you want to remove that document?{/t}')" HREF="?m=documentdel&id={$doc.docid}" {tip text="Remove document"}><img src="img/delete.gif" alt="[ {t}Delete{/t} ]"></a>
+						<a onclick="return confirmLink(this, '{trans("Are you sure, you want to remove that document?")}')" HREF="?m=documentdel&id={$doc.docid}" {tip text="Remove document"}><img src="img/delete.gif" alt="[ {trans("Delete")} ]"></a>
 						{/if}
 						{if ($docrights.$type.rights & 8)}
-						<a href="?m=documentedit&id={$doc.docid}"><img src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></a>
+						<a href="?m=documentedit&id={$doc.docid}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
 						{/if}
-						<a href="?m=documentview&id={$doc.docid}" target="_blank"><img src="img/{if preg_match('/pdf/',$doc.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$doc.contenttype)}xls{else}view{/if}.gif" alt="[ {t}View{/t} ]" title="[ {t}View{/t} ]"></a>
+						<a href="?m=documentview&id={$doc.docid}" target="_blank"><img src="img/{if preg_match('/pdf/',$doc.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$doc.contenttype)}xls{else}view{/if}.gif" alt="[ {trans("View")} ]" title="[ {trans("View")} ]"></a>
 					</TD>
 				</TR>
 				{foreachelse}
 				<TR>
 					<TD align="center" WIDTH="100%" colspan="6">
 						<p>&nbsp;</p>
-						<p><B>{t}That customer hasn't got any documents.{/t}</B></p>
+						<p><B>{trans("That customer hasn't got any documents.")}</B></p>
 						<p>&nbsp;</p>
 					</TD>
 				</TR>

@@ -4,17 +4,17 @@
 <P><TABLE cellpadding="3" WIDTH="100%">
 	<TR class="dark">
 		<TD width="1%" class="fleftu" NOWRAP>
-			<IMG src="img/settings.gif" alt=""><A href="?m=configlist&o=var{if $listdata.direction eq "asc" && $listdata.order eq "var"},desc{/if}"> <B>{t}Name:{/t}</B></A> {if $listdata.order eq "var"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<IMG src="img/empty.gif" alt="" width="16" height="16"><A href="?m=configlist&o=section{if $listdata.direction eq "asc" && $listdata.order eq "section"},desc{/if}"> {t}Section:{/t}</A> {if $listdata.order eq "section"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG src="img/settings.gif" alt=""><A href="?m=configlist&o=var{if $listdata.direction eq "asc" && $listdata.order eq "var"},desc{/if}"> <B>{trans("Name:")}</B></A> {if $listdata.order eq "var"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<IMG src="img/empty.gif" alt="" width="16" height="16"><A href="?m=configlist&o=section{if $listdata.direction eq "asc" && $listdata.order eq "section"},desc{/if}"> {trans("Section:")}</A> {if $listdata.order eq "section"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="fbt" align="center">
-			{t}Value:{/t}
+			{trans("Value:")}
 		</TD>
 		<TD width="97%" class="fbt" align="center">
-			{t}Comment:{/t}
+			{trans("Comment:")}
 		</TD>
 		<TD width="1%" class="frightu" align="right" nowrap>
-			<A href="?m=configadd{if $listdata.section}&section={$listdata.section}{/if}">{t}Add option{/t} <IMG src="img/save.gif" alt=""> </A>
+			<A href="?m=configadd{if $listdata.section}&section={$listdata.section}{/if}">{trans("Add option")} <IMG src="img/save.gif" alt=""> </A>
 		</TD>
 	</TR>
 	<TR class="DARK">
@@ -23,9 +23,9 @@
 				<INPUT type="submit" class="hiddenbtn">
 				<INPUT type="HIDDEN" name="m" value="configlist">
 				<INPUT type="HIDDEN" name="page" value="1">
-				<B>{t}Filter:{/t} </B> {t}Section:{/t}
+				<B>{trans("Filter:")} </B> {trans("Section:")}
 				<SELECT size="1" name="s" OnChange="document.filter.submit();">
-					<OPTION value=""{if !$listdata.section} SELECTED{/if}>{t}- all -{/t}</OPTION>
+					<OPTION value=""{if !$listdata.section} SELECTED{/if}>{trans("- all -")}</OPTION>
 					<OPTION value="phpui"{if $listdata.section eq "phpui"} SELECTED{/if}>phpui</OPTION>
 					<OPTION value="invoices"{if $listdata.section eq "invoices"} SELECTED{/if}>invoices</OPTION>
 					<OPTION value="receipts"{if $listdata.section eq "receipts"} SELECTED{/if}>receipts</OPTION>
@@ -34,7 +34,7 @@
 					<OPTION value="sms"{if $listdata.section eq "sms"} SELECTED{/if}>sms</OPTION>
 					 <OPTION value="zones"{if $listdata.section eq "zones"} SELECTED{/if}>zones</OPTION>
 				</SELECT>
-				{t}Option{/t}:
+				{trans("Option")}:
 				<INPUT type="text" name="n" value="{$listdata.search}" size="15" {tip text="Enter option name"}>
 				&nbsp;<A href="javascript: document.filter.submit();">&raquo;&raquo;&raquo;</A>
 			</FORM>
@@ -59,12 +59,12 @@
 		</TD>
 		<TD valign="top" OnClick="return self.location.href='?m=configedit&id={$configlist[configlist].id}';">
 			{$configlist[configlist].description|truncate:400:"..."}
-			{if $configlist[configlist].usercomment != ''}<BR><B>{t}Comment:{/t}</B> {$configlist[configlist].usercomment|truncate:400:"..."}{/if}
+			{if $configlist[configlist].usercomment != ''}<BR><B>{trans("Comment:")}</B> {$configlist[configlist].usercomment|truncate:400:"..."}{/if}
 		</TD>
 		<TD class="fright" align="right" nowrap>
-			<A href="?m=configedit&id={$configlist[configlist].id}&statuschange=1"><IMG src="img/wait.gif" alt="[ {if $configlist[configlist].disabled}{t}Enable{/t}{else}{t}Disable{/t}{/if} ]" title="[ {if $configlist[configlist].disabled}{t}Enable{/t}{else}{t}Disable{/t}{/if} ]"></A>
-			<A href="?m=configdel&id={$configlist[configlist].id}" OnClick="return confirmLink(this, '{t a=$configlist[configlist].var}Are you sure, you want to delete option \'$a\' from database?{/t}');"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
-			<A href="?m=configedit&id={$configlist[configlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+			<A href="?m=configedit&id={$configlist[configlist].id}&statuschange=1"><IMG src="img/wait.gif" alt="[ {if $configlist[configlist].disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]" title="[ {if $configlist[configlist].disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]"></A>
+			<A href="?m=configdel&id={$configlist[configlist].id}" OnClick="return confirmLink(this, '{t a=$configlist[configlist].var}Are you sure, you want to delete option \'$a\' from database?{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			<A href="?m=configedit&id={$configlist[configlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 		</TD>
 	</TR>
 	{sectionelse}
@@ -73,9 +73,9 @@
 			<p>&nbsp;</p>
 			<p><B>
 			    {if $listdata.search}
-			        {t}No configuration options in database.{/t}
+			        {trans("No configuration options in database.")}
 			    {else}
-			        {t}No configuration options in database.{/t} {t}Click <A href="?m=configload">here</A> to import them from lms.ini.{/t}
+			        {trans("No configuration options in database.")} {t}Click <A href="?m=configload">here</A> to import them from lms.ini.{/t}
 			    {/if}
 			    </B></p>
 			<p>&nbsp;</p>
@@ -91,7 +91,7 @@
 	{/if}
 	<TR CLASS="DARK">
 		<TD colspan="4" class="FALL" align="right">
-			<A href="?m=configadd{if $listdata.section}&section={$listdata.section}{/if}">{t}Add option{/t} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=configadd{if $listdata.section}&section={$listdata.section}{/if}">{trans("Add option")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
 

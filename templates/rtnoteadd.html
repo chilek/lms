@@ -14,7 +14,7 @@
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
 			<IMG src="img/note.gif" alt="">
-			<B>{t}Note content:{/t}</B>
+			<B>{trans("Note content:")}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
 			<TEXTAREA name="note[body]" cols="50" rows="5" {tip text="Enter note content" trigger="body"} >{$note.body}</TEXTAREA>
@@ -22,8 +22,8 @@
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="100%" CLASS="fbottomu" colspan="2" align="right">
-			<A href="javascript: document.note.submit();" accesskey="s">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=rtticketview&id={$note.ticketid}">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A>
+			<A href="javascript: document.note.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=rtticketview&id={$note.ticketid}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -32,7 +32,7 @@
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="ftl" NOWRAP>
 			<IMG src="img/mail.gif" alt="">
-		        <A HREF="javascript:checkElement('notify');"><B>{t}Notify users:{/t}</B></A>
+		        <A HREF="javascript:checkElement('notify');"><B>{trans("Notify users:")}</B></A>
 		</TD>
 		<TD WIDTH="99%" CLASS="ftr">
 			<INPUT type="checkbox" name="note[notify]" id="notify" value="1"{if $note.notify} CHECKED{/if}>
@@ -41,27 +41,27 @@
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
 			<IMG src="img/dead.gif" alt="">
-		        <B>{t}Status:{/t}</B>
+		        <B>{trans("Status:")}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
 			<SELECT SIZE="1" name="note[state]" {tip text="Select status" trigger="state"}>
-				<OPTION value="{$smarty.const.RT_NEW}" {if $note.state == $smarty.const.RT_NEW}SELECTED{/if}>{t}new{/t}</OPTION>
-				<OPTION value="{$smarty.const.RT_OPEN}" {if $note.state == $smarty.const.RT_OPEN}SELECTED{/if}>{t}opened{/t}</OPTION>
-				<OPTION value="{$smarty.const.RT_RESOLVED}" {if $note.state == $smarty.const.RT_RESOLVED}SELECTED{/if}>{t}resolved{/t}</OPTION>
-				<OPTION value="{$smarty.const.RT_DEAD}" {if $note.state == $smarty.const.RT_DEAD}SELECTED{/if}>{t}dead{/t}</OPTION>
+				<OPTION value="{$smarty.const.RT_NEW}" {if $note.state == $smarty.const.RT_NEW}SELECTED{/if}>{trans("new")}</OPTION>
+				<OPTION value="{$smarty.const.RT_OPEN}" {if $note.state == $smarty.const.RT_OPEN}SELECTED{/if}>{trans("opened")}</OPTION>
+				<OPTION value="{$smarty.const.RT_RESOLVED}" {if $note.state == $smarty.const.RT_RESOLVED}SELECTED{/if}>{trans("resolved")}</OPTION>
+				<OPTION value="{$smarty.const.RT_DEAD}" {if $note.state == $smarty.const.RT_DEAD}SELECTED{/if}>{trans("dead")}</OPTION>
 			</SELECT>
 		</TD>
 	</TR>
 	<TR class="light">
                 <TD WIDTH="1%" CLASS="fbl" NOWRAP>
 	                <IMG src="img/desc.gif" alt="">
-	        <B>{t}Cause:{/t}</B>
+	        <B>{trans("Cause:")}</B>
 	        </TD>
 	        <TD WIDTH="99%" CLASS="fbr">
 		        <SELECT SIZE="1" name="note[cause]" {tip text="Select request cause" trigger="cause"}>
-		        	<OPTION value="0" {if !$note.cause}SELECTED{/if}>{t}unknown/other{/t}</OPTION>
-				<OPTION value="1" {if $note.cause == 1}SELECTED{/if}>{t}customer's side{/t}</OPTION>
-			        <OPTION value="2" {if $note.cause == 2}SELECTED{/if}>{t}company's side{/t}</OPTION>
+		        	<OPTION value="0" {if !$note.cause}SELECTED{/if}>{trans("unknown/other")}</OPTION>
+				<OPTION value="1" {if $note.cause == 1}SELECTED{/if}>{trans("customer's side")}</OPTION>
+			        <OPTION value="2" {if $note.cause == 2}SELECTED{/if}>{trans("company's side")}</OPTION>
 			</SELECT>
 		</TD>
         </TR>

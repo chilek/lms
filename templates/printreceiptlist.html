@@ -19,28 +19,28 @@
 <TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
 		<TD ALIGN="CENTER" CLASS="HEAD">
-			{t}No.{/t}
+			{trans("No.")}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
-			{t}Date{/t}
+			{trans("Date")}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
-			{t}Number{/t}
+			{trans("Number")}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
-			{t}Customer{/t}
+			{trans("Customer")}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
-			{t}Title{/t}
+			{trans("Title")}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
-			{t}Income{/t}
+			{trans("Income")}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
-			{t}Expense{/t}
+			{trans("Expense")}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
-			{t}After{/t}
+			{trans("After")}
 		</TD>
 	</TR>
 	{cycle values="white,grey" print=false}
@@ -77,17 +77,17 @@
 	<TR>
 		<TD ALIGN="center" COLSPAN="8">
 			<P>&nbsp;</P>
-			<P><B>{t}No such cash receipts in database.{/t}</B></P>
+			<P><B>{trans("No such cash receipts in database.")}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>
 	{/section}
 	<TR class="grey">
 		<TD COLSPAN="5" ALIGN="RIGHT" VALIGN="TOP">
-			<B>{t}Total:{/t}</B><HR>
-			<B>{t}Initial balance:{/t}</B><BR>
-			<B>{t}Final balance:{/t}</B>
-			{if $listdata.advances}<BR><B>{t}Not accounted advances:{/t}</B>{/if}
+			<B>{trans("Total:")}</B><HR>
+			<B>{trans("Initial balance:")}</B><BR>
+			<B>{trans("Final balance:")}</B>
+			{if $listdata.advances}<BR><B>{trans("Not accounted advances:")}</B>{/if}
 		</TD>
 		<TD ALIGN="RIGHT" nowrap>
 			<B>{$listdata.totalincome|money_format}</B><HR>

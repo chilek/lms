@@ -11,16 +11,16 @@
 			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" width="97%">
-			<IMG src="img/netdev.gif" ALT=""> <B>{t}Name{/t} / {t}Producer{/t}:</B><BR>
-			<IMG src="img/home.gif" ALT=""> {t}Location:{/t}
+			<IMG src="img/netdev.gif" ALT=""> <B>{trans("Name")} / {trans("Producer")}:</B><BR>
+			<IMG src="img/home.gif" ALT=""> {trans("Location:")}
 		</TD>
 		<TD CLASS="fbt" width="1%" align="right" NOWRAP>
-			{t}Port{/t}:<BR>
-			{t}ID:{/t}
+			{trans("Port")}:<BR>
+			{trans("ID:")}
 		</TD>
 		<TD CLASS="fbt" width="1%" NOWRAP>
-			<IMG src="img/netdev_takenports.gif" ALT=""> {t}Dest. port{/t}:<BR>
-			<IMG src="img/port.gif" ALT=""> {t}Ports (used):{/t}
+			<IMG src="img/netdev_takenports.gif" ALT=""> {trans("Dest. port")}:<BR>
+			<IMG src="img/port.gif" ALT=""> {trans("Ports (used):")}
 		</TD>
 		<TD CLASS="frightu" width="1%">
 			&nbsp;
@@ -39,22 +39,22 @@
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';" NOWRAP>
 			{if $netdevlist[netdevlist].linktype}
-				<A href="?m=netdevedit&action=switchlinktype&linktype=0&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}"><IMG SRC="img/wireless.gif" alt="[ {t}Change connection type{/t} ]" title="[ {t}Change connection type{/t} ]"></A> 
+				<A href="?m=netdevedit&action=switchlinktype&linktype=0&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}"><IMG SRC="img/wireless.gif" alt="[ {trans("Change connection type")} ]" title="[ {trans("Change connection type")} ]"></A> 
 			{else}
-				<A href="?m=netdevedit&action=switchlinktype&linktype=1&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}"><IMG SRC="img/netdev_takenports.gif" alt="[ {t}Change connection type{/t} ]" title="[ {t}Change connection type{/t} ]"></A> 
+				<A href="?m=netdevedit&action=switchlinktype&linktype=1&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}"><IMG SRC="img/netdev_takenports.gif" alt="[ {trans("Change connection type")} ]" title="[ {trans("Change connection type")} ]"></A> 
 			{/if}
 			[{if $netdevlist[netdevlist].dstport}{$netdevlist[netdevlist].dstport}{/if}]
 			<BR><IMG SRC="img/port.gif" ALT=""> {$netdevlist[netdevlist].ports} ({$netdevlist[netdevlist].takenports})
 		</TD>
 		<TD WIDTH="1%">
-			<A HREF="?m=netdevedit&action=disconnect&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}" OnClick="return confirmLink(this, '{t}Are you sure, you want to delete that connection?{/t}');"><IMG SRC="img/delete.gif" {tip text="Delete connection"}></A>
+			<A HREF="?m=netdevedit&action=disconnect&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that connection?")}');"><IMG SRC="img/delete.gif" {tip text="Delete connection"}></A>
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
 		<TD colspan="4" align="center">
 			<P>&nbsp;</P>
-			<P><B>{t}No such connected devices.{/t}</B></P>
+			<P><B>{trans("No such connected devices.")}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>
@@ -62,9 +62,9 @@
 	<TR CLASS="light">
 		<TD WIDTH="100%" CLASS="ftop" COLSPAN="4" ALIGN="CENTER" NOWRAP>
 			{if $netdevinfo.ports eq $netdevinfo.takenports}
-			<B>{t}All ports in that device are in use.{/t}</B>
+			<B>{trans("All ports in that device are in use.")}</B>
 			{elseif !$restnetdevlist}
-			<B>{t}No such devices for connection.{/t}</B>
+			<B>{trans("No such devices for connection.")}</B>
 			{else}
 			<FORM METHOD="GET" ACTION="?m=netdevedit" NAME="connect">
 			<INPUT type="submit" class="hiddenbtn">
@@ -74,8 +74,8 @@
 			<TABLE width="100%">
 			    <TR>
 				<TD width="99%" NOWRAP>
-				<b>{t}Connect{/t}:</b>
-			{t}Device:{/t}<SELECT NAME="netdev" style="width: 300px" {tip trigger="link" text="Select from list device for connection"}>
+				<b>{trans("Connect")}:</b>
+			{trans("Device:")}<SELECT NAME="netdev" style="width: 300px" {tip trigger="link" text="Select from list device for connection"}>
 				{section name=restnetdevlist loop=$restnetdevlist}
 				{assign var=netdevname value=$restnetdevlist[restnetdevlist].name}
 				{if $restnetdevlist[restnetdevlist].producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$restnetdevlist[restnetdevlist].producer}{/if}
@@ -83,12 +83,12 @@
 				<OPTION VALUE="{$restnetdevlist[restnetdevlist].id}"{if $connect.id == $restnetdevlist[restnetdevlist].id} selected{/if}>{$netdevname|truncate:120:"...":true}</OPTION>
 				{/section}
 			</SELECT>
-			{t}Port{/t}:<INPUT name="srcport" value="{if $connect.srcport}{$connect.srcport}{/if}" size="2" {tip text="Enter port number in device for connection (optional)" trigger="srcport"}>
-			{t}Dest. port{/t}:<INPUT name="dstport" value="{if $connect.dstport}{$connect.dstport}{/if}" size="2" {tip text="Enter port number in device to which device will be connected (optional)" trigger="dstport"}>
-			<A HREF="javascript:checkElement('connboxlinktype')">{t}Wireless{/t}:</A><INPUT type="checkbox" name="linktype" id="connboxlinktype" value="1" {tip text="wireless"} {if $devlinktype}CHECKED{/if}>
+			{trans("Port")}:<INPUT name="srcport" value="{if $connect.srcport}{$connect.srcport}{/if}" size="2" {tip text="Enter port number in device for connection (optional)" trigger="srcport"}>
+			{trans("Dest. port")}:<INPUT name="dstport" value="{if $connect.dstport}{$connect.dstport}{/if}" size="2" {tip text="Enter port number in device to which device will be connected (optional)" trigger="dstport"}>
+			<A HREF="javascript:checkElement('connboxlinktype')">{trans("Wireless")}:</A><INPUT type="checkbox" name="linktype" id="connboxlinktype" value="1" {tip text="wireless"} {if $devlinktype}CHECKED{/if}>
 				    </TD>
 				    <TD width="1%">
-					<NOBR><A HREF="javascript:document.connect.submit(); ">{t}Connect{/t}</A> <IMG src="img/save.gif" alt=""></NOBR>
+					<NOBR><A HREF="javascript:document.connect.submit(); ">{trans("Connect")}</A> <IMG src="img/save.gif" alt=""></NOBR>
 				    </TD>
 				</TR>
 			</TABLE>

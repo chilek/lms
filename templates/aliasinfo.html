@@ -7,10 +7,10 @@
 			<IMG src="img/alias.gif" alt="">
 		</TD>
 		<TD width="1%" class="fbt">
-			<B>{t}Login:{/t}</B>
+			<B>{trans("Login:")}</B>
 		</TD>
 		<TD width="98%" class="frightu">
-			<B>{if $alias.login ne ""}{$alias.login}{else}{t}(domain alias){/t}{/if}</B>
+			<B>{if $alias.login ne ""}{$alias.login}{else}{trans("(domain alias)")}{/if}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -18,7 +18,7 @@
 			<IMG src="img/domain.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Domain:{/t}</B>
+			<B>{trans("Domain:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<a href="?m=domaininfo&id={$alias.domainid}">{$alias.domain}</a>
@@ -29,7 +29,7 @@
 			<IMG src="img/account.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Destination:{/t}</B>
+			<B>{trans("Destination:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			{foreach from=$alias.accounts item=account}
@@ -42,7 +42,7 @@
 			<IMG src="img/forward.gif" alt="">
 		</TD>
 		<TD width="1%" NOWRAP>
-			<B>{t}Forward e-mail:{/t}</B>
+			<B>{trans("Forward e-mail:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			{foreach from=$alias.mailforwards item=mailforward}
@@ -52,8 +52,8 @@
 	</TR>
 	<TR class="LIGHT">
 		<TD colspan="3" class="fbottomu" align="right" nowrap>
-			<A href="?m=aliasedit&id={$alias.id}" accesskey="e">{t}Edit{/t} <IMG SRC="img/save.gif" ALT=""></A>
-			<A href="?m=aliasdel&id={$alias.id}" onClick="return confirmLink(this,'{t}Are you sure, you want to delete that alias?{/t}');">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT=""></A>
+			<A href="?m=aliasedit&id={$alias.id}" accesskey="e">{trans("Edit")} <IMG SRC="img/save.gif" ALT=""></A>
+			<A href="?m=aliasdel&id={$alias.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that alias?")}');">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>

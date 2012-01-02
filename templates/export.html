@@ -10,7 +10,7 @@
 			<IMG src="img/money.gif" alt="">
 		</TD>
 		<TD class="frightu" width="99%">
-			<B>{t}Sale Registry{/t}</B>
+			<B>{trans("Sale Registry")}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -21,13 +21,13 @@
 						<IMG src="img/calendar.gif" alt="">
 					</TD>
 					<TD width="1%">
-						<B>{t}Period:{/t}&nbsp;</B>
+						<B>{trans("Period:")}&nbsp;</B>
 					</TD>
 					<TD width="1%" nowrap>
-						{t}From{/t}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal8.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal8.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					</TD>
 					<TD width="97%" nowrap>
-						{t}To{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal9.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal9.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
 					</TD>
 				</TR>
 			</TABLE>
@@ -35,7 +35,7 @@
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.invoicereport.submit();">{t}Save{/t} <IMG src="img/save.gif" alt="" hspace="2"></A>
+			<A href="javascript:document.invoicereport.submit();">{trans("Save")} <IMG src="img/save.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -56,7 +56,7 @@ cal9.time_comp = false;
 			<IMG src="img/money.gif" alt="">
 		</TD>
 		<TD class="frightu" width="99%">
-			<B>{t}Cash Report{/t}</B>
+			<B>{trans("Cash Report")}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -67,11 +67,11 @@ cal9.time_comp = false;
 						<IMG src="img/queue.gif" alt="">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>{t}Registry:{/t}</B>
+						<B>{trans("Registry:")}</B>
 					</TD>
 					<TD width="1%">
 						<SELECT SIZE="1" NAME="registry" {tip text="Select cash registry"}>
-					    		<OPTION VALUE="0">{t}- select registry -{/t}</OPTION>
+					    		<OPTION VALUE="0">{trans("- select registry -")}</OPTION>
 						        {foreach from=$cashreglist item=c}
 							<OPTION VALUE="{$c.id}">{$c.name|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
 						        {/foreach}
@@ -81,19 +81,19 @@ cal9.time_comp = false;
 						<IMG src="img/calendar.gif" alt="">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>{t}Period:{/t}</B>&nbsp;
-						{t}From{/t}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal12.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-						{t}To{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal13.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+						<B>{trans("Period:")}</B>&nbsp;
+						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal12.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal13.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
 					</TD>
 					<TD width="1%">
 						<IMG src="img/users.gif" alt="">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>{t}User:{/t}</B>
+						<B>{trans("User:")}</B>
 					</TD>
 					<TD width="93%">
 						<SELECT size="1" name="user" {tip text="You can select user to limit results"}>
-							<OPTION value="">{t}- all users -{/t}</OPTION>
+							<OPTION value="">{trans("- all users -")}</OPTION>
 							{section name="users" loop=$users}
 							<OPTION value="{$users[users].id}">{$users[users].name|truncate:40:"...":true}</OPTION>
 							{/section}
@@ -105,7 +105,7 @@ cal9.time_comp = false;
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.receiptlist.submit();">{t}Save{/t} <IMG src="img/save.gif" alt="" hspace="2"></A>
+			<A href="javascript:document.receiptlist.submit();">{trans("Save")} <IMG src="img/save.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
 </TABLE>

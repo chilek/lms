@@ -15,25 +15,25 @@
 <TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
 		<TD CLASS="HEAD" ALIGN="CENTER" width="1%">
-			{t}No.{/t}
+			{trans("No.")}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER" width="1%">
-			{t}Date{/t}
+			{trans("Date")}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER" width="1%">
-			{t}Liability{/t}
+			{trans("Liability")}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER" width="1%">
-			{t}Income{/t}
+			{trans("Income")}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER" width="1%">
-			{t}Expense{/t}
+			{trans("Expense")}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER" width="1%">
-			{t}After{/t}
+			{trans("After")}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
-			{t}Description{/t}
+			{trans("Description")}
 		</TD>		
 	</TR>
 	{cycle values="white,grey" print=false}
@@ -65,14 +65,14 @@
 	<TR>
 		<TD ALIGN="center" WIDTH="100%" COLSPAN="7">
 			<p>&nbsp;</p>
-			<p><B>{t}No such transactions{/t}</B></p>
+			<p><B>{trans("No such transactions")}</B></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
 	{/section}
 	<TR class="grey">
 		<TD ALIGN="right" COLSPAN="2">
-			<B>{t}Total:{/t}</B>
+			<B>{trans("Total:")}</B>
 		</TD>
 		<TD ALIGN="right" nowrap>
 			<B>{$balancelist.liability|money_format}</B>
@@ -84,7 +84,7 @@
 			<B>{$balancelist.expense|money_format}</B>
 		</TD>
 		<TD COLSPAN="2" ALIGN="right">
-			<B>{t}Balance:{/t} {$balancelist.summary|money_format}</B>
+			<B>{trans("Balance:")} {$balancelist.summary|money_format}</B>
 		</TD>
 	</TR>
 </TABLE>

@@ -26,14 +26,14 @@
 	    <TABLE WIDTH="100%" CELLPADDING="3">
 		<TR CLASS="DARK">
 		    <TD WIDTH="100%" CLASS="fall" NOWRAP>
-			<IMG SRC="img/node.gif" ALT="">&nbsp;<B>{t}Group members:{/t}</B>
+			<IMG SRC="img/node.gif" ALT="">&nbsp;<B>{trans("Group members:")}</B>
 		    </TD>
 		</TR>
 		<TR CLASS="DARK">
 		    <TD CLASS="fall" colspan="4" ALIGN="CENTER">
-			    {t}Network:{/t}
+			    {trans("Network:")}
 			    <SELECT SIZE="1" NAME="nodeassignments[membersnetid]" ONCHANGE="javascript:changeMembersNetwork();">
-			    	<OPTION value="0" {if !$membersnetid}SELECTED{/if}>{t}- all networks -{/t}</OPTION>
+			    	<OPTION value="0" {if !$membersnetid}SELECTED{/if}>{trans("- all networks -")}</OPTION>
 				{section name=networks loop=$networks}
 				<OPTION value="{$networks[networks].id}" {if $networks[networks].id eq $membersnetid}SELECTED{/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
 				{/section}
@@ -53,7 +53,7 @@
 		    {else}
 			<BR>
 			<BR>
-			<B>{t}This group hasn't got any members.{/t}</B><BR>
+			<B>{trans("This group hasn't got any members.")}</B><BR>
 			<BR>
 			<BR>
 		    {/if}
@@ -61,7 +61,7 @@
 		</TR>
 		<TR CLASS="LIGHT">
 		    <TD WIDTH="100%" CLASS="fbottomu" ALIGN="RIGHT" NOWRAP>
-			<A HREF="javascript:removeNodes();">{t}Delete{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
+			<A HREF="javascript:removeNodes();">{trans("Delete")} <IMG SRC="img/cancel.gif" ALT=""></A>
 		    </TD>
 		</TR>
 	    </TABLE>
@@ -72,14 +72,14 @@
 	    <TABLE WIDTH="100%" CELLPADDING="3">
 		<TR CLASS="DARK">
 		    <TD WIDTH="100%" CLASS="fall" NOWRAP>
-			<IMG SRC="img/node.gif" ALT="">&nbsp;<B>{t}Add new member(s):{/t}</B>
+			<IMG SRC="img/node.gif" ALT="">&nbsp;<B>{trans("Add new member(s):")}</B>
 		    </TD>
 		</TR>
 		<TR CLASS="DARK">
 		    <TD CLASS="fall" colspan="4" ALIGN="CENTER">
-			    {t}Network:{/t}
+			    {trans("Network:")}
 			    <SELECT SIZE="1" NAME="nodeassignments[othersnetid]" ONCHANGE="javascript:changeOthersNetwork();">
-			    	<OPTION value="0" {if !$othersnetid}SELECTED{/if}>{t}- all networks -{/t}</OPTION>
+			    	<OPTION value="0" {if !$othersnetid}SELECTED{/if}>{trans("- all networks -")}</OPTION>
 				{section name=networks loop=$networks}
 				<OPTION value="{$networks[networks].id}" {if $networks[networks].id eq $othersnetid}SELECTED{/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
 				{/section}
@@ -99,7 +99,7 @@
 			{else}
 			<BR>
 			<BR>
-			<B>{t}All nodes are members of this group.{/t}</B><BR>
+			<B>{trans("All nodes are members of this group.")}</B><BR>
 			<BR>
 			<BR>
 			{/if}
@@ -107,7 +107,7 @@
 		</TR>
 		<TR CLASS="LIGHT">
 		    <TD WIDTH="100%" CLASS="fbottomu" ALIGN="RIGHT" NOWRAP>
-			<A HREF="javascript:document.nodeassignments.submit();">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+			<A HREF="javascript:document.nodeassignments.submit();">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
 		    </TD>
 		</TR>
 	</TABLE>

@@ -2,22 +2,22 @@
 <!--// $Id$ //-->
 <h1>{$layout.pagetitle}</h1>
 <TABLE WIDTH="100%" CELLPADDING="3">
-    <TR CLASS="DARK"><TD CLASS="fall"><B>{t}Module Configuration:{/t}</B></TD></TR>
+    <TR CLASS="DARK"><TD CLASS="fall"><B>{trans("Module Configuration:")}</B></TD></TR>
     <TR CLASS="light"><TD CLASS="fall">
 	<FORM NAME="moduleconfig" METHOD="POST" ACTION="?m=userpanel&module=finances&f=submit_setup">
 	    <INPUT CLASS="box light" TYPE="checkbox" NAME="disable_transferform" ID="disable_transferform" VALUE="1" {if $disable_transferform eq 1}CHECKED{/if}>
-		<A HREF="javascript:checkElement('disable_transferform');">{t}Turn off access to transfer form{/t}</A><br>
+		<A HREF="javascript:checkElement('disable_transferform');">{trans("Turn off access to transfer form")}</A><br>
 	    <INPUT CLASS="box light" TYPE="checkbox" NAME="disable_invoices" ID="disable_invoices" VALUE="1" {if $disable_invoices eq 1}CHECKED{/if}>
-		<A HREF="javascript:checkElement('disable_invoices');">{t}Turn off access to invoice printing{/t}</A><br>
+		<A HREF="javascript:checkElement('disable_invoices');">{trans("Turn off access to invoice printing")}</A><br>
 	    <INPUT CLASS="box light" TYPE="checkbox" NAME="invoice_duplicate" ID="invoice_duplicate" VALUE="1" {if $invoice_duplicate eq 1}CHECKED{/if}>
-		<A HREF="javascript:checkElement('invoice_duplicate');">{t}Print invoice duplicate instead of original{/t}</A><br>
+		<A HREF="javascript:checkElement('invoice_duplicate');">{trans("Print invoice duplicate instead of original")}</A><br>
 	    <INPUT CLASS="box light" TYPE="checkbox" NAME="show_tariffname" ID="show_tariffname" VALUE="1" {if $show_tariffname eq 1}CHECKED{/if}>
-		<A HREF="javascript:checkElement('show_tariffname');">{t}Show tariff's name{/t}</A><br>
+		<A HREF="javascript:checkElement('show_tariffname');">{trans("Show tariff's name")}</A><br>
 	    <INPUT CLASS="box light" TYPE="checkbox" NAME="show_speeds" ID="show_speeds" VALUE="1" {if $show_speeds eq 1}CHECKED{/if}>
-		<A HREF="javascript:checkElement('show_speeds');">{t}Show upload/download rates/ceils{/t}</A><br>
+		<A HREF="javascript:checkElement('show_speeds');">{trans("Show upload/download rates/ceils")}</A><br>
 	<p align="right">
-	    <A HREF="?m=userpanel">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
-	    <A HREF="javascript:document.moduleconfig.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+	    <A HREF="?m=userpanel">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
+	    <A HREF="javascript:document.moduleconfig.submit();" ACCESSKEY="S">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
 	</p>
 	</FORM>
     </TD></TR>

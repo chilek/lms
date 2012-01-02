@@ -54,7 +54,7 @@ function CheckAllN2()
 			<B>{t a=$customernodes|@count|default:"0"}Customer Nodes ($a):{/t}</B>
 		</TD>
 		<TD width="1%" class="frightu" align="right" nowrap>
-			{if $customerinfo.status neq "1" and ! $customerinfo.deleted}<A HREF="?m=nodeadd&ownerid={$customerinfo.id}">{t}New Node{/t} &raquo;</A>&nbsp;{/if}
+			{if $customerinfo.status neq "1" and ! $customerinfo.deleted}<A HREF="?m=nodeadd&ownerid={$customerinfo.id}">{trans("New Node")} &raquo;</A>&nbsp;{/if}
 		</TD>
 	</TR>
         <TR id="nodespanel-{$layout.module}" style="display:none;">
@@ -62,15 +62,15 @@ function CheckAllN2()
 		    <FORM method="post" action="" name="custnodeslist">
 		    <TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
 		        <TR class="dark">
-	                <TD WIDTH="{math equation="x-y" x=95 y=$ewx}%" class="fleftu"><B>{t}Name:{/t}</B></TD>
-		    	    <TD WIDTH="1%" class="fbt" align="right">{t}ID:{/t}</TD>
+	                <TD WIDTH="{math equation="x-y" x=95 y=$ewx}%" class="fleftu"><B>{trans("Name:")}</B></TD>
+		    	    <TD WIDTH="1%" class="fbt" align="right">{trans("ID:")}</TD>
 			    {if $ewx}
-		    	    <TD WIDTH="1%" class="fbt" align="right">{t}Channel:{/t}</TD>
+		    	    <TD WIDTH="1%" class="fbt" align="right">{trans("Channel:")}</TD>
 			    {/if}
-		    	    <TD WIDTH="1%" class="fbt" align="right">{t}Address:{/t}</TD>
-		    	    <TD WIDTH="1%" class="fbt" align="right">{t}MAC:{/t}</TD>
-		    	    <TD WIDTH="1%" class="fbt" align="right">{t}Groups:{/t}</TD>
-		    	    <TD WIDTH="1%" class="fbt" align="right">{t}Network:{/t}</TD>
+		    	    <TD WIDTH="1%" class="fbt" align="right">{trans("Address:")}</TD>
+		    	    <TD WIDTH="1%" class="fbt" align="right">{trans("MAC:")}</TD>
+		    	    <TD WIDTH="1%" class="fbt" align="right">{trans("Groups:")}</TD>
+		    	    <TD WIDTH="1%" class="fbt" align="right">{trans("Network:")}</TD>
 		    	    <TD WIDTH="1%" class="frightu">&nbsp;</TD>
 			</TR>
 			{cycle values="light,lucid" print=false name=nodes}
@@ -103,7 +103,7 @@ function CheckAllN2()
 	        	    <a href="?m=ewxchinfo&id={$customernodes[customernodes].channelid}">{$customernodes[customernodes].channelname|truncate:30:"...":true}</a>
 			    	{elseif $customernodes[customernodes].channelid}
 				        {if !$customernodes[customernodes].cid}
-    				    <a href="?m=ewxchinfo&id=0">[{t}default{/t}]</a>
+    				    <a href="?m=ewxchinfo&id=0">[{trans("default")}]</a>
 	    			    {else}
 		    		    [{$customernodes[customernodes].channelid|string_format:"%04d"}]
 				        {/if}
@@ -126,11 +126,11 @@ function CheckAllN2()
 				<B><A HREF="?m=netinfo&id={$customernodes[customernodes].network.id}">{$customernodes[customernodes].network.name|truncate:"20":"...":true}</A></B> {if $customernodes[customernodes].network_pub} (<B><A HREF="?m=netinfo&id={$customernodes[customernodes].network_pub.id}">{$customernodes[customernodes].network_pub.name|truncate:"20":"...":true}</A></B>){/if}
 			    </TD>
 			    <TD NOWRAP>
-				<A HREF="?m=nodeset&id={$customernodes[customernodes].id}"><IMG src="img/{if ! $customernodes[customernodes].access}no{/if}access.gif" alt="[ {if ! $customernodes[customernodes].access}{t}Connect{/t}{else}{t}Disconnect{/t}{/if} ]" title="[ {if ! $customernodes[customernodes].access}{t}Connect{/t}{else}{t}Disconnect{/t}{/if} ]"></A>
-				<A HREF="?m=nodewarn&id={$customernodes[customernodes].id}"><IMG src="img/warning{if ! $customernodes[customernodes].warning}off{else}on{/if}.gif" alt="[ {if ! $customernodes[customernodes].warning}{t}Enable notice{/t}{else}{t}Disable notice{/t}{/if} ]" title="[ {if ! $customernodes[customernodes].warning}{t}Enable notice{/t}{else}{t}Disable notice{/t}{/if} ]"></A>
-				<A HREF="?m=nodedel&id={$customernodes[customernodes].id}" onClick="return confirmLink(this, '{t a=$customernodes[customernodes].name}Are you sure, you want to remove node \'$a\' from database?{/t}')"><IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
-				<A HREF="?m=nodeedit&id={$customernodes[customernodes].id}"><IMG SRC="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
-				<A HREF="?m=nodeinfo&id={$customernodes[customernodes].id}"><IMG SRC="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>&nbsp;
+				<A HREF="?m=nodeset&id={$customernodes[customernodes].id}"><IMG src="img/{if ! $customernodes[customernodes].access}no{/if}access.gif" alt="[ {if ! $customernodes[customernodes].access}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]" title="[ {if ! $customernodes[customernodes].access}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]"></A>
+				<A HREF="?m=nodewarn&id={$customernodes[customernodes].id}"><IMG src="img/warning{if ! $customernodes[customernodes].warning}off{else}on{/if}.gif" alt="[ {if ! $customernodes[customernodes].warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if} ]" title="[ {if ! $customernodes[customernodes].warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if} ]"></A>
+				<A HREF="?m=nodedel&id={$customernodes[customernodes].id}" onClick="return confirmLink(this, '{t a=$customernodes[customernodes].name}Are you sure, you want to remove node \'$a\' from database?{/t}')"><IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+				<A HREF="?m=nodeedit&id={$customernodes[customernodes].id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+				<A HREF="?m=nodeinfo&id={$customernodes[customernodes].id}"><IMG SRC="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>&nbsp;
 				<INPUT TYPE="checkbox" NAME="marks[{$customernodes[customernodes].id}]" VALUE="{$customernodes[customernodes].id}" CHECKED>
 			    </TD>
 			</TR>
@@ -138,7 +138,7 @@ function CheckAllN2()
 			<TR>
 			    <TD WIDTH="100%" COLSPAN="{math equation="x+y" x=6 y=$ewx}" align="center">
 				<P>&nbsp;</P>
-				<P><B>{if $customerinfo.deleted}<FONT class="red">{t}That customer has been deleted.{/t}</FONT>{else}{t}That customer hasn't got any node.{/t}{/if}</B></P>
+				<P><B>{if $customerinfo.deleted}<FONT class="red">{trans("That customer has been deleted.")}</FONT>{else}{trans("That customer hasn't got any node.")}{/if}</B></P>
 				<P>&nbsp;</P>
 			    </TD>
 			</TR>
@@ -146,12 +146,12 @@ function CheckAllN2()
 			<TR CLASS="LIGHT">
 			    <TD COLSPAN="{math equation="x+y" x=4 y=$ewx}" CLASS="FTOP">
 				<IMG SRC="img/access.gif">
-				<A HREF="javascript: setstatus(1)"> {t}Connect{/t}</A>/<A HREF="javascript: setstatus(0)">{t}Disconnect{/t}</A>
+				<A HREF="javascript: setstatus(1)"> {trans("Connect")}</A>/<A HREF="javascript: setstatus(0)">{trans("Disconnect")}</A>
 				<IMG SRC="img/warningon.gif">
-				<A HREF="javascript: setwarning(1)"> {t}Enable{/t}</A>/<A HREF="javascript: setwarning(0)">{t}Disable{/t}</A>
+				<A HREF="javascript: setwarning(1)"> {trans("Enable")}</A>/<A HREF="javascript: setwarning(0)">{trans("Disable")}</A>
 				{if $allnodegroups}
 				<IMG SRC="img/nodegroup.gif">
-				<A HREF="javascript: setgroup('setgroup')"> {t}Add{/t}</A>/<A HREF="javascript: setgroup('unsetgroup')">{t}Remove Group{/t}</A>:
+				<A HREF="javascript: setgroup('setgroup')"> {trans("Add")}</A>/<A HREF="javascript: setgroup('unsetgroup')">{trans("Remove Group")}</A>:
 				<SELECT SIZE="1" ID="groupselect">
 	            		    {foreach from=$allnodegroups item=nodegroup}
 			            <OPTION value="{$nodegroup.id}" {if $listdata.nodegroup eq $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
@@ -160,7 +160,7 @@ function CheckAllN2()
 				{/if}
 			    </TD>
 			    <TD CLASS="ftop" ALIGN="right" COLSPAN="3">
-			        <NOBR><A href="javascript:CheckAllN2();">{t}Check All{/t}</A><INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAllN();" VALUE="Check All Boxes" CHECKED></NOBR>
+			        <NOBR><A href="javascript:CheckAllN2();">{trans("Check All")}</A><INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAllN();" VALUE="Check All Boxes" CHECKED></NOBR>
                             </TD>
 			</TR>
 		    </TABLE>

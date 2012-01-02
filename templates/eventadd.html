@@ -15,7 +15,7 @@
 		end = document.forms['event'].elements['event[endtime]'];
 		if (Number(start.options[start.selectedIndex].value) > Number(end.options[end.selectedIndex].value))
 		{
-			alert('{t}End time must not precede start time!{/t}');
+			alert('{trans("End time must not precede start time!")}');
 			end.value = start.options[start.selectedIndex].value;
 		}
 	}
@@ -37,7 +37,7 @@
 			<IMG src="img/calendar.gif" alt="">
 		</TD>
 		<TD width="1%" class="fbt">
-			<B>{t}Title:{/t}</B>
+			<B>{trans("Title:")}</B>
 		</TD>
 		<TD width="98%" class="frightu">
 			<INPUT type="text" name="event[title]" id="event[title]" value="{$event.title}" size="50" {tip text="Enter event title" trigger="title"}>
@@ -48,17 +48,17 @@
 			<IMG src="img/time.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Time:{/t}</B>
+			<B>{trans("Time:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 {*			<INPUT type="hidden" name="event[date]" value="{$event.date}">
 *}			<INPUT type="text" name="event[date]" value="{$event.date}" size="10" OnCLick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="date"}>
-			{t}Begin:{/t} <SELECT name="event[begintime]" size="1" {tip text="Select time of"} OnChange="javascript:SetEndtime();">
+			{trans("Begin:")} <SELECT name="event[begintime]" size="1" {tip text="Select time of"} OnChange="javascript:SetEndtime();">
 				{section name=time loop=$hours}
 				<OPTION value="{$hours[time]}" {if $hours[time] == $event.begintime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</OPTION>
 				{/section}
 			</SELECT>
-			{t}End:{/t} <SELECT name="event[endtime]" size="1" {tip text="Select time of"} OnChange="javascript:CheckEndtime();">
+			{trans("End:")} <SELECT name="event[endtime]" size="1" {tip text="Select time of"} OnChange="javascript:CheckEndtime();">
 				{section name=time loop=$hours}
 				<OPTION value="{$hours[time]}" {if $hours[time] == $event.endtime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</OPTION>
 				{/section}
@@ -70,7 +70,7 @@
 			<IMG src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Description:{/t}</B>
+			<B>{trans("Description:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<TEXTAREA name="event[description]" cols="50" rows="5" {tip text="Enter additional information (optional)"}>{$event.description}</TEXTAREA>
@@ -81,10 +81,10 @@
 			<IMG src="img/access.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Status:{/t}</B>
+			<B>{trans("Status:")}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
-			<INPUT type="checkbox" name="event[status]" id="event[status]" value="1" {tip text="Select event's status"}{if $event.status}CHECKED{/if}><A HREF="javascript:checkElement('event[status]')"> {t}private{/t}</A>
+			<INPUT type="checkbox" name="event[status]" id="event[status]" value="1" {tip text="Select event's status"}{if $event.status}CHECKED{/if}><A HREF="javascript:checkElement('event[status]')"> {trans("private")}</A>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -92,20 +92,20 @@
 			<IMG src="img/customer.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Customer:{/t}</B>
+			<B>{trans("Customer:")}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
 			{if $customerlist}
 			<SELECT name="event[customerid]" value="{$event.customerid}" {tip text="Select customer (optional)"} onChange="document.forms['event'].elements['event[custid]'].value=document.forms['event'].elements['event[customerid]'].value">
-				<OPTION value="0"{if !$event.customerid} SELECTED{/if}>{t}- select customer -{/t}</OPTION>
+				<OPTION value="0"{if !$event.customerid} SELECTED{/if}>{trans("- select customer -")}</OPTION>
 				{foreach from=$customerlist item=customer}	
 				<OPTION value="{$customer.id}"{if $customer.id == $event.customerid} SELECTED{/if}>{$customer.customername|truncate:"40":"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
 				{/foreach}
 			</SELECT>
-			{t}or Customer ID:{/t}
-			{else}{t}ID:{/t}{/if}
+			{trans("or Customer ID:")}
+			{else}{trans("ID:")}{/if}
             		<INPUT TYPE="TEXT" NAME="event[custid]" VALUE="{if $event.customerid}{$event.customerid}{/if}" SIZE="5"{if $customerlist} onChange="reset_customer()" onfocus="reset_customer()"{/if} {tip text="Enter customer ID" trigger="custid"}>
-			<a href="javascript: void(0);" onClick="return customerchoosewin(document.forms['event'].elements['event[custid]']);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+			<a href="javascript: void(0);" onClick="return customerchoosewin(document.forms['event'].elements['event[custid]']);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -113,7 +113,7 @@
 			<IMG src="img/users.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Users:{/t}</B>
+			<B>{trans("Users:")}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
 			<SELECT size="{if $userlistsize > 5}5{else}{size of=$userlist}{/if}" name="event[userlist][]" {tip text="Select user(s) (optional)"} multiple>
@@ -125,9 +125,9 @@
 	</TR>
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
-			<A href="javascript:document.event.submit();" accesskey="s">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=eventlist">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="event[reuse]" id="event[reuse]" value="ON" {if $event.reuse}checked{/if}><A HREF="javascript:checkElement('event[reuse]')"> {t}Display this form again, when this event is saved{/t}</A>
+			<A href="javascript:document.event.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=eventlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A><BR>
+			<INPUT type="checkbox" name="event[reuse]" id="event[reuse]" value="ON" {if $event.reuse}checked{/if}><A HREF="javascript:checkElement('event[reuse]')"> {trans("Display this form again, when this event is saved")}</A>
 		</TD>
 	</TR>
 </TABLE>

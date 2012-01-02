@@ -15,17 +15,17 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
         <TR>
                 <TD style="vertical-align: top" WIDTH="50%">
-			<H1>{t}Customer Information:{/t}</H1>
+			<H1>{trans("Customer Information:")}</H1>
                         {include file="customerinfomini.html"}
 			{include file="balanceviewaccount.html"}
                 </TD>
 		<TD style="vertical-align: top" WIDTH="50%">
-			<H1>{t}Customer Account:{/t}</H1>
+			<H1>{trans("Customer Account:")}</H1>
 			<TABLE WIDTH="100%" CELLPADDING="3">
 			    <TR CLASS="DARK">
 				<TD class="fleftu">
 				    <IMG src="img/money.gif" border="0" alt="" align="absmiddle">
-				    <B>{t}Customer Account:{/t} ({t a=$limit}last $a transactions{/t})</B>
+				    <B>{trans("Customer Account:")} ({t a=$limit}last $a transactions{/t})</B>
 				</TD>
 				<TD class="frightu"></TD>
 			    </TR>
@@ -33,11 +33,11 @@
 				<TD width="100%" colspan="2" class="fall">
 				    <TABLE border="0" cellpadding="5" cellspacing="0" width="100%">
 					<TR class="dark">
-					    <TD width="1%" class="fleftu">{t}Date:{/t}</TD>
-					    <TD width="1%" class="fbt" align="right">{t}Value:{/t}</TD>
+					    <TD width="1%" class="fleftu">{trans("Date:")}</TD>
+					    <TD width="1%" class="fbt" align="right">{trans("Value:")}</TD>
 					    <TD width="1%" class="fbt" align="center">&raquo;</TD>
-					    <TD width="1%" class="fbt" align="right">{t}After:{/t}</TD>
-					    <TD width="95%" class="fbt">{t}Description:{/t}</TD>
+					    <TD width="1%" class="fbt" align="right">{trans("After:")}</TD>
+					    <TD width="95%" class="fbt">{trans("Description:")}</TD>
 					    <TD width="1%" class="frightu"></TD>
 					</TR>
 				{cycle values="#DFD5BD,#EBE4D6" print=false}
@@ -50,7 +50,7 @@
 					    <TD width="95%">{$balancelist.comment[balancelist]}</TD>
 					    <TD width="1%">
 						    {if $balancelist.doctype[balancelist]==1}
-						    <A href="invoice.php?id={$balancelist.docid[balancelist]}" target="_BLANK"><IMG src="img/print.gif" border="0" alt="[ {t}Invoice{/t} ]" align="absmiddle"></A>
+						    <A href="invoice.php?id={$balancelist.docid[balancelist]}" target="_BLANK"><IMG src="img/print.gif" border="0" alt="[ {trans("Invoice")} ]" align="absmiddle"></A>
 						    {/if}
 					    </TD>
 					</TR>
@@ -58,7 +58,7 @@
 					<TR>
 					    <TD align="center" width="100%" colspan="6">
 						<p>&nbsp;</p>
-						<p><B>{t}That customer hasn't got any transactions.{/t}</B></p>
+						<p><B>{trans("That customer hasn't got any transactions.")}</B></p>
 						<p>&nbsp;</p>
 					    </TD>
 					</TR>

@@ -2,16 +2,16 @@
 {box title="Your subscriptions"}
 <table style="width: 100%;" cellpadding="3">
 	<tr class="darkest">
-		<td width="93%" class="nobr"><b>{t}Subscription:{/t}</b></td>
-		<td width="1%" class="nobr" align="right">{t}Value:{/t}</td>
-		<td width="1%" class="nobr" align="right">{t}Discount:{/t}</td>
-		<td width="1%" class="nobr">{t}Accounting day:{/t}</td>
+		<td width="93%" class="nobr"><b>{trans("Subscription:")}</b></td>
+		<td width="1%" class="nobr" align="right">{trans("Value:")}</td>
+		<td width="1%" class="nobr" align="right">{trans("Discount:")}</td>
+		<td width="1%" class="nobr">{trans("Accounting day:")}</td>
 		{if $_config.userpanel.show_speeds}
-			<td width="1%" class="nobr" align="right">{t}Downrate (ceil):{/t}</td>
-			<td width="1%" class="nobr" align="right">{t}Uprate (ceil):{/t}</td>
+			<td width="1%" class="nobr" align="right">{trans("Downrate (ceil):")}</td>
+			<td width="1%" class="nobr" align="right">{trans("Uprate (ceil):")}</td>
 		{/if}
-		<td width="1%" class="nobr">{t}Invoice:{/t}</td>
-		<td width="1%" class="nobr">{t}Period:{/t}</td>
+		<td width="1%" class="nobr">{trans("Invoice:")}</td>
+		<td width="1%" class="nobr">{trans("Period:")}</td>
 	</tr>
 	{foreach from=$assignments item=assignment}
 	{if ($assignment.tariffid || $assignment.liabilityid) && !($assignment.suspended || ($assignment.dateto < $smarty.now && $assignment.dateto) || ($assignment.datefrom > $smarty.now && $assignment.datefrom))}
@@ -24,10 +24,10 @@
 			<td class="nobr" align="right">{$assignment.downrate|default:"-"}({$assignment.downceil|default:"-"}) kbit/s</td>
 			<td class="nobr" align="right">{$assignment.uprate|default:"-"}({$assignment.upceil|default:"-"}) kbit/s</td>
 		{/if}
-		<td>{if $assignment.invoice}{t}yes{/t}{else}&nbsp;{/if}</td>
+		<td>{if $assignment.invoice}{trans("yes")}{else}&nbsp;{/if}</td>
 		<td>
-			{if $assignment.datefrom}<nobr>{t}from{/t} {$assignment.datefrom|date_format:"%Y/%m/%d"}</nobr>{/if}
-			{if $assignment.dateto}<nobr>{t}to{/t} {$assignment.dateto|date_format:"%Y/%m/%d"}</nobr>{/if}
+			{if $assignment.datefrom}<nobr>{trans("from")} {$assignment.datefrom|date_format:"%Y/%m/%d"}</nobr>{/if}
+			{if $assignment.dateto}<nobr>{trans("to")} {$assignment.dateto|date_format:"%Y/%m/%d"}</nobr>{/if}
 		</td>
 	</tr>
 	{/if}
@@ -35,13 +35,13 @@
 	<tr>
 		<td align="center" width="100%" colspan="8">
 			<p>&nbsp;</p>
-			<p><b>{t}You haven't got any assigned subscriptions.{/t}</b></p>
+			<p><b>{trans("You haven't got any assigned subscriptions.")}</b></p>
 			<p>&nbsp;</p>
 		</td>
 	</tr>
 	{/foreach}
 	<tr class="darkest">
-		<td align="right"><b>{t}Total:{/t}</b></td>
+		<td align="right"><b>{trans("Total:")}</b></td>
 		<td class="nobr" align="right">{sum array=$assignments column="real_value" string_format=$LANGDEFS.$_language.money_format}</td>
 		<td class="nobr" align="right">({sum array=$assignments column="real_disc_value" string_format=$LANGDEFS.$_language.money_format})</td>
 		<td>&nbsp;</td>

@@ -8,10 +8,10 @@
 		<FORM NAME="changes" METHOD="POST" ACTION="?m=userpanel&module=info&f=changes">
 			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
 				<TR class="dark">
-					<TD WIDTH="30%" NOWRAP class="fleftu"><B>{t}Customer:{/t}</B></TD>
-					<TD WIDTH="15%" NOWRAP class="fbt">{t}Field:{/t}</TD>
-					<TD WIDTH="25%" NOWRAP class="fbt">{t}Old value:{/t}</TD>
-					<TD WIDTH="25%" NOWRAP class="fbt">{t}New value:{/t}</TD>
+					<TD WIDTH="30%" NOWRAP class="fleftu"><B>{trans("Customer:")}</B></TD>
+					<TD WIDTH="15%" NOWRAP class="fbt">{trans("Field:")}</TD>
+					<TD WIDTH="25%" NOWRAP class="fbt">{trans("Old value:")}</TD>
+					<TD WIDTH="25%" NOWRAP class="fbt">{trans("New value:")}</TD>
 					<TD WIDTH="5%" class="frightu">&nbsp;</TD>
 				</TR>
 				{cycle values="light,lucid" print=false}
@@ -27,16 +27,16 @@
 				<TR>
 					<TD align="center" WIDTH="100%" colspan="5" class="fall">
 					<p>&nbsp;</p>
-					<p><B>{t}There are any changes to accept.{/t}</B></p>
+					<p><B>{trans("There are any changes to accept.")}</B></p>
 					<p>&nbsp;</p>
 					</TD>
 				</TR>
 				{/foreach}
 				<TR class="dark">
 					<TD ALIGN="RIGHT" CLASS="fall" COLSPAN="5" ROWSPAN="1" NOWRAP>
-						<A HREF="javascript:document.changes.action='?m=userpanel&module=info&f=submit_changes_save';document.changes.submit()">{t}Save{/t} <IMG SRC="img/save.gif" alt=""></A>
+						<A HREF="javascript:document.changes.action='?m=userpanel&module=info&f=submit_changes_save';document.changes.submit()">{trans("Save")} <IMG SRC="img/save.gif" alt=""></A>
 						/
-						<A HREF="javascript:document.changes.action='?m=userpanel&module=info&f=submit_changes_delete';document.changes.submit()">{t}Delete{/t} <IMG SRC="img/delete.gif" alt=""></A>
+						<A HREF="javascript:document.changes.action='?m=userpanel&module=info&f=submit_changes_delete';document.changes.submit()">{trans("Delete")} <IMG SRC="img/delete.gif" alt=""></A>
 					</TD>
 				</TR>
 			</TABLE>

@@ -5,22 +5,22 @@
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" WIDTH="20%" COLSPAN="2" NOWRAP>
 			<IMG src="img/queue.gif" ALT="">
-			<B>{t}Category{/t}:</B><BR>
+			<B>{trans("Category")}:</B><BR>
 			<IMG src="img/info1.gif" ALT="">
-			{t}Description{/t}:
+			{trans("Description")}:
 		</TD>
 		<TD CLASS="fbt" WIDTH="76%" NOWRAP>
 			<IMG src="img/users.gif" ALT="">
-			<B>{t}Owners{/t}:</B>
+			<B>{trans("Owners")}:</B>
 		</TD>
 		<TD CLASS="fbt" align="right"  WIDTH="1%">
-			{t}New:{/t}
+			{trans("New:")}
 		</TD>
 		<TD CLASS="fbt" align="right" WIDTH="1%">
-			{t}Opened:{/t}
+			{trans("Opened:")}
 		</TD>
 		<TD CLASS="fbt" align="right" WIDTH="1%" ALIGN="CENTER">
-			{t}Last:{/t}
+			{trans("Last:")}
 		</TD>
 		<TD CLASS="frightu" WIDTH="1%">
 			&nbsp;
@@ -51,17 +51,17 @@
 			{if $category.lastticket}{$category.lastticket|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
 		</TD>
 		<TD CLASS="fright" NOWRAP>
-			<A HREF="?m=rtqueueview&catid={$category.id}"><IMG SRC="img/view.gif" alt="[ {t}Browse{/t} ]" title="[ {t}Browse{/t} ]"></A>
-			<A HREF="?m=rtcategorydel&id={$category.id}" OnClick="return confirmLink(this, '{t a=$category.name}Are you sure, you want to remove category \'$a\'?{/t}');"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
-			<A HREF="?m=rtcategoryedit&id={$category.id}"><IMG SRC="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
-			<A HREF="?m=rtcategoryinfo&id={$category.id}"><IMG SRC="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
+			<A HREF="?m=rtqueueview&catid={$category.id}"><IMG SRC="img/view.gif" alt="[ {trans("Browse")} ]" title="[ {trans("Browse")} ]"></A>
+			<A HREF="?m=rtcategorydel&id={$category.id}" OnClick="return confirmLink(this, '{t a=$category.name}Are you sure, you want to remove category \'$a\'?{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			<A HREF="?m=rtcategoryedit&id={$category.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			<A HREF="?m=rtcategoryinfo&id={$category.id}"><IMG SRC="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
 		</TD>
 	</TR>
 	{foreachelse}
 	<TR>
 		<TD colspan="7" align="center" class="flr">
 			<p>&nbsp;</p>
-			<p><B>{t}There are no categories.{/t}<B></p>
+			<p><B>{trans("There are no categories.")}<B></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
@@ -69,7 +69,7 @@
 	<TR CLASS="light">
 		<TD COLSPAN="3" ALIGN="RIGHT" CLASS="fleftu">
 			<IMG src="img/info2.gif" ALT="">
-			<B>{t}Total:{/t}</B>
+			<B>{trans("Total:")}</B>
 		</TD>
 		<TD ALIGN="CENTER" CLASS="fbt">
 			<B>{sum array=$categories column=new}</B>

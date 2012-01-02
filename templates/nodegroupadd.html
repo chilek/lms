@@ -9,7 +9,7 @@
 			<IMG SRC="img/nodegroup.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt">
-			<B>{t}Name:{/t}</B>
+			<B>{trans("Name:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="frightu">
 			<INPUT TYPE="TEXT" NAME="nodegroupadd[name]" VALUE="{$nodegroupadd.name}" {tip trigger="name" bold=1}>
@@ -20,7 +20,7 @@
 			<IMG SRC="img/info1.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>{t}Description:{/t}</B>
+			<B>{trans("Description:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
 			<TEXTAREA NAME="nodegroupadd[description]" COLS="50" ROWS="5" {tip text="Enter additional information (optional)"}>{$nodegroupadd.description}</TEXTAREA>
@@ -28,9 +28,9 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT"> 
-			<A HREF="javascript:document.nodegroupadd.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
-			<A HREF="?m=nodegrouplist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="nodegroupadd[reuse]" id="reuse" value="ON" id="reuse" {if $nodegroupadd.reuse}checked{/if}><A HREF="javascript:checkElement('reuse')"> {t}Display this form again, when this group is saved{/t}</A>
+			<A HREF="javascript:document.nodegroupadd.submit();" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
+			<A HREF="?m=nodegrouplist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A><BR>
+			<INPUT type="checkbox" name="nodegroupadd[reuse]" id="reuse" value="ON" id="reuse" {if $nodegroupadd.reuse}checked{/if}><A HREF="javascript:checkElement('reuse')"> {trans("Display this form again, when this group is saved")}</A>
 		</TD>
 	</TR>
 </TABLE></FORM></P>

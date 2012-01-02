@@ -16,34 +16,34 @@
 <TABLE WIDTH="960" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
-			{t}No.{/t}
+			{trans("No.")}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP" NOWRAP>
-			{t}Invoice No.{/t}<BR>
-			{t}Draw-up date{/t}
+			{trans("Invoice No.")}<BR>
+			{trans("Draw-up date")}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP" NOWRAP>
-			{t}Sale date{/t}<BR>
-			{t}Deadline{/t}
+			{trans("Sale date")}<BR>
+			{trans("Deadline")}
 		</TD>
 		<TD WIDTH="{math equation="95-x" x=$taxescount}%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
-			{t}Contractor{/t}
+			{trans("Contractor")}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
-			{t}Gross value{/t}
+			{trans("Gross value")}
 		</TD>
 		{foreach item=tax from=$taxes}
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
-			{t}Net value{/t}<BR><NOBR>{$tax.label}</NOBR>
+			{trans("Net value")}<BR><NOBR>{$tax.label}</NOBR>
 		</TD>
 		{if $tax.value}
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
-			{t}Tax value{/t}<BR><NOBR>{$tax.label}</NOBR>
+			{trans("Tax value")}<BR><NOBR>{$tax.label}</NOBR>
 		</TD>
 		{/if}
 		{/foreach}
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
-			{t}Total Tax{/t}
+			{trans("Total Tax")}
 		</TD>
 	</TR>
 	{cycle values="grey,white" print=false}
@@ -87,7 +87,7 @@
 	{/section}
 	<TR>
 		<TD COLSPAN="4" ALIGN="RIGHT" class="small">
-			<B>{t}Page total:{/t}</B>
+			<B>{trans("Page total:")}</B>
 		</TD>
 		<TD ALIGN="RIGHT" class="small">
 			<B>{$totals.$item.total|string_format:"%01.2f"}</B>
@@ -109,7 +109,7 @@
 	</TR>
 	<TR>
 		<TD COLSPAN="4" ALIGN="RIGHT" class="small">
-			<B>{t}Transfered from previous page:{/t}</B>
+			<B>{trans("Transfered from previous page:")}</B>
 		</TD>
 		<TD ALIGN="RIGHT" class="small">
 			<B>{$totals.$previtem.alltotal|string_format:"%01.2f"}</B>
@@ -131,7 +131,7 @@
 	</TR>
 	<TR>
 		<TD COLSPAN="4" ALIGN="RIGHT" class="small">
-			<B>{t}Total from start of period:{/t}</B>
+			<B>{trans("Total from start of period:")}</B>
 		</TD>
 		<TD ALIGN="RIGHT" class="small">
 			<B>{$totals.$item.alltotal|string_format:"%01.2f"}</B>
@@ -168,40 +168,40 @@
 <TABLE WIDTH="960" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
-			{t}No.{/t}
+			{trans("No.")}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP" NOWRAP>
-			{t}Invoice No.{/t}<BR>
-			{t}Draw-up date{/t}
+			{trans("Invoice No.")}<BR>
+			{trans("Draw-up date")}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP" NOWRAP>
-			{t}Sale date{/t}<BR>
-			{t}Deadline{/t}
+			{trans("Sale date")}<BR>
+			{trans("Deadline")}
 		</TD>
 		<TD WIDTH="{math equation="95-x" x=$taxescount}%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
-			{t}Contractor{/t}
+			{trans("Contractor")}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
-			{t}Gross value{/t}
+			{trans("Gross value")}
 		</TD>
 		{foreach item=tax from=$taxes}
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
-			{t}Net value{/t}<BR><NOBR>{$tax.label}</NOBR>
+			{trans("Net value")}<BR><NOBR>{$tax.label}</NOBR>
 		</TD>
 		{if $tax.value}
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
-			{t}Tax value{/t}<BR><NOBR>{$tax.label}</NOBR>
+			{trans("Tax value")}<BR><NOBR>{$tax.label}</NOBR>
 		</TD>
 		{/if}
 		{/foreach}
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
-			{t}Total Tax{/t}
+			{trans("Total Tax")}
 		</TD>
 	</TR>
 	<TR>
 		<TD ALIGN="center" COLSPAN="{math equation="6+x" x=$taxescount}">
 			<P>&nbsp;</P>
-			<P><B>{t}No such invoices in selected time period.{/t}</B></P>
+			<P><B>{trans("No such invoices in selected time period.")}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>

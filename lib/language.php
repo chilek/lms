@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-cvs
  *
- *  (C) Copyright 2001-2011 LMS Developers
+ *  (C) Copyright 2001-2012 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,17 +28,21 @@ function trans()
 {
 	global $_LANG;
 
-	$content = func_get_arg(0);
+	$args    = func_get_args();
+    $content = array_shift($args);
 
-	if(isset($_LANG[$content]))
+    if (is_array($content)) {
+        $args    = array_values($content);
+        $content = array_shift($args);
+    }
+
+	if (isset($_LANG[$content]))
 		$content = trim($_LANG[$content]);
 
-	$argc = func_num_args();
-	for($i = 1; $i < $argc; $i++)
-	{
-		$arg = func_get_arg($i);
-		$content = str_replace('$'.chr(97+$i-1), $arg, $content);
+	for ($i = 1, $len = count($args); $i <= $len; $i++) {
+		$content = str_replace('$'.chr(97+$i-1), $args[$i-1], $content);
 	}
+
 	return $content;
 }
 

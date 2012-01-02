@@ -10,7 +10,7 @@
 			<IMG SRC="img/netdev.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" CLASS="FBT">
-			<B>{t}Name:{/t}</B>
+			<B>{trans("Name:")}</B>
 		<TD WIDTH="98%" CLASS="FRIGHTU">
 			<INPUT TYPE="TEXT" NAME="netdev[name]" VALUE="{$netdev.name}" MAXLENGTH="32" {tip trigger="name" text="Enter device name" bold=1}> 
 		</TD>
@@ -26,7 +26,7 @@
 			<IMG SRC="img/producer.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Manufacturer:{/t}</B>
+			<B>{trans("Manufacturer:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 			<INPUT TYPE="TEXT" NAME="netdev[producer]" VALUE="{$netdev.producer}" {tip text="Enter producer name (optional)"}>
@@ -37,7 +37,7 @@
 			<IMG SRC="img/netdev_model.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Model:{/t}</B>
+			<B>{trans("Model:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 			<INPUT TYPE="TEXT" NAME="netdev[model]" VALUE="{$netdev.model}" {tip text="Enter device model (optional)"}>
@@ -48,7 +48,7 @@
 			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Serial number:{/t}</B>
+			<B>{trans("Serial number:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 			<INPUT TYPE="TEXT" NAME="netdev[serialnumber]" VALUE="{$netdev.serialnumber}" {tip text="Enter device serial number (optional)"}>
@@ -59,7 +59,7 @@
 			<IMG SRC="img/port.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Number of ports:{/t}</B>
+			<B>{trans("Number of ports:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 			<INPUT TYPE="TEXT" NAME="netdev[ports]" VALUE="{if $netdev.ports}{$netdev.ports}{/if}" {tip trigger="ports" text="Enter number of ports (optional)"}>
@@ -70,7 +70,7 @@
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Location:{/t}</B>
+			<B>{trans("Location:")}</B>
 		</TD>
 		<TD WIDTH="98%" NOWRAP>
 		    <INPUT TYPE="TEXT" SIZE="30" VALUE="{$netdev.location}" id="location" NAME="netdev[location]"  {tip text="Enter location (optional)" trigger="location"}>
@@ -80,7 +80,7 @@
 		    <INPUT type="hidden" name="netdev[location_street]" value="{$netdev.location_street}">
 		    <INPUT type="hidden" name="netdev[location_house]" value="{$netdev.location_house}">
 		    <INPUT type="hidden" name="netdev[location_flat]" value="{$netdev.location_flat}">
-			<INPUT TYPE="checkbox" name="netdev[teryt]" id="teryt" onchange="check_teryt('location')"{if $netdev.teryt} checked{/if}><a href="javascript:checkElement('netdev[teryt]');">{t}TERRIT-DB{/t}</a>
+			<INPUT TYPE="checkbox" name="netdev[teryt]" id="teryt" onchange="check_teryt('location')"{if $netdev.teryt} checked{/if}><a href="javascript:checkElement('netdev[teryt]');">{trans("TERRIT-DB")}</a>
 		</TD>
 	</TR>
 	<TR>
@@ -88,7 +88,7 @@
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}GPS longitude:{/t}</B>
+			<B>{trans("GPS longitude:")}</B>
 		</TD>
 		<TD WIDTH="98%" NOWRAP>
 			<INPUT id="longitude" TYPE="text" NAME="netdev[longitude]" VALUE="{$netdev.longitude}" {tip text="Enter device longitude (optional)" trigger="longitude"}>
@@ -100,7 +100,7 @@
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}GPS latitude:{/t}</B>
+			<B>{trans("GPS latitude:")}</B>
 		</TD>
 		<TD WIDTH="98%" NOWRAP>
 			<INPUT id="latitude" TYPE="text" NAME="netdev[latitude]" VALUE="{$netdev.latitude}" {tip text="Enter device latitude (optional)" trigger="latitude"}>
@@ -113,7 +113,7 @@
 			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Shortname:{/t}</B>
+			<B>{trans("Shortname:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 			<INPUT TYPE="TEXT" NAME="netdev[shortname]" VALUE="{$netdev.shortname}" MAXLENGTH="32" {tip trigger="shortname" text="Enter shortname (optional)"}>
@@ -124,7 +124,7 @@
 			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Type:{/t}</B>
+			<B>{trans("Type:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 			<SELECT NAME="netdev[nastype]" {tip text="Select type (optional)" trigger="nastype"}>
@@ -140,7 +140,7 @@
 			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Max clients:{/t}</B>
+			<B>{trans("Max clients:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 			<INPUT TYPE="TEXT" NAME="netdev[clients]" VALUE="{if $netdev.clients}{$netdev.clients}{/if}" {tip trigger="clients" text="Enter max clients (optional)"}>
@@ -151,7 +151,7 @@
 			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Secret:{/t}</B>
+			<B>{trans("Secret:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 			<INPUT TYPE="TEXT" NAME="netdev[secret]" VALUE="{$netdev.secret}" MAXLENGTH="60" {tip text="Enter secret (optional)"}>
@@ -162,7 +162,7 @@
 			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Community:{/t}</B>
+			<B>{trans("Community:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 			<INPUT TYPE="TEXT" NAME="netdev[community]" VALUE="{$netdev.community}" MAXLENGTH="50" {tip text="Enter community (optional)"}>
@@ -175,11 +175,11 @@
 			<IMG SRC="img/channel.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Channel:{/t}</B>
+			<B>{trans("Channel:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 			<SELECT NAME="netdev[channelid]" {tip text="Select channel (optional)" trigger="channelid"}>
-				<OPTION VALUE="">- {t}none{/t} -</OPTION>
+				<OPTION VALUE="">- {trans("none")} -</OPTION>
 				{foreach from=$channels item=item}
 				<OPTION VALUE="{$item.id}" {if $item.id == $netdev.channelid} SELECTED{/if}>{$item.name}</OPTION>
 				{/foreach}
@@ -196,7 +196,7 @@
 			<IMG SRC="img/calendar.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Purchase date:{/t}</B>
+			<B>{trans("Purchase date:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 			<INPUT TYPE="TEXT" NAME="netdev[purchasedate]" VALUE="{if $netdev.purchasedate}{$netdev.purchasedate}{/if}" SIZE="10" MAXSIZE="10" OnClick="javascript:cal1.popup();" {tip trigger="purchasedate" text="Enter device purchase date in 'yyyy/mm/dd' format or click to choose date from calendar (optional)"}>
@@ -207,7 +207,7 @@
 			<IMG SRC="img/guarantee.png" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Guarantee period:{/t}</B>
+			<B>{trans("Guarantee period:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 			<SELECT SIZE="1" NAME="netdev[guaranteeperiod]" {tip text="Select device guarantee period (optional)"}>
@@ -222,7 +222,7 @@
 			<IMG SRC="img/desc.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Description:{/t}</B>
+			<B>{trans("Description:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 			<TEXTAREA NAME="netdev[description]" COLS="40" ROWS="5" {tip text="Enter additional information (optional)"}>{$netdev.description}</TEXTAREA>
@@ -236,8 +236,8 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
-			<A HREF="javascript:document.netdevadd.submit();" ACCESSKEY="s">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
-			<A HREF="?m=netdevlist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A>
+			<A HREF="javascript:document.netdevadd.submit();" ACCESSKEY="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
+			<A HREF="?m=netdevlist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>	
 </TABLE>

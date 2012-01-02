@@ -27,15 +27,15 @@
 			<TABLE width="100%" cellpadding="3">
 				<TR CLASS="DARK">
 					<TD CLASS="fall" WIDTH="99%" COLSPAN="3">
-						<IMG SRC="img/settings.gif" alt="">&nbsp;<B>{t}Default Userpanel Rights:{/t}</B>
+						<IMG SRC="img/settings.gif" alt="">&nbsp;<B>{trans("Default Userpanel Rights:")}</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD CLASS="flr" COLSPAN="3" VALIGN="TOP">
 						<TABLE cellpadding="3" cellspacing="0" WIDTH="100%">
 							<TR class="dark">
-								<TD WIDTH="1%" NOWRAP class="fleftu">{t}Module:{/t}</TD>
-								<TD WIDTH="97%" NOWRAP class="fbt">{t}Description:{/t}</TD>
+								<TD WIDTH="1%" NOWRAP class="fleftu">{trans("Module:")}</TD>
+								<TD WIDTH="97%" NOWRAP class="fbt">{trans("Description:")}</TD>
 								<TD WIDTH="1%" class="frightu">&nbsp;</TD>
 							</TR>
 							{cycle values="light,lucid" print=false}
@@ -49,7 +49,7 @@
 							<TR>
 								<TD class="flr" align="center" WIDTH="100%" colspan="3">
 								<p>&nbsp;</p>
-								<p><B>{t}There are any userpanel rights.{/t}</B></p>
+								<p><B>{trans("There are any userpanel rights.")}</B></p>
 								<p>&nbsp;</p>
 								</TD>
 							</TR>
@@ -62,7 +62,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD CLASS="fbottomu" ALIGN="RIGHT" COLSPAN="3">
-						<A HREF="javascript:document.setdefaultrights.submit()" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+						<A HREF="javascript:document.setdefaultrights.submit()" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
 					</TD>
 				<TR>
 			</TABLE>
@@ -75,10 +75,10 @@
 			<TABLE width="100%" cellpadding="3">
 				<TR CLASS="DARK">
 					<TD CLASS="fleftu" WIDTH="1%">
-						<IMG SRC="img/{if $layout.lmsv.2 == 6}user{else}customer{/if}.gif" alt="">&nbsp;<B>{t}Customers:{/t}</B>
+						<IMG SRC="img/{if $layout.lmsv.2 == 6}user{else}customer{/if}.gif" alt="">&nbsp;<B>{trans("Customers:")}</B>
 					</TD>
 					<TD CLASS="frightu" WIDTH="99%" COLSPAN="2">
-						<IMG SRC="img/settings.gif" alt="">&nbsp;<B>{t}Userpanel Rights:{/t}</B>
+						<IMG SRC="img/settings.gif" alt="">&nbsp;<B>{trans("Userpanel Rights:")}</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
@@ -92,8 +92,8 @@
 					<TD CLASS="fright" COLSPAN="2" style="vertical-align: top;">
 						<TABLE cellpadding="3" cellspacing="0" WIDTH="100%">
 							<TR class="dark">
-								<TD WIDTH="1%" NOWRAP class="fleftu">{t}Module:{/t}</TD>
-								<TD WIDTH="97%" NOWRAP class="fbt">{t}Description:{/t}</TD>
+								<TD WIDTH="1%" NOWRAP class="fleftu">{trans("Module:")}</TD>
+								<TD WIDTH="97%" NOWRAP class="fbt">{trans("Description:")}</TD>
 								<TD WIDTH="1%" class="frightu">&nbsp;</TD>
 							</TR>
 							{cycle values="light,lucid" print=false}
@@ -107,7 +107,7 @@
 							<TR>
 								<TD class="flr" align="center" WIDTH="100%" colspan="3">
 								<p>&nbsp;</p>
-								<p><B>{t}There are any userpanel rights.{/t}</B></p>
+								<p><B>{trans("There are any userpanel rights.")}</B></p>
 								<p>&nbsp;</p>
 								</TD>
 							</TR>
@@ -120,10 +120,10 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD CLASS="fbl" WIDTH="1%">
-						<INPUT TYPE="checkbox" NAME="customers" CLASS="box light" OnClick="javascript:SelectAllCustomers()"><A HREF="javascript:SelectAllCustomers2()">{t}Select All{/t}</A></INPUT>
+						<INPUT TYPE="checkbox" NAME="customers" CLASS="box light" OnClick="javascript:SelectAllCustomers()"><A HREF="javascript:SelectAllCustomers2()">{trans("Select All")}</A></INPUT>
 					</TD>
 					<TD CLASS="fbr" ALIGN="RIGHT" COLSPAN="2">
-						<A HREF="javascript:document.setrights.submit()" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+						<A HREF="javascript:document.setrights.submit()" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
 					</TD>
 				<TR>
 			</TABLE>

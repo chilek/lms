@@ -9,7 +9,7 @@
 			<img src="img/settings.gif" alt="">
 		</TD>
 		<TD width="1%" class="fbt">
-			<B>{t}Name:{/t}</B>
+			<B>{trans("Name:")}</B>
 		</TD>
 		<TD width="98%" class="frightu">
 			<INPUT type="text" name="instance[name]" value="{$instance.name}" {tip text="Enter instance name" trigger="name" bold=1}>
@@ -20,11 +20,11 @@
 			<img src="img/host.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Host:{/t}</B>
+			<B>{trans("Host:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<SELECT name="instance[hostid]" {tip text="Select host name" trigger="hostid"}>
-				<OPTION value="0"{if !$instance.hostid} SELECTED{/if}>{t}- select host -{/t}</OPTION>
+				<OPTION value="0"{if !$instance.hostid} SELECTED{/if}>{trans("- select host -")}</OPTION>
 				{foreach from=$hosts item=host}
 				<OPTION value="{$host.id}"{if $instance.hostid == $host.id} SELECTED{/if}>{$host.name}</OPTION>
 				{/foreach}
@@ -36,7 +36,7 @@
 			<img src="img/plain.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Module:{/t}</B>
+			<B>{trans("Module:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<INPUT type="text" size="50" name="instance[module]" value="{$instance.module}" {tip text="Enter module name and location" trigger="module"}>
@@ -47,7 +47,7 @@
 			<img src="img/time.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Crontab:{/t}</B>
+			<B>{trans("Crontab:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<INPUT type="text" size="50" name="instance[crontab]" value="{$instance.crontab}" {tip text="Enter instance crontab (optional)" trigger="crontab"}>
@@ -58,7 +58,7 @@
 			<img src="img/dhcp.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Priority:{/t}</B>
+			<B>{trans("Priority:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<INPUT type="text" size="10" name="instance[priority]" value="{$instance.priority}" {tip text="Enter instance reload priority" trigger="priority"}>
@@ -69,7 +69,7 @@
 			<img src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Description:{/t}</B>
+			<B>{trans("Description:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<TEXTAREA rows="5" cols="50" name="instance[description]" {tip text="Enter additional information (optional)" trigger="value"}>{$instance.description}</TEXTAREA>
@@ -80,16 +80,16 @@
 			<img src="img/wait.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Status:{/t}</B>
+			<B>{trans("Status:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<INPUT type="checkbox" value="1" name="instance[disabled]" {if $instance.disabled}CHECKED{/if} {tip text="You can turn it off"}> {t}Off{/t}
+			<INPUT type="checkbox" value="1" name="instance[disabled]" {if $instance.disabled}CHECKED{/if} {tip text="You can turn it off"}> {trans("Off")}
 		</TD>
 	</TR>
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
-			<A href="javascript:document.instance.submit();" accesskey="s">{t}Submit{/t} <img src="img/save.gif" alt=""></A>
-			<A href="?m=daemoninstancelist&id={$instance.hostid}">{t}Cancel{/t} <img src="img/cancel.gif" alt=""></A><BR>
+			<A href="javascript:document.instance.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
+			<A href="?m=daemoninstancelist&id={$instance.hostid}">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A><BR>
 		</TD>
 	</TR>
 </TABLE>

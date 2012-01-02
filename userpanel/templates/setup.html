@@ -5,12 +5,12 @@
 <TABLE cellpadding="3" width="100%">
     <TR class="dark">
 	<TD class="fall" colspan="2">
-	    <B>{t}Basic Configuration:{/t}</B>
+	    <B>{trans("Basic Configuration:")}</B>
 	</TD>
     </TR>
     <TR class="light">
 	<TD class="fleft" width="1%" NOWRAP>
-	    {t}Userpanel style:{/t}
+	    {trans("Userpanel style:")}
 	</TD>
 	<TD class="fright" width="99%">
 	    <SELECT name="style" SIZE="1" {tip text="Userpanel design style"}>
@@ -22,19 +22,19 @@
     </TR>
     <TR class="light">
 	<TD class="fleft" width="1%" NOWRAP>
-	    {t}Hint style:{/t}
+	    {trans("Hint style:")}
 	</TD>
 	<TD class="fright" width="99%">
 	    <SELECT name="hint" SIZE="1" {tip text="Userpanel hints style. Chose modern for animated assistant, classic for tips in LMS style, or none to disable hints displaying"}>
-		<OPTION value="modern"{if $hint == 'modern'} SELECTED{/if}>{t}modern{/t}</OPTION>
-		<OPTION value="classic"{if $hint == 'classic'} SELECTED{/if}>{t}classic{/t}</OPTION>
-		<OPTION value="none"{if $hint == 'none'} SELECTED{/if}>{t}none{/t}</OPTION>
+		<OPTION value="modern"{if $hint == 'modern'} SELECTED{/if}>{trans("modern")}</OPTION>
+		<OPTION value="classic"{if $hint == 'classic'} SELECTED{/if}>{trans("classic")}</OPTION>
+		<OPTION value="none"{if $hint == 'none'} SELECTED{/if}>{trans("none")}</OPTION>
 	    </SELECT>
 	</TD>
     </TR>
     <TR class="light">
 	<TD class="fleft" width="1%" NOWRAP>
-	    <A HREF="javascript:checkElement('hide_nodes_modules');">{t}Disabling modules:{/t}</A>
+	    <A HREF="javascript:checkElement('hide_nodes_modules');">{trans("Disabling modules:")}</A>
 	</TD>
 	<TD class="fright" width="99%">
 	    <INPUT class="box light" type="checkbox" name="hide_nodes_modules" ID="hide_nodes_modules" value="1" {if $hide_nodes_modules} CHECKED{/if} {tip text="Hiding some modules useless when customer hasn't got any nodes"}>
@@ -42,18 +42,18 @@
     </TR>
     <TR class="light">
 	<TD class="fbottomu" align="right" colspan="2">
-	    <A HREF="javascript:document.config.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+	    <A HREF="javascript:document.config.submit();" ACCESSKEY="S">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
 	</TD>
 </TABLE>
 <BR>
 <TABLE cellpadding="3" width="100%">
     <TR class="dark">
-	<TD class="fleftu" align="center"><B>{t}Module{/t}</B></TD>
-	<TD class="fbt" align="center"><B>{t}Display name{/t}</B></TD>
-	<TD class="fbt" align="center"><B>{t}Prio{/t}</B></TD>
-	<TD class="fbt" align="center"><B>{t}Database version{/t}</B></TD>
-	<TD class="fbt" align="center"><B>{t}Tip{/t}</B></TD>
-	<TD class="frightu" align="center"><B>{t}Description{/t}</B></TD>
+	<TD class="fleftu" align="center"><B>{trans("Module")}</B></TD>
+	<TD class="fbt" align="center"><B>{trans("Display name")}</B></TD>
+	<TD class="fbt" align="center"><B>{trans("Prio")}</B></TD>
+	<TD class="fbt" align="center"><B>{trans("Database version")}</B></TD>
+	<TD class="fbt" align="center"><B>{trans("Tip")}</B></TD>
+	<TD class="frightu" align="center"><B>{trans("Description")}</B></TD>
     </tr>
     {cycle values="light,lucid" print=false}
     {foreach from=$menu item=menuitem}
@@ -68,7 +68,7 @@
 	    {$menuitem.prio}
 	</td>
 	<td onClick="return self.location.href='?m=userpanel&module={$menuitem.module}';" align="center">
-	    {if $menuitem.dbver>0}{$menuitem.dbver}{else}{t}-{/t}{/if}
+	    {if $menuitem.dbver>0}{$menuitem.dbver}{else}{trans("-")}{/if}
 	</td>
 	<td onClick="return self.location.href='?m=userpanel&module={$menuitem.module}';">
 	    {t}{$menuitem.tip}{/t}
@@ -80,7 +80,7 @@
     {/foreach}
     <TR CLASS="light">
 	<TD WIDTH="98%" COLSPAN="6" CLASS="fall" ALIGN="right">
-	    <B>{t}Total:{/t} {$total}</B>
+	    <B>{trans("Total:")} {$total}</B>
 	</TD>
     </TR>
 </table>

@@ -9,11 +9,11 @@
 			<img src="img/settings.gif" alt="">
 		</TD>
 		<TD width="1%" class="fbt">
-			<B>{t}Name:{/t}</B>
+			<B>{trans("Name:")}</B>
 		</TD>
 		<TD width="98%" class="frightu">
 			<INPUT type="text" name="config[var]" value="{$config.var}" {tip text="Enter option name" trigger="var" bold=1}>&nbsp;
-			<B>{t}Section:{/t}</B>
+			<B>{trans("Section:")}</B>
 			<SELECT size="1" name="config[section]" {tip text="Select section" trigger="section"}>
 			    <OPTION value="phpui"{if $config.section eq "phpui"} SELECTED{/if}>phpui</OPTION>
 			    <OPTION value="finances"{if $config.section eq "finances"} SELECTED{/if}>finances</OPTION>
@@ -30,7 +30,7 @@
 			<img src="img/producer.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Value:{/t}</B>
+			<B>{trans("Value:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<TEXTAREA rows="5" cols="50" name="config[value]" {tip text="Enter option value" trigger="value"}>{$config.value}</TEXTAREA>
@@ -41,7 +41,7 @@
 			<img src="img/info1.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Comment:{/t}</B>
+			<B>{trans("Comment:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<TEXTAREA rows="5" cols="50" name="config[description]" {tip text="Enter description (optional)" trigger="description"}>{$config.description}</TEXTAREA>
@@ -52,17 +52,17 @@
 			<img src="img/wait.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Status:{/t}</B>
+			<B>{trans("Status:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<INPUT type="checkbox" value="1" name="config[disabled]" {if $config.disabled}CHECKED{/if} {tip text="You can turn it off"}><A HREF="javascript:switchStatus()"> {t}Off{/t}</A>
+			<INPUT type="checkbox" value="1" name="config[disabled]" {if $config.disabled}CHECKED{/if} {tip text="You can turn it off"}><A HREF="javascript:switchStatus()"> {trans("Off")}</A>
 		</TD>
 	</TR>
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
-			<A href="javascript:document.config.submit();" accesskey="s">{t}Submit{/t} <img src="img/save.gif" alt=""></A>
-			<A href="?m=configdel&id={$config.id}" OnClick="return confirmLink(this, '{t a=$config.var}Are you sure, you want to delete option \'$a\' from database?{/t}')">{t}Delete{/t} <img src="img/delete.gif" alt=""></A>
-			<A href="?m=configlist">{t}Cancel{/t} <img src="img/cancel.gif" alt=""></A>
+			<A href="javascript:document.config.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
+			<A href="?m=configdel&id={$config.id}" OnClick="return confirmLink(this, '{t a=$config.var}Are you sure, you want to delete option \'$a\' from database?{/t}')">{trans("Delete")} <img src="img/delete.gif" alt=""></A>
+			<A href="?m=configlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE>

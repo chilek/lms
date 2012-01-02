@@ -4,10 +4,10 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="FLEFTU">
-			<IMG SRC="img/voip.gif" ALT="{t}Login:{/t}">
+			<IMG SRC="img/voip.gif" ALT="{trans("Login:")}">
 		</TD>
 		<TD WIDTH="1%" CLASS="FBT">
-			<B>{t}Login:{/t}</B>
+			<B>{trans("Login:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHTU">
 			<INPUT TYPE="TEXT" NAME="voipaccountdata[login]" VALUE="{$voipaccountdata.login}" MAXLENGTH="32" size="30" {tip text="Enter voip account login" trigger="login" bold=1}>
@@ -15,10 +15,10 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/passwd.gif" ALT="{t}Password:{/t}">
+			<IMG SRC="img/passwd.gif" ALT="{trans("Password:")}">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Password:{/t}</B>
+			<B>{trans("Password:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" NAME="voipaccountdata[passwd]" VALUE="{$voipaccountdata.passwd}" {tip text="Enter password" trigger="passwd"}>
@@ -26,10 +26,10 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/phone.gif" ALT="{t}Phone number:{/t}">
+			<IMG SRC="img/phone.gif" ALT="{trans("Phone number:")}">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Phone number:{/t}</B>
+			<B>{trans("Phone number:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" NAME="voipaccountdata[phone]" VALUE="{$voipaccountdata.phone}" {tip text="Enter phone number" trigger="phone"}>
@@ -40,21 +40,21 @@
                         <IMG SRC="img/{if ! $voipaccountdata.access}no{/if}access.gif" ALT="">
                 </TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Status:{/t}</B>
+			<B>{trans("Status:")}</B>
 		</TD>
                 <TD WIDTH="1%" CLASS="FRIGHT">
                         <SELECT SIZE="1" NAME="voipaccountdata[access]" {tip text="Select status" trigger="access"}>
-                                <OPTION VALUE="1"{if $voipaccountdata.access} SELECTED{/if}>{t}connected<!singular>{/t}</OPTION>
-                                <OPTION VALUE="0"{if ! $voipaccountdata.access} SELECTED{/if}>{t}disconnected<!singular>{/t}</OPTION>
+                                <OPTION VALUE="1"{if $voipaccountdata.access} SELECTED{/if}>{trans("connected<!singular>")}</OPTION>
+                                <OPTION VALUE="0"{if ! $voipaccountdata.access} SELECTED{/if}>{trans("disconnected<!singular>")}</OPTION>
                         </SELECT>
                 </TD>
         </TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/customer.gif" ALT="{t}Customer:{/t}">
+			<IMG SRC="img/customer.gif" ALT="{trans("Customer:")}">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Customer:{/t}</B>
+			<B>{trans("Customer:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			<SELECT SIZE="1" NAME="voipaccountdata[ownerid]" {tip text="Assign voip account to customer" trigger="customer"} style="max-width:250px;">
@@ -66,9 +66,9 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
-			<A HREF="javascript:document.voipaccountadd.submit();" ACCESSKEY="s">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
-			<A HREF="?m={if $customerinfo.id}customerinfo&id={$customerinfo.id}{else}voipaccountlist{/if}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="voipaccountdata[reuse]" id="reuse" value="ON" id="reuse" {if $voipaccountdata.reuse}checked{/if}><A HREF="javascript:checkElement('reuse')"> {t}Display this form again, when this voip account is saved{/t}</A>
+			<A HREF="javascript:document.voipaccountadd.submit();" ACCESSKEY="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
+			<A HREF="?m={if $customerinfo.id}customerinfo&id={$customerinfo.id}{else}voipaccountlist{/if}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A><BR>
+			<INPUT type="checkbox" name="voipaccountdata[reuse]" id="reuse" value="ON" id="reuse" {if $voipaccountdata.reuse}checked{/if}><A HREF="javascript:checkElement('reuse')"> {trans("Display this form again, when this voip account is saved")}</A>
 		</TD>
 	</TR>	
 </TABLE></FORM>

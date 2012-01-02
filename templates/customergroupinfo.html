@@ -14,7 +14,7 @@
 		<TD WIDTH="1%" CLASS="fleft">
 			<IMG SRC="img/customers.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" NOWRAP><B>{t}Members Count:{/t}</B>
+		<TD WIDTH="1%" NOWRAP><B>{trans("Members Count:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
 			{$customergroup.count}
@@ -36,8 +36,8 @@
 	{/if}
 	<TR CLASS="light">
 	        <TD ALIGN="RIGHT" CLASS="fbottomu" COLSPAN="3">
-			    <A HREF="?m=customergroupedit&id={$customergroup.id}{if $membersnetid}&membersnetid={$membersnetid}{/if}{if $othersnetid}&othersnetid={$othersnetid}{/if}" ACCESSKEY="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT=""></A>
-			    {if $customergroup.count eq 0} <A HREF="?m=customergroupdel&id={$customergroup.id}" onclick="return confirmLink(this,'{t}Are you sure, you want to delete that group?{/t}');">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT=""></A>{/if}
+			    <A HREF="?m=customergroupedit&id={$customergroup.id}{if $membersnetid}&membersnetid={$membersnetid}{/if}{if $othersnetid}&othersnetid={$othersnetid}{/if}" ACCESSKEY="E">{trans("Edit")} <IMG SRC="img/edit.gif" ALT=""></A>
+			    {if $customergroup.count eq 0} <A HREF="?m=customergroupdel&id={$customergroup.id}" onclick="return confirmLink(this,'{trans("Are you sure, you want to delete that group?")}');">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>{/if}
 		</TD>
 	</TR>
 </TABLE></P>

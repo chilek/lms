@@ -79,7 +79,7 @@
 			<img src="img/settings.gif" alt="">
 		</TD>
 		<TD width="1%" class="fbt">
-			<B>{t}Name:{/t}</B>
+			<B>{trans("Name:")}</B>
 		</TD>
 		<TD width="98%" class="frightu">
 			<INPUT type="text" name="config[var]" value="{$config.var}" {tip text="Enter option name" trigger="var" bold=1}>
@@ -90,7 +90,7 @@
 			<img src="img/settings.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Value:{/t}</B>
+			<B>{trans("Value:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<TEXTAREA rows="20" cols="100" name="config[value]" id="config[value]" onkeydown="return catchTab(this,event)" {tip text="Enter option value" trigger="value"}>{$config.value}</TEXTAREA>
@@ -101,7 +101,7 @@
 			<img src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Description:{/t}</B>
+			<B>{trans("Description:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<TEXTAREA rows="5" cols="100" name="config[description]" {tip text="Enter additional information (optional)" trigger="description"}>{$config.description}</TEXTAREA>
@@ -112,16 +112,16 @@
 			<img src="img/wait.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Status:{/t}</B>
+			<B>{trans("Status:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<INPUT type="checkbox" name="config[disabled]" value="1" {if $config.disabled} CHECKED{/if}{tip text="You can turn it off"}> {t}Off{/t}
+			<INPUT type="checkbox" name="config[disabled]" value="1" {if $config.disabled} CHECKED{/if}{tip text="You can turn it off"}> {trans("Off")}
 		</TD>
 	</TR>
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
-			<A href="javascript:document.config.submit();" accesskey="s">{t}Submit{/t} <img src="img/save.gif" alt=""></A>
-			<A href="?m=daemoninstanceview&id={$config.instanceid}">{t}Cancel{/t} <img src="img/cancel.gif" alt=""></A>
+			<A href="javascript:document.config.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
+			<A href="?m=daemoninstanceview&id={$config.instanceid}">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE>

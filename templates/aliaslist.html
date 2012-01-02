@@ -5,15 +5,15 @@
 <P><TABLE cellpadding="3" WIDTH="100%">
 	<TR class="DARK">
 		<TD width="41%" class="fleftu" nowrap>
-			<IMG src="img/alias.gif" alt=""> <A href="?m={$layout.module}{$suffix}&o=login{if $listdata.direction eq "asc" && $listdata.order eq "login"},desc{/if}"><B>{t}Login<!account>{/t}</B></A> {if $listdata.order eq "login"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG src="img/alias.gif" alt=""> <A href="?m={$layout.module}{$suffix}&o=login{if $listdata.direction eq "asc" && $listdata.order eq "login"},desc{/if}"><B>{trans("Login<!account>")}</B></A> {if $listdata.order eq "login"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 			<B>@</B>
-			<A href="?m={$layout.module}{$suffix}&o=domain{if $listdata.direction eq "asc" && $listdata.order eq "domain"},desc{/if}"><B>{t}Domain:{/t}</B></A> {if $listdata.order eq "domain"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m={$layout.module}{$suffix}&o=domain{if $listdata.direction eq "asc" && $listdata.order eq "domain"},desc{/if}"><B>{trans("Domain:")}</B></A> {if $listdata.order eq "domain"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="fbt" align="right">
-			<A href="?m={$layout.module}{$suffix}&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m={$layout.module}{$suffix}&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="57%" class="fbt" NOWRAP>
-			<IMG src="img/account.gif" alt=""> <A href="?m={$layout.module}{$suffix}&o=dest{if $listdata.direction eq "asc" && $listdata.order eq "dest"},desc{/if}">{t}Destination:{/t}</A> {if $listdata.order eq "dest"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG src="img/account.gif" alt=""> <A href="?m={$layout.module}{$suffix}&o=dest{if $listdata.direction eq "asc" && $listdata.order eq "dest"},desc{/if}">{trans("Destination:")}</A> {if $listdata.order eq "dest"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="frightu" NOWRAP>
 			 <B>{t a=$listdata.total}Total: $a{/t}</B>
@@ -29,17 +29,17 @@
 							<INPUT type="HIDDEN" name="m" value="{$layout.module}">
 							{if $suffix}<INPUT type="HIDDEN" name="s" value="1">{/if}
 							<INPUT type="HIDDEN" name="page" value="1">
-							<B>{t}Filter:{/t} </B> {t}Domain's owner:{/t}
+							<B>{trans("Filter:")} </B> {trans("Domain's owner:")}
 							<SELECT size="1" name="u" OnChange="document.filter.submit();">
-								<OPTION value=""{if $listdata.customer eq ""} SELECTED{/if}>{t}- all owners -{/t}</OPTION>
-								<OPTION value="0"{if $listdata.customer eq "0"} SELECTED{/if}>{t}SYSTEM DOMAIN{/t}</OPTION>
+								<OPTION value=""{if $listdata.customer eq ""} SELECTED{/if}>{trans("- all owners -")}</OPTION>
+								<OPTION value="0"{if $listdata.customer eq "0"} SELECTED{/if}>{trans("SYSTEM DOMAIN")}</OPTION>
 								{foreach from=$customerlist item=customer}
 					    				<OPTION value="{$customer.id}"{if $customer.id eq $listdata.customer} SELECTED{/if}>{$customer.customername|truncate:40:"..."}</OPTION>
 								{/foreach}
 							</SELECT>&nbsp;
-							{t}Domain:{/t}
+							{trans("Domain:")}
 							<SELECT size="1" name="d" OnChange="document.filter.submit();">
-								<OPTION value=""{if $listdata.domainid eq ""} SELECTED{/if}>{t}- all -{/t}</OPTION>
+								<OPTION value=""{if $listdata.domainid eq ""} SELECTED{/if}>{trans("- all -")}</OPTION>
 							{foreach from=$domainlist item=item}
 					    			<OPTION value="{$item.id}"{if $item.id eq $listdata.domain} SELECTED{/if}>{$item.name}</OPTION>
 							{/foreach}
@@ -47,7 +47,7 @@
 						</FORM>
 					</TD>
 					<TD width="99%" align="right" nowrap>
-						<A href="?m=aliasadd{if $listdata.domain}&domainid={$listdata.domain}{/if}">{t}New Alias{/t} <IMG src="img/save.gif" alt=""></A>
+						<A href="?m=aliasadd{if $listdata.domain}&domainid={$listdata.domain}{/if}">{trans("New Alias")} <IMG src="img/save.gif" alt=""></A>
 					</TD>
 		    		</TR>
 			</TABLE>
@@ -75,16 +75,16 @@
 		</TD>
 		<TD class="fright" align="right" NOWRAP>
 			{assign var=alias value="`$aliaslist[aliaslist].login`@`$aliaslist[aliaslist].domain`"}
-			<A href="?m=aliasdel&id={$aliaslist[aliaslist].id}" OnClick="return confirmLink(this, '{t a=$alias}Are you sure, you want to delete alias: \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
-			<A href="?m=aliasedit&id={$aliaslist[aliaslist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A> 
-			<A href="?m=aliasinfo&id={$aliaslist[aliaslist].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A> 
+			<A href="?m=aliasdel&id={$aliaslist[aliaslist].id}" OnClick="return confirmLink(this, '{t a=$alias}Are you sure, you want to delete alias: \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			<A href="?m=aliasedit&id={$aliaslist[aliaslist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A> 
+			<A href="?m=aliasinfo&id={$aliaslist[aliaslist].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A> 
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
 		<TD colspan="4" align="center" class="fall">
 			<p>&nbsp;</p>
-			<p><B>{t}No such aliases in database.{/t}</B></p>
+			<p><B>{trans("No such aliases in database.")}</B></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
@@ -101,7 +101,7 @@
 			<IMG SRC="img/info2.gif" alt=""> <B>{t a=$listdata.total}Total: $a{/t}</B>
 		</TD>
 		<TD class="frightu" colspan="2" align="right">
-			<A href="?m=aliasadd{if $listdata.domain}&domainid={$listdata.domain}{/if}">{t}New Alias{/t} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=aliasadd{if $listdata.domain}&domainid={$listdata.domain}{/if}">{trans("New Alias")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE>

@@ -2,14 +2,14 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <P class="txt">
-{if $message.from}<B>{t}Sender:{/t}</B> {$message.from} &lt;{$message.sender}&gt;<BR>{/if}
-<B>{t}Subject:{/t}</B> {$message.subject}<BR>
-<B>{t}Message:{/t}</B><BR>
+{if $message.from}<B>{trans("Sender:")}</B> {$message.from} &lt;{$message.sender}&gt;<BR>{/if}
+<B>{trans("Subject:")}</B> {$message.subject}<BR>
+<B>{trans("Message:")}</B><BR>
 <TABLE CELLPADDING="5" width="100%">
         <TR>
         	<TD CLASS="fall superlight"><PRE>{$message.body}</PRE></TD>
 	</TR>
 </TABLE>				
 {if $recipcount}
-<BR><B>{t}Sending messages to:{/t}</B><BR>
+<BR><B>{trans("Sending messages to:")}</B><BR>
 {/if}

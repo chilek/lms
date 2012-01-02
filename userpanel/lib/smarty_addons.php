@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-cvs
  *
- *  (C) Copyright 2001-2011 LMS Developers
+ *  (C) Copyright 2001-2012 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -32,7 +32,7 @@ function _smarty_block_box($params, $content, &$template, &$repeat)
 
 	if (!empty($content))
 	{
-		$title = smarty_block_t($params, $params['title'], $template, $repeat);
+		$title = trans(array_merge(array($params['title']), $params));
 
 		$style = $CONFIG['userpanel']['style'] ? $CONFIG['userpanel']['style'] : 'default';
 
@@ -51,12 +51,12 @@ function _smarty_block_box($params, $content, &$template, &$repeat)
 function _smarty_function_stylefile($params, $template)
 {
 	global $CONFIG;
-	
+
 	$style = $CONFIG['userpanel']['style'] ? $CONFIG['userpanel']['style'] : 'default';
 
         if(file_exists('style/'.$style.'/style.css'))
 	        return 'style/'.$style.'/style.css';
-        
+
 	if(file_exists('style/default/style.css'))
 	        return 'style/default/style.css';
 }
@@ -64,7 +64,7 @@ function _smarty_function_stylefile($params, $template)
 function _smarty_function_body($params, $template)
 {
 	global $CONFIG;
-	
+
 	$style = $CONFIG['userpanel']['style'] ? $CONFIG['userpanel']['style'] : 'default';
 
         if(file_exists('style/'.$style.'/body.html'))
@@ -80,19 +80,19 @@ function _smarty_function_userpaneltip($params, $template)
     global $CONFIG;
 
     $repeat = FALSE;
-    $text = smarty_block_t($params, $params['text'], $template, $repeat);
-    
+    $text = trans(array_merge(array($params['text']), $params));
+
     $tpl = $template->getTemplateVars('error');
     $error = str_replace("'", '\\\'', $tpl[$params['trigger']]);
     $error = str_replace('"', '&quot;', $error);
     $error = str_replace("\r", '', $error);
     $error = str_replace("\n", '<BR>', $error);
-	
+
     $text = str_replace('\'', '\\\'', $text);
     $text = str_replace('"', '&quot;', $text);
     $text = str_replace("\r", '', $text);
     $text = str_replace("\n", '<BR>', $text);
-	
+
     if ($CONFIG['userpanel']['hint']=='classic')
     {
 	if($tpl[$params['trigger']])
@@ -133,28 +133,28 @@ function _smarty_function_img($params, $template)
 
     $result  = '<img ';
     $result .= 'src="'.$file.'" ';
-    
+
     $repeat = FALSE;
     if($alt = $params['alt'])
-	    $result .= 'alt="'.smarty_block_t(NULL, $alt, $template, $repeat).'" ';
+	    $result .= 'alt="'.trans($alt).'" ';
     else
 	    $result .= 'alt="" ';
-	    
+
     if($text = $params['text'])
     {
-	    $text = smarty_block_t($params, $text, $template, $repeat);
-	    
+        $text = trans(array_merge(array($text), $params));
+
 	    $tpl = $template->getTemplateVars('error');
 	    $error = str_replace("'", '\\\'', $tpl[$params['trigger']]);
 	    $error = str_replace('"', '&quot;', $error);
 	    $error = str_replace("\r", '', $error);
 	    $error = str_replace("\n", '<BR>', $error);
-	
+
 	    $text = str_replace('\'', '\\\'', $text);
 	    $text = str_replace('"', '&quot;', $text);
 	    $text = str_replace("\r", '', $text);
 	    $text = str_replace("\n", '<BR>', $text);
-	
+
 	    if ($CONFIG['userpanel']['hint']=='classic')
 	    {
 		if($tpl[$params['trigger']])
@@ -172,12 +172,12 @@ function _smarty_function_img($params, $template)
 		    $result .= "onmouseover=\"javascript:displayhint('".$text."')\" onmouseout=\"javascript:hidehint()\" ";
 	    }
     }
-    
+
     if($params['width']) $result .= 'width="'.$params['width'].'" ';
     if($params['height']) $result .= 'height="'.$params['height'].'" ';
     if($params['style']) $result .= 'style="'.$params['style'].'" ';
     if($params['border']) $result .= 'border="'.$params['border'].'" ';
-    
+
     $result .= '/>';
 
     return $result;
@@ -202,7 +202,7 @@ function module_get_timestamp($tpl_name, &$tpl_timestamp, $template)
 	$module = $_GET['m'];
 	$template_path = $CONFIG['directories']['userpanel_dir'].'/modules/'.$module.'/templates/'.$tpl_name;
 	if (file_exists($template_path))
-	{    
+	{
 		$tpl_timestamp = filectime($template_path);
 		return true;
 	} else
@@ -225,7 +225,7 @@ $SMARTY->registerResource("module", array("module_get_template",
 					"module_get_timestamp",
 					"module_get_secure",
 					"module_get_trusted"));
- 
+
 $SMARTY->registerPlugin('block', 'box', '_smarty_block_box');
 $SMARTY->registerPlugin('function', 'userpaneltip','_smarty_function_userpaneltip');
 $SMARTY->registerPlugin('function', 'img','_smarty_function_img');

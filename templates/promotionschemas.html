@@ -6,15 +6,15 @@
 			<B>{t a=$promotion.schemas|@count}Promotion's Schemas ($a):{/t}</B>
 		</TD>
 		<TD width="1%" class="frightu" align="right" nowrap>
-			<A HREF="?m=promotionschemaadd&id={$promotion.id}">{t}New Schema{/t} &raquo;</A>&nbsp;
+			<A HREF="?m=promotionschemaadd&id={$promotion.id}">{trans("New Schema")} &raquo;</A>&nbsp;
 		</TD>
 	</TR>
         <TR id="promotionschemas" style="display:none;">
 	        <TD WIDTH="100%" colspan="2" class="fall">
 		    <TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
 		        <TR class="dark">
-	                <TD WIDTH="98%" class="fleftu"><B>{t}Name:{/t}</B></TD>
-		    	    <TD WIDTH="1%" class="fbt">{t}Description:{/t}</TD>
+	                <TD WIDTH="98%" class="fleftu"><B>{trans("Name:")}</B></TD>
+		    	    <TD WIDTH="1%" class="fbt">{trans("Description:")}</TD>
 		    	    <TD WIDTH="1%" class="frightu">&nbsp;</TD>
 			</TR>
 			{cycle values="light,lucid" print=false name=schemas}
@@ -27,17 +27,17 @@
 				    {$schema.description}
 			    </TD>
 			    <TD NOWRAP>
-				<A HREF="?m=promotionschemaset&id={$schema.id}&access={$schema.disabled}">{if $schema.disabled}<IMG src="img/noaccess.gif" alt="[ {t}Enable{/t} ]" title="[ {t}Enable{/t} ]">{else}<IMG src="img/access.gif" alt="[ {t}Disable{/t} ]" title="[ {t}Disable{/t} ]">{/if}</A>
-				<A HREF="?m=promotionschemadel&id={$schema.id}" onClick="return confirmLink(this, '{t a=$schema.name}Are you sure, you want to remove schema \'$a\'?{/t}')"><IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
-				<A HREF="?m=promotionschemaedit&id={$schema.id}"><IMG SRC="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
-				<A HREF="?m=promotionschemainfo&id={$schema.id}"><IMG SRC="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
+				<A HREF="?m=promotionschemaset&id={$schema.id}&access={$schema.disabled}">{if $schema.disabled}<IMG src="img/noaccess.gif" alt="[ {trans("Enable")} ]" title="[ {trans("Enable")} ]">{else}<IMG src="img/access.gif" alt="[ {trans("Disable")} ]" title="[ {trans("Disable")} ]">{/if}</A>
+				<A HREF="?m=promotionschemadel&id={$schema.id}" onClick="return confirmLink(this, '{t a=$schema.name}Are you sure, you want to remove schema \'$a\'?{/t}')"><IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+				<A HREF="?m=promotionschemaedit&id={$schema.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+				<A HREF="?m=promotionschemainfo&id={$schema.id}"><IMG SRC="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
 			    </TD>
 			</TR>
 			{foreachelse}
 			<TR>
 			    <TD WIDTH="100%" COLSPAN="3" align="center">
 				<P>&nbsp;</P>
-				<P><B>{t}This promotion hasn't got any schemas.{/t}</B></P>
+				<P><B>{trans("This promotion hasn't got any schemas.")}</B></P>
 				<P>&nbsp;</P>
 			    </TD>
 			</TR>

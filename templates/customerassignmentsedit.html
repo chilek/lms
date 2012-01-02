@@ -75,14 +75,14 @@
 			<IMG src="img/money.gif" alt="">
 		</TD>
 		<TD class="fbt" width="1%">
-			<B>{t}Type{/t}/{t}Tariff{/t}:</B>
+			<B>{trans("Type")}/{trans("Tariff")}:</B>
 		</TD>
 		<TD class="frightu" width="98%">
 		    <SELECT size="1" name="assignment[tariffid]" {tip text="Select liability type" trigger="tariffid"} onchange="set_tariff()">
-			    <OPTION value=""{if !$assignment.tariffid} SELECTED{/if}>- {t}tariffless liability{/t} -</OPTION>
-			    <OPTION value="-1"{if $assignment.tariffid == -1} SELECTED{/if}>{t}- all liabilities suspended -{/t}</OPTION>
+			    <OPTION value=""{if !$assignment.tariffid} SELECTED{/if}>- {trans("tariffless liability")} -</OPTION>
+			    <OPTION value="-1"{if $assignment.tariffid == -1} SELECTED{/if}>{trans("- all liabilities suspended -")}</OPTION>
 			    {if $promotionschemas}
-			    <OPTION value="-2"{if $assignment.tariffid == -2} SELECTED{/if}>- {t}per promotion schema{/t} -</OPTION>
+			    <OPTION value="-2"{if $assignment.tariffid == -2} SELECTED{/if}>- {trans("per promotion schema")} -</OPTION>
                 {/if}
 			    {section name=t loop=$tariffs}
 			    <OPTION value="{$tariffs[t].id}" {if $tariffs[t].id==$assignment.tariffid}SELECTED{/if}>
@@ -98,7 +98,7 @@
 			<IMG src="img/promoschema.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Schema{/t}:</B>
+			<B>{trans("Schema")}:</B>
 		</TD>
 		<TD class="fright" width="98%">
 			<SELECT size="1" name="assignment[schemaid]" {tip text="Select promotion schema"} onchange="set_schema()">
@@ -113,7 +113,7 @@
 			<IMG src="img/money.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Tariff{/t}:</B>
+			<B>{trans("Tariff")}:</B>
 		</TD>
 		<TD class="fright" width="98%">
 		    <SELECT size="1" name="assignment[stariffid]" {tip text="Select subscription" trigger="stariffid"}>
@@ -137,7 +137,7 @@
 			<IMG src="img/money.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>
-			<B>{t}Name:{/t}</B>
+			<B>{trans("Name:")}</B>
 		</TD>
 		<TD width="98%">
 		    <INPUT type="text" name="assignment[name]" value="{if $assignment.tariffid<=0}{$assignment.name}{/if}" size="30" {tip text="Enter liability name/description (tariffless liabilities only)" trigger="name"}>
@@ -148,7 +148,7 @@
 			<IMG src="img/calendar.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>
-			<B>{t}Accounting:{/t}</B>
+			<B>{trans("Accounting:")}</B>
 		</TD>
 		<TD width="98%">
 			<SELECT size="1" name="assignment[period]" {tip text="Select time period to account liability"}>
@@ -164,11 +164,11 @@
 			<IMG src="img/calendar.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>
-			<B>{t}Period:{/t}</B>
+			<B>{trans("Period:")}</B>
 		</TD>
 		<TD width="98%" nowrap>
-			{t}from:{/t} <INPUT type="TEXT" name="assignment[datefrom]" value="{if $assignment.datefrom}{$assignment.datefrom}{/if}" OnClick="cal3.popup();" {tip text="Enter accounting start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="datefrom"} SIZE="10"> 
-			{t}to:{/t} <INPUT type="TEXT" name="assignment[dateto]" value="{if $assignment.dateto}{$assignment.dateto}{/if}" OnClick="cal4.popup();" {tip text="Enter accounting end date in YYYY/MM/DD format. Leave this field empty if you don't want to set expiration date" trigger="dateto"} SIZE="10">
+			{trans("from:")} <INPUT type="TEXT" name="assignment[datefrom]" value="{if $assignment.datefrom}{$assignment.datefrom}{/if}" OnClick="cal3.popup();" {tip text="Enter accounting start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="datefrom"} SIZE="10"> 
+			{trans("to:")} <INPUT type="TEXT" name="assignment[dateto]" value="{if $assignment.dateto}{$assignment.dateto}{/if}" OnClick="cal4.popup();" {tip text="Enter accounting end date in YYYY/MM/DD format. Leave this field empty if you don't want to set expiration date" trigger="dateto"} SIZE="10">
 		</TD>
 	</TR>
 	<TR id="a_value">
@@ -176,7 +176,7 @@
 			<IMG src="img/value.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Value:{/t}</B>
+			<B>{trans("Value:")}</B>
 		</TD>
 		<TD width="98%">
 			<INPUT type="text" name="assignment[value]" value="{if $assignment.value}{$assignment.value}{/if}" size="10" {tip text="Enter liability value (tariffless liabilities only)" trigger="value"}>
@@ -187,7 +187,7 @@
 			<IMG src="img/value.gif" alt="">
 		</TD>
 		<TD width="1%"{if !$_config.privileges.finances_management|chkconfig && !$adminuser} style="display:none"{/if}>
-			<B>{t}Discount:{/t}</B>
+			<B>{trans("Discount:")}</B>
 		</TD>
 		<TD width="98%"{if !$_config.privileges.finances_management|chkconfig && !$adminuser} style="display:none"{/if}>
 			<INPUT type="text" size="8" name="assignment[discount]" value="{if $assignment.pdiscount != 0}{$assignment.pdiscount|string_format:"%.2f"}{else}{if $assignment.vdiscount != 0}{$assignment.vdiscount|string_format:"%.2f"}{/if}{/if}" {tip text="Enter discount percentage or amount" trigger="discount"}>
@@ -203,7 +203,7 @@
 			<IMG src="img/tax.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Tax:{/t}</B>
+			<B>{trans("Tax:")}</B>
 		</TD>
 		<TD width="98%">
 		    <SELECT SIZE="1" name="assignment[taxid]" {tip text="Select Tax value"}>
@@ -218,7 +218,7 @@
 			<IMG src="img/class.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Product ID:{/t}</B>
+			<B>{trans("Product ID:")}</B>
 		</TD>
 		<TD width="98%">
 			<INPUT type="text" name="assignment[prodid]" value="{$assignment.prodid}" size="10" {tip text="Enter liability Product ID (tariffless liabilities only)"}>
@@ -229,11 +229,11 @@
 			<IMG src="img/id.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>
-			<B>{t}Numbering Plan:{/t}</B>
+			<B>{trans("Numbering Plan:")}</B>
 		</TD>
 		<TD width="98%">
 		    <SELECT name="assignment[numberplanid]" {tip text="Select numbering plan"}>
-		        <OPTION value=""{if !$assignment.numberplanid} selected{/if}>- {t}default{/t} -</OPTION>
+		        <OPTION value=""{if !$assignment.numberplanid} selected{/if}>- {trans("default")} -</OPTION>
 		        {foreach item=plan from=$numberplanlist}
 		        {assign var=period value=$plan.period}
 		        <OPTION value="{$plan.id}"{if $plan.id==$assignment.numberplanid} SELECTED{/if}>{$plan.template} ({$_NUM_PERIODS.$period})</OPTION>
@@ -246,11 +246,11 @@
 			<IMG src="img/print.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>
-			<B>{t}Payment Type:{/t}</B>
+			<B>{trans("Payment Type:")}</B>
 		</TD>
 		<TD width="98%">
 		    <SELECT name="assignment[paytype]" {tip text="Select payment type" trigger="paytype"}>
-		        <OPTION value=""{if !$assignment.paytype} selected{/if}>- {t}default{/t} -</OPTION>
+		        <OPTION value=""{if !$assignment.paytype} selected{/if}>- {trans("default")} -</OPTION>
 		        {foreach from=$_PAYTYPES item=item key=key}
 		        <OPTION value="{$key}"{if $assignment.paytype==$key} selected{/if}>{$item}</OPTION>
 		        {/foreach}
@@ -266,11 +266,11 @@
 			<IMG src="img/options.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Options:{/t}</B>
+			<B>{trans("Options:")}</B>
 		</TD>
 		<TD width="98%">
-		    <NOBR><INPUT type="checkbox" name="assignment[invoice]" value="1" {if $assignment.invoice}CHECKED{/if}> <A HREF="javascript:setCheckbox('assignment[invoice]')">{t}with invoice{/t}</a></NOBR>
-			<NOBR><INPUT type="checkbox" name="assignment[settlement]" value="1" {if $assignment.settlement}CHECKED{/if}> <A HREF="javascript:setCheckbox('assignment[settlement]')">{t}with settlement of first deficient period{/t}</a></NOBR>
+		    <NOBR><INPUT type="checkbox" name="assignment[invoice]" value="1" {if $assignment.invoice}CHECKED{/if}> <A HREF="javascript:setCheckbox('assignment[invoice]')">{trans("with invoice")}</a></NOBR>
+			<NOBR><INPUT type="checkbox" name="assignment[settlement]" value="1" {if $assignment.settlement}CHECKED{/if}> <A HREF="javascript:setCheckbox('assignment[settlement]')">{trans("with settlement of first deficient period")}</a></NOBR>
 		</TD>
 	</TR>
 {if $customernodes}
@@ -279,7 +279,7 @@
 			<IMG src="img/node.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Nodes:{/t}</B>
+			<B>{trans("Nodes:")}</B>
 		</TD>
 		<TD width="98%" nowrap id="nodeslist">
 			{section name=customernodes loop=$customernodes}
@@ -289,7 +289,7 @@
                 <BR>
 			{/section}
 			{if sizeof($customernodes) > 1}
-                <INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"> <A HREF="javascript:CheckAll2();">{t}check all<!items>{/t}</A>
+                <INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"> <A HREF="javascript:CheckAll2();">{trans("check all<!items>")}</A>
 			{/if}
 		</TD>
 	</TR>
@@ -302,8 +302,8 @@
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" align="RIGHT" colspan="3">
-			<A href="javascript:document.assignment.submit()">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>&nbsp;
-			<A href="?m=customerinfo&id={$customerinfo.id}">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A>
+			<A href="javascript:document.assignment.submit()">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>&nbsp;
+			<A href="?m=customerinfo&id={$customerinfo.id}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE>

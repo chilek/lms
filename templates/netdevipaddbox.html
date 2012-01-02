@@ -8,7 +8,7 @@
 			<IMG SRC="img/ip.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" CLASS="FBT">
-			<B>{t}Name:{/t}</B>
+			<B>{trans("Name:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHTU">
 			<INPUT TYPE="TEXT" NAME="ipadd[name]" VALUE="{$nodeipdata.name}" MAXLENGTH="32" size="30" {tip text="Enter address name" trigger="ipname" bold=1}>
@@ -25,7 +25,7 @@
 			<IMG SRC="img/ip.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}IP address:{/t}</B>
+			<B>{trans("IP address:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 			<INPUT TYPE="TEXT" NAME="ipadd[ipaddr]" VALUE="{$nodeipdata.ipaddr}" {tip text="Enter IP address" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editipaddr['ipadd[ipaddr]'],0,{$netdevinfo.id});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
@@ -34,10 +34,10 @@
 	{if $_config.phpui.public_ip|chkconfig}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/ip_pub.gif" ALT="{t}Pub. IP address:{/t}">
+			<IMG SRC="img/ip_pub.gif" ALT="{trans("Pub. IP address:")}">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Pub. IP address:{/t}</B>
+			<B>{trans("Pub. IP address:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 		        <INPUT TYPE="TEXT" NAME="ipadd[ipaddr_pub]" VALUE="{$nodeipdata.ipaddr_pub}" {tip text="Enter IP address (optional)" trigger="ipaddr_pub"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editipaddr['ipadd[ipaddr_pub]'],0,{$netdevinfo.id});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
@@ -49,7 +49,7 @@
 			<IMG SRC="img/mac.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}MAC address:{/t}</B>
+			<B>{trans("MAC address:")}</B>
 		</TD>
 		<TD WIDTH="98%" NOWRAP>
 			<TABLE width="100%" cellpadding="1" cellspacing="0">
@@ -59,7 +59,7 @@
 				</TR>
 				{/foreach}
 			</TABLE>
-			<A href="javascript: newmac()">{t}Add MAC address{/t} &raquo;&raquo;&raquo;</A>
+			<A href="javascript: newmac()">{trans("Add MAC address")} &raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -67,7 +67,7 @@
 			<IMG SRC="img/passwd.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Password:{/t}</B>
+			<B>{trans("Password:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 			<INPUT TYPE="TEXT" NAME="ipadd[passwd]" VALUE="{$nodeipdata.passwd}" {tip text="Enter password (optional)" trigger="passwd"}> <a href="javascript: GenPasswd();" {tip text="Click to generate random password"}>&raquo;&raquo;&raquo;</A>
@@ -78,13 +78,13 @@
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Options:{/t}</B>
+			<B>{trans("Options:")}</B>
 		</TD>
 		<TD WIDTH="98%" NOWRAP>
-			<A HREF="javascript:checkElement('chkmac')">{t}MAC checking{/t}:</A><INPUT TYPE="checkbox" NAME="ipadd[chkmac]" VALUE="1" ID="chkmac" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if !isset($nodeipdata.chkmac) || $nodeipdata.chkmac} checked{/if}>&nbsp;
-			<A HREF="javascript:checkElement('chkduplex')">{t}Half duplex{/t}:</A><INPUT TYPE="checkbox" NAME="ipadd[halfduplex]" VALUE="1" ID="chkduplex" {tip text="Select transmission mode" trigger="halfduplex"}{if $nodeipdata.halfduplex} checked{/if}>
+			<A HREF="javascript:checkElement('chkmac')">{trans("MAC checking")}:</A><INPUT TYPE="checkbox" NAME="ipadd[chkmac]" VALUE="1" ID="chkmac" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if !isset($nodeipdata.chkmac) || $nodeipdata.chkmac} checked{/if}>&nbsp;
+			<A HREF="javascript:checkElement('chkduplex')">{trans("Half duplex")}:</A><INPUT TYPE="checkbox" NAME="ipadd[halfduplex]" VALUE="1" ID="chkduplex" {tip text="Select transmission mode" trigger="halfduplex"}{if $nodeipdata.halfduplex} checked{/if}>
 			{if $_config.phpui.radius|chkconfig}
-			&nbsp;<A HREF="javascript:checkElement('chknas')">{t}NAS{/t}:</A><INPUT TYPE="checkbox" NAME="ipadd[nas]" VALUE="1" ID="chknas" {tip text="Select NAS on or off" trigger="nas"}{if $nodeipdata.nas} checked{/if}>
+			&nbsp;<A HREF="javascript:checkElement('chknas')">{trans("NAS")}:</A><INPUT TYPE="checkbox" NAME="ipadd[nas]" VALUE="1" ID="chknas" {tip text="Select NAS on or off" trigger="nas"}{if $nodeipdata.nas} checked{/if}>
 			{/if}
 		</TD>
 	</TR>
@@ -93,12 +93,12 @@
 			<IMG SRC="img/{if ! $nodeipdata.access}no{/if}access.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>{t}Status:{/t}</B>
+			<B>{trans("Status:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 			<SELECT SIZE="1" NAME="ipadd[access]" {tip text="Select address status"}>
-				<OPTION VALUE="1"{if $nodeipdata.access} SELECTED{/if}>{t}connected<!singular>{/t}</OPTION>
-				<OPTION VALUE="0"{if ! $nodeipdata.access} SELECTED{/if}>{t}disconnected<!singular>{/t}</OPTION>
+				<OPTION VALUE="1"{if $nodeipdata.access} SELECTED{/if}>{trans("connected<!singular>")}</OPTION>
+				<OPTION VALUE="0"{if ! $nodeipdata.access} SELECTED{/if}>{trans("disconnected<!singular>")}</OPTION>
 			</SELECT>
 		</TD>
 	</TR>
@@ -111,7 +111,7 @@
 			<IMG SRC="img/info.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Description:{/t}</B>
+			<B>{trans("Description:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 			<TEXTAREA NAME="ipadd[info]" ROWS="5" COLS="40" {tip text="Enter additional information (optional)"}>{$nodeipdata.info}</TEXTAREA>
@@ -125,8 +125,8 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
-			<A HREF="javascript:document.editipaddr.submit();" ACCESSKEY="s">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
-			<A HREF="?m=netdevinfo&id={$netdevinfo.id}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A>
+			<A HREF="javascript:document.editipaddr.submit();" ACCESSKEY="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
+			<A HREF="?m=netdevinfo&id={$netdevinfo.id}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>	
 </TABLE>

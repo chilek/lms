@@ -3,11 +3,11 @@
 <table style="width: 100%;" cellpadding="3" class="light">
 	<tr class="darkest">
 		<td width="1%"></td>
-		<td width="1%">{t}Number:{/t}</td>
-		<td width="1%">{t}Date:{/t}</td>
-		<td width="95%">{t}Subject:{/t}</td>
-		<td width="1%" align="right" class="nobr">{t}Last modified:{/t}</td>
-		<td width="1%">{t}Status:{/t}</td>
+		<td width="1%">{trans("Number:")}</td>
+		<td width="1%">{trans("Date:")}</td>
+		<td width="95%">{trans("Subject:")}</td>
+		<td width="1%" align="right" class="nobr">{trans("Last modified:")}</td>
+		<td width="1%">{trans("Status:")}</td>
 	</tr>
 	{section name=helpdesklist loop=$helpdesklist start=$limit}
 	<tr class="dark" {userpaneltip text="Click icon on the left to see request details"}>
@@ -19,17 +19,17 @@
 		<td width="95%"><b>{$helpdesklist[helpdesklist].subject|escape}</b></td>
 		<td width="1%" class="nobr">{$helpdesklist[helpdesklist].lastmod|date_format:"%Y/%m/%d %H:%M"}</td>
     		<td width="1%"><b>
-			{if $helpdesklist[helpdesklist].state == 0}{t}new{/t}
-			{elseif $helpdesklist[helpdesklist].state == 1}{t}open{/t}
-			{elseif $helpdesklist[helpdesklist].state == 2}{t}resolved{/t}
-			{else}{t}dead{/t}
+			{if $helpdesklist[helpdesklist].state == 0}{trans("new")}
+			{elseif $helpdesklist[helpdesklist].state == 1}{trans("open")}
+			{elseif $helpdesklist[helpdesklist].state == 2}{trans("resolved")}
+			{else}{trans("dead")}
 			{/if}</b>
 		</td>
 	{sectionelse}
 	<tr>
 		<td align="center" width="100%" colspan="6">
 			<p>&nbsp;</p>
-			<p><b>{t}No such requests in database.{/t}</b></p>
+			<p><b>{trans("No such requests in database.")}</b></p>
 			<p>&nbsp;</p>
 		</td>
 	</tr>

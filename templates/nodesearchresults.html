@@ -4,16 +4,16 @@
 <P><table cellpadding="3" width="100%">
 	<TR class="dark" {tip text="Click on column name to change sorting order"}>
 		<TD class="fleftu" width="97%">
-			<img src="img/node.gif" ALT=""> <A href="?m=nodesearch&search&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{t}Name:{/t}</B></A> {if $listdata.order eq "name"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<img src="img/customer.gif" ALT=""> <A href="?m=nodesearch&search&o=owner{if $listdata.direction eq "asc" && $listdata.order eq "owner"},desc{/if}">{t}Owner:{/t}</A> {if $listdata.order eq "owner"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<img src="img/node.gif" ALT=""> <A href="?m=nodesearch&search&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order eq "name"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<img src="img/customer.gif" ALT=""> <A href="?m=nodesearch&search&o=owner{if $listdata.direction eq "asc" && $listdata.order eq "owner"},desc{/if}">{trans("Owner:")}</A> {if $listdata.order eq "owner"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD Class="fbt" align="right" valign="top" width="1%" nowrap>
-			<img src="img/empty.gif" ALT="" width="1" height="16"><A href="?m=nodesearch&search&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A> {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<img src="img/empty.gif" ALT="" width="1" height="16"><A href="?m=nodesearch&search&o=ownerid{if $listdata.direction eq "asc" && $listdata.order eq "ownerid"},desc{/if}">{t}Owner ID:{/t}</A> {if $listdata.order eq "ownerid"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<img src="img/empty.gif" ALT="" width="1" height="16"><A href="?m=nodesearch&search&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<img src="img/empty.gif" ALT="" width="1" height="16"><A href="?m=nodesearch&search&o=ownerid{if $listdata.direction eq "asc" && $listdata.order eq "ownerid"},desc{/if}">{trans("Owner ID:")}</A> {if $listdata.order eq "ownerid"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD CLASS="fbt" width="1%" nowrap>
-			<img src="img/ip.gif" ALT="">&nbsp;<A href="?m=nodesearch&search&o=ip{if $listdata.direction eq "asc" && $listdata.order eq "ip"},desc{/if}">{t}IP address:{/t}</A> {if $listdata.order eq "ip"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<A href="?m=nodesearch&search&o=ip{if $listdata.direction eq "asc" && $listdata.order eq "ip"},desc{/if}">({t}Pub. IP address:{/t})</A> {if $listdata.order eq "ip"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<img src="img/mac.gif" ALT="">&nbsp;<A href="?m=nodesearch&search&o=mac{if $listdata.direction eq "asc" && $listdata.order eq "mac"},desc{/if}">{t}MAC address:{/t}</A> {if $listdata.order eq "mac"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<img src="img/ip.gif" ALT="">&nbsp;<A href="?m=nodesearch&search&o=ip{if $listdata.direction eq "asc" && $listdata.order eq "ip"},desc{/if}">{trans("IP address:")}</A> {if $listdata.order eq "ip"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<A href="?m=nodesearch&search&o=ip{if $listdata.direction eq "asc" && $listdata.order eq "ip"},desc{/if}">({trans("Pub. IP address:")})</A> {if $listdata.order eq "ip"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<img src="img/mac.gif" ALT="">&nbsp;<A href="?m=nodesearch&search&o=mac{if $listdata.direction eq "asc" && $listdata.order eq "mac"},desc{/if}">{trans("MAC address:")}</A> {if $listdata.order eq "mac"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD CLASS="frightu" width="1%" align="right">
 			<NOBR><B>{t a=$listdata.total}Total: $a{/t}</B></NOBR>
@@ -56,11 +56,11 @@
 		</TD>
 		<TD class="fright" width="1%">
 			<nobr>
-			<a href="?m=nodeset&id={$nodelist[nodelist].id}"><img src="img/{if ! $nodelist[nodelist].access}no{/if}access.gif" ALT="{if ! $nodelist[nodelist].access}[ {t}Disconnect{/t} ]{else}[ {t}Connect{/t} ]{/if}"></A>
-			<a href="?m=nodewarn&id={$nodelist[nodelist].id}"><img src="img/warning{if ! $nodelist[nodelist].warning}off{else}on{/if}.gif" ALT="{if ! $nodelist[nodelist].warning}[ {t}Enable notices{/t} ]{else}[ {t}Disable notices{/t} ]{/if}"></A>
-			<a href="?m=nodedel&id={$nodelist[nodelist].id}" onClick="return confirmLink(this, '{t a=$nodelist[nodelist].name}Are you sure, you want to delete node \'$a\' from database?{/t}')"><img src="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
-			<a href="?m=nodeedit&id={$nodelist[nodelist].id}"><img src="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
-			<a href="?m=nodeinfo&id={$nodelist[nodelist].id}"><img src="img/info.gif" ALT="[ {t}Info{/t} ]"></A>
+			<a href="?m=nodeset&id={$nodelist[nodelist].id}"><img src="img/{if ! $nodelist[nodelist].access}no{/if}access.gif" ALT="{if ! $nodelist[nodelist].access}[ {trans("Disconnect")} ]{else}[ {trans("Connect")} ]{/if}"></A>
+			<a href="?m=nodewarn&id={$nodelist[nodelist].id}"><img src="img/warning{if ! $nodelist[nodelist].warning}off{else}on{/if}.gif" ALT="{if ! $nodelist[nodelist].warning}[ {trans("Enable notices")} ]{else}[ {trans("Disable notices")} ]{/if}"></A>
+			<a href="?m=nodedel&id={$nodelist[nodelist].id}" onClick="return confirmLink(this, '{t a=$nodelist[nodelist].name}Are you sure, you want to delete node \'$a\' from database?{/t}')"><img src="img/delete.gif" ALT="[ {trans("Delete")} ]"></A>
+			<a href="?m=nodeedit&id={$nodelist[nodelist].id}"><img src="img/edit.gif" ALT="[ {trans("Edit")} ]"></A>
+			<a href="?m=nodeinfo&id={$nodelist[nodelist].id}"><img src="img/info.gif" ALT="[ {trans("Info")} ]"></A>
 			</nobr>
 		</TD>
 	</TR>
@@ -68,7 +68,7 @@
 	<TR>
 		<TD colspan="4" class="fall" align="center">
 			<P>&nbsp;</P>
-			<P><B>{t}No such nodes matching search criteria.{/t}</B></P>
+			<P><B>{trans("No such nodes matching search criteria.")}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>
@@ -83,9 +83,9 @@
 	<TR CLASS="light">
 		<TD WIDTH="98%" COLSPAN="2" CLASS="fleftu" ALIGN="right">
 			<B>
-				{t}Total:{/t}<BR>
-				{t}Connected<!nodes>:{/t}<BR>
-				{t}Disconnected:{/t}
+				{trans("Total:")}<BR>
+				{trans("Connected<!nodes>:")}<BR>
+				{trans("Disconnected:")}
 			</B>
 		</TD>
 		<TD WIDTH="2%" COLSPAN="2" CLASS="frightu" VALIGN="TOP">

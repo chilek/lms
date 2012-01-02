@@ -2,17 +2,17 @@
 <!--// $Id$ //-->
 <h1>{$layout.pagetitle}</h1>
 <TABLE WIDTH="100%" CELLPADDING="3">
-    <TR CLASS="DARK"><TD CLASS="fall"><B>{t}Module Configuration:{/t}</B></TD></TR>
+    <TR CLASS="DARK"><TD CLASS="fall"><B>{trans("Module Configuration:")}</B></TD></TR>
     <TR CLASS="light"><TD CLASS="fall">
 	<FORM NAME="moduleconfig" METHOD="POST" ACTION="?m=userpanel&module=helpdesk&f=submit_setup">
 	<TABLE WIDTH="100%">
 	    <TR>
 		<TD WIDTH="1%" NOWRAP>
-		    {t}Default queue:{/t}
+		    {trans("Default queue:")}
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
 		    <SELECT NAME="default_queue" {tip text="Helpdesk queue for tickets requested in Userpanel"}>
-			    <OPTION value="0" SELECTED>{t}- select queue -{/t}</OPTION>
+			    <OPTION value="0" SELECTED>{trans("- select queue -")}</OPTION>
 			    {foreach from=$queuelist item=queue}
 			    <OPTION value="{$queue.id}"{if $queue.id == $default_queue} SELECTED{/if}>{$queue.name}</OPTION>
 			    {/foreach}
@@ -21,11 +21,11 @@
 	    </TR>
 	    <TR>
 		<TD WIDTH="1%" NOWRAP>
-		    {t}Default user:{/t}
+		    {trans("Default user:")}
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
 		    <SELECT NAME="default_userid" {tip text="Sender of new request notifications and his email. If not specified notifications goes from queue address."}> 
-		    	    <OPTION value="0" SELECTED>{t}- select user -{/t}</OPTION>
+		    	    <OPTION value="0" SELECTED>{trans("- select user -")}</OPTION>
 			    {foreach from=$userlist item=user}
 			    <OPTION value="{$user.id}"{if $user.id == $default_userid} SELECTED{/if}>{$user.name}</OPTION>
 			    {/foreach}
@@ -34,7 +34,7 @@
 	    </TR>
 	    <TR>
 		<TD WIDTH="1%" NOWRAP>
-		    {t}LMS url:{/t}
+		    {trans("LMS url:")}
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
 		    <INPUT TYPE="TEXT" NAME="lms_url" VALUE="{$lms_url}" SIZE="50" {tip text="LMS address needed to build link to new ticket in notification message"}> 
@@ -42,7 +42,7 @@
 	    </TR>
 	    <TR>
 		<TD WIDTH="1%" style="vertical-align:top" NOWRAP>
-		    {t}Default categories:{/t}
+		    {trans("Default categories:")}
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
 			{foreach from=$categories item=category}
@@ -54,8 +54,8 @@
 	</TABLE>
 	</FORM>
 	<p align="right">
-	    <A HREF="?m=userpanel">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
-	    <A HREF="javascript:document.moduleconfig.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+	    <A HREF="?m=userpanel">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
+	    <A HREF="javascript:document.moduleconfig.submit();" ACCESSKEY="S">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
 	</p>
     </TD></TR>
 </TABLE>

@@ -9,7 +9,7 @@
 			<IMG SRC="img/pass.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt" NOWRAP>
-			<B>{t}Login:{/t}</B>
+			<B>{trans("Login:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="frightu" NOWRAP>
 			<INPUT TYPE="TEXT" NAME="userinfo[login]" VALUE="{$userinfo.login}" {tip text="Enter user login" trigger="login" bold=1}> <B>({$userinfo.id|string_format:"%04d"})</B>
@@ -20,7 +20,7 @@
 			<IMG SRC="img/users.gif" ALT="">
 		</TD>
 		<TD NOWRAP>
-			<B>{t}First/last name:{/t}</B>
+			<B>{trans("First/last name:")}</B>
 		</TD>
 		<TD CLASS="fright">
 			 <INPUT TYPE="TEXT" NAME="userinfo[name]" VALUE="{$userinfo.name}" SIZE="40" {tip text="Enter user name" trigger="name"}>
@@ -30,7 +30,7 @@
 		<TD CLASS="fleft">
 			<IMG SRC="img/info.gif" ALT="">
 		</TD>
-		<TD><B>{t}Position:{/t}</B></TD>
+		<TD><B>{trans("Position:")}</B></TD>
 		<TD CLASS="fright">
 			<INPUT TYPE="TEXT" NAME="userinfo[position]" VALUE="{$userinfo.position}" SIZE="40" {tip text="Enter user position (optional)"}>
 		</TD>
@@ -39,7 +39,7 @@
 		<TD CLASS="fleft">
 			<IMG SRC="img/mail.gif" ALT="">
 		</TD>
-		<TD><B>{t}E-mail:{/t}</B></TD>
+		<TD><B>{trans("E-mail:")}</B></TD>
 		<TD CLASS="fright">
 			<INPUT TYPE="TEXT" NAME="userinfo[email]" VALUE="{$userinfo.email}" SIZE="40" {tip text="Enter e-mail address (optional)" trigger="email"}>
 		</TD>
@@ -48,7 +48,7 @@
 		<TD CLASS="FLEFT" NOWRAP>
 			<IMG SRC="img/sms.gif" ALT="">
 		</TD>
-		<TD><B>{t}Phone:{/t}</B></TD>
+		<TD><B>{trans("Phone:")}</B></TD>
 		<TD CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" NAME="userinfo[phone]" VALUE="{$userinfo.phone}" SIZE="40" {tip text="Enter phone number for SMS notification (optional)" trigger="phone"}>
 		</TD>
@@ -57,10 +57,10 @@
 		<TD CLASS="FLEFT" NOWRAP>
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
-		<TD><B>{t}Notification:{/t}</B></TD>
+		<TD><B>{trans("Notification:")}</B></TD>
 		<TD CLASS="FRIGHT">
-			<INPUT TYPE="checkbox" NAME="userinfo[ntype][]" VALUE="{$smarty.const.MSG_MAIL}" ID="ntypemail"{if ($userinfo.ntype & $smarty.const.MSG_MAIL)} checked{/if}><A HREF="javascript:checkElement('ntypemail')">{t}email{/t}</A>
-			<INPUT TYPE="checkbox" NAME="userinfo[ntype][]" VALUE="{$smarty.const.MSG_SMS}" ID="ntypesms"{if ($userinfo.ntype & $smarty.const.MSG_SMS)} checked{/if}><A HREF="javascript:checkElement('ntypesms')">{t}sms{/t}</A>
+			<INPUT TYPE="checkbox" NAME="userinfo[ntype][]" VALUE="{$smarty.const.MSG_MAIL}" ID="ntypemail"{if ($userinfo.ntype & $smarty.const.MSG_MAIL)} checked{/if}><A HREF="javascript:checkElement('ntypemail')">{trans("email")}</A>
+			<INPUT TYPE="checkbox" NAME="userinfo[ntype][]" VALUE="{$smarty.const.MSG_SMS}" ID="ntypesms"{if ($userinfo.ntype & $smarty.const.MSG_SMS)} checked{/if}><A HREF="javascript:checkElement('ntypesms')">{trans("sms")}</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -68,7 +68,7 @@
 			<IMG SRC="img/ip.gif" ALT="">
 		</TD>
 		<TD NOWRAP>
-			<B>{t}Allowed hosts:{/t}</B>
+			<B>{trans("Allowed hosts:")}</B>
 		</TD>
 		<TD CLASS="fright" NOWRAP>
 			<INPUT TYPE="TEXT" SIZE="40" NAME="userinfo[hosts]" VALUE="{$userinfo.hosts}" {tip text="Enter comma-separated list of hosts or networks (optional)" trigger="hosts"}>
@@ -79,7 +79,7 @@
 			<IMG SRC="img/pass.gif" ALT="">
 		</TD>
 		<TD NOWRAP>
-			<B>{t}Access rights:{/t}</B>
+			<B>{trans("Access rights:")}</B>
 		</TD>
 		<TD CLASS="fright" NOWRAP>
 			<table width="100%"><tr>
@@ -104,7 +104,7 @@
 			<IMG SRC="img/group.gif" ALT="">
 		</TD>
 		<TD NOWRAP>
-			<B>{t}Groups:{/t}</B>
+			<B>{trans("Groups:")}</B>
 		</TD>
 		<TD CLASS="fright" NOWRAP>
 		        {include file="multiselect.html" selected=$userinfo.selected available_tip="Enabled<!plural>:" selected_tip="Disabled<!plural>:"}
@@ -112,8 +112,8 @@
 	</TR>
 	<TR CLASS="light">
 		<TD COLSPAN="3" CLASS="fbottomu" ALIGN="right">
-			<A HREF="javascript:document.useredit.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" ALT="">
-			<A HREF="?m=userinfo&id={$userinfo.id}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
+			<A HREF="javascript:document.useredit.submit();" ACCESSKEY="S">{trans("Submit")} <IMG SRC="img/save.gif" ALT="">
+			<A HREF="?m=userinfo&id={$userinfo.id}">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>

@@ -22,11 +22,11 @@ function CheckAll2()
 <form name="invoices" action="?m=finances&f=invoice" method="POST" target="_blank">
 <table style="width: 100%;" cellpadding="3">
 	<tr class="darkest">
-		<td width="1%">{t}Date:{/t}</td>
-		<td width="1%" align="right">{t}Value:{/t}</td>
+		<td width="1%">{trans("Date:")}</td>
+		<td width="1%" align="right">{trans("Value:")}</td>
 		<td width="1%" align="center">&raquo;</td>
-		<td width="1%" align="right">{t}After:{/t}</td>
-		<td width="95%">{t}Description:{/t}</td>
+		<td width="1%" align="right">{trans("After:")}</td>
+		<td width="95%">{trans("Description:")}</td>
 		{if !$_config.userpanel.disable_invoices}
 		<td width="1%" align="right"></td>
 		{/if}
@@ -52,7 +52,7 @@ function CheckAll2()
 	<tr>
 		<td align="center" width="100%" colspan="6">
 			<p>&nbsp;</p>
-			<p><b>{t}No such transactions on your account.{/t}</b></p>
+			<p><b>{trans("No such transactions on your account.")}</b></p>
 			<p>&nbsp;</p>
 		</td>
 	</tr>
@@ -63,10 +63,10 @@ function CheckAll2()
 			<table width="100%" cellpadding="0" cellspacing="0">
 			    <tr>
 				<td width="50%">
-				{img src="print.gif" alt="[ Print ]"} <a href="javascript:document.invoices.submit()">{t}Print selected{/t}</a>
+				{img src="print.gif" alt="[ Print ]"} <a href="javascript:document.invoices.submit()">{trans("Print selected")}</a>
 				</td>
 				<td width="50%" align="right">
-				<a href="javascript:CheckAll2();">{t}Check all{/t}</a> <input style="vertical-align: middle" type="checkbox" name="allbox" onclick="CheckAll();" value="" />
+				<a href="javascript:CheckAll2();">{trans("Check all")}</a> <input style="vertical-align: middle" type="checkbox" name="allbox" onclick="CheckAll();" value="" />
 				</td>
 			    </tr>
 			</table>

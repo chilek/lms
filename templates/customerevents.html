@@ -3,13 +3,13 @@
 	<TR CLASS="DARK">
     	    <TD width="99%" class="fleftu hand" onCLick="showOrHide('eventspanel');">
                         <IMG src="img/calendar.gif" alt="">
-                        <B>{t}Customer Timetable:{/t}</B>
+                        <B>{trans("Customer Timetable:")}</B>
 			{if $limit}
                                 ({t a=$limit}last $a events{/t})
                         {/if}
                 </TD>
                 <TD width="1%" class="frightu" align="right" nowrap>
-			<A href="?m=eventadd&customerid={$customerinfo.id}">{t}New Event{/t} &raquo;</A>&nbsp;
+			<A href="?m=eventadd&customerid={$customerinfo.id}">{trans("New Event")} &raquo;</A>&nbsp;
                 </TD>
         </TR>
 	<TR id="eventspanel"  style="display:none;">
@@ -17,13 +17,13 @@
 			<TABLE cellpadding="5" cellspacing="0" width="100%">
 				<TR CLASS="DARK">
 					<TD width="1%" class="fleftu" NOWRAP>
-						{t}Date:{/t}
+						{trans("Date:")}
 					</TD>
 					<TD width="40%" class="fbt" NOWRAP>
-						<B>{t}Title:{/t}</B>
+						<B>{trans("Title:")}</B>
 					</TD>
 					<TD width="50%" class="fbt" NOWRAP>
-						{t}Description:{/t}
+						{trans("Description:")}
 					</TD>
 					<TD width="1%" class="frightu" NOWRAP></TD>
 				</TR>
@@ -41,19 +41,19 @@
 					</TD>
 					<TD width="1%" align="right" nowrap>
 						{if $eventlist[eventlist].closed}
-						<A href="?m=eventedit&id={$eventlist[eventlist].id}&action=open"><IMG src="img/resolved.gif" alt="[ {t}Open{/t} ]" title="[ {t}Open{/t} ]"></A> 
+						<A href="?m=eventedit&id={$eventlist[eventlist].id}&action=open"><IMG src="img/resolved.gif" alt="[ {trans("Open")} ]" title="[ {trans("Open")} ]"></A> 
 						{else}
-						<A href="?m=eventedit&id={$eventlist[eventlist].id}&action=close"><IMG src="img/open.gif" alt="[ {t}Close{/t} ]" title="[ {t}Close{/t} ]"></A> 
+						<A href="?m=eventedit&id={$eventlist[eventlist].id}&action=close"><IMG src="img/open.gif" alt="[ {trans("Close")} ]" title="[ {trans("Close")} ]"></A> 
 						{/if}
-						<A href="?m=eventdel&id={$eventlist[eventlist].id}" OnClick="return confirmLink(this, '{t}Are you sure, you want to delete that event?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A> 
-						<A href="?m=eventedit&id={$eventlist[eventlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A> 
+						<A href="?m=eventdel&id={$eventlist[eventlist].id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that event?")}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A> 
+						<A href="?m=eventedit&id={$eventlist[eventlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A> 
 					</TD>
 				</TR>
 				{sectionelse}
 				<TR>
 					<TD colspan="4" align="center">
 						<P>&nbsp;</P>
-						<P><B>{t}There are no events in timetable.{/t}</B></P>
+						<P><B>{trans("There are no events in timetable.")}</B></P>
 						<P>&nbsp;</P>
 					</TD>
 				</TR>

@@ -38,11 +38,11 @@
 	{sectionelse}
 	</table>
 	<TABLE width="100%" height="100%">
-	<TR title="{t}Click to close window{/t}" onclick="parent.window.close();">
+	<TR title="{trans("Click to close window")}" onclick="parent.window.close();">
 		<TD width="100%" align="center">
-			<P><B>{t}You don't have any IP network.{/t}<BR><BR>{t}To add a new network see "IP Networks" menu.{/t}</B></P>
+			<P><B>{trans("You don't have any IP network.")}<BR><BR>{t}To add a new network see "IP Networks" menu.{/t}</B></P>
 		</TD>
-	</TR>			
+	</TR>
 	{/section}
 	</table>
 </body>
@@ -52,7 +52,7 @@
 <table cellpadding="5" width="100%">
 	<tr>
 		<td class="fall dark" align="center">
-			<B>{t}Select IP address:{/t}</B>
+			<B>{trans("Select IP address:")}</B>
 		</td>
 	</tr>
 	<form target="m" name="selectnet" method="post" action="?m=chooseip&p=main{if $device}&device={$device}{/if}">
@@ -63,7 +63,7 @@
 				{section name=networks loop=$networks}
 				<OPTION VALUE="{$networks[networks].id}" {if $networks[networks].id eq $netid} SELECTED {/if} {if $networks[networks].disabled eq 1} class="alert" {/if}>{$networks[networks].name|truncate:20:"":true}: {$networks[networks].address}/{$networks[networks].prefix}</OPTION>
 				{sectionelse}
-				<OPTION VALUE="0">{t}You don't have any IP network.{/t}</OPTION>
+				<OPTION VALUE="0">{trans("You don't have any IP network.")}</OPTION>
 				{/section}
 			</SELECT>
 		</TD>
@@ -87,7 +87,7 @@
 			{if $network.page > 1}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x - 1" x=$network.page}'; return false;">&laquo;</A>{else}<FONT CLASS="BLEND">&laquo;</FONT>{/if}
 
 			{t a=$network.page b=$network.pages}Page $a of $b{/t}
-			
+
 			{if $network.page < $network.pages}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x + 1" x=$network.page}'; return false;">&raquo;</A>{else}<FONT CLASS="BLEND">&raquo;<FONT>{/if}</B>
 
 			{if $network.page + 10 <= $network.pages}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x + 10" x=$network.page}'; return false;">&raquo;&raquo;</A>{elseif $network.pages > 10}<FONT CLASS="BLEND">&raquo;&raquo;<FONT>{/if}</B>
@@ -101,4 +101,4 @@
 </table>
 </body>
 {/if}
-</html>	
+</html>

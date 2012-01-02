@@ -15,19 +15,19 @@
 <TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
 		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="1%">
-			<B>{t}No.{/t}</B>
+			<B>{trans("No.")}</B>
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="1%">
-			<B>{t}Ticket No.{/t}</B>
+			<B>{trans("Ticket No.")}</B>
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="1%">
-			{t}Request date{/t}
+			{trans("Request date")}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="96%" NOWRAP>
-			{t}Subject{/t}
+			{trans("Subject")}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="1%" NOWRAP>
-			{t}Customer{/t}
+			{trans("Customer")}
 		</TD>
 	</TR>
 	{cycle values="white,grey" print=false}
@@ -49,7 +49,7 @@
 			{if $list[list].customerid}
 			{$list[list].customername|truncate:"50":"...":true} ({$list[list].customerid|string_format:"%04d"})
 			{if $list[list].address}<BR>{$list[list].address}{/if}
-			{if $list[list].phone}<BR>{t}phone:{/t} {$list[list].phone}{/if}
+			{if $list[list].phone}<BR>{trans("phone:")} {$list[list].phone}{/if}
 			{else}
 			{$list[list].requestor|truncate:"50":"...":true}
 			{/if}
@@ -59,7 +59,7 @@
 	<TR>
 	        <TD ALIGN="center" WIDTH="100%" COLSPAN="7">
 			<P>&nbsp;</P>
-			<P><B>{t}No such requests in database.{/t}</B></P>
+			<P><B>{trans("No such requests in database.")}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>

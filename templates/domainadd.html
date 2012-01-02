@@ -9,7 +9,7 @@
 			<IMG src="img/domain.gif" alt="">
 		</TD>
 		<TD width="150" class="fbt" align="left" NOWRAP>
-			<B>{t}Domain:{/t}</b>
+			<B>{trans("Domain:")}</b>
 		</TD>
 		<TD width="98%" class="frightu" NOWRAP>
 			<INPUT type="text" name="domainadd[name]" value="{$domainadd.name}" {tip text="Enter domain name" trigger="name"} size="20">
@@ -20,11 +20,11 @@
             		<img src="img/customer.gif" alt="">
 	        </TD>
 		<TD width="1%">
-			<B>{t}Owner:{/t}</B>
+			<B>{trans("Owner:")}</B>
 		</TD>
 		<TD width="98%"class="fright">
 			<SELECT SIZE="1" NAME="domainadd[ownerid]" {tip text="Select owner or 'SYSTEM DOMAIN' if you don't want to assign it to any customer" trigger="ownerid"}>
-				<OPTION VALUE="0"{if !$domainadd.ownerid} SELECTED{/if}>{t}SYSTEM DOMAIN{/t}</OPTION>
+				<OPTION VALUE="0"{if !$domainadd.ownerid} SELECTED{/if}>{trans("SYSTEM DOMAIN")}</OPTION>
 				{foreach from=$customers item=customer}
 				<OPTION VALUE="{$customer.id}"{if $domainadd.ownerid == $customer.id} SELECTED{/if}>{$customer.customername|truncate:40:" ...":true} ({$customer.id|string_format:"%04d"})</OPTION>
 				{/foreach}
@@ -35,7 +35,7 @@
                 <TD width="1%" class="fleft">
                         <img src="img/dns.gif" alt="">
                 </TD>
-                <TD width="1%" nowrap><B>{t}Type:{/t}</B></TD>
+                <TD width="1%" nowrap><B>{trans("Type:")}</B></TD>
                 <TD width="98%" class="fright">
                 <SELECT  SIZE="1" NAME="domainadd[type]" {tip text="Select domain type" trigger="type"} id="domainadd[type]" style="float:left;" onchange=" if (this.value=='SLAVE') showslave(); else hideslave();" >
                                 <OPTION VALUE="NATIVE" {if $domainadd.type == NATIVE} SELECTED{/if}>NATIVE</OPTION>
@@ -43,7 +43,7 @@
                                 <OPTION VALUE="SLAVE" {if $domainadd.type == SLAVE} SELECTED{/if}>SLAVE</OPTION>
                  </SELECT>
                    <div id="ipmaster" style="display: none; float:left; margin-left:10px;">
-                           {t}IP address of master NS:{/t}
+                           {trans("IP address of master NS:")}
                    <input type="text" name="domainadd[master]" value="{$domainadd.master}"  {tip text="Enter IP address of master NS" trigger="master" bold="1"}>
 	           </div>
                 </TD>
@@ -52,7 +52,7 @@
                 <TD width="1%" class="fleft">
                         <img src="img/dns.gif" alt="">
                 </TD>
-                <TD width="1%" nowrap><B>{t}IP address of webserver{/t}:</B></TD>
+                <TD width="1%" nowrap><B>{trans("IP address of webserver")}:</B></TD>
                 <TD width="98%" class="fright">
 		<INPUT type="text"   name="domainadd[ipwebserver]" value="{$domainadd.ipwebserver}" {tip text="Enter IP address of webserver" trigger="ipwebserwer"} size="20">
 
@@ -62,7 +62,7 @@
                 <TD width="1%" class="fleft">
                         <img src="img/dns.gif" alt="">
                 </TD>
-                <TD width="1%" nowrap><B>{t}IP address of mailserver{/t}:</B></TD>
+                <TD width="1%" nowrap><B>{trans("IP address of mailserver")}:</B></TD>
                 <TD width="98%" class="fright">
 		<INPUT type="text"   name="domainadd[ipmailserver]" value="{$domainadd.ipmailserver}" {tip text="Enter IP address of mailserver" trigger="ipmailserwer"} size="20">
 
@@ -73,7 +73,7 @@
 			<IMG src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%" align="left">
-			<B>{t}Description:{/t}
+			<B>{trans("Description:")}
 		</TD>
 		<TD width="98%" class="fright">
 			<TEXTAREA name="domainadd[description]" rows="5" cols="50" {tip text="Enter additional information (optional)"}>{$domainadd.description}</TEXTAREA>
@@ -81,9 +81,9 @@
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" colspan="3" align="right" NOWRAP>
-			<A href="javascript: document.domainadd.submit();">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
-			<A href="?m=domainlist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="domainadd[reuse]" id="domainadd[reuse]" value="ON" {if $domainadd.reuse}checked{/if}> <A HREF="javascript:checkElement('domainadd[reuse]')">  {t}Display this form again, when this domain is saved{/t}</A>
+			<A href="javascript: document.domainadd.submit();">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
+			<A href="?m=domainlist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A><BR>
+			<INPUT type="checkbox" name="domainadd[reuse]" id="domainadd[reuse]" value="ON" {if $domainadd.reuse}checked{/if}> <A HREF="javascript:checkElement('domainadd[reuse]')">  {trans("Display this form again, when this domain is saved")}</A>
 		</TD>
 	</TR>
 </TABLE>

@@ -8,7 +8,7 @@
 	    <TD width="1%" class="fleftu">
 		<IMG src="img/queue.gif" ALT="">
 	    </TD>
-	    <TD width="1%" class="fbt"><B>{t}Name:{/t}</B></TD>
+	    <TD width="1%" class="fbt"><B>{trans("Name:")}</B></TD>
 	    <TD width="98%" class="frightu">
 		<INPUT TYPE="TEXT" NAME="category[name]" VALUE="{$category.name}" {tip text="Enter category name" trigger="name" bold=1}><B> ({$category.id|string_format:"%04d"})</B>
 	    </TD>
@@ -17,7 +17,7 @@
 	    <TD width="1%" class="fleft">
 		<IMG src="img/info1.gif" ALT="">
 	    </TD>
-	    <TD width="1%"><B>{t}Description:{/t}</B></TD>
+	    <TD width="1%"><B>{trans("Description:")}</B></TD>
 	    <TD width="98%" class="fright">
 		<TEXTAREA NAME="category[description]" COLS="50" ROWS="3" {tip text="Enter additional information (optional)"}>{$category.description}</TEXTAREA>
 	    </TD>
@@ -26,13 +26,13 @@
 	    <TD width="1%" class="fleft">
 		<IMG src="img/users.gif" ALT="">
 	    </TD>
-	    <TD width="1%"><B>{t}Users:{/t}</B></TD>
+	    <TD width="1%"><B>{trans("Users:")}</B></TD>
 	    <TD width="98%" class="fright">
 		    <TABLE width="100%" cellpadding="3">
 			<TR class="DARK">
-			    <TD width="99%" class="fleftu"><B>{t}User{/t}</B>
+			    <TD width="99%" class="fleftu"><B>{trans("User")}</B>
 			    </TD>
-			    <TD width="1%" class="frightu" align="center" nowrap><B>{t}Owner{/t}</B></TD>
+			    <TD width="1%" class="frightu" align="center" nowrap><B>{trans("Owner")}</B></TD>
 			</TR>
 			{cycle values="light,lucid" print=false}
 			{foreach from=$category.owners item=user}
@@ -54,9 +54,9 @@
 	</TR>
 	<TR class="LIGHT">
 	    <TD width="100%" COLSPAN="3" class="FBOTTOMU" ALIGN="RIGHT"> 
-	    	<A HREF="javascript:document.category.submit();" accesskey="s">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>
-		<A HREF="?m=rtcategorydel&id={$category.id}" OnClick="return confirmLink(this, '{t a=$category.name}Are you sure, you want to remove category \'$a\'?{/t}');" accesskey="d">{t}Delete{/t}<IMG src="img/delete.gif" alt=""></A>
-		<A HREF="?m=rtcategorylist">{t}Cancel{/t}<IMG src="img/cancel.gif" alt=""></A>
+	    	<A HREF="javascript:document.category.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
+		<A HREF="?m=rtcategorydel&id={$category.id}" OnClick="return confirmLink(this, '{t a=$category.name}Are you sure, you want to remove category \'$a\'?{/t}');" accesskey="d">{trans("Delete")}<IMG src="img/delete.gif" alt=""></A>
+		<A HREF="?m=rtcategorylist">{trans("Cancel")}<IMG src="img/cancel.gif" alt=""></A>
 	    </TD>
 	</TR>
 </TABLE></FORM></P>

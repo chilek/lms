@@ -1,9 +1,9 @@
 <!--// $Id$ //-->
 <DIV{if !$note.last} STYLE="page-break-after: always"{/if}>
 <DIV align="right" class="sdr">
-{t}Draw-up date:{/t} {$note.cdate|date_format:"%Y/%m/%d"}{if $note.division_cplace neq ""}, {$note.division_cplace}{/if}
+{trans("Draw-up date:")} {$note.cdate|date_format:"%Y/%m/%d"}{if $note.division_cplace neq ""}, {$note.division_cplace}{/if}
 <BR>
-{t}Deadline:{/t} {$note.pdate|date_format:"%Y/%m/%d"}
+{trans("Deadline:")} {$note.pdate|date_format:"%Y/%m/%d"}
 </DIV>
 
 <H2 align="center" class="hdf">
@@ -15,12 +15,12 @@
 <TABLE WIDTH="100%" CELLSPACING="3" class="sdr">
 	<TR>
 		<TD WIDTH="50%" class="sdr">
-			<B>{t}Note drawer:{/t}</B><BR>
+			<B>{trans("Note drawer:")}</B><BR>
 			<BR>
 			{$note.division_header|replace:"\n":"<BR>"}
 		</TD>
 		<TD WIDTH="50%" class="sdr">
-			<B>{t}Note recipient:{/t}</B><BR>
+			<B>{trans("Note recipient:")}</B><BR>
 			<BR>
 			{$note.name}<BR>
 			{$note.address}<BR>
@@ -35,13 +35,13 @@ Niniejszym, zgodnie z zawartą Umową, obciążamy Państwa należnościami wg p
 <TABLE WIDTH="100%" CELLPADDING="3">
     <TR CLASS="FALL">
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
-		<B>{t}No.{/t}</B>
+		<B>{trans("No.")}</B>
 	</TD>
 	<TD WIDTH="80%" CLASS="head" ALIGN="CENTER">
-		<B>{t}Title:{/t}</B>
+		<B>{trans("Title:")}</B>
 	</TD>
 	<TD WIDTH="19%" CLASS="head" ALIGN="CENTER">
-		<B>{t}Value:{/t}</B>
+		<B>{trans("Value:")}</B>
 	</TD>
     </TR>
 {cycle values="grey,white" print=false name=cycle2}
@@ -59,7 +59,7 @@ Niniejszym, zgodnie z zawartą Umową, obciążamy Państwa należnościami wg p
     {/foreach}
     <TR>
 	<TD COLSPAN="2" ALIGN="RIGHT" CLASS="ftop">
-		<P ALIGN="RIGHT"><B>{t}Total:{/t}</B></P>
+		<P ALIGN="RIGHT"><B>{trans("Total:")}</B></P>
 	</TD>
 	<TD CLASS="fall" ALIGN="RIGHT" NOWRAP>
 		{$note.value|money_format}
@@ -70,15 +70,15 @@ Niniejszym, zgodnie z zawartą Umową, obciążamy Państwa należnościami wg p
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR>
 		<TD WIDTH="50%" ALIGN="CENTER" ROWSPAN="2" CLASS="sdr">
-			{t}Expositor:{/t} {if $note.user}{$note.user}{else}{$note.division_author}{/if}
+			{trans("Expositor:")} {if $note.user}{$note.user}{else}{$note.division_author}{/if}
 		</TD>
 		<TD WIDTH="50%" ALIGN="RIGHT" CLASS="hdf">
-			{t}To pay:{/t} {$note.value|money_format}
+			{trans("To pay:")} {$note.value|money_format}
 		</TD>
 	</TR>
 	<TR>
 		<TD WIDTH="50%" ALIGN="RIGHT" CLASS="sdr">
-			{t}In words:{/t}
+			{trans("In words:")}
 			{if $_config.phpui.to_words_short_version|chkconfig}
 				{$note.value|string_format:"%d"|to_words:0:"":1} {$note.valuep|string_format:"%02d"}/100
 			{else}
@@ -93,10 +93,10 @@ Niniejszym, zgodnie z zawartą Umową, obciążamy Państwa należnościami wg p
 	</TR>
 	<TR>
 		<TD WIDTH="100%" COLSPAN="2">
-			<B>{t}Cautions:{/t}</B><BR>
+			<B>{trans("Cautions:")}</B><BR>
 			<BLOCKQUOTE>
-			{t}If you have any questions or doubts, contact with our Customer Service Representative. Prepare your Customer ID, please.{/t}<BR>
-			{t}You may use our automated Customer Care Web Panel, just remember your PIN (it's printed on the other side of this page){/t}
+			{trans("If you have any questions or doubts, contact with our Customer Service Representative. Prepare your Customer ID, please.")}<BR>
+			{trans("You may use our automated Customer Care Web Panel, just remember your PIN (it's printed on the other side of this page)")}
 			</BLOCKQUOTE>
 			<BR>
 		</TD>
@@ -110,7 +110,7 @@ Niniejszym, zgodnie z zawartą Umową, obciążamy Państwa należnościami wg p
 
 {if $note.customerpin}
 	<BR><BR>
-	<B>{t}Customer ID:{/t} {$note.customerid|string_format:"%04d"}</B><BR>
+	<B>{trans("Customer ID:")} {$note.customerid|string_format:"%04d"}</B><BR>
 	PIN: <CODE>{$note.customerpin|string_format:"%04d"}</CODE>
 	<BR><BR>
 {/if}
@@ -122,12 +122,12 @@ customer's balance: {$note.customerbalancelist.balance}
 {if $note.customerbalancelist}
 <TABLE cellpadding="5" cellspacing="0" width="100%">
 	<TR>
-    		<TD width="1%" class="fleftu">{t}Date:{/t}</TD>
-	        <TD width="1%" class="fbt" align="right">{t}Value:{/t}</TD>
-    		<TD width="1%" class="fbt" align="right">{t}Tax:{/t}</TD>
+    		<TD width="1%" class="fleftu">{trans("Date:")}</TD>
+	        <TD width="1%" class="fbt" align="right">{trans("Value:")}</TD>
+    		<TD width="1%" class="fbt" align="right">{trans("Tax:")}</TD>
 	        <TD width="1%" class="fbt" align="center">&raquo;</TD>
-	        <TD width="1%" class="fbt" align="right">{t}After:{/t}</TD>
-	        <TD width="93%" class="frightu">{t}Description:{/t}</TD>
+	        <TD width="1%" class="fbt" align="right">{trans("After:")}</TD>
+	        <TD width="93%" class="frightu">{trans("Description:")}</TD>
 	</TR>
 	{if $note.customerbalancelistlimit >= $note.customerbalancelist.total}
 		{assign var="startloop" value="0"}

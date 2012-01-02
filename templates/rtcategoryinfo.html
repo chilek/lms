@@ -13,7 +13,7 @@
 	    <TD width="1%" class="fleft">
 		<IMG src="img/info1.gif" ALT="">
 	    </TD>
-	    <TD width="1%"><B>{t}Description:{/t}</B></TD>
+	    <TD width="1%"><B>{trans("Description:")}</B></TD>
 	    <TD width="98%" class="fright">
 		<TABLE width="100%" cellpadding="5">
 		    <TR>
@@ -29,13 +29,13 @@
 	    <TD width="1%" class="fleft">
 		<IMG src="img/users.gif" ALT="">
 	    </TD>
-	    <TD width="1%"><B>{t}Users:{/t}</B></TD>
+	    <TD width="1%"><B>{trans("Users:")}</B></TD>
 	    <TD width="98%" class="fright">
 		    <TABLE width="100%" cellpadding="3">
 			<TR class="DARK">
-			    <TD width="99%" class="fleftu"><B>{t}User{/t}</B>
+			    <TD width="99%" class="fleftu"><B>{trans("User")}</B>
 			    </TD>
-			    <TD width="1%" class="frightu" align="center" nowrap><B>{t}Owner{/t}</B></TD>
+			    <TD width="1%" class="frightu" align="center" nowrap><B>{trans("Owner")}</B></TD>
 			</TR>
 			{cycle values="light,lucid" print=false}
 			{foreach from=$category.owners item=owner}
@@ -60,9 +60,9 @@
 	</TR>
 	<TR class="LIGHT">
 	    <TD width="100%" COLSPAN="3" class="FBOTTOMU" ALIGN="RIGHT"> 
-	        <A HREF="?m=rtqueueview&catid={$category.id}">{t}Browse{/t} <IMG src="img/view.gif" alt=""></A>
-	    	<A HREF="?m=rtcategoryedit&id={$category.id}">{t}Edit{/t} <IMG src="img/save.gif" alt=""></A>
-		<A HREF="?m=rtcategorydel&id={$category.id}" OnClick="return confirmLink(this, '{t a=$category.name}Are you sure, you want to remove category \'$a\'?{/t}');">{t}Delete{/t} <IMG src="img/delete.gif" alt=""></A>
+	        <A HREF="?m=rtqueueview&catid={$category.id}">{trans("Browse")} <IMG src="img/view.gif" alt=""></A>
+	    	<A HREF="?m=rtcategoryedit&id={$category.id}">{trans("Edit")} <IMG src="img/save.gif" alt=""></A>
+		<A HREF="?m=rtcategorydel&id={$category.id}" OnClick="return confirmLink(this, '{t a=$category.name}Are you sure, you want to remove category \'$a\'?{/t}');">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
 	    </TD>
 	</TR>
 </TABLE></P>

@@ -7,7 +7,7 @@
 			<IMG SRC="img/{if $message.type == $smarty.const.MSG_SMS}sms{else}email{/if}.gif" ALT=""> 
 		</TD>
 		<TD CLASS="FBT" WIDTH="1%" NOWRAP>
-			<B>{t}Subject:{/t}</B>
+			<B>{trans("Subject:")}</B>
 		</TD>
 		<TD CLASS="FRIGHTU" WIDTH="98%">
 			<B>{$message.subject}</B>
@@ -18,7 +18,7 @@
 			<IMG SRC="img/users.gif" ALT=""> 
 		</TD>
 		<TD WIDTH="1%">
-			<B>{t}User:{/t}</B>
+			<B>{trans("User:")}</B>
 		</TD>
 		<TD CLASS="FRIGHT" WIDTH="98%">
 			{if $message.userid}
@@ -31,7 +31,7 @@
 			<IMG SRC="img/time.gif" ALT=""> 
 		</TD>
 		<TD WIDTH="1%">
-			<B>{t}Creation date:{/t}</B>
+			<B>{trans("Creation date:")}</B>
 		</TD>
 		<TD CLASS="FRIGHT" WIDTH="98%">
 			{$message.cdate|date_format:"%Y/%m/%d %H:%m"}
@@ -43,7 +43,7 @@
 			<IMG SRC="img/mail.gif" ALT=""> 
 		</TD>
 		<TD WIDTH="1%">
-			<B>{t}Sender:{/t}</B>
+			<B>{trans("Sender:")}</B>
 		</TD>
 		<TD CLASS="FRIGHT" WIDTH="98%">
 			{$message.sender|escape:"html"}
@@ -55,7 +55,7 @@
 			<IMG SRC="img/edit.gif" ALT=""> 
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Message body:{/t}</B>
+			<B>{trans("Message body:")}</B>
 		</TD>
 		<TD CLASS="FRIGHT" WIDTH="98%">
 			<TABLE WIDTH="100%" CELLPADDING="5">
@@ -69,7 +69,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
-			 <A HREF="?m=messagelist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
+			 <A HREF="?m=messagelist">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -77,13 +77,13 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="fleftu" nowrap>
-			<A href="?m=messageinfo&id={$message.id}&o=customer{if $listdata.direction eq "asc" && $listdata.order eq "customer"},desc{/if}">{t}Customer:{/t}</A> {if $listdata.order eq "customer"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=messageinfo&id={$message.id}&o=customer{if $listdata.direction eq "asc" && $listdata.order eq "customer"},desc{/if}">{trans("Customer:")}</A> {if $listdata.order eq "customer"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt" nowrap>
-			<A href="?m=messageinfo&id={$message.id}&o=destination{if $listdata.direction eq "asc" && $listdata.order eq "destination"},desc{/if}">{t}Destination:{/t}</A> {if $listdata.order eq "destination"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=messageinfo&id={$message.id}&o=destination{if $listdata.direction eq "asc" && $listdata.order eq "destination"},desc{/if}">{trans("Destination:")}</A> {if $listdata.order eq "destination"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="97%" CLASS="fbt" align="right" nowrap>
-			<A href="?m=messageinfo&id={$message.id}&o=status{if $listdata.direction eq "asc" && $listdata.order eq "status"},desc{/if}">{t}Status:{/t} ({t}Error message{/t})</A> {if $listdata.order eq "status"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=messageinfo&id={$message.id}&o=status{if $listdata.direction eq "asc" && $listdata.order eq "status"},desc{/if}">{trans("Status:")} ({trans("Error message")})</A> {if $listdata.order eq "status"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" CLASS="frightu" nowrap>
 			<B>{t a=$listdata.total}Total: $a{/t}</B>&nbsp;
@@ -92,23 +92,23 @@
 	<TR class="DARK">
 		<TD class="fall" colspan="4" nowrap>
 			<FORM METHOD="POST" NAME="page" action="?m=messageinfo&id={$message.id}">
-			<B>{t}Filter:{/t} </B> 
+			<B>{trans("Filter:")} </B> 
 			<INPUT type="text" name="search" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>&nbsp;
 			<SELECT size="1" name="cat">
-				<OPTION value=""{if $listdata.cat eq ""} SELECTED{/if}>{t}- select filter category -{/t}</OPTION>
-				<OPTION value="name"{if $listdata.cat eq "name"} SELECTED{/if}>{t}customer name{/t}</OPTION>
-				<OPTION value="customerid"{if $listdata.cat eq "customerid"} SELECTED{/if}>{t}customer ID{/t}</OPTION>
-				<OPTION value="destination"{if $listdata.cat eq "destination"} SELECTED{/if}>{t}destination number/email{/t}</OPTION>
+				<OPTION value=""{if $listdata.cat eq ""} SELECTED{/if}>{trans("- select filter category -")}</OPTION>
+				<OPTION value="name"{if $listdata.cat eq "name"} SELECTED{/if}>{trans("customer name")}</OPTION>
+				<OPTION value="customerid"{if $listdata.cat eq "customerid"} SELECTED{/if}>{trans("customer ID")}</OPTION>
+				<OPTION value="destination"{if $listdata.cat eq "destination"} SELECTED{/if}>{trans("destination number/email")}</OPTION>
 			</SELECT>&nbsp;
-			{t}Status:{/t}
+			{trans("Status:")}
 			<SELECT size="1" name="status">
-				<OPTION value=""{if !$listdata.status} SELECTED{/if}>{t}- all statuses -{/t}</OPTION>
-				<OPTION value="{$smarty.const.MSG_NEW}"{if $listdata.status == $smarty.const.MSG_NEW} SELECTED{/if}>{t}waiting<!plural>{/t}</OPTION>
+				<OPTION value=""{if !$listdata.status} SELECTED{/if}>{trans("- all statuses -")}</OPTION>
+				<OPTION value="{$smarty.const.MSG_NEW}"{if $listdata.status == $smarty.const.MSG_NEW} SELECTED{/if}>{trans("waiting<!plural>")}</OPTION>
 			{*
-				<OPTION value="{$smarty.const.MSG_DRAFT}"{if $listdata.status == $smarty.const.MSG_DRAFT} SELECTED{/if}>{t}drafts{/t}</OPTION>
+				<OPTION value="{$smarty.const.MSG_DRAFT}"{if $listdata.status == $smarty.const.MSG_DRAFT} SELECTED{/if}>{trans("drafts")}</OPTION>
 			*}
-				<OPTION value="{$smarty.const.MSG_SENT}"{if $listdata.status == $smarty.const.MSG_SENT} SELECTED{/if}>{t}sent<!plural>{/t}</OPTION>
-				<OPTION value="{$smarty.const.MSG_ERROR}"{if $listdata.status == $smarty.const.MSG_ERROR} SELECTED{/if}>{t}errornous<!plural>{/t}</OPTION>
+				<OPTION value="{$smarty.const.MSG_SENT}"{if $listdata.status == $smarty.const.MSG_SENT} SELECTED{/if}>{trans("sent<!plural>")}</OPTION>
+				<OPTION value="{$smarty.const.MSG_ERROR}"{if $listdata.status == $smarty.const.MSG_ERROR} SELECTED{/if}>{trans("errornous<!plural>")}</OPTION>
 			</SELECT>
 			&nbsp;<A href="javascript: document.page.submit();">&raquo;&raquo;&raquo;</A>
 			</FORM>
@@ -129,7 +129,7 @@
 			{if $item.customerid}
 				<A href="?m=customerinfo&id={$item.customerid}">{$item.customer|truncate:45:"...":true} ({$item.customerid|string_format:"%04d"})</A>
 			{else}
-				{t}none{/t}
+				{trans("none")}
 			{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
@@ -137,11 +137,11 @@
 		</TD>
 		<TD WIDTH="97%" align="right">
 			{if $item.status == $smarty.const.MSG_SENT}
-				{t}sent{/t}
+				{trans("sent")}
 			{elseif $item.status == $smarty.const.MSG_ERROR}
-				{t}errornous{/t}{if $item.error} ({$item.error|escape}){/if}
+				{trans("errornous")}{if $item.error} ({$item.error|escape}){/if}
 			{else}
-				{t}waiting{/t}
+				{trans("waiting")}
 			{/if}
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>
@@ -151,7 +151,7 @@
 	<TR>
 		<TD WIDTH="100%" class="fall" ALIGN="center" COLSPAN="4">
 			<P>&nbsp;</P>
-			<P><B>{t}No such recipients in database.{/t}</B></P>
+			<P><B>{trans("No such recipients in database.")}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>	

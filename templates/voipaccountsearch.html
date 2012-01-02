@@ -30,12 +30,12 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD CLASS="FALL" COLSPAN="2">
-			<B>{t}Find voip accounts matching the following search criteria:{/t}</B>
+			<B>{trans("Find voip accounts matching the following search criteria:")}</B>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/voip.gif" width="16" alt=""> <B>{t}Login:{/t}</B>
+			<IMG src="img/voip.gif" width="16" alt=""> <B>{trans("Login:")}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[login]" {tip text="Enter login or it's fragment"}>
@@ -43,7 +43,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/passwd.gif" width="16" alt=""> <B>{t}Password:{/t}</B>
+			<IMG src="img/passwd.gif" width="16" alt=""> <B>{trans("Password:")}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[password]" {tip text="Enter password or it's fragment"}>
@@ -51,7 +51,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/phone.gif" width="16" alt=""> <B>{t}Phone number:{/t}</B>
+			<IMG src="img/phone.gif" width="16" alt=""> <B>{trans("Phone number:")}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[phone]" {tip text="Enter phone number or it's fragment"}>
@@ -59,17 +59,17 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/empty.gif" width="16" alt=""> <B>{t}Qualification operator:{/t}</B>
+			<IMG src="img/empty.gif" width="16" alt=""> <B>{trans("Qualification operator:")}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
-			<INPUT class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} CHECKED{/if}><A HREF="javascript:setOperator('operator0')"> {t}AND{/t} </A>
-			<INPUT class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} CHECKED{/if}><A HREF="javascript:setOperator('operator1')"> {t}OR{/t} </A>
+			<INPUT class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} CHECKED{/if}><A HREF="javascript:setOperator('operator0')"> {trans("AND")} </A>
+			<INPUT class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} CHECKED{/if}><A HREF="javascript:setOperator('operator1')"> {trans("OR")} </A>
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fbottomu" WIDTH="100%" COLSPAN="2" ALIGN="right">
-			<A href="javascript:Search()" accesskey="s">{t}Search{/t} <IMG SRC="img/search.gif" alt=""></A>
-			<A href="javascript:PrintList()">{t}Print{/t} <IMG SRC="img/print.gif" alt=""></A>
+			<A href="javascript:Search()" accesskey="s">{trans("Search")} <IMG SRC="img/search.gif" alt=""></A>
+			<A href="javascript:PrintList()">{trans("Print")} <IMG SRC="img/print.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE>

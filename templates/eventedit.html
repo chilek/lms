@@ -15,7 +15,7 @@
 		end = document.forms['event'].elements['event[endtime]'];
 		if (Number(start.options[start.selectedIndex].value) > Number(end.options[end.selectedIndex].value))
 		{
-			alert('{t}End time must not precede start time!{/t}');
+			alert('{trans("End time must not precede start time!")}');
 			end.value = start.options[start.selectedIndex].value;
 		}
 	}
@@ -31,7 +31,7 @@
 			<IMG src="img/calendar.gif" alt="">
 		</TD>
 		<TD width="1%" class="fbt">
-			<B>{t}Title:{/t}</B>
+			<B>{trans("Title:")}</B>
 		</TD>
 		<TD width="98%" class="frightu">
 			<INPUT type="text" name="event[title]" value="{$event.title}" size="50" {tip text="Enter event title" trigger="title" bold=1}>
@@ -42,16 +42,16 @@
 			<IMG src="img/time.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Time:{/t}</B>
+			<B>{trans("Time:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<INPUT type="text" name="event[date]" value="{$event.date}" size="10" OnCLick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="date"}>
-			{t}Begin:{/t} <SELECT name="event[begintime]" size="1" {tip text="Select time of"} OnChange="javascript:SetEndtime();">
+			{trans("Begin:")} <SELECT name="event[begintime]" size="1" {tip text="Select time of"} OnChange="javascript:SetEndtime();">
 				{section name=time loop=$hours}
 				<OPTION value="{$hours[time]}" {if $hours[time] == $event.begintime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</OPTION>
 				{/section}
 			</SELECT>
-			{t}End:{/t} <SELECT name="event[endtime]" size="1" {tip text="Select time of"} OnChange="javascript:CheckEndtime();">
+			{trans("End:")} <SELECT name="event[endtime]" size="1" {tip text="Select time of"} OnChange="javascript:CheckEndtime();">
 				{section name=time loop=$hours}
 				<OPTION value="{$hours[time]}" {if $hours[time] == $event.endtime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</OPTION>
 				{/section}
@@ -63,7 +63,7 @@
 			<IMG src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Description:{/t}</B>
+			<B>{trans("Description:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<TEXTAREA name="event[description]" cols="50" rows="5" {tip text="Enter additional information (optional)"}>{$event.description}</TEXTAREA>
@@ -74,10 +74,10 @@
 			<IMG src="img/access.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Status:{/t}</B>
+			<B>{trans("Status:")}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
-			<INPUT type="checkbox" name="event[private]" value="1" {tip text="Select event's status"}{if $event.private}CHECKED{/if}><A HREF="javascript:checkElement('event[private]')"> {t}private{/t}</A>
+			<INPUT type="checkbox" name="event[private]" value="1" {tip text="Select event's status"}{if $event.private}CHECKED{/if}><A HREF="javascript:checkElement('event[private]')"> {trans("private")}</A>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -85,11 +85,11 @@
 			<IMG src="img/customer.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Customer:{/t}</B>
+			<B>{trans("Customer:")}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
 			<SELECT name="event[customerid]" {tip text="Select customer (optional)"}>
-				<OPTION value="0"{if !$event.customerid} SELECTED{/if}>{t}- select customer -{/t}</OPTION>
+				<OPTION value="0"{if !$event.customerid} SELECTED{/if}>{trans("- select customer -")}</OPTION>
 				{foreach from=$customerlist item=customer}	
 				<OPTION value="{$customer.id}"{if $customer.id == $event.customerid} SELECTED{/if}>{$customer.customername}</OPTION>
 				{/foreach}
@@ -101,7 +101,7 @@
 			<IMG src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Note:{/t}</B>
+			<B>{trans("Note:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<TEXTAREA name="event[note]" cols="50" rows="5" {tip text="Enter note (optional)"}>{$event.note}</TEXTAREA>
@@ -112,29 +112,29 @@
 			<IMG src="img/users.gif" alt="">
 		</TD>
 		<TD width="1%" valign="top">
-			<B>{t}Users:{/t}</B>
+			<B>{trans("Users:")}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
 			<SELECT name="event[user]" {tip text="Select user (optional)"}>
-				<OPTION value=""{if !$event.user} SELECTED{/if}>{t}- select user -{/t}</OPTION>
+				<OPTION value=""{if !$event.user} SELECTED{/if}>{trans("- select user -")}</OPTION>
 				{section name=userlist loop=$userlist}	
 				<OPTION value="{$userlist[userlist].id}"{if $event.user == $userlist[userlist].id} SELECTED{/if}>{$userlist[userlist].name}</OPTION>
 				{/section}
 			</SELECT><BR>
 			{foreach item=user from=$event.userlist}	
-				<NOBR><A href="?m=userinfo&id={$user.id}">{$user.name}</A>&nbsp;<A href="?m=eventedit&action=dropuser&eid={$event.id}&aid={$user.id}"><IMG src="img/delete.gif" ALT="[ {t}Delete{/t} ]" OnClick="return confirm('{t a=$user.name}Are you sure, you want to drop user $a from that event?{/t}')"></A></NOBR><BR>
+				<NOBR><A href="?m=userinfo&id={$user.id}">{$user.name}</A>&nbsp;<A href="?m=eventedit&action=dropuser&eid={$event.id}&aid={$user.id}"><IMG src="img/delete.gif" ALT="[ {trans("Delete")} ]" OnClick="return confirm('{t a=$user.name}Are you sure, you want to drop user $a from that event?{/t}')"></A></NOBR><BR>
 			{/foreach}
 		</TD>
 	</TR>
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
-			<A href="javascript:document.event.submit();" accesskey="s">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>
+			<A href="javascript:document.event.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 			{if !$event.closed}
-			<A href="?m=eventedit&id={$event.id}&action=close">{t}Close{/t} <IMG src="img/dead.gif" alt=""></A>
+			<A href="?m=eventedit&id={$event.id}&action=close">{trans("Close")} <IMG src="img/dead.gif" alt=""></A>
 			{else}
-			<A href="?m=eventedit&id={$event.id}&action=open">{t}Open{/t} <IMG src="img/open.gif" alt=""></A>
+			<A href="?m=eventedit&id={$event.id}&action=open">{trans("Open")} <IMG src="img/open.gif" alt=""></A>
 			{/if}
-			<A href="?m=eventlist">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A>
+			<A href="?m=eventlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE>

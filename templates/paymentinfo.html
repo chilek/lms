@@ -15,7 +15,7 @@
 			<IMG SRC="img/creditor.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>{t}Creditor:{/t}</B>
+			<B>{trans("Creditor:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
 			{$payment.creditor}
@@ -26,7 +26,7 @@
 			<IMG SRC="img/value.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Value:{/t}</B> 
+			<B>{trans("Value:")}</B> 
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
 			{$payment.value|money_format} 
@@ -37,7 +37,7 @@
 			<IMG SRC="img/calendar.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Payment day:{/t}</B>
+			<B>{trans("Payment day:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">								
 			{$payment.payday}
@@ -64,9 +64,9 @@
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="balanceadd">
 			<INPUT TYPE="HIDDEN" NAME="addbalance[value]" VALUE="{math equation="x*-1" x=$payment.value}">
 			<INPUT TYPE="HIDDEN" NAME="addbalance[comment]" VALUE="{$payment.name} / {$payment.creditor}">
-			<A HREF="javascript:document.addbalance.submit();">{t}Account payment{/t} <IMG SRC="img/pay.gif" alt=""></A>
-			<A HREF="?m=paymentedit&id={$payment.id}">{t}Edit{/t} <IMG SRC="img/edit.gif" alt=""></A>
-			<A HREF="?m=paymentdel&id={$payment.id}" OnClick="return confirmLink(this, '{t}Are you sure, you want to delete that payment?{/t}');">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT=""></A> 
+			<A HREF="javascript:document.addbalance.submit();">{trans("Account payment")} <IMG SRC="img/pay.gif" alt=""></A>
+			<A HREF="?m=paymentedit&id={$payment.id}">{trans("Edit")} <IMG SRC="img/edit.gif" alt=""></A>
+			<A HREF="?m=paymentdel&id={$payment.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that payment?")}');">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A> 
 			</FORM>
 		</TD>
 	</TR>

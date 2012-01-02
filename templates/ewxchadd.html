@@ -5,36 +5,36 @@
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK" COLSPAN="2">
-		<TD WIDTH="1%" CLASS="fleftu" NOWRAP><IMG SRC="img/channel.gif" ALT=""> <B>{t}Channel name:{/t}</B></TD>
+		<TD WIDTH="1%" CLASS="fleftu" NOWRAP><IMG SRC="img/channel.gif" ALT=""> <B>{trans("Channel name:")}</B></TD>
 		<TD CLASS="frightu">
 			<INPUT TYPE="TEXT" NAME="channel[name]" VALUE="{$channel.name}" SIZE="30" {tip text="Enter channel name" trigger="name"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/downrate.gif" ALT=""> <B>{t}Downceil:{/t}</B></TD>
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/downrate.gif" ALT=""> <B>{trans("Downceil:")}</B></TD>
 		<TD CLASS="fright">
 			<INPUT TYPE="TEXT" SIZE="10" NAME="channel[downceil]" VALUE="{if $channel.downceil}{$channel.downceil}{/if}" {tip text="Enter maximal download value" trigger="downceil"}>
-			{t}night:{/t} <INPUT TYPE="TEXT" SIZE="10" NAME="channel[downceil_n]" VALUE="{if $channel.downceil_n}{$channel.downceil_n}{/if}" {tip text="Enter maximal download value (optional)" trigger="downceil_n"}> kbit/s
+			{trans("night:")} <INPUT TYPE="TEXT" SIZE="10" NAME="channel[downceil_n]" VALUE="{if $channel.downceil_n}{$channel.downceil_n}{/if}" {tip text="Enter maximal download value (optional)" trigger="downceil_n"}> kbit/s
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/uprate.gif" ALT=""> <B>{t}Upceil:{/t}</B></TD>
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/uprate.gif" ALT=""> <B>{trans("Upceil:")}</B></TD>
 		<TD CLASS="fright">
 			<INPUT TYPE="TEXT" SIZE="10" NAME="channel[upceil]" VALUE="{if $channel.upceil}{$channel.upceil}{/if}" {tip text="Enter maximal upload value" trigger="upceil"}>
-			{t}night:{/t} <INPUT TYPE="TEXT" SIZE="10" NAME="channel[upceil_n]" VALUE="{if $channel.upceil_n}{$channel.upceil_n}{/if}" {tip text="Enter maximal upload value (optional)" trigger="upceil_n"}> kbit/s
+			{trans("night:")} <INPUT TYPE="TEXT" SIZE="10" NAME="channel[upceil_n]" VALUE="{if $channel.upceil_n}{$channel.upceil_n}{/if}" {tip text="Enter maximal upload value (optional)" trigger="upceil_n"}> kbit/s
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/options.gif" ALT=""> <B>{t}Options:{/t}</B></TD>
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/options.gif" ALT=""> <B>{trans("Options:")}</B></TD>
 		<TD CLASS="fright" NOWRAP>
-		    <A HREF="javascript:checkElement('halfduplex');">{t}Half duplex{/t}:</A>
+		    <A HREF="javascript:checkElement('halfduplex');">{trans("Half duplex")}:</A>
             <INPUT TYPE="checkbox" NAME="channel[halfduplex]" VALUE="1" id="halfduplex" {if $channel.halfduplex} checked{/if} {tip text="Select transmission mode"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD width="100%" CLASS="fbottomu" COLSPAN="2" align="right">
-			<A HREF="javascript:document.channel.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
-			<A HREF="?m=channellist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
+			<A HREF="javascript:document.channel.submit();" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
+			<A HREF="?m=channellist">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>

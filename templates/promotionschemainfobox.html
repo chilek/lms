@@ -13,7 +13,7 @@
 			<IMG SRC="img/calendar.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="fright" NOWRAP colspan="2">
-			{if $schema.data}{$schema.data}{else}{t}unlimited{/t}{/if}
+			{if $schema.data}{$schema.data}{else}{trans("unlimited")}{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -23,14 +23,14 @@
 		<TD WIDTH="99%" class="fright">
 		    <TABLE width="100%">
 		        <TR>
-		            <TD width="1%" NOWRAP>{t}Contract prolongation after promotion period:{/t}</TD>
-		            <TD width="99%">{if $schema.continuation}{t}yes{/t}{else}{t}no{/t}{/if}</TD>
+		            <TD width="1%" NOWRAP>{trans("Contract prolongation after promotion period:")}</TD>
+		            <TD width="99%">{if $schema.continuation}{trans("yes")}{else}{trans("no")}{/if}</TD>
 		        </TR>
 		        <TR>
-		            <TD NOWRAP>{t}Additional subscription after promotion period:{/t}</TD>
+		            <TD NOWRAP>{trans("Additional subscription after promotion period:")}</TD>
 		            <TD>
 		                {if $schema.tariff}<A href="?m=tariffinfo&id={$schema.ctariffid}">{$schema.tariff} ({$schema.value|string_format:"%.2f"})</A>
-		                {else}{t}none{/t}{/if}
+		                {else}{trans("none")}{/if}
 		            </TD>
 		        </TR>
 		    </TABLE>
@@ -41,7 +41,7 @@
 			<A HREF="?m=promotionschemaset&id={$schema.id}&access={$schema.disabled}"><IMG SRC="img/{if $schema.disabled}no{/if}access.gif" ALT=""></A>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright" NOWRAP colspan="2">
-			{if $schema.disabled}{t}disabled{/t}{else}{t}enabled{/t}{/if}
+			{if $schema.disabled}{trans("disabled")}{else}{trans("enabled")}{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -68,8 +68,8 @@
 	{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
-			<A HREF="?m=promotionschemaedit&id={$schema.id}">{t}Edit{/t} <IMG SRC="img/edit.gif" alt=""></A>
-			<A HREF="?m=promotionschemadel&id={$schema.id}" OnClick="return confirmLink(this, '{t}Are you sure, you want to delete this schema?{/t}');">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT=""></A>
+			<A HREF="?m=promotionschemaedit&id={$schema.id}">{trans("Edit")} <IMG SRC="img/edit.gif" alt=""></A>
+			<A HREF="?m=promotionschemadel&id={$schema.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete this schema?")}');">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
 			</FORM>
 		</TD>
 	</TR>

@@ -9,7 +9,7 @@
 			<IMG SRC="img/nodegroup.gif" alt="">
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt" NOWRAP>
-			<B>{t}Name:{/t}</B>
+			<B>{trans("Name:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="frightu">
 			<INPUT TYPE="TEXT" VALUE="{$nodegroup.name}" NAME="nodegroup[name]" {tip trigger="name" bold=1}>
@@ -21,7 +21,7 @@
 			<IMG SRC="img/info1.gif" alt="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>{t}Description:{/t}</B>
+			<B>{trans("Description:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			<TEXTAREA ROWS="5" COLS="50" NAME="nodegroup[description]" {tip text="Enter additional information (optional)"}>{$nodegroup.description}</TEXTAREA>
@@ -35,7 +35,7 @@
 			    <input type="hidden" name="is_sure" value="1">
 		            <input type="hidden" name="m" value="nodegroupmove">
 			    <input type="hidden" name="from" value="{$nodegroup.id}">
-	    		    <A HREF="javascript:document.tmove.submit();" onclick="return confirm('{t}Are you sure, you want to move members to selected group?{/t}')">{t}Move members to group:{/t}</A>
+	    		    <A HREF="javascript:document.tmove.submit();" onclick="return confirm('{trans("Are you sure, you want to move members to selected group?")}')">{trans("Move members to group:")}</A>
 			    <SELECT SIZE="1" NAME="to" {tip text="Select group to which you want to move members"}>
 		            {foreach from=$nodegroups item=item}{if $item.id != $nodegroup.id}
 			            <OPTION VALUE="{$item.id}">{$item.name}</OPTION>
@@ -43,8 +43,8 @@
 		    	    </SELECT>
 			</FORM>
 			{/if}
-			<A HREF="javascript:document.tedit.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
-			<A HREF="?m=nodegroupinfo&id={$nodegroup.id}{if $membersnetid}&membersnetid={$membersnetid}{/if}{if $othersnetid}&othersnetid={$othersnetid}{/if}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A> 
+			<A HREF="javascript:document.tedit.submit();" ACCESSKEY="S">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
+			<A HREF="?m=nodegroupinfo&id={$nodegroup.id}{if $membersnetid}&membersnetid={$membersnetid}{/if}{if $othersnetid}&othersnetid={$othersnetid}{/if}">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A> 
 		</TD>
 	</TR>
 </TABLE>

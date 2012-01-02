@@ -16,7 +16,7 @@
 			<IMG SRC="img/customer.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%">
-			<B>{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}){if $customerinfo.deleted} <FONT COLOR="RED">({t}deleted customer{/t})</FONT>{/if}</B>
+			<B>{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}){if $customerinfo.deleted} <FONT COLOR="RED">({trans("deleted customer")})</FONT>{/if}</B>
 		</TD>
 	</TR>
 	<TR>
@@ -26,9 +26,9 @@
 			{if $customerinfo.status eq "1"}<IMG src="img/unk.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="99%">
-			{if $customerinfo.status eq "3"}<B>{t}connected<!singular>{/t}</B>{/if}
-			{if $customerinfo.status eq "2"}<B>{t}waiting{/t}</B>{/if}
-			{if $customerinfo.status eq "1"}<B>{t}interested<!singular>{/t}</B>{/if}
+			{if $customerinfo.status eq "3"}<B>{trans("connected<!singular>")}</B>{/if}
+			{if $customerinfo.status eq "2"}<B>{trans("waiting")}</B>{/if}
+			{if $customerinfo.status eq "1"}<B>{trans("interested<!singular>")}</B>{/if}
 		</TD>
 	</TR>
 	<TR>
@@ -106,7 +106,7 @@
 			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
-			{t}ICN{/t}: {$customerinfo.icn}
+			{trans("ICN")}: {$customerinfo.icn}
 		</TD>
 	</TR>
 {/if}
@@ -116,7 +116,7 @@
 			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
-			{t}SSN{/t}: {$customerinfo.ssn}
+			{trans("SSN")}: {$customerinfo.ssn}
 		</TD>
 	</TR>
 {/if}
@@ -126,7 +126,7 @@
 			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
-			{t}TEN{/t}: {$customerinfo.ten}
+			{trans("TEN")}: {$customerinfo.ten}
 		</TD>
 	</TR>
 {/if}
@@ -136,7 +136,7 @@
 			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
-			{t}REGON{/t}: {$customerinfo.regon}
+			{trans("REGON")}: {$customerinfo.regon}
 		</TD>
 	</TR>
 {/if}
@@ -146,7 +146,7 @@
 			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
-			{t}RBE{/t}: {$customerinfo.rbe}
+			{trans("RBE")}: {$customerinfo.rbe}
 		</TD>
 	</TR>
 {/if}
@@ -168,7 +168,7 @@
 			<IMG SRC="img/money.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
-			<B>{t}Balance:{/t}</B>
+			<B>{trans("Balance:")}</B>
 			{if $customerinfo.balance < 0}<FONT class="alert">{$customerinfo.balance|money_format}</FONT>{else}{$customerinfo.balance|default:"0"|money_format}{/if}
 		</TD>
 	</TR>

@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-cvs
  *
- *  (C) Copyright 2001-2011 LMS Developers
+ *  (C) Copyright 2001-2012 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -198,7 +198,7 @@ if($SESSION->islogged)
 	    && isset($USERPANEL->MODULES[$module]) )
         {
     		include(USERPANEL_MODULES_DIR.$module.'/functions.php');
-		
+
 		$function = isset($_GET['f']) && $_GET['f']!='' ? $_GET['f'] : 'main';
 		if (function_exists('module_'.$function)) 
 		{

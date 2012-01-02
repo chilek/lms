@@ -9,7 +9,7 @@
 			<img src="img/host.gif" alt="">
 		</TD>
 		<TD width="1%" class="fbt">
-			<B>{t}Name:{/t}</B>
+			<B>{trans("Name:")}</B>
 		</TD>
 		<TD width="98%" class="frightu">
 			<INPUT type="text" size="40" name="hostadd[name]" value="{$hostadd.name}" {tip text="Enter host name" trigger="name" bold=1}>
@@ -20,7 +20,7 @@
 			<img src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Description:{/t}</B>
+			<B>{trans("Description:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<TEXTAREA rows="5" cols="50" name="hostadd[description]" {tip text="Enter additional information (optional)" trigger="description"}>{$hostadd.description}</TEXTAREA>
@@ -28,9 +28,9 @@
 	</TR>
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
-			<A href="javascript:document.hostadd.submit();" accesskey="s">{t}Submit{/t} <img src="img/save.gif" alt=""></A>
-			<A href="?m=hostlist">{t}Cancel{/t} <img src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="hostadd[reuse]" id="hostadd[reuse]" value="ON" {if $hostadd.reuse}checked{/if}> <A HREF="javascript:checkElement('hostadd[reuse]')">{t}Display this form again, when this host is saved{/t}</a>
+			<A href="javascript:document.hostadd.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
+			<A href="?m=hostlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A><BR>
+			<INPUT type="checkbox" name="hostadd[reuse]" id="hostadd[reuse]" value="ON" {if $hostadd.reuse}checked{/if}> <A HREF="javascript:checkElement('hostadd[reuse]')">{trans("Display this form again, when this host is saved")}</a>
 		</TD>
 	</TR>
 </TABLE>

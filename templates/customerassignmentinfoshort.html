@@ -16,28 +16,28 @@
 			<IMG SRC="img/money.gif" alt="">
 		</TD>
 		<TD width="99%" NOWRAP colspan="2">
-			<B>{t}Liability's Options:{/t}</B>
+			<B>{trans("Liability's Options:")}</B>
 		</TD>
 	</TR>
 	<TR class="light">
 		<TD><IMG src="img/id.gif" ALT=""></TD>
-		<TD width="1%" NOWRAP><B>{t}Numbering Plan:{/t}</B></TD>
-		<TD nowrap>{if $assignment.numberplan}{$assignment.numberplan}{else}{t}default{/t}{/if}</TD>
+		<TD width="1%" NOWRAP><B>{trans("Numbering Plan:")}</B></TD>
+		<TD nowrap>{if $assignment.numberplan}{$assignment.numberplan}{else}{trans("default")}{/if}</TD>
 	</TR>
 	<TR class="light">
 		<TD><IMG src="img/print.gif" ALT=""></TD>
-		<TD width="1%" NOWRAP><B>{t}Payment Type:{/t}</B></TD>
-		<TD nowrap>{if $assignment.paytypename}{$assignment.paytypename}{else}{t}default{/t}{/if}</TD>
+		<TD width="1%" NOWRAP><B>{trans("Payment Type:")}</B></TD>
+		<TD nowrap>{if $assignment.paytypename}{$assignment.paytypename}{else}{trans("default")}{/if}</TD>
 	</TR>
 	<TR class="light">
 		<TD><IMG src="img/options.gif" ALT=""></TD>
-		<TD width="1%" NOWRAP>{t}with invoice{/t}:</TD>
-		<TD>{if $assignment.invoice}{t}yes{/t}{else}{t}no{/t}{/if}</TD>
+		<TD width="1%" NOWRAP>{trans("with invoice")}:</TD>
+		<TD>{if $assignment.invoice}{trans("yes")}{else}{trans("no")}{/if}</TD>
 	</TR>
 	<TR class="light">
 		<TD><IMG src="img/options.gif" ALT=""></TD>
-		<TD width="1%" NOWRAP>{t}with settlement{/t}:</TD>
-		<TD>{if $assignment.settlement}{t}yes{/t}{else}{t}no{/t}{/if}</TD>
+		<TD width="1%" NOWRAP>{trans("with settlement")}:</TD>
+		<TD>{if $assignment.settlement}{trans("yes")}{else}{trans("no")}{/if}</TD>
 	</TR>
 </TABLE>
 <SCRIPT type="text/javascript">

@@ -78,16 +78,16 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="dark">
 		<TD CLASS="fall" WIDTH="100%" COLSPAN="2">
-			<B>{t}Main Information:{/t}</B>
+			<B>{trans("Main Information:")}</B>
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<B>{t}Cash Registry:{/t}</B>
+			<B>{trans("Cash Registry:")}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
 			<SELECT SIZE="1" NAME="receipt[regid]" {tip text="Select cash registry" trigger="regid"}>
-				<OPTION VALUE="0">{t}- select registry -{/t}</OPTION>
+				<OPTION VALUE="0">{trans("- select registry -")}</OPTION>
 				{foreach from=$cashreglist item=c}
 				<OPTION VALUE="{$c.id}"{if $c.id eq $receipt.regid} SELECTED{/if}>{$c.name|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
 				{/foreach}
@@ -97,12 +97,12 @@
 	{if !$receipt.type}
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<B>{t}Type:{/t}</B>
+			<B>{trans("Type:")}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
 			<SELECT SIZE="1" NAME="type" {tip text="Select cash receipt type"}>
-				<OPTION VALUE="in"{if $receipt.type=="in"} SELECTED{/if}>{t}pay in{/t}</OPTION>
-				<OPTION VALUE="out"{if $receipt.type=="out"} SELECTED{/if}>{t}pay out{/t}</OPTION>
+				<OPTION VALUE="in"{if $receipt.type=="in"} SELECTED{/if}>{trans("pay in")}</OPTION>
+				<OPTION VALUE="out"{if $receipt.type=="out"} SELECTED{/if}>{trans("pay out")}</OPTION>
 			</SELECT>
 		</TD>
 	</TR>
@@ -110,12 +110,12 @@
 	{if $receipt.numberplanid != ""}
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<B>{t}Receipt number:{/t}</B>
+			<B>{trans("Receipt number:")}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
 			<INPUT TYPE="TEXT" NAME="receipt[number]" VALUE="{if $receipt.number}{$receipt.number}{/if}" SIZE="10" {tip text="Enter receipt number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)" trigger="number"}{if ($rights & 256) != 256 } readonly{/if}>
 		{if $receipt.extnumber || $receipt.extended}
-			{t}Additional number:{/t}
+			{trans("Additional number:")}
 			<INPUT TYPE="TEXT" NAME="receipt[extnumber]" VALUE="{$receipt.extnumber}" SIZE="40" {tip text="Enter additional document number" trigger="extnumber"}>
 		{/if}
 		</TD>
@@ -124,7 +124,7 @@
 	{if $receipt.cdate}
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<B>{t}Settlement date:{/t}</B>
+			<B>{trans("Settlement date:")}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
 			<INPUT TYPE="TEXT" NAME="receipt[cdate]" VALUE="{$receipt.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} {if ($rights & 256) != 256}readonly{else}OnClick="javascript:cal1.popup();"{/if}>
@@ -137,27 +137,27 @@
 	{if $receipt.type && $rights}
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%">
-			<B>{t}Target:{/t}</B>
+			<B>{trans("Target:")}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
 		    <TABLE>
 		    {if ($rights & 2)==2}
 			<TR>
 			    <TD width="1%" nowrap>
-				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="customer" id="radio_customer" checked> <A HREF="javascript:setCustomerType('radio_customer');">{t}customer{/t}:</A>
+				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="customer" id="radio_customer" checked> <A HREF="javascript:setCustomerType('radio_customer');">{trans("customer")}:</A>
 			    </TD>
 			    <TD width="99%" nowrap>
 			    {if $customerlist}
 				<SELECT SIZE="1" NAME="customer"  onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value; document.getElementById('radio_customer').checked=true;" {tip trigger="customerid"}>
-				    <OPTION VALUE="0">{t}... select customer ...{/t}</OPTION>
+				    <OPTION VALUE="0">{trans("... select customer ...")}</OPTION>
 				    {foreach from=$customerlist item=c}
 				    <OPTION VALUE="{$c.id}"{if $c.id eq $customer.id || $receipt.customerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
 				    {/foreach}
 				</SELECT>
-				{t}or Customer ID:{/t}
+				{trans("or Customer ID:")}
 			    {/if}
 			    <INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{elseif $receipt.customerid}{$receipt.customerid}{/if}" SIZE="5"{if $customerlist} onchange="reset_customer()" onfocus="reset_customer()"{/if} onclick="document.getElementById('radio_customer').checked=true;" {tip text="Enter customer ID" trigger="customerid"}>
-			    <A href="javascript: void(0);" onclick="document.getElementById('radio_customer').checked=true;return customerchoosewin(document.setcustomer.customerid);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+			    <A href="javascript: void(0);" onclick="document.getElementById('radio_customer').checked=true;return customerchoosewin(document.setcustomer.customerid);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
 			    </TD>
 			</TR>
 		    {/if}
@@ -165,7 +165,7 @@
 			{if  $cashregcount > 1 && $receipt.type=="out"}
 			<TR>
 			    <TD width="100%" colspan="2" nowrap>
-				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="move" {if $receipt.o_type=="move"} checked{/if}> {t}assets move{/t}
+				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="move" {if $receipt.o_type=="move"} checked{/if}> {trans("assets move")}
 			    </TD>
 			</TR>
 			{/if}
@@ -174,7 +174,7 @@
 			{if $receipt.type=="out"}
 			<TR>
 			    <TD width="1%" nowrap>
-				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="advance" id="radio_advance" {if $receipt.o_type=="advance"} checked{/if}> <A HREF="javascript:setCustomerType('radio_advance');">{t}advance{/t}:</A>
+				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="advance" id="radio_advance" {if $receipt.o_type=="advance"} checked{/if}> <A HREF="javascript:setCustomerType('radio_advance');">{trans("advance")}:</A>
 			    </TD>
 			    <TD width="99%">
 				<INPUT TYPE="text" NAME="receipt[adv_name]" VALUE="{$receipt.adv_name}" SIZE="70" {tip text="Enter recipient" trigger="adv_name"} onclick="document.getElementById('radio_advance').checked=true">
@@ -185,7 +185,7 @@
 		    {if ($rights & 16)==16}
 			<TR>
 			    <TD width="1%" nowrap>
-				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="other" id="radio_other" {if $receipt.o_type=="other"} checked{/if}> <A HREF="javascript:setCustomerType('radio_other');">{t}other{/t}:</A>
+				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="other" id="radio_other" {if $receipt.o_type=="other"} checked{/if}> <A HREF="javascript:setCustomerType('radio_other');">{trans("other")}:</A>
 			    </TD>
 			    <TD width="99%">
 				<INPUT TYPE="text" NAME="receipt[other_name]" VALUE="{$receipt.other_name}" SIZE="70" {if $receipt.type=="out"}{tip text="Enter recipient" trigger="o_name"}{else}{tip text="Enter payer" trigger="other_name"}{/if} onclick="document.getElementById('radio_other').checked=true">
@@ -200,7 +200,7 @@
 	{/if}
 	<TR CLASS="light">
 		<TD CLASS="fbottomu" WIDTH="100%" ALIGN="right" COLSPAN="2">
-			<A HREF="javascript: saveheader();">{t}Select{/t} <IMG SRC="img/save.gif" ALT=""></A>
+			<A HREF="javascript: saveheader();">{trans("Select")} <IMG SRC="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -211,7 +211,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" WIDTH="1%" nowrap>
-			<IMG SRC="img/customer.gif" ALT=""> <B>{t}Customer:{/t}</B>
+			<IMG SRC="img/customer.gif" ALT=""> <B>{trans("Customer:")}</B>
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" nowrap>
 			<B>{$customer.customername}</B> 
@@ -230,7 +230,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" width="1%" nowrap>
-			<IMG SRC="img/note.gif" ALT=""> <B>{t}Notes:{/t}</B>
+			<IMG SRC="img/note.gif" ALT=""> <B>{trans("Notes:")}</B>
 		</TD>
 		<TD CLASS="frightu">
 		        <FONT class="red">{$customer.notes|replace:"\n":"<BR>"}</FONT>
@@ -243,7 +243,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" width="1%" nowrap>
-			<IMG SRC="img/docum.gif" ALT=""> <B>{t}Documents:{/t}</B>
+			<IMG SRC="img/docum.gif" ALT=""> <B>{trans("Documents:")}</B>
 		</TD>
 		<TD CLASS="frightu">
 		        <FONT class="red">{$customer.docwarning}</FONT>
@@ -256,7 +256,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" width="1%" nowrap>
-			<IMG SRC="img/node.gif" ALT=""> <B>{t}Nodes:{/t}</B>
+			<IMG SRC="img/node.gif" ALT=""> <B>{trans("Nodes:")}</B>
 		</TD>
 		<TD CLASS="frightu">
 		        <FONT class="red">{$customer.nodeswarning}</FONT>
@@ -269,7 +269,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" width="1%" nowrap>
-			<IMG SRC="img/nodegroup.gif" ALT=""> <B>{t}Groups:{/t}</B>
+			<IMG SRC="img/nodegroup.gif" ALT=""> <B>{trans("Groups:")}</B>
 		</TD>
 		<TD CLASS="frightu">
 		        <FONT class="red">{$customer.nodegroupswarning}</FONT>
@@ -285,16 +285,16 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="dark">
 		<TD CLASS="fall" WIDTH="100%">
-			<B>{t}Moving assets:{/t}</B>
+			<B>{trans("Moving assets:")}</B>
 		</TD>
 	</TR>
 	<TR class="light">
 		<TD class="flr" nowrap>
-			<B>{t}Value:{/t}</B>
+			<B>{trans("Value:")}</B>
 			<INPUT TYPE="TEXT" NAME="value" VALUE="" SIZE="10" {tip text="Enter value"}>
-			<B>{t}Cash Registry:{/t}
+			<B>{trans("Cash Registry:")}
 			<SELECT SIZE="1" NAME="registry" {tip text="Select cash registry"}>
-				<OPTION VALUE="0">{t}- select registry -{/t}</OPTION>
+				<OPTION VALUE="0">{trans("- select registry -")}</OPTION>
 				{foreach from=$cashreglist item=c}
 				{if $c.id != $receipt.regid}
 				<OPTION VALUE="{$c.id}">{$c.name|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
@@ -305,7 +305,7 @@
 	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fbottomu" WIDTH="100%" ALIGN="right">
-			<A HREF="javascript:document.movecash.submit();">{t}Save & Print{/t} <IMG SRC="img/save.gif" ALT=""></A>
+			<A HREF="javascript:document.movecash.submit();">{trans("Save & Print")} <IMG SRC="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -322,16 +322,16 @@
 				<TR CLASS="DARK">
 					<TD class="fall">
 						<IMG src="img/money.gif" ALT="">
-						<B><A name="balance">{t}Last 10 not accounted invoices:{/t}</A></B>
+						<B><A name="balance">{trans("Last 10 not accounted invoices:")}</A></B>
 					</TD>
 				</TR>
 				<TR>
 					<TD width="100%" class="fall">
 						<TABLE cellpadding="5" cellspacing="0" width="100%">
 							<TR class="dark">
-								<TD width="1%" class="fleftu">{t}Date:{/t}</TD>
-								<TD width="97%" class="fbt">{t}Invoice:{/t}</TD>
-								<TD width="1%" class="fbt" align="right">{t}Value:{/t}</TD>
+								<TD width="1%" class="fleftu">{trans("Date:")}</TD>
+								<TD width="97%" class="fbt">{trans("Invoice:")}</TD>
+								<TD width="1%" class="fbt" align="right">{trans("Value:")}</TD>
 								<TD width="1%" class="frightu">&nbsp;</TD>
 							</TR>
 							{cycle values="light,lucid" print=false}
@@ -348,7 +348,7 @@
 							<TR>
 								<TD align="center" colspan="4">
 							    		<p>&nbsp;</p>
-									<p><B>{t}That customer hasn't got not accounted invoices.{/t}</B></p>
+									<p><B>{trans("That customer hasn't got not accounted invoices.")}</B></p>
 									<p>&nbsp;</p>
 								</TD>
 							</TR>
@@ -356,10 +356,10 @@
 							<TR class="light">
 								<TD CLASS="ftop" colspan="2" nowrap>
 									<INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes" CHECKED>
-									<A HREF="javascript:CheckAll2();">{t}Check All{/t}</A>
+									<A HREF="javascript:CheckAll2();">{trans("Check All")}</A>
 								</TD>
 							        <TD CLASS="ftop" ALIGN="right" colspan="2" nowrap>
-									<A href="javascript:document.additemlist.submit();">{t}Add items{/t} <IMG src="img/save.gif" ALT=""></A>
+									<A href="javascript:document.additemlist.submit();">{trans("Add items")} <IMG src="img/save.gif" ALT=""></A>
 								</TD>
 							</TR>
 						</TABLE>
@@ -372,13 +372,13 @@
 	{/if}
 	<TR CLASS="DARK">
 		<TD CLASS="fleftu" WIDTH="1%">
-			<B>{t}No.{/t}</B>
+			<B>{trans("No.")}</B>
 		</TD>
 		<TD CLASS="fbt" WIDTH="97%" NOWRAP>
-			{t}Name of product, commodity or service:{/t}
+			{trans("Name of product, commodity or service:")}
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{t}Value:{/t}
+			{trans("Value:")}
 		</TD>
 		<TD WIDTH="1%" NOWRAP CLASS="frightu"></TD>
 	</TR>
@@ -402,7 +402,7 @@
 	<TR>
 		<TD COLSPAN="4" ALIGN="CENTER" CLASS="fall">
 			<P>&nbsp;</P>
-			<P><B>{t}Receipt have no items. Use form below for items addition.{/t}</B></P>
+			<P><B>{trans("Receipt have no items. Use form below for items addition.")}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>
@@ -410,7 +410,7 @@
 	{if $contents}
 	<TR CLASS="light">
 		<TD COLSPAN="2" WIDTH="98%" ALIGN="RIGHT" CLASS="ftl">
-			<B>{t}Total:{/t}</B>
+			<B>{trans("Total:")}</B>
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" CLASS="ftop">
 			{sum array=$contents column=value string_format=$LANGDEFS.$_language.money_format}
@@ -436,26 +436,26 @@
 	</TR>
 	<TR CLASS="light">
 		<TD COLSPAN="4" CLASS="{if $covenantlist}flr{else}fbottomu{/if}" ALIGN="RIGHT">
-			<INPUT type="checkbox" name="original" checked> <A HREF="javascript:setType('original');">{t}original{/t}</A>&nbsp;
-			<INPUT type="checkbox" name="copy" checked> <A HREF="javascript:setType('copy');">{t}copy{/t}</A>&nbsp;
-			<A HREF="?m=receiptlist&regid={$receipt.regid}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A>&nbsp;
-			<A HREF="?m=receiptadd&action=init">{t}Clear Contents{/t} <IMG SRC="img/delete.gif" alt=""></A>&nbsp;
+			<INPUT type="checkbox" name="original" checked> <A HREF="javascript:setType('original');">{trans("original")}</A>&nbsp;
+			<INPUT type="checkbox" name="copy" checked> <A HREF="javascript:setType('copy');">{trans("copy")}</A>&nbsp;
+			<A HREF="?m=receiptlist&regid={$receipt.regid}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>&nbsp;
+			<A HREF="?m=receiptadd&action=init">{trans("Clear Contents")} <IMG SRC="img/delete.gif" alt=""></A>&nbsp;
 			{if !$customer && $receipt.o_type != "other" && $receipt.o_type != "advance"}
-			<A HREF="javascript:alert('{t}Customer not selected!{/t}');">
+			<A HREF="javascript:alert('{trans("Customer not selected!")}');">
 			{elseif !$contents}
-			<A HREF="javascript:alert('{t}Receipt have no items!{/t}');">
+			<A HREF="javascript:alert('{trans("Receipt have no items!")}');">
 			{else}
 			<A HREF="javascript:savereceipt(0);">
 			{/if}
-			{t}Save{/t} <IMG src="img/save.gif" alt=""></A>&nbsp;
+			{trans("Save")} <IMG src="img/save.gif" alt=""></A>&nbsp;
 			{if !$customer && $receipt.o_type != "other" && $receipt.o_type != "advance"}
-			<A HREF="javascript:alert('{t}Customer not selected!{/t}');">
+			<A HREF="javascript:alert('{trans("Customer not selected!")}');">
 			{elseif !$contents}
-			<A HREF="javascript:alert('{t}Receipt have no items!{/t}');">
+			<A HREF="javascript:alert('{trans("Receipt have no items!")}');">
 			{else}
 			<A HREF="javascript:savereceipt(1);">
 			{/if}
-			{t}Save & Print{/t} <IMG src="img/print.gif" alt=""></A>
+			{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
 		</TD>
 	</TR>
 	</FORM>

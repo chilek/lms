@@ -25,7 +25,7 @@
 
 	function DeleteMarked()
 	{
-		if(!confirm('{t}Are you sure, you want to delete selected operation(s) and/or document item(s)?{/t}'))
+		if(!confirm('{trans("Are you sure, you want to delete selected operation(s) and/or document item(s)?")}'))
 			return;
 
 		document.page.action="?m=balancedel";
@@ -91,62 +91,62 @@
 <TABLE width="100%" cellpadding="3">
 	<TR class="dark">
 		<TD width="1%" class="fleftu">
-			{t}Date:{/t}
+			{trans("Date:")}
 		</TD>
 		<TD width="1%" class="fbt">
-			{t}User:{/t}
+			{trans("User:")}
 		</TD>
 		<TD width="1%" class="fbt" align="right">
-			{t}Liability:{/t}
+			{trans("Liability:")}
 		</TD>
 		<TD width="1%" class="fbt" align="right">
-			{t}Income:{/t}
+			{trans("Income:")}
 		</TD>
 		<TD width="1%" class="fbt" align="right">
-			{t}Expense:{/t}
+			{trans("Expense:")}
 		</TD>
 		<TD width="1%" class="fbt" align="center">&raquo;</TD>
 		<TD width="1%" class="fbt" align="right">
-			{t}After:{/t}
+			{trans("After:")}
 		</TD>
 		<TD width="1%" class="fbt">
-			{t}Customer:{/t}
+			{trans("Customer:")}
 		</TD>
 		<TD width="91%" class="fbt">
-			{t}Description:{/t}
+			{trans("Description:")}
 		</TD>
 		<TD width="1%" CLASS="frightu">&nbsp;</TD>
 	</TR>
 	<TR class="DARK">
 		<TD class="fall" colspan="10">
-			<B>{t}Filter:{/t} </B>
+			<B>{trans("Filter:")} </B>
 				<INPUT type="text" name="search" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>
 				<SELECT size="1" name="cat" style="width: 150px">
-					<OPTION value=""{if $listdata.cat eq ""} SELECTED{/if}>{t}- select category -{/t}</OPTION>
-					<OPTION value="comment"{if $listdata.cat eq "comment"} SELECTED{/if}>{t}comment{/t}</OPTION>
-					<OPTION value="cdate"{if $listdata.cat eq "cdate"} SELECTED{/if}>{t}date (YYYY/MM/DD){/t}</OPTION>
-					<OPTION value="number"{if $listdata.cat eq "number"} SELECTED{/if}>{t}document number{/t}</OPTION>
-					<OPTION value="value"{if $listdata.cat eq "value"} SELECTED{/if}>{t}value{/t}</OPTION>
-					<OPTION value="name"{if $listdata.cat eq "name"} SELECTED{/if}>{t}customer name{/t}</OPTION>
-					<OPTION value="customerid"{if $listdata.cat eq "customerid"} SELECTED{/if}>{t}customer ID{/t}</OPTION>
-					<OPTION value="ten"{if $listdata.cat eq "ten"} SELECTED{/if}>{t}TEN{/t}</OPTION>
-					<OPTION value="address"{if $listdata.cat eq "address"} SELECTED{/if}>{t}address{/t}</OPTION>
-					<OPTION value="documented"{if $listdata.cat eq "documented"} SELECTED{/if}>{t}with document{/t}</OPTION>
-					<OPTION value="notdocumented"{if $listdata.cat eq "notdocumented"} SELECTED{/if}>{t}without document{/t}</OPTION>
+					<OPTION value=""{if $listdata.cat eq ""} SELECTED{/if}>{trans("- select category -")}</OPTION>
+					<OPTION value="comment"{if $listdata.cat eq "comment"} SELECTED{/if}>{trans("comment")}</OPTION>
+					<OPTION value="cdate"{if $listdata.cat eq "cdate"} SELECTED{/if}>{trans("date (YYYY/MM/DD)")}</OPTION>
+					<OPTION value="number"{if $listdata.cat eq "number"} SELECTED{/if}>{trans("document number")}</OPTION>
+					<OPTION value="value"{if $listdata.cat eq "value"} SELECTED{/if}>{trans("value")}</OPTION>
+					<OPTION value="name"{if $listdata.cat eq "name"} SELECTED{/if}>{trans("customer name")}</OPTION>
+					<OPTION value="customerid"{if $listdata.cat eq "customerid"} SELECTED{/if}>{trans("customer ID")}</OPTION>
+					<OPTION value="ten"{if $listdata.cat eq "ten"} SELECTED{/if}>{trans("TEN")}</OPTION>
+					<OPTION value="address"{if $listdata.cat eq "address"} SELECTED{/if}>{trans("address")}</OPTION>
+					<OPTION value="documented"{if $listdata.cat eq "documented"} SELECTED{/if}>{trans("with document")}</OPTION>
+					<OPTION value="notdocumented"{if $listdata.cat eq "notdocumented"} SELECTED{/if}>{trans("without document")}</OPTION>
 				</SELECT>&nbsp;
-				{t}Group:{/t}
+				{trans("Group:")}
 				<SELECT size="1" name="group">
-					<OPTION value="0"{if !$listdata.group} SELECTED{/if}>{t}- all groups -{/t}</OPTION>
+					<OPTION value="0"{if !$listdata.group} SELECTED{/if}>{trans("- all groups -")}</OPTION>
 					{section name="grouplist" loop=$grouplist}
 					<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group eq $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:40:"...":true}</OPTION>
 					{/section}
 				</SELECT>
 				<NOBR>
-				<INPUT type="checkbox" name="groupexclude" {if $listdata.groupexclude} CHECKED{/if}><A HREF="javascript:setCheckbox('groupexclude')">{t}exclude group{/t}</a>
+				<INPUT type="checkbox" name="groupexclude" {if $listdata.groupexclude} CHECKED{/if}><A HREF="javascript:setCheckbox('groupexclude')">{trans("exclude group")}</a>
 				</NOBR>
 				<NOBR>
-				{t}From:{/t}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
-				{t}To:{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal2.popup();"  {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
+				{trans("From:")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+				{trans("To:")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal2.popup();"  {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
 				<A href="javascript: filter();">&raquo;&raquo;&raquo;</A><BR>
 				</NOBR>
 		</TD>
@@ -195,13 +195,13 @@
 		<TD width="1%" class="fright" align="right" nowrap>
 			{if $balancelist[balancelist].docid}
 				{if $balancelist[balancelist].doctype==$smarty.const.DOC_INVOICE}
-				<A HREF="?m=invoice&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/print.gif" ALT="[ {t}Invoice{/t} ]" {tip a=$balancelist[balancelist].docid dynpopup='?m=number&id=$a'}></A>
+				<A HREF="?m=invoice&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/print.gif" ALT="[ {trans("Invoice")} ]" {tip a=$balancelist[balancelist].docid dynpopup='?m=number&id=$a'}></A>
 				{elseif $balancelist[balancelist].doctype==$smarty.const.DOC_CNOTE}
-				<A HREF="?m=invoice&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/printn.gif" ALT="[ {t}Credit note{/t} ]" {tip a=$balancelist[balancelist].docid dynpopup='?m=number&id=$a'}></A>
+				<A HREF="?m=invoice&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/printn.gif" ALT="[ {trans("Credit note")} ]" {tip a=$balancelist[balancelist].docid dynpopup='?m=number&id=$a'}></A>
 				{elseif $balancelist[balancelist].doctype==$smarty.const.DOC_RECEIPT}
-				<A HREF="?m=receipt&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/printr.gif" ALT="[ {t}Cash receipt{/t} ]" {tip a=$balancelist[balancelist].docid dynpopup='?m=number&id=$a'}></A>
+				<A HREF="?m=receipt&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/printr.gif" ALT="[ {trans("Cash receipt")} ]" {tip a=$balancelist[balancelist].docid dynpopup='?m=number&id=$a'}></A>
 				{elseif $balancelist[balancelist].doctype==$smarty.const.DOC_DNOTE}
-				<A HREF="?m=note&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/printd.gif" ALT="[ {t}Debit note{/t} ]" {tip a=$balancelist[balancelist].docid dynpopup='?m=number&id=$a'}></A>
+				<A HREF="?m=note&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/printd.gif" ALT="[ {trans("Debit note")} ]" {tip a=$balancelist[balancelist].docid dynpopup='?m=number&id=$a'}></A>
 				{/if}
 			{/if}
 			<INPUT TYPE="checkbox" NAME="marks[{$balancelist[balancelist].id}]" VALUE="{$balancelist[balancelist].id}">
@@ -211,22 +211,22 @@
 	<TR>
 		<TD WIDTH="100%" class="fall" ALIGN="center" COLSPAN="10">
 			<P>&nbsp;<?P>
-			<P><B>{t}No such transactions found in database.{/t}</B></P>
+			<P><B>{trans("No such transactions found in database.")}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>    
 	{/section}
 	<TR class="dark">
 		<TD class="fleftu" COLSPAN="8" nowrap>
-			<A HREF="javascript:DeleteMarked();">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT="{t}Delete{/t}" HSPACE="2"></A>&nbsp;
-			<A HREF="javascript:printi();">{t}Print invoices{/t} <IMG SRC="img/print.gif" ALT="" HSPACE="2"></A>&nbsp;
-			<A HREF="javascript:printr();">{t}Print cash receipts{/t} <IMG SRC="img/printr.gif" ALT="" HSPACE="2"></A>&nbsp;
-			<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i',$_config.invoices.default_printpage)} checked{/if}><A HREF="javascript:checkElement('original')">{t}original{/t}&nbsp;</a>
-			<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i',$_config.invoices.default_printpage)} checked{/if}><A HREF="javascript:checkElement('copy')">{t}copy{/t}</a>
-			<INPUT type="checkbox" name="duplicate"id ="duplicate"{if preg_match('/duplicate/i',$_config.invoices.default_printpage)} checked{/if}><A HREF="javascript:checkElement('duplicate')">{t}duplicate{/t}</a>
+			<A HREF="javascript:DeleteMarked();">{trans("Delete")} <IMG SRC="img/delete.gif" ALT="{trans("Delete")}" HSPACE="2"></A>&nbsp;
+			<A HREF="javascript:printi();">{trans("Print invoices")} <IMG SRC="img/print.gif" ALT="" HSPACE="2"></A>&nbsp;
+			<A HREF="javascript:printr();">{trans("Print cash receipts")} <IMG SRC="img/printr.gif" ALT="" HSPACE="2"></A>&nbsp;
+			<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i',$_config.invoices.default_printpage)} checked{/if}><A HREF="javascript:checkElement('original')">{trans("original")}&nbsp;</a>
+			<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i',$_config.invoices.default_printpage)} checked{/if}><A HREF="javascript:checkElement('copy')">{trans("copy")}</a>
+			<INPUT type="checkbox" name="duplicate"id ="duplicate"{if preg_match('/duplicate/i',$_config.invoices.default_printpage)} checked{/if}><A HREF="javascript:checkElement('duplicate')">{trans("duplicate")}</a>
 		</TD>
 		<TD class="frightu" ALIGN="right" colspan="2">
-			<A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes">
+			<A HREF="javascript:CheckAll2();">{trans("Check All")}</A><INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes">
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
@@ -238,7 +238,7 @@
 	{/if}
 	<TR class="light">
 		<TD colspan="2" align="right" class="fleftu" NOWRAP>
-			<B>{t}Total:{/t}</B><BR>
+			<B>{trans("Total:")}</B><BR>
 		</TD>
 		<TD nowrap class="fbt" align="right">
 			<B>{$listdata.liability|money_format}</B>
@@ -252,7 +252,7 @@
 		<TD nowrap class="fbt" align="right" colspan="2">
 		</TD>
 		<TD nowrap class="fbt" align="right">
-			<B>{t}Balance:{/t}</B>
+			<B>{trans("Balance:")}</B>
 		</TD>
 		<TD nowrap class="fbt" align="left">
 			<B>{$listdata.totalval|money_format}</B>

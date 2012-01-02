@@ -23,7 +23,7 @@
 		</TD>
 		{else}
 		<TD width="1%" class="fleftu" nowarp>
-			<IMG SRC="img/network.gif" alt=""> <B>{t}Name:{/t}</B>
+			<IMG SRC="img/network.gif" alt=""> <B>{trans("Name:")}</B>
 		</TD>
 		<TD width="99%" class="frightu" colspan="3">
 			 <INPUT TYPE="text" NAME="networkdata[name]" VALUE="{$network.name}" {tip trigger="name" bold=1}> <B>({$network.id|string_format:"%04d"})</B>
@@ -32,13 +32,13 @@
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<nobr><IMG SRC="img/ip.gif" alt=""> <B>{t}Address/prefix:{/t}</B></nobr>
+			<nobr><IMG SRC="img/ip.gif" alt=""> <B>{trans("Address/prefix:")}</B></nobr>
 		</TD>
 		<TD width="48%">
 			<NOBR>{if $unlockedit}<INPUT TYPE="text" NAME="networkdata[address]" VALUE="{$network.address}" {tip text="Write down network address and select mask" trigger="address"}> / <SELECT size="1" title="Prefixlen" name="networkdata[prefix]">{section name=prefixlist loop=$prefixlist.id}<OPTION VALUE="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] eq $network.prefix} SELECTED{/if}>{$prefixlist.value[prefixlist]}</OPTION>{/section}</SELECT>{else}{$network.address}/{$network.prefix}{/if}</NOBR>
 		</TD>
 		<TD width="2%" rowspan="2">
-			<NOBR><IMG src="img/dhcp.gif" alt=""> <B>{t}DHCP range:{/t}</B></NOBR>	
+			<NOBR><IMG src="img/dhcp.gif" alt=""> <B>{trans("DHCP range:")}</B></NOBR>	
 		</TD>
 		<TD width="48%" class="fright" rowspan="2">
 			{if $unlockedit}<INPUT TYPE="text" NAME="networkdata[dhcpstart]" VALUE="{$network.dhcpstart}" {tip text="Enter first address of DHCP range (optional)" trigger="dhcpstart"}><BR>
@@ -51,7 +51,7 @@
 	{if !$unlockedit}
 	<TR class="light">
 		<td width="1%" class="fleft">
-			<nobr><img src="img/cmp.gif" alt=""> <B>{t}Network size:{/t}</B>
+			<nobr><img src="img/cmp.gif" alt=""> <B>{trans("Network size:")}</B>
 		</TD>
 		<TD width="49%">
 			{t a=$network.size}$a addresses{/t}
@@ -60,7 +60,7 @@
 	{/if}
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/mac.gif" ALT=""> <B>{t}Interface:{/t}</B>
+			<IMG SRC="img/mac.gif" ALT=""> <B>{trans("Interface:")}</B>
 		</TD>
 		<TD COLSPAN="3" CLASS="FRIGHT" WIDTH="99%">
 			{if $unlockedit}
@@ -72,7 +72,7 @@
 	</TR>
 	<TR class="light">
 		<TD width="2%" class="fleft">
-			<nobr><img src="img/gateway.gif" alt=""> <B>{t}Gateway:{/t}</B></nobr>
+			<nobr><img src="img/gateway.gif" alt=""> <B>{trans("Gateway:")}</B></nobr>
 		</TD>		
 		<TD width="48%">
 			{if $unlockedit}
@@ -82,7 +82,7 @@
 			{/if}
 		</TD>
 		<TD width="2%">
-			<nobr><img src="img/dns.gif" alt=""> <B>{t}DNS servers:{/t}</B></NOBR>
+			<nobr><img src="img/dns.gif" alt=""> <B>{trans("DNS servers:")}</B></NOBR>
 		</TD>
 		<TD width="48%" class="fright">
 			{if $unlockedit}
@@ -96,7 +96,7 @@
 	</TR>
 	<TR class="light">
 		<TD width="2%" class="fleft">
-			<nobr><img src="img/wins.gif" alt=""> <B>{t}WINS server:{/t}</B></NOBR>
+			<nobr><img src="img/wins.gif" alt=""> <B>{trans("WINS server:")}</B></NOBR>
 		</TD>
 		<TD width="48%">
 			{if $unlockedit}
@@ -106,7 +106,7 @@
 			{/if}
 		</TD>
 		<TD width="2%">
-			<nobr><img src="img/node.gif" alt=""> <B>{t}Domain:{/t}</B></NOBR>
+			<nobr><img src="img/node.gif" alt=""> <B>{trans("Domain:")}</B></NOBR>
 		</TD>
 		<TD width="48%" class="fright">
 			{if $unlockedit}
@@ -150,12 +150,12 @@
 			{if $unlockedit}
 			<form name="remap" action="" method="get">
 				<INPUT type="submit" class="hiddenbtn">
-				<A href="?m=netcmp&id={$network.id}" OnClick="return confirmLink(this, '{t}Are you sure, you want to assign new addresses for all computers? Remember, it can make problems for your network!{/t}');">{t}Put in order{/t} <img src="img/cmp.gif" ALT="[ {t}Put in order{/t} ]"></A>
+				<A href="?m=netcmp&id={$network.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to assign new addresses for all computers? Remember, it can make problems for your network!")}');">{trans("Put in order")} <img src="img/cmp.gif" ALT="[ {trans("Put in order")} ]"></A>
 				<input type="hidden" name="is_sure" value="1">
 				<input type="hidden" name="m" value="netremap">
 				<input type="hidden" name="id" value="{$network.id}">
 				{if $netlistsize > 1}
-				<a href="javascript:document.remap.submit()" onClick="return confirm('{t a=$network.name}Are you sure, you want to change network $a to network '+getText(document.remap.mapto.value)+'?{/t}');">{t}Reassign to network:{/t}</A> 
+				<a href="javascript:document.remap.submit()" onClick="return confirm('{t a=$network.name}Are you sure, you want to change network $a to network '+getText(document.remap.mapto.value)+'?{/t}');">{trans("Reassign to network:")}</A> 
 					<select size="1" name="mapto" {tip text="Select network to which you want to move computers"}>
 						{section name=networks loop=$networks}
 						{if $networks[networks].id neq $network.id}
@@ -164,20 +164,20 @@
 						{/section}
 					</select>
 				{/if}
-				<A href="javascript:document.netedit.submit()" ACCESSKEY="S">{t}Submit{/t} <IMG src="img/save.gif" ALT="[ {t}Submit{/t} ]"></a>
-				<A href="?m=netdel&id={$network.id}" onClick="return confirmLink(this,'{t a=$network.name}Are you sure, you want to remove network \'$a\'?{/t}')">{t}Remove{/t} <img src="img/delete.gif" ALT="[ {t}Remove{/t} ]"></A>
-				<A href="?m=netinfo&id={$network.id}">{t}Cancel{/t} <img src="img/cancel.gif" ALT="[ {t}Cancel{/t} ]"></A></TD> 
+				<A href="javascript:document.netedit.submit()" ACCESSKEY="S">{trans("Submit")} <IMG src="img/save.gif" ALT="[ {trans("Submit")} ]"></a>
+				<A href="?m=netdel&id={$network.id}" onClick="return confirmLink(this,'{t a=$network.name}Are you sure, you want to remove network \'$a\'?{/t}')">{trans("Remove")} <img src="img/delete.gif" ALT="[ {trans("Remove")} ]"></A>
+				<A href="?m=netinfo&id={$network.id}">{trans("Cancel")} <img src="img/cancel.gif" ALT="[ {trans("Cancel")} ]"></A></TD> 
 				</form>
 			{else}
-			<A href="?m=netedit&id={$network.id}" ACCESSKEY="E">{t}Edit{/t} <img src="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
-			<A href="?m=netdel&id={$network.id}" onClick="return confirmLink(this,'{t a=$network.name}Are you sure, you want to remove network \'$a\'?{/t}')">{t}Remove{/t} <img src="img/delete.gif" ALT="[ {t}Remove{/t} ]"></A>
+			<A href="?m=netedit&id={$network.id}" ACCESSKEY="E">{trans("Edit")} <img src="img/edit.gif" ALT="[ {trans("Edit")} ]"></A>
+			<A href="?m=netdel&id={$network.id}" onClick="return confirmLink(this,'{t a=$network.name}Are you sure, you want to remove network \'$a\'?{/t}')">{trans("Remove")} <img src="img/delete.gif" ALT="[ {trans("Remove")} ]"></A>
 		</TD>
 			{/if}
 	</TR>
 	{if $network.page}
 	<TR class="dark">
 		<TD width="50%" class="fleftu" colspan="2">
-			<img src="img/ip.gif" ALT=""> <B>{t}IP addresses status:{/t}</B>
+			<img src="img/ip.gif" ALT=""> <B>{trans("IP addresses status:")}</B>
 		</TD>
 		<TD WIDTH="50%" CLASS="frightu" COLSPAN="2" ALIGN="RIGHT">
 			<B>{if $network.page > 1}<A HREF="?m=net{if $unlockedit}edit{else}info{/if}&id={$network.id}&page={math equation="x - 1" x=$network.page}">&laquo;&laquo;&laquo;</A>{else}<FONT CLASS="BLEND">&laquo;&laquo;&laquo;</FONT>{/if}
@@ -216,7 +216,7 @@
 						{t a=$network.page b=$network.pages}Page $a of $b{/t} {if $network.page < $network.pages}<A HREF="?m=net{if $unlockedit}edit{else}info{/if}&id={$network.id}&page={math equation="x + 1" x=$network.page}">&raquo;&raquo;&raquo;</A>{else}<FONT CLASS="BLEND">&raquo;&raquo;&raquo;</FONT>{/if}</B>
 					</TD>
 					<TD ALIGN="RIGHT" CLASS="frightu" COLSPAN="2">
-						<B>{t a=$network.assigned}Total: $a{/t} ({t}this page:{/t} {$network.pageassigned|default:"0"}, {t}free:{/t} {$network.free})</B>
+						<B>{t a=$network.assigned}Total: $a{/t} ({trans("this page:")} {$network.pageassigned|default:"0"}, {trans("free:")} {$network.free})</B>
 					</TD>
 				</TR>
 			</table>

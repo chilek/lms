@@ -8,39 +8,39 @@
 			{if $channel.id}
 			    <B>{$channel.name} ({$channel.id|string_format:"%04d"})</B>
 			{else}
-			    [{t}default{/t}]
+			    [{trans("default")}]
 			{/if}
 		</TD>
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft" NOWRAP>
-			<IMG SRC="img/downrate.gif" alt=""> <B>{t}Downceil:{/t}</B>
+			<IMG SRC="img/downrate.gif" alt=""> <B>{trans("Downceil:")}</B>
 		</TD>
 		<TD width="99%" class="fright">
 			{$channel.downceil} kbit/s
-			({t}night:{/t} {if $channel.downceil_n}{$channel.downceil_n|default:0} kbit/s{else}{t}not defined{/t}{/if})
+			({trans("night:")} {if $channel.downceil_n}{$channel.downceil_n|default:0} kbit/s{else}{trans("not defined")}{/if})
 		</TD>
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft" NOWRAP>
-			<IMG SRC="img/uprate.gif" alt=""> <B>{t}Upceil:{/t}</B>
+			<IMG SRC="img/uprate.gif" alt=""> <B>{trans("Upceil:")}</B>
 		</TD>
 		<TD width="99%" class="fright">
 			{$channel.upceil} kbit/s
-			({t}night:{/t} {if $channel.upceil_n}{$channel.upceil_n|default:0} kbit/s{else}{t}not defined{/t}{/if})
+			({trans("night:")} {if $channel.upceil_n}{$channel.upceil_n|default:0} kbit/s{else}{trans("not defined")}{/if})
 		</TD>
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft" NOWRAP>
-			<IMG SRC="img/options.gif" alt=""> <B>{t}Options:{/t}</B>
+			<IMG SRC="img/options.gif" alt=""> <B>{trans("Options:")}</B>
 		</TD>
 		<TD width="99%" class="fright">
-		    {t}Half duplex{/t}: {if $channel.halfduplex}{t}yes{/t}{else}{t}no{/t}{/if}
+		    {trans("Half duplex")}: {if $channel.halfduplex}{trans("yes")}{else}{trans("no")}{/if}
 		</TD>
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft" NOWRAP>
-			<IMG SRC="img/netdev.gif" alt=""> <B>{t}Devices:{/t}</B>
+			<IMG SRC="img/netdev.gif" alt=""> <B>{trans("Devices:")}</B>
 		</TD>
 		<TD width="99%" class="fright">
 		    {$channel.devcnt|default:0}
@@ -48,7 +48,7 @@
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft" NOWRAP>
-			<IMG SRC="img/node.gif" alt=""> <B>{t}Nodes:{/t}</B>
+			<IMG SRC="img/node.gif" alt=""> <B>{trans("Nodes:")}</B>
 		</TD>
 		<TD width="99%" class="fright">
 		    {$channel.nodecnt|default:0}
@@ -65,8 +65,8 @@
 	<TR CLASS="LIGHT">
         <TD width="100%" CLASS="fbottomu" COLSPAN="2" align="right">
             {if $channel.id}
-            <A HREF="?m=ewxchedit&id={$channel.id}" accesskey="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT=""></A>
-			<A HREF="?m=ewxchdel&id={$channel.id}" onclick="return confirmLink(this,'{t}Are you sure, you want to delete this channel?{/t}');">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT=""></A>
+            <A HREF="?m=ewxchedit&id={$channel.id}" accesskey="E">{trans("Edit")} <IMG SRC="img/edit.gif" ALT=""></A>
+			<A HREF="?m=ewxchdel&id={$channel.id}" onclick="return confirmLink(this,'{trans("Are you sure, you want to delete this channel?")}');">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
             {/if}
         </TD>
     </TR>
@@ -75,17 +75,17 @@
 <TABLE cellpadding="3" width="100%">
 	<TR CLASS="DARK">
         	<TD width="100%" CLASS="fall">
-			<IMG SRC="img/netdev.gif" alt=""> <B>{t}Devices:{/t}</B>
+			<IMG SRC="img/netdev.gif" alt=""> <B>{trans("Devices:")}</B>
                 </TD>
         </TR>
 	<TR>
 		<TD width="100%" class="fall">
 			<TABLE width="100%" cellpadding="5" cellspacing="0">
 				<TR class="DARK">
-					<TD WIDTH="30%" class="fleftu"><B>{t}Name:{/t}</B></TD>
-	                <TD WIDTH="1%" class="fbt" align="right">{t}ID:{/t}</TD>
-					<TD WIDTH="1%" class="fbt" align="right">{t}Nodes:{/t}</TD>
-					<TD WIDTH="67%" class="fbt">{t}Location:{/t}</TD>
+					<TD WIDTH="30%" class="fleftu"><B>{trans("Name:")}</B></TD>
+	                <TD WIDTH="1%" class="fbt" align="right">{trans("ID:")}</TD>
+					<TD WIDTH="1%" class="fbt" align="right">{trans("Nodes:")}</TD>
+					<TD WIDTH="67%" class="fbt">{trans("Location:")}</TD>
 					<TD WIDTH="1%" class="frightu">&nbsp;</TD>
 				</TR>
 				{cycle values="light,lucid" print=false}
@@ -105,7 +105,7 @@
 					</TD>
 					<TD align="right">
 					    {if $channel.id}
-						<A href="?m=ewxchedit&action=remove&id={$channel.id}&devid={$item.id}" onClick="return confirmLink(this, '{t}Are you sure, you want to remove this assignment?{/t}')"  {tip text="Remove this device from the channel"}><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
+						<A href="?m=ewxchedit&action=remove&id={$channel.id}&devid={$item.id}" onClick="return confirmLink(this, '{trans("Are you sure, you want to remove this assignment?")}')"  {tip text="Remove this device from the channel"}><IMG SRC="img/delete.gif" ALT="[ {trans("Delete")} ]"></A>
 					    {/if}
 					</TD>
 				</TR>
@@ -113,7 +113,7 @@
 				<TR>
                     <TD WIDTH="100%" COLSPAN="5" align="center">
 			                <P>&nbsp;</P>
-					        <P><B>{t}No devices associated with this channel.{/t}</B></P>
+					        <P><B>{trans("No devices associated with this channel.")}</B></P>
 					        <P>&nbsp;</P>
 					</TD>
 				</TR>
@@ -123,15 +123,15 @@
 				<INPUT type="submit" class="hiddenbtn">
 				<TR class="light">
 				    <TD COLSPAN="3" CLASS="ftop">
-						<B>{t}Add:{/t}</B>
+						<B>{trans("Add:")}</B>
 						<SELECT SIZE="1" NAME="devid" {tip text="Select device to associate with the channel"}>
-						        <OPTION VALUE="">- {t}select device{/t} -</OPTION>
+						        <OPTION VALUE="">- {trans("select device")} -</OPTION>
 						        {foreach from=$channel.freedevices item=item}
 							<OPTION VALUE="{$item.id}">{$item.name}{if $item.producer} / {$item.producer}{/if}{if $item.location} ({$item.location}){/if}</OPTION>
 			        			{/foreach}
 						</SELECT>
 					<TD ALIGN="RIGHT" CLASS="ftop" COLSPAN="2" NOWRAP>
-				    		<A HREF="javascript:document.device.submit()" {tip text="Add device to the channel"}>{t}Add{/t} <IMG SRC="img/save.gif" alt="[ {t}Add{/t} ]"></A>
+				    		<A HREF="javascript:document.device.submit()" {tip text="Add device to the channel"}>{trans("Add")} <IMG SRC="img/save.gif" alt="[ {trans("Add")} ]"></A>
 					</TD>
 				</TR>
 				</FORM>

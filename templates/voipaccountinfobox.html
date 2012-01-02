@@ -16,10 +16,10 @@
 						<TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/passwd.gif" ALT="{t}Password:{/t}">
+			<IMG SRC="img/passwd.gif" ALT="{trans("Password:")}">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Password:{/t}</B>
+			<B>{trans("Password:")}</B>
 		</TD>
 		<TD WIDTH="98%" NOWRAP>
 			{$voipaccountinfo.passwd}
@@ -27,10 +27,10 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/phone.gif" ALT="{t}Phone number:{/t}">
+			<IMG SRC="img/phone.gif" ALT="{trans("Phone number:")}">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Phone number:{/t}</B>
+			<B>{trans("Phone number:")}</B>
 		</TD>
 		<TD WIDTH="98%" NOWRAP>
 			{$voipaccountinfo.phone}
@@ -41,10 +41,10 @@
                         <A HREF="?m=voipaccountset&id={$voipaccountinfo.id}"><IMG SRC="img/{if ! $voipaccountinfo.access}no{/if}access.gif" ALT=""></A>
                 </TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Status:{/t}</B>
+			<B>{trans("Status:")}</B>
 		</TD>
                 <TD WIDTH="1%" COLSPAN="1">
-                        <B>{if $voipaccountinfo.access}{t}connected<!singular>{/t}{else}{t}disconnected<!singular>{/t}{/if}</B>
+                        <B>{if $voipaccountinfo.access}{trans("connected<!singular>")}{else}{trans("disconnected<!singular>")}{/if}</B>
                 </TD>
         </TR>
 	<TR CLASS="LIGHT">
@@ -52,8 +52,8 @@
 			<IMG SRC="img/users.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>{t}Created:{/t}<BR>
-			{t}Modified:{/t}</B>
+			<B>{trans("Created:")}<BR>
+			{trans("Modified:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 			{$voipaccountinfo.createdby}, {$voipaccountinfo.creationdateh}<BR>
@@ -64,8 +64,8 @@
 	</TABLE>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
-			<A HREF="?m=voipaccountedit&id={$voipaccountinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT=""></A>
-			<A HREF="?m=voipaccountdel&id={$voipaccountinfo.id}" onClick="return confirmLink(this, '{t a=$voipaccountinfo.login}Are you sure, you want to remove voip account \'$a\' from database?{/t}')">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT=""></A>
+			<A HREF="?m=voipaccountedit&id={$voipaccountinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG SRC="img/edit.gif" ALT=""></A>
+			<A HREF="?m=voipaccountdel&id={$voipaccountinfo.id}" onClick="return confirmLink(this, '{t a=$voipaccountinfo.login}Are you sure, you want to remove voip account \'$a\' from database?{/t}')">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
 		</TD>
 	</TR>	
 </TABLE>

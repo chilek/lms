@@ -20,7 +20,7 @@
 			<IMG SRC="img/producer.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-		        <B>{t}Producer:{/t}</B>
+		        <B>{trans("Producer:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 		        {$netdevinfo.producer}
@@ -33,7 +33,7 @@
 			<IMG SRC="img/netdev_model.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-		        <B>{t}Model:{/t}</B>
+		        <B>{trans("Model:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 		        {$netdevinfo.model}
@@ -46,7 +46,7 @@
 			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-		        <B>{t}Serial number:{/t}</B>
+		        <B>{trans("Serial number:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 		        {$netdevinfo.serialnumber}
@@ -58,7 +58,7 @@
 			<IMG SRC="img/port.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-		        <B>{t}Number of ports:{/t}</B>
+		        <B>{trans("Number of ports:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 		        {$netdevinfo.ports}
@@ -69,7 +69,7 @@
 			<IMG SRC="img/netdev_takenports.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-		        <B>{t}Ports used:{/t}</B>
+		        <B>{trans("Ports used:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 		        {$netdevinfo.takenports}
@@ -81,7 +81,7 @@
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-		        <B>{t}Location:{/t}</B>
+		        <B>{trans("Location:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 		        {$netdevinfo.location}
@@ -94,7 +94,7 @@
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}GPS longitude:{/t}</B>
+			<B>{trans("GPS longitude:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 			<INPUT ID="longitude" TYPE="hidden" VALUE="{$netdevinfo.longitude}">
@@ -106,7 +106,7 @@
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}GPS latitude:{/t}</B>
+			<B>{trans("GPS latitude:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 			<INPUT ID="latitude" TYPE="hidden" VALUE="{$netdevinfo.latitude}">
@@ -117,7 +117,7 @@
 		<TD WIDTH="2%" COLSPAN="2">
 		</TD>
 		<TD WIDTH="98%">
-			<a HREF="?m=netdevmap&netdevid={$netdevinfo.id}"><img src="img/network.gif" alt=""> {t}Show on map{/t} &raquo;&raquo;&raquo;</a>
+			<a HREF="?m=netdevmap&netdevid={$netdevinfo.id}"><img src="img/network.gif" alt=""> {trans("Show on map")} &raquo;&raquo;&raquo;</a>
 		</TD>
 	</TR>
 	{/if}
@@ -128,7 +128,7 @@
 			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Shortname:{/t}</B>
+			<B>{trans("Shortname:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 		        {$netdevinfo.shortname}
@@ -141,7 +141,7 @@
 			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Type:{/t}</B>
+			<B>{trans("Type:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 		        {$netdevinfo.nastypename}
@@ -154,7 +154,7 @@
 			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Max clients:{/t}</B>
+			<B>{trans("Max clients:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 		        {$netdevinfo.clients}
@@ -167,7 +167,7 @@
 			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Secret:{/t}</B>
+			<B>{trans("Secret:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 		        {$netdevinfo.secret}
@@ -180,7 +180,7 @@
 			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Community:{/t}</B>
+			<B>{trans("Community:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 		        {$netdevinfo.community}
@@ -194,7 +194,7 @@
 			<IMG SRC="img/channel.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Channel:{/t}</B>
+			<B>{trans("Channel:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 		        <a href="?m=ewxchinfo&id={$netdevinfo.channelid}">{$netdevinfo.channel} ({$netdevinfo.channelid|string_format:"%04d"})</a>
@@ -211,7 +211,7 @@
 			<IMG SRC="img/calendar.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-		        <B>{t}Purchase date:{/t}</B>
+		        <B>{trans("Purchase date:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 		        {$netdevinfo.purchasetime|date_format:"%Y/%m/%d"}
@@ -223,17 +223,17 @@
 			<IMG SRC="img/guarantee.png" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-		        <B>{t}Guarantee:{/t}</B>
+		        <B>{trans("Guarantee:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 			{if !$netdevinfo.guaranteeperiod}
-				{t}no guarantee{/t}
+				{trans("no guarantee")}
 			{elseif $netdevinfo.guaranteeperiod == -1}
-				{t}lifetime{/t}
+				{trans("lifetime")}
 			{else}
 				{assign var=periodid value=$netdevinfo.guaranteeperiod}
 				{$_GUARANTEEPERIODS.$periodid}
-		        	({if $netdevinfo.guaranteetime-$smarty.now < 0}{t}expired<!guarantee>{/t}{else}{$netdevinfo.guaranteetime|date_format:"%Y/%m/%d"}{/if})
+		        	({if $netdevinfo.guaranteetime-$smarty.now < 0}{trans("expired<!guarantee>")}{else}{$netdevinfo.guaranteetime|date_format:"%Y/%m/%d"}{/if})
 			{/if}
 		</TD>
 	</TR>
@@ -269,7 +269,7 @@
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
 			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
 			<INPUT TYPE="HIDDEN" NAME="action" VALUE="replace">
-			<A HREF="javascript:document.replace.submit(); ">{t}Replace with:{/t}</A>
+			<A HREF="javascript:document.replace.submit(); ">{trans("Replace with:")}</A>
 			<SELECT NAME="netdev" {tip trigger="replace" text="Select device from list for replacement"}>
 				{section name=replacelist loop=$replacelist}
 					{if $replacelist[replacelist].id != $netdevinfo.id}
@@ -282,8 +282,8 @@
 			</SELECT>
 			</FORM>
 			{/if}
-			<A href="?m=netdevedit&id={$netdevinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG src="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
-			<A href="?m=netdevdel&id={$netdevinfo.id}" OnClick="return confirmLink(this, '{t a=$netdevinfo.name}Are you sure, you want to remove device \'$a\' from database?{/t}');">{t}Delete{/t} <img src="img/delete.gif" ALT=""></A>
+			<A href="?m=netdevedit&id={$netdevinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG src="img/edit.gif" ALT="[ {trans("Edit")} ]"></A>
+			<A href="?m=netdevdel&id={$netdevinfo.id}" OnClick="return confirmLink(this, '{t a=$netdevinfo.name}Are you sure, you want to remove device \'$a\' from database?{/t}');">{trans("Delete")} <img src="img/delete.gif" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>

@@ -4,7 +4,7 @@
 <TABLE width="100%">
 <TR class="dark">
 <TD width="100%" class="fall">
-<b>{t}Edit item{/t}</b>
+<b>{trans("Edit item")}</b>
 </TD>
 </TR>
 <TR class="light">
@@ -14,7 +14,7 @@
 <TABLE WIDTH="100%">
 <TR>
 <TD WIDTH="1%" NOWRAP>
-{t}Title:{/t}
+{trans("Title:")}
 </TD>
 <TD WIDTH="99%" NOWRAP>
 <input name="title" value="{$solution.title}" style="width:99%" {tip text="Enter title" trigger="title" bold=1}><br/>
@@ -22,7 +22,7 @@
 </TR>
 <TR>
 <TD WIDTH="1%" NOWRAP>
-{t}Body:{/t}
+{trans("Body:")}
 </TD>
 <TD WIDTH="99%" NOWRAP>
 <textarea name="body" style="width:99%" {tip text="Enter body" trigger="body"}>{$solution.body}</textarea>
@@ -30,8 +30,8 @@
 </TABLE>
 </form>
 <p align="right">
-        <A HREF="?m=userpanel&module=help">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
-        <A HREF="javascript:document.helpcenter.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+        <A HREF="?m=userpanel&module=help">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
+        <A HREF="javascript:document.helpcenter.submit();" ACCESSKEY="S">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
 </p>
 </TD>
 </TR>

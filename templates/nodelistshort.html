@@ -27,8 +27,8 @@
 	{section name=customernodes loop=$customernodes}
 	<tr class="{cycle}{if ! $customernodes[customernodes].access} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD WIDTH="1%">
-			<a href="?m=nodeset&id={$customernodes[customernodes].id}&shortlist=1&popup=1"><IMG src="img/{if ! $customernodes[customernodes].access}no{/if}access.gif" ALT="[ {if ! $customernodes[customernodes].access}{t}Connect{/t}{else}{t}Disconnect{/t}{/if} ]"></a>
-			<a href="?m=nodewarn&id={$customernodes[customernodes].id}&shortlist=1&popup=1"><IMG src="img/warning{if ! $customernodes[customernodes].warning}off{else}on{/if}.gif" ALT="[ {if ! $customernodes[customernodes].warning}{t}Enable notice{/t}{else}{t}Disable notice{/t}{/if} ]"></a>
+			<a href="?m=nodeset&id={$customernodes[customernodes].id}&shortlist=1&popup=1"><IMG src="img/{if ! $customernodes[customernodes].access}no{/if}access.gif" ALT="[ {if ! $customernodes[customernodes].access}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]"></a>
+			<a href="?m=nodewarn&id={$customernodes[customernodes].id}&shortlist=1&popup=1"><IMG src="img/warning{if ! $customernodes[customernodes].warning}off{else}on{/if}.gif" ALT="[ {if ! $customernodes[customernodes].warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if} ]"></a>
 		</TD>
 		<TD WIDTH="99%" onClick="parent.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';">
 			{if $customernodes[customernodes].lastonline}
@@ -49,7 +49,7 @@
 	<TR>
 		<TD WIDTH="100%" COLSPAN="2" align="center">
 			<P>&nbsp;</P>
-			<P><B>{t}No nodes found in database.{/t}</B></P>
+			<P><B>{trans("No nodes found in database.")}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>

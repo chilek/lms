@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-cvs
  *
- *  (C) Copyright 2001-2011 LMS Developers
+ *  (C) Copyright 2001-2012 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -67,13 +67,11 @@ $KONTO_DO = (!isset($CONFIG['finances']['account']) ? '9870000000000000000000012
 $CURR = 'PLN';		// oznaczenie waluty
 $SHORT_TO_WORDS = 0;	// 1 - krótki format kwoty słownej 'jed dwa trz 15/100'
 			// 0 - długi format kwoty słownej 'sto dwadzieścia trzy 15/100 zł'
-$USE_ICONV = 1;		// włącza przekodowywanie ciągów z UTF-8 do ISO-8859-2
 
 /************** Koniec konfiguracji ****************/
 
 $KWOTA = trim(isset($_GET['ILE']) ? $_GET['ILE'] : 0);
 $USER_OD = trim(strip_tags(isset($_GET['OD']) ? $_GET['OD'] : ''));
-$USER_OD = $USE_ICONV ? iconv('UTF-8','ISO-8859-2',$USER_OD) : $USER_OD;
 
 $KWOTA_NR = str_replace(',','.',$KWOTA);  // na wszelki wypadek
 $KWOTA_GR = sprintf('%02d',round(($KWOTA_NR - floor($KWOTA_NR))*100));
@@ -81,13 +79,11 @@ $KWOTA_GR = sprintf('%02d',round(($KWOTA_NR - floor($KWOTA_NR))*100));
 if($SHORT_TO_WORDS)
 {
 	$KWOTA_ZL = to_words(floor($KWOTA_NR), 0, '', 1);
-	if($USE_ICONV) $KWOTA_ZL = iconv('UTF-8','ISO-8859-2',$KWOTA_ZL);
 	$KWOTA_X = $KWOTA_ZL .' '. $KWOTA_GR. '/100';
 }
 else
 {
 	$KWOTA_ZL = to_words(floor($KWOTA_NR));
-	if($USE_ICONV) $KWOTA_ZL = iconv('UTF-8','ISO-8859-2',$KWOTA_ZL);
 	$KWOTA_X = $KWOTA_ZL .' '. $KWOTA_GR. '/100 złotych';
 }
 
@@ -198,7 +194,7 @@ for ( $j=0; $j<2; $j++ ) // pętla główna
           echo('<span style="position: absolute; top: '. $posx .'px; left: 62px; font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight: bold;">'. substr($USER_OD,50,100) .'</span>');
      }
      else                // jeżeli nazwa+adres zmieszczą się w kratkach to wpisujemy w kratkach
-     {                    
+     {
           $posx=235+$j*$SHIFT;
           for ( $i=0; $i<27; $i++ ) if(isset($USER_OD[$i]))
           {

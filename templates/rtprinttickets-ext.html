@@ -32,13 +32,13 @@
 		<TD COLSPAN="4" CLASS="flr bb">
 			<TABLE WIDTH="100%">
 			    <TR>
-				<TD WIDTH="1%">{t}Date:{/t}</TD>
+				<TD WIDTH="1%">{trans("Date:")}</TD>
 				<TD WIDTH="99%">
 				    {$request.createtime|date_format:"%Y/%m/%d %H:%M"}
 				</TD>
 			    </TR>
 			    <TR>
-				<TD WIDTH="1%">{t}Submitter:{/t}</TD>
+				<TD WIDTH="1%">{trans("Submitter:")}</TD>
 				<TD WIDTH="99%">
 				    {if $request.customerid}
 				    {$request.customername} ({$request.customerid|string_format:"%04d"})
@@ -49,10 +49,10 @@
 			    </TR>
 			    {if $request.address}
 			    <TR>
-				<TD WIDTH="1%">{t}Address:{/t}</TD>
+				<TD WIDTH="1%">{trans("Address:")}</TD>
 				<TD WIDTH="99%">
 				    {$request.address}
-				    {if $request.phone}({t}phone:{/t} {$request.phone}){/if}
+				    {if $request.phone}({trans("phone:")} {$request.phone}){/if}
 				</TD>
 			    </TR>
 			    {/if}
@@ -78,7 +78,7 @@
 	<TR>
     		<TD ALIGN="center" WIDTH="100%">
 			<P>&nbsp;</P>
-			<P><B>{t}No such requests in database.{/t}</B></P>
+			<P><B>{trans("No such requests in database.")}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>

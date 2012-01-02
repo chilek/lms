@@ -4,23 +4,23 @@
 <P><TABLE cellpadding="3" WIDTH="100%">
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" WIDTH="1%" nowrap>
-			<IMG src="img/settings.gif" alt=""> <B>{t}Name:{/t}</B>
+			<IMG src="img/settings.gif" alt=""> <B>{trans("Name:")}</B>
 		</TD>
 		<TD CLASS="fbt" align="right" WIDTH="1%" NOWRAP>
-			{t}Host:{/t}
+			{trans("Host:")}
 		</TD>
 		<TD CLASS="fbt" align="right" WIDTH="1%" NOWRAP>
-			{t}Priority:{/t}
+			{trans("Priority:")}
 		</TD>
 		<TD CLASS="fbt" align="right" WIDTH="1%" NOWRAP>
-			{t}Module:{/t}<BR>
-			{t}Crontab:{/t}
+			{trans("Module:")}<BR>
+			{trans("Crontab:")}
 		</TD>
 		<TD CLASS="fbt" WIDTH="95%">
-			{t}Description:{/t}
+			{trans("Description:")}
 		</TD>
 		<TD CLASS="frightu" WIDTH="1%" nowrap>
-			<A href="?m=daemoninstanceadd&hostid={$hostid}">{t}Add instance{/t} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=daemoninstanceadd&hostid={$hostid}">{trans("Add instance")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
 	<TR class="DARK">
@@ -28,9 +28,9 @@
 			<FORM method="GET" action="?m=daemoninstancelist" name="filter">
 				<INPUT type="submit" class="hiddenbtn">
 				<INPUT type="HIDDEN" name="m" value="daemoninstancelist">
-				<B>{t}Filter:{/t} </B> {t}Host:{/t}
+				<B>{trans("Filter:")} </B> {trans("Host:")}
 				<SELECT size="1" name="id" OnChange="document.filter.submit();">
-					<OPTION value="0"{if ! $hostid} SELECTED{/if}>{t}- all hosts -{/t}</OPTION>
+					<OPTION value="0"{if ! $hostid} SELECTED{/if}>{trans("- all hosts -")}</OPTION>
 					{section name=hosts loop=$hosts}
 					<OPTION value="{$hosts[hosts].id}"{if $hosts[hosts].id eq $hostid} SELECTED{/if}>{$hosts[hosts].name}</OPTION>
 					{/section}
@@ -58,25 +58,25 @@
 			{$instance.description}
 		</TD>
 		<TD CLASS="fright" align="right" NOWRAP>
-			<A HREF="?m=daemoninstanceview&id={$instance.id}"><IMG SRC="img/view.gif" alt="[ {t}Browse Configuration{/t} ]" title="[ {t}Browse Configuration{/t} ]"></A>
-			<A HREF="?m=daemoninstanceedit&id={$instance.id}&statuschange=1"><IMG SRC="img/wait.gif" alt="[ {if $instance.disabled}{t}Enable{/t}{else}{t}Disable{/t}{/if} ]" title="[ {if $instance.disabled}{t}Enable{/t}{else}{t}Disable{/t}{/if} ]"></A>
-			<A HREF="?m=daemoninstanceadd&id={$instance.id}"><IMG SRC="img/clone.gif" alt="[ {t}Clone{/t} ]" title="[ {t}Clone{/t} ]"></A>
-			<A HREF="?m=daemoninstancedel&id={$instance.id}" OnClick="return confirmLink(this, '{t a=$instance.name}Are you sure, you want to remove instance \'$a\' and all assigned configuration?{/t}');"><IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
-			<A HREF="?m=daemoninstanceedit&id={$instance.id}"><IMG SRC="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+			<A HREF="?m=daemoninstanceview&id={$instance.id}"><IMG SRC="img/view.gif" alt="[ {trans("Browse Configuration")} ]" title="[ {trans("Browse Configuration")} ]"></A>
+			<A HREF="?m=daemoninstanceedit&id={$instance.id}&statuschange=1"><IMG SRC="img/wait.gif" alt="[ {if $instance.disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]" title="[ {if $instance.disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]"></A>
+			<A HREF="?m=daemoninstanceadd&id={$instance.id}"><IMG SRC="img/clone.gif" alt="[ {trans("Clone")} ]" title="[ {trans("Clone")} ]"></A>
+			<A HREF="?m=daemoninstancedel&id={$instance.id}" OnClick="return confirmLink(this, '{t a=$instance.name}Are you sure, you want to remove instance \'$a\' and all assigned configuration?{/t}');"><IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			<A HREF="?m=daemoninstanceedit&id={$instance.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 		</TD>
 	</TR>
 	{foreachelse}
 	<TR>
 		<TD colspan="6" align="center" class="flr">
 			<p>&nbsp;</p>
-			<p><B>{t}There are no instances configured.{/t}<B></p>
+			<p><B>{trans("There are no instances configured.")}<B></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
 	{/foreach}
 	<TR CLASS="dark">
 		<TD colspan="6" class="fall" align="right">
-			<A href="?m=daemoninstanceadd&hostid={$hostid}">{t}Add instance{/t} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=daemoninstanceadd&hostid={$hostid}">{trans("Add instance")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE></P>

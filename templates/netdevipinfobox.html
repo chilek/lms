@@ -54,7 +54,7 @@
 						<TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/ip.gif" ALT="{t}IP address:{/t}">
+			<IMG SRC="img/ip.gif" ALT="{trans("IP address:")}">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			{$nodeipdata.ip}
@@ -63,7 +63,7 @@
 	{if $nodeipdata.ip_pub != "0.0.0.0"}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/ip_pub.gif" ALT="{t}Pub. IP address:{/t}">
+			<IMG SRC="img/ip_pub.gif" ALT="{trans("Pub. IP address:")}">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			{$nodeipdata.ip_pub}
@@ -72,7 +72,7 @@
 	{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/mac.gif" ALT="{t}MAC address:{/t}">
+			<IMG SRC="img/mac.gif" ALT="{trans("MAC address:")}">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			{foreach from=$nodeipdata.macs item=item}
@@ -82,7 +82,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/passwd.gif" ALT="{t}Password:{/t}">
+			<IMG SRC="img/passwd.gif" ALT="{trans("Password:")}">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			{$nodeipdata.passwd}
@@ -90,20 +90,20 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/options.gif" ALT="{t}Options:{/t}">
+			<IMG SRC="img/options.gif" ALT="{trans("Options:")}">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
-			<A HREF="javascript:setCheckbox('chkmac')">{t}MAC checking{/t}:</A><INPUT TYPE="checkbox" NAME="chkmac" VALUE="1" ID="chkmac" {if $nodeipdata.chkmac} checked{/if} onclick="chkmac_change();">&nbsp;
-			<A HREF="javascript:setCheckbox('chkduplex')">{t}Half duplex{/t}:</A><INPUT TYPE="checkbox" NAME="duplex" VALUE="1" ID="chkduplex" {if $nodeipdata.halfduplex} checked{/if} onclick="duplex_change();">
+			<A HREF="javascript:setCheckbox('chkmac')">{trans("MAC checking")}:</A><INPUT TYPE="checkbox" NAME="chkmac" VALUE="1" ID="chkmac" {if $nodeipdata.chkmac} checked{/if} onclick="chkmac_change();">&nbsp;
+			<A HREF="javascript:setCheckbox('chkduplex')">{trans("Half duplex")}:</A><INPUT TYPE="checkbox" NAME="duplex" VALUE="1" ID="chkduplex" {if $nodeipdata.halfduplex} checked{/if} onclick="duplex_change();">
 			{if $_config.phpui.radius|chkconfig}
 			&nbsp;
-			<A HREF="javascript:setCheckbox('chknas')">{t}NAS{/t}:</A><INPUT TYPE="checkbox" NAME="nas" ID="chknas" VALUE="1" {if $nodeipdata.nas} checked{/if} onclick="nas_change();">
+			<A HREF="javascript:setCheckbox('chknas')">{trans("NAS")}:</A><INPUT TYPE="checkbox" NAME="nas" ID="chknas" VALUE="1" {if $nodeipdata.nas} checked{/if} onclick="nas_change();">
 			{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/network.gif" ALT="{t}Network:{/t}">
+			<IMG SRC="img/network.gif" ALT="{trans("Network:")}">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			<B><A HREF="?m=netinfo&id={$nodeipdata.netid}">{$nodeipdata.netname}</A></B>
@@ -114,7 +114,7 @@
 			<A HREF="?m=netdevedit&id={$netdevinfo.id}&action=ipset&ip={$nodeipdata.id}"><IMG SRC="img/{if ! $nodeipdata.access}no{/if}access.gif" ALT=""></A>
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
-			<B>{if $nodeipdata.access}{t}connected<!singular>{/t}{else}{t}disconnected<!singular>{/t}{/if}</B>
+			<B>{if $nodeipdata.access}{trans("connected<!singular>")}{else}{trans("disconnected<!singular>")}{/if}</B>
 		</TD>
 	</TR>
 	                                        </TABLE>
@@ -127,7 +127,7 @@
 			<IMG SRC="img/info.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>{t}Description:{/t}</B>
+			<B>{trans("Description:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 			{$nodeipdata.info}
@@ -139,7 +139,7 @@
 			<IMG SRC="img/time.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>{t}Last online:{/t}</B>
+			<B>{trans("Last online:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 			{if $nodeipdata.lastonline}{$nodeipdata.lastonlinedate}{else}-{/if}
@@ -150,8 +150,8 @@
 			<IMG SRC="img/users.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>{t}Created:{/t}<BR>
-			{t}Modified:{/t}</B>
+			<B>{trans("Created:")}<BR>
+			{trans("Modified:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 			{$nodeipdata.createdby}, {$nodeipdata.creationdateh}<BR>
@@ -166,8 +166,8 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
-			<A HREF="?m=netdevedit&id={$netdevinfo.id}&action=editip&ip={$nodeipdata.id}" ACCESSKEY="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT=""></A>
-			<A HREF="?m=netdevedit&id={$netdevinfo.id}&action=ipdel&ip={$nodeipdata.id}" onClick="return confirmLink(this, '{t a=$nodeipdata.name}Are you sure, you want to delete address \'$a\' from database?{/t}')">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT=""></A>
+			<A HREF="?m=netdevedit&id={$netdevinfo.id}&action=editip&ip={$nodeipdata.id}" ACCESSKEY="E">{trans("Edit")} <IMG SRC="img/edit.gif" ALT=""></A>
+			<A HREF="?m=netdevedit&id={$netdevinfo.id}&action=ipdel&ip={$nodeipdata.id}" onClick="return confirmLink(this, '{t a=$nodeipdata.name}Are you sure, you want to delete address \'$a\' from database?{/t}')">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
 		</TD>
 	</TR>	
 </TABLE>

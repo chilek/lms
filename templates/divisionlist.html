@@ -3,11 +3,11 @@
 <H1>{$layout.pagetitle}</H1>
 <P><TABLE cellpadding="3" WIDTH="100%">
 	<TR class="dark">
-		<TD width="1%" class="fleftu" NOWRAP><IMG src="img/division.gif" alt=""> <B>{t}Name:{/t}</B></TD>
-		<TD width="1%" class="fbt" align="right" NOWRAP>{t}ID:{/t}</TD>
-		<TD width="96%" class="fbt" align="left" NOWRAP>{t}Long name:{/t}</TD>
-		<TD width="1%" class="fbt" align="right" NOWRAP>{t}Customers:{/t}</TD>
-		<TD width="1%" class="frightu" align="right" NOWRAP><a href="?m=divisionadd">{t}Add division{/t} <img src="img/save.gif" alt=""></a></TD>
+		<TD width="1%" class="fleftu" NOWRAP><IMG src="img/division.gif" alt=""> <B>{trans("Name:")}</B></TD>
+		<TD width="1%" class="fbt" align="right" NOWRAP>{trans("ID:")}</TD>
+		<TD width="96%" class="fbt" align="left" NOWRAP>{trans("Long name:")}</TD>
+		<TD width="1%" class="fbt" align="right" NOWRAP>{trans("Customers:")}</TD>
+		<TD width="1%" class="frightu" align="right" NOWRAP><a href="?m=divisionadd">{trans("Add division")} <img src="img/save.gif" alt=""></a></TD>
 	</TR>
 	{if $listdata.total != 0}
 	<TR CLASS="DARK">
@@ -32,16 +32,16 @@
 			{$divisionlist[list].cnt|default:0}
 		</TD>
 		<TD class="fright" align="right" NOWRAP>
-			<A href="?m=divisionedit&id={$divisionlist[list].id}&changestatus=1"><IMG src="img/wait.gif" alt="[ {if $divisionlist[list].status}{t}Unlock{/t}{else}{t}Lock{/t}{/if} ]" title="[ {if $divisionlist[list].status}{t}Unlock{/t}{else}{t}Lock{/t}{/if} ]"></A>
-			<A href="?m=divisiondel&id={$divisionlist[list].id}" OnClick="return confirmLink(this, '{t a=$divisionlist[list].name}Are you sure, you want to delete division \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
-			<A href="?m=divisionedit&id={$divisionlist[list].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+			<A href="?m=divisionedit&id={$divisionlist[list].id}&changestatus=1"><IMG src="img/wait.gif" alt="[ {if $divisionlist[list].status}{trans("Unlock")}{else}{trans("Lock")}{/if} ]" title="[ {if $divisionlist[list].status}{trans("Unlock")}{else}{trans("Lock")}{/if} ]"></A>
+			<A href="?m=divisiondel&id={$divisionlist[list].id}" OnClick="return confirmLink(this, '{t a=$divisionlist[list].name}Are you sure, you want to delete division \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			<A href="?m=divisionedit&id={$divisionlist[list].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
 		<TD colspan="5" align="center" class="fall">
 			<p>&nbsp;</p>
-			<p><B>{t}No such divisions in database.{/t}</B></p>
+			<p><B>{trans("No such divisions in database.")}</B></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
@@ -55,7 +55,7 @@
 	{/if}
 	<TR class="light">
 		<TD colspan="5" class="fall" align="right">
-			<a href="?m=divisionadd">{t}Add division{/t} <img src="img/save.gif" alt=""></a>
+			<a href="?m=divisionadd">{trans("Add division")} <img src="img/save.gif" alt=""></a>
 		</TD>
 	</TR>
 </TABLE></P>

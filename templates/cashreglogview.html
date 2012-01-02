@@ -4,22 +4,22 @@
 <TABLE cellpadding="3" WIDTH="100%">
 	<TR class="dark">
 		<TD width="1%" class="fleftu" NOWRAP>
-			<IMG src="img/time.gif" alt=""><A href="?m=cashreglogview&o=time{if $listdata.direction eq "asc" && $listdata.order eq "time"},desc{/if}">{t}Date:{/t}</A> {if $listdata.order eq "time"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG src="img/time.gif" alt=""><A href="?m=cashreglogview&o=time{if $listdata.direction eq "asc" && $listdata.order eq "time"},desc{/if}">{trans("Date:")}</A> {if $listdata.order eq "time"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="fbt" align="right" NOWRAP>
-			<A href="?m=cashreglogview&o=value{if $listdata.direction eq "asc" && $listdata.order eq "value"},desc{/if}">{t}Real state:{/t}</A> {if $listdata.order eq "value"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=cashreglogview&o=value{if $listdata.direction eq "asc" && $listdata.order eq "value"},desc{/if}">{trans("Real state:")}</A> {if $listdata.order eq "value"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="fbt" align="right" NOWRAP>
-			<A href="?m=cashreglogview&o=snapshot{if $listdata.direction eq "asc" && $listdata.order eq "snapshot"},desc{/if}">{t}Cash state:{/t}</A> {if $listdata.order eq "snapshot"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=cashreglogview&o=snapshot{if $listdata.direction eq "asc" && $listdata.order eq "snapshot"},desc{/if}">{trans("Cash state:")}</A> {if $listdata.order eq "snapshot"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="fbt" align="left" NOWRAP>
-			<A href="?m=cashreglogview&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}">{t}User:{/t}</A> {if $listdata.order eq "username"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=cashreglogview&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}">{trans("User:")}</A> {if $listdata.order eq "username"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="95%" class="fbt" NOWRAP>
-			<A href="?m=cashreglogview&o=description{if $listdata.direction eq "asc" && $listdata.order eq "description"},desc{/if}">{t}Description:{/t}</A> {if $listdata.order eq "description"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=cashreglogview&o=description{if $listdata.direction eq "asc" && $listdata.order eq "description"},desc{/if}">{trans("Description:")}</A> {if $listdata.order eq "description"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="frightu" NOWRAP>
-			<a href="?m=cashreglogadd&regid={$listdata.regid}">{t}Add entry{/t} <img src="img/save.gif" alt=""></a>
+			<a href="?m=cashreglogadd&regid={$listdata.regid}">{trans("Add entry")} <img src="img/save.gif" alt=""></a>
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
@@ -48,16 +48,16 @@
 			{$cashreglog[cashreglog].description|replace:"\n":"<BR>"}
 		</TD>
 		<TD class="fright" align="right" NOWRAP>
-			<A href="?m=cashregloginfo&id={$cashreglog[cashreglog].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
-			<A href="?m=cashreglogedit&id={$cashreglog[cashreglog].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
-			<A href="?m=cashreglogdel&id={$cashreglog[cashreglog].id}" OnClick="return confirmLink(this, '{t}Are you sure, you want to delete selected entry?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+			<A href="?m=cashregloginfo&id={$cashreglog[cashreglog].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
+			<A href="?m=cashreglogedit&id={$cashreglog[cashreglog].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			<A href="?m=cashreglogdel&id={$cashreglog[cashreglog].id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete selected entry?")}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
 		<TD colspan="6" align="center" class="fall">
 			<p>&nbsp;</p>
-			<p><B>{t}No such cash history entries in database.{/t}</B></p>
+			<p><B>{trans("No such cash history entries in database.")}</B></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
@@ -71,7 +71,7 @@
 	{/if}
 	<TR class="light">
 		<TD colspan="6" class="fall" align="right">
-			<A href="?m=cashreglogadd&regid={$listdata.regid}">{t}Add entry{/t} <img src="img/save.gif" alt=""></a>
+			<A href="?m=cashreglogadd&regid={$listdata.regid}">{trans("Add entry")} <img src="img/save.gif" alt=""></a>
 		</TD>
 	</TR>
 </TABLE>

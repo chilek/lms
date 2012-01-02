@@ -6,17 +6,17 @@
 			<B>{t a=$netdevips|@count}IP addresses ($a):{/t}</B>
 		</TD>
 	        <TD width="1%" class="frightu" align="right">
-			<NOBR><A HREF="?m=netdevedit&action=addip&id={$netdevinfo.id}">{t}New address{/t} &raquo;</A></NOBR>
+			<NOBR><A HREF="?m=netdevedit&action=addip&id={$netdevinfo.id}">{trans("New address")} &raquo;</A></NOBR>
 		</TD>	
 	</TR>
 	<TR id="deviceips" style="display:none;">
 	        <TD WIDTH="100%" class="fall" colspan="2">
 		        <TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
 	<TR class="dark">
-	        <TD WIDTH="96%" class="fleftu"><B>{t}Name:{/t}</B></TD>
-		<TD WIDTH="1%" class="fbt" align="right">{t}ID:{/t}</TD>
-		<TD WIDTH="1%" class="fbt" align="right">{t}Address:{/t}</TD>
-		<TD WIDTH="1%" class="fbt" align="right">{t}MAC:{/t}</TD>
+	        <TD WIDTH="96%" class="fleftu"><B>{trans("Name:")}</B></TD>
+		<TD WIDTH="1%" class="fbt" align="right">{trans("ID:")}</TD>
+		<TD WIDTH="1%" class="fbt" align="right">{trans("Address:")}</TD>
+		<TD WIDTH="1%" class="fbt" align="right">{trans("MAC:")}</TD>
 		<TD WIDTH="1%" class="frightu">&nbsp;</TD>
 	</TR>
 	{if $netdevips}
@@ -50,7 +50,7 @@
         <TR>
     		<TD colspan="5" align="center">
 			<p>&nbsp;</p>
-			<p><B>{t}No IP addresses on device.{/t}</b></p>
+			<p><B>{trans("No IP addresses on device.")}</b></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
@@ -58,7 +58,7 @@
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" COLSPAN="5" CLASS="ftop">
 			<IMG SRC="img/access.gif">
-			<A HREF="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset&access=1">{t}Connect{/t}</A>/<A HREF="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset">{t}Disconnect{/t}</A>
+			<A HREF="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset&access=1">{trans("Connect")}</A>/<A HREF="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset">{trans("Disconnect")}</A>
 		</TD>
 	</TR>
 </TABLE>

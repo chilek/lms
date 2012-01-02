@@ -2,13 +2,13 @@
 <!--// $Id$ //-->
 <h1>{$layout.pagetitle}</h1>
 <TABLE WIDTH="100%" CELLPADDING="3">
-    <TR CLASS="DARK"><TD CLASS="fall"><B>{t}Module Configuration:{/t}</B></TD></TR>
+    <TR CLASS="DARK"><TD CLASS="fall"><B>{trans("Module Configuration:")}</B></TD></TR>
     <TR CLASS="light"><TD CLASS="fall">
 	<FORM NAME="moduleconfig" METHOD="POST" ACTION="?m=userpanel&module=info&f=submit_setup">
 	<TABLE WIDTH="100%">
 	    <TR>
 		<TD WIDTH="1%" NOWRAP>
-		    <A HREF="javascript:checkElement('hide_nodesbox');">{t}Hide customer nodes box:{/t}</A>
+		    <A HREF="javascript:checkElement('hide_nodesbox');">{trans("Hide customer nodes box:")}</A>
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
 		    <INPUT type="checkbox" NAME="hide_nodesbox" ID="hide_nodesbox" value="1"{if $hide_nodesbox} checked{/if} {tip text="Don't show customer nodes box if he hasn't any nodes"}>
@@ -16,7 +16,7 @@
 	    </TR>
 	    <TR>
 		<TD WIDTH="1%" NOWRAP>
-		    {t}Text of data processing agreement:{/t}
+		    {trans("Text of data processing agreement:")}
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
 		    <TEXTAREA NAME="consent_text" rows="4" cols="50" {tip text="Enter text of agreement for personal data processing"}>{$consent_text}</TEXTAREA>
@@ -24,8 +24,8 @@
 	    </TR>
 	</TABLE>
 	<p align="right">
-	    <A HREF="?m=userpanel">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
-	    <A HREF="javascript:document.moduleconfig.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+	    <A HREF="?m=userpanel">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
+	    <A HREF="javascript:document.moduleconfig.submit();" ACCESSKEY="S">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
 	</p>
 	</FORM>
     </TD></TR>
