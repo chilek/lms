@@ -38,11 +38,11 @@
 		</TD>
 	</TR>
         <TR class="LIGHT">
-                <TD WIDTH="100%" CLASS="flr">
+            <TD WIDTH="100%" CLASS="flr container">
 		        <TABLE WIDTH="100%" CELLPADDING="0">
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" style="vertical-align:top;">
-						<TABLE WIDTH="100%" CELLPADDING="2">
+						<TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
 			{if $customerinfo.status eq "3"}<IMG SRC="img/customer.gif" ALT="">{/if}
@@ -85,7 +85,7 @@
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%">
-			<TABLE width="100%" cellpadding="2" cellspacing="0">
+			<TABLE width="100%" cellpadding="1">
 			    <TR>
     				<TD width="1%" NOWRAP>{trans("Address:")}</TD>
 	    			<TD width="99%"><INPUT TYPE="TEXT" NAME="customerdata[address]" id="address" VALUE="{$customerinfo.address}" SIZE="30" {tip text="Enter address" trigger="address"}></TD>
@@ -139,7 +139,7 @@
 			<IMG SRC="img/post.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%">
-			<TABLE width="100%" cellpadding="2" cellspacing="0">
+			<TABLE width="100%" cellpadding="1">
 			    <TR>
 				<TD width="1%" NOWRAP>{trans("Name:")}</TD>
 				<TD width="99%"><INPUT TYPE="TEXT" NAME="customerdata[post_name]" id="post_name" VALUE="{$customerinfo.post_name}" SIZE="30" {tip text="Enter service name (optional)" trigger="post_name"}></TD>

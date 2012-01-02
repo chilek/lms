@@ -24,6 +24,7 @@ TD.flr		{ border-left-width: 1pt; border-left-style: solid; border-right-width: 
 TD.loginform	{ border-width: 1pt; border-style: solid; border-color: #888888; }
 TD.hand		{ cursor: pointer; }
 TR.hand		{ cursor: pointer; }
+TD.container { padding: 0; }
 FORM		{ display: inline ;}
 
 A		{ text-decoration: none; vertical-align: baseline; }

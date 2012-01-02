@@ -7,8 +7,8 @@
 			<B>{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}){if $customerinfo.deleted} <FONT COLOR="RED">({trans("deleted customer")})</FONT>{/if}</B>
 		</TD>
 	</TR>
-        <TR class="LIGHT"{if $customerpanel} id="customerpanel" style="display:none;"{/if}>
-	        <TD WIDTH="100%" {if $customerpanel} CLASS="fall" ALIGN="RIGHT"{else}CLASS="flr"{/if}>
+    <TR class="LIGHT"{if $customerpanel} id="customerpanel" style="display:none;"{/if}>
+	    <TD WIDTH="100%" {if $customerpanel} CLASS="fall container" ALIGN="RIGHT"{else}CLASS="flr container"{/if}>
 			<TABLE WIDTH="100%" CELLPADDING="0">
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" style="vertical-align:top;">
