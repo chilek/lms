@@ -59,8 +59,8 @@
 		</TD>
 		<TD><B>{trans("Notification:")}</B></TD>
 		<TD CLASS="FRIGHT">
-			<INPUT TYPE="checkbox" NAME="userinfo[ntype][]" VALUE="{$smarty.const.MSG_MAIL}" ID="ntypemail"{if ($userinfo.ntype & $smarty.const.MSG_MAIL)} checked{/if}><A HREF="javascript:checkElement('ntypemail')">{trans("email")}</A>
-			<INPUT TYPE="checkbox" NAME="userinfo[ntype][]" VALUE="{$smarty.const.MSG_SMS}" ID="ntypesms"{if ($userinfo.ntype & $smarty.const.MSG_SMS)} checked{/if}><A HREF="javascript:checkElement('ntypesms')">{trans("sms")}</A>
+			<INPUT TYPE="checkbox" NAME="userinfo[ntype][]" VALUE="{$smarty.const.MSG_MAIL}" ID="ntypemail"{if ($userinfo.ntype & $smarty.const.MSG_MAIL)} checked{/if}><label for="ntypemail">{trans("email")}</label>
+			<INPUT TYPE="checkbox" NAME="userinfo[ntype][]" VALUE="{$smarty.const.MSG_SMS}" ID="ntypesms"{if ($userinfo.ntype & $smarty.const.MSG_SMS)} checked{/if}><label for="ntypesms">{trans("sms")}</label>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

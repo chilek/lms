@@ -83,6 +83,7 @@ version ? (????-??-??):
   - invoicenote: we use tax rates which were current in the day
     when invoice was issued [Jarosław Dziubek/chilan]
   - ping: added selection of ping type thanks to Grzegorz Cichowski [chilan]
+  - use more <label> elements instead of javascript's checkElement() [alec]
 
 version 1.11.13 Dira (2011-04-07)
 

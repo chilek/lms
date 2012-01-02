@@ -182,9 +182,9 @@
 						<A href="javascript:print_doc('invoice');">{trans("invoices")} <IMG src="img/print.gif" alt=""></A>&nbsp;
 						<A href="javascript:printr();">{trans("cash receipts")} <IMG src="img/printr.gif" alt=""></A>&nbsp;
 						<A href="javascript:print_doc('note');">{trans("debit notes")} <IMG src="img/printd.gif" alt=""></A>&nbsp;
-						<INPUT type="checkbox" name="original" id="inv-original"{if preg_match('/original/i',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:checkElement('inv-original')">{trans("original")}&nbsp;</a>
-						<INPUT type="checkbox" name="copy" id="inv-copy"{if preg_match('/copy/i',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:checkElement('inv-copy')">{trans("copy")}</a>
-						<INPUT type="checkbox" name="duplicate" id="inv-duplicate"{if preg_match('/duplicate/i',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:checkElement('inv-duplicate')">{trans("duplicate")}</a>
+						<INPUT type="checkbox" name="original" id="inv-original"{if preg_match('/original/i',$_config.invoices.default_printpage)} checked{/if}> <label for="inv-original">{trans("original")}</label>
+						<INPUT type="checkbox" name="copy" id="inv-copy"{if preg_match('/copy/i',$_config.invoices.default_printpage)} checked{/if}> <label for="inv-copy">{trans("copy")}</label>
+						<INPUT type="checkbox" name="duplicate" id="inv-duplicate"{if preg_match('/duplicate/i',$_config.invoices.default_printpage)} checked{/if}> <label for="inv-duplicate">{trans("duplicate")}</label>
 						</TD><TD width="1%" align="right" NOWRAP>
 						<A href="javascript:CheckAll2();">{trans("Check All")}</A><INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes">
 						</TD></TR>
@@ -208,8 +208,8 @@
 						</SELECT>
 					</TD>
 					<TD class="ftop" colspan="3" nowrap>
-						<INPUT TYPE="radio" NAME="addbalance[type]" ID="operation0" VALUE="0" {tip text="Select type of operation"}><A HREF="javascript:checkElement('operation0')">{trans("liability")}</a><BR>
-						<INPUT TYPE="radio" NAME="addbalance[type]" ID="operation1" VALUE="1" {tip text="Select type of operation"} checked><A HREF="javascript:checkElement('operation1')">{trans("income/expense")}</a>
+						<INPUT TYPE="radio" NAME="addbalance[type]" ID="operation0" VALUE="0" {tip text="Select type of operation"}><label for="operation0">{trans("liability")}</label><BR>
+						<INPUT TYPE="radio" NAME="addbalance[type]" ID="operation1" VALUE="1" {tip text="Select type of operation"} checked><label for="operation1">{trans("income/expense")}</label>
 						{if $sourcelist}
 						<BR><IMG src="img/isource.gif" alt="">
 						<SELECT name="addbalance[sourceid]" {tip text="Select import source (optional)" trigger="source"}>

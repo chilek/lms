@@ -69,7 +69,7 @@
 		    <INPUT type="hidden" name="nodedata[location_street]" value="{$nodedata.location_street}">
 		    <INPUT type="hidden" name="nodedata[location_house]" value="{$nodedata.location_house}">
 		    <INPUT type="hidden" name="nodedata[location_flat]" value="{$nodedata.location_flat}">
-			<INPUT TYPE="checkbox" name="nodedata[teryt]" id="teryt" ononchange="check_teryt('location')"{if $nodedata.teryt} checked{/if}><a href="javascript:checkElement('nodedata[teryt]');">{trans("TERRIT-DB")}</a>
+			<INPUT TYPE="checkbox" name="nodedata[teryt]" id="teryt" ononchange="check_teryt('location')"{if $nodedata.teryt} checked{/if}> <label for="teryt">{trans("TERRIT-DB")}</label>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -125,8 +125,8 @@
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
-			<A HREF="javascript:checkElement('chkmac');">{trans("MAC checking")}:</A><INPUT TYPE="checkbox" NAME="nodedata[chkmac]" VALUE="1" id="chkmac" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if !isset($nodedata.chkmac) || $nodedata.chkmac} checked{/if}>&nbsp;
-			<A HREF="javascript:checkElement('halfduplex');">{trans("Half duplex")}:</A><INPUT TYPE="checkbox" NAME="nodedata[halfduplex]" VALUE="1" id="halfduplex" {if $nodedata.halfduplex} checked{/if} {tip text="Select transmission mode"}> 
+			<label for="chkmac">{trans("MAC checking")}:</label><INPUT TYPE="checkbox" NAME="nodedata[chkmac]" VALUE="1" id="chkmac" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if !isset($nodedata.chkmac) || $nodedata.chkmac} checked{/if}>&nbsp;
+			<label for="halfduplex">{trans("Half duplex")}:</label><INPUT TYPE="checkbox" NAME="nodedata[halfduplex]" VALUE="1" id="halfduplex" {if $nodedata.halfduplex} checked{/if} {tip text="Select transmission mode"}> 
 		</TD>
 	</TR>
     					</TABLE>
@@ -198,7 +198,7 @@
 			<A HREF="?m=nodescan{if $customerinfo.id}&ownerid={$customerinfo.id}{/if}">{trans("Scan")} <IMG SRC="img/search.gif" alt=""></A>
 			<A HREF="javascript:document.nodeadd.submit();" ACCESSKEY="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
 			<A HREF="?m={if $customerinfo.id}customerinfo&id={$customerinfo.id}{else}nodelist{/if}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="nodedata[reuse]" id="reuse" value="ON" id="reuse" {if $nodedata.reuse}checked{/if}><A HREF="javascript:checkElement('reuse')"> {trans("Display this form again, when this node is saved")}</A>
+			<INPUT type="checkbox" name="nodedata[reuse]" id="reuse" value="ON" id="reuse" {if $nodedata.reuse}checked{/if}> <label for="reuse">{trans("Display this form again, when this node is saved")}</label>
 		</TD>
 	</TR>
 </TABLE></FORM>

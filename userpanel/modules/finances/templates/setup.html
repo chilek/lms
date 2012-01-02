@@ -6,15 +6,15 @@
     <TR CLASS="light"><TD CLASS="fall">
 	<FORM NAME="moduleconfig" METHOD="POST" ACTION="?m=userpanel&module=finances&f=submit_setup">
 	    <INPUT CLASS="box light" TYPE="checkbox" NAME="disable_transferform" ID="disable_transferform" VALUE="1" {if $disable_transferform eq 1}CHECKED{/if}>
-		<A HREF="javascript:checkElement('disable_transferform');">{trans("Turn off access to transfer form")}</A><br>
+		<label for="disable_transferform">{trans("Turn off access to transfer form")}</label><br>
 	    <INPUT CLASS="box light" TYPE="checkbox" NAME="disable_invoices" ID="disable_invoices" VALUE="1" {if $disable_invoices eq 1}CHECKED{/if}>
-		<A HREF="javascript:checkElement('disable_invoices');">{trans("Turn off access to invoice printing")}</A><br>
+		<label for="disable_invoices">{trans("Turn off access to invoice printing")}</label><br>
 	    <INPUT CLASS="box light" TYPE="checkbox" NAME="invoice_duplicate" ID="invoice_duplicate" VALUE="1" {if $invoice_duplicate eq 1}CHECKED{/if}>
-		<A HREF="javascript:checkElement('invoice_duplicate');">{trans("Print invoice duplicate instead of original")}</A><br>
+		<label for="invoice_duplicate">{trans("Print invoice duplicate instead of original")}</label><br>
 	    <INPUT CLASS="box light" TYPE="checkbox" NAME="show_tariffname" ID="show_tariffname" VALUE="1" {if $show_tariffname eq 1}CHECKED{/if}>
-		<A HREF="javascript:checkElement('show_tariffname');">{trans("Show tariff's name")}</A><br>
+		<label for="show_tariffname">{trans("Show tariff's name")}</label><br>
 	    <INPUT CLASS="box light" TYPE="checkbox" NAME="show_speeds" ID="show_speeds" VALUE="1" {if $show_speeds eq 1}CHECKED{/if}>
-		<A HREF="javascript:checkElement('show_speeds');">{trans("Show upload/download rates/ceils")}</A><br>
+		<label for="show_speeds">{trans("Show upload/download rates/ceils")}</label><br>
 	<p align="right">
 	    <A HREF="?m=userpanel">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
 	    <A HREF="javascript:document.moduleconfig.submit();" ACCESSKEY="S">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>

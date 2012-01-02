@@ -76,8 +76,8 @@
 			<IMG SRC="img/folder.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
-			<INPUT TYPE="radio" NAME="customerdata[type]" VALUE="0" ID="private" {tip text="Select legal personality type" trigger="type"}{if !$customerinfo.type} CHECKED{/if}><A HREF="javascript:checkElement('private')">{trans("private person")}</A>
-			<INPUT TYPE="radio" NAME="customerdata[type]" VALUE="1" ID="company" {tip text="Select legal personality type" trigger="type"}{if $customerinfo.type} CHECKED{/if}><A HREF="javascript:checkElement('company')">{trans("legal entity")}</A>
+			<INPUT TYPE="radio" NAME="customerdata[type]" VALUE="0" ID="private" {tip text="Select legal personality type" trigger="type"}{if !$customerinfo.type} CHECKED{/if}><label for="private">{trans("private person")}</label>
+			<INPUT TYPE="radio" NAME="customerdata[type]" VALUE="1" ID="company" {tip text="Select legal personality type" trigger="type"}{if $customerinfo.type} CHECKED{/if}><label for="company">{trans("legal entity")}</label>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -199,8 +199,8 @@
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
 			<INPUT TYPE="text" size="15" value="{$item.phone}" name="customerdata[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}>
-            <INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_MOBILE}" name="customerdata[contacts][{$key}][type][]" ID="chkmobile{$key}" {if ($item.type & CONTACT_MOBILE)} checked{/if}><A HREF="javascript:checkElement('chkmobile{$key}')">{trans("mobile")}</A>
-            <INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_FAX}" name="customerdata[contacts][{$key}][type][]" ID="chkfax{$key}" {if ($item.type & CONTACT_FAX)} checked{/if}><A HREF="javascript:checkElement('chkfax{$key}')">{trans("fax")}</A>
+            <INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_MOBILE}" name="customerdata[contacts][{$key}][type][]" ID="chkmobile{$key}" {if ($item.type & CONTACT_MOBILE)} checked{/if}><label for="chkmobile{$key}">{trans("mobile")}</label>
+            <INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_FAX}" name="customerdata[contacts][{$key}][type][]" ID="chkfax{$key}" {if ($item.type & CONTACT_FAX)} checked{/if}><label for="chkfax{$key}">{trans("fax")}</label>
             <BR>
 			<INPUT TYPE="text" size="38" value="{$item.name}" name="customerdata[contacts][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
 		</TD>
@@ -367,7 +367,7 @@
 		    <TABLE cellpadding="0">
 		        <TR>
 		            <TD>
-			            <A HREF="javascript:checkElement('chkconsent')">{trans("Consent to personal data processing:")}</A>
+			            <label for="chkconsent">{trans("Consent to personal data processing:")}</label>
 			        </TD>
 			        <TD>
 			            <INPUT TYPE="checkbox" NAME="customerdata[consentdate]" ID="chkconsent" VALUE="{$smarty.now}"{if $customerinfo.consentdate} checked{/if}>
@@ -375,7 +375,7 @@
 	            </TR>
 	            <TR>
 	                <TD>
-			            <A HREF="javascript:checkElement('chkeinvoice')">{trans("Consent to electronic invoices:")}</A>
+			            <label for="chkeinvoice">{trans("Consent to electronic invoices:")}</label>
 			        </TD>
 			        <TD>
 			            <INPUT TYPE="checkbox" NAME="customerdata[einvoice]" ID="chkeinvoice" VALUE="1"{if $customerinfo.einvoice} checked{/if}>
@@ -383,7 +383,7 @@
 	            </TR>
 	            <TR>
 	                <TD>
-			            <A HREF="javascript:checkElement('chkinvoicenotice')">{trans("Consent to invoices delivery via e-mail:")}</A>
+			            <label for="chkinvoicenotice">{trans("Consent to invoices delivery via e-mail:")}</label>
 			        </TD>
 			        <TD>
 			            <INPUT TYPE="checkbox" NAME="customerdata[invoicenotice]" ID="chkinvoicenotice" VALUE="1"{if $customerinfo.invoicenotice} checked{/if}>
@@ -391,7 +391,7 @@
 	            </TR>
 	            <TR>
 	                <TD>
-			            <A HREF="javascript:checkElement('chkmailingnotice')">{trans("Consent to messages delivery via e-mail or sms:")}</A>
+			            <label for="chkmailingnotice">{trans("Consent to messages delivery via e-mail or sms:")}</label>
 			        </TD>
 			        <TD>
 			            <INPUT TYPE="checkbox" NAME="customerdata[mailingnotice]" ID="chkmailingnotice" VALUE="1"{if $customerinfo.mailingnotice} checked{/if}>

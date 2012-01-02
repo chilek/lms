@@ -17,15 +17,6 @@
 			location.href = '?m=nodeedit&id={$nodeinfo.id}&action=duplex&duplex=0';
 	}
 
-	function setCheckbox(id)
-	{
-		document.getElementById(id).checked = !document.getElementById(id).checked;
-		if (id == 'chkmac')
-			chkmac_change();
-		else
-			duplex_change();
-	}
-
 	function check_host(ip)
 	{
 		var type = (document.getElementById('type1').checked ? 1 : 2);
@@ -55,8 +46,8 @@
 		<TD WIDTH="99%" COLSPAN="2">
 			<a href="javascript:check_host('{$nodeinfo.ip}')">{$nodeinfo.ip}</a>
 			<form name="checktype">
-			<input type="radio" id="type1" name="type" value="1" checked><a href="javascript:checkElement('type1')">icmp</a>
-			<input type="radio" id="type2" name="type" value="2"><a href="javascript:checkElement('type2')">arp</a>
+			<input type="radio" id="type1" name="type" value="1" checked><label for="type1">icmp</label>
+			<input type="radio" id="type2" name="type" value="2"><label for="type2">arp</label>
 			</form>
 		</TD>
 	</TR>
@@ -137,7 +128,7 @@
 				{/section}
 			</SELECT>
 			<INPUT type="text" name="port" value="{if $nodeinfo.port}{$nodeinfo.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
-			<INPUT type="checkbox" name="linktype" id="linktype" value="1"{if $nodeinfo.linktype} CHECKED{/if}><A HREF="javascript:checkElement('linktype')"><IMG src="img/wireless.gif" alt="{trans("wireless")}" {tip text="wireless"}></A>
+			<INPUT type="checkbox" name="linktype" id="linktype" value="1"{if $nodeinfo.linktype} CHECKED{/if}><label for="linktype"><IMG src="img/wireless.gif" alt="{trans("wireless")}" title="{trans("wireless")}"></label>
 			<A HREF="javascript:document.nodelink.submit(); ">{trans("Connect")} <IMG SRC="img/edit.gif" alt=""></A>
 			{/if}
 			{/if}
@@ -152,8 +143,8 @@
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
-			<A HREF="javascript:setCheckbox('chkmac')">{trans("MAC checking")}:</A><INPUT TYPE="checkbox" NAME="chkmac" ID="chkmac" VALUE="1" {if $nodeinfo.chkmac} checked{/if} onclick="chkmac_change();">&nbsp;
-			<A HREF="javascript:setCheckbox('duplex')">{trans("Half duplex")}:</A><INPUT TYPE="checkbox" NAME="duplex" ID="duplex" VALUE="1" {if $nodeinfo.halfduplex} checked{/if} onclick="duplex_change();">
+			<label for="chkmac">{trans("MAC checking")}:</label><INPUT TYPE="checkbox" NAME="chkmac" ID="chkmac" VALUE="1" {if $nodeinfo.chkmac} checked{/if} onchange="chkmac_change();">&nbsp;
+			<label for="duplex">{trans("Half duplex")}:</label><INPUT TYPE="checkbox" NAME="duplex" ID="duplex" VALUE="1" {if $nodeinfo.halfduplex} checked{/if} onchange="duplex_change();">
 		</TD>
 	</TR>
                                 	</TABLE>

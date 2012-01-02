@@ -86,7 +86,7 @@
 		    <TD WIDTH="99%" NOWRAP>
 			{foreach from=$categories item=category}
 				<INPUT type="checkbox" name="ticket[categories][{$category.id}]" ID="cat{$category.id}" value="1" {if $category.checked > 0}CHECKED{/if}>
-				<A href="javascript:checkElement('cat{$category.id}');">{$category.name}</A><BR />
+				<label for="cat{$category.id}">{$category.name}</label><BR />
 			{/foreach}
 		    </TD>
 		<TR>

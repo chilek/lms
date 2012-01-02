@@ -221,9 +221,9 @@
 			<A HREF="javascript:DeleteMarked();">{trans("Delete")} <IMG SRC="img/delete.gif" ALT="{trans("Delete")}" HSPACE="2"></A>&nbsp;
 			<A HREF="javascript:printi();">{trans("Print invoices")} <IMG SRC="img/print.gif" ALT="" HSPACE="2"></A>&nbsp;
 			<A HREF="javascript:printr();">{trans("Print cash receipts")} <IMG SRC="img/printr.gif" ALT="" HSPACE="2"></A>&nbsp;
-			<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i',$_config.invoices.default_printpage)} checked{/if}><A HREF="javascript:checkElement('original')">{trans("original")}&nbsp;</a>
-			<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i',$_config.invoices.default_printpage)} checked{/if}><A HREF="javascript:checkElement('copy')">{trans("copy")}</a>
-			<INPUT type="checkbox" name="duplicate"id ="duplicate"{if preg_match('/duplicate/i',$_config.invoices.default_printpage)} checked{/if}><A HREF="javascript:checkElement('duplicate')">{trans("duplicate")}</a>
+			<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i',$_config.invoices.default_printpage)} checked{/if}><label for="original">{trans("original")}</label>
+			<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i',$_config.invoices.default_printpage)} checked{/if}><label for="copy">{trans("copy")}</label>
+			<INPUT type="checkbox" name="duplicate" id="duplicate"{if preg_match('/duplicate/i',$_config.invoices.default_printpage)} checked{/if}><label for="duplicate">{trans("duplicate")}</label>
 		</TD>
 		<TD class="frightu" ALIGN="right" colspan="2">
 			<A HREF="javascript:CheckAll2();">{trans("Check All")}</A><INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes">
