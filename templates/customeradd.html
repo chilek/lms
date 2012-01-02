@@ -48,8 +48,8 @@
 		</TD>
 	</TR>
 	<TR class="light">
-		<TD width="50%" class="fleft"  style="vertical-align: top;">
-			<TABLE cellpadding="2" cellspacing="0" WIDTH="100%">
+		<TD width="50%" class="fleft container"  style="vertical-align: top;">
+			<TABLE cellpadding="3" WIDTH="100%">
 				<TR>
 					<TD width="1%">
 						{if $customeradd.status eq "3" || !$customeradd.status}<img src="img/customer.gif" alt="">{/if}
@@ -92,7 +92,7 @@
 						<IMG src="img/home.gif" alt="">
 					</TD>
 					<TD width="99%" nowrap>
-						<TABLE width="100%" cellpadding="2" cellspacing="0">
+						<TABLE width="100%" cellpadding="1">
 						    <TR>
 							<TD width="1%" NOWRAP>{trans("Address:")}</TD>
 							<TD width="99%"><INPUT TYPE="text" size="30" value="{$customeradd.address}" name="customeradd[address]" id="address" {tip text="Enter customer address" trigger="address"}></TD>
@@ -147,7 +147,7 @@
 						<IMG src="img/post.gif" alt="">
 					</TD>
 					<TD width="99%" nowrap>
-						<TABLE width="100%" cellpadding="2" cellspacing="0">
+						<TABLE width="100%" cellpadding="1">
 						    <TR>
 							<TD width="1%" NOWRAP>{trans("Name:")}</TD>
 							<TD width="99%"><INPUT TYPE="text" size="30" value="{$customeradd.post_name}" name="customeradd[post_name]" id="post_name" {tip text="Enter service name (optional)" trigger="post_name"}></TD>
@@ -409,7 +409,7 @@
 			    </TR>
 			</TABLE>
 		</TD>
-		<TD width="50%" class="fright" STYLE="vertical-align: top;">
+		<TD width="50%" class="fright container" STYLE="vertical-align: top;">
 			<TABLE WIDTH="100%" CELLPADDING="3">
 		    		<TR>
 			            <TD WIDTH="1%"><IMG src="img/info1.gif" alt=""></TD>
