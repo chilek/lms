@@ -9,7 +9,7 @@
 			<IMG src="img/id.gif" alt="">
 		</TD>
 		<TD width="1%" class="fbt">
-			<B>{t}Template:{/t}</B>
+			<B>{trans("Template:")}</B>
 		</TD>
 		<TD width="98%" class="frightu">
 			<INPUT type="text" name="numberplanadd[template]" value="{$numberplanadd.template|escape}" {tip text="Enter number template" trigger="template" bold=1}>
@@ -20,11 +20,11 @@
 			<IMG src="img/docum.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>
-			<B>{t}Document type:{/t}</B>
+			<B>{trans("Document type:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<SELECT name="numberplanadd[doctype]" size="1" {tip text="Select document type" trigger="doctype"}>
-				<OPTION value="0">- {t}select document type{/t} -</OPTION>
+				<OPTION value="0">- {trans("select document type")} -</OPTION>
 			{foreach from=$_DOCTYPES item=item key=key}
 				<OPTION value="{$key}"{if $key == $numberplanadd.doctype} SELECTED{/if}>{$item}</OPTION>
 			{/foreach}
@@ -36,11 +36,11 @@
 			<IMG src="img/calendar.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Period:{/t}</B>
+			<B>{trans("Period:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<SELECT name="numberplanadd[period]" size="1" {tip text="Select numbering period" trigger="period"}>
-				<OPTION value="0">- {t}select period{/t} -</OPTION>
+				<OPTION value="0">- {trans("select period")} -</OPTION>
 			{foreach from=$_NUM_PERIODS item=item key=key}
 				<OPTION value="{$key}"{if $key == $numberplanadd.period} SELECTED{/if}>{$item}</OPTION>
 			{/foreach}
@@ -52,7 +52,7 @@
 			<IMG src="img/division.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>
-			<B>{t}Division{/t}:</B>
+			<B>{trans("Division")}:</B>
 		</TD>
 		<TD width="98%" class="fright">
 			{include file="multiselect.html" selected=$numberplanadd.selected available_tip="Available<!plural>:" selected_tip="Selected<!plural>:"}
@@ -63,7 +63,7 @@
 			<IMG src="img/empty.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>
-			<B>{t}Default:{/t}</B>
+			<B>{trans("Default:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<INPUT type="checkbox" name="numberplanadd[isdefault]" value="1" {tip text="Check box to make this plan a default for selected document type"}{if $numberplanadd.isdefault!="0"}CHECKED{/if}>
@@ -71,9 +71,9 @@
 	</TR>
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
-			<A href="javascript:document.numberplanadd.submit();" accesskey="s">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=numberplanlist">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="numberplanadd[reuse]" ID="reuse" value="ON" {if $numberplanadd.reuse}checked{/if}><A HREF="javascript:checkElement('reuse')"> {t}Display this form again, when this numbering plan is saved{/t}</A>
+			<A href="javascript:document.numberplanadd.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=numberplanlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A><BR>
+			<INPUT type="checkbox" name="numberplanadd[reuse]" ID="reuse" value="ON" {if $numberplanadd.reuse}checked{/if}><A HREF="javascript:checkElement('reuse')"> {trans("Display this form again, when this numbering plan is saved")}</A>
 		</TD>
 	</TR>
 </TABLE>

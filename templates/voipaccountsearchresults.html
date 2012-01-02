@@ -4,17 +4,17 @@
 <P><table cellpadding="3" width="100%">
 	<TR class="dark" {tip text="Click on column name to change sorting order"}>
 		<TD class="fleftu" width="96%" NOWRAP>
-			<img src="img/voip.gif" ALT=""> <A href="?m=voipaccountsearch&search&o=login{if $listdata.direction eq "asc" && $listdata.order eq "login"},desc{/if}"><B>{t}Login:{/t}</B></A> {if $listdata.order eq "login"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<img src="img/customer.gif" ALT=""> <A href="?m=voipaccountsearch&search&o=owner{if $listdata.direction eq "asc" && $listdata.order eq "owner"},desc{/if}">{t}Owner:{/t}</A> {if $listdata.order eq "owner"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<img src="img/voip.gif" ALT=""> <A href="?m=voipaccountsearch&search&o=login{if $listdata.direction eq "asc" && $listdata.order eq "login"},desc{/if}"><B>{trans("Login:")}</B></A> {if $listdata.order eq "login"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<img src="img/customer.gif" ALT=""> <A href="?m=voipaccountsearch&search&o=owner{if $listdata.direction eq "asc" && $listdata.order eq "owner"},desc{/if}">{trans("Owner:")}</A> {if $listdata.order eq "owner"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD Class="fbt" width="1%" nowrap>
-			<A href="?m=voipaccountsearch&search&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A> {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<A href="?m=voipaccountsearch&search&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 		</TD>
 		<TD CLASS="fbt" width="1%" nowrap>
-			<A href="?m=voipaccountsearch&search&o=phone{if $listdata.direction eq "asc" && $listdata.order eq "phone"},desc{/if}">{t}Phone number:{/t}</A> {if $listdata.order eq "phone"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=voipaccountsearch&search&o=phone{if $listdata.direction eq "asc" && $listdata.order eq "phone"},desc{/if}">{trans("Phone number:")}</A> {if $listdata.order eq "phone"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD CLASS="fbt" width="1%" nowrap>
-			<A href="?m=voipaccountsearch&search&o=passwd{if $listdata.direction eq "asc" && $listdata.order eq "passwd"},desc{/if}">{t}Password:{/t}</A> {if $listdata.order eq "passwd"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=voipaccountsearch&search&o=passwd{if $listdata.direction eq "asc" && $listdata.order eq "passwd"},desc{/if}">{trans("Password:")}</A> {if $listdata.order eq "passwd"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD CLASS="frightu" width="1%" align="right">
 			<NOBR><B>{t a=$listdata.total}Total: $a{/t}</B></NOBR>
@@ -47,9 +47,9 @@
 		</TD>
 		<TD width="1%" class="fright" align="right">
 			<nobr>
-			<a href="?m=voipaccountdel&id={$voipaccountlist[voipaccountlist].id}" onClick="return confirmLink(this, '{t a=$voipaccountlist[voipaccountlist].login}Are you sure, you want to remove voip account \'$a\' from database?{/t}')"><img src="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
-			<a href="?m=voipaccountedit&id={$voipaccountlist[voipaccountlist].id}"><img src="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
-			<a href="?m=voipaccountinfo&id={$voipaccountlist[voipaccountlist].id}"><img src="img/info.gif" ALT="[ {t}Info{/t} ]"></A>
+			<a href="?m=voipaccountdel&id={$voipaccountlist[voipaccountlist].id}" onClick="return confirmLink(this, '{t a=$voipaccountlist[voipaccountlist].login}Are you sure, you want to remove voip account \'$a\' from database?{/t}')"><img src="img/delete.gif" ALT="[ {trans("Delete")} ]"></A>
+			<a href="?m=voipaccountedit&id={$voipaccountlist[voipaccountlist].id}"><img src="img/edit.gif" ALT="[ {trans("Edit")} ]"></A>
+			<a href="?m=voipaccountinfo&id={$voipaccountlist[voipaccountlist].id}"><img src="img/info.gif" ALT="[ {trans("Info")} ]"></A>
 			</nobr>
 		</TD>
 	</TR>
@@ -57,7 +57,7 @@
 	<TR>
 		<TD colspan="5" class="fall" align="center">
 			<P>&nbsp;</P>
-			<P><B>{t}No such voip accounts matching search criteria.{/t}</B></P>
+			<P><B>{trans("No such voip accounts matching search criteria.")}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>
@@ -72,7 +72,7 @@
 	<TR CLASS="light">
 		<TD WIDTH="98%" COLSPAN="2" CLASS="fleftu" ALIGN="right">
 			<B>
-				{t}Total:{/t}<BR>
+				{trans("Total:")}<BR>
 			</B>
 		</TD>
 		<TD WIDTH="2%" COLSPAN="3" CLASS="frightu" VALIGN="TOP">

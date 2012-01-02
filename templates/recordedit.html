@@ -8,7 +8,7 @@
 	                <IMG src="img/dns.gif" alt="">
 	        </TD>
 	        <TD width="1%" class="fbt" nowrap>
-		        <B>{t}Type{/t}:</B>
+		        <B>{trans("Type")}:</B>
 		</TD>
 		<TD width="98%" class="frightu">
 	    		<SELECT SIZE="1" NAME="record[type]" {tip text="Select record type" trigger="type"} onchange="change_rec_type(this)">
@@ -33,7 +33,7 @@
 	                <IMG src="img/time.gif" alt="">
 	        </TD>
 	        <TD width="1%" nowrap>
-		        {t}TTL{/t}:
+		        {trans("TTL")}:
 		</TD>
 		<TD width="98%" class="fright">
 			<input type="text" size="7" value="{$record.ttl}" name="record[ttl]" {tip text="Enter record TTL" trigger="ttl"}>	
@@ -41,92 +41,92 @@
 	</TD>
 	<TR class="light" id="name" style="display: none">
                 <TD width="1%" class="fleft"><IMG src="img/domain.gif" alt=""></TD>
-	        <TD width="1%" nowrap>{t}Domain:{/t}</TD>
+	        <TD width="1%" nowrap>{trans("Domain:")}</TD>
 		<TD width="98%" class="fright"><input type="text" value="{$record.name|escape}" name="record[name]" size="30" {tip text="Enter domain name" trigger="name"}> .{$record.domainname}.</TD>
 	</TD>
 	<TR class="light" id="alias" style="display: none">
                 <TD width="1%" class="fleft"><IMG src="img/domain.gif" alt=""></TD>
-		<TD width="1%" nowrap>{t}Alias:{/t}</TD>
+		<TD width="1%" nowrap>{trans("Alias:")}</TD>
 		<TD width="98%" class="fright"><input type="text" value="{$record.alias|escape}" name="record[alias]" size="30" {tip text="Enter alias name" trigger="alias"}> .{$record.domainname}.</TD>
 	</TD>
 	<TR class="light" id="ipdst" style="display: none">
                 <TD width="1%" class="fleft"><IMG src="img/ip.gif" alt=""></TD>
-	        <TD width="1%" nowrap>{t}IP Address:{/t}</TD>
+	        <TD width="1%" nowrap>{trans("IP Address:")}</TD>
 		<TD width="98%" class="fright"><input type="text" value="{$record.ipdst|escape}" name="record[ipdst]" size="30" {tip text="Enter IP address" trigger="ipdst"}></TD>
 	</TD>
 	<TR class="light" id="ns" style="display: none">
                 <TD width="1%" class="fleft"><IMG src="img/dns.gif" alt=""></TD>
-	        <TD width="1%" nowrap>{t}DNS Server:{/t}</TD>
+	        <TD width="1%" nowrap>{trans("DNS Server:")}</TD>
 		<TD width="98%" class="fright"><input type="text" value="{$record.ns|escape}" name="record[ns]" size="40" {tip text="Enter DNS server name" trigger="ns"}> .</TD>
 	</TD>
 	<TR class="light" id="mailserver" style="display: none">
                 <TD width="1%" class="fleft"><IMG src="img/email.gif" alt=""></TD>
-	        <TD width="1%" nowrap>{t}Mail Server:{/t}</TD>
+	        <TD width="1%" nowrap>{trans("Mail Server:")}</TD>
 		<TD width="98%" class="fright"><input type="text" value="{$record.mailserver|escape}" name="record[mailserver]" size="40" {tip text="Enter mail server name" trigger="mailserver"}> .</TD>
 	</TD>
 	<TR class="light" id="weight" style="display: none">
                 <TD width="1%" class="fleft"><IMG src="img/id.gif" alt=""></TD>
-	        <TD width="1%" nowrap>{t}Weight:{/t}</TD>
+	        <TD width="1%" nowrap>{trans("Weight:")}</TD>
 		<TD width="98%" class="fright"><input type="text" value="{$record.weight|escape}" name="record[weight]" size="10" {tip text="Enter record relative weight" trigger="weight"}></TD>
 	</TD>
 	<TR class="light" id="port" style="display: none">
                 <TD width="1%" class="fleft"><IMG src="img/port.gif" alt=""></TD>
-	        <TD width="1%" nowrap>{t}Port:{/t}</TD>
+	        <TD width="1%" nowrap>{trans("Port:")}</TD>
 		<TD width="98%" class="fright"><input type="text" value="{$record.port|escape}" name="record[port]" size="10" {tip text="Enter port number" trigger="port"}></TD>
 	</TD>
 	<TR class="light" id="domain" style="display: none">
                 <TD width="1%" class="fleft"><IMG src="img/domain.gif" alt=""></TD>
-	        <TD width="1%" nowrap>{t}Domain:{/t}</TD>
+	        <TD width="1%" nowrap>{trans("Domain:")}</TD>
 		<TD width="98%" class="fright"><input type="text" value="{$record.domain|escape}" name="record[domain]" size="40" {tip text="Enter domain name" trigger="domain"}> .</TD>
 	</TR>
 	<TR class="light" id="host" style="display: none">
                 <TD width="1%" class="fleft"><IMG src="img/domain.gif" alt=""></TD>
-	        <TD width="1%" nowrap>{t}Domain:{/t}</TD>
+	        <TD width="1%" nowrap>{trans("Domain:")}</TD>
 		<TD width="98%" class="fright"><input type="text" value="{$record.host|escape}" name="record[host]" size="30" {tip text="Enter host name" trigger="host"}> .{$record.domainname}.</TD>
 	</TR>
 	<TR class="light" id="desc" style="display: none">
                 <TD width="1%" class="fleft"><IMG src="img/info.gif" alt=""></TD>
-	        <TD width="1%" nowrap>{t}Description:{/t}</TD>
+	        <TD width="1%" nowrap>{trans("Description:")}</TD>
 		<TD width="98%" class="fright"><input type="text" value="{$record.desc|escape}" name="record[desc]" size="60" {tip text="Enter description" trigger="desc"}></TD>
 	</TR>
 	<TR class="light" id="prio" style="display: none">
                 <TD width="1%" class="fleft"><IMG src="img/id.gif" alt=""></TD>
-	        <TD width="1%" nowrap>{t}Priority:{/t}</TD>
+	        <TD width="1%" nowrap>{trans("Priority:")}</TD>
 		<TD width="98%" class="fright"><input type="text" size="5" value="{$record.prio|escape}" name="record[prio]" {tip text="Enter record priority" trigger="prio"}></TD>
 	</TD>
 	<TR class="light" id="email" style="display: none">
                 <TD width="1%" class="fleft"><IMG src="img/mail.gif" alt=""></TD>
-	        <TD width="1%" nowrap>{t}E-mail address:{/t}</TD>
+	        <TD width="1%" nowrap>{trans("E-mail address:")}</TD>
 		<TD width="98%" class="fright"><input type="text" value="{$record.email|escape}" name="record[email]" size="40" {tip text="Enter e-mail address" trigger="email"}></TD>
 	</TD>
 	<TR class="light" id="serial" style="display: none">
                 <TD width="1%" class="fleft"><IMG src="img/serialnumber.gif" alt=""></TD>
-	        <TD width="1%" nowrap>{t}Serial number:{/t}</TD>
+	        <TD width="1%" nowrap>{trans("Serial number:")}</TD>
 		<TD width="98%" class="fright"><input type="text" value="{$record.serial|escape}" name="record[serial]" size="10" {tip text="Enter zone serial number" trigger="serial"}></TD>
 	</TD>
 	<TR class="light" id="refresh" style="display: none">
                 <TD width="1%" class="fleft"><IMG src="img/time.gif" alt=""></TD>
-	        <TD width="1%" nowrap>{t}Refresh interval:{/t}</TD>
+	        <TD width="1%" nowrap>{trans("Refresh interval:")}</TD>
 		<TD width="98%" class="fright"><input type="text" value="{$record.refresh|escape}" name="record[refresh]" size="10" {tip text="Enter zone refresh interval" trigger="refresh"}></TD>
 	</TD>
 	<TR class="light" id="retry" style="display: none">
                 <TD width="1%" class="fleft"><IMG src="img/time.gif" alt=""></TD>
-	        <TD width="1%" nowrap>{t}Retry interval:{/t}</TD>
+	        <TD width="1%" nowrap>{trans("Retry interval:")}</TD>
 		<TD width="98%" class="fright"><input type="text" value="{$record.retry|escape}" name="record[retry]" size="10" {tip text="Enter zone retry interval" trigger="retry"}></TD>
 	</TD>
 	<TR class="light" id="expiry" style="display: none">
                 <TD width="1%" class="fleft"><IMG src="img/time.gif" alt=""></TD>
-	        <TD width="1%" nowrap>{t}Expire time:{/t}</TD>
+	        <TD width="1%" nowrap>{trans("Expire time:")}</TD>
 		<TD width="98%" class="fright"><input type="text" value="{$record.expire|escape}" name="record[expire]" size="10" {tip text="Enter zone expiration time" trigger="expire"}></TD>
 	</TD>
 	<TR class="light" id="minttl" style="display: none">
                 <TD width="1%" class="fleft"><IMG src="img/time.gif" alt=""></TD>
-	        <TD width="1%" nowrap>{t}Default TTL:{/t}</TD>
+	        <TD width="1%" nowrap>{trans("Default TTL:")}</TD>
 		<TD width="98%" class="fright"><input type="text" value="{$record.minttl|escape}" name="record[minttl]" size="10" {tip text="Enter default TTL value" trigger="minttl"}></TD>
 	</TD>
 	<TR class="light" id="algo" style="display: none">
                 <TD width="1%" class="fleft"><IMG src="img/pass.gif" alt=""></TD>
-	        <TD width="1%" nowrap>{t}Algorithm:{/t}</TD>
+	        <TD width="1%" nowrap>{trans("Algorithm:")}</TD>
 		<TD width="98%" class="fright">
 		    <select name="record[algo]" {tip text="Select algorithm of the public key" trigger="algo"}>
 			<option value="1"{if $record.algo=='1'} selected{/if}>RSA</option>
@@ -136,7 +136,7 @@
 	</TD>
 	<TR class="light" id="ftype" style="display: none">
                 <TD width="1%" class="fleft"><IMG src="img/pass.gif" alt=""></TD>
-	        <TD width="1%" nowrap>{t}Type:{/t}</TD>
+	        <TD width="1%" nowrap>{trans("Type:")}</TD>
 		<TD width="98%" class="fright">
 		    <select name="record[ftype]" {tip text="Select algorithm used to generate the fingerprint" trigger="ftype"}>
 			<option value="1">SHA-1</option>
@@ -145,28 +145,28 @@
 	</TD>
 	<TR class="light" id="fingerprint" style="display: none">
                 <TD width="1%" class="fleft"><IMG src="img/pass.gif" alt=""></TD>
-	        <TD width="1%" nowrap>{t}Fingerprint:{/t}</TD>
+	        <TD width="1%" nowrap>{trans("Fingerprint:")}</TD>
 		<TD width="98%" class="fright"><input type="text" value="{$record.fingerprint|escape}" name="record[fingerprint]" size="80" {tip text="Enter public key fingerprint" trigger="fingerprint"}></TD>
 	</TR>
 	<TR class="light" id="content" style="display: none">
                 <TD width="1%" class="fleft"><IMG src="img/info.gif" alt=""></TD>
-	        <TD width="1%" nowrap>{t}Content:{/t}</TD>
+	        <TD width="1%" nowrap>{trans("Content:")}</TD>
 		<TD width="98%" class="fright"><input type="text" value="{$record.content|escape}" name="record[content]" size="80" {tip text="Enter record contents" trigger="content"}></TD>
 	</TR>
 	<TR class="light" id="cpu" style="display: none">
                 <TD width="1%" class="fleft"><IMG src="img/node.gif" alt=""></TD>
-	        <TD width="1%" nowrap>{t}CPU Type:{/t}</TD>
+	        <TD width="1%" nowrap>{trans("CPU Type:")}</TD>
 		<TD width="98%" class="fright"><input type="text" value="{$record.cpu|escape}" name="record[cpu]" size="40" {tip text="Enter CPU type" trigger="cpu"}></TD>
 	</TR>
 	<TR class="light" id="os" style="display: none">
                 <TD width="1%" class="fleft"><IMG src="img/node.gif" alt=""></TD>
-	        <TD width="1%" nowrap>{t}Operating System Type:{/t}</TD>
+	        <TD width="1%" nowrap>{trans("Operating System Type:")}</TD>
 		<TD width="98%" class="fright"><input type="text" value="{$record.os|escape}" name="record[os]" size="40" {tip text="Enter operating system type" trigger="os"}></TD>
 	</TR>
 	<TR class="light">
 		<TD colspan="3" class="fbottomu" align="right" nowrap>
-			<A href="javascript: document.record.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
-			<A href="?m=recordlist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
+			<A href="javascript: document.record.submit();" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
+			<A href="?m=recordlist">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>

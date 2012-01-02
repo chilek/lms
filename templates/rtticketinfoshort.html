@@ -21,7 +21,7 @@
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" NOWRAP>
 		    	<IMG src="img/users.gif" alt="">
-			<B>{t}Created by:{/t}</B>
+			<B>{trans("Created by:")}</B>
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
 			<A href="?m=userinfo&id={$ticket.creatorid}">{$ticket.creator}</a>
@@ -31,7 +31,7 @@
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" NOWRAP>
 		    	<IMG src="img/time.gif" alt="">
-			<B>{t}Uptime:{/t}</B>
+			<B>{trans("Uptime:")}</B>
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
 			{$ticket.uptime}
@@ -40,19 +40,19 @@
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" NOWRAP>
 		    	<IMG src="img/desc.gif" alt="">
-			<B>{t}Cause:{/t}</B>
+			<B>{trans("Cause:")}</B>
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
-			{if $ticket.cause==2}{t}company's side{/t}
-			{elseif $ticket.cause==1}{t}customer's side{/t}
-			{else}{t}unknown/other{/t}{/if}
+			{if $ticket.cause==2}{trans("company's side")}
+			{elseif $ticket.cause==1}{trans("customer's side")}
+			{else}{trans("unknown/other")}{/if}
 		</TD>
 	</TR>
 	{if $ticket.message}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" NOWRAP>
 		    	<IMG src="img/info.gif" alt="">
-			<B>{t}Body:{/t}</B>
+			<B>{trans("Body:")}</B>
 		</TD>
 		<TD WIDTH="99%">
 			<TABLE WIDTH="{if strlen($ticket.message)<50}100%{else}300{/if}" CELLPADDING="5">

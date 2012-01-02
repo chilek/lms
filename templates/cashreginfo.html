@@ -12,14 +12,14 @@
 	    <TD width="1%" class="fleft">
 		<IMG src="img/id.gif" ALT="">
 	    </TD>
-	    <TD width="1%" nowrap><B>{t}Cash-in receipt numbering plan:{/t}</B></TD>
+	    <TD width="1%" nowrap><B>{trans("Cash-in receipt numbering plan:")}</B></TD>
 	    <TD width="98%" class="fright">{$registry.in_template|default:"%N/LMS/%Y"}</TD>
 	</TR>
 	<TR class="LIGHT">
 	    <TD width="1%" class="fleft">
 		<IMG src="img/id.gif" ALT="">
 	    </TD>
-	    <TD width="1%" nowrap><B>{t}Cash-out receipt numbering plan:{/t}</B></TD>
+	    <TD width="1%" nowrap><B>{trans("Cash-out receipt numbering plan:")}</B></TD>
 	    <TD width="98%" class="fright">{$registry.out_template|default:"%N/LMS/%Y"}</TD>
 	</TR>
 	{if $registry.description}
@@ -27,7 +27,7 @@
 	    <TD width="1%" class="fleft">
 		<IMG src="img/info1.gif" ALT="">
 	    </TD>
-	    <TD width="1%"><B>{t}Description:{/t}</B></TD>
+	    <TD width="1%"><B>{trans("Description:")}</B></TD>
 	    <TD width="98%" class="fright">
 		<TABLE width="100%" cellpadding="5">
 		    <TR>
@@ -43,32 +43,32 @@
 	    <TD width="1%" class="fleft">
 		<IMG src="img/wait.gif" ALT="">
 	    </TD>
-	    <TD width="1%"><B>{t}Disabled summary:{/t}</B></TD>
+	    <TD width="1%"><B>{trans("Disabled summary:")}</B></TD>
 	    <TD width="98%" class="fright">
-		    {if $registry.disabled}{t}yes{/t}{else}{t}no{/t}{/if}
+		    {if $registry.disabled}{trans("yes")}{else}{trans("no")}{/if}
 	    </TD>
 	</TR>
 	<TR class="LIGHT">
 	    <TD width="1%" class="fleft">
 		<IMG src="img/users.gif" ALT="">
 	    </TD>
-	    <TD width="1%"><B>{t}Privileges:{/t}</B></TD>
+	    <TD width="1%"><B>{trans("Privileges:")}</B></TD>
 	    <TD width="98%" class="fright">
 		    <TABLE width="100%" cellpadding="3">
 			<TR class="DARK">
-			    <TD width="93%" class="ftl"><B>{t}User{/t}</B></TD>
-			    <TD width="1%" class="ftop" align="center" nowrap><B>{t}Read{/t}</B></TD>
-			    <TD width="5%" class="ftop" align="center" colspan="5" nowrap><B>{t}Write (+R){/t}</B></TD>
-			    <TD width="1%" class="ftr" align="center" nowrap><B>{t}Advanced (+R){/t}</B></TD>
+			    <TD width="93%" class="ftl"><B>{trans("User")}</B></TD>
+			    <TD width="1%" class="ftop" align="center" nowrap><B>{trans("Read")}</B></TD>
+			    <TD width="5%" class="ftop" align="center" colspan="5" nowrap><B>{trans("Write (+R)")}</B></TD>
+			    <TD width="1%" class="ftr" align="center" nowrap><B>{trans("Advanced (+R)")}</B></TD>
 			</TR>
 			<TR class="DARK">
 			    <TD width="93%" class="fbl"></TD>
 			    <TD width="1%" class="fbottom" align="center" nowrap></TD>
-			    <TD width="1%" class="fbottom" align="center">{t}customer{/t}</TD>
-			    <TD width="1%" class="fbottom" align="center" nowrap>{t}ass. move{/t}</TD>
-			    <TD width="1%" class="fbottom" align="center">{t}advance{/t}</TD>
-			    <TD width="1%" class="fbottom" align="center">{t}other{/t}</TD>
-			    <TD width="1%" class="fbottom" align="center">{t}mod.{/t}</TD>
+			    <TD width="1%" class="fbottom" align="center">{trans("customer")}</TD>
+			    <TD width="1%" class="fbottom" align="center" nowrap>{trans("ass. move")}</TD>
+			    <TD width="1%" class="fbottom" align="center">{trans("advance")}</TD>
+			    <TD width="1%" class="fbottom" align="center">{trans("other")}</TD>
+			    <TD width="1%" class="fbottom" align="center">{trans("mod.")}</TD>
 			    <TD width="1%" class="fbr" align="center" nowrap></TD>
 			</TR>
 			{cycle values="light,lucid" print=false}
@@ -112,8 +112,8 @@
 	</TR>
 	<TR class="LIGHT">
 	    <TD width="100%" COLSPAN="3" class="FBOTTOMU" ALIGN="RIGHT"> 
-	        <A HREF="?m=receiptlist&regid={$registry.id}">{t}Browse{/t} <IMG src="img/view.gif" alt=""></A>
-	    	<A HREF="?m=cashregedit&id={$registry.id}">{t}Edit{/t} <IMG src="img/save.gif" alt=""></A>
+	        <A HREF="?m=receiptlist&regid={$registry.id}">{trans("Browse")} <IMG src="img/view.gif" alt=""></A>
+	    	<A HREF="?m=cashregedit&id={$registry.id}">{trans("Edit")} <IMG src="img/save.gif" alt=""></A>
 	    </TD>
 	</TR>
 </TABLE></P>

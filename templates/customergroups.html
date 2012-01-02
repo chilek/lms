@@ -3,16 +3,16 @@
 	<TR class="dark hand" onclick="showOrHide('groupspanel');">
 		<TD class="fall">
 			<IMG src="img/group.gif" alt="">
-			<B>{t}Customer Groups:{/t}</B> 
+			<B>{trans("Customer Groups:")}</B> 
 		</TD>
 	</TR>
 	<TR id="groupspanel" style="display:none;">
 		<TD WIDTH="100%" class="fall">
 			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
 				<TR class="dark">
-					<TD WIDTH="1%" NOWRAP class="fleftu"><B>{t}Name:{/t}</B></TD>
-					<TD WIDTH="1%" NOWRAP class="fbt" COLSPAN="2">{t}Description:{/t}</TD>
-					<TD WIDTH="97%" NOWRAP class="fbt">{t}ID:{/t}</TD>
+					<TD WIDTH="1%" NOWRAP class="fleftu"><B>{trans("Name:")}</B></TD>
+					<TD WIDTH="1%" NOWRAP class="fbt" COLSPAN="2">{trans("Description:")}</TD>
+					<TD WIDTH="97%" NOWRAP class="fbt">{trans("ID:")}</TD>
 					<TD WIDTH="1%" class="frightu">&nbsp;</TD>
 				</TR>
 				{cycle name=groups values="light,lucid" print=false}
@@ -21,13 +21,13 @@
 					<TD WIDTH="1%" NOWRAP><B><A HREF="?m=customergroupinfo&id={$customergroup.id}">{$customergroup.name}</A></B></TD>
 					<TD WIDTH="1%" NOWRAP COLSPAN="2">{$customergroup.description}</TD>
 					<TD WIDTH="97%" NOWRAP>({$customergroup.id|string_format:"%04d"})</TD>
-					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP><A onClick="return confirmLink(this, '{t}Are you sure, you want to remove customer from group?{/t}')" HREF="?m=customergroup&customergroupid={$customergroup.id}&action=delete&id={$customerinfo.id}" {tip text="Remove customer from group"}><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A></TD>
+					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP><A onClick="return confirmLink(this, '{trans("Are you sure, you want to remove customer from group?")}')" HREF="?m=customergroup&customergroupid={$customergroup.id}&action=delete&id={$customerinfo.id}" {tip text="Remove customer from group"}><IMG SRC="img/delete.gif" ALT="[ {trans("Delete")} ]"></A></TD>
 				</TR>
 				{foreachelse}
 				<TR>
 					<TD align="center" WIDTH="100%" colspan="5">
 						<p>&nbsp;</p>
-						<p><B>{t}That customer is not a member of any group.{/t}</B></p>
+						<p><B>{trans("That customer is not a member of any group.")}</B></p>
 						<p>&nbsp;</p>
 					</TD>
 				</TR>
@@ -36,16 +36,16 @@
 				<INPUT type="submit" class="hiddenbtn">
 				<TR class="light">
 					<TD COLSPAN="4" CLASS="ftop">
-						<B>{t}Add:{/t}</B>
+						<B>{trans("Add:")}</B>
 						<SELECT SIZE="1" NAME="customergroupid" {tip text="Select group to attribute to customer"}>
-							<OPTION VALUE="0">{t}... select group ...{/t}</OPTION>
+							<OPTION VALUE="0">{trans("... select group ...")}</OPTION>
 							{section name=t loop=$othercustomergroups}
 							<OPTION VALUE="{$othercustomergroups[t].id}">{$othercustomergroups[t].name} ({$othercustomergroups[t].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
 					</TD>
 					<TD ALIGN="RIGHT" CLASS="ftop" ROWSPAN="2" NOWRAP>
-						<A HREF="javascript:document.customergroupassignment.submit()" {tip text="Add customer to group"}>{t}Add{/t} <IMG SRC="img/save.gif" alt=""></A>
+						<A HREF="javascript:document.customergroupassignment.submit()" {tip text="Add customer to group"}>{trans("Add")} <IMG SRC="img/save.gif" alt=""></A>
 					</TD>
 				</TR>
 				</FORM>

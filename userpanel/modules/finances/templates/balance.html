@@ -10,11 +10,11 @@
 {if $userinfo.balance < 0}
 	{if !$_config.userpanel.disable_transferform}
 	<a href="?m=finances&amp;f=transferform" target="_blank">
-	<font color="red">{t}Click here to print payment form{/t}</font>
+	<font color="red">{trans("Click here to print payment form")}</font>
 	</a>
 	{/if}
 {else}
-	{t}All your covenants are settled{/t}
+	{trans("All your covenants are settled")}
 {/if}
 </center>
 {/box}

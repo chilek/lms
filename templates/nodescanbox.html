@@ -2,7 +2,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD CLASS="FALL" COLSPAN="3">
-			<IMG SRC="img/node.gif" ALT=""> <B>{t}Computers found:{/t}</B>
+			<IMG SRC="img/node.gif" ALT=""> <B>{trans("Computers found:")}</B>
 		</TD>
 	</TR>
 	{cycle values="light,lucid" print=false}
@@ -22,14 +22,14 @@
 	<TR>
 		<TD COLSPAN="3" ALIGN="CENTER" CLASS="FALL">
 			<P>&nbsp;</P>
-			<P><B>{t}No computers were found, either exists in the database or nbtscan binary not found.{/t}</B></P>
+			<P><B>{trans("No computers were found, either exists in the database or nbtscan binary not found.")}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>
 	{/section}
 {if $nodes}
 	<TR>
-		<TD COLSPAN="3" CLASS="FALL">{t}Click on the Computer name above to get it records{/t}.</TD>
+		<TD COLSPAN="3" CLASS="FALL">{trans("Click on the Computer name above to get it records")}.</TD>
 	</TR>
 {/if}
 </TABLE>

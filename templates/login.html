@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
     <link href="{if $_config.phpui.style}{$_config.phpui.style}{else}img/style.css{/if}" rel="stylesheet" type="text/css">
     <link href="img/lms-net.gif" rel="shortcut icon">
-    <title>::: {t}Welcome to LMS{/t} {$layout.lmsv} :::</title>
+    <title>::: {trans("Welcome to LMS")} {$layout.lmsv} :::</title>
 </head>
 <body>
 <table width="100%" height="100%">
@@ -19,8 +19,8 @@
 						<img src="img/logo.gif" alt="">
 					</td>
 					<td align="center" class="loginform light" width="300">
-						<b>{t}LMS version{/t} {$layout.lmsv} ({$layout.lmsvr})<br><br>
-						&copy; 2001-2011 LMS Developers</b><br><br><br>
+						<b>{trans("LMS version")} {$layout.lmsv} ({$layout.lmsvr})<br><br>
+						&copy; 2001-2012 LMS Developers</b><br><br><br>
 						{if $error}<font class="alert bold">{$error}</font>{else}&nbsp;{/if}<br>
 						<br>
 						<form method="post" name="loginform" action="{$target}">
@@ -28,7 +28,7 @@
 							<table>
 								<tr>
 									<td align="right">
-										<b>{t}Login:{/t}&nbsp;</b>
+										<b>{trans("Login:")}&nbsp;</b>
 									</td>
 									<td>
 										<input class="bold" type="TEXT" name="loginform[login]" size="10" accesskey="l" autofocus>
@@ -36,7 +36,7 @@
 								</tr>
 								<tr>
 									<td align="right">
-										<b>{t}Password:{/t}&nbsp;</b>
+										<b>{trans("Password:")}&nbsp;</b>
 									</td>
 									<td>
 										<input class="bold" type="PASSWORD" name="loginform[pwd]" size="10"><br>
@@ -49,7 +49,7 @@
 								</tr>
 								<tr>
 									<td colspan="2" align="center">
-										<input class="bold" type="SUBMIT" name="loginform[submit]" value="{t}Login{/t}">
+										<input class="bold" type="SUBMIT" name="loginform[submit]" value="{trans("Login")}">
 									</td>
 								</tr>
 							</table>
@@ -57,8 +57,8 @@
 						<br>
 						<br>
 						<br>
-						<a href="doc/html/{$_ui_language}/"><font class="blend">{t}Documentation{/t}</font></a><br>
-						<a href="http://www.lms.org.pl/"><font class="blend">{t}LMS Project Homepage{/t}</font></a>
+						<a href="doc/html/{$_ui_language}/"><font class="blend">{trans("Documentation")}</font></a><br>
+						<a href="http://www.lms.org.pl/"><font class="blend">{trans("LMS Project Homepage")}</font></a>
 					</td>
 				</tr>
 				{if $layout.dberrors}

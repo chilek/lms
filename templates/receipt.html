@@ -13,20 +13,20 @@
 		</td>
 		<td colspan="2" width="34%" class="headgrey hdf" align="center" nowrap>
 			{if $receipt.type == "out"}
-			{t}Proof of Pay-out{/t}
+			{trans("Proof of Pay-out")}
 			{else}
-			{t}Proof of Payment{/t}
+			{trans("Proof of Payment")}
 			{/if}
-			<br><font class="sdr">{t}Receipt{/t}</font>
+			<br><font class="sdr">{trans("Receipt")}</font>
 		</td>
 		<td colspan="2" width="32%" class="ftopu shdf" align="center">
-			{if $receipt.type == "out"}{t}CR-out{/t}{else}{t}CR-in{/t}{/if}
+			{if $receipt.type == "out"}{trans("CR-out")}{else}{trans("CR-in")}{/if}
 		</td>
 	</tr>
 	<tr>
 		<td width="34%" colspan="2" class="fleft"></td>
 		<td width="34%" colspan="2" class="flr sdr" align="center" nowrap>
-			{t}Date:{/t} {$receipt.cdate|date_format:"%x"}
+			{trans("Date:")} {$receipt.cdate|date_format:"%x"}
 		</td>
 		<td width="32%" colspan="2" class="flr sdr" align="center">
 			<b>{t a=$receipt.number}No. $a{/t}</b>
@@ -37,25 +37,25 @@
 			<table width="100%">
 			    <tr>
 				<td width="1%" valign="top" nowrap>
-					{if $receipt.type == "out"}{t}To whom:{/t}{else}{t}From who:{/t}{/if}
+					{if $receipt.type == "out"}{trans("To whom:")}{else}{trans("From who:")}{/if}
 				</td>
 				<td width="99%" class="sdr"><b>{$receipt.name}<br>{$receipt.zip} {$receipt.city} {$receipt.address}</b></td>
 			    </tr>
 			</table>
 		</td>
 		<td width="16%" align="center" class="fall headgrey hdf" nowrap>
-			{if $receipt.type == "out"}{t}Has{/t}{else}{t}Owing{/t}{/if}
-			<br><font class="sdr">{t}Cash{/t}</font>
+			{if $receipt.type == "out"}{trans("Has")}{else}{trans("Owing")}{/if}
+			<br><font class="sdr">{trans("Cash")}</font>
 		</td>
 		<td width="16%" align="center" class="fall headgrey hdf" nowrap>
-			{if $receipt.type == "out"}{t}Owing{/t}{else}{t}Has{/t}{/if}
-			<br><font class="sdr">{t}Account<!singular:noun>{/t}</font>
+			{if $receipt.type == "out"}{trans("Owing")}{else}{trans("Has")}{/if}
+			<br><font class="sdr">{trans("Account<!singular:noun>")}</font>
 		</td>
 	</tr>
 	<tr class="grey">
-		<td align="center" class="fall" colspan="4" nowrap>{t}For what{/t}</td>
-		<td align="center" class="fall" nowrap>{t}Value{/t}</td>
-		<td align="center" class="fall" nowrap>{t}Number{/t}</td>
+		<td align="center" class="fall" colspan="4" nowrap>{trans("For what")}</td>
+		<td align="center" class="fall" nowrap>{trans("Value")}</td>
+		<td align="center" class="fall" nowrap>{trans("Number")}</td>
 	</tr>
 	{cycle values="grey,white" print=false name=one}
 	{foreach item="row" from=$receipt.contents}
@@ -69,7 +69,7 @@
 	{/foreach}
 	<tr>
 		<td width="51%" class="fleftu" colspan="3"></td>
-		<td width="17%" class="fbt sdr" align="right" nowrap><b>{t}Total:{/t}</b></td>
+		<td width="17%" class="fbt sdr" align="right" nowrap><b>{trans("Total:")}</b></td>
 		<td class="fall sdr" align="right" nowrap><b>{$receipt.total|money_format}</b></td>
 		<td class="fall" align="center">Symbole<br>PL. KAS. Nr</td>
 	</tr>
@@ -77,7 +77,7 @@
 		<td class="fall" colspan="5">
 			<table width="100%">
 			    <tr>
-				<td width="1%" valign="top" nowrap>{t}In words:{/t}</td>
+				<td width="1%" valign="top" nowrap>{trans("In words:")}</td>
 				<td width="99%" class="sdr"><b>
 					{if $_config.phpui.to_words_short_version|chkconfig}
 						{$receipt.total|string_format:"%d"|to_words:0:"":1} {$receipt.totalg|string_format:"%02d"}/100
@@ -91,15 +91,15 @@
 		<td class="fall"><br><br>&nbsp;</td>
 	</tr>
 	<tr class="grey">
-		<td width="17%" class="fall" align="center" nowrap>{t}Exposed By{/t}</td>
-		<td width="17%" class="fall" align="center" nowrap>{t}Checked By{/t}</td>
-		<td align="center" class="fall" nowrap>{t}Approved By{/t}</td>
-		<td align="center" class="fall" nowrap>{t}Cash Report{/t}</td>
+		<td width="17%" class="fall" align="center" nowrap>{trans("Exposed By")}</td>
+		<td width="17%" class="fall" align="center" nowrap>{trans("Checked By")}</td>
+		<td align="center" class="fall" nowrap>{trans("Approved By")}</td>
+		<td align="center" class="fall" nowrap>{trans("Cash Report")}</td>
 		<td align="center" class="fall" colspan="2" nowrap>
 			{if $receipt.type == "out"}
-			{t}Above amount{/t}
+			{trans("Above amount")}
 			{else}
-			{t}I confirm receipt of above amount{/t}
+			{trans("I confirm receipt of above amount")}
 			{/if}
 		</td>
 	</tr>
@@ -110,16 +110,16 @@
 		<td class="fall">
 			<table width="90%" cellpadding="5" align="center">
 			    <tr>
-				<td width="100%" class="fbottom">{t}no.{/t}</td>
+				<td width="100%" class="fbottom">{trans("no.")}</td>
 			    </tr>
 			    <tr>
-				<td width="100%" class="fbottom">{t}item{/t}</td>
+				<td width="100%" class="fbottom">{trans("item")}</td>
 			    </tr> 
 			</table>
 		</td>
 		{if $receipt.type == "out"}
-		<td class="fall" align="center" valign="top">{t}payed out{/t}</td>
-		<td class="fall" align="center" valign="top">{t}received{/t}</td>
+		<td class="fall" align="center" valign="top">{trans("payed out")}</td>
+		<td class="fall" align="center" valign="top">{trans("received")}</td>
 		{else}
 		<td colspan="2" class="fall">
 			<table width="90%" cellpadding="5" align="center">
@@ -127,7 +127,7 @@
 				<td width="100%">&nbsp;<br>&nbsp;</td>
 			    </tr>
 			    <tr>
-				<td width="100%" align="center" class="ftop">{t}Signature of cashier{/t}</td>
+				<td width="100%" align="center" class="ftop">{trans("Signature of cashier")}</td>
 			    </tr>
 			</table>
 		</td>
@@ -135,7 +135,7 @@
 	</tr>
 	<tr>
 		<td colspan="6" align="right">
-			<font class="small">Copyright &copy; 2001-2011 LMS Developers</font>
+			<font class="small">Copyright &copy; 2001-2012 LMS Developers</font>
 		</td>
 	</tr>
 </table>
@@ -158,20 +158,20 @@
 		</td>
 		<td colspan="2" width="34%" class="headgrey hdf" align="center" nowrap>
 			{if $receipt.type == "out"}
-			{t}Proof of Pay-out{/t}
+			{trans("Proof of Pay-out")}
 			{else}
-			{t}Proof of Payment{/t}
+			{trans("Proof of Payment")}
 			{/if}
-			<br><font class="sdr">{t}Receipt{/t}</font>
+			<br><font class="sdr">{trans("Receipt")}</font>
 		</td>
 		<td colspan="2" width="32%" class="ftopu shdf" align="center">
-			{if $receipt.type == "out"}{t}CR-out{/t}{else}{t}CR-in{/t}{/if}
+			{if $receipt.type == "out"}{trans("CR-out")}{else}{trans("CR-in")}{/if}
 		</td>
 	</tr>
 	<tr>
 		<td width="34%" colspan="2" class="fleft"></td>
 		<td width="34%" colspan="2" class="flr sdr" align="center" nowrap>
-			{t}Date:{/t} {$receipt.cdate|date_format:"%x"}
+			{trans("Date:")} {$receipt.cdate|date_format:"%x"}
 		</td>
 		<td width="32%" colspan="2" class="flr sdr" align="center">
 			<b>{t a=$receipt.number}No. $a{/t}</b>
@@ -182,24 +182,24 @@
 			<table width="100%">
 			    <tr>
 				<td width="1%" valign="top" nowrap>
-					{if $receipt.type == "out"}{t}To whom:{/t}{else}{t}From who:{/t}{/if}</td>
+					{if $receipt.type == "out"}{trans("To whom:")}{else}{trans("From who:")}{/if}</td>
 				<td width="99%" class="sdr"><b>{$receipt.name}<br>{$receipt.zip} {$receipt.city} {$receipt.address}</b></td>
 			    </tr>
 			</table>
 		</td>
 		<td width="16%" align="center" class="fall headgrey hdf" nowrap>
-			{if $receipt.type == "out"}{t}Has{/t}{else}{t}Owing{/t}{/if}
-			<br><font class="sdr">{t}Cash{/t}</font>
+			{if $receipt.type == "out"}{trans("Has")}{else}{trans("Owing")}{/if}
+			<br><font class="sdr">{trans("Cash")}</font>
 		</td>
 		<td width="16%" align="center" class="fall headgrey hdf" nowrap>
-			{if $receipt.type == "out"}{t}Owing{/t}{else}{t}Has{/t}{/if}
-			<br><font class="sdr">{t}Account<!singular:noun>{/t}</font>
+			{if $receipt.type == "out"}{trans("Owing")}{else}{trans("Has")}{/if}
+			<br><font class="sdr">{trans("Account<!singular:noun>")}</font>
 		</td>
 	</tr>
 	<tr class="grey">
-		<td align="center" class="fall" colspan="4" nowrap>{t}For what{/t}</td>
-		<td align="center" class="fall" nowrap>{t}Value{/t}</td>
-		<td align="center" class="fall" nowrap>{t}Number{/t}</td>
+		<td align="center" class="fall" colspan="4" nowrap>{trans("For what")}</td>
+		<td align="center" class="fall" nowrap>{trans("Value")}</td>
+		<td align="center" class="fall" nowrap>{trans("Number")}</td>
 	</tr>
 	{cycle values="grey,white" print=false name=two}
 	{foreach item="row" from=$receipt.contents}
@@ -211,7 +211,7 @@
 	{/foreach}
 	<tr>
 		<td width="51%" class="fleftu" colspan="3"></td>
-		<td width="17%" class="fbt sdr" align="right" nowrap><b>{t}Total:{/t}</b></td>
+		<td width="17%" class="fbt sdr" align="right" nowrap><b>{trans("Total:")}</b></td>
 		<td class="fall sdr" align="right" nowrap><b>{$receipt.total|money_format}</b></td>
 		<td class="fall" align="center">Symbole<br>PL. KAS. Nr</td>
 	</tr>
@@ -219,7 +219,7 @@
 		<td class="fall" colspan="5">
 			<table width="100%">
 			    <tr>
-				<td width="1%" valign="top" nowrap>{t}In words:{/t}</td>
+				<td width="1%" valign="top" nowrap>{trans("In words:")}</td>
 				<td width="99%" class="sdr"><b>
 					{if $_config.phpui.to_words_short_version|chkconfig}
 						{$receipt.total|string_format:"%d"|to_words:0:"":1} {$receipt.totalg|string_format:"%02d"}/100
@@ -233,15 +233,15 @@
 		<td class="fall"><br><br>&nbsp;</td>
 	</tr>
 	<tr class="grey">
-		<td width="17%" class="fall" align="center" nowrap>{t}Exposed By{/t}</td>
-		<td width="17%" class="fall" align="center" nowrap>{t}Checked By{/t}</td>
-		<td width="17%" align="center" class="fall" nowrap>{t}Approved By{/t}</td>
-		<td width="17%" align="center" class="fall" nowrap>{t}Cash Report{/t}</td>
+		<td width="17%" class="fall" align="center" nowrap>{trans("Exposed By")}</td>
+		<td width="17%" class="fall" align="center" nowrap>{trans("Checked By")}</td>
+		<td width="17%" align="center" class="fall" nowrap>{trans("Approved By")}</td>
+		<td width="17%" align="center" class="fall" nowrap>{trans("Cash Report")}</td>
 		<td align="center" class="fall" colspan="2" nowrap>
 			{if $receipt.type == "out"}
-			{t}Above amount{/t}
+			{trans("Above amount")}
 			{else}
-			{t}I confirm receipt of above amount{/t}
+			{trans("I confirm receipt of above amount")}
 			{/if}
 		</td>
 	</tr>
@@ -252,16 +252,16 @@
 		<td class="fall">
 			<table width="90%" cellpadding="5" align="center">
 			    <tr>
-				<td width="100%" class="fbottom">{t}no.{/t}</td>
+				<td width="100%" class="fbottom">{trans("no.")}</td>
 			    </tr>
 			    <tr>
-				<td width="100%" class="fbottom">{t}item{/t}</td>
+				<td width="100%" class="fbottom">{trans("item")}</td>
 			    </tr> 
 			</table>
 		</td>
 		{if $receipt.type == "out"}
-		<td class="fall" align="center" valign="top">{t}payed out{/t}</td>
-		<td class="fall" align="center" valign="top">{t}received{/t}</td>
+		<td class="fall" align="center" valign="top">{trans("payed out")}</td>
+		<td class="fall" align="center" valign="top">{trans("received")}</td>
 		{else}
 		<td colspan="2" class="fall">
 			<table width="90%" cellpadding="5" align="center">
@@ -269,7 +269,7 @@
 				<td width="100%">&nbsp;<br>&nbsp;</td>
 			    </tr>
 			    <tr>
-				<td width="100%" align="center" class="ftop">{t}Signature of cashier{/t}</td>
+				<td width="100%" align="center" class="ftop">{trans("Signature of cashier")}</td>
 			    </tr>
 			</table>
 		</td>
@@ -277,7 +277,7 @@
 	</tr>
 	<tr>
 		<td colspan="6" align="right">
-			<font class="small">Copyright &copy; 2001-2011 LMS Developers</font>
+			<font class="small">Copyright &copy; 2001-2012 LMS Developers</font>
 		</td>
 	</tr>
 </table>

@@ -15,24 +15,24 @@
 <TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
-			{t}No.{/t}
+			{trans("No.")}
 		</TD>
 		<TD WIDTH="{math equation="97-x*2" x=$taxescount}%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
-			{t}Customer{/t}
+			{trans("Customer")}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
-			{t}Gross value{/t}
+			{trans("Gross value")}
 		</TD>
 		{foreach item=tax from=$taxes}
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
-			{t}Net value{/t}<BR><NOBR>{$tax.label}</NOBR>
+			{trans("Net value")}<BR><NOBR>{$tax.label}</NOBR>
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
-			{t}Tax value{/t}<BR><NOBR>{$tax.label}</NOBR>
+			{trans("Tax value")}<BR><NOBR>{$tax.label}</NOBR>
 		</TD>
 		{/foreach}
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
-			{t}Total Tax{/t}
+			{trans("Total Tax")}
 		</TD>
 	</TR>
 	{cycle values="white,grey" print=false}
@@ -66,14 +66,14 @@
 	<TR>
 		<TD ALIGN="center" COLSPAN="{math equation="4+x*2" x=$taxescount}">
 			<P>&nbsp;</P>
-			<P><B>{t}No such liabilities in selected date.{/t}</B></P>
+			<P><B>{trans("No such liabilities in selected date.")}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>
 	{/foreach}
 	<TR class="grey">
 		<TD COLSPAN="2" ALIGN="RIGHT" VALIGN="TOP">
-			<B>{t}Total:{/t}</B>
+			<B>{trans("Total:")}</B>
 		</TD>
 		<TD ALIGN="RIGHT" VALIGN="TOP">
 			<B>{sum array=$reportlist column="value" string_format="%01.2f"}</B>

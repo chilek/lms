@@ -4,19 +4,19 @@
 <P><TABLE cellpadding="3" WIDTH="100%">
 	<TR class="dark">
 		<TD width="94%" class="fleftu" NOWRAP>
-			<IMG src="img/tax.gif" alt=""> <A href="?m=taxratelist&o=label{if $listdata.direction eq "asc" && $listdata.order eq "label"},desc{/if}"><B>{t}Label:{/t}</B></A> {if $listdata.order eq "label"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG src="img/tax.gif" alt=""> <A href="?m=taxratelist&o=label{if $listdata.direction eq "asc" && $listdata.order eq "label"},desc{/if}"><B>{trans("Label:")}</B></A> {if $listdata.order eq "label"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="fbt" align="center" NOWRAP>
-			<IMG src="img/empty.gif" alt="" height="16"><A href="?m=taxratelist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG src="img/empty.gif" alt="" height="16"><A href="?m=taxratelist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="fbt" NOWRAP>
-			<IMG src="img/empty.gif" alt=""> <A href="?m=taxratelist&o=value{if $listdata.direction eq "asc" && $listdata.order eq "value"},desc{/if}">{t}Value:{/t}</A> {if $listdata.order eq "value"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG src="img/empty.gif" alt=""> <A href="?m=taxratelist&o=value{if $listdata.direction eq "asc" && $listdata.order eq "value"},desc{/if}">{trans("Value:")}</A> {if $listdata.order eq "value"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD width="1%" class="fbt" NOWRAP>{t}Taxing:{/t}</TD>
-		<TD width="1%" class="fbt" NOWRAP>{t}Binds from date:{/t}</TD>
-		<TD width="1%" class="fbt" NOWRAP>{t}Binds to date:{/t}</TD>
+		<TD width="1%" class="fbt" NOWRAP>{trans("Taxing:")}</TD>
+		<TD width="1%" class="fbt" NOWRAP>{trans("Binds from date:")}</TD>
+		<TD width="1%" class="fbt" NOWRAP>{trans("Binds to date:")}</TD>
 		<TD width="1%" class="frightu" NOWRAP>
-			<a href="?m=taxrateadd">{t}Add tax rate{/t} <img src="img/save.gif" alt=""></a>
+			<a href="?m=taxrateadd">{trans("Add tax rate")} <img src="img/save.gif" alt=""></a>
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
@@ -48,15 +48,15 @@
 			{if $taxratelist[taxratelist].validto}{$taxratelist[taxratelist].validto|date_format:"%x"}{/if}
 		</TD>
 		<TD class="fright" align="right" NOWRAP>
-			<A href="?m=taxratedel&id={$taxratelist[taxratelist].id}" OnClick="return confirmLink(this, '{t a=$taxratelist[taxratelist].label}Are you sure, you want to delete taxrate \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
-			<A href="?m=taxrateedit&id={$taxratelist[taxratelist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+			<A href="?m=taxratedel&id={$taxratelist[taxratelist].id}" OnClick="return confirmLink(this, '{t a=$taxratelist[taxratelist].label}Are you sure, you want to delete taxrate \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			<A href="?m=taxrateedit&id={$taxratelist[taxratelist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
 		<TD colspan="7" align="center" class="fall">
 			<p>&nbsp;</p>
-			<p><B>{t}No such tax rates in database.{/t}</B></p>
+			<p><B>{trans("No such tax rates in database.")}</B></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
@@ -70,7 +70,7 @@
 	{/if}
 	<TR class="light">
 		<TD colspan="7" class="fall" align="right">
-			<a href="?m=taxrateadd">{t}Add tax rate{/t} <img src="img/save.gif" alt=""></a>
+			<a href="?m=taxrateadd">{trans("Add tax rate")} <img src="img/save.gif" alt=""></a>
 		</TD>
 	</TR>
 </TABLE></P>

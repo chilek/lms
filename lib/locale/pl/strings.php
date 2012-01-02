@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-cvs
  *
- *  (C) Copyright 2001-2011 LMS Developers
+ *  (C) Copyright 2001-2012 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -144,7 +144,7 @@ $_LANG['Are you sure, you want to drop user $a from that event?'] = 'Jesteś pew
 $_LANG['Are you sure, you want to generate new password?'] = 'Jesteś pewien, że chcesz wygenerować nowe hasło?';
 $_LANG['Are you sure, you want to generate new PIN?'] = 'Jesteś pewien, że chcesz wygenerować nowy PIN?';
 $_LANG['Are you sure, you want to irreversibly delete that user account?'] = 'Jesteś pewien, że chcesz nieodwracalnie usunąć to konto?';
-$_LANG['Are you sure, you want to move customers to tariff \'+getText(document.tmove.to.value)+\'?'] = 'Jesteś pewien, że chcesz przesunąć klientów do taryfy \'+getText(document.tmove.to.value)+\'?';
+$_LANG['Are you sure, you want to move customers to selected tariff?'] = 'Jesteś pewien, że chcesz przesunąć klientów do wybranej taryfy?';
 $_LANG['Are you sure, you want to readdress network $a to network $b ?'] = 'Jesteś pewien, że chcesz przeadresować sieć $a do sieci $b ?';
 $_LANG['Are you sure, you want to recover database created at $a?'] = 'Czy jesteś pewien, że chcesz odtworzyć bazę danych z kopii stworzonej $a?';
 $_LANG['Are you sure, you want to remove customer \\\'$a\\\' from database?\\n\\nIf that customer have some nodes, they will be also removed and data definitely lost!'] = 'Jesteś pewien, że chcesz usunąć klienta \\\'$a\\\' z bazy danych?\\n\\nJeżeli klient posiada jakieś komputery zostaną one również usunięte, a ich dane bezpowrotnie utracone!';
@@ -2529,5 +2529,8 @@ $_LANG['Enter phone numbers separated by commas'] = 'Podaj numery telefonów odd
 $_LANG['Specified phone number is not correct!'] = 'Podany numer telefonu nie jest poprawny!';
 $_LANG['Characters:'] = 'Znaków:';
 $_LANG['Select users'] = 'Wybierz użytkowników';
+$_LANG['Enter discount percentage or value'] = 'Wprowadź wartość kwotową lub procentową rabatu';
+$_LANG['Min [bit/s]'] = 'Min [bit/s]';
+$_LANG['Ping'] = 'Ping';
 
 ?>

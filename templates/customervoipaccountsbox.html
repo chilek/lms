@@ -6,17 +6,17 @@
 			<B>{t a=$customervoipaccounts.total|default:"0"}Voip Accounts ($a):{/t}</B> 
 		</TD>
 		<TD width="1%" class="frightu" align="right" nowrap>
-			{if $customerinfo.status neq "1" and ! $customerinfo.deleted}<A HREF="?m=voipaccountadd&ownerid={$customerinfo.id}">{t}New Voip Account{/t} &raquo;</A>&nbsp;{/if}
+			{if $customerinfo.status neq "1" and ! $customerinfo.deleted}<A HREF="?m=voipaccountadd&ownerid={$customerinfo.id}">{trans("New Voip Account")} &raquo;</A>&nbsp;{/if}
 		</TD>
 	</TR>
 	<TR id="voipaccountspanel" style="display:none;">
 		<TD WIDTH="100%" colspan="2" class="fall">
 			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
 				<TR class="dark">
-					<TD WIDTH="96%" NOWRAP class="fleftu"><B>{t}Login:{/t}</B></TD>
-					<TD WIDTH="1%" NOWRAP class="fbt">{t}ID:{/t}</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt" COLSPAN="2">{t}Password:{/t}</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt">{t}Phone number:{/t}</TD>
+					<TD WIDTH="96%" NOWRAP class="fleftu"><B>{trans("Login:")}</B></TD>
+					<TD WIDTH="1%" NOWRAP class="fbt">{trans("ID:")}</TD>
+					<TD WIDTH="1%" NOWRAP class="fbt" COLSPAN="2">{trans("Password:")}</TD>
+					<TD WIDTH="1%" NOWRAP class="fbt">{trans("Phone number:")}</TD>
 					<TD WIDTH="1%" class="frightu">&nbsp;</TD>
 				</TR>
 				{cycle name=voips values="light,lucid" print=false}
@@ -31,16 +31,16 @@
 					<TD WIDTH="1%" NOWRAP onclick="return self.location.href='?m=voipaccountinfo&id={$voipaccount.id}'">
 					    {$voipaccount.phone}</TD>
 					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
-						<A onClick="return confirmLink(this, '{t}Are you sure, you want to remove customer voip account?{/t}')" HREF="?m=voipaccountdel&id={$voipaccount.id}"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]" TITLE="[ {t}Delete{/t} ]"></A>
-						<A HREF="?m=voipaccountedit&id={$voipaccount.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]" TITLE="[ {t}Edit{/t} ]"></A>
-						<A HREF="?m=voipaccountinfo&id={$voipaccount.id}"><IMG SRC="img/info.gif" ALT="[ {t}Info{/t} ]" TITLE="[ {t}Info{/t} ]"></A>
+						<A onClick="return confirmLink(this, '{trans("Are you sure, you want to remove customer voip account?")}')" HREF="?m=voipaccountdel&id={$voipaccount.id}"><IMG SRC="img/delete.gif" ALT="[ {trans("Delete")} ]" TITLE="[ {trans("Delete")} ]"></A>
+						<A HREF="?m=voipaccountedit&id={$voipaccount.id}"><IMG SRC="img/edit.gif" ALT="[ {trans("Edit")} ]" TITLE="[ {trans("Edit")} ]"></A>
+						<A HREF="?m=voipaccountinfo&id={$voipaccount.id}"><IMG SRC="img/info.gif" ALT="[ {trans("Info")} ]" TITLE="[ {trans("Info")} ]"></A>
 					</TD>
 				</TR>
 				{foreachelse}
 				<TR>
 					<TD align="center" WIDTH="100%" colspan="6">
 						<p>&nbsp;</p>
-						<p><B>{t}That customer does not own any voip account.{/t}</B></p>
+						<p><B>{trans("That customer does not own any voip account.")}</B></p>
 						<p>&nbsp;</p>
 					</TD>
 				</TR>

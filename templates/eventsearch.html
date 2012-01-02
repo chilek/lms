@@ -7,7 +7,7 @@
 <TABLE width="100%" cellpadding="3">
 	<TR class="dark">
 		<TD width="100%" colspan="3" class="fall">
-			<B>{t}Find events matching the following search criteria:{/t}</B>
+			<B>{trans("Find events matching the following search criteria:")}</B>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -15,7 +15,7 @@
 			<IMG src="img/calendar.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Title:{/t}</B>
+			<B>{trans("Title:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<INPUT type="text" name="event[title]" value="{$event.title}" size="50" {tip text="Enter event title" trigger="title"}>
@@ -26,11 +26,11 @@
 			<IMG src="img/time.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Date:{/t}</B>
+			<B>{trans("Date:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			{t}From:{/t} <INPUT type="text" name="event[datefrom]" size="10" OnCLick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
-			{t}To:{/t} <INPUT type="text" name="event[dateto]" size="10" OnCLick="javascript:cal2.popup();" {tip text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
+			{trans("From:")} <INPUT type="text" name="event[datefrom]" size="10" OnCLick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
+			{trans("To:")} <INPUT type="text" name="event[dateto]" size="10" OnCLick="javascript:cal2.popup();" {tip text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -38,7 +38,7 @@
 			<IMG src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Description:{/t}</B>
+			<B>{trans("Description:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<INPUT type="text" name="event[description]" size="50" {tip text="Enter additional information"}>
@@ -49,7 +49,7 @@
 			<IMG src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Note:{/t}</B>
+			<B>{trans("Note:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<INPUT type="text" name="event[note]" size="50" {tip text="Enter note"}>
@@ -60,10 +60,10 @@
 			<IMG src="img/access.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Status:{/t}</B>
+			<B>{trans("Status:")}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
-			<INPUT type="checkbox" name="event[private]" value="1" {tip text="Select event's status"}{if $event.private}CHECKED{/if}> {t}private{/t}
+			<INPUT type="checkbox" name="event[private]" value="1" {tip text="Select event's status"}{if $event.private}CHECKED{/if}> {trans("private")}
 		</TD>
 	</TR>
 *}	<TR class="light">
@@ -71,11 +71,11 @@
 			<IMG src="img/customer.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Customer:{/t}</B>
+			<B>{trans("Customer:")}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
 			<SELECT name="event[customerid]">
-				<OPTION value="0" SELECTED>{t}- select customer -{/t}</OPTION>
+				<OPTION value="0" SELECTED>{trans("- select customer -")}</OPTION>
 				{foreach from=$customerlist item=customer}	
 				<OPTION value="{$customer.id}">{$customer.customername|truncate:"40":"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
 				{/foreach}
@@ -87,11 +87,11 @@
 			<IMG src="img/users.gif" alt="">
 		</TD>
 		<TD width="1%" valign="top">
-			<B>{t}User:{/t}</B>
+			<B>{trans("User:")}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
 			<SELECT name="event[userid]">
-				<OPTION value="" SELECTED>{t}- select user -{/t}</OPTION>
+				<OPTION value="" SELECTED>{trans("- select user -")}</OPTION>
 				{section name=userlist loop=$userlist}	
 				<OPTION value="{$userlist[userlist].id}">{$userlist[userlist].name}</OPTION>
 				{/section}
@@ -100,8 +100,8 @@
 	</TR>
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
-			<A href="javascript:document.event.submit();" accesskey="s">{t}Search{/t} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=eventlist">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A>
+			<A href="javascript:document.event.submit();" accesskey="s">{trans("Search")} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=eventlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE>

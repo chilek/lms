@@ -37,25 +37,25 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD CLASS="fleftu" WIDTH="1%">
-			{t}ID:{/t}
+			{trans("ID:")}
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt">
-			{t}Date:{/t}
+			{trans("Date:")}
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt">
-			<B>{t}Value:{/t}</B>
+			<B>{trans("Value:")}</B>
 		</TD>
 		<TD WIDTH="40%" CLASS="fbt">
-			{t}Customer:{/t}
+			{trans("Customer:")}
 		</TD>
 		<TD WIDTH="55%" CLASS="fbt">
-			{t}Description:{/t}
+			{trans("Description:")}
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt" nowrap>
-			{t}Link to:{/t}
+			{trans("Link to:")}
 		</TD>
 		<TD WIDTH="1%" CLASS="frightu" ALIGN="RIGHT" nowrap>
-			<B>{t}Total:{/t} {$listdata.total}</B>&nbsp;
+			<B>{trans("Total:")} {$listdata.total}</B>&nbsp;
 		</TD>
 	</TR>
 	{foreach from=$divisions item=division}{if $division.list}
@@ -64,7 +64,7 @@
 		    <IMG src="img/division.gif" alt=""> <B>{$division.name}</B>
 		</TD>
 		<TD colspan="3" class="frightu" align="right">
-		    <A href="?m=cashimport&action=csv&division={$division.id}">{t}Download (CSV){/t} <IMG src="img/save.gif" alt="">
+		    <A href="?m=cashimport&action=csv&division={$division.id}">{trans("Download (CSV)")} <IMG src="img/save.gif" alt="">
 		</TD>
 	</TR>
 		{cycle values="light,lucid" print=false}
@@ -92,7 +92,7 @@
 		    <TD ALIGN="RIGHT" CLASS="fright" COLSPAN="2" NOWRAP>
 			{if !$item.customerid}
 			<SELECT NAME="customer[{$item.id}]" {tip text="Select customer" trigger=$item.id}>
-				<OPTION VALUE="0">{t}- select customer -{/t}</OPTION>
+				<OPTION VALUE="0">{trans("- select customer -")}</OPTION>
 				{foreach from=$customerlist item=customer}
 				<OPTION VALUE="{$customer.id}" {if $customer.id == $item.customerid}SELECTED{/if}>{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
 				{/foreach}
@@ -109,7 +109,7 @@
 	<TR>
 		<TD class="fall" ALIGN="center"  COLSPAN="7">
 			<P>&nbsp;</P>
-			<P><B>{t}No cash operations to import.{/t}</B></P>
+			<P><B>{trans("No cash operations to import.")}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>
@@ -117,15 +117,15 @@
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" COLSPAN="3" nowrap>
 			<INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All">
-			<A HREF="javascript:CheckAll2();">{t}Check All{/t}</A>
+			<A HREF="javascript:CheckAll2();">{trans("Check All")}</A>
 		</TD>
 		<TD CLASS="fbt" COLSPAN="2" ALIGN="center" nowrap>
-		    <A href="?m=cashimport&action=txt">{t}Download all (TXT){/t} <IMG src="img/save.gif" alt="">
+		    <A href="?m=cashimport&action=txt">{trans("Download all (TXT)")} <IMG src="img/save.gif" alt="">
 		</TD>
 		<TD CLASS="frightu" COLSPAN="2" align="right" nowrap>
-			<A HREF="javascript:Delete();">{t}Delete{/t} <IMG src="img/delete.gif" ALT=""></A>
-			<A HREF="javascript:Save();">{t}Save{/t} <IMG src="img/save.gif" ALT=""></A>
-			<A HREF="javascript:document.cashimport.submit();">{t}<!do>Import{/t} <IMG src="img/save.gif" ALT=""></A>
+			<A HREF="javascript:Delete();">{trans("Delete")} <IMG src="img/delete.gif" ALT=""></A>
+			<A HREF="javascript:Save();">{trans("Save")} <IMG src="img/save.gif" ALT=""></A>
+			<A HREF="javascript:document.cashimport.submit();">{trans("<!do>Import")} <IMG src="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -134,15 +134,15 @@
 <P><TABLE width="100%" CELLPADDING="3">
 	<TR class="DARK">
 		<TD class="fall" width="100%" colspan="2">
-			<B>{t}Errors and Duplicated Entries{/t}:</B>
+			<B>{trans("Errors and Duplicated Entries")}:</B>
 		</TD>
 	</TR>
 	<TR>
 		<TD class="fall" width="100%">
 			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
                 <TR class="dark">
-				    <TD width="1%" class="fleftu"><B>{t}Line:{/t}</B></TD>
-				    <TD width="99%" class="frightu"><B>{t}Content:{/t}</B></TD>
+				    <TD width="1%" class="fleftu"><B>{trans("Line:")}</B></TD>
+				    <TD width="99%" class="frightu"><B>{trans("Content:")}</B></TD>
 				</TR>
 				{cycle name=err values="light,lucid" print=false}
 				{foreach from=$error.lines key=key item=item}
@@ -151,11 +151,11 @@
 				    <TD>
 				    {if is_array($item)}
 				    <TABLE width="100%" class="red">
-					{if $item.date}<TR><TD width="1%">{t}Date:{/t}</TD><TD width="99%">{$item.date|date_format:"%Y/%m/%d"}</TD></TR>{/if}
-					{if $item.customer}<TR><TD width="1%">{t}Customer:{/t}</TD><TD width="99%">
+					{if $item.date}<TR><TD width="1%">{trans("Date:")}</TD><TD width="99%">{$item.date|date_format:"%Y/%m/%d"}</TD></TR>{/if}
+					{if $item.customer}<TR><TD width="1%">{trans("Customer:")}</TD><TD width="99%">
 					    {$item.customer}{if $item.customerid} ({$item.customerid|string_format:"%04d"}){/if}</TD></TR>{/if}
-					{if $item.value}<TR><TD width="1%">{t}Value:{/t}</TD><TD width="99%">{$item.value|money_format}</TD></TR>{/if}
-					{if $item.comment}<TR><TD width="1%">{t}Description:{/t}</TD><TD width="99%">{$item.comment}</TD></TR>{/if}
+					{if $item.value}<TR><TD width="1%">{trans("Value:")}</TD><TD width="99%">{$item.value|money_format}</TD></TR>{/if}
+					{if $item.comment}<TR><TD width="1%">{trans("Description:")}</TD><TD width="99%">{$item.comment}</TD></TR>{/if}
 				    </TABLE>
 				    {else}
 				    {$item}
@@ -173,13 +173,13 @@
 <TABLE width="100%" CELLPADDING="3">
 	<TR class="DARK">
 		<TD class="fall" width="100%" colspan="2">
-			<B>{t}Import from file{/t}:</B>
+			<B>{trans("Import from file")}:</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fleft" width="1%" NOWRAP>
 			<IMG src="img/attach.gif" alt="">
-			<B>{t}Import file:{/t} </B>
+			<B>{trans("Import file:")} </B>
 		</TD>
 		<TD class="fright" width="99%" NOWRAP>
 			<INPUT name="file" type="file" size="70" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
@@ -188,11 +188,11 @@
 	<TR class="LIGHT">
 		<TD class="fleft" width="1%" NOWRAP>
 			<IMG src="img/isource.gif" alt="">
-			<B>{t}Source:{/t} </B>
+			<B>{trans("Source:")} </B>
 		</TD>
 		<TD class="fright" width="99%" NOWRAP>
 			<SELECT name="source" {tip text="Select import source (optional)" trigger="source"}>
-			<OPTION value="0">{t}- auto -{/t}</OPTION> 
+			<OPTION value="0">{trans("- auto -")}</OPTION> 
 			{foreach from=$sourcelist item=item}
 			<OPTION value="{$item.id}">{$item.name}</OPTION>
 			{/foreach}
@@ -201,7 +201,7 @@
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" colspan="2" width="100%" align="right" nowrap>
-			<A href="javascript: document.parser.submit();">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>
+			<A href="javascript: document.parser.submit();">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -211,17 +211,17 @@
 	<TR class="DARK">
 		<TD class="fall" width="100%">
 		    <IMG src="img/attach.gif" alt="">
-			<B>{t}Packages:{/t}</B> ({t a=10}last $a packages{/t})
+			<B>{trans("Packages:")}</B> ({t a=10}last $a packages{/t})
 		</TD>
 	</TR>
 	<TR>
 		<TD WIDTH="100%" class="fall">
 			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
 				<TR class="dark">
-					<TD WIDTH="1%" NOWRAP class="fleftu"><B>{t}Date:{/t}</B></TD>
-					<TD WIDTH="96%" NOWRAP class="fbt">{t}Filename:{/t}</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt">{t}User:{/t}</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">{t}Records:{/t}</TD>
+					<TD WIDTH="1%" NOWRAP class="fleftu"><B>{trans("Date:")}</B></TD>
+					<TD WIDTH="96%" NOWRAP class="fbt">{trans("Filename:")}</TD>
+					<TD WIDTH="1%" NOWRAP class="fbt">{trans("User:")}</TD>
+					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">{trans("Records:")}</TD>
 					<TD WIDTH="1%" class="frightu">&nbsp;</TD>
 				</TR>
 				{cycle name=files values="light,lucid" print=false}
@@ -232,14 +232,14 @@
 					<TD NOWRAP>{$item.username}</TD>
 					<TD align="right">{$item.count|default:0}</TD>
 					<TD>
-					    <A onclick="return confirmLink(this, '{t}Are you sure, you want to delete this package and related operations?{/t}')" href="?m=cashpackagedel&id={$item.id}"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+					    <A onclick="return confirmLink(this, '{trans("Are you sure, you want to delete this package and related operations?")}')" href="?m=cashpackagedel&id={$item.id}"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 					</TD>
 				</TR>
 				{foreachelse}
 				<TR>
 					<TD align="center" WIDTH="100%" colspan="4">
 						<P>&nbsp;</P>
-						<P><B>{t}There are no packages in database.{/t}</B></P>
+						<P><B>{trans("There are no packages in database.")}</B></P>
 						<P>&nbsp;</P>
 					</TD>
 				</TR>

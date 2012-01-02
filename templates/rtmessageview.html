@@ -8,7 +8,7 @@
 		        <IMG src="img/open.gif" alt="">
 		</TD>
 		<TD class="fbt" width="1%">
-			<B>{t}Subject:{/t}</B>
+			<B>{trans("Subject:")}</B>
 		</TD>
 		<TD class="frightu" width="98%">
 			<B>{$message.subject|escape}</B>
@@ -19,7 +19,7 @@
 			<IMG src="img/time.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Date:{/t}</B>
+			<B>{trans("Date:")}</B>
 		</TD>
 		<TD width="98%" class="fright" NOWRAP>
 			{$message.createtime|date_format:"%Y/%m/%d %H:%M.%S"}
@@ -34,7 +34,7 @@
 			{/if}
 		</TD>
 		<TD width="1%">
-			<B>{t}Submitter:{/t}</B>
+			<B>{trans("Submitter:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			{if $message.customerid}
@@ -54,7 +54,7 @@
 			<IMG src="img/mail.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Headers:{/t}</B>
+			<B>{trans("Headers:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<TEXTAREA rows="5" cols="100" readonly>{$message.headers|escape}</TEXTAREA>
@@ -105,7 +105,7 @@
 			<IMG src="img/edit.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Message:{/t}</B>
+			<B>{trans("Message:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<TEXTAREA rows="5" cols="100" readonly>{$message.body|escape}</TEXTAREA>
@@ -117,7 +117,7 @@
 			<IMG src="img/attach.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Attachments:{/t}</B>
+			<B>{trans("Attachments:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			{foreach from=$message.attachments item=a}
@@ -128,8 +128,8 @@
 	{/if}
 	<TR class="LIGHT">
 		<TD colspan="3" width="100%" class="fbottomu" align="right" NOWRAP>
-			<A href="?m=rtmessageadd&id={$message.id}&ticketid={$message.ticketid}">{t}Reply{/t} <IMG src="img/edit.gif" alt=""></A>
-			<A href="?m=rtticketview&id={$message.ticketid}">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A>
+			<A href="?m=rtmessageadd&id={$message.id}&ticketid={$message.ticketid}">{trans("Reply")} <IMG src="img/edit.gif" alt=""></A>
+			<A href="?m=rtticketview&id={$message.ticketid}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE>

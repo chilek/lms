@@ -9,7 +9,7 @@
 			<IMG SRC="img/group.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt">
-			<B>{t}Name:{/t}</B>
+			<B>{trans("Name:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="frightu">
 			<INPUT TYPE="TEXT" NAME="customergroupadd[name]" VALUE="{$customergroupadd.name}" {tip trigger="name" bold=1}>
@@ -20,7 +20,7 @@
 			<IMG SRC="img/info1.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>{t}Description:{/t}</B>
+			<B>{trans("Description:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
 			<TEXTAREA NAME="customergroupadd[description]" COLS="50" ROWS="5" {tip text="Enter additional information (optional)"}>{$customergroupadd.description}</TEXTAREA>
@@ -28,8 +28,8 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT"> 
-			<A HREF="javascript:document.customergroupadd.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
-			<A HREF="?m=customergrouplist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A>
+			<A HREF="javascript:document.customergroupadd.submit();" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
+			<A HREF="?m=customergrouplist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE></FORM></P>

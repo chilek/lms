@@ -4,22 +4,22 @@
 <table cellpadding="3" width="100%">
 	<TR class="dark">
 		<TD class="fleftu" width="96%">
-			<NOBR><IMG src="img/network.gif" ALT=""> <B>{t}Name:{/t}</B><BR><IMG src="img/ip.gif" ALT=""> {t}Network/prefix (interface):{/t}</NOBR>
+			<NOBR><IMG src="img/network.gif" ALT=""> <B>{trans("Name:")}</B><BR><IMG src="img/ip.gif" ALT=""> {trans("Network/prefix (interface):")}</NOBR>
 		</TD>
 		<TD class="fbt" valign="top" align="right" width="1%">
-			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALT="">{t}ID:{/t}</NOBR><BR>
-			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALT="">{t}Addresses (total/busy/online):{/t}</NOBR>
+			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALT="">{trans("ID:")}</NOBR><BR>
+			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALT="">{trans("Addresses (total/busy/online):")}</NOBR>
 		</TD>
 		<TD class="fbt" width="1%">
-			<NOBR><IMG src="img/dns.gif" ALT=""> {t}DNS servers:{/t}<BR>
-			<IMG src="img/domain.gif" ALT=""> {t}Domain:{/t}</NOBR>
+			<NOBR><IMG src="img/dns.gif" ALT=""> {trans("DNS servers:")}<BR>
+			<IMG src="img/domain.gif" ALT=""> {trans("Domain:")}</NOBR>
 		</TD>
 		<TD class="fbt" width="1%">
-			<NOBR><IMG src="img/gateway.gif" ALT=""> {t}Gateway:{/t}<BR>
-			<IMG src="img/wins.gif" ALT=""> {t}WINS server:{/t}</NOBR>
+			<NOBR><IMG src="img/gateway.gif" ALT=""> {trans("Gateway:")}<BR>
+			<IMG src="img/wins.gif" ALT=""> {trans("WINS server:")}</NOBR>
 		</TD>
 		<TD class="fbt" valign="top" width="1%">
-			<NOBR><IMG src="img/dhcp.gif" ALT=""> {t}DHCP range:{/t}</NOBR>
+			<NOBR><IMG src="img/dhcp.gif" ALT=""> {trans("DHCP range:")}</NOBR>
 		</TD>
 		<TD class="frightu" width="1%" align="right">
 			<NOBR><B>{t a=$listdata.total}Total: $a{/t} </B></NOBR>
@@ -48,10 +48,10 @@
 		</TD>
 		<TD class="fright">
 			<nobr>
-			<A href="?m=netedit&networkset&id={$netlist[netlist].id}">{if $netlist[netlist].disabled}<IMG src="img/noaccess.gif" alt="[ {t}Enable{/t} ]" title="[ {t}Enable{/t} ]">{else}<IMG src="img/access.gif" alt="[ {t}Disable{/t} ]" title="[ {t}Disable{/t} ]">{/if}</A>
-			<a href="?m=netdel&id={$netlist[netlist].id}" onClick="return confirmLink(this,'{t a=$netlist[netlist].name}Are you sure, you want to remove network \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Remove{/t} ]" title="[ {t}Remove{/t} ]"></A>
-			<A href="?m=netedit&id={$netlist[netlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
-			<A href="?m=netinfo&id={$netlist[netlist].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
+			<A href="?m=netedit&networkset&id={$netlist[netlist].id}">{if $netlist[netlist].disabled}<IMG src="img/noaccess.gif" alt="[ {trans("Enable")} ]" title="[ {trans("Enable")} ]">{else}<IMG src="img/access.gif" alt="[ {trans("Disable")} ]" title="[ {trans("Disable")} ]">{/if}</A>
+			<a href="?m=netdel&id={$netlist[netlist].id}" onClick="return confirmLink(this,'{t a=$netlist[netlist].name}Are you sure, you want to remove network \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Remove")} ]" title="[ {trans("Remove")} ]"></A>
+			<A href="?m=netedit&id={$netlist[netlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			<A href="?m=netinfo&id={$netlist[netlist].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
 			</nobr>
 		</TD>
 	</TR>
@@ -59,14 +59,14 @@
 	<TR>
 		<TD colspan="6" class="flr" align="center" width="1%">
 			<p>&nbsp;</p>
-			<p><B>{t}You have no address pools. Use menu to add new networks.{/t}</B></p>
+			<p><B>{trans("You have no address pools. Use menu to add new networks.")}</B></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
 	{/section}
 	<TR class="dark">
 		<TD width="99%" colspan="2" class="fleftu" align="right"> 
-			<B>{t}Total:{/t} {$listdata.size|default:"0"}/{$listdata.assigned|default:"0"}/{$listdata.online|default:"0"}</B>
+			<B>{trans("Total:")} {$listdata.size|default:"0"}/{$listdata.assigned|default:"0"}/{$listdata.online|default:"0"}</B>
 		</TD>
 		<TD width="1%" colspan="4" class="frightu"></TD>
 	</TR>

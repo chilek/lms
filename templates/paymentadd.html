@@ -9,7 +9,7 @@
 			<IMG SRC="img/payment.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt">
-			<B>{t}Name:{/t}</B>
+			<B>{trans("Name:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="frightu">
 			<INPUT TYPE="TEXT" NAME="payment[name]" VALUE="{$payment.name}" {tip text="Enter standing payment name" trigger="name" bold=1}>
@@ -20,7 +20,7 @@
 			<IMG SRC="img/creditor.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>{t}Creditor:{/t}</B>
+			<B>{trans("Creditor:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
 			<INPUT TYPE="TEXT" SIZE="50" NAME="payment[creditor]" VALUE="{$payment.creditor}" {tip text="Enter creditor name" trigger="creditor"}>
@@ -31,7 +31,7 @@
 			<IMG SRC="img/value.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Value:{/t}</B> 
+			<B>{trans("Value:")}</B> 
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
 			<INPUT TYPE="TEXT" SIZE="8" NAME="payment[value]" VALUE="{$payment.value}" {tip text="Enter value" trigger="value"}>
@@ -42,7 +42,7 @@
 			<IMG SRC="img/calendar.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Accounting day:{/t}</B>
+			<B>{trans("Accounting day:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">								
 			<SELECT SIZE="1" NAME="payment[period]" {tip text="Select accounting frequency"}>
@@ -58,7 +58,7 @@
 			<IMG SRC="img/info1.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>{t}Description:{/t}</B>
+			<B>{trans("Description:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
 			<TEXTAREA NAME="payment[description]" COLS="50" ROWS="5" {tip text="Enter additional information (optional)"}>{$payment.description}</TEXTAREA>
@@ -66,9 +66,9 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT"> 
-			<A HREF="javascript:document.paymentadd.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
-			<A HREF="?m=paymentlist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A><BR>
-			<INPUT TYPE="checkbox" NAME="payment[reuse]" VALUE="ON" {if $payment.reuse} checked{/if}> {t}Display this form again, when this payment is saved{/t}
+			<A HREF="javascript:document.paymentadd.submit();" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
+			<A HREF="?m=paymentlist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A><BR>
+			<INPUT TYPE="checkbox" NAME="payment[reuse]" VALUE="ON" {if $payment.reuse} checked{/if}> {trans("Display this form again, when this payment is saved")}
 		</TD>
 	</TR>
 </TABLE></FORM>

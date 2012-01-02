@@ -64,9 +64,9 @@ function updatehidden(suffix)
 </script>
 <table style="background-color: transparent;" cellspacing="0" cellpadding="0">
     <tr>
-	<td align="left" class="blend">{if $available_tip}{t}{$available_tip}{/t}{else}{t}Available<!plural>{/t}:{/if}</td>
+	<td align="left" class="blend">{if $available_tip}{t}{$available_tip}{/t}{else}{trans("Available<!plural>")}:{/if}</td>
 	<td></td>
-	<td align="left" class="blend">{if $selected_tip}{t}{$selected_tip}{/t}{else}{t}Selected<!plural>{/t}:{/if}</td>
+	<td align="left" class="blend">{if $selected_tip}{t}{$selected_tip}{/t}{else}{trans("Selected<!plural>")}:{/if}</td>
     </tr>
     <tr>
 	<td>

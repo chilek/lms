@@ -3,7 +3,7 @@
 <meta name="GENERATOR" content="LMS">
 <meta http-equiv="Content-Language" content="{$LANGDEFS.$_language.html}">
 <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_language.charset}">
-<title>::: {t}Welcome to LMS{/t}  :::</title>
+<title>::: {trans("Welcome to LMS")}  :::</title>
 <STYLE type="text/css">
 <!--
 BODY		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
@@ -21,32 +21,32 @@ INPUT		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border
 	<TR>
 		<TD>
 			<P>
-                        <IMG SRC="http://www.lms.org.pl/img/logo.png" BORDER="0" ALT="[ {t}Welcome to LMS{/t} ]">
+                        <IMG SRC="http://www.lms.org.pl/img/logo.png" BORDER="0" ALT="[ {trans("Welcome to LMS")} ]">
                         </P>
                         <P>
                         <B>
-                                &copy; 2001-2011 LMS Developers - <a href="http://www.lms.org.pl/" target="_blank">http://www.lms.org.pl</A><BR>
+                                &copy; 2001-2012 LMS Developers - <a href="http://www.lms.org.pl/" target="_blank">http://www.lms.org.pl</A><BR>
                                 &copy; 2001-2003 ASK NetX - <a href="http://www.netx.waw.pl/" target="_blank">http://www.netx.waw.pl</A><BR>
 			</B>
 			</P>
 			<P><DIV ALIGN="CENTER"><CENTER>
-			<H2>{t}Please to fill following form with customer ID and PIN which was sent to your email.{/t}</H2>
+			<H2>{trans("Please to fill following form with customer ID and PIN which was sent to your email.")}</H2>
 			{if $error}
-				<FONT COLOR="red"><B>{t}Errornous data was entered!{/t}</B></FONT><BR>
+				<FONT COLOR="red"><B>{trans("Errornous data was entered!")}</B></FONT><BR>
 			{/if}
 			<P><FORM METHOD="POST" NAME="loginform" ACTION="balanceview.php">
-				<B>{t}ID:{/t}</B><BR>
+				<B>{trans("ID:")}</B><BR>
 				<INPUT TYPE="TEXT" NAME="loginform[login]" SIZE="20" ACCESSKEY="l"><BR>
-				<B>{t}PIN:{/t}</B><BR>
+				<B>{trans("PIN:")}</B><BR>
 				<INPUT TYPE="PASSWORD" NAME="loginform[pwd]" SIZE="20"><BR><BR>
-                    		<INPUT TYPE="SUBMIT" NAME="loginform[submit]" VALUE="{t}Login{/t}">
+                    		<INPUT TYPE="SUBMIT" NAME="loginform[submit]" VALUE="{trans("Login")}">
 			</FORM></P>
 			</CENTER></DIV></P>
 			<P>
 			<BR>
 			<BR>
 			<BR>
-			<A HREF="http://www.lms.org.pl"><FONT COLOR="#666666">{t}home page{/t}</FONT></A>
+			<A HREF="http://www.lms.org.pl"><FONT COLOR="#666666">{trans("home page")}</FONT></A>
 			</P>
 		</TD>
 	</TR>

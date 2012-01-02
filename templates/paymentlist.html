@@ -8,17 +8,17 @@
 			<IMG SRC="img/creditor.gif" ALT="">
 		</TD>
 		<TD WIDTH="95%" CLASS="fbt" ALIGN="left">
-			<B>{t}Name:{/t}</B><BR>
-			{t}Creditor:{/t}
+			<B>{trans("Name:")}</B><BR>
+			{trans("Creditor:")}
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt" ALIGN="right">
-			{t}ID:{/t}
+			{trans("ID:")}
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt" ALIGN="right">
-			{t}Value:{/t}
+			{trans("Value:")}
 		</TD>	
 		<TD NOWRAP WIDTH="1%" CLASS="fbt" ALIGN="right">
-			{t}Payment day:{/t}
+			{trans("Payment day:")}
 		</TD>
 		<TD NOWRAP WIDTH="1%" CLASS="frightu" ALIGN="RIGHT">
 			<B>{t a=$listdata.total}Total: $a{/t}</B>
@@ -55,10 +55,10 @@
 			<INPUT TYPE="HIDDEN" NAME="addbalance[value]" VALUE="{math equation="x*-1" x=$paymentlist[payments].value}">
 			<INPUT TYPE="HIDDEN" NAME="addbalance[comment]" VALUE="{$paymentlist[payments].name} / {$paymentlist[payments].creditor}">
 			<NOBR>
-			<A HREF="javascript:document.addbalance{$smarty.section.payments.index}.submit();"><IMG src="img/pay.gif" alt="[ {t}Account payment{/t} ]" title="[ {t}Account payment{/t} ]"></A>
-			<A HREF="?m=paymentdel&id={$paymentlist[payments].id}" onClick="return confirmLink(this,'{t}Are you sure, you want to delete that payment?{/t}');"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
-			<A HREF="?m=paymentedit&id={$paymentlist[payments].id}"><IMG SRC="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
-			<A HREF="?m=paymentinfo&id={$paymentlist[payments].id}"><IMG SRC="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>&nbsp;
+			<A HREF="javascript:document.addbalance{$smarty.section.payments.index}.submit();"><IMG src="img/pay.gif" alt="[ {trans("Account payment")} ]" title="[ {trans("Account payment")} ]"></A>
+			<A HREF="?m=paymentdel&id={$paymentlist[payments].id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that payment?")}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			<A HREF="?m=paymentedit&id={$paymentlist[payments].id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			<A HREF="?m=paymentinfo&id={$paymentlist[payments].id}"><IMG SRC="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>&nbsp;
 			</NOBR>
 		</TD>
 	</TR>
@@ -67,7 +67,7 @@
 	<TR>
 		<TD COLSPAN="6" ALIGN="center" CLASS="fall">
 			<p>&nbsp;</p>
-			<p><B>{t}No such standing payments in database.{/t}</B></p>
+			<p><B>{trans("No such standing payments in database.")}</B></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
@@ -77,7 +77,7 @@
 			&nbsp;
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" ALIGN="right">
-			<IMG SRC="img/info2.gif" ALT="">&nbsp;<B>{t}Total:{/t}</B>
+			<IMG SRC="img/info2.gif" ALT="">&nbsp;<B>{trans("Total:")}</B>
 		</TD>
 		<TD CLASS="frightu" WIDTH="1%" ALIGN="left">
 			<B>{$listdata.total}</B>

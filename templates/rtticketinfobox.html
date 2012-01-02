@@ -15,7 +15,7 @@
 		<TR>
 		    <TD WIDTH="1%" NOWRAP>
 			<IMG src="img/ticket.gif" alt="">
-			<B>{t}Subject:{/t}</B>
+			<B>{trans("Subject:")}</B>
 		    </TD>
 		    <TD WIDTH="99%" NOWRAP>
 		        {$ticket.subject|escape|truncate:50:"...":true}
@@ -24,7 +24,7 @@
 		<TR>
 		    <TD WIDTH="1%" NOWRAP>
 		    	<IMG src="img/customer.gif" alt="">
-			<B>{t}Submitter:{/t}</B>
+			<B>{trans("Submitter:")}</B>
 		    </TD>
 		    <TD WIDTH="99%" NOWRAP>
 			{if $ticket.customerid}
@@ -40,7 +40,7 @@
 		<TR>
 		    <TD WIDTH="1%" NOWRAP>
 		    	<IMG src="img/calendar.gif" alt="">
-			<B>{t}Create time:{/t}</B>
+			<B>{trans("Create time:")}</B>
 		    </TD>
 		    <TD WIDTH="99%">
 			{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
@@ -50,7 +50,7 @@
 		<TR>
 		    <TD WIDTH="1%" NOWRAP>
 		    	<IMG src="img/users.gif" alt="">
-			<B>{t}Created by:{/t}</B>
+			<B>{trans("Created by:")}</B>
 		    </TD>
 		    <TD WIDTH="99%">
 			<A href="?m=userinfo&id={$ticket.creatorid}">{$ticket.creator}</a>
@@ -60,7 +60,7 @@
 		<TR>
 		    <TD WIDTH="1%" NOWRAP>
 		    	<IMG src="img/time.gif" alt="">
-			<B>{t}Uptime:{/t}</B>
+			<B>{trans("Uptime:")}</B>
 		    </TD>
 		    <TD WIDTH="99%">
 			{$ticket.uptime}
@@ -69,7 +69,7 @@
 		<TR>
 		    <TD WIDTH="1%" style="vertical-align:top" NOWRAP>
 			<IMG src="img/queue.gif" alt="">
-			<B>{t}Categories:{/t}</B>
+			<B>{trans("Categories:")}</B>
 		    </TD>
 		    <TD WIDTH="99%" NOWRAP>
 			{foreach from=$categories item=category}
@@ -86,7 +86,7 @@
 		<TR>
 		    <TD WIDTH="1%" NOWRAP>
 			<IMG src="img/users.gif" alt="">
-			<B>{t}Owner:{/t}</B>
+			<B>{trans("Owner:")}</B>
 		    </TD>
 		    <TD WIDTH="99%">
 			<A href="?m=userinfo&id={$ticket.owner}">{$ticket.ownername}</A>
@@ -95,7 +95,7 @@
 		<TR>
 		    <TD WIDTH="1%" NOWRAP>
 		    	<IMG src="img/queue.gif" alt="">
-			<B>{t}Queue:{/t}</B>
+			<B>{trans("Queue:")}</B>
 		    </TD>
 		    <TD WIDTH="99%">
 			<A HREF="?m=rtqueueview&id={$ticket.queueid}">{$ticket.queuename}</A>
@@ -104,7 +104,7 @@
 		<TR>
 		    <TD WIDTH="1%" NOWRAP>
 		    	<IMG src="img/dead.gif" alt="">
-			<B>{t}Status:{/t}</B>
+			<B>{trans("Status:")}</B>
 		    </TD>
 		    <TD WIDTH="99%">
 			{$ticket.status}
@@ -113,12 +113,12 @@
 		<TR>
 		    <TD WIDTH="1%" NOWRAP>
 		    	<IMG src="img/desc.gif" alt="">
-			<B>{t}Cause:{/t}</B>
+			<B>{trans("Cause:")}</B>
 		    </TD>
 		    <TD WIDTH="99%">
-			{if $ticket.cause==2}{t}company's side{/t}
-			{elseif $ticket.cause==1}{t}customer's side{/t}
-			{else}{t}unknown/other{/t}{/if}
+			{if $ticket.cause==2}{trans("company's side")}
+			{elseif $ticket.cause==1}{trans("customer's side")}
+			{else}{trans("unknown/other")}{/if}
 		    </TD>
 		</TR>
 	    </TABLE>
@@ -130,25 +130,25 @@
 	<TR CLASS="light">
 		<TD class="flr" ALIGN="RIGHT" colspan="3">
 			{if $ticket.state < 2}
-			<A href="?m=rtticketedit&id={$ticket.ticketid}&state=2">{t}Resolve{/t} <IMG src="img/resolved.gif" alt=""></A>&nbsp;
+			<A href="?m=rtticketedit&id={$ticket.ticketid}&state=2">{trans("Resolve")} <IMG src="img/resolved.gif" alt=""></A>&nbsp;
 			{/if}
-			<A href="?m=rtticketdel&id={$ticket.ticketid}" onClick="return confirmLink(this, '{t a=$ticket.ticketid}Are you sure, you want to remove ticket $a?{/t}')">{t}Delete{/t} <IMG src="img/delete.gif" alt=""></A>
-			<A href="?m=rtticketedit&id={$ticket.ticketid}">{t}Edit{/t} <IMG src="img/edit.gif" alt=""></A>
-			<A href="?m=rtticketprint&id={$ticket.ticketid}" target="_BLANK">{t}Print{/t} <IMG src="img/print.gif" alt=""></A>
+			<A href="?m=rtticketdel&id={$ticket.ticketid}" onClick="return confirmLink(this, '{t a=$ticket.ticketid}Are you sure, you want to remove ticket $a?{/t}')">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
+			<A href="?m=rtticketedit&id={$ticket.ticketid}">{trans("Edit")} <IMG src="img/edit.gif" alt=""></A>
+			<A href="?m=rtticketprint&id={$ticket.ticketid}" target="_BLANK">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
 		</TD>
 	</TR>
 	<TR CLASS="dark">
 		<TD CLASS="fall" width="100%" align="center" colspan="3" NOWRAP>
 			{if $ticket.prev_ticketid neq NULL}
-				<A HREF="?m=rtticketview&id={$ticket.prev_ticketid}">&laquo;&laquo;&laquo;&nbsp;{t}Previous ticket{/t}</A>
+				<A HREF="?m=rtticketview&id={$ticket.prev_ticketid}">&laquo;&laquo;&laquo;&nbsp;{trans("Previous ticket")}</A>
 			{else}
-				&laquo;&laquo;&laquo;&nbsp;{t}Previous ticket{/t}
+				&laquo;&laquo;&laquo;&nbsp;{trans("Previous ticket")}
 			{/if}
 			&nbsp;&nbsp;&nbsp;
 			{if $ticket.next_ticketid neq NULL}
-				<A HREF="?m=rtticketview&id={$ticket.next_ticketid}">{t}Next ticket{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+				<A HREF="?m=rtticketview&id={$ticket.next_ticketid}">{trans("Next ticket")}&nbsp;&raquo;&raquo;&raquo;</A>
 			{else}
-				{t}Next ticket{/t}&nbsp;&raquo;&raquo;&raquo;
+				{trans("Next ticket")}&nbsp;&raquo;&raquo;&raquo;
 			{/if}
 		</TD>
 	</TR>
@@ -159,13 +159,13 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
         <TR CLASS="dark">
 	        <TD CLASS="fleftu" WIDTH="1%" nowrap>
-		        <IMG SRC="img/ticket.gif" ALT=""> <B>{t}Requests causes (last year):{/t}</B>
+		        <IMG SRC="img/ticket.gif" ALT=""> <B>{trans("Requests causes (last year):")}</B>
 		</TD>
 		<TD CLASS="frightu" WIDTH="99%">
-		        {t}company's side{/t}: <B>{$stats.2.num|default:0}</B>, 
-			{t}customer's side{/t}: <B>{$stats.1.num|default:0}</B>,
-			{t}unknown/other<!plural>{/t}: <B>{$stats.0.num|default:0}</B>,
-			{t}all{/t}: <B>{$stats.0.num+$stats.1.num+$stats.2.num}</B>
+		        {trans("company's side")}: <B>{$stats.2.num|default:0}</B>, 
+			{trans("customer's side")}: <B>{$stats.1.num|default:0}</B>,
+			{trans("unknown/other<!plural>")}: <B>{$stats.0.num|default:0}</B>,
+			{trans("all")}: <B>{$stats.0.num+$stats.1.num+$stats.2.num}</B>
 		</TD>
 	</TR>
 </TABLE>
@@ -176,7 +176,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" WIDTH="1%" nowrap>
-			<IMG SRC="img/customer.gif" ALT=""> <B>{t}Customer:{/t}</B>
+			<IMG SRC="img/customer.gif" ALT=""> <B>{trans("Customer:")}</B>
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" nowrap>
 			<B>{$customerinfo.customername}</B> 

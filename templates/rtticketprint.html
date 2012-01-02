@@ -18,7 +18,7 @@
 	</TR>
 	<TR>
 		<TD width="1%">
-			<B>{t}Subject:{/t}</B>
+			<B>{trans("Subject:")}</B>
 		</TD>
 		<TD width="99%" NOWRAP>
 		        <B>{$ticket.subject|escape|truncate:50:"..."}</B>
@@ -26,7 +26,7 @@
 	</TR>
 	<TR>
 	        <TD width="1%">
-			<B>{t}Submitter:{/t}</B>
+			<B>{trans("Submitter:")}</B>
 	        </TD>
 	        <TD width="99%" NOWRAP>
 			{if $ticket.customerid}
@@ -41,7 +41,7 @@
 	</TR>
 	<TR>
 		<TD width="1%" NOWRAP>
-			<B>{t}Create time:{/t}</B>
+			<B>{trans("Create time:")}</B>
 		</TD>
 		<TD width="99%">
 			{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
@@ -50,7 +50,7 @@
 	{if $ticket.ownername}
 	<TR>
 		<TD width="1%">
-			<B>{t}Owner:{/t}</B>
+			<B>{trans("Owner:")}</B>
 		</TD>
 		<TD width="99%" NOWRAP>
 			{$ticket.ownername}
@@ -60,7 +60,7 @@
 {*
 	<TR>
 	        <TD width="1%">
-			<B>{t}Status:{/t}</B>
+			<B>{trans("Status:")}</B>
 		</TD>
 		<TD width="99%">
 			{$ticket.status}
@@ -68,7 +68,7 @@
 	</TR>
 	<TR>
 	        <TD width="1%">
-			<B>{t}Uptime:{/t}</B>
+			<B>{trans("Uptime:")}</B>
 		</TD>
 		<TD width="99%" NOWRAP>
 			{$ticket.uptime}
@@ -76,7 +76,7 @@
 	</TR>
 	<TR>
 	        <TD width="1%">
-			<B>{t}Queue:{/t}</B>
+			<B>{trans("Queue:")}</B>
 		</TD>
 		<TD width="99%" NOWRAP>
 			{$ticket.queuename}
@@ -85,7 +85,7 @@
 *}
 	<TR>
 	        <TD width="1%">
-			<B>{t}Message:{/t}</B>
+			<B>{trans("Message:")}</B>
 		</TD>
 		<TD width="99%">
 			{$ticket.messages.0.body|escape|replace:"\n":"<BR>"}
@@ -97,13 +97,13 @@
 <TABLE width="660" cellpadding="3" align="center">
         <TR CLASS="dark">
 	        <TD width="1%" nowrap>
-		        <B>{t}Requests causes (last year):{/t}</B>
+		        <B>{trans("Requests causes (last year):")}</B>
 		</TD>
 		<TD WIDTH="99%">
-		        {t}company's side{/t}: <B>{$stats.2.num|default:0}</B>,
-			{t}customer's side{/t}: <B>{$stats.1.num|default:0}</B>,
-		        {t}unknown/other<!plural>{/t}: <B>{$stats.0.num|default:0}</B>,
-			{t}all{/t}: <B>{$stats.0.num+$stats.1.num+$stats.2.num}</B>
+		        {trans("company's side")}: <B>{$stats.2.num|default:0}</B>,
+			{trans("customer's side")}: <B>{$stats.1.num|default:0}</B>,
+		        {trans("unknown/other<!plural>")}: <B>{$stats.0.num|default:0}</B>,
+			{trans("all")}: <B>{$stats.0.num+$stats.1.num+$stats.2.num}</B>
 		</TD>
 	</TR>
 </TABLE>
@@ -113,7 +113,7 @@
 <TABLE width="660" cellpadding="3" align="CENTER">
 	<TR>
 		<TD width="100%" class="HEAD">
-		{t}Notes:{/t}	
+		{trans("Notes:")}	
 		</TD>
 	</TR>
 	<TR>

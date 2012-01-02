@@ -20,26 +20,26 @@
 <TABLE WIDTH="960" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER">
-			{t}No.{/t}
+			{trans("No.")}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER">
-			{t}Number{/t}<BR>
-			{t}Date{/t}
+			{trans("Number")}<BR>
+			{trans("Date")}
 		</TD>
 		<TD WIDTH="45%" CLASS="HEAD small" ALIGN="CENTER">
-			{t}Customer{/t}
+			{trans("Customer")}
 		</TD>
 		<TD WIDTH="50%" CLASS="HEAD small" ALIGN="CENTER">
-			{t}Title{/t}
+			{trans("Title")}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER">
-			{t}Income{/t}
+			{trans("Income")}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER">
-			{t}Expense{/t}
+			{trans("Expense")}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER">
-			{t}After{/t}
+			{trans("After")}
 		</TD>
 	</TR>
 	{cycle values="white,grey" print=false}
@@ -74,7 +74,7 @@
 	{/section}
         <TR>
 	        <TD COLSPAN="4" ALIGN="RIGHT" class="small">
-			<B>{t}Page total:{/t}</B>
+			<B>{trans("Page total:")}</B>
 		</TD>
 		<TD ALIGN="RIGHT" class="small">
 		        <B>{$totals.$item.income|string_format:"%01.2f"}</B>
@@ -86,7 +86,7 @@
 	</TR>
         <TR>
 	        <TD COLSPAN="4" ALIGN="RIGHT" class="small">
-			<B>{t}Transfered from previous page:{/t}</B>
+			<B>{trans("Transfered from previous page:")}</B>
 		</TD>
 		<TD ALIGN="RIGHT" class="small">
 		        <B>{$totals.$previtem.totalincome|string_format:"%01.2f"}</B>
@@ -98,7 +98,7 @@
 	</TR>
         <TR>
 	        <TD COLSPAN="4" ALIGN="RIGHT" class="small">
-			<B>{t}Total from start of period:{/t}</B>
+			<B>{trans("Total from start of period:")}</B>
 		</TD>
 		<TD ALIGN="RIGHT" class="small">
 		        <B>{$totals.$item.totalincome|string_format:"%01.2f"}</B>
@@ -127,32 +127,32 @@
 <TABLE WIDTH="960" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER">
-			{t}No.{/t}
+			{trans("No.")}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER">
-			{t}Number{/t}<BR>
-			{t}Date{/t}
+			{trans("Number")}<BR>
+			{trans("Date")}
 		</TD>
 		<TD WIDTH="45%" CLASS="HEAD small" ALIGN="CENTER">
-			{t}Customer{/t}
+			{trans("Customer")}
 		</TD>
 		<TD WIDTH="50%" CLASS="HEAD small" ALIGN="CENTER">
-			{t}Title{/t}
+			{trans("Title")}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER">
-			{t}Income{/t}
+			{trans("Income")}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER">
-			{t}Expense{/t}
+			{trans("Expense")}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER">
-			{t}After{/t}
+			{trans("After")}
 		</TD>
 	</TR>
 	<TR>
 		<TD ALIGN="center" COLSPAN="7">
 			<P>&nbsp;</P>
-			<P><B>{t}No such cash receipts in database.{/t}</B></P>
+			<P><B>{trans("No such cash receipts in database.")}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>

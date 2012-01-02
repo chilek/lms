@@ -11,7 +11,7 @@
 			<IMG src="img/customer.gif" alt="">
 		</TD>
 		<TD class="frightu" width="99%">
-			<B>{t}Customers List:{/t}</B>
+			<B>{trans("Customers List:")}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -22,49 +22,49 @@
 					    <TABLE>
 						<TR>
 						    <TD width="1%"><IMG src="img/customer.gif" alt=""></TD>
-						    <TD width="1%" nowrap><B>{t}Status:{/t}</B></TD>
+						    <TD width="1%" nowrap><B>{trans("Status:")}</B></TD>
 						    <TD width="98%">
 							<SELECT size="1" name="filter" {tip text="Select customer's group"}>
-							    <OPTION value="0">- {t}all<!customers>{/t} -</OPTION>
-							    <OPTION value="3" CHECKED>{t}connected<!plural>{/t}</OPTION>
-							    <OPTION value="5">{t}disconnected<!plural>{/t}</OPTION>
-							    <OPTION value="6">{t}in debt{/t}</OPTION>
-							    <OPTION VALUE="11">{t}in debt above 100%{/t}</OPTION>
-							    <OPTION VALUE="12">{t}in debt above 200%{/t}</OPTION>
-							    <OPTION value="2">{t}waiting{/t}</OPTION>
-							    <OPTION value="1">{t}interested<!plural>{/t}</OPTION>
-							    <OPTION value="-1">{t}without nodes{/t}</OPTION>
+							    <OPTION value="0">- {trans("all<!customers>")} -</OPTION>
+							    <OPTION value="3" CHECKED>{trans("connected<!plural>")}</OPTION>
+							    <OPTION value="5">{trans("disconnected<!plural>")}</OPTION>
+							    <OPTION value="6">{trans("in debt")}</OPTION>
+							    <OPTION VALUE="11">{trans("in debt above 100%")}</OPTION>
+							    <OPTION VALUE="12">{trans("in debt above 200%")}</OPTION>
+							    <OPTION value="2">{trans("waiting")}</OPTION>
+							    <OPTION value="1">{trans("interested<!plural>")}</OPTION>
+							    <OPTION value="-1">{trans("without nodes")}</OPTION>
 							</SELECT>
 						    </TD>
 						</TR>
 						<TR>
 						    <TD width="1%" nowrap><IMG src="img/folder.gif" alt=""></TD>
-						    <TD width="1%" nowrap><B>{t}Legal personality:{/t}</B></TD>
+						    <TD width="1%" nowrap><B>{trans("Legal personality:")}</B></TD>
 						    <TD width="98%" nowrap>
 							<SELECT size="1" name="type" {tip text="Select legal personality type"}>
-							    <OPTION value="" SELECTED>{t}- all -{/t}</OPTION>
-			                            	    <OPTION VALUE="0">{t}private person{/t}</OPTION>
-			                            	    <OPTION VALUE="1">{t}legal entity{/t}</OPTION>
+							    <OPTION value="" SELECTED>{trans("- all -")}</OPTION>
+			                            	    <OPTION VALUE="0">{trans("private person")}</OPTION>
+			                            	    <OPTION VALUE="1">{trans("legal entity")}</OPTION>
 							</SELECT>
 						    </TD>
 						</TR>
 						<TR>
 						    <TD width="1%" nowrap><IMG src="img/netdev.gif" alt=""></TD>
-						    <TD width="1%" nowrap><B>{t}Link type:{/t}</B></TD>
+						    <TD width="1%" nowrap><B>{trans("Link type:")}</B></TD>
 						    <TD width="98%" nowrap>
 							<SELECT size="1" name="linktype" {tip text="Select link type"}>
-                            				    <OPTION VALUE="">{t}- all -{/t}</OPTION>
-				                    	    <OPTION VALUE="0">{t}wire{/t}</OPTION>
-							    <OPTION VALUE="1">{t}wireless{/t}</OPTION>
+                            				    <OPTION VALUE="">{trans("- all -")}</OPTION>
+				                    	    <OPTION VALUE="0">{trans("wire")}</OPTION>
+							    <OPTION VALUE="1">{trans("wireless")}</OPTION>
 							</SELECT>
 						    </TD>
 						</TR>
 						<TR>
 						    <TD width="1%" nowrap><IMG src="img/network.gif" alt=""></TD>
-						    <TD width="1%" nowrap><B>{t}Network:{/t}</B></TD>
+						    <TD width="1%" nowrap><B>{trans("Network:")}</B></TD>
 						    <TD width="98%" nowrap>
 							<SELECT size="1" name="network" {tip text="Select network"}>
-							    <OPTION value="0" SELECTED>{t}- all networks -{/t}</OPTION>
+							    <OPTION value="0" SELECTED>{trans("- all networks -")}</OPTION>
 							    {section name="networks" loop=$networks}
 							    <OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:40:"...":true}</OPTION>
 							    {/section}
@@ -73,10 +73,10 @@
 						</TR>
 						<TR>    
 						    <TD width="1%" nowrap><IMG src="img/group.gif" alt=""></TD>
-						    <TD width="1%" nowrap><B>{t}Group:{/t}</B></TD>
+						    <TD width="1%" nowrap><B>{trans("Group:")}</B></TD>
 						    <TD width="98%" nowrap>
 							<SELECT size="1" name="customergroup" {tip text="Select group"}>
-							    <OPTION value="0" SELECTED>{t}- all groups -{/t}</OPTION>
+							    <OPTION value="0" SELECTED>{trans("- all groups -")}</OPTION>
 							    {section name="customergroups" loop=$customergroups}
 							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:40:"...":true}</OPTION>
 							    {/section}
@@ -85,10 +85,10 @@
 						</TR>
 						<TR>
 						    <TD width="1%" nowrap><IMG src="img/nodegroup.gif" alt=""></TD>
-						    <TD width="1%" nowrap><B>{t}Nodes Group:{/t}</B></TD>
+						    <TD width="1%" nowrap><B>{trans("Nodes Group:")}</B></TD>
 						    <TD width="98%" nowrap>
 							<SELECT size="1" name="nodegroup" {tip text="Select group"}>
-							    <OPTION value="" SELECTED>{t}- all groups -{/t}</OPTION>
+							    <OPTION value="" SELECTED>{trans("- all groups -")}</OPTION>
         						    {foreach from=$nodegroups item=nodegroup}
 							    <OPTION value="{$nodegroup.id}">{$nodegroup.name|truncate:30:"...":true}</OPTION>
 	        					    {/foreach}
@@ -97,10 +97,10 @@
 					        </TR>
 						<TR>
 						    <TD width="1%" nowrap><IMG src="img/state.gif" alt=""></TD>
-						    <TD width="1%" nowrap><B>{t}Country state:{/t}</B></TD>
+						    <TD width="1%" nowrap><B>{trans("Country state:")}</B></TD>
 						    <TD width="98%" nowrap>
 							<SELECT NAME="stateid" {tip text="Select country state"}>
-                                    			    <OPTION value="0">{t}- all states -{/t}</OPTION>
+                                    			    <OPTION value="0">{trans("- all states -")}</OPTION>
 					                    {foreach from=$cstateslist item=item key=key}
 							    <OPTION value="{$key}">{$item.name}</OPTION>
 							    {/foreach}
@@ -110,25 +110,25 @@
 					    </TABLE>
 					</TD>
 					<TD width="1%"><IMG src="img/view.gif" alt=""></TD>
-					<TD width="1%"><B>{t}Sorting:{/t}</B></TD>
+					<TD width="1%"><B>{trans("Sorting:")}</B></TD>
 					<TD width="97%">
 					    <TABLE width="1%" {tip text="Select sorting direction and criteria"}>
 						<TR>
 						    <TD width="100%" nowrap>
 							<SELECT SIZE="1" name="order">
-							    <OPTION value="customername" SELECTED>{t}First/last or Company name{/t}</OPTION>
-							    <OPTION value="id">{t}Id{/t}</OPTION> 
-							    <OPTION value="balance">{t}Balance{/t}</OPTION> 
-							    <OPTION value="tariff">{t}Subscription{/t}</OPTION> 
-							    <OPTION value="address">{t}Address{/t}</OPTION> 
+							    <OPTION value="customername" SELECTED>{trans("First/last or Company name")}</OPTION>
+							    <OPTION value="id">{trans("Id")}</OPTION> 
+							    <OPTION value="balance">{trans("Balance")}</OPTION> 
+							    <OPTION value="tariff">{trans("Subscription")}</OPTION> 
+							    <OPTION value="address">{trans("Address")}</OPTION> 
 							</SELECT>
 						    </TD>
 						</TR>
 						<TR>
 						    <TD width="100%" nowrap>
 							<SELECT SIZE="1" name="direction">
-							    <OPTION value="asc" SELECTED>{t}ascending{/t}</OPTION>
-							    <OPTION value="desc">{t}descending{/t}</OPTION> 
+							    <OPTION value="asc" SELECTED>{trans("ascending")}</OPTION>
+							    <OPTION value="desc">{trans("descending")}</OPTION> 
 							</SELECT>
 						    </TD>
 						</TR>
@@ -140,7 +140,7 @@
 					    <TABLE>
 						<TR>
 						    <TD width="1%" nowrap><IMG src="img/calendar.gif" alt=""></TD>
-						    <TD width="1%" nowrap><B>{t}Balance date:{/t}</B></TD>
+						    <TD width="1%" nowrap><B>{trans("Balance date:")}</B></TD>
 						    <TD width="98%" nowrap>
 							<INPUT TYPE="text" NAME="day" SIZE="10" MAXSIZE="10" OnClick="javascript:cal12.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
 						    </TD>
@@ -148,16 +148,16 @@
 						<TR>
 						    <TD width="1%" nowrap><IMG src="img/docum.gif" alt=""></TD>
 						    <TD width="99%" colspan="2" nowrap>
-							<B>{t}With document of type:{/t}</B>
+							<B>{trans("With document of type:")}</B>
 							<SELECT SIZE="1" NAME="doctype" {tip text="Select document type"}>
-							    <OPTION VALUE="0">{t}- all -{/t}</OPTION>
+							    <OPTION VALUE="0">{trans("- all -")}</OPTION>
 							    {foreach from=$_DOCTYPES key=key item=item}
 							    <OPTION VALUE="{$key}">{$item}</OPTION>
 							    {/foreach}
 							</SELECT>
-							<B>{t}in date:{/t}</B>
-							{t}From{/t}&nbsp;<INPUT TYPE="text" NAME="docfrom" SIZE="10" MAXSIZE="10" OnClick="javascript:cal21.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
-							{t}To{/t}&nbsp;<INPUT TYPE="text" NAME="docto" SIZE="10" MAXSIZE="10" OnClick="javascript:cal22.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>	
+							<B>{trans("in date:")}</B>
+							{trans("From")}&nbsp;<INPUT TYPE="text" NAME="docfrom" SIZE="10" MAXSIZE="10" OnClick="javascript:cal21.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+							{trans("To")}&nbsp;<INPUT TYPE="text" NAME="docto" SIZE="10" MAXSIZE="10" OnClick="javascript:cal22.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>	
 						    </TD>
 						</TR>
 					    </TABLE>
@@ -168,7 +168,7 @@
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.printcustomerlist.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+			<A href="javascript:document.printcustomerlist.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -194,7 +194,7 @@ cal22.time_comp = false;
 		    <IMG src="img/money.gif" alt="">
 		</TD>
 		<TD class="frightu" width="99%">
-		    <B>{t}Network Balance Sheet{/t}</B>
+		    <B>{trans("Network Balance Sheet")}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -208,11 +208,11 @@ cal22.time_comp = false;
 							<IMG src="img/users.gif" alt="">
 						    </TD>
 						    <TD width="1%">
-						        <B>{t}User:{/t}</B>
+						        <B>{trans("User:")}</B>
 						    </TD>
 						    <TD width="98%">
 						        <SELECT size="1" name="user" {tip text="You can select user to limit results"}>
-						    	    <OPTION value="">{t}- all users -{/t}</OPTION>
+						    	    <OPTION value="">{trans("- all users -")}</OPTION>
 							    {section name="users" loop=$users}
 							    <OPTION value="{$users[users].id}">{$users[users].name|truncate:40:"...":true}</OPTION>
 							    {/section}
@@ -223,11 +223,11 @@ cal22.time_comp = false;
 							<IMG src="img/network.gif" alt="">
 						    </TD>
 						    <TD width="1%" nowrap>
-							<B>{t}Network:{/t}</B>
+							<B>{trans("Network:")}</B>
 						    </TD>
 						    <TD width="98%">
 							<SELECT size="1" name="network" {tip text="Select network"}>
-							    <OPTION value="0" SELECTED>{t}- all networks -{/t}</OPTION>
+							    <OPTION value="0" SELECTED>{trans("- all networks -")}</OPTION>
 							    {section name="networks" loop=$networks}
 							    <OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:40:"...":true}</OPTION>
 							    {/section}
@@ -239,11 +239,11 @@ cal22.time_comp = false;
 							<IMG src="img/division.gif" alt="">
 						    </TD>
 						    <TD width="1%" nowrap>
-							<B>{t}Division{/t}:</B>
+							<B>{trans("Division")}:</B>
 						    </TD>
 						    <TD width="98%" nowrap>
 							<SELECT size="1" name="division" {tip text="Select division"}>
-							    <OPTION VALUE="0">- {t}all{/t} -</OPTION>
+							    <OPTION VALUE="0">- {trans("all")} -</OPTION>
                     					    {foreach from=$divisions item=item}
 			                            	    <OPTION VALUE="{$item.id}">{$item.shortname}</OPTION>
 							    {/foreach}
@@ -255,11 +255,11 @@ cal22.time_comp = false;
 							<IMG src="img/group.gif" alt="">
 						    </TD>
 						    <TD width="1%" nowrap>
-							<B>{t}Group:{/t}</B>
+							<B>{trans("Group:")}</B>
 						    </TD>
 						    <TD width="98%">
 							<SELECT size="1" name="customergroup" {tip text="Select group"}>
-							    <OPTION value="0" SELECTED>{t}- all groups -{/t}</OPTION>
+							    <OPTION value="0" SELECTED>{trans("- all groups -")}</OPTION>
 							    {section name="customergroups" loop=$customergroups}
 							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:40:"...":true}</OPTION>
 							    {/section}
@@ -275,13 +275,13 @@ cal22.time_comp = false;
 							<IMG src="img/money.gif" alt="">
 						    </TD>
 						    <TD width="1%" nowrap>
-							<B>{t}Transaction type:{/t}</B>
+							<B>{trans("Transaction type:")}</B>
 						    </TD>
 						    <TD width="98%">
 							<SELECT name="types[]" id="balancelisttype" {tip text="Select transaction type"} multiple>
-							    <OPTION value="1">{t}Liability{/t}</OPTION>
-							    <OPTION value="2">{t}Income{/t}</OPTION>
-							    <OPTION value="3">{t}Expense{/t}</OPTION>
+							    <OPTION value="1">{trans("Liability")}</OPTION>
+							    <OPTION value="2">{trans("Income")}</OPTION>
+							    <OPTION value="3">{trans("Expense")}</OPTION>
 							</SELECT>
 						    </TD>
 						</TR>
@@ -290,13 +290,13 @@ cal22.time_comp = false;
 						    	<IMG src="img/print.gif" alt="">
 						    </TD>
 						    <TD width="1%" nowrap>
-                        				<B>{t}Documents:{/t}</B>
+                        				<B>{trans("Documents:")}</B>
                         			    </TD>
                         			    <TD width="98%">
                         				<SELECT size="1" name="docs" {tip text="Select transaction type"}>
-                                			    <OPTION value="">{t}- all -{/t}</OPTION>
-                            				    <OPTION value="documented">{t}with document{/t}</OPTION>
-                            				    <OPTION value="notdocumented">{t}without document{/t}</OPTION>
+                                			    <OPTION value="">{trans("- all -")}</OPTION>
+                            				    <OPTION value="documented">{trans("with document")}</OPTION>
+                            				    <OPTION value="notdocumented">{trans("without document")}</OPTION>
                         				</SELECT>
                         			    </TD>
                     				</TR>
@@ -305,11 +305,11 @@ cal22.time_comp = false;
 						    	<IMG src="img/isource.gif" alt="">
 						    </TD>
 						    <TD width="1%" nowrap>
-                        				<B>{t}Source:{/t}</B>
+                        				<B>{trans("Source:")}</B>
                         			    </TD>
                         			    <TD width="98%">
 							<SELECT size="1" name="source" {tip text="You can select import source to limit results"}>
-							<OPTION value="0">{t}- all sources -{/t}</OPTION>
+							<OPTION value="0">{trans("- all sources -")}</OPTION>
 							{foreach from=$sourcelist item=item}
 							<OPTION value="{$item.id}">{$item.name}</OPTION>
 							{/foreach}
@@ -322,9 +322,9 @@ cal22.time_comp = false;
 						<IMG src="img/calendar.gif" alt="">
 					</TD>
 					<TD width="95%" nowrap style="vertical-align: middle">
-						<B>{t}Period:{/t}</B>
-						{t}From{/t}&nbsp;<INPUT TYPE="text" NAME="balancefrom" SIZE="10" MAXSIZE="10" OnClick="javascript:cal1.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
-						{t}To{/t}&nbsp;<INPUT TYPE="text" NAME="balanceto" SIZE="10" MAXSIZE="10" OnClick="javascript:cal2.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+						<B>{trans("Period:")}</B>
+						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="balancefrom" SIZE="10" MAXSIZE="10" OnClick="javascript:cal1.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="balanceto" SIZE="10" MAXSIZE="10" OnClick="javascript:cal2.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
 					</TD>
 				</TR>
 			</TABLE>
@@ -332,7 +332,7 @@ cal22.time_comp = false;
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.printbalancelist.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+			<A href="javascript:document.printbalancelist.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -343,7 +343,7 @@ var cal1 = new calendar(document.printbalancelist.elements['balancefrom']);
 cal1.time_comp = false;
 var cal2 = new calendar(document.printbalancelist.elements['balanceto']);
 cal2.time_comp = false;
-multiselect('printbalancelist', 'balancelisttype', '{t}- all types -{/t}');
+multiselect('printbalancelist', 'balancelisttype', '{trans("- all types -")}');
 //-->
 </SCRIPT>
 </P>
@@ -357,7 +357,7 @@ multiselect('printbalancelist', 'balancelisttype', '{t}- all types -{/t}');
 			<IMG src="img/money.gif" alt="">
 		</TD>
 		<TD class="frightu" width="99%">
-			<B>{t}Customer Balance Sheet{/t}</B>
+			<B>{trans("Customer Balance Sheet")}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -368,7 +368,7 @@ multiselect('printbalancelist', 'balancelisttype', '{t}- all types -{/t}');
 						<IMG src="img/customer.gif" alt="">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>{t}Customer:{/t}</B>
+						<B>{trans("Customer:")}</B>
 					</TD>
 					<TD width="1%" nowrap>
 						{if $customers}
@@ -379,16 +379,16 @@ multiselect('printbalancelist', 'balancelisttype', '{t}- all types -{/t}');
 						</SELECT>
 						{else}
 						<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID"}>
-						<a href="javascript: void(0);" onClick="return customerchoosewin(document.printcustomerbalance.customer);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+						<a href="javascript: void(0);" onClick="return customerchoosewin(document.printcustomerbalance.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
 						{/if}
 					</TD>
 					<TD width="1%">
 						<IMG src="img/calendar.gif" alt="">
 					</TD>
 					<TD width="96%" nowrap>
-						<B>{t}Period:{/t}</B>&nbsp;
-						{t}From{/t}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal3.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means 1970/01/01) or click to choose it from calendar"}>
-						{t}To{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal4.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+						<B>{trans("Period:")}</B>&nbsp;
+						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal3.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means 1970/01/01) or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal4.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
 					</TD>
 				</TR>
 			</TABLE>
@@ -396,7 +396,7 @@ multiselect('printbalancelist', 'balancelisttype', '{t}- all types -{/t}');
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.printcustomerbalance.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+			<A href="javascript:document.printcustomerbalance.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -420,7 +420,7 @@ cal4.time_comp = false;
 			<IMG src="img/money.gif" alt="">
 		</TD>
 		<TD class="frightu" width="99%">
-			<B>{t}Sale Registry{/t}</B>
+			<B>{trans("Sale Registry")}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -434,11 +434,11 @@ cal4.time_comp = false;
 							<IMG src="img/division.gif" alt="">
 						    </TD>
 						    <TD width="1%" nowrap>
-							<B>{t}Division{/t}:</B>
+							<B>{trans("Division")}:</B>
 						    </TD>
 						    <TD width="98%" colspan="2" nowrap>
 							<SELECT size="1" name="division" {tip text="Select division"}>
-							    <OPTION VALUE="0">- {t}all{/t} -</OPTION>
+							    <OPTION VALUE="0">- {trans("all")} -</OPTION>
                     					{foreach from=$divisions item=item}
 			                            	    <OPTION VALUE="{$item.id}">{$item.shortname}</OPTION>
 							{/foreach}
@@ -450,7 +450,7 @@ cal4.time_comp = false;
 							<IMG src="img/group.gif" alt="">
 						    </TD>
 						    <TD width="1%" nowrap>
-							<B>{t}Group:{/t}</B>
+							<B>{trans("Group:")}</B>
 						    </TD>
 						    <TD width="97%" nowrap>
 							<SELECT size="4" name="group[]" MULTIPLE id="invoicereportgroup" {tip text="Select group"}>
@@ -460,7 +460,7 @@ cal4.time_comp = false;
 							</SELECT>
 						    </TD>
 						    <TD width="1%" nowrap>
-    							<INPUT type="checkbox" name="groupexclude" id="invoicereport-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><a href="javascript:checkElement('invoicereport-groupexclude')">{t}exclude group{/t}</a>
+    							<INPUT type="checkbox" name="groupexclude" id="invoicereport-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><a href="javascript:checkElement('invoicereport-groupexclude')">{trans("exclude group")}</a>
 						    </TD>
 						</TR>
 						<TR>
@@ -468,11 +468,11 @@ cal4.time_comp = false;
 							<IMG src="img/queue.gif" alt="">
 						    </TD>
 						    <TD width="1%" nowrap>
-							<B>{t}Plan:{/t}</B>
+							<B>{trans("Plan:")}</B>
 						    </TD>
 						    <TD width="98%" colspan="2" nowrap>
 							<SELECT name="numberplanid" {tip text="Select numbering plan"}>
-							    <OPTION value="0">- {t}all{/t} -</OPTION>
+							    <OPTION value="0">- {trans("all")} -</OPTION>
     							    {foreach item=plan from=$numberplans}
 					    		    {assign var=period value=$plan.period}
 							    <OPTION value="{$plan.id}">{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</OPTION>
@@ -489,30 +489,30 @@ cal4.time_comp = false;
 						            <IMG src="img/calendar.gif" alt="">
 					            </TD>
 					            <TD width="1%">
-						            <B>{t}Period:{/t}</B>
+						            <B>{trans("Period:")}</B>
 					            </TD>
 					            <TD width="1%" nowrap>
-						            {t}From{/t}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal8.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						            {trans("From")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal8.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					            </TD>
 					            <TD width="98%" nowrap>
-						            {t}To{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal9.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						            {trans("To")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal9.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					            </TD>
 					        </TR>
 						    <TR>
 						        <TD colspan="2"></TD>
 					            <TD colspan="2" nowrap>
-					                {t}by date{/t}:
+					                {trans("by date")}:
 					                <SELECT name="datetype" {tip text="Select date type"}>
-					                    <OPTION value="cdate">{t}Draw-up date{/t}</OPTION>
-					                    <OPTION value="sdate">{t}Sale date{/t}</OPTION>
-					                    <OPTION value="pdate">{t}Deadline{/t}</OPTION>
+					                    <OPTION value="cdate">{trans("Draw-up date")}</OPTION>
+					                    <OPTION value="sdate">{trans("Sale date")}</OPTION>
+					                    <OPTION value="pdate">{trans("Deadline")}</OPTION>
 					                </SELECT>
 					            </TD>
 					        </TR>
 					    </TABLE>
 					</TD>
 					<TD width="98%" nowrap>
-						<input type="checkbox" name="extended" value="1" id="invoicereport-extended"> <A HREF="javascript:checkElement('invoicereport-extended')">{t}extended format{/t}</a>
+						<input type="checkbox" name="extended" value="1" id="invoicereport-extended"> <A HREF="javascript:checkElement('invoicereport-extended')">{trans("extended format")}</a>
 					</TD>
 				</TR>
 			</TABLE>
@@ -520,7 +520,7 @@ cal4.time_comp = false;
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.invoicereport.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+			<A href="javascript:document.invoicereport.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -531,7 +531,7 @@ var cal8 = new calendar(document.forms['invoicereport'].elements['from']);
 cal8.time_comp = false;
 var cal9 = new calendar(document.forms['invoicereport'].elements['to']);
 cal9.time_comp = false;
-multiselect('invoicereport', 'invoicereportgroup', '{t}- all groups -{/t}');
+multiselect('invoicereport', 'invoicereportgroup', '{trans("- all groups -")}');
 //-->
 </SCRIPT>
 </P>
@@ -545,7 +545,7 @@ multiselect('invoicereport', 'invoicereportgroup', '{t}- all groups -{/t}');
 			<IMG src="img/money.gif" alt="">
 		</TD>
 		<TD class="frightu" width="99%">
-			<B>{t}Cash Report{/t}</B>
+			<B>{trans("Cash Report")}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -559,11 +559,11 @@ multiselect('invoicereport', 'invoicereportgroup', '{t}- all groups -{/t}');
 							<IMG src="img/queue.gif" alt="">
 						    </TD>
 						    <TD width="1%" nowrap>
-							<B>{t}Registry:{/t}</B>
+							<B>{trans("Registry:")}</B>
 						    </TD>
 						    <TD width="98%" nowrap>
 							<SELECT SIZE="1" NAME="registry" {tip text="Select cash registry"}>
-					    		    <OPTION VALUE="0">{t}- all -{/t}</OPTION>
+					    		    <OPTION VALUE="0">{trans("- all -")}</OPTION>
 						    	    {foreach from=$cashreglist item=c}
 							    <OPTION VALUE="{$c.id}">{$c.name|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
 						    	    {/foreach}
@@ -575,16 +575,16 @@ multiselect('invoicereport', 'invoicereportgroup', '{t}- all groups -{/t}');
 							<IMG src="img/group.gif" alt="">
 						    </TD>
 						    <TD width="1%" nowrap>
-							<B>{t}Group:{/t}</B>
+							<B>{trans("Group:")}</B>
 						    </TD>
 						    <TD width="98%" nowrap>
 							<SELECT size="1" name="group">
-							    <OPTION value="0" SELECTED>{t}- all groups -{/t}</OPTION>
+							    <OPTION value="0" SELECTED>{trans("- all groups -")}</OPTION>
 			    				    {section name="customergroups" loop=$customergroups}
 							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
 							    {/section}
 							</SELECT>
-    							<INPUT type="checkbox" name="groupexclude" id="receiptlist-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><a href="javascript:checkElement('receiptlist-groupexclude')">{t}exclude group{/t}</a>
+    							<INPUT type="checkbox" name="groupexclude" id="receiptlist-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><a href="javascript:checkElement('receiptlist-groupexclude')">{trans("exclude group")}</a>
 						    </TD>
 						</TR>
 						<TR>
@@ -592,11 +592,11 @@ multiselect('invoicereport', 'invoicereportgroup', '{t}- all groups -{/t}');
 							<IMG src="img/users.gif" alt="">
 						    </TD>
 						    <TD width="1%" nowrap>
-							<B>{t}User:{/t}</B>
+							<B>{trans("User:")}</B>
 						    </TD>
 						    <TD width="98%" nowrap>
 							<SELECT size="1" name="user" {tip text="You can select user to limit results"}>
-							    <OPTION value="">{t}- all users -{/t}</OPTION>
+							    <OPTION value="">{trans("- all users -")}</OPTION>
 							    {section name="users" loop=$users}
 							    <OPTION value="{$users[users].id}">{$users[users].name|truncate:40:"...":true}</OPTION>
 							    {/section}
@@ -608,12 +608,12 @@ multiselect('invoicereport', 'invoicereportgroup', '{t}- all groups -{/t}');
 						<IMG src="img/calendar.gif" alt="">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>{t}Period:{/t}</B>&nbsp;
-						{t}From{/t}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal12.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-						{t}To{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal13.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+						<B>{trans("Period:")}</B>&nbsp;
+						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal12.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal13.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
 					</TD>
 					<TD width="97%" nowrap>
-						<input type="checkbox" name="extended" value="1" id="receiptlist-extended"> <A HREF="javascript:checkElement('receiptlist-extended')">{t}extended format{/t}</a>
+						<input type="checkbox" name="extended" value="1" id="receiptlist-extended"> <A HREF="javascript:checkElement('receiptlist-extended')">{trans("extended format")}</a>
 					</TD>
 				</TR>
 			</TABLE>
@@ -621,7 +621,7 @@ multiselect('invoicereport', 'invoicereportgroup', '{t}- all groups -{/t}');
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.printreceiptlist.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+			<A href="javascript:document.printreceiptlist.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -660,7 +660,7 @@ cal13.time_comp = false;
 			<IMG src="img/money.gif" alt="">
 		</TD>
 		<TD class="frightu" width="99%">
-			<B>{t}Invoices{/t}</B>
+			<B>{trans("Invoices")}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -674,19 +674,19 @@ cal13.time_comp = false;
 							<IMG src="img/customer.gif" alt="">
 						    </TD>
 						    <TD width="1%" nowrap>
-							<B>{t}Customer:{/t}</B>
+							<B>{trans("Customer:")}</B>
 						    </TD>
 						    <TD width="98%" nowrap>
 							{if $customers}
 							<SELECT size="1" name="customer" {tip text="You can select customer to limit results"}>
-							    <OPTION value="0">{t}- all customers -{/t}</OPTION>
+							    <OPTION value="0">{trans("- all customers -")}</OPTION>
 							    {foreach from=$customers item=customer}
 							    <OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
 							    {/foreach}
 							</SELECT>
 							{else}
 							<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
-							<a href="javascript: void(0);" onClick="return customerchoosewin(document.printinvoices.customer);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+							<a href="javascript: void(0);" onClick="return customerchoosewin(document.printinvoices.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
 							{/if}
 						    </TD>
 						</TR>
@@ -695,16 +695,16 @@ cal13.time_comp = false;
 							<IMG src="img/group.gif" alt="">
 						    </TD>
 						    <TD width="1%" nowrap>
-							<B>{t}Group:{/t}</B>
+							<B>{trans("Group:")}</B>
 						    </TD>
 						    <TD width="98%" nowrap>
 							<SELECT size="1" name="group">
-							    <OPTION value="0" SELECTED>{t}- all groups -{/t}</OPTION>
+							    <OPTION value="0" SELECTED>{trans("- all groups -")}</OPTION>
 			    				    {section name="customergroups" loop=$customergroups}
 							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
 							    {/section}
 							</SELECT>
-    							<INPUT type="checkbox" name="groupexclude" id="invoices-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><a href="javascript:checkElement('invoices-groupexclude')">{t}exclude group{/t}</a>
+    							<INPUT type="checkbox" name="groupexclude" id="invoices-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><a href="javascript:checkElement('invoices-groupexclude')">{trans("exclude group")}</a>
 						    </TD>
 						</TR>
 						<TR>
@@ -712,11 +712,11 @@ cal13.time_comp = false;
 							<IMG src="img/queue.gif" alt="">
 						    </TD>
 						    <TD width="1%" nowrap>
-							<B>{t}Plan:{/t}</B>
+							<B>{trans("Plan:")}</B>
 						    </TD>
 						    <TD width="98%" nowrap>
 							<SELECT name="numberplan" {tip text="Select numbering plan"}>
-							    <OPTION value="0">- {t}all{/t} -</OPTION>
+							    <OPTION value="0">- {trans("all")} -</OPTION>
     							    {foreach item=plan from=$numberplans}
 					    		    {assign var=period value=$plan.period}
 							    <OPTION value="{$plan.id}">{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</OPTION>
@@ -730,17 +730,17 @@ cal13.time_comp = false;
 						<IMG src="img/calendar.gif" alt="">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>{t}Period:{/t}</B>&nbsp;
-						{t}From{/t}&nbsp;<INPUT TYPE="text" NAME="invoicefrom" SIZE="10" MAXSIZE="10" OnClick="javascript:cal10.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-						{t}To{/t}&nbsp;<INPUT TYPE="text" NAME="invoiceto" SIZE="10" MAXSIZE="10" OnClick="javascript:cal11.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+						<B>{trans("Period:")}</B>&nbsp;
+						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="invoicefrom" SIZE="10" MAXSIZE="10" OnClick="javascript:cal10.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="invoiceto" SIZE="10" MAXSIZE="10" OnClick="javascript:cal11.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
 					</TD>
 					<TD width="1%">
 						<IMG src="img/info.gif" alt="">
 					</TD>
 					<TD width="94%" nowrap>
-						<INPUT TYPE="checkbox" NAME="invoiceorg" ID="invoiceorg"{if preg_match('/original/i',$_config.invoices.default_printpage)} CHECKED{/if}>&nbsp;<A HREF="javascript:checkElement('invoiceorg')">{t}original{/t}</a>&nbsp;
-						<INPUT TYPE="checkbox" NAME="invoicecopy" ID="invoicecopy"{if preg_match('/copy/i',$_config.invoices.default_printpage)}  CHECKED{/if}>&nbsp;<A HREF="javascript:checkElement('invoicecopy')">{t}copy{/t}</a>&nbsp;
-						<INPUT TYPE="checkbox" NAME="invoicedup" ID="invoicedup"{if preg_match('/duplicate/i',$_config.invoices.default_printpage)} CHECKED{/if}>&nbsp;<A HREF="javascript:checkElement('invoicedup')">{t}duplicate{/t}</a>
+						<INPUT TYPE="checkbox" NAME="invoiceorg" ID="invoiceorg"{if preg_match('/original/i',$_config.invoices.default_printpage)} CHECKED{/if}>&nbsp;<A HREF="javascript:checkElement('invoiceorg')">{trans("original")}</a>&nbsp;
+						<INPUT TYPE="checkbox" NAME="invoicecopy" ID="invoicecopy"{if preg_match('/copy/i',$_config.invoices.default_printpage)}  CHECKED{/if}>&nbsp;<A HREF="javascript:checkElement('invoicecopy')">{trans("copy")}</a>&nbsp;
+						<INPUT TYPE="checkbox" NAME="invoicedup" ID="invoicedup"{if preg_match('/duplicate/i',$_config.invoices.default_printpage)} CHECKED{/if}>&nbsp;<A HREF="javascript:checkElement('invoicedup')">{trans("duplicate")}</a>
 					</TD>
 				</TR>
 			</TABLE>
@@ -748,8 +748,8 @@ cal13.time_comp = false;
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:print_forms();">{t}Print form of cash transfer{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
-			<A href="javascript:print();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+			<A href="javascript:print_forms();">{trans("Print form of cash transfer")} <IMG src="img/print.gif" alt="" hspace="2"></A>
+			<A href="javascript:print();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -773,7 +773,7 @@ cal11.time_comp = false;
 			<IMG src="img/money.gif" alt="">
 		</TD>
 		<TD class="frightu" width="99%">
-			<B>{t}Transfer forms{/t}</B>
+			<B>{trans("Transfer forms")}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -787,19 +787,19 @@ cal11.time_comp = false;
 							<IMG src="img/customer.gif" alt="">
 						    </TD>
 						    <TD width="1%" nowrap>
-							<B>{t}Customer:{/t}</B>
+							<B>{trans("Customer:")}</B>
 						    </TD>
 						    <TD width="98%" nowrap>
 							{if $customers}
 							<SELECT size="1" name="customer" {tip text="You can select customer to limit results"}>
-							    <OPTION value="0">{t}- all customers -{/t}</OPTION>
+							    <OPTION value="0">{trans("- all customers -")}</OPTION>
 							    {foreach from=$customers item=customer}
 							    <OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
 							    {/foreach}
 							</SELECT>
 							{else}
 							<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
-							<a href="javascript: void(0);" onClick="return customerchoosewin(document.printforms.customer);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+							<a href="javascript: void(0);" onClick="return customerchoosewin(document.printforms.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
 							{/if}
 						    </TD>
 						</TR>
@@ -808,16 +808,16 @@ cal11.time_comp = false;
 							<IMG src="img/group.gif" alt="">
 						    </TD>
 						    <TD width="1%" nowrap>
-							<B>{t}Group:{/t}</B>
+							<B>{trans("Group:")}</B>
 						    </TD>
 						    <TD width="98%" nowrap>
 							<SELECT size="1" name="customergroup">
-							    <OPTION value="0" SELECTED>{t}- all groups -{/t}</OPTION>
+							    <OPTION value="0" SELECTED>{trans("- all groups -")}</OPTION>
 			    				    {section name="customergroups" loop=$customergroups}
 							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
 							    {/section}
 							</SELECT>
-    							<INPUT type="checkbox" name="groupexclude" id="printforms-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><a href="javascript:checkElement('printforms-groupexclude')">{t}exclude group{/t}</a>
+    							<INPUT type="checkbox" name="groupexclude" id="printforms-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><a href="javascript:checkElement('printforms-groupexclude')">{trans("exclude group")}</a>
 						    </TD>
 						</TR>
 					    </TABLE>
@@ -826,7 +826,7 @@ cal11.time_comp = false;
 						<IMG src="img/value.gif" alt="">
 					</TD>
 					<TD width="98%" nowrap>
-						<B>{t}Balance:{/t}</B>&nbsp;<INPUT TYPE="text" NAME="balance" SIZE="10" {tip text="Enter balance limit (default 0)"}>
+						<B>{trans("Balance:")}</B>&nbsp;<INPUT TYPE="text" NAME="balance" SIZE="10" {tip text="Enter balance limit (default 0)"}>
 					</TD>
 				</TR>
 			</TABLE>
@@ -834,7 +834,7 @@ cal11.time_comp = false;
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.printforms.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+			<A href="javascript:document.printforms.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -850,7 +850,7 @@ cal11.time_comp = false;
 			<IMG src="img/money.gif" alt="">
 		</TD>
 		<TD class="frightu" width="99%">
-			<B>{t}Total Invoiceless Income{/t}</B>
+			<B>{trans("Total Invoiceless Income")}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -861,9 +861,9 @@ cal11.time_comp = false;
 						<IMG src="img/calendar.gif" alt="">
 					</TD>
 					<TD width="99%" nowrap>
-						<B>{t}Period:{/t}</B>&nbsp;
-						{t}From{/t}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal5.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
-						{t}To{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal6.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+						<B>{trans("Period:")}</B>&nbsp;
+						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal5.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal6.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
 					</TD>
 				</TR>
 			</TABLE>
@@ -871,7 +871,7 @@ cal11.time_comp = false;
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.printincomereport.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+			<A href="javascript:document.printincomereport.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -895,7 +895,7 @@ cal6.time_comp = false;
 			<IMG src="img/money.gif" alt="">
 		</TD>
 		<TD class="frightu" width="99%">
-			<B>{t}Liability Report{/t}</B>
+			<B>{trans("Liability Report")}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -906,49 +906,49 @@ cal6.time_comp = false;
 						<IMG src="img/customer.gif" alt="">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>{t}Customer:{/t}</B>
+						<B>{trans("Customer:")}</B>
 					</TD>
 					<TD width="1%" nowrap>
 						{if $customers}
 						<SELECT size="1" name="customer" {tip text="Select customer"}>
-							<OPTION value="0" SELECTED>{t}- all customers -{/t}</OPTION>
+							<OPTION value="0" SELECTED>{trans("- all customers -")}</OPTION>
 							{foreach from=$customers item=customer}
 							<OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
 							{/foreach}
 						</SELECT>
 						{else}
 						<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
-						<a href="javascript: void(0);" onClick="return customerchoosewin(document.liabilityreport.customer);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+						<a href="javascript: void(0);" onClick="return customerchoosewin(document.liabilityreport.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
 						{/if}
 					</TD>
 					<TD width="1%">
 						<IMG src="img/calendar.gif" alt="">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>{t}Day:{/t}</B>&nbsp;
+						<B>{trans("Day:")}</B>&nbsp;
 						<INPUT TYPE="text" NAME="day" SIZE="10" MAXSIZE="10" OnClick="javascript:cal7.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					</TD>
 					<TD width="1%">
 						<IMG src="img/view.gif" alt="">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>{t}Sorting:{/t}</B>
+						<B>{trans("Sorting:")}</B>
 					</TD>
 					<TD width="93%" {tip text="Select sorting direction and criteria"}>
 					    <TABLE width="100%">
 						<TR>
 						    <TD width="100%" nowrap>
 							<SELECT SIZE="1" name="order">
-							    <OPTION value="customername" SELECTED>{t}First/last or Company name{/t}</OPTION>
-							    <OPTION value="grossvalue">{t}Gross value{/t}</OPTION> 
+							    <OPTION value="customername" SELECTED>{trans("First/last or Company name")}</OPTION>
+							    <OPTION value="grossvalue">{trans("Gross value")}</OPTION> 
 							</SELECT>
 						    </TD>
 						</TR>
 						<TR>
 						    <TD width="100%" nowrap>
 							<SELECT SIZE="1" name="direction">
-							    <OPTION value="asc" SELECTED>{t}ascending{/t}</OPTION>
-							    <OPTION value="desc">{t}descending{/t}</OPTION> 
+							    <OPTION value="asc" SELECTED>{trans("ascending")}</OPTION>
+							    <OPTION value="desc">{trans("descending")}</OPTION> 
 							</SELECT>
 						    </TD>
 						</TR>
@@ -960,7 +960,7 @@ cal6.time_comp = false;
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.liabilityreport.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+			<A href="javascript:document.liabilityreport.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -982,7 +982,7 @@ cal7.time_comp = false;
 			<IMG src="img/money.gif" alt="">
 		</TD>
 		<TD class="frightu" width="99%">
-			<B>{t}Cash Import History{/t}</B>
+			<B>{trans("Cash Import History")}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -993,11 +993,11 @@ cal7.time_comp = false;
 						<IMG src="img/isource.gif" alt="">
 					</TD>
 					<TD width="1%">
-						<B>{t}Source:{/t}</B>
+						<B>{trans("Source:")}</B>
 					</TD>
 					<TD width="1%">
 						<SELECT size="1" name="source" {tip text="You can select import source to limit results"}>
-						<OPTION value="0">{t}- all sources -{/t}</OPTION>
+						<OPTION value="0">{trans("- all sources -")}</OPTION>
 						{foreach from=$sourcelist item=item}
 						<OPTION value="{$item.id}">{$item.name}</OPTION>
 						{/foreach}
@@ -1007,9 +1007,9 @@ cal7.time_comp = false;
 						<IMG src="img/calendar.gif" alt="">
 					</TD>
 					<TD width="96%" nowrap style="vertical-align: middle">
-						<B>{t}Period:{/t}</B>
-						{t}From{/t}&nbsp;<INPUT TYPE="text" NAME="importfrom" SIZE="10" MAXSIZE="10" OnClick="javascript:cal23.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
-						{t}To{/t}&nbsp;<INPUT TYPE="text" NAME="importto" SIZE="10" MAXSIZE="10" OnClick="javascript:cal24.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						<B>{trans("Period:")}</B>
+						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="importfrom" SIZE="10" MAXSIZE="10" OnClick="javascript:cal23.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="importto" SIZE="10" MAXSIZE="10" OnClick="javascript:cal24.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					</TD>
 				</TR>
 			</TABLE>
@@ -1017,7 +1017,7 @@ cal7.time_comp = false;
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.printimportlist.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+			<A href="javascript:document.printimportlist.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -1041,7 +1041,7 @@ cal24.time_comp = false;
 			<IMG src="img/node.gif" alt="">
 		</TD>
 		<TD class="frightu" width="99%">
-			<B>{t}Nodes List{/t}</B>
+			<B>{trans("Nodes List")}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -1052,22 +1052,22 @@ cal24.time_comp = false;
 						<IMG src="img/node.gif" alt="">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>{t}Status:{/t}</B>
+						<B>{trans("Status:")}</B>
 					</TD>
 					<TD width="1%" {tip text="Select nodes group"}>
-						<NOBR><INPUT class="radio light" type="radio" id="nodelist-all" name="filter" value="0" CHECKED><A HREF="javascript:checkElement('nodelist-all')">{t}all{/t}</a></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="nodelist-connected" name="filter" value="1"><A HREF="javascript:checkElement('nodelist-connected')">{t}connected<!plural:item>{/t}</a></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="nodelist-disconnected" name="filter" value="2"><A HREF="javascript:checkElement('nodelist-disconnected')">{t}disconnected<!plural:item>{/t}</a></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="nodelist-indebt" name="filter" value="3"><A HREF="javascript:checkElement('nodelist-indebt')">{t}indebted owner{/t}</a></NOBR>
+						<NOBR><INPUT class="radio light" type="radio" id="nodelist-all" name="filter" value="0" CHECKED><A HREF="javascript:checkElement('nodelist-all')">{trans("all")}</a></NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" id="nodelist-connected" name="filter" value="1"><A HREF="javascript:checkElement('nodelist-connected')">{trans("connected<!plural:item>")}</a></NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" id="nodelist-disconnected" name="filter" value="2"><A HREF="javascript:checkElement('nodelist-disconnected')">{trans("disconnected<!plural:item>")}</a></NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" id="nodelist-indebt" name="filter" value="3"><A HREF="javascript:checkElement('nodelist-indebt')">{trans("indebted owner")}</a></NOBR>
 					</TD>
 					<TD width="1%" nowrap>
 					    <TABLE width="100%">
 						<TR>
 						    <TD width="1%"><IMG src="img/network.gif" alt=""></TD>
-						    <TD width="1%" nowrap><B>{t}Network:{/t}</B></TD>
+						    <TD width="1%" nowrap><B>{trans("Network:")}</B></TD>
 						    <TD width="98%" nowrap>
 							<SELECT size="1" name="network" {tip text="Select network"}>
-							    <OPTION value="0" SELECTED>{t}- all networks -{/t}</OPTION>
+							    <OPTION value="0" SELECTED>{trans("- all networks -")}</OPTION>
 							    {section name="networks" loop=$networks}
 							    <OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:40:"...":true}</OPTION>
 							    {/section}
@@ -1076,10 +1076,10 @@ cal24.time_comp = false;
 						</TR>
 						<TR>
 						    <TD width="1%"><IMG src="img/group.gif" alt=""></TD>
-						    <TD width="1%" nowrap><B>{t}Group:{/t}</B></TD>
+						    <TD width="1%" nowrap><B>{trans("Group:")}</B></TD>
 						    <TD width="98%">
 							<SELECT size="1" name="customergroup" {tip text="Select group"}>
-							    <OPTION value="0" SELECTED>{t}- all groups -{/t}</OPTION>
+							    <OPTION value="0" SELECTED>{trans("- all groups -")}</OPTION>
 							    {section name="customergroups" loop=$customergroups}
 							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:40:"...":true}</OPTION>
 							    {/section}
@@ -1092,27 +1092,27 @@ cal24.time_comp = false;
 						<IMG src="img/view.gif" alt="">
 					</TD>
 					<TD width="1%">	
-			    			<B>{t}Sorting:{/t}</B>
+			    			<B>{trans("Sorting:")}</B>
 					</TD>
 					<TD width="94%" {tip text="Select sorting direction and criteria"}>
 					    <TABLE width="100%">
 						<TR>
 						    <TD width="100%" nowrap>
 							<SELECT SIZE="1" name="order">
-							    <OPTION value="name" SELECTED>{t}Name{/t}</OPTION>
-							    <OPTION value="id">{t}Id{/t}</OPTION> 
-							    <OPTION value="owner">{t}Customer name{/t}</OPTION> 
-							    <OPTION value="ownerid">{t}Customer ID{/t}</OPTION> 
-							    <OPTION value="ip">{t}IP address{/t}</OPTION> 
-							    <OPTION value="mac">{t}MAC address{/t}</OPTION>
+							    <OPTION value="name" SELECTED>{trans("Name")}</OPTION>
+							    <OPTION value="id">{trans("Id")}</OPTION> 
+							    <OPTION value="owner">{trans("Customer name")}</OPTION> 
+							    <OPTION value="ownerid">{trans("Customer ID")}</OPTION> 
+							    <OPTION value="ip">{trans("IP address")}</OPTION> 
+							    <OPTION value="mac">{trans("MAC address")}</OPTION>
 							</SELECT>
 						    </TD>
 						</TR>
 						<TR>
 						    <TD width="100%" nowrap>
 							<SELECT SIZE="1" name="direction">
-							    <OPTION value="asc" SELECTED>{t}ascending{/t}</OPTION>
-							    <OPTION value="desc">{t}descending{/t}</OPTION> 
+							    <OPTION value="asc" SELECTED>{trans("ascending")}</OPTION>
+							    <OPTION value="desc">{trans("descending")}</OPTION> 
 							</SELECT>
 						    </TD>
 						</TR>
@@ -1124,7 +1124,7 @@ cal24.time_comp = false;
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.printnodelist.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+			<A href="javascript:document.printnodelist.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -1140,7 +1140,7 @@ cal24.time_comp = false;
 			<IMG src="img/traffic.gif" alt="">
 		</TD>
 		<TD class="frightu" width="99%">
-			<B>{t}Stats{/t}</B>
+			<B>{trans("Stats")}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -1151,7 +1151,7 @@ cal24.time_comp = false;
 						<IMG src="img/customer.gif" alt="">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>{t}Customer:{/t}</B>
+						<B>{trans("Customer:")}</B>
 					</TD>
 					<TD width="1%" nowrap>
 						{if $customers}
@@ -1162,14 +1162,14 @@ cal24.time_comp = false;
 						</SELECT>
 						{else}
 						<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID"}>
-						<a href="javascript: void(0);" onClick="return customerchoosewin(document.printcustomertraffic.customer);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+						<a href="javascript: void(0);" onClick="return customerchoosewin(document.printcustomertraffic.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
 						{/if}
 					</TD>
 					<TD width="1%">
 						<IMG src="img/calendar.gif" alt="">
 					</TD>
 					<TD width="1%">
-						<B>{t}Year:{/t}</B>
+						<B>{trans("Year:")}</B>
 					</TD>
 					<TD width="1%">
 						<SELECT size="1" name="year" {tip text="Select period"}>
@@ -1179,7 +1179,7 @@ cal24.time_comp = false;
 						</SELECT>
 					</TD>
 					<TD width="1%">
-						<B>{t}Month:{/t}</B>
+						<B>{trans("Month:")}</B>
 					</TD>
 					<TD width="1%">
 						<SELECT size="1" name="month" {tip text="Select period"}>
@@ -1195,7 +1195,7 @@ cal24.time_comp = false;
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.printcustomertraffic.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+			<A href="javascript:document.printcustomertraffic.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
 </TABLE>

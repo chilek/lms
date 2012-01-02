@@ -3,7 +3,7 @@
 <H1>{$layout.pagetitle}</H1>
 <P><TABLE cellpadding="3" WIDTH="100%">
 	<TR class="dark">
-		<TD width="99%" class="fleftu" NOWRAP><IMG src="img/docum.gif" alt=""> <B>{t}Name:{/t}</B></TD>
+		<TD width="99%" class="fleftu" NOWRAP><IMG src="img/docum.gif" alt=""> <B>{trans("Name:")}</B></TD>
 		<TD width="1%" class="frightu"></TD>
 	</TR>
 	{if $listdata.total != 0}
@@ -20,14 +20,14 @@
 			<IMG src="img/docum.gif" alt=""> <B>{$item}</B>
 		</TD>
 		<TD class="fright" align="right" NOWRAP>
-			<A href="?m=documenttypeedit&id={$key}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+			<A href="?m=documenttypeedit&id={$key}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 		</TD>
 	</TR>
 	{foreachelse}
 	<TR>
 		<TD colspan="2" align="center" class="fall">
 			<p>&nbsp;</p>
-			<p><B>{t}There are no types in database.{/t}</B></p>
+			<p><B>{trans("There are no types in database.")}</B></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>

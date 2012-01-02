@@ -9,7 +9,7 @@
 			<IMG src="img/ticket.gif" alt="">
 		</TD>
 		<TD class="frightu" width="99%">
-			<B>{t}List of Requests{/t}</B>
+			<B>{trans("List of Requests")}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -20,11 +20,11 @@
 						<IMG src="img/queue.gif" alt="">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>{t}Queue:{/t}</B>
+						<B>{trans("Queue:")}</B>
 					</TD>
 					<TD width="1%">
 						<SELECT size="1" name="queue" {tip text="You can select queue to limit results"}>
-							<OPTION value="0">{t}- all queues -{/t}</OPTION>
+							<OPTION value="0">{trans("- all queues -")}</OPTION>
 							{section name=queues loop=$queues}
 							<OPTION value="{$queues[queues].id}">{$queues[queues].name|truncate:40:"...":true}</OPTION>
 							{/section}
@@ -34,26 +34,26 @@
 						<IMG src="img/customer.gif" alt="">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>{t}Customer:{/t}</B>
+						<B>{trans("Customer:")}</B>
 					</TD>
 					<TD width="1%" colspan="2" nowrap>
 						{if $customers}
 						<SELECT size="1" name="customer" {tip text="You can select customer to limit results"}>
-							<OPTION value="0">{t}- all customers -{/t}</OPTION>
+							<OPTION value="0">{trans("- all customers -")}</OPTION>
 							{foreach from=$customers item=c}
 							<OPTION value="{$c.id}">{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
 							{/foreach}
 						</SELECT>
 						{else}
 						<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
-						<a href="javascript: void(0);" onclick="return customerchoosewin(document.ticketslist.customer);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+						<a href="javascript: void(0);" onclick="return customerchoosewin(document.ticketslist.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
 						{/if}
 					</TD>
 					<TD width="1%" nowrap>
 						<IMG src="img/ticket.gif" alt="">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>{t}Subject:{/t}</B>
+						<B>{trans("Subject:")}</B>
 					</TD>
 					<TD width="92%" nowrap>
 						<INPUT type="text" name="subject" value="" size="30" {tip text="Enter subject"}>
@@ -64,12 +64,12 @@
 						<IMG src="img/dead.gif" alt="">
 					</TD>
 					<TD width="1%">
-						<B>{t}Status:{/t}</B>
+						<B>{trans("Status:")}</B>
 					</TD>
 					<TD width="1%">
 						<SELECT size="1" name="status" {tip text="You can select status to limit results"}>
-							<OPTION value="">- {t}all{/t} -</OPTION>
-							<OPTION value="-1">{t}not resolved{/t}</OPTION>
+							<OPTION value="">- {trans("all")} -</OPTION>
+							<OPTION value="-1">{trans("not resolved")}</OPTION>
 							{foreach from=$_RT_STATES item=item key=key}
 							<OPTION value="{$key}">{$item}</OPTION>
 							{/foreach}
@@ -79,17 +79,17 @@
 						<IMG src="img/time.gif" alt="">
 					</TD>
 					<TD width="1%">
-						<B>{t}Uptime:{/t}</B>
+						<B>{trans("Uptime:")}</B>
 					</TD>
 					<TD width="1%" nowrap>
-						<INPUT TYPE="text" NAME="days" SIZE="3"> {t}days{/t}
+						<INPUT TYPE="text" NAME="days" SIZE="3"> {trans("days")}
 					</TD>
 					<TD width="10%" nowrap>
 					</TD>
 				</TR>
 				<TR>
 					<TD width="1%" COLSPAN="2" NOWRAP>
-						<IMG src="img/queue.gif" alt=""><B>{t}Categories:{/t}</B>
+						<IMG src="img/queue.gif" alt=""><B>{trans("Categories:")}</B>
 					</TD>
 					<TD width="1%">
 						<TABLE>
@@ -111,10 +111,10 @@
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<INPUT TYPE="checkbox" NAME="extended" VALUE="1"><A HREF="javascript:checkElement('extended')">{t}extended format{/t}</A> &nbsp;
-			<INPUT TYPE="checkbox" NAME="contacts" VALUE="1" CHECKED><A HREF="javascript:checkElement('contacts')">{t}include contact info{/t}</A>
+			<INPUT TYPE="checkbox" NAME="extended" VALUE="1"><A HREF="javascript:checkElement('extended')">{trans("extended format")}</A> &nbsp;
+			<INPUT TYPE="checkbox" NAME="contacts" VALUE="1" CHECKED><A HREF="javascript:checkElement('contacts')">{trans("include contact info")}</A>
 			&nbsp; &nbsp; &nbsp;
-			<A href="javascript:document.ticketslist.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+			<A href="javascript:document.ticketslist.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -128,7 +128,7 @@
 			<IMG src="img/ticket.gif" alt="">
 		</TD>
 		<TD class="frightu" width="99%">
-			<B>{t}Requests Stats{/t}</B>
+			<B>{trans("Requests Stats")}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -139,11 +139,11 @@
 						<IMG src="img/queue.gif" alt="">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>{t}Queue:{/t}</B>
+						<B>{trans("Queue:")}</B>
 					</TD>
 					<TD width="1%">
 						<SELECT size="1" name="queue" {tip text="You can select queue to limit results"}>
-							<OPTION value="0">{t}- all queues -{/t}</OPTION>
+							<OPTION value="0">{trans("- all queues -")}</OPTION>
 							{section name=queues loop=$queues}
 							<OPTION value="{$queues[queues].id}">{$queues[queues].name|truncate:40:"...":true}</OPTION>
 							{/section}
@@ -158,7 +158,7 @@
 				</TR>
 				<TR>
 					<TD width="1%" COLSPAN="2" NOWRAP>
-						<IMG src="img/queue.gif" alt=""><B>{t}Categories:{/t}</B>
+						<IMG src="img/queue.gif" alt=""><B>{trans("Categories:")}</B>
 					</TD>
 					<TD width="1%">
 						<TABLE>
@@ -180,7 +180,7 @@
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.stats.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+			<A href="javascript:document.stats.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
 </TABLE>

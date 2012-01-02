@@ -13,14 +13,14 @@
 			{/if}
 			<B>{$type}</B>
 			{if $duplicate}
-			<BR><font class="sdr">{t}Duplicate draw-up date:{/t} {$smarty.now|date_format:"%Y/%m/%d"}</font>
+			<BR><font class="sdr">{trans("Duplicate draw-up date:")} {$smarty.now|date_format:"%Y/%m/%d"}</font>
 			{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" VALIGN="TOP" CLASS="sdr">
-			{t}Draw-up date:{/t}<BR>
-			{t}Sale date:{/t}<BR>
-			{t}Deadline:{/t}<BR>
-			{t}Payment type:{/t}
+			{trans("Draw-up date:")}<BR>
+			{trans("Sale date:")}<BR>
+			{trans("Deadline:")}<BR>
+			{trans("Payment type:")}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="LEFT" VALIGN="TOP" CLASS="sdr">
 			{$invoice.cdate|date_format:"%Y/%m/%d"}{if $invoice.division_cplace neq ""}, {$invoice.division_cplace}{/if}<BR>
@@ -38,17 +38,17 @@
 <TABLE WIDTH="100%" CELLSPACING="3">
 	<TR>
 		<TD WIDTH="66%" VALIGN="TOP">
-			<B>{t}Seller:{/t}</B><BR>
+			<B>{trans("Seller:")}</B><BR>
 			<BR>
 			{$invoice.division_header|replace:"\n":"<BR>"}<BR>
-			{t}Bank account:{/t} {bankaccount id=$invoice.customerid account=$invoice.account}
+			{trans("Bank account:")} {bankaccount id=$invoice.customerid account=$invoice.account}
 			<BR><BR>
-			<B>{t}Purchaser:{/t}</B><BR>
+			<B>{trans("Purchaser:")}</B><BR>
 			<BR>
 			{$invoice.name}<BR>
 			{$invoice.address}<BR>
 			{$invoice.zip} {$invoice.city}<BR>
-			{if $invoice.ten neq ""}{t}TEN:{/t} {$invoice.ten}<BR>{elseif $invoice.ssn neq ""}{t}SSN:{/t} {$invoice.ssn}<BR>{/if}
+			{if $invoice.ten neq ""}{trans("TEN:")} {$invoice.ten}<BR>{elseif $invoice.ssn neq ""}{trans("SSN:")} {$invoice.ssn}<BR>{/if}
 			<BR>
 		</TD>
 		<TD WIDTH="34%" VALIGN="TOP" CLASS="sdr">
@@ -77,45 +77,45 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
     <TR CLASS="FALL">
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
-		<B>{t}No.{/t}</B>
+		<B>{trans("No.")}</B>
 	</TD>
 	<TD WIDTH="{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}90{else}91{/if}%" CLASS="head" ALIGN="CENTER">
-		<B>{t}Name of Product, Commodity or Service:{/t}</B>
+		<B>{trans("Name of Product, Commodity or Service:")}</B>
 	</TD>
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
-		<B>{t}Product ID:{/t}</B>
+		<B>{trans("Product ID:")}</B>
 	</TD>
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
-		<B>{t}Unit:{/t}</B>
+		<B>{trans("Unit:")}</B>
 	</TD>
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
-		<B>{t}Amount:{/t}</B>
+		<B>{trans("Amount:")}</B>
 	</TD>
 	{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
-		<B>{t}Discount:{/t}</B>
+		<B>{trans("Discount:")}</B>
 	</TD>
 	{/if}
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
-		<B>{t}Unitary Net Value:{/t}</B>
+		<B>{trans("Unitary Net Value:")}</B>
 	</TD>
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
-		<B>{t}Net Value:{/t}</B>
+		<B>{trans("Net Value:")}</B>
 	</TD>
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
-		<B>{t}Tax Rate:{/t}</B>
+		<B>{trans("Tax Rate:")}</B>
 	</TD>
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
-		<B>{t}Tax Value:{/t}</B>
+		<B>{trans("Tax Value:")}</B>
 	</TD>
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
-		<B>{t}Gross Value:{/t}</B>
+		<B>{trans("Gross Value:")}</B>
 	</TD>
     </TR>
 {if $invoice.invoice}
     <TR>
 	<TD COLSPAN="{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}11{else}10{/if}" CLASS="fbottom">
-		<B>{t}Was:{/t}</B>
+		<B>{trans("Was:")}</B>
 	</TD>
     </TR>
 {cycle values="grey,white" print=false}
@@ -159,7 +159,7 @@
 {/foreach}
     <TR>
 	<TD COLSPAN="{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}7{else}6{/if}" ALIGN="RIGHT" CLASS="ftop" STYLE="text-align: right">
-		<P ALIGN="RIGHT"><B>{t}Total:{/t}</B></P>
+		<P ALIGN="RIGHT"><B>{trans("Total:")}</B></P>
 	</TD>
 	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
 		{$invoice.invoice.totalbase|money_format}
@@ -179,7 +179,7 @@
 		&nbsp;
 	</TD>
 	<TD COLSPAN="4" WIDTH="4%" ALIGN="CENTER">
-		<B>{t}in it:{/t}</B>
+		<B>{trans("in it:")}</B>
 	</TD>
     </TR>
 {foreach from=$invoice.invoice.taxest item=item}
@@ -203,7 +203,7 @@
 {/foreach}
     <TR>
 	<TD COLSPAN="{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}11{else}10{/if}" CLASS="fbottom">
-		<B>{t}Corrected to:{/t}</B>
+		<B>{trans("Corrected to:")}</B>
 	</TD>
     </TR>
 {/if}
@@ -248,7 +248,7 @@
     {/foreach}
     <TR>
 	<TD COLSPAN="{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}7{else}6{/if}" ALIGN="RIGHT" CLASS="ftop" STYLE="text-align: right">
-		<P ALIGN="RIGHT"><B>{t}Total:{/t}</B></P>
+		<P ALIGN="RIGHT"><B>{trans("Total:")}</B></P>
 	</TD>
 	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
 		{$invoice.totalbase|money_format}
@@ -268,7 +268,7 @@
 		&nbsp;
 	</TD>
 	<TD COLSPAN="4" WIDTH="4%" ALIGN="CENTER">
-		<B>{t}in it:{/t}</B>
+		<B>{trans("in it:")}</B>
 	</TD>
     </TR>
     {foreach from=$invoice.taxest item=item}
@@ -299,7 +299,7 @@
     </TR>
     <TR>
 	<TD COLSPAN="{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}7{else}6{/if}" ALIGN="RIGHT">
-		<B>{t}Difference value:{/t}</B>
+		<B>{trans("Difference value:")}</B>
 	</TD>
 	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
 		{if $totalbase > 0}+{/if}{$totalbase|money_format}
@@ -318,7 +318,7 @@
     {if $invoice.reason}
     <TR>
 	<TD COLSPAN="{if $invoice.reason}11{else}10{/if}">
-		<B>{t}Reason:{/t}</B> {$invoice.reason}
+		<B>{trans("Reason:")}</B> {$invoice.reason}
 	</TD>
     </TR>
     {/if}
@@ -332,20 +332,20 @@
 	<TR>
 		<TD WIDTH="50%" ALIGN="CENTER" ROWSPAN="2">
 	        {if $invoice.user || $invoice.division_author}
-			{t}Expositor:{/t} {if $invoice.user}{$invoice.user}{else}{$invoice.division_author}{/if}
+			{trans("Expositor:")} {if $invoice.user}{$invoice.user}{else}{$invoice.division_author}{/if}
         	{/if}
 		</TD>
 		<TD WIDTH="50%" ALIGN="RIGHT" CLASS="hdf">
 			{if $invoice.rebate}
-			{t}To repay:{/t} {$invoice.value|money_format}
+			{trans("To repay:")} {$invoice.value|money_format}
 			{else}
-			{t}To pay:{/t} {$invoice.value|money_format}
+			{trans("To pay:")} {$invoice.value|money_format}
 			{/if}
 		</TD>
 	</TR>
 	<TR>
 		<TD WIDTH="50%" ALIGN="RIGHT" CLASS="SDR">
-			{t}In words:{/t}
+			{trans("In words:")}
 			{if $_config.phpui.to_words_short_version|chkconfig}
 				{$invoice.value|string_format:"%d"|to_words:0:"":1} {$invoice.valuep|string_format:"%02d"}/100
 			{else}
@@ -360,10 +360,10 @@
 	</TR>
 	<TR>
 		<TD WIDTH="100%" COLSPAN="2">
-			<B>{t}Cautions:{/t}</B><BR>
+			<B>{trans("Cautions:")}</B><BR>
 			<BLOCKQUOTE>
-			{t}If you have any questions or doubts, contact with our Customer Service Representative. Prepare your Customer ID, please.{/t}<BR>
-			{t}You may use our automated Customer Care Web Panel, just remember your PIN (it's printed on the other side of this page){/t}
+			{trans("If you have any questions or doubts, contact with our Customer Service Representative. Prepare your Customer ID, please.")}<BR>
+			{trans("You may use our automated Customer Care Web Panel, just remember your PIN (it's printed on the other side of this page)")}
 			</BLOCKQUOTE>
 			<BR>
 		</TD>
@@ -374,7 +374,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR>
 		<TD WIDTH="100%" ALIGN="CENTER" COLSPAN="2" CLASS="hd1">
-			<B>{t}Thanks for using our services!{/t}</B>
+			<B>{trans("Thanks for using our services!")}</B>
 		</TD>
 	</TR>
 	{if $invoice.division_footer}
@@ -391,7 +391,7 @@
 
 {if $invoice.customerpin}
 	<BR><BR>
-	<B>{t}Customer ID:{/t} {$invoice.customerid|string_format:"%04d"}</B><BR>
+	<B>{trans("Customer ID:")} {$invoice.customerid|string_format:"%04d"}</B><BR>
 	PIN: <CODE>{$invoice.customerpin|string_format:"%04d"}</CODE>
 	<BR><BR>
 {/if}
@@ -403,12 +403,12 @@ customer's balance: {$invoice.customerbalancelist.balance}
 {if $invoice.customerbalancelist}
 <TABLE cellpadding="5" cellspacing="0" width="100%">
 	<TR>
-    		<TD width="1%" class="fleftu">{t}Date:{/t}</TD>
-	        <TD width="1%" class="fbt" align="right">{t}Value:{/t}</TD>
-    		<TD width="1%" class="fbt" align="right">{t}Tax:{/t}</TD>
+    		<TD width="1%" class="fleftu">{trans("Date:")}</TD>
+	        <TD width="1%" class="fbt" align="right">{trans("Value:")}</TD>
+    		<TD width="1%" class="fbt" align="right">{trans("Tax:")}</TD>
 	        <TD width="1%" class="fbt" align="center">&raquo;</TD>
-	        <TD width="1%" class="fbt" align="right">{t}After:{/t}</TD>
-	        <TD width="93%" class="frightu">{t}Description:{/t}</TD>
+	        <TD width="1%" class="fbt" align="right">{trans("After:")}</TD>
+	        <TD width="93%" class="frightu">{trans("Description:")}</TD>
 	</TR>
 	{if $invoice.customerbalancelistlimit >= $invoice.customerbalancelist.total}
 		{assign var="startloop" value="0"}

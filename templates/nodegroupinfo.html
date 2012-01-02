@@ -14,7 +14,7 @@
 		<TD WIDTH="1%" CLASS="fleft">
 			<IMG SRC="img/node.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" NOWRAP><B>{t}Members Count:{/t}</B>
+		<TD WIDTH="1%" NOWRAP><B>{trans("Members Count:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
 			{$nodegroup.count}
@@ -36,9 +36,9 @@
 	{/if}
 	<TR CLASS="light">
 	        <TD ALIGN="RIGHT" CLASS="fbottomu" COLSPAN="3">
-			<A HREF="?m=nodegroupedit&id={$nodegroup.id}{if $membersnetid}&membersnetid={$membersnetid}{/if}{if $othersnetid}&othersnetid={$othersnetid}{/if}" ACCESSKEY="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT=""></A>
+			<A HREF="?m=nodegroupedit&id={$nodegroup.id}{if $membersnetid}&membersnetid={$membersnetid}{/if}{if $othersnetid}&othersnetid={$othersnetid}{/if}" ACCESSKEY="E">{trans("Edit")} <IMG SRC="img/edit.gif" ALT=""></A>
 			{if !$nodegroup.count}
-			<A HREF="?m=nodegroupdel&id={$nodegroup.id}" onclick="return confirmLink(this,'{t}Are you sure, you want to delete that group?{/t}');">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT=""></A>
+			<A HREF="?m=nodegroupdel&id={$nodegroup.id}" onclick="return confirmLink(this,'{trans("Are you sure, you want to delete that group?")}');">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
 			{/if}
 		</TD>
 	</TR>

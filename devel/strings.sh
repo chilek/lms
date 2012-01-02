@@ -46,12 +46,14 @@ do
     echo -n "$FILENAME... "
     perl -lne 'print for /text="(.*?[^\\])"/g' $FILENAME >> html_strings
     perl -lne 'print for /_tip="(.*?[^\\])"/g' $FILENAME >> html_strings
+    perl -lne 'print for /\{trans\("([^"]+)"\)\}/g' $FILENAME >> html_strings
     perl -lne 'print for /\{t[^}]*\}([^{]*)\{\/t}/g' $FILENAME >> html_strings
     echo "done."
 done
 for FILENAME in `ls ../documents/templates/default/*.html`
 do
     echo -n "$FILENAME... "
+    perl -lne 'print for /\{trans\("([^"]+)"\)\}/g' $FILENAME >> html_strings
     perl -lne 'print for /\{t[^}]*\}([^{]*)\{\/t}/g' $FILENAME >> html_strings
     echo "done."
 done

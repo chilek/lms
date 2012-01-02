@@ -5,19 +5,19 @@
 <TABLE cellpadding="3" WIDTH="100%">
 	<TR class="dark" {tip text="Click on column name to change sorting order"}>
 		<TD class="fleftu" colspan="2" WIDTH="1%" NOWRAP>
-			<IMG src="img/ticket.gif" alt="">&nbsp;<a href="?m={$layout.module}&s=1&o=ticketid{if $queuedata.direction eq "asc" && $queuedata.order eq "ticketid"},desc{/if}"><B>{t}ID:{/t}</B></A> {if $queuedata.order eq "ticketid"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<IMG src="img/calendar.gif" alt="">&nbsp;<a href="?m={$layout.module}&s=1&o=createtime{if $queuedata.direction eq "asc" && $queuedata.order eq "createtime"},desc{/if}">{t}Create time:{/t}</A>{if $queuedata.order eq "createtime"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG src="img/ticket.gif" alt="">&nbsp;<a href="?m={$layout.module}&s=1&o=ticketid{if $queuedata.direction eq "asc" && $queuedata.order eq "ticketid"},desc{/if}"><B>{trans("ID:")}</B></A> {if $queuedata.order eq "ticketid"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<IMG src="img/calendar.gif" alt="">&nbsp;<a href="?m={$layout.module}&s=1&o=createtime{if $queuedata.direction eq "asc" && $queuedata.order eq "createtime"},desc{/if}">{trans("Create time:")}</A>{if $queuedata.order eq "createtime"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="fbt" WIDTH="97%">
-			<a href="?m={$layout.module}&s=1&o=subject{if $queuedata.direction eq "asc" && $queuedata.order eq "subject"},desc{/if}"><B>{t}Subject:{/t}</B></A> {if $queuedata.order eq "subject"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<a href="?m={$layout.module}&s=1&o=requestor{if $queuedata.direction eq "asc" && $queuedata.order eq "requestor"},desc{/if}">{t}Submitter:{/t}</A> {if $queuedata.order eq "requestor"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<a href="?m={$layout.module}&s=1&o=subject{if $queuedata.direction eq "asc" && $queuedata.order eq "subject"},desc{/if}"><B>{trans("Subject:")}</B></A> {if $queuedata.order eq "subject"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<a href="?m={$layout.module}&s=1&o=requestor{if $queuedata.direction eq "asc" && $queuedata.order eq "requestor"},desc{/if}">{trans("Submitter:")}</A> {if $queuedata.order eq "requestor"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="fbt" WIDTH="1%" NOWRAP>
-			<a href="?m={$layout.module}&s=1&o=owner{if $queuedata.direction eq "asc" && $queuedata.order eq "owner"},desc{/if}"><B>{t}Owner:{/t}</B></A> {if $queuedata.order eq "owner"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<a href="?m={$layout.module}&s=1&o=lastmodified{if $queuedata.direction eq "asc" && $queuedata.order eq "lastmodified"},desc{/if}">{t}Last modified:{/t}</A> {if $queuedata.order eq "lastmodified"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<a href="?m={$layout.module}&s=1&o=owner{if $queuedata.direction eq "asc" && $queuedata.order eq "owner"},desc{/if}"><B>{trans("Owner:")}</B></A> {if $queuedata.order eq "owner"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<a href="?m={$layout.module}&s=1&o=lastmodified{if $queuedata.direction eq "asc" && $queuedata.order eq "lastmodified"},desc{/if}">{trans("Last modified:")}</A> {if $queuedata.order eq "lastmodified"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="frightu" WIDTH="1%" NOWRAP>
-			<B>{t}Total:{/t} {$queuedata.total|default:"0"}</B>
+			<B>{trans("Total:")} {$queuedata.total|default:"0"}</B>
 		</TD>
 	</TR>
 	{if $queuedata.total != 0}
@@ -29,7 +29,7 @@
 	{/if}
 	<TR class="light">
 		<TD COLSPAN="5" class="fall" ALIGN="right">
-			<A HREF="?m=rtticketadd&id={$queuedata.queue}&customerid={$search.customerid}">{t}New Ticket{/t} <IMG src="img/save.gif" ALT=""></A>
+			<A HREF="?m=rtticketadd&id={$queuedata.queue}&customerid={$search.customerid}">{trans("New Ticket")} <IMG src="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>
 	{cycle values="light,lucid" print=false}		
@@ -80,17 +80,17 @@
 			{if $queue[ticket].state == 0 || $queue[ticket].state == 3}</FONT>{/if}
 		</TD>
 		<TD class="fright" align="right" NOWRAP>
-			<A href="?m=rtticketprint&id={$queue[ticket].id}" target="_BLANK"><IMG src="img/print.gif" alt="[ {t}Print{/t} ]" title="[ {t}Print{/t} ]" title="[ {t}Edit{/t} ]"> </A>
-			<A href="?m=rtticketdel&id={$queue[ticket].id}" onClick="return confirmLink(this, '{t a=$queue[ticket].id|string_format:"%06d"}Are you sure, you want to remove ticket $a?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
-			<A href="?m=rtticketedit&id={$queue[ticket].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
-			<A href="?m=rtticketview&id={$queue[ticket].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
+			<A href="?m=rtticketprint&id={$queue[ticket].id}" target="_BLANK"><IMG src="img/print.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]" title="[ {trans("Edit")} ]"> </A>
+			<A href="?m=rtticketdel&id={$queue[ticket].id}" onClick="return confirmLink(this, '{t a=$queue[ticket].id|string_format:"%06d"}Are you sure, you want to remove ticket $a?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			<A href="?m=rtticketedit&id={$queue[ticket].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			<A href="?m=rtticketview&id={$queue[ticket].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
 		<TD COLSPAN="5" class="flr" ALIGN="center">
 			<P>&nbsp;</P>
-			<P><B>{t}No such tickets matching search criteria.{/t}</B></P>
+			<P><B>{trans("No such tickets matching search criteria.")}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>
@@ -104,7 +104,7 @@
 	{/if}
 	<TR class="light">
 		<TD COLSPAN="5" class="fall" ALIGN="right">
-			<A HREF="?m=rtticketadd&id={$queuedata.queue}&customerid={$search.customerid}">{t}New Ticket{/t} <IMG src="img/save.gif" ALT=""></A>
+			<A HREF="?m=rtticketadd&id={$queuedata.queue}&customerid={$search.customerid}">{trans("New Ticket")} <IMG src="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>

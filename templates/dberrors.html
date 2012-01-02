@@ -3,16 +3,16 @@
 <TABLE WIDTH="100%" CELLPADDING="10">
 	<TR class="superlight">
 		<TD WIDTH="1%" CLASS="fleftu">
-			<IMG SRC="img/warning.png" ALT="[ {t}Error!{/t} ]">
+			<IMG SRC="img/warning.png" ALT="[ {trans("Error!")} ]">
 		</TD>
 		<TD WIDTH="99%" CLASS="frightu">
-			<FONT class="alert">{t}Database errors occurred!{/t}</FONT><BR>
+			<FONT class="alert">{trans("Database errors occurred!")}</FONT><BR>
 			{foreach from=$layout.dberrors item=dberror}
                 {if $layout.dbdebug}
 				    <B>({math equation="x*1000" x=$dberror.time format="%.4f"} ms):</B> {$dberror.query}<BR>
                 {else}
-				    <B>{t}Query:{/t}</B> {$dberror.query}<BR>
-    				<B>{t}Error:{/t}</B> {$dberror.error}<BR>
+				    <B>{trans("Query:")}</B> {$dberror.query}<BR>
+    				<B>{trans("Error:")}</B> {$dberror.error}<BR>
 				{/if}
 			{/foreach}
 		</TD>

@@ -7,7 +7,7 @@
 			<IMG src="img/calendar.gif" alt="">
 		</TD>
 		<TD width="1%" class="fbt">
-			<B>{t}Title:{/t}</B>
+			<B>{trans("Title:")}</B>
 		</TD>
 		<TD width="98%" class="frightu">
 			<B>{$event.title}</B>
@@ -18,7 +18,7 @@
 			<IMG src="img/time.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Time:{/t}</B>
+			<B>{trans("Time:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			{$event.date|date_format:"%x (%A)"}
@@ -34,7 +34,7 @@
 			<IMG src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Description:{/t}</B>
+			<B>{trans("Description:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<TABLE WIDTH="95%" CELLPADDING="5">
@@ -52,10 +52,10 @@
 			<IMG src="img/access.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Status:{/t}</B>
+			<B>{trans("Status:")}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
-			{if $event.private}{t}private{/t}{else}{t}public{/t}{/if}
+			{if $event.private}{trans("private")}{else}{trans("public")}{/if}
 		</TD>
 	</TR>
 	<TR class="light">
@@ -63,7 +63,7 @@
 			<IMG src="img/users.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Created by:{/t}</B>
+			<B>{trans("Created by:")}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
 			<A href="?m=userinfo&id={$event.userid}">{$event.username}</A>
@@ -74,7 +74,7 @@
 			<IMG src="img/customer.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Customer:{/t}</B>
+			<B>{trans("Customer:")}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
 			<A href="?m=customerinfo&id={$event.customerid}">{$event.customername}</A>
@@ -86,7 +86,7 @@
 			<IMG src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Note:{/t}</B>
+			<B>{trans("Note:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<TABLE WIDTH="95%" CELLPADDING="5">
@@ -104,7 +104,7 @@
 			<IMG src="img/users.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Users:{/t}</B>
+			<B>{trans("Users:")}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
 			{foreach item=user from=$event.userlist}	
@@ -114,11 +114,11 @@
 	</TR>
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
-			<A href="?m=eventedit&id={$event.id}">{t}Edit{/t} <IMG src="img/edit.gif" alt=""></A>
+			<A href="?m=eventedit&id={$event.id}">{trans("Edit")} <IMG src="img/edit.gif" alt=""></A>
 			{if !$event.closed}
-			<A href="?m=eventedit&id={$event.id}&action=close">{t}Close{/t} <IMG src="img/dead.gif" alt=""></A>
+			<A href="?m=eventedit&id={$event.id}&action=close">{trans("Close")} <IMG src="img/dead.gif" alt=""></A>
 			{else}
-			<A href="?m=eventedit&id={$event.id}&action=open">{t}Open{/t} <IMG src="img/open.gif" alt=""></A>
+			<A href="?m=eventedit&id={$event.id}&action=open">{trans("Open")} <IMG src="img/open.gif" alt=""></A>
 			{/if}
 		</TD>
 	</TR>

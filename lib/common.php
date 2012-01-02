@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-cvs
  *
- *  (C) Copyright 2001-2011 LMS Developers
+ *  (C) Copyright 2001-2012 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -711,6 +711,15 @@ function location_str($data)
     return $location;
 }
 
+function set_timer($label = 0)
+{
+    $GLOBALS['lms_timer'][$label] = microtime(true);
+}
+
+function get_timer($label = 0)
+{
+    return sprintf('%.4f', microtime(true) - $GLOBALS['lms_timer'][$label]);
+}
 
 /* Functions for modularized LMS */
 function plugin_handle($name)

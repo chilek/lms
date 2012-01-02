@@ -10,7 +10,7 @@
 			<IMG src="img/tax.gif" alt="">
 		</TD>
 		<TD width="1%" class="fbt">
-			<B>{t}Label:{/t}</B>
+			<B>{trans("Label:")}</B>
 		</TD>
 		<TD width="98%" class="frightu">
 			<INPUT type="text" name="taxrateedit[label]" value="{$taxrateedit.label}" size="16" {tip text="Enter tax rate label" trigger="label"}>
@@ -21,7 +21,7 @@
 			<IMG src="img/pay.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>
-			<B>{t}Value:{/t}</B>
+			<B>{trans("Value:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<INPUT type="text" name="taxrateedit[value]" value="{$taxrateedit.value|string_format:"%.2f"}" size="10" {tip text="Enter percentage value of tax rate" trigger="value"}>
@@ -32,7 +32,7 @@
 			<IMG src="img/pay.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Taxing:{/t}</B>
+			<B>{trans("Taxing:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<INPUT type="checkbox" name="taxrateedit[taxed]" value="1" {tip text="Select taxing status"}{if $taxrateedit.taxed!="0"}CHECKED{/if}>
@@ -43,7 +43,7 @@
 			<IMG src="img/calendar.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>
-			<B>{t}Binds from date:{/t}</B>
+			<B>{trans("Binds from date:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<INPUT type="text" name="taxrateedit[validfrom]" value="{$taxrateedit.validfrom}" size="10" OnCLick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar" trigger="validfrom"}>
@@ -54,7 +54,7 @@
 			<IMG src="img/calendar.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>
-			<B>{t}Binds to date:{/t}</B>
+			<B>{trans("Binds to date:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<INPUT type="text" name="taxrateedit[validto]" value="{$taxrateedit.validto}" size="10" OnCLick="javascript:cal2.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar" trigger="validto"}>
@@ -62,8 +62,8 @@
 	</TR>
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
-			<A href="javascript:document.taxrateedit.submit();" accesskey="s">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=taxratelist">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A>
+			<A href="javascript:document.taxrateedit.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=taxratelist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE>

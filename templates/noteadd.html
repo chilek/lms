@@ -62,12 +62,12 @@ window.open('?m=note&id={$newnoteid}');
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="dark">
 		<TD CLASS="fall" WIDTH="100%" COLSPAN="2">
-			<B>{t}Main Information:{/t}</B>
+			<B>{trans("Main Information:")}</B>
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<B>{t}Debit note number:{/t}</B>
+			<B>{trans("Debit note number:")}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
 			<INPUT TYPE="TEXT" NAME="note[number]" VALUE="{$note.number}" SIZE="10" {tip text="Enter note number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
@@ -85,7 +85,7 @@ window.open('?m=note&id={$newnoteid}');
 	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<B>{t}Settlement date:{/t}</B>
+			<B>{trans("Settlement date:")}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
 			<INPUT TYPE="TEXT" NAME="note[cdate]" VALUE="{$note.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} OnClick="javascript:cal1.popup();" >
@@ -96,11 +96,11 @@ window.open('?m=note&id={$newnoteid}');
 	</TR>
 	<TR CLASS="light">
                 <TD CLASS="fleft" WIDTH="1%" NOWRAP>
-	                <B>{t}Deadline:{/t}</B>
+	                <B>{trans("Deadline:")}</B>
 	        </TD>
 	        <TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT type="radio" name="note[paytime_default]" value="1" onclick="javascript:setPayTime(1)"{if !isset($note.paytime_default) || $note.paytime_default} checked{/if}><a href="javascript:setPayTime(1)">{t}default{/t}</a>
-                        <INPUT type="radio" name="note[paytime_default]" value="0" onclick="javascript:setPayTime(0)"{if isset($note.paytime_default) && !$note.paytime_default} checked{/if}><a href="javascript:setPayTime(0)">{t}other{/t}</a>
+			<INPUT type="radio" name="note[paytime_default]" value="1" onclick="javascript:setPayTime(1)"{if !isset($note.paytime_default) || $note.paytime_default} checked{/if}><a href="javascript:setPayTime(1)">{trans("default")}</a>
+                        <INPUT type="radio" name="note[paytime_default]" value="0" onclick="javascript:setPayTime(0)"{if isset($note.paytime_default) && !$note.paytime_default} checked{/if}><a href="javascript:setPayTime(0)">{trans("other")}</a>
 	                <INPUT TYPE="TEXT" NAME="note[paytime]" VALUE="{$note.paytime}" SIZE="5"
 			{if !isset($note.paytime_default) || $note.paytime_default} style="visibility: hidden"{/if} {tip text="Enter deadline in days (optional)" trigger="paytime"}>
 	                {* if $note.cdate}
@@ -110,25 +110,25 @@ window.open('?m=note&id={$newnoteid}');
 	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<B>{t}Customer:{/t}</B>
+			<B>{trans("Customer:")}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
 			{if $customers}
 			<SELECT SIZE="1" NAME="customer" onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value">
-				<OPTION VALUE="0">{t}... select customer ...{/t}</OPTION>
+				<OPTION VALUE="0">{trans("... select customer ...")}</OPTION>
 				{foreach from=$customers item=c}
 				<OPTION VALUE="{$c.id}"{if $c.id eq $customer.id || $note.customerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:"40":"...":true} ({$c.id|string_format:"%04d"})</OPTION>
 				{/foreach}
 			</SELECT>
-			{t}or Customer ID:{/t}
+			{trans("or Customer ID:")}
 			{/if}
 			<INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{else}{$note.customerid}{/if}" SIZE="5"{if $customers} onChange="document.setcustomer.customer.value=document.setcustomer.customerid.value"{/if} {tip text="Enter customer ID" trigger="customer"}>
-			<a href="javascript: void(0);" onClick="return customerchoosewin(document.setcustomer.customerid);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+			<a href="javascript: void(0);" onClick="return customerchoosewin(document.setcustomer.customerid);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fbottomu" WIDTH="100%" ALIGN="right" COLSPAN="2">
-			<A HREF="javascript: saveheader();">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+			<A HREF="javascript: saveheader();">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -138,7 +138,7 @@ window.open('?m=note&id={$newnoteid}');
 <TABLE WIDTH="100%" CELLPADDING="3">
         <TR CLASS="dark">
                 <TD CLASS="fleftu" WIDTH="1%" nowrap>
-                        <IMG SRC="img/customer.gif" ALT=""> <B>{t}Customer:{/t}</B>
+                        <IMG SRC="img/customer.gif" ALT=""> <B>{trans("Customer:")}</B>
                 </TD>
                 <TD CLASS="frightu" WIDTH="99%">
                         <B>{$customer.customername}</B>
@@ -153,13 +153,13 @@ window.open('?m=note&id={$newnoteid}');
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD CLASS="fleftu" WIDTH="1%">
-			<B>{t}No.{/t}</B>
+			<B>{trans("No.")}</B>
 		</TD>
 		<TD CLASS="fbt" WIDTH="97%">
-			{t}Title:{/t}
+			{trans("Title:")}
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{t}Value:{/t}
+			{trans("Value:")}
 		</TD>
 		<TD CLASS="frightu" WIDTH="1%">
 			&nbsp;
@@ -185,7 +185,7 @@ window.open('?m=note&id={$newnoteid}');
 	<TR>
 		<TD COLSPAN="4" ALIGN="CENTER" CLASS="flr">
 			<P>&nbsp;</P>
-			<P><B>{t}Debit note have no items. Use form below for items addition.{/t}</B></P>
+			<P><B>{trans("Debit note have no items. Use form below for items addition.")}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>
@@ -193,7 +193,7 @@ window.open('?m=note&id={$newnoteid}');
 	{if $contents}
 	<TR CLASS="light">
 		<TD COLSPAN="2" ALIGN="RIGHT" CLASS="fleftu">
-			<B>{t}Total:{/t}</B>
+			<B>{trans("Total:")}</B>
 		</TD>
 		<TD NOWRAP ALIGN="RIGHT" CLASS="fbt">
 			<B>{sum array=$contents column=value string_format="%01.2f"}</B>
@@ -221,17 +221,17 @@ window.open('?m=note&id={$newnoteid}');
 	</TR>
 	<TR CLASS="light">
 		<TD COLSPAN="4" CLASS="fbottomu" ALIGN="RIGHT">
-			<A HREF="?m=notelist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A>
-			<A HREF="?m=noteadd&action=init">{t}Clear Contents{/t} <IMG SRC="img/delete.gif" alt=""></A> 
+			<A HREF="?m=notelist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
+			<A HREF="?m=noteadd&action=init">{trans("Clear Contents")} <IMG SRC="img/delete.gif" alt=""></A> 
 			{if !$customer}
-			<A HREF="javascript:alert('{t}Customer not selected!{/t}');">{t}Save{/t} <IMG src="img/save.gif" alt=""></A>
-			<A HREF="javascript:alert('{t}Customer not selected!{/t}');">{t}Save & Print{/t} <IMG src="img/printd.gif" alt=""></A>
+			<A HREF="javascript:alert('{trans("Customer not selected!")}');">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
+			<A HREF="javascript:alert('{trans("Customer not selected!")}');">{trans("Save & Print")} <IMG src="img/printd.gif" alt=""></A>
 			{elseif !$contents}
-			<A HREF="javascript:alert('{t}Document has no items!{/t}');">{t}Save{/t} <IMG src="img/save.gif" alt=""></A>
-			<A HREF="javascript:alert('{t}Document has no items!{/t}');">{t}Save & Print{/t} <IMG src="img/printd.gif" alt=""></A>
+			<A HREF="javascript:alert('{trans("Document has no items!")}');">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
+			<A HREF="javascript:alert('{trans("Document has no items!")}');">{trans("Save & Print")} <IMG src="img/printd.gif" alt=""></A>
 			{else}
-			<A HREF="?m=noteadd&action=save">{t}Save{/t} <IMG src="img/save.gif" alt=""></A>
-			<A HREF="javascript:printnote()">{t}Save & Print{/t} <IMG src="img/printd.gif" alt=""></A>
+			<A HREF="?m=noteadd&action=save">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
+			<A HREF="javascript:printnote()">{trans("Save & Print")} <IMG src="img/printd.gif" alt=""></A>
 			{/if}
 		</TD>
 	</TR>

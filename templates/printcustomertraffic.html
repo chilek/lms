@@ -15,19 +15,19 @@
 <TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
 		<TD WIDTH="96%" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
-			{t}Day{/t}
+			{trans("Day")}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
-			{t}Download{/t}
+			{trans("Download")}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
-			{t}Avg. download speed{/t}
+			{trans("Avg. download speed")}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
-			{t}Upload{/t}
+			{trans("Upload")}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
-			{t}Avg. upload speed{/t}
+			{trans("Avg. upload speed")}
 		</TD>
 	</TR>
 	{cycle values="white,grey" print=false}
@@ -53,14 +53,14 @@
 	<TR>
 		<TD ALIGN="center" WIDTH="100%" COLSPAN="5">
 			<P>&nbsp;</P>
-			<P><B>{t}No such stats for selected period.{/t}</B></P>
+			<P><B>{trans("No such stats for selected period.")}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>
 	{/foreach}
 	<TR class="grey">
 		<TD ALIGN="RIGHT">
-			<B>{t}Total:{/t}</B>
+			<B>{trans("Total:")}</B>
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			<B>{$listdata.download|string_format:"%.2f"} {$listdata.downloadunit|default:"KB"}</B>

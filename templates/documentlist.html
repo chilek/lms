@@ -22,7 +22,7 @@
 
 	function delete_docs()
 	{
-		if (!confirm('{t}Are you sure, you want to delete selected documents?{/t}'))
+		if (!confirm('{trans("Are you sure, you want to delete selected documents?")}'))
 			return;
 
 		document.page.action="?m=documentdel&is_sure=1";
@@ -66,38 +66,38 @@
 <INPUT type="hidden" name="page" value="1">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
-		<TD WIDTH="1%" NOWRAP class="fleftu"> <A href="?m=documentlist&o=cdate{if $listdata.direction eq "asc" && $listdata.order eq "cdate"},desc{/if}">{t}Date:{/t}</A>{if $listdata.order eq "cdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR><B>{t}Number:{/t}</B></TD>
-		<TD WIDTH="1%" NOWRAP class="fbt"> <A href="?m=documentlist&o=type{if $listdata.direction eq "asc" && $listdata.order eq "type"},desc{/if}"><B>{t}Type:{/t}</B></A>{if $listdata.order eq "type"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</TD>
-		<TD WIDTH="1%" NOWRAP class="fbt"> <A href="?m=documentlist&o=title{if $listdata.direction eq "asc" && $listdata.order eq "title"},desc{/if}">{t}Title:{/t}</A>{if $listdata.order eq "title"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>{t}Period:{/t}</TD>
-		<TD WIDTH="96%" NOWRAP class="fbt"> <A href="?m=documentlist&o=customer{if $listdata.direction eq "asc" && $listdata.order eq "customer"},desc{/if}">{t}Customer:{/t}</A>{if $listdata.order eq "customer"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</TD>
+		<TD WIDTH="1%" NOWRAP class="fleftu"> <A href="?m=documentlist&o=cdate{if $listdata.direction eq "asc" && $listdata.order eq "cdate"},desc{/if}">{trans("Date:")}</A>{if $listdata.order eq "cdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR><B>{trans("Number:")}</B></TD>
+		<TD WIDTH="1%" NOWRAP class="fbt"> <A href="?m=documentlist&o=type{if $listdata.direction eq "asc" && $listdata.order eq "type"},desc{/if}"><B>{trans("Type:")}</B></A>{if $listdata.order eq "type"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</TD>
+		<TD WIDTH="1%" NOWRAP class="fbt"> <A href="?m=documentlist&o=title{if $listdata.direction eq "asc" && $listdata.order eq "title"},desc{/if}">{trans("Title:")}</A>{if $listdata.order eq "title"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>{trans("Period:")}</TD>
+		<TD WIDTH="96%" NOWRAP class="fbt"> <A href="?m=documentlist&o=customer{if $listdata.direction eq "asc" && $listdata.order eq "customer"},desc{/if}">{trans("Customer:")}</A>{if $listdata.order eq "customer"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</TD>
 		<TD WIDTH="1%" NOWRAP class="frightu" align="right">
-			<A href="?m=documentadd&cid={$listdata.customer}&type={$listdata.type}">{t}New Document{/t}</A> <IMG src="img/save.gif" alt="">
+			<A href="?m=documentadd&cid={$listdata.customer}&type={$listdata.type}">{trans("New Document")}</A> <IMG src="img/save.gif" alt="">
 		</TD>
 	</TR>
 	<TR class="DARK">
 		<TD class="fall" colspan="5">
-				<B>{t}Filter:{/t} </B> {t}Customer:{/t}
+				<B>{trans("Filter:")} </B> {trans("Customer:")}
                 {if $customerlist}
 				    <SELECT size="1" name="c" OnChange="filter()">
-					<OPTION value="0"{if $listdata.customer eq ""} SELECTED{/if}>{t}- all customers -{/t}</OPTION>
+					<OPTION value="0"{if $listdata.customer eq ""} SELECTED{/if}>{trans("- all customers -")}</OPTION>
 					{foreach from=$customerlist item=customer}
 					<OPTION value="{$customer.id}"{if $customer.id eq $listdata.customer} SELECTED{/if}>{$customer.customername|truncate:40:"...":true}</OPTION>
 					{/foreach}
 				    </SELECT>
 				{else}
 				    <INPUT TYPE="TEXT" NAME="c" VALUE="{if $listdata.customer}{$listdata.customer}{/if}" SIZE="5">
-				    <A href="javascript: void(0);" onClick="return customerchoosewin(document.page.elements['c']);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+				    <A href="javascript: void(0);" onClick="return customerchoosewin(document.page.elements['c']);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
                 {/if}&nbsp;
-				{t}Type:{/t}
+				{trans("Type:")}
 				<SELECT size="1" name="t" ONCHANGE="filter()">
-					<OPTION value="0"{if !$listdata.type} SELECTED {/if}>{t}- all -{/t}</OPTION>
+					<OPTION value="0"{if !$listdata.type} SELECTED {/if}>{trans("- all -")}</OPTION>
 					{foreach from=$_DOCTYPES key=key item=item}{if $key < 0}
 					<OPTION VALUE="{$key}"{if $listdata.type==$key} SELECTED{/if}>{$item}</OPTION>
 					{/if}{/foreach}
 				</SELECT>&nbsp;
-				<B>{t}Period:{/t}</B>&nbsp;
-				{t}from{/t}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
-				{t}to{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal2.popup();"  {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
+				<B>{trans("Period:")}</B>&nbsp;
+				{trans("from")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+				{trans("to")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal2.popup();"  {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
 				<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>&nbsp;
 		</TD>
 	</TR>
@@ -123,24 +123,24 @@
 		<TD NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');">
 			{$doc.title|truncate:40:"...":true}
 			{if $doc.fromdate || $doc.todate}<BR>
-			    {if $doc.fromdate}{t}from{/t} {$doc.fromdate|date_format:"%Y/%m/%d"}{/if}
-			    {if $doc.todate}{t}to{/t} {$doc.todate|date_format:"%Y/%m/%d"}{/if}
+			    {if $doc.fromdate}{trans("from")} {$doc.fromdate|date_format:"%Y/%m/%d"}{/if}
+			    {if $doc.todate}{trans("to")} {$doc.todate|date_format:"%Y/%m/%d"}{/if}
 			{/if}
 		</TD>
 		<TD NOWRAP><A href="?m=customerinfo&id={$doc.customerid}">{$doc.name|truncate:40:"...":true}</A></TD>
 		<TD CLASS="fright" ALIGN="RIGHT" NOWRAP>
 			{assign var=type value=$doc.type}
-			<a href="?m=documentview&id={$doc.docid}&save=1"><img src="img/save.gif" alt="[ {t}Save{/t} ]" title="[ {t}Save{/t} ]"></a>
+			<a href="?m=documentview&id={$doc.docid}&save=1"><img src="img/save.gif" alt="[ {trans("Save")} ]" title="[ {trans("Save")} ]"></a>
 			{if ! $doc.closed && ($docrights.$type.rights & 4)}
-			<a href="?m=documentedit&id={$doc.docid}&action=confirm"><img src="img/confirm.gif" alt="[ {t}Confirm{/t} ]" title="[ {t}Confirm{/t} ]"></a>
+			<a href="?m=documentedit&id={$doc.docid}&action=confirm"><img src="img/confirm.gif" alt="[ {trans("Confirm")} ]" title="[ {trans("Confirm")} ]"></a>
 			{/if}
 			{if ($docrights.$type.rights & 16)}
-			<a onclick="return confirmLink(this, '{t}Are you sure, you want to remove that document?{/t}')" HREF="?m=documentdel&id={$doc.docid}"><img src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></a>
+			<a onclick="return confirmLink(this, '{trans("Are you sure, you want to remove that document?")}')" HREF="?m=documentdel&id={$doc.docid}"><img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></a>
 			{/if}
 			{if ($docrights.$type.rights & 8)}
-			<a href="?m=documentedit&id={$doc.docid}"><img src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></a>
+			<a href="?m=documentedit&id={$doc.docid}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
 			{/if}
-			<a href="?m=documentview&id={$doc.docid}" target="_blank"><img src="img/{if preg_match('/pdf/',$doc.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$doc.contenttype)}xls{else}view{/if}.gif" alt="[ {t}View{/t} ]" title="[ {t}View{/t} ]"></a>
+			<a href="?m=documentview&id={$doc.docid}" target="_blank"><img src="img/{if preg_match('/pdf/',$doc.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$doc.contenttype)}xls{else}view{/if}.gif" alt="[ {trans("View")} ]" title="[ {trans("View")} ]"></a>
 			<INPUT TYPE="checkbox" NAME="marks[{$docid}]" VALUE="{$docid}"{if $marks.$docid}CHECKED{/if}>
 		</TD>
 	</TR>
@@ -148,7 +148,7 @@
 	<TR>
 		<TD align="center" WIDTH="100%" colspan="5" class="fall">
 			<p>&nbsp;</p>
-			<p><B>{t}No such documents matching search criteria or list is empty.{/t}</B></p>
+			<p><B>{trans("No such documents matching search criteria or list is empty.")}</B></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
@@ -166,13 +166,13 @@
 				<TR>
 					<TD ALIGN="left">
 						<NOBR>
-						<A HREF="javascript:print_docs();">{t}Print{/t} <IMG SRC="img/print.gif" ALT="{t}Print{/t}"></A>&nbsp;
-						<A HREF="javascript:mark_docs();">{t}Confirm{/t} <IMG SRC="img/confirm.gif" ALT="{t}Confirm{/t}"></A>&nbsp;
-						<A HREF="javascript:delete_docs();">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT="{t}Delete{/t}"></A>
+						<A HREF="javascript:print_docs();">{trans("Print")} <IMG SRC="img/print.gif" ALT="{trans("Print")}"></A>&nbsp;
+						<A HREF="javascript:mark_docs();">{trans("Confirm")} <IMG SRC="img/confirm.gif" ALT="{trans("Confirm")}"></A>&nbsp;
+						<A HREF="javascript:delete_docs();">{trans("Delete")} <IMG SRC="img/delete.gif" ALT="{trans("Delete")}"></A>
 						</NOBR>
 					</TD>
 					<TD ALIGN="right">
-				                <NOBR><A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
+				                <NOBR><A HREF="javascript:CheckAll2();">{trans("Check All")}</A><INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
 					</TD>
 				 </TR>
 			</TABLE>

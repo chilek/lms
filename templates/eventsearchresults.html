@@ -4,17 +4,17 @@
 <P><TABLE cellpadding="3" WIDTH="100%">
 	<TR CLASS="DARK">
 		<TD width="1%" class="fleftu" valign="top" NOWRAP>
-			<IMG src="img/time.gif" alt=""> <B>{t}Time:{/t}</B>
+			<IMG src="img/time.gif" alt=""> <B>{trans("Time:")}</B>
 		</TD>
 		<TD width="96%" class="fbt" valign="top" NOWRAP>
-			<IMG src="img/calendar.gif" alt=""> <B>{t}Title:{/t}</B><BR>
-			<IMG src="img/info1.gif" alt=""> {t}Description:{/t}
+			<IMG src="img/calendar.gif" alt=""> <B>{trans("Title:")}</B><BR>
+			<IMG src="img/info1.gif" alt=""> {trans("Description:")}
 		</TD>
 		<TD width="1%" valign="top" class="fbt" NOWRAP>
-			<IMG src="img/users.gif" alt=""> {t}User:{/t}
+			<IMG src="img/users.gif" alt=""> {trans("User:")}
 		</TD>
 		<TD width="1%" class="fbt" NOWRAP valign="top" align="right">
-			<IMG src="img/customer.gif" alt=""> {t}Customer:{/t}
+			<IMG src="img/customer.gif" alt=""> {trans("Customer:")}
 		</TD>
 		<TD width="1%" class="frightu" NOWRAP>
 		</TD>
@@ -33,8 +33,8 @@
 			<B>({$daylist[daylist]|date_format:"%x"})</B>
 		</TD>
 		<TD width="3%" colspan="3" class="frightu" align="right">
-			<A href="?m=eventprint&day={$daylist[daylist]}&u={$listdata.customerid}&a={$listdata.userid}" target="_BLANK">{t}Print{/t} <IMG src="img/print.gif" alt=""></A>
-			<A href="?m=eventadd&day={$daylist[daylist]|date_format:"%d"}&month={$daylist[daylist]|date_format:"%m"}&year={$daylist[daylist]|date_format:"%Y"}">{t}Add Event{/t} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=eventprint&day={$daylist[daylist]}&u={$listdata.customerid}&a={$listdata.userid}" target="_BLANK">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
+			<A href="?m=eventadd&day={$daylist[daylist]|date_format:"%d"}&month={$daylist[daylist]|date_format:"%m"}&year={$daylist[daylist]|date_format:"%Y"}">{trans("Add Event")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
 	{if $counter%2 && $counter!=0}{cycle print=false}{/if}
@@ -66,12 +66,12 @@
 		</TD>
 		<TD width="1%" class="fright" align="right" nowrap>
 			{if $eventlist[eventlist].closed}
-			<A href="?m=eventedit&id={$eventlist[eventlist].id}&action=open"><IMG src="img/resolved.gif" alt="[ {t}Open{/t} ]" title="[ {t}Open{/t} ]"></A> 
+			<A href="?m=eventedit&id={$eventlist[eventlist].id}&action=open"><IMG src="img/resolved.gif" alt="[ {trans("Open")} ]" title="[ {trans("Open")} ]"></A> 
 			{else}
-			<A href="?m=eventedit&id={$eventlist[eventlist].id}&action=close"><IMG src="img/open.gif" alt="[ {t}Close{/t} ]" title="[ {t}Close{/t} ]"></A> 
+			<A href="?m=eventedit&id={$eventlist[eventlist].id}&action=close"><IMG src="img/open.gif" alt="[ {trans("Close")} ]" title="[ {trans("Close")} ]"></A> 
 			{/if}&nbsp;
-			<A href="?m=eventedit&id={$eventlist[eventlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A> 
-			<A href="?m=eventdel&id={$eventlist[eventlist].id}" OnClick="return confirmLink(this, '{t}Are you sure, you want to delete that event?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A> 
+			<A href="?m=eventedit&id={$eventlist[eventlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A> 
+			<A href="?m=eventdel&id={$eventlist[eventlist].id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that event?")}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A> 
 		</TD>
 	    </TR>
 	    {/if}
@@ -80,7 +80,7 @@
 	<TR>
 		<TD colspan="5" class="fall" align="center">
 			<P>&nbsp;</P>
-			<P><B>{t}No such events matching search criteria.{/t}</B></P>
+			<P><B>{trans("No such events matching search criteria.")}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>

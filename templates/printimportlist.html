@@ -4,7 +4,7 @@
 	<TR>
 		<TD WIDTH="99%" VALIGN="TOP">
 			<P class="hdf"><B>{$layout.pagetitle}</B>
-			{if $source}<BR><font class="sdr"><B>{t}Source:{/t} {$source}</B></font>{/if}
+			{if $source}<BR><font class="sdr"><B>{trans("Source:")} {$source}</B></font>{/if}
 			</P>
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
@@ -17,16 +17,16 @@
 <TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER">
-			{t}No.{/t}
+			{trans("No.")}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER">
-			{t}Date{/t}
+			{trans("Date")}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER">
-			{t}Value{/t}
+			{trans("Value")}
 		</TD>
 		<TD WIDTH="97%" CLASS="HEAD" ALIGN="CENTER">
-			{t}Customer{/t}
+			{trans("Customer")}
 		</TD>
 	</TR>
 	{cycle values="white,grey" print=false}
@@ -50,14 +50,14 @@
 	<TR>
 		<TD ALIGN="center" WIDTH="100%" COLSPAN="4">
 			<P>&nbsp;</P>
-			<P><B>{t}No such cash operations.{/t}</B></P>
+			<P><B>{trans("No such cash operations.")}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>
 	{/section}
 	<TR class="grey">
 		<TD ALIGN="RIGHT" COLSPAN="2">
-			<B>{t}Total:{/t}</B>
+			<B>{trans("Total:")}</B>
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			<B>{$total|money_format}</B>

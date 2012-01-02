@@ -2,14 +2,14 @@
 <!--// $Id$ //-->
 <h1>{$layout.pagetitle}</h1>
 <TABLE WIDTH="100%" CELLPADDING="3">
-    <TR CLASS="DARK"><TD CLASS="fall"><B>{t}Module Configuration:{/t}</B></TD></TR>
+    <TR CLASS="DARK"><TD CLASS="fall"><B>{trans("Module Configuration:")}</B></TD></TR>
     <TR CLASS="light"><TD CLASS="fall">
 	<FORM NAME="moduleconfig" METHOD="POST" ACTION="?m=userpanel&module=stats&f=submit_setup">
 	    <INPUT CLASS="box light" TYPE="checkbox" NAME="owner_stats" ID="owner_stats" VALUE="1" {if $owner_stats eq 1}CHECKED{/if}>
-		<A HREF="javascript:checkElement('owner_stats');">{t}Display stats for customer nodes only{/t}</A><br>
+		<A HREF="javascript:checkElement('owner_stats');">{trans("Display stats for customer nodes only")}</A><br>
 	<p align="right">
-	    <A HREF="?m=userpanel">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
-	    <A HREF="javascript:document.moduleconfig.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+	    <A HREF="?m=userpanel">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
+	    <A HREF="javascript:document.moduleconfig.submit();" ACCESSKEY="S">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
 	</p>
 	</FORM>
     </TD></TR>

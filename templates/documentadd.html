@@ -76,7 +76,7 @@
 			<IMG src="img/docum.gif" alt="">
 		</TD>
 		<TD width="1%" class="fbt" NOWRAP>
-			<B>{t}Title:{/t}
+			<B>{trans("Title:")}
 		</TD>
 		<TD width="98%" class="frightu" NOWRAP>
 			<INPUT type="text" name="document[title]" value="{$document.title}" {tip text="Enter document title" trigger="title"} size="40">
@@ -87,20 +87,20 @@
 	        	<IMG src="img/customer.gif" ALT="">
 		</TD>
 		<TD width="1%" nowrap>
-			<B>{t}Customer:{/t}</B>
+			<B>{trans("Customer:")}</B>
 		</TD>
 		<TD class="fright" WIDTH="98%" nowrap>
 			{if $customers}
 			<SELECT SIZE="1" NAME="customer" onChange="document.documentadd.customerid.value=document.documentadd.customer.value" {tip trigger="customer"}>
-				<OPTION VALUE="0">{t}... select customer ...{/t}</OPTION>
+				<OPTION VALUE="0">{trans("... select customer ...")}</OPTION>
 				{foreach from=$customers item=c}
 				<OPTION VALUE="{$c.id}"{if $c.id eq $customer.id || $document.customerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:"40":"...":true} ({$c.id|string_format:"%04d"})</OPTION>
 				{/foreach}
 			</SELECT>
-			{t}or Customer ID:{/t}
+			{trans("or Customer ID:")}
 			{/if}
 			<INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{elseif $document.customerid}{$document.customerid}{/if}" SIZE="5"{if $customers} onchange="reset_customer()" onfocus="reset_customer()"{/if} {tip text="Enter customer ID"}>
-			<a href="javascript: void(0);" onClick="return customerchoosewin(document.documentadd.customerid);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+			<a href="javascript: void(0);" onClick="return customerchoosewin(document.documentadd.customerid);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -108,11 +108,11 @@
 			<IMG src="img/calendar.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Period:{/t}
+			<B>{trans("Period:")}
 		</TD>
 		<TD width="98%" class="fright">
-			{t}from:{/t} <INPUT type="TEXT" name="document[fromdate]" value="{if $document.fromdate}{$document.fromdate}{/if}" OnClick="cal1.popup();" {tip text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"} size="10">&nbsp;
-			{t}to:{/t} <INPUT type="TEXT" name="document[todate]" value="{if $document.todate}{$document.todate}{/if}" OnClick="cal2.popup();" {tip text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"} size="10"><BR>
+			{trans("from:")} <INPUT type="TEXT" name="document[fromdate]" value="{if $document.fromdate}{$document.fromdate}{/if}" OnClick="cal1.popup();" {tip text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"} size="10">&nbsp;
+			{trans("to:")} <INPUT type="TEXT" name="document[todate]" value="{if $document.todate}{$document.todate}{/if}" OnClick="cal2.popup();" {tip text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"} size="10"><BR>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -120,7 +120,7 @@
 			<IMG src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Description:{/t}
+			<B>{trans("Description:")}
 		</TD>
 		<TD width="98%" class="fright">
 			<TEXTAREA name="document[description]" rows="5" cols="50" {tip text="Enter additional information (optional)"}>{$document.description}</TEXTAREA>
@@ -131,11 +131,11 @@
 			<IMG src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Type:{/t}
+			<B>{trans("Type:")}
 		</TD>
 		<TD width="98%" class="fright">
 			<SELECT SIZE="1" NAME="document[type]" onchange="setnumberplans();" {tip text="Select document type" trigger="type"}>
-				<OPTION VALUE="0">... {t}select type{/t} ...</OPTION>
+				<OPTION VALUE="0">... {trans("select type")} ...</OPTION>
 				{foreach from=$_DOCTYPES key=key item=item}{if $key < 0 && in_array($key, $docrights)}
 				<OPTION VALUE="{$key}"{if $document.type==$key} SELECTED{/if}>{$item}</OPTION>
 				{/if}{/foreach}
@@ -147,11 +147,11 @@
 			<IMG src="img/class.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Template:{/t}
+			<B>{trans("Template:")}
 		</TD>
 		<TD width="98%" class="fright">
 			<SELECT SIZE="1" NAME="document[templ]" {tip text="Select template to generate new document if you haven't got prepared file" trigger="template"} onchange="getplugin();">
-				<OPTION VALUE="">... {t}select template{/t} ...</OPTION>
+				<OPTION VALUE="">... {trans("select template")} ...</OPTION>
 				{foreach from=$docengines item=item}
 				<OPTION VALUE="{$item.name}"{if $document.templ==$item.name} SELECTED{/if}>{$item.title}</OPTION>
 				{/foreach}
@@ -163,7 +163,7 @@
 			<IMG src="img/save.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}File:{/t}
+			<B>{trans("File:")}
 		</TD>
 		<TD width="98%" class="fright">
 			<INPUT size="50" type="file" name="file" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
@@ -174,14 +174,14 @@
 			<IMG src="img/docum.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Number:{/t}
+			<B>{trans("Number:")}
 		</TD>
 		<TD width="98%" class="fright">
 			<INPUT type="text" name="document[number]" value="{if $document.number}{$document.number}{/if}" size="15" {tip text="Enter document number (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
 			<DIV id="numberplans" style="display: {if !$document.numberplanid}none{else}inline{/if};">
 			{if $numberplans}
 			<SELECT name="document[numberplanid]" {tip text="Select numbering plan"}>
-				<OPTION value="0"{if !$document.numberplanid} SELECTED{/if}>... {t}select numbering plan{/t} ...</OPTION>
+				<OPTION value="0"{if !$document.numberplanid} SELECTED{/if}>... {trans("select numbering plan")} ...</OPTION>
 			    {foreach item=plan from=$numberplans}
 				{assign var=period value=$plan.period}
 				<OPTION value="{$plan.id}"{if $plan.id==$document.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$document.cdate} ({$_NUM_PERIODS.$period})</OPTION>
@@ -197,17 +197,17 @@
 		<TD width="1%" class="fleft">
 	        	<IMG src="img/confirm.gif" ALT="">
 		</TD>
-		<TD width="1%" nowrap><B>{t}Confirmed:{/t}</B></TD>
+		<TD width="1%" nowrap><B>{trans("Confirmed:")}</B></TD>
 		<TD width="98%" class="fright">
 		        <INPUT type="checkbox" name="document[closed]" value="1" {if $document.closed} checked{/if}>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" colspan="3" align="right" NOWRAP>
-			<A href="javascript: document.documentadd.submit();">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
-			<A href="javascript: print_document();">{t}Print{/t} <IMG SRC="img/print.gif" alt=""></A>
-			<A href="?m=documentlist">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="document[reuse]" ID="reuse" value="ON" {if $document.reuse}checked{/if}><A HREF="javascript:checkElement('reuse')"> {t}Display this form again, when that document is saved{/t}</A>
+			<A href="javascript: document.documentadd.submit();">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
+			<A href="javascript: print_document();">{trans("Print")} <IMG SRC="img/print.gif" alt=""></A>
+			<A href="?m=documentlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A><BR>
+			<INPUT type="checkbox" name="document[reuse]" ID="reuse" value="ON" {if $document.reuse}checked{/if}><A HREF="javascript:checkElement('reuse')"> {trans("Display this form again, when that document is saved")}</A>
 		</TD>
 	</TR>
 </TABLE>

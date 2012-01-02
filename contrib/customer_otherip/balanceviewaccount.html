@@ -2,7 +2,7 @@
 <P><TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="FLEFTU"></TD>
-		<TD WIDTH="99%" CLASS="FRIGHTU"><B>{t}Payments:{/t}</B></TD>
+		<TD WIDTH="99%" CLASS="FRIGHTU"><B>{trans("Payments:")}</B></TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
@@ -10,7 +10,6 @@
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
 			<A HREF="mailto:">
-		<!-- tu w przysz³o¶ci link do w³a¶ciwego admia etc...-->
 			</A>
 		</TD>
 	</TR>
@@ -19,19 +18,19 @@
 			<IMG SRC="img/money.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
-			{if $customerinfo.balance < 0}<FONT COLOR="RED"><H2>{t a=($customerinfo.balance*-1)|money_format b=$customerinfo.id}We are please for punctual payment in value: <B>$a</B> with comment: $b{/t}</FONT></H2>{elseif $customerinfo.balance > 0}{t 0=$customerinfo.balance|money_format}You have overpayments on value: $a, they will be moved as payments for future subscriptions or services.{/t}{else}{t}You have no outstandings towards as.{/t}{/if}
+			{if $customerinfo.balance < 0}<FONT COLOR="RED"><H2>{t a=($customerinfo.balance*-1)|money_format b=$customerinfo.id}We are please for punctual payment in value: <B>$a</B> with comment: $b{/t}</FONT></H2>{elseif $customerinfo.balance > 0}{t a=$customerinfo.balance|money_format}You have overpayments on value: $a, they will be moved as payments for future subscriptions or services.{/t}{else}{trans("You have no outstandings towards as.")}{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT"></TD>
 		<TD WIDTH=99% CLASS="fright">
-			{t}All payments send on account:{/t} 
+			{trans("All payments send on account:")} 
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT" valign="top">
-			{t}Bank:{/t}<BR>
-			{t}Account:{/t}
+			{trans("Bank:")}<BR>
+			{trans("Account:")}
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
 		<H2>{$bank_name}<BR>
@@ -41,11 +40,11 @@
 	<TR CLASS="LIGHT">
 	{if $customerinfo.balance < 0}
 		<TD WIDTH="1%" CLASS="FLEFT">
-		{t}Print<BR>Payment<BR>Form{/t}<BR>
+		{trans("Print<BR>Payment<BR>Form")}<BR>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<A HREF="../formularz_przelewu_wplaty/druk.php?ILE={if $customerinfo.balance<0}{$customerinfo.balance*-1}{else}{$customerinfo.balance}{/if}&UID={$customerinfo.id}&OD={$customerinfo.name} {$customerinfo.lastname} {$customerinfo.zip} {$customerinfo.city} {$customerinfo.address}" target="_BLANK">
-			<IMG SRC="img/ico_przelew.png" ALT="{t}Form Printout{/t}">
+			<IMG SRC="img/ico_przelew.png" ALT="{trans("Form Printout")}">
 			</A>
 			</TD>
 	{/if}			

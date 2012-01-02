@@ -4,19 +4,19 @@
 <TABLE cellpadding="3" WIDTH="100%">
 	<TR class="dark" {tip text="Click on column name to change sorting order"}>
 		<TD class="fleftu" colspan="2" WIDTH="1%" NOWRAP>
-			<IMG src="img/ticket.gif" alt="">&nbsp;<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=ticketid{if $queuedata.direction eq "asc" && $queuedata.order eq "ticketid"},desc{/if}"><B>{t}ID:{/t}</B></A> {if $queuedata.order eq "ticketid"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<IMG src="img/calendar.gif" alt="">&nbsp;<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=createtime{if $queuedata.direction eq "asc" && $queuedata.order eq "createtime"},desc{/if}">{t}Create time:{/t}</A>{if $queuedata.order eq "createtime"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG src="img/ticket.gif" alt="">&nbsp;<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=ticketid{if $queuedata.direction eq "asc" && $queuedata.order eq "ticketid"},desc{/if}"><B>{trans("ID:")}</B></A> {if $queuedata.order eq "ticketid"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<IMG src="img/calendar.gif" alt="">&nbsp;<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=createtime{if $queuedata.direction eq "asc" && $queuedata.order eq "createtime"},desc{/if}">{trans("Create time:")}</A>{if $queuedata.order eq "createtime"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="fbt" WIDTH="97%">
-			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=subject{if $queuedata.direction eq "asc" && $queuedata.order eq "subject"},desc{/if}"><B>{t}Subject:{/t}</B></A> {if $queuedata.order eq "subject"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=requestor{if $queuedata.direction eq "asc" && $queuedata.order eq "requestor"},desc{/if}">{t}Submitter:{/t}</A> {if $queuedata.order eq "requestor"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=subject{if $queuedata.direction eq "asc" && $queuedata.order eq "subject"},desc{/if}"><B>{trans("Subject:")}</B></A> {if $queuedata.order eq "subject"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=requestor{if $queuedata.direction eq "asc" && $queuedata.order eq "requestor"},desc{/if}">{trans("Submitter:")}</A> {if $queuedata.order eq "requestor"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="fbt" WIDTH="1%" NOWRAP>
-			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=owner{if $queuedata.direction eq "asc" && $queuedata.order eq "owner"},desc{/if}"><B>{t}Owner{/t}</B></A>{if $queuedata.order eq "owner"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}:<BR>
-			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=lastmodified{if $queuedata.direction eq "asc" && $queuedata.order eq "lastmodified"},desc{/if}">{t}Last modified:{/t}</A> {if $queuedata.order eq "lastmodified"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=owner{if $queuedata.direction eq "asc" && $queuedata.order eq "owner"},desc{/if}"><B>{trans("Owner")}</B></A>{if $queuedata.order eq "owner"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}:<BR>
+			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=lastmodified{if $queuedata.direction eq "asc" && $queuedata.order eq "lastmodified"},desc{/if}">{trans("Last modified:")}</A> {if $queuedata.order eq "lastmodified"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="frightu" WIDTH="1%" NOWRAP>
-			<B>{t}Total:{/t} {$queuedata.total|default:"0"}</B>
+			<B>{trans("Total:")} {$queuedata.total|default:"0"}</B>
 		</TD>
 	</TR>
 	<TR class="DARK">
@@ -28,33 +28,33 @@
 				<INPUT type="submit" class="hiddenbtn">
 				<INPUT type="HIDDEN" name="m" value="rtqueueview">
 				<INPUT type="HIDDEN" name="page" value="1">
-				<B>{t}Filter:{/t}</B>
-				{t}Queue:{/t}
+				<B>{trans("Filter:")}</B>
+				{trans("Queue:")}
 				<SELECT size="1" name="id" OnChange="document.filter.submit();">
-					<OPTION value="">- {t}all{/t} -</OPTION>
+					<OPTION value="">- {trans("all")} -</OPTION>
 					{foreach from=$queues item=q}
 					<OPTION value="{$q.id}"{if $queuedata.id == $q.id} SELECTED{/if}>{$q.name}</OPTION>
 					{/foreach}
 				</SELECT>&nbsp;
-				{t}Category:{/t}
+				{trans("Category:")}
 				<SELECT size="1" name="catid" OnChange="document.filter.submit();">
-					<OPTION value="">- {t}all{/t} -</OPTION>
+					<OPTION value="">- {trans("all")} -</OPTION>
 					{foreach from=$categories item=q}
 					<OPTION value="{$q.id}"{if $queuedata.catid == $q.id} SELECTED{/if}>{$q.name}</OPTION>
 					{/foreach}
 				</SELECT>&nbsp;
-				{t}Status:{/t}
+				{trans("Status:")}
 				<SELECT size="1" name="s" OnChange="document.filter.submit();">
-					<OPTION value=""{if $queuedata.state eq ""} SELECTED{/if}>- {t}all{/t} -</OPTION>
-					<OPTION value="0"{if $queuedata.state eq "0"} SELECTED{/if}>{t}new{/t}</OPTION>
-					<OPTION value="1"{if $queuedata.state eq "1"} SELECTED{/if}>{t}opened{/t}</OPTION>
-					<OPTION value="2"{if $queuedata.state eq "2"} SELECTED{/if}>{t}resolved{/t}</OPTION>
-					<OPTION value="3"{if $queuedata.state eq "3"} SELECTED{/if}>{t}dead{/t}</OPTION>
-					<OPTION value="-1"{if $queuedata.state eq "-1"} SELECTED{/if}>{t}not resolved{/t}</OPTION>
+					<OPTION value=""{if $queuedata.state eq ""} SELECTED{/if}>- {trans("all")} -</OPTION>
+					<OPTION value="0"{if $queuedata.state eq "0"} SELECTED{/if}>{trans("new")}</OPTION>
+					<OPTION value="1"{if $queuedata.state eq "1"} SELECTED{/if}>{trans("opened")}</OPTION>
+					<OPTION value="2"{if $queuedata.state eq "2"} SELECTED{/if}>{trans("resolved")}</OPTION>
+					<OPTION value="3"{if $queuedata.state eq "3"} SELECTED{/if}>{trans("dead")}</OPTION>
+					<OPTION value="-1"{if $queuedata.state eq "-1"} SELECTED{/if}>{trans("not resolved")}</OPTION>
 				</SELECT>&nbsp;
-				{t}Owner:{/t}
+				{trans("Owner:")}
 				<SELECT size="1" name="owner" OnChange="document.filter.submit();">
-				        <OPTION value="">{t}- all users -{/t}</OPTION>
+				        <OPTION value="">{trans("- all users -")}</OPTION>
 					{section name="users" loop=$users}
 					 <OPTION value="{$users[users].id}"{if $users[users].id == $queuedata.owner} SELECTED{/if}>{$users[users].name|truncate:40:"...":true}</OPTION>
 					{/section}
@@ -62,7 +62,7 @@
 			    </FORM>
 			    </TD>
 			    <TD width="99%" align="right">
-				<A HREF="?m=rtticketadd&id={$queuedata.id}">{t}New Ticket{/t} <IMG src="img/save.gif" ALT=""></A>
+				<A HREF="?m=rtticketadd&id={$queuedata.id}">{trans("New Ticket")} <IMG src="img/save.gif" ALT=""></A>
 			    </TD>
 			</TR>
 		    </TABLE>
@@ -130,17 +130,17 @@
 			{if $queue[ticket].state == 0 || $queue[ticket].state == 3}</FONT>{/if}
 		</TD>
 		<TD class="fright" align="right" NOWRAP>
-			<A href="?m=rtticketprint&id={$queue[ticket].id}" target="_BLANK"><IMG src="img/print.gif" alt="[ {t}Print{/t} ]" title="[ {t}Print{/t} ]" title="[ {t}Edit{/t} ]"> </A>
-			<A href="?m=rtticketdel&id={$queue[ticket].id}" onClick="return confirmLink(this, '{t a=$queue[ticket].id|string_format:"%06d"}Are you sure, you want to remove ticket $a?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
-			<A href="?m=rtticketedit&id={$queue[ticket].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"> </A>
-			<A href="?m=rtticketview&id={$queue[ticket].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"> </A>
+			<A href="?m=rtticketprint&id={$queue[ticket].id}" target="_BLANK"><IMG src="img/print.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]" title="[ {trans("Edit")} ]"> </A>
+			<A href="?m=rtticketdel&id={$queue[ticket].id}" onClick="return confirmLink(this, '{t a=$queue[ticket].id|string_format:"%06d"}Are you sure, you want to remove ticket $a?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			<A href="?m=rtticketedit&id={$queue[ticket].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"> </A>
+			<A href="?m=rtticketview&id={$queue[ticket].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"> </A>
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
 		<TD COLSPAN="5" class="flr" ALIGN="center">
 			<p>&nbsp;</p>
-			<p><B>{t}This queue is empty.{/t}</B></p>
+			<p><B>{trans("This queue is empty.")}</B></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
@@ -154,7 +154,7 @@
 	{/if}
 	<TR class="light">
 		<TD COLSPAN="5" class="fall" ALIGN="right">
-			<A HREF="?m=rtticketadd&id={$queuedata.id}">{t}New Ticket{/t} <IMG src="img/save.gif" ALT=""></A>
+			<A HREF="?m=rtticketadd&id={$queuedata.id}">{trans("New Ticket")} <IMG src="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>

@@ -48,10 +48,10 @@
 			<TABLE width="100%" cellpadding="3">
 				<TR CLASS="DARK">
 					<TD CLASS="fleftu" WIDTH="1%">
-						<IMG SRC="img/node.gif" alt="">&nbsp;<B>{t}Nodes:{/t}</B>
+						<IMG SRC="img/node.gif" alt="">&nbsp;<B>{trans("Nodes:")}</B>
 					</TD>
 					<TD CLASS="frightu" WIDTH="99%" COLSPAN="2">
-						<IMG SRC="img/mail.gif" alt="">&nbsp;<B>{t}Notice content:{/t}</B>
+						<IMG SRC="img/mail.gif" alt="">&nbsp;<B>{trans("Notice content:")}</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
@@ -68,16 +68,16 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD CLASS="fbl" WIDTH="1%" nowrap>
-						<INPUT TYPE="checkbox" NAME="nodes" OnClick="javascript:SelectAllNodes()"><A HREF="javascript:SelectAllNodes2()">{t}Select All<!nodes>{/t}</A></INPUT>
+						<INPUT TYPE="checkbox" NAME="nodes" OnClick="javascript:SelectAllNodes()"><A HREF="javascript:SelectAllNodes2()">{trans("Select All<!nodes>")}</A></INPUT>
 					</TD>
 					<TD CLASS="fbottom" ALIGN="left">
 						 <NOBR>
-						 <INPUT TYPE="checkbox" NAME="setwarnings[warnon]" ID="warnon" OnClick="switchbox(this);"{if $warnon}CHECKED{/if}><A HREF="javascript:switchbox1()">{t}Enable{/t}</A></INPUT></NOBR>
-						 / <INPUT TYPE="checkbox" NAME="setwarnings[warnoff]" ID="warnoff" OnClick="switchbox(this);" {if $warnoff}CHECKED{/if}><A HREF="javascript:switchbox2()">{t}Disable{/t}</A></INPUT>
+						 <INPUT TYPE="checkbox" NAME="setwarnings[warnon]" ID="warnon" OnClick="switchbox(this);"{if $warnon}CHECKED{/if}><A HREF="javascript:switchbox1()">{trans("Enable")}</A></INPUT></NOBR>
+						 / <INPUT TYPE="checkbox" NAME="setwarnings[warnoff]" ID="warnoff" OnClick="switchbox(this);" {if $warnoff}CHECKED{/if}><A HREF="javascript:switchbox2()">{trans("Disable")}</A></INPUT>
 						 </NOBR>
 					</TD>
 					<TD CLASS="fbr" ALIGN="RIGHT">
-						<A HREF="javascript:document.setwarnings.submit()">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+						<A HREF="javascript:document.setwarnings.submit()">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
 					</TD>
 				<TR>
 			</TABLE>

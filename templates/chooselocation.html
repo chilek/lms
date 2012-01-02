@@ -36,13 +36,13 @@
         <tr><td width="100%" align="center">
             <p>&nbsp;</p>
             <p>&nbsp;</p>
-            <p><b>{t}Location database is empty.{/t}</b></p>
+            <p><b>{trans("Location database is empty.")}</b></p>
             <p>&nbsp;</p>
             <p>&nbsp;</p>
         </td></tr>
     {else}
 	    <tr class="light" id="state">
-		    <td width="1%">{t}State{/t}:</td>
+		    <td width="1%">{trans("State")}:</td>
 		    <td width="99%">
 		        <select id="state_sel" name="state" onchange="change_selection(this)" {tip text="Select state"} style="width: 100%">
 		        {foreach from=$states item=item}
@@ -52,7 +52,7 @@
 		    </td>
 	    </tr>
 	    <tr class="light" id="district"{if empty($districts)} style="display:none"{/if}>
-		    <td>{t}District{/t}:</td>
+		    <td>{trans("District")}:</td>
 		    <td>
 		        <select id="district_sel" name="district" onchange="change_selection(this)" {tip text="Select district"} style="width: 100%">
                 {if !$data.districtid}
@@ -65,7 +65,7 @@
 		    </td>
 	    </tr>
 	    <tr class="light" id="city"{if empty($cities)} style="display:none"{/if}>
-		    <td>{t}City{/t}:</td>
+		    <td>{trans("City")}:</td>
 		    <td>
 		        <select id="city_sel" name="city" onchange="change_selection(this)" {tip text="Select city"} style="width: 100%">
                 {if !$data.cityid}
@@ -78,7 +78,7 @@
 		    </td>
 	    </tr>
 	    <tr class="light" id="street"{if empty($streets)} style="display:none"{/if}>
-		    <td>{t}Street{/t}:</td>
+		    <td>{trans("Street")}:</td>
 		    <td>
 		        <select id="street_sel" name="street" {tip text="Select street"} style="width: 100%">
 		        {foreach from=$streets item=item}
@@ -88,21 +88,21 @@
 		    </td>
 	    </tr>
 	    <tr class="light" id="house"{if empty($data.streetid) && empty($data.cityid)} style="display:none"{/if}>
-		    <td nowrap>{t}House No.{/t}:</td>
+		    <td nowrap>{trans("House No.")}:</td>
 		    <td>
                 <input type="text" size="8" id="house_input" name="house" value="" {tip text="Enter house number"}>
 		    </td>
 	    </tr>
 	    <tr class="light" id="flat"{if empty($data.streetid) && empty($data.cityid)} style="display:none"{/if}>
-		    <td nowrap>{t}Flat No.{/t}:</td>
+		    <td nowrap>{trans("Flat No.")}:</td>
 		    <td>
                 <input type="text" size="8" id="flat_input" name="flat" value="" {tip text="Enter flat number"}>
 		    </td>
 	    </tr>
         <tr class="light">
             <td colspan="2" align="right" nowrap>
-                <a href="javascript:submit_location()" accesskey="s">{t}Submit{/t} <img src="img/save.gif" alt=""></a>
-                <a href="javascript:window.parent.popclick()">{t}Cancel{/t} <img src="img/cancel.gif" alt=""></a>
+                <a href="javascript:submit_location()" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+                <a href="javascript:window.parent.popclick()">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
             </td>
         </tr>
 	{/if}
@@ -187,19 +187,19 @@ function submit_location()
 		loc = window.parent.document.getElementById('location');
 
 	if (cr.style.display == 'none' || city.value == 0) {
-		alert('{t}City has not been selected!{/t}');
+		alert('{trans("City has not been selected!")}');
 		return;
 	}
 	if (house.value == '') {
-		alert('{t}House number is required!{/t}');
+		alert('{trans("House number is required!")}');
 		return;
 	}
 	if (house.length > 8) {
-		alert('{t}House number is too long (max. 8 characters)!{/t}');
+		alert('{trans("House number is too long (max. 8 characters)!")}');
 		return;
 	}
 	if (flat.length > 8) {
-		alert('{t}Flat number is too long (max. 8 characters)!{/t}');
+		alert('{trans("Flat number is too long (max. 8 characters)!")}');
 		return;
 	}
 

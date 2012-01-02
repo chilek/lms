@@ -3,10 +3,10 @@
 <H1>{$layout.pagetitle}</H1>
 <P><TABLE cellpadding="3" WIDTH="100%">
 	<TR class="dark">
-		<TD width="1%" class="fleftu" NOWRAP><IMG src="img/state.gif" alt=""> <B>{t}Name:{/t}</B></TD>
-		<TD width="1%" class="fbt" align="right" NOWRAP>{t}ID:{/t}</TD>
-		<TD width="97%" class="fbt" align="left" NOWRAP>{t}Description:{/t}</TD>
-		<TD width="1%" class="frightu" align="right" NOWRAP><a href="?m=stateadd">{t}Add state{/t} <img src="img/save.gif" alt=""></a></TD>
+		<TD width="1%" class="fleftu" NOWRAP><IMG src="img/state.gif" alt=""> <B>{trans("Name:")}</B></TD>
+		<TD width="1%" class="fbt" align="right" NOWRAP>{trans("ID:")}</TD>
+		<TD width="97%" class="fbt" align="left" NOWRAP>{trans("Description:")}</TD>
+		<TD width="1%" class="frightu" align="right" NOWRAP><a href="?m=stateadd">{trans("Add state")} <img src="img/save.gif" alt=""></a></TD>
 	</TR>
 	{if $listdata.total != 0}
 	<TR CLASS="DARK">
@@ -28,15 +28,15 @@
 			{$statelist[statelist].description|replace:"\n":"<BR>"}
 		</TD>
 		<TD class="fright" align="right" NOWRAP>
-			<A href="?m=statedel&id={$statelist[statelist].id}" OnClick="return confirmLink(this, '{t a=$statelist[statelist].name}Are you sure, you want to delete state \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
-			<A href="?m=stateedit&id={$statelist[statelist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+			<A href="?m=statedel&id={$statelist[statelist].id}" OnClick="return confirmLink(this, '{t a=$statelist[statelist].name}Are you sure, you want to delete state \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			<A href="?m=stateedit&id={$statelist[statelist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
 		<TD colspan="4" align="center" class="fall">
 			<p>&nbsp;</p>
-			<p><B>{t}No such states in database.{/t}</B></p>
+			<p><B>{trans("No such states in database.")}</B></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
@@ -50,7 +50,7 @@
 	{/if}
 	<TR class="light">
 		<TD colspan="4" class="fall" align="right">
-			<a href="?m=stateadd">{t}Add state{/t} <img src="img/save.gif" alt=""></a>
+			<a href="?m=stateadd">{trans("Add state")} <img src="img/save.gif" alt=""></a>
 		</TD>
 	</TR>
 </TABLE></P>

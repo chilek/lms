@@ -4,16 +4,16 @@
 <P><TABLE cellpadding="3" WIDTH="100%">
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" WIDTH="1%" nowrap>
-			<IMG src="img/settings.gif" alt=""><B>{t}Name:{/t}</B>
+			<IMG src="img/settings.gif" alt=""><B>{trans("Name:")}</B>
 		</TD>
 		<TD CLASS="fbt" WIDTH="58%" NOWRAP>
-			{t}Value:{/t}
+			{trans("Value:")}
 		</TD>
 		<TD CLASS="fbt" WIDTH="40%">
-			{t}Description:{/t}
+			{trans("Description:")}
 		</TD>
 		<TD CLASS="frightu" WIDTH="1%" nowrap>
-			<A href="?m=daemonconfigadd&id={$instance.id}">{t}Add option{/t} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=daemonconfigadd&id={$instance.id}">{trans("Add option")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
 	{cycle values="light,lucid" print=false}
@@ -30,23 +30,23 @@
 			{$option.description|escape|replace:"\n":"<BR>"}
 		</TD>
 		<TD CLASS="fright" align="right" NOWRAP>
-			<A HREF="?m=daemonconfigedit&id={$option.id}&statuschange=1"><IMG src="img/wait.gif" alt="[ {if $option.disabled}{t}Enable{/t}{else}{t}Disable{/t}{/if} ]" title="[ {if $option.disabled}{t}Enable{/t}{else}{t}Disable{/t}{/if} ]"></A>
-			<A HREF="?m=daemonconfigdel&id={$option.id}" OnClick="return confirmLink(this, '{t a=$option.var}Are you sure, you want to remove option \'$a\' from database?{/t}');"><IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
-			<A HREF="?m=daemonconfigedit&id={$option.id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+			<A HREF="?m=daemonconfigedit&id={$option.id}&statuschange=1"><IMG src="img/wait.gif" alt="[ {if $option.disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]" title="[ {if $option.disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]"></A>
+			<A HREF="?m=daemonconfigdel&id={$option.id}" OnClick="return confirmLink(this, '{t a=$option.var}Are you sure, you want to remove option \'$a\' from database?{/t}');"><IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			<A HREF="?m=daemonconfigedit&id={$option.id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 		</TD>
 	</TR>
 	{foreachelse}
 	<TR>
 		<TD colspan="4" align="center" class="flr">
 			<p>&nbsp;</p>
-			<p><B>{t}That instance hasn't got any configuration option.{/t}<B></p>
+			<p><B>{trans("That instance hasn't got any configuration option.")}<B></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
 	{/foreach}
 	<TR CLASS="dark">
 		<TD colspan="4" class="fall" align="right">
-			<A href="?m=daemonconfigadd&id={$instance.id}">{t}Add option{/t} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=daemonconfigadd&id={$instance.id}">{trans("Add option")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE></P>

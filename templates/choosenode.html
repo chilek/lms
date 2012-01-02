@@ -80,7 +80,7 @@
 	<tr>
 		<td width="100%" colspan="3" align="center">
 			<p>&nbsp;</p>
-			<p><b>{t}That customer hasn't got any node.{/t}</b></p>
+			<p><b>{trans("That customer hasn't got any node.")}</b></p>
 			<p>&nbsp;</p>
 		</td>
 	</tr>
@@ -91,11 +91,11 @@
 			<tr>	
 			    <td align="left">
 			    	{if $nodelist.total > 0}
-				<nobr><input class="box" type="checkbox" name="allbox" onclick="CheckAll();" value="Check All Boxes"><a href="javascript:CheckAll2();">{t}Check All{/t}</a></nobr>
+				<nobr><input class="box" type="checkbox" name="allbox" onclick="CheckAll();" value="Check All Boxes"><a href="javascript:CheckAll2();">{trans("Check All")}</a></nobr>
 				{/if}
 			    </td>
 			    <td align="right">
-				<nobr><a href="javascript:SaveForm();">{t}Close{/t} <img src="img/save.gif" alt=""></a></nobr>
+				<nobr><a href="javascript:SaveForm();">{trans("Close")} <img src="img/save.gif" alt=""></a></nobr>
 			    </td>			
 			</tr>
 		    </table>

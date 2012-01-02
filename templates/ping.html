@@ -12,7 +12,7 @@
 	<div id="{$popupid}_popupCloseBox" class="olPopupCloseBox lmsPopupCloseBox">&nbsp;</div>
 </div>
 <div class="lmsIpPopupContents">
-	<div class="lmsIpPopupLabel">{t}Enter IP address:{/t}</div>
+	<div class="lmsIpPopupLabel">{trans("Enter IP address:")}</div>
 	<div class="lmsIpPopupForm">
 		<form name="{$popupid}_ipform" id="ipform" method="GET" action="?m=ping" onsubmit="return ping_any_host('{$popupid}');">
 			<input type="text" name="ip"><br>
@@ -60,10 +60,10 @@
 				<input type="hidden" id="received" name="received" value="0">
 				<input type="hidden" id="times" name="times" value="">
 				<div class="lmsPingEnabled">
-					<input type="checkbox" id="enabled" name="enabled" onclick="javascript:ping_toggle()" checked><a href="javascript:enabled_toggle();">{t}Enabled{/t}</a>
+					<input type="checkbox" id="enabled" name="enabled" onclick="javascript:ping_toggle()" checked><a href="javascript:enabled_toggle();">{trans("Enabled")}</a>
 				</div>
 				<div class="lmsPingAutoScroll">
-					<input type="checkbox" id="autoscroll" name="autoscroll" checked><a href="javascript:checkElement('autoscroll');">{t}Auto Scroll{/t}</a>
+					<input type="checkbox" id="autoscroll" name="autoscroll" checked><a href="javascript:checkElement('autoscroll');">{trans("Auto Scroll")}</a>
 				</div>
 			</form>
 		</div>

@@ -2,12 +2,12 @@
 <P><TABLE width="100%" cellpadding="3">
     <TR class="dark">
 	<TD class="fleftu" width="1%" NOWRAP>
-	    <IMG src="img/open.gif" alt=""> <B>{t}Ticket History{/t}</B>
+	    <IMG src="img/open.gif" alt=""> <B>{trans("Ticket History")}</B>
 	</TD>
 	<TD class="frightu" colspan="2" width="99%" align="right" NOWRAP>
 	    {if $ticket.state != 2}
-	    <A href="?m=rtnoteadd&ticketid={$ticket.ticketid}">{t}New Note{/t} <IMG src="img/note.gif" alt=""></A>
-	    <A href="?m=rtmessageadd&ticketid={$ticket.ticketid}">{t}New Message{/t} <IMG src="img/mail.gif" alt=""></A>
+	    <A href="?m=rtnoteadd&ticketid={$ticket.ticketid}">{trans("New Note")} <IMG src="img/note.gif" alt=""></A>
+	    <A href="?m=rtmessageadd&ticketid={$ticket.ticketid}">{trans("New Message")} <IMG src="img/mail.gif" alt=""></A>
 	    {/if}
 	</TD>
     <TR class="light">
@@ -21,7 +21,7 @@
 			    <B>{$message.createtime|date_format:"%Y/%m/%d %H:%M"}</B>
 			</TD>
 			<TD width="1%" class="fbt" ALIGN="RIGHT">
-			    <B>{t}From:{/t}<BR>{t}Subject:{/t}</B>
+			    <B>{trans("From:")}<BR>{trans("Subject:")}</B>
 			</TD>
 			<TD width="1%" class="fbt" NOWRAP>
 				{if $message.customerid}
@@ -41,14 +41,14 @@
 			</TD>
 			<TD width="97%" class="fbt" align="right" nowrap>
 				{if $message.attachment}
-					<A href="?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={$message.attachment}">{t}Open attachment{/t} <IMG src="img/attach.gif" alt=""></A>
+					<A href="?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={$message.attachment}">{trans("Open attachment")} <IMG src="img/attach.gif" alt=""></A>
 				{/if}
-				<A href="?m=rtmessageview&id={$message.id}">{t}Details{/t} <IMG src="img/view.gif" alt=""></A>
+				<A href="?m=rtmessageview&id={$message.id}">{trans("Details")} <IMG src="img/view.gif" alt=""></A>
 				{if $msgidx > 0}
-					<A href="?m=rtmessagedel&id={$message.id}" onClick="return confirmLink(this,'{t}Are you sure, you want to delete that message?{/t}');">{t}Delete{/t} <IMG src="img/delete.gif" alt=""></A>
+					<A href="?m=rtmessagedel&id={$message.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that message?")}');">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
 				{/if}
 				{if $ticket.state != 2}
-					<A href="?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}">{t}Answer{/t} <IMG src="img/forward.gif" alt=""></A>
+					<A href="?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}">{trans("Answer")} <IMG src="img/forward.gif" alt=""></A>
 				{/if}
 			</TD>
 		    </TR>
@@ -64,13 +64,13 @@
 				<B>{$message.createtime|date_format:"%Y/%m/%d %H:%M"}</B>
 			</TD>
 			<TD width="1%" class="fbt" ALIGN="RIGHT">
-				<B>{t}From:{/t}</B>
+				<B>{trans("From:")}</B>
 			</TD>
 			<TD width="1%" class="fbt" NOWRAP>
 				<A href="?m=userinfo&id={$message.userid}">{$message.username}</A>
 			</TD>
 			<TD width="97%" class="fbt" align="right" nowrap>
-				<A href="?m=rtnotedel&id={$message.id}" onClick="return confirmLink(this,'{t}Are you sure, you want to delete that note?{/t}');">{t}Delete{/t} <IMG src="img/delete.gif" alt=""></A>
+				<A href="?m=rtnotedel&id={$message.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that note?")}');">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
 			</TD>
 		    </TR>
 		    <TR class="LIGHT">
@@ -87,15 +87,15 @@
 	<TR CLASS="dark">
 		<TD CLASS="fall" width="100%" align="center" colspan="3" NOWRAP>
 			{if $ticket.prev_ticketid neq NULL}
-				<A HREF="?m=rtticketview&id={$ticket.prev_ticketid}">&laquo;&laquo;&laquo;&nbsp;{t}Previous ticket{/t}</A>
+				<A HREF="?m=rtticketview&id={$ticket.prev_ticketid}">&laquo;&laquo;&laquo;&nbsp;{trans("Previous ticket")}</A>
 			{else}
-				&laquo;&laquo;&laquo;&nbsp;{t}Previous ticket{/t}
+				&laquo;&laquo;&laquo;&nbsp;{trans("Previous ticket")}
 			{/if}
 			&nbsp;&nbsp;&nbsp;
 			{if $ticket.next_ticketid neq NULL}
-				<A HREF="?m=rtticketview&id={$ticket.next_ticketid}">{t}Next ticket{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+				<A HREF="?m=rtticketview&id={$ticket.next_ticketid}">{trans("Next ticket")}&nbsp;&raquo;&raquo;&raquo;</A>
 			{else}
-				{t}Next ticket{/t}&nbsp;&raquo;&raquo;&raquo;
+				{trans("Next ticket")}&nbsp;&raquo;&raquo;&raquo;
 			{/if}
 		</TD>
 	</TR>

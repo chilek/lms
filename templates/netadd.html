@@ -7,22 +7,22 @@
 	<TR CLASS="DARK" COLSPAN="2">
 		<TD WIDTH="1%" CLASS="fleftu" NOWRAP>
 			<IMG SRC="img/network.gif" ALT="">
-			<B>{t}Network name:{/t}</B>
+			<B>{trans("Network name:")}</B>
 		</TD>
 		<TD CLASS="frightu">
 			<INPUT TYPE="TEXT" SIZE="23" NAME="netadd[name]" VALUE="{$netadd.name}" {tip trigger="name" bold=1}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/ip.gif" ALT=""> <B>{t}Network address/mask:{/t}</B></TD>
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/ip.gif" ALT=""> <B>{trans("Network address/mask:")}</B></TD>
 		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[address]" VALUE="{$netadd.address}" {tip text="Enter IP address and select mask" trigger="address"}><B> / </B><SELECT SIZE="1" TITLE="Prefixlen" NAME="netadd[prefix]">{section name=prefixlist loop=$prefixlist.id}<OPTION VALUE="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] eq $netadd.prefix} SELECTED{/if}>{$prefixlist.value[prefixlist]}</OPTION>{/section}</SELECT>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/mac.gif" ALT=""> <B>{t}Interface:{/t}</B></TD>
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/mac.gif" ALT=""> <B>{trans("Interface:")}</B></TD>
 		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[interface]" VALUE="{$netadd.interface}" {tip text="Enter network interface (optional)" trigger="interface"}></TD>					
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/node.gif" ALT=""> <B>{t}Domain:{/t}</B></TD>
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/node.gif" ALT=""> <B>{trans("Domain:")}</B></TD>
 		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[domain]" VALUE="{$netadd.domain}" {tip text="Enter network domain (optional)" trigger="domain"}></TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -30,34 +30,34 @@
 		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[gateway]" VALUE="{$netadd.gateway}" {tip text="Enter gateway address (optional)" trigger="gateway"}></TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" ROWSPAN="2" CLASS="fleft" NOWRAP><IMG SRC="img/dns.gif" ALT=""> <B>{t}DNS servers:{/t}</B></TD>
+		<TD WIDTH="1%" ROWSPAN="2" CLASS="fleft" NOWRAP><IMG SRC="img/dns.gif" ALT=""> <B>{trans("DNS servers:")}</B></TD>
 		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[dns]" VALUE="{$netadd.dns}" {tip text="Enter primary DNS address (optional)" trigger="dns"}></TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[dns2]" VALUE="{$netadd.dns2}" {tip text="Enter secondary DNS address (optional)" trigger="dns2"}></TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/wins.gif" ALT=""> <B>{t}WINS server:{/t}</B></TD>
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/wins.gif" ALT=""> <B>{trans("WINS server:")}</B></TD>
 		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[wins]" VALUE="{$netadd.wins}" {tip text="Enter WINS address (optional)" trigger="wins"}></TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/dhcpstart.gif" ALT=""> <B>{t}Begin of DHCP range:{/t}</B></TD>
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/dhcpstart.gif" ALT=""> <B>{trans("Begin of DHCP range:")}</B></TD>
 		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[dhcpstart]" VALUE="{$netadd.dhcpstart}" {tip text="Enter beginning of DHCP range (optional)" trigger="dhcpstart"}></TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/dhcpend.gif" ALT=""> <B>{t}End of DHCP range:{/t}</B></TD>
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/dhcpend.gif" ALT=""> <B>{trans("End of DHCP range:")}</B></TD>
 		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[dhcpend]" VALUE="{$netadd.dhcpend}" {tip text="Enter end of DHCP range (optional)" trigger="dhcpend"}></TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/info1.gif" ALT=""> <B>{t}Notes:{/t}</B></TD>
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/info1.gif" ALT=""> <B>{trans("Notes:")}</B></TD>
 		<TD CLASS="fright">
 		  <TEXTAREA NAME="netadd[notes]" COLS="60" ROWS="7" {tip text="Enter notes (optional)"}>{$netadd.notes}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD width="100%" CLASS="fbottomu" COLSPAN="2" align="right">
-			<A HREF="javascript:document.netadd.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
-			<A HREF="?m=netlist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
+			<A HREF="javascript:document.netadd.submit();" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
+			<A HREF="?m=netlist">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>

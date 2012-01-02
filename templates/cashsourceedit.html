@@ -9,7 +9,7 @@
 			<img src="img/isource.gif" alt="">
 		</TD>
 		<TD width="1%" class="fbt">
-			<B>{t}Name:{/t}</B>
+			<B>{trans("Name:")}</B>
 		</TD>
 		<TD width="98%" class="frightu">
 			<INPUT type="text" size="40" name="sourceedit[name]" value="{$sourceedit.name}" {tip text="Enter source name" trigger="name" bold=1}>
@@ -20,7 +20,7 @@
 			<img src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Description:{/t}</B>
+			<B>{trans("Description:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<TEXTAREA rows="5" cols="50" name="sourceedit[description]" {tip text="Enter additional information (optional)" trigger="value"}>{$sourceedit.description}</TEXTAREA>
@@ -28,8 +28,8 @@
 	</TR>
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
-			<A href="javascript:document.sourceedit.submit();" accesskey="s">{t}Submit{/t} <img src="img/save.gif" alt=""></A>
-			<A href="?m=cashsourcelist">{t}Cancel{/t} <img src="img/cancel.gif" alt=""></A><BR>
+			<A href="javascript:document.sourceedit.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
+			<A href="?m=cashsourcelist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A><BR>
 		</TD>
 	</TR>
 </TABLE>

@@ -3,11 +3,11 @@
 <H1>{$layout.pagetitle}</H1>
 {if $emptydb}
     <TABLE WIDTH="100%"><TR><TD WIDTH="100%" ALIGN="Center">
-	<BR><BR><FONT class="alert">{t}No such devices in database.{/t}</FONT>
+	<BR><BR><FONT class="alert">{trans("No such devices in database.")}</FONT>
     </TD></TR></TABLE>
 {elseif !$ming && $type == 'flash'}
     <TABLE WIDTH="100%"><TR><TD WIDTH="100%" ALIGN="Center">
-	<BR><BR><FONT class="alert">{t}Your PHP does not support Ming library required for map generation!{/t}</FONT>
+	<BR><BR><FONT class="alert">{trans("Your PHP does not support Ming library required for map generation!")}</FONT>
     </TD></TR></TABLE>
 {elseif $ming && (!$type || $type=='flash')}
 <P ALIGN="CENTER">
@@ -109,22 +109,22 @@
 </P>
 {else}
     <TABLE WIDTH="100%"><TR><TD WIDTH="100%" ALIGN="Center">
-	<BR><BR><FONT class="alert">{t}Your PHP does not support GD library required for map generation!{/t}</FONT>
+	<BR><BR><FONT class="alert">{trans("Your PHP does not support GD library required for map generation!")}</FONT>
     </TD></TR></TABLE>
 {/if}
 {if !$emptydb && $type != 'openlayers'}
 <P ALIGN="CENTER">
 <FORM METHOD="GET" ACTION="?m=netdevmap" NAME="x">
 	<INPUT type="submit" class="hiddenbtn">
-	{t}Start map from:{/t}
+	{trans("Start map from:")}
 	<INPUT TYPE="hidden" NAME="m" VALUE="netdevmap">
 	<SELECT SIZE="1" NAME="start" onChange="document.x.submit();">
 		{section name=a loop=$deviceslist}
 		<OPTION VALUE="{$deviceslist[a].id}"{if $deviceslist[a].id eq $start} SELECTED{/if}>{$deviceslist[a].name}</OPTION>
 		{/section}
 	</SELECT>
-	<INPUT TYPE="SUBMIT" VALUE="{t}Generate{/t}">
-	<INPUT TYPE="CHECKBOX" NAME="mini" VALUE="1"{if $mini} CHECKED{/if}> {t}only devices{/t}
+	<INPUT TYPE="SUBMIT" VALUE="{trans("Generate")}">
+	<INPUT TYPE="CHECKBOX" NAME="mini" VALUE="1"{if $mini} CHECKED{/if}> {trans("only devices")}
 </FORM>
 </P>
 {/if}

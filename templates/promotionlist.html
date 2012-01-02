@@ -4,22 +4,22 @@
 <TABLE cellpadding="5" WIDTH="100%">
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" WIDTH="1%" NOWRAP>
-			<IMG src="img/promo.gif" ALT=""> <B>{t}Name:{/t}</B>
+			<IMG src="img/promo.gif" ALT=""> <B>{trans("Name:")}</B>
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" align="right" NOWRAP>
-			{t}ID:{/t}
+			{trans("ID:")}
 		</TD>
 		<TD CLASS="fbt" WIDTH="95%">
-			{t}Description:{/t}
+			{trans("Description:")}
 		</TD>
 		<TD CLASS="fbt" align="right" WIDTH="1%" NOWRAP>
-			{t}Schemas:{/t}
+			{trans("Schemas:")}
 		</TD>
 		<TD CLASS="fbt" align="right" WIDTH="1%" NOWRAP>
-			{t}Tariffs:{/t}
+			{trans("Tariffs:")}
 		</TD>
 		<TD CLASS="frightu" WIDTH="1%" align="right" nowrap>
-			<A href="?m=promotionadd">{t}Add promotion{/t} <IMG src="img/save.gif" alt=""> </A>
+			<A href="?m=promotionadd">{trans("Add promotion")} <IMG src="img/save.gif" alt=""> </A>
 		</TD>
 	</TR>
 	{cycle values="light,lucid" print=false}
@@ -41,17 +41,17 @@
 			{$promo.tariffs|default:"-"}
 		</TD>
 		<TD CLASS="fright" align="right" NOWRAP>
-			<A HREF="?m=promotionset&id={$promo.id}&access={$promo.disabled}">{if $promo.disabled}<IMG src="img/noaccess.gif" alt="[ {t}Enable{/t} ]" title="[ {t}Enable{/t} ]">{else}<IMG src="img/access.gif" alt="[ {t}Disable{/t} ]" title="[ {t}Disable{/t} ]">{/if}</A>
-			<A HREF="?m=promotiondel&id={$promo.id}" OnClick="return confirmLink(this, '{t a=$promo.name}Are you sure, you want to remove promotion \'$a\'?{/t}');"><IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
-			<A HREF="?m=promotionedit&id={$promo.id}"><IMG SRC="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
-			<A HREF="?m=promotioninfo&id={$promo.id}"><IMG SRC="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
+			<A HREF="?m=promotionset&id={$promo.id}&access={$promo.disabled}">{if $promo.disabled}<IMG src="img/noaccess.gif" alt="[ {trans("Enable")} ]" title="[ {trans("Enable")} ]">{else}<IMG src="img/access.gif" alt="[ {trans("Disable")} ]" title="[ {trans("Disable")} ]">{/if}</A>
+			<A HREF="?m=promotiondel&id={$promo.id}" OnClick="return confirmLink(this, '{t a=$promo.name}Are you sure, you want to remove promotion \'$a\'?{/t}');"><IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			<A HREF="?m=promotionedit&id={$promo.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			<A HREF="?m=promotioninfo&id={$promo.id}"><IMG SRC="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
 		</TD>
 	</TR>
 	{foreachelse}
 	<TR>
 		<TD colspan="6" align="center" class="flr">
 			<p>&nbsp;</p>
-			<p><B>{t}There are no promotions in database.{/t}<B></p>
+			<p><B>{trans("There are no promotions in database.")}<B></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
@@ -59,14 +59,14 @@
 	<TR CLASS="light">
 		<TD COLSPAN="2" ALIGN="RIGHT" CLASS="fleftu">
 			<IMG src="img/info2.gif" ALT="">
-			<B>{t}Total:{/t}</B>
+			<B>{trans("Total:")}</B>
 		</TD>
 		<TD CLASS="fbt" nowrap>
 			<B>{$listdata.total|default:"0"}</B>
 		</TD>
 		<TD COLSPAN="2" CLASS="fbt"></TD>
 		<TD CLASS="frightu" align="right">
-			<A href="?m=promotionadd">{t}Add promotion{/t} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=promotionadd">{trans("Add promotion")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE>

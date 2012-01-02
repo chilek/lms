@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>{t}Contract{/t}</title>
+<title>{trans("Contract")}</title>
 <STYLE type="text/css">
 <!--
 BODY		{ font-size: 12pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
@@ -15,7 +15,7 @@ P		{ font-size: 12pt; font-family: Tahoma, Verdana, Arial, Helvetica; text-align
 </head>
 <body>
 <h1>{$engine.title} {$document.nr}</h1>
-<h2>{t}Warning! This is example document (default template). You can create your own template in documents/templates/ directory.{/t}</h2>
+<h2>{trans("Warning! This is example document (default template). You can create your own template in documents/templates/ directory.")}</h2>
 <p>Zawarta w dniu {$smarty.now|date_format:"%Y-%m-%d"} w <s>Miasto</s> pomiędzy 
 <s>Naszą firmą</s> z siedzibą w <s>Siedziba</s> wpisanym do rejestru KRS pod 
 numerem <s>Numer</s>, NIP <s>Nip</s> zwanym dalej Usługodawcą reprezentowanym 
@@ -91,10 +91,10 @@ Strony uzgodniły obowiązujące opłaty za następujące usługi:
 
 <TABLE cellpadding="3" cellspacing="0" border="1">
     <TR>
-	<TD NOWRAP>{t}Service:{/t}</TD>
-	<TD NOWRAP ALIGN="RIGHT">{t}Value:{/t}</TD>
-	<TD NOWRAP>{t}Payment:{/t}</TD>
-	<TD NOWRAP>{t}Period:{/t}</TD>
+	<TD NOWRAP>{trans("Service:")}</TD>
+	<TD NOWRAP ALIGN="RIGHT">{trans("Value:")}</TD>
+	<TD NOWRAP>{trans("Payment:")}</TD>
+	<TD NOWRAP>{trans("Period:")}</TD>
     </TR>
     {foreach from=$assignments item=a}
     <TR>
@@ -108,7 +108,7 @@ Strony uzgodniły obowiązujące opłaty za następujące usługi:
     </TR>
     {/foreach}
     <TR>
-	<TD ALIGN="RIGHT">{t}Total:{/t}</TD>
+	<TD ALIGN="RIGHT">{trans("Total:")}</TD>
 	<TD NOWRAP ALIGN="RIGHT">{sum array=$assignments column="value" string_format="%01.2f"}</TD>
 	<TD>&nbsp;</TD>
 	<TD>&nbsp;</TD>
@@ -126,14 +126,14 @@ Strony uzgodniły obowiązujące opłaty za następujące usługi:
 	    następujących adresów:
 <TABLE cellpadding="3" cellspacing="0" border="1">
     <TR>
-	<TD>{t}Name:{/t}</TD>
-	<TD>{t}IP Address:{/t}</TD>
-	<TD>{t}MAC address:{/t}</TD>
-	<TD>{t}Mask:{/t}</TD>
-	<TD>{t}Gateway:{/t}</TD>
-	<TD>{t}Domain:{/t}</TD>
-	<TD>{t}DNS:{/t}</TD>
-	<TD>{t}WINS:{/t}</TD>
+	<TD>{trans("Name:")}</TD>
+	<TD>{trans("IP Address:")}</TD>
+	<TD>{trans("MAC address:")}</TD>
+	<TD>{trans("Mask:")}</TD>
+	<TD>{trans("Gateway:")}</TD>
+	<TD>{trans("Domain:")}</TD>
+	<TD>{trans("DNS:")}</TD>
+	<TD>{trans("WINS:")}</TD>
     </TR>
     {section name=customernodes loop=$customernodes}
     <TR>
@@ -157,11 +157,11 @@ Strony uzgodniły obowiązujące opłaty za następujące usługi:
 	<TD VALIGN="top">KONTA POCZTOWE (I INNE)<br>
 <TABLE cellpadding="3" cellspacing="0" border="1">
     <TR>
-	<TD>{t}Login:{/t}</TD>
-	<TD>{t}Domain:{/t}</TD>
-	<TD>{t}Password:{/t}</TD>
-	<TD>{t}Aliases:{/t}</TD>
-	<TD>{t}Type:{/t}</TD>
+	<TD>{trans("Login:")}</TD>
+	<TD>{trans("Domain:")}</TD>
+	<TD>{trans("Password:")}</TD>
+	<TD>{trans("Aliases:")}</TD>
+	<TD>{trans("Type:")}</TD>
     </TR>
     {foreach from=$customeraccounts item=account}
     <TR>
@@ -174,10 +174,10 @@ Strony uzgodniły obowiązujące opłaty za następujące usługi:
 	{/foreach}
 	</TD>
 	<TD>
-	{if ($account.type & 1) == 1}{t}shell{/t}{/if}
-	{if ($account.type & 2) == 2}{t}mail{/t}{/if}
-	{if ($account.type & 4) == 4}{t}www{/t}{/if}
-	{if ($account.type & 8) == 8}{t}ftp{/t}{/if}
+	{if ($account.type & 1) == 1}{trans("shell")}{/if}
+	{if ($account.type & 2) == 2}{trans("mail")}{/if}
+	{if ($account.type & 4) == 4}{trans("www")}{/if}
+	{if ($account.type & 8) == 8}{trans("ftp")}{/if}
 	</TD>
     </TR>
     {/foreach}

@@ -75,7 +75,7 @@
 	{if $customerinfo.ten neq ""}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT" ALIGN=CENTER>
-			<B>{t}TEN:{/t}</B>
+			<B>{trans("TEN:")}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<B>{$customerinfo.ten}</B>
@@ -87,7 +87,7 @@
 			<IMG SRC="img/money.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%" valign="top">
-			<B>{t}Balance:{/t}<B>
+			<B>{trans("Balance:")}<B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 		<H2>	{if $customerinfo.balance < 0}<FONT COLOR="RED"><B>{$customerinfo.balance|money_format}</B></FONT>{else}{$customerinfo.balance|money_format}{/if}</H2>
@@ -98,8 +98,8 @@
 			<IMG SRC="img/users.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>{t}Created:{/t}<BR>
-			{t}Modified:{/t}</B>
+			<B>{trans("Created:")}<BR>
+			{trans("Modified:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			{$customerinfo.createdby}, {$customerinfo.creationdateh}<BR>
@@ -123,7 +123,7 @@
 	{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
-<!--			<A href="?m=customeredit&id={$customerinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG src="img/edit.gif" border="0" align="absmiddle" alt="[ Edytuj ]"></A> <A href="?m=customerdel&id={$customerinfo.id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika: {$customerinfo.customername|upper} z bazy danych?\n\nJe¿eli dany u¿ytkownik posiada jakiekolwiek komputery, zostan± automatycznie usuniête z bazy danych a informacje o nich nieodwracalnie stracone!')">Usuñ <img border="0" align="absmiddle" src="img/delete.gif" alt=""></A>-->
+<!--			<A href="?m=customeredit&id={$customerinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG src="img/edit.gif" border="0" align="absmiddle" alt="[ Edytuj ]"></A> <A href="?m=customerdel&id={$customerinfo.id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika: {$customerinfo.customername|upper} z bazy danych?\n\nJe¿eli dany u¿ytkownik posiada jakiekolwiek komputery, zostan± automatycznie usuniête z bazy danych a informacje o nich nieodwracalnie stracone!')">Usuñ <img border="0" align="absmiddle" src="img/delete.gif" alt=""></A>-->
 		</TD>
 	</TR>
 </TABLE>

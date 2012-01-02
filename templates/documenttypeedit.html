@@ -7,7 +7,7 @@
 	<TR class="dark">
 		<TD width="100%" colspan="3" class="fall">
 			<IMG src="img/docum.gif" alt="">
-			<B>{t}Name:{/t} {$documenttype.name}</B>
+			<B>{trans("Name:")} {$documenttype.name}</B>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -15,17 +15,17 @@
 			<IMG src="img/users.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>
-			<B>{t}Permissions:{/t}</B>
+			<B>{trans("Permissions:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 		    <TABLE width="100%" cellpadding="3">
 			<TR class="DARK">
-			    <TD width="95%" class="ftl"><B>{t}User{/t}</B></TD>
-			    <TD width="1%" class="ftop" align="center" nowrap><B>{t}Viewing{/t}</B></TD>
-			    <TD width="1%" class="ftop" align="center" nowrap><B>{t}Creating{/t}</B></TD>
-			    <TD width="1%" class="ftop" align="center" nowrap><B>{t}Confirming{/t}</B></TD>
-			    <TD width="1%" class="ftop" align="center" nowrap><B>{t}Editing{/t}</B></TD>
-			    <TD width="1%" class="ftr" align="center" nowrap><B>{t}Deleting{/t}</B></TD>
+			    <TD width="95%" class="ftl"><B>{trans("User")}</B></TD>
+			    <TD width="1%" class="ftop" align="center" nowrap><B>{trans("Viewing")}</B></TD>
+			    <TD width="1%" class="ftop" align="center" nowrap><B>{trans("Creating")}</B></TD>
+			    <TD width="1%" class="ftop" align="center" nowrap><B>{trans("Confirming")}</B></TD>
+			    <TD width="1%" class="ftop" align="center" nowrap><B>{trans("Editing")}</B></TD>
+			    <TD width="1%" class="ftr" align="center" nowrap><B>{trans("Deleting")}</B></TD>
 			</TR>
 			{cycle values="light,lucid" print=false}
 			{foreach from=$documenttype.rights item=right key=key}
@@ -59,8 +59,8 @@
 	</TR>
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
-			<A href="javascript:document.typeedit.submit();" accesskey="s">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=documenttypes">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A>
+			<A href="javascript:document.typeedit.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=documenttypes">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE>

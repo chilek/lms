@@ -30,7 +30,7 @@
 	    <TD WIDTH="1%" CLASS="fleftu">
 		<IMG SRC="img/money.gif" ALT="">
 	    </TD>
-	    <TD WIDTH="1%" CLASS="fbt"><B>{t}Name:{/t}</B></TD>
+	    <TD WIDTH="1%" CLASS="fbt"><B>{trans("Name:")}</B></TD>
 	    <TD WIDTH="98%" CLASS="frightu">
 		<INPUT TYPE="TEXT" NAME="tariff[name]" VALUE="{$tariff.name|escape}" size="45" {tip trigger="name" text="Enter name" bold=1}>
 	    </TD>
@@ -45,11 +45,11 @@
 				    <TD WIDTH="1%">
 					<IMG SRC="img/value.gif" ALT="">
 				    </TD>
-				    <TD WIDTH="1%" NOWRAP><B>{t}Value:{/t}</B></TD>
+				    <TD WIDTH="1%" NOWRAP><B>{trans("Value:")}</B></TD>
 				    <TD WIDTH="98%" NOWRAP>
 					    <INPUT TYPE="TEXT" SIZE="8" NAME="tariff[value]" VALUE="{$tariff.value}" {tip text="Enter value" trigger="value"}>
 			            <SELECT size="1" name="tariff[period]" {tip text="Select time period of tariff accounting"}>
-            				<OPTION value=""{if $tariff.period == $key} SELECTED{/if}>{t}undefined{/t}</OPTION>
+            				<OPTION value=""{if $tariff.period == $key} SELECTED{/if}>{trans("undefined")}</OPTION>
 				            {foreach from=$_PERIODS key=key item=item}{if $key != $smarty.const.DISPOSABLE}
             				<OPTION value="{$key}"{if $tariff.period == $key} SELECTED{/if}>{$item}</OPTION>
 			            	{/if}{/foreach}
@@ -60,7 +60,7 @@
 				    <TD WIDTH="1%">
 					<IMG SRC="img/tax.gif" ALT="">
 				    </TD>
-				    <TD WIDTH="1%" NOWRAP><B>{t}Tax:{/t}</B></TD>
+				    <TD WIDTH="1%" NOWRAP><B>{trans("Tax:")}</B></TD>
 				    <TD WIDTH="98%">
 					<SELECT SIZE="1" NAME="tariff[taxid]" {tip text="Select Tax rate" trigger="taxid"}>
 					{foreach item=tax from=$taxeslist}
@@ -73,7 +73,7 @@
 				    <TD WIDTH="1%">
 					<IMG SRC="img/money.gif" alt="">
 				    </TD>
-				    <TD WIDTH="1%" nowrap><B>{t}Type:{/t}</B></TD>
+				    <TD WIDTH="1%" nowrap><B>{trans("Type:")}</B></TD>
 				    <TD WIDTH="98%">
 					<SELECT SIZE="1" NAME="tariff[type]" {tip text="Select tariff type" trigger="type"}>
 					{foreach item=item from=$_TARIFFTYPES key=key}
@@ -86,7 +86,7 @@
 				    <TD WIDTH="1%">
 					<IMG SRC="img/class.gif" ALT="">
 				    </TD>
-				    <TD WIDTH="1%" NOWRAP><B>{t}Product ID:{/t}</B></TD>
+				    <TD WIDTH="1%" NOWRAP><B>{trans("Product ID:")}</B></TD>
 				    <TD WIDTH="98%">
 					<INPUT TYPE="TEXT" SIZE="8" NAME="tariff[prodid]" VALUE="{$tariff.prodid}" {tip text="Enter Product ID number (optional)" trigger="prodid"}>
 				    </TD>
@@ -95,7 +95,7 @@
 				    <TD WIDTH="1%">
 					<IMG SRC="img/info1.gif" ALT="">
 				    </TD>
-				    <TD WIDTH="1%"><B>{t}Description:{/t}</B></TD>
+				    <TD WIDTH="1%"><B>{trans("Description:")}</B></TD>
 				    <TD WIDTH="98%">
 					<TEXTAREA NAME="tariff[description]" COLS="45" ROWS="4" {tip text="Enter additional information (optional)"}>{$tariff.description}</TEXTAREA>
 				    </TD>
@@ -108,63 +108,63 @@
 				    <TD WIDTH="1%">
 					<IMG SRC="img/uprate.gif" ALT="">
 				    </TD>
-				    <TD WIDTH="1%" NOWRAP><B>{t}Upload rate:{/t}</B></TD>
+				    <TD WIDTH="1%" NOWRAP><B>{trans("Upload rate:")}</B></TD>
 				    <TD WIDTH="98%">
 					<INPUT TYPE="TEXT" NAME="tariff[uprate]" SIZE="6" VALUE="{if $tariff.uprate}{$tariff.uprate}{/if}" {tip text="Enter minimal warranted upload value (optional)" trigger="uprate"}>
-					{t}night:{/t} <INPUT TYPE="TEXT" NAME="tariff[uprate_n]" SIZE="6" VALUE="{if $tariff.uprate_n}{$tariff.uprate_n}{/if}" {tip text="Enter minimal warranted upload value (optional)" trigger="uprate_n"}> kbit/s
+					{trans("night:")} <INPUT TYPE="TEXT" NAME="tariff[uprate_n]" SIZE="6" VALUE="{if $tariff.uprate_n}{$tariff.uprate_n}{/if}" {tip text="Enter minimal warranted upload value (optional)" trigger="uprate_n"}> kbit/s
 				    </TD>
 				</TR>
 				<TR CLASS="LIGHT">
 				    <TD WIDTH="1%">
 				    </TD>
-				    <TD WIDTH="1%" NOWRAP><B>{t}Upload ceil:{/t}</B></TD>
+				    <TD WIDTH="1%" NOWRAP><B>{trans("Upload ceil:")}</B></TD>
 				    <TD WIDTH="98%">
 					<INPUT TYPE="TEXT" NAME="tariff[upceil]" SIZE="6" VALUE="{if $tariff.upceil}{$tariff.upceil}{/if}" {tip text="Enter maximum upload value (optional)" trigger="upceil"}>
-					{t}night:{/t} <INPUT TYPE="TEXT" NAME="tariff[upceil_n]" SIZE="6" VALUE="{if $tariff.upceil_n}{$tariff.upceil_n}{/if}" {tip text="Enter maximum upload value (optional)" trigger="upceil_n"}> kbit/s
+					{trans("night:")} <INPUT TYPE="TEXT" NAME="tariff[upceil_n]" SIZE="6" VALUE="{if $tariff.upceil_n}{$tariff.upceil_n}{/if}" {tip text="Enter maximum upload value (optional)" trigger="upceil_n"}> kbit/s
 				    </TD>
 				</TR>
 				<TR CLASS="LIGHT">			
 				    <TD WIDTH="1%">
 					<IMG SRC="img/downrate.gif" ALT="">
 				    </TD>
-				    <TD WIDTH="1%" NOWRAP><B>{t}Download rate:{/t}</B></TD>
+				    <TD WIDTH="1%" NOWRAP><B>{trans("Download rate:")}</B></TD>
 				    <TD WIDTH="98%">
 					<INPUT TYPE="TEXT" NAME="tariff[downrate]" SIZE="6" VALUE="{if $tariff.downrate}{$tariff.downrate}{/if}" {tip text="Enter minimal warranted download value (optional)" trigger="downrate"}>
-					{t}night:{/t} <INPUT TYPE="TEXT" NAME="tariff[downrate_n]" SIZE="6" VALUE="{if $tariff.downrate_n}{$tariff.downrate_n}{/if}" {tip text="Enter minimal warranted download value (optional)" trigger="downrate_n"}> kbit/s
+					{trans("night:")} <INPUT TYPE="TEXT" NAME="tariff[downrate_n]" SIZE="6" VALUE="{if $tariff.downrate_n}{$tariff.downrate_n}{/if}" {tip text="Enter minimal warranted download value (optional)" trigger="downrate_n"}> kbit/s
 				    </TD>
 				</TR>
 				<TR CLASS="LIGHT">
 				    <TD WIDTH="1%">
 				    </TD>
-				    <TD WIDTH="1%" NOWRAP><B>{t}Download ceil:{/t}</B></TD>
+				    <TD WIDTH="1%" NOWRAP><B>{trans("Download ceil:")}</B></TD>
 				    <TD WIDTH="98%">
 					<INPUT TYPE="TEXT" NAME="tariff[downceil]" SIZE="6" VALUE="{if $tariff.downceil}{$tariff.downceil}{/if}" {tip text="Enter maximum download value (optional)" trigger="downceil"}>
-					{t}night:{/t} <INPUT TYPE="TEXT" NAME="tariff[downceil_n]" SIZE="6" VALUE="{if $tariff.downceil_n}{$tariff.downceil_n}{/if}" {tip text="Enter maximum download value (optional)" trigger="downceil_n"}> kbit/s
+					{trans("night:")} <INPUT TYPE="TEXT" NAME="tariff[downceil_n]" SIZE="6" VALUE="{if $tariff.downceil_n}{$tariff.downceil_n}{/if}" {tip text="Enter maximum download value (optional)" trigger="downceil_n"}> kbit/s
 				    </TD>
 				</TR>
 				<TR CLASS="LIGHT">			
 				    <TD WIDTH="1%">
 				    	<IMG SRC="img/options.gif" ALT="">
 				    </TD>
-				    <TD WIDTH="1%" NOWRAP><B>{t}Connection limit:{/t}</B></TD>
+				    <TD WIDTH="1%" NOWRAP><B>{trans("Connection limit:")}</B></TD>
 				    <TD WIDTH="98%">
 					<INPUT TYPE="TEXT" NAME="tariff[climit]" SIZE="6" VALUE="{if $tariff.climit}{$tariff.climit}{/if}" {tip text="Enter limit of simultaneous connections (optional)" trigger="climit"}>
-					{t}night:{/t} <INPUT TYPE="TEXT" NAME="tariff[climit_n]" SIZE="6" VALUE="{if $tariff.climit_n}{$tariff.climit_n}{/if}" {tip text="Enter limit of simultaneous connections (optional)" trigger="climit_n"}>
+					{trans("night:")} <INPUT TYPE="TEXT" NAME="tariff[climit_n]" SIZE="6" VALUE="{if $tariff.climit_n}{$tariff.climit_n}{/if}" {tip text="Enter limit of simultaneous connections (optional)" trigger="climit_n"}>
 				    </TD>
 				</TR>
 				<TR CLASS="LIGHT">
 				    <TD WIDTH="1%">
 				    </TD>
-				    <TD WIDTH="1%" NOWRAP><B>{t}Packet limit:{/t}</B></TD>
+				    <TD WIDTH="1%" NOWRAP><B>{trans("Packet limit:")}</B></TD>
 				    <TD WIDTH="98%">
 					<INPUT TYPE="TEXT" NAME="tariff[plimit]" SIZE="6" VALUE="{if $tariff.plimit}{$tariff.plimit}{/if}" {tip text="Enter limit of packets in time unit (optional)" trigger="plimit"}>
-					{t}night:{/t} <INPUT TYPE="TEXT" NAME="tariff[plimit_n]" SIZE="6" VALUE="{if $tariff.plimit_n}{$tariff.plimit_n}{/if}" {tip text="Enter limit of packets in time unit (optional)" trigger="plimit_n"}>
+					{trans("night:")} <INPUT TYPE="TEXT" NAME="tariff[plimit_n]" SIZE="6" VALUE="{if $tariff.plimit_n}{$tariff.plimit_n}{/if}" {tip text="Enter limit of packets in time unit (optional)" trigger="plimit_n"}>
 				    </TD>
 				</TR>
 				<TR CLASS="LIGHT">
 				    <TD WIDTH="1%">
 				    </TD>
-				    <TD WIDTH="1%" NOWRAP><B>{t}Data limit:{/t}</B></TD>
+				    <TD WIDTH="1%" NOWRAP><B>{trans("Data limit:")}</B></TD>
 				    <TD WIDTH="98%">
 					<INPUT TYPE="TEXT" VALUE="{if $tariff.dlimit}{$tariff.dlimit}{/if}" SIZE="6" NAME="tariff[dlimit]" {tip text="Enter limit of data in time unit (optional)" trigger="dlimit"}> 
 				    </TD>
@@ -179,91 +179,91 @@
 				    <TD WIDTH="1%">
 					<IMG SRC="img/account.gif" ALT="">
 				    </TD>
-				    <TD WIDTH="1%" NOWRAP><B>{t}Hosting:{/t}</B></TD>
+				    <TD WIDTH="1%" NOWRAP><B>{trans("Hosting:")}</B></TD>
 				    <TD WIDTH="98%">
 					<TABLE WIDTH="100%" CELLPADDING="3">
 					    <TR CLASS="LIGHT">
-						<TD WIDTH="1%" NOWRAP>{t}Limit of domains:{/t}</TD>
+						<TD WIDTH="1%" NOWRAP>{trans("Limit of domains:")}</TD>
 						<TD WIDTH="99%" NOWRAP>
 						    <INPUT TYPE="TEXT" NAME="tariff[domain_limit]" SIZE="5" VALUE="{$tariff.domain_limit}"{if $tariff.domain_limit === NULL} style="display:none"{/if} {tip text="Enter limit of domains" trigger="domain_limit"}>
-						    <input type="checkbox" value="1" id="domain_limit" name="limit[domain_limit]" onclick="checklimit('domain_limit')"{if $tariff.domain_limit===NULL} CHECKED{/if}><A HREF="javascript:checklimit2('domain_limit');">{t}no limit{/t}</A>
+						    <input type="checkbox" value="1" id="domain_limit" name="limit[domain_limit]" onclick="checklimit('domain_limit')"{if $tariff.domain_limit===NULL} CHECKED{/if}><A HREF="javascript:checklimit2('domain_limit');">{trans("no limit")}</A>
 						</TD>
 					    </TR>
 					    <TR CLASS="LIGHT">
-						<TD WIDTH="1%" NOWRAP>{t}Limit of account aliases:{/t}</TD>
+						<TD WIDTH="1%" NOWRAP>{trans("Limit of account aliases:")}</TD>
 						<TD WIDTH="99%" NOWRAP>
 						    <INPUT TYPE="TEXT" NAME="tariff[alias_limit]" SIZE="5" VALUE="{$tariff.alias_limit}"{if $tariff.alias_limit === NULL} style="display:none"{/if} {tip text="Enter limit of account aliases" trigger="alias_limit"}>
-						    <input type="checkbox" value="1" id="alias_limit" name="limit[alias_limit]" onclick="checklimit('alias_limit')"{if $tariff.alias_limit===NULL} CHECKED{/if}><A HREF="javascript:checklimit2('alias_limit');">{t}no limit{/t}</A>
+						    <input type="checkbox" value="1" id="alias_limit" name="limit[alias_limit]" onclick="checklimit('alias_limit')"{if $tariff.alias_limit===NULL} CHECKED{/if}><A HREF="javascript:checklimit2('alias_limit');">{trans("no limit")}</A>
 						</TD>
 					    </TR>
 					    <TR CLASS="LIGHT">
-						<TD WIDTH="1%" NOWRAP>{t}Limit of e-mail accounts:{/t}</TD>
+						<TD WIDTH="1%" NOWRAP>{trans("Limit of e-mail accounts:")}</TD>
 						<TD WIDTH="99%" NOWRAP>
 						    <INPUT TYPE="TEXT" NAME="tariff[mail_limit]" SIZE="5" VALUE="{$tariff.mail_limit}"{if $tariff.mail_limit === NULL} style="display:none"{/if} {tip text="Enter limit of e-mail accounts" trigger="mail_limit"}>
-						    <input type="checkbox" value="1" id="mail_limit" name="limit[mail_limit]" onclick="checklimit('mail_limit')"{if $tariff.mail_limit===NULL} CHECKED{/if}><A HREF="javascript:checklimit2('mail_limit');">{t}no limit{/t}</A>
+						    <input type="checkbox" value="1" id="mail_limit" name="limit[mail_limit]" onclick="checklimit('mail_limit')"{if $tariff.mail_limit===NULL} CHECKED{/if}><A HREF="javascript:checklimit2('mail_limit');">{trans("no limit")}</A>
 						</TD>
 					    </TR>
 					    <TR CLASS="LIGHT">
-						<TD WIDTH="1%" NOWRAP>{t}Limit of shell accounts:{/t}</TD>
+						<TD WIDTH="1%" NOWRAP>{trans("Limit of shell accounts:")}</TD>
 						<TD WIDTH="99%" NOWRAP>
 						    <INPUT TYPE="TEXT" NAME="tariff[sh_limit]" SIZE="5" VALUE="{$tariff.sh_limit}"{if $tariff.sh_limit === NULL} style="display:none"{/if} {tip text="Enter limit of shell accounts" trigger="sh_limit"}>
-						    <input type="checkbox" value="1" id="sh_limit" name="limit[sh_limit]" onclick="checklimit('sh_limit')"{if $tariff.sh_limit===NULL} CHECKED{/if}><A HREF="javascript:checklimit2('sh_limit');">{t}no limit{/t}</A>
+						    <input type="checkbox" value="1" id="sh_limit" name="limit[sh_limit]" onclick="checklimit('sh_limit')"{if $tariff.sh_limit===NULL} CHECKED{/if}><A HREF="javascript:checklimit2('sh_limit');">{trans("no limit")}</A>
 						</TD>
 					    </TR>
 					    <TR CLASS="LIGHT">
-						<TD WIDTH="1%" NOWRAP>{t}Limit of www accounts:{/t}</TD>
+						<TD WIDTH="1%" NOWRAP>{trans("Limit of www accounts:")}</TD>
 						<TD WIDTH="99%" NOWRAP>
 						    <INPUT TYPE="TEXT" NAME="tariff[www_limit]" SIZE="5" VALUE="{$tariff.www_limit}"{if $tariff.www_limit === NULL} style="display:none"{/if} {tip text="Enter limit of www accounts" trigger="www_limit"}>
-						    <input type="checkbox" value="1" id="www_limit" name="limit[www_limit]" onclick="checklimit('www_limit')"{if $tariff.www_limit===NULL} CHECKED{/if}><A HREF="javascript:checklimit2('www_limit');">{t}no limit{/t}</A>
+						    <input type="checkbox" value="1" id="www_limit" name="limit[www_limit]" onclick="checklimit('www_limit')"{if $tariff.www_limit===NULL} CHECKED{/if}><A HREF="javascript:checklimit2('www_limit');">{trans("no limit")}</A>
 						</TD>
 					    </TR>
 					    <TR CLASS="LIGHT">
-						<TD WIDTH="1%" NOWRAP>{t}Limit of ftp accounts:{/t}</TD>
+						<TD WIDTH="1%" NOWRAP>{trans("Limit of ftp accounts:")}</TD>
 						<TD WIDTH="99%" NOWRAP>
 						    <INPUT TYPE="TEXT" NAME="tariff[ftp_limit]" SIZE="5" VALUE="{$tariff.ftp_limit}"{if $tariff.ftp_limit === NULL} style="display:none"{/if} {tip text="Enter limit of ftp accounts" trigger="ftp_limit"}>
-						    <input type="checkbox" value="1" id="ftp_limit" name="limit[ftp_limit]" onclick="checklimit('ftp_limit')"{if $tariff.ftp_limit===NULL} CHECKED{/if}><A HREF="javascript:checklimit2('ftp_limit');">{t}no limit{/t}</A>
+						    <input type="checkbox" value="1" id="ftp_limit" name="limit[ftp_limit]" onclick="checklimit('ftp_limit')"{if $tariff.ftp_limit===NULL} CHECKED{/if}><A HREF="javascript:checklimit2('ftp_limit');">{trans("no limit")}</A>
 						</TD>
 					    </TR>
 					    <TR CLASS="LIGHT">
-						<TD WIDTH="1%" NOWRAP>{t}Limit of sql accounts:{/t}</TD>
+						<TD WIDTH="1%" NOWRAP>{trans("Limit of sql accounts:")}</TD>
 						<TD WIDTH="99%" NOWRAP>
 						    <INPUT TYPE="TEXT" NAME="tariff[sql_limit]" SIZE="5" VALUE="{$tariff.sql_limit}"{if $tariff.sql_limit === NULL} style="display:none"{/if} {tip text="Enter limit of sql accounts" trigger="sql_limit"}>
-						    <input type="checkbox" value="1" id="sql_limit" name="limit[sql_limit]" onclick="checklimit('sql_limit')"{if $tariff.sql_limit===NULL} CHECKED{/if}><A HREF="javascript:checklimit2('sql_limit');">{t}no limit{/t}</A>
+						    <input type="checkbox" value="1" id="sql_limit" name="limit[sql_limit]" onclick="checklimit('sql_limit')"{if $tariff.sql_limit===NULL} CHECKED{/if}><A HREF="javascript:checklimit2('sql_limit');">{trans("no limit")}</A>
 						</TD>
 					    </TR>
 					    <TR CLASS="LIGHT">
-						<TD WIDTH="1%" NOWRAP>{t}Quota limit of e-mail account:{/t}</TD>
+						<TD WIDTH="1%" NOWRAP>{trans("Quota limit of e-mail account:")}</TD>
 						<TD WIDTH="99%" NOWRAP>
 						    <INPUT TYPE="TEXT" NAME="tariff[quota_mail_limit]" SIZE="5" VALUE="{$tariff.quota_mail_limit}"{if $tariff.quota_mail_limit === NULL} style="display:none"{/if} {tip text="Enter quota limit of e-mail account" trigger="quota_mail_limit"}>
-						    <input type="checkbox" value="1" id="quota_mail_limit" name="limit[quota_mail_limit]" onclick="checklimit('quota_mail_limit')"{if $tariff.quota_mail_limit===NULL} CHECKED{/if}><A HREF="javascript:checklimit2('quota_mail_limit');">{t}no limit{/t}</A>
+						    <input type="checkbox" value="1" id="quota_mail_limit" name="limit[quota_mail_limit]" onclick="checklimit('quota_mail_limit')"{if $tariff.quota_mail_limit===NULL} CHECKED{/if}><A HREF="javascript:checklimit2('quota_mail_limit');">{trans("no limit")}</A>
 						</TD>
 					    </TR>
 					    <TR CLASS="LIGHT">
-						<TD WIDTH="1%" NOWRAP>{t}Quota limit of shell account:{/t}</TD>
+						<TD WIDTH="1%" NOWRAP>{trans("Quota limit of shell account:")}</TD>
 						<TD WIDTH="99%" NOWRAP>
 						    <INPUT TYPE="TEXT" NAME="tariff[quota_sh_limit]" SIZE="5" VALUE="{$tariff.quota_sh_limit}"{if $tariff.quota_sh_limit === NULL} style="display:none"{/if} {tip text="Enter quota limit of shell account" trigger="quota_sh_limit"}>
-						    <input type="checkbox" value="1" id="quota_sh_limit" name="limit[quota_sh_limit]" onclick="checklimit('quota_sh_limit')"{if $tariff.quota_sh_limit===NULL} CHECKED{/if}><A HREF="javascript:checklimit2('quota_sh_limit');">{t}no limit{/t}</A>
+						    <input type="checkbox" value="1" id="quota_sh_limit" name="limit[quota_sh_limit]" onclick="checklimit('quota_sh_limit')"{if $tariff.quota_sh_limit===NULL} CHECKED{/if}><A HREF="javascript:checklimit2('quota_sh_limit');">{trans("no limit")}</A>
 						</TD>
 					    </TR>
 					    <TR CLASS="LIGHT">
-						<TD WIDTH="1%" NOWRAP>{t}Quota limit of www account:{/t}</TD>
+						<TD WIDTH="1%" NOWRAP>{trans("Quota limit of www account:")}</TD>
 						<TD WIDTH="99%" NOWRAP>
 						    <INPUT TYPE="TEXT" NAME="tariff[quota_www_limit]" SIZE="5" VALUE="{$tariff.quota_www_limit}"{if $tariff.quota_www_limit === NULL} style="display:none"{/if} {tip text="Enter quota limit of www account" trigger="quota_www_limit"}>
-						    <input type="checkbox" value="1" id="quota_www_limit" name="limit[quota_www_limit]" onclick="checklimit('quota_www_limit')"{if $tariff.quota_www_limit===NULL} CHECKED{/if}><A HREF="javascript:checklimit2('quota_www_limit');">{t}no limit{/t}</A>
+						    <input type="checkbox" value="1" id="quota_www_limit" name="limit[quota_www_limit]" onclick="checklimit('quota_www_limit')"{if $tariff.quota_www_limit===NULL} CHECKED{/if}><A HREF="javascript:checklimit2('quota_www_limit');">{trans("no limit")}</A>
 						</TD>
 					    </TR>
 					    <TR CLASS="LIGHT">
-						<TD WIDTH="1%" NOWRAP>{t}Quota limit of ftp account:{/t}</TD>
+						<TD WIDTH="1%" NOWRAP>{trans("Quota limit of ftp account:")}</TD>
 						<TD WIDTH="99%" NOWRAP>
 						    <INPUT TYPE="TEXT" NAME="tariff[quota_ftp_limit]" SIZE="5" VALUE="{$tariff.quota_ftp_limit}"{if $tariff.quota_ftp_limit === NULL} style="display:none"{/if} {tip text="Enter quota limit of ftp account" trigger="quota_ftp_limit"}>
-						    <input type="checkbox" value="1" id="quota_ftp_limit" name="limit[quota_ftp_limit]" onclick="checklimit('quota_ftp_limit')"{if $tariff.quota_ftp_limit===NULL} CHECKED{/if}><A HREF="javascript:checklimit2('quota_ftp_limit');">{t}no limit{/t}</A>
+						    <input type="checkbox" value="1" id="quota_ftp_limit" name="limit[quota_ftp_limit]" onclick="checklimit('quota_ftp_limit')"{if $tariff.quota_ftp_limit===NULL} CHECKED{/if}><A HREF="javascript:checklimit2('quota_ftp_limit');">{trans("no limit")}</A>
 						</TD>
 					    </TR>
 					    <TR CLASS="LIGHT">
-						<TD WIDTH="1%" NOWRAP>{t}Quota limit of sql account:{/t}</TD>
+						<TD WIDTH="1%" NOWRAP>{trans("Quota limit of sql account:")}</TD>
 						<TD WIDTH="99%" NOWRAP>
 						    <INPUT TYPE="TEXT" NAME="tariff[quota_sql_limit]" SIZE="5" VALUE="{$tariff.quota_sql_limit}"{if $tariff.quota_sql_limit === NULL} style="display:none"{/if} {tip text="Enter quota limit of sql account" trigger="quota_sql_limit"}>
-						    <input type="checkbox" value="1" id="quota_sql_limit" name="limit[quota_sql_limit]" onclick="checklimit('quota_sql_limit')"{if $tariff.quota_sql_limit===NULL} CHECKED{/if}><A HREF="javascript:checklimit2('quota_sql_limit');">{t}no limit{/t}</A>
+						    <input type="checkbox" value="1" id="quota_sql_limit" name="limit[quota_sql_limit]" onclick="checklimit('quota_sql_limit')"{if $tariff.quota_sql_limit===NULL} CHECKED{/if}><A HREF="javascript:checklimit2('quota_sql_limit');">{trans("no limit")}</A>
 						</TD>
 					    </TR>
 					</TABLE>
@@ -277,8 +277,8 @@
 	</TR>
 	<TR CLASS="LIGHT">
 	    <TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT"> 
-	    	<A HREF="javascript:document.tariff.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
-		<A HREF="?m=tarifflist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A>
+	    	<A HREF="javascript:document.tariff.submit();" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
+		<A HREF="?m=tarifflist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
 	    </TD>
 	</TR>
 </TABLE>

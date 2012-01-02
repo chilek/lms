@@ -4,14 +4,14 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR class="dark">
 		<TD WIDTH="97%" CLASS="fleftu">
-			<IMG SRC="img/group.gif" ALT="">&nbsp;<B>{t}Name:{/t}</B><BR>
-			<IMG SRC="img/info1.gif" ALT="">&nbsp;{t}Description:{/t}
+			<IMG SRC="img/group.gif" ALT="">&nbsp;<B>{trans("Name:")}</B><BR>
+			<IMG SRC="img/info1.gif" ALT="">&nbsp;{trans("Description:")}
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt" align="right">
-			{t}ID:{/t}
+			{trans("ID:")}
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt" align="right">
-			{t}Members:{/t}
+			{trans("Members:")}
 		</TD>
 		<TD WIDTH="1%" CLASS="frightu" ALIGN="RIGHT" nowrap>
 			<B>{t a=$listdata.total|default:"0"}Total: $a{/t}</B>
@@ -33,12 +33,12 @@
 		<TD WIDTH="1%" CLASS="fright" ALIGN="right">
 			<NOBR>
 			{if $customergrouplist[customergroups].customers}
-				<A HREF="javascript:alert('{t}Group with members cannot be deleted!{/t}');">
+				<A HREF="javascript:alert('{trans("Group with members cannot be deleted!")}');">
 			{else}
-				<A HREF="?m=customergroupdel&id={$customergrouplist[customergroups].id}" onClick="return confirmLink(this,'{t}Are you sure, you want to remove this group?{/t}');">
-			{/if}<IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
-				<A HREF="?m=customergroupedit&id={$customergrouplist[customergroups].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
-				<A HREF="?m=customergroupinfo&id={$customergrouplist[customergroups].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
+				<A HREF="?m=customergroupdel&id={$customergrouplist[customergroups].id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to remove this group?")}');">
+			{/if}<IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+				<A HREF="?m=customergroupedit&id={$customergrouplist[customergroups].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+				<A HREF="?m=customergroupinfo&id={$customergrouplist[customergroups].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
 			</NOBR>
 		</TD>
 	</TR>
@@ -46,14 +46,14 @@
 	<TR>
 		<TD COLSPAN="4" ALIGN="center" CLASS="fall">
 			<p>&nbsp;</p>
-			<p><B>{t}There are no such groups in database.{/t}</B></p>
+			<p><B>{trans("There are no such groups in database.")}</B></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
 	{/section}
 	<TR CLASS="light">
 		<TD CLASS="fleftu" COLSPAN="2" WIDTH="98%" ALIGN="right">
-			<IMG SRC="img/info2.gif" ALT="">&nbsp;<B>{t}Total:{/t}</B>
+			<IMG SRC="img/info2.gif" ALT="">&nbsp;<B>{trans("Total:")}</B>
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" ALIGN="right" NOWRAP>
 			<B>{$listdata.totalcount|default:"0"} </B>

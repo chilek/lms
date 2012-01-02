@@ -4,7 +4,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="FLEFTU">
-			<IMG SRC="img/node.gif" ALT="{t}Name:{/t}">
+			<IMG SRC="img/node.gif" ALT="{trans("Name:")}">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHTU">
 			<INPUT TYPE="TEXT" NAME="nodedata[name]" VALUE="{$nodedata.name}" MAXLENGTH="32" size="30" {tip text="Enter node name" trigger="name" bold=1}>
@@ -18,7 +18,7 @@
 						<TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/ip.gif" ALT="{t}IP address:{/t}">
+			<IMG SRC="img/ip.gif" ALT="{trans("IP address:")}">
 		</TD>
 		<TD WIDTH="99%">
 			<INPUT TYPE="TEXT" NAME="nodedataipaddr" VALUE="{$nodedata.ipaddr}" {tip text="Enter IP address" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.nodeadd.nodedataipaddr);" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
@@ -27,7 +27,7 @@
 	{if $_config.phpui.public_ip|chkconfig}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/ip_pub.gif" ALT="{t}Pub. IP address:{/t}">
+			<IMG SRC="img/ip_pub.gif" ALT="{trans("Pub. IP address:")}">
 		</TD>
 		<TD WIDTH="99%">
 			<INPUT TYPE="TEXT" NAME="nodedataipaddr_pub" VALUE="{$nodedata.ipaddr_pub}" {tip text="Enter IP address (optional)" trigger="ipaddr_pub"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.nodeadd.nodedataipaddr_pub);" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
@@ -36,7 +36,7 @@
 	{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/mac.gif" ALT="{t}MAC address:{/t}">
+			<IMG SRC="img/mac.gif" ALT="{trans("MAC address:")}">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
 			<TABLE width="100%" cellpadding="1" cellspacing="0">
@@ -46,12 +46,12 @@
 				</TR>
 				{/foreach}
 			</TABLE>
-			<A href="javascript: newmac()">{t}Add MAC address{/t} &raquo;&raquo;&raquo;</A>
+			<A href="javascript: newmac()">{trans("Add MAC address")} &raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/passwd.gif" ALT="{t}Password:{/t}">
+			<IMG SRC="img/passwd.gif" ALT="{trans("Password:")}">
 		</TD>
 		<TD WIDTH="99%">
 			<INPUT TYPE="TEXT" NAME="nodedata[passwd]" VALUE="{$nodedata.passwd}" {tip text="Enter password (optional)" trigger="passwd"}> <a href="javascript: GenPasswd();" {tip text="Click to generate random password"}>&raquo;&raquo;&raquo;</A>
@@ -59,7 +59,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" style="vertical-align: top">
-			<IMG SRC="img/home.gif" ALT="{t}Location:{/t}">
+			<IMG SRC="img/home.gif" ALT="{trans("Location:")}">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
 		    <INPUT TYPE="TEXT" SIZE="40" VALUE="{$nodedata.location}" id="location" NAME="nodedata[location]"  {tip text="Enter location (optional)" trigger="location"}>
@@ -69,16 +69,16 @@
 		    <INPUT type="hidden" name="nodedata[location_street]" value="{$nodedata.location_street}">
 		    <INPUT type="hidden" name="nodedata[location_house]" value="{$nodedata.location_house}">
 		    <INPUT type="hidden" name="nodedata[location_flat]" value="{$nodedata.location_flat}">
-			<INPUT TYPE="checkbox" name="nodedata[teryt]" id="teryt" ononchange="check_teryt('location')"{if $nodedata.teryt} checked{/if}><a href="javascript:checkElement('nodedata[teryt]');">{t}TERRIT-DB{/t}</a>
+			<INPUT TYPE="checkbox" name="nodedata[teryt]" id="teryt" ononchange="check_teryt('location')"{if $nodedata.teryt} checked{/if}><a href="javascript:checkElement('nodedata[teryt]');">{trans("TERRIT-DB")}</a>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/nodegroup.gif" ALT="{t}Node group:{/t}">
+			<IMG SRC="img/nodegroup.gif" ALT="{trans("Node group:")}">
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
 			<SELECT SIZE="1" NAME="nodedata[nodegroup]" {tip text="Select group to attribute to node" trigger="nodegroup"} style="max-width:250px;">
-				<OPTION VALUE="0">{t}... select group ...{/t}</OPTION>
+				<OPTION VALUE="0">{trans("... select group ...")}</OPTION>
 				{foreach from=$allnodegroups item=group}
 				<OPTION VALUE="{$group.id}" {if $group.id==$nodedata.nodegroup} SELECTED{/if}>{$group.name} ({$group.id|string_format:"%04d"})</OPTION>
 				{/foreach}
@@ -88,36 +88,36 @@
 	{if $netdevices}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/netdev.gif" ALT="{t}Net device:{/t}">
+			<IMG SRC="img/netdev.gif" ALT="{trans("Net device:")}">
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
 			<SELECT SIZE="1" NAME="nodedata[netdev]" {tip text="Select network device (optional)" trigger="netdev"} style="max-width:250px;">
-				<OPTION VALUE="0"{if !$nodedata.netdev} SELECTED{/if}>{t}- select device -{/t}</OPTION>
+				<OPTION VALUE="0"{if !$nodedata.netdev} SELECTED{/if}>{trans("- select device -")}</OPTION>
 				{section name=netdevices loop=$netdevices}
 				<OPTION VALUE="{$netdevices[netdevices].id}"{if $netdevices[netdevices].id==$nodedata.netdev} SELECTED{/if}>{$netdevices[netdevices].name} {$netdevices[netdevices].producer}{if $netdevices[netdevices].location} / {$netdevices[netdevices].location}{/if}</OPTION>
 				{/section}
 			</SELECT>
 			<INPUT type="text" name="nodedata[port]" value="{if $nodedata.port}{$nodedata.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
-			<INPUT type="checkbox" name="nodedata[linktype]" value="1"{if $nodedata.linktype} CHECKED{/if}><IMG src="img/wireless.gif" alt="{t}wireless{/t}" {tip text="wireless"}>
+			<INPUT type="checkbox" name="nodedata[linktype]" value="1"{if $nodedata.linktype} CHECKED{/if}><IMG src="img/wireless.gif" alt="{trans("wireless")}" {tip text="wireless"}>
 		</TD>
 	</TR>
 	{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/customer.gif" ALT="{t}Customer:{/t}">
+			<IMG SRC="img/customer.gif" ALT="{trans("Customer:")}">
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
 		{if $customers}
 			<SELECT SIZE="1" NAME="nodedata[customerid]" {tip text="Assign node to customer" trigger="ownerid"} style="max-width:160px;" onChange="document.nodeadd.elements['nodedata[ownerid]'].value=this.value">
-				<OPTION VALUE="0">{t}... select customer ...{/t}</OPTION>
+				<OPTION VALUE="0">{trans("... select customer ...")}</OPTION>
 				{foreach from=$customers item=c}
 				<OPTION VALUE="{$c.id}"{if $nodedata.ownerid == $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
 				{/foreach}
 			</SELECT>
-			{t}or Customer ID:{/t}
+			{trans("or Customer ID:")}
 		{/if}
 		<INPUT TYPE="TEXT" NAME="nodedata[ownerid]" VALUE="{if $nodedata.ownerid}{$nodedata.ownerid}{/if}" SIZE="5"{if $customers} onChange="reset_customer()" onfocus="reset_customer()"{/if} {tip text="Enter customer ID" trigger="ownerid"}>
-		<A href="javascript: void(0);" onClick="return customerchoosewin(document.nodeadd.elements['nodedata[ownerid]']);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+		<A href="javascript: void(0);" onClick="return customerchoosewin(document.nodeadd.elements['nodedata[ownerid]']);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -125,8 +125,8 @@
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
-			<A HREF="javascript:checkElement('chkmac');">{t}MAC checking{/t}:</A><INPUT TYPE="checkbox" NAME="nodedata[chkmac]" VALUE="1" id="chkmac" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if !isset($nodedata.chkmac) || $nodedata.chkmac} checked{/if}>&nbsp;
-			<A HREF="javascript:checkElement('halfduplex');">{t}Half duplex{/t}:</A><INPUT TYPE="checkbox" NAME="nodedata[halfduplex]" VALUE="1" id="halfduplex" {if $nodedata.halfduplex} checked{/if} {tip text="Select transmission mode"}> 
+			<A HREF="javascript:checkElement('chkmac');">{trans("MAC checking")}:</A><INPUT TYPE="checkbox" NAME="nodedata[chkmac]" VALUE="1" id="chkmac" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if !isset($nodedata.chkmac) || $nodedata.chkmac} checked{/if}>&nbsp;
+			<A HREF="javascript:checkElement('halfduplex');">{trans("Half duplex")}:</A><INPUT TYPE="checkbox" NAME="nodedata[halfduplex]" VALUE="1" id="halfduplex" {if $nodedata.halfduplex} checked{/if} {tip text="Select transmission mode"}> 
 		</TD>
 	</TR>
     					</TABLE>
@@ -135,10 +135,10 @@
 					<TABLE WIDTH="100%" CELLPADDING="3">
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/home.gif" ALT="{t}Location:{/t}">
+			<IMG SRC="img/home.gif" ALT="{trans("Location:")}">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}GPS longitude:{/t}</B>
+			<B>{trans("GPS longitude:")}</B>
 		</TD>
 		<TD WIDTH="98%" NOWRAP>
 			<INPUT ID="longitude" TYPE="text" NAME="nodedata[longitude]" VALUE="{if $nodeinfo.longitude}{$nodeinfo.longitude}{else}{/if}" {tip text="Enter device longitude (optional)"} trigger="longitude">
@@ -147,10 +147,10 @@
 	</TR>
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/home.gif" ALT="{t}Location:{/t}">
+			<IMG SRC="img/home.gif" ALT="{trans("Location:")}">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}GPS latitude:{/t}</B>
+			<B>{trans("GPS latitude:")}</B>
 		</TD>
 		<TD WIDTH="98%" NOWRAP>
 			<INPUT ID="latitude" TYPE="text" NAME="nodedata[latitude]" VALUE="{if $nodeinfo.latitude}{$nodeinfo.latitude}{else}{/if}" {tip text="Enter device latitude (optional)"} trigger="latitude">
@@ -159,7 +159,7 @@
 	</TR>
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/info1.gif" ALT="{t}Description:{/t}">
+			<IMG SRC="img/info1.gif" ALT="{trans("Description:")}">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			<TEXTAREA NAME="nodedata[info]" COLS="50" ROWS="5" {tip text="Enter additional information (optional)"}>{$nodedata.info}</TEXTAREA>
@@ -171,8 +171,8 @@
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			<SELECT SIZE="1" NAME="nodedata[access]" {tip text="Select node status" trigger="access"}>
-				<OPTION VALUE="1"{if $nodedata.access} SELECTED{/if}>{t}connected<!singular>{/t}</OPTION>
-				<OPTION VALUE="0"{if ! $nodedata.access} SELECTED{/if}>{t}disconnected<!singular>{/t}</OPTION>
+				<OPTION VALUE="1"{if $nodedata.access} SELECTED{/if}>{trans("connected<!singular>")}</OPTION>
+				<OPTION VALUE="0"{if ! $nodedata.access} SELECTED{/if}>{trans("disconnected<!singular>")}</OPTION>
 			</SELECT>
 		</TD>
 	</TR>
@@ -182,8 +182,8 @@
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			<SELECT SIZE="1" NAME="nodedata[warning]" {tip text="Set notice for node"}>
-				<OPTION VALUE="1"{if $nodedata.warning} SELECTED{/if}>{t}enabled{/t}</OPTION>
-				<OPTION VALUE="0"{if ! $nodedata.warning} SELECTED{/if}>{t}disabled{/t}</OPTION>
+				<OPTION VALUE="1"{if $nodedata.warning} SELECTED{/if}>{trans("enabled")}</OPTION>
+				<OPTION VALUE="0"{if ! $nodedata.warning} SELECTED{/if}>{trans("disabled")}</OPTION>
 			</SELECT>
 		</TD>
 	</TR>
@@ -195,10 +195,10 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="2" ALIGN="RIGHT">
-			<A HREF="?m=nodescan{if $customerinfo.id}&ownerid={$customerinfo.id}{/if}">{t}Scan{/t} <IMG SRC="img/search.gif" alt=""></A>
-			<A HREF="javascript:document.nodeadd.submit();" ACCESSKEY="s">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
-			<A HREF="?m={if $customerinfo.id}customerinfo&id={$customerinfo.id}{else}nodelist{/if}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="nodedata[reuse]" id="reuse" value="ON" id="reuse" {if $nodedata.reuse}checked{/if}><A HREF="javascript:checkElement('reuse')"> {t}Display this form again, when this node is saved{/t}</A>
+			<A HREF="?m=nodescan{if $customerinfo.id}&ownerid={$customerinfo.id}{/if}">{trans("Scan")} <IMG SRC="img/search.gif" alt=""></A>
+			<A HREF="javascript:document.nodeadd.submit();" ACCESSKEY="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
+			<A HREF="?m={if $customerinfo.id}customerinfo&id={$customerinfo.id}{else}nodelist{/if}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A><BR>
+			<INPUT type="checkbox" name="nodedata[reuse]" id="reuse" value="ON" id="reuse" {if $nodedata.reuse}checked{/if}><A HREF="javascript:checkElement('reuse')"> {trans("Display this form again, when this node is saved")}</A>
 		</TD>
 	</TR>
 </TABLE></FORM>

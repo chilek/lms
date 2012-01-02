@@ -3,7 +3,7 @@
 	<TR CLASS="DARK">
 		<TD width="99%" class="fleftu hand" align="left" nowrap="nowrap" onclick="showOrHide('customeractions');">
 			<IMG src="img/options.gif" alt="">
-			<B>{t}Actions:{/t}</B>
+			<B>{trans("Actions:")}</B>
 		</TD>
 		<TD width="1%" class="frightu" align="right" nowrap>
 		</TD>
@@ -19,7 +19,7 @@
 					    <IMG src="img/options.gif" alt="">
 					</TD>
 					<TD width="98%">
-					    {t}Cutoff suspending:{/t}
+					    {trans("Cutoff suspending:")}
 					    <SELECT name="cutoffstop" {tip text="Select days number of cutoff suspending"}>
 						<OPTION value="0"{if !$customerinfo.cutoffstopnum} selected{/if}>0</OPTION>
 						<OPTION value="1"{if $customerinfo.cutoffstopnum==1} selected{/if}>1</OPTION>
@@ -35,7 +35,7 @@
 					    </SELECT>
 					</TD>
 					<TD width="1%" NOWRAP align="RIGHT">
-						<A href="javascript: document.cutoffstopaction.submit()">{t}Submit{/t} <img src="img/save.gif" alt=""></a>
+						<A href="javascript: document.cutoffstopaction.submit()">{trans("Submit")} <img src="img/save.gif" alt=""></a>
 					</TD>
 				</TR>
 				</FORM>
@@ -46,13 +46,13 @@
 					    <IMG src="img/warningon.gif" slt="">
 					</TD>
 					<TD width="98%">
-					    {t}Notice content:{/t}
+					    {trans("Notice content:")}
 					    <TEXTAREA name="setwarnings[message]" cols="60" rows="5" {tip text="Enter notice contents"}>{$customerinfo.message|escape}</TEXTAREA>
-					    <NOBR><INPUT TYPE="checkbox" NAME="setwarnings[warnon]" ID="warnon" onclick="switchbox('warnon');"><A HREF="javascript:checkElement('warnon'); switchbox('warnon')">{t}Enable{/t}</A></INPUT></NOBR>
-					    <NOBR><INPUT TYPE="checkbox" NAME="setwarnings[warnoff]" ID="warnoff" onclick="switchbox('warnoff');"><A HREF="javascript:checkElement('warnoff'); switchbox('warnoff')">{t}Disable{/t}</A></INPUT></NOBR>
+					    <NOBR><INPUT TYPE="checkbox" NAME="setwarnings[warnon]" ID="warnon" onclick="switchbox('warnon');"><A HREF="javascript:checkElement('warnon'); switchbox('warnon')">{trans("Enable")}</A></INPUT></NOBR>
+					    <NOBR><INPUT TYPE="checkbox" NAME="setwarnings[warnoff]" ID="warnoff" onclick="switchbox('warnoff');"><A HREF="javascript:checkElement('warnoff'); switchbox('warnoff')">{trans("Disable")}</A></INPUT></NOBR>
 					</TD>
 					<TD width="1%" NOWRAP align="RIGHT">
-						<A href="javascript: document.warningaction.submit()">{t}Submit{/t} <img src="img/save.gif" alt=""></a>
+						<A href="javascript: document.warningaction.submit()">{trans("Submit")} <img src="img/save.gif" alt=""></a>
 					</TD>
 				</TR>
 				</FORM>

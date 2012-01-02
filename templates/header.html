@@ -50,8 +50,8 @@
 		{/foreach}
 		<tr>
 			<td class="click-menu" style="border-bottom-style: dashed; border-bottom-width: 1pt;">
-				<div class="tip" {tip text="<B>Allows you to logout</B>"} onClick="if(confirm('{t}Are you sure that you want to logout?{/t}')) { return self.location.href='?m=logout&is_sure=1'; } ">
-					<div class="box1"><img src="img/logout.gif" alt="*" style="position: absolute"><NOBR><font style="margin-left: 21px">{t}Logout{/t} {$layout.logname|truncate:10:"..."}</font></NOBR></div>
+				<div class="tip" {tip text="<B>Allows you to logout</B>"} onClick="if(confirm('{trans("Are you sure that you want to logout?")}')) { return self.location.href='?m=logout&is_sure=1'; } ">
+					<div class="box1"><img src="img/logout.gif" alt="*" style="position: absolute"><NOBR><font style="margin-left: 21px">{trans("Logout")} {$layout.logname|truncate:10:"..."}</font></NOBR></div>
 				</div>
 			</td>
 		</tr>
@@ -70,7 +70,7 @@
 	<table width="100%" cellpadding="0" cellspacing="0">
 		<tr>
 		    <td width="1%" nowrap>
-			{t}Search:{/t}
+			{trans("Search:")}
 			<img src="img/customer.gif" alt="">
 			<input class="blend" type="text" id="customerinput" name="qscustomer" value="" size="15" {tip text="Enter customer ID, first/lastname, email or address and press Enter"}>
 			&nbsp;<img src="img/node.gif" alt="">
@@ -89,7 +89,7 @@
 			<input type="image" src="img/empty.gif" width="0" height="0" style="border: none;">
 		    </td>
 		    <td width="99%" align="right" nowrap>
-			&nbsp;<A href="?m=copyrights">&copy; 2001-2011 LMS Developers</A>
+			&nbsp;<A href="?m=copyrights">&copy; 2001-2012 LMS Developers</A>
 		    </td>
 		</tr>
 	</table>

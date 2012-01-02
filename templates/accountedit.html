@@ -19,7 +19,7 @@
 			<img src="img/account.gif" alt="">		
 		</TD>
 		<TD width="1%" class="fbt">
-			<B>{t}Login:{/t}</B>
+			<B>{trans("Login:")}</B>
 		</TD>
 		<TD width="98%" class="frightu">
 			<input type="text" name="account[login]" value="{$account.login}" {tip text="Enter account name" trigger="login"} onkeyup="update_homedir();">
@@ -36,11 +36,11 @@
 					<img src="img/domain.gif" alt="">
 				    </TD>
 				    <TD width="1%" nowrap>
-					<B>{t}Domain:{/t}</B>
+					<B>{trans("Domain:")}</B>
 				    </TD>
 				    <TD width="98%">
 				    	<select name="account[domainid]" {tip text="Select domain name" trigger="domainid"}>
-					    <option value="0" {if !$account.domainid}SELECTED{/if}>{t}- select domain -{/t}</option>
+					    <option value="0" {if !$account.domainid}SELECTED{/if}>{trans("- select domain -")}</option>
 					    {section name=domainlist loop=$domainlist}
 					    <option value="{$domainlist[domainlist].id}" {if $domainlist[domainlist].id eq $account.domainid}SELECTED{/if}>{$domainlist[domainlist].name}</option>
 					    {/section}
@@ -52,11 +52,11 @@
 					<img src="img/customer.gif" alt="">
 				    </TD>
 				    <TD width="1%">
-					<B>{t}Owner:{/t}</B>
+					<B>{trans("Owner:")}</B>
 		    		    </TD>
 				    <TD width="98%">
 					<SELECT SIZE="1" NAME="account[ownerid]" {tip text="Select owner or 'SYSTEM ACCOUNT' if you don't want to assign it to any customer" trigger="ownerid"}>
-    					    <OPTION VALUE="0"{if !$account.ownerid} SELECTED{/if}>{t}SYSTEM ACCOUNT{/t}</OPTION>
+    					    <OPTION VALUE="0"{if !$account.ownerid} SELECTED{/if}>{trans("SYSTEM ACCOUNT")}</OPTION>
 					    {foreach from=$customers item=customer}
 					    <OPTION VALUE="{$customer.id}"{if $account.ownerid == $customer.id} SELECTED{/if}>{$customer.customername|truncate:40:" ...":true} ({$customer.id|string_format:"%04d"})</OPTION>
 					    {/foreach}
@@ -68,7 +68,7 @@
 					<img src="img/name.gif" alt="">
 				    </TD>
 				    <TD width="1%" nowrap>
-					<B>{t}First/last or Company name:{/t}</B>
+					<B>{trans("First/last or Company name:")}</B>
 				    </TD>
 				    <TD width="98%">
 					<input type="text" size="30" name="account[realname]" value="{$account.realname}" {tip text="Enter optional account name" trigger="realname"}>
@@ -79,7 +79,7 @@
 					<img src="img/home.gif" alt="">
 				    </TD>
 				    <TD width="1%" nowrap>
-					<B>{t}Homedir:{/t}</B>
+					<B>{trans("Homedir:")}</B>
 				    </TD>
 				    <TD width="98%">
 					<input type="text" size="30" name="account[home]" value="{$account.home}" {tip text="Enter home directory" trigger="home"}>
@@ -90,7 +90,7 @@
 					<img src="img/calendar.gif" alt="">
 				    </TD>
 				    <TD width="1%" nowrap>
-					<B>{t}Expiration date:{/t}</B>
+					<B>{trans("Expiration date:")}</B>
 				    </TD>
 				    <TD width="98%">
 					<input type="text" size="10" name="account[expdate]" value="{if $account.expdate}{$account.expdate|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Enter or click to choose expiration date for account in YYYY/MM/DD format (Empty field means account never expires)" trigger="expdate"}>
@@ -101,7 +101,7 @@
 					<img src="img/forward.gif" alt="">
 				    </TD>
 				    <TD width="1%" nowrap>
-					<B>{t}Forward e-mail:{/t}</B>
+					<B>{trans("Forward e-mail:")}</B>
 				    </TD>
 				    <TD width="98%">
 					<input type="text" name="account[mail_forward]" size="25" value="{$account.mail_forward}" {tip text="Enter destination e-mail address for redirect (optional)" trigger="mail_forward"}>
@@ -112,7 +112,7 @@
 					<img src="img/forward.gif" alt="">
 				    </TD>
 				    <TD width="1%" nowrap>
-					<B>{t}BCC e-mail:{/t}</B>
+					<B>{trans("BCC e-mail:")}</B>
 				    </TD>
 				    <TD width="98%">
 					<input type="text" name="account[mail_bcc]" size="25" value="{$account.mail_bcc}" {tip text="Enter e-mail address for blind carbon copy (optional)" trigger="mail_bcc"}>
@@ -127,28 +127,28 @@
 					<img src="img/account.gif" alt="">
 				    </TD>
 				    <TD width="1%">
-					<B>{t}Type/Quota:{/t}</B>
+					<B>{trans("Type/Quota:")}</B>
 				    </TD>
 				    <TD width="98%">
 					    <table width="100%">
 						    <tr>
-							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][shell]" value="1" {if ($account.type & 1) == 1} CHECKED{/if}> {t}shell{/t}</td>
+							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][shell]" value="1" {if ($account.type & 1) == 1} CHECKED{/if}> {trans("shell")}</td>
 							    <td>&nbsp;<input type="text" size="5" maxlendth="10" name="quota[sh]" value="{$quota.sh}" {tip text="Enter account quota in MB" trigger="quota_sh"}></td>
 						    </tr>
 						    <tr>
-							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][mail]" value="2" {if ($account.type & 2) == 2} CHECKED{/if}> {t}mail{/t}</td>
+							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][mail]" value="2" {if ($account.type & 2) == 2} CHECKED{/if}> {trans("mail")}</td>
 							    <td>&nbsp;<input type="text" size="5" maxlength="10" name="quota[mail]" value="{$quota.mail}" {tip text="Enter account quota in MB" trigger="quota_mail"}></td>
 						    </tr>
 						    <tr>
-							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][www]" value="4" {if ($account.type & 4) == 4} CHECKED{/if}> {t}www{/t}</td>
+							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][www]" value="4" {if ($account.type & 4) == 4} CHECKED{/if}> {trans("www")}</td>
 							    <td>&nbsp;<input type="text" size="5" maxlength="10" name="quota[www]" value="{$quota.www}" {tip text="Enter account quota in MB" trigger="quota_www"}></td>
 						    </tr>
 						    <tr>
-							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][ftp]" value="8" {if ($account.type & 8) == 8} CHECKED{/if}> {t}ftp{/t}</td>
+							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][ftp]" value="8" {if ($account.type & 8) == 8} CHECKED{/if}> {trans("ftp")}</td>
 							    <td>&nbsp;<input type="text" size="5" maxlength="10" name="quota[ftp]" value="{$quota.ftp}" {tip text="Enter account quota in MB" trigger="quota_ftp"}></td>
 						    </tr>
 						    <tr>
-							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][sql]" value="16" {if ($account.type & 16) == 16} CHECKED{/if}> {t}sql{/t}</td>
+							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][sql]" value="16" {if ($account.type & 16) == 16} CHECKED{/if}> {trans("sql")}</td>
 							    <td>&nbsp;<input type="text" size="5" maxlength="10" name="quota[sql]" value="{$quota.sql}" {tip text="Enter account quota in MB" trigger="quota_sql"}></td>
 						    </tr>
 					    </table>
@@ -170,8 +170,8 @@
 	</TR>
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
-			<A href="javascript:document.account.submit();" accesskey="s">{t}Submit{/t} <img src="img/save.gif" alt=""></A>
-			<A href="?m=accountlist">{t}Cancel{/t} <img src="img/cancel.gif" alt=""></A>
+			<A href="javascript:document.account.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
+			<A href="?m=accountlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE>

@@ -11,7 +11,7 @@
 			<b>{$message.createtime|date_format:"%Y/%m/%d<br/>%H:%M"}</b>
 		</td>
 		<td width="1%" align="right">
-			<b>{t}From:{/t}<br/>{t}Subject:{/t}</b>
+			<b>{trans("From:")}<br/>{trans("Subject:")}</b>
 		</td>
 		<td width="97%" class="nobr">
 			    {if $message.customerid}
@@ -30,7 +30,7 @@
 			    {$message.subject|escape}
 		</td>
 		<td width="1%">
-			<a href="?m=helpdesk&op=message&id={$ticket.id}&msgid={$message.id}">{t}Reply{/t}</a>
+			<a href="?m=helpdesk&op=message&id={$ticket.id}&msgid={$message.id}">{trans("Reply")}</a>
 		</td>
 	</tr>
 	<tr>

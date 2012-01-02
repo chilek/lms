@@ -7,17 +7,17 @@
 <TABLE ALIGN="center" WIDTH="600" CELLPADDING="3">
 	<TR CLASS="dark">
 		<TD COLSPAN="2" ALIGN="left" CLASS="fall">
-			<B>{t}Compacting parameters{/t}</B>
+			<B>{trans("Compacting parameters")}</B>
 		</TD>
 	</TR>
 	<TR CLASS="light">
 	 	<TD WIDTH="1%" ALIGN="right" CLASS="fleft" {tip text="Compacting of database removes non-essential data from database and averages existing data. This will decrease number of records in database and reduce results latency, but also decrease stats precision."} NOWRAP>
-			<B>{t}Data precision level:{/t}</B>
+			<B>{trans("Data precision level:")}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
-			<B><INPUT TYPE="radio" NAME="level" ID="low" VALUE="low" {tip text="Data older than one day will be combined into one day"}><A HREF="javascript:setPrecision('low')">{t}Low{/t}</a></INPUT><BR>
-			   <INPUT TYPE="radio" NAME="level" ID="medium" VALUE="medium" {tip text="Data older than one month will be combined into one day"}><A HREF="javascript:setPrecision('medium')">{t}Medium{/t}</a></INPUT><BR>
-			   <INPUT TYPE="radio" NAME="level" ID="high" VALUE="high" {tip text="Data older than one month will be combined into one hour"}><A HREF="javascript:setPrecision('high')">{t}High{/t}</a></INPUT>
+			<B><INPUT TYPE="radio" NAME="level" ID="low" VALUE="low" {tip text="Data older than one day will be combined into one day"}><A HREF="javascript:setPrecision('low')">{trans("Low")}</a></INPUT><BR>
+			   <INPUT TYPE="radio" NAME="level" ID="medium" VALUE="medium" {tip text="Data older than one month will be combined into one day"}><A HREF="javascript:setPrecision('medium')">{trans("Medium")}</a></INPUT><BR>
+			   <INPUT TYPE="radio" NAME="level" ID="high" VALUE="high" {tip text="Data older than one month will be combined into one hour"}><A HREF="javascript:setPrecision('high')">{trans("High")}</a></INPUT>
 			</B>
 		</TD>
 	</TR>
@@ -25,19 +25,19 @@
 		<TD WIDTH="1%" CLASS="fleft">
 		</TD>
 		<TD WIDTH="99%" CLASS="fright" {tip text="Check that option to remove records older than one year"}>
-		    <INPUT TYPE="checkbox" NAME="removeold" ID="removeold" VALUE="1"><B>&nbsp;<A HREF="javascript:checkElement('removeold')">{t}Delete data older than one year{/t}</a></B></INPUT>
+		    <INPUT TYPE="checkbox" NAME="removeold" ID="removeold" VALUE="1"><B>&nbsp;<A HREF="javascript:checkElement('removeold')">{trans("Delete data older than one year")}</a></B></INPUT>
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft">
 		</TD>
 		<TD WIDTH="99%" CLASS="fright" {tip text="Check that option to remove stats of deleted nodes"} NOWRAP>
-		    <INPUT TYPE="checkbox" NAME="removedeleted" ID="removedeleted" VALUE="1"><B>&nbsp;<A HREF="javascript:checkElement('removedeleted')">{t}Delete stats of non-existing (deleted) nodes{/t}</a></B></INPUT>
+		    <INPUT TYPE="checkbox" NAME="removedeleted" ID="removedeleted" VALUE="1"><B>&nbsp;<A HREF="javascript:checkElement('removedeleted')">{trans("Delete stats of non-existing (deleted) nodes")}</a></B></INPUT>
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD COLSPAN="2" ALIGN="right" CLASS="fbottomu">
-			<A HREF="javascript:document.trafficdbcompact.submit();" ACCESSKEY="K">{t}Compact{/t} <IMG SRC="img/save.gif" alt=""></A>
+			<A HREF="javascript:document.trafficdbcompact.submit();" ACCESSKEY="K">{trans("Compact")} <IMG SRC="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE>

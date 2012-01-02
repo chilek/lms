@@ -9,12 +9,12 @@
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
 					<TD ALIGN="CENTER" COLSPAN="2" CLASS="FALL">
-						<IMG SRC="img/logo-ico.gif" ALT=""> <B>{t}About LMS:{/t}</B>
+						<IMG SRC="img/logo-ico.gif" ALT=""> <B>{trans("About LMS:")}</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="http://www.lms.org.pl" target="_BLANK">{t}LMS version:{/t}</A></B>
+						<B><A HREF="http://www.lms.org.pl" target="_BLANK">{trans("LMS version:")}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$layout.lmsv} ({$layout.lmsvr})
@@ -22,7 +22,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="http://www.lms.org.pl" target="_BLANK">{t}LMSDB version:{/t}</A></B>
+						<B><A HREF="http://www.lms.org.pl" target="_BLANK">{trans("LMSDB version:")}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$layout.lmsdbv}
@@ -31,9 +31,9 @@
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
 						<B>
 						{if $layout.dbtype == "mysql" || $layout.dbtype == "mysqli"}
-						<A HREF="http://www.mysql.com" target="_BLANK">{t}MySQL version:{/t}</A>
+						<A HREF="http://www.mysql.com" target="_BLANK">{trans("MySQL version:")}</A>
 						{elseif $layout.dbtype == "postgres"}
-						<A HREF="http://www.postgresql.org" target="_BLANK">{t}PostgreSQL version:{/t}</A>
+						<A HREF="http://www.postgresql.org" target="_BLANK">{trans("PostgreSQL version:")}</A>
 						{/if}
 						</B>
 					</TD>
@@ -43,7 +43,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="http://www.php.net/" target="_BLANK">{t}PHP version:{/t}</A></B>
+						<B><A HREF="http://www.php.net/" target="_BLANK">{trans("PHP version:")}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$sysinfo.phpversion}
@@ -51,7 +51,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FBL">
-						<B><A HREF="http://www.smarty.net" target="_BLANK">{t}Smarty version:{/t}</A></B>
+						<B><A HREF="http://www.smarty.net" target="_BLANK">{trans("Smarty version:")}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FBR">
 						{$layout.smarty_version}
@@ -63,12 +63,12 @@
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
 					<TD HEIGHT="24" ALIGN="CENTER" COLSPAN="2" CLASS="FALL" NOWRAP>
-						<IMG SRC="img/info1.gif" ALT=""> <B>{t}About system:{/t}</B>
+						<IMG SRC="img/info1.gif" ALT=""> <B>{trans("About system:")}</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B>{t}Hostname:{/t}</B>
+						<B>{trans("Hostname:")}</B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$sysinfo.hostname}
@@ -76,7 +76,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B>{t}System version:{/t}</B>
+						<B>{trans("System version:")}</B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$sysinfo.kernel}
@@ -84,7 +84,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B>{t}Uptime:{/t}</B>
+						<B>{trans("Uptime:")}</B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$sysinfo.uptime}
@@ -92,7 +92,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B>{t}Users logged in:{/t}</B>
+						<B>{trans("Users logged in:")}</B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$sysinfo.users}
@@ -100,7 +100,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FBL">
-						<B>{t}Load:{/t}</B>
+						<B>{trans("Load:")}</B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FBR">
 						{$sysinfo.loadavg.0} {$sysinfo.loadavg.1} {$sysinfo.loadavg.2}
@@ -116,12 +116,12 @@
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
 					<TD COLSPAN="2" ALIGN="CENTER" CLASS="FALL">
-						<IMG SRC="img/customer.gif"> <B>{t}Customers:{/t}</B>
+						<IMG SRC="img/customer.gif"> <B>{trans("Customers:")}</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="?m=customerlist&s=3">{t}Connected:{/t}</A></B>
+						<B><A HREF="?m=customerlist&s=3">{trans("Connected:")}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$customerstats.connected}
@@ -129,7 +129,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="?m=customerlist&s=2">{t}Waiting:{/t}</A></B>
+						<B><A HREF="?m=customerlist&s=2">{trans("Waiting:")}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$customerstats.awaiting}
@@ -137,7 +137,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="?m=customerlist&s=1">{t}Interested:{/t}</A></B>
+						<B><A HREF="?m=customerlist&s=1">{trans("Interested:")}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$customerstats.interested}
@@ -145,15 +145,15 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
-						<B><A HREF="?m=customerlist&s=0">{t}Total:{/t}</A><BR>
+						<B><A HREF="?m=customerlist&s=0">{trans("Total:")}</A><BR>
 						{if $_config.privileges.finances_management|chkconfig || $adminuser}
-							<A HREF="?m=customerlist&s=6">{t}Total Dues:{/t}</A></B>
+							<A HREF="?m=customerlist&s=6">{trans("Total Dues:")}</A></B>
 						{/if}
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHTU">
 						{$customerstats.total}<BR>
 						{if $_config.privileges.finances_management|chkconfig || $adminuser}
-							<NOBR>{$customerstats.debt} ({t}amount{/t} {$customerstats.debtvalue|money_format})</NOBR>
+							<NOBR>{$customerstats.debt} ({trans("amount")} {$customerstats.debtvalue|money_format})</NOBR>
 						{/if}
 					</TD>
 				</TR>
@@ -163,12 +163,12 @@
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
 					<TD COLSPAN="2" ALIGN="CENTER" CLASS="FALL">
-						<IMG SRC="img/node.gif"> <B>{t}Nodes:{/t}</B>
+						<IMG SRC="img/node.gif"> <B>{trans("Nodes:")}</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
-						<A HREF="?m=nodelist&s=3"><B>{t}Online:{/t}</B></A>
+						<A HREF="?m=nodelist&s=3"><B>{trans("Online:")}</B></A>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHTU">
 						{$nodestats.online}
@@ -176,7 +176,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<A HREF="?m=nodelist&s=1"><B>{t}Connected<!nodes>:{/t}</B></A>
+						<A HREF="?m=nodelist&s=1"><B>{trans("Connected<!nodes>:")}</B></A>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$nodestats.connected}
@@ -184,7 +184,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<A HREF="?m=nodelist&s=2"><B>{t}Disconnected:{/t}</B></A>
+						<A HREF="?m=nodelist&s=2"><B>{trans("Disconnected:")}</B></A>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$nodestats.disconnected}
@@ -192,7 +192,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
-						<B><A HREF="?m=nodelist">{t}Total:{/t}</A></B>
+						<B><A HREF="?m=nodelist">{trans("Total:")}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHTU">
 						{$nodestats.total}
@@ -215,12 +215,12 @@
 			<TABLE CELLPADDING="2">
 				<TR CLASS="DARK">
 					<TD COLSPAN="2" ALIGN="CENTER" CLASS="FALL" NOWRAP>
-						<B><A href="?m=rtticketadd&catid={$rtcategorystats.id}" {tip text="Add new ticket" trigger="newticket"}><IMG SRC="img/ticket.gif"></A>&nbsp;{t}Helpdesk:{/t}&nbsp;<A href="?m=rtqueueview&catid={$rtcategorystats.id}">{$rtcategorystats.name}</A></B>
+						<B><A href="?m=rtticketadd&catid={$rtcategorystats.id}" {tip text="Add new ticket" trigger="newticket"}><IMG SRC="img/ticket.gif"></A>&nbsp;{trans("Helpdesk:")}&nbsp;<A href="?m=rtqueueview&catid={$rtcategorystats.id}">{$rtcategorystats.name}</A></B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A href="?m=rtqueueview&catid={$rtcategorystats.id}&s=0&o=lastmodified,desc">{t}New:{/t}</A></B>
+						<B><A href="?m=rtqueueview&catid={$rtcategorystats.id}&s=0&o=lastmodified,desc">{trans("New:")}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$rtcategorystats.new|default:"0"}
@@ -228,7 +228,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A href="?m=rtqueueview&catid={$rtcategorystats.id}&s=1&o=lastmodified,desc">{t}Opened:{/t}</A></B>
+						<B><A href="?m=rtqueueview&catid={$rtcategorystats.id}&s=1&o=lastmodified,desc">{trans("Opened:")}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$rtcategorystats.opened|default:"0"}
@@ -236,7 +236,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A href="?m=rtqueueview&catid={$rtcategorystats.id}&s=3&o=lastmodified,desc">{t}Dead:{/t}</A></B>
+						<B><A href="?m=rtqueueview&catid={$rtcategorystats.id}&s=3&o=lastmodified,desc">{trans("Dead:")}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$rtcategorystats.dead|default:"0"}
@@ -244,7 +244,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT" NOWRAP>
-						<B><A href="?m=rtqueueview&catid={$rtcategorystats.id}&s=-1&o=lastmodified,desc">{t}Unresolved:{/t}</A></B>
+						<B><A href="?m=rtqueueview&catid={$rtcategorystats.id}&s=-1&o=lastmodified,desc">{trans("Unresolved:")}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$rtcategorystats.unresolved|default:"0"}
@@ -252,7 +252,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A href="?m=rtqueueview&catid={$rtcategorystats.id}&s=2&o=lastmodified,desc">{t}Resolved:{/t}</A></B>
+						<B><A href="?m=rtqueueview&catid={$rtcategorystats.id}&s=2&o=lastmodified,desc">{trans("Resolved:")}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$rtcategorystats.resolved|default:"0"}
@@ -260,7 +260,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
-						<B><A href="?m=rtqueuelist">{t}Total:{/t}</A></B>
+						<B><A href="?m=rtqueuelist">{trans("Total:")}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHTU">
 						{math equation="a+b+c+d" a=$rtcategorystats.opened b=$rtcategorystats.new c=$rtcategorystats.dead d=$rtcategorystats.resolved}
@@ -290,17 +290,17 @@
 		    <TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
 					<TD ALIGN="CENTER" CLASS="FALL">
-						<IMG SRC="img/tip.gif"> <B>{t}Useful Links:{/t}</B>
+						<IMG SRC="img/tip.gif"> <B>{trans("Useful Links:")}</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD CLASS="FALL" ALIGN="CENTER">
-						<B><A HREF="http://www.lms.org.pl" TARGET="_BLANK">{t}LMS Project Homepage{/t}</A><BR>
-							<A HREF="{$_dochref}" TARGET="_BLANK">{t}Online Documentation{/t}</A><BR>
-							<A HREF="doc/ChangeLog" TARGET="_BLANK">{t}ChangeLog{/t}</A><BR>
-							<A HREF="http://lists.lms.org.pl" TARGET="_BLANK">{t}Mailing Lists Archive{/t}</A><BR>
-							<A HREF="http://cvs.lms.org.pl" TARGET="_BLANK">{t}CVS Repository{/t}</A><BR>
-							<A HREF="http://bts.lms.org.pl" TARGET="_BLANK">{t}Bug Tracking System{/t}</A>
+						<B><A HREF="http://www.lms.org.pl" TARGET="_BLANK">{trans("LMS Project Homepage")}</A><BR>
+							<A HREF="{$_dochref}" TARGET="_BLANK">{trans("Online Documentation")}</A><BR>
+							<A HREF="doc/ChangeLog" TARGET="_BLANK">{trans("ChangeLog")}</A><BR>
+							<A HREF="http://lists.lms.org.pl" TARGET="_BLANK">{trans("Mailing Lists Archive")}</A><BR>
+							<A HREF="http://cvs.lms.org.pl" TARGET="_BLANK">{trans("CVS Repository")}</A><BR>
+							<A HREF="http://bts.lms.org.pl" TARGET="_BLANK">{trans("Bug Tracking System")}</A>
 						</B>
 					</TD>
 				</TR>
@@ -316,19 +316,19 @@
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
 					<TD ALIGN="CENTER" CLASS="FALL">
-						<IMG SRC="img/logo-ico.gif" ALT=""> <B>{t}Registration info:{/t}</B>
+						<IMG SRC="img/logo-ico.gif" ALT=""> <B>{trans("Registration info:")}</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD CLASS="FALL" ALIGN="CENTER">
 						{if $regdata}
-						{t}Registration ID:{/t} {$regdata.id|string_format:"%04d"}<BR>
-						{t}Registered for:{/t} {$regdata.name}<BR>
-						{t}URL:{/t} {$regdata.url}<BR>
-						<A HREF="?m=register">{t}Change registration info{/t}</A>
+						{trans("Registration ID:")} {$regdata.id|string_format:"%04d"}<BR>
+						{trans("Registered for:")} {$regdata.name}<BR>
+						{trans("URL:")} {$regdata.url}<BR>
+						<A HREF="?m=register">{trans("Change registration info")}</A>
 						{else}
-						{t}Your installation is unregistered!{/t}<BR>
-						<A HREF="?m=register">{t}Click here, to register your installation and learn more why you should - IT'S FREE!{/t}</A>
+						{trans("Your installation is unregistered!")}<BR>
+						<A HREF="?m=register">{trans("Click here, to register your installation and learn more why you should - IT'S FREE!")}</A>
 						{/if}
 					</TD>
 				</TR>

@@ -15,24 +15,24 @@
 <TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
 		<TD ALIGN="CENTER" CLASS="HEAD">
-			{t}No.{/t}
+			{trans("No.")}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
-			{t}ID{/t}
+			{trans("ID")}
 		</TD>
 		<TD CLASS="HEAD">
-			<B>{t}First/last name{/t}</B><BR>
-			{t}Address{/t}<BR>
-			{t}Phone{/t}
+			<B>{trans("First/last name")}</B><BR>
+			{trans("Address")}<BR>
+			{trans("Phone")}
 		</TD>
 		<TD CLASS="HEAD" VALIGN="TOP" ALIGN="RIGHT">
-			{if $_config.privileges.finances_management|chkconfig || $adminuser}{t}Subscription{/t}<BR>{/if}
-			{t}E-mail{/t}<BR>
-			{t}TEN/SSN{/t}
+			{if $_config.privileges.finances_management|chkconfig || $adminuser}{trans("Subscription")}<BR>{/if}
+			{trans("E-mail")}<BR>
+			{trans("TEN/SSN")}
 		</TD>
 		{if $_config.privileges.finances_management|chkconfig || $adminuser}
 		<TD CLASS="HEAD" ALIGN="RIGHT">
-			{t}Balance{/t}
+			{trans("Balance")}
 		</TD>
 		{/if}
 	</TR>
@@ -64,7 +64,7 @@
 	{/if}{/section}
 	{if ($_config.privileges.finances_management|chkconfig && !$_config.privileges.hide_summaries|chkconfig) || $adminuser}
 	<TR class="grey">
-		<TD COLSPAN="3" ALIGN="RIGHT"><B>{t}Total:{/t}</B></TD>
+		<TD COLSPAN="3" ALIGN="RIGHT"><B>{trans("Total:")}</B></TD>
 		<TD ALIGN="RIGHT" NOWRAP><B>{sum array=$customerlist column="tariffvalue" string_format=$LANGDEFS.$_language.money_format}</B></TD>
 		<TD ALIGN="RIGHT" NOWRAP><B>{sum array=$customerlist column="balance" string_format=$LANGDEFS.$_language.money_format}</B></TD>
 	</TR>

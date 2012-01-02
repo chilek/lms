@@ -14,7 +14,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD CLASS="FALL" COLSPAN="3">
-			<B>{t}Find devices matching the following search criteria:{/t}</B>
+			<B>{trans("Find devices matching the following search criteria:")}</B>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -22,7 +22,7 @@
 			<IMG SRC="img/search.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>{t}Name:{/t}</B>
+			<B>{trans("Name:")}</B>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" NAME="search[name]" VALUE="" {tip text="Enter device name or it's fragment"}> 
 		</TD>
@@ -32,7 +32,7 @@
 			<IMG SRC="img/producer.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Manufacturer:{/t}</B>
+			<B>{trans("Manufacturer:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" NAME="search[producer]" VALUE="" {tip text="Enter producer name or it's fragment"}>
@@ -43,7 +43,7 @@
 			<IMG SRC="img/netdev_model.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Model:{/t}</B>
+			<B>{trans("Model:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" NAME="search[model]" VALUE="" {tip text="Enter device model or it's fragment"}>
@@ -54,7 +54,7 @@
 			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Serial number:{/t}</B>
+			<B>{trans("Serial number:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" NAME="search[serialnumber]" VALUE="" {tip text="Enter device serial number or it's fragment"}>
@@ -65,7 +65,7 @@
 			<IMG SRC="img/port.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Number of ports:{/t}</B>
+			<B>{trans("Number of ports:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" NAME="search[ports]" VALUE="" {tip text="Enter number of ports"}>
@@ -76,7 +76,7 @@
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Location:{/t}</B>
+			<B>{trans("Location:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" NAME="search[location]" VALUE="" {tip text="Enter device location or it's fragment"}>
@@ -87,7 +87,7 @@
 			<IMG SRC="img/desc.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Description:{/t}</B>
+			<B>{trans("Description:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" NAME="search[description]" VALUE="" {tip text="Enter additional information"}>
@@ -98,7 +98,7 @@
 			<IMG SRC="img/ip.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}IP address:{/t}</B>
+			<B>{trans("IP address:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" NAME="search[ipaddr]" VALUE="" {tip text="Enter IP address or it's fragment"}>
@@ -109,7 +109,7 @@
 			<IMG SRC="img/mac.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}MAC address:{/t}</B>
+			<B>{trans("MAC address:")}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" NAME="search[mac]" VALUE="" {tip text="Enter MAC address or it's fragment"}>
@@ -118,17 +118,17 @@
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%"></TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Qualification operator:{/t}</B>
+			<B>{trans("Qualification operator:")}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="98%">
-			<INPUT class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} CHECKED{/if}><A HREF="javascript:setOperator('operator0')"> {t}AND{/t} </A>
-			<INPUT class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} CHECKED{/if}><A HREF="javascript:setOperator('operator1')"> {t}OR{/t} </A>
+			<INPUT class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} CHECKED{/if}><A HREF="javascript:setOperator('operator0')"> {trans("AND")} </A>
+			<INPUT class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} CHECKED{/if}><A HREF="javascript:setOperator('operator1')"> {trans("OR")} </A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
-			<A HREF="javascript:document.search.submit();" ACCESSKEY="s">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
-			<A HREF="?m=netdevlist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A>
+			<A HREF="javascript:document.search.submit();" ACCESSKEY="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
+			<A HREF="?m=netdevlist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>	
 </TABLE>

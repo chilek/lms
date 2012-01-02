@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-cvs
  *
- *  (C) Copyright 2001-2011 LMS Developers
+ *  (C) Copyright 2001-2012 LMS Developers
  *
  *
  *  This program is free software; you can redistribute it and/or modify
