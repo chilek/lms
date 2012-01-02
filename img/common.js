@@ -37,14 +37,35 @@ function autoiframe_setsize(id, width, height)
 	var doc = window.parent ? parent.document : document,
 		frame = doc.getElementById(id);
 
+    if (!frame)
+        return;
+
 	if (width) {
 		frame.style.width = width + 'px';
 		frame.parentNode.style.width = width + 'px';
 	}
+	else
+	    width = frame.offsetWidth;
+
 	if (height) {
 		frame.style.height = height + 'px';
 		frame.parentNode.style.height = height + 'px';
 	}
+	else
+	    height = frame.offsetHeight;
+
+    // move frame if it doesn't fit the screen
+    var pos = get_object_pos(frame),
+        parent_frame = doc.getElementById('overDiv'),
+        dw = doc.body.offsetWidth,
+        dh = doc.body.offsetWidth;
+
+    if (width < dw && pos.x + width > dw - 15) {
+        parent_frame.style.left = (dw - width - 15) + 'px';
+    }
+    if (height < dh && pos.y + height > dh - 15) {
+        parent_frame.style.top = (dh - height - 15) + 'px';
+    }
 }
 
 function openSelectWindow(theURL, winName, myWidth, myHeight, isCenter, formfield)
@@ -200,14 +221,14 @@ function checkElement(id)
 
 function get_object_pos(obj)
 {
-	// get old select size/position
+	// get old element size/position
 	var x = (document.layers) ? obj.x : obj.offsetLeft;
 	var y = (document.layers) ? obj.y : obj.offsetTop;
 
-	// calculate select position
+	// calculate element position
 	var elm = obj.offsetParent;
-	while(elm && elm !== null) {
-	        x += elm.offsetLeft;
+	while (elm) {
+	    x += elm.offsetLeft;
 		y += elm.offsetTop;
 		elm = elm.offsetParent;
 	}
