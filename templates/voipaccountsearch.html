@@ -15,11 +15,6 @@
 		document.voipaccountsearch.target = "";
 		document.voipaccountsearch.submit();
 	}
-
-	function setOperator(id)
-	{
-		document.voipaccountsearch.elements[id].checked = true;
-	}
 //-->
 </SCRIPT>
 <H1>{$layout.pagetitle}</H1>
@@ -62,8 +57,8 @@
 			<IMG src="img/empty.gif" width="16" alt=""> <B>{trans("Qualification operator:")}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
-			<INPUT class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} CHECKED{/if}><A HREF="javascript:setOperator('operator0')"> {trans("AND")} </A>
-			<INPUT class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} CHECKED{/if}><A HREF="javascript:setOperator('operator1')"> {trans("OR")} </A>
+			<INPUT class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} CHECKED{/if}><label for="operator0">{trans("AND")}</label>
+			<INPUT class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} CHECKED{/if}><label for="operator1">{trans("OR")}</label>
 		</TD>
 	</TR>
 	<TR CLASS="light">

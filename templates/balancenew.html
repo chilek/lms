@@ -13,11 +13,6 @@
 		document.forms['addbalance'].selectededit.value = j;
 	}
 
-	function setOperationType(id)
-	{
-		document.forms['addbalance'].elements['type'+id].checked = true;
-	}
-
 	function del(id)
 	{
 		if(confirm('{trans("Are you sure, you want to delete last operation?")}'))
@@ -93,8 +88,8 @@
 						<B>{trans("Type:")}</B>
 					</TD>
 					<TD WIDTH="98%" CLASS="FRIGHT">
-						<INPUT TYPE="radio" NAME="addbalance[type]" ID="type0" VALUE="0" {tip text="Select type of operation"}><A HREF="javascript:setOperationType('0')">{trans("liability")}</A>
-						<INPUT TYPE="radio" NAME="addbalance[type]" ID="type1" VALUE="1" {tip text="Select type of operation"} checked><A HREF="javascript:setOperationType('1')">{trans("income/expense")}</A>
+						<INPUT TYPE="radio" NAME="addbalance[type]" ID="type0" VALUE="0" {tip text="Select type of operation"}><label for="type0">{trans("liability")}</label>
+						<INPUT TYPE="radio" NAME="addbalance[type]" ID="type1" VALUE="1" {tip text="Select type of operation"} checked><label for="type1">{trans("income/expense")}</label>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
