@@ -12,12 +12,6 @@
 		}
 	}
 
-	function CheckAll2()
-	{
-		document.assignment.allbox.checked = !document.assignment.allbox.checked;
-		CheckAll();
-	}
-
 	function set_tariff()
 	{
 		var val = document.forms['assignment'].elements['assignment[tariffid]'].value;
@@ -269,8 +263,8 @@
 			<B>{trans("Options:")}</B>
 		</TD>
 		<TD width="98%">
-		    <NOBR><INPUT type="checkbox" name="assignment[invoice]" value="1" {if $assignment.invoice}CHECKED{/if}> <A HREF="javascript:setCheckbox('assignment[invoice]')">{trans("with invoice")}</a></NOBR>
-			<NOBR><INPUT type="checkbox" name="assignment[settlement]" value="1" {if $assignment.settlement}CHECKED{/if}> <A HREF="javascript:setCheckbox('assignment[settlement]')">{trans("with settlement of first deficient period")}</a></NOBR>
+		    <NOBR><INPUT type="checkbox" name="assignment[invoice]" value="1" id="invoice"{if $assignment.invoice} CHECKED{/if}><label for="invoice">{trans("with invoice")}</label></NOBR>
+			<NOBR><INPUT type="checkbox" name="assignment[settlement]" value="1" id="settlement"{if $assignment.settlement} CHECKED{/if}><label for="settlement">{trans("with settlement of first deficient period")}</label></NOBR>
 		</TD>
 	</TR>
 {if $customernodes}
@@ -284,12 +278,11 @@
 		<TD width="98%" nowrap id="nodeslist">
 			{section name=customernodes loop=$customernodes}
 			    {assign var=nodeid value=$customernodes[customernodes].id}
-				<INPUT type="checkbox" name="assignment[nodes][{counter}]" value="{$customernodes[customernodes].id}" {if in_array($nodeid, (array)$assignment.nodes)} checked{/if}>
-				<A HREF="javascript:setCheckbox('assignment[nodes][{counter name=counter2}]')"><B>{$customernodes[customernodes].name}</B> ({$customernodes[customernodes].id|string_format:"%04d"}){if $customernodes[customernodes].location} / {$customernodes[customernodes].location|truncate:"60":"...":true}{/if}</a>
+				<INPUT type="checkbox" name="assignment[nodes][{counter}]" value="{$customernodes[customernodes].id}" id="node{$customernodes[customernodes].id}" {if in_array($nodeid, (array)$assignment.nodes)} checked{/if}><label for="node{$customernodes[customernodes].id}"><B>{$customernodes[customernodes].name}</B> ({$customernodes[customernodes].id|string_format:"%04d"}){if $customernodes[customernodes].location} / {$customernodes[customernodes].location|truncate:"60":"...":true}{/if}</label>
                 <BR>
 			{/section}
 			{if sizeof($customernodes) > 1}
-                <INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"> <A HREF="javascript:CheckAll2();">{trans("check all<!items>")}</A>
+                <INPUT TYPE="checkbox" NAME="allbox" onchange="CheckAll();" id="allnodes" VALUE="Check All Boxes"><label for="allnodes">{trans("check all<!items>")}</label>
 			{/if}
 		</TD>
 	</TR>
@@ -318,10 +311,6 @@ var cal4 = new calendar(document.forms['assignment'].elements['assignment[dateto
 cal4.time_comp = false;
 set_tariff();
 {if $promotionschemas}set_schema();{/if}
-function setCheckbox(id)
-{
-	document.forms['assignment'].elements[id].checked = !document.forms['assignment'].elements[id].checked;
-}
 //-->
 </SCRIPT>
 {include file="footer.html"}
