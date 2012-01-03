@@ -51,8 +51,8 @@ HR      { border: 0; height: 1px; color: black; background-color: black; }
 INPUT[type="text"],
 INPUT[type="password"],
 INPUT[type="submit"],
-INPUT[type="button"], 
-INPUT[type="file"] { 
+INPUT[type="button"],
+INPUT[type="file"] {
 	border: solid 1px black;
 	background-color: #EBE4D6;
 }
@@ -65,9 +65,12 @@ INPUT { /* IE */
 	border-color: expression(this.type=='checkbox' || this.type=='radio' ? '' : 'black');
 	background-color: expression(this.type=='checkbox' || this.type=='radio' ? 'transparent' : '#EBE4D6');
 }
+INPUT[type="radio"] {
+    vertical-align: text-bottom;
+}
 
 INPUT.alert	{ background-color: #FF9B9B; }
-INPUT.hiddenbtn	{ display : none; } 
+INPUT.hiddenbtn	{ display : none; }
 INPUT.blend	{ border-style: solid; border-color: #c0c0c0; border-width: 1px; vertical-align: middle; color: black; }
 INPUT.scroller	{ border-style: solid; border-color: grey; border-width: 1px; vertical-align: middle; background-color: #DFD5BD; }
 
