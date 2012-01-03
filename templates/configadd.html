@@ -55,14 +55,14 @@
 			<B>{trans("Status:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<INPUT type="checkbox" value="1" name="config[disabled]" {if $config.disabled}CHECKED{/if} {tip text="You can turn it off"}> <A HREF="javascript:setCheckbox('config[disabled]')">{trans("Off")}</a>
+			<INPUT type="checkbox" value="1" name="config[disabled]" id="config_disabled"{if $config.disabled} CHECKED{/if} {tip text="You can turn it off"}><label for="config_disabled">{trans("Off")}</label>
 		</TD>
 	</TR>
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
 			<A href="javascript:document.config.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
 			<A href="?m=configlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="config[reuse]" value="ON" {if $config.reuse}checked{/if}> <A HREF="javascript:setCheckbox('config[reuse]')">{trans("Display this form again, when this option is saved")}</a>
+			<INPUT type="checkbox" name="config[reuse]" value="ON" id="reuse"{if $config.reuse} checked{/if}><label for="reuse">{trans("Display this form again, when this option is saved")}</label>
 		</TD>
 	</TR>
 </TABLE>
@@ -70,12 +70,6 @@
 <SCRIPT type="text/javascript">
 <!--
 document.forms['config'].elements['config[name]'].focus();
-
-function setCheckbox(id)
-{
-	document.forms['config'].elements[id].checked =
-		!document.forms['config'].elements[id].checked;
-}
 //-->
 </SCRIPT>
 {include file="footer.html"}

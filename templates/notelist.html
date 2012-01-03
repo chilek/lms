@@ -44,11 +44,6 @@ window.open('?m=note&id={$note}');
 		document.page.submit();
 	}
 
-	function setCheckbox(id)
-	{
-		document.page.elements[id].checked = !document.page.elements[id].checked;
-	}
-
 	function filter()
 	{
 		document.page.action="?m=notelist";
@@ -122,14 +117,14 @@ window.open('?m=note&id={$note}');
 					{/section}
 				</SELECT>
 				<NOBR>
-				<INPUT type="checkbox" name="groupexclude" {if $listdata.groupexclude} CHECKED{/if}><A HREF="javascript:setCheckbox('groupexclude')">{trans("exclude group")}</a>
+				<INPUT type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} CHECKED{/if}><label for="groupexclude">{trans("exclude group")}</label>
 				</NOBR>
 				<NOBR>
-				<INPUT type="checkbox" name="hideclosed" {if $listdata.hideclosed} CHECKED{/if}><A HREF="javascript:setCheckbox('hideclosed')">{trans("hide accounted<!plural>")}</a>
+				<INPUT type="checkbox" name="hideclosed" id="hideclosed"{if $listdata.hideclosed} CHECKED{/if}><label for="hideclosed">{trans("hide accounted<!plural>")}</label>
 				&nbsp;<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>
 				</NOBR>
 		</TD>
-	</TR>		
+	</TR>
 	{if $listdata.total != 0}
 	<TR CLASS="dark">
 		<TD WIDTH="100%" class="fall" COLSPAN="7">
@@ -195,9 +190,9 @@ window.open('?m=note&id={$note}');
 						<NOBR><A HREF="javascript:pays();">{trans("Check/Uncheck as accounted")} <IMG SRC="img/pay.gif" ALT=""></A></NOBR>&nbsp;
 						<NOBR><A HREF="javascript:prints();">{trans("Print")} <IMG SRC="img/printd.gif" ALT="" ></A></NOBR>&nbsp;
 {*
-						<INPUT type="checkbox" name="original"{if preg_match('/original/i',$_config.notes.default_printpage)} checked{/if}> <A HREF="javascript:setCheckbox('original')">{trans("original")}</a>&nbsp;
-						<INPUT type="checkbox" name="copy"{if preg_match('/copy/i',$_config.notes.default_printpage)} checked{/if}> <A HREF="javascript:setCheckbox('copy')">{trans("copy")}</a>
-						<INPUT type="checkbox" name="duplicate"{if preg_match('/duplicate/i',$_config.notes.default_printpage)} checked{/if}> <A HREF="javascript:setCheckbox('duplicate')">{trans("duplicate")}</a>
+						<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i',$_config.notes.default_printpage)} checked{/if}><label for="original">{trans("original")}</label>
+						<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i',$_config.notes.default_printpage)} checked{/if}><label for="copy">{trans("copy")}</label>
+						<INPUT type="checkbox" name="duplicate"id="duplicate"{if preg_match('/duplicate/i',$_config.notes.default_printpage)} checked{/if}><label for="duplicate">{trans("duplicate")}</label>
 *}
 					</TD>
 					<TD ALIGN="right">	

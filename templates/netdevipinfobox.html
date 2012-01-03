@@ -24,17 +24,6 @@
 		else
 			location.href = '?m=netdevedit&id={$netdevinfo.id}&ip={$nodeipdata.id}&action=nas&nas=0';
 	}
-
-	function setCheckbox(id)
-	{
-		document.getElementById(id).checked = !document.getElementById(id).checked;
-		if (id == 'chkmac')
-			chkmac_change();
-		else if (id == 'chkduplex')
-			duplex_change();
-		else
-			nas_change();
-	}
 //-->
 </SCRIPT>
 <TABLE WIDTH="100%" CELLPADDING="3">
@@ -93,11 +82,11 @@
 			<IMG SRC="img/options.gif" ALT="{trans("Options:")}">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
-			<A HREF="javascript:setCheckbox('chkmac')">{trans("MAC checking")}:</A><INPUT TYPE="checkbox" NAME="chkmac" VALUE="1" ID="chkmac" {if $nodeipdata.chkmac} checked{/if} onclick="chkmac_change();">&nbsp;
-			<A HREF="javascript:setCheckbox('chkduplex')">{trans("Half duplex")}:</A><INPUT TYPE="checkbox" NAME="duplex" VALUE="1" ID="chkduplex" {if $nodeipdata.halfduplex} checked{/if} onclick="duplex_change();">
+			<label for="chkmac">{trans("MAC checking")}:</label><INPUT TYPE="checkbox" NAME="chkmac" VALUE="1" ID="chkmac" {if $nodeipdata.chkmac} checked{/if} onchange="chkmac_change();">&nbsp;
+			<label for="chkduplex">{trans("Half duplex")}:</label><INPUT TYPE="checkbox" NAME="duplex" VALUE="1" ID="chkduplex" {if $nodeipdata.halfduplex} checked{/if} onchange="duplex_change();">
 			{if $_config.phpui.radius|chkconfig}
 			&nbsp;
-			<A HREF="javascript:setCheckbox('chknas')">{trans("NAS")}:</A><INPUT TYPE="checkbox" NAME="nas" ID="chknas" VALUE="1" {if $nodeipdata.nas} checked{/if} onclick="nas_change();">
+			<label for="chknas">{trans("NAS")}:</label><INPUT TYPE="checkbox" NAME="nas" ID="chknas" VALUE="1" {if $nodeipdata.nas} checked{/if} onchange="nas_change();">
 			{/if}
 		</TD>
 	</TR>

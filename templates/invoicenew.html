@@ -424,8 +424,8 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 	</TR>
 	<TR CLASS="light">
 		<TD COLSPAN="9" CLASS="fbottomu" ALIGN="RIGHT">
-			<INPUT type="checkbox" name="original"{if preg_match('/original/i',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:setType('original');">{trans("original")}</A>
-        		<INPUT type="checkbox" name="copy"{if preg_match('/copy/i',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:setType('copy');">{trans("copy")}</A>&nbsp;
+			<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i',$_config.invoices.default_printpage)} checked{/if}><label for="original">{trans("original")}</label>
+        	<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i',$_config.invoices.default_printpage)} checked{/if}><label for="copy">{trans("copy")}</label>&nbsp;
 			<A HREF="?m=invoicelist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
 			<A HREF="?m=invoicenew&action=init">{trans("Clear Contents")} <IMG SRC="img/delete.gif" alt=""></A> 
 			{if !$customer}
