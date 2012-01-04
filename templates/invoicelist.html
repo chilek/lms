@@ -8,27 +8,6 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 {/if}
 <SCRIPT type="text/javascript">
 <!--
-	function CheckAll()
-	{
-		for (var i=0; i<document.page.elements.length; i++)
-		{
-			var e = document.page.elements[i];
-			if (e.name != 'allbox' &&
-				e.name != 'groupexclude' &&
-				e.name != 'hideclosed' &&
-				e.name != 'original' &&
-				e.name != 'duplicate' &&
-				e.name != 'copy')
-				e.checked = document.page.allbox.checked;
-		}
-	}
-
-	function CheckAll2()
-	{
-		document.page.allbox.checked = !document.page.allbox.checked;
-		CheckAll();
-	}
-
 	function pays()
 	{
 		if (!confirm('{trans("Are you sure, you want to check/uncheck selected invoices as accounted?")}'))
@@ -213,8 +192,8 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 						<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i',$_config.invoices.default_printpage)} checked{/if}><label for="copy">{trans("copy")}</label>
 						<INPUT type="checkbox" name="duplicate" id="duplicate"{if preg_match('/duplicate/i',$_config.invoices.default_printpage)} checked{/if}><label for="duplicate">{trans("duplicate")}</label>
 					</TD>
-					<TD ALIGN="right">	
-						<NOBR><A HREF="javascript:CheckAll2();">{trans("Check All")}</A><INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
+					<TD ALIGN="right">
+						<NOBR><label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('page', this, ['original', 'duplicate', 'copy', 'groupexclude', 'hideclosed'])" VALUE="1"></NOBR>
 					</TD>
 				</TR>
 			</TABLE>

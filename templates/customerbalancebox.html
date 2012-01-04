@@ -1,26 +1,6 @@
 <!--// $Id$ //-->
 <SCRIPT type="text/javascript">
 	<!--
-
-	function CheckAll()
-	{
-		for (var i=0; i<document.addbalance.elements.length; i++)
-		{
-			var e = document.addbalance.elements[i];
-			if (e.type == 'checkbox' && e.name != 'allbox' 
-				&& e.name != 'copy' && e.name != 'original' && e.name != 'duplicate') 
-			{
-				e.checked = document.addbalance.allbox.checked;
-			}
-		}
-	}
-
-	function CheckAll2()
-	{
-		document.addbalance.allbox.checked = !document.addbalance.allbox.checked;
-		CheckAll();
-	}
-
 	function AddBalance()
 	{
 		if(document.forms['addbalance'].elements['addbalance[value]'].value != '')
@@ -38,7 +18,7 @@
 			add = "&which=original";
 		else if(!document.addbalance.original.checked && document.addbalance.copy.checked)
 			add = "&which=copy";
-		
+
 		document.addbalance.action = "?m=receipt&print=cached&cash=1" + add;
 		document.addbalance.target = "_blank";
 		document.addbalance.submit();
@@ -186,7 +166,7 @@
 						<INPUT type="checkbox" name="copy" id="inv-copy"{if preg_match('/copy/i',$_config.invoices.default_printpage)} checked{/if}> <label for="inv-copy">{trans("copy")}</label>
 						<INPUT type="checkbox" name="duplicate" id="inv-duplicate"{if preg_match('/duplicate/i',$_config.invoices.default_printpage)} checked{/if}> <label for="inv-duplicate">{trans("duplicate")}</label>
 						</TD><TD width="1%" align="right" NOWRAP>
-						<A href="javascript:CheckAll2();">{trans("Check All")}</A><INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes">
+						<label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('addbalance', this, ['copy', 'original', 'duplicate'])" VALUE="1">
 						</TD></TR>
 					    </TABLE>
 					</TD>

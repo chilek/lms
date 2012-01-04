@@ -42,27 +42,11 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 
 		document.setcustomer.submit();
 	}
-	
+
 	function reset_customer()
         {
 	        if (document.setcustomer.customerid.value)
 	                document.setcustomer.customer.value = document.setcustomer.customerid.value;
-	}
-	
-	function CheckAll()
-	{
-		for (var i=0; i<document.additemlist.elements.length; i++)
-		{
-			var e = document.additemlist.elements[i];
-		        if (e.name != 'allbox')
-				e.checked = document.additemlist.allbox.checked;
-		}
-	}
-
-	function CheckAll2()
-	{
-		document.additemlist.allbox.checked = !document.additemlist.allbox.checked;
-		CheckAll();
 	}
 
 	function setType(type)
@@ -265,8 +249,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 							{/section}
 							<TR class="light">
 								<TD CLASS="ftop" colspan="2" nowrap>
-									<INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes">
-									<A HREF="javascript:CheckAll2();">{trans("Check All")}</A>
+									<INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('additemlist', this)" VALUE="1"><label for="allbox"">{trans("Check All")}</label>
 								</TD>
 							        <TD CLASS="ftop" ALIGN="right" colspan="7" nowrap>
 									<A href="javascript:document.additemlist.submit();">{trans("Add items")} <IMG src="img/save.gif" ALT=""></A>

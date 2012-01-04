@@ -10,22 +10,6 @@
 {include file="calendar_js.html"}
 <SCRIPT type="text/javascript">
 <!--
-	function CheckAll()
-	{
-		for (var i=0; i<document.page.elements.length; i++)
-		{
-			var e = document.page.elements[i];
-			if (e.name != 'allbox' && e.name != 'original' && e.name != 'copy')
-				e.checked = document.page.allbox.checked;
-		}
-	}
-
-	function CheckAll2()
-	{
-		document.page.allbox.checked = !document.page.allbox.checked;
-		CheckAll();
-	}
-
 	function prints()
 	{
 		var add = "";
@@ -35,7 +19,7 @@
 			add = "&which=original";
 		else if (!document.page.original.checked && document.page.copy.checked)
 			add = "&which=copy";
-		
+
 		document.page.action = "?m=receipt&print=cached" + add;
 		document.page.target = "_blank";
 		document.page.submit();
@@ -193,7 +177,7 @@
 						<INPUT type="checkbox" name="copy" checked> <A HREF="javascript:setType('copy');">{trans("copy")}</A>
 					</TD>
 					<TD ALIGN="right">	
-						<NOBR><A HREF="javascript:CheckAll2();">{trans("Check All")}</A><INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
+						<NOBR><label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('page', this, ['original', 'copy'])" VALUE="1"></NOBR>
 					</TD>
 				</TR>
 			</TABLE>

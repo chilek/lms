@@ -3,22 +3,6 @@
 <H1>{$layout.pagetitle}</H1>
 <SCRIPT type="text/javascript">
 <!--
-	function CheckAll()
-	{
-		for (var i=0; i<document.cashimport.elements.length; i++)
-		{
-			var e = document.cashimport.elements[i];
-			if (e.name != 'allbox')
-			e.checked = document.cashimport.allbox.checked;
-		}
-	}
-
-	function CheckAll2()
-	{
-		document.cashimport.allbox.checked = !document.cashimport.allbox.checked;
-		CheckAll();
-	}
-
 	function Delete()
 	{
 		document.cashimport.action += '&action=delete';
@@ -116,8 +100,7 @@
 	{/if}
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" COLSPAN="3" nowrap>
-			<INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All">
-			<A HREF="javascript:CheckAll2();">{trans("Check All")}</A>
+			<INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('cashimport', this)" VALUE="1"><label for="allbox">{trans("Check All")}</label>
 		</TD>
 		<TD CLASS="fbt" COLSPAN="2" ALIGN="center" nowrap>
 		    <A href="?m=cashimport&action=txt">{trans("Download all (TXT)")} <IMG src="img/save.gif" alt="">

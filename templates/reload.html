@@ -1,24 +1,5 @@
 <!--// $Id$ //-->
 <H1><B>{$layout.pagetitle}</B></H1>
-<SCRIPT type="text/javascript">
-<!--
-	function CheckAll()
-	{
-		for (var i=0; i<document.reload.elements.length; i++)
-		{
-			var e = document.reload.elements[i];
-			if (e.name != 'allbox')
-				e.checked = document.reload.allbox.checked;
-		}
-	}
-
-	function CheckAll2()
-	{
-		document.reload.allbox.checked = !document.reload.allbox.checked;
-		CheckAll();
-	}
-//-->
-</SCRIPT>
 <P><FORM name="reload" method="POST" action="?m=reload&setreloads">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
@@ -61,8 +42,7 @@
 				{/section}
 				<TR class="light">
 					<TD CLASS="ftop" colspan="2"nowrap>
-						<INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes">
-						<A HREF="javascript:CheckAll2();">{trans("Check All")}</A>
+						<INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('reload', this)" VALUE="1"><label for="allbox">{trans("Check All")}</label>
 					</TD>
 					<TD CLASS="ftop" ALIGN="right" colspan="3" nowrap>
 						<A href="javascript:document.reload.submit();">{trans("Submit")} <IMG src="img/save.gif" ALT=""></A>
