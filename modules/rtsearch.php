@@ -110,15 +110,15 @@ function RTSearch($search, $order='createtime,desc')
 				list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['req'], "%[^<]<%[^>]");
 			else
 				list($ticket['requestoremail']) = sscanf($ticket['req'], "<%[^>]");
-			
+
 			$result[$idx] = $ticket;
 		}
 	}
 
-	$result['total'] = sizeof($result);	
+	$result['total'] = sizeof($result);
 	$result['order'] = $order;
 	$result['direction'] = $direction;
-		
+
 	return $result;
 }
 
@@ -218,7 +218,7 @@ if(isset($search) || isset($_GET['s']))
 }
 else
 {
-	foreach($categories as $category)
+	if (!empty($categories)) foreach($categories as $category)
 	{
 		$category['checked'] = true;
 		$ncategories[] = $category;
