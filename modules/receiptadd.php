@@ -29,7 +29,7 @@ function GetCustomerCovenants($id)
 	global $CONFIG, $DB;
 
 	if(!$id) return NULL;
-	
+
 	if($invoicelist = $DB->GetAllByKey('SELECT docid AS id, cdate, SUM(value)*-1 AS value, number, template, reference AS ref,
 				(SELECT dd.id FROM documents dd WHERE dd.reference = docid AND dd.closed = 0 LIMIT 1) AS reference
 			FROM cash
@@ -47,9 +47,9 @@ function GetCustomerCovenants($id)
 				unset($invoicelist[$idx]);
 				continue;
 			}
-			
+
 			$invoicelist[$idx]['number'] = docnumber($row['number'], $row['template'], $row['cdate']);
-			
+
 			// invoice has cnote reference
 			if($row['reference'])
 			{
@@ -74,7 +74,7 @@ function GetCustomerCovenants($id)
 				}
 			}
 		}
-		
+
 		return $invoicelist;
 	}
 }
@@ -84,7 +84,7 @@ function GetCustomerNotes($id)
 	global $CONFIG, $DB;
 
 	if(!$id) return NULL;
-	
+
 	if($invoicelist = $DB->GetAll('SELECT docid AS id, cdate, SUM(value) AS value, number, template
 			FROM cash
 			LEFT JOIN documents ON (docid = documents.id)
@@ -98,7 +98,7 @@ function GetCustomerNotes($id)
 		{
 			$invoicelist[$idx]['number'] = docnumber($row['number'], $row['template'], $row['cdate']);
 		}
-		
+
 		return $invoicelist;
 	}
 }
@@ -231,17 +231,16 @@ switch($action)
 		$receipt = ($_POST['receipt']) ? $_POST['receipt'] : NULL;
 		$receipt['customerid'] = isset($_POST['customerid']) ? $_POST['customerid'] : 0;
 		$receipt['type'] = isset($receipt['type']) ? $receipt['type'] : $_POST['type'];
-		
+
 		if(!$receipt['regid'])
 			$error['regid'] = trans('Registry not selected!');
-
-		if($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $receipt['regid']))<=1)
+		else if($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $receipt['regid']))<=1)
 			$error['regid'] = trans('You have no write rights to selected registry!');
 
 		if(isset($error)) break;
-		
+
 		$receipt['cdate'] = time();
-		
+
 		if($receipt['type'] == 'in')
 			$receipt['numberplanid'] = $DB->GetOne('SELECT in_numberplanid FROM cashregs WHERE id=?', array($receipt['regid']));
 		else
@@ -250,16 +249,16 @@ switch($action)
 			if( $DB->GetOne('SELECT SUM(value) FROM receiptcontents WHERE regid = ?', array($receipt['regid']))<=0)
 				$error['regid'] = trans('There is no cash in selected registry!');
 		}
-		
+
 		if($receipt['numberplanid'])
 			if(strpos($DB->GetOne('SELECT template FROM numberplans WHERE id=?', array($receipt['numberplanid'])), '%I')!==FALSE)
 				$receipt['extended'] = TRUE;
 	break;
 
 	case 'additem':
-		
+
 		unset($error['nocash']);
-	
+
 		$itemdata = r_trim($_POST);
 		$itemdata['value'] = round((float) str_replace(',','.',$itemdata['value']),2);
 		$itemdata['posuid'] = (string) getmicrotime();
@@ -269,29 +268,29 @@ switch($action)
 		{
 			// sprawdzamy czy mamy tyle kasy w kasie ;)
 			$cash = $DB->GetOne('SELECT SUM(value) FROM receiptcontents WHERE regid = ?', array($receipt['regid']));
-			
+
 			$sum = 0;
 			if($contents)
 				foreach($contents as $item)
 					$sum += $item['value'];
 			$sum += $itemdata['value'];
-			
+
 			if( $cash < $sum )
 				$error['nocash'] = trans('There is no cash in selected registry! You can expense only $a.', moneyf($cash));
 		}
-	
+
 		if(!$error && $itemdata['value'] && $itemdata['description'])
 			additem($contents, $itemdata);
 	break;
-	
+
 	case 'additemlist':
-	
+
 		if(isset($_POST['marks']))
 		{
 			unset($error['nocash']);
-		
+
 			$cash = $DB->GetOne('SELECT SUM(value) FROM receiptcontents WHERE regid = ?', array($receipt['regid']));
-			
+
 			foreach($_POST['marks'] as $id)
 			{
 				$row = $DB->GetRow('SELECT SUM(value) AS value, number, cdate, template, documents.type AS type,
@@ -305,7 +304,7 @@ switch($action)
 				$itemdata['value'] = $receipt['type']=='in' ? -$row['value'] : $row['value'];
 				$itemdata['docid'] = $id;
 				$itemdata['posuid'] = (string) (getmicrotime()+$id);
-		
+
 				if($row['type']==DOC_INVOICE)
 					$itemdata['description'] = trans('Invoice No. $a', docnumber($row['number'], $row['template'], $row['cdate']));
 				else
@@ -334,7 +333,7 @@ switch($action)
 						$itemdata['description'] .= ')';
 					}
 				}
-				
+
 				if($receipt['type'] != 'in')
 				{
 					// sprawdzamy czy mamy tyle kasy w kasie ;)
@@ -343,7 +342,7 @@ switch($action)
 						foreach($contents as $item)
 							$sum += $item['value'];
 					$sum += $itemdata['value'];
-									
+
 					if( $cash < $sum )
 					{
 						$error['nocash'] = trans('There is no cash in selected registry! You can expense only $a.', moneyf($cash));
@@ -375,7 +374,7 @@ switch($action)
 		if($receipt = $_POST['receipt'])
 			foreach($receipt as $key => $val)
 				$receipt[$key] = $val;
-		
+
 		//$receipt['customerid'] = $_POST['customerid'];
 		$receipt['type'] = isset($_POST['type']) ? $_POST['type'] : $oldtype;
 
@@ -393,7 +392,7 @@ switch($action)
 			if(checkdate($month, $day, $year)) 
 			{
 				$receipt['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);
-			}				
+			}
 			else
 			{
 				$error['cdate'] = trans('Incorrect date format!');
@@ -429,7 +428,7 @@ switch($action)
 				$receipt['extended'] = TRUE;
 
 		$rights = $DB->GetOne('SELECT rights FROM cashrights WHERE regid=? AND userid=?', array($receipt['regid'], $AUTH->id));
-		
+
 		if(isset($receipt['o_type'])) switch($receipt['o_type'])
 		{
 			case 'customer': if(($rights & 2)!=2) $rightserror = true; break; 
@@ -448,7 +447,7 @@ switch($action)
 		if($receipt['o_type'] != 'customer')
 		{
 			$receipt['customerid'] = 0;
-			
+
 			switch($receipt['o_type'])
 			{
 				 case 'advance':
@@ -460,19 +459,19 @@ switch($action)
 						$error['other_name'] = trans('Target is required!');
 				break;
 			}
-			
+
 			if(!isset($error))
 				$receipt['selected'] = TRUE;
 			break;
 		}
-		
+
 		if(isset($_GET['customerid']) && $_GET['customerid'] != '')
 			$cid = intval($_GET['customerid']);
 		else
 			$cid = isset($_POST['customerid']) ? intval($_POST['customerid']) : 0;
 
 		$receipt['customerid'] = $cid;
-		
+
 		if(!isset($error) && $cid)
 			if($LMS->CustomerExists($cid))
 			{
@@ -489,7 +488,7 @@ switch($action)
 					$customer['groups'] = $LMS->CustomergroupGetForCustomer($cid);
 					if(!isset($CONFIG['receipts']['show_notes']) || !chkconfig($CONFIG['receipts']['show_notes']))
 						unset($customer['notes']);
-					
+
 					// niezatwierdzone dokumenty klienta
 					if(isset($CONFIG['receipts']['show_documents_warning']) && chkconfig($CONFIG['receipts']['show_documents_warning']))
 						if($DB->GetOne('SELECT COUNT(*) FROM documents WHERE customerid = ? AND closed = 0 AND type < 0', array($cid)))
@@ -499,7 +498,7 @@ switch($action)
 							else
 								$customer['docwarning'] = trans('Customer has got unconfirmed documents!');
 						}
-					
+
 					// jesli klient posiada zablokowane komputery poinformujmy
 	    				// o tym kasjera, moze po wplacie trzeba bedzie zmienic ich status
 					if(isset($CONFIG['receipts']['show_nodes_warning']) && chkconfig($CONFIG['receipts']['show_nodes_warning']))
@@ -516,7 +515,7 @@ switch($action)
 	    				if(!empty($CONFIG['receipts']['show_nodegroups_warning']))
 					{
 						$list = preg_split("/\s+/", $CONFIG['receipts']['show_nodegroups_warning']);
-		
+
 						if($DB->GetOne('SELECT COUNT(*) FROM nodes n
 			    				JOIN nodegroupassignments a ON (n.id = a.nodeid)
 				    			JOIN nodegroups g ON (g.id = a.nodegroupid)
@@ -536,7 +535,7 @@ switch($action)
 						unset($contents);
 				}
 			}
-			
+
 		if(!isset($error) && isset($customer))
 			$receipt['selected'] = TRUE;
 	break;
@@ -560,7 +559,7 @@ switch($action)
 				if($error)
 					$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
 			}
-		
+
 			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, customerid, userid, name, address, zip, city, closed)
 					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)',
 					array(	DOC_RECEIPT,
@@ -575,20 +574,20 @@ switch($action)
 						$customer['zip'],
 						$customer['city']
 						));
-			$DB->UnLockTables();		
-						
+			$DB->UnLockTables();
+
 			$rid = $DB->GetLastInsertId('documents');
-			
+
 			$iid = 0;
 			foreach($contents as $item)
 			{
 				$iid++;
-				
+
 				if($receipt['type'] == 'in')
 					$value = str_replace(',','.',$item['value']);
 				else 
 					$value = str_replace(',','.',$item['value']*-1);
-				
+
 				$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
 					        VALUES(?,?,?,?,?)', 
 						array($rid, 
@@ -597,7 +596,7 @@ switch($action)
 							$item['description'],
 							$receipt['regid']
 						));
-				
+
 				$DB->Execute('INSERT INTO cash (time, type, docid, itemid, value, comment, userid, customerid)
 						VALUES(?, 1, ?, ?, ?, ?, ?, ?)', 
 						array($receipt['cdate'],
@@ -608,7 +607,7 @@ switch($action)
 							$AUTH->id,
 							$customer['id']
 						));
-				
+
 				if(isset($item['docid']))
 					$DB->Execute('UPDATE documents SET closed=1 WHERE id=?', array($item['docid']));
 				if(isset($item['references']))
@@ -617,7 +616,7 @@ switch($action)
 			}
 
 			$DB->CommitTrans();
-			
+
 			$print = TRUE;
 		}
 		elseif($contents && ($receipt['o_type'] == 'other' || $receipt['o_type'] == 'advance'))
@@ -633,11 +632,11 @@ switch($action)
 					$error['number'] = trans('Receipt number must be integer!');
 				elseif($LMS->DocumentExists($receipt['number'], DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']))
 					$error['number'] = trans('Receipt number $a already exists!', $receipt['number']);
-				
+
 				if($error)
 					$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
 			}
-		
+
 			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed)
 					VALUES(?, ?, ?, ?, ?, ?, ?, ?)',
 					array(	DOC_RECEIPT,
@@ -649,20 +648,20 @@ switch($action)
 						$receipt['o_type'] == 'advance' ? $receipt['adv_name'] : $receipt['other_name'],
 						$receipt['o_type'] == 'advance' ? 0 : 1
 						));
-			$DB->UnLockTables();		
-						
+			$DB->UnLockTables();
+
 			$rid = $DB->GetLastInsertId('documents');
-			
+
 			$iid = 0;
 			foreach($contents as $item)
 			{
 				$iid++;
-				
+
 				if($receipt['type'] == 'in')
 					$value = str_replace(',','.',$item['value']);
 				else
 					$value = str_replace(',','.',$item['value']*-1);
-				
+
 					$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
 						VALUES(?,?,?,?,?)', 
 						array($rid, 
@@ -682,12 +681,12 @@ switch($action)
 							$AUTH->id,
 						));
 			}
-		
+
 			$DB->CommitTrans();
-			
+
 			$print = TRUE;
 		}
-		
+
 		if(isset($print))
 		{
 			$SESSION->remove('receiptcontents');
@@ -707,17 +706,17 @@ switch($action)
 
 		$value = str_replace(',','.',$_POST['value']);
 		$dest = $_POST['registry'];
-		
+
 		if($value && $dest)
 		{
 			$cash = $DB->GetOne('SELECT SUM(value) FROM receiptcontents WHERE regid = ?', array($receipt['regid']));
-			
+
 			if( $cash < $value )
 			{
 				$error['nocash'] = trans('There is no cash in selected registry! You can expense only $a.', moneyf($cash));
 				break;
 			}
-		
+
 			$DB->BeginTrans();
 
 			if(!$receipt['number'])
@@ -728,14 +727,14 @@ switch($action)
 					$error['number'] = trans('Receipt number must be integer!');
 				elseif($LMS->DocumentExists($receipt['number'], DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']))
 					$error['number'] = trans('Receipt number $a already exists!', $receipt['number']);
-				
+
 				if($error)
 					$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
 			}
-			
+
 			// cash-out
 			$description = trans('Moving assets to registry $a',$DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($dest)));
-			
+
 			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed)
 					VALUES(?, ?, ?, ?, ?, ?, \'\', 1)',
 					array(	DOC_RECEIPT,
@@ -747,7 +746,7 @@ switch($action)
 						));
 
 			$rid = $DB->GetOne('SELECT id FROM documents WHERE type=? AND number=? AND cdate=? AND numberplanid=?', array(DOC_RECEIPT, $receipt['number'], $receipt['cdate'], $receipt['numberplanid'])); 
-			
+
 			$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
 				        VALUES(?,?,?,?,?)', 
 					array($rid, 
@@ -774,9 +773,9 @@ switch($action)
 						$receipt['cdate'],
 						$AUTH->id
 						));
-						
+
 			$did = $DB->GetOne('SELECT id FROM documents WHERE type=? AND number=? AND cdate=? AND numberplanid=?', array(DOC_RECEIPT, $number, $receipt['cdate'], $numberplan)); 
-			
+
 			$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
 				        VALUES(?,?,?,?,?)', 
 					array($did, 
@@ -785,12 +784,12 @@ switch($action)
 						$description,
 						$dest
 					));
-		
+
 			$DB->CommitTrans();
-			
+
 			$SESSION->remove('receipt');
 			$SESSION->remove('receiptadderror');
-			
+
 			if(isset($_GET['print']))
 				$SESSION->save('receiptprint', array('receipt' => $rid,
 					'which' => (isset($_GET['which']) ? $_GET['which'] : '')));

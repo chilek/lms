@@ -49,11 +49,6 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 	                document.setcustomer.customer.value = document.setcustomer.customerid.value;
 	}
 
-	function setType(type)
-	{
-		document.additem.elements[type].checked = !document.additem.elements[type].checked;
-	}
-
 	function setPayTime(type)
 	{
 		var list = document.setcustomer.elements['invoice[paytime_default]'];
@@ -145,8 +140,8 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 			<B>{trans("Deadline:")}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT type="radio" name="invoice[paytime_default]" value="1" onclick="setPayTime(1)"{if !isset($invoice.paytime_default) || $invoice.paytime_default} checked{/if}><a href="javascript:setPayTime(1)">{trans("default")}</a>
-			<INPUT type="radio" name="invoice[paytime_default]" value="0" onclick="setPayTime(0)"{if isset($invoice.paytime_default) && !$invoice.paytime_default} checked{/if}><a href="javascript:setPayTime(0)">{trans("other")}</a>
+			<INPUT type="radio" name="invoice[paytime_default]" value="1" id="type1" onchange="setPayTime(1)"{if !isset($invoice.paytime_default) || $invoice.paytime_default} checked{/if}><label for="type1">{trans("default")}</label>
+			<INPUT type="radio" name="invoice[paytime_default]" value="0" id="type0" onchange="setPayTime(0)"{if isset($invoice.paytime_default) && !$invoice.paytime_default} checked{/if}><label for="type0">{trans("other")}</label>
 			<INPUT TYPE="TEXT" NAME="invoice[paytime]" VALUE="{$invoice.paytime}" SIZE="5" ID="paytime" onclick="deadline_calendar(this)"
 			{if !isset($invoice.paytime_default) || $invoice.paytime_default} style="visibility: hidden"{/if} {tip text="Enter deadline in days (optional)" trigger="paytime"}>
 		</TD>
