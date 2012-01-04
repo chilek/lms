@@ -34,22 +34,6 @@ window.open('?m=note&id={$newnoteid}');
 		document.setcustomer.elements['note[paytime]'].style.visibility = type ? 'hidden' : 'visible';
 	}
 
-	function CheckAll()
-	{
-		for (var i=0; i<document.additemlist.elements.length; i++)
-		{
-			var e = document.additemlist.elements[i];
-			if (e.name != 'allbox')
-				e.checked = document.additemlist.allbox.checked;
-		}
-	}
-
-	function CheckAll2()
-	{
-		document.additemlist.allbox.checked = !document.additemlist.allbox.checked;
-		CheckAll();
-	}
-
 	function printnote()
 	{
 		document.additem.action="?m=noteadd&action=save&print=1";

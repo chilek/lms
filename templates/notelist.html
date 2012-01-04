@@ -10,24 +10,6 @@ window.open('?m=note&id={$note}');
 {/if}
 <SCRIPT type="text/javascript">
 <!--
-	function CheckAll()
-	{
-		for (var i=0; i<document.page.elements.length; i++)
-		{
-			var e = document.page.elements[i];
-			if (e.name != 'allbox' &&
-				e.name != 'groupexclude' &&
-				e.name != 'hideclosed')
-				e.checked = document.page.allbox.checked;
-		}
-	}
-
-	function CheckAll2()
-	{
-		document.page.allbox.checked = !document.page.allbox.checked;
-		CheckAll();
-	}
-
 	function pays()
 	{
 		if(! confirm('{trans("Are you sure, you want to check/uncheck selected debit notes as accounted?")}'))
@@ -196,7 +178,7 @@ window.open('?m=note&id={$note}');
 *}
 					</TD>
 					<TD ALIGN="right">	
-						<NOBR><A HREF="javascript:CheckAll2();">{trans("Check All")}</A><INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
+						<NOBR><label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('page', this, ['groupexclude', 'hideclosed'])" VALUE="1"></NOBR>
 					</TD>
 				</TR>
 			</TABLE>

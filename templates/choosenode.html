@@ -13,22 +13,6 @@
 <!--
 	var targetfield = window.opener.targetfield;
 
-	function CheckAll()
-	{
-		for (var i=0; i<document.nodelist.elements.length; i++)
-		{
-			var e = document.nodelist.elements[i];
-			if (e.name != 'allbox')
-				e.checked = document.nodelist.allbox.checked;
-		}
-	}
-
-	function CheckAll2()
-	{
-		document.nodelist.allbox.checked = !document.nodelist.allbox.checked;
-		CheckAll();
-	}
-
 	function SaveForm()
 	{
 		var result = '';
@@ -88,15 +72,15 @@
 	<tr>
 		<td width="100%" colspan="3" align="center">
 		    <table width="100%" cellpadding="3" id="table">
-			<tr>	
+			<tr>
 			    <td align="left">
 			    	{if $nodelist.total > 0}
-				<nobr><input class="box" type="checkbox" name="allbox" onclick="CheckAll();" value="Check All Boxes"><a href="javascript:CheckAll2();">{trans("Check All")}</a></nobr>
+				<nobr><input class="box" type="checkbox" name="allbox" id="allbox" onchange="CheckAll('nodelist', this)" value="1"><label for="allbox">{trans("Check All")}</label></nobr>
 				{/if}
 			    </td>
 			    <td align="right">
 				<nobr><a href="javascript:SaveForm();">{trans("Close")} <img src="img/save.gif" alt=""></a></nobr>
-			    </td>			
+			    </td>
 			</tr>
 		    </table>
 		</td>

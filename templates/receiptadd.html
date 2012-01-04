@@ -4,22 +4,6 @@
 {include file="calendar_js.html"}
 <SCRIPT type="text/javascript">
 <!--
-	function CheckAll()
-	{
-		for (var i=0; i<document.additemlist.elements.length; i++)
-		{
-			var e = document.additemlist.elements[i];
-			if (e.name != 'allbox')
-				e.checked = document.additemlist.allbox.checked;
-		}
-	}
-
-	function CheckAll2()
-	{
-		document.additemlist.allbox.checked = !document.additemlist.allbox.checked;
-		CheckAll();
-	}
-
 	function savereceipt(print)
 	{
 		var add = "";
@@ -355,8 +339,8 @@
 							{/foreach}
 							<TR class="light">
 								<TD CLASS="ftop" colspan="2" nowrap>
-									<INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes" CHECKED>
-									<A HREF="javascript:CheckAll2();">{trans("Check All")}</A>
+									<INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('additemlist', this)" VALUE="1" CHECKED>
+									<label for="allbox">{trans("Check All")}</label>
 								</TD>
 							        <TD CLASS="ftop" ALIGN="right" colspan="2" nowrap>
 									<A href="javascript:document.additemlist.submit();">{trans("Add items")} <IMG src="img/save.gif" ALT=""></A>

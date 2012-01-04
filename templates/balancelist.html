@@ -4,25 +4,6 @@
 {include file="calendar_js.html"}
 <SCRIPT type="text/javascript">
 	<!--
-	function CheckAll()
-	{
-		for (var i=0; i<document.page.elements.length; i++)
-		{
-			var e = document.page.elements[i];
-			if (e.name != 'allbox' &&
-				e.name != 'original' &&
-				e.name != 'duplicate' &&
-				e.name != 'copy')
-			e.checked = document.page.allbox.checked;
-		}
-	}
-
-	function CheckAll2()
-	{
-		document.page.elements['allbox'].checked = !document.page.elements['allbox'].checked;
-		CheckAll();
-	}
-
 	function DeleteMarked()
 	{
 		if(!confirm('{trans("Are you sure, you want to delete selected operation(s) and/or document item(s)?")}'))
@@ -150,7 +131,7 @@
 				<A href="javascript: filter();">&raquo;&raquo;&raquo;</A><BR>
 				</NOBR>
 		</TD>
-	</TR>		
+	</TR>
 	{if $listdata.total != 0}
 	<TR class="dark">
 		<TD WIDTH="100%" class="fall" COLSPAN="10">
@@ -226,7 +207,7 @@
 			<INPUT type="checkbox" name="duplicate" id="duplicate"{if preg_match('/duplicate/i',$_config.invoices.default_printpage)} checked{/if}><label for="duplicate">{trans("duplicate")}</label>
 		</TD>
 		<TD class="frightu" ALIGN="right" colspan="2">
-			<A HREF="javascript:CheckAll2();">{trans("Check All")}</A><INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes">
+			<label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('page', this, ['original', 'duplicate', 'copy'])" VALUE="1">
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
@@ -258,7 +239,6 @@
 			<B>{$listdata.totalval|money_format}</B>
 		</TD>
 		<TD class="frightu">&nbsp;
-			
 		</TD>
 	</TR>
 </TABLE>

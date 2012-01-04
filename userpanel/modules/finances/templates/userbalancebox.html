@@ -1,24 +1,5 @@
 <!--// $Id$ //-->
 {box title="Your balance"}
-<script type="text/javascript">
-<!--
-function CheckAll()
-{
-	for (var i=0; i<document.invoices.elements.length; i++)
-	{
-		var e = document.invoices.elements[i];
-		if (e.name != 'allbox')
-			e.checked = document.invoices.allbox.checked;
-	}
-}
-
-function CheckAll2()
-{
-	document.invoices.allbox.checked = !document.invoices.allbox.checked;
-	CheckAll();
-}
-//-->
-</script>
 <form name="invoices" action="?m=finances&f=invoice" method="POST" target="_blank">
 <table style="width: 100%;" cellpadding="3">
 	<tr class="darkest">
@@ -66,7 +47,7 @@ function CheckAll2()
 				{img src="print.gif" alt="[ Print ]"} <a href="javascript:document.invoices.submit()">{trans("Print selected")}</a>
 				</td>
 				<td width="50%" align="right">
-				<a href="javascript:CheckAll2();">{trans("Check all")}</a> <input style="vertical-align: middle" type="checkbox" name="allbox" onclick="CheckAll();" value="" />
+				<label for="allbox">{trans("Check all")}</label><input style="vertical-align: middle" type="checkbox" name="allbox" id="allbox" onchange="CheckAll('invoices', this)" value="1" />
 				</td>
 			    </tr>
 			</table>

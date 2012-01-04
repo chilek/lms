@@ -26,24 +26,6 @@ function setgroup(act)
 	document.custnodeslist.action = '?m=nodegroup&action=' + act + '&groupid=' + document.getElementById('groupselect').value;
 	document.custnodeslist.submit();
 }
-
-function CheckAllN()
-{
-	for (var i=0; i<document.custnodeslist.elements.length; i++)
-	{
-		var e = document.custnodeslist.elements[i];
-		if (e.type == 'checkbox' && e.name != 'allbox')
-		{
-			e.checked = document.custnodeslist.allbox.checked;
-		}
-	}
-}
-
-function CheckAllN2()
-{
-	document.custnodeslist.allbox.checked = !document.custnodeslist.allbox.checked;
-	CheckAllN();
-}
 //-->
 </SCRIPT>
 {if $_config.phpui.ewx_support|chkconfig}{assign var=ewx value=1}{else}{assign var=ewx value=0}{/if}
@@ -160,8 +142,8 @@ function CheckAllN2()
 				{/if}
 			    </TD>
 			    <TD CLASS="ftop" ALIGN="right" COLSPAN="3">
-			        <NOBR><A href="javascript:CheckAllN2();">{trans("Check All")}</A><INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAllN();" VALUE="Check All Boxes" CHECKED></NOBR>
-                            </TD>
+			        <NOBR><label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('custnodeslist', this)" VALUE="1" CHECKED></NOBR>
+                </TD>
 			</TR>
 		    </TABLE>
 		    </FORM>
