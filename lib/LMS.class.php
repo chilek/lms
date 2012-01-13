@@ -2056,8 +2056,8 @@ class LMS
 						    !empty($data['paytype']) ? $data['paytype'] : NULL,
 						    $data['datefrom'],
 						    $data['dateto'],
-						    $data['pdiscount'],
-						    $data['vdiscount'],
+						    str_replace(',', '.', $data['pdiscount']),
+						    str_replace(',', '.', $data['vdiscount']),
 						    isset($lid) ? $lid : 0,
 						    ));
 
