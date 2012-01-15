@@ -309,7 +309,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 						content += '<div class="lmsMapPopupName">' + features[i].data.name + '</div>'
 							+ (features[i].data.ipaddr.length ? 
 								'<div class="lmsMapPopupAddress">' + features[i].data.ipaddr.replace(/,/g, 
-									'<div class="lmsMapPopupAddress">') + '</div>'
+									'</div><div class="lmsMapPopupAddress">') + '</div>'
 								: '');
 					}
 					content += '</div>';
