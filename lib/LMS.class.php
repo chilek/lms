@@ -607,7 +607,7 @@ class LMS
 
 	function GetCustomer($id, $short=false)
 	{
-	    global $CONTACTTYPES;
+		global $CONTACTTYPES;
 
 		if($result = $this->DB->GetRow('SELECT c.*, '
 			.$this->DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername,
@@ -625,26 +625,24 @@ class LMS
 				$result['consentdate'] = $result['consentdate'] ? date('Y/m/d',$result['consentdate']) : '';
 				$result['up_logins'] = $this->DB->GetRow('SELECT lastlogindate, lastloginip, 
 					failedlogindate, failedloginip
-		                        FROM up_customers WHERE customerid = ?', array($result['id']));
+					FROM up_customers WHERE customerid = ?', array($result['id']));
 
-                // Get country name
-                if ($result['countryid']) {
-    				$result['country'] = $this->DB->GetOne('SELECT name FROM countries WHERE id = ?',
-	    			    array($result['countryid']));
-                }
-				if ($result['countryid'] == $result['post_countryid']) {
-				    $result['post_country'] = $result['country'];
+				// Get country name
+				if ($result['countryid']) {
+					$result['country'] = $this->DB->GetOne('SELECT name FROM countries WHERE id = ?',
+						array($result['countryid']));
+					if ($result['countryid'] == $result['post_countryid'])
+						$result['post_country'] = $result['country'];
+					else if ($result['post_countryid'])
+						$result['country'] = $this->DB->GetOne('SELECT name FROM countries WHERE id = ?',
+							array($result['post_countryid']));
 				}
-				else if ($result['post_countryid']) {
-    				$result['country'] = $this->DB->GetOne('SELECT name FROM countries WHERE id = ?',
-	    			    array($result['post_countryid']));
-                }
 
-                // Get state name
+				// Get state name
 				if ($cstate = $this->DB->GetRow('SELECT s.id, s.name
-				    FROM states s, zipcodes
-					WHERE zip = ? AND stateid = s.id', array($result['zip']))
-			    ) {
+					FROM states s, zipcodes
+					WHERE zip = ? AND stateid = s.id', array($result['zip'])))
+				{
 					$result['stateid'] = $cstate['id'];
 					$result['cstate'] = $cstate['name'];
 				}
@@ -653,9 +651,9 @@ class LMS
 					$result['post_cstate'] = $result['cstate'];
 				}
 				else if ($result['post_zip'] && ($cstate = $this->DB->GetRow('SELECT s.id, s.name
-				    FROM states s, zipcodes
-				    WHERE zip = ? AND stateid = s.id', array($result['post_zip'])))
-			    ) {
+					FROM states s, zipcodes
+					WHERE zip = ? AND stateid = s.id', array($result['post_zip']))))
+				{
 					$result['post_stateid'] = $cstate['id'];
 					$result['post_cstate'] = $cstate['name'];
 				}
@@ -670,16 +668,16 @@ class LMS
 					FROM customercontacts WHERE customerid = ? ORDER BY id',
 					array($result['id']));
 
-            if (is_array($result['contacts']))
-                foreach ($result['contacts'] as $idx => $row) {
-                    $types = array();
-                    foreach ($CONTACTTYPES as $tidx => $tname)
-                        if ($row['type'] & $tidx)
-                            $types[] = $tname;
+			if (is_array($result['contacts']))
+				foreach ($result['contacts'] as $idx => $row) {
+					$types = array();
+					foreach ($CONTACTTYPES as $tidx => $tname)
+						if ($row['type'] & $tidx)
+							$types[] = $tname;
 
-                    if ($types)
-                        $result['contacts'][$idx]['typestr'] = implode('/', $types);
-                }
+					if ($types)
+						$result['contacts'][$idx]['typestr'] = implode('/', $types);
+				}
 
 			return $result;
 		}
