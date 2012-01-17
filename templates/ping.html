@@ -16,8 +16,8 @@
 	<div class="lmsIpPopupForm">
 		<form name="{$popupid}_ipform" id="ipform" method="GET" action="?m=ping" onsubmit="return ping_any_host('{$popupid}');">
 			<input type="text" name="ip"><br>
-			<input type="radio" id="type1" name="type" value="1" checked><label for="type1">icmp</label>
-			<input type="radio" id="type2" name="type" value="2"><label for="type2">arp</label>
+			<input type="radio" id="{$popupid}_type1" name="type" value="1" checked><label for="type1">icmp</label>
+			<input type="radio" id="{$popupid}_type2" name="type" value="2"><label for="type2">arp</label>
 			<input type="submit" class="hiddenbtn">
 		</form>
 	</div>
