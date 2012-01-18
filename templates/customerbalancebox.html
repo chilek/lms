@@ -166,7 +166,7 @@
 						<INPUT type="checkbox" name="copy" id="inv-copy"{if preg_match('/copy/i',$_config.invoices.default_printpage)} checked{/if}> <label for="inv-copy">{trans("copy")}</label>
 						<INPUT type="checkbox" name="duplicate" id="inv-duplicate"{if preg_match('/duplicate/i',$_config.invoices.default_printpage)} checked{/if}> <label for="inv-duplicate">{trans("duplicate")}</label>
 						</TD><TD width="1%" align="right" NOWRAP>
-						<label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('addbalance', this, ['copy', 'original', 'duplicate'])" VALUE="1">
+						<label for="allboxb">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allboxb" onchange="CheckAll('addbalance', this, ['copy', 'original', 'duplicate'])" VALUE="1">
 						</TD></TR>
 					    </TABLE>
 					</TD>
