@@ -84,6 +84,7 @@ version ? (????-??-??):
     when invoice was issued [Jarosław Dziubek/chilan]
   - ping: added selection of ping type thanks to Grzegorz Cichowski [chilan]
   - use more <label> elements instead of javascript's checkElement() [alec]
+  - fixed issue with too big session data on mysql [alec]
 
 version 1.11.13 Dira (2011-04-07)
 

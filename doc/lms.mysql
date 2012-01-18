@@ -1109,12 +1109,12 @@ CREATE TABLE eventassignments (
 # Structure of table sessions
 #
 CREATE TABLE sessions (
-    id varchar(50) NOT NULL DEFAULT '', 
-    ctime int(11) NOT NULL DEFAULT 0, 
-    mtime int(11) NOT NULL DEFAULT 0, 
-    atime int(11) NOT NULL DEFAULT 0, 
-    vdata text NOT NULL, 
-    content text NOT NULL, 
+    id varchar(50) NOT NULL DEFAULT '',
+    ctime int(11) NOT NULL DEFAULT 0,
+    mtime int(11) NOT NULL DEFAULT 0,
+    atime int(11) NOT NULL DEFAULT 0,
+    vdata text NOT NULL,
+    content mediumtext NOT NULL,
     PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
@@ -1675,4 +1675,4 @@ INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2011113000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012011800');
