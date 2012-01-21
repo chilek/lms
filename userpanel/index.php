@@ -154,7 +154,6 @@ while (false !== ($filename = readdir($dh))) {
 };
 
 $SMARTY->assign('_config',$CONFIG);
-$SMARTY->assignByRef('_LANG', $_LANG);
 $SMARTY->assignByRef('LANGDEFS', $LANGDEFS);
 $SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
 $SMARTY->assignByRef('_language', $LMS->lang);

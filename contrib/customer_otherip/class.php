@@ -97,7 +97,6 @@ $LMS->lang = $_language;
 
 // set some template and layout variables
 
-$SMARTY->assignByRef('_LANG', $_LANG);
 $SMARTY->assignByRef('LANGDEFS', $LANGDEFS);
 $SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
 $SMARTY->assignByRef('_language', $LMS->lang);

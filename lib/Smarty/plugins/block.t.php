@@ -26,17 +26,8 @@
 
 function smarty_block_t($params, $content, $template, $repeat)
 {
-	if (!empty($content))
-	{
-		$lang = $template->getTemplateVars('_LANG');
-		if($lang[$content])
-			$content = trim($lang[$content]);
-
-		if(is_array($params))
-			foreach($params as $paramid => $paramval)
-				$content = str_replace('$'.$paramid, $paramval, $content);
-
-		return trim($content);
+	if (!empty($content)) {
+        return trans(array_merge((array)$content, $params));
 	}
 }
 
