@@ -129,7 +129,7 @@ else
 // or browser langs aren't set
 if (empty($_ui_language))
 	$_ui_language = $_language;
-
+$_ui_language = 'pl';
 $_LANG = array();
 
 if (@is_readable(LIB_DIR.'/locale/'.$_ui_language.'/strings.php'))
