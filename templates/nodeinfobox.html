@@ -16,12 +16,6 @@
 		else
 			location.href = '?m=nodeedit&id={$nodeinfo.id}&action=duplex&duplex=0';
 	}
-
-	function check_host(ip)
-	{
-		var type = (document.getElementById('type1').checked ? 1 : 2);
-		ping_popup(ip, type);
-	}
 //-->
 </SCRIPT>
 <TABLE WIDTH="100%" CELLPADDING="3">
@@ -44,11 +38,7 @@
 			<IMG SRC="img/ip.gif" ALT="{trans("IP address:")}">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
-			<a href="javascript:check_host('{$nodeinfo.ip}')">{$nodeinfo.ip}</a>
-			<form name="checktype">
-			<input type="radio" id="type1" name="type" value="1" checked><label for="type1">icmp</label>
-			<input type="radio" id="type2" name="type" value="2"><label for="type2">arp</label>
-			</form>
+			<a href="javascript:ping_popup('{$nodeinfo.ip}')">{$nodeinfo.ip}</a>
 		</TD>
 	</TR>
 	{if $nodeinfo.ip_pub != "0.0.0.0"}

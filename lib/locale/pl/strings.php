@@ -2532,5 +2532,9 @@ $_LANG['Select users'] = 'Wybierz użytkowników';
 $_LANG['Enter discount percentage or value'] = 'Wprowadź wartość kwotową lub procentową rabatu';
 $_LANG['Min [bit/s]'] = 'Min [bit/s]';
 $_LANG['Ping'] = 'Ping';
+$_LANG['arp'] = 'arp';
+$_LANG['icmp'] = 'icmp';
+$_LANG['Start'] = 'Uruchom';
+$_LANG['Stop'] = 'Zatrzymaj';
 
 ?>
