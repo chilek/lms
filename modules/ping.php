@@ -26,7 +26,8 @@
 
 function refresh($params)
 {
-	global $CONFIG;
+	global $CONFIG, $SESSION;
+
 	// xajax response
 	$objResponse = new xajaxResponse();
 
@@ -35,16 +36,8 @@ function refresh($params)
 	$received = $params['received'];
 	$transmitted = $params['transmitted'];
 	$type = $params['type'];
+
 	switch ($type) {
-		case 1:
-			if (empty($CONFIG['phpui']['ping_helper']))
-				$cmd = 'sudo ping %i -c 1 -s 1450 -w 1.0';
-			else
-				$cmd = $CONFIG['phpui']['ping_helper'];
-			$summary_regexp = '/^[0-9]+[[:blank:]]+packets[[:blank:]]+transmitted/i';
-			$reply_regexp = '/icmp_[rs]eq/';
-			$reply_detailed_regexp = '/^([0-9]+).+icmp_[rs]eq=([0-9]+).+ttl=([0-9]+).+time=([0-9\.]+.+)$/';
-			break;
 		case 2:
 			if (empty($CONFIG['phpui']['arping_helper']))
 				$cmd = 'sudo arping %i -c 1 -w 1.0';
@@ -54,19 +47,30 @@ function refresh($params)
 			$reply_regexp = '/unicast/i';
 			$reply_detailed_regexp = '/\ \[(.*?)\].+\ ([0-9\.]+.+)$/';
 			break;
+		case 1:
+        default:
+			if (empty($CONFIG['phpui']['ping_helper']))
+				$cmd = 'sudo ping %i -c 1 -s 1450 -w 1.0';
+			else
+				$cmd = $CONFIG['phpui']['ping_helper'];
+			$summary_regexp = '/^[0-9]+[[:blank:]]+packets[[:blank:]]+transmitted/i';
+			$reply_regexp = '/icmp_[rs]eq/';
+			$reply_detailed_regexp = '/^([0-9]+).+icmp_[rs]eq=([0-9]+).+ttl=([0-9]+).+time=([0-9\.]+.+)$/';
+			break;
 	}
 	$cmd = preg_replace('/%if/', $iface, $cmd);
 	$cmd = preg_replace('/%i/', $ipaddr, $cmd);
 	exec($cmd, $output);
 	$sent = preg_grep($summary_regexp, $output);
-	if (count($sent) && preg_match('/^([0-9]+)/', current($sent), $matches))
-		$transmitted += $matches[1];
-	else
-		$transmitted++;
 	$replies = preg_grep($reply_regexp, $output);
 	$times = array();
 	if (count($replies))
 	{
+    	if (count($sent) && preg_match('/^([0-9]+)/', current($sent), $matches))
+	    	$transmitted += $matches[1];
+	    else
+		    $transmitted++;
+
 		$output = '';
 		$seqs = array();
 		$oldreceived = $received;
@@ -94,6 +98,10 @@ function refresh($params)
 		$output = trans('Destination Host Unreachable').'<br>';
 	if (empty($received))
 		$received = '0';
+
+    $SESSION->save('ping_type', $type);
+    $SESSION->close(); // force session state save
+
 	$objResponse->append('data', 'innerHTML', $output);
 	$objResponse->assign('transmitted', 'value', $transmitted);
 	$objResponse->assign('received', 'value', $received);
@@ -101,6 +109,7 @@ function refresh($params)
 		round(($received / $transmitted) * 100), $received, $transmitted));
 	$objResponse->assign('times', 'value', json_encode($times));
 	$objResponse->call('ping_reply');
+
 	return $objResponse;
 }
 
@@ -133,12 +142,22 @@ $layout['pagetitle'] = trans('Ping');
 
 if (isset($_GET['ip']) && check_ip($_GET['ip']))
 {
-	$SMARTY->assign('ipaddr', $_GET['ip']);
-	if (isset($_GET['type']) && intval($_GET['type']))
-		$SMARTY->assign('type', intval($_GET['type']));
+	if (!empty($_GET['type']))
+		$type = intval($_GET['type']);
 	else
-		$SMARTY->assign('type', 1);
+	    $SESSION->restore('ping_type', $type);
+
+    if (!$type) {
+        $type = 1;
+    }
+
+    $SESSION->save('ping_type', $type);
+
+	$SMARTY->assign('type', $type);
+	$SMARTY->assign('ipaddr', $_GET['ip']);
+
 	$netid = $LMS->GetNetIDByIP($_GET['ip']);
+
 	if ($netid)
 		$SMARTY->assign('interface', $DB->GetOne('SELECT interface FROM networks WHERE id = ?', array($netid)));
 }

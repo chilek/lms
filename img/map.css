@@ -116,93 +116,10 @@ div.lmsPingContentsFrame {
 div.lmsPingContents {
 	position: absolute;
 	left: 0px; width: 100%;
-	top: 0px; bottom: 44px;
+	top: 0px; bottom: 48px;
 	overflow: auto;
 	padding: 0px;
-}
-
-div.lmsPingBottom {
-	background-color: #CEBD9B;
-	border-top-width: 1pt; border-top-style: solid;
-	position:absolute;
-	bottom: 0px; height: 44px; width: 100%;
-	left: 0px;
-	overflow: hidden;
-	padding: 0px;
-}
-
-div.lmsPingTotalSummary {
-	position: absolute;
-	left: 0px; bottom: 0px;
-	width: 62%; height: 40px;
-	font-weight: bold;
-	white-space: nowrap;
-	overflow: visible;
-	line-height: 40px;
-	vertical-align: middle;
-	padding: 0px;
-}
-
-div.lmsPingTotal {
-	position: absolute;
-	left: 0px; bottom: 20px;
-	width: auto; height: 20px;
-	font-weight: bold;
-	white-space: nowrap;
-	overflow: visible;
-	line-height: 20px;
-	vertical-align: middle;
-	padding: 0px;
-	padding-left: 2px;
-}
-
-div.lmsPingSummary {
-	position: absolute;
-	bottom: 0px;
-	width: auto; height: 20px;
-	font-weight: bold;
-	white-space: nowrap;
-	overflow: visible;
-	line-height: 20px;
-	vertical-align: middle;
-	padding: 0px;
-	padding-left: 2px;
-}
-
-div.lmsPingControls {
-	position: absolute;
-	right: 0px; bottom: 0px;
-	width: 38%; height: 40px;
-	white-space: nowrap;
-	overflow: visible;
-	line-height: 40px;
-	vertical-align: middle;
-	text-align: left;
-	padding: 0px;
-}
-
-div.lmsPingEnabled {
-	position: absolute;
-	left: 0px; bottom: 20px;
-	width: auto; height: 20px;
-	white-space: nowrap;
-	overflow: visible;
-	line-height: 20px;
-	vertical-align: middle;
-	padding: 0px;
-	padding-right: 2px;
-}
-
-div.lmsPingAutoScroll {
-	position: absolute;
-	left: 0px; bottom: 0px;
-	width: auto; height: 20px;
-	white-space: nowrap;
-	overflow: visible;
-	line-height: 20px;
-	vertical-align: middle;
-	padding: 0px;
-	padding-right: 2px;
+    margin-bottom: 5px;
 }
 
 div.olControlPanel {

@@ -452,8 +452,6 @@ function check_teryt(locid, init)
 
 function ping_popup(ip, type)
 {
-	if (type == null)
-		type = 1;
-	popup('?m=ping&ip=' + ip + '&type=' + type, 1, 1, 30, 30);
+	popup('?m=ping&ip=' + ip + '&type=' + (type ? type : 0), 1, 1, 30, 30);
 	autoiframe_setsize('autoiframe', 480, 300);
 }

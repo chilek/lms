@@ -59,14 +59,7 @@ function smarty_function_tip($params, $template)
 		}
 		elseif($params['text'] != '')
 		{
-			$text = $params['text'];
-			$tmpl = $template->getTemplateVars('_LANG');
-			if($tmpl[$text])
-				$text = trim($tmpl[$text]);
-
-			if(is_array($params))
-				foreach($params as $paramid => $paramval)
-					$text = str_replace('$'.$paramid, $paramval, $text);
+    		$text = trans(array_merge((array)$params['text'], $params));
 
 			$text = str_replace('\'', '\\\'', $text);
 			$text = str_replace('"', '&quot;', $text);

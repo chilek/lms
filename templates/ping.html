@@ -42,37 +42,39 @@
 <script type="text/javascript" src="img/common.js"></script>
 <body>
 	<div id="data" class="lmsPingContents"></div>
-	<div class="lmsPingBottom">
-		<div class="lmsPingTotalSummary">
-			<div id="total" class="lmsPingTotal">
-				{t a="0" b="0" c="0"}Total: $a% ($b/$c){/t}
-			</div>
-			<div id="summary" class="lmsPingSummary">
+	<form id="params">
+	<table cellpadding="2" style="bottom: 0; position: absolute" width="100%">
+		<tr class="light">
+			<td width="99%" id="summary" class="fbt bold" align="left" nowrap>
 				mix/avg/max = -/-/- ms
-			</div>
-		</div>
-		<div class="lmsPingControls">
-			<form id="params">
-				<input type="hidden" name="type" value="{$type}">
+			</td>
+			<td width="1%" id="total" class="fbt bold" align="right" nowrap>
+				{t a="0" b="0" c="0"}Total: $a% ($b/$c){/t}
+			</td>
+		</tr>
+		<tr class="dark">
 				<input type="hidden" name="interface" value="{$interface}">
 				<input type="hidden" name="ipaddr" value="{$ipaddr}">
 				<input type="hidden" id="transmitted" name="transmitted" value="0">
 				<input type="hidden" id="received" name="received" value="0">
 				<input type="hidden" id="times" name="times" value="">
-				<div class="lmsPingEnabled">
-					<input type="checkbox" id="enabled" name="enabled" onclick="javascript:ping_toggle()" checked><a href="javascript:enabled_toggle();">{trans("Enabled")}</a>
-				</div>
-				<div class="lmsPingAutoScroll">
+				<td nowrap>
 					<input type="checkbox" id="autoscroll" name="autoscroll" checked><label for="autoscroll">{trans("Auto Scroll")}</label>
-				</div>
-			</form>
-		</div>
-	</div>
+					&nbsp;
+					<input type="radio" name="type" id="type1" value="1"{if $type == 1} checked{/if}><label for="type1">{trans("icmp")}</label>
+					<input type="radio" name="type" id="type2" value="2"{if $type == 2} checked{/if}><label for="type2">{trans("arp")}</label>
+				</td>
+				<td nowrap align="right">
+					<input type="button" id="enabled" name="enabled" onclick="ping_toggle()" />
+				</td>
+		</tr>
+	</table>
+	</form>
 </body>
 <script type="text/javascript">
 <!--
-	var reqTime = 0;
-	var minTime = 1000.0, maxTime = 0.0, sumTime = 0.0;
+	var reqTime = 0
+	    minTime = 1000.0, maxTime = 0.0, sumTime = 0.0;
 
 	function time_to_fixed(time)
 	{
@@ -85,7 +87,10 @@
 
 	function ping_reply()
 	{
-		elem = document.getElementById('data');
+	    var stop = "{trans("Stop")}", start = "{trans("Start")}",
+	        button = document.getElementById('enabled'),
+	        elem = document.getElementById('data');
+
 		if (elem && document.getElementById('autoscroll').checked)
 			elem.scrollTop = elem.scrollHeight;
 		try {
@@ -105,7 +110,8 @@
 					+ [time_to_fixed(minTime), time_to_fixed(avgTime), time_to_fixed(maxTime)].join('/') + ' ms';
 			}
 		} catch(e) {}
-		if (document.getElementById('enabled').checked) {
+
+		if (button.value == stop) {
 			var d = new Date();
 			var waitTime = 1000 - d.getTime() + reqTime;
 			if (waitTime < 10)
@@ -125,17 +131,18 @@
 
 	function ping_toggle()
 	{
-		if (document.getElementById('enabled').checked)
-			ping_refresh();
+	    var stop = "{trans("Stop")}", start = "{trans("Start")}",
+	        button = document.getElementById('enabled');
+
+        if (button.value == stop)
+            button.value = start;
+        else {
+            button.value = stop;
+		    ping_refresh();
+	    }
 	}
 
-	function enabled_toggle()
-	{
-		checkElement('enabled');
-		ping_toggle();
-	}
-
-	ping_refresh();
+	ping_toggle();
 //-->
 </script>
 {/if}
