@@ -376,12 +376,12 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 							for (var j in nodeids)
 								content += '<div class="lmsInfoPopupAddress"><a href="#" onclick="ping_host(\''
 								+ featurepopup.id + '\', \'' + ips[j] + '\')"><img src="img/ip.gif" alt="">&nbsp;'
-								+ ips[j] + '</a></form></div>';
+								+ ips[j] + '</a></div>';
 						}
 					} else
 						content += '<div class="lmsInfoPopupAddress"><a href="#" onclick="ping_host(\''
 							+ featurepopup.id + '\', \'' + features[i].data.ipaddr + '\')"><img src="img/ip.gif" alt="">&nbsp;'
-							+ features[i].data.ipaddr + '</a></form></div>';
+							+ features[i].data.ipaddr + '</a></div>';
 					content += '<div class="lmsInfoPopupDetails"><a href="?m=' + features[i].data.type + '&id=' + features[i].data.id + '">'
 						+ '<img src="img/info1.gif" alt="">&nbsp;Info</a></div>';
 				}
