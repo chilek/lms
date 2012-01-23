@@ -59,7 +59,9 @@ function smarty_function_tip($params, $template)
 		}
 		elseif($params['text'] != '')
 		{
-    		$text = trans(array_merge((array)$params['text'], $params));
+		    $text = $params['text'];
+		    unset($params['text']);
+    		$text = trans(array_merge((array)$text, $params));
 
 			$text = str_replace('\'', '\\\'', $text);
 			$text = str_replace('"', '&quot;', $text);
