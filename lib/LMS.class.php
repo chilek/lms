@@ -4957,15 +4957,15 @@ class LMS
 
 	function VoipAccountUpdate($voipaccountdata)
 	{
-		$this->DB->Execute('UPDATE voipaccounts SET login=?, passwd=?, phone=?, moddate=?NOW?, access=?
+		$this->DB->Execute('UPDATE voipaccounts SET login=?, passwd=?, phone=?, moddate=?NOW?, access=?, 
 				modid=?, ownerid=? WHERE id=?', 
 				array($voipaccountdata['login'],
 				    $voipaccountdata['passwd'],
 				    $voipaccountdata['phone'],
+				    $voipaccountdata['access'],
 				    $this->AUTH->id,
 				    $voipaccountdata['ownerid'],
-				    $voipaccountdata['id'],
-				    $voipaccountdata['access']
+				    $voipaccountdata['id']
 			    ));
 	}
 
