@@ -108,16 +108,9 @@ function ping_any_host(id)
 	if (!ip.match(/^([0-9]{1,3}\.){3}[0-9]{1,3}$/))
 		return false;
 
-	var type = (document.forms[id + '_ipform'].elements[id + '_type1'].checked ? 1 : 2);
-	ping_host(id, ip, type);
+	ping_host(id, ip);
 
 	return false;
-}
-
-function check_host(id, ip)
-{
-	var type = (document.getElementById('type1_' + ip).checked ? 1 : 2);
-	ping_host(id, ip, type);
 }
 
 function findFeaturesIntersection(selectFeature, feature)
@@ -381,24 +374,14 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 							var ips = features[i].data.ipaddr.split(',');
 							var nodeids = features[i].data.nodeid.split(',');
 							for (var j in nodeids)
-								content += '<div class="lmsInfoPopupAddress"><a href="javascript:check_host(\''
+								content += '<div class="lmsInfoPopupAddress"><a href="#" onclick="ping_host(\''
 								+ featurepopup.id + '\', \'' + ips[j] + '\')"><img src="img/ip.gif" alt="">&nbsp;'
-								+ ips[j] + '</a><form name="checktype_' + ips[j] + '">'
-								+ '<input type="radio" id="type1_' + ips[j] + '" name="type" value="1" checked>'
-								+ '<a href="javascript:checkElement(\'type1_' + ips[j] + '\')">icmp</a>'
-								+ '<input type="radio" id="type2_' + ips[j] + '" name="type" value="2">'
-								+ '<a href="javascript:checkElement(\'type2_' + ips[j] + '\')">arp</a>'
-								+ '</form></div>';
+								+ ips[j] + '</a></form></div>';
 						}
 					} else
-						content += '<div class="lmsInfoPopupAddress"><a href="javascript:check_host(\''
+						content += '<div class="lmsInfoPopupAddress"><a href="#" onclick="ping_host(\''
 							+ featurepopup.id + '\', \'' + features[i].data.ipaddr + '\')"><img src="img/ip.gif" alt="">&nbsp;'
-							+ features[i].data.ipaddr + '</a><form name="checktype_' + features[i].data.ipaddr + '">'
-							+ '<input type="radio" id="type1_' + features[i].data.ipaddr + '" name="type" value="1" checked>'
-							+ '<a href="javascript:checkElement(\'type1_' + features[i].data.ipaddr + '\')">icmp</a>'
-							+ '<input type="radio" id="type2_' + features[i].data.ipaddr + '" name="type" value="2">'
-							+ '<a href="javascript:checkElement(\'type2_' + features[i].data.ipaddr + '\')">arp</a>'
-							+ '</form></div>';
+							+ features[i].data.ipaddr + '</a></form></div>';
 					content += '<div class="lmsInfoPopupDetails"><a href="?m=' + features[i].data.type + '&id=' + features[i].data.id + '">'
 						+ '<img src="img/info1.gif" alt="">&nbsp;Info</a></div>';
 				}
