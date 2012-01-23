@@ -46,7 +46,7 @@
 			<IMG SRC="img/ip.gif" ALT="{trans("IP address:")}">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
-			{$nodeipdata.ip}
+			<a href="javascript:ping_popup('{$nodeipdata.ip}')">{$nodeipdata.ip}</a>
 		</TD>
 	</TR>
 	{if $nodeipdata.ip_pub != "0.0.0.0"}
@@ -55,7 +55,7 @@
 			<IMG SRC="img/ip_pub.gif" ALT="{trans("Pub. IP address:")}">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
-			{$nodeipdata.ip_pub}
+			<a href="javascript:ping_popup('{$nodeipdata.ip_pub}')">{$nodeipdata.ip_pub}</a>
 		</TD>
 	</TR>
 	{/if}

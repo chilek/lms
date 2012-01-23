@@ -47,7 +47,7 @@
 			<IMG SRC="img/ip_pub.gif" ALT="{trans("Pub. IP address:")}">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
-			{$nodeinfo.ip_pub}
+			<a href="javascript:ping_popup('{$nodeinfo.ip_pub}')">{$nodeinfo.ip_pub}</a>
 		</TD>
 	</TR>
 	{/if}
