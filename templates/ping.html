@@ -112,7 +112,8 @@
 		} catch(e) {}
 
 		if (button.value == stop) {
-			if (window.parent && window.parent.parent && window.parent.parent.parent && window.parent.parent.parent.parent) {
+			if (window.parent && window.parent.parent && window.parent.parent.parent && window.parent.parent.parent.parent
+				&& window.parent.parent.parent.document.getElementById('autoiframe')) {
 				var elem = window.parent.parent.parent.document.getElementById('overDiv');
 				if (elem && elem.style.visibility == 'hidden')
 					return;
