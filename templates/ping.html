@@ -112,6 +112,11 @@
 		} catch(e) {}
 
 		if (button.value == stop) {
+			if (window.parent && window.parent.parent && window.parent.parent.parent && window.parent.parent.parent.parent) {
+				var elem = window.parent.parent.parent.document.getElementById('overDiv');
+				if (elem && elem.style.visibility == 'hidden')
+					return;
+			}
 			var d = new Date();
 			var waitTime = 1000 - d.getTime() + reqTime;
 			if (waitTime < 10)
