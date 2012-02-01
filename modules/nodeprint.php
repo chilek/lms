@@ -65,21 +65,22 @@ switch($type)
 					case 'mac':
 						$sqlord = ' ORDER BY mac';
 					break;
-				    	case 'ip':
+					case 'ip':
 						$sqlord = ' ORDER BY ipaddr';
 					break;
 					case 'ownerid':
 						$sqlord = ' ORDER BY ownerid';
 					break;
-				    	case 'owner':
+					case 'owner':
 						$sqlord = ' ORDER BY owner';
 					break;
 				}
 
-				if($_POST['network'])
+				$net = intval($_POST['network']);
+				if ($net)
 					$net = $LMS->GetNetworkParams($_POST['network']);
-				
-				$group = $_POST['customergroup'];
+
+				$group = intval($_POST['customergroup']);
 
 				$nodelist = $DB->GetAll('SELECT vnodes.id AS id, inet_ntoa(ipaddr) AS ip, mac, 
 					    vnodes.name AS name, vnodes.info AS info, 
