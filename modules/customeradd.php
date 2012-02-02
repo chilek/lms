@@ -72,12 +72,7 @@ if(isset($_GET['ajax']))
 
 $customeradd = array();
 
-if(isset($_POST['customeradd']) && isset($_GET['newcontact']))
-{
-	$customeradd = $_POST['customeradd'];
-	$customeradd['contacts'][] = array();
-}
-elseif(isset($_POST['customeradd']))
+if (isset($_POST['customeradd']))
 {
 	$customeradd = $_POST['customeradd'];
 
