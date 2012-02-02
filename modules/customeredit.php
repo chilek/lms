@@ -34,7 +34,7 @@ elseif(!$exists)
 {
 	$SESSION->redirect('?m=customerlist');
 }
-elseif(isset($_POST['customerdata']) && !isset($_GET['newcontact']))
+elseif (isset($_POST['customerdata']))
 {
 	$customerdata = $_POST['customerdata'];
 	foreach($customerdata as $key=>$value)
@@ -192,13 +192,7 @@ else
 		foreach($customerinfo['messengers'] as $idx => $val)
 			$customerinfo['uid'][$idx] = $val['uid'];
 
-	if(isset($_POST['customerdata']) && isset($_GET['newcontact']))
-	{
-    		$customerdata = $_POST['customerdata'];
-		$customerdata['contacts'][] = array();
-		$customerinfo = array_merge($customerinfo, $customerdata);
-	}
-	elseif(empty($customerinfo['contacts']))
+	if (empty($customerinfo['contacts']))
 		$customerinfo['contacts'][] = array();
 }
 

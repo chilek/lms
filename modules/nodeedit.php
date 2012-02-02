@@ -76,7 +76,7 @@ else
 
 $layout['pagetitle'] = trans('Node Edit: $a', $nodeinfo['name']);
 
-if(isset($_POST['nodeedit']) && !isset($_GET['newmac']))
+if (isset($_POST['nodeedit']))
 {
 	$nodeedit = $_POST['nodeedit'];
 
@@ -247,17 +247,10 @@ if(isset($_POST['nodeedit']) && !isset($_GET['newmac']))
 }
 else
 {
-	if(isset($_POST['nodeedit']) && isset($_GET['newmac']))
-	{
-		$nodeedit = $_POST['nodeedit'];
-		$nodeedit['macs'][] = '';
-		$nodeinfo = array_merge($nodeinfo, $nodeedit);
+	if ($nodeinfo['city_name'] || $nodeinfo['street_name']) {
+		$nodeinfo['teryt'] = true;
+		$nodeinfo['location'] = location_str($nodeinfo);
 	}
-
-    if ($nodeinfo['city_name'] || $nodeinfo['street_name']) {
-        $nodeinfo['teryt'] = true;
-        $nodeinfo['location'] = location_str($nodeinfo);
-    }
 }
 
 if(empty($nodeinfo['macs']))

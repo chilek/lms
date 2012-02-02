@@ -48,7 +48,7 @@ if(isset($_GET['premac']))
 if(isset($_GET['prename']))
 	$nodedata['name'] = $_GET['prename'];
 
-if(isset($_POST['nodedata']) && !isset($_GET['newmac']))
+if (isset($_POST['nodedata']))
 {
 	$nodedata = $_POST['nodedata'];
 
@@ -202,16 +202,6 @@ if(isset($_POST['nodedata']) && !isset($_GET['newmac']))
 		if($nodedata['ipaddr_pub']=='0.0.0.0')
 			$nodedata['ipaddr_pub'] = '';
     }
-}
-else
-{
-	if(isset($_POST['nodedata']) && isset($_GET['newmac']))
-	{
-		$nodedata = $_POST['nodedata'];
-		$nodedata['ipaddr'] = $_POST['nodedataipaddr'];
-		$nodedata['ipaddr_pub'] = $_POST['nodedataipaddr_pub'];
-		$nodedata['macs'][] = '';
-	}
 }
 
 if(empty($nodedata['macs']))
