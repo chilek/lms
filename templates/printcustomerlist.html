@@ -26,11 +26,11 @@
 			{trans("Phone")}
 		</TD>
 		<TD CLASS="HEAD" VALIGN="TOP" ALIGN="RIGHT">
-			{if $_config.privileges.finances_management|chkconfig || $adminuser}{trans("Subscription")}<BR>{/if}
+			{if !$_config.privileges.hide_finances|chkconfig || $adminuser}{trans("Subscription")}<BR>{/if}
 			{trans("E-mail")}<BR>
 			{trans("TEN/SSN")}
 		</TD>
-		{if $_config.privileges.finances_management|chkconfig || $adminuser}
+		{if !$_config.privileges.hide_finances|chkconfig || $adminuser}
 		<TD CLASS="HEAD" ALIGN="RIGHT">
 			{trans("Balance")}
 		</TD>
@@ -51,18 +51,18 @@
 			{$contactlist.$cid.phone}
 		</TD>
 		<TD ALIGN="RIGHT">
-			{if $_config.privileges.finances_management|chkconfig || $adminuser}{$customerlist[customerlist].tariffvalue|money_format}<BR>{/if}
+			{if !$_config.privileges.hide_finances|chkconfig || $adminuser}{$customerlist[customerlist].tariffvalue|money_format}<BR>{/if}
 			{$customerlist[customerlist].email}<BR>
 			{if $customerlist[customerlist].ten}{$customerlist[customerlist].ten}{else}{$customerlist[customerlist].ssn}{/if}
 		</TD>
-		{if $_config.privileges.finances_management|chkconfig || $adminuser}
+		{if !$_config.privileges.hide_finances|chkconfig || $adminuser}
 		<TD ALIGN="RIGHT" NOWRAP>
 			{$customerlist[customerlist].balance|money_format} 
 		</TD>
 		{/if}
 	</TR>
 	{/if}{/section}
-	{if ($_config.privileges.finances_management|chkconfig && !$_config.privileges.hide_summaries|chkconfig) || $adminuser}
+	{if (!$_config.privileges.hide_finances|chkconfig && !$_config.privileges.hide_summaries|chkconfig) || $adminuser}
 	<TR class="grey">
 		<TD COLSPAN="3" ALIGN="RIGHT"><B>{trans("Total:")}</B></TD>
 		<TD ALIGN="RIGHT" NOWRAP><B>{sum array=$customerlist column="tariffvalue" string_format=$LANGDEFS.$_language.money_format}</B></TD>

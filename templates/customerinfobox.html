@@ -314,7 +314,7 @@
 		</TD>
 	</TR>
 	{/if}
-	{if $_config.privileges.finances_management|chkconfig || $adminuser}
+	{if !$_config.privileges.hide_finances|chkconfig || $adminuser}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
 			<IMG SRC="img/money.gif" ALT="">

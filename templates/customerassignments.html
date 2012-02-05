@@ -23,10 +23,10 @@
 				<TR class="dark">
 					<TD WIDTH="92%" NOWRAP class="fleftu"><B>{trans("Liability:")}</B></TD>
 					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">
-						{if $_config.privileges.finances_management|chkconfig || 4adminuser}{trans("Value:")}{/if}
+						{if !$_config.privileges.hide_finances|chkconfig || $adminuser}{trans("Value:")}{/if}
 					</TD>
 					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">
-						{if $_config.privileges.finances_management|chkconfig || $adminuser}{trans("Discount:")}{/if}
+						{if !$_config.privileges.hide_finances|chkconfig || $adminuser}{trans("Discount:")}{/if}
 					</TD>
 					<TD WIDTH="1%" NOWRAP class="fbt">{trans("Accounting:")}</TD>
 					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">{trans("Downceil:")}</TD>
@@ -52,10 +52,10 @@
 						{if $a.nodes}({foreach from=$a.nodes item=item key=key}{$item.name}{if $key+1<sizeof($a.nodes)}, {/if}{/foreach}){/if}
 					</TD>
 					<TD NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
-					    {if $_config.privileges.finances_management|chkconfig || $adminuser}{$a.value|money_format}{/if}
+					    {if !$_config.privileges.hide_finances|chkconfig || $adminuser}{$a.value|money_format}{/if}
 					</TD>
 					<TD ALIGN="RIGHT" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
-					    {if $_config.privileges.finances_management|chkconfig || $adminuser}{if $a.pdiscount != 0}{$a.pdiscount}%{else}{if $a.vdiscount != 0}{$a.vdiscount|money_format}{else}-{/if}{/if}{/if}
+					    {if !$_config.privileges.hide_finances|chkconfig || $adminuser}{if $a.pdiscount != 0}{$a.pdiscount}%{else}{if $a.vdiscount != 0}{$a.vdiscount|money_format}{else}-{/if}{/if}{/if}
 					</TD>
 					<TD NOWRAP OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">{$a.payday}</TD>
 					<TD NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
@@ -92,12 +92,12 @@
 				<TR class="light">
 					<TD CLASS="ftop" ALIGN="RIGHT"><B>{trans("Total:")}</B></TD>
 					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">
-						{if $_config.privileges.finances_management|chkconfig || $adminuser}
+						{if !$_config.privileges.hide_finances|chkconfig || $adminuser}
 						{sum array=$assignments column="real_value" string_format=$LANGDEFS.$_language.money_format}
 						{/if}
 					</TD>
 					<TD CLASS="ftop" NOWRAP ALIGN="LEFT">
-						{if $_config.privileges.finances_management|chkconfig || $adminuser}
+						{if !$_config.privileges.hide_finances|chkconfig || $adminuser}
 						({sum array=$assignments column="real_disc_value" string_format=$LANGDEFS.$_language.money_format})
 						{/if}
 					</TD>
