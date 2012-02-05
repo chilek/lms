@@ -43,7 +43,7 @@
 			{include file="customerassignments.html"}
 		</TD>
 	</TR>
-	{if $_config.privileges.finances_management|chkconfig || $adminuser}
+	{if !$_config.privileges.hide_finances|chkconfig || $adminuser}
 	<TR>
 		<TD WIDTH="100%">
 			{include file="customerbalancebox.html" limit=-10}

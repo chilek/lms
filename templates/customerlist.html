@@ -13,7 +13,7 @@
 			{trans("Services:")}
 		</TD>
 		<TD width="1%" class="fbt" ALIGN="right" VALIGN="TOP" NOWRAP>
-		{if $_config.privileges.finances_management|chkconfig || $adminuser}
+		{if !$_config.privileges.hide_finances|chkconfig || $adminuser}
 			<a href="?m={$layout.module}&s={$listdata.state}&o=balance{if $listdata.direction eq "asc" && $listdata.order eq "balance"},desc{/if}">{trans("Balance:")}</A>&nbsp;{if $listdata.order eq "balance"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<a href="?m={$layout.module}&s={$listdata.state}&o=tariff{if $listdata.direction eq "asc" && $listdata.order eq "tariff"},desc{/if}">{trans("Subscription:")}</A>&nbsp;{if $listdata.order eq "tariff"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		{/if}
@@ -36,7 +36,7 @@
 					<OPTION VALUE="1"{if $listdata.state eq 1} SELECTED{/if}>{trans("interested<!plural>")}</OPTION>
 					<OPTION VALUE="4"{if $listdata.state eq 4} SELECTED{/if}>{trans("deleted<!plural>")}</OPTION>
 					<OPTION VALUE="5"{if $listdata.state eq 5} SELECTED{/if}>{trans("disconnected<!plural>")}</OPTION>
-					{if ($_config.privileges.finances_management|chkconfig && !$_config.privileges.hide_summaries|chkconfig) || $adminuser}
+					{if (!$_config.privileges.hide_finances|chkconfig && !$_config.privileges.hide_summaries|chkconfig) || $adminuser}
 					<OPTION VALUE="6"{if $listdata.state eq 6} SELECTED{/if}>{trans("in debt")}</OPTION>
 					<OPTION VALUE="11"{if $listdata.state eq 11} SELECTED{/if}>{trans("in debt above 100%")}</OPTION>
 					<OPTION VALUE="12"{if $listdata.state eq 12} SELECTED{/if}>{trans("in debt above 200%")}</OPTION>
@@ -98,13 +98,13 @@
 			{/if}
 		</TD>
 		<TD align="right" valign="top" NOWRAP>
-			{if $_config.privileges.finances_management|chkconfig || $adminuser}
+			{if !$_config.privileges.hide_finances|chkconfig || $adminuser}
 			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALT="">{if $customerlist[customerlist].balance < 0}<font class="alert">{/if}{$customerlist[customerlist].balance|money_format}{if $customerlist[customerlist].balance < 0}</FONT>{/if}<BR><IMG src="img/empty.gif" width="1" height="16" ALT=""><FONT CLASS="blend">{$customerlist[customerlist].tariffvalue|money_format}</FONT></NOBR>
 			{/if}
 		</TD>		
 		<TD align="right" class="fright">
 			<NOBR>
-			{if $_config.privileges.finances_management|chkconfig || $adminuser}
+			{if !$_config.privileges.hide_finances|chkconfig || $adminuser}
 				{if $customerlist[customerlist].balance < 0}
 					<A HREF="?m=customerbalanceok&id={$customerlist[customerlist].id}" OnClick="return confirmLink(this, '{t a=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$a\'?{/t}');"><IMG src="img/pay.gif" alt="[ {trans("Account")} ]" title="[ {trans("Account")} ]"></A>
 				{/if}
@@ -164,13 +164,13 @@
 			&nbsp;
 		</TD>
 		<TD class="fbt" align="right">
-			{if ($_config.privileges.finances_management|chkconfig && !$_config.privileges.hide_summaries|chkconfig) || $adminuser}
+			{if (!$_config.privileges.hide_finances|chkconfig && !$_config.privileges.hide_summaries|chkconfig) || $adminuser}
 			<B>{trans("Outstandings")}:<BR>
 			{trans("Overcharges")}:</B>
 			{/if}
 		</TD>
 		<TD class="fbt" align="right" nowrap>
-			{if ($_config.privileges.finances_management|chkconfig && !$_config.privileges.hide_summaries|chkconfig) || $adminuser}
+			{if (!$_config.privileges.hide_finances|chkconfig && !$_config.privileges.hide_summaries|chkconfig) || $adminuser}
 			<B>{$listdata.below|money_format}<BR>
 			{$listdata.over|money_format}</B>
 			{/if}

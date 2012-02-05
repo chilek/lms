@@ -348,7 +348,7 @@ multiselect('printbalancelist', 'balancelisttype', '{trans("- all types -")}');
 </SCRIPT>
 </P>
 {/if}
-{if ($printmenu=="customer" || $printmenu=="finances") && ($_config.privileges.finances_management|chkconfig || $adminuser)}
+{if ($printmenu=="customer" || $printmenu=="finances") && (!$_config.privileges.hide_finances|chkconfig || $adminuser)}
 <P><FORM method="post" name="printcustomerbalance" id="printcustomerbalance" action="?m=print&type=customerbalance" target="_blank">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE width="100%" CELLPADDING="3">
@@ -886,7 +886,7 @@ cal6.time_comp = false;
 </SCRIPT>
 </P>
 {/if}
-{if ($printmenu=="customer" || $printmenu=="finances") && ($_config.privileges.finances_management|chkconfig || $adminuser)}
+{if ($printmenu=="customer" || $printmenu=="finances") && (!$_config.privileges.hide_finances|chkconfig || $adminuser)}
 <P><FORM method="post" name="liabilityreport" id="liabilityreport" action="?m=print&type=liabilityreport" target="_blank">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE width="100%" CELLPADDING="3">
