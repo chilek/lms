@@ -15,9 +15,9 @@
 			<B>{trans("Data precision level:")}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
-			<B><INPUT TYPE="radio" NAME="level" ID="low" VALUE="low" {tip text="Data older than one day will be combined into one day"}><A HREF="javascript:setPrecision('low')">{trans("Low")}</a></INPUT><BR>
-			   <INPUT TYPE="radio" NAME="level" ID="medium" VALUE="medium" {tip text="Data older than one month will be combined into one day"}><A HREF="javascript:setPrecision('medium')">{trans("Medium")}</a></INPUT><BR>
-			   <INPUT TYPE="radio" NAME="level" ID="high" VALUE="high" {tip text="Data older than one month will be combined into one hour"}><A HREF="javascript:setPrecision('high')">{trans("High")}</a></INPUT>
+			<B><INPUT TYPE="radio" NAME="level" ID="low" VALUE="low" {tip text="Data older than one day will be combined into one day"}><label for="low">{trans("Low")}</label><BR>
+			   <INPUT TYPE="radio" NAME="level" ID="medium" VALUE="medium" {tip text="Data older than one month will be combined into one day"}><label for="medium">{trans("Medium")}</label><BR>
+			   <INPUT TYPE="radio" NAME="level" ID="high" VALUE="high" {tip text="Data older than one month will be combined into one hour"}><label for="high">{trans("High")}</label>
 			</B>
 		</TD>
 	</TR>
@@ -42,12 +42,4 @@
 	</TR>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
-function setPrecision(id)
-{
-	document.trafficdbcompact.elements[id].checked = true;
-}
-//-->
-</SCRIPT>
 {include file="footer.html"}
