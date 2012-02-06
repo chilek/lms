@@ -154,23 +154,23 @@
 				    <TD width="98%">
 					    <table width="100%">
 						    <tr>
-							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][shell]" value="1" {if ($account.type & 1) == 1} CHECKED{/if}> {trans("shell")}</td>
+							    <td width="1%" nowrap><INPUT type="checkbox" id="type_shell" name="account[type][shell]" value="1" {if ($account.type & 1) == 1} CHECKED{/if}> <label for="type_shell">{trans("shell")}</label></td>
 							    <td>&nbsp;<input type="text" size="5" maxlendth="10" name="quota[sh]" value="{$quota.sh}" {tip text="Enter account quota in MB" trigger="quota_sh"}></td>
 						    </tr>
 						    <tr>
-							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][mail]" value="2" {if ($account.type & 2) == 2} CHECKED{/if}> {trans("mail")}</td>
+							    <td width="1%" nowrap><INPUT type="checkbox" id="type_mail" name="account[type][mail]" value="2" {if ($account.type & 2) == 2} CHECKED{/if}> <label for="type_mail">{trans("mail")}</label></td>
 							    <td>&nbsp;<input type="text" size="5" maxlength="10" name="quota[mail]" value="{$quota.mail}" {tip text="Enter account quota in MB" trigger="quota_mail"}></td>
 						    </tr>
 						    <tr>
-							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][www]" value="4" {if ($account.type & 4) == 4} CHECKED{/if}> {trans("www")}</td>
+							    <td width="1%" nowrap><INPUT type="checkbox" id="type_www" name="account[type][www]" value="4" {if ($account.type & 4) == 4} CHECKED{/if}> <label for="type_www">{trans("www")}</label></td>
 							    <td>&nbsp;<input type="text" size="5" maxlength="10" name="quota[www]" value="{$quota.www}" {tip text="Enter account quota in MB" trigger="quota_www"}></td>
 						    </tr>
 						    <tr>
-							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][ftp]" value="8" {if ($account.type & 8) == 8} CHECKED{/if}> {trans("ftp")}</td>
+							    <td width="1%" nowrap><INPUT type="checkbox" id="type_ftp" name="account[type][ftp]" value="8" {if ($account.type & 8) == 8} CHECKED{/if}> <label for="type_ftp">{trans("ftp")}</label></td>
 							    <td>&nbsp;<input type="text" size="5" maxlength="10" name="quota[ftp]" value="{$quota.ftp}" {tip text="Enter account quota in MB" trigger="quota_ftp"}></td>
 						    </tr>
 						    <tr>
-							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][sql]" value="16" {if ($account.type & 16) == 16} CHECKED{/if}> {trans("sql")}</td>
+							    <td width="1%" nowrap><INPUT type="checkbox" id="type_sql" name="account[type][sql]" value="16" {if ($account.type & 16) == 16} CHECKED{/if}> <label for="type_sql">{trans("sql")}</label></td>
 							    <td>&nbsp;<input type="text" size="5" maxlength="10" name="quota[sql]" value="{$quota.sql}" {tip text="Enter account quota in MB" trigger="quota_sql"}></td>
 						    </tr>
 					    </table>
