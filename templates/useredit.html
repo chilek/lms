@@ -86,13 +86,13 @@
 			    <td width="50%" style="vertical-align: top" nowrap>
 			    {section name=acl loop=$accesslist}
 			    {if $smarty.section.acl.index <= floor(sizeof($accesslist)/2) - 1}
-			    <input type="checkbox" name="acl[{$accesslist[acl].id}]" value="1" {if $accesslist[acl].enabled} checked{/if}> <A HREF="javascript:setAcl('acl[{$accesslist[acl].id}]')">{$accesslist[acl].name}</a><BR>
+			    <input type="checkbox" id="acl_{$accesslist[acl].id}" name="acl[{$accesslist[acl].id}]" value="1" {if $accesslist[acl].enabled} checked{/if}> <label for="acl_{$accesslist[acl].id}">{$accesslist[acl].name}</label><BR>
 			    {/if}
 			    {/section}
 			    </td><td width="50%" style="vertical-align: top" nowrap>
 			    {section name=acl loop=$accesslist}
 			    {if $smarty.section.acl.index > floor(sizeof($accesslist)/2) - 1}
-			    <input type="checkbox" name="acl[{$accesslist[acl].id}]" value="1" {if $accesslist[acl].enabled} checked{/if}> <A HREF="javascript:setAcl('acl[{$accesslist[acl].id}]')">{$accesslist[acl].name}</a><BR>
+			    <input type="checkbox" id="acl_{$accesslist[acl].id}" name="acl[{$accesslist[acl].id}]" value="1" {if $accesslist[acl].enabled} checked{/if}> <label for="acl_{$accesslist[acl].id}">{$accesslist[acl].name}</label><BR>
 			    {/if}
 			    {/section}
 			    </td>
@@ -121,11 +121,6 @@
 <SCRIPT type="text/javascript">
 <!--
 document.forms['useredit'].elements['userinfo[login]'].focus();
-
-function setAcl(id)
-{
-	document.forms['useredit'].elements[id].checked = !document.forms['useredit'].elements[id].checked;
-}
 
 //-->
 </SCRIPT>
