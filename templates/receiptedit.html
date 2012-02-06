@@ -37,16 +37,6 @@
 		document.setcustomer.submit();
 	}
 
-	function setType(type)
-	{
-		document.additem.elements[type].checked = !document.additem.elements[type].checked;
-	}
-
-	function setCustomerType(type)
-	{
-		document.getElementById(type).checked = true;
-	}
-
 	function reset_customer()
 	{
 		if (document.setcustomer.customerid.value)
@@ -108,7 +98,7 @@
 		    <TABLE>
 			<TR>
 			    <TD width="1%" nowrap>
-				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="customer" id="radio_customer" checked> <A HREF="javascript:setCustomerType('radio_customer');">{trans("customer")}:</A>
+				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="customer" id="radio_customer" checked> <label for="radio_customer">{trans("customer")}:</label>
 			    </TD>
 			    <TD width="99%">
 				{if $customerlist}
@@ -126,7 +116,7 @@
 			</TR>
 			<TR>
 			    <TD width="1%" nowrap>
-				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="advance" id="radio_advance" {if $receipt.o_type=="advance"} checked{/if}> <A HREF="javascript:setCustomerType('radio_advance');">{trans("advance")}:</A>
+				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="advance" id="radio_advance" {if $receipt.o_type=="advance"} checked{/if}> <label for="radio_advance">{trans("advance")}:</label>
 			    </TD>
 			    <TD width="99%">
 				<INPUT TYPE="text" NAME="receipt[adv_name]" VALUE="{$receipt.adv_name}" SIZE="70" {tip text="Enter recipient" trigger="adv_name"} onclick="document.getElementById('radio_advance').checked=true">
@@ -134,7 +124,7 @@
 			</TR>
 			<TR>
 			    <TD width="1%" nowrap>
-				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="other" id="radio_other" {if $receipt.o_type=="other"} checked{/if}> <A HREF="javascript:setCustomerType('radio_other');">{trans("other")}:</A>
+				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="other" id="radio_other" {if $receipt.o_type=="other"} checked{/if}> <label for="radio_other">{trans("other")}:</label>
 			    </TD>
 			    <TD width="99%">
 				<INPUT TYPE="text" NAME="receipt[other_name]" VALUE="{$receipt.other_name}" SIZE="70" {if $receipt.type=="out"}{tip text="Enter recipient" trigger="other_name"}{else}{tip text="Enter payer" trigger="other_name"}{/if} onclick="document.getElementById('radio_other').checked=true">
@@ -292,8 +282,8 @@
 	</TR>
 	<TR CLASS="light">
 		<TD COLSPAN="4" CLASS="{if $covenantlist}flr{else}fbottomu{/if}" ALIGN="RIGHT">
-			<INPUT type="checkbox" name="original" checked> <A HREF="javascript:setType('original');">{trans("original")}</A>&nbsp;
-			<INPUT type="checkbox" name="copy" checked> <A HREF="javascript:setType('copy');">{trans("copy")}</A>&nbsp;
+			<INPUT type="checkbox" id="original" name="original" checked> <label for="original">{trans("original")}</label>&nbsp;
+			<INPUT type="checkbox" id="copy" name="copy" checked> <label for="copy">{trans("copy")}</label>&nbsp;
 			<A HREF="?m=receiptlist&regid={$receipt.regid}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>&nbsp;
 			{if !$customer && $receipt.o_type != "other" && $receipt.o_type != "advance"}
 			<A HREF="javascript:alert('{trans("Customer not selected!")}');">
