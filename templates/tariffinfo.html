@@ -65,7 +65,7 @@
 				    {$tariff.prodid}
 				</TD>
 			    </TR>
-			{if !$_config.privileges.hide_summaries|chkconfig || $adminuser}
+			{if !check_conf('privileges.hide_summaries')}
 			    <TR CLASS="light">
 				<TD WIDTH="1%">
 				    <IMG SRC="img/customers.gif" ALT="">

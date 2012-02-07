@@ -169,7 +169,6 @@ $SMARTY->assignByRef('layout', $layout);
 $SMARTY->assignByRef('LANGDEFS', $LANGDEFS);
 $SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
 $SMARTY->assignByRef('_language', $LMS->lang);
-$SMARTY->assignByRef('_config',$CONFIG);
 
 $error = NULL; // initialize error variable needed for (almost) all modules
 
@@ -206,14 +205,14 @@ if($AUTH->islogged)
 	{
 		$allow = !$AUTH->id || (!empty($access['allow']) && preg_match('/'.$access['allow'].'/i', $module));
 
-		$adminuser = FALSE;
 		if($AUTH->id && ($rights = $LMS->GetUserRights($AUTH->id)))
 			foreach($rights as $level)
 			{
-				if($level === 0)
-					$adminuser = TRUE;
-				if(!$allow)
-				{
+				if($level === 0) {
+					$CONFIG['privileges']['superuser'] = true;
+			    }
+
+				if(!$allow) {
 					if(isset($access['table'][$level]['deny_reg']))
 						$deny = (bool) preg_match('/'.$access['table'][$level]['deny_reg'].'/i', $module);
 					elseif(isset($access['table'][$level]['allow_reg']))
@@ -228,7 +227,6 @@ if($AUTH->islogged)
 		{
 			$layout['module'] = $module;
 			$LMS->InitUI();
-			$SMARTY->assign('adminuser', $adminuser);
 			include(MODULES_DIR.'/'.$module.'.php');
 		}
 		else

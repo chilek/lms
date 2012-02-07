@@ -41,7 +41,7 @@
 			<B>{trans("Seller:")}</B><BR>
 			<BR>
 			{$invoice.division_header|replace:"\n":"<BR>"}<BR>
-			{trans("Bank account:")} {bankaccount id=$invoice.customerid account=$invoice.account}
+			{trans("Bank account:")} {bankaccount($invoice.customerid, $invoice.account)}
 			<BR><BR>
 			<B>{trans("Purchaser:")}</B><BR>
 			<BR>
@@ -346,7 +346,7 @@
 	<TR>
 		<TD WIDTH="50%" ALIGN="RIGHT" CLASS="SDR">
 			{trans("In words:")}
-			{if $_config.phpui.to_words_short_version|chkconfig}
+			{if check_conf('phpui.to_words_short_version')}
 				{$invoice.value|string_format:"%d"|to_words:0:"":1} {$invoice.valuep|string_format:"%02d"}/100
 			{else}
 				{t a=$invoice.value|string_format:"%d"|to_words b=$invoice.valuep|to_words}$a dollars $b cents{/t}

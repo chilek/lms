@@ -11,12 +11,6 @@
 			for (var i = 0; i < document.setrights.elements[0].length; i++)
 				document.setrights.elements[0].options[i].selected = false;
 	}
-
-	function SelectAllCustomers2()
-	{
-		document.setrights.customers.checked = !document.setrights.customers.checked;
-		SelectAllCustomers();
-	}
 //-->
 </SCRIPT>
 <H1>{$layout.pagetitle}</H1>
@@ -120,7 +114,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD CLASS="fbl" WIDTH="1%">
-						<INPUT TYPE="checkbox" NAME="customers" CLASS="box light" OnClick="javascript:SelectAllCustomers()"><A HREF="javascript:SelectAllCustomers2()">{trans("Select All")}</A></INPUT>
+						<INPUT TYPE="checkbox" NAME="customers" CLASS="box light" id="selectall" onchange="SelectAllCustomers()"></INPUT><label for="selectall">{trans("Select All")}</label>
 					</TD>
 					<TD CLASS="fbr" ALIGN="RIGHT" COLSPAN="2">
 						<A HREF="javascript:document.setrights.submit()" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>

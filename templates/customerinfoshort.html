@@ -162,7 +162,7 @@
 		</TD>
 	</TR>
 {/if}
-{if !$_config.privileges.hide_finances|chkconfig || $adminuser}
+{if !check_conf('privileges.hide_finances')}
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/money.gif" ALT="">

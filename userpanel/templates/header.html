@@ -2,11 +2,12 @@
 <!--// $Id$ //-->
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{$_ui_language}"> 
   <meta content="text/html; charset={$LANGDEFS.$_ui_language.charset}" http-equiv="content-type" />
-  <meta http-equiv="refresh" content="{math equation="x+5" x=$_config.phpui.timeout}">
+  <meta http-equiv="refresh" content="{get_conf('phpui.timeout')+5}">
   <title>{trans("Virtual Customer Service")}</title>
 <link type="text/css" rel="stylesheet" href="{stylefile}" />
 <script type="text/javascript" language="JavaScript" src="style/default/common.js"></script>
-{if $_config.userpanel.hint neq 'classic' and $_config.userpanel.hint neq 'none'}
+{$hint_mode = get_conf('userpanel.hint')}
+{if $hint_mode neq 'classic' and $hint_mode neq 'none'}
 <script type="text/javascript" language="JavaScript" src="style/default/avatar.js"></script>
 </head>
 <body onload="javascript:draginit()">
@@ -23,7 +24,7 @@
 </div>
 <img id="avatar" src="style/default/avatar.gif" alt="" style="cursor:move;">
 </div>
-{elseif $_config.userpanel.hint eq 'classic'}
+{elseif $hint_mode eq 'classic'}
 </head>
 <div id="overDiv" style="position:absolute; visibility:hidden; z-index:100;"></div>
 <script type="text/javascript" language="JavaScript" src="style/default/overlib.js"></script>

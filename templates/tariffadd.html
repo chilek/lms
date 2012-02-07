@@ -8,6 +8,7 @@
 	}
 //-->
 </SCRIPT>
+{$default_taxrate = get_conf('phpui.default_taxrate')}
 <H1>{$layout.pagetitle}</H1>
 <FORM METHOD="POST" NAME="tariff" ACTION="?m=tariffadd">
 <INPUT type="submit" class="hiddenbtn">
@@ -50,7 +51,7 @@
 				    <TD WIDTH="98%">
 					<SELECT SIZE="1" NAME="tariff[taxid]" {tip text="Select Tax rate" trigger="taxid"}>
 					{foreach item=tax from=$taxeslist}
-					    <OPTION VALUE="{$tax.id}"{if $tax.value == $_config.phpui.default_taxrate || $tax.id == $tariff.taxid} selected{/if}>{$tax.label}</OPTION>
+					    <OPTION VALUE="{$tax.id}"{if $tax.value == $default_taxrate || $tax.id == $tariff.taxid} selected{/if}>{$tax.label}</OPTION>
 					{/foreach}
 					</SELECT>
 				    </TD>

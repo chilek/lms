@@ -33,7 +33,7 @@ window.open('?m=note&id={$note}');
 		document.page.submit();
 	}
 
-{if $_config.phpui.short_pagescroller|chkconfig}
+{if check_conf('phpui', 'short_pagescroller')}
 	function pagechange1()
 	{
 		document.page.action="?m=notelist&page=" + document.forms['page'].elements['page1'].value;
@@ -155,7 +155,7 @@ window.open('?m=note&id={$note}');
 			<P><B>{trans("No such debit notes in database.")}</B></P>
 			<P>&nbsp;</P>
 		</TD>
-	</TR>	
+	</TR>
 	{/section}
 	{if $listdata.total != 0}
 	<TR CLASS="dark">
@@ -171,13 +171,8 @@ window.open('?m=note&id={$note}');
 					<TD ALIGN="left">
 						<NOBR><A HREF="javascript:pays();">{trans("Check/Uncheck as accounted")} <IMG SRC="img/pay.gif" ALT=""></A></NOBR>&nbsp;
 						<NOBR><A HREF="javascript:prints();">{trans("Print")} <IMG SRC="img/printd.gif" ALT="" ></A></NOBR>&nbsp;
-{*
-						<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i',$_config.notes.default_printpage)} checked{/if}><label for="original">{trans("original")}</label>
-						<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i',$_config.notes.default_printpage)} checked{/if}><label for="copy">{trans("copy")}</label>
-						<INPUT type="checkbox" name="duplicate"id="duplicate"{if preg_match('/duplicate/i',$_config.notes.default_printpage)} checked{/if}><label for="duplicate">{trans("duplicate")}</label>
-*}
 					</TD>
-					<TD ALIGN="right">	
+					<TD ALIGN="right">
 						<NOBR><label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('page', this, ['groupexclude', 'hideclosed'])" VALUE="1"></NOBR>
 					</TD>
 				</TR>

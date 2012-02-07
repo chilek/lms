@@ -106,7 +106,7 @@
 			<a href="javascript: void(0);" onClick="return gpscoordschoosewin(document.netdevedit.elements['netdev[longitude]'], document.netdevedit.elements['netdev[latitude]']);" {tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
-{if $_config.phpui.radius|chkconfig}
+{if check_conf('phpui.radius')}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
 			<IMG SRC="img/radius.gif" ALT="">

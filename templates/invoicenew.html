@@ -90,6 +90,8 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 	}
 //-->
 </script>
+{$default_printpage = get_conf('invoices.default_printpage')}
+{$default_taxrate   = get_conf('phpui.default_taxrate')}
 <FORM NAME="setcustomer" METHOD="POST" ACTION="?m=invoicenew&action=setcustomer">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
@@ -389,7 +391,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 		<TD CLASS="ftop" ALIGN="RIGHT" NOWRAP>
 			<SELECT size="1" name="taxid" {tip text="Select Tax rate"}>
 			{foreach item=tax from=$taxeslist}
-				<OPTION value="{$tax.id}"{if $tax.value == $_config.phpui.default_taxrate} selected{/if}>{$tax.label}</OPTION>
+				<OPTION value="{$tax.id}"{if $tax.value == $default_taxrate} selected{/if}>{$tax.label}</OPTION>
 			{/foreach}
 			</SELECT>
 		</TD>
@@ -402,8 +404,8 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 	</TR>
 	<TR CLASS="light">
 		<TD COLSPAN="9" CLASS="fbottomu" ALIGN="RIGHT">
-			<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i',$_config.invoices.default_printpage)} checked{/if}><label for="original">{trans("original")}</label>
-        	<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i',$_config.invoices.default_printpage)} checked{/if}><label for="copy">{trans("copy")}</label>&nbsp;
+			<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i', $default_printpage)} checked{/if}><label for="original">{trans("original")}</label>
+        	<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}><label for="copy">{trans("copy")}</label>&nbsp;
 			<A HREF="?m=invoicelist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
 			<A HREF="?m=invoicenew&action=init">{trans("Clear Contents")} <IMG SRC="img/delete.gif" alt=""></A> 
 			{if !$customer}

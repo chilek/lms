@@ -32,7 +32,7 @@
 		document.page.submit();
 	}
 
-{if $_config.phpui.short_pagescroller|chkconfig}
+{if check_conf('phpui.short_pagescroller')}
 	function pagechange1()
 	{
 		document.page.action="?m=receiptlist&page=" + document.forms['page'].elements['page1'].value;
