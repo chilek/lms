@@ -124,7 +124,7 @@ function module_main()
 			$DB->Execute('INSERT INTO rtticketcategories (ticketid, categoryid) VALUES (?, ?)',
 				array($id, $catid));
 
-		if(isset($CONFIG['phpui']['newticket_notify']) && chkconfig($CONFIG['phpui']['newticket_notify']))
+		if(check_conf('phpui.newticket_notify'))
 		{
 			$user = $LMS->GetUserInfo($CONFIG['userpanel']['default_userid']);
 
@@ -150,7 +150,7 @@ function module_main()
             $sms_body = $headers['Subject']."\n".$ticket['body'];
 			$body = $ticket['body']."\n\n".$CONFIG['userpanel']['lms_url'].'/?m=rtticketview&id='.$id;
 
-            if (chkconfig($CONFIG['phpui']['helpdesk_customerinfo'])) {
+            if (check_conf('phpui.helpdesk_customerinfo')) {
                 $info = $DB->GetRow('SELECT id AS customerid, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
                         email, address, zip, city, (SELECT phone FROM customercontacts
                             WHERE customerid = customers.id ORDER BY id LIMIT 1) AS phone

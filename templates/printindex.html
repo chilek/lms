@@ -2,6 +2,7 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {include file="calendar_js.html"}
+{$default_printpage = get_conf('invoices.default_printpage')}
 {if $printmenu=="customer"}
 <P><FORM method="POST" name="printcustomerlist" id="printcustomerlist" action="?m=customerprint&type=customerlist" target="_blank">
 <INPUT type="submit" class="hiddenbtn">
@@ -348,7 +349,7 @@ multiselect('printbalancelist', 'balancelisttype', '{trans("- all types -")}');
 </SCRIPT>
 </P>
 {/if}
-{if ($printmenu=="customer" || $printmenu=="finances") && (!$_config.privileges.hide_finances|chkconfig || $adminuser)}
+{if ($printmenu=="customer" || $printmenu=="finances") && !check_conf('privileges.hide_finances')}
 <P><FORM method="post" name="printcustomerbalance" id="printcustomerbalance" action="?m=print&type=customerbalance" target="_blank">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE width="100%" CELLPADDING="3">
@@ -738,9 +739,9 @@ cal13.time_comp = false;
 						<IMG src="img/info.gif" alt="">
 					</TD>
 					<TD width="94%" nowrap>
-						<INPUT TYPE="checkbox" NAME="invoiceorg" ID="invoiceorg"{if preg_match('/original/i',$_config.invoices.default_printpage)} CHECKED{/if}>&nbsp;<label for="invoiceorg">{trans("original")}</label>&nbsp;
-						<INPUT TYPE="checkbox" NAME="invoicecopy" ID="invoicecopy"{if preg_match('/copy/i',$_config.invoices.default_printpage)}  CHECKED{/if}>&nbsp;<label for="invoicecopy">{trans("copy")}</label>&nbsp;
-						<INPUT TYPE="checkbox" NAME="invoicedup" ID="invoicedup"{if preg_match('/duplicate/i',$_config.invoices.default_printpage)} CHECKED{/if}>&nbsp;<label for="invoicedup">{trans("duplicate")}</label>
+						<INPUT TYPE="checkbox" NAME="invoiceorg" ID="invoiceorg"{if preg_match('/original/i', $default_printpage)} CHECKED{/if}>&nbsp;<label for="invoiceorg">{trans("original")}</label>&nbsp;
+						<INPUT TYPE="checkbox" NAME="invoicecopy" ID="invoicecopy"{if preg_match('/copy/i', $default_printpage)}  CHECKED{/if}>&nbsp;<label for="invoicecopy">{trans("copy")}</label>&nbsp;
+						<INPUT TYPE="checkbox" NAME="invoicedup" ID="invoicedup"{if preg_match('/duplicate/i', $default_printpage)} CHECKED{/if}>&nbsp;<label for="invoicedup">{trans("duplicate")}</label>
 					</TD>
 				</TR>
 			</TABLE>
@@ -886,7 +887,7 @@ cal6.time_comp = false;
 </SCRIPT>
 </P>
 {/if}
-{if ($printmenu=="customer" || $printmenu=="finances") && (!$_config.privileges.hide_finances|chkconfig || $adminuser)}
+{if ($printmenu=="customer" || $printmenu=="finances") && !check_conf('privileges.hide_finances')}
 <P><FORM method="post" name="liabilityreport" id="liabilityreport" action="?m=print&type=liabilityreport" target="_blank">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE width="100%" CELLPADDING="3">

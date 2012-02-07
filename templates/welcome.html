@@ -4,7 +4,7 @@
 <P>
 <TABLE width="100%" cellpadding="3" COLS="12">
 	<TR>
-		{if !$_config.privileges.hide_sysinfo|chkconfig}
+		{if !check_conf('privileges.hide_sysinfo')}
 		<TD WIDTH="50%" style="vertical-align: top;" COLSPAN="5">
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
@@ -107,11 +107,11 @@
 					</TD>
 				</TR>
 			</TABLE>
-		</TD>					
+		</TD>
 		{/if}
 	</TR>
 	<TR>
-		{if !$_config.privileges.hide_summaries|chkconfig}
+		{if !check_conf('privileges.hide_summaries')}
 		<TD WIDTH="50%" style="vertical-align: top;" COLSPAN="5">
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
@@ -146,13 +146,13 @@
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
 						<B><A HREF="?m=customerlist&s=0">{trans("Total:")}</A><BR>
-						{if !$_config.privileges.hide_finances|chkconfig || $adminuser}
+						{if !check_conf('privileges.hide_finances')}
 							<A HREF="?m=customerlist&s=6">{trans("Total Dues:")}</A></B>
 						{/if}
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHTU">
 						{$customerstats.total}<BR>
-						{if !$_config.privileges.hide_finances|chkconfig || $adminuser}
+						{if !check_conf('privileges.hide_finances')}
 							<NOBR>{$customerstats.debt} ({trans("amount")} {$customerstats.debtvalue|money_format})</NOBR>
 						{/if}
 					</TD>
@@ -285,7 +285,7 @@
 			{/if}
 			</TABLE>
 		</TD>
-		{if !$_config.privileges.hide_links|chkconfig}
+		{if !check_conf('privileges.hide_links')}
 		<TD WIDTH="50%" style="vertical-align: top;" COLSPAN="6">
 		    <TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
@@ -309,7 +309,7 @@
 		{/if}
 	</TR>
 	<TR>
-		{if $adminuser}
+		{if check_conf('privileges.superuser')}
 		<TD WIDTH="50%" style="vertical-align: top;" COLSPAN="6">
 		</TD>
 		<TD WIDTH="50%" style="vertical-align: top;">

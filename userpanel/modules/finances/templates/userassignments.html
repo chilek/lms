@@ -1,12 +1,13 @@
 <!--// $Id$ //-->
 {box title="Your subscriptions"}
+{$show_speeds = check_conf('userpanel.show_speeds')}
 <table style="width: 100%;" cellpadding="3">
 	<tr class="darkest">
 		<td width="93%" class="nobr"><b>{trans("Subscription:")}</b></td>
 		<td width="1%" class="nobr" align="right">{trans("Value:")}</td>
 		<td width="1%" class="nobr" align="right">{trans("Discount:")}</td>
 		<td width="1%" class="nobr">{trans("Accounting day:")}</td>
-		{if $_config.userpanel.show_speeds}
+		{if $show_speeds}
 			<td width="1%" class="nobr" align="right">{trans("Downrate (ceil):")}</td>
 			<td width="1%" class="nobr" align="right">{trans("Uprate (ceil):")}</td>
 		{/if}
@@ -16,11 +17,11 @@
 	{foreach from=$assignments item=assignment}
 	{if ($assignment.tariffid || $assignment.liabilityid) && !($assignment.suspended || ($assignment.dateto < $smarty.now && $assignment.dateto) || ($assignment.datefrom > $smarty.now && $assignment.datefrom))}
 	<tr class="dark">
-		<td><b>{if $_config.userpanel.show_tariffname}{$assignment.name}{/if}</b></td>
+		<td><b>{if check_conf('userpanel.show_tariffname')}{$assignment.name}{/if}</b></td>
 		<td class="nobr" align="right">{$assignment.value|money_format}</td>
 		<td class="nobr" align="right">{if $assignment.discount > 0}{$assignment.discount}%{/if}</td>
 		<td class="nobr">{$assignment.payday}</td>
-		{if $_config.userpanel.show_speeds}
+		{if $show_speeds}
 			<td class="nobr" align="right">{$assignment.downrate|default:"-"}({$assignment.downceil|default:"-"}) kbit/s</td>
 			<td class="nobr" align="right">{$assignment.uprate|default:"-"}({$assignment.upceil|default:"-"}) kbit/s</td>
 		{/if}
@@ -45,7 +46,7 @@
 		<td class="nobr" align="right">{sum array=$assignments column="real_value" string_format=$LANGDEFS.$_language.money_format}</td>
 		<td class="nobr" align="right">({sum array=$assignments column="real_disc_value" string_format=$LANGDEFS.$_language.money_format})</td>
 		<td>&nbsp;</td>
-		{if $_config.userpanel.show_speeds}
+		{if $show_speeds}
 			<td class="nobr" align="right">{sum array=$assignments column="real_downrate" default="-"}({sum array=$assignments column="real_downceil" default="-"}) kbit/s</td>
 			<td class="nobr" align="right">{sum array=$assignments column="real_uprate" default="-"}({sum array=$assignments column="real_upceil" default="-"}) kbit/s</td>
 		{/if}

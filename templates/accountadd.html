@@ -5,7 +5,7 @@
 <!--
 	function update_homedir()
 	{
-		var prefix = "{$_config.phpui.homedir_prefix}";
+		var prefix = "{get_conf('phpui.homedir_prefix')}";
 		document.forms['account'].elements['account[home]'].value = prefix + document.forms['account'].elements['account[login]'].value;
 	}
 //-->
@@ -82,7 +82,7 @@
 					<B>{trans("Homedir:")}</B>
 				    </TD>
 				    <TD width="98%">
-					<input type="text" name="account[home]" value="{if $account.home}{$account.home}{else}{$_config.phpui.homedir_prefix}{/if}" {tip text="Enter home directory" trigger="home"}>
+					<input type="text" name="account[home]" value="{if $account.home}{$account.home}{else}{get_conf('phpui.homedir_prefix')}{/if}" {tip text="Enter home directory" trigger="home"}>
 				    </TD>
 				</TR>
 				<TR>

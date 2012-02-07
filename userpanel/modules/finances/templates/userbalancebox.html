@@ -1,5 +1,6 @@
 <!--// $Id$ //-->
 {box title="Your balance"}
+{$disable_invoices = check_conf('userpanel.disable_invoices')}
 <form name="invoices" action="?m=finances&f=invoice" method="POST" target="_blank">
 <table style="width: 100%;" cellpadding="3">
 	<tr class="darkest">
@@ -8,7 +9,7 @@
 		<td width="1%" align="center">&raquo;</td>
 		<td width="1%" align="right">{trans("After:")}</td>
 		<td width="95%">{trans("Description:")}</td>
-		{if !$_config.userpanel.disable_invoices}
+		{if !$disable_invoices}
 		<td width="1%" align="right"></td>
 		{/if}
 	</tr>
@@ -19,7 +20,7 @@
 		<td width="1%" align="center">&raquo;</td>
 		<td width="1%" align="right" class="nobr">{if $balancelist.after[balancelist] < 0}<font color="red">{/if}{$balancelist.after[balancelist]|money_format}{if $balancelist.after[balancelist] < 0}</font>{/if}</td>
 		<td width="95%">{$balancelist.comment[balancelist]}</td>
-		{if !$_config.userpanel.disable_invoices}
+		{if !$disable_invoices}
 		<td width="1%" class="nobr">
 			{if $balancelist.doctype[balancelist]==1 || $balancelist.doctype[balancelist]==3}
 			<a href="?m=finances&amp;f=invoice&amp;id={$balancelist.docid[balancelist]}" target="_blank">{img src="print.gif" alt="[ Print ]" text=$balancelist.number[balancelist]}</a><input style="vertical-align: middle" type="checkbox" name="inv[{$balancelist.docid[balancelist]}]" value="1" />
@@ -38,7 +39,7 @@
 		</td>
 	</tr>
 	{/section}
-	{if !$_config.userpanel.disable_invoices}
+	{if !$disable_invoices}
 	<tr class="darkest">
 		<td colspan="6" width="100%">
 			<table width="100%" cellpadding="0" cellspacing="0">

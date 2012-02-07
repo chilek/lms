@@ -23,7 +23,7 @@
  *
  *  $Id$
  */
-		      
+
 if (defined('USERPANEL_SETUPMODE'))
 {
     function module_setup()
@@ -32,7 +32,7 @@ if (defined('USERPANEL_SETUPMODE'))
         $SMARTY->assign('owner_stats', $LMS->CONFIG['userpanel']['owner_stats']);
 	$SMARTY->display('module:stats:setup.html');
     }
-		    
+
     function module_submit_setup()
     {
 	global $SMARTY,$DB;
@@ -169,7 +169,7 @@ function module_main()
 	$SESSION->save('trafficorder', $_POST['order']);
 
     $bar = isset($_GET['bar']) ? $_GET['bar'] : '';
-    $owner = chkconfig($CONFIG['userpanel']['owner_stats']) ? $SESSION->id : NULL;
+    $owner = check_conf('userpanel.owner_stats') ? $SESSION->id : NULL;
 
     switch($bar)
     {

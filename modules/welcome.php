@@ -31,7 +31,7 @@ $layout['pagetitle'] = 'LAN Management System';
 $layout['dbversion'] = $DB->GetDBVersion();
 $layout['dbtype'] = $CONFIG['database']['type'];
 
-if ($adminuser) {
+if (check_conf('privileges.superuser')) {
     $content = $LMS->CheckUpdates();
 
     if(isset($content['newer_version'])) {

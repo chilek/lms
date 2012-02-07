@@ -51,7 +51,7 @@
 		document.page.submit();
 	}
 
-	{if $_config.phpui.short_pagescroller|chkconfig}
+	{if check_conf('phpui.short_pagescroller')}
 	function pagechange1()
 	{
 		document.page.action="?m=balancelist&page=" + document.forms['page'].elements['page1'].value;
@@ -195,16 +195,16 @@
 			<P><B>{trans("No such transactions found in database.")}</B></P>
 			<P>&nbsp;</P>
 		</TD>
-	</TR>    
+	</TR>
 	{/section}
 	<TR class="dark">
 		<TD class="fleftu" COLSPAN="8" nowrap>
 			<A HREF="javascript:DeleteMarked();">{trans("Delete")} <IMG SRC="img/delete.gif" ALT="{trans("Delete")}" HSPACE="2"></A>&nbsp;
 			<A HREF="javascript:printi();">{trans("Print invoices")} <IMG SRC="img/print.gif" ALT="" HSPACE="2"></A>&nbsp;
 			<A HREF="javascript:printr();">{trans("Print cash receipts")} <IMG SRC="img/printr.gif" ALT="" HSPACE="2"></A>&nbsp;
-			<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i',$_config.invoices.default_printpage)} checked{/if}><label for="original">{trans("original")}</label>
-			<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i',$_config.invoices.default_printpage)} checked{/if}><label for="copy">{trans("copy")}</label>
-			<INPUT type="checkbox" name="duplicate" id="duplicate"{if preg_match('/duplicate/i',$_config.invoices.default_printpage)} checked{/if}><label for="duplicate">{trans("duplicate")}</label>
+			<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i', get_conf('invoices.default_printpage'))} checked{/if}><label for="original">{trans("original")}</label>
+			<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i', get_conf('invoices.default_printpage'))} checked{/if}><label for="copy">{trans("copy")}</label>
+			<INPUT type="checkbox" name="duplicate" id="duplicate"{if preg_match('/duplicate/i', get_conf('invoices.default_printpage'))} checked{/if}><label for="duplicate">{trans("duplicate")}</label>
 		</TD>
 		<TD class="frightu" ALIGN="right" colspan="2">
 			<label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('page', this, ['original', 'duplicate', 'copy'])" VALUE="1">

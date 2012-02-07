@@ -24,16 +24,73 @@
  *  $Id$
  */
 
-function chkconfig($value, $default = FALSE)
+function chkconfig($value, $default = false)
 {
-	if($value == '')
-		return $default;
-	elseif(preg_match('/^(1|y|on|yes|true|tak|t|enabled)$/i', $value))
-		return TRUE;
-	elseif(preg_match('/^(0|n|no|off|false|nie|disabled)$/i', $value))
-		return FALSE;
-	else
-		trigger_error('Incorrect option value: '.$value);
+    if (is_bool($value)) {
+        return $value;
+    }
+
+    if ($value == '') {
+        return $default;
+    }
+
+    if (preg_match('/^(1|y|on|yes|true|tak|t|enabled)$/i', $value)) {
+        return true;
+    }
+
+    if (preg_match('/^(0|n|no|off|false|nie|disabled)$/i', $value)) {
+        return false;
+    }
+
+    trigger_error('Incorrect option value: '.$value);
+}
+
+function check_conf($name)
+{
+    global $CONFIG;
+
+    list($section, $name) = explode('.', $name, 2);
+
+    if (empty($name)) {
+        return false;
+    }
+
+    if ($section == 'privileges' && !empty($CONFIG['privileges']['superuser'])) {
+        return preg_match('/^hide/', $name) ? false : true;
+    }
+
+    if (!array_key_exists($section, $CONFIG)) {
+        return false;
+    }
+
+    if (!array_key_exists($name, $CONFIG[$section])) {
+        return false;
+    }
+
+    return chkconfig($CONFIG[$section][$name]);
+}
+
+function get_conf($name, $default = null)
+{
+    global $CONFIG;
+
+    list($section, $name) = explode('.', $name, 2);
+
+    if (empty($name)) {
+        return $default;
+    }
+
+    if (!array_key_exists($section, $CONFIG)) {
+        return $default;
+    }
+
+    if (!array_key_exists($name, $CONFIG[$section])) {
+        return $default;
+    }
+
+    $value = $CONFIG[$section][$name];
+
+    return $value == '' ? $default : $value;
 }
 
 /*

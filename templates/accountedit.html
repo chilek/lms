@@ -5,7 +5,7 @@
 <!--
 	function update_homedir()
 	{
-		var prefix = "{$_config.phpui.homedir_prefix}";
+		var prefix = "{get_conf('phpui.homedir_prefix')}";
 		document.forms['account'].elements['account[home]'].value = prefix + document.forms['account'].elements['account[login]'].value;
 	}
 //-->
@@ -16,7 +16,7 @@
 <TABLE width="100%" cellpadding="3">
 	<TR class="dark">
 		<TD width="1%" class="fleftu">
-			<img src="img/account.gif" alt="">		
+			<img src="img/account.gif" alt="">
 		</TD>
 		<TD width="1%" class="fbt">
 			<B>{trans("Login:")}</B>

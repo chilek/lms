@@ -108,7 +108,7 @@ if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0
 
 // Redirect to SSL
 
-$_FORCE_SSL = chkconfig($CONFIG['phpui']['force_ssl']);
+$_FORCE_SSL = check_conf('phpui.force_ssl');
 
 if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
 {
@@ -153,13 +153,12 @@ while (false !== ($filename = readdir($dh))) {
     }
 };
 
-$SMARTY->assign('_config',$CONFIG);
 $SMARTY->assignByRef('LANGDEFS', $LANGDEFS);
 $SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
 $SMARTY->assignByRef('_language', $LMS->lang);
 $SMARTY->template_dir = USERPANEL_DIR.'/templates/';
 $SMARTY->compile_dir = SMARTY_COMPILE_DIR;
-$SMARTY->debugging = chkconfig($CONFIG['phpui']['smarty_debug']);
+$SMARTY->debugging = check_conf('phpui.smarty_debug');
 require_once(USERPANEL_LIB_DIR.'/smarty_addons.php');
 
 $layout['upv'] = $USERPANEL->_version.' ('.$USERPANEL->_revision.'/'.$SESSION->_revision.')';
@@ -184,7 +183,7 @@ if($SESSION->islogged)
 	$rights = $USERPANEL->GetCustomerRights($SESSION->id);
 	$SMARTY->assign('rights', $rights);
 
-	if(isset($LMS->CONFIG['userpanel']['hide_nodes_modules']) && chkconfig($LMS->CONFIG['userpanel']['hide_nodes_modules']))
+	if(check_conf('userpanel.hide_nodes_modules'))
 	{
 		if(!$DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ownerid = ? LIMIT 1', array($SESSION->id)))
 		{
@@ -244,7 +243,7 @@ else
         $SMARTY->assign('target','?'.$_SERVER['QUERY_STRING']);
         $SMARTY->display('login.html');
 }
-               
+
 $DB->Destroy();
 
 ?>

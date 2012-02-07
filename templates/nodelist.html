@@ -1,6 +1,7 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
+{$lastonline_limit = get_conf('phpui.lastonline_limit')}
 <TABLE cellpadding="3" width="100%">
 	<TR class="dark" {tip text="Click on column name to change sorting order"}>
 		<TD class="fleftu" width="97%">
@@ -56,7 +57,7 @@
 				</SELECT></NOBR>
 			</FORM>
 		</TD>
-	</TR>		
+	</TR>
 	{if $listdata.total != 0}
 	<TR CLASS="dark">
 		<TD CLASS="fall" colspan="4">
@@ -70,7 +71,7 @@
 		<TD width="95%" class="fleft" onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';">
 			<a name="{$nodelist[nodelist].id}">
 			{if $nodelist[nodelist].lastonline}
-			    {if ($smarty.now-$nodelist[nodelist].lastonline) > $_config.phpui.lastonline_limit}
+			    {if ($smarty.now-$nodelist[nodelist].lastonline) > $lastonline_limit}
 				<img src="img/node_off.gif" ALT="">
 			    {else}
 				<img src="img/node_on.gif" ALT="">
