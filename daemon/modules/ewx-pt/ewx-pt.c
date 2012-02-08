@@ -376,6 +376,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
         free(hosts[i].name);
         free(hosts[i].mac);
         free(hosts[i].ip);
+        free(hosts[i].passwd);
 	}
 	free(hosts);
 
