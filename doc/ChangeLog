@@ -86,6 +86,7 @@ version ? (????-??-??):
   - use more <label> elements instead of javascript's checkElement() [alec]
   - fixed issue with too big session data on mysql [alec]
   - new contact add and new mac add ported to javascript [chilan]
+  - BTS#00000908: address smarty function beautify_bankaccount [wdjag/chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
