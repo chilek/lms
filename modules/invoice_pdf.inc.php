@@ -52,7 +52,7 @@ function invoice_simple_form_fill($x,$y,$scale)
 
     //text_autosize(15*$scale+$x,683*$scale+$y,30*$scale, substr($tmp,0,17),350*$scale);
     //text_autosize(15*$scale+$x,626*$scale+$y,30*$scale, substr($tmp,18,200),350*$scale);
-    text_autosize(15*$scale+$x,683*$scale+$y,30*$scale, $account, 350*$scale);
+    text_autosize(15*$scale+$x,683*$scale+$y,30*$scale, beautify_bankaccount($account), 350*$scale);
     text_autosize(15*$scale+$x,445*$scale+$y,30*$scale,"*".number_format($invoice['total'],2,',','')."*",350*$scale);
 
     text_autosize(15*$scale+$x,390*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2//TRANSLIT",$invoice['name']),350*$scale);
@@ -83,7 +83,7 @@ function invoice_main_form_fill($x,$y,$scale)
 
     text_autosize(15*$scale+$x,680*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2//TRANSLIT",$name),950*$scale);
     text_autosize(15*$scale+$x,617*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2//TRANSLIT",$address." ".$zip." ".$city),950*$scale);
-    text_autosize(15*$scale+$x,555*$scale+$y,30*$scale,$account,950*$scale);
+    text_autosize(15*$scale+$x,555*$scale+$y,30*$scale, beautify_bankaccount($account), 950*$scale);
     $pdf->addtext(330*$scale+$x,495*$scale+$y,30*$scale,'X');
     text_autosize(550*$scale+$x,495*$scale+$y,30*$scale,"*".number_format($invoice['total'],2,',','')."*",400*$scale);
     text_autosize(15*$scale+$x,434*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('$a dollars $b cents',to_words(floor($invoice['total'])),to_words(round(($invoice['total']-floor($invoice['total']))*100)))),950*$scale);

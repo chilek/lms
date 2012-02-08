@@ -153,4 +153,9 @@ function bankaccount($id, $account=NULL)
 	return $account;
 }
 
+function beautify_bankaccount($account)
+{
+	return preg_replace('/(..)(....)(....)(....)(....)(....)/i', '${1} ${2} ${3} ${4} ${5} ${6}', $account);
+}
+
 ?>

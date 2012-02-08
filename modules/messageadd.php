@@ -126,7 +126,7 @@ function BodyVars(&$body, $data)
 	$body = str_replace('%cid', $data['id'], $body);
 	$body = str_replace('%pin', $data['pin'], $body);
 	if (strpos($body, '%bankaccount') !== false)
-		$body = str_replace('%bankaccount', bankaccount($data['id']), $body);
+		$body = str_replace('%bankaccount', beautify_bankaccount(bankaccount($data['id']), $body));
 
 	if(!(strpos($body, '%last_10_in_a_table') === FALSE))
 	{
