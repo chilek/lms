@@ -87,7 +87,7 @@ function bankaccount($id, $account=NULL)
 	return $account;
 }
 
-function beautify_bankaccount($account)
+function format_bankaccount($account)
 {
 	return $account;
 }
