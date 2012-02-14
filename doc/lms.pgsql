@@ -926,6 +926,7 @@ CREATE TABLE domains (
 	type varchar(6) 	DEFAULT '' NOT NULL,
 	notified_serial integer DEFAULT NULL,
 	account varchar(40) 	DEFAULT NULL,
+	mxbackup smallint	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (name)
 );
@@ -1772,4 +1773,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012011800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012021400');
