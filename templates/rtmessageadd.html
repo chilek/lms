@@ -23,8 +23,8 @@
 			<B>{trans("Submitter:")}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
-			<INPUT class="radio light" type="radio" name="message[sender]" id="sender0" value="user" CHECKED><A HREF="javascript:setSubmitter('sender0')">{trans("user")}</A></INPUT>
-			<INPUT class="radio light" type="radio" name="message[sender]" id="sender1" value="customer" {if $message.sender eq 'customer'}CHECKED{/if}><A HREF="javascript:setSubmitter('sender1')">{trans("customer")}</A></INPUT>
+			<INPUT class="radio light" type="radio" name="message[sender]" id="sender0" value="user" CHECKED><label for="sender0">{trans("user")}</label>
+			<INPUT class="radio light" type="radio" name="message[sender]" id="sender1" value="customer" {if $message.sender eq 'customer'}CHECKED{/if}><label for="sender1">{trans("customer")}</label>
 		</TD>
 	</TR>
 	<TR CLASS="light">
@@ -99,11 +99,6 @@
 {include file="footer.html"}
 <SCRIPT type="text/javascript">
 <!--
-	function setSubmitter(id)
-	{
-		document.forms['message'].elements[id].checked = true;
-	}
-
 document.forms['message'].elements['message[subject]'].focus();
 //-->
 </SCRIPT>
