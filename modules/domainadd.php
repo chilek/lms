@@ -80,12 +80,13 @@ if(isset($_POST['domainadd']))
 	{
 		$DB->BeginTrans();
 	
-		$DB->Execute('INSERT INTO domains (name, ownerid, type, master, description) VALUES (?,?,?,?,?)',
+		$DB->Execute('INSERT INTO domains (name, ownerid, type, master, description, mxbackup) VALUES (?,?,?,?,?,?)',
 				array($domainadd['name'], 
 					$domainadd['ownerid'], 
 					$domainadd['type'], 
 					$domainadd['master'], 
-					$domainadd['description']));
+					$domainadd['description'],
+					$domainadd['mxbackup']));
 
 		$lid = $DB->GetLastInsertID('domains');
 

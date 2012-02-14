@@ -26,7 +26,7 @@
 
 $id = $_GET['id'];
 
-$domain = $DB->GetRow('SELECT d.id, d.name, d.ownerid, d.description, d.type,
+$domain = $DB->GetRow('SELECT d.id, d.name, d.ownerid, d.description, d.mxbackup, d.type,
 		(SELECT COUNT(*) FROM passwd WHERE domainid = d.id) AS accountcnt, 
 		(SELECT COUNT(*) FROM records WHERE domain_id = d.id) AS recordscnt,
 		(SELECT COUNT(*) FROM aliases WHERE domainid = d.id) AS aliascnt, '

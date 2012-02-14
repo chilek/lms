@@ -2538,4 +2538,6 @@ $_LANG['icmp'] = 'icmp';
 $_LANG['Start'] = 'Uruchom';
 $_LANG['Stop'] = 'Zatrzymaj';
 
+$_LANG['Backup MX support:'] = 'Obsługa zapasowego MX:';
+
 ?>

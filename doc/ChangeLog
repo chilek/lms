@@ -87,6 +87,7 @@ version ? (????-??-??):
   - fixed issue with too big session data on mysql [alec]
   - new contact add and new mac add ported to javascript [chilan]
   - BTS#00000908: added function format_bankaccount [wdjag/chilan]
+  - added support for domain mx backup [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
