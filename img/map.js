@@ -419,7 +419,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 
 		var centerbutton = new OpenLayers.Control.Button({
 			displayClass: "lmsCenterButton", 
-			title: "Cetner map around network elements ...",
+			title: "Center map around network elements ...",
 			command: 'center'});
 
 		var refreshbutton = new OpenLayers.Control.Button({
