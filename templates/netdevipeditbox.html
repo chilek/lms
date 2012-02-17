@@ -188,10 +188,11 @@
 		var lastmacelem = document.getElementById('mac' + (nr - 1));
 		var newrow = lastmacelem.parentNode.insertRow(lastmacelem.rowIndex + 1);
 		newrow.id = 'mac' + nr;
-		newrow.innerHTML = '<TD width="100%"><INPUT TYPE="TEXT" NAME="ipadd[macs][' + nr + ']" VALUE=""'
+		var newcell = newrow.insertCell(0);
+		newcell.innerHTML = '<INPUT TYPE="TEXT" NAME="ipadd[macs][' + nr + ']" VALUE=""'
 			+ ' onmouseover="popup(\'{trans("Enter MAC address")}\')" onmouseout="pophide()">'
 			+ '<a href="javascript: void(0);" onClick="return macchoosewin(document.editipaddr.elements[\'ipadd[macs][' + nr + ']\']);"'
-			+ ' onmouseover="popup(\'{trans("Click to select MAC from the list")}\')" onmouseout="pophide()">&raquo;&raquo;&raquo;</A></TD>';
+			+ ' onmouseover="popup(\'{trans("Click to select MAC from the list")}\')" onmouseout="pophide()">&nbsp;&raquo;&raquo;&raquo;</A>';
 		macscountelem.value = parseInt(nr) + 1;
 	}
 //-->

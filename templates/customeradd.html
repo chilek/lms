@@ -19,16 +19,18 @@
 		var lastcontactelem = document.getElementById('contact' + (nr - 1));
 		var newrow = lastcontactelem.parentNode.insertRow(lastcontactelem.rowIndex + 1);
 		newrow.id = 'contact' + nr;
-		newrow.innerHTML = '<TD width="1%" style="vertical-align: top"><IMG src="img/phone.gif" alt=""></TD>'
-			+ '<TD width="99%" NOWRAP>'
-			+ '<INPUT TYPE="text" size="15" value="" name="customeradd[contacts][' + nr + '][phone]"'
+		var newcell1 = newrow.insertCell(0);
+		var newcell2 = newrow.insertCell(1);
+		newcell1.style.verticalAlign = "top";
+		newcell1.innerHTML = '<IMG src="img/phone.gif" alt="">'
+		newcell2.innerHTML = '<INPUT TYPE="text" size="15" value="" name="customeradd[contacts][' + nr + '][phone]"'
 				+ ' onmouseover="popup(\'{trans("Enter contact phone")}\')" onmouseout="pophide()">'
 			+ '<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_MOBILE}" ID="chkmobile' + nr + '"'
 				+ ' name="customeradd[contacts][' + nr + '][type][]"><label for="chkmobile' + nr + '">{trans("mobile")}</label>'
 			+ '<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_FAX}" ID="chkfax' + nr + '"'
 				+ ' name="customeradd[contacts][' + nr + '][type][]"><label for="chkfax' + nr + '">{trans("fax")}</label>'
 			+ '<BR><INPUT TYPE="text" size="38" value="" name="customeradd[contacts][' + nr + '][name]"'
-				+ ' onmouseover="popup(\'{trans("Enter contact name/description (optional)")}\')" onmouseout="pophide()"></TD>';
+				+ ' onmouseover="popup(\'{trans("Enter contact name/description (optional)")}\')" onmouseout="pophide()">';
 		contactscountelem.value = parseInt(nr) + 1;
 	}
 //-->
