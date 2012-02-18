@@ -160,6 +160,7 @@
 		var newrow = lastmacelem.parentNode.insertRow(lastmacelem.rowIndex + 1);
 		newrow.id = 'mac' + nr;
 		var newcell = newrow.insertCell(0);
+		newcell.style.width = '100%';
 		newcell.innerHTML = '<INPUT TYPE="TEXT" NAME="ipadd[macs][' + nr + ']" VALUE=""'
 			+ ' onmouseover="popup(\'{trans("Enter MAC address")}\')" onmouseout="pophide()">'
 			+ '<a href="javascript: void(0);" onClick="return macchoosewin(document.editipaddr.elements[\'ipadd[macs][' + nr + ']\']);"'

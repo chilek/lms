@@ -24,8 +24,11 @@
 		newrow.id = 'contact' + nr;
 		var newcell1 = newrow.insertCell(0);
 		var newcell2 = newrow.insertCell(1);
-		newcell1.style.verticalAlign = "top";
-		newcell1.innerHTML = '<IMG src="img/phone.gif" alt="">'
+		newcell1.style.verticalAlign = 'top';
+		newcell1.style.width = '1%';
+		newcell1.innerHTML = '<IMG src="img/phone.gif" alt="">';
+		newcell2.style.width = '99%';
+		newcell2.style.whiteSpace = 'nowrap';
 		newcell2.innerHTML = '<INPUT TYPE="text" size="15" value="" name="customerdata[contacts][' + nr + '][phone]"'
 				+ ' onmouseover="popup(\'{trans("Enter contact phone")}\')" onmouseout="pophide()">'
 			+ '<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_MOBILE}"'
