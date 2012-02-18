@@ -2062,18 +2062,33 @@ class LMS
 		    $result[] = $this->DB->GetLastInsertID('assignments');
         }
 
-		if (!empty($data['nodes']) && !empty($result) && count($result = array_filter($result))) {
-		    // Use multi-value INSERT query
-		    $values = array();
-			foreach ((array)$data['nodes'] as $nodeid) {
-			    foreach ($result as $aid) {
-  			        $values[] = sprintf('(%d, %d)', $nodeid, $aid);
-			    }
+		if (!empty($result) && count($result = array_filter($result))) {
+			if (!empty($data['nodes'])) {
+				// Use multi-value INSERT query
+				$values = array();
+				foreach ((array)$data['nodes'] as $nodeid) {
+					foreach ($result as $aid) {
+						$values[] = sprintf('(%d, %d)', $nodeid, $aid);
+					}
+				}
+
+				$this->DB->Execute('INSERT INTO nodeassignments (nodeid, assignmentid)
+					VALUES ' . implode(', ', $values));
 			}
 
-			$this->DB->Execute('INSERT INTO nodeassignments (nodeid, assignmentid)
-			    VALUES ' . implode(', ', $values));
-        }
+			if (!empty($data['locks'])) {
+				// Use multi-value INSERT query
+				$values = array();
+				foreach ($data['locks'] as $lock) {
+					foreach ($result as $aid) {
+						$values[] = sprintf('(%d, %d, %d, %d)', $aid, $lock['days'], $lock['from'], $lock['to']);
+					}
+				}
+
+				$this->DB->Execute('INSERT INTO assignmentlocks (assignmentid, days, fromsec, tosec)
+					VALUES ' . implode(', ', $values));
+			}
+		}
 
 		return $result;
 	}

@@ -20,6 +20,7 @@ DROP TABLE IF EXISTS ewx_channels;
 DROP TABLE IF EXISTS numberplans;
 DROP TABLE IF EXISTS nodeassignments;
 DROP TABLE IF EXISTS assignments;
+DROP TABLE IF EXISTS assignmentlocks;
 DROP TABLE IF EXISTS taxes;
 DROP TABLE IF EXISTS cash;
 DROP TABLE IF EXISTS dbinfo;
@@ -211,6 +212,20 @@ CREATE TABLE assignments (
   INDEX customerid (customerid),
   INDEX numberplanid (numberplanid)
 ) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table  assignmentlocks
+#
+CREATE TABLE assignmentlocks (
+	id int(11)		NOT NULL auto_increment,
+	assignmentid int(11)	NOT NULL
+		REFERENCES assignments (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	days smallint		DEFAULT 0 NOT NULL,
+	fromsec int(11)		DEFAULT 0 NOT NULL,
+	tosec int(11)		DEFAULT 0 NOT NULL,
+	PRIMARY KEY (id)
+) ENGINE=INNODB;
 
 # --------------------------------------------------------
 #
@@ -1676,4 +1691,4 @@ INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012021400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012021800');

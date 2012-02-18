@@ -10,33 +10,47 @@
 <SCRIPT TYPE="text/javascript" SRC="img/common.js"></SCRIPT>
 </head>
 <body>
-<TABLE WIDTH="100%" CELLPADDING="3" id="table">
+<TABLE style="width: 100%;" CELLPADDING="3" id="table">
 	<TR class="DARK">
-		<TD width="1%">
+		<TD style="width: 1%;">
 			<IMG SRC="img/money.gif" alt="">
 		</TD>
-		<TD width="99%" NOWRAP colspan="2">
-			<B>{trans("Liability's Options:")}</B>
+		<TD style="width: 99%; white-space: nowrap;" colspan="2">
+			<span class="bold">{trans("Liability's Options:")}</span>
 		</TD>
 	</TR>
 	<TR class="light">
 		<TD><IMG src="img/id.gif" ALT=""></TD>
-		<TD width="1%" NOWRAP><B>{trans("Numbering Plan:")}</B></TD>
-		<TD nowrap>{if $assignment.numberplan}{$assignment.numberplan}{else}{trans("default")}{/if}</TD>
+		<TD style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Numbering Plan:")}</span></TD>
+		<TD style="white-space: nowrap;">{if $assignment.numberplan}{$assignment.numberplan}{else}{trans("default")}{/if}</TD>
 	</TR>
 	<TR class="light">
 		<TD><IMG src="img/print.gif" ALT=""></TD>
-		<TD width="1%" NOWRAP><B>{trans("Payment Type:")}</B></TD>
-		<TD nowrap>{if $assignment.paytypename}{$assignment.paytypename}{else}{trans("default")}{/if}</TD>
+		<TD style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Payment Type:")}</span></TD>
+		<TD style="white-space: nowrap;">{if $assignment.paytypename}{$assignment.paytypename}{else}{trans("default")}{/if}</TD>
+	</TR>
+	<TR class="light">
+		<TD style="vertical-align: top;"><IMG src="img/time.gif" ALT=""></TD>
+		<TD style="width: 1%; vertical-align: top; white-space: nowrap;"><span class="bold">{trans("Locks:")}</span></TD>
+		<TD style="white-space: nowrap;">
+			{foreach from=$assignment.locks item=item key=key}
+				{foreach from=$item.days item=day key=daynr}
+					{$_DAYS[$daynr]}&nbsp;
+				{/foreach}
+				{trans("from:")} {$item.fhour|string_format:"%02d"}:{$item.fminute|string_format:"%02d"} 
+				{trans("to:")} {$item.thour|string_format:"%02d"}:{$item.tminute|string_format:"%02d"}
+				<br>
+			{/foreach}
+		</TD>
 	</TR>
 	<TR class="light">
 		<TD><IMG src="img/options.gif" ALT=""></TD>
-		<TD width="1%" NOWRAP>{trans("with invoice")}:</TD>
+		<TD style="width: 1%; white-space: nowrap;">{trans("with invoice")}:</TD>
 		<TD>{if $assignment.invoice}{trans("yes")}{else}{trans("no")}{/if}</TD>
 	</TR>
 	<TR class="light">
 		<TD><IMG src="img/options.gif" ALT=""></TD>
-		<TD width="1%" NOWRAP>{trans("with settlement")}:</TD>
+		<TD style="width: 1%; white-space: nowrap;">{trans("with settlement")}:</TD>
 		<TD>{if $assignment.settlement}{trans("yes")}{else}{trans("no")}{/if}</TD>
 	</TR>
 </TABLE>

@@ -250,6 +250,20 @@ if(isset($_POST['assignment']))
 			$error['value'] = trans('Incorrect value!');
 	}
 
+	$locks = array();
+	if (is_array($a['locks']))
+		foreach ($a['locks'] as $lock) {
+			$days = 0;
+			foreach ($lock['days'] as $key => $value)
+				$days += (1 << $key);
+			$lfrom = $lock['fhour'] * 3600 + $lock['fminute'] * 60;
+			$lto = $lock['thour'] * 3600 + $lock['tminute'] * 60;
+			if ($lfrom >= $lto || !$days)
+				$error['locks'] = trans('Incorrect lock!');
+			else
+				$locks[] = array('days' => $days, 'from' => $lfrom, 'to' => $lto);
+		}
+
 	if(!$error) 
 	{
 		$DB->BeginTrans();
@@ -319,6 +333,15 @@ if(isset($_POST['assignment']))
 					array($nodeid, $a['id']));
 		}
 
+		$DB->Execute('DELETE FROM assignmentlocks WHERE assignmentid=?', array($a['id']));
+
+		if (!empty($locks))
+		{
+			foreach($locks as $lock)
+				$DB->Execute('INSERT INTO assignmentlocks (assignmentid, days, fromsec, tosec) VALUES (?, ?, ?, ?)',
+					array($a['id'], $lock['days'], $lock['from'], $lock['to']));
+		}
+
 		$DB->CommitTrans();
 
 		$SESSION->redirect('?'.$SESSION->get('backto'));
@@ -376,6 +399,21 @@ else
 
 	// nodes assignments
 	$a['nodes'] = $DB->GetCol('SELECT nodeid FROM nodeassignments WHERE assignmentid=?', array($a['id']));
+
+	$a['locks'] = array();
+	$locks = $DB->GetAll('SELECT days, fromsec, tosec FROM assignmentlocks WHERE assignmentid=?', array($a['id']));
+	if ($locks)
+		foreach ($locks as $lock) {
+			$fromsec = intval($lock['fromsec']);
+			$tosec = intval($lock['tosec']);
+			$days = intval($lock['days']);
+			$lockdays = array();
+			for ($i = 0; $i < 7; $i++)
+				if ($days & (1 << $i))
+					$lockdays[$i] = 1;
+			$a['locks'][] = array('days' => $lockdays, 'fhour' => intval($fromsec / 3600), 'fminute' => intval(($fromsec % 3600) / 60),
+				'thour' => intval($tosec / 3600), 'tminute' => intval(($tosec % 3600) / 60));
+		}
 }
 
 $expired = isset($_GET['expired']) ? $_GET['expired'] : false;
