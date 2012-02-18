@@ -2540,4 +2540,15 @@ $_LANG['Stop'] = 'Zatrzymaj';
 
 $_LANG['Backup MX support:'] = 'Obsługa zapasowego MX:';
 
+$_LANG['Mon'] = 'pn.';
+$_LANG['Tue'] = 'wt.';
+$_LANG['Thu'] = 'śr.';
+$_LANG['Wed'] = 'cz.';
+$_LANG['Fri'] = 'pt.';
+$_LANG['Sat'] = 'sb.';
+$_LANG['Sun'] = 'nd.';
+$_LANG['Incorrect lock!'] = 'Niepoprawna blokada!';
+$_LANG['Locks:'] = 'Blokady:';
+$_LANG['Add new lock'] = 'Dodaj nową blokadę';
+
 ?>

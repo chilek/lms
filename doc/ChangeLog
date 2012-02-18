@@ -89,6 +89,7 @@ version ? (????-??-??):
   - BTS#0000908: added function format_bankaccount [wdjag/chilan]
   - added support for domain mx backup [chilan]
   - BTS#0000911: msie support for javascript used for new mac/contact add [prezes_kk/chilan]
+  - assignment locks support introduced [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 

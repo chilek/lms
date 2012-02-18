@@ -121,6 +121,22 @@ CREATE INDEX assignments_tariffid_idx ON assignments (tariffid);
 CREATE INDEX assignments_customerid_idx ON assignments (customerid);
 CREATE INDEX assignments_numberplanid_idx ON assignments (numberplanid);
 
+/* ----------------------------------------------------
+ Structure of table "assignmentlocks"
+---------------------------------------------------*/
+DROP SEQUENCE IF EXISTS assignmentlocks_id_seq;
+CREATE SEQUENCE assignmentlocks_id_seq;
+DROP TABLE IF EXISTS assignmentlocks CASCADE;
+CREATE TABLE assignmentlocks (
+	id integer		DEFAULT nextval('assignmentlocks_id_seq'::text) NOT NULL,
+	assignmentid integer	NOT NULL
+		REFERENCES assignments (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	days smallint		DEFAULT 0 NOT NULL,
+	fromsec integer		DEFAULT 0 NOT NULL,
+	tosec integer		DEFAULT 0 NOT NULL,
+	PRIMARY KEY (id)
+);
+
 /* -------------------------------------------------------- 
   Structure of table "cash" 
 -------------------------------------------------------- */
@@ -1773,4 +1789,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012021400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012021800');

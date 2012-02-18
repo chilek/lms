@@ -28,13 +28,29 @@ $a = $DB->GetRow('SELECT a.invoice, a.settlement,
         a.numberplanid, a.paytype, n.template, n.period
 		FROM assignments a
 		LEFT JOIN numberplans n ON (n.id = a.numberplanid)
-		WHERE a.id = ?',array($_GET['id']));
+		WHERE a.id = ?',array(intval($_GET['id'])));
 
 if ($a['template']) {
     $a['numberplan'] = $a['template'].' ('.$NUM_PERIODS[$a['period']].')';
 }
 
 $a['paytypename'] = $PAYTYPES[$a['paytype']];
+
+$a['locks'] = array();
+$locks = $DB->GetAll('SELECT days, fromsec, tosec FROM assignmentlocks WHERE assignmentid = ?',
+	array(intval($_GET['id'])));
+if (!empty($locks))
+	foreach ($locks as $lock) {
+		$from = intval($lock['fromsec']);
+		$to = intval($lock['tosec']);
+		$days = intval($lock['days']);
+		$lockdays = array();
+		for ($i = 0; $i < 7; $i++)
+			if ($days & (1 << $i))
+				$lockdays[$i] = 1;
+		$a['locks'][] = array('days' => $lockdays, 'fhour' => intval($from / 3600), 'fminute' => intval(($from % 3600) / 60),
+			'thour' => intval($to / 3600), 'tminute' => intval(($to % 3600) / 60));
+	}
 
 $SMARTY->assign('assignment', $a);
 $SMARTY->display('customerassignmentinfoshort.html');
