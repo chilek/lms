@@ -1,3 +1,11 @@
+div#map {
+	position: absolute;
+	width: 85%;
+	height: 85%;
+	width: expression(document.body.clientWidth - 200 + 'px');	/* IE fix */
+	height: expression(document.body.clientHeight - 150 + 'px');	/* IE fix */
+}
+
 div.olPopup {
 	overflow: visible;
 }
@@ -38,8 +46,10 @@ div.lmsInfoPopupContents {
 	background-color: #DFD5BD;
 	padding: 6px;
 	border-color: black;
-	border: thin solid black;
-	width: auto; height: auto;
+	border: 1px solid black;
+	width: auto !important;
+	width: 100%;		/* IE fix */
+	height: auto;
 	white-space: nowrap;
 	overflow: visible;
 }
@@ -48,7 +58,9 @@ div.lmsInfoPopupName {
 	background-color: #DFD5BD;
 	font-weight: bold;
 	padding: 2px;
-	width: auto; height: auto;
+	width: auto !important;
+	width: 100%;		/* IE fix */
+	height: auto;
 	white-space: nowrap;
 	clear: both;
 }
@@ -57,7 +69,9 @@ div.lmsInfoPopupAddress {
 	background-color: #DFD5BD;
 	padding: 2px;
 	border: none;
-	width: auto; height: auto;
+	width: auto !important;
+	width: 100%;		/* IE fix */
+	height: auto;
 	white-space: nowrap;
 	clear: both;
 }
@@ -72,7 +86,7 @@ div.lmsInfoPopupDetails {
 }
 
 div.lmsMapPopupContents {
-	border: thin solid black;
+	border: 1px solid black;
 	background-color: #DFD5BD;
 	width: auto; height: auto;
 	white-space: nowrap;
@@ -95,9 +109,11 @@ div.lmsMapPopupAddress {
 }
 
 div.lmsIpPopupContents {
-	border: thin solid black;
+	border: 1px solid black;
 	background-color: #DFD5BD;
-	width: auto; height: auto;
+	width: auto !important;
+	width: 100%;		/* IE fix */
+	height: auto;
 	padding: 6px;
 	white-space: nowrap;
 	overflow: visible;
@@ -108,7 +124,7 @@ div.lmsIpPopupLabel {
 }
 
 div.lmsPingContentsFrame {
-	border: 1pt solid black;
+	border: 1px solid black;
 	padding: 0px;
 	background-color: #DFD5BD;
 }
@@ -119,7 +135,7 @@ div.lmsPingContents {
 	top: 0px; bottom: 48px;
 	overflow: auto;
 	padding: 0px;
-    margin-bottom: 5px;
+	margin-bottom: 5px;
 }
 
 div.olControlPanel {
@@ -131,7 +147,7 @@ div.olControlPanel {
 	display: block;
 	float: left;
 	width: 22px; height: 22px;
-	border: thin solid black;
+	border: 1px solid black;
 	margin: 1px;
 	background-position: center center;
 	background-repeat: no-repeat;
