@@ -4,6 +4,8 @@ var maprequest = null;
 var mappopup = null;
 var lastonline_limit;
 var lmsProjection = new OpenLayers.Projection("EPSG:4326");
+var devicesLbl;
+var nodesLbl;
 
 function removeInvisiblePopups()
 {
@@ -35,7 +37,7 @@ function netdevmap_updater()
 		var devices = data.devices;
 		var nodes = data.nodes;
 
-		var devicelayer = map.getLayersByName('Devices')[0];
+		var devicelayer = map.getLayersByName(devicesLbl)[0];
 		for (i in devices)
 		{
 			var features = devicelayer.getFeaturesByAttribute('id', parseInt(devices[i].id));
@@ -50,7 +52,7 @@ function netdevmap_updater()
 			}
 		}
 
-		var nodelayer = map.getLayersByName('Nodes')[0];
+		var nodelayer = map.getLayersByName(nodesLbl)[0];
 		for (i in nodes)
 		{
 			var features = nodelayer.getFeaturesByAttribute('id', parseInt(nodes[i].id));
@@ -219,7 +221,8 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				), deviceArray[i]));
 		}
 
-	var devicelayer = new OpenLayers.Layer.Vector("Devices", {
+	devicesLbl = OpenLayers.Lang.translate("Devices");
+	var devicelayer = new OpenLayers.Layer.Vector(devicesLbl, {
 		styleMap: new OpenLayers.StyleMap(devicestyle)
 	});
 	devicelayer.addFeatures(devices);
@@ -239,7 +242,8 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				null, linkstyles[devlinkArray[i].type]));
 		}
 
-	var devlinklayer = new OpenLayers.Layer.Vector("Device Links");
+	var devlinkLbl = OpenLayers.Lang.translate("Device Links");
+	var devlinklayer = new OpenLayers.Layer.Vector(devlinkLbl);
 	devlinklayer.addFeatures(devlinks);
 
 	var nodes = [];
@@ -256,7 +260,8 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				), nodeArray[i]));
 		}
 
-	var nodelayer = new OpenLayers.Layer.Vector("Nodes", {
+	nodesLbl = OpenLayers.Lang.translate("Nodes");
+	var nodelayer = new OpenLayers.Layer.Vector(nodesLbl, {
 		styleMap: new OpenLayers.StyleMap(nodestyle)
 	});
 	nodelayer.addFeatures(nodes);
@@ -276,7 +281,8 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				null, linkstyles[nodelinkArray[i].type]));
 		}
 
-	var nodelinklayer = new OpenLayers.Layer.Vector("Node Links");
+	var nodelinkLbl = OpenLayers.Lang.translate("Node Links");
+	var nodelinklayer = new OpenLayers.Layer.Vector(nodelinkLbl);
 	nodelinklayer.addFeatures(nodelinks);
 
 	map.addLayer(devicelayer);
@@ -412,19 +418,22 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		map.addControl(selectlayer);
 		selectlayer.activate();
 
+		var checkbuttonLbl = OpenLayers.Lang.translate("Check a host ...");
 		var checkbutton = new OpenLayers.Control.Button({
 			displayClass: "lmsCheckButton", 
-			title: "Check a host ...",
+			title: checkbuttonLbl,
 			command: 'check'});
 
+		var centerbuttonLbl = OpenLayers.Lang.translate("Center map around network elements ...");
 		var centerbutton = new OpenLayers.Control.Button({
 			displayClass: "lmsCenterButton", 
-			title: "Center map around network elements ...",
+			title: centerbuttonLbl,
 			command: 'center'});
 
+		var refreshbuttonLbl = OpenLayers.Lang.translate("Refesh network state ...");
 		var refreshbutton = new OpenLayers.Control.Button({
 			displayClass: "lmsRefreshButton", 
-			title: "Refesh network state ...",
+			title: refreshbuttonLbl,
 			command: 'refresh'});
 
 		var panel = new OpenLayers.Control.Panel({
@@ -496,7 +505,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 	if (navigator.appName == "Microsoft Internet Explorer") {
 		var layerSwitcher = new OpenLayers.Control.LayerSwitcher({ roundedCorner: false });
 	} else {
-		var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
+		var layerSwitcher = new OpenLayers.Control.LayerSwitcher({ roundedCornerColor: '#CEBD9B' });
 	}
 	map.addControl(layerSwitcher);
 	map.addControl(new OpenLayers.Control.MousePosition({ displayProjection: lmsProjection }));
