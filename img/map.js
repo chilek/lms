@@ -491,7 +491,13 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 	}
 
 	map.addControl(new OpenLayers.Control.ScaleLine());
-	var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
+	map.addControl(new OpenLayers.Control.NavToolbar());
+	/* in MSIE LayerSwitcher display rounded corners is broken */
+	if (navigator.appName == "Microsoft Internet Explorer") {
+		var layerSwitcher = new OpenLayers.Control.LayerSwitcher({ roundedCorner: false });
+	} else {
+		var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
+	}
 	map.addControl(layerSwitcher);
 	map.addControl(new OpenLayers.Control.MousePosition({ displayProjection: lmsProjection }));
 
