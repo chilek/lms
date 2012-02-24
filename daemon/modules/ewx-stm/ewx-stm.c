@@ -1247,7 +1247,7 @@ int add_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, stru
 	if(result == STATUS_OK)
 		for(i=0; i<c.no; i++)
 		{
-			add_node(g, ewx, sh, &c.hosts[i], channelid + ewx->offset);
+			add_node(g, ewx, sh, &c.hosts[i], channelid);
 		}
 
 	return result;
@@ -1363,7 +1363,7 @@ int update_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, s
 	if(result == STATUS_OK)
 		for(i=0; i<cu.no; i++)
 		{
-			add_node(g, ewx, sh, &cu.hosts[i], c.id + ewx->offset);
+			add_node(g, ewx, sh, &cu.hosts[i], c.id);
 		}
 
 	free(upceil);
@@ -1552,7 +1552,7 @@ int add_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, struct 
 
 //	snmp_add_var(pdu, CustomerNo, STM_OID_LEN, 'i', itoa(h.id));
 	snmp_add_var(pdu, CustomerPathNo, STM_OID_LEN, 'u', itoa(ewx->path));
-	snmp_add_var(pdu, CustomerChannelNo, STM_OID_LEN, 'u', itoa(chid));
+	snmp_add_var(pdu, CustomerChannelNo, STM_OID_LEN, 'u', itoa(chid + (chid ? ewx->offset : 0)));
 	snmp_add_var(pdu, CustomerIpAddr, STM_OID_LEN, 's', h.ip);
 	snmp_add_var(pdu, CustomerMacAddr, STM_OID_LEN, 's', h.mac);
 	snmp_add_var(pdu, CustomerUpMinSpeed, STM_OID_LEN, 'u', itoa(h.uprate));
