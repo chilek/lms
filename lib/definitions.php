@@ -161,6 +161,7 @@ $PAYTYPES = array(
     5   => trans('compensation'),
     6   => trans('barter'),
     7   => trans('contract'),
+    8   => trans('paid'),
 );
 
 // Contact types

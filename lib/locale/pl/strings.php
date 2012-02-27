@@ -2361,6 +2361,7 @@ $_LANG['tariffless liability'] = 'zobowiązanie beztaryfowe';
 $_LANG['barter'] = 'barter';
 $_LANG['card'] = 'karta';
 $_LANG['cash'] = 'gotówka';
+$_LANG['paid'] = 'zapłacono';
 $_LANG['compensation'] = 'kompensata';
 $_LANG['transfer'] = 'przelew';
 $_LANG['transfer/cash'] = 'przelew/gotówka';

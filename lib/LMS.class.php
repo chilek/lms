@@ -1017,9 +1017,10 @@ class LMS
 		return $result;
 	}
 
-	function GetCustomerBalance($id)
+	/* added balance totime - tcpdf invoice */
+	function GetCustomerBalance($id, $totime=NULL)
 	{
-		return $this->DB->GetOne('SELECT SUM(value) FROM cash WHERE customerid=?', array($id));
+		return $this->DB->GetOne('SELECT SUM(value) FROM cash WHERE customerid = ?'.($totime ? ' AND time < '.intval($totime) : ''), array($id));
 	}
 
 	function GetCustomerBalanceList($id, $totime=NULL, $direction='ASC')
