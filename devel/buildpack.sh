@@ -7,7 +7,7 @@
 
 WORKDIR=`pwd`
 NOTDISTRIB="devel .project modules/core modules/mailing modules/auth modules/traffic modules/users lib/ExecStack.class.php"
-SMARTYVER="2.6.26"
+SMARTYVER="3.1.8"
 
 echo -ne "Katalog tmp? [$TMPDIR]: "
 read TEMPDIR
@@ -27,7 +27,7 @@ if [ -z "$LMSVER" ]; then
 	exit
 fi
 
-echo -ne "CVS Tag?: "
+echo -ne "GIT Tag?: "
 read CVSTAG
 if [ -z "$CVSTAG" ]; then
 	echo "No way, we can't go without this."
@@ -44,13 +44,13 @@ fi
 # pobieramy LMSa
 X=$RANDOM
 mkdir -p $TEMPDIR/$X
-wget --proxy=off "http://cvs.lms.org.pl/viewvc/Development/lms/?view=tar&pathrev=${CVSTAG}" -O $TEMPDIR/$X/lms.tar.gz
+wget --proxy=off "https://github.com/lmsgit/lms/tarball/${CVSTAG}" -O $TEMPDIR/$X/lms.tar.gz
 umask 022
 cd $TEMPDIR/$X/
 # ropakowujemy
 tar -xzf lms.tar.gz
-# i datę, zepsutą przez ViewCVS
-touch `find . -type d`    
+rm -f lms.tar.gz
+mv lmsgit* lms
 cd lms
 # usuwamy deweloperski stuff
 rm -Rf $NOTDISTRIB
@@ -64,8 +64,9 @@ tar -xzf Smarty-$SMARTYVER.tar.gz
 mv Smarty-$SMARTYVER/libs/* Smarty/
 mv Smarty-$SMARTYVER/libs/plugins/* Smarty/plugins/
 rm -Rf Smarty-$SMARTYVER Smarty-$SMARTYVER.tar.gz
-cd ../../
-tar -czf $WORKDIR/lms-$LMSVER.tar.gz lms
-cd $WORKDIR
-echo -ne "Do clenup (I'll don't do this):\nrm -Rf $TEMPDIR/$X\n"
 
+# cleanup
+cd ../..
+tar -czf lms-$LMSVER.tar.gz lms
+cd ..
+echo -ne "Do clenup (I'll don't do this):\nrm -Rf $TEMPDIR/$X\n"
