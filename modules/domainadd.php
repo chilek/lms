@@ -86,7 +86,7 @@ if(isset($_POST['domainadd']))
 					$domainadd['type'], 
 					$domainadd['master'], 
 					$domainadd['description'],
-					$domainadd['mxbackup']));
+					empty($domainadd['mxbackup']) ? 0 : 1));
 
 		$lid = $DB->GetLastInsertID('domains');
 
