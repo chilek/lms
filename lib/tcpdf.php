@@ -313,7 +313,8 @@ function init_pdf($pagesize, $orientation, $title) {
 
 	$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 	$pdf->setLanguageArray($l);
-	$pdf->setFontSubsetting(true);
+	/* disable font subsetting to improve performance */
+	$pdf->setFontSubsetting(false);
 
 	$pdf->AddPage();
 	return $pdf;
