@@ -1,90 +1,91 @@
 <!--// $Id$ //-->
-<TABLE WIDTH="100%" CELLPADDING="3">
-        <TR CLASS="DARK">
-	        <TD width="100%" class="fall hand" align="left" nowrap="nowrap" onClick="showOrHide('devicenodes');">
+<TABLE style="width: 100%;" CELLPADDING="3">
+	<TR CLASS="DARK">
+		 <TD style="width: 100%; text-align: left; white-space: nowrap;" class="fall hand" onClick="showOrHide('devicenodes');">
 			<IMG SRC="img/node.gif" ALT="">
-			<B>{t a=$netcomplist|@count}Connected nodes ($a):{/t}</B>
-                </TD>
-        </TR>
+			<span class="bold">{t a=$netcomplist|@count}Connected nodes ($a):{/t}</span>
+		</TD>
+	</TR>
 	<TR id="devicenodes" style="display:none;">
-	        <TD WIDTH="100%" class="fall">
-	                <TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
+		<TD style="width: 100%;" class="fall">
+			<TABLE cellpadding="5" cellspacing="0" style="width: 100%;">
 				<TR class="dark">
-					<TD CLASS="fleftu" width="97%" nowrap>
-						<img src="img/node.gif" ALT=""> <B>{trans("Name:")}</B><BR>
+					<TD CLASS="fleftu" style="width: 97%; white-space: nowrap;">
+						<img src="img/node.gif" ALT=""> <span class="bold">{trans("Name:")}</span><BR>
 						<img src="img/customer.gif" ALT=""> {trans("Owner:")}
 					</TD>
-					<TD CLASS="fbt" width="1%" align="right" NOWRAP>
+					<TD CLASS="fbt" style="width: 1%; text-align: right; white-space: nowrap;">
 						{trans("Node ID:")}<BR>
 						{trans("Customer ID:")}
 					</TD>
-					<TD CLASS="fbt" width="1%" NOWRAP>
+					<TD CLASS="fbt" style="width: 1%; white-space: nowrap;">
 						<img src="img/netdev_takenports.gif"> {trans("Port")}:<BR>
 						<img src="img/ip.gif" ALT=""> {trans("IP address:")}
 					</TD>
-					<TD CLASS="frightu" WIDTH="1%">&nbsp;</TD>
-			    	</TR>
+					<TD CLASS="frightu" style="width: 1%;">&nbsp;</TD>
+				</TR>
 				{cycle values="light,lucid" print=false}
 				{section name=netcomplist loop=$netcomplist start=$start}
 				<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-					<TD width="97%" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';">
-						<IMG SRC="img/node.gif" ALT=""> <B>{$netcomplist[netcomplist].name}</B><BR>
+					<TD style="width: 97%;" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';">
+						<IMG SRC="img/node.gif" ALT=""> <span class="bold">{$netcomplist[netcomplist].name}</span><BR>
 						<IMG SRC="img/customer.gif" ALT=""> <A href="?m=customerinfo&id={$netcomplist[netcomplist].ownerid}" {tip a=$netcomplist[netcomplist].ownerid dynpopup='?m=customerinfoshort&id=$a'}>{$netcomplist[netcomplist].owner}</A>
 					</TD>
-					<TD width="1%" align="right" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';" NOWRAP>
+					<TD style="width: 1%; text-align: right; white-space: nowrap;" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';">
 						({$netcomplist[netcomplist].id|string_format:"%04d"})<BR>
-						<font class="blend">({$netcomplist[netcomplist].ownerid|string_format:"%04d"})</font>
+						<span class="blend">({$netcomplist[netcomplist].ownerid|string_format:"%04d"})</span>
 					</TD>
-					<TD width="1%" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';" NOWRAP>
-						{if $netcomplist[netcomplist].linktype}
-						<A href="?m=netdevedit&action=switchnodelinktype&linktype=0&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}"><IMG src="img/wireless.gif" alt="[ {trans("Change connection type")} ]" title="[ {trans("Change connection type")} ]"></A>
-						{else}
-						<A href="?m=netdevedit&action=switchnodelinktype&linktype=1&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}"><IMG src="img/netdev_takenports.gif" alt="[ {trans("Change connection type")} ]" title="[ {trans("Change connection type")} ]" title="[ {trans("Change connection type")} ]"></A>
-						{/if}
+					<TD style="width: 1%; white-space: nowrap;" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';">
+						<A href="?m=netdevedit&action=switchnodelinktype&linktype={($netcomplist[netcomplist].linktype + 1) % 3}&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}">
+						<IMG src="{if $netcomplist[netcomplist].linktype == 1}img/wireless.gif{elseif $netcomplist[netcomplist].linktype == 2}img/netdev_takenports.gif{else}img/netdev_takenports.gif{/if}" alt="[ {trans("Change connection type")} ]" title="[ {trans("Change connection type")} ]"></A>
 						[{if $netcomplist[netcomplist].port}{$netcomplist[netcomplist].port}{/if}]
 						<BR><IMG SRC="img/ip.gif" ALT=""> {$netcomplist[netcomplist].ip}{if $netcomplist[netcomplist].ip_pub != "0.0.0.0"} ({$netcomplist[netcomplist].ip_pub}){/if}
 					</TD>
-					<TD WIDTH="1%">
+					<TD style="width: 1%;">
 						<A HREF="?m=netdevedit&action=disconnectnode&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that connection?")}');"><IMG SRC="img/delete.gif" ALT="" {tip text="Delete connection"}></A>
 					</TD>
 				</TR>
 				{sectionelse}
 				<TR>
-					<TD colspan="4" align="center">
+					<TD colspan="4" style="text-align: center;">
 						<p>&nbsp;</p>
-						<p><B>{trans("No such connected nodes.")}</b></p>
+						<p><span class="bold">{trans("No such connected nodes.")}</span></p>
 						<p>&nbsp;</p>
 					</TD>
 				</TR>
 				{/section}
 				<TR CLASS="light">
-					<TD WIDTH="100%" CLASS="ftop" COLSPAN="4" ALIGN="CENTER" NOWRAP>
+					<TD style="width: 100%; text-align: center; white-space: nowrap;" CLASS="ftop" COLSPAN="4">
 						{if $netdevinfo.ports eq $netdevinfo.takenports}
-						<B>{trans("All ports in that device are in use.")}</B>
+						<span class="bold">{trans("All ports in that device are in use.")}</span>
 						{elseif $nodelist eq NULL}
-						<B>{trans("No such nodes to connection.")}</B>
+						<span class="bold">{trans("No such nodes to connection.")}</span>
 						{else}
 						<FORM METHOD="GET" ACTION="?m=netdevedit" NAME="connectnode">
 						<INPUT type="submit" class="hiddenbtn">
 						<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
 						<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
 						<INPUT TYPE="HIDDEN" NAME="action" VALUE="connectnode">
-						<TABLE WIDTH="100%">
-						    <TR>
-							<TD width="99%" NOWRAP>
-						<b>{trans("Connect")}:</b>
-						{trans("Node:")}<SELECT NAME="nodeid" {tip trigger="linknode" text="Select node, which you want to connect to device"}>
-		    				{section name=nodelist loop=$nodelist}
-							<OPTION VALUE="{$nodelist[nodelist].id}"{if $connectnode.id == $nodelist[nodelist].id} selected{/if}>{$nodelist[nodelist].name} ({$nodelist[nodelist].ip})</OPTION>
-						{/section}
-						</SELECT>
-						{trans("Dest. port")}:<INPUT name="port" value="{if $connectnode.port}{$connectnode.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
-						<label for="devnodeslinktype">{trans("Wireless")}:</label><INPUT type="checkbox" name="linktype" id="devnodeslinktype" value="1" {tip text="wireless"} {if $nodelinktype}CHECKED{/if}>
-							</TD>
-							<TD width="1%" align="right">
-								<NOBR><A HREF="javascript:document.connectnode.submit(); ">{trans("Connect")}</A> <IMG src="img/save.gif" alt=""></NOBR>
-							</TD>
-						    </TR>
+						<TABLE style="width: 100%;">
+							<TR>
+								<TD style="width: 99%; white-space: nowrap;">
+									<span class="bold">{trans("Connect")}:</span>
+									{trans("Node:")}<SELECT NAME="nodeid" {tip trigger="linknode" text="Select node, which you want to connect to device"}>
+									{section name=nodelist loop=$nodelist}
+										<OPTION VALUE="{$nodelist[nodelist].id}"{if $connectnode.id == $nodelist[nodelist].id} selected{/if}>{$nodelist[nodelist].name} ({$nodelist[nodelist].ip})</OPTION>
+									{/section}
+									</SELECT>
+									{trans("Dest. port")}:<INPUT name="port" value="{if $connectnode.port}{$connectnode.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
+									<SELECT NAME="linktype" id="devnodeslinktype" {tip trigger="devnodeslinktype" text="Select link type"}>
+										<OPTION value="0">{trans("wire")}</OPTION>
+										<OPTION value="1">{trans("wireless")}</OPTION>
+										<OPTION value="2">{trans("fiber")}</OPTION>
+									</SELECT>
+								</TD>
+								<TD style="width: 1%; text-align: right; white-space: nowrap;">
+									<A HREF="javascript:document.connectnode.submit(); ">{trans("Connect")}</A> <IMG src="img/save.gif" alt="">
+								</TD>
+							</TR>
 						</TABLE>
 						</FORM>
 						{/if}
