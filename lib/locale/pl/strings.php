@@ -558,6 +558,7 @@ $_LANG['expired'] = 'wygasł';
 $_LANG['expired<!guarantee>'] = 'wygasła';
 $_LANG['Exposed By'] = 'Wystawił';
 $_LANG['Expositor:'] = 'Wystawił:';
+$_LANG['fiber'] = 'światłowodowe';
 $_LANG['File upload has finished prematurely.'] = 'Plik został wysłany częściowo.';
 $_LANG['File is too large.'] = 'Plik jest za duży.';
 $_LANG['File name for saving document printout. WARNING: Setting attachment_name with default content_type will (in case of MSIE) print document, and prompt for save on disk. Default: empty.'] = 'Nazwa pliku dla zapisu dokumentu. UWAGA: Ustawienie attachment_name tak samo jak domyślnie content_type spowoduje (w przypadku MSIE) wydruk dokumentu i zapytanie o zapis na dysk. Domyślnie: pusta.';

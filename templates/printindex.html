@@ -6,169 +6,170 @@
 {if $printmenu=="customer"}
 <P><FORM method="POST" name="printcustomerlist" id="printcustomerlist" action="?m=customerprint&type=customerlist" target="_blank">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" cellpadding="3">
+<TABLE style="width: 100%;" cellpadding="3">
 	<TR class="DARK">
-		<TD class="fleftu" width="1%">
+		<TD class="fleftu" style="width: 1%;">
 			<IMG src="img/customer.gif" alt="">
 		</TD>
-		<TD class="frightu" width="99%">
-			<B>{trans("Customers List:")}</B>
+		<TD class="frightu" style="width: 99%;">
+			<span class="bold">{trans("Customers List:")}</span>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
-		<TD class="flr container" width="100%" colspan="2">
-			<TABLE width="100%" cellpadding="3">
+		<TD class="flr container" style="width: 100%;" colspan="2">
+			<TABLE style="width: 100%;" cellpadding="3">
 				<TR>
-					<TD width="1%" nowrap>
-					    <TABLE>
-						<TR>
-						    <TD width="1%"><IMG src="img/customer.gif" alt=""></TD>
-						    <TD width="1%" nowrap><B>{trans("Status:")}</B></TD>
-						    <TD width="98%">
-							<SELECT size="1" name="filter" {tip text="Select customer's group"}>
-							    <OPTION value="0">- {trans("all<!customers>")} -</OPTION>
-							    <OPTION value="3" CHECKED>{trans("connected<!plural>")}</OPTION>
-							    <OPTION value="5">{trans("disconnected<!plural>")}</OPTION>
-							    <OPTION value="6">{trans("in debt")}</OPTION>
-							    <OPTION VALUE="11">{trans("in debt above 100%")}</OPTION>
-							    <OPTION VALUE="12">{trans("in debt above 200%")}</OPTION>
-							    <OPTION value="2">{trans("waiting")}</OPTION>
-							    <OPTION value="1">{trans("interested<!plural>")}</OPTION>
-							    <OPTION value="-1">{trans("without nodes")}</OPTION>
-							</SELECT>
-						    </TD>
-						</TR>
-						<TR>
-						    <TD width="1%" nowrap><IMG src="img/folder.gif" alt=""></TD>
-						    <TD width="1%" nowrap><B>{trans("Legal personality:")}</B></TD>
-						    <TD width="98%" nowrap>
-							<SELECT size="1" name="type" {tip text="Select legal personality type"}>
-							    <OPTION value="" SELECTED>{trans("- all -")}</OPTION>
-			                            	    <OPTION VALUE="0">{trans("private person")}</OPTION>
-			                            	    <OPTION VALUE="1">{trans("legal entity")}</OPTION>
-							</SELECT>
-						    </TD>
-						</TR>
-						<TR>
-						    <TD width="1%" nowrap><IMG src="img/netdev.gif" alt=""></TD>
-						    <TD width="1%" nowrap><B>{trans("Link type:")}</B></TD>
-						    <TD width="98%" nowrap>
-							<SELECT size="1" name="linktype" {tip text="Select link type"}>
-                            				    <OPTION VALUE="">{trans("- all -")}</OPTION>
-				                    	    <OPTION VALUE="0">{trans("wire")}</OPTION>
-							    <OPTION VALUE="1">{trans("wireless")}</OPTION>
-							</SELECT>
-						    </TD>
-						</TR>
-						<TR>
-						    <TD width="1%" nowrap><IMG src="img/network.gif" alt=""></TD>
-						    <TD width="1%" nowrap><B>{trans("Network:")}</B></TD>
-						    <TD width="98%" nowrap>
-							<SELECT size="1" name="network" {tip text="Select network"}>
-							    <OPTION value="0" SELECTED>{trans("- all networks -")}</OPTION>
-							    {section name="networks" loop=$networks}
-							    <OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:40:"...":true}</OPTION>
-							    {/section}
-							</SELECT>
-						    </TD>
-						</TR>
-						<TR>    
-						    <TD width="1%" nowrap><IMG src="img/group.gif" alt=""></TD>
-						    <TD width="1%" nowrap><B>{trans("Group:")}</B></TD>
-						    <TD width="98%" nowrap>
-							<SELECT size="1" name="customergroup" {tip text="Select group"}>
-							    <OPTION value="0" SELECTED>{trans("- all groups -")}</OPTION>
-							    {section name="customergroups" loop=$customergroups}
-							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:40:"...":true}</OPTION>
-							    {/section}
-							</SELECT>
-						    </TD>
-						</TR>
-						<TR>
-						    <TD width="1%" nowrap><IMG src="img/nodegroup.gif" alt=""></TD>
-						    <TD width="1%" nowrap><B>{trans("Nodes Group:")}</B></TD>
-						    <TD width="98%" nowrap>
-							<SELECT size="1" name="nodegroup" {tip text="Select group"}>
-							    <OPTION value="" SELECTED>{trans("- all groups -")}</OPTION>
-        						    {foreach from=$nodegroups item=nodegroup}
-							    <OPTION value="{$nodegroup.id}">{$nodegroup.name|truncate:30:"...":true}</OPTION>
-	        					    {/foreach}
-							</SELECT>
-						    </TD>
-					        </TR>
-						<TR>
-						    <TD width="1%" nowrap><IMG src="img/state.gif" alt=""></TD>
-						    <TD width="1%" nowrap><B>{trans("Country state:")}</B></TD>
-						    <TD width="98%" nowrap>
-							<SELECT NAME="stateid" {tip text="Select country state"}>
-                                    			    <OPTION value="0">{trans("- all states -")}</OPTION>
-					                    {foreach from=$cstateslist item=item key=key}
-							    <OPTION value="{$key}">{$item.name}</OPTION>
-							    {/foreach}
-							</SELECT>
-						    </TD>
-					        </TR>
-					    </TABLE>
+					<TD style="width: 1%; white-space: nowrap;">
+						<TABLE>
+							<TR>
+								<TD style="width: 1%;"><IMG src="img/customer.gif" alt=""></TD>
+								<TD style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Status:")}</span></TD>
+								<TD style="width: 98%;">
+									<SELECT size="1" name="filter" {tip text="Select customer's group"}>
+										<OPTION value="0">- {trans("all<!customers>")} -</OPTION>
+										<OPTION value="3" CHECKED>{trans("connected<!plural>")}</OPTION>
+										<OPTION value="5">{trans("disconnected<!plural>")}</OPTION>
+										<OPTION value="6">{trans("in debt")}</OPTION>
+										<OPTION VALUE="11">{trans("in debt above 100%")}</OPTION>
+										<OPTION VALUE="12">{trans("in debt above 200%")}</OPTION>
+										<OPTION value="2">{trans("waiting")}</OPTION>
+										<OPTION value="1">{trans("interested<!plural>")}</OPTION>
+										<OPTION value="-1">{trans("without nodes")}</OPTION>
+									</SELECT>
+								</TD>
+							</TR>
+							<TR>
+								<TD style="width: 1%; white-space: nowrap;"><IMG src="img/folder.gif" alt=""></TD>
+								<TD style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Legal personality:")}</span></TD>
+								<TD style="width: 98%; white-space: nowrap;">
+									<SELECT size="1" name="type" {tip text="Select legal personality type"}>
+										<OPTION value="" SELECTED>{trans("- all -")}</OPTION>
+										<OPTION VALUE="0">{trans("private person")}</OPTION>
+										<OPTION VALUE="1">{trans("legal entity")}</OPTION>
+									</SELECT>
+								</TD>
+							</TR>
+							<TR>
+								<TD style="width: 1%; white-space: nowrap;"><IMG src="img/netdev.gif" alt=""></TD>
+								<TD style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Link type:")}</span></TD>
+								<TD style="width: 98%; white-space: nowrap;">
+									<SELECT size="1" name="linktype" {tip text="Select link type"}>
+										<OPTION VALUE="">{trans("- all -")}</OPTION>
+										<OPTION VALUE="0">{trans("wire")}</OPTION>
+										<OPTION VALUE="1">{trans("wireless")}</OPTION>
+										<OPTION VALUE="2">{trans("fiber")}</OPTION>
+									</SELECT>
+								</TD>
+							</TR>
+							<TR>
+								<TD style="width: 1%; white-space: nowrap;"><IMG src="img/network.gif" alt=""></TD>
+								<TD style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Network:")}</span></TD>
+								<TD style="width: 98%; white-space: nowrap;">
+									<SELECT size="1" name="network" {tip text="Select network"}>
+										<OPTION value="0" SELECTED>{trans("- all networks -")}</OPTION>
+										{section name="networks" loop=$networks}
+										<OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:40:"...":true}</OPTION>
+										{/section}
+									</SELECT>
+								</TD>
+							</TR>
+							<TR>
+								<TD style="width: 1%; white-space: nowrap;"><IMG src="img/group.gif" alt=""></TD>
+								<TD style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Group:")}</span></TD>
+								<TD style="width: 98%; white-space: nowrap;">
+									<SELECT size="1" name="customergroup" {tip text="Select group"}>
+										<OPTION value="0" SELECTED>{trans("- all groups -")}</OPTION>
+										{section name="customergroups" loop=$customergroups}
+										<OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:40:"...":true}</OPTION>
+										{/section}
+									</SELECT>
+								</TD>
+							</TR>
+							<TR>
+								<TD style="width: 1%; white-space: nowrap;"><IMG src="img/nodegroup.gif" alt=""></TD>
+								<TD style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Nodes Group:")}</span></TD>
+								<TD style="width: 98%; white-space: nowrap;">
+									<SELECT size="1" name="nodegroup" {tip text="Select group"}>
+										<OPTION value="" SELECTED>{trans("- all groups -")}</OPTION>
+										{foreach from=$nodegroups item=nodegroup}
+										<OPTION value="{$nodegroup.id}">{$nodegroup.name|truncate:30:"...":true}</OPTION>
+										{/foreach}
+									</SELECT>
+								</TD>
+							</TR>
+							<TR>
+								<TD style="width: 1%; white-space: nowrap;"><IMG src="img/state.gif" alt=""></TD>
+								<TD style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Country state:")}</span></TD>
+								<TD style="width: 98%; white-space: nowrap;">
+									<SELECT NAME="stateid" {tip text="Select country state"}>
+										<OPTION value="0">{trans("- all states -")}</OPTION>
+										{foreach from=$cstateslist item=item key=key}
+										<OPTION value="{$key}">{$item.name}</OPTION>
+										{/foreach}
+									</SELECT>
+								</TD>
+							</TR>
+						</TABLE>
 					</TD>
-					<TD width="1%"><IMG src="img/view.gif" alt=""></TD>
-					<TD width="1%"><B>{trans("Sorting:")}</B></TD>
-					<TD width="97%">
-					    <TABLE width="1%" {tip text="Select sorting direction and criteria"}>
-						<TR>
-						    <TD width="100%" nowrap>
-							<SELECT SIZE="1" name="order">
-							    <OPTION value="customername" SELECTED>{trans("First/last or Company name")}</OPTION>
-							    <OPTION value="id">{trans("Id")}</OPTION> 
-							    <OPTION value="balance">{trans("Balance")}</OPTION> 
-							    <OPTION value="tariff">{trans("Subscription")}</OPTION> 
-							    <OPTION value="address">{trans("Address")}</OPTION> 
-							</SELECT>
-						    </TD>
-						</TR>
-						<TR>
-						    <TD width="100%" nowrap>
-							<SELECT SIZE="1" name="direction">
-							    <OPTION value="asc" SELECTED>{trans("ascending")}</OPTION>
-							    <OPTION value="desc">{trans("descending")}</OPTION> 
-							</SELECT>
-						    </TD>
-						</TR>
-					    </TABLE>
+					<TD style="width: 1%;"><IMG src="img/view.gif" alt=""></TD>
+					<TD style="width: 1%;"><span class="bold">{trans("Sorting:")}</span></TD>
+					<TD style="width: 97%;">
+						<TABLE style="width: 1%;" {tip text="Select sorting direction and criteria"}>
+							<TR>
+								<TD style="width: 100%; white-space: nowrap;">
+									<SELECT SIZE="1" name="order">
+										<OPTION value="customername" SELECTED>{trans("First/last or Company name")}</OPTION>
+										<OPTION value="id">{trans("Id")}</OPTION> 
+										<OPTION value="balance">{trans("Balance")}</OPTION> 
+										<OPTION value="tariff">{trans("Subscription")}</OPTION> 
+										<OPTION value="address">{trans("Address")}</OPTION> 
+									</SELECT>
+								</TD>
+							</TR>
+							<TR>
+								<TD style="width: 100%; white-space: nowrap;">
+									<SELECT SIZE="1" name="direction">
+										<OPTION value="asc" SELECTED>{trans("ascending")}</OPTION>
+										<OPTION value="desc">{trans("descending")}</OPTION> 
+									</SELECT>
+								</TD>
+							</TR>
+						</TABLE>
 					</TD>
 				</TR>
 				<TR>
-					<TD width="100%" colspan="4">
-					    <TABLE>
-						<TR>
-						    <TD width="1%" nowrap><IMG src="img/calendar.gif" alt=""></TD>
-						    <TD width="1%" nowrap><B>{trans("Balance date:")}</B></TD>
-						    <TD width="98%" nowrap>
-							<INPUT TYPE="text" NAME="day" SIZE="10" MAXSIZE="10" OnClick="javascript:cal12.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
-						    </TD>
-						</TR>
-						<TR>
-						    <TD width="1%" nowrap><IMG src="img/docum.gif" alt=""></TD>
-						    <TD width="99%" colspan="2" nowrap>
-							<B>{trans("With document of type:")}</B>
-							<SELECT SIZE="1" NAME="doctype" {tip text="Select document type"}>
-							    <OPTION VALUE="0">{trans("- all -")}</OPTION>
-							    {foreach from=$_DOCTYPES key=key item=item}
-							    <OPTION VALUE="{$key}">{$item}</OPTION>
-							    {/foreach}
-							</SELECT>
-							<B>{trans("in date:")}</B>
-							{trans("From")}&nbsp;<INPUT TYPE="text" NAME="docfrom" SIZE="10" MAXSIZE="10" OnClick="javascript:cal21.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
-							{trans("To")}&nbsp;<INPUT TYPE="text" NAME="docto" SIZE="10" MAXSIZE="10" OnClick="javascript:cal22.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>	
-						    </TD>
-						</TR>
-					    </TABLE>
+					<TD style="width: 100%;" colspan="4">
+						<TABLE>
+							<TR>
+								<TD style="width: 1%; white-space: nowrap;"><IMG src="img/calendar.gif" alt=""></TD>
+								<TD style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Balance date:")}</span></TD>
+								<TD style="width: 98%; white-space: nowrap;">
+									<INPUT TYPE="text" NAME="day" SIZE="10" MAXSIZE="10" OnClick="javascript:cal12.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+								</TD>
+							</TR>
+							<TR>
+								<TD style="width: 1%; white-space: nowrap;"><IMG src="img/docum.gif" alt=""></TD>
+								<TD style="width: 99%; white-space: nowrap;" colspan="2">
+									<span class="bold">{trans("With document of type:")}</span>
+									<SELECT SIZE="1" NAME="doctype" {tip text="Select document type"}>
+										<OPTION VALUE="0">{trans("- all -")}</OPTION>
+										{foreach from=$_DOCTYPES key=key item=item}
+										<OPTION VALUE="{$key}">{$item}</OPTION>
+										{/foreach}
+									</SELECT>
+									<span class="bold">{trans("in date:")}</span>
+									{trans("From")}&nbsp;<INPUT TYPE="text" NAME="docfrom" SIZE="10" MAXSIZE="10" OnClick="javascript:cal21.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+									{trans("To")}&nbsp;<INPUT TYPE="text" NAME="docto" SIZE="10" MAXSIZE="10" OnClick="javascript:cal22.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>	
+								</TD>
+							</TR>
+						</TABLE>
 					</TD>
 				</TR>
 			</TABLE>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
-		<TD class="fbottomu" width="100%" colspan="2" align="right">
+		<TD class="fbottomu" style="width: 100%; text-align: right;" colspan="2">
 			<A href="javascript:document.printcustomerlist.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>

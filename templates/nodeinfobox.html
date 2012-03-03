@@ -18,44 +18,44 @@
 	}
 //-->
 </SCRIPT>
-<TABLE WIDTH="100%" CELLPADDING="3">
+<TABLE style="width: 100%;" CELLPADDING="3">
 	<TR CLASS="DARK">
-		<TD WIDTH="1%" CLASS="FLEFTU">
+		<TD style="width: 1%;" CLASS="FLEFTU">
 			<IMG SRC="img/node.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
-			<B>{$nodeinfo.name} ({$nodeinfo.id|string_format:"%04d"})</B>
+		<TD style="width: 99%;" CLASS="FRIGHTU" COLSPAN="2">
+			<span class="bold">{$nodeinfo.name} ({$nodeinfo.id|string_format:"%04d"})</span>
 		</TD>
 	</TR>
-    <TR class="LIGHT">
-	    <TD WIDTH="100%" COLSPAN="3" CLASS="flr container">
-			<TABLE WIDTH="100%" CELLPADDING="0">
+	<TR class="LIGHT">
+		<TD style="width: 100%;" COLSPAN="3" CLASS="flr container">
+			<TABLE style="width: 100%;" CELLPADDING="0">
 				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" style="vertical-align:top;">
-						<TABLE WIDTH="100%" CELLPADDING="3">
+					<TD style="width: 50%; vertical-align: top;">
+						<TABLE style="width: 100%" CELLPADDING="3">
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
+		<TD style="width: 1%;">
 			<IMG SRC="img/ip.gif" ALT="{trans("IP address:")}">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
+		<TD style="width: 99%;" COLSPAN="2">
 			<a href="javascript:ping_popup('{$nodeinfo.ip}')">{$nodeinfo.ip}</a>
 		</TD>
 	</TR>
 	{if $nodeinfo.ip_pub != "0.0.0.0"}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
+		<TD style="width: 1%;">
 			<IMG SRC="img/ip_pub.gif" ALT="{trans("Pub. IP address:")}">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
+		<TD style="width: 99%;" COLSPAN="2">
 			<a href="javascript:ping_popup('{$nodeinfo.ip_pub}')">{$nodeinfo.ip_pub}</a>
 		</TD>
 	</TR>
 	{/if}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
+		<TD style="width: 1%;">
 			<IMG SRC="img/mac.gif" ALT="{trans("MAC address:")}">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
+		<TD style="width: 99%;" COLSPAN="2">
 			{foreach from=$nodeinfo.macs item=item}
 				{$item.mac} {if $item.producer}({$item.producer}){/if}<BR>
 			{/foreach}
@@ -63,29 +63,29 @@
 	</TR>
 {if $nodeinfo.passwd}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
+		<TD style="width: 1%;">
 			<IMG SRC="img/passwd.gif" ALT="{trans("Password:")}">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
+		<TD style="width: 99%;" COLSPAN="2">
 			{$nodeinfo.passwd}
 		</TD>
 	</TR>
 {/if}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
+		<TD style="width: 1%;">
 			<IMG SRC="img/network.gif" ALT="{trans("Network:")}">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			<B><A HREF="?m=netinfo&id={$nodeinfo.netid}">{$nodeinfo.netname}</A></B>
+		<TD style="width: 99%;" COLSPAN="2">
+			<span class="bold"><A HREF="?m=netinfo&id={$nodeinfo.netid}">{$nodeinfo.netname}</A></span>
 		</TD>
 	</TR>
 {if $nodeinfo.location}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
+		<TD style="width: 1%;">
 			<IMG SRC="img/home.gif" ALT="{trans("Location:")}">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-		    {$nodeinfo.location}
+		<TD style="width: 99%;" COLSPAN="2">
+			{$nodeinfo.location}
 		</TD>
 	</TR>
 {/if}
@@ -98,29 +98,35 @@
 	<INPUT type="submit" class="hiddenbtn">
 {/if}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
+		<TD style="width: 1%;">
 			<IMG SRC="img/netdev.gif" ALT="{trans("Net device:")}">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
+		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
 			{if $nodeinfo.netdev}
-			<B><A HREF="?m=netdevinfo&id={$netdevices.id}">{$netdevices.name} {$netdevices.producer}{if $netdevices.location} / {$netdevices.location}{/if}</A></B>
-			    {if $nodeinfo.port}[{$nodeinfo.port}]{/if}
-			    {if $nodeinfo.linktype}<IMG src="img/wireless.gif" alt="{trans("wireless")}" {tip text="wireless"}{/if}
+				<span class="bold"><A HREF="?m=netdevinfo&id={$netdevices.id}">{$netdevices.name} {$netdevices.producer}{if $netdevices.location} / {$netdevices.location}{/if}</A></span>
+				{if $nodeinfo.port}[{$nodeinfo.port}]{/if}
+					{if $nodeinfo.linktype == 1}<IMG src="img/wireless.gif" alt="{trans("wireless")}" {tip text="wireless"}>
+					{elseif $nodeinfo.linktype == 2}<IMG src="img/netdev_takenports.gif" alt="{trans("fiber")}" {tip text="fiber"}>
+					{else}<IMG src="img/netdev_takenports.gif" alt="{trans("wire")}" {tip text="wire"}>{/if}
 			{else}
-			{if $netdevices}
-			<SELECT SIZE="1" style="width:300px" NAME="devid" {tip trigger="netdev"}>
+				{if $netdevices}
+				<SELECT SIZE="1" style="width: 300px;" NAME="devid" {tip trigger="netdev"}>
 				<OPTION VALUE="0" {if !$netdevice}SELECTED{/if}>- {trans("no device")} -</OPTION>
-				{section name=netdev loop=$netdevices}
-				{assign var=netdevname value=$netdevices[netdev].name}
-				{if $netdevices[netdev].producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$netdevices[netdev].producer}{/if}
-		                {if $netdevices[netdev].location}{assign var=netdevname value=$netdevname|cat:" ("|cat:$netdevices[netdev].location|cat:")"}{/if}
-				<OPTION VALUE="{$netdevices[netdev].id}" {if $netdevices[netdev].id==$netdevice}SELECTED{/if}>{$netdevname|truncate:120:"...":true}</OPTION>
-				{/section}
-			</SELECT>
-			<INPUT type="text" name="port" value="{if $nodeinfo.port}{$nodeinfo.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
-			<INPUT type="checkbox" name="linktype" id="linktype" value="1"{if $nodeinfo.linktype} CHECKED{/if}><label for="linktype"><IMG src="img/wireless.gif" alt="{trans("wireless")}" title="{trans("wireless")}"></label>
-			<A HREF="javascript:document.nodelink.submit(); ">{trans("Connect")} <IMG SRC="img/edit.gif" alt=""></A>
-			{/if}
+					{section name=netdev loop=$netdevices}
+					{assign var=netdevname value=$netdevices[netdev].name}
+					{if $netdevices[netdev].producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$netdevices[netdev].producer}{/if}
+					{if $netdevices[netdev].location}{assign var=netdevname value=$netdevname|cat:" ("|cat:$netdevices[netdev].location|cat:")"}{/if}
+					<OPTION VALUE="{$netdevices[netdev].id}" {if $netdevices[netdev].id==$netdevice}SELECTED{/if}>{$netdevname|truncate:120:"...":true}</OPTION>
+					{/section}
+				</SELECT>
+				<INPUT type="text" name="port" value="{if $nodeinfo.port}{$nodeinfo.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
+				<SELECT name="linktype" id="linktype" {tip trigger="linktype" text="Select link type"}>
+					<OPTION VAlUE="0">{trans("wire")}</OPTION>
+					<OPTION VAlUE="1">{trans("wireless")}</OPTION>
+					<OPTION VAlUE="2">{trans("fiber")}</OPTION>
+				</SELECT>
+				<A HREF="javascript:document.nodelink.submit(); ">{trans("Connect")} <IMG SRC="img/edit.gif" alt=""></A>
+				{/if}
 			{/if}
 		</TD>
 	</TR>
@@ -129,25 +135,25 @@
 {/if}
 {/if}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
+		<TD style="width: 1%;">
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
+		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
 			<label for="chkmac">{trans("MAC checking")}:</label><INPUT TYPE="checkbox" NAME="chkmac" ID="chkmac" VALUE="1" {if $nodeinfo.chkmac} checked{/if} onchange="chkmac_change();">&nbsp;
 			<label for="duplex">{trans("Half duplex")}:</label><INPUT TYPE="checkbox" NAME="duplex" ID="duplex" VALUE="1" {if $nodeinfo.halfduplex} checked{/if} onchange="duplex_change();">
 		</TD>
 	</TR>
-                                	</TABLE>
+					</TABLE>
 				</TD>
-				<TD WIDTH="50%" style="vertical-align:top;">
-					<TABLE WIDTH="100%" CELLPADDING="3">
+				<TD style="width: 50%; vertical-align: top;">
+					<TABLE style="width: 100%;" CELLPADDING="3">
 {if $nodeinfo.info}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
+		<TD style="width: 1%;">
 			<IMG SRC="img/info1.gif" ALT="{trans("Description:")}">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			<TABLE width="100%" cellpadding="5">
+		<TD style="width: 99%;" COLSPAN="2">
+			<TABLE style="width; 100%;" cellpadding="5">
 				<TR>
 					<TD class="fall superlight">
 						{$nodeinfo.info|replace:"\n":"<BR>"}
@@ -159,111 +165,111 @@
 {/if}
 {if $nodeinfo.longitude || $nodeinfo.latitude}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
+		<TD style="width: 1%;">
 			<IMG SRC="img/home.gif" ALT="{trans("GPS coordinates:")}">
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("GPS longitude:")}</B>
+		<TD style="width: 1%; white-space: nowrap;">
+			<span class="bold">{trans("GPS longitude:")}</span>
 		</TD>
-		<TD WIDTH="98%" NOWRAP>
+		<TD style="width: 98%; white-space: nowrap;">
 			{if $nodeinfo.longitude}{$nodeinfo.longitude}{else}{/if}
 			<INPUT TYPE="hidden" ID="longitude" NAME="longitude" VALUE="{$nodeinfo.longitude}">
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
+		<TD style="width: 1%;">
 			<IMG SRC="img/home.gif" ALT="{trans("GPS coordinates:")}">
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("GPS latitude:")}</B>
+		<TD style="width: 1%; white-space: nowrap;">
+			<span class="bold">{trans("GPS latitude:")}</span>
 		</TD>
-		<TD WIDTH="98%" NOWRAP>
+		<TD style="width: 98%; white-space: nowrap;">
 			{if $nodeinfo.latitude}{$nodeinfo.latitude}{else}{/if}
 			<INPUT TYPE="hidden" ID="latitude" NAME="latitude" VALUE="{$nodeinfo.latitude}"> 
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="2%" COLSPAN="2">
+		<TD style="width: 2%;" COLSPAN="2">
 		</TD>
-		<TD WIDTH="98%">
+		<TD style="width: 98%;">
 			<a HREF="?m=netdevmap&nodeid={$nodeinfo.id}"><img src="img/network.gif" alt=""> {trans("Show on map")} &raquo;&raquo;&raquo;</a>
 		</TD>
 	</TR>
 {/if}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
+		<TD style="width: 1%;">
 			<A HREF="?m=nodeset&id={$nodeinfo.id}"><IMG SRC="img/{if ! $nodeinfo.access}no{/if}access.gif" ALT=""></A>
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			<B>{if $nodeinfo.access}{trans("connected<!singular>")}{else}{trans("disconnected<!singular>")}{/if}</B>
+		<TD style="width: 99%;" COLSPAN="2">
+			<span class="bold">{if $nodeinfo.access}{trans("connected<!singular>")}{else}{trans("disconnected<!singular>")}{/if}</span>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
+		<TD style="width: 1%;">
 			<A HREF="?m=nodewarn&id={$nodeinfo.id}"><IMG SRC="img/warning{if ! $nodeinfo.warning}off{else}on{/if}.gif" ALT=""></A>
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			<B>{if $nodeinfo.warning}{trans("notice enabled")}{else}{trans("notice disabled")}{/if}</B>
+		<TD style="width: 99%;" COLSPAN="2">
+			<span class="bold">{if $nodeinfo.warning}{trans("notice enabled")}{else}{trans("notice disabled")}{/if}</span>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
+		<TD style="width: 1%;">
 			<IMG SRC="img/time.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" nowrap>
-			<B>{trans("last online:")}</B>
+		<TD style="width: 1%; white-space: nowrap;">
+			<span class="bold">{trans("last online:")}</span>
 		</TD>
-		<TD WIDTH="98%">
+		<TD style="width: 98%;">
 			{if $nodeinfo.lastonline}{$nodeinfo.lastonlinedate}{else}-{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
+		<TD style="width: 1%;">
 			<IMG SRC="img/users.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("Created:")}<BR>
-			{trans("Modified:")}</B>
+		<TD style="width: 1%;">
+			<span class="bold">{trans("Created:")}<BR>
+			{trans("Modified:")}</span>
 		</TD>
-		<TD WIDTH="98%">
+		<TD style="width: 98%;">
 			{$nodeinfo.createdby}, {$nodeinfo.creationdateh}<BR>
 			{if $nodeinfo.moddate}{$nodeinfo.modifiedby}, {$nodeinfo.moddateh}{else}-{/if}
 		</TD>
 	</TR>
 {if $nodestats.month.download.data || $nodestats.month.upload.data}
-        <TR CLASS="LIGHT">
-	        <TD WIDTH="1%">
-		        <IMG SRC="img/traffic.gif" ALT="">
+	<TR CLASS="LIGHT">
+		<TD style="width: 1%;">
+			<IMG SRC="img/traffic.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2" nowrap>
-			<B>{trans("Traffic stats from last (download/upload):")}</B>
+		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
+			<span class="bold">{trans("Traffic stats from last (download/upload):")}</span>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%"></TD>
-		<TD WIDTH="99%" COLSPAN="2" nowrap>
-			<TABLE width="100%" cellpadding="3">
+		<TD style="width: 1%;"></TD>
+		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
+			<TABLE style="width: 100%;" cellpadding="3">
 				<TR>
-					<TD width="1%" nowrap>
-						<A HREF="javascript:popup('?m=trafficgraph&nodeid={$nodeinfo.id}&bar=hour',1,1,10,10)"><B>{trans("hour:")}</B></A>
+					<TD style="width: 1%; white-space: nowrap;">
+						<A HREF="javascript:popup('?m=trafficgraph&nodeid={$nodeinfo.id}&bar=hour',1,1,10,10)"><span class="bold">{trans("hour:")}</span></A>
 					</TD>
-					<TD width="99%" nowrap>
+					<TD style="width: 99%; white-space: nowrap;">
 						{$nodestats.hour.download.data|string_format:"%.2f"} {$nodestats.hour.download.units} ({$nodestats.hour.downavg|string_format:"%d"} kbit/s) / {$nodestats.hour.upload.data|string_format:"%.2f"} {$nodestats.hour.upload.units} ({$nodestats.hour.upavg|string_format:"%d"} kbit/s) 
 					</TD>
 				</TR>
 				<TR>
-					<TD width="1%" nowrap>
-						<A HREF="javascript:popup('?m=trafficgraph&nodeid={$nodeinfo.id}&bar=day',1,1,10,10)"><B>{trans("24 hour:")}</B></A>
+					<TD style="width:1%; white-space: nowrap;">
+						<A HREF="javascript:popup('?m=trafficgraph&nodeid={$nodeinfo.id}&bar=day',1,1,10,10)"><span class="bold">{trans("24 hour:")}</span></A>
 					</TD>
-					<TD width="99%" nowrap>
+					<TD style="width: 99%; white-space: nowrap;">
 						{$nodestats.day.download.data|string_format:"%.2f"} {$nodestats.day.download.units} ({$nodestats.day.downavg|string_format:"%d"} kbit/s) / {$nodestats.day.upload.data|string_format:"%.2f"} {$nodestats.day.upload.units} ({$nodestats.day.upavg|string_format:"%d"} kbit/s)
 					</TD>
 				</TR>
 				<TR>
-					<TD width="1%" nowrap>
-						<A HREF="javascript:popup('?m=trafficgraph&nodeid={$nodeinfo.id}&bar=month',1,1,10,10)"><B>{trans("30 days:")}</B></A>
+					<TD style="width: 1%; white-space: nowrap;">
+						<A HREF="javascript:popup('?m=trafficgraph&nodeid={$nodeinfo.id}&bar=month',1,1,10,10)"><span class="bold">{trans("30 days:")}</span></A>
 					</TD>
-					<TD width="99%" nowrap>
+					<TD style="width: 99%; white-space: nowrap;">
 						{$nodestats.month.download.data|string_format:"%.2f"} {$nodestats.month.download.units} ({$nodestats.month.downavg|string_format:"%d"} kbit/s) / {$nodestats.month.upload.data|string_format:"%.2f"} {$nodestats.month.upload.units} ({$nodestats.month.upavg|string_format:"%d"} kbit/s)
 					</TD>
 				</TR>
@@ -271,14 +277,14 @@
 		</TD>
 	</TR>
 {/if}
-                                               </TABLE>
+						</TABLE>
 					</TD>
 				</TR>
 			</TABLE>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
+		<TD style="width: 100%; text-align: right;" CLASS="FBOTTOMU" COLSPAN="3">
 			<A HREF="?m=nodeedit&id={$nodeinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG SRC="img/edit.gif" ALT=""></A>
 			<A HREF="?m=nodedel&id={$nodeinfo.id}" onClick="return confirmLink(this, '{t a=$nodeinfo.name}Are you sure, you want to remove node \'$a\' from database?{/t}')">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
 		</TD>
