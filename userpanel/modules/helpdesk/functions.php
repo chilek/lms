@@ -145,7 +145,7 @@ function module_main()
 			$headers['Date'] = date('r');
 	        $headers['From'] = $mailfname.' <'.$mailfrom.'>';
 			$headers['Subject'] = sprintf("[RT#%06d] %s", $id, $ticket['subject']);
-			$headers['Reply-To'] = $headers['From'];
+			$headers['Reply-To'] = $ticket['mailfrom'];
 
             $sms_body = $headers['Subject']."\n".$ticket['body'];
 			$body = $ticket['body']."\n\n".$CONFIG['userpanel']['lms_url'].'/?m=rtticketview&id='.$id;
@@ -158,14 +158,14 @@ function module_main()
 
                 $body .= "\n\n-- \n";
                 $body .= trans('Customer:').' '.$info['customername']."\n";
-                $body .= trans('ID:').' '.sprintf('%04d', $info['customerid'])."\n";
+                $body .= trans('ID:').' '.sprintf('%04d', $SESSION->id)."\n";
                 $body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
                 $body .= trans('Phone:').' '.$info['phone']."\n";
                 $body .= trans('E-mail:').' '.$info['email'];
 
                 $sms_body .= "\n";
                 $sms_body .= trans('Customer:').' '.$info['customername'];
-                $sms_body .= ' '.sprintf('(%04d)', $ticket['customerid']).'. ';
+                $sms_body .= ' '.sprintf('(%04d)', $SESSION->id).'. ';
                 $sms_body .= $info['address'].', '.$info['zip'].' '.$info['city'].'. ';
                 $sms_body .= $info['phone'];
             }
