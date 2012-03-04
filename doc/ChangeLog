@@ -90,6 +90,7 @@ version ? (????-??-??):
   - added support for domain mx backup [chilan]
   - BTS#0000911: msie support for javascript used for new mac/contact add [prezes_kk/chilan]
   - assignment locks support introduced [chilan]
+  - daemon/ewx-stm: save channel id without offset in ewx_stm_nodes table [chilan]
   - added fiber link type and changed link type selection from checkbox to combobox [chilan]
 
 version 1.11.13 Dira (2011-04-07)
