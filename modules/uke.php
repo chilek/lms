@@ -388,13 +388,12 @@ foreach ($netnodes as $netnodename => $netnode) {
 				(SELECT ls.name FROM location_states ls JOIN teryt_ulic tu ON tu.woj = ls.ident WHERE tu.id = ?) AS area_woj, 
 				(SELECT ld.name FROM location_districts ld JOIN teryt_ulic tu ON tu.pow = ld.ident WHERE tu.id = ?) AS area_pow, 
 				(SELECT lb.name FROM location_boroughs lb JOIN location_cities lc ON lc.boroughid = lb.id WHERE lc.id = ?) AS area_gmi, 
-				(SELECT ".$DB->Concat('tt.woj', "'_'", 'tt.pow', "'_'", 'tt.gmi', "'_'", 'tt.rodz')." 
-					FROM teryt_terc tt
-					JOIN location_cities lc ON tt.nazwa = lc.name 
-					JOIN location_boroughs lb ON lb.id = lc.boroughid AND tt.gmi = lb.ident 
-					JOIN location_districts ld ON ld.id = lb.districtid AND tt.pow = ld.ident 
-					JOIN location_states ls ON ls.id = ld.stateid AND tt.woj = ls.ident 
-					WHERE lc.id = nd.location_city AND tt.pow <> '0' AND tt.gmi <> '0' AND tt.rodz <> '0') AS area_terc, 
+				(SELECT ".$DB->Concat('ls.ident', "'_'", 'ld.ident', "'_'", 'lb.ident', "'_'", 'lb.type')." 
+					FROM location_cities lc 
+					JOIN location_boroughs lb ON lb.id = lc.boroughid 
+					JOIN location_districts ld ON ld.id = lb.districtid AND 
+					JOIN location_states ls ON ls.id = ld.stateid 
+					WHERE lc.id = nd.location_city) AS area_terc, 
 				(SELECT lc.name FROM location_cities lc WHERE lc.id = ?) AS area_city, 
 				(SELECT lc.ident FROM location_cities lc WHERE lc.id = ?) AS area_simc, 
 				(SELECT tu.cecha FROM teryt_ulic tu WHERE tu.id = ?) AS address_cecha, 
