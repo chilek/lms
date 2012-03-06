@@ -232,7 +232,12 @@ $menu = array(
 					'tip' => trans('Network map display'),
 					'prio' => 40,
 				),
-			),
+				array(
+					'name' => trans('UKE SIISv2 report'),
+					'link' => '?m=uke',
+					'tip' => trans('Allows you to prepare SIIS v2 report for UKE'),
+					'prio' => 50,
+				),
 		),
 
 		'networks' => array(
