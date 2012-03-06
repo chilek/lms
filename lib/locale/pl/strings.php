@@ -2552,7 +2552,7 @@ $_LANG['Incorrect lock!'] = 'Niepoprawna blokada!';
 $_LANG['Locks:'] = 'Blokady:';
 $_LANG['Add new lock'] = 'Dodaj nową blokadę';
 
-$_LANG['UKE SIISv2 report'] = 'Raport SIISv2 do UKE';
-$_LANG['Allows you to prepare SIIS v2 report for UKE'] = 'Wygenerowanie raportu SIIS w wersji 2 dla UKE';
+$_LANG['UKE report'] = 'Raport do UKE';
+$_LANG['Allows you to prepare SIIS v2 report for UKE'] = 'Wygenerowanie raportu SIIS w wersji 2 do UKE';
 
 ?>
