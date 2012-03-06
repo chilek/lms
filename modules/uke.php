@@ -391,9 +391,9 @@ foreach ($netnodes as $netnodename => $netnode) {
 				(SELECT ".$DB->Concat('ls.ident', "'_'", 'ld.ident', "'_'", 'lb.ident', "'_'", 'lb.type')." 
 					FROM location_cities lc 
 					JOIN location_boroughs lb ON lb.id = lc.boroughid 
-					JOIN location_districts ld ON ld.id = lb.districtid AND 
+					JOIN location_districts ld ON ld.id = lb.districtid 
 					JOIN location_states ls ON ls.id = ld.stateid 
-					WHERE lc.id = nd.location_city) AS area_terc, 
+					WHERE lc.id = ?) AS area_terc, 
 				(SELECT lc.name FROM location_cities lc WHERE lc.id = ?) AS area_city, 
 				(SELECT lc.ident FROM location_cities lc WHERE lc.id = ?) AS area_simc, 
 				(SELECT tu.cecha FROM teryt_ulic tu WHERE tu.id = ?) AS address_cecha, 
