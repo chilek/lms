@@ -539,7 +539,7 @@ if ($netlinks)
 
 // prepare zip archive package containing all generated files
 $zip = new ZipArchive();
-$filename = tempnam('', 'LMS_SIIS_').'.zip';
+$filename = tempnam('/tmp', 'LMS_SIIS_').'.zip';
 if ($zip->open($filename, ZIPARCHIVE::OVERWRITE)) {
 	$zip->addFromString('WEZLY.csv', $snetnodes);
 	$zip->addFromString('W_INTERFACE.csv', $snetinterfaces);
