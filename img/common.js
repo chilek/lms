@@ -438,8 +438,8 @@ function check_teryt(locid, init)
     if (locid) {
         var loc = document.getElementById(locid);
         if (checked) {
-            if (!init)
-                loc.value = '';
+            //if (!init)
+            //    loc.value = '';
             loc.setAttribute('readonly', true);
         }
         else {
