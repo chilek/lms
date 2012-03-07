@@ -562,7 +562,7 @@ while (my $record = get_entry($fh)) {
     }
     # entry exists
     if ($data) {
-        if ($data->{'NAZWA'} ne $record->{'NAZWA_1'} || (defined($record->{'NAZWA2'}) && $data->{'NAZWA2'} ne $record->{'NAZWA_2'})
+        if ($data->{'NAZWA'} ne $record->{'NAZWA_1'} || (defined($record->{'NAZWA_2'}) && $data->{'NAZWA2'} ne $record->{'NAZWA_2'})
             || $data->{'typeid'} != $typeid
         ) {
             $street_update->execute($cid, $record->{'NAZWA_1'}, $record->{'NAZWA_2'}, $typeid, $data->{'id'});
