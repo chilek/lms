@@ -33,7 +33,7 @@ function get_loc_streets($cityid)
         FROM location_streets s
         LEFT JOIN location_street_types t ON (s.typeid = t.id)
         WHERE s.cityid = ?
-        ORDER BY (CASE WHEN s.name2 IS NOT NULL THEN s.name2 || ' ' || s.name ELSE s.name END)", array($cityid));
+        ORDER BY s.name", array($cityid));
 
     if ($list)
         foreach ($list as $idx => $row) {
