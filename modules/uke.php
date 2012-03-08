@@ -490,7 +490,7 @@ $processed_netlinks = array();
 $netlinks = array();
 if ($netdevices)
 	foreach ($netdevices as $netdevice) {
-		$ndnetlinks = $DB->GetAll("SELECT src, dst, type FROM netlinks WHERE src = ? OR dst = ?",
+		$ndnetlinks = $DB->GetAll("SELECT src, dst, type, speed FROM netlinks WHERE src = ? OR dst = ?",
 			array($netdevice['id'], $netdevice['id']));
 		if ($ndnetlinks)
 			foreach ($ndnetlinks as $netlink) {
@@ -503,13 +503,15 @@ if ($netdevices)
 				if (!isset($processed_netlinks[$netnodelinkid])) {
 					if ($netlink['src'] == $netdevice['id']) {
 						if ($netdevnetnode != $dstnetnode) {
-							$netlinks[] = array('type' => $netlink['type'], 'src' => $netdevnetnode, 'dst' => $dstnetnode);
+							$netlinks[] = array('type' => $netlink['type'], 'speed' => $netlink['speed'],
+								'src' => $netdevnetnode, 'dst' => $dstnetnode);
 							$processed_netlinks[$netnodelinkid] = true;
 							$netnodes[$netdevnetnode]['distports']++;
 						}
 					} else
 						if ($netdevnetnode != $srcnetnode) {
-							$netlinks[] = array('type' => $netlink['type'], 'src' => $netdevnetnode, 'dst' => $srcnetnode);
+							$netlinks[] = array('type' => $netlink['type'], 'speed' => $netlink['speed'],
+								'src' => $netdevnetnode, 'dst' => $srcnetnode);
 							$processed_netlinks[$netnodelinkid] = true;
 							$netnodes[$netdevnetnode]['distports']++;
 						}
@@ -538,7 +540,7 @@ if ($netlinks)
 		if ($netnodes[$netlink['src']]['id'] != $netnodes[$netlink['dst']]['id']) {
 			$snetlinks .= $netlinkid.",".$netnodes[$netlink['src']]['id'].",".$netnodes[$netlink['dst']]['id'].",Nie,Tak,Nie,"
 				."0,0,"
-				.implode(',', array_fill(0, 2, $linktypes[$netlink['type']]['specyficzne']['szybkosc_dystrybucyjna'])).","
+				.implode(',', array_fill(0, 2, floor($netlink['speed'] / 1000))).","
 				."0,0,0,0\n";
 			$netlinkid++;
 		}

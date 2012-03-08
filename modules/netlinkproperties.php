@@ -26,7 +26,7 @@
 
 function update_netlink_properties($id, $devid, $linktype, $linkspeed)
 {
-	global $LMS;
+	global $LMS, $LINKSPEEDS;
 
 	$result = new xajaxResponse();
 
@@ -34,6 +34,20 @@ function update_netlink_properties($id, $devid, $linktype, $linkspeed)
 		$LMS->SetNetDevLinkType($id, $devid, $linktype, $linkspeed);
 	else
 		$LMS->SetNodeLinkType($devid, $linktype, $linkspeed);
+
+	switch ($linktype) {
+		case 0: case 2:
+			$bitmap = 'netdev_takenports.gif';
+			break;
+		case 1:
+			$bitmap = 'wireless.gif';
+	}
+
+	$contents = "<IMG src=\"img/".$bitmap
+		."\" alt=\"[ ".trans("Change connection type")." ]\" title=\"[ ".trans("Change connection type")." ]\""
+		." onmouseover=\"popup('<span style=&quot;white-space: nowrap;&quot;>".trans("Link speed:")." ".$LINKSPEEDS[$linkspeed]
+		."</span>');\" onmouseout=\"pophide();\">";
+	$result->call('update_netlink_info', $contents);
 
 	return $result;
 }

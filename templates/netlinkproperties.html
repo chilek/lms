@@ -16,7 +16,7 @@
 	<FORM name="netlinkproperties" method="GET">
 	<table id="propertiestable" style="width: 100%;" cellpadding="3">
 		<tr class="light">
-			<td style="width: 1%; white-space: nowrap;">{trans("Link type")}:</td>
+			<td style="width: 1%; white-space: nowrap;">{trans("Link type:")}</td>
 			<td style="width: 99%;">
 				<select name="linktype" {tip text="Select link type"} style="width: 100%;">
 					<option value="0"{if $link.type==0} selected{/if}>{trans("wire")}</option>
@@ -26,9 +26,9 @@
 			</td>
 		</tr>
 		<tr class="light">
-			<td style="white-space: nowrap;">{trans("Link speed")}:</td>
+			<td style="white-space: nowrap;">{trans("Link speed:")}</td>
 			<td>
-				<select name="linkspeed" {tip text="Select linkspeed"} style="width: 100%;">
+				<select name="linkspeed" {tip text="Select link speed"} style="width: 100%;">
 				{foreach from=$_LINKSPEEDS item=item key=key}
 					<option value="{$key}"{if $key==$link.speed} selected{/if}>{$item}</option>
 				{/foreach}
@@ -41,29 +41,27 @@
 			</td>
 		</tr>
 	</table>
+	<input type="hidden" name="linkspeedname" id="linkspeedname" value="">
 	</FORM>
 <script type="text/javascript">
 <!--
-function submit_netlink_properties()
-{
+function submit_netlink_properties() {
 	var form = document.forms['netlinkproperties'];
 	var linktype = form.elements['linktype'].value;
 	var linkspeed = form.elements['linkspeed'].value;
 
 	xajax_update_netlink_properties({$link.id}, {$link.devid}, linktype, linkspeed);
+}
 
+function update_netlink_info(newcontent) {
 	var elem = window.parent.document.getElementById(
 		'{if $link.isnetlink}dev{else}node{/if}linkproperties_' + '{$link.devid}');
-	elem.innerHTML = '<IMG src="img/'
-		+ (linktype == 1 ? 'wireless.gif' : (linktype == 2 ? 'netdev_takenports.gif' : 'netdev_takenports.gif'))
-		+ '" alt="[ {trans("Change connection type")} ]" title="[ {trans("Change connection type")} ]"'
-		+ ' onmouseover="popup(\'ala\');" onmouseout="pophide();">';
+	elem.innerHTML = newcontent;
 
 	window.parent.popclick();
 }
 
-function resize_frame()
-{
+function resize_frame() {
 	var pt = document.getElementById('propertiestable'),
 	h = pt.offsetHeight;
 	autoiframe_setsize('autoiframe', 350, Math.max(h, 10));
