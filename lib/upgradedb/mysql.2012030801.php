@@ -21,13 +21,12 @@
  *
  */
 
-// TERYT
-
 $DB->BeginTrans();
 
+// name2 support for teryt location_street
+$DB->Execute("ALTER TABLE location_streets ADD name2 varchar(128) DEFAULT NULL");
+$DB->Execute("DROP VIEW teryt_ulic");
 $DB->Execute("
-	ALTER TABLE location_streets ADD name2 varchar(128) DEFAULT NULL;
-	DROP VIEW teryt_ulic;
 	CREATE VIEW teryt_ulic AS
 		SELECT st.ident AS woj, d.ident AS pow, b.ident AS gmi, b.type AS rodz_gmi,
 			c.ident AS sym, s.ident AS sym_ul, s.name AS nazwa_1, s.name2 AS nazwa_2, t.name AS cecha, s.id
@@ -36,10 +35,13 @@ $DB->Execute("
 		JOIN location_cities c ON (s.cityid = c.id)
 		JOIN location_boroughs b ON (c.boroughid = b.id)
 		JOIN location_districts d ON (b.districtid = d.id)
-		JOIN location_states st ON (d.stateid = st.id);
+		JOIN location_states st ON (d.stateid = st.id)
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012030800', 'dbversion'));
+// netlinks speed support
+$DB->Execute("ALTER TABLE netlinks ADD speed int(11) DEFAULT '100000' NOT NULL");
+
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012030801', 'dbversion'));
 
 $DB->CommitTrans();
 

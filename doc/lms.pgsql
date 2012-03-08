@@ -717,6 +717,7 @@ CREATE TABLE netlinks (
 	src integer 		DEFAULT 0 NOT NULL,
 	dst integer 		DEFAULT 0 NOT NULL,
 	type smallint		DEFAULT 0 NOT NULL,
+	speed integer		DEFAULT 100000 NOT NULL,
 	srcport smallint	DEFAULT 0 NOT NULL,
 	dstport smallint	DEFAULT 0 NOT NULL,
 	PRIMARY KEY  (id),

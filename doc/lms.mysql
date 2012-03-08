@@ -570,6 +570,7 @@ CREATE TABLE netlinks (
   src int(11) NOT NULL DEFAULT '0',
   dst int(11) NOT NULL DEFAULT '0',
   type tinyint(1) NOT NULL DEFAULT '0',
+  speed int(11) NOT NULL DEFAULT '100000',
   srcport smallint NOT NULL DEFAULT '0',
   dstport smallint NOT NULL DEFAULT '0',
   PRIMARY KEY  (id),
@@ -1692,4 +1693,4 @@ INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012021800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012030801');

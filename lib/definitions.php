@@ -198,6 +198,17 @@ $DAYS = array(
 	DAY_SUNDAY	=> trans('Sun'),
 );
 
+$LINKSPEEDS = array(
+	10000		=> trans('10Mbit/s'),
+	25000		=> trans('25Mbit/s'),
+	54000		=> trans('54Mbit/s'),
+	100000		=> trans('100Mbit/s'),
+	200000		=> trans('200Mbit/s'),
+	300000		=> trans('300Mbit/s'),
+	1000000		=> trans('1Gbit/s'),
+	10000000	=> trans('10Gbit/s'),
+);
+
 if(isset($SMARTY))
 {
 	$SMARTY->assign('_DOCTYPES', $DOCTYPES);
