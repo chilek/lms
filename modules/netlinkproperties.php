@@ -40,7 +40,7 @@ function update_netlink_properties($id, $devid, $linktype, $linkspeed)
 			$bitmap = 'netdev_takenports.gif';
 			break;
 		case 1:
-			$bitmap = 'netdev_takenports.gif';
+			$bitmap = 'wireless.gif';
 	}
 
 	$contents = "<IMG src=\"img/".$bitmap
