@@ -16,7 +16,7 @@
 	<FORM name="netlinkproperties" method="GET">
 	<table id="propertiestable" style="width: 100%;" cellpadding="3">
 		<tr class="light">
-			<td style="width: 1%; white-space: nowrap;">{trans("Link type")}:</td>
+			<td style="width: 1%; white-space: nowrap;">{trans("Link type:")}</td>
 			<td style="width: 99%;">
 				<select name="linktype" {tip text="Select link type"} style="width: 100%;">
 					<option value="0"{if $link.type==0} selected{/if}>{trans("wire")}</option>
@@ -26,9 +26,9 @@
 			</td>
 		</tr>
 		<tr class="light">
-			<td style="white-space: nowrap;">{trans("Link speed")}:</td>
+			<td style="white-space: nowrap;">{trans("Link speed:")}</td>
 			<td>
-				<select name="linkspeed" {tip text="Select linkspeed"} style="width: 100%;">
+				<select name="linkspeed" {tip text="Select link speed"} style="width: 100%;">
 				{foreach from=$_LINKSPEEDS item=item key=key}
 					<option value="{$key}"{if $key==$link.speed} selected{/if}>{$item}</option>
 				{/foreach}
