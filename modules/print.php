@@ -488,7 +488,7 @@ switch($type)
 			{
 				$list1 = $DB->GetAllByKey('SELECT a.customerid AS id, '.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername, '
 					.$DB->Concat('city',"' '",'address').' AS address, ten, 
-					SUM(((((100 - a.pdiscount) * t.value) / 100) - a.vdiscount) *
+					SUM((((((100 - a.pdiscount) * t.value) / 100) - a.vdiscount) *
 						((CASE a.suspended WHEN 0 THEN 100.0 ELSE '.$suspension_percentage.' END) / 100))
 					* (CASE a.period
 						WHEN '.YEARLY.' THEN 12
