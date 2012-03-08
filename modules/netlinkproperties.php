@@ -45,7 +45,8 @@ function update_netlink_properties($id, $devid, $linktype, $linkspeed)
 
 	$contents = "<IMG src=\"img/".$bitmap
 		."\" alt=\"[ ".trans("Change connection type")." ]\" title=\"[ ".trans("Change connection type")." ]\""
-		." onmouseover=\"popup('".$LINKSPEEDS[$linkspeed]."');\" onmouseout=\"pophide();\">";
+		." onmouseover=\"popup('<span style=&quot;white-space: nowrap;&quot;>".trans("Link speed:")." ".$LINKSPEEDS[$linkspeed]
+		."</span>');\" onmouseout=\"pophide();\">";
 	$result->call('update_netlink_info', $contents);
 
 	return $result;
