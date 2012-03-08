@@ -1374,7 +1374,8 @@ class LMS
 	{
 		if ($result = $this->DB->GetRow('SELECT n.*,
 		    inet_ntoa(n.ipaddr) AS ip, inet_ntoa(n.ipaddr_pub) AS ip_pub,
-		    lc.name AS city_name, ls.name AS street_name, lt.name AS street_type
+		    lc.name AS city_name,
+				(CASE WHEN ls.name2 IS NOT NULL THEN ls.name2 || \' \' || ls.name ELSE ls.name END) AS street_name, lt.name AS street_type
 			FROM vnodes n
 			LEFT JOIN location_cities lc ON (lc.id = n.location_city)
 			LEFT JOIN location_streets ls ON (ls.id = n.location_street)
@@ -3326,7 +3327,8 @@ class LMS
 	function GetNetDev($id)
 	{
 		$result = $this->DB->GetRow('SELECT d.*, t.name AS nastypename, c.name AS channel,
-		        lc.name AS city_name, ls.name AS street_name, lt.name AS street_type
+		        lc.name AS city_name,
+				(CASE WHEN ls.name2 IS NOT NULL THEN ls.name2 || \' \' || ls.name ELSE ls.name END) AS street_name, lt.name AS street_type
 			FROM netdevices d
 			LEFT JOIN nastypes t ON (t.id = d.nastype)
 			LEFT JOIN ewx_channels c ON (d.channelid = c.id)
