@@ -299,16 +299,6 @@ case 'editip':
 	$edit = 'ip';
 	break;
 
-case 'switchlinktype':
-
-	$LMS->SetNetDevLinkType($_GET['devid'], $_GET['id'], $_GET['linktype'], $_GET['linkspeed']);
-	$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
-
-case 'switchnodelinktype':
-
-	$LMS->SetNodeLinkType($_GET['nodeid'], $_GET['linktype'], $_GET['linkspeed']);
-	$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
-
 case 'ipdel':
 
 	if($_GET['is_sure']=='1' && !empty($_GET['ip']))
