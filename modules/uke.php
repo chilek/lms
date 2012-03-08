@@ -411,7 +411,11 @@ foreach ($netnodes as $netnodename => $netnode) {
 			$teryt['address_budynek'] = $range['location_house'];
 
 			// get info about computers connected to network node
-			$nodes = $DB->GetAll("SELECT na.nodeid, c.type, SUM(t.downceil) AS downstream, SUM(t.upceil) AS upstream 
+			$nodes = $DB->GetAll("SELECT na.nodeid, c.type, "
+				.$DB->GroupConcat("DISTINCT (CASE t.type WHEN ".TARIFF_INTERNET." THEN 'INT'
+					WHEN ".TARIFF_PHONE." THEN 'TEL'
+					WHEN ".TARIFF_TV." THEN 'TV'
+					END)")." AS servicetypes, SUM(t.downceil) AS downstream, SUM(t.upceil) AS upstream 
 				FROM nodeassignments na 
 				JOIN nodes n ON n.id = na.nodeid 
 				JOIN assignments a ON a.id = na.assignmentid 
@@ -465,23 +469,33 @@ foreach ($netnodes as $netnodename => $netnode) {
 					else
 						$set = 14;
 					if ($node['type'] == 0)
-						$personalnodes[$set]++;
+						$personalnodes[$node['servicetypes']][$set]++;
 					else
-						$commercialnodes[$set]++;
+						$commercialnodes[$node['servicetypes']][$set]++;
 				}
-			// save info about computers connected to this network node
-			$personalnodes = array_replace(array_fill(0, 15, '0'), $personalnodes);
-			$commercialnodes = array_replace(array_fill(0, 15, '0'), $commercialnodes);
-			$snetranges .= $netrangeid.",".$netnode['id'].","
-				.implode(',', array($teryt['area_woj'], $teryt['area_pow'], $teryt['area_gmi']." ("
-					.$borough_types[intval($area_rodz)].")",
-					$teryt['area_terc'], $teryt['area_city'], $teryt['area_simc'],
-					$teryt['address_cecha'], $teryt['address_ulica'], $teryt['address_symul'],
-					$teryt['address_budynek'], ZIP_CODE))
-				.",0,".$linktypes[$range['linktype']]['technologia_dostepu'].",INT,WLASNA,"
-				.$linktypes[$range['linktype']]['szybkosc'].","
-				.implode(',', $personalnodes).",".implode(',', $commercialnodes)."\n";
-			$netrangeid++;
+				// save info about computers connected to this network node
+			foreach ($personalnodes as $servicetype => $servicenodes)
+				$personalnodes[$servicetype] = array_replace(array_fill(0, 15, '0'), $servicenodes);
+			foreach ($commercialnodes as $servicetype => $servicenodes)
+				$commercialnodes[$servicetype] = array_replace(array_fill(0, 15, '0'), $servicenodes);
+			foreach (array_unique(array_merge(array_keys($personalnodes), array_keys($commercialnodes))) as $servicetype) {
+				$services = array_flip(explode(',', $servicetype));
+				$ukeservices = array();
+				foreach (array('TEL', 'INT', 'TV') as $service)
+					if (isset($services[$service]))
+						$ukeservices[] = $service;
+				$snetranges .= $netrangeid.",".$netnode['id'].","
+					.implode(',', array($teryt['area_woj'], $teryt['area_pow'], $teryt['area_gmi']." ("
+						.$borough_types[intval($area_rodz)].")",
+						$teryt['area_terc'], $teryt['area_city'], $teryt['area_simc'],
+						$teryt['address_cecha'], $teryt['address_ulica'], $teryt['address_symul'],
+						$teryt['address_budynek'], ZIP_CODE))
+					.",0,".$linktypes[$range['linktype']]['technologia_dostepu'].",".implode('_', $ukeservices).",WLASNA,"
+					.$linktypes[$range['linktype']]['szybkosc'].","
+					.(implode(',', isset($personalnodes[$servicetype]) ? $personalnodes[$servicetype] : array_fill(0, 15, '0'))).","
+					.(implode(',', isset($commercialnodes[$servicetypes]) ? $commercialnodes[$servicetype] : array_fill(0, 15, '0')))."\n";
+				$netrangeid++;
+			}
 		}
 }
 
