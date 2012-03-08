@@ -42,7 +42,9 @@ switch($action)
 		else if($netdev['ports'] > $netdev['takenports'])
 		{
 			$LMS->NetDevLinkNode($_GET['id'],$_GET['devid'],
-				isset($_GET['linktype']) ? intval($_GET['linktype']) : 0, intval($_GET['port']));
+				isset($_GET['linktype']) ? intval($_GET['linktype']) : 0,
+				isset($_GET['linkspeed']) ? intval($_GET['linkspeed']) : 100000,
+				intval($_GET['port']));
 			$SESSION->redirect('?m=nodeinfo&id='.$_GET['id']);
 		}
 		else

@@ -829,6 +829,10 @@ class LMS
 							$searchargs[] = 'EXISTS (SELECT 1 FROM nodes
 								WHERE ownerid = c.id AND linktype = '.intval($value).')';
 						break;
+						case 'linkspeed':
+							$searchargs[] = 'EXISTS (SELECT 1 FROM nodes
+								WHERE ownerid = c.id AND linkspeed = '.intval($value).')';
+						break;
 						case 'doctype':
 							$val = explode(':', $value); // <doctype>:<fromdate>:<todate>
 							$searchargs[] = 'EXISTS (SELECT 1 FROM documents
@@ -1277,7 +1281,7 @@ class LMS
 				ipaddr=inet_aton(?), passwd=?, netdev=?, moddate=?NOW?,
 				modid=?, access=?, warning=?, ownerid=?, info=?, location=?,
 				location_city=?, location_street=?, location_house=?, location_flat=?,
-				chkmac=?, halfduplex=?, linktype=?, port=?, nas=?,
+				chkmac=?, halfduplex=?, linktype=?, linkspeed=?, port=?, nas=?,
 				longitude=?, latitude=? 
 				WHERE id=?',
 				array($nodedata['name'],
@@ -1298,6 +1302,7 @@ class LMS
 				    $nodedata['chkmac'],
 				    $nodedata['halfduplex'],
 				    isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
+				    isset($nodedata['linkspeed']) ? intval($nodedata['linkspeed']) : 100000,
 				    isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
 				    isset($nodedata['nas']) ? $nodedata['nas'] : 0,
 				    !empty($nodedata['longitude']) ? str_replace(',', '.', $nodedata['longitude']) : null,
@@ -1568,9 +1573,9 @@ class LMS
 		if($this->DB->Execute('INSERT INTO nodes (name, ipaddr, ipaddr_pub, ownerid,
 			passwd, creatorid, creationdate, access, warning, info, netdev,
 			location, location_city, location_street, location_house, location_flat,
-			linktype, port, chkmac, halfduplex, nas, longitude, latitude)
+			linktype, linkspeed, port, chkmac, halfduplex, nas, longitude, latitude)
 			VALUES (?, inet_aton(?), inet_aton(?), ?, ?, ?,
-			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			array(strtoupper($nodedata['name']),
 				$nodedata['ipaddr'],
 				$nodedata['ipaddr_pub'],
@@ -1587,6 +1592,7 @@ class LMS
 				$nodedata['location_house'] ? $nodedata['location_house'] : null,
 				$nodedata['location_flat'] ? $nodedata['location_flat'] : null,
 				isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
+				isset($nodedata['linkspeed']) ? intval($nodedata['linkspeed']) : 100000,
 				isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
 				$nodedata['chkmac'],
 				$nodedata['halfduplex'],
@@ -1735,7 +1741,7 @@ class LMS
 
 	function GetNetDevLinkedNodes($id)
 	{
-		return $this->DB->GetAll('SELECT nodes.id AS id, nodes.name AS name, linktype, ipaddr, 
+		return $this->DB->GetAll('SELECT nodes.id AS id, nodes.name AS name, linktype, linkspeed, ipaddr, 
 			inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, 
 			netdev, port, ownerid,
 			'.$this->DB->Concat('c.lastname',"' '",'c.name').' AS owner 
@@ -1744,25 +1750,28 @@ class LMS
 			ORDER BY nodes.name ASC', array($id));
 	}
 
-	function NetDevLinkNode($id, $devid, $type=0, $port=0)
+	function NetDevLinkNode($id, $devid, $type=0, $speed=100000, $port=0)
 	{
-		return $this->DB->Execute('UPDATE nodes SET netdev=?, linktype=?, port=?
+		return $this->DB->Execute('UPDATE nodes SET netdev=?, linktype=?, linkspeed=?, port=?
 			 WHERE id=?', 
 			 array($devid,
 				intval($type),
+				intval($speed),
 				intval($port),
 				$id
 			));
 	}
 
-	function SetNetDevLinkType($dev1, $dev2, $type=0)
+	function SetNetDevLinkType($dev1, $dev2, $type=0, $speed=100000)
 	{
-		return $this->DB->Execute('UPDATE netlinks SET type=? WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($type, $dev1, $dev2, $dev1, $dev2));
+		return $this->DB->Execute('UPDATE netlinks SET type=?, speed=? WHERE (src=? AND dst=?) OR (dst=? AND src=?)',
+			array($type, $speed, $dev1, $dev2, $dev1, $dev2));
 	}
 
-	function SetNodeLinkType($node, $type=0)
+	function SetNodeLinkType($node, $type=0, $speed=100000)
 	{
-		return $this->DB->Execute('UPDATE nodes SET linktype=? WHERE id=?', array($type, $node));
+		return $this->DB->Execute('UPDATE nodes SET linktype=?, linkspeed=? WHERE id=?',
+			array($type, $speed, $node));
 	}
 
 	/*
@@ -3233,7 +3242,7 @@ class LMS
 
 	function GetNetDevLinkType($dev1,$dev2)
 	{
-		return $this->DB->GetOne('SELECT type FROM netlinks 
+		return $this->DB->GetRow('SELECT type, speed FROM netlinks 
 			WHERE (src=? AND dst=?) OR (dst=? AND src=?)', 
 			array($dev1,$dev2,$dev1,$dev2));
 	}
@@ -3242,12 +3251,12 @@ class LMS
 	{
 		return $this->DB->GetAll('SELECT d.id, d.name, d.description,
 			d.location, d.producer, d.ports, l.type AS linktype,
-			l.srcport, l.dstport,
+			l.speed AS linkspeed, l.srcport, l.dstport,
 			(SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id) 
 			+ (SELECT COUNT(*) FROM nodes WHERE netdev = d.id AND ownerid > 0)
 			AS takenports 
 			FROM netdevices d
-			JOIN (SELECT DISTINCT type,
+			JOIN (SELECT DISTINCT type, speed, 
 				(CASE src WHEN ? THEN dst ELSE src END) AS dev, 
 				(CASE src WHEN ? THEN dstport ELSE srcport END) AS srcport, 
 				(CASE src WHEN ? THEN srcport ELSE dstport END) AS dstport 
@@ -3461,14 +3470,14 @@ class LMS
 			array($dev1, $dev2, $dev1, $dev2));
 	}
 
-	function NetDevLink($dev1, $dev2, $type=0, $sport=0, $dport=0)
+	function NetDevLink($dev1, $dev2, $type=0, $speed=100000, $sport=0, $dport=0)
 	{
 		if($dev1 != $dev2)
 			if(!$this->IsNetDevLink($dev1,$dev2))
 				return $this->DB->Execute('INSERT INTO netlinks 
-					(src, dst, type, srcport, dstport) 
-					VALUES (?, ?, ?, ?, ?)', 
-					array($dev1, $dev2, $type, 
+					(src, dst, type, speed, srcport, dstport) 
+					VALUES (?, ?, ?, ?, ?, ?)', 
+					array($dev1, $dev2, $type, $speed,
 						intval($sport), intval($dport)));
 
 		return FALSE;
