@@ -198,6 +198,12 @@ $DAYS = array(
 	DAY_SUNDAY	=> trans('Sun'),
 );
 
+$LINKTYPES = array(
+	0		=> trans('wire'),
+	1		=> trans('wireless'),
+	2		=> trans('fiber'),
+);
+
 $LINKSPEEDS = array(
 	10000		=> trans('10Mbit/s'),
 	25000		=> trans('25Mbit/s'),
@@ -222,6 +228,7 @@ if(isset($SMARTY))
 	$SMARTY->assign('_CONTACTTYPES', $CONTACTTYPES);
 	$SMARTY->assign('_DISCOUNTTYPES', $DISCOUNTTYPES);
 	$SMARTY->assign('_DAYS', $DAYS);
+	$SMARTY->assign('_LINKTYPES', $LINKTYPES);
 	$SMARTY->assign('_LINKSPEEDS', $LINKSPEEDS);
 }
 

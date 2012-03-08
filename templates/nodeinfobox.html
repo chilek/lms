@@ -103,11 +103,11 @@
 		</TD>
 		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
 			{if $nodeinfo.netdev}
-				<span class="bold"><A HREF="?m=netdevinfo&id={$netdevices.id}">{$netdevices.name} {$netdevices.producer}{if $netdevices.location} / {$netdevices.location}{/if}</A></span>
+				<span class="bold">
+				<A HREF="?m=netdevinfo&id={$netdevices.id}">{$netdevices.name} {$netdevices.producer}{if $netdevices.location} / {$netdevices.location}{/if}</A>
+				</span>
 				{if $nodeinfo.port}[{$nodeinfo.port}]{/if}
-					{if $nodeinfo.linktype == 1}<IMG src="img/wireless.gif" alt="{trans("wireless")}" {tip text="wireless"}>
-					{elseif $nodeinfo.linktype == 2}<IMG src="img/netdev_takenports.gif" alt="{trans("fiber")}" {tip text="fiber"}>
-					{else}<IMG src="img/netdev_takenports.gif" alt="{trans("wire")}" {tip text="wire"}>{/if}
+				<IMG src="img/{if $nodeinfo.linktype == 1}wireless.gif{elseif $nodeinfo.linktype == 2}netdev_takenports.gif{else}netdev_takenports.gif{/if}" alt="{$_LINKTYPES[$nodeinfo.linktype]}" {tip text=$_LINKSPEEDS[$nodeinfo.linkspeed]}>
 			{else}
 				{if $netdevices}
 				<SELECT SIZE="1" style="width: 300px;" NAME="devid" {tip trigger="netdev"}>
@@ -121,9 +121,14 @@
 				</SELECT>
 				<INPUT type="text" name="port" value="{if $nodeinfo.port}{$nodeinfo.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
 				<SELECT name="linktype" id="linktype" {tip trigger="linktype" text="Select link type"}>
-					<OPTION VAlUE="0">{trans("wire")}</OPTION>
-					<OPTION VAlUE="1">{trans("wireless")}</OPTION>
-					<OPTION VAlUE="2">{trans("fiber")}</OPTION>
+					{foreach from=$_LINKTYPES item=item key=key}
+					<OPTION VAlUE="{$key}"{if $key==100000} selected{/if}>{$item}</OPTION>
+					{/foreach}
+				</SELECT>
+				<SElECT name="linkspeed" id="linkspeed" {tip trigger="linkspeed" text="Select link speed"}>
+					{foreach from=$_LINKSPEEDS item=item key=key}
+					<OPTION VALUE="{$key}"{if $key==100000} selected{/if}>{$item}</OPTION>
+					{/foreach}
 				</SELECT>
 				<A HREF="javascript:document.nodelink.submit(); ">{trans("Connect")} <IMG SRC="img/edit.gif" alt=""></A>
 				{/if}
