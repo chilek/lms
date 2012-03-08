@@ -36,11 +36,9 @@
 						<span class="blend">({$netcomplist[netcomplist].ownerid|string_format:"%04d"})</span>
 					</TD>
 					<TD style="width: 1%; white-space: nowrap;">
-						<!--<A href="?m=netdevedit&action=switchnodelinktype&linktype={($netcomplist[netcomplist].linktype + 1) % 3}&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}">//-->
 						<span id="nodelinkproperties_{$netcomplist[netcomplist].id}" onClick="javascript:netlinkpropertieschoosewin('{$netdevinfo.id}', '{$netcomplist[netcomplist].id}', false);" >
 							<IMG src="{if $netcomplist[netcomplist].linktype == 1}img/wireless.gif{elseif $netcomplist[netcomplist].linktype == 2}img/netdev_takenports.gif{else}img/netdev_takenports.gif{/if}" alt="[ {trans("Change connection type")} ]" title="[ {trans("Change connection type")} ]" {tip trigger="nodelinkproperties_$netcomplist[netcomplist].id" text=$_LINKSPEEDS[$netcomplist[netcomplist].linkspeed]}>
 						</span>
-						<!--</A>//-->
 						<span onclick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';">
 						[{if $netcomplist[netcomplist].port}{$netcomplist[netcomplist].port}{/if}]
 						<BR><IMG SRC="img/ip.gif" ALT=""> {$netcomplist[netcomplist].ip}{if $netcomplist[netcomplist].ip_pub != "0.0.0.0"} ({$netcomplist[netcomplist].ip_pub}){/if}
