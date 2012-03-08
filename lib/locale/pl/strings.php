@@ -2560,5 +2560,6 @@ $_LANG['Select link speed'] = 'Wybierz szybkość łącza';
 
 $_LANG['phone'] = 'telefon';
 $_LANG['tv'] = 'telewizja';
+$_LANG['Change connection properties'] = 'Zmień właściwości połączenia';
 
 ?>
