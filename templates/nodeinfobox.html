@@ -120,6 +120,7 @@
 					{/section}
 				</SELECT>
 				<INPUT type="text" name="port" value="{if $nodeinfo.port}{$nodeinfo.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
+				<BR>
 				<SELECT name="linktype" id="linktype" {tip trigger="linktype" text="Select link type"}>
 					{foreach from=$_LINKTYPES item=item key=key}
 					<OPTION VAlUE="{$key}"{if $key==100000} selected{/if}>{$item}</OPTION>
