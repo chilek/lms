@@ -144,13 +144,17 @@ $NUM_PERIODS = array(
 define('TARIFF_INTERNET', 1);
 define('TARIFF_HOSTING', 2);
 define('TARIFF_SERVICE', 3);
+define('TARIFF_PHONE', 4);
+define('TARIFF_TV', 5);
 define('TARIFF_OTHER', -1);
 
 $TARIFFTYPES = array(
-    TARIFF_INTERNET => trans('internet'),
-    TARIFF_HOSTING 	=> trans('hosting'),
-    TARIFF_SERVICE 	=> trans('service'),
-    TARIFF_OTHER	=> trans('other'),
+	TARIFF_INTERNET	=> trans('internet'),
+	TARIFF_HOSTING	=> trans('hosting'),
+	TARIFF_SERVICE	=> trans('service'),
+	TARIFF_PHONE	=> trans('phone'),
+	TARIFF_TV	=> trans('tv'),
+	TARIFF_OTHER	=> trans('other'),
 );
 
 $PAYTYPES = array(
