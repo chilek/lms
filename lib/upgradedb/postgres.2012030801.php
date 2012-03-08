@@ -39,8 +39,11 @@ $DB->Execute("
 		JOIN location_states st ON (d.stateid = st.id);
 ");
 
-// netlink speed support
-$DB->Execute("ALTER TABLE netlinks ADD speed integer DEFAULT 100000 NOT NULL");
+// netlink and node link speed support
+$DB->Execute("
+	ALTER TABLE netlinks ADD speed integer DEFAULT 100000 NOT NULL;
+	ALTER TABLE nodes ADD linkspeed integer DEFAULT 100000 NOT NULL;
+");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012030801', 'dbversion'));
 
