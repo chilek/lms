@@ -39,7 +39,7 @@
 		</TD>
 		<TD style="width: 1%; white-space: nowrap;">
 			<span id="devlinkproperties_{$netdevlist[netdevlist].id}" onClick="javascript:netlinkpropertieschoosewin('{$netdevinfo.id}', '{$netdevlist[netdevlist].id}', true);">
-				<IMG SRC="img/{if $netdevlist[netdevlist].linktype == 1}wireless.gif{elseif $netdevlist[netdevlist].linktype == 2}netdev_takenports.gif{else}netdev_takenports.gif{/if}" alt="[ {trans("Change connection properties")} ]" title="[ {trans("Change connection properties")} ]" {tip trigger="devlinkproperties_$netdevlist[netdevlist].id" text="<span style=\"white-space: nowrap;\">{trans("Link speed:")} {$_LINKSPEEDS[$netdevlist[netdevlist].linkspeed]}</span>"}>
+				<IMG SRC="img/{if $netdevlist[netdevlist].linktype == 1}wireless.gif{elseif $netdevlist[netdevlist].linktype == 2}netdev_takenports.gif{else}netdev_takenports.gif{/if}" alt="[ {trans("Change connection properties")} ]" title="[ {trans("Change connection properties")} ]" {tip trigger="devlinkproperties_$netdevlist[netdevlist].id" text="<span style=\"white-space: nowrap;\">{trans("Link type:")} {$_LINKTYPES[$netdevlist[netdevlist].linktype]}<br>{trans("Link speed:")} {$_LINKSPEEDS[$netdevlist[netdevlist].linkspeed]}</span>"}>
 			</span>
 			<span onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';">
 			[{if $netdevlist[netdevlist].dstport}{$netdevlist[netdevlist].dstport}{/if}]
