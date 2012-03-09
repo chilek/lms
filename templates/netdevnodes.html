@@ -78,7 +78,7 @@
 										<OPTION VALUE="{$nodelist[nodelist].id}"{if $connectnode.id == $nodelist[nodelist].id} selected{/if}>{$nodelist[nodelist].name} ({$nodelist[nodelist].ip})</OPTION>
 									{/section}
 									</SELECT>
-									{trans("Dest. port")}:<INPUT name="port" value="{if $connectnode.port}{$connectnode.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
+									<label for="port">{trans("Dest. port")}:<INPUT name="port" id="port" value="{if $connectnode.port}{$connectnode.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
 									<SELECT NAME="linktype" id="devnodeslinktype" {tip trigger="devnodeslinktype" text="Select link type"}>
 										{foreach from=$_LINKTYPES item=item key=key}
 										<OPTION value="$key"{if $key==$nodelinktype} selected{/if}>{$item}</OPTION>
