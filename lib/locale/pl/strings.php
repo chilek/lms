@@ -2558,4 +2558,8 @@ $_LANG['Allows you to prepare SIIS v2 report for UKE'] = 'Wygenerowanie raportu 
 $_LANG['Link speed:'] = 'Szybkość łącza:';
 $_LANG['Select link speed'] = 'Wybierz szybkość łącza';
 
+$_LANG['phone'] = 'telefon';
+$_LANG['tv'] = 'telewizja';
+$_LANG['Change connection properties'] = 'Zmień właściwości połączenia';
+
 ?>
