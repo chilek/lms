@@ -51,22 +51,16 @@ function get_loc_cities($districtid)
 {
 	global $DB;
 
-	$subquery = $DB->Concat("(SELECT (CASE WHEN c.cityid IS NOT NULL THEN (SELECT ".$DB->Concat('lc.name', "' - '")." FROM location_cities lc WHERE lc.id = c.cityid) 
-			ELSE '' END))", "(CASE WHEN c.name IS NULL THEN b.name ELSE c.name END)");
-	$list = $DB->GetAll("SELECT c.id, 
-			".$subquery." AS name, 
-			b.name AS borough, b.type AS btype 
-		FROM location_boroughs b 
-		LEFT JOIN location_cities c ON (c.boroughid = b.id) 
-		WHERE b.districtid = ? 
-			AND (c.cityid IS NULL OR EXISTS (SELECT id FROM location_cities WHERE id = c.cityid)) 
-		ORDER BY ".$subquery.", b.name, b.type",
-			array($districtid));
+	$list = $DB->GetAll('SELECT c.id, c.name, b.name AS borough, b.type AS btype
+		FROM location_cities c
+		JOIN location_boroughs b ON (c.boroughid = b.id)
+		WHERE b.districtid = ?
+		ORDER BY c.name, b.type', array($districtid));
 
 	if ($list)
 		foreach ($list as $idx => $row) {
-			$name = sprintf('%s (%s %s)', $row['name'],
-				trans('<!borough_abbr>'), $row['borough']);
+			$name = sprintf('%s (%s%s)', $row['name'],
+				$row['btype'] < 4 ? trans('<!borough_abbr>') : '', $row['borough']);
 			$list[$idx] = array('id' => $row['id'], 'name' => $name);
 		}
 
