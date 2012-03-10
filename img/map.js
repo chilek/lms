@@ -430,17 +430,17 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 
 		var checkbutton = new OpenLayers.Control.Button({
 			displayClass: "lmsCheckButton", 
-			title: "Check a host ...",
+			title: checkhostcaption,
 			command: 'check'});
 
 		var centerbutton = new OpenLayers.Control.Button({
 			displayClass: "lmsCenterButton", 
-			title: "Center map around network elements ...",
+			title: centermapcaption,
 			command: 'center'});
 
 		var refreshbutton = new OpenLayers.Control.Button({
 			displayClass: "lmsRefreshButton", 
-			title: "Refesh network state ...",
+			title: refreshmapcaption,
 			command: 'refresh'});
 
 		var panel = new OpenLayers.Control.Panel({
