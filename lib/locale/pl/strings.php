@@ -2562,4 +2562,8 @@ $_LANG['phone'] = 'telefon';
 $_LANG['tv'] = 'telewizja';
 $_LANG['Change connection properties'] = 'Zmień właściwości połączenia';
 
+$_LANG['Check a host ...'] = 'Sprawdź łączność z hostem ...';
+$_LANG['Center map around network elements ...'] = 'Wycentruj mapę wokół jej elementów ...';
+$_LANG['Refresh network state ...'] = 'Odśwież stan sieci ...';
+
 ?>
