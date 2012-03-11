@@ -189,17 +189,7 @@ else
 
 	$SESSION->remove('nslp');
 
-	$states = $DB->GetAll('SELECT id, name, ident FROM location_states ORDER BY name');
-	if (count($states))
-		$data['stateid'] = $states[key($states)]['id'];
-
-	if (!empty($data['stateid'])) {
-		$districts = $DB->GetAll('SELECT id, ident, name
-			FROM location_districts WHERE stateid = ?', array($data['stateid']));
-		$SMARTY->assign('districts', $districts);
-	}
-
-	$SMARTY->assign('states', $states);
+	$SMARTY->assign('states', $DB->GetAll('SELECT id, name, ident FROM location_states ORDER BY name'));
 	$SMARTY->assign('k',$k);
 	$SMARTY->display('nodesearch.html');
 }
