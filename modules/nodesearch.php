@@ -21,8 +21,66 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id$
+ *  $Id: nodesearch.php,v 1.46 2012/01/02 11:01:35 alec Exp $
  */
+
+function get_loc_boroughs($districtid)
+{
+	global $DB;
+
+	$borough_types = array(
+		1 => 'gm. miejska',
+		2 => 'gm. wiejska',
+		3 => 'gm. miejsko-wiejska',
+		4 => 'miasto w gminie miejsko-wiejskiej',
+		5 => 'obszar wiejski gminy miejsko-wiejskiej',
+	);
+
+	$list = $DB->GetAll('SELECT b.id, b.name AS borough, b.type AS btype
+		FROM location_boroughs b
+		WHERE b.districtid = ?
+		ORDER BY b.name, b.type', array($districtid));
+
+	if ($list)
+		foreach ($list as $idx => $row) {
+			$name = sprintf('%s (%s)', $row['borough'],
+				$borough_types[$row['btype']]);
+			$list[$idx] = array('id' => $row['id'], 'name' => $name);
+		}
+
+	return $list;
+}
+
+function select_location($what, $id)
+{
+	global $DB;
+
+	$JSResponse = new xajaxResponse();
+
+	if ($what == 'search[state]')
+		$stateid = $id;
+	else if ($what == 'search[district]')
+		$districtid = $id;
+	else if ($what == 'search[borough]')
+		$boroughid = $id;
+
+	if ($stateid) {
+		$list = $DB->GetAll('SELECT id, name
+			FROM location_districts WHERE stateid = ?
+			ORDER BY name', array($stateid));
+
+		$JSResponse->call('update_selection', 'district',
+			$list ? $list : array(), !$what ? $districtid : 0);
+	}
+
+	if ($districtid) {
+		$list = get_loc_boroughs($districtid);
+		$JSResponse->call('update_selection', 'borough',
+			$list ? $list : array(), !$what ? $boroughid : 0);
+	}
+
+	return $JSResponse;
+}
 
 function macformat($mac)
 {
@@ -117,10 +175,31 @@ if(isset($_GET['search']))
 }
 else
 {
+	require(LIB_DIR.'/xajax/xajax_core/xajax.inc.php');
+
+	$xajax = new xajax();
+	$xajax->configure('errorHandler', true);
+	$xajax->configure('javascript URI', 'img');
+	$xajax->register(XAJAX_FUNCTION, 'select_location');
+	$xajax->processRequest();
+
+	$SMARTY->assign('xajax', $xajax->getJavascript());
+
 	$layout['pagetitle'] = trans('Nodes Search');
 
 	$SESSION->remove('nslp');
 
+	$states = $DB->GetAll('SELECT id, name, ident FROM location_states ORDER BY name');
+	if (count($states))
+		$data['stateid'] = $states[key($states)]['id'];
+
+	if (!empty($data['stateid'])) {
+		$districts = $DB->GetAll('SELECT id, ident, name
+			FROM location_districts WHERE stateid = ?', array($data['stateid']));
+		$SMARTY->assign('districts', $districts);
+	}
+
+	$SMARTY->assign('states', $states);
 	$SMARTY->assign('k',$k);
 	$SMARTY->display('nodesearch.html');
 }
