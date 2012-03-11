@@ -82,6 +82,23 @@ function select_location($what, $id)
 	return $JSResponse;
 }
 
+function connect_nodes($nodeids, $deviceid, $linktype, $linkspeed)
+{
+	global $DB;
+
+	$JSResponse = new xajaxResponse();
+
+	$DB->BeginTrans();
+	foreach ($nodeids as $nodeid)
+		$DB->Execute("UPDATE nodes SET netdev = ?, port = 0, linktype = ?, linkspeed = ? WHERE id = ?",
+			array($deviceid, $linktype, $linkspeed, $nodeid));
+	$DB->CommitTrans();
+
+	$JSResponse->call('operation_finished');
+
+	return $JSResponse;
+}
+
 function macformat($mac)
 {
 	$res = str_replace('-', ':', $mac);
@@ -133,8 +150,17 @@ $SESSION->save('nslk', $k);
 // MAC address reformatting
 $nodesearch['mac'] = macformat($nodesearch['mac']);
 
+require(LIB_DIR.'/xajax/xajax_core/xajax.inc.php');
+$xajax = new xajax();
+$xajax->configure('errorHandler', true);
+$xajax->configure('javascript URI', 'img');
+
 if(isset($_GET['search'])) 
 {
+	$xajax->register(XAJAX_FUNCTION, 'connect_nodes');
+	$SMARTY->assign('xajax', $xajax->getJavascript());
+	$xajax->processRequest();
+
 	$layout['pagetitle'] = trans('Nodes Search Results');
 
 	$nodelist = $LMS->GetNodeList($o, $nodesearch, $k);
@@ -165,7 +191,16 @@ if(isset($_GET['search']))
 	$SMARTY->assign('start',$start);
 	$SMARTY->assign('nodelist',$nodelist);
 	$SMARTY->assign('listdata',$listdata);
-	
+
+	$netdevlist = $LMS->GetNetDevList();
+	unset($netdevlist['total']);
+	unset($netdevlist['order']);
+	unset($netdevlist['direction']);
+	$SMARTY->assign('netdevlist', $netdevlist);
+
+	$xajax->register(XAJAX_FUNCTION, 'connect_nodes');
+	$SMARTY->assign('xajax', $xajax->getJavascript());
+
 	if(isset($_GET['print']))
 		$SMARTY->display('printnodelist.html');
 	elseif($listdata['total']==1)
@@ -175,15 +210,9 @@ if(isset($_GET['search']))
 }
 else
 {
-	require(LIB_DIR.'/xajax/xajax_core/xajax.inc.php');
-
-	$xajax = new xajax();
-	$xajax->configure('errorHandler', true);
-	$xajax->configure('javascript URI', 'img');
 	$xajax->register(XAJAX_FUNCTION, 'select_location');
-	$xajax->processRequest();
-
 	$SMARTY->assign('xajax', $xajax->getJavascript());
+	$xajax->processRequest();
 
 	$layout['pagetitle'] = trans('Nodes Search');
 
@@ -191,7 +220,9 @@ else
 
 	$SMARTY->assign('states', $DB->GetAll('SELECT id, name, ident FROM location_states ORDER BY name'));
 	$SMARTY->assign('k',$k);
+
 	$SMARTY->display('nodesearch.html');
 }
+
 
 ?>

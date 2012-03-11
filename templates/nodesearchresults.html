@@ -1,28 +1,30 @@
 {include file="header.html"}
-<!--// $Id$ //-->
+<!--// $Id: nodesearchresults.html,v 1.57 2012/02/07 13:10:34 alec Exp $ //-->
+{$xajax}
 <H1>{$layout.pagetitle}</H1>
 {$lastonline_limit = get_conf('phpui.lastonline_limit')}
-<P><table cellpadding="3" width="100%">
+<form name="nodesearchresults">
+<P><table cellpadding="3" style="width: 100%;">
 	<TR class="dark" {tip text="Click on column name to change sorting order"}>
-		<TD class="fleftu" width="97%">
-			<img src="img/node.gif" ALT=""> <A href="?m=nodesearch&search&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order eq "name"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+		<TD class="fleftu" style="width: 96%;">
+			<img src="img/node.gif" ALT=""> <A href="?m=nodesearch&search&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><span class="bold">{trans("Name:")}</span></A> {if $listdata.order eq "name"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<img src="img/customer.gif" ALT=""> <A href="?m=nodesearch&search&o=owner{if $listdata.direction eq "asc" && $listdata.order eq "owner"},desc{/if}">{trans("Owner:")}</A> {if $listdata.order eq "owner"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD Class="fbt" align="right" valign="top" width="1%" nowrap>
+		<TD Class="fbt" style="text-align: right; vertical-align: top; width: 1%; white-space: nowrap;">
 			<img src="img/empty.gif" ALT="" width="1" height="16"><A href="?m=nodesearch&search&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<img src="img/empty.gif" ALT="" width="1" height="16"><A href="?m=nodesearch&search&o=ownerid{if $listdata.direction eq "asc" && $listdata.order eq "ownerid"},desc{/if}">{trans("Owner ID:")}</A> {if $listdata.order eq "ownerid"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD CLASS="fbt" width="1%" nowrap>
+		<TD CLASS="fbt" style="width: 1%; white-space: nowrap;">
 			<img src="img/ip.gif" ALT="">&nbsp;<A href="?m=nodesearch&search&o=ip{if $listdata.direction eq "asc" && $listdata.order eq "ip"},desc{/if}">{trans("IP address:")}</A> {if $listdata.order eq "ip"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<A href="?m=nodesearch&search&o=ip{if $listdata.direction eq "asc" && $listdata.order eq "ip"},desc{/if}">({trans("Pub. IP address:")})</A> {if $listdata.order eq "ip"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<img src="img/mac.gif" ALT="">&nbsp;<A href="?m=nodesearch&search&o=mac{if $listdata.direction eq "asc" && $listdata.order eq "mac"},desc{/if}">{trans("MAC address:")}</A> {if $listdata.order eq "mac"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD CLASS="frightu" width="1%" align="right">
-			<NOBR><B>{t a=$listdata.total}Total: $a{/t}</B></NOBR>
+		<TD CLASS="frightu" colspan="2" style="width: 2%; text-align: right; white-space: nowrap;">
+			<span class="bold">{t a=$listdata.total}Total: $a{/t}</span>
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
 	<TR CLASS="dark">
-		<TD CLASS="fall" colspan="4">
+		<TD CLASS="fall" colspan="5">
 			{include file="scroller.html" loop=$nodelist adlink="&search=1"}
 		</TD>
 	</TR>
@@ -30,7 +32,7 @@
 	{cycle values="light,lucid" print=false}
 	{section name=nodelist loop=$nodelist start=$start max=$pagelimit}
 	<TR class="{cycle}{if ! $nodelist[nodelist].access} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD width="95%" class="fleft" onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';">
+		<TD class="fleft" style="width: 95%;" onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';">
 			<a name="{$nodelist[nodelist].id}">
 			{if $nodelist[nodelist].lastonline}
 			    {if ($smarty.now-$nodelist[nodelist].lastonline) > $lastonline_limit}
@@ -44,58 +46,132 @@
 			{if $nodelist[nodelist].info}
 			    <IMG src="img/info1.gif" alt="" {tip text=$nodelist[nodelist].info}>
 			{/if}
-			<B>{$nodelist[nodelist].name}</B></A><BR>
+			<span class="bold">{$nodelist[nodelist].name}</span></A><BR>
 			<img src="img/customer.gif" ALT="">&nbsp;<A href="?m=customerinfo&id={$nodelist[nodelist].ownerid}" {tip a=$nodelist[nodelist].ownerid dynpopup='?m=customerinfoshort&id=$a'}>{if ! $nodelist[nodelist].access}<font class="blend">{/if}{$nodelist[nodelist].owner|truncate:60:" ..."|replace:" ":"&nbsp;"}{if ! $nodelist[nodelist].access}</FONT>{/if}</A>
 		</TD>
-		<TD align="right" width="1%" onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';" valign="top">
+		<TD style="width: 1%; text-align: right; vertical-align: top;" onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';">
 			<img src="img/empty.gif" ALT="" width="1" height="16">({$nodelist[nodelist].id|string_format:"%04d"})<BR>
-			<img src="img/empty.gif" ALT="" width="1" height="16"><font class="blend">({$nodelist[nodelist].ownerid|string_format:"%04d"})</font>
+			<img src="img/empty.gif" ALT="" width="1" height="16"><span class="blend">({$nodelist[nodelist].ownerid|string_format:"%04d"})</span>
 		</TD>
-		<TD width="1%" onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';" valign="top" nowrap>
+		<TD style="width: 1%; vertical-align: top; white-space: nowrap;" onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';">
 			<img src="img/ip.gif" ALT="">&nbsp;{$nodelist[nodelist].ip}{if $nodelist[nodelist].ip_pub != "0.0.0.0"} ({$nodelist[nodelist].ip_pub}){/if}<BR>
 			<img src="img/mac.gif" ALT="">&nbsp;{$nodelist[nodelist].mac|replace:",":"<BR><img src=\"img/mac.gif\" ALT=\"\">&nbsp;"}
 		</TD>
-		<TD class="fright" width="1%">
-			<nobr>
+		<TD style="width: 1%; white-space: nowrap;">
 			<a href="?m=nodeset&id={$nodelist[nodelist].id}"><img src="img/{if ! $nodelist[nodelist].access}no{/if}access.gif" ALT="{if ! $nodelist[nodelist].access}[ {trans("Disconnect")} ]{else}[ {trans("Connect")} ]{/if}"></A>
 			<a href="?m=nodewarn&id={$nodelist[nodelist].id}"><img src="img/warning{if ! $nodelist[nodelist].warning}off{else}on{/if}.gif" ALT="{if ! $nodelist[nodelist].warning}[ {trans("Enable notices")} ]{else}[ {trans("Disable notices")} ]{/if}"></A>
 			<a href="?m=nodedel&id={$nodelist[nodelist].id}" onClick="return confirmLink(this, '{t a=$nodelist[nodelist].name}Are you sure, you want to delete node \'$a\' from database?{/t}')"><img src="img/delete.gif" ALT="[ {trans("Delete")} ]"></A>
 			<a href="?m=nodeedit&id={$nodelist[nodelist].id}"><img src="img/edit.gif" ALT="[ {trans("Edit")} ]"></A>
 			<a href="?m=nodeinfo&id={$nodelist[nodelist].id}"><img src="img/info.gif" ALT="[ {trans("Info")} ]"></A>
-			</nobr>
+		</TD>
+		<TD class="fright" style="width: 1%;">
+			<INPUT TYPE="checkbox" NAME="marks[{$nodelist[nodelist].id}]" VALUE="{$nodelist[nodelist].id}"{if $marks.$nodeid}CHECKED{/if}>
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD colspan="4" class="fall" align="center">
+		<TD colspan="5" class="fall" style="text-align: center;">
 			<P>&nbsp;</P>
-			<P><B>{trans("No such nodes matching search criteria.")}</B></P>
+			<P><span class="bold">{trans("No such nodes matching search criteria.")}</span></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>
 	{/section}
 	{if $listdata.total != 0}
 	<TR CLASS="dark">
-		<TD CLASS="fall" colspan="4">
+		<TD CLASS="fall" colspan="5">
 			{include file="scroller.html" loop=$nodelist adlink="&search=1"}
 		</TD>
 	</TR>
 	{/if}
 	<TR CLASS="light">
-		<TD WIDTH="98%" COLSPAN="2" CLASS="fleftu" ALIGN="right">
-			<B>
+		<TD style="width: 97%; text-align: right;" COLSPAN="2" CLASS="fleftu">
+			<span class="bold">
 				{trans("Total:")}<BR>
 				{trans("Connected<!nodes>:")}<BR>
 				{trans("Disconnected:")}
-			</B>
+			</span>
 		</TD>
-		<TD WIDTH="2%" COLSPAN="2" CLASS="frightu" VALIGN="TOP">
-			<B>
+		<TD style="width: 3%; vertical-align: top;" COLSPAN="3" CLASS="frightu">
+			<span class="bold">
 				{if $listdata.total}{$listdata.total}{else}0{/if}<BR>
 				{if $listdata.totalon}{$listdata.totalon}{else}0{/if}<BR>
 				{if $listdata.totaloff}{$listdata.totaloff}{else}0{/if}
-			</B>
-		</TD>				
-	</TR>			
+			</span>
+		</TD>
+	</TR>
+	<TR CLASS="dark">
+		<TD class="fleftu" style="width: 97%; white-space: nowrap;" colspan="2">
+			<label for="operation"><span class="bold">{trans("Operation:")}</span></label>
+			<select id="operation" onChange="javascript:changeOperation(this.value);">
+				<option value="1">{trans("Connect to device")}</option>
+			</select>
+			<span id="deviceconnect" style="white-space: nowrap;">
+				<select id="device">
+					{foreach from=$netdevlist item=item}
+					<option value="{$item.id}">{$item.name}</option>
+					{/foreach}
+				</select>
+				<select id="linktype">
+					{foreach from=$_LINKTYPES item=item key=key}
+					<option value="{$key}">{$item}</option>
+					{/foreach}
+				</select>
+				<select id="linkspeed">
+					{foreach from=$_LINKSPEEDS item=item key=key}
+					<option value="{$key}"{if $key==100000} selected{/if}>{$item}</option>
+					{/foreach}
+				</select>
+			</span>
+			<a href="javascript:applyOperation();">{trans("Submit")}</a>
+		</TD>
+		<TD class="frightu" style="width: 3%; text-align: right; white-space: nowrap;" colspan="3">
+			<label for="checkallnodes">{trans("Check All")}</label><input type="checkbox" id="checkallnodes" onChange="CheckAll('nodesearchresults', this);">
+		</TD>
+	</TR>
 </TABLE></P>
+</form>
+<SCRIPT type="text/javascript">
+<!--
+	function changeOperation(operation) {
+	}
+
+	var operationFinished = true;
+
+	function applyOperation() {
+		if (!operationFinished) {
+			alert('Previous operation has not been finished yet!');
+			return;
+		}
+		operationFinished = false;
+
+		var nodeids = [];
+		var inputs = document.getElementsByTagName("INPUT");
+		for (i = 0, len = inputs.length; i < len; i++) {
+			var e = inputs[i];
+			if (e.type == 'checkbox' && e.name.match(/^marks/) && e.checked)
+				nodeids.push(e.value);
+		}
+		if (!nodeids.length) {
+			alert('{trans("You haven\'t selected any nodes!")}');
+			return;
+		}
+
+		var operation = parseInt(document.getElementById('operation').value);
+		switch (operation) {
+			case 1:
+				xajax_connect_nodes(nodeids,
+					document.getElementById('device').value,
+					document.getElementById('linktype').value,
+					document.getElementById('linkspeed').value);
+				break;
+		}
+	}
+
+	function operation_finished()
+	{
+		operationFinished = true;
+	}
+//-->
+</SCRIPT>
 {include file="footer.html"}
