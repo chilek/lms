@@ -178,13 +178,15 @@ $linktypes = array(
 );
 
 // prepare info about network devices from lms database
-$netdevices = $DB->GetAll("SELECT nd.id, (CASE WHEN nd.location_street <> 0
+$netdevices = $DB->GetAll("SELECT nd.id, (CASE WHEN nd.location_city <> 0
 			THEN ".$DB->Concat('nd.location_street', "'_'", 'nd.location_city', "'_'", 'nd.location_house', "'_'",
 				"(CASE WHEN nd.location_flat IS NULL THEN '' ELSE nd.location_flat END)")."
 			ELSE nd.location END
 		) AS netnodename, 
-		(SELECT ls.name FROM location_states ls JOIN teryt_ulic tu ON tu.woj = ls.ident WHERE tu.id = nd.location_street) AS area_woj, 
-		(SELECT ld.name FROM location_districts ld JOIN teryt_ulic tu ON tu.pow = ld.ident WHERE tu.id = nd.location_street) AS area_pow, 
+		(SELECT ls.name FROM location_states ls JOIN teryt_simc ts ON ts.woj = ls.ident JOIN location_cities lc ON ts.sym = lc.ident 
+			WHERE lc.id = nd.location_city LIMIT 1) AS area_woj, 
+		(SELECT ld.name FROM location_districts ld JOIN teryt_simc ts ON ts.pow = ld.ident JOIN location_cities lc ON ts.sym = lc.ident 
+			WHERE lc.id = nd.location_city LIMIT 1) AS area_pow, 
 		(SELECT lb.name FROM location_boroughs lb JOIN location_cities lc ON lc.boroughid = lb.id WHERE lc.id = nd.location_city) AS area_gmi, 
 		(SELECT ".$DB->Concat('ls.ident', "'_'", 'ld.ident', "'_'", 'lb.ident', "'_'", 'lb.type')." 
 			FROM location_cities lc 
@@ -379,15 +381,17 @@ foreach ($netnodes as $netnodename => $netnode) {
 	// save info about network ranges
 	$ranges = $DB->GetAll("SELECT n.linktype, n.location_street, n.location_city, n.location_house 
 		FROM nodes n 
-		WHERE n.ownerid > 0 AND n.location_street <> 0 AND n.netdev IN (".implode(',', $netnode['netdevices']).") 
+		WHERE n.ownerid > 0 AND n.location_city <> 0 AND n.netdev IN (".implode(',', $netnode['netdevices']).") 
 		GROUP BY n.linktype, n.location_street, n.location_city, n.location_house",
 		array($netdevice['id']));
 	if ($ranges)
 		foreach ($ranges as $range) {
 			// get teryt info for group of computers connected to network node
 			$teryt = $DB->GetRow("SELECT 
-				(SELECT ls.name FROM location_states ls JOIN teryt_ulic tu ON tu.woj = ls.ident WHERE tu.id = ?) AS area_woj, 
-				(SELECT ld.name FROM location_districts ld JOIN teryt_ulic tu ON tu.pow = ld.ident WHERE tu.id = ?) AS area_pow, 
+				(SELECT ls.name FROM location_states ls JOIN teryt_simc ts ON ts.woj = ls.ident 
+					JOIN location_cities lc ON lc.ident = ts.sym WHERE lc.id = ? LIMIT 1) AS area_woj, 
+				(SELECT ld.name FROM location_districts ld JOIN teryt_simc ts ON ts.pow = ld.ident 
+					JOIN location_cities lc ON lc.ident = ts.sym WHERE lc.id = ? LIMIT 1) AS area_pow, 
 				(SELECT lb.name FROM location_boroughs lb JOIN location_cities lc ON lc.boroughid = lb.id WHERE lc.id = ?) AS area_gmi, 
 				(SELECT ".$DB->Concat('ls.ident', "'_'", 'ld.ident', "'_'", 'lb.ident', "'_'", 'lb.type')." 
 					FROM location_cities lc 
@@ -401,7 +405,7 @@ foreach ($netnodes as $netnodename => $netnode) {
 				(SELECT (CASE WHEN ls.name2 IS NOT NULL THEN ".$DB->Concat('ls.name2', "' '", 'ls.name')." ELSE ls.name END) AS name 
 					FROM location_streets ls WHERE ls.id = ?) AS address_ulica, 
 				(SELECT tu.sym_ul FROM teryt_ulic tu WHERE tu.id = ?) AS address_symul",
-				array($range['location_street'], $range['location_street'], $range['location_city'],
+				array($range['location_city'], $range['location_city'], $range['location_city'],
 					$range['location_city'], $range['location_city'], $range['location_city'],
 					$range['location_street'], $range['location_street'], $range['location_street']));
 			list ($area_woj, $area_pow, $area_gmi, $area_rodz) = explode('_', $teryt['area_terc']);
@@ -426,7 +430,8 @@ foreach ($netnodes as $netnodename => $netnode) {
 						AND (aa.datefrom < ?NOW? OR aa.datefrom = 0) 
 						AND (aa.dateto > ?NOW? OR aa.dateto = 0) GROUP BY aa.customerid) 
 					AS allsuspended ON allsuspended.cid = c.id 
-				WHERE n.ownerid > 0 AND n.linktype = ? AND n.location_city = ? AND n.location_street = ? AND n.location_house = ? 
+				WHERE n.ownerid > 0 AND n.linktype = ? AND n.location_city = ? 
+					AND (n.location_street = ? OR n.location_street IS NULL) AND n.location_house = ? 
 					AND a.suspended = 0 AND a.period = ".MONTHLY
 					." AND (a.datefrom = 0 OR a.datefrom < ?NOW?) AND (a.dateto = 0 OR a.dateto > ?NOW?) 
 					AND allsuspended.total IS NULL 
