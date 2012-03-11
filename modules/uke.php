@@ -195,7 +195,7 @@ $netdevices = $DB->GetAll("SELECT nd.id, (CASE WHEN nd.location_street <> 0
 		(SELECT lc.name FROM location_cities lc WHERE lc.id = nd.location_city) AS area_city, 
 		(SELECT lc.ident FROM location_cities lc WHERE lc.id = nd.location_city) AS area_simc, 
 		(SELECT tu.cecha FROM teryt_ulic tu WHERE tu.id = nd.location_street) AS address_cecha, 
-		(SELECT (CASE WHEN ls.name2 IS NOT NULL THEN ls.name2 || ' ' || ls.name ELSE ls.name END) AS name 
+		(SELECT (CASE WHEN ls.name2 IS NOT NULL THEN ".$DB->Concat('ls.name2' , "' '", 'ls.name')." ELSE ls.name END) AS name 
 			FROM location_streets ls WHERE ls.id = nd.location_street) AS address_ulica, 
 		(SELECT tu.sym_ul FROM teryt_ulic tu WHERE tu.id = nd.location_street) AS address_symul, 
 		(CASE WHEN nd.location_flat IS NULL THEN nd.location_house ELSE "
@@ -398,7 +398,7 @@ foreach ($netnodes as $netnodename => $netnode) {
 				(SELECT lc.name FROM location_cities lc WHERE lc.id = ?) AS area_city, 
 				(SELECT lc.ident FROM location_cities lc WHERE lc.id = ?) AS area_simc, 
 				(SELECT tu.cecha FROM teryt_ulic tu WHERE tu.id = ?) AS address_cecha, 
-				(SELECT (CASE WHEN ls.name2 IS NOT NULL THEN ls.name2 || ' ' || ls.name ELSE ls.name END) AS name 
+				(SELECT (CASE WHEN ls.name2 IS NOT NULL THEN ".$DB->Concat('ls.name2', "' '", 'ls.name')." ELSE ls.name END) AS name 
 					FROM location_streets ls WHERE ls.id = ?) AS address_ulica, 
 				(SELECT tu.sym_ul FROM teryt_ulic tu WHERE tu.id = ?) AS address_symul",
 				array($range['location_street'], $range['location_street'], $range['location_city'],

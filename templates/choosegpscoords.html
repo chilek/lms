@@ -46,7 +46,10 @@
 					srclat: {$devlink.srclat},
 					dstlon: {$devlink.dstlon},
 					dstlat: {$devlink.dstlat},
-					type: {$devlink.type}
+					type: {$devlink.type},
+					speed: {$devlink.speed},
+					typename: "{$devlink.typename}",
+					speedname: "{$devlink.speedname}"
 				});
 			{/foreach}
 		{/if}
@@ -74,7 +77,10 @@
 					nodelat: {$nodelink.nodelat},
 					netdevlon: {$nodelink.netdevlon},
 					netdevlat: {$nodelink.netdevlat},
-					type: {$nodelink.type}
+					type: {$nodelink.type},
+					speed: {$nodelink.speed},
+					typename: "{$nodelink.type}",
+					speedname: "{$nodelink.speed}"
 				});
 			{/foreach}
 		{/if}
