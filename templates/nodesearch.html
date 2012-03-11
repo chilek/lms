@@ -139,11 +139,11 @@ function change_selection(elem)
 	var district = document.getElementById('district'),
 		borough = document.getElementById('borough');
 
-	if (elem.name == 'state') {
+	if (elem.name == 'search[state]') {
 		district.style.display = 'none';
 		borough.style.display = 'none';
 	}
-	else if (elem.name == 'district')
+	else if (elem.name == 'search[district]')
 		borough.style.display = 'none';
 
 	if (elem.value != 0)
@@ -165,14 +165,6 @@ function update_selection(type, data, selected)
 		elem.style.display = '';
 	select.value = selected ? selected : 0;
 	select.focus();
-}
-
-function search_update(cityid, districtid, stateid)
-{
-	document.getElementById('state_sel').value = stateid;
-	document.getElementById('district').style.display = 'none';
-
-	xajax_select_location('', cityid+':'+districtid+':'+stateid);
 }
 
 document.forms['nodesearch'].elements['search[name]'].focus();
