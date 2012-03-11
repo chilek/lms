@@ -2574,4 +2574,9 @@ $_LANG['rural area to municipal-rural commune'] = 'obszar wiejski gm. miejsko-wi
 $_LANG['Commune'] = 'Gmina';
 $_LANG['Select commune'] = 'Wybierz gminę';
 
+$_LANG['Operation:'] = 'Czynność:';
+$_LANG['Connect to device'] = 'Podłączenie do urządzenia';
+$_LANG['Previous operation has not been finished yet!'] = 'Poprzednia czynność nie została jeszcze zakończona!';
+$_LANG['You haven\\\'t selected any nodes!'] = 'Nie wybrałeś żadnego komputera!';
+
 ?>
