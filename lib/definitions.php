@@ -144,13 +144,17 @@ $NUM_PERIODS = array(
 define('TARIFF_INTERNET', 1);
 define('TARIFF_HOSTING', 2);
 define('TARIFF_SERVICE', 3);
+define('TARIFF_PHONE', 4);
+define('TARIFF_TV', 5);
 define('TARIFF_OTHER', -1);
 
 $TARIFFTYPES = array(
-    TARIFF_INTERNET => trans('internet'),
-    TARIFF_HOSTING 	=> trans('hosting'),
-    TARIFF_SERVICE 	=> trans('service'),
-    TARIFF_OTHER	=> trans('other'),
+	TARIFF_INTERNET	=> trans('internet'),
+	TARIFF_HOSTING	=> trans('hosting'),
+	TARIFF_SERVICE	=> trans('service'),
+	TARIFF_PHONE	=> trans('phone'),
+	TARIFF_TV	=> trans('tv'),
+	TARIFF_OTHER	=> trans('other'),
 );
 
 $PAYTYPES = array(
@@ -199,6 +203,23 @@ $DAYS = array(
 	DAY_SUNDAY	=> trans('Sun'),
 );
 
+$LINKTYPES = array(
+	0		=> trans('wire'),
+	1		=> trans('wireless'),
+	2		=> trans('fiber'),
+);
+
+$LINKSPEEDS = array(
+	10000		=> trans('10Mbit/s'),
+	25000		=> trans('25Mbit/s'),
+	54000		=> trans('54Mbit/s'),
+	100000		=> trans('100Mbit/s'),
+	200000		=> trans('200Mbit/s'),
+	300000		=> trans('300Mbit/s'),
+	1000000		=> trans('1Gbit/s'),
+	10000000	=> trans('10Gbit/s'),
+);
+
 if(isset($SMARTY))
 {
 	$SMARTY->assign('_DOCTYPES', $DOCTYPES);
@@ -212,6 +233,8 @@ if(isset($SMARTY))
 	$SMARTY->assign('_CONTACTTYPES', $CONTACTTYPES);
 	$SMARTY->assign('_DISCOUNTTYPES', $DISCOUNTTYPES);
 	$SMARTY->assign('_DAYS', $DAYS);
+	$SMARTY->assign('_LINKTYPES', $LINKTYPES);
+	$SMARTY->assign('_LINKSPEEDS', $LINKSPEEDS);
 }
 
 define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');

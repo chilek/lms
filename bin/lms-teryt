@@ -513,7 +513,7 @@ while ($row = $dbq->fetchrow_hashref()) {
     $str_types{$row->{'name'}} = $row->{'id'};
 }
 $dbq = $dbase->prepare("
-    SELECT s.id, s.ident, s.name, s.typeid, c.ident AS city
+    SELECT s.id, s.ident, s.name, s.name2, s.typeid, c.ident AS city
     FROM location_streets s
     JOIN location_cities c ON (s.cityid = c.id)
 ");
@@ -521,6 +521,7 @@ $dbq->execute();
 while ($row = $dbq->fetchrow_hashref()) {
     $ulic{$row->{'ident'}.':'.$row->{'city'}} = {
         'NAZWA' => $row->{'name'},
+        'NAZWA2' => $row->{'name2'},
         'typeid' => int($row->{'typeid'}),
         'id' => $row->{'id'},
     };
@@ -529,8 +530,8 @@ while ($row = $dbq->fetchrow_hashref()) {
 ######## Update ULIC database ########################################################
 # Prepare some queries
 my $type_insert = $dbase->prepare("INSERT INTO location_street_types (name) VALUES (LOWER(?))");
-my $street_insert = $dbase->prepare("INSERT INTO location_streets (cityid, name, typeid, ident) VALUES (?, ?, ?, ?)");
-my $street_update = $dbase->prepare("UPDATE location_streets SET cityid = ?, name = ?, typeid = ? WHERE id = ?");
+my $street_insert = $dbase->prepare("INSERT INTO location_streets (cityid, name, name2, typeid, ident) VALUES (?, ?, ?, ?, ?)");
+my $street_update = $dbase->prepare("UPDATE location_streets SET cityid = ?, name = ?, name2 = ?, typeid = ? WHERE id = ?");
 my $street_delete = $dbase->prepare("DELETE FROM location_streets WHERE id = ?");
 
 # Parse ULIC file
@@ -562,16 +563,17 @@ while (my $record = get_entry($fh)) {
     # entry exists
     if ($data) {
         if ($data->{'NAZWA'} ne $record->{'NAZWA_1'}
+            || (defined($record->{'NAZWA_2'}) && (!defined($data->{'NAZWA2'}) || $data->{'NAZWA2'} ne $record->{'NAZWA_2'}))
             || $data->{'typeid'} != $typeid
         ) {
-            $street_update->execute($cid, $record->{'NAZWA_1'}, $typeid, $data->{'id'});
+            $street_update->execute($cid, $record->{'NAZWA_1'}, $record->{'NAZWA_2'}, $typeid, $data->{'id'});
         }
         # mark data as valid
         $ulic{$key}{'valid'} = 1;
     }
     # add new street
     else {
-        $street_insert->execute($cid, $record->{'NAZWA_1'}, $typeid, $id);
+        $street_insert->execute($cid, $record->{'NAZWA_1'}, $record->{'NAZWA_2'}, $typeid, $id);
     }
 }
 close($fh);
@@ -686,7 +688,7 @@ if ($merge)
     my $street_get = $dbase->prepare("SELECT s.id, s.cityid
         FROM location_streets s
         JOIN location_cities c ON (s.cityid = c.id)
-        WHERE s.name = ? AND c.name = ?
+        WHERE ".($dbtype =~ /mysql/ ? "CONCAT(s.name2, s.name)" : "(s.name2 || s.name)")." = ? AND c.name = ?
         ORDER BY c.cityid LIMIT 1");
     my $city_get = $dbase->prepare("SELECT id
         FROM location_cities

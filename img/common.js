@@ -118,6 +118,12 @@ function gpscoordschoosewin(formfield1, formfield2)
 	return openSelectWindow2('?m=choosegpscoords', 'choosegpscoords', 450, 300, 'true', formfield1, formfield2);
 }
 
+function netlinkpropertieschoosewin(id, devid, isnetlink)
+{
+	return openSelectWindow('?m=netlinkproperties&id=' + id + '&devid=' + devid + '&isnetlink=' + (isnetlink ? 1 : 0),
+		'netlinkproperties', 350, 100, 'true');
+}
+
 function sendvalue(targetfield, value)
 {
 	targetfield.value = value;
@@ -438,8 +444,8 @@ function check_teryt(locid, init)
     if (locid) {
         var loc = document.getElementById(locid);
         if (checked) {
-            if (!init)
-                loc.value = '';
+            //if (!init)
+            //    loc.value = '';
             loc.setAttribute('readonly', true);
         }
         else {

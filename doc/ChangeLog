@@ -92,6 +92,11 @@ version ? (????-??-??):
   - assignment locks support introduced [chilan]
   - daemon/ewx-stm: save channel id without offset in ewx_stm_nodes table [chilan]
   - added fiber link type and changed link type selection from checkbox to combobox [chilan]
+  - teryt streets containing two segments support [chilan]
+  - added link speed for netlinks and nodelinks [chilan]
+  - additional tariff types to select (phone, tv) [chilan]
+  - uke report support for service types [chilan]
+  - netdevmap: show link properties in tooltip [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 

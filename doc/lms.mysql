@@ -463,6 +463,7 @@ CREATE TABLE location_street_types (
 CREATE TABLE location_streets (
     id int(11)          NOT NULL auto_increment,
     name varchar(128)   NOT NULL, -- TERYT: NAZWA_1
+    name2 varchar(128)  DEFAULT NULL, -- TERYT: NAZWA_2
     ident varchar(8)    NOT NULL, -- TERYT: SYM_UL
     typeid int(11)      DEFAULT NULL
         REFERENCES location_street_types (id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -569,6 +570,7 @@ CREATE TABLE netlinks (
   src int(11) NOT NULL DEFAULT '0',
   dst int(11) NOT NULL DEFAULT '0',
   type tinyint(1) NOT NULL DEFAULT '0',
+  speed int(11) NOT NULL DEFAULT '100000',
   srcport smallint NOT NULL DEFAULT '0',
   dstport smallint NOT NULL DEFAULT '0',
   PRIMARY KEY  (id),
@@ -616,6 +618,7 @@ CREATE TABLE nodes (
   modid int(11) NOT NULL DEFAULT '0',
   netdev int(11) NOT NULL DEFAULT '0',
   linktype tinyint(1) NOT NULL DEFAULT '0',
+  linkspeed int(11) NOT NULL DEFAULT '100000',
   port smallint NOT NULL DEFAULT '0',
   access tinyint(1) NOT NULL DEFAULT '1',
   warning tinyint(1) NOT NULL DEFAULT '0',
@@ -1550,7 +1553,7 @@ SELECT s.ident AS woj, d.ident AS pow, b.ident AS gmi, b.type AS rodz_gmi,
 
 CREATE VIEW teryt_ulic AS
 SELECT st.ident AS woj, d.ident AS pow, b.ident AS gmi, b.type AS rodz_gmi,
-        c.ident AS sym, s.ident AS sym_ul, s.name AS nazwa_1, t.name AS cecha, s.id
+        c.ident AS sym, s.ident AS sym_ul, s.name AS nazwa_1, s.name2 AS nazwa_2, t.name AS cecha, s.id
     FROM location_streets s
     JOIN location_street_types t ON (s.typeid = t.id)
     JOIN location_cities c ON (s.cityid = c.id)
@@ -1691,4 +1694,4 @@ INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012021800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012030801');

@@ -57,7 +57,7 @@ case 'replace':
 			(CASE src WHEN ? THEN dstport ELSE srcport END) AS dstport
 			FROM netlinks WHERE src = ? OR dst = ?)
 			UNION
-			(SELECT linktype AS type, id, port AS srcport, NULL AS dstport
+			(SELECT linktype AS type, linkspeed AS speed, id, port AS srcport, NULL AS dstport
 			FROM nodes WHERE netdev = ? AND ownerid > 0)
 			ORDER BY srcport',
 			array($dev1['id'], $dev1['id'], $dev1['id'], 
@@ -68,7 +68,7 @@ case 'replace':
 			(CASE src WHEN ? THEN dstport ELSE srcport END) AS dstport
 			FROM netlinks WHERE src = ? OR dst = ?)
 			UNION
-			(SELECT linktype AS type, id, port AS srcport, NULL AS dstport
+			(SELECT linktype AS type, linkspeed AS speed, id, port AS srcport, NULL AS dstport
 			FROM nodes WHERE netdev = ? AND ownerid > 0)
 			ORDER BY srcport',
 			array($dev2['id'], $dev2['id'], $dev2['id'], 
@@ -175,6 +175,7 @@ case 'nas':
 case 'connect':
 
 	$linktype = !empty($_GET['linktype']) ? intval($_GET['linktype']) : '0';
+	$linkspeed = !empty($_GET['linkspeed']) ? intval($_GET['linkspeed']) : '100000';
 	$dev['srcport'] = !empty($_GET['srcport']) ? intval($_GET['srcport']) : '0';
 	$dev['dstport'] = !empty($_GET['dstport']) ? intval($_GET['dstport']) : '0';
 	$dev['id'] = !empty($_GET['netdev']) ? intval($_GET['netdev']) : '0';
@@ -223,10 +224,11 @@ case 'connect':
 	}
 
 	$SESSION->save('devlinktype', $linktype);
+	$SESSION->save('devlinkspeed', $linkspeed);
 
 	if(!$error)
 	{
-		$LMS->NetDevLink($dev['id'], $_GET['id'], $linktype, $dev['srcport'], $dev['dstport']);
+		$LMS->NetDevLink($dev['id'], $_GET['id'], $linktype, $linkspeed, $dev['srcport'], $dev['dstport']);
 		$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
 	}
 
@@ -237,6 +239,7 @@ case 'connect':
 case 'connectnode':
 
 	$linktype = !empty($_GET['linktype']) ? intval($_GET['linktype']) : '0';
+	$linkspeed = !empty($_GET['linkspeed']) ? intval($_GET['linkspeed']) : '0';
 	$node['port'] = !empty($_GET['port']) ? intval($_GET['port']) : '0';
 	$node['id'] = !empty($_GET['nodeid']) ? intval($_GET['nodeid']) : '0';
 
@@ -262,10 +265,11 @@ case 'connectnode':
 	}
 
 	$SESSION->save('nodelinktype', $linktype);
+	$SESSION->save('nodelinkspeed', $linkspeed);
 
 	if(!$error)
 	{
-		$LMS->NetDevLinkNode($node['id'], $_GET['id'], $linktype, $node['port']);
+		$LMS->NetDevLinkNode($node['id'], $_GET['id'], $linktype, $linkspeed, $node['port']);
 		$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
 	}
 
@@ -294,16 +298,6 @@ case 'editip':
 	$SMARTY->assign('nodeipdata',$nodeipdata);
 	$edit = 'ip';
 	break;
-
-case 'switchlinktype':
-
-	$LMS->SetNetDevLinkType($_GET['devid'], $_GET['id'], $_GET['linktype']);
-	$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
-
-case 'switchnodelinktype':
-
-	$LMS->SetNodeLinkType($_GET['nodeid'], $_GET['linktype']);
-	$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
 
 case 'ipdel':
 
@@ -620,7 +614,9 @@ $SMARTY->assign('restnetdevlist',$netdevlist);
 $SMARTY->assign('replacelist',$replacelist);
 $SMARTY->assign('replacelisttotal',$replacelisttotal);
 $SMARTY->assign('devlinktype',$SESSION->get('devlinktype'));
+$SMARTY->assign('devlinkspeed',$SESSION->get('devlinkspeed'));
 $SMARTY->assign('nodelinktype',$SESSION->get('nodelinktype'));
+$SMARTY->assign('nodelinkspeed',$SESSION->get('nodelinkspeed'));
 $SMARTY->assign('nastype', $LMS->GetNAStypes());
 
 switch($edit)

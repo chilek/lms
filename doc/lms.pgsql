@@ -250,6 +250,7 @@ DROP TABLE IF EXISTS location_streets CASCADE;
 CREATE TABLE location_streets (
     id integer          DEFAULT nextval('location_streets_id_seq'::text) NOT NULL,
     name varchar(128)   NOT NULL, -- TERYT: NAZWA_1
+    name2 varchar(128)  DEFAULT NULL, -- TERYT: NAZWA_2
     ident varchar(8)    NOT NULL, -- TERYT: SYM_UL
     typeid integer      DEFAULT NULL
         REFERENCES location_street_types (id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -300,6 +301,7 @@ CREATE TABLE nodes (
 	ownerid integer 	DEFAULT 0 NOT NULL,
 	netdev integer 		DEFAULT 0 NOT NULL,
 	linktype smallint	DEFAULT 0 NOT NULL,
+	linkspeed integer	DEFAULT 100000 NOT NULL,
 	port smallint		DEFAULT 0 NOT NULL,
 	creationdate integer 	DEFAULT 0 NOT NULL,
 	moddate integer 	DEFAULT 0 NOT NULL,
@@ -716,6 +718,7 @@ CREATE TABLE netlinks (
 	src integer 		DEFAULT 0 NOT NULL,
 	dst integer 		DEFAULT 0 NOT NULL,
 	type smallint		DEFAULT 0 NOT NULL,
+	speed integer		DEFAULT 100000 NOT NULL,
 	srcport smallint	DEFAULT 0 NOT NULL,
 	dstport smallint	DEFAULT 0 NOT NULL,
 	PRIMARY KEY  (id),
@@ -1721,7 +1724,7 @@ SELECT s.ident AS woj, d.ident AS pow, b.ident AS gmi, b.type AS rodz_gmi,
 
 CREATE VIEW teryt_ulic AS
 SELECT st.ident AS woj, d.ident AS pow, b.ident AS gmi, b.type AS rodz_gmi,
-        c.ident AS sym, s.ident AS sym_ul, s.name AS nazwa_1, t.name AS cecha, s.id
+        c.ident AS sym, s.ident AS sym_ul, s.name AS nazwa_1, s.name2 AS nazwa_2, t.name AS cecha, s.id
     FROM location_streets s
     JOIN location_street_types t ON (s.typeid = t.id)
     JOIN location_cities c ON (s.cityid = c.id)

@@ -11,24 +11,31 @@
     </TD></TR></TABLE>
 {elseif $ming && (!$type || $type=='flash')}
 <P ALIGN="CENTER">
-<OBJECT classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" WIDTH="100%" HEIGHT="400" id="intro">
+<OBJECT classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" WIDTH="100%" HEIGHT="450" id="intro">
 <PARAM NAME="movie" VALUE="?m=netdevmap&graph=flash&start={$start}{if $mini}&mini=1{/if}">
 <PARAM NAME="loop" VALUE="false">
 <PARAM NAME="quality" VALUE="high">
 <PARAM NAME="bgcolor" VALUE="#EBE4D6">
-<EMBED src="?m=netdevmap&graph=flash&start={$start}{if $mini}&mini=1{/if}" loop="false" quality="high" bgcolor="#EBE4D6" WIDTH="100%" HEIGHT="400" NAME="map"
+<EMBED src="?m=netdevmap&graph=flash&start={$start}{if $mini}&mini=1{/if}" loop="false" quality="high" WIDTH="100%" HEIGHT="450" NAME="map"
   TYPE="application/x-shockwave-flash" PLUGINSPAGE="http://www.macromedia.com/go/getflashplayer"></EMBED>
 </OBJECT>
 </P>
 {elseif $type=='openlayers'}
 <script type="text/javascript" language="JavaScript" src="img/OpenLayers/OpenLayers.js"></script>
 <script type="text/javascript" language="JavaScript" src="img/OpenLayers/lang/{$_ui_language}.js"></script>
-<script type="text/javascript" language="JavaScript" src="http://maps.google.com/maps/api/js?v=3.2&sensor=false"></script>
+<script type="text/javascript" language="JavaScript" src="https://maps.google.com/maps/api/js?v=3.5&sensor=false&language=pl"></script>
 <div id="map" class="map"></div>
 <script type="text/javascript" language="Javascript" src="img/DragPopup.js"></script>
 <!--[if IE]>
 <script type="text/javascript" language="Javascript" src="img/json2.js"></script>
 <![endif]-->
+<script type="text/javascript" language="Javascript">
+<!--
+	var checkhostcaption = "{trans("Check a host ...")}";
+	var centermapcaption = "{trans("Center map around network elements ...")}";
+	var refreshmapcaption = "{trans("Refresh network state ...")}";
+//-->
++</script>
 <script type="text/javascript" language="Javascript" src="img/map.js"></script>
 <script type="text/javascript" language="JavaScript">
 <!--
@@ -56,7 +63,10 @@
 				srclat: {$devlink.srclat},
 				dstlon: {$devlink.dstlon},
 				dstlat: {$devlink.dstlat},
-				type: {$devlink.type}
+				type: {$devlink.type},
+				speed: {$devlink.speed},
+				typename: "{$devlink.typename}",
+				speedname: "{$devlink.speedname}"
 			});
 		{/foreach}
 	{/if}
@@ -84,7 +94,10 @@
 				nodelat: {$nodelink.nodelat},
 				netdevlon: {$nodelink.netdevlon},
 				netdevlat: {$nodelink.netdevlat},
-				type: {$nodelink.type}
+				type: {$nodelink.type},
+				speed: {$nodelink.speed},
+				typename: "{$nodelink.typename}",
+				speedname: "{$nodelink.speedname}"
 			});
 		{/foreach}
 	{/if}
@@ -112,9 +125,9 @@
 </MAP>
 </P>
 {else}
-    <TABLE WIDTH="100%"><TR><TD WIDTH="100%" ALIGN="Center">
-	<BR><BR><FONT class="alert">{trans("Your PHP does not support GD library required for map generation!")}</FONT>
-    </TD></TR></TABLE>
+	<TABLE WIDTH="100%"><TR><TD WIDTH="100%" ALIGN="Center">
+		<BR><BR><FONT class="alert">{trans("Your PHP does not support GD library required for map generation!")}</FONT>
+	</TD></TR></TABLE>
 {/if}
 {if !$emptydb && $type != 'openlayers'}
 <P ALIGN="CENTER">

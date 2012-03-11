@@ -115,10 +115,8 @@ function ping_any_host(id)
 	return false;
 }
 
-function findFeaturesIntersection(selectFeature, feature)
+function findFeaturesIntersection(selectFeature, feature, featureLonLat)
 {
-	var featureLonLat = new OpenLayers.LonLat(feature.data.lon, feature.data.lat);
-	featureLonLat.transform(lmsProjection, map.getProjectionObject());
 	var featurePixel = map.getPixelFromLonLat(featureLonLat);
 	var features = [];
 	for (var i in selectFeature.layers) {
@@ -135,6 +133,8 @@ function findFeaturesIntersection(selectFeature, feature)
 			}
 		}
 	}
+	if (!features.length)
+		features.push(feature);
 	return features;
 }
 
@@ -239,7 +239,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 			);
 			devlinks.push(new OpenLayers.Feature.Vector(
 				new OpenLayers.Geometry.LineString(points),
-				null, linkstyles[devlinkArray[i].type]));
+				devlinkArray[i], linkstyles[devlinkArray[i].type]));
 		}
 
 	var devlinkLbl = OpenLayers.Lang.translate("Device Links");
@@ -278,7 +278,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				);
 			nodelinks.push(new OpenLayers.Feature.Vector(
 				new OpenLayers.Geometry.LineString(points),
-				null, linkstyles[nodelinkArray[i].type]));
+				nodelinkArray[i], linkstyles[nodelinkArray[i].type]));
 		}
 
 	var nodelinkLbl = OpenLayers.Lang.translate("Node Links");
@@ -290,7 +290,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 	map.addLayer(nodelayer);
 	map.addLayer(nodelinklayer);
 
-	var highlightlayer = new OpenLayers.Control.SelectFeature([devicelayer, nodelayer], {
+	var highlightlayer = new OpenLayers.Control.SelectFeature([devicelayer, devlinklayer, nodelayer, nodelinklayer], {
 		hover: true,
 		highlightOnly: true,
 		clickout: false,
@@ -298,24 +298,35 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		multiple: false,
 		eventListeners: {
 			"featurehighlighted": function(e) {
-				var map = this.map;
-				var feature = e.feature;
 				if (mappopup == null)
 				{
-					var features = findFeaturesIntersection(this, feature);
+					var map = this.map;
+					var feature = e.feature;
+					var featureLonLat, mapLonLat;
+					if (feature.geometry.CLASS_NAME == "OpenLayers.Geometry.Point") {
+						featureLonLat = new OpenLayers.LonLat(feature.data.lon, feature.data.lat);
+						featureLonLat.transform(lmsProjection, map.getProjectionObject());
+						mapLonLat = featureLonLat.clone();
+					}
+					else {
+						featureLonLat = map.getLonLatFromViewPortPx(this.handlers.feature.evt.xy);
+						mapLonLat = featureLonLat.clone();
+						mapLonLat.transform(map.getProjectionObject(), lmsProjection).transform(lmsProjection, map.getProjectionObject());
+					}
+					var features = findFeaturesIntersection(this, feature, featureLonLat);
 					var content = '<div class="lmsMapPopupContents">';
 					for (var i in features) {
+						if (features[i].geometry.CLASS_NAME == "OpenLayers.Geometry.Point")
 						content += '<div class="lmsMapPopupName">' + features[i].data.name + '</div>'
 							+ (features[i].data.ipaddr.length ? 
 								'<div class="lmsMapPopupAddress">' + features[i].data.ipaddr.replace(/,/g, 
 									'</div><div class="lmsMapPopupAddress">') + '</div>'
 								: '');
+						else
+							content += '<span class="bold">' + features[i].data.typename + '<br>' + features[i].data.speedname + '</span>';
 					}
 					content += '</div>';
-					mappopup = new OpenLayers.Popup.Anchored(null,
-						new OpenLayers.LonLat(feature.data.lon, feature.data.lat)
-							.transform(lmsProjection, map.getProjectionObject()),
-						new OpenLayers.Size(10, 10), content);
+					mappopup = new OpenLayers.Popup.Anchored(null, mapLonLat, new OpenLayers.Size(10, 10), content);
 					mappopup.setOpacity(0.8);
 					mappopup.closeOnMove = true;
 					map.addPopup(mappopup);
@@ -347,13 +358,12 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 
 	if (selection)
 	{
-		var selectlayer = new OpenLayers.Control.SelectFeature([devicelayer, nodelayer], {
+		var selectlayer = new OpenLayers.Control.SelectFeature([devlinklayer, nodelinklayer, devicelayer, nodelayer], {
 			clickout: true, toggle: false,
 			multiple: true, hover: false,
 			toggleKey: "ctrlKey", // ctrl key removes from selection
 			multipleKey: "shiftKey", // shift key adds to selection
 			onSelect: function(feature) {
-				//alert(feature);
 				var map = feature.layer.map;
 				if (mappopup)
 				{
@@ -361,10 +371,16 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 					mappopup = null;
 				}
 				selectedFeature = feature;
-				var featurepopup = new OpenLayers.Popup(null,
-					new OpenLayers.LonLat(feature.data.lon, feature.data.lat)
-						.transform(lmsProjection, map.getProjectionObject()),
-					new OpenLayers.Size(10, 10));
+				var featureLonLat;
+				if (feature.geometry.CLASS_NAME == "OpenLayers.Geometry.Point") {
+					featureLonLat = new OpenLayers.LonLat(feature.data.lon, feature.data.lat);
+					featureLonLat.transform(lmsProjection, map.getProjectionObject());
+				}
+				else 
+					featureLonLat = map.getLonLatFromViewPortPx(this.handlers.feature.evt.xy);
+				var features = findFeaturesIntersection(this, feature, featureLonLat);
+				if (features.length > 1 || features[0].geometry.CLASS_NAME == "OpenLayers.Geometry.Point") {
+					var featurepopup = new OpenLayers.Popup(null, featureLonLat, new OpenLayers.Size(10, 10));
 				featurepopup.setOpacity(0.9);
 				//featurepopup.closeOnMove = true;
 				//featurepopup.keepInMap = true;
@@ -372,7 +388,6 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				var content = '<div class="lmsPopupTitleBar"><div class="lmsPopupTitle">Info</div>'
 					+ '<div id="' + featurepopup.id + '_popupCloseBox" class="olPopupCloseBox lmsPopupCloseBox">&nbsp;</div></div>'
 					+ '<div class="lmsInfoPopupContents">';
-				var features = findFeaturesIntersection(this, feature);
 				for (var i in features) {
 					content += '<div class="lmsInfoPopupName">' + features[i].data.name + '</div>';
 					if (features[i].data.type == 'netdevinfo') {
@@ -409,6 +424,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				featurepopup.contentDiv.style.heigh = 'auto';
 				//featurepopup.updateSize();
 				feature.popup = featurepopup;
+				}
 			},
 			onUnselect: function(feature) {
 				//map.removePopup(feature.popup);
@@ -418,22 +434,19 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		map.addControl(selectlayer);
 		selectlayer.activate();
 
-		var checkbuttonLbl = OpenLayers.Lang.translate("Check a host ...");
 		var checkbutton = new OpenLayers.Control.Button({
 			displayClass: "lmsCheckButton", 
-			title: checkbuttonLbl,
+			title: checkhostcaption,
 			command: 'check'});
 
-		var centerbuttonLbl = OpenLayers.Lang.translate("Center map around network elements ...");
 		var centerbutton = new OpenLayers.Control.Button({
 			displayClass: "lmsCenterButton", 
-			title: centerbuttonLbl,
+			title: centermapcaption,
 			command: 'center'});
 
-		var refreshbuttonLbl = OpenLayers.Lang.translate("Refesh network state ...");
 		var refreshbutton = new OpenLayers.Control.Button({
 			displayClass: "lmsRefreshButton", 
-			title: refreshbuttonLbl,
+			title: refreshmapcaption,
 			command: 'refresh'});
 
 		var panel = new OpenLayers.Control.Panel({

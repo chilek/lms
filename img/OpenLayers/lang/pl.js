@@ -24,7 +24,4 @@ OpenLayers.Lang.pl = {
 	'Device Links': "Połączenia urządzeń",
 	'Nodes': "Komputery",
 	'Node Links': "Połączenia komputerów",
-	'Check a host ...': "Sprawdź hosta ...",
-	'Center map around network elements ...': "Centruj mapę względem urządzeń sieciowych...",
-	'Refesh network state ...': "Odśwież stan sieci ..."
 };

@@ -2553,4 +2553,18 @@ $_LANG['Incorrect lock!'] = 'Niepoprawna blokada!';
 $_LANG['Locks:'] = 'Blokady:';
 $_LANG['Add new lock'] = 'Dodaj nową blokadę';
 
+$_LANG['UKE report'] = 'Raport do UKE';
+$_LANG['Allows you to prepare SIIS v2 report for UKE'] = 'Wygenerowanie raportu SIIS w wersji 2 do UKE';
+
+$_LANG['Link speed:'] = 'Szybkość łącza:';
+$_LANG['Select link speed'] = 'Wybierz szybkość łącza';
+
+$_LANG['phone'] = 'telefon';
+$_LANG['tv'] = 'telewizja';
+$_LANG['Change connection properties'] = 'Zmień właściwości połączenia';
+
+$_LANG['Check a host ...'] = 'Sprawdź łączność z hostem ...';
+$_LANG['Center map around network elements ...'] = 'Wyśrodkuj mapę wokół jej elementów ...';
+$_LANG['Refresh network state ...'] = 'Odśwież stan sieci ...';
+
 ?>

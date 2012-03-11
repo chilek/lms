@@ -37,12 +37,14 @@
 			<IMG src="img/empty.gif" height="16">[{if $netdevlist[netdevlist].srcport}{$netdevlist[netdevlist].srcport}{/if}]<BR>
 			({$netdevlist[netdevlist].id|string_format:"%04d"})
 		</TD>
-		<TD style="width: 1%; white-space: nowrap;" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';">
-			<A href="?m=netdevedit&action=switchlinktype&linktype={($netdevlist[netdevlist].linktype + 1) % 3}&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}">
-			<IMG SRC="img/{if $netdevlist[netdevlist].linktype == 1}wireless.gif{elseif $netdevlist[netdevlist].linktype == 2}netdev_takenports.gif{else}netdev_takenports.gif{/if}" alt="[ {trans("Change connection type")} ]" title="[ {trans("Change connection type")} ]">
-			</A>
+		<TD style="width: 1%; white-space: nowrap;">
+			<span id="devlinkproperties_{$netdevlist[netdevlist].id}" onClick="javascript:netlinkpropertieschoosewin('{$netdevinfo.id}', '{$netdevlist[netdevlist].id}', true);">
+				<IMG SRC="img/{if $netdevlist[netdevlist].linktype == 1}wireless.gif{elseif $netdevlist[netdevlist].linktype == 2}netdev_takenports.gif{else}netdev_takenports.gif{/if}" alt="[ {trans("Change connection properties")} ]" title="[ {trans("Change connection properties")} ]" {tip trigger="devlinkproperties_$netdevlist[netdevlist].id" text="<span style=\"white-space: nowrap;\">{trans("Link type:")} {$_LINKTYPES[$netdevlist[netdevlist].linktype]}<br>{trans("Link speed:")} {$_LINKSPEEDS[$netdevlist[netdevlist].linkspeed]}</span>"}>
+			</span>
+			<span onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';">
 			[{if $netdevlist[netdevlist].dstport}{$netdevlist[netdevlist].dstport}{/if}]
 			<BR><IMG SRC="img/port.gif" ALT=""> {$netdevlist[netdevlist].ports} ({$netdevlist[netdevlist].takenports})
+			</span>
 		</TD>
 		<TD style="width: 1%;">
 			<A HREF="?m=netdevedit&action=disconnect&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that connection?")}');"><IMG SRC="img/delete.gif" {tip text="Delete connection"}></A>
@@ -81,12 +83,17 @@
 							<OPTION VALUE="{$restnetdevlist[restnetdevlist].id}"{if $connect.id == $restnetdevlist[restnetdevlist].id} selected{/if}>{$netdevname|truncate:120:"...":true}</OPTION>
 						{/section}
 						</SELECT>
-						{trans("Port")}:<INPUT name="srcport" value="{if $connect.srcport}{$connect.srcport}{/if}" size="2" {tip text="Enter port number in device for connection (optional)" trigger="srcport"}>
-						{trans("Dest. port")}:<INPUT name="dstport" value="{if $connect.dstport}{$connect.dstport}{/if}" size="2" {tip text="Enter port number in device to which device will be connected (optional)" trigger="dstport"}>
+						<label for="srcport">{trans("Port")}:</label><INPUT name="srcport" id="srcport" value="{if $connect.srcport}{$connect.srcport}{/if}" size="2" {tip text="Enter port number in device for connection (optional)" trigger="srcport"}>
+						<label for="dstport">{trans("Dest. port")}:</label><INPUT name="dstport" id="dstport" value="{if $connect.dstport}{$connect.dstport}{/if}" size="2" {tip text="Enter port number in device to which device will be connected (optional)" trigger="dstport"}>
 						<SELECT name="linktype" id="connboxlinktype" {tip trigger="linktype" text="Select link type"}>
-							<OPTION VALUE="0">{trans("wire")}</OPTION>
-							<OPTION VALUE="1">{trans("wireless")}</OPTION>
-							<OPTION VALUE="2">{trans("fiber")}</OPTION>
+							{foreach from=$_LINKTYPES item=item key=key}
+							<OPTION VALUE="{$key}"{if $key==$devlinktype} selected{/if}>{$item}</OPTION>
+							{/foreach}
+						</SELECT>
+						<SELECT name="linkspeed" id="connboxlinkspeed" {tip trigger="linkspeed" text="Select link speed"}>
+							{foreach from=$_LINKSPEEDS item=item key=key}
+								<OPTION VALUE="{$key}"{if $key==$devlinkspeed || (!$devlinkspeed && $key==100000)} selected{/if}>{$item}</OPTION>
+							{/foreach}
 						</SELECT>
 					</TD>
 					<TD style="width: 1%; white-space: nowrap;">

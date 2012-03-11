@@ -55,9 +55,21 @@
 								<TD style="width: 98%; white-space: nowrap;">
 									<SELECT size="1" name="linktype" {tip text="Select link type"}>
 										<OPTION VALUE="">{trans("- all -")}</OPTION>
-										<OPTION VALUE="0">{trans("wire")}</OPTION>
-										<OPTION VALUE="1">{trans("wireless")}</OPTION>
-										<OPTION VALUE="2">{trans("fiber")}</OPTION>
+										{foreach from=$_LINKTYPES item=item key=key}
+										<OPTION VALUE="{$key}">{$item}</OPTION>
+										{/foreach}
+									</SELECT>
+								</TD>
+							</TR>
+							<TR>
+								<TD style="width: 1%; white-space: nowrap;"><IMG src="img/netdev.gif" alt=""></TD>
+								<TD style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Link speed:")}</span></TD>
+								<TD style="width: 98%; white-space: nowrap;">
+									<SELECT size="1" name="linkspeed" {tip text="Select link speed"}>
+										<OPTION VALUE="">{trans("- all -")}</OPTION>
+										{foreach from=$_LINKSPEEDS item=item key=key}
+										<OPTION VALUE="{$key}">{$item}</OPTION>
+										{/foreach}
 									</SELECT>
 								</TD>
 							</TR>
