@@ -98,6 +98,8 @@ version ? (????-??-??):
   - uke report support for service types [chilan]
   - netdevmap: show link properties in tooltip [chilan]
   - netdevmap: link weight depends on link speed [chilan]
+  - added timeout mechanism for fetch_url(); without timeout support
+    we could wait for LMS update info forever [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 

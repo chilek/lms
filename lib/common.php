@@ -21,7 +21,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id$
+ *  $Id: common.php,v 1.130 2012/01/02 11:01:28 alec Exp $
  */
 
 // Common functions, that making it in class would be nonsense :)
@@ -574,28 +574,36 @@ function fetch_url($url)
 	$url_parsed = parse_url($url);
 	$host = $url_parsed['host'];
 	$path = $url_parsed['path'];
-        $port = isset($url_parsed['port']) ? $url_parsed['port'] : 0; //sometimes port is undefined
+	$port = isset($url_parsed['port']) ? $url_parsed['port'] : 0; //sometimes port is undefined
 
-        if ($port==0)
-	        $port = 80;
+	if ($port==0)
+		$port = 80;
 	if ($url_parsed['query'] != '')
-	         $path .= '?'.$url_parsed['query'];
-		 
+		$path .= '?'.$url_parsed['query'];
+
 	$request = "GET $path HTTP/1.0\r\nHost: $host\r\n\r\n";
 
 	$fp = @fsockopen($host, $port, $errno, $errstr, 5);
 
 	if(!$fp) return FALSE;
-	
+
+	if (!stream_set_timeout($fp, 3)) return FALSE;
+
 	fwrite($fp, $request);
+	$info = stream_get_meta_data($fp);
+	if ($info['timed_out']) return FALSE;
+
 	$body = FALSE;
 	$out = '';
-	
+
 	while(!feof($fp))
 	{
 		$s = fgets($fp, 1024);
+		$info = stream_get_meta_data($fp);
+		if ($info['timed_out']) return FALSE;
+
 		if($body)
-		        $out .= $s;
+			$out .= $s;
 		if($s == "\r\n")
 			$body = TRUE;
 	}
