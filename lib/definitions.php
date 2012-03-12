@@ -225,6 +225,8 @@ $BOROUGHTYPES = array(
 	3 => trans('municipal-rural commune'),
 	4 => trans('city in the municipal-rural commune'),
 	5 => trans('rural area to municipal-rural commune'),
+	8 => trans('estate in Warsaw-Centre commune'),
+	9 => trans('estate'),
 );
 
 if(isset($SMARTY))

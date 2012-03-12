@@ -157,6 +157,8 @@ $borough_types = array(
 //	4 => 'miasto w gminie miejsko-wiejskiej',
 	5 => 'gm. miejsko-wiejska',
 //	5 => 'obszar wiejski gminy miejsko-wiejskiej',
+	8 => 'dzielnica gminy Warszawa-Centrum',
+	9 => 'dzielnica',
 );
 
 $linktypes = array(
