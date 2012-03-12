@@ -37,7 +37,7 @@ class Auth {
 	var $ip;
 	var $lastip;
 	var $error;
-	var $_version = '1.11-cvs';
+	var $_version = '1.11-git';
 	var $_revision = '$Revision$';
 	var $DB = NULL;
 	var $SESSION = NULL;
@@ -46,8 +46,9 @@ class Auth {
 	{
 		$this->DB = &$DB;
 		$this->SESSION = &$SESSION;
-                $this->_revision = preg_replace('/^.Revision: ([0-9.]+).*/', '\1', $this->_revision);
-	       		
+		//$this->_revision = preg_replace('/^.Revision: ([0-9.]+).*/', '\1', $this->_revision);
+		$this->_revision = '';
+
 		if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
 			$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
 		elseif(isset($_SERVER['HTTP_CLIENT_IP']))
