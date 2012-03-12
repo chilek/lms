@@ -324,9 +324,8 @@ case 'formaddip':
 	$subtitle = trans('New IP address');
 	$nodeipdata = $_POST['ipadd'];
 	$nodeipdata['ownerid'] = 0;
-	if (isset($nodeipdata['macs']))
-		foreach ($nodeipdata['macs'] as $key => $value)
-			$nodeipdata['macs'][$key] = str_replace('-',':',$value);
+	foreach ($nodeipdata['macs'] as $key => $value)
+		$nodeipdata['macs'][$key] = str_replace('-',':',$value);
 
 	foreach($nodeipdata as $key => $value)
 		if($key != 'macs')
@@ -368,22 +367,20 @@ case 'formaddip':
 		$nodeipdata['ipaddr_pub'] = '0.0.0.0';
 
 	$macs = array();
-	if (isset($nodeipdata['macs']))
-		foreach ($nodeipdata['macs'] as $key => $value)
-			if (check_mac($value))
-			{
-				if ($value != '00:00:00:00:00:00' && !chkconfig($CONFIG['phpui']['allow_mac_sharing']))
-					if ($LMS->GetNodeIDByMAC($value))
-						$error['mac'.$key] = trans('MAC address is in use!');
-				$macs[] = $value;
-			}
-			elseif ($value != '')
-				$error['mac'.$key] = trans('Incorrect MAC address!');
-	if (empty($macs)) {
-		$macs[] = '';
+	foreach ($nodeipdata['macs'] as $key => $value)
+		if (check_mac($value))
+		{
+			if ($value != '00:00:00:00:00:00' && !chkconfig($CONFIG['phpui']['allow_mac_sharing']))
+				if ($LMS->GetNodeIDByMAC($value))
+					$error['mac'.$key] = trans('MAC address is in use!');
+			$macs[] = $value;
+		}
+		elseif ($value != '')
+			$error['mac'.$key] = trans('Incorrect MAC address!');
+	if (empty($macs))
 		$error['mac0'] = trans('MAC address is required!');
-	}
-	$nodeipdata['macs'] = $macs;
+	else
+		$nodeipdata['macs'] = $macs;
 
 	if (strlen($nodeipdata['passwd']) > 32)
 		$error['passwd'] = trans('Password is too long (max.32 characters)!');
@@ -411,9 +408,8 @@ case 'formeditip':
 	$subtitle = trans('IP address edit');
 	$nodeipdata = $_POST['ipadd'];
 	$nodeipdata['ownerid']=0;
-	if (isset($nodeipdata['macs']))
-		foreach($nodeipdata['macs'] as $key => $value)
-			$nodeipdata['macs'][$key] = str_replace('-',':',$value);
+	foreach($nodeipdata['macs'] as $key => $value)
+		$nodeipdata['macs'][$key] = str_replace('-',':',$value);
 
 	foreach($nodeipdata as $key => $value)
 		if($key != 'macs')
@@ -462,22 +458,20 @@ case 'formeditip':
 		$nodeipdata['ipaddr_pub'] = '0.0.0.0';
 
 	$macs = array();
-	if (isset($nodeipdata['macs']))
-		foreach ($nodeipdata['macs'] as $key => $value)
-			if (check_mac($value))
-			{
-				if ($value != '00:00:00:00:00:00' && isset($CONFIG['phpui']['allow_mac_sharing']) && !chkconfig($CONFIG['phpui']['allow_mac_sharing']))
-					if (($nodeid = $LMS->GetNodeIDByMAC($value)) != NULL && $nodeid != $_GET['ip'])
-						$error['mac'.$key] = trans('MAC address is in use!');
-				$macs[] = $value;
-			}
-			elseif ($value != '')
-				$error['mac'.$key] = trans('Incorrect MAC address!');
-	if (empty($macs)) {
-		$macs[] = '';
+	foreach ($nodeipdata['macs'] as $key => $value)
+		if (check_mac($value))
+		{
+			if ($value != '00:00:00:00:00:00' && isset($CONFIG['phpui']['allow_mac_sharing']) && !chkconfig($CONFIG['phpui']['allow_mac_sharing']))
+				if (($nodeid = $LMS->GetNodeIDByMAC($value)) != NULL && $nodeid != $_GET['ip'])
+					$error['mac'.$key] = trans('MAC address is in use!');
+			$macs[] = $value;
+		}
+		elseif ($value != '')
+			$error['mac'.$key] = trans('Incorrect MAC address!');
+	if (empty($macs))
 		$error['mac0'] = trans('MAC address is required!');
-	}
-	$nodeipdata['macs'] = $macs;
+	else
+		$nodeipdata['macs'] = $macs;
 
 	if (strlen($nodeipdata['passwd']) > 32)
 		$error['passwd'] = trans('Password is too long (max.32 characters)!');
