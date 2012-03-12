@@ -27,7 +27,7 @@
 class Session {
 
 	var $SID = NULL;			// session unique ID
-	var $_version = '1.11-cvs';		// library version
+	var $_version = '1.11-git';		// library version
 	var $_revision = '$Revision$';	// library revision
 	var $_content = array();		// session content array
 	var $_updated = FALSE;			// indicates that content has
