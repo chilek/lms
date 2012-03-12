@@ -2566,4 +2566,17 @@ $_LANG['Check a host ...'] = 'Sprawdź łączność z hostem ...';
 $_LANG['Center map around network elements ...'] = 'Wyśrodkuj mapę wokół jej elementów ...';
 $_LANG['Refresh network state ...'] = 'Odśwież stan sieci ...';
 
+$_LANG['municipal commune'] = 'gm. miejska';
+$_LANG['rural commune'] = 'gm. wiejska';
+$_LANG['municipal-rural commune'] = 'gm. miejsko-wiejska';
+$_LANG['city in the municipal-rural commune'] = 'miasto w gm. miejsko-wiejskiej';
+$_LANG['rural area to municipal-rural commune'] = 'obszar wiejski gm. miejsko-wiejskiej';
+$_LANG['Commune'] = 'Gmina';
+$_LANG['Select commune'] = 'Wybierz gminę';
+
+$_LANG['Operation:'] = 'Czynność:';
+$_LANG['Connect to device'] = 'Podłączenie do urządzenia';
+$_LANG['Previous operation has not been finished yet!'] = 'Poprzednia czynność nie została jeszcze zakończona!';
+$_LANG['You haven\\\'t selected any nodes!'] = 'Nie wybrałeś żadnego komputera!';
+
 ?>

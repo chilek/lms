@@ -141,10 +141,19 @@ function findFeaturesIntersection(selectFeature, feature, featureLonLat)
 function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selection, startLon, startLat)
 {
 	var linkstyles = [
-		{ strokeColor: '#00ff00', strokeOpacity: 0.5, strokeWidth: 2 },
-		{ strokeColor: '#0000ff', strokeOpacity: 0.5, strokeWidth: 2 },
-		{ strokeColor: '#ff0000', strokeOpacity: 0.5, strokeWidth: 2 }
+		{ strokeColor: '#00ff00', strokeOpacity: 0.5 },
+		{ strokeColor: '#0000ff', strokeOpacity: 0.5 },
+		{ strokeColor: '#ff0000', strokeOpacity: 0.5 }
 	];
+	var linkweights = [];
+	linkweights[10000] = 1;
+	linkweights[25000] = 1;
+	linkweights[54000] = 2;
+	linkweights[100000] = 2;
+	linkweights[200000] = 3;
+	linkweights[300000] = 3;
+	linkweights[1000000] = 4;
+	linkweights[10000000] = 6;
 
 	var map = new OpenLayers.Map("map", {
 		controls: [new OpenLayers.Control.KeyboardDefaults(),
@@ -237,6 +246,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				new OpenLayers.Geometry.Point(devlinkArray[i].dstlon, devlinkArray[i].dstlat)
 					.transform(lmsProjection, map.getProjectionObject())
 			);
+			linkstyles[devlinkArray[i].type].strokeWidth = linkweights[devlinkArray[i].speed];
 			devlinks.push(new OpenLayers.Feature.Vector(
 				new OpenLayers.Geometry.LineString(points),
 				devlinkArray[i], linkstyles[devlinkArray[i].type]));
@@ -276,6 +286,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				new OpenLayers.Geometry.Point(nodelinkArray[i].netdevlon, nodelinkArray[i].netdevlat)
 					.transform(lmsProjection, map.getProjectionObject())
 				);
+			linkstyles[nodelinkArray[i].type].strokeWidth = linkweights[nodelinkArray[i].speed];
 			nodelinks.push(new OpenLayers.Feature.Vector(
 				new OpenLayers.Geometry.LineString(points),
 				nodelinkArray[i], linkstyles[nodelinkArray[i].type]));

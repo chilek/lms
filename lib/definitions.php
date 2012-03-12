@@ -219,6 +219,14 @@ $LINKSPEEDS = array(
 	10000000	=> trans('10Gbit/s'),
 );
 
+$BOROUGHTYPES = array(
+	1 => trans('municipal commune'),
+	2 => trans('rural commune'),
+	3 => trans('municipal-rural commune'),
+	4 => trans('city in the municipal-rural commune'),
+	5 => trans('rural area to municipal-rural commune'),
+);
+
 if(isset($SMARTY))
 {
 	$SMARTY->assign('_DOCTYPES', $DOCTYPES);
@@ -234,6 +242,7 @@ if(isset($SMARTY))
 	$SMARTY->assign('_DAYS', $DAYS);
 	$SMARTY->assign('_LINKTYPES', $LINKTYPES);
 	$SMARTY->assign('_LINKSPEEDS', $LINKSPEEDS);
+	$SMARTY->assign('_BOROUGHTYPES', $BOROUGHTYPES);
 }
 
 define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');

@@ -1380,7 +1380,7 @@ class LMS
 		if ($result = $this->DB->GetRow('SELECT n.*,
 		    inet_ntoa(n.ipaddr) AS ip, inet_ntoa(n.ipaddr_pub) AS ip_pub,
 		    lc.name AS city_name,
-				(CASE WHEN ls.name2 IS NOT NULL THEN ls.name2 || \' \' || ls.name ELSE ls.name END) AS street_name, lt.name AS street_type
+				(CASE WHEN ls.name2 IS NOT NULL THEN '.$DB->Concat('ls.name2', "' '", 'ls.name').' ELSE ls.name END) AS street_name, lt.name AS street_type
 			FROM vnodes n
 			LEFT JOIN location_cities lc ON (lc.id = n.location_city)
 			LEFT JOIN location_streets ls ON (ls.id = n.location_street)
@@ -1455,6 +1455,24 @@ class LMS
 					case 'ipaddr':
 						$searchargs[] = '(inet_ntoa(n.ipaddr) ?LIKE? '.$this->DB->Escape('%'.trim($value).'%')
 							.' OR inet_ntoa(n.ipaddr_pub) ?LIKE? '.$this->DB->Escape('%'.trim($value).'%').')';
+					break;
+					case 'state':
+						if ($value != '0')
+							$searchargs[] = 'n.location_city IN (SELECT lc.id FROM location_cities lc 
+								JOIN location_boroughs lb ON lb.id = lc.boroughid 
+								JOIN location_districts ld ON ld.id = lb.districtid 
+								JOIN location_states ls ON ls.id = ld.stateid WHERE ls.id = '.$this->DB->Escape($value).')';
+					break;
+					case 'district':
+						if ($value != '0')
+							$searchargs[] = 'n.location_city IN (SELECT lc.id FROM location_cities lc 
+								JOIN location_boroughs lb ON lb.id = lc.boroughid 
+								JOIN location_districts ld ON ld.id = lb.districtid WHERE ld.id = '.$this->DB->Escape($value).')';
+					break;
+					case 'borough':
+						if ($value != '0')
+							$searchargs[] = 'n.location_city IN (SELECT lc.id FROM location_cities lc WHERE lc.boroughid = '
+								.$this->DB->Escape($value).')';
 					break;
 					default:
 						$searchargs[] = 'n.'.$idx.' ?LIKE? '.$this->DB->Escape("%$value%");
@@ -3337,7 +3355,7 @@ class LMS
 	{
 		$result = $this->DB->GetRow('SELECT d.*, t.name AS nastypename, c.name AS channel,
 		        lc.name AS city_name,
-				(CASE WHEN ls.name2 IS NOT NULL THEN ls.name2 || \' \' || ls.name ELSE ls.name END) AS street_name, lt.name AS street_type
+				(CASE WHEN ls.name2 IS NOT NULL THEN '.$DB->Concat('ls.name2', "' '", 'ls.name').' ELSE ls.name END) AS street_name, lt.name AS street_type
 			FROM netdevices d
 			LEFT JOIN nastypes t ON (t.id = d.nastype)
 			LEFT JOIN ewx_channels c ON (d.channelid = c.id)
