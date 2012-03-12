@@ -688,7 +688,7 @@ if ($merge)
     my $street_get = $dbase->prepare("SELECT s.id, s.cityid
         FROM location_streets s
         JOIN location_cities c ON (s.cityid = c.id)
-        WHERE ".($dbtype =~ /mysql/ ? "CONCAT(s.name2, s.name)" : "(s.name2 || s.name)")." = ? AND c.name = ?
+        WHERE ".($dbtype =~ /mysql/ ? "CONCAT(COALESCE(s.name2, ''), s.name)" : "(COALESCE(s.name2, '') || s.name)")." = ? AND c.name = ?
         ORDER BY c.cityid LIMIT 1");
     my $city_get = $dbase->prepare("SELECT id
         FROM location_cities
