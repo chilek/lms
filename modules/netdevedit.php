@@ -379,8 +379,10 @@ case 'formaddip':
 			}
 			elseif ($value != '')
 				$error['mac'.$key] = trans('Incorrect MAC address!');
-	if (empty($macs))
+	if (empty($macs)) {
+		$macs[] = '';
 		$error['mac0'] = trans('MAC address is required!');
+	}
 	$nodeipdata['macs'] = $macs;
 
 	if (strlen($nodeipdata['passwd']) > 32)
@@ -471,8 +473,10 @@ case 'formeditip':
 			}
 			elseif ($value != '')
 				$error['mac'.$key] = trans('Incorrect MAC address!');
-	if (empty($macs))
+	if (empty($macs)) {
+		$macs[] = '';
 		$error['mac0'] = trans('MAC address is required!');
+	}
 	$nodeipdata['macs'] = $macs;
 
 	if (strlen($nodeipdata['passwd']) > 32)
