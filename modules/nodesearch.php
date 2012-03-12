@@ -21,8 +21,83 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id$
+ *  $Id: nodesearch.php,v 1.46 2012/01/02 11:01:35 alec Exp $
  */
+
+function get_loc_boroughs($districtid)
+{
+	global $DB;
+
+	$borough_types = array(
+		1 => 'gm. miejska',
+		2 => 'gm. wiejska',
+		3 => 'gm. miejsko-wiejska',
+		4 => 'miasto w gminie miejsko-wiejskiej',
+		5 => 'obszar wiejski gminy miejsko-wiejskiej',
+	);
+
+	$list = $DB->GetAll('SELECT b.id, b.name AS borough, b.type AS btype
+		FROM location_boroughs b
+		WHERE b.districtid = ?
+		ORDER BY b.name, b.type', array($districtid));
+
+	if ($list)
+		foreach ($list as $idx => $row) {
+			$name = sprintf('%s (%s)', $row['borough'],
+				$borough_types[$row['btype']]);
+			$list[$idx] = array('id' => $row['id'], 'name' => $name);
+		}
+
+	return $list;
+}
+
+function select_location($what, $id)
+{
+	global $DB;
+
+	$JSResponse = new xajaxResponse();
+
+	if ($what == 'search[state]')
+		$stateid = $id;
+	else if ($what == 'search[district]')
+		$districtid = $id;
+	else if ($what == 'search[borough]')
+		$boroughid = $id;
+
+	if ($stateid) {
+		$list = $DB->GetAll('SELECT id, name
+			FROM location_districts WHERE stateid = ?
+			ORDER BY name', array($stateid));
+
+		$JSResponse->call('update_selection', 'district',
+			$list ? $list : array(), !$what ? $districtid : 0);
+	}
+
+	if ($districtid) {
+		$list = get_loc_boroughs($districtid);
+		$JSResponse->call('update_selection', 'borough',
+			$list ? $list : array(), !$what ? $boroughid : 0);
+	}
+
+	return $JSResponse;
+}
+
+function connect_nodes($nodeids, $deviceid, $linktype, $linkspeed)
+{
+	global $DB;
+
+	$JSResponse = new xajaxResponse();
+
+	$DB->BeginTrans();
+	foreach ($nodeids as $nodeid)
+		$DB->Execute("UPDATE nodes SET netdev = ?, port = 0, linktype = ?, linkspeed = ? WHERE id = ?",
+			array($deviceid, $linktype, $linkspeed, $nodeid));
+	$DB->CommitTrans();
+
+	$JSResponse->call('operation_finished');
+
+	return $JSResponse;
+}
 
 function macformat($mac)
 {
@@ -75,8 +150,17 @@ $SESSION->save('nslk', $k);
 // MAC address reformatting
 $nodesearch['mac'] = macformat($nodesearch['mac']);
 
+require(LIB_DIR.'/xajax/xajax_core/xajax.inc.php');
+$xajax = new xajax();
+$xajax->configure('errorHandler', true);
+$xajax->configure('javascript URI', 'img');
+
 if(isset($_GET['search'])) 
 {
+	$xajax->register(XAJAX_FUNCTION, 'connect_nodes');
+	$SMARTY->assign('xajax', $xajax->getJavascript());
+	$xajax->processRequest();
+
 	$layout['pagetitle'] = trans('Nodes Search Results');
 
 	$nodelist = $LMS->GetNodeList($o, $nodesearch, $k);
@@ -107,7 +191,16 @@ if(isset($_GET['search']))
 	$SMARTY->assign('start',$start);
 	$SMARTY->assign('nodelist',$nodelist);
 	$SMARTY->assign('listdata',$listdata);
-	
+
+	$netdevlist = $LMS->GetNetDevList();
+	unset($netdevlist['total']);
+	unset($netdevlist['order']);
+	unset($netdevlist['direction']);
+	$SMARTY->assign('netdevlist', $netdevlist);
+
+	$xajax->register(XAJAX_FUNCTION, 'connect_nodes');
+	$SMARTY->assign('xajax', $xajax->getJavascript());
+
 	if(isset($_GET['print']))
 		$SMARTY->display('printnodelist.html');
 	elseif($listdata['total']==1)
@@ -117,12 +210,19 @@ if(isset($_GET['search']))
 }
 else
 {
+	$xajax->register(XAJAX_FUNCTION, 'select_location');
+	$SMARTY->assign('xajax', $xajax->getJavascript());
+	$xajax->processRequest();
+
 	$layout['pagetitle'] = trans('Nodes Search');
 
 	$SESSION->remove('nslp');
 
+	$SMARTY->assign('states', $DB->GetAll('SELECT id, name, ident FROM location_states ORDER BY name'));
 	$SMARTY->assign('k',$k);
+
 	$SMARTY->display('nodesearch.html');
 }
+
 
 ?>
