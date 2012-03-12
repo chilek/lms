@@ -34,7 +34,7 @@ class LMS
 	var $CONFIG;			// table including lms.ini options
 	var $cache = array();		// internal cache
 	var $hooks = array();       // registered plugin hooks
-	var $_version = '1.11-cvs';	// class version
+	var $_version = '1.11-git';	// class version
 	var $_revision = '$Revision$';
 
 	function LMS(&$DB, &$AUTH, &$CONFIG) // class variables setting
@@ -43,8 +43,10 @@ class LMS
 		$this->AUTH = &$AUTH;
 		$this->CONFIG = &$CONFIG;
 
-		$this->_revision = preg_replace('/^.Revision: ([0-9.]+).*/', '\1', $this->_revision);
-		$this->_version = $this->_version.' ('.$this->_revision.')';
+		//$this->_revision = preg_replace('/^.Revision: ([0-9.]+).*/', '\1', $this->_revision);
+		$this->_revision = '';
+		//$this->_version = $this->_version.' ('.$this->_revision.')';
+		$this->_version = '';
 	}
 
 	function _postinit()
