@@ -42,7 +42,8 @@ class LMSDB_driver_postgres extends LMSDB_common
 			return;
 		}
 
-		$this->_version .= ' ('.preg_replace('/^.Revision: ([0-9.]+).*/','\1',$this->_revision).'/'.preg_replace('/^.Revision: ([0-9.]+).*/','\1','$Revision$').')';
+		//$this->_version .= ' ('.preg_replace('/^.Revision: ([0-9.]+).*/','\1',$this->_revision).'/'.preg_replace('/^.Revision: ([0-9.]+).*/','\1','$Revision$').')';
+		$this->_version .= '';
 		$this->Connect($dbhost,$dbuser,$dbpasswd,$dbname);
 	}
 
