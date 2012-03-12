@@ -2571,6 +2571,8 @@ $_LANG['rural commune'] = 'gm. wiejska';
 $_LANG['municipal-rural commune'] = 'gm. miejsko-wiejska';
 $_LANG['city in the municipal-rural commune'] = 'miasto w gm. miejsko-wiejskiej';
 $_LANG['rural area to municipal-rural commune'] = 'obszar wiejski gm. miejsko-wiejskiej';
+$_LANG['estate in Warsaw-Centre commune'] = 'dzielnica gminy Warszawa-Centrum';
+$_LANG['estate'] = 'dzielnica';
 $_LANG['Commune'] = 'Gmina';
 $_LANG['Select commune'] = 'Wybierz gminę';
 
