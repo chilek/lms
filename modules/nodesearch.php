@@ -26,15 +26,7 @@
 
 function get_loc_boroughs($districtid)
 {
-	global $DB;
-
-	$borough_types = array(
-		1 => 'gm. miejska',
-		2 => 'gm. wiejska',
-		3 => 'gm. miejsko-wiejska',
-		4 => 'miasto w gminie miejsko-wiejskiej',
-		5 => 'obszar wiejski gminy miejsko-wiejskiej',
-	);
+	global $DB, $BOROUGHTYPES;
 
 	$list = $DB->GetAll('SELECT b.id, b.name AS borough, b.type AS btype
 		FROM location_boroughs b
@@ -44,7 +36,7 @@ function get_loc_boroughs($districtid)
 	if ($list)
 		foreach ($list as $idx => $row) {
 			$name = sprintf('%s (%s)', $row['borough'],
-				$borough_types[$row['btype']]);
+				$BOROUGHTYPES[$row['btype']]);
 			$list[$idx] = array('id' => $row['id'], 'name' => $name);
 		}
 
