@@ -19,7 +19,7 @@
 						<img src="img/logo.gif" alt="">
 					</td>
 					<td align="center" class="loginform light" width="300">
-						<b>{trans("LMS version")} {$layout.lmsv} ({$layout.lmsvr})<br><br>
+						<b>{trans("LMS version")} {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}<br><br>
 						&copy; 2001-2012 LMS Developers</b><br><br><br>
 						{if $error}<font class="alert bold">{$error}</font>{else}&nbsp;{/if}<br>
 						<br>
