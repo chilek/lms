@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 #
-#  LMS version 1.11-cvs
+#  LMS version 1.11-git
 #
 #  Copyright (C) 2001-2012 LMS Developers
 #
@@ -30,7 +30,7 @@ use vars qw($configfile $quiet $help $version $update $fetch $list $merge);
 use Cwd;
 use LWP::UserAgent;
 
-my $_version = '1.11-cvs';
+my $_version = '1.11-git';
 
 my %options = (
 	"--config-file|C=s"	=>	\$configfile,
@@ -622,7 +622,12 @@ sub location_update
     printf("%s (%04d) %s: ", $row->{'name'}, $row->{'id'}, $addr) if not $quiet;
 
     # get house/flat
-    if ($addr =~ /\s([0-9-]+\s*[a-z]*)$/i) {
+    if ($addr =~ /\s(([0-9-\/]+\s*[a-z]*)\ m\.\ ([0-9a-z\/]+))$/i) {
+    	$addr = substr($addr, 0, -1 * length($1));
+    	$house = $2;
+    	$flat = $3;
+    }
+    elsif ($addr =~ /\s([0-9-]+\s*[a-z]*)$/i) {
         $addr = substr($addr, 0, -1 * length($1));
         $house = $1;
     }
