@@ -239,7 +239,6 @@ if ($netdevices)
 				implode('_', array($netdevice['location_city'], $netdevice['location_street'],
 					$netdevice['location_house'], $netdevice['location_flat']));
 		$netnodename = $netdevice['netnodename'];
-		echo print_r($netnodename, true)."\n";
 		if (!array_key_exists($netnodename, $netnodes)) {
 			$netnodes[$netnodename]['id'] = $netnodeid;
 			$netnodes[$netnodename]['location'] = $netdevice['location'];
