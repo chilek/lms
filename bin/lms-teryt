@@ -654,7 +654,7 @@ sub location_update
 
     # find location_street and/or location_city IDs
     if ($street && $city) {
-        $street_get->execute($street, $street, $city);
+        $street_get->execute($street, $street, "^$city.*");
         if (my $srow = $street_get->fetchrow_hashref()) {
             $street_id = $srow->{'id'};
             $city_id = $srow->{'cityid'};
