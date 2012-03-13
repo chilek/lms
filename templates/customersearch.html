@@ -210,6 +210,19 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" style="width: 1%; white-space: nowrap;">
+			<IMG src="img/division.gif" width="16" alt=""> <span class="bold">{trans("Division")}:</span>
+		</TD>
+		<TD CLASS="fright" style="width: 99%;">
+			<SELECT SIZE="1" NAME="d">
+				<OPTION VALUE="">- {trans("all")} -</OPTION>
+				{foreach from=$divisions item=division}
+					<OPTION VALUE="{$division.id}"{if $listdata.division==$division.id} SELECTED{/if}>{$division.shortname|truncate:30:"...":true}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TR>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" style="width: 1%; white-space: nowrap;">
 			<IMG src="img/access.gif" width="16" alt=""> <span class="bold">{trans("Status:")}</span>
 		</TD>
 		<TD CLASS="fright" style="width: 99%;">
