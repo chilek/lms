@@ -422,7 +422,7 @@ foreach ($netnodes as $netnodename => $netnode) {
 				.$DB->GroupConcat("DISTINCT (CASE t.type WHEN ".TARIFF_INTERNET." THEN 'INT'
 					WHEN ".TARIFF_PHONE." THEN 'TEL'
 					WHEN ".TARIFF_TV." THEN 'TV'
-					END)")." AS servicetypes, SUM(t.downceil) AS downstream, SUM(t.upceil) AS upstream 
+					ELSE 'INT' END)")." AS servicetypes, SUM(t.downceil) AS downstream, SUM(t.upceil) AS upstream 
 				FROM nodeassignments na 
 				JOIN nodes n ON n.id = na.nodeid 
 				JOIN assignments a ON a.id = na.assignmentid 
