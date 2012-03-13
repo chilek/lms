@@ -695,7 +695,8 @@ if ($merge)
         JOIN location_cities c ON (s.cityid = c.id)
         WHERE ("
         	.($dbtype =~ /mysql/ ? "(CASE WHEN s.name2 IS NULL THEN s.name ELSE CONCAT(s.name2, ' ', s.name) END)"
-        		: "(CASE WHEN s.name2 IS NULL THEN s.name ELSE s.name2 || ' ' || s.name END)")." = ? OR s.name = ?) AND c.name = ?
+        		: "(CASE WHEN s.name2 IS NULL THEN s.name ELSE s.name2 || ' ' || s.name END)")." = ? OR s.name = ?) AND 
+        		c.name ". ($dbtype =~ /mysql/ ? "REGEXP" : "~") ."?
         ORDER BY c.cityid LIMIT 1");
     my $city_get = $dbase->prepare("SELECT id
         FROM location_cities
