@@ -435,8 +435,8 @@ foreach ($netnodes as $netnodename => $netnode) {
 					AS allsuspended ON allsuspended.cid = c.id 
 				WHERE n.ownerid > 0 AND n.linktype = ? AND n.location_city = ? 
 					AND (n.location_street = ? OR n.location_street IS NULL) AND n.location_house = ? 
-					AND a.suspended = 0 AND a.period = ".MONTHLY
-					." AND (a.datefrom = 0 OR a.datefrom < ?NOW?) AND (a.dateto = 0 OR a.dateto > ?NOW?) 
+					AND a.suspended = 0 AND a.period IN (".implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY)).") 
+					AND (a.datefrom = 0 OR a.datefrom < ?NOW?) AND (a.dateto = 0 OR a.dateto > ?NOW?) 
 					AND allsuspended.total IS NULL 
 				GROUP BY na.nodeid, c.type",
 				array($range['linktype'], $range['location_city'], $range['location_street'], $range['location_house']));
