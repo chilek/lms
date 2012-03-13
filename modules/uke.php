@@ -180,11 +180,7 @@ $linktypes = array(
 );
 
 // prepare info about network devices from lms database
-$netdevices = $DB->GetAll("SELECT nd.id, (CASE WHEN nd.location_city IS NOT NULL THEN "
-			.$DB->Concat("COALESCE(nd.location_city, '0')", "'_'", "COALESCE(nd.location_street, '0')", "'_'",
-				'nd.location_house', "'_'", "COALESCE(nd.location_flat, '')")." 
-			ELSE nd.location END
-		) AS netnodename, 
+$netdevices = $DB->GetAll("SELECT nd.id, nd.location_city, nd.location_street, nd.location_house, nd.location_flat, nd.location, 
 		(SELECT ls.name FROM location_states ls JOIN teryt_simc ts ON ts.woj = ls.ident JOIN location_cities lc ON ts.sym = lc.ident 
 			WHERE lc.id = nd.location_city LIMIT 1) AS area_woj, 
 		(SELECT ld.name FROM location_districts ld JOIN teryt_simc ts ON ts.pow = ld.ident JOIN location_cities lc ON ts.sym = lc.ident 
@@ -236,8 +232,14 @@ $netnodes = array();
 $netdevs = array();
 $netnodeid = 1;
 if ($netdevices)
-	foreach ($netdevices as $netdevice) {
+	foreach ($netdevices as $netdevid => $netdevice) {
+		$netdevice['netnodename'] = $netdevices[$netdevid]['netnodename'] =
+			empty($netdevice['location_city']) ?
+				$netdevice['location'] :
+				implode('_', array($netdevice['location_city'], $netdevice['location_street'],
+					$netdevice['location_house'], $netdevice['location_flat']));
 		$netnodename = $netdevice['netnodename'];
+		echo print_r($netnodename, true)."\n";
 		if (!array_key_exists($netnodename, $netnodes)) {
 			$netnodes[$netnodename]['id'] = $netnodeid;
 			$netnodes[$netnodename]['location'] = $netdevice['location'];
