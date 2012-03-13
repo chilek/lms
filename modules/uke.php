@@ -180,10 +180,9 @@ $linktypes = array(
 );
 
 // prepare info about network devices from lms database
-$netdevices = $DB->GetAll("SELECT nd.id, (CASE WHEN nd.location_city <> 0
-			THEN ".$DB->Concat("(CASE WHEN nd.location_street IS NULL THEN '' ELSE nd.location_street END)", "'_'",
-				'nd.location_city', "'_'", 'nd.location_house', "'_'",
-				"(CASE WHEN nd.location_flat IS NULL THEN '' ELSE nd.location_flat END)")."
+$netdevices = $DB->GetAll("SELECT nd.id, (CASE WHEN nd.location_city IS NOT NULL THEN "
+			.$DB->Concat("COALESCE(nd.location_city, '0')", "'_'", "COALESCE(nd.location_street, '0')", "'_'",
+				'nd.location_house', "'_'", "COALESCE(nd.location_flat, '')")." 
 			ELSE nd.location END
 		) AS netnodename, 
 		(SELECT ls.name FROM location_states ls JOIN teryt_simc ts ON ts.woj = ls.ident JOIN location_cities lc ON ts.sym = lc.ident 
