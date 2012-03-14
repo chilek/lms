@@ -49,7 +49,7 @@ function get_loc_streets($cityid)
 
 function get_loc_cities($districtid)
 {
-	global $DB;
+	global $DB, $BOROUGHTYPES;
 
 	$list = $DB->GetAll('SELECT c.id, c.name, b.name AS borough, b.type AS btype
 		FROM location_cities c
@@ -59,8 +59,8 @@ function get_loc_cities($districtid)
 
 	if ($list)
 		foreach ($list as $idx => $row) {
-			$name = sprintf('%s (%s%s)', $row['name'],
-				$row['btype'] < 4 ? trans('<!borough_abbr>') : '', $row['borough']);
+			$name = sprintf('%s (%s %s)', $row['name'],
+				$BOROUGHTYPES[$row['btype']], $row['borough']);
 			$list[$idx] = array('id' => $row['id'], 'name' => $name);
 		}
 
