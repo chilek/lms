@@ -72,8 +72,8 @@ $isnetlink = isset($_GET['isnetlink']) ? intval($_GET['isnetlink']) : 0;
 if ($isnetlink)
 	$link = $LMS->GetNetDevLinkType($id, $devid);
 else
-	$link = $DB->GetRow("SELECT linktype AS type, linkspeed AS speed FROM nodes WHERE netdev = ?",
-		array($id));
+	$link = $DB->GetRow("SELECT linktype AS type, linkspeed AS speed FROM nodes WHERE netdev = ? AND id = ?",
+		array($id, $devid));
 
 $link['id'] = $id;
 $link['devid'] = $devid;
