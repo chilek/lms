@@ -327,6 +327,12 @@ foreach ($netnodes as $netnodename => $netnode) {
 		$netnode['latitude'] = str_replace(',', '.', sprintf('%06f', $netnode['latitude'] / count($netnode['latitudes'])));
 	}
 	// save info about network nodes
+	if (empty($netnode['address_ulica'])) {
+		$netnode['address_ulica'] = "BRAK ULICY";
+		$netnode['address_symul'] = "99999";
+	}
+	if (empty($netnode['address_symul']))
+		$netnode['address_symul'] = "99998";
 	$snetnodes .= $netnode['id'].",własny,skrzynka,"
 		.(isset($netnode['area_woj'])
 			? implode(',', array($netnode['area_woj'], $netnode['area_pow'], $netnode['area_gmi']." (".$netnode['area_rodz_gmi'].")",
