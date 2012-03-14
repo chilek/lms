@@ -2,16 +2,16 @@ div.map {
 	position: absolute;
 	width: 85%;
 	height: 85%;
-	width: expression(document.body.clientWidth - 200 + 'px');	/* IE fix */
-	height: expression(document.body.clientHeight - 150 + 'px');	/* IE fix */
+	width: expression((parseInt(document.body.clientWidth) - 200) + 'px');	/* IE fix */
+	height: expression((parseInt(document.body.clientHeight) - 150) + 'px');	/* IE fix */
 }
 
 div.smallmap {
 	position: absolute;
 	width: 100%;
 	height: 100%;
-	width: expression(document.body.clientWidth + 'px');	/* IE fix */
-	height: expression(document.body.clientHeight + 'px');	/* IE fix */
+	width: expression(parseInt(document.body.clientWidth) + 'px');	/* IE fix */
+	height: expression(parseInt(document.body.clientHeight) + 'px');	/* IE fix */
 }
 
 div.olPopup {
