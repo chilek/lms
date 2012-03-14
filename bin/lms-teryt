@@ -120,7 +120,9 @@ if ($fetch)
         my $content = $response->content;
         my $file_url = $url;
 
-        $ua->show_progress(1);
+	if ($ua->can("show_progress")) {
+		$ua->show_progress(1);
+	}
 
         while ($content =~ m/href="(downloadPreFile\.jspa[^\"]+)"/g) {
             my $file = $1;
