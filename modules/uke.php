@@ -331,8 +331,10 @@ foreach ($netnodes as $netnodename => $netnode) {
 		$netnode['address_ulica'] = "BRAK ULICY";
 		$netnode['address_symul'] = "99999";
 	}
-	if (empty($netnode['address_symul']))
+	if (empty($netnode['address_symul'])) {
+		$teryt['address_ulica'] = "ULICA SPOZA ZAKRESU";
 		$netnode['address_symul'] = "99998";
+	}
 	$snetnodes .= $netnode['id'].",własny,skrzynka,"
 		.(isset($netnode['area_woj'])
 			? implode(',', array($netnode['area_woj'], $netnode['area_pow'], $netnode['area_gmi']." (".$netnode['area_rodz_gmi'].")",
