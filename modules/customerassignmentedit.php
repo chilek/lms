@@ -251,7 +251,7 @@ if(isset($_POST['assignment']))
 	}
 
 	$locks = array();
-	if (is_array($a['locks']))
+	if (!empty($a['locks']))
 		foreach ($a['locks'] as $lock) {
 			$days = 0;
 			foreach ($lock['days'] as $key => $value)
