@@ -324,7 +324,7 @@ case 'formaddip':
 	$subtitle = trans('New IP address');
 	$nodeipdata = $_POST['ipadd'];
 	$nodeipdata['ownerid'] = 0;
-	foreach($nodeipdata['macs'] as $key => $value)
+	foreach ($nodeipdata['macs'] as $key => $value)
 		$nodeipdata['macs'][$key] = str_replace('-',':',$value);
 
 	foreach($nodeipdata as $key => $value)
@@ -379,7 +379,8 @@ case 'formaddip':
 			$error['mac'.$key] = trans('Incorrect MAC address!');
 	if (empty($macs))
 		$error['mac0'] = trans('MAC address is required!');
-	$nodeipdata['macs'] = $macs;
+	else
+		$nodeipdata['macs'] = $macs;
 
 	if (strlen($nodeipdata['passwd']) > 32)
 		$error['passwd'] = trans('Password is too long (max.32 characters)!');
@@ -469,7 +470,8 @@ case 'formeditip':
 			$error['mac'.$key] = trans('Incorrect MAC address!');
 	if (empty($macs))
 		$error['mac0'] = trans('MAC address is required!');
-	$nodeipdata['macs'] = $macs;
+	else
+		$nodeipdata['macs'] = $macs;
 
 	if (strlen($nodeipdata['passwd']) > 32)
 		$error['passwd'] = trans('Password is too long (max.32 characters)!');
