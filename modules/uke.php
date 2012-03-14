@@ -437,8 +437,10 @@ foreach ($netnodes as $netnodename => $netnode) {
 				$teryt['address_ulica'] = "BRAK ULICY";
 				$teryt['address_symul'] = "99999";
 			}
-			if (empty($teryt['address_symul']))
+			if (empty($teryt['address_symul'])) {
+				$teryt['address_ulica'] = "ULICA SPOZA ZAKRESU";
 				$teryt['address_symul'] = "99998";
+			}
 			$teryt['address_symul'] = sprintf("%05d", $teryt['address_symul']);
 
 			// get info about computers connected to network node
