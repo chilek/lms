@@ -103,6 +103,7 @@ version ? (????-??-??):
   - searching nodes by teryt localization [chilan]
   - nodesearchresults: first operation introduced - connect to device [chilan]
   - customersearch: division selection - requested by jlc [chilan]
+  - daemon tc-new: fix empty mac segfault [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
