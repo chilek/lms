@@ -38,6 +38,8 @@ function DBLoad($filename=NULL)
 	else
 		$file = fopen($filename,'r');
 
+	if (!$file) return FALSE;
+
 	$DB->BeginTrans(); // przyspieszmy działanie jeżeli baza danych obsługuje transakcje
 	while(!feof($file))
 	{
