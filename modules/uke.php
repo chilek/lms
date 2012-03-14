@@ -432,8 +432,14 @@ foreach ($netnodes as $netnodename => $netnode) {
 			list ($area_woj, $area_pow, $area_gmi, $area_rodz) = explode('_', $teryt['area_terc']);
 			$teryt['area_terc'] = sprintf("%02d%02d%02d%s", $area_woj, $area_pow, $area_gmi, $area_rodz);
 			$teryt['area_simc'] = sprintf("%07d", $teryt['area_simc']);
-			$teryt['address_symul'] = sprintf("%05d", $teryt['address_symul']);
 			$teryt['address_budynek'] = $range['location_house'];
+			if (empty($teryt['address_ulica'])) {
+				$teryt['address_ulica'] = "BRAK ULICY";
+				$teryt['address_symul'] = "99999";
+			}
+			if (empty($teryt['address_symul']))
+				$teryt['address_symul'] = "99998";
+			$teryt['address_symul'] = sprintf("%05d", $teryt['address_symul']);
 
 			// get info about computers connected to network node
 			$nodes = $DB->GetAll("SELECT na.nodeid, c.type, "
