@@ -181,10 +181,16 @@ $linktypes = array(
 
 // prepare info about network devices from lms database
 $netdevices = $DB->GetAll("SELECT nd.id, nd.location_city, nd.location_street, nd.location_house, nd.location_flat, nd.location, 
-		(SELECT ls.name FROM location_states ls JOIN teryt_simc ts ON ts.woj = ls.ident JOIN location_cities lc ON ts.sym = lc.ident 
-			WHERE lc.id = nd.location_city LIMIT 1) AS area_woj, 
-		(SELECT ld.name FROM location_districts ld JOIN teryt_simc ts ON ts.pow = ld.ident JOIN location_cities lc ON ts.sym = lc.ident 
-			WHERE lc.id = nd.location_city LIMIT 1) AS area_pow, 
+		(SELECT ls.name FROM location_cities lc
+			JOIN location_boroughs lb ON lb.id = lc.boroughid
+			JOIN location_districts ld ON ld.id = lb.districtid
+			JOIN location_states ls ON ls.id = ld.stateid
+			WHERE lc.id = nd.location_city) AS area_woj,
+		(SELECT ld.name FROM location_cities lc
+			JOIN location_boroughs lb ON lb.id = lc.boroughid
+			JOIN location_districts ld ON ld.id = lb.districtid
+			JOIN location_states ls ON ls.id = ld.stateid
+			WHERE lc.id = nd.location_city) AS area_pow,
 		(SELECT lb.name FROM location_boroughs lb JOIN location_cities lc ON lc.boroughid = lb.id WHERE lc.id = nd.location_city) AS area_gmi, 
 		(SELECT ".$DB->Concat('ls.ident', "'_'", 'ld.ident', "'_'", 'lb.ident', "'_'", 'lb.type')." 
 			FROM location_cities lc 
@@ -391,10 +397,16 @@ foreach ($netnodes as $netnodename => $netnode) {
 		foreach ($ranges as $range) {
 			// get teryt info for group of computers connected to network node
 			$teryt = $DB->GetRow("SELECT 
-				(SELECT ls.name FROM location_states ls JOIN teryt_simc ts ON ts.woj = ls.ident 
-					JOIN location_cities lc ON lc.ident = ts.sym WHERE lc.id = ? LIMIT 1) AS area_woj, 
-				(SELECT ld.name FROM location_districts ld JOIN teryt_simc ts ON ts.pow = ld.ident 
-					JOIN location_cities lc ON lc.ident = ts.sym WHERE lc.id = ? LIMIT 1) AS area_pow, 
+				(SELECT ls.name FROM location_cities lc
+					JOIN location_boroughs lb ON lb.id = lc.boroughid
+					JOIN location_districts ld ON ld.id = lb.districtid
+					JOIN location_states ls ON ls.id = ld.stateid
+					WHERE lc.id = ?) AS area_woj,
+				(SELECT ld.name FROM location_cities lc
+					JOIN location_boroughs lb ON lb.id = lc.boroughid
+					JOIN location_districts ld ON ld.id = lb.districtid
+					JOIN location_states ls ON ls.id = ld.stateid
+					WHERE lc.id = ?) AS area_pow,
 				(SELECT lb.name FROM location_boroughs lb JOIN location_cities lc ON lc.boroughid = lb.id WHERE lc.id = ?) AS area_gmi, 
 				(SELECT ".$DB->Concat('ls.ident', "'_'", 'ld.ident', "'_'", 'lb.ident', "'_'", 'lb.type')." 
 					FROM location_cities lc 
