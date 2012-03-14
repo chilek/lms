@@ -44,7 +44,7 @@
 						<BR><IMG SRC="img/ip.gif" ALT=""> {$netcomplist[netcomplist].ip}{if $netcomplist[netcomplist].ip_pub != "0.0.0.0"} ({$netcomplist[netcomplist].ip_pub}){/if}
 						</span>
 					</TD>
-					<TD style="width: 1%;">
+					<TD style="width: 1%; text-align: right;">
 						<A HREF="?m=netdevedit&action=disconnectnode&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that connection?")}');"><IMG SRC="img/delete.gif" ALT="" {tip text="Delete connection"}></A>
 					</TD>
 				</TR>
