@@ -134,7 +134,7 @@ function invoice_seller($x, $y)
 	$y = $y - text_align_left($x, $y, $font_size, '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT", trans('Seller:')).'</b>');
 	$tmp = iconv("UTF-8","ISO-8859-2//TRANSLIT", $invoice['division_header']);
 
-	$account = bankaccount($invoice['customerid'], $invoice['account']);
+	$account = format_bankaccount(bankaccount($invoice['customerid'], $invoice['account']));
 	$tmp = str_replace('%bankaccount', $account, $tmp);
 
 	$tmp = preg_split('/\r?\n/', $tmp);
@@ -835,7 +835,7 @@ function invoice_footnote($x, $y, $width, $font_size)
 		//$y = $y - text_align_left($x, $y, $font_size, '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT", trans('Notes:')).'</b>');
 		$tmp = iconv("UTF-8", "ISO-8859-2//TRANSLIT", $invoice['division_footer']);
 
-		$account = bankaccount($invoice['customerid'], $invoice['account']);
+		$account = format_bankaccount(bankaccount($invoice['customerid'], $invoice['account']));
 		$tmp = str_replace('%bankaccount', $account, $tmp);
 
 		$tmp = preg_split('/\r?\n/', $tmp);
