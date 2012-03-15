@@ -1,8 +1,9 @@
 {include file="clearheader.html" landscape=true}
 <!--// $Id$ //-->
 {foreach from=$pages item=item}{assign var=previtem value=$item-1}
+<DIV{if $item > 1} style="page-break-before: always; border-style: none;"{/if}>
 <TABLE WIDTH="960" CELLPADDING="3" ALIGN="CENTER">
-	<TR{if $item > 1} style="page-break-before: always; border-style: none;"{/if}>
+	<TR>
 		<TD WIDTH="99%" ALIGN="LEFT">
 			<B><font class="sdr">{$layout.pagetitle}{if $pagescount} ({t a=$item b=$pagescount}Page $a from $b{/t}){/if}</font></B>
 		</TD>
@@ -206,5 +207,6 @@
 		</TD>
 	</TR>
 </TABLE>
+</DIV>
 {/foreach}
 {include file="clearfooter.html"}
