@@ -126,16 +126,21 @@ function invoice_buyer($x,$y)
     return $y;
 }
 
-function invoice_seller($x,$y) 
+function invoice_seller($x, $y)
 {
-    global $pdf, $invoice;
-    $font_size=10;
-    $y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Seller:')).'</b>');
-    $tmp = iconv("UTF-8","ISO-8859-2//TRANSLIT", $invoice['division_header']);
-    $tmp = preg_split('/\r?\n/', $tmp);
-    foreach ($tmp as $line) $y=$y-text_align_left($x,$y,$font_size,$line);
+	global $pdf, $invoice;
 
-    return $y;
+	$font_size = 10;
+	$y = $y - text_align_left($x, $y, $font_size, '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT", trans('Seller:')).'</b>');
+	$tmp = iconv("UTF-8","ISO-8859-2//TRANSLIT", $invoice['division_header']);
+
+	$account = bankaccount($invoice['customerid'], $invoice['account']);
+	$tmp = str_replace('%bankaccount', $account, $tmp);
+
+	$tmp = preg_split('/\r?\n/', $tmp);
+	foreach ($tmp as $line) $y = $y-text_align_left($x, $y, $font_size, $line);
+
+	return $y;
 }
 
 function invoice_title($x,$y) 
@@ -821,18 +826,21 @@ function invoice_expositor ($x,$y)
     return $y;
 }
 
-function invoice_footnote($x, $y, $width, $font_size) 
+function invoice_footnote($x, $y, $width, $font_size)
 {
-    global $pdf, $invoice;
+	global $pdf, $invoice;
 
-    if(!empty($invoice['division_footer']))
-    {
-	$y = $y - $pdf->getFontHeight($font_size);
-	$y = $y - text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Notes:')).'</b>');
-	$tmp = iconv("UTF-8","ISO-8859-2//TRANSLIT", $invoice['division_footer']);
-        $tmp = preg_split('/\r?\n/', $tmp);
-	foreach ($tmp as $line) $y = text_wrap($x,$y,$width,$font_size,$line,"full");
-    }
+	if (!empty($invoice['division_footer'])) {
+		$y = $y - $pdf->getFontHeight($font_size);
+		//$y = $y - text_align_left($x, $y, $font_size, '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT", trans('Notes:')).'</b>');
+		$tmp = iconv("UTF-8", "ISO-8859-2//TRANSLIT", $invoice['division_footer']);
+
+		$account = bankaccount($invoice['customerid'], $invoice['account']);
+		$tmp = str_replace('%bankaccount', $account, $tmp);
+
+		$tmp = preg_split('/\r?\n/', $tmp);
+		foreach ($tmp as $line) $y = text_wrap($x, $y, $width, $font_size, $line, "full");
+	}
 }
 
 function invoice_body_standard()
