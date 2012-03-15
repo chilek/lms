@@ -46,7 +46,7 @@
 			<BR><IMG SRC="img/port.gif" ALT=""> {$netdevlist[netdevlist].ports} ({$netdevlist[netdevlist].takenports})
 			</span>
 		</TD>
-		<TD style="width: 1%;">
+		<TD style="width: 1%; text-align: right;">
 			<A HREF="?m=netdevedit&action=disconnect&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that connection?")}');"><IMG SRC="img/delete.gif" {tip text="Delete connection"}></A>
 		</TD>
 	</TR>
