@@ -4,8 +4,6 @@ var maprequest = null;
 var mappopup = null;
 var lastonline_limit;
 var lmsProjection = new OpenLayers.Projection("EPSG:4326");
-var devicesLbl;
-var nodesLbl;
 
 function removeInvisiblePopups()
 {
@@ -37,7 +35,7 @@ function netdevmap_updater()
 		var devices = data.devices;
 		var nodes = data.nodes;
 
-		var devicelayer = map.getLayersByName(devicesLbl)[0];
+		var devicelayer = map.getLayersByName('Devices')[0];
 		for (i in devices)
 		{
 			var features = devicelayer.getFeaturesByAttribute('id', parseInt(devices[i].id));
@@ -52,7 +50,7 @@ function netdevmap_updater()
 			}
 		}
 
-		var nodelayer = map.getLayersByName(nodesLbl)[0];
+		var nodelayer = map.getLayersByName('Nodes')[0];
 		for (i in nodes)
 		{
 			var features = nodelayer.getFeaturesByAttribute('id', parseInt(nodes[i].id));
@@ -230,8 +228,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				), deviceArray[i]));
 		}
 
-	devicesLbl = OpenLayers.Lang.translate("Devices");
-	var devicelayer = new OpenLayers.Layer.Vector(devicesLbl, {
+	var devicelayer = new OpenLayers.Layer.Vector("Devices", {
 		styleMap: new OpenLayers.StyleMap(devicestyle)
 	});
 	devicelayer.addFeatures(devices);
@@ -252,8 +249,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				devlinkArray[i], linkstyles[devlinkArray[i].type]));
 		}
 
-	var devlinkLbl = OpenLayers.Lang.translate("Device Links");
-	var devlinklayer = new OpenLayers.Layer.Vector(devlinkLbl);
+	var devlinklayer = new OpenLayers.Layer.Vector("Device Links");
 	devlinklayer.addFeatures(devlinks);
 
 	var nodes = [];
@@ -270,8 +266,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				), nodeArray[i]));
 		}
 
-	nodesLbl = OpenLayers.Lang.translate("Nodes");
-	var nodelayer = new OpenLayers.Layer.Vector(nodesLbl, {
+	var nodelayer = new OpenLayers.Layer.Vector("Nodes", {
 		styleMap: new OpenLayers.StyleMap(nodestyle)
 	});
 	nodelayer.addFeatures(nodes);
@@ -292,8 +287,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				nodelinkArray[i], linkstyles[nodelinkArray[i].type]));
 		}
 
-	var nodelinkLbl = OpenLayers.Lang.translate("Node Links");
-	var nodelinklayer = new OpenLayers.Layer.Vector(nodelinkLbl);
+	var nodelinklayer = new OpenLayers.Layer.Vector("Node Links");
 	nodelinklayer.addFeatures(nodelinks);
 
 	map.addLayer(devicelayer);
@@ -328,11 +322,11 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 					var content = '<div class="lmsMapPopupContents">';
 					for (var i in features) {
 						if (features[i].geometry.CLASS_NAME == "OpenLayers.Geometry.Point")
-						content += '<div class="lmsMapPopupName">' + features[i].data.name + '</div>'
-							+ (features[i].data.ipaddr.length ? 
-								'<div class="lmsMapPopupAddress">' + features[i].data.ipaddr.replace(/,/g, 
-									'</div><div class="lmsMapPopupAddress">') + '</div>'
-								: '');
+							content += '<div class="lmsMapPopupName">' + features[i].data.name + '</div>'
+								+ (features[i].data.ipaddr.length ? 
+									'<div class="lmsMapPopupAddress">' + features[i].data.ipaddr.replace(/,/g, 
+										'</div><div class="lmsMapPopupAddress">') + '</div>'
+									: '');
 						else
 							content += '<span class="bold">' + features[i].data.typename + '<br>' + features[i].data.speedname + '</span>';
 					}
@@ -392,49 +386,49 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				var features = findFeaturesIntersection(this, feature, featureLonLat);
 				if (features.length > 1 || features[0].geometry.CLASS_NAME == "OpenLayers.Geometry.Point") {
 					var featurepopup = new OpenLayers.Popup(null, featureLonLat, new OpenLayers.Size(10, 10));
-				featurepopup.setOpacity(0.9);
-				//featurepopup.closeOnMove = true;
-				//featurepopup.keepInMap = true;
-				//featurepopup.panMapIfOutOfView = true;
-				var content = '<div class="lmsPopupTitleBar"><div class="lmsPopupTitle">Info</div>'
-					+ '<div id="' + featurepopup.id + '_popupCloseBox" class="olPopupCloseBox lmsPopupCloseBox">&nbsp;</div></div>'
-					+ '<div class="lmsInfoPopupContents">';
-				for (var i in features) {
-					content += '<div class="lmsInfoPopupName">' + features[i].data.name + '</div>';
-					if (features[i].data.type == 'netdevinfo') {
-						if (features[i].data.ipaddr.length) {
-							var ips = features[i].data.ipaddr.split(',');
-							var nodeids = features[i].data.nodeid.split(',');
-							for (var j in nodeids)
-								content += '<div class="lmsInfoPopupAddress"><a href="#" onclick="ping_host(\''
-								+ featurepopup.id + '\', \'' + ips[j] + '\')"><img src="img/ip.gif" alt="">&nbsp;'
-								+ ips[j] + '</a></div>';
-						}
-					} else
-						content += '<div class="lmsInfoPopupAddress"><a href="#" onclick="ping_host(\''
-							+ featurepopup.id + '\', \'' + features[i].data.ipaddr + '\')"><img src="img/ip.gif" alt="">&nbsp;'
-							+ features[i].data.ipaddr + '</a></div>';
-					content += '<div class="lmsInfoPopupDetails"><a href="?m=' + features[i].data.type + '&id=' + features[i].data.id + '">'
-						+ '<img src="img/info1.gif" alt="">&nbsp;Info</a></div>';
-				}
-				content += '</div>';
-				featurepopup.setContentHTML(content);
+					featurepopup.setOpacity(0.9);
+					//featurepopup.closeOnMove = true;
+					//featurepopup.keepInMap = true;
+					//featurepopup.panMapIfOutOfView = true;
+					var content = '<div class="lmsPopupTitleBar"><div class="lmsPopupTitle">Info</div>'
+						+ '<div id="' + featurepopup.id + '_popupCloseBox" class="olPopupCloseBox lmsPopupCloseBox">&nbsp;</div></div>'
+						+ '<div class="lmsInfoPopupContents">';
+					for (var i in features) {
+						content += '<div class="lmsInfoPopupName">' + features[i].data.name + '</div>';
+						if (features[i].data.type == 'netdevinfo') {
+							if (features[i].data.ipaddr.length) {
+								var ips = features[i].data.ipaddr.split(',');
+								var nodeids = features[i].data.nodeid.split(',');
+								for (var j in nodeids)
+									content += '<div class="lmsInfoPopupAddress"><a href="#" onclick="ping_host(\''
+									+ featurepopup.id + '\', \'' + ips[j] + '\')"><img src="img/ip.gif" alt="">&nbsp;'
+									+ ips[j] + '</a></div>';
+							}
+						} else
+							content += '<div class="lmsInfoPopupAddress"><a href="#" onclick="ping_host(\''
+								+ featurepopup.id + '\', \'' + features[i].data.ipaddr + '\')"><img src="img/ip.gif" alt="">&nbsp;'
+								+ features[i].data.ipaddr + '</a></div>';
+						content += '<div class="lmsInfoPopupDetails"><a href="?m=' + features[i].data.type + '&id=' + features[i].data.id + '">'
+							+ '<img src="img/info1.gif" alt="">&nbsp;Info</a></div>';
+					}
+					content += '</div>';
+					featurepopup.setContentHTML(content);
 
-				map.addPopup(featurepopup);
+					map.addPopup(featurepopup);
 
-				var dragpopup = new OpenLayers.Control.DragPopup(featurepopup, { feature: feature });
-				map.addControl(dragpopup);
+					var dragpopup = new OpenLayers.Control.DragPopup(featurepopup, { feature: feature });
+					map.addControl(dragpopup);
 
-				featurepopup.div.style.overflow = 'visible';
-				featurepopup.div.style.width = 'auto';
-				featurepopup.div.style.height = 'auto';
-				featurepopup.groupDiv.style.overflow = 'visible';
-				featurepopup.groupDiv.style.width = 'auto';
-				featurepopup.groupDiv.style.height = 'auto';
-				featurepopup.contentDiv.style.width = 'auto';
-				featurepopup.contentDiv.style.heigh = 'auto';
-				//featurepopup.updateSize();
-				feature.popup = featurepopup;
+					featurepopup.div.style.overflow = 'visible';
+					featurepopup.div.style.width = 'auto';
+					featurepopup.div.style.height = 'auto';
+					featurepopup.groupDiv.style.overflow = 'visible';
+					featurepopup.groupDiv.style.width = 'auto';
+					featurepopup.groupDiv.style.height = 'auto';
+					featurepopup.contentDiv.style.width = 'auto';
+					featurepopup.contentDiv.style.heigh = 'auto';
+					//featurepopup.updateSize();
+					feature.popup = featurepopup;
 				}
 			},
 			onUnselect: function(feature) {
@@ -524,13 +518,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 	}
 
 	map.addControl(new OpenLayers.Control.ScaleLine());
-	map.addControl(new OpenLayers.Control.NavToolbar());
-	/* in MSIE LayerSwitcher display rounded corners is broken */
-	if (navigator.appName == "Microsoft Internet Explorer") {
-		var layerSwitcher = new OpenLayers.Control.LayerSwitcher({ roundedCorner: false });
-	} else {
-		var layerSwitcher = new OpenLayers.Control.LayerSwitcher({ roundedCornerColor: '#CEBD9B' });
-	}
+	var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
 	map.addControl(layerSwitcher);
 	map.addControl(new OpenLayers.Control.MousePosition({ displayProjection: lmsProjection }));
 

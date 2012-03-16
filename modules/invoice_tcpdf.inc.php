@@ -42,6 +42,10 @@ function invoice_seller() {
 	$pdf->SetFont('arial', '', 10);
 	$seller = '<b>'.trans('Seller:').'</b><br>';
 	$tmp = $invoice['division_header'];
+
+	$account = format_bankaccount(bankaccount($invoice['customerid'], $invoice['account']));
+	$tmp = str_replace('%bankaccount', $account, $tmp);
+
 	$tmp = preg_split('/\r?\n/', $tmp);
 	foreach ($tmp as $line)
 		$seller .= $line.'<br>';
@@ -138,6 +142,10 @@ function invoice_footnote() {
 		$pdf->SetFont('arial', 'B', 10);
 		$pdf->Write($h=0, trans('Infos:'), $link='', $fill=0, $align='L', $ln=true, $stretch=0, $firstline=false, $firstblock=false, $maxh=0);
 		$tmp = $invoice['division_footer'];
+
+		$account = format_bankaccount(bankaccount($invoice['customerid'], $invoice['account']));
+		$tmp = str_replace('%bankaccount', $account, $tmp);
+
 		$tmp = preg_split('/\r?\n/', $tmp);
 		$pdf->SetFont('arial', '', 6);
 		foreach ($tmp as $line)

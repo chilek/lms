@@ -308,14 +308,14 @@ div.olControlSaveFeaturesItemInactive {
     position: absolute;
     top: 25px;
     right: 0;
-    width: 25em;
+    width: 20em;
     font-family: sans-serif;
     font-weight: bold;
     margin-top: 3px;
     margin-left: 3px;
     margin-bottom: 3px;
     font-size: smaller;
-    color: #800000;
+    color: white;
     background-color: transparent;
 }
 
@@ -324,7 +324,7 @@ div.olControlSaveFeaturesItemInactive {
     padding-left: 10px;
     padding-bottom: 5px;
     padding-right: 75px;
-    background-color: #CEBD9B;
+    background-color: darkblue;
     width: 100%;
     height: 100%;
 }
