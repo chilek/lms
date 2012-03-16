@@ -60,7 +60,7 @@ $DB->Execute("INSERT INTO rtticketcategories (ticketid, categoryid)
 		SELECT id, ? FROM rttickets",
 		array($default_catid));
 
-$DB->Execute("INSERT INTO uiconfig (section, var) VALUES ('userpanel', 'default_categories', ?)", array($default_catid));
+$DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES ('userpanel', 'default_categories', ?)", array($default_catid));
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011091600', 'dbversion'));
 
