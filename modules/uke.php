@@ -288,7 +288,7 @@ if ($netdevices)
 		$netnodes[$netnodename]['fibercommercialaccessports'] += $netdevice['fibercommercialaccessports'];
 		$netnodes[$netnodename]['personalaccessports'] += $netdevice['cablepersonalaccessports']
 			+ $netdevice['radiopersonalaccessports'] + $netdevice['fiberpersonalaccessports'];
-		$netnodes[$netnodename]['commercialacessports'] += $netdevice['cablecommercialaccessports']
+		$netnodes[$netnodename]['commercialaccessports'] += $netdevice['cablecommercialaccessports']
 			+ $netdevice['radiocommercialaccessports'] + $netdevice['fibercommercialaccessports'];
 		if (isset($netdevice['longitude'])) {
 			$netnodes[$netnodename]['longitudes'][] = $netdevice['longitude'];
