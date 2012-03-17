@@ -223,7 +223,7 @@ $dbq = $dbase->prepare("SELECT d.id, d.number, d.cdate, c.email, d.name, d.custo
 			LEFT JOIN numberplans n ON (n.id = d.numberplanid)
 			$groupjoin
 			WHERE c.deleted = 0 AND d.type = 1 AND c.email != '' 
-				AND d.cdate >= $daystart AND d.cdate <= $dayend AND c.invoicenotice = '1'
+				AND d.cdate >= $daystart AND d.cdate <= $dayend AND c.invoicenotice = 1
 				$groupwhere");
 $dbq->execute();
 while(my $row = $dbq->fetchrow_hashref())
