@@ -181,10 +181,16 @@ $linktypes = array(
 
 // prepare info about network devices from lms database
 $netdevices = $DB->GetAll("SELECT nd.id, nd.location_city, nd.location_street, nd.location_house, nd.location_flat, nd.location, 
-		(SELECT ls.name FROM location_states ls JOIN teryt_simc ts ON ts.woj = ls.ident JOIN location_cities lc ON ts.sym = lc.ident 
-			WHERE lc.id = nd.location_city LIMIT 1) AS area_woj, 
-		(SELECT ld.name FROM location_districts ld JOIN teryt_simc ts ON ts.pow = ld.ident JOIN location_cities lc ON ts.sym = lc.ident 
-			WHERE lc.id = nd.location_city LIMIT 1) AS area_pow, 
+		(SELECT ls.name FROM location_cities lc
+			JOIN location_boroughs lb ON lb.id = lc.boroughid
+			JOIN location_districts ld ON ld.id = lb.districtid
+			JOIN location_states ls ON ls.id = ld.stateid
+			WHERE lc.id = nd.location_city) AS area_woj,
+		(SELECT ld.name FROM location_cities lc
+			JOIN location_boroughs lb ON lb.id = lc.boroughid
+			JOIN location_districts ld ON ld.id = lb.districtid
+			JOIN location_states ls ON ls.id = ld.stateid
+			WHERE lc.id = nd.location_city) AS area_pow,
 		(SELECT lb.name FROM location_boroughs lb JOIN location_cities lc ON lc.boroughid = lb.id WHERE lc.id = nd.location_city) AS area_gmi, 
 		(SELECT ".$DB->Concat('ls.ident', "'_'", 'ld.ident', "'_'", 'lb.ident', "'_'", 'lb.type')." 
 			FROM location_cities lc 
@@ -321,6 +327,14 @@ foreach ($netnodes as $netnodename => $netnode) {
 		$netnode['latitude'] = str_replace(',', '.', sprintf('%06f', $netnode['latitude'] / count($netnode['latitudes'])));
 	}
 	// save info about network nodes
+	if (empty($netnode['address_ulica'])) {
+		$netnode['address_ulica'] = "BRAK ULICY";
+		$netnode['address_symul'] = "99999";
+	}
+	if (empty($netnode['address_symul'])) {
+		$netnode['address_ulica'] = "ULICA SPOZA ZAKRESU";
+		$netnode['address_symul'] = "99998";
+	}
 	$snetnodes .= $netnode['id'].",własny,skrzynka,"
 		.(isset($netnode['area_woj'])
 			? implode(',', array($netnode['area_woj'], $netnode['area_pow'], $netnode['area_gmi']." (".$netnode['area_rodz_gmi'].")",
@@ -391,10 +405,16 @@ foreach ($netnodes as $netnodename => $netnode) {
 		foreach ($ranges as $range) {
 			// get teryt info for group of computers connected to network node
 			$teryt = $DB->GetRow("SELECT 
-				(SELECT ls.name FROM location_states ls JOIN teryt_simc ts ON ts.woj = ls.ident 
-					JOIN location_cities lc ON lc.ident = ts.sym WHERE lc.id = ? LIMIT 1) AS area_woj, 
-				(SELECT ld.name FROM location_districts ld JOIN teryt_simc ts ON ts.pow = ld.ident 
-					JOIN location_cities lc ON lc.ident = ts.sym WHERE lc.id = ? LIMIT 1) AS area_pow, 
+				(SELECT ls.name FROM location_cities lc
+					JOIN location_boroughs lb ON lb.id = lc.boroughid
+					JOIN location_districts ld ON ld.id = lb.districtid
+					JOIN location_states ls ON ls.id = ld.stateid
+					WHERE lc.id = ?) AS area_woj,
+				(SELECT ld.name FROM location_cities lc
+					JOIN location_boroughs lb ON lb.id = lc.boroughid
+					JOIN location_districts ld ON ld.id = lb.districtid
+					JOIN location_states ls ON ls.id = ld.stateid
+					WHERE lc.id = ?) AS area_pow,
 				(SELECT lb.name FROM location_boroughs lb JOIN location_cities lc ON lc.boroughid = lb.id WHERE lc.id = ?) AS area_gmi, 
 				(SELECT ".$DB->Concat('ls.ident', "'_'", 'ld.ident', "'_'", 'lb.ident', "'_'", 'lb.type')." 
 					FROM location_cities lc 
@@ -414,8 +434,16 @@ foreach ($netnodes as $netnodename => $netnode) {
 			list ($area_woj, $area_pow, $area_gmi, $area_rodz) = explode('_', $teryt['area_terc']);
 			$teryt['area_terc'] = sprintf("%02d%02d%02d%s", $area_woj, $area_pow, $area_gmi, $area_rodz);
 			$teryt['area_simc'] = sprintf("%07d", $teryt['area_simc']);
-			$teryt['address_symul'] = sprintf("%05d", $teryt['address_symul']);
 			$teryt['address_budynek'] = $range['location_house'];
+			if (empty($teryt['address_ulica'])) {
+				$teryt['address_ulica'] = "BRAK ULICY";
+				$teryt['address_symul'] = "99999";
+			}
+			if (empty($teryt['address_symul'])) {
+				$teryt['address_ulica'] = "ULICA SPOZA ZAKRESU";
+				$teryt['address_symul'] = "99998";
+			}
+			$teryt['address_symul'] = sprintf("%05d", $teryt['address_symul']);
 
 			// get info about computers connected to network node
 			$nodes = $DB->GetAll("SELECT na.nodeid, c.type, "
@@ -435,8 +463,8 @@ foreach ($netnodes as $netnodename => $netnode) {
 					AS allsuspended ON allsuspended.cid = c.id 
 				WHERE n.ownerid > 0 AND n.linktype = ? AND n.location_city = ? 
 					AND (n.location_street = ? OR n.location_street IS NULL) AND n.location_house = ? 
-					AND a.suspended = 0 AND a.period = ".MONTHLY
-					." AND (a.datefrom = 0 OR a.datefrom < ?NOW?) AND (a.dateto = 0 OR a.dateto > ?NOW?) 
+					AND a.suspended = 0 AND a.period IN (".implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY)).") 
+					AND (a.datefrom = 0 OR a.datefrom < ?NOW?) AND (a.dateto = 0 OR a.dateto > ?NOW?) 
 					AND allsuspended.total IS NULL 
 				GROUP BY na.nodeid, c.type",
 				array($range['linktype'], $range['location_city'], $range['location_street'], $range['location_house']));
