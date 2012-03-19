@@ -1736,6 +1736,8 @@ SELECT st.ident AS woj, d.ident AS pow, b.ident AS gmi, b.type AS rodz_gmi,
 /* ---------------------------------------------------
  Data records
 ------------------------------------------------------*/
+INSERT INTO rtcategories (name, description)
+	VALUES ('default', 'default category');
 INSERT INTO uiconfig (section, var)
 	VALUES ('userpanel', 'data_consent_text');
 INSERT INTO uiconfig (section, var, value, description, disabled) 
@@ -1762,7 +1764,8 @@ INSERT INTO uiconfig (section, var, value, description, disabled)
 	VALUES ('userpanel', 'logout_url', '', '', 0);
 INSERT INTO uiconfig (section, var, value, description, disabled)
 	VALUES ('userpanel', 'owner_stats', '0', '', 0);
-INSERT INTO uiconfig (section, var) VALUES ('userpanel', 'default_categories');
+INSERT INTO uiconfig (section, var, value)
+	VALUES ('userpanel', 'default_categories', (SELECT MAX(id) FROM rtcategories));
 INSERT INTO up_rights(module, name, description)
 	VALUES ('info', 'edit_addr_ack', 'Customer can change address information with admin acknowlegment');
 INSERT INTO up_rights(module, name, description)
