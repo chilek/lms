@@ -81,7 +81,7 @@
 									<label for="port">{trans("Dest. port")}:<INPUT name="port" id="port" value="{if $connectnode.port}{$connectnode.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
 									<SELECT NAME="linktype" id="devnodeslinktype" {tip trigger="devnodeslinktype" text="Select link type"}>
 										{foreach from=$_LINKTYPES item=item key=key}
-										<OPTION value="$key"{if $key==$nodelinktype} selected{/if}>{$item}</OPTION>
+										<OPTION value="{$key}"{if $key==$nodelinktype} selected{/if}>{$item}</OPTION>
 										{/foreach}
 									</SELECT>
 									<SELECT NAME="linkspeed" id="devnodeslinkspeed" {tip trigger="devnodeslinkspeed" test="Select link speed"}>
