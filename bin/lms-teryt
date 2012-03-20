@@ -656,7 +656,7 @@ sub location_update
 
     # find location_street and/or location_city IDs
     if ($street && $city) {
-        $street_get->execute($street, $street, "$city%");
+        $street_get->execute($street, "$city%");
         if (my $srow = $street_get->fetchrow_hashref()) {
             $street_id = $srow->{'id'};
             $city_id = $srow->{'cityid'};
@@ -695,10 +695,10 @@ if ($merge)
     my $street_get = $dbase->prepare("SELECT s.id, s.cityid
         FROM location_streets s
         JOIN location_cities c ON (s.cityid = c.id)
-        WHERE ("
+        WHERE "
         	.($dbtype =~ /mysql/ ? "(CASE WHEN s.name2 IS NULL THEN s.name ELSE CONCAT(s.name2, ' ', s.name) END)"
-        		: "(CASE WHEN s.name2 IS NULL THEN s.name ELSE s.name2 || ' ' || s.name END)")." = ? OR s.name = ?) AND 
-        		c.name LIKE ?
+        		: "(CASE WHEN s.name2 IS NULL THEN s.name ELSE s.name2 || ' ' || s.name END)")." = ?
+        		AND c.name LIKE ?
         ORDER BY c.cityid LIMIT 1");
     my $city_get = $dbase->prepare("SELECT id
         FROM location_cities
