@@ -537,7 +537,7 @@ foreach ($netnodes as $netnodename => $netnode) {
 					.",0,".$linktypes[$range['linktype']]['technologia_dostepu'].",".implode('_', $ukeservices).",WLASNA,"
 					.$linktypes[$range['linktype']]['szybkosc'].","
 					.(implode(',', isset($personalnodes[$servicetype]) ? $personalnodes[$servicetype] : array_fill(0, 15, '0'))).","
-					.(implode(',', isset($commercialnodes[$servicetypes]) ? $commercialnodes[$servicetype] : array_fill(0, 15, '0')))."\n";
+					.(implode(',', isset($commercialnodes[$servicetype]) ? $commercialnodes[$servicetype] : array_fill(0, 15, '0')))."\n";
 				$netrangeid++;
 			}
 		}
