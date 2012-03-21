@@ -461,7 +461,7 @@ foreach ($netnodes as $netnodename => $netnode) {
 						AND (aa.datefrom < ?NOW? OR aa.datefrom = 0) 
 						AND (aa.dateto > ?NOW? OR aa.dateto = 0) GROUP BY aa.customerid) 
 					AS allsuspended ON allsuspended.cid = c.id 
-				WHERE n.ownerid > 0 AND n.linktype = ? AND n.location_city = ? 
+				WHERE n.ownerid > 0 AND n.netdev > 0 AND n.linktype = ? AND n.location_city = ? 
 					AND (n.location_street = ? OR n.location_street IS NULL) AND n.location_house = ? 
 					AND a.suspended = 0 AND a.period IN (".implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY)).") 
 					AND (a.datefrom = 0 OR a.datefrom < ?NOW?) AND (a.dateto = 0 OR a.dateto > ?NOW?) 
