@@ -656,7 +656,7 @@ sub location_update
 
 	# find location_street and/or location_city IDs
 	if ($street && $city) {
-		$street_get->execute($street, $street, "$city%");
+		$street_get->execute($street, $street, $city);
 		my $srows = $street_get->fetchall_hashref('id');
 		if (scalar(keys %$srows) == 1) {
 			foreach my $srow (keys %$srows) {
