@@ -693,7 +693,7 @@ if ($merge)
 {
 	my $node_update = $dbase->prepare("UPDATE nodes SET location_city = ?, location_street = ?,
 		location_house = ?, location_flat = ?, location = ? WHERE id = ?");
-	 my $dev_update = $dbase->prepare("UPDATE netdevices SET location_city = ?, location_street = ?,
+	my $dev_update = $dbase->prepare("UPDATE netdevices SET location_city = ?, location_street = ?,
 		location_house = ?, location_flat = ?, location = ? WHERE id = ?");
 	my $street_get = $dbase->prepare("SELECT s.id, s.cityid, (CASE WHEN s.name2 IS NULL THEN s.name ELSE s.name2 || ' ' || s.name END) AS name 
 		FROM location_streets s
