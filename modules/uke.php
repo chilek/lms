@@ -461,7 +461,7 @@ foreach ($netnodes as $netnodename => $netnode) {
 						AND (aa.datefrom < ?NOW? OR aa.datefrom = 0) 
 						AND (aa.dateto > ?NOW? OR aa.dateto = 0) GROUP BY aa.customerid) 
 					AS allsuspended ON allsuspended.cid = c.id 
-				WHERE n.ownerid > 0 AND n.linktype = ? AND n.location_city = ? 
+				WHERE n.ownerid > 0 AND n.netdev > 0 AND n.linktype = ? AND n.location_city = ? 
 					AND (n.location_street = ? OR n.location_street IS NULL) AND n.location_house = ? 
 					AND a.suspended = 0 AND a.period IN (".implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY)).") 
 					AND (a.datefrom = 0 OR a.datefrom < ?NOW?) AND (a.dateto = 0 OR a.dateto > ?NOW?) 
@@ -537,7 +537,7 @@ foreach ($netnodes as $netnodename => $netnode) {
 					.",0,".$linktypes[$range['linktype']]['technologia_dostepu'].",".implode('_', $ukeservices).",WLASNA,"
 					.$linktypes[$range['linktype']]['szybkosc'].","
 					.(implode(',', isset($personalnodes[$servicetype]) ? $personalnodes[$servicetype] : array_fill(0, 15, '0'))).","
-					.(implode(',', isset($commercialnodes[$servicetypes]) ? $commercialnodes[$servicetype] : array_fill(0, 15, '0')))."\n";
+					.(implode(',', isset($commercialnodes[$servicetype]) ? $commercialnodes[$servicetype] : array_fill(0, 15, '0')))."\n";
 				$netrangeid++;
 			}
 		}
