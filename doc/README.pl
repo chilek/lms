@@ -1,4 +1,4 @@
-LMS - LAN Management System 1.11-git
+LMS - LAN Management System 1.11-cvs
 
    [logo-small.png]
 
