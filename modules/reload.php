@@ -29,6 +29,9 @@ $layout['pagetitle'] = trans('Configuration Reload');
 $_RELOAD_TYPE = $CONFIG['phpui']['reload_type'];
 $_EXECCMD = $CONFIG['phpui']['reload_execcmd'];
 
+$serverTime = date("r");
+$SMARTY->assign('serverTime', $serverTime);
+
 switch($_RELOAD_TYPE)
 {
 	case 'exec':
