@@ -24,7 +24,7 @@
 $DB->BeginTrans();
 
 // name2 support for teryt location_street
-$DB->Execute("DROP VIEW teryf_ulic");
+$DB->Execute("DROP VIEW teryt_ulic");
 
 $DB->Execute("ALTER TABLE location_streets ADD name2 varchar(128) DEFAULT NULL");
 
