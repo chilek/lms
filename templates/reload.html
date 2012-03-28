@@ -5,7 +5,8 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD class="fall">
-			<B>{trans("Select hosts for configuration reload:")} <span id="reloadtimer"></span></B>
+		<div style="float:left">
+			<B>{trans("Select hosts for configuration reload:")} </div> <div id="reloadtxt" style="display:none; float:right">{trans("Reload configuration in:")} <span id="reloadtimer"></span> </div> </B>
 		</TD>
 	</TR>
 	<TR>
@@ -75,7 +76,8 @@
 	serverTimeDiff=Math.round((serverTimeDiff+(userDate-(new Date())))/1000);
 	if (serverTimeDiff>=0)
 	{
-		document.getElementById("reloadtimer").innerHTML="Przeładowanie nastąpi za: "+serverTimeDiff+" sekund";
+		document.getElementById("reloadtxt").style.display='inline';
+		document.getElementById("reloadtimer").innerHTML=" "+serverTimeDiff+" s";
 		timer=setTimeout("ShowSeconds()",1000);
 	}
 	else
