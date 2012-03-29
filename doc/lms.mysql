@@ -36,6 +36,7 @@ DROP TABLE IF EXISTS location_cities;
 DROP TABLE IF EXISTS location_boroughs;
 DROP TABLE IF EXISTS location_districts;
 DROP TABLE IF EXISTS location_states;
+DROP TABLE IF EXISTS pna;
 DROP TABLE IF EXISTS netdevices;
 DROP TABLE IF EXISTS netlinks;
 DROP TABLE IF EXISTS networks;
@@ -471,6 +472,24 @@ CREATE TABLE location_streets (
         REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (id),
     UNIQUE (cityid, name, ident)
+) ENGINE=INNODB;
+
+# --------------------------------------------------------
+#
+# Structure of table pna
+#
+CREATE TABLE pna (
+	id int(11)		NOT NULL auto_increment,
+	zip varchar(10)		NOT NULL,
+	cityid int(11)		NOT NULL
+		REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	streetid int(11)	DEFAULT NULL
+		REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	fromhouse varchar(10)	DEFAULT NULL,
+	tohouse varchar(10)	DEFAULT NULL,
+	parity smallint		DEFAULT '0' NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE (zip, cityid, streetid, fromhouse, tohouse, parity)
 ) ENGINE=INNODB;
 
 # --------------------------------------------------------
@@ -1697,4 +1716,4 @@ INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012030801');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012032900');
