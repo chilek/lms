@@ -261,6 +261,26 @@ CREATE TABLE location_streets (
 );
 
 /* -------------------------------------------------------- 
+  Structure of table "pna"
+-------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS pna_id_seq;
+CREATE SEQUENCE pna_id_seq;
+DROP TABLE IF EXISTS pna CASCADE;
+CREATE TABLE pna (
+	id integer DEFAULT nextval('pna_id_seq'::text) NOT NULL,
+	zip varchar(128) NOT NULL,
+	cityid integer NOT NULL
+		REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	streetid integer DEFAULT NULL
+		REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	fromhouse varchar(10) DEFAULT NULL,
+	tohouse varchar(10) DEFAULT NULL,
+	parity smallint DEFAULT 0 NOT NULL
+	PRIMARY KEY (id),
+	UNIQUE (zip, cityid, streetid, fromhouse, tohouse, parity)
+);
+
+/* -------------------------------------------------------- 
   Structure of table "networks"
 -------------------------------------------------------- */
 DROP SEQUENCE IF EXISTS networks_id_seq;
@@ -1795,4 +1815,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012021800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012032900');
