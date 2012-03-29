@@ -269,7 +269,7 @@ function convert_pna_to_teryt($data) {
 				(!empty($data[CITY][1])
 					? array($data[CITY][0], $data[CITY][1], $data[BOROUGH], $data[DISTRICT], $data[STATE])
 					: array($data[CITY][0], $data[BOROUGH], $data[DISTRICT], $data[STATE])));
-	if ($teryt) {
+	if ($teryt)
 		foreach ($data[HOUSE] as $house)
 			if (!empty($teryt['sid']))
 				$DB->Execute("INSERT INTO pna (zip, cityid, streetid, fromhouse, tohouse, parity)
@@ -278,9 +278,7 @@ function convert_pna_to_teryt($data) {
 			else
 				$DB->Execute("INSERT INTO pna (zip, cityid, fromhouse, tohouse, parity)
 					VALUES (?, ?, ?, ?, ?)",
-					array($data[PNA], (!empty($teryt['cid2']) ? $teryt['cid2'] : $teryt['cid']),
-						$house['from'], $house['to'], $house['parity']));
-	}
+					array($data[PNA], $teryt['cid'], $house['from'], $house['to'], $house['parity']));
 	else {
 		printf("city=%s", implode(",", $data[CITY]));
 		if (!empty($data[STREET][0]))
