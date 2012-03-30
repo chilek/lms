@@ -1,10 +1,10 @@
 {if $part eq "titlebar"}
-<div class="lmsPopupTitleBar">
+<div class="lmsPopupTitleBar" style="width: auto !important; width: 452px">
 	<div class="lmsPopupTitle">{t a=$ipaddr}Ping to $a{/t}</div>
 	<div id="{$popupid}_popupCloseBox" class="olPopupCloseBox lmsPopupCloseBox">&nbsp;</div>
 </div>
 <div class="lmsPingContentsFrame">
-	<iframe id="autoiframe_{$popupid}" width="100" height="10" frameborder="0" framespacing="0" scrolling="no" src="?m=ping&ip={$ipaddr}&type={$type}"></iframe>
+	<iframe id="autoiframe_{$popupid}" width="450px" height="300px" frameborder="0" framespacing="0" scrolling="no" src="?m=ping&ip={$ipaddr}&type={$type}"></iframe>
 </div>
 {elseif $part eq "ipform"}
 <div class="lmsPopupTitleBar">
@@ -39,9 +39,12 @@
 	<frame scrolling="always" frameborder="0" marginheight="0" marginwidth="0" name="m" noresize src="?m=ping&p=main&ip={$ipaddr}&type={$type}">
 </frameset>
 {else}
+<!--[if IE]>
+<script type="text/javascript" src="img/json2.js"></script>
+<![endif]-->
 <script type="text/javascript" src="img/common.js"></script>
-<body>
-	<div id="data" class="lmsPingContents"></div>
+<body style="overflow: auto">
+	<div id="data" class="lmsPingContents" style="height: 250px; width: 450px; overflow: auto"></div>
 	<form id="params">
 	<table cellpadding="2" style="bottom: 0; position: absolute" width="100%">
 		<tr class="light">
