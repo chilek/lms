@@ -2582,4 +2582,6 @@ $_LANG['Connect to device'] = 'Podłączenie do urządzenia';
 $_LANG['Previous operation has not been finished yet!'] = 'Poprzednia czynność nie została jeszcze zakończona!';
 $_LANG['You haven\\\'t selected any nodes!'] = 'Nie wybrałeś żadnego komputera!';
 
+$_LANG['Your balance on date of invoice issue:'] = 'Saldo w dniu wystawienia faktury:';
+
 ?>
