@@ -32,7 +32,7 @@ function invoice_title() {
 
 	if ($type == trans('DUPLICATE')) {
 		$pdf->SetFont('arial', '', 10);
-		$title = trans('Duplicate draw-up date:').' '.date('d.m.Y').' r.';
+		$title = trans('Duplicate draw-up date:').' '.date('d.m.Y');
 		$pdf->Write($h=0, $title, $link='', $fill=0, $align='C', $ln=true, $stretch=0, $firstline=false, $firstblock=false, $maxh=0);
 	}
 }
@@ -120,7 +120,7 @@ function invoice_dates() {
 	$pdf->SetFont('arial', '', 8);
 	$pdf->Ln();
 	if ($paytype != 8) {
-		$deadline = trans('Deadline:').' <b>'.date("d.m.Y", $invoice['pdate']).' r.</b>';
+		$deadline = trans('Deadline:').' <b>'.date("d.m.Y", $invoice['pdate']).'</b>';
 		$pdf->writeHTMLCell(0, 0, '', '', $deadline, 0, 1, 0, true, 'L');
 	}
 	$payment = trans('Payment type:').' <b>'.$invoice['paytypename'].'</b>';
