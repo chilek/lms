@@ -105,6 +105,7 @@ version ? (????-??-??):
   - customersearch: division selection - requested by jlc [chilan]
   - daemon tc-new: fix empty mac segfault [chilan]
   - invoice_pdf: %bankaccount substitution for invoice from division header and footer [chilan]
+  - tcpdf support for invoices [prezes_kk]
 
 version 1.11.13 Dira (2011-04-07)
 
