@@ -65,11 +65,15 @@ INPUT { /* IE */
 	border-color: expression(this.type=='checkbox' || this.type=='radio' ? '' : 'black');
 	background-color: expression(this.type=='checkbox' || this.type=='radio' ? 'transparent' : '#EBE4D6');
 }
+
 INPUT[type="radio"] {
     vertical-align: text-bottom;
 }
 
 INPUT.alert	{ background-color: #FF9B9B; }
+INPUT.alert { /* IE fix */
+	background-color: expression(this.type=='checkbox' || this.type=='radio' ? 'transparent' : '#FF9B9B');
+}
 INPUT.hiddenbtn	{ display : none; }
 INPUT.blend	{ border-style: solid; border-color: #c0c0c0; border-width: 1px; vertical-align: middle; color: black; }
 INPUT.scroller	{ border-style: solid; border-color: grey; border-width: 1px; vertical-align: middle; background-color: #DFD5BD; }
@@ -184,6 +188,8 @@ div.multiselectlayer ul li input { border: none; }
     border-radius: 3px;
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
+    box-shadow: #333 1px 1px 12px;
     -moz-box-shadow: 1px 1px 12px #333;
     -webkit-box-shadow: #333 1px 1px 12px;
+    behavior: url(img/pie.htc);
 }
