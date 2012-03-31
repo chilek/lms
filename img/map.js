@@ -524,7 +524,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 	}
 
 	map.addControl(new OpenLayers.Control.ScaleLine());
-	map.addControl(new OpenLayers.Control.NavToolbar());
+	//map.addControl(new OpenLayers.Control.NavToolbar());
 	/* in MSIE LayerSwitcher display rounded corners is broken */
 	if (navigator.appName == "Microsoft Internet Explorer") {
 		var layerSwitcher = new OpenLayers.Control.LayerSwitcher({ roundedCorner: false });
