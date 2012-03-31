@@ -26,7 +26,7 @@
 
 if(strtolower($CONFIG['invoices']['type']) == 'pdf')
 {
-    include('invoice_pdf.php');
+    include('invoice_tcpdf.php');
     $SESSION->close();
     die;
 }
