@@ -109,7 +109,7 @@ function invoice_balance() {
 	global $pdf, $invoice, $LMS;
 
 	$pdf->SetFont('arial', '', 7);
-	$pdf->writeHTMLCell(0, 0, '', '', trans('Your balance on date of invoice amounts:').' '.moneyf($LMS->GetCustomerBalance($invoice['customerid'], $invoice['cdate'])), 0, 1, 0, true, 'L');
+	$pdf->writeHTMLCell(0, 0, '', '', trans('Your balance on date of invoice issue:').' '.moneyf($LMS->GetCustomerBalance($invoice['customerid'], $invoice['cdate'])), 0, 1, 0, true, 'L');
 }
 
 function invoice_dates() {
@@ -139,15 +139,15 @@ function invoice_footnote() {
 
 	if (!empty($invoice['division_footer'])) {
 		$pdf->Ln(25);
-		$pdf->SetFont('arial', 'B', 10);
-		$pdf->Write($h=0, trans('Infos:'), $link='', $fill=0, $align='L', $ln=true, $stretch=0, $firstline=false, $firstblock=false, $maxh=0);
+		//$pdf->SetFont('arial', 'B', 10);
+		//$pdf->Write($h=0, trans('Notes:'), $link='', $fill=0, $align='L', $ln=true, $stretch=0, $firstline=false, $firstblock=false, $maxh=0);
 		$tmp = $invoice['division_footer'];
 
 		$account = format_bankaccount(bankaccount($invoice['customerid'], $invoice['account']));
 		$tmp = str_replace('%bankaccount', $account, $tmp);
 
 		$tmp = preg_split('/\r?\n/', $tmp);
-		$pdf->SetFont('arial', '', 6);
+		$pdf->SetFont('arial', '', 8);
 		foreach ($tmp as $line)
 			$footnote .= $line.'<br>';
 		$pdf->writeHTMLCell(0, 0, '', '', $footnote, 0, 1, 0, true, 'L');
