@@ -4,7 +4,8 @@ function invoice_date() {
 	global $pdf, $invoice;
 
 	$pdf->SetFont('arial', '', 10);
-	$pdf->writeHTMLCell(0, 0, '', 25, trans('Settlement date:').' <b>'.date("d.m.Y",$invoice['cdate']).' r.</b>', 0, 1, 0, true, 'R');
+	$pdf->writeHTMLCell(0, 0, '', 25, trans('Settlement date:').' <b>'.date("d.m.Y",$invoice['cdate']).'</b>', 0, 1, 0, true, 'R');
+	$pdf->writeHTMLCell(0, 0, '', '', trans('Sale date:').' <b>'.date("d.m.Y",$invoice['sdate']).'</b>', 0, 1, 0, true, 'R');
 }
 
 function invoice_title() {
@@ -138,7 +139,7 @@ function invoice_footnote() {
 	global $pdf, $invoice;
 
 	if (!empty($invoice['division_footer'])) {
-		$pdf->Ln(25);
+		$pdf->Ln(7);
 		//$pdf->SetFont('arial', 'B', 10);
 		//$pdf->Write($h=0, trans('Notes:'), $link='', $fill=0, $align='L', $ln=true, $stretch=0, $firstline=false, $firstblock=false, $maxh=0);
 		$tmp = $invoice['division_footer'];
