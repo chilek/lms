@@ -186,7 +186,7 @@ function invoice_simple_form_fill() {
 	$pdf->setColor('text', 0, 0, 0);
 
 	/* division name */
-	$pdf->Text(7, 197, $invoice['division_name']);
+	$pdf->Text(7, 197, $invoice['division_shortname']);
 	$pdf->Text(7, 203, $invoice['division_address']);
 	$pdf->Text(7, 209, $invoice['division_zip'].' '.$invoice['division_city']);
 
@@ -367,13 +367,14 @@ function invoice_data() {
 	global $pdf, $invoice;
 
 	/* print table */
-	$pdf->writeHTMLCell('', '', '', 105, '', 0, 1, 0, true, 'L');
+	$pdf->writeHTMLCell('', '', '', 95, '', 0, 1, 0, true, 'L');
 	$pdf->Table($header, $invoice);
 }
 
 function invoice_to_pay() {
 	global $pdf, $invoice;
 
+	$pdf->Ln(-12);
 	$pdf->SetFont('arial', 'B', 14);
 	if (isset($invoice['rebate']))
 		$pdf->writeHTMLCell(0, 0, '', '', trans('To repay:').' '.moneyf($invoice['value']), 0, 1, 0, true, 'L');
