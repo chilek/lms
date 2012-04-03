@@ -10,6 +10,8 @@ require_once(LIB_DIR.'/tcpdf/config/lang/pol.php');
 require_once(LIB_DIR.'/tcpdf/tcpdf.php');
 
 class TCPDFpl extends TCPDF {
+	public $invoice_type;
+
 	/* convert UTF-8 to ISO-8859-2 */
 	protected function UTF8ToLatin1($str) {
 		if (!$this->isunicode) {
@@ -34,9 +36,8 @@ class TCPDFpl extends TCPDF {
 		$this->SetLineStyle(array('width' => $line_width, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0)));
 		/* print barcode with invoice number in footer */
 		$barcode = $this->getBarcode();
-		if (!empty($barcode)) {
+		if (!empty($barcode) && ($this->invoice_type == 'standard')) {
 			$this->Ln($line_width);
-			$barcode_width = round(($this->w - $this->original_lMargin - $this->original_rMargin) / 3);
 			$style = array(
 				'position' => 'L',
 				'align' => 'L',
@@ -53,10 +54,11 @@ class TCPDFpl extends TCPDF {
 				'stretchtext' => 0
 			);
 			$this->write1DBarcode($barcode, 'C128', '', $cur_y + $line_width - 0.25, '', ($this->footer_margin - 2), 0.3, $style, '');
+			/* draw line */
+			$this->SetY($cur_y);
+			$this->SetX($this->original_rMargin);
+			$this->Cell(0, 0, '', array('T' => array('width' => 0.1)), 0, 'L');
 		}
-		$this->SetY($cur_y);
-		$this->SetX($this->original_rMargin);
-		$this->Cell(0, 0, '', array('T' => array('width' => 0.1)), 0, 'L');
 	}
 
 	public function getWrapStringWidth($txt, $font_size) {
@@ -298,7 +300,9 @@ class TCPDFpl extends TCPDF {
 }
 
 function init_pdf($pagesize, $orientation, $title) {
-	global $layout;
+	global $layout, $CONFIG;
+
+	$pdf->invoice_type = $CONFIG['invoices']['template_file'];
 	$pdf = new TCPDFpl($orientation, PDF_UNIT, $pagesize, true, 'UTF-8', false, false);
 
 	$pdf->SetProducer('LMS Developers');
