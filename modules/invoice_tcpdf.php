@@ -12,6 +12,9 @@ function invoice_body() {
 		case "standard":
 			invoice_body_standard();
 			break;
+		case "FT-0100":
+			invoice_body_ft0100();
+			break;
 		default:
 			require($template);
 	}
