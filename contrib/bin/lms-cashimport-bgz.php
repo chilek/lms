@@ -192,12 +192,12 @@ function log_in_to_bgz($user, $firm, $pass) {
 		return FALSE;
 	}
 
-	define('GET_FILES_REQUEST', "<table page=\"1\"><sort-components><sort key=\"file_name\" dir=\"ASC\"/></sort-components>"
-		."<filters><filter key=\"name\" value=\"\"/><filter key=\"status\" value=\"4\"/><filter key=\"userName\" value=\"".$user."\"/></filters>"
-		."</table>");
 	//define('GET_FILES_REQUEST', "<table page=\"1\"><sort-components><sort key=\"file_name\" dir=\"ASC\"/></sort-components>"
-	//	."<filters><filter key=\"name\" value=\"\"/><filter key=\"status\" value=\"\"/><filter key=\"userName\" value=\"".$user."\"/></filters>"
+	//	."<filters><filter key=\"name\" value=\"\"/><filter key=\"status\" value=\"4\"/><filter key=\"userName\" value=\"".$user."\"/></filters>"
 	//	."</table>");
+	define('GET_FILES_REQUEST', "<table page=\"1\"><sort-components><sort key=\"file_name\" dir=\"ASC\"/></sort-components>"
+		."<filters><filter key=\"name\" value=\"78_PZ030404.TXT\"/><filter key=\"status\" value=\"\"/><filter key=\"userName\" value=\"".$user."\"/></filters>"
+		."</table>");
 	return TRUE;
 }
 
@@ -504,6 +504,79 @@ function parse_file($filename, $contents) {
 		printf("Done.\n");
 }
 
+function commit_cashimport()
+{
+	global $DB, $LMS, $CONFIG;
+
+	$imports = $DB->GetAll('SELECT i.*, f.idate
+		FROM cashimport i
+		LEFT JOIN sourcefiles f ON (f.id = i.sourcefileid)
+		WHERE i.closed = 0 AND i.customerid <> 0');
+
+	if (!empty($imports)) {
+		$idate  = isset($CONFIG['finances']['cashimport_use_idate'])
+			&& chkconfig($CONFIG['finances']['cashimport_use_idate']);
+		$icheck = isset($CONFIG['finances']['cashimport_checkinvoices'])
+			&& chkconfig($CONFIG['finances']['cashimport_checkinvoices']);
+
+		foreach ($imports as $import) {
+
+			$DB->BeginTrans();
+
+			$balance['time'] = $idate ? $import['idate'] : $import['date'];
+			$balance['type'] = 1;
+			$balance['value'] = $import['value'];
+			$balance['customerid'] = $import['customerid'];
+			$balance['comment'] = $import['description'];
+			$balance['importid'] = $import['id'];
+			$balance['sourceid'] = $import['sourceid'];
+
+			if ($import['value'] > 0 && $icheck)
+			{
+				if($invoices = $DB->GetAll('SELECT d.id,
+						(SELECT SUM(value*count) FROM invoicecontents WHERE docid = d.id) +
+						COALESCE((SELECT SUM((a.value+b.value)*(a.count+b.count)) - SUM(b.value*b.count)
+							FROM documents dd
+							JOIN invoicecontents a ON (a.docid = dd.id)
+							JOIN invoicecontents b ON (dd.reference = b.docid AND a.itemid = b.itemid)
+							WHERE dd.reference = d.id
+							GROUP BY dd.reference), 0) AS value
+					FROM documents d
+					WHERE d.customerid = ? AND d.type = ? AND d.closed = 0
+					GROUP BY d.id, d.cdate ORDER BY d.cdate',
+					array($balance['customerid'], DOC_INVOICE)))
+				{
+					foreach($invoices as $inv)
+						$sum += $inv['value'];
+
+					$bval = $LMS->GetCustomerBalance($balance['customerid']);
+					$value = f_round($bval + $import['value'] + $sum);
+
+					foreach($invoices as $inv) {
+						$inv['value'] = f_round($inv['value']);
+						if($inv['value'] > $value)
+							break;
+						else
+						{
+							// close invoice and assigned credit notes
+							$DB->Execute('UPDATE documents SET closed = 1
+								WHERE id = ? OR reference = ?',
+								array($inv['id'], $inv['id']));
+
+							$value -= $inv['value'];
+						}
+					}
+				}
+			}
+
+			$DB->Execute('UPDATE cashimport SET closed = 1 WHERE id = ?', array($import['id']));
+			$LMS->AddBalance($balance);
+
+			$DB->CommitTrans();
+		}
+	}
+}
+
 if (!$quiet)
 	printf("Logging in to BGZ ... ");
 $res = log_in_to_bgz($CONFIG['finances']['bgz_username'], $CONFIG['finances']['bgz_firm'], $CONFIG['finances']['bgz_password']);
@@ -539,7 +612,7 @@ while ($xml->valid()) {
 							$fileid = $props->current();
 							break;
 						case "file_name":
-							$filename = $props->current();
+							$filename = strval($props->current());
 					}
 					$props->next();
 				}
@@ -554,6 +627,8 @@ while ($xml->valid()) {
 	}
 	$xml->next();
 }
+
+commit_cashimport();
 
 $lastchange = !empty($CONFIG['finances']['bgz_password_lastchange']) ? intval($CONFIG['finances']['bgz_password_lastchange']) : 0;
 if (!$lastchange || time() - $lastchange > 30 * 86400)
