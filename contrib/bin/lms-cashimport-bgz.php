@@ -192,12 +192,12 @@ function log_in_to_bgz($user, $firm, $pass) {
 		return FALSE;
 	}
 
-	//define('GET_FILES_REQUEST', "<table page=\"1\"><sort-components><sort key=\"file_name\" dir=\"ASC\"/></sort-components>"
-	//	."<filters><filter key=\"name\" value=\"\"/><filter key=\"status\" value=\"4\"/><filter key=\"userName\" value=\"".$user."\"/></filters>"
-	//	."</table>");
 	define('GET_FILES_REQUEST', "<table page=\"1\"><sort-components><sort key=\"file_name\" dir=\"ASC\"/></sort-components>"
-		."<filters><filter key=\"name\" value=\"78_PZ030404.TXT\"/><filter key=\"status\" value=\"\"/><filter key=\"userName\" value=\"".$user."\"/></filters>"
+		."<filters><filter key=\"name\" value=\"\"/><filter key=\"status\" value=\"4\"/><filter key=\"userName\" value=\"".$user."\"/></filters>"
 		."</table>");
+	//define('GET_FILES_REQUEST', "<table page=\"1\"><sort-components><sort key=\"file_name\" dir=\"ASC\"/></sort-components>"
+	//	."<filters><filter key=\"name\" value=\"78_PZ030404.TXT\"/><filter key=\"status\" value=\"\"/><filter key=\"userName\" value=\"".$user."\"/></filters>"
+	//	."</table>");
 	return TRUE;
 }
 
