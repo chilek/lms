@@ -530,6 +530,7 @@ function commit_cashimport()
 			$balance['comment'] = $import['description'];
 			$balance['importid'] = $import['id'];
 			$balance['sourceid'] = $import['sourceid'];
+			$balance['userid'] = 0;
 
 			if ($import['value'] > 0 && $icheck)
 			{
@@ -628,8 +629,6 @@ while ($xml->valid()) {
 	$xml->next();
 }
 
-commit_cashimport();
-
 $lastchange = !empty($CONFIG['finances']['bgz_password_lastchange']) ? intval($CONFIG['finances']['bgz_password_lastchange']) : 0;
 if (!$lastchange || time() - $lastchange > 30 * 86400)
 {
@@ -663,5 +662,7 @@ if (!$quiet)
 	printf("Done.\n");
 
 unlink(COOKIE_FILE);
+
+commit_cashimport();
 
 ?>
