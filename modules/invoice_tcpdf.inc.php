@@ -414,11 +414,11 @@ function invoice_expositor() {
 	$pdf->writeHTMLCell(0, 0, '', '', trans('Expositor:').' <b>'.$expositor.'</b>', 0, 1, 0, true, 'R');
 }
 
-function invoice_footnote($top) {
+function invoice_footnote() {
 	global $pdf, $invoice;
 
 	if (!empty($invoice['division_footer'])) {
-		$pdf->Ln($top);
+		$pdf->Ln(7);
 		//$pdf->SetFont('arial', 'B', 10);
 		//$pdf->Write($h=0, trans('Notes:'), $link='', $fill=0, $align='L', $ln=true, $stretch=0, $firstline=false, $firstblock=false, $maxh=0);
 		$tmp = $invoice['division_footer'];
@@ -447,7 +447,7 @@ function invoice_body_standard()
 	invoice_balance();
 	invoice_dates();
 	invoice_expositor();
-	invoice_footnote(7);
+	invoice_footnote();
 	$docnumber = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
 	$pdf->SetTitle(trans('Invoice No. $a', $docnumber));
 	$pdf->SetAuthor($invoice['division_name']);
@@ -486,7 +486,7 @@ function invoice_body_ft0100()
 	invoice_balance();
 	invoice_dates();
 	invoice_expositor();
-	invoice_footnote(2);
+	invoice_footnote();
 	/* draw FT-0100 form */
 	invoice_simple_form_draw();
 	invoice_main_form_draw();
