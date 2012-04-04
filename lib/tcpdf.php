@@ -302,8 +302,8 @@ class TCPDFpl extends TCPDF {
 function init_pdf($pagesize, $orientation, $title) {
 	global $layout, $CONFIG;
 
-	$pdf->invoice_type = $CONFIG['invoices']['template_file'];
 	$pdf = new TCPDFpl($orientation, PDF_UNIT, $pagesize, true, 'UTF-8', false, false);
+	$pdf->invoice_type = $CONFIG['invoices']['template_file'];
 
 	$pdf->SetProducer('LMS Developers');
 	$pdf->SetSubject($title);
