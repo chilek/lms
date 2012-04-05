@@ -29,7 +29,7 @@ $type = isset($_GET['type']) ? $_GET['type'] : '';
 switch($type)
 {
 	case 'customerbalance': /********************************************/
-	
+
 		$from = $_POST['from'];
 		$to = $_POST['to'];
 
@@ -37,7 +37,7 @@ switch($type)
 		if($from && preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $from))
 		{
 			list($year, $month, $day) = explode('/',$from);
-    			$date['from'] = mktime(0, 0, 0, (int)$month, (int)$day, (int)$year);
+			$date['from'] = mktime(0, 0, 0, (int)$month, (int)$day, (int)$year);
 		}
 		else
 			$date['from'] = 0;
@@ -118,8 +118,9 @@ switch($type)
 		}
 		
 		$SMARTY->assign('balancelist', $list);
-		$SMARTY->display('printcustomerbalance.html');
-	break;	
+		$output = $SMARTY->fetch('printcustomerbalance.html');
+		html2pdf($output);
+	break;
 	
 	case 'balancelist': /********************************************/
 	
@@ -281,7 +282,8 @@ switch($type)
 		if($source)
 			$SMARTY->assign('source', $DB->GetOne('SELECT name FROM cashsources WHERE id = ?', array($source)));
 
-		$SMARTY->display('printbalancelist.html');
+		$output = $SMARTY->fetch('printbalancelist.html');
+		html2pdf($output);
 	break;
 
 	case 'incomereport': /********************************************/
@@ -314,7 +316,8 @@ switch($type)
 			array($date['from'], $date['to']));
 
 		$SMARTY->assign('incomelist', $incomelist);
-		$SMARTY->display('printincomereport.html');
+		$output = $SMARTY->fetch('printincomereport.html');
+		html2pdf($output);
 	break;
 
 	case 'importlist': /********************************************/
@@ -353,7 +356,8 @@ switch($type)
 		if ($source)
 			$SMARTY->assign('source', $DB->GetOne('SELECT name FROM cashsources WHERE id = ?', array($source)));
 		$SMARTY->assign('importlist', $importlist);
-		$SMARTY->display('printimportlist.html');
+		$output = $SMARTY->fetch('printimportlist.html');
+		html2pdf($output);
 	break;
 
 	case 'invoices': /********************************************/
@@ -604,7 +608,8 @@ switch($type)
 			$SMARTY->assign('taxescount', sizeof($taxes));
 		}
 
-		$SMARTY->display('printliabilityreport.html');
+		$output = $SMARTY->fetch('printliabilityreport.html');
+		html2pdf($output);
 	break;
 	
 	case 'receiptlist':
@@ -763,7 +768,7 @@ switch($type)
 				}
 
 				$rows++;
-			        $page = $x;
+				$page = $x;
 
 				if($row['value']>0)
 					$totals[$page]['income'] += $row['value'];
@@ -777,7 +782,7 @@ switch($type)
 			{
 				$pages[] = $page;
 
-			        $totals[$page]['totalincome'] = $totals[$page-1]['totalincome'] + $t['income'];
+				$totals[$page]['totalincome'] = $totals[$page-1]['totalincome'] + $t['income'];
 				$totals[$page]['totalexpense'] = $totals[$page-1]['totalexpense'] + $t['expense'];
 				$totals[$page]['rowstart'] = $totals[$page-1]['rowstart'] + $totals[$page-1]['rows'];
 			}
@@ -786,18 +791,20 @@ switch($type)
 			$SMARTY->assign('totals', $totals);
 			$SMARTY->assign('pagescount', sizeof($pages));
 			$SMARTY->assign('reccount', sizeof($list));
-			$SMARTY->display('printreceiptlist-ext.html');
+			$output = $SMARTY->fetch('printreceiptlist-ext.html');
+			html2pdf($output);
 		}
 		else
 		{
-			$SMARTY->display('printreceiptlist.html');
+			$output = $SMARTY->fetch('printreceiptlist.html');
+			html2pdf($output);
 		}
 	break;
 
 	default: /*******************************************************/
-	
+
 		$layout['pagetitle'] = trans('Reports');
-		
+
 		if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
 		{
 			$SMARTY->assign('customers', $LMS->GetCustomerNames());

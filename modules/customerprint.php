@@ -111,11 +111,12 @@ switch($type)
 				$SMARTY->assign('customerlist', $ncustomerlist);
 			break;	
 		}
-		
-		$SMARTY->assign('contactlist', $DB->GetAllByKey('SELECT customerid, MIN(phone) AS phone 
+
+		$SMARTY->assign('contactlist', $DB->GetAllByKey('SELECT customerid, MIN(phone) AS phone, type 
 						FROM customercontacts WHERE phone != \'\' GROUP BY customerid', 'customerid'));
-		
-		$SMARTY->display('printcustomerlist.html');
+
+		$output = $SMARTY->fetch('printcustomerlist.html');
+		html2pdf($output, 'P', array(5, 10, 5, 10), trans('Reports'), $layout['pagetitle']);
 	break;
 
 	case 'customerbalance': /********************************************/
@@ -141,7 +142,7 @@ switch($type)
 		$id = $_POST['customer'];
 
 		if($tslist = $DB->GetAll('SELECT cash.id AS id, time, cash.value AS value,
-		        taxes.label AS taxlabel, customerid, comment, name AS username 
+			axes.label AS taxlabel, customerid, comment, name AS username 
 				    FROM cash 
 				    LEFT JOIN taxes ON (taxid = taxes.id)
 				    LEFT JOIN users ON users.id=userid 
@@ -157,7 +158,7 @@ switch($type)
 			{
 				$saldolist['after'][$i] = $saldolist['balance'] + $saldolist['value'][$i];
 				$saldolist['balance'] += $saldolist['value'][$i];
-			        $saldolist['date'][$i] = date('Y/m/d H:i', $saldolist['time'][$i]);
+				$saldolist['date'][$i] = date('Y/m/d H:i', $saldolist['time'][$i]);
 
 				if($saldolist['time'][$i]>=$date['from'] && $saldolist['time'][$i]<=$date['to'])
 				{
@@ -181,7 +182,8 @@ switch($type)
 		$list['customerid'] = $id;
 
 		$SMARTY->assign('balancelist', $list);
-		$SMARTY->display('printcustomerbalance.html');
+		$output = $SMARTY->fetch('printcustomerbalance.html');
+		>html2pdf($output, 'P', array(5, 10, 5, 10), trans('Reports'), $layout['pagetitle']);
 	break;
 
 	default: /*******************************************************/
@@ -189,7 +191,7 @@ switch($type)
 		$layout['pagetitle'] = trans('Reports');
 
 		$yearstart = date('Y', (int) $DB->GetOne('SELECT MIN(dt) FROM stats'));
-	        $yearend = date('Y', (int) $DB->GetOne('SELECT MAX(dt) FROM stats'));
+		$yearend = date('Y', (int) $DB->GetOne('SELECT MAX(dt) FROM stats'));
 		for($i=$yearstart; $i<$yearend+1; $i++)
 			$statyears[] = $i;
 		for($i=1; $i<13; $i++)

@@ -97,7 +97,8 @@ switch($type)
 					    .($sqlord != '' ? $sqlord.' '.$direction : ''));
 				
 				$SMARTY->assign('nodelist', $nodelist);
-				$SMARTY->display('printindebtnodelist.html');
+				$output = $SMARTY->fetch('printindebtnodelist.html');
+				html2pdf($output);
 				$SESSION->close();
 				die;
 			break;
@@ -110,7 +111,8 @@ switch($type)
 		unset($nodelist['totaloff']);
 		
 		$SMARTY->assign('nodelist', $nodelist);
-		$SMARTY->display('printnodelist.html');
+		$output = $SMARTY->fetch('printnodelist.html');
+		html2pdf($output);
 	break;
 
 	default:

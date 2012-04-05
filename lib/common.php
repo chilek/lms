@@ -766,4 +766,40 @@ function register_plugin($handle, $plugin)
         $PLUGINS[$handle][] = $plugin;
 }
 
+function html2pdf($content, $orientation='P', $margins=array(5, 10, 5, 10), $save=false)
+{
+	global $layout;
+	require_once(LIB_DIR.'/html2pdf/html2pdf.class.php');
+
+	if (isset($margins))
+		if (!is_array($margins))
+			$margins = array(5, 10, 5, 10);
+
+	$html2pdf = new HTML2PDF($orientation, 'A4', 'en', true, 'UTF-8', $margins);
+
+	$html2pdf->pdf->SetProducer('LMS Developers');
+	$html2pdf->pdf->SetCreator('LMS '.$layout['lmsv']);
+	$html2pdf->pdf->SetSubject(trans('Reports'));
+	$html2pdf->pdf->SetTitle($layout['pagetitle']);
+
+	$html2pdf->pdf->SetDisplayMode('fullpage', 'SinglePage', 'UseNone');
+	$html2pdf->AddFont('arial', '', 'arial.php');
+	$html2pdf->AddFont('arial', 'B', 'arialb.php');
+	$html2pdf->AddFont('arial', 'I', 'ariali.php');
+	$html2pdf->AddFont('arial', 'BI', 'arialbi.php');
+
+	$html2pdf->WriteHTML($content);
+	$html2pdf->pdf->SetProtection(array('modify', 'annot-forms', 'fill-forms', 'extract', 'assemble'), '', PASSWORD_CHANGEME, '1');
+
+	if ($save) {
+		if (function_exists('mb_convert_encoding'))
+			$filename = mb_convert_encoding($title, "ISO-8859-2", "UTF-8");
+		else
+			$filename = iconv("UTF-8", "ISO-8859-2", $title);
+		$html2pdf->Output($layout['pagetitle'].'.pdf', 'D');
+	} else {
+		$html2pdf->Output();
+	}
+}
+
 ?>

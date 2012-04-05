@@ -79,7 +79,8 @@ switch($type)
 			$SMARTY->assign('listdata', $listdata);
 		}
 
-		$SMARTY->display('printcustomertraffic.html');
+		$output = $SMARTY->fetch('printcustomertraffic.html');
+		html2pdf($output);
 	break;
 
 	default:
