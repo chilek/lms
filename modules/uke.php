@@ -604,6 +604,9 @@ if ($netlinks)
 		}
 
 // prepare zip archive package containing all generated files
+if (!extension_loaded ('zip'))
+	die ('<B>Zip extension not loaded! In order to use this extension you must compile PHP with zip support by using the --enable-zip configure option. </B>');
+	
 $zip = new ZipArchive();
 $filename = tempnam('/tmp', 'LMS_SIIS_').'.zip';
 if ($zip->open($filename, ZIPARCHIVE::OVERWRITE)) {
