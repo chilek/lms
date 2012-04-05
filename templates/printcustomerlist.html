@@ -47,16 +47,7 @@
 			{$customerlist[customerlist].id|string_format:"%04d"}
 		</TD>
 		<TD>
-			{if $customerlist[customerlist].type eq 1}
-				{if $customerlist[customerlist].customername|count_characters:true < 40}
 			<B>{$customerlist[customerlist].customername}</B><BR>
-				{else}
-					<B>{$customerlist[customerlist].lastname}<BR>
-					{$customerlist[customerlist].name}</B><BR>
-				{/if}
-			{else}
-				<B>{$customerlist[customerlist].customername}</B><BR>
-			{/if}
 			{$customerlist[customerlist].zip} {$customerlist[customerlist].city}{if $customerlist[customerlist].city neq ""},{/if} {$customerlist[customerlist].address}<BR>
 			{if $contactlist.$cid.type}{trans("mobile")}{else}{trans("phone<!plural>")}{/if} {$contactlist.$cid.phone}
 		</TD>
@@ -67,7 +58,7 @@
 		</TD>
 		{if !check_conf('privileges.hide_finances')}
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$customerlist[customerlist].balance|money_format} 
+			{$customerlist[customerlist].balance|money_format}
 		</TD>
 		{/if}
 	</TR>

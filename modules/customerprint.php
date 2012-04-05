@@ -112,7 +112,7 @@ switch($type)
 			break;
 		}
 
-		$SMARTY->assign('contactlist', $DB->GetAllByKey('SELECT customerid, MIN(phone) AS phone, type 
+		$SMARTY->assign('contactlist', $DB->GetAllByKey('SELECT customerid, MIN(phone) AS phone
 						FROM customercontacts WHERE phone != \'\' GROUP BY customerid', 'customerid'));
 
 		$output = $SMARTY->fetch('printcustomerlist.html');
@@ -142,7 +142,7 @@ switch($type)
 		$id = $_POST['customer'];
 
 		if($tslist = $DB->GetAll('SELECT cash.id AS id, time, cash.value AS value,
-			axes.label AS taxlabel, customerid, comment, name AS username 
+			taxes.label AS taxlabel, customerid, comment, name AS username 
 				    FROM cash 
 				    LEFT JOIN taxes ON (taxid = taxes.id)
 				    LEFT JOIN users ON users.id=userid 
