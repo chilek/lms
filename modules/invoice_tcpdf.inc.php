@@ -196,7 +196,11 @@ function invoice_simple_form_fill() {
 
 	/* customer name */
 	$pdf->SetFont('courier', '', 9);
-	$pdf->Text(7, 228, $invoice['name']);
+	/* if customer name lenght > 26 chars then cut string */
+	if (mb_strlen($invoice['name']) > 26)
+		$pdf->Text(7, 228, mb_substr($invoice['name'], 0, 26));
+	else
+		$pdf->Text(7, 228, $invoice['name']);
 	$pdf->Text(7, 234, $invoice['address']);
 	$pdf->Text(7, 240, $invoice['zip'].' '.$invoice['city']);
 
@@ -237,7 +241,11 @@ function invoice_main_form_fill() {
 
 	/* customer name */
 	$pdf->SetFont('courier', '', 9);
+	/* if customer name lenght > 70 chars then stretch font */
+	if (mb_strlen($invoice['name']) > 70)
+		$pdf->setFontStretching(85);
 	$pdf->Text(67, 243.5, $invoice['name']);
+	$pdf->setFontStretching(100);
 	$pdf->Text(67, 252.5, $invoice['address'].', '.$invoice['zip'].' '.$invoice['city']);
 
 	/* barcode */
