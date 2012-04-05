@@ -62,16 +62,7 @@
 			{$nodelist[nodelist].balance|money_format}
 		</TD>
 		<TD ALIGN="LEFT">
-			{if $nodelist[nodelist].type eq 1}
-				{if $nodelist[nodelist].owner|count_characters:true < 40}
 			{$nodelist[nodelist].owner}
-				{else}
-					{$nodelist[nodelist].lastname|truncate:40:"...":true}<BR>
-					{$nodelist[nodelist].ownername}
-				{/if}
-			{else}
-				{$nodelist[nodelist].owner}
-			{/if}
 		</TD>
 		<TD ALIGN="LEFT">
 			{$nodelist[nodelist].info}
