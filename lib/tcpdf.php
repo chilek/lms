@@ -17,7 +17,10 @@ class TCPDFpl extends TCPDF {
 		if (!$this->isunicode) {
 			return $str;
 		}
-		return iconv("UTF-8", "ISO-8859-2", $str);
+		if (function_exists('mb_convert_encoding'))
+			return mb_convert_encoding($str, "ISO-8859-2", "UTF-8");
+		else
+			return iconv("UTF-8", "ISO-8859-2", $str);
 	}
 
 	/* set own Header function */

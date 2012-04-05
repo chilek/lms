@@ -1,3 +1,20 @@
+5.9.155 (2012-04-02)
+	- Bug item #3512596 "font import problems" was fixed.
+	- Method addTTFfont() was modified to extract only specified Platform ID and Encoding ID (check the source code documentation).
+	- All fonts were updated.
+	- Bug item #3513867 "booklet and setHeaderTemplateAutoreset: header shifted left" was fixed.
+	- Bug item #3513749 "TCPDF Superscript/Subscript" was fixed.
+
+5.9.154 (2012-03-29)
+	- A debug echo was removed.
+
+5.9.153 (2012-03-28)
+	- A bug on font conversion was fixed.
+	- All fonts were updated.
+	- Method isCharDefined() was added to find if a character is defined on the selected font.
+	- Method replaceMissingChars() was added to automatically replace missing chars on selected font.
+	- SetFont() method was fixed.
+
 5.9.152 (2012-03-23)
 	- The following overprint methods were added: setOverprint(), getOverprint().
 	- Signature of setAlpha() method was changed and method getAlpha() was added.
