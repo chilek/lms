@@ -49,7 +49,7 @@ function TrafficGraph($nodeid, $net = NULL, $customer = NULL, $bar = NULL, $from
 
 	function value2string($value, $base = 1024)
 	{
-		$units = array('', 'k', 'M', 'G');
+		$units = array('', 'k', 'M', 'G', 'T');
 
 		$basek = $base;
 		$baseM = $basek * $basek;
