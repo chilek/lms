@@ -1,8 +1,8 @@
-BODY		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; padding: 0pt; background-color: #FFFFFF; }
-BODY.landscape	{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; padding: 0pt; background-color: #FFFFFF; size: landscape; }
+BODY		{ font-size: 8pt; font-family: Arial, Helvetica; padding: 0pt; background-color: #FFFFFF; }
+BODY.landscape	{ font-size: 8pt; font-family: Arial, Helvetica; padding: 0pt; background-color: #FFFFFF; size: landscape; }
 
 TABLE		{ border-collapse: collapse; border-color: #000000; }
-TD		{ font-size: 8pt; }
+TD		{ font-size: 8pt; padding: 2px; padding-right: 6px; }
 TD.fleft	{ border-left-width: 1pt; border-left-style: solid; }
 TD.fright	{ border-right-width: 1pt; border-right-style: solid; }
 TD.ftop		{ border-top-width: 1pt; border-top-style: solid; }
@@ -20,12 +20,12 @@ TD.bb		{ border-color: black; }
 
 A		{ text-decoration: none; }
 
-P		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
-P.nor		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
-P.txt		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; text-align: justify }
-P.separated	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; margin-top: 5; margin-bottom: 5 }
+P		{ font-size:  8pt; font-family: Arial, Helvetica; }
+P.nor		{ font-size:  8pt; font-family: Arial, Helvetica; }
+P.txt		{ font-size:  8pt; font-family: Arial, Helvetica; text-align: justify }
+P.separated	{ font-size:  8pt; font-family: Arial, Helvetica; margin-top: 5; margin-bottom: 5 }
 
-H1		{ font-size: 14pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
+H1		{ font-size: 14pt; font-family: Arial, Helvetica; }
 
 .shdf		{ font-size: 20pt; font-weight: bold; }
 .hdf		{ font-size: 14pt; }
