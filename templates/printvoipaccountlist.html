@@ -1,57 +1,58 @@
 {include file="clearheader.html"}
 <!--// $Id$ //-->
-<TABLE WIDTH="100%">
+<TABLE WIDTH="100%" CELLPADDING="3" ALIGN="CENTER">
 	<TR>
-		<TD WIDTH="99%" VALIGN="TOP">
+		<TD WIDTH="535" VALIGN="TOP">
 			<H1>{$layout.pagetitle}</H1>
 		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+		<TD WIDTH="180" ALIGN="RIGHT" NOWRAP>
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
 			{$smarty.now|date_format:"%A, %x"}<BR>
 			{t a=$layout.logname}Prepared by: $a{/t}
 		</TD>
 	</TR>
 </TABLE>
-<TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN=CENTER>
+<BR>
+<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
-		<TD WIDTH="1%" ALIGN=CENTER CLASS=head>
+		<TD WIDTH="15" ALIGN="CENTER" CLASS="head">
 			{trans("No.")}
 		</TD>
-		<TD WIDTH="1%" ALIGN=CENTER CLASS=head>
+		<TD WIDTH="30" ALIGN="CENTER" CLASS="head">
 			{trans("ID")}
 		</TD>
-		<TD WIDTH="1%" ALIGN=CENTER CLASS=head>
+		<TD WIDTH="50" ALIGN="CENTER" CLASS="head">
 			{trans("Login<!voipaccounts>")}
 		</TD>
-		<TD WIDTH="1%" ALIGN=CENTER CLASS=head>
+		<TD WIDTH="50" ALIGN="CENTER" CLASS="head">
 			{trans("Password")}
 		</TD>
-		<TD WIDTH="1%" ALIGN=CENTER CLASS=head>
+		<TD WIDTH="50" ALIGN="CENTER" CLASS="head">
 			{trans("Phone")}
 		</TD>
-		<TD WIDTH="95%" ALIGN=CENTER CLASS=head>
+		<TD WIDTH="250" ALIGN="CENTER" CLASS="head">
 			{trans("Owner")}
 		</TD>
 	</TR>
 	{cycle values="white,grey" print=false}
 	{section name=voipaccountlist loop=$voipaccountlist}
 	<TR class="{cycle}">
-		<TD WIDTH="1%" ALIGN=CENTER>
-			{counter}
+		<TD ALIGN="CENTER">
+			{counter}.
 		</TD>
-		<TD WIDTH="1%" ALIGN=CENTER>
+		<TD ALIGN="CENTER">
 			{$voipaccountlist[voipaccountlist].id|string_format:"%04d"}
 		</TD>
-		<TD WIDTH="1%" ALIGN=RIGHT>
+		<TD ALIGN="RIGHT">
 			<B>{$voipaccountlist[voipaccountlist].login}</B>
 		</TD>
-		<TD WIDTH="1%" ALIGN=CENTER>
+		<TD ALIGN="CENTER">
 			{$voipaccountlist[voipaccountlist].passwd}
 		</TD>
-		<TD WIDTH="1%" ALIGN=CENTER>
+		<TD ALIGN="CENTER">
 			{$voipaccountlist[voipaccountlist].phone}
 		</TD>
-		<TD WIDTH="95%" ALIGN=LEFT>
+		<TD ALIGN="LEFT">
 			{$voipaccountlist[voipaccountlist].owner}
 		</TD>
 	</TR>

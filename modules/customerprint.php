@@ -33,7 +33,7 @@ switch($type)
 		$date = 0;
 		$search['type'] = $_POST['type'];
 		$search['linktype'] = $_POST['linktype'];
-		
+
 		if($_POST['day'])
 		{
 			list($year, $month, $day) = explode('/', $_POST['day']);
@@ -55,7 +55,7 @@ switch($type)
 		}
 		else
 			$docto = 0;
-		
+
 		if(!empty($_POST['doctype']) || !empty($docfrom) || !empty($docto))
 		{
 			$search['doctype'] = intval($_POST['doctype']).':'.$docfrom.':'.$docto;
@@ -109,18 +109,18 @@ switch($type)
 							$ncustomerlist[] = $customerlist[$idx];
 				}
 				$SMARTY->assign('customerlist', $ncustomerlist);
-			break;	
+			break;
 		}
 
 		$SMARTY->assign('contactlist', $DB->GetAllByKey('SELECT customerid, MIN(phone) AS phone, type 
 						FROM customercontacts WHERE phone != \'\' GROUP BY customerid', 'customerid'));
 
 		$output = $SMARTY->fetch('printcustomerlist.html');
-		html2pdf($output, 'P', array(5, 10, 5, 10), trans('Reports'), $layout['pagetitle']);
+		html2pdf($output);
 	break;
 
 	case 'customerbalance': /********************************************/
-	
+
 		$from = $_POST['from'];
 		$to = $_POST['to'];
 
@@ -131,13 +131,13 @@ switch($type)
 		if($to) {
 			list($year, $month, $day) = explode('/',$to);
 			$date['to'] = mktime(23,59,59,$month,$day,$year);
-		} else { 
+		} else {
 			$to = date('Y/m/d',time());
 			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
 		}
 
 		$layout['pagetitle'] = trans('Customer $a Balance Sheet ($b to $c)',
-		    $LMS->GetCustomerName($_POST['customer']), ($from ? $from : ''), $to);
+			$LMS->GetCustomerName($_POST['customer']), ($from ? $from : ''), $to);
 
 		$id = $_POST['customer'];
 
@@ -183,7 +183,7 @@ switch($type)
 
 		$SMARTY->assign('balancelist', $list);
 		$output = $SMARTY->fetch('printcustomerbalance.html');
-		>html2pdf($output, 'P', array(5, 10, 5, 10), trans('Reports'), $layout['pagetitle']);
+		html2pdf($output);
 	break;
 
 	default: /*******************************************************/

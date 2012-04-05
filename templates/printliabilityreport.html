@@ -1,48 +1,49 @@
 {include file="clearheader.html"}
 <!--// $Id$ //-->
-<TABLE WIDTH="100%">
+<TABLE WIDTH="100%" CELLPADDING="3" ALIGN="CENTER">
 	<TR>
-		<TD WIDTH="99%" ALIGN="LEFT">
+		<TD WIDTH="535" ALIGN="LEFT">
 			<H1>{$layout.pagetitle}</H1>
 		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+		<TD WIDTH="180" ALIGN="RIGHT" NOWRAP>
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
 			{$smarty.now|date_format:"%A, %x"}<BR>
 			{t a=$layout.logname}Prepared by: $a{/t}
 		</TD>
 	</TR>
 </TABLE>
-<TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+<BR>
+<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
-		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+		<TD WIDTH="15" CLASS="HEAD" ALIGN="CENTER">
 			{trans("No.")}
 		</TD>
-		<TD WIDTH="{math equation="97-x*2" x=$taxescount}%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+		<TD WIDTH="450" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Customer")}
 		</TD>
-		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+		<TD WIDTH="35" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Gross value")}
 		</TD>
 		{foreach item=tax from=$taxes}
-		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
-			{trans("Net value")}<BR><NOBR>{$tax.label}</NOBR>
+		<TD WIDTH="35" CLASS="HEAD" ALIGN="CENTER">
+			{trans("Net value")}
 		</TD>
-		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
-			{trans("Tax value")}<BR><NOBR>{$tax.label}</NOBR>
+		<TD WIDTH="35" CLASS="HEAD" ALIGN="CENTER">
+			{trans("Tax value")} {$tax.label}
 		</TD>
 		{/foreach}
-		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+		<TD WIDTH="35" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Total Tax")}
 		</TD>
 	</TR>
 	{cycle values="white,grey" print=false}
 	{foreach item=report from=$reportlist}
 	<TR class="{cycle}">
-		<TD ALIGN="RIGHT">
-			{counter}
+		<TD ALIGN="CENTER">
+			{counter}.
 		</TD>
 		<TD>
-			{$report.customername} ({$report.id|string_format:"%04d"})<BR>
+			<B>{$report.customername}</B> ({$report.id|string_format:"%04d"})<BR>
 			{$report.address}
 			{if $report.ten}<BR>{$report.ten}{/if}
 		</TD>
@@ -71,23 +72,23 @@
 		</TD>
 	</TR>
 	{/foreach}
-	<TR class="grey">
-		<TD COLSPAN="2" ALIGN="RIGHT" VALIGN="TOP">
+	<TR>
+		<TD CLASS="HEADGREY" COLSPAN="2" ALIGN="RIGHT">
 			<B>{trans("Total:")}</B>
 		</TD>
-		<TD ALIGN="RIGHT" VALIGN="TOP">
+		<TD CLASS="HEADGREY" ALIGN="RIGHT">
 			<B>{sum array=$reportlist column="value" string_format="%01.2f"}</B>
 		</TD>
 		{foreach item=tax from=$taxes}
 		{assign var=taxid value=$tax.id}
-		<TD ALIGN="RIGHT" VALIGN="TOP">
+		<TD CLASS="HEADGREY" ALIGN="RIGHT">
 			<B>{$total.netto.$taxid|string_format:"%01.2f"}</B>
 		</TD>
-		<TD ALIGN="RIGHT" VALIGN="TOP">
+		<TD CLASS="HEADGREY" ALIGN="RIGHT">
 			<B>{$total.tax.$taxid|string_format:"%01.2f"}</B>
 		</TD>
 		{/foreach}
-		<TD ALIGN="RIGHT" VALIGN="TOP">
+		<TD CLASS="HEADGREY" ALIGN="RIGHT">
 			<B>{sum array=$reportlist column="taxsum" string_format="%01.2f"}</B>
 		</TD>
 	</TR>
