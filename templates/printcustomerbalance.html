@@ -1,46 +1,47 @@
 {include file="clearheader.html"}
 <!--// $Id$ //-->
-<TABLE WIDTH="100%">
+<TABLE WIDTH="100%" CELLPADDING="3" ALIGN="CENTER">
 	<TR>
-		<TD WIDTH="99%" VALIGN="TOP">
+		<TD WIDTH="535" VALIGN="TOP">
 			<H1>{$layout.pagetitle}</H1>
 		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+		<TD WIDTH="180" ALIGN="RIGHT" NOWRAP>
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
 			{$smarty.now|date_format:"%A, %x"}<BR>
 			{t a=$layout.logname}Prepared by: $a{/t}
 		</TD>
 	</TR>
 </TABLE>
-<TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+<BR>
+<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
-		<TD CLASS="HEAD" ALIGN="CENTER" width="1%">
+		<TD WIDTH="15" CLASS="HEAD" ALIGN="CENTER">
 			{trans("No.")}
 		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER" width="1%">
+		<TD WIDTH="45" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Date")}
 		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER" width="1%">
+		<TD WIDTH="60" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Liability")}
 		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER" width="1%">
+		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Income")}
 		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER" width="1%">
+		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Expense")}
 		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER" width="1%">
+		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
 			{trans("After")}
 		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER">
+		<TD WIDTH="280" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Description")}
-		</TD>		
+		</TD>
 	</TR>
 	{cycle values="white,grey" print=false}
 	{section name=balancelist loop=$balancelist.id}
 	<TR class="{cycle}">
 		<TD ALIGN="CENTER">
-			{counter}
+			{counter}.
 		</TD>
 		<TD ALIGN="CENTER" NOWRAP>
 			{$balancelist.date[balancelist]}
@@ -58,7 +59,7 @@
 			{$balancelist.after[balancelist]|money_format}
 		</TD>
 		<TD ALIGN="LEFT">
-			{$balancelist.comment[balancelist]}
+			{$balancelist.comment[balancelist]|wordwrap:60:"<br />\n"}
 		</TD>
 	</TR>
 	{sectionelse}
@@ -70,20 +71,20 @@
 		</TD>
 	</TR>
 	{/section}
-	<TR class="grey">
-		<TD ALIGN="right" COLSPAN="2">
+	<TR>
+		<TD CLASS="HEADGREY" ALIGN="right" COLSPAN="2">
 			<B>{trans("Total:")}</B>
 		</TD>
-		<TD ALIGN="right" nowrap>
+		<TD CLASS="HEADGREY" ALIGN="right" nowrap>
 			<B>{$balancelist.liability|money_format}</B>
 		</TD>
-		<TD ALIGN="right" nowrap>
+		<TD CLASS="HEADGREY" ALIGN="right" nowrap>
 			<B>{$balancelist.income|money_format}</B>
 		</TD>
-		<TD ALIGN="right" nowrap>
+		<TD CLASS="HEADGREY" ALIGN="right" nowrap>
 			<B>{$balancelist.expense|money_format}</B>
 		</TD>
-		<TD COLSPAN="2" ALIGN="right">
+		<TD CLASS="HEADGREY" COLSPAN="2" ALIGN="right">
 			<B>{trans("Balance:")} {$balancelist.summary|money_format}</B>
 		</TD>
 	</TR>
