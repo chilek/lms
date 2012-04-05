@@ -196,7 +196,11 @@ function invoice_simple_form_fill() {
 
 	/* customer name */
 	$pdf->SetFont('courier', '', 9);
-	$pdf->Text(7, 228, $invoice['name']);
+	/* if customer name lenght > 26 chars then cut string */
+	if (mb_strlen($invoice['name']) > 26)
+		$pdf->Text(7, 228, mb_substr($invoice['name'], 0, 26));
+	else
+		$pdf->Text(7, 228, $invoice['name']);
 	$pdf->Text(7, 234, $invoice['address']);
 	$pdf->Text(7, 240, $invoice['zip'].' '.$invoice['city']);
 
@@ -237,7 +241,11 @@ function invoice_main_form_fill() {
 
 	/* customer name */
 	$pdf->SetFont('courier', '', 9);
+	/* if customer name lenght > 70 chars then stretch font */
+	if (mb_strlen($invoice['name']) > 70)
+		$pdf->setFontStretching(85);
 	$pdf->Text(67, 243.5, $invoice['name']);
+	$pdf->setFontStretching(100);
 	$pdf->Text(67, 252.5, $invoice['address'].', '.$invoice['zip'].' '.$invoice['city']);
 
 	/* barcode */
@@ -282,14 +290,14 @@ function invoice_date() {
 	global $pdf, $invoice;
 
 	$pdf->SetFont('arial', '', 10);
-	$pdf->writeHTMLCell(0, 0, '', 25, trans('Settlement date:').' <b>'.date("d.m.Y",$invoice['cdate']).'</b>', 0, 1, 0, true, 'R');
+	$pdf->writeHTMLCell(0, 0, '', 20, trans('Settlement date:').' <b>'.date("d.m.Y",$invoice['cdate']).'</b>', 0, 1, 0, true, 'R');
 	$pdf->writeHTMLCell(0, 0, '', '', trans('Sale date:').' <b>'.date("d.m.Y",$invoice['sdate']).'</b>', 0, 1, 0, true, 'R');
 }
 
 function invoice_title() {
 	global $pdf, $invoice, $type;
 
-	$pdf->SetY(35);
+	$pdf->SetY(30);
 	$pdf->SetFont('arial', 'B', 16);
 	$docnumber = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
 	if (isset($invoice['invoice']))
@@ -328,7 +336,8 @@ function invoice_seller() {
 	$tmp = preg_split('/\r?\n/', $tmp);
 	foreach ($tmp as $line)
 		$seller .= $line.'<br>';
-	$pdf->writeHTMLCell(80, 35, '', 60, $seller, 0, 1, 0, true, 'L');
+	$pdf->Ln(0);
+	$pdf->writeHTMLCell(80, '', '', 45, $seller, 0, 1, 0, true, 'L');
 }
 
 function invoice_buyer() {
@@ -336,29 +345,37 @@ function invoice_buyer() {
 
 	$buyer = '<b>'.trans('Purchaser:').'</b><br>';
 
+	$buyer .= $invoice['name'].'<br>';
+	$buyer .= $invoice['address'].'<br>';
+	$buyer .= $invoice['zip'].' ' .$invoice['city'].'<br>';
+	if ($invoice['ten'])
+		$buyer .= trans('TEN').': '.$invoice['ten'].'<br>';
+	$pdf->SetFont('arial', '', 10);
+	$pdf->writeHTMLCell(80, '', '', '', $buyer, 0, 1, 0, true, 'L');
+
+	$postbox = '';
 	if ($invoice['post_name'] || $invoice['post_address']) {
 		if ($invoice['post_name'])
-			$buyer .= $invoice['post_name'].'<br>';
+			$postbox .= $invoice['post_name'].'<br>';
 		else
-			$buyer .= $invoice['name'].'<br>';
-		$buyer .= $invoice['post_address'].'<br>';
-		$buyer .= $invoice['post_zip'].' '.$invoice['post_city'].'<br>';
+			$postbox .= $invoice['name'].'<br>';
+		$postbox .= $invoice['post_address'].'<br>';
+		$postbox .= $invoice['post_zip'].' '.$invoice['post_city'].'<br>';
 	} else {
-		$buyer .= $invoice['name'].'<br>';
-		$buyer .= $invoice['address'].'<br>';
-		$buyer .= $invoice['zip'].' '.$invoice['city'].'<br>';
+		$postbox .= $invoice['name'].'<br>';
+		$postbox .= $invoice['address'].'<br>';
+		$postbox .= $invoice['zip'].' '.$invoice['city'].'<br>';
 	}
 
 	if ($invoice['division_countryid'] && $invoice['countryid'] && $invoice['division_countryid'] != $invoice['countryid'])
-		$buyer .= trans($invoice['country']).'<br>';
-	if ($invoice['ten'])
-		$buyer .= trans('TEN').': '.$invoice['ten'].'<br>';
+		$postbox .= trans($invoice['country']).'<br>';
+
+	$pdf->SetFont('arial', '', 10);
+	$pdf->writeHTMLCell(80, '', 105, 60, $postbox, 0, 1, 0, true, 'L');
 
 	$pin = '<b>'.trans('Customer ID: $a', sprintf('%04d',$invoice['customerid'])).'</b><br>';
 	$pin .= '<b>PIN: '.sprintf('%04d', $invoice['customerpin']).'</b><br>';
 
-	$pdf->SetFont('arial', '', 10);
-	$pdf->writeHTMLCell(80, '', 105, 60, $buyer, 0, 1, 0, true, 'L');
 	$pdf->SetFont('arial', 'B', 8);
 	$pdf->writeHTMLCell('', '', 105, '', $pin, 0, 1, 0, true, 'L');
 }
