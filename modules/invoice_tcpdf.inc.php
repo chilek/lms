@@ -282,14 +282,14 @@ function invoice_date() {
 	global $pdf, $invoice;
 
 	$pdf->SetFont('arial', '', 10);
-	$pdf->writeHTMLCell(0, 0, '', 25, trans('Settlement date:').' <b>'.date("d.m.Y",$invoice['cdate']).'</b>', 0, 1, 0, true, 'R');
+	$pdf->writeHTMLCell(0, 0, '', 20, trans('Settlement date:').' <b>'.date("d.m.Y",$invoice['cdate']).'</b>', 0, 1, 0, true, 'R');
 	$pdf->writeHTMLCell(0, 0, '', '', trans('Sale date:').' <b>'.date("d.m.Y",$invoice['sdate']).'</b>', 0, 1, 0, true, 'R');
 }
 
 function invoice_title() {
 	global $pdf, $invoice, $type;
 
-	$pdf->SetY(35);
+	$pdf->SetY(30);
 	$pdf->SetFont('arial', 'B', 16);
 	$docnumber = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
 	if (isset($invoice['invoice']))
@@ -315,6 +315,24 @@ function invoice_title() {
 	}
 }
 
+function invoice_top() {
+	global $pdf;
+
+	//$pdf->Ln();
+	//$pdf->Image(SYS_DIR.'/a-zet.jpg', 7, 5, 0, 0, 'jpeg', '', 'T', false);
+}
+
+function invoice_bottom() {
+	global $pdf, $invoice;
+
+	$top = "Biuro Obsługi Klienta czynne w poniedziałki, środy, piątki w godz. 10.00 - 14.00,"
+		." tel. 91 384 26 07, 502 592 329, www: http://www.azet.net, email: kontakt@azet.net, GG: 9445376";
+	$top = mb_ereg_replace('\r?\n', '<br>', $top);
+
+	$pdf->SetFont('arial', 'B', 6);
+	$pdf->writeHTMLCell('', '', '', 185, $top, 0, 1, 0, true, 'C');
+}
+
 function invoice_seller() {
 	global $pdf, $invoice;
 
@@ -328,7 +346,8 @@ function invoice_seller() {
 	$tmp = preg_split('/\r?\n/', $tmp);
 	foreach ($tmp as $line)
 		$seller .= $line.'<br>';
-	$pdf->writeHTMLCell(80, 35, '', 60, $seller, 0, 1, 0, true, 'L');
+	$pdf->Ln(0);
+	$pdf->writeHTMLCell(80, '', '', 45, $seller, 0, 1, 0, true, 'L');
 }
 
 function invoice_buyer() {
@@ -336,29 +355,37 @@ function invoice_buyer() {
 
 	$buyer = '<b>'.trans('Purchaser:').'</b><br>';
 
+	$buyer .= $invoice['name'].'<br>';
+	$buyer .= $invoice['address'].'<br>';
+	$buyer .= $invoice['zip'].' ' .$invoice['city'].'<br>';
+	if ($invoice['ten'])
+		$buyer .= trans('TEN').': '.$invoice['ten'].'<br>';
+	$pdf->SetFont('arial', '', 10);
+	$pdf->writeHTMLCell(80, '', '', '', $buyer, 0, 1, 0, true, 'L');
+
+	$postbox = '';
 	if ($invoice['post_name'] || $invoice['post_address']) {
 		if ($invoice['post_name'])
-			$buyer .= $invoice['post_name'].'<br>';
+			$postbox .= $invoice['post_name'].'<br>';
 		else
-			$buyer .= $invoice['name'].'<br>';
-		$buyer .= $invoice['post_address'].'<br>';
-		$buyer .= $invoice['post_zip'].' '.$invoice['post_city'].'<br>';
+			$postbox .= $invoice['name'].'<br>';
+		$postbox .= $invoice['post_address'].'<br>';
+		$postbox .= $invoice['post_zip'].' '.$invoice['post_city'].'<br>';
 	} else {
-		$buyer .= $invoice['name'].'<br>';
-		$buyer .= $invoice['address'].'<br>';
-		$buyer .= $invoice['zip'].' '.$invoice['city'].'<br>';
+		$postbox .= $invoice['name'].'<br>';
+		$postbox .= $invoice['address'].'<br>';
+		$postbox .= $invoice['zip'].' '.$invoice['city'].'<br>';
 	}
 
 	if ($invoice['division_countryid'] && $invoice['countryid'] && $invoice['division_countryid'] != $invoice['countryid'])
-		$buyer .= trans($invoice['country']).'<br>';
-	if ($invoice['ten'])
-		$buyer .= trans('TEN').': '.$invoice['ten'].'<br>';
+		$postbox .= trans($invoice['country']).'<br>';
+
+	$pdf->SetFont('arial', '', 10);
+	$pdf->writeHTMLCell(80, '', 105, 60, $postbox, 0, 1, 0, true, 'L');
 
 	$pin = '<b>'.trans('Customer ID: $a', sprintf('%04d',$invoice['customerid'])).'</b><br>';
 	$pin .= '<b>PIN: '.sprintf('%04d', $invoice['customerpin']).'</b><br>';
 
-	$pdf->SetFont('arial', '', 10);
-	$pdf->writeHTMLCell(80, '', 105, 60, $buyer, 0, 1, 0, true, 'L');
 	$pdf->SetFont('arial', 'B', 8);
 	$pdf->writeHTMLCell('', '', 105, '', $pin, 0, 1, 0, true, 'L');
 }
@@ -477,6 +504,7 @@ function invoice_body_ft0100()
 {
 	global $pdf, $invoice;
 
+	invoice_top();
 	invoice_date();
 	invoice_title();
 	invoice_seller();
@@ -493,6 +521,8 @@ function invoice_body_ft0100()
 	/* fill FT-0100 form */
 	invoice_simple_form_fill();
 	invoice_main_form_fill();
+
+	invoice_bottom();
 
 	$docnumber = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
 	$pdf->SetTitle(trans('Invoice No. $a', $docnumber));
