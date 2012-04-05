@@ -323,24 +323,6 @@ function invoice_title() {
 	}
 }
 
-function invoice_top() {
-	global $pdf;
-
-	//$pdf->Ln();
-	//$pdf->Image(SYS_DIR.'/a-zet.jpg', 7, 5, 0, 0, 'jpeg', '', 'T', false);
-}
-
-function invoice_bottom() {
-	global $pdf, $invoice;
-
-	$top = "Biuro Obsługi Klienta czynne w poniedziałki, środy, piątki w godz. 10.00 - 14.00,"
-		." tel. 91 384 26 07, 502 592 329, www: http://www.azet.net, email: kontakt@azet.net, GG: 9445376";
-	$top = mb_ereg_replace('\r?\n', '<br>', $top);
-
-	$pdf->SetFont('arial', 'B', 6);
-	$pdf->writeHTMLCell('', '', '', 185, $top, 0, 1, 0, true, 'C');
-}
-
 function invoice_seller() {
 	global $pdf, $invoice;
 
@@ -512,7 +494,6 @@ function invoice_body_ft0100()
 {
 	global $pdf, $invoice;
 
-	invoice_top();
 	invoice_date();
 	invoice_title();
 	invoice_seller();
@@ -529,8 +510,6 @@ function invoice_body_ft0100()
 	/* fill FT-0100 form */
 	invoice_simple_form_fill();
 	invoice_main_form_fill();
-
-	invoice_bottom();
 
 	$docnumber = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
 	$pdf->SetTitle(trans('Invoice No. $a', $docnumber));
