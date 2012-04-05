@@ -1092,6 +1092,7 @@ $_LANG['Register your installation today! ;-)'] = 'Zarejestruj swoją instalacj�
 $_LANG['Registration ID:'] = 'Nr rejestracyjny:';
 $_LANG['Registration info:'] = 'Informacje o rejestracji:';
 $_LANG['Reload'] = 'Przeładowanie';
+$_LANG['Reload configuration in:'] = "Przeładowanie konfiguracji za:";
 $_LANG['Reload type. Allowed values: exec - call some command (most often with sudo, some script or something else, configurable below); sql - writes down to SQL (multiple queries separated with semicolon may be setup).'] = 'Typ przeładowania. Dostępne opcje: exec - wykonanie komendy (najczęściej jakiego skryptu lub innego programu przy użyciu sudo - konfigurowalne dalej); sql - zapisuje zlecenie w bazie danych SQL (konkretne zapytanie sql również może być zdefiniowane).';
 $_LANG['Remove'] = 'Usuń';
 $_LANG['Remove customer from group'] = 'Usuń klienta z grupy';
