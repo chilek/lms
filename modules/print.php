@@ -118,8 +118,12 @@ switch($type)
 		}
 		
 		$SMARTY->assign('balancelist', $list);
-		$output = $SMARTY->fetch('printcustomerbalance.html');
-		html2pdf($output);
+		if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
+			$output = $SMARTY->fetch('printcustomerbalance.html');
+			html2pdf($output);
+		} else {
+			$SMARTY->display('printcustomerbalance.html');
+		}
 	break;
 	
 	case 'balancelist': /********************************************/
@@ -282,8 +286,12 @@ switch($type)
 		if($source)
 			$SMARTY->assign('source', $DB->GetOne('SELECT name FROM cashsources WHERE id = ?', array($source)));
 
-		$output = $SMARTY->fetch('printbalancelist.html');
-		html2pdf($output);
+		if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
+			$output = $SMARTY->fetch('printbalancelist.html');
+			html2pdf($output);
+		} else {
+			$SMARTY->display('printbalancelist.html');
+		}
 	break;
 
 	case 'incomereport': /********************************************/
@@ -316,8 +324,12 @@ switch($type)
 			array($date['from'], $date['to']));
 
 		$SMARTY->assign('incomelist', $incomelist);
-		$output = $SMARTY->fetch('printincomereport.html');
-		html2pdf($output);
+		if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
+			$output = $SMARTY->fetch('printincomereport.html');
+			html2pdf($output);
+		} else {
+			$SMARTY->display('printincomereport.html');
+		}
 	break;
 
 	case 'importlist': /********************************************/
@@ -356,8 +368,12 @@ switch($type)
 		if ($source)
 			$SMARTY->assign('source', $DB->GetOne('SELECT name FROM cashsources WHERE id = ?', array($source)));
 		$SMARTY->assign('importlist', $importlist);
-		$output = $SMARTY->fetch('printimportlist.html');
-		html2pdf($output);
+		if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
+			$output = $SMARTY->fetch('printimportlist.html');
+			html2pdf($output);
+		} else {
+			$SMARTY->display('printimportlist.html');
+		}
 	break;
 
 	case 'invoices': /********************************************/
@@ -608,8 +624,12 @@ switch($type)
 			$SMARTY->assign('taxescount', sizeof($taxes));
 		}
 
-		$output = $SMARTY->fetch('printliabilityreport.html');
-		html2pdf($output);
+		if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
+			$output = $SMARTY->fetch('printliabilityreport.html');
+			html2pdf($output);
+		} else {
+			$SMARTY->display('printliabilityreport.html');
+		}
 	break;
 	
 	case 'receiptlist':
@@ -791,13 +811,21 @@ switch($type)
 			$SMARTY->assign('totals', $totals);
 			$SMARTY->assign('pagescount', sizeof($pages));
 			$SMARTY->assign('reccount', sizeof($list));
-			$output = $SMARTY->fetch('printreceiptlist-ext.html');
-			html2pdf($output);
+			if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
+				$output = $SMARTY->fetch('printreceiptlist-ext.html');
+				html2pdf($output);
+			} else {
+				$SMARTY->display('printreceiptlist-ext.html');
+			}
 		}
 		else
 		{
-			$output = $SMARTY->fetch('printreceiptlist.html');
-			html2pdf($output);
+			if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
+				$output = $SMARTY->fetch('printreceiptlist.html');
+				html2pdf($output);
+			} else {
+				$SMARTY->display('printreceiptlist.html');
+			}
 		}
 	break;
 

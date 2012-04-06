@@ -115,8 +115,12 @@ switch($type)
 		$SMARTY->assign('contactlist', $DB->GetAllByKey('SELECT customerid, MIN(phone) AS phone
 						FROM customercontacts WHERE phone != \'\' GROUP BY customerid', 'customerid'));
 
-		$output = $SMARTY->fetch('printcustomerlist.html');
-		html2pdf($output);
+		if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
+			$output = $SMARTY->fetch('printcustomerlist.html');
+			html2pdf($output);
+		} else {
+			$SMARTY->display('printcustomerlist.html');
+		}
 	break;
 
 	case 'customerbalance': /********************************************/
@@ -182,8 +186,12 @@ switch($type)
 		$list['customerid'] = $id;
 
 		$SMARTY->assign('balancelist', $list);
-		$output = $SMARTY->fetch('printcustomerbalance.html');
-		html2pdf($output);
+		if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
+			$output = $SMARTY->fetch('printcustomerbalance.html');
+			html2pdf($output);
+		} else {
+			$SMARTY->display('printcustomerbalance.html');
+		}
 	break;
 
 	default: /*******************************************************/

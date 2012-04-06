@@ -1,7 +1,12 @@
 {include file="clearheader.html" landscape=true}
 <!--// $Id$ //-->
+{$report_type = get_conf('phpui.report_type')}
 {foreach from=$pages item=item}{assign var=previtem value=$item-1}
+{if $report_type == 'pdf'}
 {if $item > 1}<page>{/if}
+{else}
+<DIV{if $item > 1} style="page-break-before: always; border-style: none;"{/if}>
+{/if}
 <TABLE WIDTH="100%" CELLPADDING="3" ALIGN="CENTER">
 	<TR>
 		<TD WIDTH="800" ALIGN="LEFT">
@@ -153,7 +158,11 @@
 		</TD>
 	</TR>
 </TABLE>
+{if $report_type == 'pdf'}
 {if $item > 1}</page>{/if}
+{else}
+</DIV>
+{/if}
 {foreachelse}
 <TABLE WIDTH="100%" CELLPADDING="3" ALIGN="CENTER">
 	<TR style="border-style: none;">
