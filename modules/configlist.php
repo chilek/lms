@@ -99,7 +99,7 @@ function GetConfigList($order='var,asc', $section='', $search='')
 					$config[$idx]['description'] = trans('Limit of records displayed on one page in domains list. Default: 100.');
 				break;
 
-    			case 'aliaslist_pagelimit':
+				case 'aliaslist_pagelimit':
 					$config[$idx]['description'] = trans('Limit of records displayed on one page in aliases list. Default: 100.');
 				break;
 
@@ -267,6 +267,10 @@ function GetConfigList($order='var,asc', $section='', $search='')
 
 				case 'arp_table_backend':
 					$config[$idx]['description'] = trans('Command which returns IP-MAC bindings. Default: internal backend');
+				break;
+
+				case 'report_type':
+					$config[$idx]['description'] = trans('Documents type. You can use "html" or "pdf". Default: html.');
 				break;
 
 				default:
