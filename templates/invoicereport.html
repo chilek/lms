@@ -1,90 +1,86 @@
 <!--// $Id$ //-->
 {include file="clearheader.html"}
-<TABLE WIDTH="100%">
+<TABLE WIDTH="100%" CELLPADDING="3" ALIGN="CENTER">
 	<TR>
-		<TD WIDTH="99%" ALIGN="LEFT">
+		<TD WIDTH="800" ALIGN="LEFT">
 			<P class="hdf"><B>{$layout.pagetitle}</B>
 			{if $layout.division}<BR><font class="sdr"><B>{$layout.division}</B></font>{/if}
 			{if $layout.group}<BR><font class="sdr"><B>{$layout.group}</B></font>{/if}
 			</P>
 		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+		<TD WIDTH="200" ALIGN="RIGHT" NOWRAP>
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
 			{$smarty.now|date_format:"%A, %x"}<BR>
 			{t a=$layout.logname}Created by: $a{/t}
 		</TD>
 	</TR>
 </TABLE>
-<TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+<BR>
+<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
-		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+		<TD WIDTH="25" CLASS="HEAD" ALIGN="CENTER">
 			{trans("No.")}
 		</TD>
-		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP" NOWRAP>
+		<TD WIDTH="100" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Invoice No.")}<BR>
 			{trans("Draw-up date")}
 		</TD>
-		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP" NOWRAP>
+		<TD WIDTH="100" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Sale date")}<BR>
 			{trans("Deadline")}
 		</TD>
-		<TD WIDTH="{math equation="96-x" x=$taxescount}%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+		<TD WIDTH="520" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Contractor")}
 		</TD>
-{*
-		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
-			{trans("Gross value")}
-		</TD>
-*}
 		{foreach item=tax from=$taxes}
-		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
-			{trans("Net value")}<BR><NOBR>{$tax.label}</NOBR>
+		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
+			{trans("Net value")}
 		</TD>
-        {if $tax.value}
-		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
-			{trans("Tax value")}<BR><NOBR>{$tax.label}</NOBR>
+		{if $tax.value}
+		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
+			{trans("Tax value")} {$tax.label}
 		</TD>
 		{/if}
 		{/foreach}
-		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
+			{trans("Gross value")}
+		</TD>
+		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Total Tax")}
 		</TD>
 	</TR>
 	{cycle values="grey,white" print=false}
 	{foreach item=invoice from=$invoicelist}
 	<TR class="{cycle}">
-		<TD ALIGN="RIGHT">
-			{counter}
+		<TD ALIGN="CENTER">
+			{counter}.
 		</TD>
 		<TD ALIGN="RIGHT">
-			{$invoice.number}<BR>
-			{$invoice.cdate|date_format:"%Y/%m/%d"}
+			<B>{$invoice.number}</B><BR>
+			{$invoice.cdate|date_format:"%d.%m.%Y"}
 		</TD>
 		<TD ALIGN="RIGHT">
-			{if $invoice.sdate}{$invoice.sdate|date_format:"%Y/%m/%d"}{else}{$invoice.cdate|date_format:"%Y/%m/%d"}{/if}<BR>
-			{$invoice.pdate|date_format:"%Y/%m/%d"}
+			{if $invoice.sdate}{$invoice.sdate|date_format:"%d.%m.%Y"}{else}{$invoice.cdate|date_format:"%d.%m.%Y"}{/if}<BR>
+			{$invoice.pdate|date_format:"%d.%m.%Y"}
 		</TD>
 		<TD>
-			{$invoice.custname} ({$invoice.customerid|string_format:"%04d"})<BR>
-			{$invoice.custaddress}<BR>
-			{$invoice.ten}
+			<B>{$invoice.custname}</B> ({$invoice.customerid|string_format:"%04d"})<BR>
+			{$invoice.custaddress}
 		</TD>
-{*
-		<TD ALIGN="RIGHT">
-			{$invoice.brutto|string_format:"%01.2f"}
-		</TD>
-*}
 		{foreach item=tax from=$taxes}
 		{assign var=taxid value=$tax.id}
 		<TD ALIGN="RIGHT">
 			{$invoice.$taxid.val|string_format:"%01.2f"}
 		</TD>
-        {if $tax.value}
+		{if $tax.value}
 		<TD ALIGN="RIGHT">
 			{$invoice.$taxid.tax|string_format:"%01.2f"}
 		</TD>
-        {/if}
+		{/if}
 		{/foreach}
+		<TD ALIGN="RIGHT">
+			{$invoice.brutto|string_format:"%01.2f"}
+		</TD>
 		<TD ALIGN="RIGHT">
 			{$invoice.tax|string_format:"%01.2f"}
 		</TD>
@@ -98,27 +94,25 @@
 		</TD>
 	</TR>
 	{/foreach}
-	<TR class="grey">
-		<TD COLSPAN="4" ALIGN="RIGHT">
+	<TR>
+		<TD CLASS="HEADGREY" COLSPAN="4" ALIGN="RIGHT">
 			<B>{trans("Total:")}</B>
 		</TD>
-{*
-		<TD ALIGN="RIGHT">
-			<B>{$listdata.brutto|string_format:"%01.2f"}</B>
-		</TD>
-*}
 		{foreach item=tax from=$taxes}
 		{assign var=taxid value=$tax.id}
-		<TD ALIGN="RIGHT">
+		<TD CLASS="HEADGREY" ALIGN="RIGHT">
 			<B>{$listdata.$taxid.val|string_format:"%01.2f"}</B>
 		</TD>
-        {if $tax.value}
-		<TD ALIGN="RIGHT">
+		{if $tax.value}
+		<TD CLASS="HEADGREY" ALIGN="RIGHT">
 			<B>{$listdata.$taxid.tax|string_format:"%01.2f"}</B>
 		</TD>
-        {/if}
+		{/if}
 		{/foreach}
-		<TD ALIGN="RIGHT">
+		<TD CLASS="HEADGREY" ALIGN="RIGHT">
+			<B>{$listdata.brutto|string_format:"%01.2f"}</B>
+		</TD>
+		<TD CLASS="HEADGREY" ALIGN="RIGHT">
 			<B>{$listdata.tax|string_format:"%01.2f"}</B>
 		</TD>
 	</TR>

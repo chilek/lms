@@ -1,32 +1,33 @@
 {include file="clearheader.html"}
 <!--// $Id$ //-->
-<TABLE WIDTH="100%">
+<TABLE WIDTH="100%" CELLPADDING="3" ALIGN="CENTER">
 	<TR>
-		<TD WIDTH="99%" VALIGN="TOP">
+		<TD WIDTH="535" VALIGN="TOP">
 			<H1>{$layout.pagetitle}</H1>
 		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+		<TD WIDTH="180" ALIGN="RIGHT" NOWRAP>
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
 			{$smarty.now|date_format:"%A, %x"}<BR>
 			{t a=$layout.logname}Created by: $a{/t}
 		</TD>
 	</TR>
 </TABLE>
-<TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+<BR>
+<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
-		<TD WIDTH="96%" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
+		<TD WIDTH="100" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
 			{trans("Day")}
 		</TD>
-		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
+		<TD WIDTH="80" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
 			{trans("Download")}
 		</TD>
-		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
+		<TD WIDTH="150" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
 			{trans("Avg. download speed")}
 		</TD>
-		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
+		<TD WIDTH="80" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
 			{trans("Upload")}
 		</TD>
-		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
+		<TD WIDTH="150" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
 			{trans("Avg. upload speed")}
 		</TD>
 	</TR>
@@ -34,7 +35,7 @@
 	{foreach from=$stats item=stat}
 	<TR class="{cycle}">
 		<TD ALIGN="LEFT" NOWRAP>
-			{$stat.date|date_format:"%Y/%m/%d (%A)"}
+			{$stat.date|date_format:"%d.%m.%Y (%A)"}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			{$stat.download|string_format:"%.2f"} {$stat.downloadunit}
@@ -58,20 +59,20 @@
 		</TD>
 	</TR>
 	{/foreach}
-	<TR class="grey">
-		<TD ALIGN="RIGHT">
+	<TR>
+		<TD CLASS="HEADGREY" ALIGN="RIGHT">
 			<B>{trans("Total:")}</B>
 		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
+		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
 			<B>{$listdata.download|string_format:"%.2f"} {$listdata.downloadunit|default:"KB"}</B>
 		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
+		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
 			<B>{$listdata.downavg|string_format:"%d"} kbit/s</B>
 		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
+		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
 			<B>{$listdata.upload|string_format:"%.2f"} {$listdata.uploadunit|default:"KB"}</B>
 		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
+		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
 			<B>{$listdata.upavg|string_format:"%d"} kbit/s</B>
 		</TD>
 	</TR>

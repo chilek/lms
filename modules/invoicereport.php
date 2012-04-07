@@ -26,11 +26,11 @@
 
 function set_taxes($taxid)
 {
-    global $taxes, $DB;
+	global $taxes, $DB;
 
-    if (empty($taxes[$taxid]))
-        $taxes[$taxid] = $DB->GetRow('SELECT id, value, label, taxed
-            FROM taxes WHERE id = ?', array($taxid));
+	if (empty($taxes[$taxid]))
+		$taxes[$taxid] = $DB->GetRow('SELECT id, value, label, taxed
+			FROM taxes WHERE id = ?', array($taxid));
 }
 
 $from = $_POST['from'];
@@ -40,14 +40,14 @@ $to = $_POST['to'];
 if($from) {
 	list($year, $month, $day) = explode('/',$from);
 	$unixfrom = mktime(0,0,0,$month,$day,$year);
-} else { 
+} else {
 	$from = date('Y/m/d',time());
 	$unixfrom = mktime(0,0,0); //today
 }
 if($to) {
 	list($year, $month, $day) = explode('/',$to);
 	$unixto = mktime(23,59,59,$month,$day,$year);
-} else { 
+} else {
 	$to = date('Y/m/d',time());
 	$unixto = mktime(23,59,59); //today
 }
@@ -63,9 +63,9 @@ $taxescount = 0;
 if(!empty($_POST['group']))
 {
 	if(is_array($_POST['group'])) {
-	    $groups = array_map('intval', $_POST['group']);
+		$groups = array_map('intval', $_POST['group']);
 		$groups = implode(',', $groups);
-    }
+	}
 	else
 		$groups = intval($_POST['group']);
 
@@ -74,39 +74,39 @@ if(!empty($_POST['group']))
 			WHERE a.customergroupid IN ('.$groups.')
 			AND a.customerid = d.customerid)';
 
-        $names = $DB->GetAll('SELECT name FROM customergroups WHERE id IN ('.$groups.')');
+	$names = $DB->GetAll('SELECT name FROM customergroups WHERE id IN ('.$groups.')');
 
 	$groupnames = '';
 	foreach($names as $idx => $row)
 		$groupnames .= ($idx ? ', ' : '') . $row['name'];
 
 	if(isset($_POST['groupexclude']))
-	        $layout['group'] = trans('Group: all excluding $a', $groupnames);
+		$layout['group'] = trans('Group: all excluding $a', $groupnames);
 	else
-	        $layout['group'] = trans('Group: $a', $groupnames);
+		$layout['group'] = trans('Group: $a', $groupnames);
 }
 
 if(!empty($_POST['division']))
 {
 	$divwhere = ' AND d.divisionid '.(isset($_POST['divexclude']) ? '!=' : '=').' '.intval($_POST['division']);
 
-        $divname = $DB->GetOne('SELECT name FROM divisions WHERE id = ?', 
+	$divname = $DB->GetOne('SELECT name FROM divisions WHERE id = ?', 
 			array(intval($_POST['division'])));
 
-        $layout['division'] = $divname;
+	$layout['division'] = $divname;
 }
 
 // Sorting
 switch ($_POST['datetype']) {
-    case 'sdate':
-        $sortcol = 'COALESCE(d.sdate, d.cdate)';
-        break;
-    case 'pdate':
-        $sortcol = '(d.cdate + (d.paytime * 86400))';
-        break;
-    case 'cdate':
-    default:
-        $sortcol = 'd.cdate';
+	case 'sdate':
+		$sortcol = 'COALESCE(d.sdate, d.cdate)';
+		break;
+	case 'pdate':
+		$sortcol = '(d.cdate + (d.paytime * 86400))';
+		break;
+	case 'cdate':
+	default:
+		$sortcol = 'd.cdate';
 }
 
 // we can't simply get documents with SUM(value*count)
@@ -114,8 +114,8 @@ switch ($_POST['datetype']) {
 
 // get documents items numeric values for calculations
 $items = $DB->GetAll('SELECT c.docid, c.itemid, c.taxid, c.value, c.count,
-        d.number, d.cdate, d.sdate, d.paytime, d.customerid, d.reference,
-        d.name, d.address, d.zip, d.city, d.ten, d.ssn, n.template
+	d.number, d.cdate, d.sdate, d.paytime, d.customerid, d.reference,
+	d.name, d.address, d.zip, d.city, d.ten, d.ssn, n.template
 	    FROM documents d
 	    LEFT JOIN invoicecontents c ON c.docid = d.id
 	    LEFT JOIN numberplans n ON d.numberplanid = n.id
@@ -137,7 +137,7 @@ if($items)
 		$idx = $row['docid'];
 		$taxid = $row['taxid'];
 
-        set_taxes($taxid);
+		set_taxes($taxid);
 
 		$invoicelist[$idx]['custname'] = $row['name'];
 		$invoicelist[$idx]['custaddress'] = $row['zip'].' '.$row['city'].', '.$row['address'];
@@ -169,7 +169,7 @@ if($items)
 			$row['value'] += $item['value'];
 			$row['count'] += $item['count'];
 
-            set_taxes($item['taxid']);
+			set_taxes($item['taxid']);
 
 			$refitemsum = $item['value'] * $item['count'];
 			$refitemval = round($refitemsum / ($taxes[$item['taxid']]['value']+100) * 100, 2);
@@ -274,10 +274,20 @@ if(isset($_POST['extended']))
 	$SMARTY->assign('totals', $totals);
 	$SMARTY->assign('pagescount', sizeof($pages));
 	$SMARTY->assign('reccount', $reccount);
-	$SMARTY->display('invoicereport-ext.html');
+	if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
+		$output = $SMARTY->fetch('invoicereport-ext.html');
+		html2pdf($output, 'L', array(5, 5, 5, 5), ($_GET['save'] == 1) ? true : false);
+	} else {
+		$SMARTY->display('invoicereport-ext.html');
+	}
 }
 else {
-	$SMARTY->display('invoicereport.html');
+	if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
+		$output = $SMARTY->fetch('invoicereport.html');
+		html2pdf($output, 'L', array(5, 5, 5, 5), ($_GET['save'] == 1) ? true : false);
+	} else {
+		$SMARTY->display('invoicereport.html');
+	}
 }
 
 ?>
