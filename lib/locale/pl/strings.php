@@ -2549,9 +2549,10 @@ $_LANG['Wed'] = 'cz.';
 $_LANG['Fri'] = 'pt.';
 $_LANG['Sat'] = 'sb.';
 $_LANG['Sun'] = 'nd.';
-$_LANG['Incorrect lock!'] = 'Niepoprawna blokada!';
 $_LANG['Locks:'] = 'Blokady:';
 $_LANG['Add new lock'] = 'Dodaj nową blokadę';
+$_LANG['Remove lock'] = 'Usuń blokadę';
+$_LANG['Days:'] = 'Dni:';
 
 $_LANG['UKE report'] = 'Raport do UKE';
 $_LANG['Allows you to prepare SIIS v2 report for UKE'] = 'Wygenerowanie raportu SIIS w wersji 2 do UKE';

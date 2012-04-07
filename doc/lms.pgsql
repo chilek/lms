@@ -122,15 +122,15 @@ CREATE INDEX assignments_customerid_idx ON assignments (customerid);
 CREATE INDEX assignments_numberplanid_idx ON assignments (numberplanid);
 
 /* ----------------------------------------------------
- Structure of table "assignmentlocks"
+ Structure of table "nodelocks"
 ---------------------------------------------------*/
-DROP SEQUENCE IF EXISTS assignmentlocks_id_seq;
-CREATE SEQUENCE assignmentlocks_id_seq;
-DROP TABLE IF EXISTS assignmentlocks CASCADE;
-CREATE TABLE assignmentlocks (
-	id integer		DEFAULT nextval('assignmentlocks_id_seq'::text) NOT NULL,
-	assignmentid integer	NOT NULL
-		REFERENCES assignments (id) ON DELETE CASCADE ON UPDATE CASCADE,
+DROP SEQUENCE IF EXISTS nodelocks_id_seq;
+CREATE SEQUENCE nodelocks_id_seq;
+DROP TABLE IF EXISTS nodelocks CASCADE;
+CREATE TABLE nodelocks (
+	id integer		DEFAULT nextval('nodelocks_id_seq'::text) NOT NULL,
+	nodeid integer		NOT NULL
+		REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	days smallint		DEFAULT 0 NOT NULL,
 	fromsec integer		DEFAULT 0 NOT NULL,
 	tosec integer		DEFAULT 0 NOT NULL,
@@ -1815,4 +1815,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012032900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012040700');

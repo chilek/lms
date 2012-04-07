@@ -5,8 +5,6 @@
  *
  *  (C) Copyright 2001-2012 LMS Developers
  *
- *  Please, see the doc/AUTHORS for more information about authors!
- *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
  *  published by the Free Software Foundation.
@@ -21,22 +19,29 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id$
  */
 
-$a = $DB->GetRow('SELECT a.invoice, a.settlement,
-        a.numberplanid, a.paytype, n.template, n.period
-		FROM assignments a
-		LEFT JOIN numberplans n ON (n.id = a.numberplanid)
-		WHERE a.id = ?',array(intval($_GET['id'])));
+$DB->BeginTrans();
 
-if ($a['template']) {
-    $a['numberplan'] = $a['template'].' ('.$NUM_PERIODS[$a['period']].')';
-}
+$DB->Execute("
+	CREATE TABLE nodelocks (
+		id int(11)		NOT NULL auto_increment,
+		nodeid int(11)		NOT NULL
+			REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		days smallint		DEFAULT 0 NOT NULL,
+		fromsec int(11)		DEFAULT 0 NOT NULL,
+		tosec int(11)		DEFAULT 0 NOT NULL,
+		PRIMARY KEY (id)
+	) ENGINE=INNODB");
+$DB->Execute("
+	INSERT INTO nodelocks (nodeid, days, fromsec, tosec) 
+		(SELECT na.nodeid, days, fromsec, tosec FROM assignmentlocks al 
+			LEFT JOIN assignments a ON a.id = al.assignmentid 
+			LEFT JOIN nodeassignments na ON na.assignmentid = a.id)");
+$DB->Execute("DROP TABLE assignmentlocks");
 
-$a['paytypename'] = $PAYTYPES[$a['paytype']];
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012040700', 'dbversion'));
 
-$SMARTY->assign('assignment', $a);
-$SMARTY->display('customerassignmentinfoshort.html');
+$DB->CommitTrans();
 
 ?>

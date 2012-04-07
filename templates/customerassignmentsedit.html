@@ -25,41 +25,6 @@
 		{/if}
 	}
 
-var lockcount = {count($assignment.locks)};
-
-	function removelock(id)
-	{
-		var elem = document.getElementById(id);
-		elem.parentNode.deleteRow(elem.rowIndex);
-	}
-
-	function addlock()
-	{
-		var locktableelem = document.getElementById('locktable');
-		var newrow = locktableelem.insertRow(-1);
-		newrow.id = 'lock' + lockcount;
-		var newcell = newrow.insertCell(0);
-		newcell.style.whiteSpace = 'nowrap';
-		newcell.style.width = '100%';
-		var hour = '';
-		var minute = '';
-		for (i = 0; i < 24; i++)
-			hour += '<option value="' + i + '">' + (i < 10 ? '0' : '') + i + '</option>';
-		for (i = 0; i < 60; i++)
-			minute += '<option value="' + i + '">' + (i < 10 ? '0' : '') + i + '</option>';
-		var dayoptions = '';
-		{foreach from=$_DAYS item=item key=key}
-			dayoptions += '<input type="checkbox" name="assignment[locks][' + lockcount + '][days][{$key}]" id="lockdays' + lockcount + '_{$key}" value="1">'
-				+ ' <label for="lockdays' + lockcount + '_{$key}">{$item}</label> ';
-		{/foreach}
-		newcell.innerHTML = dayoptions + ' {trans("from:")} <select name="assignment[locks][' + lockcount + '][fhour]">' + hour + '</select>'
-			+ ':<select name="assignment[locks][' + lockcount + '][fminute]">' + minute + '</select> '
-			+ '{trans("to:")} <select name="assignment[locks][' + lockcount + '][thour]">' + hour + '</select>'
-			+ ':<select name="assignment[locks][' + lockcount + '][tminute]">' + minute + '</select> ';
-		newcell.innerHTML += '<a href="javascript:removelock(\'lock' + lockcount + '\')"><img src="img/delete.gif" alt=""></a>';
-		lockcount++;
-	}
-
 {if $promotionschemas}
 	function set_schema()
 	{
@@ -316,54 +281,6 @@ var lockcount = {count($assignment.locks)};
                         </TABLE>
                     </TD>
                 </TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD style="width: 1%;" class="fleft">
-			<IMG src="img/time.gif" alt="">
-		</TD>
-		<TD style="width: 1%;">
-			<span class="bold">{trans("Locks:")}</span>
-		</TD>
-		<TD style="width: 98%;" class="fright">
-			<a href="javascript:addlock()">{trans("Add new lock")}&nbsp;&raquo;&raquo;&raquo;</a>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD style="width: 1%;" class="fleft">
-		</TD>
-		<TD style="width: 99%;" colspan="2" class="fright">
-			<TABLE style="width: 100%;" id="locktable">
-				{foreach from=$assignment.locks item=item key=key}
-				<TR id="lock{$key}">
-					<TD style="white-space: nowrap; width: 100%">
-					{foreach from=$_DAYS item=dayname key=daynr}
-						<input type="checkbox" name="assignment[locks][{$key}][days][{$daynr}]" id="lockdays{$key}_{$daynr}" value="1"{if $item.days[$daynr]} checked{/if}>
-						<label for="lockdays{$key}_{$daynr}">{$dayname}</label>
-					{/foreach}
-					{trans("from:")} <select name="assignment[locks][{$key}][fhour]">
-					{for $i = 0 to 23}
-						<option value="{$i}"{if $i == $item.fhour} selected{/if}>{$i|string_format:"%02d"}</option>
-					{/for}
-					</select>:<select name="assignment[locks][{$key}][fminute]">
-					{for $i = 0 to 59}
-						<option value="{$i}"{if $i == $item.fminute} selected{/if}>{$i|string_format:"%02d"}</option>
-					{/for}
-					</select>
-					{trans("to:")} <select name="assignment[locks][{$key}][thour]">
-					{for $i = 0 to 23}
-						<option value="{$i}"{if $i == $item.thour} selected{/if}>{$i|string_format:"%02d"}</option>
-					{/for}
-					</select>:<select name="assignment[locks][{$key}][tminute]">
-					{for $i = 0 to 59}
-						<option value="{$i}"{if $i == $item.tminute} selected{/if}>{$i|string_format:"%02d"}</option>
-					{/for}
-					</select>
-					<a href="javascript:removelock('lock{$key}')"><img src="img/delete.gif" alt=""></a>
-					</TD>
-				</TR>
-				{/foreach}
 			</TABLE>
 		</TD>
 	</TR>

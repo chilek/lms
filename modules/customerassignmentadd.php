@@ -265,21 +265,6 @@ if(isset($_POST['assignment']))
 		unset($a['schemaid']);
 	}
 
-	$locks = array();
-		if (is_array($a['locks']))
-			foreach ($a['locks'] as $lock) {
-				$days = 0;
-				foreach ($lock['days'] as $key => $value)
-					$days += (1 << $key);
-				$lfrom = $lock['fhour'] * 3600 + $lock['fminute'] * 60;
-				$lto = $lock['thour'] * 3600 + $lock['tminute'] * 60;
-				if ($lfrom >= $lto || !$days)
-					$error['locks'] = trans('Incorrect lock!');
-				else
-					$locks[] = array('days' => $days, 'from' => $lfrom, 'to' => $lto);
-			}
-	$a['locks'] = $locks;
-
 	if (!$error)
 	{
 		$a['customerid'] = $customer['id'];

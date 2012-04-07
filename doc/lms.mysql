@@ -20,7 +20,7 @@ DROP TABLE IF EXISTS ewx_channels;
 DROP TABLE IF EXISTS numberplans;
 DROP TABLE IF EXISTS nodeassignments;
 DROP TABLE IF EXISTS assignments;
-DROP TABLE IF EXISTS assignmentlocks;
+DROP TABLE IF EXISTS nodelocks;
 DROP TABLE IF EXISTS taxes;
 DROP TABLE IF EXISTS cash;
 DROP TABLE IF EXISTS dbinfo;
@@ -216,12 +216,12 @@ CREATE TABLE assignments (
 
 # --------------------------------------------------------
 #
-# Structure of table  assignmentlocks
+# Structure of table  nodelocks
 #
-CREATE TABLE assignmentlocks (
+CREATE TABLE nodelocks (
 	id int(11)		NOT NULL auto_increment,
-	assignmentid int(11)	NOT NULL
-		REFERENCES assignments (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	nodeid int(11)		NOT NULL
+		REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	days smallint		DEFAULT 0 NOT NULL,
 	fromsec int(11)		DEFAULT 0 NOT NULL,
 	tosec int(11)		DEFAULT 0 NOT NULL,
@@ -1716,4 +1716,4 @@ INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012032900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012040700');
