@@ -107,6 +107,7 @@ version ? (????-??-??):
   - invoice_pdf: %bankaccount substitution for invoice from division header and footer [chilan]
   - tcpdf support for invoices [prezes_kk]
   - assignmentlocks -> nodelocks [chilan]
+  - we can choose format of reports beetween html and pdf - phpui->report_type [prezes_kk]
 
 version 1.11.13 Dira (2011-04-07)
 
