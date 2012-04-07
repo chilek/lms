@@ -33,7 +33,7 @@ switch($type)
 		$date = 0;
 		$search['type'] = $_POST['type'];
 		$search['linktype'] = $_POST['linktype'];
-		
+
 		if($_POST['day'])
 		{
 			list($year, $month, $day) = explode('/', $_POST['day']);
@@ -55,7 +55,7 @@ switch($type)
 		}
 		else
 			$docto = 0;
-		
+
 		if(!empty($_POST['doctype']) || !empty($docfrom) || !empty($docto))
 		{
 			$search['doctype'] = intval($_POST['doctype']).':'.$docfrom.':'.$docto;
@@ -109,17 +109,22 @@ switch($type)
 							$ncustomerlist[] = $customerlist[$idx];
 				}
 				$SMARTY->assign('customerlist', $ncustomerlist);
-			break;	
+			break;
 		}
-		
-		$SMARTY->assign('contactlist', $DB->GetAllByKey('SELECT customerid, MIN(phone) AS phone 
+
+		$SMARTY->assign('contactlist', $DB->GetAllByKey('SELECT customerid, MIN(phone) AS phone
 						FROM customercontacts WHERE phone != \'\' GROUP BY customerid', 'customerid'));
-		
-		$SMARTY->display('printcustomerlist.html');
+
+		if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
+			$output = $SMARTY->fetch('printcustomerlist.html');
+			html2pdf($output);
+		} else {
+			$SMARTY->display('printcustomerlist.html');
+		}
 	break;
 
 	case 'customerbalance': /********************************************/
-	
+
 		$from = $_POST['from'];
 		$to = $_POST['to'];
 
@@ -130,18 +135,18 @@ switch($type)
 		if($to) {
 			list($year, $month, $day) = explode('/',$to);
 			$date['to'] = mktime(23,59,59,$month,$day,$year);
-		} else { 
+		} else {
 			$to = date('Y/m/d',time());
 			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
 		}
 
 		$layout['pagetitle'] = trans('Customer $a Balance Sheet ($b to $c)',
-		    $LMS->GetCustomerName($_POST['customer']), ($from ? $from : ''), $to);
+			$LMS->GetCustomerName($_POST['customer']), ($from ? $from : ''), $to);
 
 		$id = $_POST['customer'];
 
 		if($tslist = $DB->GetAll('SELECT cash.id AS id, time, cash.value AS value,
-		        taxes.label AS taxlabel, customerid, comment, name AS username 
+			taxes.label AS taxlabel, customerid, comment, name AS username 
 				    FROM cash 
 				    LEFT JOIN taxes ON (taxid = taxes.id)
 				    LEFT JOIN users ON users.id=userid 
@@ -157,7 +162,7 @@ switch($type)
 			{
 				$saldolist['after'][$i] = $saldolist['balance'] + $saldolist['value'][$i];
 				$saldolist['balance'] += $saldolist['value'][$i];
-			        $saldolist['date'][$i] = date('Y/m/d H:i', $saldolist['time'][$i]);
+				$saldolist['date'][$i] = date('Y/m/d H:i', $saldolist['time'][$i]);
 
 				if($saldolist['time'][$i]>=$date['from'] && $saldolist['time'][$i]<=$date['to'])
 				{
@@ -181,7 +186,12 @@ switch($type)
 		$list['customerid'] = $id;
 
 		$SMARTY->assign('balancelist', $list);
-		$SMARTY->display('printcustomerbalance.html');
+		if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
+			$output = $SMARTY->fetch('printcustomerbalance.html');
+			html2pdf($output);
+		} else {
+			$SMARTY->display('printcustomerbalance.html');
+		}
 	break;
 
 	default: /*******************************************************/
@@ -189,7 +199,7 @@ switch($type)
 		$layout['pagetitle'] = trans('Reports');
 
 		$yearstart = date('Y', (int) $DB->GetOne('SELECT MIN(dt) FROM stats'));
-	        $yearend = date('Y', (int) $DB->GetOne('SELECT MAX(dt) FROM stats'));
+		$yearend = date('Y', (int) $DB->GetOne('SELECT MAX(dt) FROM stats'));
 		for($i=$yearstart; $i<$yearend+1; $i++)
 			$statyears[] = $i;
 		for($i=1; $i<13; $i++)

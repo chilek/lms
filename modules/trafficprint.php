@@ -35,37 +35,37 @@ switch($type)
 		$customer = isset($_POST['customer']) ? intval($_POST['customer']) : intval($_GET['customer']);
 
 		$layout['pagetitle'] = trans('Stats of Customer $a in month $b', $LMS->GetCustomerName($customer), strftime('%B %Y', mktime(0,0,0,$month,1,$year)));
-	
+
 		$from = mktime(0,0,0,$month,1,$year);
 		$to = mktime(0,0,0,$month+1,1,$year);
 
-    		if($list = $DB->GetAll('SELECT download, upload, dt
-	                	    FROM stats
+		if($list = $DB->GetAll('SELECT download, upload, dt
+				    FROM stats
 				    LEFT JOIN nodes ON (nodeid = nodes.id)
 				    WHERE ownerid = ? AND dt >= ? AND dt < ?',
 				    array($customer, $from, $to)))
 		{
 			for($i=1; $i<=date('t',$from); $i++)
 				$stats[$i]['date'] = mktime(0,0,0,$month,$i,$year); 
-				
+
 			foreach($list as $row)
 			{
 				$day = date('j', $row['dt']);
-				
+
 				$stats[$day]['download'] += $row['download'];
 				$stats[$day]['upload'] += $row['upload'];
 			}
-			
+
 			for($i=1; $i<=date('t',$from); $i++)
 			{
 				$stats[$i]['upavg'] = $stats[$i]['upload']*8/1000/86400; //kbit/s
 				$stats[$i]['downavg'] = $stats[$i]['download']*8/1000/86400; //kbit/s
-				
+
 				$listdata['upload'] += $stats[$i]['upload'];
 				$listdata['download'] += $stats[$i]['download'];
 				$listdata['upavg'] += $stats[$i]['upavg'];
 				$listdata['downavg'] += $stats[$i]['downavg'];
-				
+
 				list($stats[$i]['upload'], $stats[$i]['uploadunit']) = setunits($stats[$i]['upload']);
 				list($stats[$i]['download'], $stats[$i]['downloadunit']) = setunits($stats[$i]['download']);
 			}
@@ -79,12 +79,17 @@ switch($type)
 			$SMARTY->assign('listdata', $listdata);
 		}
 
-		$SMARTY->display('printcustomertraffic.html');
+		if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
+			$output = $SMARTY->fetch('printcustomertraffic.html');
+			html2pdf($output);
+		} else {
+			$SMARTY->display('printcustomertraffic.html');
+		}
 	break;
 
 	default:
 		$layout['pagetitle'] = trans('Reports');
-		
+
 		$yearstart = date('Y', (int) $DB->GetOne('SELECT MIN(dt) FROM stats'));
 		$yearend = date('Y', (int) $DB->GetOne('SELECT MAX(dt) FROM stats'));
 		for($i=$yearstart; $i<$yearend+1; $i++)
