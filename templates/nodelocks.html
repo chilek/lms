@@ -1,0 +1,38 @@
+<!--// $Id: nodelocks.html,v 1.1 2012/04/06 11:01:40 chilek Exp $ //-->
+{$xajax}
+<TABLE style="width: 100%;" CELLPADDING="3">
+	<TR class="dark hand" onclick="showOrHide('nodelockspanel');">
+		<TD class="fall">
+			<IMG src="img/time.gif" alt="">
+			<span class="bold"><A name="nodelocks">{trans("Locks:")}</A></span>
+		</TD>
+	</TR>
+	<TR id="nodelockspanel" style="display: none;">
+		<TD style="width: 100%;" class="fall">
+			<FORM id="nodelockadd" name="nodelockadd">
+			<TABLE style="width: 100%;" cellpadding="5" cellspacing="0" id="nodelocktable">
+			</TABLE>
+			</FORM>
+		</TD>
+	</TR>
+</TABLE>
+<SCRIPT type="text/javascript">
+<!--
+if (getCookie('nodelockspanel') == '1')
+{
+	document.getElementById('nodelockspanel').style.display = '';
+}
+
+function addNodeLock() {
+	xajax.$('nodelockaddlink').disabled = true;
+	xajax_addNodeLock({$nodeinfo.id}, xajax.getFormValues('nodelockadd'));
+}
+
+function delNodeLock(id) {
+	xajax.$('nodelocktable').disabled = true;
+	xajax_delNodeLock({$nodeinfo.id}, id);
+}
+
+xajax_getNodeLocks({$nodeinfo.id});
+//-->
+</SCRIPT>

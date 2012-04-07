@@ -98,6 +98,8 @@ $layout['pagetitle'] = trans('Node Info: $a',$nodeinfo['name']);
 
 $nodeinfo = $LMS->ExecHook('node_info_init', $nodeinfo);
 
+include(MODULES_DIR.'/nodexajax.inc.php');
+
 $SMARTY->assign('netdevices',$netdevices);
 $SMARTY->assign('nodestats',$nodestats);
 $SMARTY->assign('nodegroups',$nodegroups);
