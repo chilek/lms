@@ -1,8 +1,8 @@
 {include file="clearheader.html"}
 <!--// $Id$ //-->
-<TABLE WIDTH="100%">
+<TABLE WIDTH="100%" CELLPADDING="3" ALIGN="CENTER">
 	<TR>
-		<TD WIDTH="99%" VALIGN="TOP">
+		<TD WIDTH="535" VALIGN="TOP">
 			<H1>{$layout.pagetitle}</H1>
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
@@ -12,26 +12,27 @@
 		</TD>
 	</TR>
 </TABLE>
-<TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+<BR>
+<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
-		<TD ALIGN="CENTER" CLASS="HEAD">
+		<TD WIDTH="15" ALIGN="CENTER" CLASS="HEAD">
 			{trans("No.")}
 		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER">
+		<TD WIDTH="30" CLASS="HEAD" ALIGN="CENTER">
 			{trans("ID")}
 		</TD>
-		<TD CLASS="HEAD">
-			<B>{trans("First/last name")}</B><BR>
+		<TD WIDTH="400" CLASS="HEAD">
+			<B>{trans("First/last name")} / {trans("Name")}</B><BR>
 			{trans("Address")}<BR>
 			{trans("Phone")}
 		</TD>
-		<TD CLASS="HEAD" VALIGN="TOP" ALIGN="RIGHT">
+		<TD WIDTH="150" CLASS="HEAD" ALIGN="RIGHT">
 			{if !check_conf('privileges.hide_finances')}{trans("Subscription")}<BR>{/if}
 			{trans("E-mail")}<BR>
 			{trans("TEN/SSN")}
 		</TD>
 		{if !check_conf('privileges.hide_finances')}
-		<TD CLASS="HEAD" ALIGN="RIGHT">
+		<TD WIDTH="50" CLASS="HEAD" ALIGN="RIGHT">
 			{trans("Balance")}
 		</TD>
 		{/if}
@@ -40,33 +41,33 @@
 	{section name=customerlist loop=$customerlist}{if $customerlist[customerlist].id}
 	<TR class="{cycle}">{assign var=cid value=$customerlist[customerlist].id}
 		<TD ALIGN="CENTER">
-			{counter}
+			{counter}.
 		</TD>
 		<TD ALIGN="CENTER">
 			{$customerlist[customerlist].id|string_format:"%04d"}
 		</TD>
 		<TD>
 			<B>{$customerlist[customerlist].customername}</B><BR>
-			{$customerlist[customerlist].address}{if $customerlist[customerlist].city neq ""},{/if} {$customerlist[customerlist].zip} {$customerlist[customerlist].city}<BR>
-			{$contactlist.$cid.phone}
+			{$customerlist[customerlist].zip} {$customerlist[customerlist].city}{if $customerlist[customerlist].city neq ""},{/if} {$customerlist[customerlist].address}<BR>
+			{if $contactlist.$cid.type}{trans("mobile")}{else}{trans("phone<!plural>")}{/if} {$contactlist.$cid.phone}
 		</TD>
 		<TD ALIGN="RIGHT">
 			{if !check_conf('privileges.hide_finances')}{$customerlist[customerlist].tariffvalue|money_format}<BR>{/if}
-			{$customerlist[customerlist].email}<BR>
-			{if $customerlist[customerlist].ten}{$customerlist[customerlist].ten}{else}{$customerlist[customerlist].ssn}{/if}
+			{if $customerlist[customerlist].email}{$customerlist[customerlist].email}<BR>{/if}
+			{if $customerlist[customerlist].ten}{trans("TEN:")} {$customerlist[customerlist].ten}{elseif $customerlist[customerlist].ssn}{trans("SSN:")} {$customerlist[customerlist].ssn}{/if}
 		</TD>
 		{if !check_conf('privileges.hide_finances')}
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$customerlist[customerlist].balance|money_format} 
+			{$customerlist[customerlist].balance|money_format}
 		</TD>
 		{/if}
 	</TR>
 	{/if}{/section}
 	{if !check_conf('privileges.hide_finances') && !check_conf('privileges.hide_summaries')}
-	<TR class="grey">
-		<TD COLSPAN="3" ALIGN="RIGHT"><B>{trans("Total:")}</B></TD>
-		<TD ALIGN="RIGHT" NOWRAP><B>{sum array=$customerlist column="tariffvalue" string_format=$LANGDEFS.$_language.money_format}</B></TD>
-		<TD ALIGN="RIGHT" NOWRAP><B>{sum array=$customerlist column="balance" string_format=$LANGDEFS.$_language.money_format}</B></TD>
+	<TR>
+		<TD CLASS="HEADGREY" COLSPAN="3" ALIGN="RIGHT"><B>{trans("Total:")}</B></TD>
+		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP><B>{sum array=$customerlist column="tariffvalue" string_format=$LANGDEFS.$_language.money_format}</B></TD>
+		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP><B>{sum array=$customerlist column="balance" string_format=$LANGDEFS.$_language.money_format}</B></TD>
 	</TR>
 	{/if}
 </TABLE>

@@ -1,56 +1,57 @@
 {include file="clearheader.html"}
 <!--// $Id$ //-->
-<TABLE WIDTH="100%">
+<TABLE WIDTH="100%" CELLPADDING="3" ALIGN="CENTER">
 	<TR>
-		<TD WIDTH="99%" VALIGN="TOP" NOWRAP>
+		<TD WIDTH="535" VALIGN="TOP">
 			<P class="hdf"><B>{$layout.pagetitle}</B>
 			{if $layout.username}<BR><font class="sdr"><B>{$layout.username}</B></font>{/if}
 			{if $layout.registry}<BR><font class="sdr"><B>{$layout.registry}</B></font>{/if}
 			{if $layout.group}<BR><font class="sdr"><B>{$layout.group}</B></font>{/if}
 			</P>
 		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+		<TD WIDTH="180" ALIGN="RIGHT" NOWRAP>
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
 			{$smarty.now|date_format:"%A, %x"}<BR>
 			{t a=$layout.logname}Prepared by: $a{/t}
 		</TD>
 	</TR>
 </TABLE>
-<TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+<BR>
+<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
-		<TD ALIGN="CENTER" CLASS="HEAD">
+		<TD WIDTH="15" ALIGN="CENTER" CLASS="HEAD">
 			{trans("No.")}
 		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER">
+		<TD WIDTH="45" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Date")}
 		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER">
+		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Number")}
 		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER">
+		<TD WIDTH="225" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Customer")}
 		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER">
+		<TD WIDTH="120" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Title")}
 		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER">
+		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Income")}
 		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER">
+		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Expense")}
 		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER">
+		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
 			{trans("After")}
 		</TD>
 	</TR>
 	{cycle values="white,grey" print=false}
 	{section name=receiptlist loop=$receiptlist}
 	<TR class="{cycle}">
-		<TD ALIGN="RIGHT">
-			{counter}
+		<TD ALIGN="CENTER">
+			{counter}.
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$receiptlist[receiptlist].cdate|date_format:"%Y/%m/%d"}
+			{$receiptlist[receiptlist].cdate|date_format:"%d.%m.%Y"}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			{$receiptlist[receiptlist].number}
@@ -82,23 +83,23 @@
 		</TD>
 	</TR>
 	{/section}
-	<TR class="grey">
-		<TD COLSPAN="5" ALIGN="RIGHT" VALIGN="TOP">
+	<TR>
+		<TD CLASS="HEADGREY" COLSPAN="5" ALIGN="RIGHT">
 			<B>{trans("Total:")}</B><HR>
 			<B>{trans("Initial balance:")}</B><BR>
 			<B>{trans("Final balance:")}</B>
 			{if $listdata.advances}<BR><B>{trans("Not accounted advances:")}</B>{/if}
 		</TD>
-		<TD ALIGN="RIGHT" nowrap>
+		<TD CLASS="HEADGREY" ALIGN="RIGHT" nowrap>
 			<B>{$listdata.totalincome|money_format}</B><HR>
 			<B>{$listdata.startbalance|money_format}</B><BR>
 			<B>{$listdata.endbalance|money_format}</B>
 			{if $listdata.advances}<BR><B>{$listdata.advances|money_format}</B>{/if}
 		</TD>
-		<TD ALIGN="RIGHT" VALIGN="TOP" nowrap>
+		<TD CLASS="HEADGREY" ALIGN="RIGHT" nowrap>
 			<B>{$listdata.totalexpense|money_format}</B><HR>
 		</TD>
-		<TD></TD>
+		<TD CLASS="HEADGREY"></TD>
 	</TR>
 </TABLE>
 {include file="clearfooter.html"}
