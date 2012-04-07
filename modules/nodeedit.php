@@ -267,6 +267,8 @@ if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_
 
 $nodeinfo = $LMS->ExecHook('node_edit_init', $nodeinfo);
 
+include(MODULES_DIR.'/nodexajax.inc.php');
+
 $SMARTY->assign('netdevices', $LMS->GetNetDevNames());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNamesByNode($nodeid));
 $SMARTY->assign('othernodegroups', $LMS->GetNodeGroupNamesWithoutNode($nodeid));

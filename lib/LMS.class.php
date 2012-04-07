@@ -2106,19 +2106,6 @@ class LMS
 				$this->DB->Execute('INSERT INTO nodeassignments (nodeid, assignmentid)
 					VALUES ' . implode(', ', $values));
 			}
-
-			if (!empty($data['locks'])) {
-				// Use multi-value INSERT query
-				$values = array();
-				foreach ($data['locks'] as $lock) {
-					foreach ($result as $aid) {
-						$values[] = sprintf('(%d, %d, %d, %d)', $aid, $lock['days'], $lock['from'], $lock['to']);
-					}
-				}
-
-				$this->DB->Execute('INSERT INTO assignmentlocks (assignmentid, days, fromsec, tosec)
-					VALUES ' . implode(', ', $values));
-			}
 		}
 
 		return $result;
