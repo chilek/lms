@@ -2549,6 +2549,7 @@ $_LANG['Wed'] = 'cz.';
 $_LANG['Fri'] = 'pt.';
 $_LANG['Sat'] = 'sb.';
 $_LANG['Sun'] = 'nd.';
+$_LANG['No locks.'] = 'Brak blokad.';
 $_LANG['Locks:'] = 'Blokady:';
 $_LANG['Add new lock'] = 'Dodaj nową blokadę';
 $_LANG['Remove lock'] = 'Usuń blokadę';
