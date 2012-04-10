@@ -793,10 +793,10 @@ function html2pdf($content, $orientation='P', $margins=array(5, 10, 5, 10), $sav
 
 	if ($save) {
 		if (function_exists('mb_convert_encoding'))
-			$filename = mb_convert_encoding($title, "ISO-8859-2", "UTF-8");
+			$filename = mb_convert_encoding($layout['pagetitle'], "ISO-8859-2", "UTF-8");
 		else
-			$filename = iconv("UTF-8", "ISO-8859-2", $title);
-		$html2pdf->Output($layout['pagetitle'].'.pdf', 'D');
+			$filename = iconv("UTF-8", "ISO-8859-2//TRANSLIT", $layout['pagetitle']);
+		$html2pdf->Output($filename.'.pdf', 'D');
 	} else {
 		$html2pdf->Output();
 	}
