@@ -53,8 +53,8 @@ function invoice_body()
 
 global $pdf;
 
-require_once(LIB_DIR.'/pdf.php');
-require_once(MODULES_DIR.'/invoice_pdf.inc.php');
+require_once(LIB_DIR.'/tcpdf.php');
+require_once(MODULES_DIR.'/invoice_tcpdf.inc.php');
 
 // handle multi-invoice print
 if(!empty($_POST['inv']))
