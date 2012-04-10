@@ -48,7 +48,7 @@ function invoice_body()
 	            require(MODULES_DIR.'/'.$template);
     }
 
-    if(!isset($invoice['last'])) $pdf->ezNewPage();
+    if(!isset($invoice['last'])) $pdf->AddPage();
 }
 
 global $pdf;
