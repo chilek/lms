@@ -201,7 +201,7 @@ class TCPDFpl extends TCPDF {
 						$this->Cell($h_width['discount'], 6, sprintf('%.2f%%', $item['discount']), 1, 0, 'R', 0, '', 1);
 					$this->Cell($h_width['basevalue'], 6, moneyf($item['basevalue']), 1, 0, 'R', 0, '', 1);
 					$this->Cell($h_width['totalbase'], 6, moneyf($item['totalbase']), 1, 0, 'R', 0, '', 1);
-					$this->Cell($h_width['taxlabel'], 6, $item['taxlabel'], 1, 0, 'R', 0, '', 1);
+					$this->Cell($h_width['taxlabel'], 6, $item['taxlabel'], 1, 0, 'C', 0, '', 1);
 					$this->Cell($h_width['totaltax'], 6, moneyf($item['totaltax']), 1, 0, 'R', 0, '', 1);
 					$this->Cell($h_width['total'], 6, moneyf($item['total']), 1, 0, 'R', 0, '', 1);
 					$this->Ln();
@@ -261,7 +261,7 @@ class TCPDFpl extends TCPDF {
 				$this->Cell($h_width['discount'], 6, sprintf('%.2f%%', $item['discount']), 1, 0, 'R', 0, '', 1);
 			$this->Cell($h_width['basevalue'], 6, moneyf($item['basevalue']), 1, 0, 'R', 0, '', 1);
 			$this->Cell($h_width['totalbase'], 6, moneyf($item['totalbase']), 1, 0, 'R', 0, '', 1);
-			$this->Cell($h_width['taxlabel'], 6, $item['taxlabel'], 1, 0, 'R', 0, '', 1);
+			$this->Cell($h_width['taxlabel'], 6, $item['taxlabel'], 1, 0, 'C', 0, '', 1);
 			$this->Cell($h_width['totaltax'], 6, moneyf($item['totaltax']), 1, 0, 'R', 0, '', 1);
 			$this->Cell($h_width['total'], 6, moneyf($item['total']), 1, 0, 'R', 0, '', 1);
 			$this->Ln();
