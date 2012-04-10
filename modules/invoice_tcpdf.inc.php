@@ -288,7 +288,7 @@ function invoice_main_form_fill() {
 			'text' => false,
 		);
 		$pdf->StartTransform();
-		$pdf->Translate(60);
+		$pdf->TranslateX(60);
 		$pdf->write1DBarcode($barcode, 'C128', '', 263, 60, 5, 0.3, $style, '');
 		$pdf->StopTransform();
 	}
