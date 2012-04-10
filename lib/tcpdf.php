@@ -118,7 +118,7 @@ class TCPDFpl extends TCPDF {
 		$heads['prodid'] = trans('Product ID:');
 		$heads['content'] = trans('Unit:');
 		$heads['count'] = trans('Amount:');
-		if($invoice['discount'])
+		if (!empty($invoice['pdiscount']) || !empty($invoice['vdiscount']))
 			$heads['discount'] = trans('Discount:');
 		$heads['basevalue'] = trans('Unitary Net Value:');
 		$heads['totalbase'] = trans('Net Value:');
@@ -137,7 +137,7 @@ class TCPDFpl extends TCPDF {
 			$t_width['prodid'] = $this->getStringWidth($item['prodid']);
 			$t_width['content'] = $this->getStringWidth($item['content']);
 			$t_width['count'] = $this->getStringWidth(sprintf('%.2f', $item['count']));
-			if ($invoice['discount'])
+			if (!empty($invoice['pdiscount']) || !empty($invoice['vdiscount']))
 				$t_width['discount'] = $this->getStringWidth(sprintf('%.2f%%', $item['discount']));
 			$t_width['basevalue'] = $this->getStringWidth(moneyf($item['basevalue']))+1;
 			$t_width['totalbase'] = $this->getStringWidth(moneyf($item['totalbase']))+1;
@@ -156,7 +156,7 @@ class TCPDFpl extends TCPDF {
 			$t_width['prodid'] = $this->getStringWidth($item['prodid']);
 			$t_width['content'] = $this->getStringWidth($item['content']);
 			$t_width['count'] = $this->getStringWidth(sprintf('%.2f', $item['count']));
-			if ($invoice['discount'])
+			if (!empty($invoice['pdiscount']) || !empty($invoice['vdiscount']))
 				$t_width['discount'] = $this->getStringWidth(sprintf('%.2f%%', $item['discount']));
 			$t_width['basevalue'] = $this->getStringWidth(moneyf($item['basevalue']))+1;
 			$t_width['totalbase'] = $this->getStringWidth(moneyf($item['totalbase']))+1;
@@ -197,7 +197,7 @@ class TCPDFpl extends TCPDF {
 					$this->Cell($h_width['prodid'], 6, $item['prodid'], 1, 0, 'C', 0, '', 1);
 					$this->Cell($h_width['content'], 6, $item['content'], 1, 0, 'C', 0, '', 1);
 					$this->Cell($h_width['count'], 6, sprintf('%.2f', $item['count']), 1, 0, 'C', 0, '', 1);
-					if ($invoice['discount'])
+					if (!empty($invoice['pdiscount']) || !empty($invoice['vdiscount']))
 						$this->Cell($h_width['discount'], 6, sprintf('%.2f%%', $item['discount']), 1, 0, 'R', 0, '', 1);
 					$this->Cell($h_width['basevalue'], 6, moneyf($item['basevalue']), 1, 0, 'R', 0, '', 1);
 					$this->Cell($h_width['totalbase'], 6, moneyf($item['totalbase']), 1, 0, 'R', 0, '', 1);
@@ -257,7 +257,7 @@ class TCPDFpl extends TCPDF {
 			$this->Cell($h_width['prodid'], 6, $item['prodid'], 1, 0, 'C', 0, '', 1);
 			$this->Cell($h_width['content'], 6, $item['content'], 1, 0, 'C', 0, '', 1);
 			$this->Cell($h_width['count'], 6, sprintf('%.2f', $item['count']), 1, 0, 'C', 0, '', 1);
-			if ($invoice['discount'])
+			if (!empty($invoice['pdiscount']) || !empty($invoice['vdiscount']))
 				$this->Cell($h_width['discount'], 6, sprintf('%.2f%%', $item['discount']), 1, 0, 'R', 0, '', 1);
 			$this->Cell($h_width['basevalue'], 6, moneyf($item['basevalue']), 1, 0, 'R', 0, '', 1);
 			$this->Cell($h_width['totalbase'], 6, moneyf($item['totalbase']), 1, 0, 'R', 0, '', 1);
