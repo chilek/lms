@@ -235,7 +235,7 @@ function invoice_simple_form_fill() {
 
 	/* amount */
 	$pdf->SetFont('courier', 'B', 10);
-	$pdf->Text(10, 263, moneyf($invoice['value']));
+	$pdf->Text(7, 263, moneyf($invoice['value']));
 }
 
 function invoice_main_form_fill() {
@@ -288,7 +288,7 @@ function invoice_main_form_fill() {
 			'text' => false,
 		);
 		$pdf->StartTransform();
-		$pdf->TranslateX(60);
+		$pdf->TranslateX(55);
 		$pdf->write1DBarcode($barcode, 'C128', '', 263, 60, 5, 0.3, $style, '');
 		$pdf->StopTransform();
 	}
