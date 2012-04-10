@@ -467,11 +467,10 @@ function invoice_footnote() {
 		$account = format_bankaccount(bankaccount($invoice['customerid'], $invoice['account']));
 		$tmp = str_replace('%bankaccount', $account, $tmp);
 
-		$tmp = preg_split('/\r?\n/', $tmp);
+		$tmp = mb_ereg_replace('\r?\n', '<br>', $tmp);
+
 		$pdf->SetFont('arial', '', 8);
-		foreach ($tmp as $line)
-			$footnote .= $line.'<br>';
-		$pdf->writeHTMLCell(0, 0, '', '', $footnote, 0, 1, 0, true, 'L');
+		$pdf->writeHTMLCell(0, 0, '', '', $tmp, 0, 1, 0, true, 'L');
 	}
 }
 
