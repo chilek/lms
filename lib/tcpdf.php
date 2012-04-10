@@ -189,24 +189,22 @@ class TCPDFpl extends TCPDF {
 			$this->Ln(3);
 			$this->writeHTMLCell(0, 0, '', '', '<b>'.trans('Was:').'</b>', 0, 1, 0, true, 'L');
 			$this->Ln(3);
-			$fill = 0;
 			$i = 1;
 			if ($invoice['invoice']['content'])
 				foreach ($invoice['invoice']['content'] as $item) {
-					$this->Cell($h_width['no'], 6, $i.'.', 1, 0, 'C', $fill, '', 1);
-					$this->Cell($h_width['name'], 6, $item['description'], 1, 0, 'L', $fill, '', 1);
-					$this->Cell($h_width['prodid'], 6, $item['prodid'], 1, 0, 'C', $fill, '', 1);
-					$this->Cell($h_width['content'], 6, $item['content'], 1, 0, 'C', $fill, '', 1);
-					$this->Cell($h_width['count'], 6, sprintf('%.2f', $item['count']), 1, 0, 'C', $fill, '', 1);
+					$this->Cell($h_width['no'], 6, $i.'.', 1, 0, 'C', 0, '', 1);
+					$this->Cell($h_width['name'], 6, $item['description'], 1, 0, 'L', 0, '', 1);
+					$this->Cell($h_width['prodid'], 6, $item['prodid'], 1, 0, 'C', 0, '', 1);
+					$this->Cell($h_width['content'], 6, $item['content'], 1, 0, 'C', 0, '', 1);
+					$this->Cell($h_width['count'], 6, sprintf('%.2f', $item['count']), 1, 0, 'C', 0, '', 1);
 					if ($invoice['discount'])
-						$this->Cell($h_width['discount'], 6, sprintf('%.2f%%', $item['discount']), 1, 0, 'R', $fill, '', 1);
-					$this->Cell($h_width['basevalue'], 6, moneyf($item['basevalue']), 1, 0, 'R', $fill, '', 1);
-					$this->Cell($h_width['totalbase'], 6, moneyf($item['totalbase']), 1, 0, 'R', $fill, '', 1);
-					$this->Cell($h_width['taxlabel'], 6, $item['taxlabel'], 1, 0, 'R', $fill, '', 1);
-					$this->Cell($h_width['totaltax'], 6, moneyf($item['totaltax']), 1, 0, 'R', $fill, '', 1);
-					$this->Cell($h_width['total'], 6, moneyf($item['total']), 1, 0, 'R', $fill, '', 1);
-					$this->Ln(10);
-					$fill=!$fill;
+						$this->Cell($h_width['discount'], 6, sprintf('%.2f%%', $item['discount']), 1, 0, 'R', 0, '', 1);
+					$this->Cell($h_width['basevalue'], 6, moneyf($item['basevalue']), 1, 0, 'R', 0, '', 1);
+					$this->Cell($h_width['totalbase'], 6, moneyf($item['totalbase']), 1, 0, 'R', 0, '', 1);
+					$this->Cell($h_width['taxlabel'], 6, $item['taxlabel'], 1, 0, 'R', 0, '', 1);
+					$this->Cell($h_width['totaltax'], 6, moneyf($item['totaltax']), 1, 0, 'R', 0, '', 1);
+					$this->Cell($h_width['total'], 6, moneyf($item['total']), 1, 0, 'R', 0, '', 1);
+					$this->Ln();
 					$i++;
 				}
 
@@ -252,23 +250,21 @@ class TCPDFpl extends TCPDF {
 		}
 
 		/* invoice data */
-		$fill = 0;
 		$i = 1;
 		foreach ($invoice['content'] as $item) {
-			$this->Cell($h_width['no'], 6, $i.'.', 1, 0, 'C', $fill, '', 1);
-			$this->Cell($h_width['name'], 6, $item['description'], 1, 0, 'L', $fill, '', 1);
-			$this->Cell($h_width['prodid'], 6, $item['prodid'], 1, 0, 'C', $fill, '', 1);
-			$this->Cell($h_width['content'], 6, $item['content'], 1, 0, 'C', $fill, '', 1);
-			$this->Cell($h_width['count'], 6, sprintf('%.2f', $item['count']), 1, 0, 'C', $fill, '', 1);
+			$this->Cell($h_width['no'], 6, $i.'.', 1, 0, 'C', 0, '', 1);
+			$this->Cell($h_width['name'], 6, $item['description'], 1, 0, 'L', 0, '', 1);
+			$this->Cell($h_width['prodid'], 6, $item['prodid'], 1, 0, 'C', 0, '', 1);
+			$this->Cell($h_width['content'], 6, $item['content'], 1, 0, 'C', 0, '', 1);
+			$this->Cell($h_width['count'], 6, sprintf('%.2f', $item['count']), 1, 0, 'C', 0, '', 1);
 			if ($invoice['discount'])
-				$this->Cell($h_width['discount'], 6, sprintf('%.2f%%', $item['discount']), 1, 0, 'R', $fill, '', 1);
-			$this->Cell($h_width['basevalue'], 6, moneyf($item['basevalue']), 1, 0, 'R', $fill, '', 1);
-			$this->Cell($h_width['totalbase'], 6, moneyf($item['totalbase']), 1, 0, 'R', $fill, '', 1);
-			$this->Cell($h_width['taxlabel'], 6, $item['taxlabel'], 1, 0, 'R', $fill, '', 1);
-			$this->Cell($h_width['totaltax'], 6, moneyf($item['totaltax']), 1, 0, 'R', $fill, '', 1);
-			$this->Cell($h_width['total'], 6, moneyf($item['total']), 1, 0, 'R', $fill, '', 1);
-			$this->Ln(10);
-			$fill=!$fill;
+				$this->Cell($h_width['discount'], 6, sprintf('%.2f%%', $item['discount']), 1, 0, 'R', 0, '', 1);
+			$this->Cell($h_width['basevalue'], 6, moneyf($item['basevalue']), 1, 0, 'R', 0, '', 1);
+			$this->Cell($h_width['totalbase'], 6, moneyf($item['totalbase']), 1, 0, 'R', 0, '', 1);
+			$this->Cell($h_width['taxlabel'], 6, $item['taxlabel'], 1, 0, 'R', 0, '', 1);
+			$this->Cell($h_width['totaltax'], 6, moneyf($item['totaltax']), 1, 0, 'R', 0, '', 1);
+			$this->Cell($h_width['total'], 6, moneyf($item['total']), 1, 0, 'R', 0, '', 1);
+			$this->Ln();
 			$i++;
 		}
 

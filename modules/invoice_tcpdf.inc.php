@@ -415,7 +415,7 @@ function invoice_data() {
 function invoice_to_pay() {
 	global $pdf, $invoice;
 
-	$pdf->Ln(-12);
+	$pdf->Ln(-9);
 	$pdf->SetFont('arial', 'B', 14);
 	if (isset($invoice['rebate']))
 		$pdf->writeHTMLCell(0, 0, '', '', trans('To repay:').' '.moneyf($invoice['value']), 0, 1, 0, true, 'L');
