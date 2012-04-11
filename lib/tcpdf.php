@@ -88,7 +88,7 @@ class TCPDFpl extends TCPDF {
 		}
 	}
 
-	public function getWrapStringWidth($txt, $font_size) {
+	public function getWrapStringWidth($txt, $font_style) {
 		$long = '';
 		if ($words = explode(' ', $txt)) {
 			foreach ($words as $word)
@@ -98,7 +98,7 @@ class TCPDFpl extends TCPDF {
 			$long = $txt;
 		}
 
-		return $this->getStringWidth($long, '', '', $font_size);
+		return $this->getStringWidth($long, '', $font_style) + 2.5;
 	}
 
 	public function Table($header, $invoice) {
@@ -128,7 +128,8 @@ class TCPDFpl extends TCPDF {
 
 		/* width of the columns on the invoice */
 		foreach ($heads as $name => $text)
-			$h_width[$name] = $this->getWrapStringWidth($text, 8);
+			//$h_width[$name] = $this->getStringWidth($text, '', 'B', 8);
+			$h_width[$name] = $this->getWrapStringWidth($text, 'B');
 
 		/* change the column widths if are wider than the header */
 		if ($invoice['content']) foreach ($invoice['content'] as $item) {
@@ -174,12 +175,18 @@ class TCPDFpl extends TCPDF {
 		foreach ($h_width as $name => $w)
 			if ($name != 'name')
 				$sum += $w;
-			$h_width['name'] = $table_width - $sum;
+		$h_width['name'] = $table_width - $sum;
 
+		$h_head = 0;
 		/* invoice data table headers */
 		foreach ($heads as $item => $name) {
-			$this->Cell($h_width[$item], 7, $heads[$item], 1, 0, 'C', 1, '', 1);
+			//$this->Cell($h_width[$item], 7, $heads[$item], 1, 0, 'C', 1, '', 1);
+			$h_cell = $this->getStringHeight($h_width[$item], $heads[$item], true, false, 0, 1);
+			if ($h_cell > $h_head)
+				$h_head = $h_cell;
 		}
+		foreach ($heads as $item => $name)
+			$this->MultiCell($h_width[$item], $h_head, $heads[$item], 1, 'C', true, 0, '', '', true, 0, false, false, $h_head, 'M');
 
 		$this->Ln();
 		$this->SetFont('arial', '', 8);
@@ -201,7 +208,7 @@ class TCPDFpl extends TCPDF {
 						$this->Cell($h_width['discount'], 6, sprintf('%.2f%%', $item['discount']), 1, 0, 'R', 0, '', 1);
 					$this->Cell($h_width['basevalue'], 6, moneyf($item['basevalue']), 1, 0, 'R', 0, '', 1);
 					$this->Cell($h_width['totalbase'], 6, moneyf($item['totalbase']), 1, 0, 'R', 0, '', 1);
-					$this->Cell($h_width['taxlabel'], 6, $item['taxlabel'], 1, 0, 'R', 0, '', 1);
+					$this->Cell($h_width['taxlabel'], 6, $item['taxlabel'], 1, 0, 'C', 0, '', 1);
 					$this->Cell($h_width['totaltax'], 6, moneyf($item['totaltax']), 1, 0, 'R', 0, '', 1);
 					$this->Cell($h_width['total'], 6, moneyf($item['total']), 1, 0, 'R', 0, '', 1);
 					$this->Ln();
@@ -261,7 +268,7 @@ class TCPDFpl extends TCPDF {
 				$this->Cell($h_width['discount'], 6, sprintf('%.2f%%', $item['discount']), 1, 0, 'R', 0, '', 1);
 			$this->Cell($h_width['basevalue'], 6, moneyf($item['basevalue']), 1, 0, 'R', 0, '', 1);
 			$this->Cell($h_width['totalbase'], 6, moneyf($item['totalbase']), 1, 0, 'R', 0, '', 1);
-			$this->Cell($h_width['taxlabel'], 6, $item['taxlabel'], 1, 0, 'R', 0, '', 1);
+			$this->Cell($h_width['taxlabel'], 6, $item['taxlabel'], 1, 0, 'C', 0, '', 1);
 			$this->Cell($h_width['totaltax'], 6, moneyf($item['totaltax']), 1, 0, 'R', 0, '', 1);
 			$this->Cell($h_width['total'], 6, moneyf($item['total']), 1, 0, 'R', 0, '', 1);
 			$this->Ln();

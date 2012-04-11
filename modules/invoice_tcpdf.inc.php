@@ -235,7 +235,7 @@ function invoice_simple_form_fill() {
 
 	/* amount */
 	$pdf->SetFont('courier', 'B', 10);
-	$pdf->Text(10, 263, moneyf($invoice['value']));
+	$pdf->Text(7, 263, moneyf($invoice['value']));
 }
 
 function invoice_main_form_fill() {
@@ -288,7 +288,7 @@ function invoice_main_form_fill() {
 			'text' => false,
 		);
 		$pdf->StartTransform();
-		$pdf->TranslateX(60);
+		$pdf->TranslateX(55);
 		$pdf->write1DBarcode($barcode, 'C128', '', 263, 60, 5, 0.3, $style, '');
 		$pdf->StopTransform();
 	}
@@ -471,10 +471,10 @@ function invoice_footnote() {
 		$account = format_bankaccount(bankaccount($invoice['customerid'], $invoice['account']));
 		$tmp = str_replace('%bankaccount', $account, $tmp);
 
-		$tmp = mb_ereg_replace('\r?\n', '<br>', $tmp);
-
 		$pdf->SetFont('arial', '', 8);
-		$pdf->writeHTMLCell(0, 0, '', '', $tmp, 0, 1, 0, true, 'L');
+		$h = $pdf->getStringHeight(0, $tmp);
+		$tmp = mb_ereg_replace('\r?\n', '<br>', $tmp);
+		$pdf->writeHTMLCell(0, 0, '', 188 - $h, $tmp, 0, 1, 0, true, 'C');
 	}
 }
 
