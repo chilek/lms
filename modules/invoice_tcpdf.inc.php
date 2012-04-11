@@ -328,22 +328,22 @@ function invoice_title() {
 		$title = trans('Credit Note No. $a', $docnumber);
 	else
 		$title = trans('Invoice No. $a', $docnumber);
-	$pdf->Write($h=0, $title, $link='', $fill=0, $align='C', $ln=true, $stretch=0, $firstline=false, $firstblock=false, $maxh=0);
+	$pdf->Write(0, $title, '', 0, 'C', true, 0, false, false, 0);
 
 	if (isset($invoice['invoice'])) {
 		$pdf->SetFont('arial', 'B', 12);
 		$docnumber = docnumber($invoice['invoice']['number'], $invoice['invoice']['template'], $invoice['invoice']['cdate']);
 		$title = trans('for Invoice No. $a', $docnumber);
-		$pdf->Write($h=0, $title, $link='', $fill=0, $align='C', $ln=true, $stretch=0, $firstline=false, $firstblock=false, $maxh=0);
+		$pdf->Write(0, $title, '', 0, 'C', true, 0, false, false, 0);
 	}
 
 	$pdf->SetFont('arial', '', 16);
-	$pdf->Write($h=0, $type, $link='', $fill=0, $align='C', $ln=true, $stretch=0, $firstline=false, $firstblock=false, $maxh=0);
+	$pdf->Write(0, $type, '', 0, 'C', true, 0, false, false, 0);
 
 	if ($type == trans('DUPLICATE')) {
 		$pdf->SetFont('arial', '', 10);
 		$title = trans('Duplicate draw-up date:').' '.date('d.m.Y');
-		$pdf->Write($h=0, $title, $link='', $fill=0, $align='C', $ln=true, $stretch=0, $firstline=false, $firstblock=false, $maxh=0);
+		$pdf->Write(0, $title, '', 0, 'C', true, 0, false, false, 0);
 	}
 }
 
@@ -465,7 +465,7 @@ function invoice_footnote() {
 	if (!empty($invoice['division_footer'])) {
 		$pdf->Ln(7);
 		//$pdf->SetFont('arial', 'B', 10);
-		//$pdf->Write($h=0, trans('Notes:'), $link='', $fill=0, $align='L', $ln=true, $stretch=0, $firstline=false, $firstblock=false, $maxh=0);
+		//$pdf->Write(0, trans('Notes:'), '', 0, 'L', true, 0, false, false, 0);
 		$tmp = $invoice['division_footer'];
 
 		$account = format_bankaccount(bankaccount($invoice['customerid'], $invoice['account']));
