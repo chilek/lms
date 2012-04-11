@@ -92,6 +92,7 @@ DROP TABLE IF EXISTS voipaccounts;
 DROP TABLE IF EXISTS messages;
 DROP TABLE IF EXISTS messageitems;
 DROP TABLE IF EXISTS nastypes;
+DROP TABLE IF EXISTS managementurls;
 DROP TABLE IF EXISTS up_rights;
 DROP TABLE IF EXISTS up_rights_assignments;
 DROP TABLE IF EXISTS up_customers;
@@ -1483,6 +1484,19 @@ CREATE TABLE nastypes (
 
 # --------------------------------------------------------
 #
+# Structure of table managementurls
+#
+CREATE TABLE managementurls (
+	id int(11)		NOT NULL auto_increment,
+	netdevid int(11)	NOT NULL
+		REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	url text		DEFAULT '' NOT NULL,
+	comment varchar(100)	DEFAULT NULL,
+	PRIMARY KEY (id)
+) ENGINE=INNODB;
+
+# --------------------------------------------------------
+#
 # Structure of table records
 #
 CREATE TABLE records (
@@ -1716,4 +1730,4 @@ INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012040700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012041101');
