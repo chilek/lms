@@ -71,7 +71,7 @@ function check_hostname_fqdn($hostname, $wildcard=false, $dns_strict_tld_check=f
 			}
                         $first = 1;
                 } else {
-                        if (!preg_match('/^[a-zA-Z0-9-\/]+$/',$hostname_label)) {
+                        if (!preg_match('/^[a-zA-Z0-9-\/_]+$/',$hostname_label)) {
 				return trans('You have invalid characters in your hostname!');
 			}
                 }
