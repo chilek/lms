@@ -112,6 +112,7 @@ version ? (????-??-??):
   - changed pin field type from int to varchar(6) [red]
   - liability reports are consistent with invoice/cash issues [chilan]
   - small fix for new PHP version [red]
+  - fix validation data in domains for DKIM [red]
 
 version 1.11.13 Dira (2011-04-07)
 
