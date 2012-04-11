@@ -2,6 +2,7 @@ $Id: ChangeLog,v 1.1637 2012/02/18 23:12:00 chilek Exp $
 
 version ? (????-??-??):
 
+  - small fix for new PHP version [red]
   - Fixed nodes list in Userpanel [alec]
   - lmsd/ewx-pt: Fixed issues on nodes deletion [alec]
   - lmsd/ewx-stm-channels: Fixed issues on nodes deletion, improved performance [alec]
