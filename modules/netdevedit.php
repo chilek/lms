@@ -621,6 +621,8 @@ $SMARTY->assign('nodelinktype',$SESSION->get('nodelinktype'));
 $SMARTY->assign('nodelinkspeed',$SESSION->get('nodelinkspeed'));
 $SMARTY->assign('nastype', $LMS->GetNAStypes());
 
+include(MODULES_DIR.'/netdevxajax.inc.php');
+
 switch($edit)
 {
     case 'data':

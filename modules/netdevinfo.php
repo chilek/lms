@@ -62,6 +62,8 @@ $SMARTY->assign('devlinkspeed',$SESSION->get('devlinkspeed'));
 $SMARTY->assign('nodelinktype',$SESSION->get('nodelinktype'));
 $SMARTY->assign('nodelinkspeed',$SESSION->get('nodelinkspeed'));
 
+include(MODULES_DIR.'/netdevxajax.inc.php');
+
 if(isset($_GET['ip']))
 {
 	$SMARTY->assign('nodeipdata',$LMS->GetNode($_GET['ip']));

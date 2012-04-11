@@ -1590,6 +1590,21 @@ CREATE TABLE nastypes (
 );
 
 /* ---------------------------------------------------
+ Structure of table "managementurls"
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS managementurls_id_seq;
+CREATE SEQUENCE managementurls_id_seq;
+DROP TABLE IF EXISTS managementurls;
+CREATE TABLE managementurls (
+	id integer		DEFAULT nextval('managementurls_id_seq'::text) NOT NULL,
+	netdevid integer	NOT NULL
+		REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	url text		DEFAULT '' NOT NULL,
+	comment varchar(100)	DEFAULT NULL,
+	PRIMARY KEY (id)
+);
+
+/* ---------------------------------------------------
  Structure of table "up_rights" (Userpanel)
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS up_rights_id_seq;
@@ -1815,4 +1830,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012040700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012041101');
