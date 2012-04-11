@@ -2,7 +2,6 @@ $Id: ChangeLog,v 1.1637 2012/02/18 23:12:00 chilek Exp $
 
 version ? (????-??-??):
 
-  - small fix for new PHP version [red]
   - Fixed nodes list in Userpanel [alec]
   - lmsd/ewx-pt: Fixed issues on nodes deletion [alec]
   - lmsd/ewx-stm-channels: Fixed issues on nodes deletion, improved performance [alec]
@@ -110,8 +109,9 @@ version ? (????-??-??):
   - assignmentlocks -> nodelocks [chilan]
   - we can choose format of reports beetween html and pdf - phpui->report_type [prezes_kk]
   - script for automatic filling of gps coordinates based on Sebastian Wielgosz work [prezes_kk]
-  - changed pin field type from int to varchar(6) [pjona]
+  - changed pin field type from int to varchar(6) [red]
   - liability reports are consistent with invoice/cash issues [chilan]
+  - small fix for new PHP version [red]
 
 version 1.11.13 Dira (2011-04-07)
 
