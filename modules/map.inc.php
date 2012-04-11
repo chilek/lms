@@ -34,7 +34,7 @@ $devices = $DB->GetAllByKey('SELECT n.id, n.name, n.location, '.$DB->GroupConcat
 
 if ($devices)
 {
-	foreach ($devices as $devidx => $device)
+	foreach ($devices as $devidx => $device) {
 		if ($device['lastonline'])
 			if (time() - $device['lastonline'] > $CONFIG['phpui']['lastonline_limit'])
 				$devices[$devidx]['state'] = 2;
@@ -42,6 +42,14 @@ if ($devices)
 				$devices[$devidx]['state'] = 1;
 		else
 			$devices[$devidx]['state'] = 0;
+		$urls = $DB->GetRow('SELECT '.$DB->GroupConcat('url').' AS url,
+			'.$DB->GroupConcat('comment').' AS comment FROM managementurls WHERE netdevid = ?',
+			array($device['id']));
+		if ($urls) {
+			$devices[$devidx]['url'] = $urls['url'];
+			$devices[$devidx]['comment'] = $urls['comment'];
+		}
+	}
 
 	$devids = implode(',', array_keys($devices));
 
