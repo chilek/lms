@@ -524,7 +524,7 @@ switch($type)
 						ELSE 1 END)
 					) AS value
 					FROM assignments a, tariffs t, customersview c
-					WHERE a.customerid = c.id 
+					WHERE a.customerid = c.id AND status = 3 
 					AND a.tariffid = t.id AND t.taxid=?
 					AND c.deleted=0 
 					AND (a.datefrom<=? OR a.datefrom=0) AND (a.dateto>=? OR a.dateto=0) 
@@ -543,7 +543,7 @@ switch($type)
 					SUM(((((100 - a.pdiscount) * l.value) / 100) - a.vdiscount) *
 						((CASE a.suspended WHEN 0 THEN 100.0 ELSE '.$suspension_percentage.' END) / 100)) AS value
 					FROM assignments a, liabilities l, customersview c
-					WHERE a.customerid = c.id 
+					WHERE a.customerid = c.id AND status = 3 
 					AND a.liabilityid = l.id AND l.taxid=?
 					AND c.deleted=0
 					AND (a.datefrom<=? OR a.datefrom=0) AND (a.dateto>=? OR a.dateto=0) 

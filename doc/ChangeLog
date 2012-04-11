@@ -108,6 +108,9 @@ version ? (????-??-??):
   - tcpdf support for invoices [prezes_kk]
   - assignmentlocks -> nodelocks [chilan]
   - we can choose format of reports beetween html and pdf - phpui->report_type [prezes_kk]
+  - script for automatic filling of gps coordinates based on Sebastian Wielgosz work [prezes_kk]
+  - changed pin field type from int to varchar(6) [pjona]
+  - liability reports are consistent with invoice/cash issues [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
