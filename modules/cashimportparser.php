@@ -140,8 +140,14 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 		if(!empty($pattern['comment_replace']))
 			$comment = preg_replace($pattern['comment_replace']['from'], $pattern['comment_replace']['to'], $comment);
 
-		$customer = trim($lastname.' '.$name);
+		// remove unneeded spaces and cut $customer and $comment to fit into database (150 chars limit)
+		$customer = trim($lastname.' '.$name);                                                                                                                                           
+		$customer = preg_replace('/[ ]+/',' ',$customer);
+		$customer = substr($customer,0,150);
+
 		$comment = trim($comment);
+		$comment = preg_replace('/[ ]+/',' ',$comment);
+		$comment = substr($comment,0,150);
 
 		if(!empty($pattern['use_line_hash']))
 			$hash = md5($theline.(!empty($pattern['line_idx_hash']) ? $ln : ''));
