@@ -116,7 +116,7 @@ if($dbtype =~ /mysql/)
 }
 elsif($dbtype eq "postgres")
 {
-	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1, AutoCommit => 0 });
 	$utsfmt = "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";
 }
 else
@@ -177,6 +177,7 @@ while (my ($ip,$record) = each %data)
 	$dbq->execute();
 }
 
+$dbase->commit;
 # finally 
 $dbq->finish();
 $dbase->disconnect();
