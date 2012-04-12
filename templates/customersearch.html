@@ -19,7 +19,7 @@
 	}
 //-->
 </SCRIPT>
-<P><FORM METHOD="POST" ACTION="?m=customersearch&search=1" NAME="customersearch">
+<P><FORM METHOD="POST" ACTION="?m=customersearch&search=1" NAME="customersearch" ID="customersearch">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE style="width: 100%;" CELLPADDING="3">
 	<TR CLASS="DARK">
@@ -180,6 +180,19 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" style="width: 1%; white-space: nowrap;">
+			<IMG src="img/money.gif" alt=""> <span class="bold">{trans("Tariffs")}:</span>
+		</TD>
+		<TD CLASS="fright" style="width: 99%;">
+			<SELECT SIZE="1" NAME="search[tariffs][]" MULTIPLE id="customertariffs">
+				<OPTION VALUE="" SELECTED>{trans("- all -")}</OPTION>
+				{foreach from=$tariffs item=item}
+				 	<OPTION VALUE="{$item.id}">{$item.name}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" style="width: 1%; white-space: nowrap;">
 			<IMG src="img/empty.gif" width="16" alt=""> <span class="bold">{trans("Created:")}</span>
 		</TD>
 		<TD CLASS="fright" style="width: 99%;">
@@ -302,6 +315,7 @@ var cal3 = new calendar(document.customersearch.elements['search[deletedfrom]'])
 cal3.time_comp = false;
 var cal4 = new calendar(document.customersearch.elements['search[deletedto]']);
 cal4.time_comp = false;
+multiselect('customersearch', 'customertariffs', '{t}- all -{/t}', null);
 //-->
 </SCRIPT>
 {include file="footer.html"}

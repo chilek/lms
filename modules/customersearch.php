@@ -29,6 +29,9 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 if(isset($_POST['search']))
 {
 	$customersearch = $_POST['search'];
+
+	if(!empty($customersearch['tariffs']))
+		$customersearch['tariffs'] = implode(",", $customersearch['tariffs']);
 	
 	if($customersearch['createdfrom'])
 	{
@@ -161,6 +164,7 @@ else
 	$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 	$SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 	$SMARTY->assign('cstateslist', $LMS->GetCountryStates());
+	$SMARTY->assign('tariffs', $LMS->GetTariffs());
 	$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions ORDER BY shortname'));
 	$SMARTY->assign('k', $k);
 	$SMARTY->display('customersearch.html');
