@@ -62,7 +62,7 @@ if(isset($_POST['customergroup']))
 
 	if($customergroupedit['name'] == '')
 		$error['name'] = trans('Group name required!');
-	elseif(strlen($customergroupedit['name']) > 16)
+	elseif(strlen($customergroupedit['name']) > 255)
 		$error['name'] = trans('Group name is too long!');
 	elseif(!preg_match('/^[._a-z0-9-]+$/i', $customergroupedit['name']))
 		$error['name'] = trans('Invalid chars in group name!');
