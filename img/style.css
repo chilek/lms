@@ -104,7 +104,7 @@ div.multiselectlayer {
 	position: absolute;
 	z-index: 100;
 	overflow: hidden;
-	width: 250px;
+	width: 350px;
 }
 /* iframe hack for IE6 */
 div.multiselectlayer iframe {
@@ -126,7 +126,7 @@ div.multiselectlayer ul {
 	border: solid 1px #888888;
 	white-space: nowrap;
 	max-height: 200px;
-	max-width: 250px;
+	max-width: 350px;
 	overflow-x: hidden;
 	overflow-y: auto;
 }

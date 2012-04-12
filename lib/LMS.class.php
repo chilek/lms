@@ -848,6 +848,13 @@ class LMS
 							$searchargs[] = 'EXISTS (SELECT 1 FROM zipcodes z
 								WHERE z.zip = c.zip AND z.stateid = '.intval($value).')';
 						break;
+						case 'tariffs':
+							$searchargs[] = 'EXISTS (SELECT 1 FROM assignments a 
+							WHERE a.customerid = c.id
+							AND (datefrom <= ?NOW? OR datefrom = 0) 
+							AND (dateto >= ?NOW? OR dateto = 0)
+							AND (tariffid IN ('.$value.')))';
+						break;
 						default:
 							$searchargs[] = "$key ?LIKE? ".$this->DB->Escape("%$value%");
 					}

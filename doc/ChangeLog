@@ -114,6 +114,7 @@ version ? (????-??-??):
   - small fix for new PHP version [red]
   - fix validation data in domains for DKIM [red]
   - added management urls for netdevices [chilan]
+  - customersearch: we can search customers by tariff [ceho]
 
 version 1.11.13 Dira (2011-04-07)
 
