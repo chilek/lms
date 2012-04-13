@@ -461,3 +461,36 @@ function ping_popup(ip, type)
 	popup('?m=ping&ip=' + ip + '&type=' + (type ? type : 0), 1, 1, 30, 30);
 	autoiframe_setsize('autoiframe', 480, 300);
 }
+
+function changeMacFormat(id)
+{
+	if (!id) return;
+	var elem = document.getElementById(id);
+	if (!elem) return;
+	var curmac = elem.innerHTML;
+	var macpatterns = [ /^([0-9a-f]{2}:){5}[0-9a-f]{2}$/gi, /^([0-9a-f]{2}-){5}[0-9a-f]{2}$/gi,
+		/^([0-9a-f]{4}\.){2}[0-9a-f]{4}$/gi, /^[0-9a-f]{12}$/gi ];
+	for (var i in macpatterns)
+		if (macpatterns[i].test(curmac))
+			break;
+	if (i >= macpatterns.length)
+		return;
+	i = parseInt(i);
+	switch (i) {
+		case 0:
+			curmac = curmac.replace(/:/g, '-');
+			break;
+		case 1:
+			curmac = curmac.replace(/-/g, '');
+			curmac = curmac.toLowerCase();
+			curmac = curmac.replace(/^([0-9a-f]{4})([0-9a-f]{4})([0-9a-f]{4})$/gi, '$1.$2.$3');
+			break;
+		case 2:
+			curmac = curmac.replace(/\./g, '');
+			curmac = curmac.toUpperCase();
+			break;
+		case 3:
+			curmac = curmac.replace(/^([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/gi, '$1:$2:$3:$4:$5:$6');
+	}
+	elem.innerHTML = curmac;
+}

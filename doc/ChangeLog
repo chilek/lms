@@ -118,6 +118,7 @@ version ? (????-??-??):
   - cashimportparser.php: fixed problem with long customername and description [ceho]
   - customergroups: extended group name to 255 chars [ceho]
   - lms-traffic: disable 'autocommit' for postgresql [ceho]
+  - clicking on mac icon changes mac format [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
