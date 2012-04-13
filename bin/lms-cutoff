@@ -142,7 +142,7 @@ if ($excluded_customergroups ne '') {
 if ($customergroups ne '') {
     $filter = $filter . " AND (SELECT count(*) FROM customerassignments
                                 WHERE customerassignments.customerid = customers.id
-                                  AND customerassignments.customergroupid IN ($customergroups)) != 0";
+                                  AND customerassignments.customergroupid IN ($customergroups)) > 0";
 }
 
 my $dbq = $dbase->prepare("
