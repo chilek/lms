@@ -59,16 +59,18 @@
 		</TD>
 	</TR>
 	{/if}
+	{assign var="counter" value=0}
+	{foreach from=$nodeipdata.macs item=item}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/mac.gif" ALT="{trans("MAC address:")}">
+			<a href="javascript:changeMacFormat('mac{$counter}');"><IMG SRC="img/mac.gif" ALT="{trans("MAC address:")}"></a>
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
-			{foreach from=$nodeipdata.macs item=item}
-				{$item.mac} {if $item.producer}({$item.producer}){/if}<BR>
-			{/foreach}
+			<span id="mac{$counter}">{$item.mac}</span> {if $item.producer}({$item.producer}){/if}<BR>
 		</TD>
 	</TR>
+	{math equation="x+1" x=$counter assign="counter"}
+	{/foreach}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
 			<IMG SRC="img/passwd.gif" ALT="{trans("Password:")}">
