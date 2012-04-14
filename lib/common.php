@@ -777,8 +777,16 @@ function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $o
 
 	$html2pdf = new HTML2PDF($orientation, 'A4', 'en', true, 'UTF-8', $margins);
 
+	if ($id) {
+		$info = $DB->GetRow('SELECT di.name, di.description FROM divisions di
+			LEFT JOIN documents d ON (d.divisionid = di.id)
+			WHERE d.id = ?', array($id));
+	}
+
 	$html2pdf->pdf->SetProducer('LMS Developers');
 	$html2pdf->pdf->SetCreator('LMS '.$layout['lmsv']);
+	if ($info)
+		$html2pdf->pdf->SetAuthor($info['name']);
 	if ($subject)
 		$html2pdf->pdf->SetSubject($subject);
 	if ($title)
@@ -796,27 +804,29 @@ function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $o
 	if ($copy) {
 		/* add watermark only for contract & annex */
 		if(($type == DOC_CONTRACT) || ($type == DOC_ANNEX)) {
-			$PageWidth = $html2pdf->pdf->getPageWidth();
-			$PageHeight = $html2pdf->pdf->getPageHeight();
-			$x = ($PageWidth / 2) - 100;
-			$y = ($PageHeight / 2) + 50;
-			$html2pdf->pdf->SetAlpha(0.2);
-			$html2pdf->pdf->StartTransform();
-			$html2pdf->pdf->Rotate(45, $x, $y);
 			$html2pdf->AddFont('courier', '', 'courier.php');
 			$html2pdf->AddFont('courier', 'B', 'courierb.php');
-			$html2pdf->pdf->SetFont("courier", "B", 120);
 			$html2pdf->pdf->SetTextColor(255, 0, 0);
-			$html2pdf->pdf->Text($x, $y, trim(preg_replace("/(.)/i", "\${1} ", trans('COPY'))));
-			$html2pdf->pdf->StopTransform();
+
+			$PageWidth = $html2pdf->pdf->getPageWidth();
+			$PageHeight = $html2pdf->pdf->getPageHeight();
+			$PageCount = $html2pdf->pdf->getNumPages();
+			$txt = trim(preg_replace("/(.)/i", "\${1} ", trans('COPY')));
+			$w = $html2pdf->pdf->getStringWidth($txt, 'courier', 'B', 120);
+			$x = ($PageWidth / 2) - (($w / 2) * sin(45));
+			$y = ($PageHeight / 2) + 50;
+
+			for($i = 1; $i <= $PageCount; $i++) {
+				$html2pdf->pdf->setPage($i);
+				$html2pdf->pdf->SetAlpha(0.2);
+				$html2pdf->pdf->SetFont('courier', 'B', 120);
+				$html2pdf->pdf->StartTransform();
+				$html2pdf->pdf->Rotate(45, $x, $y);
+				$html2pdf->pdf->Text($x, $y, $txt);
+				$html2pdf->pdf->StopTransform();
+			}
 			$html2pdf->pdf->SetAlpha(1);
 		}
-	}
-
-	if ($type && $id) {
-		$info = $DB->GetRow('SELECT di.name, di.description FROM divisions di
-			LEFT JOIN documents d ON (d.divisionid = di.id)
-			WHERE d.id = ?', array($id));
 	}
 
 	if(($type == DOC_CONTRACT) || ($type == DOC_ANNEX)) {
