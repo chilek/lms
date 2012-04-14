@@ -120,7 +120,7 @@ switch($type)
 		$SMARTY->assign('balancelist', $list);
 		if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
 			$output = $SMARTY->fetch('printcustomerbalance.html');
-			html2pdf($output);
+			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {
 			$SMARTY->display('printcustomerbalance.html');
 		}
@@ -288,7 +288,7 @@ switch($type)
 
 		if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
 			$output = $SMARTY->fetch('printbalancelist.html');
-			html2pdf($output);
+			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {
 			$SMARTY->display('printbalancelist.html');
 		}
@@ -326,7 +326,7 @@ switch($type)
 		$SMARTY->assign('incomelist', $incomelist);
 		if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
 			$output = $SMARTY->fetch('printincomereport.html');
-			html2pdf($output);
+			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {
 			$SMARTY->display('printincomereport.html');
 		}
@@ -370,7 +370,7 @@ switch($type)
 		$SMARTY->assign('importlist', $importlist);
 		if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
 			$output = $SMARTY->fetch('printimportlist.html');
-			html2pdf($output);
+			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {
 			$SMARTY->display('printimportlist.html');
 		}
@@ -626,7 +626,7 @@ switch($type)
 
 		if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
 			$output = $SMARTY->fetch('printliabilityreport.html');
-			html2pdf($output);
+			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {
 			$SMARTY->display('printliabilityreport.html');
 		}
@@ -813,7 +813,7 @@ switch($type)
 			$SMARTY->assign('reccount', sizeof($list));
 			if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
 				$output = $SMARTY->fetch('printreceiptlist-ext.html');
-				html2pdf($output);
+				html2pdf($output, trans('Reports'), $layout['pagetitle']);
 			} else {
 				$SMARTY->display('printreceiptlist-ext.html');
 			}
@@ -822,7 +822,7 @@ switch($type)
 		{
 			if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
 				$output = $SMARTY->fetch('printreceiptlist.html');
-				html2pdf($output);
+				html2pdf($output, trans('Reports'), $layout['pagetitle']);
 			} else {
 				$SMARTY->display('printreceiptlist.html');
 			}

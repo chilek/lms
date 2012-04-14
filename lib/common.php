@@ -766,36 +766,94 @@ function register_plugin($handle, $plugin)
         $PLUGINS[$handle][] = $plugin;
 }
 
-function html2pdf($content, $orientation='P', $margins=array(5, 10, 5, 10), $save=false)
+function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $orientation='P', $margins=array(5, 10, 5, 10), $save=false, $copy=false)
 {
-	global $layout;
+	global $layout, $DB;
 	require_once(LIB_DIR.'/html2pdf/html2pdf.class.php');
 
 	if (isset($margins))
 		if (!is_array($margins))
-			$margins = array(5, 10, 5, 10);
+			$margins = array(5, 10, 5, 10); /* default */
 
 	$html2pdf = new HTML2PDF($orientation, 'A4', 'en', true, 'UTF-8', $margins);
 
+	if ($id) {
+		$info = $DB->GetRow('SELECT di.name, di.description FROM divisions di
+			LEFT JOIN documents d ON (d.divisionid = di.id)
+			WHERE d.id = ?', array($id));
+	}
+
 	$html2pdf->pdf->SetProducer('LMS Developers');
 	$html2pdf->pdf->SetCreator('LMS '.$layout['lmsv']);
-	$html2pdf->pdf->SetSubject(trans('Reports'));
-	$html2pdf->pdf->SetTitle($layout['pagetitle']);
+	if ($info)
+		$html2pdf->pdf->SetAuthor($info['name']);
+	if ($subject)
+		$html2pdf->pdf->SetSubject($subject);
+	if ($title)
+		$html2pdf->pdf->SetTitle($title);
 
 	$html2pdf->pdf->SetDisplayMode('fullpage', 'SinglePage', 'UseNone');
 	$html2pdf->AddFont('arial', '', 'arial.php');
 	$html2pdf->AddFont('arial', 'B', 'arialb.php');
 	$html2pdf->AddFont('arial', 'I', 'ariali.php');
 	$html2pdf->AddFont('arial', 'BI', 'arialbi.php');
+	$html2pdf->AddFont('times', '', 'times.php');
 
 	$html2pdf->WriteHTML($content);
+
+	if ($copy) {
+		/* add watermark only for contract & annex */
+		if(($type == DOC_CONTRACT) || ($type == DOC_ANNEX)) {
+			$html2pdf->AddFont('courier', '', 'courier.php');
+			$html2pdf->AddFont('courier', 'B', 'courierb.php');
+			$html2pdf->pdf->SetTextColor(255, 0, 0);
+
+			$PageWidth = $html2pdf->pdf->getPageWidth();
+			$PageHeight = $html2pdf->pdf->getPageHeight();
+			$PageCount = $html2pdf->pdf->getNumPages();
+			$txt = trim(preg_replace("/(.)/i", "\${1} ", trans('COPY')));
+			$w = $html2pdf->pdf->getStringWidth($txt, 'courier', 'B', 120);
+			$x = ($PageWidth / 2) - (($w / 2) * sin(45));
+			$y = ($PageHeight / 2) + 50;
+
+			for($i = 1; $i <= $PageCount; $i++) {
+				$html2pdf->pdf->setPage($i);
+				$html2pdf->pdf->SetAlpha(0.2);
+				$html2pdf->pdf->SetFont('courier', 'B', 120);
+				$html2pdf->pdf->StartTransform();
+				$html2pdf->pdf->Rotate(45, $x, $y);
+				$html2pdf->pdf->Text($x, $y, $txt);
+				$html2pdf->pdf->StopTransform();
+			}
+			$html2pdf->pdf->SetAlpha(1);
+		}
+	}
+
+	if(($type == DOC_CONTRACT) || ($type == DOC_ANNEX)) {
+		/* set signature additional information */
+		$info = array(
+			'Name' => $info['name'],
+			'Location' => $subject,
+			'Reason' => $title,
+			'ContactInfo' => $info['description'],
+		);
+
+		/* setup your cert & key file */
+		$cert = 'file://'.LIB_DIR.'/tcpdf/config/lms.cert';
+		$key = 'file://'.LIB_DIR.'/tcpdf/config/lms.key';
+
+		/* set document digital signature & protection */
+		if (file_exists($cert) && file_exists($key)) {
+			$html2pdf->pdf->setSignature($cert, $key, 'lms-documents', '', 1, $info);
+		}
+	}
 	$html2pdf->pdf->SetProtection(array('modify', 'annot-forms', 'fill-forms', 'extract', 'assemble'), '', PASSWORD_CHANGEME, '1');
 
 	if ($save) {
 		if (function_exists('mb_convert_encoding'))
-			$filename = mb_convert_encoding($layout['pagetitle'], "ISO-8859-2", "UTF-8");
+			$filename = mb_convert_encoding($title, "ISO-8859-2", "UTF-8");
 		else
-			$filename = iconv("UTF-8", "ISO-8859-2//TRANSLIT", $layout['pagetitle']);
+			$filename = iconv("UTF-8", "ISO-8859-2//TRANSLIT", $title);
 		$html2pdf->Output($filename.'.pdf', 'D');
 	} else {
 		$html2pdf->Output();
