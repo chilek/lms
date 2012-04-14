@@ -25,6 +25,7 @@ struct plan
 	int period;
 	int plan;
 	int number;
+	int isdefault;
 };
 
 #ifdef USE_PGSQL
