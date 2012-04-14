@@ -117,7 +117,7 @@ switch($type)
 
 		if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
 			$output = $SMARTY->fetch('printcustomerlist.html');
-			html2pdf($output);
+			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {
 			$SMARTY->display('printcustomerlist.html');
 		}
@@ -188,7 +188,7 @@ switch($type)
 		$SMARTY->assign('balancelist', $list);
 		if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
 			$output = $SMARTY->fetch('printcustomerbalance.html');
-			html2pdf($output);
+			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {
 			$SMARTY->display('printcustomerbalance.html');
 		}

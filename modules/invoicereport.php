@@ -276,7 +276,7 @@ if(isset($_POST['extended']))
 	$SMARTY->assign('reccount', $reccount);
 	if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
 		$output = $SMARTY->fetch('invoicereport-ext.html');
-		html2pdf($output, 'L', array(5, 5, 5, 5), ($_GET['save'] == 1) ? true : false);
+		html2pdf($output, trans('Reports'), $layout['pagetitle'], NULL, NULL, 'L', array(5, 5, 5, 5), ($_GET['save'] == 1) ? true : false);
 	} else {
 		$SMARTY->display('invoicereport-ext.html');
 	}
@@ -284,7 +284,7 @@ if(isset($_POST['extended']))
 else {
 	if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
 		$output = $SMARTY->fetch('invoicereport.html');
-		html2pdf($output, 'L', array(5, 5, 5, 5), ($_GET['save'] == 1) ? true : false);
+		html2pdf($output, trans('Reports'), $layout['pagetitle'], NULL, NULL, 'L', array(5, 5, 5, 5), ($_GET['save'] == 1) ? true : false);
 	} else {
 		$SMARTY->display('invoicereport.html');
 	}

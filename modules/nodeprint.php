@@ -99,7 +99,7 @@ switch($type)
 				$SMARTY->assign('nodelist', $nodelist);
 				if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
 					$output = $SMARTY->fetch('printindebtnodelist.html');
-					html2pdf($output);
+					html2pdf($output, trans('Reports'), $layout['pagetitle']);
 				} else {
 					$SMARTY->display('printindebtnodelist.html');
 				}
@@ -117,7 +117,7 @@ switch($type)
 		$SMARTY->assign('nodelist', $nodelist);
 		if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
 			$output = $SMARTY->fetch('printnodelist.html');
-			html2pdf($output);
+			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {
 			$SMARTY->display('printnodelist.html');
 		}
