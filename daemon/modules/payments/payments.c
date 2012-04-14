@@ -264,7 +264,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	int docid=0, last_cid=0, last_paytype=0, last_plan=0, exec=0, suspended=0, itemid=0;
 
 	time_t t;
-	struct tm *tt;
+	struct tm tt;
 	char monthday[3], month[3], year[5], quarterday[4], weekday[2], yearday[4], halfday[4];
 	char monthname[20], nextmon[8];
 
@@ -392,22 +392,22 @@ void reload(GLOBAL *g, struct payments_module *p)
 
 	// get current date
 	t = time(NULL);
-	tt = localtime(&t);
-	strftime(monthday, 	sizeof(monthday), 	"%d", tt);
-	strftime(weekday, 	sizeof(weekday), 	"%u", tt);
-	strftime(monthname, 	sizeof(monthname), 	"%B", tt);
-	strftime(month, 	sizeof(month), 		"%m", tt);
-	strftime(year, 		sizeof(year), 		"%Y", tt);
+	memcpy(&tt, localtime(&t), sizeof(tt));
+	strftime(monthday, 	sizeof(monthday), 	"%d", &tt);
+	strftime(weekday, 	sizeof(weekday), 	"%u", &tt);
+	strftime(monthname, 	sizeof(monthname), 	"%B", &tt);
+	strftime(month, 	sizeof(month), 		"%m", &tt);
+	strftime(year, 		sizeof(year), 		"%Y", &tt);
 
 	currtime = strdup(itoa(t));
-	imday = tt->tm_mday;
-	imonth = tt->tm_mon+1;
+	imday = tt.tm_mday;
+	imonth = tt.tm_mon+1;
 
 	// leap year fix
-	if(is_leap_year(tt->tm_year+1900) && tt->tm_yday+1 > 31+28)
-		strncpy(yearday, itoa(tt->tm_yday), sizeof(yearday));
+	if(is_leap_year(tt.tm_year+1900) && tt.tm_yday+1 > 31+28)
+		strncpy(yearday, itoa(tt.tm_yday), sizeof(yearday));
 	else
-		strncpy(yearday, itoa(tt->tm_yday+1), sizeof(yearday));
+		strncpy(yearday, itoa(tt.tm_yday+1), sizeof(yearday));
 
 	// halfyear
 	if(imonth > 6)
@@ -435,23 +435,23 @@ void reload(GLOBAL *g, struct payments_module *p)
 
 	// next month in YYYY/MM format
 	if (imonth == 12)
-		snprintf(nextmon, sizeof(nextmon), "%04d/%02d", tt->tm_year+1901, 1);
+		snprintf(nextmon, sizeof(nextmon), "%04d/%02d", tt.tm_year+1901, 1);
 	else
-		snprintf(nextmon, sizeof(nextmon), "%04d/%02d", tt->tm_year+1900, imonth+1);
+		snprintf(nextmon, sizeof(nextmon), "%04d/%02d", tt.tm_year+1900, imonth+1);
 
 	// time periods
-	y_period = get_period(tt, YEARLY, p->up_payments);
-	h_period = get_period(tt, HALFYEARLY, p->up_payments);
-	q_period = get_period(tt, QUARTERLY, p->up_payments);
-	m_period = get_period(tt, MONTHLY, p->up_payments);
-	w_period = get_period(tt, WEEKLY, p->up_payments);
-	d_period = get_period(tt, DAILY, p->up_payments);
+	y_period = get_period(&tt, YEARLY, p->up_payments);
+	h_period = get_period(&tt, HALFYEARLY, p->up_payments);
+	q_period = get_period(&tt, QUARTERLY, p->up_payments);
+	m_period = get_period(&tt, MONTHLY, p->up_payments);
+	w_period = get_period(&tt, WEEKLY, p->up_payments);
+	d_period = get_period(&tt, DAILY, p->up_payments);
 
 	// today (for disposable liabilities)
-	tt->tm_sec = 0;
-	tt->tm_min = 0;
-	tt->tm_hour = 0;
-	today = mktime(tt);
+	tt.tm_sec = 0;
+	tt.tm_min = 0;
+	tt.tm_hour = 0;
+	today = mktime(&tt);
 
 	/****** main payments *******/
 	if( (res = g->db_pquery(g->conn, "SELECT * FROM payments "
@@ -536,10 +536,10 @@ void reload(GLOBAL *g, struct payments_module *p)
 			if (!p->numberplanid)
 			{
 				// get numbering plans for all divisions
-				result = g->db_query(g->conn, "SELECT n.id, n.period, COALESCE(a.divisionid, 0) AS divid "
-    					"FROM numberplans n "
-	    				"LEFT JOIN numberplanassignments a ON (a.planid = n.id) "
-		    			"WHERE doctype = 1 AND isdefault = 1");
+				result = g->db_query(g->conn, "SELECT n.id, n.period, COALESCE(a.divisionid, 0) AS divid, isdefault "
+					"FROM numberplans n "
+					"LEFT JOIN numberplanassignments a ON (a.planid = n.id) "
+					"WHERE doctype = 1");
 
 				for(i=0; i<g->db_nrows(result); i++) 
 				{
@@ -547,9 +547,10 @@ void reload(GLOBAL *g, struct payments_module *p)
 					plans[pl].plan = atoi(g->db_get_data(result, i, "id"));
 					plans[pl].period = atoi(g->db_get_data(result, i, "period"));
 					plans[pl].division = atoi(g->db_get_data(result, i, "divid"));
+					plans[pl].isdefault = atoi(g->db_get_data(result, i, "isdefault"));
 					plans[pl].number = 0;
 					pl++;
-    				}
+				}
 				g->db_free(&result);
 			}
 		}
@@ -590,27 +591,26 @@ void reload(GLOBAL *g, struct payments_module *p)
 
 			if( !val ) continue;
 
-            // calculate assignment value according to tariff's period
-            if (t_period && period != DISPOSABLE && t_period != period) {
+			// calculate assignment value according to tariff's period
+			if (t_period && period != DISPOSABLE && t_period != period) {
+				if (t_period == YEARLY)
+					val = val / 12.0;
+				else if (t_period == HALFYEARLY)
+					val = val / 6.0;
+				else if (t_period == QUARTERLY)
+					val = val / 3.0;
 
-                if (t_period == YEARLY)
-                    val = val / 12.0;
-                else if (t_period == HALFYEARLY)
-                    val = val / 6.0;
-                else if (t_period == QUARTERLY)
-                    val = val / 3.0;
-
-                if (period == YEARLY)
-                    val = val * 12.0;
-                else if (period == HALFYEARLY)
-                    val = val * 6.0;
-                else if (period == QUARTERLY)
-                    val = val * 3.0;
-                else if (period == WEEKLY)
-                    val = val / 4.0;
-                else if (period == DAILY)
-                    val = val / 30.0;
-            }
+				if (period == YEARLY)
+					val = val * 12.0;
+				else if (period == HALFYEARLY)
+					val = val * 6.0;
+				else if (period == QUARTERLY)
+					val = val * 3.0;
+				else if (period == WEEKLY)
+					val = val / 4.0;
+				else if (period == DAILY)
+					val = val / 30.0;
+			}
 
 			value = ftoa(val);
 			taxid = g->db_get_data(res,i,"taxid");
@@ -661,17 +661,17 @@ void reload(GLOBAL *g, struct payments_module *p)
 					paytype = p->paytype;
 
 				// select numberplan
-                if (a_numberplan) {
-    				for (n=0; n<pl; n++)
+				if (a_numberplan) {
+					for (n=0; n<pl; n++)
 						if (plans[n].plan == a_numberplan)
 							break;
-			    } else {
-    				for (n=0; n<pl; n++)
-						if (plans[n].division == divid)
+				} else {
+					for (n=0; n<pl; n++)
+						if (plans[n].division == divid && plans[n].isdefault)
 							break;
-                }
+				}
 
-                numberplan = (n < pl) ? n : -1;
+				numberplan = (n < pl) ? n : -1;
 
 				if ( last_cid != cid || last_paytype != paytype || last_plan != numberplan)
 				{
@@ -679,8 +679,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 					char *numberplanid, *paytime, *paytype_str = strdup(itoa(paytype));
 					int period, number = 0;
 
-                    last_paytype = paytype;
-                    last_plan = numberplan;
+					last_paytype = paytype;
+					last_plan = numberplan;
 
 					// numberplan found
 					if (numberplan >= 0)
@@ -698,8 +698,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 
 					if(!number)
 					{
-						char *start = get_num_period_start(tt, period);
-						char *end = get_num_period_end(tt, period);
+						char *start = get_num_period_start(&tt, period);
+						char *end = get_num_period_end(&tt, period);
 
 						// set invoice number
 						result = g->db_pquery(g->conn, "SELECT MAX(number) AS number FROM documents "

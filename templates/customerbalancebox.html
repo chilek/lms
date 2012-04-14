@@ -154,23 +154,23 @@
 				</TR>
 				{/section}
 				<TR class="light">
-					<TD CLASS="ftop" ALIGN="left" colspan="9">
-					    <TABLE cellpadding="0" cellspacing="0">
-						<TR><TD width="99%" NOWRAP>
-						{if check_conf('phpui.delete_link_in_customerbalancebox')}
-						<A href="javascript:delpos();">{trans("Delete")} <IMG src="img/delete.gif" alt="{trans("Delete")}"></A>&nbsp;
-						{/if}
-						{trans("Print")}:
-						<A href="javascript:print_doc('invoice');">{trans("invoices")} <IMG src="img/print.gif" alt=""></A>&nbsp;
-						<A href="javascript:printr();">{trans("cash receipts")} <IMG src="img/printr.gif" alt=""></A>&nbsp;
-						<A href="javascript:print_doc('note');">{trans("debit notes")} <IMG src="img/printd.gif" alt=""></A>&nbsp;
-						<INPUT type="checkbox" name="original" id="inv-original"{if preg_match('/original/i', $default_printpage)} checked{/if}> <label for="inv-original">{trans("original")}</label>
-						<INPUT type="checkbox" name="copy" id="inv-copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}> <label for="inv-copy">{trans("copy")}</label>
-						<INPUT type="checkbox" name="duplicate" id="inv-duplicate"{if preg_match('/duplicate/i', $default_printpage)} checked{/if}> <label for="inv-duplicate">{trans("duplicate")}</label>
-						</TD><TD width="1%" align="right" NOWRAP>
-						<label for="allboxb">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allboxb" onchange="CheckAll('addbalance', this, ['copy', 'original', 'duplicate'])" VALUE="1">
-						</TD></TR>
-					    </TABLE>
+					<TD CLASS="ftop" style="text-align: left;" colspan="9">
+						<TABLE style="width: 100%" cellpadding="0" cellspacing="0">
+							<TR><TD style="width: 99%; white-space: nowrap;">
+							{if check_conf('phpui.delete_link_in_customerbalancebox')}
+							<A href="javascript:delpos();">{trans("Delete")} <IMG src="img/delete.gif" alt="{trans("Delete")}"></A>&nbsp;
+							{/if}
+							{trans("Print")}:
+							<A href="javascript:print_doc('invoice');">{trans("invoices")} <IMG src="img/print.gif" alt=""></A>&nbsp;
+							<A href="javascript:printr();">{trans("cash receipts")} <IMG src="img/printr.gif" alt=""></A>&nbsp;
+							<A href="javascript:print_doc('note');">{trans("debit notes")} <IMG src="img/printd.gif" alt=""></A>&nbsp;
+							<INPUT type="checkbox" name="original" id="inv-original"{if preg_match('/original/i', $default_printpage)} checked{/if}> <label for="inv-original">{trans("original")}</label>
+							<INPUT type="checkbox" name="copy" id="inv-copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}> <label for="inv-copy">{trans("copy")}</label>
+							<INPUT type="checkbox" name="duplicate" id="inv-duplicate"{if preg_match('/duplicate/i', $default_printpage)} checked{/if}> <label for="inv-duplicate">{trans("duplicate")}</label>
+							</TD><TD style="width: 1%; text-align: right; white-space: nowrap;">
+							<label for="allboxb">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allboxb" onchange="CheckAll('addbalance', this, ['copy', 'original', 'duplicate'])" VALUE="1">
+							</TD></TR>
+						</TABLE>
 					</TD>
 				</TR>
 				<TR class="light">
