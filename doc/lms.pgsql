@@ -1832,4 +1832,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012041101');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012041102');
