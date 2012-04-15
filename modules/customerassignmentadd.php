@@ -312,8 +312,6 @@ $schemas = $DB->GetAll('SELECT p.name AS promotion, s.name, s.id,
 		WHERE promotionschemaid = s.id LIMIT 1)
 	ORDER BY p.name, s.name');
 
-print_r($a);
-print_r($ar);
 $SMARTY->assign('assignment', $a);
 $SMARTY->assign('customernodes', $customernodes);
 $SMARTY->assign('promotionschemas', $schemas);
