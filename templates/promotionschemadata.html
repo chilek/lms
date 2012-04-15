@@ -126,7 +126,7 @@ function edit_tariff(id)
 		periods = { {strip}
 			"-":0
 			{foreach name=periods from=$_PERIODS item=item key=key}
-				{if $key},"{$item}":{$ey}{/if}
+				{if $key},"{$item}":{$key}{/if}
 			{/foreach}
 		{/strip} };
 
