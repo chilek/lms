@@ -46,6 +46,11 @@ function module_main()
     $SMARTY->display('module:info.html');
 } 
 
+function module_docview()
+{
+	include 'docview.php';
+}
+
 function module_updateuserform()
 {
     global $LMS,$SMARTY,$SESSION;
