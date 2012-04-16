@@ -96,9 +96,11 @@ else
 
 $layout['pagetitle'] = trans('Node Info: $a',$nodeinfo['name']);
 
+include(MODULES_DIR.'/nodexajax.inc.php');
+
 $nodeinfo = $LMS->ExecHook('node_info_init', $nodeinfo);
 
-include(MODULES_DIR.'/nodexajax.inc.php');
+$xajax->processRequest();
 
 $SMARTY->assign('netdevices',$netdevices);
 $SMARTY->assign('nodestats',$nodestats);

@@ -92,7 +92,6 @@ $xajax->configure('javascript URI', 'img');
 $xajax->register(XAJAX_FUNCTION, 'getNodeLocks');
 $xajax->register(XAJAX_FUNCTION, 'addNodeLock');
 $xajax->register(XAJAX_FUNCTION, 'delNodeLock');
-$xajax->processRequest();
 
 $SMARTY->assign('xajax', $xajax->getJavascript());
 
