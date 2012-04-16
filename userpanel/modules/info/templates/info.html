@@ -5,6 +5,8 @@
 	<tr>
 		<td valign="top" width="100%">
 			{include file="module:userinfobox.html"}
+			<br />
+			{include file="module:userdocsbox.html"}
 		</td>
 	</tr>
 	{if get_conf('userpanel.data_consent_text') && !$userinfo.consentdate}
@@ -18,6 +20,8 @@
 	<tr>
 		<td valign="top" width="50%">
 			{include file="module:userinfobox.html"}
+			<br />
+			{include file="module:userdocsbox.html"}
 		</td>
 		<td valign="top" width="50%">
 			{if get_conf('userpanel.data_consent_text') && !$userinfo.consentdate}
