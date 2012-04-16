@@ -62,6 +62,7 @@ define('USERPANEL_MODULES_DIR', USERPANEL_DIR.'/modules/');
 
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
+define('DOC_DIR', $CONFIG['directories']['doc_dir']);
 define('MODULES_DIR', $CONFIG['directories']['modules_dir']);
 define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir']);
 
