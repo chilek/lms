@@ -73,5 +73,9 @@ $_LANG['Don\'t show customer nodes box if he hasn\'t any nodes'] = 'Jeśli klien
 $_LANG['Text of data processing agreement:'] = 'Tekst zgody na przetwarzanie danych:';
 $_LANG['Enter text of agreement for personal data processing'] = 'Wprowadź tekst zgody na przetwarzanie danych osobowych';
 $_LANG['Personal data processing agreement'] = 'Zgoda na przetwarzanie danych osobowych';
+$_LANG['Your documents'] = 'Twoje dokumenty';
+$_LANG['No such documents on your account'] = 'Nie ma żadnych dokumentów na Twoim koncie';
+$_LANG['not approved'] = 'niezatwierdzony';
+$_LANG['indefinitely'] = 'bezterminowo';
 
 ?>
