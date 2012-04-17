@@ -1,6 +1,6 @@
 <?php
 
-/* LMS version 1.11-cvs
+/* LMS version 1.11-git
  *
  *  (C) Copyright 2001-2012 LMS Developers
  *
