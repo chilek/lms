@@ -33,8 +33,8 @@ class LMS {
 	var $AUTH;   // object from Session.class.php (session management)
 	var $CONFIG;   // table including lms.ini options
 	var $cache = array();  // internal cache
-	var $hooks = array();	// registered plugin hooks
-	var $xajax;	 // xajax object
+	var $hooks = array(); // registered plugin hooks
+	var $xajax;  // xajax object
 	var $_version = '1.11-git'; // class version
 	var $_revision = '$Revision$';
 
@@ -86,7 +86,11 @@ class LMS {
 
 	function RegisterXajaxFunction($funcname) {
 		if ($this->xajax) {
-			$this->xajax->register(XAJAX_FUNCTION, $funcname);
+			if (is_array($funcname))
+				foreach ($funcname as $func)
+					$this->xajax->register(XAJAX_FUNCTION, $func);
+			else
+				$this->xajax->register(XAJAX_FUNCTION, $funcname);
 		}
 	}
 
