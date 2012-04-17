@@ -121,6 +121,7 @@ version ? (????-??-??):
   - clicking on mac icon changes mac format [chilan]
   - daemon/payments: better to not depend on localtime() singularity [chilan]
   - daemon/payments: fixed assignment numberplan support [chilan]
+  - fixed domain filtering [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
