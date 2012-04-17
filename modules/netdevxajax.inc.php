@@ -46,8 +46,7 @@ function addManagementUrl($netdevid, $params) {
 	if (empty($params['url']))
 		return $result;
 
-	$DB->Execute('INSERT INTO managementurls (netdevid, url, comment) VALUES (?, ?, ?)',
-		array($netdevid, $params['url'], $params['comment']));
+	$DB->Execute('INSERT INTO managementurls (netdevid, url, comment) VALUES (?, ?, ?)', array($netdevid, $params['url'], $params['comment']));
 	$result->call('xajax_getManagementUrls', $netdevid);
 	$result->assign('managementurladdlink', 'disabled', false);
 
@@ -65,16 +64,7 @@ function delManagementUrl($netdevid, $id) {
 	return $result;
 }
 
-require(LIB_DIR.'/xajax/xajax_core/xajax.inc.php');
-
-$xajax = new xajax();
-$xajax->configure('errorHandler', true);
-$xajax->configure('javascript URI', 'img');
-$xajax->register(XAJAX_FUNCTION, 'getManagementUrls');
-$xajax->register(XAJAX_FUNCTION, 'addManagementUrl');
-$xajax->register(XAJAX_FUNCTION, 'delManagementUrl');
-$xajax->processRequest();
-
-$SMARTY->assign('xajax', $xajax->getJavascript());
-
+$LMS->InitXajax();
+$LMS->RegisterXajaxFunction(array('getManagementUrls', 'addManagementUrl', 'delManagementUrl'));
+$SMARTY->assign('xajax', $LMS->RunXajax());
 ?>
