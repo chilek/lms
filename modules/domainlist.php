@@ -1,7 +1,7 @@
 <?php
 
 /*
- * LMS version 1.11-cvs
+ * LMS version 1.11-git
  *
  *  (C) Copyright 2001-2012 LMS Developers
  *
@@ -21,35 +21,33 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id$
+ *  $Id: domainlist.php,v 1.34 2012/01/02 11:01:34 alec Exp $
  */
 
-function GetDomainList($order='name,asc', $customer='', $filtr='')
-{
+function GetDomainList($order = 'name,asc', $customer = '', $filtr = '') {
 	global $DB, $CONFIG;
 
-	list($order,$direction) = sscanf($order, '%[^,],%s');
+	list($order, $direction) = sscanf($order, '%[^,],%s');
 
 	($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
 
-	switch($order)
-	{
+	switch ($order) {
 		case 'id':
 			$sqlord = " ORDER BY d.id $direction";
-		break;
+			break;
 		case 'description':
 			$sqlord = " ORDER BY d.description $direction";
-		break;
+			break;
 		case 'customer':
 			$sqlord = " ORDER BY customername $direction";
-		break;
-    		case 'type':
-    			$sqlord = " ORDER BY type $direction";
-                break;
+			break;
+		case 'type':
+			$sqlord = " ORDER BY type $direction";
+			break;
 		default:
 			$sqlord = " ORDER BY d.name $direction";
-		break;
-    }
+			break;
+	}
 
 	if ($filtr == '0-9') {
 		if ($CONFIG['database']['type'] == 'postgres')
@@ -58,20 +56,20 @@ function GetDomainList($order='name,asc', $customer='', $filtr='')
 			$where[] = "d.name REGEXP '^[0-9]'";
 	} else if ($filtr) {
 		$filtr = substr($filtr, 0, 1);
-		$where[] = 'd.name LIKE '.$DB->Escape("$filtr%");
+		$where[] = 'd.name ?LIKE? ' . $DB->Escape("$filtr%");
 	}
-	if ($customer!='')
-		$where[] = 'd.ownerid = '.intval($customer);
+	if ($customer != '')
+		$where[] = 'd.ownerid = ' . intval($customer);
 
-	$where = !empty($where) ? ' WHERE '.implode(' AND ', $where) : '';
+	$where = !empty($where) ? ' WHERE ' . implode(' AND ', $where) : '';
 
 	$list = $DB->GetAll('SELECT d.id AS id, d.name AS name, d.description, 
 		d.ownerid, d.type, (SELECT COUNT(*) FROM passwd WHERE domainid = d.id) AS cnt, '
-		.$DB->Concat('lastname', "' '",'c.name').' AS customername 
+			. $DB->Concat('lastname', "' '", 'c.name') . ' AS customername 
 		FROM domains d
 		LEFT JOIN customers c ON (d.ownerid = c.id)'
-		.$where
-		.($sqlord != '' ? $sqlord : ''));
+			. $where
+			. ($sqlord != '' ? $sqlord : ''));
 
 	$list['total'] = sizeof($list);
 	$list['order'] = $order;
@@ -81,18 +79,15 @@ function GetDomainList($order='name,asc', $customer='', $filtr='')
 	return $list;
 }
 
-function GetDomainFirstLetters($customer='')
-{
+function GetDomainFirstLetters($customer = '') {
 	global $DB;
 
 	if ($list = $DB->GetAllByKey('SELECT DISTINCT UPPER(SUBSTR(name, 1, 1)) AS idx
 		FROM domains'
-		.($customer!='' ? ' WHERE ownerid = '.intval($customer) : '')
-		.' ORDER BY 1', 'idx'))
-	{
+			. ($customer != '' ? ' WHERE ownerid = ' . intval($customer) : '')
+			. ' ORDER BY 1', 'idx')) {
 		foreach ($list as $idx => $row)
-			if (preg_match('/[0-9]/', $row['idx']))
-			{
+			if (preg_match('/[0-9]/', $row['idx'])) {
 				$list['0-9'] = 1;
 				unset($list[$idx]);
 			}
@@ -101,19 +96,19 @@ function GetDomainFirstLetters($customer='')
 	return $list;
 }
 
-if(!isset($_GET['o']))
+if (!isset($_GET['o']))
 	$SESSION->restore('dlo', $o);
 else
 	$o = $_GET['o'];
 $SESSION->save('dlo', $o);
 
-if(!isset($_GET['c']))
-        $SESSION->restore('dlc', $c);
+if (!isset($_GET['c']))
+	$SESSION->restore('dlc', $c);
 else
 	$c = $_GET['c'];
 $SESSION->save('dlc', $c);
 
-if(!isset($_GET['f']))
+if (!isset($_GET['f']))
 	$SESSION->restore('dfi', $f);
 else
 	$f = $_GET['f'];
@@ -138,10 +133,11 @@ unset($domainlist['order']);
 unset($domainlist['direction']);
 unset($domainlist['customer']);
 
-$page = (empty($_GET['page']) ? 1 : $_GET['page']); 
+$page = (empty($_GET['page']) ? 1 : $_GET['page']);
 $pagelimit = (empty($CONFIG['phpui']['domainlist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['domainlist_pagelimit']);
 
- if ($page > ceil($listdata['total']/$pagelimit)) $page=1;
+if ($page > ceil($listdata['total'] / $pagelimit))
+	$page = 1;
 
 $start = ($page - 1) * $pagelimit;
 
@@ -157,5 +153,4 @@ $SMARTY->assign('domaincount', $domaincount);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 $SMARTY->display('domainlist.html');
-
 ?>
