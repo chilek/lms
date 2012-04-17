@@ -1,7 +1,7 @@
 <?php
 
 /*
- *  LMS version 1.11-cvs
+ *  LMS version 1.11-git
  *
  *  (C) Copyright 2001-2012 LMS Developers
  *
@@ -89,8 +89,4 @@ $_LANG['Value:'] = 'Vertė:';
 $_LANG['yes'] = 'taip';
 $_LANG['You haven\'t got any assigned subscriptions.'] = 'Neturi priskirtų tarifų';
 $_LANG['Your balance'] = 'Tavo sąskaita';
-$_LANG['Your subscriptions'] = 'Tavo įkainiai';
-$_LANG['monthly ($a)'] = 'per menėsį ($a)';
-$_LANG['Reason:'] = 'Priežastis:';
-
-?>
+$_LANG['Your subscriptions'] = 'Tavo 
