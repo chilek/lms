@@ -3,7 +3,7 @@
 {$report_type = get_conf('phpui.report_type')}
 {foreach from=$pages item=item}{assign var=previtem value=$item-1}
 {if $report_type == 'pdf'}
-{if $item > 1}[page]{/if}
+{if $item > 1}<page>{/if}
 {else}
 <DIV{if $item > 1} style="page-break-before: always; border-style: none;"{/if}>
 {/if}
@@ -159,7 +159,7 @@
 	</TR>
 </TABLE>
 {if $report_type == 'pdf'}
-{if $item > 1}[/page]{/if}
+{if $item > 1}</page>{/if}
 {else}
 </DIV>
 {/if}
