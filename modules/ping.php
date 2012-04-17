@@ -118,16 +118,9 @@ if (isset($_GET['p']))
 	$SMARTY->assign('part', $_GET['p']);
 	switch ($_GET['p']) {
 		case 'main':
-			/* Using AJAX for template plugins */
-			require(LIB_DIR.'/xajax/xajax_core/xajax.inc.php');
-
-			$xajax = new xajax();
-			$xajax->configure('errorHandler', true);
-			$xajax->configure('javascript URI', 'img');
-			$xajax->register(XAJAX_FUNCTION, 'refresh');
-			$xajax->processRequest();
-
-			$SMARTY->assign('xajax', $xajax->getJavascript());
+			$LMS->InitXajax();
+			$LMS->RegisterXajaxFunction('refresh');
+			$SMARTY->assign('xajax', $LMS->RunXajax());
 			break;
 		case 'titlebar':
 		case 'ipform':

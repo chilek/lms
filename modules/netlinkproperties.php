@@ -24,8 +24,7 @@
  *  $Id$
  */
 
-function update_netlink_properties($id, $devid, $linktype, $linkspeed)
-{
+function update_netlink_properties($id, $devid, $linktype, $linkspeed) {
 	global $LMS, $LINKTYPES, $LINKSPEEDS;
 
 	$result = new xajaxResponse();
@@ -43,25 +42,19 @@ function update_netlink_properties($id, $devid, $linktype, $linkspeed)
 			$bitmap = 'wireless.gif';
 	}
 
-	$contents = "<IMG src=\"img/".$bitmap
-		."\" alt=\"[ ".trans("Change connection properties")." ]\" title=\"[ ".trans("Change connection properties")." ]\""
-		." onmouseover=\"popup('<span style=&quot;white-space: nowrap;&quot;>".trans("Link type:")." ".$LINKTYPES[$linktype]."<br>"
-		.trans("Link speed:")." ".$LINKSPEEDS[$linkspeed]
-		."</span>');\" onmouseout=\"pophide();\">";
+	$contents = "<IMG src=\"img/" . $bitmap
+			. "\" alt=\"[ " . trans("Change connection properties") . " ]\" title=\"[ " . trans("Change connection properties") . " ]\""
+			. " onmouseover=\"popup('<span style=&quot;white-space: nowrap;&quot;>" . trans("Link type:") . " " . $LINKTYPES[$linktype] . "<br>"
+			. trans("Link speed:") . " " . $LINKSPEEDS[$linkspeed]
+			. "</span>');\" onmouseout=\"pophide();\">";
 	$result->call('update_netlink_info', $contents);
 
 	return $result;
 }
 
-require(LIB_DIR.'/xajax/xajax_core/xajax.inc.php');
-
-$xajax = new xajax();
-$xajax->configure('errorHandler', true);
-$xajax->configure('javascript URI', 'img');
-$xajax->register(XAJAX_FUNCTION, 'update_netlink_properties');
-$xajax->processRequest();
-
-$SMARTY->assign('xajax', $xajax->getJavascript());
+$LMS->InitXajax();
+$LMS->RegisterXajaxFunction('update_netlink_properties');
+$SMARTY->assign('xajax', $LMS->RunXajax());
 
 $layout['pagetitle'] = trans('Select link properties');
 
@@ -72,8 +65,7 @@ $isnetlink = isset($_GET['isnetlink']) ? intval($_GET['isnetlink']) : 0;
 if ($isnetlink)
 	$link = $LMS->GetNetDevLinkType($id, $devid);
 else
-	$link = $DB->GetRow("SELECT linktype AS type, linkspeed AS speed FROM nodes WHERE netdev = ? AND id = ?",
-		array($id, $devid));
+	$link = $DB->GetRow("SELECT linktype AS type, linkspeed AS speed FROM nodes WHERE netdev = ? AND id = ?", array($id, $devid));
 
 $link['id'] = $id;
 $link['devid'] = $devid;
@@ -81,5 +73,4 @@ $link['isnetlink'] = $isnetlink;
 
 $SMARTY->assign('link', $link);
 $SMARTY->display('netlinkproperties.html');
-
 ?>

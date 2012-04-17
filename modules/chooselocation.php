@@ -24,12 +24,10 @@
  *  $Id$
  */
 
-
-function get_loc_streets($cityid)
-{
+function get_loc_streets($cityid) {
 	global $DB;
 
-	$list = $DB->GetAll("SELECT s.id, (CASE WHEN s.name2 IS NOT NULL THEN ".$DB->Concat('s.name', "' '", 's.name2')." ELSE s.name END) AS name, t.name AS typename
+	$list = $DB->GetAll("SELECT s.id, (CASE WHEN s.name2 IS NOT NULL THEN " . $DB->Concat('s.name', "' '", 's.name2') . " ELSE s.name END) AS name, t.name AS typename
 		FROM location_streets s
 		LEFT JOIN location_street_types t ON (s.typeid = t.id)
 		WHERE s.cityid = ?
@@ -47,8 +45,7 @@ function get_loc_streets($cityid)
 	return $list;
 }
 
-function get_loc_cities($districtid)
-{
+function get_loc_cities($districtid) {
 	global $DB, $BOROUGHTYPES;
 
 	$list = $DB->GetAll('SELECT c.id, c.name, b.name AS borough, b.type AS btype
@@ -59,17 +56,14 @@ function get_loc_cities($districtid)
 
 	if ($list)
 		foreach ($list as $idx => $row) {
-			$name = sprintf('%s (%s %s)', $row['name'],
-				$BOROUGHTYPES[$row['btype']], $row['borough']);
+			$name = sprintf('%s (%s %s)', $row['name'], $BOROUGHTYPES[$row['btype']], $row['borough']);
 			$list[$idx] = array('id' => $row['id'], 'name' => $name);
 		}
 
 	return $list;
 }
 
-
-if (isset($_GET['ajax']) && isset($_GET['what']))
-{
+if (isset($_GET['ajax']) && isset($_GET['what'])) {
 	header('Content-type: text/plain');
 	$search = urldecode(trim($_GET['what']));
 
@@ -86,31 +80,27 @@ if (isset($_GET['ajax']) && isset($_GET['what']))
 		JOIN location_boroughs b ON (c.boroughid = b.id)
 		JOIN location_districts d ON (b.districtid = d.id)
 		JOIN location_states s ON (d.stateid = s.id)
-		WHERE c.name ?LIKE? '.$DB->Escape("%$search%").'
+		WHERE c.name ?LIKE? ' . $DB->Escape("%$search%") . '
 		ORDER BY c.name, b.type LIMIT 10');
 
 	$eligible = $actions = array();
 	if ($list)
 		foreach ($list as $idx => $row) {
-			$name = sprintf('%s (%s%s, %s)', $row['name'],
-			$row['btype'] < 4 ? trans('<!borough_abbr>') : '', $row['borough'],
-				trans('<!district_abbr>') . $row['district']);
+			$name = sprintf('%s (%s%s, %s)', $row['name'], $row['btype'] < 4 ? trans('<!borough_abbr>') : '', $row['borough'], trans('<!district_abbr>') . $row['district']);
 
 			$eligible[$idx] = escape_js($name);
-			$actions[$idx]  = sprintf("javascript: search_update(%d,%d,%d)",
-				$row['id'], $row['districtid'], $row['stateid']);
+			$actions[$idx] = sprintf("javascript: search_update(%d,%d,%d)", $row['id'], $row['districtid'], $row['stateid']);
 		}
 
 	if ($eligible) {
-		print "this.eligible = [\"".implode('","',$eligible)."\"];\n";
-		print "this.actions = [\"".implode('","',$actions)."\"];\n";
+		print "this.eligible = [\"" . implode('","', $eligible) . "\"];\n";
+		print "this.actions = [\"" . implode('","', $actions) . "\"];\n";
 	} else
 		print "false;\n";
 	die;
 }
 
-function select_location($what, $id)
-{
+function select_location($what, $id) {
 	global $DB;
 
 	$JSResponse = new xajaxResponse();
@@ -132,14 +122,12 @@ function select_location($what, $id)
 			FROM location_districts WHERE stateid = ?
 			ORDER BY name', array($stateid));
 
-		$JSResponse->call('update_selection', 'district',
-			$list ? $list : array(), !$what ? $districtid : 0);
+		$JSResponse->call('update_selection', 'district', $list ? $list : array(), !$what ? $districtid : 0);
 	}
 
 	if ($districtid) {
 		$list = get_loc_cities($districtid);
-		$JSResponse->call('update_selection', 'city',
-			$list ? $list : array(), !$what ? $cityid : 0);
+		$JSResponse->call('update_selection', 'city', $list ? $list : array(), !$what ? $cityid : 0);
 	}
 
 	if ($cityid) {
@@ -150,15 +138,9 @@ function select_location($what, $id)
 	return $JSResponse;
 }
 
-require(LIB_DIR.'/xajax/xajax_core/xajax.inc.php');
-
-$xajax = new xajax();
-$xajax->configure('errorHandler', true);
-$xajax->configure('javascript URI', 'img');
-$xajax->register(XAJAX_FUNCTION, 'select_location');
-$xajax->processRequest();
-
-$SMARTY->assign('xajax', $xajax->getJavascript());
+$LMS->InitXajax();
+$LMS->RegisterXajaxFunction('select_location');
+$SMARTY->assign('xajax', $LMS->RunXajax());
 
 $layout['pagetitle'] = trans('Select location');
 
@@ -206,5 +188,4 @@ $data['formname'] = $_GET['form'];
 $SMARTY->assign('data', $data);
 $SMARTY->assign('states', $states);
 $SMARTY->display('chooselocation.html');
-
 ?>

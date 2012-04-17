@@ -24,8 +24,7 @@
  *  $Id: netdevinfo.php,v 1.36 2012/01/02 11:01:35 alec Exp $
  */
 
-if(! $LMS->NetDevExists($_GET['id']))
-{
+if (!$LMS->NetDevExists($_GET['id'])) {
 	$SESSION->redirect('?m=netdevlist');
 }
 
@@ -49,29 +48,25 @@ $layout['pagetitle'] = trans('Device Info: $a $b $c', $netdevinfo['name'], $netd
 
 $netdevinfo['id'] = $_GET['id'];
 
-$SMARTY->assign('netdevinfo',$netdevinfo);
-$SMARTY->assign('netdevlist',$netdevconnected);
-$SMARTY->assign('netcomplist',$netcomplist);
-$SMARTY->assign('restnetdevlist',$netdevlist);
-$SMARTY->assign('netdevips',$netdevips);
-$SMARTY->assign('nodelist',$nodelist);
-$SMARTY->assign('replacelist',$replacelist);
-$SMARTY->assign('replacelisttotal',$replacelisttotal);
-$SMARTY->assign('devlinktype',$SESSION->get('devlinktype'));
-$SMARTY->assign('devlinkspeed',$SESSION->get('devlinkspeed'));
-$SMARTY->assign('nodelinktype',$SESSION->get('nodelinktype'));
-$SMARTY->assign('nodelinkspeed',$SESSION->get('nodelinkspeed'));
+$SMARTY->assign('netdevinfo', $netdevinfo);
+$SMARTY->assign('netdevlist', $netdevconnected);
+$SMARTY->assign('netcomplist', $netcomplist);
+$SMARTY->assign('restnetdevlist', $netdevlist);
+$SMARTY->assign('netdevips', $netdevips);
+$SMARTY->assign('nodelist', $nodelist);
+$SMARTY->assign('replacelist', $replacelist);
+$SMARTY->assign('replacelisttotal', $replacelisttotal);
+$SMARTY->assign('devlinktype', $SESSION->get('devlinktype'));
+$SMARTY->assign('devlinkspeed', $SESSION->get('devlinkspeed'));
+$SMARTY->assign('nodelinktype', $SESSION->get('nodelinktype'));
+$SMARTY->assign('nodelinkspeed', $SESSION->get('nodelinkspeed'));
 
-include(MODULES_DIR.'/netdevxajax.inc.php');
+include(MODULES_DIR . '/netdevxajax.inc.php');
 
-if(isset($_GET['ip']))
-{
-	$SMARTY->assign('nodeipdata',$LMS->GetNode($_GET['ip']));
+if (isset($_GET['ip'])) {
+	$SMARTY->assign('nodeipdata', $LMS->GetNode($_GET['ip']));
 	$SMARTY->display('netdevipinfo.html');
-}
-else
-{
+} else {
 	$SMARTY->display('netdevinfo.html');
 }
-
 ?>
