@@ -799,6 +799,27 @@ function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $o
 	$html2pdf->AddFont('arial', 'BI', 'arialbi.php');
 	$html2pdf->AddFont('times', '', 'times.php');
 
+	/* if tidy extension is loaded we repair html content */
+	if (extension_loaded('tidy')) {
+		$config = array(
+			'indent' => true,
+			'output-html' => true,
+			'indent-spaces' => 4,
+			'join-styles' => true,
+			'join-classes' => true,
+			'fix-bad-comments' => true,
+			'fix-backslash' => true,
+			'repeated-attributes' => 'keep-last',
+			'drop-proprietary-attribute' => true,
+			'sort-attributes' => 'alpha',
+			'hide-comments' => true,
+			'new-blocklevel-tags' => 'page, page_header, page_footer, barcode',
+			'wrap' => 200);
+
+		$tidy = new tidy;
+		$content = $tidy->repairString($content, $config, 'utf8');
+	}
+
 	$html2pdf->WriteHTML($content);
 
 	if ($copy) {

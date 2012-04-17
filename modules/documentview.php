@@ -64,7 +64,7 @@ if(!empty($_POST['marks']))
 			{
 				if (strtolower($CONFIG['phpui']['document_type']) == 'pdf') {
 					if($i > 0)
-						$htmlbuffer .= "<page>\n";
+						$htmlbuffer .= "\n<page>\n";
 					ob_start();
 					include_once($filename);
 					$htmlbuffer .= ob_get_contents();
