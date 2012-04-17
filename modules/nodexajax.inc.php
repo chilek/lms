@@ -40,7 +40,7 @@ function getNodeLocks($nodeid) {
 				if ($days & (1 << $i))
 					$lockdays[$i] = 1;
 			$nodelocks[] = array('id' => $lock['id'], 'days' => $lockdays, 'fhour' => intval($fromsec / 3600), 'fminute' => intval(($fromsec % 3600) / 60),
-				'thour' => intval($tosec / 3600), 'tminute' => intval(($tosec % 3600) / 60));
+					'thour' => intval($tosec / 3600), 'tminute' => intval(($tosec % 3600) / 60));
 		}
 	$SMARTY->assign('nodelocks', $nodelocks);
 	$nodelocklist = $SMARTY->fetch('nodelocklist.html');
@@ -65,8 +65,7 @@ function addNodeLock($nodeid, $params) {
 	if ($fromsec >= $tosec || !$days)
 		return $result;
 
-	$DB->Execute('INSERT INTO nodelocks (nodeid, days, fromsec, tosec) VALUES (?, ?, ?, ?)',
-		array($nodeid, $days, $fromsec, $tosec));
+	$DB->Execute('INSERT INTO nodelocks (nodeid, days, fromsec, tosec) VALUES (?, ?, ?, ?)', array($nodeid, $days, $fromsec, $tosec));
 	$result->call('xajax_getNodeLocks', $nodeid);
 	$result->assign('nodelockaddlink', 'disabled', false);
 
@@ -84,15 +83,6 @@ function delNodeLock($nodeid, $id) {
 	return $result;
 }
 
-require(LIB_DIR.'/xajax/xajax_core/xajax.inc.php');
-
-$xajax = new xajax();
-$xajax->configure('errorHandler', true);
-$xajax->configure('javascript URI', 'img');
-$xajax->register(XAJAX_FUNCTION, 'getNodeLocks');
-$xajax->register(XAJAX_FUNCTION, 'addNodeLock');
-$xajax->register(XAJAX_FUNCTION, 'delNodeLock');
-
-$SMARTY->assign('xajax', $xajax->getJavascript());
-
+$LMS->InitXajax();
+$LMS->RegisterXajaxFunction(array('getNodeLocks', 'addNodeLock', 'delNodeLock'));
 ?>
