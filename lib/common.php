@@ -776,6 +776,8 @@ function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $o
 			$margins = array(5, 10, 5, 10); /* default */
 
 	$html2pdf = new HTML2PDF($orientation, 'A4', 'en', true, 'UTF-8', $margins);
+	/* disable font subsetting to improve performance */
+	$html2pdf->pdf->setFontSubsetting(false);
 
 	if ($id) {
 		$info = $DB->GetRow('SELECT di.name, di.description FROM divisions di
@@ -868,6 +870,7 @@ function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $o
 			$html2pdf->pdf->setSignature($cert, $key, 'lms-documents', '', 1, $info);
 		}
 	}
+
 	$html2pdf->pdf->SetProtection(array('modify', 'annot-forms', 'fill-forms', 'extract', 'assemble'), '', PASSWORD_CHANGEME, '1');
 
 	if ($save) {
