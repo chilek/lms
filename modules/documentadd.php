@@ -1,7 +1,7 @@
 <?php
 
 /*
- * LMS version 1.11-cvs
+ * LMS version 1.11-git
  *
  *  (C) Copyright 2001-2012 LMS Developers
  *
@@ -26,8 +26,7 @@
 
 $_DOC_DIR = DOC_DIR;
 
-function plugin($template, $customer)
-{
+function plugin($template, $customer) {
 	global $_DOC_DIR;
 
 	$result = '';
@@ -36,138 +35,121 @@ function plugin($template, $customer)
 	$JSResponse = new xajaxResponse();
 
 	// read template information
-	if (file_exists($file = DOC_DIR.'/templates/'.$template.'/info.php'))
-	    include($file);
+	if (file_exists($file = DOC_DIR . '/templates/' . $template . '/info.php'))
+		include($file);
 	// call plugin
-	if (!empty($engine['plugin']) && file_exists($file = DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['plugin'].'.php'))
-	    include($file);
+	if (!empty($engine['plugin']) && file_exists($file = DOC_DIR . '/templates/' . $engine['name'] . '/' . $engine['plugin'] . '.php'))
+		include($file);
 
 	$JSResponse->assign('plugin', 'innerHTML', $result);
 	return $JSResponse;
 }
 
-/* Using AJAX for template plugins */
-require(LIB_DIR.'/xajax/xajax_core/xajax.inc.php');
+$LMS->InitXajax();
+$LMS->RegisterXajaxFunction('plugin');
+$SMARTY->assign('xajax', $LMS->RunXajax());
 
-$xajax = new xajax();
-$xajax->configure('errorHandler', true);
-$xajax->configure('javascript URI', 'img');
-$xajax->register(XAJAX_FUNCTION, 'plugin');
-$xajax->processRequest();
-
-$SMARTY->assign('xajax', $xajax->getJavascript());
-/* end AJAX plugin stuff */
-
-if(isset($_POST['document']))
-{
+if (isset($_POST['document'])) {
 	$document = $_POST['document'];
 
 	$oldfromdate = $document['fromdate'];
 	$oldtodate = $document['todate'];
 
-	if(!($document['title'] || $document['description'] || $document['type']))
-	{
-		$SESSION->redirect('?'.$SESSION->get('backto'));
+	if (!($document['title'] || $document['description'] || $document['type'])) {
+		$SESSION->redirect('?' . $SESSION->get('backto'));
 	}
 
 	$document['customerid'] = isset($_POST['customerid']) ? intval($_POST['customerid']) : intval($_POST['customer']);
 
-	if(!$LMS->CustomerExists(intval($document['customerid'])))
+	if (!$LMS->CustomerExists(intval($document['customerid'])))
 		$error['customer'] = trans('Customer not selected!');
 
-	if(!$document['type'])
+	if (!$document['type'])
 		$error['type'] = trans('Document type is required!');
 
-	if(!$document['title'])
+	if (!$document['title'])
 		$error['title'] = trans('Document title is required!');
 
 
 	// check if selected customer can use selected numberplan
-        if($document['numberplanid'] && $document['customerid']
-	        && !$DB->GetOne('SELECT 1 FROM numberplanassignments
+	if ($document['numberplanid'] && $document['customerid']
+			&& !$DB->GetOne('SELECT 1 FROM numberplanassignments
 	                WHERE planid = ? AND divisionid IN (SELECT divisionid
-				FROM customers WHERE id = ?)', array($document['numberplanid'], $document['customerid'])))
-	{
-	        $error['number'] = trans('Selected numbering plan doesn\'t match customer\'s division!');
+				FROM customers WHERE id = ?)', array($document['numberplanid'], $document['customerid']))) {
+		$error['number'] = trans('Selected numbering plan doesn\'t match customer\'s division!');
 	}
 	// check number
-	elseif($document['number'] == '')
-	{
+	elseif ($document['number'] == '') {
 		$tmp = $LMS->GetNewDocumentNumber($document['type'], $document['numberplanid']);
 		$document['number'] = $tmp ? $tmp : 0;
 		$autonumber = true;
-	}
-	elseif(!preg_match('/^[0-9]+$/', $document['number']))
-    		$error['number'] = trans('Document number must be an integer!');
-	elseif($LMS->DocumentExists($document['number'], $document['type'], $document['numberplanid']))
+	} elseif (!preg_match('/^[0-9]+$/', $document['number']))
+		$error['number'] = trans('Document number must be an integer!');
+	elseif ($LMS->DocumentExists($document['number'], $document['type'], $document['numberplanid']))
 		$error['number'] = trans('Document with specified number exists!');
 
-	if($document['fromdate'])
-	{
-		$date = explode('/',$document['fromdate']);
-		if(checkdate($date[1],$date[2],$date[0]))
-			$document['fromdate'] = mktime(0,0,0,$date[1],$date[2],$date[0]);
+	if ($document['fromdate']) {
+		$date = explode('/', $document['fromdate']);
+		if (checkdate($date[1], $date[2], $date[0]))
+			$document['fromdate'] = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
 		else
 			$error['fromdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
 	}
-	else 
+	else
 		$document['fromdate'] = 0;
 
-	if($document['todate'])
-	{
-		$date = explode('/',$document['todate']);
-		if(checkdate($date[1],$date[2],$date[0]))
-			$document['todate'] = mktime(23,59,59,$date[1],$date[2],$date[0]);
+	if ($document['todate']) {
+		$date = explode('/', $document['todate']);
+		if (checkdate($date[1], $date[2], $date[0]))
+			$document['todate'] = mktime(23, 59, 59, $date[1], $date[2], $date[0]);
 		else
 			$error['todate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
 	}
-	else 
+	else
 		$document['todate'] = 0;
 
-	if($document['fromdate'] > $document['todate'] && $document['todate']!=0)
+	if ($document['fromdate'] > $document['todate'] && $document['todate'] != 0)
 		$error['todate'] = trans('Start date can\'t be greater than end date!');
 
-	if($filename = $_FILES['file']['name'])
-	{
-		if(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
-		{
+	if ($filename = $_FILES['file']['name']) {
+		if (is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size']) {
 			$file = $_FILES['file']['tmp_name'];
 			$document['md5sum'] = md5_file($file);
 			$document['contenttype'] = $_FILES['file']['type'];
 			$document['filename'] = $filename;
 		}
 		else // upload errors
-			switch($_FILES['file']['error'])
-			{
+			switch ($_FILES['file']['error']) {
 				case 1:
-				case 2: $error['file'] = trans('File is too large.'); break;
-				case 3: $error['file'] = trans('File upload has finished prematurely.'); break;
-				case 4: $error['file'] = trans('Path to file was not specified.'); break;
-				default: $error['file'] = trans('Problem during file upload.'); break;
+				case 2: $error['file'] = trans('File is too large.');
+					break;
+				case 3: $error['file'] = trans('File upload has finished prematurely.');
+					break;
+				case 4: $error['file'] = trans('Path to file was not specified.');
+					break;
+				default: $error['file'] = trans('Problem during file upload.');
+					break;
 			}
-	}
-	elseif($document['templ'])
-	{
+	} elseif ($document['templ']) {
 		$result = '';
 		// read template information
-		include(DOC_DIR.'/templates/'.$document['templ'].'/info.php');
+		include(DOC_DIR . '/templates/' . $document['templ'] . '/info.php');
 		// set some variables (needed in e.g. plugin)
 		$SMARTY->assignByRef('document', $document);
 		// call plugin
-		if(!empty($engine['plugin']) && file_exists(DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['plugin'].'.php'))
-			include(DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['plugin'].'.php');
+		if (!empty($engine['plugin']) && file_exists(DOC_DIR . '/templates/' . $engine['name'] . '/' . $engine['plugin'] . '.php'))
+			include(DOC_DIR . '/templates/' . $engine['name'] . '/' . $engine['plugin'] . '.php');
 		// get plugin content
 		$SMARTY->assign('plugin_result', $result);
 
 		// run template engine
-		if(file_exists(DOC_DIR.'/templates/'.$engine['engine'].'/engine.php'))
-			require_once(DOC_DIR.'/templates/'.$engine['engine'].'/engine.php');
+		if (file_exists(DOC_DIR . '/templates/' . $engine['engine'] . '/engine.php'))
+			require_once(DOC_DIR . '/templates/' . $engine['engine'] . '/engine.php');
 		else
-			require_once(DOC_DIR.'/templates/default/engine.php');
+			require_once(DOC_DIR . '/templates/default/engine.php');
 
-		if(!empty($output))
-		{
-			$file = DOC_DIR.'/tmp.file';
+		if (!empty($output)) {
+			$file = DOC_DIR . '/tmp.file';
 			$fh = fopen($file, 'w');
 			fwrite($fh, $output);
 			fclose($fh);
@@ -175,38 +157,33 @@ if(isset($_POST['document']))
 			$document['md5sum'] = md5_file($file);
 			$document['contenttype'] = $engine['content_type'];
 			$document['filename'] = $engine['output'];
-		}
-		else if (empty($error))
+		} else if (empty($error))
 			$error['template'] = trans('Problem during file generation!');
 	}
 	else
 		$error['file'] = trans('You must to specify file for upload or select document template!');
 
-	if(!$error)
-	{
-        if ($DB->GetOne('SELECT docid FROM documentcontents WHERE md5sum = ?',
-            array($document['md5sum']))
-        ) {
+	if (!$error) {
+		if ($DB->GetOne('SELECT docid FROM documentcontents WHERE md5sum = ?', array($document['md5sum']))
+		) {
 			$error['file'] = trans('Specified file exists in database!');
-        }
-        else {
-    		$path = DOC_DIR.'/'.substr($document['md5sum'],0,2);
-	    	@mkdir($path, 0700);
-		    $newfile = $path.'/'.$document['md5sum'];
+		} else {
+			$path = DOC_DIR . '/' . substr($document['md5sum'], 0, 2);
+			@mkdir($path, 0700);
+			$newfile = $path . '/' . $document['md5sum'];
 
-            // If we have a file with specified md5sum, we assume
-            // it's here because of some error. We can replace it with
-            // the new document file
-		    if (file_exists($newfile)) {
-		        @unlink($newfile);
-		    }
-			if(!@rename($file, $newfile))
+			// If we have a file with specified md5sum, we assume
+			// it's here because of some error. We can replace it with
+			// the new document file
+			if (file_exists($newfile)) {
+				@unlink($newfile);
+			}
+			if (!@rename($file, $newfile))
 				$error['file'] = trans('Can\'t save file in "$a" directory!', $path);
 		}
 	}
 
-	if(!$error)
-	{
+	if (!$error) {
 		$customer = $LMS->GetCustomer($document['customerid']);
 		$time = time();
 
@@ -214,14 +191,13 @@ if(isset($_POST['document']))
 
 		$DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, 
 			customerid, userid, name, address, zip, city, ten, ssn, divisionid, closed)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-			array(	$document['type'],
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($document['type'],
 				$document['number'],
 				$document['numberplanid'],
 				$time,
 				$document['customerid'],
 				$AUTH->id,
-				trim($customer['lastname'].' '.$customer['name']),
+				trim($customer['lastname'] . ' ' . $customer['name']),
 				$customer['address'] ? $customer['address'] : '',
 				$customer['zip'] ? $customer['zip'] : '',
 				$customer['city'] ? $customer['city'] : '',
@@ -229,13 +205,12 @@ if(isset($_POST['document']))
 				$customer['ssn'] ? $customer['ssn'] : '',
 				$customer['divisionid'],
 				isset($document['closed']) ? 1 : 0
-			));
+		));
 
 		$docid = $DB->GetLastInsertID('documents');
 
 		$DB->Execute('INSERT INTO documentcontents (docid, title, fromdate, todate, filename, contenttype, md5sum, description)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-			array(	$docid,
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?)', array($docid,
 				$document['title'],
 				$document['fromdate'],
 				$document['todate'],
@@ -243,20 +218,19 @@ if(isset($_POST['document']))
 				$document['contenttype'],
 				$document['md5sum'],
 				$document['description']
-			));
+		));
 
 		// template post-action
-		if(!empty($engine['post-action']) && file_exists(DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['post-action'].'.php'))
-			include(DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['post-action'].'.php');
+		if (!empty($engine['post-action']) && file_exists(DOC_DIR . '/templates/' . $engine['name'] . '/' . $engine['post-action'] . '.php'))
+			include(DOC_DIR . '/templates/' . $engine['name'] . '/' . $engine['post-action'] . '.php');
 
 		$DB->CommitTrans();
 
-		if(!isset($document['reuse']))
-		{
-			if(isset($_GET['print']))
+		if (!isset($document['reuse'])) {
+			if (isset($_GET['print']))
 				$SESSION->save('documentprint', $docid);
 
-			$SESSION->redirect('?m=documentlist&c='.$document['customerid']);
+			$SESSION->redirect('?m=documentlist&c=' . $document['customerid']);
 		}
 
 		unset($document['title']);
@@ -265,24 +239,21 @@ if(isset($_POST['document']))
 		unset($document['fromdate']);
 		unset($document['todate']);
 	}
-	else
-	{
+	else {
 		$document['fromdate'] = $oldfromdate;
 		$document['todate'] = $oldtodate;
-		if(isset($autonumber))
+		if (isset($autonumber))
 			$document['number'] = '';
 	}
 }
-else
-{
+else {
 	$document['customerid'] = isset($_GET['cid']) ? $_GET['cid'] : '';
 	$document['type'] = isset($_GET['type']) ? $_GET['type'] : '';
 }
 
 $rights = $DB->GetCol('SELECT doctype FROM docrights WHERE userid = ? AND (rights & 2) = 2', array($AUTH->id));
 
-if(!$rights)
-{
+if (!$rights) {
 	$SMARTY->display('noaccess.html');
 	die;
 }
@@ -290,39 +261,36 @@ if(!$rights)
 $allnumberplans = array();
 $numberplans = array();
 
-if($templist = $LMS->GetNumberPlans())
-	foreach($templist as $item)
-		if($item['doctype']<0)
+if ($templist = $LMS->GetNumberPlans())
+	foreach ($templist as $item)
+		if ($item['doctype'] < 0)
 			$allnumberplans[] = $item;
 
-if(isset($document['numberplanid']))
-{
-	foreach($allnumberplans as $plan)
-		if($plan['doctype'] == $document['numberplanid'])
+if (isset($document['numberplanid'])) {
+	foreach ($allnumberplans as $plan)
+		if ($plan['doctype'] == $document['numberplanid'])
 			$numberplans[] = $plan;
-} 
+}
 
-if($dirs = getdir(DOC_DIR.'/templates', '^[a-z0-9_-]+$'))
-	foreach($dirs as $dir)
-	{
-		$infofile = DOC_DIR.'/templates/'.$dir.'/info.php';
-		if(file_exists($infofile))
-		{
+if ($dirs = getdir(DOC_DIR . '/templates', '^[a-z0-9_-]+$'))
+	foreach ($dirs as $dir) {
+		$infofile = DOC_DIR . '/templates/' . $dir . '/info.php';
+		if (file_exists($infofile)) {
 			unset($engine);
 			include($infofile);
 			$docengines[$dir] = $engine;
 		}
 	}
 
-if($docengines) ksort($docengines);
+if ($docengines)
+	ksort($docengines);
 
 $layout['pagetitle'] = trans('New Document');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
-{
-        $SMARTY->assign('customers', $LMS->GetCustomerNames());
+if (!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks'])) {
+	$SMARTY->assign('customers', $LMS->GetCustomerNames());
 }
 
 $SMARTY->assign('error', $error);
@@ -333,5 +301,4 @@ $SMARTY->assign('docengines', $docengines);
 $SMARTY->assign('document', $document);
 
 $SMARTY->display('documentadd.html');
-
 ?>
