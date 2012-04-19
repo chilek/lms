@@ -414,6 +414,7 @@ switch($type)
 			.(!empty($_POST['group']) ? '&groupid='.intval($_POST['group']) : '')
 			.(!empty($_POST['numberplan']) ? '&numberplanid='.intval($_POST['numberplan']) : '')
 			.(!empty($_POST['groupexclude']) ? '&groupexclude=1' : '')
+			.(!empty($_POST['autoissued']) ? '&autoissued=1' : '')
 		);
 	break;
 
