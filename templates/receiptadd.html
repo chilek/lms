@@ -315,7 +315,7 @@
 								<TD onclick="checkElement('mark{$item.id}')">{$item.number}</TD>
 							        <TD align="right" onclick="checkElement('mark{$item.id}')"><nobr>{$item.value|money_format}</nobr></TD>
 								<TD align="right">
-									<INPUT TYPE="checkbox" ID="mark{$item.id}" NAME="marks[]" VALUE="{$item.id}" checked>
+									<INPUT TYPE="checkbox" ID="mark{$item.id}" NAME="marks[]" VALUE="{$item.id}" >
 								</TD>
 							</TR>
 							{foreachelse}
@@ -329,7 +329,7 @@
 							{/foreach}
 							<TR class="light">
 								<TD CLASS="ftop" colspan="2" nowrap>
-									<INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('additemlist', this)" VALUE="1"  checked>
+									<INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('additemlist', this)" VALUE="1">
 									<label for="allbox">{trans("Check All")}</label>
 								</TD>
 							        <TD CLASS="ftop" ALIGN="right" colspan="2" nowrap>

@@ -123,6 +123,7 @@ version ? (????-??-??):
   - daemon/payments: fixed assignment numberplan support [chilan]
   - fixed domain filtering [chilan]
   - fixed position of table on tcpdf invoice [chilan]
+  - added several variable to database structure. [nicraM]
 
 version 1.11.13 Dira (2011-04-07)
 
