@@ -21,14 +21,10 @@
  *
  */
 
-$DB->BeginTrans();
-
 $DB->Execute("INSERT INTO uiconfig (section, var, value, description, disabled) VALUES ('phpui', 'default_assignment_settlement', '0', 'with settlement of first deficient period. (0-disabled, 1-enabled)', '0')");
 $DB->Execute("INSERT INTO uiconfig (section, var, value, description, disabled) VALUES ('phpui', 'default_cutomer_assignment_nodes', '0', 'Assignment with all computers. (0-disabled, 1-enabled)', '0')");
 $DB->Execute("INSERT INTO uiconfig (section, var, value, description, disabled) VALUES ('invoices', 'default_printpage', 'orginal,copy', '', '0')");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012041901', 'dbversion'));
-
-$DB->CommitTrans();
 
 ?>
