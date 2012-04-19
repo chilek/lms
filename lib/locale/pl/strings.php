@@ -2596,6 +2596,6 @@ $_LANG['Management URL\'s:'] = 'Adresy URL do zarządzania';
 $_LANG['Enter URL comment'] = 'Podaj komentarz adresu URL do zarządzania';
 $_LANG['Add new management URL'] = 'Dodaj nowy adres URL do zarządzania';
 
-$_LANG['show only automatically issued'] = 'pokaż tylko wystawione automatycznie';
+$_LANG['only automatically issued'] = 'tylko wystawione automatycznie';
 
 ?>
