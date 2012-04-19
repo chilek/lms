@@ -290,8 +290,6 @@ else
 		$a['settlement'] = true;
 	if (!empty($CONFIG['phpui']['default_assignment_period']))
 		$a['period'] = $CONFIG['phpui']['default_assignment_period'];
-	if (!empty($CONFIG['phpui']['default_cutomer_assignment_nodes']))
-		$a['nodes'] = array($a['nodes'] = true ); 
 }
 
 $expired = isset($_GET['expired']) ? $_GET['expired'] : false;
@@ -323,6 +321,7 @@ $SMARTY->assign('expired', $expired);
 $SMARTY->assign('assignments', $LMS->GetCustomerAssignments($customer['id'], $expired));
 $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_INVOICE, NULL, $customer['divisionid'], false));
 $SMARTY->assign('customerinfo', $customer);
+
 $SMARTY->display('customerassignmentsedit.html');
 
 ?>
