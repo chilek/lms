@@ -46,6 +46,9 @@ function addManagementUrl($netdevid, $params) {
 	if (empty($params['url']))
 		return $result;
 
+	if (!preg_match('/^[[:alnum:]]+:\/\/.+/i', $params['url']))
+		$params['url'] = 'http://' . $params['url'];
+
 	$DB->Execute('INSERT INTO managementurls (netdevid, url, comment) VALUES (?, ?, ?)', array($netdevid, $params['url'], $params['comment']));
 	$result->call('xajax_getManagementUrls', $netdevid);
 	$result->assign('managementurladdlink', 'disabled', false);
