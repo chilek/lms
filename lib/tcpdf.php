@@ -30,13 +30,15 @@
  *  This reduces execution time by ~30-50%
  */
 
-require_once(LIB_DIR.'/tcpdf/config/lang/pol.php');
-require_once(LIB_DIR.'/tcpdf/tcpdf.php');
+require_once(LIB_DIR . '/tcpdf/config/lang/pol.php');
+require_once(LIB_DIR . '/tcpdf/tcpdf.php');
 
 class TCPDFpl extends TCPDF {
+
 	public $invoice_type;
 
 	/* convert UTF-8 to ISO-8859-2 */
+
 	protected function UTF8ToLatin1($str) {
 		if (!$this->isunicode) {
 			return $str;
@@ -48,14 +50,16 @@ class TCPDFpl extends TCPDF {
 	}
 
 	/* set own Header function */
+
 	public function Header() {
 		/* insert your own logo in lib/tcpdf/images/logo.png */
-		$image_file = K_PATH_IMAGES.'logo.png';
+		$image_file = K_PATH_IMAGES . 'logo.png';
 		if (file_exists($image_file))
 			$this->Image($image_file, 13, 10, 50, '', 'PNG', '', 'T', false, 300, '', false, false, 0, false, false, false);
 	}
 
 	/* set own Footer function */
+
 	public function Footer() {
 		$cur_y = $this->y;
 		$this->SetTextColor(0, 0, 0);
@@ -66,19 +70,19 @@ class TCPDFpl extends TCPDF {
 		if (!empty($barcode) && ($this->invoice_type == 'standard')) {
 			$this->Ln($line_width);
 			$style = array(
-				'position' => 'L',
-				'align' => 'L',
-				'stretch' => false,
-				'fitwidth' => true,
-				'cellfitalign' => '',
-				'border' => false,
-				'padding' => 0,
-				'fgcolor' => array(0, 0, 0),
-				'bgcolor' => false,
-				'text' => true,
-				'font' => 'times',
-				'fontsize' => 6,
-				'stretchtext' => 0
+					'position' => 'L',
+					'align' => 'L',
+					'stretch' => false,
+					'fitwidth' => true,
+					'cellfitalign' => '',
+					'border' => false,
+					'padding' => 0,
+					'fgcolor' => array(0, 0, 0),
+					'bgcolor' => false,
+					'text' => true,
+					'font' => 'times',
+					'fontsize' => 6,
+					'stretchtext' => 0
 			);
 			$this->write1DBarcode($barcode, 'C128', '', $cur_y + $line_width - 0.25, '', ($this->footer_margin - 2), 0.3, $style, '');
 			/* draw line */
@@ -128,43 +132,45 @@ class TCPDFpl extends TCPDF {
 
 		/* width of the columns on the invoice */
 		foreach ($heads as $name => $text)
-			//$h_width[$name] = $this->getStringWidth($text, '', 'B', 8);
+		//$h_width[$name] = $this->getStringWidth($text, '', 'B', 8);
 			$h_width[$name] = $this->getWrapStringWidth($text, 'B');
 
 		/* change the column widths if are wider than the header */
-		if ($invoice['content']) foreach ($invoice['content'] as $item) {
-			$t_width['no'] = 7;
-			$t_width['name'] = $this->getStringWidth($item['description']);
-			$t_width['prodid'] = $this->getStringWidth($item['prodid']);
-			$t_width['content'] = $this->getStringWidth($item['content']);
-			$t_width['count'] = $this->getStringWidth(sprintf('%.2f', $item['count']));
-			if (!empty($invoice['pdiscount']) || !empty($invoice['vdiscount']))
-				$t_width['discount'] = $this->getStringWidth(sprintf('%.2f%%', $item['discount']));
-			$t_width['basevalue'] = $this->getStringWidth(moneyf($item['basevalue']))+1;
-			$t_width['totalbase'] = $this->getStringWidth(moneyf($item['totalbase']))+1;
-			$t_width['taxlabel'] = $this->getStringWidth($item['taxlabel'])+1;
-			$t_width['totaltax'] = $this->getStringWidth(moneyf($item['totaltax']))+1;
-			$t_width['total'] = $this->getStringWidth(moneyf($item['total']))+1;
-		}
+		if ($invoice['content'])
+			foreach ($invoice['content'] as $item) {
+				$t_width['no'] = 7;
+				$t_width['name'] = $this->getStringWidth($item['description']);
+				$t_width['prodid'] = $this->getStringWidth($item['prodid']);
+				$t_width['content'] = $this->getStringWidth($item['content']);
+				$t_width['count'] = $this->getStringWidth(sprintf('%.2f', $item['count']));
+				if (!empty($invoice['pdiscount']) || !empty($invoice['vdiscount']))
+					$t_width['discount'] = $this->getStringWidth(sprintf('%.2f%%', $item['discount']));
+				$t_width['basevalue'] = $this->getStringWidth(moneyf($item['basevalue'])) + 1;
+				$t_width['totalbase'] = $this->getStringWidth(moneyf($item['totalbase'])) + 1;
+				$t_width['taxlabel'] = $this->getStringWidth($item['taxlabel']) + 1;
+				$t_width['totaltax'] = $this->getStringWidth(moneyf($item['totaltax'])) + 1;
+				$t_width['total'] = $this->getStringWidth(moneyf($item['total'])) + 1;
+			}
 
 		foreach ($t_width as $name => $w)
 			if ($w > $h_width[$name])
 				$h_width[$name] = $w;
 
-		if (isset($invoice['invoice']['content'])) foreach ($invoice['invoice']['content'] as $item) {
-			$t_width['no'] = 7;
-			$t_width['name'] = $this->getStringWidth($item['description']);
-			$t_width['prodid'] = $this->getStringWidth($item['prodid']);
-			$t_width['content'] = $this->getStringWidth($item['content']);
-			$t_width['count'] = $this->getStringWidth(sprintf('%.2f', $item['count']));
-			if (!empty($invoice['pdiscount']) || !empty($invoice['vdiscount']))
-				$t_width['discount'] = $this->getStringWidth(sprintf('%.2f%%', $item['discount']));
-			$t_width['basevalue'] = $this->getStringWidth(moneyf($item['basevalue']))+1;
-			$t_width['totalbase'] = $this->getStringWidth(moneyf($item['totalbase']))+1;
-			$t_width['taxlabel'] = $this->getStringWidth($item['taxlabel'])+1;
-			$t_width['totaltax'] = $this->getStringWidth(moneyf($item['totaltax']))+1;
-			$t_width['total'] = $this->getStringWidth(moneyf($item['total']))+1;
-		}
+		if (isset($invoice['invoice']['content']))
+			foreach ($invoice['invoice']['content'] as $item) {
+				$t_width['no'] = 7;
+				$t_width['name'] = $this->getStringWidth($item['description']);
+				$t_width['prodid'] = $this->getStringWidth($item['prodid']);
+				$t_width['content'] = $this->getStringWidth($item['content']);
+				$t_width['count'] = $this->getStringWidth(sprintf('%.2f', $item['count']));
+				if (!empty($invoice['pdiscount']) || !empty($invoice['vdiscount']))
+					$t_width['discount'] = $this->getStringWidth(sprintf('%.2f%%', $item['discount']));
+				$t_width['basevalue'] = $this->getStringWidth(moneyf($item['basevalue'])) + 1;
+				$t_width['totalbase'] = $this->getStringWidth(moneyf($item['totalbase'])) + 1;
+				$t_width['taxlabel'] = $this->getStringWidth($item['taxlabel']) + 1;
+				$t_width['totaltax'] = $this->getStringWidth(moneyf($item['totaltax'])) + 1;
+				$t_width['total'] = $this->getStringWidth(moneyf($item['total'])) + 1;
+			}
 
 		foreach ($t_width as $name => $w)
 			if ($w > $h_width[$name])
@@ -194,12 +200,12 @@ class TCPDFpl extends TCPDF {
 		/* invoice correction data */
 		if (isset($invoice['invoice'])) {
 			$this->Ln(3);
-			$this->writeHTMLCell(0, 0, '', '', '<b>'.trans('Was:').'</b>', 0, 1, 0, true, 'L');
+			$this->writeHTMLCell(0, 0, '', '', '<b>' . trans('Was:') . '</b>', 0, 1, 0, true, 'L');
 			$this->Ln(3);
 			$i = 1;
 			if ($invoice['invoice']['content'])
 				foreach ($invoice['invoice']['content'] as $item) {
-					$this->Cell($h_width['no'], 6, $i.'.', 1, 0, 'C', 0, '', 1);
+					$this->Cell($h_width['no'], 6, $i . '.', 1, 0, 'C', 0, '', 1);
 					$this->Cell($h_width['name'], 6, $item['description'], 1, 0, 'L', 0, '', 1);
 					$this->Cell($h_width['prodid'], 6, $item['prodid'], 1, 0, 'C', 0, '', 1);
 					$this->Cell($h_width['content'], 6, $item['content'], 1, 0, 'C', 0, '', 1);
@@ -249,9 +255,9 @@ class TCPDFpl extends TCPDF {
 			}
 
 			/* reason of issue of invoice correction */
-			if($invoice['reason'] != '') {
-				$this->writeHTMLCell(0, 0, '', '', '<b>'.trans('Reason:').' '.$invoice['reason'].'</b>', 0, 1, 0, true, 'L');
-				$this->writeHTMLCell(0, 0, '', '', '<b>'.trans('Corrected to:').'</b>', 0, 1, 0, true, 'L');
+			if ($invoice['reason'] != '') {
+				$this->writeHTMLCell(0, 0, '', '', '<b>' . trans('Reason:') . ' ' . $invoice['reason'] . '</b>', 0, 1, 0, true, 'L');
+				$this->writeHTMLCell(0, 0, '', '', '<b>' . trans('Corrected to:') . '</b>', 0, 1, 0, true, 'L');
 				$this->Ln(3);
 			}
 		}
@@ -259,7 +265,7 @@ class TCPDFpl extends TCPDF {
 		/* invoice data */
 		$i = 1;
 		foreach ($invoice['content'] as $item) {
-			$this->Cell($h_width['no'], 6, $i.'.', 1, 0, 'C', 0, '', 1);
+			$this->Cell($h_width['no'], 6, $i . '.', 1, 0, 'C', 0, '', 1);
 			$this->Cell($h_width['name'], 6, $item['description'], 1, 0, 'L', 0, '', 1);
 			$this->Cell($h_width['prodid'], 6, $item['prodid'], 1, 0, 'C', 0, '', 1);
 			$this->Cell($h_width['content'], 6, $item['content'], 1, 0, 'C', 0, '', 1);
@@ -327,6 +333,7 @@ class TCPDFpl extends TCPDF {
 			$this->Ln();
 		}
 	}
+
 }
 
 function init_pdf($pagesize, $orientation, $title) {
@@ -337,7 +344,7 @@ function init_pdf($pagesize, $orientation, $title) {
 
 	$pdf->SetProducer('LMS Developers');
 	$pdf->SetSubject($title);
-	$pdf->SetCreator('LMS '.$layout['lmsv']);
+	$pdf->SetCreator('LMS ' . $layout['lmsv']);
 	$pdf->SetDisplayMode('fullwidth', 'SinglePage', 'UseNone');
 
 	$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
@@ -354,11 +361,11 @@ function init_pdf($pagesize, $orientation, $title) {
 	return $pdf;
 }
 
-function close_pdf(&$pdf, $name=false) {
+function close_pdf(&$pdf, $name = false) {
 	ob_clean();
 	header('Pragma: private');
 	header('Cache-control: private, must-revalidate');
-	if(!empty($name))
+	if (!empty($name))
 		$pdf->Output($name, 'D');
 	else
 		$pdf->Output();

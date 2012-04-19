@@ -140,8 +140,8 @@ function invoice_main_form_draw() {
 	$pdf->Rect(67, 214, 130, 5, 'F', '', array(255, 255, 255));
 
 	/* payment/transfer */
-	for ($i=0; $i<2; $i++)
-		$pdf->Rect(105+($i*5.5), 223, 5, 5, 'DF', array('all' => $line_thin));
+	for ($i = 0; $i < 2; $i++)
+		$pdf->Rect(105 + ($i * 5.5), 223, 5, 5, 'DF', array('all' => $line_thin));
 	$pdf->SetFont('arial', '', 12);
 	$pdf->Text(104.5, 223, 'W');
 	$pdf->Text(110.5, 223, 'P');
@@ -150,8 +150,8 @@ function invoice_main_form_draw() {
 	$pdf->SetFont('arial', '', 6);
 	$pdf->Rect(121, 220, 10, 3, 'F', '', array(255, 255, 255));
 	$pdf->Text(121, 220, 'waluta');
-	for ($i=0; $i<3; $i++)
-		$pdf->Rect(120+($i*4.5), 223, 4, 5, 'F', '', array(255, 255, 255));
+	for ($i = 0; $i < 3; $i++)
+		$pdf->Rect(120 + ($i * 4.5), 223, 4, 5, 'F', '', array(255, 255, 255));
 
 	/* amount */
 	$pdf->Rect(139.5, 219.5, 61.25, 9, 'D', array('all' => $line_bold));
@@ -162,10 +162,10 @@ function invoice_main_form_draw() {
 	/* account/amount */
 	$pdf->Rect(68, 230, 60, 3, 'F', '', array(255, 255, 255));
 	$pdf->Text(68, 230, 'nr rachunku zleceniodawcy (przelew) / kwota słownie (wpłata)');
-	for ($i=0; $i<26; $i++)
-		$pdf->Rect(66+($i*4.5), 233, 4.5, 5, 'DF', array('all' => $line_thin));
-	for ($i=0; $i<6; $i++)
-		$pdf->Line(75+($i*18), 236, 75+($i*18), 238, $line_bold);
+	for ($i = 0; $i < 26; $i++)
+		$pdf->Rect(66 + ($i * 4.5), 233, 4.5, 5, 'DF', array('all' => $line_thin));
+	for ($i = 0; $i < 6; $i++)
+		$pdf->Line(75 + ($i * 18), 236, 75 + ($i * 18), 238, $line_bold);
 
 	/* customer name */
 	$pdf->Rect(68, 240, 22, 3, 'F', '', array(255, 255, 255));
@@ -193,8 +193,8 @@ function invoice_main_form_draw() {
 	$pdf->Rect(155, 273, 20, 20, 'DF', array('all' => $line_thin));
 	$pdf->SetLineStyle($line_dash);
 	$pdf->Circle(165, 283, 8);
-	for ($i=0; $i<4; $i++)
-		$pdf->Rect(135.5+($i*4.5), 285, 4.5, 4.5, 'DF', array('all' => $line_thin));
+	for ($i = 0; $i < 4; $i++)
+		$pdf->Rect(135.5 + ($i * 4.5), 285, 4.5, 4.5, 'DF', array('all' => $line_thin));
 	$pdf->Line(144.5, 285, 144.5, 289.5, $line_bold);
 	$pdf->StartTransform();
 	$pdf->Translate(0, 16);
@@ -212,7 +212,7 @@ function invoice_simple_form_fill() {
 	/* division name */
 	$pdf->Text(7, 197, $invoice['division_shortname']);
 	$pdf->Text(7, 203, $invoice['division_address']);
-	$pdf->Text(7, 209, $invoice['division_zip'].' '.$invoice['division_city']);
+	$pdf->Text(7, 209, $invoice['division_zip'] . ' ' . $invoice['division_city']);
 
 	/* account */
 	$pdf->SetFont('courier', 'B', 9);
@@ -226,7 +226,7 @@ function invoice_simple_form_fill() {
 	else
 		$pdf->Text(7, 228, $invoice['name']);
 	$pdf->Text(7, 234, $invoice['address']);
-	$pdf->Text(7, 240, $invoice['zip'].' '.$invoice['city']);
+	$pdf->Text(7, 240, $invoice['zip'] . ' ' . $invoice['city']);
 
 	/* title */
 	$pdf->Text(7, 249, 'Zapłata za fakturę numer:');
@@ -247,7 +247,7 @@ function invoice_main_form_fill() {
 
 	/* division name */
 	$pdf->Text(67, 197, $invoice['division_name']);
-	$pdf->Text(67, 206, $invoice['division_address'].', '.$invoice['division_zip'].' '.$invoice['division_city']);
+	$pdf->Text(67, 206, $invoice['division_address'] . ', ' . $invoice['division_zip'] . ' ' . $invoice['division_city']);
 
 	/* account */
 	$pdf->SetFont('courier', 'B', 9);
@@ -261,7 +261,7 @@ function invoice_main_form_fill() {
 
 	/* amount */
 	$pdf->Text(142, 224, moneyf($invoice['value']));
-	$pdf->Text(67, 233, trans('$a dollars $b cents', to_words(floor($invoice['value'])), to_words(round(($invoice['value']-floor($invoice['value']))*100))));
+	$pdf->Text(67, 233, trans('$a dollars $b cents', to_words(floor($invoice['value'])), to_words(round(($invoice['value'] - floor($invoice['value'])) * 100))));
 
 	/* customer name */
 	$pdf->SetFont('courier', '', 9);
@@ -270,22 +270,22 @@ function invoice_main_form_fill() {
 		$pdf->setFontStretching(85);
 	$pdf->Text(67, 243.5, $invoice['name']);
 	$pdf->setFontStretching(100);
-	$pdf->Text(67, 252.5, $invoice['address'].', '.$invoice['zip'].' '.$invoice['city']);
+	$pdf->Text(67, 252.5, $invoice['address'] . ', ' . $invoice['zip'] . ' ' . $invoice['city']);
 
 	/* barcode */
 	$barcode = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
 	if (!empty($barcode)) {
 		$style = array(
-			'position' => 'L',
-			'align' => 'L',
-			'stretch' => false,
-			'fitwidth' => true,
-			'cellfitalign' => '',
-			'border' => false,
-			'padding' => 0,
-			'fgcolor' => array(0, 0, 0),
-			'bgcolor' => false,
-			'text' => false,
+				'position' => 'L',
+				'align' => 'L',
+				'stretch' => false,
+				'fitwidth' => true,
+				'cellfitalign' => '',
+				'border' => false,
+				'padding' => 0,
+				'fgcolor' => array(0, 0, 0),
+				'bgcolor' => false,
+				'text' => false,
 		);
 		$pdf->StartTransform();
 		$pdf->TranslateX(55);
@@ -305,7 +305,7 @@ function invoice_main_form_fill() {
 		$pdf->StartTransform();
 		$pdf->Translate(0, 13);
 		$pdf->Text(135, 260, trans('Deadline:'));
-		$pdf->Text(135, 263, date("d.m.Y", $invoice['pdate']).' r.');
+		$pdf->Text(135, 263, date("d.m.Y", $invoice['pdate']) . ' r.');
 		$pdf->StopTransform();
 	}
 }
@@ -314,8 +314,8 @@ function invoice_date() {
 	global $pdf, $invoice;
 
 	$pdf->SetFont('arial', '', 10);
-	$pdf->writeHTMLCell(0, 0, '', 20, trans('Settlement date:').' <b>'.date("d.m.Y",$invoice['cdate']).'</b>', 0, 1, 0, true, 'R');
-	$pdf->writeHTMLCell(0, 0, '', '', trans('Sale date:').' <b>'.date("d.m.Y",$invoice['sdate']).'</b>', 0, 1, 0, true, 'R');
+	$pdf->writeHTMLCell(0, 0, '', 20, trans('Settlement date:') . ' <b>' . date("d.m.Y", $invoice['cdate']) . '</b>', 0, 1, 0, true, 'R');
+	$pdf->writeHTMLCell(0, 0, '', '', trans('Sale date:') . ' <b>' . date("d.m.Y", $invoice['sdate']) . '</b>', 0, 1, 0, true, 'R');
 }
 
 function invoice_title() {
@@ -342,7 +342,7 @@ function invoice_title() {
 
 	if ($type == trans('DUPLICATE')) {
 		$pdf->SetFont('arial', '', 10);
-		$title = trans('Duplicate draw-up date:').' '.date('d.m.Y');
+		$title = trans('Duplicate draw-up date:') . ' ' . date('d.m.Y');
 		$pdf->Write(0, $title, '', 0, 'C', true, 0, false, false, 0);
 	}
 }
@@ -351,7 +351,7 @@ function invoice_seller() {
 	global $pdf, $invoice;
 
 	$pdf->SetFont('arial', '', 10);
-	$seller = '<b>'.trans('Seller:').'</b><br>';
+	$seller = '<b>' . trans('Seller:') . '</b><br>';
 	$tmp = $invoice['division_header'];
 
 	$account = format_bankaccount(bankaccount($invoice['customerid'], $invoice['account']));
@@ -359,7 +359,7 @@ function invoice_seller() {
 
 	$tmp = preg_split('/\r?\n/', $tmp);
 	foreach ($tmp as $line)
-		$seller .= $line.'<br>';
+		$seller .= $line . '<br>';
 	$pdf->Ln(0);
 	$pdf->writeHTMLCell(80, '', '', 45, $seller, 0, 1, 0, true, 'L');
 }
@@ -369,13 +369,13 @@ function invoice_buyer() {
 
 	$oldy = $pdf->GetY();
 
-	$buyer = '<b>'.trans('Purchaser:').'</b><br>';
+	$buyer = '<b>' . trans('Purchaser:') . '</b><br>';
 
-	$buyer .= $invoice['name'].'<br>';
-	$buyer .= $invoice['address'].'<br>';
-	$buyer .= $invoice['zip'].' ' .$invoice['city'].'<br>';
+	$buyer .= $invoice['name'] . '<br>';
+	$buyer .= $invoice['address'] . '<br>';
+	$buyer .= $invoice['zip'] . ' ' . $invoice['city'] . '<br>';
 	if ($invoice['ten'])
-		$buyer .= trans('TEN').': '.$invoice['ten'].'<br>';
+		$buyer .= trans('TEN') . ': ' . $invoice['ten'] . '<br>';
 	$pdf->SetFont('arial', '', 10);
 	$pdf->writeHTMLCell(80, '', '', '', $buyer, 0, 1, 0, true, 'L');
 
@@ -384,35 +384,37 @@ function invoice_buyer() {
 	$postbox = '';
 	if ($invoice['post_name'] || $invoice['post_address']) {
 		if ($invoice['post_name'])
-			$postbox .= $invoice['post_name'].'<br>';
+			$postbox .= $invoice['post_name'] . '<br>';
 		else
-			$postbox .= $invoice['name'].'<br>';
-		$postbox .= $invoice['post_address'].'<br>';
-		$postbox .= $invoice['post_zip'].' '.$invoice['post_city'].'<br>';
+			$postbox .= $invoice['name'] . '<br>';
+		$postbox .= $invoice['post_address'] . '<br>';
+		$postbox .= $invoice['post_zip'] . ' ' . $invoice['post_city'] . '<br>';
 	} else {
-		$postbox .= $invoice['name'].'<br>';
-		$postbox .= $invoice['address'].'<br>';
-		$postbox .= $invoice['zip'].' '.$invoice['city'].'<br>';
+		$postbox .= $invoice['name'] . '<br>';
+		$postbox .= $invoice['address'] . '<br>';
+		$postbox .= $invoice['zip'] . ' ' . $invoice['city'] . '<br>';
 	}
 
 	if ($invoice['division_countryid'] && $invoice['countryid'] && $invoice['division_countryid'] != $invoice['countryid'])
-		$postbox .= trans($invoice['country']).'<br>';
+		$postbox .= trans($invoice['country']) . '<br>';
 
 	$pdf->SetFont('arial', 'B', 10);
 	$pdf->writeHTMLCell(80, '', 125, 50, $postbox, 0, 1, 0, true, 'L');
 
-	$pin = '<b>'.trans('Customer ID: $a', sprintf('%04d',$invoice['customerid'])).'</b><br>';
-	$pin .= '<b>PIN: '.sprintf('%04d', $invoice['customerpin']).'</b><br>';
+	$pin = '<b>' . trans('Customer ID: $a', sprintf('%04d', $invoice['customerid'])) . '</b><br>';
+	$pin .= '<b>PIN: ' . sprintf('%04d', $invoice['customerpin']) . '</b><br>';
 
 	$pdf->SetFont('arial', 'B', 8);
 	$pdf->writeHTMLCell('', '', 125, $oldy + round(($y - $oldy) / 2), $pin, 0, 1, 0, true, 'L');
+
+	$pdf->SetY($y);
 }
 
 function invoice_data() {
 	global $pdf, $invoice;
 
 	/* print table */
-	$pdf->writeHTMLCell('', '', '', 95, '', 0, 1, 0, true, 'L');
+	$pdf->writeHTMLCell('', '', '', '', '', 0, 1, 0, true, 'L');
 	$pdf->Table($header, $invoice);
 }
 
@@ -422,19 +424,19 @@ function invoice_to_pay() {
 	$pdf->Ln(-9);
 	$pdf->SetFont('arial', 'B', 14);
 	if (isset($invoice['rebate']))
-		$pdf->writeHTMLCell(0, 0, '', '', trans('To repay:').' '.moneyf($invoice['value']), 0, 1, 0, true, 'L');
+		$pdf->writeHTMLCell(0, 0, '', '', trans('To repay:') . ' ' . moneyf($invoice['value']), 0, 1, 0, true, 'L');
 	else
-		$pdf->writeHTMLCell(0, 0, '', '', trans('To pay:').' '.moneyf($invoice['value']), 0, 1, 0, true, 'L');
+		$pdf->writeHTMLCell(0, 0, '', '', trans('To pay:') . ' ' . moneyf($invoice['value']), 0, 1, 0, true, 'L');
 
 	$pdf->SetFont('arial', '', 10);
-	$pdf->writeHTMLCell(0, 6, '', '', trans('In words:').' '.trans('$a dollars $b cents', to_words(floor($invoice['value'])), to_words(round(($invoice['value']-floor($invoice['value']))*100))), 0, 1, 0, true, 'L');
+	$pdf->writeHTMLCell(0, 6, '', '', trans('In words:') . ' ' . trans('$a dollars $b cents', to_words(floor($invoice['value'])), to_words(round(($invoice['value'] - floor($invoice['value'])) * 100))), 0, 1, 0, true, 'L');
 }
 
 function invoice_balance() {
 	global $pdf, $invoice, $LMS;
 
 	$pdf->SetFont('arial', '', 7);
-	$pdf->writeHTMLCell(0, 0, '', '', trans('Your balance on date of invoice issue:').' '.moneyf($LMS->GetCustomerBalance($invoice['customerid'], $invoice['cdate'])), 0, 1, 0, true, 'L');
+	$pdf->writeHTMLCell(0, 0, '', '', trans('Your balance on date of invoice issue:') . ' ' . moneyf($LMS->GetCustomerBalance($invoice['customerid'], $invoice['cdate'])), 0, 1, 0, true, 'L');
 }
 
 function invoice_dates() {
@@ -444,10 +446,10 @@ function invoice_dates() {
 	$pdf->SetFont('arial', '', 8);
 	$pdf->Ln();
 	if ($paytype != 8) {
-		$deadline = trans('Deadline:').' <b>'.date("d.m.Y", $invoice['pdate']).'</b>';
+		$deadline = trans('Deadline:') . ' <b>' . date("d.m.Y", $invoice['pdate']) . '</b>';
 		$pdf->writeHTMLCell(0, 0, '', '', $deadline, 0, 1, 0, true, 'L');
 	}
-	$payment = trans('Payment type:').' <b>'.$invoice['paytypename'].'</b>';
+	$payment = trans('Payment type:') . ' <b>' . $invoice['paytypename'] . '</b>';
 	$pdf->writeHTMLCell(0, 0, '', '', $payment, 0, 1, 0, true, 'L');
 }
 
@@ -456,7 +458,7 @@ function invoice_expositor() {
 
 	$expositor = isset($invoice['user']) ? $invoice['user'] : $invoice['division_author'];
 	$pdf->SetFont('arial', '', 8);
-	$pdf->writeHTMLCell(0, 0, '', '', trans('Expositor:').' <b>'.$expositor.'</b>', 0, 1, 0, true, 'R');
+	$pdf->writeHTMLCell(0, 0, '', '', trans('Expositor:') . ' <b>' . $expositor . '</b>', 0, 1, 0, true, 'R');
 }
 
 function invoice_footnote() {
@@ -478,8 +480,7 @@ function invoice_footnote() {
 	}
 }
 
-function invoice_body_standard()
-{
+function invoice_body_standard() {
 	global $pdf, $invoice;
 
 	invoice_date();
@@ -498,15 +499,15 @@ function invoice_body_standard()
 	$pdf->setBarcode($docnumber);
 
 	/* setup your cert & key file */
-	$cert = 'file://'.LIB_DIR.'/tcpdf/config/lms.cert';
-	$key = 'file://'.LIB_DIR.'/tcpdf/config/lms.key';
+	$cert = 'file://' . LIB_DIR . '/tcpdf/config/lms.cert';
+	$key = 'file://' . LIB_DIR . '/tcpdf/config/lms.key';
 
 	/* setup signature additional information */
 	$info = array(
-		'Name' => $invoice['division_name'],
-		'Location' => trans('Invoices'),
-		'Reason' => trans('Invoice No. $a', $docnumber),
-		'ContactInfo' => $invoice['division_author']
+			'Name' => $invoice['division_name'],
+			'Location' => trans('Invoices'),
+			'Reason' => trans('Invoice No. $a', $docnumber),
+			'ContactInfo' => $invoice['division_author']
 	);
 
 	/* set document digital signature & protection */
@@ -517,8 +518,7 @@ function invoice_body_standard()
 	$pdf->SetProtection(array('modify', 'copy', 'annot-forms', 'fill-forms', 'extract', 'assemble'), '', 'PASSWORD_CHANGEME', '1');
 }
 
-function invoice_body_ft0100()
-{
+function invoice_body_ft0100() {
 	global $pdf, $invoice;
 
 	invoice_date();
@@ -543,15 +543,15 @@ function invoice_body_ft0100()
 	$pdf->SetAuthor($invoice['division_name']);
 
 	/* setup your cert & key file */
-	$cert = 'file://'.LIB_DIR.'/tcpdf/config/lms.cert';
-	$key = 'file://'.LIB_DIR.'/tcpdf/config/lms.key';
+	$cert = 'file://' . LIB_DIR . '/tcpdf/config/lms.cert';
+	$key = 'file://' . LIB_DIR . '/tcpdf/config/lms.key';
 
 	/* setup signature additional information */
 	$info = array(
-		'Name' => $invoice['division_name'],
-		'Location' => trans('Invoices'),
-		'Reason' => trans('Invoice No. $a', $docnumber),
-		'ContactInfo' => $invoice['division_author']
+			'Name' => $invoice['division_name'],
+			'Location' => trans('Invoices'),
+			'Reason' => trans('Invoice No. $a', $docnumber),
+			'ContactInfo' => $invoice['division_author']
 	);
 
 	/* set document digital signature & protection */
