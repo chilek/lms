@@ -815,15 +815,15 @@ if($action != '')
 switch($receipt['type'])
 {
 	case 'in':
-		$layout['pagetitle'] = trans('New Cash-in Receipt');
+		$layout['pagetitle'] = trans('New Cash-in Receipt').'<A href="?m=customerinfo&id='.$customer['id'].'"> '.$customer['name'].' '.$customer['lastname'].'</A>';
 		$list = GetCustomerCovenants($customer['id']);
 	break;
 	case 'out':
-		$layout['pagetitle'] = trans('New Cash-out Receipt');
+		$layout['pagetitle'] = trans('New Cash-out Receipt'.'<A href="?m=customerinfo&id='.$customer['id'].'"> '.$customer['name'].' '.$customer['lastname'].'</A>');
 		$list = GetCustomerNotes($customer['id']);
 	break;
 	default:
-		$layout['pagetitle'] = trans('New Cash Receipt');
+		$layout['pagetitle'] = trans('New Cash Receipt'.'<A href="?m=customerinfo&id='.$customer['id'].'"> '.$customer['name'].' '.$customer['lastname'].'</A>');
 	break;
 }
 
