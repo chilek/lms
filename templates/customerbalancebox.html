@@ -136,7 +136,7 @@
 							{elseif $balancelist.doctype[balancelist] == $smarty.const.DOC_CNOTE}
 								<A href="?m=invoice&id={$balancelist.docid[balancelist]}" TARGET="_blank"><IMG SRC="img/printn.gif" ALT="[ {trans("Credit note")} ]" {tip a=$balancelist.docid[balancelist] dynpopup='?m=number&id=$a'}></A>
 							{elseif $balancelist.doctype[balancelist] == $smarty.const.DOC_RECEIPT}
-								<A href="?m=receipt&id={$balancelist.docid[balancelist]}" TARGET="_blank"><IMG SRC="img/printr.gif" ALT="[ {trans("Cash receipt")} ]" {tip a=$balancelist.docid[balancelist] dynpopup='?m=number&id=$a'}></A>
+								<A href="?m=receipt&id={$balancelist.docid[balancelist]}&which=original" TARGET="_blank"><IMG SRC="img/printr.gif" ALT="[ {trans("Cash receipt")} ]" {tip a=$balancelist.docid[balancelist] dynpopup='?m=number&id=$a'}></A>
 							{elseif $balancelist.doctype[balancelist] == $smarty.const.DOC_DNOTE}
 								<A href="?m=note&id={$balancelist.docid[balancelist]}" TARGET="_blank"><IMG SRC="img/printd.gif" ALT="[ {trans("Debit note")} ]" {tip a=$balancelist.docid[balancelist] dynpopup='?m=number&id=$a'}></A>
 							{/if}
