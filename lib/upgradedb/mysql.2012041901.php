@@ -18,15 +18,26 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
- *
+
+*
  */
 
 $DB->BeginTrans();
 
-$DB->Execute("INSERT INTO uiconfig (section, var, value, description, disabled) VALUES ('phpui', 'default_assignment_settlement', '0', 'with settlement of first deficient period. (0-disabled, 1-enabled)', '0')");
-$DB->Execute("INSERT INTO uiconfig (section, var, value, description, disabled) VALUES ('phpui', 'default_cutomer_assignment_nodes', '0', 'Assignment with all computers. (0-disabled, 1-enabled)', '0')");
-$DB->Execute("INSERT INTO uiconfig (section, var, value, description, disabled) VALUES ('invoices', 'default_printpage', 'orginal,copy', '', '0')");
+$cfg = $DB->Execute("SELECT value FROM uiconfig WHERE var = 'default_assignment_settlement' AND section = 'phpui'");
+if (empty($cfg)) {
+        $DB->Execute("INSERT INTO uiconfig (section, var, value, description, disabled) VALUES ('phpui', 'default_assignment_settlement', '0', 'with settlement of first deficient period. (0-disabled, 1-enabled)', '0')");
+        };
 
+$cfg = $DB->Execute("SELECT value FROM uiconfig WHERE var = 'default_cutomer_assignment_nodes' AND section = 'phpui'");
+if (empty($cfg)) {
+$DB->Execute("INSERT INTO uiconfig (section, var, value, description, disabled) VALUES ('phpui', 'default_cutomer_assignment_nodes', '0', 'Assignment with all computers. (0-disabled, 1-enabled)', '0')");
+};
+
+$cfg = $DB->Execute("SELECT value FROM uiconfig WHERE var = 'default_printpage' AND section = 'invoices'");
+if (empty($cfg)) {
+	$DB->Execute("INSERT INTO uiconfig (section, var, value, description, disabled) VALUES ('invoices', 'default_printpage', 'original,copy', '', '0')");
+};
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012041901', 'dbversion'));
 
