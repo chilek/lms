@@ -1811,12 +1811,6 @@ INSERT INTO up_rights(module, name, description)
         VALUES ('info', 'edit_contact', 'Customer can change contact information');
 INSERT INTO uiconfig (section, var, value, description, disabled)
 	VALUES ('phpui', 'default_assignment_invoice', '0', '', '0');
-INSERT INTO uiconfig (section, var, value, description, disabled) 
-	VALUES ('phpui', 'default_assignment_settlement', '0', 'with settlement of first deficient period. (0-disabled, 1-enabled)', '0');
-INSERT INTO uiconfig (section, var, value, description, disabled) 
-	VALUES ('phpui', 'default_cutomer_assignment_nodes', '0', 'Assignment with all computers. (0-disabled, 1-enabled)', '0');
-INSERT INTO uiconfig (section, var, value, description, disabled) 
-	VALUES ('invoices', 'default_printpage', 'orginal,copy', '', '0');
 
 INSERT INTO countries (name) VALUES ('Lithuania');
 INSERT INTO countries (name) VALUES ('Poland');
@@ -1838,4 +1832,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012041901');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012041102');

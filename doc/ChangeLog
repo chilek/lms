@@ -122,7 +122,6 @@ version ? (????-??-??):
   - daemon/payments: better to not depend on localtime() singularity [chilan]
   - daemon/payments: fixed assignment numberplan support [chilan]
   - fixed domain filtering [chilan]
-  - added some variables to phpui in db, assignment with all computers, with invoice [nicraM]
   - fixed position of table on tcpdf invoice [chilan]
 
 version 1.11.13 Dira (2011-04-07)
