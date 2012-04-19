@@ -135,7 +135,7 @@ elseif($receipt = GetReceipt($_GET['id']))
 
 	$receipt['last'] = TRUE;
 	$receipt['first'] = TRUE;
-	$SMARTY->assign('type', isset($_GET['which']) ? $_GET['which'] : 'NULL');
+	$SMARTY->assign('type', isset($_GET['which']) ? $_GET['which'] : NULL);
 	$SMARTY->assign('receipt',$receipt);
 	$SMARTY->display('receiptheader.html');
 	$SMARTY->display($CONFIG['receipts']['template_file']);
