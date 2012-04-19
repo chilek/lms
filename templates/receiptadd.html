@@ -45,6 +45,7 @@
 	}
 //-->
 </SCRIPT>
+{$default_printpage = get_conf('invoices.default_printpage')}
 <FORM NAME="setcustomer" METHOD="POST" ACTION="?m=receiptadd{if $receipt.type}&type={$receipt.type}{/if}&action={if $receipt.regid && !$error.regid}setcustomer{else}setreg{/if}">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="receipt[type]" value="{$receipt.type}">
@@ -410,8 +411,8 @@
 	</TR>
 	<TR CLASS="light">
 		<TD COLSPAN="4" CLASS="{if $covenantlist}flr{else}fbottomu{/if}" ALIGN="RIGHT">
-			<INPUT type="checkbox" id="original" name="original" checked> <label for="original">{trans("original")}</label>&nbsp;
-			<INPUT type="checkbox" id="copy" name="copy" checked> <label for="copy">{trans("copy")}</label>&nbsp;
+			<INPUT type="checkbox" id="original" name="original" {if preg_match('/original/i', $default_printpage)} checked{/if}> <label for="original">{trans("original")}</label>&nbsp;
+			<INPUT type="checkbox" id="copy" name="copy" {if preg_match('/copy/i', $default_printpage)} checked{/if}> <label for="copy">{trans("copy")}</label>&nbsp;
 			<A HREF="?m=receiptlist&regid={$receipt.regid}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>&nbsp;
 			<A HREF="?m=receiptadd&action=init">{trans("Clear Contents")} <IMG SRC="img/delete.gif" alt=""></A>&nbsp;
 			{if !$customer && $receipt.o_type != "other" && $receipt.o_type != "advance"}
