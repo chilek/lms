@@ -1,7 +1,7 @@
 $Id: ChangeLog,v 1.1637 2012/04/19 10:00:00 chilek Exp $
 
 version ? (????-??-??):
-  - Added some variables to phpui in db, assignment with all computers, with invoice. [nicraM]
+
   - Fixed nodes list in Userpanel [alec]
   - lmsd/ewx-pt: Fixed issues on nodes deletion [alec]
   - lmsd/ewx-stm-channels: Fixed issues on nodes deletion, improved performance [alec]
@@ -122,6 +122,7 @@ version ? (????-??-??):
   - daemon/payments: better to not depend on localtime() singularity [chilan]
   - daemon/payments: fixed assignment numberplan support [chilan]
   - fixed domain filtering [chilan]
+  - added some variables to phpui in db, assignment with all computers, with invoice [nicraM]
 
 version 1.11.13 Dira (2011-04-07)
 
