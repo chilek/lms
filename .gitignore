@@ -51,3 +51,4 @@ lib/Smarty/plugins/shared.mb_wordwrap.php
 lib/Smarty/plugins/variablefilter.htmlspecialchars.php
 lib/Smarty/sysplugins
 nbproject/private
+lms.ini
