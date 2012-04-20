@@ -130,6 +130,10 @@ function GetConfigList($order='var,asc', $section='', $search='')
 				case 'force_ssl':
 					$config[$idx]['description'] = trans('SSL Enforcing. Setting this option to 1 will effect with that LMS will enforce SSL connection with redirect to \'https://\'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] at every request without SSL. Default: 0 (off).');
 				break;
+
+				case 'reload_timer':
+					$config[$idx]['description'] = trans('Reload timer. If set to 1 it will display remaining time to configuration reload. If using more than one host, remember to sync time between them.');
+				break;
 				
 				case 'reload_type':
 					$config[$idx]['description'] = trans('Reload type. Allowed values: exec - call some command (most often with sudo, some script or something else, configurable below); sql - writes down to SQL (multiple queries separated with semicolon may be setup).');
