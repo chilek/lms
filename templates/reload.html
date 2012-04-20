@@ -5,7 +5,8 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD class="fall">
-			<B>{trans("Select hosts for configuration reload:")}</B>
+		<div style="float:left">
+			<B>{trans("Select hosts for configuration reload:")} </div> <div id="reloadtxt" style="display:none; float:right">{trans("Reload configuration in:")} <span id="reloadtimer"></span> </div> </B>
 		</TD>
 	</TR>
 	<TR>
@@ -54,3 +55,39 @@
 </TABLE>
 </FORM>
 </P>
+{literal}
+<SCRIPT type="text/javascript">
+        <!--
+
+{/literal}
+	if ('{$serverTime}' != 'false')
+		var serverTime = new Date("{$serverTime}");
+	var timerOn = false;
+{section name=hosts loop=$hosts}
+	{if $hosts[hosts].reload==1}timerOn=true;{/if}
+{/section}
+{literal}
+	var timer;
+	var userDate = new Date();
+
+	function ShowSeconds()
+	{
+		var serverTimeMinute = new Date(serverTime.getFullYear(),serverTime.getMonth(),serverTime.getDate(),serverTime.getHours(),serverTime.getMinutes(),Math.floor((serverTime.getSeconds()+59)/60)*60);
+		var serverTimeDiff = serverTimeMinute-serverTime;
+		serverTimeDiff=Math.round((serverTimeDiff+(userDate-(new Date())))/1000);
+		if (serverTimeDiff>=0)
+		{
+			document.getElementById("reloadtxt").style.display='inline';
+			document.getElementById("reloadtimer").innerHTML=" "+serverTimeDiff+" s";
+			timer=setTimeout("ShowSeconds()",1000);
+		}
+		else
+			window.location.reload();
+	}
+
+	if (timerOn && typeof(serverTime) != 'undefined')
+		ShowSeconds();
+
+	//-->
+</SCRIPT>
+{/literal}
