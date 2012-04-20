@@ -100,6 +100,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 				WHERE cdate >= ? AND cdate <= ? AND (type = ? OR type = ?)'
 				.(!empty($_GET['customerid']) ? ' AND d.customerid = '.intval($_GET['customerid']) : '')
 				.(!empty($_GET['numberplanid']) ? ' AND d.numberplanid = '.intval($_GET['numberplanid']) : '')
+				.(!empty($_GET['autoissued']) ? ' AND d.userid = 0' : '')
 				.(!empty($_GET['groupid']) ?
 				' AND '.(!empty($_GET['groupexclude']) ? 'NOT' : '').'
 					EXISTS (SELECT 1 FROM customerassignments a

@@ -740,21 +740,34 @@ cal13.time_comp = false;
 						</TR>
 					    </TABLE>
 					</TD>
-					<TD width="1%">
-						<IMG src="img/calendar.gif" alt="">
-					</TD>
-					<TD width="1%" nowrap>
-						<B>{trans("Period:")}</B>&nbsp;
-						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="invoicefrom" SIZE="10" MAXSIZE="10" OnClick="javascript:cal10.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="invoiceto" SIZE="10" MAXSIZE="10" OnClick="javascript:cal11.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
-					</TD>
-					<TD width="1%">
-						<IMG src="img/info.gif" alt="">
-					</TD>
-					<TD width="94%" nowrap>
-						<INPUT TYPE="checkbox" NAME="invoiceorg" ID="invoiceorg"{if preg_match('/original/i', $default_printpage)} CHECKED{/if}>&nbsp;<label for="invoiceorg">{trans("original")}</label>&nbsp;
-						<INPUT TYPE="checkbox" NAME="invoicecopy" ID="invoicecopy"{if preg_match('/copy/i', $default_printpage)}  CHECKED{/if}>&nbsp;<label for="invoicecopy">{trans("copy")}</label>&nbsp;
-						<INPUT TYPE="checkbox" NAME="invoicedup" ID="invoicedup"{if preg_match('/duplicate/i', $default_printpage)} CHECKED{/if}>&nbsp;<label for="invoicedup">{trans("duplicate")}</label>
+					<TD style="width: 99%;">
+						<TABLE style="width: 100%;">
+							<TR>
+								<TD style="width: 1%;">
+									<IMG src="img/calendar.gif" alt="">
+								</TD>
+								<TD style="width: 1%; white-space: nowrap;">
+									<span class="bold">{trans("Period:")}</span>&nbsp;
+									{trans("From")}&nbsp;<INPUT TYPE="text" NAME="invoicefrom" SIZE="10" MAXSIZE="10" OnClick="javascript:cal10.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+									{trans("To")}&nbsp;<INPUT TYPE="text" NAME="invoiceto" SIZE="10" MAXSIZE="10" OnClick="javascript:cal11.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+								</TD>
+								<TD style="width: 1%;">
+									<IMG src="img/info.gif" alt="">
+								</TD>
+								<TD style="width: 97%; white-space: nowrap;">
+									<INPUT TYPE="checkbox" NAME="invoiceorg" ID="invoiceorg"{if preg_match('/original/i', $default_printpage)} CHECKED{/if}>&nbsp;<label for="invoiceorg">{trans("original")}</label>&nbsp;
+									<INPUT TYPE="checkbox" NAME="invoicecopy" ID="invoicecopy"{if preg_match('/copy/i', $default_printpage)}  CHECKED{/if}>&nbsp;<label for="invoicecopy">{trans("copy")}</label>&nbsp;
+									<INPUT TYPE="checkbox" NAME="invoicedup" ID="invoicedup"{if preg_match('/duplicate/i', $default_printpage)} CHECKED{/if}>&nbsp;<label for="invoicedup">{trans("duplicate")}</label>
+								</TD>
+							</TR>
+							<TR>
+								<TD style="width: 3%;" colspan="3">&nbsp;</TD>
+								<TD style="width: 97%;">
+									<input type="checkbox" id="autoissued" name="autoissued">
+									<label for="autoissued">{trans("only automatically issued")}</label>
+								</TD>
+							</TR>
+						</TABLE>
 					</TD>
 				</TR>
 			</TABLE>
