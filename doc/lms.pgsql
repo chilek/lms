@@ -723,9 +723,32 @@ CREATE TABLE stats (
 	dt integer 		DEFAULT 0 NOT NULL,
 	upload bigint 		DEFAULT 0,
 	download bigint 	DEFAULT 0,
+	nodesessionid integer	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (nodeid, dt)
 );
 CREATE INDEX stats_dt_idx ON stats(dt);
+CREATE INDEX stats_nodesessionid_idx ON stats(nodesessionid);
+
+/* -------------------------------------------------------- 
+  Structure of table "nodesessions" 
+-------------------------------------------------------- */
+CREATE SEQUENCE nodesessions_id_seq;
+CREATE TABLE nodesessions (
+	id integer		DEFAULT nextval('nodesessions_id_seq'::text) NOT NULL,
+	customerid integer	DEFAULT 0 NOT NULL,
+	nodeid integer		DEFAULT 0 NOT NULL,
+	ipaddr bigint		DEFAULT 0 NOT NULL,
+	mac varchar(17)		DEFAULT '' NOT NULL,
+	startdt integer		DEFAULT 0 NOT NULL,
+	stopdt integer		DEFAULT 0 NOT NULL,
+	download bigint		DEFAULT 0,
+	upload bigint		DEFAULT 0,
+	sessionid varchar(32)	DEFAULT '' NOT NULL,
+	PRIMARY KEY (id)
+);
+CREATE INDEX nodesessions_customerid_idx ON nodesessions(customerid);
+CREATE INDEX nodesessions_nodeid_idx ON nodesessions(nodeid);
+CREATE INDEX nodesessions_sessionid_idx ON nodesessions(sessionid);
 
 /* ---------------------------------------------------
  Structure of table "netlinks"
@@ -1832,4 +1855,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012041102');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012042300');
