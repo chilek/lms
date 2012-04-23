@@ -25,20 +25,20 @@ $DB->BeginTrans();
 
 $DB->Execute("
 	CREATE TABLE nodedessions (
-		id int(11)              NOT NULL auto_increment,
-		customerid int(11)      NOT NULL DEFAULT '0',
-		nodeid int(11)          NOT NULL DEFAULT '0',
-		ipaddr int(16) unsigned NOT NULL DEFAULT '0',
-		mac varchar(17)         NOT NULL DEFAULT '',
-		start int(11)           NOT NULL DEFAULT '0',
-		stop int(11)            NOT NULL DEFAULT '0',
-		download bigint         DEFAULT '0',
-		upload bigint           DEFAULT '0',
-		sessionid varchar(32)   NOT NULL DEFAULT ',
+		id int(11)		NOT NULL auto_increment,
+		customerid int(11)	NOT NULL DEFAULT '0',
+		nodeid int(11)		NOT NULL DEFAULT '0',
+		ipaddr int(16) unsigned	NOT NULL DEFAULT '0',
+		mac varchar(17)		NOT NULL DEFAULT '',
+		start int(11)		NOT NULL DEFAULT '0',
+		stop int(11)		NOT NULL DEFAULT '0',
+		download bigint		DEFAULT '0',
+		upload bigint		DEFAULT '0',
+		tag varchar(32)		NOT NULL DEFAULT ',
 		PRIMARY KEY (id),
 		INDEX customerid (customerid),
 		INDEX nodeid (nodeid),
-		INDEX sessionid (sessionid)
+		INDEX tag (tag)
 	) ENGINE=InnoDB
 ");
 $DB->Execute("ALTER TABLE stats ADD nodesessionid int(11) NOT NULL DEFAULT '0'");

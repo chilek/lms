@@ -743,12 +743,12 @@ CREATE TABLE nodesessions (
 	stop integer		DEFAULT 0 NOT NULL,
 	download bigint		DEFAULT 0,
 	upload bigint		DEFAULT 0,
-	sessionid varchar(32)	DEFAULT '' NOT NULL,
+	tag varchar(32)		DEFAULT '' NOT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX nodesessions_customerid_idx ON nodesessions(customerid);
 CREATE INDEX nodesessions_nodeid_idx ON nodesessions(nodeid);
-CREATE INDEX nodesessions_sessionid_idx ON nodesessions(sessionid);
+CREATE INDEX nodesessions_tag_idx ON nodesessions(tag);
 
 /* ---------------------------------------------------
  Structure of table "netlinks"
