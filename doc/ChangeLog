@@ -123,9 +123,11 @@ version ? (????-??-??):
   - daemon/payments: fixed assignment numberplan support [chilan]
   - fixed domain filtering [chilan]
   - fixed position of table on tcpdf invoice [chilan]
+  - added several variable to database structure. [nicraM]
   - selection of only automatically issued invoices is possible now in invoice print [chilan]
- 
+
 version 1.11.13 Dira (2011-04-07)
+
 
   - contrib/cutoff2: Fixed "Column 'period' in where clause is ambiguous" [alec]
   - BTS#0000862: Fixed bug in SQL query on MySQL [alec]

@@ -89,8 +89,8 @@
 		<TD class="frightu" align="right" nowrap>
 			<A href="javascript: new_doc()">{trans("New document:")}</A>
 			<SELECT name="newdocument" id="newdocselect">
-				<OPTION value="?m=invoicenew&action=init&customerid={$balancelist.customerid}">{trans("invoice")}</OPTION>
 				<OPTION value="?m=receiptadd&type=in&action=init&customerid={$balancelist.customerid}">{trans("cash-in receipt")}</OPTION>
+				<OPTION value="?m=invoicenew&action=init&customerid={$balancelist.customerid}">{trans("invoice")}</OPTION>
 				<OPTION value="?m=receiptadd&type=out&action=init&customerid={$balancelist.customerid}">{trans("cash-out receipt")}</OPTION>
 				<OPTION value="?m=noteadd&action=init&customerid={$balancelist.customerid}">{trans("debit note")}</OPTION>
 			</SELECT>&nbsp;
@@ -99,7 +99,7 @@
 			<INPUT type="hidden" name="search" value="{$balancelist.customerid}">
 			<SELECT name="showlist" id="showlistselect">
 				{if $limit}<OPTION value="list">{trans("transactions")}</OPTION>{/if}
-				<OPTION value="invoice">{trans("invoices")}</OPTION>
+				<OPTION selected value="invoice">{trans("invoices")}</OPTION>
 				<OPTION value="note">{trans("debit notes")}</OPTION>
 			</SELECT>
 		</TD>
@@ -136,7 +136,7 @@
 							{elseif $balancelist.doctype[balancelist] == $smarty.const.DOC_CNOTE}
 								<A href="?m=invoice&id={$balancelist.docid[balancelist]}" TARGET="_blank"><IMG SRC="img/printn.gif" ALT="[ {trans("Credit note")} ]" {tip a=$balancelist.docid[balancelist] dynpopup='?m=number&id=$a'}></A>
 							{elseif $balancelist.doctype[balancelist] == $smarty.const.DOC_RECEIPT}
-								<A href="?m=receipt&id={$balancelist.docid[balancelist]}" TARGET="_blank"><IMG SRC="img/printr.gif" ALT="[ {trans("Cash receipt")} ]" {tip a=$balancelist.docid[balancelist] dynpopup='?m=number&id=$a'}></A>
+								<A href="?m=receipt&id={$balancelist.docid[balancelist]}&which=original" TARGET="_blank"><IMG SRC="img/printr.gif" ALT="[ {trans("Cash receipt")} ]" {tip a=$balancelist.docid[balancelist] dynpopup='?m=number&id=$a'}></A>
 							{elseif $balancelist.doctype[balancelist] == $smarty.const.DOC_DNOTE}
 								<A href="?m=note&id={$balancelist.docid[balancelist]}" TARGET="_blank"><IMG SRC="img/printd.gif" ALT="[ {trans("Debit note")} ]" {tip a=$balancelist.docid[balancelist] dynpopup='?m=number&id=$a'}></A>
 							{/if}
