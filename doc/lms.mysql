@@ -124,6 +124,8 @@ CREATE TABLE users (
   failedlogindate int(11) NOT NULL DEFAULT '0',
   failedloginip varchar(16) NOT NULL DEFAULT '',
   deleted tinyint(1)    NOT NULL DEFAULT '0',
+  passwdexpiration int(11) NOT NULL DEFAULT '0',
+  passwdlastchange int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY  (id),
   UNIQUE KEY login (login)
 ) ENGINE=InnoDB;

@@ -6,28 +6,28 @@
 <INPUT type="submit" class="hiddenbtn">
 <TABLE width="50%" cellpadding="3">
 	<TR class="dark">
-		<TD class="fall" colspan="2" nowrap>
-			<img src="img/pass.gif" alt=""> <B>{trans("Enter new password:")}</B>
+		<TD class="fall" colspan="2" style="white-space: nowrap;">
+			<img src="img/pass.gif" alt=""> <span class="bold">{trans("Enter new password:")}</span>
 		</TD>
 	</TR>
 	<TR class="light">
-		<TD class="fleft" align="right" nowrap>
-			<B>{trans("New password:")}</B>
+		<TD class="fleft" style="text-align: right; white-space: nowrap;">
+			<span class="bold">{trans("New password:")}</span>
 		</TD>
-		<TD class="fright" nowrap>
+		<TD class="fright" style="white-space: nowrap;">
 			<input type="password" name="passwd[passwd]" {tip text="Enter password" trigger="password"}>
 		</TD>
 	</TR>
 	<TR class="light">
-		<TD class="fleft" align="right" nowrap>
-			<B>{trans("Repeat password:")}</B>
+		<TD class="fleft" style="text-align: right; white-space: nowrap;">
+			<span class="bold">{trans("Repeat password:")}</span>
 		</TD>
-		<TD class="fright" nowrap>
+		<TD class="fright" style="white-space: nowrap;">
 			<input type="password" name="passwd[confirm]" {tip text="Confirm password" trigger="password"}>
 		</TD>
 	</TR>
 	<TR class="light">
-		<TD class="fbottomu" align="right" colspan="2">
+		<TD class="fbottomu" style="text-align: right;" colspan="2">
 			<A href="javascript:document.password.submit();" accesskey="s">{trans("Submit")} <img src="img/pass.gif" alt=""></A>
 		</TD>
 	</TR>

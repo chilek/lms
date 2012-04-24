@@ -189,20 +189,21 @@ if($AUTH->islogged)
 	$module = isset($_GET['m']) ? preg_replace('/[^a-zA-Z0-9_-]/', '', $_GET['m']) : '';
 	$deny = $allow = FALSE;
 
-	if($module == '')
+	if ($AUTH->passwdrequiredchange)
+		$module = 'chpasswd';
+
+	if ($module == '')
 	{
 		$module = $CONFIG['phpui']['default_module'];
 	}
 
-    // Load plugin files and register hook callbacks
-    $plugins = preg_split('/[;,\s\t\n]+/', $CONFIG['phpui']['plugins'], -1, PREG_SPLIT_NO_EMPTY);
-    if (!empty($plugins)) {
-        foreach ($plugins as $plugin_name) {
-            require LIB_DIR . '/plugins/' . $plugin_name . '.php';
-        }
-    }
+	// Load plugin files and register hook callbacks
+	$plugins = preg_split('/[;,\s\t\n]+/', $CONFIG['phpui']['plugins'], -1, PREG_SPLIT_NO_EMPTY);
+	if (!empty($plugins))
+		foreach ($plugins as $plugin_name)
+			require LIB_DIR . '/plugins/' . $plugin_name . '.php';
 
-	if(file_exists(MODULES_DIR.'/'.$module.'.php'))
+	if (file_exists(MODULES_DIR.'/'.$module.'.php'))
 	{
 		$allow = !$AUTH->id || (!empty($access['allow']) && preg_match('/'.$access['allow'].'/i', $module));
 
@@ -211,7 +212,7 @@ if($AUTH->islogged)
 			{
 				if($level === 0) {
 					$CONFIG['privileges']['superuser'] = true;
-			    }
+				}
 
 				if(!$allow) {
 					if(isset($access['table'][$level]['deny_reg']))

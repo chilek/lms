@@ -230,6 +230,18 @@ $BOROUGHTYPES = array(
 	9 => trans('estate'),
 );
 
+$PASSWDEXPIRATIONS = array(
+	0	=> trans('never expires'),
+	7	=> trans('week'),
+	14	=> trans('2 weeks'),
+	21	=> trans('21 days'),
+	31	=> trans('month'),
+	62	=> trans('2 months'),
+	93	=> trans('quarter'),
+	183	=> trans('half year'),
+	365	=> trans('year'),
+);
+
 if(isset($SMARTY))
 {
 	$SMARTY->assign('_DOCTYPES', $DOCTYPES);
@@ -246,6 +258,7 @@ if(isset($SMARTY))
 	$SMARTY->assign('_LINKTYPES', $LINKTYPES);
 	$SMARTY->assign('_LINKSPEEDS', $LINKSPEEDS);
 	$SMARTY->assign('_BOROUGHTYPES', $BOROUGHTYPES);
+	$SMARTY->assign('_PASSWDEXPIRATIONS', $PASSWDEXPIRATIONS);
 }
 
 define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');
