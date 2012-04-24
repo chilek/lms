@@ -33,8 +33,7 @@ $serverTime = date("r");
 
 if (check_conf('phpui.reload_timer'))
 	$SMARTY->assign('serverTime', $serverTime);
-else
-	$SMARTY->assign('serverTime', 'false');
+
 switch($_RELOAD_TYPE)
 {
 	case 'exec':

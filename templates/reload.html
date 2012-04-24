@@ -1,19 +1,19 @@
 <!--// $Id$ //-->
-<H1><B>{$layout.pagetitle}</B></H1>
+<H1><span class="bold">{$layout.pagetitle}</span></H1>
 <P><FORM name="reload" method="POST" action="?m=reload&setreloads">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD class="fall">
 		<div style="float:left">
-			<B>{trans("Select hosts for configuration reload:")} </div> <div id="reloadtxt" style="display:none; float:right">{trans("Reload configuration in:")} <span id="reloadtimer"></span> </div> </B>
+			<span class="bold">{trans("Select hosts for configuration reload:")} </div> </span> <div id="reloadtxt" style="display:none; float:right"><span class="bold">{trans("Reload configuration in:")} </span> <span id="reloadtimer" class="bold"></span> </div>
 		</TD>
 	</TR>
 	<TR>
 		<TD width="100%" class="fall">
 			<TABLE cellpadding="5" cellspacing="0" width="100%">
 				<TR class="dark">
-					<TD width="1%" class="fleftu" nowrap><IMG src="img/host.gif" ALT=""> <B>{trans("Name:")}</B></TD>
+					<TD width="1%" class="fleftu" nowrap><IMG src="img/host.gif" ALT=""> <span class="bold">{trans("Name:")}</span></TD>
 					<TD width="96%" class="fbt" nowrap>{trans("Description:")}</TD>
 					<TD width="1%" class="fbt" align="right" nowrap>{trans("Last Reload:")}</TD>
 					<TD width="1%" class="fbt" nowrap>{trans("Status:")}</TD>
@@ -22,7 +22,7 @@
 				{cycle values="light,lucid" print=false}
 				{section name=hosts loop=$hosts}
 				<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-					<TD nowrap onClick="return checkElement({$hosts[hosts].id});"><IMG src="img/host.gif" ALT=""> <B>{$hosts[hosts].name}</B></TD>
+					<TD nowrap onClick="return checkElement({$hosts[hosts].id});"><IMG src="img/host.gif" ALT=""> <span class="bold">{$hosts[hosts].name}</span></TD>
 					<TD onClick="return checkElement({$hosts[hosts].id});">{$hosts[hosts].description}</TD>
 					<TD align="right" nowrap onClick="return checkElement({$hosts[hosts].id});">{if $hosts[hosts].lastreload}{$hosts[hosts].lastreload|date_format:"%Y/%m/%d %H:%M"}{else}-{/if}</TD>
 					<TD nowrap onClick="return checkElement({$hosts[hosts].id});">{if $hosts[hosts].reload==1}{trans("waiting")}
@@ -36,7 +36,7 @@
 				<TR>
 					<TD colspan="4" align="center">
 						<P>&nbsp;</P>
-						<P><B>{trans("No such hosts in database.")}</B></P>
+						<P><span class="bold">{trans("No such hosts in database.")}</span></P>
 						<P>&nbsp;</P>
 					</TD>
 				</TR>
@@ -55,12 +55,11 @@
 </TABLE>
 </FORM>
 </P>
-{if $serverTime != 'false'}
+{if $serverTime}
 <SCRIPT type="text/javascript">
         <!--
 
-	if ('{$serverTime}' != 'false')
-		var serverTime = new Date("{$serverTime}");
+	var serverTime = new Date("{$serverTime}");
 	var timerOn = false;
 {section name=hosts loop=$hosts}
 	{if $hosts[hosts].reload==1}timerOn=true;{/if}
