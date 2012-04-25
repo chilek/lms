@@ -220,20 +220,6 @@ CREATE TABLE assignments (
 
 # --------------------------------------------------------
 #
-# Structure of table  nodelocks
-#
-CREATE TABLE nodelocks (
-	id int(11)		NOT NULL auto_increment,
-	nodeid int(11)		NOT NULL
-		REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	days smallint		DEFAULT 0 NOT NULL,
-	fromsec int(11)		DEFAULT 0 NOT NULL,
-	tosec int(11)		DEFAULT 0 NOT NULL,
-	PRIMARY KEY (id)
-) ENGINE=INNODB;
-
-# --------------------------------------------------------
-#
 # Structure of table taxes
 #
 CREATE TABLE taxes (
@@ -668,6 +654,20 @@ CREATE TABLE nodes (
   INDEX location_city (location_city, location_street, location_house, location_flat),
   INDEX location_street (location_street)
 ) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table  nodelocks
+#
+CREATE TABLE nodelocks (
+	id int(11)		NOT NULL auto_increment,
+	nodeid int(11)		NOT NULL
+		REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	days smallint		DEFAULT 0 NOT NULL,
+	fromsec int(11)		DEFAULT 0 NOT NULL,
+	tosec int(11)		DEFAULT 0 NOT NULL,
+	PRIMARY KEY (id)
+) ENGINE=INNODB;
 
 # --------------------------------------------------------
 #
