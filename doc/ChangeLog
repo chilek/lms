@@ -125,6 +125,7 @@ version ? (????-??-??):
   - fixed position of table on tcpdf invoice [chilan]
   - selection of only automatically issued invoices is possible now in invoice print [chilan]
   - implemented simple password expiration mechanism [chilan]
+  - chpasswd: new password should be different than old one [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
