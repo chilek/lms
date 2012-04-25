@@ -69,6 +69,8 @@ $LMS->RegisterHook('node_del_after', array($example_plugin, 'node_after'));
 /*
  List of supported actions:
 
+ module_load_before - Just before LMS module load
+
  node_info_init  - Just before displaying nodeinfo.html
 
  node_add_before - Before node creation (just before executing SQL insert queries)
@@ -86,4 +88,7 @@ $LMS->RegisterHook('node_del_after', array($example_plugin, 'node_after'));
  node_warn_after - After changing a warning flag
 
  send_sms_before - Called just before sending SMS, using this you can add your own service handlers
+
+ access_table_init - Called after default access table is built
+
 */
