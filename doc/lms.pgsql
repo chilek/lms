@@ -23,7 +23,7 @@ CREATE TABLE users (
 	failedloginip varchar(16) DEFAULT '' NOT NULL,
 	deleted smallint	DEFAULT 0 NOT NULL,
 	passwdexpiration integer DEFAULT 0 NOT NULL,
-	pssswdlastchange integer DEFAULT 0 NOT NULL,
+	passwdlastchange integer DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (login)
 );
