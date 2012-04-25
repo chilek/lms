@@ -123,22 +123,6 @@ CREATE INDEX assignments_tariffid_idx ON assignments (tariffid);
 CREATE INDEX assignments_customerid_idx ON assignments (customerid);
 CREATE INDEX assignments_numberplanid_idx ON assignments (numberplanid);
 
-/* ----------------------------------------------------
- Structure of table "nodelocks"
----------------------------------------------------*/
-DROP SEQUENCE IF EXISTS nodelocks_id_seq;
-CREATE SEQUENCE nodelocks_id_seq;
-DROP TABLE IF EXISTS nodelocks CASCADE;
-CREATE TABLE nodelocks (
-	id integer		DEFAULT nextval('nodelocks_id_seq'::text) NOT NULL,
-	nodeid integer		NOT NULL
-		REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	days smallint		DEFAULT 0 NOT NULL,
-	fromsec integer		DEFAULT 0 NOT NULL,
-	tosec integer		DEFAULT 0 NOT NULL,
-	PRIMARY KEY (id)
-);
-
 /* -------------------------------------------------------- 
   Structure of table "cash" 
 -------------------------------------------------------- */
@@ -277,7 +261,7 @@ CREATE TABLE pna (
 		REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	fromhouse varchar(10) DEFAULT NULL,
 	tohouse varchar(10) DEFAULT NULL,
-	parity smallint DEFAULT 0 NOT NULL
+	parity smallint DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (zip, cityid, streetid, fromhouse, tohouse, parity)
 );
@@ -354,6 +338,22 @@ CREATE INDEX nodes_ownerid_idx ON nodes (ownerid);
 CREATE INDEX nodes_ipaddr_pub_idx ON nodes (ipaddr_pub);
 CREATE INDEX nodes_location_street_idx ON nodes (location_street);
 CREATE INDEX nodes_location_city_idx ON nodes (location_city, location_street, location_house, location_flat);
+
+/* ----------------------------------------------------
+ Structure of table "nodelocks"
+---------------------------------------------------*/
+DROP SEQUENCE IF EXISTS nodelocks_id_seq;
+CREATE SEQUENCE nodelocks_id_seq;
+DROP TABLE IF EXISTS nodelocks CASCADE;
+CREATE TABLE nodelocks (
+	id integer		DEFAULT nextval('nodelocks_id_seq'::text) NOT NULL,
+	nodeid integer		NOT NULL
+		REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	days smallint		DEFAULT 0 NOT NULL,
+	fromsec integer		DEFAULT 0 NOT NULL,
+	tosec integer		DEFAULT 0 NOT NULL,
+	PRIMARY KEY (id)
+);
 
 /* -------------------------------------------------------- 
   Structure of table "macs" 
