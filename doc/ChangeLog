@@ -183,6 +183,7 @@ version 1.11.12 Aris (2011-03-18)
     with "deleted" status, the list is empty [alec]
   - lmsd/tc,tc-new: Added %h1, %h2, %h3, %h4 variables [alec]
   - fixed "Check All" checkbox on Cash Operations Import list [alec]
+  - Added reload timer. Add reload_timer true to phpui to enable it [paszczus]
 
 version 1.11.11 Bray (2011-01-17)
 
