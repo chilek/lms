@@ -64,12 +64,12 @@
 			{$voipaccountlist[voipaccountlist].passwd}
 		</td>
 		<td width="1%" class="fright" align="right">
-			<nobr>
+			<span class="nobr">
 			<a href="?m=voipaccountset&id={$voipaccountlist[voipaccountlist].id}"><img src="img/{if ! $voipaccountlist[voipaccountlist].access}no{/if}access.gif" alt="[ {if ! $voipaccountlist[voipaccountlist].access}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]" title="[ {if ! $voipaccountlist[voipaccountlist].access}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]"></a>
 			<a onClick="return confirmLink(this, '{t a=$voipaccountlist[voipaccountlist].login}Are you sure, you want to remove voip account \'$a\' from database?{/t}')" href="?m=voipaccountdel&id={$voipaccountlist[voipaccountlist].id}"><img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></a>
 			<a href="?m=voipaccountedit&id={$voipaccountlist[voipaccountlist].id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
 			<a href="?m=voipaccountinfo&id={$voipaccountlist[voipaccountlist].id}"><img src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></a>
-			</nobr>
+			</span>
 		</td>
 	</tr>
 	{if $voipaccountlist[voipaccountlist.index_next].ownerid eq $voipaccountlist[voipaccountlist].ownerid && $listdata.order eq "owner"}{cycle print=false}{/if}

@@ -30,29 +30,29 @@
 	<tr class="{cycle}{if $netlist[netlist].disabled == 1} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<td class="fleft" width="96%" onClick="return self.location.href='?m=netinfo&id={$netlist[netlist].id}';">
 		<a name="{$netlist[netlist].id}">
-			<nobr><img src="img/network.gif" alt=""> <strong>{$netlist[netlist].name|truncate:40:"...":true}</strong><br /><img src="img/ip.gif" alt=""> {$netlist[netlist].address} / {$netlist[netlist].prefix} {if $netlist[netlist].interface}({$netlist[netlist].interface}){/if}</nobr>
+			<span class="nobr"><img src="img/network.gif" alt=""> <strong>{$netlist[netlist].name|truncate:40:"...":true}</strong><br /><img src="img/ip.gif" alt=""> {$netlist[netlist].address} / {$netlist[netlist].prefix} {if $netlist[netlist].interface}({$netlist[netlist].interface}){/if}</span>
 		</td>
 		<td valign="top" align="right" onClick="return self.location.href='?m=netinfo&id={$netlist[netlist].id}';" width="1%">
-			<nobr><img src="img/empty.gif" width="1" height="16" alt="">({$netlist[netlist].id|string_format:"%04d"})<br /><img src="img/empty.gif" width="1" height="16" alt="">{$netlist[netlist].size}/{$netlist[netlist].assigned|string_format:"%01d"}/{$netlist[netlist].online|string_format:"%01d"}</nobr>
+			<span class="nobr"><img src="img/empty.gif" width="1" height="16" alt="">({$netlist[netlist].id|string_format:"%04d"})<br /><img src="img/empty.gif" width="1" height="16" alt="">{$netlist[netlist].size}/{$netlist[netlist].assigned|string_format:"%01d"}/{$netlist[netlist].online|string_format:"%01d"}</span>
 		</td>
 		<td width="1%" onClick="return self.location.href='?m=netinfo&id={$netlist[netlist].id}';">
-			<nobr>{if $netlist[netlist].dns neq ""}<img src="img/dns.gif" alt=""> {$netlist[netlist].dns}{if $netlist[netlist].dns2 neq ""}, {$netlist[netlist].dns2}{/if}{/if}<br />
-			{if $netlist[netlist].domain neq ""}<img src="img/domain.gif" alt=""> {$netlist[netlist].domain}{/if}&nbsp;</nobr>
+			<span class="nobr">{if $netlist[netlist].dns neq ""}<img src="img/dns.gif" alt=""> {$netlist[netlist].dns}{if $netlist[netlist].dns2 neq ""}, {$netlist[netlist].dns2}{/if}{/if}<br />
+			{if $netlist[netlist].domain neq ""}<img src="img/domain.gif" alt=""> {$netlist[netlist].domain}{/if}&nbsp;</span>
 		</td>
 		<td width="1%" onClick="return self.location.href='?m=netinfo&id={$netlist[netlist].id}';">
-			<nobr>{if $netlist[netlist].gateway neq ""}<img src="img/gateway.gif" alt=""> {$netlist[netlist].gateway}{/if}<br />
-			{if $netlist[netlist].wins neq ""}<img src="img/wins.gif" alt=""> {$netlist[netlist].wins}{/if}&nbsp;</nobr>
+			<span class="nobr">{if $netlist[netlist].gateway neq ""}<img src="img/gateway.gif" alt=""> {$netlist[netlist].gateway}{/if}<br />
+			{if $netlist[netlist].wins neq ""}<img src="img/wins.gif" alt=""> {$netlist[netlist].wins}{/if}&nbsp;</span>
 		</td>
 		<td width="1%" onClick="return self.location.href='?m=netinfo&id={$netlist[netlist].id}';">
-			<nobr>{if $netlist[netlist].dhcpstart}<img src="img/dhcpstart.gif" alt=""> {$netlist[netlist].dhcpstart}<br /><img src="img/dhcpend.gif" alt=""> {$netlist[netlist].dhcpend}{/if}</nobr>
+			<span class="nobr">{if $netlist[netlist].dhcpstart}<img src="img/dhcpstart.gif" alt=""> {$netlist[netlist].dhcpstart}<br /><img src="img/dhcpend.gif" alt=""> {$netlist[netlist].dhcpend}{/if}</span>
 		</td>
 		<td class="fright">
-			<nobr>
+			<span class="nobr">
 			<a href="?m=netedit&networkset&id={$netlist[netlist].id}">{if $netlist[netlist].disabled}<img src="img/noaccess.gif" alt="[ {trans("Enable")} ]" title="[ {trans("Enable")} ]">{else}<img src="img/access.gif" alt="[ {trans("Disable")} ]" title="[ {trans("Disable")} ]">{/if}</a>
 			<a href="?m=netdel&id={$netlist[netlist].id}" onClick="return confirmLink(this,'{t a=$netlist[netlist].name}Are you sure, you want to remove network \'$a\'?{/t}')"><img src="img/delete.gif" alt="[ {trans("Remove")} ]" title="[ {trans("Remove")} ]"></a>
 			<a href="?m=netedit&id={$netlist[netlist].id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
 			<a href="?m=netinfo&id={$netlist[netlist].id}"><img src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></a>
-			</nobr>
+			</span>
 		</td>
 	</tr>
 	{sectionelse}

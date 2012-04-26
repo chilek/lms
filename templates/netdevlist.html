@@ -43,11 +43,11 @@
 			<img src="img/serialnumber.gif" alt=""> {$netdevlist[netdevlist].serialnumber}
 		</td>
 		<td width="1%" class="fright" align="right">
-			<nobr>
+			<span class="nobr">
 			<a href="?m=netdevdel&id={$netdevlist[netdevlist].id}" onClick="return confirmLink(this, '{t a=$netdevlist[netdevlist].name}Are you sure, you want to remove device \'$a\' from database?{/t}')"><img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></a>
 			<a href="?m=netdevedit&id={$netdevlist[netdevlist].id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
 			<a href="?m=netdevinfo&id={$netdevlist[netdevlist].id}"><img src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></a>
-			</nobr>
+			</span>
 		</td>
 	</tr>
 	{if $netdevlist[netdevlist.index_next].ownerid eq $netdevlist[netdevlist].ownerid && $listdata.order eq "owner"}{cycle print=false}{/if}

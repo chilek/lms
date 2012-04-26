@@ -32,7 +32,7 @@
 	</tr>
 	<tr class="light">
 		<td width="1%" class="fleft">
-			<nobr><img src="img/ip.gif" alt=""> <strong>{trans("Address/prefix:")}</strong></nobr>
+			<span class="nobr"><img src="img/ip.gif" alt=""> <strong>{trans("Address/prefix:")}</strong></span>
 		</td>
 		<td width="48%">
 			<span class="nobr">{if $unlockedit}<input type="text" name="networkdata[address]" value="{$network.address}" {tip text="Write down network address and select mask" trigger="address"}> / <select size="1" title="Prefixlen" name="networkdata[prefix]">{section name=prefixlist loop=$prefixlist.id}<option value="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] eq $network.prefix} selected="selected"{/if}>{$prefixlist.value[prefixlist]}</option>{/section}</select>{else}{$network.address}/{$network.prefix}{/if}</span>
@@ -51,7 +51,7 @@
 	{if !$unlockedit}
 	<tr class="light">
 		<td width="1%" class="fleft">
-			<nobr><img src="img/cmp.gif" alt=""> <strong>{trans("Network size:")}</strong>
+			<span class="nobr"><img src="img/cmp.gif" alt=""> <strong>{trans("Network size:")}</strong>
 		</td>
 		<td width="49%">
 			{t a=$network.size}$a addresses{/t}
@@ -72,7 +72,7 @@
 	</tr>
 	<tr class="light">
 		<td width="2%" class="fleft">
-			<nobr><img src="img/gateway.gif" alt=""> <strong>{trans("Gateway:")}</strong></nobr>
+			<span class="nobr"><img src="img/gateway.gif" alt=""> <strong>{trans("Gateway:")}</strong></span>
 		</td>		
 		<td width="48%">
 			{if $unlockedit}
@@ -82,7 +82,7 @@
 			{/if}
 		</td>
 		<td width="2%">
-			<nobr><img src="img/dns.gif" alt=""> <strong>{trans("DNS servers:")}</strong></span>
+			<span class="nobr"><img src="img/dns.gif" alt=""> <strong>{trans("DNS servers:")}</strong></span>
 		</td>
 		<td width="48%" class="fright">
 			{if $unlockedit}
@@ -96,7 +96,7 @@
 	</tr>
 	<tr class="light">
 		<td width="2%" class="fleft">
-			<nobr><img src="img/wins.gif" alt=""> <strong>{trans("WINS server:")}</strong></span>
+			<span class="nobr"><img src="img/wins.gif" alt=""> <strong>{trans("WINS server:")}</strong></span>
 		</td>
 		<td width="48%">
 			{if $unlockedit}
@@ -106,7 +106,7 @@
 			{/if}
 		</td>
 		<td width="2%">
-			<nobr><img src="img/node.gif" alt=""> <strong>{trans("Domain:")}</strong></span>
+			<span class="nobr"><img src="img/node.gif" alt=""> <strong>{trans("Domain:")}</strong></span>
 		</td>
 		<td width="48%" class="fright">
 			{if $unlockedit}

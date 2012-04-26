@@ -91,16 +91,16 @@
 		</td>
 		<td width="1%" onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';" valign="top" nowrap="nowrap">
 			<img src="img/ip.gif" alt="">&nbsp;{$nodelist[nodelist].ip} {if $nodelist[nodelist].ip_pub != "0.0.0.0"}({$nodelist[nodelist].ip_pub}){/if}<br />
-			<nobr><img src="img/mac.gif" alt="">&nbsp;{$nodelist[nodelist].mac|replace:",":"</nobr><br /><nobr><img src=\"img/mac.gif\" alt=\"\">&nbsp;"}</nobr>
+			<span class="nobr"><img src="img/mac.gif" alt="">&nbsp;{$nodelist[nodelist].mac|replace:",":"</span><br /><span class="nobr"><img src=\"img/mac.gif\" alt=\"\">&nbsp;"}</span>
 		</td>
 		<td class="fright" width="1%">
-			<nobr>
+			<span class="nobr">
 			<a href="?m=nodeset&id={$nodelist[nodelist].id}"><img src="img/{if ! $nodelist[nodelist].access}no{/if}access.gif" alt="[ {if ! $nodelist[nodelist].access}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]" title="[ {if ! $nodelist[nodelist].access}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]"></a>
                         <a href="?m=nodewarn&id={$nodelist[nodelist].id}"><img src="img/warning{if ! $nodelist[nodelist].warning}off{else}on{/if}.gif" alt="[ {if ! $nodelist[nodelist].warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if} ]" title="[ {if ! $nodelist[nodelist].warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if} ]"></a>
 			<a onClick="return confirmLink(this, '{t a=$nodelist[nodelist].name}Are you sure, you want to remove node \'$a\' from database?{/t}')" href="?m=nodedel&id={$nodelist[nodelist].id}"><img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></a>
 			<a href="?m=nodeedit&id={$nodelist[nodelist].id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
 			<a href="?m=nodeinfo&id={$nodelist[nodelist].id}"><img src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></a>
-			</nobr>
+			</span>
 		</td>
 	</tr>
 	{if $nodelist[nodelist.index_next].ownerid eq $nodelist[nodelist].ownerid && $listdata.order eq "owner"}{cycle print=false}{/if}

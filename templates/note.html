@@ -137,17 +137,17 @@ customer's balance: {$note.customerbalancelist.balance}
 	{section name=balancelist loop=$note.customerbalancelist.id start=$startloop max=$note.customerbalancelistlimit}
 	{* section name=balancelist loop=$note.customerbalancelist.id start=$note.customerbalancelistlimit step=-1 *}
 	<tr>
-		<td width="1%"><nobr>{$note.customerbalancelist.date[balancelist]}</nobr></td>
-		<td width="1%" align="right"><nobr>{if $note.customerbalancelist.value[balancelist] > 0}+{/if}{$note.customerbalancelist.value[balancelist]|money_format}</nobr>
+		<td width="1%"><span class="nobr">{$note.customerbalancelist.date[balancelist]}</span></td>
+		<td width="1%" align="right"><span class="nobr">{if $note.customerbalancelist.value[balancelist] > 0}+{/if}{$note.customerbalancelist.value[balancelist]|money_format}</span>
 		</td>
 		<td width="1%" align="right">
-                        <nobr>{$note.customerbalancelist.tax[balancelist]}</nobr>
+                        <span class="nobr">{$note.customerbalancelist.tax[balancelist]}</span>
 		</td>
 		<td width="1%" align="center">&raquo;</td>
-		<td width="1%" align="right"><nobr>
+		<td width="1%" align="right"><span class="nobr">
 			{if $note.customerbalancelist.after[balancelist] < 0}<STRONG>{/if}
 			    {$note.customerbalancelist.after[balancelist]|money_format}
-			{if $note.customerbalancelist.after[balancelist] < 0}</STRONG>{/if}</nobr>
+			{if $note.customerbalancelist.after[balancelist] < 0}</STRONG>{/if}</span>
 		</td>
 		<td width="93%">{$note.customerbalancelist.comment[balancelist]}</td>
         </tr>

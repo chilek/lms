@@ -101,8 +101,8 @@
 			{$accountlist[accountlist].quota_sh}/{$accountlist[accountlist].quota_mail}/{$accountlist[accountlist].quota_www}/{$accountlist[accountlist].quota_ftp}/{$accountlist[accountlist].quota_sql}
 		</td>
 		<td align="right" valign="top" OnClick="return self.location.href='?m=accountinfo&id={$accountlist[accountlist].id}';">
-			<nobr>{if $accountlist[accountlist].lastlogin}{$accountlist[accountlist].lastlogin|date_format:"%Y/%m/%d %H:%M"}{/if}</nobr><br />
-			<nobr>{if $accountlist[accountlist].expdate}{$accountlist[accountlist].expdate|date_format:"%Y/%m/%d"}{/if}</nobr>
+			<span class="nobr">{if $accountlist[accountlist].lastlogin}{$accountlist[accountlist].lastlogin|date_format:"%Y/%m/%d %H:%M"}{/if}</span><br />
+			<span class="nobr">{if $accountlist[accountlist].expdate}{$accountlist[accountlist].expdate|date_format:"%Y/%m/%d"}{/if}</span>
 		</td>
 		<td class="fright" align="right">
 			{assign var=account value="`$accountlist[accountlist].login`@`$accountlist[accountlist].domain`"}

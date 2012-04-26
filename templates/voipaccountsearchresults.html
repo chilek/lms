@@ -46,11 +46,11 @@
 			{$voipaccountlist[voipaccountlist].passwd}
 		</td>
 		<td width="1%" class="fright" align="right">
-			<nobr>
+			<span class="nobr">
 			<a href="?m=voipaccountdel&id={$voipaccountlist[voipaccountlist].id}" onClick="return confirmLink(this, '{t a=$voipaccountlist[voipaccountlist].login}Are you sure, you want to remove voip account \'$a\' from database?{/t}')"><img src="img/delete.gif" alt="[ {trans("Delete")} ]"></a>
 			<a href="?m=voipaccountedit&id={$voipaccountlist[voipaccountlist].id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]"></a>
 			<a href="?m=voipaccountinfo&id={$voipaccountlist[voipaccountlist].id}"><img src="img/info.gif" alt="[ {trans("Info")} ]"></a>
-			</nobr>
+			</span>
 		</td>
 	</tr>
 	{sectionelse}

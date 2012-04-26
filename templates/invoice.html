@@ -418,17 +418,17 @@ customer's balance: {$invoice.customerbalancelist.balance}
 	{section name=balancelist loop=$invoice.customerbalancelist.id start=$startloop max=$invoice.customerbalancelistlimit}
 	{* section name=balancelist loop=$invoice.customerbalancelist.id start=$invoice.customerbalancelistlimit step=-1 *}
 	<tr>
-		<td width="1%"><nobr>{$invoice.customerbalancelist.date[balancelist]}</nobr></td>
-		<td width="1%" align="right"><nobr>{if $invoice.customerbalancelist.value[balancelist] > 0}+{/if}{$invoice.customerbalancelist.value[balancelist]|money_format}</nobr>
+		<td width="1%"><span class="nobr">{$invoice.customerbalancelist.date[balancelist]}</span></td>
+		<td width="1%" align="right"><span class="nobr">{if $invoice.customerbalancelist.value[balancelist] > 0}+{/if}{$invoice.customerbalancelist.value[balancelist]|money_format}</span>
 		</td>
 		<td width="1%" align="right">
-                        <nobr>{$invoice.customerbalancelist.tax[balancelist]}</nobr>
+                        <span class="nobr">{$invoice.customerbalancelist.tax[balancelist]}</span>
 		</td>
 		<td width="1%" align="center">&raquo;</td>
-		<td width="1%" align="right"><nobr>
+		<td width="1%" align="right"><span class="nobr">
 			{if $invoice.customerbalancelist.after[balancelist] < 0}<STRONG>{/if}
 			    {$invoice.customerbalancelist.after[balancelist]|money_format}
-			{if $invoice.customerbalancelist.after[balancelist] < 0}</STRONG>{/if}</nobr>
+			{if $invoice.customerbalancelist.after[balancelist] < 0}</STRONG>{/if}</span>
 		</td>
 		<td width="93%">{$invoice.customerbalancelist.comment[balancelist]}</td>
         </tr>

@@ -121,7 +121,7 @@
 				{cycle name=bal values="light,lucid" print=false}
 				{section name=balancelist loop=$balancelist.id start=$limit}
 				<tr class="{cycle name=bal}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-					<td width="1%"><nobr>{$balancelist.date[balancelist]}</nobr></td>
+					<td width="1%"><span class="nobr">{$balancelist.date[balancelist]}</span></td>
 					<td width="1%" nowrap="nowrap">{$balancelist.username[balancelist]|truncate:16:"...":true}</td>
 					<td width="1%" align="right" nowrap="nowrap">{if !$balancelist.type[balancelist]}{($balancelist.value[balancelist]*-1)|money_format}{else}-{/if}</td>
 					<td width="1%" align="right" nowrap="nowrap">{if $balancelist.type[balancelist] && $balancelist.value[balancelist] > 0}{$balancelist.value[balancelist]|money_format}{else}-{/if}</td>

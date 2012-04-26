@@ -30,7 +30,7 @@
 			{$userslist[userslist].lastloginip} {if $userslist[userslist].lastloginip neq $userslist[userslist].lastloginhost}({$userslist[userslist].lastloginhost}){/if}</span>
 		</td>
 		<td width="1%" class="fright">
-			<nobr>
+			<span class="nobr">
 			<a href="?m=userpasswd&id={$userslist[userslist].id}"><img src="img/keys.gif" alt="[ {trans("Change password")} ]" title="[ {trans("Change password")} ]"></a>
 			{if $userslist[userslist].id neq $layout.logid}<a href="?m=userdel&id={$userslist[userslist].id}" onClick="return confirmLink(this, '{trans("Are you sure, you want to irreversibly delete that user account?")}');">{/if}<img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></a>
 			<a href="?m=useredit&id={$userslist[userslist].id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
