@@ -24,9 +24,9 @@
 		</td>
 		<td width="98%" class="fright">
 			<select name="instance[hostid]" {tip text="Select host name" trigger="hostid"}>
-				<option value="0"{if !$instance.hostid} SELECTED{/if}>{trans("- select host -")}</option>
+				<option value="0"{if !$instance.hostid} selected="selected"{/if}>{trans("- select host -")}</option>
 				{foreach from=$hosts item=host}
-				<option value="{$host.id}"{if $instance.hostid == $host.id} SELECTED{/if}>{$host.name}</option>
+				<option value="{$host.id}"{if $instance.hostid == $host.id} selected="selected"{/if}>{$host.name}</option>
 				{/foreach}
 			</select>
 		</td>

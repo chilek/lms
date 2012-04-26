@@ -20,10 +20,10 @@
 	    <td width="1%" nowrap="nowrap"><strong>{trans("Cash-in receipt numbering plan:")}</strong></td>
 	    <td width="98%" class="fright">
 	    	    <select name="registry[in_numberplanid]" {tip text="Select numbering plan"}>
-			    <option value="0"{if ! $registry.in_numberplanid} SELECTED{/if}>{trans("- select numbering plan -")}</option>
+			    <option value="0"{if ! $registry.in_numberplanid} selected="selected"{/if}>{trans("- select numbering plan -")}</option>
 	    		    {foreach item=plan from=$numberplanlist}
 	        	    {assign var=period value=$plan.period}
-			    <option value="{$plan.id}"{if $plan.id==$registry.in_numberplanid} SELECTED{/if}>{$plan.template} ({$_NUM_PERIODS.$period})</option>
+			    <option value="{$plan.id}"{if $plan.id==$registry.in_numberplanid} selected="selected"{/if}>{$plan.template} ({$_NUM_PERIODS.$period})</option>
 			    {/foreach}
 		    </select>
 	    </td>
@@ -35,10 +35,10 @@
 	    <td width="1%" nowrap="nowrap"><strong>{trans("Cash-out receipt numbering plan:")}</strong></td>
 	    <td width="98%" class="fright">
 	    	    <select name="registry[out_numberplanid]" {tip text="Select numbering plan"}>
-			    <option value="0"{if ! $registry.out_numberplanid} SELECTED{/if}>{trans("- select numbering plan -")}</option>
+			    <option value="0"{if ! $registry.out_numberplanid} selected="selected"{/if}>{trans("- select numbering plan -")}</option>
 	    		    {foreach item=plan from=$numberplanlist}
 	        	    {assign var=period value=$plan.period}
-			    <option value="{$plan.id}"{if $plan.id==$registry.out_numberplanid} SELECTED{/if}>{$plan.template} ({$_NUM_PERIODS.$period})</option>
+			    <option value="{$plan.id}"{if $plan.id==$registry.out_numberplanid} selected="selected"{/if}>{$plan.template} ({$_NUM_PERIODS.$period})</option>
 			    {/foreach}
 		    </select>
 	    </td>

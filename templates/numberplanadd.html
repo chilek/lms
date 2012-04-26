@@ -26,7 +26,7 @@
 			<select name="numberplanadd[doctype]" size="1" {tip text="Select document type" trigger="doctype"}>
 				<option value="0">- {trans("select document type")} -</option>
 			{foreach from=$_DOCTYPES item=item key=key}
-				<option value="{$key}"{if $key == $numberplanadd.doctype} SELECTED{/if}>{$item}</option>
+				<option value="{$key}"{if $key == $numberplanadd.doctype} selected="selected"{/if}>{$item}</option>
 			{/foreach}
 			</select>
 		</td>
@@ -42,7 +42,7 @@
 			<select name="numberplanadd[period]" size="1" {tip text="Select numbering period" trigger="period"}>
 				<option value="0">- {trans("select period")} -</option>
 			{foreach from=$_NUM_PERIODS item=item key=key}
-				<option value="{$key}"{if $key == $numberplanadd.period} SELECTED{/if}>{$item}</option>
+				<option value="{$key}"{if $key == $numberplanadd.period} selected="selected"{/if}>{$item}</option>
 			{/foreach}
 			</select>
 		</td>

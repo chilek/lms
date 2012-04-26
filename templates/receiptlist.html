@@ -84,13 +84,13 @@
 				<strong>{trans("Filter:")} </strong> 
 				<input name="search" type="text" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>&nbsp;
 				<select size="1" name="cat">
-					<option value=""{if $listdata.cat eq ""} SELECTED{/if}>{trans("- select filter -")}</option>
-					<option value="number"{if $listdata.cat eq "number"} SELECTED{/if}>{trans("number")}</option>
-					<option value="value"{if $listdata.cat eq "value"} SELECTED{/if}>{trans("value")}</option>
-					<option value="name"{if $listdata.cat eq "name"} SELECTED{/if}>{trans("customer name")}</option>
-					<option value="customerid"{if $listdata.cat eq "customerid"} SELECTED{/if}>{trans("customer ID")}</option>
-					<option value="ten"{if $listdata.cat eq "ten"} SELECTED{/if}>{trans("TEN")}</option>
-					<option value="address"{if $listdata.cat eq "address"} SELECTED{/if}>{trans("address")}</option>
+					<option value=""{if $listdata.cat eq ""} selected="selected"{/if}>{trans("- select filter -")}</option>
+					<option value="number"{if $listdata.cat eq "number"} selected="selected"{/if}>{trans("number")}</option>
+					<option value="value"{if $listdata.cat eq "value"} selected="selected"{/if}>{trans("value")}</option>
+					<option value="name"{if $listdata.cat eq "name"} selected="selected"{/if}>{trans("customer name")}</option>
+					<option value="customerid"{if $listdata.cat eq "customerid"} selected="selected"{/if}>{trans("customer ID")}</option>
+					<option value="ten"{if $listdata.cat eq "ten"} selected="selected"{/if}>{trans("TEN")}</option>
+					<option value="address"{if $listdata.cat eq "address"} selected="selected"{/if}>{trans("address")}</option>
 				</select>&nbsp;
 				<strong>{trans("Period:")}</strong>&nbsp;
 				{trans("from")}&nbsp;<input type="text" name="from" size="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>

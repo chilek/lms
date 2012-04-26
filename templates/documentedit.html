@@ -33,7 +33,7 @@
 				{
 					result = result + '<option value="' + key + '"';
 					if(key == s)
-						result += ' SELECTED';
+						result += ' selected="selected"';
 					result = result + '>' + p[type][key] + ' (' + pr[type][key] + ') </option>';
 				}
 				result += '</select>';
@@ -72,7 +72,7 @@
 		<td width="98%" class="fright">
 			<select size="1" name="document[type]" onchange="setnumberplans();" {tip text="Select document type" trigger="type"}>
 				{foreach from=$_DOCTYPES key=key item=item}{if $key < 0 && in_array($key, $docrights)}
-				<option value="{$key}"{if $document.type==$key} SELECTED{/if}>{$item}</option>
+				<option value="{$key}"{if $document.type==$key} selected="selected"{/if}>{$item}</option>
 				{/if}{/foreach}
 			</select>
 		</td>
@@ -91,7 +91,7 @@
 			<select name="document[numberplanid]" {tip text="Select numbering plan"}>
 			{foreach item=plan from=$numberplans}
 				{assign var=period value=$plan.period}
-				<option value="{$plan.id}"{if $plan.id==$document.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$document.cdate} ({$_NUM_PERIODS.$period})</option>
+				<option value="{$plan.id}"{if $plan.id==$document.numberplanid} selected="selected"{/if}>{number number=$plan.next template=$plan.template time=$document.cdate} ({$_NUM_PERIODS.$period})</option>
 			{/foreach}
 			</select>
 			{else}
@@ -146,7 +146,7 @@
 			<select size="1" name="document[template]" {tip text="Select template to generate new document if you haven't got prepared file" trigger="template"}>
 				<option value="0">... {trans("select template")} ...</option>
 				{foreach from=$docengines item=item}
-				<option value="{$item.name}"{if $document.template==$item.name} SELECTED{/if}>{$item.title}</option>
+				<option value="{$item.name}"{if $document.template==$item.name} selected="selected"{/if}>{$item.title}</option>
 				{/foreach}
 			</select>
 		</td>

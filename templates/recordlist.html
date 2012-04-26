@@ -19,7 +19,7 @@
 				    <span class="nobr">{trans("Domain:")}
 				    <select size="1" name="d" OnChange="document.filter.submit();">
 					{section name=domainlist loop=$domainlist}
-					    <option value="{$domainlist[domainlist].id}"{if $domainlist[domainlist].id eq $listdata.domain} SELECTED{/if}>{$domainlist[domainlist].name}</option>
+					    <option value="{$domainlist[domainlist].id}"{if $domainlist[domainlist].id eq $listdata.domain} selected="selected"{/if}>{$domainlist[domainlist].name}</option>
 					{/section}
 				    </select></span>
 				</form>

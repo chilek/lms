@@ -43,7 +43,7 @@
 								<td style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Legal personality:")}</span></td>
 								<td style="width: 98%; white-space: nowrap;">
 									<select size="1" name="type" {tip text="Select legal personality type"}>
-										<option value="" SELECTED>{trans("- all -")}</option>
+										<option value="" selected="selected">{trans("- all -")}</option>
 										<option value="0">{trans("private person")}</option>
 										<option value="1">{trans("legal entity")}</option>
 									</select>
@@ -78,7 +78,7 @@
 								<td style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Network:")}</span></td>
 								<td style="width: 98%; white-space: nowrap;">
 									<select size="1" name="network" {tip text="Select network"}>
-										<option value="0" SELECTED>{trans("- all networks -")}</option>
+										<option value="0" selected="selected">{trans("- all networks -")}</option>
 										{section name="networks" loop=$networks}
 										<option value="{$networks[networks].id}">{$networks[networks].name|truncate:40:"...":true}</option>
 										{/section}
@@ -90,7 +90,7 @@
 								<td style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Group:")}</span></td>
 								<td style="width: 98%; white-space: nowrap;">
 									<select size="1" name="customergroup" {tip text="Select group"}>
-										<option value="0" SELECTED>{trans("- all groups -")}</option>
+										<option value="0" selected="selected">{trans("- all groups -")}</option>
 										{section name="customergroups" loop=$customergroups}
 										<option value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:40:"...":true}</option>
 										{/section}
@@ -102,7 +102,7 @@
 								<td style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Nodes Group:")}</span></td>
 								<td style="width: 98%; white-space: nowrap;">
 									<select size="1" name="nodegroup" {tip text="Select group"}>
-										<option value="" SELECTED>{trans("- all groups -")}</option>
+										<option value="" selected="selected">{trans("- all groups -")}</option>
 										{foreach from=$nodegroups item=nodegroup}
 										<option value="{$nodegroup.id}">{$nodegroup.name|truncate:30:"...":true}</option>
 										{/foreach}
@@ -130,7 +130,7 @@
 							<tr>
 								<td style="width: 100%; white-space: nowrap;">
 									<select size="1" name="order">
-										<option value="customername" SELECTED>{trans("First/last or Company name")}</option>
+										<option value="customername" selected="selected">{trans("First/last or Company name")}</option>
 										<option value="id">{trans("Id")}</option> 
 										<option value="balance">{trans("Balance")}</option> 
 										<option value="tariff">{trans("Subscription")}</option> 
@@ -141,7 +141,7 @@
 							<tr>
 								<td style="width: 100%; white-space: nowrap;">
 									<select size="1" name="direction">
-										<option value="asc" SELECTED>{trans("ascending")}</option>
+										<option value="asc" selected="selected">{trans("ascending")}</option>
 										<option value="desc">{trans("descending")}</option> 
 									</select>
 								</td>
@@ -241,7 +241,7 @@ cal22.time_comp = false;
 						    </td>
 						    <td width="98%">
 							<select size="1" name="network" {tip text="Select network"}>
-							    <option value="0" SELECTED>{trans("- all networks -")}</option>
+							    <option value="0" selected="selected">{trans("- all networks -")}</option>
 							    {section name="networks" loop=$networks}
 							    <option value="{$networks[networks].id}">{$networks[networks].name|truncate:40:"...":true}</option>
 							    {/section}
@@ -273,7 +273,7 @@ cal22.time_comp = false;
 						    </td>
 						    <td width="98%">
 							<select size="1" name="customergroup" {tip text="Select group"}>
-							    <option value="0" SELECTED>{trans("- all groups -")}</option>
+							    <option value="0" selected="selected">{trans("- all groups -")}</option>
 							    {section name="customergroups" loop=$customergroups}
 							    <option value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:40:"...":true}</option>
 							    {/section}
@@ -593,7 +593,7 @@ multiselect('invoicereport', 'invoicereportgroup', '{trans("- all groups -")}');
 						    </td>
 						    <td width="98%" nowrap="nowrap">
 							<select size="1" name="group">
-							    <option value="0" SELECTED>{trans("- all groups -")}</option>
+							    <option value="0" selected="selected">{trans("- all groups -")}</option>
 			    				    {section name="customergroups" loop=$customergroups}
 							    <option value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</option>
 							    {/section}
@@ -713,7 +713,7 @@ cal13.time_comp = false;
 						    </td>
 						    <td width="98%" nowrap="nowrap">
 							<select size="1" name="group">
-							    <option value="0" SELECTED>{trans("- all groups -")}</option>
+							    <option value="0" selected="selected">{trans("- all groups -")}</option>
 			    				    {section name="customergroups" loop=$customergroups}
 							    <option value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</option>
 							    {/section}
@@ -839,7 +839,7 @@ cal11.time_comp = false;
 						    </td>
 						    <td width="98%" nowrap="nowrap">
 							<select size="1" name="customergroup">
-							    <option value="0" SELECTED>{trans("- all groups -")}</option>
+							    <option value="0" selected="selected">{trans("- all groups -")}</option>
 			    				    {section name="customergroups" loop=$customergroups}
 							    <option value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</option>
 							    {/section}
@@ -938,7 +938,7 @@ cal6.time_comp = false;
 					<td width="1%" nowrap="nowrap">
 						{if $customers}
 						<select size="1" name="customer" {tip text="Select customer"}>
-							<option value="0" SELECTED>{trans("- all customers -")}</option>
+							<option value="0" selected="selected">{trans("- all customers -")}</option>
 							{foreach from=$customers item=customer}
 							<option value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</option>
 							{/foreach}
@@ -966,7 +966,7 @@ cal6.time_comp = false;
 						<tr>
 						    <td width="100%" nowrap="nowrap">
 							<select size="1" name="order">
-							    <option value="customername" SELECTED>{trans("First/last or Company name")}</option>
+							    <option value="customername" selected="selected">{trans("First/last or Company name")}</option>
 							    <option value="grossvalue">{trans("Gross value")}</option> 
 							</select>
 						    </td>
@@ -974,7 +974,7 @@ cal6.time_comp = false;
 						<tr>
 						    <td width="100%" nowrap="nowrap">
 							<select size="1" name="direction">
-							    <option value="asc" SELECTED>{trans("ascending")}</option>
+							    <option value="asc" selected="selected">{trans("ascending")}</option>
 							    <option value="desc">{trans("descending")}</option> 
 							</select>
 						    </td>
@@ -1094,7 +1094,7 @@ cal24.time_comp = false;
 						    <td width="1%" nowrap="nowrap"><strong>{trans("Network:")}</strong></td>
 						    <td width="98%" nowrap="nowrap">
 							<select size="1" name="network" {tip text="Select network"}>
-							    <option value="0" SELECTED>{trans("- all networks -")}</option>
+							    <option value="0" selected="selected">{trans("- all networks -")}</option>
 							    {section name="networks" loop=$networks}
 							    <option value="{$networks[networks].id}">{$networks[networks].name|truncate:40:"...":true}</option>
 							    {/section}
@@ -1106,7 +1106,7 @@ cal24.time_comp = false;
 						    <td width="1%" nowrap="nowrap"><strong>{trans("Group:")}</strong></td>
 						    <td width="98%">
 							<select size="1" name="customergroup" {tip text="Select group"}>
-							    <option value="0" SELECTED>{trans("- all groups -")}</option>
+							    <option value="0" selected="selected">{trans("- all groups -")}</option>
 							    {section name="customergroups" loop=$customergroups}
 							    <option value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:40:"...":true}</option>
 							    {/section}
@@ -1126,7 +1126,7 @@ cal24.time_comp = false;
 						<tr>
 						    <td width="100%" nowrap="nowrap">
 							<select size="1" name="order">
-							    <option value="name" SELECTED>{trans("Name")}</option>
+							    <option value="name" selected="selected">{trans("Name")}</option>
 							    <option value="id">{trans("Id")}</option> 
 							    <option value="owner">{trans("Customer name")}</option> 
 							    <option value="ownerid">{trans("Customer ID")}</option> 
@@ -1138,7 +1138,7 @@ cal24.time_comp = false;
 						<tr>
 						    <td width="100%" nowrap="nowrap">
 							<select size="1" name="direction">
-							    <option value="asc" SELECTED>{trans("ascending")}</option>
+							    <option value="asc" selected="selected">{trans("ascending")}</option>
 							    <option value="desc">{trans("descending")}</option> 
 							</select>
 						    </td>
@@ -1201,7 +1201,7 @@ cal24.time_comp = false;
 					<td width="1%">
 						<select size="1" name="year" {tip text="Select period"}>
 							{foreach item=year from=$statyears}
-							<option value="{$year}"{if $year == $curryear} SELECTED{/if}>{$year}</option>
+							<option value="{$year}"{if $year == $curryear} selected="selected"{/if}>{$year}</option>
 							{/foreach}
 						</select>
 					</td>
@@ -1211,7 +1211,7 @@ cal24.time_comp = false;
 					<td width="1%">
 						<select size="1" name="month" {tip text="Select period"}>
 							{foreach item=month key=id from=$months}
-							<option value="{$id}"{if $id == $currmonth} SELECTED{/if}>{$month}</option>
+							<option value="{$id}"{if $id == $currmonth} selected="selected"{/if}>{$month}</option>
 							{/foreach}
 						</select>
 					</td>

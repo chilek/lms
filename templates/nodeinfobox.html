@@ -114,12 +114,12 @@
 			{else}
 				{if $netdevices}
 				<select size="1" style="width: 300px;" name="devid" {tip trigger="netdev"}>
-				<option value="0" {if !$netdevice}SELECTED{/if}>- {trans("no device")} -</option>
+				<option value="0" {if !$netdevice}selected="selected"{/if}>- {trans("no device")} -</option>
 					{section name=netdev loop=$netdevices}
 					{assign var=netdevname value=$netdevices[netdev].name}
 					{if $netdevices[netdev].producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$netdevices[netdev].producer}{/if}
 					{if $netdevices[netdev].location}{assign var=netdevname value=$netdevname|cat:" ("|cat:$netdevices[netdev].location|cat:")"}{/if}
-					<option value="{$netdevices[netdev].id}" {if $netdevices[netdev].id==$netdevice}SELECTED{/if}>{$netdevname|truncate:120:"...":true}</option>
+					<option value="{$netdevices[netdev].id}" {if $netdevices[netdev].id==$netdevice}selected="selected"{/if}>{$netdevname|truncate:120:"...":true}</option>
 					{/section}
 				</select>
 				<input type="text" name="port" value="{if $nodeinfo.port}{$nodeinfo.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>

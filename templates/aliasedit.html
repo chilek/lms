@@ -58,9 +58,9 @@ function togglelogin()
 		</td>
 		<td width="98%" class="fright">
 			<select name="alias[domainid]" {tip text="Select domain name" trigger="domainid"}>
-				<option value="0" {if !$alias.domainid}SELECTED{/if}>{trans("- select domain -")}</option>
+				<option value="0" {if !$alias.domainid}selected="selected"{/if}>{trans("- select domain -")}</option>
     				{foreach from=$domainlist item=item}
-				<option value="{$item.id}"{if $item.id eq $alias.domainid} SELECTED{/if}>{$item.name}</option>
+				<option value="{$item.id}"{if $item.id eq $alias.domainid} selected="selected"{/if}>{$item.name}</option>
 	    			{/foreach}
 			</select>
 		</td>
@@ -78,9 +78,9 @@ function togglelogin()
 			<a href="javascript:delaccount({$account.id})"><img src="img/delete.gif" alt="" {tip text="Delete"}></a><br />
 			{/foreach}
 			<select size="1" name="alias[accountid]" {tip text="Select account" trigger="accountid"}>
-				<option value="0"{if !$alias.accountid} SELECTED{/if}>{trans("- select account -")}</option>
+				<option value="0"{if !$alias.accountid} selected="selected"{/if}>{trans("- select account -")}</option>
 				{foreach from=$accountlist item=item}
-				<option value="{$item.id}"{if $item.id eq $alias.accountid} SELECTED{/if}>{$item.login}@{$item.domain}</option>
+				<option value="{$item.id}"{if $item.id eq $alias.accountid} selected="selected"{/if}>{$item.login}@{$item.domain}</option>
 				{/foreach}
 			</select>
 			<a href="javascript:addaccount()"><img src="img/add.gif" alt="" {tip text="Add"}></a>

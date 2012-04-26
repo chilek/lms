@@ -44,8 +44,8 @@
 		</td>
                 <td width="1%" class="FRIGHT">
                         <select size="1" name="voipaccountdata[access]" {tip text="Select status" trigger="access"}>
-                                <option value="1"{if $voipaccountdata.access} SELECTED{/if}>{trans("connected<!singular>")}</option>
-                                <option value="0"{if ! $voipaccountdata.access} SELECTED{/if}>{trans("disconnected<!singular>")}</option>
+                                <option value="1"{if $voipaccountdata.access} selected="selected"{/if}>{trans("connected<!singular>")}</option>
+                                <option value="0"{if ! $voipaccountdata.access} selected="selected"{/if}>{trans("disconnected<!singular>")}</option>
                         </select>
                 </td>
         </tr>
@@ -59,7 +59,7 @@
 		<td width="98%" class="FRIGHT">
 			<select size="1" name="voipaccountdata[ownerid]" {tip text="Assign voip account to customer" trigger="customer"} style="max-width:250px;">
 				{foreach from=$customers item=c}
-				<option value="{$c.id}"{if $voipaccountdata.ownerid == $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</option>
+				<option value="{$c.id}"{if $voipaccountdata.ownerid == $c.id} selected="selected"{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</option>
 				{/foreach}
 			</select>
 		</td>

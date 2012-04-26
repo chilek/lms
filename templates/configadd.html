@@ -15,13 +15,13 @@
 			<input type="text" name="config[name]" value="{$config.name}" {tip text="Enter option name" trigger="name" bold=1}>&nbsp;
 			<strong>{trans("Section:")}</strong>
 			<select size="1" name="config[section]" {tip text="Select section" trigger="section"}>
-			    <option value="phpui"{if $config.section eq "phpui"} SELECTED{/if}>phpui</option>
-			    <option value="finances"{if $config.section eq "finances"} SELECTED{/if}>finances</option>
-			    <option value="invoices"{if $config.section eq "invoices"} SELECTED{/if}>invoices</option>
-			    <option value="receipts"{if $config.section eq "receipts"} SELECTED{/if}>receipts</option>
-			    <option value="mail"{if $config.section eq "mail"} SELECTED{/if}>mail</option>
-			    <option value="sms"{if $config.section eq "sms"} SELECTED{/if}>sms</option>
-			    <option value="zones" {if $config.section eq "zones"}SELECTED{/if}>zones</option>
+			    <option value="phpui"{if $config.section eq "phpui"} selected="selected"{/if}>phpui</option>
+			    <option value="finances"{if $config.section eq "finances"} selected="selected"{/if}>finances</option>
+			    <option value="invoices"{if $config.section eq "invoices"} selected="selected"{/if}>invoices</option>
+			    <option value="receipts"{if $config.section eq "receipts"} selected="selected"{/if}>receipts</option>
+			    <option value="mail"{if $config.section eq "mail"} selected="selected"{/if}>mail</option>
+			    <option value="sms"{if $config.section eq "sms"} selected="selected"{/if}>sms</option>
+			    <option value="zones" {if $config.section eq "zones"}selected="selected"{/if}>zones</option>
 			</select>
 		</td>
 	</tr>

@@ -36,9 +36,9 @@
 				    <td width="98%" nowrap="nowrap">
 					    <input type="TEXT" size="8" name="tariff[value]" value="{$tariff.value}" {tip text="Enter value" trigger="value"}>
 			            <select size="1" name="tariff[period]" {tip text="Select time period of tariff accounting"}>
-            				<option value=""{if $tariff.period == $key} SELECTED{/if}>{trans("undefined")}</option>
+            				<option value=""{if $tariff.period == $key} selected="selected"{/if}>{trans("undefined")}</option>
 				            {foreach from=$_PERIODS key=key item=item}{if $key != $smarty.const.DISPOSABLE}
-            				<option value="{$key}"{if $tariff.period == $key} SELECTED{/if}>{$item}</option>
+            				<option value="{$key}"{if $tariff.period == $key} selected="selected"{/if}>{$item}</option>
 			            	{/if}{/foreach}
 			            </select>
 				    </td>

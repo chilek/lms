@@ -59,7 +59,7 @@ window.open('?m=note&id={$newnoteid}');
 			<select name="note[numberplanid]" {tip text="Select numbering plan"}>
 			{foreach item=plan from=$numberplanlist}
 				{assign var=period value=$plan.period}
-				<option value="{$plan.id}"{if $plan.id==$note.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$note.cdate} ({$_NUM_PERIODS.$period})</option>
+				<option value="{$plan.id}"{if $plan.id==$note.numberplanid} selected="selected"{/if}>{number number=$plan.next template=$plan.template time=$note.cdate} ({$_NUM_PERIODS.$period})</option>
 			{/foreach}
 			</select>
 			{else}
@@ -101,7 +101,7 @@ window.open('?m=note&id={$newnoteid}');
 			<select size="1" name="customer" onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value">
 				<option value="0">{trans("... select customer ...")}</option>
 				{foreach from=$customers item=c}
-				<option value="{$c.id}"{if $c.id eq $customer.id || $note.customerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:"40":"...":true} ({$c.id|string_format:"%04d"})</option>
+				<option value="{$c.id}"{if $c.id eq $customer.id || $note.customerid eq $c.id} selected="selected"{/if}>{$c.customername|truncate:"40":"...":true} ({$c.id|string_format:"%04d"})</option>
 				{/foreach}
 			</select>
 			{trans("or Customer ID:")}

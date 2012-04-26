@@ -48,12 +48,12 @@
 			<input type="text" name="event[date]" value="{$event.date}" size="10" OnCLick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="date"}>
 			{trans("Begin:")} <select name="event[begintime]" size="1" {tip text="Select time of"} OnChange="javascript:SetEndtime();">
 				{section name=time loop=$hours}
-				<option value="{$hours[time]}" {if $hours[time] == $event.begintime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</option>
+				<option value="{$hours[time]}" {if $hours[time] == $event.begintime}selected="selected"{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</option>
 				{/section}
 			</select>
 			{trans("End:")} <select name="event[endtime]" size="1" {tip text="Select time of"} OnChange="javascript:CheckEndtime();">
 				{section name=time loop=$hours}
-				<option value="{$hours[time]}" {if $hours[time] == $event.endtime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</option>
+				<option value="{$hours[time]}" {if $hours[time] == $event.endtime}selected="selected"{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</option>
 				{/section}
 			</select>
 		</td>
@@ -89,9 +89,9 @@
 		</td>
 		<td width="98%" class="fright" nowrap="nowrap">
 			<select name="event[customerid]" {tip text="Select customer (optional)"}>
-				<option value="0"{if !$event.customerid} SELECTED{/if}>{trans("- select customer -")}</option>
+				<option value="0"{if !$event.customerid} selected="selected"{/if}>{trans("- select customer -")}</option>
 				{foreach from=$customerlist item=customer}	
-				<option value="{$customer.id}"{if $customer.id == $event.customerid} SELECTED{/if}>{$customer.customername}</option>
+				<option value="{$customer.id}"{if $customer.id == $event.customerid} selected="selected"{/if}>{$customer.customername}</option>
 				{/foreach}
 			</select>
 		</td>
@@ -116,9 +116,9 @@
 		</td>
 		<td width="98%" class="fright" nowrap="nowrap">
 			<select name="event[user]" {tip text="Select user (optional)"}>
-				<option value=""{if !$event.user} SELECTED{/if}>{trans("- select user -")}</option>
+				<option value=""{if !$event.user} selected="selected"{/if}>{trans("- select user -")}</option>
 				{section name=userlist loop=$userlist}	
-				<option value="{$userlist[userlist].id}"{if $event.user == $userlist[userlist].id} SELECTED{/if}>{$userlist[userlist].name}</option>
+				<option value="{$userlist[userlist].id}"{if $event.user == $userlist[userlist].id} selected="selected"{/if}>{$userlist[userlist].name}</option>
 				{/section}
 			</select><br />
 			{foreach item=user from=$event.userlist}	

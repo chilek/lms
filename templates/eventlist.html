@@ -35,16 +35,16 @@
 				<input type="HIDDEN" name="m" value="eventlist">
 				<strong>{trans("Filter:")} </strong> {trans("User:")}
 				<select size="1" name="a" OnChange="document.filter.submit();">
-					<option value="0"{if $listdata.userid eq ""} SELECTED{/if}>{trans("- all users -")}</option>
+					<option value="0"{if $listdata.userid eq ""} selected="selected"{/if}>{trans("- all users -")}</option>
 					{section name=userlist loop=$userlist}
-					    <option value="{$userlist[userlist].id}"{if $userlist[userlist].id eq $listdata.userid} SELECTED{/if}>{$userlist[userlist].name|truncate:40:"...":true}</option>
+					    <option value="{$userlist[userlist].id}"{if $userlist[userlist].id eq $listdata.userid} selected="selected"{/if}>{$userlist[userlist].name|truncate:40:"...":true}</option>
 					{/section}
 				</select>&nbsp;
 				{trans("Customer:")}
 				<select size="1" name="u" OnChange="document.filter.submit();">
-					<option value="0"{if $listdata.customerid eq ""} SELECTED{/if}>{trans("- all customers -")}</option>
+					<option value="0"{if $listdata.customerid eq ""} selected="selected"{/if}>{trans("- all customers -")}</option>
 					{foreach from=$customerlist item=customer}
-					    <option value="{$customer.id}"{if $customer.id eq $listdata.customerid} SELECTED{/if}>{$customer.customername|truncate:40:"...":true}</option>
+					    <option value="{$customer.id}"{if $customer.id eq $listdata.customerid} selected="selected"{/if}>{$customer.customername|truncate:40:"...":true}</option>
 					{/foreach}
 				</select>
 				{trans("Month:")}

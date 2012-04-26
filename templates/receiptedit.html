@@ -61,7 +61,7 @@
 		<td class="fright" width="99%" nowrap="nowrap">
 			<select size="1" name="receipt[regid]" {tip text="Select cash registry" trigger="regid"}>
 				{foreach from=$cashreglist item=c}
-				<option value="{$c.id}"{if $c.id eq $receipt.regid} SELECTED{/if}>{$c.name|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</option>
+				<option value="{$c.id}"{if $c.id eq $receipt.regid} selected="selected"{/if}>{$c.name|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</option>
 				{/foreach}
 			</select>
 		</td>
@@ -105,7 +105,7 @@
 				<select size="1" name="customer"  onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value; document.getElementById('radio_customer').checked=true;" {tip trigger="customerid"}>
 				    <option value="0">{trans("... select customer ...")}</option>
 				    {foreach from=$customerlist item=c}
-				    <option value="{$c.id}"{if $c.id eq $customer.id || $receipt.customerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</option>
+				    <option value="{$c.id}"{if $c.id eq $customer.id || $receipt.customerid eq $c.id} selected="selected"{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</option>
 				    {/foreach}
 				</select>
 				{trans("or Customer ID:")}

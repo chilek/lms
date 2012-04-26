@@ -33,30 +33,30 @@
 				<select size="1" name="id" OnChange="document.filter.submit();">
 					<option value="">- {trans("all")} -</option>
 					{foreach from=$queues item=q}
-					<option value="{$q.id}"{if $queuedata.id == $q.id} SELECTED{/if}>{$q.name}</option>
+					<option value="{$q.id}"{if $queuedata.id == $q.id} selected="selected"{/if}>{$q.name}</option>
 					{/foreach}
 				</select>&nbsp;
 				{trans("Category:")}
 				<select size="1" name="catid" OnChange="document.filter.submit();">
 					<option value="">- {trans("all")} -</option>
 					{foreach from=$categories item=q}
-					<option value="{$q.id}"{if $queuedata.catid == $q.id} SELECTED{/if}>{$q.name}</option>
+					<option value="{$q.id}"{if $queuedata.catid == $q.id} selected="selected"{/if}>{$q.name}</option>
 					{/foreach}
 				</select>&nbsp;
 				{trans("Status:")}
 				<select size="1" name="s" OnChange="document.filter.submit();">
-					<option value=""{if $queuedata.state eq ""} SELECTED{/if}>- {trans("all")} -</option>
-					<option value="0"{if $queuedata.state eq "0"} SELECTED{/if}>{trans("new")}</option>
-					<option value="1"{if $queuedata.state eq "1"} SELECTED{/if}>{trans("opened")}</option>
-					<option value="2"{if $queuedata.state eq "2"} SELECTED{/if}>{trans("resolved")}</option>
-					<option value="3"{if $queuedata.state eq "3"} SELECTED{/if}>{trans("dead")}</option>
-					<option value="-1"{if $queuedata.state eq "-1"} SELECTED{/if}>{trans("not resolved")}</option>
+					<option value=""{if $queuedata.state eq ""} selected="selected"{/if}>- {trans("all")} -</option>
+					<option value="0"{if $queuedata.state eq "0"} selected="selected"{/if}>{trans("new")}</option>
+					<option value="1"{if $queuedata.state eq "1"} selected="selected"{/if}>{trans("opened")}</option>
+					<option value="2"{if $queuedata.state eq "2"} selected="selected"{/if}>{trans("resolved")}</option>
+					<option value="3"{if $queuedata.state eq "3"} selected="selected"{/if}>{trans("dead")}</option>
+					<option value="-1"{if $queuedata.state eq "-1"} selected="selected"{/if}>{trans("not resolved")}</option>
 				</select>&nbsp;
 				{trans("Owner:")}
 				<select size="1" name="owner" OnChange="document.filter.submit();">
 				        <option value="">{trans("- all users -")}</option>
 					{section name="users" loop=$users}
-					 <option value="{$users[users].id}"{if $users[users].id == $queuedata.owner} SELECTED{/if}>{$users[users].name|truncate:40:"...":true}</option>
+					 <option value="{$users[users].id}"{if $users[users].id == $queuedata.owner} selected="selected"{/if}>{$users[users].name|truncate:40:"...":true}</option>
 					{/section}
 				</select>
 			    </form>

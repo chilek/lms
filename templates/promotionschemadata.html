@@ -42,9 +42,9 @@
     					    {textformat assign=fkey}tariffperiod{$key}{/textformat}
     					    {if $formdata.$fkey}{assign var=period value=$formdata.$fkey}{else}{assign var=period value=0}{/if}
                             <br /><select name="form[tariffperiod{$key}]" id="tariffperiod{$key}" {tip text="Select accounting period (optional) - overwrites customer liability's period" trigger="tariffperiod`$key`"}>
-					            <option value="0" {if !$period}SELECTED{/if}>-</option>
+					            <option value="0" {if !$period}selected="selected"{/if}>-</option>
 				                {foreach from=$_PERIODS item=p key=pkey}{if $pkey}
-                                <option value="{$pkey}" {if $pkey == $period}SELECTED{/if}>{$p}</option>
+                                <option value="{$pkey}" {if $pkey == $period}selected="selected"{/if}>{$p}</option>
                                 {/if}{/foreach}
 					        </select>
                             {/if}
@@ -72,7 +72,7 @@
 					<td colspan="2" class="ftop" style="vertical-align: top">
 					    <select name="form[tariffid]" {tip text="Select subscription" trigger="tariffid"}>
 				        {foreach from=$tariffs item=t}
-                            <option value="{$t.id}" {if $t.id == $formdata.tariffid}SELECTED{/if}>
+                            <option value="{$t.id}" {if $t.id == $formdata.tariffid}selected="selected"{/if}>
                             {$t.name|truncate:40:"...":true} ({$t.value|money_format}{if $t.upceil || $t.downceil}, {$t.downceil}/{$t.upceil} kbit/s{/if})
                             </option>
                         {/foreach}
@@ -87,9 +87,9 @@
 					    {if $formdata.$fkey}{assign var=period value=$formdata.$fkey}{else}{assign var=period value=0}{/if}
 					    <br />
 					    <select name="form[period{$key}]" {tip text="Select accounting period (optional) - overwrites customer liability's period" trigger="period`$key`"}>
-					        <option value="0" {if !$period}SELECTED{/if}>-</option>
+					        <option value="0" {if !$period}selected="selected"{/if}>-</option>
 				            {foreach from=$_PERIODS item=p key=pkey}{if $pkey}
-                            <option value="{$pkey}" {if $pkey == $period}SELECTED{/if}>{$p}</option>
+                            <option value="{$pkey}" {if $pkey == $period}selected="selected"{/if}>{$p}</option>
                             {/if}{/foreach}
 					    </select>
 					    {/if}

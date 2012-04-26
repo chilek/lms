@@ -56,9 +56,9 @@
 		            <td nowrap="nowrap">{trans("Additional subscription after promotion period:")}</td>
 		            <td>
 		                <select name="schema[ctariffid]" {tip text="Select subscription" trigger="ctariffid"}>
-		                    <option value="0"{if !$schema.ctariffid} SELECTED{/if}>- {trans("none")} -</option>
+		                    <option value="0"{if !$schema.ctariffid} selected="selected"{/if}>- {trans("none")} -</option>
 		                {foreach from=$tariffs item=t}
-                            <option value="{$t.id}"{if $t.id == $schema.ctariffid} SELECTED{/if}>
+                            <option value="{$t.id}"{if $t.id == $schema.ctariffid} selected="selected"{/if}>
                             {$t.name|truncate:40:"...":true} ({$t.value|money_format}{if $t.upceil || $t.downceil}, {$t.downceil}/{$t.upceil} kbit/s{/if})
                             </option>
                         {/foreach}

@@ -45,23 +45,23 @@
 				<strong>{trans("Filter:")}</strong>
 				{trans("Type:")}
 				<select size="1" name="t" ONCHANGE="document.choosefilter.submit();">
-					<option value="0"{if !$listdata.type} SELECTED{/if}>{trans("- all -")}</option>
+					<option value="0"{if !$listdata.type} selected="selected"{/if}>{trans("- all -")}</option>
 					{foreach from=$_TARIFFTYPES item=item key=key}
-					<option value="{$key}" {if $listdata.type eq $key} SELECTED {/if}>{$item}</option>
+					<option value="{$key}" {if $listdata.type eq $key} selected="selected" {/if}>{$item}</option>
 					{/foreach}
 				</select>
 				{trans("Promotion:")}
 				<select size="1" name="p" ONCHANGE="document.choosefilter.submit();">
-					<option value="0"{if !$listdata.promotionid} SELECTED{/if}>{trans("- all -")}</option>
+					<option value="0"{if !$listdata.promotionid} selected="selected"{/if}>{trans("- all -")}</option>
 					{section name=promotions loop=$promotions}
-					<option value="{$promotions[promotions].id}" {if $listdata.promotionid eq $promotions[promotions].id} SELECTED {/if}>{$promotions[promotions].name|truncate:50:"...":true}</option>
+					<option value="{$promotions[promotions].id}" {if $listdata.promotionid eq $promotions[promotions].id} selected="selected" {/if}>{$promotions[promotions].name|truncate:50:"...":true}</option>
 					{/section}
 				</select>
 				{trans("Group:")}
 				<select size="1" name="g" ONCHANGE="document.choosefilter.submit();">
-					<option value="0"{if !$listdata.customergroupid} SELECTED{/if}>{trans("- all -")}</option>
+					<option value="0"{if !$listdata.customergroupid} selected="selected"{/if}>{trans("- all -")}</option>
 					{section name=customergroups loop=$customergroups}
-					<option value="{$customergroups[customergroups].id}" {if $listdata.customergroupid eq $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"...":true}</option>
+					<option value="{$customergroups[customergroups].id}" {if $listdata.customergroupid eq $customergroups[customergroups].id} selected="selected" {/if}>{$customergroups[customergroups].name|truncate:50:"...":true}</option>
 					{/section}
 				</select>
 			</form>

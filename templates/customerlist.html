@@ -30,48 +30,48 @@
 				<input type="HIDDEN" name="page" value="1">
 				<strong>{trans("Filter:")}</strong> <span class="nobr">{trans("Customers:")}
 				<select size="1" name="s" ONCHANGE="document.choosefilter.submit();">
-					<option value="0"{if $listdata.state eq 0} SELECTED{/if}>{trans("- all customers -")}</option>
-					<option value="3"{if $listdata.state eq 3} SELECTED{/if}>{trans("connected<!plural>")}</option>
-					<option value="2"{if $listdata.state eq 2} SELECTED{/if}>{trans("awaiting")}</option>
-					<option value="1"{if $listdata.state eq 1} SELECTED{/if}>{trans("interested<!plural>")}</option>
-					<option value="4"{if $listdata.state eq 4} SELECTED{/if}>{trans("deleted<!plural>")}</option>
-					<option value="5"{if $listdata.state eq 5} SELECTED{/if}>{trans("disconnected<!plural>")}</option>
+					<option value="0"{if $listdata.state eq 0} selected="selected"{/if}>{trans("- all customers -")}</option>
+					<option value="3"{if $listdata.state eq 3} selected="selected"{/if}>{trans("connected<!plural>")}</option>
+					<option value="2"{if $listdata.state eq 2} selected="selected"{/if}>{trans("awaiting")}</option>
+					<option value="1"{if $listdata.state eq 1} selected="selected"{/if}>{trans("interested<!plural>")}</option>
+					<option value="4"{if $listdata.state eq 4} selected="selected"{/if}>{trans("deleted<!plural>")}</option>
+					<option value="5"{if $listdata.state eq 5} selected="selected"{/if}>{trans("disconnected<!plural>")}</option>
 					{if !check_conf('privileges.hide_finances')}
-					<option value="6"{if $listdata.state eq 6} SELECTED{/if}>{trans("in debt")}</option>
-					<option value="11"{if $listdata.state eq 11} SELECTED{/if}>{trans("in debt above 100%")}</option>
-					<option value="12"{if $listdata.state eq 12} SELECTED{/if}>{trans("in debt above 200%")}</option>
+					<option value="6"{if $listdata.state eq 6} selected="selected"{/if}>{trans("in debt")}</option>
+					<option value="11"{if $listdata.state eq 11} selected="selected"{/if}>{trans("in debt above 100%")}</option>
+					<option value="12"{if $listdata.state eq 12} selected="selected"{/if}>{trans("in debt above 200%")}</option>
 					{/if}
-					<option value="7"{if $listdata.state eq 7} SELECTED{/if}>{trans("online")}</option>
-					<option value="8"{if $listdata.state eq 8} SELECTED{/if}>{trans("without group")}</option>
-					<option value="9"{if $listdata.state eq 9} SELECTED{/if}>{trans("without tariff")}</option>
-					<option value="10"{if $listdata.state eq 10} SELECTED{/if}>{trans("suspended<!plural>")}</option>
+					<option value="7"{if $listdata.state eq 7} selected="selected"{/if}>{trans("online")}</option>
+					<option value="8"{if $listdata.state eq 8} selected="selected"{/if}>{trans("without group")}</option>
+					<option value="9"{if $listdata.state eq 9} selected="selected"{/if}>{trans("without tariff")}</option>
+					<option value="10"{if $listdata.state eq 10} selected="selected"{/if}>{trans("suspended<!plural>")}</option>
 				</select></span>
 				<span class="nobr">{trans("Division")}:
 				<select size="1" name="d" ONCHANGE="document.choosefilter.submit();">
-				        <option value="" {if !$listdata.division} SELECTED {/if}>- {trans("all")} -</option>
+				        <option value="" {if !$listdata.division} selected="selected" {/if}>- {trans("all")} -</option>
 				        {foreach from=$divisions item=division}
-				        <option value="{$division.id}"{if $listdata.division eq $division.id} SELECTED {/if}>{$division.shortname|truncate:30:"...":true}</option>
+				        <option value="{$division.id}"{if $listdata.division eq $division.id} selected="selected" {/if}>{$division.shortname|truncate:30:"...":true}</option>
 					{/foreach}
 				</select></span>
 				<span class="nobr">{trans("Network:")}
 				<select size="1" name="n" ONCHANGE="document.choosefilter.submit();">
-					<option value="0" {if !$listdata.network} SELECTED {/if}>{trans("- all networks -")}</option>
+					<option value="0" {if !$listdata.network} selected="selected" {/if}>{trans("- all networks -")}</option>
 					{section name=networks loop=$networks}
-					<option value="{$networks[networks].id}" {if $listdata.network eq $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:30:"...":true}</option>
+					<option value="{$networks[networks].id}" {if $listdata.network eq $networks[networks].id} selected="selected" {/if}>{$networks[networks].name|truncate:30:"...":true}</option>
 					{/section}
 				</select></span>
 				<span class="nobr">{trans("Group:")}
 				<select size="1" name="g" ONCHANGE="document.choosefilter.submit();">
-					<option value="" {if !$listdata.customergroup} SELECTED {/if}>{trans("- all groups -")}</option>
+					<option value="" {if !$listdata.customergroup} selected="selected" {/if}>{trans("- all groups -")}</option>
 					{section name=customergroups loop=$customergroups}
-					<option value="{$customergroups[customergroups].id}" {if $listdata.customergroup eq $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:30:"...":true}</option>
+					<option value="{$customergroups[customergroups].id}" {if $listdata.customergroup eq $customergroups[customergroups].id} selected="selected" {/if}>{$customergroups[customergroups].name|truncate:30:"...":true}</option>
 					{/section}
 				</select></span>
 				<span class="nobr">{trans("Nodes Group:<!short>")}
 				<select size="1" name="ng" ONCHANGE="document.choosefilter.submit();">
-	        			<option value="" {if !$listdata.nodegroup} SELECTED {/if}>{trans("- all groups -")}</option>
+	        			<option value="" {if !$listdata.nodegroup} selected="selected" {/if}>{trans("- all groups -")}</option>
 		        		{foreach from=$nodegroups item=nodegroup}
-			        	<option value="{$nodegroup.id}" {if $listdata.nodegroup eq $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</option>
+			        	<option value="{$nodegroup.id}" {if $listdata.nodegroup eq $nodegroup.id} selected="selected" {/if}>{$nodegroup.name|truncate:30:"...":true}</option>
 				        {/foreach}
 				</select></span>
 			</form>

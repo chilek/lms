@@ -58,7 +58,7 @@
 					<td class="fleft">
 						<select size="20" name="setwarnings[mcustomerid][]" id="customerslist" multiple {tip text="Select customers"}>
 							{foreach from=$customerlist key=key item=item}
-							<option value="{$key}" {if $item.warning}CLASS="red"{/if}{if isset($selected.$key)} SELECTED{/if}>{$item.customername|truncate:40:"...":true} ({$key|string_format:"%04d"})</option>
+							<option value="{$key}" {if $item.warning}CLASS="red"{/if}{if isset($selected.$key)} selected="selected"{/if}>{$item.customername|truncate:40:"...":true} ({$key|string_format:"%04d"})</option>
 							{/foreach}
 						</select>
 					</td>

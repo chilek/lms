@@ -64,13 +64,13 @@
 		</td>
 		<td class="frightu" style="width: 98%;">
 			<select size="1" name="assignment[tariffid]" {tip text="Select liability type" trigger="tariffid"} onchange="set_tariff()">
-				<option value=""{if !$assignment.tariffid} SELECTED{/if}>- {trans("tariffless liability")} -</option>
-				<option value="-1"{if $assignment.tariffid == -1} SELECTED{/if}>{trans("- all liabilities suspended -")}</option>
+				<option value=""{if !$assignment.tariffid} selected="selected"{/if}>- {trans("tariffless liability")} -</option>
+				<option value="-1"{if $assignment.tariffid == -1} selected="selected"{/if}>{trans("- all liabilities suspended -")}</option>
 				{if $promotionschemas}
-				<option value="-2"{if $assignment.tariffid == -2} SELECTED{/if}>- {trans("per promotion schema")} -</option>
+				<option value="-2"{if $assignment.tariffid == -2} selected="selected"{/if}>- {trans("per promotion schema")} -</option>
 				{/if}
 				{section name=t loop=$tariffs}
-				<option value="{$tariffs[t].id}" {if $tariffs[t].id==$assignment.tariffid}SELECTED{/if}>
+				<option value="{$tariffs[t].id}" {if $tariffs[t].id==$assignment.tariffid}selected="selected"{/if}>
 				{$tariffs[t].name} ({if !check_conf('privileges.hide_finances')}{$tariffs[t].value|money_format}, {/if}{if $tariffs[t].upceil || $tariffs[t].downceil}{$tariffs[t].downceil}/{$tariffs[t].upceil} kbit/s{/if})
 				</option>
 				{/section}
@@ -88,7 +88,7 @@
 		<td class="fright" style="width: 98%;">
 			<select size="1" name="assignment[schemaid]" {tip text="Select promotion schema"} onchange="set_schema()">
 				{foreach from=$promotionschemas item=schema}
-				<option value="{$schema.id}"{if $assignment.schemaid == $schema.id} SELECTED{/if}>{$schema.promotion|truncate:40:"...":true} / {$schema.name|truncate:40:"...":true}</option>
+				<option value="{$schema.id}"{if $assignment.schemaid == $schema.id} selected="selected"{/if}>{$schema.promotion|truncate:40:"...":true} / {$schema.name|truncate:40:"...":true}</option>
 				{/foreach}
 			</select>
 		</td>
@@ -103,7 +103,7 @@
 		<td class="fright" style="width: 98%;">
 			<select size="1" name="assignment[stariffid]" {tip text="Select subscription" trigger="stariffid"}>
 				{section name=t loop=$tariffs}
-				<option value="{$tariffs[t].id}" {if $tariffs[t].id==$assignment.stariffid}SELECTED{/if}>
+				<option value="{$tariffs[t].id}" {if $tariffs[t].id==$assignment.stariffid}selected="selected"{/if}>
 				{$tariffs[t].name} ({$tariffs[t].value|money_format}{if $tariffs[t].upceil || $tariffs[t].downceil}, {$tariffs[t].downceil}/{$tariffs[t].upceil} kbit/s{/if})
 				</option>
 				{/section}
@@ -138,7 +138,7 @@
 		<td style="width: 98%;">
 			<select size="1" name="assignment[period]" {tip text="Select time period to account liability"}>
 				{foreach from=$_PERIODS key=key item=item}
-				<option value="{$key}"{if $assignment.period == $key} SELECTED{/if}>{$item}</option>
+				<option value="{$key}"{if $assignment.period == $key} selected="selected"{/if}>{$item}</option>
 				{/foreach}
 			</select>
 			<input type="TEXT" name="assignment[at]" value="{if $assignment.at}{$assignment.at}{/if}" {tip text="Enter accounting time. For disposable accounting enter date in format YYYY/MM/DD, for weekly accounting enter day of week (Monday = 1), for monthly accounting enter day of month (1 to 28), for yearly accounting enter day and month in format DD/MM (15/09 means September 15th), for half-yearly DD/MM (MM <=6) and for quarterly DD/MM (MM <= 3)" trigger="at"} size="8">
@@ -221,7 +221,7 @@
 				<option value=""{if !$assignment.numberplanid} selected{/if}>- {trans("default")} -</option>
 				{foreach item=plan from=$numberplanlist}
 				{assign var=period value=$plan.period}
-				<option value="{$plan.id}"{if $plan.id==$assignment.numberplanid} SELECTED{/if}>{$plan.template} ({$_NUM_PERIODS.$period})</option>
+				<option value="{$plan.id}"{if $plan.id==$assignment.numberplanid} selected="selected"{/if}>{$plan.template} ({$_NUM_PERIODS.$period})</option>
 				{/foreach}
 			</select>
 		</td>

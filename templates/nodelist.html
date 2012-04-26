@@ -29,30 +29,30 @@
 				<strong>{trans("Filter:")}</strong> 
 				<span class="nobr">{trans("Status:")}
 				<select size="1" name="s" ONCHANGE="document.choosefilter.submit();">
-					<option value="0"{if $listdata.state eq 0} SELECTED{/if}>{trans("- all -")}</option>
-					<option value="1"{if $listdata.state eq 1} SELECTED{/if}>{trans("connected<!plural:item>")}</option>
-					<option value="2"{if $listdata.state eq 2} SELECTED{/if}>{trans("disconnected<!plural:item>")}</option>
-					<option value="3"{if $listdata.state eq 3} SELECTED{/if}>{trans("online")}</option>
+					<option value="0"{if $listdata.state eq 0} selected="selected"{/if}>{trans("- all -")}</option>
+					<option value="1"{if $listdata.state eq 1} selected="selected"{/if}>{trans("connected<!plural:item>")}</option>
+					<option value="2"{if $listdata.state eq 2} selected="selected"{/if}>{trans("disconnected<!plural:item>")}</option>
+					<option value="3"{if $listdata.state eq 3} selected="selected"{/if}>{trans("online")}</option>
 				</select></span>&nbsp;
 				<span class="nobr">{trans("Network:")}
 				<select size="1" name="n" ONCHANGE="document.choosefilter.submit();">
-					<option value="0" {if !$listdata.network} SELECTED {/if}>{trans("- all networks -")}</option>
+					<option value="0" {if !$listdata.network} selected="selected" {/if}>{trans("- all networks -")}</option>
 					{section name=networks loop=$networks}
-					<option value="{$networks[networks].id}" {if $listdata.network eq $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:30:"...":true}</option>
+					<option value="{$networks[networks].id}" {if $listdata.network eq $networks[networks].id} selected="selected" {/if}>{$networks[networks].name|truncate:30:"...":true}</option>
 					{/section}
 				</select></span>&nbsp;
 				<span class="nobr">{trans("Group:")}
 				<select size="1" name="ng" ONCHANGE="document.choosefilter.submit();">
-					<option value="" {if !$listdata.nodegroup} SELECTED {/if}>{trans("- all groups -")}</option>
+					<option value="" {if !$listdata.nodegroup} selected="selected" {/if}>{trans("- all groups -")}</option>
 					{foreach from=$nodegroups item=nodegroup}
-					<option value="{$nodegroup.id}" {if $listdata.nodegroup eq $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</option>
+					<option value="{$nodegroup.id}" {if $listdata.nodegroup eq $nodegroup.id} selected="selected" {/if}>{$nodegroup.name|truncate:30:"...":true}</option>
 					{/foreach}
 				</select></span>&nbsp;
 				<span class="nobr">{trans("Customers Group:")}
 				<select size="1" name="g" ONCHANGE="document.choosefilter.submit();">
-					<option value="" {if !$listdata.customergroup} SELECTED {/if}>{trans("- all groups -")}</option>
+					<option value="" {if !$listdata.customergroup} selected="selected" {/if}>{trans("- all groups -")}</option>
 					{section name=customergroups loop=$customergroups}
-					<option value="{$customergroups[customergroups].id}" {if $listdata.customergroup eq $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:30:"...":true}</option>
+					<option value="{$customergroups[customergroups].id}" {if $listdata.customergroup eq $customergroups[customergroups].id} selected="selected" {/if}>{$customergroups[customergroups].name|truncate:30:"...":true}</option>
 					{/section}
 				</select></span>
 			</form>

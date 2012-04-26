@@ -63,9 +63,9 @@
 				<strong>{trans("Filter:")} </strong> {trans("Customer:")}
                 {if $customerlist}
 				    <select size="1" name="c" OnChange="filter()">
-					<option value="0"{if $listdata.customer eq ""} SELECTED{/if}>{trans("- all customers -")}</option>
+					<option value="0"{if $listdata.customer eq ""} selected="selected"{/if}>{trans("- all customers -")}</option>
 					{foreach from=$customerlist item=customer}
-					<option value="{$customer.id}"{if $customer.id eq $listdata.customer} SELECTED{/if}>{$customer.customername|truncate:40:"...":true}</option>
+					<option value="{$customer.id}"{if $customer.id eq $listdata.customer} selected="selected"{/if}>{$customer.customername|truncate:40:"...":true}</option>
 					{/foreach}
 				    </select>
 				{else}
@@ -74,9 +74,9 @@
                 {/if}&nbsp;
 				{trans("Type:")}
 				<select size="1" name="t" ONCHANGE="filter()">
-					<option value="0"{if !$listdata.type} SELECTED {/if}>{trans("- all -")}</option>
+					<option value="0"{if !$listdata.type} selected="selected" {/if}>{trans("- all -")}</option>
 					{foreach from=$_DOCTYPES key=key item=item}{if $key < 0}
-					<option value="{$key}"{if $listdata.type==$key} SELECTED{/if}>{$item}</option>
+					<option value="{$key}"{if $listdata.type==$key} selected="selected"{/if}>{$item}</option>
 					{/if}{/foreach}
 				</select>&nbsp;
 				<strong>{trans("Period:")}</strong>&nbsp;

@@ -81,7 +81,7 @@
 			<select size="1" name="nodedata[nodegroup]" {tip text="Select group to attribute to node" trigger="nodegroup"} style="max-width:250px;">
 				<option value="0">{trans("... select group ...")}</option>
 				{foreach from=$allnodegroups item=group}
-				<option value="{$group.id}" {if $group.id==$nodedata.nodegroup} SELECTED{/if}>{$group.name} ({$group.id|string_format:"%04d"})</option>
+				<option value="{$group.id}" {if $group.id==$nodedata.nodegroup} selected="selected"{/if}>{$group.name} ({$group.id|string_format:"%04d"})</option>
 				{/foreach}
 			</select>
 		</td>
@@ -93,9 +93,9 @@
 		</td>
 		<td style="width: 99%; white-space: nowrap;">
 			<select size="1" name="nodedata[netdev]" {tip text="Select network device (optional)" trigger="netdev"} style="max-width:250px;">
-				<option value="0"{if !$nodedata.netdev} SELECTED{/if}>{trans("- select device -")}</option>
+				<option value="0"{if !$nodedata.netdev} selected="selected"{/if}>{trans("- select device -")}</option>
 				{section name=netdevices loop=$netdevices}
-				<option value="{$netdevices[netdevices].id}"{if $netdevices[netdevices].id==$nodedata.netdev} SELECTED{/if}>{$netdevices[netdevices].name} {$netdevices[netdevices].producer}{if $netdevices[netdevices].location} / {$netdevices[netdevices].location}{/if}</option>
+				<option value="{$netdevices[netdevices].id}"{if $netdevices[netdevices].id==$nodedata.netdev} selected="selected"{/if}>{$netdevices[netdevices].name} {$netdevices[netdevices].producer}{if $netdevices[netdevices].location} / {$netdevices[netdevices].location}{/if}</option>
 				{/section}
 			</select>
 			<input type="text" name="nodedata[port]" value="{if $nodedata.port}{$nodedata.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
@@ -122,7 +122,7 @@
 			<select size="1" name="nodedata[customerid]" {tip text="Assign node to customer" trigger="ownerid"} style="max-width:160px;" onChange="document.nodeadd.elements['nodedata[ownerid]'].value=this.value">
 				<option value="0">{trans("... select customer ...")}</option>
 				{foreach from=$customers item=c}
-				<option value="{$c.id}"{if $nodedata.ownerid == $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</option>
+				<option value="{$c.id}"{if $nodedata.ownerid == $c.id} selected="selected"{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</option>
 				{/foreach}
 			</select>
 			{trans("or Customer ID:")}
@@ -182,8 +182,8 @@
 		</td>
 		<td style="width: 99%;" colspan="2">
 			<select size="1" name="nodedata[access]" {tip text="Select node status" trigger="access"}>
-				<option value="1"{if $nodedata.access} SELECTED{/if}>{trans("connected<!singular>")}</option>
-				<option value="0"{if ! $nodedata.access} SELECTED{/if}>{trans("disconnected<!singular>")}</option>
+				<option value="1"{if $nodedata.access} selected="selected"{/if}>{trans("connected<!singular>")}</option>
+				<option value="0"{if ! $nodedata.access} selected="selected"{/if}>{trans("disconnected<!singular>")}</option>
 			</select>
 		</td>
 	</tr>
@@ -193,8 +193,8 @@
 		</td>
 		<td style="width: 99%;" colspan="2">
 			<select size="1" name="nodedata[warning]" {tip text="Set notice for node"}>
-				<option value="1"{if $nodedata.warning} SELECTED{/if}>{trans("enabled")}</option>
-				<option value="0"{if ! $nodedata.warning} SELECTED{/if}>{trans("disabled")}</option>
+				<option value="1"{if $nodedata.warning} selected="selected"{/if}>{trans("enabled")}</option>
+				<option value="0"{if ! $nodedata.warning} selected="selected"{/if}>{trans("disabled")}</option>
 			</select>
 		</td>
 	</tr>

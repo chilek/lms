@@ -54,7 +54,7 @@
 			<select name="cnote[numberplanid]" {tip text="Select numbering plan"}>
 			{foreach item=plan from=$numberplanlist}
 				{assign var=period value=$plan.period}
-				<option value="{$plan.id}"{if $plan.id==$cnote.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$cnote.cdate} ({$_NUM_PERIODS.$period})</option>
+				<option value="{$plan.id}"{if $plan.id==$cnote.numberplanid} selected="selected"{/if}>{number number=$plan.next template=$plan.template time=$cnote.cdate} ({$_NUM_PERIODS.$period})</option>
 			{/foreach}
 			</select>
 			{else}

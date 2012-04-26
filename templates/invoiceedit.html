@@ -160,7 +160,7 @@
 			<select size="1" name="customer" onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value">
 				<option value="0">{trans("... select customer ...")}</option>
 				{foreach from=$customers item=c}
-				<option value="{$c.id}"{if $c.id eq $customer.id || $invoice.customerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:"40":"...":true} ({$c.id|string_format:"%04d"})</option>
+				<option value="{$c.id}"{if $c.id eq $customer.id || $invoice.customerid eq $c.id} selected="selected"{/if}>{$c.customername|truncate:"40":"...":true} ({$c.id|string_format:"%04d"})</option>
 				{/foreach}
 			</select>
 			{trans("or Customer ID:")}

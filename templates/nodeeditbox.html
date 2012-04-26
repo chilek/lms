@@ -90,9 +90,9 @@
 		</td>
 		<td style="width: 99%; white-space: nowrap;" colspan="2">
 			<select size="1" name="nodeedit[netdev]" {tip text="Select net device from list" trigger="netdev"} style="max-width:250px;">
-				<option value="0" {if ! $nodeinfo.netdev}SELECTED{/if}>- {trans("no device")} -</option>
+				<option value="0" {if ! $nodeinfo.netdev}selected="selected"{/if}>- {trans("no device")} -</option>
 				{section name="netdev" loop=$netdevices}
-				<option value="{$netdevices[netdev].id}" {if $nodeinfo.netdev == $netdevices[netdev].id} SELECTED {/if}>{$netdevices[netdev].name} {if $netdevices[netdev].producer}/ {$netdevices[netdev].producer}{/if} {if $netdevices[netdev].location}({$netdevices[netdev].location }){/if}</option>
+				<option value="{$netdevices[netdev].id}" {if $nodeinfo.netdev == $netdevices[netdev].id} selected="selected" {/if}>{$netdevices[netdev].name} {if $netdevices[netdev].producer}/ {$netdevices[netdev].producer}{/if} {if $netdevices[netdev].location}({$netdevices[netdev].location }){/if}</option>
 				{/section}
 			</select>
 			<input type="text" name="nodeedit[port]" value="{if $nodeinfo.port}{$nodeinfo.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
@@ -118,7 +118,7 @@
 			{if $customers}
 			<select size="1" name="nodeedit[customerid]" {tip text="Assign node to customer"} style="max-width:160px;" onChange="document.editnode.elements['nodeedit[ownerid]'].value=this.value">
 				{foreach from=$customers item=c}
-				<option value="{$c.id}"{if $nodeinfo.ownerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</option>
+				<option value="{$c.id}"{if $nodeinfo.ownerid eq $c.id} selected="selected"{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</option>
 				{/foreach}
 			</select>
 			{trans("or Customer ID:")}
@@ -178,8 +178,8 @@
 		</td>
 		<td style="width: 99%;" colspan="2">
 			<select size="1" name="nodeedit[access]" {tip text="Select node status" trigger="access"}>
-				<option value="1"{if $nodeinfo.access} SELECTED{/if}>{trans("connected<!singular>")}</option>
-				<option value="0"{if ! $nodeinfo.access} SELECTED{/if}>{trans("disconnected<!singular>")}</option>
+				<option value="1"{if $nodeinfo.access} selected="selected"{/if}>{trans("connected<!singular>")}</option>
+				<option value="0"{if ! $nodeinfo.access} selected="selected"{/if}>{trans("disconnected<!singular>")}</option>
 			</select>
 		</td>
 	</tr>
@@ -189,8 +189,8 @@
 		</td>
 		<td style="width: 99%;" colspan="2">
 			<select size="1" name="nodeedit[warning]" {tip text="Set notice for node"}>
-				<option value="1"{if $nodeinfo.warning} SELECTED{/if}>{trans("enabled")}</option>
-				<option value="0"{if ! $nodeinfo.warning} SELECTED{/if}>{trans("disabled")}</option>
+				<option value="1"{if $nodeinfo.warning} selected="selected"{/if}>{trans("enabled")}</option>
+				<option value="0"{if ! $nodeinfo.warning} selected="selected"{/if}>{trans("disabled")}</option>
 			</select>
 		</td>
 	</tr>

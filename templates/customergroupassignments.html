@@ -34,9 +34,9 @@
 		    <td class="fall" colspan="4" align="CENTER">
 			    {trans("Network:")}
 			    <select size="1" name="customerassignments[membersnetid]" ONCHANGE="javascript:changeMembersNetwork();">
-			    	<option value="0" {if !$membersnetid}SELECTED{/if}>{trans("- all networks -")}</option>
+			    	<option value="0" {if !$membersnetid}selected="selected"{/if}>{trans("- all networks -")}</option>
 				{section name=networks loop=$networks}
-				<option value="{$networks[networks].id}" {if $networks[networks].id eq $membersnetid}SELECTED{/if}>{$networks[networks].name|truncate:30:"...":true}</option>
+				<option value="{$networks[networks].id}" {if $networks[networks].id eq $membersnetid}selected="selected"{/if}>{$networks[networks].name|truncate:30:"...":true}</option>
 				{/section}
 			    </select>&nbsp;
 		    </td>
@@ -80,9 +80,9 @@
 		    <td class="fall" colspan="4" align="CENTER">
 			    {trans("Network:")}
 			    <select size="1" name="customerassignments[othersnetid]" ONCHANGE="javascript:changeOthersNetwork();">
-			    	<option value="0" {if !$othersnetid}SELECTED{/if}>{trans("- all networks -")}</option>
+			    	<option value="0" {if !$othersnetid}selected="selected"{/if}>{trans("- all networks -")}</option>
 				{section name=networks loop=$networks}
-				<option value="{$networks[networks].id}" {if $networks[networks].id eq $othersnetid}SELECTED{/if}>{$networks[networks].name|truncate:30:"...":true}</option>
+				<option value="{$networks[networks].id}" {if $networks[networks].id eq $othersnetid}selected="selected"{/if}>{$networks[networks].name|truncate:30:"...":true}</option>
 				{/section}
 			    </select>&nbsp;
 		    </td>

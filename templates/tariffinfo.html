@@ -264,9 +264,9 @@
 			<input type="hidden" value="tariffinfo" name="m">
 			<input type="hidden" value="{$tariff.id}" name="id">
 			<select size="1" name="netid" ONCHANGE="javascript:changeNetwork();">
-				<option value="0" {if !$netid}SELECTED{/if}>{trans("- all networks -")}</option>
+				<option value="0" {if !$netid}selected="selected"{/if}>{trans("- all networks -")}</option>
 				{section name=networks loop=$networks}
-				<option value="{$networks[networks].id}" {if $networks[networks].id eq $netid}SELECTED{/if}>{$networks[networks].name|truncate:30:"...":true}</option>
+				<option value="{$networks[networks].id}" {if $networks[networks].id eq $netid}selected="selected"{/if}>{$networks[networks].name|truncate:30:"...":true}</option>
 				{/section}
 			</select>&nbsp;
 		</form>

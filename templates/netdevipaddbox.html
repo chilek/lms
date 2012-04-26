@@ -98,8 +98,8 @@
 		</td>
 		<td width="98%">
 			<select size="1" name="ipadd[access]" {tip text="Select address status"}>
-				<option value="1"{if $nodeipdata.access} SELECTED{/if}>{trans("connected<!singular>")}</option>
-				<option value="0"{if ! $nodeipdata.access} SELECTED{/if}>{trans("disconnected<!singular>")}</option>
+				<option value="1"{if $nodeipdata.access} selected="selected"{/if}>{trans("connected<!singular>")}</option>
+				<option value="0"{if ! $nodeipdata.access} selected="selected"{/if}>{trans("disconnected<!singular>")}</option>
 			</select>
 		</td>
 	</tr>

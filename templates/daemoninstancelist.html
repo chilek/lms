@@ -30,9 +30,9 @@
 				<input type="HIDDEN" name="m" value="daemoninstancelist">
 				<strong>{trans("Filter:")} </strong> {trans("Host:")}
 				<select size="1" name="id" OnChange="document.filter.submit();">
-					<option value="0"{if ! $hostid} SELECTED{/if}>{trans("- all hosts -")}</option>
+					<option value="0"{if ! $hostid} selected="selected"{/if}>{trans("- all hosts -")}</option>
 					{section name=hosts loop=$hosts}
-					<option value="{$hosts[hosts].id}"{if $hosts[hosts].id eq $hostid} SELECTED{/if}>{$hosts[hosts].name}</option>
+					<option value="{$hosts[hosts].id}"{if $hosts[hosts].id eq $hostid} selected="selected"{/if}>{$hosts[hosts].name}</option>
 					{/section}
 				</select>
 			</form>

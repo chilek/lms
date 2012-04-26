@@ -147,7 +147,7 @@
 			<img src="img/group.gif"> <a href="javascript:customerGroup(1);">{trans("Add")}</a> / <a href="javascript:customerGroup(0);">{trans("Remove Group")}</a>:
 			<select size="1" name="setwarnings[customergroup]">
 				{section name=customergroups loop=$customergroups}
-				<option value="{$customergroups[customergroups].id}" {if $listdata.customergroup eq $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"...":true}</option>
+				<option value="{$customergroups[customergroups].id}" {if $listdata.customergroup eq $customergroups[customergroups].id} selected="selected" {/if}>{$customergroups[customergroups].name|truncate:50:"...":true}</option>
 				{/section}
 			</select>
 		</td>

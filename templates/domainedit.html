@@ -25,9 +25,9 @@
 		</td>
 		<td width="98%"class="fright">
 			<select size="1" name="domain[ownerid]" {tip text="Select owner or 'SYSTEM DOMAIN' if you don't want to assign it to any customer" trigger="ownerid"}>
-				<option value="0"{if !$domain.ownerid} SELECTED{/if}>{trans("SYSTEM DOMAIN")}</option>
+				<option value="0"{if !$domain.ownerid} selected="selected"{/if}>{trans("SYSTEM DOMAIN")}</option>
 				{foreach from=$customers item=customer}
-					<option value="{$customer.id}"{if $domain.ownerid == $customer.id} SELECTED{/if}>{$customer.customername|truncate:40:" ...":true} ({$customer.id|string_format:"%04d"})</option>
+					<option value="{$customer.id}"{if $domain.ownerid == $customer.id} selected="selected"{/if}>{$customer.customername|truncate:40:" ...":true} ({$customer.id|string_format:"%04d"})</option>
 				{/foreach}
 			</select>
 		</td>
@@ -37,9 +37,9 @@
                 <td width="1%" nowrap="nowrap"><strong>{trans("Type:")}</strong></td>
                 <td width="98%" class="fright">
             		<select size="1" name="domain[type]"{tip text="Select domain type" trigger="type"} id="domain[type]" style="float: left;" onchange="if (this.value=='SLAVE') document.getElementById('ipmaster').style.display='block'; else document.getElementById('ipmaster').style.display='none';">
-                    		<option value="NATIVE" {if $domain.type == NATIVE} SELECTED{/if}>NATIVE</option>
-                                <option value="MASTER" {if $domain.type == MASTER} SELECTED{/if}>MASTER</option>
-                                <option value="SLAVE" {if $domain.type == SLAVE} SELECTED{/if}>SLAVE</option>
+                    		<option value="NATIVE" {if $domain.type == NATIVE} selected="selected"{/if}>NATIVE</option>
+                                <option value="MASTER" {if $domain.type == MASTER} selected="selected"{/if}>MASTER</option>
+                                <option value="SLAVE" {if $domain.type == SLAVE} selected="selected"{/if}>SLAVE</option>
             		</select>
 			<div id="ipmaster" style="display: none; float:left; margin-left:10px;">
 		        {trans("IP address of master NS:")}

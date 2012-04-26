@@ -40,9 +40,9 @@
 				    </td>
 				    <td width="98%">
 					<select name="account[domainid]" {tip text="Select domain name" trigger="domainid"}>
-					    <option value="0" {if !$account.domainid}SELECTED{/if}>{trans("- select domain -")}</option>
+					    <option value="0" {if !$account.domainid}selected="selected"{/if}>{trans("- select domain -")}</option>
 					    {section name=domainlist loop=$domainlist}
-					    <option value="{$domainlist[domainlist].id}" {if $domainlist[domainlist].id eq $account.domainid}SELECTED{/if}>{$domainlist[domainlist].name}</option>
+					    <option value="{$domainlist[domainlist].id}" {if $domainlist[domainlist].id eq $account.domainid}selected="selected"{/if}>{$domainlist[domainlist].name}</option>
 					    {/section}
 					</select>
 				    </td>
@@ -56,9 +56,9 @@
 		    		    </td>
 				    <td width="98%">
 					<select size="1" name="account[ownerid]" {tip text="Select owner or 'SYSTEM ACCOUNT' if you don't want to assign it to any customer" trigger="ownerid"}>
-    					    <option value="0"{if !$account.ownerid} SELECTED{/if}>{trans("SYSTEM ACCOUNT")}</option>
+    					    <option value="0"{if !$account.ownerid} selected="selected"{/if}>{trans("SYSTEM ACCOUNT")}</option>
 					    {foreach from=$customers item=customer}
-					    <option value="{$customer.id}"{if $account.ownerid == $customer.id} SELECTED{/if}>{$customer.customername|truncate:40:" ...":true} ({$customer.id|string_format:"%04d"})</option>
+					    <option value="{$customer.id}"{if $account.ownerid == $customer.id} selected="selected"{/if}>{$customer.customername|truncate:40:" ...":true} ({$customer.id|string_format:"%04d"})</option>
 					    {/foreach}
 					</select>
 				    </td>

@@ -78,7 +78,7 @@
 			<select name="customer[{$item.id}]" {tip text="Select customer" trigger=$item.id}>
 				<option value="0">{trans("- select customer -")}</option>
 				{foreach from=$customerlist item=customer}
-				<option value="{$customer.id}" {if $customer.id == $item.customerid}SELECTED{/if}>{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</option>
+				<option value="{$customer.id}" {if $customer.id == $item.customerid}selected="selected"{/if}>{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</option>
 				{/foreach}
 			</select>&nbsp;
 			{else}

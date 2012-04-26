@@ -53,7 +53,7 @@
 					<select name="division[countryid]" {tip text="Enter country" trigger="countryid"}>
 						<option value="0"></option>
 						{foreach from=$countries item=item key=key}
-						<option value="{$key}"{if $key==$division.countryid} SELECTED{/if}>{t}{$item.name}{/t}</option>
+						<option value="{$key}"{if $key==$division.countryid} selected="selected"{/if}>{t}{$item.name}{/t}</option>
 						{/foreach}
 					</select>
 				</td>

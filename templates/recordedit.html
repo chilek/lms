@@ -12,19 +12,19 @@
 		</td>
 		<td width="98%" class="frightu">
 	    		<select size="1" name="record[type]" {tip text="Select record type" trigger="type"} onchange="change_rec_type(this)">
-                    	    <option value="A" {if $record.type == 'A'} SELECTED{/if}>A</option>
-                    	    <option value="AAAA" {if $record.type == 'AAAA'} SELECTED{/if}>AAAA</option>
-                    	    <option value="CNAME" {if $record.type == 'CNAME'} SELECTED{/if}>CNAME</option>
-                    	    <option value="HINFO" {if $record.type == 'HINFO'} SELECTED{/if}>HINFO</option>
-                    	    <option value="MX" {if $record.type == 'MX'} SELECTED{/if}>MX</option>
-                    	    <option value="NAPTR" {if $record.type == 'NAPTR'} SELECTED{/if}>NAPTR</option>
-                    	    <option value="NS" {if $record.type == 'NS'} SELECTED{/if}>NS</option>
-                    	    <option value="PTR" {if $record.type == 'PTR' || (!$record.type && preg_match('/in-addr\.arpa$/', $record.domainname))} SELECTED{/if}>PTR</option>
-                    	    <option value="SOA" {if $record.type == 'SOA'} SELECTED{/if}>SOA</option>
-                    	    <option value="SPF" {if $record.type == 'SPF'} SELECTED{/if}>SPF</option>
-                    	    <option value="SRV" {if $record.type == 'SRV'} SELECTED{/if}>SRV</option>
-                    	    <option value="SSHFP" {if $record.type == 'SSHFP'} SELECTED{/if}>SSHFP</option>
-                    	    <option value="TXT" {if $record.type == 'TXT'} SELECTED{/if}>TXT</option>
+                    	    <option value="A" {if $record.type == 'A'} selected="selected"{/if}>A</option>
+                    	    <option value="AAAA" {if $record.type == 'AAAA'} selected="selected"{/if}>AAAA</option>
+                    	    <option value="CNAME" {if $record.type == 'CNAME'} selected="selected"{/if}>CNAME</option>
+                    	    <option value="HINFO" {if $record.type == 'HINFO'} selected="selected"{/if}>HINFO</option>
+                    	    <option value="MX" {if $record.type == 'MX'} selected="selected"{/if}>MX</option>
+                    	    <option value="NAPTR" {if $record.type == 'NAPTR'} selected="selected"{/if}>NAPTR</option>
+                    	    <option value="NS" {if $record.type == 'NS'} selected="selected"{/if}>NS</option>
+                    	    <option value="PTR" {if $record.type == 'PTR' || (!$record.type && preg_match('/in-addr\.arpa$/', $record.domainname))} selected="selected"{/if}>PTR</option>
+                    	    <option value="SOA" {if $record.type == 'SOA'} selected="selected"{/if}>SOA</option>
+                    	    <option value="SPF" {if $record.type == 'SPF'} selected="selected"{/if}>SPF</option>
+                    	    <option value="SRV" {if $record.type == 'SRV'} selected="selected"{/if}>SRV</option>
+                    	    <option value="SSHFP" {if $record.type == 'SSHFP'} selected="selected"{/if}>SSHFP</option>
+                    	    <option value="TXT" {if $record.type == 'TXT'} selected="selected"{/if}>TXT</option>
         		</select>
 		</td>
 	</tr>

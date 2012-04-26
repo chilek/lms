@@ -110,7 +110,7 @@
 			<select size="1" name="net">
 				<option value="0">{trans("- all -")}</option>
 				{section name="netlist" loop=$netlist}
-				<option value="{$netlist[netlist].id}" {if $netlist[netlist].id == $trafficnet}SELECTED{/if}>{$netlist[netlist].name|truncate:30:"...":true}</option>
+				<option value="{$netlist[netlist].id}" {if $netlist[netlist].id == $trafficnet}selected="selected"{/if}>{$netlist[netlist].name|truncate:30:"...":true}</option>
 				{/section}
 			</select>
 		</td>
@@ -145,11 +145,11 @@
 		</td>
 		<td class="fright">
 			<select size="1" name="order">
-				<option value="name"{if $trafficorder == "name"} SELECTED{/if}>{trans("Node name")}</option>
-				<option value="ip"{if $trafficorder == "ip"} SELECTED{/if}>{trans("Node IP address")}</option>
-				<option value="nodeid"{if $trafficorder == "nodeid"} SELECTED{/if}>{trans("Node number")}</option>
-				<option value="download"{if $trafficorder == "download"} SELECTED{/if}>{trans("Download")}</option>
-				<option value="upload"{if $trafficorder == "upload"} SELECTED{/if}>{trans("Upload")}</option>
+				<option value="name"{if $trafficorder == "name"} selected="selected"{/if}>{trans("Node name")}</option>
+				<option value="ip"{if $trafficorder == "ip"} selected="selected"{/if}>{trans("Node IP address")}</option>
+				<option value="nodeid"{if $trafficorder == "nodeid"} selected="selected"{/if}>{trans("Node number")}</option>
+				<option value="download"{if $trafficorder == "download"} selected="selected"{/if}>{trans("Download")}</option>
+				<option value="upload"{if $trafficorder == "upload"} selected="selected"{/if}>{trans("Upload")}</option>
 			</select>
 		</td>
 	</tr>

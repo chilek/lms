@@ -95,20 +95,20 @@
 			<strong>{trans("Filter:")} </strong> 
 			<input type="text" name="search" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>&nbsp;
 			<select size="1" name="cat">
-				<option value=""{if $listdata.cat eq ""} SELECTED{/if}>{trans("- select filter category -")}</option>
-				<option value="name"{if $listdata.cat eq "name"} SELECTED{/if}>{trans("customer name")}</option>
-				<option value="customerid"{if $listdata.cat eq "customerid"} SELECTED{/if}>{trans("customer ID")}</option>
-				<option value="destination"{if $listdata.cat eq "destination"} SELECTED{/if}>{trans("destination number/email")}</option>
+				<option value=""{if $listdata.cat eq ""} selected="selected"{/if}>{trans("- select filter category -")}</option>
+				<option value="name"{if $listdata.cat eq "name"} selected="selected"{/if}>{trans("customer name")}</option>
+				<option value="customerid"{if $listdata.cat eq "customerid"} selected="selected"{/if}>{trans("customer ID")}</option>
+				<option value="destination"{if $listdata.cat eq "destination"} selected="selected"{/if}>{trans("destination number/email")}</option>
 			</select>&nbsp;
 			{trans("Status:")}
 			<select size="1" name="status">
-				<option value=""{if !$listdata.status} SELECTED{/if}>{trans("- all statuses -")}</option>
-				<option value="{$smarty.const.MSG_NEW}"{if $listdata.status == $smarty.const.MSG_NEW} SELECTED{/if}>{trans("waiting<!plural>")}</option>
+				<option value=""{if !$listdata.status} selected="selected"{/if}>{trans("- all statuses -")}</option>
+				<option value="{$smarty.const.MSG_NEW}"{if $listdata.status == $smarty.const.MSG_NEW} selected="selected"{/if}>{trans("waiting<!plural>")}</option>
 			{*
-				<option value="{$smarty.const.MSG_DRAFT}"{if $listdata.status == $smarty.const.MSG_DRAFT} SELECTED{/if}>{trans("drafts")}</option>
+				<option value="{$smarty.const.MSG_DRAFT}"{if $listdata.status == $smarty.const.MSG_DRAFT} selected="selected"{/if}>{trans("drafts")}</option>
 			*}
-				<option value="{$smarty.const.MSG_SENT}"{if $listdata.status == $smarty.const.MSG_SENT} SELECTED{/if}>{trans("sent<!plural>")}</option>
-				<option value="{$smarty.const.MSG_ERROR}"{if $listdata.status == $smarty.const.MSG_ERROR} SELECTED{/if}>{trans("errornous<!plural>")}</option>
+				<option value="{$smarty.const.MSG_SENT}"{if $listdata.status == $smarty.const.MSG_SENT} selected="selected"{/if}>{trans("sent<!plural>")}</option>
+				<option value="{$smarty.const.MSG_ERROR}"{if $listdata.status == $smarty.const.MSG_ERROR} selected="selected"{/if}>{trans("errornous<!plural>")}</option>
 			</select>
 			&nbsp;<a href="javascript: document.page.submit();">&raquo;&raquo;&raquo;</a>
 			</form>

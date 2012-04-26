@@ -87,22 +87,22 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 				<strong>{trans("Filter:")} </strong> 
 				<input type="text" name="search" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>&nbsp;
 				<select size="1" name="cat">
-					<option value=""{if $listdata.cat eq ""} SELECTED{/if}>{trans("- select filter category -")}</option>
-					<option value="cdate"{if $listdata.cat eq "cdate"} SELECTED{/if}>{trans("day (YYYY/MM/DD)")}</option>
-					<option value="month"{if $listdata.cat eq "month"} SELECTED{/if}>{trans("month (YYYY/MM)")}</option>
-					<option value="number"{if $listdata.cat eq "number"} SELECTED{/if}>{trans("number")}</option>
-					<option value="value"{if $listdata.cat eq "value"} SELECTED{/if}>{trans("value")}</option>
-					<option value="name"{if $listdata.cat eq "name"} SELECTED{/if}>{trans("customer name")}</option>
-					<option value="customerid"{if $listdata.cat eq "customerid"} SELECTED{/if}>{trans("customer ID")}</option>
-					<option value="ten"{if $listdata.cat eq "ten"} SELECTED{/if}>{trans("TEN")}</option>
-					<option value="address"{if $listdata.cat eq "address"} SELECTED{/if}>{trans("address")}</option>
-					<option value="cnotes"{if $listdata.cat eq "cnotes"} SELECTED{/if}>{trans("show only credit notes")}</option>
+					<option value=""{if $listdata.cat eq ""} selected="selected"{/if}>{trans("- select filter category -")}</option>
+					<option value="cdate"{if $listdata.cat eq "cdate"} selected="selected"{/if}>{trans("day (YYYY/MM/DD)")}</option>
+					<option value="month"{if $listdata.cat eq "month"} selected="selected"{/if}>{trans("month (YYYY/MM)")}</option>
+					<option value="number"{if $listdata.cat eq "number"} selected="selected"{/if}>{trans("number")}</option>
+					<option value="value"{if $listdata.cat eq "value"} selected="selected"{/if}>{trans("value")}</option>
+					<option value="name"{if $listdata.cat eq "name"} selected="selected"{/if}>{trans("customer name")}</option>
+					<option value="customerid"{if $listdata.cat eq "customerid"} selected="selected"{/if}>{trans("customer ID")}</option>
+					<option value="ten"{if $listdata.cat eq "ten"} selected="selected"{/if}>{trans("TEN")}</option>
+					<option value="address"{if $listdata.cat eq "address"} selected="selected"{/if}>{trans("address")}</option>
+					<option value="cnotes"{if $listdata.cat eq "cnotes"} selected="selected"{/if}>{trans("show only credit notes")}</option>
 				</select>&nbsp;
 				{trans("Group:")}
 				<select size="1" name="group">
-					<option value="0"{if !$listdata.group} SELECTED{/if}>{trans("- all groups -")}</option>
+					<option value="0"{if !$listdata.group} selected="selected"{/if}>{trans("- all groups -")}</option>
 					{section name="grouplist" loop=$grouplist}
-					<option value="{$grouplist[grouplist].id}"{if $listdata.group eq $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:30:"...":true}</option>
+					<option value="{$grouplist[grouplist].id}"{if $listdata.group eq $grouplist[grouplist].id} selected="selected"{/if}>{$grouplist[grouplist].name|truncate:30:"...":true}</option>
 					{/section}
 				</select>
 				<span class="nobr">

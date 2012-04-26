@@ -30,9 +30,9 @@
 				<strong>{trans("Filter:")}</strong> 
 				<span class="nobr">{trans("Customers Group:")}
 				<select size="1" name="g" ONCHANGE="document.choosefilter.submit();">
-					<option value="" {if !$listdata.customergroup} SELECTED {/if}>{trans("- all groups -")}</option>
+					<option value="" {if !$listdata.customergroup} selected="selected" {/if}>{trans("- all groups -")}</option>
 					{section name=customergroups loop=$customergroups}
-					<option value="{$customergroups[customergroups].id}" {if $listdata.customergroup eq $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:30:"...":true}</option>
+					<option value="{$customergroups[customergroups].id}" {if $listdata.customergroup eq $customergroups[customergroups].id} selected="selected" {/if}>{$customergroups[customergroups].name|truncate:30:"...":true}</option>
 					{/section}
 				</select></span>
 			</form>

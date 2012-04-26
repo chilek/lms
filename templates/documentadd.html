@@ -47,7 +47,7 @@
 				for (key in p[type]) {
 					result = result + '<option value="' + key + '"';
 					if(key == s)
-						result += ' SELECTED';
+						result += ' selected="selected"';
 					result = result + '>' + p[type][key] + ' (' + pr[type][key] + ') </option>';
 				}
 				result += '</select>';
@@ -94,7 +94,7 @@
 			<select size="1" name="customer" onChange="document.documentadd.customerid.value=document.documentadd.customer.value" {tip trigger="customer"}>
 				<option value="0">{trans("... select customer ...")}</option>
 				{foreach from=$customers item=c}
-				<option value="{$c.id}"{if $c.id eq $customer.id || $document.customerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:"40":"...":true} ({$c.id|string_format:"%04d"})</option>
+				<option value="{$c.id}"{if $c.id eq $customer.id || $document.customerid eq $c.id} selected="selected"{/if}>{$c.customername|truncate:"40":"...":true} ({$c.id|string_format:"%04d"})</option>
 				{/foreach}
 			</select>
 			{trans("or Customer ID:")}
@@ -137,7 +137,7 @@
 			<select size="1" name="document[type]" onchange="setnumberplans();" {tip text="Select document type" trigger="type"}>
 				<option value="0">... {trans("select type")} ...</option>
 				{foreach from=$_DOCTYPES key=key item=item}{if $key < 0 && in_array($key, $docrights)}
-				<option value="{$key}"{if $document.type==$key} SELECTED{/if}>{$item}</option>
+				<option value="{$key}"{if $document.type==$key} selected="selected"{/if}>{$item}</option>
 				{/if}{/foreach}
 			</select>
 		</td>
@@ -153,7 +153,7 @@
 			<select size="1" name="document[templ]" {tip text="Select template to generate new document if you haven't got prepared file" trigger="template"} onchange="getplugin();">
 				<option value="">... {trans("select template")} ...</option>
 				{foreach from=$docengines item=item}
-				<option value="{$item.name}"{if $document.templ==$item.name} SELECTED{/if}>{$item.title}</option>
+				<option value="{$item.name}"{if $document.templ==$item.name} selected="selected"{/if}>{$item.title}</option>
 				{/foreach}
 			</select>
 		</td>
@@ -181,10 +181,10 @@
 			<div id="numberplans" style="display: {if !$document.numberplanid}none{else}inline{/if};">
 			{if $numberplans}
 			<select name="document[numberplanid]" {tip text="Select numbering plan"}>
-				<option value="0"{if !$document.numberplanid} SELECTED{/if}>... {trans("select numbering plan")} ...</option>
+				<option value="0"{if !$document.numberplanid} selected="selected"{/if}>... {trans("select numbering plan")} ...</option>
 			    {foreach item=plan from=$numberplans}
 				{assign var=period value=$plan.period}
-				<option value="{$plan.id}"{if $plan.id==$document.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$document.cdate} ({$_NUM_PERIODS.$period})</option>
+				<option value="{$plan.id}"{if $plan.id==$document.numberplanid} selected="selected"{/if}>{number number=$plan.next template=$plan.template time=$document.cdate} ({$_NUM_PERIODS.$period})</option>
 			    {/foreach}
 			</select>
 			{else}

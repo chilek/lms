@@ -75,7 +75,7 @@
 		</td>
 		<td width="98%" class="fright" nowrap="nowrap">
 			<select name="event[customerid]">
-				<option value="0" SELECTED>{trans("- select customer -")}</option>
+				<option value="0" selected="selected">{trans("- select customer -")}</option>
 				{foreach from=$customerlist item=customer}	
 				<option value="{$customer.id}">{$customer.customername|truncate:"40":"...":true} ({$customer.id|string_format:"%04d"})</option>
 				{/foreach}
@@ -91,7 +91,7 @@
 		</td>
 		<td width="98%" class="fright" nowrap="nowrap">
 			<select name="event[userid]">
-				<option value="" SELECTED>{trans("- select user -")}</option>
+				<option value="" selected="selected">{trans("- select user -")}</option>
 				{section name=userlist loop=$userlist}	
 				<option value="{$userlist[userlist].id}">{$userlist[userlist].name}</option>
 				{/section}

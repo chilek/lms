@@ -139,7 +139,7 @@
 	<input type="hidden" name="m" value="netdevmap">
 	<select size="1" name="start" onChange="document.x.submit();">
 		{section name=a loop=$deviceslist}
-		<option value="{$deviceslist[a].id}"{if $deviceslist[a].id eq $start} SELECTED{/if}>{$deviceslist[a].name}</option>
+		<option value="{$deviceslist[a].id}"{if $deviceslist[a].id eq $start} selected="selected"{/if}>{$deviceslist[a].name}</option>
 		{/section}
 	</select>
 	<input type="SUBMIT" value="{trans("Generate")}">

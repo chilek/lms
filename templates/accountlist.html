@@ -37,32 +37,32 @@
 							<input type="HIDDEN" name="page" value="1">
 							<strong>{trans("Filter:")} </strong> {trans("Owner:")}
 							<select size="1" name="u" OnChange="document.filter.submit();">
-								<option value=""{if $listdata.customer eq ""} SELECTED{/if}>{trans("- all owners -")}</option>
-								<option value="0"{if $listdata.customer eq "0"} SELECTED{/if}>{trans("SYSTEM ACCOUNT")}</option>
+								<option value=""{if $listdata.customer eq ""} selected="selected"{/if}>{trans("- all owners -")}</option>
+								<option value="0"{if $listdata.customer eq "0"} selected="selected"{/if}>{trans("SYSTEM ACCOUNT")}</option>
 								{foreach from=$customerlist item=customer}
-					    				<option value="{$customer.id}"{if $customer.id eq $listdata.customer} SELECTED{/if}>{$customer.customername|truncate:35:"...":true}</option>
+					    				<option value="{$customer.id}"{if $customer.id eq $listdata.customer} selected="selected"{/if}>{$customer.customername|truncate:35:"...":true}</option>
 								{/foreach}
 							</select>&nbsp;
 							{trans("Type:")}
 							<select size="1" name="t" ONCHANGE="document.filter.submit();">
-								<option value="0"{if !$listdata.type} SELECTED {/if}>{trans("- all -")}</option>
-								<option value="1"{if $listdata.type eq 1} SELECTED {/if}>{trans("shell")}</option>
-								<option value="2"{if $listdata.type eq 2} SELECTED {/if}>{trans("mail")}</option>
-								<option value="4"{if $listdata.type eq 4} SELECTED {/if}>{trans("www")}</option>
-								<option value="8"{if $listdata.type eq 8} SELECTED {/if}>{trans("ftp")}</option>
-								<option value="16"{if $listdata.type eq 16} SELECTED {/if}>{trans("sql")}</option>
+								<option value="0"{if !$listdata.type} selected="selected" {/if}>{trans("- all -")}</option>
+								<option value="1"{if $listdata.type eq 1} selected="selected" {/if}>{trans("shell")}</option>
+								<option value="2"{if $listdata.type eq 2} selected="selected" {/if}>{trans("mail")}</option>
+								<option value="4"{if $listdata.type eq 4} selected="selected" {/if}>{trans("www")}</option>
+								<option value="8"{if $listdata.type eq 8} selected="selected" {/if}>{trans("ftp")}</option>
+								<option value="16"{if $listdata.type eq 16} selected="selected" {/if}>{trans("sql")}</option>
 							</select>&nbsp;
 							{trans("Status:")}
 							<select size="1" name="k" OnChange="document.filter.submit();">
-								<option value="0"{if !$listdata.kind} SELECTED {/if}>{trans("- all -")}</option>
-								<option value="1"{if $listdata.kind eq 1} SELECTED {/if}>{trans("expired")}</option>
-								<option value="2"{if $listdata.kind eq 2} SELECTED {/if}>{trans("active")}</option>
+								<option value="0"{if !$listdata.kind} selected="selected" {/if}>{trans("- all -")}</option>
+								<option value="1"{if $listdata.kind eq 1} selected="selected" {/if}>{trans("expired")}</option>
+								<option value="2"{if $listdata.kind eq 2} selected="selected" {/if}>{trans("active")}</option>
 							</select>&nbsp;
 							<span class="nobr">{trans("Domain:")}
 							<select size="1" name="d" OnChange="document.filter.submit();">
-								<option value=""{if $listdata.domain eq ""} SELECTED{/if}>{trans("- all -")}</option>
+								<option value=""{if $listdata.domain eq ""} selected="selected"{/if}>{trans("- all -")}</option>
 								{section name=domainlist loop=$domainlist}
-					    				<option value="{$domainlist[domainlist].id}"{if $domainlist[domainlist].id eq $listdata.domain} SELECTED{/if}>{$domainlist[domainlist].name}</option>
+					    				<option value="{$domainlist[domainlist].id}"{if $domainlist[domainlist].id eq $listdata.domain} selected="selected"{/if}>{$domainlist[domainlist].name}</option>
 								{/section}
 							</select></span>
 						</form>

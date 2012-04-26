@@ -184,7 +184,7 @@
 		</td>
 		<td class="fright" style="width: 99%;">
 			<select size="1" name="search[tariffs][]" MULTIPLE id="customertariffs">
-				<option value="" SELECTED>{trans("- all -")}</option>
+				<option value="" selected="selected">{trans("- all -")}</option>
 				{foreach from=$tariffs item=item}
 				 	<option value="{$item.id}">{$item.name}</option>
 				{/foreach}
@@ -229,7 +229,7 @@
 			<select size="1" name="d">
 				<option value="">- {trans("all")} -</option>
 				{foreach from=$divisions item=division}
-					<option value="{$division.id}"{if $listdata.division==$division.id} SELECTED{/if}>{$division.shortname|truncate:30:"...":true}</option>
+					<option value="{$division.id}"{if $listdata.division==$division.id} selected="selected"{/if}>{$division.shortname|truncate:30:"...":true}</option>
 				{/foreach}
 			</select>
 		</tr>
@@ -262,9 +262,9 @@
 		</td>
 		<td class="fright" style="width: 99%;">
 			<select size="1" name="n">
-				<option value="0" {if !$listdata.network} SELECTED {/if}>{trans("- all networks -")}</option>
+				<option value="0" {if !$listdata.network} selected="selected" {/if}>{trans("- all networks -")}</option>
 				{section name=networks loop=$networks}
-				<option value="{$networks[networks].id}" {if $listdata.network eq $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:50:"...":true}</option>
+				<option value="{$networks[networks].id}" {if $listdata.network eq $networks[networks].id} selected="selected" {/if}>{$networks[networks].name|truncate:50:"...":true}</option>
 				{/section}
 			</select>
 		</td>
@@ -275,9 +275,9 @@
 		</td>
 		<td class="fright" style="width: 99%;">
 			<select size="1" name="g">
-				<option value="" {if !$listdata.customergroup} SELECTED {/if}>{trans("- all groups -")}</option>
+				<option value="" {if !$listdata.customergroup} selected="selected" {/if}>{trans("- all groups -")}</option>
 				{section name=customergroups loop=$customergroups}
-				<option value="{$customergroups[customergroups].id}" {if $listdata.customergroup eq $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"...":true}</option>
+				<option value="{$customergroups[customergroups].id}" {if $listdata.customergroup eq $customergroups[customergroups].id} selected="selected" {/if}>{$customergroups[customergroups].name|truncate:50:"...":true}</option>
 				{/section}
 			</select>
 		</td>
@@ -288,9 +288,9 @@
 		</td>
 		<td class="fright" style="width: 99%;">
 			<select size="1" name="ng">
-				<option value="" {if !$listdata.nodegroup} SELECTED {/if}>{trans("- all groups -")}</option>
+				<option value="" {if !$listdata.nodegroup} selected="selected" {/if}>{trans("- all groups -")}</option>
 				{foreach from=$nodegroups item=nodegroup}
-				<option value="{$nodegroup.id}" {if $listdata.nodegroup eq $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</option>
+				<option value="{$nodegroup.id}" {if $listdata.nodegroup eq $nodegroup.id} selected="selected" {/if}>{$nodegroup.name|truncate:30:"...":true}</option>
 				{/foreach}
 			</select>
 		</td>

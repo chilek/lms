@@ -130,7 +130,7 @@
 			<select name="netdev[nastype]" {tip text="Select type (optional)" trigger="nastype"}>
 				<option value="0"></option>
 				{foreach from=$nastype item=item key=key}
-				<option value="{$key}" {if $key==$netdevices.nastype} SELECTED{/if}>{$item.name}</option>
+				<option value="{$key}" {if $key==$netdevices.nastype} selected="selected"{/if}>{$item.name}</option>
 				{/foreach}
 			</select>
 		</td>
@@ -181,7 +181,7 @@
 			<select name="netdev[channelid]" {tip text="Select channel (optional)" trigger="channelid"}>
 				<option value="">- {trans("none")} -</option>
 				{foreach from=$channels item=item}
-				<option value="{$item.id}" {if $item.id == $netdev.channelid} SELECTED{/if}>{$item.name}</option>
+				<option value="{$item.id}" {if $item.id == $netdev.channelid} selected="selected"{/if}>{$item.name}</option>
 				{/foreach}
 			</select>
 		</td>
@@ -212,7 +212,7 @@
 		<td width="98%">
 			<select size="1" name="netdev[guaranteeperiod]" {tip text="Select device guarantee period (optional)"}>
 				{foreach from=$_GUARANTEEPERIODS key=key item=period}
-				<option value="{$key}"{if $netdev.guaranteeperiod eq $key} SELECTED{/if}>{$period}</option>
+				<option value="{$key}"{if $netdev.guaranteeperiod eq $key} selected="selected"{/if}>{$period}</option>
 				{/foreach}
 			</select>
 		</td>

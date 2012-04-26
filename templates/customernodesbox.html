@@ -137,7 +137,7 @@ function setgroup(act)
 				<a href="javascript: setgroup('setgroup')"> {trans("Add")}</a>/<a href="javascript: setgroup('unsetgroup')">{trans("Remove Group")}</a>:
 				<select size="1" id="groupselect">
 	            		    {foreach from=$allnodegroups item=nodegroup}
-			            <option value="{$nodegroup.id}" {if $listdata.nodegroup eq $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</option>
+			            <option value="{$nodegroup.id}" {if $listdata.nodegroup eq $nodegroup.id} selected="selected" {/if}>{$nodegroup.name|truncate:30:"...":true}</option>
 				    {/foreach}
 				</select>
 				{/if}

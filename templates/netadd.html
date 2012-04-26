@@ -15,7 +15,7 @@
 	</tr>
 	<tr class="LIGHT">
 		<td width="1%" class="fleft" nowrap="nowrap"><img src="img/ip.gif" alt=""> <strong>{trans("Network address/mask:")}</strong></td>
-		<td class="fright"><input type="TEXT" size="23" name="netadd[address]" value="{$netadd.address}" {tip text="Enter IP address and select mask" trigger="address"}><strong> / </strong><select size="1" TITLE="Prefixlen" name="netadd[prefix]">{section name=prefixlist loop=$prefixlist.id}<option value="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] eq $netadd.prefix} SELECTED{/if}>{$prefixlist.value[prefixlist]}</option>{/section}</select>
+		<td class="fright"><input type="TEXT" size="23" name="netadd[address]" value="{$netadd.address}" {tip text="Enter IP address and select mask" trigger="address"}><strong> / </strong><select size="1" TITLE="Prefixlen" name="netadd[prefix]">{section name=prefixlist loop=$prefixlist.id}<option value="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] eq $netadd.prefix} selected="selected"{/if}>{$prefixlist.value[prefixlist]}</option>{/section}</select>
 	</tr>
 	<tr class="LIGHT">
 		<td width="1%" class="fleft" nowrap="nowrap"><img src="img/mac.gif" alt=""> <strong>{trans("Interface:")}</strong></td>

@@ -38,17 +38,17 @@
 							<strong>{trans("Filter:")} </strong>
 							{trans("Owner:")}
 							<select size="1" name="c" OnChange="document.filter.submit();">
-								<option value=""{if $listdata.customer eq ""} SELECTED{/if}>{trans("- all owners -")}</option>
-			        				<option value="0"{if $listdata.customer eq "0"} SELECTED{/if}>{trans("SYSTEM DOMAIN")}</option>
+								<option value=""{if $listdata.customer eq ""} selected="selected"{/if}>{trans("- all owners -")}</option>
+			        				<option value="0"{if $listdata.customer eq "0"} selected="selected"{/if}>{trans("SYSTEM DOMAIN")}</option>
 								{foreach from=$customerlist item=customer}
-				    					<option value="{$customer.id}"{if $customer.id eq $listdata.customer} SELECTED{/if}>{$customer.customername|truncate:40:"...":true}</option>
+				    					<option value="{$customer.id}"{if $customer.id eq $listdata.customer} selected="selected"{/if}>{$customer.customername|truncate:40:"...":true}</option>
 								{/foreach}
 							</select>
 							&nbsp;{trans("Name:")}
 							<select size="1" name="f" OnChange="document.filter.submit();">
-								<option value=""{if $listdata.name eq ""} SELECTED{/if}>{trans("- all -")}</option>
+								<option value=""{if $listdata.name eq ""} selected="selected"{/if}>{trans("- all -")}</option>
 								{foreach from=$domaincount item=item key=key}
-				    					<option value="{$key}"{if $key eq $listdata.name} SELECTED{/if}>{$key}...</option>
+				    					<option value="{$key}"{if $key eq $listdata.name} selected="selected"{/if}>{$key}...</option>
 								{/foreach}
 							</select>
 						</form>

@@ -80,14 +80,14 @@
 					<td style="width: 1%; white-space: nowrap;" rowspan="2">{trans("Status:")}</td>
 					<td style="width: 1%;" rowspan="2">
 						<select name="message[group]" {tip trigger="group" text="Select recipients group"}>
-							<option value="0"{if !$message.group} SELECTED{/if}>{trans("- all customers -")}</option>
-							<option value="3"{if $message.group == "3"} SELECTED{/if}>{trans("connected<!plural>")}</option>
-							<option value="2"{if $message.group == "2"} SELECTED{/if}>{trans("awaiting")}</option>
-							<option value="1"{if $message.group == "1"} SELECTED{/if}>{trans("interested<!plural>")}</option>
-							<option value="4"{if $message.group == "4"} SELECTED{/if}>{trans("deleted<!plural>")}</option>
-							<option value="5"{if $message.group == "5"} SELECTED{/if}>{trans("disconnected<!plural>")}</option>
-							<option value="6"{if $message.group == "6"} SELECTED{/if}>{trans("in debt")}</option>
-							<option value="7"{if $message.group == "7"} SELECTED{/if}>{trans("not in debt")}</option>
+							<option value="0"{if !$message.group} selected="selected"{/if}>{trans("- all customers -")}</option>
+							<option value="3"{if $message.group == "3"} selected="selected"{/if}>{trans("connected<!plural>")}</option>
+							<option value="2"{if $message.group == "2"} selected="selected"{/if}>{trans("awaiting")}</option>
+							<option value="1"{if $message.group == "1"} selected="selected"{/if}>{trans("interested<!plural>")}</option>
+							<option value="4"{if $message.group == "4"} selected="selected"{/if}>{trans("deleted<!plural>")}</option>
+							<option value="5"{if $message.group == "5"} selected="selected"{/if}>{trans("disconnected<!plural>")}</option>
+							<option value="6"{if $message.group == "6"} selected="selected"{/if}>{trans("in debt")}</option>
+							<option value="7"{if $message.group == "7"} selected="selected"{/if}>{trans("not in debt")}</option>
 						</select>
 					</td>
 					<td style="width: 1%; white-space: nowrap;">{trans("Group:")}</td>
@@ -95,7 +95,7 @@
 						<select name="message[customergroup]" {tip trigger="customergroup" text="Select customers group"}>
 							<option value="0">{trans("- all groups -")}</option>
 							{section name="customergroups" loop=$customergroups}
-							<option value="{$customergroups[customergroups].id}"{if $message.customergroup == $customergroups[customergroups].id} SELECTED{/if}>{$customergroups[customergroups].name|truncate:"30":"...":true}</option>
+							<option value="{$customergroups[customergroups].id}"{if $message.customergroup == $customergroups[customergroups].id} selected="selected"{/if}>{$customergroups[customergroups].name|truncate:"30":"...":true}</option>
 						{/section}
 						</select>
 					</td>
@@ -104,7 +104,7 @@
 						<select name="message[network]" {tip trigger="network" text="Select IP network"}>
 							<option value="0">{trans("- all networks -")}</option>
 							{section name="networks" loop=$networks}
-							<option value="{$networks[networks].id}"{if $message.network == $networks[networks].id} SELECTED{/if}>{$networks[networks].name|truncate:"30":"...":true}</option>
+							<option value="{$networks[networks].id}"{if $message.network == $networks[networks].id} selected="selected"{/if}>{$networks[networks].name|truncate:"30":"...":true}</option>
 							{/section}
 						</select>
 					</td>
@@ -113,9 +113,9 @@
 					<td style="width: 1%; white-space: nowrap;">{trans("Nodes Group:<!short>")}</td>
 					<td style="width: 1%;">
 						<select size="1" name="message[nodegroup]" {tip trigger="nodegroup" text="Select nodes group"}>
-							<option value="" {if !$listdata.nodegroup} SELECTED {/if}>{trans("- all groups -")}</option>
+							<option value="" {if !$listdata.nodegroup} selected="selected" {/if}>{trans("- all groups -")}</option>
 							{foreach from=$nodegroups item=nodegroup}
-							<option value="{$nodegroup.id}" {if $message.nodegroup eq $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</option>
+							<option value="{$nodegroup.id}" {if $message.nodegroup eq $nodegroup.id} selected="selected" {/if}>{$nodegroup.name|truncate:30:"...":true}</option>
 							{/foreach}
 						</select>
 					</td>

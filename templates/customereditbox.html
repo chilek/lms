@@ -72,9 +72,9 @@
 		</td>
 		<td width="99%">
 			<select size="1" name="customerdata[status]" {tip text="Select customer state" trigger="status"}>
-				<option value="3"{if $customerinfo.status eq "3"} SELECTED{/if}>{trans("connected<!singular>")}</option>
-				<option value="2"{if $customerinfo.status eq "2"} SELECTED{/if}>{trans("waiting")}</option>
-				<option value="1"{if $customerinfo.status eq "1"} SELECTED{/if}>{trans("interested<!singular>")}</option>
+				<option value="3"{if $customerinfo.status eq "3"} selected="selected"{/if}>{trans("connected<!singular>")}</option>
+				<option value="2"{if $customerinfo.status eq "2"} selected="selected"{/if}>{trans("waiting")}</option>
+				<option value="1"{if $customerinfo.status eq "1"} selected="selected"{/if}>{trans("interested<!singular>")}</option>
 			</select>
 		</td>
 	</tr>
@@ -86,7 +86,7 @@
 		<td width="99%" nowrap="nowrap">
 			<select size="1" name="customerdata[divisionid]" {tip text="Select division" trigger="divisionid"}>
     			{foreach from=$divisions item=item}{if !$item.status || $item.id == $customerinfo.divisionid}
-	    			<option value="{$item.id}"{if $customerinfo.divisionid == $item.id} SELECTED{/if}>{$item.shortname}</option>
+	    			<option value="{$item.id}"{if $customerinfo.divisionid == $item.id} selected="selected"{/if}>{$item.shortname}</option>
 		        {/if}{/foreach}
 			</select>
 		</td>
@@ -129,7 +129,7 @@
 			            <select name="customerdata[stateid]" {tip text="Select country state (optional)" trigger="stateid"}>
 			                <option value="0"></option>
 			                {foreach from=$cstateslist item=item key=key}
-			                <option value="{$key}"{if $key==$customerinfo.stateid} SELECTED{/if}>{$item.name}</option>
+			                <option value="{$key}"{if $key==$customerinfo.stateid} selected="selected"{/if}>{$item.name}</option>
 			                {/foreach}
 			            </select>
 				</td>
@@ -142,7 +142,7 @@
 			            <select name="customerdata[countryid]" {tip text="Select country (optional)" trigger="countryid"}>
 			                <option value="0"></option>
 					{foreach from=$countrieslist item=item key=key}
-			                <option value="{$key}"{if $key==$customerinfo.countryid} SELECTED{/if}>{t}{$item.name}{/t}</option>
+			                <option value="{$key}"{if $key==$customerinfo.countryid} selected="selected"{/if}>{t}{$item.name}{/t}</option>
 					{/foreach}
 			            </select>
     				</td>
@@ -187,7 +187,7 @@
 			            <select name="customerdata[post_stateid]" {tip text="Select country state (optional)" trigger="post_stateid"}>
 			                <option value="0"></option>
 			                {foreach from=$cstateslist item=item key=key}
-			                <option value="{$key}"{if $key==$customerinfo.post_stateid} SELECTED{/if}>{$item.name}</option>
+			                <option value="{$key}"{if $key==$customerinfo.post_stateid} selected="selected"{/if}>{$item.name}</option>
 			                {/foreach}
 			            </select>
 				</td>
@@ -200,7 +200,7 @@
 			            <select name="customerdata[post_countryid]" {tip text="Select country (optional)" trigger="post_countryid"}>
 			                <option value="0"></option>
 					{foreach from=$countrieslist item=item key=key}
-			                <option value="{$key}"{if $key==$customerinfo.post_countryid} SELECTED{/if}>{t}{$item.name}{/t}</option>
+			                <option value="{$key}"{if $key==$customerinfo.post_countryid} selected="selected"{/if}>{t}{$item.name}{/t}</option>
 					{/foreach}
 			            </select>
     				</td>
