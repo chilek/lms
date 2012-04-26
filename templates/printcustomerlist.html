@@ -1,74 +1,74 @@
 {include file="clearheader.html"}
 <!--// $Id$ //-->
-<TABLE WIDTH="100%" CELLPADDING="3" ALIGN="CENTER">
-	<TR>
-		<TD WIDTH="535" VALIGN="TOP">
-			<H1>{$layout.pagetitle}</H1>
-		</TD>
-		<TD WIDTH="180" ALIGN="RIGHT" NOWRAP>
-			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %x"}<BR>
+<table width="100%" cellpadding="3" align="CENTER">
+	<tr>
+		<td width="535" VALIGN="TOP">
+			<h1>{$layout.pagetitle}</h1>
+		</td>
+		<td width="180" align="RIGHT" nowrap="nowrap">
+			LMS {$layout.lmsv} @ {$layout.hostname}<br />
+			{$smarty.now|date_format:"%A, %x"}<br />
 			{t a=$layout.logname}Prepared by: $a{/t}
-		</TD>
-	</TR>
-</TABLE>
-<BR>
-<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
-	<TR>
-		<TD WIDTH="15" ALIGN="CENTER" CLASS="HEAD">
+		</td>
+	</tr>
+</table>
+<br />
+<table width="100%" cellpadding="3" BORDER="1" align="CENTER">
+	<tr>
+		<td width="15" align="CENTER" class="HEAD">
 			{trans("No.")}
-		</TD>
-		<TD WIDTH="30" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="30" class="HEAD" align="CENTER">
 			{trans("ID")}
-		</TD>
-		<TD WIDTH="400" CLASS="HEAD">
-			<B>{trans("First/last name")} / {trans("Name")}</B><BR>
-			{trans("Address")}<BR>
+		</td>
+		<td width="400" class="HEAD">
+			<strong>{trans("First/last name")} / {trans("Name")}</strong><br />
+			{trans("Address")}<br />
 			{trans("Phone")}
-		</TD>
-		<TD WIDTH="150" CLASS="HEAD" ALIGN="RIGHT">
-			{if !check_conf('privileges.hide_finances')}{trans("Subscription")}<BR>{/if}
-			{trans("E-mail")}<BR>
+		</td>
+		<td width="150" class="HEAD" align="RIGHT">
+			{if !check_conf('privileges.hide_finances')}{trans("Subscription")}<br />{/if}
+			{trans("E-mail")}<br />
 			{trans("TEN/SSN")}
-		</TD>
+		</td>
 		{if !check_conf('privileges.hide_finances')}
-		<TD WIDTH="50" CLASS="HEAD" ALIGN="RIGHT">
+		<td width="50" class="HEAD" align="RIGHT">
 			{trans("Balance")}
-		</TD>
+		</td>
 		{/if}
-	</TR>
+	</tr>
 	{cycle values="white,grey" print=false}
 	{section name=customerlist loop=$customerlist}{if $customerlist[customerlist].id}
-	<TR class="{cycle}">{assign var=cid value=$customerlist[customerlist].id}
-		<TD ALIGN="CENTER">
+	<tr class="{cycle}">{assign var=cid value=$customerlist[customerlist].id}
+		<td align="CENTER">
 			{counter}.
-		</TD>
-		<TD ALIGN="CENTER">
+		</td>
+		<td align="CENTER">
 			{$customerlist[customerlist].id|string_format:"%04d"}
-		</TD>
-		<TD>
-			<B>{$customerlist[customerlist].customername}</B><BR>
-			{$customerlist[customerlist].zip} {$customerlist[customerlist].city}{if $customerlist[customerlist].city neq ""},{/if} {$customerlist[customerlist].address}<BR>
+		</td>
+		<td>
+			<strong>{$customerlist[customerlist].customername}</strong><br />
+			{$customerlist[customerlist].zip} {$customerlist[customerlist].city}{if $customerlist[customerlist].city neq ""},{/if} {$customerlist[customerlist].address}<br />
 			{if $contactlist.$cid.type}{trans("mobile")}{else}{trans("phone<!plural>")}{/if} {$contactlist.$cid.phone}
-		</TD>
-		<TD ALIGN="RIGHT">
-			{if !check_conf('privileges.hide_finances')}{$customerlist[customerlist].tariffvalue|money_format}<BR>{/if}
-			{if $customerlist[customerlist].email}{$customerlist[customerlist].email}<BR>{/if}
+		</td>
+		<td align="RIGHT">
+			{if !check_conf('privileges.hide_finances')}{$customerlist[customerlist].tariffvalue|money_format}<br />{/if}
+			{if $customerlist[customerlist].email}{$customerlist[customerlist].email}<br />{/if}
 			{if $customerlist[customerlist].ten}{trans("TEN:")} {$customerlist[customerlist].ten}{elseif $customerlist[customerlist].ssn}{trans("SSN:")} {$customerlist[customerlist].ssn}{/if}
-		</TD>
+		</td>
 		{if !check_conf('privileges.hide_finances')}
-		<TD ALIGN="RIGHT" NOWRAP>
+		<td align="RIGHT" nowrap="nowrap">
 			{$customerlist[customerlist].balance|money_format}
-		</TD>
+		</td>
 		{/if}
-	</TR>
+	</tr>
 	{/if}{/section}
 	{if !check_conf('privileges.hide_finances') && !check_conf('privileges.hide_summaries')}
-	<TR>
-		<TD CLASS="HEADGREY" COLSPAN="3" ALIGN="RIGHT"><B>{trans("Total:")}</B></TD>
-		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP><B>{sum array=$customerlist column="tariffvalue" string_format=$LANGDEFS.$_language.money_format}</B></TD>
-		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP><B>{sum array=$customerlist column="balance" string_format=$LANGDEFS.$_language.money_format}</B></TD>
-	</TR>
+	<tr>
+		<td class="HEADGREY" colspan="3" align="RIGHT"><strong>{trans("Total:")}</strong></td>
+		<td class="HEADGREY" align="RIGHT" nowrap="nowrap"><strong>{sum array=$customerlist column="tariffvalue" string_format=$LANGDEFS.$_language.money_format}</strong></td>
+		<td class="HEADGREY" align="RIGHT" nowrap="nowrap"><strong>{sum array=$customerlist column="balance" string_format=$LANGDEFS.$_language.money_format}</strong></td>
+	</tr>
 	{/if}
-</TABLE>
+</table>
 {include file="clearfooter.html"}

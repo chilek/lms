@@ -1,75 +1,75 @@
 {include file="clearheader.html"}
 <!--// $Id$ //-->
-<TABLE WIDTH="100%">
-	<TR>
-		<TD WIDTH="99%" VALIGN="TOP">
-			<H1>{$layout.pagetitle}</H1>
-		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
-			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %x"}<BR>
+<table width="100%">
+	<tr>
+		<td width="99%" VALIGN="TOP">
+			<h1>{$layout.pagetitle}</h1>
+		</td>
+		<td width="1%" align="RIGHT" nowrap="nowrap">
+			LMS {$layout.lmsv} @ {$layout.hostname}<br />
+			{$smarty.now|date_format:"%A, %x"}<br />
 			{t a=$layout.logname}Prepared by: $a{/t}
-		</TD>
-	</TR>
-</TABLE>
-<TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
-	<TR>
-		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="1%">
-			<B>{trans("No.")}</B>
-		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="95%">
+		</td>
+	</tr>
+</table>
+<table width="640" cellpadding="3" BORDER="1" align="CENTER">
+	<tr>
+		<td class="HEAD" align="CENTER" width="1%">
+			<strong>{trans("No.")}</strong>
+		</td>
+		<td class="HEAD" align="CENTER" width="95%">
 			{trans("Customer")}
-		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="1%" NOWRAP>
+		</td>
+		<td class="HEAD" align="CENTER" width="1%" nowrap="nowrap">
 			{trans("Total")}
-		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="1%" NOWRAP>
+		</td>
+		<td class="HEAD" align="CENTER" width="1%" nowrap="nowrap">
 			{trans("customer's side")}
-		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="1%" NOWRAP>
+		</td>
+		<td class="HEAD" align="CENTER" width="1%" nowrap="nowrap">
 			{trans("company's side")}
-		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="1%">
+		</td>
+		<td class="HEAD" align="CENTER" width="1%">
 			{trans("unknown/other<!plural>")}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{cycle values="white,grey" print=false}
 	{section name=list loop=$list}
-	<TR class="{cycle}">
-		<TD ALIGN="CENTER">
+	<tr class="{cycle}">
+		<td align="CENTER">
 			{counter}
-		</TD>
-		<TD>
-			<B>{$list[list].customername|truncate:"50":"...":true} ({$list[list].customerid|string_format:"%04d"})</B>
-		</TD>
-		<TD ALIGN="RIGHT">
+		</td>
+		<td>
+			<strong>{$list[list].customername|truncate:"50":"...":true} ({$list[list].customerid|string_format:"%04d"})</strong>
+		</td>
+		<td align="RIGHT">
 			{$list[list].total}
-		</TD>
-		<TD ALIGN="RIGHT">
+		</td>
+		<td align="RIGHT">
 			{$list[list].customer}
-		</TD>
-		<TD ALIGN="RIGHT">
+		</td>
+		<td align="RIGHT">
 			{$list[list].company}
-		</TD>
-		<TD ALIGN="RIGHT">
+		</td>
+		<td align="RIGHT">
 			{$list[list].other}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{sectionelse}
-	<TR>
-	        <TD ALIGN="center" WIDTH="100%" COLSPAN="6">
+	<tr>
+	        <td align="center" width="100%" colspan="6">
 			<P>&nbsp;</P>
-			<P><B>{trans("No such requests in database.")}</B></P>
+			<P><strong>{trans("No such requests in database.")}</strong></P>
 			<P>&nbsp;</P>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/section}
-	<TR class="grey">
-		<TD COLSPAN="2" ALIGN="RIGHT"><B>{trans("Total:")}</B></TD>
-		<TD ALIGN="RIGHT"><B>{sum array=$list column="total"}</B></TD>
-		<TD ALIGN="RIGHT"><B>{sum array=$list column="customer"}</B></TD>
-		<TD ALIGN="RIGHT"><B>{sum array=$list column="company"}</B></TD>
-		<TD ALIGN="RIGHT"><B>{sum array=$list column="other"}</B></TD>
-	</TR>
-</TABLE>
+	<tr class="grey">
+		<td colspan="2" align="RIGHT"><strong>{trans("Total:")}</strong></td>
+		<td align="RIGHT"><strong>{sum array=$list column="total"}</strong></td>
+		<td align="RIGHT"><strong>{sum array=$list column="customer"}</strong></td>
+		<td align="RIGHT"><strong>{sum array=$list column="company"}</strong></td>
+		<td align="RIGHT"><strong>{sum array=$list column="other"}</strong></td>
+	</tr>
+</table>
 {include file="clearfooter.html"}

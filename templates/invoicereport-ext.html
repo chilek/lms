@@ -5,218 +5,218 @@
 {if $report_type == 'pdf'}
 {if $item > 1}<page>{/if}
 {else}
-<DIV{if $item > 1} style="page-break-before: always; border-style: none;"{/if}>
+<div{if $item > 1} style="page-break-before: always; border-style: none;"{/if}>
 {/if}
-<TABLE WIDTH="100%" CELLPADDING="3" ALIGN="CENTER">
-	<TR>
-		<TD WIDTH="800" ALIGN="LEFT">
-			<font class="hdf"><B>{$layout.pagetitle}</B></font><font class="sdr">{if $pagescount} ({t a=$item b=$pagescount}Page $a from $b{/t}){/if}</font>
-		</TD>
-		<TD WIDTH="200" ALIGN="RIGHT" NOWRAP>
-			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %x"}<BR>
+<table width="100%" cellpadding="3" align="CENTER">
+	<tr>
+		<td width="800" align="LEFT">
+			<font class="hdf"><strong>{$layout.pagetitle}</strong></font><font class="sdr">{if $pagescount} ({t a=$item b=$pagescount}Page $a from $b{/t}){/if}</font>
+		</td>
+		<td width="200" align="RIGHT" nowrap="nowrap">
+			LMS {$layout.lmsv} @ {$layout.hostname}<br />
+			{$smarty.now|date_format:"%A, %x"}<br />
 			{t a=$layout.logname}Created by: $a{/t}
-		</TD>
-	</TR>
-</TABLE>
-<BR>
-<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
-	<TR>
-		<TD WIDTH="25" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+	</tr>
+</table>
+<br />
+<table width="100%" cellpadding="3" BORDER="1" align="CENTER">
+	<tr>
+		<td width="25" class="HEAD" align="CENTER">
 			{trans("No.")}
-		</TD>
-		<TD WIDTH="100" CLASS="HEAD" ALIGN="CENTER">
-			{trans("Invoice No.")}<BR>
+		</td>
+		<td width="100" class="HEAD" align="CENTER">
+			{trans("Invoice No.")}<br />
 			{trans("Draw-up date")}
-		</TD>
-		<TD WIDTH="100" CLASS="HEAD" ALIGN="CENTER">
-			{trans("Sale date")}<BR>
+		</td>
+		<td width="100" class="HEAD" align="CENTER">
+			{trans("Sale date")}<br />
 			{trans("Deadline")}
-		</TD>
-		<TD WIDTH="520" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="520" class="HEAD" align="CENTER">
 			{trans("Contractor")}
-		</TD>
+		</td>
 		{foreach item=tax from=$taxes}
-		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
+		<td width="50" class="HEAD" align="CENTER">
 			{trans("Net value")}
-		</TD>
+		</td>
 		{if $tax.value}
-		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
+		<td width="50" class="HEAD" align="CENTER">
 			{trans("Tax value")} {$tax.label}
-		</TD>
+		</td>
 		{/if}
 		{/foreach}
-		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
+		<td width="50" class="HEAD" align="CENTER">
 			{trans("Gross value")}
-		</TD>
-		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="50" class="HEAD" align="CENTER">
 			{trans("Total Tax")}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{cycle values="grey,white" print=false}
 	{math assign=start equation="(x-1)*y" x=$item y=$rows}
 	{section name=invoicelist loop=$invoicelist start=$start max=$rows}
-	<TR class="{cycle}">
-		<TD ALIGN="CENTER">
+	<tr class="{cycle}">
+		<td align="CENTER">
 			{counter}.
-		</TD>
-		<TD ALIGN="RIGHT">
-			<B>{$invoicelist[invoicelist].number}</B><BR>
+		</td>
+		<td align="RIGHT">
+			<strong>{$invoicelist[invoicelist].number}</strong><br />
 			{$invoicelist[invoicelist].cdate|date_format:"%d.%m.%Y"}
-		</TD>
-		<TD ALIGN="RIGHT">
-			{if $invoicelist[invoicelist].sdate}{$invoicelist[invoicelist].sdate|date_format:"%d.%m.%Y"}{else}{$invoicelist[invoicelist].cdate|date_format:"%d.%m.%Y"}{/if}<BR>
+		</td>
+		<td align="RIGHT">
+			{if $invoicelist[invoicelist].sdate}{$invoicelist[invoicelist].sdate|date_format:"%d.%m.%Y"}{else}{$invoicelist[invoicelist].cdate|date_format:"%d.%m.%Y"}{/if}<br />
 			{$invoicelist[invoicelist].pdate|date_format:"%d.%m.%Y"}
-		</TD>
-		<TD>
-			<B>{$invoicelist[invoicelist].custname}</B> ({$invoicelist[invoicelist].customerid|string_format:"%04d"})<BR>
+		</td>
+		<td>
+			<strong>{$invoicelist[invoicelist].custname}</strong> ({$invoicelist[invoicelist].customerid|string_format:"%04d"})<br />
 			{$invoicelist[invoicelist].custaddress}
-		</TD>
+		</td>
 		{foreach item=tax from=$taxes}
 		{assign var=taxid value=$tax.id}
-		<TD ALIGN="RIGHT">
+		<td align="RIGHT">
 			{$invoicelist[invoicelist].$taxid.val|string_format:"%01.2f"}
-		</TD>
+		</td>
 		{if $tax.value}
-		<TD ALIGN="RIGHT">
+		<td align="RIGHT">
 			{$invoicelist[invoicelist].$taxid.tax|string_format:"%01.2f"}
-		</TD>
+		</td>
 		{/if}
 		{/foreach}
-		<TD ALIGN="RIGHT">
+		<td align="RIGHT">
 			{$invoicelist[invoicelist].brutto|string_format:"%01.2f"}
-		</TD>
-		<TD ALIGN="RIGHT">
+		</td>
+		<td align="RIGHT">
 			{$invoicelist[invoicelist].tax|string_format:"%01.2f"}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/section}
-	<TR>
-		<TD COLSPAN="4" ALIGN="RIGHT" class="HEADGREY">
-			<B>{trans("Page total:")}</B>
-		</TD>
+	<tr>
+		<td colspan="4" align="RIGHT" class="HEADGREY">
+			<strong>{trans("Page total:")}</strong>
+		</td>
 		{foreach item=tax from=$taxes}
 		{assign var=taxid value=$tax.id}
-		<TD ALIGN="RIGHT" class="HEADGREY">
-			<B>{$totals.$item.val.$taxid|string_format:"%01.2f"}</B>
-		</TD>
+		<td align="RIGHT" class="HEADGREY">
+			<strong>{$totals.$item.val.$taxid|string_format:"%01.2f"}</strong>
+		</td>
 		{if $tax.value}
-		<TD ALIGN="RIGHT" class="HEADGREY">
-			<B>{$totals.$item.tax.$taxid|string_format:"%01.2f"}</B>
-		</TD>
+		<td align="RIGHT" class="HEADGREY">
+			<strong>{$totals.$item.tax.$taxid|string_format:"%01.2f"}</strong>
+		</td>
 		{/if}
 		{/foreach}
-		<TD ALIGN="RIGHT" class="HEADGREY">
-			<B>{$totals.$item.total|string_format:"%01.2f"}</B>
-		</TD>
-		<TD ALIGN="RIGHT" class="HEADGREY">
-			<B>{$totals.$item.sumtax|string_format:"%01.2f"}</B>
-		</TD>
-	</TR>
-	<TR>
-		<TD COLSPAN="4" ALIGN="RIGHT" class="HEADGREY">
-			<B>{trans("Transfered from previous page:")}</B>
-		</TD>
+		<td align="RIGHT" class="HEADGREY">
+			<strong>{$totals.$item.total|string_format:"%01.2f"}</strong>
+		</td>
+		<td align="RIGHT" class="HEADGREY">
+			<strong>{$totals.$item.sumtax|string_format:"%01.2f"}</strong>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="4" align="RIGHT" class="HEADGREY">
+			<strong>{trans("Transfered from previous page:")}</strong>
+		</td>
 		{foreach item=tax from=$taxes}
 		{assign var=taxid value=$tax.id}
-		<TD ALIGN="RIGHT" class="HEADGREY">
-			<B>{$totals.$previtem.allval.$taxid|string_format:"%01.2f"}</B>
-		</TD>
+		<td align="RIGHT" class="HEADGREY">
+			<strong>{$totals.$previtem.allval.$taxid|string_format:"%01.2f"}</strong>
+		</td>
 		{if $tax.value}
-		<TD ALIGN="RIGHT" class="HEADGREY">
-			<B>{$totals.$previtem.alltax.$taxid|string_format:"%01.2f"}</B>
-		</TD>
+		<td align="RIGHT" class="HEADGREY">
+			<strong>{$totals.$previtem.alltax.$taxid|string_format:"%01.2f"}</strong>
+		</td>
 		{/if}
 		{/foreach}
-		<TD ALIGN="RIGHT" class="HEADGREY">
-			<B>{$totals.$previtem.alltotal|string_format:"%01.2f"}</B>
-		</TD>
-		<TD ALIGN="RIGHT" class="HEADGREY">
-			<B>{$totals.$previtem.allsumtax|string_format:"%01.2f"}</B>
-		</TD>
-	</TR>
-	<TR>
-		<TD COLSPAN="4" ALIGN="RIGHT" class="HEADGREY">
-			<B>{trans("Total from start of period:")}</B>
-		</TD>
+		<td align="RIGHT" class="HEADGREY">
+			<strong>{$totals.$previtem.alltotal|string_format:"%01.2f"}</strong>
+		</td>
+		<td align="RIGHT" class="HEADGREY">
+			<strong>{$totals.$previtem.allsumtax|string_format:"%01.2f"}</strong>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="4" align="RIGHT" class="HEADGREY">
+			<strong>{trans("Total from start of period:")}</strong>
+		</td>
 		{foreach item=tax from=$taxes}
 		{assign var=taxid value=$tax.id}
-		<TD ALIGN="RIGHT" class="HEADGREY">
-			<B>{$totals.$item.allval.$taxid|string_format:"%01.2f"}</B>
-		</TD>
+		<td align="RIGHT" class="HEADGREY">
+			<strong>{$totals.$item.allval.$taxid|string_format:"%01.2f"}</strong>
+		</td>
 		{if $tax.value}
-		<TD ALIGN="RIGHT" class="HEADGREY">
-			<B>{$totals.$item.alltax.$taxid|string_format:"%01.2f"}</B>
-		</TD>
+		<td align="RIGHT" class="HEADGREY">
+			<strong>{$totals.$item.alltax.$taxid|string_format:"%01.2f"}</strong>
+		</td>
 		{/if}
 		{/foreach}
-		<TD ALIGN="RIGHT" class="HEADGREY">
-			<B>{$totals.$item.alltotal|string_format:"%01.2f"}</B>
-		</TD>
-		<TD ALIGN="RIGHT" class="HEADGREY">
-			<B>{$totals.$item.allsumtax|string_format:"%01.2f"}</B>
-		</TD>
-	</TR>
-</TABLE>
+		<td align="RIGHT" class="HEADGREY">
+			<strong>{$totals.$item.alltotal|string_format:"%01.2f"}</strong>
+		</td>
+		<td align="RIGHT" class="HEADGREY">
+			<strong>{$totals.$item.allsumtax|string_format:"%01.2f"}</strong>
+		</td>
+	</tr>
+</table>
 {if $report_type == 'pdf'}
 {if $item > 1}</page>{/if}
 {else}
-</DIV>
+</div>
 {/if}
 {foreachelse}
-<TABLE WIDTH="100%" CELLPADDING="3" ALIGN="CENTER">
-	<TR style="border-style: none;">
-		<TD WIDTH="800" ALIGN="LEFT">
-			<B><font class="sdr">{$layout.pagetitle}</font></B>
-		</TD>
-		<TD WIDTH="200" ALIGN="RIGHT" NOWRAP>
-			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %x"}<BR>
+<table width="100%" cellpadding="3" align="CENTER">
+	<tr style="border-style: none;">
+		<td width="800" align="LEFT">
+			<strong><font class="sdr">{$layout.pagetitle}</font></strong>
+		</td>
+		<td width="200" align="RIGHT" nowrap="nowrap">
+			LMS {$layout.lmsv} @ {$layout.hostname}<br />
+			{$smarty.now|date_format:"%A, %x"}<br />
 			{t a=$layout.logname}Created by: $a{/t}
-		</TD>
-	</TR>
-</TABLE>
-<BR>
-<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
-	<TR>
-		<TD WIDTH="25" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+	</tr>
+</table>
+<br />
+<table width="100%" cellpadding="3" BORDER="1" align="CENTER">
+	<tr>
+		<td width="25" class="HEAD" align="CENTER">
 			{trans("No.")}
-		</TD>
-		<TD WIDTH="125" CLASS="HEAD" ALIGN="CENTER">
-			{trans("Invoice No.")}<BR>
+		</td>
+		<td width="125" class="HEAD" align="CENTER">
+			{trans("Invoice No.")}<br />
 			{trans("Draw-up date")}
-		</TD>
-		<TD WIDTH="125" CLASS="HEAD" ALIGN="CENTER">
-			{trans("Sale date")}<BR>
+		</td>
+		<td width="125" class="HEAD" align="CENTER">
+			{trans("Sale date")}<br />
 			{trans("Deadline")}
-		</TD>
-		<TD WIDTH="520" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="520" class="HEAD" align="CENTER">
 			{trans("Contractor")}
-		</TD>
+		</td>
 		{foreach item=tax from=$taxes}
-		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
+		<td width="50" class="HEAD" align="CENTER">
 			{trans("Net value")}
-		</TD>
+		</td>
 		{if $tax.value}
-		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
+		<td width="50" class="HEAD" align="CENTER">
 			{trans("Tax value")} {$tax.label}
-		</TD>
+		</td>
 		{/if}
 		{/foreach}
-		<TD WIDTH="100" CLASS="HEAD" ALIGN="CENTER">
+		<td width="100" class="HEAD" align="CENTER">
 			{trans("Gross value")}
-		</TD>
-		<TD WIDTH="100" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="100" class="HEAD" align="CENTER">
 			{trans("Total Tax")}
-		</TD>
-	</TR>
-	<TR>
-		<TD ALIGN="center" COLSPAN="{math equation="6+x" x=$taxescount}">
+		</td>
+	</tr>
+	<tr>
+		<td align="center" colspan="{math equation="6+x" x=$taxescount}">
 			<P>&nbsp;</P>
-			<P><B>{trans("No such invoices in selected time period.")}</B></P>
+			<P><strong>{trans("No such invoices in selected time period.")}</strong></P>
 			<P>&nbsp;</P>
-		</TD>
-	</TR>
-</TABLE>
+		</td>
+	</tr>
+</table>
 {/foreach}
 {include file="clearfooter.html"}

@@ -1,7 +1,7 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<SCRIPT type="text/javascript">
+<h1>{$layout.pagetitle}</h1>
+<script type="text/javascript">
 <!--
 	function Delete()
 	{
@@ -15,222 +15,222 @@
 		document.cashimport.submit();
 	}
 //-->
-</SCRIPT>
-<P><FORM NAME="cashimport" ACTION="?m=cashimport" METHOD="post">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD CLASS="fleftu" WIDTH="1%">
+</script>
+<P><form name="cashimport" action="?m=cashimport" method="post">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td class="fleftu" width="1%">
 			{trans("ID:")}
-		</TD>
-		<TD WIDTH="1%" CLASS="fbt">
+		</td>
+		<td width="1%" class="fbt">
 			{trans("Date:")}
-		</TD>
-		<TD WIDTH="1%" CLASS="fbt">
-			<B>{trans("Value:")}</B>
-		</TD>
-		<TD WIDTH="40%" CLASS="fbt">
+		</td>
+		<td width="1%" class="fbt">
+			<strong>{trans("Value:")}</strong>
+		</td>
+		<td width="40%" class="fbt">
 			{trans("Customer:")}
-		</TD>
-		<TD WIDTH="55%" CLASS="fbt">
+		</td>
+		<td width="55%" class="fbt">
 			{trans("Description:")}
-		</TD>
-		<TD WIDTH="1%" CLASS="fbt" nowrap>
+		</td>
+		<td width="1%" class="fbt" nowrap="nowrap">
 			{trans("Link to:")}
-		</TD>
-		<TD WIDTH="1%" CLASS="frightu" ALIGN="RIGHT" nowrap>
-			<B>{trans("Total:")} {$listdata.total}</B>&nbsp;
-		</TD>
-	</TR>
+		</td>
+		<td width="1%" class="frightu" align="RIGHT" nowrap="nowrap">
+			<strong>{trans("Total:")} {$listdata.total}</strong>&nbsp;
+		</td>
+	</tr>
 	{foreach from=$divisions item=division}{if $division.list}
-	<TR class="DARK">
-		<TD colspan="4" class="fleftu">
-		    <IMG src="img/division.gif" alt=""> <B>{$division.name}</B>
-		</TD>
-		<TD colspan="3" class="frightu" align="right">
-		    <A href="?m=cashimport&action=csv&division={$division.id}">{trans("Download (CSV)")} <IMG src="img/save.gif" alt="">
-		</TD>
-	</TR>
+	<tr class="DARK">
+		<td colspan="4" class="fleftu">
+		    <img src="img/division.gif" alt=""> <strong>{$division.name}</strong>
+		</td>
+		<td colspan="3" class="frightu" align="right">
+		    <a href="?m=cashimport&action=csv&division={$division.id}">{trans("Download (CSV)")} <img src="img/save.gif" alt="">
+		</td>
+	</tr>
 		{cycle values="light,lucid" print=false}
 		{foreach from=$division.list item=item}
-		<TR class="{cycle}">
-		    <TD CLASS="fleft">
+		<tr class="{cycle}">
+		    <td class="fleft">
 			{$item.id|string_format:"%04d"}
-		    </TD>
-		    <TD NOWRAP>
+		    </td>
+		    <td nowrap="nowrap">
 			{$item.date|date_format:"%Y/%m/%d"}
-		    </TD>
-		    <TD NOWRAP ALIGN="RIGHT">
-			<B>{$item.value|money_format}</B>
-		    </TD>
-		    <TD ALIGN="LEFT">
+		    </td>
+		    <td nowrap="nowrap" align="RIGHT">
+			<strong>{$item.value|money_format}</strong>
+		    </td>
+		    <td align="LEFT">
 			{if $item.customer}{$item.customer}
 			{elseif $item.customerid}
 			    {assign var=cust value=$item.customerid}
 			    {$customerlist.$cust.customername}
 			{/if}
-		    </TD>
-		    <TD ALIGN="LEFT">
+		    </td>
+		    <td align="LEFT">
 			{$item.description}
-		    </TD>
-		    <TD ALIGN="RIGHT" CLASS="fright" COLSPAN="2" NOWRAP>
+		    </td>
+		    <td align="RIGHT" class="fright" colspan="2" nowrap="nowrap">
 			{if !$item.customerid}
-			<SELECT NAME="customer[{$item.id}]" {tip text="Select customer" trigger=$item.id}>
-				<OPTION VALUE="0">{trans("- select customer -")}</OPTION>
+			<select name="customer[{$item.id}]" {tip text="Select customer" trigger=$item.id}>
+				<option value="0">{trans("- select customer -")}</option>
 				{foreach from=$customerlist item=customer}
-				<OPTION VALUE="{$customer.id}" {if $customer.id == $item.customerid}SELECTED{/if}>{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
+				<option value="{$customer.id}" {if $customer.id == $item.customerid}selected="selected"{/if}>{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</option>
 				{/foreach}
-			</SELECT>&nbsp;
+			</select>&nbsp;
 			{else}
-			<INPUT TYPE="hidden" NAME="customer[{$item.id}]" VALUE="{$item.customerid}">
+			<input type="hidden" name="customer[{$item.id}]" value="{$item.customerid}">
 			{/if}
-			<INPUT TYPE="checkbox" NAME="marks[{$item.id}]" VALUE="{$item.id}">
-		</TD>
-	    </TR>
+			<input type="checkbox" name="marks[{$item.id}]" value="{$item.id}">
+		</td>
+	    </tr>
 	    {/foreach}
 	{/if}{/foreach}
 	{if !$listdata.total}
-	<TR>
-		<TD class="fall" ALIGN="center"  COLSPAN="7">
+	<tr>
+		<td class="fall" align="center"  colspan="7">
 			<P>&nbsp;</P>
-			<P><B>{trans("No cash operations to import.")}</B></P>
+			<P><strong>{trans("No cash operations to import.")}</strong></P>
 			<P>&nbsp;</P>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
-	<TR CLASS="dark">
-		<TD CLASS="fleftu" COLSPAN="3" nowrap>
-			<INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('cashimport', this)" VALUE="1"><label for="allbox">{trans("Check All")}</label>
-		</TD>
-		<TD CLASS="fbt" COLSPAN="2" ALIGN="center" nowrap>
-		    <A href="?m=cashimport&action=txt">{trans("Download all (TXT)")} <IMG src="img/save.gif" alt="">
-		</TD>
-		<TD CLASS="frightu" COLSPAN="2" align="right" nowrap>
-			<A HREF="javascript:Delete();">{trans("Delete")} <IMG src="img/delete.gif" ALT=""></A>
-			<A HREF="javascript:Save();">{trans("Save")} <IMG src="img/save.gif" ALT=""></A>
-			<A HREF="javascript:document.cashimport.submit();">{trans("<!do>Import")} <IMG src="img/save.gif" ALT=""></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM></P>
+	<tr class="dark">
+		<td class="fleftu" colspan="3" nowrap="nowrap">
+			<input type="checkbox" name="allbox" id="allbox" onchange="CheckAll('cashimport', this)" value="1"><label for="allbox">{trans("Check All")}</label>
+		</td>
+		<td class="fbt" colspan="2" align="center" nowrap="nowrap">
+		    <a href="?m=cashimport&action=txt">{trans("Download all (TXT)")} <img src="img/save.gif" alt="">
+		</td>
+		<td class="frightu" colspan="2" align="right" nowrap="nowrap">
+			<a href="javascript:Delete();">{trans("Delete")} <img src="img/delete.gif" alt=""></a>
+			<a href="javascript:Save();">{trans("Save")} <img src="img/save.gif" alt=""></a>
+			<a href="javascript:document.cashimport.submit();">{trans("<!do>Import")} <img src="img/save.gif" alt=""></a>
+		</td>
+	</tr>
+</table>
+</form></P>
 {if $error.lines}
-<P><TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
-		<TD class="fall" width="100%" colspan="2">
-			<B>{trans("Errors and Duplicated Entries")}:</B>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="fall" width="100%">
-			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
-                <TR class="dark">
-				    <TD width="1%" class="fleftu"><B>{trans("Line:")}</B></TD>
-				    <TD width="99%" class="frightu"><B>{trans("Content:")}</B></TD>
-				</TR>
+<P><table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td class="fall" width="100%" colspan="2">
+			<strong>{trans("Errors and Duplicated Entries")}:</strong>
+		</td>
+	</tr>
+	<tr>
+		<td class="fall" width="100%">
+			<table cellpadding="5" cellspacing="0" width="100%">
+                <tr class="dark">
+				    <td width="1%" class="fleftu"><strong>{trans("Line:")}</strong></td>
+				    <td width="99%" class="frightu"><strong>{trans("Content:")}</strong></td>
+				</tr>
 				{cycle name=err values="light,lucid" print=false}
 				{foreach from=$error.lines key=key item=item}
-				<TR class="{cycle name=err}">
-				    <TD>{$key}.</TD>
-				    <TD>
+				<tr class="{cycle name=err}">
+				    <td>{$key}.</td>
+				    <td>
 				    {if is_array($item)}
-				    <TABLE width="100%" class="red">
-					{if $item.date}<TR><TD width="1%">{trans("Date:")}</TD><TD width="99%">{$item.date|date_format:"%Y/%m/%d"}</TD></TR>{/if}
-					{if $item.customer}<TR><TD width="1%">{trans("Customer:")}</TD><TD width="99%">
-					    {$item.customer}{if $item.customerid} ({$item.customerid|string_format:"%04d"}){/if}</TD></TR>{/if}
-					{if $item.value}<TR><TD width="1%">{trans("Value:")}</TD><TD width="99%">{$item.value|money_format}</TD></TR>{/if}
-					{if $item.comment}<TR><TD width="1%">{trans("Description:")}</TD><TD width="99%">{$item.comment}</TD></TR>{/if}
-				    </TABLE>
+				    <table width="100%" class="red">
+					{if $item.date}<tr><td width="1%">{trans("Date:")}</td><td width="99%">{$item.date|date_format:"%Y/%m/%d"}</td></tr>{/if}
+					{if $item.customer}<tr><td width="1%">{trans("Customer:")}</td><td width="99%">
+					    {$item.customer}{if $item.customerid} ({$item.customerid|string_format:"%04d"}){/if}</td></tr>{/if}
+					{if $item.value}<tr><td width="1%">{trans("Value:")}</td><td width="99%">{$item.value|money_format}</td></tr>{/if}
+					{if $item.comment}<tr><td width="1%">{trans("Description:")}</td><td width="99%">{$item.comment}</td></tr>{/if}
+				    </table>
 				    {else}
 				    {$item}
 				    {/if}
-				    </TD>
-				</TR>
+				    </td>
+				</tr>
 				{/foreach}
-			</TABLE>
-		</TD>
-	</TR>
-</TABLE></P>
+			</table>
+		</td>
+	</tr>
+</table></P>
 {/if}
-<P><FORM name="parser" enctype="multipart/form-data" method="post" action="?m=cashimportparser">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
-		<TD class="fall" width="100%" colspan="2">
-			<B>{trans("Import from file")}:</B>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="fleft" width="1%" NOWRAP>
-			<IMG src="img/attach.gif" alt="">
-			<B>{trans("Import file:")} </B>
-		</TD>
-		<TD class="fright" width="99%" NOWRAP>
-			<INPUT name="file" type="file" size="70" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="fleft" width="1%" NOWRAP>
-			<IMG src="img/isource.gif" alt="">
-			<B>{trans("Source:")} </B>
-		</TD>
-		<TD class="fright" width="99%" NOWRAP>
-			<SELECT name="source" {tip text="Select import source (optional)" trigger="source"}>
-			<OPTION value="0">{trans("- auto -")}</OPTION> 
+<P><form name="parser" enctype="multipart/form-data" method="post" action="?m=cashimportparser">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td class="fall" width="100%" colspan="2">
+			<strong>{trans("Import from file")}:</strong>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" width="1%" nowrap="nowrap">
+			<img src="img/attach.gif" alt="">
+			<strong>{trans("Import file:")} </strong>
+		</td>
+		<td class="fright" width="99%" nowrap="nowrap">
+			<input name="file" type="file" size="70" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" width="1%" nowrap="nowrap">
+			<img src="img/isource.gif" alt="">
+			<strong>{trans("Source:")} </strong>
+		</td>
+		<td class="fright" width="99%" nowrap="nowrap">
+			<select name="source" {tip text="Select import source (optional)" trigger="source"}>
+			<option value="0">{trans("- auto -")}</option> 
 			{foreach from=$sourcelist item=item}
-			<OPTION value="{$item.id}">{$item.name}</OPTION>
+			<option value="{$item.id}">{$item.name}</option>
 			{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="fbottomu" colspan="2" width="100%" align="right" nowrap>
-			<A href="javascript: document.parser.submit();">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM></P>
+			</select>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fbottomu" colspan="2" width="100%" align="right" nowrap="nowrap">
+			<a href="javascript: document.parser.submit();">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+		</td>
+	</tr>
+</table>
+</form></P>
 <P>
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
-		<TD class="fall" width="100%">
-		    <IMG src="img/attach.gif" alt="">
-			<B>{trans("Packages:")}</B> ({t a=10}last $a packages{/t})
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%" class="fall">
-			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
-				<TR class="dark">
-					<TD WIDTH="1%" NOWRAP class="fleftu"><B>{trans("Date:")}</B></TD>
-					<TD WIDTH="96%" NOWRAP class="fbt">{trans("Filename:")}</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt">{trans("User:")}</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">{trans("Records:")}</TD>
-					<TD WIDTH="1%" class="frightu">&nbsp;</TD>
-				</TR>
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td class="fall" width="100%">
+		    <img src="img/attach.gif" alt="">
+			<strong>{trans("Packages:")}</strong> ({t a=10}last $a packages{/t})
+		</td>
+	</tr>
+	<tr>
+		<td width="100%" class="fall">
+			<table cellpadding="5" cellspacing="0" width="100%">
+				<tr class="dark">
+					<td width="1%" nowrap="nowrap" class="fleftu"><strong>{trans("Date:")}</strong></td>
+					<td width="96%" nowrap="nowrap" class="fbt">{trans("Filename:")}</td>
+					<td width="1%" nowrap="nowrap" class="fbt">{trans("User:")}</td>
+					<td width="1%" nowrap="nowrap" class="fbt" align="RIGHT">{trans("Records:")}</td>
+					<td width="1%" class="frightu">&nbsp;</td>
+				</tr>
 				{cycle name=files values="light,lucid" print=false}
 				{foreach from=$sourcefiles item=item}
-				<TR class="{cycle name=files}">
-					<TD NOWRAP><B>{$item.idate|date_format:"%Y/%m/%d %H:%M"}</B></TD>
-					<TD NOWRAP>{$item.name}</TD>
-					<TD NOWRAP>{$item.username}</TD>
-					<TD align="right">{$item.count|default:0}</TD>
-					<TD>
-					    <A onclick="return confirmLink(this, '{trans("Are you sure, you want to delete this package and related operations?")}')" href="?m=cashpackagedel&id={$item.id}"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-					</TD>
-				</TR>
+				<tr class="{cycle name=files}">
+					<td nowrap="nowrap"><strong>{$item.idate|date_format:"%Y/%m/%d %H:%M"}</strong></td>
+					<td nowrap="nowrap">{$item.name}</td>
+					<td nowrap="nowrap">{$item.username}</td>
+					<td align="right">{$item.count|default:0}</td>
+					<td>
+					    <a onclick="return confirmLink(this, '{trans("Are you sure, you want to delete this package and related operations?")}')" href="?m=cashpackagedel&id={$item.id}"><img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></a>
+					</td>
+				</tr>
 				{foreachelse}
-				<TR>
-					<TD align="center" WIDTH="100%" colspan="4">
+				<tr>
+					<td align="center" width="100%" colspan="4">
 						<P>&nbsp;</P>
-						<P><B>{trans("There are no packages in database.")}</B></P>
+						<P><strong>{trans("There are no packages in database.")}</strong></P>
 						<P>&nbsp;</P>
-					</TD>
-				</TR>
+					</td>
+				</tr>
 				{/foreach}
-			</TABLE>
-		</TD>
-	</TR>
-</TABLE>
+			</table>
+		</td>
+	</tr>
+</table>
 </P>
 {include file="footer.html"}
 

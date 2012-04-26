@@ -6,169 +6,169 @@
 {if $report_type == 'pdf'}
 {if $item > 1}<page>{/if}
 {else}
-<DIV{if $item > 1} style="page-break-before: always; border-style: none;"{/if}>
+<div{if $item > 1} style="page-break-before: always; border-style: none;"{/if}>
 {/if}
-<TABLE WIDTH="100%" CELLPADDING="3" ALIGN="CENTER">
-	<TR>
-		<TD WIDTH="535" ALIGN="LEFT">
-			<B><font class="hdf">{$layout.pagetitle}</B></font><font class="sdr">{if $pagescount} ({t a=$item b=$pagescount}Page $a from $b{/t}){/if}</font><BR>
-			{if $layout.username} <B>{$layout.username}</B>{/if}
-			{if $layout.registry} <B>{$layout.registry}</B>{/if}
-			{if $layout.group} <B>{$layout.group}</B>{/if}
-		</TD>
-		<TD WIDTH="180" ALIGN="RIGHT" NOWRAP>
-			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %x"}<BR>
+<table width="100%" cellpadding="3" align="CENTER">
+	<tr>
+		<td width="535" align="LEFT">
+			<strong><font class="hdf">{$layout.pagetitle}</strong></font><font class="sdr">{if $pagescount} ({t a=$item b=$pagescount}Page $a from $b{/t}){/if}</font><br />
+			{if $layout.username} <strong>{$layout.username}</strong>{/if}
+			{if $layout.registry} <strong>{$layout.registry}</strong>{/if}
+			{if $layout.group} <strong>{$layout.group}</strong>{/if}
+		</td>
+		<td width="180" align="RIGHT" nowrap="nowrap">
+			LMS {$layout.lmsv} @ {$layout.hostname}<br />
+			{$smarty.now|date_format:"%A, %x"}<br />
 			{t a=$layout.logname}Created by: $a{/t}
-		</TD>
-	</TR>
-</TABLE>
-<BR>
-<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
-	<TR>
-		<TD WIDTH="15" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+	</tr>
+</table>
+<br />
+<table width="100%" cellpadding="3" BORDER="1" align="CENTER">
+	<tr>
+		<td width="15" class="HEAD" align="CENTER">
 			{trans("No.")}
-		</TD>
-		<TD WIDTH="45" CLASS="HEAD" ALIGN="CENTER">
-			{trans("Number")}<BR>
+		</td>
+		<td width="45" class="HEAD" align="CENTER">
+			{trans("Number")}<br />
 			{trans("Date")}
-		</TD>
-		<TD WIDTH="225" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="225" class="HEAD" align="CENTER">
 			{trans("Customer")}
-		</TD>
-		<TD WIDTH="180" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="180" class="HEAD" align="CENTER">
 			{trans("Title")}
-		</TD>
-		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="50" class="HEAD" align="CENTER">
 			{trans("Income")}
-		</TD>
-		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="50" class="HEAD" align="CENTER">
 			{trans("Expense")}
-		</TD>
-		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="50" class="HEAD" align="CENTER">
 			{trans("After")}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{cycle values="white,grey" print=false}
         {section name=receiptlist loop=$receiptlist start=$totals.$item.rowstart max=$totals.$item.rows}
-	<TR class="{cycle}">
-		<TD ALIGN="CENTER">
+	<tr class="{cycle}">
+		<td align="CENTER">
 			{counter}.
-		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
-			{$receiptlist[receiptlist].number}<BR>
+		</td>
+		<td align="RIGHT" nowrap="nowrap">
+			{$receiptlist[receiptlist].number}<br />
 			{$receiptlist[receiptlist].cdate|date_format:"%d.%m.%Y"}
-		</TD>
-		<TD ALIGN="LEFT">
-			{$receiptlist[receiptlist].name} {if $receiptlist[receiptlist].customerid}({$receiptlist[receiptlist].customerid|string_format:"%04d"}){/if}<BR>
+		</td>
+		<td align="LEFT">
+			{$receiptlist[receiptlist].name} {if $receiptlist[receiptlist].customerid}({$receiptlist[receiptlist].customerid|string_format:"%04d"}){/if}<br />
 			{$receiptlist[receiptlist].zip} {$receiptlist[receiptlist].city} {$receiptlist[receiptlist].address}
-		</TD>
-		<TD ALIGN="LEFT">
+		</td>
+		<td align="LEFT">
 			{foreach from=$receiptlist[receiptlist].title item=title}
-				{$title|truncate:"100":"":true}<BR>
+				{$title|truncate:"100":"":true}<br />
 			{/foreach}
-		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
+		</td>
+		<td align="RIGHT" nowrap="nowrap">
 			{if $receiptlist[receiptlist].value > 0}{$receiptlist[receiptlist].value|string_format:"%.2f"}{else}-{/if}
-		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
+		</td>
+		<td align="RIGHT" nowrap="nowrap">
 			{if $receiptlist[receiptlist].value < 0}{($receiptlist[receiptlist].value*-1)|string_format:"%.2f"}{else}-{/if}
-		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
+		</td>
+		<td align="RIGHT" nowrap="nowrap">
 			{$receiptlist[receiptlist].after|string_format:"%.2f"}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/section}
-	<TR>
-		<TD COLSPAN="4" ALIGN="RIGHT">
-			<B>{trans("Page total:")}</B>
-		</TD>
-		<TD ALIGN="RIGHT">
-		        <B>{$totals.$item.income|string_format:"%01.2f"}</B>
-		</TD>
-		<TD ALIGN="RIGHT">
-		        <B>{$totals.$item.expense|string_format:"%01.2f"}</B>
-		</TD>
-		<TD></TD>
-	</TR>
-	<TR>
-		<TD COLSPAN="4" ALIGN="RIGHT">
-			<B>{trans("Transfered from previous page:")}</B>
-		</TD>
-		<TD ALIGN="RIGHT">
-		        <B>{$totals.$previtem.totalincome|string_format:"%01.2f"}</B>
-		</TD>
-		<TD ALIGN="RIGHT">
-		        <B>{$totals.$previtem.totalexpense|string_format:"%01.2f"}</B>
-		</TD>
-		<TD></TD>
-	</TR>
-	<TR>
-		<TD COLSPAN="4" ALIGN="RIGHT">
-			<B>{trans("Total from start of period:")}</B>
-		</TD>
-		<TD ALIGN="RIGHT">
-			<B>{$totals.$item.totalincome|string_format:"%01.2f"}</B>
-		</TD>
-		<TD ALIGN="RIGHT">
-			<B>{$totals.$item.totalexpense|string_format:"%01.2f"}</B>
-		</TD>
-		<TD></TD>
-	</TR>
-</TABLE>
+	<tr>
+		<td colspan="4" align="RIGHT">
+			<strong>{trans("Page total:")}</strong>
+		</td>
+		<td align="RIGHT">
+		        <strong>{$totals.$item.income|string_format:"%01.2f"}</strong>
+		</td>
+		<td align="RIGHT">
+		        <strong>{$totals.$item.expense|string_format:"%01.2f"}</strong>
+		</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td colspan="4" align="RIGHT">
+			<strong>{trans("Transfered from previous page:")}</strong>
+		</td>
+		<td align="RIGHT">
+		        <strong>{$totals.$previtem.totalincome|string_format:"%01.2f"}</strong>
+		</td>
+		<td align="RIGHT">
+		        <strong>{$totals.$previtem.totalexpense|string_format:"%01.2f"}</strong>
+		</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td colspan="4" align="RIGHT">
+			<strong>{trans("Total from start of period:")}</strong>
+		</td>
+		<td align="RIGHT">
+			<strong>{$totals.$item.totalincome|string_format:"%01.2f"}</strong>
+		</td>
+		<td align="RIGHT">
+			<strong>{$totals.$item.totalexpense|string_format:"%01.2f"}</strong>
+		</td>
+		<td></td>
+	</tr>
+</table>
 {if $report_type == 'pdf'}
 {if $item > 1}</page>{/if}
 {else}
-</DIV>
+</div>
 {/if}
 {foreachelse}
-<TABLE WIDTH="100%" CELLPADDING="3" ALIGN="CENTER">
-	<TR style="border-style: none;">
-		<TD WIDTH="535" ALIGN="LEFT">
-			<B><font class="hdf">{$layout.pagetitle}</font></B><BR>
-			{if $layout.username} <B>{$layout.username}</B>{/if}
-			{if $layout.registry} <B>{$layout.registry}</B>{/if}
-		</TD>
-		<TD WIDTH="180" ALIGN="RIGHT" NOWRAP>
-			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %x"}<BR>
+<table width="100%" cellpadding="3" align="CENTER">
+	<tr style="border-style: none;">
+		<td width="535" align="LEFT">
+			<strong><font class="hdf">{$layout.pagetitle}</font></strong><br />
+			{if $layout.username} <strong>{$layout.username}</strong>{/if}
+			{if $layout.registry} <strong>{$layout.registry}</strong>{/if}
+		</td>
+		<td width="180" align="RIGHT" nowrap="nowrap">
+			LMS {$layout.lmsv} @ {$layout.hostname}<br />
+			{$smarty.now|date_format:"%A, %x"}<br />
 			{t a=$layout.logname}Created by: $a{/t}
-		</TD>
-	</TR>
-</TABLE>
-<BR>
-<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
-	<TR>
-		<TD WIDTH="15" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+	</tr>
+</table>
+<br />
+<table width="100%" cellpadding="3" BORDER="1" align="CENTER">
+	<tr>
+		<td width="15" class="HEAD" align="CENTER">
 			{trans("No.")}
-		</TD>
-		<TD WIDTH="45" CLASS="HEAD" ALIGN="CENTER">
-			{trans("Number")}<BR>
+		</td>
+		<td width="45" class="HEAD" align="CENTER">
+			{trans("Number")}<br />
 			{trans("Date")}
-		</TD>
-		<TD WIDTH="225" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="225" class="HEAD" align="CENTER">
 			{trans("Customer")}
-		</TD>
-		<TD WIDTH="180" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="180" class="HEAD" align="CENTER">
 			{trans("Title")}
-		</TD>
-		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="50" class="HEAD" align="CENTER">
 			{trans("Income")}
-		</TD>
-		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="50" class="HEAD" align="CENTER">
 			{trans("Expense")}
-		</TD>
-		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="50" class="HEAD" align="CENTER">
 			{trans("After")}
-		</TD>
-	</TR>
-	<TR>
-		<TD ALIGN="center" COLSPAN="7">
+		</td>
+	</tr>
+	<tr>
+		<td align="center" colspan="7">
 			<P>&nbsp;</P>
-			<P><B>{trans("No such cash receipts in database.")}</B></P>
+			<P><strong>{trans("No such cash receipts in database.")}</strong></P>
 			<P>&nbsp;</P>
-		</TD>
-	</TR>
-</TABLE>
+		</td>
+	</tr>
+</table>
 {/foreach}
 {include file="clearfooter.html"}

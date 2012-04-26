@@ -1,133 +1,133 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<FORM NAME="search" METHOD="POST" ACTION="?m=netdevsearch&search=1">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD CLASS="FALL" COLSPAN="3">
-			<B>{trans("Find devices matching the following search criteria:")}</B>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/search.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("Name:")}</B>
-		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" NAME="search[name]" VALUE="" {tip text="Enter device name or it's fragment"}> 
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/producer.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Manufacturer:")}</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" NAME="search[producer]" VALUE="" {tip text="Enter producer name or it's fragment"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/netdev_model.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Model:")}</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" NAME="search[model]" VALUE="" {tip text="Enter device model or it's fragment"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/serialnumber.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Serial number:")}</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" NAME="search[serialnumber]" VALUE="" {tip text="Enter device serial number or it's fragment"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/port.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Number of ports:")}</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" NAME="search[ports]" VALUE="" {tip text="Enter number of ports"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/home.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Location:")}</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" NAME="search[location]" VALUE="" {tip text="Enter device location or it's fragment"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/desc.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Description:")}</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" NAME="search[description]" VALUE="" {tip text="Enter additional information"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/ip.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("IP address:")}</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" NAME="search[ipaddr]" VALUE="" {tip text="Enter IP address or it's fragment"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/mac.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("MAC address:")}</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" NAME="search[mac]" VALUE="" {tip text="Enter MAC address or it's fragment"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%"></TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Qualification operator:")}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="98%">
-			<INPUT class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} CHECKED{/if}><label for="operator0">{trans("AND")}</label>
-			<INPUT class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} CHECKED{/if}><label for="operator1">{trans("OR")}</label>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
-			<A HREF="javascript:document.search.submit();" ACCESSKEY="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
-			<A HREF="?m=netdevlist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
-		</TD>
-	</TR>	
-</TABLE>
-</FORM>
-<SCRIPT type="text/javascript">
+<h1>{$layout.pagetitle}</h1>
+<form name="search" method="POST" action="?m=netdevsearch&search=1">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td class="FALL" colspan="3">
+			<strong>{trans("Find devices matching the following search criteria:")}</strong>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="FLEFT">
+			<img src="img/search.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Name:")}</strong>
+		<td width="98%" class="FRIGHT">
+			<input type="TEXT" name="search[name]" value="" {tip text="Enter device name or it's fragment"}> 
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="FLEFT">
+			<img src="img/producer.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("Manufacturer:")}</strong>
+		</td>
+		<td width="98%" class="FRIGHT">
+			<input type="TEXT" name="search[producer]" value="" {tip text="Enter producer name or it's fragment"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="FLEFT">
+			<img src="img/netdev_model.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("Model:")}</strong>
+		</td>
+		<td width="98%" class="FRIGHT">
+			<input type="TEXT" name="search[model]" value="" {tip text="Enter device model or it's fragment"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="FLEFT">
+			<img src="img/serialnumber.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("Serial number:")}</strong>
+		</td>
+		<td width="98%" class="FRIGHT">
+			<input type="TEXT" name="search[serialnumber]" value="" {tip text="Enter device serial number or it's fragment"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="FLEFT">
+			<img src="img/port.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("Number of ports:")}</strong>
+		</td>
+		<td width="98%" class="FRIGHT">
+			<input type="TEXT" name="search[ports]" value="" {tip text="Enter number of ports"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="FLEFT">
+			<img src="img/home.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("Location:")}</strong>
+		</td>
+		<td width="98%" class="FRIGHT">
+			<input type="TEXT" name="search[location]" value="" {tip text="Enter device location or it's fragment"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="FLEFT">
+			<img src="img/desc.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("Description:")}</strong>
+		</td>
+		<td width="98%" class="FRIGHT">
+			<input type="TEXT" name="search[description]" value="" {tip text="Enter additional information"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="FLEFT">
+			<img src="img/ip.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("IP address:")}</strong>
+		</td>
+		<td width="98%" class="FRIGHT">
+			<input type="TEXT" name="search[ipaddr]" value="" {tip text="Enter IP address or it's fragment"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="FLEFT">
+			<img src="img/mac.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("MAC address:")}</strong>
+		</td>
+		<td width="98%" class="FRIGHT">
+			<input type="TEXT" name="search[mac]" value="" {tip text="Enter MAC address or it's fragment"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" width="1%"></td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("Qualification operator:")}</strong>
+		</td>
+		<td class="fright" width="98%">
+			<input class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} checked="checked"{/if}><label for="operator0">{trans("AND")}</label>
+			<input class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} checked="checked"{/if}><label for="operator1">{trans("OR")}</label>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="100%" class="FBOTTOMU" colspan="3" align="RIGHT">
+			<a href="javascript:document.search.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+			<a href="?m=netdevlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
+		</td>
+	</tr>	
+</table>
+</form>
+<script type="text/javascript">
 <!--
 document.forms['search'].elements['search[name]'].focus();
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}

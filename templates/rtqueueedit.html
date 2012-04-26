@@ -1,93 +1,93 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<FORM METHOD="POST" NAME="queue" ACTION="?m=rtqueueedit&id={$queue.id}">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
-	    <TD width="1%" class="fleftu">
-		<IMG src="img/queue.gif" ALT="">
-	    </TD>
-	    <TD width="1%" class="fbt"><B>{trans("Name:")}</B></TD>
-	    <TD width="98%" class="frightu">
-		<INPUT TYPE="TEXT" NAME="queue[name]" VALUE="{$queue.name}" {tip text="Enter queue name" trigger="name" bold=1}><B> ({$queue.id|string_format:"%04d"})</B>
-	    </TD>
-	</TR>
-	<TR class="LIGHT">
-	    <TD width="1%" class="fleft">
-		<IMG src="img/mail.gif" ALT="">
-	    </TD>
-	    <TD width="1%"><B>{trans("E-mail:")}</B></TD>
-	    <TD width="98%" class="fright">
-		    <INPUT TYPE="TEXT" SIZE="50" NAME="queue[email]" VALUE="{$queue.email}" {tip text="Enter e-mail address" trigger="email"}>
-	    </TD>
-	</TR>
-	<TR class="LIGHT">
-	    <TD width="1%" class="fleft">
-		<IMG src="img/info1.gif" ALT="">
-	    </TD>
-	    <TD width="1%"><B>{trans("Description:")}</B></TD>
-	    <TD width="98%" class="fright">
-		<TEXTAREA NAME="queue[description]" COLS="50" ROWS="3" {tip text="Enter additional information (optional)"}>{$queue.description}</TEXTAREA>
-	    </TD>
-	</TR>
-	<TR class="LIGHT">
-	    <TD width="1%" class="fleft">
-		<IMG src="img/users.gif" ALT="">
-	    </TD>
-	    <TD width="1%"><B>{trans("Privileges:")}</B></TD>
-	    <TD width="98%" class="fright">
-		    <TABLE width="100%" cellpadding="3">
-			<TR class="DARK">
-			    <TD width="96%" class="fleftu"><B>{trans("User")}</B>
-			    </TD>
-			    <TD width="1%" class="fbt" align="center" nowrap><B>{trans("Read")}</B></TD>
-			    <TD width="1%" class="fbt" align="center" nowrap><B>{trans("Write (+R)")}</B></TD>
-			    <TD width="1%" class="fbt" align="center" nowrap><B>{trans("Delete (+R)")}</B></TD>
-			    <TD width="1%" class="frightu" align="center" nowrap><B>{trans("Notice (+R)")}</B></TD>
-			</TR>
+<h1>{$layout.pagetitle}</h1>
+<form method="POST" name="queue" action="?m=rtqueueedit&id={$queue.id}">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+	    <td width="1%" class="fleftu">
+		<img src="img/queue.gif" alt="">
+	    </td>
+	    <td width="1%" class="fbt"><strong>{trans("Name:")}</strong></td>
+	    <td width="98%" class="frightu">
+		<input type="TEXT" name="queue[name]" value="{$queue.name}" {tip text="Enter queue name" trigger="name" bold=1}><strong> ({$queue.id|string_format:"%04d"})</strong>
+	    </td>
+	</tr>
+	<tr class="LIGHT">
+	    <td width="1%" class="fleft">
+		<img src="img/mail.gif" alt="">
+	    </td>
+	    <td width="1%"><strong>{trans("E-mail:")}</strong></td>
+	    <td width="98%" class="fright">
+		    <input type="TEXT" size="50" name="queue[email]" value="{$queue.email}" {tip text="Enter e-mail address" trigger="email"}>
+	    </td>
+	</tr>
+	<tr class="LIGHT">
+	    <td width="1%" class="fleft">
+		<img src="img/info1.gif" alt="">
+	    </td>
+	    <td width="1%"><strong>{trans("Description:")}</strong></td>
+	    <td width="98%" class="fright">
+		<textarea name="queue[description]" cols="50" rows="3" {tip text="Enter additional information (optional)"}>{$queue.description}</textarea>
+	    </td>
+	</tr>
+	<tr class="LIGHT">
+	    <td width="1%" class="fleft">
+		<img src="img/users.gif" alt="">
+	    </td>
+	    <td width="1%"><strong>{trans("Privileges:")}</strong></td>
+	    <td width="98%" class="fright">
+		    <table width="100%" cellpadding="3">
+			<tr class="DARK">
+			    <td width="96%" class="fleftu"><strong>{trans("User")}</strong>
+			    </td>
+			    <td width="1%" class="fbt" align="center" nowrap="nowrap"><strong>{trans("Read")}</strong></td>
+			    <td width="1%" class="fbt" align="center" nowrap="nowrap"><strong>{trans("Write (+R)")}</strong></td>
+			    <td width="1%" class="fbt" align="center" nowrap="nowrap"><strong>{trans("Delete (+R)")}</strong></td>
+			    <td width="1%" class="frightu" align="center" nowrap="nowrap"><strong>{trans("Notice (+R)")}</strong></td>
+			</tr>
 			{cycle values="light,lucid" print=false}
 			{foreach from=$queue.rights item=right}
-			<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-			    <TD width="97%" class="fleft">
-				<A href="?m=userinfo&id={$right.id}">{$right.name}</A>
-				<INPUT type="hidden" name="queue[usernames][{$right.id}]" value="{$right.name}">
-			    </TD>
-			    <TD width="1%" align="center">
-				    <INPUT type="checkbox" name="queue[users][{$right.id}][1]" value="1" {if $right.rights > 0}CHECKED{/if}>
-			    </TD>
-			    <TD width="1%" align="center">
-			    	    <INPUT type="checkbox" name="queue[users][{$right.id}][2]" value="2" {if ($right.rights & 2) == 2}CHECKED{/if}>
-			    </TD>
-			    <TD width="1%" align="center">
-			    	    <INPUT type="checkbox" name="queue[users][{$right.id}][4]" value="4" {if ($right.rights & 4) == 4}CHECKED{/if}>
-			    </TD>
-			    <TD width="1%" align="center" class="fright">
-			    	    <INPUT type="checkbox" name="queue[users][{$right.id}][8]" value="8" {if ($right.rights & 8) == 8}CHECKED{/if}>
-			    </TD>
-			</TR>
+			<tr class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+			    <td width="97%" class="fleft">
+				<a href="?m=userinfo&id={$right.id}">{$right.name}</a>
+				<input type="hidden" name="queue[usernames][{$right.id}]" value="{$right.name}">
+			    </td>
+			    <td width="1%" align="center">
+				    <input type="checkbox" name="queue[users][{$right.id}][1]" value="1" {if $right.rights > 0}CHECKED{/if}>
+			    </td>
+			    <td width="1%" align="center">
+			    	    <input type="checkbox" name="queue[users][{$right.id}][2]" value="2" {if ($right.rights & 2) == 2}CHECKED{/if}>
+			    </td>
+			    <td width="1%" align="center">
+			    	    <input type="checkbox" name="queue[users][{$right.id}][4]" value="4" {if ($right.rights & 4) == 4}CHECKED{/if}>
+			    </td>
+			    <td width="1%" align="center" class="fright">
+			    	    <input type="checkbox" name="queue[users][{$right.id}][8]" value="8" {if ($right.rights & 8) == 8}CHECKED{/if}>
+			    </td>
+			</tr>
 			{/foreach}
-			<TR class="LIGHT">
-			    <TD width="96%" class="ftop"></TD>
-			    <TD width="1%" class="ftop"></TD>
-			    <TD width="1%" class="ftop"></TD>
-			    <TD width="1%" class="ftop"></TD>
-			    <TD width="1%" class="ftop"></TD>
-			</TR>
-		</TABLE>			
-	    </TD>
-	</TR>
-	<TR class="LIGHT">
-	    <TD width="100%" COLSPAN="3" class="FBOTTOMU" ALIGN="RIGHT"> 
-	    	<A HREF="javascript:document.queue.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-		<A HREF="?m=rtqueuedel&id={$queue.id}" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to remove queue \'$a\' and all assigned tickets and messages?{/t}');" accesskey="d">{trans("Delete")}<IMG src="img/delete.gif" alt=""></A>
-		<A HREF="?m=rtqueuelist">{trans("Cancel")}<IMG src="img/cancel.gif" alt=""></A>
-	    </TD>
-	</TR>
-</TABLE></FORM></P>
-<SCRIPT type="text/javascript">
+			<tr class="LIGHT">
+			    <td width="96%" class="ftop"></td>
+			    <td width="1%" class="ftop"></td>
+			    <td width="1%" class="ftop"></td>
+			    <td width="1%" class="ftop"></td>
+			    <td width="1%" class="ftop"></td>
+			</tr>
+		</table>			
+	    </td>
+	</tr>
+	<tr class="LIGHT">
+	    <td width="100%" colspan="3" class="FBOTTOMU" align="RIGHT"> 
+	    	<a href="javascript:document.queue.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+		<a href="?m=rtqueuedel&id={$queue.id}" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to remove queue \'$a\' and all assigned tickets and messages?{/t}');" accesskey="d">{trans("Delete")}<img src="img/delete.gif" alt=""></a>
+		<a href="?m=rtqueuelist">{trans("Cancel")}<img src="img/cancel.gif" alt=""></a>
+	    </td>
+	</tr>
+</table></form></P>
+<script type="text/javascript">
 <!--
 document.forms['queue'].elements['queue[name]'].focus();
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}

@@ -8,160 +8,160 @@
 	}
 //-->
 </script>
-<P><FORM method="POST" name="ticket" action="?m=rtticketedit&id={$ticket.ticketid}">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD width="100%" CLASS="fall">
-			<IMG src="img/ticket.gif" alt="">
-			<B>{t a=$ticket.ticketid|string_format:"%06d"}Ticket No. $a{/t}</B>
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD width="100%" class="flr">
-<TABLE width="100%" cellpadding="0">
-    <TR>
-	<TD width="50%">
-	    <TABLE>
-		<TR>
-		    <TD WIDTH="1%" NOWRAP>
-			<IMG src="img/ticket.gif" alt="">
-			<B>{trans("Subject:")}</B>
-		    </TD>
-		    <TD WIDTH="99%" NOWRAP>
-		        <INPUT type="text" size="50" name="ticket[subject]" value="{$ticket.subject}" {tip text="Enter ticket subject" trigger="subject"}></INPUT>
-		    </TD>
-		</TR>
-		<TR>
-		    <TD WIDTH="1%" NOWRAP>
-		    	<IMG src="img/customer.gif" alt="">
-			<B>{trans("Submitter:")}</B>
-		    </TD>
-		    <TD WIDTH="99%" NOWRAP>
+<P><form method="POST" name="ticket" action="?m=rtticketedit&id={$ticket.ticketid}">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="dark">
+		<td width="100%" class="fall">
+			<img src="img/ticket.gif" alt="">
+			<strong>{t a=$ticket.ticketid|string_format:"%06d"}Ticket No. $a{/t}</strong>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="100%" class="flr">
+<table width="100%" cellpadding="0">
+    <tr>
+	<td width="50%">
+	    <table>
+		<tr>
+		    <td width="1%" nowrap="nowrap">
+			<img src="img/ticket.gif" alt="">
+			<strong>{trans("Subject:")}</strong>
+		    </td>
+		    <td width="99%" nowrap="nowrap">
+		        <input type="text" size="50" name="ticket[subject]" value="{$ticket.subject}" {tip text="Enter ticket subject" trigger="subject"}></INPUT>
+		    </td>
+		</tr>
+		<tr>
+		    <td width="1%" nowrap="nowrap">
+		    	<img src="img/customer.gif" alt="">
+			<strong>{trans("Submitter:")}</strong>
+		    </td>
+		    <td width="99%" nowrap="nowrap">
 			{if !$ticket.customerid}
 				{$ticket.requestor|escape} 
 				{if $ticket.requestoremail}
-				&lt;<A HREF="mailto:{$ticket.requestoremail}">{$ticket.requestoremail}</A>&gt;
+				&lt;<a href="mailto:{$ticket.requestoremail}">{$ticket.requestoremail}</a>&gt;
 				{/if}
-				<BR>
+				<br />
 			{/if}
-			<NOBR>
+			<span class="nobr">
 			{if $customerlist}
-			<SELECT size="1" name="ticket[customerid]" {tip text="You can assign customer to ticket"} onChange="document.forms['ticket'].elements['ticket[custid]'].value=document.forms['ticket'].elements['ticket[customerid]'].value">
-			        <OPTION value="0">{trans("- select customer -")}</OPTION>
+			<select size="1" name="ticket[customerid]" {tip text="You can assign customer to ticket"} onChange="document.forms['ticket'].elements['ticket[custid]'].value=document.forms['ticket'].elements['ticket[customerid]'].value">
+			        <option value="0">{trans("- select customer -")}</option>
 				{foreach from=$customerlist item=c}
-					<OPTION value="{$c.id}"{if $c.id==$ticket.customerid} SELECTED{/if}>{$c.customername|truncate:"45":"..."} ({$c.id|string_format:"%04d"})</OPTION>
+					<option value="{$c.id}"{if $c.id==$ticket.customerid} selected="selected"{/if}>{$c.customername|truncate:"45":"..."} ({$c.id|string_format:"%04d"})</option>
 				{/foreach}
-			</SELECT>
+			</select>
 			{else}
-			{if $ticket.customername}<A href="?m=customerinfo&id={$ticket.customerid}">{$ticket.customername|truncate:"45":"...":true}</A>{/if}
+			{if $ticket.customername}<a href="?m=customerinfo&id={$ticket.customerid}">{$ticket.customername|truncate:"45":"...":true}</a>{/if}
 			{/if}
-			<INPUT TYPE="TEXT" NAME="ticket[custid]" VALUE="{if $ticket.customerid}{$ticket.customerid}{/if}" SIZE="5"{if $customerlist} onChange="reset_customer()" onfocus="reset_customer()"{/if} {tip text="Enter customer ID" trigger="custid"}>
-			<a href="javascript: void(0);" onClick="return customerchoosewin(document.ticket.elements['ticket[custid]']);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
-			</NOBR>
-		    </TD>
-		</TR>
-		<TR>
-		    <TD WIDTH="1%"NOWRAP>
-		    	<IMG src="img/calendar.gif" alt="">
-			<B>{trans("Ticket date:")}</B>
-		    </TD>
-		    <TD WIDTH="99%">
+			<input type="TEXT" name="ticket[custid]" value="{if $ticket.customerid}{$ticket.customerid}{/if}" size="5"{if $customerlist} onChange="reset_customer()" onfocus="reset_customer()"{/if} {tip text="Enter customer ID" trigger="custid"}>
+			<a href="javascript: void(0);" onClick="return customerchoosewin(document.ticket.elements['ticket[custid]']);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</a>
+			</span>
+		    </td>
+		</tr>
+		<tr>
+		    <td width="1%"NOWRAP>
+		    	<img src="img/calendar.gif" alt="">
+			<strong>{trans("Ticket date:")}</strong>
+		    </td>
+		    <td width="99%">
 			{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
-		    </TD>
-		</TR>
-		<TR>
-		    <TD WIDTH="1%"NOWRAP>
-		    	<IMG src="img/time.gif" alt="">
-			<B>{trans("Uptime:")}</B>
-		    </TD>
-		    <TD WIDTH="99%">
+		    </td>
+		</tr>
+		<tr>
+		    <td width="1%"NOWRAP>
+		    	<img src="img/time.gif" alt="">
+			<strong>{trans("Uptime:")}</strong>
+		    </td>
+		    <td width="99%">
 			{$ticket.uptime}
-		    </TD>
-		</TR>
-		    <TD WIDTH="1%" style="vertical-align:top" NOWRAP>
-			<IMG src="img/queue.gif" alt="">
-			<B>{trans("Categories:")}</B>
-		    </TD>
-		    <TD WIDTH="99%" NOWRAP>
+		    </td>
+		</tr>
+		    <td width="1%" style="vertical-align:top" nowrap="nowrap">
+			<img src="img/queue.gif" alt="">
+			<strong>{trans("Categories:")}</strong>
+		    </td>
+		    <td width="99%" nowrap="nowrap">
 			{foreach from=$categories item=category}
-				<INPUT type="checkbox" name="ticket[categories][{$category.id}]" ID="cat{$category.id}" value="1" {if $category.checked > 0}CHECKED{/if}>
+				<input type="checkbox" name="ticket[categories][{$category.id}]" id="cat{$category.id}" value="1" {if $category.checked > 0}CHECKED{/if}>
 				<label for="cat{$category.id}">{$category.name}</label><BR />
 			{/foreach}
-		    </TD>
-		<TR>
-		</TR>
-	    </TABLE>
-	</TD>
-	<TD width="50%" style="vertical-align:top">	
-	    <TABLE>
-		<TR>
-		    <TD WIDTH="1%" NOWRAP>
-			<IMG src="img/users.gif" alt="">
-			<B>{trans("Owner:")}</B>
-		    </TD>
-		    <TD WIDTH="99%">
-			<SELECT size="1" name="ticket[owner]" {tip text="Select user" trigger="owner"}>
+		    </td>
+		<tr>
+		</tr>
+	    </table>
+	</td>
+	<td width="50%" style="vertical-align:top">	
+	    <table>
+		<tr>
+		    <td width="1%" nowrap="nowrap">
+			<img src="img/users.gif" alt="">
+			<strong>{trans("Owner:")}</strong>
+		    </td>
+		    <td width="99%">
+			<select size="1" name="ticket[owner]" {tip text="Select user" trigger="owner"}>
 			{if $ticket.owner==0}
-				<OPTION value="0" SELECTED>- {trans("select user")} -</OPTION>
+				<option value="0" selected="selected">- {trans("select user")} -</option>
 			{/if}
 			{foreach from=$userlist item=item}
-				<OPTION value="{$item.id}" {if $item.id == $ticket.owner}SELECTED{/if}>{$item.name}</OPTION>
+				<option value="{$item.id}" {if $item.id == $ticket.owner}selected="selected"{/if}>{$item.name}</option>
 			{/foreach}
-			</SELECT>
-		    </TD>
-		</TR>
-		<TR>
-		    <TD WIDTH="1%" NOWRAP>
-		    	<IMG src="img/queue.gif" alt="">
-			<B>{trans("Queue:")}</B>
-		    </TD>
-		    <TD WIDTH="99%">
-			<SELECT size="1" name="ticket[queueid]" {tip text="Select queue" trigger="queue"}>
+			</select>
+		    </td>
+		</tr>
+		<tr>
+		    <td width="1%" nowrap="nowrap">
+		    	<img src="img/queue.gif" alt="">
+			<strong>{trans("Queue:")}</strong>
+		    </td>
+		    <td width="99%">
+			<select size="1" name="ticket[queueid]" {tip text="Select queue" trigger="queue"}>
 			{foreach from=$queuelist item=item}
-				<OPTION value="{$item.id}" {if $item.id == $ticket.queueid}SELECTED{/if}>{$item.name}</OPTION>
+				<option value="{$item.id}" {if $item.id == $ticket.queueid}selected="selected"{/if}>{$item.name}</option>
 			{/foreach}
-			</SELECT>
-		    </TD>
-		</TR>
-		<TR>
-		    <TD WIDTH="1%" NOWRAP>
-		    	<IMG src="img/dead.gif" alt="">
-			<B>{trans("Status:")}</B>
-		    </TD>
-		    <TD WIDTH="99%">
-			<SELECT SIZE="1" name="ticket[state]" {tip text="Select status" trigger="state"}>
-				<OPTION value="0" {if $ticket.state == 0}SELECTED{/if}>{trans("new")}</OPTION>
-				<OPTION value="1" {if $ticket.state == 1}SELECTED{/if}>{trans("opened")}</OPTION>
-				<OPTION value="2" {if $ticket.state == 2}SELECTED{/if}>{trans("resolved")}</OPTION>
-				<OPTION value="3" {if $ticket.state == 3}SELECTED{/if}>{trans("dead")}</OPTION>
-			</SELECT>
-		    </TD>
-		</TR>
-		<TR>
-		    <TD WIDTH="1%" NOWRAP>
-		    	<IMG src="img/desc.gif" alt="">
-			<B>{trans("Cause:")}</B>
-		    </TD>
-		    <TD WIDTH="99%">
-			<SELECT SIZE="1" name="ticket[cause]" {tip text="Select request cause" trigger="cause"}>
-				<OPTION value="0" {if !$ticket.cause}SELECTED{/if}>{trans("unknown/other")}</OPTION>
-				<OPTION value="1" {if $ticket.cause == 1}SELECTED{/if}>{trans("customer's side")}</OPTION>
-				<OPTION value="2" {if $ticket.cause == 2}SELECTED{/if}>{trans("company's side")}</OPTION>
-			</SELECT>
-		    </TD>
-		</TR>
-	    </TABLE>
-	</TD>
-    </TR>
-</TABLE>
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fbottomu" ALIGN="RIGHT">
-			<A href="javascript:document.ticket.submit()">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=rtqueueview&id={$ticket.queueid}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM></P>
+			</select>
+		    </td>
+		</tr>
+		<tr>
+		    <td width="1%" nowrap="nowrap">
+		    	<img src="img/dead.gif" alt="">
+			<strong>{trans("Status:")}</strong>
+		    </td>
+		    <td width="99%">
+			<select size="1" name="ticket[state]" {tip text="Select status" trigger="state"}>
+				<option value="0" {if $ticket.state == 0}selected="selected"{/if}>{trans("new")}</option>
+				<option value="1" {if $ticket.state == 1}selected="selected"{/if}>{trans("opened")}</option>
+				<option value="2" {if $ticket.state == 2}selected="selected"{/if}>{trans("resolved")}</option>
+				<option value="3" {if $ticket.state == 3}selected="selected"{/if}>{trans("dead")}</option>
+			</select>
+		    </td>
+		</tr>
+		<tr>
+		    <td width="1%" nowrap="nowrap">
+		    	<img src="img/desc.gif" alt="">
+			<strong>{trans("Cause:")}</strong>
+		    </td>
+		    <td width="99%">
+			<select size="1" name="ticket[cause]" {tip text="Select request cause" trigger="cause"}>
+				<option value="0" {if !$ticket.cause}selected="selected"{/if}>{trans("unknown/other")}</option>
+				<option value="1" {if $ticket.cause == 1}selected="selected"{/if}>{trans("customer's side")}</option>
+				<option value="2" {if $ticket.cause == 2}selected="selected"{/if}>{trans("company's side")}</option>
+			</select>
+		    </td>
+		</tr>
+	    </table>
+	</td>
+    </tr>
+</table>
+		</td>
+	</tr>
+	<tr class="light">
+		<td class="fbottomu" align="RIGHT">
+			<a href="javascript:document.ticket.submit()">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+			<a href="?m=rtqueueview&id={$ticket.queueid}">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
+		</td>
+	</tr>
+</table>
+</form></P>

@@ -1,75 +1,75 @@
 <!--// $Id$ //-->
-<TABLE WIDTH="100%" CELLPADDING="3">
-        <TR CLASS="DARK">
-	        <TD width="99%" class="fleftu hand" align="left" nowrap="nowrap" onClick="showOrHide('deviceips');">
-			<IMG SRC="img/ip.gif" ALT="">
-			<B>{t a=$netdevips|@count}IP addresses ($a):{/t}</B>
-		</TD>
-	        <TD width="1%" class="frightu" align="right">
-			<NOBR><A HREF="?m=netdevedit&action=addip&id={$netdevinfo.id}">{trans("New address")} &raquo;</A></NOBR>
-		</TD>	
-	</TR>
-	<TR id="deviceips" style="display:none;">
-	        <TD WIDTH="100%" class="fall" colspan="2">
-		        <TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
-	<TR class="dark">
-	        <TD WIDTH="96%" class="fleftu"><B>{trans("Name:")}</B></TD>
-		<TD WIDTH="1%" class="fbt" align="right">{trans("ID:")}</TD>
-		<TD WIDTH="1%" class="fbt" align="right">{trans("Address:")}</TD>
-		<TD WIDTH="1%" class="fbt" align="right">{trans("MAC:")}</TD>
-		<TD WIDTH="1%" class="frightu">&nbsp;</TD>
-	</TR>
+<table width="100%" cellpadding="3">
+        <tr class="DARK">
+	        <td width="99%" class="fleftu hand" align="left" nowrap="nowrap" onClick="showOrHide('deviceips');">
+			<img src="img/ip.gif" alt="">
+			<strong>{t a=$netdevips|@count}IP addresses ($a):{/t}</strong>
+		</td>
+	        <td width="1%" class="frightu" align="right">
+			<span class="nobr"><a href="?m=netdevedit&action=addip&id={$netdevinfo.id}">{trans("New address")} &raquo;</a></span>
+		</td>	
+	</tr>
+	<tr id="deviceips" style="display:none;">
+	        <td width="100%" class="fall" colspan="2">
+		        <table cellpadding="5" cellspacing="0" width="100%">
+	<tr class="dark">
+	        <td width="96%" class="fleftu"><strong>{trans("Name:")}</strong></td>
+		<td width="1%" class="fbt" align="right">{trans("ID:")}</td>
+		<td width="1%" class="fbt" align="right">{trans("Address:")}</td>
+		<td width="1%" class="fbt" align="right">{trans("MAC:")}</td>
+		<td width="1%" class="frightu">&nbsp;</td>
+	</tr>
 	{if $netdevips}
 	{cycle values="light,lucid" print=false}
 	{section name=list loop=$netdevips}
-	<TR class="{cycle}{if ! $netdevips[list].access} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD WIDTH="96%" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
-			<B>{$netdevips[list].name}</B>
-			{if $netdevips[list].location}<BR>
-			<NOBR>{$netdevips[list].info|truncate:50:"...":true}</NOBR>
+	<tr class="{cycle}{if ! $netdevips[list].access} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<td width="96%" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
+			<strong>{$netdevips[list].name}</strong>
+			{if $netdevips[list].location}<br />
+			<span class="nobr">{$netdevips[list].info|truncate:50:"...":true}</span>
 			{/if}
-		</TD>
-		<TD WIDTH="1%" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
+		</td>
+		<td width="1%" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
 			({$netdevips[list].id|string_format:"%04d"})
-		</TD>
-		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';" NOWRAP>
-			{$netdevips[list].ip}{if $netdevips[list].ip_pub!="0.0.0.0"} ({$netdevips[list].ip_pub}){/if}<BR>
-		</TD>
-		<TD WIDTH="1%" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
-			{$netdevips[list].mac|replace:",":"<BR>"}
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<A href="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset&ip={$netdevips[list].id}"><IMG src="img/{if ! $netdevips[list].access}no{/if}access.gif" ALT="" {if ! $netdevips[list].access}{tip text="Connect"}{else}{tip text="Disconnect"}{/if}></A>
-			<A HREF="?m=netdevedit&action=ipdel&id={$netdevinfo.id}&ip={$netdevips[list].id}" onClick="return confirmLink(this, '{t a=$netdevips[list].name}Are you sure, you want to delete address \'$a\' from database?{/t}')"><IMG SRC="img/delete.gif" ALT="" {tip text="Delete"}></A>
-			<A HREF="?m=netdevedit&action=editip&id={$netdevinfo.id}&ip={$netdevips[list].id}"><IMG SRC="img/edit.gif" ALT="" {tip text="Edit"}></A>
-			<A HREF="?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}"><IMG SRC="img/info.gif" ALT="" {tip text="Info"}></A>
-		</TD>
-	</TR>
+		</td>
+		<td width="1%" align="right" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';" nowrap="nowrap">
+			{$netdevips[list].ip}{if $netdevips[list].ip_pub!="0.0.0.0"} ({$netdevips[list].ip_pub}){/if}<br />
+		</td>
+		<td width="1%" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
+			{$netdevips[list].mac|replace:",":"<br />"}
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<a href="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset&ip={$netdevips[list].id}"><img src="img/{if ! $netdevips[list].access}no{/if}access.gif" alt="" {if ! $netdevips[list].access}{tip text="Connect"}{else}{tip text="Disconnect"}{/if}></a>
+			<a href="?m=netdevedit&action=ipdel&id={$netdevinfo.id}&ip={$netdevips[list].id}" onClick="return confirmLink(this, '{t a=$netdevips[list].name}Are you sure, you want to delete address \'$a\' from database?{/t}')"><img src="img/delete.gif" alt="" {tip text="Delete"}></a>
+			<a href="?m=netdevedit&action=editip&id={$netdevinfo.id}&ip={$netdevips[list].id}"><img src="img/edit.gif" alt="" {tip text="Edit"}></a>
+			<a href="?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}"><img src="img/info.gif" alt="" {tip text="Info"}></a>
+		</td>
+	</tr>
 	{/section}
 	{else}
-        <TR>
-    		<TD colspan="5" align="center">
+        <tr>
+    		<td colspan="5" align="center">
 			<p>&nbsp;</p>
-			<p><B>{trans("No IP addresses on device.")}</b></p>
+			<p><strong>{trans("No IP addresses on device.")}</strong></p>
 			<p>&nbsp;</p>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" COLSPAN="5" CLASS="ftop">
-			<IMG SRC="img/access.gif">
-			<A HREF="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset&access=1">{trans("Connect")}</A>/<A HREF="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset">{trans("Disconnect")}</A>
-		</TD>
-	</TR>
-</TABLE>
-		</TD>
-	</TR>
-</TABLE>
-<SCRIPT type="text/javascript">
+	<tr class="LIGHT">
+		<td width="100%" colspan="5" class="ftop">
+			<img src="img/access.gif">
+			<a href="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset&access=1">{trans("Connect")}</a>/<a href="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset">{trans("Disconnect")}</a>
+		</td>
+	</tr>
+</table>
+		</td>
+	</tr>
+</table>
+<script type="text/javascript">
 <!--
 if (getCookie('deviceips') == '1')
 {
 	document.getElementById('deviceips').style.display = '';
 }
 //-->
-</SCRIPT>
+</script>

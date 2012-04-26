@@ -1,94 +1,94 @@
 <!--// $Id$ //-->
-<FORM NAME="editvoipaccount" METHOD="POST" ACTION="?m=voipaccountedit&id={$voipaccountinfo.id}">
-<INPUT type="submit" class="hiddenbtn">
-<INPUT TYPE="hidden" NAME="voipaccountedit[id]" VALUE="{$voipaccountinfo.id}">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD WIDTH="1%" CLASS="FLEFTU">
-			<IMG SRC="img/voip.gif" ALT="{trans("Login:")}">
-		</TD>
-		<TD WIDTH="1%" CLASS="FBT">
-			<B>{trans("Login:")}</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHTU">
-			<INPUT TYPE="TEXT" NAME="voipaccountedit[login]" VALUE="{$voipaccountinfo.login}" MAXLENGTH="32" size="30" {tip text="Enter voip account login" trigger="login" bold=1}>
-			<B>({$voipaccountinfo.id|string_format:"%04d"})</B>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/passwd.gif" ALT="{trans("Password:")}">
-		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("Password:")}</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" NAME="voipaccountedit[passwd]" VALUE="{$voipaccountinfo.passwd}" {tip text="Enter password" trigger="passwd"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/phone.gif" ALT="{trans("Phone number:")}">
-		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("Phone number:")}</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" NAME="voipaccountedit[phone]" VALUE="{$voipaccountinfo.phone}" {tip text="Enter phone number" trigger="phone"}>
-		</TD>
-	</TR>
-        <TR CLASS="LIGHT">
-                <TD WIDTH="1%" CLASS="FLEFT">
-                        <IMG SRC="img/{if ! $voipaccountinfo.access}no{/if}access.gif" ALT="">
-                </TD>
-		<TD WIDTH="1%">
-			<B>{trans("Status:")}</B>
-		</TD>
-                <TD WIDTH="99%" CLASS="FRIGHT">
-                        <SELECT SIZE="1" NAME="voipaccountedit[access]" {tip text="Select node status" trigger="access"}>
-                                <OPTION VALUE="1"{if $voipaccountinfo.access} SELECTED{/if}>{trans("connected<!singular>")}</OPTION>
-                                <OPTION VALUE="0"{if ! $voipaccountinfo.access} SELECTED{/if}>{trans("disconnected<!singular>")}</OPTION>
-                        </SELECT>
-                </TD>
-        </TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/customer.gif" ALT="{trans("Customer:")}">
-		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("Customer:")}</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
-			<SELECT SIZE="1" NAME="voipaccountedit[ownerid]" {tip text="Assign voip account to customer"} style="max-width:250px;">
+<form name="editvoipaccount" method="POST" action="?m=voipaccountedit&id={$voipaccountinfo.id}">
+<input type="submit" class="hiddenbtn">
+<input type="hidden" name="voipaccountedit[id]" value="{$voipaccountinfo.id}">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td width="1%" class="FLEFTU">
+			<img src="img/voip.gif" alt="{trans("Login:")}">
+		</td>
+		<td width="1%" class="FBT">
+			<strong>{trans("Login:")}</strong>
+		</td>
+		<td width="98%" class="FRIGHTU">
+			<input type="TEXT" name="voipaccountedit[login]" value="{$voipaccountinfo.login}" maxlength="32" size="30" {tip text="Enter voip account login" trigger="login" bold=1}>
+			<strong>({$voipaccountinfo.id|string_format:"%04d"})</strong>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="FLEFT">
+			<img src="img/passwd.gif" alt="{trans("Password:")}">
+		</td>
+		<td width="1%">
+			<strong>{trans("Password:")}</strong>
+		</td>
+		<td width="98%" class="FRIGHT">
+			<input type="TEXT" name="voipaccountedit[passwd]" value="{$voipaccountinfo.passwd}" {tip text="Enter password" trigger="passwd"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="FLEFT">
+			<img src="img/phone.gif" alt="{trans("Phone number:")}">
+		</td>
+		<td width="1%">
+			<strong>{trans("Phone number:")}</strong>
+		</td>
+		<td width="98%" class="FRIGHT">
+			<input type="TEXT" name="voipaccountedit[phone]" value="{$voipaccountinfo.phone}" {tip text="Enter phone number" trigger="phone"}>
+		</td>
+	</tr>
+        <tr class="LIGHT">
+                <td width="1%" class="FLEFT">
+                        <img src="img/{if ! $voipaccountinfo.access}no{/if}access.gif" alt="">
+                </td>
+		<td width="1%">
+			<strong>{trans("Status:")}</strong>
+		</td>
+                <td width="99%" class="FRIGHT">
+                        <select size="1" name="voipaccountedit[access]" {tip text="Select node status" trigger="access"}>
+                                <option value="1"{if $voipaccountinfo.access} selected="selected"{/if}>{trans("connected<!singular>")}</option>
+                                <option value="0"{if ! $voipaccountinfo.access} selected="selected"{/if}>{trans("disconnected<!singular>")}</option>
+                        </select>
+                </td>
+        </tr>
+	<tr class="LIGHT">
+		<td width="1%" class="FLEFT">
+			<img src="img/customer.gif" alt="{trans("Customer:")}">
+		</td>
+		<td width="1%">
+			<strong>{trans("Customer:")}</strong>
+		</td>
+		<td width="98%" class="FRIGHT">
+			<select size="1" name="voipaccountedit[ownerid]" {tip text="Assign voip account to customer"} style="max-width:250px;">
 				{foreach from=$customers item=c}
-				<OPTION VALUE="{$c.id}"{if $voipaccountinfo.ownerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
+				<option value="{$c.id}"{if $voipaccountinfo.ownerid eq $c.id} selected="selected"{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</option>
 				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/users.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("Created:")}<BR>
-			{trans("Modified:")}</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
-			{$voipaccountinfo.createdby}, {$voipaccountinfo.creationdateh}<BR>
+			</select>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="FLEFT">
+			<img src="img/users.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Created:")}<br />
+			{trans("Modified:")}</strong>
+		</td>
+		<td width="98%" class="FRIGHT">
+			{$voipaccountinfo.createdby}, {$voipaccountinfo.creationdateh}<br />
 			{if $voipaccountinfo.moddate}{$voipaccountinfo.modifiedby}, {$voipaccountinfo.moddateh}{else}-{/if}
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
-			<A HREF="javascript:document.editvoipaccount.submit();" ACCESSKEY="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
-			<A HREF="?m=voipaccountinfo&id={$voipaccountinfo.id}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
-		</TD>
-	</TR>	
-</TABLE>
-</FORM>
-<SCRIPT type="text/javascript">
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="100%" class="FBOTTOMU" colspan="3" align="RIGHT">
+			<a href="javascript:document.editvoipaccount.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+			<a href="?m=voipaccountinfo&id={$voipaccountinfo.id}">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
+		</td>
+	</tr>	
+</table>
+</form>
+<script type="text/javascript">
 <!--
 	document.forms['editvoipaccount'].elements['voipaccountedit[login]'].focus();
 //-->
-</SCRIPT>
+</script>

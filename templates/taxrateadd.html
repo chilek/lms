@@ -1,74 +1,74 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 {include file="calendar_js.html"}
-<H1>{$layout.pagetitle}</H1>
-<FORM method="POST" action="?m=taxrateadd" name="taxrateadd">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" cellpadding="3">
-	<TR class="dark">
-		<TD width="1%" class="fleftu">
-			<IMG src="img/tax.gif" alt="">
-		</TD>
-		<TD width="1%" class="fbt">
-			<B>{trans("Label:")}</B>
-		</TD>
-		<TD width="98%" class="frightu">
-			<INPUT type="text" name="taxrateadd[label]" value="{$taxrateadd.label}" size="16" {tip text="Enter tax rate label" trigger="label"}>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
-			<IMG src="img/pay.gif" alt="">
-		</TD>
-		<TD width="1%" nowrap>
-			<B>{trans("Value:")}</B>
-		</TD>
-		<TD width="98%" class="fright">
-			<INPUT type="text" name="taxrateadd[value]" value="{$taxrateadd.value|string_format:"%.2f"}" size="10" {tip text="Enter percentage value of tax rate" trigger="value"}>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
-			<IMG src="img/pay.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Taxing:")}</B>
-		</TD>
-		<TD width="98%" class="fright">
-			<INPUT type="checkbox" name="taxrateadd[taxed]" value="1" {tip text="Select taxing status"}{if $taxrateadd.taxed!="0"}CHECKED{/if}>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
-			<IMG src="img/calendar.gif" alt="">
-		</TD>
-		<TD width="1%" nowrap>
-			<B>{trans("Binds from date:")}</B>
-		</TD>
-		<TD width="98%" class="fright">
-			<INPUT type="text" name="taxrateadd[validfrom]" value="{$taxrateadd.validfrom}" size="10" OnCLick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar" trigger="validfrom"}>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
-			<IMG src="img/calendar.gif" alt="">
-		</TD>
-		<TD width="1%" nowrap>
-			<B>{trans("Binds to date:")}</B>
-		</TD>
-		<TD width="98%" class="fright">
-			<INPUT type="text" name="taxrateadd[validto]" value="{$taxrateadd.validto}" size="10" OnCLick="javascript:cal2.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar" trigger="validto"}>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD class="fbottomu" align="right" colspan="3">
-			<A href="javascript:document.taxrateadd.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=taxratelist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="taxrateadd[reuse]" value="ON" {if $taxrateadd.reuse}checked{/if}> {trans("Display this form again, when this tax rate is saved")}
-		</TD>
-	</TR>
-</TABLE>
-<SCRIPT type="text/javascript">
+<h1>{$layout.pagetitle}</h1>
+<form method="POST" action="?m=taxrateadd" name="taxrateadd">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="dark">
+		<td width="1%" class="fleftu">
+			<img src="img/tax.gif" alt="">
+		</td>
+		<td width="1%" class="fbt">
+			<strong>{trans("Label:")}</strong>
+		</td>
+		<td width="98%" class="frightu">
+			<input type="text" name="taxrateadd[label]" value="{$taxrateadd.label}" size="16" {tip text="Enter tax rate label" trigger="label"}>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft">
+			<img src="img/pay.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("Value:")}</strong>
+		</td>
+		<td width="98%" class="fright">
+			<input type="text" name="taxrateadd[value]" value="{$taxrateadd.value|string_format:"%.2f"}" size="10" {tip text="Enter percentage value of tax rate" trigger="value"}>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft">
+			<img src="img/pay.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Taxing:")}</strong>
+		</td>
+		<td width="98%" class="fright">
+			<input type="checkbox" name="taxrateadd[taxed]" value="1" {tip text="Select taxing status"}{if $taxrateadd.taxed!="0"}CHECKED{/if}>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft">
+			<img src="img/calendar.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("Binds from date:")}</strong>
+		</td>
+		<td width="98%" class="fright">
+			<input type="text" name="taxrateadd[validfrom]" value="{$taxrateadd.validfrom}" size="10" OnCLick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar" trigger="validfrom"}>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft">
+			<img src="img/calendar.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("Binds to date:")}</strong>
+		</td>
+		<td width="98%" class="fright">
+			<input type="text" name="taxrateadd[validto]" value="{$taxrateadd.validto}" size="10" OnCLick="javascript:cal2.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar" trigger="validto"}>
+		</td>
+	</tr>
+	<tr class="light">
+		<td class="fbottomu" align="right" colspan="3">
+			<a href="javascript:document.taxrateadd.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+			<a href="?m=taxratelist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a><br />
+			<input type="checkbox" name="taxrateadd[reuse]" value="ON" {if $taxrateadd.reuse}checked{/if}> {trans("Display this form again, when this tax rate is saved")}
+		</td>
+	</tr>
+</table>
+<script type="text/javascript">
 <!--
 var cal1 = new calendar(document.forms['taxrateadd'].elements['taxrateadd[validfrom]']);
 cal1.time_comp = false;
@@ -76,5 +76,5 @@ var cal2 = new calendar(document.forms['taxrateadd'].elements['taxrateadd[validt
 cal2.time_comp = false;
 document.forms['taxrateadd'].elements['taxrateadd[label]'].focus();
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}

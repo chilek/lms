@@ -1,40 +1,40 @@
 <!-- $Id$ -->
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD WIDTH="1%" CLASS="fleftu">
-			<IMG SRC="img/promo.gif" ALT="">
-		</TD>
-		<TD WIDTH="98%" COLSPAN="2" CLASS="frightu">
-			<B>{$promotion.name} ({$promotion.id|string_format:"%04d"})</B>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft">
-			<A HREF="?m=promotionset&id={$promotion.id}&access={$promotion.disabled}"><IMG SRC="img/{if $promotion.disabled}no{/if}access.gif" ALT=""></A>
-		</TD>
-		<TD WIDTH="99%" CLASS="fright" NOWRAP colspan="2">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td width="1%" class="fleftu">
+			<img src="img/promo.gif" alt="">
+		</td>
+		<td width="98%" colspan="2" class="frightu">
+			<strong>{$promotion.name} ({$promotion.id|string_format:"%04d"})</strong>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft">
+			<a href="?m=promotionset&id={$promotion.id}&access={$promotion.disabled}"><img src="img/{if $promotion.disabled}no{/if}access.gif" alt=""></a>
+		</td>
+		<td width="99%" class="fright" nowrap="nowrap" colspan="2">
 			{if $promotion.disabled}{trans("disabled")}{else}{trans("enabled")}{/if}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{if $promotion.description}
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft">
-			<IMG SRC="img/info1.gif" ALT="">
-		</TD>
-		<TD WIDTH="98%" CLASS="fright" COLSPAN="2">
-			<TABLE WIDTH="100%" CELLPADDING="5">
-			    <TR><TD CLASS="fall superlight">
-				    {$promotion.description|replace:"\n":"<BR>"}
-			    </TD></TR>
-			</TABLE>
-		</TD>
-	</TR>
+	<tr class="light">
+		<td width="1%" class="fleft">
+			<img src="img/info1.gif" alt="">
+		</td>
+		<td width="98%" class="fright" colspan="2">
+			<table width="100%" cellpadding="5">
+			    <tr><td class="fall superlight">
+				    {$promotion.description|replace:"\n":"<br />"}
+			    </td></tr>
+			</table>
+		</td>
+	</tr>
 	{/if}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
-			<A HREF="?m=promotionedit&id={$promotion.id}">{trans("Edit")} <IMG SRC="img/edit.gif" alt=""></A>
-			<A HREF="?m=promotiondel&id={$promotion.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete this promotion?")}');">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A> 
-			</FORM>
-		</TD>
-	</TR>
-</TABLE>
+	<tr class="LIGHT">
+		<td width="100%" colspan="3" class="FBOTTOMU" align="RIGHT">
+			<a href="?m=promotionedit&id={$promotion.id}">{trans("Edit")} <img src="img/edit.gif" alt=""></a>
+			<a href="?m=promotiondel&id={$promotion.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete this promotion?")}');">{trans("Delete")} <img src="img/delete.gif" alt=""></a> 
+			</form>
+		</td>
+	</tr>
+</table>

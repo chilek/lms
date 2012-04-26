@@ -1,15 +1,15 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
+<h1>{$layout.pagetitle}</h1>
 <P class="txt">
-{if $message.from}<B>{trans("Sender:")}</B> {$message.from} &lt;{$message.sender}&gt;<BR>{/if}
-<B>{trans("Subject:")}</B> {$message.subject}<BR>
-<B>{trans("Message:")}</B><BR>
-<TABLE CELLPADDING="5" width="100%">
-        <TR>
-        	<TD CLASS="fall superlight"><PRE>{$message.body}</PRE></TD>
-	</TR>
-</TABLE>				
+{if $message.from}<strong>{trans("Sender:")}</strong> {$message.from} &lt;{$message.sender}&gt;<br />{/if}
+<strong>{trans("Subject:")}</strong> {$message.subject}<br />
+<strong>{trans("Message:")}</strong><br />
+<table cellpadding="5" width="100%">
+        <tr>
+        	<td class="fall superlight"><PRE>{$message.body}</PRE></td>
+	</tr>
+</table>				
 {if $recipcount}
-<BR><B>{trans("Sending messages to:")}</B><BR>
+<br /><strong>{trans("Sending messages to:")}</strong><br />
 {/if}

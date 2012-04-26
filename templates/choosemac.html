@@ -14,7 +14,7 @@
 </script>{/if}
 </head>
 {if ! $part}
-<frameset frameborder="0" framespacing="0" ROWS="30,*">
+<frameset frameborder="0" framespacing="0" rows="30,*">
 	<frame scrolling="no" frameborder="0" marginheight="0" marginwidth="0" name="cal" noresize src="?m=choosemac&p=top">
 	<frame scrolling="always" frameborder="0" marginheight="0" marginwidth="0" name="m" noresize src="?m=choosemac&p=main">
 </frameset>
@@ -23,37 +23,37 @@
 <body>
 	<table width="100%" cellpadding="1">
 	{section name=maclist loop=$maclist.mac}
-	<TR onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')"{if $maclist.nodename[maclist] eq ""} onClick="sendvalue(targetfield,'{$maclist.mac[maclist]}');"{/if}>
-		<TD align="center">
+	<tr onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')"{if $maclist.nodename[maclist] eq ""} onClick="sendvalue(targetfield,'{$maclist.mac[maclist]}');"{/if}>
+		<td align="center">
 			{if $maclist.nodename[maclist] eq ""}
 			<a href="javascript: void(0);" onclick="sendvalue(targetfield,'{$maclist.mac[maclist]}');">
-				{if $smarty.server.REMOTE_ADDR eq $maclist.ip[maclist]}<font class="red"><B>{/if}{$maclist.mac[maclist]}{if $smarty.server.REMOTE_ADDR eq $maclist.ip[maclist]}</B></font>{/if}
-			</A>
+				{if $smarty.server.REMOTE_ADDR eq $maclist.ip[maclist]}<font class="red"><strong>{/if}{$maclist.mac[maclist]}{if $smarty.server.REMOTE_ADDR eq $maclist.ip[maclist]}</strong></font>{/if}
+			</a>
 			{else}
 			<font class="blend">{$maclist.mac[maclist]}</font>
 			{/if}
 		</td>
-		<TD align="center">
+		<td align="center">
 			{if $maclist.nodename[maclist] eq ""}
 			<a href="javascript: void(0);" onclick="sendvalue(targetfield,'{$maclist.mac[maclist]}');">
 				{if $smarty.server.REMOTE_ADDR eq $maclist.ip[maclist]}<font class="alert">{/if}
 						{$maclist.ip[maclist]}
 				{if $smarty.server.REMOTE_ADDR eq $maclist.ip[maclist]}</font>{/if}
-			</A>
+			</a>
 			{else}
 			<font class="blend">{$maclist.nodename[maclist]}</font>
 			{/if}
-	</TR>
+	</tr>
 	{sectionelse}
 	</table>
 	<table width="100%" height="100%">
-		<TR title="{trans("Click to close window")}" onclick="parent.window.close();">
-			<TD align="center">
+		<tr title="{trans("Click to close window")}" onclick="parent.window.close();">
+			<td align="center">
 				<FONT class="alert">{trans("That server hasn't seen any MAC addresses!")}</FONT>
-				<BR><BR>
+				<br /><br />
 				{trans("Or, most likely, can't get MAC addresses table on that host.")}
-			</TD>
-		</TR>
+			</td>
+		</tr>
 	{/section}
 	</table>
 </body>
@@ -63,7 +63,7 @@
 <table cellpadding="5" width="100%">
 	<tr>
 		<td class="fall dark" align="center">
-			<B>{trans("Select MAC address:")}</B>
+			<strong>{trans("Select MAC address:")}</strong>
 		</td>
 	</tr>
 </table>

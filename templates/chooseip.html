@@ -12,7 +12,7 @@
 </script>{/if}
 </head>
 {if ! $part}
-<frameset name="all" frameborder="0" framespacing="0" ROWS="65,*,27">
+<frameset name="all" frameborder="0" framespacing="0" rows="65,*,27">
 	<frame scrolling="no" frameborder="0" marginheight="0" marginwidth="0" name="cal" noresize src="?m=chooseip&p=top{if $device}&device={$device}{/if}">
 	<frame scrolling="always" frameborder="0" marginheight="0" marginwidth="0" name="m" noresize src="?m=chooseip&p=main{if $device}&device={$device}{/if}">
 	<frame scrolling="no" frameborder="0" marginheight="0" marginwidth="0" name="down" noresize src="?m=chooseip&p=down{if $device}&device={$device}{/if}">
@@ -22,27 +22,27 @@
 <body>
 	<table width="100%" cellpadding="1">
 	{section name=iplist loop=$network.nodes.address}
-	{if $smarty.section.iplist.index is even}<TR>{/if}
-		<TD width="50%" align="center" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')"{if $network.nodes.name[iplist] eq ""} onClick="sendvalue(targetfield,'{$network.nodes.address[iplist]}');"{/if}>
+	{if $smarty.section.iplist.index is even}<tr>{/if}
+		<td width="50%" align="center" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')"{if $network.nodes.name[iplist] eq ""} onClick="sendvalue(targetfield,'{$network.nodes.address[iplist]}');"{/if}>
 			{if $network.nodes.name[iplist] neq ""}
-				{if $device && $network.nodes.name[iplist] eq "<b>GATEWAY</b>"}
-					<A href="javascript: void(0);" onClick="sendvalue(targetfield,'{$network.nodes.address[iplist]}');">{$network.nodes.name[iplist]}</A>
+				{if $device && $network.nodes.name[iplist] eq "<strong>GATEWAY</strong>"}
+					<a href="javascript: void(0);" onClick="sendvalue(targetfield,'{$network.nodes.address[iplist]}');">{$network.nodes.name[iplist]}</a>
 				{else}
 					<FONT class="blend">{$network.nodes.name[iplist]}</FONT>
 				{/if}
 			{else}
-			<A href="javascript: void(0);" onClick="sendvalue(targetfield,'{$network.nodes.address[iplist]}');">{$network.nodes.address[iplist]}</A>
+			<a href="javascript: void(0);" onClick="sendvalue(targetfield,'{$network.nodes.address[iplist]}');">{$network.nodes.address[iplist]}</a>
 			{/if}
-		</TD>
-	{if $smarty.section.iplist.index is not even}</TR>{/if}
+		</td>
+	{if $smarty.section.iplist.index is not even}</tr>{/if}
 	{sectionelse}
 	</table>
-	<TABLE width="100%" height="100%">
-	<TR title="{trans("Click to close window")}" onclick="parent.window.close();">
-		<TD width="100%" align="center">
-			<P><B>{trans("You don't have any IP network.")}<BR><BR>{t}To add a new network see "IP Networks" menu.{/t}</B></P>
-		</TD>
-	</TR>
+	<table width="100%" height="100%">
+	<tr title="{trans("Click to close window")}" onclick="parent.window.close();">
+		<td width="100%" align="center">
+			<P><strong>{trans("You don't have any IP network.")}<br /><br />{t}To add a new network see "IP Networks" menu.{/t}</strong></P>
+		</td>
+	</tr>
 	{/section}
 	</table>
 </body>
@@ -52,21 +52,21 @@
 <table cellpadding="5" width="100%">
 	<tr>
 		<td class="fall dark" align="center">
-			<B>{trans("Select IP address:")}</B>
+			<strong>{trans("Select IP address:")}</strong>
 		</td>
 	</tr>
 	<form target="m" name="selectnet" method="post" action="?m=chooseip&p=main{if $device}&device={$device}{/if}">
-	<INPUT type="submit" class="hiddenbtn">
+	<input type="submit" class="hiddenbtn">
 	<tr>
 		<td class="fall light" align="center">
-			<SELECT SIZE="1" onchange="parent.location.href='?m=chooseip{if $device}&device={$device}{/if}&netid='+document.selectnet.elements['netid'].value" NAME="netid">
+			<select size="1" onchange="parent.location.href='?m=chooseip{if $device}&device={$device}{/if}&netid='+document.selectnet.elements['netid'].value" name="netid">
 				{section name=networks loop=$networks}
-				<OPTION VALUE="{$networks[networks].id}" {if $networks[networks].id eq $netid} SELECTED {/if} {if $networks[networks].disabled eq 1} class="alert" {/if}>{$networks[networks].name|truncate:20:"":true}: {$networks[networks].address}/{$networks[networks].prefix}</OPTION>
+				<option value="{$networks[networks].id}" {if $networks[networks].id eq $netid} selected="selected" {/if} {if $networks[networks].disabled eq 1} class="alert" {/if}>{$networks[networks].name|truncate:20:"":true}: {$networks[networks].address}/{$networks[networks].prefix}</option>
 				{sectionelse}
-				<OPTION VALUE="0">{trans("You don't have any IP network.")}</OPTION>
+				<option value="0">{trans("You don't have any IP network.")}</option>
 				{/section}
-			</SELECT>
-		</TD>
+			</select>
+		</td>
 	</tr>
 	</form>
 </table>
@@ -77,25 +77,25 @@
 <table cellpadding="5" width="100%">
 	<tr>
 		<td class="fall light" align="center">
-			<B>
-			{if $network.page > 1}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page=1'; return false;">&#9668;</A>{elseif $network.pages > 1}<FONT CLASS="BLEND">&#9668;</FONT>{/if}
+			<strong>
+			{if $network.page > 1}<a href="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page=1'; return false;">&#9668;</a>{elseif $network.pages > 1}<FONT class="BLEND">&#9668;</FONT>{/if}
 
-			{if $network.page - 50 >= 1}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x - 50" x=$network.page}'; return false;">&laquo;&laquo;&laquo;</A>{elseif $network.pages > 50}<FONT CLASS="BLEND">&laquo;&laquo;&laquo;</FONT>{/if}
+			{if $network.page - 50 >= 1}<a href="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x - 50" x=$network.page}'; return false;">&laquo;&laquo;&laquo;</a>{elseif $network.pages > 50}<FONT class="BLEND">&laquo;&laquo;&laquo;</FONT>{/if}
 
-			{if $network.page - 10 >= 1}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x - 10" x=$network.page}'; return false;">&laquo;&laquo;</A>{elseif $network.pages > 10}<FONT CLASS="BLEND">&laquo;&laquo;</FONT>{/if}
+			{if $network.page - 10 >= 1}<a href="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x - 10" x=$network.page}'; return false;">&laquo;&laquo;</a>{elseif $network.pages > 10}<FONT class="BLEND">&laquo;&laquo;</FONT>{/if}
 
-			{if $network.page > 1}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x - 1" x=$network.page}'; return false;">&laquo;</A>{else}<FONT CLASS="BLEND">&laquo;</FONT>{/if}
+			{if $network.page > 1}<a href="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x - 1" x=$network.page}'; return false;">&laquo;</a>{else}<FONT class="BLEND">&laquo;</FONT>{/if}
 
 			{t a=$network.page b=$network.pages}Page $a of $b{/t}
 
-			{if $network.page < $network.pages}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x + 1" x=$network.page}'; return false;">&raquo;</A>{else}<FONT CLASS="BLEND">&raquo;<FONT>{/if}</B>
+			{if $network.page < $network.pages}<a href="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x + 1" x=$network.page}'; return false;">&raquo;</a>{else}<FONT class="BLEND">&raquo;<FONT>{/if}</strong>
 
-			{if $network.page + 10 <= $network.pages}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x + 10" x=$network.page}'; return false;">&raquo;&raquo;</A>{elseif $network.pages > 10}<FONT CLASS="BLEND">&raquo;&raquo;<FONT>{/if}</B>
+			{if $network.page + 10 <= $network.pages}<a href="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x + 10" x=$network.page}'; return false;">&raquo;&raquo;</a>{elseif $network.pages > 10}<FONT class="BLEND">&raquo;&raquo;<FONT>{/if}</strong>
 
-			{if $network.page + 50 <= $network.pages}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x + 50" x=$network.page}'; return false;">&raquo;&raquo;&raquo;</A>{elseif $network.pages > 50}<FONT CLASS="BLEND">&raquo;&raquo;&raquo;<FONT>{/if}</B>
+			{if $network.page + 50 <= $network.pages}<a href="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x + 50" x=$network.page}'; return false;">&raquo;&raquo;&raquo;</a>{elseif $network.pages > 50}<FONT class="BLEND">&raquo;&raquo;&raquo;<FONT>{/if}</strong>
 
-			{if $network.page < $network.pages}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={$network.pages}'; return false;">&#9658;</A>{elseif $network.pages > 1}<FONT CLASS="BLEND">&#9658;<FONT>{/if}
-			</B>
+			{if $network.page < $network.pages}<a href="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={$network.pages}'; return false;">&#9658;</a>{elseif $network.pages > 1}<FONT class="BLEND">&#9658;<FONT>{/if}
+			</strong>
 		</td>
 	</tr>
 </table>

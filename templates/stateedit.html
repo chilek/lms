@@ -1,41 +1,41 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<FORM method="POST" action="?m=stateedit&id={$stateedit.id}" name="stateedit">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" cellpadding="3">
-	<TR class="dark">
-		<TD width="1%" class="fleftu">
-			<IMG src="img/state.gif" alt="">
-		</TD>
-		<TD width="1%" class="fbt">
-			<B>{trans("Name:")}</B>
-		</TD>
-		<TD width="98%" class="frightu">
-			<INPUT type="text" name="stateedit[name]" value="{$stateedit.name|escape}" {tip text="Enter state name" trigger="name" bold=1}>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
-			<IMG src="img/info.gif" alt="">
-		</TD>
-		<TD width="1%" nowrap>
-			<B>{trans("Description:")}</B>
-		</TD>
-		<TD width="98%" class="fright">
-			<TEXTAREA NAME="stateedit[description]" COLS="45" ROWS="4" {tip text="Enter additional information (optional)"}>{$stateedit.description}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD class="fbottomu" align="right" colspan="3">
-			<A href="javascript:document.stateedit.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=statelist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
-		</TD>
-	</TR>
-</TABLE>
-<SCRIPT type="text/javascript">
+<h1>{$layout.pagetitle}</h1>
+<form method="POST" action="?m=stateedit&id={$stateedit.id}" name="stateedit">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="dark">
+		<td width="1%" class="fleftu">
+			<img src="img/state.gif" alt="">
+		</td>
+		<td width="1%" class="fbt">
+			<strong>{trans("Name:")}</strong>
+		</td>
+		<td width="98%" class="frightu">
+			<input type="text" name="stateedit[name]" value="{$stateedit.name|escape}" {tip text="Enter state name" trigger="name" bold=1}>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft">
+			<img src="img/info.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("Description:")}</strong>
+		</td>
+		<td width="98%" class="fright">
+			<textarea name="stateedit[description]" cols="45" rows="4" {tip text="Enter additional information (optional)"}>{$stateedit.description}</textarea>
+		</td>
+	</tr>
+	<tr class="light">
+		<td class="fbottomu" align="right" colspan="3">
+			<a href="javascript:document.stateedit.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+			<a href="?m=statelist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
+		</td>
+	</tr>
+</table>
+<script type="text/javascript">
 <!--
 document.forms['stateedit'].elements['stateedit[name]'].focus();
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}

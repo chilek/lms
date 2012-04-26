@@ -1,22 +1,22 @@
 <!--// $Id: nodelocks.html,v 1.1 2012/04/06 11:01:40 chilek Exp $ //-->
 {$xajax}
-<TABLE style="width: 100%;" CELLPADDING="3">
-	<TR class="dark hand" onclick="showOrHide('nodelockspanel');">
-		<TD class="fall">
-			<IMG src="img/time.gif" alt="">
-			<span class="bold"><A name="nodelocks">{trans("Locks:")}</A></span>
-		</TD>
-	</TR>
-	<TR id="nodelockspanel" style="display: none;">
-		<TD style="width: 100%;" class="fall">
-			<FORM id="nodelockadd" name="nodelockadd">
-			<DIV id="nodelocktable">
-			</DIV>
-			</FORM>
-		</TD>
-	</TR>
-</TABLE>
-<SCRIPT type="text/javascript">
+<table style="width: 100%;" cellpadding="3">
+	<tr class="dark hand" onclick="showOrHide('nodelockspanel');">
+		<td class="fall">
+			<img src="img/time.gif" alt="">
+			<span class="bold"><a name="nodelocks">{trans("Locks:")}</a></span>
+		</td>
+	</tr>
+	<tr id="nodelockspanel" style="display: none;">
+		<td style="width: 100%;" class="fall">
+			<form id="nodelockadd" name="nodelockadd">
+			<div id="nodelocktable">
+			</div>
+			</form>
+		</td>
+	</tr>
+</table>
+<script type="text/javascript">
 <!--
 if (getCookie('nodelockspanel') == '1')
 {
@@ -35,4 +35,4 @@ function delNodeLock(id) {
 
 xajax_getNodeLocks({$nodeinfo.id});
 //-->
-</SCRIPT>
+</script>

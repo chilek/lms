@@ -1,5 +1,5 @@
 <!--// $Id$ //-->
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 <!--
 	function randomize()
 	{
@@ -26,465 +26,465 @@
 		var newcell2 = newrow.insertCell(1);
 		newcell1.style.verticalAlign = 'top';
 		newcell1.style.width = '1%';
-		newcell1.innerHTML = '<IMG src="img/phone.gif" alt="">';
+		newcell1.innerHTML = '<img src="img/phone.gif" alt="">';
 		newcell2.style.width = '99%';
 		newcell2.style.whiteSpace = 'nowrap';
-		newcell2.innerHTML = '<INPUT TYPE="text" size="15" value="" name="customerdata[contacts][' + nr + '][phone]"'
+		newcell2.innerHTML = '<input type="text" size="15" value="" name="customerdata[contacts][' + nr + '][phone]"'
 				+ ' onmouseover="popup(\'{trans("Enter contact phone")}\')" onmouseout="pophide()">'
-			+ '<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_MOBILE}"'
-				+ ' name="customerdata[contacts][' + nr + '][type][]" ID="chkmobile' + nr + '"><label for="chkmobile' + nr + '">{trans("mobile")}</label>'
-			+ '<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_FAX}"'
-				+ ' name="customerdata[contacts][' + nr + '][type][]" ID="chkfax' + nr + '"><label for="chkfax' + nr + '">{trans("fax")}</label>'
-			+ '<BR><INPUT TYPE="text" size="38" value="" name="customerdata[contacts][' + nr + '][name]"'
+			+ '<input type="checkbox" value="{$smarty.const.CONTACT_MOBILE}"'
+				+ ' name="customerdata[contacts][' + nr + '][type][]" id="chkmobile' + nr + '"><label for="chkmobile' + nr + '">{trans("mobile")}</label>'
+			+ '<input type="checkbox" value="{$smarty.const.CONTACT_FAX}"'
+				+ ' name="customerdata[contacts][' + nr + '][type][]" id="chkfax' + nr + '"><label for="chkfax' + nr + '">{trans("fax")}</label>'
+			+ '<br /><input type="text" size="38" value="" name="customerdata[contacts][' + nr + '][name]"'
 				+ ' onmouseover="popup(\'{trans("Enter contact name/description (optional)")}\')" onmouseout="pophide()">';
 		contactscountelem.value = parseInt(nr) + 1;
 	}
 //-->
-</SCRIPT>
-<FORM NAME="customeredit" id="customeredit" METHOD="POST" ACTION="?m=customeredit&id={$customerinfo.id}{if $recover}&action=recover{/if}"><INPUT TYPE="HIDDEN" NAME="customerdata[id]" VALUE="{$customerinfo.id}">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD WIDTH="100%" CLASS="FALL" NOWRAP>
-		        <TABLE WIDTH="100%" CELLPADDING="1">
-				<TR>
-					<TD WIDTH="1%"><B>{trans("Name/Surname:")}</B></TD>
-					<TD WIDTH="99%"><INPUT TYPE="TEXT" SIZE="50" NAME="customerdata[lastname]" VALUE="{$customerinfo.lastname|escape}" {tip text="Enter first/lastname of customer" trigger="lastname" bold=1}></TD>
-				</TR>
-				<TR>
-					<TD WIDTH="1%"><B>{trans("First name:")}</B></TD>
-					<TD WIDTH="99%"><INPUT TYPE="TEXT" SIZE="50" NAME="customerdata[name]" VALUE="{$customerinfo.name|escape}" {tip text="Enter first name of customer (optional)" trigger="name" bold=1}></TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-        <TR class="LIGHT">
-            <TD WIDTH="100%" CLASS="flr container">
-		        <TABLE WIDTH="100%" CELLPADDING="0">
-				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" style="vertical-align:top;">
-						<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			{if $customerinfo.status eq "3"}<IMG SRC="img/customer.gif" ALT="">{/if}
-			{if $customerinfo.status eq "2"}<IMG SRC="img/wait.gif" ALT="">{/if}
-			{if $customerinfo.status eq "1"}<IMG SRC="img/unk.gif" ALT="">{/if}
-		</TD>
-		<TD WIDTH="99%">
-			<SELECT SIZE="1" NAME="customerdata[status]" {tip text="Select customer state" trigger="status"}>
-				<OPTION VALUE="3"{if $customerinfo.status eq "3"} SELECTED{/if}>{trans("connected<!singular>")}</OPTION>
-				<OPTION VALUE="2"{if $customerinfo.status eq "2"} SELECTED{/if}>{trans("waiting")}</OPTION>
-				<OPTION VALUE="1"{if $customerinfo.status eq "1"} SELECTED{/if}>{trans("interested<!singular>")}</OPTION>
-			</SELECT>
-		</TD>
-	</TR>
+</script>
+<form name="customeredit" id="customeredit" method="POST" action="?m=customeredit&id={$customerinfo.id}{if $recover}&action=recover{/if}"><input type="HIDDEN" name="customerdata[id]" value="{$customerinfo.id}">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td width="100%" class="FALL" nowrap="nowrap">
+		        <table width="100%" cellpadding="1">
+				<tr>
+					<td width="1%"><strong>{trans("Name/Surname:")}</strong></td>
+					<td width="99%"><input type="TEXT" size="50" name="customerdata[lastname]" value="{$customerinfo.lastname|escape}" {tip text="Enter first/lastname of customer" trigger="lastname" bold=1}></td>
+				</tr>
+				<tr>
+					<td width="1%"><strong>{trans("First name:")}</strong></td>
+					<td width="99%"><input type="TEXT" size="50" name="customerdata[name]" value="{$customerinfo.name|escape}" {tip text="Enter first name of customer (optional)" trigger="name" bold=1}></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+        <tr class="LIGHT">
+            <td width="100%" class="flr container">
+		        <table width="100%" cellpadding="0">
+				<tr class="LIGHT">
+					<td width="50%" style="vertical-align:top;">
+						<table width="100%" cellpadding="3">
+	<tr class="LIGHT">
+		<td width="1%">
+			{if $customerinfo.status eq "3"}<img src="img/customer.gif" alt="">{/if}
+			{if $customerinfo.status eq "2"}<img src="img/wait.gif" alt="">{/if}
+			{if $customerinfo.status eq "1"}<img src="img/unk.gif" alt="">{/if}
+		</td>
+		<td width="99%">
+			<select size="1" name="customerdata[status]" {tip text="Select customer state" trigger="status"}>
+				<option value="3"{if $customerinfo.status eq "3"} selected="selected"{/if}>{trans("connected<!singular>")}</option>
+				<option value="2"{if $customerinfo.status eq "2"} selected="selected"{/if}>{trans("waiting")}</option>
+				<option value="1"{if $customerinfo.status eq "1"} selected="selected"{/if}>{trans("interested<!singular>")}</option>
+			</select>
+		</td>
+	</tr>
 	{if $divisions}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/division.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" NOWRAP>
-			<SELECT size="1" name="customerdata[divisionid]" {tip text="Select division" trigger="divisionid"}>
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/division.gif" alt="">
+		</td>
+		<td width="99%" nowrap="nowrap">
+			<select size="1" name="customerdata[divisionid]" {tip text="Select division" trigger="divisionid"}>
     			{foreach from=$divisions item=item}{if !$item.status || $item.id == $customerinfo.divisionid}
-	    			<OPTION VALUE="{$item.id}"{if $customerinfo.divisionid == $item.id} SELECTED{/if}>{$item.shortname}</OPTION>
+	    			<option value="{$item.id}"{if $customerinfo.divisionid == $item.id} selected="selected"{/if}>{$item.shortname}</option>
 		        {/if}{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
+			</select>
+		</td>
+	</tr>
 	{/if}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/folder.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" NOWRAP>
-			<INPUT TYPE="radio" NAME="customerdata[type]" VALUE="0" ID="private" {tip text="Select legal personality type" trigger="type"}{if !$customerinfo.type} CHECKED{/if}><label for="private">{trans("private person")}</label>
-			<INPUT TYPE="radio" NAME="customerdata[type]" VALUE="1" ID="company" {tip text="Select legal personality type" trigger="type"}{if $customerinfo.type} CHECKED{/if}><label for="company">{trans("legal entity")}</label>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" style="vertical-align: top">
-			<IMG SRC="img/home.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%">
-			<TABLE width="100%" cellpadding="1">
-			    <TR>
-    				<TD width="1%" NOWRAP>{trans("Address:")}</TD>
-	    			<TD width="99%"><INPUT TYPE="TEXT" NAME="customerdata[address]" id="address" VALUE="{$customerinfo.address}" SIZE="30" {tip text="Enter address" trigger="address"}></TD>
-			    </TR>
-			    <TR>
-		    		<TD width="1%" NOWRAP>{trans("City:")}</TD>
-			    	<TD width="99%"><INPUT TYPE="TEXT" NAME="customerdata[city]" id="city" VALUE="{$customerinfo.city}" SIZE="30" {tip text="Enter city"}></TD>
-			    </TR>
-			    <TR>
-    				<TD width="1%" NOWRAP>{trans("Zip:")}</TD>
-	    			<TD width="99%"><INPUT TYPE="TEXT" NAME="customerdata[zip]" id="zip" VALUE="{$customerinfo.zip}" SIZE="10" {tip text="Enter zip code" trigger="zip"}></TD>
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/folder.gif" alt="">
+		</td>
+		<td width="99%" nowrap="nowrap">
+			<input type="radio" name="customerdata[type]" value="0" id="private" {tip text="Select legal personality type" trigger="type"}{if !$customerinfo.type} checked="checked"{/if}><label for="private">{trans("private person")}</label>
+			<input type="radio" name="customerdata[type]" value="1" id="company" {tip text="Select legal personality type" trigger="type"}{if $customerinfo.type} checked="checked"{/if}><label for="company">{trans("legal entity")}</label>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" style="vertical-align: top">
+			<img src="img/home.gif" alt="">
+		</td>
+		<td width="99%">
+			<table width="100%" cellpadding="1">
+			    <tr>
+    				<td width="1%" nowrap="nowrap">{trans("Address:")}</td>
+	    			<td width="99%"><input type="TEXT" name="customerdata[address]" id="address" value="{$customerinfo.address}" size="30" {tip text="Enter address" trigger="address"}></td>
+			    </tr>
+			    <tr>
+		    		<td width="1%" nowrap="nowrap">{trans("City:")}</td>
+			    	<td width="99%"><input type="TEXT" name="customerdata[city]" id="city" value="{$customerinfo.city}" size="30" {tip text="Enter city"}></td>
+			    </tr>
+			    <tr>
+    				<td width="1%" nowrap="nowrap">{trans("Zip:")}</td>
+	    			<td width="99%"><input type="TEXT" name="customerdata[zip]" id="zip" value="{$customerinfo.zip}" size="10" {tip text="Enter zip code" trigger="zip"}></td>
     				{if $customerinfo.zipwarning}
-	    			<INPUT TYPE="HIDDEN" NAME="customerdata[zipwarning]" VALUE="1">
+	    			<input type="HIDDEN" name="customerdata[zipwarning]" value="1">
 		    		{/if}
-			    </TR>
+			    </tr>
 			    {if $cstateslist}
-			    <TR>
-			        <TD width="1%" NOWRAP>{trans("State:")}</TD>
-			        <TD width="99%">
-			            <SELECT NAME="customerdata[stateid]" {tip text="Select country state (optional)" trigger="stateid"}>
-			                <OPTION value="0"></OPTION>
+			    <tr>
+			        <td width="1%" nowrap="nowrap">{trans("State:")}</td>
+			        <td width="99%">
+			            <select name="customerdata[stateid]" {tip text="Select country state (optional)" trigger="stateid"}>
+			                <option value="0"></option>
 			                {foreach from=$cstateslist item=item key=key}
-			                <OPTION value="{$key}"{if $key==$customerinfo.stateid} SELECTED{/if}>{$item.name}</OPTION>
+			                <option value="{$key}"{if $key==$customerinfo.stateid} selected="selected"{/if}>{$item.name}</option>
 			                {/foreach}
-			            </SELECT>
-				</TD>
-			    </TR>
+			            </select>
+				</td>
+			    </tr>
                 {/if}
                 {if $countrieslist}
-			    <TR>
-			        <TD width="1%" NOWRAP>{trans("Country:")}</TD>
-			        <TD width="99%">
-			            <SELECT NAME="customerdata[countryid]" {tip text="Select country (optional)" trigger="countryid"}>
-			                <OPTION value="0"></OPTION>
+			    <tr>
+			        <td width="1%" nowrap="nowrap">{trans("Country:")}</td>
+			        <td width="99%">
+			            <select name="customerdata[countryid]" {tip text="Select country (optional)" trigger="countryid"}>
+			                <option value="0"></option>
 					{foreach from=$countrieslist item=item key=key}
-			                <OPTION value="{$key}"{if $key==$customerinfo.countryid} SELECTED{/if}>{t}{$item.name}{/t}</OPTION>
+			                <option value="{$key}"{if $key==$customerinfo.countryid} selected="selected"{/if}>{t}{$item.name}{/t}</option>
 					{/foreach}
-			            </SELECT>
-    				</TD>
-			    </TR>
+			            </select>
+    				</td>
+			    </tr>
 			    {/if}
-			</TABLE>
+			</table>
 		<script type="text/javascript">
 		new AutoSuggest(document.getElementById('customeredit'),document.getElementById('address'),'?m=customeradd&ajax=1&mode=address&what=',0);
 		new AutoSuggest(document.getElementById('customeredit'),document.getElementById('zip'),'?m=customeradd&ajax=1&mode=zip&what=',0);
 		new AutoSuggest(document.getElementById('customeredit'),document.getElementById('city'),'?m=customeradd&ajax=1&mode=city&what=',0);
 		</script>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" style="vertical-align: top">
-			<IMG SRC="img/post.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%">
-			<TABLE width="100%" cellpadding="1">
-			    <TR>
-				<TD width="1%" NOWRAP>{trans("Name:")}</TD>
-				<TD width="99%"><INPUT TYPE="TEXT" NAME="customerdata[post_name]" id="post_name" VALUE="{$customerinfo.post_name}" SIZE="30" {tip text="Enter service name (optional)" trigger="post_name"}></TD>
-			    </TR>
-			    <TR>
-    				<TD width="1%" NOWRAP>{trans("Address:")}</TD>
-	    			<TD width="99%"><INPUT TYPE="TEXT" NAME="customerdata[post_address]" id="post_address" VALUE="{$customerinfo.post_address}" SIZE="30" {tip text="Enter service address (optional)" trigger="post_address"}></TD>
-			    </TR>
-			    <TR>
-		    		<TD width="1%" NOWRAP>{trans("City:")}</TD>
-			    	<TD width="99%"><INPUT TYPE="TEXT" NAME="customerdata[post_city]" id="post_city" VALUE="{$customerinfo.post_city}" SIZE="30" {tip text="Enter city of service address (optional)" trigger="post_city"}></TD>
-			    </TR>
-			    <TR>
-    				<TD width="1%" NOWRAP>{trans("Zip:")}</TD>
-	    			<TD width="99%"><INPUT TYPE="TEXT" NAME="customerdata[post_zip]" id="post_zip" VALUE="{$customerinfo.post_zip}" SIZE="10" {tip text="Enter zip code of service address (optional)" trigger="post_zip"}></TD>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" style="vertical-align: top">
+			<img src="img/post.gif" alt="">
+		</td>
+		<td width="99%">
+			<table width="100%" cellpadding="1">
+			    <tr>
+				<td width="1%" nowrap="nowrap">{trans("Name:")}</td>
+				<td width="99%"><input type="TEXT" name="customerdata[post_name]" id="post_name" value="{$customerinfo.post_name}" size="30" {tip text="Enter service name (optional)" trigger="post_name"}></td>
+			    </tr>
+			    <tr>
+    				<td width="1%" nowrap="nowrap">{trans("Address:")}</td>
+	    			<td width="99%"><input type="TEXT" name="customerdata[post_address]" id="post_address" value="{$customerinfo.post_address}" size="30" {tip text="Enter service address (optional)" trigger="post_address"}></td>
+			    </tr>
+			    <tr>
+		    		<td width="1%" nowrap="nowrap">{trans("City:")}</td>
+			    	<td width="99%"><input type="TEXT" name="customerdata[post_city]" id="post_city" value="{$customerinfo.post_city}" size="30" {tip text="Enter city of service address (optional)" trigger="post_city"}></td>
+			    </tr>
+			    <tr>
+    				<td width="1%" nowrap="nowrap">{trans("Zip:")}</td>
+	    			<td width="99%"><input type="TEXT" name="customerdata[post_zip]" id="post_zip" value="{$customerinfo.post_zip}" size="10" {tip text="Enter zip code of service address (optional)" trigger="post_zip"}></td>
     				{if $customerinfo.post_zipwarning}
-	    			<INPUT TYPE="HIDDEN" NAME="customerdata[post_zipwarning]" VALUE="1">
+	    			<input type="HIDDEN" name="customerdata[post_zipwarning]" value="1">
 		    		{/if}
-			    </TR>
+			    </tr>
 			    {if $cstateslist}
-			    <TR>
-			        <TD width="1%" NOWRAP>{trans("State:")}</TD>
-			        <TD width="99%">
-			            <SELECT NAME="customerdata[post_stateid]" {tip text="Select country state (optional)" trigger="post_stateid"}>
-			                <OPTION value="0"></OPTION>
+			    <tr>
+			        <td width="1%" nowrap="nowrap">{trans("State:")}</td>
+			        <td width="99%">
+			            <select name="customerdata[post_stateid]" {tip text="Select country state (optional)" trigger="post_stateid"}>
+			                <option value="0"></option>
 			                {foreach from=$cstateslist item=item key=key}
-			                <OPTION value="{$key}"{if $key==$customerinfo.post_stateid} SELECTED{/if}>{$item.name}</OPTION>
+			                <option value="{$key}"{if $key==$customerinfo.post_stateid} selected="selected"{/if}>{$item.name}</option>
 			                {/foreach}
-			            </SELECT>
-				</TD>
-			    </TR>
+			            </select>
+				</td>
+			    </tr>
                 {/if}
                 {if $countrieslist}
-			    <TR>
-			        <TD width="1%" NOWRAP>{trans("Country:")}</TD>
-			        <TD width="99%">
-			            <SELECT NAME="customerdata[post_countryid]" {tip text="Select country (optional)" trigger="post_countryid"}>
-			                <OPTION value="0"></OPTION>
+			    <tr>
+			        <td width="1%" nowrap="nowrap">{trans("Country:")}</td>
+			        <td width="99%">
+			            <select name="customerdata[post_countryid]" {tip text="Select country (optional)" trigger="post_countryid"}>
+			                <option value="0"></option>
 					{foreach from=$countrieslist item=item key=key}
-			                <OPTION value="{$key}"{if $key==$customerinfo.post_countryid} SELECTED{/if}>{t}{$item.name}{/t}</OPTION>
+			                <option value="{$key}"{if $key==$customerinfo.post_countryid} selected="selected"{/if}>{t}{$item.name}{/t}</option>
 					{/foreach}
-			            </SELECT>
-    				</TD>
-			    </TR>
+			            </select>
+    				</td>
+			    </tr>
 			    {/if}
-			</TABLE>
+			</table>
 		<script type="text/javascript">
 		new AutoSuggest(document.getElementById('customeredit'),document.getElementById('post_address'),'?m=customeradd&ajax=1&mode=address&what=',0);
 		new AutoSuggest(document.getElementById('customeredit'),document.getElementById('post_zip'),'?m=customeradd&ajax=1&mode=zip&what=',0);
 		new AutoSuggest(document.getElementById('customeredit'),document.getElementById('post_city'),'?m=customeradd&ajax=1&mode=city&what=',0);
 		</script>
-	</TR>
+	</tr>
 	{foreach from=$customerinfo.contacts item=item key=key}
-	<TR CLASS="LIGHT" ID="contact{$key}">
-		<TD WIDTH="1%" style="vertical-align: top">
-			<IMG SRC="img/phone.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" NOWRAP>
-			<INPUT TYPE="text" size="15" value="{$item.phone}" name="customerdata[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}>
-            <INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_MOBILE}" name="customerdata[contacts][{$key}][type][]" ID="chkmobile{$key}" {if ($item.type & CONTACT_MOBILE)} checked{/if}><label for="chkmobile{$key}">{trans("mobile")}</label>
-            <INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_FAX}" name="customerdata[contacts][{$key}][type][]" ID="chkfax{$key}" {if ($item.type & CONTACT_FAX)} checked{/if}><label for="chkfax{$key}">{trans("fax")}</label>
-            <BR>
-			<INPUT TYPE="text" size="38" value="{$item.name}" name="customerdata[contacts][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
-		</TD>
-	</TR>
+	<tr class="LIGHT" id="contact{$key}">
+		<td width="1%" style="vertical-align: top">
+			<img src="img/phone.gif" alt="">
+		</td>
+		<td width="99%" nowrap="nowrap">
+			<input type="text" size="15" value="{$item.phone}" name="customerdata[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}>
+            <input type="checkbox" value="{$smarty.const.CONTACT_MOBILE}" name="customerdata[contacts][{$key}][type][]" id="chkmobile{$key}" {if ($item.type & CONTACT_MOBILE)} checked="checked"{/if}><label for="chkmobile{$key}">{trans("mobile")}</label>
+            <input type="checkbox" value="{$smarty.const.CONTACT_FAX}" name="customerdata[contacts][{$key}][type][]" id="chkfax{$key}" {if ($item.type & CONTACT_FAX)} checked="checked"{/if}><label for="chkfax{$key}">{trans("fax")}</label>
+            <br />
+			<input type="text" size="38" value="{$item.name}" name="customerdata[contacts][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
+		</td>
+	</tr>
 	{/foreach}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%"></TD>
-		<TD WIDTH="99%">
-			<INPUT TYPE="HIDDEN" ID="contactscount" VALUE="{$item@total}">
-			<A href="javascript: newcontact()">{trans("Add contact field")} &raquo;&raquo;&raquo;</A>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/gg.gif" alt="Gadu-Gadu">
-		</TD>
-		<TD WIDTH="99%">
+	<tr class="LIGHT">
+		<td width="1%"></td>
+		<td width="99%">
+			<input type="HIDDEN" id="contactscount" value="{$item@total}">
+			<a href="javascript: newcontact()">{trans("Add contact field")} &raquo;&raquo;&raquo;</a>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/gg.gif" alt="Gadu-Gadu">
+		</td>
+		<td width="99%">
 			{assign var=gg value=$smarty.const.IM_GG}
-			<INPUT TYPE="TEXT" NAME="customerdata[uid][{$gg}]" VALUE="{if $customerinfo.uid.$gg}{$customerinfo.uid.$gg}{/if}" SIZE="20" {tip text="Enter Gadu-Gadu ID (optional)" trigger="gg"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG src="img/yim.gif" alt="Yahoo">
-		</TD>
-		<TD WIDTH="99%">
+			<input type="TEXT" name="customerdata[uid][{$gg}]" value="{if $customerinfo.uid.$gg}{$customerinfo.uid.$gg}{/if}" size="20" {tip text="Enter Gadu-Gadu ID (optional)" trigger="gg"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/yim.gif" alt="Yahoo">
+		</td>
+		<td width="99%">
 			{assign var=yahoo value=$smarty.const.IM_YAHOO}
-			<INPUT TYPE="TEXT" NAME="customerdata[uid][{$yahoo}]" VALUE="{if $customerinfo.uid.$yahoo}{$customerinfo.uid.$yahoo}{/if}" SIZE="20" {tip text="Enter Yahoo Messenger ID (optional)" trigger="yahoo"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG src="img/skype.gif" alt="Skype">
-		</TD>
-		<TD WIDTH="99%">
+			<input type="TEXT" name="customerdata[uid][{$yahoo}]" value="{if $customerinfo.uid.$yahoo}{$customerinfo.uid.$yahoo}{/if}" size="20" {tip text="Enter Yahoo Messenger ID (optional)" trigger="yahoo"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/skype.gif" alt="Skype">
+		</td>
+		<td width="99%">
 			{assign var=skype value=$smarty.const.IM_SKYPE}
-			<INPUT TYPE="TEXT" NAME="customerdata[uid][{$skype}]" VALUE="{if $customerinfo.uid.$skype}{$customerinfo.uid.$skype}{/if}" SIZE="20" {tip text="Enter Skype ID (optional)" trigger="skype"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/mail.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%">
-			<INPUT TYPE="TEXT" NAME="customerdata[email]" VALUE="{$customerinfo.email}" SIZE="38" {tip text="Enter e-mail address (optional)" trigger="email" }><BR>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/pin.gif" ALT="">
-		</TD>
-		<TD WIDTH="98%">
-			<INPUT TYPE="TEXT" NAME="customerdata[pin]" VALUE="{if $customerinfo.pin}{$customerinfo.pin}{/if}" SIZE="6" {tip text="Enter 4 to 6 digits PIN number (optional)" trigger="pin"}>&nbsp;
-			<A href="javascript: randomize()" {tip text="Generate PIN"}>&raquo;&raquo;&raquo;</A>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD width="1%" style="vertical-align: top">
-			<IMG src="img/serialnumber.gif" alt="">
-		</TD>
-		<TD width="99%">
-		    <TABLE width="100%">
-		        <TR>
-		            <TD width="1%" NOWRAP>{trans("ICN")}:</TD>
-		            <TD width="99%">
-			<INPUT TYPE="text" VALUE="{$customerinfo.icn}" name="customerdata[icn]" SIZE="30" {tip text="Enter Identity Card Number (optional)" trigger="icn"}>
-			        </TD>
-			    </TR>
-		        <TR>
-		            <TD width="1%" NOWRAP>{trans("SSN")}:</TD>
-		            <TD width="99%">
-			<INPUT TYPE="TEXT" NAME="customerdata[ssn]" VALUE="{$customerinfo.ssn}" SIZE="30" {tip text="Enter Social Security Number (optional)" trigger="ssn"}>
+			<input type="TEXT" name="customerdata[uid][{$skype}]" value="{if $customerinfo.uid.$skype}{$customerinfo.uid.$skype}{/if}" size="20" {tip text="Enter Skype ID (optional)" trigger="skype"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/mail.gif" alt="">
+		</td>
+		<td width="99%">
+			<input type="TEXT" name="customerdata[email]" value="{$customerinfo.email}" size="38" {tip text="Enter e-mail address (optional)" trigger="email" }><br />
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/pin.gif" alt="">
+		</td>
+		<td width="98%">
+			<input type="TEXT" name="customerdata[pin]" value="{if $customerinfo.pin}{$customerinfo.pin}{/if}" size="6" {tip text="Enter 4 to 6 digits PIN number (optional)" trigger="pin"}>&nbsp;
+			<a href="javascript: randomize()" {tip text="Generate PIN"}>&raquo;&raquo;&raquo;</a>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" style="vertical-align: top">
+			<img src="img/serialnumber.gif" alt="">
+		</td>
+		<td width="99%">
+		    <table width="100%">
+		        <tr>
+		            <td width="1%" nowrap="nowrap">{trans("ICN")}:</td>
+		            <td width="99%">
+			<input type="text" value="{$customerinfo.icn}" name="customerdata[icn]" size="30" {tip text="Enter Identity Card Number (optional)" trigger="icn"}>
+			        </td>
+			    </tr>
+		        <tr>
+		            <td width="1%" nowrap="nowrap">{trans("SSN")}:</td>
+		            <td width="99%">
+			<input type="TEXT" name="customerdata[ssn]" value="{$customerinfo.ssn}" size="30" {tip text="Enter Social Security Number (optional)" trigger="ssn"}>
 			{if $customerinfo.ssnwarning}
-			<INPUT TYPE="HIDDEN" NAME="customerdata[ssnwarning]" VALUE="1">
+			<input type="HIDDEN" name="customerdata[ssnwarning]" value="1">
 			{/if}
-			        </TD>
-			    </TR>
-		        <TR>
-		            <TD width="1%" NOWRAP>{trans("TEN")}:</TD>
-		            <TD width="99%">
-			<INPUT TYPE="TEXT" NAME="customerdata[ten]" VALUE="{$customerinfo.ten}" SIZE="30" {tip text="Enter Tax Exempt Number (optional)" trigger="ten"}>
+			        </td>
+			    </tr>
+		        <tr>
+		            <td width="1%" nowrap="nowrap">{trans("TEN")}:</td>
+		            <td width="99%">
+			<input type="TEXT" name="customerdata[ten]" value="{$customerinfo.ten}" size="30" {tip text="Enter Tax Exempt Number (optional)" trigger="ten"}>
 			{if $customerinfo.tenwarning}
-			<INPUT TYPE="HIDDEN" NAME="customerdata[tenwarning]" VALUE="1">
+			<input type="HIDDEN" name="customerdata[tenwarning]" value="1">
 			{/if}
-			        </TD>
-			    </TR>
-		        <TR>
-		            <TD width="1%" NOWRAP>{trans("REGON")}:</TD>
-		            <TD width="99%">
-			<INPUT TYPE="text" value="{$customerinfo.regon}" name="customerdata[regon]" SIZE="30" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
-			        </TD>
-			    </TR>
-		        <TR>
-		            <TD width="1%" NOWRAP>{trans("RBE")}:</TD>
-		            <TD width="99%">
-			<INPUT TYPE="text" value="{$customerinfo.rbe}" name="customerdata[rbe]" SIZE="30" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
-			        </TD>
-			    </TR>
-            </TABLE>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" style="vertical-align: top">
-			<IMG SRC="img/options.gif" ALT="">
-		</TD>
-		<TD WIDTH="98%">
-		    <TABLE>
-		        <TR>
-		            <TD>
+			        </td>
+			    </tr>
+		        <tr>
+		            <td width="1%" nowrap="nowrap">{trans("REGON")}:</td>
+		            <td width="99%">
+			<input type="text" value="{$customerinfo.regon}" name="customerdata[regon]" size="30" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
+			        </td>
+			    </tr>
+		        <tr>
+		            <td width="1%" nowrap="nowrap">{trans("RBE")}:</td>
+		            <td width="99%">
+			<input type="text" value="{$customerinfo.rbe}" name="customerdata[rbe]" size="30" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
+			        </td>
+			    </tr>
+            </table>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" style="vertical-align: top">
+			<img src="img/options.gif" alt="">
+		</td>
+		<td width="98%">
+		    <table>
+		        <tr>
+		            <td>
 			            {trans("Deadline:")}
-			        </TD>
-			        <TD>
-			<SELECT name="customerdata[paytime]" {tip text="Select default deadline in days" trigger="paytime"}>
-				<OPTION value="-1"{if $customerinfo.paytime==-1} selected{/if}>- {trans("default")} -</OPTION>
-				<OPTION value="0"{if $customerinfo.paytime==0} selected{/if}>0</OPTION>
-				<OPTION value="7"{if $customerinfo.paytime==7} selected{/if}>7</OPTION>
-				<OPTION value="10"{if $customerinfo.paytime==10} selected{/if}>10</OPTION>
-				<OPTION value="14"{if $customerinfo.paytime==14} selected{/if}>14</OPTION>
-				<OPTION value="21"{if $customerinfo.paytime==21} selected{/if}>21</OPTION>
-				<OPTION value="30"{if $customerinfo.paytime==30} selected{/if}>30</OPTION>
-			</SELECT>
-		            </TD>
-	            </TR>
-	            <TR>
-	                <TD>
+			        </td>
+			        <td>
+			<select name="customerdata[paytime]" {tip text="Select default deadline in days" trigger="paytime"}>
+				<option value="-1"{if $customerinfo.paytime==-1} selected{/if}>- {trans("default")} -</option>
+				<option value="0"{if $customerinfo.paytime==0} selected{/if}>0</option>
+				<option value="7"{if $customerinfo.paytime==7} selected{/if}>7</option>
+				<option value="10"{if $customerinfo.paytime==10} selected{/if}>10</option>
+				<option value="14"{if $customerinfo.paytime==14} selected{/if}>14</option>
+				<option value="21"{if $customerinfo.paytime==21} selected{/if}>21</option>
+				<option value="30"{if $customerinfo.paytime==30} selected{/if}>30</option>
+			</select>
+		            </td>
+	            </tr>
+	            <tr>
+	                <td>
 			            {trans("Payment type:")}
-			        </TD>
-			        <TD>
-			<SELECT name="customerdata[paytype]" {tip text="Select default invoices payment type" trigger="paytype"}>
-				<OPTION value=""{if !$customerinfo.paytype} selected{/if}>- {trans("default")} -</OPTION>
+			        </td>
+			        <td>
+			<select name="customerdata[paytype]" {tip text="Select default invoices payment type" trigger="paytype"}>
+				<option value=""{if !$customerinfo.paytype} selected{/if}>- {trans("default")} -</option>
 				{foreach from=$_PAYTYPES item=item key=key}
-				<OPTION value="{$key}"{if $customerinfo.paytype==$key} selected{/if}>{$item}</OPTION>
+				<option value="{$key}"{if $customerinfo.paytype==$key} selected{/if}>{$item}</option>
 				{/foreach}
-			</SELECT>
-		            </TD>
-	            </TR>
-                <TR>
-                    <TD>
+			</select>
+		            </td>
+	            </tr>
+                <tr>
+                    <td>
 			            {trans("Cutoff suspending:")}
-			        </TD>
-			        <TD>
-			<SELECT name="customerdata[cutoffstop]" {tip text="Select days number of cutoff suspending (optional)" trigger="cutoffstop"}>
-			    <OPTION value="0"{if !$customerinfo.cutoffstop} selected{/if}>0</OPTION>
-			    <OPTION value="1"{if $customerinfo.cutoffstop==1} selected{/if}>1</OPTION>
-			    <OPTION value="2"{if $customerinfo.cutoffstop==2} selected{/if}>2</OPTION>
-			    <OPTION value="3"{if $customerinfo.cutoffstop==3} selected{/if}>3</OPTION>
-			    <OPTION value="4"{if $customerinfo.cutoffstop==4} selected{/if}>4</OPTION>
-			    <OPTION value="5"{if $customerinfo.cutoffstop==5} selected{/if}>5</OPTION>
-			    <OPTION value="6"{if $customerinfo.cutoffstop==6} selected{/if}>6</OPTION>
-			    <OPTION value="7"{if $customerinfo.cutoffstop==7} selected{/if}>7</OPTION>
-			    <OPTION value="14"{if $customerinfo.cutoffstop==14} selected{/if}>14</OPTION>
-			    <OPTION value="21"{if $customerinfo.cutoffstop==21} selected{/if}>21</OPTION>
-			    <OPTION value="30"{if $customerinfo.cutoffstop==30} selected{/if}>30</OPTION>
-			</SELECT>
-			        </TD>
-			    </TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD width="1%" style="vertical-align: top">
-			<IMG src="img/options.gif" alt="">
-		</TD>
-		<TD width="99%">
-		    <TABLE cellpadding="0">
-		        <TR>
-		            <TD>
+			        </td>
+			        <td>
+			<select name="customerdata[cutoffstop]" {tip text="Select days number of cutoff suspending (optional)" trigger="cutoffstop"}>
+			    <option value="0"{if !$customerinfo.cutoffstop} selected{/if}>0</option>
+			    <option value="1"{if $customerinfo.cutoffstop==1} selected{/if}>1</option>
+			    <option value="2"{if $customerinfo.cutoffstop==2} selected{/if}>2</option>
+			    <option value="3"{if $customerinfo.cutoffstop==3} selected{/if}>3</option>
+			    <option value="4"{if $customerinfo.cutoffstop==4} selected{/if}>4</option>
+			    <option value="5"{if $customerinfo.cutoffstop==5} selected{/if}>5</option>
+			    <option value="6"{if $customerinfo.cutoffstop==6} selected{/if}>6</option>
+			    <option value="7"{if $customerinfo.cutoffstop==7} selected{/if}>7</option>
+			    <option value="14"{if $customerinfo.cutoffstop==14} selected{/if}>14</option>
+			    <option value="21"{if $customerinfo.cutoffstop==21} selected{/if}>21</option>
+			    <option value="30"{if $customerinfo.cutoffstop==30} selected{/if}>30</option>
+			</select>
+			        </td>
+			    </tr>
+			</table>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" style="vertical-align: top">
+			<img src="img/options.gif" alt="">
+		</td>
+		<td width="99%">
+		    <table cellpadding="0">
+		        <tr>
+		            <td>
 			            <label for="chkconsent">{trans("Consent to personal data processing:")}</label>
-			        </TD>
-			        <TD>
-			            <INPUT TYPE="checkbox" NAME="customerdata[consentdate]" ID="chkconsent" VALUE="{$smarty.now}"{if $customerinfo.consentdate} checked{/if}>
-		            </TD>
-	            </TR>
-	            <TR>
-	                <TD>
+			        </td>
+			        <td>
+			            <input type="checkbox" name="customerdata[consentdate]" id="chkconsent" value="{$smarty.now}"{if $customerinfo.consentdate} checked="checked"{/if}>
+		            </td>
+	            </tr>
+	            <tr>
+	                <td>
 			            <label for="chkeinvoice">{trans("Consent to electronic invoices:")}</label>
-			        </TD>
-			        <TD>
-			            <INPUT TYPE="checkbox" NAME="customerdata[einvoice]" ID="chkeinvoice" VALUE="1"{if $customerinfo.einvoice} checked{/if}>
-		            </TD>
-	            </TR>
-	            <TR>
-	                <TD>
+			        </td>
+			        <td>
+			            <input type="checkbox" name="customerdata[einvoice]" id="chkeinvoice" value="1"{if $customerinfo.einvoice} checked="checked"{/if}>
+		            </td>
+	            </tr>
+	            <tr>
+	                <td>
 			            <label for="chkinvoicenotice">{trans("Consent to invoices delivery via e-mail:")}</label>
-			        </TD>
-			        <TD>
-			            <INPUT TYPE="checkbox" NAME="customerdata[invoicenotice]" ID="chkinvoicenotice" VALUE="1"{if $customerinfo.invoicenotice} checked{/if}>
-		            </TD>
-	            </TR>
-	            <TR>
-	                <TD>
+			        </td>
+			        <td>
+			            <input type="checkbox" name="customerdata[invoicenotice]" id="chkinvoicenotice" value="1"{if $customerinfo.invoicenotice} checked="checked"{/if}>
+		            </td>
+	            </tr>
+	            <tr>
+	                <td>
 			            <label for="chkmailingnotice">{trans("Consent to messages delivery via e-mail or sms:")}</label>
-			        </TD>
-			        <TD>
-			            <INPUT TYPE="checkbox" NAME="customerdata[mailingnotice]" ID="chkmailingnotice" VALUE="1"{if $customerinfo.mailingnotice} checked{/if}>
-		            </TD>
-	            </TR>
-	        </TABLE>
-	    </TD>
-	</TR>
-                                    		</TABLE>
-					</TD>
-					<TD WIDTH="50%" style="vertical-align:top;">
-						<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/info1.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%">
-			<TEXTAREA NAME="customerdata[info]" COLS="60" ROWS="10" {tip text="Enter additional information (optional)"}>{$customerinfo.info|escape}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/warningon.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%">
-			<TEXTAREA NAME="customerdata[message]" COLS="60" ROWS="10" {tip text="Enter notice contents (optional)"}>{$customerinfo.message|escape}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/note.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%">
-			<TEXTAREA NAME="customerdata[notes]" COLS="60" ROWS="10" {tip text="Enter notes (optional)"}>{$customerinfo.notes|escape}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/money.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%">
-			<B>{trans("Balance:")}</B>
-			{if $customerinfo.balance < 0}<FONT CLASS="ALERT">{$customerinfo.balance|money_format}</FONT>{else}{$customerinfo.balance|money_format}{/if}
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/users.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%">
-			<B>{trans("Created:")}</B> {$customerinfo.createdby}, {$customerinfo.creationdateh}<BR>
-			<B>{trans("Modified:")}</B> {if $customerinfo.moddate}{$customerinfo.modifiedby}, {$customerinfo.moddateh}{else}-{/if}
-		</TD>
-	</TR>
-                                        	</TABLE>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" CLASS="FBOTTOMU" ALIGN="RIGHT">
-			<A HREF="javascript:document.customeredit.submit();" ACCESSKEY="S">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
-			<A HREF="?m=customerinfo&id={$customerinfo.id}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
-<SCRIPT type="text/javascript">
+			        </td>
+			        <td>
+			            <input type="checkbox" name="customerdata[mailingnotice]" id="chkmailingnotice" value="1"{if $customerinfo.mailingnotice} checked="checked"{/if}>
+		            </td>
+	            </tr>
+	        </table>
+	    </td>
+	</tr>
+                                    		</table>
+					</td>
+					<td width="50%" style="vertical-align:top;">
+						<table width="100%" cellpadding="3">
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/info1.gif" alt="">
+		</td>
+		<td width="99%">
+			<textarea name="customerdata[info]" cols="60" rows="10" {tip text="Enter additional information (optional)"}>{$customerinfo.info|escape}</textarea>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/warningon.gif" alt="">
+		</td>
+		<td width="99%">
+			<textarea name="customerdata[message]" cols="60" rows="10" {tip text="Enter notice contents (optional)"}>{$customerinfo.message|escape}</textarea>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/note.gif" alt="">
+		</td>
+		<td width="99%">
+			<textarea name="customerdata[notes]" cols="60" rows="10" {tip text="Enter notes (optional)"}>{$customerinfo.notes|escape}</textarea>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/money.gif" alt="">
+		</td>
+		<td width="99%">
+			<strong>{trans("Balance:")}</strong>
+			{if $customerinfo.balance < 0}<FONT class="ALERT">{$customerinfo.balance|money_format}</FONT>{else}{$customerinfo.balance|money_format}{/if}
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/users.gif" alt="">
+		</td>
+		<td width="99%">
+			<strong>{trans("Created:")}</strong> {$customerinfo.createdby}, {$customerinfo.creationdateh}<br />
+			<strong>{trans("Modified:")}</strong> {if $customerinfo.moddate}{$customerinfo.modifiedby}, {$customerinfo.moddateh}{else}-{/if}
+		</td>
+	</tr>
+                                        	</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="100%" class="FBOTTOMU" align="RIGHT">
+			<a href="javascript:document.customeredit.submit();" accesskey="S">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+			<a href="?m=customerinfo&id={$customerinfo.id}">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
+		</td>
+	</tr>
+</table>
+</form>
+<script type="text/javascript">
 <!--
 document.forms['customeredit'].elements['customerdata[lastname]'].focus();
 //-->
-</SCRIPT>
+</script>
 

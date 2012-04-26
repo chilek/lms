@@ -1,193 +1,193 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
+<h1>{$layout.pagetitle}</h1>
 {include file="calendar_js.html"}
 {$default_printpage = get_conf('invoices.default_printpage')}
 {if $printmenu=="customer"}
-<P><FORM method="POST" name="printcustomerlist" id="printcustomerlist" action="?m=customerprint&type=customerlist" target="_blank">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE style="width: 100%;" cellpadding="3">
-	<TR class="DARK">
-		<TD class="fleftu" style="width: 1%;">
-			<IMG src="img/customer.gif" alt="">
-		</TD>
-		<TD class="frightu" style="width: 99%;">
+<P><form method="POST" name="printcustomerlist" id="printcustomerlist" action="?m=customerprint&type=customerlist" target="_blank">
+<input type="submit" class="hiddenbtn">
+<table style="width: 100%;" cellpadding="3">
+	<tr class="DARK">
+		<td class="fleftu" style="width: 1%;">
+			<img src="img/customer.gif" alt="">
+		</td>
+		<td class="frightu" style="width: 99%;">
 			<span class="bold">{trans("Customers List:")}</span>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="flr container" style="width: 100%;" colspan="2">
-			<TABLE style="width: 100%;" cellpadding="3">
-				<TR>
-					<TD style="width: 1%; white-space: nowrap;">
-						<TABLE>
-							<TR>
-								<TD style="width: 1%;"><IMG src="img/customer.gif" alt=""></TD>
-								<TD style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Status:")}</span></TD>
-								<TD style="width: 98%;">
-									<SELECT size="1" name="filter" {tip text="Select customer's group"}>
-										<OPTION value="0">- {trans("all<!customers>")} -</OPTION>
-										<OPTION value="3" CHECKED>{trans("connected<!plural>")}</OPTION>
-										<OPTION value="5">{trans("disconnected<!plural>")}</OPTION>
-										<OPTION value="6">{trans("in debt")}</OPTION>
-										<OPTION VALUE="11">{trans("in debt above 100%")}</OPTION>
-										<OPTION VALUE="12">{trans("in debt above 200%")}</OPTION>
-										<OPTION value="2">{trans("waiting")}</OPTION>
-										<OPTION value="1">{trans("interested<!plural>")}</OPTION>
-										<OPTION value="-1">{trans("without nodes")}</OPTION>
-									</SELECT>
-								</TD>
-							</TR>
-							<TR>
-								<TD style="width: 1%; white-space: nowrap;"><IMG src="img/folder.gif" alt=""></TD>
-								<TD style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Legal personality:")}</span></TD>
-								<TD style="width: 98%; white-space: nowrap;">
-									<SELECT size="1" name="type" {tip text="Select legal personality type"}>
-										<OPTION value="" SELECTED>{trans("- all -")}</OPTION>
-										<OPTION VALUE="0">{trans("private person")}</OPTION>
-										<OPTION VALUE="1">{trans("legal entity")}</OPTION>
-									</SELECT>
-								</TD>
-							</TR>
-							<TR>
-								<TD style="width: 1%; white-space: nowrap;"><IMG src="img/netdev.gif" alt=""></TD>
-								<TD style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Link type:")}</span></TD>
-								<TD style="width: 98%; white-space: nowrap;">
-									<SELECT size="1" name="linktype" {tip text="Select link type"}>
-										<OPTION VALUE="">{trans("- all -")}</OPTION>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="flr container" style="width: 100%;" colspan="2">
+			<table style="width: 100%;" cellpadding="3">
+				<tr>
+					<td style="width: 1%; white-space: nowrap;">
+						<table>
+							<tr>
+								<td style="width: 1%;"><img src="img/customer.gif" alt=""></td>
+								<td style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Status:")}</span></td>
+								<td style="width: 98%;">
+									<select size="1" name="filter" {tip text="Select customer's group"}>
+										<option value="0">- {trans("all<!customers>")} -</option>
+										<option value="3" checked="checked">{trans("connected<!plural>")}</option>
+										<option value="5">{trans("disconnected<!plural>")}</option>
+										<option value="6">{trans("in debt")}</option>
+										<option value="11">{trans("in debt above 100%")}</option>
+										<option value="12">{trans("in debt above 200%")}</option>
+										<option value="2">{trans("waiting")}</option>
+										<option value="1">{trans("interested<!plural>")}</option>
+										<option value="-1">{trans("without nodes")}</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td style="width: 1%; white-space: nowrap;"><img src="img/folder.gif" alt=""></td>
+								<td style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Legal personality:")}</span></td>
+								<td style="width: 98%; white-space: nowrap;">
+									<select size="1" name="type" {tip text="Select legal personality type"}>
+										<option value="" selected="selected">{trans("- all -")}</option>
+										<option value="0">{trans("private person")}</option>
+										<option value="1">{trans("legal entity")}</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td style="width: 1%; white-space: nowrap;"><img src="img/netdev.gif" alt=""></td>
+								<td style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Link type:")}</span></td>
+								<td style="width: 98%; white-space: nowrap;">
+									<select size="1" name="linktype" {tip text="Select link type"}>
+										<option value="">{trans("- all -")}</option>
 										{foreach from=$_LINKTYPES item=item key=key}
-										<OPTION VALUE="{$key}">{$item}</OPTION>
+										<option value="{$key}">{$item}</option>
 										{/foreach}
-									</SELECT>
-								</TD>
-							</TR>
-							<TR>
-								<TD style="width: 1%; white-space: nowrap;"><IMG src="img/netdev.gif" alt=""></TD>
-								<TD style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Link speed:")}</span></TD>
-								<TD style="width: 98%; white-space: nowrap;">
-									<SELECT size="1" name="linkspeed" {tip text="Select link speed"}>
-										<OPTION VALUE="">{trans("- all -")}</OPTION>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td style="width: 1%; white-space: nowrap;"><img src="img/netdev.gif" alt=""></td>
+								<td style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Link speed:")}</span></td>
+								<td style="width: 98%; white-space: nowrap;">
+									<select size="1" name="linkspeed" {tip text="Select link speed"}>
+										<option value="">{trans("- all -")}</option>
 										{foreach from=$_LINKSPEEDS item=item key=key}
-										<OPTION VALUE="{$key}">{$item}</OPTION>
+										<option value="{$key}">{$item}</option>
 										{/foreach}
-									</SELECT>
-								</TD>
-							</TR>
-							<TR>
-								<TD style="width: 1%; white-space: nowrap;"><IMG src="img/network.gif" alt=""></TD>
-								<TD style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Network:")}</span></TD>
-								<TD style="width: 98%; white-space: nowrap;">
-									<SELECT size="1" name="network" {tip text="Select network"}>
-										<OPTION value="0" SELECTED>{trans("- all networks -")}</OPTION>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td style="width: 1%; white-space: nowrap;"><img src="img/network.gif" alt=""></td>
+								<td style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Network:")}</span></td>
+								<td style="width: 98%; white-space: nowrap;">
+									<select size="1" name="network" {tip text="Select network"}>
+										<option value="0" selected="selected">{trans("- all networks -")}</option>
 										{section name="networks" loop=$networks}
-										<OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:40:"...":true}</OPTION>
+										<option value="{$networks[networks].id}">{$networks[networks].name|truncate:40:"...":true}</option>
 										{/section}
-									</SELECT>
-								</TD>
-							</TR>
-							<TR>
-								<TD style="width: 1%; white-space: nowrap;"><IMG src="img/group.gif" alt=""></TD>
-								<TD style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Group:")}</span></TD>
-								<TD style="width: 98%; white-space: nowrap;">
-									<SELECT size="1" name="customergroup" {tip text="Select group"}>
-										<OPTION value="0" SELECTED>{trans("- all groups -")}</OPTION>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td style="width: 1%; white-space: nowrap;"><img src="img/group.gif" alt=""></td>
+								<td style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Group:")}</span></td>
+								<td style="width: 98%; white-space: nowrap;">
+									<select size="1" name="customergroup" {tip text="Select group"}>
+										<option value="0" selected="selected">{trans("- all groups -")}</option>
 										{section name="customergroups" loop=$customergroups}
-										<OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:40:"...":true}</OPTION>
+										<option value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:40:"...":true}</option>
 										{/section}
-									</SELECT>
-								</TD>
-							</TR>
-							<TR>
-								<TD style="width: 1%; white-space: nowrap;"><IMG src="img/nodegroup.gif" alt=""></TD>
-								<TD style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Nodes Group:")}</span></TD>
-								<TD style="width: 98%; white-space: nowrap;">
-									<SELECT size="1" name="nodegroup" {tip text="Select group"}>
-										<OPTION value="" SELECTED>{trans("- all groups -")}</OPTION>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td style="width: 1%; white-space: nowrap;"><img src="img/nodegroup.gif" alt=""></td>
+								<td style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Nodes Group:")}</span></td>
+								<td style="width: 98%; white-space: nowrap;">
+									<select size="1" name="nodegroup" {tip text="Select group"}>
+										<option value="" selected="selected">{trans("- all groups -")}</option>
 										{foreach from=$nodegroups item=nodegroup}
-										<OPTION value="{$nodegroup.id}">{$nodegroup.name|truncate:30:"...":true}</OPTION>
+										<option value="{$nodegroup.id}">{$nodegroup.name|truncate:30:"...":true}</option>
 										{/foreach}
-									</SELECT>
-								</TD>
-							</TR>
-							<TR>
-								<TD style="width: 1%; white-space: nowrap;"><IMG src="img/state.gif" alt=""></TD>
-								<TD style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Country state:")}</span></TD>
-								<TD style="width: 98%; white-space: nowrap;">
-									<SELECT NAME="stateid" {tip text="Select country state"}>
-										<OPTION value="0">{trans("- all states -")}</OPTION>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td style="width: 1%; white-space: nowrap;"><img src="img/state.gif" alt=""></td>
+								<td style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Country state:")}</span></td>
+								<td style="width: 98%; white-space: nowrap;">
+									<select name="stateid" {tip text="Select country state"}>
+										<option value="0">{trans("- all states -")}</option>
 										{foreach from=$cstateslist item=item key=key}
-										<OPTION value="{$key}">{$item.name}</OPTION>
+										<option value="{$key}">{$item.name}</option>
 										{/foreach}
-									</SELECT>
-								</TD>
-							</TR>
-						</TABLE>
-					</TD>
-					<TD style="width: 1%;"><IMG src="img/view.gif" alt=""></TD>
-					<TD style="width: 1%;"><span class="bold">{trans("Sorting:")}</span></TD>
-					<TD style="width: 97%;">
-						<TABLE style="width: 1%;" {tip text="Select sorting direction and criteria"}>
-							<TR>
-								<TD style="width: 100%; white-space: nowrap;">
-									<SELECT SIZE="1" name="order">
-										<OPTION value="customername" SELECTED>{trans("First/last or Company name")}</OPTION>
-										<OPTION value="id">{trans("Id")}</OPTION> 
-										<OPTION value="balance">{trans("Balance")}</OPTION> 
-										<OPTION value="tariff">{trans("Subscription")}</OPTION> 
-										<OPTION value="address">{trans("Address")}</OPTION> 
-									</SELECT>
-								</TD>
-							</TR>
-							<TR>
-								<TD style="width: 100%; white-space: nowrap;">
-									<SELECT SIZE="1" name="direction">
-										<OPTION value="asc" SELECTED>{trans("ascending")}</OPTION>
-										<OPTION value="desc">{trans("descending")}</OPTION> 
-									</SELECT>
-								</TD>
-							</TR>
-						</TABLE>
-					</TD>
-				</TR>
-				<TR>
-					<TD style="width: 100%;" colspan="4">
-						<TABLE>
-							<TR>
-								<TD style="width: 1%; white-space: nowrap;"><IMG src="img/calendar.gif" alt=""></TD>
-								<TD style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Balance date:")}</span></TD>
-								<TD style="width: 98%; white-space: nowrap;">
-									<INPUT TYPE="text" NAME="day" SIZE="10" MAXSIZE="10" OnClick="javascript:cal12.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
-								</TD>
-							</TR>
-							<TR>
-								<TD style="width: 1%; white-space: nowrap;"><IMG src="img/docum.gif" alt=""></TD>
-								<TD style="width: 99%; white-space: nowrap;" colspan="2">
+									</select>
+								</td>
+							</tr>
+						</table>
+					</td>
+					<td style="width: 1%;"><img src="img/view.gif" alt=""></td>
+					<td style="width: 1%;"><span class="bold">{trans("Sorting:")}</span></td>
+					<td style="width: 97%;">
+						<table style="width: 1%;" {tip text="Select sorting direction and criteria"}>
+							<tr>
+								<td style="width: 100%; white-space: nowrap;">
+									<select size="1" name="order">
+										<option value="customername" selected="selected">{trans("First/last or Company name")}</option>
+										<option value="id">{trans("Id")}</option> 
+										<option value="balance">{trans("Balance")}</option> 
+										<option value="tariff">{trans("Subscription")}</option> 
+										<option value="address">{trans("Address")}</option> 
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td style="width: 100%; white-space: nowrap;">
+									<select size="1" name="direction">
+										<option value="asc" selected="selected">{trans("ascending")}</option>
+										<option value="desc">{trans("descending")}</option> 
+									</select>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td style="width: 100%;" colspan="4">
+						<table>
+							<tr>
+								<td style="width: 1%; white-space: nowrap;"><img src="img/calendar.gif" alt=""></td>
+								<td style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Balance date:")}</span></td>
+								<td style="width: 98%; white-space: nowrap;">
+									<input type="text" name="day" size="10" MAXSIZE="10" OnClick="javascript:cal12.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+								</td>
+							</tr>
+							<tr>
+								<td style="width: 1%; white-space: nowrap;"><img src="img/docum.gif" alt=""></td>
+								<td style="width: 99%; white-space: nowrap;" colspan="2">
 									<span class="bold">{trans("With document of type:")}</span>
-									<SELECT SIZE="1" NAME="doctype" {tip text="Select document type"}>
-										<OPTION VALUE="0">{trans("- all -")}</OPTION>
+									<select size="1" name="doctype" {tip text="Select document type"}>
+										<option value="0">{trans("- all -")}</option>
 										{foreach from=$_DOCTYPES key=key item=item}
-										<OPTION VALUE="{$key}">{$item}</OPTION>
+										<option value="{$key}">{$item}</option>
 										{/foreach}
-									</SELECT>
+									</select>
 									<span class="bold">{trans("in date:")}</span>
-									{trans("From")}&nbsp;<INPUT TYPE="text" NAME="docfrom" SIZE="10" MAXSIZE="10" OnClick="javascript:cal21.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
-									{trans("To")}&nbsp;<INPUT TYPE="text" NAME="docto" SIZE="10" MAXSIZE="10" OnClick="javascript:cal22.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>	
-								</TD>
-							</TR>
-						</TABLE>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="fbottomu" style="width: 100%; text-align: right;" colspan="2">
-			<A href="javascript:document.printcustomerlist.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
-<SCRIPT type="text/javascript">
+									{trans("From")}&nbsp;<input type="text" name="docfrom" size="10" MAXSIZE="10" OnClick="javascript:cal21.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+									{trans("To")}&nbsp;<input type="text" name="docto" size="10" MAXSIZE="10" OnClick="javascript:cal22.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>	
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fbottomu" style="width: 100%; text-align: right;" colspan="2">
+			<a href="javascript:document.printcustomerlist.submit();">{trans("Print")} <img src="img/print.gif" alt="" hspace="2"></a>
+		</td>
+	</tr>
+</table>
+</form>
+<script type="text/javascript">
 <!--
 var cal12 = new calendar(document.printcustomerlist.elements['day']);
 cal12.time_comp = false;
@@ -196,162 +196,162 @@ cal21.time_comp = false;
 var cal22 = new calendar(document.printcustomerlist.elements['docto']);
 cal22.time_comp = false;
 //-->
-</SCRIPT>
+</script>
 </P>
 {/if}
 {if $printmenu=="finances"}
-<P><FORM method="post" name="printbalancelist" id="printbalancelist" action="?m=print&type=balancelist" target="_blank">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
-		<TD class="fleftu" width="1%">
-		    <IMG src="img/money.gif" alt="">
-		</TD>
-		<TD class="frightu" width="99%">
-		    <B>{trans("Network Balance Sheet")}</B>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="flr container" width="100%" colspan="2">
-			<TABLE width="100%">
-				<TR>
-					<TD width="1%" nowrap>
-					    <TABLE cellpadding="3">
-					        <TR>
-					    	    <TD width="1%">
-							<IMG src="img/users.gif" alt="">
-						    </TD>
-						    <TD width="1%">
-						        <B>{trans("User:")}</B>
-						    </TD>
-						    <TD width="98%">
-						        <SELECT size="1" name="user" {tip text="You can select user to limit results"}>
-						    	    <OPTION value="">{trans("- all users -")}</OPTION>
+<P><form method="post" name="printbalancelist" id="printbalancelist" action="?m=print&type=balancelist" target="_blank">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td class="fleftu" width="1%">
+		    <img src="img/money.gif" alt="">
+		</td>
+		<td class="frightu" width="99%">
+		    <strong>{trans("Network Balance Sheet")}</strong>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="flr container" width="100%" colspan="2">
+			<table width="100%">
+				<tr>
+					<td width="1%" nowrap="nowrap">
+					    <table cellpadding="3">
+					        <tr>
+					    	    <td width="1%">
+							<img src="img/users.gif" alt="">
+						    </td>
+						    <td width="1%">
+						        <strong>{trans("User:")}</strong>
+						    </td>
+						    <td width="98%">
+						        <select size="1" name="user" {tip text="You can select user to limit results"}>
+						    	    <option value="">{trans("- all users -")}</option>
 							    {section name="users" loop=$users}
-							    <OPTION value="{$users[users].id}">{$users[users].name|truncate:40:"...":true}</OPTION>
+							    <option value="{$users[users].id}">{$users[users].name|truncate:40:"...":true}</option>
 							    {/section}
-					    	    </SELECT>
-						</TR>
-						<TR>
-						    <TD width="1%">
-							<IMG src="img/network.gif" alt="">
-						    </TD>
-						    <TD width="1%" nowrap>
-							<B>{trans("Network:")}</B>
-						    </TD>
-						    <TD width="98%">
-							<SELECT size="1" name="network" {tip text="Select network"}>
-							    <OPTION value="0" SELECTED>{trans("- all networks -")}</OPTION>
+					    	    </select>
+						</tr>
+						<tr>
+						    <td width="1%">
+							<img src="img/network.gif" alt="">
+						    </td>
+						    <td width="1%" nowrap="nowrap">
+							<strong>{trans("Network:")}</strong>
+						    </td>
+						    <td width="98%">
+							<select size="1" name="network" {tip text="Select network"}>
+							    <option value="0" selected="selected">{trans("- all networks -")}</option>
 							    {section name="networks" loop=$networks}
-							    <OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:40:"...":true}</OPTION>
+							    <option value="{$networks[networks].id}">{$networks[networks].name|truncate:40:"...":true}</option>
 							    {/section}
-							</SELECT>
-						    </TD>
-						</TR>
-						<TR>
-						    <TD width="1%">
-							<IMG src="img/division.gif" alt="">
-						    </TD>
-						    <TD width="1%" nowrap>
-							<B>{trans("Division")}:</B>
-						    </TD>
-						    <TD width="98%" nowrap>
-							<SELECT size="1" name="division" {tip text="Select division"}>
-							    <OPTION VALUE="0">- {trans("all")} -</OPTION>
+							</select>
+						    </td>
+						</tr>
+						<tr>
+						    <td width="1%">
+							<img src="img/division.gif" alt="">
+						    </td>
+						    <td width="1%" nowrap="nowrap">
+							<strong>{trans("Division")}:</strong>
+						    </td>
+						    <td width="98%" nowrap="nowrap">
+							<select size="1" name="division" {tip text="Select division"}>
+							    <option value="0">- {trans("all")} -</option>
                     					    {foreach from=$divisions item=item}
-			                            	    <OPTION VALUE="{$item.id}">{$item.shortname}</OPTION>
+			                            	    <option value="{$item.id}">{$item.shortname}</option>
 							    {/foreach}
-							</SELECT>
-						    </TD>
-						</TR>
-						<TR>
-						    <TD width="1%">
-							<IMG src="img/group.gif" alt="">
-						    </TD>
-						    <TD width="1%" nowrap>
-							<B>{trans("Group:")}</B>
-						    </TD>
-						    <TD width="98%">
-							<SELECT size="1" name="customergroup" {tip text="Select group"}>
-							    <OPTION value="0" SELECTED>{trans("- all groups -")}</OPTION>
+							</select>
+						    </td>
+						</tr>
+						<tr>
+						    <td width="1%">
+							<img src="img/group.gif" alt="">
+						    </td>
+						    <td width="1%" nowrap="nowrap">
+							<strong>{trans("Group:")}</strong>
+						    </td>
+						    <td width="98%">
+							<select size="1" name="customergroup" {tip text="Select group"}>
+							    <option value="0" selected="selected">{trans("- all groups -")}</option>
 							    {section name="customergroups" loop=$customergroups}
-							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:40:"...":true}</OPTION>
+							    <option value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:40:"...":true}</option>
 							    {/section}
-							</SELECT>
-						    </TD>
-						</TR>
-					    </TABLE>
-					</TD>
-					<TD width="1%" nowrap>
-					    <TABLE>
-						<TR>
-						    <TD width="1%">
-							<IMG src="img/money.gif" alt="">
-						    </TD>
-						    <TD width="1%" nowrap>
-							<B>{trans("Transaction type:")}</B>
-						    </TD>
-						    <TD width="98%">
-							<SELECT name="types[]" id="balancelisttype" {tip text="Select transaction type"} multiple>
-							    <OPTION value="1">{trans("Liability")}</OPTION>
-							    <OPTION value="2">{trans("Income")}</OPTION>
-							    <OPTION value="3">{trans("Expense")}</OPTION>
-							</SELECT>
-						    </TD>
-						</TR>
-						<TR>
-						    <TD width="1%">
-						    	<IMG src="img/print.gif" alt="">
-						    </TD>
-						    <TD width="1%" nowrap>
-                        				<B>{trans("Documents:")}</B>
-                        			    </TD>
-                        			    <TD width="98%">
-                        				<SELECT size="1" name="docs" {tip text="Select transaction type"}>
-                                			    <OPTION value="">{trans("- all -")}</OPTION>
-                            				    <OPTION value="documented">{trans("with document")}</OPTION>
-                            				    <OPTION value="notdocumented">{trans("without document")}</OPTION>
-                        				</SELECT>
-                        			    </TD>
-                    				</TR>
-						<TR>
-						    <TD width="1%">
-						    	<IMG src="img/isource.gif" alt="">
-						    </TD>
-						    <TD width="1%" nowrap>
-                        				<B>{trans("Source:")}</B>
-                        			    </TD>
-                        			    <TD width="98%">
-							<SELECT size="1" name="source" {tip text="You can select import source to limit results"}>
-							<OPTION value="0">{trans("- all sources -")}</OPTION>
+							</select>
+						    </td>
+						</tr>
+					    </table>
+					</td>
+					<td width="1%" nowrap="nowrap">
+					    <table>
+						<tr>
+						    <td width="1%">
+							<img src="img/money.gif" alt="">
+						    </td>
+						    <td width="1%" nowrap="nowrap">
+							<strong>{trans("Transaction type:")}</strong>
+						    </td>
+						    <td width="98%">
+							<select name="types[]" id="balancelisttype" {tip text="Select transaction type"} multiple>
+							    <option value="1">{trans("Liability")}</option>
+							    <option value="2">{trans("Income")}</option>
+							    <option value="3">{trans("Expense")}</option>
+							</select>
+						    </td>
+						</tr>
+						<tr>
+						    <td width="1%">
+						    	<img src="img/print.gif" alt="">
+						    </td>
+						    <td width="1%" nowrap="nowrap">
+                        				<strong>{trans("Documents:")}</strong>
+                        			    </td>
+                        			    <td width="98%">
+                        				<select size="1" name="docs" {tip text="Select transaction type"}>
+                                			    <option value="">{trans("- all -")}</option>
+                            				    <option value="documented">{trans("with document")}</option>
+                            				    <option value="notdocumented">{trans("without document")}</option>
+                        				</select>
+                        			    </td>
+                    				</tr>
+						<tr>
+						    <td width="1%">
+						    	<img src="img/isource.gif" alt="">
+						    </td>
+						    <td width="1%" nowrap="nowrap">
+                        				<strong>{trans("Source:")}</strong>
+                        			    </td>
+                        			    <td width="98%">
+							<select size="1" name="source" {tip text="You can select import source to limit results"}>
+							<option value="0">{trans("- all sources -")}</option>
 							{foreach from=$sourcelist item=item}
-							<OPTION value="{$item.id}">{$item.name}</OPTION>
+							<option value="{$item.id}">{$item.name}</option>
 							{/foreach}
-							</SELECT>
-						    </TD>
-						</TR>
-					    </TABLE>
-					</TD>
-					<TD width="1%">
-						<IMG src="img/calendar.gif" alt="">
-					</TD>
-					<TD width="95%" nowrap style="vertical-align: middle">
-						<B>{trans("Period:")}</B>
-						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="balancefrom" SIZE="10" MAXSIZE="10" OnClick="javascript:cal1.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
-						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="balanceto" SIZE="10" MAXSIZE="10" OnClick="javascript:cal2.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.printbalancelist.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
-<SCRIPT type="text/javascript">
+							</select>
+						    </td>
+						</tr>
+					    </table>
+					</td>
+					<td width="1%">
+						<img src="img/calendar.gif" alt="">
+					</td>
+					<td width="95%" nowrap="nowrap" style="vertical-align: middle">
+						<strong>{trans("Period:")}</strong>
+						{trans("From")}&nbsp;<input type="text" name="balancefrom" size="10" MAXSIZE="10" OnClick="javascript:cal1.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<input type="text" name="balanceto" size="10" MAXSIZE="10" OnClick="javascript:cal2.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fbottomu" width="100%" colspan="2" align="right">
+			<a href="javascript:document.printbalancelist.submit();">{trans("Print")} <img src="img/print.gif" alt="" hspace="2"></a>
+		</td>
+	</tr>
+</table>
+</form>
+<script type="text/javascript">
 <!--
 var cal1 = new calendar(document.printbalancelist.elements['balancefrom']);
 cal1.time_comp = false;
@@ -359,187 +359,187 @@ var cal2 = new calendar(document.printbalancelist.elements['balanceto']);
 cal2.time_comp = false;
 multiselect('printbalancelist', 'balancelisttype', '{trans("- all types -")}');
 //-->
-</SCRIPT>
+</script>
 </P>
 {/if}
 {if ($printmenu=="customer" || $printmenu=="finances") && !check_conf('privileges.hide_finances')}
-<P><FORM method="post" name="printcustomerbalance" id="printcustomerbalance" action="?m=print&type=customerbalance" target="_blank">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
-		<TD class="fleftu" width="1%">
-			<IMG src="img/money.gif" alt="">
-		</TD>
-		<TD class="frightu" width="99%">
-			<B>{trans("Customer Balance Sheet")}</B>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="flr container" width="100%" colspan="2">
-			<TABLE width="100%" cellpadding="3">
-				<TR>
-					<TD width="1%">
-						<IMG src="img/customer.gif" alt="">
-					</TD>
-					<TD width="1%" nowrap>
-						<B>{trans("Customer:")}</B>
-					</TD>
-					<TD width="1%" nowrap>
+<P><form method="post" name="printcustomerbalance" id="printcustomerbalance" action="?m=print&type=customerbalance" target="_blank">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td class="fleftu" width="1%">
+			<img src="img/money.gif" alt="">
+		</td>
+		<td class="frightu" width="99%">
+			<strong>{trans("Customer Balance Sheet")}</strong>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="flr container" width="100%" colspan="2">
+			<table width="100%" cellpadding="3">
+				<tr>
+					<td width="1%">
+						<img src="img/customer.gif" alt="">
+					</td>
+					<td width="1%" nowrap="nowrap">
+						<strong>{trans("Customer:")}</strong>
+					</td>
+					<td width="1%" nowrap="nowrap">
 						{if $customers}
-						<SELECT size="1" name="customer" {tip text="Select customer"}>
+						<select size="1" name="customer" {tip text="Select customer"}>
 							{foreach from=$customers item=customer}
-							<OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
+							<option value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</option>
 							{/foreach}
-						</SELECT>
+						</select>
 						{else}
-						<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID"}>
-						<a href="javascript: void(0);" onClick="return customerchoosewin(document.printcustomerbalance.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
+						<input type="text" name="customer" value="" size="5" {tip text="Enter customer ID"}>
+						<a href="javascript: void(0);" onClick="return customerchoosewin(document.printcustomerbalance.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</a>
 						{/if}
-					</TD>
-					<TD width="1%">
-						<IMG src="img/calendar.gif" alt="">
-					</TD>
-					<TD width="96%" nowrap>
-						<B>{trans("Period:")}</B>&nbsp;
-						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal3.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means 1970/01/01) or click to choose it from calendar"}>
-						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal4.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.printcustomerbalance.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
-<SCRIPT type="text/javascript">
+					</td>
+					<td width="1%">
+						<img src="img/calendar.gif" alt="">
+					</td>
+					<td width="96%" nowrap="nowrap">
+						<strong>{trans("Period:")}</strong>&nbsp;
+						{trans("From")}&nbsp;<input type="text" name="from" size="10" MAXSIZE="10" OnClick="javascript:cal3.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means 1970/01/01) or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<input type="text" name="to" size="10" MAXSIZE="10" OnClick="javascript:cal4.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fbottomu" width="100%" colspan="2" align="right">
+			<a href="javascript:document.printcustomerbalance.submit();">{trans("Print")} <img src="img/print.gif" alt="" hspace="2"></a>
+		</td>
+	</tr>
+</table>
+</form>
+<script type="text/javascript">
 <!--
 var cal3 = new calendar(document.printcustomerbalance.elements['from']);
 cal3.time_comp = false;
 var cal4 = new calendar(document.printcustomerbalance.elements['to']);
 cal4.time_comp = false;
 //-->
-</SCRIPT>
+</script>
 </P>
 {/if}
 {if $printmenu=="finances"}
-<P><FORM method="post" name="invoicereport" id="invoicereport" action="?m=invoicereport" target="_blank">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
-		<TD class="fleftu" width="1%">
-			<IMG src="img/money.gif" alt="">
-		</TD>
-		<TD class="frightu" width="99%">
-			<B>{trans("Sale Registry")}</B>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="flr container" width="100%" colspan="2">
-			<TABLE width="100%" cellpadding="3">
-				<TR>
-					<TD width="1%">
-					    <TABLE width="100%">
-						<TR>
-						    <TD width="1%">
-							<IMG src="img/division.gif" alt="">
-						    </TD>
-						    <TD width="1%" nowrap>
-							<B>{trans("Division")}:</B>
-						    </TD>
-						    <TD width="98%" colspan="2" nowrap>
-							<SELECT size="1" name="division" {tip text="Select division"}>
-							    <OPTION VALUE="0">- {trans("all")} -</OPTION>
+<P><form method="post" name="invoicereport" id="invoicereport" action="?m=invoicereport" target="_blank">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td class="fleftu" width="1%">
+			<img src="img/money.gif" alt="">
+		</td>
+		<td class="frightu" width="99%">
+			<strong>{trans("Sale Registry")}</strong>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="flr container" width="100%" colspan="2">
+			<table width="100%" cellpadding="3">
+				<tr>
+					<td width="1%">
+					    <table width="100%">
+						<tr>
+						    <td width="1%">
+							<img src="img/division.gif" alt="">
+						    </td>
+						    <td width="1%" nowrap="nowrap">
+							<strong>{trans("Division")}:</strong>
+						    </td>
+						    <td width="98%" colspan="2" nowrap="nowrap">
+							<select size="1" name="division" {tip text="Select division"}>
+							    <option value="0">- {trans("all")} -</option>
                     					{foreach from=$divisions item=item}
-			                            	    <OPTION VALUE="{$item.id}">{$item.shortname}</OPTION>
+			                            	    <option value="{$item.id}">{$item.shortname}</option>
 							{/foreach}
-							</SELECT>
-						    </TD>
-						</TR>
-						<TR>
-						    <TD width="1%">
-							<IMG src="img/group.gif" alt="">
-						    </TD>
-						    <TD width="1%" nowrap>
-							<B>{trans("Group:")}</B>
-						    </TD>
-						    <TD width="97%" nowrap>
-							<SELECT size="4" name="group[]" MULTIPLE id="invoicereportgroup" {tip text="Select group"}>
+							</select>
+						    </td>
+						</tr>
+						<tr>
+						    <td width="1%">
+							<img src="img/group.gif" alt="">
+						    </td>
+						    <td width="1%" nowrap="nowrap">
+							<strong>{trans("Group:")}</strong>
+						    </td>
+						    <td width="97%" nowrap="nowrap">
+							<select size="4" name="group[]" MULTIPLE id="invoicereportgroup" {tip text="Select group"}>
 			    				    {section name="customergroups" loop=$customergroups}
-							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
+							    <option value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</option>
 							    {/section}
-							</SELECT>
-						    </TD>
-						    <TD width="1%" nowrap>
-    							<INPUT type="checkbox" name="groupexclude" id="invoicereport-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><label for="invoicereport-groupexclude">{trans("exclude group")}</label>
-						    </TD>
-						</TR>
-						<TR>
-						    <TD width="1%">
-							<IMG src="img/queue.gif" alt="">
-						    </TD>
-						    <TD width="1%" nowrap>
-							<B>{trans("Plan:")}</B>
-						    </TD>
-						    <TD width="98%" colspan="2" nowrap>
-							<SELECT name="numberplanid" {tip text="Select numbering plan"}>
-							    <OPTION value="0">- {trans("all")} -</OPTION>
+							</select>
+						    </td>
+						    <td width="1%" nowrap="nowrap">
+    							<input type="checkbox" name="groupexclude" id="invoicereport-groupexclude" {if $listdata.groupexclude} checked="checked"{/if}><label for="invoicereport-groupexclude">{trans("exclude group")}</label>
+						    </td>
+						</tr>
+						<tr>
+						    <td width="1%">
+							<img src="img/queue.gif" alt="">
+						    </td>
+						    <td width="1%" nowrap="nowrap">
+							<strong>{trans("Plan:")}</strong>
+						    </td>
+						    <td width="98%" colspan="2" nowrap="nowrap">
+							<select name="numberplanid" {tip text="Select numbering plan"}>
+							    <option value="0">- {trans("all")} -</option>
     							    {foreach item=plan from=$numberplans}
 					    		    {assign var=period value=$plan.period}
-							    <OPTION value="{$plan.id}">{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</OPTION>
+							    <option value="{$plan.id}">{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</option>
 							    {/foreach}
-							</SELECT>
-						    </TD>
-						</TR>
-					    </TABLE>
-					</TD>
-					<TD width="1%">
-					    <TABLE width="100%">
-						    <TR>
-						        <TD width="1%">
-						            <IMG src="img/calendar.gif" alt="">
-					            </TD>
-					            <TD width="1%">
-						            <B>{trans("Period:")}</B>
-					            </TD>
-					            <TD width="1%" nowrap>
-						            {trans("From")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal8.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-					            </TD>
-					            <TD width="98%" nowrap>
-						            {trans("To")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal9.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-					            </TD>
-					        </TR>
-						    <TR>
-						        <TD colspan="2"></TD>
-					            <TD colspan="2" nowrap>
+							</select>
+						    </td>
+						</tr>
+					    </table>
+					</td>
+					<td width="1%">
+					    <table width="100%">
+						    <tr>
+						        <td width="1%">
+						            <img src="img/calendar.gif" alt="">
+					            </td>
+					            <td width="1%">
+						            <strong>{trans("Period:")}</strong>
+					            </td>
+					            <td width="1%" nowrap="nowrap">
+						            {trans("From")}&nbsp;<input type="text" name="from" size="10" MAXSIZE="10" OnClick="javascript:cal8.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+					            </td>
+					            <td width="98%" nowrap="nowrap">
+						            {trans("To")}&nbsp;<input type="text" name="to" size="10" MAXSIZE="10" OnClick="javascript:cal9.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+					            </td>
+					        </tr>
+						    <tr>
+						        <td colspan="2"></td>
+					            <td colspan="2" nowrap="nowrap">
 					                {trans("by date")}:
-					                <SELECT name="datetype" {tip text="Select date type"}>
-					                    <OPTION value="cdate">{trans("Draw-up date")}</OPTION>
-					                    <OPTION value="sdate">{trans("Sale date")}</OPTION>
-					                    <OPTION value="pdate">{trans("Deadline")}</OPTION>
-					                </SELECT>
-					            </TD>
-					        </TR>
-					    </TABLE>
-					</TD>
-					<TD width="98%" nowrap>
+					                <select name="datetype" {tip text="Select date type"}>
+					                    <option value="cdate">{trans("Draw-up date")}</option>
+					                    <option value="sdate">{trans("Sale date")}</option>
+					                    <option value="pdate">{trans("Deadline")}</option>
+					                </select>
+					            </td>
+					        </tr>
+					    </table>
+					</td>
+					<td width="98%" nowrap="nowrap">
 						<input type="checkbox" name="extended" value="1" id="invoicereport-extended"><label for="invoicereport-extended">{trans("extended format")}</label>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.invoicereport.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
-<SCRIPT type="text/javascript">
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fbottomu" width="100%" colspan="2" align="right">
+			<a href="javascript:document.invoicereport.submit();">{trans("Print")} <img src="img/print.gif" alt="" hspace="2"></a>
+		</td>
+	</tr>
+</table>
+</form>
+<script type="text/javascript">
 <!--
 var cal8 = new calendar(document.forms['invoicereport'].elements['from']);
 cal8.time_comp = false;
@@ -547,113 +547,113 @@ var cal9 = new calendar(document.forms['invoicereport'].elements['to']);
 cal9.time_comp = false;
 multiselect('invoicereport', 'invoicereportgroup', '{trans("- all groups -")}');
 //-->
-</SCRIPT>
+</script>
 </P>
 {/if}
 {if $printmenu=="finances"}
-<P><FORM method="post" name="printreceiptlist" id="printreceiptlist" action="?m=print&type=receiptlist" target="_blank">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
-		<TD class="fleftu" width="1%">
-			<IMG src="img/money.gif" alt="">
-		</TD>
-		<TD class="frightu" width="99%">
-			<B>{trans("Cash Report")}</B>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="flr container" width="100%" colspan="2">
-			<TABLE width="100%" cellpadding="3">
-				<TR>
-					<TD width="1%">
-					    <TABLE width="100%">
-						<TR>
-						    <TD width="1%">
-							<IMG src="img/queue.gif" alt="">
-						    </TD>
-						    <TD width="1%" nowrap>
-							<B>{trans("Registry:")}</B>
-						    </TD>
-						    <TD width="98%" nowrap>
-							<SELECT SIZE="1" NAME="registry" {tip text="Select cash registry"}>
-					    		    <OPTION VALUE="0">{trans("- all -")}</OPTION>
+<P><form method="post" name="printreceiptlist" id="printreceiptlist" action="?m=print&type=receiptlist" target="_blank">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td class="fleftu" width="1%">
+			<img src="img/money.gif" alt="">
+		</td>
+		<td class="frightu" width="99%">
+			<strong>{trans("Cash Report")}</strong>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="flr container" width="100%" colspan="2">
+			<table width="100%" cellpadding="3">
+				<tr>
+					<td width="1%">
+					    <table width="100%">
+						<tr>
+						    <td width="1%">
+							<img src="img/queue.gif" alt="">
+						    </td>
+						    <td width="1%" nowrap="nowrap">
+							<strong>{trans("Registry:")}</strong>
+						    </td>
+						    <td width="98%" nowrap="nowrap">
+							<select size="1" name="registry" {tip text="Select cash registry"}>
+					    		    <option value="0">{trans("- all -")}</option>
 						    	    {foreach from=$cashreglist item=c}
-							    <OPTION VALUE="{$c.id}">{$c.name|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
+							    <option value="{$c.id}">{$c.name|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</option>
 						    	    {/foreach}
-							</SELECT>
-						    </TD>
-						</TR>
-						<TR>
-						    <TD width="1%">
-							<IMG src="img/group.gif" alt="">
-						    </TD>
-						    <TD width="1%" nowrap>
-							<B>{trans("Group:")}</B>
-						    </TD>
-						    <TD width="98%" nowrap>
-							<SELECT size="1" name="group">
-							    <OPTION value="0" SELECTED>{trans("- all groups -")}</OPTION>
+							</select>
+						    </td>
+						</tr>
+						<tr>
+						    <td width="1%">
+							<img src="img/group.gif" alt="">
+						    </td>
+						    <td width="1%" nowrap="nowrap">
+							<strong>{trans("Group:")}</strong>
+						    </td>
+						    <td width="98%" nowrap="nowrap">
+							<select size="1" name="group">
+							    <option value="0" selected="selected">{trans("- all groups -")}</option>
 			    				    {section name="customergroups" loop=$customergroups}
-							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
+							    <option value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</option>
 							    {/section}
-							</SELECT>
-    							<INPUT type="checkbox" name="groupexclude" id="receiptlist-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><label for="receiptlist-groupexclude">{trans("exclude group")}</label>
-						    </TD>
-						</TR>
-						<TR>
-						    <TD width="1%">
-							<IMG src="img/users.gif" alt="">
-						    </TD>
-						    <TD width="1%" nowrap>
-							<B>{trans("User:")}</B>
-						    </TD>
-						    <TD width="98%" nowrap>
-							<SELECT size="1" name="user" {tip text="You can select user to limit results"}>
-							    <OPTION value="">{trans("- all users -")}</OPTION>
+							</select>
+    							<input type="checkbox" name="groupexclude" id="receiptlist-groupexclude" {if $listdata.groupexclude} checked="checked"{/if}><label for="receiptlist-groupexclude">{trans("exclude group")}</label>
+						    </td>
+						</tr>
+						<tr>
+						    <td width="1%">
+							<img src="img/users.gif" alt="">
+						    </td>
+						    <td width="1%" nowrap="nowrap">
+							<strong>{trans("User:")}</strong>
+						    </td>
+						    <td width="98%" nowrap="nowrap">
+							<select size="1" name="user" {tip text="You can select user to limit results"}>
+							    <option value="">{trans("- all users -")}</option>
 							    {section name="users" loop=$users}
-							    <OPTION value="{$users[users].id}">{$users[users].name|truncate:40:"...":true}</OPTION>
+							    <option value="{$users[users].id}">{$users[users].name|truncate:40:"...":true}</option>
 							    {/section}
-							</SELECT>
-						    </TD>
-						</TR>
-					    </TABLE>
-					<TD width="1%">
-						<IMG src="img/calendar.gif" alt="">
-					</TD>
-					<TD width="1%" nowrap>
-						<B>{trans("Period:")}</B>&nbsp;
-						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal12.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal13.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
-					</TD>
-					<TD width="97%" nowrap>
+							</select>
+						    </td>
+						</tr>
+					    </table>
+					<td width="1%">
+						<img src="img/calendar.gif" alt="">
+					</td>
+					<td width="1%" nowrap="nowrap">
+						<strong>{trans("Period:")}</strong>&nbsp;
+						{trans("From")}&nbsp;<input type="text" name="from" size="10" MAXSIZE="10" OnClick="javascript:cal12.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<input type="text" name="to" size="10" MAXSIZE="10" OnClick="javascript:cal13.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+					</td>
+					<td width="97%" nowrap="nowrap">
 						<input type="checkbox" name="extended" value="1" id="receiptlist-extended"><label for="receiptlist-extended">{trans("extended format")}</label>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.printreceiptlist.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
-<SCRIPT type="text/javascript">
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fbottomu" width="100%" colspan="2" align="right">
+			<a href="javascript:document.printreceiptlist.submit();">{trans("Print")} <img src="img/print.gif" alt="" hspace="2"></a>
+		</td>
+	</tr>
+</table>
+</form>
+<script type="text/javascript">
 <!--
 var cal12 = new calendar(document.printreceiptlist.elements['from']);
 cal12.time_comp = false;
 var cal13 = new calendar(document.printreceiptlist.elements['to']);
 cal13.time_comp = false;
 //-->
-</SCRIPT>
+</script>
 </P>
 {/if}
 {if $printmenu=="finances"}
-<P><FORM method="post" name="printinvoices" id="printinvoices" action="?m=print&type=invoices" target="_blank">
-<INPUT type="submit" class="hiddenbtn">
-<SCRIPT type="text/javascript">
+<P><form method="post" name="printinvoices" id="printinvoices" action="?m=print&type=invoices" target="_blank">
+<input type="submit" class="hiddenbtn">
+<script type="text/javascript">
 <!--
 	function print()
 	{
@@ -667,566 +667,566 @@ cal13.time_comp = false;
 		document.printinvoices.submit();
 	}
 //-->
-</SCRIPT>
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
-		<TD class="fleftu" width="1%">
-			<IMG src="img/money.gif" alt="">
-		</TD>
-		<TD class="frightu" width="99%">
-			<B>{trans("Invoices")}</B>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="flr container" width="100%" colspan="2">
-			<TABLE width="100%" cellpadding="3">
-				<TR>
-					<TD width="1%">
-					    <TABLE width="100%">
-						<TR>
-						    <TD width="1%">
-							<IMG src="img/customer.gif" alt="">
-						    </TD>
-						    <TD width="1%" nowrap>
-							<B>{trans("Customer:")}</B>
-						    </TD>
-						    <TD width="98%" nowrap>
+</script>
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td class="fleftu" width="1%">
+			<img src="img/money.gif" alt="">
+		</td>
+		<td class="frightu" width="99%">
+			<strong>{trans("Invoices")}</strong>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="flr container" width="100%" colspan="2">
+			<table width="100%" cellpadding="3">
+				<tr>
+					<td width="1%">
+					    <table width="100%">
+						<tr>
+						    <td width="1%">
+							<img src="img/customer.gif" alt="">
+						    </td>
+						    <td width="1%" nowrap="nowrap">
+							<strong>{trans("Customer:")}</strong>
+						    </td>
+						    <td width="98%" nowrap="nowrap">
 							{if $customers}
-							<SELECT size="1" name="customer" {tip text="You can select customer to limit results"}>
-							    <OPTION value="0">{trans("- all customers -")}</OPTION>
+							<select size="1" name="customer" {tip text="You can select customer to limit results"}>
+							    <option value="0">{trans("- all customers -")}</option>
 							    {foreach from=$customers item=customer}
-							    <OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
+							    <option value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</option>
 							    {/foreach}
-							</SELECT>
+							</select>
 							{else}
-							<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
-							<a href="javascript: void(0);" onClick="return customerchoosewin(document.printinvoices.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
+							<input type="text" name="customer" value="" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
+							<a href="javascript: void(0);" onClick="return customerchoosewin(document.printinvoices.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</a>
 							{/if}
-						    </TD>
-						</TR>
-						<TR>
-						    <TD width="1%">
-							<IMG src="img/group.gif" alt="">
-						    </TD>
-						    <TD width="1%" nowrap>
-							<B>{trans("Group:")}</B>
-						    </TD>
-						    <TD width="98%" nowrap>
-							<SELECT size="1" name="group">
-							    <OPTION value="0" SELECTED>{trans("- all groups -")}</OPTION>
+						    </td>
+						</tr>
+						<tr>
+						    <td width="1%">
+							<img src="img/group.gif" alt="">
+						    </td>
+						    <td width="1%" nowrap="nowrap">
+							<strong>{trans("Group:")}</strong>
+						    </td>
+						    <td width="98%" nowrap="nowrap">
+							<select size="1" name="group">
+							    <option value="0" selected="selected">{trans("- all groups -")}</option>
 			    				    {section name="customergroups" loop=$customergroups}
-							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
+							    <option value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</option>
 							    {/section}
-							</SELECT>
-    							<INPUT type="checkbox" name="groupexclude" id="invoices-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><label for="invoices-groupexclude">{trans("exclude group")}</label>
-						    </TD>
-						</TR>
-						<TR>
-						    <TD width="1%">
-							<IMG src="img/queue.gif" alt="">
-						    </TD>
-						    <TD width="1%" nowrap>
-							<B>{trans("Plan:")}</B>
-						    </TD>
-						    <TD width="98%" nowrap>
-							<SELECT name="numberplan" {tip text="Select numbering plan"}>
-							    <OPTION value="0">- {trans("all")} -</OPTION>
+							</select>
+    							<input type="checkbox" name="groupexclude" id="invoices-groupexclude" {if $listdata.groupexclude} checked="checked"{/if}><label for="invoices-groupexclude">{trans("exclude group")}</label>
+						    </td>
+						</tr>
+						<tr>
+						    <td width="1%">
+							<img src="img/queue.gif" alt="">
+						    </td>
+						    <td width="1%" nowrap="nowrap">
+							<strong>{trans("Plan:")}</strong>
+						    </td>
+						    <td width="98%" nowrap="nowrap">
+							<select name="numberplan" {tip text="Select numbering plan"}>
+							    <option value="0">- {trans("all")} -</option>
     							    {foreach item=plan from=$numberplans}
 					    		    {assign var=period value=$plan.period}
-							    <OPTION value="{$plan.id}">{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</OPTION>
+							    <option value="{$plan.id}">{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</option>
 							    {/foreach}
-							</SELECT>
-						    </TD>
-						</TR>
-					    </TABLE>
-					</TD>
-					<TD style="width: 99%;">
-						<TABLE style="width: 100%;">
-							<TR>
-								<TD style="width: 1%;">
-									<IMG src="img/calendar.gif" alt="">
-								</TD>
-								<TD style="width: 1%; white-space: nowrap;">
+							</select>
+						    </td>
+						</tr>
+					    </table>
+					</td>
+					<td style="width: 99%;">
+						<table style="width: 100%;">
+							<tr>
+								<td style="width: 1%;">
+									<img src="img/calendar.gif" alt="">
+								</td>
+								<td style="width: 1%; white-space: nowrap;">
 									<span class="bold">{trans("Period:")}</span>&nbsp;
-									{trans("From")}&nbsp;<INPUT TYPE="text" NAME="invoicefrom" SIZE="10" MAXSIZE="10" OnClick="javascript:cal10.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-									{trans("To")}&nbsp;<INPUT TYPE="text" NAME="invoiceto" SIZE="10" MAXSIZE="10" OnClick="javascript:cal11.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
-								</TD>
-								<TD style="width: 1%;">
-									<IMG src="img/info.gif" alt="">
-								</TD>
-								<TD style="width: 97%; white-space: nowrap;">
-									<INPUT TYPE="checkbox" NAME="invoiceorg" ID="invoiceorg"{if preg_match('/original/i', $default_printpage)} CHECKED{/if}>&nbsp;<label for="invoiceorg">{trans("original")}</label>&nbsp;
-									<INPUT TYPE="checkbox" NAME="invoicecopy" ID="invoicecopy"{if preg_match('/copy/i', $default_printpage)}  CHECKED{/if}>&nbsp;<label for="invoicecopy">{trans("copy")}</label>&nbsp;
-									<INPUT TYPE="checkbox" NAME="invoicedup" ID="invoicedup"{if preg_match('/duplicate/i', $default_printpage)} CHECKED{/if}>&nbsp;<label for="invoicedup">{trans("duplicate")}</label>
-								</TD>
-							</TR>
-							<TR>
-								<TD style="width: 3%;" colspan="3">&nbsp;</TD>
-								<TD style="width: 97%;">
+									{trans("From")}&nbsp;<input type="text" name="invoicefrom" size="10" MAXSIZE="10" OnClick="javascript:cal10.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+									{trans("To")}&nbsp;<input type="text" name="invoiceto" size="10" MAXSIZE="10" OnClick="javascript:cal11.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+								</td>
+								<td style="width: 1%;">
+									<img src="img/info.gif" alt="">
+								</td>
+								<td style="width: 97%; white-space: nowrap;">
+									<input type="checkbox" name="invoiceorg" id="invoiceorg"{if preg_match('/original/i', $default_printpage)} checked="checked"{/if}>&nbsp;<label for="invoiceorg">{trans("original")}</label>&nbsp;
+									<input type="checkbox" name="invoicecopy" id="invoicecopy"{if preg_match('/copy/i', $default_printpage)}  checked="checked"{/if}>&nbsp;<label for="invoicecopy">{trans("copy")}</label>&nbsp;
+									<input type="checkbox" name="invoicedup" id="invoicedup"{if preg_match('/duplicate/i', $default_printpage)} checked="checked"{/if}>&nbsp;<label for="invoicedup">{trans("duplicate")}</label>
+								</td>
+							</tr>
+							<tr>
+								<td style="width: 3%;" colspan="3">&nbsp;</td>
+								<td style="width: 97%;">
 									<input type="checkbox" id="autoissued" name="autoissued">
 									<label for="autoissued">{trans("only automatically issued")}</label>
-								</TD>
-							</TR>
-						</TABLE>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:print_forms();">{trans("Print form of cash transfer")} <IMG src="img/print.gif" alt="" hspace="2"></A>
-			<A href="javascript:print();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
-<SCRIPT type="text/javascript">
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fbottomu" width="100%" colspan="2" align="right">
+			<a href="javascript:print_forms();">{trans("Print form of cash transfer")} <img src="img/print.gif" alt="" hspace="2"></a>
+			<a href="javascript:print();">{trans("Print")} <img src="img/print.gif" alt="" hspace="2"></a>
+		</td>
+	</tr>
+</table>
+</form>
+<script type="text/javascript">
 <!--
 var cal10 = new calendar(document.printinvoices.elements['invoicefrom']);
 cal10.time_comp = false;
 var cal11 = new calendar(document.printinvoices.elements['invoiceto']);
 cal11.time_comp = false;
 //-->
-</SCRIPT>
+</script>
 </P>
 {/if}
 {if $printmenu=="finances"}
-<P><FORM method="post" name="printforms" id="printforms" action="?m=print&type=transferforms2" target="_blank">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
-		<TD class="fleftu" width="1%">
-			<IMG src="img/money.gif" alt="">
-		</TD>
-		<TD class="frightu" width="99%">
-			<B>{trans("Transfer forms")}</B>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="flr container" width="100%" colspan="2">
-			<TABLE width="100%" cellpadding="3">
-				<TR>
-					<TD width="1%">
-					    <TABLE width="100%">
-						<TR>
-						    <TD width="1%">
-							<IMG src="img/customer.gif" alt="">
-						    </TD>
-						    <TD width="1%" nowrap>
-							<B>{trans("Customer:")}</B>
-						    </TD>
-						    <TD width="98%" nowrap>
+<P><form method="post" name="printforms" id="printforms" action="?m=print&type=transferforms2" target="_blank">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td class="fleftu" width="1%">
+			<img src="img/money.gif" alt="">
+		</td>
+		<td class="frightu" width="99%">
+			<strong>{trans("Transfer forms")}</strong>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="flr container" width="100%" colspan="2">
+			<table width="100%" cellpadding="3">
+				<tr>
+					<td width="1%">
+					    <table width="100%">
+						<tr>
+						    <td width="1%">
+							<img src="img/customer.gif" alt="">
+						    </td>
+						    <td width="1%" nowrap="nowrap">
+							<strong>{trans("Customer:")}</strong>
+						    </td>
+						    <td width="98%" nowrap="nowrap">
 							{if $customers}
-							<SELECT size="1" name="customer" {tip text="You can select customer to limit results"}>
-							    <OPTION value="0">{trans("- all customers -")}</OPTION>
+							<select size="1" name="customer" {tip text="You can select customer to limit results"}>
+							    <option value="0">{trans("- all customers -")}</option>
 							    {foreach from=$customers item=customer}
-							    <OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
+							    <option value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</option>
 							    {/foreach}
-							</SELECT>
+							</select>
 							{else}
-							<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
-							<a href="javascript: void(0);" onClick="return customerchoosewin(document.printforms.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
+							<input type="text" name="customer" value="" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
+							<a href="javascript: void(0);" onClick="return customerchoosewin(document.printforms.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</a>
 							{/if}
-						    </TD>
-						</TR>
-						<TR>
-						    <TD width="1%">
-							<IMG src="img/group.gif" alt="">
-						    </TD>
-						    <TD width="1%" nowrap>
-							<B>{trans("Group:")}</B>
-						    </TD>
-						    <TD width="98%" nowrap>
-							<SELECT size="1" name="customergroup">
-							    <OPTION value="0" SELECTED>{trans("- all groups -")}</OPTION>
+						    </td>
+						</tr>
+						<tr>
+						    <td width="1%">
+							<img src="img/group.gif" alt="">
+						    </td>
+						    <td width="1%" nowrap="nowrap">
+							<strong>{trans("Group:")}</strong>
+						    </td>
+						    <td width="98%" nowrap="nowrap">
+							<select size="1" name="customergroup">
+							    <option value="0" selected="selected">{trans("- all groups -")}</option>
 			    				    {section name="customergroups" loop=$customergroups}
-							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
+							    <option value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</option>
 							    {/section}
-							</SELECT>
-    							<INPUT type="checkbox" name="groupexclude" id="printforms-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><label for="printforms-groupexclude">{trans("exclude group")}</label>
-						    </TD>
-						</TR>
-					    </TABLE>
-					</TD>
-					<TD width="1%">
-						<IMG src="img/value.gif" alt="">
-					</TD>
-					<TD width="98%" nowrap>
-						<B>{trans("Balance:")}</B>&nbsp;<INPUT TYPE="text" NAME="balance" SIZE="10" {tip text="Enter balance limit (default 0)"}>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.printforms.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
+							</select>
+    							<input type="checkbox" name="groupexclude" id="printforms-groupexclude" {if $listdata.groupexclude} checked="checked"{/if}><label for="printforms-groupexclude">{trans("exclude group")}</label>
+						    </td>
+						</tr>
+					    </table>
+					</td>
+					<td width="1%">
+						<img src="img/value.gif" alt="">
+					</td>
+					<td width="98%" nowrap="nowrap">
+						<strong>{trans("Balance:")}</strong>&nbsp;<input type="text" name="balance" size="10" {tip text="Enter balance limit (default 0)"}>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fbottomu" width="100%" colspan="2" align="right">
+			<a href="javascript:document.printforms.submit();">{trans("Print")} <img src="img/print.gif" alt="" hspace="2"></a>
+		</td>
+	</tr>
+</table>
+</form>
 </P>
 {/if}
 {if $printmenu=="incomereport" || $printmenu=="finances"}
-<P><FORM method="post" name="printincomereport" id="printincomereport" action="?m=print&type=incomereport" target="_blank">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
-		<TD class="fleftu" width="1%">
-			<IMG src="img/money.gif" alt="">
-		</TD>
-		<TD class="frightu" width="99%">
-			<B>{trans("Total Invoiceless Income")}</B>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="flr container" width="100%" colspan="2">
-			<TABLE width="100%" cellpadding="3">
-				<TR>
-					<TD width="1%">
-						<IMG src="img/calendar.gif" alt="">
-					</TD>
-					<TD width="99%" nowrap>
-						<B>{trans("Period:")}</B>&nbsp;
-						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal5.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
-						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal6.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.printincomereport.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
-<SCRIPT type="text/javascript">
+<P><form method="post" name="printincomereport" id="printincomereport" action="?m=print&type=incomereport" target="_blank">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td class="fleftu" width="1%">
+			<img src="img/money.gif" alt="">
+		</td>
+		<td class="frightu" width="99%">
+			<strong>{trans("Total Invoiceless Income")}</strong>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="flr container" width="100%" colspan="2">
+			<table width="100%" cellpadding="3">
+				<tr>
+					<td width="1%">
+						<img src="img/calendar.gif" alt="">
+					</td>
+					<td width="99%" nowrap="nowrap">
+						<strong>{trans("Period:")}</strong>&nbsp;
+						{trans("From")}&nbsp;<input type="text" name="from" size="10" MAXSIZE="10" OnClick="javascript:cal5.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<input type="text" name="to" size="10" MAXSIZE="10" OnClick="javascript:cal6.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fbottomu" width="100%" colspan="2" align="right">
+			<a href="javascript:document.printincomereport.submit();">{trans("Print")} <img src="img/print.gif" alt="" hspace="2"></a>
+		</td>
+	</tr>
+</table>
+</form>
+<script type="text/javascript">
 <!--
 var cal5 = new calendar(document.printincomereport.elements['from']);
 cal5.time_comp = false;
 var cal6 = new calendar(document.printincomereport.elements['to']);
 cal6.time_comp = false;
 //-->
-</SCRIPT>
+</script>
 </P>
 {/if}
 {if ($printmenu=="customer" || $printmenu=="finances") && !check_conf('privileges.hide_finances')}
-<P><FORM method="post" name="liabilityreport" id="liabilityreport" action="?m=print&type=liabilityreport" target="_blank">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
-		<TD class="fleftu" width="1%">
-			<IMG src="img/money.gif" alt="">
-		</TD>
-		<TD class="frightu" width="99%">
-			<B>{trans("Liability Report")}</B>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="flr container" width="100%" colspan="2">
-			<TABLE width="100%" cellpadding="3">
-				<TR>
-					<TD width="1%">
-						<IMG src="img/customer.gif" alt="">
-					</TD>
-					<TD width="1%" nowrap>
-						<B>{trans("Customer:")}</B>
-					</TD>
-					<TD width="1%" nowrap>
+<P><form method="post" name="liabilityreport" id="liabilityreport" action="?m=print&type=liabilityreport" target="_blank">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td class="fleftu" width="1%">
+			<img src="img/money.gif" alt="">
+		</td>
+		<td class="frightu" width="99%">
+			<strong>{trans("Liability Report")}</strong>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="flr container" width="100%" colspan="2">
+			<table width="100%" cellpadding="3">
+				<tr>
+					<td width="1%">
+						<img src="img/customer.gif" alt="">
+					</td>
+					<td width="1%" nowrap="nowrap">
+						<strong>{trans("Customer:")}</strong>
+					</td>
+					<td width="1%" nowrap="nowrap">
 						{if $customers}
-						<SELECT size="1" name="customer" {tip text="Select customer"}>
-							<OPTION value="0" SELECTED>{trans("- all customers -")}</OPTION>
+						<select size="1" name="customer" {tip text="Select customer"}>
+							<option value="0" selected="selected">{trans("- all customers -")}</option>
 							{foreach from=$customers item=customer}
-							<OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
+							<option value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</option>
 							{/foreach}
-						</SELECT>
+						</select>
 						{else}
-						<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
-						<a href="javascript: void(0);" onClick="return customerchoosewin(document.liabilityreport.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
+						<input type="text" name="customer" value="" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
+						<a href="javascript: void(0);" onClick="return customerchoosewin(document.liabilityreport.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</a>
 						{/if}
-					</TD>
-					<TD width="1%">
-						<IMG src="img/calendar.gif" alt="">
-					</TD>
-					<TD width="1%" nowrap>
-						<B>{trans("Day:")}</B>&nbsp;
-						<INPUT TYPE="text" NAME="day" SIZE="10" MAXSIZE="10" OnClick="javascript:cal7.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-					</TD>
-					<TD width="1%">
-						<IMG src="img/view.gif" alt="">
-					</TD>
-					<TD width="1%" nowrap>
-						<B>{trans("Sorting:")}</B>
-					</TD>
-					<TD width="93%" {tip text="Select sorting direction and criteria"}>
-					    <TABLE width="100%">
-						<TR>
-						    <TD width="100%" nowrap>
-							<SELECT SIZE="1" name="order">
-							    <OPTION value="customername" SELECTED>{trans("First/last or Company name")}</OPTION>
-							    <OPTION value="grossvalue">{trans("Gross value")}</OPTION> 
-							</SELECT>
-						    </TD>
-						</TR>
-						<TR>
-						    <TD width="100%" nowrap>
-							<SELECT SIZE="1" name="direction">
-							    <OPTION value="asc" SELECTED>{trans("ascending")}</OPTION>
-							    <OPTION value="desc">{trans("descending")}</OPTION> 
-							</SELECT>
-						    </TD>
-						</TR>
-					    </TABLE>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.liabilityreport.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
-<SCRIPT type="text/javascript">
+					</td>
+					<td width="1%">
+						<img src="img/calendar.gif" alt="">
+					</td>
+					<td width="1%" nowrap="nowrap">
+						<strong>{trans("Day:")}</strong>&nbsp;
+						<input type="text" name="day" size="10" MAXSIZE="10" OnClick="javascript:cal7.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+					</td>
+					<td width="1%">
+						<img src="img/view.gif" alt="">
+					</td>
+					<td width="1%" nowrap="nowrap">
+						<strong>{trans("Sorting:")}</strong>
+					</td>
+					<td width="93%" {tip text="Select sorting direction and criteria"}>
+					    <table width="100%">
+						<tr>
+						    <td width="100%" nowrap="nowrap">
+							<select size="1" name="order">
+							    <option value="customername" selected="selected">{trans("First/last or Company name")}</option>
+							    <option value="grossvalue">{trans("Gross value")}</option> 
+							</select>
+						    </td>
+						</tr>
+						<tr>
+						    <td width="100%" nowrap="nowrap">
+							<select size="1" name="direction">
+							    <option value="asc" selected="selected">{trans("ascending")}</option>
+							    <option value="desc">{trans("descending")}</option> 
+							</select>
+						    </td>
+						</tr>
+					    </table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fbottomu" width="100%" colspan="2" align="right">
+			<a href="javascript:document.liabilityreport.submit();">{trans("Print")} <img src="img/print.gif" alt="" hspace="2"></a>
+		</td>
+	</tr>
+</table>
+</form>
+<script type="text/javascript">
 <!--
 var cal7 = new calendar(document.liabilityreport.elements['day']);
 cal7.time_comp = false;
 //-->
-</SCRIPT>
+</script>
 </P>
 {/if}
 {if $printmenu=="finances"}
-<P><FORM method="post" name="printimportlist" id="printimportlist" action="?m=print&type=importlist" target="_blank">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
-		<TD class="fleftu" width="1%">
-			<IMG src="img/money.gif" alt="">
-		</TD>
-		<TD class="frightu" width="99%">
-			<B>{trans("Cash Import History")}</B>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="flr container" width="100%" colspan="2">
-			<TABLE width="100%" cellpadding="3">
-				<TR>
-					<TD width="1%" nowrap>
-						<IMG src="img/isource.gif" alt="">
-					</TD>
-					<TD width="1%">
-						<B>{trans("Source:")}</B>
-					</TD>
-					<TD width="1%">
-						<SELECT size="1" name="source" {tip text="You can select import source to limit results"}>
-						<OPTION value="0">{trans("- all sources -")}</OPTION>
+<P><form method="post" name="printimportlist" id="printimportlist" action="?m=print&type=importlist" target="_blank">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td class="fleftu" width="1%">
+			<img src="img/money.gif" alt="">
+		</td>
+		<td class="frightu" width="99%">
+			<strong>{trans("Cash Import History")}</strong>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="flr container" width="100%" colspan="2">
+			<table width="100%" cellpadding="3">
+				<tr>
+					<td width="1%" nowrap="nowrap">
+						<img src="img/isource.gif" alt="">
+					</td>
+					<td width="1%">
+						<strong>{trans("Source:")}</strong>
+					</td>
+					<td width="1%">
+						<select size="1" name="source" {tip text="You can select import source to limit results"}>
+						<option value="0">{trans("- all sources -")}</option>
 						{foreach from=$sourcelist item=item}
-						<OPTION value="{$item.id}">{$item.name}</OPTION>
+						<option value="{$item.id}">{$item.name}</option>
 						{/foreach}
-						</SELECT>
-					</TD>
-					<TD width="1%">
-						<IMG src="img/calendar.gif" alt="">
-					</TD>
-					<TD width="96%" nowrap style="vertical-align: middle">
-						<B>{trans("Period:")}</B>
-						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="importfrom" SIZE="10" MAXSIZE="10" OnClick="javascript:cal23.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
-						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="importto" SIZE="10" MAXSIZE="10" OnClick="javascript:cal24.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.printimportlist.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
-<SCRIPT type="text/javascript">
+						</select>
+					</td>
+					<td width="1%">
+						<img src="img/calendar.gif" alt="">
+					</td>
+					<td width="96%" nowrap="nowrap" style="vertical-align: middle">
+						<strong>{trans("Period:")}</strong>
+						{trans("From")}&nbsp;<input type="text" name="importfrom" size="10" MAXSIZE="10" OnClick="javascript:cal23.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<input type="text" name="importto" size="10" MAXSIZE="10" OnClick="javascript:cal24.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fbottomu" width="100%" colspan="2" align="right">
+			<a href="javascript:document.printimportlist.submit();">{trans("Print")} <img src="img/print.gif" alt="" hspace="2"></a>
+		</td>
+	</tr>
+</table>
+</form>
+<script type="text/javascript">
 <!--
 var cal23 = new calendar(document.printimportlist.elements['importfrom']);
 cal23.time_comp = false;
 var cal24 = new calendar(document.printimportlist.elements['importto']);
 cal24.time_comp = false;
 //-->
-</SCRIPT>
+</script>
 </P>
 {/if}
 {if $printmenu=="node"}
-<P><FORM method="post" name="printnodelist" id="printnodelist" action="?m=nodeprint&type=nodelist" target="_blank">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
-		<TD class="fleftu" width="1%">
-			<IMG src="img/node.gif" alt="">
-		</TD>
-		<TD class="frightu" width="99%">
-			<B>{trans("Nodes List")}</B>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="flr container" width="100%" colspan="2">
-			<TABLE width="100%" cellpadding="3">
-				<TR>
-					<TD width="1%">
-						<IMG src="img/node.gif" alt="">
-					</TD>
-					<TD width="1%" nowrap>
-						<B>{trans("Status:")}</B>
-					</TD>
-					<TD width="1%" {tip text="Select nodes group"}>
-						<NOBR><INPUT class="radio light" type="radio" id="nodelist-all" name="filter" value="0" CHECKED><label for="nodelist-all">{trans("all")}</label></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="nodelist-connected" name="filter" value="1"><label for="nodelist-connected">{trans("connected<!plural:item>")}</label></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="nodelist-disconnected" name="filter" value="2"><label for="nodelist-disconnected">{trans("disconnected<!plural:item>")}</label></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="nodelist-indebt" name="filter" value="3"><label for="nodelist-indebt">{trans("indebted owner")}</label></NOBR>
-					</TD>
-					<TD width="1%" nowrap>
-					    <TABLE width="100%">
-						<TR>
-						    <TD width="1%"><IMG src="img/network.gif" alt=""></TD>
-						    <TD width="1%" nowrap><B>{trans("Network:")}</B></TD>
-						    <TD width="98%" nowrap>
-							<SELECT size="1" name="network" {tip text="Select network"}>
-							    <OPTION value="0" SELECTED>{trans("- all networks -")}</OPTION>
+<P><form method="post" name="printnodelist" id="printnodelist" action="?m=nodeprint&type=nodelist" target="_blank">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td class="fleftu" width="1%">
+			<img src="img/node.gif" alt="">
+		</td>
+		<td class="frightu" width="99%">
+			<strong>{trans("Nodes List")}</strong>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="flr container" width="100%" colspan="2">
+			<table width="100%" cellpadding="3">
+				<tr>
+					<td width="1%">
+						<img src="img/node.gif" alt="">
+					</td>
+					<td width="1%" nowrap="nowrap">
+						<strong>{trans("Status:")}</strong>
+					</td>
+					<td width="1%" {tip text="Select nodes group"}>
+						<span class="nobr"><input class="radio light" type="radio" id="nodelist-all" name="filter" value="0" checked="checked"><label for="nodelist-all">{trans("all")}</label></span><br />
+						<span class="nobr"><input class="radio light" type="radio" id="nodelist-connected" name="filter" value="1"><label for="nodelist-connected">{trans("connected<!plural:item>")}</label></span><br />
+						<span class="nobr"><input class="radio light" type="radio" id="nodelist-disconnected" name="filter" value="2"><label for="nodelist-disconnected">{trans("disconnected<!plural:item>")}</label></span><br />
+						<span class="nobr"><input class="radio light" type="radio" id="nodelist-indebt" name="filter" value="3"><label for="nodelist-indebt">{trans("indebted owner")}</label></span>
+					</td>
+					<td width="1%" nowrap="nowrap">
+					    <table width="100%">
+						<tr>
+						    <td width="1%"><img src="img/network.gif" alt=""></td>
+						    <td width="1%" nowrap="nowrap"><strong>{trans("Network:")}</strong></td>
+						    <td width="98%" nowrap="nowrap">
+							<select size="1" name="network" {tip text="Select network"}>
+							    <option value="0" selected="selected">{trans("- all networks -")}</option>
 							    {section name="networks" loop=$networks}
-							    <OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:40:"...":true}</OPTION>
+							    <option value="{$networks[networks].id}">{$networks[networks].name|truncate:40:"...":true}</option>
 							    {/section}
-							</SELECT>
-						    </TD>
-						</TR>
-						<TR>
-						    <TD width="1%"><IMG src="img/group.gif" alt=""></TD>
-						    <TD width="1%" nowrap><B>{trans("Group:")}</B></TD>
-						    <TD width="98%">
-							<SELECT size="1" name="customergroup" {tip text="Select group"}>
-							    <OPTION value="0" SELECTED>{trans("- all groups -")}</OPTION>
+							</select>
+						    </td>
+						</tr>
+						<tr>
+						    <td width="1%"><img src="img/group.gif" alt=""></td>
+						    <td width="1%" nowrap="nowrap"><strong>{trans("Group:")}</strong></td>
+						    <td width="98%">
+							<select size="1" name="customergroup" {tip text="Select group"}>
+							    <option value="0" selected="selected">{trans("- all groups -")}</option>
 							    {section name="customergroups" loop=$customergroups}
-							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:40:"...":true}</OPTION>
+							    <option value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:40:"...":true}</option>
 							    {/section}
-							</SELECT>
-						    </TD>
-						</TR>
-					    </TABLE>
-					</TD>
-					<TD width="1%">
-						<IMG src="img/view.gif" alt="">
-					</TD>
-					<TD width="1%">	
-			    			<B>{trans("Sorting:")}</B>
-					</TD>
-					<TD width="94%" {tip text="Select sorting direction and criteria"}>
-					    <TABLE width="100%">
-						<TR>
-						    <TD width="100%" nowrap>
-							<SELECT SIZE="1" name="order">
-							    <OPTION value="name" SELECTED>{trans("Name")}</OPTION>
-							    <OPTION value="id">{trans("Id")}</OPTION> 
-							    <OPTION value="owner">{trans("Customer name")}</OPTION> 
-							    <OPTION value="ownerid">{trans("Customer ID")}</OPTION> 
-							    <OPTION value="ip">{trans("IP address")}</OPTION> 
-							    <OPTION value="mac">{trans("MAC address")}</OPTION>
-							</SELECT>
-						    </TD>
-						</TR>
-						<TR>
-						    <TD width="100%" nowrap>
-							<SELECT SIZE="1" name="direction">
-							    <OPTION value="asc" SELECTED>{trans("ascending")}</OPTION>
-							    <OPTION value="desc">{trans("descending")}</OPTION> 
-							</SELECT>
-						    </TD>
-						</TR>
-					    </TABLE>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.printnodelist.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
+							</select>
+						    </td>
+						</tr>
+					    </table>
+					</td>
+					<td width="1%">
+						<img src="img/view.gif" alt="">
+					</td>
+					<td width="1%">	
+			    			<strong>{trans("Sorting:")}</strong>
+					</td>
+					<td width="94%" {tip text="Select sorting direction and criteria"}>
+					    <table width="100%">
+						<tr>
+						    <td width="100%" nowrap="nowrap">
+							<select size="1" name="order">
+							    <option value="name" selected="selected">{trans("Name")}</option>
+							    <option value="id">{trans("Id")}</option> 
+							    <option value="owner">{trans("Customer name")}</option> 
+							    <option value="ownerid">{trans("Customer ID")}</option> 
+							    <option value="ip">{trans("IP address")}</option> 
+							    <option value="mac">{trans("MAC address")}</option>
+							</select>
+						    </td>
+						</tr>
+						<tr>
+						    <td width="100%" nowrap="nowrap">
+							<select size="1" name="direction">
+							    <option value="asc" selected="selected">{trans("ascending")}</option>
+							    <option value="desc">{trans("descending")}</option> 
+							</select>
+						    </td>
+						</tr>
+					    </table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fbottomu" width="100%" colspan="2" align="right">
+			<a href="javascript:document.printnodelist.submit();">{trans("Print")} <img src="img/print.gif" alt="" hspace="2"></a>
+		</td>
+	</tr>
+</table>
+</form>
 </P>
 {/if}
 {if $printmenu=="traffic" || $printmenu=="customer"}
-<P><FORM method="post" name="printcustomertraffic" id="printcustomertraffic"  action="?m=trafficprint&type=customertraffic" target="_blank">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
-		<TD class="fleftu" width="1%">
-			<IMG src="img/traffic.gif" alt="">
-		</TD>
-		<TD class="frightu" width="99%">
-			<B>{trans("Stats")}</B>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="flr container" width="100%" colspan="2">
-			<TABLE width="100%" cellpadding="3">
-				<TR>
-					<TD width="1%">
-						<IMG src="img/customer.gif" alt="">
-					</TD>
-					<TD width="1%" nowrap>
-						<B>{trans("Customer:")}</B>
-					</TD>
-					<TD width="1%" nowrap>
+<P><form method="post" name="printcustomertraffic" id="printcustomertraffic"  action="?m=trafficprint&type=customertraffic" target="_blank">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td class="fleftu" width="1%">
+			<img src="img/traffic.gif" alt="">
+		</td>
+		<td class="frightu" width="99%">
+			<strong>{trans("Stats")}</strong>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="flr container" width="100%" colspan="2">
+			<table width="100%" cellpadding="3">
+				<tr>
+					<td width="1%">
+						<img src="img/customer.gif" alt="">
+					</td>
+					<td width="1%" nowrap="nowrap">
+						<strong>{trans("Customer:")}</strong>
+					</td>
+					<td width="1%" nowrap="nowrap">
 						{if $customers}
-						<SELECT size="1" name="customer" {tip text="Select customer"}>
+						<select size="1" name="customer" {tip text="Select customer"}>
 							{foreach from=$customers item=customer}
-							<OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
+							<option value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</option>
 							{/foreach}
-						</SELECT>
+						</select>
 						{else}
-						<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID"}>
-						<a href="javascript: void(0);" onClick="return customerchoosewin(document.printcustomertraffic.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
+						<input type="text" name="customer" value="" size="5" {tip text="Enter customer ID"}>
+						<a href="javascript: void(0);" onClick="return customerchoosewin(document.printcustomertraffic.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</a>
 						{/if}
-					</TD>
-					<TD width="1%">
-						<IMG src="img/calendar.gif" alt="">
-					</TD>
-					<TD width="1%">
-						<B>{trans("Year:")}</B>
-					</TD>
-					<TD width="1%">
-						<SELECT size="1" name="year" {tip text="Select period"}>
+					</td>
+					<td width="1%">
+						<img src="img/calendar.gif" alt="">
+					</td>
+					<td width="1%">
+						<strong>{trans("Year:")}</strong>
+					</td>
+					<td width="1%">
+						<select size="1" name="year" {tip text="Select period"}>
 							{foreach item=year from=$statyears}
-							<OPTION value="{$year}"{if $year == $curryear} SELECTED{/if}>{$year}</OPTION>
+							<option value="{$year}"{if $year == $curryear} selected="selected"{/if}>{$year}</option>
 							{/foreach}
-						</SELECT>
-					</TD>
-					<TD width="1%">
-						<B>{trans("Month:")}</B>
-					</TD>
-					<TD width="1%">
-						<SELECT size="1" name="month" {tip text="Select period"}>
+						</select>
+					</td>
+					<td width="1%">
+						<strong>{trans("Month:")}</strong>
+					</td>
+					<td width="1%">
+						<select size="1" name="month" {tip text="Select period"}>
 							{foreach item=month key=id from=$months}
-							<OPTION value="{$id}"{if $id == $currmonth} SELECTED{/if}>{$month}</OPTION>
+							<option value="{$id}"{if $id == $currmonth} selected="selected"{/if}>{$month}</option>
 							{/foreach}
-						</SELECT>
-					</TD>
-					<TD width="92%"></TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.printcustomertraffic.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
+						</select>
+					</td>
+					<td width="92%"></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fbottomu" width="100%" colspan="2" align="right">
+			<a href="javascript:document.printcustomertraffic.submit();">{trans("Print")} <img src="img/print.gif" alt="" hspace="2"></a>
+		</td>
+	</tr>
+</table>
+</form>
 </P>
 {/if}
 {include file="footer.html"}

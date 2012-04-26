@@ -1,105 +1,105 @@
 {include file="clearheader.html"}
 <!--// $Id$ //-->
-<TABLE WIDTH="100%" CELLPADDING="3" ALIGN="CENTER">
-	<TR>
-		<TD WIDTH="535" VALIGN="TOP">
-			<P class="hdf"><B>{$layout.pagetitle}</B>
-			{if $layout.username}<BR><font class="sdr"><B>{$layout.username}</B></font>{/if}
-			{if $layout.registry}<BR><font class="sdr"><B>{$layout.registry}</B></font>{/if}
-			{if $layout.group}<BR><font class="sdr"><B>{$layout.group}</B></font>{/if}
+<table width="100%" cellpadding="3" align="CENTER">
+	<tr>
+		<td width="535" VALIGN="TOP">
+			<P class="hdf"><strong>{$layout.pagetitle}</strong>
+			{if $layout.username}<br /><font class="sdr"><strong>{$layout.username}</strong></font>{/if}
+			{if $layout.registry}<br /><font class="sdr"><strong>{$layout.registry}</strong></font>{/if}
+			{if $layout.group}<br /><font class="sdr"><strong>{$layout.group}</strong></font>{/if}
 			</P>
-		</TD>
-		<TD WIDTH="180" ALIGN="RIGHT" NOWRAP>
-			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %x"}<BR>
+		</td>
+		<td width="180" align="RIGHT" nowrap="nowrap">
+			LMS {$layout.lmsv} @ {$layout.hostname}<br />
+			{$smarty.now|date_format:"%A, %x"}<br />
 			{t a=$layout.logname}Prepared by: $a{/t}
-		</TD>
-	</TR>
-</TABLE>
-<BR>
-<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
-	<TR>
-		<TD WIDTH="15" ALIGN="CENTER" CLASS="HEAD">
+		</td>
+	</tr>
+</table>
+<br />
+<table width="100%" cellpadding="3" BORDER="1" align="CENTER">
+	<tr>
+		<td width="15" align="CENTER" class="HEAD">
 			{trans("No.")}
-		</TD>
-		<TD WIDTH="45" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="45" class="HEAD" align="CENTER">
 			{trans("Date")}
-		</TD>
-		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="50" class="HEAD" align="CENTER">
 			{trans("Number")}
-		</TD>
-		<TD WIDTH="225" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="225" class="HEAD" align="CENTER">
 			{trans("Customer")}
-		</TD>
-		<TD WIDTH="120" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="120" class="HEAD" align="CENTER">
 			{trans("Title")}
-		</TD>
-		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="50" class="HEAD" align="CENTER">
 			{trans("Income")}
-		</TD>
-		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="50" class="HEAD" align="CENTER">
 			{trans("Expense")}
-		</TD>
-		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="50" class="HEAD" align="CENTER">
 			{trans("After")}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{cycle values="white,grey" print=false}
 	{section name=receiptlist loop=$receiptlist}
-	<TR class="{cycle}">
-		<TD ALIGN="CENTER">
+	<tr class="{cycle}">
+		<td align="CENTER">
 			{counter}.
-		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
+		</td>
+		<td align="RIGHT" nowrap="nowrap">
 			{$receiptlist[receiptlist].cdate|date_format:"%d.%m.%Y"}
-		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
+		</td>
+		<td align="RIGHT" nowrap="nowrap">
 			{$receiptlist[receiptlist].number}
-		</TD>
-		<TD ALIGN="LEFT">
+		</td>
+		<td align="LEFT">
 			{$receiptlist[receiptlist].customer}
-		</TD>
-		<TD ALIGN="LEFT">
+		</td>
+		<td align="LEFT">
 			{foreach from=$receiptlist[receiptlist].title item=title}
-				{$title}<BR>
+				{$title}<br />
 			{/foreach}
-		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
+		</td>
+		<td align="RIGHT" nowrap="nowrap">
 			{if $receiptlist[receiptlist].value > 0}{$receiptlist[receiptlist].value|money_format}{else}-{/if}
-		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
+		</td>
+		<td align="RIGHT" nowrap="nowrap">
 			{if $receiptlist[receiptlist].value < 0}{($receiptlist[receiptlist].value*-1)|money_format}{else}-{/if}
-		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
+		</td>
+		<td align="RIGHT" nowrap="nowrap">
 			{$receiptlist[receiptlist].after|money_format}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{sectionelse}
-	<TR>
-		<TD ALIGN="center" COLSPAN="8">
+	<tr>
+		<td align="center" colspan="8">
 			<P>&nbsp;</P>
-			<P><B>{trans("No such cash receipts in database.")}</B></P>
+			<P><strong>{trans("No such cash receipts in database.")}</strong></P>
 			<P>&nbsp;</P>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/section}
-	<TR>
-		<TD CLASS="HEADGREY" COLSPAN="5" ALIGN="RIGHT">
-			<B>{trans("Total:")}</B><HR>
-			<B>{trans("Initial balance:")}</B><BR>
-			<B>{trans("Final balance:")}</B>
-			{if $listdata.advances}<BR><B>{trans("Not accounted advances:")}</B>{/if}
-		</TD>
-		<TD CLASS="HEADGREY" ALIGN="RIGHT" nowrap>
-			<B>{$listdata.totalincome|money_format}</B><HR>
-			<B>{$listdata.startbalance|money_format}</B><BR>
-			<B>{$listdata.endbalance|money_format}</B>
-			{if $listdata.advances}<BR><B>{$listdata.advances|money_format}</B>{/if}
-		</TD>
-		<TD CLASS="HEADGREY" ALIGN="RIGHT" nowrap>
-			<B>{$listdata.totalexpense|money_format}</B><HR>
-		</TD>
-		<TD CLASS="HEADGREY"></TD>
-	</TR>
-</TABLE>
+	<tr>
+		<td class="HEADGREY" colspan="5" align="RIGHT">
+			<strong>{trans("Total:")}</strong><HR>
+			<strong>{trans("Initial balance:")}</strong><br />
+			<strong>{trans("Final balance:")}</strong>
+			{if $listdata.advances}<br /><strong>{trans("Not accounted advances:")}</strong>{/if}
+		</td>
+		<td class="HEADGREY" align="RIGHT" nowrap="nowrap">
+			<strong>{$listdata.totalincome|money_format}</strong><HR>
+			<strong>{$listdata.startbalance|money_format}</strong><br />
+			<strong>{$listdata.endbalance|money_format}</strong>
+			{if $listdata.advances}<br /><strong>{$listdata.advances|money_format}</strong>{/if}
+		</td>
+		<td class="HEADGREY" align="RIGHT" nowrap="nowrap">
+			<strong>{$listdata.totalexpense|money_format}</strong><HR>
+		</td>
+		<td class="HEADGREY"></td>
+	</tr>
+</table>
 {include file="clearfooter.html"}

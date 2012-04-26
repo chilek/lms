@@ -1,7 +1,7 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 {include file="calendar_js.html"}
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 <!--
 	function CountSelectedCustomers()
 	{
@@ -21,224 +21,224 @@
 		}
 	}
 //-->
-</SCRIPT>
-<H1>{$layout.pagetitle}</H1>
-<P><FORM NAME="addbalance" METHOD="POST" ACTION="?m=balanceadd">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" cellpadding="3">
-	<TR>
-		<TD WIDTH="1%" style="vertical-align: top;">
-			<TABLE width="100%" cellpadding="3">
-				<TR CLASS="DARK">
-					<TD CLASS="FALL">
-						<IMG SRC="img/customer.gif" ALT="">&nbsp;<B>{trans("Customers:")}</B>
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD CLASS="FALL">
-						{trans("Select customers which has to concern new payment or covenant operation or leave it not selected if you want to add network income/expense operation.")}<BR><BR>
-						<SELECT size="20" id="customerselect" name="addbalance[mcustomerid][]" onChange="javascript:CountSelectedCustomers();" multiple>
+</script>
+<h1>{$layout.pagetitle}</h1>
+<P><form name="addbalance" method="POST" action="?m=balanceadd">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr>
+		<td width="1%" style="vertical-align: top;">
+			<table width="100%" cellpadding="3">
+				<tr class="DARK">
+					<td class="FALL">
+						<img src="img/customer.gif" alt="">&nbsp;<strong>{trans("Customers:")}</strong>
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td class="FALL">
+						{trans("Select customers which has to concern new payment or covenant operation or leave it not selected if you want to add network income/expense operation.")}<br /><br />
+						<select size="20" id="customerselect" name="addbalance[mcustomerid][]" onChange="javascript:CountSelectedCustomers();" multiple>
 							{foreach from=$customers item=customer}
-							<OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
+							<option value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</option>
 							{/foreach}
-						</SELECT><BR>
-						{trans("Selected:")} <INPUT TYPE="edit" NAME="selectededit" VALUE="0" SIZE="5" style="border: 0" class="light" readonly></INPUT>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-		<TD WIDTH="99%" VALIGN="TOP" style="vertical-align: top;">
-			<TABLE width="100%" cellpadding="3">
-				<TR CLASS="DARK">
-					<TD CLASS="FALL" COLSPAN="3">
-						<IMG SRC="img/money.gif" ALT="">&nbsp;<B>{trans("Value and description:")}</B>
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="1%" CLASS="FLEFT">
-						<IMG SRC="img/value.gif" ALT="">
-					</TD>
-					<TD WIDTH="1%">
-						<B>{trans("Value:")}</B>
-					</TD>
-					<TD WIDTH="98%" CLASS="FRIGHT">
-						<INPUT TYPE="TEXT" NAME="addbalance[value]" VALUE="{$value}" SIZE="15" {tip text="Enter value of operation"}><BR>
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="1%" CLASS="FLEFT">
-						<IMG SRC="img/tax.gif" ALT="">
-					</TD>
-					<TD WIDTH="1%">
-						<B>{trans("Tax:")}</B>
-					</TD>
-					<TD WIDTH="98%" CLASS="FRIGHT">
-						<SELECT size="1" name="addbalance[taxid]" {tip text="Select Tax rate"}>
+						</select><br />
+						{trans("Selected:")} <input type="edit" name="selectededit" value="0" size="5" style="border: 0" class="light" readonly></INPUT>
+					</td>
+				</tr>
+			</table>
+		</td>
+		<td width="99%" VALIGN="TOP" style="vertical-align: top;">
+			<table width="100%" cellpadding="3">
+				<tr class="DARK">
+					<td class="FALL" colspan="3">
+						<img src="img/money.gif" alt="">&nbsp;<strong>{trans("Value and description:")}</strong>
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td width="1%" class="FLEFT">
+						<img src="img/value.gif" alt="">
+					</td>
+					<td width="1%">
+						<strong>{trans("Value:")}</strong>
+					</td>
+					<td width="98%" class="FRIGHT">
+						<input type="TEXT" name="addbalance[value]" value="{$value}" size="15" {tip text="Enter value of operation"}><br />
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td width="1%" class="FLEFT">
+						<img src="img/tax.gif" alt="">
+					</td>
+					<td width="1%">
+						<strong>{trans("Tax:")}</strong>
+					</td>
+					<td width="98%" class="FRIGHT">
+						<select size="1" name="addbalance[taxid]" {tip text="Select Tax rate"}>
 						{foreach item=tax from=$taxeslist}
-							<OPTION value="{$tax.id}" {if ($taxid && $tax.id == $taxid) || (!$taxid && $tax.value == get_conf('phpui.default_taxrate'))}selected{/if}>{$tax.label}</OPTION>
+							<option value="{$tax.id}" {if ($taxid && $tax.id == $taxid) || (!$taxid && $tax.value == get_conf('phpui.default_taxrate'))}selected{/if}>{$tax.label}</option>
 						{/foreach}
-						</SELECT>
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="1%" CLASS="FLEFT">
-						<IMG SRC="img/payment.gif" ALT="">
-					</TD>
-					<TD WIDTH="1%">
-						<B>{trans("Type:")}</B>
-					</TD>
-					<TD WIDTH="98%" CLASS="FRIGHT">
-						<INPUT TYPE="radio" NAME="addbalance[type]" ID="type0" VALUE="0" {tip text="Select type of operation"}><label for="type0">{trans("liability")}</label>
-						<INPUT TYPE="radio" NAME="addbalance[type]" ID="type1" VALUE="1" {tip text="Select type of operation"} checked><label for="type1">{trans("income/expense")}</label>
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="1%" class="FLEFT">
-						<IMG SRC="img/calendar.gif" ALT="">
-					</TD>
-					<TD WIDTH="1%">
-						<B>{trans("Date:")}</B>
-					</TD>
-					<TD WIDTH="98%" class="fright">
-						<INPUT TYPE="TEXT" NAME="addbalance[time]" VALUE="{if $time}{$time|date_format:"%Y/%m/%d %H:%M"}{/if}" SIZE="15" MAXSIZE="15" OnClick="javascript:cal1.popup();" {tip text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
-					</TD>
-				</TR>
+						</select>
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td width="1%" class="FLEFT">
+						<img src="img/payment.gif" alt="">
+					</td>
+					<td width="1%">
+						<strong>{trans("Type:")}</strong>
+					</td>
+					<td width="98%" class="FRIGHT">
+						<input type="radio" name="addbalance[type]" id="type0" value="0" {tip text="Select type of operation"}><label for="type0">{trans("liability")}</label>
+						<input type="radio" name="addbalance[type]" id="type1" value="1" {tip text="Select type of operation"} checked="checked"><label for="type1">{trans("income/expense")}</label>
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td width="1%" class="FLEFT">
+						<img src="img/calendar.gif" alt="">
+					</td>
+					<td width="1%">
+						<strong>{trans("Date:")}</strong>
+					</td>
+					<td width="98%" class="fright">
+						<input type="TEXT" name="addbalance[time]" value="{if $time}{$time|date_format:"%Y/%m/%d %H:%M"}{/if}" size="15" MAXSIZE="15" OnClick="javascript:cal1.popup();" {tip text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
+					</td>
+				</tr>
 				{if $sourcelist}
-				<TR class="LIGHT">
-					<TD class="fleft" width="1%">
-						<IMG src="img/isource.gif" alt="">
-					</TD>
-					<TD width="1%" NOWRAP>
-						<B>{trans("Source:")} </B>
-					</TD>
-					<TD class="fright" width="98%" NOWRAP>
-						<SELECT name="addbalance[sourceid]" {tip text="Select import source (optional)" trigger="source"}>
-						<OPTION value="0">{trans("- none -")}</OPTION> 
+				<tr class="LIGHT">
+					<td class="fleft" width="1%">
+						<img src="img/isource.gif" alt="">
+					</td>
+					<td width="1%" nowrap="nowrap">
+						<strong>{trans("Source:")} </strong>
+					</td>
+					<td class="fright" width="98%" nowrap="nowrap">
+						<select name="addbalance[sourceid]" {tip text="Select import source (optional)" trigger="source"}>
+						<option value="0">{trans("- none -")}</option> 
 						{foreach from=$sourcelist item=item}
-						<OPTION value="{$item.id}"{if $item.id == $sourceid} SELECTED{/if}>{$item.name}</OPTION>
+						<option value="{$item.id}"{if $item.id == $sourceid} selected="selected"{/if}>{$item.name}</option>
 						{/foreach}
-						</SELECT>
-					</TD>
-				</TR>
+						</select>
+					</td>
+				</tr>
 				{/if}
-				<TR CLASS="LIGHT">
-					<TD WIDTH="1%" class="FLEFT">
-						<IMG SRC="img/info1.gif" ALT="">
-					</TD>
-					<TD WIDTH="1%">
-						<B>{trans("Description:")}</B>
-					</TD>
-					<TD WIDTH="98%" class="fright">
-						<TEXTAREA NAME="addbalance[comment]" rows="5" cols="50" {tip text="Enter comment"}>{$comment|replace:"\n":"<BR>"}</TEXTAREA>
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD CLASS="fbottomu" ALIGN="right" COLSPAN="3">
-						<A HREF="javascript:document.addbalance.submit();" ACCESSKEY="s" >{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
-					</TD>
-				</TR>
+				<tr class="LIGHT">
+					<td width="1%" class="FLEFT">
+						<img src="img/info1.gif" alt="">
+					</td>
+					<td width="1%">
+						<strong>{trans("Description:")}</strong>
+					</td>
+					<td width="98%" class="fright">
+						<textarea name="addbalance[comment]" rows="5" cols="50" {tip text="Enter comment"}>{$comment|replace:"\n":"<br />"}</textarea>
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td class="fbottomu" align="right" colspan="3">
+						<a href="javascript:document.addbalance.submit();" accesskey="s" >{trans("Submit")} <img src="img/save.gif" alt=""></a>
+					</td>
+				</tr>
 			{if $last}
-				<TR><TD>&nbsp;</TD></TR>
-				<TR CLASS="DARK">
-					<TD CLASS="FALL" COLSPAN="3">
-						<IMG SRC="img/money.gif" ALT="">&nbsp;<B>{trans("Last operation:")}</B>
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="1%" CLASS="FLEFT">
-						<IMG SRC="img/value.gif" ALT="">
-					</TD>
-					<TD WIDTH="1%">
-						<B>{trans("Value:")}</B>
-					</TD>
-					<TD WIDTH="98%" CLASS="FRIGHT">
+				<tr><td>&nbsp;</td></tr>
+				<tr class="DARK">
+					<td class="FALL" colspan="3">
+						<img src="img/money.gif" alt="">&nbsp;<strong>{trans("Last operation:")}</strong>
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td width="1%" class="FLEFT">
+						<img src="img/value.gif" alt="">
+					</td>
+					<td width="1%">
+						<strong>{trans("Value:")}</strong>
+					</td>
+					<td width="98%" class="FRIGHT">
 						{$last.value|money_format}
-					</TD>
-				</TR>
+					</td>
+				</tr>
 				{if $last.tax}
-				<TR CLASS="LIGHT">
-					<TD WIDTH="1%" CLASS="FLEFT">
-						<IMG SRC="img/tax.gif" ALT="">
-					</TD>
-					<TD WIDTH="1%">
-						<B>{trans("Tax:")}</B>
-					</TD>
-					<TD WIDTH="98%" CLASS="FRIGHT">
+				<tr class="LIGHT">
+					<td width="1%" class="FLEFT">
+						<img src="img/tax.gif" alt="">
+					</td>
+					<td width="1%">
+						<strong>{trans("Tax:")}</strong>
+					</td>
+					<td width="98%" class="FRIGHT">
 						{$last.tax}
-					</TD>
-				</TR>
+					</td>
+				</tr>
 				{/if}
-				<TR CLASS="LIGHT">
-					<TD WIDTH="1%" class="FLEFT">
-						<IMG SRC="img/calendar.gif" ALT="">
-					</TD>
-					<TD WIDTH="1%">
-						<B>{trans("Date:")}</B>
-					</TD>
-					<TD WIDTH="98%" class="fright">
+				<tr class="LIGHT">
+					<td width="1%" class="FLEFT">
+						<img src="img/calendar.gif" alt="">
+					</td>
+					<td width="1%">
+						<strong>{trans("Date:")}</strong>
+					</td>
+					<td width="98%" class="fright">
 						{$last.time|date_format:"%Y/%m/%d %H:%M"}
-					</TD>
-				</TR>
+					</td>
+				</tr>
 				{if $last.customerid}
-				<TR CLASS="LIGHT">
-					<TD WIDTH="1%" class="FLEFT">
-						<IMG SRC="img/customer.gif" ALT="">
-					</TD>
-					<TD WIDTH="1%">
-						<B>{trans("Customer:")}</B>
-					</TD>
-					<TD WIDTH="98%" class="fright">
-						<A href="?m=customerinfo&id={$last.customerid}">{$last.customername}</A>
-					</TD>
-				</TR>
+				<tr class="LIGHT">
+					<td width="1%" class="FLEFT">
+						<img src="img/customer.gif" alt="">
+					</td>
+					<td width="1%">
+						<strong>{trans("Customer:")}</strong>
+					</td>
+					<td width="98%" class="fright">
+						<a href="?m=customerinfo&id={$last.customerid}">{$last.customername}</a>
+					</td>
+				</tr>
 				{/if}
 				{if $last.sourcename}
-				<TR CLASS="LIGHT">
-					<TD WIDTH="1%" class="FLEFT">
-						<IMG SRC="img/isource.gif" ALT="">
-					</TD>
-					<TD WIDTH="1%">
-						<B>{trans("Source:")}</B>
-					</TD>
-					<TD WIDTH="98%" class="fright">
+				<tr class="LIGHT">
+					<td width="1%" class="FLEFT">
+						<img src="img/isource.gif" alt="">
+					</td>
+					<td width="1%">
+						<strong>{trans("Source:")}</strong>
+					</td>
+					<td width="98%" class="fright">
 						{$last.sourcename}
-					</TD>
-				</TR>
+					</td>
+				</tr>
 				{/if}
 				{if $last.comment}
-				<TR CLASS="LIGHT">
-					<TD WIDTH="1%" class="FLEFT">
-						<IMG SRC="img/info1.gif" ALT="">
-					</TD>
-					<TD WIDTH="1%">
-						<B>{trans("Description:")}</B>
-					</TD>
-					<TD WIDTH="98%" class="fright">
-						<TABLE WIDTH="100%" CELLPADDING="5">
-					                <TR>
-							        <TD CLASS="fall superlight">
-							    		{$last.comment|replace:"\n":"<BR>"}
-								</TD>
-							</TR>
-						</TABLE>
-					</TD>
-				</TR>
+				<tr class="LIGHT">
+					<td width="1%" class="FLEFT">
+						<img src="img/info1.gif" alt="">
+					</td>
+					<td width="1%">
+						<strong>{trans("Description:")}</strong>
+					</td>
+					<td width="98%" class="fright">
+						<table width="100%" cellpadding="5">
+					                <tr>
+							        <td class="fall superlight">
+							    		{$last.comment|replace:"\n":"<br />"}
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
 				{/if}
-				<TR CLASS="LIGHT">
-					<TD CLASS="fbottomu" ALIGN="right" COLSPAN="3">
-						<A HREF="javascript:del({$last.id});" ACCESSKEY="d" >{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
-					</TD>
-				</TR>
+				<tr class="LIGHT">
+					<td class="fbottomu" align="right" colspan="3">
+						<a href="javascript:del({$last.id});" accesskey="d" >{trans("Delete")} <img src="img/delete.gif" alt=""></a>
+					</td>
+				</tr>
 			{/if}
-			</TABLE>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
+			</table>
+		</td>
+	</tr>
+</table>
+</form>
 </P>
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 <!--
 var cal1 = new calendar(document.forms['addbalance'].elements['addbalance[time]']);
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}

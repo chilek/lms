@@ -1,104 +1,104 @@
 {include file="header.html"}
 <!-- $Id$ -->
-<H1><B>{$layout.pagetitle}</B></H1>
-<P><FORM method="POST" name="message" action="?m=rtmessageadd" enctype="multipart/form-data">
-<INPUT type="submit" class="hiddenbtn">
-<INPUT type="hidden" name="message[inreplyto]" value ="{$message.inreplyto|default:"0"}">
-<INPUT type="hidden" name="message[references]" value ="{$message.references|escape|default:""}">
-<INPUT type="hidden" name="message[ticketid]" value ="{$message.ticketid}">
-<INPUT type="hidden" name="message[customerid]" value ="{$message.customerid}">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD WIDTH="1%" CLASS="fleftu" NOWRAP>
-			<IMG src="img/mail.gif" alt="">
-			<B>{trans("Subject:")}</B>
-		</TD>
-		<TD WIDTH="99%" CLASS="frightu">
-			<INPUT type="text" size="75" name="message[subject]" value="{$message.subject}" {tip text="Enter message subject" trigger="subject"}></INPUT>
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
-			<IMG src="img/users.gif" alt="">
-			<B>{trans("Submitter:")}</B>
-		</TD>
-		<TD WIDTH="99%" CLASS="fright">
-			<INPUT class="radio light" type="radio" name="message[sender]" id="sender0" value="user" CHECKED><label for="sender0">{trans("user")}</label>
-			<INPUT class="radio light" type="radio" name="message[sender]" id="sender1" value="customer" {if $message.sender eq 'customer'}CHECKED{/if}><label for="sender1">{trans("customer")}</label>
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
-			<IMG src="img/email.gif" alt="">
-			<B>{trans("Recipient's e-mail:")}</B>
-		</TD>
-		<TD WIDTH="99%" CLASS="fright">
-			<INPUT type="text" size="25" name="message[destination]" value="{$message.destination|escape}" {tip text="Enter recipient's e-mail - if sender is an user and message should be sent (optional)" trigger="destination"}>
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
-			<IMG src="img/edit.gif" alt="">
-			<B>{trans("Content:")}</B>
-		</TD>
-		<TD WIDTH="99%" CLASS="fright">
-			<TEXTAREA name="message[body]" cols="75" rows="10" {tip text="Enter message content" trigger="body"}>{$message.body}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
-			<IMG src="img/attach.gif" alt="">
-			<B>{trans("Attachment:")}</B>
-		</TD>
-		<TD WIDTH="99%" CLASS="fright">
-			<INPUT name="file" type="file" size="55" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="100%" CLASS="fbottomu" colspan="2" align="right">
-			<A href="javascript:document.message.submit();" accesskey="s">{trans("Submit/Send")} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=rtticketview&id={$message.ticketid}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
-		</TD>
-	</TR>
-</TABLE>
-<BR>
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="ftl" NOWRAP>
-			<IMG src="img/mail.gif" alt="">
-		        <label for="notify"><B>{trans("Notify users:")}</B></label>
-		</TD>
-		<TD WIDTH="99%" CLASS="ftr">
-			<INPUT type="checkbox" name="message[notify]" id="notify" value="1"{if $message.notify} CHECKED{/if}>
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
-			<IMG src="img/resolved.gif" alt="">
-		        <label for="state"><B>{trans("Resolve ticket:")}</B></label>
-		</TD>
-		<TD WIDTH="99%" CLASS="fright">
-			<INPUT type="checkbox" name="message[state]" id="state" value="{$smarty.const.RT_RESOLVED}"{if $message.state==$smarty.const.RT_RESOLVED} CHECKED{/if}>
-		</TD>
-	</TR>
-	<TR class="light">
-                <TD WIDTH="1%" CLASS="fbl" NOWRAP>
-	                <IMG src="img/desc.gif" alt="">
-	        <B>{trans("Cause:")}</B>
-	        </TD>
-	        <TD WIDTH="99%" CLASS="fbr">
-		        <SELECT SIZE="1" name="message[cause]" {tip text="Select request cause" trigger="cause"}>
-		        	<OPTION value="0" {if !$message.cause}SELECTED{/if}>{trans("unknown/other")}</OPTION>
-				<OPTION value="1" {if $message.cause == 1}SELECTED{/if}>{trans("customer's side")}</OPTION>
-			        <OPTION value="2" {if $message.cause == 2}SELECTED{/if}>{trans("company's side")}</OPTION>
-			</SELECT>
-		</TD>
-        </TR>
-</TABLE>
-</FORM></P>
+<h1><strong>{$layout.pagetitle}</strong></h1>
+<P><form method="POST" name="message" action="?m=rtmessageadd" enctype="multipart/form-data">
+<input type="submit" class="hiddenbtn">
+<input type="hidden" name="message[inreplyto]" value ="{$message.inreplyto|default:"0"}">
+<input type="hidden" name="message[references]" value ="{$message.references|escape|default:""}">
+<input type="hidden" name="message[ticketid]" value ="{$message.ticketid}">
+<input type="hidden" name="message[customerid]" value ="{$message.customerid}">
+<table width="100%" cellpadding="3">
+	<tr class="dark">
+		<td width="1%" class="fleftu" nowrap="nowrap">
+			<img src="img/mail.gif" alt="">
+			<strong>{trans("Subject:")}</strong>
+		</td>
+		<td width="99%" class="frightu">
+			<input type="text" size="75" name="message[subject]" value="{$message.subject}" {tip text="Enter message subject" trigger="subject"}></INPUT>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft" nowrap="nowrap">
+			<img src="img/users.gif" alt="">
+			<strong>{trans("Submitter:")}</strong>
+		</td>
+		<td width="99%" class="fright">
+			<input class="radio light" type="radio" name="message[sender]" id="sender0" value="user" checked="checked"><label for="sender0">{trans("user")}</label>
+			<input class="radio light" type="radio" name="message[sender]" id="sender1" value="customer" {if $message.sender eq 'customer'}CHECKED{/if}><label for="sender1">{trans("customer")}</label>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft" nowrap="nowrap">
+			<img src="img/email.gif" alt="">
+			<strong>{trans("Recipient's e-mail:")}</strong>
+		</td>
+		<td width="99%" class="fright">
+			<input type="text" size="25" name="message[destination]" value="{$message.destination|escape}" {tip text="Enter recipient's e-mail - if sender is an user and message should be sent (optional)" trigger="destination"}>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft" nowrap="nowrap">
+			<img src="img/edit.gif" alt="">
+			<strong>{trans("Content:")}</strong>
+		</td>
+		<td width="99%" class="fright">
+			<textarea name="message[body]" cols="75" rows="10" {tip text="Enter message content" trigger="body"}>{$message.body}</textarea>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft" nowrap="nowrap">
+			<img src="img/attach.gif" alt="">
+			<strong>{trans("Attachment:")}</strong>
+		</td>
+		<td width="99%" class="fright">
+			<input name="file" type="file" size="55" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="100%" class="fbottomu" colspan="2" align="right">
+			<a href="javascript:document.message.submit();" accesskey="s">{trans("Submit/Send")} <img src="img/save.gif" alt=""></a>
+			<a href="?m=rtticketview&id={$message.ticketid}">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
+		</td>
+	</tr>
+</table>
+<br />
+<table width="100%" cellpadding="3">
+	<tr class="light">
+		<td width="1%" class="ftl" nowrap="nowrap">
+			<img src="img/mail.gif" alt="">
+		        <label for="notify"><strong>{trans("Notify users:")}</strong></label>
+		</td>
+		<td width="99%" class="ftr">
+			<input type="checkbox" name="message[notify]" id="notify" value="1"{if $message.notify} checked="checked"{/if}>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft" nowrap="nowrap">
+			<img src="img/resolved.gif" alt="">
+		        <label for="state"><strong>{trans("Resolve ticket:")}</strong></label>
+		</td>
+		<td width="99%" class="fright">
+			<input type="checkbox" name="message[state]" id="state" value="{$smarty.const.RT_RESOLVED}"{if $message.state==$smarty.const.RT_RESOLVED} checked="checked"{/if}>
+		</td>
+	</tr>
+	<tr class="light">
+                <td width="1%" class="fbl" nowrap="nowrap">
+	                <img src="img/desc.gif" alt="">
+	        <strong>{trans("Cause:")}</strong>
+	        </td>
+	        <td width="99%" class="fbr">
+		        <select size="1" name="message[cause]" {tip text="Select request cause" trigger="cause"}>
+		        	<option value="0" {if !$message.cause}selected="selected"{/if}>{trans("unknown/other")}</option>
+				<option value="1" {if $message.cause == 1}selected="selected"{/if}>{trans("customer's side")}</option>
+			        <option value="2" {if $message.cause == 2}selected="selected"{/if}>{trans("company's side")}</option>
+			</select>
+		</td>
+        </tr>
+</table>
+</form></P>
 {include file="footer.html"}
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 <!--
 document.forms['message'].elements['message[subject]'].focus();
 //-->
-</SCRIPT>
+</script>

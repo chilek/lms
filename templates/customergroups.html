@@ -1,63 +1,63 @@
 <!--// $Id$ //-->
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR class="dark hand" onclick="showOrHide('groupspanel');">
-		<TD class="fall">
-			<IMG src="img/group.gif" alt="">
-			<B>{trans("Customer Groups:")}</B> 
-		</TD>
-	</TR>
-	<TR id="groupspanel" style="display:none;">
-		<TD WIDTH="100%" class="fall">
-			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
-				<TR class="dark">
-					<TD WIDTH="1%" NOWRAP class="fleftu"><B>{trans("Name:")}</B></TD>
-					<TD WIDTH="1%" NOWRAP class="fbt" COLSPAN="2">{trans("Description:")}</TD>
-					<TD WIDTH="97%" NOWRAP class="fbt">{trans("ID:")}</TD>
-					<TD WIDTH="1%" class="frightu">&nbsp;</TD>
-				</TR>
+<table width="100%" cellpadding="3">
+	<tr class="dark hand" onclick="showOrHide('groupspanel');">
+		<td class="fall">
+			<img src="img/group.gif" alt="">
+			<strong>{trans("Customer Groups:")}</strong> 
+		</td>
+	</tr>
+	<tr id="groupspanel" style="display:none;">
+		<td width="100%" class="fall">
+			<table cellpadding="5" cellspacing="0" width="100%">
+				<tr class="dark">
+					<td width="1%" nowrap="nowrap" class="fleftu"><strong>{trans("Name:")}</strong></td>
+					<td width="1%" nowrap="nowrap" class="fbt" colspan="2">{trans("Description:")}</td>
+					<td width="97%" nowrap="nowrap" class="fbt">{trans("ID:")}</td>
+					<td width="1%" class="frightu">&nbsp;</td>
+				</tr>
 				{cycle name=groups values="light,lucid" print=false}
 				{foreach from=$customergroups item=customergroup}
-				<TR class="{cycle name=groups}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-					<TD WIDTH="1%" NOWRAP><B><A HREF="?m=customergroupinfo&id={$customergroup.id}">{$customergroup.name}</A></B></TD>
-					<TD WIDTH="1%" NOWRAP COLSPAN="2">{$customergroup.description}</TD>
-					<TD WIDTH="97%" NOWRAP>({$customergroup.id|string_format:"%04d"})</TD>
-					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP><A onClick="return confirmLink(this, '{trans("Are you sure, you want to remove customer from group?")}')" HREF="?m=customergroup&customergroupid={$customergroup.id}&action=delete&id={$customerinfo.id}" {tip text="Remove customer from group"}><IMG SRC="img/delete.gif" ALT="[ {trans("Delete")} ]"></A></TD>
-				</TR>
+				<tr class="{cycle name=groups}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+					<td width="1%" nowrap="nowrap"><strong><a href="?m=customergroupinfo&id={$customergroup.id}">{$customergroup.name}</a></strong></td>
+					<td width="1%" nowrap="nowrap" colspan="2">{$customergroup.description}</td>
+					<td width="97%" nowrap="nowrap">({$customergroup.id|string_format:"%04d"})</td>
+					<td width="1%" align="RIGHT" nowrap="nowrap"><a onClick="return confirmLink(this, '{trans("Are you sure, you want to remove customer from group?")}')" href="?m=customergroup&customergroupid={$customergroup.id}&action=delete&id={$customerinfo.id}" {tip text="Remove customer from group"}><img src="img/delete.gif" alt="[ {trans("Delete")} ]"></a></td>
+				</tr>
 				{foreachelse}
-				<TR>
-					<TD align="center" WIDTH="100%" colspan="5">
+				<tr>
+					<td align="center" width="100%" colspan="5">
 						<p>&nbsp;</p>
-						<p><B>{trans("That customer is not a member of any group.")}</B></p>
+						<p><strong>{trans("That customer is not a member of any group.")}</strong></p>
 						<p>&nbsp;</p>
-					</TD>
-				</TR>
+					</td>
+				</tr>
 				{/foreach}
-				<FORM METHOD="POST" NAME="customergroupassignment" ACTION="?m=customergroup&action=add&id={$customerinfo.id}">
-				<INPUT type="submit" class="hiddenbtn">
-				<TR class="light">
-					<TD COLSPAN="4" CLASS="ftop">
-						<B>{trans("Add:")}</B>
-						<SELECT SIZE="1" NAME="customergroupid" {tip text="Select group to attribute to customer"}>
-							<OPTION VALUE="0">{trans("... select group ...")}</OPTION>
+				<form method="POST" name="customergroupassignment" action="?m=customergroup&action=add&id={$customerinfo.id}">
+				<input type="submit" class="hiddenbtn">
+				<tr class="light">
+					<td colspan="4" class="ftop">
+						<strong>{trans("Add:")}</strong>
+						<select size="1" name="customergroupid" {tip text="Select group to attribute to customer"}>
+							<option value="0">{trans("... select group ...")}</option>
 							{section name=t loop=$othercustomergroups}
-							<OPTION VALUE="{$othercustomergroups[t].id}">{$othercustomergroups[t].name} ({$othercustomergroups[t].id|string_format:"%04d"})</OPTION>
+							<option value="{$othercustomergroups[t].id}">{$othercustomergroups[t].name} ({$othercustomergroups[t].id|string_format:"%04d"})</option>
 							{/section}
-						</SELECT>
-					</TD>
-					<TD ALIGN="RIGHT" CLASS="ftop" ROWSPAN="2" NOWRAP>
-						<A HREF="javascript:document.customergroupassignment.submit()" {tip text="Add customer to group"}>{trans("Add")} <IMG SRC="img/save.gif" alt=""></A>
-					</TD>
-				</TR>
-				</FORM>
-			</TABLE>
-		</TD>
-	</TR>
-</TABLE>
-<SCRIPT type="text/javascript">
+						</select>
+					</td>
+					<td align="RIGHT" class="ftop" rowspan="2" nowrap="nowrap">
+						<a href="javascript:document.customergroupassignment.submit()" {tip text="Add customer to group"}>{trans("Add")} <img src="img/save.gif" alt=""></a>
+					</td>
+				</tr>
+				</form>
+			</table>
+		</td>
+	</tr>
+</table>
+<script type="text/javascript">
 <!--
 	if (getCookie('groupspanel') == '1')
 	{
 		document.getElementById('groupspanel').style.display = '';
 	}
 //-->
-</SCRIPT>
+</script>

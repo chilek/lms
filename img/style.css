@@ -193,3 +193,5 @@ div.multiselectlayer ul li input { border: none; }
     -webkit-box-shadow: #333 1px 1px 12px;
     behavior: url(img/pie.htc);
 }
+
+.nobr { white-space: nowrap; }

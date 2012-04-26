@@ -20,7 +20,7 @@
     <input type="submit" class="hiddenbtn">
     <table id="searchtable" cellpadding="5" width="100%">
         <tr>
-            <td class="fall dark" nowrap>
+            <td class="fall dark" nowrap="nowrap">
                  <img src="img/home.gif" alt="">
                  <input type="text" name="searchcity" value="" size="40" onkeyup="document.search.submit();" {tip text="Enter city name"}>
             </td>
@@ -36,7 +36,7 @@
         <tr><td width="100%" align="center">
             <p>&nbsp;</p>
             <p>&nbsp;</p>
-            <p><b>{trans("Location database is empty.")}</b></p>
+            <p><strong>{trans("Location database is empty.")}</strong></p>
             <p>&nbsp;</p>
             <p>&nbsp;</p>
         </td></tr>
@@ -88,19 +88,19 @@
 		    </td>
 	    </tr>
 	    <tr class="light" id="house"{if empty($data.streetid) && empty($data.cityid)} style="display:none"{/if}>
-		    <td nowrap>{trans("House No.")}:</td>
+		    <td nowrap="nowrap">{trans("House No.")}:</td>
 		    <td>
                 <input type="text" size="8" id="house_input" name="house" value="" {tip text="Enter house number"}>
 		    </td>
 	    </tr>
 	    <tr class="light" id="flat"{if empty($data.streetid) && empty($data.cityid)} style="display:none"{/if}>
-		    <td nowrap>{trans("Flat No.")}:</td>
+		    <td nowrap="nowrap">{trans("Flat No.")}:</td>
 		    <td>
                 <input type="text" size="8" id="flat_input" name="flat" value="" {tip text="Enter flat number"}>
 		    </td>
 	    </tr>
         <tr class="light">
-            <td colspan="2" align="right" nowrap>
+            <td colspan="2" align="right" nowrap="nowrap">
                 <a href="javascript:submit_location()" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
             </td>
         </tr>

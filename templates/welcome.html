@@ -1,360 +1,360 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
+<h1>{$layout.pagetitle}</h1>
 <P>
-<TABLE width="100%" cellpadding="3" COLS="12">
-	<TR>
+<table width="100%" cellpadding="3" cols="12">
+	<tr>
 		{if !check_conf('privileges.hide_sysinfo')}
-		<TD WIDTH="50%" style="vertical-align: top;" COLSPAN="5">
-			<TABLE WIDTH="100%" CELLPADDING="3">
-				<TR CLASS="DARK">
-					<TD ALIGN="CENTER" COLSPAN="2" CLASS="FALL">
-						<IMG SRC="img/logo-ico.gif" ALT=""> <B>{trans("About LMS:")}</B>
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="http://www.lms.org.pl" target="_BLANK">{trans("LMS version:")}</A></B>
-					</TD>
-					<TD WIDTH="50%" CLASS="FRIGHT">
+		<td width="50%" style="vertical-align: top;" colspan="5">
+			<table width="100%" cellpadding="3">
+				<tr class="DARK">
+					<td align="CENTER" colspan="2" class="FALL">
+						<img src="img/logo-ico.gif" alt=""> <strong>{trans("About LMS:")}</strong>
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td width="50%" align="RIGHT" class="FLEFT">
+						<strong><a href="http://www.lms.org.pl" target="_BLANK">{trans("LMS version:")}</a></strong>
+					</td>
+					<td width="50%" class="FRIGHT">
 						{$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="http://www.lms.org.pl" target="_BLANK">{trans("LMSDB version:")}</A></B>
-					</TD>
-					<TD WIDTH="50%" CLASS="FRIGHT">
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td width="50%" align="RIGHT" class="FLEFT">
+						<strong><a href="http://www.lms.org.pl" target="_BLANK">{trans("LMSDB version:")}</a></strong>
+					</td>
+					<td width="50%" class="FRIGHT">
 						{$layout.lmsdbv}
-					</TD>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B>
+					</td>
+				<tr class="LIGHT">
+					<td width="50%" align="RIGHT" class="FLEFT">
+						<strong>
 						{if $layout.dbtype == "mysql" || $layout.dbtype == "mysqli"}
-						<A HREF="http://www.mysql.com" target="_BLANK">{trans("MySQL version:")}</A>
+						<a href="http://www.mysql.com" target="_BLANK">{trans("MySQL version:")}</a>
 						{elseif $layout.dbtype == "postgres"}
-						<A HREF="http://www.postgresql.org" target="_BLANK">{trans("PostgreSQL version:")}</A>
+						<a href="http://www.postgresql.org" target="_BLANK">{trans("PostgreSQL version:")}</a>
 						{/if}
-						</B>
-					</TD>
-					<TD WIDTH="50%" CLASS="FRIGHT">
+						</strong>
+					</td>
+					<td width="50%" class="FRIGHT">
 						{$layout.dbversion}
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="http://www.php.net/" target="_BLANK">{trans("PHP version:")}</A></B>
-					</TD>
-					<TD WIDTH="50%" CLASS="FRIGHT">
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td width="50%" align="RIGHT" class="FLEFT">
+						<strong><a href="http://www.php.net/" target="_BLANK">{trans("PHP version:")}</a></strong>
+					</td>
+					<td width="50%" class="FRIGHT">
 						{$sysinfo.phpversion}
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FBL">
-						<B><A HREF="http://www.smarty.net" target="_BLANK">{trans("Smarty version:")}</A></B>
-					</TD>
-					<TD WIDTH="50%" CLASS="FBR">
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td width="50%" align="RIGHT" class="FBL">
+						<strong><a href="http://www.smarty.net" target="_BLANK">{trans("Smarty version:")}</a></strong>
+					</td>
+					<td width="50%" class="FBR">
 						{$layout.smarty_version}
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-		<TD WIDTH="50%" style="vertical-align: top;" COLSPAN="6">
-			<TABLE WIDTH="100%" CELLPADDING="3">
-				<TR CLASS="DARK">
-					<TD HEIGHT="24" ALIGN="CENTER" COLSPAN="2" CLASS="FALL" NOWRAP>
-						<IMG SRC="img/info1.gif" ALT=""> <B>{trans("About system:")}</B>
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B>{trans("Hostname:")}</B>
-					</TD>
-					<TD WIDTH="50%" CLASS="FRIGHT">
+					</td>
+				</tr>
+			</table>
+		</td>
+		<td width="50%" style="vertical-align: top;" colspan="6">
+			<table width="100%" cellpadding="3">
+				<tr class="DARK">
+					<td HEIGHT="24" align="CENTER" colspan="2" class="FALL" nowrap="nowrap">
+						<img src="img/info1.gif" alt=""> <strong>{trans("About system:")}</strong>
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td width="50%" align="RIGHT" class="FLEFT">
+						<strong>{trans("Hostname:")}</strong>
+					</td>
+					<td width="50%" class="FRIGHT">
 						{$sysinfo.hostname}
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B>{trans("System version:")}</B>
-					</TD>
-					<TD WIDTH="50%" CLASS="FRIGHT">
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td width="50%" align="RIGHT" class="FLEFT">
+						<strong>{trans("System version:")}</strong>
+					</td>
+					<td width="50%" class="FRIGHT">
 						{$sysinfo.kernel}
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B>{trans("Uptime:")}</B>
-					</TD>
-					<TD WIDTH="50%" CLASS="FRIGHT">
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td width="50%" align="RIGHT" class="FLEFT">
+						<strong>{trans("Uptime:")}</strong>
+					</td>
+					<td width="50%" class="FRIGHT">
 						{$sysinfo.uptime}
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B>{trans("Users logged in:")}</B>
-					</TD>
-					<TD WIDTH="50%" CLASS="FRIGHT">
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td width="50%" align="RIGHT" class="FLEFT">
+						<strong>{trans("Users logged in:")}</strong>
+					</td>
+					<td width="50%" class="FRIGHT">
 						{$sysinfo.users}
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FBL">
-						<B>{trans("Load:")}</B>
-					</TD>
-					<TD WIDTH="50%" CLASS="FBR">
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td width="50%" align="RIGHT" class="FBL">
+						<strong>{trans("Load:")}</strong>
+					</td>
+					<td width="50%" class="FBR">
 						{$sysinfo.loadavg.0} {$sysinfo.loadavg.1} {$sysinfo.loadavg.2}
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
+					</td>
+				</tr>
+			</table>
+		</td>
 		{/if}
-	</TR>
-	<TR>
+	</tr>
+	<tr>
 		{if !check_conf('privileges.hide_summaries')}
-		<TD WIDTH="50%" style="vertical-align: top;" COLSPAN="5">
-			<TABLE WIDTH="100%" CELLPADDING="3">
-				<TR CLASS="DARK">
-					<TD COLSPAN="2" ALIGN="CENTER" CLASS="FALL">
-						<IMG SRC="img/customer.gif"> <B>{trans("Customers:")}</B>
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="?m=customerlist&s=3">{trans("Connected:")}</A></B>
-					</TD>
-					<TD WIDTH="50%" CLASS="FRIGHT">
+		<td width="50%" style="vertical-align: top;" colspan="5">
+			<table width="100%" cellpadding="3">
+				<tr class="DARK">
+					<td colspan="2" align="CENTER" class="FALL">
+						<img src="img/customer.gif"> <strong>{trans("Customers:")}</strong>
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td width="50%" align="RIGHT" class="FLEFT">
+						<strong><a href="?m=customerlist&s=3">{trans("Connected:")}</a></strong>
+					</td>
+					<td width="50%" class="FRIGHT">
 						{$customerstats.connected}
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="?m=customerlist&s=2">{trans("Waiting:")}</A></B>
-					</TD>
-					<TD WIDTH="50%" CLASS="FRIGHT">
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td width="50%" align="RIGHT" class="FLEFT">
+						<strong><a href="?m=customerlist&s=2">{trans("Waiting:")}</a></strong>
+					</td>
+					<td width="50%" class="FRIGHT">
 						{$customerstats.awaiting}
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="?m=customerlist&s=1">{trans("Interested:")}</A></B>
-					</TD>
-					<TD WIDTH="50%" CLASS="FRIGHT">
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td width="50%" align="RIGHT" class="FLEFT">
+						<strong><a href="?m=customerlist&s=1">{trans("Interested:")}</a></strong>
+					</td>
+					<td width="50%" class="FRIGHT">
 						{$customerstats.interested}
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
-						<B><A HREF="?m=customerlist&s=0">{trans("Total:")}</A><BR>
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td width="50%" align="RIGHT" class="FLEFTU">
+						<strong><a href="?m=customerlist&s=0">{trans("Total:")}</a><br />
 						{if !check_conf('privileges.hide_finances')}
-							<A HREF="?m=customerlist&s=6">{trans("Total Dues:")}</A></B>
+							<a href="?m=customerlist&s=6">{trans("Total Dues:")}</a></strong>
 						{/if}
-					</TD>
-					<TD WIDTH="50%" CLASS="FRIGHTU">
-						{$customerstats.total}<BR>
+					</td>
+					<td width="50%" class="FRIGHTU">
+						{$customerstats.total}<br />
 						{if !check_conf('privileges.hide_finances')}
-							<NOBR>{$customerstats.debt} ({trans("amount")} {$customerstats.debtvalue|money_format})</NOBR>
+							<span class="nobr">{$customerstats.debt} ({trans("amount")} {$customerstats.debtvalue|money_format})</span>
 						{/if}
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-		<TD WIDTH="50%" style="vertical-align: top;" COLSPAN="6">
-			<TABLE WIDTH="100%" CELLPADDING="3">
-				<TR CLASS="DARK">
-					<TD COLSPAN="2" ALIGN="CENTER" CLASS="FALL">
-						<IMG SRC="img/node.gif"> <B>{trans("Nodes:")}</B>
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
-						<A HREF="?m=nodelist&s=3"><B>{trans("Online:")}</B></A>
-					</TD>
-					<TD WIDTH="50%" CLASS="FRIGHTU">
+					</td>
+				</tr>
+			</table>
+		</td>
+		<td width="50%" style="vertical-align: top;" colspan="6">
+			<table width="100%" cellpadding="3">
+				<tr class="DARK">
+					<td colspan="2" align="CENTER" class="FALL">
+						<img src="img/node.gif"> <strong>{trans("Nodes:")}</strong>
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td width="50%" align="RIGHT" class="FLEFTU">
+						<a href="?m=nodelist&s=3"><strong>{trans("Online:")}</strong></a>
+					</td>
+					<td width="50%" class="FRIGHTU">
 						{$nodestats.online}
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<A HREF="?m=nodelist&s=1"><B>{trans("Connected<!nodes>:")}</B></A>
-					</TD>
-					<TD WIDTH="50%" CLASS="FRIGHT">
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td width="50%" align="RIGHT" class="FLEFT">
+						<a href="?m=nodelist&s=1"><strong>{trans("Connected<!nodes>:")}</strong></a>
+					</td>
+					<td width="50%" class="FRIGHT">
 						{$nodestats.connected}
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<A HREF="?m=nodelist&s=2"><B>{trans("Disconnected:")}</B></A>
-					</TD>
-					<TD WIDTH="50%" CLASS="FRIGHT">
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td width="50%" align="RIGHT" class="FLEFT">
+						<a href="?m=nodelist&s=2"><strong>{trans("Disconnected:")}</strong></a>
+					</td>
+					<td width="50%" class="FRIGHT">
 						{$nodestats.disconnected}
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
-						<B><A HREF="?m=nodelist">{trans("Total:")}</A></B>
-					</TD>
-					<TD WIDTH="50%" CLASS="FRIGHTU">
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td width="50%" align="RIGHT" class="FLEFTU">
+						<strong><a href="?m=nodelist">{trans("Total:")}</a></strong>
+					</td>
+					<td width="50%" class="FRIGHTU">
 						{$nodestats.total}
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
+					</td>
+				</tr>
+			</table>
+		</td>
 		{/if}
-	</TR>
-	<TR>
-		<TD WIDTH="50%" style="vertical-align: top;" COLSPAN="5">
-			<TABLE WIDTH="100%" CELLPADDING="3">
+	</tr>
+	<tr>
+		<td width="50%" style="vertical-align: top;" colspan="5">
+			<table width="100%" cellpadding="3">
 			{counter start=0 skip=1 assign=rtstatscounter print=false}
 			{foreach from=$rtstats item=rtcategorystats}
 				{if $rtstatscounter is div by 5}
-				<TR>
+				<tr>
 				{/if}
-					<TD WIDTH="20%">
+					<td width="20%">
 
-			<TABLE CELLPADDING="2">
-				<TR CLASS="DARK">
-					<TD COLSPAN="2" ALIGN="CENTER" CLASS="FALL" NOWRAP>
-						<B><A href="?m=rtticketadd&catid={$rtcategorystats.id}" {tip text="Add new ticket" trigger="newticket"}><IMG SRC="img/ticket.gif"></A>&nbsp;{trans("Helpdesk:")}&nbsp;<A href="?m=rtqueueview&catid={$rtcategorystats.id}">{$rtcategorystats.name}</A></B>
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A href="?m=rtqueueview&catid={$rtcategorystats.id}&s=0&o=lastmodified,desc">{trans("New:")}</A></B>
-					</TD>
-					<TD WIDTH="50%" CLASS="FRIGHT">
+			<table cellpadding="2">
+				<tr class="DARK">
+					<td colspan="2" align="CENTER" class="FALL" nowrap="nowrap">
+						<strong><a href="?m=rtticketadd&catid={$rtcategorystats.id}" {tip text="Add new ticket" trigger="newticket"}><img src="img/ticket.gif"></a>&nbsp;{trans("Helpdesk:")}&nbsp;<a href="?m=rtqueueview&catid={$rtcategorystats.id}">{$rtcategorystats.name}</a></strong>
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td width="50%" align="RIGHT" class="FLEFT">
+						<strong><a href="?m=rtqueueview&catid={$rtcategorystats.id}&s=0&o=lastmodified,desc">{trans("New:")}</a></strong>
+					</td>
+					<td width="50%" class="FRIGHT">
 						{$rtcategorystats.new|default:"0"}
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A href="?m=rtqueueview&catid={$rtcategorystats.id}&s=1&o=lastmodified,desc">{trans("Opened:")}</A></B>
-					</TD>
-					<TD WIDTH="50%" CLASS="FRIGHT">
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td width="50%" align="RIGHT" class="FLEFT">
+						<strong><a href="?m=rtqueueview&catid={$rtcategorystats.id}&s=1&o=lastmodified,desc">{trans("Opened:")}</a></strong>
+					</td>
+					<td width="50%" class="FRIGHT">
 						{$rtcategorystats.opened|default:"0"}
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A href="?m=rtqueueview&catid={$rtcategorystats.id}&s=3&o=lastmodified,desc">{trans("Dead:")}</A></B>
-					</TD>
-					<TD WIDTH="50%" CLASS="FRIGHT">
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td width="50%" align="RIGHT" class="FLEFT">
+						<strong><a href="?m=rtqueueview&catid={$rtcategorystats.id}&s=3&o=lastmodified,desc">{trans("Dead:")}</a></strong>
+					</td>
+					<td width="50%" class="FRIGHT">
 						{$rtcategorystats.dead|default:"0"}
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT" NOWRAP>
-						<B><A href="?m=rtqueueview&catid={$rtcategorystats.id}&s=-1&o=lastmodified,desc">{trans("Unresolved:")}</A></B>
-					</TD>
-					<TD WIDTH="50%" CLASS="FRIGHT">
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td width="50%" align="RIGHT" class="FLEFT" nowrap="nowrap">
+						<strong><a href="?m=rtqueueview&catid={$rtcategorystats.id}&s=-1&o=lastmodified,desc">{trans("Unresolved:")}</a></strong>
+					</td>
+					<td width="50%" class="FRIGHT">
 						{$rtcategorystats.unresolved|default:"0"}
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A href="?m=rtqueueview&catid={$rtcategorystats.id}&s=2&o=lastmodified,desc">{trans("Resolved:")}</A></B>
-					</TD>
-					<TD WIDTH="50%" CLASS="FRIGHT">
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td width="50%" align="RIGHT" class="FLEFT">
+						<strong><a href="?m=rtqueueview&catid={$rtcategorystats.id}&s=2&o=lastmodified,desc">{trans("Resolved:")}</a></strong>
+					</td>
+					<td width="50%" class="FRIGHT">
 						{$rtcategorystats.resolved|default:"0"}
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
-						<B><A href="?m=rtqueuelist">{trans("Total:")}</A></B>
-					</TD>
-					<TD WIDTH="50%" CLASS="FRIGHTU">
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td width="50%" align="RIGHT" class="FLEFTU">
+						<strong><a href="?m=rtqueuelist">{trans("Total:")}</a></strong>
+					</td>
+					<td width="50%" class="FRIGHTU">
 						{math equation="a+b+c+d" a=$rtcategorystats.opened b=$rtcategorystats.new c=$rtcategorystats.dead d=$rtcategorystats.resolved}
-					</TD>
-				</TR>
-			</TABLE>
+					</td>
+				</tr>
+			</table>
 
-					</TD>
+					</td>
 				{if $rtstatscounter mod 5 == 4}
-				</TR>
+				</tr>
 				{/if}
 				{counter}
 			{/foreach}
 			{if $rtstatscounter is not div by 5}
 				{assign var=loop value=$rtstatscounter%5*-1+5}
 				{section name=filler loop=$loop}
-				<TD WIDTH="20%">
-				</TD>
+				<td width="20%">
+				</td>
 				{/section}
-			</TR>
-			</TR>
+			</tr>
+			</tr>
 			{/if}
-			</TABLE>
-		</TD>
+			</table>
+		</td>
 		{if !check_conf('privileges.hide_links')}
-		<TD WIDTH="50%" style="vertical-align: top;" COLSPAN="6">
-		    <TABLE WIDTH="100%" CELLPADDING="3">
-				<TR CLASS="DARK">
-					<TD ALIGN="CENTER" CLASS="FALL">
-						<IMG SRC="img/tip.gif"> <B>{trans("Useful Links:")}</B>
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD CLASS="FALL" ALIGN="CENTER">
-						<B><A HREF="http://www.lms.org.pl" TARGET="_BLANK">{trans("LMS Project Homepage")}</A><BR>
-							<A HREF="{$_dochref}" TARGET="_BLANK">{trans("Online Documentation")}</A><BR>
-							<A HREF="doc/ChangeLog" TARGET="_BLANK">{trans("ChangeLog")}</A><BR>
-							<A HREF="http://lists.lms.org.pl" TARGET="_BLANK">{trans("Mailing Lists Archive")}</A><BR>
-							<A HREF="http://git.lms.org.pl" TARGET="_BLANK">{trans("GIT Repository")}</A><BR>
-							<A HREF="http://bts.lms.org.pl" TARGET="_BLANK">{trans("Bug Tracking System")}</A>
-						</B>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
+		<td width="50%" style="vertical-align: top;" colspan="6">
+		    <table width="100%" cellpadding="3">
+				<tr class="DARK">
+					<td align="CENTER" class="FALL">
+						<img src="img/tip.gif"> <strong>{trans("Useful Links:")}</strong>
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td class="FALL" align="CENTER">
+						<strong><a href="http://www.lms.org.pl" TARGET="_BLANK">{trans("LMS Project Homepage")}</a><br />
+							<a href="{$_dochref}" TARGET="_BLANK">{trans("Online Documentation")}</a><br />
+							<a href="doc/ChangeLog" TARGET="_BLANK">{trans("ChangeLog")}</a><br />
+							<a href="http://lists.lms.org.pl" TARGET="_BLANK">{trans("Mailing Lists Archive")}</a><br />
+							<a href="http://git.lms.org.pl" TARGET="_BLANK">{trans("GIT Repository")}</a><br />
+							<a href="http://bts.lms.org.pl" TARGET="_BLANK">{trans("Bug Tracking System")}</a>
+						</strong>
+					</td>
+				</tr>
+			</table>
+		</td>
 		{/if}
-	</TR>
-	<TR>
+	</tr>
+	<tr>
 		{if check_conf('privileges.superuser')}
-		<TD WIDTH="50%" style="vertical-align: top;" COLSPAN="6">
-		</TD>
-		<TD WIDTH="50%" style="vertical-align: top;">
-			<TABLE WIDTH="100%" CELLPADDING="3">
-				<TR CLASS="DARK">
-					<TD ALIGN="CENTER" CLASS="FALL">
-						<IMG SRC="img/logo-ico.gif" ALT=""> <B>{trans("Registration info:")}</B>
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD CLASS="FALL" ALIGN="CENTER">
+		<td width="50%" style="vertical-align: top;" colspan="6">
+		</td>
+		<td width="50%" style="vertical-align: top;">
+			<table width="100%" cellpadding="3">
+				<tr class="DARK">
+					<td align="CENTER" class="FALL">
+						<img src="img/logo-ico.gif" alt=""> <strong>{trans("Registration info:")}</strong>
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td class="FALL" align="CENTER">
 						{if $regdata}
-						{trans("Registration ID:")} {$regdata.id|string_format:"%04d"}<BR>
-						{trans("Registered for:")} {$regdata.name}<BR>
-						{trans("URL:")} {$regdata.url}<BR>
-						<A HREF="?m=register">{trans("Change registration info")}</A>
+						{trans("Registration ID:")} {$regdata.id|string_format:"%04d"}<br />
+						{trans("Registered for:")} {$regdata.name}<br />
+						{trans("URL:")} {$regdata.url}<br />
+						<a href="?m=register">{trans("Change registration info")}</a>
 						{else}
-						{trans("Your installation is unregistered!")}<BR>
-						<A HREF="?m=register">{trans("Click here, to register your installation and learn more why you should - IT'S FREE!")}</A>
+						{trans("Your installation is unregistered!")}<br />
+						<a href="?m=register">{trans("Click here, to register your installation and learn more why you should - IT'S FREE!")}</a>
 						{/if}
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
+					</td>
+				</tr>
+			</table>
+		</td>
 		{/if}
-	</TR>
-</TABLE>
+	</tr>
+</table>
 </P>
 {if $layout.fortune}
 <P>
-<TABLE width="100%" cellpadding="10">
-	<TR class="superlight">
-		<TD class="fleftu" width="1%">
-			<IMG SRC="img/totd.gif" ALT="">
-		</TD>
-		<TD class="frightu" width="99%">
-			<P class="txt">{$layout.fortune|replace:"\n":"<BR>"}</P>
-		</TD>
-	</TR>
-</TABLE>
+<table width="100%" cellpadding="10">
+	<tr class="superlight">
+		<td class="fleftu" width="1%">
+			<img src="img/totd.gif" alt="">
+		</td>
+		<td class="frightu" width="99%">
+			<P class="txt">{$layout.fortune|replace:"\n":"<br />"}</P>
+		</td>
+	</tr>
+</table>
 </P>
 {/if}
 {if $newer_version}
-<SCRIPT TYPE="text/javascript">
+<script type="text/javascript">
 alert('{t a=$newer_version b="http://lms.org.pl/download"}There is newer version of LMS ($a) available for download from $b.{/t}');
-</SCRIPT>
+</script>
 {/if}
 {include file="footer.html"}

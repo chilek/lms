@@ -1,80 +1,80 @@
 {include file="clearheader.html"}
 <!--// $Id$ //-->
-<TABLE WIDTH="100%" CELLPADDING="3" ALIGN="CENTER">
-	<TR>
-		<TD WIDTH="535" VALIGN="TOP">
-			<H1>{$layout.pagetitle}</H1>
-		</TD>
-		<TD WIDTH="180" ALIGN="RIGHT" NOWRAP>
-			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %x"}<BR>
+<table width="100%" cellpadding="3" align="CENTER">
+	<tr>
+		<td width="535" VALIGN="TOP">
+			<h1>{$layout.pagetitle}</h1>
+		</td>
+		<td width="180" align="RIGHT" nowrap="nowrap">
+			LMS {$layout.lmsv} @ {$layout.hostname}<br />
+			{$smarty.now|date_format:"%A, %x"}<br />
 			{t a=$layout.logname}Created by: $a{/t}
-		</TD>
-	</TR>
-</TABLE>
-<BR>
-<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
-	<TR>
-		<TD WIDTH="100" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
+		</td>
+	</tr>
+</table>
+<br />
+<table width="100%" cellpadding="3" BORDER="1" align="CENTER">
+	<tr>
+		<td width="100" class="HEAD" align="CENTER" nowrap="nowrap">
 			{trans("Day")}
-		</TD>
-		<TD WIDTH="80" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
+		</td>
+		<td width="80" class="HEAD" align="CENTER" nowrap="nowrap">
 			{trans("Download")}
-		</TD>
-		<TD WIDTH="150" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
+		</td>
+		<td width="150" class="HEAD" align="CENTER" nowrap="nowrap">
 			{trans("Avg. download speed")}
-		</TD>
-		<TD WIDTH="80" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
+		</td>
+		<td width="80" class="HEAD" align="CENTER" nowrap="nowrap">
 			{trans("Upload")}
-		</TD>
-		<TD WIDTH="150" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
+		</td>
+		<td width="150" class="HEAD" align="CENTER" nowrap="nowrap">
 			{trans("Avg. upload speed")}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{cycle values="white,grey" print=false}
 	{foreach from=$stats item=stat}
-	<TR class="{cycle}">
-		<TD ALIGN="LEFT" NOWRAP>
+	<tr class="{cycle}">
+		<td align="LEFT" nowrap="nowrap">
 			{$stat.date|date_format:"%d.%m.%Y (%A)"}
-		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
+		</td>
+		<td align="RIGHT" nowrap="nowrap">
 			{$stat.download|string_format:"%.2f"} {$stat.downloadunit}
-		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
+		</td>
+		<td align="RIGHT" nowrap="nowrap">
 			{$stat.downavg|string_format:"%d"} kbit/s
-		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
+		</td>
+		<td align="RIGHT" nowrap="nowrap">
 			{$stat.upload|string_format:"%.2f"} {$stat.uploadunit}
-		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
+		</td>
+		<td align="RIGHT" nowrap="nowrap">
 			{$stat.upavg|string_format:"%d"} kbit/s
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{foreachelse}
-	<TR>
-		<TD ALIGN="center" WIDTH="100%" COLSPAN="5">
+	<tr>
+		<td align="center" width="100%" colspan="5">
 			<P>&nbsp;</P>
-			<P><B>{trans("No such stats for selected period.")}</B></P>
+			<P><strong>{trans("No such stats for selected period.")}</strong></P>
 			<P>&nbsp;</P>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/foreach}
-	<TR>
-		<TD CLASS="HEADGREY" ALIGN="RIGHT">
-			<B>{trans("Total:")}</B>
-		</TD>
-		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
-			<B>{$listdata.download|string_format:"%.2f"} {$listdata.downloadunit|default:"KB"}</B>
-		</TD>
-		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
-			<B>{$listdata.downavg|string_format:"%d"} kbit/s</B>
-		</TD>
-		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
-			<B>{$listdata.upload|string_format:"%.2f"} {$listdata.uploadunit|default:"KB"}</B>
-		</TD>
-		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
-			<B>{$listdata.upavg|string_format:"%d"} kbit/s</B>
-		</TD>
-	</TR>
-</TABLE>
+	<tr>
+		<td class="HEADGREY" align="RIGHT">
+			<strong>{trans("Total:")}</strong>
+		</td>
+		<td class="HEADGREY" align="RIGHT" nowrap="nowrap">
+			<strong>{$listdata.download|string_format:"%.2f"} {$listdata.downloadunit|default:"KB"}</strong>
+		</td>
+		<td class="HEADGREY" align="RIGHT" nowrap="nowrap">
+			<strong>{$listdata.downavg|string_format:"%d"} kbit/s</strong>
+		</td>
+		<td class="HEADGREY" align="RIGHT" nowrap="nowrap">
+			<strong>{$listdata.upload|string_format:"%.2f"} {$listdata.uploadunit|default:"KB"}</strong>
+		</td>
+		<td class="HEADGREY" align="RIGHT" nowrap="nowrap">
+			<strong>{$listdata.upavg|string_format:"%d"} kbit/s</strong>
+		</td>
+	</tr>
+</table>
 {include file="clearfooter.html"}

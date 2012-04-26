@@ -1,22 +1,22 @@
 <!--// $Id: netdevmanagementurls.html,v 1.1 2012/04/11 23:01:40 chilek Exp $ //-->
 {$xajax}
-<TABLE style="width: 100%;" CELLPADDING="3">
-	<TR class="dark hand" onclick="showOrHide('managementurlspanel');">
-		<TD class="fall">
-			<IMG src="img/network.gif" alt="">
-			<span class="bold"><A name="managementurls">{trans("Management URL's:")}</A></span>
-		</TD>
-	</TR>
-	<TR id="managementurlspanel" style="display: none;">
-		<TD style="width: 100%;" class="fall">
-			<FORM id="managementurladd" name="managementurladd">
-			<DIV id="managementurltable">
-			</DIV>
-			</FORM>
-		</TD>
-	</TR>
-</TABLE>
-<SCRIPT type="text/javascript">
+<table style="width: 100%;" cellpadding="3">
+	<tr class="dark hand" onclick="showOrHide('managementurlspanel');">
+		<td class="fall">
+			<img src="img/network.gif" alt="">
+			<span class="bold"><a name="managementurls">{trans("Management URL's:")}</a></span>
+		</td>
+	</tr>
+	<tr id="managementurlspanel" style="display: none;">
+		<td style="width: 100%;" class="fall">
+			<form id="managementurladd" name="managementurladd">
+			<div id="managementurltable">
+			</div>
+			</form>
+		</td>
+	</tr>
+</table>
+<script type="text/javascript">
 <!--
 if (getCookie('managementurlspanel') == '1')
 {
@@ -37,4 +37,4 @@ function delManagementUrl(id) {
 
 xajax_getManagementUrls({$netdevinfo.id});
 //-->
-</SCRIPT>
+</script>

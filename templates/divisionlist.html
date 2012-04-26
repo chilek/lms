@@ -1,62 +1,62 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<P><TABLE cellpadding="3" WIDTH="100%">
-	<TR class="dark">
-		<TD width="1%" class="fleftu" NOWRAP><IMG src="img/division.gif" alt=""> <B>{trans("Name:")}</B></TD>
-		<TD width="1%" class="fbt" align="right" NOWRAP>{trans("ID:")}</TD>
-		<TD width="96%" class="fbt" align="left" NOWRAP>{trans("Long name:")}</TD>
-		<TD width="1%" class="fbt" align="right" NOWRAP>{trans("Customers:")}</TD>
-		<TD width="1%" class="frightu" align="right" NOWRAP><a href="?m=divisionadd">{trans("Add division")} <img src="img/save.gif" alt=""></a></TD>
-	</TR>
+<h1>{$layout.pagetitle}</h1>
+<P><table cellpadding="3" width="100%">
+	<tr class="dark">
+		<td width="1%" class="fleftu" nowrap="nowrap"><img src="img/division.gif" alt=""> <strong>{trans("Name:")}</strong></td>
+		<td width="1%" class="fbt" align="right" nowrap="nowrap">{trans("ID:")}</td>
+		<td width="96%" class="fbt" align="left" nowrap="nowrap">{trans("Long name:")}</td>
+		<td width="1%" class="fbt" align="right" nowrap="nowrap">{trans("Customers:")}</td>
+		<td width="1%" class="frightu" align="right" nowrap="nowrap"><a href="?m=divisionadd">{trans("Add division")} <img src="img/save.gif" alt=""></a></td>
+	</tr>
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="5" CLASS="FALL">
+	<tr class="DARK">
+		<td colspan="5" class="FALL">
 			{include file="scroller.html" loop=$divisionlist}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
 	{cycle values="light,lucid" print=false}
 	{section name=list loop=$divisionlist}
-	<TR class="{cycle}{if $divisionlist[list].status} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD class="fleft" NOWRAP onclick="return self.location.href='?m=divisionedit&id={$divisionlist[list].id}';">
-			<IMG src="img/division.gif" alt=""> <B>{$divisionlist[list].shortname}</B>
-		</TD>
-		<TD align="right" NOWRAP onclick="return self.location.href='?m=divisionedit&id={$divisionlist[list].id}';">
+	<tr class="{cycle}{if $divisionlist[list].status} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<td class="fleft" nowrap="nowrap" onclick="return self.location.href='?m=divisionedit&id={$divisionlist[list].id}';">
+			<img src="img/division.gif" alt=""> <strong>{$divisionlist[list].shortname}</strong>
+		</td>
+		<td align="right" nowrap="nowrap" onclick="return self.location.href='?m=divisionedit&id={$divisionlist[list].id}';">
 			({$divisionlist[list].id|string_format:"%04d"})
-		</TD>
-		<TD align="left" onclick="return self.location.href='?m=divisionedit&id={$divisionlist[list].id}';">
+		</td>
+		<td align="left" onclick="return self.location.href='?m=divisionedit&id={$divisionlist[list].id}';">
 			{$divisionlist[list].name}
-		</TD>
-		<TD align="right" onclick="return self.location.href='?m=divisionedit&id={$divisionlist[list].id}';">
+		</td>
+		<td align="right" onclick="return self.location.href='?m=divisionedit&id={$divisionlist[list].id}';">
 			{$divisionlist[list].cnt|default:0}
-		</TD>
-		<TD class="fright" align="right" NOWRAP>
-			<A href="?m=divisionedit&id={$divisionlist[list].id}&changestatus=1"><IMG src="img/wait.gif" alt="[ {if $divisionlist[list].status}{trans("Unlock")}{else}{trans("Lock")}{/if} ]" title="[ {if $divisionlist[list].status}{trans("Unlock")}{else}{trans("Lock")}{/if} ]"></A>
-			<A href="?m=divisiondel&id={$divisionlist[list].id}" OnClick="return confirmLink(this, '{t a=$divisionlist[list].name}Are you sure, you want to delete division \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A href="?m=divisionedit&id={$divisionlist[list].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-		</TD>
-	</TR>
+		</td>
+		<td class="fright" align="right" nowrap="nowrap">
+			<a href="?m=divisionedit&id={$divisionlist[list].id}&changestatus=1"><img src="img/wait.gif" alt="[ {if $divisionlist[list].status}{trans("Unlock")}{else}{trans("Lock")}{/if} ]" title="[ {if $divisionlist[list].status}{trans("Unlock")}{else}{trans("Lock")}{/if} ]"></a>
+			<a href="?m=divisiondel&id={$divisionlist[list].id}" OnClick="return confirmLink(this, '{t a=$divisionlist[list].name}Are you sure, you want to delete division \'$a\'?{/t}')"><img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></a>
+			<a href="?m=divisionedit&id={$divisionlist[list].id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
+		</td>
+	</tr>
 	{sectionelse}
-	<TR>
-		<TD colspan="5" align="center" class="fall">
+	<tr>
+		<td colspan="5" align="center" class="fall">
 			<p>&nbsp;</p>
-			<p><B>{trans("No such divisions in database.")}</B></p>
+			<p><strong>{trans("No such divisions in database.")}</strong></p>
 			<p>&nbsp;</p>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/section}
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="5" CLASS="FALL">
+	<tr class="DARK">
+		<td colspan="5" class="FALL">
 			{include file="scroller.html" loop=$divisionlist}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
-	<TR class="light">
-		<TD colspan="5" class="fall" align="right">
+	<tr class="light">
+		<td colspan="5" class="fall" align="right">
 			<a href="?m=divisionadd">{trans("Add division")} <img src="img/save.gif" alt=""></a>
-		</TD>
-	</TR>
-</TABLE></P>
+		</td>
+	</tr>
+</table></P>
 {include file="footer.html"}

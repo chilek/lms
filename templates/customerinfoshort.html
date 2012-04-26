@@ -6,179 +6,179 @@
 <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
 <title>::: LMS :::</title>
 <link href="img/style.css" rel="stylesheet" type="text/css">
-<SCRIPT TYPE="text/javascript" SRC="img/autoiframe.js"></SCRIPT>
-<SCRIPT TYPE="text/javascript" SRC="img/common.js"></SCRIPT>
+<script type="text/javascript" src="img/autoiframe.js"></script>
+<script type="text/javascript" src="img/common.js"></script>
 </head>
 <body>
-<TABLE WIDTH="100%" CELLPADDING="3" id="table">
-	<TR CLASS="DARK">
-		<TD WIDTH="1%">
-			<IMG SRC="img/customer.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%">
-			<B>{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}){if $customerinfo.deleted} <FONT COLOR="RED">({trans("deleted customer")})</FONT>{/if}</B>
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="1%">
-			{if $customerinfo.status eq "3"}<IMG src="img/customer.gif" alt="">{/if}
-			{if $customerinfo.status eq "2"}<IMG src="img/wait.gif" alt="">{/if}
-			{if $customerinfo.status eq "1"}<IMG src="img/unk.gif" alt="">{/if}
-		</TD>
-		<TD WIDTH="99%">
-			{if $customerinfo.status eq "3"}<B>{trans("connected<!singular>")}</B>{/if}
-			{if $customerinfo.status eq "2"}<B>{trans("waiting")}</B>{/if}
-			{if $customerinfo.status eq "1"}<B>{trans("interested<!singular>")}</B>{/if}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="1%" >
-			<IMG SRC="img/home.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" NOWRAP>
-			{$customerinfo.address}<BR>
+<table width="100%" cellpadding="3" id="table">
+	<tr class="DARK">
+		<td width="1%">
+			<img src="img/customer.gif" alt="">
+		</td>
+		<td width="99%">
+			<strong>{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}){if $customerinfo.deleted} <FONT COLOR="RED">({trans("deleted customer")})</FONT>{/if}</strong>
+		</td>
+	</tr>
+	<tr>
+		<td width="1%">
+			{if $customerinfo.status eq "3"}<img src="img/customer.gif" alt="">{/if}
+			{if $customerinfo.status eq "2"}<img src="img/wait.gif" alt="">{/if}
+			{if $customerinfo.status eq "1"}<img src="img/unk.gif" alt="">{/if}
+		</td>
+		<td width="99%">
+			{if $customerinfo.status eq "3"}<strong>{trans("connected<!singular>")}</strong>{/if}
+			{if $customerinfo.status eq "2"}<strong>{trans("waiting")}</strong>{/if}
+			{if $customerinfo.status eq "1"}<strong>{trans("interested<!singular>")}</strong>{/if}
+		</td>
+	</tr>
+	<tr>
+		<td width="1%" >
+			<img src="img/home.gif" alt="">
+		</td>
+		<td width="99%" nowrap="nowrap">
+			{$customerinfo.address}<br />
 			{$customerinfo.zip} {$customerinfo.city}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 {if $customerinfo.post_name neq "" || $customerinfo.post_address neq ""}
-	<TR>
-		<TD WIDTH="1%" >
-			<IMG SRC="img/post.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" NOWRAP>
+	<tr>
+		<td width="1%" >
+			<img src="img/post.gif" alt="">
+		</td>
+		<td width="99%" nowrap="nowrap">
 			{if $customerinfo.post_name neq ""}{$customerinfo.post_name}{/if}
-			{if $customerinfo.post_address neq ""}<BR>{$customerinfo.post_address}{/if}
-			<BR>{$customerinfo.post_zip} {$customerinfo.post_city}
-		</TD>
-	</TR>
+			{if $customerinfo.post_address neq ""}<br />{$customerinfo.post_address}{/if}
+			<br />{$customerinfo.post_zip} {$customerinfo.post_city}
+		</td>
+	</tr>
 {/if}
 {foreach from=$customerinfo.contacts item=item}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/phone.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" NOWRAP>
+	<tr>
+		<td width="1%">
+			<img src="img/phone.gif" alt="">
+		</td>
+		<td width="99%" nowrap="nowrap">
 		    {$item.phone}
 		    {if $item.typestr}[{$item.typestr}]{/if}
 		    {if $item.name} ({$item.name|truncate:"40":"...":true}){/if}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 {/foreach}
 {if $customerinfo.email neq ""}
-	<TR>
-		<TD WIDTH="1%" >
-			<IMG SRC="img/mail.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%">
-			<A HREF="mailto:{$customerinfo.email}">{$customerinfo.email}</A>
-		</TD>
-	</TR>
+	<tr>
+		<td width="1%" >
+			<img src="img/mail.gif" alt="">
+		</td>
+		<td width="99%">
+			<a href="mailto:{$customerinfo.email}">{$customerinfo.email}</a>
+		</td>
+	</tr>
 {/if}
 {foreach from=$customerinfo.messengers item=item}
-	<TR>
-		<TD>
+	<tr>
+		<td>
 			{if $item.type == $smarty.const.IM_GG}
-			<IMG src="http://status.gadu-gadu.pl/users/status.asp?id={$item.uid}&styl=1" alt="">
+			<img src="http://status.gadu-gadu.pl/users/status.asp?id={$item.uid}&styl=1" alt="">
 			{elseif $item.type == $smarty.const.IM_YAHOO}
-			<IMG src="http://opi.yahoo.com/online?u='{$item.uid}'&m=g&t=5" alt="">
+			<img src="http://opi.yahoo.com/online?u='{$item.uid}'&m=g&t=5" alt="">
 			{elseif $item.type == $smarty.const.IM_SKYPE}
-			<IMG src="http://mystatus.skype.com/smallicon/{$item.uid}" alt="">
+			<img src="http://mystatus.skype.com/smallicon/{$item.uid}" alt="">
 			{else}
-			<IMG src="img/gg.gif" alt="">
+			<img src="img/gg.gif" alt="">
 			{/if}
-		</TD>
-		<TD>
+		</td>
+		<td>
 			{if $item.type == $smarty.const.IM_GG}
-			<A HREF="gg:{$item.uid}">{$item.uid}</A>
+			<a href="gg:{$item.uid}">{$item.uid}</a>
 			{elseif $item.type == $smarty.const.IM_YAHOO}
-			<A HREF="ymsgr:sendIM?{$item.uid}">{$item.uid}</A>
+			<a href="ymsgr:sendIM?{$item.uid}">{$item.uid}</a>
 			{elseif $item.type == $smarty.const.IM_SKYPE}
-			<A HREF="skype:{$item.uid}?call">{$item.uid}</A>
+			<a href="skype:{$item.uid}?call">{$item.uid}</a>
 			{else}
 			{$item.uid}
 			{/if}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 {/foreach}
 {if $customerinfo.icn neq ""}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/serialnumber.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" NOWRAP>
+	<tr>
+		<td width="1%">
+			<img src="img/serialnumber.gif" alt="">
+		</td>
+		<td width="99%" nowrap="nowrap">
 			{trans("ICN")}: {$customerinfo.icn}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 {/if}
 {if $customerinfo.ssn neq ""}
-	<TR">
-		<TD WIDTH="1%">
-			<IMG SRC="img/serialnumber.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" NOWRAP>
+	<tr">
+		<td width="1%">
+			<img src="img/serialnumber.gif" alt="">
+		</td>
+		<td width="99%" nowrap="nowrap">
 			{trans("SSN")}: {$customerinfo.ssn}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 {/if}
 {if $customerinfo.ten neq ""}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/serialnumber.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" NOWRAP>
+	<tr>
+		<td width="1%">
+			<img src="img/serialnumber.gif" alt="">
+		</td>
+		<td width="99%" nowrap="nowrap">
 			{trans("TEN")}: {$customerinfo.ten}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 {/if}
 {if $customerinfo.regon neq ""}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/serialnumber.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" NOWRAP>
+	<tr>
+		<td width="1%">
+			<img src="img/serialnumber.gif" alt="">
+		</td>
+		<td width="99%" nowrap="nowrap">
 			{trans("REGON")}: {$customerinfo.regon}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 {/if}
 {if $customerinfo.rbe neq ""}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/serialnumber.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" NOWRAP>
+	<tr>
+		<td width="1%">
+			<img src="img/serialnumber.gif" alt="">
+		</td>
+		<td width="99%" nowrap="nowrap">
 			{trans("RBE")}: {$customerinfo.rbe}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 {/if}
 {if $customergroups}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/group.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%">
+	<tr>
+		<td width="1%">
+			<img src="img/group.gif" alt="">
+		</td>
+		<td width="99%">
 			{foreach from=$customergroups item=customergroup name=customergroup}
 				{$customergroup.name}{if !$smarty.foreach.customergroup.last},{/if} 
 			{/foreach}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 {/if}
 {if !check_conf('privileges.hide_finances')}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/money.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" NOWRAP>
-			<B>{trans("Balance:")}</B>
+	<tr>
+		<td width="1%">
+			<img src="img/money.gif" alt="">
+		</td>
+		<td width="99%" nowrap="nowrap">
+			<strong>{trans("Balance:")}</strong>
 			{if $customerinfo.balance < 0}<FONT class="alert">{$customerinfo.balance|money_format}</FONT>{else}{$customerinfo.balance|default:"0"|money_format}{/if}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 {/if}
-</TABLE>
-<SCRIPT TYPE="text/javascript">
+</table>
+<script type="text/javascript">
 <!--
 var table = document.getElementById('table');
 autoiframe_setsize('autoiframe', table.offsetWidth, table.offsetHeight);
 //-->
-</SCRIPT>
+</script>
 </BODY>
 </HTML>

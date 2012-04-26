@@ -10,67 +10,67 @@
 <script type="text/javascript" src="img/common.js"></script>
 </head>
 <BODY>
-<TABLE WIDTH="100%" CELLPADDING="3" id="table">
-	<TR CLASS="dark">
-		<TD COLSPAN="2" width="100%" CLASS="fall" NOWRAP>
-			<IMG src="img/ticket.gif" alt="">
-			<B>{t a=$ticket.id|string_format:"%06d"}Ticket No. $a{/t}</B>
-		</TD>
-	</TR>
+<table width="100%" cellpadding="3" id="table">
+	<tr class="dark">
+		<td colspan="2" width="100%" class="fall" nowrap="nowrap">
+			<img src="img/ticket.gif" alt="">
+			<strong>{t a=$ticket.id|string_format:"%06d"}Ticket No. $a{/t}</strong>
+		</td>
+	</tr>
 	{if $ticket.creatorid}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" NOWRAP>
-		    	<IMG src="img/users.gif" alt="">
-			<B>{trans("Created by:")}</B>
-		</TD>
-		<TD WIDTH="99%" NOWRAP>
-			<A href="?m=userinfo&id={$ticket.creatorid}">{$ticket.creator}</a>
-		</TD>
-	</TR>
+	<tr class="LIGHT">
+		<td width="1%" nowrap="nowrap">
+		    	<img src="img/users.gif" alt="">
+			<strong>{trans("Created by:")}</strong>
+		</td>
+		<td width="99%" nowrap="nowrap">
+			<a href="?m=userinfo&id={$ticket.creatorid}">{$ticket.creator}</a>
+		</td>
+	</tr>
 	{/if}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" NOWRAP>
-		    	<IMG src="img/time.gif" alt="">
-			<B>{trans("Uptime:")}</B>
-		</TD>
-		<TD WIDTH="99%" NOWRAP>
+	<tr class="LIGHT">
+		<td width="1%" nowrap="nowrap">
+		    	<img src="img/time.gif" alt="">
+			<strong>{trans("Uptime:")}</strong>
+		</td>
+		<td width="99%" nowrap="nowrap">
 			{$ticket.uptime}
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" NOWRAP>
-		    	<IMG src="img/desc.gif" alt="">
-			<B>{trans("Cause:")}</B>
-		</TD>
-		<TD WIDTH="99%" NOWRAP>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" nowrap="nowrap">
+		    	<img src="img/desc.gif" alt="">
+			<strong>{trans("Cause:")}</strong>
+		</td>
+		<td width="99%" nowrap="nowrap">
 			{if $ticket.cause==2}{trans("company's side")}
 			{elseif $ticket.cause==1}{trans("customer's side")}
 			{else}{trans("unknown/other")}{/if}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{if $ticket.message}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" NOWRAP>
-		    	<IMG src="img/info.gif" alt="">
-			<B>{trans("Body:")}</B>
-		</TD>
-		<TD WIDTH="99%">
-			<TABLE WIDTH="{if strlen($ticket.message)<50}100%{else}300{/if}" CELLPADDING="5">
-                                <TR>
-				        <TD CLASS="fall superlight">
-						{$ticket.message|replace:"\n":"<BR>"}
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
+	<tr class="LIGHT">
+		<td width="1%" nowrap="nowrap">
+		    	<img src="img/info.gif" alt="">
+			<strong>{trans("Body:")}</strong>
+		</td>
+		<td width="99%">
+			<table width="{if strlen($ticket.message)<50}100%{else}300{/if}" cellpadding="5">
+                                <tr>
+				        <td class="fall superlight">
+						{$ticket.message|replace:"\n":"<br />"}
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
 	{/if}
-</TABLE>
-<SCRIPT TYPE="text/javascript">
+</table>
+<script type="text/javascript">
 <!--
 var table = document.getElementById('table');
 autoiframe_setsize('autoiframe', table.offsetWidth < 450 ? table.offsetWidth : 450, table.offsetHeight);
 //-->
-</SCRIPT>
+</script>
 </BODY>
 </HTML>

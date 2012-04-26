@@ -1,61 +1,61 @@
 {include file="clearheader.html"}
 <!--// $Id$ //-->
-<TABLE WIDTH="100%">
-	<TR>
-		<TD WIDTH="50%" ALIGN="LEFT" NOWRAP>
-			<H1>{$layout.pagetitle}: {$date|date_format:"%x (%A)"}</H1>
-		</TD>
-		<TD WIDTH="50%" ALIGN="RIGHT">
-			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %e %B %Y"}<BR>
+<table width="100%">
+	<tr>
+		<td width="50%" align="LEFT" nowrap="nowrap">
+			<h1>{$layout.pagetitle}: {$date|date_format:"%x (%A)"}</h1>
+		</td>
+		<td width="50%" align="RIGHT">
+			LMS {$layout.lmsv} @ {$layout.hostname}<br />
+			{$smarty.now|date_format:"%A, %e %B %Y"}<br />
 			{t a=$layout.logname}Prepared by: $a{/t}
-		</TD>
-	</TR>
-</TABLE>
-<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
-	<TR>
-		<TD WIDTH="1%" CLASS="HEAD">
+		</td>
+	</tr>
+</table>
+<table width="100%" cellpadding="3" BORDER="1" align="CENTER">
+	<tr>
+		<td width="1%" class="HEAD">
 			{trans("Time")}
-		</TD>
-		<TD WIDTH="97%" CLASS="HEAD" ALIGN="LEFT">
-			{trans("Title")}<BR>
+		</td>
+		<td width="97%" class="HEAD" align="LEFT">
+			{trans("Title")}<br />
 			{trans("Description")}/{trans("Note")}
-		</TD>
-		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="1%" class="HEAD" align="CENTER">
 			{trans("User")}
-		</TD>
-		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="1%" class="HEAD" align="CENTER">
 			{trans("Customer")}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{cycle values="white,grey" print=false}
 	{foreach item=event from=$eventlist}
-	<TR class="{cycle}">
-		<TD WIDTH="1%" VALIGN="TOP" ALIGN="LEFT">
-			<NOBR>
+	<tr class="{cycle}">
+		<td width="1%" VALIGN="TOP" align="LEFT">
+			<span class="nobr">
 			{math equation="floor(x/100)" x=$event.begintime format="%02d"}:{math equation="x % 100" x=$event.begintime format="%02d"}
 			{if $event.begintime != $event.endtime}
 			- {math equation="floor(x/100)" x=$event.endtime format="%02d"}:{math equation="x % 100" x=$event.endtime format="%02d"}
 			{/if}
-			</NOBR>
-		</TD>
-		<TD WIDTH="97%" ALIGN="LEFT" VALIGN="TOP">
-			<B>{$event.title}</B><BR>
-			{$event.description}<BR>
+			</span>
+		</td>
+		<td width="97%" align="LEFT" VALIGN="TOP">
+			<strong>{$event.title}</strong><br />
+			{$event.description}<br />
 			{$event.note}
-		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT" VALIGN="TOP">
+		</td>
+		<td width="1%" align="RIGHT" VALIGN="TOP">
 			{foreach item=user from=$event.userlist}
-				<NOBR>{$user.name|truncate:"25":"...":true}</NOBR><BR>
+				<span class="nobr">{$user.name|truncate:"25":"...":true}</span><br />
 			{/foreach}
-		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT" VALIGN="TOP">
-			<NOBR>{$event.customername|truncate:"40":"...":true}</NOBR><BR>
-			<NOBR>{$event.customeraddr}</NOBR><BR>
-			<NOBR>{$event.customercity}</NOBR><BR>
-			<NOBR>{$event.customerphone}</NOBR>
-		</TD>
-	</TR>
+		</td>
+		<td width="1%" align="RIGHT" VALIGN="TOP">
+			<span class="nobr">{$event.customername|truncate:"40":"...":true}</span><br />
+			<span class="nobr">{$event.customeraddr}</span><br />
+			<span class="nobr">{$event.customercity}</span><br />
+			<span class="nobr">{$event.customerphone}</span>
+		</td>
+	</tr>
 	{/foreach}
-</TABLE>
+</table>
 {include file="clearfooter.html"}

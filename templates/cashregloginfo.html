@@ -1,65 +1,65 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
-	    <TD width="1%" class="fleftu">
-		<IMG src="img/value.gif" ALT="">
-	    </TD>
-	    <TD width="1%" class="fbt" NOWRAP><B>{trans("Real state:")}</B></TD>
-	    <TD width="98%" class="frightu">
-		<B>{$reglog.value|money_format}</B>
-	    </TD>
-	</TR>
-	<TR class="LIGHT">
-	    <TD width="1%" class="fleft">
-		<IMG src="img/queue.gif" ALT="">
-	    </TD>
-	    <TD width="1%" NOWRAP><B>{trans("Cash state:")}</B></TD>
-	    <TD width="98%" class="fright">
+<h1>{$layout.pagetitle}</h1>
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+	    <td width="1%" class="fleftu">
+		<img src="img/value.gif" alt="">
+	    </td>
+	    <td width="1%" class="fbt" nowrap="nowrap"><strong>{trans("Real state:")}</strong></td>
+	    <td width="98%" class="frightu">
+		<strong>{$reglog.value|money_format}</strong>
+	    </td>
+	</tr>
+	<tr class="LIGHT">
+	    <td width="1%" class="fleft">
+		<img src="img/queue.gif" alt="">
+	    </td>
+	    <td width="1%" nowrap="nowrap"><strong>{trans("Cash state:")}</strong></td>
+	    <td width="98%" class="fright">
 		{$reglog.snapshot|money_format}
-	    </TD>
-	</TR>
-	<TR class="LIGHT">
-	    <TD width="1%" class="fleft">
-		<IMG src="img/time.gif" ALT="">
-	    </TD>
-	    <TD width="1%"><B>{trans("Time:")}</B></TD>
-	    <TD width="98%" class="fright">
+	    </td>
+	</tr>
+	<tr class="LIGHT">
+	    <td width="1%" class="fleft">
+		<img src="img/time.gif" alt="">
+	    </td>
+	    <td width="1%"><strong>{trans("Time:")}</strong></td>
+	    <td width="98%" class="fright">
 		{$reglog.time}
-	    </TD>
-	</TR>
-	<TR class="LIGHT">
-	    <TD width="1%" class="fleft">
-		<IMG src="img/users.gif" ALT="">
-	    </TD>
-	    <TD width="1%"><B>{trans("User:")}</B></TD>
-	    <TD width="98%" class="fright">
-		<A href="?m=userinfo&id={$reglog.userid}">{$reglog.username}</A>
-	    </TD>
-	</TR>
+	    </td>
+	</tr>
+	<tr class="LIGHT">
+	    <td width="1%" class="fleft">
+		<img src="img/users.gif" alt="">
+	    </td>
+	    <td width="1%"><strong>{trans("User:")}</strong></td>
+	    <td width="98%" class="fright">
+		<a href="?m=userinfo&id={$reglog.userid}">{$reglog.username}</a>
+	    </td>
+	</tr>
 	{if $reglog.description}
-	<TR class="LIGHT">
-	    <TD width="1%" class="fleft">
-		<IMG src="img/info1.gif" ALT="">
-	    </TD>
-	    <TD width="1%"><B>{trans("Description")}:</B></TD>
-	    <TD width="98%" class="fright">
-		    <TABLE WIDTH="100%" CELLPADDING="5">
-	                    <TR>
-			            <TD CLASS="fall superlight">
-					    {$reglog.description|replace:"\n":"<BR>"}
-				    </TD>
-			    </TR>
-		    </TABLE>
-	    </TD>
-	</TR>
+	<tr class="LIGHT">
+	    <td width="1%" class="fleft">
+		<img src="img/info1.gif" alt="">
+	    </td>
+	    <td width="1%"><strong>{trans("Description")}:</strong></td>
+	    <td width="98%" class="fright">
+		    <table width="100%" cellpadding="5">
+	                    <tr>
+			            <td class="fall superlight">
+					    {$reglog.description|replace:"\n":"<br />"}
+				    </td>
+			    </tr>
+		    </table>
+	    </td>
+	</tr>
 	{/if}
-	<TR class="LIGHT">
-	    <TD width="100%" COLSPAN="3" class="FBOTTOMU" ALIGN="RIGHT"> 
-	    	<A HREF="?m=cashreglogedit&id={$reglog.id}" accesskey="s">{trans("Edit")} <IMG src="img/save.gif" alt=""></A>
-		<A href="?m=cashreglogdel&id={$reglog.id}" onclick="return confirmLink(this, '{trans("Are you sure, you want to delete selected entry?")}')">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
-	    </TD>
-	</TR>
-</TABLE>
+	<tr class="LIGHT">
+	    <td width="100%" colspan="3" class="FBOTTOMU" align="RIGHT"> 
+	    	<a href="?m=cashreglogedit&id={$reglog.id}" accesskey="s">{trans("Edit")} <img src="img/save.gif" alt=""></a>
+		<a href="?m=cashreglogdel&id={$reglog.id}" onclick="return confirmLink(this, '{trans("Are you sure, you want to delete selected entry?")}')">{trans("Delete")} <img src="img/delete.gif" alt=""></a>
+	    </td>
+	</tr>
+</table>
 {include file="footer.html"}

@@ -1,87 +1,87 @@
 {include file="header.html"}
 <!-- $Id$ -->
-<H1>{$layout.pagetitle}</H1>
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR class="dark">
-		<TD WIDTH="1%" CLASS="fleftu">
-			<IMG SRC="img/payment.gif" ALT=""><BR>
-			<IMG SRC="img/creditor.gif" ALT="">
-		</TD>
-		<TD WIDTH="95%" CLASS="fbt" ALIGN="left">
-			<B>{trans("Name:")}</B><BR>
+<h1>{$layout.pagetitle}</h1>
+<table width="100%" cellpadding="3">
+	<tr class="dark">
+		<td width="1%" class="fleftu">
+			<img src="img/payment.gif" alt=""><br />
+			<img src="img/creditor.gif" alt="">
+		</td>
+		<td width="95%" class="fbt" align="left">
+			<strong>{trans("Name:")}</strong><br />
 			{trans("Creditor:")}
-		</TD>
-		<TD WIDTH="1%" CLASS="fbt" ALIGN="right">
+		</td>
+		<td width="1%" class="fbt" align="right">
 			{trans("ID:")}
-		</TD>
-		<TD WIDTH="1%" CLASS="fbt" ALIGN="right">
+		</td>
+		<td width="1%" class="fbt" align="right">
 			{trans("Value:")}
-		</TD>	
-		<TD NOWRAP WIDTH="1%" CLASS="fbt" ALIGN="right">
+		</td>	
+		<td nowrap="nowrap" width="1%" class="fbt" align="right">
 			{trans("Payment day:")}
-		</TD>
-		<TD NOWRAP WIDTH="1%" CLASS="frightu" ALIGN="RIGHT">
-			<B>{t a=$listdata.total}Total: $a{/t}</B>
-		</TD>
-	</TR>
+		</td>
+		<td nowrap="nowrap" width="1%" class="frightu" align="RIGHT">
+			<strong>{t a=$listdata.total}Total: $a{/t}</strong>
+		</td>
+	</tr>
 	{cycle values="light,lucid" print=false}
 	{section name=payments loop=$paymentlist}
-	<FORM NAME="addbalance{$smarty.section.payments.index}" METHOD="POST" ACTION="?m=balanceadd">
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD WIDTH="1%" CLASS="fleft" onClick="return self.location.href='?m=paymentinfo&id={$paymentlist[payments].id}';" class="fleft">
-			<IMG SRC="img/payment.gif" ALT=""><BR>
-			<IMG SRC="img/creditor.gif" ALT="">
-		</TD>
-		<TD WIDTH="95%" onClick="return self.location.href='?m=paymentinfo&id={$paymentlist[payments].id}';">
-			<B>{$paymentlist[payments].name}</B><BR>
+	<form name="addbalance{$smarty.section.payments.index}" method="POST" action="?m=balanceadd">
+	<tr class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<td width="1%" class="fleft" onClick="return self.location.href='?m=paymentinfo&id={$paymentlist[payments].id}';" class="fleft">
+			<img src="img/payment.gif" alt=""><br />
+			<img src="img/creditor.gif" alt="">
+		</td>
+		<td width="95%" onClick="return self.location.href='?m=paymentinfo&id={$paymentlist[payments].id}';">
+			<strong>{$paymentlist[payments].name}</strong><br />
 			{$paymentlist[payments].creditor}
-		</TD>
-		<TD WIDTH="1%" ALIGN="right" onClick="return self.location.href='?m=paymentinfo&id={$paymentlist[payments].id}';">
+		</td>
+		<td width="1%" align="right" onClick="return self.location.href='?m=paymentinfo&id={$paymentlist[payments].id}';">
 			({$paymentlist[payments].id|string_format:"%04d"})
-		</TD>
-		<TD WIDTH="1%" ALIGN="right" onClick="return self.location.href='?m=paymentinfo&id={$paymentlist[payments].id}';">
-			<NOBR>
+		</td>
+		<td width="1%" align="right" onClick="return self.location.href='?m=paymentinfo&id={$paymentlist[payments].id}';">
+			<span class="nobr">
 			{$paymentlist[payments].value|money_format} 
-			</NOBR>
-		</TD>
-		<TD WIDTH="1%" ALIGN="right" onClick="return self.location.href='?m=paymentinfo&id={$paymentlist[payments].id}';">
-			<NOBR>
+			</span>
+		</td>
+		<td width="1%" align="right" onClick="return self.location.href='?m=paymentinfo&id={$paymentlist[payments].id}';">
+			<span class="nobr">
 			{$paymentlist[payments].payday} 
-			</NOBR>
-		</TD>
-		<TD WIDTH="1%" CLASS="fright" ALIGN="right" >
-			<INPUT type="submit" class="hiddenbtn">
-			<INPUT TYPE="HIDDEN" NAME="m" VALUE="balanceadd">
-			<INPUT TYPE="HIDDEN" NAME="addbalance[value]" VALUE="{math equation="x*-1" x=$paymentlist[payments].value}">
-			<INPUT TYPE="HIDDEN" NAME="addbalance[comment]" VALUE="{$paymentlist[payments].name} / {$paymentlist[payments].creditor}">
-			<NOBR>
-			<A HREF="javascript:document.addbalance{$smarty.section.payments.index}.submit();"><IMG src="img/pay.gif" alt="[ {trans("Account payment")} ]" title="[ {trans("Account payment")} ]"></A>
-			<A HREF="?m=paymentdel&id={$paymentlist[payments].id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that payment?")}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A HREF="?m=paymentedit&id={$paymentlist[payments].id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-			<A HREF="?m=paymentinfo&id={$paymentlist[payments].id}"><IMG SRC="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>&nbsp;
-			</NOBR>
-		</TD>
-	</TR>
-	</FORM>
+			</span>
+		</td>
+		<td width="1%" class="fright" align="right" >
+			<input type="submit" class="hiddenbtn">
+			<input type="HIDDEN" name="m" value="balanceadd">
+			<input type="HIDDEN" name="addbalance[value]" value="{math equation="x*-1" x=$paymentlist[payments].value}">
+			<input type="HIDDEN" name="addbalance[comment]" value="{$paymentlist[payments].name} / {$paymentlist[payments].creditor}">
+			<span class="nobr">
+			<a href="javascript:document.addbalance{$smarty.section.payments.index}.submit();"><img src="img/pay.gif" alt="[ {trans("Account payment")} ]" title="[ {trans("Account payment")} ]"></a>
+			<a href="?m=paymentdel&id={$paymentlist[payments].id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that payment?")}');"><img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></a>
+			<a href="?m=paymentedit&id={$paymentlist[payments].id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
+			<a href="?m=paymentinfo&id={$paymentlist[payments].id}"><img src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></a>&nbsp;
+			</span>
+		</td>
+	</tr>
+	</form>
 	{sectionelse}
-	<TR>
-		<TD COLSPAN="6" ALIGN="center" CLASS="fall">
+	<tr>
+		<td colspan="6" align="center" class="fall">
 			<p>&nbsp;</p>
-			<p><B>{trans("No such standing payments in database.")}</B></p>
+			<p><strong>{trans("No such standing payments in database.")}</strong></p>
 			<p>&nbsp;</p>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/section}
-	<TR CLASS="light">
-		<TD CLASS="fleftu" COLSPAN="4" WIDTH="98%">
+	<tr class="light">
+		<td class="fleftu" colspan="4" width="98%">
 			&nbsp;
-		</TD>
-		<TD CLASS="fbt" WIDTH="1%" ALIGN="right">
-			<IMG SRC="img/info2.gif" ALT="">&nbsp;<B>{trans("Total:")}</B>
-		</TD>
-		<TD CLASS="frightu" WIDTH="1%" ALIGN="left">
-			<B>{$listdata.total}</B>
-		</TD>
-	</TR>
-</TABLE>
+		</td>
+		<td class="fbt" width="1%" align="right">
+			<img src="img/info2.gif" alt="">&nbsp;<strong>{trans("Total:")}</strong>
+		</td>
+		<td class="frightu" width="1%" align="left">
+			<strong>{$listdata.total}</strong>
+		</td>
+	</tr>
+</table>
 {include file="footer.html"}

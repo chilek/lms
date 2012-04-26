@@ -15,8 +15,8 @@
 	<div class="lmsIpPopupLabel">{trans("Enter IP address:")}</div>
 	<div class="lmsIpPopupForm">
 		<form name="{$popupid}_ipform" id="ipform" method="GET" action="?m=ping" onsubmit="return ping_any_host('{$popupid}');">
-			<input type="text" name="ip"><br>
-			<input type="radio" id="{$popupid}_type1" name="type" value="1" checked><label for="{$popupid}_type1">icmp</label>
+			<input type="text" name="ip"><br />
+			<input type="radio" id="{$popupid}_type1" name="type" value="1" checked="checked"><label for="{$popupid}_type1">icmp</label>
 			<input type="radio" id="{$popupid}_type2" name="type" value="2"><label for="{$popupid}_type2">arp</label>
 			<input type="submit" class="hiddenbtn">
 		</form>
@@ -35,7 +35,7 @@
 {$xajax}
 </head>
 {if !$part}
-<frameset name="all" frameborder="0" framespacing="0" ROWS="*">
+<frameset name="all" frameborder="0" framespacing="0" rows="*">
 	<frame scrolling="always" frameborder="0" marginheight="0" marginwidth="0" name="m" noresize src="?m=ping&p=main&ip={$ipaddr}&type={$type}">
 </frameset>
 {else}
@@ -48,10 +48,10 @@
 	<form id="params">
 	<table cellpadding="2" style="bottom: 0; position: absolute" width="100%">
 		<tr class="light">
-			<td width="99%" id="summary" class="fbt bold" align="left" nowrap>
+			<td width="99%" id="summary" class="fbt bold" align="left" nowrap="nowrap">
 				mix/avg/max = -/-/- ms
 			</td>
-			<td width="1%" id="total" class="fbt bold" align="right" nowrap>
+			<td width="1%" id="total" class="fbt bold" align="right" nowrap="nowrap">
 				{t a="0" b="0" c="0"}Total: $a% ($b/$c){/t}
 			</td>
 		</tr>
@@ -61,13 +61,13 @@
 				<input type="hidden" id="transmitted" name="transmitted" value="0">
 				<input type="hidden" id="received" name="received" value="0">
 				<input type="hidden" id="times" name="times" value="">
-				<td nowrap>
-					<input type="checkbox" id="autoscroll" name="autoscroll" checked><label for="autoscroll">{trans("Auto Scroll")}</label>
+				<td nowrap="nowrap">
+					<input type="checkbox" id="autoscroll" name="autoscroll" checked="checked"><label for="autoscroll">{trans("Auto Scroll")}</label>
 					&nbsp;
-					<input type="radio" name="type" id="type1" value="1"{if $type == 1} checked{/if}><label for="type1">{trans("icmp")}</label>
-					<input type="radio" name="type" id="type2" value="2"{if $type == 2} checked{/if}><label for="type2">{trans("arp")}</label>
+					<input type="radio" name="type" id="type1" value="1"{if $type == 1} checked="checked"{/if}><label for="type1">{trans("icmp")}</label>
+					<input type="radio" name="type" id="type2" value="2"{if $type == 2} checked="checked"{/if}><label for="type2">{trans("arp")}</label>
 				</td>
-				<td nowrap align="right">
+				<td nowrap="nowrap" align="right">
 					<input type="button" id="enabled" name="enabled" onclick="ping_toggle()" />
 				</td>
 		</tr>

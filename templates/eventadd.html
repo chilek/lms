@@ -1,7 +1,7 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 {include file="calendar_js.html"}
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 <!--
 	function SetEndtime()
 	{
@@ -26,117 +26,117 @@
 			document.forms['event'].elements['event[customerid]'].value = document.forms['event'].elements['event[custid]'].value;
 	}
 //-->
-</SCRIPT>
-<H1>{$layout.pagetitle}</H1>
+</script>
+<h1>{$layout.pagetitle}</h1>
 <P align="CENTER">
-<FORM method="POST" action="?m=eventadd" name="event" id="event">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" cellpadding="3">
-	<TR class="dark">
-		<TD width="1%" class="fleftu">
-			<IMG src="img/calendar.gif" alt="">
-		</TD>
-		<TD width="1%" class="fbt">
-			<B>{trans("Title:")}</B>
-		</TD>
-		<TD width="98%" class="frightu">
-			<INPUT type="text" name="event[title]" id="event[title]" value="{$event.title}" size="50" {tip text="Enter event title" trigger="title"}>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
-			<IMG src="img/time.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Time:")}</B>
-		</TD>
-		<TD width="98%" class="fright">
-{*			<INPUT type="hidden" name="event[date]" value="{$event.date}">
-*}			<INPUT type="text" name="event[date]" value="{$event.date}" size="10" OnCLick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="date"}>
-			{trans("Begin:")} <SELECT name="event[begintime]" size="1" {tip text="Select time of"} OnChange="javascript:SetEndtime();">
+<form method="POST" action="?m=eventadd" name="event" id="event">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="dark">
+		<td width="1%" class="fleftu">
+			<img src="img/calendar.gif" alt="">
+		</td>
+		<td width="1%" class="fbt">
+			<strong>{trans("Title:")}</strong>
+		</td>
+		<td width="98%" class="frightu">
+			<input type="text" name="event[title]" id="event[title]" value="{$event.title}" size="50" {tip text="Enter event title" trigger="title"}>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft">
+			<img src="img/time.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Time:")}</strong>
+		</td>
+		<td width="98%" class="fright">
+{*			<input type="hidden" name="event[date]" value="{$event.date}">
+*}			<input type="text" name="event[date]" value="{$event.date}" size="10" OnCLick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="date"}>
+			{trans("Begin:")} <select name="event[begintime]" size="1" {tip text="Select time of"} OnChange="javascript:SetEndtime();">
 				{section name=time loop=$hours}
-				<OPTION value="{$hours[time]}" {if $hours[time] == $event.begintime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</OPTION>
+				<option value="{$hours[time]}" {if $hours[time] == $event.begintime}selected="selected"{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</option>
 				{/section}
-			</SELECT>
-			{trans("End:")} <SELECT name="event[endtime]" size="1" {tip text="Select time of"} OnChange="javascript:CheckEndtime();">
+			</select>
+			{trans("End:")} <select name="event[endtime]" size="1" {tip text="Select time of"} OnChange="javascript:CheckEndtime();">
 				{section name=time loop=$hours}
-				<OPTION value="{$hours[time]}" {if $hours[time] == $event.endtime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</OPTION>
+				<option value="{$hours[time]}" {if $hours[time] == $event.endtime}selected="selected"{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</option>
 				{/section}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
-			<IMG src="img/info.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Description:")}</B>
-		</TD>
-		<TD width="98%" class="fright">
-			<TEXTAREA name="event[description]" cols="50" rows="5" {tip text="Enter additional information (optional)"}>{$event.description}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
-			<IMG src="img/access.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Status:")}</B>
-		</TD>
-		<TD width="98%" class="fright" nowrap>
-			<INPUT type="checkbox" name="event[status]" id="event_status" value="1" {tip text="Select event's status"}{if $event.status}CHECKED{/if}> <label for="event_status">{trans("private")}</label>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
-			<IMG src="img/customer.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Customer:")}</B>
-		</TD>
-		<TD width="98%" class="fright" nowrap>
+			</select>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft">
+			<img src="img/info.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Description:")}</strong>
+		</td>
+		<td width="98%" class="fright">
+			<textarea name="event[description]" cols="50" rows="5" {tip text="Enter additional information (optional)"}>{$event.description}</textarea>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft">
+			<img src="img/access.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Status:")}</strong>
+		</td>
+		<td width="98%" class="fright" nowrap="nowrap">
+			<input type="checkbox" name="event[status]" id="event_status" value="1" {tip text="Select event's status"}{if $event.status}CHECKED{/if}> <label for="event_status">{trans("private")}</label>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft">
+			<img src="img/customer.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Customer:")}</strong>
+		</td>
+		<td width="98%" class="fright" nowrap="nowrap">
 			{if $customerlist}
-			<SELECT name="event[customerid]" value="{$event.customerid}" {tip text="Select customer (optional)"} onChange="document.forms['event'].elements['event[custid]'].value=document.forms['event'].elements['event[customerid]'].value">
-				<OPTION value="0"{if !$event.customerid} SELECTED{/if}>{trans("- select customer -")}</OPTION>
+			<select name="event[customerid]" value="{$event.customerid}" {tip text="Select customer (optional)"} onChange="document.forms['event'].elements['event[custid]'].value=document.forms['event'].elements['event[customerid]'].value">
+				<option value="0"{if !$event.customerid} selected="selected"{/if}>{trans("- select customer -")}</option>
 				{foreach from=$customerlist item=customer}	
-				<OPTION value="{$customer.id}"{if $customer.id == $event.customerid} SELECTED{/if}>{$customer.customername|truncate:"40":"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
+				<option value="{$customer.id}"{if $customer.id == $event.customerid} selected="selected"{/if}>{$customer.customername|truncate:"40":"...":true} ({$customer.id|string_format:"%04d"})</option>
 				{/foreach}
-			</SELECT>
+			</select>
 			{trans("or Customer ID:")}
 			{else}{trans("ID:")}{/if}
-            		<INPUT TYPE="TEXT" NAME="event[custid]" VALUE="{if $event.customerid}{$event.customerid}{/if}" SIZE="5"{if $customerlist} onChange="reset_customer()" onfocus="reset_customer()"{/if} {tip text="Enter customer ID" trigger="custid"}>
-			<a href="javascript: void(0);" onClick="return customerchoosewin(document.forms['event'].elements['event[custid]']);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
-			<IMG src="img/users.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Users:")}</B>
-		</TD>
-		<TD width="98%" class="fright" nowrap>
-			<SELECT size="{if $userlistsize > 5}5{else}{size of=$userlist}{/if}" name="event[userlist][]" {tip text="Select user(s) (optional)"} multiple>
+            		<input type="TEXT" name="event[custid]" value="{if $event.customerid}{$event.customerid}{/if}" size="5"{if $customerlist} onChange="reset_customer()" onfocus="reset_customer()"{/if} {tip text="Enter customer ID" trigger="custid"}>
+			<a href="javascript: void(0);" onClick="return customerchoosewin(document.forms['event'].elements['event[custid]']);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</a>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft">
+			<img src="img/users.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Users:")}</strong>
+		</td>
+		<td width="98%" class="fright" nowrap="nowrap">
+			<select size="{if $userlistsize > 5}5{else}{size of=$userlist}{/if}" name="event[userlist][]" {tip text="Select user(s) (optional)"} multiple>
 				{section name=userlist loop=$userlist}	
-				<OPTION value="{$userlist[userlist].id}">{$userlist[userlist].name}</OPTION>
+				<option value="{$userlist[userlist].id}">{$userlist[userlist].name}</option>
 				{/section}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD class="fbottomu" align="right" colspan="3">
-			<A href="javascript:document.event.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=eventlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="event[reuse]" id="reuse" value="ON" {if $event.reuse}checked{/if}> <label for="reuse">{trans("Display this form again, when this event is saved")}</label>
-		</TD>
-	</TR>
-</TABLE>
+			</select>
+		</td>
+	</tr>
+	<tr class="light">
+		<td class="fbottomu" align="right" colspan="3">
+			<a href="javascript:document.event.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+			<a href="?m=eventlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a><br />
+			<input type="checkbox" name="event[reuse]" id="reuse" value="ON" {if $event.reuse}checked{/if}> <label for="reuse">{trans("Display this form again, when this event is saved")}</label>
+		</td>
+	</tr>
+</table>
 </P>
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 <!--
 var cal1 = new calendar(document.forms['event'].elements['event[date]']);
 cal1.time_comp = false;
 document.forms['event'].elements['event[title]'].focus();
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}

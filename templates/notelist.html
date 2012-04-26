@@ -1,14 +1,14 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
+<h1>{$layout.pagetitle}</h1>
 {if $note}
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 <!--
 window.open('?m=note&id={$note}');
 //-->
-</SCRIPT>
+</script>
 {/if}
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 <!--
 	function pays()
 	{
@@ -49,136 +49,136 @@ window.open('?m=note&id={$note}');
 	}
 {/if}
 //-->
-</SCRIPT>
-<FORM METHOD="POST" NAME="page">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD CLASS="fleftu" WIDTH="1%" nowrap>
-			<A href="?m=notelist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-		</TD>
-		<TD WIDTH="1%" CLASS="fbt" nowrap>
-			<A href="?m=notelist&o=cdate{if $listdata.direction eq "asc" && $listdata.order eq "cdate"},desc{/if}">{trans("Date:")}</A> {if $listdata.order eq "cdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-		</TD>
-		<TD WIDTH="1%" CLASS="fbt" nowrap>
-			<A href="?m=notelist&o=number{if $listdata.direction eq "asc" && $listdata.order eq "number"},desc{/if}">{trans("Number:")}</A> {if $listdata.order eq "number"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-		</TD>
-		<TD WIDTH="1%" CLASS="fbt" nowrap>
-			<A href="?m=notelist&o=value{if $listdata.direction eq "asc" && $listdata.order eq "value"},desc{/if}">{trans("Value:")}</A> {if $listdata.order eq "value"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-		</TD>
-		<TD WIDTH="1%" CLASS="fbt" nowrap>
-			<A href="?m=notelist&o=count{if $listdata.direction eq "asc" && $listdata.order eq "count"},desc{/if}">{trans("Items:")}</A> {if $listdata.order eq "count"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-		</TD>
-		<TD WIDTH="94%" CLASS="fbt" nowrap>
-			<A href="?m=notelist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}">{trans("For:")}</A> {if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-		</TD>
-		<TD WIDTH="1%" CLASS="frightu">
+</script>
+<form method="POST" name="page">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td class="fleftu" width="1%" nowrap="nowrap">
+			<a href="?m=notelist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{trans("ID:")}</a> {if $listdata.order eq "id"}<img src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</td>
+		<td width="1%" class="fbt" nowrap="nowrap">
+			<a href="?m=notelist&o=cdate{if $listdata.direction eq "asc" && $listdata.order eq "cdate"},desc{/if}">{trans("Date:")}</a> {if $listdata.order eq "cdate"}<img src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</td>
+		<td width="1%" class="fbt" nowrap="nowrap">
+			<a href="?m=notelist&o=number{if $listdata.direction eq "asc" && $listdata.order eq "number"},desc{/if}">{trans("Number:")}</a> {if $listdata.order eq "number"}<img src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</td>
+		<td width="1%" class="fbt" nowrap="nowrap">
+			<a href="?m=notelist&o=value{if $listdata.direction eq "asc" && $listdata.order eq "value"},desc{/if}">{trans("Value:")}</a> {if $listdata.order eq "value"}<img src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</td>
+		<td width="1%" class="fbt" nowrap="nowrap">
+			<a href="?m=notelist&o=count{if $listdata.direction eq "asc" && $listdata.order eq "count"},desc{/if}">{trans("Items:")}</a> {if $listdata.order eq "count"}<img src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</td>
+		<td width="94%" class="fbt" nowrap="nowrap">
+			<a href="?m=notelist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}">{trans("For:")}</a> {if $listdata.order eq "name"}<img src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</td>
+		<td width="1%" class="frightu">
 			&nbsp;
-		</TD>
-	</TR>
-	<TR class="DARK">
-		<TD class="fall" colspan="7">
-				<B>{trans("Filter:")} </B> 
-				<INPUT type="text" name="search" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>&nbsp;
-				<SELECT size="1" name="cat">
-					<OPTION value=""{if $listdata.cat eq ""} SELECTED{/if}>{trans("- select filter category -")}</OPTION>
-					<OPTION value="cdate"{if $listdata.cat eq "cdate"} SELECTED{/if}>{trans("day (YYYY/MM/DD)")}</OPTION>
-					<OPTION value="month"{if $listdata.cat eq "month"} SELECTED{/if}>{trans("month (YYYY/MM)")}</OPTION>
-					<OPTION value="number"{if $listdata.cat eq "number"} SELECTED{/if}>{trans("number")}</OPTION>
-					<OPTION value="value"{if $listdata.cat eq "value"} SELECTED{/if}>{trans("value")}</OPTION>
-					<OPTION value="name"{if $listdata.cat eq "name"} SELECTED{/if}>{trans("customer name")}</OPTION>
-					<OPTION value="customerid"{if $listdata.cat eq "customerid"} SELECTED{/if}>{trans("customer ID")}</OPTION>
-					<OPTION value="ten"{if $listdata.cat eq "ten"} SELECTED{/if}>{trans("TEN")}</OPTION>
-					<OPTION value="address"{if $listdata.cat eq "address"} SELECTED{/if}>{trans("address")}</OPTION>
-				</SELECT>&nbsp;
+		</td>
+	</tr>
+	<tr class="DARK">
+		<td class="fall" colspan="7">
+				<strong>{trans("Filter:")} </strong> 
+				<input type="text" name="search" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>&nbsp;
+				<select size="1" name="cat">
+					<option value=""{if $listdata.cat eq ""} selected="selected"{/if}>{trans("- select filter category -")}</option>
+					<option value="cdate"{if $listdata.cat eq "cdate"} selected="selected"{/if}>{trans("day (YYYY/MM/DD)")}</option>
+					<option value="month"{if $listdata.cat eq "month"} selected="selected"{/if}>{trans("month (YYYY/MM)")}</option>
+					<option value="number"{if $listdata.cat eq "number"} selected="selected"{/if}>{trans("number")}</option>
+					<option value="value"{if $listdata.cat eq "value"} selected="selected"{/if}>{trans("value")}</option>
+					<option value="name"{if $listdata.cat eq "name"} selected="selected"{/if}>{trans("customer name")}</option>
+					<option value="customerid"{if $listdata.cat eq "customerid"} selected="selected"{/if}>{trans("customer ID")}</option>
+					<option value="ten"{if $listdata.cat eq "ten"} selected="selected"{/if}>{trans("TEN")}</option>
+					<option value="address"{if $listdata.cat eq "address"} selected="selected"{/if}>{trans("address")}</option>
+				</select>&nbsp;
 				{trans("Group:")}
-				<SELECT size="1" name="group">
-					<OPTION value="0"{if !$listdata.group} SELECTED{/if}>{trans("- all groups -")}</OPTION>
+				<select size="1" name="group">
+					<option value="0"{if !$listdata.group} selected="selected"{/if}>{trans("- all groups -")}</option>
 					{section name="grouplist" loop=$grouplist}
-					<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group eq $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:30:"...":true}</OPTION>
+					<option value="{$grouplist[grouplist].id}"{if $listdata.group eq $grouplist[grouplist].id} selected="selected"{/if}>{$grouplist[grouplist].name|truncate:30:"...":true}</option>
 					{/section}
-				</SELECT>
-				<NOBR>
-				<INPUT type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} CHECKED{/if}><label for="groupexclude">{trans("exclude group")}</label>
-				</NOBR>
-				<NOBR>
-				<INPUT type="checkbox" name="hideclosed" id="hideclosed"{if $listdata.hideclosed} CHECKED{/if}><label for="hideclosed">{trans("hide accounted<!plural>")}</label>
-				&nbsp;<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>
-				</NOBR>
-		</TD>
-	</TR>
+				</select>
+				<span class="nobr">
+				<input type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} checked="checked"{/if}><label for="groupexclude">{trans("exclude group")}</label>
+				</span>
+				<span class="nobr">
+				<input type="checkbox" name="hideclosed" id="hideclosed"{if $listdata.hideclosed} checked="checked"{/if}><label for="hideclosed">{trans("hide accounted<!plural>")}</label>
+				&nbsp;<a href="javascript: filter();">&raquo;&raquo;&raquo;</a>
+				</span>
+		</td>
+	</tr>
 	{if $listdata.total != 0}
-	<TR CLASS="dark">
-		<TD WIDTH="100%" class="fall" COLSPAN="7">
+	<tr class="dark">
+		<td width="100%" class="fall" colspan="7">
 			{include file="scroller.html" loop=$notelist scrollerno=1}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
 	{cycle values="light,lucid" print=false}
 	{section name=notelist loop=$notelist start=$start max=$pagelimit}
 	{assign var=note value=$notelist[notelist]}
 	{assign var=noteid value=$note.id}
-	<TR class="{cycle}{if $note.closed} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD WIDTH="1%" CLASS="fleft">
+	<tr class="{cycle}{if $note.closed} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<td width="1%" class="fleft">
 			{$note.id|string_format:"%06d"}
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
+		</td>
+		<td width="1%" nowrap="nowrap">
 			{$note.cdate|date_format:"%Y/%m/%d %H:%M"}
-		</TD>
-		<TD WIDTH="1%" NOWRAP align="right">
+		</td>
+		<td width="1%" nowrap="nowrap" align="right">
 			{number number=$note.number template=$note.template time=$note.cdate assign=number}{$number}
-		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+		</td>
+		<td width="1%" nowrap="nowrap" align="RIGHT">
 			{$note.value|money_format} 
-		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+		</td>
+		<td width="1%" nowrap="nowrap" align="RIGHT">
 			{$note.count}
-		</TD>
-		<TD WIDTH="94%">
-			<A HREF="?m=customerinfo&id={$note.customerid}"{if $note.closed} class="blend"{/if}>{$note.name}, {$note.address}, {$note.zip} {$note.city}{if $note.country neq ""}, {t}{$note.country}{/t}{/if}</A>
-		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright">
-			<NOBR>
+		</td>
+		<td width="94%">
+			<a href="?m=customerinfo&id={$note.customerid}"{if $note.closed} class="blend"{/if}>{$note.name}, {$note.address}, {$note.zip} {$note.city}{if $note.country neq ""}, {t}{$note.country}{/t}{/if}</a>
+		</td>
+		<td width="1%" align="RIGHT" class="fright">
+			<span class="nobr">
 			{if !$note.closed}
-			    <A onClick="return confirmLink(this, '{t a=$number}Are you sure, you want to remove debit note \'$a\' from database?{/t}')" HREF="?m=notedel&id={$note.id}"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			    <A HREF="?m=noteedit&id={$note.id}&action=edit"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			    <a onClick="return confirmLink(this, '{t a=$number}Are you sure, you want to remove debit note \'$a\' from database?{/t}')" href="?m=notedel&id={$note.id}"><img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></a>
+			    <a href="?m=noteedit&id={$note.id}&action=edit"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
 			{/if}
-			<A HREF="?m=note&id={$note.id}" TARGET="_blank"><IMG src="img/printd.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]"></A>
-			<INPUT TYPE="checkbox" NAME="marks[{$note.id}]" VALUE="{$note.id}"{if $marks.$noteid}CHECKED{/if}>
-			</NOBR>
-		</TD>
-	</TR>
+			<a href="?m=note&id={$note.id}" TARGET="_blank"><img src="img/printd.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]"></a>
+			<input type="checkbox" name="marks[{$note.id}]" value="{$note.id}"{if $marks.$noteid}CHECKED{/if}>
+			</span>
+		</td>
+	</tr>
 	{sectionelse}
-	<TR>
-		<TD WIDTH="100%" class="fall" ALIGN="center"  COLSPAN="7">
+	<tr>
+		<td width="100%" class="fall" align="center"  colspan="7">
 			<P>&nbsp;</P>
-			<P><B>{trans("No such debit notes in database.")}</B></P>
+			<P><strong>{trans("No such debit notes in database.")}</strong></P>
 			<P>&nbsp;</P>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/section}
 	{if $listdata.total != 0}
-	<TR CLASS="dark">
-		<TD WIDTH="100%" class="fall" COLSPAN="7">
+	<tr class="dark">
+		<td width="100%" class="fall" colspan="7">
 			{include file="scroller.html" loop=$notelist scrollerno=2}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
-	<TR CLASS="dark">
-		<TD CLASS="fall" COLSPAN="7">
-			<TABLE WIDTH="100%">
-				<TR>
-					<TD ALIGN="left">
-						<NOBR><A HREF="javascript:pays();">{trans("Check/Uncheck as accounted")} <IMG SRC="img/pay.gif" ALT=""></A></NOBR>&nbsp;
-						<NOBR><A HREF="javascript:prints();">{trans("Print")} <IMG SRC="img/printd.gif" ALT="" ></A></NOBR>&nbsp;
-					</TD>
-					<TD ALIGN="right">
-						<NOBR><label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('page', this, ['groupexclude', 'hideclosed'])" VALUE="1"></NOBR>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
+	<tr class="dark">
+		<td class="fall" colspan="7">
+			<table width="100%">
+				<tr>
+					<td align="left">
+						<span class="nobr"><a href="javascript:pays();">{trans("Check/Uncheck as accounted")} <img src="img/pay.gif" alt=""></a></span>&nbsp;
+						<span class="nobr"><a href="javascript:prints();">{trans("Print")} <img src="img/printd.gif" alt="" ></a></span>&nbsp;
+					</td>
+					<td align="right">
+						<span class="nobr"><label for="allbox">{trans("Check All")}</label><input type="checkbox" name="allbox" id="allbox" onchange="CheckAll('page', this, ['groupexclude', 'hideclosed'])" value="1"></span>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+</form>
 {include file="footer.html"}

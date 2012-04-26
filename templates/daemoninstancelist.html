@@ -1,83 +1,83 @@
 {include file="header.html"}
 <!-- $Id$ -->
-<H1><B>{$layout.pagetitle}</B></H1>
-<P><TABLE cellpadding="3" WIDTH="100%">
-	<TR CLASS="dark">
-		<TD CLASS="fleftu" WIDTH="1%" nowrap>
-			<IMG src="img/settings.gif" alt=""> <B>{trans("Name:")}</B>
-		</TD>
-		<TD CLASS="fbt" align="right" WIDTH="1%" NOWRAP>
+<h1><strong>{$layout.pagetitle}</strong></h1>
+<P><table cellpadding="3" width="100%">
+	<tr class="dark">
+		<td class="fleftu" width="1%" nowrap="nowrap">
+			<img src="img/settings.gif" alt=""> <strong>{trans("Name:")}</strong>
+		</td>
+		<td class="fbt" align="right" width="1%" nowrap="nowrap">
 			{trans("Host:")}
-		</TD>
-		<TD CLASS="fbt" align="right" WIDTH="1%" NOWRAP>
+		</td>
+		<td class="fbt" align="right" width="1%" nowrap="nowrap">
 			{trans("Priority:")}
-		</TD>
-		<TD CLASS="fbt" align="right" WIDTH="1%" NOWRAP>
-			{trans("Module:")}<BR>
+		</td>
+		<td class="fbt" align="right" width="1%" nowrap="nowrap">
+			{trans("Module:")}<br />
 			{trans("Crontab:")}
-		</TD>
-		<TD CLASS="fbt" WIDTH="95%">
+		</td>
+		<td class="fbt" width="95%">
 			{trans("Description:")}
-		</TD>
-		<TD CLASS="frightu" WIDTH="1%" nowrap>
-			<A href="?m=daemoninstanceadd&hostid={$hostid}">{trans("Add instance")} <IMG src="img/save.gif" alt=""></A>
-		</TD>
-	</TR>
-	<TR class="DARK">
-		<TD class="fall" colspan="6">
-			<FORM method="GET" action="?m=daemoninstancelist" name="filter">
-				<INPUT type="submit" class="hiddenbtn">
-				<INPUT type="HIDDEN" name="m" value="daemoninstancelist">
-				<B>{trans("Filter:")} </B> {trans("Host:")}
-				<SELECT size="1" name="id" OnChange="document.filter.submit();">
-					<OPTION value="0"{if ! $hostid} SELECTED{/if}>{trans("- all hosts -")}</OPTION>
+		</td>
+		<td class="frightu" width="1%" nowrap="nowrap">
+			<a href="?m=daemoninstanceadd&hostid={$hostid}">{trans("Add instance")} <img src="img/save.gif" alt=""></a>
+		</td>
+	</tr>
+	<tr class="DARK">
+		<td class="fall" colspan="6">
+			<form method="GET" action="?m=daemoninstancelist" name="filter">
+				<input type="submit" class="hiddenbtn">
+				<input type="HIDDEN" name="m" value="daemoninstancelist">
+				<strong>{trans("Filter:")} </strong> {trans("Host:")}
+				<select size="1" name="id" OnChange="document.filter.submit();">
+					<option value="0"{if ! $hostid} selected="selected"{/if}>{trans("- all hosts -")}</option>
 					{section name=hosts loop=$hosts}
-					<OPTION value="{$hosts[hosts].id}"{if $hosts[hosts].id eq $hostid} SELECTED{/if}>{$hosts[hosts].name}</OPTION>
+					<option value="{$hosts[hosts].id}"{if $hosts[hosts].id eq $hostid} selected="selected"{/if}>{$hosts[hosts].name}</option>
 					{/section}
-				</SELECT>
-			</FORM>
-		</TD>
-	</TR>		
+				</select>
+			</form>
+		</td>
+	</tr>		
 	{cycle values="light,lucid" print=false}
 	{foreach from=$instancelist item=instance}
-	<TR class="{cycle}{if $instance.disabled} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD CLASS="fleft" onClick="return self.location.href='?m=daemoninstanceview&id={$instance.id}';" nowrap>
-			<IMG src="img/settings.gif" alt="">
-			<B>{$instance.name}</B>
-		</TD>
-		<TD align="right" onClick="return self.location.href='?m=daemoninstanceview&id={$instance.id}';">
+	<tr class="{cycle}{if $instance.disabled} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<td class="fleft" onClick="return self.location.href='?m=daemoninstanceview&id={$instance.id}';" nowrap="nowrap">
+			<img src="img/settings.gif" alt="">
+			<strong>{$instance.name}</strong>
+		</td>
+		<td align="right" onClick="return self.location.href='?m=daemoninstanceview&id={$instance.id}';">
 			{$instance.hostname}
-		</TD>
-		<TD align="right" onClick="return self.location.href='?m=daemoninstanceview&id={$instance.id}';">
+		</td>
+		<td align="right" onClick="return self.location.href='?m=daemoninstanceview&id={$instance.id}';">
 			{$instance.priority}
-		</TD>
-		<TD align="right" onClick="return self.location.href='?m=daemoninstanceview&id={$instance.id}';" nowrap>
-			{$instance.module}<BR>{$instance.crontab}
-		</TD>
-		<TD onClick="return self.location.href='?m=daemoninstanceview&id={$instance.id}';">
+		</td>
+		<td align="right" onClick="return self.location.href='?m=daemoninstanceview&id={$instance.id}';" nowrap="nowrap">
+			{$instance.module}<br />{$instance.crontab}
+		</td>
+		<td onClick="return self.location.href='?m=daemoninstanceview&id={$instance.id}';">
 			{$instance.description}
-		</TD>
-		<TD CLASS="fright" align="right" NOWRAP>
-			<A HREF="?m=daemoninstanceview&id={$instance.id}"><IMG SRC="img/view.gif" alt="[ {trans("Browse Configuration")} ]" title="[ {trans("Browse Configuration")} ]"></A>
-			<A HREF="?m=daemoninstanceedit&id={$instance.id}&statuschange=1"><IMG SRC="img/wait.gif" alt="[ {if $instance.disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]" title="[ {if $instance.disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]"></A>
-			<A HREF="?m=daemoninstanceadd&id={$instance.id}"><IMG SRC="img/clone.gif" alt="[ {trans("Clone")} ]" title="[ {trans("Clone")} ]"></A>
-			<A HREF="?m=daemoninstancedel&id={$instance.id}" OnClick="return confirmLink(this, '{t a=$instance.name}Are you sure, you want to remove instance \'$a\' and all assigned configuration?{/t}');"><IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A HREF="?m=daemoninstanceedit&id={$instance.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-		</TD>
-	</TR>
+		</td>
+		<td class="fright" align="right" nowrap="nowrap">
+			<a href="?m=daemoninstanceview&id={$instance.id}"><img src="img/view.gif" alt="[ {trans("Browse Configuration")} ]" title="[ {trans("Browse Configuration")} ]"></a>
+			<a href="?m=daemoninstanceedit&id={$instance.id}&statuschange=1"><img src="img/wait.gif" alt="[ {if $instance.disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]" title="[ {if $instance.disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]"></a>
+			<a href="?m=daemoninstanceadd&id={$instance.id}"><img src="img/clone.gif" alt="[ {trans("Clone")} ]" title="[ {trans("Clone")} ]"></a>
+			<a href="?m=daemoninstancedel&id={$instance.id}" OnClick="return confirmLink(this, '{t a=$instance.name}Are you sure, you want to remove instance \'$a\' and all assigned configuration?{/t}');"><img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></a>
+			<a href="?m=daemoninstanceedit&id={$instance.id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
+		</td>
+	</tr>
 	{foreachelse}
-	<TR>
-		<TD colspan="6" align="center" class="flr">
+	<tr>
+		<td colspan="6" align="center" class="flr">
 			<p>&nbsp;</p>
-			<p><B>{trans("There are no instances configured.")}<B></p>
+			<p><strong>{trans("There are no instances configured.")}<strong></p>
 			<p>&nbsp;</p>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/foreach}
-	<TR CLASS="dark">
-		<TD colspan="6" class="fall" align="right">
-			<A href="?m=daemoninstanceadd&hostid={$hostid}">{trans("Add instance")} <IMG src="img/save.gif" alt=""></A>
-		</TD>
-	</TR>
-</TABLE></P>
+	<tr class="dark">
+		<td colspan="6" class="fall" align="right">
+			<a href="?m=daemoninstanceadd&hostid={$hostid}">{trans("Add instance")} <img src="img/save.gif" alt=""></a>
+		</td>
+	</tr>
+</table></P>
 {include file="footer.html"}

@@ -1,23 +1,23 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
+<h1>{$layout.pagetitle}</h1>
 {if $emptydb}
-    <TABLE WIDTH="100%"><TR><TD WIDTH="100%" ALIGN="Center">
-	<BR><BR><FONT class="alert">{trans("No such devices in database.")}</FONT>
-    </TD></TR></TABLE>
+    <table width="100%"><tr><td width="100%" align="Center">
+	<br /><br /><FONT class="alert">{trans("No such devices in database.")}</FONT>
+    </td></tr></table>
 {elseif !$ming && $type == 'flash'}
-    <TABLE WIDTH="100%"><TR><TD WIDTH="100%" ALIGN="Center">
-	<BR><BR><FONT class="alert">{trans("Your PHP does not support Ming library required for map generation!")}</FONT>
-    </TD></TR></TABLE>
+    <table width="100%"><tr><td width="100%" align="Center">
+	<br /><br /><FONT class="alert">{trans("Your PHP does not support Ming library required for map generation!")}</FONT>
+    </td></tr></table>
 {elseif $ming && (!$type || $type=='flash')}
-<P ALIGN="CENTER">
-<OBJECT classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" WIDTH="100%" HEIGHT="400" id="intro">
-<PARAM NAME="movie" VALUE="?m=netdevmap&graph=flash&start={$start}{if $mini}&mini=1{/if}">
-<PARAM NAME="loop" VALUE="false">
-<PARAM NAME="quality" VALUE="high">
-<PARAM NAME="bgcolor" VALUE="#EBE4D6">
-<EMBED src="?m=netdevmap&graph=flash&start={$start}{if $mini}&mini=1{/if}" loop="false" quality="high" bgcolor="#EBE4D6" WIDTH="100%" HEIGHT="400" NAME="map"
-  TYPE="application/x-shockwave-flash" PLUGINSPAGE="http://www.macromedia.com/go/getflashplayer"></EMBED>
+<P align="CENTER">
+<OBJECT classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" width="100%" HEIGHT="400" id="intro">
+<PARAM name="movie" value="?m=netdevmap&graph=flash&start={$start}{if $mini}&mini=1{/if}">
+<PARAM name="loop" value="false">
+<PARAM name="quality" value="high">
+<PARAM name="bgcolor" value="#EBE4D6">
+<EMBED src="?m=netdevmap&graph=flash&start={$start}{if $mini}&mini=1{/if}" loop="false" quality="high" bgcolor="#EBE4D6" width="100%" HEIGHT="400" name="map"
+  type="application/x-shockwave-flash" PLUGINSPAGE="http://www.macromedia.com/go/getflashplayer"></EMBED>
 </OBJECT>
 </P>
 {elseif $type=='openlayers'}
@@ -115,36 +115,36 @@
 //-->
 </script>
 {elseif $gd} {* default if $type is not set or not 'flash' *}
-<P ALIGN="CENTER">
-<IMG SRC="?m=netdevmap&graph=true&start={$start}{if $mini}&mini=1{/if}" ALT="" USEMAP="#devices">
-<MAP NAME="devices">
+<P align="CENTER">
+<img src="?m=netdevmap&graph=true&start={$start}{if $mini}&mini=1{/if}" alt="" USEMAP="#devices">
+<MAP name="devices">
 {section name=devicemap loop=$devicemap}
-    <AREA SHAPE="CIRCLE" COORDS="{$devicemap[devicemap].x},{$devicemap[devicemap].y},10"  HREF="?m=netdevinfo&id={$devicemap[devicemap].id}">
+    <AREA SHAPE="CIRCLE" COORDS="{$devicemap[devicemap].x},{$devicemap[devicemap].y},10"  href="?m=netdevinfo&id={$devicemap[devicemap].id}">
 {/section}
 {section name=nodemap loop=$nodemap}
-    <AREA SHAPE="CIRCLE" COORDS="{$nodemap[nodemap].x},{$nodemap[nodemap].y},10"  HREF="?m=nodeinfo&id={$nodemap[nodemap].id}">
+    <AREA SHAPE="CIRCLE" COORDS="{$nodemap[nodemap].x},{$nodemap[nodemap].y},10"  href="?m=nodeinfo&id={$nodemap[nodemap].id}">
 {/section}
 </MAP>
 </P>
 {else}
-    <TABLE WIDTH="100%"><TR><TD WIDTH="100%" ALIGN="Center">
-	<BR><BR><FONT class="alert">{trans("Your PHP does not support GD library required for map generation!")}</FONT>
-    </TD></TR></TABLE>
+    <table width="100%"><tr><td width="100%" align="Center">
+	<br /><br /><FONT class="alert">{trans("Your PHP does not support GD library required for map generation!")}</FONT>
+    </td></tr></table>
 {/if}
 {if !$emptydb && $type != 'openlayers'}
-<P ALIGN="CENTER">
-<FORM METHOD="GET" ACTION="?m=netdevmap" NAME="x">
-	<INPUT type="submit" class="hiddenbtn">
+<P align="CENTER">
+<form method="GET" action="?m=netdevmap" name="x">
+	<input type="submit" class="hiddenbtn">
 	{trans("Start map from:")}
-	<INPUT TYPE="hidden" NAME="m" VALUE="netdevmap">
-	<SELECT SIZE="1" NAME="start" onChange="document.x.submit();">
+	<input type="hidden" name="m" value="netdevmap">
+	<select size="1" name="start" onChange="document.x.submit();">
 		{section name=a loop=$deviceslist}
-		<OPTION VALUE="{$deviceslist[a].id}"{if $deviceslist[a].id eq $start} SELECTED{/if}>{$deviceslist[a].name}</OPTION>
+		<option value="{$deviceslist[a].id}"{if $deviceslist[a].id eq $start} selected="selected"{/if}>{$deviceslist[a].name}</option>
 		{/section}
-	</SELECT>
-	<INPUT TYPE="SUBMIT" VALUE="{trans("Generate")}">
-	<INPUT TYPE="CHECKBOX" NAME="mini" VALUE="1"{if $mini} CHECKED{/if}> {trans("only devices")}
-</FORM>
+	</select>
+	<input type="SUBMIT" value="{trans("Generate")}">
+	<input type="CHECKBOX" name="mini" value="1"{if $mini} checked="checked"{/if}> {trans("only devices")}
+</form>
 </P>
 {/if}
 {include file="footer.html"}

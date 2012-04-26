@@ -1,5 +1,5 @@
 <!--// $Id$ //-->
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 <!--
 function setstatus(access)
 {
@@ -27,61 +27,61 @@ function setgroup(act)
 	document.custnodeslist.submit();
 }
 //-->
-</SCRIPT>
+</script>
 {$lastonline_limit=get_conf('phpui.lastonline_limit')}
 {if check_conf('phpui.ewx_support')}{assign var=ewx value=1}{else}{assign var=ewx value=0}{/if}
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD width="99%" class="fleftu hand" onclick="showOrHide('nodespanel-{$layout.module}');">
-			<IMG SRC="img/node.gif" alt="">
-			<B>{t a=$customernodes|@count|default:"0"}Customer Nodes ($a):{/t}</B>
-		</TD>
-		<TD width="1%" class="frightu" align="right" nowrap>
-			{if $customerinfo.status neq "1" and ! $customerinfo.deleted}<A HREF="?m=nodeadd&ownerid={$customerinfo.id}">{trans("New Node")} &raquo;</A>&nbsp;{/if}
-		</TD>
-	</TR>
-        <TR id="nodespanel-{$layout.module}" style="display:none;">
-	        <TD WIDTH="100%" colspan="2" class="fall">
-		    <FORM method="post" action="" name="custnodeslist">
-		    <TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
-		        <TR class="dark">
-	                <TD WIDTH="{math equation="x-y" x=95 y=$ewx}%" class="fleftu"><B>{trans("Name:")}</B></TD>
-		    	    <TD WIDTH="1%" class="fbt" align="right">{trans("ID:")}</TD>
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td width="99%" class="fleftu hand" onclick="showOrHide('nodespanel-{$layout.module}');">
+			<img src="img/node.gif" alt="">
+			<strong>{t a=$customernodes|@count|default:"0"}Customer Nodes ($a):{/t}</strong>
+		</td>
+		<td width="1%" class="frightu" align="right" nowrap="nowrap">
+			{if $customerinfo.status neq "1" and ! $customerinfo.deleted}<a href="?m=nodeadd&ownerid={$customerinfo.id}">{trans("New Node")} &raquo;</a>&nbsp;{/if}
+		</td>
+	</tr>
+        <tr id="nodespanel-{$layout.module}" style="display:none;">
+	        <td width="100%" colspan="2" class="fall">
+		    <form method="post" action="" name="custnodeslist">
+		    <table cellpadding="5" cellspacing="0" width="100%">
+		        <tr class="dark">
+	                <td width="{math equation="x-y" x=95 y=$ewx}%" class="fleftu"><strong>{trans("Name:")}</strong></td>
+		    	    <td width="1%" class="fbt" align="right">{trans("ID:")}</td>
 			    {if $ewx}
-		    	    <TD WIDTH="1%" class="fbt" align="right">{trans("Channel:")}</TD>
+		    	    <td width="1%" class="fbt" align="right">{trans("Channel:")}</td>
 			    {/if}
-		    	    <TD WIDTH="1%" class="fbt" align="right">{trans("Address:")}</TD>
-		    	    <TD WIDTH="1%" class="fbt" align="right">{trans("MAC:")}</TD>
-		    	    <TD WIDTH="1%" class="fbt" align="right">{trans("Groups:")}</TD>
-		    	    <TD WIDTH="1%" class="fbt" align="right">{trans("Network:")}</TD>
-		    	    <TD WIDTH="1%" class="frightu">&nbsp;</TD>
-			</TR>
+		    	    <td width="1%" class="fbt" align="right">{trans("Address:")}</td>
+		    	    <td width="1%" class="fbt" align="right">{trans("MAC:")}</td>
+		    	    <td width="1%" class="fbt" align="right">{trans("Groups:")}</td>
+		    	    <td width="1%" class="fbt" align="right">{trans("Network:")}</td>
+		    	    <td width="1%" class="frightu">&nbsp;</td>
+			</tr>
 			{cycle values="light,lucid" print=false name=nodes}
 			{section name=customernodes loop=$customernodes}
-    			<TR class="{cycle name=nodes}{if ! $customernodes[customernodes].access} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-			    <TD onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';">
+    			<tr class="{cycle name=nodes}{if ! $customernodes[customernodes].access} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+			    <td onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';">
 				{if $customernodes[customernodes].lastonline}
 				    {if ($smarty.now-$customernodes[customernodes].lastonline) > $lastonline_limit}
-					<img src="img/node_off.gif" ALT="" {tip a=$customernodes[customernodes].lastonlinedate text="Last online: \$a"}>
+					<img src="img/node_off.gif" alt="" {tip a=$customernodes[customernodes].lastonlinedate text="Last online: \$a"}>
 				    {else}
-				        <img src="img/node_on.gif" ALT="" {tip a="on-line" text="Last online: \$a"}>
+				        <img src="img/node_on.gif" alt="" {tip a="on-line" text="Last online: \$a"}>
 				    {/if}
 				{else}
 				<img src="img/node_unk.gif" alt="">
 				{/if}
-				<B>{$customernodes[customernodes].name}</B>
-				{if $customernodes[customernodes].location}<BR>
-				<NOBR>{$customernodes[customernodes].location|truncate:60:"...":true}</NOBR>
+				<strong>{$customernodes[customernodes].name}</strong>
+				{if $customernodes[customernodes].location}<br />
+				<span class="nobr">{$customernodes[customernodes].location|truncate:60:"...":true}</span>
 				{/if}
-				{if $customernodes[customernodes].info}<BR>
-				<NOBR>{$customernodes[customernodes].info|truncate:60:"...":true}</NOBR>
+				{if $customernodes[customernodes].info}<br />
+				<span class="nobr">{$customernodes[customernodes].info|truncate:60:"...":true}</span>
 				{/if}
-			    </TD>
-			    <TD onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';" align="right">
+			    </td>
+			    <td onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';" align="right">
 				({$customernodes[customernodes].id|string_format:"%04d"})
-			    </TD>
+			    </td>
 			    {if $ewx}
-		    	    <TD onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';" align="right" NOWRAP>
+		    	    <td onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';" align="right" nowrap="nowrap">
     				{if $customernodes[customernodes].channelname}
 	        	    <a href="?m=ewxchinfo&id={$customernodes[customernodes].channelid}">{$customernodes[customernodes].channelname|truncate:30:"...":true}</a>
 			    	{elseif $customernodes[customernodes].channelid}
@@ -92,70 +92,70 @@ function setgroup(act)
 				        {/if}
 				    {/if}
 				    {if $customernodes[customernodes].downceil}({$customernodes[customernodes].downceil}/{$customernodes[customernodes].upceil|default:0} kbit/s){/if}
-			        </TD>
+			        </td>
 			    {/if}
-			    <TD onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';" align="right" NOWRAP>
+			    <td onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';" align="right" nowrap="nowrap">
 				{$customernodes[customernodes].ip} {if $customernodes[customernodes].ip_pub != "0.0.0.0"} ({$customernodes[customernodes].ip_pub}){/if}
-			    </TD>
-		    	    <TD onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';">
-				{$customernodes[customernodes].mac|replace:",":"<BR>"}
-			    </TD>
-			    <TD align="right" NOWRAP>
+			    </td>
+		    	    <td onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';">
+				{$customernodes[customernodes].mac|replace:",":"<br />"}
+			    </td>
+			    <td align="right" nowrap="nowrap">
 				{if $customernodes[customernodes].gcount}
 				<img src="img/nodegroup.gif" alt="" {tip a=$customernodes[customernodes].id dynpopup='?m=nodeinfo&id=$a&nodegroups=1' sticky=1}>
 				{/if}
-			    </TD>
-			    <TD align="right" NOWRAP>
-				<B><A HREF="?m=netinfo&id={$customernodes[customernodes].network.id}">{$customernodes[customernodes].network.name|truncate:"20":"...":true}</A></B> {if $customernodes[customernodes].network_pub} (<B><A HREF="?m=netinfo&id={$customernodes[customernodes].network_pub.id}">{$customernodes[customernodes].network_pub.name|truncate:"20":"...":true}</A></B>){/if}
-			    </TD>
-			    <TD NOWRAP>
-				<A HREF="?m=nodeset&id={$customernodes[customernodes].id}"><IMG src="img/{if ! $customernodes[customernodes].access}no{/if}access.gif" alt="[ {if ! $customernodes[customernodes].access}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]" title="[ {if ! $customernodes[customernodes].access}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]"></A>
-				<A HREF="?m=nodewarn&id={$customernodes[customernodes].id}"><IMG src="img/warning{if ! $customernodes[customernodes].warning}off{else}on{/if}.gif" alt="[ {if ! $customernodes[customernodes].warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if} ]" title="[ {if ! $customernodes[customernodes].warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if} ]"></A>
-				<A HREF="?m=nodedel&id={$customernodes[customernodes].id}" onClick="return confirmLink(this, '{t a=$customernodes[customernodes].name}Are you sure, you want to remove node \'$a\' from database?{/t}')"><IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-				<A HREF="?m=nodeedit&id={$customernodes[customernodes].id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-				<A HREF="?m=nodeinfo&id={$customernodes[customernodes].id}"><IMG SRC="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>&nbsp;
-				<INPUT TYPE="checkbox" NAME="marks[{$customernodes[customernodes].id}]" VALUE="{$customernodes[customernodes].id}" CHECKED>
-			    </TD>
-			</TR>
+			    </td>
+			    <td align="right" nowrap="nowrap">
+				<strong><a href="?m=netinfo&id={$customernodes[customernodes].network.id}">{$customernodes[customernodes].network.name|truncate:"20":"...":true}</a></strong> {if $customernodes[customernodes].network_pub} (<strong><a href="?m=netinfo&id={$customernodes[customernodes].network_pub.id}">{$customernodes[customernodes].network_pub.name|truncate:"20":"...":true}</a></strong>){/if}
+			    </td>
+			    <td nowrap="nowrap">
+				<a href="?m=nodeset&id={$customernodes[customernodes].id}"><img src="img/{if ! $customernodes[customernodes].access}no{/if}access.gif" alt="[ {if ! $customernodes[customernodes].access}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]" title="[ {if ! $customernodes[customernodes].access}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]"></a>
+				<a href="?m=nodewarn&id={$customernodes[customernodes].id}"><img src="img/warning{if ! $customernodes[customernodes].warning}off{else}on{/if}.gif" alt="[ {if ! $customernodes[customernodes].warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if} ]" title="[ {if ! $customernodes[customernodes].warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if} ]"></a>
+				<a href="?m=nodedel&id={$customernodes[customernodes].id}" onClick="return confirmLink(this, '{t a=$customernodes[customernodes].name}Are you sure, you want to remove node \'$a\' from database?{/t}')"><img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></a>
+				<a href="?m=nodeedit&id={$customernodes[customernodes].id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
+				<a href="?m=nodeinfo&id={$customernodes[customernodes].id}"><img src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></a>&nbsp;
+				<input type="checkbox" name="marks[{$customernodes[customernodes].id}]" value="{$customernodes[customernodes].id}" checked="checked">
+			    </td>
+			</tr>
 			{sectionelse}
-			<TR>
-			    <TD WIDTH="100%" COLSPAN="{math equation="x+y" x=6 y=$ewx}" align="center">
+			<tr>
+			    <td width="100%" colspan="{math equation="x+y" x=6 y=$ewx}" align="center">
 				<P>&nbsp;</P>
-				<P><B>{if $customerinfo.deleted}<FONT class="red">{trans("That customer has been deleted.")}</FONT>{else}{trans("That customer hasn't got any node.")}{/if}</B></P>
+				<P><strong>{if $customerinfo.deleted}<FONT class="red">{trans("That customer has been deleted.")}</FONT>{else}{trans("That customer hasn't got any node.")}{/if}</strong></P>
 				<P>&nbsp;</P>
-			    </TD>
-			</TR>
+			    </td>
+			</tr>
 			{/section}
-			<TR CLASS="LIGHT">
-			    <TD COLSPAN="{math equation="x+y" x=4 y=$ewx}" CLASS="FTOP">
-				<IMG SRC="img/access.gif">
-				<A HREF="javascript: setstatus(1)"> {trans("Connect")}</A>/<A HREF="javascript: setstatus(0)">{trans("Disconnect")}</A>
-				<IMG SRC="img/warningon.gif">
-				<A HREF="javascript: setwarning(1)"> {trans("Enable")}</A>/<A HREF="javascript: setwarning(0)">{trans("Disable")}</A>
+			<tr class="LIGHT">
+			    <td colspan="{math equation="x+y" x=4 y=$ewx}" class="FTOP">
+				<img src="img/access.gif">
+				<a href="javascript: setstatus(1)"> {trans("Connect")}</a>/<a href="javascript: setstatus(0)">{trans("Disconnect")}</a>
+				<img src="img/warningon.gif">
+				<a href="javascript: setwarning(1)"> {trans("Enable")}</a>/<a href="javascript: setwarning(0)">{trans("Disable")}</a>
 				{if $allnodegroups}
-				<IMG SRC="img/nodegroup.gif">
-				<A HREF="javascript: setgroup('setgroup')"> {trans("Add")}</A>/<A HREF="javascript: setgroup('unsetgroup')">{trans("Remove Group")}</A>:
-				<SELECT SIZE="1" ID="groupselect">
+				<img src="img/nodegroup.gif">
+				<a href="javascript: setgroup('setgroup')"> {trans("Add")}</a>/<a href="javascript: setgroup('unsetgroup')">{trans("Remove Group")}</a>:
+				<select size="1" id="groupselect">
 	            		    {foreach from=$allnodegroups item=nodegroup}
-			            <OPTION value="{$nodegroup.id}" {if $listdata.nodegroup eq $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
+			            <option value="{$nodegroup.id}" {if $listdata.nodegroup eq $nodegroup.id} selected="selected" {/if}>{$nodegroup.name|truncate:30:"...":true}</option>
 				    {/foreach}
-				</SELECT>
+				</select>
 				{/if}
-			    </TD>
-			    <TD CLASS="ftop" ALIGN="right" COLSPAN="3">
-			        <NOBR><label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('custnodeslist', this)" VALUE="1" CHECKED></NOBR>
-                </TD>
-			</TR>
-		    </TABLE>
-		    </FORM>
-		</TD>
-	</TR>
-</TABLE>
-<SCRIPT type="text/javascript">
+			    </td>
+			    <td class="ftop" align="right" colspan="3">
+			        <span class="nobr"><label for="allbox">{trans("Check All")}</label><input type="checkbox" name="allbox" id="allbox" onchange="CheckAll('custnodeslist', this)" value="1" checked="checked"></span>
+                </td>
+			</tr>
+		    </table>
+		    </form>
+		</td>
+	</tr>
+</table>
+<script type="text/javascript">
 <!--
 if (getCookie('nodespanel-{$layout.module}') == '1')
 {
 	document.getElementById('nodespanel-{$layout.module}').style.display = '';
 }
 //-->
-</SCRIPT>
+</script>

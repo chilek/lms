@@ -1,69 +1,69 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
-	    <TD width="1%" class="fleftu">
-		<IMG src="img/queue.gif" ALT="">
-	    </TD>
-	    <TD width="99%" colspan="2" class="frightu"><B>{$category.name} ({$category.id|string_format:"%04d"})</B></TD>
-	</TR>
+<h1>{$layout.pagetitle}</h1>
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+	    <td width="1%" class="fleftu">
+		<img src="img/queue.gif" alt="">
+	    </td>
+	    <td width="99%" colspan="2" class="frightu"><strong>{$category.name} ({$category.id|string_format:"%04d"})</strong></td>
+	</tr>
 	{if $category.description}
-	<TR class="LIGHT">
-	    <TD width="1%" class="fleft">
-		<IMG src="img/info1.gif" ALT="">
-	    </TD>
-	    <TD width="1%"><B>{trans("Description:")}</B></TD>
-	    <TD width="98%" class="fright">
-		<TABLE width="100%" cellpadding="5">
-		    <TR>
-			<TD class="fall superlight">
-			    {$category.description|replace:"\n":"<BR>"}
-			</TD>
-		    </TR>
-		</TABLE>
-	    </TD>
-	</TR>
+	<tr class="LIGHT">
+	    <td width="1%" class="fleft">
+		<img src="img/info1.gif" alt="">
+	    </td>
+	    <td width="1%"><strong>{trans("Description:")}</strong></td>
+	    <td width="98%" class="fright">
+		<table width="100%" cellpadding="5">
+		    <tr>
+			<td class="fall superlight">
+			    {$category.description|replace:"\n":"<br />"}
+			</td>
+		    </tr>
+		</table>
+	    </td>
+	</tr>
 	{/if}
-	<TR class="LIGHT">
-	    <TD width="1%" class="fleft">
-		<IMG src="img/users.gif" ALT="">
-	    </TD>
-	    <TD width="1%"><B>{trans("Users:")}</B></TD>
-	    <TD width="98%" class="fright">
-		    <TABLE width="100%" cellpadding="3">
-			<TR class="DARK">
-			    <TD width="99%" class="fleftu"><B>{trans("User")}</B>
-			    </TD>
-			    <TD width="1%" class="frightu" align="center" nowrap><B>{trans("Owner")}</B></TD>
-			</TR>
+	<tr class="LIGHT">
+	    <td width="1%" class="fleft">
+		<img src="img/users.gif" alt="">
+	    </td>
+	    <td width="1%"><strong>{trans("Users:")}</strong></td>
+	    <td width="98%" class="fright">
+		    <table width="100%" cellpadding="3">
+			<tr class="DARK">
+			    <td width="99%" class="fleftu"><strong>{trans("User")}</strong>
+			    </td>
+			    <td width="1%" class="frightu" align="center" nowrap="nowrap"><strong>{trans("Owner")}</strong></td>
+			</tr>
 			{cycle values="light,lucid" print=false}
 			{foreach from=$category.owners item=owner}
 			{if $owner}
-			<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-			    <TD width="99%" class="fleft">
-				<A href="?m=userinfo&id={$owner.id}">{$owner.name}</A>
-				<INPUT type="hidden" name="category[usernames][{$right.id}]" value="{$right.name}">
-			    </TD>
-			    <TD width="1%" align="center">
-				{if $owner.owner > 0}<IMG src="img/pass.gif" alt="">{/if}
-			    </TD>
-			</TR>
+			<tr class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+			    <td width="99%" class="fleft">
+				<a href="?m=userinfo&id={$owner.id}">{$owner.name}</a>
+				<input type="hidden" name="category[usernames][{$right.id}]" value="{$right.name}">
+			    </td>
+			    <td width="1%" align="center">
+				{if $owner.owner > 0}<img src="img/pass.gif" alt="">{/if}
+			    </td>
+			</tr>
 			{/if}
 			{/foreach}
-			<TR class=LIGHT">
-			    <TD width="99%" class="ftop"></TD>
-			    <TD width="1%" class="ftop"></TD>
-			</TR>
-		</TABLE>
-	    </TD>
-	</TR>
-	<TR class="LIGHT">
-	    <TD width="100%" COLSPAN="3" class="FBOTTOMU" ALIGN="RIGHT"> 
-	        <A HREF="?m=rtqueueview&catid={$category.id}">{trans("Browse")} <IMG src="img/view.gif" alt=""></A>
-	    	<A HREF="?m=rtcategoryedit&id={$category.id}">{trans("Edit")} <IMG src="img/save.gif" alt=""></A>
-		<A HREF="?m=rtcategorydel&id={$category.id}" OnClick="return confirmLink(this, '{t a=$category.name}Are you sure, you want to remove category \'$a\'?{/t}');">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
-	    </TD>
-	</TR>
-</TABLE></P>
+			<tr class=LIGHT">
+			    <td width="99%" class="ftop"></td>
+			    <td width="1%" class="ftop"></td>
+			</tr>
+		</table>
+	    </td>
+	</tr>
+	<tr class="LIGHT">
+	    <td width="100%" colspan="3" class="FBOTTOMU" align="RIGHT"> 
+	        <a href="?m=rtqueueview&catid={$category.id}">{trans("Browse")} <img src="img/view.gif" alt=""></a>
+	    	<a href="?m=rtcategoryedit&id={$category.id}">{trans("Edit")} <img src="img/save.gif" alt=""></a>
+		<a href="?m=rtcategorydel&id={$category.id}" OnClick="return confirmLink(this, '{t a=$category.name}Are you sure, you want to remove category \'$a\'?{/t}');">{trans("Delete")} <img src="img/delete.gif" alt=""></a>
+	    </td>
+	</tr>
+</table></P>
 {include file="footer.html"}

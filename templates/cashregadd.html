@@ -1,137 +1,137 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<FORM METHOD="POST" NAME="registry" ACTION="?m=cashregadd">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
-	    <TD width="1%" class="fleftu">
-		<IMG src="img/queue.gif" ALT="">
-	    </TD>
-	    <TD width="1%" class="fbt"><B>{trans("Name:")}</B></TD>
-	    <TD width="98%" class="frightu">
-		<INPUT TYPE="TEXT" NAME="registry[name]" VALUE="{$registry.name}" SIZE="40" {tip text="Enter name" trigger="name" bold=1}>
-	    </TD>
-	</TR>
-	<TR class="LIGHT">
-	    <TD width="1%" class="fleft">
-		<IMG src="img/id.gif" ALT="">
-	    </TD>
-	    <TD width="1%" nowrap><B>{trans("Cash-in receipt numbering plan:")}</B></TD>
-	    <TD width="98%" class="fright">
-	    	    <SELECT name="registry[in_numberplanid]" {tip text="Select numbering plan"}>
-			    <OPTION value="0"{if ! $registry.in_numberplanid} SELECTED{/if}>{trans("- select numbering plan -")}</OPTION>
+<h1>{$layout.pagetitle}</h1>
+<form method="POST" name="registry" action="?m=cashregadd">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+	    <td width="1%" class="fleftu">
+		<img src="img/queue.gif" alt="">
+	    </td>
+	    <td width="1%" class="fbt"><strong>{trans("Name:")}</strong></td>
+	    <td width="98%" class="frightu">
+		<input type="TEXT" name="registry[name]" value="{$registry.name}" size="40" {tip text="Enter name" trigger="name" bold=1}>
+	    </td>
+	</tr>
+	<tr class="LIGHT">
+	    <td width="1%" class="fleft">
+		<img src="img/id.gif" alt="">
+	    </td>
+	    <td width="1%" nowrap="nowrap"><strong>{trans("Cash-in receipt numbering plan:")}</strong></td>
+	    <td width="98%" class="fright">
+	    	    <select name="registry[in_numberplanid]" {tip text="Select numbering plan"}>
+			    <option value="0"{if ! $registry.in_numberplanid} selected="selected"{/if}>{trans("- select numbering plan -")}</option>
 	    		    {foreach item=plan from=$numberplanlist}
 	        	    {assign var=period value=$plan.period}
-			    <OPTION value="{$plan.id}"{if $plan.id==$registry.in_numberplanid} SELECTED{/if}>{$plan.template} ({$_NUM_PERIODS.$period})</OPTION>
+			    <option value="{$plan.id}"{if $plan.id==$registry.in_numberplanid} selected="selected"{/if}>{$plan.template} ({$_NUM_PERIODS.$period})</option>
 			    {/foreach}
-		    </SELECT>
-	    </TD>
-	</TR>
-	<TR class="LIGHT">
-	    <TD width="1%" class="fleft">
-		<IMG src="img/id.gif" ALT="">
-	    </TD>
-	    <TD width="1%" nowrap><B>{trans("Cash-out receipt numbering plan:")}</B></TD>
-	    <TD width="98%" class="fright">
-	    	    <SELECT name="registry[out_numberplanid]" {tip text="Select numbering plan"}>
-			    <OPTION value="0"{if ! $registry.out_numberplanid} SELECTED{/if}>{trans("- select numbering plan -")}</OPTION>
+		    </select>
+	    </td>
+	</tr>
+	<tr class="LIGHT">
+	    <td width="1%" class="fleft">
+		<img src="img/id.gif" alt="">
+	    </td>
+	    <td width="1%" nowrap="nowrap"><strong>{trans("Cash-out receipt numbering plan:")}</strong></td>
+	    <td width="98%" class="fright">
+	    	    <select name="registry[out_numberplanid]" {tip text="Select numbering plan"}>
+			    <option value="0"{if ! $registry.out_numberplanid} selected="selected"{/if}>{trans("- select numbering plan -")}</option>
 	    		    {foreach item=plan from=$numberplanlist}
 	        	    {assign var=period value=$plan.period}
-			    <OPTION value="{$plan.id}"{if $plan.id==$registry.out_numberplanid} SELECTED{/if}>{$plan.template} ({$_NUM_PERIODS.$period})</OPTION>
+			    <option value="{$plan.id}"{if $plan.id==$registry.out_numberplanid} selected="selected"{/if}>{$plan.template} ({$_NUM_PERIODS.$period})</option>
 			    {/foreach}
-		    </SELECT>
-	    </TD>
-	</TR>
-	<TR class="LIGHT">
-	    <TD width="1%" class="fleft">
-		<IMG src="img/info1.gif" ALT="">
-	    </TD>
-	    <TD width="1%"><B>{trans("Description")}:</B></TD>
-	    <TD width="98%" class="fright">
-		<TEXTAREA NAME="registry[description]" COLS="50" ROWS="3" {tip text="Enter additional information (optional)"}>{$registry.description}</TEXTAREA>
-	    </TD>
-	</TR>
-	<TR class="LIGHT">
-	    <TD width="1%" class="fleft">
-		<IMG src="img/wait.gif" ALT="">
-	    </TD>
-	    <TD width="1%" nowrap><B>{trans("Disabled summary:")}</B></TD>
-	    <TD width="98%" class="fright">
-		    <INPUT type="checkbox" name="registry[disabled]" value="1" {if $registry.disabled} checked{/if}>
-	    </TD>
-	</TR>
-	<TR class="LIGHT">
-	    <TD width="1%" class="fleft">
-		<IMG src="img/users.gif" ALT="">
-	    </TD>
-	    <TD width="1%"><B>{trans("Permissions:")}</B></TD>
-	    <TD width="98%" class="fright">
-		    <TABLE width="100%" cellpadding="3">
-			<TR class="DARK">
-			    <TD width="93%" class="ftl"><B>{trans("User")}</B></TD>
-			    <TD width="1%" class="ftop" align="center" nowrap><B>{trans("Read")}</B></TD>
-			    <TD width="5%" class="ftop" align="center" colspan="5" nowrap><B>{trans("Write (+R)")}</B></TD>
-			    <TD width="1%" class="ftr" align="center" nowrap><B>{trans("Advanced (+R)")}</B></TD>
-			</TR>
-			<TR class="DARK">
-			    <TD width="93%" class="fbl"></TD>
-			    <TD width="1%" class="fbottom" align="center" nowrap></TD>
-			    <TD width="1%" class="fbottom" align="center">{trans("customer")}</TD>
-			    <TD width="1%" class="fbottom" align="center" nowrap>{trans("ass. move")}</TD>
-			    <TD width="1%" class="fbottom" align="center">{trans("advance")}</TD>
-			    <TD width="1%" class="fbottom" align="center">{trans("other")}</TD>
-			    <TD width="1%" class="fbottom" align="center">{trans("mod.")}</TD>
-			    <TD width="1%" class="fbr" align="center" nowrap></TD>
-			</TR>
+		    </select>
+	    </td>
+	</tr>
+	<tr class="LIGHT">
+	    <td width="1%" class="fleft">
+		<img src="img/info1.gif" alt="">
+	    </td>
+	    <td width="1%"><strong>{trans("Description")}:</strong></td>
+	    <td width="98%" class="fright">
+		<textarea name="registry[description]" cols="50" rows="3" {tip text="Enter additional information (optional)"}>{$registry.description}</textarea>
+	    </td>
+	</tr>
+	<tr class="LIGHT">
+	    <td width="1%" class="fleft">
+		<img src="img/wait.gif" alt="">
+	    </td>
+	    <td width="1%" nowrap="nowrap"><strong>{trans("Disabled summary:")}</strong></td>
+	    <td width="98%" class="fright">
+		    <input type="checkbox" name="registry[disabled]" value="1" {if $registry.disabled} checked="checked"{/if}>
+	    </td>
+	</tr>
+	<tr class="LIGHT">
+	    <td width="1%" class="fleft">
+		<img src="img/users.gif" alt="">
+	    </td>
+	    <td width="1%"><strong>{trans("Permissions:")}</strong></td>
+	    <td width="98%" class="fright">
+		    <table width="100%" cellpadding="3">
+			<tr class="DARK">
+			    <td width="93%" class="ftl"><strong>{trans("User")}</strong></td>
+			    <td width="1%" class="ftop" align="center" nowrap="nowrap"><strong>{trans("Read")}</strong></td>
+			    <td width="5%" class="ftop" align="center" colspan="5" nowrap="nowrap"><strong>{trans("Write (+R)")}</strong></td>
+			    <td width="1%" class="ftr" align="center" nowrap="nowrap"><strong>{trans("Advanced (+R)")}</strong></td>
+			</tr>
+			<tr class="DARK">
+			    <td width="93%" class="fbl"></td>
+			    <td width="1%" class="fbottom" align="center" nowrap="nowrap"></td>
+			    <td width="1%" class="fbottom" align="center">{trans("customer")}</td>
+			    <td width="1%" class="fbottom" align="center" nowrap="nowrap">{trans("ass. move")}</td>
+			    <td width="1%" class="fbottom" align="center">{trans("advance")}</td>
+			    <td width="1%" class="fbottom" align="center">{trans("other")}</td>
+			    <td width="1%" class="fbottom" align="center">{trans("mod.")}</td>
+			    <td width="1%" class="fbr" align="center" nowrap="nowrap"></td>
+			</tr>
 			{cycle values="light,lucid" print=false}
 			{foreach from=$registry.rights item=right}
-			<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-			    <TD width="93%" class="fleft">
-				<A href="?m=userinfo&id={$right.id}">{$right.name}</A>
-				<INPUT type="hidden" name="registry[usernames][{$right.id}]" value="{$right.name}">
-			    </TD>
-			    <TD width="1%" align="center">
-				    <INPUT type="checkbox" name="registry[users][{$right.id}][1]" value="1" {if ($right.rights & 1)==1}CHECKED{/if}>
-			    </TD>
-			    <TD width="1%" align="center">
-			    	    <INPUT type="checkbox" name="registry[users][{$right.id}][2]" value="2" {if ($right.rights & 2)==2}CHECKED{/if}>
-			    </TD>
-			    <TD width="1%" align="center">
-			    	    <INPUT type="checkbox" name="registry[users][{$right.id}][4]" value="4" {if ($right.rights & 4)==4}CHECKED{/if}>
-			    </TD>
-			    <TD width="1%" align="center">
-			    	    <INPUT type="checkbox" name="registry[users][{$right.id}][8]" value="8" {if ($right.rights & 8)==8}CHECKED{/if}>
-			    </TD>
-			    <TD width="1%" align="center">
-			    	    <INPUT type="checkbox" name="registry[users][{$right.id}][16]" value="16" {if ($right.rights & 16)==16}CHECKED{/if}>
-			    </TD>
-			    <TD width="1%" align="center">
-			    	    <INPUT type="checkbox" name="registry[users][{$right.id}][32]" value="32" {if ($right.rights & 32)==32}CHECKED{/if}>
-			    </TD>
-			    <TD width="1%" align="center" class="fright">
-			    	    <INPUT type="checkbox" name="registry[users][{$right.id}][256]" value="256" {if ($right.rights & 256)==256}CHECKED{/if}>
-			    </TD>
-			</TR>
+			<tr class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+			    <td width="93%" class="fleft">
+				<a href="?m=userinfo&id={$right.id}">{$right.name}</a>
+				<input type="hidden" name="registry[usernames][{$right.id}]" value="{$right.name}">
+			    </td>
+			    <td width="1%" align="center">
+				    <input type="checkbox" name="registry[users][{$right.id}][1]" value="1" {if ($right.rights & 1)==1}CHECKED{/if}>
+			    </td>
+			    <td width="1%" align="center">
+			    	    <input type="checkbox" name="registry[users][{$right.id}][2]" value="2" {if ($right.rights & 2)==2}CHECKED{/if}>
+			    </td>
+			    <td width="1%" align="center">
+			    	    <input type="checkbox" name="registry[users][{$right.id}][4]" value="4" {if ($right.rights & 4)==4}CHECKED{/if}>
+			    </td>
+			    <td width="1%" align="center">
+			    	    <input type="checkbox" name="registry[users][{$right.id}][8]" value="8" {if ($right.rights & 8)==8}CHECKED{/if}>
+			    </td>
+			    <td width="1%" align="center">
+			    	    <input type="checkbox" name="registry[users][{$right.id}][16]" value="16" {if ($right.rights & 16)==16}CHECKED{/if}>
+			    </td>
+			    <td width="1%" align="center">
+			    	    <input type="checkbox" name="registry[users][{$right.id}][32]" value="32" {if ($right.rights & 32)==32}CHECKED{/if}>
+			    </td>
+			    <td width="1%" align="center" class="fright">
+			    	    <input type="checkbox" name="registry[users][{$right.id}][256]" value="256" {if ($right.rights & 256)==256}CHECKED{/if}>
+			    </td>
+			</tr>
 			{/foreach}
-			<TR class="LIGHT">
-			    <TD width="93%" class="ftop"></TD>
-			    <TD width="7%" colspan="7" class="ftop"></TD>
-			</TR>
-		</TABLE>
-	    </TD>
-	</TR>
-	<TR class="LIGHT">
-	    <TD width="100%" COLSPAN="3" class="FBOTTOMU" ALIGN="RIGHT"> 
-	    	<A HREF="javascript:document.registry.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-		<A HREF="?m=cashreglist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
-	    </TD>
-	</TR>
-</TABLE>
-</FORM></P>
-<SCRIPT type="text/javascript">
+			<tr class="LIGHT">
+			    <td width="93%" class="ftop"></td>
+			    <td width="7%" colspan="7" class="ftop"></td>
+			</tr>
+		</table>
+	    </td>
+	</tr>
+	<tr class="LIGHT">
+	    <td width="100%" colspan="3" class="FBOTTOMU" align="RIGHT"> 
+	    	<a href="javascript:document.registry.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+		<a href="?m=cashreglist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
+	    </td>
+	</tr>
+</table>
+</form></P>
+<script type="text/javascript">
 <!--
 document.forms['registry'].elements['registry[name]'].focus();
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}

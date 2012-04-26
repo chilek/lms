@@ -1,68 +1,68 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<FORM METHOD="POST" NAME="category" ACTION="?m=rtcategoryedit&id={$category.id}">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
-	    <TD width="1%" class="fleftu">
-		<IMG src="img/queue.gif" ALT="">
-	    </TD>
-	    <TD width="1%" class="fbt"><B>{trans("Name:")}</B></TD>
-	    <TD width="98%" class="frightu">
-		<INPUT TYPE="TEXT" NAME="category[name]" VALUE="{$category.name}" {tip text="Enter category name" trigger="name" bold=1}><B> ({$category.id|string_format:"%04d"})</B>
-	    </TD>
-	</TR>
-	<TR class="LIGHT">
-	    <TD width="1%" class="fleft">
-		<IMG src="img/info1.gif" ALT="">
-	    </TD>
-	    <TD width="1%"><B>{trans("Description:")}</B></TD>
-	    <TD width="98%" class="fright">
-		<TEXTAREA NAME="category[description]" COLS="50" ROWS="3" {tip text="Enter additional information (optional)"}>{$category.description}</TEXTAREA>
-	    </TD>
-	</TR>
-	<TR class="LIGHT">
-	    <TD width="1%" class="fleft">
-		<IMG src="img/users.gif" ALT="">
-	    </TD>
-	    <TD width="1%"><B>{trans("Users:")}</B></TD>
-	    <TD width="98%" class="fright">
-		    <TABLE width="100%" cellpadding="3">
-			<TR class="DARK">
-			    <TD width="99%" class="fleftu"><B>{trans("User")}</B>
-			    </TD>
-			    <TD width="1%" class="frightu" align="center" nowrap><B>{trans("Owner")}</B></TD>
-			</TR>
+<h1>{$layout.pagetitle}</h1>
+<form method="POST" name="category" action="?m=rtcategoryedit&id={$category.id}">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+	    <td width="1%" class="fleftu">
+		<img src="img/queue.gif" alt="">
+	    </td>
+	    <td width="1%" class="fbt"><strong>{trans("Name:")}</strong></td>
+	    <td width="98%" class="frightu">
+		<input type="TEXT" name="category[name]" value="{$category.name}" {tip text="Enter category name" trigger="name" bold=1}><strong> ({$category.id|string_format:"%04d"})</strong>
+	    </td>
+	</tr>
+	<tr class="LIGHT">
+	    <td width="1%" class="fleft">
+		<img src="img/info1.gif" alt="">
+	    </td>
+	    <td width="1%"><strong>{trans("Description:")}</strong></td>
+	    <td width="98%" class="fright">
+		<textarea name="category[description]" cols="50" rows="3" {tip text="Enter additional information (optional)"}>{$category.description}</textarea>
+	    </td>
+	</tr>
+	<tr class="LIGHT">
+	    <td width="1%" class="fleft">
+		<img src="img/users.gif" alt="">
+	    </td>
+	    <td width="1%"><strong>{trans("Users:")}</strong></td>
+	    <td width="98%" class="fright">
+		    <table width="100%" cellpadding="3">
+			<tr class="DARK">
+			    <td width="99%" class="fleftu"><strong>{trans("User")}</strong>
+			    </td>
+			    <td width="1%" class="frightu" align="center" nowrap="nowrap"><strong>{trans("Owner")}</strong></td>
+			</tr>
 			{cycle values="light,lucid" print=false}
 			{foreach from=$category.owners item=user}
-			<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-			    <TD width="99%" class="fleft">
-				<A href="?m=userinfo&id={$user.id}">{$user.name}</A>
-			    </TD>
-			    <TD width="1%" align="center" class="fright">
-			    	    <INPUT type="checkbox" name="category[users][{$user.id}]" value="1" {if $user.owner > 0}CHECKED{/if}>
-			    </TD>
-			</TR>
+			<tr class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+			    <td width="99%" class="fleft">
+				<a href="?m=userinfo&id={$user.id}">{$user.name}</a>
+			    </td>
+			    <td width="1%" align="center" class="fright">
+			    	    <input type="checkbox" name="category[users][{$user.id}]" value="1" {if $user.owner > 0}CHECKED{/if}>
+			    </td>
+			</tr>
 			{/foreach}
-			<TR class="LIGHT">
-			    <TD width="99%" class="ftop"></TD>
-			    <TD width="1%" class="ftop"></TD>
-			</TR>
-		</TABLE>			
-	    </TD>
-	</TR>
-	<TR class="LIGHT">
-	    <TD width="100%" COLSPAN="3" class="FBOTTOMU" ALIGN="RIGHT"> 
-	    	<A HREF="javascript:document.category.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-		<A HREF="?m=rtcategorydel&id={$category.id}" OnClick="return confirmLink(this, '{t a=$category.name}Are you sure, you want to remove category \'$a\'?{/t}');" accesskey="d">{trans("Delete")}<IMG src="img/delete.gif" alt=""></A>
-		<A HREF="?m=rtcategorylist">{trans("Cancel")}<IMG src="img/cancel.gif" alt=""></A>
-	    </TD>
-	</TR>
-</TABLE></FORM></P>
-<SCRIPT type="text/javascript">
+			<tr class="LIGHT">
+			    <td width="99%" class="ftop"></td>
+			    <td width="1%" class="ftop"></td>
+			</tr>
+		</table>			
+	    </td>
+	</tr>
+	<tr class="LIGHT">
+	    <td width="100%" colspan="3" class="FBOTTOMU" align="RIGHT"> 
+	    	<a href="javascript:document.category.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+		<a href="?m=rtcategorydel&id={$category.id}" OnClick="return confirmLink(this, '{t a=$category.name}Are you sure, you want to remove category \'$a\'?{/t}');" accesskey="d">{trans("Delete")}<img src="img/delete.gif" alt=""></a>
+		<a href="?m=rtcategorylist">{trans("Cancel")}<img src="img/cancel.gif" alt=""></a>
+	    </td>
+	</tr>
+</table></form></P>
+<script type="text/javascript">
 <!--
 document.forms['category'].elements['category[name]'].focus();
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}

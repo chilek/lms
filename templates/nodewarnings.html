@@ -1,6 +1,6 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<SCRIPT TYPE="text/javascript">
+<script type="text/javascript">
 <!--
 	function SelectAllNodes()
 	{
@@ -38,59 +38,59 @@
 		switchbox(document.setwarnings.elements['setwarnings[warnoff]']);
 	}
 //-->
-</SCRIPT>
-<H1>{$layout.pagetitle}</H1>
-<P><FORM NAME="setwarnings" METHOD="POST" ACTION="?m=nodewarn" id="setwarnings">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" cellpadding="3">
-	<TR>
-		<TD WIDTH="1%" VALIGN="TOP">
-			<TABLE width="100%" cellpadding="3">
-				<TR CLASS="DARK">
-					<TD CLASS="fleftu" WIDTH="1%">
-						<IMG SRC="img/node.gif" alt="">&nbsp;<B>{trans("Nodes:")}</B>
-					</TD>
-					<TD CLASS="frightu" WIDTH="99%" COLSPAN="2">
-						<IMG SRC="img/mail.gif" alt="">&nbsp;<B>{trans("Notice content:")}</B>
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD CLASS="fleft">
-						<SELECT size="20" name="setwarnings[mnodeid][]" id="nodeslist" multiple {tip text="Select nodes"}>
+</script>
+<h1>{$layout.pagetitle}</h1>
+<P><form name="setwarnings" method="POST" action="?m=nodewarn" id="setwarnings">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr>
+		<td width="1%" VALIGN="TOP">
+			<table width="100%" cellpadding="3">
+				<tr class="DARK">
+					<td class="fleftu" width="1%">
+						<img src="img/node.gif" alt="">&nbsp;<strong>{trans("Nodes:")}</strong>
+					</td>
+					<td class="frightu" width="99%" colspan="2">
+						<img src="img/mail.gif" alt="">&nbsp;<strong>{trans("Notice content:")}</strong>
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td class="fleft">
+						<select size="20" name="setwarnings[mnodeid][]" id="nodeslist" multiple {tip text="Select nodes"}>
 							{section name=nodelist loop=$nodelist}
-							<OPTION value="{$nodelist[nodelist].id}" {if $nodelist[nodelist].warning}CLASS="red"{/if}>{$nodelist[nodelist].name|truncate:40:"...":true} / {$nodelist[nodelist].ip} ({$nodelist[nodelist].id|string_format:"%04d"})</OPTION>
+							<option value="{$nodelist[nodelist].id}" {if $nodelist[nodelist].warning}CLASS="red"{/if}>{$nodelist[nodelist].name|truncate:40:"...":true} / {$nodelist[nodelist].ip} ({$nodelist[nodelist].id|string_format:"%04d"})</option>
 							{/section}
-						</SELECT>
-					</TD>
-					<TD CLASS="fright" COLSPAN="2">
-						<TEXTAREA NAME="setwarnings[message]" id="setwarnings[message]" ROWS="20" COLS="75" {tip text="Enter notice content"}>{$warnmessage}</TEXTAREA>
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD CLASS="fbl" WIDTH="1%" nowrap>
-						<INPUT TYPE="checkbox" NAME="nodes" OnClick="javascript:SelectAllNodes()"><A HREF="javascript:SelectAllNodes2()">{trans("Select All<!nodes>")}</A></INPUT>
-					</TD>
-					<TD CLASS="fbottom" ALIGN="left">
-						 <NOBR>
-						 <INPUT TYPE="checkbox" NAME="setwarnings[warnon]" ID="warnon" OnClick="switchbox(this);"{if $warnon}CHECKED{/if}><A HREF="javascript:switchbox1()">{trans("Enable")}</A></INPUT></NOBR>
-						 / <INPUT TYPE="checkbox" NAME="setwarnings[warnoff]" ID="warnoff" OnClick="switchbox(this);" {if $warnoff}CHECKED{/if}><A HREF="javascript:switchbox2()">{trans("Disable")}</A></INPUT>
-						 </NOBR>
-					</TD>
-					<TD CLASS="fbr" ALIGN="RIGHT">
-						<A HREF="javascript:document.setwarnings.submit()">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
-					</TD>
-				<TR>
-			</TABLE>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
+						</select>
+					</td>
+					<td class="fright" colspan="2">
+						<textarea name="setwarnings[message]" id="setwarnings[message]" rows="20" cols="75" {tip text="Enter notice content"}>{$warnmessage}</textarea>
+					</td>
+				</tr>
+				<tr class="LIGHT">
+					<td class="fbl" width="1%" nowrap="nowrap">
+						<input type="checkbox" name="nodes" OnClick="javascript:SelectAllNodes()"><a href="javascript:SelectAllNodes2()">{trans("Select All<!nodes>")}</a></INPUT>
+					</td>
+					<td class="fbottom" align="left">
+						 <span class="nobr">
+						 <input type="checkbox" name="setwarnings[warnon]" id="warnon" OnClick="switchbox(this);"{if $warnon}CHECKED{/if}><a href="javascript:switchbox1()">{trans("Enable")}</a></INPUT></span>
+						 / <input type="checkbox" name="setwarnings[warnoff]" id="warnoff" OnClick="switchbox(this);" {if $warnoff}CHECKED{/if}><a href="javascript:switchbox2()">{trans("Disable")}</a></INPUT>
+						 </span>
+					</td>
+					<td class="fbr" align="RIGHT">
+						<a href="javascript:document.setwarnings.submit()">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+					</td>
+				<tr>
+			</table>
+		</td>
+	</tr>
+</table>
+</form>
 </P>
 
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 <!--//
 document.forms['setwarnings'].elements['setwarnings[message]'].focus();
 //-->
-</SCRIPT>
+</script>
 
 {include file="footer.html"}

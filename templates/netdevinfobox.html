@@ -1,231 +1,231 @@
 <!--// $Id$ //-->
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR{if $devicepanel} class="dark hand" onClick="showOrHide('devicepanel');"{else} class="dark"{/if}>
-		<TD WIDTH="1%" CLASS="FLEFTU">
-			<IMG SRC="img/netdev.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHTU">
-			<B>{$netdevinfo.name} ({$netdevinfo.id|string_format:"%04d"})</B>
-		</TD>
-	</TR>
-	<TR class="LIGHT"{if $devicepanel} id="devicepanel" style="display:none;"{/if}>
-	    <TD WIDTH="100%" COLSPAN="2"{if $devicepanel} CLASS="fall container" ALIGN="RIGHT"{else}CLASS="flr container"{/if}>
-			<TABLE WIDTH="100%" CELLPADDING="0">
-				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" style="vertical-align:top;">
-						<TABLE WIDTH="100%" CELLPADDING="3">
+<table width="100%" cellpadding="3">
+	<tr{if $devicepanel} class="dark hand" onClick="showOrHide('devicepanel');"{else} class="dark"{/if}>
+		<td width="1%" class="FLEFTU">
+			<img src="img/netdev.gif" alt="">
+		</td>
+		<td width="99%" class="FRIGHTU">
+			<strong>{$netdevinfo.name} ({$netdevinfo.id|string_format:"%04d"})</strong>
+		</td>
+	</tr>
+	<tr class="LIGHT"{if $devicepanel} id="devicepanel" style="display:none;"{/if}>
+	    <td width="100%" colspan="2"{if $devicepanel} class="fall container" align="RIGHT"{else}CLASS="flr container"{/if}>
+			<table width="100%" cellpadding="0">
+				<tr class="LIGHT">
+					<td width="50%" style="vertical-align:top;">
+						<table width="100%" cellpadding="3">
         {if $netdevinfo.producer}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/producer.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-		        <B>{trans("Producer:")}</B>
-		</TD>
-		<TD WIDTH="98%">
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/producer.gif" alt="">
+		</td>
+		<td width="1%">
+		        <strong>{trans("Producer:")}</strong>
+		</td>
+		<td width="98%">
 		        {$netdevinfo.producer}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
 	{if $netdevinfo.model}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/netdev_model.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-		        <B>{trans("Model:")}</B>
-		</TD>
-		<TD WIDTH="98%">
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/netdev_model.gif" alt="">
+		</td>
+		<td width="1%">
+		        <strong>{trans("Model:")}</strong>
+		</td>
+		<td width="98%">
 		        {$netdevinfo.model}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
 	{if $netdevinfo.serialnumber}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/serialnumber.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-		        <B>{trans("Serial number:")}</B>
-		</TD>
-		<TD WIDTH="98%">
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/serialnumber.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+		        <strong>{trans("Serial number:")}</strong>
+		</td>
+		<td width="98%">
 		        {$netdevinfo.serialnumber}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/port.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-		        <B>{trans("Number of ports:")}</B>
-		</TD>
-		<TD WIDTH="98%">
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/port.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+		        <strong>{trans("Number of ports:")}</strong>
+		</td>
+		<td width="98%">
 		        {$netdevinfo.ports}
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/netdev_takenports.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-		        <B>{trans("Ports used:")}</B>
-		</TD>
-		<TD WIDTH="98%">
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/netdev_takenports.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+		        <strong>{trans("Ports used:")}</strong>
+		</td>
+		<td width="98%">
 		        {$netdevinfo.takenports}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{if $netdevinfo.location}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/home.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-		        <B>{trans("Location:")}</B>
-		</TD>
-		<TD WIDTH="98%">
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/home.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+		        <strong>{trans("Location:")}</strong>
+		</td>
+		<td width="98%">
 		        {$netdevinfo.location}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
 	{if $netdevinfo.longitude || $netdevinfo.latitude}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/home.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("GPS longitude:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-			<INPUT ID="longitude" TYPE="hidden" VALUE="{$netdevinfo.longitude}">
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/home.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("GPS longitude:")}</strong>
+		</td>
+		<td width="98%">
+			<input id="longitude" type="hidden" value="{$netdevinfo.longitude}">
 			{$netdevinfo.longitude}
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/home.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("GPS latitude:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-			<INPUT ID="latitude" TYPE="hidden" VALUE="{$netdevinfo.latitude}">
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/home.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("GPS latitude:")}</strong>
+		</td>
+		<td width="98%">
+			<input id="latitude" type="hidden" value="{$netdevinfo.latitude}">
 			{$netdevinfo.latitude}
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="2%" COLSPAN="2">
-		</TD>
-		<TD WIDTH="98%">
-			<a HREF="?m=netdevmap&netdevid={$netdevinfo.id}"><img src="img/network.gif" alt=""> {trans("Show on map")} &raquo;&raquo;&raquo;</a>
-		</TD>
-	</TR>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="2%" colspan="2">
+		</td>
+		<td width="98%">
+			<a href="?m=netdevmap&netdevid={$netdevinfo.id}"><img src="img/network.gif" alt=""> {trans("Show on map")} &raquo;&raquo;&raquo;</a>
+		</td>
+	</tr>
 	{/if}
 {if check_conf('phpui.radius')}
 	{if $netdevinfo.shortname}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/radius.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Shortname:")}</B>
-		</TD>
-		<TD WIDTH="98%">
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/radius.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("Shortname:")}</strong>
+		</td>
+		<td width="98%">
 		        {$netdevinfo.shortname}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
 	{if $netdevinfo.nastype}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/radius.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Type:")}</B>
-		</TD>
-		<TD WIDTH="98%">
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/radius.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("Type:")}</strong>
+		</td>
+		<td width="98%">
 		        {$netdevinfo.nastypename}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
 	{if $netdevinfo.clients}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/radius.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Max clients:")}</B>
-		</TD>
-		<TD WIDTH="98%">
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/radius.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("Max clients:")}</strong>
+		</td>
+		<td width="98%">
 		        {$netdevinfo.clients}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
 	{if $netdevinfo.secret}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/radius.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Secret:")}</B>
-		</TD>
-		<TD WIDTH="98%">
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/radius.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("Secret:")}</strong>
+		</td>
+		<td width="98%">
 		        {$netdevinfo.secret}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
 	{if $netdevinfo.community}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/radius.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Community:")}</B>
-		</TD>
-		<TD WIDTH="98%">
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/radius.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("Community:")}</strong>
+		</td>
+		<td width="98%">
 		        {$netdevinfo.community}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
 {/if}
 	{if $netdevinfo.channelid}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/channel.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Channel:")}</B>
-		</TD>
-		<TD WIDTH="98%">
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/channel.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("Channel:")}</strong>
+		</td>
+		<td width="98%">
 		        <a href="?m=ewxchinfo&id={$netdevinfo.channelid}">{$netdevinfo.channel} ({$netdevinfo.channelid|string_format:"%04d"})</a>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
-	                        	</TABLE>
-				</TD>
-				<TD WIDTH="50%" style="vertical-align:top;">
-				        <TABLE WIDTH="100%" CELLPADDING="3">
+	                        	</table>
+				</td>
+				<td width="50%" style="vertical-align:top;">
+				        <table width="100%" cellpadding="3">
 	{if $netdevinfo.purchasetime}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/calendar.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-		        <B>{trans("Purchase date:")}</B>
-		</TD>
-		<TD WIDTH="98%">
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/calendar.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+		        <strong>{trans("Purchase date:")}</strong>
+		</td>
+		<td width="98%">
 		        {$netdevinfo.purchasetime|date_format:"%Y/%m/%d"}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/guarantee.png" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-		        <B>{trans("Guarantee:")}</B>
-		</TD>
-		<TD WIDTH="98%">
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/guarantee.png" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+		        <strong>{trans("Guarantee:")}</strong>
+		</td>
+		<td width="98%">
 			{if !$netdevinfo.guaranteeperiod}
 				{trans("no guarantee")}
 			{elseif $netdevinfo.guaranteeperiod == -1}
@@ -235,65 +235,65 @@
 				{$_GUARANTEEPERIODS.$periodid}
 		        	({if $netdevinfo.guaranteetime-$smarty.now < 0}{trans("expired<!guarantee>")}{else}{$netdevinfo.guaranteetime|date_format:"%Y/%m/%d"}{/if})
 			{/if}
-		</TD>
-	</TR>
+		</td>
+	</tr>
         {if $netdevinfo.description}
-        <TR CLASS="LIGHT">
-                <TD WIDTH="1%">
-                        <IMG SRC="img/desc.gif" ALT="">
-                </TD>
-                <TD WIDTH="99%" COLSPAN="2">
-                        <TABLE WIDTH="100%" CELLPADDING="5">
-                                <TR>
-                                        <TD class="fall superlight">
-						{$netdevinfo.description|escape|replace:"\n":"<BR>"}
-                                        </TD>
-                                </TR>
-                        </TABLE>
-                </TD>
-        </TR>
+        <tr class="LIGHT">
+                <td width="1%">
+                        <img src="img/desc.gif" alt="">
+                </td>
+                <td width="99%" colspan="2">
+                        <table width="100%" cellpadding="5">
+                                <tr>
+                                        <td class="fall superlight">
+						{$netdevinfo.description|escape|replace:"\n":"<br />"}
+                                        </td>
+                                </tr>
+                        </table>
+                </td>
+        </tr>
         {/if}
-	                                        </TABLE>
-					</TD>
-				</TR>
-			</TABLE>
+	                                        </table>
+					</td>
+				</tr>
+			</table>
 {if !$devicepanel}
-    		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-	        <TD WIDTH="100%" COLSPAN="2" CLASS="FBOTTOMU" ALIGN="RIGHT">
+    		</td>
+	</tr>
+	<tr class="LIGHT">
+	        <td width="100%" colspan="2" class="FBOTTOMU" align="RIGHT">
 {/if}
 			{if $replacelisttotal>1}
-			<FORM METHOD="GET" ACTION="?m=netdevedit" NAME="replace">
-			<INPUT type="submit" class="hiddenbtn">
-			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
-			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
-			<INPUT TYPE="HIDDEN" NAME="action" VALUE="replace">
-			<A HREF="javascript:document.replace.submit(); ">{trans("Replace with:")}</A>
-			<SELECT NAME="netdev" {tip trigger="replace" text="Select device from list for replacement"}>
+			<form method="GET" action="?m=netdevedit" name="replace">
+			<input type="submit" class="hiddenbtn">
+			<input type="HIDDEN" name="m" value="netdevedit">
+			<input type="HIDDEN" name="id" value="{$netdevinfo.id}">
+			<input type="HIDDEN" name="action" value="replace">
+			<a href="javascript:document.replace.submit(); ">{trans("Replace with:")}</a>
+			<select name="netdev" {tip trigger="replace" text="Select device from list for replacement"}>
 				{section name=replacelist loop=$replacelist}
 					{if $replacelist[replacelist].id != $netdevinfo.id}
 					{assign var=netdevname value=$replacelist[replacelist].name}
 					{if $replacelist[replacelist].producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$replacelist[replacelist].producer}{/if}
 					{if $replacelist[replacelist].location}{assign var=netdevname value=$netdevname|cat:" ("|cat:$replacelist[replacelist].location|cat:")"}{/if}
-					<OPTION VALUE="{$replacelist[replacelist].id}">{$netdevname|truncate:120:"...":true}</OPTION>
+					<option value="{$replacelist[replacelist].id}">{$netdevname|truncate:120:"...":true}</option>
 					{/if}
 				{/section}
-			</SELECT>
-			</FORM>
+			</select>
+			</form>
 			{/if}
-			<A href="?m=netdevedit&id={$netdevinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG src="img/edit.gif" ALT="[ {trans("Edit")} ]"></A>
-			<A href="?m=netdevdel&id={$netdevinfo.id}" OnClick="return confirmLink(this, '{t a=$netdevinfo.name}Are you sure, you want to remove device \'$a\' from database?{/t}');">{trans("Delete")} <img src="img/delete.gif" ALT=""></A>
-		</TD>
-	</TR>
-</TABLE>
+			<a href="?m=netdevedit&id={$netdevinfo.id}" accesskey="E">{trans("Edit")} <img src="img/edit.gif" alt="[ {trans("Edit")} ]"></a>
+			<a href="?m=netdevdel&id={$netdevinfo.id}" OnClick="return confirmLink(this, '{t a=$netdevinfo.name}Are you sure, you want to remove device \'$a\' from database?{/t}');">{trans("Delete")} <img src="img/delete.gif" alt=""></a>
+		</td>
+	</tr>
+</table>
 {if $devicepanel}
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 <!--
 if (getCookie('devicepanel') == '1')
 {
 	document.getElementById('devicepanel').style.display = '';
 }
 //-->
-</SCRIPT>
+</script>
 {/if}

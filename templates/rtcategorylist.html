@@ -1,85 +1,85 @@
 {include file="header.html"}
 <!-- $Id$ -->
-<H1><B>{$layout.pagetitle}</B></H1>
-<TABLE cellpadding="5" WIDTH="100%">
-	<TR CLASS="dark">
-		<TD CLASS="fleftu" WIDTH="20%" COLSPAN="2" NOWRAP>
-			<IMG src="img/queue.gif" ALT="">
-			<B>{trans("Category")}:</B><BR>
-			<IMG src="img/info1.gif" ALT="">
+<h1><strong>{$layout.pagetitle}</strong></h1>
+<table cellpadding="5" width="100%">
+	<tr class="dark">
+		<td class="fleftu" width="20%" colspan="2" nowrap="nowrap">
+			<img src="img/queue.gif" alt="">
+			<strong>{trans("Category")}:</strong><br />
+			<img src="img/info1.gif" alt="">
 			{trans("Description")}:
-		</TD>
-		<TD CLASS="fbt" WIDTH="76%" NOWRAP>
-			<IMG src="img/users.gif" ALT="">
-			<B>{trans("Owners")}:</B>
-		</TD>
-		<TD CLASS="fbt" align="right"  WIDTH="1%">
+		</td>
+		<td class="fbt" width="76%" nowrap="nowrap">
+			<img src="img/users.gif" alt="">
+			<strong>{trans("Owners")}:</strong>
+		</td>
+		<td class="fbt" align="right"  width="1%">
 			{trans("New:")}
-		</TD>
-		<TD CLASS="fbt" align="right" WIDTH="1%">
+		</td>
+		<td class="fbt" align="right" width="1%">
 			{trans("Opened:")}
-		</TD>
-		<TD CLASS="fbt" align="right" WIDTH="1%" ALIGN="CENTER">
+		</td>
+		<td class="fbt" align="right" width="1%" align="CENTER">
 			{trans("Last:")}
-		</TD>
-		<TD CLASS="frightu" WIDTH="1%">
+		</td>
+		<td class="frightu" width="1%">
 			&nbsp;
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$categories item=category}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD CLASS="fleft" onClick="return self.location.href='?m=rtqueueview&catid={$category.id}';" COLSPAN="2">
-			<IMG src="img/queue.gif" ALT="">
-			<B>{$category.name}</B><BR>
+	<tr class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<td class="fleft" onClick="return self.location.href='?m=rtqueueview&catid={$category.id}';" colspan="2">
+			<img src="img/queue.gif" alt="">
+			<strong>{$category.name}</strong><br />
 			{if $category.description}
-				<IMG src="img/info1.gif" ALT=""> {$category.description}
+				<img src="img/info1.gif" alt=""> {$category.description}
 			{/if}
-		</TD>
-		<TD>
+		</td>
+		<td>
 			{foreach from=$category.owners item=owner key=key}
-				<A HREF="?m=userinfo&id={$owner.id}">{$owner.name}</A>{if $key+1<sizeof($category.owners)}, {/if}
+				<a href="?m=userinfo&id={$owner.id}">{$owner.name}</a>{if $key+1<sizeof($category.owners)}, {/if}
 			{/foreach}
-		</TD>
-		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&catid={$category.id}';">
+		</td>
+		<td align="CENTER" onClick="return self.location.href='?m=rtqueueview&catid={$category.id}';">
 			{$category.new|default:0}
-		</TD>
-		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&catid={$category.id}';">
+		</td>
+		<td align="CENTER" onClick="return self.location.href='?m=rtqueueview&catid={$category.id}';">
 			{$category.open|default:0}
-		</TD>
-		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&catid={$category.id}';" NOWRAP>
+		</td>
+		<td align="CENTER" onClick="return self.location.href='?m=rtqueueview&catid={$category.id}';" nowrap="nowrap">
 			{if $category.lastticket}{$category.lastticket|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
-		</TD>
-		<TD CLASS="fright" NOWRAP>
-			<A HREF="?m=rtqueueview&catid={$category.id}"><IMG SRC="img/view.gif" alt="[ {trans("Browse")} ]" title="[ {trans("Browse")} ]"></A>
-			<A HREF="?m=rtcategorydel&id={$category.id}" OnClick="return confirmLink(this, '{t a=$category.name}Are you sure, you want to remove category \'$a\'?{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A HREF="?m=rtcategoryedit&id={$category.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-			<A HREF="?m=rtcategoryinfo&id={$category.id}"><IMG SRC="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
-		</TD>
-	</TR>
+		</td>
+		<td class="fright" nowrap="nowrap">
+			<a href="?m=rtqueueview&catid={$category.id}"><img src="img/view.gif" alt="[ {trans("Browse")} ]" title="[ {trans("Browse")} ]"></a>
+			<a href="?m=rtcategorydel&id={$category.id}" OnClick="return confirmLink(this, '{t a=$category.name}Are you sure, you want to remove category \'$a\'?{/t}');"><img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></a>
+			<a href="?m=rtcategoryedit&id={$category.id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
+			<a href="?m=rtcategoryinfo&id={$category.id}"><img src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></a>
+		</td>
+	</tr>
 	{foreachelse}
-	<TR>
-		<TD colspan="7" align="center" class="flr">
+	<tr>
+		<td colspan="7" align="center" class="flr">
 			<p>&nbsp;</p>
-			<p><B>{trans("There are no categories.")}<B></p>
+			<p><strong>{trans("There are no categories.")}<strong></p>
 			<p>&nbsp;</p>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/foreach}
-	<TR CLASS="light">
-		<TD COLSPAN="3" ALIGN="RIGHT" CLASS="fleftu">
-			<IMG src="img/info2.gif" ALT="">
-			<B>{trans("Total:")}</B>
-		</TD>
-		<TD ALIGN="CENTER" CLASS="fbt">
-			<B>{sum array=$categories column=new}</B>
-		</TD>
-		<TD ALIGN="CENTER" CLASS="fbt">
-			<B>{sum array=$categories column=open}</B>
-		</TD>
-		<TD CLASS="frightu" COLSPAN="2">
+	<tr class="light">
+		<td colspan="3" align="RIGHT" class="fleftu">
+			<img src="img/info2.gif" alt="">
+			<strong>{trans("Total:")}</strong>
+		</td>
+		<td align="CENTER" class="fbt">
+			<strong>{sum array=$categories column=new}</strong>
+		</td>
+		<td align="CENTER" class="fbt">
+			<strong>{sum array=$categories column=open}</strong>
+		</td>
+		<td class="frightu" colspan="2">
 			&nbsp;
-		</TD>
-	</TR>
-</TABLE>
+		</td>
+	</tr>
+</table>
 {include file="footer.html"}

@@ -1,93 +1,93 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<P><FORM method="POST" action="?m=daemoninstanceadd" name="instance">
-<INPUT type="submit" class="hiddenbtn">
-<INPUT type="hidden" name="instance[id]" value="{$instance.id}">
-<TABLE width="100%" cellpadding="3">
-	<TR class="dark">
-		<TD width="1%" class="fleftu">
+<h1>{$layout.pagetitle}</h1>
+<P><form method="POST" action="?m=daemoninstanceadd" name="instance">
+<input type="submit" class="hiddenbtn">
+<input type="hidden" name="instance[id]" value="{$instance.id}">
+<table width="100%" cellpadding="3">
+	<tr class="dark">
+		<td width="1%" class="fleftu">
 			<img src="img/settings.gif" alt="">
-		</TD>
-		<TD width="1%" class="fbt">
-			<B>{trans("Name:")}</B>
-		</TD>
-		<TD width="98%" class="frightu">
-			<INPUT type="text" name="instance[name]" value="{$instance.name}" {tip text="Enter instance name" trigger="name" bold=1}>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+		</td>
+		<td width="1%" class="fbt">
+			<strong>{trans("Name:")}</strong>
+		</td>
+		<td width="98%" class="frightu">
+			<input type="text" name="instance[name]" value="{$instance.name}" {tip text="Enter instance name" trigger="name" bold=1}>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft">
 			<img src="img/host.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Host:")}</B>
-		</TD>
-		<TD width="98%" class="fright">
-			<SELECT name="instance[hostid]" {tip text="Select host name" trigger="hostid"}>
-				<OPTION value="0"{if !$instance.hostid} SELECTED{/if}>{trans("- select host -")}</OPTION>
+		</td>
+		<td width="1%">
+			<strong>{trans("Host:")}</strong>
+		</td>
+		<td width="98%" class="fright">
+			<select name="instance[hostid]" {tip text="Select host name" trigger="hostid"}>
+				<option value="0"{if !$instance.hostid} selected="selected"{/if}>{trans("- select host -")}</option>
 				{foreach from=$hosts item=host}
-				<OPTION value="{$host.id}"{if $instance.hostid == $host.id} SELECTED{/if}>{$host.name}</OPTION>
+				<option value="{$host.id}"{if $instance.hostid == $host.id} selected="selected"{/if}>{$host.name}</option>
 				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+			</select>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft">
 			<img src="img/plain.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Module:")}</B>
-		</TD>
-		<TD width="98%" class="fright">
-			<INPUT type="text" size="50" name="instance[module]" value="{$instance.module}" {tip text="Enter module name and location" trigger="module"}>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+		</td>
+		<td width="1%">
+			<strong>{trans("Module:")}</strong>
+		</td>
+		<td width="98%" class="fright">
+			<input type="text" size="50" name="instance[module]" value="{$instance.module}" {tip text="Enter module name and location" trigger="module"}>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft">
 			<img src="img/time.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Crontab:")}</B>
-		</TD>
-		<TD width="98%" class="fright">
-			<INPUT type="text" size="50" name="instance[crontab]" value="{$instance.crontab}" {tip text="Enter instance crontab (optional)" trigger="crontab"}>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+		</td>
+		<td width="1%">
+			<strong>{trans("Crontab:")}</strong>
+		</td>
+		<td width="98%" class="fright">
+			<input type="text" size="50" name="instance[crontab]" value="{$instance.crontab}" {tip text="Enter instance crontab (optional)" trigger="crontab"}>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft">
 			<img src="img/dhcp.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Priority:")}</B>
-		</TD>
-		<TD width="98%" class="fright">
-			<INPUT type="text" size="10" name="instance[priority]" value="{$instance.priority}" {tip text="Enter instance reload priority" trigger="priority"}>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+		</td>
+		<td width="1%">
+			<strong>{trans("Priority:")}</strong>
+		</td>
+		<td width="98%" class="fright">
+			<input type="text" size="10" name="instance[priority]" value="{$instance.priority}" {tip text="Enter instance reload priority" trigger="priority"}>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft">
 			<img src="img/info.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Description:")}</B>
-		</TD>
-		<TD width="98%" class="fright">
-			<TEXTAREA rows="5" cols="50" name="instance[description]" {tip text="Enter additional information (optional)" trigger="description"}>{$instance.description}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD class="fbottomu" align="right" colspan="3">
-			<A href="javascript:document.instance.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
-			<A href="?m=daemoninstancelist&id={$instance.hostid}">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="instance[reuse]" id="instance_reuse" value="ON" {if $instance.reuse}checked{/if}> <label for="instance_reuse">{trans("Display this form again, when this instance is saved")}</label>
-		</TD>
-	</TR>
-</TABLE>
+		</td>
+		<td width="1%">
+			<strong>{trans("Description:")}</strong>
+		</td>
+		<td width="98%" class="fright">
+			<textarea rows="5" cols="50" name="instance[description]" {tip text="Enter additional information (optional)" trigger="description"}>{$instance.description}</textarea>
+		</td>
+	</tr>
+	<tr class="light">
+		<td class="fbottomu" align="right" colspan="3">
+			<a href="javascript:document.instance.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+			<a href="?m=daemoninstancelist&id={$instance.hostid}">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a><br />
+			<input type="checkbox" name="instance[reuse]" id="instance_reuse" value="ON" {if $instance.reuse}checked{/if}> <label for="instance_reuse">{trans("Display this form again, when this instance is saved")}</label>
+		</td>
+	</tr>
+</table>
 </P>
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 <!--
 document.forms['instance'].elements['instance[name]'].focus();
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}

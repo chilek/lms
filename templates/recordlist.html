@@ -1,85 +1,85 @@
 {include file="header.html"}
-<H1>{$layout.pagetitle}</H1>
-<P><TABLE cellpadding="3" WIDTH="100%">
-	<TR class="dark"">
-		<TD width="46%" class="fleftu" NOWRAP>{trans("Host:")}</TD>
-		<TD width="2%" class="fbt" NOWRAP align="right">{trans("TTL")}:</TD>
-		<TD width="2%" class="fbt" NOWRAP>{trans("Type")}:</TD>
-		<TD width="2%" class="fbt" NOWRAP>{trans("Priority:")}</TD>
-		<TD width="46%" class="fbt" NOWRAP>{trans("Content")}:</TD>
-		<TD width="2%" class="frightu" align="right" NOWRAP><B>{t a=$listdata.total}Total: $a{/t}</B>&nbsp;</TD>
-	</TR>
-	<TR class="DARK">
-		<TD class="fall" colspan="6">
-			<TABLE cellpadding="0" cellspacing="0" width="100%">
-			    <TR>
-                    		<TD width="1%" NOWRAP>
-				<FORM method="GET" action="?m={$layout.module}" name="filter">
+<h1>{$layout.pagetitle}</h1>
+<P><table cellpadding="3" width="100%">
+	<tr class="dark"">
+		<td width="46%" class="fleftu" nowrap="nowrap">{trans("Host:")}</td>
+		<td width="2%" class="fbt" nowrap="nowrap" align="right">{trans("TTL")}:</td>
+		<td width="2%" class="fbt" nowrap="nowrap">{trans("Type")}:</td>
+		<td width="2%" class="fbt" nowrap="nowrap">{trans("Priority:")}</td>
+		<td width="46%" class="fbt" nowrap="nowrap">{trans("Content")}:</td>
+		<td width="2%" class="frightu" align="right" nowrap="nowrap"><strong>{t a=$listdata.total}Total: $a{/t}</strong>&nbsp;</td>
+	</tr>
+	<tr class="DARK">
+		<td class="fall" colspan="6">
+			<table cellpadding="0" cellspacing="0" width="100%">
+			    <tr>
+                    		<td width="1%" nowrap="nowrap">
+				<form method="GET" action="?m={$layout.module}" name="filter">
 				    <input type="hidden" name="m" value="{$layout.module}">
-				    <NOBR>{trans("Domain:")}
-				    <SELECT size="1" name="d" OnChange="document.filter.submit();">
+				    <span class="nobr">{trans("Domain:")}
+				    <select size="1" name="d" OnChange="document.filter.submit();">
 					{section name=domainlist loop=$domainlist}
-					    <OPTION value="{$domainlist[domainlist].id}"{if $domainlist[domainlist].id eq $listdata.domain} SELECTED{/if}>{$domainlist[domainlist].name}</OPTION>
+					    <option value="{$domainlist[domainlist].id}"{if $domainlist[domainlist].id eq $listdata.domain} selected="selected"{/if}>{$domainlist[domainlist].name}</option>
 					{/section}
-				    </SELECT></NOBR>
-				</FORM>
-			    </TD>
-			    <TD width="99%" align="right" nowrap>
-                        	<A href="?m=recordadd&d={$listdata.domain}">{trans("New Record")} <IMG src="img/save.gif" alt=""></A>
-            		    </TD>
-			</TR>
-		    </TABLE>
-		</TD>
-	</TR>
+				    </select></span>
+				</form>
+			    </td>
+			    <td width="99%" align="right" nowrap="nowrap">
+                        	<a href="?m=recordadd&d={$listdata.domain}">{trans("New Record")} <img src="img/save.gif" alt=""></a>
+            		    </td>
+			</tr>
+		    </table>
+		</td>
+	</tr>
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="6" CLASS="FALL">
+	<tr class="DARK">
+		<td colspan="6" class="FALL">
 			{include file="scroller.html" loop=$recordslist adlink=$suffix}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
 	{cycle values="light,lucid" print=false}
 	{section name=recordslist loop=$recordslist start=$start max=$pagelimit}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD class="fleft" NOWRAP onclick="return location.href='?m=recordedit&id={$recordslist[recordslist].id}'">{$recordslist[recordslist].name}</TD>
-		<TD align="center">{$recordslist[recordslist].ttl}</TD>
-		<TD align="center" NOWRAP>{$recordslist[recordslist].type}</TD>
-		<TD align="center" NOWRAP>{$recordslist[recordslist].prio}</TD>
-		<TD align="left" NOWRAP onclick="return location.href='?m=recordedit&id={$recordslist[recordslist].id}'">{$recordslist[recordslist].content}</TD>
-		<TD class="fright" align="right">			
+	<tr class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<td class="fleft" nowrap="nowrap" onclick="return location.href='?m=recordedit&id={$recordslist[recordslist].id}'">{$recordslist[recordslist].name}</td>
+		<td align="center">{$recordslist[recordslist].ttl}</td>
+		<td align="center" nowrap="nowrap">{$recordslist[recordslist].type}</td>
+		<td align="center" nowrap="nowrap">{$recordslist[recordslist].prio}</td>
+		<td align="left" nowrap="nowrap" onclick="return location.href='?m=recordedit&id={$recordslist[recordslist].id}'">{$recordslist[recordslist].content}</td>
+		<td class="fright" align="right">			
 			{if $showaddedit}
-			<NOBR>
-			<A href="?m=recordedit&id={$recordslist[recordslist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A> 
+			<span class="nobr">
+			<a href="?m=recordedit&id={$recordslist[recordslist].id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a> 
 			{if $recordslist[recordslist].type != "SOA"}
-			<A href="?m=recorddel&id={$recordslist[recordslist].id}" OnClick="return confirmLink(this, '{t a=$account}Are you sure you want to delete this record?{/t}')"><IMG src="img/delete.gif" title="[ {trans("Delete")} ]" alt="[ {trans("Delete")} ]"></A> 
+			<a href="?m=recorddel&id={$recordslist[recordslist].id}" OnClick="return confirmLink(this, '{t a=$account}Are you sure you want to delete this record?{/t}')"><img src="img/delete.gif" title="[ {trans("Delete")} ]" alt="[ {trans("Delete")} ]"></a> 
 			{/if}
-			</NOBR>
+			</span>
 			{/if}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{sectionelse}
-	<TR>
-		<TD colspan="6" align="center" class="flr">
+	<tr>
+		<td colspan="6" align="center" class="flr">
 			<p>&nbsp;</p>
-			<p><B>{trans("No such records in database.")}</B></p>
+			<p><strong>{trans("No such records in database.")}</strong></p>
 			<p>&nbsp;</p>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/section}
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="7" CLASS="FALL">
+	<tr class="DARK">
+		<td colspan="7" class="FALL">
 			{include file="scroller.html" loop=$recordslist adlink=$suffix}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
-	<TR class="light">
-        	<TD colspan="3" class="fleftu" align="right" valign="top"></TD>
-		<TD class="frightu" colspan="3" align="right">
+	<tr class="light">
+        	<td colspan="3" class="fleftu" align="right" valign="top"></td>
+		<td class="frightu" colspan="3" align="right">
 		{if $showaddedit}
-			<A href="?m=recordadd&d={$listdata.domain}">{trans("New Record")} <IMG src="img/save.gif" alt=""></A>
+			<a href="?m=recordadd&d={$listdata.domain}">{trans("New Record")} <img src="img/save.gif" alt=""></a>
 		{/if}
-		</TD>
-	</TR>
-</TABLE></P>
+		</td>
+	</tr>
+</table></P>
 {include file="footer.html"}

@@ -6,7 +6,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
 <title>::: LMS :{if $layout.pagetitle neq ""} {$layout.pagetitle} :{/if}::</title>
 <link href="img/style.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="img/common.js"></SCRIPT>
+<script type="text/javascript" src="img/common.js"></script>
 </head>
 <body>
 <script type="text/javascript">
@@ -43,16 +43,16 @@
 			<table width="100%">
 			    <tr>
 				<td width="1%"><img src="img/node.gif" alt=""></td>
-				<td width="99%"><b>{$nodelist[nodelist].name}</b></td>
+				<td width="99%"><strong>{$nodelist[nodelist].name}</strong></td>
 			    </tr>
 			    <tr>
 				<td width="1%"><img src="img/ip.gif" alt=""></td>
-				<td width="99%"><nobr>{$nodelist[nodelist].ip} {if $nodelist[nodelist].ip_pub!="0.0.0.0"} ({$nodelist[nodelist].ip_pub}) {/if} / {$nodelist[nodelist].mac}</nobr></td>
+				<td width="99%"><span class="nobr">{$nodelist[nodelist].ip} {if $nodelist[nodelist].ip_pub!="0.0.0.0"} ({$nodelist[nodelist].ip_pub}) {/if} / {$nodelist[nodelist].mac}</span></td>
 			    </tr>
 			    {if $nodelist[nodelist].location}
 			    <tr>
 				<td width="1%"><img src="img/home.gif" alt=""></td>
-				<td width="99%"><nobr>{$nodelist[nodelist].location|truncate:60:"...":true}</nobr></td>
+				<td width="99%"><span class="nobr">{$nodelist[nodelist].location|truncate:60:"...":true}</span></td>
 			    </tr>
 			    {/if}
 			</table>
@@ -64,7 +64,7 @@
 	<tr>
 		<td width="100%" colspan="3" align="center">
 			<p>&nbsp;</p>
-			<p><b>{trans("That customer hasn't got any node.")}</b></p>
+			<p><strong>{trans("That customer hasn't got any node.")}</strong></p>
 			<p>&nbsp;</p>
 		</td>
 	</tr>
@@ -75,11 +75,11 @@
 			<tr>
 			    <td align="left">
 			    	{if $nodelist.total > 0}
-				<nobr><input class="box" type="checkbox" name="allbox" id="allbox" onchange="CheckAll('nodelist', this)" value="1"><label for="allbox">{trans("Check All")}</label></nobr>
+				<span class="nobr"><input class="box" type="checkbox" name="allbox" id="allbox" onchange="CheckAll('nodelist', this)" value="1"><label for="allbox">{trans("Check All")}</label></span>
 				{/if}
 			    </td>
 			    <td align="right">
-				<nobr><a href="javascript:SaveForm();">{trans("Close")} <img src="img/save.gif" alt=""></a></nobr>
+				<span class="nobr"><a href="javascript:SaveForm();">{trans("Close")} <img src="img/save.gif" alt=""></a></span>
 			    </td>
 			</tr>
 		    </table>

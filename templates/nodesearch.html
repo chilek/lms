@@ -1,7 +1,7 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 {$xajax}
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 <!--
 	function PrintList()
 	{
@@ -17,54 +17,54 @@
 		document.nodesearch.submit();
 	}
 //-->
-</SCRIPT>
-<H1>{$layout.pagetitle}</H1>
+</script>
+<h1>{$layout.pagetitle}</h1>
 <P>
-<FORM METHOD="POST" ACTION="?m=nodesearch&search" NAME="nodesearch">
-<INPUT type="submit" class="hiddenbtn">
-<INPUT TYPE="hidden" NAME="m" VALUE="nodesearch">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD CLASS="FALL" COLSPAN="2">
-			<B>{trans("Find nodes matching the following search criteria:")}</B>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/node.gif" width="16" alt=""> <B>{trans("Node name:")}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%">
-			<INPUT TYPE="text" NAME="search[name]" {tip text="Enter node name or it's fragment"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/mac.gif" width="16" alt=""> <B>{trans("MAC address:")}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%">
-			<INPUT TYPE="text" NAME="search[mac]" {tip text="Enter MAC address or it's fragment"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/ip.gif" width="16" alt=""> <B>{trans("IP address:")}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%">
-			<INPUT TYPE="text" NAME="search[ipaddr]" {tip text="Enter IP address or it's fragment"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/home.gif" width="16" alt=""> <B>{trans("Location:")}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%">
-			<INPUT TYPE="text" NAME="search[location]" {tip text="Enter node location"}>
-		</TD>
-	</TR>
+<form method="POST" action="?m=nodesearch&search" name="nodesearch">
+<input type="submit" class="hiddenbtn">
+<input type="hidden" name="m" value="nodesearch">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td class="FALL" colspan="2">
+			<strong>{trans("Find nodes matching the following search criteria:")}</strong>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" width="1%" nowrap="nowrap">
+			<img src="img/node.gif" width="16" alt=""> <strong>{trans("Node name:")}</strong>
+		</td>
+		<td class="fright" width="99%">
+			<input type="text" name="search[name]" {tip text="Enter node name or it's fragment"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" width="1%" nowrap="nowrap">
+			<img src="img/mac.gif" width="16" alt=""> <strong>{trans("MAC address:")}</strong>
+		</td>
+		<td class="fright" width="99%">
+			<input type="text" name="search[mac]" {tip text="Enter MAC address or it's fragment"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" width="1%" nowrap="nowrap">
+			<img src="img/ip.gif" width="16" alt=""> <strong>{trans("IP address:")}</strong>
+		</td>
+		<td class="fright" width="99%">
+			<input type="text" name="search[ipaddr]" {tip text="Enter IP address or it's fragment"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" width="1%" nowrap="nowrap">
+			<img src="img/home.gif" width="16" alt=""> <strong>{trans("Location:")}</strong>
+		</td>
+		<td class="fright" width="99%">
+			<input type="text" name="search[location]" {tip text="Enter node location"}>
+		</td>
+	</tr>
 {if !empty($states)}
 	<tr class="light" id="state">
 		<td class="fleft" style="width: 1%; white-space: nowrap;">
-			<IMG src="img/home.gif" width="16" alt=""> <span class="bold">{trans("State")}:</span>
+			<img src="img/home.gif" width="16" alt=""> <span class="bold">{trans("State")}:</span>
 		</td>
 		<td class="fright" style="width: 99%;">
 			<select id="state_sel" name="search[state]" onchange="change_selection(this)" {tip text="Select state"} style="width: 20%;">
@@ -77,7 +77,7 @@
 	</tr>
 	<tr class="light" id="district"{if empty($districts)} style="display:none"{/if}>
 		<td class="fleft" style="width: 1%; white-space: nowrap;">
-			<IMG src="img/home.gif" width="16" alt=""> <span class="bold">{trans("District")}:</span>
+			<img src="img/home.gif" width="16" alt=""> <span class="bold">{trans("District")}:</span>
 		</td>
 		<td class="fright" style="width: 99%;">
 			<select id="district_sel" name="search[district]" onchange="change_selection(this)" {tip text="Select district"} style="width: 20%;">
@@ -92,7 +92,7 @@
 	</tr>
 	<tr class="light" id="borough"{if empty($boroughs)} style="display:none"{/if}>
 		<td class="fleft" style="width: 1%; white-space: nowrap;">
-			<IMG src="img/home.gif" width="16" alt=""> <span class="bold">{trans("Commune")}:</span>
+			<img src="img/home.gif" width="16" alt=""> <span class="bold">{trans("Commune")}:</span>
 		</td>
 		<td class="fright" style="width: 99%;">
 			<select id="borough_sel" name="search[borough]" {tip text="Select commune"} style="width: 20%;">
@@ -106,33 +106,33 @@
 		</td>
 	</tr>
 {/if}
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/info1.gif" width="16" alt=""> <B>{trans("Description:")}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%">
-			<INPUT TYPE="text" NAME="search[info]" {tip text="Enter additional information"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/empty.gif" width="16" alt=""> <B>{trans("Qualification operator:")}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%">
-			<INPUT class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} CHECKED{/if}><label for="operator0">{trans("AND")}</label>
-			<INPUT class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} CHECKED{/if}><label for="operator1">{trans("OR")}</label>
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fbottomu" WIDTH="100%" COLSPAN="2" ALIGN="right">
-			<A href="javascript:Search()" accesskey="s">{trans("Search")} <IMG SRC="img/search.gif" alt=""></A>
-			<A href="javascript:PrintList()">{trans("Print")} <IMG SRC="img/print.gif" alt=""></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
+	<tr class="LIGHT">
+		<td class="fleft" width="1%" nowrap="nowrap">
+			<img src="img/info1.gif" width="16" alt=""> <strong>{trans("Description:")}</strong>
+		</td>
+		<td class="fright" width="99%">
+			<input type="text" name="search[info]" {tip text="Enter additional information"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" width="1%" nowrap="nowrap">
+			<img src="img/empty.gif" width="16" alt=""> <strong>{trans("Qualification operator:")}</strong>
+		</td>
+		<td class="fright" width="99%">
+			<input class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} checked="checked"{/if}><label for="operator0">{trans("AND")}</label>
+			<input class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} checked="checked"{/if}><label for="operator1">{trans("OR")}</label>
+		</td>
+	</tr>
+	<tr class="light">
+		<td class="fbottomu" width="100%" colspan="2" align="right">
+			<a href="javascript:Search()" accesskey="s">{trans("Search")} <img src="img/search.gif" alt=""></a>
+			<a href="javascript:PrintList()">{trans("Print")} <img src="img/print.gif" alt=""></a>
+		</td>
+	</tr>
+</table>
+</form>
 </P>
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 <!--
 function change_selection(elem)
 {
@@ -169,5 +169,5 @@ function update_selection(type, data, selected)
 
 document.forms['nodesearch'].elements['search[name]'].focus();
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}
