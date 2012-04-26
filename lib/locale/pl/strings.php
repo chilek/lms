@@ -2600,4 +2600,18 @@ $_LANG['Add new management URL'] = 'Dodaj nowy adres URL do zarządzania';
 
 $_LANG['only automatically issued'] = 'tylko wystawione automatycznie';
 
+$_LANG['Password expiration:'] = 'Wygasanie hasła:';
+$_LANG['Last password change:'] = 'Ostatnia zmiana hasła:';
+$_LANG['never expires'] = 'nigdy nie wygasa';
+$_LANG['week'] = 'tydzień';
+$_LANG['2 weeks'] = '2 tygodnie';
+$_LANG['21 days'] = '21 dni';
+$_LANG['month'] = 'miesiąc';
+$_LANG['2 months'] = '2 miesiące';
+$_LANG['quarter'] = 'kwartał';
+$_LANG['half year'] = 'pół roku';
+$_LANG['year'] = 'rok';
+$_LANG['Select password expiration period'] = 'Ustal czas po którym hasło wygasa';
+$_LANG['New password is the same as old password!'] = 'Nowe hasło jest takie same jak stare hasło!';
+
 ?>

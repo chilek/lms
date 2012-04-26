@@ -5,16 +5,16 @@
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
-		<TD CLASS="FLEFTU" WIDTH="1%">
-			<IMG SRC="img/pass.gif" ALT=""> <B>{trans("Login:")}</B>
+		<TD CLASS="FLEFTU" style="width: 1%;">
+			<IMG SRC="img/pass.gif" ALT=""> <span class="bold">{trans("Login:")}</span>
 		</TD>
-		<TD CLASS="FRIGHTU" WIDTH="99%">
+		<TD CLASS="FRIGHTU" style="width: 99%;">
 			<INPUT TYPE="TEXT" NAME="useradd[login]" VALUE="{$useradd.login}" {tip text="Enter user login" trigger="login" bold=1}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD CLASS="FLEFT" NOWRAP>
-			<IMG SRC="img/users.gif" ALT=""> <B>{trans("First/last name:")}</B>
+		<TD CLASS="FLEFT" style="white-space: nowrap;">
+			<IMG SRC="img/users.gif" ALT=""> <span class="bold">{trans("First/last name:")}</span>
 		</TD>
 		<TD CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" NAME="useradd[name]" VALUE="{$useradd.name}" SIZE="40" {tip text="Enter user name" trigger="name"}>
@@ -22,7 +22,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="FLEFT">
-			<IMG SRC="img/info.gif" ALT=""> <B>{trans("Position:")}</B>
+			<IMG SRC="img/info.gif" ALT=""> <span class="bold">{trans("Position:")}</span>
 		</TD>
 		<TD CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" NAME="useradd[position]" VALUE="{$useradd.position}" SIZE="40" {tip text="Enter user position (optional)" trigger="position"}>
@@ -30,23 +30,23 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="FLEFT">
-			<IMG SRC="img/mail.gif" ALT=""> <B>{trans("E-mail:")}</B>
+			<IMG SRC="img/mail.gif" ALT=""> <span class="bold">{trans("E-mail:")}</span>
 		</TD>
 		<TD CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" NAME="useradd[email]" VALUE="{$useradd.email}" SIZE="40" {tip text="Enter e-mail address (optional)" trigger="email"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD CLASS="FLEFT" NOWRAP>
-			<IMG SRC="img/sms.gif" ALT=""> <B>{trans("Phone:")}</B>
+		<TD CLASS="FLEFT" style="white-space: nowrap;">
+			<IMG SRC="img/sms.gif" ALT=""> <span class="bold">{trans("Phone:")}</span>
 		</TD>
 		<TD CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" NAME="useradd[phone]" VALUE="{$useradd.phone}" SIZE="40" {tip text="Enter phone number for SMS notification (optional)" trigger="phone"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD CLASS="FLEFT" NOWRAP>
-			<IMG SRC="img/options.gif" ALT=""> <B>{trans("Notification:")}</B>
+		<TD CLASS="FLEFT" style="white-space: nowrap;">
+			<IMG SRC="img/options.gif" ALT=""> <span class="bold">{trans("Notification:")}</span>
 		</TD>
 		<TD CLASS="FRIGHT">
 			<INPUT TYPE="checkbox" NAME="useradd[ntype][]" VALUE="{$smarty.const.MSG_MAIL}" ID="ntypemail"{if ($useradd.ntype & $smarty.const.MSG_MAIL)} checked{/if}><label for="ntypemail">{trans("email")}</label>
@@ -55,60 +55,75 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="FLEFT">
-			<IMG SRC="img/pass.gif" ALT=""> <B>{trans("Password:")}</B>
+			<IMG SRC="img/pass.gif" ALT=""> <span class="bold">{trans("Password:")}</span>
 		</TD>
 		<TD CLASS="FRIGHT">
 			<INPUT TYPE="PASSWORD" NAME="useradd[password]" {tip text="Enter password" trigger="password"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD CLASS="FLEFT" NOWRAP>
-			<IMG SRC="img/pass.gif" ALT=""> <B>{trans("Repeat password:")}</B>
+		<TD CLASS="FLEFT" style="white-space: nowrap;">
+			<IMG SRC="img/pass.gif" ALT=""> <span class="bold">{trans("Repeat password:")}</span>
 		</TD>
 		<TD CLASS="FRIGHT">
 			<INPUT TYPE="PASSWORD" NAME="useradd[confirm]" {tip text="Confirm password" trigger="password"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" NOWRAP>
-			<IMG SRC="img/ip.gif" ALT=""> <B>{trans("Allowed hosts:")}</B>
+		<TD CLASS="fleft" style="white-space: nowrap;">
+			<IMG SRC="img/ip.gif" ALT=""> <span class="bold">{trans("Allowed hosts:")}</span>
 		</TD>
-		<TD CLASS="fright" NOWRAP>
+		<TD CLASS="fright" style="white-space: nowrap;">
 			<INPUT TYPE="TEXT" SIZE="40" NAME="useradd[hosts]" VALUE="{$useradd.hosts}" {tip text="Enter comma-separated list of hosts or networks (optional)" trigger="hosts"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" NOWRAP>
-			<IMG SRC="img/pass.gif" ALT=""> <B>{trans("Access rights:")}</B>
+		<TD CLASS="fleft" style="white-space: nowrap;">
+			<IMG SRC="img/passwd.gif" ALT=""> <span class="bold">{trans("Password expiration:")}</span>
 		</TD>
-		<TD CLASS="fright" NOWRAP>
-		<table width="100%"><tr>
-		        <td width="50%" style="vertical-align: top" nowrap>
-			{section name=acl loop=$accesslist}
-			{if $smarty.section.acl.index <= floor(sizeof($accesslist)/2) - 1}
-				<INPUT TYPE="checkbox" ID="acl_{$accesslist[acl].id}" NAME="acl[{$accesslist[acl].id}]" value="1" {if $accesslist[acl].enabled} checked{/if}> <label for="acl_{$accesslist[acl].id}">{$accesslist[acl].name}</label><BR>
-			{/if}
-			{/section}
-			</td><td width="50%" style="vertical-align: top" nowrap>
-			{section name=acl loop=$accesslist}
-			{if $smarty.section.acl.index > floor(sizeof($accesslist)/2) - 1}
-				<INPUT TYPE="checkbox" ID="acl_{$accesslist[acl].id}" NAME="acl[{$accesslist[acl].id}]" value="1" {if $accesslist[acl].enabled} checked{/if}> <label for="acl_{$accesslist[acl].id}">{$accesslist[acl].name}</label><BR>
-			{/if}
-			{/section}
-			</td>
-			</tr></table>
+		<TD CLASS="fright" style="white-space: nowrap;">
+			<SELECT name="useradd[passwdexpiration]" {tip text="Select password expiration period" trigger="passwdexpiration"}>
+				{foreach from=$_PASSWDEXPIRATIONS item=item key=key}
+				<OPTION value="{$key}"{if $key == $useradd.passwdexpiration} selected{/if}>{$item}</OPTION>
+				{/foreach}
+			</SELECT>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" NOWRAP>
-			<IMG SRC="img/group.gif" ALT=""> <B>{trans("Groups:")}</B>
+		<TD CLASS="fleft" style="white-space: nowrap;">
+			<IMG SRC="img/pass.gif" ALT=""> <span class="bold">{trans("Access rights:")}</span>
 		</TD>
-		<TD CLASS="fright" NOWRAP>
+		<TD CLASS="fright" style="white-space: nowrap;">
+			<table style="width: 100%;">
+				<tr>
+					<td style="width: 50%; vertical-align: top; white-space: nowrap;">
+						{section name=acl loop=$accesslist}
+						{if $smarty.section.acl.index <= floor(sizeof($accesslist)/2) - 1}
+						<INPUT TYPE="checkbox" ID="acl_{$accesslist[acl].id}" NAME="acl[{$accesslist[acl].id}]" value="1" {if $accesslist[acl].enabled} checked{/if}> <label for="acl_{$accesslist[acl].id}">{$accesslist[acl].name}</label><BR>
+						{/if}
+						{/section}
+					</td>
+					<td style="width: 50%; vertical-align: top; white-space: nowrap;">
+						{section name=acl loop=$accesslist}
+						{if $smarty.section.acl.index > floor(sizeof($accesslist)/2) - 1}
+						<INPUT TYPE="checkbox" ID="acl_{$accesslist[acl].id}" NAME="acl[{$accesslist[acl].id}]" value="1" {if $accesslist[acl].enabled} checked{/if}> <label for="acl_{$accesslist[acl].id}">{$accesslist[acl].name}</label><BR>
+						{/if}
+						{/section}
+					</td>
+				</tr>
+			</table>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" style="white-space: nowrap;">
+			<IMG SRC="img/group.gif" ALT=""> <span class="bold">{trans("Groups:")}</span>
+		</TD>
+		<TD CLASS="fright" style="white-space: nowrap;">
 			{include file="multiselect.html" selected=$useradd.selected available_tip="Enabled<!plural>:" selected_tip="Disabled<!plural>:"}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD CLASS="FBOTTOMU" COLSPAN="2" ALIGN="RIGHT">
+		<TD CLASS="FBOTTOMU" COLSPAN="2" style="text-align: right;">
 			<A HREF="javascript:document.useradd.submit();" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
 			<A HREF="?m=userlist">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
 		</TD>

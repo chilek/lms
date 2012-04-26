@@ -89,4 +89,8 @@ $_LANG['Value:'] = 'Vertė:';
 $_LANG['yes'] = 'taip';
 $_LANG['You haven\'t got any assigned subscriptions.'] = 'Neturi priskirtų tarifų';
 $_LANG['Your balance'] = 'Tavo sąskaita';
-$_LANG['Your subscriptions'] = 'Tavo 
+$_LANG['Your subscriptions'] = 'Tavo įkainiai';
+$_LANG['monthly ($a)'] = 'per menėsį ($a)';
+$_LANG['Reason:'] = 'Priežastis:';
+
+?>

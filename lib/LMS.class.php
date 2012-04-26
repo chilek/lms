@@ -236,7 +236,7 @@ class LMS {
 	 */
 
 	function SetUserPassword($id, $passwd) {
-		$this->DB->Execute('UPDATE users SET passwd=? WHERE id=?', array(crypt($passwd), $id));
+		$this->DB->Execute('UPDATE users SET passwd=?, passwdlastchange=?NOW? WHERE id=?', array(crypt($passwd), $id));
 	}
 
 	function GetUserName($id = null) { // returns user name
@@ -260,32 +260,38 @@ class LMS {
 	}
 
 	function GetUserList() { // returns list of users
-		if ($userslist = $this->DB->GetAll('SELECT id, login, name, lastlogindate, lastloginip 
+		if ($userlist = $this->DB->GetAll('SELECT id, login, name, lastlogindate, lastloginip, 
+				passwdexpiration, passwdlastchange 
 				FROM users WHERE deleted=0 ORDER BY login ASC')) {
-			foreach ($userslist as $idx => $row) {
+			foreach ($userlist as $idx => $row) {
 				if ($row['id'] == $this->AUTH->id) {
 					$row['lastlogindate'] = $this->AUTH->last;
-					$userslist[$idx]['lastlogindate'] = $this->AUTH->last;
+					$userlist[$idx]['lastlogindate'] = $this->AUTH->last;
 					$row['lastloginip'] = $this->AUTH->lastip;
-					$userslist[$idx]['lastloginip'] = $this->AUTH->lastip;
+					$userlist[$idx]['lastloginip'] = $this->AUTH->lastip;
 				}
 
 				if ($row['lastlogindate'])
-					$userslist[$idx]['lastlogin'] = date('Y/m/d H:i', $row['lastlogindate']);
+					$userlist[$idx]['lastlogin'] = date('Y/m/d H:i', $row['lastlogindate']);
 				else
-					$userslist[$idx]['lastlogin'] = '-';
+					$userlist[$idx]['lastlogin'] = '-';
+
+				if ($row['passwdlastchange'])
+					$userlist[$idx]['passwdlastchange'] = date('Y/m/d H:i', $row['passwdlastchange']);
+				else
+					$userlist[$idx]['passwdlastchange'] = '-';
 
 				if (check_ip($row['lastloginip']))
-					$userslist[$idx]['lastloginhost'] = gethostbyaddr($row['lastloginip']);
+					$userlist[$idx]['lastloginhost'] = gethostbyaddr($row['lastloginip']);
 				else {
-					$userslist[$idx]['lastloginhost'] = '-';
-					$userslist[$idx]['lastloginip'] = '-';
+					$userlist[$idx]['lastloginhost'] = '-';
+					$userlist[$idx]['lastloginip'] = '-';
 				}
 			}
 		}
 
-		$userslist['total'] = sizeof($userslist);
-		return $userslist;
+		$userlist['total'] = sizeof($userlist);
+		return $userlist;
 	}
 
 	function GetUserIDByLogin($login) {
@@ -294,8 +300,8 @@ class LMS {
 
 	function UserAdd($user) {
 		if ($this->DB->Execute('INSERT INTO users (login, name, email, passwd, rights,
-				hosts, position, ntype, phone)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array($user['login'],
+				hosts, position, ntype, phone, passwdexpiration)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($user['login'],
 						$user['name'],
 						$user['email'],
 						crypt($user['password']),
@@ -304,6 +310,7 @@ class LMS {
 						$user['position'],
 						!empty($user['ntype']) ? $user['ntype'] : null,
 						!empty($user['phone']) ? $user['phone'] : null,
+						!empty($user['passwdexpiration']) ? $user['passwdexpiration'] : 0,
 				)))
 			return $this->DB->GetOne('SELECT id FROM users WHERE login=?', array($user['login']));
 		else
@@ -351,6 +358,11 @@ class LMS {
 			else
 				$userinfo['faillogin'] = '-';
 
+			if ($userinfo['passwdlastchange'])
+				$userinfo['passwdlastchange'] = date('Y/m/d H:i', $userinfo['passwdlastchange']);
+			else
+				$userinfo['passwdlastchange'] = '-';
+
 			if (check_ip($userinfo['lastloginip']))
 				$userinfo['lastloginhost'] = gethostbyaddr($userinfo['lastloginip']);
 			else {
@@ -370,7 +382,7 @@ class LMS {
 
 	function UserUpdate($user) {
 		return $this->DB->Execute('UPDATE users SET login=?, name=?, email=?, rights=?,
-				hosts=?, position=?, ntype=?, phone=? WHERE id=?', array($user['login'],
+				hosts=?, position=?, ntype=?, phone=?, passwdexpiration=? WHERE id=?', array($user['login'],
 						$user['name'],
 						$user['email'],
 						$user['rights'],
@@ -378,6 +390,7 @@ class LMS {
 						$user['position'],
 						!empty($user['ntype']) ? $user['ntype'] : null,
 						!empty($user['phone']) ? $user['phone'] : null,
+						!empty($user['passwdexpiration']) ? $user['passwdexpiration'] : 0,
 						$user['id']
 				));
 	}

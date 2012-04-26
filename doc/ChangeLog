@@ -124,7 +124,12 @@ version ? (????-??-??):
   - fixed domain filtering [chilan]
   - fixed position of table on tcpdf invoice [chilan]
   - selection of only automatically issued invoices is possible now in invoice print [chilan]
- 
+  - implemented simple password expiration mechanism [chilan]
+  - chpasswd: new password should be different than old one [chilan]
+  - new hook: we can register function which is invoked before module load and modify
+    access table [chilan]
+  - new simple plugin which allows to use one-time sms passwords [chilan]
+
 version 1.11.13 Dira (2011-04-07)
 
   - contrib/cutoff2: Fixed "Column 'period' in where clause is ambiguous" [alec]

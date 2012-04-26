@@ -22,6 +22,8 @@ CREATE TABLE users (
 	failedlogindate integer DEFAULT 0  NOT NULL,
 	failedloginip varchar(16) DEFAULT '' NOT NULL,
 	deleted smallint	DEFAULT 0 NOT NULL,
+	passwdexpiration integer DEFAULT 0 NOT NULL,
+	passwdlastchange integer DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (login)
 );
@@ -120,22 +122,6 @@ CREATE TABLE assignments (
 CREATE INDEX assignments_tariffid_idx ON assignments (tariffid);
 CREATE INDEX assignments_customerid_idx ON assignments (customerid);
 CREATE INDEX assignments_numberplanid_idx ON assignments (numberplanid);
-
-/* ----------------------------------------------------
- Structure of table "nodelocks"
----------------------------------------------------*/
-DROP SEQUENCE IF EXISTS nodelocks_id_seq;
-CREATE SEQUENCE nodelocks_id_seq;
-DROP TABLE IF EXISTS nodelocks CASCADE;
-CREATE TABLE nodelocks (
-	id integer		DEFAULT nextval('nodelocks_id_seq'::text) NOT NULL,
-	nodeid integer		NOT NULL
-		REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	days smallint		DEFAULT 0 NOT NULL,
-	fromsec integer		DEFAULT 0 NOT NULL,
-	tosec integer		DEFAULT 0 NOT NULL,
-	PRIMARY KEY (id)
-);
 
 /* -------------------------------------------------------- 
   Structure of table "cash" 
@@ -275,7 +261,7 @@ CREATE TABLE pna (
 		REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	fromhouse varchar(10) DEFAULT NULL,
 	tohouse varchar(10) DEFAULT NULL,
-	parity smallint DEFAULT 0 NOT NULL
+	parity smallint DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (zip, cityid, streetid, fromhouse, tohouse, parity)
 );
@@ -352,6 +338,22 @@ CREATE INDEX nodes_ownerid_idx ON nodes (ownerid);
 CREATE INDEX nodes_ipaddr_pub_idx ON nodes (ipaddr_pub);
 CREATE INDEX nodes_location_street_idx ON nodes (location_street);
 CREATE INDEX nodes_location_city_idx ON nodes (location_city, location_street, location_house, location_flat);
+
+/* ----------------------------------------------------
+ Structure of table "nodelocks"
+---------------------------------------------------*/
+DROP SEQUENCE IF EXISTS nodelocks_id_seq;
+CREATE SEQUENCE nodelocks_id_seq;
+DROP TABLE IF EXISTS nodelocks CASCADE;
+CREATE TABLE nodelocks (
+	id integer		DEFAULT nextval('nodelocks_id_seq'::text) NOT NULL,
+	nodeid integer		NOT NULL
+		REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	days smallint		DEFAULT 0 NOT NULL,
+	fromsec integer		DEFAULT 0 NOT NULL,
+	tosec integer		DEFAULT 0 NOT NULL,
+	PRIMARY KEY (id)
+);
 
 /* -------------------------------------------------------- 
   Structure of table "macs" 
@@ -723,9 +725,32 @@ CREATE TABLE stats (
 	dt integer 		DEFAULT 0 NOT NULL,
 	upload bigint 		DEFAULT 0,
 	download bigint 	DEFAULT 0,
+	nodesessionid integer	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (nodeid, dt)
 );
 CREATE INDEX stats_dt_idx ON stats(dt);
+CREATE INDEX stats_nodesessionid_idx ON stats(nodesessionid);
+
+/* -------------------------------------------------------- 
+  Structure of table "nodesessions" 
+-------------------------------------------------------- */
+CREATE SEQUENCE nodesessions_id_seq;
+CREATE TABLE nodesessions (
+	id integer		DEFAULT nextval('nodesessions_id_seq'::text) NOT NULL,
+	customerid integer	DEFAULT 0 NOT NULL,
+	nodeid integer		DEFAULT 0 NOT NULL,
+	ipaddr bigint		DEFAULT 0 NOT NULL,
+	mac varchar(17)		DEFAULT '' NOT NULL,
+	start integer		DEFAULT 0 NOT NULL,
+	stop integer		DEFAULT 0 NOT NULL,
+	download bigint		DEFAULT 0,
+	upload bigint		DEFAULT 0,
+	tag varchar(32)		DEFAULT '' NOT NULL,
+	PRIMARY KEY (id)
+);
+CREATE INDEX nodesessions_customerid_idx ON nodesessions(customerid);
+CREATE INDEX nodesessions_nodeid_idx ON nodesessions(nodeid);
+CREATE INDEX nodesessions_tag_idx ON nodesessions(tag);
 
 /* ---------------------------------------------------
  Structure of table "netlinks"
@@ -1832,4 +1857,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012041102');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012042500');
