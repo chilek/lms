@@ -1,14 +1,14 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
+<h1>{$layout.pagetitle}</h1>
 {if $receipt.receipt}
-<SCRIPT type="text/javascript">window.open('?m=receipt&id={$receipt.receipt}&which={$receipt.which}');</SCRIPT>
+<script type="text/javascript">window.open('?m=receipt&id={$receipt.receipt}&which={$receipt.which}');</script>
 {/if}
 {if $receipt.receipt2}
-<SCRIPT type="text/javascript">window.open('?m=receipt&id={$receipt.receipt2}&which={$receipt.which}');</SCRIPT>
+<script type="text/javascript">window.open('?m=receipt&id={$receipt.receipt2}&which={$receipt.which}');</script>
 {/if}
 {include file="calendar_js.html"}
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 <!--
 	function prints()
 	{
@@ -48,188 +48,188 @@
 	}
 {/if}
 //-->
-</SCRIPT>
-<FORM METHOD="POST" NAME="page">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD WIDTH="1%" CLASS="fleftu" nowrap>
-			<A href="?m=receiptlist&o=cdate{if $listdata.direction eq "asc" && $listdata.order eq "cdate"},desc{/if}">{trans("Date:")}</A> {if $listdata.order eq "cdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<A href="?m=receiptlist&o=user{if $listdata.direction eq "asc" && $listdata.order eq "user"},desc{/if}">{trans("User:")}</A> {if $listdata.order eq "user"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-		</TD>
-		<TD WIDTH="1%" CLASS="fbt" nowrap>
-			<A href="?m=receiptlist&o=number{if $listdata.direction eq "asc" && $listdata.order eq "number"},desc{/if}">{trans("Number:")}</A> {if $listdata.order eq "number"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-		</TD>
-		<TD WIDTH="1%" CLASS="fbt" nowrap>
+</script>
+<form method="POST" name="page">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td width="1%" class="fleftu" nowrap="nowrap">
+			<a href="?m=receiptlist&o=cdate{if $listdata.direction eq "asc" && $listdata.order eq "cdate"},desc{/if}">{trans("Date:")}</a> {if $listdata.order eq "cdate"}<img src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<br />
+			<a href="?m=receiptlist&o=user{if $listdata.direction eq "asc" && $listdata.order eq "user"},desc{/if}">{trans("User:")}</a> {if $listdata.order eq "user"}<img src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</td>
+		<td width="1%" class="fbt" nowrap="nowrap">
+			<a href="?m=receiptlist&o=number{if $listdata.direction eq "asc" && $listdata.order eq "number"},desc{/if}">{trans("Number:")}</a> {if $listdata.order eq "number"}<img src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</td>
+		<td width="1%" class="fbt" nowrap="nowrap">
 			{trans("Income:")}
-		</TD>
-		<TD WIDTH="1%" CLASS="fbt" nowrap>
+		</td>
+		<td width="1%" class="fbt" nowrap="nowrap">
 			{trans("Expense:")}
-		</TD>
-		<TD WIDTH="40%" CLASS="fbt" nowrap>
-			<A href="?m=receiptlist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}">{trans("For:")}</A> {if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-		</TD>
-		<TD WIDTH="50%" CLASS="fbt" nowrap>
+		</td>
+		<td width="40%" class="fbt" nowrap="nowrap">
+			<a href="?m=receiptlist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}">{trans("For:")}</a> {if $listdata.order eq "name"}<img src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</td>
+		<td width="50%" class="fbt" nowrap="nowrap">
 			{trans("Title:")}
-		</TD>
-		<TD WIDTH="1%" CLASS="frightu" align="right">
-			<NOBR>
-			<A href="?m=receiptadd&type=in&action=init&regid={$listdata.regid}">{trans("New Cash-in Receipt")} <img src="img/save.gif" alt=""></A><BR>
-			<A href="?m=receiptadd&type=out&action=init&regid={$listdata.regid}">{trans("New Cash-out Receipt")} <img src="img/save.gif" alt=""></A>
-			</NOBR>
-		</TD>
-	</TR>
-	<TR class="DARK">
-		<TD class="fall" colspan="7">
-				<B>{trans("Filter:")} </B> 
-				<INPUT name="search" type="text" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>&nbsp;
-				<SELECT size="1" name="cat">
-					<OPTION value=""{if $listdata.cat eq ""} SELECTED{/if}>{trans("- select filter -")}</OPTION>
-					<OPTION value="number"{if $listdata.cat eq "number"} SELECTED{/if}>{trans("number")}</OPTION>
-					<OPTION value="value"{if $listdata.cat eq "value"} SELECTED{/if}>{trans("value")}</OPTION>
-					<OPTION value="name"{if $listdata.cat eq "name"} SELECTED{/if}>{trans("customer name")}</OPTION>
-					<OPTION value="customerid"{if $listdata.cat eq "customerid"} SELECTED{/if}>{trans("customer ID")}</OPTION>
-					<OPTION value="ten"{if $listdata.cat eq "ten"} SELECTED{/if}>{trans("TEN")}</OPTION>
-					<OPTION value="address"{if $listdata.cat eq "address"} SELECTED{/if}>{trans("address")}</OPTION>
-				</SELECT>&nbsp;
-				<B>{trans("Period:")}</B>&nbsp;
-				{trans("from")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
-				{trans("to")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal2.popup();"  {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
-				<INPUT type="checkbox" id="advances" name="advances" value="1"{if $listdata.advances} checked{/if}><label for="advances">{trans("not settled adv. only")}</label>&nbsp;
-				<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>
-		</TD>
-	</TR>		
+		</td>
+		<td width="1%" class="frightu" align="right">
+			<span class="nobr">
+			<a href="?m=receiptadd&type=in&action=init&regid={$listdata.regid}">{trans("New Cash-in Receipt")} <img src="img/save.gif" alt=""></a><br />
+			<a href="?m=receiptadd&type=out&action=init&regid={$listdata.regid}">{trans("New Cash-out Receipt")} <img src="img/save.gif" alt=""></a>
+			</span>
+		</td>
+	</tr>
+	<tr class="DARK">
+		<td class="fall" colspan="7">
+				<strong>{trans("Filter:")} </strong> 
+				<input name="search" type="text" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>&nbsp;
+				<select size="1" name="cat">
+					<option value=""{if $listdata.cat eq ""} SELECTED{/if}>{trans("- select filter -")}</option>
+					<option value="number"{if $listdata.cat eq "number"} SELECTED{/if}>{trans("number")}</option>
+					<option value="value"{if $listdata.cat eq "value"} SELECTED{/if}>{trans("value")}</option>
+					<option value="name"{if $listdata.cat eq "name"} SELECTED{/if}>{trans("customer name")}</option>
+					<option value="customerid"{if $listdata.cat eq "customerid"} SELECTED{/if}>{trans("customer ID")}</option>
+					<option value="ten"{if $listdata.cat eq "ten"} SELECTED{/if}>{trans("TEN")}</option>
+					<option value="address"{if $listdata.cat eq "address"} SELECTED{/if}>{trans("address")}</option>
+				</select>&nbsp;
+				<strong>{trans("Period:")}</strong>&nbsp;
+				{trans("from")}&nbsp;<input type="text" name="from" size="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+				{trans("to")}&nbsp;<input type="text" name="to" size="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal2.popup();"  {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
+				<input type="checkbox" id="advances" name="advances" value="1"{if $listdata.advances} checked="checked"{/if}><label for="advances">{trans("not settled adv. only")}</label>&nbsp;
+				<a href="javascript: filter();">&raquo;&raquo;&raquo;</a>
+		</td>
+	</tr>		
 	{if $listdata.total != 0}
-	<TR CLASS="dark">
-		<TD WIDTH="100%" class="fall" COLSPAN="7">
+	<tr class="dark">
+		<td width="100%" class="fall" colspan="7">
 			{include file="scroller.html" loop=$receiptlist scrollerno=1}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
 	{cycle values="light,lucid" print=false}
 	{section name=receiptlist loop=$receiptlist start=$start max=$pagelimit}
 	{assign var=receipt value=$receiptlist[receiptlist]}
 	{assign var=receiptid value=$receipt.id}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD WIDTH="1%" class="fleft" NOWRAP><A id="{$receipt.id}"></A>
+	<tr class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<td width="1%" class="fleft" nowrap="nowrap"><a id="{$receipt.id}"></a>
 			{if !$receipt.closed}<FONT class="alert">{/if}
-			{$receipt.cdate|date_format:"%Y/%m/%d %H:%M"}<BR>
+			{$receipt.cdate|date_format:"%Y/%m/%d %H:%M"}<br />
 			{$receipt.user|truncate:"16":"...":true}
 			{if !$receipt.closed}</FONT>{/if}		
-		</TD>
-		<TD WIDTH="1%" NOWRAP align="right"{if !$receipt.closed} class="alert"{/if}>
+		</td>
+		<td width="1%" nowrap="nowrap" align="right"{if !$receipt.closed} class="alert"{/if}>
 			{$receipt.number}
-		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT"{if !$receipt.closed} class="alert"{/if}>
+		</td>
+		<td width="1%" nowrap="nowrap" align="RIGHT"{if !$receipt.closed} class="alert"{/if}>
 			{if $receipt.value > 0}{$receipt.value|money_format}{else}-{/if}
-		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT"{if !$receipt.closed} class="alert"{/if}>
+		</td>
+		<td width="1%" nowrap="nowrap" align="RIGHT"{if !$receipt.closed} class="alert"{/if}>
 			{if $receipt.value < 0}{($receipt.value*-1)|money_format}{else}-{/if}
-		</TD>
-		<TD WIDTH="45%"{if !$receipt.closed} class="alert"{/if}>
-			{if $receipt.customerid}<A HREF="?m=customerinfo&id={$receipt.customerid}">{/if}
+		</td>
+		<td width="45%"{if !$receipt.closed} class="alert"{/if}>
+			{if $receipt.customerid}<a href="?m=customerinfo&id={$receipt.customerid}">{/if}
 			{$receipt.customer|truncate:"60":"...":true}
-			{if $receipt.customerid}</A>{/if}
-		</TD>
-		<TD WIDTH="50%"{if !$receipt.closed} class="alert"{/if}>
+			{if $receipt.customerid}</a>{/if}
+		</td>
+		<td width="50%"{if !$receipt.closed} class="alert"{/if}>
 			{if $receipt.title}
 			{$receipt.title|truncate:"80":"...":true}
 			{/if}
-		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>
+		</td>
+		<td width="1%" align="RIGHT" class="fright" nowrap="nowrap">
 			{if !$receipt.closed}
-			<A HREF="?m=receiptadv&id={$receipt.id}"><IMG SRC="img/eraser.gif" ALT="[ {trans("Settle advance")} ]" title="[ {trans("Settle advance")} ]"></A>
+			<a href="?m=receiptadv&id={$receipt.id}"><img src="img/eraser.gif" alt="[ {trans("Settle advance")} ]" title="[ {trans("Settle advance")} ]"></a>
 			{/if}
-			<A onClick="return confirmLink(this, '{t a=$receipt.number}Are you sure, you want to remove receipt \'$a\' from database?{/t}')" HREF="?m=receiptdel&id={$receipt.id}"><IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A HREF="?m=receiptedit&id={$receipt.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-			<A HREF="?m=receipt&id={$receipt.id}" TARGET="_blank"><IMG src="img/printr.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]"></A>
-			<INPUT TYPE="checkbox" NAME="marks[{$receipt.id}]" VALUE="{$receipt.id}"{if $marks.$receiptid}CHECKED{/if}>
-		</TD>
-	</TR>
+			<a onClick="return confirmLink(this, '{t a=$receipt.number}Are you sure, you want to remove receipt \'$a\' from database?{/t}')" href="?m=receiptdel&id={$receipt.id}"><img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></a>
+			<a href="?m=receiptedit&id={$receipt.id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
+			<a href="?m=receipt&id={$receipt.id}" TARGET="_blank"><img src="img/printr.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]"></a>
+			<input type="checkbox" name="marks[{$receipt.id}]" value="{$receipt.id}"{if $marks.$receiptid}CHECKED{/if}>
+		</td>
+	</tr>
 	{sectionelse}
-	<TR>
-		<TD WIDTH="100%" class="fall" ALIGN="center"  COLSPAN="7">
+	<tr>
+		<td width="100%" class="fall" align="center"  colspan="7">
 			<P>&nbsp;</P>
-			<P><B>{trans("No such receipts in database.")}</B></P>
+			<P><strong>{trans("No such receipts in database.")}</strong></P>
 			<P>&nbsp;</P>
-		</TD>
-	</TR>	
+		</td>
+	</tr>	
 	{/section}
 	{if $listdata.total != 0}
-	<TR CLASS="dark" id="end">
-		<TD WIDTH="100%" class="fall" COLSPAN="7">
+	<tr class="dark" id="end">
+		<td width="100%" class="fall" colspan="7">
 			{include file="scroller.html" loop=$receiptlist scrollerno=2}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
-	<TR CLASS="dark">
-		<TD CLASS="fall" COLSPAN="7">
-			<TABLE WIDTH="100%">
-				<TR>
-					<TD ALIGN="left" nowrap>
-						<A HREF="javascript:prints();">{trans("Print")} <IMG SRC="img/printr.gif" ALT="" ></A>&nbsp;
-						<INPUT type="checkbox" id="original" name="original" checked> <label for="original">{trans("original")}</label>&nbsp;
-						<INPUT type="checkbox" id="copy" name="copy" checked> <label for="copy">{trans("copy")}</label>
-					</TD>
-					<TD ALIGN="right">	
-						<NOBR><label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('page', this, ['original', 'copy'])" VALUE="1"></NOBR>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-        <TR class="light">
-		<TD colspan="2" align="right" class="fleftu" NOWRAP style="vertical-align: top;">
-		        <B>{trans("Total:")}</B><HR>
-		        <B>{trans("Initial balance:")}</B><BR>
-		        <B>{trans("Final balance:")}</B><BR>
-    		</TD>
-	        <TD nowrap class="fbt" align="right" style="vertical-align: top;">
-		        <NOBR>
+	<tr class="dark">
+		<td class="fall" colspan="7">
+			<table width="100%">
+				<tr>
+					<td align="left" nowrap="nowrap">
+						<a href="javascript:prints();">{trans("Print")} <img src="img/printr.gif" alt="" ></a>&nbsp;
+						<input type="checkbox" id="original" name="original" checked="checked"> <label for="original">{trans("original")}</label>&nbsp;
+						<input type="checkbox" id="copy" name="copy" checked="checked"> <label for="copy">{trans("copy")}</label>
+					</td>
+					<td align="right">	
+						<span class="nobr"><label for="allbox">{trans("Check All")}</label><input type="checkbox" name="allbox" id="allbox" onchange="CheckAll('page', this, ['original', 'copy'])" value="1"></span>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+        <tr class="light">
+		<td colspan="2" align="right" class="fleftu" nowrap="nowrap" style="vertical-align: top;">
+		        <strong>{trans("Total:")}</strong><HR>
+		        <strong>{trans("Initial balance:")}</strong><br />
+		        <strong>{trans("Final balance:")}</strong><br />
+    		</td>
+	        <td nowrap="nowrap" class="fbt" align="right" style="vertical-align: top;">
+		        <span class="nobr">
 			{$listdata.totalincome|money_format}<HR>
-			{$listdata.startbalance|money_format}<BR>
+			{$listdata.startbalance|money_format}<br />
 			{$listdata.endbalance|money_format}
-			</NOBR>
-		</TD>
-		<TD nowrap class="fbt" align="right" style="vertical-align: top;">
+			</span>
+		</td>
+		<td nowrap="nowrap" class="fbt" align="right" style="vertical-align: top;">
 			{$listdata.totalexpense|money_format}<HR>
-		</TD>
-		<TD colspan="3" class="frightu" align="right">
-			<H1>{trans("Cash state:")} <B>{$listdata.cashstate|money_format}</B></H1>
-			<A href="?m=cashreglogview&regid={$listdata.regid}">{trans("Cash history")} <img src="img/value.gif" alt=""></A>&nbsp;
-			<A href="?m=receiptadd&type=in&action=init&regid={$listdata.regid}">{trans("New Cash-in Receipt")} <img src="img/save.gif" alt=""></A>&nbsp;
-			<A href="?m=receiptadd&type=out&action=init&regid={$listdata.regid}">{trans("New Cash-out Receipt")} <img src="img/save.gif" alt=""></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
+		</td>
+		<td colspan="3" class="frightu" align="right">
+			<h1>{trans("Cash state:")} <strong>{$listdata.cashstate|money_format}</strong></h1>
+			<a href="?m=cashreglogview&regid={$listdata.regid}">{trans("Cash history")} <img src="img/value.gif" alt=""></a>&nbsp;
+			<a href="?m=receiptadd&type=in&action=init&regid={$listdata.regid}">{trans("New Cash-in Receipt")} <img src="img/save.gif" alt=""></a>&nbsp;
+			<a href="?m=receiptadd&type=out&action=init&regid={$listdata.regid}">{trans("New Cash-out Receipt")} <img src="img/save.gif" alt=""></a>
+		</td>
+	</tr>
+</table>
+</form>
 {if $logentry}
 <P>
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD CLASS="fleftu" WIDTH="1%" nowrap>
-			<IMG SRC="img/time.gif" ALT=""> <B>{trans("Cash History Last Entry:")}</B>
-		</TD>
-		<TD CLASS="fbt" WIDTH="1%" nowrap>
+<table width="100%" cellpadding="3">
+	<tr class="dark">
+		<td class="fleftu" width="1%" nowrap="nowrap">
+			<img src="img/time.gif" alt=""> <strong>{trans("Cash History Last Entry:")}</strong>
+		</td>
+		<td class="fbt" width="1%" nowrap="nowrap">
 			{$logentry.time|date_format:"%x %H:%M"} &nbsp;
-			<B>
+			<strong>
 			{if $logentry.value<0}<FONT class="alert">{/if}{$logentry.value|money_format}{if $logentry.value<0}</FONT>{/if}
 			<FONT class="blend">({trans("Cash state:")} {$logentry.snapshot|money_format})</FONT> &nbsp;
-			</B>
-		</TD>
-		<TD CLASS="frightu" WIDTH="98%" nowrap>
+			</strong>
+		</td>
+		<td class="frightu" width="98%" nowrap="nowrap">
 			{$logentry.description}
-		</TD>
-	</TR>
-</TABLE>
+		</td>
+	</tr>
+</table>
 </P>
 {/if}
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 <!--
 var cal1 = new calendar(document.page.elements['from']);
 cal1.time_comp = false;
 var cal2 = new calendar(document.page.elements['to']);
 cal2.time_comp = false;
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}

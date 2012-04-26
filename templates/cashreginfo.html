@@ -1,120 +1,120 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
-	    <TD width="1%" class="fleftu">
-		<IMG src="img/queue.gif" ALT="">
-	    </TD>
-	    <TD width="99%" colspan="2" class="frightu"><B>{$registry.name} ({$registry.id|string_format:"%04d"})</B></TD>
-	</TR>
-	<TR class="LIGHT">
-	    <TD width="1%" class="fleft">
-		<IMG src="img/id.gif" ALT="">
-	    </TD>
-	    <TD width="1%" nowrap><B>{trans("Cash-in receipt numbering plan:")}</B></TD>
-	    <TD width="98%" class="fright">{$registry.in_template|default:"%N/LMS/%Y"}</TD>
-	</TR>
-	<TR class="LIGHT">
-	    <TD width="1%" class="fleft">
-		<IMG src="img/id.gif" ALT="">
-	    </TD>
-	    <TD width="1%" nowrap><B>{trans("Cash-out receipt numbering plan:")}</B></TD>
-	    <TD width="98%" class="fright">{$registry.out_template|default:"%N/LMS/%Y"}</TD>
-	</TR>
+<h1>{$layout.pagetitle}</h1>
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+	    <td width="1%" class="fleftu">
+		<img src="img/queue.gif" alt="">
+	    </td>
+	    <td width="99%" colspan="2" class="frightu"><strong>{$registry.name} ({$registry.id|string_format:"%04d"})</strong></td>
+	</tr>
+	<tr class="LIGHT">
+	    <td width="1%" class="fleft">
+		<img src="img/id.gif" alt="">
+	    </td>
+	    <td width="1%" nowrap="nowrap"><strong>{trans("Cash-in receipt numbering plan:")}</strong></td>
+	    <td width="98%" class="fright">{$registry.in_template|default:"%N/LMS/%Y"}</td>
+	</tr>
+	<tr class="LIGHT">
+	    <td width="1%" class="fleft">
+		<img src="img/id.gif" alt="">
+	    </td>
+	    <td width="1%" nowrap="nowrap"><strong>{trans("Cash-out receipt numbering plan:")}</strong></td>
+	    <td width="98%" class="fright">{$registry.out_template|default:"%N/LMS/%Y"}</td>
+	</tr>
 	{if $registry.description}
-	<TR class="LIGHT">
-	    <TD width="1%" class="fleft">
-		<IMG src="img/info1.gif" ALT="">
-	    </TD>
-	    <TD width="1%"><B>{trans("Description:")}</B></TD>
-	    <TD width="98%" class="fright">
-		<TABLE width="100%" cellpadding="5">
-		    <TR>
-			<TD class="fall superlight">
-			    {$registry.description|replace:"\n":"<BR>"}
-			</TD>
-		    </TR>
-		</TABLE>
-	    </TD>
-	</TR>
+	<tr class="LIGHT">
+	    <td width="1%" class="fleft">
+		<img src="img/info1.gif" alt="">
+	    </td>
+	    <td width="1%"><strong>{trans("Description:")}</strong></td>
+	    <td width="98%" class="fright">
+		<table width="100%" cellpadding="5">
+		    <tr>
+			<td class="fall superlight">
+			    {$registry.description|replace:"\n":"<br />"}
+			</td>
+		    </tr>
+		</table>
+	    </td>
+	</tr>
 	{/if}
-	<TR class="LIGHT">
-	    <TD width="1%" class="fleft">
-		<IMG src="img/wait.gif" ALT="">
-	    </TD>
-	    <TD width="1%"><B>{trans("Disabled summary:")}</B></TD>
-	    <TD width="98%" class="fright">
+	<tr class="LIGHT">
+	    <td width="1%" class="fleft">
+		<img src="img/wait.gif" alt="">
+	    </td>
+	    <td width="1%"><strong>{trans("Disabled summary:")}</strong></td>
+	    <td width="98%" class="fright">
 		    {if $registry.disabled}{trans("yes")}{else}{trans("no")}{/if}
-	    </TD>
-	</TR>
-	<TR class="LIGHT">
-	    <TD width="1%" class="fleft">
-		<IMG src="img/users.gif" ALT="">
-	    </TD>
-	    <TD width="1%"><B>{trans("Privileges:")}</B></TD>
-	    <TD width="98%" class="fright">
-		    <TABLE width="100%" cellpadding="3">
-			<TR class="DARK">
-			    <TD width="93%" class="ftl"><B>{trans("User")}</B></TD>
-			    <TD width="1%" class="ftop" align="center" nowrap><B>{trans("Read")}</B></TD>
-			    <TD width="5%" class="ftop" align="center" colspan="5" nowrap><B>{trans("Write (+R)")}</B></TD>
-			    <TD width="1%" class="ftr" align="center" nowrap><B>{trans("Advanced (+R)")}</B></TD>
-			</TR>
-			<TR class="DARK">
-			    <TD width="93%" class="fbl"></TD>
-			    <TD width="1%" class="fbottom" align="center" nowrap></TD>
-			    <TD width="1%" class="fbottom" align="center">{trans("customer")}</TD>
-			    <TD width="1%" class="fbottom" align="center" nowrap>{trans("ass. move")}</TD>
-			    <TD width="1%" class="fbottom" align="center">{trans("advance")}</TD>
-			    <TD width="1%" class="fbottom" align="center">{trans("other")}</TD>
-			    <TD width="1%" class="fbottom" align="center">{trans("mod.")}</TD>
-			    <TD width="1%" class="fbr" align="center" nowrap></TD>
-			</TR>
+	    </td>
+	</tr>
+	<tr class="LIGHT">
+	    <td width="1%" class="fleft">
+		<img src="img/users.gif" alt="">
+	    </td>
+	    <td width="1%"><strong>{trans("Privileges:")}</strong></td>
+	    <td width="98%" class="fright">
+		    <table width="100%" cellpadding="3">
+			<tr class="DARK">
+			    <td width="93%" class="ftl"><strong>{trans("User")}</strong></td>
+			    <td width="1%" class="ftop" align="center" nowrap="nowrap"><strong>{trans("Read")}</strong></td>
+			    <td width="5%" class="ftop" align="center" colspan="5" nowrap="nowrap"><strong>{trans("Write (+R)")}</strong></td>
+			    <td width="1%" class="ftr" align="center" nowrap="nowrap"><strong>{trans("Advanced (+R)")}</strong></td>
+			</tr>
+			<tr class="DARK">
+			    <td width="93%" class="fbl"></td>
+			    <td width="1%" class="fbottom" align="center" nowrap="nowrap"></td>
+			    <td width="1%" class="fbottom" align="center">{trans("customer")}</td>
+			    <td width="1%" class="fbottom" align="center" nowrap="nowrap">{trans("ass. move")}</td>
+			    <td width="1%" class="fbottom" align="center">{trans("advance")}</td>
+			    <td width="1%" class="fbottom" align="center">{trans("other")}</td>
+			    <td width="1%" class="fbottom" align="center">{trans("mod.")}</td>
+			    <td width="1%" class="fbr" align="center" nowrap="nowrap"></td>
+			</tr>
 			{cycle values="light,lucid" print=false}
 			{foreach from=$registry.rights item=right}
 			{if $right.rights}
-			<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-			    <TD width="93%" class="fleft">
-				<A href="?m=userinfo&id={$right.id}">{$right.name}</A>
-				<INPUT type="hidden" name="registry[usernames][{$right.id}]" value="{$right.name}">
-			    </TD>
-			    <TD width="1%" align="center">
-				{if $right.rights > 0}<IMG src="img/pass.gif" alt="">{/if}
-			    </TD>
-			    <TD width="1%" align="center">
-				{if ($right.rights & 2)==2}<IMG src="img/pass.gif" alt="">{/if}
-			    </TD>
-			    <TD width="1%" align="center">
-			    	{if ($right.rights & 4)==4}<IMG src="img/pass.gif" alt="">{/if}
-			    </TD>
-			    <TD width="1%" align="center">
-                                {if ($right.rights & 8)==8}<IMG src="img/pass.gif" alt="">{/if}
-			    </TD>
-			    <TD width="1%" align="center">
-                                {if ($right.rights & 16)==16}<IMG src="img/pass.gif" alt="">{/if}
-			    </TD>
-			    <TD width="1%" align="center">
-                                {if ($right.rights & 32)==32}<IMG src="img/pass.gif" alt="">{/if}
-			    </TD>
-			    <TD width="1%" align="center" class="fright">
-				{if ($right.rights & 256)==256}<IMG src="img/pass.gif" alt="">{/if}
-			    </TD>
-			</TR>
+			<tr class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+			    <td width="93%" class="fleft">
+				<a href="?m=userinfo&id={$right.id}">{$right.name}</a>
+				<input type="hidden" name="registry[usernames][{$right.id}]" value="{$right.name}">
+			    </td>
+			    <td width="1%" align="center">
+				{if $right.rights > 0}<img src="img/pass.gif" alt="">{/if}
+			    </td>
+			    <td width="1%" align="center">
+				{if ($right.rights & 2)==2}<img src="img/pass.gif" alt="">{/if}
+			    </td>
+			    <td width="1%" align="center">
+			    	{if ($right.rights & 4)==4}<img src="img/pass.gif" alt="">{/if}
+			    </td>
+			    <td width="1%" align="center">
+                                {if ($right.rights & 8)==8}<img src="img/pass.gif" alt="">{/if}
+			    </td>
+			    <td width="1%" align="center">
+                                {if ($right.rights & 16)==16}<img src="img/pass.gif" alt="">{/if}
+			    </td>
+			    <td width="1%" align="center">
+                                {if ($right.rights & 32)==32}<img src="img/pass.gif" alt="">{/if}
+			    </td>
+			    <td width="1%" align="center" class="fright">
+				{if ($right.rights & 256)==256}<img src="img/pass.gif" alt="">{/if}
+			    </td>
+			</tr>
 			{/if}
 			{/foreach}
-			<TR class=LIGHT">
-			    <TD width="93%" class="ftop"></TD>
-			    <TD width="7%" class="ftop" colspan="7"></TD>
-			</TR>
-		</TABLE>
-	    </TD>
-	</TR>
-	<TR class="LIGHT">
-	    <TD width="100%" COLSPAN="3" class="FBOTTOMU" ALIGN="RIGHT"> 
-	        <A HREF="?m=receiptlist&regid={$registry.id}">{trans("Browse")} <IMG src="img/view.gif" alt=""></A>
-	    	<A HREF="?m=cashregedit&id={$registry.id}">{trans("Edit")} <IMG src="img/save.gif" alt=""></A>
-	    </TD>
-	</TR>
-</TABLE></P>
+			<tr class=LIGHT">
+			    <td width="93%" class="ftop"></td>
+			    <td width="7%" class="ftop" colspan="7"></td>
+			</tr>
+		</table>
+	    </td>
+	</tr>
+	<tr class="LIGHT">
+	    <td width="100%" colspan="3" class="FBOTTOMU" align="RIGHT"> 
+	        <a href="?m=receiptlist&regid={$registry.id}">{trans("Browse")} <img src="img/view.gif" alt=""></a>
+	    	<a href="?m=cashregedit&id={$registry.id}">{trans("Edit")} <img src="img/save.gif" alt=""></a>
+	    </td>
+	</tr>
+</table></P>
 {include file="footer.html"}

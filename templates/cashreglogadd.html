@@ -1,49 +1,49 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 {include file="calendar_js.html"}
-<H1>{$layout.pagetitle}</H1>
-<FORM METHOD="POST" NAME="reglog" ACTION="?m=cashreglogadd&regid={$reglog.regid}">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
-	    <TD width="1%" class="fleftu">
-		<IMG src="img/value.gif" ALT="">
-	    </TD>
-	    <TD width="1%" class="fbt" NOWRAP><B>{trans("Real state:")}</B></TD>
-	    <TD width="98%" class="frightu">
-		<INPUT TYPE="TEXT" NAME="reglog[value]" VALUE="{if $reglog.value!=''}{$reglog.value|string_format:"%.2f"}{/if}" SIZE="16" {tip text="Enter real cash state value" trigger="value"}>
-	    </TD>
-	</TR>
-	<TR class="LIGHT">
-	    <TD width="1%" class="fleft">
-		<IMG src="img/time.gif" ALT="">
-	    </TD>
-	    <TD width="1%"><B>{trans("Time:")}</B></TD>
-	    <TD width="98%" class="fright">
-		<INPUT TYPE="TEXT" NAME="reglog[time]" VALUE="{if $reglog.time}{$reglog.time}{/if}" SIZE="16" OnClick="javascript:cal.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="time"}>
-	    </TD>
-	</TR>
-	<TR class="LIGHT">
-	    <TD width="1%" class="fleft">
-		<IMG src="img/info1.gif" ALT="">
-	    </TD>
-	    <TD width="1%"><B>{trans("Description")}:</B></TD>
-	    <TD width="98%" class="fright">
-		<TEXTAREA NAME="reglog[description]" COLS="50" ROWS="3" {tip text="Enter additional information (optional)"}>{$reglog.description}</TEXTAREA>
-	    </TD>
-	</TR>
-	<TR class="LIGHT">
-	    <TD width="100%" COLSPAN="3" class="FBOTTOMU" ALIGN="RIGHT"> 
-	    	<A HREF="javascript:document.reglog.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-		<A HREF="?m=cashreglogview">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
-	    </TD>
-	</TR>
-</TABLE>
-</FORM>
-<SCRIPT type="text/javascript">
+<h1>{$layout.pagetitle}</h1>
+<form method="POST" name="reglog" action="?m=cashreglogadd&regid={$reglog.regid}">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+	    <td width="1%" class="fleftu">
+		<img src="img/value.gif" alt="">
+	    </td>
+	    <td width="1%" class="fbt" nowrap="nowrap"><strong>{trans("Real state:")}</strong></td>
+	    <td width="98%" class="frightu">
+		<input type="TEXT" name="reglog[value]" value="{if $reglog.value!=''}{$reglog.value|string_format:"%.2f"}{/if}" size="16" {tip text="Enter real cash state value" trigger="value"}>
+	    </td>
+	</tr>
+	<tr class="LIGHT">
+	    <td width="1%" class="fleft">
+		<img src="img/time.gif" alt="">
+	    </td>
+	    <td width="1%"><strong>{trans("Time:")}</strong></td>
+	    <td width="98%" class="fright">
+		<input type="TEXT" name="reglog[time]" value="{if $reglog.time}{$reglog.time}{/if}" size="16" OnClick="javascript:cal.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="time"}>
+	    </td>
+	</tr>
+	<tr class="LIGHT">
+	    <td width="1%" class="fleft">
+		<img src="img/info1.gif" alt="">
+	    </td>
+	    <td width="1%"><strong>{trans("Description")}:</strong></td>
+	    <td width="98%" class="fright">
+		<textarea name="reglog[description]" cols="50" rows="3" {tip text="Enter additional information (optional)"}>{$reglog.description}</textarea>
+	    </td>
+	</tr>
+	<tr class="LIGHT">
+	    <td width="100%" colspan="3" class="FBOTTOMU" align="RIGHT"> 
+	    	<a href="javascript:document.reglog.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+		<a href="?m=cashreglogview">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
+	    </td>
+	</tr>
+</table>
+</form>
+<script type="text/javascript">
 <!--
 document.forms['reglog'].elements['reglog[value]'].focus();
 var cal = new calendar(document.reglog.elements['reglog[time]']);
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}

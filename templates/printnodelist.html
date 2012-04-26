@@ -1,75 +1,75 @@
 {include file="clearheader.html"}
 <!--// $Id$ //-->
-<TABLE WIDTH="100%" CELLPADDING="3" ALIGN="CENTER">
-	<TR>
-		<TD WIDTH="535" VALIGN="TOP">
-			<H1>{$layout.pagetitle}</H1>
-		</TD>
-		<TD WIDTH="180" ALIGN="RIGHT" NOWRAP>
-			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %x"}<BR>
+<table width="100%" cellpadding="3" align="CENTER">
+	<tr>
+		<td width="535" VALIGN="TOP">
+			<h1>{$layout.pagetitle}</h1>
+		</td>
+		<td width="180" align="RIGHT" nowrap="nowrap">
+			LMS {$layout.lmsv} @ {$layout.hostname}<br />
+			{$smarty.now|date_format:"%A, %x"}<br />
 			{t a=$layout.logname}Prepared by: $a{/t}
-		</TD>
-	</TR>
-</TABLE>
-<BR>
-<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
-	<TR>
-		<TD WIDTH="15" ALIGN="CENTER" CLASS="head">
+		</td>
+	</tr>
+</table>
+<br />
+<table width="100%" cellpadding="3" BORDER="1" align="CENTER">
+	<tr>
+		<td width="15" align="CENTER" class="head">
 			{trans("No.")}
-		</TD>
-		<TD WIDTH="20" ALIGN="CENTER" CLASS="head">
+		</td>
+		<td width="20" align="CENTER" class="head">
 			{trans("ID")}
-		</TD>
-		<TD WIDTH="80" ALIGN="CENTER" CLASS="head">
+		</td>
+		<td width="80" align="CENTER" class="head">
 			{trans("Node name")}
-		</TD>
-		<TD WIDTH="75" ALIGN="CENTER" CLASS="head">
+		</td>
+		<td width="75" align="CENTER" class="head">
 			{trans("IP address")}
-		</TD>
-		<TD WIDTH="75" ALIGN="CENTER" CLASS="head">
+		</td>
+		<td width="75" align="CENTER" class="head">
 			{trans("MAC address")}
-		</TD>
-		<TD WIDTH="230" ALIGN="CENTER" CLASS="head">
+		</td>
+		<td width="230" align="CENTER" class="head">
 			{trans("Owner")}
-		</TD>
-		<TD WIDTH="100" ALIGN="CENTER" CLASS="head">
+		</td>
+		<td width="100" align="CENTER" class="head">
 			{trans("Description")}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{cycle values="white,grey" print=false}
 	{section name=nodelist loop=$nodelist}
-	<TR class="{cycle}">
-		<TD ALIGN="CENTER">
+	<tr class="{cycle}">
+		<td align="CENTER">
 			{counter}.
-		</TD>
-		<TD ALIGN="CENTER">
+		</td>
+		<td align="CENTER">
 			{$nodelist[nodelist].id|string_format:"%04d"}
-		</TD>
-		<TD ALIGN="LEFT">
-			<B>{$nodelist[nodelist].name}</B>
-		</TD>
-		<TD ALIGN="CENTER">
+		</td>
+		<td align="LEFT">
+			<strong>{$nodelist[nodelist].name}</strong>
+		</td>
+		<td align="CENTER">
 			{$nodelist[nodelist].ip}
-		</TD>
-		<TD ALIGN="CENTER">
-			{$nodelist[nodelist].mac|replace:",":"<BR>"}
-		</TD>
-		<TD ALIGN="LEFT">
+		</td>
+		<td align="CENTER">
+			{$nodelist[nodelist].mac|replace:",":"<br />"}
+		</td>
+		<td align="LEFT">
 			{$nodelist[nodelist].owner}
-		</TD>
-		<TD ALIGN="LEFT">
+		</td>
+		<td align="LEFT">
 			{$nodelist[nodelist].info}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{sectionelse}
-	<TR>
-		<TD ALIGN="center" COLSPAN="7">
+	<tr>
+		<td align="center" colspan="7">
 			<P>&nbsp;</P>
-			<P><B>{trans("No such nodes in database.")}</B></P>
+			<P><strong>{trans("No such nodes in database.")}</strong></P>
 			<P>&nbsp;</P>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/section}
-</TABLE>
+</table>
 {include file="clearfooter.html"}

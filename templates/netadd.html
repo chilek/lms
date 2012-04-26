@@ -1,70 +1,70 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<P><FORM METHOD="POST" ACTION="?m=netadd" NAME="netadd">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK" COLSPAN="2">
-		<TD WIDTH="1%" CLASS="fleftu" NOWRAP>
-			<IMG SRC="img/network.gif" ALT="">
-			<B>{trans("Network name:")}</B>
-		</TD>
-		<TD CLASS="frightu">
-			<INPUT TYPE="TEXT" SIZE="23" NAME="netadd[name]" VALUE="{$netadd.name}" {tip trigger="name" bold=1}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/ip.gif" ALT=""> <B>{trans("Network address/mask:")}</B></TD>
-		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[address]" VALUE="{$netadd.address}" {tip text="Enter IP address and select mask" trigger="address"}><B> / </B><SELECT SIZE="1" TITLE="Prefixlen" NAME="netadd[prefix]">{section name=prefixlist loop=$prefixlist.id}<OPTION VALUE="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] eq $netadd.prefix} SELECTED{/if}>{$prefixlist.value[prefixlist]}</OPTION>{/section}</SELECT>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/mac.gif" ALT=""> <B>{trans("Interface:")}</B></TD>
-		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[interface]" VALUE="{$netadd.interface}" {tip text="Enter network interface (optional)" trigger="interface"}></TD>					
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/node.gif" ALT=""> <B>{trans("Domain:")}</B></TD>
-		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[domain]" VALUE="{$netadd.domain}" {tip text="Enter network domain (optional)" trigger="domain"}></TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/gateway.gif" ALT=""> <B>Gateway:</B></TD>
-		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[gateway]" VALUE="{$netadd.gateway}" {tip text="Enter gateway address (optional)" trigger="gateway"}></TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" ROWSPAN="2" CLASS="fleft" NOWRAP><IMG SRC="img/dns.gif" ALT=""> <B>{trans("DNS servers:")}</B></TD>
-		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[dns]" VALUE="{$netadd.dns}" {tip text="Enter primary DNS address (optional)" trigger="dns"}></TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[dns2]" VALUE="{$netadd.dns2}" {tip text="Enter secondary DNS address (optional)" trigger="dns2"}></TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/wins.gif" ALT=""> <B>{trans("WINS server:")}</B></TD>
-		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[wins]" VALUE="{$netadd.wins}" {tip text="Enter WINS address (optional)" trigger="wins"}></TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/dhcpstart.gif" ALT=""> <B>{trans("Begin of DHCP range:")}</B></TD>
-		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[dhcpstart]" VALUE="{$netadd.dhcpstart}" {tip text="Enter beginning of DHCP range (optional)" trigger="dhcpstart"}></TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/dhcpend.gif" ALT=""> <B>{trans("End of DHCP range:")}</B></TD>
-		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[dhcpend]" VALUE="{$netadd.dhcpend}" {tip text="Enter end of DHCP range (optional)" trigger="dhcpend"}></TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/info1.gif" ALT=""> <B>{trans("Notes:")}</B></TD>
-		<TD CLASS="fright">
-		  <TEXTAREA NAME="netadd[notes]" COLS="60" ROWS="7" {tip text="Enter notes (optional)"}>{$netadd.notes}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD width="100%" CLASS="fbottomu" COLSPAN="2" align="right">
-			<A HREF="javascript:document.netadd.submit();" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
-			<A HREF="?m=netlist">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM></P>
-<SCRIPT type="text/javascript">
+<h1>{$layout.pagetitle}</h1>
+<P><form method="POST" action="?m=netadd" name="netadd">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK" colspan="2">
+		<td width="1%" class="fleftu" nowrap="nowrap">
+			<img src="img/network.gif" alt="">
+			<strong>{trans("Network name:")}</strong>
+		</td>
+		<td class="frightu">
+			<input type="TEXT" size="23" name="netadd[name]" value="{$netadd.name}" {tip trigger="name" bold=1}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft" nowrap="nowrap"><img src="img/ip.gif" alt=""> <strong>{trans("Network address/mask:")}</strong></td>
+		<td class="fright"><input type="TEXT" size="23" name="netadd[address]" value="{$netadd.address}" {tip text="Enter IP address and select mask" trigger="address"}><strong> / </strong><select size="1" TITLE="Prefixlen" name="netadd[prefix]">{section name=prefixlist loop=$prefixlist.id}<option value="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] eq $netadd.prefix} SELECTED{/if}>{$prefixlist.value[prefixlist]}</option>{/section}</select>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft" nowrap="nowrap"><img src="img/mac.gif" alt=""> <strong>{trans("Interface:")}</strong></td>
+		<td class="fright"><input type="TEXT" size="23" name="netadd[interface]" value="{$netadd.interface}" {tip text="Enter network interface (optional)" trigger="interface"}></td>					
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft" nowrap="nowrap"><img src="img/node.gif" alt=""> <strong>{trans("Domain:")}</strong></td>
+		<td class="fright"><input type="TEXT" size="23" name="netadd[domain]" value="{$netadd.domain}" {tip text="Enter network domain (optional)" trigger="domain"}></td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft" nowrap="nowrap"><img src="img/gateway.gif" alt=""> <strong>Gateway:</strong></td>
+		<td class="fright"><input type="TEXT" size="23" name="netadd[gateway]" value="{$netadd.gateway}" {tip text="Enter gateway address (optional)" trigger="gateway"}></td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" rowspan="2" class="fleft" nowrap="nowrap"><img src="img/dns.gif" alt=""> <strong>{trans("DNS servers:")}</strong></td>
+		<td class="fright"><input type="TEXT" size="23" name="netadd[dns]" value="{$netadd.dns}" {tip text="Enter primary DNS address (optional)" trigger="dns"}></td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fright"><input type="TEXT" size="23" name="netadd[dns2]" value="{$netadd.dns2}" {tip text="Enter secondary DNS address (optional)" trigger="dns2"}></td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft" nowrap="nowrap"><img src="img/wins.gif" alt=""> <strong>{trans("WINS server:")}</strong></td>
+		<td class="fright"><input type="TEXT" size="23" name="netadd[wins]" value="{$netadd.wins}" {tip text="Enter WINS address (optional)" trigger="wins"}></td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft" nowrap="nowrap"><img src="img/dhcpstart.gif" alt=""> <strong>{trans("Begin of DHCP range:")}</strong></td>
+		<td class="fright"><input type="TEXT" size="23" name="netadd[dhcpstart]" value="{$netadd.dhcpstart}" {tip text="Enter beginning of DHCP range (optional)" trigger="dhcpstart"}></td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft" nowrap="nowrap"><img src="img/dhcpend.gif" alt=""> <strong>{trans("End of DHCP range:")}</strong></td>
+		<td class="fright"><input type="TEXT" size="23" name="netadd[dhcpend]" value="{$netadd.dhcpend}" {tip text="Enter end of DHCP range (optional)" trigger="dhcpend"}></td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft" nowrap="nowrap"><img src="img/info1.gif" alt=""> <strong>{trans("Notes:")}</strong></td>
+		<td class="fright">
+		  <textarea name="netadd[notes]" cols="60" rows="7" {tip text="Enter notes (optional)"}>{$netadd.notes}</textarea>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="100%" class="fbottomu" colspan="2" align="right">
+			<a href="javascript:document.netadd.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+			<a href="?m=netlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
+		</td>
+	</tr>
+</table>
+</form></P>
+<script type="text/javascript">
 <!--
 document.forms['netadd'].elements['netadd[name]'].focus();
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}

@@ -1,7 +1,7 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 {include file="calendar_js.html"}
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 <!--
 	function update_homedir()
 	{
@@ -9,178 +9,178 @@
 		document.forms['account'].elements['account[home]'].value = prefix + document.forms['account'].elements['account[login]'].value;
 	}
 //-->
-</SCRIPT>
-<H1>{$layout.pagetitle}</H1>
-<FORM method="POST" action="?m=accountedit&id={$account.id}" name="account">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" cellpadding="3">
-	<TR class="dark">
-		<TD width="1%" class="fleftu">
+</script>
+<h1>{$layout.pagetitle}</h1>
+<form method="POST" action="?m=accountedit&id={$account.id}" name="account">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="dark">
+		<td width="1%" class="fleftu">
 			<img src="img/account.gif" alt="">
-		</TD>
-		<TD width="1%" class="fbt">
-			<B>{trans("Login:")}</B>
-		</TD>
-		<TD width="98%" class="frightu">
+		</td>
+		<td width="1%" class="fbt">
+			<strong>{trans("Login:")}</strong>
+		</td>
+		<td width="98%" class="frightu">
 			<input type="text" name="account[login]" value="{$account.login}" {tip text="Enter account name" trigger="login"} onkeyup="update_homedir();">
-		</TD>
-	</TR>
-	<TR class="light">
-	    <TD width="100%" colspan="3" class="flr">
-		<TABLE width="100%" cellpadding="0">
-		    <TR class="LIGHT">
-			<TD width="50%" style="vertical-align: top">
-			    <TABLE width="100%" cellpadding="3">
-				<TR>
-				    <TD width="1%">
+		</td>
+	</tr>
+	<tr class="light">
+	    <td width="100%" colspan="3" class="flr">
+		<table width="100%" cellpadding="0">
+		    <tr class="LIGHT">
+			<td width="50%" style="vertical-align: top">
+			    <table width="100%" cellpadding="3">
+				<tr>
+				    <td width="1%">
 					<img src="img/domain.gif" alt="">
-				    </TD>
-				    <TD width="1%" nowrap>
-					<B>{trans("Domain:")}</B>
-				    </TD>
-				    <TD width="98%">
+				    </td>
+				    <td width="1%" nowrap="nowrap">
+					<strong>{trans("Domain:")}</strong>
+				    </td>
+				    <td width="98%">
 				    	<select name="account[domainid]" {tip text="Select domain name" trigger="domainid"}>
 					    <option value="0" {if !$account.domainid}SELECTED{/if}>{trans("- select domain -")}</option>
 					    {section name=domainlist loop=$domainlist}
 					    <option value="{$domainlist[domainlist].id}" {if $domainlist[domainlist].id eq $account.domainid}SELECTED{/if}>{$domainlist[domainlist].name}</option>
 					    {/section}
 					</select>
-				    </TD>
-				</TR>
-			    	<TR>
-				    <TD width="1%">
+				    </td>
+				</tr>
+			    	<tr>
+				    <td width="1%">
 					<img src="img/customer.gif" alt="">
-				    </TD>
-				    <TD width="1%">
-					<B>{trans("Owner:")}</B>
-		    		    </TD>
-				    <TD width="98%">
-					<SELECT SIZE="1" NAME="account[ownerid]" {tip text="Select owner or 'SYSTEM ACCOUNT' if you don't want to assign it to any customer" trigger="ownerid"}>
-    					    <OPTION VALUE="0"{if !$account.ownerid} SELECTED{/if}>{trans("SYSTEM ACCOUNT")}</OPTION>
+				    </td>
+				    <td width="1%">
+					<strong>{trans("Owner:")}</strong>
+		    		    </td>
+				    <td width="98%">
+					<select size="1" name="account[ownerid]" {tip text="Select owner or 'SYSTEM ACCOUNT' if you don't want to assign it to any customer" trigger="ownerid"}>
+    					    <option value="0"{if !$account.ownerid} SELECTED{/if}>{trans("SYSTEM ACCOUNT")}</option>
 					    {foreach from=$customers item=customer}
-					    <OPTION VALUE="{$customer.id}"{if $account.ownerid == $customer.id} SELECTED{/if}>{$customer.customername|truncate:40:" ...":true} ({$customer.id|string_format:"%04d"})</OPTION>
+					    <option value="{$customer.id}"{if $account.ownerid == $customer.id} SELECTED{/if}>{$customer.customername|truncate:40:" ...":true} ({$customer.id|string_format:"%04d"})</option>
 					    {/foreach}
-					</SELECT>
-				    </TD>
-				</TR>
-				<TR>
-				    <TD width="1%">
+					</select>
+				    </td>
+				</tr>
+				<tr>
+				    <td width="1%">
 					<img src="img/name.gif" alt="">
-				    </TD>
-				    <TD width="1%" nowrap>
-					<B>{trans("First/last or Company name:")}</B>
-				    </TD>
-				    <TD width="98%">
+				    </td>
+				    <td width="1%" nowrap="nowrap">
+					<strong>{trans("First/last or Company name:")}</strong>
+				    </td>
+				    <td width="98%">
 					<input type="text" size="30" name="account[realname]" value="{$account.realname}" {tip text="Enter optional account name" trigger="realname"}>
-				    </TD>
-				</TR>
-				<TR>
-				    <TD width="1%">
+				    </td>
+				</tr>
+				<tr>
+				    <td width="1%">
 					<img src="img/home.gif" alt="">
-				    </TD>
-				    <TD width="1%" nowrap>
-					<B>{trans("Homedir:")}</B>
-				    </TD>
-				    <TD width="98%">
+				    </td>
+				    <td width="1%" nowrap="nowrap">
+					<strong>{trans("Homedir:")}</strong>
+				    </td>
+				    <td width="98%">
 					<input type="text" size="30" name="account[home]" value="{$account.home}" {tip text="Enter home directory" trigger="home"}>
-				    </TD>
-				</TR>
-				<TR>
-				    <TD width="1%">
+				    </td>
+				</tr>
+				<tr>
+				    <td width="1%">
 					<img src="img/calendar.gif" alt="">
-				    </TD>
-				    <TD width="1%" nowrap>
-					<B>{trans("Expiration date:")}</B>
-				    </TD>
-				    <TD width="98%">
+				    </td>
+				    <td width="1%" nowrap="nowrap">
+					<strong>{trans("Expiration date:")}</strong>
+				    </td>
+				    <td width="98%">
 					<input type="text" size="10" name="account[expdate]" value="{if $account.expdate}{$account.expdate|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Enter or click to choose expiration date for account in YYYY/MM/DD format (Empty field means account never expires)" trigger="expdate"}>
-				    </TD>
-			    	</TR>
-				<TR>
-				    <TD width="1%">
+				    </td>
+			    	</tr>
+				<tr>
+				    <td width="1%">
 					<img src="img/forward.gif" alt="">
-				    </TD>
-				    <TD width="1%" nowrap>
-					<B>{trans("Forward e-mail:")}</B>
-				    </TD>
-				    <TD width="98%">
+				    </td>
+				    <td width="1%" nowrap="nowrap">
+					<strong>{trans("Forward e-mail:")}</strong>
+				    </td>
+				    <td width="98%">
 					<input type="text" name="account[mail_forward]" size="25" value="{$account.mail_forward}" {tip text="Enter destination e-mail address for redirect (optional)" trigger="mail_forward"}>
-				    </TD>
-				</TR>
-				<TR>
-				    <TD width="1%">
+				    </td>
+				</tr>
+				<tr>
+				    <td width="1%">
 					<img src="img/forward.gif" alt="">
-				    </TD>
-				    <TD width="1%" nowrap>
-					<B>{trans("BCC e-mail:")}</B>
-				    </TD>
-				    <TD width="98%">
+				    </td>
+				    <td width="1%" nowrap="nowrap">
+					<strong>{trans("BCC e-mail:")}</strong>
+				    </td>
+				    <td width="98%">
 					<input type="text" name="account[mail_bcc]" size="25" value="{$account.mail_bcc}" {tip text="Enter e-mail address for blind carbon copy (optional)" trigger="mail_bcc"}>
-				    </TD>
-				</TR>
-			    </TABLE>
-			</TD>
-			<TD width="50%" style="vertical-align: top">
-			    <TABLE width="100%" cellpadding="3">
-				<TR>
-				    <TD width="1%">
+				    </td>
+				</tr>
+			    </table>
+			</td>
+			<td width="50%" style="vertical-align: top">
+			    <table width="100%" cellpadding="3">
+				<tr>
+				    <td width="1%">
 					<img src="img/account.gif" alt="">
-				    </TD>
-				    <TD width="1%">
-					<B>{trans("Type/Quota:")}</B>
-				    </TD>
-				    <TD width="98%">
+				    </td>
+				    <td width="1%">
+					<strong>{trans("Type/Quota:")}</strong>
+				    </td>
+				    <td width="98%">
 					    <table width="100%">
 						    <tr>
-							    <td width="1%" nowrap><INPUT type="checkbox" id="type_shell" name="account[type][shell]" value="1" {if ($account.type & 1) == 1} CHECKED{/if}> <label for="type_shell">{trans("shell")}</label></td>
+							    <td width="1%" nowrap="nowrap"><input type="checkbox" id="type_shell" name="account[type][shell]" value="1" {if ($account.type & 1) == 1} checked="checked"{/if}> <label for="type_shell">{trans("shell")}</label></td>
 							    <td>&nbsp;<input type="text" size="5" maxlendth="10" name="quota[sh]" value="{$quota.sh}" {tip text="Enter account quota in MB" trigger="quota_sh"}></td>
 						    </tr>
 						    <tr>
-							    <td width="1%" nowrap><INPUT type="checkbox" id="type_mail" name="account[type][mail]" value="2" {if ($account.type & 2) == 2} CHECKED{/if}> <label for="type_mail">{trans("mail")}</label></td>
+							    <td width="1%" nowrap="nowrap"><input type="checkbox" id="type_mail" name="account[type][mail]" value="2" {if ($account.type & 2) == 2} checked="checked"{/if}> <label for="type_mail">{trans("mail")}</label></td>
 							    <td>&nbsp;<input type="text" size="5" maxlength="10" name="quota[mail]" value="{$quota.mail}" {tip text="Enter account quota in MB" trigger="quota_mail"}></td>
 						    </tr>
 						    <tr>
-							    <td width="1%" nowrap><INPUT type="checkbox" id="type_www" name="account[type][www]" value="4" {if ($account.type & 4) == 4} CHECKED{/if}> <label for="type_www">{trans("www")}</label></td>
+							    <td width="1%" nowrap="nowrap"><input type="checkbox" id="type_www" name="account[type][www]" value="4" {if ($account.type & 4) == 4} checked="checked"{/if}> <label for="type_www">{trans("www")}</label></td>
 							    <td>&nbsp;<input type="text" size="5" maxlength="10" name="quota[www]" value="{$quota.www}" {tip text="Enter account quota in MB" trigger="quota_www"}></td>
 						    </tr>
 						    <tr>
-							    <td width="1%" nowrap><INPUT type="checkbox" id="type_ftp" name="account[type][ftp]" value="8" {if ($account.type & 8) == 8} CHECKED{/if}> <label for="type_ftp">{trans("ftp")}</label></td>
+							    <td width="1%" nowrap="nowrap"><input type="checkbox" id="type_ftp" name="account[type][ftp]" value="8" {if ($account.type & 8) == 8} checked="checked"{/if}> <label for="type_ftp">{trans("ftp")}</label></td>
 							    <td>&nbsp;<input type="text" size="5" maxlength="10" name="quota[ftp]" value="{$quota.ftp}" {tip text="Enter account quota in MB" trigger="quota_ftp"}></td>
 						    </tr>
 						    <tr>
-							    <td width="1%" nowrap><INPUT type="checkbox" id="type_sql" name="account[type][sql]" value="16" {if ($account.type & 16) == 16} CHECKED{/if}> <label for="type_sql">{trans("sql")}</label></td>
+							    <td width="1%" nowrap="nowrap"><input type="checkbox" id="type_sql" name="account[type][sql]" value="16" {if ($account.type & 16) == 16} checked="checked"{/if}> <label for="type_sql">{trans("sql")}</label></td>
 							    <td>&nbsp;<input type="text" size="5" maxlength="10" name="quota[sql]" value="{$quota.sql}" {tip text="Enter account quota in MB" trigger="quota_sql"}></td>
 						    </tr>
 					    </table>
-				    </TD>
-				</TR>
-				<TR>
-				    <TD width="1%">
+				    </td>
+				</tr>
+				<tr>
+				    <td width="1%">
 					<img src="img/info.gif" alt="">
-				    </TD>
-				    <TD width="99%" colspan="2">
+				    </td>
+				    <td width="99%" colspan="2">
 					<textarea name="account[description]" rows="5" cols="50" {tip text="Enter additional information (optional)"}>{$account.description}</textarea>
-				    </TD>
-				</TR>
-			    </TABLE>
-			</TD>
-		    </TR>
-		</TABLE>
-	    </TD>
-	</TR>
-	<TR class="light">
-		<TD class="fbottomu" align="right" colspan="3">
-			<A href="javascript:document.account.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
-			<A href="?m=accountlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
-<SCRIPT type="text/javascript">
+				    </td>
+				</tr>
+			    </table>
+			</td>
+		    </tr>
+		</table>
+	    </td>
+	</tr>
+	<tr class="light">
+		<td class="fbottomu" align="right" colspan="3">
+			<a href="javascript:document.account.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+			<a href="?m=accountlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
+		</td>
+	</tr>
+</table>
+</form>
+<script type="text/javascript">
 <!--
 var cal1 = new calendar(document.forms['account'].elements['account[expdate]']);
 cal1.time_comp = false;
 document.forms['account'].elements['account[login]'].focus();
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}

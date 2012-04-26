@@ -1,189 +1,189 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<FORM METHOD="POST" ACTION="?m=accountsearch&search=account" NAME="accountsearch">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD CLASS="FALL" COLSPAN="2">
-			<B>{trans("Find accounts matching the following search criteria:")}</B>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/account.gif" alt=""> <B>{trans("Login:")}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%">
-			<INPUT TYPE="text" NAME="search[login]" {tip text="Enter login or it's fragment"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/domain.gif" alt=""> <B>{trans("Domain:")}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%">
-			<INPUT TYPE="text" NAME="search[domain]" {tip text="Enter domain name or it's fragment"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/account.gif" alt=""> <B>{trans("Type:")}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%">
-			<SELECT SIZE="1" NAME="search[type]" {tip text="Select account type"}>
-    				<OPTION VALUE="0">{trans("- all types -")}</OPTION>
-				<OPTION VALUE="1">{trans("shell")}</OPTION>
-				<OPTION VALUE="2">{trans("mail")}</OPTION>
-				<OPTION VALUE="4">{trans("www")}</OPTION>
-				<OPTION VALUE="8">{trans("ftp")}</OPTION>
-				<OPTION VALUE="16">{trans("sql")}</OPTION>
-			</SELECT>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/customer.gif" alt=""> <B>{trans("Owner:")}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%">
-			<SELECT SIZE="1" NAME="search[ownerid]" {tip text="Select owner"}>
-    				<OPTION VALUE="">{trans("- all owners -")}</OPTION>
-				<OPTION VALUE="0">{trans("SYSTEM ACCOUNT")}</OPTION>
+<h1>{$layout.pagetitle}</h1>
+<form method="POST" action="?m=accountsearch&search=account" name="accountsearch">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td class="FALL" colspan="2">
+			<strong>{trans("Find accounts matching the following search criteria:")}</strong>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" width="1%" nowrap="nowrap">
+			<img src="img/account.gif" alt=""> <strong>{trans("Login:")}</strong>
+		</td>
+		<td class="fright" width="99%">
+			<input type="text" name="search[login]" {tip text="Enter login or it's fragment"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" width="1%" nowrap="nowrap">
+			<img src="img/domain.gif" alt=""> <strong>{trans("Domain:")}</strong>
+		</td>
+		<td class="fright" width="99%">
+			<input type="text" name="search[domain]" {tip text="Enter domain name or it's fragment"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" width="1%" nowrap="nowrap">
+			<img src="img/account.gif" alt=""> <strong>{trans("Type:")}</strong>
+		</td>
+		<td class="fright" width="99%">
+			<select size="1" name="search[type]" {tip text="Select account type"}>
+    				<option value="0">{trans("- all types -")}</option>
+				<option value="1">{trans("shell")}</option>
+				<option value="2">{trans("mail")}</option>
+				<option value="4">{trans("www")}</option>
+				<option value="8">{trans("ftp")}</option>
+				<option value="16">{trans("sql")}</option>
+			</select>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" width="1%" nowrap="nowrap">
+			<img src="img/customer.gif" alt=""> <strong>{trans("Owner:")}</strong>
+		</td>
+		<td class="fright" width="99%">
+			<select size="1" name="search[ownerid]" {tip text="Select owner"}>
+    				<option value="">{trans("- all owners -")}</option>
+				<option value="0">{trans("SYSTEM ACCOUNT")}</option>
 				{foreach from=$customerlist item=item}
-				<OPTION VALUE="{$item.id}">{$item.customername|truncate:40:" ...":true} ({$item.id|string_format:"%04d"})</OPTION>
+				<option value="{$item.id}">{$item.customername|truncate:40:" ...":true} ({$item.id|string_format:"%04d"})</option>
 				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/name.gif" alt=""> <B>{trans("First/last or Company name:")}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%">
-			<INPUT type="text" name="search[realname]" {tip text="Enter optional account name"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/info.gif" width="16" alt=""> <B>{trans("Description:")}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%">
-			<INPUT TYPE="text" NAME="search[description]" {tip text="Enter additional information"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/wait.gif" alt=""> <B>{trans("Status:")}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%">
-			<SELECT size="1" name="search[kind]">
-                        	<OPTION value="0">{trans("- all -")}</OPTION>
-			        <OPTION value="1">{trans("expired")}</OPTION>
-				<OPTION value="2">{trans("active")}</OPTION>
-			</SELECT>
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fbottomu" WIDTH="100%" COLSPAN="2" ALIGN="right">
-			<A href="javascript:document.accountsearch.submit()" accesskey="s">{trans("Search")} <IMG SRC="img/search.gif" alt=""></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
-<SCRIPT type="text/javascript">
+			</select>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" width="1%" nowrap="nowrap">
+			<img src="img/name.gif" alt=""> <strong>{trans("First/last or Company name:")}</strong>
+		</td>
+		<td class="fright" width="99%">
+			<input type="text" name="search[realname]" {tip text="Enter optional account name"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" width="1%" nowrap="nowrap">
+			<img src="img/info.gif" width="16" alt=""> <strong>{trans("Description:")}</strong>
+		</td>
+		<td class="fright" width="99%">
+			<input type="text" name="search[description]" {tip text="Enter additional information"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" width="1%" nowrap="nowrap">
+			<img src="img/wait.gif" alt=""> <strong>{trans("Status:")}</strong>
+		</td>
+		<td class="fright" width="99%">
+			<select size="1" name="search[kind]">
+                        	<option value="0">{trans("- all -")}</option>
+			        <option value="1">{trans("expired")}</option>
+				<option value="2">{trans("active")}</option>
+			</select>
+		</td>
+	</tr>
+	<tr class="light">
+		<td class="fbottomu" width="100%" colspan="2" align="right">
+			<a href="javascript:document.accountsearch.submit()" accesskey="s">{trans("Search")} <img src="img/search.gif" alt=""></a>
+		</td>
+	</tr>
+</table>
+</form>
+<script type="text/javascript">
 <!--
 document.forms['accountsearch'].elements['search[login]'].focus();
 //-->
-</SCRIPT>
-<BR>
-<FORM METHOD="POST" ACTION="?m=aliassearch&search" NAME="aliassearch">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD CLASS="FALL" COLSPAN="2">
-			<B>{trans("Find aliases matching the following search criteria:")}</B>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/alias.gif" alt=""> <B>{trans("Login:")}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%">
-			<INPUT TYPE="text" NAME="search[login]" {tip text="Enter login or it's fragment"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/domain.gif" alt=""> <B>{trans("Domain:")}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%">
-			<INPUT TYPE="text" NAME="search[domain]" {tip text="Enter domain name or it's fragment"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/customer.gif" alt=""> <B>{trans("Domain's owner:")}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%">
-			<SELECT SIZE="1" NAME="search[ownerid]" {tip text="Select owner"}>
-    				<OPTION VALUE="">{trans("- all owners -")}</OPTION>
-				<OPTION VALUE="0">{trans("SYSTEM DOMAIN")}</OPTION>
+</script>
+<br />
+<form method="POST" action="?m=aliassearch&search" name="aliassearch">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td class="FALL" colspan="2">
+			<strong>{trans("Find aliases matching the following search criteria:")}</strong>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" width="1%" nowrap="nowrap">
+			<img src="img/alias.gif" alt=""> <strong>{trans("Login:")}</strong>
+		</td>
+		<td class="fright" width="99%">
+			<input type="text" name="search[login]" {tip text="Enter login or it's fragment"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" width="1%" nowrap="nowrap">
+			<img src="img/domain.gif" alt=""> <strong>{trans("Domain:")}</strong>
+		</td>
+		<td class="fright" width="99%">
+			<input type="text" name="search[domain]" {tip text="Enter domain name or it's fragment"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" width="1%" nowrap="nowrap">
+			<img src="img/customer.gif" alt=""> <strong>{trans("Domain's owner:")}</strong>
+		</td>
+		<td class="fright" width="99%">
+			<select size="1" name="search[ownerid]" {tip text="Select owner"}>
+    				<option value="">{trans("- all owners -")}</option>
+				<option value="0">{trans("SYSTEM DOMAIN")}</option>
 				{foreach from=$customerlist item=item}
-				<OPTION VALUE="{$item.id}">{$item.customername|truncate:40:" ...":true} ({$item.id|string_format:"%04d"})</OPTION>
+				<option value="{$item.id}">{$item.customername|truncate:40:" ...":true} ({$item.id|string_format:"%04d"})</option>
 				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fbottomu" WIDTH="100%" COLSPAN="2" ALIGN="right">
-			<A href="javascript:document.aliassearch.submit()" accesskey="s">{trans("Search")} <IMG SRC="img/search.gif" alt=""></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
-<BR>
-<FORM METHOD="POST" ACTION="?m=domainsearch&search" NAME="domainsearch">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD CLASS="FALL" COLSPAN="2">
-			<B>{trans("Find domain matching the following search criteria:")}</B>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/domain.gif" alt=""> <B>{trans("Name:")}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%">
-			<INPUT TYPE="text" NAME="search[domain]" {tip text="Enter domain name or it's fragment"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/info.gif" width="16" alt=""> <B>{trans("Description:")}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%">
-			<INPUT TYPE="text" NAME="search[description]" {tip text="Enter additional information"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/customer.gif" alt=""> <B>{trans("Owner:")}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%">
-			<SELECT SIZE="1" NAME="search[ownerid]" {tip text="Select owner"}>
-    				<OPTION VALUE="">{trans("- all owners -")}</OPTION>
-				<OPTION VALUE="0">{trans("SYSTEM ACCOUNT")}</OPTION>
+			</select>
+		</td>
+	</tr>
+	<tr class="light">
+		<td class="fbottomu" width="100%" colspan="2" align="right">
+			<a href="javascript:document.aliassearch.submit()" accesskey="s">{trans("Search")} <img src="img/search.gif" alt=""></a>
+		</td>
+	</tr>
+</table>
+</form>
+<br />
+<form method="POST" action="?m=domainsearch&search" name="domainsearch">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td class="FALL" colspan="2">
+			<strong>{trans("Find domain matching the following search criteria:")}</strong>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" width="1%" nowrap="nowrap">
+			<img src="img/domain.gif" alt=""> <strong>{trans("Name:")}</strong>
+		</td>
+		<td class="fright" width="99%">
+			<input type="text" name="search[domain]" {tip text="Enter domain name or it's fragment"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" width="1%" nowrap="nowrap">
+			<img src="img/info.gif" width="16" alt=""> <strong>{trans("Description:")}</strong>
+		</td>
+		<td class="fright" width="99%">
+			<input type="text" name="search[description]" {tip text="Enter additional information"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" width="1%" nowrap="nowrap">
+			<img src="img/customer.gif" alt=""> <strong>{trans("Owner:")}</strong>
+		</td>
+		<td class="fright" width="99%">
+			<select size="1" name="search[ownerid]" {tip text="Select owner"}>
+    				<option value="">{trans("- all owners -")}</option>
+				<option value="0">{trans("SYSTEM ACCOUNT")}</option>
 				{foreach from=$customerlist item=item}
-				<OPTION VALUE="{$item.id}">{$item.customername|truncate:40:" ...":true} ({$item.id|string_format:"%04d"})</OPTION>
+				<option value="{$item.id}">{$item.customername|truncate:40:" ...":true} ({$item.id|string_format:"%04d"})</option>
 				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fbottomu" WIDTH="100%" COLSPAN="2" ALIGN="right">
-			<A href="javascript:document.domainsearch.submit()" accesskey="s">{trans("Search")} <IMG SRC="img/search.gif" alt=""></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
+			</select>
+		</td>
+	</tr>
+	<tr class="light">
+		<td class="fbottomu" width="100%" colspan="2" align="right">
+			<a href="javascript:document.domainsearch.submit()" accesskey="s">{trans("Search")} <img src="img/search.gif" alt=""></a>
+		</td>
+	</tr>
+</table>
+</form>
 {include file="footer.html"}

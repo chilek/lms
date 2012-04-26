@@ -1,8 +1,8 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
+<h1>{$layout.pagetitle}</h1>
 {include file="calendar_js.html"}
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 <!-- 
 	function PrintList()
 	{
@@ -18,293 +18,293 @@
 		document.customersearch.submit();
 	}
 //-->
-</SCRIPT>
-<P><FORM METHOD="POST" ACTION="?m=customersearch&search=1" NAME="customersearch" ID="customersearch">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE style="width: 100%;" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD CLASS="FALL" COLSPAN="2">
+</script>
+<P><form method="POST" action="?m=customersearch&search=1" name="customersearch" id="customersearch">
+<input type="submit" class="hiddenbtn">
+<table style="width: 100%;" cellpadding="3">
+	<tr class="DARK">
+		<td class="FALL" colspan="2">
 			<span class="bold">{trans("Display customers matching the following criteria:")}</span>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" style="width: 1%; white-space: nowrap;">
-			<IMG src="img/customer.gif" alt=""> <span class="bold">{trans("First/last or Company name:")}</span>
-		</TD>
-		<TD CLASS="fright" style="width: 99%;">
-			<INPUT TYPE="text" NAME="search[customername]" VALUE="{$search.customername}">
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" style="width: 1%; white-space: nowrap;">
-			<IMG src="img/home.gif" alt=""> <span class="bold">{trans("Address:")}</span>
-		</TD>
-		<TD CLASS="fright" style="width: 99%; white-space: nowrap;">
-			<INPUT TYPE="text" NAME="search[address]" VALUE="{$search.address}">
-			<span class="bold">{trans("City:")}</span> <INPUT TYPE="text" NAME="search[city]" VALUE="{$search.city}">
-			<span class="bold">{trans("Postcode:")}</span> <INPUT TYPE="text" NAME="search[zip]" VALUE="{$search.zip}" SIZE="10">
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" style="width: 1%; white-space: nowrap;">
-			<IMG src="img/phone.gif" alt=""> <span class="bold">{trans("Phone:")}</span>
-		</TD>
-		<TD CLASS="fright" style="width: 99%; white-space: nowrap;">
-			<INPUT TYPE="text" NAME="search[phone]" VALUE="{$search.phone}">
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" style="width: 1%; white-space: nowrap;">
-			<IMG src="img/mail.gif" alt=""> <span class="bold">{trans("E-mail:")}</span>
-		</TD>
-		<TD CLASS="fright" style="width: 99%;">
-			<INPUT TYPE="text" NAME="search[email]" VALUE="{$search.email}">
-		</TD>
-	</TR>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" style="width: 1%; white-space: nowrap;">
+			<img src="img/customer.gif" alt=""> <span class="bold">{trans("First/last or Company name:")}</span>
+		</td>
+		<td class="fright" style="width: 99%;">
+			<input type="text" name="search[customername]" value="{$search.customername}">
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" style="width: 1%; white-space: nowrap;">
+			<img src="img/home.gif" alt=""> <span class="bold">{trans("Address:")}</span>
+		</td>
+		<td class="fright" style="width: 99%; white-space: nowrap;">
+			<input type="text" name="search[address]" value="{$search.address}">
+			<span class="bold">{trans("City:")}</span> <input type="text" name="search[city]" value="{$search.city}">
+			<span class="bold">{trans("Postcode:")}</span> <input type="text" name="search[zip]" value="{$search.zip}" size="10">
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" style="width: 1%; white-space: nowrap;">
+			<img src="img/phone.gif" alt=""> <span class="bold">{trans("Phone:")}</span>
+		</td>
+		<td class="fright" style="width: 99%; white-space: nowrap;">
+			<input type="text" name="search[phone]" value="{$search.phone}">
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" style="width: 1%; white-space: nowrap;">
+			<img src="img/mail.gif" alt=""> <span class="bold">{trans("E-mail:")}</span>
+		</td>
+		<td class="fright" style="width: 99%;">
+			<input type="text" name="search[email]" value="{$search.email}">
+		</td>
+	</tr>
 	{*
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" style="width: 1%; white-space: nowrap;">
-			<IMG src="img/gg.gif" alt=""> <span class="bold">{trans("IM:")}</span>
-		</TD>
-		<TD CLASS="fright" style="width: 99%;">
-			<INPUT TYPE="text" NAME="search[im]" VALUE="{$search.im}">
-		</TD>
-	</TR>
+	<tr class="LIGHT">
+		<td class="fleft" style="width: 1%; white-space: nowrap;">
+			<img src="img/gg.gif" alt=""> <span class="bold">{trans("IM:")}</span>
+		</td>
+		<td class="fright" style="width: 99%;">
+			<input type="text" name="search[im]" value="{$search.im}">
+		</td>
+	</tr>
 	*}
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" style="width: 1%; white-space: nowrap;">
-			<IMG src="img/serialnumber.gif" width="16" alt=""> <span class="bold">{trans("ICN:")}</span>
-		</TD>
-		<TD CLASS="fright" style="width: 99%;">
-			<INPUT TYPE="text" NAME="search[icn]" VALUE="{$search.icn}">
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" style="width: 1%; white-space: nowrap;">
-			<IMG src="img/empty.gif" width="16" alt=""> <span class="bold">{trans("SSN:")}</span>
-		</TD>
-		<TD CLASS="fright" style="width: 99%;">
-			<INPUT TYPE="text" NAME="search[ssn]" VALUE="{$search.ssn}">
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" style="width: 1%; white-space: nowrap;">
-			<IMG src="img/empty.gif" width="16" alt=""> <span class="bold">{trans("TEN:")}</span>
-		</TD>
-		<TD CLASS="fright" style="width: 99%;">
-			<INPUT TYPE="text" NAME="search[ten]" VALUE="{$search.ten}">
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" style="width: 1%; white-space: nowrap;">
-			<IMG src="img/empty.gif" width="16" alt=""> <span class="bold">{trans("REGON:")}</span>
-		</TD>
-		<TD CLASS="fright" style="width: 99%;">
-			<INPUT TYPE="text" NAME="search[regon]" VALUE="{$search.regon}">
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" style="width: 1%; white-space: nowrap;">
-			<IMG src="img/report.gif" alt=""> <span class="bold">{trans("RBE:")}</span>
-		</TD>
-		<TD CLASS="fright" style="width: 99%;">
-			<INPUT TYPE="text" NAME="search[rbe]" VALUE="{$search.rbe}">
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" style="width: 1%; white-space: nowrap;">
-			<IMG src="img/note.gif" alt=""> <span class="bold">{trans("Notes:")}</span>
-		</TD>
-		<TD CLASS="fright" style="width: 99%;">
-			<INPUT TYPE="text" NAME="search[notes]" VALUE="{$search.notes}">
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" style="width: 1%; white-space: nowrap;">
-			<IMG src="img/info1.gif" alt=""> <span class="bold">{trans("Additional information:")}</span>
-		</TD>
-		<TD CLASS="fright" style="width: 99%;">
-			<INPUT TYPE="text" NAME="search[info]" VALUE="{$search.info}">
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" style="width: 1%; white-space: nowrap;">
-			<IMG src="img/folder.gif" alt=""> <span class="bold">{trans("Legal personality:")}</span>
-		</TD>
-		<TD CLASS="fright" style="width: 99%;">
-			<SELECT SIZE="1" NAME="search[type]">
-				<OPTION VALUE="">{trans("- all -")}</OPTION>
-				<OPTION VALUE="0">{trans("private person")}</OPTION>
-				<OPTION VALUE="1">{trans("legal entity")}</OPTION>
-			</SELECT>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" style="width: 1%; white-space: nowrap;">
-			<IMG src="img/state.gif" alt=""> <span class="bold">{trans("Country state:")}</span>
-		</TD>
-		<TD CLASS="fright" style="width: 99%;">
-			<SELECT NAME="search[stateid]" {tip text="Select country state"}>
-				<OPTION value="">{trans("- all states -")}</OPTION>
+	<tr class="LIGHT">
+		<td class="fleft" style="width: 1%; white-space: nowrap;">
+			<img src="img/serialnumber.gif" width="16" alt=""> <span class="bold">{trans("ICN:")}</span>
+		</td>
+		<td class="fright" style="width: 99%;">
+			<input type="text" name="search[icn]" value="{$search.icn}">
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" style="width: 1%; white-space: nowrap;">
+			<img src="img/empty.gif" width="16" alt=""> <span class="bold">{trans("SSN:")}</span>
+		</td>
+		<td class="fright" style="width: 99%;">
+			<input type="text" name="search[ssn]" value="{$search.ssn}">
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" style="width: 1%; white-space: nowrap;">
+			<img src="img/empty.gif" width="16" alt=""> <span class="bold">{trans("TEN:")}</span>
+		</td>
+		<td class="fright" style="width: 99%;">
+			<input type="text" name="search[ten]" value="{$search.ten}">
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" style="width: 1%; white-space: nowrap;">
+			<img src="img/empty.gif" width="16" alt=""> <span class="bold">{trans("REGON:")}</span>
+		</td>
+		<td class="fright" style="width: 99%;">
+			<input type="text" name="search[regon]" value="{$search.regon}">
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" style="width: 1%; white-space: nowrap;">
+			<img src="img/report.gif" alt=""> <span class="bold">{trans("RBE:")}</span>
+		</td>
+		<td class="fright" style="width: 99%;">
+			<input type="text" name="search[rbe]" value="{$search.rbe}">
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" style="width: 1%; white-space: nowrap;">
+			<img src="img/note.gif" alt=""> <span class="bold">{trans("Notes:")}</span>
+		</td>
+		<td class="fright" style="width: 99%;">
+			<input type="text" name="search[notes]" value="{$search.notes}">
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" style="width: 1%; white-space: nowrap;">
+			<img src="img/info1.gif" alt=""> <span class="bold">{trans("Additional information:")}</span>
+		</td>
+		<td class="fright" style="width: 99%;">
+			<input type="text" name="search[info]" value="{$search.info}">
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" style="width: 1%; white-space: nowrap;">
+			<img src="img/folder.gif" alt=""> <span class="bold">{trans("Legal personality:")}</span>
+		</td>
+		<td class="fright" style="width: 99%;">
+			<select size="1" name="search[type]">
+				<option value="">{trans("- all -")}</option>
+				<option value="0">{trans("private person")}</option>
+				<option value="1">{trans("legal entity")}</option>
+			</select>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" style="width: 1%; white-space: nowrap;">
+			<img src="img/state.gif" alt=""> <span class="bold">{trans("Country state:")}</span>
+		</td>
+		<td class="fright" style="width: 99%;">
+			<select name="search[stateid]" {tip text="Select country state"}>
+				<option value="">{trans("- all states -")}</option>
 				{foreach from=$cstateslist item=item key=key}
-				<OPTION value="{$key}">{$item.name}</OPTION>
+				<option value="{$key}">{$item.name}</option>
 				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" style="width: 1%; white-space: nowrap;">
-			<IMG src="img/netdev.gif" alt=""> <span class="bold">{trans("Link type:")}</span>
-		</TD>
-		<TD CLASS="fright" style="width: 99%;">
-			<SELECT SIZE="1" NAME="search[linktype]">
-				<OPTION VALUE="">{trans("- all -")}</OPTION>
+			</select>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" style="width: 1%; white-space: nowrap;">
+			<img src="img/netdev.gif" alt=""> <span class="bold">{trans("Link type:")}</span>
+		</td>
+		<td class="fright" style="width: 99%;">
+			<select size="1" name="search[linktype]">
+				<option value="">{trans("- all -")}</option>
 				{foreach from=$_LINKTYPES item=item key=key}
-					<OPTION VALUE="{$key}">{$item}</OPTION>
+					<option value="{$key}">{$item}</option>
 				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" style="width: 1%; white-space: nowrap;">
-			<IMG src="img/netdev.gif" alt=""> <span class="bold">{trans("Link speed:")}</span>
-		</TD>
-		<TD CLASS="fright" style="width: 99%;">
-			<SELECT SIZE="1" NAME="search[linkspeed]">
-				<OPTION VALUE="">{trans("- all -")}</OPTION>
+			</select>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" style="width: 1%; white-space: nowrap;">
+			<img src="img/netdev.gif" alt=""> <span class="bold">{trans("Link speed:")}</span>
+		</td>
+		<td class="fright" style="width: 99%;">
+			<select size="1" name="search[linkspeed]">
+				<option value="">{trans("- all -")}</option>
 				{foreach from=$_LINKSPEEDS item=item key=key}
-					<OPTION VALUE="{$key}">{$item}</OPTION>
+					<option value="{$key}">{$item}</option>
 				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" style="width: 1%; white-space: nowrap;">
-			<IMG src="img/money.gif" alt=""> <span class="bold">{trans("Tariffs:")}</span>
-		</TD>
-		<TD CLASS="fright" style="width: 99%;">
-			<SELECT SIZE="1" NAME="search[tariffs][]" MULTIPLE id="customertariffs">
-				<OPTION VALUE="" SELECTED>{trans("- all -")}</OPTION>
+			</select>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" style="width: 1%; white-space: nowrap;">
+			<img src="img/money.gif" alt=""> <span class="bold">{trans("Tariffs:")}</span>
+		</td>
+		<td class="fright" style="width: 99%;">
+			<select size="1" name="search[tariffs][]" MULTIPLE id="customertariffs">
+				<option value="" SELECTED>{trans("- all -")}</option>
 				{foreach from=$tariffs item=item}
-				 	<OPTION VALUE="{$item.id}">{$item.name}</OPTION>
+				 	<option value="{$item.id}">{$item.name}</option>
 				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" style="width: 1%; white-space: nowrap;">
-			<IMG src="img/empty.gif" width="16" alt=""> <span class="bold">{trans("Created:")}</span>
-		</TD>
-		<TD CLASS="fright" style="width: 99%;">
-			{trans("from")} <INPUT type="text" value="" name="search[createdfrom]" size="10" OnClick="javascript:cal1.popup();">
-			{trans("to")} <INPUT type="text" value="" name="search[createdto]" size="10" OnClick="javascript:cal2.popup();">
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" style="width: 1%; white-space: nowrap;">
-			<IMG src="img/empty.gif" width="16" alt=""> <span class="bold">{trans("Deleted:")}</span>
-		</TD>
-		<TD CLASS="fright" style="width: 99%;">
-			{trans("from")} <INPUT type="text" value="" name="search[deletedfrom]" size="10" OnClick="javascript:cal3.popup();">
-			{trans("to")} <INPUT type="text" value="" name="search[deletedto]" size="10" OnClick="javascript:cal4.popup();">
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" style="width: 1%; white-space: nowrap;">
-			<IMG src="img/empty.gif" width="16" alt=""> <span class="bold">{trans("Qualification operator:")}</span>
-		</TD>
-		<TD CLASS="fright" style="width: 99%;">
-			<INPUT class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} CHECKED{/if}><label for="operator0">{trans("AND")}</label>
-			<INPUT class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} CHECKED{/if}><label for="operator1">{trans("OR")}</label>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="flr" style="width: 100%;" COLSPAN="2">&nbsp;</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" style="width: 1%; white-space: nowrap;">
-			<IMG src="img/division.gif" width="16" alt=""> <span class="bold">{trans("Division")}:</span>
-		</TD>
-		<TD CLASS="fright" style="width: 99%;">
-			<SELECT SIZE="1" NAME="d">
-				<OPTION VALUE="">- {trans("all")} -</OPTION>
+			</select>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" style="width: 1%; white-space: nowrap;">
+			<img src="img/empty.gif" width="16" alt=""> <span class="bold">{trans("Created:")}</span>
+		</td>
+		<td class="fright" style="width: 99%;">
+			{trans("from")} <input type="text" value="" name="search[createdfrom]" size="10" OnClick="javascript:cal1.popup();">
+			{trans("to")} <input type="text" value="" name="search[createdto]" size="10" OnClick="javascript:cal2.popup();">
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" style="width: 1%; white-space: nowrap;">
+			<img src="img/empty.gif" width="16" alt=""> <span class="bold">{trans("Deleted:")}</span>
+		</td>
+		<td class="fright" style="width: 99%;">
+			{trans("from")} <input type="text" value="" name="search[deletedfrom]" size="10" OnClick="javascript:cal3.popup();">
+			{trans("to")} <input type="text" value="" name="search[deletedto]" size="10" OnClick="javascript:cal4.popup();">
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" style="width: 1%; white-space: nowrap;">
+			<img src="img/empty.gif" width="16" alt=""> <span class="bold">{trans("Qualification operator:")}</span>
+		</td>
+		<td class="fright" style="width: 99%;">
+			<input class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} checked="checked"{/if}><label for="operator0">{trans("AND")}</label>
+			<input class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} checked="checked"{/if}><label for="operator1">{trans("OR")}</label>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="flr" style="width: 100%;" colspan="2">&nbsp;</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" style="width: 1%; white-space: nowrap;">
+			<img src="img/division.gif" width="16" alt=""> <span class="bold">{trans("Division")}:</span>
+		</td>
+		<td class="fright" style="width: 99%;">
+			<select size="1" name="d">
+				<option value="">- {trans("all")} -</option>
 				{foreach from=$divisions item=division}
-					<OPTION VALUE="{$division.id}"{if $listdata.division==$division.id} SELECTED{/if}>{$division.shortname|truncate:30:"...":true}</OPTION>
+					<option value="{$division.id}"{if $listdata.division==$division.id} SELECTED{/if}>{$division.shortname|truncate:30:"...":true}</option>
 				{/foreach}
-			</SELECT>
-		</TR>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" style="width: 1%; white-space: nowrap;">
-			<IMG src="img/access.gif" width="16" alt=""> <span class="bold">{trans("Status:")}</span>
-		</TD>
-		<TD CLASS="fright" style="width: 99%;">
-			<SELECT SIZE="1" NAME="s">
-				<OPTION VALUE="0">{trans("- all -")}</OPTION>
-				<OPTION VALUE="3">{trans("connected<!plural>")}</OPTION>
-				<OPTION VALUE="2">{trans("waiting")}</OPTION>
-				<OPTION VALUE="1">{trans("interested<!plural>")}</OPTION>
-				<OPTION VALUE="4">{trans("deleted<!plural>")}</OPTION>
-				<OPTION VALUE="5">{trans("disconnected<!plural>")}</OPTION>
-				<OPTION VALUE="6">{trans("in debt")}</OPTION>
-				<OPTION VALUE="11">{trans("in debt above 100%")}</OPTION>
-				<OPTION VALUE="12">{trans("in debt above 200%")}</OPTION>
-				<OPTION VALUE="7">{trans("online")}</OPTION>
-				<OPTION VALUE="8">{trans("without group")}</OPTION>
-				<OPTION VALUE="9">{trans("without tariff")}</OPTION>
-				<OPTION VALUE="10">{trans("suspended<!plural>")}</OPTION>
-			</SELECT>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" style="width: 1%; white-space: nowrap;">
-			<IMG src="img/network.gif" alt=""> <span class="bold">{trans("Network:")}</span>
-		</TD>
-		<TD CLASS="fright" style="width: 99%;">
-			<SELECT SIZE="1" NAME="n">
-				<OPTION value="0" {if !$listdata.network} SELECTED {/if}>{trans("- all networks -")}</OPTION>
+			</select>
+		</tr>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" style="width: 1%; white-space: nowrap;">
+			<img src="img/access.gif" width="16" alt=""> <span class="bold">{trans("Status:")}</span>
+		</td>
+		<td class="fright" style="width: 99%;">
+			<select size="1" name="s">
+				<option value="0">{trans("- all -")}</option>
+				<option value="3">{trans("connected<!plural>")}</option>
+				<option value="2">{trans("waiting")}</option>
+				<option value="1">{trans("interested<!plural>")}</option>
+				<option value="4">{trans("deleted<!plural>")}</option>
+				<option value="5">{trans("disconnected<!plural>")}</option>
+				<option value="6">{trans("in debt")}</option>
+				<option value="11">{trans("in debt above 100%")}</option>
+				<option value="12">{trans("in debt above 200%")}</option>
+				<option value="7">{trans("online")}</option>
+				<option value="8">{trans("without group")}</option>
+				<option value="9">{trans("without tariff")}</option>
+				<option value="10">{trans("suspended<!plural>")}</option>
+			</select>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" style="width: 1%; white-space: nowrap;">
+			<img src="img/network.gif" alt=""> <span class="bold">{trans("Network:")}</span>
+		</td>
+		<td class="fright" style="width: 99%;">
+			<select size="1" name="n">
+				<option value="0" {if !$listdata.network} SELECTED {/if}>{trans("- all networks -")}</option>
 				{section name=networks loop=$networks}
-				<OPTION value="{$networks[networks].id}" {if $listdata.network eq $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:50:"...":true}</OPTION>
+				<option value="{$networks[networks].id}" {if $listdata.network eq $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:50:"...":true}</option>
 				{/section}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" style="width: 1%; white-space: nowrap;">
-			<IMG src="img/group.gif" alt=""> <span class="bold">{trans("Group:")}</span>
-		</TD>
-		<TD CLASS="fright" style="width: 99%;">
-			<SELECT SIZE="1" NAME="g">
-				<OPTION value="" {if !$listdata.customergroup} SELECTED {/if}>{trans("- all groups -")}</OPTION>
+			</select>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" style="width: 1%; white-space: nowrap;">
+			<img src="img/group.gif" alt=""> <span class="bold">{trans("Group:")}</span>
+		</td>
+		<td class="fright" style="width: 99%;">
+			<select size="1" name="g">
+				<option value="" {if !$listdata.customergroup} SELECTED {/if}>{trans("- all groups -")}</option>
 				{section name=customergroups loop=$customergroups}
-				<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroup eq $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"...":true}</OPTION>
+				<option value="{$customergroups[customergroups].id}" {if $listdata.customergroup eq $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"...":true}</option>
 				{/section}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" style="width: 1%; white-space: nowrap;">
-			<IMG src="img/nodegroup.gif" alt=""> <span class="bold">{trans("Nodes Group:")}</span>
-		</TD>
-		<TD CLASS="fright" style="width: 99%;">
-			<SELECT SIZE="1" NAME="ng">
-				<OPTION value="" {if !$listdata.nodegroup} SELECTED {/if}>{trans("- all groups -")}</OPTION>
+			</select>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" style="width: 1%; white-space: nowrap;">
+			<img src="img/nodegroup.gif" alt=""> <span class="bold">{trans("Nodes Group:")}</span>
+		</td>
+		<td class="fright" style="width: 99%;">
+			<select size="1" name="ng">
+				<option value="" {if !$listdata.nodegroup} SELECTED {/if}>{trans("- all groups -")}</option>
 				{foreach from=$nodegroups item=nodegroup}
-				<OPTION value="{$nodegroup.id}" {if $listdata.nodegroup eq $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
+				<option value="{$nodegroup.id}" {if $listdata.nodegroup eq $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</option>
 				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fbottomu" style="width: 100%; text-align: right;" COLSPAN="2">
-			<A ACCESSKEY="S" href="javascript:Search();">{trans("Search")} <IMG SRC="img/search.gif" alt=""></A>&nbsp;
-			<A href="javascript:PrintList();">{trans("Print")} <IMG SRC="img/print.gif" alt=""></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
+			</select>
+		</td>
+	</tr>
+	<tr class="light">
+		<td class="fbottomu" style="width: 100%; text-align: right;" colspan="2">
+			<a accesskey="S" href="javascript:Search();">{trans("Search")} <img src="img/search.gif" alt=""></a>&nbsp;
+			<a href="javascript:PrintList();">{trans("Print")} <img src="img/print.gif" alt=""></a>
+		</td>
+	</tr>
+</table>
+</form>
 </P>
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 <!--
 document.forms['customersearch'].elements['search[customername]'].focus();
 var cal1 = new calendar(document.customersearch.elements['search[createdfrom]']);
@@ -317,5 +317,5 @@ var cal4 = new calendar(document.customersearch.elements['search[deletedto]']);
 cal4.time_comp = false;
 multiselect('customersearch', 'customertariffs', '{t}- all -{/t}', null);
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}

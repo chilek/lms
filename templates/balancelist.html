@@ -1,8 +1,8 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
+<h1>{$layout.pagetitle}</h1>
 {include file="calendar_js.html"}
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 	<!--
 	function DeleteMarked()
 	{
@@ -66,189 +66,189 @@
 	}
 	{/if}
 	//-->
-</SCRIPT>
-<FORM METHOD="POST" NAME="page">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" cellpadding="3">
-	<TR class="dark">
-		<TD width="1%" class="fleftu">
+</script>
+<form method="POST" name="page">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="dark">
+		<td width="1%" class="fleftu">
 			{trans("Date:")}
-		</TD>
-		<TD width="1%" class="fbt">
+		</td>
+		<td width="1%" class="fbt">
 			{trans("User:")}
-		</TD>
-		<TD width="1%" class="fbt" align="right">
+		</td>
+		<td width="1%" class="fbt" align="right">
 			{trans("Liability:")}
-		</TD>
-		<TD width="1%" class="fbt" align="right">
+		</td>
+		<td width="1%" class="fbt" align="right">
 			{trans("Income:")}
-		</TD>
-		<TD width="1%" class="fbt" align="right">
+		</td>
+		<td width="1%" class="fbt" align="right">
 			{trans("Expense:")}
-		</TD>
-		<TD width="1%" class="fbt" align="center">&raquo;</TD>
-		<TD width="1%" class="fbt" align="right">
+		</td>
+		<td width="1%" class="fbt" align="center">&raquo;</td>
+		<td width="1%" class="fbt" align="right">
 			{trans("After:")}
-		</TD>
-		<TD width="1%" class="fbt">
+		</td>
+		<td width="1%" class="fbt">
 			{trans("Customer:")}
-		</TD>
-		<TD width="91%" class="fbt">
+		</td>
+		<td width="91%" class="fbt">
 			{trans("Description:")}
-		</TD>
-		<TD width="1%" CLASS="frightu">&nbsp;</TD>
-	</TR>
-	<TR class="DARK">
-		<TD class="fall" colspan="10">
-			<B>{trans("Filter:")} </B>
-				<INPUT type="text" name="search" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>
-				<SELECT size="1" name="cat" style="width: 150px">
-					<OPTION value=""{if $listdata.cat eq ""} SELECTED{/if}>{trans("- select category -")}</OPTION>
-					<OPTION value="comment"{if $listdata.cat eq "comment"} SELECTED{/if}>{trans("comment")}</OPTION>
-					<OPTION value="cdate"{if $listdata.cat eq "cdate"} SELECTED{/if}>{trans("date (YYYY/MM/DD)")}</OPTION>
-					<OPTION value="number"{if $listdata.cat eq "number"} SELECTED{/if}>{trans("document number")}</OPTION>
-					<OPTION value="value"{if $listdata.cat eq "value"} SELECTED{/if}>{trans("value")}</OPTION>
-					<OPTION value="name"{if $listdata.cat eq "name"} SELECTED{/if}>{trans("customer name")}</OPTION>
-					<OPTION value="customerid"{if $listdata.cat eq "customerid"} SELECTED{/if}>{trans("customer ID")}</OPTION>
-					<OPTION value="ten"{if $listdata.cat eq "ten"} SELECTED{/if}>{trans("TEN")}</OPTION>
-					<OPTION value="address"{if $listdata.cat eq "address"} SELECTED{/if}>{trans("address")}</OPTION>
-					<OPTION value="documented"{if $listdata.cat eq "documented"} SELECTED{/if}>{trans("with document")}</OPTION>
-					<OPTION value="notdocumented"{if $listdata.cat eq "notdocumented"} SELECTED{/if}>{trans("without document")}</OPTION>
-				</SELECT>&nbsp;
+		</td>
+		<td width="1%" class="frightu">&nbsp;</td>
+	</tr>
+	<tr class="DARK">
+		<td class="fall" colspan="10">
+			<strong>{trans("Filter:")} </strong>
+				<input type="text" name="search" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>
+				<select size="1" name="cat" style="width: 150px">
+					<option value=""{if $listdata.cat eq ""} SELECTED{/if}>{trans("- select category -")}</option>
+					<option value="comment"{if $listdata.cat eq "comment"} SELECTED{/if}>{trans("comment")}</option>
+					<option value="cdate"{if $listdata.cat eq "cdate"} SELECTED{/if}>{trans("date (YYYY/MM/DD)")}</option>
+					<option value="number"{if $listdata.cat eq "number"} SELECTED{/if}>{trans("document number")}</option>
+					<option value="value"{if $listdata.cat eq "value"} SELECTED{/if}>{trans("value")}</option>
+					<option value="name"{if $listdata.cat eq "name"} SELECTED{/if}>{trans("customer name")}</option>
+					<option value="customerid"{if $listdata.cat eq "customerid"} SELECTED{/if}>{trans("customer ID")}</option>
+					<option value="ten"{if $listdata.cat eq "ten"} SELECTED{/if}>{trans("TEN")}</option>
+					<option value="address"{if $listdata.cat eq "address"} SELECTED{/if}>{trans("address")}</option>
+					<option value="documented"{if $listdata.cat eq "documented"} SELECTED{/if}>{trans("with document")}</option>
+					<option value="notdocumented"{if $listdata.cat eq "notdocumented"} SELECTED{/if}>{trans("without document")}</option>
+				</select>&nbsp;
 				{trans("Group:")}
-				<SELECT size="1" name="group">
-					<OPTION value="0"{if !$listdata.group} SELECTED{/if}>{trans("- all groups -")}</OPTION>
+				<select size="1" name="group">
+					<option value="0"{if !$listdata.group} SELECTED{/if}>{trans("- all groups -")}</option>
 					{section name="grouplist" loop=$grouplist}
-					<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group eq $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:40:"...":true}</OPTION>
+					<option value="{$grouplist[grouplist].id}"{if $listdata.group eq $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:40:"...":true}</option>
 					{/section}
-				</SELECT>
-				<NOBR>
-				<INPUT type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} CHECKED{/if}><label for="groupexclude">{trans("exclude group")}</label>
-				</NOBR>
-				<NOBR>
-				{trans("From:")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
-				{trans("To:")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal2.popup();"  {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
-				<A href="javascript: filter();">&raquo;&raquo;&raquo;</A><BR>
-				</NOBR>
-		</TD>
-	</TR>
+				</select>
+				<span class="nobr">
+				<input type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} checked="checked"{/if}><label for="groupexclude">{trans("exclude group")}</label>
+				</span>
+				<span class="nobr">
+				{trans("From:")}&nbsp;<input type="text" name="from" size="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+				{trans("To:")}&nbsp;<input type="text" name="to" size="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal2.popup();"  {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
+				<a href="javascript: filter();">&raquo;&raquo;&raquo;</a><br />
+				</span>
+		</td>
+	</tr>
 	{if $listdata.total != 0}
-	<TR class="dark">
-		<TD WIDTH="100%" class="fall" COLSPAN="10">
+	<tr class="dark">
+		<td width="100%" class="fall" colspan="10">
 			{include file="scroller.html" loop=$balancelist scrollerno=1}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
 	{cycle values="light,lucid" print=false}
 	{section name=balancelist loop=$balancelist start=$start max=$pagelimit}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD width="1%" class="fleft" nowrap>
+	<tr class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<td width="1%" class="fleft" nowrap="nowrap">
 			{$balancelist[balancelist].time|date_format:"%Y/%m/%d %H:%M"}
-		</TD>
-		<TD width="1%" nowrap>
-			{if $balancelist[balancelist].userid}<NOBR>{$balancelist[balancelist].user|truncate:16:"...":true}</NOBR>{else}-{/if}
-		</TD>
-		<TD width="1%" align="right" nowrap>
+		</td>
+		<td width="1%" nowrap="nowrap">
+			{if $balancelist[balancelist].userid}<span class="nobr">{$balancelist[balancelist].user|truncate:16:"...":true}</span>{else}-{/if}
+		</td>
+		<td width="1%" align="right" nowrap="nowrap">
 			{if $balancelist[balancelist].covenant}{($balancelist[balancelist].value*-1)|money_format}{else}-{/if}
-		</TD>
-		<TD width="1%" align="right" nowrap>
+		</td>
+		<td width="1%" align="right" nowrap="nowrap">
 			{if !$balancelist[balancelist].covenant && $balancelist[balancelist].value > 0}{$balancelist[balancelist].value|money_format}{else}-{/if}
-		</TD>
-		<TD width="1%" align="right" nowrap>
+		</td>
+		<td width="1%" align="right" nowrap="nowrap">
 			{if !$balancelist[balancelist].covenant && $balancelist[balancelist].value < 0}{($balancelist[balancelist].value*-1)|money_format}{else}-{/if}
-		</TD>
-		<TD width="1%" align="center">
+		</td>
+		<td width="1%" align="center">
 			&raquo;
-		</TD>
-		<TD width="1%" align="right" nowrap>
+		</td>
+		<td width="1%" align="right" nowrap="nowrap">
 			{if $balancelist[balancelist].covenant}
 			-
 			{else}
 			{$balancelist[balancelist].after|money_format}
 			{/if}
-		</TD>
-		<TD width="1%" nowrap>
-			{if $balancelist[balancelist].customerid}<NOBR><A HREF="?m=customerinfo&id={$balancelist[balancelist].customerid}">{$balancelist[balancelist].customername|truncate:20:"...":true}</A></NOBR>{else} - {/if}
-		</TD>
-		<TD width="91%">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			{if $balancelist[balancelist].customerid}<span class="nobr"><a href="?m=customerinfo&id={$balancelist[balancelist].customerid}">{$balancelist[balancelist].customername|truncate:20:"...":true}</a></span>{else} - {/if}
+		</td>
+		<td width="91%">
 			{$balancelist[balancelist].comment}
-		</TD>
-		<TD width="1%" class="fright" align="right" nowrap>
+		</td>
+		<td width="1%" class="fright" align="right" nowrap="nowrap">
 			{if $balancelist[balancelist].docid}
 				{if $balancelist[balancelist].doctype==$smarty.const.DOC_INVOICE}
-				<A HREF="?m=invoice&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/print.gif" ALT="[ {trans("Invoice")} ]" {tip a=$balancelist[balancelist].docid dynpopup='?m=number&id=$a'}></A>
+				<a href="?m=invoice&id={$balancelist[balancelist].docid}" target="_BLANK"><img src="img/print.gif" alt="[ {trans("Invoice")} ]" {tip a=$balancelist[balancelist].docid dynpopup='?m=number&id=$a'}></a>
 				{elseif $balancelist[balancelist].doctype==$smarty.const.DOC_CNOTE}
-				<A HREF="?m=invoice&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/printn.gif" ALT="[ {trans("Credit note")} ]" {tip a=$balancelist[balancelist].docid dynpopup='?m=number&id=$a'}></A>
+				<a href="?m=invoice&id={$balancelist[balancelist].docid}" target="_BLANK"><img src="img/printn.gif" alt="[ {trans("Credit note")} ]" {tip a=$balancelist[balancelist].docid dynpopup='?m=number&id=$a'}></a>
 				{elseif $balancelist[balancelist].doctype==$smarty.const.DOC_RECEIPT}
-				<A HREF="?m=receipt&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/printr.gif" ALT="[ {trans("Cash receipt")} ]" {tip a=$balancelist[balancelist].docid dynpopup='?m=number&id=$a'}></A>
+				<a href="?m=receipt&id={$balancelist[balancelist].docid}" target="_BLANK"><img src="img/printr.gif" alt="[ {trans("Cash receipt")} ]" {tip a=$balancelist[balancelist].docid dynpopup='?m=number&id=$a'}></a>
 				{elseif $balancelist[balancelist].doctype==$smarty.const.DOC_DNOTE}
-				<A HREF="?m=note&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/printd.gif" ALT="[ {trans("Debit note")} ]" {tip a=$balancelist[balancelist].docid dynpopup='?m=number&id=$a'}></A>
+				<a href="?m=note&id={$balancelist[balancelist].docid}" target="_BLANK"><img src="img/printd.gif" alt="[ {trans("Debit note")} ]" {tip a=$balancelist[balancelist].docid dynpopup='?m=number&id=$a'}></a>
 				{/if}
 			{/if}
-			<INPUT TYPE="checkbox" NAME="marks[{$balancelist[balancelist].id}]" VALUE="{$balancelist[balancelist].id}">
-		</TD>
-	</TR>
+			<input type="checkbox" name="marks[{$balancelist[balancelist].id}]" value="{$balancelist[balancelist].id}">
+		</td>
+	</tr>
 	{sectionelse}
-	<TR>
-		<TD WIDTH="100%" class="fall" ALIGN="center" COLSPAN="10">
+	<tr>
+		<td width="100%" class="fall" align="center" colspan="10">
 			<P>&nbsp;<?P>
-			<P><B>{trans("No such transactions found in database.")}</B></P>
+			<P><strong>{trans("No such transactions found in database.")}</strong></P>
 			<P>&nbsp;</P>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/section}
-	<TR class="dark">
-		<TD class="fleftu" COLSPAN="8" nowrap>
-			<A HREF="javascript:DeleteMarked();">{trans("Delete")} <IMG SRC="img/delete.gif" ALT="{trans("Delete")}" HSPACE="2"></A>&nbsp;
-			<A HREF="javascript:printi();">{trans("Print invoices")} <IMG SRC="img/print.gif" ALT="" HSPACE="2"></A>&nbsp;
-			<A HREF="javascript:printr();">{trans("Print cash receipts")} <IMG SRC="img/printr.gif" ALT="" HSPACE="2"></A>&nbsp;
-			<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i', get_conf('invoices.default_printpage'))} checked{/if}><label for="original">{trans("original")}</label>
-			<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i', get_conf('invoices.default_printpage'))} checked{/if}><label for="copy">{trans("copy")}</label>
-			<INPUT type="checkbox" name="duplicate" id="duplicate"{if preg_match('/duplicate/i', get_conf('invoices.default_printpage'))} checked{/if}><label for="duplicate">{trans("duplicate")}</label>
-		</TD>
-		<TD class="frightu" ALIGN="right" colspan="2">
-			<label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('page', this, ['original', 'duplicate', 'copy'])" VALUE="1">
-		</TD>
-	</TR>
+	<tr class="dark">
+		<td class="fleftu" colspan="8" nowrap="nowrap">
+			<a href="javascript:DeleteMarked();">{trans("Delete")} <img src="img/delete.gif" alt="{trans("Delete")}" HSPACE="2"></a>&nbsp;
+			<a href="javascript:printi();">{trans("Print invoices")} <img src="img/print.gif" alt="" HSPACE="2"></a>&nbsp;
+			<a href="javascript:printr();">{trans("Print cash receipts")} <img src="img/printr.gif" alt="" HSPACE="2"></a>&nbsp;
+			<input type="checkbox" name="original" id="original"{if preg_match('/original/i', get_conf('invoices.default_printpage'))} checked="checked"{/if}><label for="original">{trans("original")}</label>
+			<input type="checkbox" name="copy" id="copy"{if preg_match('/copy/i', get_conf('invoices.default_printpage'))} checked="checked"{/if}><label for="copy">{trans("copy")}</label>
+			<input type="checkbox" name="duplicate" id="duplicate"{if preg_match('/duplicate/i', get_conf('invoices.default_printpage'))} checked="checked"{/if}><label for="duplicate">{trans("duplicate")}</label>
+		</td>
+		<td class="frightu" align="right" colspan="2">
+			<label for="allbox">{trans("Check All")}</label><input type="checkbox" name="allbox" id="allbox" onchange="CheckAll('page', this, ['original', 'duplicate', 'copy'])" value="1">
+		</td>
+	</tr>
 	{if $listdata.total != 0}
-	<TR class="dark">
-		<TD WIDTH="100%" class="fall" COLSPAN="10">
+	<tr class="dark">
+		<td width="100%" class="fall" colspan="10">
 			{include file="scroller.html" loop=$balancelist scrollerno=2}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
-	<TR class="light">
-		<TD colspan="2" align="right" class="fleftu" NOWRAP>
-			<B>{trans("Total:")}</B><BR>
-		</TD>
-		<TD nowrap class="fbt" align="right">
-			<B>{$listdata.liability|money_format}</B>
-		</TD>
-		<TD nowrap class="fbt" align="right">
-			<B>{$listdata.income|money_format}</B>
-		</TD>
-		<TD nowrap class="fbt" align="right">
-			<B>{$listdata.expense|money_format}</B>
-		</TD>
-		<TD nowrap class="fbt" align="right" colspan="2">
-		</TD>
-		<TD nowrap class="fbt" align="right">
-			<B>{trans("Balance:")}</B>
-		</TD>
-		<TD nowrap class="fbt" align="left">
-			<B>{$listdata.totalval|money_format}</B>
-		</TD>
-		<TD class="frightu">&nbsp;
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
-<SCRIPT type="text/javascript">
+	<tr class="light">
+		<td colspan="2" align="right" class="fleftu" nowrap="nowrap">
+			<strong>{trans("Total:")}</strong><br />
+		</td>
+		<td nowrap="nowrap" class="fbt" align="right">
+			<strong>{$listdata.liability|money_format}</strong>
+		</td>
+		<td nowrap="nowrap" class="fbt" align="right">
+			<strong>{$listdata.income|money_format}</strong>
+		</td>
+		<td nowrap="nowrap" class="fbt" align="right">
+			<strong>{$listdata.expense|money_format}</strong>
+		</td>
+		<td nowrap="nowrap" class="fbt" align="right" colspan="2">
+		</td>
+		<td nowrap="nowrap" class="fbt" align="right">
+			<strong>{trans("Balance:")}</strong>
+		</td>
+		<td nowrap="nowrap" class="fbt" align="left">
+			<strong>{$listdata.totalval|money_format}</strong>
+		</td>
+		<td class="frightu">&nbsp;
+		</td>
+	</tr>
+</table>
+</form>
+<script type="text/javascript">
 <!--
 var cal1 = new calendar(document.page.elements['from']);
 cal1.time_comp = false;
 var cal2 = new calendar(document.page.elements['to']);
 cal2.time_comp = false;
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}

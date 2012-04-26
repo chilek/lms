@@ -1,68 +1,68 @@
 {include file="clearheader.html"}
 <!--// $Id$ //-->
-<TABLE WIDTH="100%">
-	<TR>
-		<TD WIDTH="99%" VALIGN="TOP">
-			<H1>{$layout.pagetitle}</H1>
-		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
-			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %x"}<BR>
+<table width="100%">
+	<tr>
+		<td width="99%" VALIGN="TOP">
+			<h1>{$layout.pagetitle}</h1>
+		</td>
+		<td width="1%" align="RIGHT" nowrap="nowrap">
+			LMS {$layout.lmsv} @ {$layout.hostname}<br />
+			{$smarty.now|date_format:"%A, %x"}<br />
 			{t a=$layout.logname}Prepared by: $a{/t}
-		</TD>
-	</TR>
-</TABLE>
-<TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
-	<TR>
-		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="1%">
-			<B>{trans("No.")}</B>
-		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="1%">
-			<B>{trans("Ticket No.")}</B>
-		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="1%">
+		</td>
+	</tr>
+</table>
+<table width="640" cellpadding="3" BORDER="1" align="CENTER">
+	<tr>
+		<td class="HEAD" align="CENTER" width="1%">
+			<strong>{trans("No.")}</strong>
+		</td>
+		<td class="HEAD" align="CENTER" width="1%">
+			<strong>{trans("Ticket No.")}</strong>
+		</td>
+		<td class="HEAD" align="CENTER" width="1%">
 			{trans("Request date")}
-		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="96%" NOWRAP>
+		</td>
+		<td class="HEAD" align="CENTER" width="96%" nowrap="nowrap">
 			{trans("Subject")}
-		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="1%" NOWRAP>
+		</td>
+		<td class="HEAD" align="CENTER" width="1%" nowrap="nowrap">
 			{trans("Customer")}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{cycle values="white,grey" print=false}
 	{section name=list loop=$list}
-	<TR class="{cycle}">
-		<TD ALIGN="CENTER">
+	<tr class="{cycle}">
+		<td align="CENTER">
 			{counter}.
-		</TD>
-		<TD ALIGN="CENTER">
-			<B>{$list[list].id|string_format:"%08d"}</B>
-		</TD>
-		<TD ALIGN="CENTER">
+		</td>
+		<td align="CENTER">
+			<strong>{$list[list].id|string_format:"%08d"}</strong>
+		</td>
+		<td align="CENTER">
 			{$list[list].createtime|date_format:"%Y/%m/%d"}
-		</TD>
-		<TD>
+		</td>
+		<td>
 			{$list[list].subject|escape}
-		</TD>
-		<TD NOWRAP>
+		</td>
+		<td nowrap="nowrap">
 			{if $list[list].customerid}
 			{$list[list].customername|truncate:"50":"...":true} ({$list[list].customerid|string_format:"%04d"})
-			{if $list[list].address}<BR>{$list[list].address}{/if}
-			{if $list[list].phone}<BR>{trans("phone:")} {$list[list].phone}{/if}
+			{if $list[list].address}<br />{$list[list].address}{/if}
+			{if $list[list].phone}<br />{trans("phone:")} {$list[list].phone}{/if}
 			{else}
 			{$list[list].requestor|truncate:"50":"...":true}
 			{/if}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{sectionelse}
-	<TR>
-	        <TD ALIGN="center" WIDTH="100%" COLSPAN="7">
+	<tr>
+	        <td align="center" width="100%" colspan="7">
 			<P>&nbsp;</P>
-			<P><B>{trans("No such requests in database.")}</B></P>
+			<P><strong>{trans("No such requests in database.")}</strong></P>
 			<P>&nbsp;</P>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/section}
-</TABLE>
+</table>
 {include file="clearfooter.html"}

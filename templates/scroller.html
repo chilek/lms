@@ -1,16 +1,16 @@
 {if check_conf('phpui.short_pagescroller')}
-    <B>{trans("Page:")}
-    {if $page > 1}<A HREF="?m={$layout.module}{$adlink}{if $listdata.id}&id={$listdata.id}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}&s={$listdata.state}{/if}{if $listdata.kind}&k={$listdata.kind}{/if}{if $listdata.order}&o={$listdata.order},{$listdata.direction}{/if}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{/if}
+    <strong>{trans("Page:")}
+    {if $page > 1}<a href="?m={$layout.module}{$adlink}{if $listdata.id}&id={$listdata.id}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}&s={$listdata.state}{/if}{if $listdata.kind}&k={$listdata.kind}{/if}{if $listdata.order}&o={$listdata.order},{$listdata.direction}{/if}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</a>{/if}
     {math assign=lastpage equation="ceil(x/y)" x=$listdata.total y=$pagelimit}   
     {if $page == $lastpage}{math assign=scroller_start equation="max(0,x-3)*y" x=$page y=$pagelimit}
     {elseif $page > 1 && $page < $lastpage}{math assign=scroller_start equation="max(0,x-2)*y" x=$page y=$pagelimit}{/if}
     {section name=pcnt loop=$loop step=$pagelimit start=$scroller_start|default:0 max=3}
 	{math assign=cnt equation="ceil(x/y)+z" x=$scroller_start|default:0 y=$pagelimit z=$smarty.section.pcnt.rownum}
-	{if $page eq $cnt}[{else}<A HREF="?m={$layout.module}{$adlink}{if $listdata.id}&id={$listdata.id}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}&s={$listdata.state}{/if}{if $listdata.kind}&k={$listdata.kind}{/if}{if $listdata.order}&o={$listdata.order},{$listdata.direction}{/if}&page={$cnt}">{/if}{$cnt}{if $page eq $cnt}]{else}</A>{/if}
+	{if $page eq $cnt}[{else}<a href="?m={$layout.module}{$adlink}{if $listdata.id}&id={$listdata.id}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}&s={$listdata.state}{/if}{if $listdata.kind}&k={$listdata.kind}{/if}{if $listdata.order}&o={$listdata.order},{$listdata.direction}{/if}&page={$cnt}">{/if}{$cnt}{if $page eq $cnt}]{else}</a>{/if}
     {/section}
-    ... {if $lastpage != $page}<A HREF="?m={$layout.module}{$adlink}{if $listdata.id}&id={$listdata.id}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}&s={$listdata.state}{/if}{if $listdata.kind}&k={$listdata.kind}{/if}{if $listdata.order}&o={$listdata.order},{$listdata.direction}{/if}&page={$lastpage}">{/if}[{$lastpage}]{if $lastpage != $page}</A>{/if}
-    {if $page < $lastpage} <A HREF="?m={$layout.module}{$adlink}{if $listdata.id}&id={$listdata.id}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}&s={$listdata.state}{/if}{if $listdata.kind}&k={$listdata.kind}{/if}{if $listdata.order}&o={$listdata.order},{$listdata.direction}{/if}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{/if}
-    </B>
+    ... {if $lastpage != $page}<a href="?m={$layout.module}{$adlink}{if $listdata.id}&id={$listdata.id}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}&s={$listdata.state}{/if}{if $listdata.kind}&k={$listdata.kind}{/if}{if $listdata.order}&o={$listdata.order},{$listdata.direction}{/if}&page={$lastpage}">{/if}[{$lastpage}]{if $lastpage != $page}</a>{/if}
+    {if $page < $lastpage} <a href="?m={$layout.module}{$adlink}{if $listdata.id}&id={$listdata.id}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}&s={$listdata.state}{/if}{if $listdata.kind}&k={$listdata.kind}{/if}{if $listdata.order}&o={$listdata.order},{$listdata.direction}{/if}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</a>{/if}
+    </strong>
     {math equation="x + 1" x=$start assign=startx}
     {if $start + $pagelimit > $listdata.total}{assign var=endx value=$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}{/if}
     ({t a=$startx b=$endx c=$listdata.total}records $a - $b of $c{/t})
@@ -33,13 +33,13 @@
     {/if}
     {/if}
 {else}
-    <B>{trans("Page:")}
-    {if $page > 1}<A HREF="?m={$layout.module}{$adlink}{if $listdata.id}&id={$listdata.id}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}&s={$listdata.state}{/if}{if $listdata.kind}&k={$listdata.kind}{/if}{if $listdata.order}&o={$listdata.order},{$listdata.direction}{/if}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
+    <strong>{trans("Page:")}
+    {if $page > 1}<a href="?m={$layout.module}{$adlink}{if $listdata.id}&id={$listdata.id}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}&s={$listdata.state}{/if}{if $listdata.kind}&k={$listdata.kind}{/if}{if $listdata.order}&o={$listdata.order},{$listdata.direction}{/if}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</a>{else}&laquo;&laquo;&laquo;{/if}
     {section name=pcnt loop=$loop step=$pagelimit}
-	{if $page eq $smarty.section.pcnt.rownum}[{else}<A HREF="?m={$layout.module}{$adlink}{if $listdata.id}&id={$listdata.id}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{if $listdata.state}&s={$listdata.state}{/if}{/if}{if $listdata.kind}&k={$listdata.kind}{/if}{if $listdata.order}&o={$listdata.order},{$listdata.direction}{/if}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A>{/if}
+	{if $page eq $smarty.section.pcnt.rownum}[{else}<a href="?m={$layout.module}{$adlink}{if $listdata.id}&id={$listdata.id}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{if $listdata.state}&s={$listdata.state}{/if}{/if}{if $listdata.kind}&k={$listdata.kind}{/if}{if $listdata.order}&o={$listdata.order},{$listdata.direction}{/if}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</a>{/if}
     {/section}
-    {if $page < $smarty.section.pcnt.rownum} <A HREF="?m={$layout.module}{$adlink}{if $listdata.id}&id={$listdata.id}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}&s={$listdata.state}{/if}{if $listdata.kind}&k={$listdata.kind}{/if}{if $listdata.order}&o={$listdata.order},{$listdata.direction}{/if}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else} &raquo;&raquo;&raquo;{/if}
-    </B> 
+    {if $page < $smarty.section.pcnt.rownum} <a href="?m={$layout.module}{$adlink}{if $listdata.id}&id={$listdata.id}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}&s={$listdata.state}{/if}{if $listdata.kind}&k={$listdata.kind}{/if}{if $listdata.order}&o={$listdata.order},{$listdata.direction}{/if}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</a>{else} &raquo;&raquo;&raquo;{/if}
+    </strong> 
     {math equation="x + 1" x=$start assign=startx}
     {if $start + $pagelimit > $listdata.total}{assign var=endx value=$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}{/if}
     ({t a=$startx b=$endx c=$listdata.total}records $a - $b of $c{/t})

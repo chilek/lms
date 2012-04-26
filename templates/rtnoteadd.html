@@ -1,75 +1,75 @@
 {include file="header.html"}
 <!-- $Id$ -->
-<H1><B>{$layout.pagetitle}</B></H1>
-<FORM method="POST" name="note" action="?m=rtnoteadd">
-<INPUT type="hidden" name="note[ticketid]" value="{$note.ticketid}">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD WIDTH="1%" CLASS="fall" colspan="2" NOWRAP>
-			<IMG src="img/ticket.gif" alt="">
-			<B>{t a=$note.ticketid|string_format:"%06d"}Ticket No. $a{/t}</B>
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
-			<IMG src="img/note.gif" alt="">
-			<B>{trans("Note content:")}</B>
-		</TD>
-		<TD WIDTH="99%" CLASS="fright">
-			<TEXTAREA name="note[body]" cols="50" rows="5" {tip text="Enter note content" trigger="body"} >{$note.body}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="100%" CLASS="fbottomu" colspan="2" align="right">
-			<A href="javascript: document.note.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=rtticketview&id={$note.ticketid}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
-		</TD>
-	</TR>
-</TABLE>
-<BR>
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="ftl" NOWRAP>
-			<IMG src="img/mail.gif" alt="">
-		        <label for="notify"><B>{trans("Notify users:")}</B></label>
-		</TD>
-		<TD WIDTH="99%" CLASS="ftr">
-			<INPUT type="checkbox" name="note[notify]" id="notify" value="1"{if $note.notify} CHECKED{/if}>
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
-			<IMG src="img/dead.gif" alt="">
-		        <B>{trans("Status:")}</B>
-		</TD>
-		<TD WIDTH="99%" CLASS="fright">
-			<SELECT SIZE="1" name="note[state]" {tip text="Select status" trigger="state"}>
-				<OPTION value="{$smarty.const.RT_NEW}" {if $note.state == $smarty.const.RT_NEW}SELECTED{/if}>{trans("new")}</OPTION>
-				<OPTION value="{$smarty.const.RT_OPEN}" {if $note.state == $smarty.const.RT_OPEN}SELECTED{/if}>{trans("opened")}</OPTION>
-				<OPTION value="{$smarty.const.RT_RESOLVED}" {if $note.state == $smarty.const.RT_RESOLVED}SELECTED{/if}>{trans("resolved")}</OPTION>
-				<OPTION value="{$smarty.const.RT_DEAD}" {if $note.state == $smarty.const.RT_DEAD}SELECTED{/if}>{trans("dead")}</OPTION>
-			</SELECT>
-		</TD>
-	</TR>
-	<TR class="light">
-                <TD WIDTH="1%" CLASS="fbl" NOWRAP>
-	                <IMG src="img/desc.gif" alt="">
-	        <B>{trans("Cause:")}</B>
-	        </TD>
-	        <TD WIDTH="99%" CLASS="fbr">
-		        <SELECT SIZE="1" name="note[cause]" {tip text="Select request cause" trigger="cause"}>
-		        	<OPTION value="0" {if !$note.cause}SELECTED{/if}>{trans("unknown/other")}</OPTION>
-				<OPTION value="1" {if $note.cause == 1}SELECTED{/if}>{trans("customer's side")}</OPTION>
-			        <OPTION value="2" {if $note.cause == 2}SELECTED{/if}>{trans("company's side")}</OPTION>
-			</SELECT>
-		</TD>
-        </TR>
-</TABLE>
-</FORM>
-<SCRIPT type="text/javascript">
+<h1><strong>{$layout.pagetitle}</strong></h1>
+<form method="POST" name="note" action="?m=rtnoteadd">
+<input type="hidden" name="note[ticketid]" value="{$note.ticketid}">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="dark">
+		<td width="1%" class="fall" colspan="2" nowrap="nowrap">
+			<img src="img/ticket.gif" alt="">
+			<strong>{t a=$note.ticketid|string_format:"%06d"}Ticket No. $a{/t}</strong>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft" nowrap="nowrap">
+			<img src="img/note.gif" alt="">
+			<strong>{trans("Note content:")}</strong>
+		</td>
+		<td width="99%" class="fright">
+			<textarea name="note[body]" cols="50" rows="5" {tip text="Enter note content" trigger="body"} >{$note.body}</textarea>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="100%" class="fbottomu" colspan="2" align="right">
+			<a href="javascript: document.note.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+			<a href="?m=rtticketview&id={$note.ticketid}">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
+		</td>
+	</tr>
+</table>
+<br />
+<table width="100%" cellpadding="3">
+	<tr class="light">
+		<td width="1%" class="ftl" nowrap="nowrap">
+			<img src="img/mail.gif" alt="">
+		        <label for="notify"><strong>{trans("Notify users:")}</strong></label>
+		</td>
+		<td width="99%" class="ftr">
+			<input type="checkbox" name="note[notify]" id="notify" value="1"{if $note.notify} checked="checked"{/if}>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft" nowrap="nowrap">
+			<img src="img/dead.gif" alt="">
+		        <strong>{trans("Status:")}</strong>
+		</td>
+		<td width="99%" class="fright">
+			<select size="1" name="note[state]" {tip text="Select status" trigger="state"}>
+				<option value="{$smarty.const.RT_NEW}" {if $note.state == $smarty.const.RT_NEW}SELECTED{/if}>{trans("new")}</option>
+				<option value="{$smarty.const.RT_OPEN}" {if $note.state == $smarty.const.RT_OPEN}SELECTED{/if}>{trans("opened")}</option>
+				<option value="{$smarty.const.RT_RESOLVED}" {if $note.state == $smarty.const.RT_RESOLVED}SELECTED{/if}>{trans("resolved")}</option>
+				<option value="{$smarty.const.RT_DEAD}" {if $note.state == $smarty.const.RT_DEAD}SELECTED{/if}>{trans("dead")}</option>
+			</select>
+		</td>
+	</tr>
+	<tr class="light">
+                <td width="1%" class="fbl" nowrap="nowrap">
+	                <img src="img/desc.gif" alt="">
+	        <strong>{trans("Cause:")}</strong>
+	        </td>
+	        <td width="99%" class="fbr">
+		        <select size="1" name="note[cause]" {tip text="Select request cause" trigger="cause"}>
+		        	<option value="0" {if !$note.cause}SELECTED{/if}>{trans("unknown/other")}</option>
+				<option value="1" {if $note.cause == 1}SELECTED{/if}>{trans("customer's side")}</option>
+			        <option value="2" {if $note.cause == 2}SELECTED{/if}>{trans("company's side")}</option>
+			</select>
+		</td>
+        </tr>
+</table>
+</form>
+<script type="text/javascript">
 <!--
 document.forms['note'].elements['note[body]'].focus();
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}

@@ -1,6 +1,6 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
+<h1>{$layout.pagetitle}</h1>
 <script type="text/javascript">
 <!--
 	function getText(index)
@@ -16,303 +16,303 @@
 	}
 //-->
 </script>
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD WIDTH="1%" CLASS="fleftu">
-			<IMG SRC="img/money.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" CLASS="frightu" NOWRAP>
-			<B>{$tariff.name} ({$tariff.id|string_format:"%04d"})</B>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-	    <TD WIDTH="100%" COLSPAN="2" CLASS="flr container">
-		<TABLE WIDTH="100%" CELLPADDING="0">
-		<TR CLASS="LIGHT">
-		    <TD WIDTH="50%" style="vertical-align: top;">
-			<TABLE WIDTH="100%" CELLPADDING="3">
-			    <TR CLASS="LIGHT">
-				<TD WIDTH="1%" NOWRAP>
-				    <IMG SRC="img/value.gif" ALT="">
-				</TD>
-				<TD WIDTH="1%"><B>{trans("Value:")}</B></TD>
-				<TD WIDTH="98%" NOWRAP>
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td width="1%" class="fleftu">
+			<img src="img/money.gif" alt="">
+		</td>
+		<td width="99%" class="frightu" nowrap="nowrap">
+			<strong>{$tariff.name} ({$tariff.id|string_format:"%04d"})</strong>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+	    <td width="100%" colspan="2" class="flr container">
+		<table width="100%" cellpadding="0">
+		<tr class="LIGHT">
+		    <td width="50%" style="vertical-align: top;">
+			<table width="100%" cellpadding="3">
+			    <tr class="LIGHT">
+				<td width="1%" nowrap="nowrap">
+				    <img src="img/value.gif" alt="">
+				</td>
+				<td width="1%"><strong>{trans("Value:")}</strong></td>
+				<td width="98%" nowrap="nowrap">
 				    {$tariff.value|money_format}
 				    {if $tariff.period}{assign var=tperiod value=$tariff.period}({$_PERIODS.$tperiod})
 				    {else}<font class="blend">({trans("period undefined")})</font>{/if}
-				</TD>
-			    </TR>
-			    <TR class="LIGHT">
-				<TD WIDTH="1%" NOWRAP>
-				    <IMG SRC="img/tax.gif" ALT="">
-				</TD>
-				<TD WIDTH="1%"><B>{trans("Tax:")}</B></TD>
-				<TD WIDTH="98%">{$tariff.tax}</TD>
-			    </TR>
-			    <TR class="LIGHT">
-				<TD WIDTH="1%" NOWRAP>
-				    <IMG SRC="img/money.gif" ALT="">
-				</TD>
-				<TD WIDTH="1%"><B>{trans("Type:")}</B></TD>
-				<TD WIDTH="98%">{assign var=typeid value=$tariff.type}{$_TARIFFTYPES.$typeid}</TD>
-			    </TR>
-			    <TR class="LIGHT">
-				<TD WIDTH="1%" NOWRAP>
-				    <IMG SRC="img/class.gif" ALT="">
-				</TD>
-				<TD WIDTH="1%"><B>{trans("Product ID:")}</B></TD>
-				<TD WIDTH="98%">
+				</td>
+			    </tr>
+			    <tr class="LIGHT">
+				<td width="1%" nowrap="nowrap">
+				    <img src="img/tax.gif" alt="">
+				</td>
+				<td width="1%"><strong>{trans("Tax:")}</strong></td>
+				<td width="98%">{$tariff.tax}</td>
+			    </tr>
+			    <tr class="LIGHT">
+				<td width="1%" nowrap="nowrap">
+				    <img src="img/money.gif" alt="">
+				</td>
+				<td width="1%"><strong>{trans("Type:")}</strong></td>
+				<td width="98%">{assign var=typeid value=$tariff.type}{$_TARIFFTYPES.$typeid}</td>
+			    </tr>
+			    <tr class="LIGHT">
+				<td width="1%" nowrap="nowrap">
+				    <img src="img/class.gif" alt="">
+				</td>
+				<td width="1%"><strong>{trans("Product ID:")}</strong></td>
+				<td width="98%">
 				    {$tariff.prodid}
-				</TD>
-			    </TR>
+				</td>
+			    </tr>
 			{if !check_conf('privileges.hide_summaries')}
-			    <TR CLASS="light">
-				<TD WIDTH="1%">
-				    <IMG SRC="img/customers.gif" ALT="">
-				</TD>
-				<TD WIDTH="1%" NOWRAP><B>{trans("Number of customers:")}</B></TD>
-				<TD WIDTH="98%">
+			    <tr class="light">
+				<td width="1%">
+				    <img src="img/customers.gif" alt="">
+				</td>
+				<td width="1%" nowrap="nowrap"><strong>{trans("Number of customers:")}</strong></td>
+				<td width="98%">
 				    {$tariff.customerscount|default:0} ({$tariff.count|default:0},{$tariff.activecount|default:0})
-				</TD>
-			    </TR>
-			    <TR CLASS="light">
-				<TD WIDTH="1%" NOWRAP>
-				    <IMG SRC="img/values.gif" ALT="">
-				</TD>
-				<TD WIDTH="1%" NOWRAP><B>{trans("Avg. monthly income:")}</B></TD>
-				<TD WIDTH="98%">
+				</td>
+			    </tr>
+			    <tr class="light">
+				<td width="1%" nowrap="nowrap">
+				    <img src="img/values.gif" alt="">
+				</td>
+				<td width="1%" nowrap="nowrap"><strong>{trans("Avg. monthly income:")}</strong></td>
+				<td width="98%">
 				    {$tariff.totalval|money_format} 
-				</TD>
-			    </TR>
+				</td>
+			    </tr>
 			{/if}
-			</TABLE>
-		    </TD>
-		    <TD WIDTH="50%" VALIGN="50%">
-			<TABLE WIDTH="100%" CELLPADDING="3">
-			    <TR CLASS="LIGHT">
-				<TD WIDTH="1%">
-				    <IMG SRC="img/uprate.gif" ALT="">
-				</TD>
-				<TD WIDTH="1%" NOWRAP><B>{trans("Upload rate:")}</B></TD>
-				<TD WIDTH="98%" NOWRAP>
+			</table>
+		    </td>
+		    <td width="50%" VALIGN="50%">
+			<table width="100%" cellpadding="3">
+			    <tr class="LIGHT">
+				<td width="1%">
+				    <img src="img/uprate.gif" alt="">
+				</td>
+				<td width="1%" nowrap="nowrap"><strong>{trans("Upload rate:")}</strong></td>
+				<td width="98%" nowrap="nowrap">
 				    {if $tariff.uprate}{$tariff.uprate} kbit/s{else}{trans("no limits")}{/if}
 				    ({trans("night:")} {if $tariff.uprate_n}{$tariff.uprate_n|default:0} kbit/s{else}{trans("not defined")}{/if})
-				</TD>
-			    </TR>
-			    <TR CLASS="LIGHT">
-				<TD WIDTH="1%">
-				</TD>
-				<TD WIDTH="1%" NOWRAP><B>{trans("Upload ceil:")}</B></TD>
-				<TD WIDTH="98%" NOWRAP>
+				</td>
+			    </tr>
+			    <tr class="LIGHT">
+				<td width="1%">
+				</td>
+				<td width="1%" nowrap="nowrap"><strong>{trans("Upload ceil:")}</strong></td>
+				<td width="98%" nowrap="nowrap">
 				    {if $tariff.upceil}{$tariff.upceil} kbit/s{else}{trans("no limits")}{/if}
 				    ({trans("night:")} {if $tariff.upceil_n}{$tariff.upceil_n|default:0} kbit/s{else}{trans("not defined")}{/if})
-				</TD>
-			    </TR>
-			    <TR CLASS="light">
-				<TD WIDTH="1%">
-				    <IMG SRC="img/downrate.gif" ALT="">
-				</TD>
-				<TD WIDTH="1%" NOWRAP><B>{trans("Download rate:")}</B></TD>
-				<TD WIDTH="98%" NOWRAP>
+				</td>
+			    </tr>
+			    <tr class="light">
+				<td width="1%">
+				    <img src="img/downrate.gif" alt="">
+				</td>
+				<td width="1%" nowrap="nowrap"><strong>{trans("Download rate:")}</strong></td>
+				<td width="98%" nowrap="nowrap">
 				    {if $tariff.downrate}{$tariff.downrate} kbit/s{else}{trans("no limits")}{/if}
 				    ({trans("night:")} {if $tariff.downrate_n}{$tariff.downrate_n|default:0} kbit/s{else}{trans("not defined")}{/if})
-				</TD>
-			    </TR>
-			    <TR CLASS="light">
-				<TD WIDTH="1%">
-				</TD>
-				<TD WIDTH="1%" NOWRAP><B>{trans("Download ceil:")}</B></TD>
-				<TD WIDTH="98%" NOWRAP>
+				</td>
+			    </tr>
+			    <tr class="light">
+				<td width="1%">
+				</td>
+				<td width="1%" nowrap="nowrap"><strong>{trans("Download ceil:")}</strong></td>
+				<td width="98%" nowrap="nowrap">
 				    {if $tariff.downceil}{$tariff.downceil} kbit/s{else}{trans("no limits")}{/if}
 				    ({trans("night:")} {if $tariff.downceil_n}{$tariff.downceil_n|default:0} kbit/s{else}{trans("not defined")}{/if})
-				</TD>
-			    </TR>
-			    <TR CLASS="light">
-				<TD WIDTH="1%">
-				    <IMG SRC="img/options.gif" ALT="">
-				</TD>
-				<TD WIDTH="1%" NOWRAP><B>{trans("Connection limit:")}</B></TD>
-				<TD WIDTH="98%" NOWRAP>
+				</td>
+			    </tr>
+			    <tr class="light">
+				<td width="1%">
+				    <img src="img/options.gif" alt="">
+				</td>
+				<td width="1%" nowrap="nowrap"><strong>{trans("Connection limit:")}</strong></td>
+				<td width="98%" nowrap="nowrap">
 				    {if $tariff.climit}{$tariff.climit}{else}{trans("no limits")}{/if}
 				    ({trans("night:")} {if $tariff.climit_n}{$tariff.climit_n|default:0}{else}{trans("not defined")}{/if})
-				</TD>
-			    </TR>
-			    <TR CLASS="light">
-				<TD WIDTH="1%">
-				</TD>
-				<TD WIDTH="1%" NOWRAP><B>{trans("Packet limit:")}</B></TD>
-				<TD WIDTH="98%" NOWRAP>
+				</td>
+			    </tr>
+			    <tr class="light">
+				<td width="1%">
+				</td>
+				<td width="1%" nowrap="nowrap"><strong>{trans("Packet limit:")}</strong></td>
+				<td width="98%" nowrap="nowrap">
 				    {if $tariff.plimit}{$tariff.plimit}{else}{trans("no limits")}{/if}
 				    ({trans("night:")} {if $tariff.climit_n}{$tariff.climit_n|default:0}{else}{trans("not defined")}{/if})
-				</TD>
-			    </TR>
-			    <TR CLASS="light">
-				<TD WIDTH="1%">
-				</TD>
-				<TD WIDTH="1%" NOWRAP><B>{trans("Data limit:")}</B></TD>
-				<TD WIDTH="98%">
+				</td>
+			    </tr>
+			    <tr class="light">
+				<td width="1%">
+				</td>
+				<td width="1%" nowrap="nowrap"><strong>{trans("Data limit:")}</strong></td>
+				<td width="98%">
 				    {if $tariff.dlimit}{$tariff.dlimit}{else}{trans("no limits")}{/if}
-				</TD>
-			    </TR>
-			</TABLE>
-		    </TD>
-		</TR>
-	    </TABLE>
-	    </TD>
-	</TR>
+				</td>
+			    </tr>
+			</table>
+		    </td>
+		</tr>
+	    </table>
+	    </td>
+	</tr>
 	{if $tariff.description}
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft">
-			<IMG SRC="img/info1.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" CLASS="fright">
-			<TABLE WIDTH="100%" CELLPADDING="5"> 
-			    <TR><TD CLASS="fall superlight">
-				    {$tariff.description|replace:"\n":"<BR>"}
-			    </TD></TR>
-			</TABLE>
-		</TD>
-	</TR>
+	<tr class="light">
+		<td width="1%" class="fleft">
+			<img src="img/info1.gif" alt="">
+		</td>
+		<td width="99%" class="fright">
+			<table width="100%" cellpadding="5"> 
+			    <tr><td class="fall superlight">
+				    {$tariff.description|replace:"\n":"<br />"}
+			    </td></tr>
+			</table>
+		</td>
+	</tr>
 	{/if}
 	{if $tariff.promotions}
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft">
-			<IMG SRC="img/promo.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" CLASS="fright">
+	<tr class="light">
+		<td width="1%" class="fleft">
+			<img src="img/promo.gif" alt="">
+		</td>
+		<td width="99%" class="fright">
 		    {foreach from=$tariff.promotions item=promo}
-		    <NOBR><A href="?m=promotioninfo&id={$promo.id}">{$promo.name}</A></NOBR>&nbsp;
+		    <span class="nobr"><a href="?m=promotioninfo&id={$promo.id}">{$promo.name}</a></span>&nbsp;
 		    {/foreach}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft">
-			<IMG SRC="img/account.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" CLASS="fright">
-			<TABLE WIDTH="100%" CELLPADDING="0">
-			    <TR>
-				    <TD WIDTH="1%" NOWRAP>{trans("Limit of domains:")}</TD>
-				    <TD width="99%" NOWRAP>{if $tariff.domain_limit===NULL}{trans("no limit")}{else}{$tariff.domain_limit}{/if}</TD>
-			    </TR>
-			    <TR>
-				    <TD WIDTH="1%" NOWRAP>{trans("Limit of account aliases:")}</TD>
-				    <TD width="99%" NOWRAP>{if $tariff.alias_limit===NULL}{trans("no limit")}{else}{$tariff.alias_limit}{/if}</TD>
-			    </TR>
-			    <TR>
-				    <TD WIDTH="1%" NOWRAP>{trans("Limit of e-mail accounts:")}</TD>
-				    <TD width="99%" NOWRAP>{if $tariff.mail_limit===NULL}{trans("no limit")}{else}{$tariff.mail_limit}{/if}</TD>
-			    </TR>
-			    <TR>
-				    <TD WIDTH="1%" NOWRAP>{trans("Limit of shell accounts:")}</TD>
-				    <TD width="99%" NOWRAP>{if $tariff.sh_limit===NULL}{trans("no limit")}{else}{$tariff.sh_limit}{/if}</TD>
-			    </TR>
-			    <TR>
-				    <TD WIDTH="1%" NOWRAP>{trans("Limit of www accounts:")}</TD>
-				    <TD width="99%" NOWRAP>{if $tariff.www_limit===NULL}{trans("no limit")}{else}{$tariff.www_limit}{/if}</TD>
-			    </TR>
-			    <TR>
-				    <TD WIDTH="1%" NOWRAP>{trans("Limit of ftp accounts:")}</TD>
-				    <TD width="99%" NOWRAP>{if $tariff.ftp_limit===NULL}{trans("no limit")}{else}{$tariff.ftp_limit}{/if}</TD>
-			    </TR>
-			    <TR>
-				    <TD WIDTH="1%" NOWRAP>{trans("Limit of sql accounts:")}</TD>
-				    <TD width="99%" NOWRAP>{if $tariff.sql_limit===NULL}{trans("no limit")}{else}{$tariff.sql_limit}{/if}</TD>
-			    </TR>
-			    <TR>
-				    <TD WIDTH="1%" NOWRAP>{trans("Quota limit of e-mail account:")}</TD>
-				    <TD width="99%" NOWRAP>{if $tariff.quota_mail_limit===NULL}{trans("no limit")}{else}{$tariff.quota_mail_limit}{/if}</TD>
-			    </TR>
-			    <TR>
-				    <TD WIDTH="1%" NOWRAP>{trans("Quota limit of shell account:")}</TD>
-				    <TD width="99%" NOWRAP>{if $tariff.quota_sh_limit===NULL}{trans("no limit")}{else}{$tariff.quota_sh_limit}{/if}</TD>
-			    </TR>
-			    <TR>
-				    <TD WIDTH="1%" NOWRAP>{trans("Quota limit of www account:")}</TD>
-				    <TD width="99%" NOWRAP>{if $tariff.quota_www_limit===NULL}{trans("no limit")}{else}{$tariff.quota_www_limit}{/if}</TD>
-			    </TR>
-			    <TR>
-				    <TD WIDTH="1%" NOWRAP>{trans("Quota limit of ftp account:")}</TD>
-				    <TD width="99%" NOWRAP>{if $tariff.quota_ftp_limit===NULL}{trans("no limit")}{else}{$tariff.quota_ftp_limit}{/if}</TD>
-			    </TR>
-			    <TR>
-				    <TD WIDTH="1%" NOWRAP>{trans("Quota limit of sql account:")}</TD>
-				    <TD width="99%" NOWRAP>{if $tariff.quota_sql_limit===NULL}{trans("no limit")}{else}{$tariff.quota_sql_limit}{/if}</TD>
-			    </TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR CLASS="light">
-	        <TD ALIGN="RIGHT" CLASS="fbottomu" COLSPAN="2">
-			<A HREF="?m=tariffedit&id={$tariff.id}" ACCESSKEY="E">{trans("Edit")} <IMG SRC="img/edit.gif" ALT=""></A>
+	<tr class="light">
+		<td width="1%" class="fleft">
+			<img src="img/account.gif" alt="">
+		</td>
+		<td width="99%" class="fright">
+			<table width="100%" cellpadding="0">
+			    <tr>
+				    <td width="1%" nowrap="nowrap">{trans("Limit of domains:")}</td>
+				    <td width="99%" nowrap="nowrap">{if $tariff.domain_limit===NULL}{trans("no limit")}{else}{$tariff.domain_limit}{/if}</td>
+			    </tr>
+			    <tr>
+				    <td width="1%" nowrap="nowrap">{trans("Limit of account aliases:")}</td>
+				    <td width="99%" nowrap="nowrap">{if $tariff.alias_limit===NULL}{trans("no limit")}{else}{$tariff.alias_limit}{/if}</td>
+			    </tr>
+			    <tr>
+				    <td width="1%" nowrap="nowrap">{trans("Limit of e-mail accounts:")}</td>
+				    <td width="99%" nowrap="nowrap">{if $tariff.mail_limit===NULL}{trans("no limit")}{else}{$tariff.mail_limit}{/if}</td>
+			    </tr>
+			    <tr>
+				    <td width="1%" nowrap="nowrap">{trans("Limit of shell accounts:")}</td>
+				    <td width="99%" nowrap="nowrap">{if $tariff.sh_limit===NULL}{trans("no limit")}{else}{$tariff.sh_limit}{/if}</td>
+			    </tr>
+			    <tr>
+				    <td width="1%" nowrap="nowrap">{trans("Limit of www accounts:")}</td>
+				    <td width="99%" nowrap="nowrap">{if $tariff.www_limit===NULL}{trans("no limit")}{else}{$tariff.www_limit}{/if}</td>
+			    </tr>
+			    <tr>
+				    <td width="1%" nowrap="nowrap">{trans("Limit of ftp accounts:")}</td>
+				    <td width="99%" nowrap="nowrap">{if $tariff.ftp_limit===NULL}{trans("no limit")}{else}{$tariff.ftp_limit}{/if}</td>
+			    </tr>
+			    <tr>
+				    <td width="1%" nowrap="nowrap">{trans("Limit of sql accounts:")}</td>
+				    <td width="99%" nowrap="nowrap">{if $tariff.sql_limit===NULL}{trans("no limit")}{else}{$tariff.sql_limit}{/if}</td>
+			    </tr>
+			    <tr>
+				    <td width="1%" nowrap="nowrap">{trans("Quota limit of e-mail account:")}</td>
+				    <td width="99%" nowrap="nowrap">{if $tariff.quota_mail_limit===NULL}{trans("no limit")}{else}{$tariff.quota_mail_limit}{/if}</td>
+			    </tr>
+			    <tr>
+				    <td width="1%" nowrap="nowrap">{trans("Quota limit of shell account:")}</td>
+				    <td width="99%" nowrap="nowrap">{if $tariff.quota_sh_limit===NULL}{trans("no limit")}{else}{$tariff.quota_sh_limit}{/if}</td>
+			    </tr>
+			    <tr>
+				    <td width="1%" nowrap="nowrap">{trans("Quota limit of www account:")}</td>
+				    <td width="99%" nowrap="nowrap">{if $tariff.quota_www_limit===NULL}{trans("no limit")}{else}{$tariff.quota_www_limit}{/if}</td>
+			    </tr>
+			    <tr>
+				    <td width="1%" nowrap="nowrap">{trans("Quota limit of ftp account:")}</td>
+				    <td width="99%" nowrap="nowrap">{if $tariff.quota_ftp_limit===NULL}{trans("no limit")}{else}{$tariff.quota_ftp_limit}{/if}</td>
+			    </tr>
+			    <tr>
+				    <td width="1%" nowrap="nowrap">{trans("Quota limit of sql account:")}</td>
+				    <td width="99%" nowrap="nowrap">{if $tariff.quota_sql_limit===NULL}{trans("no limit")}{else}{$tariff.quota_sql_limit}{/if}</td>
+			    </tr>
+			</table>
+		</td>
+	</tr>
+	<tr class="light">
+	        <td align="RIGHT" class="fbottomu" colspan="2">
+			<a href="?m=tariffedit&id={$tariff.id}" accesskey="E">{trans("Edit")} <img src="img/edit.gif" alt=""></a>
 			{if $tariff.count eq 0}
-			<A HREF="?m=tariffdel&id={$tariff.id}" onclick="return confirmLink(this,'{trans("Are you sure, you want to delete that tariff?")}');">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
+			<a href="?m=tariffdel&id={$tariff.id}" onclick="return confirmLink(this,'{trans("Are you sure, you want to delete that tariff?")}');">{trans("Delete")} <img src="img/delete.gif" alt=""></a>
 			{/if}
-		</TD>
-	</TR>
-	<TR CLASS="DARK">
-		<TD CLASS="fall" COLSPAN="2">
-			<B>{trans("Customers in Subscription:")}</B>
-		</TD>
-	</TR>
-	<TR CLASS="DARK">
-		<TD CLASS="fall" colspan="4" ALIGN="CENTER">
+		</td>
+	</tr>
+	<tr class="DARK">
+		<td class="fall" colspan="2">
+			<strong>{trans("Customers in Subscription:")}</strong>
+		</td>
+	</tr>
+	<tr class="DARK">
+		<td class="fall" colspan="4" align="CENTER">
 		{trans("Network:")}
-		<FORM NAME="tinfo" METHOD="GET" ACTION="?m=tariffinfo">
-			<INPUT type="submit" class="hiddenbtn">
-			<INPUT TYPE="hidden" VALUE="tariffinfo" NAME="m">
-			<INPUT TYPE="hidden" VALUE="{$tariff.id}" NAME="id">
-			<SELECT SIZE="1" NAME="netid" ONCHANGE="javascript:changeNetwork();">
-				<OPTION value="0" {if !$netid}SELECTED{/if}>{trans("- all networks -")}</OPTION>
+		<form name="tinfo" method="GET" action="?m=tariffinfo">
+			<input type="submit" class="hiddenbtn">
+			<input type="hidden" value="tariffinfo" name="m">
+			<input type="hidden" value="{$tariff.id}" name="id">
+			<select size="1" name="netid" ONCHANGE="javascript:changeNetwork();">
+				<option value="0" {if !$netid}SELECTED{/if}>{trans("- all networks -")}</option>
 				{section name=networks loop=$networks}
-				<OPTION value="{$networks[networks].id}" {if $networks[networks].id eq $netid}SELECTED{/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
+				<option value="{$networks[networks].id}" {if $networks[networks].id eq $netid}SELECTED{/if}>{$networks[networks].name|truncate:30:"...":true}</option>
 				{/section}
-			</SELECT>&nbsp;
-		</FORM>
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%" CLASS="FALL" COLSPAN="2">
-			<TABLE WIDTH="100%" CELLPADDING="2">
+			</select>&nbsp;
+		</form>
+		</td>
+	</tr>
+	<tr>
+		<td width="100%" class="FALL" colspan="2">
+			<table width="100%" cellpadding="2">
 				{cycle values="light,lucid" print=false}
 				{section name=l1 loop=$tariff.customers max=$tariff.rows}
-				<TR>
+				<tr>
 					{section name=l2 loop=$tariff.customers start=$smarty.section.l1.index step=$tariff.rows}
-					<TD WIDTH="33%" class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')" {cycle print=false} onclick="return self.location.href='?m=customerinfo&id={$tariff.customers[l2].id}'">
-					<IMG SRC="img/customer.gif" ALT=""> <A HREF="?m=customerinfo&id={$tariff.customers[l2].id}">({$tariff.customers[l2].id|string_format:"%04d"}) {$tariff.customers[l2].customername|truncate:50:" ..."} {if $tariff.customers[l2].cnt > 1}({$tariff.customers[l2].cnt}){/if}</A></TD>
+					<td width="33%" class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')" {cycle print=false} onclick="return self.location.href='?m=customerinfo&id={$tariff.customers[l2].id}'">
+					<img src="img/customer.gif" alt=""> <a href="?m=customerinfo&id={$tariff.customers[l2].id}">({$tariff.customers[l2].id|string_format:"%04d"}) {$tariff.customers[l2].customername|truncate:50:" ..."} {if $tariff.customers[l2].cnt > 1}({$tariff.customers[l2].cnt}){/if}</a></td>
 					{/section}{cycle print=false}
-				</TR>
+				</tr>
 				{sectionelse}
-				<TR>
-					<TD WIDTH="100%" ALIGN="CENTER">
+				<tr>
+					<td width="100%" align="CENTER">
 						<P>&nbsp;</P>
-						<P><B>{trans("No such customers with that subscription.")}</B></P>
+						<P><strong>{trans("No such customers with that subscription.")}</strong></P>
 						<P>&nbsp;</P>
-					</TD>
-				</TR>
+					</td>
+				</tr>
 				{/section}
-			</TABLE>
-		</TD>
-	</TR>
-	<TR CLASS="DARK">
-		<TD WIDTH="100%" CLASS="FALL" COLSPAN="2">
+			</table>
+		</td>
+	</tr>
+	<tr class="DARK">
+		<td width="100%" class="FALL" colspan="2">
 			<P>
-			<FORM NAME="tmove" METHOD="GET" ACTION="?m=tariffmove">
-				<INPUT type="submit" class="hiddenbtn">
-				<INPUT TYPE="hidden" VALUE="tariffmove" NAME="m">
-				<INPUT TYPE="hidden" VALUE="{$tariff.id}" NAME="from">
-				<INPUT TYPE="hidden" VALUE="{if !$netid}0{else}{$netid}{/if}" NAME="netid">
-				<input type="hidden" name="is_sure" VALUE="0">
-				<B><A HREF="javascript:document.tmove.submit();" onClick="return confirmForm(document.tmove.elements['is_sure'],'{trans("Are you sure, you want to move customers to selected tariff?")}','1');">{trans("Move customers to subscription:")}</A> </B>
-				<SELECT SIZE="1" NAME="to">
+			<form name="tmove" method="GET" action="?m=tariffmove">
+				<input type="submit" class="hiddenbtn">
+				<input type="hidden" value="tariffmove" name="m">
+				<input type="hidden" value="{$tariff.id}" name="from">
+				<input type="hidden" value="{if !$netid}0{else}{$netid}{/if}" name="netid">
+				<input type="hidden" name="is_sure" value="0">
+				<strong><a href="javascript:document.tmove.submit();" onClick="return confirmForm(document.tmove.elements['is_sure'],'{trans("Are you sure, you want to move customers to selected tariff?")}','1');">{trans("Move customers to subscription:")}</a> </strong>
+				<select size="1" name="to">
 					{section name=lt loop=$tariffs}
-					{if $tariffs[lt].id neq $tariff.id}<OPTION VALUE="{$tariffs[lt].id}">{$tariffs[lt].name} ({$tariffs[lt].value|money_format} )</OPTION>{/if}
+					{if $tariffs[lt].id neq $tariff.id}<option value="{$tariffs[lt].id}">{$tariffs[lt].name} ({$tariffs[lt].value|money_format} )</option>{/if}
 					{/section}
-				</SELECT>
-			</FORM>
+				</select>
+			</form>
 			</P>
-		</TD>
-	</TR>
-</TABLE>
+		</td>
+	</tr>
+</table>
 {include file="footer.html"}

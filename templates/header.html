@@ -22,10 +22,10 @@
 	<table width="100%">
 		<tr>
 			<td align="center" style="border-bottom-style: dashed; border-bottom-width: 1px;" valign="top">
-				<br>
-				<img src="{get_conf('phpui.logo', 'img/logo-40.png')}" alt="LMS {$layout.lmsv}"><br>
-				<B>LMS {$layout.lmsv}</B><br>
-				&nbsp;<br>
+				<br />
+				<img src="{get_conf('phpui.logo', 'img/logo-40.png')}" alt="LMS {$layout.lmsv}"><br />
+				<strong>LMS {$layout.lmsv}</strong><br />
+				&nbsp;<br />
 			</td>
 		</tr>
 	</table>
@@ -33,13 +33,13 @@
 		{foreach from=$newmenu item=menuitem name=menu}
 		<tr>
 			<td class="click-menu">
-				<div class="tip"{if $menuitem.tip} {tip text="<B>\$a</B>" a=$menuitem.tip}{/if}{if ! $menuitem.submenu} onClick="{if $menuitem.windowopen}window.open('{$menuitem.link}');{else}return self.location.href='{$menuitem.link}';{/if}"{/if}>
+				<div class="tip"{if $menuitem.tip} {tip text="<strong>\$a</strong>" a=$menuitem.tip}{/if}{if ! $menuitem.submenu} onClick="{if $menuitem.windowopen}window.open('{$menuitem.link}');{else}return self.location.href='{$menuitem.link}';{/if}"{/if}>
 					<div class="box1"><img src="img/{$menuitem.img}" alt="*" style="position: absolute"><font style="margin-left: 21px">{$menuitem.name}</font></div>
 				</div>
 				<div class="section">
 				{if $menuitem.submenu}
 				{foreach from=$menuitem.submenu item=submenuitem}
-					<div class="tip"{if $submenuitem.tip} {tip text="<B>\$a</B>" a=$submenuitem.tip}{/if}>
+					<div class="tip"{if $submenuitem.tip} {tip text="<strong>\$a</strong>" a=$submenuitem.tip}{/if}>
 						<div class="box2" onClick="return self.location.href='{$submenuitem.link}';">&raquo;&nbsp;<a href="{$submenuitem.link}">{$submenuitem.name}</a></div>
 					</div>
 				{/foreach}
@@ -50,13 +50,13 @@
 		{/foreach}
 		<tr>
 			<td class="click-menu" style="border-bottom-style: dashed; border-bottom-width: 1pt;">
-				<div class="tip" {tip text="<B>Allows you to logout</B>"} onClick="if(confirm('{trans("Are you sure that you want to logout?")}')) { return self.location.href='?m=logout&is_sure=1'; } ">
-					<div class="box1"><img src="img/logout.gif" alt="*" style="position: absolute"><NOBR><font style="margin-left: 21px">{trans("Logout")} {$layout.logname|truncate:10:"..."}</font></NOBR></div>
+				<div class="tip" {tip text="<strong>Allows you to logout</strong>"} onClick="if(confirm('{trans("Are you sure that you want to logout?")}')) { return self.location.href='?m=logout&is_sure=1'; } ">
+					<div class="box1"><img src="img/logout.gif" alt="*" style="position: absolute"><span class="nobr"><font style="margin-left: 21px">{trans("Logout")} {$layout.logname|truncate:10:"..."}</font></span></div>
 				</div>
 			</td>
 		</tr>
 		<tr>
-			<td nowrap align="center"><font style="font-size: 7pt;">&nbsp;<br><B>LMS {$layout.lmsv}<br>{if $layout.lmsvr}({$layout.lmsvr})<br>{/if}DB: {$layout.dbschversion}<br>@ {$layout.hostname}</B></font>&nbsp;<br>&nbsp;<br></td>
+			<td nowrap="nowrap" align="center"><font style="font-size: 7pt;">&nbsp;<br /><strong>LMS {$layout.lmsv}<br />{if $layout.lmsvr}({$layout.lmsvr})<br />{/if}DB: {$layout.dbschversion}<br />@ {$layout.hostname}</strong></font>&nbsp;<br />&nbsp;<br /></td>
 		</tr>
 	</table>
 	<script type="text/javascript">
@@ -69,7 +69,7 @@
     	<form method="post" name="quicksearch" action="?m=quicksearch" id="quicksearch">
 	<table width="100%" cellpadding="0" cellspacing="0">
 		<tr>
-		    <td width="1%" nowrap>
+		    <td width="1%" nowrap="nowrap">
 			{trans("Search:")}
 			<img src="img/customer.gif" alt="">
 			<input class="blend" type="text" id="customerinput" name="qscustomer" value="" size="15" {tip text="Enter customer ID, first/lastname, email or address and press Enter"}>
@@ -88,16 +88,16 @@
 			{* Enter key submit hack for IE *}
 			<input type="image" src="img/empty.gif" width="0" height="0" style="border: none;">
 		    </td>
-		    <td width="99%" align="right" nowrap>
-			&nbsp;<A href="?m=copyrights">&copy; 2001-2012 LMS Developers</A>
+		    <td width="99%" align="right" nowrap="nowrap">
+			&nbsp;<a href="?m=copyrights">&copy; 2001-2012 LMS Developers</a>
 		    </td>
 		</tr>
 	</table>
 	</form>
 	<hr>
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 <!--//
 document.forms['quicksearch'].elements['customerinput'].focus();
 //-->
-</SCRIPT>
+</script>
 {/if}

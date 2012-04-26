@@ -1,59 +1,59 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
+<h1>{$layout.pagetitle}</h1>
 {include file="calendar_js.html"}
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR>
-		<TD WIDTH="100%">
+<table width="100%" cellpadding="3">
+	<tr>
+		<td width="100%">
 			{include file="customerinfobox.html"}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
+		</td>
+	</tr>
+	<tr>
+		<td width="100%">
 			{include file="customernodesbox.html"}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
+		</td>
+	</tr>
+	<tr>
+		<td width="100%">
 			{include file="customervoipaccountsbox.html"}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
+		</td>
+	</tr>
+	<tr>
+		<td width="100%">
 			{include file="customerdocuments.html" limit=10}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
+		</td>
+	</tr>
+	<tr>
+		<td width="100%">
 			{include file="customermessages.html" limit=10}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
+		</td>
+	</tr>
+	<tr>
+		<td width="100%">
 			{include file="customerevents.html" limit=10}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
+		</td>
+	</tr>
+	<tr>
+		<td width="100%">
 			{include file="customergroups.html"}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
+		</td>
+	</tr>
+	<tr>
+		<td width="100%">
 			{include file="customerassignments.html"}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{if !check_conf('privileges.hide_finances')}
-	<TR>
-		<TD WIDTH="100%">
+	<tr>
+		<td width="100%">
 			{include file="customerbalancebox.html" limit=-10}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
-	<TR>
-		<TD WIDTH="100%">
+	<tr>
+		<td width="100%">
 			{include file="customeractions.html"}
-		</TD>
-	</TR>
-</TABLE>
+		</td>
+	</tr>
+</table>
 {include file="footer.html"}

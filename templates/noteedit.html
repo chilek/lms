@@ -1,6 +1,6 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
+<h1>{$layout.pagetitle}</h1>
 {include file="calendar_js.html"}
 <script type="text/javascript">
 <!--
@@ -26,169 +26,169 @@
 	}
 //-->
 </script>
-<FORM NAME="setcustomer" METHOD="POST" ACTION="?m=noteedit&action=setcustomer">
-<INPUT type="submit" class="hiddenbtn">
-<INPUT type="HIDDEN" name="note[number]" value="{$note.number}">
-<INPUT type="HIDDEN" name="note[template]" value="{$note.template}">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD CLASS="fall" WIDTH="100%" COLSPAN="2">
-			<B>{trans("Main Information:")}</B>
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<B>{trans("Settlement date:")}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="note[cdate]" VALUE="{$note.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} OnClick="javascript:cal1.popup();" >
+<form name="setcustomer" method="POST" action="?m=noteedit&action=setcustomer">
+<input type="submit" class="hiddenbtn">
+<input type="HIDDEN" name="note[number]" value="{$note.number}">
+<input type="HIDDEN" name="note[template]" value="{$note.template}">
+<table width="100%" cellpadding="3">
+	<tr class="dark">
+		<td class="fall" width="100%" colspan="2">
+			<strong>{trans("Main Information:")}</strong>
+		</td>
+	</tr>
+	<tr class="light">
+		<td class="fleft" width="1%" nowrap="nowrap">
+			<strong>{trans("Settlement date:")}</strong>
+		</td>
+		<td class="fright" width="99%" nowrap="nowrap">
+			<input type="TEXT" name="note[cdate]" value="{$note.cdate|date_format:"%Y/%m/%d"}" size="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} OnClick="javascript:cal1.popup();" >
 			{if $note.cdatewarning}
-			<INPUT TYPE="HIDDEN" NAME="note[cdatewarning]" VALUE="1">
+			<input type="HIDDEN" name="note[cdatewarning]" value="1">
 			{/if}
-		</TD>
-	</TR>
-	<TR CLASS="light">
-                <TD CLASS="fleft" WIDTH="1%" NOWRAP>
-	                <B>{trans("Deadline:")}</B>
-	        </TD>
-	        <TD CLASS="fright" WIDTH="99%" NOWRAP>
-	                <INPUT TYPE="TEXT" NAME="note[paytime]" VALUE="{$note.paytime}" SIZE="10" {tip text="Enter deadline in days (optional)"}>
+		</td>
+	</tr>
+	<tr class="light">
+                <td class="fleft" width="1%" nowrap="nowrap">
+	                <strong>{trans("Deadline:")}</strong>
+	        </td>
+	        <td class="fright" width="99%" nowrap="nowrap">
+	                <input type="TEXT" name="note[paytime]" value="{$note.paytime}" size="10" {tip text="Enter deadline in days (optional)"}>
 	                ({$note.cdate+$note.paytime*86400|date_format:"%Y/%m/%d"})
-	        </TD>																							        </TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<B>{trans("Customer:")}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+	        </td>																							        </tr>
+	<tr class="light">
+		<td class="fleft" width="1%" nowrap="nowrap">
+			<strong>{trans("Customer:")}</strong>
+		</td>
+		<td class="fright" width="99%" nowrap="nowrap">
 			{if $customers}
-			<SELECT SIZE="1" NAME="customer" onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value">
-				<OPTION VALUE="0">{trans("... select customer ...")}</OPTION>
+			<select size="1" name="customer" onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value">
+				<option value="0">{trans("... select customer ...")}</option>
 				{foreach from=$customers item=c}
-				<OPTION VALUE="{$c.id}"{if $c.id eq $customer.id || $note.customerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:"40":"...":true} ({$c.id|string_format:"%04d"})</OPTION>
+				<option value="{$c.id}"{if $c.id eq $customer.id || $note.customerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:"40":"...":true} ({$c.id|string_format:"%04d"})</option>
 				{/foreach}
-			</SELECT>
+			</select>
 			{trans("or Customer ID:")}
 			{/if}
-			<INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{else}{$note.customerid}{/if}" SIZE="5"{if $customers} onChange="reset_customer()" onfocus="reset_customer()"{/if} {tip text="Enter customer ID"}>
-			<a href="javascript: void(0);" onClick="return customerchoosewin(document.setcustomer.customerid);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fbottomu" WIDTH="100%" ALIGN="right" COLSPAN="2">
-			<A HREF="javascript: saveheader();">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
+			<input type="TEXT" name="customerid" value="{if $customer.id}{$customer.id}{else}{$note.customerid}{/if}" size="5"{if $customers} onChange="reset_customer()" onfocus="reset_customer()"{/if} {tip text="Enter customer ID"}>
+			<a href="javascript: void(0);" onClick="return customerchoosewin(document.setcustomer.customerid);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</a>
+		</td>
+	</tr>
+	<tr class="light">
+		<td class="fbottomu" width="100%" align="right" colspan="2">
+			<a href="javascript: saveheader();">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+		</td>
+	</tr>
+</table>
+</form>
 {if $customer}
 <P>
-<TABLE WIDTH="100%" CELLPADDING="3">
-        <TR CLASS="dark">
-                <TD CLASS="fleftu" WIDTH="1%" nowrap>
-                        <IMG SRC="img/customer.gif" ALT=""> <B>{trans("Customer:")}</B>
-                </TD>
-                <TD CLASS="frightu" WIDTH="99%">
-                        <B>{$customer.customername}</B>
+<table width="100%" cellpadding="3">
+        <tr class="dark">
+                <td class="fleftu" width="1%" nowrap="nowrap">
+                        <img src="img/customer.gif" alt=""> <strong>{trans("Customer:")}</strong>
+                </td>
+                <td class="frightu" width="99%">
+                        <strong>{$customer.customername}</strong>
                         &nbsp;&raquo;&nbsp; {$customer.address} &nbsp; {$customer.zip} {$customer.city}
                         &nbsp;&raquo;&nbsp; {if $customer.balance < 0}<FONT class="red">{/if}{$customer.balance|money_format}{if $customer.balance < 0}</FONT>{/if}
-                </TD>
-        </TR>
-</TABLE>
+                </td>
+        </tr>
+</table>
 </P>
 {/if}
 <P>	
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD CLASS="fleftu" WIDTH="1%">
-			<B>{trans("No.")}</B>
-		</TD>
-		<TD CLASS="fbt" WIDTH="97%">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td class="fleftu" width="1%">
+			<strong>{trans("No.")}</strong>
+		</td>
+		<td class="fbt" width="97%">
 			{trans("Title:")}
-		</TD>
-		<TD CLASS="fbt" WIDTH="1%" NOWRAP ALIGN="RIGHT">
+		</td>
+		<td class="fbt" width="1%" nowrap="nowrap" align="RIGHT">
 			{trans("Value:")}
-		</TD>
-		<TD CLASS="frightu" WIDTH="1%">
+		</td>
+		<td class="frightu" width="1%">
 			&nbsp;
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{*{counter print=false}*}
 	{cycle values="light,lucid" print=false}
 	{foreach from=$contents item=item}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD CLASS="fleft" WIDTH="1%">
-			<B>{counter}.</B>
-		</TD>
-		<TD WIDTH="97%">
+	<tr class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<td class="fleft" width="1%">
+			<strong>{counter}.</strong>
+		</td>
+		<td width="97%">
 			{$item.description}
-		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+		</td>
+		<td width="1%" nowrap="nowrap" align="RIGHT">
 			{$item.value|string_format:"%.2f"}
-		</TD>
-		<TD WIDTH="1%" NOWRAP CLASS="fright">
-			<A HREF="?m=noteedit&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
-		</TD>			
-	</TR>
+		</td>
+		<td width="1%" nowrap="nowrap" class="fright">
+			<a href="?m=noteedit&action=deletepos&posuid={$item.posuid}"><img src="img/delete.gif" {tip text="Remove this item from list"}></a>
+		</td>			
+	</tr>
 	{foreachelse}
-	<TR>
-		<TD COLSPAN="4" ALIGN="CENTER" CLASS="flr">
+	<tr>
+		<td colspan="4" align="CENTER" class="flr">
 			<p>&nbsp;</p>
-			<p><B>{trans("Debit note have no items. Use form below for items addition.")}</B></p>
+			<p><strong>{trans("Debit note have no items. Use form below for items addition.")}</strong></p>
 			<p>&nbsp;</p>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/foreach}
 	{if $contents}
-	<TR CLASS="light">
-		<TD COLSPAN="2" WIDTH="98%" ALIGN="RIGHT" CLASS="fleftu">
-			<B>{trans("Total:")}</B>
-		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" CLASS="fbt">
-			<B>{sum array=$contents column=value string_format="%01.2f"}</B>
-		</TD>
-		<TD WIDTH="1%" CLASS="frightu">
+	<tr class="light">
+		<td colspan="2" width="98%" align="RIGHT" class="fleftu">
+			<strong>{trans("Total:")}</strong>
+		</td>
+		<td width="1%" nowrap="nowrap" align="RIGHT" class="fbt">
+			<strong>{sum array=$contents column=value string_format="%01.2f"}</strong>
+		</td>
+		<td width="1%" class="frightu">
 			&nbsp;
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
-	<FORM METHOD="POST" ACTION="?m=noteedit&action=additem" NAME="additem">
-	<INPUT type="submit" class="hiddenbtn">
-	<TR CLASS="light">
-		<TD CLASS="ftl" WIDTH="1%" NOWRAP>
-			<B>{counter}.</B>
-		</TD>
-		<TD CLASS="ftop" WIDTH="92%" NOWRAP>
-			<INPUT TYPE="text" NAME="description" SIZE="80" {tip text="Enter description" trigger="description"}>
-		</TD>
-		<TD CLASS="ftop" ALIGN="RIGHT" NOWRAP>
-			<INPUT TYPE="text" NAME="value" SIZE="8" {tip text="Enter value" trigger="value"}>
-		</TD>
-		<TD CLASS="ftr">
-			<A HREF="javascript:document.additem.submit(); "><IMG SRC="img/save.gif" ALT="" {tip text="Add item"}></A>
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD COLSPAN="9" CLASS="fbottomu" ALIGN="RIGHT">
-			<A HREF="?m=notelist">{trans("Cancel")} <IMG src="img/cancel.gif"></A> 
+	<form method="POST" action="?m=noteedit&action=additem" name="additem">
+	<input type="submit" class="hiddenbtn">
+	<tr class="light">
+		<td class="ftl" width="1%" nowrap="nowrap">
+			<strong>{counter}.</strong>
+		</td>
+		<td class="ftop" width="92%" nowrap="nowrap">
+			<input type="text" name="description" size="80" {tip text="Enter description" trigger="description"}>
+		</td>
+		<td class="ftop" align="RIGHT" nowrap="nowrap">
+			<input type="text" name="value" size="8" {tip text="Enter value" trigger="value"}>
+		</td>
+		<td class="ftr">
+			<a href="javascript:document.additem.submit(); "><img src="img/save.gif" alt="" {tip text="Add item"}></a>
+		</td>
+	</tr>
+	<tr class="light">
+		<td colspan="9" class="fbottomu" align="RIGHT">
+			<a href="?m=notelist">{trans("Cancel")} <img src="img/cancel.gif"></a> 
 			{if !$customer}
-			<A HREF="javascript:alert('{trans("Customer not selected!")}');">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-			<A HREF="javascript:alert('{trans("Customer not selected!")}');">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
+			<a href="javascript:alert('{trans("Customer not selected!")}');">{trans("Save")} <img src="img/save.gif" alt=""></a>
+			<a href="javascript:alert('{trans("Customer not selected!")}');">{trans("Save & Print")} <img src="img/print.gif" alt=""></a>
 			{elseif !$contents}
-			<A HREF="javascript:alert('{trans("Document has no items!")}');">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-			<A HREF="javascript:alert('{trans("Document has no items!")}');">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
+			<a href="javascript:alert('{trans("Document has no items!")}');">{trans("Save")} <img src="img/save.gif" alt=""></a>
+			<a href="javascript:alert('{trans("Document has no items!")}');">{trans("Save & Print")} <img src="img/print.gif" alt=""></a>
 			{else}
-			<A HREF="?m=noteedit&action=save">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-			<A HREF="javascript:printnote()">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
+			<a href="?m=noteedit&action=save">{trans("Save")} <img src="img/save.gif" alt=""></a>
+			<a href="javascript:printnote()">{trans("Save & Print")} <img src="img/print.gif" alt=""></a>
 			{/if}
-		</TD>
-	</TR>
-	</FORM>
-</TABLE>
-<SCRIPT type="text/javascript">
+		</td>
+	</tr>
+	</form>
+</table>
+<script type="text/javascript">
 <!--
 var cal1 = new calendar(document.forms['setcustomer'].elements['note[cdate]']);
 cal1.time_comp = false;
 document.forms['setcustomer'].elements['note[cdate]'].focus();
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}

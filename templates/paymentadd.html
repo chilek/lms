@@ -1,81 +1,81 @@
 {include file="header.html"}
 <!-- $Id$ -->
-<H1>{$layout.pagetitle}</H1>
-<FORM METHOD="POST" NAME="paymentadd" ACTION="?m=paymentadd">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD WIDTH="1%" CLASS="fleftu">
-			<IMG SRC="img/payment.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" CLASS="fbt">
-			<B>{trans("Name:")}</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="frightu">
-			<INPUT TYPE="TEXT" NAME="payment[name]" VALUE="{$payment.name}" {tip text="Enter standing payment name" trigger="name" bold=1}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft">
-			<IMG SRC="img/creditor.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("Creditor:")}</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="fright">
-			<INPUT TYPE="TEXT" SIZE="50" NAME="payment[creditor]" VALUE="{$payment.creditor}" {tip text="Enter creditor name" trigger="creditor"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft">
-			<IMG SRC="img/value.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Value:")}</B> 
-		</TD>
-		<TD WIDTH="98%" CLASS="fright">
-			<INPUT TYPE="TEXT" SIZE="8" NAME="payment[value]" VALUE="{$payment.value}" {tip text="Enter value" trigger="value"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft">
-			<IMG SRC="img/calendar.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Accounting day:")}</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="fright">								
-			<SELECT SIZE="1" NAME="payment[period]" {tip text="Select accounting frequency"}>
+<h1>{$layout.pagetitle}</h1>
+<form method="POST" name="paymentadd" action="?m=paymentadd">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td width="1%" class="fleftu">
+			<img src="img/payment.gif" alt="">
+		</td>
+		<td width="1%" class="fbt">
+			<strong>{trans("Name:")}</strong>
+		</td>
+		<td width="98%" class="frightu">
+			<input type="TEXT" name="payment[name]" value="{$payment.name}" {tip text="Enter standing payment name" trigger="name" bold=1}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft">
+			<img src="img/creditor.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Creditor:")}</strong>
+		</td>
+		<td width="98%" class="fright">
+			<input type="TEXT" size="50" name="payment[creditor]" value="{$payment.creditor}" {tip text="Enter creditor name" trigger="creditor"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft">
+			<img src="img/value.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("Value:")}</strong> 
+		</td>
+		<td width="98%" class="fright">
+			<input type="TEXT" size="8" name="payment[value]" value="{$payment.value}" {tip text="Enter value" trigger="value"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft">
+			<img src="img/calendar.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("Accounting day:")}</strong>
+		</td>
+		<td width="98%" class="fright">								
+			<select size="1" name="payment[period]" {tip text="Select accounting frequency"}>
 				{foreach from=$_PERIODS key=key item=item}{if $key>0}
-				<OPTION VALUE="{$key}"{if $payment.period eq $key} SELECTED{/if}>{$item}</OPTION>
+				<option value="{$key}"{if $payment.period eq $key} SELECTED{/if}>{$item}</option>
 				{/if}{/foreach}
-			</SELECT>&nbsp;
-    			<INPUT TYPE="TEXT" NAME="payment[at]" VALUE="{$payment.at}" {tip text="Enter when to account payment. For weekly payment enter day of week (Monday = 1), for monthly payment enter day of month (from 1 to 28), for yearly payment enter day and month in format DD/MM (15/09 means 15 September), for half-yearly DD/MM (MM <=6) and quarterly DD/MM (MM <= 3)" trigger="at"} SIZE="5">
-		</TD>
-	</TR>	
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft">
-			<IMG SRC="img/info1.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("Description:")}</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="fright">
-			<TEXTAREA NAME="payment[description]" COLS="50" ROWS="5" {tip text="Enter additional information (optional)"}>{$payment.description}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT"> 
-			<A HREF="javascript:document.paymentadd.submit();" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
-			<A HREF="?m=paymentlist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A><BR>
-			<INPUT TYPE="checkbox" NAME="payment[reuse]" VALUE="ON" {if $payment.reuse} checked{/if}> {trans("Display this form again, when this payment is saved")}
-		</TD>
-	</TR>
-</TABLE></FORM>
+			</select>&nbsp;
+    			<input type="TEXT" name="payment[at]" value="{$payment.at}" {tip text="Enter when to account payment. For weekly payment enter day of week (Monday = 1), for monthly payment enter day of month (from 1 to 28), for yearly payment enter day and month in format DD/MM (15/09 means 15 September), for half-yearly DD/MM (MM <=6) and quarterly DD/MM (MM <= 3)" trigger="at"} size="5">
+		</td>
+	</tr>	
+	<tr class="LIGHT">
+		<td width="1%" class="fleft">
+			<img src="img/info1.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Description:")}</strong>
+		</td>
+		<td width="98%" class="fright">
+			<textarea name="payment[description]" cols="50" rows="5" {tip text="Enter additional information (optional)"}>{$payment.description}</textarea>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="100%" colspan="3" class="FBOTTOMU" align="RIGHT"> 
+			<a href="javascript:document.paymentadd.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+			<a href="?m=paymentlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a><br />
+			<input type="checkbox" name="payment[reuse]" value="ON" {if $payment.reuse} checked="checked"{/if}> {trans("Display this form again, when this payment is saved")}
+		</td>
+	</tr>
+</table></form>
 </P>
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 <!--
 document.forms['paymentadd'].elements['payment[name]'].focus();
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}

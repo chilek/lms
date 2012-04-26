@@ -1,94 +1,94 @@
 {include file="header.html"}
 <!-- $Id$ -->
-<H1>{$layout.pagetitle}</H1>
-<FORM METHOD="POST" NAME="schemaadd" ACTION="?m=promotionschemaadd&id={$schema.promotionid}">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD WIDTH="1%" CLASS="fleftu">
-			<IMG SRC="img/promoschema.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" CLASS="fbt">
-			<B>{trans("Name:")}</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="frightu">
-			<INPUT TYPE="TEXT" NAME="schema[name]" VALUE="{$schema.name}" SIZE="40" {tip text="Enter schema name" trigger="name" bold=1}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft">
-			<IMG SRC="img/calendar.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("Periods:")}</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="fright" ID="periodcont">
+<h1>{$layout.pagetitle}</h1>
+<form method="POST" name="schemaadd" action="?m=promotionschemaadd&id={$schema.promotionid}">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td width="1%" class="fleftu">
+			<img src="img/promoschema.gif" alt="">
+		</td>
+		<td width="1%" class="fbt">
+			<strong>{trans("Name:")}</strong>
+		</td>
+		<td width="98%" class="frightu">
+			<input type="TEXT" name="schema[name]" value="{$schema.name}" size="40" {tip text="Enter schema name" trigger="name" bold=1}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft">
+			<img src="img/calendar.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Periods:")}</strong>
+		</td>
+		<td width="98%" class="fright" id="periodcont">
 		    {foreach from=$schema.periods item=period key=key}
-			<SELECT NAME="schema[periods][]" {tip text="Select length of the period (in months)"}>
+			<select name="schema[periods][]" {tip text="Select length of the period (in months)"}>
 			    {if !$key}
-                <OPTION value="0"{if !$period} selected{/if}>- {trans("unlimited")} -</OPTION>
+                <option value="0"{if !$period} selected{/if}>- {trans("unlimited")} -</option>
                 {/if}
 			    {foreach from=$schema.selection item=item}
-			    <OPTION value="{$item}"{if $period == $item} selected{/if}>{$item}</OPTION>
+			    <option value="{$item}"{if $period == $item} selected{/if}>{$item}</option>
 			    {/foreach}
-			</SELECT>
+			</select>
 			{/foreach}
-			<A href="javascript:del_period_item()" ID="perioddel"{if count($schema.periods) < 2} style="display:none"{/if}><IMG src="img/delete.gif" alt="" {tip text="Delete"}></A>
-			<A href="javascript:add_period_item()"><IMG src="img/add.gif" alt="" {tip text="Add"}></A>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft">
-			<IMG SRC="img/options.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("Options:")}</B>
-		</TD>
-		<TD WIDTH="98%" class="fright">
-		    <TABLE width="100%">
-		        <TR>
-		            <TD width="1%" NOWRAP>{trans("Contract prolongation after promotion period:")}</TD>
-		            <TD width="99%">
-		                <INPUT type="checkbox" name="schema[continuation]" value="1"{if $schema.continuation} checked{/if}>
-		            </TD>
-		        </TR>
-		        <TR>
-		            <TD NOWRAP>{trans("Additional subscription after promotion period:")}</TD>
-		            <TD>
-		                <SELECT name="schema[ctariffid]" {tip text="Select subscription" trigger="ctariffid"}>
-		                    <OPTION value="0"{if !$schema.ctariffid} SELECTED{/if}>- {trans("none")} -</OPTION>
+			<a href="javascript:del_period_item()" id="perioddel"{if count($schema.periods) < 2} style="display:none"{/if}><img src="img/delete.gif" alt="" {tip text="Delete"}></a>
+			<a href="javascript:add_period_item()"><img src="img/add.gif" alt="" {tip text="Add"}></a>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft">
+			<img src="img/options.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Options:")}</strong>
+		</td>
+		<td width="98%" class="fright">
+		    <table width="100%">
+		        <tr>
+		            <td width="1%" nowrap="nowrap">{trans("Contract prolongation after promotion period:")}</td>
+		            <td width="99%">
+		                <input type="checkbox" name="schema[continuation]" value="1"{if $schema.continuation} checked="checked"{/if}>
+		            </td>
+		        </tr>
+		        <tr>
+		            <td nowrap="nowrap">{trans("Additional subscription after promotion period:")}</td>
+		            <td>
+		                <select name="schema[ctariffid]" {tip text="Select subscription" trigger="ctariffid"}>
+		                    <option value="0"{if !$schema.ctariffid} SELECTED{/if}>- {trans("none")} -</option>
 		                {foreach from=$tariffs item=t}
-                            <OPTION value="{$t.id}"{if $t.id == $schema.ctariffid} SELECTED{/if}>
+                            <option value="{$t.id}"{if $t.id == $schema.ctariffid} SELECTED{/if}>
                             {$t.name|truncate:40:"...":true} ({$t.value|money_format}{if $t.upceil || $t.downceil}, {$t.downceil}/{$t.upceil} kbit/s{/if})
-                            </OPTION>
+                            </option>
                         {/foreach}
-		                </SELECT>
-		            </TD>
-		        </TR>
-		    </TABLE>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft">
-			<IMG SRC="img/info1.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("Description:")}</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="fright">
-			<TEXTAREA NAME="schema[description]" COLS="50" ROWS="5" {tip text="Enter additional information (optional)"}>{$schema.description}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT"> 
-			<A HREF="javascript:document.schemaadd.submit();" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
-			<A HREF="?m=promotioninfo&id={$schema.promotionid}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A><BR>
-			<INPUT TYPE="checkbox" NAME="schema[reuse]" VALUE="ON" id="reuse" {if $schema.reuse} checked{/if}><label for="reuse">{trans("Display this form again, when this schema is saved")}</label>
-		</TD>
-	</TR>
-</TABLE></FORM>
+		                </select>
+		            </td>
+		        </tr>
+		    </table>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft">
+			<img src="img/info1.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Description:")}</strong>
+		</td>
+		<td width="98%" class="fright">
+			<textarea name="schema[description]" cols="50" rows="5" {tip text="Enter additional information (optional)"}>{$schema.description}</textarea>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="100%" colspan="3" class="FBOTTOMU" align="RIGHT"> 
+			<a href="javascript:document.schemaadd.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+			<a href="?m=promotioninfo&id={$schema.promotionid}">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a><br />
+			<input type="checkbox" name="schema[reuse]" value="ON" id="reuse" {if $schema.reuse} checked="checked"{/if}><label for="reuse">{trans("Display this form again, when this schema is saved")}</label>
+		</td>
+	</tr>
+</table></form>
 </P>
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 <!--
 document.forms['schemaadd'].elements['schema[name]'].focus();
 
@@ -117,5 +117,5 @@ function del_period_item()
 	document.getElementById('perioddel').style.display = items.length > 1 ? '' : 'none';
 }
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}

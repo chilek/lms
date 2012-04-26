@@ -1,121 +1,121 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
+<h1>{$layout.pagetitle}</h1>
 {include file="calendar_js.html"}
-<P><FORM method="post" name="invoicereport" id="invoicereport" action="?m=export&type=invoices">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
-		<TD class="fleftu" width="1%">
-			<IMG src="img/money.gif" alt="">
-		</TD>
-		<TD class="frightu" width="99%">
-			<B>{trans("Sale Registry")}</B>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="flr" width="100%" colspan="2">
-			<TABLE width="100%">
-				<TR>
-					<TD width="1%">
-						<IMG src="img/calendar.gif" alt="">
-					</TD>
-					<TD width="1%">
-						<B>{trans("Period:")}&nbsp;</B>
-					</TD>
-					<TD width="1%" nowrap>
-						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal8.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-					</TD>
-					<TD width="97%" nowrap>
-						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal9.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.invoicereport.submit();">{trans("Save")} <IMG src="img/save.gif" alt="" hspace="2"></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
-<SCRIPT type="text/javascript">
+<P><form method="post" name="invoicereport" id="invoicereport" action="?m=export&type=invoices">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td class="fleftu" width="1%">
+			<img src="img/money.gif" alt="">
+		</td>
+		<td class="frightu" width="99%">
+			<strong>{trans("Sale Registry")}</strong>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="flr" width="100%" colspan="2">
+			<table width="100%">
+				<tr>
+					<td width="1%">
+						<img src="img/calendar.gif" alt="">
+					</td>
+					<td width="1%">
+						<strong>{trans("Period:")}&nbsp;</strong>
+					</td>
+					<td width="1%" nowrap="nowrap">
+						{trans("From")}&nbsp;<input type="text" name="from" size="10" MAXSIZE="10" OnClick="javascript:cal8.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+					</td>
+					<td width="97%" nowrap="nowrap">
+						{trans("To")}&nbsp;<input type="text" name="to" size="10" MAXSIZE="10" OnClick="javascript:cal9.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fbottomu" width="100%" colspan="2" align="right">
+			<a href="javascript:document.invoicereport.submit();">{trans("Save")} <img src="img/save.gif" alt="" hspace="2"></a>
+		</td>
+	</tr>
+</table>
+</form>
+<script type="text/javascript">
 <!--
 var cal8 = new calendar(document.forms['invoicereport'].elements['from']);
 cal8.time_comp = false;
 var cal9 = new calendar(document.forms['invoicereport'].elements['to']);
 cal9.time_comp = false;
 //-->
-</SCRIPT>
-<P><FORM method="post" name="receiptlist" id="receiptlist" action="?m=export&type=cash">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
-		<TD class="fleftu" width="1%">
-			<IMG src="img/money.gif" alt="">
-		</TD>
-		<TD class="frightu" width="99%">
-			<B>{trans("Cash Report")}</B>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="flr" width="100%" colspan="2">
-			<TABLE width="100%">
-				<TR>
-					<TD width="1%">
-						<IMG src="img/queue.gif" alt="">
-					</TD>
-					<TD width="1%" nowrap>
-						<B>{trans("Registry:")}</B>
-					</TD>
-					<TD width="1%">
-						<SELECT SIZE="1" NAME="registry" {tip text="Select cash registry"}>
-					    		<OPTION VALUE="0">{trans("- select registry -")}</OPTION>
+</script>
+<P><form method="post" name="receiptlist" id="receiptlist" action="?m=export&type=cash">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td class="fleftu" width="1%">
+			<img src="img/money.gif" alt="">
+		</td>
+		<td class="frightu" width="99%">
+			<strong>{trans("Cash Report")}</strong>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="flr" width="100%" colspan="2">
+			<table width="100%">
+				<tr>
+					<td width="1%">
+						<img src="img/queue.gif" alt="">
+					</td>
+					<td width="1%" nowrap="nowrap">
+						<strong>{trans("Registry:")}</strong>
+					</td>
+					<td width="1%">
+						<select size="1" name="registry" {tip text="Select cash registry"}>
+					    		<option value="0">{trans("- select registry -")}</option>
 						        {foreach from=$cashreglist item=c}
-							<OPTION VALUE="{$c.id}">{$c.name|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
+							<option value="{$c.id}">{$c.name|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</option>
 						        {/foreach}
-						</SELECT>
-					</TD>
-					<TD width="1%">
-						<IMG src="img/calendar.gif" alt="">
-					</TD>
-					<TD width="1%" nowrap>
-						<B>{trans("Period:")}</B>&nbsp;
-						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal12.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal13.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
-					</TD>
-					<TD width="1%">
-						<IMG src="img/users.gif" alt="">
-					</TD>
-					<TD width="1%" nowrap>
-						<B>{trans("User:")}</B>
-					</TD>
-					<TD width="93%">
-						<SELECT size="1" name="user" {tip text="You can select user to limit results"}>
-							<OPTION value="">{trans("- all users -")}</OPTION>
+						</select>
+					</td>
+					<td width="1%">
+						<img src="img/calendar.gif" alt="">
+					</td>
+					<td width="1%" nowrap="nowrap">
+						<strong>{trans("Period:")}</strong>&nbsp;
+						{trans("From")}&nbsp;<input type="text" name="from" size="10" MAXSIZE="10" OnClick="javascript:cal12.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<input type="text" name="to" size="10" MAXSIZE="10" OnClick="javascript:cal13.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+					</td>
+					<td width="1%">
+						<img src="img/users.gif" alt="">
+					</td>
+					<td width="1%" nowrap="nowrap">
+						<strong>{trans("User:")}</strong>
+					</td>
+					<td width="93%">
+						<select size="1" name="user" {tip text="You can select user to limit results"}>
+							<option value="">{trans("- all users -")}</option>
 							{section name="users" loop=$users}
-							<OPTION value="{$users[users].id}">{$users[users].name|truncate:40:"...":true}</OPTION>
+							<option value="{$users[users].id}">{$users[users].name|truncate:40:"...":true}</option>
 							{/section}
-						</SELECT>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.receiptlist.submit();">{trans("Save")} <IMG src="img/save.gif" alt="" hspace="2"></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
-<SCRIPT type="text/javascript">
+						</select>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fbottomu" width="100%" colspan="2" align="right">
+			<a href="javascript:document.receiptlist.submit();">{trans("Save")} <img src="img/save.gif" alt="" hspace="2"></a>
+		</td>
+	</tr>
+</table>
+</form>
+<script type="text/javascript">
 <!--
 var cal12 = new calendar(document.receiptlist.elements['from']);
 cal12.time_comp = false;
 var cal13 = new calendar(document.receiptlist.elements['to']);
 cal13.time_comp = false;
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}

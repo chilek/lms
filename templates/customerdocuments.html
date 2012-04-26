@@ -1,72 +1,72 @@
 <!--// $Id$ //-->
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD width="99%" class="fleftu hand" onclick="showOrHide('docpanel');">
-			<IMG src="img/docum.gif" alt="">
-			<B>{trans("Customer's Documents:")}</B> ({t a=$limit}last $a documents{/t})
-		</TD>
-		<TD width="1%" class="frightu" align="right" nowrap>
-			<A href="?m=documentadd&cid={$customerinfo.id}">{trans("New Document")} &raquo;</A>
-			<A href="?m=documentlist&c={$customerinfo.id}">{trans("All Documents")} &raquo;</A>&nbsp;
-		</TD>
-	</TR>
-	<TR id="docpanel" style="display:none;">
-		<TD WIDTH="100%" class="fall" colspan="2">
-			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
-				<TR class="dark">
-					<TD WIDTH="1%" NOWRAP class="fleftu"><B>{trans("Number:")}</B></TD>
-					<TD WIDTH="1%" NOWRAP class="fbt">{trans("Created:")}</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt"><B>{trans("Type:")}</B></TD>
-					<TD WIDTH="95%" NOWRAP class="fbt">{trans("Title:")}</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt">{trans("Period:")}</TD>
-					<TD WIDTH="1%" NOWRAP class="frightu"></TD>
-				</TR>
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td width="99%" class="fleftu hand" onclick="showOrHide('docpanel');">
+			<img src="img/docum.gif" alt="">
+			<strong>{trans("Customer's Documents:")}</strong> ({t a=$limit}last $a documents{/t})
+		</td>
+		<td width="1%" class="frightu" align="right" nowrap="nowrap">
+			<a href="?m=documentadd&cid={$customerinfo.id}">{trans("New Document")} &raquo;</a>
+			<a href="?m=documentlist&c={$customerinfo.id}">{trans("All Documents")} &raquo;</a>&nbsp;
+		</td>
+	</tr>
+	<tr id="docpanel" style="display:none;">
+		<td width="100%" class="fall" colspan="2">
+			<table cellpadding="5" cellspacing="0" width="100%">
+				<tr class="dark">
+					<td width="1%" nowrap="nowrap" class="fleftu"><strong>{trans("Number:")}</strong></td>
+					<td width="1%" nowrap="nowrap" class="fbt">{trans("Created:")}</td>
+					<td width="1%" nowrap="nowrap" class="fbt"><strong>{trans("Type:")}</strong></td>
+					<td width="95%" nowrap="nowrap" class="fbt">{trans("Title:")}</td>
+					<td width="1%" nowrap="nowrap" class="fbt">{trans("Period:")}</td>
+					<td width="1%" nowrap="nowrap" class="frightu"></td>
+				</tr>
 				{cycle values="light,lucid" print=false name=doc}
 				{foreach from=$documents item=doc}
-				<TR class="{cycle name=doc}{if $doc.closed} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-					<TD NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');"{if $doc.description} {tip text=$doc.description}{/if}>
-						<B>{number number=$doc.number template=$doc.template time=$doc.cdate}</B>
-					</TD>
-					<TD NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');">{$doc.cdate|date_format:"%Y/%m/%d"}</TD>
-					<TD NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');"><B>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</B></TD>
-					<TD NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');">{$doc.title|truncate:40:"...":true}</TD>
-					<TD NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');">
+				<tr class="{cycle name=doc}{if $doc.closed} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+					<td nowrap="nowrap" onclick="window.open('?m=documentview&id={$doc.docid}');"{if $doc.description} {tip text=$doc.description}{/if}>
+						<strong>{number number=$doc.number template=$doc.template time=$doc.cdate}</strong>
+					</td>
+					<td nowrap="nowrap" onclick="window.open('?m=documentview&id={$doc.docid}');">{$doc.cdate|date_format:"%Y/%m/%d"}</td>
+					<td nowrap="nowrap" onclick="window.open('?m=documentview&id={$doc.docid}');"><strong>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</strong></td>
+					<td nowrap="nowrap" onclick="window.open('?m=documentview&id={$doc.docid}');">{$doc.title|truncate:40:"...":true}</td>
+					<td nowrap="nowrap" onclick="window.open('?m=documentview&id={$doc.docid}');">
 						{if $doc.fromdate}{trans("from")} {$doc.fromdate|date_format:"%Y/%m/%d"}{/if}
 						{if $doc.todate}{trans("to")} {$doc.todate|date_format:"%Y/%m/%d"}{/if}
-					</TD>
-					<TD ALIGN="RIGHT" NOWRAP>
+					</td>
+					<td align="RIGHT" nowrap="nowrap">
 						{assign var=type value=$doc.type}
 						<a href="?m=documentview&id={$doc.docid}&save=1"><img src="img/save.gif" alt="[ {trans("Save")} ]" title="[ {trans("Save")} ]"></a>
 						{if ! $doc.closed && ($docrights.$type.rights & 4)}
 						<a href="?m=documentedit&id={$doc.docid}&action=confirm"><img src="img/confirm.gif" alt="[ {trans("Confirm")} ]" title="[ {trans("Confirm")} ]"></a>
 						{/if}
 						{if ($docrights.$type.rights & 16)}
-						<a onclick="return confirmLink(this, '{trans("Are you sure, you want to remove that document?")}')" HREF="?m=documentdel&id={$doc.docid}" {tip text="Remove document"}><img src="img/delete.gif" alt="[ {trans("Delete")} ]"></a>
+						<a onclick="return confirmLink(this, '{trans("Are you sure, you want to remove that document?")}')" href="?m=documentdel&id={$doc.docid}" {tip text="Remove document"}><img src="img/delete.gif" alt="[ {trans("Delete")} ]"></a>
 						{/if}
 						{if ($docrights.$type.rights & 8)}
 						<a href="?m=documentedit&id={$doc.docid}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
 						{/if}
 						<a href="?m=documentview&id={$doc.docid}" target="_blank"><img src="img/{if preg_match('/pdf/',$doc.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$doc.contenttype)}xls{else}view{/if}.gif" alt="[ {trans("View")} ]" title="[ {trans("View")} ]"></a>
-					</TD>
-				</TR>
+					</td>
+				</tr>
 				{foreachelse}
-				<TR>
-					<TD align="center" WIDTH="100%" colspan="6">
+				<tr>
+					<td align="center" width="100%" colspan="6">
 						<p>&nbsp;</p>
-						<p><B>{trans("That customer hasn't got any documents.")}</B></p>
+						<p><strong>{trans("That customer hasn't got any documents.")}</strong></p>
 						<p>&nbsp;</p>
-					</TD>
-				</TR>
+					</td>
+				</tr>
 				{/foreach}
-			</TABLE>
-		</TD>
-	</TR>
-</TABLE>
-<SCRIPT type="text/javascript">
+			</table>
+		</td>
+	</tr>
+</table>
+<script type="text/javascript">
 <!--
 	if (getCookie('docpanel') == '1')
 	{
 		document.getElementById('docpanel').style.display = '';
 	}
 //-->
-</SCRIPT>
+</script>

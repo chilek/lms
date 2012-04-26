@@ -1,66 +1,66 @@
 <!--// $Id$ //-->
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD width="99%" class="fleftu hand" align="left" nowrap="nowrap" onclick="showOrHide('customeractions');">
-			<IMG src="img/options.gif" alt="">
-			<B>{trans("Actions:")}</B>
-		</TD>
-		<TD width="1%" class="frightu" align="right" nowrap>
-		</TD>
-	</TR>
-	<TR id="customeractions" style="display:none;" class="light">
-		<TD width="100%" class="fall container" colspan="2">
-			<TABLE cellpadding="3" cellspacing="0" width="100%">
-				<FORM method="GET" name="cutoffstopaction" action="?m=customercutoffstop">
-				<INPUT type="hidden" name="m" value="customercutoffstop">
-				<INPUT type="hidden" name="customerid" value="{$customerinfo.id}">
-				<TR>
-					<TD width="1%">
-					    <IMG src="img/options.gif" alt="">
-					</TD>
-					<TD width="98%">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td width="99%" class="fleftu hand" align="left" nowrap="nowrap" onclick="showOrHide('customeractions');">
+			<img src="img/options.gif" alt="">
+			<strong>{trans("Actions:")}</strong>
+		</td>
+		<td width="1%" class="frightu" align="right" nowrap="nowrap">
+		</td>
+	</tr>
+	<tr id="customeractions" style="display:none;" class="light">
+		<td width="100%" class="fall container" colspan="2">
+			<table cellpadding="3" cellspacing="0" width="100%">
+				<form method="GET" name="cutoffstopaction" action="?m=customercutoffstop">
+				<input type="hidden" name="m" value="customercutoffstop">
+				<input type="hidden" name="customerid" value="{$customerinfo.id}">
+				<tr>
+					<td width="1%">
+					    <img src="img/options.gif" alt="">
+					</td>
+					<td width="98%">
 					    {trans("Cutoff suspending:")}
-					    <SELECT name="cutoffstop" {tip text="Select days number of cutoff suspending"}>
-						<OPTION value="0"{if !$customerinfo.cutoffstopnum} selected{/if}>0</OPTION>
-						<OPTION value="1"{if $customerinfo.cutoffstopnum==1} selected{/if}>1</OPTION>
-						<OPTION value="2"{if $customerinfo.cutoffstopnum==2} selected{/if}>2</OPTION>
-						<OPTION value="3"{if $customerinfo.cutoffstopnum==3} selected{/if}>3</OPTION>
-						<OPTION value="4"{if $customerinfo.cutoffstopnum==4} selected{/if}>4</OPTION>
-						<OPTION value="5"{if $customerinfo.cutoffstopnum==5} selected{/if}>5</OPTION>
-						<OPTION value="6"{if $customerinfo.cutoffstopnum==6} selected{/if}>6</OPTION>
-						<OPTION value="7"{if $customerinfo.cutoffstopnum==7} selected{/if}>7</OPTION>
-						<OPTION value="14"{if $customerinfo.cutoffstopnum==14} selected{/if}>14</OPTION>
-						<OPTION value="21"{if $customerinfo.cutoffstopnum==21} selected{/if}>21</OPTION>
-						<OPTION value="30"{if $customerinfo.cutoffstopnum==30} selected{/if}>30</OPTION>
-					    </SELECT>
-					</TD>
-					<TD width="1%" NOWRAP align="RIGHT">
-						<A href="javascript: document.cutoffstopaction.submit()">{trans("Submit")} <img src="img/save.gif" alt=""></a>
-					</TD>
-				</TR>
-				</FORM>
-				<FORM method="POST" name="warningaction" action="?m=customerwarn">
-				<INPUT type="hidden" name="setwarnings[mcustomerid][{$customerinfo.id}]" value="{$customerinfo.id}">
-				<TR>
-					<TD width="1%">
-					    <IMG src="img/warningon.gif" slt="">
-					</TD>
-					<TD width="98%">
+					    <select name="cutoffstop" {tip text="Select days number of cutoff suspending"}>
+						<option value="0"{if !$customerinfo.cutoffstopnum} selected{/if}>0</option>
+						<option value="1"{if $customerinfo.cutoffstopnum==1} selected{/if}>1</option>
+						<option value="2"{if $customerinfo.cutoffstopnum==2} selected{/if}>2</option>
+						<option value="3"{if $customerinfo.cutoffstopnum==3} selected{/if}>3</option>
+						<option value="4"{if $customerinfo.cutoffstopnum==4} selected{/if}>4</option>
+						<option value="5"{if $customerinfo.cutoffstopnum==5} selected{/if}>5</option>
+						<option value="6"{if $customerinfo.cutoffstopnum==6} selected{/if}>6</option>
+						<option value="7"{if $customerinfo.cutoffstopnum==7} selected{/if}>7</option>
+						<option value="14"{if $customerinfo.cutoffstopnum==14} selected{/if}>14</option>
+						<option value="21"{if $customerinfo.cutoffstopnum==21} selected{/if}>21</option>
+						<option value="30"{if $customerinfo.cutoffstopnum==30} selected{/if}>30</option>
+					    </select>
+					</td>
+					<td width="1%" nowrap="nowrap" align="RIGHT">
+						<a href="javascript: document.cutoffstopaction.submit()">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+					</td>
+				</tr>
+				</form>
+				<form method="POST" name="warningaction" action="?m=customerwarn">
+				<input type="hidden" name="setwarnings[mcustomerid][{$customerinfo.id}]" value="{$customerinfo.id}">
+				<tr>
+					<td width="1%">
+					    <img src="img/warningon.gif" slt="">
+					</td>
+					<td width="98%">
 					    {trans("Notice content:")}
-					    <TEXTAREA name="setwarnings[message]" cols="60" rows="5" {tip text="Enter notice contents"}>{$customerinfo.message|escape}</TEXTAREA>
-					    <NOBR><INPUT TYPE="checkbox" NAME="setwarnings[warnon]" ID="warnon" onchange="switchbox('warnon');"><label for="warnon">{trans("Enable")}</label></INPUT></NOBR>
-					    <NOBR><INPUT TYPE="checkbox" NAME="setwarnings[warnoff]" ID="warnoff" onchange="switchbox('warnoff');"><label for="warnoff">{trans("Disable")}</label></INPUT></NOBR>
-					</TD>
-					<TD width="1%" NOWRAP align="RIGHT">
-						<A href="javascript: document.warningaction.submit()">{trans("Submit")} <img src="img/save.gif" alt=""></a>
-					</TD>
-				</TR>
-				</FORM>
-			</TABLE>
-		</TD>
-	</TR>
-</TABLE>
-<SCRIPT type="text/javascript">
+					    <textarea name="setwarnings[message]" cols="60" rows="5" {tip text="Enter notice contents"}>{$customerinfo.message|escape}</textarea>
+					    <span class="nobr"><input type="checkbox" name="setwarnings[warnon]" id="warnon" onchange="switchbox('warnon');"><label for="warnon">{trans("Enable")}</label></INPUT></span>
+					    <span class="nobr"><input type="checkbox" name="setwarnings[warnoff]" id="warnoff" onchange="switchbox('warnoff');"><label for="warnoff">{trans("Disable")}</label></INPUT></span>
+					</td>
+					<td width="1%" nowrap="nowrap" align="RIGHT">
+						<a href="javascript: document.warningaction.submit()">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+					</td>
+				</tr>
+				</form>
+			</table>
+		</td>
+	</tr>
+</table>
+<script type="text/javascript">
 <!--
 if(getCookie('customeractions') == '1')
 {
@@ -76,4 +76,4 @@ function switchbox(id)
 		document.warningaction.elements['setwarnings[warnon]'].checked = false;
 }
 //-->
-</SCRIPT>
+</script>

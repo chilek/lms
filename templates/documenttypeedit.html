@@ -1,67 +1,67 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<FORM method="POST" action="?m=documenttypeedit&id={$documenttype.id}" name="typeedit">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" cellpadding="3">
-	<TR class="dark">
-		<TD width="100%" colspan="3" class="fall">
-			<IMG src="img/docum.gif" alt="">
-			<B>{trans("Name:")} {$documenttype.name}</B>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
-			<IMG src="img/users.gif" alt="">
-		</TD>
-		<TD width="1%" nowrap>
-			<B>{trans("Permissions:")}</B>
-		</TD>
-		<TD width="98%" class="fright">
-		    <TABLE width="100%" cellpadding="3">
-			<TR class="DARK">
-			    <TD width="95%" class="ftl"><B>{trans("User")}</B></TD>
-			    <TD width="1%" class="ftop" align="center" nowrap><B>{trans("Viewing")}</B></TD>
-			    <TD width="1%" class="ftop" align="center" nowrap><B>{trans("Creating")}</B></TD>
-			    <TD width="1%" class="ftop" align="center" nowrap><B>{trans("Confirming")}</B></TD>
-			    <TD width="1%" class="ftop" align="center" nowrap><B>{trans("Editing")}</B></TD>
-			    <TD width="1%" class="ftr" align="center" nowrap><B>{trans("Deleting")}</B></TD>
-			</TR>
+<h1>{$layout.pagetitle}</h1>
+<form method="POST" action="?m=documenttypeedit&id={$documenttype.id}" name="typeedit">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="dark">
+		<td width="100%" colspan="3" class="fall">
+			<img src="img/docum.gif" alt="">
+			<strong>{trans("Name:")} {$documenttype.name}</strong>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft">
+			<img src="img/users.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("Permissions:")}</strong>
+		</td>
+		<td width="98%" class="fright">
+		    <table width="100%" cellpadding="3">
+			<tr class="DARK">
+			    <td width="95%" class="ftl"><strong>{trans("User")}</strong></td>
+			    <td width="1%" class="ftop" align="center" nowrap="nowrap"><strong>{trans("Viewing")}</strong></td>
+			    <td width="1%" class="ftop" align="center" nowrap="nowrap"><strong>{trans("Creating")}</strong></td>
+			    <td width="1%" class="ftop" align="center" nowrap="nowrap"><strong>{trans("Confirming")}</strong></td>
+			    <td width="1%" class="ftop" align="center" nowrap="nowrap"><strong>{trans("Editing")}</strong></td>
+			    <td width="1%" class="ftr" align="center" nowrap="nowrap"><strong>{trans("Deleting")}</strong></td>
+			</tr>
 			{cycle values="light,lucid" print=false}
 			{foreach from=$documenttype.rights item=right key=key}
-			<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-			    <TD width="95%" class="fleft">
-				<A href="?m=userinfo&id={$key}">{$right.name}</A>
-			    </TD>
-			    <TD width="1%" align="center">
-				    <INPUT type="checkbox" name="rights[{$key}][1]" value="1" {if ($right.rights & 1)==1}CHECKED{/if}>
-			    </TD>
-			    <TD width="1%" align="center" nowrap="nowrap">
-			    	    <INPUT type="checkbox" name="rights[{$key}][2]" value="2" {if ($right.rights & 2)==2}CHECKED{/if}>
-			    </TD>
-			    <TD width="1%" align="center" nowrap="nowrap">
-			    	    <INPUT type="checkbox" name="rights[{$key}][4]" value="4" {if ($right.rights & 4)==4}CHECKED{/if}>
-			    </TD>
-			    <TD width="1%" align="center" nowrap="nowrap">
-			    	    <INPUT type="checkbox" name="rights[{$key}][8]" value="8" {if ($right.rights & 8)==8}CHECKED{/if}>
-			    </TD>
-			    <TD width="1%" align="center" class="fright">
-			    	    <INPUT type="checkbox" name="rights[{$key}][16]" value="16" {if ($right.rights & 16)==16}CHECKED{/if}>
-			    </TD>
-			</TR>
+			<tr class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+			    <td width="95%" class="fleft">
+				<a href="?m=userinfo&id={$key}">{$right.name}</a>
+			    </td>
+			    <td width="1%" align="center">
+				    <input type="checkbox" name="rights[{$key}][1]" value="1" {if ($right.rights & 1)==1}CHECKED{/if}>
+			    </td>
+			    <td width="1%" align="center" nowrap="nowrap">
+			    	    <input type="checkbox" name="rights[{$key}][2]" value="2" {if ($right.rights & 2)==2}CHECKED{/if}>
+			    </td>
+			    <td width="1%" align="center" nowrap="nowrap">
+			    	    <input type="checkbox" name="rights[{$key}][4]" value="4" {if ($right.rights & 4)==4}CHECKED{/if}>
+			    </td>
+			    <td width="1%" align="center" nowrap="nowrap">
+			    	    <input type="checkbox" name="rights[{$key}][8]" value="8" {if ($right.rights & 8)==8}CHECKED{/if}>
+			    </td>
+			    <td width="1%" align="center" class="fright">
+			    	    <input type="checkbox" name="rights[{$key}][16]" value="16" {if ($right.rights & 16)==16}CHECKED{/if}>
+			    </td>
+			</tr>
 			{/foreach}
-			<TR class="LIGHT">
-			    <TD width="95%" class="ftop"></TD>
-			    <TD width="5%" class="ftop" colspan="5"></TD>
-			</TR>
-		</TABLE>			
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD class="fbottomu" align="right" colspan="3">
-			<A href="javascript:document.typeedit.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=documenttypes">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
-		</TD>
-	</TR>
-</TABLE>
+			<tr class="LIGHT">
+			    <td width="95%" class="ftop"></td>
+			    <td width="5%" class="ftop" colspan="5"></td>
+			</tr>
+		</table>			
+		</td>
+	</tr>
+	<tr class="light">
+		<td class="fbottomu" align="right" colspan="3">
+			<a href="javascript:document.typeedit.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+			<a href="?m=documenttypes">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
+		</td>
+	</tr>
+</table>
 {include file="footer.html"}

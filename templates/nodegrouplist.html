@@ -1,69 +1,69 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<FORM NAME="tmove" METHOD="POST" ACTION="">
-<INPUT TYPE="submit" CLASS="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR class="dark">
-		<TD WIDTH="97%" CLASS="fleftu">
-			<IMG SRC="img/nodegroup.gif" ALT="">&nbsp;<B>{trans("Name:")}</B><BR>
-			<IMG SRC="img/info1.gif" ALT="">&nbsp;{trans("Description:")}
-		</TD>
-		<TD WIDTH="1%" CLASS="fbt" align="right">
+<h1>{$layout.pagetitle}</h1>
+<form name="tmove" method="POST" action="">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="dark">
+		<td width="97%" class="fleftu">
+			<img src="img/nodegroup.gif" alt="">&nbsp;<strong>{trans("Name:")}</strong><br />
+			<img src="img/info1.gif" alt="">&nbsp;{trans("Description:")}
+		</td>
+		<td width="1%" class="fbt" align="right">
 			{trans("ID:")}
-		</TD>
-		<TD WIDTH="1%" CLASS="fbt" align="right">
+		</td>
+		<td width="1%" class="fbt" align="right">
 			{trans("Members:")}
-		</TD>
-		<TD WIDTH="1%" CLASS="frightu" ALIGN="RIGHT">
-			<NOBR><B>{t a=$listdata.total|default:"0"}Total: $a{/t}</B><NOBR>
-		</TD>
-	</TR>
+		</td>
+		<td width="1%" class="frightu" align="RIGHT">
+			<span class="nobr"><strong>{t a=$listdata.total|default:"0"}Total: $a{/t}</strong><span class="nobr">
+		</td>
+	</tr>
 	{cycle values="light,lucid" print=false}
 	{section name=nodegroups loop=$nodegrouplist}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD WIDTH="97%" CLASS="fleft" onClick="return self.location.href='?m=nodegroupinfo&id={$nodegrouplist[nodegroups].id}';" class="fleft">
-			<IMG SRC="img/nodegroup.gif" ALT="">&nbsp;<B>{$nodegrouplist[nodegroups].name}</B><BR>
-			{if $nodegrouplist[nodegroups].description}<IMG SRC="img/info1.gif" ALT="">&nbsp;{$nodegrouplist[nodegroups].description}{/if}
-		</TD>
-		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=nodegroupinfo&id={$nodegrouplist[nodegroups].id}';">
+	<tr class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<td width="97%" class="fleft" onClick="return self.location.href='?m=nodegroupinfo&id={$nodegrouplist[nodegroups].id}';" class="fleft">
+			<img src="img/nodegroup.gif" alt="">&nbsp;<strong>{$nodegrouplist[nodegroups].name}</strong><br />
+			{if $nodegrouplist[nodegroups].description}<img src="img/info1.gif" alt="">&nbsp;{$nodegrouplist[nodegroups].description}{/if}
+		</td>
+		<td width="1%" align="right" onClick="return self.location.href='?m=nodegroupinfo&id={$nodegrouplist[nodegroups].id}';">
 			({$nodegrouplist[nodegroups].id|string_format:"%04d"})
-		</TD>
-		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=nodegroupinfo&id={$nodegrouplist[nodegroups].id}';">
+		</td>
+		<td width="1%" align="right" onClick="return self.location.href='?m=nodegroupinfo&id={$nodegrouplist[nodegroups].id}';">
 			{$nodegrouplist[nodegroups].nodescount} 
-		</TD>
-		<TD WIDTH="1%" CLASS="fright" ALIGN="right">
-			<NOBR>
-			{if $nodegrouplist[nodegroups].nodescount}<A HREF="javascript:alert('{trans("Group with members cannot be deleted!")}');">
-			{else}<A HREF="?m=nodegroupdel&id={$nodegrouplist[nodegroups].id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to remove this group?")}');">
-			{/if}<IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A HREF="?m=nodegroupedit&id={$nodegrouplist[nodegroups].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-			<A HREF="?m=nodegroupinfo&id={$nodegrouplist[nodegroups].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
-			<INPUT CLASS="radio light" TYPE="radio" NAME="from" ID="{$nodegrouplist[nodegroups].id}" VALUE="{$nodegrouplist[nodegroups].id}" {if $selectednodegroupid==$nodegrouplist[nodegroups].id}CHECKED{/if}></INPUT>
-			<INPUT CLASS="radio light" TYPE="radio" NAME="to" ID="{$nodegrouplist[nodegroups].id}" VALUE="{$nodegrouplist[nodegroups].id}" onClick="javascript:document.tmove.submit();"></INPUT>
-			</NOBR>
-		</TD>
-	</TR>
+		</td>
+		<td width="1%" class="fright" align="right">
+			<span class="nobr">
+			{if $nodegrouplist[nodegroups].nodescount}<a href="javascript:alert('{trans("Group with members cannot be deleted!")}');">
+			{else}<a href="?m=nodegroupdel&id={$nodegrouplist[nodegroups].id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to remove this group?")}');">
+			{/if}<img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></a>
+			<a href="?m=nodegroupedit&id={$nodegrouplist[nodegroups].id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
+			<a href="?m=nodegroupinfo&id={$nodegrouplist[nodegroups].id}"><img src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></a>
+			<input class="radio light" type="radio" name="from" id="{$nodegrouplist[nodegroups].id}" value="{$nodegrouplist[nodegroups].id}" {if $selectednodegroupid==$nodegrouplist[nodegroups].id}CHECKED{/if}></INPUT>
+			<input class="radio light" type="radio" name="to" id="{$nodegrouplist[nodegroups].id}" value="{$nodegrouplist[nodegroups].id}" onClick="javascript:document.tmove.submit();"></INPUT>
+			</span>
+		</td>
+	</tr>
 	{sectionelse}
-	<TR>
-		<TD COLSPAN="4" ALIGN="center" CLASS="fall">
+	<tr>
+		<td colspan="4" align="center" class="fall">
 			<p>&nbsp;</p>
-			<p><B>{trans("There are no such groups in database.")}</B></p>
+			<p><strong>{trans("There are no such groups in database.")}</strong></p>
 			<p>&nbsp;</p>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/section}
-	<TR CLASS="light">
-		<TD CLASS="fleftu" COLSPAN="2" WIDTH="98%" ALIGN="right">
-			<IMG SRC="img/info2.gif" ALT="">&nbsp;<B>{trans("Total:")}</B>
-		</TD>
-		<TD CLASS="fbt" WIDTH="1%" ALIGN="right" NOWRAP>
-			<B>{$listdata.nodestotal|default:"0"} </B>
-		</TD>
-		<TD CLASS="frightu" WIDTH="1%">
+	<tr class="light">
+		<td class="fleftu" colspan="2" width="98%" align="right">
+			<img src="img/info2.gif" alt="">&nbsp;<strong>{trans("Total:")}</strong>
+		</td>
+		<td class="fbt" width="1%" align="right" nowrap="nowrap">
+			<strong>{$listdata.nodestotal|default:"0"} </strong>
+		</td>
+		<td class="frightu" width="1%">
 			&nbsp;
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
+		</td>
+	</tr>
+</table>
+</form>
 {include file="footer.html"}

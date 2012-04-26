@@ -1,53 +1,53 @@
 {include file="header.html"}
 <!-- $Id$ -->
-<H1><B>{$layout.pagetitle}</B></H1>
-<P><TABLE cellpadding="3" WIDTH="100%">
-	<TR CLASS="dark">
-		<TD CLASS="fleftu" WIDTH="1%" nowrap>
-			<IMG src="img/settings.gif" alt=""><B>{trans("Name:")}</B>
-		</TD>
-		<TD CLASS="fbt" WIDTH="58%" NOWRAP>
+<h1><strong>{$layout.pagetitle}</strong></h1>
+<P><table cellpadding="3" width="100%">
+	<tr class="dark">
+		<td class="fleftu" width="1%" nowrap="nowrap">
+			<img src="img/settings.gif" alt=""><strong>{trans("Name:")}</strong>
+		</td>
+		<td class="fbt" width="58%" nowrap="nowrap">
 			{trans("Value:")}
-		</TD>
-		<TD CLASS="fbt" WIDTH="40%">
+		</td>
+		<td class="fbt" width="40%">
 			{trans("Description:")}
-		</TD>
-		<TD CLASS="frightu" WIDTH="1%" nowrap>
-			<A href="?m=daemonconfigadd&id={$instance.id}">{trans("Add option")} <IMG src="img/save.gif" alt=""></A>
-		</TD>
-	</TR>
+		</td>
+		<td class="frightu" width="1%" nowrap="nowrap">
+			<a href="?m=daemonconfigadd&id={$instance.id}">{trans("Add option")} <img src="img/save.gif" alt=""></a>
+		</td>
+	</tr>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$optionlist item=option}
-	<TR class="{cycle}{if $option.disabled} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD CLASS="fleft" valign="top" onClick="return self.location.href='?m=daemonconfigedit&id={$option.id}';" nowrap>
-			<IMG src="img/settings.gif" alt="">
-			<B>{$option.var}</B>
-		</TD>
-		<TD valign="top" onClick="return self.location.href='?m=daemonconfigedit&id={$option.id}';" nowrap>
+	<tr class="{cycle}{if $option.disabled} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<td class="fleft" valign="top" onClick="return self.location.href='?m=daemonconfigedit&id={$option.id}';" nowrap="nowrap">
+			<img src="img/settings.gif" alt="">
+			<strong>{$option.var}</strong>
+		</td>
+		<td valign="top" onClick="return self.location.href='?m=daemonconfigedit&id={$option.id}';" nowrap="nowrap">
 			<PRE>{$option.value|escape}</PRE>
-		</TD>
-		<TD valign="top" onClick="return self.location.href='?m=daemonconfigedit&id={$option.id}';">
-			{$option.description|escape|replace:"\n":"<BR>"}
-		</TD>
-		<TD CLASS="fright" align="right" NOWRAP>
-			<A HREF="?m=daemonconfigedit&id={$option.id}&statuschange=1"><IMG src="img/wait.gif" alt="[ {if $option.disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]" title="[ {if $option.disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]"></A>
-			<A HREF="?m=daemonconfigdel&id={$option.id}" OnClick="return confirmLink(this, '{t a=$option.var}Are you sure, you want to remove option \'$a\' from database?{/t}');"><IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A HREF="?m=daemonconfigedit&id={$option.id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-		</TD>
-	</TR>
+		</td>
+		<td valign="top" onClick="return self.location.href='?m=daemonconfigedit&id={$option.id}';">
+			{$option.description|escape|replace:"\n":"<br />"}
+		</td>
+		<td class="fright" align="right" nowrap="nowrap">
+			<a href="?m=daemonconfigedit&id={$option.id}&statuschange=1"><img src="img/wait.gif" alt="[ {if $option.disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]" title="[ {if $option.disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]"></a>
+			<a href="?m=daemonconfigdel&id={$option.id}" OnClick="return confirmLink(this, '{t a=$option.var}Are you sure, you want to remove option \'$a\' from database?{/t}');"><img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></a>
+			<a href="?m=daemonconfigedit&id={$option.id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
+		</td>
+	</tr>
 	{foreachelse}
-	<TR>
-		<TD colspan="4" align="center" class="flr">
+	<tr>
+		<td colspan="4" align="center" class="flr">
 			<p>&nbsp;</p>
-			<p><B>{trans("That instance hasn't got any configuration option.")}<B></p>
+			<p><strong>{trans("That instance hasn't got any configuration option.")}<strong></p>
 			<p>&nbsp;</p>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/foreach}
-	<TR CLASS="dark">
-		<TD colspan="4" class="fall" align="right">
-			<A href="?m=daemonconfigadd&id={$instance.id}">{trans("Add option")} <IMG src="img/save.gif" alt=""></A>
-		</TD>
-	</TR>
-</TABLE></P>
+	<tr class="dark">
+		<td colspan="4" class="fall" align="right">
+			<a href="?m=daemonconfigadd&id={$instance.id}">{trans("Add option")} <img src="img/save.gif" alt=""></a>
+		</td>
+	</tr>
+</table></P>
 {include file="footer.html"}

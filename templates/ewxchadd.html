@@ -1,47 +1,47 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<P><FORM METHOD="POST" ACTION="?m=ewxchadd" NAME="channel">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK" COLSPAN="2">
-		<TD WIDTH="1%" CLASS="fleftu" NOWRAP><IMG SRC="img/channel.gif" ALT=""> <B>{trans("Channel name:")}</B></TD>
-		<TD CLASS="frightu">
-			<INPUT TYPE="TEXT" NAME="channel[name]" VALUE="{$channel.name}" SIZE="30" {tip text="Enter channel name" trigger="name"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/downrate.gif" ALT=""> <B>{trans("Downceil:")}</B></TD>
-		<TD CLASS="fright">
-			<INPUT TYPE="TEXT" SIZE="10" NAME="channel[downceil]" VALUE="{if $channel.downceil}{$channel.downceil}{/if}" {tip text="Enter maximal download value" trigger="downceil"}>
-			{trans("night:")} <INPUT TYPE="TEXT" SIZE="10" NAME="channel[downceil_n]" VALUE="{if $channel.downceil_n}{$channel.downceil_n}{/if}" {tip text="Enter maximal download value (optional)" trigger="downceil_n"}> kbit/s
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/uprate.gif" ALT=""> <B>{trans("Upceil:")}</B></TD>
-		<TD CLASS="fright">
-			<INPUT TYPE="TEXT" SIZE="10" NAME="channel[upceil]" VALUE="{if $channel.upceil}{$channel.upceil}{/if}" {tip text="Enter maximal upload value" trigger="upceil"}>
-			{trans("night:")} <INPUT TYPE="TEXT" SIZE="10" NAME="channel[upceil_n]" VALUE="{if $channel.upceil_n}{$channel.upceil_n}{/if}" {tip text="Enter maximal upload value (optional)" trigger="upceil_n"}> kbit/s
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/options.gif" ALT=""> <B>{trans("Options:")}</B></TD>
-		<TD CLASS="fright" NOWRAP>
+<h1>{$layout.pagetitle}</h1>
+<P><form method="POST" action="?m=ewxchadd" name="channel">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK" colspan="2">
+		<td width="1%" class="fleftu" nowrap="nowrap"><img src="img/channel.gif" alt=""> <strong>{trans("Channel name:")}</strong></td>
+		<td class="frightu">
+			<input type="TEXT" name="channel[name]" value="{$channel.name}" size="30" {tip text="Enter channel name" trigger="name"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft" nowrap="nowrap"><img src="img/downrate.gif" alt=""> <strong>{trans("Downceil:")}</strong></td>
+		<td class="fright">
+			<input type="TEXT" size="10" name="channel[downceil]" value="{if $channel.downceil}{$channel.downceil}{/if}" {tip text="Enter maximal download value" trigger="downceil"}>
+			{trans("night:")} <input type="TEXT" size="10" name="channel[downceil_n]" value="{if $channel.downceil_n}{$channel.downceil_n}{/if}" {tip text="Enter maximal download value (optional)" trigger="downceil_n"}> kbit/s
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft" nowrap="nowrap"><img src="img/uprate.gif" alt=""> <strong>{trans("Upceil:")}</strong></td>
+		<td class="fright">
+			<input type="TEXT" size="10" name="channel[upceil]" value="{if $channel.upceil}{$channel.upceil}{/if}" {tip text="Enter maximal upload value" trigger="upceil"}>
+			{trans("night:")} <input type="TEXT" size="10" name="channel[upceil_n]" value="{if $channel.upceil_n}{$channel.upceil_n}{/if}" {tip text="Enter maximal upload value (optional)" trigger="upceil_n"}> kbit/s
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft" nowrap="nowrap"><img src="img/options.gif" alt=""> <strong>{trans("Options:")}</strong></td>
+		<td class="fright" nowrap="nowrap">
 		    <label for="halfduplex">{trans("Half duplex")}:</label>
-            <INPUT TYPE="checkbox" NAME="channel[halfduplex]" VALUE="1" id="halfduplex" {if $channel.halfduplex} checked{/if} {tip text="Select transmission mode"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD width="100%" CLASS="fbottomu" COLSPAN="2" align="right">
-			<A HREF="javascript:document.channel.submit();" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
-			<A HREF="?m=channellist">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM></P>
-<SCRIPT type="text/javascript">
+            <input type="checkbox" name="channel[halfduplex]" value="1" id="halfduplex" {if $channel.halfduplex} checked="checked"{/if} {tip text="Select transmission mode"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="100%" class="fbottomu" colspan="2" align="right">
+			<a href="javascript:document.channel.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+			<a href="?m=channellist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
+		</td>
+	</tr>
+</table>
+</form></P>
+<script type="text/javascript">
 <!--
 document.forms['channel'].elements['channel[name]'].focus();
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}

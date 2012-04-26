@@ -1,10 +1,10 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
+<h1>{$layout.pagetitle}</h1>
 {if $newinvoice}
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}&copy={$newinvoice.copy}');
-</SCRIPT>
+</script>
 {/if}
 {include file="calendar_js.html"}
 <script type="text/javascript">
@@ -92,337 +92,337 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 </script>
 {$default_printpage = get_conf('invoices.default_printpage')}
 {$default_taxrate   = get_conf('phpui.default_taxrate')}
-<FORM NAME="setcustomer" METHOD="POST" ACTION="?m=invoicenew&action=setcustomer">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD CLASS="fall" WIDTH="100%" COLSPAN="2">
-			<B>{trans("Main Information:")}</B>
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<B>{trans("Invoice number:")}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="invoice[number]" VALUE="{$invoice.number}" SIZE="10" {tip text="Enter invoice number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
+<form name="setcustomer" method="POST" action="?m=invoicenew&action=setcustomer">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="dark">
+		<td class="fall" width="100%" colspan="2">
+			<strong>{trans("Main Information:")}</strong>
+		</td>
+	</tr>
+	<tr class="light">
+		<td class="fleft" width="1%" nowrap="nowrap">
+			<strong>{trans("Invoice number:")}</strong>
+		</td>
+		<td class="fright" width="99%" nowrap="nowrap">
+			<input type="TEXT" name="invoice[number]" value="{$invoice.number}" size="10" {tip text="Enter invoice number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
 			{if $numberplanlist}
-			<SELECT name="invoice[numberplanid]" {tip text="Select numbering plan"}>
+			<select name="invoice[numberplanid]" {tip text="Select numbering plan"}>
 			{foreach item=plan from=$numberplanlist}
 				{assign var=period value=$plan.period}
-				<OPTION value="{$plan.id}"{if $plan.id==$invoice.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</OPTION>
+				<option value="{$plan.id}"{if $plan.id==$invoice.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</option>
 			{/foreach}
-			</SELECT>
+			</select>
 			{else}
-				<INPUT type="hidden" name="invoice[numberplanid]" value="0">
+				<input type="hidden" name="invoice[numberplanid]" value="0">
 			{/if}
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<B>{trans("Settlement date:")}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="invoice[cdate]" VALUE="{$invoice.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} OnClick="cal1.popup();" >
+		</td>
+	</tr>
+	<tr class="light">
+		<td class="fleft" width="1%" nowrap="nowrap">
+			<strong>{trans("Settlement date:")}</strong>
+		</td>
+		<td class="fright" width="99%" nowrap="nowrap">
+			<input type="TEXT" name="invoice[cdate]" value="{$invoice.cdate|date_format:"%Y/%m/%d"}" size="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} OnClick="cal1.popup();" >
 			{if $invoice.cdatewarning}
-			<INPUT TYPE="HIDDEN" NAME="invoice[cdatewarning]" VALUE="1">
+			<input type="HIDDEN" name="invoice[cdatewarning]" value="1">
 			{/if}
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<B>{trans("Sale date:")}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="invoice[sdate]" VALUE="{$invoice.sdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"} OnClick="cal2.popup();">
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<B>{trans("Deadline:")}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT type="radio" name="invoice[paytime_default]" value="1" id="type1" onchange="setPayTime(1)"{if !isset($invoice.paytime_default) || $invoice.paytime_default} checked{/if}><label for="type1">{trans("default")}</label>
-			<INPUT type="radio" name="invoice[paytime_default]" value="0" id="type0" onchange="setPayTime(0)"{if isset($invoice.paytime_default) && !$invoice.paytime_default} checked{/if}><label for="type0">{trans("other")}</label>
-			<INPUT TYPE="TEXT" NAME="invoice[paytime]" VALUE="{$invoice.paytime}" SIZE="5" ID="paytime" onclick="deadline_calendar(this)"
+		</td>
+	</tr>
+	<tr class="light">
+		<td class="fleft" width="1%" nowrap="nowrap">
+			<strong>{trans("Sale date:")}</strong>
+		</td>
+		<td class="fright" width="99%" nowrap="nowrap">
+			<input type="TEXT" name="invoice[sdate]" value="{$invoice.sdate|date_format:"%Y/%m/%d"}" size="10" {tip text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"} OnClick="cal2.popup();">
+		</td>
+	</tr>
+	<tr class="light">
+		<td class="fleft" width="1%" nowrap="nowrap">
+			<strong>{trans("Deadline:")}</strong>
+		</td>
+		<td class="fright" width="99%" nowrap="nowrap">
+			<input type="radio" name="invoice[paytime_default]" value="1" id="type1" onchange="setPayTime(1)"{if !isset($invoice.paytime_default) || $invoice.paytime_default} checked="checked"{/if}><label for="type1">{trans("default")}</label>
+			<input type="radio" name="invoice[paytime_default]" value="0" id="type0" onchange="setPayTime(0)"{if isset($invoice.paytime_default) && !$invoice.paytime_default} checked="checked"{/if}><label for="type0">{trans("other")}</label>
+			<input type="TEXT" name="invoice[paytime]" value="{$invoice.paytime}" size="5" id="paytime" onclick="deadline_calendar(this)"
 			{if !isset($invoice.paytime_default) || $invoice.paytime_default} style="visibility: hidden"{/if} {tip text="Enter deadline in days (optional)" trigger="paytime"}>
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<B>{trans("Payment type:")}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<SELECT name="invoice[paytype]" {tip text="Select payment type" trigger="paytype"}>
-				<OPTION value=""{if !$invoice.paytype} selected{/if}>- {trans("default")} -</OPTION>
+		</td>
+	</tr>
+	<tr class="light">
+		<td class="fleft" width="1%" nowrap="nowrap">
+			<strong>{trans("Payment type:")}</strong>
+		</td>
+		<td class="fright" width="99%" nowrap="nowrap">
+			<select name="invoice[paytype]" {tip text="Select payment type" trigger="paytype"}>
+				<option value=""{if !$invoice.paytype} selected{/if}>- {trans("default")} -</option>
 				{foreach from=$_PAYTYPES item=item key=key}
-				<OPTION value="{$key}"{if $invoice.paytype==$key} selected{/if}>{$item}</OPTION>
+				<option value="{$key}"{if $invoice.paytype==$key} selected{/if}>{$item}</option>
 				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<B>{trans("Customer:")}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+			</select>
+		</td>
+	</tr>
+	<tr class="light">
+		<td class="fleft" width="1%" nowrap="nowrap">
+			<strong>{trans("Customer:")}</strong>
+		</td>
+		<td class="fright" width="99%" nowrap="nowrap">
 			{if $customers}
-			<SELECT SIZE="1" NAME="customer" onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value">
-				<OPTION VALUE="0">{trans("... select customer ...")}</OPTION>
+			<select size="1" name="customer" onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value">
+				<option value="0">{trans("... select customer ...")}</option>
 				{foreach from=$customers item=c}
-				<OPTION VALUE="{$c.id}"{if $c.id eq $customer.id || $invoice.customerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:"40":"...":true} ({$c.id|string_format:"%04d"})</OPTION>
+				<option value="{$c.id}"{if $c.id eq $customer.id || $invoice.customerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:"40":"...":true} ({$c.id|string_format:"%04d"})</option>
 				{/foreach}
-			</SELECT>
+			</select>
 			{trans("or Customer ID:")}
 			{/if}
-			<INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{else}{$invoice.customerid}{/if}" SIZE="5"{if $customers} onfocus="reset_customer()" onchange="reset_customer()"{/if} {tip text="Enter customer ID"}>
-			<a href="javascript: void(0);" onClick="return customerchoosewin(document.setcustomer.customerid);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fbottomu" WIDTH="100%" ALIGN="right" COLSPAN="2">
-			<A HREF="javascript: saveheader();">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
+			<input type="TEXT" name="customerid" value="{if $customer.id}{$customer.id}{else}{$invoice.customerid}{/if}" size="5"{if $customers} onfocus="reset_customer()" onchange="reset_customer()"{/if} {tip text="Enter customer ID"}>
+			<a href="javascript: void(0);" onClick="return customerchoosewin(document.setcustomer.customerid);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</a>
+		</td>
+	</tr>
+	<tr class="light">
+		<td class="fbottomu" width="100%" align="right" colspan="2">
+			<a href="javascript: saveheader();">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+		</td>
+	</tr>
+</table>
+</form>
 {if $customer}
-<BR>
-<TABLE WIDTH="100%" CELLPADDING="3">
-        <TR CLASS="dark">
-                <TD CLASS="fleftu" WIDTH="1%" nowrap>
-                        <IMG SRC="img/customer.gif" ALT=""> <B>{trans("Customer:")}</B>
-                </TD>
-                <TD CLASS="frightu" WIDTH="99%">
-                        <B>{$customer.customername}</B>
+<br />
+<table width="100%" cellpadding="3">
+        <tr class="dark">
+                <td class="fleftu" width="1%" nowrap="nowrap">
+                        <img src="img/customer.gif" alt=""> <strong>{trans("Customer:")}</strong>
+                </td>
+                <td class="frightu" width="99%">
+                        <strong>{$customer.customername}</strong>
                         &nbsp;&raquo;&nbsp; {$customer.address} &nbsp; {$customer.zip} {$customer.city}
                         &nbsp;&raquo;&nbsp; {if $customer.balance < 0}<FONT class="red">{/if}{$customer.balance|money_format}{if $customer.balance < 0}</FONT>{/if}
-                </TD>
-        </TR>
-</TABLE>
+                </td>
+        </tr>
+</table>
 {/if}
-<BR>
-<TABLE WIDTH="100%" CELLPADDING="3">
+<br />
+<table width="100%" cellpadding="3">
 {if $covenantlist}
-	<FORM name="additemlist" method="POST" action="?m=invoicenew&action=additemlist">
-	<TR>
-		<TD colspan="9" class="ftopu">
-			<TABLE WIDTH="100%" CELLPADDING="3">
-				<TR CLASS="DARK">
-					<TD class="fall">
-						<IMG src="img/money.gif" ALT="">
-						<B>{trans("Invoiceless liabilities:")}</B>
-					</TD>
-				</TR>
-				<TR>
-					<TD width="100%" class="fall">
-						<TABLE cellpadding="5" cellspacing="0" width="100%">
-							<TR class="dark">
-								<TD width="1%" class="fleftu">{trans("Date:")}</TD>
-								<TD width="92%" class="fbt">{trans("Name of product, commodity or service:")}</TD>
-								<TD width="1%" class="fbt" align="right" nowrap>{trans("Product ID:")}</TD>
-								<TD width="1%" class="fbt" align="right">{trans("Amount:")}</TD>
-								<TD width="1%" class="fbt" align="right">{trans("Unit:")}</TD>
-								<TD width="1%" class="fbt" align="right" nowrap>{trans("Net Value:")}</TD>
-								<TD width="1%" class="fbt" align="right" nowrap>{trans("Tax:")}</TD>
-								<TD width="1%" class="fbt" align="right" nowrap>{trans("Gross Value:")}</TD>
-								<TD width="1%" class="frightu">&nbsp;</TD>
-							</TR>
+	<form name="additemlist" method="POST" action="?m=invoicenew&action=additemlist">
+	<tr>
+		<td colspan="9" class="ftopu">
+			<table width="100%" cellpadding="3">
+				<tr class="DARK">
+					<td class="fall">
+						<img src="img/money.gif" alt="">
+						<strong>{trans("Invoiceless liabilities:")}</strong>
+					</td>
+				</tr>
+				<tr>
+					<td width="100%" class="fall">
+						<table cellpadding="5" cellspacing="0" width="100%">
+							<tr class="dark">
+								<td width="1%" class="fleftu">{trans("Date:")}</td>
+								<td width="92%" class="fbt">{trans("Name of product, commodity or service:")}</td>
+								<td width="1%" class="fbt" align="right" nowrap="nowrap">{trans("Product ID:")}</td>
+								<td width="1%" class="fbt" align="right">{trans("Amount:")}</td>
+								<td width="1%" class="fbt" align="right">{trans("Unit:")}</td>
+								<td width="1%" class="fbt" align="right" nowrap="nowrap">{trans("Net Value:")}</td>
+								<td width="1%" class="fbt" align="right" nowrap="nowrap">{trans("Tax:")}</td>
+								<td width="1%" class="fbt" align="right" nowrap="nowrap">{trans("Gross Value:")}</td>
+								<td width="1%" class="frightu">&nbsp;</td>
+							</tr>
 							{cycle values="light,lucid" print=false}
 							{section name=covenantlist loop=$covenantlist}
-							<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-							        <TD><nobr>{$covenantlist[covenantlist].time|date_format:"%Y/%m/%d"}</nobr></TD>
-								<TD>{$covenantlist[covenantlist].comment}</TD>
-							        <TD align="right"><INPUT type="text" name="l_prodid[{$covenantlist[covenantlist].cashid}]" value="" size="6"></TD>
-							        <TD align="right"><INPUT type="text" name="l_count[{$covenantlist[covenantlist].cashid}]" value="1" size="3"></TD>
-							        <TD align="right"><INPUT type="text" name="l_jm[{$covenantlist[covenantlist].cashid}]" value="{trans("pcs.")}" size="3"></TD>
-							        <TD align="right" nowrap>{$covenantlist[covenantlist].net|money_format}</TD>
-							        <TD align="right" nowrap>{$covenantlist[covenantlist].tax}</TD>
-							        <TD align="right" nowrap>{$covenantlist[covenantlist].value|money_format}</TD>
-								<TD align="right">
-									<INPUT TYPE="checkbox" NAME="marks[]" VALUE="{$covenantlist[covenantlist].cashid}">
-								</TD>
-							</TR>
+							<tr class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+							        <td><nobr>{$covenantlist[covenantlist].time|date_format:"%Y/%m/%d"}</nobr></td>
+								<td>{$covenantlist[covenantlist].comment}</td>
+							        <td align="right"><input type="text" name="l_prodid[{$covenantlist[covenantlist].cashid}]" value="" size="6"></td>
+							        <td align="right"><input type="text" name="l_count[{$covenantlist[covenantlist].cashid}]" value="1" size="3"></td>
+							        <td align="right"><input type="text" name="l_jm[{$covenantlist[covenantlist].cashid}]" value="{trans("pcs.")}" size="3"></td>
+							        <td align="right" nowrap="nowrap">{$covenantlist[covenantlist].net|money_format}</td>
+							        <td align="right" nowrap="nowrap">{$covenantlist[covenantlist].tax}</td>
+							        <td align="right" nowrap="nowrap">{$covenantlist[covenantlist].value|money_format}</td>
+								<td align="right">
+									<input type="checkbox" name="marks[]" value="{$covenantlist[covenantlist].cashid}">
+								</td>
+							</tr>
 							{/section}
-							<TR class="light">
-								<TD CLASS="ftop" colspan="2" nowrap>
-									<INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('additemlist', this)" VALUE="1"><label for="allbox"">{trans("Check All")}</label>
-								</TD>
-							        <TD CLASS="ftop" ALIGN="right" colspan="7" nowrap>
-									<A href="javascript:document.additemlist.submit();">{trans("Add items")} <IMG src="img/save.gif" ALT=""></A>
-								</TD>
-							</TR>
-						</TABLE>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-        </TR>
-	</FORM>
+							<tr class="light">
+								<td class="ftop" colspan="2" nowrap="nowrap">
+									<input type="checkbox" name="allbox" id="allbox" onchange="CheckAll('additemlist', this)" value="1"><label for="allbox"">{trans("Check All")}</label>
+								</td>
+							        <td class="ftop" align="right" colspan="7" nowrap="nowrap">
+									<a href="javascript:document.additemlist.submit();">{trans("Add items")} <img src="img/save.gif" alt=""></a>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+        </tr>
+	</form>
 {/if}
-	<TR CLASS="DARK">
-		<TD CLASS="fleftu" WIDTH="1%">
-			<B>{trans("No.")}</B>
-		</TD>
-		<TD CLASS="fbt" WIDTH="93%">
+	<tr class="DARK">
+		<td class="fleftu" width="1%">
+			<strong>{trans("No.")}</strong>
+		</td>
+		<td class="fbt" width="93%">
 			{trans("Name of product, commodity or service:")}
-		</TD>
-		<TD CLASS="fbt" WIDTH="1%" nowrap>
+		</td>
+		<td class="fbt" width="1%" nowrap="nowrap">
 			{trans("Product ID:")}
-		</TD>
-		<TD CLASS="fbt" WIDTH="1%" ALIGN="RIGHT">
-			{trans("Amount:")}<BR>
+		</td>
+		<td class="fbt" width="1%" align="RIGHT">
+			{trans("Amount:")}<br />
 			{trans("Unit:")}
-		</TD>
-		<TD CLASS="fbt" WIDTH="1%" ALIGN="RIGHT">
+		</td>
+		<td class="fbt" width="1%" align="RIGHT">
 			{trans("Discount:")}
-		</TD>
-		<TD CLASS="fbt" WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{trans("Net Price:")}<BR>
+		</td>
+		<td class="fbt" width="1%" nowrap="nowrap" align="RIGHT">
+			{trans("Net Price:")}<br />
 			{trans("Net Value:")}
-		</TD>
-		<TD CLASS="fbt" WIDTH="1%" ALIGN="RIGHT">
+		</td>
+		<td class="fbt" width="1%" align="RIGHT">
 			{trans("Tax:")}
-		</TD>
-		<TD CLASS="fbt" WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{trans("Gross Price:")}<BR>
+		</td>
+		<td class="fbt" width="1%" nowrap="nowrap" align="RIGHT">
+			{trans("Gross Price:")}<br />
 			{trans("Gross Value:")}
-		</TD>
-		<TD CLASS="frightu" WIDTH="1%">
+		</td>
+		<td class="frightu" width="1%">
 			&nbsp;
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$contents item=item}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD CLASS="fleft" WIDTH="1%">
-			<B>{counter}.</B>
-		</TD>
-		<TD WIDTH="92%">
+	<tr class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<td class="fleft" width="1%">
+			<strong>{counter}.</strong>
+		</td>
+		<td width="92%">
 			{$item.name}
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
+		</td>
+		<td width="1%" nowrap="nowrap">
 			{$item.prodid}
-		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{$item.count|string_format:"%.2f"}<BR>
+		</td>
+		<td width="1%" nowrap="nowrap" align="RIGHT">
+			{$item.count|string_format:"%.2f"}<br />
 			{$item.jm}
-		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+		</td>
+		<td width="1%" nowrap="nowrap" align="RIGHT">
 			{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f%%"}{else}{if $item.vdiscount != 0}{$item.vdiscount|money_format}{/if}{/if}
-		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{$item.valuenetto|money_format}<BR>
+		</td>
+		<td width="1%" nowrap="nowrap" align="RIGHT">
+			{$item.valuenetto|money_format}<br />
 			{$item.s_valuenetto|money_format}
-		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+		</td>
+		<td width="1%" nowrap="nowrap" align="RIGHT">
 			{$item.tax}
-		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{$item.valuebrutto|money_format}<BR>
+		</td>
+		<td width="1%" nowrap="nowrap" align="RIGHT">
+			{$item.valuebrutto|money_format}<br />
 			{$item.s_valuebrutto|money_format}
-		</TD>
-		<TD WIDTH="1%" NOWRAP CLASS="fright">
-			<A HREF="?m=invoicenew&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
-		</TD>
-	</TR>
+		</td>
+		<td width="1%" nowrap="nowrap" class="fright">
+			<a href="?m=invoicenew&action=deletepos&posuid={$item.posuid}"><img src="img/delete.gif" {tip text="Remove this item from list"}></a>
+		</td>
+	</tr>
 	{foreachelse}
-	<TR>
-		<TD COLSPAN="9" ALIGN="CENTER" CLASS="flr">
+	<tr>
+		<td colspan="9" align="CENTER" class="flr">
 			<P>&nbsp;</P>
-			<P><B>{trans("Invoice have no items. Use form below for items addition.")}</B></P>
+			<P><strong>{trans("Invoice have no items. Use form below for items addition.")}</strong></P>
 			<P>&nbsp;</P>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/foreach}
 	{if $contents}
-	<TR CLASS="light">
-		<TD COLSPAN="5" WIDTH="96%" ALIGN="RIGHT" CLASS="fleftu">
-			<B>{trans("Total:")}</B>
-		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" CLASS="fbt">
-			<B>{sum array=$contents column=s_valuenetto string_format="%01.2f"}</B>
-		</TD>
-		<TD WIDTH="1%" CLASS="fbt">
+	<tr class="light">
+		<td colspan="5" width="96%" align="RIGHT" class="fleftu">
+			<strong>{trans("Total:")}</strong>
+		</td>
+		<td width="1%" nowrap="nowrap" align="RIGHT" class="fbt">
+			<strong>{sum array=$contents column=s_valuenetto string_format="%01.2f"}</strong>
+		</td>
+		<td width="1%" class="fbt">
 			&nbsp;
-		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" CLASS="fbt">
-			<B>{sum array=$contents column=s_valuebrutto string_format="%01.2f"}</B>
-		</TD>
-		<TD WIDTH="1%" CLASS="frightu">
+		</td>
+		<td width="1%" nowrap="nowrap" align="RIGHT" class="fbt">
+			<strong>{sum array=$contents column=s_valuebrutto string_format="%01.2f"}</strong>
+		</td>
+		<td width="1%" class="frightu">
 			&nbsp;
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
-	<FORM METHOD="POST" ACTION="?m=invoicenew&action=additem" NAME="additem">
-	<INPUT type="submit" class="hiddenbtn">
-	<INPUT TYPE="HIDDEN" NAME="tariffid" VALUE="0">
-	<TR CLASS="light">
-		<TD CLASS="ftl" WIDTH="1%" NOWRAP>
-			<B>{counter}.</B>
-		</TD>
-		<TD CLASS="ftop" WIDTH="92%" NOWRAP>
-			<INPUT TYPE="text" NAME="name" SIZE="40" style="width:300px" {tip text="Enter description or select tariff from the list"}><BR>
-			<SELECT SIZE="1" NAME="ttariffid" style="width: 300px" onchange="setItem(document.additem.ttariffid.value)" {tip text="Enter description or select tariff from the list"}>
-				<OPTION VALUE="0">-</OPTION>
+	<form method="POST" action="?m=invoicenew&action=additem" name="additem">
+	<input type="submit" class="hiddenbtn">
+	<input type="HIDDEN" name="tariffid" value="0">
+	<tr class="light">
+		<td class="ftl" width="1%" nowrap="nowrap">
+			<strong>{counter}.</strong>
+		</td>
+		<td class="ftop" width="92%" nowrap="nowrap">
+			<input type="text" name="name" size="40" style="width:300px" {tip text="Enter description or select tariff from the list"}><br />
+			<select size="1" name="ttariffid" style="width: 300px" onchange="setItem(document.additem.ttariffid.value)" {tip text="Enter description or select tariff from the list"}>
+				<option value="0">-</option>
 				{foreach from=$tariffs item=tariff}
-				<OPTION VALUE="{$tariff.id}">{$tariff.name} ({$tariff.value|money_format})</OPTION>
+				<option value="{$tariff.id}">{$tariff.name} ({$tariff.value|money_format})</option>
 				{/foreach}
-			</SELECT>{*&nbsp;<A HREF="javascript:setItem(document.additem.ttariffid.value)">{trans("Select")}</A>*}
-		</TD>
-		<TD CLASS="ftop">
-			<INPUT TYPE="text" NAME="prodid" SIZE="6">
-		</TD>
-		<TD CLASS="ftop">
-			<INPUT TYPE="text" NAME="count" SIZE="3" VALUE="1">
-			<INPUT TYPE="text" NAME="jm" SIZE="3" VALUE="{trans("pcs.")}">
-		</TD>
-		<TD CLASS="ftop" ALIGN="RIGHT">
-			<INPUT TYPE="text" NAME="discount" SIZE="6" {tip text="Enter discount percentage or amount"}>
-			<SELECT name="discount_type">
+			</select>{*&nbsp;<a href="javascript:setItem(document.additem.ttariffid.value)">{trans("Select")}</a>*}
+		</td>
+		<td class="ftop">
+			<input type="text" name="prodid" size="6">
+		</td>
+		<td class="ftop">
+			<input type="text" name="count" size="3" value="1">
+			<input type="text" name="jm" size="3" value="{trans("pcs.")}">
+		</td>
+		<td class="ftop" align="RIGHT">
+			<input type="text" name="discount" size="6" {tip text="Enter discount percentage or amount"}>
+			<select name="discount_type">
 				{foreach from=$_DISCOUNTTYPES item=item key=key}
-					<OPTION value="{$key}">{$item}</OPTION>
+					<option value="{$key}">{$item}</option>
 				{/foreach}
-			</SELECT>
-		</TD>
-		<TD CLASS="ftop" ALIGN="RIGHT" NOWRAP>
-			<INPUT TYPE="text" NAME="valuenetto" SIZE="6" {tip text="Enter unitary value without discount"}>
-		</TD>
-		<TD CLASS="ftop" ALIGN="RIGHT" NOWRAP>
-			<SELECT size="1" name="taxid" {tip text="Select Tax rate"}>
+			</select>
+		</td>
+		<td class="ftop" align="RIGHT" nowrap="nowrap">
+			<input type="text" name="valuenetto" size="6" {tip text="Enter unitary value without discount"}>
+		</td>
+		<td class="ftop" align="RIGHT" nowrap="nowrap">
+			<select size="1" name="taxid" {tip text="Select Tax rate"}>
 			{foreach item=tax from=$taxeslist}
-				<OPTION value="{$tax.id}"{if $tax.value == $default_taxrate} selected{/if}>{$tax.label}</OPTION>
+				<option value="{$tax.id}"{if $tax.value == $default_taxrate} selected{/if}>{$tax.label}</option>
 			{/foreach}
-			</SELECT>
-		</TD>
-		<TD CLASS="ftop" ALIGN="RIGHT" NOWRAP>
-			<INPUT TYPE="text" NAME="valuebrutto" SIZE="6" {tip text="Enter unitary value without discount"}>
-		</TD>
-		<TD CLASS="ftr">
-			<A HREF="javascript:document.additem.submit(); "><IMG SRC="img/save.gif" ALT="" {tip text="Add item"}></A>
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD COLSPAN="9" CLASS="fbottomu" ALIGN="RIGHT">
-			<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i', $default_printpage)} checked{/if}><label for="original">{trans("original")}</label>
-        	<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}><label for="copy">{trans("copy")}</label>&nbsp;
-			<A HREF="?m=invoicelist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
-			<A HREF="?m=invoicenew&action=init">{trans("Clear Contents")} <IMG SRC="img/delete.gif" alt=""></A> 
+			</select>
+		</td>
+		<td class="ftop" align="RIGHT" nowrap="nowrap">
+			<input type="text" name="valuebrutto" size="6" {tip text="Enter unitary value without discount"}>
+		</td>
+		<td class="ftr">
+			<a href="javascript:document.additem.submit(); "><img src="img/save.gif" alt="" {tip text="Add item"}></a>
+		</td>
+	</tr>
+	<tr class="light">
+		<td colspan="9" class="fbottomu" align="RIGHT">
+			<input type="checkbox" name="original" id="original"{if preg_match('/original/i', $default_printpage)} checked="checked"{/if}><label for="original">{trans("original")}</label>
+        	<input type="checkbox" name="copy" id="copy"{if preg_match('/copy/i', $default_printpage)} checked="checked"{/if}><label for="copy">{trans("copy")}</label>&nbsp;
+			<a href="?m=invoicelist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
+			<a href="?m=invoicenew&action=init">{trans("Clear Contents")} <img src="img/delete.gif" alt=""></a> 
 			{if !$customer}
-			<A HREF="javascript:alert('{trans("Customer not selected!")}');">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-			<A HREF="javascript:alert('{trans("Customer not selected!")}');">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
+			<a href="javascript:alert('{trans("Customer not selected!")}');">{trans("Save")} <img src="img/save.gif" alt=""></a>
+			<a href="javascript:alert('{trans("Customer not selected!")}');">{trans("Save & Print")} <img src="img/print.gif" alt=""></a>
 			{elseif !$contents}
-			<A HREF="javascript:alert('{trans("Invoice have no items!")}');">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-			<A HREF="javascript:alert('{trans("Invoice have no items!")}');">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
+			<a href="javascript:alert('{trans("Invoice have no items!")}');">{trans("Save")} <img src="img/save.gif" alt=""></a>
+			<a href="javascript:alert('{trans("Invoice have no items!")}');">{trans("Save & Print")} <img src="img/print.gif" alt=""></a>
 			{else}
-			<A HREF="?m=invoicenew&action=save">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-			<A HREF="javascript:printinvoice()">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
+			<a href="?m=invoicenew&action=save">{trans("Save")} <img src="img/save.gif" alt=""></a>
+			<a href="javascript:printinvoice()">{trans("Save & Print")} <img src="img/print.gif" alt=""></a>
 			{/if}
-		</TD>
-	</TR>
-	</FORM>
-</TABLE>
-<SCRIPT type="text/javascript">
+		</td>
+	</tr>
+	</form>
+</table>
+<script type="text/javascript">
 <!--
 deadline_callback = function(val)
 {
@@ -438,5 +438,5 @@ var cal3 = new calendar(deadline_callback);
 cal3.time_comp = false;
 document.forms['setcustomer'].elements['invoice[number]'].focus();
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}

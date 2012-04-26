@@ -1,82 +1,82 @@
 {include file="header.html"}
 <!-- $Id$ -->
-<H1><B>{$layout.pagetitle}</B></H1>
-<TABLE cellpadding="5" WIDTH="100%">
-	<TR CLASS="dark">
-		<TD CLASS="fleftu" WIDTH="95%">
-			<IMG src="img/queue.gif" ALT="">
-			<B>{trans("Queue")}:</B><BR>
-			<IMG src="img/info1.gif" ALT="">
+<h1><strong>{$layout.pagetitle}</strong></h1>
+<table cellpadding="5" width="100%">
+	<tr class="dark">
+		<td class="fleftu" width="95%">
+			<img src="img/queue.gif" alt="">
+			<strong>{trans("Queue")}:</strong><br />
+			<img src="img/info1.gif" alt="">
 			{trans("Description")}:
-		</TD>
-		<TD CLASS="fbt" WIDTH="1%" align="right" NOWRAP>
-			<B>{trans("E-mail:")}</B>
-		</TD>
-		<TD CLASS="fbt" align="right"  WIDTH="1%">
+		</td>
+		<td class="fbt" width="1%" align="right" nowrap="nowrap">
+			<strong>{trans("E-mail:")}</strong>
+		</td>
+		<td class="fbt" align="right"  width="1%">
 			{trans("New:")}
-		</TD>
-		<TD CLASS="fbt" align="right" WIDTH="1%">
+		</td>
+		<td class="fbt" align="right" width="1%">
 			{trans("Opened:")}
-		</TD>
-		<TD CLASS="fbt" align="right" WIDTH="1%" ALIGN="CENTER">
+		</td>
+		<td class="fbt" align="right" width="1%" align="CENTER">
 			{trans("Last:")}
-		</TD>
-		<TD CLASS="frightu" WIDTH="1%">
+		</td>
+		<td class="frightu" width="1%">
 			&nbsp;
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$queues item=queue}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD CLASS="fleft" onClick="return self.location.href='?m=rtqueueview&id={$queue.id}';">
-			<IMG src="img/queue.gif" ALT="">
-			<B>{$queue.name}</B><BR>
+	<tr class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<td class="fleft" onClick="return self.location.href='?m=rtqueueview&id={$queue.id}';">
+			<img src="img/queue.gif" alt="">
+			<strong>{$queue.name}</strong><br />
 			{if $queue.description}
-				<IMG src="img/info1.gif" ALT=""> {$queue.description}
+				<img src="img/info1.gif" alt=""> {$queue.description}
 			{/if}
-		</TD>
-		<TD  align="right">
-			<A HREF="mailto:{$queue.email}">{$queue.email}</A>
-		</TD>
-		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&id={$queue.id}';">
+		</td>
+		<td  align="right">
+			<a href="mailto:{$queue.email}">{$queue.email}</a>
+		</td>
+		<td align="CENTER" onClick="return self.location.href='?m=rtqueueview&id={$queue.id}';">
 			{$queue.new|default:0}
-		</TD>
-		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&id={$queue.id}';">
+		</td>
+		<td align="CENTER" onClick="return self.location.href='?m=rtqueueview&id={$queue.id}';">
 			{$queue.open|default:0}
-		</TD>
-		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&id={$queue.id}';" NOWRAP>
+		</td>
+		<td align="CENTER" onClick="return self.location.href='?m=rtqueueview&id={$queue.id}';" nowrap="nowrap">
 			{if $queue.lastticket}{$queue.lastticket|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
-		</TD>
-		<TD CLASS="fright" NOWRAP>
-			<A HREF="?m=rtqueueview&id={$queue.id}"><IMG SRC="img/view.gif" alt="[ {trans("Browse")} ]" title="[ {trans("Browse")} ]"></A>
-			<A HREF="?m=rtqueuedel&id={$queue.id}" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to remove queue \'$a\' and all assigned tickets and messages?{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A HREF="?m=rtqueueedit&id={$queue.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-			<A HREF="?m=rtqueueinfo&id={$queue.id}"><IMG SRC="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
-		</TD>
-	</TR>
+		</td>
+		<td class="fright" nowrap="nowrap">
+			<a href="?m=rtqueueview&id={$queue.id}"><img src="img/view.gif" alt="[ {trans("Browse")} ]" title="[ {trans("Browse")} ]"></a>
+			<a href="?m=rtqueuedel&id={$queue.id}" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to remove queue \'$a\' and all assigned tickets and messages?{/t}');"><img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></a>
+			<a href="?m=rtqueueedit&id={$queue.id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
+			<a href="?m=rtqueueinfo&id={$queue.id}"><img src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></a>
+		</td>
+	</tr>
 	{foreachelse}
-	<TR>
-		<TD colspan="6" align="center" class="flr">
+	<tr>
+		<td colspan="6" align="center" class="flr">
 			<p>&nbsp;</p>
-			<p><B>{trans("There are no queues.")}<B></p>
+			<p><strong>{trans("There are no queues.")}<strong></p>
 			<p>&nbsp;</p>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/foreach}
-	<TR CLASS="light">
-		<TD COLSPAN="2" ALIGN="RIGHT" CLASS="fleftu">
-			<IMG src="img/info2.gif" ALT="">
-			<B>{trans("Total:")}</B>
-		</TD>
-		<TD ALIGN="CENTER" CLASS="fbt">
-			<B>{sum array=$queues column=new}</B>
-		</TD>
-		<TD ALIGN="CENTER" CLASS="fbt">
-			<B>{sum array=$queues column=open}</B>
-		</TD>
-		<TD CLASS="frightu" COLSPAN="2">
+	<tr class="light">
+		<td colspan="2" align="RIGHT" class="fleftu">
+			<img src="img/info2.gif" alt="">
+			<strong>{trans("Total:")}</strong>
+		</td>
+		<td align="CENTER" class="fbt">
+			<strong>{sum array=$queues column=new}</strong>
+		</td>
+		<td align="CENTER" class="fbt">
+			<strong>{sum array=$queues column=open}</strong>
+		</td>
+		<td class="frightu" colspan="2">
 			&nbsp;
-		</TD>
-	</TR>
-</TABLE>
+		</td>
+	</tr>
+</table>
 {include file="footer.html"}

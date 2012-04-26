@@ -1,41 +1,41 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<FORM METHOD="POST" NAME="customergroupadd" ACTION="?m=customergroupadd">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD WIDTH="1%" CLASS="fleftu">
-			<IMG SRC="img/group.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" CLASS="fbt">
-			<B>{trans("Name:")}</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="frightu">
-			<INPUT TYPE="TEXT" NAME="customergroupadd[name]" VALUE="{$customergroupadd.name}" SIZE="50" {tip trigger="name" bold=1}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft">
-			<IMG SRC="img/info1.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("Description:")}</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="fright">
-			<TEXTAREA NAME="customergroupadd[description]" COLS="50" ROWS="5" {tip text="Enter additional information (optional)"}>{$customergroupadd.description}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT"> 
-			<A HREF="javascript:document.customergroupadd.submit();" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
-			<A HREF="?m=customergrouplist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
-		</TD>
-	</TR>
-</TABLE></FORM></P>
-<SCRIPT type="text/javascript">
+<h1>{$layout.pagetitle}</h1>
+<form method="POST" name="customergroupadd" action="?m=customergroupadd">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td width="1%" class="fleftu">
+			<img src="img/group.gif" alt="">
+		</td>
+		<td width="1%" class="fbt">
+			<strong>{trans("Name:")}</strong>
+		</td>
+		<td width="98%" class="frightu">
+			<input type="TEXT" name="customergroupadd[name]" value="{$customergroupadd.name}" size="50" {tip trigger="name" bold=1}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft">
+			<img src="img/info1.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Description:")}</strong>
+		</td>
+		<td width="98%" class="fright">
+			<textarea name="customergroupadd[description]" cols="50" rows="5" {tip text="Enter additional information (optional)"}>{$customergroupadd.description}</textarea>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="100%" colspan="3" class="FBOTTOMU" align="RIGHT"> 
+			<a href="javascript:document.customergroupadd.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+			<a href="?m=customergrouplist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
+		</td>
+	</tr>
+</table></form></P>
+<script type="text/javascript">
 <!--
 document.forms['customergroupadd'].elements['customergroupadd[name]'].focus();
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}

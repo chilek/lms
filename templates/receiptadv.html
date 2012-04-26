@@ -1,8 +1,8 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
+<h1>{$layout.pagetitle}</h1>
 {include file="calendar_js.html"}
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 <!--
 	function show(n)
 	{
@@ -27,115 +27,115 @@
 		document.receipt.submit();
 	}
 //-->
-</SCRIPT>
-<FORM NAME="receipt" METHOD="POST" ACTION="?m=receiptadv&id={$receipt.id}">
-<INPUT type="submit" class="hiddenbtn">
-<INPUT type="hidden" name="receipt[id]" value="{$receipt.id}">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="light">
-		<TD width="100%" CLASS="ftopu">
-			<INPUT type="radio" name="receipt[type]" value="return" id="radio_return" onclick="show('tab_return')" checked> <B>{trans("return")}</B><BR>
-			    <TABLE width="100%" id="tab_return" style="margin-left: 40px;{if isset($receipt.type) && $receipt.type!="return"} display: none;{/if}">
-				<TR>
-				    <TD WIDTH="1%" NOWRAP>
+</script>
+<form name="receipt" method="POST" action="?m=receiptadv&id={$receipt.id}">
+<input type="submit" class="hiddenbtn">
+<input type="hidden" name="receipt[id]" value="{$receipt.id}">
+<table width="100%" cellpadding="3">
+	<tr class="light">
+		<td width="100%" class="ftopu">
+			<input type="radio" name="receipt[type]" value="return" id="radio_return" onclick="show('tab_return')" checked="checked"> <strong>{trans("return")}</strong><br />
+			    <table width="100%" id="tab_return" style="margin-left: 40px;{if isset($receipt.type) && $receipt.type!="return"} display: none;{/if}">
+				<tr>
+				    <td width="1%" nowrap="nowrap">
 					{trans("Cash-in receipt number:")}
-				    </TD>
-				    <TD WIDTH="99%" NOWRAP>
-					<INPUT TYPE="TEXT" NAME="receipt[number]" VALUE="{if $receipt.number}{$receipt.number}{/if}" SIZE="10" {tip text="Enter receipt number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)" trigger="number"}>
+				    </td>
+				    <td width="99%" nowrap="nowrap">
+					<input type="TEXT" name="receipt[number]" value="{if $receipt.number}{$receipt.number}{/if}" size="10" {tip text="Enter receipt number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)" trigger="number"}>
 					{if $receipt.extnumber || $receipt.in_extended}
 					    {trans("Additional number:")}
-					    <INPUT TYPE="TEXT" NAME="receipt[extnumber]" VALUE="{$receipt.extnumber}" SIZE="40" {tip text="Enter additional document number" trigger="extnumber"}>
+					    <input type="TEXT" name="receipt[extnumber]" value="{$receipt.extnumber}" size="40" {tip text="Enter additional document number" trigger="extnumber"}>
 					{/if}
-				    </TD>
-				</TR>
-				<TR>
-				    <TD WIDTH="1%" NOWRAP>
+				    </td>
+				</tr>
+				<tr>
+				    <td width="1%" nowrap="nowrap">
 					{trans("Settlement date:")}
-				    </TD>
-				    <TD WIDTH="99%" NOWRAP>
-					<INPUT TYPE="TEXT" NAME="receiptr[cdate]" VALUE="{$receipt.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} OnClick="javascript:cal1.popup();">
+				    </td>
+				    <td width="99%" nowrap="nowrap">
+					<input type="TEXT" name="receiptr[cdate]" value="{$receipt.cdate|date_format:"%Y/%m/%d"}" size="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} OnClick="javascript:cal1.popup();">
 					{if $receipt.cdatewarning}
-					<INPUT TYPE="HIDDEN" NAME="receiptr[cdatewarning]" VALUE="1">
+					<input type="HIDDEN" name="receiptr[cdatewarning]" value="1">
 					{/if}
-				    </TD>
-				</TR>
-			    </TABLE>
-			<INPUT type="radio" name="receipt[type]" value="settle" id="radio_settle" onclick="show('tab_settle')" {if $receipt.type=="settle"} checked{/if}> <B>{trans("settlement")}</B><BR>
-			    <TABLE width="100%" id="tab_settle" style="margin-left: 40px;{if $receipt.type!="settle"} display: none;{/if}">
-				<TR>
-				    <TD WIDTH="1%" NOWRAP>
+				    </td>
+				</tr>
+			    </table>
+			<input type="radio" name="receipt[type]" value="settle" id="radio_settle" onclick="show('tab_settle')" {if $receipt.type=="settle"} checked="checked"{/if}> <strong>{trans("settlement")}</strong><br />
+			    <table width="100%" id="tab_settle" style="margin-left: 40px;{if $receipt.type!="settle"} display: none;{/if}">
+				<tr>
+				    <td width="1%" nowrap="nowrap">
 					{trans("Cash-in receipt number:")}
-				    </TD>
-				    <TD WIDTH="99%" NOWRAP>
-					<INPUT TYPE="TEXT" NAME="receipt[in_number]" VALUE="{if $receipt.in_number}{$receipt.in_number}{/if}" SIZE="10" {tip text="Enter receipt number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)" trigger="in_number"}>
+				    </td>
+				    <td width="99%" nowrap="nowrap">
+					<input type="TEXT" name="receipt[in_number]" value="{if $receipt.in_number}{$receipt.in_number}{/if}" size="10" {tip text="Enter receipt number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)" trigger="in_number"}>
 					{if $receipt.in_extnumber || $receipt.in_extended}
 					    {trans("Additional number:")}
-    					    <INPUT TYPE="TEXT" NAME="receipt[in_extnumber]" VALUE="{$receipt.in_extnumber}" SIZE="40" {tip text="Enter additional document number" trigger="in_extnumber"}>
+    					    <input type="TEXT" name="receipt[in_extnumber]" value="{$receipt.in_extnumber}" size="40" {tip text="Enter additional document number" trigger="in_extnumber"}>
 					{/if}
-				    </TD>
-				</TR>
-				<TR>
-				    <TD WIDTH="1%" NOWRAP>
+				    </td>
+				</tr>
+				<tr>
+				    <td width="1%" nowrap="nowrap">
 					{trans("Cash-out receipt number:")}
-				    </TD>
-				    <TD WIDTH="99%" NOWRAP>
-					<INPUT TYPE="TEXT" NAME="receipt[out_number]" VALUE="{if $receipt.out_number}{$receipt.out_number}{/if}" SIZE="10" {tip text="Enter receipt number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)" trigger="out_number"}>
+				    </td>
+				    <td width="99%" nowrap="nowrap">
+					<input type="TEXT" name="receipt[out_number]" value="{if $receipt.out_number}{$receipt.out_number}{/if}" size="10" {tip text="Enter receipt number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)" trigger="out_number"}>
 					{if $receipt.out_extnumber || $receipt.out_extended}
 					    {trans("Additional number:")}
-    					    <INPUT TYPE="TEXT" NAME="receipt[out_extnumber]" VALUE="{$receipt.out_extnumber}" SIZE="40" {tip text="Enter additional document number" trigger="out_extnumber"}>
+    					    <input type="TEXT" name="receipt[out_extnumber]" value="{$receipt.out_extnumber}" size="40" {tip text="Enter additional document number" trigger="out_extnumber"}>
 					{/if}
-				    </TD>
-				</TR>
-				<TR>
-				    <TD WIDTH="1%" NOWRAP>
+				    </td>
+				</tr>
+				<tr>
+				    <td width="1%" nowrap="nowrap">
 					{trans("Settlement date:")}
-				    </TD>
-				    <TD WIDTH="99%" NOWRAP>
-					<INPUT TYPE="TEXT" NAME="receipt[cdate]" VALUE="{$receipt.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} OnClick="javascript:cal2.popup();">
+				    </td>
+				    <td width="99%" nowrap="nowrap">
+					<input type="TEXT" name="receipt[cdate]" value="{$receipt.cdate|date_format:"%Y/%m/%d"}" size="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} OnClick="javascript:cal2.popup();">
 					{if $receipt.cdatewarning}
-					<INPUT TYPE="HIDDEN" NAME="receipt[cdatewarning]" VALUE="1">
+					<input type="HIDDEN" name="receipt[cdatewarning]" value="1">
 					{/if}
-				    </TD>
-				</TR>
-				<TR>
-				    <TD WIDTH="1%" NOWRAP>
+				    </td>
+				</tr>
+				<tr>
+				    <td width="1%" nowrap="nowrap">
 					{trans("Value:")}
-				    </TD>
-				    <TD WIDTH="99%" NOWRAP>
-					<INPUT TYPE="TEXT" NAME="receipt[value]" VALUE="{if $receipt.value}{$receipt.value|string_format:"%.2f"}{/if}" SIZE="10" {tip text="Enter real amount of expense" trigger="value"}>
-				    </TD>
-				</TR>
-				<TR>
-				    <TD WIDTH="1%" NOWRAP>
+				    </td>
+				    <td width="99%" nowrap="nowrap">
+					<input type="TEXT" name="receipt[value]" value="{if $receipt.value}{$receipt.value|string_format:"%.2f"}{/if}" size="10" {tip text="Enter real amount of expense" trigger="value"}>
+				    </td>
+				</tr>
+				<tr>
+				    <td width="1%" nowrap="nowrap">
 					{trans("Recipient:")}
-				    </TD>
-				    <TD WIDTH="99%" NOWRAP>
-					<INPUT TYPE="TEXT" NAME="receipt[name]" VALUE="{$receipt.name}" SIZE="70" {tip text="Enter recipient" trigger="name"}>
-				    </TD>
-				</TR>
-				<TR>
-				    <TD WIDTH="1%" NOWRAP>
+				    </td>
+				    <td width="99%" nowrap="nowrap">
+					<input type="TEXT" name="receipt[name]" value="{$receipt.name}" size="70" {tip text="Enter recipient" trigger="name"}>
+				    </td>
+				</tr>
+				<tr>
+				    <td width="1%" nowrap="nowrap">
 					{trans("Description:")}
-				    </TD>
-				    <TD WIDTH="99%" NOWRAP>
-					<INPUT TYPE="TEXT" NAME="receipt[description]" VALUE="{$receipt.description}" SIZE="70" {tip text="Enter receipt description" trigger="description"}>
-				    </TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="100%" ALIGN="right" CLASS="fbottomu">
-			<INPUT type="checkbox" id="original" name="original" checked> <label for="original">{trans("original")}</label>&nbsp;
-			<INPUT type="checkbox" id="copy" name="copy" checked> <label for="copy">{trans("copy")}</label>&nbsp;
-			<A HREF="?m=receiptlist&regid={$receipt.regid}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>&nbsp;
-			<A HREF="javascript: savereceipt(0);">{trans("Save")} <IMG SRC="img/save.gif" ALT=""></A>&nbsp;
-			<A HREF="javascript: savereceipt(1);">{trans("Save & Print")} <IMG SRC="img/print.gif" ALT=""></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
-<SCRIPT type="text/javascript">
+				    </td>
+				    <td width="99%" nowrap="nowrap">
+					<input type="TEXT" name="receipt[description]" value="{$receipt.description}" size="70" {tip text="Enter receipt description" trigger="description"}>
+				    </td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="100%" align="right" class="fbottomu">
+			<input type="checkbox" id="original" name="original" checked="checked"> <label for="original">{trans("original")}</label>&nbsp;
+			<input type="checkbox" id="copy" name="copy" checked="checked"> <label for="copy">{trans("copy")}</label>&nbsp;
+			<a href="?m=receiptlist&regid={$receipt.regid}">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>&nbsp;
+			<a href="javascript: savereceipt(0);">{trans("Save")} <img src="img/save.gif" alt=""></a>&nbsp;
+			<a href="javascript: savereceipt(1);">{trans("Save & Print")} <img src="img/print.gif" alt=""></a>
+		</td>
+	</tr>
+</table>
+</form>
+<script type="text/javascript">
 <!--
 var cal1 = new calendar(document.forms['receipt'].elements['receiptr[cdate]']);
 cal1.time_comp = false;
@@ -143,5 +143,5 @@ var cal2 = new calendar(document.forms['receipt'].elements['receipt[cdate]']);
 cal2.time_comp = false;
 document.forms['receipt'].elements['receipt[name]'].focus();
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}

@@ -1,57 +1,57 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1 align="center">{trans("LMS version")} {$layout.lmsv} ({$layout.lmsvr})</H1>
-<P align="center"><B>Copyright &copy; 2001-2012 LMS Developers</B></P>
+<H1 align="center">{trans("LMS version")} {$layout.lmsv} ({$layout.lmsvr})</h1>
+<P align="center"><strong>Copyright &copy; 2001-2012 LMS Developers</strong></P>
 
 <P class="txt">{trans("This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License Version 2 as published by the Free Software Foundation.")}</P>
 <P class="txt">{trans("This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.")}</p>
 <P class="txt">{trans("You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.")}</p>
 
 <P align="center"><a href="http://www.opensource.org/docs/definition.php"><img src="img/opensource-110x95.gif" width="110" height="95"></a></p>
-<p align="center"><B>{trans("LMS include elements of other software:")}</B></P>
-<p align="center"><A href="http://www.phpmyadmin.net/">phpMyAdmin</A><BR>
-<a href="http://phpsysinfo.sourceforge.net/">phpsysinfo</a><BR>
-<a href="http://adodb.sourceforge.net/">ADOdb</a><BR>
-<a href="http://www.openlayers.org/">OpenLayers</a><br>
-<a href="http://florian-amrhein.de/newsportal/index-english.php3">NewsPortal</A><BR>
-<a href="http://www.bosrup.com/web/overlib/">overLIB</A><BR>
-<a href="http://www.ros.co.nz/pdf/">ezpdf</A><BR>
-<a href="http://www.xajaxproject.org/">xajax</A><BR>
-<a href="http://www.softcomplex.com/products/tigra_calendar/">Tigra Calendar</A><BR>
-<a href="http://gosu.pl/dhtml/mygosumenu.html">Cezary Tomczak's mygosuMenu published under revised BSD license.</a><br>
-{t}Piotr Kleban's number-to-words conversion procedures<BR>and code examples from <a href="http://www.php.net/manual">PHP Manual</A>{/t}</P>
-<p align="center"><B>{trans("LMS developers (in alphabetical order):")}</B></P>
-<TABLE WIDTH="100%" CELLPADDING="5">
+<p align="center"><strong>{trans("LMS include elements of other software:")}</strong></P>
+<p align="center"><a href="http://www.phpmyadmin.net/">phpMyAdmin</a><br />
+<a href="http://phpsysinfo.sourceforge.net/">phpsysinfo</a><br />
+<a href="http://adodb.sourceforge.net/">ADOdb</a><br />
+<a href="http://www.openlayers.org/">OpenLayers</a><br />
+<a href="http://florian-amrhein.de/newsportal/index-english.php3">NewsPortal</a><br />
+<a href="http://www.bosrup.com/web/overlib/">overLIB</a><br />
+<a href="http://www.ros.co.nz/pdf/">ezpdf</a><br />
+<a href="http://www.xajaxproject.org/">xajax</a><br />
+<a href="http://www.softcomplex.com/products/tigra_calendar/">Tigra Calendar</a><br />
+<a href="http://gosu.pl/dhtml/mygosumenu.html">Cezary Tomczak's mygosuMenu published under revised BSD license.</a><br />
+{t}Piotr Kleban's number-to-words conversion procedures<br />and code examples from <a href="http://www.php.net/manual">PHP Manual</a>{/t}</P>
+<p align="center"><strong>{trans("LMS developers (in alphabetical order):")}</strong></P>
+<table width="100%" cellpadding="5">
 	{foreach from=$authors item=author name=authors key=nick}
-	{if $smarty.foreach.authors.iteration is odd}<TR>{/if}
-		<TD WIDTH="50%" style="vertical-align: top;">
-			<TABLE WIDTH="100%" CELLPADDING="5">
-				<TR class="superlight">
-					<TD CLASS="fleftu" WIDTH="1%">
-						<IMG SRC="img/{$nick|lower}.icon.gif" BORDER="1">
-					</TD>
-					<TD CLASS="frightu" WIDTH="99%">
-						<B>{$nick}</B><BR>
-						{$author.realname}<BR>
-						{if $author.www}<A HREF="http://{$author.www}" TARGET="_BLANK">{$author.www}</A>{/if}&nbsp;<BR>
+	{if $smarty.foreach.authors.iteration is odd}<tr>{/if}
+		<td width="50%" style="vertical-align: top;">
+			<table width="100%" cellpadding="5">
+				<tr class="superlight">
+					<td class="fleftu" width="1%">
+						<img src="img/{$nick|lower}.icon.gif" BORDER="1">
+					</td>
+					<td class="frightu" width="99%">
+						<strong>{$nick}</strong><br />
+						{$author.realname}<br />
+						{if $author.www}<a href="http://{$author.www}" TARGET="_BLANK">{$author.www}</a>{/if}&nbsp;<br />
 						{$author.info}
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	{if $smarty.foreach.authors.iteration is even}</TR>{/if}
+					</td>
+				</tr>
+			</table>
+		</td>
+	{if $smarty.foreach.authors.iteration is even}</tr>{/if}
 	{/foreach}
-	{if $smarty.foreach.authors.iteration is odd}</TR>{/if}
-</TABLE>
-<P align="center"><B>{trans("The rest of group:")}</B></P>
+	{if $smarty.foreach.authors.iteration is odd}</tr>{/if}
+</table>
+<P align="center"><strong>{trans("The rest of group:")}</strong></P>
 <P align="center">
 {foreach from=$others item=other name=others key=nick}
-	{if $other.www}<A href="http://{$other.www}" target="_BLANK">{/if}
+	{if $other.www}<a href="http://{$other.www}" target="_BLANK">{/if}
 	{$other.realname} [{$nick}]
-	{if $other.www}</A>{/if}
-	- {$other.info}<BR>
+	{if $other.www}</a>{/if}
+	- {$other.info}<br />
 {/foreach}
 </P>
-<P align="center"><a href="http://www.smarty.net/"><B>{trans("LMS uses Smarty Template Engine - http://www.smarty.net/")}</B></A></P>
-<P align="center"><a href="http://www.smarty.net/"><img src="img/smarty_icon.gif" alt="Smarty"></A></p>
+<P align="center"><a href="http://www.smarty.net/"><strong>{trans("LMS uses Smarty Template Engine - http://www.smarty.net/")}</strong></a></P>
+<P align="center"><a href="http://www.smarty.net/"><img src="img/smarty_icon.gif" alt="Smarty"></a></p>
 {include file="footer.html"}

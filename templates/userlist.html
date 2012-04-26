@@ -1,47 +1,47 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
+<h1>{$layout.pagetitle}</h1>
 <table width="100%" cellpadding="3">
-	<TR class="dark">
-		<TD class="fleftu" width="1%">
-			<NOBR><IMG SRC="img/users.gif" ALT=""> <B>{trans("Login:")}</B></NOBR>
-		</TD>
-		<TD class="fbt" width="96%">
-			<NOBR><IMG SRC="img/info2.gif" ALT=""> <B>{trans("First/last name:")}</B></NOBR>
-		</TD>
-		<TD class="fbt" width="2%" NOWRAP>
-			<IMG SRC="img/time.gif" ALT=""> <B>{trans("Last login:")}</B>
-		</TD>
-		<TD class="frightu" width="1%">
-			<NOBR><B>{trans("Total:")} {$userslist.total}</B></NOBR>
-		</TD>
-	</TR>
+	<tr class="dark">
+		<td class="fleftu" width="1%">
+			<span class="nobr"><img src="img/users.gif" alt=""> <strong>{trans("Login:")}</strong></span>
+		</td>
+		<td class="fbt" width="96%">
+			<span class="nobr"><img src="img/info2.gif" alt=""> <strong>{trans("First/last name:")}</strong></span>
+		</td>
+		<td class="fbt" width="2%" nowrap="nowrap">
+			<img src="img/time.gif" alt=""> <strong>{trans("Last login:")}</strong>
+		</td>
+		<td class="frightu" width="1%">
+			<span class="nobr"><strong>{trans("Total:")} {$userslist.total}</strong></span>
+		</td>
+	</tr>
 	{cycle values="light,lucid" print=false}
 	{section name=userslist loop=$userslist}{if $userslist[userslist].id}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD class="fleft" width="1%" onClick="return self.location.href='?m=userinfo&id={$userslist[userslist].id}';">
-			<NOBR><IMG SRC="img/users.gif" ALT=""> <B>{$userslist[userslist].login}</B></NOBR>
-		</TD>
-		<TD width="96%" onClick="return self.location.href='?m=userinfo&id={$userslist[userslist].id}';">
-			<NOBR><IMG SRC="img/info2.gif" ALT=""> {$userslist[userslist].name}</NOBR>
-		</TD>
-		<TD width="1%" onClick="return self.location.href='?m=userinfo&id={$userslist[userslist].id}';">
-			<NOBR><IMG SRC="img/time.gif" ALT=""> {$userslist[userslist].lastlogin}
-			{$userslist[userslist].lastloginip} {if $userslist[userslist].lastloginip neq $userslist[userslist].lastloginhost}({$userslist[userslist].lastloginhost}){/if}</NOBR>
-		</TD>
-		<TD width="1%" class="fright">
+	<tr class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<td class="fleft" width="1%" onClick="return self.location.href='?m=userinfo&id={$userslist[userslist].id}';">
+			<span class="nobr"><img src="img/users.gif" alt=""> <strong>{$userslist[userslist].login}</strong></span>
+		</td>
+		<td width="96%" onClick="return self.location.href='?m=userinfo&id={$userslist[userslist].id}';">
+			<span class="nobr"><img src="img/info2.gif" alt=""> {$userslist[userslist].name}</span>
+		</td>
+		<td width="1%" onClick="return self.location.href='?m=userinfo&id={$userslist[userslist].id}';">
+			<span class="nobr"><img src="img/time.gif" alt=""> {$userslist[userslist].lastlogin}
+			{$userslist[userslist].lastloginip} {if $userslist[userslist].lastloginip neq $userslist[userslist].lastloginhost}({$userslist[userslist].lastloginhost}){/if}</span>
+		</td>
+		<td width="1%" class="fright">
 			<nobr>
-			<a href="?m=userpasswd&id={$userslist[userslist].id}"><img src="img/keys.gif" alt="[ {trans("Change password")} ]" title="[ {trans("Change password")} ]"></A>
-			{if $userslist[userslist].id neq $layout.logid}<a href="?m=userdel&id={$userslist[userslist].id}" onClick="return confirmLink(this, '{trans("Are you sure, you want to irreversibly delete that user account?")}');">{/if}<img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<a href="?m=useredit&id={$userslist[userslist].id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-			<a href="?m=userinfo&id={$userslist[userslist].id}"><img src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
-		</TD>
-	</TR>
+			<a href="?m=userpasswd&id={$userslist[userslist].id}"><img src="img/keys.gif" alt="[ {trans("Change password")} ]" title="[ {trans("Change password")} ]"></a>
+			{if $userslist[userslist].id neq $layout.logid}<a href="?m=userdel&id={$userslist[userslist].id}" onClick="return confirmLink(this, '{trans("Are you sure, you want to irreversibly delete that user account?")}');">{/if}<img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></a>
+			<a href="?m=useredit&id={$userslist[userslist].id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
+			<a href="?m=userinfo&id={$userslist[userslist].id}"><img src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></a>
+		</td>
+	</tr>
 	{/if}{/section}
-	<TR CLASS="LIGHT">
-		<TD CLASS="FALL" COLSPAN="4">
+	<tr class="LIGHT">
+		<td class="FALL" colspan="4">
 			&nbsp;
-		</TD>
-	</TR>
-</TABLE>
+		</td>
+	</tr>
+</table>
 {include file="footer.html"}

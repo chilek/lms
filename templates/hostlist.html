@@ -1,58 +1,58 @@
 {include file="header.html"}
 <!-- $Id$ -->
-<H1><B>{$layout.pagetitle}</B></H1>
-<P><TABLE cellpadding="3" WIDTH="100%">
-	<TR CLASS="dark">
-		<TD CLASS="fleftu" WIDTH="1%" nowrap>
-			<img src="img/host.gif" alt=""><B>{trans("Name:")}</B>
-		</TD>
-		<TD CLASS="fbt" WIDTH="1%" NOWRAP>
+<h1><strong>{$layout.pagetitle}</strong></h1>
+<P><table cellpadding="3" width="100%">
+	<tr class="dark">
+		<td class="fleftu" width="1%" nowrap="nowrap">
+			<img src="img/host.gif" alt=""><strong>{trans("Name:")}</strong>
+		</td>
+		<td class="fbt" width="1%" nowrap="nowrap">
 			{trans("ID:")}
-		</TD>
-		<TD CLASS="fbt" WIDTH="1%" NOWRAP>
+		</td>
+		<td class="fbt" width="1%" nowrap="nowrap">
 			{trans("Last Reload:")}
-		</TD>
-		<TD CLASS="fbt" WIDTH="96%">
+		</td>
+		<td class="fbt" width="96%">
 			{trans("Description:")}
-		</TD>
-		<TD CLASS="frightu" WIDTH="1%" nowrap>
-			<A href="?m=hostadd">{trans("Add host")} <img src="img/save.gif" alt=""></A>
-		</TD>
-	</TR>
+		</td>
+		<td class="frightu" width="1%" nowrap="nowrap">
+			<a href="?m=hostadd">{trans("Add host")} <img src="img/save.gif" alt=""></a>
+		</td>
+	</tr>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$hostlist item=host}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD CLASS="fleft" onClick="return self.location.href='?m=hostedit&id={$host.id}';" nowrap>
-			<IMG src="img/host.gif" alt="">
-			<B>{$host.name}</B>
-		</TD>
-		<TD onClick="return self.location.href='?m=hostedit&id={$host.id}';">
+	<tr class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<td class="fleft" onClick="return self.location.href='?m=hostedit&id={$host.id}';" nowrap="nowrap">
+			<img src="img/host.gif" alt="">
+			<strong>{$host.name}</strong>
+		</td>
+		<td onClick="return self.location.href='?m=hostedit&id={$host.id}';">
 			({$host.id|string_format:"%04d"})
-		</TD>
-		<TD onClick="return self.location.href='?m=hostedit&id={$host.id}';" nowrap>
+		</td>
+		<td onClick="return self.location.href='?m=hostedit&id={$host.id}';" nowrap="nowrap">
 			{if $host.lastreload}{$host.lastreload|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
-		</TD>
-		<TD onClick="return self.location.href='?m=hostedit&id={$host.id}';">
+		</td>
+		<td onClick="return self.location.href='?m=hostedit&id={$host.id}';">
 			{$host.description}
-		</TD>
-		<TD CLASS="fright" align="right" NOWRAP>
-			<A HREF="?m=hostedit&id={$host.id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-			<A HREF="?m=hostdel&id={$host.id}" OnClick="return confirmLink(this, '{t a=$host.name}Are you sure, you want to remove host \'$a\' and all assigned configuration?{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-		</TD>
-	</TR>
+		</td>
+		<td class="fright" align="right" nowrap="nowrap">
+			<a href="?m=hostedit&id={$host.id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
+			<a href="?m=hostdel&id={$host.id}" OnClick="return confirmLink(this, '{t a=$host.name}Are you sure, you want to remove host \'$a\' and all assigned configuration?{/t}');"><img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></a>
+		</td>
+	</tr>
 	{foreachelse}
-	<TR>
-		<TD colspan="5" align="center" class="flr">
+	<tr>
+		<td colspan="5" align="center" class="flr">
 			<p>&nbsp;</p>
-			<p><B>{trans("There are no hosts configured.")}<B></p>
+			<p><strong>{trans("There are no hosts configured.")}<strong></p>
 			<p>&nbsp;</p>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/foreach}
-	<TR CLASS="dark">
-		<TD colspan="5" class="fall" align="right">
-			<A href="?m=hostadd">{trans("Add host")} <IMG src="img/save.gif" alt=""></A>
-		</TD>
-	</TR>
-</TABLE></P>
+	<tr class="dark">
+		<td colspan="5" class="fall" align="right">
+			<a href="?m=hostadd">{trans("Add host")} <img src="img/save.gif" alt=""></a>
+		</td>
+	</tr>
+</table></P>
 {include file="footer.html"}

@@ -14,7 +14,7 @@
 </script>{/if}
 </head>
 {if ! $part}
-<frameset name="all" frameborder="0" framespacing="0" ROWS="36,*">
+<frameset name="all" frameborder="0" framespacing="0" rows="36,*">
 	<frame scrolling="no" frameborder="0" marginheight="0" marginwidth="0" name="top" noresize src="?m=choosecustomer&p=top">
 	<frame scrolling="always" frameborder="0" marginheight="0" marginwidth="0" name="main" noresize src="?m=choosecustomer&p=main">
 </frameset>
@@ -25,7 +25,7 @@
 <input type="submit" class="hiddenbtn">
 <table cellpadding="5" width="100%">
 	<tr>
-		<td class="fall dark" align="center" nowrap>
+		<td class="fall dark" align="center" nowrap="nowrap">
 			<img src="img/customer.gif" alt="">
 			<input type="text" name="searchcustomer" value="{$searchcustomer}" size="20" onkeyup="document.search.submit();">&nbsp;&nbsp;
 			<img src="img/node.gif" alt="">
@@ -48,8 +48,8 @@ document.search.searchcustomer.focus();
 	{section name=customerlist loop=$customerlist}
 	<tr class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<td {$customerlist[customerlist].id} style="vertical-align: top;" onClick="sendvalue(targetfield,'{$customerlist[customerlist].id}');">
-			<b>{$customerlist[customerlist].customername}</b>
-			({$customerlist[customerlist].id|string_format:"%04d"})<br>
+			<strong>{$customerlist[customerlist].customername}</strong>
+			({$customerlist[customerlist].id|string_format:"%04d"})<br />
 			{$customerlist[customerlist].address}{if $customerlist[customerlist].city neq ""},{/if} {$customerlist[customerlist].zip} {$customerlist[customerlist].city}
 		</td>
 		<td width="1%" align="right" style="vertical-align: top;" onClick="sendvalue(targetfield,'{$customerlist[customerlist].id}');">
@@ -57,7 +57,7 @@ document.search.searchcustomer.focus();
 			{$node.name}
 			{/foreach}
 		</td>
-		<td align="right" nowrap style="vertical-align: top;" onClick="sendvalue(targetfield,'{$customerlist[customerlist].id}');">
+		<td align="right" nowrap="nowrap" style="vertical-align: top;" onClick="sendvalue(targetfield,'{$customerlist[customerlist].id}');">
 			{if $customerlist[customerlist].balance < 0}<font class="alert">{/if}{$customerlist[customerlist].balance|money_format}{if $customerlist[customerlist].balance < 0}</font>{/if}
 		</td>
 	</tr>
@@ -65,13 +65,13 @@ document.search.searchcustomer.focus();
 	<tr>
 		<td colspan="3" align="center">
 			<p>&nbsp;</p>
-			<p><b>
+			<p><strong>
 			{if $searchcustomer || $searchnode}
 				{trans("No such customers matching search criteria.")}
 			{else}
 				{trans("Enter customer and/or node data and press Enter.")}
 			{/if}
-			</b></p>
+			</strong></p>
 			<p>&nbsp;</p>
 		</td>
 	</tr>

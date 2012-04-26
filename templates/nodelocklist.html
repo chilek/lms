@@ -1,45 +1,45 @@
-<TABLE style="width: 100%;" cellpadding="5" cellspacing="0">
-<TR class="dark">
-	<TD style="width: 1%; white-space: nowrap;" class="fleftu" COLSPAN="2">{trans("Days:")}</TD>
-	<TD style="width: 1%; white-space: nowrap;" class="fbt">{trans("From:")}</TD>
-	<TD style="width: 1%; white-space: nowrap;" class="fbt">{trans("To:")}</TD>
-	<TD style="width: 97%;" class="frightu">&nbsp;</TD>
-</TR>
+<table style="width: 100%;" cellpadding="5" cellspacing="0">
+<tr class="dark">
+	<td style="width: 1%; white-space: nowrap;" class="fleftu" colspan="2">{trans("Days:")}</td>
+	<td style="width: 1%; white-space: nowrap;" class="fbt">{trans("From:")}</td>
+	<td style="width: 1%; white-space: nowrap;" class="fbt">{trans("To:")}</td>
+	<td style="width: 97%;" class="frightu">&nbsp;</td>
+</tr>
 {cycle name=locks values="light,lucid" print=false}
 {foreach from=$nodelocks item=nodelock}
-<TR class="{cycle name=locks}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-	<TD style="width: 1%; white-space: nowrap;" COLSPAN="2">
+<tr class="{cycle name=locks}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<td style="width: 1%; white-space: nowrap;" colspan="2">
 		{foreach from=$nodelock.days item=day key=daynr}
 			{$_DAYS[$daynr]}&nbsp;
 		{/foreach}
-	</TD>
-	<TD style="width: 1%; white-space: nowrap;">
+	</td>
+	<td style="width: 1%; white-space: nowrap;">
 		{$nodelock.fhour|string_format:"%02d"}:{$nodelock.fminute|string_format:"%02d"}
-	</TD>
-	<TD style="width: 1%; white-space: nowrap;">
+	</td>
+	<td style="width: 1%; white-space: nowrap;">
 		{$nodelock.thour|string_format:"%02d"}:{$nodelock.tminute|string_format:"%02d"}
-	</TD>
-	<TD style="width: 97%; text-align: right; white-space: nowrap;">
-		<A HREF="javascript:delNodeLock({$nodelock.id});"><IMG SRC="img/delete.gif" ALT="[ {trans("Delete")} ]" {tip text="Remove lock"}></A>
-	</TD>
-</TR>
+	</td>
+	<td style="width: 97%; text-align: right; white-space: nowrap;">
+		<a href="javascript:delNodeLock({$nodelock.id});"><img src="img/delete.gif" alt="[ {trans("Delete")} ]" {tip text="Remove lock"}></a>
+	</td>
+</tr>
 {foreachelse}
-<TR>
-	<TD style="width: 100%; text-align: center;" colspan="5">
+<tr>
+	<td style="width: 100%; text-align: center;" colspan="5">
 		<p>&nbsp;</p>
 		<p><span class="bold">{trans("No locks.")}</span></p>
 		<p>&nbsp;</p>
-	</TD>
-</TR>
+	</td>
+</tr>
 {/foreach}
-<TR class="light">
-	<TD COLSPAN="2" CLASS="ftop" style="white-space: nowrap;">
+<tr class="light">
+	<td colspan="2" class="ftop" style="white-space: nowrap;">
 		{foreach from=$_DAYS item=dayname key=daynr}
 		<input type="checkbox" name="days[{$daynr}]" id="lockdays_{$daynr}" value="1">
 		<label for="lockdays_{$daynr}">{$dayname}</label>
 		{/foreach}
-	</TD>
-	<TD class="ftop" style="white-space: nowrap;">
+	</td>
+	<td class="ftop" style="white-space: nowrap;">
 		<select name="fhour">
 		{for $i = 0 to 23}
 			<option value="{$i}">{$i|string_format:"%02d"}</option>
@@ -49,8 +49,8 @@
 			<option value="{$i}">{$i|string_format:"%02d"}</option>
 		{/for}
 		</select>
-	</TD>
-	<TD class="ftop" style="white-space: nowrap;">
+	</td>
+	<td class="ftop" style="white-space: nowrap;">
 		<select name="thour">
 		{for $i = 0 to 23}
 			<option value="{$i}">{$i|string_format:"%02d"}</option>
@@ -60,9 +60,9 @@
 			<option value="{$i}">{$i|string_format:"%02d"}</option>
 		{/for}
 		</select>
-	</TD>
-	<TD style="text-align: right; white-space: nowrap;" CLASS="ftop" ROWSPAN="2">
-		<A id="nodelockaddlink" HREF="javascript:addNodeLock();" {tip text="Add new lock"}>{trans("Add")} <IMG SRC="img/save.gif" alt=""></A>
-	</TD>
-</TR>
-</TABLE>
+	</td>
+	<td style="text-align: right; white-space: nowrap;" class="ftop" rowspan="2">
+		<a id="nodelockaddlink" href="javascript:addNodeLock();" {tip text="Add new lock"}>{trans("Add")} <img src="img/save.gif" alt=""></a>
+	</td>
+</tr>
+</table>

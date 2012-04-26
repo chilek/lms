@@ -1,42 +1,42 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<FORM METHOD="POST" NAME="nodegroupadd" ACTION="?m=nodegroupadd">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD WIDTH="1%" CLASS="fleftu">
-			<IMG SRC="img/nodegroup.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" CLASS="fbt">
-			<B>{trans("Name:")}</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="frightu">
-			<INPUT TYPE="TEXT" NAME="nodegroupadd[name]" VALUE="{$nodegroupadd.name}" {tip trigger="name" bold=1}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft">
-			<IMG SRC="img/info1.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("Description:")}</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="fright">
-			<TEXTAREA NAME="nodegroupadd[description]" COLS="50" ROWS="5" {tip text="Enter additional information (optional)"}>{$nodegroupadd.description}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT"> 
-			<A HREF="javascript:document.nodegroupadd.submit();" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
-			<A HREF="?m=nodegrouplist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="nodegroupadd[reuse]" id="reuse" value="ON" id="reuse" {if $nodegroupadd.reuse}checked{/if}><label for="reuse">{trans("Display this form again, when this group is saved")}</label>
-		</TD>
-	</TR>
-</TABLE></FORM></P>
-<SCRIPT type="text/javascript">
+<h1>{$layout.pagetitle}</h1>
+<form method="POST" name="nodegroupadd" action="?m=nodegroupadd">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td width="1%" class="fleftu">
+			<img src="img/nodegroup.gif" alt="">
+		</td>
+		<td width="1%" class="fbt">
+			<strong>{trans("Name:")}</strong>
+		</td>
+		<td width="98%" class="frightu">
+			<input type="TEXT" name="nodegroupadd[name]" value="{$nodegroupadd.name}" {tip trigger="name" bold=1}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft">
+			<img src="img/info1.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Description:")}</strong>
+		</td>
+		<td width="98%" class="fright">
+			<textarea name="nodegroupadd[description]" cols="50" rows="5" {tip text="Enter additional information (optional)"}>{$nodegroupadd.description}</textarea>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="100%" colspan="3" class="FBOTTOMU" align="RIGHT"> 
+			<a href="javascript:document.nodegroupadd.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+			<a href="?m=nodegrouplist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a><br />
+			<input type="checkbox" name="nodegroupadd[reuse]" id="reuse" value="ON" id="reuse" {if $nodegroupadd.reuse}checked{/if}><label for="reuse">{trans("Display this form again, when this group is saved")}</label>
+		</td>
+	</tr>
+</table></form></P>
+<script type="text/javascript">
 <!--
 document.forms['nodegroupadd'].elements['nodegroupadd[name]'].focus();
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}

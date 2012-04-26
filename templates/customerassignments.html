@@ -1,122 +1,122 @@
 <!--// $Id$ //-->
 {assign var=today value=$smarty.now|date_format:"%x 00:00:00"}{assign var=today value=$today|date_format:"%s"}
-<TABLE style="width: 100%;" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD style="width: 99%; white-space: nowrap; text-align: left;" class="fleftu hand" onClick="showOrHide('customerassignments');">
-			<IMG src="img/money.gif" alt="">
+<table style="width: 100%;" cellpadding="3">
+	<tr class="DARK">
+		<td style="width: 99%; white-space: nowrap; text-align: left;" class="fleftu hand" onClick="showOrHide('customerassignments');">
+			<img src="img/money.gif" alt="">
 			<span class="bold">{trans("Customer Liabilities:")}</span>
-		</TD>
-		<TD style="width: 1%; text-align: right; white-space: nowrap;" class="frightu">
+		</td>
+		<td style="width: 1%; text-align: right; white-space: nowrap;" class="frightu">
 			{if !$customerinfo.deleted}
-			<A href="?m=customerassignmentadd&id={$customerinfo.id}">{trans("New Liability")} &raquo;</A>
+			<a href="?m=customerassignmentadd&id={$customerinfo.id}">{trans("New Liability")} &raquo;</a>
 				{if $layout.module == 'customerassignmentedit'}
-				<A href="?m={$layout.module}&expired={if $expired}0{else}1{/if}&id={$assignment.id}">{if $expired}{trans("Hide expired")}{else}{trans("Show expired")}{/if} &raquo;</A>&nbsp;
+				<a href="?m={$layout.module}&expired={if $expired}0{else}1{/if}&id={$assignment.id}">{if $expired}{trans("Hide expired")}{else}{trans("Show expired")}{/if} &raquo;</a>&nbsp;
 				{else}
-				<A href="?m={$layout.module}&expired={if $expired}0{else}1{/if}&id={if $nodeinfo}{$nodeinfo.id}{else}{$customerinfo.id}{/if}">{if $expired}{trans("Hide expired")}{else}{trans("Show expired")}{/if} &raquo;</A>&nbsp;
+				<a href="?m={$layout.module}&expired={if $expired}0{else}1{/if}&id={if $nodeinfo}{$nodeinfo.id}{else}{$customerinfo.id}{/if}">{if $expired}{trans("Hide expired")}{else}{trans("Show expired")}{/if} &raquo;</a>&nbsp;
 				{/if}
 			{/if}
-		</TD>
-	</TR>
-	<TR id="customerassignments" style="display: none;">
-		<TD style="width: 100%;" class="fall" colspan="2">
-			<TABLE cellpadding="5" cellspacing="0" style="width: 100%;">
-				<TR class="dark">
-					<TD style="width: 92%; white-space: nowrap;" class="fleftu"><span class="bold">{trans("Liability:")}</span></TD>
-					<TD style="width: 1%; white-space: nowrap; text-align: right;" class="fbt">
+		</td>
+	</tr>
+	<tr id="customerassignments" style="display: none;">
+		<td style="width: 100%;" class="fall" colspan="2">
+			<table cellpadding="5" cellspacing="0" style="width: 100%;">
+				<tr class="dark">
+					<td style="width: 92%; white-space: nowrap;" class="fleftu"><span class="bold">{trans("Liability:")}</span></td>
+					<td style="width: 1%; white-space: nowrap; text-align: right;" class="fbt">
 						{if !check_conf('privileges.hide_finances')}{trans("Value:")}{/if}
-					</TD>
-					<TD style="width: 1%; white-space: nowrap; text-align: right;" class="fbt">
+					</td>
+					<td style="width: 1%; white-space: nowrap; text-align: right;" class="fbt">
 						{if !check_conf('privileges.hide_finances')}{trans("Discount:")}{/if}
-					</TD>
-					<TD style="width: 1%; white-space: nowrap;" class="fbt">{trans("Accounting:")}</TD>
-					<TD style="width: 1%; white-space: nowrap; text-align: right;" class="fbt">{trans("Downceil:")}</TD>
-					<TD style="width: 1%; white-space: nowrap; text-align: right;" class="fbt">{trans("Upceil:")}</TD>
-					<TD style="width: 1%; white-space: nowrap;" class="fbt">{trans("Options:")}</TD>
-					<TD style="width: 1%; white-space: nowrap;" class="fbt">{trans("Period:")}</TD>
-					<TD style="width: 1%;" class="frightu">&nbsp;</TD>
-				</TR>
+					</td>
+					<td style="width: 1%; white-space: nowrap;" class="fbt">{trans("Accounting:")}</td>
+					<td style="width: 1%; white-space: nowrap; text-align: right;" class="fbt">{trans("Downceil:")}</td>
+					<td style="width: 1%; white-space: nowrap; text-align: right;" class="fbt">{trans("Upceil:")}</td>
+					<td style="width: 1%; white-space: nowrap;" class="fbt">{trans("Options:")}</td>
+					<td style="width: 1%; white-space: nowrap;" class="fbt">{trans("Period:")}</td>
+					<td style="width: 1%;" class="frightu">&nbsp;</td>
+				</tr>
 				{cycle name=assign values="light,lucid" print=false}
 				{foreach from=$assignments item=a}
-				<TR class="{cycle name=assign}
+				<tr class="{cycle name=assign}
 					{if ($a.dateto < $today && $a.dateto) || ($a.liabilityid && $a.at < $today && $a.at > 365)} blend{elseif ($a.datefrom > $today && $a.datefrom && $a.period) && !($a.suspended)} alertblend{elseif ($a.suspended)}suspended{/if}"
 					onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')" >
 					{if !$a.tariffid && !$a.liabilityid}
-					<TD COLSPAN="7" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
+					<td colspan="7" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
 						<span class="bold">{trans("Suspending of all liabilities")}</span>
-					</TD>
+					</td>
 					{else}
-					<TD OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
+					<td OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
 						{if $a.tariffid}
-							<A HREF="?m=tariffinfo&id={$a.tariffid}"><span class="bold">{$a.name}</span></A>
+							<a href="?m=tariffinfo&id={$a.tariffid}"><span class="bold">{$a.name}</span></a>
 						{else}
 							{$a.name}
 						{/if}
 						{if $a.nodes}({foreach from=$a.nodes item=item key=key}{$item.name}{if $key+1<sizeof($a.nodes)}, {/if}{/foreach}){/if}
-					</TD>
-					<TD style="white-space: nowrap; text-align: right;" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
+					</td>
+					<td style="white-space: nowrap; text-align: right;" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
 						{if !check_conf('privileges.hide_finances')}{$a.value|money_format}{/if}
-					</TD>
-					<TD style="text-align: right;" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
+					</td>
+					<td style="text-align: right;" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
 						{if !check_conf('privileges.hide_finances')}{if $a.pdiscount != 0}{$a.pdiscount}%{else}{if $a.vdiscount != 0}{$a.vdiscount|money_format}{else}-{/if}{/if}{/if}
-					</TD>
-					<TD style="white-space: nowrap;" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">{$a.payday}</TD>
-					<TD style="white-space: nowrap; text-align: right;" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
+					</td>
+					<td style="white-space: nowrap;" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">{$a.payday}</td>
+					<td style="white-space: nowrap; text-align: right;" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
 						{if $a.downceil}{$a.downceil} kbit/s{else}-{/if}
-					</TD>
-					<TD style="white-space: nowrap; text-align: right;" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
+					</td>
+					<td style="white-space: nowrap; text-align: right;" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
 						{if $a.upceil}{$a.upceil} kbit/s{else}-{/if}
-					</TD>
-					<TD style="white-space: nowrap; text-align: right;">
+					</td>
+					<td style="white-space: nowrap; text-align: right;">
 						<img src="img/options.gif" alt="" {tip a=$a.id dynpopup='?m=customerassignmentinfo&id=$a'}>
-					</TD>
+					</td>
 					{/if}
-					<TD style="white-space: nowrap;" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
+					<td style="white-space: nowrap;" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
 						{if $a.datefrom}{trans("from")} {$a.datefrom|date_format:"%Y/%m/%d"}{/if}
 						{if $a.dateto}{trans("to")} {$a.dateto|date_format:"%Y/%m/%d"}{/if}
-					</TD>
-					<TD style="text-align: right; white-space: nowrap;">
+					</td>
+					<td style="text-align: right; white-space: nowrap;">
 						{if ($a.tariffid || $a.liabilityid) && (($a.dateto > $today || !$a.dateto) || ($a.liabilityid && $a.at > $today))}
-						<A href="?m=customerassignmentedit&action=suspend&id={$a.id}&suspend={if $a.suspended}0{else}1{/if}" {tip text="Enable/disable accounting of selected liability"}><IMG SRC="img/wait.gif" alt="[ {if $a.suspended}{trans("Restore")}{else}{trans("Suspend")}{/if} ]"></A>
+						<a href="?m=customerassignmentedit&action=suspend&id={$a.id}&suspend={if $a.suspended}0{else}1{/if}" {tip text="Enable/disable accounting of selected liability"}><img src="img/wait.gif" alt="[ {if $a.suspended}{trans("Restore")}{else}{trans("Suspend")}{/if} ]"></a>
 						{/if}
-						<A onClick="return confirmLink(this, '{trans("Are you sure, you want to delete this liability?")}')" HREF="?m=customerassignmentdel&id={$a.id}" {tip text="Delete customer's liability"}><IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]"></A>
-						<A href="?m=customerassignmentedit&id={$a.id}"><IMG SRC="img/edit.gif" ALT="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-					</TD>
-				</TR>
+						<a onClick="return confirmLink(this, '{trans("Are you sure, you want to delete this liability?")}')" href="?m=customerassignmentdel&id={$a.id}" {tip text="Delete customer's liability"}><img src="img/delete.gif" alt="[ {trans("Delete")} ]"></a>
+						<a href="?m=customerassignmentedit&id={$a.id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
+					</td>
+				</tr>
 				{foreachelse}
-				<TR>
-					<TD style="text-align: center; width: 100%;" colspan="9">
+				<tr>
+					<td style="text-align: center; width: 100%;" colspan="9">
 						<P>&nbsp;</P>
 						<P><span class="bold">{trans("That customer hasn't got any assigned subscriptions.")}</span></P>
 						<P>&nbsp;</P>
-					</TD>
-				</TR>
+					</td>
+				</tr>
 				{/foreach}
-				<TR class="light">
-					<TD CLASS="ftop" style="text-align: right;"><span class="bold">{trans("Total:")}</span></TD>
-					<TD CLASS="ftop" style="white-space: nowrap; text-align: right;">
+				<tr class="light">
+					<td class="ftop" style="text-align: right;"><span class="bold">{trans("Total:")}</span></td>
+					<td class="ftop" style="white-space: nowrap; text-align: right;">
 						{if !check_conf('privileges.hide_finances')}
 						{sum array=$assignments column="real_value" string_format=$LANGDEFS.$_language.money_format}
 						{/if}
-					</TD>
-					<TD CLASS="ftop" style="white-space: nowrap; text-align: left;">
+					</td>
+					<td class="ftop" style="white-space: nowrap; text-align: left;">
 						{if !check_conf('privileges.hide_finances')}
 						({sum array=$assignments column="real_disc_value" string_format=$LANGDEFS.$_language.money_format})
 						{/if}
-					</TD>
-					<TD CLASS="FTOP">&nbsp;</TD>
-					<TD CLASS="ftop" style="white-space: nowrap; text-align: right;">{sum array=$assignments column="real_downceil" assign=downceilsum}{if $downceilsum}{$downceilsum} kbit/s{/if}</TD>
-					<TD CLASS="ftop" style="white-space: nowrap; text-align: right;">{sum array=$assignments column="real_upceil" assign=upceilsum}{if $upceilsum}{$upceilsum} kbit/s{/if}</TD>
-					<TD CLASS="ftop" COLSPAN="3">&nbsp;</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-</TABLE>
-<SCRIPT type="text/javascript">
+					</td>
+					<td class="FTOP">&nbsp;</td>
+					<td class="ftop" style="white-space: nowrap; text-align: right;">{sum array=$assignments column="real_downceil" assign=downceilsum}{if $downceilsum}{$downceilsum} kbit/s{/if}</td>
+					<td class="ftop" style="white-space: nowrap; text-align: right;">{sum array=$assignments column="real_upceil" assign=upceilsum}{if $upceilsum}{$upceilsum} kbit/s{/if}</td>
+					<td class="ftop" colspan="3">&nbsp;</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<script type="text/javascript">
 <!--
 if(getCookie('customerassignments')=='1')
 {
 	document.getElementById('customerassignments').style.display = '';
 }
 //-->
-</SCRIPT>
+</script>

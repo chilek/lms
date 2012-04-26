@@ -1,43 +1,43 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<P><TABLE cellpadding="3" WIDTH="100%">
-	<TR class="dark">
-		<TD width="99%" class="fleftu" NOWRAP><IMG src="img/docum.gif" alt=""> <B>{trans("Name:")}</B></TD>
-		<TD width="1%" class="frightu"></TD>
-	</TR>
+<h1>{$layout.pagetitle}</h1>
+<P><table cellpadding="3" width="100%">
+	<tr class="dark">
+		<td width="99%" class="fleftu" nowrap="nowrap"><img src="img/docum.gif" alt=""> <strong>{trans("Name:")}</strong></td>
+		<td width="1%" class="frightu"></td>
+	</tr>
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="2" CLASS="FALL">
+	<tr class="DARK">
+		<td colspan="2" class="FALL">
 			{include file="scroller.html" loop=$typelist}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
 	{cycle values="light,lucid" print=false}
 	{foreach from=$typelist key=key item=item}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD class="fleft" NOWRAP onClick="return self.location.href='?m=documenttypeedit&id={$key}';">
-			<IMG src="img/docum.gif" alt=""> <B>{$item}</B>
-		</TD>
-		<TD class="fright" align="right" NOWRAP>
-			<A href="?m=documenttypeedit&id={$key}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-		</TD>
-	</TR>
+	<tr class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<td class="fleft" nowrap="nowrap" onClick="return self.location.href='?m=documenttypeedit&id={$key}';">
+			<img src="img/docum.gif" alt=""> <strong>{$item}</strong>
+		</td>
+		<td class="fright" align="right" nowrap="nowrap">
+			<a href="?m=documenttypeedit&id={$key}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
+		</td>
+	</tr>
 	{foreachelse}
-	<TR>
-		<TD colspan="2" align="center" class="fall">
+	<tr>
+		<td colspan="2" align="center" class="fall">
 			<p>&nbsp;</p>
-			<p><B>{trans("There are no types in database.")}</B></p>
+			<p><strong>{trans("There are no types in database.")}</strong></p>
 			<p>&nbsp;</p>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/foreach}
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="2" CLASS="FALL">
+	<tr class="DARK">
+		<td colspan="2" class="FALL">
 			{include file="scroller.html" loop=$typelist}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
-</TABLE></P>
+</table></P>
 {include file="footer.html"}

@@ -1,41 +1,41 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<DIV align="CENTER">
-<FORM method="POST" action="{if $target}{$target}{else}?m=userpasswd&id={$passwd.id}{/if}" name="password">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE width="50%" cellpadding="3">
-	<TR class="dark">
-		<TD class="fall" colspan="2" style="white-space: nowrap;">
+<h1>{$layout.pagetitle}</h1>
+<div align="CENTER">
+<form method="POST" action="{if $target}{$target}{else}?m=userpasswd&id={$passwd.id}{/if}" name="password">
+<input type="submit" class="hiddenbtn">
+<table width="50%" cellpadding="3">
+	<tr class="dark">
+		<td class="fall" colspan="2" style="white-space: nowrap;">
 			<img src="img/pass.gif" alt=""> <span class="bold">{trans("Enter new password:")}</span>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD class="fleft" style="text-align: right; white-space: nowrap;">
+		</td>
+	</tr>
+	<tr class="light">
+		<td class="fleft" style="text-align: right; white-space: nowrap;">
 			<span class="bold">{trans("New password:")}</span>
-		</TD>
-		<TD class="fright" style="white-space: nowrap;">
+		</td>
+		<td class="fright" style="white-space: nowrap;">
 			<input type="password" name="passwd[passwd]" {tip text="Enter password" trigger="password"}>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD class="fleft" style="text-align: right; white-space: nowrap;">
+		</td>
+	</tr>
+	<tr class="light">
+		<td class="fleft" style="text-align: right; white-space: nowrap;">
 			<span class="bold">{trans("Repeat password:")}</span>
-		</TD>
-		<TD class="fright" style="white-space: nowrap;">
+		</td>
+		<td class="fright" style="white-space: nowrap;">
 			<input type="password" name="passwd[confirm]" {tip text="Confirm password" trigger="password"}>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD class="fbottomu" style="text-align: right;" colspan="2">
-			<A href="javascript:document.password.submit();" accesskey="s">{trans("Submit")} <img src="img/pass.gif" alt=""></A>
-		</TD>
-	</TR>
-</TABLE>
-</DIV>
-<SCRIPT type="text/javascript">
+		</td>
+	</tr>
+	<tr class="light">
+		<td class="fbottomu" style="text-align: right;" colspan="2">
+			<a href="javascript:document.password.submit();" accesskey="s">{trans("Submit")} <img src="img/pass.gif" alt=""></a>
+		</td>
+	</tr>
+</table>
+</div>
+<script type="text/javascript">
 <!--
 document.forms['password'].elements['passwd[passwd]'].focus();
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}

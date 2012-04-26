@@ -1,59 +1,59 @@
 <!--// $Id$ //-->
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR class="dark hand">
-		<TD width="99%" class="fleftu hand" onclick="showOrHide('voipaccountspanel');">
-			<IMG src="img/voip.gif" alt="">
-			<B>{t a=$customervoipaccounts.total|default:"0"}Voip Accounts ($a):{/t}</B> 
-		</TD>
-		<TD width="1%" class="frightu" align="right" nowrap>
-			{if $customerinfo.status neq "1" and ! $customerinfo.deleted}<A HREF="?m=voipaccountadd&ownerid={$customerinfo.id}">{trans("New Voip Account")} &raquo;</A>&nbsp;{/if}
-		</TD>
-	</TR>
-	<TR id="voipaccountspanel" style="display:none;">
-		<TD WIDTH="100%" colspan="2" class="fall">
-			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
-				<TR class="dark">
-					<TD WIDTH="96%" NOWRAP class="fleftu"><B>{trans("Login:")}</B></TD>
-					<TD WIDTH="1%" NOWRAP class="fbt">{trans("ID:")}</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt" COLSPAN="2">{trans("Password:")}</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt">{trans("Phone number:")}</TD>
-					<TD WIDTH="1%" class="frightu">&nbsp;</TD>
-				</TR>
+<table width="100%" cellpadding="3">
+	<tr class="dark hand">
+		<td width="99%" class="fleftu hand" onclick="showOrHide('voipaccountspanel');">
+			<img src="img/voip.gif" alt="">
+			<strong>{t a=$customervoipaccounts.total|default:"0"}Voip Accounts ($a):{/t}</strong> 
+		</td>
+		<td width="1%" class="frightu" align="right" nowrap="nowrap">
+			{if $customerinfo.status neq "1" and ! $customerinfo.deleted}<a href="?m=voipaccountadd&ownerid={$customerinfo.id}">{trans("New Voip Account")} &raquo;</a>&nbsp;{/if}
+		</td>
+	</tr>
+	<tr id="voipaccountspanel" style="display:none;">
+		<td width="100%" colspan="2" class="fall">
+			<table cellpadding="5" cellspacing="0" width="100%">
+				<tr class="dark">
+					<td width="96%" nowrap="nowrap" class="fleftu"><strong>{trans("Login:")}</strong></td>
+					<td width="1%" nowrap="nowrap" class="fbt">{trans("ID:")}</td>
+					<td width="1%" nowrap="nowrap" class="fbt" colspan="2">{trans("Password:")}</td>
+					<td width="1%" nowrap="nowrap" class="fbt">{trans("Phone number:")}</td>
+					<td width="1%" class="frightu">&nbsp;</td>
+				</tr>
 				{cycle name=voips values="light,lucid" print=false}
 				{foreach from=$customervoipaccounts.accounts item=voipaccount}
-				<TR class="{cycle name=voips}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-					<TD WIDTH="96%" NOWRAP onclick="return self.location.href='?m=voipaccountinfo&id={$voipaccount.id}'">
-					    <B>{$voipaccount.login}</B></TD>
-					<TD WIDTH="1%" NOWRAP onclick="return self.location.href='?m=voipaccountinfo&id={$voipaccount.id}'">
-					    ({$voipaccount.id|string_format:"%04d"})</TD>
-					<TD WIDTH="1%" NOWRAP COLSPAN="2" onclick="return self.location.href='?m=voipaccountinfo&id={$voipaccount.id}'">
-					    {$voipaccount.passwd}</TD>
-					<TD WIDTH="1%" NOWRAP onclick="return self.location.href='?m=voipaccountinfo&id={$voipaccount.id}'">
-					    {$voipaccount.phone}</TD>
-					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
-						<A onClick="return confirmLink(this, '{trans("Are you sure, you want to remove customer voip account?")}')" HREF="?m=voipaccountdel&id={$voipaccount.id}"><IMG SRC="img/delete.gif" ALT="[ {trans("Delete")} ]" TITLE="[ {trans("Delete")} ]"></A>
-						<A HREF="?m=voipaccountedit&id={$voipaccount.id}"><IMG SRC="img/edit.gif" ALT="[ {trans("Edit")} ]" TITLE="[ {trans("Edit")} ]"></A>
-						<A HREF="?m=voipaccountinfo&id={$voipaccount.id}"><IMG SRC="img/info.gif" ALT="[ {trans("Info")} ]" TITLE="[ {trans("Info")} ]"></A>
-					</TD>
-				</TR>
+				<tr class="{cycle name=voips}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+					<td width="96%" nowrap="nowrap" onclick="return self.location.href='?m=voipaccountinfo&id={$voipaccount.id}'">
+					    <strong>{$voipaccount.login}</strong></td>
+					<td width="1%" nowrap="nowrap" onclick="return self.location.href='?m=voipaccountinfo&id={$voipaccount.id}'">
+					    ({$voipaccount.id|string_format:"%04d"})</td>
+					<td width="1%" nowrap="nowrap" colspan="2" onclick="return self.location.href='?m=voipaccountinfo&id={$voipaccount.id}'">
+					    {$voipaccount.passwd}</td>
+					<td width="1%" nowrap="nowrap" onclick="return self.location.href='?m=voipaccountinfo&id={$voipaccount.id}'">
+					    {$voipaccount.phone}</td>
+					<td width="1%" align="RIGHT" nowrap="nowrap">
+						<a onClick="return confirmLink(this, '{trans("Are you sure, you want to remove customer voip account?")}')" href="?m=voipaccountdel&id={$voipaccount.id}"><img src="img/delete.gif" alt="[ {trans("Delete")} ]" TITLE="[ {trans("Delete")} ]"></a>
+						<a href="?m=voipaccountedit&id={$voipaccount.id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" TITLE="[ {trans("Edit")} ]"></a>
+						<a href="?m=voipaccountinfo&id={$voipaccount.id}"><img src="img/info.gif" alt="[ {trans("Info")} ]" TITLE="[ {trans("Info")} ]"></a>
+					</td>
+				</tr>
 				{foreachelse}
-				<TR>
-					<TD align="center" WIDTH="100%" colspan="6">
+				<tr>
+					<td align="center" width="100%" colspan="6">
 						<p>&nbsp;</p>
-						<p><B>{trans("That customer does not own any voip account.")}</B></p>
+						<p><strong>{trans("That customer does not own any voip account.")}</strong></p>
 						<p>&nbsp;</p>
-					</TD>
-				</TR>
+					</td>
+				</tr>
 				{/foreach}
-			</TABLE>
-		</TD>
-	</TR>
-</TABLE>
-<SCRIPT type="text/javascript">
+			</table>
+		</td>
+	</tr>
+</table>
+<script type="text/javascript">
 <!--
 	if (getCookie('voipaccountspanel') == '1')
 	{
 		document.getElementById('voipaccountspanel').style.display = '';
 	}
 //-->
-</SCRIPT>
+</script>

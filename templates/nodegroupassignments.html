@@ -18,100 +18,100 @@
 //-->
 </script>
 <P>
-<FORM NAME="nodeassignments" METHOD="POST" ACTION="?m=nodegroup&id={$nodegroup.id}">
-<INPUT type="submit" class="hiddenbtn">
-<INPUT TYPE="hidden" NAME="oper" VALUE="1">
-<TABLE WIDTH="100%" CELLPADDING="0">
-    <TR><TD WIDTH="49%" style="vertical-align: top">
-	    <TABLE WIDTH="100%" CELLPADDING="3">
-		<TR CLASS="DARK">
-		    <TD WIDTH="100%" CLASS="fall" NOWRAP>
-			<IMG SRC="img/node.gif" ALT="">&nbsp;<B>{trans("Group members:")}</B>
-		    </TD>
-		</TR>
-		<TR CLASS="DARK">
-		    <TD CLASS="fall" colspan="4" ALIGN="CENTER">
+<form name="nodeassignments" method="POST" action="?m=nodegroup&id={$nodegroup.id}">
+<input type="submit" class="hiddenbtn">
+<input type="hidden" name="oper" value="1">
+<table width="100%" cellpadding="0">
+    <tr><td width="49%" style="vertical-align: top">
+	    <table width="100%" cellpadding="3">
+		<tr class="DARK">
+		    <td width="100%" class="fall" nowrap="nowrap">
+			<img src="img/node.gif" alt="">&nbsp;<strong>{trans("Group members:")}</strong>
+		    </td>
+		</tr>
+		<tr class="DARK">
+		    <td class="fall" colspan="4" align="CENTER">
 			    {trans("Network:")}
-			    <SELECT SIZE="1" NAME="nodeassignments[membersnetid]" ONCHANGE="javascript:changeMembersNetwork();">
-			    	<OPTION value="0" {if !$membersnetid}SELECTED{/if}>{trans("- all networks -")}</OPTION>
+			    <select size="1" name="nodeassignments[membersnetid]" ONCHANGE="javascript:changeMembersNetwork();">
+			    	<option value="0" {if !$membersnetid}SELECTED{/if}>{trans("- all networks -")}</option>
 				{section name=networks loop=$networks}
-				<OPTION value="{$networks[networks].id}" {if $networks[networks].id eq $membersnetid}SELECTED{/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
+				<option value="{$networks[networks].id}" {if $networks[networks].id eq $membersnetid}SELECTED{/if}>{$networks[networks].name|truncate:30:"...":true}</option>
 				{/section}
-			    </SELECT>&nbsp;
-		    </TD>
-		</TR>
-		<TR CLASS="LIGHT">
-		    <TD WIDTH="100%" CLASS="flr" ALIGN="CENTER">
+			    </select>&nbsp;
+		    </td>
+		</tr>
+		<tr class="LIGHT">
+		    <td width="100%" class="flr" align="CENTER">
 		    {if $nodegroup.nodescount}
-			<SELECT SIZE="20" NAME="nodeassignments[gmnodeid][]" multiple>
+			<select size="20" name="nodeassignments[gmnodeid][]" multiple>
 				{section name=node loop=$nodegroup.nodes}
-					<OPTION VALUE="{$nodegroup.nodes[node].id}">
+					<option value="{$nodegroup.nodes[node].id}">
 					{$nodegroup.nodes[node].nodename|truncate:40:"...":true} ({$nodegroup.nodes[node].id|string_format:"%04d"})
-					</OPTION>
+					</option>
 				{/section}
-			</SELECT>
+			</select>
 		    {else}
-			<BR>
-			<BR>
-			<B>{trans("This group hasn't got any members.")}</B><BR>
-			<BR>
-			<BR>
+			<br />
+			<br />
+			<strong>{trans("This group hasn't got any members.")}</strong><br />
+			<br />
+			<br />
 		    {/if}
-		    </TD>
-		</TR>
-		<TR CLASS="LIGHT">
-		    <TD WIDTH="100%" CLASS="fbottomu" ALIGN="RIGHT" NOWRAP>
-			<A HREF="javascript:removeNodes();">{trans("Delete")} <IMG SRC="img/cancel.gif" ALT=""></A>
-		    </TD>
-		</TR>
-	    </TABLE>
-    </TD>
-    <TD WIDTH="2%">
-    </TD>
-    <TD WIDTH="49%" STYLE="vertical-align: top;">
-	    <TABLE WIDTH="100%" CELLPADDING="3">
-		<TR CLASS="DARK">
-		    <TD WIDTH="100%" CLASS="fall" NOWRAP>
-			<IMG SRC="img/node.gif" ALT="">&nbsp;<B>{trans("Add new member(s):")}</B>
-		    </TD>
-		</TR>
-		<TR CLASS="DARK">
-		    <TD CLASS="fall" colspan="4" ALIGN="CENTER">
+		    </td>
+		</tr>
+		<tr class="LIGHT">
+		    <td width="100%" class="fbottomu" align="RIGHT" nowrap="nowrap">
+			<a href="javascript:removeNodes();">{trans("Delete")} <img src="img/cancel.gif" alt=""></a>
+		    </td>
+		</tr>
+	    </table>
+    </td>
+    <td width="2%">
+    </td>
+    <td width="49%" style="vertical-align: top;">
+	    <table width="100%" cellpadding="3">
+		<tr class="DARK">
+		    <td width="100%" class="fall" nowrap="nowrap">
+			<img src="img/node.gif" alt="">&nbsp;<strong>{trans("Add new member(s):")}</strong>
+		    </td>
+		</tr>
+		<tr class="DARK">
+		    <td class="fall" colspan="4" align="CENTER">
 			    {trans("Network:")}
-			    <SELECT SIZE="1" NAME="nodeassignments[othersnetid]" ONCHANGE="javascript:changeOthersNetwork();">
-			    	<OPTION value="0" {if !$othersnetid}SELECTED{/if}>{trans("- all networks -")}</OPTION>
+			    <select size="1" name="nodeassignments[othersnetid]" ONCHANGE="javascript:changeOthersNetwork();">
+			    	<option value="0" {if !$othersnetid}SELECTED{/if}>{trans("- all networks -")}</option>
 				{section name=networks loop=$networks}
-				<OPTION value="{$networks[networks].id}" {if $networks[networks].id eq $othersnetid}SELECTED{/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
+				<option value="{$networks[networks].id}" {if $networks[networks].id eq $othersnetid}SELECTED{/if}>{$networks[networks].name|truncate:30:"...":true}</option>
 				{/section}
-			    </SELECT>&nbsp;
-		    </TD>
-		</TR>
-		<TR CLASS="LIGHT">
-		    <TD WIDTH="100%" CLASS="flr" ALIGN="CENTER">
+			    </select>&nbsp;
+		    </td>
+		</tr>
+		<tr class="LIGHT">
+		    <td width="100%" class="flr" align="CENTER">
 			{if $nodescount}
-			<SELECT SIZE="20" NAME="nodeassignments[mnodeid][]" multiple>
+			<select size="20" name="nodeassignments[mnodeid][]" multiple>
 				{section name=node loop=$nodes}
-					<OPTION VALUE="{$nodes[node].id}">
+					<option value="{$nodes[node].id}">
 					{$nodes[node].nodename} ({$nodes[node].id|string_format:"%04d"})
-					</OPTION>
+					</option>
 				{/section}
-			</SELECT>
+			</select>
 			{else}
-			<BR>
-			<BR>
-			<B>{trans("All nodes are members of this group.")}</B><BR>
-			<BR>
-			<BR>
+			<br />
+			<br />
+			<strong>{trans("All nodes are members of this group.")}</strong><br />
+			<br />
+			<br />
 			{/if}
-		    </TD>
-		</TR>
-		<TR CLASS="LIGHT">
-		    <TD WIDTH="100%" CLASS="fbottomu" ALIGN="RIGHT" NOWRAP>
-			<A HREF="javascript:document.nodeassignments.submit();">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
-		    </TD>
-		</TR>
-	</TABLE>
-    </TD></TR>
-</TABLE>
-</FORM>
+		    </td>
+		</tr>
+		<tr class="LIGHT">
+		    <td width="100%" class="fbottomu" align="RIGHT" nowrap="nowrap">
+			<a href="javascript:document.nodeassignments.submit();">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+		    </td>
+		</tr>
+	</table>
+    </td></tr>
+</table>
+</form>
 </P>

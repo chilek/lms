@@ -1,71 +1,71 @@
 <!--// $Id$ //-->
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD WIDTH="1%" CLASS="FLEFTU">
-			<IMG SRC="img/voip.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
-			<B>{$voipaccountinfo.login} ({$voipaccountinfo.id|string_format:"%04d"})</B>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" COLSPAN="3" CLASS="FLR" ALIGN="RIGHT">
-			<TABLE WIDTH="100%" CELLPADDING="0">
-				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" style="vertical-align:top;">
-						<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/passwd.gif" ALT="{trans("Password:")}">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Password:")}</B>
-		</TD>
-		<TD WIDTH="98%" NOWRAP>
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td width="1%" class="FLEFTU">
+			<img src="img/voip.gif" alt="">
+		</td>
+		<td width="99%" class="FRIGHTU" colspan="2">
+			<strong>{$voipaccountinfo.login} ({$voipaccountinfo.id|string_format:"%04d"})</strong>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="100%" colspan="3" class="FLR" align="RIGHT">
+			<table width="100%" cellpadding="0">
+				<tr class="LIGHT">
+					<td width="50%" style="vertical-align:top;">
+						<table width="100%" cellpadding="3">
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/passwd.gif" alt="{trans("Password:")}">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("Password:")}</strong>
+		</td>
+		<td width="98%" nowrap="nowrap">
 			{$voipaccountinfo.passwd}
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/phone.gif" ALT="{trans("Phone number:")}">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Phone number:")}</B>
-		</TD>
-		<TD WIDTH="98%" NOWRAP>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/phone.gif" alt="{trans("Phone number:")}">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("Phone number:")}</strong>
+		</td>
+		<td width="98%" nowrap="nowrap">
 			{$voipaccountinfo.phone}
-		</TD>
-	</TR>
-        <TR CLASS="LIGHT">
-                <TD WIDTH="1%">
-                        <A HREF="?m=voipaccountset&id={$voipaccountinfo.id}"><IMG SRC="img/{if ! $voipaccountinfo.access}no{/if}access.gif" ALT=""></A>
-                </TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Status:")}</B>
-		</TD>
-                <TD WIDTH="1%" COLSPAN="1">
-                        <B>{if $voipaccountinfo.access}{trans("connected<!singular>")}{else}{trans("disconnected<!singular>")}{/if}</B>
-                </TD>
-        </TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/users.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("Created:")}<BR>
-			{trans("Modified:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-			{$voipaccountinfo.createdby}, {$voipaccountinfo.creationdateh}<BR>
+		</td>
+	</tr>
+        <tr class="LIGHT">
+                <td width="1%">
+                        <a href="?m=voipaccountset&id={$voipaccountinfo.id}"><img src="img/{if ! $voipaccountinfo.access}no{/if}access.gif" alt=""></a>
+                </td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("Status:")}</strong>
+		</td>
+                <td width="1%" colspan="1">
+                        <strong>{if $voipaccountinfo.access}{trans("connected<!singular>")}{else}{trans("disconnected<!singular>")}{/if}</strong>
+                </td>
+        </tr>
+	<tr class="LIGHT">
+		<td width="1%">
+			<img src="img/users.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Created:")}<br />
+			{trans("Modified:")}</strong>
+		</td>
+		<td width="98%">
+			{$voipaccountinfo.createdby}, {$voipaccountinfo.creationdateh}<br />
 			{if $voipaccountinfo.moddate}{$voipaccountinfo.modifiedby}, {$voipaccountinfo.moddateh}{else}-{/if}
-		</TD>
-	</TR>
-				</TABLE>
-	</TABLE>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
-			<A HREF="?m=voipaccountedit&id={$voipaccountinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG SRC="img/edit.gif" ALT=""></A>
-			<A HREF="?m=voipaccountdel&id={$voipaccountinfo.id}" onClick="return confirmLink(this, '{t a=$voipaccountinfo.login}Are you sure, you want to remove voip account \'$a\' from database?{/t}')">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
-		</TD>
-	</TR>	
-</TABLE>
+		</td>
+	</tr>
+				</table>
+	</table>
+	<tr class="LIGHT">
+		<td width="100%" class="FBOTTOMU" colspan="3" align="RIGHT">
+			<a href="?m=voipaccountedit&id={$voipaccountinfo.id}" accesskey="E">{trans("Edit")} <img src="img/edit.gif" alt=""></a>
+			<a href="?m=voipaccountdel&id={$voipaccountinfo.id}" onClick="return confirmLink(this, '{t a=$voipaccountinfo.login}Are you sure, you want to remove voip account \'$a\' from database?{/t}')">{trans("Delete")} <img src="img/delete.gif" alt=""></a>
+		</td>
+	</tr>	
+</table>

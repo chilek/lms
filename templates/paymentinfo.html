@@ -1,74 +1,74 @@
 {include file="header.html"}
 <!-- $Id$ -->
-<H1>{$layout.pagetitle}</H1>
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD WIDTH="1%" CLASS="fleftu">
-			<IMG SRC="img/payment.gif" ALT="">
-		</TD>
-		<TD WIDTH="98%" COLSPAN="2" CLASS="frightu">
-			<B>{$payment.name} ({$payment.id|string_format:"%04d"})</B>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft">
-			<IMG SRC="img/creditor.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("Creditor:")}</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="fright">
+<h1>{$layout.pagetitle}</h1>
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td width="1%" class="fleftu">
+			<img src="img/payment.gif" alt="">
+		</td>
+		<td width="98%" colspan="2" class="frightu">
+			<strong>{$payment.name} ({$payment.id|string_format:"%04d"})</strong>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft">
+			<img src="img/creditor.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Creditor:")}</strong>
+		</td>
+		<td width="98%" class="fright">
 			{$payment.creditor}
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft">
-			<IMG SRC="img/value.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Value:")}</B> 
-		</TD>
-		<TD WIDTH="98%" CLASS="fright">
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft">
+			<img src="img/value.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("Value:")}</strong> 
+		</td>
+		<td width="98%" class="fright">
 			{$payment.value|money_format} 
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft">
-			<IMG SRC="img/calendar.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Payment day:")}</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="fright">								
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft">
+			<img src="img/calendar.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("Payment day:")}</strong>
+		</td>
+		<td width="98%" class="fright">								
 			{$payment.payday}
-		</TD>
-	</TR>	
+		</td>
+	</tr>	
 	{if $payment.description}
-	<TR CLASS="light">	
-		<TD WIDTH="1%" CLASS="fleft">
-			<IMG SRC="img/info1.gif" ALT="">
-		</TD>
-		<TD WIDTH="98%" CLASS="fright" COLSPAN="2">
-			<TABLE WIDTH="100%" CELLPADDING="5"> 
-			    <TR><TD CLASS="fall superlight">
-				    {$payment.description|replace:"\n":"<BR>"}
-			    </TD></TR>
-			</TABLE>
-		</TD>
-	</TR>
+	<tr class="light">	
+		<td width="1%" class="fleft">
+			<img src="img/info1.gif" alt="">
+		</td>
+		<td width="98%" class="fright" colspan="2">
+			<table width="100%" cellpadding="5"> 
+			    <tr><td class="fall superlight">
+				    {$payment.description|replace:"\n":"<br />"}
+			    </td></tr>
+			</table>
+		</td>
+	</tr>
 	{/if}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
-			<FORM NAME="addbalance" METHOD="POST" ACTION="?m=balanceadd">
-			<INPUT type="submit" class="hiddenbtn">
-			<INPUT TYPE="HIDDEN" NAME="m" VALUE="balanceadd">
-			<INPUT TYPE="HIDDEN" NAME="addbalance[value]" VALUE="{math equation="x*-1" x=$payment.value}">
-			<INPUT TYPE="HIDDEN" NAME="addbalance[comment]" VALUE="{$payment.name} / {$payment.creditor}">
-			<A HREF="javascript:document.addbalance.submit();">{trans("Account payment")} <IMG SRC="img/pay.gif" alt=""></A>
-			<A HREF="?m=paymentedit&id={$payment.id}">{trans("Edit")} <IMG SRC="img/edit.gif" alt=""></A>
-			<A HREF="?m=paymentdel&id={$payment.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that payment?")}');">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A> 
-			</FORM>
-		</TD>
-	</TR>
-</TABLE>
+	<tr class="LIGHT">
+		<td width="100%" colspan="3" class="FBOTTOMU" align="RIGHT">
+			<form name="addbalance" method="POST" action="?m=balanceadd">
+			<input type="submit" class="hiddenbtn">
+			<input type="HIDDEN" name="m" value="balanceadd">
+			<input type="HIDDEN" name="addbalance[value]" value="{math equation="x*-1" x=$payment.value}">
+			<input type="HIDDEN" name="addbalance[comment]" value="{$payment.name} / {$payment.creditor}">
+			<a href="javascript:document.addbalance.submit();">{trans("Account payment")} <img src="img/pay.gif" alt=""></a>
+			<a href="?m=paymentedit&id={$payment.id}">{trans("Edit")} <img src="img/edit.gif" alt=""></a>
+			<a href="?m=paymentdel&id={$payment.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that payment?")}');">{trans("Delete")} <img src="img/delete.gif" alt=""></a> 
+			</form>
+		</td>
+	</tr>
+</table>
 {include file="footer.html"}

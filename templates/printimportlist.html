@@ -1,69 +1,69 @@
 {include file="clearheader.html"}
 <!--// $Id$ //-->
-<TABLE WIDTH="100%" CELLPADDING="3" ALIGN="CENTER">
-	<TR>
-		<TD WIDTH="535" VALIGN="TOP">
-			<P class="hdf"><B>{$layout.pagetitle}</B>
-			{if $source}<BR><font class="sdr"><B>{trans("Source:")} {$source}</B></font>{/if}
+<table width="100%" cellpadding="3" align="CENTER">
+	<tr>
+		<td width="535" VALIGN="TOP">
+			<P class="hdf"><strong>{$layout.pagetitle}</strong>
+			{if $source}<br /><font class="sdr"><strong>{trans("Source:")} {$source}</strong></font>{/if}
 			</P>
-		</TD>
-		<TD WIDTH="180" ALIGN="RIGHT" NOWRAP>
-			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %x"}<BR>
+		</td>
+		<td width="180" align="RIGHT" nowrap="nowrap">
+			LMS {$layout.lmsv} @ {$layout.hostname}<br />
+			{$smarty.now|date_format:"%A, %x"}<br />
 			{t a=$layout.logname}Created by: $a{/t}
-		</TD>
-	</TR>
-</TABLE>
-<BR>
-<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
-	<TR>
-		<TD WIDTH="15" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+	</tr>
+</table>
+<br />
+<table width="100%" cellpadding="3" BORDER="1" align="CENTER">
+	<tr>
+		<td width="15" class="HEAD" align="CENTER">
 			{trans("No.")}
-		</TD>
-		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="50" class="HEAD" align="CENTER">
 			{trans("Date")}
-		</TD>
-		<TD WIDTH="100" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="100" class="HEAD" align="CENTER">
 			{trans("Value")}
-		</TD>
-		<TD WIDTH="400" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="400" class="HEAD" align="CENTER">
 			{trans("Customer")}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{cycle values="white,grey" print=false}
 	{section name=importlist loop=$importlist}
-	<TR class="{cycle}">
-		<TD ALIGN="CENTER">
+	<tr class="{cycle}">
+		<td align="CENTER">
 			{counter}.
-		</TD>
-		<TD ALIGN="CENTER" NOWRAP>
+		</td>
+		<td align="CENTER" nowrap="nowrap">
 			{$importlist[importlist].time|date_format:"%d.%m.%Y"}
-		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
+		</td>
+		<td align="RIGHT" nowrap="nowrap">
 			{$importlist[importlist].value|money_format}
-		</TD>
-		<TD>
+		</td>
+		<td>
 			{$importlist[importlist].customername} ({$importlist[importlist].customerid|string_format:"%04d"})
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{assign var=total value=$total+$importlist[importlist].value}
 	{sectionelse}
-	<TR>
-		<TD ALIGN="center" WIDTH="100%" COLSPAN="4">
+	<tr>
+		<td align="center" width="100%" colspan="4">
 			<P>&nbsp;</P>
-			<P><B>{trans("No such cash operations.")}</B></P>
+			<P><strong>{trans("No such cash operations.")}</strong></P>
 			<P>&nbsp;</P>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/section}
-	<TR>
-		<TD CLASS="HEADGREY" ALIGN="RIGHT" COLSPAN="2">
-			<B>{trans("Total:")}</B>
-		</TD>
-		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
-			<B>{$total|money_format}</B>
-		</TD>
-		<TD CLASS="HEADGREY"></TD>
-	</TR>
-</TABLE>
+	<tr>
+		<td class="HEADGREY" align="RIGHT" colspan="2">
+			<strong>{trans("Total:")}</strong>
+		</td>
+		<td class="HEADGREY" align="RIGHT" nowrap="nowrap">
+			<strong>{$total|money_format}</strong>
+		</td>
+		<td class="HEADGREY"></td>
+	</tr>
+</table>
 {include file="clearfooter.html"}

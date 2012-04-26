@@ -1,99 +1,99 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<P><TABLE cellpadding="3" WIDTH="100%">
-	<TR class="dark">
-		<TD width="1%" class="fleftu" NOWRAP>
-			<IMG src="img/settings.gif" alt=""><A href="?m=configlist&o=var{if $listdata.direction eq "asc" && $listdata.order eq "var"},desc{/if}"> <B>{trans("Name:")}</B></A> {if $listdata.order eq "var"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<IMG src="img/empty.gif" alt="" width="16" height="16"><A href="?m=configlist&o=section{if $listdata.direction eq "asc" && $listdata.order eq "section"},desc{/if}"> {trans("Section:")}</A> {if $listdata.order eq "section"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-		</TD>
-		<TD width="1%" class="fbt" align="center">
+<h1>{$layout.pagetitle}</h1>
+<P><table cellpadding="3" width="100%">
+	<tr class="dark">
+		<td width="1%" class="fleftu" nowrap="nowrap">
+			<img src="img/settings.gif" alt=""><a href="?m=configlist&o=var{if $listdata.direction eq "asc" && $listdata.order eq "var"},desc{/if}"> <strong>{trans("Name:")}</strong></a> {if $listdata.order eq "var"}<img src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<br />
+			<img src="img/empty.gif" alt="" width="16" height="16"><a href="?m=configlist&o=section{if $listdata.direction eq "asc" && $listdata.order eq "section"},desc{/if}"> {trans("Section:")}</a> {if $listdata.order eq "section"}<img src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</td>
+		<td width="1%" class="fbt" align="center">
 			{trans("Value:")}
-		</TD>
-		<TD width="97%" class="fbt" align="center">
+		</td>
+		<td width="97%" class="fbt" align="center">
 			{trans("Comment:")}
-		</TD>
-		<TD width="1%" class="frightu" align="right" nowrap>
-			<A href="?m=configadd{if $listdata.section}&section={$listdata.section}{/if}">{trans("Add option")} <IMG src="img/save.gif" alt=""> </A>
-		</TD>
-	</TR>
-	<TR class="DARK">
-		<TD class="fall" colspan="4">
-			<FORM method="GET" action="?m=configlist" name="filter">
-				<INPUT type="submit" class="hiddenbtn">
-				<INPUT type="HIDDEN" name="m" value="configlist">
-				<INPUT type="HIDDEN" name="page" value="1">
-				<B>{trans("Filter:")} </B> {trans("Section:")}
-				<SELECT size="1" name="s" OnChange="document.filter.submit();">
-					<OPTION value=""{if !$listdata.section} SELECTED{/if}>{trans("- all -")}</OPTION>
-					<OPTION value="phpui"{if $listdata.section eq "phpui"} SELECTED{/if}>phpui</OPTION>
-					<OPTION value="invoices"{if $listdata.section eq "invoices"} SELECTED{/if}>invoices</OPTION>
-					<OPTION value="receipts"{if $listdata.section eq "receipts"} SELECTED{/if}>receipts</OPTION>
-					<OPTION value="finances"{if $listdata.section eq "finances"} SELECTED{/if}>finances</OPTION>
-					<OPTION value="mail"{if $listdata.section eq "mail"} SELECTED{/if}>mail</OPTION>
-					<OPTION value="sms"{if $listdata.section eq "sms"} SELECTED{/if}>sms</OPTION>
-					 <OPTION value="zones"{if $listdata.section eq "zones"} SELECTED{/if}>zones</OPTION>
-				</SELECT>
+		</td>
+		<td width="1%" class="frightu" align="right" nowrap="nowrap">
+			<a href="?m=configadd{if $listdata.section}&section={$listdata.section}{/if}">{trans("Add option")} <img src="img/save.gif" alt=""> </a>
+		</td>
+	</tr>
+	<tr class="DARK">
+		<td class="fall" colspan="4">
+			<form method="GET" action="?m=configlist" name="filter">
+				<input type="submit" class="hiddenbtn">
+				<input type="HIDDEN" name="m" value="configlist">
+				<input type="HIDDEN" name="page" value="1">
+				<strong>{trans("Filter:")} </strong> {trans("Section:")}
+				<select size="1" name="s" OnChange="document.filter.submit();">
+					<option value=""{if !$listdata.section} SELECTED{/if}>{trans("- all -")}</option>
+					<option value="phpui"{if $listdata.section eq "phpui"} SELECTED{/if}>phpui</option>
+					<option value="invoices"{if $listdata.section eq "invoices"} SELECTED{/if}>invoices</option>
+					<option value="receipts"{if $listdata.section eq "receipts"} SELECTED{/if}>receipts</option>
+					<option value="finances"{if $listdata.section eq "finances"} SELECTED{/if}>finances</option>
+					<option value="mail"{if $listdata.section eq "mail"} SELECTED{/if}>mail</option>
+					<option value="sms"{if $listdata.section eq "sms"} SELECTED{/if}>sms</option>
+					 <option value="zones"{if $listdata.section eq "zones"} SELECTED{/if}>zones</option>
+				</select>
 				{trans("Option")}:
-				<INPUT type="text" name="n" value="{$listdata.search}" size="15" {tip text="Enter option name"}>
-				&nbsp;<A href="javascript: document.filter.submit();">&raquo;&raquo;&raquo;</A>
-			</FORM>
-		</TD>
-	</TR>
+				<input type="text" name="n" value="{$listdata.search}" size="15" {tip text="Enter option name"}>
+				&nbsp;<a href="javascript: document.filter.submit();">&raquo;&raquo;&raquo;</a>
+			</form>
+		</td>
+	</tr>
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="4" CLASS="FALL">
+	<tr class="DARK">
+		<td colspan="4" class="FALL">
 			{include file="scroller.html" loop=$configlist}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
 	{cycle values="light,lucid" print=false}
 	{section name=configlist loop=$configlist start=$start max=$pagelimit}
-	<TR class="{cycle}{if $configlist[configlist].disabled} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD class="fleft" valign="top" NOWRAP OnClick="return self.location.href='?m=configedit&id={$configlist[configlist].id}';">
-			<IMG src="img/settings.gif" alt=""><B> {$configlist[configlist].var}</B><BR>
-			<IMG src="img/empty.gif" alt="" width="16" height="16"> [{$configlist[configlist].section}]
-		</TD>
-		<TD align="right" valign="top" OnClick="return self.location.href='?m=configedit&id={$configlist[configlist].id}';">
+	<tr class="{cycle}{if $configlist[configlist].disabled} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<td class="fleft" valign="top" nowrap="nowrap" OnClick="return self.location.href='?m=configedit&id={$configlist[configlist].id}';">
+			<img src="img/settings.gif" alt=""><strong> {$configlist[configlist].var}</strong><br />
+			<img src="img/empty.gif" alt="" width="16" height="16"> [{$configlist[configlist].section}]
+		</td>
+		<td align="right" valign="top" OnClick="return self.location.href='?m=configedit&id={$configlist[configlist].id}';">
 			{$configlist[configlist].value|escape}
-		</TD>
-		<TD valign="top" OnClick="return self.location.href='?m=configedit&id={$configlist[configlist].id}';">
+		</td>
+		<td valign="top" OnClick="return self.location.href='?m=configedit&id={$configlist[configlist].id}';">
 			{$configlist[configlist].description|truncate:400:"..."}
-			{if $configlist[configlist].usercomment != ''}<BR><B>{trans("Comment:")}</B> {$configlist[configlist].usercomment|truncate:400:"..."}{/if}
-		</TD>
-		<TD class="fright" align="right" nowrap>
-			<A href="?m=configedit&id={$configlist[configlist].id}&statuschange=1"><IMG src="img/wait.gif" alt="[ {if $configlist[configlist].disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]" title="[ {if $configlist[configlist].disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]"></A>
-			<A href="?m=configdel&id={$configlist[configlist].id}" OnClick="return confirmLink(this, '{t a=$configlist[configlist].var}Are you sure, you want to delete option \'$a\' from database?{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A href="?m=configedit&id={$configlist[configlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-		</TD>
-	</TR>
+			{if $configlist[configlist].usercomment != ''}<br /><strong>{trans("Comment:")}</strong> {$configlist[configlist].usercomment|truncate:400:"..."}{/if}
+		</td>
+		<td class="fright" align="right" nowrap="nowrap">
+			<a href="?m=configedit&id={$configlist[configlist].id}&statuschange=1"><img src="img/wait.gif" alt="[ {if $configlist[configlist].disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]" title="[ {if $configlist[configlist].disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]"></a>
+			<a href="?m=configdel&id={$configlist[configlist].id}" OnClick="return confirmLink(this, '{t a=$configlist[configlist].var}Are you sure, you want to delete option \'$a\' from database?{/t}');"><img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></a>
+			<a href="?m=configedit&id={$configlist[configlist].id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
+		</td>
+	</tr>
 	{sectionelse}
-	<TR>
-		<TD colspan="4" align="center" class="fall">
+	<tr>
+		<td colspan="4" align="center" class="fall">
 			<p>&nbsp;</p>
-			<p><B>
+			<p><strong>
 			    {if $listdata.search}
 			        {trans("No configuration options in database.")}
 			    {else}
-			        {trans("No configuration options in database.")} {t}Click <A href="?m=configload">here</A> to import them from lms.ini.{/t}
+			        {trans("No configuration options in database.")} {t}Click <a href="?m=configload">here</a> to import them from lms.ini.{/t}
 			    {/if}
-			    </B></p>
+			    </strong></p>
 			<p>&nbsp;</p>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/section}
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="4" CLASS="FALL">
+	<tr class="DARK">
+		<td colspan="4" class="FALL">
 			{include file="scroller.html" loop=$configlist}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
-	<TR CLASS="DARK">
-		<TD colspan="4" class="FALL" align="right">
-			<A href="?m=configadd{if $listdata.section}&section={$listdata.section}{/if}">{trans("Add option")} <IMG src="img/save.gif" alt=""></A>
-		</TD>
-	</TR>
+	<tr class="DARK">
+		<td colspan="4" class="FALL" align="right">
+			<a href="?m=configadd{if $listdata.section}&section={$listdata.section}{/if}">{trans("Add option")} <img src="img/save.gif" alt=""></a>
+		</td>
+	</tr>
 
-</TABLE></P>
+</table></P>
 {include file="footer.html"}

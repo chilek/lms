@@ -1,96 +1,96 @@
 {include file="clearheader.html"}
 <!--// $Id$ //-->
-<TABLE WIDTH="100%" CELLPADDING="3" ALIGN="CENTER">
-	<TR>
-		<TD WIDTH="535" ALIGN="LEFT">
-			<H1>{$layout.pagetitle}</H1>
-		</TD>
-		<TD WIDTH="180" ALIGN="RIGHT" NOWRAP>
-			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %x"}<BR>
+<table width="100%" cellpadding="3" align="CENTER">
+	<tr>
+		<td width="535" align="LEFT">
+			<h1>{$layout.pagetitle}</h1>
+		</td>
+		<td width="180" align="RIGHT" nowrap="nowrap">
+			LMS {$layout.lmsv} @ {$layout.hostname}<br />
+			{$smarty.now|date_format:"%A, %x"}<br />
 			{t a=$layout.logname}Prepared by: $a{/t}
-		</TD>
-	</TR>
-</TABLE>
-<BR>
-<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
-	<TR>
-		<TD WIDTH="15" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+	</tr>
+</table>
+<br />
+<table width="100%" cellpadding="3" BORDER="1" align="CENTER">
+	<tr>
+		<td width="15" class="HEAD" align="CENTER">
 			{trans("No.")}
-		</TD>
-		<TD WIDTH="450" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="450" class="HEAD" align="CENTER">
 			{trans("Customer")}
-		</TD>
-		<TD WIDTH="35" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="35" class="HEAD" align="CENTER">
 			{trans("Gross value")}
-		</TD>
+		</td>
 		{foreach item=tax from=$taxes}
-		<TD WIDTH="35" CLASS="HEAD" ALIGN="CENTER">
+		<td width="35" class="HEAD" align="CENTER">
 			{trans("Net value")}
-		</TD>
-		<TD WIDTH="35" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="35" class="HEAD" align="CENTER">
 			{trans("Tax value")} {$tax.label}
-		</TD>
+		</td>
 		{/foreach}
-		<TD WIDTH="35" CLASS="HEAD" ALIGN="CENTER">
+		<td width="35" class="HEAD" align="CENTER">
 			{trans("Total Tax")}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{cycle values="white,grey" print=false}
 	{foreach item=report from=$reportlist}
-	<TR class="{cycle}">
-		<TD ALIGN="CENTER">
+	<tr class="{cycle}">
+		<td align="CENTER">
 			{counter}.
-		</TD>
-		<TD>
-			<B>{$report.customername}</B> ({$report.id|string_format:"%04d"})<BR>
+		</td>
+		<td>
+			<strong>{$report.customername}</strong> ({$report.id|string_format:"%04d"})<br />
 			{$report.address}
-			{if $report.ten}<BR>{$report.ten}{/if}
-		</TD>
-		<TD ALIGN="RIGHT">
+			{if $report.ten}<br />{$report.ten}{/if}
+		</td>
+		<td align="RIGHT">
 			{$report.value|string_format:"%01.2f"}
-		</TD>
+		</td>
 		{foreach item=tax from=$taxes}
 		{assign var=taxid value=$tax.id}
-		<TD ALIGN="RIGHT">
+		<td align="RIGHT">
 			{$report.$taxid.netto|string_format:"%01.2f"}
-		</TD>
-		<TD ALIGN="RIGHT">
+		</td>
+		<td align="RIGHT">
 			{$report.$taxid.tax|string_format:"%01.2f"}
-		</TD>
+		</td>
 		{/foreach}
-		<TD ALIGN="RIGHT">
+		<td align="RIGHT">
 			{$report.taxsum|string_format:"%01.2f"}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{foreachelse}
-	<TR>
-		<TD ALIGN="center" COLSPAN="{math equation="4+x*2" x=$taxescount}">
+	<tr>
+		<td align="center" colspan="{math equation="4+x*2" x=$taxescount}">
 			<P>&nbsp;</P>
-			<P><B>{trans("No such liabilities in selected date.")}</B></P>
+			<P><strong>{trans("No such liabilities in selected date.")}</strong></P>
 			<P>&nbsp;</P>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/foreach}
-	<TR>
-		<TD CLASS="HEADGREY" COLSPAN="2" ALIGN="RIGHT">
-			<B>{trans("Total:")}</B>
-		</TD>
-		<TD CLASS="HEADGREY" ALIGN="RIGHT">
-			<B>{sum array=$reportlist column="value" string_format="%01.2f"}</B>
-		</TD>
+	<tr>
+		<td class="HEADGREY" colspan="2" align="RIGHT">
+			<strong>{trans("Total:")}</strong>
+		</td>
+		<td class="HEADGREY" align="RIGHT">
+			<strong>{sum array=$reportlist column="value" string_format="%01.2f"}</strong>
+		</td>
 		{foreach item=tax from=$taxes}
 		{assign var=taxid value=$tax.id}
-		<TD CLASS="HEADGREY" ALIGN="RIGHT">
-			<B>{$total.netto.$taxid|string_format:"%01.2f"}</B>
-		</TD>
-		<TD CLASS="HEADGREY" ALIGN="RIGHT">
-			<B>{$total.tax.$taxid|string_format:"%01.2f"}</B>
-		</TD>
+		<td class="HEADGREY" align="RIGHT">
+			<strong>{$total.netto.$taxid|string_format:"%01.2f"}</strong>
+		</td>
+		<td class="HEADGREY" align="RIGHT">
+			<strong>{$total.tax.$taxid|string_format:"%01.2f"}</strong>
+		</td>
 		{/foreach}
-		<TD CLASS="HEADGREY" ALIGN="RIGHT">
-			<B>{sum array=$reportlist column="taxsum" string_format="%01.2f"}</B>
-		</TD>
-	</TR>
-</TABLE>
+		<td class="HEADGREY" align="RIGHT">
+			<strong>{sum array=$reportlist column="taxsum" string_format="%01.2f"}</strong>
+		</td>
+	</tr>
+</table>
 {include file="clearfooter.html"}

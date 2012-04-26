@@ -1,87 +1,87 @@
 {include file="clearheader.html"}
 <!--// $Id$ //-->
-<TABLE WIDTH="100%">
-	<TR>
-		<TD WIDTH="99%" VALIGN="TOP">
-			<H1>{$layout.pagetitle}</H1>
-		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
-			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %x"}<BR>
+<table width="100%">
+	<tr>
+		<td width="99%" VALIGN="TOP">
+			<h1>{$layout.pagetitle}</h1>
+		</td>
+		<td width="1%" align="RIGHT" nowrap="nowrap">
+			LMS {$layout.lmsv} @ {$layout.hostname}<br />
+			{$smarty.now|date_format:"%A, %x"}<br />
 			{t a=$layout.logname}Prepared by: $a{/t}
-		</TD>
-	</TR>
-</TABLE>
+		</td>
+	</tr>
+</table>
 {foreach from=$list item=request}
-<TABLE WIDTH="640" CELLPADDING="3" ALIGN="CENTER">
-	<TR>
-		<TD CLASS="grey bb fleftu" ALIGN="CENTER" WIDTH="1%" NOWRAP>
-			<IMG src="img/ticket.gif" alt="">
-		</TD>
-		<TD CLASS="grey bb fbt" ALIGN="CENTER" WIDTH="1%" NOWRAP>
-			<B>{$request.id|string_format:"%08d"}:</B>
-		</TD>
-		<TD CLASS="grey bb fbt" WIDTH="97%">
-			<B>{$request.subject|escape}</B>
-		</TD>
-		<TD CLASS="grey bb frightu" ALIGN="CENTER" WIDTH="1%">
+<table width="640" cellpadding="3" align="CENTER">
+	<tr>
+		<td class="grey bb fleftu" align="CENTER" width="1%" nowrap="nowrap">
+			<img src="img/ticket.gif" alt="">
+		</td>
+		<td class="grey bb fbt" align="CENTER" width="1%" nowrap="nowrap">
+			<strong>{$request.id|string_format:"%08d"}:</strong>
+		</td>
+		<td class="grey bb fbt" width="97%">
+			<strong>{$request.subject|escape}</strong>
+		</td>
+		<td class="grey bb frightu" align="CENTER" width="1%">
 			#{counter}
-		</TD>
-	</TR>
-	<TR>
-		<TD COLSPAN="4" CLASS="flr bb">
-			<TABLE WIDTH="100%">
-			    <TR>
-				<TD WIDTH="1%">{trans("Date:")}</TD>
-				<TD WIDTH="99%">
+		</td>
+	</tr>
+	<tr>
+		<td colspan="4" class="flr bb">
+			<table width="100%">
+			    <tr>
+				<td width="1%">{trans("Date:")}</td>
+				<td width="99%">
 				    {$request.createtime|date_format:"%Y/%m/%d %H:%M"}
-				</TD>
-			    </TR>
-			    <TR>
-				<TD WIDTH="1%">{trans("Submitter:")}</TD>
-				<TD WIDTH="99%">
+				</td>
+			    </tr>
+			    <tr>
+				<td width="1%">{trans("Submitter:")}</td>
+				<td width="99%">
 				    {if $request.customerid}
 				    {$request.customername} ({$request.customerid|string_format:"%04d"})
 				    {else}
 				    {$request.requestor}
 				    {/if}
-				</TD>
-			    </TR>
+				</td>
+			    </tr>
 			    {if $request.address}
-			    <TR>
-				<TD WIDTH="1%">{trans("Address:")}</TD>
-				<TD WIDTH="99%">
+			    <tr>
+				<td width="1%">{trans("Address:")}</td>
+				<td width="99%">
 				    {$request.address}
 				    {if $request.phone}({trans("phone:")} {$request.phone}){/if}
-				</TD>
-			    </TR>
+				</td>
+			    </tr>
 			    {/if}
-			</TABLE>
-		</TD>
-	</TR>
-	<TR>
-		<TD COLSPAN="4" CLASS="fbottomu bb">
-			<TABLE WIDTH="100%" CELLPADDING="3">
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="4" class="fbottomu bb">
+			<table width="100%" cellpadding="3">
 			    {foreach from=$request.content item=item}
-			    <TR>
-				<TD WIDTH="100%" CLASS="ftop{if $item.note} blend{/if}">
-				    {$item.body|escape|replace:"\n":"<BR>"}
-				</TD>
-			    </TR>
+			    <tr>
+				<td width="100%" class="ftop{if $item.note} blend{/if}">
+				    {$item.body|escape|replace:"\n":"<br />"}
+				</td>
+			    </tr>
 			    {/foreach}			
-			</TABLE>
-		</TD>
-	</TR>
-</TABLE><BR>
+			</table>
+		</td>
+	</tr>
+</table><br />
 {foreachelse}
-<TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
-	<TR>
-    		<TD ALIGN="center" WIDTH="100%">
+<table width="640" cellpadding="3" BORDER="1" align="CENTER">
+	<tr>
+    		<td align="center" width="100%">
 			<P>&nbsp;</P>
-			<P><B>{trans("No such requests in database.")}</B></P>
+			<P><strong>{trans("No such requests in database.")}</strong></P>
 			<P>&nbsp;</P>
-		</TD>
-	</TR>
-</TABLE>
+		</td>
+	</tr>
+</table>
 {/foreach}
 {include file="clearfooter.html"}

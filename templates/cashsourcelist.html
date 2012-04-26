@@ -1,52 +1,52 @@
 {include file="header.html"}
 <!-- $Id$ -->
-<H1><B>{$layout.pagetitle}</B></H1>
-<P><TABLE cellpadding="3" WIDTH="100%">
-	<TR CLASS="dark">
-		<TD CLASS="fleftu" WIDTH="1%" nowrap>
-			<img src="img/isource.gif" alt=""><B>{trans("Name:")}</B>
-		</TD>
-		<TD CLASS="fbt" WIDTH="1%" NOWRAP>
+<h1><strong>{$layout.pagetitle}</strong></h1>
+<P><table cellpadding="3" width="100%">
+	<tr class="dark">
+		<td class="fleftu" width="1%" nowrap="nowrap">
+			<img src="img/isource.gif" alt=""><strong>{trans("Name:")}</strong>
+		</td>
+		<td class="fbt" width="1%" nowrap="nowrap">
 			{trans("ID:")}
-		</TD>
-		<TD CLASS="fbt" WIDTH="97%">
+		</td>
+		<td class="fbt" width="97%">
 			{trans("Description:")}
-		</TD>
-		<TD CLASS="frightu" WIDTH="1%" nowrap>
-			<A href="?m=cashsourceadd">{trans("Add source")} <img src="img/save.gif" alt=""></A>
-		</TD>
-	</TR>
+		</td>
+		<td class="frightu" width="1%" nowrap="nowrap">
+			<a href="?m=cashsourceadd">{trans("Add source")} <img src="img/save.gif" alt=""></a>
+		</td>
+	</tr>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$sourcelist item=source}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD CLASS="fleft" onClick="return self.location.href='?m=cashsourceedit&id={$source.id}'" nowrap>
-			<IMG src="img/isource.gif" alt="">
-			<B>{$source.name}</B>
-		</TD>
-		<TD onClick="return self.location.href='?m=cashsourceedit&id={$source.id}'">
+	<tr class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<td class="fleft" onClick="return self.location.href='?m=cashsourceedit&id={$source.id}'" nowrap="nowrap">
+			<img src="img/isource.gif" alt="">
+			<strong>{$source.name}</strong>
+		</td>
+		<td onClick="return self.location.href='?m=cashsourceedit&id={$source.id}'">
 			({$source.id|string_format:"%04d"})
-		</TD>
-		<TD onClick="return self.location.href='?m=cashsourceedit&id={$source.id}'">
+		</td>
+		<td onClick="return self.location.href='?m=cashsourceedit&id={$source.id}'">
 			{$source.description}
-		</TD>
-		<TD CLASS="fright" align="right" NOWRAP>
-			<A HREF="?m=cashsourcedel&id={$source.id}" OnClick="return confirmLink(this, '{t a=$source.name}Are you sure, you want to remove source \'$a\'?{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A HREF="?m=cashsourceedit&id={$source.id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-		</TD>
-	</TR>
+		</td>
+		<td class="fright" align="right" nowrap="nowrap">
+			<a href="?m=cashsourcedel&id={$source.id}" OnClick="return confirmLink(this, '{t a=$source.name}Are you sure, you want to remove source \'$a\'?{/t}');"><img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></a>
+			<a href="?m=cashsourceedit&id={$source.id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
+		</td>
+	</tr>
 	{foreachelse}
-	<TR>
-		<TD colspan="4" align="center" class="flr">
+	<tr>
+		<td colspan="4" align="center" class="flr">
 			<p>&nbsp;</p>
-			<p><B>{trans("There are no sources in database.")}<B></p>
+			<p><strong>{trans("There are no sources in database.")}<strong></p>
 			<p>&nbsp;</p>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/foreach}
-	<TR CLASS="dark">
-		<TD colspan="4" class="fall" align="right">
-			<A href="?m=cashsourceadd">{trans("Add source")} <IMG src="img/save.gif" alt=""></A>
-		</TD>
-	</TR>
-</TABLE></P>
+	<tr class="dark">
+		<td colspan="4" class="fall" align="right">
+			<a href="?m=cashsourceadd">{trans("Add source")} <img src="img/save.gif" alt=""></a>
+		</td>
+	</tr>
+</table></P>
 {include file="footer.html"}

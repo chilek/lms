@@ -1,126 +1,126 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<TABLE width="100%" cellpadding="3">
-	<TR class="dark">
-		<TD width="1%" class="fleftu">
-			<IMG src="img/calendar.gif" alt="">
-		</TD>
-		<TD width="1%" class="fbt">
-			<B>{trans("Title:")}</B>
-		</TD>
-		<TD width="98%" class="frightu">
-			<B>{$event.title}</B>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
-			<IMG src="img/time.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Time:")}</B>
-		</TD>
-		<TD width="98%" class="fright">
+<h1>{$layout.pagetitle}</h1>
+<table width="100%" cellpadding="3">
+	<tr class="dark">
+		<td width="1%" class="fleftu">
+			<img src="img/calendar.gif" alt="">
+		</td>
+		<td width="1%" class="fbt">
+			<strong>{trans("Title:")}</strong>
+		</td>
+		<td width="98%" class="frightu">
+			<strong>{$event.title}</strong>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft">
+			<img src="img/time.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Time:")}</strong>
+		</td>
+		<td width="98%" class="fright">
 			{$event.date|date_format:"%x (%A)"}
 			{math equation="floor(x/100)" x=$event.begintime format="%02d"}:{math equation="x % 100" x=$event.begintime format="%02d"}
 			{if $event.begintime != $event.endtime}
 			- {math equation="floor(x/100)" x=$event.endtime format="%02d"}:{math equation="x % 100" x=$event.endtime format="%02d"}
 			{/if}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 {if $event.description}
-	<TR class="light">
-		<TD width="1%" class="fleft">
-			<IMG src="img/info.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Description:")}</B>
-		</TD>
-		<TD width="98%" class="fright">
-			<TABLE WIDTH="95%" CELLPADDING="5">
-				<TR>
-					<TD CLASS="fall superlight">
-						{$event.description|replace:"\n":"<BR>"}
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
+	<tr class="light">
+		<td width="1%" class="fleft">
+			<img src="img/info.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Description:")}</strong>
+		</td>
+		<td width="98%" class="fright">
+			<table width="95%" cellpadding="5">
+				<tr>
+					<td class="fall superlight">
+						{$event.description|replace:"\n":"<br />"}
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
 {/if}
-	<TR class="light">
-		<TD width="1%" class="fleft">
-			<IMG src="img/access.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Status:")}</B>
-		</TD>
-		<TD width="98%" class="fright" nowrap>
+	<tr class="light">
+		<td width="1%" class="fleft">
+			<img src="img/access.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Status:")}</strong>
+		</td>
+		<td width="98%" class="fright" nowrap="nowrap">
 			{if $event.private}{trans("private")}{else}{trans("public")}{/if}
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
-			<IMG src="img/users.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Created by:")}</B>
-		</TD>
-		<TD width="98%" class="fright" nowrap>
-			<A href="?m=userinfo&id={$event.userid}">{$event.username}</A>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
-			<IMG src="img/customer.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Customer:")}</B>
-		</TD>
-		<TD width="98%" class="fright" nowrap>
-			<A href="?m=customerinfo&id={$event.customerid}">{$event.customername}</A>
-		</TD>
-	</TR>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft">
+			<img src="img/users.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Created by:")}</strong>
+		</td>
+		<td width="98%" class="fright" nowrap="nowrap">
+			<a href="?m=userinfo&id={$event.userid}">{$event.username}</a>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft">
+			<img src="img/customer.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Customer:")}</strong>
+		</td>
+		<td width="98%" class="fright" nowrap="nowrap">
+			<a href="?m=customerinfo&id={$event.customerid}">{$event.customername}</a>
+		</td>
+	</tr>
 {if $event.note}
-	<TR class="light">
-		<TD width="1%" class="fleft">
-			<IMG src="img/info.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Note:")}</B>
-		</TD>
-		<TD width="98%" class="fright">
-			<TABLE WIDTH="95%" CELLPADDING="5">
-				<TR>
-					<TD CLASS="FALL" BGCOLOR="#F4F0EC">
-						{$event.note|replace:"\n":"<BR>"}
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
+	<tr class="light">
+		<td width="1%" class="fleft">
+			<img src="img/info.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Note:")}</strong>
+		</td>
+		<td width="98%" class="fright">
+			<table width="95%" cellpadding="5">
+				<tr>
+					<td class="FALL" BGCOLOR="#F4F0EC">
+						{$event.note|replace:"\n":"<br />"}
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
 {/if}
-	<TR class="light">
-		<TD width="1%" class="fleft">
-			<IMG src="img/users.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Users:")}</B>
-		</TD>
-		<TD width="98%" class="fright" nowrap>
+	<tr class="light">
+		<td width="1%" class="fleft">
+			<img src="img/users.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Users:")}</strong>
+		</td>
+		<td width="98%" class="fright" nowrap="nowrap">
 			{foreach item=user from=$event.userlist}	
-				<NOBR><A href="?m=userinfo&id={$user.id}">{$user.name}</A></NOBR><BR>
+				<span class="nobr"><a href="?m=userinfo&id={$user.id}">{$user.name}</a></span><br />
 			{/foreach}
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD class="fbottomu" align="right" colspan="3">
-			<A href="?m=eventedit&id={$event.id}">{trans("Edit")} <IMG src="img/edit.gif" alt=""></A>
+		</td>
+	</tr>
+	<tr class="light">
+		<td class="fbottomu" align="right" colspan="3">
+			<a href="?m=eventedit&id={$event.id}">{trans("Edit")} <img src="img/edit.gif" alt=""></a>
 			{if !$event.closed}
-			<A href="?m=eventedit&id={$event.id}&action=close">{trans("Close")} <IMG src="img/dead.gif" alt=""></A>
+			<a href="?m=eventedit&id={$event.id}&action=close">{trans("Close")} <img src="img/dead.gif" alt=""></a>
 			{else}
-			<A href="?m=eventedit&id={$event.id}&action=open">{trans("Open")} <IMG src="img/open.gif" alt=""></A>
+			<a href="?m=eventedit&id={$event.id}&action=open">{trans("Open")} <img src="img/open.gif" alt=""></a>
 			{/if}
-		</TD>
-	</TR>
-</TABLE>
+		</td>
+	</tr>
+</table>
 {include file="footer.html"}

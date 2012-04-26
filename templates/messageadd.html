@@ -1,9 +1,9 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<FORM name="message" id="message" method="post" action="?m=messageadd" enctype="multipart/form-data">
-<INPUT type="submit" class="hiddenbtn">
-<SCRIPT type="text/javascript">
+<h1>{$layout.pagetitle}</h1>
+<form name="message" id="message" method="post" action="?m=messageadd" enctype="multipart/form-data">
+<input type="submit" class="hiddenbtn">
+<script type="text/javascript">
 <!--
 	function checkaddr(email)
 	{
@@ -51,35 +51,35 @@
 		document.getElementById('charscounttext').innerHTML = elem.value.length;
 	}
 -->
-</SCRIPT>
-<TABLE style="width: 100%;" CELLPADDING="3">
+</script>
+<table style="width: 100%;" cellpadding="3">
 {if $message.customerid}
-	<TR CLASS="DARK">
-		<TD CLASS="FLEFTU" style="width: 1%;">
-			<IMG SRC="img/customer.gif" ALT=""> 
-		</TD>
-		<TD CLASS="FBT" style="width: 1%; white-space: nowrap;">
+	<tr class="DARK">
+		<td class="FLEFTU" style="width: 1%;">
+			<img src="img/customer.gif" alt=""> 
+		</td>
+		<td class="FBT" style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("Recipient:")}</span>
-		</TD>
-		<TD CLASS="FRIGHTU" style="width: 98%;">
+		</td>
+		<td class="FRIGHTU" style="width: 98%;">
 			<span class="bold">{$message.customer} ({$message.customerid|string_format:"%04d"})</span>
-			<INPUT type="hidden" name="message[customerid]" value="{$message.customerid}">
-		</TD>
-	</TR>
+			<input type="hidden" name="message[customerid]" value="{$message.customerid}">
+		</td>
+	</tr>
 {else}
-	<TR CLASS="DARK">
-		<TD CLASS="FLEFTU" style="width: 1%;">
-			<IMG SRC="img/group.gif" ALT=""> 
-		</TD>
-		<TD CLASS="FBT" style="width: 1%; white-space: nowrap;">
+	<tr class="DARK">
+		<td class="FLEFTU" style="width: 1%;">
+			<img src="img/group.gif" alt=""> 
+		</td>
+		<td class="FBT" style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("Recipients:")}</span>
-		</TD>
-		<TD CLASS="FRIGHTU" style="width: 98%;">
-			<TABLE style="width: 100%;">
-				<TR>
-					<TD style="width: 1%; white-space: nowrap;" rowspan="2">{trans("Status:")}</TD>
-					<TD style="width: 1%;" rowspan="2">
-						<SELECT NAME="message[group]" {tip trigger="group" text="Select recipients group"}>
+		</td>
+		<td class="FRIGHTU" style="width: 98%;">
+			<table style="width: 100%;">
+				<tr>
+					<td style="width: 1%; white-space: nowrap;" rowspan="2">{trans("Status:")}</td>
+					<td style="width: 1%;" rowspan="2">
+						<select name="message[group]" {tip trigger="group" text="Select recipients group"}>
 							<option value="0"{if !$message.group} SELECTED{/if}>{trans("- all customers -")}</option>
 							<option value="3"{if $message.group == "3"} SELECTED{/if}>{trans("connected<!plural>")}</option>
 							<option value="2"{if $message.group == "2"} SELECTED{/if}>{trans("awaiting")}</option>
@@ -88,176 +88,176 @@
 							<option value="5"{if $message.group == "5"} SELECTED{/if}>{trans("disconnected<!plural>")}</option>
 							<option value="6"{if $message.group == "6"} SELECTED{/if}>{trans("in debt")}</option>
 							<option value="7"{if $message.group == "7"} SELECTED{/if}>{trans("not in debt")}</option>
-						</SELECT>
-					</TD>
-					<TD style="width: 1%; white-space: nowrap;">{trans("Group:")}</TD>
-					<TD style="width: 1%;">
-						<SELECT NAME="message[customergroup]" {tip trigger="customergroup" text="Select customers group"}>
+						</select>
+					</td>
+					<td style="width: 1%; white-space: nowrap;">{trans("Group:")}</td>
+					<td style="width: 1%;">
+						<select name="message[customergroup]" {tip trigger="customergroup" text="Select customers group"}>
 							<option value="0">{trans("- all groups -")}</option>
 							{section name="customergroups" loop=$customergroups}
 							<option value="{$customergroups[customergroups].id}"{if $message.customergroup == $customergroups[customergroups].id} SELECTED{/if}>{$customergroups[customergroups].name|truncate:"30":"...":true}</option>
 						{/section}
-						</SELECT>
-					</TD>
-					<TD style="width: 1%; white-space: nowrap">{trans("Network:")}</TD>
-					<TD style="width: 95%;">
-						<SELECT NAME="message[network]" {tip trigger="network" text="Select IP network"}>
+						</select>
+					</td>
+					<td style="width: 1%; white-space: nowrap="nowrap"">{trans("Network:")}</td>
+					<td style="width: 95%;">
+						<select name="message[network]" {tip trigger="network" text="Select IP network"}>
 							<option value="0">{trans("- all networks -")}</option>
 							{section name="networks" loop=$networks}
 							<option value="{$networks[networks].id}"{if $message.network == $networks[networks].id} SELECTED{/if}>{$networks[networks].name|truncate:"30":"...":true}</option>
 							{/section}
-						</SELECT>
-					</TD>
-				</TR>
-				<TR>
-					<TD style="width: 1%; white-space: nowrap;">{trans("Nodes Group:<!short>")}</TD>
-					<TD style="width: 1%;">
-						<SELECT SIZE="1" NAME="message[nodegroup]" {tip trigger="nodegroup" text="Select nodes group"}>
-							<OPTION value="" {if !$listdata.nodegroup} SELECTED {/if}>{trans("- all groups -")}</OPTION>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td style="width: 1%; white-space: nowrap;">{trans("Nodes Group:<!short>")}</td>
+					<td style="width: 1%;">
+						<select size="1" name="message[nodegroup]" {tip trigger="nodegroup" text="Select nodes group"}>
+							<option value="" {if !$listdata.nodegroup} SELECTED {/if}>{trans("- all groups -")}</option>
 							{foreach from=$nodegroups item=nodegroup}
-							<OPTION value="{$nodegroup.id}" {if $message.nodegroup eq $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
+							<option value="{$nodegroup.id}" {if $message.nodegroup eq $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</option>
 							{/foreach}
-						</SELECT>
-					</TD>
-					<TD style="width: 1%; white-space: nowrap;">{trans("Link type:")}</TD>
-					<TD style="width: 95%;">
-						<SELECT SIZE="1" NAME="message[linktype]" {tip trigger="linktype" text="Select link type"}>
-							<OPTION VALUE="">{trans("- all -")}</OPTION>
-							<OPTION VALUE="0">{trans("wire")}</OPTION>
-							<OPTION VALUE="1">{trans("wireless")}</OPTION>
-							<OPTION VALUE="2">{trans("fiber")}</OPTION>
-						</SELECT>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
+						</select>
+					</td>
+					<td style="width: 1%; white-space: nowrap;">{trans("Link type:")}</td>
+					<td style="width: 95%;">
+						<select size="1" name="message[linktype]" {tip trigger="linktype" text="Select link type"}>
+							<option value="">{trans("- all -")}</option>
+							<option value="0">{trans("wire")}</option>
+							<option value="1">{trans("wireless")}</option>
+							<option value="2">{trans("fiber")}</option>
+						</select>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
 {/if}
-	<TR CLASS="LIGHT">
-		<TD CLASS="FLEFT" style="width: 1%;">
-			<IMG SRC="img/mailsms.gif" ALT=""> 
-		</TD>
-		<TD style="width: 1%; white-space: nowrap;">
+	<tr class="LIGHT">
+		<td class="FLEFT" style="width: 1%;">
+			<img src="img/mailsms.gif" alt=""> 
+		</td>
+		<td style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("Type:")}</span>
-		</TD>
-		<TD CLASS="FRIGHT" style="width: 98%;">
-			<INPUT type="radio" NAME="message[type]" id="typemail" value="{$smarty.const.MSG_MAIL}"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} CHECKED{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typemail"><span class="bold">{trans("email")}</span></label>
-			<INPUT type="radio" NAME="message[type]" id="typesms" value="{$smarty.const.MSG_SMS}"{if $message.type == $smarty.const.MSG_SMS} CHECKED{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typesms"><span class="bold">{trans("sms")}</span></label>
+		</td>
+		<td class="FRIGHT" style="width: 98%;">
+			<input type="radio" name="message[type]" id="typemail" value="{$smarty.const.MSG_MAIL}"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} checked="checked"{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typemail"><span class="bold">{trans("email")}</span></label>
+			<input type="radio" name="message[type]" id="typesms" value="{$smarty.const.MSG_SMS}"{if $message.type == $smarty.const.MSG_SMS} checked="checked"{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typesms"><span class="bold">{trans("sms")}</span></label>
 			{if !$message.customerid}
-			<INPUT type="radio" NAME="message[type]" id="typeanysms" value="{$smarty.const.MSG_ANYSMS}"{if $message.type == $smarty.const.MSG_ANYSMS} CHECKED{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typeanysms"><span class="bold">{trans("any sms")}</span></label>
+			<input type="radio" name="message[type]" id="typeanysms" value="{$smarty.const.MSG_ANYSMS}"{if $message.type == $smarty.const.MSG_ANYSMS} checked="checked"{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typeanysms"><span class="bold">{trans("any sms")}</span></label>
 			{/if}
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT" ID="mailsender"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
-		<TD CLASS="FLEFT" style="width: 1%;">
-			<IMG SRC="img/email.gif" ALT=""> 
-		</TD>
-		<TD style="width: 1%; white-space: nowrap;">
+		</td>
+	</tr>
+	<tr class="LIGHT" id="mailsender"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
+		<td class="FLEFT" style="width: 1%;">
+			<img src="img/email.gif" alt=""> 
+		</td>
+		<td style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("Sender E-mail:")}</span>
-		</TD>
-		<TD CLASS="FRIGHT" style="width: 98%;">
-			<INPUT type="text" NAME="message[sender]" SIZE="40" value="{if $message.sender}{$message.sender}{elseif $userinfo.email}{$userinfo.email}{/if}" {tip trigger="sender" text="Enter sender e-mail address"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT" ID="mailfrom"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
-		<TD CLASS="FLEFT" style="width: 1%;">
-			<IMG SRC="img/users.gif" ALT=""> 
-		</TD>
-		<TD style="width: 1%;">
+		</td>
+		<td class="FRIGHT" style="width: 98%;">
+			<input type="text" name="message[sender]" size="40" value="{if $message.sender}{$message.sender}{elseif $userinfo.email}{$userinfo.email}{/if}" {tip trigger="sender" text="Enter sender e-mail address"}>
+		</td>
+	</tr>
+	<tr class="LIGHT" id="mailfrom"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
+		<td class="FLEFT" style="width: 1%;">
+			<img src="img/users.gif" alt=""> 
+		</td>
+		<td style="width: 1%;">
 			<span class="bold">{trans("Sender:")}</span>
-		</TD>
-		<TD CLASS="FRIGHT" style="width: 98%;">
-			<INPUT type="text" NAME="message[from]" SIZE="40"  VALUE="{if $message.from}{$message.from}{elseif $userinfo.name}{$userinfo.name}{/if}" {tip trigger="from" text="Enter sender name"}>
-		</TD>
-	</TR>
+		</td>
+		<td class="FRIGHT" style="width: 98%;">
+			<input type="text" name="message[from]" size="40"  value="{if $message.from}{$message.from}{elseif $userinfo.name}{$userinfo.name}{/if}" {tip trigger="from" text="Enter sender name"}>
+		</td>
+	</tr>
 {if !$message.customerid}
 	{if $users}
-	<TR CLASS="LIGHT" ID="users"{if $message.type != $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>
-		<TD CLASS="FLEFT" style="width: 1%;">
-			<IMG SRC="img/users.gif" ALT=""> 
-		</TD>
-		<TD style="width: 1%;">
+	<tr class="LIGHT" id="users"{if $message.type != $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>
+		<td class="FLEFT" style="width: 1%;">
+			<img src="img/users.gif" alt=""> 
+		</td>
+		<td style="width: 1%;">
 			<span class="bold">{trans("Users:")}</span>
-		</TD>
-		<TD CLASS="FRIGHT" style="width: 98%;">
-			<SELECT size="4" name="message[users][]" MULTIPLE id="messageusers" {tip text="Select users"}>
+		</td>
+		<td class="FRIGHT" style="width: 98%;">
+			<select size="4" name="message[users][]" MULTIPLE id="messageusers" {tip text="Select users"}>
 			{section name="users" loop=$users}
-				<OPTION value="{$users[users].phone}">{$users[users].name|truncate:30:"...":true}</OPTION>
+				<option value="{$users[users].phone}">{$users[users].name|truncate:30:"...":true}</option>
 			{/section}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
-	<TR CLASS="LIGHT" ID="phonenumber"{if $message.type != $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>
-		<TD CLASS="FLEFT" style="width: 1%;">
-			<IMG SRC="img/sms.gif" ALT=""> 
-		</TD>
-		<TD style="width: 1%;">
+	<tr class="LIGHT" id="phonenumber"{if $message.type != $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>
+		<td class="FLEFT" style="width: 1%;">
+			<img src="img/sms.gif" alt=""> 
+		</td>
+		<td style="width: 1%;">
 			<span class="bold">{trans("Phone number:")}</span>
-		</TD>
-		<TD CLASS="FRIGHT" style="width: 98%;">
-			<INPUT type="text" NAME="message[phonenumber]" SIZE="60" VALUE="{$message.phonenumber}" {tip trigger="phonenumber" text="Enter phone numbers separated by commas"}>
-		</TD>
-	</TR>
+		</td>
+		<td class="FRIGHT" style="width: 98%;">
+			<input type="text" name="message[phonenumber]" size="60" value="{$message.phonenumber}" {tip trigger="phonenumber" text="Enter phone numbers separated by commas"}>
+		</td>
+	</tr>
 {/if}
-	<TR CLASS="LIGHT">
-		<TD CLASS="FLEFT" style="width: 1%;">
-			<IMG SRC="img/mail.gif" ALT=""> 
-		</TD>
-		<TD style="width: 1%;">
+	<tr class="LIGHT">
+		<td class="FLEFT" style="width: 1%;">
+			<img src="img/mail.gif" alt=""> 
+		</td>
+		<td style="width: 1%;">
 			<span class="bold">{trans("Subject:")}</span>
-		</TD>
-		<TD CLASS="FRIGHT" style="width: 98%;">
-			<INPUT type="text" NAME="message[subject]" SIZE="60" VALUE="{$message.subject}" {tip trigger="subject" text="Enter message subject"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT" ID="mailbody"{if $message.type > $smarty.const.MSG_MAIL} style="display: none"{/if}>
-		<TD CLASS="FLEFT" style="width: 1%;">
-			<IMG SRC="img/edit.gif" ALT=""> 
-		</TD>
-		<TD style="width: 1%; white-space: nowrap;">
+		</td>
+		<td class="FRIGHT" style="width: 98%;">
+			<input type="text" name="message[subject]" size="60" value="{$message.subject}" {tip trigger="subject" text="Enter message subject"}>
+		</td>
+	</tr>
+	<tr class="LIGHT" id="mailbody"{if $message.type > $smarty.const.MSG_MAIL} style="display: none"{/if}>
+		<td class="FLEFT" style="width: 1%;">
+			<img src="img/edit.gif" alt=""> 
+		</td>
+		<td style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("Message body:")}</span>
-		</TD>
-		<TD CLASS="FRIGHT" style="width: 98%;">
-			<TEXTAREA NAME="message[mailbody]" COLS="80" ROWS="20" {tip text="Use carriage return for indentation only. LMS will reformat paragraphs and break long lines." trigger="body"}>{$message.body}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT" ID="smsbody"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} style="display: none"{/if}>
-		<TD CLASS="FLEFT" style="width: 1%;">
-			<IMG SRC="img/edit.gif" ALT=""> 
-		</TD>
-		<TD style="width: 1%; white-space: nowrap;">
+		</td>
+		<td class="FRIGHT" style="width: 98%;">
+			<textarea name="message[mailbody]" cols="80" rows="20" {tip text="Use carriage return for indentation only. LMS will reformat paragraphs and break long lines." trigger="body"}>{$message.body}</textarea>
+		</td>
+	</tr>
+	<tr class="LIGHT" id="smsbody"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} style="display: none"{/if}>
+		<td class="FLEFT" style="width: 1%;">
+			<img src="img/edit.gif" alt=""> 
+		</td>
+		<td style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("Message body:")}</span>
-		</TD>
-		<TD CLASS="FRIGHT" style="width: 98%;">
-			<TEXTAREA NAME="message[smsbody]" ID="smstext" COLS="60" ROWS="5" onkeydown="countChars(this)" onkeyup="countChars(this)" onmouseout="countChars(this)" {tip text="Enter message body" trigger="body"}>{$message.body}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT" ID="charscount"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} style="display: none"{/if}>
-		<TD CLASS="FLEFT" style="width: 1%;"></TD>
-		<TD style="width: 1%; white-space: nowrap;">
+		</td>
+		<td class="FRIGHT" style="width: 98%;">
+			<textarea name="message[smsbody]" id="smstext" cols="60" rows="5" onkeydown="countChars(this)" onkeyup="countChars(this)" onmouseout="countChars(this)" {tip text="Enter message body" trigger="body"}>{$message.body}</textarea>
+		</td>
+	</tr>
+	<tr class="LIGHT" id="charscount"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} style="display: none"{/if}>
+		<td class="FLEFT" style="width: 1%;"></td>
+		<td style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("Characters:")}</span>
-		</TD>
-		<TD CLASS="FRIGHT" style="width: 98%;" ID="charscounttext">0</TD>
-	</TR>
-	<TR CLASS="LIGHT" ID="attachment"{if $message.type > $smarty.const.MSG_MAIL} style="display: none"{/if}>
-		<TD style="width: 1%;" CLASS="fleft">
-			<IMG src="img/attach.gif" alt="">
-		</TD>
-		<TD style="width: 1%; white-space: nowrap;">
+		</td>
+		<td class="FRIGHT" style="width: 98%;" id="charscounttext">0</td>
+	</tr>
+	<tr class="LIGHT" id="attachment"{if $message.type > $smarty.const.MSG_MAIL} style="display: none"{/if}>
+		<td style="width: 1%;" class="fleft">
+			<img src="img/attach.gif" alt="">
+		</td>
+		<td style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("Attachment:")}</span>
-		</TD>
-		<TD style="width: 98%;" CLASS="fright">
-			<INPUT name="file" type="file" size="60" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="FBOTTOMU" COLSPAN="3" style="text-align: right;">
-			 <A HREF="javascript:document.message.submit();" accesskey="s">{trans("Send")} <IMG SRC="img/save.gif" ALT=""></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
-<SCRIPT type="text/javascript">
+		</td>
+		<td style="width: 98%;" class="fright">
+			<input name="file" type="file" size="60" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="FBOTTOMU" colspan="3" style="text-align: right;">
+			 <a href="javascript:document.message.submit();" accesskey="s">{trans("Send")} <img src="img/save.gif" alt=""></a>
+		</td>
+	</tr>
+</table>
+</form>
+<script type="text/javascript">
 <!--
 document.forms['message'].elements['message[sender]'].focus();
 countChars(document.getElementById('smstext'));
@@ -268,5 +268,5 @@ var users = [];
 {/foreach}
 multiselect('message', 'messageusers', '{trans("- none -")}', users);
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}

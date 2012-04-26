@@ -1,108 +1,108 @@
 {include file="clearheader.html"}
 <!--// $Id$ //-->
-<TABLE WIDTH="100%" CELLPADDING="3" ALIGN="CENTER">
-	<TR>
-		<TD WIDTH="535" VALIGN="TOP">
-			<P class="hdf"><B>{$layout.pagetitle}</B>
-			{if $net}<BR><font class="sdr"><B>{trans("Network:")} {$net}</B></font>{/if}
-			{if $group}<BR><font class="sdr"><B>{trans("Group:")} {$group}</B></font>{/if}
-			{if $division}<BR><font class="sdr"><B>{trans("Division")}: {$division}</B></font>{/if}
-			{if $types}<BR><font class="sdr"><B>{trans("Type:")} {$types}</B></font>{/if}
-			{if $source}<BR><font class="sdr"><B>{trans("Source:")} {$source}</B></font>{/if}
+<table width="100%" cellpadding="3" align="CENTER">
+	<tr>
+		<td width="535" VALIGN="TOP">
+			<P class="hdf"><strong>{$layout.pagetitle}</strong>
+			{if $net}<br /><font class="sdr"><strong>{trans("Network:")} {$net}</strong></font>{/if}
+			{if $group}<br /><font class="sdr"><strong>{trans("Group:")} {$group}</strong></font>{/if}
+			{if $division}<br /><font class="sdr"><strong>{trans("Division")}: {$division}</strong></font>{/if}
+			{if $types}<br /><font class="sdr"><strong>{trans("Type:")} {$types}</strong></font>{/if}
+			{if $source}<br /><font class="sdr"><strong>{trans("Source:")} {$source}</strong></font>{/if}
 			</P>
-		</TD>
-		<TD WIDTH="180" ALIGN="RIGHT" NOWRAP>
-			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %x"}<BR>
+		</td>
+		<td width="180" align="RIGHT" nowrap="nowrap">
+			LMS {$layout.lmsv} @ {$layout.hostname}<br />
+			{$smarty.now|date_format:"%A, %x"}<br />
 			{t a=$layout.logname}Created by: $a{/t}
-		</TD>
-	</TR>
-</TABLE>
-<BR>
-<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
-	<TR>
-		<TD WIDTH="15" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+	</tr>
+</table>
+<br />
+<table width="100%" cellpadding="3" BORDER="1" align="CENTER">
+	<tr>
+		<td width="15" class="HEAD" align="CENTER">
 			{trans("No.")}
-		</TD>
-		<TD WIDTH="45" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="45" class="HEAD" align="CENTER">
 			{trans("Date")}
-		</TD>
-		<TD WIDTH="60" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="60" class="HEAD" align="CENTER">
 			{trans("Liability")}
-		</TD>
-		<TD WIDTH="40" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="40" class="HEAD" align="CENTER">
 			{trans("Income")}
-		</TD>
-		<TD WIDTH="40" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="40" class="HEAD" align="CENTER">
 			{trans("Expense")}
-		</TD>
-		<TD WIDTH="40" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="40" class="HEAD" align="CENTER">
 			{trans("After")}
-		</TD>
-		<TD WIDTH="120" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="120" class="HEAD" align="CENTER">
 			{trans("Customer")}
-		</TD>
-		<TD WIDTH="200" CLASS="HEAD" ALIGN="CENTER">
+		</td>
+		<td width="200" class="HEAD" align="CENTER">
 			{trans("Description")}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{cycle values="white,grey" print=false}
 	{section name=balancelist loop=$balancelist}
-	<TR class="{cycle}">
-		<TD ALIGN="CENTER">
+	<tr class="{cycle}">
+		<td align="CENTER">
 			{counter}.
-		</TD>
-		<TD ALIGN="CENTER" NOWRAP>
+		</td>
+		<td align="CENTER" nowrap="nowrap">
 			{$balancelist[balancelist].time|date_format:"%d.%m.%Y"}
-		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
+		</td>
+		<td align="RIGHT" nowrap="nowrap">
 			{if $balancelist[balancelist].covenant}{($balancelist[balancelist].value*-1)|money_format}{else}-{/if}
-		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
+		</td>
+		<td align="RIGHT" nowrap="nowrap">
 			{if !$balancelist[balancelist].covenant && $balancelist[balancelist].value > 0}{$balancelist[balancelist].value|money_format}{else}-{/if}
-		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
+		</td>
+		<td align="RIGHT" nowrap="nowrap">
 			{if !$balancelist[balancelist].covenant && $balancelist[balancelist].value < 0}{($balancelist[balancelist].value*-1)|money_format}{else}-{/if}
-		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
+		</td>
+		<td align="RIGHT" nowrap="nowrap">
 			{if $balancelist[balancelist].covenant}
 			-
 			{else}
 			{$balancelist[balancelist].after|money_format} 
 			{/if}
-		</TD>
-		<TD ALIGN="LEFT" NOWRAP>
+		</td>
+		<td align="LEFT" nowrap="nowrap">
 			{$balancelist[balancelist].customername|truncate:25:"..."}
-		</TD>
-		<TD ALIGN="LEFT">
+		</td>
+		<td align="LEFT">
 			{$balancelist[balancelist].comment|wordwrap:42:"<br />\n"}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{sectionelse}
-	<TR>
-		<TD ALIGN="center" WIDTH="100%" COLSPAN="8">
+	<tr>
+		<td align="center" width="100%" colspan="8">
 			<P>&nbsp;</P>
-			<P><B>{trans("No such cash operations.")}</B></P>
+			<P><strong>{trans("No such cash operations.")}</strong></P>
 			<P>&nbsp;</P>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/section}
-	<TR>
-		<TD CLASS="HEADGREY" ALIGN="RIGHT" COLSPAN="2">
-			<B>{trans("Total:")}</B>
-		</TD>
-		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
-			<B>{$listdata.liability|money_format}</B>
-		</TD>
-		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
-			<B>{$listdata.income|money_format}</B>
-		</TD>
-		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
-			<B>{$listdata.expense|money_format}</B>
-		</TD>
-		<TD CLASS="HEADGREY" ALIGN="CENTER" COLSPAN="3" NOWRAP>
-			<B>{trans("Balance:")} {$listdata.total|money_format}</B>
-		</TD>
-	</TR>
-</TABLE>
+	<tr>
+		<td class="HEADGREY" align="RIGHT" colspan="2">
+			<strong>{trans("Total:")}</strong>
+		</td>
+		<td class="HEADGREY" align="RIGHT" nowrap="nowrap">
+			<strong>{$listdata.liability|money_format}</strong>
+		</td>
+		<td class="HEADGREY" align="RIGHT" nowrap="nowrap">
+			<strong>{$listdata.income|money_format}</strong>
+		</td>
+		<td class="HEADGREY" align="RIGHT" nowrap="nowrap">
+			<strong>{$listdata.expense|money_format}</strong>
+		</td>
+		<td class="HEADGREY" align="CENTER" colspan="3" nowrap="nowrap">
+			<strong>{trans("Balance:")} {$listdata.total|money_format}</strong>
+		</td>
+	</tr>
+</table>
 {include file="clearfooter.html"}

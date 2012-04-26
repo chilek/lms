@@ -1,6 +1,6 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
+<h1>{$layout.pagetitle}</h1>
 {include file="calendar_js.html"}
 {$xajax}
 <script type="text/javascript">
@@ -18,169 +18,169 @@
 		document.documentgen.submit();
 	}
 //-->
-</SCRIPT>
-<FORM name="documentgen" method="POST" action="?m=documentgen">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE cellpadding="3" WIDTH="100%">
-	<TR class="DARK">
-		<TD width="1%" class="fleftu">
-			<IMG src="img/docum.gif" alt="">
-		</TD>
-		<TD width="1%" class="fbt" NOWRAP>
-			<B>{trans("Title:")}
-		</TD>
-		<TD width="98%" class="frightu" NOWRAP>
-			<INPUT type="text" name="document[title]" value="{$document.title}" {tip text="Enter document title" trigger="title"} size="40">
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD width="1%" class="fleft">
-			<IMG src="img/docum.gif" alt="">
-		</TD>
-		<TD width="1%" nowrap>
-			<B>{trans("First number:")}
-		</TD>
-		<TD width="98%" class="fright">
-			<INPUT type="text" name="document[number]" value="{if $document.number}{$document.number}{/if}" size="15" {tip text="Enter document number (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
+</script>
+<form name="documentgen" method="POST" action="?m=documentgen">
+<input type="submit" class="hiddenbtn">
+<table cellpadding="3" width="100%">
+	<tr class="DARK">
+		<td width="1%" class="fleftu">
+			<img src="img/docum.gif" alt="">
+		</td>
+		<td width="1%" class="fbt" nowrap="nowrap">
+			<strong>{trans("Title:")}
+		</td>
+		<td width="98%" class="frightu" nowrap="nowrap">
+			<input type="text" name="document[title]" value="{$document.title}" {tip text="Enter document title" trigger="title"} size="40">
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft">
+			<img src="img/docum.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("First number:")}
+		</td>
+		<td width="98%" class="fright">
+			<input type="text" name="document[number]" value="{if $document.number}{$document.number}{/if}" size="15" {tip text="Enter document number (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
 			{if $numberplans}
-			<SELECT name="document[numberplanid]" {tip text="Select numbering plan"}>
+			<select name="document[numberplanid]" {tip text="Select numbering plan"}>
 			{foreach item=plan from=$numberplans}
 				{assign var=period value=$plan.period}
-				<OPTION value="{$plan.id}"{if $plan.id==$document.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$document.cdate} ({$_NUM_PERIODS.$period})</OPTION>
+				<option value="{$plan.id}"{if $plan.id==$document.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$document.cdate} ({$_NUM_PERIODS.$period})</option>
 			{/foreach}
 			{else}
-				<INPUT type="hidden" name="document[numberplanid]" value="0">
+				<input type="hidden" name="document[numberplanid]" value="0">
 			{/if}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD width="1%" class="fleft">
-			<IMG src="img/calendar.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Period:")}
-		</TD>
-		<TD width="98%" class="fright">
-			{trans("from:")} <INPUT type="TEXT" name="document[fromdate]" value="{if $document.fromdate}{$document.fromdate}{/if}" OnClick="cal1.popup();" {tip text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"} size="10">&nbsp;
-			{trans("to:")} <INPUT type="TEXT" name="document[todate]" value="{if $document.todate}{$document.todate}{/if}" OnClick="cal2.popup();" {tip text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"} size="10"><BR>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD width="1%" class="fleft">
-			<IMG src="img/info.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Description:")}
-		</TD>
-		<TD width="98%" class="fright">
-			<TEXTAREA name="document[description]" rows="5" cols="50" {tip text="Enter additional information (optional)"}>{$document.description}</TEXTAREA>
-		</TD>
-	</TR>
+			</select>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft">
+			<img src="img/calendar.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Period:")}
+		</td>
+		<td width="98%" class="fright">
+			{trans("from:")} <input type="TEXT" name="document[fromdate]" value="{if $document.fromdate}{$document.fromdate}{/if}" OnClick="cal1.popup();" {tip text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"} size="10">&nbsp;
+			{trans("to:")} <input type="TEXT" name="document[todate]" value="{if $document.todate}{$document.todate}{/if}" OnClick="cal2.popup();" {tip text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"} size="10"><br />
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft">
+			<img src="img/info.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Description:")}
+		</td>
+		<td width="98%" class="fright">
+			<textarea name="document[description]" rows="5" cols="50" {tip text="Enter additional information (optional)"}>{$document.description}</textarea>
+		</td>
+	</tr>
 {*
-	<TR class="LIGHT">
-		<TD width="1%" class="fleft">
-			<IMG src="img/save.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("File:")}
-		</TD>
-		<TD width="98%" class="fright">
-			<INPUT size="50" type="file" name="file" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
-		</TD>
-	</TR>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft">
+			<img src="img/save.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("File:")}
+		</td>
+		<td width="98%" class="fright">
+			<input size="50" type="file" name="file" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
+		</td>
+	</tr>
 *}
-	<TR class="LIGHT">
-		<TD width="1%" class="fleft">
-			<IMG src="img/info.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Type:")}
-		</TD>
-		<TD width="98%" class="fright">
-			<SELECT SIZE="1" NAME="document[type]" {tip text="Select document type" trigger="type"}>
-				<OPTION VALUE="0">... {trans("select type")} ...</OPTION>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft">
+			<img src="img/info.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Type:")}
+		</td>
+		<td width="98%" class="fright">
+			<select size="1" name="document[type]" {tip text="Select document type" trigger="type"}>
+				<option value="0">... {trans("select type")} ...</option>
 				{foreach from=$_DOCTYPES key=key item=item}{if $key < 0 && in_array($key, $docrights)}
-				<OPTION VALUE="{$key}"{if $document.type==$key} SELECTED{/if}>{$item}</OPTION>
+				<option value="{$key}"{if $document.type==$key} SELECTED{/if}>{$item}</option>
 				{/if}{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD width="1%" class="fleft">
-			<IMG src="img/class.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Template:")}
-		</TD>
-		<TD width="98%" class="fright">
-			<SELECT SIZE="1" NAME="document[templ]" {tip text="Select document template" trigger="template"} onchange="getplugin();">
-				<OPTION VALUE="0">... {trans("select template")} ...</OPTION>
+			</select>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft">
+			<img src="img/class.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Template:")}
+		</td>
+		<td width="98%" class="fright">
+			<select size="1" name="document[templ]" {tip text="Select document template" trigger="template"} onchange="getplugin();">
+				<option value="0">... {trans("select template")} ...</option>
 				{foreach from=$docengines item=item}
-				<OPTION VALUE="{$item.name}"{if $document.templ==$item.name} SELECTED{/if}>{$item.title}</OPTION>
+				<option value="{$item.name}"{if $document.templ==$item.name} SELECTED{/if}>{$item.title}</option>
 				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD width="1%" class="fleft">
-	        	<IMG src="img/confirm.gif" ALT="">
-		</TD>
-		<TD width="1%" nowrap><B>{trans("Confirmed:")}</B></TD>
-		<TD width="98%" class="fright">
-		        <INPUT type="checkbox" name="document[closed]" value="1" {if $document.closed} checked{/if}>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD width="1%" class="fleft">
-	        	<IMG src="img/customer.gif" ALT="">
-		</TD>
-		<TD width="1%" nowrap><B>{trans("Customers:")}</B></TD>
-		<TD width="98%" class="fright">
-			<TABLE width="100%">
-				<TR>
-					<TD width="1%" {tip text="Select customer's group"}>
-						<NOBR><INPUT class="radio light" type="radio" name="filter" value="3" CHECKED>{trans("connected<!plural>")}</NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" name="filter" value="5">{trans("disconnected<!plural>")}</NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" name="filter" value="6">{trans("in debt")}</NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" name="filter" value="2">{trans("waiting")}</NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" name="filter" value="1">{trans("interested<!plural>")}</NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" name="filter" value="-1">{trans("without nodes")}</NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" name="filter" value="0">{trans("all<!customers>")}</NOBR>
-					</TD>
-					<TD width="5%">&nbsp;</TD>
-					<TD width="1%">
-						<NOBR><IMG src="img/network.gif" alt=""> <B>{trans("Network:")}</B></NOBR><BR><BR>
-						<NOBR><IMG src="img/group.gif" alt=""> <B>{trans("Group:")}</B></NOBR>
-					</TD>
-					<TD width="97%">
-						<SELECT size="1" name="network" {tip text="Select network" trigger="customer"}>
-							<OPTION value="0" SELECTED>{trans("- all networks -")}</OPTION>
+			</select>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft">
+	        	<img src="img/confirm.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap"><strong>{trans("Confirmed:")}</strong></td>
+		<td width="98%" class="fright">
+		        <input type="checkbox" name="document[closed]" value="1" {if $document.closed} checked="checked"{/if}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft">
+	        	<img src="img/customer.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap"><strong>{trans("Customers:")}</strong></td>
+		<td width="98%" class="fright">
+			<table width="100%">
+				<tr>
+					<td width="1%" {tip text="Select customer's group"}>
+						<span class="nobr"><input class="radio light" type="radio" name="filter" value="3" checked="checked">{trans("connected<!plural>")}</span><br />
+						<span class="nobr"><input class="radio light" type="radio" name="filter" value="5">{trans("disconnected<!plural>")}</span><br />
+						<span class="nobr"><input class="radio light" type="radio" name="filter" value="6">{trans("in debt")}</span><br />
+						<span class="nobr"><input class="radio light" type="radio" name="filter" value="2">{trans("waiting")}</span><br />
+						<span class="nobr"><input class="radio light" type="radio" name="filter" value="1">{trans("interested<!plural>")}</span><br />
+						<span class="nobr"><input class="radio light" type="radio" name="filter" value="-1">{trans("without nodes")}</span><br />
+						<span class="nobr"><input class="radio light" type="radio" name="filter" value="0">{trans("all<!customers>")}</span>
+					</td>
+					<td width="5%">&nbsp;</td>
+					<td width="1%">
+						<span class="nobr"><img src="img/network.gif" alt=""> <strong>{trans("Network:")}</strong></span><br /><br />
+						<span class="nobr"><img src="img/group.gif" alt=""> <strong>{trans("Group:")}</strong></span>
+					</td>
+					<td width="97%">
+						<select size="1" name="network" {tip text="Select network" trigger="customer"}>
+							<option value="0" SELECTED>{trans("- all networks -")}</option>
 							{section name="networks" loop=$networks}
-							<OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:40:"...":true}</OPTION>
+							<option value="{$networks[networks].id}">{$networks[networks].name|truncate:40:"...":true}</option>
 							{/section}
-						</SELECT><BR><BR>
-						<SELECT size="1" name="customergroup" {tip text="Select group" trigger="customer"}>
-							<OPTION value="0" SELECTED>{trans("- all groups -")}</OPTION>
+						</select><br /><br />
+						<select size="1" name="customergroup" {tip text="Select group" trigger="customer"}>
+							<option value="0" SELECTED>{trans("- all groups -")}</option>
 							{section name="customergroups" loop=$customergroups}
-							<OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:40:"...":true}</OPTION>
+							<option value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:40:"...":true}</option>
 							{/section}
-						</SELECT>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	<TR>
-	<TR class="LIGHT">
-		<TD class="fbottomu" colspan="3" align="right" NOWRAP>
-			<A href="javascript: document.documentgen.submit();">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>&nbsp;
-		{*	<A href="?m=">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A> *}
-			<A href="javascript: printdoc();">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
-		</TD>
-	</TR>
-</TABLE><BR><DIV id="plugin" name="plugin">{$plugin_result}</DIV>
-</FORM>
-<SCRIPT type="text/javascript">
+						</select>
+					</td>
+				</tr>
+			</table>
+		</td>
+	<tr>
+	<tr class="LIGHT">
+		<td class="fbottomu" colspan="3" align="right" nowrap="nowrap">
+			<a href="javascript: document.documentgen.submit();">{trans("Submit")} <img src="img/save.gif" alt=""></a>&nbsp;
+		{*	<a href="?m=">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a> *}
+			<a href="javascript: printdoc();">{trans("Print")} <img src="img/print.gif" alt=""></a>
+		</td>
+	</tr>
+</table><br /><div id="plugin" name="plugin">{$plugin_result}</div>
+</form>
+<script type="text/javascript">
 <!--
 var cal1 = new calendar(document.forms['documentgen'].elements['document[fromdate]']);
 cal1.time_comp = false;
@@ -188,5 +188,5 @@ var cal2 = new calendar(document.forms['documentgen'].elements['document[todate]
 cal2.time_comp = false;
 document.forms['documentgen'].elements['document[title]'].focus();
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}

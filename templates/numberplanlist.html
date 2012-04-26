@@ -1,75 +1,75 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<P><TABLE cellpadding="3" WIDTH="100%">
-	<TR class="dark">
-		<TD width="93%" class="fleftu" NOWRAP><IMG src="img/id.gif" alt=""> <B>{trans("Template:")}</B></TD>
-		<TD width="1%" class="fbt" align="right" NOWRAP>{trans("ID:")}</TD>
-		<TD width="1%" class="fbt" align="right" NOWRAP>{trans("Example (next) number:")}</TD>
-		<TD width="1%" class="fbt" align="right" NOWRAP>{trans("No. of issued documents:")}</TD>
-		<TD width="1%" class="fbt" align="right" NOWRAP>{trans("Document type:")}</TD>
-		<TD width="1%" class="fbt" align="right" NOWRAP>{trans("Period:")}</TD>
-		<TD width="1%" class="fbt" align="right" NOWRAP>{trans("Default:")}</TD>
-		<TD width="1%" class="frightu" align="right"  NOWRAP><a href="?m=numberplanadd">{trans("Add plan")} <img src="img/save.gif" alt=""></a></TD>
-	</TR>
+<h1>{$layout.pagetitle}</h1>
+<P><table cellpadding="3" width="100%">
+	<tr class="dark">
+		<td width="93%" class="fleftu" nowrap="nowrap"><img src="img/id.gif" alt=""> <strong>{trans("Template:")}</strong></td>
+		<td width="1%" class="fbt" align="right" nowrap="nowrap">{trans("ID:")}</td>
+		<td width="1%" class="fbt" align="right" nowrap="nowrap">{trans("Example (next) number:")}</td>
+		<td width="1%" class="fbt" align="right" nowrap="nowrap">{trans("No. of issued documents:")}</td>
+		<td width="1%" class="fbt" align="right" nowrap="nowrap">{trans("Document type:")}</td>
+		<td width="1%" class="fbt" align="right" nowrap="nowrap">{trans("Period:")}</td>
+		<td width="1%" class="fbt" align="right" nowrap="nowrap">{trans("Default:")}</td>
+		<td width="1%" class="frightu" align="right"  nowrap="nowrap"><a href="?m=numberplanadd">{trans("Add plan")} <img src="img/save.gif" alt=""></a></td>
+	</tr>
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="8" CLASS="FALL">
+	<tr class="DARK">
+		<td colspan="8" class="FALL">
 			{include file="scroller.html" loop=$numberplanlist}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
 	{cycle values="light,lucid" print=false}
 	{section name=numberplanlist loop=$numberplanlist}
-	<TR class="{cycle}{if ($numberplanlist[numberplanlist].validfrom !=0 && $numberplanlist[numberplanlist].validfrom > $smarty.now) || ($numberplanlist[numberplanlist].validto !=0 && $numberplanlist[numberplanlist].validto < $smarty.now)} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD class="fleft" NOWRAP onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
-			<IMG src="img/id.gif" alt=""> <B>{$numberplanlist[numberplanlist].template}</B>
-		</TD>
-		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
+	<tr class="{cycle}{if ($numberplanlist[numberplanlist].validfrom !=0 && $numberplanlist[numberplanlist].validfrom > $smarty.now) || ($numberplanlist[numberplanlist].validto !=0 && $numberplanlist[numberplanlist].validto < $smarty.now)} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<td class="fleft" nowrap="nowrap" onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
+			<img src="img/id.gif" alt=""> <strong>{$numberplanlist[numberplanlist].template}</strong>
+		</td>
+		<td align="right" nowrap="nowrap" onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
 			({$numberplanlist[numberplanlist].id|string_format:"%04d"})
-		</TD>
-		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
+		</td>
+		<td align="right" nowrap="nowrap" onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
 			{number number=$numberplanlist[numberplanlist].next template=$numberplanlist[numberplanlist].template time=$smarty.now}
-		</TD>
-		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
+		</td>
+		<td align="right" nowrap="nowrap" onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
 			{$numberplanlist[numberplanlist].issued|default:"0"}
-		</TD>
-		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
+		</td>
+		<td align="right" nowrap="nowrap" onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
 			{assign var="doctype" value=$numberplanlist[numberplanlist].doctype}
 			{$_DOCTYPES.$doctype}
-		</TD>
-		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
+		</td>
+		<td align="right" nowrap="nowrap" onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
 			{assign var="period" value=$numberplanlist[numberplanlist].period}
 			{$_NUM_PERIODS.$period}
-		</TD>
-		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
+		</td>
+		<td align="right" nowrap="nowrap" onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
 			{if $numberplanlist[numberplanlist].isdefault}{trans("yes")}{/if}
-		</TD>
-		<TD class="fright" align="right" NOWRAP>
-			<A href="?m=numberplandel&id={$numberplanlist[numberplanlist].id}" OnClick="return confirmLink(this, '{t a=$numberplanlist[numberplanlist].template}Are you sure, you want to delete numberplan \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A href="?m=numberplanedit&id={$numberplanlist[numberplanlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-		</TD>
-	</TR>
+		</td>
+		<td class="fright" align="right" nowrap="nowrap">
+			<a href="?m=numberplandel&id={$numberplanlist[numberplanlist].id}" OnClick="return confirmLink(this, '{t a=$numberplanlist[numberplanlist].template}Are you sure, you want to delete numberplan \'$a\'?{/t}')"><img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></a>
+			<a href="?m=numberplanedit&id={$numberplanlist[numberplanlist].id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
+		</td>
+	</tr>
 	{sectionelse}
-	<TR>
-		<TD colspan="8" align="center" class="fall">
+	<tr>
+		<td colspan="8" align="center" class="fall">
 			<p>&nbsp;</p>
-			<p><B>{trans("No such numbering plans in database.")}</B></p>
+			<p><strong>{trans("No such numbering plans in database.")}</strong></p>
 			<p>&nbsp;</p>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/section}
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="8" CLASS="FALL">
+	<tr class="DARK">
+		<td colspan="8" class="FALL">
 			{include file="scroller.html" loop=$numberplanlist}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
-	<TR class="light">
-		<TD colspan="8" class="fall" align="right">
+	<tr class="light">
+		<td colspan="8" class="fall" align="right">
 			<a href="?m=numberplanadd">{trans("Add plan")} <img src="img/save.gif" alt=""></a>
-		</TD>
-	</TR>
-</TABLE></P>
+		</td>
+	</tr>
+</table></P>
 {include file="footer.html"}

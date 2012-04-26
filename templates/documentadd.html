@@ -1,6 +1,6 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
+<h1>{$layout.pagetitle}</h1>
 {include file="calendar_js.html"}
 {$xajax}
 <script type="text/javascript">
@@ -25,7 +25,7 @@
 		if(type==0)
 		{
 			plans.style.display = 'none';
-			plans.innerHTML = '<INPUT type="hidden" name="document[numberplanid]" value="0">';
+			plans.innerHTML = '<input type="hidden" name="document[numberplanid]" value="0">';
 		}
 		else
 		{
@@ -43,19 +43,19 @@
 			{/if}{/foreach}
 			if (p[type].length)
 			{
-				var key, result = '<SELECT name="document[numberplanid]">';
+				var key, result = '<select name="document[numberplanid]">';
 				for (key in p[type]) {
-					result = result + '<OPTION value="' + key + '"';
+					result = result + '<option value="' + key + '"';
 					if(key == s)
 						result += ' SELECTED';
-					result = result + '>' + p[type][key] + ' (' + pr[type][key] + ') </OPTION>';
+					result = result + '>' + p[type][key] + ' (' + pr[type][key] + ') </option>';
 				}
-				result += '</SELECT>';
+				result += '</select>';
 
 				plans.innerHTML = result;
 			}
 			else
-				plans.innerHTML = '<INPUT type="hidden" name="document[numberplanid]" value="0">';
+				plans.innerHTML = '<input type="hidden" name="document[numberplanid]" value="0">';
 
 			plans.style.display = 'inline';
 		}
@@ -68,152 +68,152 @@
 	}
 //-->
 </script>
-<FORM name="documentadd" method="POST" action="?m=documentadd" enctype="multipart/form-data">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE cellpadding="3" WIDTH="100%">
-	<TR class="DARK">
-		<TD width="1%" class="fleftu">
-			<IMG src="img/docum.gif" alt="">
-		</TD>
-		<TD width="1%" class="fbt" NOWRAP>
-			<B>{trans("Title:")}
-		</TD>
-		<TD width="98%" class="frightu" NOWRAP>
-			<INPUT type="text" name="document[title]" value="{$document.title}" {tip text="Enter document title" trigger="title"} size="40">
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD width="1%" class="fleft">
-	        	<IMG src="img/customer.gif" ALT="">
-		</TD>
-		<TD width="1%" nowrap>
-			<B>{trans("Customer:")}</B>
-		</TD>
-		<TD class="fright" WIDTH="98%" nowrap>
+<form name="documentadd" method="POST" action="?m=documentadd" enctype="multipart/form-data">
+<input type="submit" class="hiddenbtn">
+<table cellpadding="3" width="100%">
+	<tr class="DARK">
+		<td width="1%" class="fleftu">
+			<img src="img/docum.gif" alt="">
+		</td>
+		<td width="1%" class="fbt" nowrap="nowrap">
+			<strong>{trans("Title:")}
+		</td>
+		<td width="98%" class="frightu" nowrap="nowrap">
+			<input type="text" name="document[title]" value="{$document.title}" {tip text="Enter document title" trigger="title"} size="40">
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft">
+	        	<img src="img/customer.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap">
+			<strong>{trans("Customer:")}</strong>
+		</td>
+		<td class="fright" width="98%" nowrap="nowrap">
 			{if $customers}
-			<SELECT SIZE="1" NAME="customer" onChange="document.documentadd.customerid.value=document.documentadd.customer.value" {tip trigger="customer"}>
-				<OPTION VALUE="0">{trans("... select customer ...")}</OPTION>
+			<select size="1" name="customer" onChange="document.documentadd.customerid.value=document.documentadd.customer.value" {tip trigger="customer"}>
+				<option value="0">{trans("... select customer ...")}</option>
 				{foreach from=$customers item=c}
-				<OPTION VALUE="{$c.id}"{if $c.id eq $customer.id || $document.customerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:"40":"...":true} ({$c.id|string_format:"%04d"})</OPTION>
+				<option value="{$c.id}"{if $c.id eq $customer.id || $document.customerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:"40":"...":true} ({$c.id|string_format:"%04d"})</option>
 				{/foreach}
-			</SELECT>
+			</select>
 			{trans("or Customer ID:")}
 			{/if}
-			<INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{elseif $document.customerid}{$document.customerid}{/if}" SIZE="5"{if $customers} onchange="reset_customer()" onfocus="reset_customer()"{/if} {tip text="Enter customer ID"}>
-			<a href="javascript: void(0);" onClick="return customerchoosewin(document.documentadd.customerid);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD width="1%" class="fleft">
-			<IMG src="img/calendar.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Period:")}
-		</TD>
-		<TD width="98%" class="fright">
-			{trans("from:")} <INPUT type="TEXT" name="document[fromdate]" value="{if $document.fromdate}{$document.fromdate}{/if}" OnClick="cal1.popup();" {tip text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"} size="10">&nbsp;
-			{trans("to:")} <INPUT type="TEXT" name="document[todate]" value="{if $document.todate}{$document.todate}{/if}" OnClick="cal2.popup();" {tip text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"} size="10"><BR>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD width="1%" class="fleft">
-			<IMG src="img/info.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Description:")}
-		</TD>
-		<TD width="98%" class="fright">
-			<TEXTAREA name="document[description]" rows="5" cols="50" {tip text="Enter additional information (optional)"}>{$document.description}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD width="1%" class="fleft">
-			<IMG src="img/info.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Type:")}
-		</TD>
-		<TD width="98%" class="fright">
-			<SELECT SIZE="1" NAME="document[type]" onchange="setnumberplans();" {tip text="Select document type" trigger="type"}>
-				<OPTION VALUE="0">... {trans("select type")} ...</OPTION>
+			<input type="TEXT" name="customerid" value="{if $customer.id}{$customer.id}{elseif $document.customerid}{$document.customerid}{/if}" size="5"{if $customers} onchange="reset_customer()" onfocus="reset_customer()"{/if} {tip text="Enter customer ID"}>
+			<a href="javascript: void(0);" onClick="return customerchoosewin(document.documentadd.customerid);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</a>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft">
+			<img src="img/calendar.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Period:")}
+		</td>
+		<td width="98%" class="fright">
+			{trans("from:")} <input type="TEXT" name="document[fromdate]" value="{if $document.fromdate}{$document.fromdate}{/if}" OnClick="cal1.popup();" {tip text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"} size="10">&nbsp;
+			{trans("to:")} <input type="TEXT" name="document[todate]" value="{if $document.todate}{$document.todate}{/if}" OnClick="cal2.popup();" {tip text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"} size="10"><br />
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft">
+			<img src="img/info.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Description:")}
+		</td>
+		<td width="98%" class="fright">
+			<textarea name="document[description]" rows="5" cols="50" {tip text="Enter additional information (optional)"}>{$document.description}</textarea>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft">
+			<img src="img/info.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Type:")}
+		</td>
+		<td width="98%" class="fright">
+			<select size="1" name="document[type]" onchange="setnumberplans();" {tip text="Select document type" trigger="type"}>
+				<option value="0">... {trans("select type")} ...</option>
 				{foreach from=$_DOCTYPES key=key item=item}{if $key < 0 && in_array($key, $docrights)}
-				<OPTION VALUE="{$key}"{if $document.type==$key} SELECTED{/if}>{$item}</OPTION>
+				<option value="{$key}"{if $document.type==$key} SELECTED{/if}>{$item}</option>
 				{/if}{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD width="1%" class="fleft">
-			<IMG src="img/class.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Template:")}
-		</TD>
-		<TD width="98%" class="fright">
-			<SELECT SIZE="1" NAME="document[templ]" {tip text="Select template to generate new document if you haven't got prepared file" trigger="template"} onchange="getplugin();">
-				<OPTION VALUE="">... {trans("select template")} ...</OPTION>
+			</select>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft">
+			<img src="img/class.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Template:")}
+		</td>
+		<td width="98%" class="fright">
+			<select size="1" name="document[templ]" {tip text="Select template to generate new document if you haven't got prepared file" trigger="template"} onchange="getplugin();">
+				<option value="">... {trans("select template")} ...</option>
 				{foreach from=$docengines item=item}
-				<OPTION VALUE="{$item.name}"{if $document.templ==$item.name} SELECTED{/if}>{$item.title}</OPTION>
+				<option value="{$item.name}"{if $document.templ==$item.name} SELECTED{/if}>{$item.title}</option>
 				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD width="1%" class="fleft">
-			<IMG src="img/save.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("File:")}
-		</TD>
-		<TD width="98%" class="fright">
-			<INPUT size="50" type="file" name="file" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD width="1%" class="fleft">
-			<IMG src="img/docum.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Number:")}
-		</TD>
-		<TD width="98%" class="fright">
-			<INPUT type="text" name="document[number]" value="{if $document.number}{$document.number}{/if}" size="15" {tip text="Enter document number (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
-			<DIV id="numberplans" style="display: {if !$document.numberplanid}none{else}inline{/if};">
+			</select>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft">
+			<img src="img/save.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("File:")}
+		</td>
+		<td width="98%" class="fright">
+			<input size="50" type="file" name="file" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft">
+			<img src="img/docum.gif" alt="">
+		</td>
+		<td width="1%">
+			<strong>{trans("Number:")}
+		</td>
+		<td width="98%" class="fright">
+			<input type="text" name="document[number]" value="{if $document.number}{$document.number}{/if}" size="15" {tip text="Enter document number (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
+			<div id="numberplans" style="display: {if !$document.numberplanid}none{else}inline{/if};">
 			{if $numberplans}
-			<SELECT name="document[numberplanid]" {tip text="Select numbering plan"}>
-				<OPTION value="0"{if !$document.numberplanid} SELECTED{/if}>... {trans("select numbering plan")} ...</OPTION>
+			<select name="document[numberplanid]" {tip text="Select numbering plan"}>
+				<option value="0"{if !$document.numberplanid} SELECTED{/if}>... {trans("select numbering plan")} ...</option>
 			    {foreach item=plan from=$numberplans}
 				{assign var=period value=$plan.period}
-				<OPTION value="{$plan.id}"{if $plan.id==$document.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$document.cdate} ({$_NUM_PERIODS.$period})</OPTION>
+				<option value="{$plan.id}"{if $plan.id==$document.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$document.cdate} ({$_NUM_PERIODS.$period})</option>
 			    {/foreach}
-			</SELECT>
+			</select>
 			{else}
-				<INPUT type="hidden" name="document[numberplanid]" value="0">
+				<input type="hidden" name="document[numberplanid]" value="0">
 			{/if}
-			</DIV>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD width="1%" class="fleft">
-	        	<IMG src="img/confirm.gif" ALT="">
-		</TD>
-		<TD width="1%" nowrap><B>{trans("Confirmed:")}</B></TD>
-		<TD width="98%" class="fright">
-		        <INPUT type="checkbox" name="document[closed]" value="1" {if $document.closed} checked{/if}>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD class="fbottomu" colspan="3" align="right" NOWRAP>
-			<A href="javascript: document.documentadd.submit();">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
-			<A href="javascript: print_document();">{trans("Print")} <IMG SRC="img/print.gif" alt=""></A>
-			<A href="?m=documentlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="document[reuse]" ID="reuse" value="ON" {if $document.reuse}checked{/if}> <label for="reuse">{trans("Display this form again, when that document is saved")}</label>
-		</TD>
-	</TR>
-</TABLE>
-<BR><DIV id="plugin" name="plugin">{$plugin_result}</DIV>
-</FORM>
-<SCRIPT type="text/javascript">
+			</div>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td width="1%" class="fleft">
+	        	<img src="img/confirm.gif" alt="">
+		</td>
+		<td width="1%" nowrap="nowrap"><strong>{trans("Confirmed:")}</strong></td>
+		<td width="98%" class="fright">
+		        <input type="checkbox" name="document[closed]" value="1" {if $document.closed} checked="checked"{/if}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fbottomu" colspan="3" align="right" nowrap="nowrap">
+			<a href="javascript: document.documentadd.submit();">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+			<a href="javascript: print_document();">{trans("Print")} <img src="img/print.gif" alt=""></a>
+			<a href="?m=documentlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a><br />
+			<input type="checkbox" name="document[reuse]" id="reuse" value="ON" {if $document.reuse}checked{/if}> <label for="reuse">{trans("Display this form again, when that document is saved")}</label>
+		</td>
+	</tr>
+</table>
+<br /><div id="plugin" name="plugin">{$plugin_result}</div>
+</form>
+<script type="text/javascript">
 <!--
 var cal1 = new calendar(document.forms['documentadd'].elements['document[fromdate]']);
 cal1.time_comp = false;
@@ -222,5 +222,5 @@ cal2.time_comp = false;
 document.forms['documentadd'].elements['document[title]'].focus();
 setnumberplans();
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}

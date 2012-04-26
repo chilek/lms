@@ -1,75 +1,75 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<FORM method="POST" action="?m=configedit&id={$config.id}" name="config">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" cellpadding="3">
-	<TR class="dark">
-		<TD width="1%" class="fleftu">
+<h1>{$layout.pagetitle}</h1>
+<form method="POST" action="?m=configedit&id={$config.id}" name="config">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="dark">
+		<td width="1%" class="fleftu">
 			<img src="img/settings.gif" alt="">
-		</TD>
-		<TD width="1%" class="fbt">
-			<B>{trans("Name:")}</B>
-		</TD>
-		<TD width="98%" class="frightu">
-			<INPUT type="text" name="config[var]" value="{$config.var}" {tip text="Enter option name" trigger="var" bold=1}>&nbsp;
-			<B>{trans("Section:")}</B>
-			<SELECT size="1" name="config[section]" {tip text="Select section" trigger="section"}>
-			    <OPTION value="phpui"{if $config.section eq "phpui"} SELECTED{/if}>phpui</OPTION>
-			    <OPTION value="finances"{if $config.section eq "finances"} SELECTED{/if}>finances</OPTION>
-			    <OPTION value="invoices"{if $config.section eq "invoices"} SELECTED{/if}>invoices</OPTION>
-			    <OPTION value="receipts"{if $config.section eq "receipts"} SELECTED{/if}>receipts</OPTION>
-			    <OPTION value="mail"{if $config.section eq "mail"} SELECTED{/if}>mail</OPTION>
-			    <OPTION value="sms"{if $config.section eq "sms"} SELECTED{/if}>sms</OPTION>
-			    <OPTION value="zones" {if $config.section eq "zones"}SELECTED{/if}>zones</OPTION>
-			</SELECT>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+		</td>
+		<td width="1%" class="fbt">
+			<strong>{trans("Name:")}</strong>
+		</td>
+		<td width="98%" class="frightu">
+			<input type="text" name="config[var]" value="{$config.var}" {tip text="Enter option name" trigger="var" bold=1}>&nbsp;
+			<strong>{trans("Section:")}</strong>
+			<select size="1" name="config[section]" {tip text="Select section" trigger="section"}>
+			    <option value="phpui"{if $config.section eq "phpui"} SELECTED{/if}>phpui</option>
+			    <option value="finances"{if $config.section eq "finances"} SELECTED{/if}>finances</option>
+			    <option value="invoices"{if $config.section eq "invoices"} SELECTED{/if}>invoices</option>
+			    <option value="receipts"{if $config.section eq "receipts"} SELECTED{/if}>receipts</option>
+			    <option value="mail"{if $config.section eq "mail"} SELECTED{/if}>mail</option>
+			    <option value="sms"{if $config.section eq "sms"} SELECTED{/if}>sms</option>
+			    <option value="zones" {if $config.section eq "zones"}SELECTED{/if}>zones</option>
+			</select>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft">
 			<img src="img/producer.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Value:")}</B>
-		</TD>
-		<TD width="98%" class="fright">
-			<TEXTAREA rows="5" cols="50" name="config[value]" {tip text="Enter option value" trigger="value"}>{$config.value}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+		</td>
+		<td width="1%">
+			<strong>{trans("Value:")}</strong>
+		</td>
+		<td width="98%" class="fright">
+			<textarea rows="5" cols="50" name="config[value]" {tip text="Enter option value" trigger="value"}>{$config.value}</textarea>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft">
 			<img src="img/info1.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Comment:")}</B>
-		</TD>
-		<TD width="98%" class="fright">
-			<TEXTAREA rows="5" cols="50" name="config[description]" {tip text="Enter description (optional)" trigger="description"}>{$config.description}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+		</td>
+		<td width="1%">
+			<strong>{trans("Comment:")}</strong>
+		</td>
+		<td width="98%" class="fright">
+			<textarea rows="5" cols="50" name="config[description]" {tip text="Enter description (optional)" trigger="description"}>{$config.description}</textarea>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%" class="fleft">
 			<img src="img/wait.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Status:")}</B>
-		</TD>
-		<TD width="98%" class="fright">
-			<INPUT type="checkbox" value="1" id="disabled" name="config[disabled]" {if $config.disabled}CHECKED{/if} {tip text="You can turn it off"}><label for="disabled"> {trans("Off")}</label>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD class="fbottomu" align="right" colspan="3">
-			<A href="javascript:document.config.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
-			<A href="?m=configdel&id={$config.id}" OnClick="return confirmLink(this, '{t a=$config.var}Are you sure, you want to delete option \'$a\' from database?{/t}')">{trans("Delete")} <img src="img/delete.gif" alt=""></A>
-			<A href="?m=configlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A>
-		</TD>
-	</TR>
-</TABLE>
+		</td>
+		<td width="1%">
+			<strong>{trans("Status:")}</strong>
+		</td>
+		<td width="98%" class="fright">
+			<input type="checkbox" value="1" id="disabled" name="config[disabled]" {if $config.disabled}CHECKED{/if} {tip text="You can turn it off"}><label for="disabled"> {trans("Off")}</label>
+		</td>
+	</tr>
+	<tr class="light">
+		<td class="fbottomu" align="right" colspan="3">
+			<a href="javascript:document.config.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+			<a href="?m=configdel&id={$config.id}" OnClick="return confirmLink(this, '{t a=$config.var}Are you sure, you want to delete option \'$a\' from database?{/t}')">{trans("Delete")} <img src="img/delete.gif" alt=""></a>
+			<a href="?m=configlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
+		</td>
+	</tr>
+</table>
 </P>
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 <!--
 	document.forms['config'].elements['config[var]'].focus();
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}
