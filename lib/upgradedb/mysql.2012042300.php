@@ -24,7 +24,7 @@
 $DB->BeginTrans();
 
 $DB->Execute("
-	CREATE TABLE nodedessions (
+	CREATE TABLE nodesessions (
 		id int(11)		NOT NULL auto_increment,
 		customerid int(11)	NOT NULL DEFAULT '0',
 		nodeid int(11)		NOT NULL DEFAULT '0',
