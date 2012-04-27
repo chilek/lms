@@ -31,26 +31,19 @@ if(isset($setwarnings['mnodeid']))
 	$message = isset($setwarnings['message']) ? $setwarnings['message'] : '';
 	$warnon  = isset($setwarnings['warnon']) ? $setwarnings['warnon'] : FALSE;
 	$warnoff = isset($setwarnings['warnoff']) ? $setwarnings['warnoff'] : FALSE;
-    $nodes   = array();
 
-	foreach($setwarnings['mnodeid'] as $value)
-	{
-		if ($warnon) {
-			if ($LMS->NodeSetWarn($value, TRUE))
-			    $nodes[] = $value;
-	    }
-		else if ($warnoff) {
-			if ($LMS->NodeSetWarn($value, FALSE))
-			    $nodes[] = $value;
-        }
-		if($message)
-			$DB->Execute('UPDATE customers SET message=? WHERE id=?', array($message,$LMS->GetNodeOwner($value)));
+	$nodes = array_values($setwarnings['mnodeid']);
+
+	if (!empty($nodes)) {
+		$DB->Execute('UPDATE nodes SET warning = ? WHERE id IN (' . implode(',', $nodes) . ')',
+			array($warnon : 1 : 0));
+		if ($message)
+			$DB->Execute('UPDATE customers SET message = ? WHERE id IN 
+				(SELECT DISTINCT n.ownerid FROM nodes n WHERE n.id IN (' . implode(',', $nodes) . '))',
+				array($message));
+		$data = array('nodes' => $nodes);
+		$LMS->ExecHook('node_warn_after', $data);
 	}
-
-    if (!empty($nodes)) {
-        $data = array('nodes' => $nodes);
-        $LMS->ExecHook('node_warn_after', $data);
-    }
 
 	$SESSION->save('warnmessage', $message);
 	$SESSION->save('warnon', $warnon);
