@@ -34,7 +34,7 @@ $DB->Execute("
 		stop int(11)		NOT NULL DEFAULT '0',
 		download bigint		DEFAULT '0',
 		upload bigint		DEFAULT '0',
-		tag varchar(32)		NOT NULL DEFAULT ',
+		tag varchar(32)		NOT NULL DEFAULT '',
 		PRIMARY KEY (id),
 		INDEX customerid (customerid),
 		INDEX nodeid (nodeid),
