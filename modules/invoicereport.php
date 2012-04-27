@@ -145,7 +145,7 @@ if($items)
 		$invoicelist[$idx]['number'] = docnumber($row['number'], $row['template'], $row['cdate']);
 		$invoicelist[$idx]['cdate'] = $row['cdate'];
 		$invoicelist[$idx]['sdate'] = $row['sdate'];
-        $invoicelist[$idx]['pdate'] = $row['cdate'] + ($row['paytime'] * 86400);
+		$invoicelist[$idx]['pdate'] = $row['cdate'] + ($row['paytime'] * 86400);
 		$invoicelist[$idx]['customerid'] = $row['customerid'];
 
 		if(!isset($invoicelist[$idx][$taxid]))

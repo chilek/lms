@@ -505,7 +505,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 		"c.paytype, a.paytype AS a_paytype, a.numberplanid, d.inv_paytype AS d_paytype, "
 		"UPPER(c.lastname) AS lastname, c.name AS custname, c.address, c.zip, c.city, c.ten, c.ssn, "
 		"c.countryid, c.divisionid, c.paytime, "
-		"(CASE a.liabilityid WHEN 0 THEN t.type ELSE -1 END) AS tarifftype"
+		"(CASE a.liabilityid WHEN 0 THEN t.type ELSE -1 END) AS tarifftype, "
 		"(CASE a.liabilityid WHEN 0 THEN t.name ELSE li.name END) AS name, "
 		"(CASE a.liabilityid WHEN 0 THEN t.taxid ELSE li.taxid END) AS taxid, "
 		"(CASE a.liabilityid WHEN 0 THEN t.prodid ELSE li.prodid END) AS prodid, "
@@ -1014,9 +1014,9 @@ void reload(GLOBAL *g, struct payments_module *p)
 
 struct payments_module * init(GLOBAL *g, MODULE *m)
 {
-	char *tarifftypes_section = TARIFFTYPES_SECTION;
 	struct payments_module *p;
 	QueryHandle *res;
+	int i;
 
 	if(g->api_version != APIVERSION)
 	{
@@ -1039,12 +1039,32 @@ struct payments_module * init(GLOBAL *g, MODULE *m)
 	p->excluded_networks = strdup(g->config_getstring(p->base.ini, p->base.instance, "excluded_networks", ""));
 	p->numberplanid = g->config_getint(p->base.ini, p->base.instance, "numberplan", 0);
 	p->check_invoices = g->config_getbool(p->base.ini, p->base.instance, "check_invoices", 0);
-	p->tariff_internet = g->config_getstring(p->base.ini, tarifftypes_section, _TARIFF_INTERNET_, _TARIFF_INTERNET_);
-	p->tariff_hosting = g->config_getstring(p->base.ini, tarifftypes_section, _TARIFF_HOSTING_, _TARIFF_HOSTING_);
-	p->tariff_service = g->config_getstring(p->base.ini, tarifftypes_section, _TARIFF_SERVICE_, _TARIFF_SERVICE_);
-	p->tariff_phone = g->config_getstring(p->base.ini, tarifftypes_section, _TARIFF_PHONE_, _TARIFF_PHONE_);
-	p->tariff_tv = g->config_getstring(p->base.ini, tarifftypes_section, _TARIFF_TV_, _TARIFF_TV_);
-	p->tariff_other = g->config_getstring(p->base.ini, tarifftypes_section, _TARIFF_OTHER_, _TARIFF_OTHER_);
+
+	p->tariff_internet = _TARIFF_INTERNET_;
+	p->tariff_hosting = _TARIFF_HOSTING_;
+	p->tariff_service = _TARIFF_SERVICE_;
+	p->tariff_phone = _TARIFF_PHONE_;
+	p->tariff_tv = _TARIFF_TV_;
+	p->tariff_other = _TARIFF_OTHER_;
+
+	res = g->db_query(g->conn, "SELECT var, value FROM uiconfig WHERE section='tarifftypes' AND disabled=0");
+	for (i = 0; i < g->db_nrows(res); i++) {
+		char *val = g->db_get_data(res, i, "value");
+		if (!strcmp(g->db_get_data(res, i, "var"), _TARIFF_INTERNET_))
+			p->tariff_internet = strdup(val);
+		else if (!strcmp(g->db_get_data(res, i, "var"), _TARIFF_HOSTING_))
+			p->tariff_hosting = strdup(val);
+		else if (!strcmp(g->db_get_data(res, i, "var"), _TARIFF_SERVICE_))
+			p->tariff_service = strdup(val);
+		else if (!strcmp(g->db_get_data(res, i, "var"), _TARIFF_PHONE_))
+			p->tariff_phone = strdup(val);
+		else if (!strcmp(g->db_get_data(res, i, "var"), _TARIFF_TV_))
+			p->tariff_tv = strdup(val);
+		else if (!strcmp(g->db_get_data(res, i, "var"), _TARIFF_OTHER_))
+			p->tariff_other = strdup(val);
+	}
+	g->db_free(&res);
+
 	p->num_period = YEARLY;
 
 	res = g->db_query(g->conn, "SELECT value FROM uiconfig WHERE section='finances' AND var='suspension_percentage' AND disabled=0");
