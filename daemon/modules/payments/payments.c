@@ -255,6 +255,24 @@ char * get_num_period_end(struct tm *t, int period)
 	return res;
 }
 
+char *get_tarifftype_str(struct payments_module *p, int tarifftype)
+{
+	switch (tarifftype) {
+	case 1:
+		return p->tariff_internet;
+	case 2:
+		return p->tariff_hosting;
+	case 3:
+		return p->tariff_service;
+	case 4:
+		return p->tariff_phone;
+	case 5:
+		return p->tariff_tv;
+	default:
+		return p->tariff_other;
+	}
+}
+
 void reload(GLOBAL *g, struct payments_module *p)
 {
 	QueryHandle *res, *result;
@@ -487,6 +505,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 		"c.paytype, a.paytype AS a_paytype, a.numberplanid, d.inv_paytype AS d_paytype, "
 		"UPPER(c.lastname) AS lastname, c.name AS custname, c.address, c.zip, c.city, c.ten, c.ssn, "
 		"c.countryid, c.divisionid, c.paytime, "
+		"(CASE a.liabilityid WHEN 0 THEN t.type ELSE -1 END) AS tarifftype"
 		"(CASE a.liabilityid WHEN 0 THEN t.name ELSE li.name END) AS name, "
 		"(CASE a.liabilityid WHEN 0 THEN t.taxid ELSE li.taxid END) AS taxid, "
 		"(CASE a.liabilityid WHEN 0 THEN t.prodid ELSE li.prodid END) AS prodid, "
@@ -571,6 +590,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 			int datefrom        = atoi(g->db_get_data(res,i,"datefrom"));
 			int t_period        = atoi(g->db_get_data(res,i,"t_period"));
 			double val          = atof(g->db_get_data(res,i,"value"));
+			int tarifftype_int  = atoi(g->db_get_data(res, i, "tarifftype"));
+			char *tarifftype    = (tarifftype_int == -1 ? "" : get_tarifftype_str(p, tarifftype_int));
 
 			if( !val ) continue;
 
@@ -636,6 +657,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 				case HALFYEARLY: g->str_replace(&description, "%period", h_period); break;
 				case YEARLY: g->str_replace(&description, "%period", y_period); break;
 			}
+			g->str_replace(&description, "%type", tarifftype);
 			g->str_replace(&description, "%tariff", g->db_get_data(res,i,"name"));
 			g->str_replace(&description, "%next_mon", nextmon);
 			g->str_replace(&description, "%month", monthname);
@@ -831,6 +853,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 
 				description = strdup(p->s_comment);
 				g->str_replace(&description, "%period", get_diff_period(datefrom, today-86400));
+				g->str_replace(&description, "%type", tarifftype);
 				g->str_replace(&description, "%tariff", g->db_get_data(res,i,"name"));
 				g->str_replace(&description, "%month", monthname);
 				g->str_replace(&description, "%year", year);
@@ -991,6 +1014,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 
 struct payments_module * init(GLOBAL *g, MODULE *m)
 {
+	char *tarifftypes_section = TARIFFTYPES_SECTION;
 	struct payments_module *p;
 	QueryHandle *res;
 
@@ -1015,6 +1039,12 @@ struct payments_module * init(GLOBAL *g, MODULE *m)
 	p->excluded_networks = strdup(g->config_getstring(p->base.ini, p->base.instance, "excluded_networks", ""));
 	p->numberplanid = g->config_getint(p->base.ini, p->base.instance, "numberplan", 0);
 	p->check_invoices = g->config_getbool(p->base.ini, p->base.instance, "check_invoices", 0);
+	p->tariff_internet = g->config_getstring(p->base.ini, tarifftypes_section, _TARIFF_INTERNET_, _TARIFF_INTERNET_);
+	p->tariff_hosting = g->config_getstring(p->base.ini, tarifftypes_section, _TARIFF_HOSTING_, _TARIFF_HOSTING_);
+	p->tariff_service = g->config_getstring(p->base.ini, tarifftypes_section, _TARIFF_SERVICE_, _TARIFF_SERVICE_);
+	p->tariff_phone = g->config_getstring(p->base.ini, tarifftypes_section, _TARIFF_PHONE_, _TARIFF_PHONE_);
+	p->tariff_tv = g->config_getstring(p->base.ini, tarifftypes_section, _TARIFF_TV_, _TARIFF_TV_);
+	p->tariff_other = g->config_getstring(p->base.ini, tarifftypes_section, _TARIFF_OTHER_, _TARIFF_OTHER_);
 	p->num_period = YEARLY;
 
 	res = g->db_query(g->conn, "SELECT value FROM uiconfig WHERE section='finances' AND var='suspension_percentage' AND disabled=0");

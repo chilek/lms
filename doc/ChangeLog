@@ -129,6 +129,7 @@ version ? (????-??-??):
   - new hook: we can register function which is invoked before module load and modify
     access table [chilan]
   - new simple plugin which allows to use one-time sms passwords [chilan]
+  - payments: support %type placeholder which gets its value from tarifftypes config section [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
