@@ -186,6 +186,23 @@ define('WEEK', 2);
 define('DAY', 1);
 define('DISPOSABLE', 0);
 
+// Tariff types
+define('TARIFF_INTERNET', 1);
+define('TARIFF_HOSTING', 2);
+define('TARIFF_SERVICE', 3);
+define('TARIFF_PHONE', 4);
+define('TARIFF_TV', 5);
+define('TARIFF_OTHER', -1);
+
+$TARIFFTYPES = array(
+	TARIFF_INTERNET	=> isset($CONFIG['tarifftypes']['internet']) ? $CONFIG['tarifftypes']['internet'] : trans('internet'),
+	TARIFF_HOSTING	=> isset($CONFIG['tarifftypes']['hosting']) ? $CONFIG['tarifftypes']['config'] : trans('hosting'),
+	TARIFF_SERVICE	=> isset($CONFIG['tarifftypes']['service']) ? $CONFIG['tarifftypes']['service'] : trans('service'),
+	TARIFF_PHONE	=> isset($CONFIG['tarifftypes']['phone']) ? $CONFIG['tarifftypes']['phone'] : trans('phone'),
+	TARIFF_TV	=> isset($CONFIG['tarifftypes']['tv']) ? $CONFIG['tarifftypes']['tv'] : trans('tv'),
+	TARIFF_OTHER	=> isset($CONFIG['tarifftypes']['other']) ? $CONFIG['tarifftypes']['other'] : trans('other'),
+);
+
 $fakedate = (array_key_exists('fakedate', $options) ? $options['fakedate'] : NULL);
 
 $currtime = strftime("%s", localtime2());
@@ -340,6 +357,7 @@ $query = "SELECT a.tariffid, a.liabilityid, a.customerid,
 		a.invoice, t.description AS description, a.id AS assignmentid, 
 		c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid, 
 		d.inv_paytype AS d_paytype, t.period AS t_period, 
+		(CASE a.liabilityid WHEN 0 THEN -1 ELSE t.type END) AS tarifftype, 
 		(CASE a.liabilityid WHEN 0 THEN t.name ELSE l.name END) AS name, 
 		(CASE a.liabilityid WHEN 0 THEN t.taxid ELSE l.taxid END) AS taxid, 
 		(CASE a.liabilityid WHEN 0 THEN t.prodid ELSE l.prodid END) AS prodid, 
@@ -393,6 +411,7 @@ foreach($assigns as $assign)
 		$desc = $assign['name'];
 	else
 		$desc = $CONFIG['payments']['comment'];
+	$desc = preg_replace("/\%type/", $assign['tarifftype'] != TARIFF_OTHER ? $TARIFFTYPES[$assign['tarifftype']] : '', $desc);
 	$desc = preg_replace("/\%tariff/", $assign['name'], $desc);
 	$desc = preg_replace("/\%desc/", $assign['description'], $desc);
 	$desc = preg_replace("/\%period/", $txts[$assign['period']], $desc);
@@ -537,6 +556,7 @@ foreach($assigns as $assign)
 			//print "value: $val diffdays: $diffdays alldays: $alldays settl_value: $value\n";
 
 			$sdesc = $s_comment;
+			$sdesc = preg_replace("/\%type/", $assign['tarifftype'] != TARIFF_OTHER ? $TARIFFTYPES[$assign['tarifftype']] : '', $sdesc);
 			$sdesc = preg_replace("/\%tariff/", $assign['name'], $sdesc);
 			$sdesc = preg_replace("/\%desc/", $assign['description'], $sdesc);
 			$sdesc = preg_replace("/\%period/", $period, $sdesc);
