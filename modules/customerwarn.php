@@ -32,16 +32,13 @@ if(isset($setwarnings['mcustomerid']))
 	$warnoff = isset($setwarnings['warnoff']) ? $setwarnings['warnoff'] : FALSE;
 	$message = isset($setwarnings['message']) ? $setwarnings['message'] : NULL;
 
-	foreach($setwarnings['mcustomerid'] as $uid)
-	{
-		if($warnon)
-			$LMS->NodeSetWarnU($uid, TRUE);
-
-		if($warnoff) 
-			$LMS->NodeSetWarnU($uid, FALSE);
-
-		if(isset($message))
-			$DB->Execute('UPDATE customers SET message=? WHERE id=?', array($message, $uid));
+	$cids = implode(',', array_values($setwarnings['mcustomerid']));
+	if (!empty($cids)) {
+		$DB->Execute('UPDATE nodes SET warning = ? WHERE ownerid IN (' . $cids . ')',
+			array($warnon ? 1 : 0));
+		if (isset($message))
+			$DB->Execute('UPDATE customers SET message = ? WHERE id IN (' . $cids . ')',
+				array($message));
 	}
 
 	$SESSION->save('warnmessage', $message);
