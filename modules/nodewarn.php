@@ -61,18 +61,16 @@ if(isset($setwarnings['mnodeid']))
 
 $warning = isset($_GET['warning']) ? 1 : 0;
 
-if(!empty($_POST['marks']))
+if (!empty($_POST['marks']))
 {
-    $nodes = array();
-    foreach($_POST['marks'] as $id) {
-        if ($LMS->NodeSetWarn($id, $warning))
-			$nodes[] = $id;
-    }
+	$nodes = array_values($_POST['marks']);
 
-    if (!empty($nodes)) {
-        $data = array('nodes' => $nodes, 'warning' => $warning);
-        $LMS->ExecHook('node_warn_after', $data);
-    }
+	$DB->Execute('UPDATE node SET warning = ? WHERE id IN (' . implode(',', $nodes) . ')',
+		array($warning));
+	if (!empty($nodes)) {
+		$data = array('nodes' => $nodes, 'warning' => $warning);
+		$LMS->ExecHook('node_warn_after', $data);
+	}
 
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
