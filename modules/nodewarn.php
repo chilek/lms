@@ -32,7 +32,7 @@ if(isset($setwarnings['mnodeid']))
 	$warnon  = isset($setwarnings['warnon']) ? $setwarnings['warnon'] : FALSE;
 	$warnoff = isset($setwarnings['warnoff']) ? $setwarnings['warnoff'] : FALSE;
 
-	$nodes = array_values(array_filter($setwarnings['mnodeid'], "is_init"));
+	$nodes = array_values(array_filter($setwarnings['mnodeid'], "is_int"));
 
 	if (!empty($nodes)) {
 		$DB->Execute('UPDATE nodes SET warning = ? WHERE id IN (' . implode(',', $nodes) . ')',
