@@ -96,6 +96,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 		}
 	}
 } elseif (isset($_GET['fetchallinvoices'])) {
+	$offset = intval(date('Z'));
 	$ids = $DB->GetCol('SELECT id FROM documents d
 				WHERE cdate >= ? AND cdate <= ? AND (type = ? OR type = ?)'
 				.(!empty($_GET['customerid']) ? ' AND d.customerid = '.intval($_GET['customerid']) : '')
@@ -111,7 +112,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 					WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)'
 				.' ORDER BY CEIL(cdate/86400), id',
-				array($_GET['from'], $_GET['to'], DOC_INVOICE, DOC_CNOTE));
+				array(intval($_GET['from']) - $offset, intval($_GET['to']) - $offset, DOC_INVOICE, DOC_CNOTE));
 	if (!$ids) {
 		$SESSION->close();
 		die;
