@@ -99,6 +99,7 @@ elseif(isset($_GET['fetchallinvoices']))
 {
 	$layout['pagetitle'] = trans('Invoices');
 
+	$offset = intval(date('Z'));
 	$ids = $DB->GetCol('SELECT d.id FROM documents d
 		WHERE d.cdate >= ? AND d.cdate <= ? AND (d.type = ? OR d.type = ?)'
 		.(!empty($_GET['customerid']) ? ' AND d.customerid = '.intval($_GET['customerid']) : '')
@@ -114,7 +115,7 @@ elseif(isset($_GET['fetchallinvoices']))
 		        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 			WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)' 
 		.' ORDER BY CEIL(d.cdate/86400), d.id',
-		array($_GET['from'], $_GET['to'], DOC_INVOICE, DOC_CNOTE));
+		array(intval($_GET['from']) - $offset, intval($_GET['to']) - $offset, DOC_INVOICE, DOC_CNOTE));
 
 	if(!$ids)
 	{
