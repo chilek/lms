@@ -26,13 +26,13 @@
 
 $setwarnings = isset($_POST['setwarnings']) ? $_POST['setwarnings'] : array();
 
-if(isset($setwarnings['mcustomerid']))
+if (isset($setwarnings['mcustomerid']))
 {
 	$warnon = isset($setwarnings['warnon']) ? $setwarnings['warnon'] : FALSE;
 	$warnoff = isset($setwarnings['warnoff']) ? $setwarnings['warnoff'] : FALSE;
 	$message = isset($setwarnings['message']) ? $setwarnings['message'] : NULL;
 
-	$cids = implode(',', array_values($setwarnings['mcustomerid']));
+	$cids = implode(',', array_values(array_filter($setwarnings['mcustomerid'], "is_int")));
 	if (!empty($cids)) {
 		$DB->Execute('UPDATE nodes SET warning = ? WHERE ownerid IN (' . $cids . ')',
 			array($warnon ? 1 : 0));
