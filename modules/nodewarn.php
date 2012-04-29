@@ -32,7 +32,7 @@ if(isset($setwarnings['mnodeid']))
 	$warnon  = isset($setwarnings['warnon']) ? $setwarnings['warnon'] : FALSE;
 	$warnoff = isset($setwarnings['warnoff']) ? $setwarnings['warnoff'] : FALSE;
 
-	$nodes = array_values(array_filter($setwarnings['mnodeid'], 'is_numeric'));
+	$nodes = array_filter($setwarnings['mnodeid'], 'is_natural');
 
 	if (!empty($nodes)) {
 		$DB->Execute('UPDATE nodes SET warning = ? WHERE id IN (' . implode(',', $nodes) . ')',
@@ -56,7 +56,7 @@ $warning = isset($_GET['warning']) ? 1 : 0;
 
 if (!empty($_POST['marks']))
 {
-	$nodes = array_values(array_filter($_POST['marks'], 'is_numeric'));
+	$nodes = array_filter($_POST['marks'], 'is_natural');
 
 	$DB->Execute('UPDATE node SET warning = ? WHERE id IN (' . implode(',', $nodes) . ')',
 		array($warning));

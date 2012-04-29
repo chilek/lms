@@ -32,7 +32,7 @@ if (isset($setwarnings['mcustomerid']))
 	$warnoff = isset($setwarnings['warnoff']) ? $setwarnings['warnoff'] : FALSE;
 	$message = isset($setwarnings['message']) ? $setwarnings['message'] : NULL;
 
-	$cids = implode(',', array_values(array_filter($setwarnings['mcustomerid'], 'is_numeric')));
+	$cids = implode(',', array_filter($setwarnings['mcustomerid'], 'is_natural'));
 	if (!empty($cids)) {
 		$DB->Execute('UPDATE nodes SET warning = ? WHERE ownerid IN (' . $cids . ')',
 			array($warnon ? 1 : 0));
