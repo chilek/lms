@@ -34,8 +34,7 @@ if (isset($setwarnings['mcustomerid']))
 
 	$cids = implode(',', array_filter($setwarnings['mcustomerid'], 'is_natural'));
 	if (!empty($cids)) {
-		$DB->Execute('UPDATE nodes SET warning = ? WHERE ownerid IN (' . $cids . ')',
-			array($warnon ? 1 : 0));
+		$LMS->NodeSetWarnU($cids, $warnon ? 1 : 0);
 		if (isset($message))
 			$DB->Execute('UPDATE customers SET message = ? WHERE id IN (' . $cids . ')',
 				array($message));
