@@ -36,7 +36,7 @@ if(isset($setwarnings['mnodeid']))
 
 	if (!empty($nodes)) {
 		$DB->Execute('UPDATE nodes SET warning = ? WHERE id IN (' . implode(',', $nodes) . ')',
-			array($warnon : 1 : 0));
+			array($warnon ? 1 : 0));
 		if ($message)
 			$DB->Execute('UPDATE customers SET message = ? WHERE id IN 
 				(SELECT DISTINCT n.ownerid FROM nodes n WHERE n.id IN (' . implode(',', $nodes) . '))',
