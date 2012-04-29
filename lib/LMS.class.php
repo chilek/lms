@@ -1488,7 +1488,7 @@ class LMS {
 
 	function NodeSetWarnU($id, $warning = FALSE) {
 		return $this->DB->Execute('UPDATE nodes SET warning = ? WHERE ownerid IN ('
-			. (is_array($id) ? implode(',', $id) : $id . ')', array($warning));
+			. (is_array($id) ? implode(',', $id) : $id) . ')', array($warning));
 	}
 
 	function IPSetU($netdev, $access = FALSE) {
