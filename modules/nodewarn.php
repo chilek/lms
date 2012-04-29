@@ -35,8 +35,7 @@ if(isset($setwarnings['mnodeid']))
 	$nodes = array_filter($setwarnings['mnodeid'], 'is_natural');
 
 	if (!empty($nodes)) {
-		$DB->Execute('UPDATE nodes SET warning = ? WHERE id IN (' . implode(',', $nodes) . ')',
-			array($warnon ? 1 : 0));
+		$LMS->NodeSetWarn($nodes, $warnon ? 1 : 0);
 		if ($message)
 			$DB->Execute('UPDATE customers SET message = ? WHERE id IN 
 				(SELECT DISTINCT n.ownerid FROM nodes n WHERE n.id IN (' . implode(',', $nodes) . '))',
@@ -58,8 +57,7 @@ if (!empty($_POST['marks']))
 {
 	$nodes = array_filter($_POST['marks'], 'is_natural');
 
-	$DB->Execute('UPDATE node SET warning = ? WHERE id IN (' . implode(',', $nodes) . ')',
-		array($warning));
+	$LMS->NodeSetWarn($nodes, $warning);
 	if (!empty($nodes)) {
 		$data = array('nodes' => $nodes, 'warning' => $warning);
 		$LMS->ExecHook('node_warn_after', $data);

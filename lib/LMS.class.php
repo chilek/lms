@@ -1476,10 +1476,8 @@ class LMS {
 	}
 
 	function NodeSetWarn($id, $warning = FALSE) {
-		if ($warning)
-			return $this->DB->Execute('UPDATE nodes SET warning=1 WHERE id=?', array($id));
-		else
-			return $this->DB->Execute('UPDATE nodes SET warning=0 WHERE id=?', array($id));
+		return $this->DB->Execute('UPDATE nodes SET warning = ? WHERE id IN ('
+			. (is_array($id) ? implode(',', $id) : $id) . ')', array($warning));
 	}
 
 	function NodeSwitchWarn($id) {
@@ -1489,10 +1487,8 @@ class LMS {
 	}
 
 	function NodeSetWarnU($id, $warning = FALSE) {
-		if ($warning)
-			return $this->DB->Execute('UPDATE nodes SET warning=1 WHERE ownerid=?', array($id));
-		else
-			return $this->DB->Execute('UPDATE nodes SET warning=0 WHERE ownerid=?', array($id));
+		return $this->DB->Execute('UPDATE nodes SET warning = ? WHERE ownerid IN ('
+			. (is_array($id) ? implode(',', $id) : $id . ')', array($warning));
 	}
 
 	function IPSetU($netdev, $access = FALSE) {
