@@ -40,6 +40,22 @@ class lms_smspasswords_plugin
 		return $vars;
 	}
 
+	function send_new_password($phone) {
+		global $SMARTY;
+
+		$LMS = $this->lms;
+		$SESSION = $LMS->AUTH->SESSION;
+
+		$retries = 3;
+		$smspassword = strval(rand(10000000, 99999999));
+		$LMS->SendSMS($phone, trans('Your one-time password is $a', $smspassword));
+		$SESSION->save('session_smspassword', $smspassword);
+		$SESSION->save('session_retries', $retries);
+		$SMARTY->assign('target', '?' . $_SERVER['QUERY_STRING']);
+		$SMARTY->assign('retries', $retries);
+		$SMARTY->display('smspassword.html');
+	}
+
 	function module_load_before($vars) {
 		global $SMARTY;
 
@@ -50,14 +66,26 @@ class lms_smspasswords_plugin
 		//$this->authenticated = true;
 		if (!$this->authenticated) {
 			$module = $vars['module'];
+			$SESSION->restore('session_retries', $retries);
 			if (isset($_POST['smspasswordform']['passwd'])) {
 				$SESSION->restore('session_smspassword', $smspassword);
 				$passwd = $_POST['smspasswordform']['passwd'];
 				if ($passwd == $smspassword) {
 					$SESSION->save('session_smsauthenticated', true);
 					$SESSION->remove('session_smspassword');
+					$SESSION->remove('session_retries');
 					$vars['abort'] = false;
 				} else {
+					$retries--;
+					if (empty($retries)) {
+						$phone = $LMS->DB->GetOne('SELECT phone FROM users WHERE id = ?',
+							array($LMS->AUTH->id));
+						$this->send_new_password($phone);
+						$vars['abort'] = true;
+						return $vars;
+					}
+					$SESSION->save('session_retries', $retries);
+					$SMARTY->assign('retries', $retries);
 					$SMARTY->assign('target', $_POST['smspasswordform']['target']);
 					$SMARTY->display('smspassword.html');
 					$vars['abort'] = true;
@@ -72,11 +100,7 @@ class lms_smspasswords_plugin
 				$vars['abort'] = false;
 				return $vars;
 			}
-			$smspassword = strval(rand(10000000, 99999999));
-			$LMS->SendSMS($phone, trans('Your one-time password is $a', $smspassword));
-			$SESSION->save('session_smspassword', $smspassword);
-			$SMARTY->assign('target', '?' . $_SERVER['QUERY_STRING']);
-			$SMARTY->display('smspassword.html');
+			$this->send_new_password($phone);
 			$vars['abort'] = true;
 		} else
 			$vars['abort'] = false;
