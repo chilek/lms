@@ -80,7 +80,7 @@
 				<INPUT type="hidden" name="registry[usernames][{$right.id}]" value="{$right.name}">
 			    </TD>
 			    <TD width="1%" align="center">
-				{if $right.rights > 0}<IMG src="img/pass.gif" alt="">{/if}
+				{if ($right.rights & 1) == 1}<IMG src="img/pass.gif" alt="">{/if}
 			    </TD>
 			    <TD width="1%" align="center">
 				{if ($right.rights & 2)==2}<IMG src="img/pass.gif" alt="">{/if}
