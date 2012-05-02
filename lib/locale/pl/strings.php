@@ -2264,6 +2264,7 @@ $_LANG['Enter record TTL'] = 'Wprowadź TTL rekordu';
 $_LANG['IP address of mailserver'] = 'Adres IP serwera pocztowego';
 $_LANG['IP address of master NS:'] = 'Adres IP głównego serwera nazw:';
 $_LANG['IP address of webserver'] = 'Adres IP serwera www';
+$_LANG['Default SPF record. If you leave the field blank, record will not add. Example: "v=spf1 a mx ip4:ADDRESS_MAILSERVER ~all" (Put in quotes).'] = 'Domyślny SPF rekord. Jeśli pozostawimy puste pole, rekord się nie doda. Przykład: "v=spf1 a mx ip4:ADRES_SERWERA_MAIL ~all" (Umieszczać w cudzysłowiach).';
 $_LANG['Wrong record type!'] = 'Nieprawidłowy typ rekordu!';
 $_LANG['Wrong TTL'] = 'Nieprawidłowy TTL';
 $_LANG['SOA record already exists'] = 'Rekord SOA już istnieje';
