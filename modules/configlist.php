@@ -516,6 +516,9 @@ function GetConfigList($order='var,asc', $section='', $search='')
                                         case 'default_mailserver_ip':
                                                 $config[$idx]['description'] = trans('IP address of mailserver');
                                         break;
+                                        case 'default_spf':
+                                                $config[$idx]['description'] = trans('Default SPF record. If you leave the field blank, record will not add. Example: "v=spf1 a mx ip4:ADDRESS_MAILSERVER ~all" (Put in quotes).');
+                                        break;
 
                                 } //end: var
                         break;
