@@ -3364,10 +3364,10 @@ class LMS {
 	}
 
 	function GetQueueList($stats = true) {
-		if ($result = $this->DB->GetAll('SELECT id, name, email, description 
-				FROM rtqueues q ORDER BY name'
+		if ($result = $this->DB->GetAll('SELECT q.id, name, email, description 
+				FROM rtqueues q'
 				. (!check_conf('privileges.superuser') ? ' JOIN rtrights r ON r.queueid = q.id
-					WHERE r.rights <> 0 AND r.userid = ?' : ''), array($this->AUTH->id))) {
+					WHERE r.rights <> 0 AND r.userid = ?' : '') . ' ORDER BY name', array($this->AUTH->id))) {
 			if ($stats)
 				foreach ($result as $idx => $row)
 					foreach ($this->GetQueueStats($row['id']) as $sidx => $row)
@@ -3377,9 +3377,9 @@ class LMS {
 	}
 
 	function GetQueueNames() {
-		return $this->DB->GetAll('SELECT id, name FROM rtqueues q ORDER BY name'
+		return $this->DB->GetAll('SELECT q.id, name FROM rtqueues q'
 			. (!check_conf('privileges.superuser') ? ' JOIN rtrights r ON r.queueid = q.id 
-				WHERE r.rights <> 0 AND r.userid = ?' : ''), array($this->AUTH->id));
+				WHERE r.rights <> 0 AND r.userid = ?' : '') . ' ORDER BY name', array($this->AUTH->id));
 	}
 
 	function QueueExists($id) {
