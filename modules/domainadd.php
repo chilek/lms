@@ -130,6 +130,12 @@ if(isset($_POST['domainadd']))
 					VALUES (?, ?, ?, \'MX\', 10, ?)',
 					array($lid, $domainadd['name'], $CONFIG['zones']['default_ttl'],
 						$CONFIG['zones']['default_mx']));
+				if($CONFIG['zones']['default_spf']) {
+					$DB->Execute('INSERT INTO records(domain_id,name,ttl,type,prio,content)
+						VALUES (?, ?, ?, \'TXT\', 0, ?)',
+						array($lid, $domainadd['name'], $CONFIG['zones']['default_ttl'],
+							$CONFIG['zones']['default_spf']));
+				}
 			}
 		}
 		
