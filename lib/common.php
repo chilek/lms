@@ -889,7 +889,7 @@ function is_natural($var) {
 }
 
 function check_password_strength($password) {
-	return (preg_match('/[a-z]/', $password) && preg_match('/[A-Z]/' $password)
+	return (preg_match('/[a-z]/', $password) && preg_match('/[A-Z]/', $password)
 		&& preg_match('/[0-9]/', $password) && mb_strlen($password) >= 8);
 }
 
