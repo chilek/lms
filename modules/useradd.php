@@ -51,10 +51,12 @@ if(sizeof($useradd))
 	if($useradd['name']=='')
 		$error['name'] = trans('You have to enter first and lastname!');
 
-	if($useradd['password']=='')
+	if ($useradd['password'] == '')
 		$error['password'] = trans('Empty passwords are not allowed!');
-	elseif($useradd['password']!=$useradd['confirm'])
+	elseif ($useradd['password'] != $useradd['confirm'])
 		$error['password'] = trans('Passwords does not match!');
+	elseif (!check_password_strength($useradd['password']))
+		$error['password'] = trans('The password should contain at least one capital letter, one lower case letter, one digit and should consist of at least 8 characters!');
 
 	// ACL mask...
 	$mask = '';
