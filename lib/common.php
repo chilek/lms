@@ -893,4 +893,12 @@ function check_password_strength($password) {
 		&& preg_match('/[0-9]/', $password) && mb_strlen($password) >= 8);
 }
 
+function access_denied() {
+	global $SMARTY, $SESSION;
+
+	$SMARTY->display('noaccess.html');
+	$SESSION->close();
+	die;
+}
+
 ?>
