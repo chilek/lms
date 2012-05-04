@@ -132,7 +132,6 @@ version ? (????-??-??):
   - new simple plugin which allows to use one-time sms passwords [chilan]
   - payments: support %type placeholder which gets its value from tarifftypes config section [chilan]
   - queues to whom we don't have access privileges, are not shown at all [chilan]
-  - required read permission to cash registry to be able view receipt list [chilan]
   - user password should contain at least one capital letter, one lower case letter, one digit
     and should consist of at least 8 characters [chilan]
 
