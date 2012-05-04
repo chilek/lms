@@ -2616,4 +2616,6 @@ $_LANG['Select password expiration period'] = 'Ustal czas po którym hasło wyga
 $_LANG['New password is the same as old password!'] = 'Nowe hasło jest takie same jak stare hasło!';
 $_LANG['The password should contain at least one capital letter, one lower case letter, one digit and should consist of at least 8 characters!'] = 'Hasło powinno zawierać co najmniej jedną dużą literę, jedną małą literę, jedną cyfrę oraz składać się z co najmniej 8 znaków!';
 
+$_LANG['reports'] = 'raporty';
+
 ?>

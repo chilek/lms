@@ -24,6 +24,9 @@
  *  $Id$
  */
 
+if (!check_conf('privileges.reports'))
+	access_denied();
+
 $type = isset($_GET['type']) ? $_GET['type'] : '';
 
 switch($type)

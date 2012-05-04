@@ -47,13 +47,13 @@ if (check_conf('privileges.superuser')) {
 $SMARTY->assign('_dochref', is_dir('doc/html/'.$LMS->ui_lang) ? 'doc/html/'.$LMS->ui_lang.'/' : 'doc/html/en/');
 $SMARTY->assign('rtstats', $LMS->RTStats());
 
-if (!$CONFIG['phpui']['hide_sysinfo']) {
-    require_once LIB_DIR.'/Sysinfo.class.php';
-    $SI = new Sysinfo;
+if (!check_conf('privileges.hide_sysinfo')) {
+	require_once LIB_DIR.'/Sysinfo.class.php';
+	$SI = new Sysinfo;
 	$SMARTY->assign('sysinfo', $SI->get_sysinfo());
 }
 
-if (!$CONFIG['phpui']['hide_summaries']) {
+if (!check_conf('privileges.hide_summaries')) {
 	$SMARTY->assign('customerstats', $LMS->CustomerStats());
 	$SMARTY->assign('nodestats', $LMS->NodeStats());
 }
