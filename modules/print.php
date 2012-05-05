@@ -24,11 +24,17 @@
  *  $Id$
  */
 
+if (!check_conf('privileges.reports'))
+	access_denied();
+
 $type = isset($_GET['type']) ? $_GET['type'] : '';
 
 switch($type)
 {
 	case 'customerbalance': /********************************************/
+
+		if (!check_conf('privileges.finances_management'))
+			access_denied();
 
 		$from = $_POST['from'];
 		$to = $_POST['to'];
@@ -127,7 +133,10 @@ switch($type)
 	break;
 	
 	case 'balancelist': /********************************************/
-	
+
+		if (!check_conf('privileges.finances_management'))
+			access_denied();
+
 		$from = $_POST['balancefrom'];
 		$to = $_POST['balanceto'];
 		$net = intval($_POST['network']);
@@ -295,7 +304,10 @@ switch($type)
 	break;
 
 	case 'incomereport': /********************************************/
-	
+
+		if (!check_conf('privileges.finances_management'))
+			access_denied();
+
 		$from = $_POST['from'];
 		$to = $_POST['to'];
 
@@ -333,6 +345,9 @@ switch($type)
 	break;
 
 	case 'importlist': /********************************************/
+
+		if (!check_conf('privileges.finances_management'))
+			access_denied();
 
 		$from = $_POST['importfrom'];
 		$to = $_POST['importto'];
@@ -378,6 +393,9 @@ switch($type)
 
 	case 'invoices': /********************************************/
 
+		if (!check_conf('privileges.finances_management'))
+			access_denied();
+
 		$from = $_POST['invoicefrom'];
 		$to = $_POST['invoiceto'];
 
@@ -419,7 +437,10 @@ switch($type)
 	break;
 
 	case 'transferforms': /********************************************/
-	
+
+		if (!check_conf('privileges.finances_management'))
+			access_denied();
+
 		$from = $_POST['invoicefrom'];
 		$to = $_POST['invoiceto'];
 
@@ -452,11 +473,17 @@ switch($type)
 	break;	
 
 	case 'transferforms2': /********************************************/
-		
+
+		if (!check_conf('privileges.finances_management'))
+			access_denied();
+
 		require_once(MODULES_DIR.'/transferforms2.php');
 	break;
 
 	case 'liabilityreport': /********************************************/
+
+		if (!check_conf('privileges.finances_management'))
+			access_denied();
 
 		if (isset($_POST['day']) && $_POST['day']) 
 		{
@@ -634,6 +661,9 @@ switch($type)
 	break;
 	
 	case 'receiptlist':
+
+		if (!check_conf('privileges.cash_operations'))
+			access_denied();
 
 		if($_POST['from'])
 		{

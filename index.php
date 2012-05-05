@@ -216,27 +216,25 @@ if ($AUTH->islogged) {
 
 	if (file_exists(MODULES_DIR.'/'.$module.'.php'))
 	{
-		$allow = !$AUTH->id || (!empty($access['allow']) && preg_match('/'.$access['allow'].'/i', $module));
+		$global_allow = !$AUTH->id || (!empty($access['allow']) && preg_match('/'.$access['allow'].'/i', $module));
 
-		if($AUTH->id && ($rights = $LMS->GetUserRights($AUTH->id)))
-			foreach($rights as $level)
+		if ($AUTH->id && ($rights = $LMS->GetUserRights($AUTH->id)))
+			foreach ($rights as $level)
 			{
-				if($level === 0) {
+				if ($level === 0) {
 					$CONFIG['privileges']['superuser'] = true;
 				}
 
-				if(!$allow) {
-					if(isset($access['table'][$level]['deny_reg']))
-						$deny = (bool) preg_match('/'.$access['table'][$level]['deny_reg'].'/i', $module);
-					elseif(isset($access['table'][$level]['allow_reg']))
-						$allow = (bool) preg_match('/'.$access['table'][$level]['allow_reg'].'/i', $module);
-				}
+				if (!$global_allow && !$deny && isset($access['table'][$level]['deny_reg']))
+					$deny = (bool) preg_match('/'.$access['table'][$level]['deny_reg'].'/i', $module);
+				elseif (!$allow && isset($access['table'][$level]['allow_reg']))
+					$allow = (bool) preg_match('/'.$access['table'][$level]['allow_reg'].'/i', $module);
 
-				if(isset($access['table'][$level]['privilege']))
+				if (isset($access['table'][$level]['privilege']))
 					$CONFIG['privileges'][$access['table'][$level]['privilege']] = TRUE;
 			}
 
-		if($allow && ! $deny)
+		if ($global_allow || ($allow && !$deny))
 		{
 			$layout['module'] = $module;
 			$LMS->InitUI();

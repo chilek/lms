@@ -124,12 +124,19 @@ version ? (????-??-??):
   - fixed domain filtering [chilan]
   - fixed position of table on tcpdf invoice [chilan]
   - selection of only automatically issued invoices is possible now in invoice print [chilan]
+  - added reload timer. Add reload_timer true to phpui to enable it [paszczus]
   - implemented simple password expiration mechanism [chilan]
   - chpasswd: new password should be different than old one [chilan]
   - new hook: we can register function which is invoked before module load and modify
     access table [chilan]
   - new simple plugin which allows to use one-time sms passwords [chilan]
   - payments: support %type placeholder which gets its value from tarifftypes config section [chilan]
+  - queues to whom we don't have access privileges, are not shown at all [chilan]
+  - user password should contain at least one capital letter, one lower case letter, one digit
+    and should consist of at least 8 characters [chilan]
+  - user should have reports privilege to have access to any reports [chilan]
+  - small user permission revolution: if user has deny permission defined after allow permission,
+    he won't have an access to given module [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
@@ -184,7 +191,6 @@ version 1.11.12 Aris (2011-03-18)
     with "deleted" status, the list is empty [alec]
   - lmsd/tc,tc-new: Added %h1, %h2, %h3, %h4 variables [alec]
   - fixed "Check All" checkbox on Cash Operations Import list [alec]
-  - Added reload timer. Add reload_timer true to phpui to enable it [paszczus]
 
 version 1.11.11 Bray (2011-01-17)
 

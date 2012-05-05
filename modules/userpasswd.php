@@ -26,20 +26,20 @@
 
 $id = (isset($_GET['id'])) ? $_GET['id'] : $AUTH->id;
 
-if($LMS->UserExists($id))
-{
-	if(isset($_POST['passwd']))
-	{
+if ($LMS->UserExists($id)) {
+	if(isset($_POST['passwd'])) {
 		$passwd = $_POST['passwd'];
-		
-		if($passwd['passwd'] == '' || $passwd['confirm'] == '')
+
+		if ($passwd['passwd'] == '' || $passwd['confirm'] == '')
 			$error['password'] = trans('Empty passwords are not allowed!').'<BR>';
-		
-		if($passwd['passwd'] != $passwd['confirm'])
+
+		if ($passwd['passwd'] != $passwd['confirm'])
 			$error['password'] = trans('Passwords does not match!');
-		
-		if(!$error)
-		{
+
+		if (!check_password_strength($passwd['passwd']))
+			$error['password'] = trans('The password should contain at least one capital letter, one lower case letter, one digit and should consist of at least 8 characters!');
+
+		if (!$error) {
 			$LMS->SetUserPassword($id, $passwd['passwd']);
 			header('Location: ?'. $SESSION->get('backto'));
 		}
@@ -52,10 +52,7 @@ if($LMS->UserExists($id))
 	$SMARTY->assign('error', $error);
 	$SMARTY->assign('passwd', $passwd);
 	$SMARTY->display('userpasswd.html');
-}
-else
-{
+} else
 	$SESSION->redirect('?m='. $SESSION->get('lastmodule'));
-}
 
 ?>

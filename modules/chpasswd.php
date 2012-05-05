@@ -36,6 +36,8 @@ if ($LMS->UserExists($id))
 			$error['password'] = trans('Empty passwords are not allowed!');
 		elseif ($passwd['passwd'] != $passwd['confirm'])
 			$error['password'] = trans('Passwords does not match!');
+		elseif (!check_password_strength($passwd['passwd']))
+			$error['password'] = trans('The password should contain at least one capital letter, one lower case letter, one digit and should consist of at least 8 characters!');
 
 		if (!$error)
 		{

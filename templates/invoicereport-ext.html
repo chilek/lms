@@ -69,7 +69,7 @@
 			{$invoicelist[invoicelist].pdate|date_format:"%d.%m.%Y"}
 		</TD>
 		<TD>
-			<B>{$invoicelist[invoicelist].custname}</B> ({$invoicelist[invoicelist].customerid|string_format:"%04d"})<BR>
+			<B>{$invoicelist[invoicelist].custname}</B> ({$invoicelist[invoicelist].customerid|string_format:"%04d"}){if $invoicelist[invoicelist].ten}, {$invoicelist[invoicelist].ten}{/if}<BR>
 			{$invoicelist[invoicelist].custaddress}
 		</TD>
 		{foreach item=tax from=$taxes}
