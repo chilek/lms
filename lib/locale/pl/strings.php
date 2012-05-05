@@ -2260,6 +2260,7 @@ $_LANG['Are you sure you want to delete this record?'] = 'Jesteś pewien, że ch
 $_LANG['Enter IP address of mailserver'] = 'Wprowadź adres IP serwera pocztowego';
 $_LANG['Enter IP address of master NS'] = 'Wprowadź adres IP głównego serwera nazw';
 $_LANG['Enter IP address of webserver'] = 'wprowadź adres IP serwera www';
+$_LANG['Default SPF record. If you leave the field blank, record will not add. Example: "v=spf1 a mx ip4:ADDRESS_MAILSERVER ~all" (Put in quotes).'] = 'Domyślny SPF rekord. Jeśli pozostawimy puste pole, rekord się nie doda. Przykład: "v=spf1 a mx ip4:ADRES_SERWERA_MAIL ~all" (Umieszczać w cudzysłowiach).';
 $_LANG['Enter record TTL'] = 'Wprowadź TTL rekordu';
 $_LANG['IP address of mailserver'] = 'Adres IP serwera pocztowego';
 $_LANG['IP address of master NS:'] = 'Adres IP głównego serwera nazw:';
@@ -2613,5 +2614,8 @@ $_LANG['half year'] = 'pół roku';
 $_LANG['year'] = 'rok';
 $_LANG['Select password expiration period'] = 'Ustal czas po którym hasło wygasa';
 $_LANG['New password is the same as old password!'] = 'Nowe hasło jest takie same jak stare hasło!';
+$_LANG['The password should contain at least one capital letter, one lower case letter, one digit and should consist of at least 8 characters!'] = 'Hasło powinno zawierać co najmniej jedną dużą literę, jedną małą literę, jedną cyfrę oraz składać się z co najmniej 8 znaków!';
+
+$_LANG['reports'] = 'raporty';
 
 ?>

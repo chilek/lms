@@ -888,4 +888,17 @@ function is_natural($var) {
 	return preg_match('/^[1-9][0-9]$/', $var);
 }
 
+function check_password_strength($password) {
+	return (preg_match('/[a-z]/', $password) && preg_match('/[A-Z]/', $password)
+		&& preg_match('/[0-9]/', $password) && mb_strlen($password) >= 8);
+}
+
+function access_denied() {
+	global $SMARTY, $SESSION;
+
+	$SMARTY->display('noaccess.html');
+	$SESSION->close();
+	die;
+}
+
 ?>

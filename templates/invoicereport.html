@@ -64,7 +64,7 @@
 			{$invoice.pdate|date_format:"%d.%m.%Y"}
 		</TD>
 		<TD>
-			<B>{$invoice.custname}</B> ({$invoice.customerid|string_format:"%04d"})<BR>
+			<B>{$invoice.custname}</B> ({$invoice.customerid|string_format:"%04d"}){if $invoice.ten}, {$invoice.ten}{/if}<BR>
 			{$invoice.custaddress}
 		</TD>
 		{foreach item=tax from=$taxes}

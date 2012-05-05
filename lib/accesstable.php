@@ -39,6 +39,7 @@ $access['table'][2]['allow_reg']	= '^nodeset$';
 
 $access['table'][3]['name']		= trans('finances management');
 $access['table'][3]['allow_reg']	= '^((tariff|customerassignment)(add|info|list|move|edit|del)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list|)|(cashreg(list|add|edit|del|info))|(invoice|invoice(list|new|edit|del|note|report|paid))|(note|note(list|add|edit|del|paid))|number|export|print|cashimport|cashimportparser|cashpackagedel)$';
+$access['table'][3]['privilege']	= 'finances_management';
 
 $access['table'][4]['name']    		= trans('configuration reload');
 $access['table'][4]['allow_reg']    	= '^reload$';
@@ -78,6 +79,7 @@ $access['table'][15]['allow_reg']   	= '^((daemoninstance|daemonconfig)(list|edi
 
 $access['table'][16]['name']        	= trans('cash operations');
 $access['table'][16]['allow_reg']   	= '^(cashreglist|receipt|receipt(list|edit|add|del|adv)|cashreglog(info|view|add|edit|del)|choosecustomer)$';
+$access['table'][16]['privilege']	= 'cash_operations';
 
 $access['table'][17]['name']		= trans('customers groups management');
 $access['table'][17]['allow_reg']	= '^(customergroup|customergroup(add|edit|del|info|list|move))$';
@@ -108,6 +110,9 @@ $access['table'][25]['privilege']	= 'hide_links';
 
 $access['table'][26]['name']		= trans('finances hiding');
 $access['table'][26]['privilege']	= 'hide_finances';
+
+$access['table'][27]['name']		= trans('reports');
+$access['table'][27]['privilege']	= 'reports';
 
 $access['table'][253]['name']		= trans('users edition and addition forbidden');
 $access['table'][253]['deny_reg']	= '^(user(add|del|edit|passwd))$';
