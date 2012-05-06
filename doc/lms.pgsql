@@ -1834,8 +1834,6 @@ INSERT INTO up_rights(module, name, description, setdefault)
         VALUES ('info', 'edit_contact_ack', 'Customer can change contact information with admin acknowlegment', 0);
 INSERT INTO up_rights(module, name, description)
         VALUES ('info', 'edit_contact', 'Customer can change contact information');
-INSERT INTO uiconfig (section, var, value, description, disabled)
-	VALUES ('phpui', 'default_assignment_invoice', '0', '', '0');
 
 INSERT INTO countries (name) VALUES ('Lithuania');
 INSERT INTO countries (name) VALUES ('Poland');
@@ -1857,4 +1855,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012042500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012050200');
