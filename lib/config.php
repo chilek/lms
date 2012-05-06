@@ -166,6 +166,7 @@ $DEFAULTS = array(
 		'radius' => 1,
 		'public_ip' => 1,
 		'default_assignment_period' => 3,
+		'default_assignment_invoice' => 0,
 	),
 	'invoices' => array(
 		'template_file' => 'invoice.html',

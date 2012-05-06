@@ -23,7 +23,7 @@
 
 $DB->BeginTrans();
 
-$DB->Execute("INSERT INTO uiconfig (section, var, value, description, disabled) VALUES ('phpui', 'default_assignment_invoice', '0', '', '0')");
+//$DB->Execute("INSERT INTO uiconfig (section, var, value, description, disabled) VALUES ('phpui', 'default_assignment_invoice', '0', '', '0')");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012041102', 'dbversion'));
 
