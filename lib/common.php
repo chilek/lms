@@ -885,7 +885,7 @@ function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $o
 }
 
 function is_natural($var) {
-	return preg_match('/^[1-9][0-9]$/', $var);
+	return preg_match('/^[1-9][0-9]*$/', $var);
 }
 
 function check_password_strength($password) {
