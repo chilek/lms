@@ -1477,7 +1477,7 @@ class LMS {
 
 	function NodeSetWarn($id, $warning = FALSE) {
 		return $this->DB->Execute('UPDATE nodes SET warning = ? WHERE id IN ('
-			. (is_array($id) ? implode(',', $id) : $id) . ')', array($warning));
+			. (is_array($id) ? implode(',', $id) : $id) . ')', array($warning ? 1 : 0));
 	}
 
 	function NodeSwitchWarn($id) {
@@ -1488,7 +1488,7 @@ class LMS {
 
 	function NodeSetWarnU($id, $warning = FALSE) {
 		return $this->DB->Execute('UPDATE nodes SET warning = ? WHERE ownerid IN ('
-			. (is_array($id) ? implode(',', $id) : $id) . ')', array($warning));
+			. (is_array($id) ? implode(',', $id) : $id) . ')', array($warning ? 1 : 0));
 	}
 
 	function IPSetU($netdev, $access = FALSE) {
