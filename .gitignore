@@ -1,4 +1,5 @@
 templates_c/*
+userpanel/templates_c/*
 lib/Smarty/Smarty.class.php
 lib/Smarty/SmartyBC.class.php
 lib/Smarty/debug.tpl
