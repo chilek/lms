@@ -137,6 +137,7 @@ version ? (????-??-??):
   - user should have reports privilege to have access to any reports [chilan]
   - small user permission revolution: if user has deny permission defined after allow permission,
     he won't have an access to given module [chilan]
+  - OpenLayers: ported 'Fix Google terms/poweredby/popup' commit to our version [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
