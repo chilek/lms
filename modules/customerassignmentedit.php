@@ -184,8 +184,10 @@ if(isset($_POST['assignment']))
 				if(checkdate($m, $d, $y))
 				{
 					$at = mktime(0, 0, 0, $m, $d, $y);
-					if($at < mktime(0,0,0))
+					if ($at < mktime(0, 0, 0) && !$a['atwarning']) {
+						$a['atwarning'] = TRUE;
 						$error['at'] = trans('Incorrect date!');
+					}
 				}
 				else
 					$error['at'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');

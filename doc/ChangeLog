@@ -138,7 +138,8 @@ version ? (????-??-??):
   - small user permission revolution: if user has deny permission defined after allow permission,
     he won't have an access to given module [chilan]
   - OpenLayers: ported 'Fix Google terms/poweredby/popup' commit to our version [chilan]
-
+  - past at date for disposable assignments is possible and we're only warned in such situation [chilan]
+ 
 version 1.11.13 Dira (2011-04-07)
 
   - contrib/cutoff2: Fixed "Column 'period' in where clause is ambiguous" [alec]
