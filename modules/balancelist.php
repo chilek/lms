@@ -158,12 +158,23 @@ if(isset($_POST['search']))
         $s = $_POST['search'];
 else
 	$SESSION->restore('bls', $s);
+if(!isset($s))
+     {
+     $year=date("Y", time());
+     $month=date("m", time());
+     $day=date("d", time());
+     $s = $year.'/'.$month.'/'.$day;
+     }
 $SESSION->save('bls', $s);
 
 if(isset($_POST['cat']))
         $c = $_POST['cat'];
 else
 	$SESSION->restore('blc', $c);
+if (!isset($c))
+{
+$c="cdate";
+}
 $SESSION->save('blc', $c);
 
 if(isset($_POST['group']))
