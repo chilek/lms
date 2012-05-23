@@ -170,6 +170,12 @@ if(isset($_POST['search']))
 	$s = $_POST['search'];
 else
 	$SESSION->restore('ils', $s);
+if(!isset($s))
+     {
+     $year=date("Y", time());
+     $month=date("m", time());
+     $s = $year.'/'.$month;
+     }
 $SESSION->save('ils', $s);
 
 if(isset($_GET['o']))
@@ -182,6 +188,10 @@ if(isset($_POST['cat']))
 	$c = $_POST['cat'];
 else
 	$SESSION->restore('ilc', $c);
+if (!isset($c))
+{
+$c="month";
+}
 $SESSION->save('ilc', $c);
 
 if(isset($_POST['search']))
