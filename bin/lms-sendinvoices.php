@@ -162,7 +162,7 @@ $debug_email = (!empty($CONFIG['sendinvoices']['debug_email']) ? $CONFIG['sendin
 $sender_name = (!empty($CONFIG['sendinvoices']['sender_name']) ? $CONFIG['sendinvoices']['sender_name'] : '');
 $sender_email = (!empty($CONFIG['sendinvoices']['sender_email']) ? $CONFIG['sendinvoices']['sender_email'] : '');
 $mail_subject = (!empty($CONFIG['sendinvoices']['mail_subject']) ? $CONFIG['sendinvoices']['mail_subject'] : 'Invoice No. %invoice');
-$mail_body = (!empty($CONFIG['sendinvoices']['mail_body']) ? $CONFIG['sendinvoices']['mail_body'] : 'Attached file with Invoice No. %invoice');
+$mail_body = (!empty($CONFIG['sendinvoices']['mail_body']) ? $CONFIG['sendinvoices']['mail_body'] : $CONFIG['mail']['sendinvoice_mail_body']);
 $invoice_filename = (!empty($CONFIG['sendinvoices']['invoice_filename']) ? $CONFIG['sendinvoices']['invoice_filename'] : 'invoice_%docid');
 
 if (empty($sender_email))
