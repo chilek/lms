@@ -2600,6 +2600,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
             if ($this->_isForOneLine) return false;
 
             $this->_maxH = 0;
+            $this->_makeBreakLine(0); //Patch for multiple DIV elements each one surrounded by a NOBREAK tag, the second element in every page will be shifted to the right.
 
             // create a sub HTML2PDF to execute the content of the tag, to get the dimensions
             $sub = null;
