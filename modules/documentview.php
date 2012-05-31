@@ -66,7 +66,7 @@ if(!empty($_POST['marks']))
 					if($i > 0)
 						$htmlbuffer .= "\n<page>\n";
 					ob_start();
-					include_once($filename);
+					readfile($filename);
 					$htmlbuffer .= ob_get_contents();
 					ob_end_clean();
 					if($i > 0)
@@ -109,7 +109,7 @@ if(!empty($_POST['marks']))
 			}
 
 			ob_start();
-			include_once($filename);
+			readfile($filename);
 			$htmlbuffer = ob_get_contents();
 			ob_end_clean();
 			html2pdf($htmlbuffer, $subject, $title, $doc['type'], $doc['id'], 'P', array(10, 5, 15, 5), ($_GET['save'] == 1) ? true : false);
