@@ -304,6 +304,7 @@ class HTML2PDF_parsingCss
     public function fontSet()
     {
         $family = strtolower($this->value['font-family']);
+        $family = str_replace(array('"', "'"), "", $family);
 
         $b = ($this->value['font-bold']        ? 'B' : '');
         $i = ($this->value['font-italic']      ? 'I' : '');
