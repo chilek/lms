@@ -192,7 +192,7 @@ if ($filetype == 'pdf') {
 	$fext = 'pdf';
 }
 
-$currtime = localtime2() + date('Z');
+$currtime = localtime2();
 $month = intval(date('m', $currtime));
 $day = intval(date('d', $currtime));
 $year = intval(date('Y', $currtime));
