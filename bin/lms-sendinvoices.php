@@ -192,11 +192,12 @@ if ($filetype == 'pdf') {
 	$fext = 'pdf';
 }
 
-$currtime = localtime2();
+$timeoffset = date('Z');
+$currtime = localtime2() + $timeoffset;
 $month = intval(date('m', $currtime));
 $day = intval(date('d', $currtime));
 $year = intval(date('Y', $currtime));
-$daystart = intval($currtime / 86400) * 86400;
+$daystart = (intval($currtime / 86400) * 86400) - $timeoffset;
 $dayend = $daystart + 86399;
 $from = $sender_email;
 
