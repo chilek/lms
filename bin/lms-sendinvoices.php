@@ -270,6 +270,9 @@ if (!empty($docs))
 			$invoice_number = docnumber($doc['number'], $invoice_number, $doc['cdate'] + date('Z'));
 			$body = preg_replace('/%invoice/', $invoice_number, $body);
 			$body = preg_replace('/%balance/', $LMS->GetCustomerBalance($doc['customerid']), $body);
+			$day = sprintf("%02d",$day);
+			$month = sprintf("%02d",$month);
+			$year = sprintf("%04d",$year);
 			$body = preg_replace('/%today/', $year ."-". $month ."-". $day, $body);
 			$body = str_replace('\n', "\n", $body);
 			$subject = preg_replace('/%invoice/', $invoice_number, $subject);
