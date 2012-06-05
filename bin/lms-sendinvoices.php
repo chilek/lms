@@ -32,6 +32,7 @@ $parameters = array(
 	'q' => 'quiet',
 	'h' => 'help',
 	'v' => 'version',
+	't' => 'test',
 	'f:' => 'fakedate:',
 	'i:' => 'invoiceid:',
 );
@@ -67,6 +68,7 @@ lms-sendinvoices.php
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
+-t, --test                      print only invoices to send;
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
 -f, --fakedate=YYYY/MM/DD       override system date;
@@ -246,6 +248,12 @@ if (!$ch)
 	die("Fatal error: Can't init curl library!\n");
 
 if (!empty($docs))
+{
+	if (array_key_exists('test', $options))
+	{
+		$test = TRUE;
+		printf("WARNING! You are using test mode.\n");
+	}
 	foreach ($docs as $doc) {
 		curl_setopt_array($ch, array(
 			CURLOPT_URL => $lms_url . '/?m=invoice&override=1&original=1&id=' . $doc['id']
@@ -278,20 +286,23 @@ if (!empty($docs))
 			$subject = preg_replace('/%invoice/', $invoice_number, $subject);
 			$filename = preg_replace('/%docid/', $doc['id'], $invoice_filename);
 
-			if (!$quiet)
+			if (!$quiet || $test)
 				printf("Invoice No. $invoice_number for " . $doc['name'] . " <$custemail>\n");
 
-			$res = $LMS->SendMail($custemail,
-				array('From' => $from, 'To' => $doc['name'] . ' <' . $custemail . '>',
-					'Subject' => $subject), $body,
-				array(0 => array('content_type' => $ftype, 'filename' => $filename . '.' . $fext,
-					'data' => $res)));
+			if (!$test)
+			{
+				$res = $LMS->SendMail($custemail,
+					array('From' => $from, 'To' => $doc['name'] . ' <' . $custemail . '>',
+						'Subject' => $subject), $body,
+					array(0 => array('content_type' => $ftype, 'filename' => $filename . '.' . $fext,
+						'data' => $res)));
 
-			if (is_string($res))
-				fprintf(STDERR, "Error sending mail: $res\n");
+				if (is_string($res))
+					fprintf(STDERR, "Error sending mail: $res\n");
+			}
 		}
 	}
-
+}
 curl_close($ch);
 
 unlink(COOKIE_FILE);
