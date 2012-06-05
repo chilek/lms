@@ -248,8 +248,12 @@ if (!$ch)
 	die("Fatal error: Can't init curl library!\n");
 
 if (!empty($docs))
+{
 	if (array_key_exists('test', $options))
+	{
+		$test = TRUE;
 		printf("WARNING! You are using test mode.\n");
+	}
 	foreach ($docs as $doc) {
 		curl_setopt_array($ch, array(
 			CURLOPT_URL => $lms_url . '/?m=invoice&override=1&original=1&id=' . $doc['id']
@@ -282,10 +286,10 @@ if (!empty($docs))
 			$subject = preg_replace('/%invoice/', $invoice_number, $subject);
 			$filename = preg_replace('/%docid/', $doc['id'], $invoice_filename);
 
-			if (!$quiet || array_key_exists('test', $options))
+			if (!$quiet || $test)
 				printf("Invoice No. $invoice_number for " . $doc['name'] . " <$custemail>\n");
 
-			if (!array_key_exists('test', $options))
+			if (!$test)
 			{
 				$res = $LMS->SendMail($custemail,
 					array('From' => $from, 'To' => $doc['name'] . ' <' . $custemail . '>',
@@ -298,7 +302,7 @@ if (!empty($docs))
 			}
 		}
 	}
-
+}
 curl_close($ch);
 
 unlink(COOKIE_FILE);
