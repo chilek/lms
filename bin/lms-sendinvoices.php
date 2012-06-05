@@ -32,6 +32,7 @@ $parameters = array(
 	'q' => 'quiet',
 	'h' => 'help',
 	'v' => 'version',
+	't' => 'test',
 	'f:' => 'fakedate:',
 	'i:' => 'invoiceid:',
 );
@@ -67,6 +68,7 @@ lms-sendinvoices.php
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
+-t, --test                      print only invoices to send;
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
 -f, --fakedate=YYYY/MM/DD       override system date;
@@ -164,6 +166,7 @@ $sender_email = (!empty($CONFIG['sendinvoices']['sender_email']) ? $CONFIG['send
 $mail_subject = (!empty($CONFIG['sendinvoices']['mail_subject']) ? $CONFIG['sendinvoices']['mail_subject'] : 'Invoice No. %invoice');
 $mail_body = (!empty($CONFIG['sendinvoices']['mail_body']) ? $CONFIG['sendinvoices']['mail_body'] : $CONFIG['mail']['sendinvoice_mail_body']);
 $invoice_filename = (!empty($CONFIG['sendinvoices']['invoice_filename']) ? $CONFIG['sendinvoices']['invoice_filename'] : 'invoice_%docid');
+$notify_email = (!empty($CONFIG['sendinvoices']['notify_email']) ? $CONFIG['sendinvoices']['notify_email'] : '');
 
 if (empty($sender_email))
 	die("Fatal error: sender_email unset! Con't continue, exiting.\n");
@@ -246,6 +249,12 @@ if (!$ch)
 	die("Fatal error: Can't init curl library!\n");
 
 if (!empty($docs))
+{
+	if (array_key_exists('test', $options))
+	{
+		$test = TRUE;
+		printf("WARNING! You are using test mode.\n");
+	}
 	foreach ($docs as $doc) {
 		curl_setopt_array($ch, array(
 			CURLOPT_URL => $lms_url . '/?m=invoice&override=1&original=1&id=' . $doc['id']
@@ -270,25 +279,32 @@ if (!empty($docs))
 			$invoice_number = docnumber($doc['number'], $invoice_number, $doc['cdate'] + date('Z'));
 			$body = preg_replace('/%invoice/', $invoice_number, $body);
 			$body = preg_replace('/%balance/', $LMS->GetCustomerBalance($doc['customerid']), $body);
+			$day = sprintf("%02d",$day);
+			$month = sprintf("%02d",$month);
+			$year = sprintf("%04d",$year);
 			$body = preg_replace('/%today/', $year ."-". $month ."-". $day, $body);
 			$body = str_replace('\n', "\n", $body);
 			$subject = preg_replace('/%invoice/', $invoice_number, $subject);
 			$filename = preg_replace('/%docid/', $doc['id'], $invoice_filename);
 
-			if (!$quiet)
+			if (!$quiet || $test)
 				printf("Invoice No. $invoice_number for " . $doc['name'] . " <$custemail>\n");
 
-			$res = $LMS->SendMail($custemail,
-				array('From' => $from, 'To' => $doc['name'] . ' <' . $custemail . '>',
-					'Subject' => $subject), $body,
-				array(0 => array('content_type' => $ftype, 'filename' => $filename . '.' . $fext,
-					'data' => $res)));
+			if (!$test)
+			{
+				$res = $LMS->SendMail($custemail . ',' . $notify_email,
+					array('From' => $from, 'To' => $doc['name'] . ' <' . $custemail . '>',
+						'Cc' => $notify_email,
+						'Subject' => $subject), $body,
+					array(0 => array('content_type' => $ftype, 'filename' => $filename . '.' . $fext,
+						'data' => $res)));
 
-			if (is_string($res))
-				fprintf(STDERR, "Error sending mail: $res\n");
+				if (is_string($res))
+					fprintf(STDERR, "Error sending mail: $res\n");
+			}
 		}
 	}
-
+}
 curl_close($ch);
 
 unlink(COOKIE_FILE);
