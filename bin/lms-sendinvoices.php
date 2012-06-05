@@ -166,6 +166,7 @@ $sender_email = (!empty($CONFIG['sendinvoices']['sender_email']) ? $CONFIG['send
 $mail_subject = (!empty($CONFIG['sendinvoices']['mail_subject']) ? $CONFIG['sendinvoices']['mail_subject'] : 'Invoice No. %invoice');
 $mail_body = (!empty($CONFIG['sendinvoices']['mail_body']) ? $CONFIG['sendinvoices']['mail_body'] : $CONFIG['mail']['sendinvoice_mail_body']);
 $invoice_filename = (!empty($CONFIG['sendinvoices']['invoice_filename']) ? $CONFIG['sendinvoices']['invoice_filename'] : 'invoice_%docid');
+$notify_email = (!empty($CONFIG['sendinvoices']['notify_email']) ? $CONFIG['sendinvoices']['notify_email'] : '';
 
 if (empty($sender_email))
 	die("Fatal error: sender_email unset! Con't continue, exiting.\n");
@@ -291,8 +292,9 @@ if (!empty($docs))
 
 			if (!$test)
 			{
-				$res = $LMS->SendMail($custemail,
+				$res = $LMS->SendMail($custemail . ',' . $notify_email,
 					array('From' => $from, 'To' => $doc['name'] . ' <' . $custemail . '>',
+						'Cc' => $notify_email,
 						'Subject' => $subject), $body,
 					array(0 => array('content_type' => $ftype, 'filename' => $filename . '.' . $fext,
 						'data' => $res)));
