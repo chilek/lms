@@ -614,6 +614,7 @@ CREATE TABLE documentcontents (
 	contenttype varchar(255) DEFAULT '' NOT NULL,
 	md5sum varchar(32) 	DEFAULT '' NOT NULL,
 	description text 	DEFAULT '' NOT NULL,
+	PRIMARY KEY (md5sum),
 	UNIQUE (docid)
 );
 CREATE INDEX documentcontents_md5sum_idx ON documentcontents (md5sum);
@@ -630,7 +631,8 @@ CREATE TABLE receiptcontents (
 	itemid smallint		DEFAULT 0 NOT NULL,
 	value numeric(9,2)	DEFAULT 0 NOT NULL,
 	regid integer		DEFAULT 0 NOT NULL,
-	description text 	DEFAULT '' NOT NULL
+	description text 	DEFAULT '' NOT NULL,
+	PRIMARY KEY (docid, itemid)
 );
 CREATE INDEX receiptcontents_docid_idx ON receiptcontents(docid);
 CREATE INDEX receiptcontents_regid_idx ON receiptcontents(regid);
@@ -650,7 +652,8 @@ CREATE TABLE invoicecontents (
 	description text 	DEFAULT '' NOT NULL,
 	tariffid integer 	DEFAULT 0 NOT NULL,
 	pdiscount numeric(4,2) DEFAULT 0 NOT NULL,
-	vdiscount numeric(9,2) DEFAULT 0 NOT NULL
+	vdiscount numeric(9,2) DEFAULT 0 NOT NULL,
+	PRIMARY KEY (docid, itemid)
 );
 CREATE INDEX invoicecontents_docid_idx ON invoicecontents (docid);
 
@@ -900,7 +903,8 @@ CREATE TABLE rtattachments (
 	messageid integer 	    NOT NULL
 	    REFERENCES rtmessages (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	filename varchar(255) 	DEFAULT '' NOT NULL,
-	contenttype varchar(255) DEFAULT '' NOT NULL
+	contenttype varchar(255) DEFAULT '' NOT NULL,
+	PRIMARY KEY (messageid, filename)
 );
 
 CREATE INDEX rtattachments_message_idx ON rtattachments (messageid);
@@ -1107,6 +1111,7 @@ DROP TABLE IF EXISTS eventassignments CASCADE;
 CREATE TABLE eventassignments (
 	eventid 	integer 	DEFAULT 0 NOT NULL,
 	userid 		integer 	DEFAULT 0 NOT NULL,
+	PRIMARY KEY (eventid, userid),
 	CONSTRAINT eventassignments_eventid_key UNIQUE (eventid, userid)
 );
 

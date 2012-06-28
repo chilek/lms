@@ -296,6 +296,7 @@ CREATE TABLE invoicecontents (
   count decimal(9,2) NOT NULL DEFAULT '0',
   description text NOT NULL DEFAULT '',
   tariffid int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (docid, itemid),
   INDEX docid (docid)
 ) ENGINE=InnoDB;
 
@@ -363,6 +364,7 @@ CREATE TABLE documentcontents (
         INDEX md5sum (md5sum),
 	INDEX fromdate (fromdate),
 	INDEX todate (todate),
+    PRIMARY KEY (md5sum),	
 	UNIQUE KEY docid (docid)
 ) ENGINE=InnoDB;
 
@@ -376,6 +378,7 @@ CREATE TABLE receiptcontents (
 	value decimal(9,2) 	NOT NULL DEFAULT '0',
 	description text 	NOT NULL DEFAULT '',
 	regid int(11)		NOT NULL DEFAULT '0',
+	PRIMARY KEY (docid, itemid),
 	INDEX docid (docid),
 	INDEX regid (regid)
 ) ENGINE=InnoDB;
@@ -747,6 +750,7 @@ CREATE TABLE rtattachments (
     REFERENCES rtmessages (id) ON DELETE CASCADE ON UPDATE CASCADE,
   filename varchar(255) NOT NULL DEFAULT '',
   contenttype varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (messageid, filename),
   INDEX messageid (messageid)
 ) ENGINE=InnoDB;
 
@@ -1166,6 +1170,7 @@ CREATE TABLE events (
 CREATE TABLE eventassignments (
     eventid int(11) NOT NULL DEFAULT '0',
     userid int(11) NOT NULL DEFAULT '0',
+    PRIMARY KEY (eventid, userid),
     UNIQUE (eventid, userid)
 ) ENGINE=InnoDB;
 
