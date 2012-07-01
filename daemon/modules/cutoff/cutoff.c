@@ -403,12 +403,17 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 					"AND (a.dateto >= %NOW% OR a.dateto = 0) "
 				"GROUP BY a.customerid "
 			") t ON (t.customerid = c.id) "
+				"JOIN (SELECT SUM(l.value) AS liab, a.customerid "
+					"FROM assignments a JOIN liabilities l ON (a.liabilityid = l.id) "
+					"WHERE a.period = 3 AND a.suspended = 0 AND (a.datefrom <= UNIX_TIMESTAMP() OR a.datefrom = 0) "
+					"AND (a.dateto >= UNIX_TIMESTAMP() OR a.dateto = 0) "
+					"GROUP BY a.customerid ) l ON (l.customerid = c.id)"
 			"WHERE c.deleted = 0 "
 				"AND c.cutoffstop < %NOW% "
 #ifdef USE_PGSQL
-				"AND balance * -1 > (?/100::numeric * tariff) "
+				"AND balance * -1 > (?/100::numeric * (tariff+liab)) "
 #else
-				"AND balance * -1 > (?/100 * tariff) "
+				"AND balance * -1 > (?/100 * (tariff+liab)) "
 #endif
 				"%groups%egroups%nets%enets" 
 		);
