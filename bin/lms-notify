@@ -99,6 +99,7 @@ my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
 
 my $smtp_host = $ini->val('notify', 'smtp_host') || 'localhost';
+my $smtp_port = $ini->val('notify', 'smtp_port') || '465';
 my $smtp_user = $ini->val('notify', 'smtp_user') || '';
 my $smtp_pass = $ini->val('notify', 'smtp_pass') || '';
 my $smtp_auth = $ini->val('notify', 'smtp_auth') || ''; # 'LOGIN', 'PLAIN', 'CRAM-MD5', 'NTLM'
@@ -279,6 +280,7 @@ sub send_mail
 		
 	(new Mail::Sender)->MailMsg ({
 	        smtp => $smtp_host,
+		port => $smtp_port,
 		from => $mailfrom,
 		auth => $smtp_auth,
 		authid => $smtp_user,
