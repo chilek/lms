@@ -52,9 +52,9 @@ if (!empty($s_arr)) {
     }
 }
 
-$DB->Execute("ALTER TABLE promotionschemas ADD INDEX ctariffid (ctariffid)");
 $DB->Execute("ALTER TABLE promotionschemas ADD ctariffid int(11) DEFAULT NULL
     REFERENCES tariffs (id) ON DELETE RESTRICT ON UPDATE CASCADE");
+$DB->Execute("ALTER TABLE promotionschemas ADD INDEX ctariffid (ctariffid)");
 $DB->Execute("ALTER TABLE promotionschemas ADD continuation tinyint(1) DEFAULT NULL");
 $DB->Execute("UPDATE promotionschemas SET continuation = 1");
 
