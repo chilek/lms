@@ -4062,8 +4062,14 @@ class LMS {
 					return trans('Unable to write to SMSTools outgoing directory ($a)!', $dir);
 
 				$filename = $dir . '/lms-' . $messageid . '-' . $number;
-				$message = clear_utf($message);
-				$file = sprintf("To: %s\n\n%s", $number, $message);
+				$latin1 = iconv('UTF-8', 'ISO-8859-15', $message);
+				$alphabet = '';
+				if (strlen($latin1) != mb_strlen($message, 'UTF-8')) {
+					$alphabet = "Alphabet: UCS2\n";
+					$message = iconv('UTF-8', 'UNICODEBIG', $message);
+				}
+				//$message = clear_utf($message);
+				$file = sprintf("To: %s\n%s\n%s", $number, $alphabet, $message);
 
 				if ($fp = fopen($filename, 'w')) {
 					fwrite($fp, $file);
