@@ -141,6 +141,7 @@ version ? (????-??-??):
   - past at date for disposable assignments is possible and we're only warned in such situation [chilan]
   - bumped OpenLayers to 2.12 [chilan]
   - support of ucs2 encoded smses [chilan]
+  - bin/lms-payments: added %prev_period variable [ceho]
  
 version 1.11.13 Dira (2011-04-07)
 
