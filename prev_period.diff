@@ -1,0 +1,20 @@
+diff --git a/bin/lms-payments b/bin/lms-payments
+index 3eda4be..a058fcd 100755
+--- a/bin/lms-payments
++++ b/bin/lms-payments
+@@ -239,6 +239,7 @@ $txts{+DISPOSABLE} = strftime("%Y/%m/%d", 0, 0, 12, $dom, $month - 1, $year - 19
+ my $current_month = strftime("%Y/%m/%d", 0, 0, 12, 1, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, 0, $month, $year - 1900);
+ my $current_period = strftime("%m/%Y", 0, 0, 12, 1, $month - 1, $year - 1900);
+ my $next_period = strftime("%m/%Y", 0, 0, 12, 1, $month, $year - 1900);
++my $prev_period = strftime("%m/%Y", 0, 0, 12, 1, $month - 2, $year - 1900);
+ 
+ # sale date setting
+ my $saledate = $currtime;
+@@ -474,6 +475,7 @@ while(my $assign = $dbq->fetchrow_hashref())
+ 	$desc =~ s/\%current_month/$current_month/g;
+ 	$desc =~ s/\%current_period/$current_period/g;
+ 	$desc =~ s/\%next_period/$next_period/g;
++	$desc =~ s/\%prev_period/$prev_period/g;
+ 
+ 	if ($suspension_percentage && ($assign->{'suspended'} || $suspended == $uid))
+ 	{
