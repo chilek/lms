@@ -36,6 +36,7 @@ if(($right & 4) != 4)
 }
 
 $DB->Execute('DELETE FROM rttickets WHERE id = ?', array($ticket));
+$DB->Execute('DELETE FROM rtmessages WHERE ticketid = ?', array($ticket));
 
 if (isset($CONFIG['rt']['mail_dir']))
 	rrmdir($CONFIG['rt']['mail_dir'].sprintf('/%06d', $ticket));
