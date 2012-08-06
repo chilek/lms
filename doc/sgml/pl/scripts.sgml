@@ -425,6 +425,7 @@ http://www.naszasiec.pl/</screen></example>
           <para>%current_month - okres od pierwszego dnia bie¿±cego miesi±ca do jego koñca</para>
 	  <para>%current_period - bie¿±cy miesi±c w formacie MM/RRRR</para>
 	  <para>%next_period - nastêpny miesi±c w formacie MM/RRRR</para>
+	  <para>%prev_period - poprzedni miesi±c w formacie MM/RRRR</para>
 	  <para>%desc - opis taryfy</para>
           <para>Przyk³ad:       <prompt>comment = 'Abonament za %current_month w/g taryfy %tariff'</prompt></para>
 	  </listitem>

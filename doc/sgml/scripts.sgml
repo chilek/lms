@@ -392,6 +392,7 @@ invoices in <emphasis>[payments]</emphasis> section of
 	   <para>%current_month - period form 1st day of current month to the last day</para>
 	   <para>%current_period - current month in MM/YYYY format</para>
 	   <para>%next_period - next month in MM/YYYY format</para>
+	   <para>%prev_period - previous month in MM/YYYY format</para>
 	   <para>%desc - tariff description</para>
 	   <para>Example:	<prompt>comment = 'Subscription for %current_month'</prompt></para>
 	  </listitem>

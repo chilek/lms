@@ -292,6 +292,8 @@ else
 		$a['settlement'] = true;
 	if (!empty($CONFIG['phpui']['default_assignment_period']))
 		$a['period'] = $CONFIG['phpui']['default_assignment_period'];
+	if (!empty($CONFIG['phpui']['default_assignment_at']))
+		$a['at'] = $CONFIG['phpui']['default_assignment_at'];
 }
 
 $expired = isset($_GET['expired']) ? $_GET['expired'] : false;
