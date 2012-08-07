@@ -110,21 +110,23 @@
 </P>
 {/if}
 <P>
-<TABLE width="660" cellpadding="3" align="CENTER">
+<TABLE width="660" cellpadding="3" border="1" align="CENTER">
 	<TR>
-		<TD width="100%" class="HEAD">
+		<TD width="100%" colspan="2" class="HEAD">
 		{trans("Notes:")}	
 		</TD>
 	</TR>
-	<TR>
-		<TD width="100%" class="flr">
-			<P>&nbsp;
-			<P>&nbsp;
-			<P>&nbsp;
-			<P>&nbsp;
-			<P>&nbsp;
-			<P>&nbsp;
+	{foreach from=$ticket.messages item=message name=message}
+	{if !$smarty.foreach.message.first} 
+	<TR>	
+		<TD width="1%">
+			<B>{$message.username}</B>
+		</TD>
+		<TD width="99%">
+		    {$message.body}
 		</TD>
 	</TR>
+	{/if}
+	{/foreach}
 </TABLE>
 {include file="clearfooter.html"}
