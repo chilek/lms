@@ -174,6 +174,48 @@ $SMARTY->assignByRef('layout', $layout);
 
 header('X-Powered-By: LMS/'.$layout['lmsv']);
 
+/* ID and PIN recovery */     
+function CheckPESEL($str)
+{
+	if (!preg_match('/^[0-9]{11}$/',$str)) //sprawdzamy czy ciąg ma 11 cyfr
+	{
+		return false;
+	}
+ 
+	$arrSteps = array(1, 3, 7, 9, 1, 3, 7, 9, 1, 3); // tablica z odpowiednimi wagami
+	$intSum = 0;
+	for ($i = 0; $i < 10; $i++)
+	{
+		$intSum += $arrSteps[$i] * $str[$i]; //mnożymy każdy ze znaków przez wagć i sumujemy wszystko
+	}
+	$int = 10 - $intSum % 10; //obliczamy sumć kontrolną
+	$intControlNr = ($int == 10)?0:$int;
+	if ($intControlNr == $str[10]) //sprawdzamy czy taka sama suma kontrolna jest w ciągu
+	{
+		return true;
+	}
+	return false;
+} 
+
+
+if(filter_var($_POST['recovery_email'], FILTER_VALIDATE_EMAIL) && CheckPESEL($_POST['recovery_pesel']) && $_POST['recovery_submit']=='Wyślij przypomnienie')
+{
+   $emails=$LMS->GetCustomerIDandPIN($_POST['recovery_email'],$_POST['recovery_pesel']);
+   foreach($emails as $email)
+   {
+        $to      = $_POST['recovery_email'];
+        $subject = 'Przypomnienie ID i PIN do bok.alfa-system.pl';
+        $message = 'ID: '.$email['id'].' # PIN: '.$email['pin'].' # Wirtualne Biuro Obsługi Klienta: https://bok.alfa-system.pl';
+        $headers = 'From: pomoc@alfa-system.pl';
+        
+        if(mail($to, $subject, $message, $headers)) $recovery="OK";
+   }
+}
+elseif(strlen($_POST['recovery_email'])>1 && strlen($_POST['recovery_pesel'])>1 && strlen($_POST['recovery_submit'])>1)
+{
+    $recovery="ERROR";
+}
+
 if($SESSION->islogged)
 {
 	$module = isset($_GET['m']) ? $_GET['m'] : '';
@@ -237,12 +279,15 @@ if($SESSION->islogged)
 
         if(!isset($_SESSION['lastmodule']) || $_SESSION['lastmodule'] != $module)
     		$_SESSION['lastmodule'] = $module;
-}
-else
-{
+}else{
+        $ownerid=$DB->GetOne('SELECT ownerid FROM nodes WHERE ipaddr = ? LIMIT 1', array(ip2long($_SERVER['SERVER_ADDR'])));
+        $bilans=$DB->GetOne('SELECT SUM(value) FROM cash WHERE customerid = ? LIMIT 1', array($ownerid));
+    
         $SMARTY->assign('error', $SESSION->error);
         $SMARTY->assign('target','?'.$_SERVER['QUERY_STRING']);
-        $SMARTY->display('login.html');
+        $SMARTY->assign('recovery', $recovery);
+        $SMARTY->assign('bilans', $bilans);
+        $SMARTY->display('login.html');       
 }
 
 $DB->Destroy();

@@ -1,20 +1,14 @@
 <!--// $Id$ //-->
-{box title="Balance"}
-<center>
-<h1>{if $userinfo.balance < 0}
-	<div style="color: red; white-space: nowrap;"><b>{$userinfo.balance|money_format}</b></div>
-    {else}
-	<div style="white-space: nowrap;">{$userinfo.balance|money_format}</div>
-    {/if}
-</h1>
+{box title="Balance:"}
 {if $userinfo.balance < 0}
-	{if !check_conf('userpanel.disable_transferform')}
-	<a href="?m=finances&amp;f=transferform" target="_blank">
-	<font color="red">{trans("Click here to print payment form")}</font>
-	</a>
-	{/if}
+    <div class="alert alert-error">
+        <h1>Kwota do zapłaty: {$userinfo.balance|money_format}</h1>
+    {if !check_conf('userpanel.disable_transferform')}
+	<a href="?m=finances&amp;f=transferform" target="_blank">Wydrukuj formularz zapłaty.</a>
+    {/if}        
 {else}
-	{trans("All your covenants are settled")}
+    <div class="alert alert-success"><h1>{$userinfo.balance|money_format}</h1>
+    {trans("All your covenants are settled")}.
 {/if}
-</center>
+    </div>
 {/box}

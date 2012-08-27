@@ -1,53 +1,53 @@
 <!--// $Id$ //-->
 {include file="header.html"}
-<table style="width: 100%;" cellpadding="10">
+<table class="table">
     <tr>
         <td>
 <form method="post" action="?m=helpdesk&id={$ticket.id}" name="helpdesk">
 {box title="Message"}
 <input type="hidden" name="helpdesk[inreplyto]" value="{$helpdesk.inreplyto}" />
-<table width="100%" cellpadding="3" class="light">
+<table class="table table-bordered">
 	<tr class="light">
-		<td width="1%">
+		<td>
 			{img src="helpdesk.gif" alt=""}
 		</td>
-		<td width="1%">
+		<td>
 			<b>{trans("Subject:")}</b>
 		</td>
-		<td width="98%">
+		<td>
 			<input style="width:99%;" type="text" name="helpdesk[subject]" value="{$helpdesk.subject}" {userpaneltip text="Enter message subject" trigger="subject"} />
 		</td>
 	</tr>
-	<tr class="light">
-		<td width="1%">
+	<tr>
+		<td>
 			{img src="help.gif" alt=""}
 		</td>
-		<td width="1%">
+		<td>
 			<b>{trans("Body:")}</b>
 		</td>
-		<td width="98%">
+		<td>
 			<textarea style="width:99%;" name="helpdesk[body]" rows="5" {userpaneltip text="Enter message content" trigger="body"}>{$helpdesk.body}</textarea>
 		</td>
 	</tr>
-	<tr class="light">
-		<td width="100%" colspan="3" align="right">
-			<a href="javascript:document.helpdesk.submit()" accesskey="S">{trans("Submit")} {img src="save.gif" alt="[ Submit ]"}</a>
+	<tr>
+		<td colspan="3">
+			<a class="btn btn-danger" href="javascript:document.helpdesk.submit()" accesskey="S">{trans("Submit")}</a>
 		</td>
 	</tr>
 </table>
 {/box}
 <br />
 {box title=$title}
-<table class="width: 100%;" cellpadding="3">
+<table class="table table-bordered">
 	{foreach from=$ticket.messages item=message}
-        <tr class="darkest">
-		<td width="1%" align="right">
+        <tr>
+		<td>
 			<b>{$message.createtime|date_format:"%Y/%m/%d<br/>%H:%M"}</b>
 		</td>
-		<td width="1%" align="right">
+		<td>
 			<b>{trans("From:")}<br/>{trans("Subject:")}</b>
 		</td>
-		<td width="97%" class="nobr">
+		<td>
 			    {if $message.customerid}
 				    {$message.customername}
 			    {elseif $message.userid}
@@ -63,8 +63,8 @@
 			    <br />
 			    {$message.subject|escape}
 		</td>
-		<td width="1%">
-			<a href="?m=helpdesk&op=message&id={$ticket.id}&msgid={$message.id}">{trans("Reply")}</a>
+		<td>
+			<a class="btn btn-danger" href="?m=helpdesk&op=message&id={$ticket.id}&msgid={$message.id}">{trans("Reply")}</a>
 		</td>
 	</tr>
 	<tr>
