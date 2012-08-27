@@ -1,25 +1,9 @@
 {include file="header.html"}
-<!--// $Id$ //-->
-<table width="100%" cellpadding="10">
 {if !$usernodes.total && check_conf('userpanel.hide_nodesbox')}
-	<tr>
-		<td valign="top" width="100%">
-			{include file="module:updateuserinfobox.html"}
-			<br />
-			{include file="module:userdocsbox.html"}
-		</td>
-	</tr>
+    {include file="module:updateuserinfobox.html"}
+
 {else}
-	<tr>
-		<td valign="top" width="50%">
-			{include file="module:updateuserinfobox.html"}
-			<br />
-			{include file="module:userdocsbox.html"}
-		</td>
-		<td valign="top" width="50%">
-			{include file="module:usernodesbox.html"}
-		</td>
-	</tr>
+    {include file="module:updateuserinfobox.html"}
+   
 {/if}
-</table>
 {include file="footer.html"}

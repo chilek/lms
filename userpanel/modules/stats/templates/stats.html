@@ -1,20 +1,13 @@
 {include file="header.html"}
-<table width="100%" cellpadding="10" align="center">
-    <tr>
-        <td align="center">
+
 	    {box title="Filter"}
-	    <p style="white-space: nowrap; text-align: center;">
 		<a href="?m=stats&amp;bar=hour">{if $bar=='hour'}<b>{/if}{trans("Last hour")}{if $bar=='hour'}</b>{/if}</a> /
 		<a href="?m=stats&amp;bar=day">{if $bar=='day'}<b>{/if}{trans("Last day")}{if $bar=='day'}</b>{/if}</a> /
 		<a href="?m=stats&amp;bar=month">{if $bar=='month'}<b>{/if}{trans("Last 30 days")}{if $bar=='month'}</b>{/if}</a> /
 		<a href="?m=stats&amp;bar=year">{if $bar=='year'}<b>{/if}{trans("Last year")}{if $bar=='year'}</b>{/if}</a> /
 		<a href="?m=stats&amp;bar=all">{if $bar=='all'}<b>{/if}{trans("All")}{if $bar=='all'}</b>{/if}</a>
-	    </p>
 	    {/box}
-	</td>
-    </tr>
-    <tr>
-	<td align="center">
+
 {if $download || $upload}
 <table width="100%" align="center" cellpadding="0" cellspacing="0">
 	<tr>
@@ -65,9 +58,7 @@
 </table>
 {else}
 {box title="Network Statistics"}
-<p>&nbsp;</p>
-<p style="text-align: center;"><b>{trans("No such data for selected period.")}</b></p>
-<p>&nbsp;</p>
+<div class="alert alert-error">{trans("No such data for selected period.")}</div>
 {/box}
 {/if}
         </td>

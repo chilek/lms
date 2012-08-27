@@ -1,0 +1,107 @@
+{include file="header.html"}
+<div class="box_info">
+<b>Nagradzamy ABONENTÓW</b>, którzy terminowo opłacają abonament oraz mają uzupełnione dane kontaktowe.<br><br>
+Każdy kto spełni poniższe wymagania - otrzyma bonus w postaci łącza symetrycznego, czyli prędkość wysyłania będzie taka sam jak prędkość pobierania.
+<p>UWAGA! BONUS nie stanowi oferty w sensie art.66 k.c. i warunki BONUSU mogą zostać zmienione.</p>
+</div>
+<div class="box_dane">
+<ol style="text-align:left">
+{if $userinfo.consentdate == 0}
+    <li> <a href="http://bok.alfa-system.pl/?m=info"><span class="false">Wyraź zgodę na przetwarzanie danych osobowych !</span></a> <span class="tipsy">(Czas oczekiwania na zatwierdzenie zmiany do 24 godzin.)</span></li>
+{else}
+    <li>Zgoda na przetwarzanie danych osobowych: <span class="true">JEST</span></li>    
+{/if}
+
+
+{if $userinfo.email}
+    <li>Adres e-mail: <span class="true">JEST</span></li>
+{else}
+    <li> <a href="http://bok.alfa-system.pl/?m=info&amp;f=updateuserform"><span class="false">Uzupełnij adres e-mail !</span></a> <span class="tipsy">(Czas oczekiwania na zatwierdzenie zmiany do 24 godzin.)</span></li>
+{/if}
+
+
+{if $userinfo.contacts}
+    {foreach from=$userinfo.contacts item=item}
+	{if $item.phone}
+	    <li>Telefon kontaktowy: <span class="true">JEST</span></li>
+	{/if}
+    {/foreach}
+{else}
+	    <li> <a href="http://bok.alfa-system.pl/?m=info&amp;f=updateuserform"><span class="false">Uzupełnij nr telefonu !</span></a> <span class="tipsy">(Czas oczekiwania na zatwierdzenie zmiany do 24 godzin.)</span></li>
+{/if}    	
+
+{if $userinfo.type eq 0 }
+
+    {if $userinfo.ssn neq ""}
+    <li>PESEL: <span class="true">JEST</span></li>
+    {else}
+    <li> <a href="http://bok.alfa-system.pl/?m=info&amp;f=updateuserform"><span class="false">Uzupełnij PESEL !</span></a> <span class="tipsy">(Czas oczekiwania na zatwierdzenie zmiany do 24 godzin.)</span></li>
+    {/if}    
+
+{elseif $userinfo.type eq 1}
+
+    {if $userinfo.ten neq ""}
+    <li>NIP: <span class="true">JEST</span></li>
+    {else}
+    <li> <a href="http://bok.alfa-system.pl/?m=info&amp;f=updateuserform"><span class="false">Uzupełnij NIP !</span></a> <span class="tipsy">(Czas oczekiwania na zatwierdzenie zmiany do 24 godzin.)</span></li>
+    {/if}
+{/if}    
+
+
+<!-- if $suma_wplat >= 0 or $bilans >= 0 -->
+{if $bilans >= 0 or $brak_regularnych_wplat == 1 }
+    <li>Bilans: <span class="true">OK</span></li>
+{else}
+    {if $brak_regularnych_wplat != 1}
+    <li>Terminowość wpłat: <span class="false">NIE</span> <span class="tipsy">(Brak wpłat do każdego 15 dnia miesiąca na przestrzeni ostatnich {$miesiecy_wstecz} miesięcy.)</span></li>
+    {else}
+    <li>Bilans: <span class="false">UJEMNY</span> <span class="tipsy">(Wpłaty nie pokrywają powstałych zobowiązań. Należy uregulować zaległości.)</span></li>    
+    {/if}
+{/if}
+
+{if $ilosc_wplat >= $miesiecy_wstecz}
+    <li>Umowa była podpisana przed {$miesiecy_wstecz} miesiącami: <span class="true">TAK</span></li>
+{else}
+    <li>Umowa była podpisana przed {$miesiecy_wstecz} miesiącami: <span class="false">NIE</span> <span class="tipsy">(Jesteś jeszcze za krótko z nami.)</span></li>
+{/if}
+
+{if $taryfa === true or $taryfa_bonus === true}
+    <li>Możliwości techniczne oraz taryfa bez promocji: <span class="true">TAK</span></li>
+{else}    
+    <li>Możliwości techniczne oraz taryfa bez promocji: <span class="false">NIE</span> <span class="tipsy">(W Twojej lokalizacji nie możemy aktywować bonusu lub korzystasz z promocji lub masz zadłużenie.)</span></li>
+{/if}
+
+</ol>
+<p><b>UWAGA!</b> Przyznany BONUS zostanie automatycznie anulowany, gdy choć jeden z w/w warunków nie będzie spełniony w trakcie korzystania z BONUSU.</p>
+</div>
+
+
+<br>
+{if $taryfa_bonus===false}taryfa_bonus{/if}
+
+{if $punkty eq 7 AND $status==1}
+
+<div class="box_ok">
+<form name="frm_premia" method="post" action="?m=bonus&amp;f=premia">
+<input type="hidden" name="taryfa_premium" value={$taryfa_premium}>
+<b><a href="javascript:document.frm_premia.submit()">Kliknij, aby aktywować BONUS !</a></b>
+<br/>Zwiększenie prędkości nastąpi do 24h od aktywacji.
+</form>
+</div>
+{elseif $status==2}
+<div class="box_ok">
+    <span class="true">BONUS JEST AKTYWNY</span>
+</div>    
+{elseif $status==0}
+<div class="box_ok">
+    <span class="false">BONUS ZOSTAŁ DEAKTYWOWANY</span>
+</div>    
+{else}
+<div class="box_wazne">
+    <p><b>Niespełnione warunki. BONUS nie może zostać aktywowany.</b></p>
+</div>    
+{/if}
+
+
+<p class="center">Błędy i uwagii prosimy kierować na adres <a href="mailto:pomoc@alfa-system.pl?subject=BONUS">pomoc@alfa-system.pl</a> lub GG <a href="gg:5004035">5004035</a></p>
+{include file="footer.html"}

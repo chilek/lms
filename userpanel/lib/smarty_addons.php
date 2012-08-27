@@ -34,7 +34,7 @@ function _smarty_block_box($params, $content, &$template, &$repeat)
 	{
 		$title = trans(array_merge(array($params['title']), $params));
 
-		$style = $CONFIG['userpanel']['style'] ? $CONFIG['userpanel']['style'] : 'default';
+		$style = $CONFIG['userpanel']['style'] ? $CONFIG['userpanel']['style'] : 'alfa';
 
 		if(file_exists('style/'.$style.'/box.html'))
 			$file = 'style/'.$style.'/box.html';

@@ -22,7 +22,7 @@
  *  USA.
  *
  *  $Id$
- */
+
 
 $USERPANEL->AddModule(trans('Stats'),	// Display name
 		    'stats', 		// Module name - must be the same as directory name
@@ -30,5 +30,5 @@ $USERPANEL->AddModule(trans('Stats'),	// Display name
 		    50,			// Priority
 		    trans('This module is for showing bandwidth utilization stats')	// Description
 		    );
-
+ */
 ?>

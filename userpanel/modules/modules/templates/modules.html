@@ -1,30 +1,25 @@
 {include file="header.html"}
-<table width="100%" cellpadding="10">
-    <tr>
-	<td>
 {box title="Loaded modules"}
-<table cellpadding="3">
-<tr class="darkest">
-    <th width="1%">{trans("Module")}</th>
-    <th width="1%">{trans("Display name")}</th>
-    <th width="1%">{trans("Prio")}</th>
-    <th width="40%">{trans("Tip")}</th>
-    <th width="56%">{trans("Description")}</th>
-</tr>
+<table class="table table-bordered table-striped">
+    <thead>
+        
+    <th>{trans("Module")}</th>
+    <th>{trans("Display name")}</th>
+    <th>{trans("Prio")}</th>
+    <th>{trans("Tip")}</th>
+    <th>{trans("Description")}</th>
+</thead>
 {foreach from=$modules item=module}
-<tr class="dark">
+<tr>
     <td>{$module.module}</td>
     <td>{$module.name}</td>
-    <td align="center">{$module.prio}</td>
+    <td>{$module.prio}</td>
     <td>{t}{$module.tip}{/t}</td>
     <td>{t}{$module.description}{/t}</td>
 </tr>
 {/foreach}
 </table>
 {/box}
-	</td>
-    </tr>
-</table>
 {include file="footer.html"}
 
 
