@@ -29,6 +29,12 @@ if(!$LMS->TariffExists($_GET['id']))
 	$SESSION->redirect('?m=tarifflist');
 }
 
+if(isset($_GET['id']) && isset($_GET['tariffset']))
+{
+	$LMS->tariffSet($_GET['id']);
+	$SESSION->redirect('?m=tarifflist#'.$_GET['id']);
+}
+
 if(isset($_POST['tariff']))
 {
 	$tariff = $_POST['tariff'];

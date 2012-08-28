@@ -64,6 +64,12 @@
 					<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroupid eq $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"...":true}</OPTION>
 					{/section}
 				</SELECT>
+				{trans("State:")}
+				<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
+					<OPTION value=""{if !$listdata.state} SELECTED{/if}>{t}- all -{/t}</OPTION>
+					<OPTION value="1"{if $listdata.state eq 1} SELECTED{/if}>{t}on{/t}</OPTION>
+					<OPTION value="2"{if $listdata.state eq 2} SELECTED{/if}>{t}off{/t}</OPTION>
+				</SELECT>
 			</FORM>
 		</TD>
 	</TR>
@@ -110,6 +116,7 @@
 		</TD>
 		<TD WIDTH="1%" CLASS="fright" ALIGN="right">
 			<NOBR>
+			<A href="?m=tariffedit&tariffset&id={$tarifflist[tariffs].id}"><IMG src="img/{if $tarifflist[tariffs].disabled == 1}no{/if}access.gif" alt="[ {t}Disable{/t} ]" title="[ {t}Disable{/t} ]"></A>
 			{if $tarifflist[tariffs].customers}<A HREF="javascript:alert('{trans("Subscription with assigned customers cannot be deleted!")}');">{else}<A HREF="?m=tariffdel&id={$tarifflist[tariffs].id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that tariff?")}');">{/if}<IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 				<A HREF="?m=tariffedit&id={$tarifflist[tariffs].id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 				<A HREF="?m=tariffadd&id={$tarifflist[tariffs].id}"><IMG SRC="img/clone.gif" alt="[ {trans("Clone")} ]" title="[ {trans("Clone")} ]"></A>
