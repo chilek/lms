@@ -1298,7 +1298,7 @@ class LMS {
 	}
 
 	function GetNodeMACByID($id) {
-		return $this->DB->GetOne('SELECT mac FROM vnodes WHERE nodeid=?', array($id));
+		return $this->DB->GetOne('SELECT mac FROM vnodes WHERE id=?', array($id));
 	}
 
 	function GetNodeName($id) {
