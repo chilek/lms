@@ -2445,6 +2445,7 @@ class LMS {
 				taxes.label AS tax, t.period
 				FROM tariffs t
 				LEFT JOIN taxes ON t.taxid = taxes.id
+				WHERE t.disabled=0
 				ORDER BY t.name, t.value DESC');
 	}
 
@@ -2467,6 +2468,18 @@ class LMS {
 			$this->DB->Execute('DELETE FROM cash WHERE docid = ?', array($docid));
 		}
 	}
+
+	function tariffSet($id)
+	{
+
+		if($this->DB->GetOne('SELECT disabled FROM tariffs WHERE id = ?', array($id)) == 1 )
+			return $this->DB->Execute('UPDATE tariffs SET disabled = 0 WHERE id = ?', 
+					array($id));
+		else
+			return $this->DB->Execute('UPDATE tariffs SET disabled = 1 WHERE id = ?', 
+					array($id));
+	}
+
 
 	function DebitNoteContentDelete($docid, $itemid = 0) {
 		if ($itemid) {
