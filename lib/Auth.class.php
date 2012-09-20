@@ -151,30 +151,29 @@ class Auth {
 	}
 
 	function VerifyAccess($access) {
-	    if ($access!='1') {
+	    $access = intval($access);
+	    if (empty($access)) {
 		$this->error = trans('Account is disabled');
 		return FALSE;
 	    }
 	    else return TRUE;
 	}
 	
-	function VerifyAccessFrom($access)
-	{
-	    if (is_null($access) || $access=='0') return TRUE;
+	function VerifyAccessFrom($access) {
+	    $access = intval($access);
+	    if (empty($access)) return TRUE;
 	    if ($access < time()) return TRUE;
-	    if ($access > time())
-	    {
+	    if ($access > time()) {
 		$this->error = trans('Account is not active');
 		return FALSE;
 	    }
 	}
 	
-	function VerifyAccessTo($access)
-	{
-	    if (is_null($access) || $access=='0') return TRUE;
+	function VerifyAccessTo($access) {
+	    $access = intval($access);
+	    if (empty($access) return TRUE;
 	    if ($access > time()) return TRUE;
-	    if ($access < time())
-	    {
+	    if ($access < time()) {
 		$this->error = trans('Account is not active');
 		return FALSE;
 	    }
