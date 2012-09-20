@@ -52,5 +52,6 @@ $_LANG['Secret:'] = 'Polarizace:';
 $_LANG['Enter secret (optional)'] = 'Zadejte polarizaci V nebo H';
 $_LANG['Community:'] = 'Azimut:';
 $_LANG['Enter community (optional)'] = 'Zadejte azimut';
-
+$_LANG['Account active:'] = 'účet aktivní:';
+$_LANG['Account is disabled'] = 'Účet je zakázán';
 ?>

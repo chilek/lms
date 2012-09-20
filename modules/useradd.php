@@ -58,6 +58,35 @@ if(sizeof($useradd))
 	elseif (!check_password_strength($useradd['password']))
 		$error['password'] = trans('The password should contain at least one capital letter, one lower case letter, one digit and should consist of at least 8 characters!');
 
+	if($useradd['accessfrom'] == '')
+		$accessfrom = 0;
+	elseif(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/',$useradd['accessfrom']))
+	{
+		list($y, $m, $d) = explode('/', $useradd['accessfrom']);
+		if(checkdate($m, $d, $y))
+			$accessfrom = mktime(0, 0, 0, $m, $d, $y);
+		else
+			$error['accessfrom'] = trans('Incorrect charging time!');
+	}
+	else
+		$error['accessfrom'] = trans('Incorrect charging time!');
+
+	if($useradd['accessto'] == '')
+		$accessto = 0;
+	elseif(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $useradd['accessto']))
+	{
+		list($y, $m, $d) = explode('/', $useradd['accessto']);
+		if(checkdate($m, $d, $y))
+			$accessto = mktime(23, 59, 59, $m, $d, $y);
+		else
+			$error['accessto'] = trans('Incorrect charging time!');
+	}
+	else
+		$error['accessto'] = trans('Incorrect charging time!');
+
+	if($accessto < $accessfrom && $accessto != 0 && $accessfrom != 0)
+		$error['accessto'] = trans('Incorrect date range!');
+
 	// ACL mask...
 	$mask = '';
 	$outmask = '';
@@ -80,7 +109,8 @@ if(sizeof($useradd))
     }
 
 	if(!$error)
-	{
+	{	$useradd['accessfrom'] = $accessfrom;
+		$useradd['accessto'] = $accessto;
 		$id = $LMS->UserAdd($useradd);
 
                 if(isset($_POST['selected']))

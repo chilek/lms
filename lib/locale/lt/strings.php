@@ -2067,5 +2067,7 @@ $_LANG['cash'] = 'grynieji';
 $_LANG['compensation'] = 'kompensacija';
 $_LANG['transfer'] = 'pavedimas';
 $_LANG['transfer/cash'] = 'pavedimas/grynieji';
+$_LANG['Account active:'] = 'sąskaita aktyvus:';
+$_LANG['Account is disabled'] = 'Sąskaita užblokuota';
 
 ?>

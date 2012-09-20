@@ -1,139 +1,157 @@
 {include file="header.html"}
+{include file="calendar_js.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<FORM NAME="useradd" METHOD="POST" ACTION="?m=useradd">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD CLASS="FLEFTU" style="width: 1%;">
-			<IMG SRC="img/pass.gif" ALT=""> <span class="bold">{trans("Login:")}</span>
-		</TD>
-		<TD CLASS="FRIGHTU" style="width: 99%;">
-			<INPUT TYPE="TEXT" NAME="useradd[login]" VALUE="{$useradd.login}" {tip text="Enter user login" trigger="login" bold=1}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="FLEFT" style="white-space: nowrap;">
-			<IMG SRC="img/users.gif" ALT=""> <span class="bold">{trans("First/last name:")}</span>
-		</TD>
-		<TD CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" NAME="useradd[name]" VALUE="{$useradd.name}" SIZE="40" {tip text="Enter user name" trigger="name"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="FLEFT">
-			<IMG SRC="img/info.gif" ALT=""> <span class="bold">{trans("Position:")}</span>
-		</TD>
-		<TD CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" NAME="useradd[position]" VALUE="{$useradd.position}" SIZE="40" {tip text="Enter user position (optional)" trigger="position"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="FLEFT">
-			<IMG SRC="img/mail.gif" ALT=""> <span class="bold">{trans("E-mail:")}</span>
-		</TD>
-		<TD CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" NAME="useradd[email]" VALUE="{$useradd.email}" SIZE="40" {tip text="Enter e-mail address (optional)" trigger="email"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="FLEFT" style="white-space: nowrap;">
-			<IMG SRC="img/sms.gif" ALT=""> <span class="bold">{trans("Phone:")}</span>
-		</TD>
-		<TD CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" NAME="useradd[phone]" VALUE="{$useradd.phone}" SIZE="40" {tip text="Enter phone number for SMS notification (optional)" trigger="phone"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="FLEFT" style="white-space: nowrap;">
-			<IMG SRC="img/options.gif" ALT=""> <span class="bold">{trans("Notification:")}</span>
-		</TD>
-		<TD CLASS="FRIGHT">
-			<INPUT TYPE="checkbox" NAME="useradd[ntype][]" VALUE="{$smarty.const.MSG_MAIL}" ID="ntypemail"{if ($useradd.ntype & $smarty.const.MSG_MAIL)} checked{/if}><label for="ntypemail">{trans("email")}</label>
-			<INPUT TYPE="checkbox" NAME="useradd[ntype][]" VALUE="{$smarty.const.MSG_SMS}" ID="ntypesms"{if ($useradd.ntype & $smarty.const.MSG_SMS)} checked{/if}><label for="ntypesms">{trans("sms")}</label>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="FLEFT">
-			<IMG SRC="img/pass.gif" ALT=""> <span class="bold">{trans("Password:")}</span>
-		</TD>
-		<TD CLASS="FRIGHT">
-			<INPUT TYPE="PASSWORD" NAME="useradd[password]" {tip text="Enter password" trigger="password"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="FLEFT" style="white-space: nowrap;">
-			<IMG SRC="img/pass.gif" ALT=""> <span class="bold">{trans("Repeat password:")}</span>
-		</TD>
-		<TD CLASS="FRIGHT">
-			<INPUT TYPE="PASSWORD" NAME="useradd[confirm]" {tip text="Confirm password" trigger="password"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" style="white-space: nowrap;">
-			<IMG SRC="img/ip.gif" ALT=""> <span class="bold">{trans("Allowed hosts:")}</span>
-		</TD>
-		<TD CLASS="fright" style="white-space: nowrap;">
-			<INPUT TYPE="TEXT" SIZE="40" NAME="useradd[hosts]" VALUE="{$useradd.hosts}" {tip text="Enter comma-separated list of hosts or networks (optional)" trigger="hosts"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" style="white-space: nowrap;">
-			<IMG SRC="img/passwd.gif" ALT=""> <span class="bold">{trans("Password expiration:")}</span>
-		</TD>
-		<TD CLASS="fright" style="white-space: nowrap;">
-			<SELECT name="useradd[passwdexpiration]" {tip text="Select password expiration period" trigger="passwdexpiration"}>
+<h1>{$layout.pagetitle}</h1>
+<form name="useradd" method="POST" action="?m=useradd">
+<input type="submit" class="hiddenbtn">
+<table width="100%" cellpadding="3">
+	<tr class="DARK">
+		<td class="FLEFTU" style="width: 1%;">
+			<img SRC="img/pass.gif" alt=""> <span class="bold">{trans("Login:")}</span>
+		</td>
+		<td class="FRIGHTU" style="width: 99%;">
+			<input type="TEXT" name="useradd[login]" value="{$useradd.login}" {tip text="Enter user login" trigger="login" bold=1}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="FLEFT" style="white-space: nowrap;">
+			<img SRC="img/users.gif" alt=""> <span class="bold">{trans("First/last name:")}</span>
+		</td>
+		<td class="FRIGHT">
+			<input type="TEXT" name="useradd[name]" value="{$useradd.name}" size="40" {tip text="Enter user name" trigger="name"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="FLEFT">
+			<img SRC="img/info.gif" alt=""> <span class="bold">{trans("Position:")}</span>
+		</td>
+		<td class="FRIGHT">
+			<input type="TEXT" name="useradd[position]" value="{$useradd.position}" size="40" {tip text="Enter user position (optional)" trigger="position"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="FLEFT">
+			<img SRC="img/mail.gif" alt=""> <span class="bold">{trans("E-mail:")}</span>
+		</td>
+		<td class="FRIGHT">
+			<input type="TEXT" name="useradd[email]" value="{$useradd.email}" size="40" {tip text="Enter e-mail address (optional)" trigger="email"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="FLEFT" style="white-space: nowrap;">
+			<img SRC="img/sms.gif" alt=""> <span class="bold">{trans("Phone:")}</span>
+		</td>
+		<td class="FRIGHT">
+			<input type="TEXT" name="useradd[phone]" value="{$useradd.phone}" size="40" {tip text="Enter phone number for SMS notification (optional)" trigger="phone"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="FLEFT" style="white-space: nowrap;">
+			<img SRC="img/options.gif" alt=""> <span class="bold">{trans("Notification:")}</span>
+		</td>
+		<td class="FRIGHT">
+			<input type="checkbox" name="useradd[ntype][]" value="{$smarty.const.MSG_MAIL}" ID="ntypemail"{if ($useradd.ntype & $smarty.const.MSG_MAIL)} checked{/if}><label for="ntypemail">{trans("email")}</label>
+			<input type="checkbox" name="useradd[ntype][]" value="{$smarty.const.MSG_SMS}" ID="ntypesms"{if ($useradd.ntype & $smarty.const.MSG_SMS)} checked{/if}><label for="ntypesms">{trans("sms")}</label>
+		</td>
+	</tr>
+	<tr class="light">
+	    <td class="FLEFT" style="white-space: nowrap;">
+			<img src="img/access.gif" alt=""> <span class="bold">{trans("Account active:")}</span>
+		</td>
+		<td class="FRIGHT">
+			<input type="radio" name="useradd[access]" value="1" id="accessyes" {if !isset($useradd.access) || $useradd.access=='1'} checked{/if}><label for="accessyes">{trans("yes")}</label>
+			<input type="radio" name="useradd[access]" value="0" id="accessno" {if $useradd.access=='0'} checked{/if}><label for="accessno">{trans("no")}</label>
+		</td>
+	</tr>
+	<tr class="light">
+	    <td class="fleft"><img src="img/calendar.gif"> <span class="bold">{trans("Account active:")}</span>
+	    <td class="fright">
+		<span class="bold">{trans('from')}:</span><input type="text" name="useradd[accessfrom]" value="{if $useradd.accessfrom}{$useradd.accessfrom}{/if}" size="10" {tip text="Enter access start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="accessfrom"} onclick="javascript:cal1.popup();">&nbsp;
+		<span class="bold">{trans('to')}:</span><input type="text" name="useradd[accessto]" value="{if $useradd.accessto}{$useradd.accessto}{/if}" size="10"  {tip text="Enter access end date in YYYY/MM/DD format. If you don't want to define 'To' date leave this field empty" trigger="accessto"} onclick="javascript:cal2.popup();">
+	    </td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="FLEFT">
+			<img SRC="img/pass.gif" alt=""> <span class="bold">{trans("Password:")}</span>
+		</td>
+		<td class="FRIGHT">
+			<input type="PASSWORD" name="useradd[password]" {tip text="Enter password" trigger="password"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="FLEFT" style="white-space: nowrap;">
+			<img SRC="img/pass.gif" alt=""> <span class="bold">{trans("Repeat password:")}</span>
+		</td>
+		<td class="FRIGHT">
+			<input type="PASSWORD" name="useradd[confirm]" {tip text="Confirm password" trigger="password"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" style="white-space: nowrap;">
+			<img SRC="img/ip.gif" alt=""> <span class="bold">{trans("Allowed hosts:")}</span>
+		</td>
+		<td class="fright" style="white-space: nowrap;">
+			<input type="TEXT" size="40" name="useradd[hosts]" value="{$useradd.hosts}" {tip text="Enter comma-separated list of hosts or networks (optional)" trigger="hosts"}>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" style="white-space: nowrap;">
+			<img SRC="img/passwd.gif" alt=""> <span class="bold">{trans("Password expiration:")}</span>
+		</td>
+		<td class="fright" style="white-space: nowrap;">
+			<select name="useradd[passwdexpiration]" {tip text="Select password expiration period" trigger="passwdexpiration"}>
 				{foreach from=$_PASSWDEXPIRATIONS item=item key=key}
-				<OPTION value="{$key}"{if $key == $useradd.passwdexpiration} selected{/if}>{$item}</OPTION>
+				<option value="{$key}"{if $key == $useradd.passwdexpiration} selected{/if}>{$item}</option>
 				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" style="white-space: nowrap;">
-			<IMG SRC="img/pass.gif" ALT=""> <span class="bold">{trans("Access rights:")}</span>
-		</TD>
-		<TD CLASS="fright" style="white-space: nowrap;">
+			</select>
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" style="white-space: nowrap;">
+			<img SRC="img/pass.gif" alt=""> <span class="bold">{trans("Access rights:")}</span>
+		</td>
+		<td class="fright" style="white-space: nowrap;">
 			<table style="width: 100%;">
 				<tr>
 					<td style="width: 50%; vertical-align: top; white-space: nowrap;">
 						{section name=acl loop=$accesslist}
 						{if $smarty.section.acl.index <= floor(sizeof($accesslist)/2) - 1}
-						<INPUT TYPE="checkbox" ID="acl_{$accesslist[acl].id}" NAME="acl[{$accesslist[acl].id}]" value="1" {if $accesslist[acl].enabled} checked{/if}> <label for="acl_{$accesslist[acl].id}">{$accesslist[acl].name}</label><BR>
+						<input type="checkbox" ID="acl_{$accesslist[acl].id}" name="acl[{$accesslist[acl].id}]" value="1" {if $accesslist[acl].enabled} checked{/if}> <label for="acl_{$accesslist[acl].id}">{$accesslist[acl].name}</label><BR>
 						{/if}
 						{/section}
 					</td>
 					<td style="width: 50%; vertical-align: top; white-space: nowrap;">
 						{section name=acl loop=$accesslist}
 						{if $smarty.section.acl.index > floor(sizeof($accesslist)/2) - 1}
-						<INPUT TYPE="checkbox" ID="acl_{$accesslist[acl].id}" NAME="acl[{$accesslist[acl].id}]" value="1" {if $accesslist[acl].enabled} checked{/if}> <label for="acl_{$accesslist[acl].id}">{$accesslist[acl].name}</label><BR>
+						<input type="checkbox" ID="acl_{$accesslist[acl].id}" name="acl[{$accesslist[acl].id}]" value="1" {if $accesslist[acl].enabled} checked{/if}> <label for="acl_{$accesslist[acl].id}">{$accesslist[acl].name}</label><BR>
 						{/if}
 						{/section}
 					</td>
 				</tr>
 			</table>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" style="white-space: nowrap;">
-			<IMG SRC="img/group.gif" ALT=""> <span class="bold">{trans("Groups:")}</span>
-		</TD>
-		<TD CLASS="fright" style="white-space: nowrap;">
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="fleft" style="white-space: nowrap;">
+			<img SRC="img/group.gif" alt=""> <span class="bold">{trans("Groups:")}</span>
+		</td>
+		<td class="fright" style="white-space: nowrap;">
 			{include file="multiselect.html" selected=$useradd.selected available_tip="Enabled<!plural>:" selected_tip="Disabled<!plural>:"}
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="FBOTTOMU" COLSPAN="2" style="text-align: right;">
-			<A HREF="javascript:document.useradd.submit();" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
-			<A HREF="?m=userlist">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
-<SCRIPT type="text/javascript">
+		</td>
+	</tr>
+	<tr class="LIGHT">
+		<td class="FBOTTOMU" COLSPAN="2" style="text-align: right;">
+			<a href="javascript:document.useradd.submit();" accesskey="s">{trans("Submit")} <img SRC="img/save.gif" alt=""></a>
+			<a href="?m=userlist">{trans("Cancel")} <img SRC="img/cancel.gif" alt=""></a>
+		</td>
+	</tr>
+</table>
+</form>
+<script type="text/javascript">
 <!--
 document.forms['useradd'].elements['useradd[login]'].focus();
-
+var cal1=new calendar(document.forms['useradd'].elements['useradd[accessfrom]']);cal1.time_comp = false;
+var cal2=new calendar(document.forms['useradd'].elements['useradd[accessto]']);cal2.time_comp = false;
 //-->
-</SCRIPT>
+</script>
 {include file="footer.html"}
