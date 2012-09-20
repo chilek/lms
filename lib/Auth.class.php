@@ -33,6 +33,9 @@ class Auth {
 	var $islogged = FALSE;
 	var $passverified = FALSE;
 	var $hostverified = FALSE;
+	var $access = FALSE;
+	var $accessfrom = FALSE;
+	var $accessto = FALSE;
 	var $last;
 	var $ip;
 	var $lastip;
@@ -147,6 +150,36 @@ class Auth {
 		return FALSE;
 	}
 
+	function VerifyAccess($access) {
+	    if ($access!='1') {
+		$this->error = trans('Account is disabled');
+		return FALSE;
+	    }
+	    else return TRUE;
+	}
+	
+	function VerifyAccessFrom($access)
+	{
+	    if (is_null($access) || $access=='0') return TRUE;
+	    if ($access < time()) return TRUE;
+	    if ($access > time())
+	    {
+		$this->error = trans('Account is not active');
+		return FALSE;
+	    }
+	}
+	
+	function VerifyAccessTo($access)
+	{
+	    if (is_null($access) || $access=='0') return TRUE;
+	    if ($access > time()) return TRUE;
+	    if ($access < time())
+	    {
+		$this->error = trans('Account is not active');
+		return FALSE;
+	    }
+	}
+
 	function VerifyHost($hosts = '') {
 		if (!$hosts)
 			return TRUE;
@@ -184,7 +217,7 @@ class Auth {
 		$this->islogged = false;
 
 		if ($user = $this->DB->GetRow('SELECT id, name, passwd, hosts, lastlogindate, lastloginip, 
-			passwdexpiration, passwdlastchange 
+			passwdexpiration, passwdlastchange, access, accessfrom, accessto 
 			FROM users WHERE login=? AND deleted=0', array($this->login)))
 		{
 			$this->logname = $user['name'];
@@ -196,7 +229,10 @@ class Auth {
 
 			$this->passverified = $this->VerifyPassword($user['passwd']);
 			$this->hostverified = $this->VerifyHost($user['hosts']);
-			$this->islogged = ($this->passverified && $this->hostverified);
+			$this->access = $this->VerifyAccess($user['access']);
+			$this->accessfrom = $this->VerifyAccessFrom($user['accessfrom']);
+			$this->accessto = $this->VerifyAccessTo($user['accessto']);
+			$this->islogged = ($this->passverified && $this->hostverified && $this->access && $this->accessfrom && $this->accessto);
 			if ($this->islogged && $this->passwdexpiration
 				&& (time() - $this->passwdlastchange) / 86400 >= $user['passwdexpiration'])
 				$this->SESSION->save('session_passwdrequiredchange', TRUE);

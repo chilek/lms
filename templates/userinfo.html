@@ -61,6 +61,27 @@
 			{if !$userinfo.ntype}{trans("none")}{else}{$userinfo.ntype}{/if}
 		</TD>
 	</TR>
+	<tr class="light">
+		<td style="width: 1%; white-space: nowrap;" class="fleft">
+			<img src="img/{if !$userinfo.access}no{/if}access.gif" alt="">
+		</td>
+		<td style="width: 1%;"><span class="bold">{trans("Account active:")}</span></td>
+		<td style="width: 98%;" class="fright">
+			{if !$userinfo.access}{trans("no")}{else}{trans("yes")}{/if}
+		</td>
+	</tr>
+{if $userinfo.accessfrom || $userinfo.accessto}
+	<tr class="light">
+		<td style="width: 1%; white-space: nowrap;" class="fleft">
+			<img src="img/calendar.gif" alt="">
+		</td>
+		<td style="width: 1%;"><span class="bold">{trans("Account active:")}</span></td>
+		<td style="width: 98%;" class="fright">
+			{if $userinfo.accessfrom}<span class="bold">{trans("from")}:</span> {$userinfo.accessfrom}{/if}
+			{if $userinfo.accessto}<span class="bold"> {trans("to")}:</span> {$userinfo.accessto}{/if}
+		</td>
+	</tr>
+{/if}
 	<TR CLASS="LIGHT">
 		<TD style="width: 1%; white-space: nowrap;" CLASS="fleft">
 			<IMG SRC="img/ip.gif" ALT="">
@@ -134,9 +155,17 @@
 	</TR>
 	<TR CLASS="light">
 		<TD COLSPAN="3" CLASS="fbottomu" style="text-align: right;">
+			{if $layout.logid ne $userinfo.id}
+			    {if !$userinfo.access}
+				<a href="?m=useraccess&id={$userinfo.id}&access=1">{trans("Connect")} <img src="img/noaccess.gif" alt=""></a>
+			    {else}
+				<a href="?m=useraccess&id={$userinfo.id}&access=0">{trans("Disconnect")} <img src="img/access.gif" alt=""></a>
+			    {/if}
+			{/if}
 			<A HREF="?m=useredit&id={$userinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG SRC="img/edit.gif" ALT=""></A>
 			<A HREF="?m=userdel&id={$userinfo.id}" onClick="return confirmLink(this, '{trans("Are you sure, you want to irreversibly delete that user account?")}');">{trans("Delete")} <img src="img/delete.gif" alt=""></A>
 			<A HREF="?m=userpasswd&id={$userinfo.id}">{trans("Change password")} <IMG SRC="img/keys.gif" ALT=""> </A>
+			<a href="?m=userlist">{trans("User list")} <img src="img/users.gif" alt=""></a>
 		</TD>
 	</TR>
 </TABLE>
