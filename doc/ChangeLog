@@ -2,7 +2,6 @@ $Id: ChangeLog,v 1.1637 2012/04/19 10:00:00 chilek Exp $
 
 version ? (????-??-??):
 
-  - Came the possibility to enable / disable user accounts, and set a time validity of the account
   - Fixed nodes list in Userpanel [alec]
   - lmsd/ewx-pt: Fixed issues on nodes deletion [alec]
   - lmsd/ewx-stm-channels: Fixed issues on nodes deletion, improved performance [alec]
@@ -143,6 +142,8 @@ version ? (????-??-??):
   - bumped OpenLayers to 2.12 [chilan]
   - support of ucs2 encoded smses [chilan]
   - bin/lms-payments: added %prev_period variable [ceho]
+  - enabling and disabling user accounts is possible [michu006]
+  - validity period for users accounts [michu006]
  
 version 1.11.13 Dira (2011-04-07)
 
