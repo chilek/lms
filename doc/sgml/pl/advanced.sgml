@@ -96,6 +96,9 @@
                     <member>failedlogindate - data ostatniej nieudanej próby logowania</member>
                     <member>failedloginip - adres IP, z którego próbowano siê zalogowaæ</member>
                     <member>deleted - czy usuniêty (0/1)</member>
+                    <member>access - czy konto aktywne (0/1)</member>
+                    <member>accessfrom - data od której konto jest aktywne</member>
+                    <member>accessto - data do której konto jest aktywne</member>
                </simplelist>
           </sect2>
           <sect2 id="customers">

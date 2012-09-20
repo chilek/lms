@@ -92,6 +92,9 @@
                     <member>failedlogindate - date of last failed login attempt</member>
                     <member>failedloginip - IP of last failed login attempt</member>
                     <member>deleted - if is deleted boolean (0/1)</member>
+                    <member>access - whether the account is active (0/1)</member>
+                    <member>accessfrom - date from which the account is active</member>
+                    <member>accessto - date to which the account is active</member>
                </simplelist>
           </sect2>
           <sect2 id="customers">
