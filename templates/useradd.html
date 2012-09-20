@@ -1,4 +1,5 @@
 {include file="header.html"}
+{include file="calendar_js.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <FORM NAME="useradd" METHOD="POST" ACTION="?m=useradd">
@@ -53,6 +54,22 @@
 			<INPUT TYPE="checkbox" NAME="useradd[ntype][]" VALUE="{$smarty.const.MSG_SMS}" ID="ntypesms"{if ($useradd.ntype & $smarty.const.MSG_SMS)} checked{/if}><label for="ntypesms">{trans("sms")}</label>
 		</TD>
 	</TR>
+	<tr class="light">
+	    <td class="FLEFT" style="white-space: nowrap;">
+			<img src="img/access.gif" alt=""> <span class="bold">{trans("Account active:")}</span>
+		</td>
+		<td class="FRIGHT">
+			<input type="radio" name="useradd[access]" value="1" id="accessyes" {if !isset($useradd.access) || $useradd.access=='1'} checked{/if}><label for="accessyes">{trans("yes")}</label>
+			<input type="radio" name="useradd[access]" value="0" id="accessno" {if $useradd.access=='0'} checked{/if}><label for="accessno">{trans("no")}</label>
+		</td>
+	</tr>
+	<tr class="light">
+	    <td class="fleft"><img src="img/calendar.gif"> <span class="bold">{trans("Account active:")}</span>
+	    <td class="fright">
+		<span class="bold">{trans('from')}:</span><input type="text" name="useradd[accessfrom]" value="{if $useradd.accessfrom}{$useradd.accessfrom}{/if}" size="10" {tip text="Enter access start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="accessfrom"} onclick="javascript:cal1.popup();">&nbsp;
+		<span class="bold">{trans('to')}:</span><input type="text" name="useradd[accessto]" value="{if $useradd.accessto}{$useradd.accessto}{/if}" size="10"  {tip text="Enter access end date in YYYY/MM/DD format. If you don't want to define 'To' date leave this field empty" trigger="accessto"} onclick="javascript:cal2.popup();">
+	    </td>
+	</tr>
 	<TR CLASS="LIGHT">
 		<TD CLASS="FLEFT">
 			<IMG SRC="img/pass.gif" ALT=""> <span class="bold">{trans("Password:")}</span>
@@ -133,7 +150,8 @@
 <SCRIPT type="text/javascript">
 <!--
 document.forms['useradd'].elements['useradd[login]'].focus();
-
+var cal1=new calendar(document.forms['useradd'].elements['useradd[accessfrom]']);cal1.time_comp = false;
+var cal2=new calendar(document.forms['useradd'].elements['useradd[accessto]']);cal2.time_comp = false;
 //-->
 </SCRIPT>
 {include file="footer.html"}
