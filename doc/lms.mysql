@@ -126,6 +126,9 @@ CREATE TABLE users (
   deleted tinyint(1)    NOT NULL DEFAULT '0',
   passwdexpiration int(11) NOT NULL DEFAULT '0',
   passwdlastchange int(11) NOT NULL DEFAULT '0',
+  access tinyint(1) NOT NULL DEFAULT '1',
+  accessfrom int(11) NOT NULL DEFAULT '0',
+  accessto int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY  (id),
   UNIQUE KEY login (login)
 ) ENGINE=InnoDB;

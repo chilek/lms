@@ -24,6 +24,9 @@ CREATE TABLE users (
 	deleted smallint	DEFAULT 0 NOT NULL,
 	passwdexpiration integer DEFAULT 0 NOT NULL,
 	passwdlastchange integer DEFAULT 0 NOT NULL,
+	access smallint DEFAULT 1 NOT NULL,
+	accessfrom integer DEFAULT 0 NOT NULL,
+	accessto integer DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (login)
 );
