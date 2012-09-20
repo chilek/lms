@@ -171,7 +171,7 @@ class Auth {
 	
 	function VerifyAccessTo($access) {
 	    $access = intval($access);
-	    if (empty($access) return TRUE;
+	    if (empty($access)) return TRUE;
 	    if ($access > time()) return TRUE;
 	    if ($access < time()) {
 		$this->error = trans('Account is not active');
