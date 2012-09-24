@@ -119,6 +119,7 @@ $_LANG['Answer'] = 'Odpowiedz';
 $_LANG['Approved By'] = 'Zatwierdził';
 $_LANG['Are you sure that you want to logout?'] = 'Czy na pewno chcesz się wylogować?';
 $_LANG['Are you sure, you want to account ALL debts of customer \\\'$a\\\'?'] = 'Jesteś pewien, że chcesz rozliczyć WSZYSTKIE należności użytkownika \\\'$a\\\'?';
+$_LANG['Are you sure, you want to account ALL debts of customer ?'] = 'Jesteś pewien, że chcesz rozliczyć WSZYSTKIE należności użytkownika ?';
 $_LANG['Are you sure, you want to assign new addresses for all computers? Remember, it can make problems for your network!'] = 'Jesteś pewien, że chcesz przypisać nowe adresy do wszystkich komputerów? Pamiętaj, to może stwarzać problemy w twojej sieci!';
 $_LANG['Are you sure, you want to change network $a to network \'+getText(document.remap.mapto.value)+\'?'] = 'Jesteś pewien, że chcesz przeadresować sieć $a do sieci \'+getText(document.remap.mapto.value)+\'?';
 $_LANG['Are you sure, you want to check/uncheck selected invoices as accounted?'] = 'Jesteś pewien, że chcesz zaznaczyć/odznaczyć wybrane faktury jako rozliczone?';

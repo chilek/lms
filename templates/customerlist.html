@@ -1,5 +1,54 @@
 {include file="header.html"}
 <!--// $Id$ //-->
+{literal}
+<script type="text/javascript" language="JavaScript">
+<!--
+    function rozliczklienta(idek,nazwa,kwota)
+    {
+	if(confirm('Klient : '+nazwa+'\nBilans : '+kwota+'\n\n{/literal}{trans("Are you sure, you want to account ALL debts of customer ?")}{literal}')) {
+	    document.getElementById('src_balance'+idek).src='img/empty.gif';
+	    document.getElementById('src_balance'+idek).style.display='none';
+	    document.getElementById('str_balance'+idek).innerHTML='{/literal}{0.00|money_format}{literal}';
+	    document.getElementById('str_balance'+idek).style.color='#000000';
+	    sendPOST('?m=axrequest','action=balanceok&idown='+idek);
+	}
+    }
+
+    function setCustomerAccess(idek)
+    {
+	if(document.getElementById('staccess'+idek).value=='1') {
+	    document.getElementById('staccess'+idek).value='0';
+	    addClass(document.getElementById('idtr'+idek),'blend');
+	    addClass(document.getElementById('idtra'+idek),'blend');
+	    document.getElementById('src_access'+idek).src='img/noaccess.gif';
+	    sendPOST('?m=axrequest','action=nodeaccess&idown='+idek+'&access=0');
+	} else {
+	    document.getElementById('staccess'+idek).value='1';
+	    removeClass(document.getElementById('idtr'+idek),'blend');
+	    removeClass(document.getElementById('idtra'+idek),'blend');
+	    document.getElementById('src_access'+idek).src='img/access.gif';
+	    sendPOST('?m=axrequest','action=nodeaccess&idown='+idek+'&access=1');
+	}
+    }
+
+    function setCustomerWarning(idek)
+    {
+	if(document.getElementById('stwarning'+idek).value=='1')
+	{
+	    document.getElementById('stwarning'+idek).value='0';
+	    document.getElementById('src_warning'+idek).src='img/warningoff.gif';
+	    sendPOST('?m=axrequest','action=warning&idown='+idek+'&warning=0');
+	}
+	else
+	{
+	    document.getElementById('stwarning'+idek).value='1';
+	    document.getElementById('src_warning'+idek).src='img/warningon.gif';
+	    sendPOST('?m=axrequest','action=warning&idown='+idek+'&warning=1');
+	}
+    }
+//-->
+</script>
+{/literal}
 <H1>{$layout.pagetitle}</H1>
 <P>
 <TABLE cellpadding="3" WIDTH="100%">
@@ -19,7 +68,7 @@
 		{/if}
 		</TD>
 		<TD width="1%" align="right" class="frightu">
-			<NOBR><B>{t a=$listdata.total}Total: $a{/t}</B></NOBR>
+			<NOBR><B>{t a=$listdata.total}Total: $a{/t}</B><br><a href="javascript:document.choosefilter.submit();">odświerz</a></NOBR>
 		</TD>
 	</TR>
 	<TR CLASS="DARK">
@@ -74,6 +123,7 @@
 			        	<OPTION value="{$nodegroup.id}" {if $listdata.nodegroup eq $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
 				        {/foreach}
 				</SELECT></NOBR>
+				
 			</FORM>
 		</TD>
 	</TR>		
@@ -86,53 +136,64 @@
 	{/if}
 	{cycle values="light,lucid" print=false}
 	{section name=customerlist loop=$customerlist start=$start max=$pagelimit}
-	<TR class="{cycle}{if $customerlist[customerlist].account && !$customerlist[customerlist].nodeac} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	{assign var='idek' value=$customerlist[customerlist].id}
+	<TR id="idtr{$idek}" class="{cycle}{if $customerlist[customerlist].account && !$customerlist[customerlist].nodeac} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD onClick="return self.location.href='?m=customerinfo&id={$customerlist[customerlist].id}';" class="fleft" valign="top">
-			<IMG src="img/{if $customerlist[customerlist].status eq 1}unk{/if}{if $customerlist[customerlist].status eq 2}wait{/if}{if $customerlist[customerlist].status eq 3}customer{/if}.gif" alt="">{if $customerlist[customerlist].info}&nbsp;<img src="img/info1.gif" alt="" {tip text=$customerlist[customerlist].info}>{/if}<A name="{$customerlist[customerlist].id}" {tip a=$customerlist[customerlist].id dynpopup='?m=customerinfoshort&id=$a'}>&nbsp;<B>{$customerlist[customerlist].customername|escape}</B></A><BR>
+			<IMG src="img/{if $customerlist[customerlist].status eq 1}unk{/if}{if $customerlist[customerlist].status eq 2}wait{/if}{if $customerlist[customerlist].status eq 3}customer{/if}.gif" alt="">{if $customerlist[customerlist].info}&nbsp;<img src="img/info1.gif" alt="" {tip text=$customerlist[customerlist].info}>{/if}<A name="{$customerlist[customerlist].id}" {tip a=$customerlist[customerlist].id dynpopup='?m=customerinfoshort&id=$a'} id="idtra{$idek}">&nbsp;<B>{$customerlist[customerlist].customername|escape}</B></A><BR>
 			<IMG src="img/home.gif" alt="">&nbsp;{$customerlist[customerlist].address}{if $customerlist[customerlist].city neq ""},{/if} {$customerlist[customerlist].zip} {$customerlist[customerlist].city}{if $customerlist[customerlist].country neq ""}, {t}{$customerlist[customerlist].country}{/t}{/if}
 		</TD>
 		<TD valign="top" align="right">
 			({$customerlist[customerlist].id|string_format:"%04d"})<BR>
 			{if $customerlist[customerlist].account}
-				<IMG SRC="img/node{if !$customerlist[customerlist].online}_off{/if}.gif" ALT="" {tip a=$customerlist[customerlist].id dynpopup='?m=nodelistshort&id=$a' sticky=1}></A>
+			    <IMG SRC="img/node{if !$customerlist[customerlist].online}_off{/if}.gif" ALT="" {tip a=$customerlist[customerlist].id dynpopup='?m=nodelistshort&id=$a' sticky=1}></A>
 			{/if}
 		</TD>
 		<TD align="right" valign="top" NOWRAP>
 			{if !check_conf('privileges.hide_finances')}
-			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALT="">{if $customerlist[customerlist].balance < 0}<font class="alert">{/if}{$customerlist[customerlist].balance|money_format}{if $customerlist[customerlist].balance < 0}</FONT>{/if}<BR><IMG src="img/empty.gif" width="1" height="16" ALT=""><FONT CLASS="blend">{$customerlist[customerlist].tariffvalue|money_format}</FONT></NOBR>
+				<div id="str_balance{$idek}">{if $customerlist[customerlist].balance < 0}<font class="alert">{/if}{$customerlist[customerlist].balance|money_format}{if $customerlist[customerlist].balance < 0}</font>{/if}</DIV>
+				<font CLASS="blend">{$customerlist[customerlist].tariffvalue|money_format}</font>
 			{/if}
 		</TD>
 		<TD align="right" class="fright">
 			<NOBR>
 			{if !check_conf('privileges.hide_finances')}
 				{if $customerlist[customerlist].balance < 0}
-					<A HREF="?m=customerbalanceok&id={$customerlist[customerlist].id}" OnClick="return confirmLink(this, '{t a=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$a\'?{/t}');"><IMG src="img/pay.gif" alt="[ {trans("Account")} ]" title="[ {trans("Account")} ]"></A>
+					<img id="src_balance{$idek}" src="img/pay.gif" border="0" style="cursor:pointer;" onclick="rozliczklienta({$idek},'{$customerlist[customerlist].customername}','{$customerlist[customerlist].balance}');">
 				{/if}
 			{/if}
 			{if $customerlist[customerlist].account}
-				{if $customerlist[customerlist].status eq 3}
-					{if $customerlist[customerlist].nodeac eq 1}
-						<A HREF="?m=nodeset&ownerid={$customerlist[customerlist].id}"><IMG src="img/access.gif" alt="[ {trans("Disconnect All")} ]" title="[ {trans("Disconnect All")} ]"></A>
-					{else}
-						{if $customerlist[customerlist].nodeac eq 2}
-							<A HREF="?m=nodeset&ownerid={$customerlist[customerlist].id}"><IMG src="img/mixaccess.gif" alt="[ {trans("Disconnect All")} ]" title="[ {trans("Disconnect All")} ]"></A>
-						{else}<A HREF="?m=nodeset&ownerid={$customerlist[customerlist].id}&access=1"><IMG src="img/noaccess.gif" alt="[ {trans("Connect All")} ]" title="[ {trans("Connect All")} ]"></A>
-						{/if}
-					{/if}
+			    {if $customerlist[customerlist].status eq 3}
+				{if $customerlist[customerlist].nodeac eq 1}
+						<input type="hidden" id="staccess{$idek}" value="1">
+						<img src="img/access.gif" id="src_access{$idek}" border="0" style="cursor:pointer;" onclick="setCustomerAccess({$idek});">
+				{else}
+				    {if $customerlist[customerlist].nodeac eq 2}
+							<input type="hidden" id="staccess{$idek}" value="0">
+							<img src="img/mixaccess.gif" id="src_access{$idek}" border="0" style="cursor:pointer;" onclick="setCustomerAccess({$idek});">
+				    {else}
+						    <input type="hidden" id="staccess{$idek}" value="0">
+						    <img src="img/noaccess.gif" id="src_access{$idek}" border="0" style="cursor:pointer;" onclick="setCustomerAccess({$idek});">
+				    {/if}
 				{/if}
+			    {else}
+				<img src="{$img.empty}" width="16">
+			    {/if}
 			{/if}
 			{if $customerlist[customerlist].warncount}
 				{if $customerlist[customerlist].status eq 3}
-					{if $customerlist[customerlist].nodewarn eq 1}
-						<A HREF="?m=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningon.gif" alt="[ {trans("Disable notices for all")} ]" title="[ {trans("Disable notices for all")} ]"></A>
+					{if $customerlist[customerlist].nodewarn >= 1}
+					
+						<input type="hidden" id="stwarning{$idek}" value="1">
+						<img src="img/warningon.gif" id="src_warning{$idek}" border="0" style="cursor:pointer;" onClick="setCustomerWarning('{$idek}');">
 					{else}
-						{if $customerlist[customerlist].nodewarn eq 2}
-							<A HREF="?m=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningmix.gif" alt="[ {trans("Disable notices for all")} ]" title="[ {trans("Disable notices for all")} ]"></A>
-						{else}<A HREF="?m=nodewarn&ownerid={$customerlist[customerlist].id}&warning=1" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningoff.gif" alt="[ {trans("Enable notices for all")} ]" title="[ {trans("Enable notices for all")} ]"></A>
-						{/if}
+						<input type="hidden" id="stwarning{$idek}" value="0">
+						<img src="img/warningoff.gif" id="src_warning{$idek}" border="0" style="cursor:pointer;" onClick="setCustomerWarning('{$idek}');">
 					{/if}
+				{else}
+				    <img src="{$img.empty}" width="16">
 				{/if}
 			{/if}
+			
 			{if $listdata.state eq 4}
 			<A href="?m=customeredit&id={$customerlist[customerlist].id}&action=recover"><IMG src="img/recover.gif" alt="[ {trans("Recover")} ]" title="[ {trans("Recover")} ]"></A> 
 			{else}

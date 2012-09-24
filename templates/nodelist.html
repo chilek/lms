@@ -1,5 +1,47 @@
 {include file="header.html"}
-<!--// $Id$ //-->
+<!--// $Id$ nodelist.html //-->
+{literal}
+<script type="text/javascript" language="JavaScript">
+<!--
+
+    function setNodeAccess(idek)
+    {
+	if ( document.getElementById('staccess'+idek).value=='1' )
+	{
+	    document.getElementById('staccess'+idek).value='0';
+	    addClass(document.getElementById('idtr'+idek),'blend');
+	    addClass(document.getElementById('idtra'+idek),'blend');
+	    document.getElementById('src_access'+idek).src='img/noaccess.gif';
+	    sendPOST('?m=axrequest','action=nodeaccess&id='+idek+'&access=0');
+	}
+	else
+	{
+	    document.getElementById('staccess'+idek).value='1';
+	    removeClass(document.getElementById('idtr'+idek),'blend');
+	    removeClass(document.getElementById('idtra'+idek),'blend');
+	    document.getElementById('src_access'+idek).src='img/access.gif';
+	    sendPOST('?m=axrequest','action=nodeaccess&id='+idek+'&access=1');
+	}
+    }
+
+    function setNodeWarning(idek)
+    {
+	if (document.getElementById('stwarning'+idek).value=='1')
+	{
+	    document.getElementById('stwarning'+idek).value='0';
+	    document.getElementById('src_warning'+idek).src='img/warningoff.gif';
+	    sendPOST('?m=axrequest','action=warning&id='+idek+'&warning=0');
+	}
+	else
+	{
+	    document.getElementById('stwarning'+idek).value='1';
+	    document.getElementById('src_warning'+idek).src='img/warningon.gif';
+	    sendPOST('?m=axrequest','action=warning&id='+idek+'&warning=1');
+	}
+    }
+//-->
+</script>
+{/literal}
 <H1>{$layout.pagetitle}</H1>
 {$lastonline_limit = get_conf('phpui.lastonline_limit')}
 <TABLE cellpadding="3" width="100%">
@@ -67,7 +109,10 @@
 	{/if}
 	{cycle values="light,lucid" print=false}
 	{section name=nodelist loop=$nodelist start=$start max=$pagelimit}
-	<TR class="{cycle}{if ! $nodelist[nodelist].access} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	{assign var='idek' value=$nodelist[nodelist].id}
+	<input type="hidden" id="staccess{$idek}" value="{$nodelist[nodelist].access}">
+	<input type="hidden" id="stwarning{$idek}" value="{$nodelist[nodelist].warning}">
+	<TR class="{cycle}{if ! $nodelist[nodelist].access} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')" id="idtr{$idek}">
 		<TD width="95%" class="fleft" onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';">
 			<a name="{$nodelist[nodelist].id}">
 			{if $nodelist[nodelist].lastonline}
@@ -83,7 +128,7 @@
 			    <IMG src="img/info1.gif" alt="" {tip text=$nodelist[nodelist].info}>
 			{/if}
 			<B>{$nodelist[nodelist].name}</B></A><BR>
-			<img src="img/customer.gif" ALT="">&nbsp;<A href="?m=customerinfo&id={$nodelist[nodelist].ownerid}" {tip a=$nodelist[nodelist].ownerid dynpopup='?m=customerinfoshort&id=$a'}>{if ! $nodelist[nodelist].access}<font class="blend">{/if}{$nodelist[nodelist].owner|truncate:40:"...":true|replace:" ":"&nbsp;"}{if ! $nodelist[nodelist].access}</FONT>{/if}</A>
+			<img src="img/customer.gif" ALT="">&nbsp;<a href="?m=customerinfo&id={$nodelist[nodelist].ownerid}" {tip a=$nodelist[nodelist].ownerid dynpopup='?m=customerinfoshort&id=$a'} id="idtra{$idek}" {if ! $nodelist[nodelist].access}class="blend"{/if}>{$nodelist[nodelist].owner|truncate:40:"...":true|replace:" ":"&nbsp;"}</A>
 		</TD>
 		<TD align="right" width="1%" onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';" valign="top">
 			<img src="img/empty.gif" ALT="" width="1" height="16">({$nodelist[nodelist].id|string_format:"%04d"})<BR>
@@ -95,8 +140,8 @@
 		</TD>
 		<TD class="fright" width="1%">
 			<nobr>
-			<a href="?m=nodeset&id={$nodelist[nodelist].id}"><img src="img/{if ! $nodelist[nodelist].access}no{/if}access.gif" alt="[ {if ! $nodelist[nodelist].access}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]" title="[ {if ! $nodelist[nodelist].access}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]"></A>
-                        <a href="?m=nodewarn&id={$nodelist[nodelist].id}"><img src="img/warning{if ! $nodelist[nodelist].warning}off{else}on{/if}.gif" alt="[ {if ! $nodelist[nodelist].warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if} ]" title="[ {if ! $nodelist[nodelist].warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if} ]"></A>
+			<img id="src_access{$idek}" onclick="setNodeAccess('{$idek}');" src="img/{if !$nodelist[nodelist].access}no{/if}access.gif" alt="[ {if ! $nodelist[nodelist].access}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]" title="[ {if ! $nodelist[nodelist].access}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]" style="border:0;cursor:pointer;">
+                        <img id="src_warning{$idek}" onclick="setNodeWarning('{$idek}');" src="img/warning{if !$nodelist[nodelist].warning}off{else}on{/if}.gif" alt="[ {if ! $nodelist[nodelist].warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if} ]" title="[ {if ! $nodelist[nodelist].warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if} ]" style="border:0;cursor:pointer;">
 			<a onClick="return confirmLink(this, '{t a=$nodelist[nodelist].name}Are you sure, you want to remove node \'$a\' from database?{/t}')" href="?m=nodedel&id={$nodelist[nodelist].id}"><img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 			<a href="?m=nodeedit&id={$nodelist[nodelist].id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 			<a href="?m=nodeinfo&id={$nodelist[nodelist].id}"><img src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>

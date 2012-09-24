@@ -494,3 +494,49 @@ function changeMacFormat(id)
 	}
 	elem.innerHTML = curmac;
 }
+
+
+function AjaxObjectCreateGeneral() {
+    var req;
+    try {
+	req = new XMLHttpRequest();
+    } 
+    catch (e) {
+	try {
+	    req = new ActiveXObject("Msxml2.XMLHTTP");
+	} 
+	catch(e) {
+	    try {
+		req = new ActiveXObject("Microsoft.XMLHTTP");
+	    } 
+	    catch(e) {
+		return false;
+	    }
+	}
+    }
+    return req;
+}
+
+
+function sendPOST(plik,dane) {
+    var xml = AjaxObjectCreateGeneral();
+    var wynik = null;
+    if ( xml != false ) {
+	xml.onreadystatechange = function() {
+	    if ( xml.readyState == 4 ) {
+		if ( xml.status == 200 ) {
+		    if ( xml.responseText == 'true' ) wynik = true;
+		    else if ( xml.responseText == 'false' ) wynik = false;
+		    else if ( xml.responseText == 'null' ) wynik = null;
+		    else wynik = xml.responseText;
+		} 
+		else wynik = null;
+	    } 
+	    else wynik = null;
+	}
+	xml.open('POST',plik,false);
+	xml.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+	xml.send(dane);
+    }
+    return wynik;
+}
