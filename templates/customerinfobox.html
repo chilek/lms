@@ -20,6 +20,7 @@
 			{if $customerinfo.status eq "1"}<IMG src="img/unk.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="99%">
+			{trans("Status")}: 
 			{if $customerinfo.status eq "3"}<B>{trans("connected<!singular>")}</B>{/if}
 			{if $customerinfo.status eq "2"}<B>{trans("waiting")}</B>{/if}
 			{if $customerinfo.status eq "1"}<B>{trans("interested<!singular>")}</B>{/if}
@@ -31,7 +32,7 @@
 			<IMG src="img/division.gif" alt="">
 		</TD>
 		<TD WIDTH="99%">
-			{$customerinfo.division}
+			{trans("Division")}: {$customerinfo.division}
 		</TD>
 	</TR>
 {/if}
@@ -40,7 +41,7 @@
 			<IMG src="img/folder.gif" alt="">
 		</TD>
 		<TD WIDTH="99%">
-			{if $customerinfo.type}{trans("legal entity")}{else}{trans("private person")}{/if}
+			{trans("Legal status")}: {$_CUSTYPES[$customerinfo.type]}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -56,7 +57,7 @@
 	</TR>
 {if $customerinfo.post_name neq "" || $customerinfo.post_address neq ""}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
+		<TD WIDTH="1%" style="vertical-align:top;">
 			<IMG SRC="img/post.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%">
@@ -86,7 +87,7 @@
 			<IMG SRC="img/mail.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%">
-			<A HREF="mailto:{$customerinfo.email}">{$customerinfo.email}</A>
+			Mail: <A HREF="mailto:{$customerinfo.email}">{$customerinfo.email}</A>
 		</TD>
 	</TR>
 {/if}
@@ -105,11 +106,11 @@
 		</TD>
 		<TD>
 			{if $item.type == $smarty.const.IM_GG}
-			<A HREF="gg:{$item.uid}">{$item.uid}</A>
+			Gadu-Gadu: <A HREF="gg:{$item.uid}">{$item.uid}</A>
 			{elseif $item.type == $smarty.const.IM_YAHOO}
-			<A HREF="ymsgr:sendIM?{$item.uid}">{$item.uid}</A>
+			Yahoo: <A HREF="ymsgr:sendIM?{$item.uid}">{$item.uid}</A>
 			{elseif $item.type == $smarty.const.IM_SKYPE}
-			<A HREF="skype:{$item.uid}?call">{$item.uid}</A>
+			Skype: <A HREF="skype:{$item.uid}?call">{$item.uid}</A>
 			{else}
 			{$item.uid}
 			{/if}
@@ -122,7 +123,7 @@
 			<IMG SRC="img/pin.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%">
-			{$customerinfo.pin}
+			PIN: {$customerinfo.pin}
 		</TD>
 	</TR>
 {/if}
