@@ -2625,5 +2625,7 @@ $_LANG['Account is disabled'] = 'Konto jest wyłączone';
 $_LANG['Account is not active'] = 'Konto nie jest aktywne';
 $_LANG['Enter access start date in YYYY/MM/DD format. If you don\'t want to define \'From\' date leave this field empty'] = 'Wprowadź datę od której ważność konta powinna obowiązywać lub zostaw to pole puste. Data powinna być w formacie RRRR/MM/DD';
 $_LANG['Enter access end date in YYYY/MM/DD format. If you don\'t want to define \'To\' date leave this field empty'] = 'Wprowadź datę do której ważność konta powinna obowiązywać lub zostaw to pole puste. Data powinna być w formacie RRRR/MM/DD';
+$_LANG['Last modification time:'] = 'Czas ostatniej modyfikacji:';
+$_LANG['Last modified by:'] = 'Ostatnio zmodyfikował:';
 
 ?>

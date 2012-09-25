@@ -801,6 +801,8 @@
                     <member>customerid - identyfikator klienta</member>
                     <member>private - prywatny/publiczny</member>
                     <member>closed - status zamkniêcia</member>
+		    <member>moduserid - id u¿ytkownika, który ostatnio zmodyfikowa³ zdarzenie</member>
+		    <member>moddate - data ostatniej modyfikacji zdarzenia</member>
                </simplelist>
           </sect2>
           <sect2 id="eventassignments">

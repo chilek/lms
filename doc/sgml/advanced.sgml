@@ -799,6 +799,8 @@
                     <member>customerid - customer ID</member>
                     <member>private - status (private/public)</member>
                     <member>closed - is event closed? (1-yes/0-no)</member>
+		    <member>moduserid - id of last user that modified the event</member>
+		    <member>moddate - date of last event modification</member>
                </simplelist>
           </sect2>
           <sect2 id="eventassignments">
