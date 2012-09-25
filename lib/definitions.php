@@ -242,6 +242,18 @@ $PASSWDEXPIRATIONS = array(
 	365	=> trans('year'),
 );
 
+// customer account type
+define('CUSTOMER_PRIVATE',0);
+define('CUSTOMER_LEGAL',1);
+define('CONTRACTOR_PRIVATE',2);
+define('CONTRACTOR_LEGAL',3);
+$CUSTYPES = array(
+    CUSTOMER_PRIVATE	=> trans('private person'),
+    CUSTOMER_LEGAL	=> trans('legal entity'),
+    CONTRACTOR_PRIVATE	=> trans('private person'),
+    CONTRACTOR_LEGAL	=> trans('legal entity')
+);
+
 if(isset($SMARTY))
 {
 	$SMARTY->assign('_DOCTYPES', $DOCTYPES);
@@ -259,6 +271,7 @@ if(isset($SMARTY))
 	$SMARTY->assign('_LINKSPEEDS', $LINKSPEEDS);
 	$SMARTY->assign('_BOROUGHTYPES', $BOROUGHTYPES);
 	$SMARTY->assign('_PASSWDEXPIRATIONS', $PASSWDEXPIRATIONS);
+	$SMARTY->assign('_CUSTYPES',$CUSTYPES);
 }
 
 define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');
