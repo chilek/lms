@@ -36,6 +36,7 @@ $access['table'][1]['allow_reg']	= '^(([a-z]+(list|info|view|search|balance|info
 
 $access['table'][2]['name']		= trans('nodes connection/disconnection');
 $access['table'][2]['allow_reg']	= '^nodeset$';
+$access['table'][2]['privilege']	= 'nodeset';
 
 $access['table'][3]['name']		= trans('finances management');
 $access['table'][3]['allow_reg']	= '^((tariff|customerassignment)(add|info|list|move|edit|del)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list|)|(cashreg(list|add|edit|del|info))|(invoice|invoice(list|new|edit|del|note|report|paid))|(note|note(list|add|edit|del|paid))|number|export|print|cashimport|cashimportparser|cashpackagedel)$';
@@ -49,6 +50,7 @@ $access['table'][5]['allow_reg']	= '^((customer|document)(add|edit|info|infoshor
 
 $access['table'][6]['name'] 		= trans('nodes management');
 $access['table'][6]['allow_reg']  	= '^(node(add|info|infoshort|list|listshort|scan|search|del|edit|print|warn)|choose(mac|ip|location))$';
+$access['table'][6]['privilege']	= 'nodewarn';
 
 $access['table'][7]['name']    	     	= trans('traffic stats');
 $access['table'][7]['allow_reg']	= '^(traffic|traffic(print|graph))$';
