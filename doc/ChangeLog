@@ -144,6 +144,7 @@ version ? (????-??-??):
   - bin/lms-payments: added %prev_period variable [ceho]
   - enabling and disabling user accounts is possible [michu006]
   - validity period for users accounts [michu006]
+  - added info about last modification user and date for events [ceho]
  
 version 1.11.13 Dira (2011-04-07)
 
