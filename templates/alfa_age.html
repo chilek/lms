@@ -1,0 +1,77 @@
+{include file="header.html"}
+<!--// $Id: tariffl.html,v 1.45 2005/10/19 13:34:49 lukas Exp $ //-->
+
+
+
+<TABLE WIDTH="100%" CELLPADDING="3">
+        <TR CLASS="DARK">
+            <TD WIDTH="1%" CLASS="fleftu">
+
+            </TD>
+            <TD WIDTH="1%" CLASS="fbt"><B></B></TD>
+            <TD WIDTH="98%" CLASS="frightu">
+            <h1>Serwery</h1>
+            </TD>
+
+        </TR>
+        <TR class="LIGHT">
+
+            <TD WIDTH="100%" COLSPAN="3" CLASS="flr">
+
+                <TABLE WIDTH="100%" CELLPADDING="0">
+                    <TR CLASS="LIGHT">
+                        <TD WIDTH="80%" VALIGN="top">
+                            <TABLE WIDTH="100%" CELLPADDING="3" border=0>
+
+
+                            <tr CLASS="frightu">    
+                            <td align=left colspan=8>
+
+
+{foreach from=$srednia key=k item=v}
+<p>Średnia wieku: {math equation="x / y" x=$v.suma y=$v.ile format="%.2f"}</p>
+{/foreach}
+
+<table cellpadding="10" cellspacing="10" border>   
+    <tr>
+        <td>WIEK</td>
+        <td>ILOŚĆ</td>
+        <td>.</td>
+    </tr>
+{foreach from=$roczniki key=k item=v}
+    <tr>    
+        <td>{$v.wiek}</td>
+        <td>{$v.ile}</td>
+        <td><hr style="text-align:left;float:left;color:black;height:5px;background:red;width:{$v.ile}"/></td>
+    </tr> 
+{/foreach}
+    
+</table>	
+
+
+
+                            </td>
+                        </tr>
+
+                        </table>
+
+
+                    </TD>
+                    <TD WIDTH="30%" VALIGN="top">
+                        <TABLE WIDTH="100%" CELLPADDING="3">
+
+                            </TABLE>
+                        </TD>
+                    </TR>
+                </TABLE>
+            </TD>
+        </TR>
+        <TR CLASS="LIGHT">
+            <TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
+
+            </TD>
+        </TR>
+</TABLE></FORM></P>
+
+{include file="footer.html"}
+

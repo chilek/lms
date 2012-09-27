@@ -1,0 +1,180 @@
+#!/usr/bin/perl -Tw
+#
+#  LMS version 1.11-cvs
+#
+#  Copyright (C) 2001-2011 LMS Developers
+#
+#  Please, see the doc/AUTHORS for more information about authors!
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License Version 2 as
+#  published by the Free Software Foundation.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+#  USA.
+#
+#  $Id: lms-cutoff,v 1.42 2011/01/18 08:11:57 alec Exp $
+
+use strict;
+use DBI;
+use Config::IniFiles;
+use Getopt::Long;
+use vars qw($configfile $quiet $help $version);
+use POSIX qw(strftime);
+
+my $_version = '1.11-cvs';
+
+my %options = (
+        "--config-file|C=s"     =>      \$configfile,
+        "--quiet|q"             =>      \$quiet,
+        "--help|h"              =>      \$help,
+        "--version|v"           =>      \$version,
+);
+
+Getopt::Long::config("no_ignore_case");
+GetOptions(%options);
+
+if($help)
+{
+        print STDERR <<EOF;
+lms-cutoff, version $_version
+(C) 2001-2011 LMS Developers
+
+-C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
+-h, --help                      print this help and exit;
+-v, --version                   print version info and exit;
+-q, --quiet                     suppress any output, except errors;
+
+EOF
+        exit 0;
+}
+
+if($version)
+{
+        print STDERR <<EOF;
+lms-cutoff, version $_version
+(C) 2001-2011 LMS Developers
+
+EOF
+        exit 0;
+}
+
+if(!$configfile)
+{
+        $configfile = "/etc/lms/lms.ini";
+}
+
+if(!$quiet)
+{
+        print STDOUT "lms-cutoff, version $_version\n";
+        print STDOUT "(C) 2001-2011 LMS Developers\n";
+        print STDOUT "Using file $configfile as config.\n";
+}
+
+if(! -r $configfile)
+{
+        print STDERR "Fatal error: Unable to read configuration file $configfile, exiting.\n";
+        exit 1;
+}
+
+my $ini = new Config::IniFiles -file => $configfile;
+print @Config::IniFiles::errors;
+
+my $dbtype = $ini->val('database', 'type') || 'mysql';
+my $dbhost = $ini->val('database', 'host') || 'localhost';
+my $dbuser = $ini->val('database', 'user') || 'root';
+my $dbpasswd = $ini->val('database', 'password') || '';
+my $dbname = $ini->val('database', 'database') || 'lms';
+
+my $limit = $ini->val('cutoff', 'limit') || 0;
+my $message = $ini->val('cutoff', 'message') || 'Automatic cutoff caused by exceeding of liabilities limit on %now';
+
+my $dbase;
+my $utsfmt;
+
+if($dbtype =~ /mysql/)
+{
+        $dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+        $dbase->do("SET NAMES utf8");
+        $utsfmt = "UNIX_TIMESTAMP()";
+}
+elsif($dbtype eq "postgres")
+{
+        $dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+        $utsfmt = "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";
+}
+else
+{
+        print STDERR "Fatal error: unsupported database type: $dbtype, exiting.\n";
+        exit 1;
+}
+
+my $now_date = strftime "%Y/%m/%d", localtime;
+$message =~ s/%now/$now_date/g;
+my $keepmessage = $message;
+my $absolute = 0;
+
+my $dbq = $dbase->prepare("
+        SELECT customers.id AS id, UPPER(lastname) AS lastname,
+        customers.name, access, SUM(cash.value) AS balance FROM customers
+        JOIN cash ON customers.id = cash.customerid JOIN nodes ON ownerid = cash.customerid
+        WHERE deleted = 0 AND access = 0 GROUP BY customers.id, lastname, name ORDER BY lastname, name
+");
+
+$dbq->execute();
+while (my $row = $dbq->fetchrow_hashref())
+{
+
+my $utsfmt2 = "UNIX_TIMESTAMP() - 4924800";
+my $row2;
+my $sdbq2 = $dbase->prepare("select SUM(value) as limits, SUM(customerid) as ile from cash where customerid='$row->{'id'}' AND type=0 AND time >= $utsfmt2 ORDER BY time 
+DESC");
+$sdbq2->execute();
+$row2 = $sdbq2->fetchrow_hashref();
+if($row2->{'limits'}) {
+
+if(!$row2->{'ile'}) {
+$row2->{'ile'} = 0;
+}
+
+# jak jest mniej niz 2 pozycje nie wylacza
+#if( ($row2->{'ile'}/$row->{'id'}) >= 2) {
+
+if($row->{'balance'}>$row2->{'limits'}) {
+
+my $row3;
+my $sdbq3 = $dbase->prepare("select id  from assignments where customerid='$row->{'id'}' and tariffid='0' and (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt 
+OR dateto = 0)");;
+$sdbq3->execute();
+$row3 = $sdbq3->fetchrow_hashref();
+if(!$row3->{'id'}) {
+
+        if(!$quiet)
+        {
+                print STDOUT "$row->{'lastname'} $row->{'name'} ($row->{'id'})\t$row->{'balance'}\t$row2->{'limits'}\n";
+        }
+
+#        my $sdbq = $dbase->prepare("UPDATE nodes SET access=1, warning=0 WHERE ownerid='$row->{'id'}'");
+#        $sdbq->execute();
+
+#        my $sdbq4 = $dbase->prepare("UPDATE assignments SET suspended=0 WHERE customerid='$row->{'id'}'");
+#        $sdbq4->execute();
+
+
+}
+}
+}
+}
+$dbq->finish();
+$dbase->disconnect();
+
+
+
+

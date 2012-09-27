@@ -165,22 +165,23 @@ while (my $row = $dbq->fetchrow_hashref())
 		print STDOUT "$row->{'lastname'} $row->{'name'} ($row->{'id'})\t$row->{'balance'}\n";
 	}
 	
-	my $sdbq = $dbase->prepare("UPDATE nodes SET access=0, warning=1 WHERE ownerid='$row->{'id'}'");
-	$sdbq->execute();
-		
-	if($message)
-	{
-		$absolute = -1 * $row->{'balance'};
-		$message =~ s/%b/$absolute/g;
-		$message =~ s/%B/$row->{'balance'}/g;
-		
-		$sdbq = $dbase->prepare("UPDATE customers SET message=? WHERE id=?");
-		$sdbq->execute($message, $row->{'id'});
-		
-		$message = $keepmessage;
-	}
 	
-	$sdbq->finish();
+	#my $sdbq = $dbase->prepare("UPDATE nodes SET access=0, warning=1 WHERE ownerid='$row->{'id'}'");
+	#$sdbq->execute();
+		
+	#if($message)
+	#{
+	#	$absolute = -1 * $row->{'balance'};
+	#	$message =~ s/%b/$absolute/g;
+	#	$message =~ s/%B/$row->{'balance'}/g;
+	#	
+	#	$sdbq = $dbase->prepare("UPDATE customers SET message=? WHERE id=?");
+	#	$sdbq->execute($message, $row->{'id'});
+	#	
+	#	$message = $keepmessage;
+	#}
+	
+	#$sdbq->finish();
 }
 
 $dbq->finish();

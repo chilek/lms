@@ -1,0 +1,73 @@
+{include file="header.html"}
+<!--// $Id: tariffl.html,v 1.45 2005/10/19 13:34:49 lukas Exp $ //-->
+
+
+
+<TABLE WIDTH="100%" CELLPADDING="3">
+        <TR CLASS="DARK">
+            <TD WIDTH="1%" CLASS="fleftu">
+
+            </TD>
+            <TD WIDTH="1%" CLASS="fbt"><B></B></TD>
+            <TD WIDTH="98%" CLASS="frightu">
+            <h1>Weryfikacja BONUSU</h1>
+            </TD>
+
+        </TR>
+        <TR class="LIGHT">
+
+            <TD WIDTH="100%" COLSPAN="3" CLASS="flr">
+
+                <TABLE WIDTH="100%" CELLPADDING="0">
+                    <TR CLASS="LIGHT">
+                        <TD WIDTH="80%" VALIGN="top">
+                            <TABLE WIDTH="100%" CELLPADDING="3" border=0>
+
+
+                            <tr CLASS="frightu">    
+                            <td align=left colspan=8>
+<ol>                            
+{foreach from=$bonus item=i}  
+                          
+<li>
+    <a href="http://lms.alfa-system.pl/?m=customerinfo&id={$i.customerid}">{$i.lastname} {$i.name}</a> 
+    {if $i.status eq 2}
+     -  <span style="color:green;">OK</span>
+    {else}
+     -  <span style="color:red;">DEAKTYWACJA</span>    
+    {/if}
+    </li>
+
+{/foreach}
+
+
+</ol>
+
+
+
+
+                            </td>
+                        </tr>
+
+                        </table>
+
+
+                    </TD>
+                    <TD WIDTH="30%" VALIGN="top">
+                        <TABLE WIDTH="100%" CELLPADDING="3">
+
+                            </TABLE>
+                        </TD>
+                    </TR>
+                </TABLE>
+            </TD>
+        </TR>
+        <TR CLASS="LIGHT">
+            <TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
+
+            </TD>
+        </TR>
+</TABLE></FORM></P>
+
+{include file="footer.html"}
+

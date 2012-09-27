@@ -1,0 +1,593 @@
+lms-notify, version 1.11-cvs
+(C) 2001-2012 LMS Developers
+Using file /etc/lms/lms.ini as config.
+[debt] Marzena WITKOWSKA (0007): lukasz@alfa-system.pl
+[debt] Krystian RITAU (0008): lukasz@alfa-system.pl
+[debt] Mariusz PIETREK (0012): lukasz@alfa-system.pl
+[debt] Marek WESOŁOWSKI (0014): lukasz@alfa-system.pl
+[debt] Witold KOZACZKIEWICZ (0025): lukasz@alfa-system.pl
+[debt] Sylwester WNUK (0029): lukasz@alfa-system.pl
+[debt] Adam BRZEZIŃSKI (0034): lukasz@alfa-system.pl
+[debt] Tomasz BĄK (0036): lukasz@alfa-system.pl
+[debt] Anna SZYMAŃSKA (0039): lukasz@alfa-system.pl
+[debt] Artur SROKA (0040): lukasz@alfa-system.pl
+[debt] Marcin KIEPUL (0042): lukasz@alfa-system.pl
+[debt] Wojciech DYLEWSKI (0043): lukasz@alfa-system.pl
+[debt] Marcin SZYMANOWICZ (0044): lukasz@alfa-system.pl
+[debt] Sylwester SZYMANOWICZ (0045): lukasz@alfa-system.pl
+[debt] Krzysztof KRUK (0048): lukasz@alfa-system.pl
+[debt] Agnieszka NASKRĘT (0050): lukasz@alfa-system.pl
+[debt] Witold JACHYMSKI (0057): lukasz@alfa-system.pl
+[debt] Andrzej, Zofia ZIELIŃSKI (0058): lukasz@alfa-system.pl
+[debt] Krzysztof MAKOWSKI (0060): lukasz@alfa-system.pl
+[debt] Małgorzata MOŃKA (0067): lukasz@alfa-system.pl
+[debt] Krystyna STEINKE (0074): lukasz@alfa-system.pl
+[debt] Tomasz ZAGÓRSKI (0081): lukasz@alfa-system.pl
+[debt] Elżbieta KOWAL (0084): lukasz@alfa-system.pl
+[debt] Jerzy STEPOWANY (0085): lukasz@alfa-system.pl
+[debt] Adam KUPKA (0089): lukasz@alfa-system.pl
+[debt] Iwona DĄBROWSKA (0105): lukasz@alfa-system.pl
+[debt] Ewa CIEPLIŃSKA (0127): lukasz@alfa-system.pl
+[debt] Jacek CZYKIETA (0133): lukasz@alfa-system.pl
+[debt] Jan BRAŃCZYK (0135): lukasz@alfa-system.pl
+[debt] Krzysztof MENCEL (0139): lukasz@alfa-system.pl
+[debt] Andrzej KOWALSKI (0140): lukasz@alfa-system.pl
+[debt] Łukasz WOJTULEK (0144): lukasz@alfa-system.pl
+[debt] Grzegorz ŻURAWSKI (0145): lukasz@alfa-system.pl
+[debt] Agnieszka OSTROWIECKA (0147): lukasz@alfa-system.pl
+[debt] Gertruda WOJTALA (0149): lukasz@alfa-system.pl
+[debt] Krzysztof NOWAK (0152): lukasz@alfa-system.pl
+[debt] Zbigniew WIERZBA (0153): lukasz@alfa-system.pl
+[debt] Krzysztof KUCHARZ (0155): lukasz@alfa-system.pl
+[debt] Iwona BLICHARSKA (0158): lukasz@alfa-system.pl
+[debt] Zygmunt WALNIK (0161): lukasz@alfa-system.pl
+[debt] Andrzej MANDELSKI (0163): lukasz@alfa-system.pl
+[debt] Roman KRANC (0177): lukasz@alfa-system.pl
+[debt] Paweł WASILEWSKI (0186): lukasz@alfa-system.pl
+[debt] Zbigniew KOZAK (0190): lukasz@alfa-system.pl
+[debt] Roman KOŁODZIEJ (0200): lukasz@alfa-system.pl
+[debt] Dominik BYŚ (0205): lukasz@alfa-system.pl
+[debt] Grażyna TARNOWSKA (0221): lukasz@alfa-system.pl
+[debt] Piotr PORWOŁ (0225): lukasz@alfa-system.pl
+[debt] Bożena NEUMANN (0226): lukasz@alfa-system.pl
+[debt]  ZESPÓŁ OPIEKI ZDROWOTNEJ W KNUROWIE (0231): lukasz@alfa-system.pl
+[debt] Maria KRUSZCZYŃSKA (0239): lukasz@alfa-system.pl
+[debt] Franciszek ŚWIST (0243): lukasz@alfa-system.pl
+[debt] Jan, Maria KUBAJ (0245): lukasz@alfa-system.pl
+[debt] Lucjan PASIEKA (0247): lukasz@alfa-system.pl
+[debt]  MIEJSKI OŚRODEK SPORTU I REKREACJI W KNUROWIE (0263): lukasz@alfa-system.pl
+[debt] Sławomir PIENTNIK (0279): lukasz@alfa-system.pl
+[debt] Andrzej CIEKANOWSKI (0282): lukasz@alfa-system.pl
+[debt] Krzysztof SZARANIEC (0293): lukasz@alfa-system.pl
+[debt] Ewa SZCZERBETKA (0300): lukasz@alfa-system.pl
+[debt] Adam ZYDROŃ (0309): lukasz@alfa-system.pl
+[debt] Marek NOWAK (0316): lukasz@alfa-system.pl
+[debt] Leszek PACH (0319): lukasz@alfa-system.pl
+[debt] Roland NIEMCZYK (0335): lukasz@alfa-system.pl
+[debt] Krzysztof I Grażyna DUDZIEC (0342): lukasz@alfa-system.pl
+[debt] Jacek SIENICKI (0359): lukasz@alfa-system.pl
+[debt] Marta WALCZAK (0366): lukasz@alfa-system.pl
+[debt] Mariusz ROSTEK (0372): lukasz@alfa-system.pl
+[debt] Mirosław PIETRZAK (0386): lukasz@alfa-system.pl
+[debt] Jarosław KOZIEŃ (0402): lukasz@alfa-system.pl
+[debt] Justyna i Stanisław PRZEPIÓRA (0410): lukasz@alfa-system.pl
+[debt] Paweł BOBAK (0435): lukasz@alfa-system.pl
+[debt] Edward, Elżbieta GACEK (0436): lukasz@alfa-system.pl
+[debt] Piotr PARA (0437): lukasz@alfa-system.pl
+[debt] Małgorzata DUCHNOWSKA (0444): lukasz@alfa-system.pl
+[debt] Jarosław WIDMAN (0446): lukasz@alfa-system.pl
+[debt] Mirosław BERNASIUK (0453): lukasz@alfa-system.pl
+[debt] Andrzej SZYMOSZEK (0460): lukasz@alfa-system.pl
+[debt] Grzegorz SPRUS (0465): lukasz@alfa-system.pl
+[debt] Krystyna SMOLKA (0470): lukasz@alfa-system.pl
+[debt] Stefania ROJOWIEC (0495): lukasz@alfa-system.pl
+[debt] Bogusław TARNOWSKI (0496): lukasz@alfa-system.pl
+[debt] Damian SIMON (0499): lukasz@alfa-system.pl
+[debt] Stanisław WITRAK (0501): lukasz@alfa-system.pl
+[debt] Marek LEŚNIAK (0504): lukasz@alfa-system.pl
+[debt] Ilona BUĆKO (0507): lukasz@alfa-system.pl
+[debt] Bogusław STĘPIEŃ (0510): lukasz@alfa-system.pl
+[debt] Marzena STANKIEWICZ (0518): lukasz@alfa-system.pl
+[debt] Marian POLAK (0525): lukasz@alfa-system.pl
+[debt] Marcin MRÓZ (0537): lukasz@alfa-system.pl
+[debt] Artur i Dorota STRADOMSKI (0545): lukasz@alfa-system.pl
+[debt] Henryk ŚLIWIŃSKI (0546): lukasz@alfa-system.pl
+[debt] Waldemar PILARSKI (0549): lukasz@alfa-system.pl
+[debt] Jerzy ZARĘBA (0558): lukasz@alfa-system.pl
+[debt] Bożena GŁOWACKA (0563): lukasz@alfa-system.pl
+[debt] Ewa KABICZKE (0583): lukasz@alfa-system.pl
+[debt] Łukasz ŻYRKOWSKI (0585): lukasz@alfa-system.pl
+[debt] Zbigniew FARYŃSKI (0601): lukasz@alfa-system.pl
+[debt] Piotr SKOWRON (0602): lukasz@alfa-system.pl
+[debt] Bogusław FĄFARA (0623): lukasz@alfa-system.pl
+[debt] Rafał NIEDZIELA (0625): lukasz@alfa-system.pl
+[debt]  USŁUGI TRANSPORTOWE KAŹMIERCZAK STEFAN (0628): lukasz@alfa-system.pl
+[debt] Kazimierz SIKORA (0630): lukasz@alfa-system.pl
+[debt] Bartosz JANKOWSKI (0637): lukasz@alfa-system.pl
+[debt] Tomasz BETLER (0650): lukasz@alfa-system.pl
+[debt] Ireneusz SŁAWEK (0655): lukasz@alfa-system.pl
+[debt] Łukasz KALICH (0667): lukasz@alfa-system.pl
+[debt] Piotr POMOCNIK (0671): lukasz@alfa-system.pl
+[debt] Paweł JANKOWSKI (0676): lukasz@alfa-system.pl
+[debt] Grażyna KUTKOWSKA (0680): lukasz@alfa-system.pl
+[debt] Sebastian CHOMIUK (0684): lukasz@alfa-system.pl
+[debt] Franciszek RYFIAK (0685): lukasz@alfa-system.pl
+[debt] Stanisław ŚWIĄTEK (0687): lukasz@alfa-system.pl
+[debt] Krzesimir KOŁODZIEJ (0698): lukasz@alfa-system.pl
+[debt] Cyprian CHŁOPAŚ (0718): lukasz@alfa-system.pl
+[debt] Czesław WALCZYK (0721): lukasz@alfa-system.pl
+[debt] Janina MUSIAŁEK (0722): lukasz@alfa-system.pl
+[debt] Aurelia ŁOWICKA (0724): lukasz@alfa-system.pl
+[debt] Jadwiga i Patrycja WIEJAK (0730): lukasz@alfa-system.pl
+[debt] Agnieszka PISARSKA (0734): lukasz@alfa-system.pl
+[debt] Dariusz GRABAN (0736): lukasz@alfa-system.pl
+[debt] Henryk ROKITOWSKI (0743): lukasz@alfa-system.pl
+[debt] Tomasz DZITKOWSKI (0744): lukasz@alfa-system.pl
+[debt] Ireneusz CZARNECKI (0753): lukasz@alfa-system.pl
+[debt] Bogumiła SŁOWIŃSKA (0756): lukasz@alfa-system.pl
+[debt] Mirosław GODLEWSKI (0757): lukasz@alfa-system.pl
+[debt] Adam GRUDZIECKI (0759): lukasz@alfa-system.pl
+[debt] Tadeusz ZAPART (0765): lukasz@alfa-system.pl
+[debt] Beata ZAREMBA (0769): lukasz@alfa-system.pl
+[debt] Mirosław KRAWCZYŃSKI (0778): lukasz@alfa-system.pl
+[debt] Damian CZAPLA (0785): lukasz@alfa-system.pl
+[debt] Jakub HEBDA (0793): lukasz@alfa-system.pl
+[debt] Dorota BLUKACZ (0799): lukasz@alfa-system.pl
+[debt] Sławomir MICHALAK (0801): lukasz@alfa-system.pl
+[debt] Dariusz MIERNOW (0819): lukasz@alfa-system.pl
+[debt] Krzysztof GOWOREK (0820): lukasz@alfa-system.pl
+[debt] Daniel WIETRZYKOWSKI (0821): lukasz@alfa-system.pl
+[debt] Maria i Marzena ALCZYŃSKA (0824): lukasz@alfa-system.pl
+[debt] Dariusz KASZA (0826): lukasz@alfa-system.pl
+[debt] Marek i Joanna DYMKOWSKA (0845): lukasz@alfa-system.pl
+[debt] Piotr BIELIŃSKI (0849): lukasz@alfa-system.pl
+[debt]  ROB-BUD USŁUGI REMONTOWO-BUDOWLANE  ROBERT KRAWIEC (0854): lukasz@alfa-system.pl
+[debt] Krzysztof MATUSZEK (0859): lukasz@alfa-system.pl
+[debt] Radosław LAUBACH (0864): lukasz@alfa-system.pl
+[debt] Krystyna SULIKOWSKA (0867): lukasz@alfa-system.pl
+[debt] Renata JAWORSKA (0876): lukasz@alfa-system.pl
+[debt] Karina BIELECKA (0888): lukasz@alfa-system.pl
+[debt] Zbigniew SZULC (0893): lukasz@alfa-system.pl
+[debt] Damian STASZEWSKI (0903): lukasz@alfa-system.pl
+[debt] Mirosław MAŁECKI (0918): lukasz@alfa-system.pl
+[debt] Rafał KORDUSIAK (0930): lukasz@alfa-system.pl
+[debt] Marcin LAKSANDER (0932): lukasz@alfa-system.pl
+[debt] Agnieszka, Sebastian ZDUŃCZUK (0943): lukasz@alfa-system.pl
+[debt] Maciej, Wiesława MAZUREK (0947): lukasz@alfa-system.pl
+[debt] Mariola, Eugeniusz ŁYKO (0948): lukasz@alfa-system.pl
+[debt] Justyna ŚWIERCZYŃSKA (0949): lukasz@alfa-system.pl
+[debt] Halina BORUCKA (0953): lukasz@alfa-system.pl
+[debt] Dawid KRUSZCZYŃSKI (0956): lukasz@alfa-system.pl
+[debt] Andrzej GAJEWSKI (0960): lukasz@alfa-system.pl
+[debt] Edyta STĘPIEŃ (0963): lukasz@alfa-system.pl
+[debt] Beata MOCZULSKA (0968): lukasz@alfa-system.pl
+[debt]  HURTOWNIA ODZIEŻY YOURNEWSTYLE.PL SP. Z O.O. (0969): lukasz@alfa-system.pl
+[debt] Szymon MYDLAK (0974): lukasz@alfa-system.pl
+[debt] Krystyna ZACIERKA (0975): lukasz@alfa-system.pl
+[debt] Marcin HAMPEL (0981): lukasz@alfa-system.pl
+[debt] Adrian WÓJCIK (0985): lukasz@alfa-system.pl
+[debt] Monika KIEŁB (0986): lukasz@alfa-system.pl
+[debt] Justyna JASKUŁA (1001): lukasz@alfa-system.pl
+[debt] Dariusz PAŁKA (1005): lukasz@alfa-system.pl
+[debt] Jacek WANDRASZ (1013): lukasz@alfa-system.pl
+[debt] Małgorzata RÓG (1016): lukasz@alfa-system.pl
+[debt] Grzegorz GĄSIOROWSKI (1018): lukasz@alfa-system.pl
+[debt] Krzysztof RYBA (1030): lukasz@alfa-system.pl
+[debt] Damian OLIWNIAK (1033): lukasz@alfa-system.pl
+[debt] Anna NOWAK (1035): lukasz@alfa-system.pl
+[debt] Alina NANTKA (1041): lukasz@alfa-system.pl
+[debt] Krzysztof FOJT (1046): lukasz@alfa-system.pl
+[debt] Marcin ZIENKOWICZ (1047): lukasz@alfa-system.pl
+[debt] Krzysztof NAPIERAŁA (1049): lukasz@alfa-system.pl
+[debt] Joanna DÜLLICK (1053): lukasz@alfa-system.pl
+[debt] Marianna CHMIELOWSKA (1056): lukasz@alfa-system.pl
+[debt] Gabriela FRANKE (1057): lukasz@alfa-system.pl
+[debt] Paweł i Izabela CZOPEK (1063): lukasz@alfa-system.pl
+[debt] Rafał HALECZKO (1064): lukasz@alfa-system.pl
+[debt] Katarzyna SOBCZAK (1066): lukasz@alfa-system.pl
+[debt] Arkadiusz KOC (1068): lukasz@alfa-system.pl
+[debt] Andrzej RYPIEŃ (1069): lukasz@alfa-system.pl
+[debt] Karolina POTOCKA (1078): lukasz@alfa-system.pl
+[debt] Dorota SZUBTARSKA (1082): lukasz@alfa-system.pl
+[debt] Radosław KRĘPLEWSKI (1083): lukasz@alfa-system.pl
+[debt] Andrzej MAZUR (1084): lukasz@alfa-system.pl
+[debt] Ryszard ADAMSKI (1085): lukasz@alfa-system.pl
+[debt] Małgorzata WIELICZKO (1089): lukasz@alfa-system.pl
+[debt] Tomasz TROCHA (1091): lukasz@alfa-system.pl
+[debt] Radosław SĘK (1093): lukasz@alfa-system.pl
+[debt] Justyna PACHLA (1097): lukasz@alfa-system.pl
+[debt] Adrian DAJCZAK (1101): lukasz@alfa-system.pl
+[debt] Tadeusz KNEIFEL (1107): lukasz@alfa-system.pl
+[debt] Adrian SIADKOWSKI (1108): lukasz@alfa-system.pl
+[debt] Andrzej BIENIEK (1110): lukasz@alfa-system.pl
+[debt] Wiesława GRZYB (1117): lukasz@alfa-system.pl
+[debt] Jacek KACUGA (1125): lukasz@alfa-system.pl
+[debt] Jan URBANIAK (1129): lukasz@alfa-system.pl
+[debt] Piotr BARAN (1130): lukasz@alfa-system.pl
+[debt] Kamil SZMITKA (1135): lukasz@alfa-system.pl
+[debt] Dawid WIĘCŁAW (1137): lukasz@alfa-system.pl
+[debt]  LEWIN ROBERT LEKKI, ROBERT WINCKIEWICZ S.C. (1140): lukasz@alfa-system.pl
+[debt] Szymon SKOCZYLAS (1145): lukasz@alfa-system.pl
+[debt] Beata DYMIDZIUK (1147): lukasz@alfa-system.pl
+[debt] Grzegorz PHU BIS-KOMPLEX BISMOR (1150): lukasz@alfa-system.pl
+[debt]  BPINB EXACT PROJECT MGR INŻ.  MIROSŁAW MUSIAŁEK (1151): lukasz@alfa-system.pl
+[debt] Paweł WIĘZIK (1163): lukasz@alfa-system.pl
+[debt] Aleksander OŻÓG (1164): lukasz@alfa-system.pl
+[debt] Eugeniusz DZIAŁOWY (1166): lukasz@alfa-system.pl
+[debt] Marek PIERZAK (1172): lukasz@alfa-system.pl
+[debt] Piotr MACIAK (1173): lukasz@alfa-system.pl
+[debt]  P.H.U. VIRTUAL ZOFIA SZYMANEK (1179): lukasz@alfa-system.pl
+[debt] Wojciech ŻYWOT (1181): lukasz@alfa-system.pl
+[debt] Sławomir JUSZCZYK (1182): lukasz@alfa-system.pl
+[debt] Daniel MARSZAŁEK (1184): lukasz@alfa-system.pl
+[debt] Sławomir FOIT (1185): lukasz@alfa-system.pl
+[debt] Marcin, Adelajda CIEŚLIK (1189): lukasz@alfa-system.pl
+[debt] Łukasz PYRCIOCH (1194): lukasz@alfa-system.pl
+[debt] Łukasz KUDZIA (1197): lukasz@alfa-system.pl
+[debt] Krzysztof GAŁUSZKA (1198): lukasz@alfa-system.pl
+[debt] Alina KWIECIEŃ (1202): lukasz@alfa-system.pl
+[debt] Bernadeta DYMEK (1204): lukasz@alfa-system.pl
+[debt] Krzysztof Chotoborski (1211): lukasz@alfa-system.pl
+[debt] Jan RAŚ (1223): lukasz@alfa-system.pl
+[debt] Tomasz TARGAŃSKI (1225): lukasz@alfa-system.pl
+[debt] Marek DZIETCZYK (1227): lukasz@alfa-system.pl
+[debt] Dominik PIECHOTA (1228): lukasz@alfa-system.pl
+[debt] Herbert CUDOK (1233): lukasz@alfa-system.pl
+[debt] Agnieszka ŁUKASZEWICZ (1240): lukasz@alfa-system.pl
+[debt] Przemysław MIROCHA (1251): lukasz@alfa-system.pl
+[debt] Franciszek STUDZIŃSKI (1261): lukasz@alfa-system.pl
+[debt] Tomasz BARTOSZEK (1264): lukasz@alfa-system.pl
+[debt] Łukasz SOBCZAK (1273): lukasz@alfa-system.pl
+[debt] Dariusz SURA (1276): lukasz@alfa-system.pl
+[debt] Marcin MORDAL (1278): lukasz@alfa-system.pl
+[debt] Marcin I Magdalena KASPRZYK (1279): lukasz@alfa-system.pl
+[debt] Zdzisław DMOCHOWSKI (1280): lukasz@alfa-system.pl
+[debt] Andrzej SZYLAJ (1283): lukasz@alfa-system.pl
+[debt] Roman ROKITOWSKI (1286): lukasz@alfa-system.pl
+[debt] Marlena KOZŁOWSKA (1295): lukasz@alfa-system.pl
+[debt] Agnieszka ŚWIERKOSZ (1301): lukasz@alfa-system.pl
+[debt] Remigiusz ZIÓŁEK (1303): lukasz@alfa-system.pl
+[debt] Żaneta SMUGAJ (1306): lukasz@alfa-system.pl
+[debt] Jarosław CZUPA (1315): lukasz@alfa-system.pl
+[debt] Artur RADZIK (1318): lukasz@alfa-system.pl
+[debt] Arkadiusz I Elwira KRÓL (1327): lukasz@alfa-system.pl
+[debt] Zbigniew JURECZKA (1328): lukasz@alfa-system.pl
+[debt] Piotr, Edyta BICZ (1332): lukasz@alfa-system.pl
+[debt] Krzysztof MORAWIEC (1335): lukasz@alfa-system.pl
+[debt] Zbigniew DOROŻAŁA (1342): lukasz@alfa-system.pl
+[debt] Aneta LEWICKA (1347): lukasz@alfa-system.pl
+[debt] Małgorzata CHODAK (1355): lukasz@alfa-system.pl
+[debt] Danuta LUBSZCZYK (1357): lukasz@alfa-system.pl
+[debt] Tomasz SAWICKI (1358): lukasz@alfa-system.pl
+[debt] Tomasz CHODAŁA (1366): lukasz@alfa-system.pl
+[debt] Adam, Bożena LANC (1384): lukasz@alfa-system.pl
+[debt] Marek MRÓZ (1393): lukasz@alfa-system.pl
+[debt] Wiesław KARLIŃSKI (1394): lukasz@alfa-system.pl
+[debt] Jerzy SZUMICHORA (1397): lukasz@alfa-system.pl
+[debt] Andrzej KOZAK (1398): lukasz@alfa-system.pl
+[debt] Bożena TARGOS (1404): lukasz@alfa-system.pl
+[debt] Ireneusz JAWORSKI (1407): lukasz@alfa-system.pl
+[debt] Magdalena RENKAW (1419): lukasz@alfa-system.pl
+[debt] Wioletta ZIELIŃSKA (1423): lukasz@alfa-system.pl
+[debt] Maria PIEKIELNIK (1424): lukasz@alfa-system.pl
+[debt] Łukasz KARWACKI (1426): lukasz@alfa-system.pl
+[debt] Zygmunt NAMYSŁO (1430): lukasz@alfa-system.pl
+[debt] Arkadiusz KACZOR (1434): lukasz@alfa-system.pl
+[debt] Gabriel ZAWADZKI (1439): lukasz@alfa-system.pl
+[debt] Paweł TYTENIEC (1448): lukasz@alfa-system.pl
+[debt] Katarzyna CHYBIŃSKA (1451): lukasz@alfa-system.pl
+[debt] Joanna SZYPUŁA (1453): lukasz@alfa-system.pl
+[debt] Adam KRAWCZAK (1457): lukasz@alfa-system.pl
+[debt] Sylwester ISKRA (1458): lukasz@alfa-system.pl
+[debt] Grzegorz SOBCZAK (1459): lukasz@alfa-system.pl
+[debt] Patryk KRÓL (1464): lukasz@alfa-system.pl
+[debt] Krystian WIDERA (1478): lukasz@alfa-system.pl
+[debt] Krystyna ŁYŹNIAK (1479): lukasz@alfa-system.pl
+[debt] Sławomir DUDKIEWICZ (1480): lukasz@alfa-system.pl
+[debt] Marek ORZANNA (1482): lukasz@alfa-system.pl
+[debt] Dawid BAKALARZ (1489): lukasz@alfa-system.pl
+[debt] Krzysztof RACHEL (1490): lukasz@alfa-system.pl
+[debt] Henryk ŚWIENTEK (1491): lukasz@alfa-system.pl
+[debt] Alicja JASKOT (1500): lukasz@alfa-system.pl
+[debt] Henryk i Grazyna POTEMPA (1504): lukasz@alfa-system.pl
+[debt]  NEW FORM ADAM CZERKIES (1507): lukasz@alfa-system.pl
+[debt] Artur SZYMICZEK (1512): lukasz@alfa-system.pl
+[debt] Barbara KOLWICZ (1524): lukasz@alfa-system.pl
+[debt] Ryszard WEGNER (1525): lukasz@alfa-system.pl
+[debt] Piotr DWULATEK (1533): lukasz@alfa-system.pl
+[debt] Grzegorz SAROSIŃSKI (1534): lukasz@alfa-system.pl
+[debt] Henryk GŁOBISZ (1549): lukasz@alfa-system.pl
+[debt] Marcin PINIOŻYŃSKI (1554): lukasz@alfa-system.pl
+[debt]  FIRMA OGÓLNOBUDOWLANA "SZWEDO" (1555): lukasz@alfa-system.pl
+[debt] Jacek PIETRACZYK (1556): lukasz@alfa-system.pl
+[debt] Grażyna WECHOWSKA (1558): lukasz@alfa-system.pl
+[debt] Joanna i Janusz SŁOWIŃSKI (1560): lukasz@alfa-system.pl
+[debt] Urszula KRAWCZYK (1572): lukasz@alfa-system.pl
+[debt] Mariusz BARON (1578): lukasz@alfa-system.pl
+[debt] Marcin ZIMNICKI (1584): lukasz@alfa-system.pl
+[debt] Jerzy WEPS (1587): lukasz@alfa-system.pl
+[debt] Waldemar KORZENIEWSKI (1592): lukasz@alfa-system.pl
+[debt] Bożena NEUDEK (1593): lukasz@alfa-system.pl
+[debt] Artur MAREK (1599): lukasz@alfa-system.pl
+[debt] Iwona KUPNIEWSKA (1606): lukasz@alfa-system.pl
+[debt] Gabriel SKOWROŃSKI (1609): lukasz@alfa-system.pl
+[debt] Paweł MARKS (1610): lukasz@alfa-system.pl
+[debt] Konrad ROKITA (1611): lukasz@alfa-system.pl
+[debt] Bogusław KOMAN (1614): lukasz@alfa-system.pl
+[debt] Mirosław ADAMCZUK (1616): lukasz@alfa-system.pl
+[debt]  SZPITAL W KNUROWIE SP. Z O.O. (1621): lukasz@alfa-system.pl
+[debt] Michał BONK (1622): lukasz@alfa-system.pl
+[debt] Marian BARSZCZ (1629): lukasz@alfa-system.pl
+[debt] Paweł WIECIEK (1634): lukasz@alfa-system.pl
+[debt] Grzegorz KOTYNIA (1638): lukasz@alfa-system.pl
+[debt] Marzena BYLAK (1639): lukasz@alfa-system.pl
+[debt] Dariusz DAŃCZURA (1640): lukasz@alfa-system.pl
+[debt] Mirosława KOTYNIA (1645): lukasz@alfa-system.pl
+[debt] Antoni WUJCIK (1650): lukasz@alfa-system.pl
+[debt] Sławomir ALEKSANDROWICZ (1654): lukasz@alfa-system.pl
+[debt] Piotr MALINOWSKI (1659): lukasz@alfa-system.pl
+[debt] Tomasz POŹNIAK (1666): lukasz@alfa-system.pl
+[debt] Janusz GRABARSKI (1670): lukasz@alfa-system.pl
+[debt] Leon i Barbara PUCEK (1671): lukasz@alfa-system.pl
+[debt] Krzysztof i Ilona PLUTA (1672): lukasz@alfa-system.pl
+[debt] Paweł SURÓWKA (1674): lukasz@alfa-system.pl
+[debt] Alicja MATERNA (1676): lukasz@alfa-system.pl
+[debt] Mariusz MANISTA (1682): lukasz@alfa-system.pl
+[debt] Waldemar CIEPIELA (1684): lukasz@alfa-system.pl
+[debt] Jacek WRAŻEN (1705): lukasz@alfa-system.pl
+[debt] Piotr SZLACHETKO (1710): lukasz@alfa-system.pl
+[debt] Monika SOLAK (1713): lukasz@alfa-system.pl
+[debt] Patryk KRAWCZYK (1717): lukasz@alfa-system.pl
+[debt] Aneta KAMIŃSKA (1721): lukasz@alfa-system.pl
+[debt] Dawid SICIŃSKI (1722): lukasz@alfa-system.pl
+[debt] Wesołowska Ewelina SALON FRYZJERSKI "MEDUZA" (1725): lukasz@alfa-system.pl
+[debt] Marek FRYDRYK (1726): lukasz@alfa-system.pl
+[debt] Krzysztof, Brygida SZYMOSZEK (1728): lukasz@alfa-system.pl
+[debt]  UNITOM SP. Z O.O. (1733): lukasz@alfa-system.pl
+[debt] Marek KASPRZYK (1744): lukasz@alfa-system.pl
+[debt] Michał MIERZWA (1747): lukasz@alfa-system.pl
+[debt] Aldona MĄKA (1751): lukasz@alfa-system.pl
+[debt] Robert, Dorota KATA (1758): lukasz@alfa-system.pl
+[debt] Łukasz KOWALCZYK (1761): lukasz@alfa-system.pl
+[debt] Anna BULIŃSKA (1766): lukasz@alfa-system.pl
+[debt] Ireneusz NOCULA (1767): lukasz@alfa-system.pl
+[debt] Stanisław MICHNIEWICZ (1768): lukasz@alfa-system.pl
+[debt] Karina WOJTAS (1782): lukasz@alfa-system.pl
+[debt] Stanisław i Teresa JARUCHIEWICZ (1785): lukasz@alfa-system.pl
+[debt]  P.P.H.U. "MR MEBEL" MARIUSZ RZEPKA (1798): lukasz@alfa-system.pl
+[debt] Stanisław STYCZEŃ (1803): lukasz@alfa-system.pl
+[debt] Marian PIEŁKA (1814): lukasz@alfa-system.pl
+[debt] Sonia REMIORZ-ORZEŁ (1817): lukasz@alfa-system.pl
+[debt] Jadwiga CABAŁA (1823): lukasz@alfa-system.pl
+[debt] Zbigniew, Bogumiła PĘCHERZ (1826): lukasz@alfa-system.pl
+[debt] Dariusz ŻEBROWSKI (1829): lukasz@alfa-system.pl
+[debt] Damian JANIK (1831): lukasz@alfa-system.pl
+[debt] Agnieszka BIERNAT (1836): lukasz@alfa-system.pl
+[debt] Dariusz WIECHA (1841): lukasz@alfa-system.pl
+[debt] Bronisław KONDRAT (1842): lukasz@alfa-system.pl
+[debt] Artur MIŁOSZ (1852): lukasz@alfa-system.pl
+[debt] Stefan ZDUŃCZUK (1856): lukasz@alfa-system.pl
+[debt] Dominika JASTRZĘBSKA (1872): lukasz@alfa-system.pl
+[debt] Małgorzata SZLĘK (1877): lukasz@alfa-system.pl
+[debt] Łukasz PLEŚNIAK (1888): lukasz@alfa-system.pl
+[debt] Jan LICHOWICZ (1890): lukasz@alfa-system.pl
+[debt] Łukasz KRZYSZCZUK (1892): lukasz@alfa-system.pl
+[debt] Janusz GOŁĘBIEWSKI (1897): lukasz@alfa-system.pl
+[debt] Leszek MLECZKO (1906): lukasz@alfa-system.pl
+[debt] Wanda PAWŁOWSKA (1919): lukasz@alfa-system.pl
+[debt] Renata MATRAS (1921): lukasz@alfa-system.pl
+[debt] Janina FILIP (1924): lukasz@alfa-system.pl
+[debt] Cezary ŻMUDA (1927): lukasz@alfa-system.pl
+[debt] Luiza ZARYCHTA (1933): lukasz@alfa-system.pl
+[debt] Piotr WETOSZKA (1938): lukasz@alfa-system.pl
+[debt] Mateusz HADAM (1940): lukasz@alfa-system.pl
+[debt] Marcin KABICZKE (1942): lukasz@alfa-system.pl
+[debt] Grzegorz KOZIEŁ (1945): lukasz@alfa-system.pl
+[debt] Edward ŻARCZYŃSKI (1950): lukasz@alfa-system.pl
+[debt] Marcin PULIT (1951): lukasz@alfa-system.pl
+[debt] Łukasz SIEROŃ (1953): lukasz@alfa-system.pl
+[debt] Danuta SZYMANIAK (1954): lukasz@alfa-system.pl
+[debt] Bogdan ŁASAK (1955): lukasz@alfa-system.pl
+[debt] Anna KWIETNIOWSKA (1961): lukasz@alfa-system.pl
+[debt] Dariusz RAJTAR (1980): lukasz@alfa-system.pl
+[debt] Bogusław WARDZIŃSKI (1981): lukasz@alfa-system.pl
+[debt] Andrzej TRZASKACZ (1984): lukasz@alfa-system.pl
+[debt] Stanisław BREJ (1985): lukasz@alfa-system.pl
+[debt] Joanna SZATKOWSKA (2005): lukasz@alfa-system.pl
+[debt] Piotr SŁABASZEWSKI (2012): lukasz@alfa-system.pl
+[debt] Agata MOSZKOWICZ (2035): lukasz@alfa-system.pl
+[debt] Maria ZAMOJSKA (2041): lukasz@alfa-system.pl
+[debt] Dawid MAŚLIŃSKI (2046): lukasz@alfa-system.pl
+[debt] Bogusław JASTO (2057): lukasz@alfa-system.pl
+[debt] Mariusz STOIŃSKI (2059): lukasz@alfa-system.pl
+[debt] Ryszard LEWANDOWICZ (2068): lukasz@alfa-system.pl
+[debt]  WIWI – STYL A. PŁUCIENNIK (2082): lukasz@alfa-system.pl
+[debt] Barbara SIWIK (2083): lukasz@alfa-system.pl
+[debt] Janusz RYCIAK (2086): lukasz@alfa-system.pl
+[debt] Marcin KWAPIS (2092): lukasz@alfa-system.pl
+[debt] Marcin TELAKOWSKI (2094): lukasz@alfa-system.pl
+[debt] Eugeniusz DZIEŻOK (2103): lukasz@alfa-system.pl
+[debt] Wojciech JANOWSKI (2113): lukasz@alfa-system.pl
+[debt] Rafał SZCZEPAŃSKI (2121): lukasz@alfa-system.pl
+[debt] Dariusz JANIK (2126): lukasz@alfa-system.pl
+[debt] Łukasz KRUZEL (2149): lukasz@alfa-system.pl
+[debt] Piotr WALKOWIAK (2150): lukasz@alfa-system.pl
+[debt] Jakub PEPLIŃSKI (2151): lukasz@alfa-system.pl
+[debt] Robert KOPCZYK (2154): lukasz@alfa-system.pl
+[debt] Jerzy ORŁOWSKI (2155): lukasz@alfa-system.pl
+[debt] Antoni MISZTALEWSKI (2162): lukasz@alfa-system.pl
+[debt]  "OSTROWSKI" SP. Z O.O. (2163): lukasz@alfa-system.pl
+[debt] Sławomir MATURA (2167): lukasz@alfa-system.pl
+[debt] Mirosław ZIEMIŃSKI (2168): lukasz@alfa-system.pl
+[debt]  PRODUKTOWNIA MATEUSZ DUDZIŃSKI (2173): lukasz@alfa-system.pl
+[debt] Tomasz BALBIERZ (2179): lukasz@alfa-system.pl
+[debt] Michał PYCH (2181): lukasz@alfa-system.pl
+[debt] Stanisław KONIAKOWSKI (2183): lukasz@alfa-system.pl
+[debt] Mirosław KOPEĆ (2186): lukasz@alfa-system.pl
+[debt] Bogusław TEBINKA (2188): lukasz@alfa-system.pl
+[debt] Krzysztof KUDŁA (2192): lukasz@alfa-system.pl
+[debt] Krzysztof STĘPIEŃ (2196): lukasz@alfa-system.pl
+[debt] Jolanta WIDOMSKA (2204): lukasz@alfa-system.pl
+[debt] Paweł MANISTA (2206): lukasz@alfa-system.pl
+[debt] Małgorzata PAJOR (2207): lukasz@alfa-system.pl
+[debt]  MAR-MEDICA SPRZĘT MEDYCZNY, REHABILITACJA, MASAŻ MARZENA ODROBINA, MARLENA MIERZWA S.C. (2208): lukasz@alfa-system.pl
+[debt] Dawid TYLIŃSKI (2209): lukasz@alfa-system.pl
+[debt] Tomasz KOZŁOWSKI (2210): lukasz@alfa-system.pl
+[debt] Anna DĄBROWSKA (2211): lukasz@alfa-system.pl
+[debt] Krzysztof SZCZYGIEŁ (2212): lukasz@alfa-system.pl
+[debt] Jacek GANCZARCZYK (2215): lukasz@alfa-system.pl
+[debt] Jacek MAZIARZ (2216): lukasz@alfa-system.pl
+[debt] Joanna MORDON (2217): lukasz@alfa-system.pl
+[debt] Patryk MEHLICH (2218): lukasz@alfa-system.pl
+[debt] Julia SZCZERBAK (2219): lukasz@alfa-system.pl
+[debt] Artur LOSZA (2220): lukasz@alfa-system.pl
+[debt] Adrianna WOŹNIAK (2222): lukasz@alfa-system.pl
+[debt]  USŁUGI STOMATOLOGICZNE S.C. IZABELA KRACZLA-BIZOŃ, ZBIGNIEW BIZOŃ (2227): lukasz@alfa-system.pl
+[debt] Tomasz BRZESKI (2228): lukasz@alfa-system.pl
+[debt] Waldemar ZYGAŁA (2229): lukasz@alfa-system.pl
+[debt] Stefan GIERZOK (2231): lukasz@alfa-system.pl
+[debt] Joachim SZNAPKA (2232): lukasz@alfa-system.pl
+[debt] Grzegorz CZENCZEK (2233): lukasz@alfa-system.pl
+[debt] Jarosław KRASKA (2234): lukasz@alfa-system.pl
+[debt] Adrian ZAWISZEWSKI (2235): lukasz@alfa-system.pl
+[debt] Janusz BINKIEWICZ (2239): lukasz@alfa-system.pl
+[debt]  ANOWI BIZNES IWONA OKSZTUL (2240): lukasz@alfa-system.pl
+[debt] Jerzy ZYDROŃ (2245): lukasz@alfa-system.pl
+[debt] Dariusz KMINIKOWSKI (2246): lukasz@alfa-system.pl
+[debt] Dawid WILK (2247): lukasz@alfa-system.pl
+[debt] Zbigniew CIESIELSKI (2248): lukasz@alfa-system.pl
+[debt] Marzena KOS (2249): lukasz@alfa-system.pl
+[debt] Krzysztof BĄCZKIEWICZ (2250): lukasz@alfa-system.pl
+[debt] Anna KOSIARSKA (2253): lukasz@alfa-system.pl
+[debt] Krzysztof GÓRECKI (2254): lukasz@alfa-system.pl
+[debt] Wioletta KANIOWSKA (2255): lukasz@alfa-system.pl
+[debt]  SOL-TB BEATA WŁODARCZYK (2257): lukasz@alfa-system.pl
+[debt] Artur CEBULA (2259): lukasz@alfa-system.pl
+[debt] Robert BERGMANN (2260): lukasz@alfa-system.pl
+[debt] Piotr MANIAK (2261): lukasz@alfa-system.pl
+[debt] Adrian CZERWIEC (2262): lukasz@alfa-system.pl
+[debt] Marcin SZYMAŃSKI (2264): lukasz@alfa-system.pl
+[debt] Rafał GOLDBERG (2265): lukasz@alfa-system.pl
+[debt] Piotr ZYCH (2266): lukasz@alfa-system.pl
+[debt] Monika RUDZKA (2267): lukasz@alfa-system.pl
+[debt] Dominik PCHEŁKA (2269): lukasz@alfa-system.pl
+[debt] Andrzej KRYŚ (2272): lukasz@alfa-system.pl
+[debt] Paweł MAZUR (2274): lukasz@alfa-system.pl
+[debt] Łukasz RDUCH (2275): lukasz@alfa-system.pl
+[debt] Dariusz PIETRZAK (2278): lukasz@alfa-system.pl
+[debt] Paweł OCIEPKA (2281): lukasz@alfa-system.pl
+[debt] Grzegorz KŁYK (2288): lukasz@alfa-system.pl
+[debt] Krzysztof GRABOWSKI (2291): lukasz@alfa-system.pl
+[debt] Karolina WŁODARCZYK (2292): lukasz@alfa-system.pl
+[debt] Bogdan CIEŚLIK (2293): lukasz@alfa-system.pl
+[debt] Adam GRABOWSKI (2294): lukasz@alfa-system.pl
+[debt] Damian GOLIŃSKI (2301): lukasz@alfa-system.pl
+[debt] Zbigniew WARZYŃSKI (2302): lukasz@alfa-system.pl
+[debt] Sabina GRZONKA (2309): lukasz@alfa-system.pl
+[debt] Łukasz MORDAL (2311): lukasz@alfa-system.pl
+[debt] Aneta JANECKA (2314): lukasz@alfa-system.pl
+[debt] Przemysław DZIEDZIC (2316): lukasz@alfa-system.pl
+[debt]  NIEPUBLICZNA PLACÓWKA OŚWIATOWO-WYCHOWAWCZA STUDIO TAŃCA ISKRA (2317): lukasz@alfa-system.pl
+[debt] Piotr KUSY (2318): lukasz@alfa-system.pl
+[debt]  GALERIA I PRACOWNIA ARTYSTYCZNA ORSO (2321): lukasz@alfa-system.pl
+[debt] Andrzej BIELECKI (2323): lukasz@alfa-system.pl
+[debt]  FIRMA HANDLOWO-USŁUGOWA "BOSS" TOMASZ MIESZCZAK (2326): lukasz@alfa-system.pl
+[debt]  E-CALL POLSKA SP. Z O.O. (2330): lukasz@alfa-system.pl
+[debt] Michał KRAWCZYK (2331): lukasz@alfa-system.pl
+[debt] Sylwia CICHOŃ (2335): lukasz@alfa-system.pl
+[debt] Pelagia GŁOGOWSKA (2337): lukasz@alfa-system.pl
+[debt] Lucyna SCHARMACH (2349): lukasz@alfa-system.pl
+[debt] Adriana RATAJSKA (2351): lukasz@alfa-system.pl
+[debt] Mirosława DOPIERAŁA (2352): lukasz@alfa-system.pl
+[debt] Zofia GÓRAK (2353): lukasz@alfa-system.pl
+[debt] Natalia HAMPEL (2356): lukasz@alfa-system.pl
+[debt] Sebastian GOLIŃSKI (2358): lukasz@alfa-system.pl
+[debt] Waldemar Kląskała PRZEDSIĘBIORSTWO DEKER-BUD (2360): lukasz@alfa-system.pl
+[debt] Piotr GAWRYSIAK (2362): lukasz@alfa-system.pl
+[debt] Daniel BOJARCZUK (2363): lukasz@alfa-system.pl
+[debt] Ryszard WALCZYŃSKI (2369): lukasz@alfa-system.pl
+[debt] Katarzyna BAZELUK (2371): lukasz@alfa-system.pl
+[debt] Paweł RAŚ (2373): lukasz@alfa-system.pl
+[debt] Krzysztof NELKE (2376): lukasz@alfa-system.pl
+[debt] Katarzyna JELENIEWICZ (2381): lukasz@alfa-system.pl
+[debt] Elżbieta GAWRYCH (2389): lukasz@alfa-system.pl
+[debt] Katarzyna MUSIOL (2390): lukasz@alfa-system.pl
+[debt] Barbara POREMBSKA (2402): lukasz@alfa-system.pl
+[debt] Piotr POLOK (2403): lukasz@alfa-system.pl
+[debt] Anna MIKUCKA (2404): lukasz@alfa-system.pl
+[debt]  DAMIAN SKURA INŻYNIERIA BUDOWLANA I ARCHITEKTURA (2405): lukasz@alfa-system.pl
+[debt] Honorata PRZYBYŁA (2406): lukasz@alfa-system.pl
+[debt] Jacek TKOCZ (2409): lukasz@alfa-system.pl
+[debt] Robert KARAŚ (2410): lukasz@alfa-system.pl
+[debt] Joanna WOJNOWSKA (2412): lukasz@alfa-system.pl
+[debt] Arkadiusz JANAŚ (2418): lukasz@alfa-system.pl
+[debt] Mateusz SKOWRON (2420): lukasz@alfa-system.pl
+[debt] Tomasz JURECZKO (2422): lukasz@alfa-system.pl
+[debt] Edward KOŚĆ (2424): lukasz@alfa-system.pl
+[debt] Elżbieta GILNER (2427): lukasz@alfa-system.pl
+[debt] Katarzyna SZAFRANIEC (2428): lukasz@alfa-system.pl
+[debt] Grzegorz SZTECHMILER (2433): lukasz@alfa-system.pl
+[debt] Jan BEJNAROWICZ (2437): lukasz@alfa-system.pl
+[debt] Katarzyna ŁYKO (2438): lukasz@alfa-system.pl
+[debt] Ireneusz KOTOWICZ (2441): lukasz@alfa-system.pl
+[debt] Agata MECH (2442): lukasz@alfa-system.pl
+[debt] Adrian ŚWIĘTEK (2444): lukasz@alfa-system.pl
+[debt] Łukasz LESZCZYŃSKI (2446): lukasz@alfa-system.pl
+[debt] Adam URBANIAK (2448): lukasz@alfa-system.pl
+[debt] Patryk UMŁAWSKI (2450): lukasz@alfa-system.pl
+[debt] Adam MANISTA (2452): lukasz@alfa-system.pl
+[debt] Antoli MISIEJUK (2453): lukasz@alfa-system.pl
+[debt]  RODZINNE CENTRUM REKREACJI, SPORTÓW I SZTUK WALKI "WEFYA" (2456): lukasz@alfa-system.pl
+[debt] Halina LESISZ (2464): lukasz@alfa-system.pl
+[debt] Joanna WOSZCZAK (2466): lukasz@alfa-system.pl
+[debt] Tomasz GÓRAK (2468): lukasz@alfa-system.pl
+[debt] Damian GRABOWSKI (2469): lukasz@alfa-system.pl
+[debt] Agnieszka DZIEDZIC (2475): lukasz@alfa-system.pl
+[debt] Zdzisław MADEJA (2477): lukasz@alfa-system.pl
+[debt] Sylwia SŁOWIŃSKA (2483): lukasz@alfa-system.pl
+[debt] Małgorzata DZIERNIEJKO (2484): lukasz@alfa-system.pl
+[debt] Anna STELMACH (2485): lukasz@alfa-system.pl
+[debt] Marcin PORĘBSKI (2486): lukasz@alfa-system.pl
+[debt] Krzysztof TKACZUK (2487): lukasz@alfa-system.pl
+[debt] Michał PEŁKA (2488): lukasz@alfa-system.pl
+[debt] Grzegorz BANASZEK (2489): lukasz@alfa-system.pl
+[debt] Dawid WIŚNIOWSKI (2490): lukasz@alfa-system.pl
+[debt] Roksana LIPNICKA (2492): lukasz@alfa-system.pl
+[debt] Marcin ŻAKOWSKI (2496): lukasz@alfa-system.pl
+[debt] Piotr KAWCZAK (2497): lukasz@alfa-system.pl
+[debt]  PHU OBSESSION KRZYSZTOF DUSZA (2502): lukasz@alfa-system.pl
+[debt] Dawid PINOCY (2503): lukasz@alfa-system.pl
+[debt] Sebastian DĄBEK (2505): lukasz@alfa-system.pl
+[debt] Marcin WACHOWSKI (2506): lukasz@alfa-system.pl
+[debt] Grzegorz NIŹNIKIEWICZ (2513): lukasz@alfa-system.pl
+[debt] Józef MIKOŁAJCZAK (2517): lukasz@alfa-system.pl
+[debt] Rafał BOCZ (2518): lukasz@alfa-system.pl
+[debt] Marek ŁUKASIK (2520): lukasz@alfa-system.pl
+[debt] Szymon BŁASZCZYK (2526): lukasz@alfa-system.pl
+[debt] Kazimierz ŚLIWIŃSKI (2528): lukasz@alfa-system.pl
+[debt] Robert DZIUBLIŃSKI (2530): lukasz@alfa-system.pl
+[debt] Witold BUCHTA (2533): lukasz@alfa-system.pl
+[debt] Anna BIAŁY (2535): lukasz@alfa-system.pl
+[debt] Bartosz KAPLIŃSKI (2537): lukasz@alfa-system.pl
+[debt] Łukasz DAŃCZURA (2539): lukasz@alfa-system.pl
+[debt]  SKANSKA S.A. (2552): lukasz@alfa-system.pl
+[debt] Aleksander HAPEN (2553): lukasz@alfa-system.pl
+[debt] Tomasz NOWAK (2556): lukasz@alfa-system.pl
+[debt] Teresa GENDARZ (2558): lukasz@alfa-system.pl
+[debt] Janusz OLEWSKI (2570): lukasz@alfa-system.pl
+[debt] Jan GAIK (2571): lukasz@alfa-system.pl
+[debt] Wojciech NIEWIADOMSKI (2574): lukasz@alfa-system.pl
+[debt] Rafał SOLAK (2578): lukasz@alfa-system.pl
+[debt] Adam KUCA (2580): lukasz@alfa-system.pl
+[debt] Dariusz GRZYBOWSKI (2582): lukasz@alfa-system.pl
+[debt] Piotr BARLASZ (2583): lukasz@alfa-system.pl
+[debt] Rafał LENŻA (2584): lukasz@alfa-system.pl
+[debt] Paweł GIBAS (2590): lukasz@alfa-system.pl
+[debt] Natalia KAMPE (2591): lukasz@alfa-system.pl
+[debt] Rafał OLEŚ (2593): lukasz@alfa-system.pl
+[debt]  ITECOM SP. Z O.O. (2596): lukasz@alfa-system.pl
+[debt] Marek GRALA (2599): lukasz@alfa-system.pl
+[debt] Mateusz JANKOWSKI (2604): lukasz@alfa-system.pl
+[debt] Bartosz SEROCKI (2609): lukasz@alfa-system.pl
+[debt]  MCOMP USŁUGI KOMPUTEROWE MARCIN JANDUŁA (2611): lukasz@alfa-system.pl
+[debt] Daniel ZAKRZEWSKI (2614): lukasz@alfa-system.pl
