@@ -1,11 +1,4 @@
-<!--// $Id$ //-->
-<P>
-<TABLE WIDTH="100%" CELLPADDING="10">
-	<TR class="superlight">
-		<TD WIDTH="1%" CLASS="fleftu">
-			<IMG SRC="img/warning.png" ALT="[ {trans("Error!")} ]">
-		</TD>
-		<TD WIDTH="99%" CLASS="frightu">
+
 			<FONT class="alert">{trans("Database errors occurred!")}</FONT><BR>
 			{foreach from=$layout.dberrors item=dberror}
                 {if $layout.dbdebug}
@@ -15,7 +8,4 @@
     				<B>{trans("Error:")}</B> {$dberror.error}<BR>
 				{/if}
 			{/foreach}
-		</TD>
-	</TR>
-</TABLE>
-</P>
+

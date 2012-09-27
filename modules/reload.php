@@ -29,6 +29,30 @@ $layout['pagetitle'] = trans('Configuration Reload');
 $_RELOAD_TYPE = $CONFIG['phpui']['reload_type'];
 $_EXECCMD = $CONFIG['phpui']['reload_execcmd'];
 
+
+// kyob: specyfic case in our network
+function CheckReload()
+{
+    global $DB;
+    //echo count($DB->GetAll('SELECT content FROM sessions WHERE content LIKE "%reload%"'));
+    return count($DB->GetAll('SELECT content FROM sessions WHERE content LIKE "%reload%"'));
+    //echo '<pre>';print_r($SESSION);echo '</pre>';
+}
+$checkreload=CheckReload();
+$SMARTY->assign('checkreload',$checkreload);
+
+function GetUserID()
+{
+    global $SESSION;
+    return $SESSION->_content[session_id];
+}
+$SMARTY->assign('user',GetUserID());
+// kyob-end
+
+
+
+
+
 $serverTime = date("r");
 
 if (check_conf('phpui.reload_timer'))
@@ -132,6 +156,7 @@ switch($_RELOAD_TYPE)
 			}
 			else
 			{
+				$SMARTY->assign('teraz',mktime());
 				$SMARTY->assign('hosts', $hosts);
 				$SMARTY->display('header.html');
 				$SMARTY->display('reload.html');

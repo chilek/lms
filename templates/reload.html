@@ -29,8 +29,20 @@
 						    {elseif $hosts[hosts].reload==0}{trans("OK")}
 						    {else}{trans("unknown")}{/if}</TD>
 					<TD>
-						<INPUT TYPE="checkbox" NAME="hosts[]" ID="{$hosts[hosts].id}" VALUE="{$hosts[hosts].id}"{if $hosts[hosts].reload} CHECKED{/if}>
-					</TD>
+
+{if ($teraz-$hosts[hosts].lastreload)<1800}
+	<INPUT TYPE="checkbox" NAME="hosts[]" ID="{$hosts[hosts].id}" VALUE="{$hosts[hosts].id}"{if $hosts[hosts].reload} CHECKED{/if} DISABLED > 
+{elseif ($teraz-$hosts[1].lastreload<1800) and $hosts[hosts].id==6}
+	<INPUT TYPE="checkbox" NAME="hosts[]" ID="{$hosts[hosts].id}" VALUE="{$hosts[hosts].id}"{if $hosts[hosts].reload} CHECKED{/if} DISABLED > 	
+{elseif ($teraz-$hosts[2].lastreload<1800) and $hosts[hosts].id==1}
+	<INPUT TYPE="checkbox" NAME="hosts[]" ID="{$hosts[hosts].id}" VALUE="{$hosts[hosts].id}"{if $hosts[hosts].reload} CHECKED{/if} DISABLED > 	
+
+
+{else}
+	<INPUT TYPE="checkbox" NAME="hosts[]" ID="{$hosts[hosts].id}" VALUE="{$hosts[hosts].id}"{if $hosts[hosts].reload} CHECKED{/if} > 
+{/if}	
+                                            
+                                        </TD>
 				</TR>
 				{sectionelse}
 				<TR>
@@ -55,6 +67,10 @@
 </TABLE>
 </FORM>
 </P>
+<p>
+Jeśli nie można przeładować NAT1, NAT2, VLAN1 to znaczy, że jeszcze nie upłyneło 30 minut od ostatniego przeładowania kolejek.
+</P>
+
 {if $serverTime}
 <SCRIPT type="text/javascript">
         <!--
