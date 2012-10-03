@@ -86,6 +86,13 @@ if(isset($_POST['event']))
 			}
 		}
 
+		$DB->Execute('UPDATE events SET moddate=?, moduserid=? WHERE id=?',
+			array(
+				mktime(), 
+				$AUTH->id,
+				$event['id']
+				));
+
 		$SESSION->redirect('?m=eventlist');
 	}
 }

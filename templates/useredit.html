@@ -1,4 +1,5 @@
 {include file="header.html"}
+{include file="calendar_js.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <FORM NAME="useredit" METHOD="POST" ACTION="?m=useredit&id={$userinfo.id}">
@@ -63,6 +64,30 @@
 			<INPUT TYPE="checkbox" NAME="userinfo[ntype][]" VALUE="{$smarty.const.MSG_SMS}" ID="ntypesms"{if ($userinfo.ntype & $smarty.const.MSG_SMS)} checked{/if}><label for="ntypesms">{trans("sms")}</label>
 		</TD>
 	</TR>
+	{if $layout.logid ne $userinfo.id}
+	<tr class="light">
+	    <td class="FLEFT" style="white-space: nowrap;">
+			<img src="img/access.gif" alt="">
+		</td>
+		<td><span class="bold">{trans("Account active:")}</span></td>
+		<td class="FRIGHT">
+			<input type="radio" name="userinfo[access]" value="1" id="accessyes" {if $userinfo.access} checked{/if}><label for="accessyes">{trans("yes")}</label>
+			<input type="radio" name="userinfo[access]" value="0" id="accessno"  {if !$userinfo.access} checked{/if}><label for="accessno">{trans("no")}</label>
+		</td>
+	</tr>
+	<tr class="light">
+	    <td class="fleft"><img src="img/calendar.gif"></td>
+	    <td> <span class="bold">{trans("Account active:")}</span></td>
+	    <td class="fright">
+		<span class="bold">{trans('from')}:</span><input type="text" name="userinfo[accessfrom]" value="{if $userinfo.accessfrom}{$userinfo.accessfrom}{/if}" size="10" {tip text="Enter access start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="accessfrom"} onclick="javascript:cal1.popup();">&nbsp;
+		<span class="bold">{trans('to')}:</span><input type="text" name="userinfo[accessto]" value="{if $userinfo.accessto}{$userinfo.accessto}{/if}" size="10"  {tip text="Enter access end date in YYYY/MM/DD format. If you don't want to define 'To' date leave this field empty" trigger="accessto"} onclick="javascript:cal2.popup();">
+	    </td>
+	</tr>
+	{else}
+	    <input type="hidden" name="userinfo[accessfrom]" value="{if $userinfo.accessfrom}{$userinfo.accessfrom}{/if}" >
+	    <input type="hidden" name="userinfo[accessto]" value="{if $userinfo.accessto}{$userinfo.accessto}{/if}" >
+	    <input type="hidden" name="userinfo[access]" value="{if $userinfo.access}1{else}0{/if}">
+	{/if}
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft">
 			<IMG SRC="img/ip.gif" ALT="">
@@ -139,7 +164,8 @@
 <SCRIPT type="text/javascript">
 <!--
 document.forms['useredit'].elements['userinfo[login]'].focus();
-
+var cal1=new calendar(document.forms['useredit'].elements['userinfo[accessfrom]']);cal1.time_comp = false;
+var cal2=new calendar(document.forms['useredit'].elements['userinfo[accessto]']);cal2.time_comp = false;
 //-->
 </SCRIPT>
 {include file="footer.html"}

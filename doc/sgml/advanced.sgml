@@ -92,6 +92,9 @@
                     <member>failedlogindate - date of last failed login attempt</member>
                     <member>failedloginip - IP of last failed login attempt</member>
                     <member>deleted - if is deleted boolean (0/1)</member>
+                    <member>access - whether the account is active (0/1)</member>
+                    <member>accessfrom - date from which the account is active</member>
+                    <member>accessto - date to which the account is active</member>
                </simplelist>
           </sect2>
           <sect2 id="customers">
@@ -796,6 +799,8 @@
                     <member>customerid - customer ID</member>
                     <member>private - status (private/public)</member>
                     <member>closed - is event closed? (1-yes/0-no)</member>
+		    <member>moduserid - id of last user that modified the event</member>
+		    <member>moddate - date of last event modification</member>
                </simplelist>
           </sect2>
           <sect2 id="eventassignments">
