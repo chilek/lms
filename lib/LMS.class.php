@@ -261,7 +261,7 @@ class LMS {
 
 	function GetUserList() { // returns list of users
 		if ($userlist = $this->DB->GetAll('SELECT id, login, name, lastlogindate, lastloginip, 
-				passwdexpiration, passwdlastchange 
+				passwdexpiration, passwdlastchange, access, accessfrom, accessto  
 				FROM users WHERE deleted=0 ORDER BY login ASC')) {
 			foreach ($userlist as $idx => $row) {
 				if ($row['id'] == $this->AUTH->id) {
@@ -270,6 +270,16 @@ class LMS {
 					$row['lastloginip'] = $this->AUTH->lastip;
 					$userlist[$idx]['lastloginip'] = $this->AUTH->lastip;
 				}
+
+				if ($row['accessfrom'])
+					$userlist[$idx]['accessfrom'] = date('Y/m/d',$row['accessfrom']);
+				else
+				    $userlist[$idx]['accessfrom'] = '-';
+				
+				if ($row['accessto'])
+					$userlist[$idx]['accessto'] = date('Y/m/d',$row['accessto']);
+				else
+				    $userlist[$idx]['accessto'] = '-';
 
 				if ($row['lastlogindate'])
 					$userlist[$idx]['lastlogin'] = date('Y/m/d H:i', $row['lastlogindate']);
@@ -300,8 +310,8 @@ class LMS {
 
 	function UserAdd($user) {
 		if ($this->DB->Execute('INSERT INTO users (login, name, email, passwd, rights,
-				hosts, position, ntype, phone, passwdexpiration)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($user['login'],
+				hosts, position, ntype, phone, passwdexpiration, access, accessfrom, accessto)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($user['login'],
 						$user['name'],
 						$user['email'],
 						crypt($user['password']),
@@ -311,6 +321,9 @@ class LMS {
 						!empty($user['ntype']) ? $user['ntype'] : null,
 						!empty($user['phone']) ? $user['phone'] : null,
 						!empty($user['passwdexpiration']) ? $user['passwdexpiration'] : 0,
+						!empty($user['access']) ? 1 : 0,
+						!empty($user['accessfrom']) ? $user['accessfrom'] : 0,
+						!empty($user['accessto']) ? $user['accessto'] : 0
 				)))
 			return $this->DB->GetOne('SELECT id FROM users WHERE login=?', array($user['login']));
 		else
@@ -318,7 +331,7 @@ class LMS {
 	}
 
 	function UserDelete($id) {
-		if ($this->DB->Execute('UPDATE users SET deleted=1 WHERE id=?', array($id))) {
+		if ($this->DB->Execute('UPDATE users SET deleted=1, access=0 WHERE id=?', array($id))) {
 			$this->cache['users'][$id]['deleted'] = 1;
 			return true;
 		}
@@ -339,6 +352,11 @@ class LMS {
 		}
 	}
 
+	function UserAccess($id,$access)
+	{
+	    $this->DB->Execute('UPDATE users SET access = ? WHERE id = ? ;',array($access,$id));
+	}
+
 	function GetUserInfo($id) {
 		if ($userinfo = $this->DB->GetRow('SELECT * FROM users WHERE id = ?', array($id))) {
 			$this->cache['users'][$id] = $userinfo;
@@ -347,6 +365,16 @@ class LMS {
 				$userinfo['lastlogindate'] = $this->AUTH->last;
 				$userinfo['lastloginip'] = $this->AUTH->lastip;
 			}
+
+			if ($userinfo['accessfrom'])
+				$userinfo['accessfrom'] = date('Y/m/d', $userinfo['accessfrom']);
+			else
+				$userinfo['accessfrom'] = '';
+
+			if ($userinfo['accessto'])
+				$userinfo['accessto'] = date('Y/m/d', $userinfo['accessto']);
+			else
+				$userinfo['accessot'] = '';
 
 			if ($userinfo['lastlogindate'])
 				$userinfo['lastlogin'] = date('Y/m/d H:i', $userinfo['lastlogindate']);
@@ -382,7 +410,7 @@ class LMS {
 
 	function UserUpdate($user) {
 		return $this->DB->Execute('UPDATE users SET login=?, name=?, email=?, rights=?,
-				hosts=?, position=?, ntype=?, phone=?, passwdexpiration=? WHERE id=?', array($user['login'],
+				hosts=?, position=?, ntype=?, phone=?, passwdexpiration=?, access=?, accessfrom=?, accessto=? WHERE id=?', array($user['login'],
 						$user['name'],
 						$user['email'],
 						$user['rights'],
@@ -391,6 +419,9 @@ class LMS {
 						!empty($user['ntype']) ? $user['ntype'] : null,
 						!empty($user['phone']) ? $user['phone'] : null,
 						!empty($user['passwdexpiration']) ? $user['passwdexpiration'] : 0,
+						!empty($user['access']) ? 1 : 0,
+						!empty($user['accessfrom']) ? $user['accessfrom'] : 0,
+						!empty($user['accessto']) ? $user['accessto'] : 0,
 						$user['id']
 				));
 	}
@@ -1298,7 +1329,7 @@ class LMS {
 	}
 
 	function GetNodeMACByID($id) {
-		return $this->DB->GetOne('SELECT mac FROM vnodes WHERE nodeid=?', array($id));
+		return $this->DB->GetOne('SELECT mac FROM vnodes WHERE id=?', array($id));
 	}
 
 	function GetNodeName($id) {

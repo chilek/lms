@@ -18,7 +18,7 @@
 			<IMG src="img/time.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{trans("Time:")}</B>
+			<B>{trans("Creation time:")}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			{$event.date|date_format:"%x (%A)"}
@@ -28,6 +28,20 @@
 			{/if}
 		</TD>
 	</TR>
+{if $event.moddate != 0}
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/time.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Last modification time:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			{$event.moddate|date_format:"%x (%X)"}
+		</TD>
+	</TR>
+{/if}
+	     
 {if $event.description}
 	<TR class="light">
 		<TD width="1%" class="fleft">
@@ -69,6 +83,19 @@
 			<A href="?m=userinfo&id={$event.userid}">{$event.username}</A>
 		</TD>
 	</TR>
+{if $event.moduserid != 0}
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/users.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Last modified by:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright" nowrap>
+			<A href="?m=userinfo&id={$event.moduserid}">{$event.modusername}</A>
+		</TD>
+	</TR>
+{/if}
 	<TR class="light">
 		<TD width="1%" class="fleft">
 			<IMG src="img/customer.gif" alt="">

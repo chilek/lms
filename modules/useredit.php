@@ -53,6 +53,35 @@ if($userinfo)
 	if($userinfo['email']!='' && !check_email($userinfo['email']))
 		$error['email'] = trans('E-mail isn\'t correct!');
 
+	if($userinfo['accessfrom'] == '')
+		$accessfrom = 0;
+	elseif(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/',$userinfo['accessfrom']))
+	{
+		list($y, $m, $d) = explode('/', $userinfo['accessfrom']);
+		if(checkdate($m, $d, $y))
+			$accessfrom = mktime(0, 0, 0, $m, $d, $y);
+		else
+			$error['accessfrom'] = trans('Incorrect charging time!');
+	}
+	else
+		$error['accessfrom'] = trans('Incorrect charging time!');
+
+	if($userinfo['accessto'] == '')
+		$accessto = 0;
+	elseif(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $userinfo['accessto']))
+	{
+		list($y, $m, $d) = explode('/', $userinfo['accessto']);
+		if(checkdate($m, $d, $y))
+			$accessto = mktime(23, 59, 59, $m, $d, $y);
+		else
+			$error['accessto'] = trans('Incorrect charging time!');
+	}
+	else
+		$error['accessto'] = trans('Incorrect charging time!');
+
+	if($accessto < $accessfrom && $accessto != 0 && $accessfrom != 0)
+		$error['accessto'] = trans('Incorrect date range!');
+	
 	// let's make an ACL mask...
 	$mask = '';
 	$outmask = '';
@@ -75,6 +104,8 @@ if($userinfo)
 
 	if(!$error)
 	{
+		$userinfo['accessfrom'] = $accessfrom;
+		$userinfo['accessto'] = $accessto;
 		$LMS->UserUpdate($userinfo);
 
 		$DB->Execute('DELETE FROM excludedgroups WHERE userid = ?', array($userinfo['id']));
