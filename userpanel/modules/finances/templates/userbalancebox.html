@@ -1,19 +1,19 @@
-{box title="Twój bilans płatności:"}
 {$disable_invoices = check_conf('userpanel.disable_invoices')}
 <form name="invoices" action="?m=finances&amp;f=invoice" method="POST" target="_blank">
 <table class="table table-bordered table-striped">
-    <thead>    
-    <tr>
-        <th>{trans("Date")}</th>
-        <th class="positive">Wpłata</th>
-        <th class="negative">Zobowiązanie</th>
-	<th>Saldo</th>
-	<th>Tytuł przelewu / Opis faktury VAT</th>
-	{if !$disable_invoices}
-	<th></th>
-	{/if}
+    <tr class="info">
+        <td colspan="6"><strong>Bilans płatności:</strong></td>
     </tr>
-    </thead>    
+    <tr class="warning">
+        <td><strong>{trans("Date")}</strong></td>
+        <td class="positive"><strong>Wpłata</strong></td>
+        <td class="negative"><strong>Zobowiązanie</strong></td>
+	<td><strong>Saldo</strong></td>
+	<td><strong>Tytuł przelewu / Opis faktury VAT</strong></td>
+	{if !$disable_invoices}
+	<td></td>
+	{/if}
+    </tr>  
     {section name=balancelist loop=$balancelist.id step=-1}
     <tr>
         <td>{$balancelist.date[balancelist]}</td>
@@ -69,4 +69,3 @@
     {/if}
 </table>
 </form>
-{/box}

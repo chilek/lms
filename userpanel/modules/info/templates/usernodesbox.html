@@ -1,21 +1,23 @@
 <table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Opis urządzenia:</th>
-            <th>MAC adres:</th>
-            <th>Lokalne IP:</th>
-            <th>Publiczne IP:</th>
+    <tr class="info"><td colspan="4"><strong>Przypisane urządzenia:</strong></td></tr>
+
+
+        <tr class="warning">
+            <td><strong>Opis urządzenia:</strong></td>
+            <td><strong>MAC adres:</strong></td>
+            <td><strong>Lokalne IP:</strong></td>
+            <td><strong>Publiczne IP:</strong></td>
         </tr>
-    </thead>
+
 {section name=usernodes loop=$usernodes}
 {if $usernodes[usernodes].id}
     <tr>
-        <td>
+        <td><strong>
             {if $usernodes[usernodes].access}
                 <span class="positive">{$usernodes[usernodes].name}</span>
             {else}
                 <span class="negative">{$usernodes[usernodes].name}</span>
-            {/if}                
+            {/if}</strong>                
         </td>
         <td>{$usernodes[usernodes].mac|replace:",":"<br/>"}</td>
         <td>{$usernodes[usernodes].ip}</td>

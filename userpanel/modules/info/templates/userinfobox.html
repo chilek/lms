@@ -2,121 +2,83 @@
 <div class="alert alert-warning">{trans("WARNING! Some fields have been changed and changes must become accepted by admin")}.</div>
 {/if}
 
-<table class="table table-bordered">
-<tr>
-    <td>
-Imię i nazwisko / Nazwa firmy
-		</td>
-		<td>
-			<b>{$userinfo.customername} ({$userinfo.id|string_format:"%04d"})</b>
-		</td>
+<table class="table table-bordered table-striped">
+        <tr class="info">
+            <td colspan="2"><strong>Dane osobowe:</strong></td>
+        </tr>
+        <tr>
+            <td><strong>Imię i nazwisko / Nazwa firmy</strong></td>
+            <td>{$userinfo.customername} ({$userinfo.id|string_format:"%04d"})</td>
 	</tr>
-{if $userinfo.email}
+        {if $userinfo.email}
 	<tr>
-		<td>
-			E-mail:
-		</td>
-		<td>
-			{$userinfo.email}
-		</td>
+            <td><strong>E-mail:</strong></td>
+            <td>{$userinfo.email}</td>
 	</tr>
-{/if}
+        {/if}
 	<tr>
-		<td>
-			Adres instalacji:
-		</td>
-		<td>
-			{$userinfo.address}<br/>
-			{$userinfo.zip} {$userinfo.city}
-		</td>
+            <td><strong>Adres instalacji:</strong></td>
+            <td>{$userinfo.address}<br/>{$userinfo.zip} {$userinfo.city}</td>
 	</tr>
-{if $userinfo.contacts}
+        {if $userinfo.contacts}
 	<tr>
-		<td>
-			Telefony kontaktowe:
-		</td>
-		<td>
-			{foreach from=$userinfo.contacts item=item}
-        			{if $item.phone}{$item.phone}<BR />{/if}
-	        	{/foreach}
-		</td>
+            <td><strong>Telefony kontaktowe:</strong></td>
+            <td>{foreach from=$userinfo.contacts item=item}
+                    {if $item.phone}{$item.phone}<BR />{/if}
+                {/foreach}
+            </td>
 	</tr>
-{/if}
-{if $userinfo.im neq "" && $userinfo.im neq 0}
+        {/if}
+        {if $userinfo.im neq "" && $userinfo.im neq 0}
 	<tr>
-		<td>
-			Gadu-Gadu:
-		</td>
-		<td>
-			{$userinfo.im}
-		</td>
+            <td><strong>Gadu-Gadu:</strong></td>
+            <td>{$userinfo.im}</td>
 	</tr>
-{/if}
-{foreach from=$userinfo.messengers item=item}
+        {/if}
+        {foreach from=$userinfo.messengers item=item}
 	<tr>
-		<td>
-			{if $item.type == $smarty.const.IM_GG}
-			{img src="gg.gif" alt=""}
-			{elseif $item.type == $smarty.const.IM_YAHOO}
-			{img src="yahoo.gif" alt=""}
-			{elseif $item.type == $smarty.const.IM_SKYPE}
-			{img src="skype.gif" alt=""}
-			{/if}
-		</td>
-		<td>
-			{$item.uid}
-		</td>
+            <td>
+                {if $item.type == $smarty.const.IM_GG}
+                    {img src="gg.gif" alt=""}
+                {elseif $item.type == $smarty.const.IM_YAHOO}
+                    {img src="yahoo.gif" alt=""}
+                {elseif $item.type == $smarty.const.IM_SKYPE}
+                    {img src="skype.gif" alt=""}
+                {/if}
+            </td>
+            <td>{$item.uid}</td>
 	</tr>
-{/foreach}
-{if $userinfo.ten neq ""}
+        {/foreach}
+        {if $userinfo.ten neq ""}
 	<tr>
-		<td>
-			{trans("TEN")}
-		</td>
-		<td>
-			{$userinfo.ten}
-		</td>
+            <td><strong>{trans("TEN")}</strong></td>
+            <td>{$userinfo.ten}</td>
 	</tr>
-{/if}
-{if $userinfo.ssn neq ""}
+        {/if}
+        {if $userinfo.ssn neq ""}
 	<tr>
-		<td>
-			{trans("SSN")}
-		</td>
-                <td>
-			{$userinfo.ssn}
-		</td>
+            <td><strong>{trans("SSN")}</strong></td>
+            <td>{$userinfo.ssn}</td>
 	</tr>
-{/if}
+        {/if}
 	<tr>
-		<td>
-			{trans("Balance:")}
-		</td>
-		<td>
-			{if $userinfo.balance < 0}<font color="red"><b>{$userinfo.balance|money_format}</b></font>{else}{$userinfo.balance|money_format}{/if}
-		</td>
+            <td><strong>{trans("Balance:")}</strong></td>
+            <td>{if $userinfo.balance < 0}<font color="red"><b>{$userinfo.balance|money_format}</b></font>{else}{$userinfo.balance|money_format}{/if}</td>
 	</tr>
-{$bankaccount = bankaccount($userinfo.id, $userinfo.account)}
-{if $bankaccount}
+        {$bankaccount = bankaccount($userinfo.id, $userinfo.account)}
+        {if $bankaccount}
 	<tr>
-
-	    <td>
-			{trans("Bank account:")}
-		</td>
-		<td>
-			{format_bankaccount($bankaccount)|replace:" ":"&nbsp;"}
-		</td>
+            <td><strong>{trans("Bank account:")}</strong></td>
+            <td>{format_bankaccount($bankaccount)|replace:" ":"&nbsp;"}	</td>
 	</tr>
-{/if}
+        {/if}
 	{if $rights.info.edit_addr ||
 	    $rights.info.edit_addr_ack ||
 	    $rights.info.edit_contact ||
 	    $rights.info.edit_contact_ack
 	}
-	<tr>
-		<td colspan="2">
-			<a class="btn btn-danger" href="?m=info&amp;f=updateuserform" accesskey="A">{trans("Actualize data")}</a>
-		</td>
+        <tr class="warning">
+            <td colspan="2"><a class="btn btn-info" href="?m=info&amp;f=updateuserform" accesskey="A">{trans("Actualize data")}</a></td>
 	</tr>
 	{/if}
 </table>

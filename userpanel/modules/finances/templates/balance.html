@@ -1,5 +1,4 @@
 <!--// $Id$ //-->
-{box title="Balance:"}
 {if $userinfo.balance < 0}
     <div class="alert alert-error">
         <h1>Kwota do zapłaty: {$userinfo.balance|money_format}</h1>
@@ -11,4 +10,4 @@
     {trans("All your covenants are settled")}.
 {/if}
     </div>
-{/box}
+
