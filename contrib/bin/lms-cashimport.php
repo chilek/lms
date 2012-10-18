@@ -154,7 +154,7 @@ function parse_file($filename, $contents) {
 	if (!$quiet)
 		printf("Getting cash import file ".$filename." ... ");
 
-	@include(!empty($CONFIG['phpui']['import_config']) ? $CONFIG['phpui']['import_config'] : 'cashimportcfg.php');
+	@include_once(!empty($CONFIG['phpui']['import_config']) ? $CONFIG['phpui']['import_config'] : 'cashimportcfg.php');
 
 	if (!isset($patterns) || !is_array($patterns))
 	{
