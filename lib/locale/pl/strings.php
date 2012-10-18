@@ -2627,5 +2627,6 @@ $_LANG['Enter access start date in YYYY/MM/DD format. If you don\'t want to defi
 $_LANG['Enter access end date in YYYY/MM/DD format. If you don\'t want to define \'To\' date leave this field empty'] = 'Wprowadź datę do której ważność konta powinna obowiązywać lub zostaw to pole puste. Data powinna być w formacie RRRR/MM/DD';
 $_LANG['Last modification time:'] = 'Czas ostatniej modyfikacji:';
 $_LANG['Last modified by:'] = 'Ostatnio zmodyfikował:';
+$_LANG['Turns on the upper toolbar. Default: 1'] = 'Włącz górny pasek narzędzi. Demyślnie: 1';
 
 ?>

@@ -276,6 +276,10 @@ function GetConfigList($order='var,asc', $section='', $search='')
 				case 'report_type':
 					$config[$idx]['description'] = trans('Documents type. You can use "html" or "pdf". Default: html.');
 				break;
+				
+				case 'display_toolbar' :
+					$config[$idx]['description'] = trans('Turns on the upper toolbar. Default: 1');
+				break;
 
 				default:
 					$config[$idx]['description'] = trans('Unknown option. No description.');
