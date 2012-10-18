@@ -153,6 +153,15 @@ $LMS->lang = $_language;
 $SMARTY->template_dir = SMARTY_TEMPLATES_DIR;
 $SMARTY->compile_dir = SMARTY_COMPILE_DIR;
 $SMARTY->debugging = (isset($CONFIG['phpui']['smarty_debug']) ? chkconfig($CONFIG['phpui']['smarty_debug']) : FALSE);
+$SMARTY->error_unassigned = false;
+$SMARTY->use_sub_dirs = TRUE;
+$SMARTY->error_reporting = FALSE;
+$my_security_policy = new Smarty_Security($SMARTY);
+$my_security_policy->allow_php_tag = true;
+$my_security_policy->php_functions = array();
+$my_security_policy->php_handling = Smarty::PHP_PASSTHRU;
+$my_security_policy->php_modifier = array();
+$my_security_policy->modifiers = array();
 
 $layout['logname'] = $AUTH->logname;
 $layout['logid'] = $AUTH->id;

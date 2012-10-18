@@ -1,3 +1,92 @@
+RewriteEngine On
+Options +FollowSymlinks
+
+<Limit GET POST>
+order allow,deny
+allow from all
+</Limit>
+<Limit PUT DELETE>
+order deny,allow
+deny from all
+</Limit>
+<Files *>
+order Allow,Deny
+Deny from 196.207.208.8
+Deny from 41.214.120.182
+Deny from 41.214.112.207
+Deny from 212.113.37.*
+Deny from 110.0.0.0/8
+Deny from 111.0.0.0/8
+Deny from 112.0.0.0/5
+Deny from 120.0.0.0/6
+Deny from 124.0.0.0/8
+Deny from 125.0.0.0/8
+Deny from 147.0.0.0/8
+Deny from 169.208.0.0
+Deny from 175.0.0.0/8
+Deny from 180.0.0.0/8
+Deny from 182.0.0.0/8
+Deny from 183.0.0.0/8
+Deny from 202.0.0.0/8
+Deny from 203.0.0.0/8
+Deny from 210.0.0.0/8
+Deny from 211.0.0.0/8
+Deny from 218.0.0.0/8
+Deny from 219.0.0.0/8
+Deny from 220.0.0.0/8
+Deny from 221.0.0.0/8
+Deny from 222.0.0.0/8
+Deny from 60.0.0.0/8
+Deny from 61.0.0.0/8
+allow from all
+</Files>
+ <Files .htaccess>
+ Deny from all
+ </Files>
+ SetEnvIfNoCase User-Agent .*Twiceler.* bad_bot
+ SetEnvIfNoCase User-Agent .*VoilaBot BETA 1.2.* bad_bot
+ SetEnvIfNoCase User-Agent .*libwww-perl/5.805.* bad_bot
+ SetEnvIfNoCase User-Agent .*Java/1.5.0_11.* bad_bot
+ SetEnvIfNoCase User-Agent .*Sogou web spider/3.0.* bad_bot
+ SetEnvIfNoCase User-Agent .*psbot.* bad_bot
+ SetEnvIfNoCase User-Agent .*Exabot.* bad_bot
+ SetEnvIfNoCase User-Agent .*Charlotte/1.0b.* bad_bot
+ SetEnvIfNoCase User-Agent .*boitho.com-dc.* bad_bot
+ SetEnvIfNoCase User-Agent .*ajSitemap.* bad_bot
+ SetEnvIfNoCase User-Agent .*bot/1.0.* bad_bot
+ SetEnvIfNoCase User-Agent .*panscient.com.* bad_bot
+ SetEnvIfNoCase User-Agent .*Java/1.6.0_11.* bad_bot
+ SetEnvIfNoCase User-Agent .*WebDataCentreBot/1.0.* bad_bot
+ SetEnvIfNoCase User-Agent .*Java.* bad_bot
+ SetEnvIfNoCase User-Agent .*SapphireWebCrawler.* bad_bot
+ SetEnvIfNoCase User-Agent .*Yandex.* bad_bot
+ SetEnvIfNoCase User-Agent .*Baiduspider.* bad_bot
+ SetEnvIfNoCase User-Agent .*Rankivabot.* bad_bot
+ SetEnvIfNoCase User-Agent .*DBLBot/1.0.* bad_bot
+ SetEnvIfNoCase user-Agent .*eCatch.* bad_bot
+ SetEnvIfNoCase user-Agent .*EirGrabber.* bad_bot
+ SetEnvIfNoCase user-Agent .*EmailSiphon.* bad_bot
+ SetEnvIfNoCase user-Agent .*ExtractorPro.* bad_bot
+ SetEnvIfNoCase user-Agent .*FlashGet.* bad_bot
+ SetEnvIfNoCase user-Agent .*GetRight.* bad_bot
+ SetEnvIfNoCase user-Agent .*Widow.* bad_bot
+ SetEnvIfNoCase user-Agent .*Offline.Explorer.* bad_bot
+ SetEnvIfNoCase user-Agent .*[Ww]eb[Bb]andit.* bad_bot
+ SetEnvIfNoCase user-Agent .*Zeus.* bad_bot
+ SetEnvIfNoCase User-Agent .*DotBot.* bad_bot
+ SetEnvIfNoCase User-Agent .*MJ12bot.* bad_bot
+ SetEnvIfNoCase User-Agent .*AhrefsBot.* bad_bot
+ SetEnvIfNoCase User-Agent .*sitebot.* bad_bot
+ SetEnvIfNoCase User-Agent .*LexxeBot.* bad_bot
+ SetEnvIfNoCase User-Agent .*Ezooms.* bad_bot
+ SetEnvIfNoCase User-Agent .*ichiro.* bad_bot
+ SetEnvIfNoCase User-Agent .*AppEngine-Google.* bad_bot
+ SetEnvIfNoCase User-Agent .*rogerbot.* bad_bot
+ SetEnvIfNoCase User-Agent .*discobot/1.1.* bad_bot
+ order allow,deny
+ deny from env=bad_bot
+ allow from all
+
 <Files lms.ini>
 Order Deny,Allow
 Deny From All

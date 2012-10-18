@@ -1,0 +1,3 @@
+UserAgent: *
+Disallow: *
+Disallow: /*
