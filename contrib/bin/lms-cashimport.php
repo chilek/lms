@@ -422,7 +422,7 @@ function commit_cashimport()
 	}
 }
 
-$ih = imap_open("{" . $CONFIG['cashimport']['server'] . "}INBOX", $CONFIG['cashimport']['username'], $CONFIG['cashimport']['password']);
+$ih = @imap_open("{" . $CONFIG['cashimport']['server'] . "}INBOX", $CONFIG['cashimport']['username'], $CONFIG['cashimport']['password']);
 if (!$ih)
 	die("Cannot connect to mail server!\n");
 
