@@ -427,24 +427,25 @@ if (!$ih)
 	die("Cannot connect to mail server!\n");
 
 $posts = imap_search($ih, 'UNSEEN');
-foreach ($posts as $postid) {
-	$post = imap_fetchstructure($ih, $postid);
-	if ($post->type == 1) {
-		$parts = $post->parts;
-		//print_r($parts);
-		foreach ($parts as $partid => $part )
-			if ($part->ifdisposition && $part->disposition == 'ATTACHMENT' && $part->type == 0) {
-				$fname = $part->dparameters[0]->value;
-				$msg = imap_fetchbody($ih, $postid, $partid + 1);
-				if ($part->encoding == 3)
-					$msg = imap_base64($msg);
-				imap_setflag_full($ih, $postid, "\\Seen");
-				parse_file($fname, $msg);
-				if (chkconfig($CONFIG['cashimport']['autocommit']))
-					commit_cashimport();
-			}
+if (!empty($posts))
+	foreach ($posts as $postid) {
+		$post = imap_fetchstructure($ih, $postid);
+		if ($post->type == 1) {
+			$parts = $post->parts;
+			//print_r($parts);
+			foreach ($parts as $partid => $part )
+				if ($part->ifdisposition && strtoupper($part->disposition) == 'ATTACHMENT' && $part->type == 0) {
+					$fname = $part->dparameters[0]->value;
+					$msg = imap_fetchbody($ih, $postid, $partid + 1);
+					if ($part->encoding == 3)
+						$msg = imap_base64($msg);
+					imap_setflag_full($ih, $postid, "\\Seen");
+					parse_file($fname, $msg);
+					if (chkconfig($CONFIG['cashimport']['autocommit']))
+						commit_cashimport();
+				}
+		}
 	}
-}
 
 imap_close($ih);
 
