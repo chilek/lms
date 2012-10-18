@@ -148,13 +148,13 @@ $LMS->lang = $_language;
 if (empty($CONFIG['cashimport']['server']) || empty($CONFIG['cashimport']['username']) || empty($CONFIG['cashimport']['password']))
 	die("Fatal error: mailbox credentials are not set!\n");
 
+@include(!empty($CONFIG['phpui']['import_config']) ? $CONFIG['phpui']['import_config'] : 'cashimportcfg.php');
+
 function parse_file($filename, $contents) {
-	global $CONFIG, $DB, $quiet;
+	global $CONFIG, $DB, $quiet, $patterns;
 
 	if (!$quiet)
 		printf("Getting cash import file ".$filename." ... ");
-
-	@include_once(!empty($CONFIG['phpui']['import_config']) ? $CONFIG['phpui']['import_config'] : 'cashimportcfg.php');
 
 	if (!isset($patterns) || !is_array($patterns))
 	{
