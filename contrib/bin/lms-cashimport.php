@@ -426,7 +426,7 @@ $ih = @imap_open("{" . $CONFIG['cashimport']['server'] . "}INBOX", $CONFIG['cash
 if (!$ih)
 	die("Cannot connect to mail server!\n");
 
-$posts = imap_search($ih, !empty($CONFIG['cashimport']['use_seen_flag']) ? 'UNSEEN' : 'ALL');
+$posts = imap_search($ih, chkconfig($CONFIG['cashimport']['use_seen_flag'], true) ? 'UNSEEN' : 'ALL');
 if (!empty($posts))
 	foreach ($posts as $postid) {
 		$post = imap_fetchstructure($ih, $postid);
@@ -439,7 +439,7 @@ if (!empty($posts))
 					$msg = imap_fetchbody($ih, $postid, $partid + 1);
 					if ($part->encoding == 3)
 						$msg = imap_base64($msg);
-					if (!empty($CONFIG['cashimport']['use_seen_flag']))
+					if (chkconfig($CONFIG['cashimport']['use_seen_flag'], true))
 						imap_setflag_full($ih, $postid, "\\Seen");
 					parse_file($fname, $msg);
 					if (chkconfig($CONFIG['cashimport']['autocommit']))
