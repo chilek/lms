@@ -147,7 +147,7 @@ $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 */
 
-define(ZIP_CODE, '15-950');
+define(ZIP_CODE, '44-196');
 
 $borough_types = array(
 	1 => 'gm. miejska',
