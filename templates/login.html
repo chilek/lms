@@ -1,77 +1,38 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<!--// $Id$ //-->
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta name="GENERATOR" content="LMS {$layout.lmsv}">
-    <meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
-    <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
-    <link href="{get_conf('phpui.style', 'img/style.css')}" rel="stylesheet" type="text/css">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />  
     <link href="img/lms-net.gif" rel="shortcut icon">
     <title>::: {trans("Welcome to LMS")} {$layout.lmsv} :::</title>
+    
+    <link href="assets/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="assets/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
 </head>
 <body>
-<table width="100%" height="100%">
-	<tr>
-		<td valign="middle" align="center">
-			<table align="center" cellpadding="20">
-				<tr>
-					<td>
-						<img src="img/logo.gif" alt="">
-					</td>
-					<td align="center" class="loginform light" width="300">
-						<b>{trans("LMS version")} {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}<br><br>
-						&copy; 2001-2012 LMS Developers</b><br><br><br>
-						{if $error}<font class="alert bold">{$error}</font>{else}&nbsp;{/if}<br>
-						<br>
-						<form method="post" name="loginform" action="{$target}">
-						<INPUT type="submit" class="hiddenbtn">
-							<table>
-								<tr>
-									<td align="right">
-										<b>{trans("Login:")}&nbsp;</b>
-									</td>
-									<td>
-										<input class="bold" type="TEXT" name="loginform[login]" size="10" accesskey="l" autofocus>
-									</td>
-								</tr>
-								<tr>
-									<td align="right">
-										<b>{trans("Password:")}&nbsp;</b>
-									</td>
-									<td>
-										<input class="bold" type="PASSWORD" name="loginform[pwd]" size="10"><br>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="2">
-										&nbsp;
-									</td>
-								</tr>
-								<tr>
-									<td colspan="2" align="center">
-										<input class="bold" type="SUBMIT" name="loginform[submit]" value="{trans("Login")}">
-									</td>
-								</tr>
-							</table>
-						</form>
-						<br>
-						<br>
-						<br>
-						<a href="doc/html/{$_ui_language}/"><font class="blend">{trans("Documentation")}</font></a><br>
-						<a href="http://www.lms.org.pl/"><font class="blend">{trans("LMS Project Homepage")}</font></a>
-					</td>
-				</tr>
-				{if $layout.dberrors}
-				<tr>
-					<td colspan="2">
-					{include file="dberrors.html"}
-					</td>
-				</tr>
-				{/if}
-			</table>
-		</td>
-	</tr>
-</table>
+<div class="container-fluid">
+    <div class="row-fluid show-grid">
+        <div class="span3"></div>
+        <div class="span6">
+            <h1>LAN Management System {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}</h1>
+            <p>&copy; 2001-2012 LMS Developers</p>
+            {if $error}<div class="alert alert-info">{$error}</div>{/if}
+            <form class="well form-inline" method="post" name="loginform" action="{$target}">
+                <input type="text" name="loginform[login]" accesskey="l" autofocus class="input-small" placeholder="{trans("Login:")}">
+                <input type="password" name="loginform[pwd]" class="input-small" placeholder="{trans("Password:")}">
+                <input type="submit" class="btn" name="loginform[submit]" value="{trans("Login")}">
+            </form>
+            <a href="doc/html/{$_ui_language}/">{trans("Documentation")}</a> | <a href="http://www.lms.org.pl/">{trans("LMS Project Homepage")}</a> | <a href="https://github.com/lmsgit/lms/">Repozytorium GIT</a>		
+        </div>
+        <div class="span3"></div>
+    </div>
+</div>
+{if $layout.dberrors}
+<div class="alert alert-error">
+{include file="dberrors.html"}
+</div>
+{/if}
+
 <script type="text/javascript">
 <!--
 document.forms['loginform'].elements['loginform[login]'].focus();

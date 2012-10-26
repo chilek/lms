@@ -1,0 +1,225 @@
+#!/usr/bin/perl
+#
+#  LMS version 1.11-cvs
+#
+#  Copyright (C) 2001-2011 LMS Developers
+#
+#  Please, see the doc/AUTHORS for more information about authors!
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License Version 2 as
+#  published by the Free Software Foundation.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+#  USA.
+#
+#  $Id: lms-sendinvoices,v 1.51 2011/01/18 08:11:58 alec Exp $
+
+use strict;
+use DBI;
+use Config::IniFiles;
+use Getopt::Long;
+use vars qw($configfile $help $version $quiet $fakedate $fwmiesiac);
+use POSIX qw(strftime);
+use LWP::UserAgent;
+use Time::Local;
+use MIME::QuotedPrint;
+
+my $_version = '1.11-cvs';
+
+my %options = (
+	"--config-file|C=s"     =>      \$configfile,
+	"--quiet|q"     	=>      \$quiet,
+	"--help|h"              =>      \$help,
+	"--version|v"           =>      \$version,
+	"--fakedate|f=s"	=>	\$fakedate,
+	"--fwmiesiac|m=s"	=>	\$fwmiesiac,
+);
+
+Getopt::Long::config("no_ignore_case");
+GetOptions(%options);
+
+if($help)
+{
+	print STDERR <<EOF;
+lms-sendinvoices, version $_version
+(C) 2001-2011 LMS Developers
+
+-C, --config-file=/etc/lms/lms.ini    alternate config file 
+			    (default: /etc/lms/lms.ini);
+-q, --quiet		    suppress any output, except errors;
+-h, --help		    print this help and exit;
+-v, --version		    print version info and exit;
+-f, --fakedate=YYYY/MM/DD   override system date;
+-m, --fwmiesiac=MM   override system date;
+EOF
+	exit 0;
+}
+
+
+print $fwmiesiac;
+
+if($version)
+{
+	print STDERR <<EOF;
+lms-sendinvoices, version $_version
+(C) 2001-2011 LMS Developers
+
+EOF
+	exit 0;
+}
+
+if(!$configfile)
+{
+	$configfile = "/etc/lms/lms.ini";
+}
+
+if(! -r $configfile)
+{
+	print STDERR "Fatal error: Unable to read configuration file $configfile, exiting.\n";
+	exit 1;
+}
+
+if(!$quiet)
+{
+	print STDOUT "lms-saveinvoices, version $_version\n";
+	print STDOUT "(C) 2001-2011 LMS Developers\n";
+	print STDOUT "Using file $configfile as config.\n";
+}
+
+my $ini = new Config::IniFiles -file => $configfile;
+print "a2";
+print @Config::IniFiles::errors;
+print "a3";
+my $dbtype = $ini->val('database', 'type') || 'mysql';
+my $dbhost = $ini->val('database', 'host') || 'localhost';
+my $dbuser = $ini->val('database', 'user') || '';
+my $dbpasswd = $ini->val('database', 'password') || '';
+my $dbname = $ini->val('database', 'database') || 'lms';
+
+my $lms_url = $ini->val('sendinvoices', 'lms_url') || 'http://lms.alfa-system.pl';
+my $lms_user = $ini->val('sendinvoices', 'lms_user') || '';
+my $lms_password = $ini->val('sendinvoices', 'lms_password') || '';
+
+
+my $filetype = $ini->val('invoices', 'type') || '';
+my $customergroups = $ini->val('sendinvoices', 'customergroups') || '';
+
+
+my $dbase;
+my $utsfmt;
+
+print "a1";
+
+if($dbtype =~ /mysql/)
+{
+	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+	$dbase->do("SET NAMES utf8");
+	$utsfmt = "UNIX_TIMESTAMP()";
+}
+else
+{
+	print STDERR "Fatal error: unsupported database type: $dbtype, exiting.\n";
+	exit 1;
+}
+
+sub localtime2()
+{
+	if($fakedate)
+	{
+		my @fakedate = split(/\//, $fakedate);
+		return localtime(timelocal(0,0,0,$fakedate[2],$fakedate[1]-1,$fakedate[0]));
+	}
+	else
+	{
+		return localtime();
+	}
+}
+
+
+# get/set invoice file type
+my $dbq = $dbase->prepare("SELECT value FROM uiconfig WHERE section='invoices' AND var='type' AND disabled=0");
+$dbq->execute();
+if(my $row = $dbq->fetchrow_hashref())
+{
+	$filetype = $row->{'value'};
+}
+
+my $fencoding = 'quoted-printable';
+my $ftype = 'text/html';
+my $fext = 'html';
+
+if($filetype eq 'pdf')
+{
+	$ftype = 'application/octetstream';
+	$fencoding = 'Base64';
+	$fext = 'pdf';
+}
+
+
+
+my $month =  int strftime("%m",localtime2());
+my $day = int strftime("%d",localtime2());
+my $year = strftime("%Y",localtime2());
+my $daystart = strftime("%s", 0, 0, 0, $day, $month - 1, $year - 1900);
+my $dayend = strftime("%s", 59, 59, 23, $day, $month - 1, $year - 1900);
+
+
+my $groupwhere = '';
+my $groupjoin = '';
+
+if($customergroups)
+{
+	$customergroups = "UPPER('$customergroups')";
+	$customergroups =~ s/[ \t]+/\'\),UPPER\(\'/g;
+	$groupwhere = " AND UPPER(customergroups.name) IN ($customergroups)";  
+	$groupjoin = "LEFT JOIN customerassignments ON (d.customerid = customerassignments.customerid) 
+			LEFT JOIN customergroups ON (customerassignments.customergroupid = customergroups.id) ";
+}
+
+$dbq = $dbase->prepare("SELECT d.id, d.number, d.cdate, c.email, d.name, d.customerid, n.template
+			FROM documents d 
+			LEFT JOIN customers c ON (c.id = d.customerid) 
+			LEFT JOIN numberplans n ON (n.id = d.numberplanid)
+			$groupjoin
+			WHERE c.deleted = 0 AND d.type = 1 AND c.email != '' 
+				AND d.cdate >= $daystart AND d.cdate <= $dayend
+				$groupwhere");
+$dbq->execute();
+while(my $row = $dbq->fetchrow_hashref())
+{
+my $ua = LWP::UserAgent->new;
+print "1";
+	my $response = $ua->get($lms_url.'/?m=invoice&override=1&original=0&id='.$row->{'id'}.'&loginform[login]='.$lms_user.'&loginform[pwd]='.$lms_password);
+	
+	if ($response->is_success)
+	{
+		my $date = strftime("%Y-%m-%d", localtime($row->{'cdate'}));
+		
+		my $pdf_data = $response->content;
+		open my $ofh, '>:raw', 'faktury/'.$date.'_'.$row->{'id'}.'.'.$fext
+		    or die "Could not write: $!";
+		    print {$ofh} $pdf_data;
+		    close $ofh;
+		    
+		
+		if(!$quiet)
+		{
+			print "Invoice No. $row->{id} for $row->{'name'}\n";
+		}
+	}
+	else
+	{
+		print STDERR "Error: ".$response->status_line."\n";
+	}
+}
+
+$dbq->finish();
+$dbase->disconnect();

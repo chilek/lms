@@ -1,0 +1,128 @@
+<!--// $Id$ //-->
+{box title="Informations about you"}
+<table class="table table-bordered">
+{if $fields_changed}
+<tr>
+    <td colspan="2">
+        <span class="label label-important">{trans("WARNING! Some fields have been changed and changes must become accepted by admin")}</span>
+    </td>
+</tr>
+{/if}
+<tr>
+    <td>
+Imię i nazwisko / Nazwa firmy
+		</td>
+		<td>
+			<b>{$userinfo.customername} ({$userinfo.id|string_format:"%04d"})</b>
+		</td>
+	</tr>
+{if $userinfo.email}
+	<tr>
+		<td>
+			E-mail:
+		</td>
+		<td>
+			{$userinfo.email}
+		</td>
+	</tr>
+{/if}
+	<tr>
+		<td>
+			Adres instalacji:
+		</td>
+		<td>
+			{$userinfo.address}<br/>
+			{$userinfo.zip} {$userinfo.city}
+		</td>
+	</tr>
+{if $userinfo.contacts}
+	<tr>
+		<td>
+			Telefony kontaktowe:
+		</td>
+		<td>
+			{foreach from=$userinfo.contacts item=item}
+        			{if $item.phone}{$item.phone}<BR />{/if}
+	        	{/foreach}
+		</td>
+	</tr>
+{/if}
+{if $userinfo.im neq "" && $userinfo.im neq 0}
+	<tr>
+		<td>
+			Gadu-Gadu:
+		</td>
+		<td>
+			{$userinfo.im}
+		</td>
+	</tr>
+{/if}
+{foreach from=$userinfo.messengers item=item}
+	<tr>
+		<td>
+			{if $item.type == $smarty.const.IM_GG}
+			{img src="gg.gif" alt=""}
+			{elseif $item.type == $smarty.const.IM_YAHOO}
+			{img src="yahoo.gif" alt=""}
+			{elseif $item.type == $smarty.const.IM_SKYPE}
+			{img src="skype.gif" alt=""}
+			{/if}
+		</td>
+		<td>
+			{$item.uid}
+		</td>
+	</tr>
+{/foreach}
+{if $userinfo.ten neq ""}
+	<tr>
+		<td>
+			{trans("TEN")}
+		</td>
+		<td>
+			{$userinfo.ten}
+		</td>
+	</tr>
+{/if}
+{if $userinfo.ssn neq ""}
+	<tr>
+		<td>
+			{trans("SSN")}
+		</td>
+                <td>
+			{$userinfo.ssn}
+		</td>
+	</tr>
+{/if}
+	<tr>
+		<td>
+			{trans("Balance:")}
+		</td>
+		<td>
+			{if $userinfo.balance < 0}<font color="red"><b>{$userinfo.balance|money_format}</b></font>{else}{$userinfo.balance|money_format}{/if}
+		</td>
+	</tr>
+{$bankaccount = bankaccount($userinfo.id, $userinfo.account)}
+{if $bankaccount}
+	<tr>
+
+	    <td>
+			{trans("Bank account:")}
+		</td>
+		<td>
+			{format_bankaccount($bankaccount)|replace:" ":"&nbsp;"}
+		</td>
+	</tr>
+{/if}
+	{if $rights.info.edit_addr ||
+	    $rights.info.edit_addr_ack ||
+	    $rights.info.edit_contact ||
+	    $rights.info.edit_contact_ack
+	}
+	<tr>
+		<td colspan="2">
+			<a class="btn btn-danger" href="?m=info&amp;f=updateuserform" accesskey="A">{trans("Actualize data")}</a>
+		</td>
+	</tr>
+	{/if}
+</table>
+{/box}

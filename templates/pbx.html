@@ -1,0 +1,66 @@
+{include file="header.html"}
+<!--// $Id: tariffl.html,v 1.45 2005/10/19 13:34:49 lukas Exp $ //-->
+<TABLE WIDTH="100%" CELLPADDING="3">
+        <TR CLASS="DARK">
+            <TD WIDTH="1%" CLASS="fleftu">
+
+            </TD>
+            <TD WIDTH="1%" CLASS="fbt"><B></B></TD>
+            <TD WIDTH="98%" CLASS="frightu">
+            <h1>Wybierz typ komunikatu</h1>
+            </TD>
+
+        </TR>
+        <TR class="LIGHT">
+
+            <TD WIDTH="100%" COLSPAN="3" CLASS="flr">
+
+                <TABLE WIDTH="100%" CELLPADDING="0">
+                    <TR CLASS="LIGHT">
+                        <TD WIDTH="80%" VALIGN="top">
+                            <TABLE WIDTH="100%" CELLPADDING="3" border=0>
+
+
+                            <tr CLASS="frightu">
+                            <td align=center colspan=8>
+                            <p>STATUS CENTRALI: <b>{$type}</b></p>
+
+
+<form method="get" name="formpbx" action="?m=pbx&typ={$typ}">
+<INPUT TYPE="HIDDEN" NAME="m" VALUE="pbx">
+
+<p>ZMIEN STATUS:
+<select size="1" name="typ"  onchange="document.formpbx.submit();">
+<option value="0"> - </option>
+<option value="1">STANDARD - normalna praca</option>
+<option value="2">AWARIA - gdy padnie wszystko</option>
+<option value="3">DZEIN WOLNY - gdy nie pracujemy</option>
+<option value="4">PO PRACY - gdy nie ma nas w biurze</option>
+</select>
+</p>
+<INPUT type="submit" class="hiddenbtn">
+</form>
+
+<hr>
+<p><b>TEST</b> ( Sugerowany STATUS: <b>{$suggest}</b> )</p>
+                            </td>
+                        </tr>
+
+                        </table>
+                    </TD>
+                    <TD WIDTH="30%" VALIGN="top">
+                        <TABLE WIDTH="100%" CELLPADDING="3">
+
+                            </TABLE>
+                        </TD>
+                    </TR>
+                </TABLE>
+            </TD>
+        </TR>
+        <TR CLASS="LIGHT">
+            <TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
+
+            </TD>
+        </TR>
+</TABLE></FORM></P>
+{include file="footer.html"}

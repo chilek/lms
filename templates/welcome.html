@@ -157,6 +157,24 @@
 						{/if}
 					</TD>
 				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
+						<B><A HREF="#">Abonenci z mailami:</A><BR>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHTU">
+						{$emails} ( 
+{math equation="(a / b) * c" a=$emails b=$customerstats.total c=100 format="%.2f"} % )
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
+						<B><A HREF="#">Abonenci z PESEL:</A><BR>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHTU">
+						{$pesel} ( 
+{math equation="(a / b) * c" a=$pesel b=$customerstats.total c=100 format="%.2f"} % )
+					</TD>
+				</TR>
 			</TABLE>
 		</TD>
 		<TD WIDTH="50%" style="vertical-align: top;" COLSPAN="6">
@@ -267,8 +285,8 @@
 					</TD>
 				</TR>
 			</TABLE>
-
-					</TD>
+                                                                
+                                        </TD>
 				{if $rtstatscounter mod 5 == 4}
 				</TR>
 				{/if}

@@ -1,68 +1,107 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<!--// $Id$ //-->
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{$_ui_language}">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta content="text/html; charset={$LANGDEFS.$_ui_language.charset}" http-equiv="content-type" />
-  <title>{trans("Virtual Customer Service")}</title>
-<link type="text/css" rel="stylesheet" href="{stylefile}" />
+    <meta content="text/html; charset={$LANGDEFS.$_ui_language.charset}" http-equiv="content-type" />
+    <title>{trans("Virtual Customer Service")}</title>
+    <!-- TWITTER BOOTSTRAP -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://bok.alfa-system.pl/style/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://bok.alfa-system.pl/style/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
 </head>
 <body>
-<div class="login">
-<table style="vertical-align: middle; width:100%; height: 100%; margin:auto">
-    <tr>
-	<td align="center">
-	    <table>
-		<tr>
-		    <td>
-			{img src="logo.jpg" alt=""}
-		    </td>
-		    <td>&nbsp;</td>
-		    <td align="center">
-			{box title="VCS"}
-			<div style="white-space: nowrap; text-align: center;"><b>{trans("Virtual Customer Service")}</b></div><br/>
-			{if $error}<div style="color:red;text-align: center;"><b>{$error}</b></div>{else}&nbsp;{/if}
-			<br/><br/>
-			<form id="login" method="post" action="{$target}">
-			<table style="height: 100%; width: 100%;">
-			    <tr>
-				<td align="right" style="white-space: nowrap;">
-				    <b>{trans("Customer ID:")}</b>
-				</td>
-				<td align="left">
-				    <input type="text" name="loginform[login]" style="width: 50pt" />
-				</td>
-			    </tr>
-			    <tr>
-				<td align="right" style="white-space: nowrap;">
-				    <b>{trans("PIN:")}</b>
-				</td>
-				<td align="left">
-				    <input type="password" name="loginform[pwd]" style="width: 50pt" />
-				</td>
-			    </tr>
-			    <tr>
-				<td colspan="2" align="center">
-				    <br/><input type="submit" name="loginform[submit]" style="font-weight: bold;" value="{trans("Login")}"/>
-				</td>
-			    </tr>
-			</table>
-			</form>
-			{/box}
-		    </td>
-    		</tr>
-	    </table>
-	    <div class="copyrights"><b>LMS Userpanel {$layout.upv}</b><br/>
-	    {trans("This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License version 2.")}<br/>
-	    {trans("For more information see")} <a href="doc/COPYING">doc/COPYING</a> {trans("and")} <a href="doc/AUTHORS">doc/AUTHORS</a>
-	    </div>
-	</td>
-    </tr>
-</table>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12">
+                <a href="http://alfa-system.pl"><img src="http://alfa-system.pl/media/images/logo.png" alt="Alfa-System" /></a>
+               
+                <div class="row-fluid">
+                    <div class="span4">
+                        <fieldset>
+                            <legend>{t}Virtual Customer Service{/t}</legend>
+                            <form id="login" method="post" action="{$target}" class="well">
+                                <label>{t}Customer ID:{/t}</label>
+                                <input type="text" name="loginform[login]" />
+                                <label>{t}PIN:{/t}</label>
+                                <input type="password" name="loginform[pwd]" />
+                                <br/>
+                                <input type="submit" name="loginform[submit]" class="btn" value="{t}Login{/t}"/>
+                            </form>
+                        </fieldset>
+                        {if $error}<div class="alert alert-error"><b>{$error}</b></div>{else}&nbsp;{/if}
+                    </div>
+      
+                    <div class="span4">
+                        <fieldset>
+                            <legend>Przypomnienie ID i PIN</legend>
+                            <form id="recovery" method="post" action="{$target}" class="well">
+                                <label>{t}E-mail:{/t}</label>
+                                <input type="text" name="recovery_email" />
+                                <label>PESEL:</label>
+                                <input type="text" name="recovery_pesel" />        
+                                <br/>
+                                <input type="submit" name="recovery_submit" class="btn" value="Wyślij przypomnienie"/>
+                            </form>
+                        </fieldset>
+                        {if $recovery eq 'OK'}
+                            <div class="alert alert-success"><b>Dane do logowanie zostały wysłane.</b></div>
+                        {elseif $recovery eq 'ERROR'}
+                            <div class="alert alert-error"><b>Wystąpił błąd. Prawdopodobna przyczyna niepoprawne dane lub brak uzupełnionych danych w panelu użytkownika.</b></div>
+                        {/if}          
+                    </div>
+                    
+                    <div class="span4">
+                        <!-- NEGATIVE BALANCE ALERT -->
+                        <fieldset>
+                            <legend>Informacja:</legend>
+                            {if $bilans<0}
+                                <div class="alert alert-error"><h1>UWAGA! Twój bilans jest ujemny.</h1></div>
+                            {/if}
+                            <div class="alert alert-success"><h1>Dziękujemy za terminowe uiszczanie opłat.</h1><br/></div>
+                        </fieldset>                        
+                    </div>   
+                    
+                </div>        
+ 
+                <div class="alert alert-info">
+                    <strong>Jak uzyskać dostęp do BOK:</strong>
+                    <ul>
+                        <li>wysyłając e-mail na adres <a href="mailto:pomoc@alfa-system.pl">pomoc@alfa-system.pl</a></li>
+                        <li>pisząc na GG: <a href="gg:5004035">5004035</a></li>
+                    </ul>
+                    <p><strong>Dopisz swój adres e-mail w swoim panelu,</strong> wtedy co miesiąc będziesz otrzymywać faktury VAT na podany adres.</p>
+                </div>
+
+                <div class="alert alert-success">
+                    <strong>Faktury VAT do rozlicznia podatkowego oraz druki do wpłat dostępne są po zalogowaniu do BOK.</strong>
+                </div>
+
+                <div class="alert alert-error">
+                    <strong>Poleć nas! Polecający i polecany przez 2 miesiące abonament tylko 1,23zł w promocji "Polecam i nie płacę"</strong>
+                    <br><br>
+                    Możesz skorzystać z tej promocji wielokrotnie. Poleć nas 6 osobom, a roczny koszt abonamentu zredukuje sie do kwoty 14,76 zł z VAT!
+                </div>
+
+                <div class="alert alert-block">
+                    <strong>Sesje przychodzące - godziny księgowania przelewów przychodzących:</strong>
+                    <ul>
+                        <li>10:30</li>
+                        <li>14:30</li>
+                        <li>17:00</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
 <script type="text/javascript">
 <!--
 document.forms['login'].elements['loginform[login]'].focus();
 //-->
 </script>
-</div>
+<!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+<!--[if lt IE 9]>
+<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
 </body>
 </html>

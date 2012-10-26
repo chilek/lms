@@ -11,13 +11,30 @@
     <link href="img/lms-net.gif" rel="shortcut icon">
     <script type="text/javascript" src="img/common.js"> </script>
     <script type="text/javascript" src="img/ClickShowHideMenu.js"> </script>
-    <script type="text/javascript" src="img/autosuggest.js"> </script>
+    <script type="text/javascript" src="img/autosuggest.js"> </script>  
+    <!-- ### LEAFLET - do mapy nodów ## -->
+	<link rel="stylesheet" href="img/Leaflet.markercluster/lib/leaflet-dist/leaflet.css" />
+	<!--[if lte IE 8]><link rel="stylesheet" href="img/Leaflet.markercluster/leaflet-dist/leaflet.ie.css" /><![endif]-->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="img/Leaflet.markercluster/example/screen.css" />
+	<script src="img/Leaflet.markercluster/lib/leaflet-dist/leaflet-src.js"></script>
+        
+        <link rel="stylesheet" href="img/Leaflet.markercluster/dist/MarkerCluster.css" />
+	<link rel="stylesheet" href="img/Leaflet.markercluster/dist/MarkerCluster.Default.css" />
+	<!--[if lte IE 8]><link rel="stylesheet" href="img/Leaflet.markercluster/dist/MarkerCluster.Default.ie.css" /><![endif]-->
+	<script src="img/Leaflet.markercluster/dist/leaflet.markercluster-src.js"></script> 
+
+    <!-- ### LEAFLET - do mapy nodów ## -->       
+
+    
 </head>
 <body onload="start_login_timeout({get_conf('phpui.timeout')})">
+    
 <div id="overDiv" style="position:absolute; visibility:hidden; z-index:100;"></div>
 <script type="text/javascript" language="JavaScript" src="img/overlib.js"></script>
 {if !$layout.popup}
 <div id="pagecontainer">
+   
     <div id="pageleftbar">
 	<table width="100%">
 		<tr>
@@ -29,6 +46,7 @@
 			</td>
 		</tr>
 	</table>
+        
 	<table id="click-menu1" class="click-menu" cellpadding="0" cellspacing="0">
 		{foreach from=$newmenu item=menuitem name=menu}
 		<tr>
@@ -65,7 +83,7 @@
 	</script>
     </div>
     <div id="pagecontent">
-    	<div id="autosuggest"><ul></ul></div>
+       	<div id="autosuggest"><ul></ul></div>
     	<form method="post" name="quicksearch" action="?m=quicksearch" id="quicksearch">
 	<table width="100%" cellpadding="0" cellspacing="0">
 		<tr>

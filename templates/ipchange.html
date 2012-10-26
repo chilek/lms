@@ -1,0 +1,53 @@
+{include file="header.html"}
+<!--// $Id: tariffl.html,v 1.45 2005/10/19 13:34:49 lukas Exp $ //-->
+
+<form method="post" name="logip" action="?m=ipchange">
+<select name="ip" onchange="document.logip.submit();">
+{section name=ip_list loop=$list_new_ip}
+	<option value="{$list_new_ip[ip_list].ipnum}">{$list_new_ip[ip_list].ip}</option>
+{/section}
+</select>
+<input type="submit" class="hiddenbtn">
+</form>
+
+<table cellapdding=5 cellspacing=5 border>
+    <tr style="text-align:center;background:black;color:white;font-weight:bold;">
+	<td>POSIADACZ IP</td>
+	<td>STARE IP</td>
+	<td>NOWE IP</td>
+
+	<td>OSTATNIA ZMIANA</td>
+    </tr>
+{section name=j loop=$list_ip}
+    <tr>
+	<td style="padding:1em">{$list_ip[j].kto}</td>
+	<td style="padding:1em">{$list_ip[j].from_ip}</td>
+	<td style="padding:1em">{$list_ip[j].to_ip}</td>
+	<td style="padding:1em">{$list_ip[j].do}</td>
+    </tr>
+{/section}
+
+</table>    	
+
+<!--
+<table cellapdding=5 cellspacing=5 border>
+    <tr style="text-align:center;background:black;color:white;font-weight:bold;">
+	<td>POSIADACZ IP</td>
+	<td>STARE IP</td>
+	<td>NOWE IP</td>
+	<td>OSTATNIA ZMIANA</td>
+    </tr>
+{section name=i loop=$list}
+    <tr>
+	<td style="padding:1em">{$list[i].kto}</td>
+	<td style="padding:1em">{$list[i].from_ip}</td>
+	<td style="padding:1em">{$list[i].to_ip}</td>	
+	<td style="padding:1em">{$list[i].do}</td>
+    </tr>
+{/section}
+
+</table>    	
+-->
+
+{include file="footer.html"}
+

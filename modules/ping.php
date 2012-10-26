@@ -40,7 +40,8 @@ function refresh($params)
 	switch ($type) {
 		case 2:
 			if (empty($CONFIG['phpui']['arping_helper']))
-				$cmd = 'arping %i -c 1 -w 1.0';
+				//$cmd = 'arping %i -c 1 -w 1.0';
+				$cmd = 'arping -c 1 -t 1.0 %i';
 			else
 				$cmd = $CONFIG['phpui']['arping_helper'];
 			$summary_regexp = '/^sent+[[:blank:]]+[0-9]+[[:blank:]]+probes/i';
@@ -50,7 +51,8 @@ function refresh($params)
 		case 1:
         default:
 			if (empty($CONFIG['phpui']['ping_helper']))
-				$cmd = 'ping %i -c 1 -s 1450 -w 1.0';
+//				$cmd = 'ping %i -c 1 -s 1450 -w 1.0';
+				$cmd = 'ping -c 1 -s 1450 -t 1.0 %i';
 			else
 				$cmd = $CONFIG['phpui']['ping_helper'];
 			$summary_regexp = '/^[0-9]+[[:blank:]]+packets[[:blank:]]+transmitted/i';

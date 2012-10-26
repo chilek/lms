@@ -1,0 +1,90 @@
+{include file="header.html"}
+<!--// $Id: tariffl.html,v 1.45 2005/10/19 13:34:49 lukas Exp $ //-->
+
+
+
+<TABLE WIDTH="100%" CELLPADDING="3">
+        <TR CLASS="DARK">
+            <TD WIDTH="1%" CLASS="fleftu">
+
+            </TD>
+            <TD WIDTH="1%" CLASS="fbt"><B></B></TD>
+            <TD WIDTH="98%" CLASS="frightu">
+            <h1>Lista osób z komunikatem o zadłużeniu</h1>
+            </TD>
+
+        </TR>
+        <TR class="LIGHT">
+
+            <TD WIDTH="100%" COLSPAN="3" CLASS="flr">
+
+                <TABLE WIDTH="100%" CELLPADDING="0">
+                    <TR CLASS="LIGHT">
+                        <TD WIDTH="80%" VALIGN="top">
+                            <TABLE WIDTH="100%" CELLPADDING="3" border=0>
+
+
+                            <tr CLASS="frightu">    
+                            <td align=left colspan=8>
+<table border cellpadding="5" cellspacing="5">
+<tr>
+<td>l.p.</td>
+<td>kto</td>
+<td>bilans</td>
+<td>status</td>
+<td>info</td>
+</tr>       
+{foreach from=$warnings item=i}                        
+<tr>
+<td>{counter}</td>
+<td><a href="http://lms.alfa-system.pl/?m=customerinfo&id={$i.ownerid}">{$i.lastname} {$i.name}</a> </td>
+<td align="center"><b>{$i.suma} zł</b></td>
+<td align="center">    
+    {if $i.suma >= 0}
+     <span style="color:red;">USUNAĆ KOMUNIKAT</span>
+    {else}
+    <span style="color:green;">OK</span>    
+    {/if}
+</td>            
+<td>{$i.notes}</td>              
+</tr>
+{/foreach}
+
+<tr style="background:white;">
+<td>-</td>
+<td align="right">Suma zadłużenia:</td>
+<td colspan="2" align="center"><b>{$suma} zł</b></td>
+<td align="center">-</td>                          
+
+</tr>
+
+</table>
+
+
+
+
+                            </td>
+                        </tr>
+
+                        </table>
+
+
+                    </TD>
+                    <TD WIDTH="30%" VALIGN="top">
+                        <TABLE WIDTH="100%" CELLPADDING="3">
+
+                            </TABLE>
+                        </TD>
+                    </TR>
+                </TABLE>
+            </TD>
+        </TR>
+        <TR CLASS="LIGHT">
+            <TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
+
+            </TD>
+        </TR>
+</TABLE></FORM></P>
+
+{include file="footer.html"}
+
