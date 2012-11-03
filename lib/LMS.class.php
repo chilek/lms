@@ -158,6 +158,9 @@ class LMS {
 				fputs($dumpfile, "DELETE FROM $tablename;\n");
 			}
 
+			if ($this->CONFIG['database']['type'] == 'postgres')
+				fputs($dumpfile, "SET CONSTRAINTS ALL DEFERRED;\n");
+
 			// Since we're using foreign keys, order of tables is important
 			// Note: add all referenced tables to the list
 			$order = array('users', 'customers', 'customergroups', 'nodes', 'numberplans',
