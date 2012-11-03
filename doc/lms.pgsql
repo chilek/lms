@@ -107,7 +107,7 @@ CREATE TABLE assignments (
 	tariffid integer 	DEFAULT 0 NOT NULL,
 	liabilityid integer 	DEFAULT 0 NOT NULL,
 	customerid integer	NOT NULL
-	    REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+	    REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	period smallint 	DEFAULT 0 NOT NULL,
 	at integer 		DEFAULT 0 NOT NULL,
 	datefrom integer	DEFAULT 0 NOT NULL,
@@ -119,7 +119,7 @@ CREATE TABLE assignments (
 	vdiscount numeric(9,2) DEFAULT 0 NOT NULL,
 	paytype smallint    DEFAULT NULL,
 	numberplanid integer DEFAULT NULL
-	    REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE INITIALLY DEFERRED,
+	    REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id)
 );
 CREATE INDEX assignments_tariffid_idx ON assignments (tariffid);
@@ -178,7 +178,7 @@ CREATE TABLE location_districts (
     name varchar(64)    NOT NULL, --TERYT: NAZWA
     ident varchar(8)    NOT NULL, --TERYT: POW
     stateid integer     NOT NULL  --TERYT: WOJ
-        REFERENCES location_states (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+        REFERENCES location_states (id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (id),
     UNIQUE (stateid, name)
 );
@@ -194,7 +194,7 @@ CREATE TABLE location_boroughs (
     name varchar(64)    NOT NULL, -- TERYT: NAZWA
     ident varchar(8)    NOT NULL, -- TERYT: GMI
     districtid integer  NOT NULL
-        REFERENCES location_districts (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+        REFERENCES location_districts (id) ON DELETE CASCADE ON UPDATE CASCADE,
     type smallint       NOT NULL, -- TERYT: RODZ
     PRIMARY KEY (id),
     UNIQUE (districtid, name, type)
@@ -212,7 +212,7 @@ CREATE TABLE location_cities (
     name varchar(64)    NOT NULL, -- TERYT: NAZWA
     cityid integer      DEFAULT NULL,
     boroughid integer   DEFAULT NULL
-        REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+        REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (id)
 );
 CREATE INDEX location_cities_cityid ON location_cities (cityid);
@@ -242,9 +242,9 @@ CREATE TABLE location_streets (
     name2 varchar(128)  DEFAULT NULL, -- TERYT: NAZWA_2
     ident varchar(8)    NOT NULL, -- TERYT: SYM_UL
     typeid integer      DEFAULT NULL
-        REFERENCES location_street_types (id) ON DELETE SET NULL ON UPDATE CASCADE INITIALLY DEFERRED,
+        REFERENCES location_street_types (id) ON DELETE SET NULL ON UPDATE CASCADE,
     cityid integer      NOT NULL
-        REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+        REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (id),
     UNIQUE (cityid, name, ident)
 );
@@ -259,9 +259,9 @@ CREATE TABLE pna (
 	id integer DEFAULT nextval('pna_id_seq'::text) NOT NULL,
 	zip varchar(128) NOT NULL,
 	cityid integer NOT NULL
-		REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+		REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	streetid integer DEFAULT NULL
-		REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+		REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	fromhouse varchar(10) DEFAULT NULL,
 	tohouse varchar(10) DEFAULT NULL,
 	parity smallint DEFAULT 0 NOT NULL,
@@ -324,9 +324,9 @@ CREATE TABLE nodes (
 	info text		    DEFAULT '' NOT NULL,
 	location varchar(255) DEFAULT NULL,
     location_city integer DEFAULT NULL
-        REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE INITIALLY DEFERRED,
+        REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
     location_street integer DEFAULT NULL
-        REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE INITIALLY DEFERRED,
+        REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
     location_house varchar(8) DEFAULT NULL,
     location_flat varchar(8) DEFAULT NULL,
 	nas smallint 		DEFAULT 0 NOT NULL,
@@ -351,7 +351,7 @@ DROP TABLE IF EXISTS nodelocks CASCADE;
 CREATE TABLE nodelocks (
 	id integer		DEFAULT nextval('nodelocks_id_seq'::text) NOT NULL,
 	nodeid integer		NOT NULL
-		REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+		REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	days smallint		DEFAULT 0 NOT NULL,
 	fromsec integer		DEFAULT 0 NOT NULL,
 	tosec integer		DEFAULT 0 NOT NULL,
@@ -368,7 +368,7 @@ CREATE TABLE macs (
 	id integer		DEFAULT nextval('macs_id_seq'::text) NOT NULL,
 	mac varchar(17)		DEFAULT '' NOT NULL,
 	nodeid integer		NOT NULL
-		REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+		REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id),
 	CONSTRAINT macs_mac_key UNIQUE (mac, nodeid)
 );
@@ -411,9 +411,9 @@ DROP TABLE IF EXISTS nodeassignments CASCADE;
 CREATE TABLE nodeassignments (
         id integer              DEFAULT nextval('nodeassignments_id_seq'::text) NOT NULL,
 	nodeid integer          NOT NULL
-		REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+		REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	assignmentid integer    NOT NULL
-		REFERENCES assignments (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+		REFERENCES assignments (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id),
 	CONSTRAINT nodeassignments_nodeid_key UNIQUE (nodeid, assignmentid)
 );
@@ -492,11 +492,11 @@ CREATE TABLE promotionschemas (
     description text    DEFAULT NULL,
     data text           DEFAULT NULL,
     promotionid integer DEFAULT NULL
-        REFERENCES promotions (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+        REFERENCES promotions (id) ON DELETE CASCADE ON UPDATE CASCADE,
     disabled smallint   DEFAULT 0 NOT NULL,
     continuation smallint   DEFAULT NULL,
     ctariffid integer DEFAULT NULL
-        REFERENCES tariffs (id) ON DELETE RESTRICT ON UPDATE CASCADE INITIALLY DEFERRED,
+        REFERENCES tariffs (id) ON DELETE RESTRICT ON UPDATE CASCADE,
     PRIMARY KEY (id),
     CONSTRAINT promotionschemas_promotionid_key UNIQUE (promotionid, name)
 );
@@ -511,9 +511,9 @@ DROP TABLE IF EXISTS promotionassignments CASCADE;
 CREATE TABLE promotionassignments (
     id integer          DEFAULT nextval('promotionassignments_id_seq'::text) NOT NULL,
     promotionschemaid integer DEFAULT NULL
-        REFERENCES promotionschemas (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+        REFERENCES promotionschemas (id) ON DELETE CASCADE ON UPDATE CASCADE,
     tariffid integer    DEFAULT NULL
-        REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+        REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
     data text           DEFAULT NULL,
     PRIMARY KEY (id),
     CONSTRAINT promotionassignments_promotionschemaid_key UNIQUE (promotionschemaid, tariffid)
@@ -710,9 +710,9 @@ DROP TABLE IF EXISTS customerassignments CASCADE;
 CREATE TABLE customerassignments (
 	id integer DEFAULT nextval('customerassignments_id_seq'::text) NOT NULL,
 	customergroupid integer NOT NULL
-	    REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+	    REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	customerid integer NOT NULL
-	    REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+	    REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id),
 	CONSTRAINT customerassignments_customergroupid_key UNIQUE (customergroupid, customerid)
 );
@@ -827,7 +827,7 @@ DROP TABLE IF EXISTS rttickets CASCADE;
 CREATE TABLE rttickets (
   id integer default nextval('rttickets_id_seq'::text) NOT NULL,
   queueid integer 	NOT NULL
-    REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+    REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE,
   requestor varchar(255) DEFAULT '' NOT NULL,
   subject varchar(255) 	DEFAULT '' NOT NULL,
   state smallint 	DEFAULT 0 NOT NULL,
@@ -851,7 +851,7 @@ DROP TABLE IF EXISTS rtmessages CASCADE;
 CREATE TABLE rtmessages (
   id integer default nextval('rtmessages_id_seq'::text) NOT NULL,
   ticketid integer 	NOT NULL
-    REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+    REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE,
   userid integer 	DEFAULT 0 NOT NULL,
   customerid integer 	DEFAULT 0 NOT NULL,
   mailfrom varchar(255) DEFAULT '' NOT NULL,
@@ -873,9 +873,9 @@ DROP TABLE IF EXISTS rtnotes CASCADE;
 CREATE TABLE rtnotes (
 	id integer default nextval('rtnotes_id_seq'::text) NOT NULL,
 	ticketid integer      NOT NULL
-	    REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+	    REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE,
     userid integer        NOT NULL
-        REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+        REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	body text             DEFAULT '' NOT NULL,
 	createtime integer    DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
@@ -890,9 +890,9 @@ DROP TABLE IF EXISTS rtrights CASCADE;
 CREATE TABLE rtrights (
     id integer DEFAULT nextval('rtrights_id_seq'::text) NOT NULL, 
     userid integer NOT NULL
-        REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+        REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
     queueid integer NOT NULL
-        REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+        REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE,
     rights integer DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT rtrights_userid_key UNIQUE (userid, queueid)
@@ -901,7 +901,7 @@ CREATE TABLE rtrights (
 DROP TABLE IF EXISTS rtattachments CASCADE;
 CREATE TABLE rtattachments (
 	messageid integer 	    NOT NULL
-	    REFERENCES rtmessages (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+	    REFERENCES rtmessages (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	filename varchar(255) 	DEFAULT '' NOT NULL,
 	contenttype varchar(255) DEFAULT '' NOT NULL
 );
@@ -925,9 +925,9 @@ DROP TABLE IF EXISTS rtcategoryusers CASCADE;
 CREATE TABLE rtcategoryusers (
 	id integer		DEFAULT nextval('rtcategoryusers_id_seq'::text) NOT NULL,
 	userid integer		NOT NULL
-		REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+		REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	categoryid integer	NOT NULL
-		REFERENCES rtcategories (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+		REFERENCES rtcategories (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id),
 	CONSTRAINT rtcategories_userid_key UNIQUE (userid, categoryid)
 );
@@ -938,9 +938,9 @@ DROP TABLE IF EXISTS rtticketcategories CASCADE;
 CREATE TABLE rtticketcategories (
 	id integer		DEFAUlT nextval('rtticketcategories_id_seq'::text) NOT NULL,
 	ticketid integer	NOT NULL
-		REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+		REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	categoryid integer	NOT NULL
-		REFERENCES rtcategories (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+		REFERENCES rtcategories (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id),
 	CONSTRAINT rtticketcategories_ticketid_key UNIQUE (ticketid, categoryid)
 );
@@ -1008,7 +1008,7 @@ DROP TABLE IF EXISTS records CASCADE;
 CREATE TABLE records (
 	id integer		DEFAULT nextval('records_id_seq'::text) NOT NULL,
 	domain_id integer	DEFAULT NULL
-		REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+		REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	name varchar(255)	DEFAULT NULL,
 	type varchar(6)		DEFAULT NULL,
 	content varchar(255)	DEFAULT NULL,
@@ -1150,7 +1150,7 @@ DROP TABLE IF EXISTS sourcefiles CASCADE;
 CREATE TABLE sourcefiles (
     id integer      	DEFAULT nextval('sourcefiles_id_seq'::text) NOT NULL,
     userid integer     DEFAULT NULL
-        REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE INITIALLY DEFERRED,
+        REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
     name varchar(255)   NOT NULL,
     idate integer	    NOT NULL,
     PRIMARY KEY (id),
@@ -1172,13 +1172,13 @@ CREATE TABLE cashimport (
     customer varchar(150) 	DEFAULT '' NOT NULL,
     description varchar(150) 	DEFAULT '' NOT NULL,
     customerid integer 		DEFAULT NULL
-	    REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE INITIALLY DEFERRED,
+	    REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
     hash varchar(50) 		DEFAULT '' NOT NULL,
     closed smallint 		DEFAULT 0 NOT NULL,
     sourceid integer		DEFAULT NULL
-	    REFERENCES cashsources (id) ON DELETE SET NULL ON UPDATE CASCADE INITIALLY DEFERRED,
+	    REFERENCES cashsources (id) ON DELETE SET NULL ON UPDATE CASCADE,
     sourcefileid integer    DEFAULT NULL
-	    REFERENCES sourcefiles (id) ON DELETE SET NULL ON UPDATE CASCADE INITIALLY DEFERRED,
+	    REFERENCES sourcefiles (id) ON DELETE SET NULL ON UPDATE CASCADE,
     PRIMARY KEY (id)
 );
 
@@ -1386,9 +1386,9 @@ CREATE TABLE netdevices (
 	name varchar(32) 	DEFAULT '' NOT NULL,
 	location varchar(255) 	DEFAULT '' NOT NULL,
     location_city integer DEFAULT NULL
-        REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE INITIALLY DEFERRED,
+        REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
     location_street integer DEFAULT NULL
-        REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE INITIALLY DEFERRED,
+        REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
     location_house varchar(8) DEFAULT NULL,
     location_flat varchar(8) DEFAULT NULL,
 	description text 	DEFAULT '' NOT NULL,
@@ -1404,7 +1404,7 @@ CREATE TABLE netdevices (
 	secret varchar(60) 	DEFAULT '' NOT NULL,
 	community varchar(50) 	DEFAULT '' NOT NULL,
 	channelid integer 	DEFAULT NULL
-	    REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE INITIALLY DEFERRED,
+	    REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	longitude numeric(10, 6) DEFAULT NULL,
 	latitude numeric(10, 6) DEFAULT NULL,
 	PRIMARY KEY (id)
@@ -1432,7 +1432,7 @@ DROP TABLE IF EXISTS imessengers CASCADE;
 CREATE TABLE imessengers (
     id 		integer         DEFAULT nextval('imessengers_id_seq'::text) NOT NULL,
     customerid 	integer    	NOT NULL
-	    REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+	    REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
     uid 	varchar(32)     DEFAULT '' NOT NULL,
     type 	smallint        DEFAULT 0 NOT NULL,
     PRIMARY KEY (id)
@@ -1448,7 +1448,7 @@ DROP TABLE IF EXISTS customercontacts CASCADE;
 CREATE TABLE customercontacts (
     id 		integer 	DEFAULT nextval('customercontacts_id_seq'::text) NOT NULL,
     customerid 	integer 	NOT NULL
-	    REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+	    REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
     name 	varchar(255) 	NOT NULL DEFAULT '',
     phone 	varchar(255) 	NOT NULL DEFAULT '',
     type    smallint        DEFAULT NULL,
@@ -1466,7 +1466,7 @@ DROP TABLE IF EXISTS excludedgroups CASCADE;
 CREATE TABLE excludedgroups (
 	id 		integer NOT NULL DEFAULT nextval('excludedgroups_id_seq'::text),
 	customergroupid integer NOT NULL
-	    REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+	    REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	userid 		integer NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
 	CONSTRAINT excludedgroups_userid_key UNIQUE (userid, customergroupid)
@@ -1626,7 +1626,7 @@ DROP TABLE IF EXISTS managementurls;
 CREATE TABLE managementurls (
 	id integer		DEFAULT nextval('managementurls_id_seq'::text) NOT NULL,
 	netdevid integer	NOT NULL
-		REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE INITIALLY DEFERRED,
+		REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	url text		DEFAULT '' NOT NULL,
 	comment varchar(100)	DEFAULT NULL,
 	PRIMARY KEY (id)
@@ -1858,4 +1858,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012110300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012092000');
