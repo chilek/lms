@@ -1,5 +1,6 @@
 <?php
 
+
 /*
  * LMS version 1.11-git
  *
@@ -157,10 +158,10 @@ class LMS {
 
 				fputs($dumpfile, "DELETE FROM $tablename;\n");
 			}
-
+			
 			if ($this->CONFIG['database']['type'] == 'postgres')
-				fputs($dumpfile, "SET CONSTRAINTS ALL DEFERRED;\n");
-
+			    fputs($dumpfile, "SET CONSTRAINTS ALL DEFERRED;\n");
+			    
 			// Since we're using foreign keys, order of tables is important
 			// Note: add all referenced tables to the list
 			$order = array('users', 'customers', 'customergroups', 'nodes', 'numberplans',
@@ -210,10 +211,14 @@ class LMS {
 
 	function DatabaseCreate($gzipped = FALSE, $stats = FALSE) { // create database backup
 		$basename = 'lms-' . time() . '-' . DBVERSION;
+
+		if (SYSLOG) addlogs('utworzono kopię bazy danych','e=add;m=sl');
+
 		if (($gzipped) && (extension_loaded('zlib')))
 			return $this->DBDump($this->CONFIG['directories']['backup_dir'] . '/' . $basename . '.sql.gz', TRUE, $stats);
 		else
 			return $this->DBDump($this->CONFIG['directories']['backup_dir'] . '/' . $basename . '.sql', FALSE, $stats);
+		
 	}
 
 	/*
@@ -239,6 +244,9 @@ class LMS {
 	 */
 
 	function SetUserPassword($id, $passwd) {
+
+		if (SYSLOG) addlogs('zmiana hasła dla użytkownika: '.$this->DB->GetOne('SELECT login FROM users WHERE id=? LIMIT 1;',array($id)),'e=up;m=admin;');
+
 		$this->DB->Execute('UPDATE users SET passwd=?, passwdlastchange=?NOW? WHERE id=?', array(crypt($passwd), $id));
 	}
 
@@ -312,6 +320,9 @@ class LMS {
 	}
 
 	function UserAdd($user) {
+	
+		if (SYSLOG) addlogs('dodano użytkownika: '.$user['login'],'e=add;m=admin;');
+	
 		if ($this->DB->Execute('INSERT INTO users (login, name, email, passwd, rights,
 				hosts, position, ntype, phone, passwdexpiration, access, accessfrom, accessto)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($user['login'],
@@ -334,6 +345,9 @@ class LMS {
 	}
 
 	function UserDelete($id) {
+		
+		if (SYSLOG) addlogs('usunięto użytkownika: '.$this->DB->GetOne('SELECT login FROM users WHERE id=? LIMIT 1;',array($id)),'e=rm;m=admin;');
+		
 		if ($this->DB->Execute('UPDATE users SET deleted=1, access=0 WHERE id=?', array($id))) {
 			$this->cache['users'][$id]['deleted'] = 1;
 			return true;
@@ -357,6 +371,7 @@ class LMS {
 
 	function UserAccess($id,$access)
 	{
+	    if (SYSLOG) addlogs(($access ? 'włączono' : 'wyłączono').' konto użytkownika: '.$this->DB->GetOne('SELECT login FROM users WHERE id=? LIMIT 1;',array($id)),'e=up;m=admin;');
 	    $this->DB->Execute('UPDATE users SET access = ? WHERE id = ? ;',array($access,$id));
 	}
 
@@ -412,7 +427,10 @@ class LMS {
 	}
 
 	function UserUpdate($user) {
-		return $this->DB->Execute('UPDATE users SET login=?, name=?, email=?, rights=?,
+
+		if (SYSLOG) $diff['old'] = $this->GetUserInfo($user['id']);
+
+		$return = $this->DB->Execute('UPDATE users SET login=?, name=?, email=?, rights=?,
 				hosts=?, position=?, ntype=?, phone=?, passwdexpiration=?, access=?, accessfrom=?, accessto=? WHERE id=?', array($user['login'],
 						$user['name'],
 						$user['email'],
@@ -427,6 +445,13 @@ class LMS {
 						!empty($user['accessto']) ? $user['accessto'] : 0,
 						$user['id']
 				));
+		if (SYSLOG) {
+		    $diff['type'] = 'up';
+		    $diff['card'] = 'user';
+		    $diff['new'] = $this->GetUserInfo($user['id']);
+		    addlogs('aktualizacja danych użytkownika: '.$user['login'],'e=up;m=admin;',$diff);
+		}
+		return $return;
 	}
 
 	function GetUserRights($id) {
@@ -523,7 +548,9 @@ class LMS {
 			if ($customeradd['post_zip'] != $customeradd['zip']) {
 				$this->UpdateCountryState($customeradd['post_zip'], $customeradd['post_stateid']);
 			}
-			return $this->DB->GetLastInsertID('customers');
+			$return = $this->DB->GetLastInsertID('customers');
+			if (SYSLOG) addlogs('dodano klienta: '.$customeradd['name'].' '.$customeradd['lastname'],'e=add;m=cus;c='.$return);
+			return $return;
 		} else
 			return FALSE;
 	}
@@ -531,12 +558,28 @@ class LMS {
 	function DeleteCustomer($id) {
 		$this->DB->BeginTrans();
 
-		$this->DB->Execute('UPDATE customers SET deleted=1, moddate=?NOW?, modid=?
-				WHERE id=?', array($this->AUTH->id, $id));
+		
+		$nodes = $this->DB->GetCol('SELECT id FROM nodes WHERE ownerid=?', array($id));
+		
+		if (SYSLOG) {
+		
+		    $diff['new'] = array();
+		    $diff['old']['customerassignments'] = $this->DB->GetAll('SELLECT * FROM customerassignments WHERE customerid=? ;',array($id));
+		    $diff['old']['assignments'] = $this->DB->GetAll('SELECT * FROM assignments WHERE customerid=? ;',array($id));
+		    $diff['old']['nodegroupassignments'] = $this->DB->GetAll('SELECT * FROM nodegroupassignments WHERE nodeid IN (' .join(',', $nodes). ')');
+		    $diff['old']['nodes'] = $this->DB->GetAll('SELECT * FROM nodes WHERE ownerid = ? ',array($id));
+		    $diff['old']['up_rights_assignments'] = $this->DB->GetAll('SELECT * FROM up_rights_assignments WHERE customerid = ? ;',array($id));
+		    $diff['type'] = 'del';
+		    $diff['card'] = 'customer';
+		    addlogs('skasowano klienta: '.$this->GetCustomerName($id),'e=rm;m=cus;c='.$id,$diff);
+		
+		}
+		
+		$this->DB->Execute('UPDATE customers SET deleted=1, moddate=?NOW?, modid=? WHERE id=?', array($this->AUTH->id, $id));
 		$this->DB->Execute('DELETE FROM customerassignments WHERE customerid=?', array($id));
 		$this->DB->Execute('DELETE FROM assignments WHERE customerid=?', array($id));
 		// nodes
-		$nodes = $this->DB->GetCol('SELECT id FROM nodes WHERE ownerid=?', array($id));
+		
 		if ($nodes) {
 			$this->DB->Execute('DELETE FROM nodegroupassignments WHERE nodeid IN (' . join(',', $nodes) . ')');
 			$plugin_data = array();
@@ -557,6 +600,9 @@ class LMS {
 	}
 
 	function CustomerUpdate($customerdata) {
+	
+		if (SYSLOG) $diff['old'] = $this->getcustomer($customerdata['id']);
+	
 		$res = $this->DB->Execute('UPDATE customers SET status=?, type=?, address=?,
 				zip=?, city=?, countryid=?, email=?, ten=?, ssn=?, moddate=?NOW?, modid=?,
 				post_name=?, post_address=?, post_zip=?, post_city=?, post_countryid=?,
@@ -603,6 +649,12 @@ class LMS {
 			$this->UpdateCountryState($customerdata['zip'], $customerdata['stateid']);
 			if ($customerdata['post_zip'] != $customerdata['zip']) {
 				$this->UpdateCountryState($customerdata['post_zip'], $customerdata['post_stateid']);
+			}
+			if (SYSLOG) {
+			    $diff['type'] = 'up';
+			    $diff['card'] = 'customer';
+			    $diff['new'] = $this->getcustomer($customerdata['id']);
+			    addlogs('aktualizacja danych klienta: '.$customerdata['name'].' '.$customerdata['lastname'],'e=up;m=cus;c='.$customerdata['id'],$diff);
 			}
 		}
 
@@ -1112,21 +1164,39 @@ class LMS {
 
 	function CustomergroupAdd($customergroupdata) {
 		if ($this->DB->Execute('INSERT INTO customergroups (name, description) VALUES (?, ?)', array($customergroupdata['name'], $customergroupdata['description'])))
+		{
+			if (SYSLOG) addlogs('dodano grupę: '.$customergroupdata['name'].' dla klientów','e=add;m=cus;');
 			return $this->DB->GetOne('SELECT id FROM customergroups WHERE name=?', array($customergroupdata['name']));
+		}
 		else
 			return FALSE;
 	}
 
 	function CustomergroupUpdate($customergroupdata) {
-		return $this->DB->Execute('UPDATE customergroups SET name=?, description=? 
+		if (SYSLOG) $diff['old'] = $this->DB->GetRow('SELECT * FROM customergroups WHERE id=? ;',array($customergroupdata['id']));
+		$return = $this->DB->Execute('UPDATE customergroups SET name=?, description=? 
 				WHERE id=?', array($customergroupdata['name'],
 						$customergroupdata['description'],
 						$customergroupdata['id']
 				));
+		if (SYSLOG) {
+		    $diff['type'] = 'up';
+		    $diff['card'] = 'customergroup';
+		    $diff['new'] = $this->DB->GetRow('SELECT * FROM customergroups WHERE id=? ;',array($customergroupdata['id']));
+		    addlogs('aktualizacja danych grupy: '.$customergroupdata['name'].' dla klientów','e=up;m=cus;',$diff);
+		}
+		return $return;
 	}
 
 	function CustomergroupDelete($id) {
 		if (!$this->CustomergroupWithCustomerGet($id)) {
+			if (SYSLOG) {
+			    $diff['old'] = $this->DB->GetRow('SELECT * FROM customergroups WHERE id=?',array($id));
+			    $diff['new'] = array();
+			    $diff['type'] = 'del';
+			    $diff['card'] = 'customergroup';
+			    addlogs('skasowano grupę: '.$diff['old']['name'].' dla klientów','e=rm;m=cus;');
+			}
 			$this->DB->Execute('DELETE FROM customergroups WHERE id=?', array($id));
 			return TRUE;
 		}
@@ -1220,12 +1290,22 @@ class LMS {
 	}
 
 	function CustomerassignmentDelete($customerassignmentdata) {
+		if (SYSLOG) {
+		    $grname = $this->DB->GetOne('SELECT name FROM customergroups WHERE id=?',array($customerassignmentdata['customergroupid']));
+		    addlogs('usunięto klienta: '.$this->getcustomername($customerassignmentdata['customerid']).' z grupy: '.$grname,'e=rm;m=cus;c='.$customerassignmentdata['customerid']);
+		    unset($grname);
+		}
 		return $this->DB->Execute('DELETE FROM customerassignments 
 			WHERE customergroupid=? AND customerid=?', array($customerassignmentdata['customergroupid'],
 						$customerassignmentdata['customerid']));
 	}
 
 	function CustomerassignmentAdd($customerassignmentdata) {
+		if (SYSLOG) {
+		    $grname = $this->DB->GetOne('SELECT name FROM customergroups WHERE id=?',array($customerassignmentdata['customergroupid']));
+		    addlogs('dodano klienta: '.$this->getcustomername($customerassignmentdata['customerid']).' do grupy: '.$grname,'e=add;m=cus;c='.$customerassignmentdata['customerid']);
+		    unset($grname);
+		}
 		return $this->DB->Execute('INSERT INTO customerassignments (customergroupid, customerid) VALUES (?, ?)', array($customerassignmentdata['customergroupid'],
 						$customerassignmentdata['customerid']));
 	}
@@ -1258,6 +1338,11 @@ class LMS {
 	}
 
 	function NodeUpdate($nodedata, $deleteassignments = FALSE) {
+	
+		$this->DB->BeginTrans();
+		
+		if (SYSLOG) $diff['old'] = $this->getnode($nodedata['id']);
+	
 		$this->DB->Execute('UPDATE nodes SET name=UPPER(?), ipaddr_pub=inet_aton(?),
 				ipaddr=inet_aton(?), passwd=?, netdev=?, moddate=?NOW?,
 				modid=?, access=?, warning=?, ownerid=?, info=?, location=?,
@@ -1298,10 +1383,43 @@ class LMS {
 		if ($deleteassignments) {
 			$this->DB->Execute('DELETE FROM nodeassignments WHERE nodeid = ?', array($nodedata['id']));
 		}
+		
+		if (SYSLOG) {
+		
+		    $diff['new'] = $this->getnode($nodedata['id']);
+		    $diff['type'] = 'up';
+		    $diff['card'] = 'node';
+		    $cusname = $this->getcustomername($nodedata['ownerid']);
+
+		    addlogs('aktualizacja danych komputera: '.$nodedata['name'].', klient: '.$cusname,'e=up;m=node;n='.$nodedata['id'].';c='.$nodedata['ownerid'].';');
+
+		    if ($diff['old']['access'] !== $diff['new']['access']) {
+			$access = $diff['new']['access'];
+			addlogs(($access ? 'włączono' : 'wyłączono').' dostęp dla komputera: '.$nodedata['name'].', klient: '.$cusname,'e=acl;m=node;n='.$nodedata['id'].';c='.$nodedata['ownerid']);
+		    }
+
+		    if ($diff['old']['warning'] !== $diff['new']['warning']) {
+			$warning = $diff['new']['warning'];
+			addlogs(($warning ? 'włączono' : 'wyłączono').' powiadomienie dla komputera: '.$nodedata['name'].', klient: '.$cusname,'e=acl;m=node;n='.$nodedata['id'].';c='.$nodedata['ownerid']);
+		    }
+		    unset($cusname);
+		    unset($diff);
+		}
+		$this->DB->CommitTrans();
 	}
 
 	function DeleteNode($id) {
 		$this->DB->BeginTrans();
+
+		if (SYSLOG) {
+		    $diff['new'] = array();
+		    $diff['type'] = 'del';
+		    $diff['card'] = 'node';
+		    $diff['old']['nodes'] = $this->getnode($id);
+		    $diff['old']['nodegroupassignments'] = $this->DB->GetAll('SELECT * FROM nodegroupassignments WHERE nodeid=?',array($id));
+		    addlogs('skasowano komputer: '.$diff['old']['nodes']['name'].', klient: '.$this->getcustomername($diff['old']['nodes']['ownerid']),'e=rm;m=node;c='.$diff['old']['nodes']['ownerid'],$diff);
+		}
+
 		$this->DB->Execute('DELETE FROM nodes WHERE id = ?', array($id));
 		$this->DB->Execute('DELETE FROM nodegroupassignments WHERE nodeid = ?', array($id));
 		$this->DB->CommitTrans();
@@ -1485,51 +1603,131 @@ class LMS {
 	function NodeSet($id, $access = -1) {
 		if ($access != -1) {
 			if ($access)
-				return $this->DB->Execute('UPDATE nodes SET access = 1 WHERE id = ?
+			{
+				$return = $this->DB->Execute('UPDATE nodes SET access = 1 WHERE id = ?
 					AND EXISTS (SELECT 1 FROM customers WHERE id = ownerid 
 						AND status = 3)', array($id));
+				if (SYSLOG && $return) 
+				{
+				    $tmp = $this->DB->GetRow('SELECT name, ownerid FROM nodes WHERE id=? LIMIT 1;',array($id));
+				    addlogs('włączono dostęp, komputer: '.$tmp['name'].', klient: '.$this->getcustomername($tmp['ownerid']),'e=acl;m=node;n='.$id.';c='.$tmp['ownerid'].';');
+				    unset($tmp);
+				}
+				return $return;
+			}
 			else
-				return $this->DB->Execute('UPDATE nodes SET access = 0 WHERE id = ?', array($id));
+			{
+				$return = $this->DB->Execute('UPDATE nodes SET access = 0 WHERE id = ?', array($id));
+				if (SYSLOG && $return)
+				{
+				    $tmp = $this->DB->GetRow('SELECT name, ownerid FROM nodes WHERE id=? LIMIT 1;',array($id));
+				    addlogs('wyłączono dostęp, komputer: '.$tmp['name'].', klient: '.$this->getcustomername($tmp['ownerid']),'e=acl;m=node;n='.$id.';c='.$tmp['ownerid'].';');
+				}
+				return $return;
+			}
 		}
 		elseif ($this->DB->GetOne('SELECT access FROM nodes WHERE id = ?', array($id)) == 1)
-			return $this->DB->Execute('UPDATE nodes SET access=0 WHERE id = ?', array($id));
+		{
+			$return = $this->DB->Execute('UPDATE nodes SET access=0 WHERE id = ?', array($id));
+			if (SYSLOG && $return)
+			{
+			    $tmp = $this->DB->GetRow('SELECT name, ownerid FROM nodes WHERE id=? LIMIT 1;',array($id));
+			    addlogs('wyłączono dostęp, komputer: '.$tmp['name'].', klient: '.$this->getcustomername($tmp['ownerid']),'e=acl;m=node;n='.$id.';c='.$tmp['ownerid'].';');
+			}
+			return $return;
+		}
 		else
-			return $this->DB->Execute('UPDATE nodes SET access = 1 WHERE id = ?
+		{
+			$return = $this->DB->Execute('UPDATE nodes SET access = 1 WHERE id = ?
 					AND EXISTS (SELECT 1 FROM customers WHERE id = ownerid 
 						AND status = 3)', array($id));
+			if (SYSLOG && $return)
+			{
+			    $tmp = $this->DB->GetRow('SELECT name, ownerid FROM nodes WHERE id=? LIMIT 1;',array($id));
+			    addlogs('włączono dostęp, komputer: '.$tmp['name'].', klient: '.$this->getcustomername($tmp['ownerid']),'e=acl;m=node;n='.$id.';c='.$tmp['ownerid'].';');
+			}
+			return $return;
+		}
 	}
 
 	function NodeSetU($id, $access = FALSE) {
+		if (SYSLOG) $cusname = $this->getcustomername($id);
 		if ($access) {
 			if ($this->DB->GetOne('SELECT status FROM customers WHERE id = ?', array($id)) == 3) {
+				if (SYSLOG) addlogs('włączono komputery klienta: '.$cusname,'e=acl;m=node;c='.$id);
 				return $this->DB->Execute('UPDATE nodes SET access=1 WHERE ownerid=?', array($id));
 			}
 		}
 		else
+		{
+			if (SYSLOG) addlogs('wyłączono komputery klienta: '.$cusname,'e=acl;m=node;c='.$id);
 			return $this->DB->Execute('UPDATE nodes SET access=0 WHERE ownerid=?', array($id));
+		}
 	}
 
 	function NodeSetWarn($id, $warning = FALSE) {
-		return $this->DB->Execute('UPDATE nodes SET warning = ? WHERE id IN ('
+		$this->DB->BeginTrans();
+		if (SYSLOG) {
+		    if (is_array($id)) {
+			for ($i=0;$i<sizeof($id);$i++) {
+			    $ownerid = $this->getnodeowner($id[$i]);
+			    addlogs(($warning ? 'włączono' : 'wyłączono').' powiadomienie dla komputera: '.$this->getnodename($id[$i]).', klient: '.$this->getcustomername($ownerid),'e=warn;m=node;n='.$id[$i].';c='.$ownerid.';');
+			}
+		    } else {
+			$ownerid = $this->getnodeowner($id);
+			addlogs(($warning ? 'włączono' : 'wyłączono').' powiadomienie dla komputera: '.$this->getnodename($id).', klient: '.$this->getcustomername($ownerid),'e=warn;m=node;n='.$id.';c='.$ownerid.';');
+		    }
+		}
+		$return = $this->DB->Execute('UPDATE nodes SET warning = ? WHERE id IN ('
 			. (is_array($id) ? implode(',', $id) : $id) . ')', array($warning ? 1 : 0));
+		
+		$this->DB->CommitTrans();
+		return $return;
 	}
 
 	function NodeSwitchWarn($id) {
-		return $this->DB->Execute('UPDATE nodes 
+		$return = $this->DB->Execute('UPDATE nodes 
 			SET warning = (CASE warning WHEN 0 THEN 1 ELSE 0 END)
 			WHERE id = ?', array($id));
+		
+		if (SYSLOG) {
+		    $warning = $this->DB->GetOne('SELECT warning FROM nodes WHERE id=? LIMIT 1;',array($id));
+		    $ownerid = $this->getnodeowner($id);
+		    addlogs(($warning ? 'włączono' : 'wyłączono').' powiadomienie dla komputera: '.$this->getnodename($id).', klient: '.$this->getcustomername($ownerid),'e=warn;m=node;n='.$id.';c='.$ownerid.';');
+		}
+		
+		return $return;
 	}
 
 	function NodeSetWarnU($id, $warning = FALSE) {
-		return $this->DB->Execute('UPDATE nodes SET warning = ? WHERE ownerid IN ('
+		$this->DB->BeginTrans();
+		
+		$return = $this->DB->Execute('UPDATE nodes SET warning = ? WHERE ownerid IN ('
 			. (is_array($id) ? implode(',', $id) : $id) . ')', array($warning ? 1 : 0));
+		
+		if (SYSLOG) {
+		    if (is_array($id)) {
+			for ($i=0;$i<sizeof($id);$i++)
+			    addlogs(($warning ? 'włączono' : 'wyłączono').' powiadomienie dla komputerów klienta: '.$this->getcustomername($id[$i]),'e=warn;m=node;c='.$id[$i].';');
+		    }
+			else addlogs(($warning ? 'włączono' : 'wyłączono').' powiadomienie dla komputerów klienta: '.$this->getcustomername($id),'e=warn;m=node;c='.$id.';');
+		}
+		
+		$this->DB->CommitTrans();
+		return $return;
 	}
 
 	function IPSetU($netdev, $access = FALSE) {
 		if ($access)
+		{
+			if (SYSLOG) addlogs('włączono dostęp dla urządzenia sieciowego: '.$this->getnodename($netdev),'e=acl;m=netdev;n='.$netdev.';');
 			return $this->DB->Execute('UPDATE nodes SET access=1 WHERE netdev=? AND ownerid=0', array($netdev));
+		}
 		else
+		{
+			if (SYSLOG) addlogs('wyłączono dostęp dla urządzenia sieciowego: '.$this->getnodename($netdev),'e=acl;m=netdev;n='.$netdev.';');
 			return $this->DB->Execute('UPDATE nodes SET access=0 WHERE netdev=? AND ownerid=0', array($netdev));
+		}
 	}
 
 	function NodeAdd($nodedata) {
@@ -1583,6 +1781,15 @@ class LMS {
 
 				$this->DB->UnLockTables();
 				$this->DB->CommitTrans();
+			}
+			
+			if (SYSLOG) {
+			    if (!empty($nodedata['ownerid'])) {
+				$ownerid = $this->getnodeowner($id);
+				addlogs('dodano komputer: '.$this->getnodename($id).', klient: '.$this->getcustomername($ownerid),'e=add;m=node;n='.$id.';c='.$ownerid.';');
+			    }
+			    else
+				addlogs('dodano adres IP do urządzenia sieciowego '.$this->getnodename($id),'e=add;m=netdev;n='.$nodedata['netdev'].';');
 			}
 
 			return $id;
@@ -1716,7 +1923,9 @@ class LMS {
 	/*
 	 *  Tarrifs and finances
 	 */
-
+	
+	
+	
 	function GetCustomerTariffsValue($id) {
 		return $this->DB->GetOne('SELECT SUM(tariffs.value)
 		    FROM assignments, tariffs
@@ -1812,8 +2021,22 @@ class LMS {
 		$this->DB->BeginTrans();
 
 		if ($lid = $this->DB->GetOne('SELECT liabilityid FROM assignments WHERE id=?', array($id))) {
+			if (SYSLOG) $diff['old']['liabilities'] = $this->DB->GetRow('SELECT * FROM liabilities WHERE id=? LIMIT 1;',array($lid));
 			$this->DB->Execute('DELETE FROM liabilities WHERE id=?', array($lid));
 		}
+		    else $diff['old']['liabilities'] = NULL;
+		    
+		if (SYSLOG) {
+		    $diff['old']['assignments'] = $this->DB->GetRow('SELECT * FROM assignments WHERE id=? LIMIT 1;',array($id));
+		    $diff['type']['del'];
+		    $diff['card']['assignments'];
+		    $diff['new'] = array();
+		    if (isset($diff['old']['liabilities']['name'])) $nazwa = ': '.$diff['old']['liabilities']['name'];
+			else $nazwa = 'w.g. taryfy: '.$this->gettariffname($diff['old']['assignments']['tariffid']);
+
+		    addlogs('skasowano zobowiązanie '.$nazwa.', klient: '.$this->getcustomername($diff['old']['assignments']['customerid']),'e=rm;m=fin;c='.$diff['old']['assignments']['customerid'],$diff);
+		}
+		
 		$this->DB->Execute('DELETE FROM assignments WHERE id=?', array($id));
 
 		$this->DB->CommitTrans();
@@ -1959,6 +2182,14 @@ class LMS {
 					));
 
 					$result[] = $this->DB->GetLastInsertID('assignments');
+					
+					if (SYSLOG && !empty($result) && !empty($data['customerid'])) {
+					    if (!empty($data['liabilityid']))
+						$nazwa = $this->DB->GetOne('SELECT name FROM liabilites WHERE id=? LIMIT 1;',array($data['liabilityid']));
+					    else
+						$nazwa = $this->DB->GetOne('SELECT name FROM tariffs WHERE id=? LIMIT 1;',array($data['tariffid']));
+					    addlogs('dodano zobowiązanie: '.$nazwa.', klient: '.$this->getcustomername($data['customerid']),'e=add;m=fin;c='.$data['customerid']);
+					}
 				}
 			}
 		}
@@ -1992,7 +2223,17 @@ class LMS {
 			));
 
 			$result[] = $this->DB->GetLastInsertID('assignments');
+
+			if (SYSLOG && !empty($result) && !empty($data['customerid'])) {
+				if (!empty($data['liabilityid']))
+				    $nazwa = $this->DB->GetOne('SELECT name FROM liabilites WHERE id=? LIMIT 1;',array($data['liabilityid']));
+				else
+				    $nazwa = $this->DB->GetOne('SELECT name FROM tariffs WHERE id=? LIMIT 1;',array($data['tariffid']));
+			    addlogs('dodano zobowiązanie: '.$nazwa.', klient: '.$this->getcustomername($data['customerid']),'e=add;m=fin;c='.$data['customerid']);
+			}
 		}
+		
+		
 
 		if (!empty($result) && count($result = array_filter($result))) {
 			if (!empty($data['nodes'])) {
@@ -2013,7 +2254,20 @@ class LMS {
 	}
 
 	function SuspendAssignment($id, $suspend = TRUE) {
-		return $this->DB->Execute('UPDATE assignments SET suspended=? WHERE id=?', array($suspend ? 1 : 0, $id));
+		$return = $this->DB->Execute('UPDATE assignments SET suspended=? WHERE id=?', array($suspend ? 1 : 0, $id));
+		if (SYSLOG) {
+		    $tmp = $this->DB->GetRow('SELECT liabilityid, tariffid, customerid FROM assignments WHERE id=? LIMIT 1;',array($id));
+		    if (!empty($tmp['customerid'])) {
+			if (!empty($tmp['liabilityid']))
+			    $nazwa = $this->DB->GetOne('SELECT name FROM liabilites WHERE id=? LIMIT 1;',array($tmp['liabilityid']));
+			else
+			    $nazwa = $this->DB->GetOne('SELECT name FROM tariffs WHERE id=? LIMIT 1;',array($tmp['tariffid']));
+			    
+			addlogs(($suspend ? 'zawieszono' : 'przywrócono').' naliczanie płatności: '.$nazwa.', klient: '.$this->getcustomername($tmp['customerid']),'e=up;m=fin;c='.$tmp['customerid']);
+		    }
+		
+		}
+		return $return;
 	}
 
 	function AddInvoice($invoice) {
@@ -2045,6 +2299,8 @@ class LMS {
 				$invoice['customer']['divisionid'],
 		));
 		$iid = $this->DB->GetLastInsertID('documents');
+
+		
 
 		$itemid = 0;
 		foreach ($invoice['contents'] as $idx => $item) {
@@ -2082,7 +2338,10 @@ class LMS {
 					'itemid' => $itemid
 			));
 		}
-
+		if (SYSLOG) {
+		    global $DOCTYPES;
+		    addlogs('dodano dokument: '.$DOCTYPES[$type].' nr.: '.$number.', klient: '.$invoice['customer']['customername'],'e=add;m=fin;c='.$invoice['customer']['id'].';',NULL);
+		}
 		return $iid;
 	}
 
@@ -2298,6 +2557,11 @@ class LMS {
 		}
 		else
 			return FALSE;
+	}
+	
+	function GetTariffName($id) {
+	    $id = (int)$id;
+	    return $this->DB->GetOne('SELECT name FROM tariffs WHERE id = ? LIMIT 1;',array($id));
 	}
 
 	function TariffAdd($tariff) {

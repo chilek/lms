@@ -128,6 +128,8 @@ if($_FORCE_SSL && (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on'))
 	exit(0);
 }
 
+define('SYSLOG',(isset($CONFIG['phpui']['syslog_level']) ? chkconfig($CONFIG['phpui']['syslog_level']) : TRUE));
+
 // Include required files (including sequence is important)
 
 require_once(LIB_DIR.'/language.php');
