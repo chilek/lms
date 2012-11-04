@@ -58,6 +58,11 @@ $menu = array(
 					'prio' => 40,
 				),
 				array(
+					'name' => 'Logi Systemowe',
+					'link' => '?m=syslog&sl_df='.date('Y/m/d',strtotime("-2 week",time())),
+					'prio' => 45,
+				),
+				array(
 					'name' => trans('Copyrights'),
 					'link' =>'?m=copyrights',
 					'tip' => trans('Copyrights, authors, etc.'),

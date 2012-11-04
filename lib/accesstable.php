@@ -114,6 +114,9 @@ $access['table'][26]['privilege']	= 'hide_finances';
 $access['table'][27]['name']		= trans('reports');
 $access['table'][27]['privilege']	= 'reports';
 
+$access['table'][28]['name']		= 'Zezwalaj na przeglądanie logów systemowych.';
+$access['table'][28]['allow_reg']	= '^(syslog)$';
+
 $access['table'][253]['name']		= trans('users edition and addition forbidden');
 $access['table'][253]['deny_reg']	= '^(user(add|del|edit|passwd))$';
 

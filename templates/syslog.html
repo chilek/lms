@@ -1,0 +1,121 @@
+{include file="header.html"}
+{include file="calendar_js.html"}
+
+<!--// $Id: syslog.html, 2012/11/02 20:41, Sylwester Kondracki Exp $ //-->
+
+<h1>{$layout.pagetitle}</h1>
+
+<form method="GET" name="syslog" id="syslog" action="?m=syslog">
+<input type="submit" class="hiddenbtn">
+<input type="hidden" name="m" value="syslog">
+<input type="hidden" name="page" value="1">
+
+<table width="100%" cellpadding="3" cellspacing="10">
+    <tr class="dark">
+	<td colspan="7" width="100%" align="left" class="fall" style="padding-top:5px;padding-bottom:6px;">
+			<img src="img/search.gif" style="border:0;cursor:pointer;" {tip text="Ustaw filtr"} onclick="document.syslog.submit();">&nbsp;
+			od: <input type="text" name="sl_df" style="width:80px;" value="{$filter.df}" onclick="javascript:cal1.popup();">&nbsp;
+			do: <input type="text" name="sl_dt" style="width:80px;" value="{$filter.dt}" onclick="javascript:cal2.popup();">&nbsp;
+
+			moduł: <select name="sl_mod" style="width:120px;">
+			    <option value="" {if !$filter.mod} SELECTED{/if}>-- all --</option>
+			    {foreach from=$_MOD item=items key=keys}
+				<option value="{$keys}" {if $keys == $filter.mod}SELECTED{/if}>{$items}</option>
+			    {/foreach}
+			</select>&nbsp;
+
+			operacja: <select name="sl_ev" style="width:60px;">
+			    <option value="" {if $filter.ev}SELECTED{/if}>-- all --</option>
+			    {foreach from=$_MSG_LOG item=items key=keys}
+				<option value="{$keys}" {if $filter.ev == $keys}SELECTED{/if}>{$items}</option>
+			    {/foreach}
+			</select>
+
+			użytkownik: <select name="sl_us" style="width:100px;">
+			    <option value="">-- all --</option>
+			    {section name=luser loop=$users}
+				<option value="{$users[luser].id}" {if $users[luser].deleted}class="blend"{/if} {if $filter.us == $users[luser].id}SELECTED{/if}>{$users[luser].login}</option>
+			    {/section}
+			</select>
+
+			<input type="checkbox" id="id_deluser" name="sl_dus" value="1" {if $filter.dus} checked{/if}><label for="id_deluser" {tip text="Zaznacz jeżeli chcesz dołączyć logi skasowanych użytkowników"}>skasowani</label>&nbsp;&nbsp;
+	</td>
+    </tr>
+
+{if $listdata.total !=0 }
+    <tr class="dark">
+	<td colspan="7" class="fall">
+	    {include file="scroller.html" loop=$syslog}
+	</td>
+    </tr>
+    {/if}
+
+    {if $syslog}
+    <tr class="dark">
+	<td class="fbl" align="center"><b>Data</b></td>
+	<td class="fbottom" align="center"><b>Moduł</b></td>
+	<td class="fbottom" align="center"><b>Operacja</b></td>
+	<td class="fbottom" align="left"><b>Opis</b></td>
+	<td class="fbottom" align="center"><b>Użytkownik</b></td>
+	<td class="fbottom" width="1%">&nbsp;</td>
+	<td class="fbr" width="1%">&nbsp;</td>
+    </tr>
+    {/if}
+    
+    
+    {cycle values="light,lucid" print=false}
+    {section name="l1" loop=$syslog start=$start max=$pagelimit}
+    {assign var="syslogid" value=$syslog[l1].id}
+    {assign var="_modules" value=$syslog[l1].module}
+    {assign var="_event" value=$syslog[l1].event}
+	<tr  class="{cycle}" onmouseover="addClass(this,'highlight');" onmouseout="removeClass(this,'highlight');">
+	    <td width="1%" class="fleft" ><nobr>{$syslog[l1].cdate|date_format:"%Y-%m-%d %H:%M:%S"}</nobr></td>
+	    <td width="1%" align="center"><nobr>{$_MOD.$_modules}</nobr></td>
+	    <td width="1%" align="center" style="color:{if $_event == $smarty.const._ADD_}green{elseif $_event == $smarty.const._RM_}red{elseif $_event == $smarty.const._UP_}blue{elseif $_event == $smarty.const._MOV_}blue{elseif $_event == $smarty.const._ERR_}red{elseif $_event == $smarty.const._WARN_}brown{elseif $_event == $smarty.const._ACL_}purple{else}black{/if};"><nobr><b>{$_MSG_LOG.$_event}</b></nobr></td>
+	    <td width="auto" >{$syslog[l1].msg}</td>
+	    <td width="1%" align="center" ><nobr>{$syslog[l1].login}</nobr></td>
+	    <td width="1%" align="right">
+		<nobr>
+		{if $syslog[l1].cid}<img src="img/customer.gif" onclick="location.href='?m=customerinfo&id={$syslog[l1].cid}';" style="cursor:pointer;" {tip text="przejdź do karty klienta"}>
+		{else}<img src="img/empty.gif" width="16">
+		{/if}
+		</nobr>
+	    </td>
+	    <td width="1%" align="right" class="fright">
+		<nobr>
+		{if $syslog[l1].nid}<img src="img/node.gif" onclick="location.href='?m={if $syslog[l1].module == $smarty.const.MOD_NODE}nodeinfo{else if $syslog[l1].module == $smarty.const.MOD_NETDEV}netdevinfo{/if}&id={$syslog[l1].nid}';" style="cursor:pointer;" {tip text="przejdź do karty komputera/urządzenia"}>{else}<img src="img/empty.gif" width="16">{/if}
+		</nobr>
+	    </td>
+	</tr>
+    {sectionelse}
+	<tr>
+	    <td colspan="7" align="center" class="flr">
+	    <br>
+		<h1>Brak wyników</h1>
+		<br>
+	    </td>
+	</tr>
+    {/section}
+    
+	
+    
+    {if $listdata.total != 0 }
+    <tr class="dark">
+	<td colspan="7" class="fall">
+	    {include file="scroller.html" loop=$syslog}
+	</td>
+    </tr>
+    {else}
+	<tr><td colspan="7" class="ftop"></td></tr>
+    {/if}
+    
+
+</table>
+</form>
+<script type="text/javascript">
+<!--
+var cal1 = new calendar(document.forms['syslog'].elements['sl_df']); cal1.time_comp = false;
+var cal2 = new calendar(document.forms['syslog'].elements['sl_dt']); cal2.time_comp = false;
+//-->
+</script>
+{include file="footer.html"}

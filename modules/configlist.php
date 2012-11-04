@@ -276,6 +276,10 @@ function GetConfigList($order='var,asc', $section='', $search='')
 				case 'report_type':
 					$config[$idx]['description'] = trans('Documents type. You can use "html" or "pdf". Default: html.');
 				break;
+				
+				case 'syslog_level':
+					$config[$idx]['description'] = 'Logowanie zdarzeń systemowych. 0 - wyłączone, 1 - włączone. DEF.: 1';
+				break;
 
 				default:
 					$config[$idx]['description'] = trans('Unknown option. No description.');

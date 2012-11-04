@@ -901,4 +901,101 @@ function access_denied() {
 	die;
 }
 
+function addLogs($message = NULL, $string = NULL, $diff = NULL)
+{
+    global $DB, $AUTH;
+    if (empty($message)) return NULL;
+    
+    $cid = 0;
+    $nid = 0;
+    $uid = ($AUTH->id ? $AUTH->id : 0);
+    $event = _ADD_;
+    $module = MOD_OTHER;
+    if (!is_null($diff) && !empty($diff))
+    {
+	if (is_array($diff)) $diff = serialize($diff);
+	else 
+	    $diff = NULL;
+    }
+    else $diff = NULL;
+
+    if (!empty($string) && is_string($string))
+    {
+	$string = strtolower($string);
+	$tmp = explode(';',$string);
+	$count = sizeof($tmp);
+	for ( $i = 0; $i < $count; $i++ ) if (!empty($tmp[$i]))
+	{
+	    $t = explode('=',$tmp[$i]);
+	    switch ($t[0]) 
+	    {
+		case 'c'	: // customerid
+		case 'cus'	:
+		case 'customer' :
+				$cid = (int)$t[1]; 
+		break;
+		
+		case 'n'	: // nodeid
+		case 'node'	:
+				$nid = (int)$t[1]; 
+		break;
+		
+		case 'e'	: // event
+		case 'event'	:
+				if (in_array($t[1],array('add','rm','up','mov','err','inf','warn','acl')))
+				    switch ($t[1])
+				    {
+					case 'add'	: $event = _ADD_;	break;
+					case 'rm'	: $event = _RM_;	break;
+					case 'up'	: $event = _UP_;	break;
+					case 'mov'	: $event = _MOV_;	break;
+					case 'err'	: $event = _ERR_;	break;
+					case 'inf'	: $event = _INF_;	break;
+					case 'warn'	: $event = _WARN_;	break;
+					case 'acl'	: $event = _ACL_;	break;
+				    } // end switch ($t[1]) 
+		break;
+		
+		case 'u'	:
+		case 'user'	:
+				$uid = (int)$t[1];
+		break;
+		
+		case 'm'	: //modules
+		case 'mod'	:
+		case 'module'	:
+				switch($t[1])
+				{
+					case 'oth'	: case 'other'		: $module = MOD_OTHER;		break;
+					case 'cus'	: case 'customer'	: $module = MOD_CUSTOMER;	break;
+					case 'node'				: $module = MOD_NODE;		break;
+					case 'netdev'				: $module = MOD_NETDEV;		break;
+					case 'fin'	: case 'finances'	: $module = MOD_FINANCES;	break;
+					case 'doc'	: case 'documents'	: $module = MOD_DOCUMENTS;	break;
+					case 'hd'	: case 'helpdesk'	: $module = MOD_HELPDESK;	break;
+					case 'tt'	: case 'timetable'	: $module = MOD_TIMETABLE;	break;
+					case 'conf'	: case 'config'		: $module = MOD_CONFIG;		break;
+					case 'admin'				: $module = MOD_ADMIN;		break;
+					case 'voip'				: $module = MOD_VOIP;		break;
+					case 'hosting'				: $module = MOD_HOSTING;	break;
+					case 'sl'	: case 'syslog'		: $module = MOD_SYSLOG;		break;
+					case 'mon'	: case 'monitoring'	: $module = MOD_MONITORING;	break;
+					case 'mag'	: case 'magazyn'	: $module = MOD_MAGAZYN;	break;
+					case 'con'	: case 'contractor'	: $module = MOD_CONTRACTOR;	break;
+					case 'dem'	: case 'daemon'		: $module = MOD_DAEMON;		break;
+				}
+		break;
+	    }
+	}
+    }
+	
+	if (!$DB->Execute('INSERT INTO syslog (cdate, uid, cid, nid, module, event, msg, diff) VALUES (?,?,?,?,?,?,?,?) ;',array(time(),$uid,$cid,$nid,$module,$event,$message,$diff)))
+	{
+	    $DB->LockTables('syslog');
+	    $DB->Execute('INSERT INTO syslog (cdate, uid, cid, nid, module, event, msg, diff) VALUES (?,?,?,?,?,?,?,?) ;',array(time(),$uid,$cid,$nid,$module,$event,$message,$diff));
+	    $DB->UnlockTables();
+	}
+	
+}
+
 ?>

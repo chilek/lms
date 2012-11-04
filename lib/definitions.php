@@ -26,6 +26,67 @@
 
 // that definitions should be included before LMS.class.php but after Smarty
 
+// ----------------------- system logs --------------------------
+define('MOD_OTHER',1);
+define('MOD_CUSTOMER',2);
+define('MOD_NODE',3);
+define('MOD_NETDEV',4);
+define('MOD_FINANCES',5);
+define('MOD_DOCUMENTS',6);
+define('MOD_HELPDESK',7);
+define('MOD_TIMETABLE',8);
+define('MOD_CONFIG',9);
+define('MOD_ADMIN',10);
+define('MOD_VOIP',11);
+define('MOD_HOSTING',12);
+define('MOD_DAEMON',13);
+//define('MOD_MAG',14);
+//define('MOD_CONTRACTOR',15);
+define('MOD_SYSLOG',100);
+
+
+$MOD = array(
+    MOD_OTHER		=> 'inny',
+    MOD_CUSTOMER	=> 'klienci',
+    MOD_NODE		=> 'komputery',
+    MOD_NETDEV		=> 'urządzenia sieciowe',
+    MOD_FINANCES	=> 'finanse',
+    MOD_DOCUMENTS	=> 'dokumenty',
+    MOD_HELPDESK	=> 'helpdesk',
+    MOD_TIMETABLE	=> 'terminarz',
+    MOD_CONFIG		=> 'konfiguracja',
+    MOD_ADMIN		=> 'administracja',
+    MOD_VOIP		=> 'VoIP',
+    MOD_HOSTING		=> 'hosting',
+    MOD_DAEMON		=> 'daemon',
+//    MOD_MAG		=> 'magazyn',
+//    MOD_CONTRACTOR	=> 'kontrachenci',
+    MOD_SYSLOG		=> 'system logs'
+);
+
+define('_ADD_',1);		// dodanie
+define('_RM_',2);		// skasowanie
+define('_UP_',3);		// aktualizacja / update /
+define('_MOV_',4);		// przeniesienie
+define('_WARN_',5);		// powiadomienia
+define('_ACL_',6);		// access dla kompów
+define('_INF_',7);		// informacja 
+define('_ERR_',8);		// błąd
+
+$MSG_LOG = array(
+    _ADD_	=> 'added',
+    _RM_	=> 'delete',
+    _UP_	=> 'update',
+    _MOV_	=> 'move',
+    _WARN_	=> 'warn',
+    _ACL_	=> 'access',
+    _INF_	=> 'inf.',
+    _ERR_	=> 'error',
+);
+
+// ----------------------- end system logs --------------------------
+
+
 // Helpdesk ticket status
 define('RT_NEW', 0);
 define('RT_OPEN', 1);
@@ -259,6 +320,8 @@ if(isset($SMARTY))
 	$SMARTY->assign('_LINKSPEEDS', $LINKSPEEDS);
 	$SMARTY->assign('_BOROUGHTYPES', $BOROUGHTYPES);
 	$SMARTY->assign('_PASSWDEXPIRATIONS', $PASSWDEXPIRATIONS);
+	$SMARTY->assign('_MSG_LOG',$MSG_LOG);
+	$SMARTY->assign('_MOD',$MOD);
 }
 
 define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');
