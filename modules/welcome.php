@@ -58,6 +58,18 @@ if (!check_conf('privileges.hide_summaries')) {
 	$SMARTY->assign('nodestats', $LMS->NodeStats());
 }
 
+$stats['emails']=$DB->GetOne('
+	SELECT COUNT(`email`) AS emails
+	FROM customers
+	WHERE LENGTH(`email`)>1 AND deleted=0');
+
+$stats['ssn']=$DB->GetOne('
+	SELECT COUNT(`ssn`) AS ssns
+	FROM customers
+	WHERE LENGTH(`ssn`)>1 AND deleted=0');
+
+$SMARTY->assign('stats',$stats);
+
 $SMARTY->display('welcome.html');
 
 ?>
