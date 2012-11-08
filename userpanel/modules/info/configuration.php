@@ -27,7 +27,7 @@
 $USERPANEL->AddModule(trans('Info'),	// Display name
 		    'info', 		// Module name - must be the same as directory name
 		    trans('Show basic informations about you'), // Tip 
-		    10,			// Priority
+		    5,			// Priority
 		    trans('This module is for showing basic informations about current logged customer'),	// Description
 		    array(		// Array of submenus in LMS
 		        array(

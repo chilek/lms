@@ -22,12 +22,12 @@
  *  USA.
  *
  *  $Id$
- */
 
+ */
 $USERPANEL->AddModule(trans('Help'),	// Display name
 		    'help', 		// Module name - must be the same as directory name
 		    trans('Runs problems solving center'), // Tip 
-		    5,			// Priority
+		    55,			// Priority
 		    trans('This module shows problems solving center')	// Description
 		    );
 

@@ -1,0 +1,8 @@
+<div class="row-fluid">
+    <div class="span12">
+        <div class="page-header"><img src="media/logo.png" alt="Alfa-System" /></div>
+        <ul class="nav nav-tabs">
+        {foreach from=$modules item=menuitem}
+            <li {if strpos($smarty.get.m, $menuitem.module) !== false && strlen($smarty.get.m)==strlen($menuitem.module) } class="active" {/if}><a href="?m={$menuitem.module}" {userpaneltip text=$menuitem.tip}><b>{$smarty.get.page} {$menuitem.name|replace:" ":"&nbsp;"}</b></a></li>
+        {/foreach}
+        </ul>       

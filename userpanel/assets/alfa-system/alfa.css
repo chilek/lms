@@ -1,0 +1,57 @@
+/* GLOBAL */
+html {
+    margin: 0 1em;
+    padding: 0 1em;
+}
+
+/* MODULE: FINANCE */
+.positive { color: darkgreen; }
+.negative { color: #cc0000; }
+.center { text-align:center; }
+
+/* MODULE: BONUS */
+
+.true { color: green;  font-weight: bold; }
+.false { color: red; font-weight: bold; }
+.box_ok {
+    border:solid 1px #349534; 
+    background:#C9FFCA;
+    text-align:center;
+    margin: 1em auto;
+    padding: .5em;
+    text-align:center;
+    width:25%;		
+}
+
+.box_info {
+    border:solid 1px #ddd155; 
+    background:#ffffcc;
+    text-align:center;
+    margin: 1em auto;
+    padding: .5em;
+    text-align:center;
+    width:75%;		
+}
+
+
+.box_dane {
+    border:solid 1px #ccc; 
+    background:#eee;
+    text-align:center;
+    margin: 1em auto;
+    padding: .5em;
+    text-align:center;
+    width:75%;	
+}
+
+.box_wazne {
+    border:solid 1px #c00; 
+    background:#f7cbca;
+    text-align:center;
+    margin: 1em auto;
+    padding: .5em;
+    text-align:center;
+    width:50%;	
+}
+
+.tipsy {color: #666;}

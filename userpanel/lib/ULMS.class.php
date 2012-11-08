@@ -59,6 +59,11 @@ class ULMS extends LMS
 	{
 		return $this->DB->GetOne('SELECT message FROM customers WHERE id=?', array($id));
 	}
+        
+	function GetCustomerIDandPIN($email,$pesel)
+	{
+		return $this->DB->GetAll('SELECT id,pin FROM customers WHERE email=? AND ssn=?', array($email,$pesel));
+	}        
 	
 	function GetCustomerTickets($id)
 	{

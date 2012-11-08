@@ -1,19 +1,15 @@
-<!-- $Id$ -->
 {include file="header.html"}
-<table style="width: 100%;" cellpadding="10">
-    <tr>
-	<td>
 {box title=$title}
-<table class="width: 100%;" cellpadding="3">
+<table class="table table-bordered">
 	{foreach from=$ticket.messages item=message}
-        <tr class="darkest">
-		<td width="1%" align="right">
-			<b>{$message.createtime|date_format:"%Y/%m/%d<br/>%H:%M"}</b>
+        <tr>
+		<td>
+			<b>{$message.createtime|date_format:"%Y/%m/%d %H:%M"}</b>
 		</td>
-		<td width="1%" align="right">
+		<td>
 			<b>{trans("From:")}<br/>{trans("Subject:")}</b>
 		</td>
-		<td width="97%" class="nobr">
+		<td>
 			    {if $message.customerid}
 				    {$message.customername}
 			    {elseif $message.userid}
@@ -29,8 +25,8 @@
 			    <br />
 			    {$message.subject|escape}
 		</td>
-		<td width="1%">
-			<a href="?m=helpdesk&op=message&id={$ticket.id}&msgid={$message.id}">{trans("Reply")}</a>
+		<td>
+			<a class="btn btn-danger" href="?m=helpdesk&op=message&id={$ticket.id}&msgid={$message.id}">{trans("Reply")}</a>
 		</td>
 	</tr>
 	<tr>
@@ -41,7 +37,5 @@
 	{/foreach}
 </table>
 {/box}
-	</td>
-    </tr>
-</table>
+
 {include file="footer.html"}

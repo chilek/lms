@@ -1,32 +1,27 @@
 <!--// $Id$ //-->
 <form method="post" action="?m=helpdesk" name="helpdesk">
 {box title="New Request"}
-<table width="100%" cellpadding="3" class="light">
-	<tr class="light">
-		<td width="1%">
-			{img src="helpdesk.gif" alt=""}
-		</td>
-		<td width="1%">
+<table class="table table-bordered">
+	<tr>
+		<td>
 			<b>{trans("Subject:")}</b>
 		</td>
-		<td width="98%">
+		<td>
 			<input style="width:99%;" type="text" name="helpdesk[subject]" value="{$helpdesk.subject}" {userpaneltip text="Enter request subject" trigger="subject"} />
 		</td>
 	</tr>
-	<tr class="light">
-		<td width="1%">
-			{img src="help.gif" alt=""}
-		</td>
-		<td width="1%">
+	<tr>
+
+		<td>
 			<b>{trans("Body:")}</b>
 		</td>
-		<td width="98%">
+		<td>
 			<textarea style="width:99%;" name="helpdesk[body]" rows="5" {userpaneltip text="Enter request contents" trigger="body"}>{$helpdesk.body}</textarea>
 		</td>
 	</tr>
-	<tr class="light">
-		<td width="100%" colspan="3" align="right">
-			<a href="javascript:document.helpdesk.submit()" accesskey="S">{trans("Submit")} {img src="save.gif" alt="[ Submit ]"}</a>
+	<tr>
+		<td colspan="2">
+			<a class="btn btn-danger" href="javascript:document.helpdesk.submit()" accesskey="S">{trans("Submit")}</a>
 		</td>
 	</tr>
 </table>

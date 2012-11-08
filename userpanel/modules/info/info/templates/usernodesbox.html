@@ -1,0 +1,35 @@
+<!--// $Id$ //-->
+{box title="Your computers"}
+{section name=usernodes loop=$usernodes}
+{if $usernodes[usernodes].id}
+    <table class="table table-bordered">
+        <tr>
+            <td rowspan="3">
+                {if $usernodes[usernodes].access}
+                    {img src="access.gif" alt="" text="Connected"}
+                {else}
+                    {img src="noaccess.gif" alt="" text="Disconnected"}
+                {/if}             
+                <br/>
+                <b>NAZWA URZĄDZENIA:</b> {$usernodes[usernodes].name}  
+            </td>
+            <td>
+                <b>LOKALNE IP:</b> {$usernodes[usernodes].ip}
+            </td>
+        </tr>
+        <tr>            
+            <td>
+                {if $usernodes[usernodes].ip_pub!="0.0.0.0"} <b>PUBLICZNE IP:</b> {$usernodes[usernodes].ip_pub}{/if}
+            </td>
+        </tr>
+        <tr>            
+            <td>
+                <b>MAC ADDRESS:</b> {$usernodes[usernodes].mac|replace:",":"<br/>"}
+            </td>
+        </tr>
+</table>
+{/if}
+{sectionelse}
+    <p><b>{trans("You don't have any computers.")}</b></p>
+{/section}
+{/box}

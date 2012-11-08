@@ -22,8 +22,8 @@
  *  USA.
  *
  *  $Id$
- */
 
+ */
 $USERPANEL->AddModule(trans('Stats'),	// Display name
 		    'stats', 		// Module name - must be the same as directory name
 		    trans('Show bandwidth utilization stats'), // Tip 
