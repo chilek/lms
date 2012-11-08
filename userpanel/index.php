@@ -26,7 +26,7 @@
 
 // REPLACE THIS WITH PATH TO YOUR CONFIG FILE
 
-$CONFIG_FILE = (is_readable('lms.ini')) ? 'lms.ini' : '/etc/lms/lms.ini';
+$CONFIG_FILE = (is_readable('lms.ini')) ? 'lms.ini' : '/etc/lms/lmsgit.ini';
 
 // PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
 // *EXACTLY* WHAT ARE YOU DOING!!!
