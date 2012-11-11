@@ -40,7 +40,7 @@
 			<IMG src="img/folder.gif" alt="">
 		</TD>
 		<TD WIDTH="99%">
-			{if $customerinfo.type}{trans("legal entity")}{else}{trans("private person")}{/if}
+			{if $customerinfo.type == $smarty.const.CTYPES_COMPANY}{assign var='type' value=$smarty.const.CTYPES_COMPANY}{$_CTYPES.$type}{elseif $customerinfo.type == $smarty.const.CTYPES_PRIVATE}{assign var='type' value=$smarty.const.CTYPES_PRIVATE}{$_CTYPES.$type}{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

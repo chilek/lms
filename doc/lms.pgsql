@@ -1099,6 +1099,8 @@ CREATE TABLE events (
 	customerid 	integer 	DEFAULT 0 NOT NULL,
 	private 	smallint 	DEFAULT 0 NOT NULL,
 	closed 		smallint 	DEFAULT 0 NOT NULL,
+	moddate		integer		DEFAULT 0 NOT NULL,
+	moduserid	integer		DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX events_date_idx ON events(date);
@@ -1732,9 +1734,14 @@ END
 CREATE VIEW customersview AS
 SELECT c.* FROM customers c
         WHERE NOT EXISTS (
-	        SELECT 1 FROM customerassignments a
-	        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-	        WHERE e.userid = lms_current_user() AND a.customerid = c.id);
+	        SELECT 1 FROM customerassignments a 
+	        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid) 
+	        WHERE e.userid = lms_current_user() AND a.customerid = c.id) 
+	        AND c.type IN ('0','1');
+
+CREATE VIEW contractorview AS
+SELECT c.* FROM customers c
+        WHERE c.type = '2' ;
 
 CREATE OR REPLACE FUNCTION int2txt(bigint) RETURNS text AS $$
 SELECT $1::text;
@@ -1858,4 +1865,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012092000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012111100');
