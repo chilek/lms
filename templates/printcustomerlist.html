@@ -49,7 +49,7 @@
 		<TD>
 			<B>{$customerlist[customerlist].customername}</B><BR>
 			{$customerlist[customerlist].zip} {$customerlist[customerlist].city}{if $customerlist[customerlist].city neq ""},{/if} {$customerlist[customerlist].address}<BR>
-			{if $contactlist.$cid.type}{trans("mobile")}{else}{trans("phone<!plural>")}{/if} {$contactlist.$cid.phone}
+			{if $contactlist.$cid.type}{trans("mobile")}{else}{trans("phone<!plural>")}{/if} {$contactlist.$cid.phone|phone_format}
 		</TD>
 		<TD ALIGN="RIGHT">
 			{if !check_conf('privileges.hide_finances')}{$customerlist[customerlist].tariffvalue|money_format}<BR>{/if}

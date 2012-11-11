@@ -53,7 +53,7 @@
 			<NOBR>{$event.customername|truncate:"40":"...":true}</NOBR><BR>
 			<NOBR>{$event.customeraddr}</NOBR><BR>
 			<NOBR>{$event.customercity}</NOBR><BR>
-			<NOBR>{$event.customerphone}</NOBR>
+			<NOBR>{$event.customerphone|phone_format}</NOBR>
 		</TD>
 	</TR>
 	{/foreach}

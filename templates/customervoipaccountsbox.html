@@ -29,7 +29,7 @@
 					<TD WIDTH="1%" NOWRAP COLSPAN="2" onclick="return self.location.href='?m=voipaccountinfo&id={$voipaccount.id}'">
 					    {$voipaccount.passwd}</TD>
 					<TD WIDTH="1%" NOWRAP onclick="return self.location.href='?m=voipaccountinfo&id={$voipaccount.id}'">
-					    {$voipaccount.phone}</TD>
+					    {$voipaccount.phone|phone_format}</TD>
 					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
 						<A onClick="return confirmLink(this, '{trans("Are you sure, you want to remove customer voip account?")}')" HREF="?m=voipaccountdel&id={$voipaccount.id}"><IMG SRC="img/delete.gif" ALT="[ {trans("Delete")} ]" TITLE="[ {trans("Delete")} ]"></A>
 						<A HREF="?m=voipaccountedit&id={$voipaccount.id}"><IMG SRC="img/edit.gif" ALT="[ {trans("Edit")} ]" TITLE="[ {trans("Edit")} ]"></A>

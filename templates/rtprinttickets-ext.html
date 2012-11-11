@@ -52,7 +52,7 @@
 				<TD WIDTH="1%">{trans("Address:")}</TD>
 				<TD WIDTH="99%">
 				    {$request.address}
-				    {if $request.phone}({trans("phone:")} {$request.phone}){/if}
+				    {if $request.phone}({trans("phone:")} {$request.phone|phone_format}){/if}
 				</TD>
 			    </TR>
 			    {/if}

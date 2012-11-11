@@ -160,4 +160,6 @@ function format_bankaccount($account)
 	return preg_replace('/(..)(....)(....)(....)(....)/i', '${1} ${2} ${3} ${4} ${5}', $account);
 }
 
+function phone_format($string) { return $string; }
+
 ?>

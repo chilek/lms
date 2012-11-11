@@ -58,7 +58,7 @@
 			<IMG SRC="img/phone.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
-		    {$item.phone}
+		    {$item.phone|phone_format}
 		    {if $item.typestr}[{$item.typestr}]{/if}
 		    {if $item.name} ({$item.name|truncate:"40":"...":true}){/if}
 		</TD>
