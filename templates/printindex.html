@@ -44,8 +44,8 @@
 								<TD style="width: 98%; white-space: nowrap;">
 									<SELECT size="1" name="type" {tip text="Select legal personality type"}>
 										<OPTION value="" SELECTED>{trans("- all -")}</OPTION>
-										<OPTION VALUE="0">{trans("private person")}</OPTION>
-										<OPTION VALUE="1">{trans("legal entity")}</OPTION>
+										<OPTION VALUE="{$smarty.const.CTYPES_PRIVATE}">{assign var='type' value=$smarty.const.CTYPES_PRIVATE}{$_CTYPES.$type}</OPTION>
+										<OPTION VALUE="{$smarty.const.CTYPES_COMPANY}">{assign var='type' value=$smarty.const.CTYPES_COMPANY}{$_CTYPES.$type}</OPTION>
 									</SELECT>
 								</TD>
 							</TR>

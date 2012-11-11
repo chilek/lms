@@ -97,8 +97,8 @@
 			<IMG SRC="img/folder.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
-			<INPUT TYPE="radio" NAME="customerdata[type]" VALUE="0" ID="private" {tip text="Select legal personality type" trigger="type"}{if !$customerinfo.type} CHECKED{/if}><label for="private">{trans("private person")}</label>
-			<INPUT TYPE="radio" NAME="customerdata[type]" VALUE="1" ID="company" {tip text="Select legal personality type" trigger="type"}{if $customerinfo.type} CHECKED{/if}><label for="company">{trans("legal entity")}</label>
+			<INPUT TYPE="radio" NAME="customerdata[type]" VALUE="0" ID="private" {tip text="Select legal personality type" trigger="type"}{if $customerinfo.type == $smarty.const.CTYPES_PRIVATE} CHECKED{/if}><label for="private">{assign var='type' value=$smarty.const.CTYPES_PRIVATE}{$_CTYPES.$type}</label>
+			<INPUT TYPE="radio" NAME="customerdata[type]" VALUE="1" ID="company" {tip text="Select legal personality type" trigger="type"}{if $customerinfo.type == $smarty.const.CTYPES_COMPANY} CHECKED{/if}><label for="company">{assign var='type' value=$smarty.const.CTYPES_COMPANY}{$_CTYPES.$type}</label>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
