@@ -23,7 +23,6 @@
 
 $DB->BeginTrans();
 
-// Najpierw kasujemy widok bo korzysta on z kolumny PIN, której chcemy zmienić typ
 $DB->Execute("DROP VIEW customersview");
 
 $DB->Execute("CREATE VIEW customersview AS
