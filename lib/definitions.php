@@ -26,6 +26,17 @@
 
 // that definitions should be included before LMS.class.php but after Smarty
 
+// customers and contractor type
+define('CTYPES_PRIVATE',0);
+define('CTYPES_COMPANY',1);
+define('CTYPES_CONTRACTOR',2);
+
+$CTYPES = array(
+    CTYPES_PRIVATE	=> trans('private person'),
+    CTYPES_COMPANY	=> trans('legal entity'),
+    CTYPES_CONTRACTOR	=> trans('contractor'),
+);
+
 // Helpdesk ticket status
 define('RT_NEW', 0);
 define('RT_OPEN', 1);
@@ -62,6 +73,9 @@ define('DOC_RECEIPT', 2);
 define('DOC_CNOTE', 3);
 //define('DOC_CMEMO', 4);
 define('DOC_DNOTE', 5);
+define('DOC_INVOICE_PRO',6);
+define('DOC_INVOICE_PURCHASE',7);
+
 define('DOC_CONTRACT', -1);
 define('DOC_ANNEX', -2);
 define('DOC_PROTOCOL', -3);
@@ -71,6 +85,8 @@ define('DOC_OTHER', -10);
 
 $DOCTYPES = array(
     DOC_INVOICE 	=>	trans('invoice'),
+    DOC_INVOICE_PRO	=>	trans('pro-forma invoice'),
+    DOC_INVOICE_PURCHASE =>	trans('purchase invoice'),
     DOC_RECEIPT 	=>	trans('cash receipt'),
     DOC_CNOTE	    =>	trans('credit note'), // faktura korygujaca
 //    DOC_CMEMO	    =>	trans('credit memo'), // nota korygujaca
@@ -244,6 +260,7 @@ $PASSWDEXPIRATIONS = array(
 
 if(isset($SMARTY))
 {
+	$SMARTY->assign('_CTYPES',$CTYPES);
 	$SMARTY->assign('_DOCTYPES', $DOCTYPES);
 	$SMARTY->assign('_PERIODS', $PERIODS);
 	$SMARTY->assign('_GUARANTEEPERIODS', $GUARANTEEPERIODS);

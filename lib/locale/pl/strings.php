@@ -23,7 +23,8 @@
  *
  *  $Id$
  */
-
+$_LANG['purchase invoice'] = 'faktura zakupu';
+$_LANG['pro-forma invoice'] = 'faktura pro-forma';
 $_LANG['$a ($b addresses)'] = '$a ($b adresów)';
 $_LANG['$a addresses'] = '$a adresów';
 $_LANG['$a ago ($b)'] = '$a temu ($b)';
