@@ -219,7 +219,7 @@
 			<IMG SRC="img/phone.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
-			<INPUT TYPE="text" size="15" value="{$item.phone}" name="customerdata[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}>{$item.type}&nbsp;
+			<INPUT TYPE="text" size="15" value="{$item.phone}" name="customerdata[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}>
             <INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_MOBILE}" name="customerdata[contacts][{$key}][type][]" ID="chkmobile{$key}" {if ($item.type == $smarty.const.CONTACT_MOBILE)} checked{/if}><label for="chkmobile{$key}">{trans("mobile")}</label>
             <INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_FAX}" name="customerdata[contacts][{$key}][type][]" ID="chkfax{$key}" {if ($item.type == $smarty.const.CONTACT_FAX)} checked{/if}><label for="chkfax{$key}">{trans("fax")}</label>
             <BR>
