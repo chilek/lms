@@ -118,4 +118,6 @@ function format_bankaccount($account)
 	return $account;
 }
 
+function phone_format($string) { return $string; }
+
 ?>

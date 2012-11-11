@@ -58,7 +58,7 @@
 			({$voipaccountlist[voipaccountlist].id|string_format:"%04d"})
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=voipaccountinfo&id={$voipaccountlist[voipaccountlist].id}';" valign="top" nowrap>
-			<B>{$voipaccountlist[voipaccountlist].phone}</B>
+			<B>{$voipaccountlist[voipaccountlist].phone|phone_format}</B>
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=voipaccountinfo&id={$voipaccountlist[voipaccountlist].id}';" valign="top" nowrap>
 			{$voipaccountlist[voipaccountlist].passwd}

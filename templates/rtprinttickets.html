@@ -49,7 +49,7 @@
 			{if $list[list].customerid}
 			{$list[list].customername|truncate:"50":"...":true} ({$list[list].customerid|string_format:"%04d"})
 			{if $list[list].address}<BR>{$list[list].address}{/if}
-			{if $list[list].phone}<BR>{trans("phone:")} {$list[list].phone}{/if}
+			{if $list[list].phone}<BR>{trans("phone:")} {$list[list].phone|phone_format}{/if}
 			{else}
 			{$list[list].requestor|truncate:"50":"...":true}
 			{/if}

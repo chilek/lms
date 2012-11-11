@@ -24,6 +24,25 @@
  *  $Id$
  */
 
+$fortunes[] = "
+- co robicie ?
+- skręcamy sobie
+- a w którą stronę skręcacie ?
+- na wprost
+";
+$fortunes[] = "Przy jednym ogniu można i trzy pieczenie upiec. Tylko trzeba je mieć.";
+$fortunes[] = "Punkt widzenia zależy od punktu siedzenia.";
+$fortunes[] = "Dwóch półgłówków nie tworzy jednej głowy.";
+$fortunes[] = "Głupota sama przechodzi z pokolenia na pokolenia, wiedzę trzeba przenieść.";
+$fortunes[] = "Programowanie niskopoziomowe jest dobre dla duszy programisty.";
+$fortunes[] = "Prędkość światła jest do kitu";
+$fortunes[] = "Jeżeli nie możesz sprawić by działało dobrze - spraw chociaż by dobrze wyglądało. <i>Bill Gates</i>";
+$fortunes[] = "Internet ? Nie, dziękuję, nie jesteśmy zainteresowani. <i>Bill Gates</i>";
+$fortunes[] = "640 KB pamięci operacyjnej powinno każdemu wystarczyć. <i>Bill Gates</i>";
+$fortunes[] = "Prawdziwy programista wiesza się razem ze swoim programem";
+$fortunes[] = "Gdyby dureń zrozumiał że jest durniem, automatycznie przestałby być durniem. Wniosek z tego taki, że durnie rekrutują się jedynie spośród ludzi pewnych, że nie są durniami.";
+$fortunes[] = "Człowiek rodzi się inteligentny, ale potem idzie do szkoły";
+$fortunes[] = "Między pierwszą setką a drugą zawsze jest jeszcze miejsce na jedną";
 $fortunes[] = "Możesz się pokaleczyć wymachując siekierą?";
 $fortunes[] = "Komputer nie podłączony do źródła zasilania zdecydowanie odmówi działania.";
 $fortunes[] = "Doświadczenie to coś, co zdobywasz tuż po chwili w której go potrzebowałeś.";

@@ -172,4 +172,67 @@ function format_bankaccount($account)
 	return preg_replace('/(..)(....)(....)(....)(....)(....)(....)/i', '${1} ${2} ${3} ${4} ${5} ${6} ${7}', $account);
 }
 
+function phone_format($string)
+{
+    $stacjonarne = array(
+			12, 13, 14, 15, 16, 17, 18, 22, 23, 24, 25, 26, 29, 30, 32, 33, 34, 39, 40, 41, 42, 43, 44, 46, 47,
+			48, 52, 54, 55, 56, 58, 59, 61, 62, 63, 64, 65, 67, 68, 70, 71, 74, 75, 76, 77, 80, 81, 82, 83, 84,
+			85, 86, 87, 89, 91, 94, 95
+		);
+    $format = 0;
+    $t = array();
+    
+    if ( strlen($string)===7 )
+	$format = 1;
+    else {
+	$t[0] = substr($string,0,2);
+	if (in_array($t[0],$stacjonarne))
+	    $format = 2;
+	else 
+	    $format = 3;
+    }
+    
+    $string = str_replace(',','',$string);
+    $string = str_replace(' ','',$string);
+    $string = str_replace('(','',$string);
+    $string = str_replace(')','',$string);
+    $string = str_replace('-','',$string);
+    $string = str_replace('/','',$string);
+    $str = '';
+    $t = array();
+    
+    switch ($format)
+    {
+	
+	case'1': 
+		$t[0] = substr($string,0,3);
+		$t[1] = substr($string,3,2);
+		$t[2] = substr($string,5,2);
+	break;
+	
+	case'2':
+		$t[0] = substr($string,0,2);
+		$t[1] = substr($string,2,3);
+		$t[2] = substr($string,5,2);
+		$t[3] = substr($string,7,2);
+	break;
+	
+	case'3':
+		$t[0] = substr($string,0,3);
+		$t[1] = substr($string,3,3);
+		$t[2] = substr($string,6,3);
+	break;
+	
+	default:
+		$t[0] = $string;
+    }
+    
+    if (count($t)!==0)
+	$str = implode(' ',$t);
+    else 
+	$str = $string;
+    
+    return $str;
+}
+
 ?>
