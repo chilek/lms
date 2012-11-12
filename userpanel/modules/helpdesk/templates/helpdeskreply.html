@@ -1,8 +1,6 @@
 <!--// $Id$ //-->
 {include file="header.html"}
-<table class="table">
-    <tr>
-        <td>
+
 <form method="post" action="?m=helpdesk&id={$ticket.id}" name="helpdesk">
 {box title="Message"}
 <input type="hidden" name="helpdesk[inreplyto]" value="{$helpdesk.inreplyto}" />
@@ -76,7 +74,5 @@
 </table>
 {/box}
 </form>
-        </td>
-    </tr>
-</table>
+
 {include file="footer.html"}

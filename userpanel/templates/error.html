@@ -1,27 +1,4 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<table align="center">
-    <tr>
-	<td>
-{box title="Error"}
-<table width="100%" CELLPADDING="3" class="light">
-    <tr>
-	<td>
-	    <table>
-		<tr>
-		    <td>
-			{img src="warning.png"}
-		    </td>
-		    <td>
-			{$layout.error}
-		    </td>
-		</tr>
-	    </table>
-	</td>
-    </tr>
-</table>
-{/box}
-	</td>
-    </tr>
-</table>
+<div class="alert alert-error">{$layout.error}</div>
 {include file="footer.html"}
