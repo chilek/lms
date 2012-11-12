@@ -244,7 +244,7 @@ $ su - postgres
 $ /usr/local/pgsql/bin/initdb -D /usr/local/pgsql/data --locale=pl_PL.UTF-8
 $ /usr/local/pgsql/bin/postmaster -D /usr/local/pgsql/data >logfile 2>&1 &</screen>
                </para>
-		<para><warning><para>It's required to add in postgresql.conf: custom_variable_classes = 'lms'</para></warning></para>
+		<para><warning><para>Applies to version <= 9.1.x: It's required to add in postgresql.conf: custom_variable_classes = 'lms'</para></warning></para>
           </sect3>
           <sect3 id="install-pgsql-dbcreate">
           <title>Database Creation</title>
