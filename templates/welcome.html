@@ -157,24 +157,6 @@
 						{/if}
 					</TD>
 				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
-						<B><A HREF="#">Abonenci z mailami:</A><BR>
-					</TD>
-					<TD WIDTH="50%" CLASS="FRIGHTU">
-						{$stats.emails} ( 
-{math equation="(a / b) * c" a=$stats.emails b=$customerstats.total c=100 format="%.2f"} % )
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
-						<B><A HREF="#">Abonenci z PESEL:</A><BR>
-					</TD>
-					<TD WIDTH="50%" CLASS="FRIGHTU">
-						{$stats.ssn} ( 
-{math equation="(a / b) * c" a=$stats.ssn b=$customerstats.total c=100 format="%.2f"} % )
-					</TD>
-				</TR>
 			</TABLE>
 		</TD>
 		<TD WIDTH="50%" style="vertical-align: top;" COLSPAN="6">
