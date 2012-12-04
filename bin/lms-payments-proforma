@@ -20,7 +20,7 @@
 #  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 #  USA.
 #
-#  $Id$
+#  $Id lms-payments-proforma, modified Sylwester Kondracki
 
 use strict;
 use DBI;
@@ -345,7 +345,7 @@ $dbq = $dbase->prepare("SELECT n.id, n.period,
 	COALESCE(a.divisionid, 0) AS divid, isdefault
 	FROM numberplans n
 	LEFT JOIN numberplanassignments a ON (a.planid = n.id)
-	WHERE doctype = 1");
+	WHERE doctype = 6");
 $dbq->execute();
 while(my $row = $dbq->fetchrow_hashref())
 {
@@ -383,7 +383,7 @@ $dbq = $dbase->prepare("SELECT a.tariffid, a.liabilityid, a.customerid,
 	LEFT JOIN liabilities l ON (a.liabilityid = l.id)
 	LEFT JOIN divisions d ON (d.id = c.divisionid)
 	WHERE c.status = 3
-		AND a.invoice != 6 
+		AND a.invoice = 6 
 		AND ((a.period = ".DISPOSABLE." AND at = $today)
 			OR ((a.period = ".DAY."
 			OR (a.period = ".WEEK." AND at = $weekday)
@@ -446,7 +446,9 @@ while(my $assign = $dbq->fetchrow_hashref())
 	# check, if all customer liabilities are suspended
 	if ($suspended != $uid)
 	{
-		my $xdbq = $dbase->prepare("SELECT 1 FROM assignments, customers WHERE customerid = customers.id AND tariffid = 0 AND liabilityid = 0 AND (datefrom <= $currtime OR datefrom = 0) AND (dateto > $currtime OR dateto = 0) AND customerid = $uid");
+		my $xdbq = $dbase->prepare("SELECT 1 FROM assignments, customers 
+		WHERE customerid = customers.id AND tariffid = 0 AND liabilityid = 0 AND (datefrom <= $currtime OR datefrom = 0) 
+		AND (dateto > $currtime OR dateto = 0) AND customerid = $uid");
 		$xdbq->execute();
 		if(my $xrow = $xdbq->fetchrow_hashref())
 		{
@@ -544,9 +546,9 @@ while(my $assign = $dbq->fetchrow_hashref())
 				{
 					my %period = get_period($periods{$plan});
 
-					my $dbqn = $dbase->prepare("SELECT MAX(number) AS number FROM documents
-						WHERE cdate >= ? AND cdate < ? AND type = 1 AND numberplanid = ?");
-					$dbqn->execute($period{'start'}, $period{'end'}, $plan);
+					my $dbqn = $dbase->prepare("SELECT MAX(id) AS number FROM documents
+						WHERE type = 6 AND numberplanid = ?");
+					$dbqn->execute($plan);
 
 					$row = $dbqn->fetchrow_hashref();
 					$numbers{$plan} = $row->{'number'} || 0;
@@ -565,13 +567,13 @@ while(my $assign = $dbq->fetchrow_hashref())
 
 				my $idbq = $dbase->prepare("INSERT INTO documents (number, numberplanid, type, countryid, divisionid,
 						customerid, name, address, zip, city, ten, ssn, cdate, sdate, paytime, paytype)
-						VALUES (?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+						VALUES (?, ?, 6, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 				$idbq->execute($numbers{$plan}, $plan, $urow->{'countryid'}, $urow->{'divisionid'}, $uid,
 						$urow->{'lastname'}.' '.$urow->{'name'}, $urow->{'address'}, $urow->{'zip'},
 						$urow->{'city'}, $urow->{'ten'}, $urow->{'ssn'}, $currtime, $saledate, $paytime, $inv_paytype);
 
 				$idbq = $dbase->prepare("SELECT id FROM documents
-						WHERE cdate = ? AND number = ? AND type = 1 AND customerid = ?");
+						WHERE cdate = ? AND number = ? AND type = 6 AND customerid = ?");
 				$idbq->execute($currtime, $numbers{$plan}, $uid);
 				my $irow = $idbq->fetchrow_hashref();
 
@@ -619,12 +621,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 
 			$icdbq->finish();
 		}
-		else 
-		{
-			$cdbq = $dbase->prepare("INSERT INTO cash (time, value, taxid, customerid, comment)
-					VALUES ($currtime, $val * -1, $assign->{'taxid'}, $uid, ?)");
-			$cdbq->execute($desc);
-		}
+		
 
 		print STDERR "CID:$uid\tVAL:$val\tDESC:$desc\n" if not $quiet;
 
@@ -656,8 +653,6 @@ while(my $assign = $dbq->fetchrow_hashref())
 			}
 
 			my $value = sprintf("%.2f", $diffdays * $val/$alldays);
-
-			#print "value: ".$val." diffdays: $diffdays alldays: $alldays settl_value: $value\n";
 
 			my $sdesc = $s_comment;
 			$sdesc =~ s/\%tariff/$assign->{'name'}/g;
@@ -700,13 +695,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 				}
 				$icdbq->finish();
 			}
-			else
-			{
-				$cdbq = $dbase->prepare("INSERT INTO cash (time, value, taxid, customerid, comment)
-						VALUES ($currtime, $value * -1, $assign->{'taxid'}, $uid, ?)");
-				$cdbq->execute($sdesc);
-				$cdbq->finish();
-			}
+			
 
 			print STDERR "CID:$uid\tVAL:$value\tDESC:$sdesc\n" if not $quiet;
 
@@ -728,7 +717,7 @@ if ($check_invoices)
 			GROUP BY customerid
 			HAVING SUM(value) >= 0
 		)
-		AND type IN (1, 3, 5)
+		AND type IN (1, 3, 5, 6)
 		AND cdate <= $currtime
 		AND closed = 0");
 	$dbq->execute();

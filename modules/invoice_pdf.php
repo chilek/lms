@@ -76,10 +76,10 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached')
 	{
 		$ids = $DB->GetCol('SELECT DISTINCT docid
 			FROM cash, documents
-			WHERE docid = documents.id AND (documents.type = ? OR documents.type = ?)
+			WHERE docid = documents.id AND (documents.type = ? OR documents.type = ? OR documents.type = ?)
 				AND cash.id IN ('.implode(',', $ids).')
 			ORDER BY docid',
-			array(DOC_INVOICE, DOC_CNOTE));
+			array(DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO));
 	}
 
 	if(!empty($_GET['original'])) $which[] = trans('ORIGINAL');
@@ -107,7 +107,7 @@ elseif(isset($_GET['fetchallinvoices']))
 {
 	$offset = intval(date('Z'));
 	$ids = $DB->GetCol('SELECT id FROM documents d
-				WHERE cdate >= ? AND cdate <= ? AND (type = ? OR type = ?)'
+				WHERE cdate >= ? AND cdate <= ? AND (type = ? OR type = ? OR type = ?)'
 				.(!empty($_GET['customerid']) ? ' AND d.customerid = '.intval($_GET['customerid']) : '')
 				.(!empty($_GET['numberplanid']) ? ' AND d.numberplanid = '.intval($_GET['numberplanid']) : '')
 				.(!empty($_GET['autoissued']) ? ' AND d.userid = 0' : '')
@@ -121,7 +121,7 @@ elseif(isset($_GET['fetchallinvoices']))
 				        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 				        WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)'
 				.' ORDER BY CEIL(cdate/86400), id',
-				array(intval($_GET['from']) - $offset, intval($_GET['to']) - $offset, DOC_INVOICE, DOC_CNOTE));
+				array(intval($_GET['from']) - $offset, intval($_GET['to']) - $offset, DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO));
 	if(!$ids)
 	{
 		$SESSION->close();

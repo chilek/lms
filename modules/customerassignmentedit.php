@@ -291,7 +291,8 @@ if(isset($_POST['assignment']))
 			unset($a['invoice']);
 			unset($a['settlement']);
 		}
-
+//					!empty($a['invoice']) ? $a['invoice'] : 0,
+//					isset($a['invoice']) ? 1 : 0,
 		$DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, period=?, at=?,
 			invoice=?, settlement=?, datefrom=?, dateto=?, pdiscount=?, vdiscount=?,
 			liabilityid=?, numberplanid=?, paytype=?
@@ -300,7 +301,7 @@ if(isset($_POST['assignment']))
 					$customer['id'],
 					$period,
 					$at,
-					isset($a['invoice']) ? 1 : 0,
+					!empty($a['invoice']) ? $a['invoice'] : 0,
 					isset($a['settlement']) ? 1 : 0,
 					$from,
 					$to,

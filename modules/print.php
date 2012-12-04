@@ -435,6 +435,51 @@ switch($type)
 			.(!empty($_POST['autoissued']) ? '&autoissued=1' : '')
 		);
 	break;
+	
+	case 'invoicesproforma': /********************************************/
+
+		if (!check_conf('privileges.finances_management'))
+			access_denied();
+
+		$from = $_POST['invoicefrom'];
+		$to = $_POST['invoiceto'];
+
+		// date format 'yyyy/mm/dd'
+		if($to) {
+			list($year, $month, $day) = explode('/',$to);
+			$date['to'] = mktime(23,59,59,$month,$day,$year);
+		} else { 
+			$to = date('Y/m/d',time());
+			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
+		}
+
+		if($from) {
+			list($year, $month, $day) = explode('/',$from);
+			$date['from'] = mktime(0,0,0,$month,$day,$year);
+		} else { 
+			$from = date('Y/m/d',time());
+			$date['from'] = mktime(0,0,0); //pocz±tek dnia dzisiejszego
+		}
+
+		$type = '';
+		$type .= isset($_POST['invoiceorg']) ? '&original=1' : '';
+		$type .= isset($_POST['invoicecopy']) ? '&copy=1' : '';
+		$type .= isset($_POST['invoicedup']) ? '&duplicate=1' : '';
+		if(!$type) $type = '&oryginal=1';
+		
+		$layout['pagetitle'] = trans('Invoices');
+	
+		header('Location: ?m=invoice&fetchallinvoicesproforma=1'
+			.$type
+			.'&from='.$date['from']
+			.'&to='.$date['to']
+			.(!empty($_POST['customer']) ? '&customerid='.intval($_POST['customer']) : '')
+			.(!empty($_POST['group']) ? '&groupid='.intval($_POST['group']) : '')
+			.(!empty($_POST['numberplan']) ? '&numberplanid='.intval($_POST['numberplan']) : '')
+			.(!empty($_POST['groupexclude']) ? '&groupexclude=1' : '')
+			.(!empty($_POST['autoissued']) ? '&autoissued=1' : '')
+		);
+	break;
 
 	case 'transferforms': /********************************************/
 
@@ -469,6 +514,42 @@ switch($type)
 		$which = '';
 		
 		require_once(MODULES_DIR.'/transferforms.php');
+		
+	break;	
+	
+	case 'transferformsproforma': /********************************************/
+
+		if (!check_conf('privileges.finances_management'))
+			access_denied();
+
+		$from = $_POST['invoicefrom'];
+		$to = $_POST['invoiceto'];
+
+		if($to) {
+			list($year, $month, $day) = explode('/',$to);
+			$date['to'] = mktime(23,59,59,$month,$day,$year);
+		} else { 
+			$to = date('Y/m/d',time());
+			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
+		}
+
+		if($from) {
+			list($year, $month, $day) = explode('/',$from);
+			$date['from'] = mktime(0,0,0,$month,$day,$year);
+		} else { 
+			$from = date('Y/m/d',time());
+			$date['from'] = mktime(0,0,0); //pocz±tek dnia dzisiejszego
+		}
+		
+		$_GET['from'] = $date['from'];
+		$_GET['to'] = $date['to'];
+		$_GET['customerid'] = $_POST['customer'];
+		$_GET['groupid'] = $_POST['group'];
+		$_GET['numberplan'] = $_POST['numberplan'];
+		$_GET['groupexclude'] = !empty($_POST['groupexclude']) ? 1 : 0;
+		$which = '';
+		require_once(MODULES_DIR.'/transferformsproforma.php');
+		
 		
 	break;	
 
@@ -872,6 +953,7 @@ switch($type)
 		$SMARTY->assign('networks', $LMS->GetNetworks());
 		$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 		$SMARTY->assign('numberplans', $LMS->GetNumberPlans(array(DOC_INVOICE, DOC_CNOTE)));
+		$SMARTY->assign('numberplansproforma', $LMS->GetNumberPlans(array(DOC_INVOICE_PRO)));
 		$SMARTY->assign('cashreglist', $DB->GetAllByKey('SELECT id, name FROM cashregs ORDER BY name', 'id'));
 		$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions ORDER BY shortname'));
 		$SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources ORDER BY name'));

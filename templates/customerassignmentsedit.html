@@ -257,7 +257,16 @@
 			<B>{trans("Options:")}</B>
 		</TD>
 		<TD style="width: 98%;">
+			<!--
 			<NOBR><INPUT type="checkbox" name="assignment[invoice]" value="1" id="invoice"{if $assignment.invoice} CHECKED{/if}><label for="invoice">{trans("with invoice")}</label></NOBR>
+			//-->
+			<nobr><select name="assignment[invoice]" id="invoice">
+			    <option value="0">&nbsp;</option>
+			    <option value="{$smarty.const.DOC_INVOICE}" {if $assignment.invoice == $smarty.const.DOC_INVOICE} SELECTED{/if}>{trans("with invoice")}</option>
+			    <option value="{$smarty.const.DOC_INVOICE_PRO}" {if $assignment.invoice == $smarty.const.DOC_INVOICE_PRO} SELECTED{/if}>{trans("with pro forma invoice")}</option>
+			    </select>
+			</nobr>
+			
 			<NOBR><INPUT type="checkbox" name="assignment[settlement]" value="1" id="settlement"{if $assignment.settlement} CHECKED{/if}><label for="settlement">{trans("with settlement of first deficient period")}</label></NOBR>
 		</TD>
 	</TR>

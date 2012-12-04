@@ -792,6 +792,147 @@ cal11.time_comp = false;
 </P>
 {/if}
 {if $printmenu=="finances"}
+<P><FORM method="post" name="printinvoicesproforma" id="printinvoicesproforma" action="?m=print&type=invoicesproforma" target="_blank">
+<INPUT type="submit" class="hiddenbtn">
+<SCRIPT type="text/javascript">
+<!--
+	function print_proforma()
+	{
+		document.printinvoicesproforma.action="?m=print&type=invoicesproforma";
+		document.printinvoicesproforma.submit();
+	}
+
+	function print_forms_proforma()
+	{
+		document.printinvoicesproforma.action="?m=print&type=transferformsproforma";
+		document.printinvoicesproforma.submit();
+	}
+//-->
+</SCRIPT>
+<TABLE width="100%" CELLPADDING="3">
+	<TR class="DARK">
+		<TD class="fleftu" width="1%">
+			<IMG src="img/money.gif" alt="">
+		</TD>
+		<TD class="frightu" width="99%">
+			<B>{trans("Pro Forma Invoices")}</B>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="flr container" width="100%" colspan="2">
+			<TABLE width="100%" cellpadding="3">
+				<TR>
+					<TD width="1%">
+					    <TABLE width="100%">
+						<TR>
+						    <TD width="1%">
+							<IMG src="img/customer.gif" alt="">
+						    </TD>
+						    <TD width="1%" nowrap>
+							<B>{trans("Customer:")}</B>
+						    </TD>
+						    <TD width="98%" nowrap>
+							{if $customers}
+							<SELECT size="1" name="customer" {tip text="You can select customer to limit results"}>
+							    <OPTION value="0">{trans("- all customers -")}</OPTION>
+							    {foreach from=$customers item=customer}
+							    <OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
+							    {/foreach}
+							</SELECT>
+							{else}
+							<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
+							<a href="javascript: void(0);" onClick="return customerchoosewin(document.printinvoices.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
+							{/if}
+						    </TD>
+						</TR>
+						<TR>
+						    <TD width="1%">
+							<IMG src="img/group.gif" alt="">
+						    </TD>
+						    <TD width="1%" nowrap>
+							<B>{trans("Group:")}</B>
+						    </TD>
+						    <TD width="98%" nowrap>
+							<SELECT size="1" name="group">
+							    <OPTION value="0" SELECTED>{trans("- all groups -")}</OPTION>
+			    				    {section name="customergroups" loop=$customergroups}
+							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
+							    {/section}
+							</SELECT>
+    							<INPUT type="checkbox" name="groupexclude" id="invoices-groupexclude-pro" {if $listdata.groupexclude} CHECKED{/if}><label for="invoices-groupexclude-pro">{trans("exclude group")}</label>
+						    </TD>
+						</TR>
+						<TR>
+						    <TD width="1%">
+							<IMG src="img/queue.gif" alt="">
+						    </TD>
+						    <TD width="1%" nowrap>
+							<B>{trans("Plan:")}</B>
+						    </TD>
+						    <TD width="98%" nowrap>
+							<SELECT name="numberplan" {tip text="Select numbering plan"}>
+							    <OPTION value="0">- {trans("all")} -</OPTION>
+    							    {foreach item=plan from=$numberplansproforma}
+					    		    {assign var=period value=$plan.period}
+							    <OPTION value="{$plan.id}">{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</OPTION>
+							    {/foreach}
+							</SELECT>
+						    </TD>
+						</TR>
+					    </TABLE>
+					</TD>
+					<TD style="width: 99%;">
+						<TABLE style="width: 100%;">
+							<TR>
+								<TD style="width: 1%;">
+									<IMG src="img/calendar.gif" alt="">
+								</TD>
+								<TD style="width: 1%; white-space: nowrap;">
+									<span class="bold">{trans("Period:")}</span>&nbsp;
+									{trans("From")}&nbsp;<INPUT TYPE="text" NAME="invoicefrom" SIZE="10" MAXSIZE="10" OnClick="javascript:cal14.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+									{trans("To")}&nbsp;<INPUT TYPE="text" NAME="invoiceto" SIZE="10" MAXSIZE="10" OnClick="javascript:cal15.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+								</TD>
+								<TD style="width: 1%;">
+									<IMG src="img/info.gif" alt="">
+								</TD>
+								<TD style="width: 97%; white-space: nowrap;">
+									<INPUT TYPE="checkbox" NAME="invoiceorg" ID="invoiceorg-pro"{if preg_match('/original/i', $default_printpage)} CHECKED{/if}>&nbsp;<label for="invoiceorg-pro">{trans("original")}</label>&nbsp;
+									<INPUT TYPE="checkbox" NAME="invoicecopy" ID="invoicecopy-pro"{if preg_match('/copy/i', $default_printpage)}  CHECKED{/if}>&nbsp;<label for="invoicecopy-pro">{trans("copy")}</label>&nbsp;
+									<INPUT TYPE="checkbox" NAME="invoicedup" ID="invoicedup-pro"{if preg_match('/duplicate/i', $default_printpage)} CHECKED{/if}>&nbsp;<label for="invoicedup-pro">{trans("duplicate")}</label>
+								</TD>
+							</TR>
+							<TR>
+								<TD style="width: 3%;" colspan="3">&nbsp;</TD>
+								<TD style="width: 97%;">
+									<input type="checkbox" id="autoissued-pro" name="autoissued">
+									<label for="autoissued-pro">{trans("only automatically issued")}</label>
+								</TD>
+							</TR>
+						</TABLE>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fbottomu" width="100%" colspan="2" align="right">
+			<A href="javascript:print_forms_proforma();">{trans("Print form of cash transfer")} <IMG src="img/print.gif" alt="" hspace="2"></A>
+			<A href="javascript:print_proforma();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+<SCRIPT type="text/javascript">
+<!--
+var cal14 = new calendar(document.printinvoicesproforma.elements['invoicefrom']);
+cal14.time_comp = false;
+var cal15 = new calendar(document.printinvoicesproforma.elements['invoiceto']);
+cal15.time_comp = false;
+//-->
+</SCRIPT>
+</P>
+{/if}
+{if $printmenu=="finances"}
 <P><FORM method="post" name="printforms" id="printforms" action="?m=print&type=transferforms2" target="_blank">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE width="100%" CELLPADDING="3">

@@ -321,6 +321,12 @@ $menu = array(
 					'prio' => 75,
 				),
 				array(
+					'name' => trans('New Pro Forma Invoice'),
+					'link' => '?m=invoicenew&action=init&proforma',
+					'tip' => trans('Generate invoice'),
+					'prio' => 76,
+				),
+				array(
 					'name' => trans('Debit Notes List'),
 					'link' => '?m=notelist',
 					'tip' => trans('List of debit notes'),

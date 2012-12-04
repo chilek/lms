@@ -45,6 +45,8 @@
 
 		if (type == 'invoice')
 			document.addbalance.action = '?m=invoicelist';
+		else if (type == 'invoiceproforma')
+			document.addbalance.action = '?m=invoicelist&proforma';
 		else if (type == 'note')
 			document.addbalance.action = '?m=notelist';
 		else
@@ -90,6 +92,7 @@
 			<A href="javascript: new_doc()">{trans("New document:")}</A>
 			<SELECT name="newdocument" id="newdocselect">
 				<OPTION value="?m=invoicenew&action=init&customerid={$balancelist.customerid}">{trans("invoice")}</OPTION>
+				<OPTION value="?m=invoicenew&action=init&proforma&customerid={$balancelist.customerid}">{trans("pro forma invoice")}</OPTION>
 				<OPTION value="?m=receiptadd&type=in&action=init&customerid={$balancelist.customerid}">{trans("cash-in receipt")}</OPTION>
 				<OPTION value="?m=receiptadd&type=out&action=init&customerid={$balancelist.customerid}">{trans("cash-out receipt")}</OPTION>
 				<OPTION value="?m=noteadd&action=init&customerid={$balancelist.customerid}">{trans("debit note")}</OPTION>
@@ -100,6 +103,7 @@
 			<SELECT name="showlist" id="showlistselect">
 				{if $limit}<OPTION value="list">{trans("transactions")}</OPTION>{/if}
 				<OPTION value="invoice">{trans("invoices")}</OPTION>
+				<OPTION value="invoiceproforma">{trans("pro forma invoice")}</OPTION>
 				<OPTION value="note">{trans("debit notes")}</OPTION>
 			</SELECT>
 		</TD>
@@ -131,7 +135,10 @@
 					<TD width="92%">{$balancelist.comment[balancelist]}</TD>
 					<TD width="1%" align="right" nowrap>
 						{if $balancelist.docid[balancelist]}
-							{if $balancelist.doctype[balancelist] == $smarty.const.DOC_INVOICE}
+							{if $balancelist.doctype[balancelist] == $smarty.const.DOC_INVOICE_PRO}
+							    <a href="?m=invoiceconvert&docid={$balancelist.docid[balancelist]}&parent=customerinfo&cid={$customerinfo.id}" {tip text="Convert a proforma invoice to invoice"}><img src="img/convert.png"></a>
+							{/if}
+							{if $balancelist.doctype[balancelist] == $smarty.const.DOC_INVOICE || $balancelist.doctype[balancelist] == $smarty.const.DOC_INVOICE_PRO}
 								<A href="?m=invoice&id={$balancelist.docid[balancelist]}" TARGET="_blank"><IMG SRC="img/print.gif" ALT="[ {trans("Invoice")} ]" {tip a=$balancelist.docid[balancelist] dynpopup='?m=number&id=$a'}></A>
 							{elseif $balancelist.doctype[balancelist] == $smarty.const.DOC_CNOTE}
 								<A href="?m=invoice&id={$balancelist.docid[balancelist]}" TARGET="_blank"><IMG SRC="img/printn.gif" ALT="[ {trans("Credit note")} ]" {tip a=$balancelist.docid[balancelist] dynpopup='?m=number&id=$a'}></A>

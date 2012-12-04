@@ -1919,7 +1919,7 @@ class LMS {
 						$data['customerid'],
 						$period,
 						$at,
-						!empty($data['invoice']) ? 1 : 0,
+						!empty($data['invoice']) ? $data['invoice'] : 0,
 						!empty($data['settlement']) ? 1 : 0,
 						!empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
 						!empty($data['paytype']) ? $data['paytype'] : NULL,
@@ -1951,7 +1951,7 @@ class LMS {
 							$data['customerid'],
 							$data['period'],
 							$this->CalcAt($data['period'], $datefrom),
-							!empty($data['invoice']) ? 1 : 0,
+							!empty($data['invoice']) ? $data['invoice'] : 0,
 							!empty($data['settlement']) ? 1 : 0,
 							!empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
 							!empty($data['paytype']) ? $data['paytype'] : NULL,
@@ -1980,7 +1980,7 @@ class LMS {
 					$data['customerid'],
 					$data['period'],
 					$data['at'],
-					!empty($data['invoice']) ? 1 : 0,
+					!empty($data['invoice']) ? $data['invoice'] : 0,
 					!empty($data['settlement']) ? 1 : 0,
 					!empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
 					!empty($data['paytype']) ? $data['paytype'] : NULL,
@@ -2114,10 +2114,10 @@ class LMS {
 	function GetInvoiceContent($invoiceid) {
 		global $PAYTYPES;
 
-		if ($result = $this->DB->GetRow('SELECT d.id, d.number, d.name, d.customerid,
+		if ($result = $this->DB->GetRow('SELECT d.id, d.number, d.name, d.customerid, d.type, 
 				d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
 				d.ten, d.ssn, d.cdate, d.sdate, d.paytime, d.paytype, d.numberplanid,
-				d.closed, d.reference, d.reason, d.divisionid,
+				d.closed, d.reference, d.reason, d.divisionid, 
 				(SELECT name FROM users WHERE id = d.userid) AS user, n.template,
 				ds.name AS division_name, ds.shortname AS division_shortname,
 				ds.address AS division_address, ds.zip AS division_zip,
@@ -2132,7 +2132,7 @@ class LMS {
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
 				LEFT JOIN divisions ds ON (ds.id = d.divisionid)
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
-				WHERE d.id = ? AND (d.type = ? OR d.type = ?)', array($invoiceid, DOC_INVOICE, DOC_CNOTE))) {
+				WHERE d.id = ? AND (d.type = ? OR d.type = ? OR d.type = ?)', array($invoiceid, DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO))) {
 			$result['pdiscount'] = 0;
 			$result['vdiscount'] = 0;
 			$result['totalbase'] = 0;
@@ -2204,7 +2204,7 @@ class LMS {
 			$result['valuep'] = round(($result['value'] - floor($result['value'])) * 100);
 
 			// NOTE: don't waste CPU/mem when printing history is not set:
-			if (chkconfig($this->CONFIG['invoices']['print_balance_history'])) {
+			if (chkconfig($this->CONFIG['invoices']['print_balance_history'])  && $result['type'] != DOC_INVOICE_PRO) {
 				if (isset($this->CONFIG['invoices']['print_balance_history_save']) && chkconfig($this->CONFIG['invoices']['print_balance_history_save']))
 					$result['customerbalancelist'] = $this->GetCustomerBalanceList($result['customerid'], $result['cdate']);
 				else
@@ -2543,7 +2543,7 @@ class LMS {
 					LEFT JOIN documents ON (docid = documents.id)
 					WHERE cash.id = ?', array($id));
 
-		if ($row['doctype'] == DOC_INVOICE || $row['doctype'] == DOC_CNOTE)
+		if ($row['doctype'] == DOC_INVOICE || $row['doctype'] == DOC_CNOTE || $row['doctype'] == DOC_INVOICE_PRO)
 			$this->InvoiceContentDelete($row['docid'], $row['itemid']);
 		elseif ($row['doctype'] == DOC_RECEIPT)
 			$this->ReceiptContentDelete($row['docid'], $row['itemid']);
@@ -4263,8 +4263,10 @@ class LMS {
 			$daystart = mktime(0, 0, 0);
 			$dayend = mktime(0, 0, 0, date('n'), date('j') + 1);
 
-			$max = $this->DB->GetAllByKey('SELECT numberplanid AS id, MAX(number) AS max 
-					    FROM documents LEFT JOIN numberplans ON (numberplanid = numberplans.id)
+			$max = $this->DB->GetAllByKey('SELECT numberplanid AS id, '
+//					    .($doctype == DOC_INVOICE_PRO ? ' MAX(documents.id) AS max ' : ' MAX(documents.number) AS max')
+					    .' MAX(documents.number) AS max '
+					    .' FROM documents LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 					    WHERE '
 					. ($doctype ? 'numberplanid IN (' . implode(',', array_keys($list)) . ') AND ' : '')
 					. ' cdate >= (CASE period
@@ -4347,14 +4349,21 @@ class LMS {
 				$end = mktime(0, 0, 0, 1, 1, date('Y', $cdate) + 1);
 				break;
 			case CONTINUOUS:
-				$number = $this->DB->GetOne('SELECT MAX(number) FROM documents 
+//				if ($doctype == DOC_INVOICE_PRO)
+//					$number = $this->DB->GetOne('SELECT MAX(id) FROM documents 
+//						WHERE type = ? AND numberplanid = ?', array(DOC_INVOICE_PRO, $planid));
+//				else
+					$number = $this->DB->GetOne('SELECT MAX(number) FROM documents 
 						WHERE type = ? AND numberplanid = ?', array($doctype, $planid));
 
 				return $number ? ++$number : 1;
 				break;
 		}
 
-		$number = $this->DB->GetOne('
+//		if ($doctype == DOC_INVOICE_PRO)
+//			$number = $this->DB->GetOne('SELECT MAX(id) FROM documents WHERE type = ? AND numberplanid = ?', array(DOC_INVOICE_PRO, $planid));
+//		else
+			$number = $this->DB->GetOne('
 				SELECT MAX(number) 
 				FROM documents 
 				WHERE cdate >= ? AND cdate < ? AND type = ? AND numberplanid = ?', array($start, $end, $doctype, $planid));

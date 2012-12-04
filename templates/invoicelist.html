@@ -85,6 +85,10 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 	<TR class="DARK">
 		<TD class="fall" colspan="7">
 				<B>{trans("Filter:")} </B> 
+				<select size="1" name="intype" onchange="filter();">
+				    <option value="{$smarty.const.DOC_INVOICE}" {if $listdata.intype == $smarty.const.DOC_INVOICE} SELECTED{/if}>{assign var='type' value=$smarty.const.DOC_INVOICE}{$_DOCTYPES.$type}</option>
+				    <option value="{$smarty.const.DOC_INVOICE_PRO}" {if $listdata.intype == $smarty.const.DOC_INVOICE_PRO} SELECTED{/if}>{assign var='type' value=$smarty.const.DOC_INVOICE_PRO}{$_DOCTYPES.$type}</option>
+				</select>&nbsp;
 				<INPUT type="text" name="search" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>&nbsp;
 				<SELECT size="1" name="cat">
 					<OPTION value=""{if $listdata.cat eq ""} SELECTED{/if}>{trans("- select filter category -")}</OPTION>
@@ -109,7 +113,9 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 				<INPUT type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} CHECKED{/if}><label for="groupexclude">{trans("exclude group")}</label>
 				</NOBR>
 				<NOBR>
+				{if $listdata.intype != $smarty.const.DOC_INVOICE_PRO}
 				<INPUT type="checkbox" name="hideclosed" id="hideclosed"{if $listdata.hideclosed} CHECKED{/if}><label for="hideclosed">{trans("hide accounted<!plural>")}</label>
+				{/if}
 				&nbsp;<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>
 				</NOBR>
 		</TD>
@@ -146,21 +152,26 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright">
 			<NOBR>
-			{if $invoice.type == $smarty.const.DOC_INVOICE}
-			    <A HREF="?m=invoicenote&id={$invoice.id}&action=init"><IMG src="img/eraser.gif" alt="[ {trans("Revise")} ]" title="[ {trans("Revise")} ]"></A>
+			{if $invoice.type == $smarty.const.DOC_INVOICE_PRO}
+			    <a href="?m=invoiceconvert&docid={$invoice.id}&parent=invoicelist" {tip text="Convert a proforma invoice to invoice"}><img src="img/convert.png"></a>
+			{/if}
+			{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO}
+			    {if $invoice.type != $smarty.const.DOC_INVOICE_PRO}
+				<A HREF="?m=invoicenote&id={$invoice.id}&action=init"><IMG src="img/eraser.gif" alt="[ {trans("Revise")} ]" title="[ {trans("Revise")} ]"></A>
+			    {/if}
 			    {if ! $invoice.closed}
 			    <A onClick="return confirmLink(this, '{t a=$number}Are you sure, you want to remove invoice \'$a\' from database?{/t}')" HREF="?m=invoicedel&id={$invoice.id}"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 			    {/if}
 		        <A HREF="?m=invoiceedit&id={$invoice.id}&action=edit"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-		    {/if}
+			{/if}
 			{if $invoice.type == $smarty.const.DOC_CNOTE && !$invoice.closed}
 			    <A onClick="return confirmLink(this, '{t a=$number}Are you sure, you want to remove credit note \'$a\' from database?{/t}')" HREF="?m=invoicedel&id={$invoice.id}"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 			{/if}
-			{if $invoice.type == $smarty.const.DOC_INVOICE}
-			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG src="img/print.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]"></A>
+			{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO}
+			    <A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG src="img/print.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]"></A>
 			{/if}
 			{if $invoice.type == $smarty.const.DOC_CNOTE}
-			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG src="img/printn.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]"></A>
+			    <A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG src="img/printn.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]"></A>
 			{/if}
 			<INPUT TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}"{if $marks.$invoiceid}CHECKED{/if}>
 			</NOBR>
@@ -187,7 +198,9 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 			<TABLE WIDTH="100%">
 				<TR>
 					<TD ALIGN="left">
+						{if $listdata.intype != $smarty.const.DOC_INVOICE_PRO}
 						<NOBR><A HREF="javascript:pays();">{trans("Check/Uncheck as accounted")} <IMG SRC="img/pay.gif" ALT=""></A></NOBR>&nbsp;
+						{/if}
 						<NOBR><A HREF="javascript:prints();">{trans("Print")} <IMG SRC="img/print.gif" ALT="" ></A></NOBR>&nbsp;
 						<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i', $default_printpage)} checked{/if}><label for="original">{trans("original")}</label>
 						<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}><label for="copy">{trans("copy")}</label>

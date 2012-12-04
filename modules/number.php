@@ -36,6 +36,9 @@ if($doc = $DB->GetRow('SELECT number, cdate, type, template, extnumber
 		case DOC_INVOICE:
 			$ntempl = trans('Invoice No. $a',$ntempl);
 		break;
+		case DOC_INVOICE_PRO:
+			$ntempl = trans('Pro Forma Invoice No. $a',$ntempl);
+		break;
 		case DOC_RECEIPT:
 			$ntempl = trans('Cash Receipt No. $a',$ntempl);
 		break;
