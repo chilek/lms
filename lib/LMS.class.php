@@ -478,14 +478,15 @@ class LMS {
 	}
 
 	function CustomerAdd($customeradd) {
-		if ($this->DB->Execute('INSERT INTO customers (name, lastname, type,
+		if ($this->DB->Execute('INSERT INTO customers (id, name, lastname, type,
 				    address, zip, city, countryid, email, ten, ssn, status, creationdate,
 				    post_name, post_address, post_zip, post_city, post_countryid,
 				    creatorid, info, notes, message, pin, regon, rbe,
 				    icn, cutoffstop, consentdate, einvoice, divisionid, paytime, paytype,
 				    invoicenotice, mailingnotice)
-				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?,
-				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array(lms_ucwords($customeradd['name']),
+				    VALUES (?, ?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?,
+				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($customeradd['id'],
+				    		lms_ucwords($customeradd['name']),
 						$customeradd['lastname'],
 						empty($customeradd['type']) ? 0 : 1,
 						$customeradd['address'],
