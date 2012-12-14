@@ -441,6 +441,7 @@ $_LANG['Enter creditor name'] = 'Wprowadź nazwę wierzyciela';
 $_LANG['Enter customer address'] = 'Wprowadź adres klienta';
 $_LANG['Enter customer city'] = 'Wprowadź miasto klienta';
 $_LANG['Enter customer e-mail address (optional)'] = 'Wprowadź adres e-mail klienta (opcjonalnie)';
+$_LANG['Enter customer id. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)'] = 'Wprowadź id klienta. UWAGA! Zmiana tego numeru może być NIEBEZPIECZNA! (pozostaw to pole puste aby uzyskać kolejny numer)';
 $_LANG['Enter customer name'] = 'Wprowadź imię klienta';
 $_LANG['Enter customer Social Security Number (optional)'] = 'Wprowadź numer PESEL klienta (opcjonalnie)';
 $_LANG['Enter customer last name or company name'] = 'Wprowadź nazwisko lub nazwę firmy';
