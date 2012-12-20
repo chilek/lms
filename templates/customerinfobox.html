@@ -48,18 +48,18 @@
 			<IMG SRC="img/print.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%">
-                       <B>Dane klienta:</B><BR>
-                       <TABLE CELLPADDING="5">
-                       <TR>
-                       <TD CLASS="fall lucid">
-			{$customerinfo.address}<BR>
-			{$customerinfo.zip} {$customerinfo.city}
-			{if $customerinfo.cstate}<BR>{$customerinfo.cstate}{/if}
-			{if $customerinfo.country}<BR>{t}{$customerinfo.country}{/t}{/if}
-                       </TD>
-                       </TR>
-                       </TABLE>
-</TD>
+            		<B>{trans("Customer address:")}</B><BR>
+			    <TABLE CELLPADDING="5">
+                    		<TR>
+                    		    <TD CLASS="fall lucid">
+					{$customerinfo.address}<BR>
+					{$customerinfo.zip} {$customerinfo.city}
+					{if $customerinfo.cstate}<BR>{$customerinfo.cstate}{/if}
+					{if $customerinfo.country}<BR>{t}{$customerinfo.country}{/t}{/if}
+				    </TD>
+                    		</TR>
+			    </TABLE>
+		</TD>
 	</TR>
 {if $customerinfo.post_name neq "" || $customerinfo.post_address neq ""}
 	<TR CLASS="LIGHT">
@@ -67,18 +67,18 @@
 			<IMG SRC="img/post.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%">
-                       <B>Adres korespondencyjny:</B><BR>
-                       <TABLE CELLPADDING="5">
-                       <TR>
-                       <TD CLASS="fall lucid">
-			{if $customerinfo.post_name neq ""}{$customerinfo.post_name}{/if}
-			{if $customerinfo.post_address neq ""}<BR>{$customerinfo.post_address}{/if}
-			{$customerinfo.post_zip} {$customerinfo.post_city}
-			{if $customerinfo.post_cstate}<BR>{$customerinfo.post_cstate}{/if}
-			{if $customerinfo.post_country}<BR>{t}{$customerinfo.post_country}{/t}{/if}
-                       </TD>
-                       </TR>
-                       </TABLE>
+            		<B>{trans("Postal address:")}</B><BR>
+            		    <TABLE CELLPADDING="5">
+            			<TR>
+        			    <TD CLASS="fall lucid">
+					{if $customerinfo.post_name neq ""}{$customerinfo.post_name}{/if}
+					{if $customerinfo.post_address neq ""}<BR>{$customerinfo.post_address}{/if}
+					{$customerinfo.post_zip} {$customerinfo.post_city}
+					{if $customerinfo.post_cstate}<BR>{$customerinfo.post_cstate}{/if}
+					{if $customerinfo.post_country}<BR>{t}{$customerinfo.post_country}{/t}{/if}
+        			    </TD>
+        			</TR>
+        		    </TABLE>
                </TD>
        </TR>
 {/if}
@@ -88,14 +88,14 @@
                        <IMG SRC="img/home.gif" ALT="">
                </TD>
                <TD WIDTH="99%">
-                       <B>Adres instalacji:</B><BR>
-                       <TABLE CELLPADDING="5">
-                       <TR>
-                       <TD CLASS="fall lucid">
-                       {$customerinfo.inst_address}<BR>
-                       </TD>
-                       </TR>
-                       </TABLE>
+                	<B>{trans("Installation address:")}</B><BR>
+            		<TABLE CELLPADDING="5">
+            		    <TR>
+        			<TD CLASS="fall lucid">
+        			    {$customerinfo.inst_address}<BR>
+        			</TD>
+        		    </TR>
+        		</TABLE>
 		</TD>
 	</TR>
 {/if}
