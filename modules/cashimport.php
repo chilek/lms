@@ -138,6 +138,10 @@ elseif(isset($_POST['marks']))
 	    	&& chkconfig($CONFIG['finances']['cashimport_checkinvoices']);
 
         foreach ($imports as $import) {
+			
+			// do not insert if the record is already closed (prevent multiple inserts of the same record)
+			if($import['closed'] == 1)
+				continue;
 
 			$DB->BeginTrans();
 
