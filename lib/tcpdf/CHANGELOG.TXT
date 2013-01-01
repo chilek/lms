@@ -1,3 +1,112 @@
+5.9.202 (2012-12-16)
+	- Vertical space problem after table was fixed.
+
+5.9.201 (2012-12-10)
+	- First 256 chars are now always included on font subset to overcome a problem reported on the forum.
+
+5.9.200 (2012-12-05)
+	- Bug item #768 "Rowspan with Pagebreak error" was fixed.
+	- Page regions now works also with limited MultiCell() cells.
+
+5.9.199 (2012-11-29)
+	- Internal setImageBuffer() method was improved.
+
+5.9.198 (2012-11-19)
+	- Datamatrix EDIFACT mode was fixed.
+
+5.9.197 (2012-11-06)
+	- Bug item #756 "TCPDF 5.9.196 shows line on top of all PDFs" was fixed.
+
+5.9.196 (2012-11-02)
+	- Several methods were improved to avoid output when the context is out of page.
+	- Bug item #755 "remove cached files before unsetting" was fixed.
+
+5.9.195 (2012-10-24)
+	- Method _putfonts() was improved.
+
+5.9.194 (2012-10-23)
+	- Text alignment on TextField() method was fixed.
+
+5.9.193 (2012-09-25)
+	- Support for named destinations on HTML links was added  (i.e.: <a href="#destinationname">link to named destination</a>).
+
+5.9.192 (2012-09-24)
+	- A problem on the releasing process was fixed.
+
+5.9.191 (2012-09-24)
+	- SVG image naow support svg and eps images.
+
+5.9.190 (2012-09-23)
+	- "page" word translation is now set to empty if not defined.
+	- Tooltip feature was added on the radiobutton annotation.
+
+5.9.189 (2012-09-18)
+	- Bug item #3568969 "ini_get safe_mode error" was fixed.
+
+5.9.188 (2012-09-15)
+	- A datamatrix barcode bug was fixed.
+
+5.9.187 (2012-09-14)
+	- Subset feature was extended to include the first 256 characters.
+
+5.9.186 (2012-09-13)
+	- barcodes.php file was resynced.
+	- Methods SetAbsX, SetAbsY, SetAbsXY where added to set the absolute pointer coordinates.
+	- Method getCharBBox were added to get single character bounding box.
+	- Signature of addTTFfont method was changed ($addcbbox paramter was added).
+
+5.9.185 (2012-09-12)
+	- Method _putfontwidths() was fixed.
+
+5.9.184 (2012-09-11)
+	- A problem with EAN barcodes was fixed.
+
+5.9.183 (2012-09-07)
+	- A problem with font names normalization was fixed.
+
+5.9.182 (2012-09-05)
+	- Bug item #3564982 "Infinite loop in Write() method" was fixed.
+
+5.9.181 (2012-08-31)
+	- composer.json file was added.
+	- Bug item #3563369 "Cached images are not unlinked some time" was fixed.
+
+5.9.180 (2012-08-22)
+	- Bug item #3560493 "Problems with nested cells in HTML" was fixed.
+
+5.9.179 (2012-08-04)
+	- SVG 'use' tag was fixed for 'circle' and 'ellipse' shift problem.
+	- Alpha status is now correctly stored and restored by getGraphicVars() and SetGraphicVars() methods.
+
+5.9.178 (2012-08-02)
+	- SVG 'use' tag was fixed for 'circle' and 'ellipse'.
+
+5.9.177 (2012-08-02)
+	- An additional control on annotations was fixed.
+
+5.9.176 (2012-07-25)
+	- A bug related to stroke width was fixed.
+	- A problem related to font spacing in HTML was fixed.
+
+5.9.175 (2012-07-25)
+	- The problem of missing letter on hyphen break was fixed.
+
+5.9.174 (2012-07-25)
+	- The problem of wrong filename when downloading PDF from an Android device was fixed.
+	- The method setHeaderData() was extended to set text and line color for header (see example n. 1).
+	- The method setFooterData() was added to set text and line color for footer (see example n. 1).
+	- The methods setTextShadow() and getTextShadow() were added to set text shadows (see example n. 1).
+	- The GetCharWidth() method was fixed for negative character spacing.
+	- A 'none' border mode is now correctly recognized.
+	- Break on hyphen problem was fixed.
+
+5.9.173 (2012-07-23)
+	- Some additional control wher added on barcode methods.
+	- The option CURLOPT_FOLLOWLOCATION on Image method is now disabled if PHP safe_mode is on or open_basedir is set.
+	- Method Bookmark() was extended to include X parameter.
+	- Method setDestination() was extended to include X parameter.
+	- A problem with Thai language was fixed.
+
 5.9.172 (2012-07-02)
 	- A PNG color profile issue was fixed.
 
