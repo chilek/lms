@@ -99,7 +99,7 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 					$from = mktime(0,0,0, $invmonth, 1, $invyear);
 					$to = mktime(0,0,0, !empty($pattern['pinvoice_month']) && $pattern['pinvoice_month'] > 0 ? $invmonth + 1 : 13, 1, $invyear);
 					$id = $DB->GetOne('SELECT customerid FROM documents 
-							WHERE number=? AND cdate>? AND cdate<? AND type IN (?,?)', 
+							WHERE number=? AND cdate>=? AND cdate<? AND type IN (?,?)', 
 							array($invid, $from, $to, DOC_INVOICE, DOC_CNOTE));
 				}
 			}
