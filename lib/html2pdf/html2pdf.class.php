@@ -5190,7 +5190,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
                 }
 
                 // if we are in a new page, and if we have a thead => draw it
-                if (HTML2PDF::$_tables[$param['num']]['new_page'] && count(HTML2PDF::$_tables[$param['num']]['thead']['code'])) && !$this->_isInThead) {
+                if (HTML2PDF::$_tables[$param['num']]['new_page'] && count(HTML2PDF::$_tables[$param['num']]['thead']['code']) && !$this->_isInThead) {
                     HTML2PDF::$_tables[$param['num']]['new_page'] = false;
                     $tmpTR = HTML2PDF::$_tables[$param['num']]['tr_curr'];
                     $tmpTD = HTML2PDF::$_tables[$param['num']]['td_curr'];
