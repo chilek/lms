@@ -376,6 +376,8 @@ function invoice_buyer() {
 	$buyer .= $invoice['zip'] . ' ' . $invoice['city'] . '<br>';
 	if ($invoice['ten'])
 		$buyer .= trans('TEN') . ': ' . $invoice['ten'] . '<br>';
+	else
+		$buyer .= trans('SSL') . ': ' . $invoice['ssl'] . '<br>';
 	$pdf->SetFont('arial', '', 10);
 	$pdf->writeHTMLCell(80, '', '', '', $buyer, 0, 1, 0, true, 'L');
 
