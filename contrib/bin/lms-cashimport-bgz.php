@@ -610,7 +610,7 @@ while ($xml->valid()) {
 				while ($props->valid()) {
 					switch ($props->key()) {
 						case "id":
-							$fileid = $props->current();
+							$fileid = strval($props->current());
 							break;
 						case "file_name":
 							$filename = strval($props->current());
