@@ -1,81 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
-    <title>{trans("Virtual Customer Service")}</title>
-    <!-- TWITTER BOOTSTRAP RESPONSIVE -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- TWITTER BOOTSTRAP CSS -->
-    <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
-</head>
-<body>
-<div class="container-fluid">
-    <div class="row-fluid">
-        <div class="span12">
-            <div class="page-header"><a href="http://alfa-system.pl"><img src="media/logo.png" alt="Alfa-System" /></a></div>
-            
+    <head>
+        <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+        <title>{trans("Virtual Customer Service")}</title>
+        <!-- TWITTER BOOTSTRAP RESPONSIVE -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- TWITTER BOOTSTRAP CSS -->
+        <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="assets/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="container-fluid">
             <div class="row-fluid">
-                <div class="span4">
-                    <fieldset>
-                        <legend>{t}Virtual Customer Service{/t}</legend>
-                        <form id="login" method="post" action="{$target}" class="well">
-                            <label>{t}Customer ID:{/t}</label>
-                            <input type="text" name="loginform[login]" />
-                            <label>{t}PIN:{/t}</label>
-                            <input type="password" name="loginform[pwd]" />
-                            <br/>
-                            <input type="submit" name="loginform[submit]" class="btn" value="{t}Login{/t}"/>
-                        </form>
-                    </fieldset>
-                    {if $error}<div class="alert alert-error"><b>{$error}</b></div>{else}&nbsp;{/if}
-                </div>
-      
-                <div class="span4">
-                    <fieldset>
-                        <legend>Przypomnienie ID i PIN</legend>
-                        <form id="recovery" method="post" action="{$target}" class="well">
-                            <label>{t}E-mail:{/t}</label>
-                            <input type="text" name="recovery_email" />
-                            <label>PESEL:</label>
-                            <input type="text" name="recovery_pesel" />        
-                            <br/>
-                            <input type="submit" name="recovery_submit" class="btn" value="Wyślij przypomnienie"/>
-                        </form>
-                    </fieldset>
-                    {if $recovery eq 'OK'}
-                        <div class="alert alert-success"><b>Dane do logowanie zostały wysłane.</b></div>
-                    {elseif $recovery eq 'ERROR'}
-                        <div class="alert alert-error"><b>Wystąpił błąd. Prawdopodobna przyczyna niepoprawne dane lub brak uzupełnionych danych w panelu użytkownika.</b></div>
-                    {/if}          
-                </div>
-                    
-                <div class="span4">
-                    <fieldset>
-                        <legend>Informacje:</legend>
-                        {if $bilans<0}<!-- NEGATIVE BALANCE ALERT --><div class="alert alert-error"><h1>UWAGA! Twój bilans jest ujemny.</h1></div>{/if}
-                        <div class="alert alert-info">Dopisz swój adres e-mail, aby co miesiąc otrzymywać faktury VAT.</div>
-                        <div class="alert alert-success">Faktury VAT do rozlicznia podatkowego oraz druki do wpłat dostępne są po zalogowaniu do BOK.</div>
-                        <div class="alert alert-block">
-                            <strong>Sesje przychodzące - godziny księgowania przelewów przychodzących:</strong>
-                            <ul>
-                                <li>10:30</li>
-                                <li>14:30</li>
-                                <li>17:00</li>
-                            </ul>
-                        </div> 
-                    </fieldset>                        
-                </div>   
-            </div>        
+                <div class="span12">
+                    <div class="page-header"><a href="http://alfa-system.pl"><img src="media/logo.png" alt="Alfa-System" /></a></div>
 
+                    <div class="row-fluid">
+                        <div class="span4">
+                            <fieldset>
+                                <legend>{t}Virtual Customer Service{/t}</legend>
+                                <form id="login" method="post" action="{$target}" class="well">
+                                    <label>{t}Customer ID:{/t}</label>
+                                    <input type="text" name="loginform[login]" />
+                                    <label>{t}PIN:{/t}</label>
+                                    <input type="password" name="loginform[pwd]" />
+                                    <br/>
+                                    <input type="submit" name="loginform[submit]" class="btn" value="{t}Login{/t}"/>
+                                </form>
+                            </fieldset>
+                            {if $error}<div class="alert alert-error"><b>{$error}</b></div>{else}&nbsp;{/if}
+                        </div>
+
+                        <div class="span4">
+                            <fieldset>
+                                <legend>Przypomnienie ID i PIN</legend>
+                                <form id="recovery" method="post" action="{$target}" class="well">
+                                    <label>{t}E-mail:{/t}</label>
+                                    <input type="text" name="recovery_email" />
+                                    <label>PESEL:</label>
+                                    <input type="text" name="recovery_pesel" />        
+                                    <br/>
+                                    <input type="submit" name="recovery_submit" class="btn" value="Wyślij przypomnienie"/>
+                                </form>
+                            </fieldset>
+                            {if $recovery eq 'OK'}
+                            <div class="alert alert-success"><b>Dane do logowanie zostały wysłane.</b></div>
+                            {/if}
+                            {if isset($recovery_errors.email) }
+                            <div class="alert alert-error">{trans("E-Mail is invalid.")}</div>
+                            {/if}
+                            {if isset($recovery_errors.pesel) }
+                            <div class="alert alert-error">{trans("PESEL is invalid.")}</div>
+                            {/if} 
+                            <div class="alert alert-block">Przypomnienie zadziała pod warunkiem, gdy Abonent ma uzupełniony profil z adresem email oraz numerem PESEL.</div>
+                        </div>
+
+                        <div class="span4">
+                            <fieldset>
+                                <legend>Informacje:</legend>
+                                {if $bilans<0}<!-- NEGATIVE BALANCE ALERT --><div class="alert alert-error"><h1>UWAGA! Twój bilans jest ujemny.</h1></div>{/if}
+                                <div class="alert alert-info">Dopisz swój adres e-mail, aby co miesiąc otrzymywać faktury VAT.</div>
+                                <div class="alert alert-success">Faktury VAT do rozlicznia podatkowego oraz druki do wpłat dostępne są po zalogowaniu do BOK.</div>
+                                <div class="alert alert-block">
+                                    <strong>Sesje przychodzące - godziny księgowania przelewów przychodzących:</strong>
+                                    <ul>
+                                        <li>10:30</li>
+                                        <li>14:30</li>
+                                        <li>17:00</li>
+                                    </ul>
+                                </div> 
+                            </fieldset>                        
+                        </div>   
+                    </div>        
+
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-<script type="text/javascript">
-<!--
-document.forms['login'].elements['loginform[login]'].focus();
-//-->
-</script>
-<!-- TWITTER BOOTSTRAP JS -->
-</body>
+        <script type="text/javascript">
+            <!--
+            document.forms['login'].elements['loginform[login]'].focus();
+            //-->
+        </script>
+        <!-- TWITTER BOOTSTRAP JS -->
+    </body>
 </html>

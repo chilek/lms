@@ -34,4 +34,6 @@ $_LANG['Prio'] = 'Priorytet';
 $_LANG['Tip'] = 'Podpowiedź';
 $_LANG['Description'] = 'Opis';
 
+$_LANG['E-Mail is invalid.'] = 'Adres e-mail jest niepoprawny.';
+$_LANG['PESEL is invalid.'] = 'PESEL jest niepoprawny.';
 ?>
