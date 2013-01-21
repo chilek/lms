@@ -1,7 +1,5 @@
-<!--// $Id$ //-->
-{box title="Personal data processing agreement"}
-<table width="100%" cellpadding="3" class="light">
-	<tr><td width="100%">{get_conf('userpanel.data_consent_text')|replace:"\n":"<br />"}</td></tr>
-	<tr><td width="100%" align="right"><a href="?m=info&consent=1">{trans("Confirm")}</a> {img src="edit.gif" alt=""}</td></tr>
-</table>
-{/box}
+<div class="alert alert-error">
+	{get_conf('userpanel.data_consent_text')|replace:"\n":"<br />"}
+        <br/><br/>
+	<a class="btn btn-danger" href="?m=info&amp;consent=1">Wyrażam zgodę!</a>
+</div>

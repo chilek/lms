@@ -1,0 +1,42 @@
+{box title="Your documents"}
+<table class="table table-bordered">
+	{if $documents}
+	<tr>
+		<td><b>{trans("Number:")}</b></td>
+		<td><b>{trans("Type:")}</b></td>
+		<td><b>{trans("Created:")}</b></td>
+		<td><b>{trans("Period:")}</b></td>
+		<td>&nbsp;</td>
+	</tr>
+	{/if}
+	{cycle values="light,lucid" print=false name=doc}
+	{foreach from=$documents item=doc}
+	<tr class="{cycle name=doc}{if !$doc.closed} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<td><b>{number number=$doc.number template=$doc.template time=$doc.cdate}</b></td>
+		<td>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</td>
+		<td>{$doc.cdate|date_format:"%d.%m.%Y"}</td>
+		<td>
+		{if ($doc.type == $smarty.const.DOC_CONTRACT) || ($doc.type == $smarty.const.DOC_ANNEX)}
+			{if $doc.fromdate}{$doc.fromdate|date_format:"%d.%m.%Y"}{/if}
+			{if $doc.todate} - {$doc.todate|date_format:"%d.%m.%Y"}{else}{if $doc.fromdate} - {/if}{trans("indefinitely")}{/if}
+		{/if}
+		</td>
+		<td>
+		{if $doc.closed}
+			<a href="?m=info&amp;f=docview&amp;id={$doc.docid}" target="_blank">{trans("View")} {img src="view.gif" alt="[ View ]"}</a>
+		{else}
+			{trans("not approved")}
+		{/if}
+		</td>
+	</tr>
+	{foreachelse}
+	<tr>
+		<td colspan="8">
+			<p>&nbsp;</p>
+			<p><b>{trans("No such documents on your account.")}</b></p>
+			<p>&nbsp;</p>
+		</td>
+	</tr>
+	{/foreach}
+</table>
+{/box}

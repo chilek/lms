@@ -59,5 +59,4 @@ if (!check_conf('privileges.hide_summaries')) {
 }
 
 $SMARTY->display('welcome.html');
-
 ?>

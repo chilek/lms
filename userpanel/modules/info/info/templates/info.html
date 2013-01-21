@@ -1,0 +1,19 @@
+{include file="header.html"}
+    {if !$usernodes.total && check_conf('userpanel.hide_nodesbox')}
+	{if get_conf('userpanel.data_consent_text') && !$userinfo.consentdate}
+		{include file="module:consentbox.html"}
+	{/if}
+
+        {include file="module:userinfobox.html"}
+	{include file="module:userdocsbox.html"}
+    {else}
+        {if get_conf('userpanel.data_consent_text') && !$userinfo.consentdate}
+            {include file="module:consentbox.html"}
+        {/if}
+
+        {include file="module:userinfobox.html"}
+        {include file="module:usernodesbox.html"}
+        {include file="module:userdocsbox.html"}
+{/if}
+
+{include file="footer.html"}

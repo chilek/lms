@@ -1,29 +1,24 @@
-<!-- $Id$ -->
 {include file="header.html"}
-<table width="100%" cellpadding="10">
-    <tr>
-	<td>
-{box title="Message to you"}
+
+
 {if $message}
-<table width="100%">
+<table class="table">
 	<tr>
-		<td align="center">
+		<td>
 			{$message}
 		</td>
 	</tr>
 	<tr>
-		<td align="right">
+		<td>
 			<a href="?m=messages&amp;confirm=1">{trans("I confirm reading of message")} {img src="save.gif" alt=""}</a>
 		</td>
 	</tr>
 </table>
 {else}
-	<p>&nbsp;</p>
-	<p align="center"><b>{trans("We don't have any messages to you.")}</b></p>
-	<p>&nbsp;</p>
+
+	{trans("We don't have any messages to you.")}
+
 {/if}
-{/box}
-	</td>
-    </tr>
-</table>
+
+
 {include file="footer.html"}

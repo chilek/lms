@@ -53,3 +53,5 @@ lib/Smarty/plugins/variablefilter.htmlspecialchars.php
 lib/Smarty/sysplugins
 nbproject/private
 lms.ini
+lmsgit.ini
+*.log

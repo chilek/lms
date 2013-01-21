@@ -78,8 +78,7 @@ function module_updateuserform()
     $userinfo['skype'] = isset($userinfo['messengers'][IM_SKYPE]) ? $userinfo['messengers'][IM_SKYPE]['uid'] : '';
     
     $SMARTY->assign('userinfo',$userinfo);
-    $SMARTY->assign('usernodes',$usernodes);
-    $SMARTY->assign('documents',$documents);
+
     $SMARTY->display('module:updateuser.html');
 }
 

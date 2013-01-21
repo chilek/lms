@@ -22,7 +22,7 @@
  *  USA.
  *
  *  $Id$
- */
+
 
 $USERPANEL->AddModule(trans('Modules'),	// Display name
 		    'modules', 		// Module name - must be the same as directory name
@@ -30,5 +30,5 @@ $USERPANEL->AddModule(trans('Modules'),	// Display name
 		    98,			// Priority
 		    trans('This module is for showing informations about modules')	// Description
 		    );
-
+ */
 ?>
