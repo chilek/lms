@@ -83,6 +83,38 @@ function delNodeLock($nodeid, $id) {
 	return $result;
 }
 
+function getThroughput($ip) {
+	global $CONFIG;
+
+	$result = new xajaxResponse();
+	$cmd = get_conf('phpui.live_traffic_helper');
+	if (empty($cmd))
+		return $result;
+
+	$cmd = str_replace('%i', $ip, $cmd);
+	exec($cmd, $output);
+	if (!is_array($output) && count($output) != 1)
+		return $result;
+
+	$stats = explode(' ', $output[0]);
+	if (count($stats) != 4)
+		return $result;
+
+	array_walk($stats, intval);
+	foreach (array(0, 2) as $idx)
+		if ($stats[$idx] > 1000000)
+			$stats[$idx] = (round(floatval($stats[$idx]) / 1000000.0, 2)) . ' Mbit/s';
+		elseif ($stats[$idx] > 1000)
+			$stats[$idx] = (round(floatval($stats[$idx]) / 1000.0, 2)) . ' Kbit/s';
+		else
+			$stats[$idx] = $stats[$idx] . ' bit/s';
+	$result->assign('livetraffic', 'innerHTML', $stats[0] . ' / ' . $stats[2]);
+	$result->call('live_traffic_finished');
+
+	return $result;
+}
+
 $LMS->InitXajax();
-$LMS->RegisterXajaxFunction(array('getNodeLocks', 'addNodeLock', 'delNodeLock'));
+$LMS->RegisterXajaxFunction(array('getNodeLocks', 'addNodeLock', 'delNodeLock', 'getThroughput'));
+
 ?>

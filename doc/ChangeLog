@@ -146,7 +146,9 @@ version ? (????-??-??):
   - validity period for users accounts [michu006]
   - added info about last modification user and date for events [ceho]
   - fixed discount presentation on invoices [chilan]
- 
+  - added live traffic stats in node info module [chilan]
+  - don't update time counter for session when we get access to xajax funcions [chilan]
+
 version 1.11.13 Dira (2011-04-07)
 
   - contrib/cutoff2: Fixed "Column 'period' in where clause is ambiguous" [alec]

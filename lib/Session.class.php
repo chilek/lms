@@ -151,7 +151,8 @@ class Session {
 			{
 				$this->_destroySession();
 			} else {
-				$this->DB->Execute('UPDATE sessions SET atime = ?NOW? WHERE id = ?', array($this->SID));
+				if (!isset($_POST['xjxfun']))
+					$this->DB->Execute('UPDATE sessions SET atime = ?NOW? WHERE id = ?', array($this->SID));
 				$this->_content = unserialize($row['content']);
 				return;
 			}

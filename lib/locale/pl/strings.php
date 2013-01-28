@@ -2629,4 +2629,6 @@ $_LANG['Enter access end date in YYYY/MM/DD format. If you don\'t want to define
 $_LANG['Last modification time:'] = 'Czas ostatniej modyfikacji:';
 $_LANG['Last modified by:'] = 'Ostatnio zmodyfikował:';
 
+$_LANG['current:'] = 'aktualnie:';
+
 ?>
