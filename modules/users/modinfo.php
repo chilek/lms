@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2012 LMS Developers
+ *  (C) Copyright 2001-2013 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -29,7 +29,7 @@ $_MODINFO['users'] = array(
 			'en' => 'System users',
 			'pl' => 'Użytkownicy systemu'
 			),
-		'version' => '1.11-cvs',
+		'version' => '1.11-git',
 		'description' => array(
 			'en' => 'System users management',
 			'pl' => 'Zarządzanie użytkownikami systemu'

@@ -2,7 +2,7 @@
 #
 #  LMS version 1.11-git
 #
-#  Copyright (C) 2001-2012 LMS Developers
+#  Copyright (C) 2001-2013 LMS Developers
 #
 #  Please, see the doc/AUTHORS for more information about authors!
 #
@@ -86,7 +86,7 @@ sub isprivate($)
 	return matchip($ip,"192.168.0.0","255.255.0.0") || matchip($ip,"10.0.0.0","255.0.0.0") || matchip($ip,"172.16.0.0","255.240.0.0");
 }
 
-my $_version = '1.11-cvs';
+my $_version = '1.11-git';
 
 my %options = (
 	"--config-file|C=s"	=>	\$configfile,
@@ -104,7 +104,7 @@ if($help)
 {
 	print STDERR <<EOF;
 lms-mgc, version $_version
-(C) 2001-2012 LMS Developers
+(C) 2001-2013 LMS Developers
 
 -C, --config-file=/etc/lms/lms-mgc.ini	alternate config file (default: /etc/lms/lms-mgc.ini);
 -i, --instances=name		Name(s) or number(s) of instance(s) to run, useful
@@ -122,7 +122,7 @@ if($version)
 {
 	print STDERR <<EOF;
 lms-mgc, version $_version
-(C) 2001-2012 LMS Developers
+(C) 2001-2013 LMS Developers
 
 EOF
 	exit 0;
@@ -136,7 +136,7 @@ if(!$configfile)
 if(!$quiet)
 {
 	print STDOUT "lms-mgc, version $_version\n";
-	print STDOUT "(C) 2001-2012 LMS Developers\n";
+	print STDOUT "(C) 2001-2013 LMS Developers\n";
 	print STDOUT "Using file $configfile as config.\n";
 }
 

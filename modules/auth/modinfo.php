@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2012 LMS Developers
+ *  (C) Copyright 2001-2013 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -33,7 +33,7 @@ $_MODINFO['auth'] = array(
 			'en' => 'Users access rights management and verification',
 			'pl' => 'Zarządzanie i weryfikacja uprawnień użytkowników'
 			),
-		'version' => '1.11-cvs',
+		'version' => '1.11-git',
 		'revision' => '$Revision$',
 		'author' => 'LMS Developers',
 		'url' => 'http://www.lms.org.pl',

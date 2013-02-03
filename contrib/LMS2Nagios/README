@@ -1,6 +1,6 @@
 pyLMS2Nagios v6
 
-Wspó³pracuje z LMS v1.11-cvs
+Wspó³pracuje z LMS v1.11-git
 Wspó³pracuje z nagios-2.9
 Wymaga bazy MySQL
 System pracuje na PLD v2.0, powinno dzia³aæ na dowolnym systemie uniksowym

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2012 LMS Developers
+ *  (C) Copyright 2001-2013 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -54,7 +54,7 @@ $layout['logname'] = $AUTH->logname;
 $layout['lmsdbv'] = $DB->_version;
 $layout['smarty_version'] = $SMARTY->_version;
 $layout['hostname'] = hostname();
-$layout['lmsv'] = '1.11-cvs';
+$layout['lmsv'] = '1.11-git';
 $layout['lmsvr'] = $LMS->_revision;
 $layout['dberrors'] =& $DB->errors;
 $layout['popup'] = isset($_GET['popup']) ? true : false;

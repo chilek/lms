@@ -2,7 +2,7 @@
 #
 #  LMS version 1.11-git
 #
-#  Copyright (C) 2001-2012 LMS Developers
+#  Copyright (C) 2001-2013 LMS Developers
 #
 #  Please, see the doc/AUTHORS for more information about authors!
 #
@@ -29,7 +29,7 @@ use strict;
 use Getopt::Long;
 use vars qw(@ISA $help $version);
 use Net::Server::PreFork;
-my $_version = '1.11-cvs';
+my $_version = '1.11-git';
 
 @ISA = qw(Net::Server::PreFork);  
 lms_arpd->run();
@@ -109,7 +109,7 @@ sub configure_hook
 	{
 		print STDERR <<EOF;
 lms-arpd, version $_version
-(C) 2001-2012 LMS Developers
+(C) 2001-2013 LMS Developers
 
 -h, --help		print this help and exit;
 -v, --version		print version info and exit;

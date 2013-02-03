@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2012 LMS Developers
+ *  (C) Copyright 2001-2013 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,7 +26,7 @@
 		      
 class ExecStack
 {
-	var $version = '1.11-cvs';
+	var $version = '1.11-git';
 	var $_MODINFO = array();
 	var $_BINDTABLE = array();
 	var $_EXECSTACK = array();

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2012 LMS Developers
+ *  (C) Copyright 2001-2013 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -23,7 +23,7 @@ $_MODINFO['sample'] = array(
 			'en' => 'Example template for modinfo.php',
 			'pl' => 'Przykładowy szablon dla modinfo.php'
 			),
-		'version' => '1.11-cvs', // version
+		'version' => '1.11-git', // version
 		'description' => array( // description
 			'en' => 'This is sample module that contains template for modinfo.php',
 			'pl' => 'To jest przykładowy moduł, który tak naprawdę zawiera tylko przykładowy modinfo.php',

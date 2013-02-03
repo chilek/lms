@@ -1,7 +1,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2012 LMS Developers
+ *  (C) Copyright 2001-2013 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -447,7 +447,7 @@ static void parse_command_line(int argc, char **argv)
 		switch(opt) 
 		{
     		case 'v':
-            		printf("LMS Daemon version 1.11-cvs (%s)\nCopyright (c) 2001-2012 LMS Developers\n", revision);
+            		printf("LMS Daemon version 1.11-git (%s)\nCopyright (c) 2001-2013 LMS Developers\n", revision);
             		exit(0);
     		case 's':
             		ssl = 1;
@@ -488,7 +488,7 @@ static void parse_command_line(int argc, char **argv)
 			break;
 		case 'x':
         default:
-			printf("LMS Daemon version 1.11-cvs (%s). Command line options:\n", revision);
+			printf("LMS Daemon version 1.11-git (%s). Command line options:\n", revision);
         	printf(" --dbhost -h host[:port]\tdatabase host (default: 'localhost')\n");
         	printf(" --dbname -d db_name\t\tdatabase name (default: 'lms')\n");
         	printf(" --dbuser -u db_user\t\tdatabase user (default: 'lms')\n");

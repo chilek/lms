@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2012 LMS Developers
+ *  (C) Copyright 2001-2013 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -104,7 +104,7 @@ $SMARTY->template_dir = getcwd();
 $SMARTY->compile_dir = SMARTY_COMPILE_DIR;
 @include('locale/'.$LMS->ui_lang.'/strings.php');
 
-$layout['lmsv'] = '1.11-cvs';
+$layout['lmsv'] = '1.11-git';
 
 $SMARTY->assignByRef('layout', $layout);
 

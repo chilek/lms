@@ -2,7 +2,7 @@
 #
 #  LMS version 1.11-git
 #
-#  Copyright (C) 2001-2012 LMS Developers
+#  Copyright (C) 2001-2013 LMS Developers
 #  Copyright (C) 2004 'pit' ?? 
 #  based on http://www.bsd.edu.pl/lms.tar and
 #  http://www.bsdguru.org/dyskusja/viewtopic.php?t=3313&highlight=lms
@@ -87,7 +87,7 @@ sub isprivate($)
 	return matchip($ip,"192.168.0.0","255.255.0.0") || matchip($ip,"10.0.0.0","255.0.0.0") || matchip($ip,"172.16.0.0","255.240.0.0");
 }
 
-my $_version = '1.11-cvs';
+my $_version = '1.11-git';
 
 my %options = (
 	"--config-file|C=s"	=>	\$configfile,

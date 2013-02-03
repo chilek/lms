@@ -2,7 +2,7 @@
 #
 #  LMS version 1.11-git
 #
-#  Copyright (C) 2001-2012 LMS Developers
+#  Copyright (C) 2001-2013 LMS Developers
 #
 #  Please, see the doc/AUTHORS for more information about authors!
 #
@@ -30,7 +30,7 @@ use vars qw($configfile $quiet $help $version $iplist);
 
 $ENV{'PATH'}='/sbin:/usr/sbin:/usr/local/sbin:/bin:/usr/bin:/usr/local/bin';
 
-my $_version = '1.11-cvs';
+my $_version = '1.11-git';
 
 my %options = (
 	"--config-file|C=s"  	=>	\$configfile,
@@ -60,7 +60,7 @@ if($help)
 {
      print STDERR <<EOF;
 lms-arping, version $_version
-(C) 2001-2012 LMS Developers
+(C) 2001-2013 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini     alternate config file (default: /etc/lms/lms.ini);
 -h, --help			print this help and exit;
@@ -75,7 +75,7 @@ if($version)
 {
      print STDERR <<EOF;
 lms-arping, version $_version
-(C) 2001-2012 LMS Developers
+(C) 2001-2013 LMS Developers
 
 EOF
      exit 0;
@@ -89,7 +89,7 @@ if(!$configfile)
 if(!$quiet)
 {
      print STDOUT "lms-arping, version $_version\n";
-     print STDOUT "(C) 2001-2012 LMS Developers\n";
+     print STDOUT "(C) 2001-2013 LMS Developers\n";
      print STDOUT "Using file $configfile as config.\n";
 }
 

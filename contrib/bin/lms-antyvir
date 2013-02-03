@@ -2,7 +2,7 @@
 #
 # LMS version 1.11-git
 #
-#  (C) 2001-2012 LMS Developers
+#  (C) 2001-2013 LMS Developers
 #
 #  Please, see the doc/AUTHORS for more information about authors!
 #
@@ -31,7 +31,7 @@ use vars qw($configfile $quiet $help $version);
 
 $ENV{'PATH'}='/sbin:/usr/sbin:/usr/local/sbin:/bin:/usr/bin:/usr/local/bin';
 
-my $_version = '1.11-cvs';
+my $_version = '1.11-git';
 
 sub dotquad2u32($)
 {
@@ -54,8 +54,8 @@ if($help)
 {
         print STDERR <<EOF;
 lms-antyvir, version $_version
-(C) 2001-2012 LMS Developers
-(C) 2001-2012 Wojciech Swiadkowski
+(C) 2001-2013 LMS Developers
+(C) 2001-2013 Wojciech Swiadkowski
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms
 -h, --help                      print this help and exit;
@@ -70,8 +70,8 @@ if($version)
 {
      print STDERR <<EOF;
 lms-antyvir, version $_version
-(C) 2001-2012 LMS Developers
-(C) 2001-2012 Wojciech Swiadkowski
+(C) 2001-2013 LMS Developers
+(C) 2001-2013 Wojciech Swiadkowski
 
 EOF
     exit 0;
@@ -85,8 +85,8 @@ if(!$configfile)
 if(!$quiet)
 {
 	print STDOUT "lms-antyvir, version $_version\n";
-	print STDOUT "(C) 2001-2012 LMS Developers\n";
-	print STDOUT "(C) 2001-2012 Wojciech Swiadkowski\n";
+	print STDOUT "(C) 2001-2013 LMS Developers\n";
+	print STDOUT "(C) 2001-2013 Wojciech Swiadkowski\n";
 	print STDOUT "Using file $configfile as config.\n";
 }
 

@@ -2,7 +2,7 @@
 #
 #  LMS version 1.11-git
 #
-#  Copyright (C) 2001-2012 LMS Developers
+#  Copyright (C) 2001-2013 LMS Developers
 #
 #  Please, see the doc/AUTHORS for more information about authors!
 #
@@ -42,7 +42,7 @@ $ENV{'PATH'}='/sbin:/usr/sbin:/usr/local/sbin:/bin:/usr/bin:/usr/local/bin';
 
 sub basename($) { my @tmp = split '/',$_[0]; return pop @tmp }
 
-my $_version = '1.11-cvs';
+my $_version = '1.11-git';
 
 my %options = (
 	"--config-file|C=s"     =>      \$configfile,
@@ -59,7 +59,7 @@ if($help)
 {
 	print STDERR <<EOF;
 lms-rtparser, version $_version
-(C) 2001-2012 LMS Developers
+(C) 2001-2013 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini
 		alternate config file (default: /etc/lms/lms.ini);
@@ -78,7 +78,7 @@ if($version)
 {
 	print STDERR <<EOF;
 lms-rtparser, version $_version
-(C) 2001-2012 LMS Developers
+(C) 2001-2013 LMS Developers
 
 EOF
 	exit 0;

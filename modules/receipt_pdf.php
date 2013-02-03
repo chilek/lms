@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2012 LMS Developers
+ *  (C) Copyright 2001-2013 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -149,7 +149,7 @@ function receipt_footer($x,$y)
     $pdf->line($xmax, $yy, $xmax, $y);
     $pdf->line($x, $y, $xmax, $y);
 
-    $y -= text_align_right($xmax,$y-6,$font_size/2,iconv("UTF-8","ISO-8859-2",'Copyright (C) 2001-2012 LMS Developers'));
+    $y -= text_align_right($xmax,$y-6,$font_size/2,iconv("UTF-8","ISO-8859-2",'Copyright (C) 2001-2013 LMS Developers'));
     $y -= 15;
     $pdf->setLineStyle(0.5, NULL, NULL, array(2,2));
     $pdf->line($x-10, $y, $xmax+10, $y);

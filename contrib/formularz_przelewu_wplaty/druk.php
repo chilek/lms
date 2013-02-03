@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2012 LMS Developers
+ *  (C) Copyright 2001-2013 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -18,7 +18,7 @@ $CONFIG_FILE = (is_readable('lms.ini')) ? 'lms.ini' : '/etc/lms/lms.ini';
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 
-header('X-Powered-By: LMS/1.11-cvs/contrib_formularz_przelewu_wplaty');
+header('X-Powered-By: LMS/1.11-git/contrib_formularz_przelewu_wplaty');
 
 // Parse configuration file
 $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);

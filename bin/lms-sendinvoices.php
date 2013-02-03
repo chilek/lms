@@ -2,9 +2,9 @@
 <?php
 
 /*
- * LMS version 1.11-cvs
+ * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2012 LMS Developers
+ *  (C) Copyright 2001-2013 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -54,7 +54,7 @@ if (array_key_exists('version', $options))
 {
 	print <<<EOF
 lms-sendinvoices.php
-(C) 2001-2012 LMS Developers
+(C) 2001-2013 LMS Developers
 
 EOF;
 	exit(0);
@@ -64,7 +64,7 @@ if (array_key_exists('help', $options))
 {
 	print <<<EOF
 lms-sendinvoices.php
-(C) 2001-2012 LMS Developers
+(C) 2001-2013 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -83,7 +83,7 @@ if (!$quiet)
 {
 	print <<<EOF
 lms-sendinvoices.php
-(C) 2001-2012 LMS Developers
+(C) 2001-2013 LMS Developers
 
 EOF;
 }

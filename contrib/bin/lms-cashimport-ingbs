@@ -1,8 +1,8 @@
 #!/usr/bin/perl -Tw
 #
-# LMS version 1.11-cvs
+# LMS version 1.11-git
 #
-#  (C) 2001-2012 LMS Developers
+#  (C) 2001-2013 LMS Developers
 #
 #  Please, see the doc/AUTHORS for more information about authors!
 #
@@ -45,7 +45,7 @@ my $konto = 'numer_twojego_konta';
 
 # Poni¿ej nic nie zmieniaj je¶li nie wiesz co robisz
 
-my $_version = '1.11-cvs';
+my $_version = '1.11-git';
 
 my %options = (
 	"--config-file|C=s"	=>	\$configfile,
@@ -61,7 +61,7 @@ if($help)
 {
 	print STDERR <<EOF;
 lms-cashimport-ingbs, version $_version
-(C) 2001-2012 LMS Developers
+(C) 2001-2013 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini	alternate config file (default: /etc/lms/lms.ini);
 -h, --help			print this help and exit;
@@ -76,7 +76,7 @@ if($version)
 {
 	print STDERR <<EOF;
 lms-cashimport-ingbs, version $_version
-(C) 2001-2012 LMS Developers
+(C) 2001-2013 LMS Developers
 
 EOF
 	exit 0;
@@ -90,7 +90,7 @@ if(!$configfile)
 if(!$quiet)
 {
 	print STDOUT "lms-cashimport-ingbs, version $_version\n";
-	print STDOUT "(C) 2001-2012 LMS Developers\n";
+	print STDOUT "(C) 2001-2013 LMS Developers\n";
 	print STDOUT "Using file $configfile as config.\n";
 }
 
