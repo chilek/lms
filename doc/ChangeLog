@@ -148,6 +148,7 @@ version ? (????-??-??):
   - fixed discount presentation on invoices [chilan]
   - added live traffic stats in node info module [chilan]
   - don't update time counter for session when we get access to xajax funcions [chilan]
+  - netdevmap: openlayers map works again in google chrome [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
