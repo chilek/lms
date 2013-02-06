@@ -51,7 +51,7 @@ function invoice_body()
 require_once(LIB_DIR.'/pdf.php');
 require_once(MODULES_DIR.'/invoice_pdf.inc.php');
 
-init_pdf($pdf, 'A4', 'portrait', trans('Invoices'));
+$pdf = init_pdf('A4', 'portrait', trans('Invoices'));
 
 if(isset($_GET['print']) && $_GET['print'] == 'cached')
 {

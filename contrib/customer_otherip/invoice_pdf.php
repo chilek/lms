@@ -380,7 +380,7 @@ function invoice_body()
 
 require_once(LIB_DIR.'/pdf.php');
 
-init_pdf($pdf, 'A4', 'portrait', trans('Invoices'));
+$pdf = init_pdf('A4', 'portrait', trans('Invoices'));
 
 $id = $pdf->getFirstPageId();
 
