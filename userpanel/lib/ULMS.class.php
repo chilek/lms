@@ -39,7 +39,7 @@ class ULMS extends LMS
 			return NULL;
 	}
 	
-	function GetCustomer($id)
+	function GetCustomer($id, $short = false)
 	{
 		if($result = $this->DB->GetRow('SELECT c.*, '.$this->DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername
 	                                FROM customers c WHERE c.id = ?', array($id)))
