@@ -59,7 +59,7 @@ require_once(MODULES_DIR.'/invoice_tcpdf.inc.php');
 // handle multi-invoice print
 if(!empty($_POST['inv']))
 {
-	$pdf = init_pdf('A4', 'portrait', trans('Invoices'));
+	$pdf = &init_pdf('A4', 'portrait', trans('Invoices'));
 
 	$count = count($_POST['inv']);
         $i = 0;

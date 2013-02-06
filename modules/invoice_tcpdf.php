@@ -49,7 +49,7 @@ function invoice_body() {
 require_once(LIB_DIR.'/tcpdf.php');
 require_once(MODULES_DIR.'/invoice_tcpdf.inc.php');
 
-$pdf = init_pdf('A4', 'portrait', trans('Invoices'));
+$pdf = &init_pdf('A4', 'portrait', trans('Invoices'));
 
 if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	$SESSION->restore('ilm', $ilm);

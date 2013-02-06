@@ -100,7 +100,7 @@ function address_box($x,$y,$scale)
 
 require_once(LIB_DIR.'/pdf.php');
 
-$pdf = init_pdf('A4', 'portrait', trans('Form of Cash Transfer'));
+$pdf = &init_pdf('A4', 'portrait', trans('Form of Cash Transfer'));
 
 $pdf->setLineStyle(2);
 
