@@ -117,7 +117,7 @@ $_BMARGIN = (!isset($CONFIG['finances']['bottommargin']) ? 0 : $CONFIG['finances
 
 require_once(LIB_DIR.'/pdf.php');
 
-$pdf =& init_pdf('A4', 'landscape', trans('Form of Cash Transfer'));
+$pdf = init_pdf('A4', 'landscape', trans('Form of Cash Transfer'));
 
 $pdf->setLineStyle(2);
 
