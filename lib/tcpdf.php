@@ -344,7 +344,7 @@ class TCPDFpl extends TCPDF {
 
 }
 
-function init_pdf($pagesize, $orientation, $title) {
+function init_pdf(&$pdf, $pagesize, $orientation, $title) {
 	global $layout, $CONFIG;
 
 	$pdf = new TCPDFpl($orientation, PDF_UNIT, $pagesize, true, 'UTF-8', false, false);

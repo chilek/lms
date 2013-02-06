@@ -247,7 +247,7 @@ function receipt_body()
 
 require_once(LIB_DIR.'/pdf.php');
 
-$pdf = init_pdf('A4', 'portrait', trans('Receipts'));
+init_pdf($pdf, 'A4', 'portrait', trans('Receipts'));
 
 $id = $pdf->getFirstPageId();
 
