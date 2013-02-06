@@ -272,12 +272,12 @@ class xajax
 //EndSkipAIO
 		
 		// Setup plugin manager
-		$this->objPluginManager =& xajaxPluginManager::getInstance();
+		$this->objPluginManager = xajaxPluginManager::getInstance();
 		$this->objPluginManager->loadPlugins($aPluginFolders);
 
-		$this->objLanguageManager =& xajaxLanguageManager::getInstance();
-		$this->objArgumentManager =& xajaxArgumentManager::getInstance();
-		$this->objResponseManager =& xajaxResponseManager::getInstance();
+		$this->objLanguageManager = xajaxLanguageManager::getInstance();
+		$this->objArgumentManager = xajaxArgumentManager::getInstance();
+		$this->objResponseManager = xajaxResponseManager::getInstance();
 		
 		$this->sCoreIncludeOutput = ob_get_clean();
 	}
@@ -354,12 +354,12 @@ class xajax
 			if (XAJAX_PROCESSING_EVENT == $aArgs[0])
 			{
 				$sEvent = $aArgs[1];
-				$xuf =& $aArgs[2];
+				$xuf = $aArgs[2];
 
 				if (false == is_a($xuf, 'xajaxUserFunction'))
 					$xuf = new xajaxUserFunction($xuf);
 
-				$this->aProcessingEvents[$sEvent] =& $xuf;
+				$this->aProcessingEvents[$sEvent] = $xuf;
 
 				return true;
 			}
