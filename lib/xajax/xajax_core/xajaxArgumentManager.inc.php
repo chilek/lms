@@ -386,7 +386,7 @@ class xajaxArgumentManager
 		object - A reference to an instance of this class.  This function is
 			used to implement the singleton pattern.
 	*/
-	function &getInstance()
+	public static function &getInstance()
 	{
 		static $obj;
 		if (!$obj) {

@@ -121,7 +121,7 @@ class xajaxLanguageManager
 		Implements the singleton pattern: provides a single instance of the xajax 
 		language manager object to all object which request it.
 	*/
-	function &getInstance()
+	public static function &getInstance()
 	{
 		static $obj;
 		if (!$obj) {
