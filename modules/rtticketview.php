@@ -70,18 +70,16 @@ if($ticket['customerid'] && chkconfig($CONFIG['phpui']['helpdesk_customerinfo'])
 foreach($categories as $category)
 	$catids[] = $category['id'];
 $iteration = $LMS->GetQueueContents($ticket['queueid'], $order='createtime,desc', $state=-1, 0, $catids);
-foreach($iteration as $idx => $element)
-{
-	if (intval($element['id']) == intval($_GET['id']))
-	{
-		$next_ticketid = isset($iteration[$idx+1]) ? $iteration[$idx+1]['id'] : 0;
-		$prev_ticketid = isset($iteration[$idx-1]) ? $iteration[$idx-1]['id'] : 0;
-		break;
-	}
+if (!empty($iteration['total'])) {
+	foreach ($iteration as $idx => $element)
+		if (intval($element['id']) == intval($_GET['id'])) {
+			$next_ticketid = isset($iteration[$idx + 1]) ? $iteration[$idx + 1]['id'] : 0;
+			$prev_ticketid = isset($iteration[$idx - 1]) ? $iteration[$idx - 1]['id'] : 0;
+			break;
+		}
+	$ticket['next_ticketid'] = $next_ticketid;
+	$ticket['prev_ticketid'] = $prev_ticketid;
 }
-
-$ticket['next_ticketid'] = $next_ticketid;
-$ticket['prev_ticketid'] = $prev_ticketid;
 
 foreach ($categories as $category)
 {
