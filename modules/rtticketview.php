@@ -72,7 +72,7 @@ foreach($categories as $category)
 $iteration = $LMS->GetQueueContents($ticket['queueid'], $order='createtime,desc', $state=-1, 0, $catids);
 if (!empty($iteration['total'])) {
 	foreach ($iteration as $idx => $element)
-		if (intval($element['id']) == intval($_GET['id'])) {
+		if (isset($element['id']) && intval($element['id']) == intval($_GET['id'])) {
 			$next_ticketid = isset($iteration[$idx + 1]) ? $iteration[$idx + 1]['id'] : 0;
 			$prev_ticketid = isset($iteration[$idx - 1]) ? $iteration[$idx - 1]['id'] : 0;
 			break;
