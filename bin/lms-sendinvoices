@@ -230,6 +230,10 @@ while(my $row = $dbq->fetchrow_hashref())
 {
 	my $sender;
 	my $ua = LWP::UserAgent->new;
+	my %ssl_opts;
+	$ssl_opts{'verify_hostname'} = 0;
+	$ssl_opts{'SSL_verify_mode'} = SSL_VERIFY_NONE;
+	$ua->ssl_opts(%ssl_opts);
 	my $response = $ua->get($lms_url.'/?m=invoice&override=1&original=1&id='.$row->{'id'}.'&loginform[login]='.$lms_user.'&loginform[pwd]='.$lms_password);
 	
 	if ($response->is_success)
@@ -256,6 +260,7 @@ while(my $row = $dbq->fetchrow_hashref())
 			authid => $smtp_user,
 			authpwd => $smtp_pass,
 			on_errors => undef,
+			tls_allowed => 0,
 #			debug_level => 4,
 #			debug => './log.txt',
 	        })) {
