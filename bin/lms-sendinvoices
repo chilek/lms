@@ -32,6 +32,7 @@ use LWP::UserAgent;
 use Time::Local;
 use MIME::QuotedPrint;
 use Mail::Sender;
+use IO::Socket::SSL;
 
 my $_version = '1.11-git';
 
