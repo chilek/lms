@@ -2221,7 +2221,7 @@ class LMS {
 			$result['pesel'] = $result['ssn'];
 			$result['nip'] = $result['ten'];
 			if ($result['post_name'] || $result['post_address']) {
-				$reulst['serviceaddr'] = $result['post_name'];
+				$result['serviceaddr'] = $result['post_name'];
 				if ($result['post_address'])
 					$result['serviceaddr'] .= "\n" . $result['post_address'];
 				if ($result['post_zip'] && $result['post_city'])
