@@ -145,7 +145,7 @@ $LMS = new LMS($DB, $AUTH, $CONFIG);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
-if (empty($CONFIG['finances']['bgz_username']) || empty($CONFIG['finances']['bgz_firm']) || empty($CONFIG['finances']['bgz_firm']))
+if (empty($CONFIG['finances']['bgz_username']) || empty($CONFIG['finances']['bgz_password']) || empty($CONFIG['finances']['bgz_firm']))
 	die("Fatal error: BGZ credentials are not set!\n");
 
 define('USER_AGENT', "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
