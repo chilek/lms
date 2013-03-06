@@ -332,8 +332,8 @@ if (!defined('__CLASS_HTML2PDF__')) {
          *  S : return the document as a string. name is ignored.
          *  FI: equivalent to F + I option
          *  FD: equivalent to F + D option
-         *  true  => I
-         *  false => S
+         *  true  => S
+         *  false => I
          *
          * @param  string $name The name of the file when saved.
          * @param  string $dest Destination where to send the document.
@@ -6461,6 +6461,39 @@ if (!defined('__CLASS_HTML2PDF__')) {
         {
             $this->pdf->undoTransform();
             $this->parsingCss->load();
+        }
+
+        /**
+         * tag : STRIKE
+         * mode : OPEN
+         *
+         * @param  array $param
+         * @return boolean
+         */
+        protected function _tag_open_STRIKE($param, $other = 'strike')
+        {
+            $this->parsingCss->save();
+            $this->parsingCss->value['font-linethrough'] = true;
+            $this->parsingCss->analyse($other, $param);
+            $this->parsingCss->setPosition();
+            $this->parsingCss->fontSet();
+
+            return true;
+        }
+
+        /**
+         * tag : STRIKE
+         * mode : CLOSE
+         *
+         * @param  array $param
+         * @return boolean
+         */
+        protected function _tag_close_STRIKE($param)
+        {
+            $this->parsingCss->load();
+            $this->parsingCss->fontSet();
+
+            return true;
         }
 
         /**
