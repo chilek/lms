@@ -534,6 +534,8 @@ class LMS {
 		$this->DB->Execute('UPDATE customers SET deleted=1, moddate=?NOW?, modid=?
 				WHERE id=?', array($this->AUTH->id, $id));
 		$this->DB->Execute('DELETE FROM customerassignments WHERE customerid=?', array($id));
+		$this->DB->Execute('DELETE FROM liabilities WHERE liabilityid IN
+			(SELECT liabilityid FROM assignments WHERE liabilityid <> 0 AND customerid = ?)', array($id));
 		$this->DB->Execute('DELETE FROM assignments WHERE customerid=?', array($id));
 		// nodes
 		$nodes = $this->DB->GetCol('SELECT id FROM nodes WHERE ownerid=?', array($id));
