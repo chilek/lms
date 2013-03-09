@@ -461,24 +461,21 @@ function check_email( $email )
 	return TRUE;
 }
 
-function get_producer($mac)
-{
-	$mac = strtoupper(str_replace(':','-',substr($mac,0,8)));
+function get_producer($mac) {
+	$mac = strtoupper(str_replace(':', '-', substr($mac, 0, 8)));
 
 	if (!$mac)
-	    return '';
+		return '';
 
-	if($macfile = fopen(LIB_DIR.'/ethercodes.txt','r'))
-		while(!feof($macfile))
-		{
-			$line = trim(fgets($macfile,4096));
-			if($line)
-				list($prefix,$producer) = explode(':', $line);
-			if($mac == $prefix)
-				break;
+	$maclines = @file(LIB_DIR . '/ethercodes.txt', FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES);
+	if (!empty($maclines))
+		foreach ($maclines as $line) {
+			list ($prefix, $producer) = explode(':', $line);
+			if ($mac == $prefix)
+				return $producer;
 		}
-	fclose($macfile);
-	return $producer;
+
+	return '';
 }
 
 function setunits($data)  // for traffic data
