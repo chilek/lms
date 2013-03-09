@@ -293,10 +293,12 @@
 				<SCRIPT TYPE="text/javascript">
 				<!--
 					function live_traffic_start() {
+						xajax.config.waitCursor = false;
 						xajax_getThroughput('{$nodeinfo.ip}');
 					}
 
 					function live_traffic_finished() {
+						xajax.config.waitCursor = true;
 						setTimeout("live_traffic_start()", 3000);
 					}
 
