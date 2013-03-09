@@ -13,7 +13,8 @@ fi
 
 grep "(hex)" oui.txt > temp.txt
 iconv --from iso-8859-1 --to utf-8 < temp.txt > out.txt
-awk '{print substr($0,1,8) ":" substr($0,19)}' < out.txt > ../lib/ethercodes.txt
+#awk '{print $1 ":" $3}' < out.txt > ../lib/ethercodes.txt
+awk '{printf("%s:", $1, ":"); for (i=3; i<=NF; i++) printf((i == 3 ? "%s" : " %s"), $i); printf("\n"); }' <out.txt >../lib/ethercodes.txt
 
 rm -f temp.txt
 rm -f oui.txt
