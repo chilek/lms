@@ -19,4 +19,4 @@ rm -f temp.txt
 rm -f oui.txt
 rm -f out.txt
 
-cvs commit ../lib/ethercodes.txt
+git commit -a -m "bumped ethercodes.txt"
