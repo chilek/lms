@@ -538,8 +538,11 @@ foreach ($netnodes as $netnodename => $netnode) {
 						$teryt['area_terc'], $teryt['area_city'], $teryt['area_simc'],
 						$teryt['address_cecha'], $teryt['address_ulica'], $teryt['address_symul'],
 						$teryt['address_budynek'], ZIP_CODE))
-					.",0,".$linktypes[$range['linktype']]['technologia_dostepu'].",".implode('_', $ukeservices).",WLASNA,"
-					.$linktypes[$range['linktype']]['szybkosc'].","
+					.",0,".$linktypes[$range['linktype']]['technologia_dostepu'].",";
+				$snetranges .= ",Nie,Nie," . (isset($ukeservices['INT']) ? "Tak" : "Nie")
+					. ",Nie,Nie," . (isset($ukeservices['TV']) ? "Tak" : "Nie") . ","
+					. (isset($ukeservices['TEL']) ? "Tak" : "Nie") . ",Nie,Nie,";
+				$snetranges .= ",WLASNA," . $linktypes[$range['linktype']]['szybkosc'].","
 					.(implode(',', isset($personalnodes[$servicetype]) ? $personalnodes[$servicetype] : array_fill(0, 17, '0'))).","
 					.(implode(',', isset($commercialnodes[$servicetype]) ? $commercialnodes[$servicetype] : array_fill(0, 17, '0')))."\n";
 				$netrangeid++;
