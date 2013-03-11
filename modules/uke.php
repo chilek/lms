@@ -502,8 +502,12 @@ foreach ($netnodes as $netnodename => $netnode) {
 						$set = 12;
 					elseif ($node['downstream'] == 30000)
 						$set = 13;
-					else
+					elseif ($node['downstream'] < 100000)
 						$set = 14;
+					elseif ($node['downstream'] == 100000)
+						$set = 15;
+					else
+						$set = 16;
 					if ($node['type'] == 0)
 						$personalnodes[$node['servicetypes']][$set]++;
 					else
@@ -512,13 +516,13 @@ foreach ($netnodes as $netnodename => $netnode) {
 				// save info about computers connected to this network node
 			foreach ($personalnodes as $servicetype => $servicenodes) {
 				$services = array();
-				foreach (array_fill(0, 15, '0') as $key => $value)
+				foreach (array_fill(0, 17, '0') as $key => $value)
 					$services[] = isset($servicenodes[$key]) ? $servicenodes[$key] : $value;
 				$personalnodes[$servicetype] = $services;
 			}
 			foreach ($commercialnodes as $servicetype => $servicenodes) {
 				$services = array();
-				foreach (array_fill(0, 15, '0') as $key => $value)
+				foreach (array_fill(0, 17, '0') as $key => $value)
 					$services[] = isset($servicenodes[$key]) ? $servicenodes[$key] : $value;
 				$commercialnodes[$servicetype] = $services;
 			}
@@ -536,8 +540,8 @@ foreach ($netnodes as $netnodename => $netnode) {
 						$teryt['address_budynek'], ZIP_CODE))
 					.",0,".$linktypes[$range['linktype']]['technologia_dostepu'].",".implode('_', $ukeservices).",WLASNA,"
 					.$linktypes[$range['linktype']]['szybkosc'].","
-					.(implode(',', isset($personalnodes[$servicetype]) ? $personalnodes[$servicetype] : array_fill(0, 15, '0'))).","
-					.(implode(',', isset($commercialnodes[$servicetype]) ? $commercialnodes[$servicetype] : array_fill(0, 15, '0')))."\n";
+					.(implode(',', isset($personalnodes[$servicetype]) ? $personalnodes[$servicetype] : array_fill(0, 17, '0'))).","
+					.(implode(',', isset($commercialnodes[$servicetype]) ? $commercialnodes[$servicetype] : array_fill(0, 17, '0')))."\n";
 				$netrangeid++;
 			}
 		}
