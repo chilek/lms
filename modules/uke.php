@@ -586,7 +586,7 @@ if ($netlinks)
 			$snetlines .= $netlineid.",węzeł sieci,".$netnodes[$netlink['src']]['id'].",węzeł sieci,".$netnodes[$netlink['dst']]['id'].",Nie,Tak,Nie,"
 				.implode(',', array_slice($linktypes[$netlink['type']], 0, 6)).","
 				.implode(',', array_fill(0, 3, $linktypes[$netlink['type']]['liczba_jednostek'])).","
-				.$linktypes[$netlink['type']]['jednostka'].",0,0\n";
+				.$linktypes[$netlink['type']]['jednostka'].",0," . $linktypes[$netlink['type']]['jednostka'] . ",0\n";
 			$netlineid++;
 		}
 
