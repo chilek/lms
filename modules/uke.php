@@ -619,7 +619,7 @@ $filename = tempnam('/tmp', 'LMS_SIIS_').'.zip';
 if ($zip->open($filename, ZIPARCHIVE::OVERWRITE)) {
 	$zip->addFromString('WEZLY.csv', $snetnodes);
 	$zip->addFromString('W_INTERFACE.csv', $snetinterfaces);
-	$zip->addFromString('W_ZASIEG.csv', $snetranges);
+	$zip->addFromString('USLUGI_SZER.csv', $snetranges);
 	$zip->addFromString('LINIE.csv', $snetlines);
 	$zip->addFromString('POLACZENIA.csv', $snetlinks);
 	$zip->close();
