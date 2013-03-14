@@ -5591,6 +5591,7 @@ Chapter 7. For curious
    quota_ftp_limit - quota limit of ftp account
    quota_sql_limit - quota limit of sql account
    description - description for subscription
+   disabled - disabled/enabled flag (1/0)
      __________________________________________________________________
 
 7.2.19. Promotions ('promotions')
