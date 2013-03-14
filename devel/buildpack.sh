@@ -7,7 +7,7 @@
 
 WORKDIR=`pwd`
 NOTDISTRIB="devel .project modules/core modules/mailing modules/auth modules/traffic modules/users lib/ExecStack.class.php"
-SMARTYVER="3.1.11"
+SMARTYVER="3.1.13"
 
 echo -ne "Katalog tmp? [$TMPDIR]: "
 read TEMPDIR
