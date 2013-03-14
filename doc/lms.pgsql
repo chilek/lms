@@ -460,6 +460,7 @@ CREATE TABLE tariffs (
 	quota_ftp_limit integer	DEFAULT NULL,
 	quota_sql_limit integer	DEFAULT NULL,
 	description text	DEFAULT '' NOT NULL,
+	disabled smallint 	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
 	CONSTRAINT tariffs_name_key UNIQUE (name, value, period)
 );
@@ -1865,4 +1866,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2012111100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2013031400');

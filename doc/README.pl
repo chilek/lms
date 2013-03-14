@@ -6627,6 +6627,7 @@ Rozdział 7. Dla dociekliwych
    quota_ftp_limit - limit quoty dla konta ftp
    quota_sql_limit - limit quoty dla konta sql
    description - opis
+   disabled - status taryfy: włączona/wyłączona (0/1)
      __________________________________________________________________
 
 7.2.20. Promocje ('promotions')
