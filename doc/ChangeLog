@@ -150,6 +150,7 @@ version ? (????-??-??):
   - don't update time counter for session when we get access to xajax funcions [chilan]
   - netdevmap: openlayers map works again in google chrome [chilan]
   - uke siis reports adjusted to version 3 [chilan]
+  - added possibility to disable the tariffs [red]
 
 version 1.11.13 Dira (2011-04-07)
 
