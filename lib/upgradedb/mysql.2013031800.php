@@ -30,7 +30,6 @@ $DB->Execute("ALTER TABLE location_districts ADD FOREIGN KEY (stateid) REFERENCE
 $DB->Execute("ALTER TABLE location_boroughs ADD FOREIGN KEY (districtid) REFERENCES location_districts (id) ON DELETE CASCADE ON UPDATE CASCADE");
 $DB->Execute("ALTER TABLE location_cities ADD FOREIGN KEY (boroughid) REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE");
 $DB->Execute("ALTER TABLE location_streets ADD FOREIGN KEY (cityid) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE");
-$DB->Execute("ALTER TABLE location_streets ADD INDEX (typeid)");
 $DB->Execute("ALTER TABLE location_streets ADD FOREIGN KEY (typeid) REFERENCES location_street_types (id) ON DELETE SET NULL ON UPDATE CASCADE");
 $DB->Execute("ALTER TABLE pna ADD INDEX (streetid)");
 $DB->Execute("ALTER TABLE pna ADD INDEX (cityid)");
@@ -41,7 +40,6 @@ $DB->Execute("ALTER TABLE netdevices ADD FOREIGN KEY (location_street) REFERENCE
 $DB->Execute("ALTER TABLE netdevices ADD FOREIGN KEY (channelid) REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE");
 $DB->Execute("ALTER TABLE nodes ADD FOREIGN KEY (location_city) REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE");
 $DB->Execute("ALTER TABLE nodes ADD FOREIGN KEY (location_street) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE");
-$DB->Execute("ALTER TABLE nodelocks ADD INDEX (nodeid)");
 $DB->Execute("ALTER TABLE nodelocks ADD FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE");
 $DB->Execute("ALTER TABLE rtattachments ADD FOREIGN KEY (messageid) REFERENCES rtmessages (id) ON DELETE CASCADE ON UPDATE CASCADE");
 $DB->Execute("DELETE FROM rtmessages WHERE ticketid NOT IN (SELECT id FROM rttickets)");
@@ -78,7 +76,6 @@ $DB->Execute("ALTER TABLE imessengers ADD FOREIGN KEY (customerid) REFERENCES cu
 $DB->Execute("ALTER TABLE customercontacts ADD FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE");
 $DB->Execute("ALTER TABLE excludedgroups ADD FOREIGN KEY (customergroupid) REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE");
 $DB->Execute("DELETE FROM managementurls WHERE netdevid NOT IN (SELECT id FROM netdevices)");
-$DB->Execute("ALTER TABLE managementurls ADD INDEX (netdevid)");
 $DB->Execute("ALTER TABLE managementurls ADD FOREIGN KEY (netdevid) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013031800', 'dbversion');
