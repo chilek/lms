@@ -1,3 +1,8 @@
 Ala test
-
+No nieźle mi idzie
 dopisaem ta linie w drugim kroku
+if [$ala == $ela ]; then
+echo wypad
+else
+echio ok
+emdif
