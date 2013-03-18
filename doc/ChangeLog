@@ -151,6 +151,7 @@ version ? (????-??-??):
   - netdevmap: openlayers map works again in google chrome [chilan]
   - uke siis reports adjusted to version 3 [chilan]
   - added possibility to disable the tariffs [red]
+  - mysql schema fixes [LoLe]
 
 version 1.11.13 Dira (2011-04-07)
 
