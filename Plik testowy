@@ -4,5 +4,6 @@ dopisaem ta linie w drugim kroku
 if [$ala == $ela ]; then
 echo wypad
 else
+echo jestem panem tego pliku
 echio ok
 emdif
