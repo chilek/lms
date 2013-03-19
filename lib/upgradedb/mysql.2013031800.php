@@ -78,7 +78,7 @@ $DB->Execute("ALTER TABLE excludedgroups ADD FOREIGN KEY (customergroupid) REFER
 $DB->Execute("DELETE FROM managementurls WHERE netdevid NOT IN (SELECT id FROM netdevices)");
 $DB->Execute("ALTER TABLE managementurls ADD FOREIGN KEY (netdevid) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013031800', 'dbversion');
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013031800', 'dbversion'));
 $DB->CommitTrans();
 
 ?>
