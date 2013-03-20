@@ -342,7 +342,7 @@ foreach ($netnodes as $netnodename => $netnode) {
 				$netnode['address_ulica'], $netnode['address_symul'], $netnode['address_budynek'], ZIP_CODE))
 			: "LMS netdevinfo ID's: ".implode(' ', $netnode['netdevices']).",".implode(',', array_fill(0, 10, '')))
 		.",0,".(isset($netnode['longitude']) ? $netnode['latitude'].",".$netnode['longitude'] : ",")
-		.",Nie,".($netnode['cabledistports'] + $netonode['radiodistports'] + $netnode['fiberdistports'] > 1
+		.",Nie,".($netnode['cabledistports'] + $netnode['radiodistports'] + $netnode['fiberdistports'] > 1
 			|| $netnode['personalaccessports'] + $netnode['commercialaccessports'] == 0 ? "Tak" : "Nie").","
 		.($netnode['cablepersonalaccessports'] || $netnode['cablecommercialaccessports']
 			|| $netnode['radiopersonalaccessports'] || $netnode['radiocommercialaccessports']
