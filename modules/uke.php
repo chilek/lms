@@ -539,9 +539,9 @@ foreach ($netnodes as $netnodename => $netnode) {
 						$teryt['address_cecha'], $teryt['address_ulica'], $teryt['address_symul'],
 						$teryt['address_budynek'], ZIP_CODE))
 					.",0,".$linktypes[$range['linktype']]['technologia_dostepu'];
-				$snetranges .= ",Nie,Nie," . (isset($ukeservices['INT']) ? "Tak" : "Nie")
-					. ",Nie,Nie," . (isset($ukeservices['TV']) ? "Tak" : "Nie") . ","
-					. (isset($ukeservices['TEL']) ? "Tak" : "Nie") . ",Nie,Nie,";
+				$snetranges .= ",Nie,Nie," . (array_search('INT', $ukeservices) !== FALSE ? "Tak" : "Nie")
+					. ",Nie,Nie," . (array_search('TV', $ukeservices) !== FALSE ? "Tak" : "Nie") . ","
+					. (array_search('TEL', $ukeservices) !== FALSE ? "Tak" : "Nie") . ",Nie,Nie,";
 				$snetranges .= ",WLASNA," . $linktypes[$range['linktype']]['szybkosc'].","
 					.(implode(',', isset($personalnodes[$servicetype]) ? $personalnodes[$servicetype] : array_fill(0, 17, '0'))).","
 					.(implode(',', isset($commercialnodes[$servicetype]) ? $commercialnodes[$servicetype] : array_fill(0, 17, '0')))."\n";
