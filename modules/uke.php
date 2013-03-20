@@ -168,7 +168,7 @@ $linktypes = array(
 		'jednostka' => "linie w kablu",
 		'specyficzne' => array('szybkosc_dystrybucyjna' => "100")),
 	array('linia' => "bezprzewodowa", 'trakt' => "NIE DOTYCZY", 'technologia' => "radiowa", 'typ' => "WLAN",
-		'pasmo' => "5GHz", 'szybkosc_radia' => "100",
+		'pasmo' => "5", 'szybkosc_radia' => "100",
 		'technologia_dostepu' => "WLAN-urządzenie abonenckie", 'szybkosc' => "54", 'liczba_jednostek' => "1",
 		'jednostka' => "kanały",
 		'specyficzne' => array('szybkosc_dystrybucyjna' => "100")),
