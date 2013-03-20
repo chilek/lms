@@ -604,9 +604,9 @@ if ($netlinks)
 	foreach ($netlinks as $netlink)
 		if ($netnodes[$netlink['src']]['id'] != $netnodes[$netlink['dst']]['id']) {
 			$snetlinks .= $netlinkid.",".$netnodes[$netlink['src']]['id'].",".$netnodes[$netlink['dst']]['id'].",Nie,Tak,Nie,"
-				."0,0,"
+				.",,"
 				.implode(',', array_fill(0, 2, floor($netlink['speed'] / 1000))).","
-				."0,0,0,0\n";
+				.",,0,0\n";
 			$netlinkid++;
 		}
 
