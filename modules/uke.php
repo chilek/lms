@@ -162,17 +162,17 @@ $borough_types = array(
 );
 
 $linktypes = array(
-	array('linia' => "linia kablowa", 'trakt' => "podziemny", 'technologia' => "kablowa", 'typ' => "UTP",
+	array('linia' => "kablowa", 'trakt' => "podziemny", 'technologia' => "kablowa", 'typ' => "UTP",
 		'pasmo' => "", 'szybkosc_radia' => "",
 		'technologia_dostepu' => "Ethernet", 'szybkosc' => "100", 'liczba_jednostek' => "1",
 		'jednostka' => "linie w kablu",
 		'specyficzne' => array('szybkosc_dystrybucyjna' => "100")),
-	array('linia' => "linia bezprzewodowa", 'trakt' => "", 'technologia' => "radiowa", 'typ' => "WLAN",
+	array('linia' => "bezprzewodowa", 'trakt' => "NIE DOTYCZY", 'technologia' => "radiowa", 'typ' => "WLAN",
 		'pasmo' => "5GHz", 'szybkosc_radia' => "100",
 		'technologia_dostepu' => "WLAN-urządzenie abonenckie", 'szybkosc' => "54", 'liczba_jednostek' => "1",
 		'jednostka' => "kanały",
 		'specyficzne' => array('szybkosc_dystrybucyjna' => "100")),
-	array('linia' => "linia kablowa", 'trakt' => "podziemny w kanalizacji", 'technologia' => "światłowodowa", 'typ' => "SMF", 
+	array('linia' => "kablowa", 'trakt' => "podziemny w kanalizacji", 'technologia' => "światłowodowa", 'typ' => "SMF", 
 		'pasmo' => "", 'szybkosc_radia' => "",
 		'technologia_dostepu' => "FTTH", 'szybkosc' => "100", 'liczba_jednostek' => "2",
 		'jednostka' => "włókna",
