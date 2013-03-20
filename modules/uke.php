@@ -337,7 +337,7 @@ foreach ($netnodes as $netnodename => $netnode) {
 	}
 	$snetnodes .= $netnode['id'].",własny,skrzynka,"
 		.(isset($netnode['area_woj'])
-			? implode(',', array($netnode['area_woj'], $netnode['area_pow'], $netnode['area_gmi']." (".$netnode['area_rodz_gmi'].")",
+			? implode(',', array($netnode['area_woj'], $netnode['area_pow'], $netnode['area_gmi'],
 				$netnode['area_terc'], $netnode['area_city'], $netnode['area_simc'], $netnode['address_cecha'],
 				$netnode['address_ulica'], $netnode['address_symul'], $netnode['address_budynek'], ZIP_CODE))
 			: "LMS netdevinfo ID's: ".implode(' ', $netnode['netdevices']).",".implode(',', array_fill(0, 10, '')))
@@ -533,8 +533,7 @@ foreach ($netnodes as $netnodename => $netnode) {
 					if (isset($services[$service]))
 						$ukeservices[] = $service;
 				$snetranges .= $netrangeid.",".$netnode['id'].","
-					.implode(',', array($teryt['area_woj'], $teryt['area_pow'], $teryt['area_gmi']." ("
-						.$borough_types[intval($area_rodz)].")",
+					.implode(',', array($teryt['area_woj'], $teryt['area_pow'], $teryt['area_gmi'],
 						$teryt['area_terc'], $teryt['area_city'], $teryt['area_simc'],
 						$teryt['address_cecha'], $teryt['address_ulica'], $teryt['address_symul'],
 						$teryt['address_budynek'], ZIP_CODE))
