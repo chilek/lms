@@ -349,7 +349,8 @@ foreach ($netnodes as $netnodename => $netnode) {
 			|| $netnode['fiberpersonalaccessports'] || $netnode['fibercommercialaccessports'] ? "Tak" : "Nie").",\n";
 
 	// save info about network interfaces located in distribution layer
-	if ($netnode['cabledistports'] + $netnode['radiodistports'] + $netnode['fiberdistports'] > 1) {
+	if ($netnode['cabledistports'] + $netnode['radiodistports'] + $netnode['fiberdistports'] > 1
+		|| $netnode['personalaccessports'] + $netnode['commercialaccessports'] == 0) {
 		if ($netnode['cabledistports']) {
 			$snetinterfaces .= $netintid.",".$netnode['id'].",sieć szkieletowa lub dystrybucyjna,kablowe,,Ethernet,,0,100,0,"
 				.$netnode['cabledistports'].","
