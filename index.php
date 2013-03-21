@@ -189,7 +189,8 @@ if ($AUTH->islogged) {
 	$plugins = preg_split('/[;,\s\t\n]+/', $CONFIG['phpui']['plugins'], -1, PREG_SPLIT_NO_EMPTY);
 	if (!empty($plugins))
 		foreach ($plugins as $plugin_name)
-			require LIB_DIR . '/plugins/' . $plugin_name . '.php';
+			if(is_readable(LIB_DIR . '/plugins/' . $plugin_name . '.php'))
+				require LIB_DIR . '/plugins/' . $plugin_name . '.php';
 
 	$res = $LMS->ExecHook('access_table_init', array('accesstable' => $access['table']));
 	if (isset($res['accesstable']))
