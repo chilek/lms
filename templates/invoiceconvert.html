@@ -1,0 +1,242 @@
+{include file="header.html"}
+{include file="calendar_js.html"}
+<h1>{$layout.pagetitle}</h1>
+<form name="invoiceconvert" method="POST" action="?m=invoiceconvert&id={$invoice.docid}">
+<input type="hidden" name="docid" value="{$docid}">
+<input type="hidden" name="parents" value="{$parents}">
+<input type="hidden" name="cid" value="{$cid}">
+<div class="light" style="border:solid 1px #000000;">
+<table width="100%" cellpadding="3" align="top">
+	<tr class="dark">
+		<td class="fbottom" width="100%" COLSPAN="2">
+			<B>{$layout.pagetitle}</B>
+		</td>
+	</tr>
+	<tr>
+	    <td width="50%" align="left" style="vertical-align:top;">
+		<table width="100%" cellpadding="3">
+		    <tr class="light">
+			    <td width="1%" nowrap>
+			    	<B>{trans("Invoice number:")}</B><br>
+		    	</TD>
+		    	<TD  WIDTH="99%" NOWRAP>
+		    		{if $numberplanlist}
+		    		<SELECT name="invoice[numberplanid]" {tip text="Select numbering plan"}>
+		    		{foreach item=plan from=$numberplanlist}
+		    			{assign var=period value=$plan.period}
+		    			<OPTION value="{$plan.id}"{if $plan.id==$invoice.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</OPTION>
+		    		{/foreach}
+		    		</SELECT>
+		    		{else}
+		    			<INPUT type="hidden" name="invoice[numberplanid]" value="0">
+		    		{/if}
+		    	</TD>
+		    </TR>
+		    <tr class="light">
+		    	<td width="1%" nowrap>
+		    		<B>{trans("Settlement date:")}&nbsp;&nbsp;&nbsp;&nbsp;</B>
+		    	</td>
+		    	<td width="99%" nowrap>
+		    		<input type="TEXT" name="invoiceconvert[cdate]" value="{$invoice.cdate|date_format:"%Y/%m/%d"}" size="10" readonly {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} onclick="javascript:cal1.popup();" >
+		    		{if $invoice.cdatewarning}
+		    		<input type="HIDDEN" name="invoiceconvert[cdatewarning]" value="1">
+		    		{/if}
+		    	</td>
+		    </tr>
+		    <tr class="light">
+		    	<td width="1%" nowrap>
+		    		<B>{trans("Sale date:")}</B>
+		    	</td>
+		    	<td width="99%" nowrap>
+		    		<input type="TEXT" name="invoiceconvert[sdate]" value="{$invoice.sdate|date_format:"%Y/%m/%d"}" size="10" readonly {tip text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"} onclick="javascript:cal2.popup();" >
+		    	</td>
+		    </tr>
+		    <tr class="light">
+		    	<td width="1%" nowrap>
+		    		<B>{trans("Deadline:")}</B>
+		    	</td>
+		    	<td width="99%" nowrap>
+		    		<input type="TEXT" name="invoiceconvert[paytime]" value="{$invoice.paytime}" size="5" id="paytime">
+		    	</td>
+		    </tr>
+		    <tr class="light">
+		    	<td width="1%" nowrap>
+		    		<B>{trans("Payment type:")}</B>
+		    	</td>
+		    	<td width="99%" nowrap>
+		    		<SELECT name="invoiceconvert[paytype]" {tip text="Select payment type" trigger="paytype"}>
+		    			{foreach from=$_PAYTYPES item=item key=key}
+		    			<OPTION value="{$key}"{if $invoice.paytype==$key} selected{/if}>{$item}</OPTION>
+		    			{/foreach}
+		    		</SELECT>
+		    	</td>
+		    </tr>
+		</table>
+	    </td>
+	    
+	    <td width="50%" align="left" style="vertical-align:top;">
+		<table width="100%" cellpadding="1">
+		
+		    <tr class="light">
+			<td align="left" nowrap>
+			    <h3>{trans("Customer")} ({$invoice.customerid|string_format:"%04d"})&nbsp;:</h3>
+			</td>
+			<td>
+			    <h3>{$invoice.name}</h3>
+			</td>
+		    </tr>
+
+		    <tr>
+			<td>
+			    <b>{trans("Address:")}</b>
+			</td>
+			<td width="99%" nowrap align="top">
+			    {$invoice.address}<br>
+			</td>
+		    </tr>
+		    <tr>
+			<td>
+			    <b>{trans("City:")}</b>
+			</td>
+			<td width="99%" nowrap align="top">
+			    {$invoice.zip} {$invoice.city}
+			</td>
+		    </tr>
+		    {if $invoice.ten}
+		    <tr>
+			<td>
+			    <b>{trans("TEN:")}</b>
+			</td>
+			<td width="99%" nowrap align="top">
+			    {$invoice.ten}
+			</td>
+		    </tr>
+		    {/if}
+		    {if $invoice.ssn}
+		    <tr>
+			<td>
+			    <b>{trans("SSN:")}</b>
+			</td>
+			<td width="99%" nowrap align="top">
+			    {$invoice.ssn}
+			</td>
+		    </tr>
+		    {/if}
+		</table>
+	    </td>
+	</tr>
+	
+	{assign var="contents" value=$invoice.content}
+	<tr class="lucid">
+	    <td colspan="2" width="100%">
+		<table width="100%" cellpadding="3">
+		<TR CLASS="DARK">
+		<TD CLASS="fleftu" WIDTH="1%">
+			<B>{trans("No.")}</B>
+		</TD>
+		<TD CLASS="fbt" WIDTH="93%">
+			{trans("Name of product, commodity or service:")}
+		</TD>
+		<TD CLASS="fbt" WIDTH="1%" nowrap>
+			{trans("Product ID:")}
+		</TD>
+		<TD CLASS="fbt" WIDTH="1%" ALIGN="RIGHT">
+			{trans("Amount:")}<BR>
+			{trans("Unit:")}
+		</TD>
+		<TD CLASS="fbt" WIDTH="1%" NOWRAP ALIGN="RIGHT">
+			{trans("Discount:")}
+		</TD>
+		<TD CLASS="fbt" WIDTH="1%" NOWRAP ALIGN="RIGHT">
+			{trans("Net Price:")}<BR>
+			{trans("Net Value:")}
+		</TD>
+		<TD CLASS="fbt" WIDTH="1%" ALIGN="RIGHT">
+			{trans("Tax:")}
+		</TD>
+		<TD CLASS="frightu" WIDTH="1%" NOWRAP ALIGN="RIGHT">
+			{trans("Gross Price:")}<BR>
+			{trans("Gross Value:")}
+		</TD>
+		
+	</TR>
+		    {cycle values="light,lucid" print=false}
+		    {assign var="sum_brutto" value="0"}
+		    {assign var="sum_netto" value="0"}
+		    
+		    {section name="lista" loop=$contents}
+			{assign var='lp' value=$smarty.section.lista.index+1}
+			{math assign="v_netto" equation="round((brutto / (vat / 100 + 1)),2)" brutto=$contents[lista].value vat=$contents[lista].taxvalue}
+			{math assign='w_brutto' equation="x*y" x=$contents[lista].value y=$contents[lista].count}
+			{math assign='w_netto' equation="round((brutto / (vat / 100 + 1)),2)" brutto=$w_brutto vat=$contents[lista].taxvalue}
+			{math assign='sum_brutto' equation="sbrutto + wbrutto" sbrutto=$sum_brutto wbrutto=$w_brutto}
+			{math assign='sum_netto' equation="snetto + wnetto" snetto=$sum_netto wnetto=$w_netto}
+			<tr class="{cycle}">
+			    <td width="1%" class="fleft">
+				<B>{$lp}.</B>
+			    </td>
+			    <td width="93%">
+				{$contents[lista].description}
+			    </td>
+			    <td width="1%">
+				{$contents[lista].pkwiu}
+			    </td>
+			    <td width="1%" align="center">
+				{$contents[lista].count}<br>
+				{$contents[lista].content}
+			    </td>
+			    <td width="1%">
+				{if $contents[lista].pdiscount != 0}{$contents[lista].pdiscount|string_format:"%.2f %%"}{else}{if $contents[lista].vdiscount != 0}{$contents[lista].vdiscount|money_format}{/if}{/if}
+			    </td>
+			    <td width="1%" align="right">
+				{$v_netto|money_format}<br>
+				{$w_netto|money_format}
+			    </td>
+			    <td width="1%" align="right">
+				{$contents[lista].taxlabel}
+			    </td>
+			    <td width="1%" align="right" class="fright">
+				{$contents[lista].value|money_format}<br>
+				{$w_brutto|money_format}
+			    </td>
+			</tr>
+		    {sectionelse}
+		    <tr class="lucid">
+			<td colspan="8" align="CENTER" class="fbottomu">
+			    <p>&nbsp;</p>
+			    <p><B>{trans("Invoice have no items.")}</B></p>
+			    <p>&nbsp;</p>
+			</td>
+		    </tr>
+		    {/section}
+		    {if $contents}
+			<tr class="dark">
+			    <td colspan="5" width="97%" align="right" class="fleftu"><b>{trans("Total:")}</b>&nbsp;</td>
+			    <td width="1%" nowrap align="right" class="fbt">{$sum_netto|money_format}</td>
+			    <td width="1%" class="fbt">&nbsp;</td>
+			    <td width="1%" nowrap align="right" class="frightu">{$sum_brutto|money_format}</td>
+			</tr>
+		    {/if}
+		</table>
+	    </td>
+	</tr>
+	
+	<tr class="light"><td colspan="2"></td></tr>
+	
+	<tr class="dark">
+	    <td colspan="2" align="right" class="ftop">
+		<B><a href="javascript: document.invoiceconvert.submit();">{trans('Save')} <img src="img/save.gif"></a></B>
+		<B><a href="?m=invoicelist">{trans('Cancel')} <img src="img/cancel.gif"></a></B>
+	    </td>
+	</tr>
+</table>
+</div>
+</form>
+<script type="text/javascript" language="JavaScript">
+<!--
+    var cal1 = new calendar(document.forms['invoiceconvert'].elements['invoiceconvert[cdate]']);
+    cal1.time_comp = false;
+    var cal2 = new calendar(document.forms['invoiceconvert'].elements['invoiceconvert[sdate]']);
+    cal2.time_comp = false;
+//-->
+</script>

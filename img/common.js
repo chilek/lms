@@ -113,6 +113,11 @@ function locationchoosewin(varname, formname, city, street)
 	return openSelectWindow('?m=chooselocation&name='+varname+'&form='+formname+'&city='+city+'&street='+street,'chooselocation',350,200,'true');
 }
 
+function invoiceconvertwin(varname, docid, parent)
+{
+	return openSelectWindow('?m=invoiceconvert&name=' + varname + '&parent=' + parent + '&docid=' + docid,'invoiceconvert',350,300,'true');
+}
+
 function gpscoordschoosewin(formfield1, formfield2)
 {
 	return openSelectWindow2('?m=choosegpscoords', 'choosegpscoords', 450, 300, 'true', formfield1, formfield2);

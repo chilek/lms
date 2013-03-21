@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL, $order, $pagelimit=100, $page=NULL)
+function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL, $order, $pagelimit=100, $page=NULL, $intype=DOC_INVOICE)
 {
 	global $DB;
 	
@@ -94,7 +94,7 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL,
 		}
 	}
 
-	if($hideclosed)
+	if($hideclosed || $intype == DOC_INVOICE_PRO)
 		$where .= ' AND closed = 0';
 
 	if($res = $DB->Exec('SELECT d.id AS id, number, cdate, type,
@@ -116,7 +116,7 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL,
 				WHERE e.userid = lms_current_user()
 				) e ON (e.customerid = d.customerid) 
 			WHERE e.customerid IS NULL AND 
-				(type = '.DOC_CNOTE.(($cat != 'cnotes') ? ' OR type = '.DOC_INVOICE : '').')'
+				(type = '.DOC_CNOTE.(($cat != 'cnotes') ? ' OR type = '.$intype : '').')'
 			.$where
 			.(!empty($group['group']) ?
 			            ' AND '.(!empty($group['exclude']) ? 'NOT' : '').' EXISTS (
@@ -210,6 +210,16 @@ if(isset($_POST['group'])) {
 $SESSION->save('ilg', $g);
 $SESSION->save('ilge', $ge);
 
+if (isset($_GET['proforma'])) $_POST['intype'] = DOC_INVOICE_PRO;
+
+if (isset($_POST['intype'])) 
+    $intype = $_POST['intype'];
+else 
+    $SESSION->restore('ilintype',$intype);
+if (empty($intype)) $intype = DOC_INVOICE;
+$SESSION->save('ilintype',$intype);
+$listdata['intype'] = $intype;
+
 if($c == 'cdate' && $s && preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $s))
 {
 	list($year, $month, $day) = explode('/', $s);
@@ -224,8 +234,9 @@ elseif($c == 'month' && $s && preg_match('/^[0-9]{4}\/[0-9]{2}$/', $s))
 $pagelimit = $CONFIG['phpui']['invoicelist_pagelimit'];
 $page = !isset($_GET['page']) ? 0 : intval($_GET['page']);
 
-$invoicelist = GetInvoicesList($s, $c, array('group' => $g, 'exclude'=> $ge), $h, $o, $pagelimit, $page);
+$invoicelist = GetInvoicesList($s, $c, array('group' => $g, 'exclude'=> $ge), $h, $o, $pagelimit, $page, $intype);
 
+$SESSION->restore('ilintype', $listdata['intype']);
 $SESSION->restore('ilc', $listdata['cat']);
 $SESSION->restore('ils', $listdata['search']);
 $SESSION->restore('ilg', $listdata['group']);

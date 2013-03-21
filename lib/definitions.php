@@ -84,8 +84,8 @@ define('DOC_SHEET', -5);
 define('DOC_OTHER', -10);
 
 $DOCTYPES = array(
-    DOC_INVOICE 	=>	trans('invoice'),
-    DOC_INVOICE_PRO	=>	trans('pro-forma invoice'),
+    DOC_INVOICE 	=>	trans('Invoice'),
+    DOC_INVOICE_PRO	=>	trans('Pro Forma Invoice'),
     DOC_INVOICE_PURCHASE =>	trans('purchase invoice'),
     DOC_RECEIPT 	=>	trans('cash receipt'),
     DOC_CNOTE	    =>	trans('credit note'), // faktura korygujaca

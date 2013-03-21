@@ -287,7 +287,7 @@ if(isset($_POST['assignment']))
 else
 {
 	if (!empty($CONFIG['phpui']['default_assignment_invoice']))
-		$a['invoice'] = true;
+		$a['invoice'] = DOC_INVOICE;
 	if (!empty($CONFIG['phpui']['default_assignment_settlement']))
 		$a['settlement'] = true;
 	if (!empty($CONFIG['phpui']['default_assignment_period']))

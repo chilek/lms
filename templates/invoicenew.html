@@ -94,6 +94,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 {$default_taxrate   = get_conf('phpui.default_taxrate')}
 <FORM NAME="setcustomer" METHOD="POST" ACTION="?m=invoicenew&action=setcustomer">
 <INPUT type="submit" class="hiddenbtn">
+<input type="hidden" name="invoice[type]" value="{$invoice.type}">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="dark">
 		<TD CLASS="fall" WIDTH="100%" COLSPAN="2">

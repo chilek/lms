@@ -78,12 +78,12 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached' && sizeof($_POST['marks']
 {
         $SESSION->restore('rlm', $rlm);
 	$SESSION->remove('rlm');
-
+	
 	if(sizeof($_POST['marks']))
 	        foreach($_POST['marks'] as $id => $mark)
 	                $rlm[$id] = $mark;
 	if(sizeof($rlm))
-		foreach($rlm as $mark)
+		foreach($rlm as $mark) 
 			$ids[] = intval($mark);
 
 	if(empty($ids))

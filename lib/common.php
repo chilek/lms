@@ -545,7 +545,7 @@ if (!function_exists('bcmod'))
 	while ( strlen($x) );
 	    return (int)$mod;
     }
-}					     
+}
 
 function docnumber($number=NULL, $template=NULL, $time=NULL, $ext_num='')
 {

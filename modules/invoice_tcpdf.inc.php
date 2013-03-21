@@ -326,14 +326,21 @@ function invoice_title() {
 	$docnumber = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
 	if (isset($invoice['invoice']))
 		$title = trans('Credit Note No. $a', $docnumber);
-	else
-		$title = trans('Invoice No. $a', $docnumber);
+	else {
+		if ($invoice['type'] == DOC_INVOICE)
+		    $title = trans('Invoice No. $a', $docnumber);
+		else
+		    $title = trans('Pro Forma Invoice No. $a', $docnumber);
+	}
 	$pdf->Write(0, $title, '', 0, 'C', true, 0, false, false, 0);
 
 	if (isset($invoice['invoice'])) {
 		$pdf->SetFont('arial', 'B', 12);
 		$docnumber = docnumber($invoice['invoice']['number'], $invoice['invoice']['template'], $invoice['invoice']['cdate']);
-		$title = trans('for Invoice No. $a', $docnumber);
+		if ($invoice['type'] == DOC_INVOICE)
+		    $title = trans('for Invoice No. $a', $docnumber);
+		else
+		    $title = trans('for Pro Forma Invoice No. $a', $docnumber);
 		$pdf->Write(0, $title, '', 0, 'C', true, 0, false, false, 0);
 	}
 

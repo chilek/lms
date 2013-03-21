@@ -150,14 +150,21 @@ function invoice_title($x,$y)
     $tmp = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
     if(isset($invoice['invoice']))
     	$y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Credit Note No. $a',$tmp)).'</b>');
-    else
-	$y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Invoice No. $a',$tmp)).'</b>');
+    else {
+	if ($invoice['type'] == DOC_INVOICE)
+	    $y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Invoice No. $a',$tmp)).'</b>');
+	else
+	    $y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Pro Forma Invoice No. $a',$tmp)).'</b>');
+    }
     
     if(isset($invoice['invoice']))
     {
 	$font_size = 12; $y += 8;
 	$tmp = docnumber($invoice['invoice']['number'], $invoice['invoice']['template'], $invoice['invoice']['cdate']);
-	$y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('for Invoice No. $a',$tmp)).'</b>');
+	if ($invoice['type'] == DOC_INVOICE)
+	    $y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('for Invoice No. $a',$tmp)).'</b>');
+	else
+	    $y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('for Pro Forma Invoice No. $a',$tmp)).'</b>');
 	$y -= 5;
     }
     

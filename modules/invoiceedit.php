@@ -215,7 +215,7 @@ switch($action)
 			break;
 
 		$SESSION->restore('invoiceid', $invoice['id']);
-		$invoice['type'] = DOC_INVOICE;
+//		$invoice['type'] = DOC_INVOICE;
 
 		$currtime = time();
 		$cdate = $invoice['cdate'] ? $invoice['cdate'] : $currtime;
