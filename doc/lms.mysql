@@ -215,7 +215,7 @@ CREATE TABLE assignments (
   numberplanid int(11) DEFAULT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY customerid REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY numberplainid REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  FOREIGN KEY numberplanid REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
   INDEX tariffid (tariffid),
   INDEX customerid (customerid),
   INDEX numberplanid (numberplanid),
