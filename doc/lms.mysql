@@ -214,11 +214,11 @@ CREATE TABLE assignments (
   paytype smallint DEFAULT NULL,
   numberplanid int(11) DEFAULT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY customerid REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY numberplanid REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
   INDEX tariffid (tariffid),
   INDEX customerid (customerid),
   INDEX numberplanid (numberplanid),
+  FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (numberplanid) REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -405,9 +405,9 @@ CREATE TABLE location_districts (
     ident varchar(8)    NOT NULL, -- TERYT: POW
     stateid int(11)     NOT NULL,  -- TERYT: WOJ
     PRIMARY KEY (id),
-    FOREIGN KEY stateid REFERENCES location_states (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    UNIQUE KEY stateid (stateid, name)
-) ENGINE=INNODB;
+    UNIQUE KEY stateid (stateid, name),
+    FOREIGN KEY (stateid) REFERENCES location_states (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -420,8 +420,8 @@ CREATE TABLE location_boroughs (
     districtid int(11)  NOT NULL,
     type smallint       NOT NULL, -- TERYT: RODZ
     PRIMARY KEY (id),
-    FOREIGN KEY districtid REFERENCES location_districts (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    UNIQUE KEY districtid (districtid, name, type)
+    UNIQUE KEY districtid (districtid, name, type),
+    FOREIGN KEY (districtid) REFERENCES location_districts (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=INNODB;
 
 # --------------------------------------------------------
@@ -435,9 +435,9 @@ CREATE TABLE location_cities (
     cityid int(11)      DEFAULT NULL,
     boroughid int(11)   DEFAULT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY boroughid REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE,
     INDEX cityid (cityid),
-    INDEX boroughid (boroughid, name)
+    INDEX boroughid (boroughid, name),
+    FOREIGN KEY (boroughid) REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=INNODB;
 
 # --------------------------------------------------------
@@ -462,9 +462,9 @@ CREATE TABLE location_streets (
     typeid int(11)      DEFAULT NULL,
     cityid int(11)      NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY typeid REFERENCES location_street_types (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    FOREIGN KEY cityid REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    UNIQUE (cityid, name, ident)
+    UNIQUE KEY (cityid, name, ident),
+    FOREIGN KEY (typeid) REFERENCES location_street_types (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY (cityid) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=INNODB;
 
 # --------------------------------------------------------
@@ -480,9 +480,9 @@ CREATE TABLE pna (
 	tohouse varchar(10)	DEFAULT NULL,
 	parity smallint		DEFAULT '0' NOT NULL,
 	PRIMARY KEY (id),
-	FOREIGN KEY cityid REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY streetid REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	UNIQUE (zip, cityid, streetid, fromhouse, tohouse, parity)
+	UNIQUE (zip, cityid, streetid, fromhouse, tohouse, parity),
+	FOREIGN KEY (cityid) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (streetid) REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=INNODB;
 
 # --------------------------------------------------------
@@ -565,12 +565,12 @@ CREATE TABLE netdevices (
   longitude decimal(10, 6) DEFAULT NULL,
   latitude decimal(10, 6) DEFAULT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY location_city REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  FOREIGN KEY location_street REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  FOREIGN KEY channelid REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE,
   INDEX channelid (channelid),
   INDEX location_city (location_city, location_street, location_house, location_flat),
-  INDEX location_street (location_street)
+  INDEX location_street (location_street),
+  FOREIGN KEY (location_city) REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  FOREIGN KEY (location_street) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  FOREIGN KEY (channelid) REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -622,11 +622,11 @@ CREATE TABLE networks (
   dhcpend varchar(16) NOT NULL DEFAULT '',
   disabled tinyint(1) NOT NULL DEFAULT '0',
   notes text NOT NULL DEFAULT '',
-  hostid smallint NULL,
+  hostid int(11) DEFAULT NULL,
   PRIMARY KEY  (id),
-  FOREIGN KEY hostid REFERENCES hosts (id) ON DELETE SET NULL ON UPDATE CASCADE,
   UNIQUE KEY name (name),
-  UNIQUE KEY address (address, hostid)
+  UNIQUE KEY address (address, hostid),
+  FOREIGN KEY (hostid) REFERENCES hosts (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -663,15 +663,15 @@ CREATE TABLE nodes (
   longitude decimal(10, 6) DEFAULT NULL,
   latitude decimal(10, 6) DEFAULT NULL,
   PRIMARY KEY  (id),
-  FOREIGN KEY location_city REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  FOREIGN KEY location_street REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
   UNIQUE KEY name (name),
   UNIQUE KEY ipaddr (ipaddr),
   INDEX netdev (netdev),
   INDEX ownerid (ownerid),
   INDEX ipaddr_pub (ipaddr_pub),
   INDEX location_city (location_city, location_street, location_house, location_flat),
-  INDEX location_street (location_street)
+  INDEX location_street (location_street),
+  FOREIGN KEY (location_city) REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  FOREIGN KEY (location_street) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -685,7 +685,7 @@ CREATE TABLE nodelocks (
 	fromsec int(11)		DEFAULT 0 NOT NULL,
 	tosec int(11)		DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
-	FOREIGN KEY nodeid REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=INNODB;
 
 # --------------------------------------------------------
@@ -697,8 +697,8 @@ CREATE TABLE macs (
   mac varchar(17)   NOT NULL DEFAULT '',
   nodeid int(11)    NOT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  UNIQUE KEY mac (mac, nodeid)
+  UNIQUE KEY mac (mac, nodeid),
+  FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -735,10 +735,10 @@ CREATE TABLE nodeassignments (
     nodeid int(11) NOT NULL,
     assignmentid int(11) NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (assignmentid) REFERENCES assignments (id) ON DELETE CASCADE ON UPDATE CASCADE,
     UNIQUE KEY nodeid (nodeid, assignmentid),
-    INDEX assignmentid (assignmentid)
+    INDEX assignmentid (assignmentid),
+    FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (assignmentid) REFERENCES assignments (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 
@@ -754,19 +754,44 @@ CREATE TABLE payments (
   period smallint NOT NULL DEFAULT '0',
   at smallint NOT NULL DEFAULT '0',
   description text NOT NULL,
-  PRIMARY KEY  (id)
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
-# Structure of table  rtattachments
+# Structure of table  rtqueues
 #
-CREATE TABLE rtattachments (
-  messageid int(11)     NOT NULL,
-  filename varchar(255) NOT NULL DEFAULT '',
-  contenttype varchar(255) NOT NULL DEFAULT '',
-  FOREIGN KEY messageid REFERENCES rtmessages (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  INDEX messageid (messageid)
+CREATE TABLE rtqueues (
+  id int(11) NOT NULL auto_increment,
+  name varchar(255) NOT NULL DEFAULT '',
+  email varchar(255) NOT NULL DEFAULT '',
+  description text NOT NULL DEFAULT '',
+  PRIMARY KEY (id),
+  UNIQUE KEY name (name)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table  rttickets
+#
+CREATE TABLE rttickets (
+  id int(11) NOT NULL auto_increment,
+  queueid int(11) NOT NULL,
+  requestor varchar(255) NOT NULL DEFAULT '',
+  subject varchar(255) NOT NULL DEFAULT '',
+  state tinyint(4) NOT NULL DEFAULT '0',
+  cause tinyint(4) NOT NULL DEFAULT '0',
+  owner int(11) NOT NULL DEFAULT '0',
+  customerid int(11) NOT NULL DEFAULT '0',
+  creatorid int(11) NOT NULL DEFAULT '0',
+  createtime int(11) NOT NULL DEFAULT '0',
+  resolvetime int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (id),
+  INDEX queueid (queueid),
+  INDEX customerid (customerid),
+  INDEX creatorid (creatorid),
+  INDEX createtime (createtime),
+  FOREIGN KEY (queueid) REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -787,8 +812,20 @@ CREATE TABLE rtmessages (
   body mediumtext NOT NULL DEFAULT '',
   createtime int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY  (id),
-  FOREIGN KEY ticketid REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  INDEX ticketid (ticketid)
+  INDEX ticketid (ticketid),
+  FOREIGN KEY (ticketid) REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table  rtattachments
+#
+CREATE TABLE rtattachments (
+  messageid int(11)     NOT NULL,
+  filename varchar(255) NOT NULL DEFAULT '',
+  contenttype varchar(255) NOT NULL DEFAULT '',
+  INDEX messageid (messageid),
+  FOREIGN KEY (messageid) REFERENCES rtmessages (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -802,47 +839,10 @@ CREATE TABLE rtnotes (
 	body text            NOT NULL DEFAULT '',
 	createtime int(11)   NOT NULL DEFAULT '0',
 	PRIMARY KEY (id),
-	FOREIGN KEY ticketid REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY userid REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	INDEX ticketid (ticketid),
-	INDEX userid (userid)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table  rtqueues
-#
-CREATE TABLE rtqueues (
-  id int(11) NOT NULL auto_increment,
-  name varchar(255) NOT NULL DEFAULT '',
-  email varchar(255) NOT NULL DEFAULT '',
-  description text NOT NULL DEFAULT '',
-  PRIMARY KEY  (id),
-  UNIQUE KEY name (name)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table  rttickets
-#
-CREATE TABLE rttickets (
-  id int(11) NOT NULL auto_increment,
-  queueid int(11) NOT NULL,
-  requestor varchar(255) NOT NULL DEFAULT '',
-  subject varchar(255) NOT NULL DEFAULT '',
-  state tinyint(4) NOT NULL DEFAULT '0',
-  cause tinyint(4) NOT NULL DEFAULT '0',
-  owner int(11) NOT NULL DEFAULT '0',
-  customerid int(11) NOT NULL DEFAULT '0',
-  creatorid int(11) NOT NULL DEFAULT '0',
-  createtime int(11) NOT NULL DEFAULT '0',
-  resolvetime int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY  (id),
-  FOREIGN KEY queueid REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  INDEX queueid (queueid),
-  INDEX customerid (customerid),
-  INDEX creatorid (creatorid),
-  INDEX createtime (createtime)
+	INDEX userid (userid),
+	FOREIGN KEY (ticketid) REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -855,9 +855,9 @@ CREATE TABLE rtrights (
     queueid INT(11) NOT NULL,
     rights INT(11) DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY userid REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY queueid REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    UNIQUE KEY (userid, queueid)
+    UNIQUE KEY (userid, queueid),
+    FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (queueid) REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -881,9 +881,9 @@ CREATE TABLE rtcategoryusers (
 	userid int(11)		NOT NULL,
 	categoryid int(11)	NOT NULL,
 	PRIMARY KEY (id),
-	FOREIGN KEY userid REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY categoryid REFERENCES rtcategories (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	UNIQUE KEY userid (userid, categoryid)
+	UNIQUE KEY userid (userid, categoryid),
+	FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (categoryid) REFERENCES rtcategories (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=INNODB;
 
 # --------------------------------------------------------
@@ -895,9 +895,9 @@ CREATE TABLE rtticketcategories (
 	ticketid int(11)	NOT NULL,
 	categoryid int(11)	NOT NULL,
 	PRIMARY KEY (id),
-	FOREIGN KEY ticketid REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY categoryid REFERENCES rtcategories (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	UNIQUE KEY ticketid (ticketid, categoryid)
+	UNIQUE KEY ticketid (ticketid, categoryid),
+	FOREIGN KEY (ticketid) REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (categoryid) REFERENCES rtcategories (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=INNODB;
 
 # --------------------------------------------------------
@@ -1007,10 +1007,10 @@ CREATE TABLE promotionschemas (
     continuation tinyint(1) DEFAULT NULL,
     ctariffid int(11) DEFAULT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY promotionid REFERENCES promotions (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY ctariffid REFERENCES tariffs (id) ON DELETE RESTRICT ON UPDATE CASCADE,
     UNIQUE KEY promotionid (promotionid, name),
-    INDEX ctariffid (ctariffid)
+    INDEX ctariffid (ctariffid),
+    FOREIGN KEY (promotionid) REFERENCES promotions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (ctariffid) REFERENCES tariffs (id) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1023,10 +1023,10 @@ CREATE TABLE promotionassignments (
     tariffid int(11)    DEFAULT NULL,
     data text           DEFAULT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY promotionschemaid REFERENCES promotionschemas (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY tariffid REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
     UNIQUE KEY promotionschemaid (promotionschemaid, tariffid),
-    INDEX tariffid (tariffid)
+    INDEX tariffid (tariffid),
+    FOREIGN KEY (promotionschemaid) REFERENCES promotionschemas (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (tariffid) REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1063,10 +1063,10 @@ CREATE TABLE customerassignments (
   customergroupid int(11) NOT NULL,
   customerid int(11) NOT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY customergroupid REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY customerid REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
   UNIQUE KEY customerassignment (customergroupid, customerid),
-  INDEX customerid (customerid)
+  INDEX customerid (customerid),
+  FOREIGN KEY (customergroupid) REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1227,9 +1227,9 @@ CREATE TABLE sourcefiles (
     name	varchar(255)    NOT NULL,
     idate	int(11)	        NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY userid REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
     UNIQUE KEY idate (idate, name),
-    INDEX userid (userid)
+    INDEX userid (userid),
+    FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1248,13 +1248,13 @@ CREATE TABLE cashimport (
     sourceid int(11) DEFAULT NULL,
     sourcefileid int(11) DEFAULT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY customerid REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    FOREIGN KEY sourceid REFERENCES cashsources (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    FOREIGN KEY sourcefileid REFERENCES sourcefiles (id) ON DELETE SET NULL ON UPDATE CASCADE,
     INDEX hash (hash),
     INDEX customerid (customerid),
     INDEX sourceid (sourceid),
-    INDEX sourcefileid (sourcefileid)
+    INDEX sourcefileid (sourcefileid),
+    FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY (sourceid) REFERENCES cashsources (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY (sourcefileid) REFERENCES sourcefiles (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1355,8 +1355,8 @@ CREATE TABLE imessengers (
 	uid varchar(32) 	NOT NULL DEFAULT '',
 	type tinyint(1) 	NOT NULL DEFAULT '0',
 	PRIMARY KEY (id),
-	FOREIGN KEY customerid REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	INDEX customerid (customerid)
+	INDEX customerid (customerid),
+	FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1370,9 +1370,9 @@ CREATE TABLE customercontacts (
 	phone 		varchar(255) 	NOT NULL DEFAULT '',
 	type        smallint        DEFAULT NULL,
 	PRIMARY KEY (id),
-	FOREIGN KEY customerid REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	INDEX customerid (customerid),
-	INDEX phone (phone)
+	INDEX phone (phone),
+	FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1447,9 +1447,9 @@ CREATE TABLE excludedgroups (
 	customergroupid int(11) 	NOT NULL,
 	userid 		int(11) 	NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
-	FOREIGN KEY customergroupid REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	UNIQUE KEY userid (userid, customergroupid),
-	KEY customergroupid (customergroupid)
+	KEY customergroupid (customergroupid),
+	FOREIGN KEY (customergroupid) REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1524,8 +1524,8 @@ CREATE TABLE managementurls (
 	netdevid int(11)	NOT NULL,
 	url text		DEFAULT '' NOT NULL,
 	comment varchar(100)	DEFAULT NULL,
-	PRIMARY KEY (id)
-	FOREIGN KEY netdevid REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id),
+	FOREIGN KEY (netdevid) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=INNODB;
 
 # --------------------------------------------------------
@@ -1542,9 +1542,9 @@ CREATE TABLE records (
   prio            INT(11) DEFAULT NULL,
   change_date     INT(11) DEFAULT NULL,
   PRIMARY KEY(id),
-  FOREIGN KEY (domain_id) REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE,
   INDEX domain_id (domain_id),
-  INDEX name_type (name, type, domain_id)
+  INDEX name_type (name, type, domain_id),
+  FOREIGN KEY (domain_id) REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------

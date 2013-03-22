@@ -24,8 +24,8 @@
 $DB->BeginTrans();
 
 $DB->Execute("ALTER TABLE networks
-				ADD COLUMN hostid smallint NULL 
-				REFERENCES hosts (id) ON DELETE SET NULL ON UPDATE CASCADE");
+				ADD COLUMN hostid int(11) NULL 
+				FOREIGN KEY (hostid) REFERENCES hosts (id) ON DELETE SET NULL ON UPDATE CASCADE");
 
 $DB->Execute("ALTER TABLE networks DROP INDEX address,
 				ADD UNIQUE address(address, hostid)");
