@@ -306,7 +306,7 @@ CREATE TABLE networks (
 	dhcpend varchar(16) 	DEFAULT '' NOT NULL,
 	disabled smallint 	DEFAULT 0 NOT NULL,
 	notes text		DEFAULT '' NOT NULL,
-	hostid smallint NULL
+	hostid integer NULL
 		REFERENCES hosts (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id),
 	UNIQUE (name),
