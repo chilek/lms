@@ -269,6 +269,22 @@ CREATE TABLE pna (
 	UNIQUE (zip, cityid, streetid, fromhouse, tohouse, parity)
 );
 
+/* ---------------------------------------------------
+ Structure of table "hosts"
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS hosts_id_seq;
+CREATE SEQUENCE hosts_id_seq;
+DROP TABLE IF EXISTS hosts CASCADE;
+CREATE TABLE hosts (
+    id integer DEFAULT nextval('hosts_id_seq'::text) NOT NULL,
+    name varchar(255) 		DEFAULT '' NOT NULL,
+    description text 		DEFAULT '' NOT NULL,
+    lastreload integer 		DEFAULT 0 NOT NULL,
+    reload smallint 		DEFAULT 0 NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (name)
+);
+
 /* -------------------------------------------------------- 
   Structure of table "networks"
 -------------------------------------------------------- */
@@ -290,10 +306,13 @@ CREATE TABLE networks (
 	dhcpend varchar(16) 	DEFAULT '' NOT NULL,
 	disabled smallint 	DEFAULT 0 NOT NULL,
 	notes text		DEFAULT '' NOT NULL,
+	hostid smallint NULL
+		REFERENCES hosts (id),
 	PRIMARY KEY (id),
 	UNIQUE (name),
-	UNIQUE (address)
+	CONSTRAINT networks_address_key UNIQUE (address, hostid)
 );
+CREATE INDEX networks_hostid_idx ON networks (hostid)
 
 /* -------------------------------------------------------- 
   Structure of table "nodes"
@@ -1191,22 +1210,6 @@ CREATE INDEX cashimport_sourcefileid_idx ON cashimport (sourcefileid);
 CREATE INDEX cashimport_sourceid_idx ON cashimport (sourceid);
 
 /* ---------------------------------------------------
- Structure of table "hosts"
-------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS hosts_id_seq;
-CREATE SEQUENCE hosts_id_seq;
-DROP TABLE IF EXISTS hosts CASCADE;
-CREATE TABLE hosts (
-    id integer DEFAULT nextval('hosts_id_seq'::text) NOT NULL,
-    name varchar(255) 		DEFAULT '' NOT NULL,
-    description text 		DEFAULT '' NOT NULL,
-    lastreload integer 		DEFAULT 0 NOT NULL,
-    reload smallint 		DEFAULT 0 NOT NULL,
-    PRIMARY KEY (id),
-    UNIQUE (name)
-);
-
-/* ---------------------------------------------------
  Structure of table "daemoninstances" (lmsd config)
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS daemoninstances_id_seq;
@@ -1866,4 +1869,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2013031800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2013032100');
