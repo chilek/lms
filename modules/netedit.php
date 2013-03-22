@@ -174,6 +174,7 @@ if(isset($_POST['networkdata']))
 	$network['dns'] = $networkdata['dns'];
 	$network['dns2'] = $networkdata['dns2'];
 	$network['notes'] = $networkdata['notes'];
+	$network['hostid'] = $networkdata['hostid'];
 }
 
 $networks = $LMS->GetNetworks();
@@ -185,6 +186,7 @@ $SMARTY->assign('network',$network);
 $SMARTY->assign('networks',$networks);
 $SMARTY->assign('netlistsize',sizeof($networks));
 $SMARTY->assign('prefixlist', $LMS->GetPrefixList());
+$SMARTY->assign('hostlist', $LMS->DB->GetAll("SELECT id, name FROM hosts ORDER BY name"));
 $SMARTY->assign('error',$error);
 $SMARTY->display('netinfo.html');
 
