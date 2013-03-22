@@ -624,6 +624,7 @@ CREATE TABLE networks (
   notes text NOT NULL DEFAULT '',
   hostid smallint NULL,
   PRIMARY KEY  (id),
+  FOREIGN KEY hostid REFERENCES hosts (id) ON DELETE SET NULL ON UPDATE CASCADE,
   UNIQUE KEY name (name),
   UNIQUE KEY address (address, hostid)
 ) ENGINE=InnoDB;

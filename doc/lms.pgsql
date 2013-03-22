@@ -307,7 +307,7 @@ CREATE TABLE networks (
 	disabled smallint 	DEFAULT 0 NOT NULL,
 	notes text		DEFAULT '' NOT NULL,
 	hostid smallint NULL
-		REFERENCES hosts (id),
+		REFERENCES hosts (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id),
 	UNIQUE (name),
 	CONSTRAINT networks_address_key UNIQUE (address, hostid)
