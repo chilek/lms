@@ -165,7 +165,7 @@ class LMS {
 			// Note: add all referenced tables to the list
 			$order = array('users', 'customers', 'customergroups', 'nodes', 'numberplans',
 					'assignments', 'rtqueues', 'rttickets', 'rtmessages', 'domains',
-					'cashsources', 'sourcefiles', 'ewx_channels');
+					'cashsources', 'sourcefiles', 'ewx_channels', 'hosts');
 
 			foreach ($tables as $idx => $table) {
 				if (in_array($table, $order)) {
@@ -2857,7 +2857,7 @@ class LMS {
 	function NetworkUpdate($networkdata) {
 		return $this->DB->Execute('UPDATE networks SET name=?, address=inet_aton(?), 
 			mask=?, interface=?, gateway=?, dns=?, dns2=?, domain=?, wins=?, 
-			dhcpstart=?, dhcpend=?, notes=? WHERE id=?', array(strtoupper($networkdata['name']),
+			dhcpstart=?, dhcpend=?, notes=?, hostid=? WHERE id=?', array(strtoupper($networkdata['name']),
 						$networkdata['address'],
 						$networkdata['mask'],
 						strtolower($networkdata['interface']),
@@ -2869,6 +2869,7 @@ class LMS {
 						$networkdata['dhcpstart'],
 						$networkdata['dhcpend'],
 						$networkdata['notes'],
+						$networkdata['hostid'],
 						$networkdata['id']
 				));
 	}
@@ -2956,7 +2957,7 @@ class LMS {
 	function GetNetworkRecord($id, $page = 0, $plimit = 4294967296, $firstfree = false) {
 		$network = $this->DB->GetRow('SELECT id, name, inet_ntoa(address) AS address, 
 				address AS addresslong, mask, interface, gateway, dns, dns2, 
-				domain, wins, dhcpstart, dhcpend, 
+				domain, wins, dhcpstart, dhcpend, hostid,
 				mask2prefix(inet_aton(mask)) AS prefix,
 				inet_ntoa(broadcast(address, inet_aton(mask))) AS broadcast, 
 				notes 
@@ -2970,6 +2971,8 @@ class LMS {
 				FROM nodes WHERE ipaddr_pub > ? AND ipaddr_pub < ?', 'ipaddr', array($network['addresslong'], ip_long($network['broadcast']),
 				$network['addresslong'], ip_long($network['broadcast'])));
 
+		if($network['hostid'])
+			$network['hostname'] = $this->DB->GetOne('SELECT name FROM hosts WHERE id=?', array($network['hostid']));
 		$network['size'] = pow(2, 32 - $network['prefix']);
 		$network['assigned'] = sizeof($nodes);
 		$network['free'] = $network['size'] - $network['assigned'] - 2;
