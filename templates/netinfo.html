@@ -116,6 +116,26 @@
 			{/if}
 		</TD>
 	</TR>
+	{if $network.hostid || $unlockedit}
+	<tr class="light"> 
+        <td width="2%" class="fleft">
+            <nobr><img src="img/host.gif" alt="Host"> <strong>{trans("Host:")}</strong></nobr>
+        </td>
+        <td width="48%">
+            {if $unlockedit}
+            <select size="1" title="Host" name="networkdata[hostid]">
+                <option value=""></option>
+                {section name=hostlist loop=$hostlist}
+                <option value="{$hostlist[hostlist].id}"{if $hostlist[hostlist].id eq $network.hostid} SELECTED{/if}>{$hostlist[hostlist].name}</option>
+                {/section}
+            </select>
+            {else}
+            {$network.hostname}
+            {/if}
+        </td>
+        <td width="50%" class="fright" colspan="2"></td>
+    </tr>
+    {/if}
 	{if $network.notes || $unlockedit}
 	<TR class="light">
 		<TD width="50%" class="fleft" colspan="2">
