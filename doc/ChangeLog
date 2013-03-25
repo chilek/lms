@@ -152,7 +152,8 @@ version ? (????-??-??):
   - uke siis reports adjusted to version 3 [chilan]
   - added possibility to disable the tariffs [red]
   - mysql schema fixes [LoLe/chilan]
-
+  - it's possible to add new config sections from ui [chilan]
+ 
 version 1.11.13 Dira (2011-04-07)
 
   - contrib/cutoff2: Fixed "Column 'period' in where clause is ambiguous" [alec]

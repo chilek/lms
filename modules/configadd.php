@@ -47,9 +47,12 @@ if(sizeof($config))
 	elseif($LMS->GetConfigOptionId($config['name'], $config['section']))
 		$error['name'] = trans('Option exists!'); 
 
-	if(!preg_match('/^[a-z0-9_-]+$/', $config['section']) && $config['section']!='')
-    		$error['section'] = trans('Section name contains forbidden characters!');
-	    
+	$section = empty($config['section']) ? $config['newsection'] : $config['section'];
+	if (empty($section))
+		$error['newsection'] = trans('Section name can\'t be empty!');
+	elseif (!preg_match('/^[a-z0-9_-]+$/', $section))
+		$error[empty($config['section']) ? 'newsection' : 'section'] = trans('Section name contains forbidden characters!');
+
 	if($config['value']=='')
 		$error['value'] = trans('Option with empty value not allowed!');
 	elseif($msg = $LMS->CheckOption($config['name'], $config['value']))
@@ -60,7 +63,7 @@ if(sizeof($config))
 	if(!$error)
 	{
 		$DB->Execute('INSERT INTO uiconfig (section, var, value, description, disabled) VALUES (?, ?, ?, ?, ?)', 
-				array(	$config['section'], 
+				array($section, 
 					$config['name'], 
 					$config['value'],
 					$config['description'],
@@ -83,6 +86,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 if(isset($_GET['section']))
 	$config['section'] = $_GET['section'];
 
+$SMARTY->assign('sections', $LMS->GetConfigSections());
 $SMARTY->assign('error', $error);
 $SMARTY->assign('config', $config);
 $SMARTY->display('configadd.html');

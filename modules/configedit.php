@@ -96,6 +96,7 @@ $layout['pagetitle'] = trans('Option Edit: $a',$option);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
+$SMARTY->assign('sections', $LMS->GetConfigSections());
 $SMARTY->assign('error', $error);
 $SMARTY->assign('config', $config);
 $SMARTY->display('configedit.html');

@@ -4674,6 +4674,13 @@ class LMS {
 		return $result;
 	}
 
+	function GetConfigSections() {
+		$sections = $this->DB->GetCol('SELECT DISTINCT section FROM uiconfig ORDER BY section');
+		$sections = array_unique(array_merge($sections,
+			array('phpui', 'finances', 'invoices', 'receipts', 'mail', 'sms', 'zones', 'tarifftypes')));
+		sort($sections);
+		return $sections;
+	}
 }
 
 ?>

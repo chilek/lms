@@ -2631,4 +2631,8 @@ $_LANG['Last modified by:'] = 'Ostatnio zmodyfikował:';
 
 $_LANG['current:'] = 'aktualnie:';
 
+$_LANG['- new section -'] = '- nowa sekcja -';
+$_LANG['Enter section name'] = 'Podaj nazwę sekcji';
+$_LANG['Section name can\'t be empty'] = 'Nazwa sekcji nie może być pusta!';
+
 ?>

@@ -15,14 +15,9 @@
 			<INPUT type="text" name="config[var]" value="{$config.var}" {tip text="Enter option name" trigger="var" bold=1}>&nbsp;
 			<B>{trans("Section:")}</B>
 			<SELECT size="1" name="config[section]" {tip text="Select section" trigger="section"}>
-			    <OPTION value="phpui"{if $config.section eq "phpui"} SELECTED{/if}>phpui</OPTION>
-			    <OPTION value="finances"{if $config.section eq "finances"} SELECTED{/if}>finances</OPTION>
-			    <OPTION value="invoices"{if $config.section eq "invoices"} SELECTED{/if}>invoices</OPTION>
-			    <OPTION value="receipts"{if $config.section eq "receipts"} SELECTED{/if}>receipts</OPTION>
-			    <OPTION value="mail"{if $config.section eq "mail"} SELECTED{/if}>mail</OPTION>
-			    <OPTION value="sms"{if $config.section eq "sms"} SELECTED{/if}>sms</OPTION>
-			    <OPTION value="zones" {if $config.section eq "zones"}SELECTED{/if}>zones</OPTION>
-			    <OPTION value="tarifftypes" {if $config.section eq "tarifftypes"}SELECTED{/if}>tarifftypes</OPTION>
+				{foreach $sections as $section}
+				<OPTION value="{$section}"{if $config.section eq $section} selected{/if}>{$section}</OPTION>
+				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>

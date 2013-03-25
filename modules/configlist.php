@@ -579,6 +579,7 @@ $SESSION->save('conlp', $page);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
+$SMARTY->assign('sections', $LMS->GetConfigSections());
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('page', $page);
 $SMARTY->assign('start', $start);

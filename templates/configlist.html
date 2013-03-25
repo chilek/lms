@@ -26,14 +26,9 @@
 				<span class="bold">{trans("Filter:")} </span> {trans("Section:")}
 				<SELECT size="1" name="s" OnChange="document.filter.submit();">
 					<OPTION value=""{if !$listdata.section} SELECTED{/if}>{trans("- all -")}</OPTION>
-					<OPTION value="phpui"{if $listdata.section eq "phpui"} SELECTED{/if}>phpui</OPTION>
-					<OPTION value="invoices"{if $listdata.section eq "invoices"} SELECTED{/if}>invoices</OPTION>
-					<OPTION value="receipts"{if $listdata.section eq "receipts"} SELECTED{/if}>receipts</OPTION>
-					<OPTION value="finances"{if $listdata.section eq "finances"} SELECTED{/if}>finances</OPTION>
-					<OPTION value="mail"{if $listdata.section eq "mail"} SELECTED{/if}>mail</OPTION>
-					<OPTION value="sms"{if $listdata.section eq "sms"} SELECTED{/if}>sms</OPTION>
-					<OPTION value="zones"{if $listdata.section eq "zones"} SELECTED{/if}>zones</OPTION>
-					<OPTION value="tarifftypes"{if $listdata.section eq "tarifftypes"} SELECTED{/if}>tarifftypes</OPTION>
+					{foreach $sections as $section}
+					<OPTION value="{$section}"{if $listdata.section eq $section} selected{/if}>{$section}</OPTION>
+					{/foreach}
 				</SELECT>
 				{trans("Option")}:
 				<INPUT type="text" name="n" value="{$listdata.search}" size="15" {tip text="Enter option name"}>
