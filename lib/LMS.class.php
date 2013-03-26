@@ -3953,15 +3953,15 @@ class LMS {
 			$buf = $body;
 		}
 
-		$error = $mail_object = & Mail::factory('smtp', $params);
+		$error = $mail_object = @Mail::factory('smtp', $params);
 		//if (PEAR::isError($error))
-		if (is_a($error, 'PEAR_Error'))
-			return $error->getMessage();
+		if (is_a(@$error, 'PEAR_Error'))
+			return @$error->getMessage();
 
-		$error = $mail_object->send($recipients, $headers, $buf);
+		@$error = @$mail_object->send($recipients, $headers, $buf);
 		//if (PEAR::isError($error))
-		if (is_a($error, 'PEAR_Error'))
-			return $error->getMessage();
+		if (is_a(@$error, 'PEAR_Error'))
+			return @$error->getMessage();
 		else
 			return MSG_SENT;
 	}
