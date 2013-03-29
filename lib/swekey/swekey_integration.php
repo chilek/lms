@@ -430,7 +430,7 @@ class SwekeyIntegration {
 				$result = array();
 				if (!mb_ereg('^[A-F0-9]{32}$', $params['swekey_id'])) {
 					$result['error'] = "Invalid swekey id";
-				} else if ($this->is_user_logged) {
+				} else if (!$this->is_user_logged) {
 					$result['error'] = "No user logged";
 				} else {
 					$error = $this->AttachSwekeyToCurrentUser($params['swekey_id']);
