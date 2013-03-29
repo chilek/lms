@@ -15,6 +15,8 @@ class LmsSwekeyIntegration extends SwekeyIntegration {
 		$this->show_debug_info = true;
 		$this->swekey_dir_url = 'img/swekey/';
 		$this->input_names = array("loginform[login]");
+		// w obiekcie utworzonym przez swekey_json_server.php nie ma obiektu $AUTH wiec nie mamy ustawionego
+		// is_user_logged = true
 		$this->is_user_logged = !empty($this->AUTH->id);
 
 		if ($this->is_user_logged) {
@@ -26,10 +28,13 @@ class LmsSwekeyIntegration extends SwekeyIntegration {
 	}
 
 	function GetUserNameFromSwekeyId($swekey_id) {
+		// w obiekcie utworzonym przez swekey_json_server.php nie ma obiektu $DB wiec nie mozemy polaczyc sie z baza
 		return $this->DB->GetOne('SELECT login FROM users WHERE swekey_id = ?', array($swekey_id));
 	}
 
 	function AttachSwekeyToCurrentUser($swekey_id) {
+		// w obiekcie utworzonym przez swekey_json_server.php nie ma obiektow $DB i $AUTH
+		// i wywala bledem
 		if (!$DB->Execute('UPDATE users SET swekey_id = ? WHERE id = ?', array($swekey_id, $this->AUTH->id)))
 			return "Failed to attach the user";
 	}

@@ -12,6 +12,7 @@ include_once(dirname(__FILE__) . '/../../../lib/swekey/lms_integration.php');
 if (session_id() == '')
 	session_start();
 
+// w tym miejscu niestety nie istnieja zmienne $DB, $AUTH, $LMS
 $SWEKEY = new LmsSwekeyIntegration($DB, $AUTH, $LMS);
 $result = $SWEKEY->AjaxHandler($_POST);
 
