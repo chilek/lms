@@ -42,7 +42,7 @@ class LmsSwekeyIntegration extends SwekeyIntegration {
 	function AjaxHandler($params) {
 		switch ($params['action']) {
 			case 'attach_swekey':
-				if (!empty($params['lms_user_id']) && is_int($params['lms_user_id'])) {
+				if (!empty($params['lms_user_id'])) {
 					$this->AUTH->id = intval($params['lms_user_id']);
 					$this->is_user_logged = true;
 				}
