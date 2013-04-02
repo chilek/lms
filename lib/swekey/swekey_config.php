@@ -8,7 +8,7 @@ $config = array(
 	'allow_mobile_emulation' => false,
 	'allow_when_no_network' => false,
 	'allow_disabled' => true,
-	'user_managment' => true,
+	'user_managment' => false,
 	'logo_xoffset' => '1px',
 	'logo_yoffset' => '-2px',
 );

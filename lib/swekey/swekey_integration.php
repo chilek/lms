@@ -92,7 +92,7 @@ class SwekeyIntegration {
 		return $res;
 	}
 
-	function GetIntegrationScript() {
+	function GetIntegrationScript($uid) {
 		$config = $this->GetConfig();
 
 		$require_js_includes = false;
@@ -144,7 +144,7 @@ class SwekeyIntegration {
 					$js .= "\t" . 'swekey_integration_params.' . $locstr . '_str = "' . $str . '";' . "\n";
 			}
 
-			$js .= "\t" . 'swekey_propose_to_attach();' . "\n";
+			$js .= "\t" . 'swekey_propose_to_attach(' . $uid . ');' . "\n";
 		}
 
 		// We are not logged

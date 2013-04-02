@@ -1,5 +1,5 @@
 var swekey_integration_params = {
-	//strings
+	// strings
 	'logo_gray_str'		: "No swekey plugged",
 	'logo_orange_str'	: "Authenticating...",
 	'logo_red_str'		: "Swekey authentication failed",
@@ -46,7 +46,7 @@ function cb_ajax_test(result) {
 }
 
 function test_swekey_ajax() {
-	swekey_ajax_caller({'action':'ajax_test' ,'result':'success', 'session':123456789, 'arr':[1,2]}, cb_ajax_test);
+	swekey_ajax_caller({'action':'ajax_test', 'result':'success', 'session':123456789, 'arr':[1,2]}, cb_ajax_test);
 }
 
 /////////////////////////////
@@ -263,7 +263,7 @@ function cb_attach_swekey(result) {
 	}
 }
 
-function swekey_propose_to_attach() {
+function swekey_propose_to_attach(uid) {
 	if (isTemporaryPage())
 		return;
 
@@ -274,10 +274,10 @@ function swekey_propose_to_attach() {
 
 		document.cookie = "swekey_proposed=" + id + "; path=/;";
 		if (confirm(swekey_integration_params.attach_ask_str)) {
-			swekey_ajax_caller({'action':'attach_swekey', 'swekey_id':id}, cb_attach_swekey);
+			swekey_ajax_caller({'action':'attach_swekey', 'swekey_id':id, 'lms_user_id':uid}, cb_attach_swekey);
 		}
 	} else {
-		setTimeout("swekey_propose_to_attach()", 2000);
+		setTimeout("swekey_propose_to_attach(uid)", 2000);
 	}
 }
 

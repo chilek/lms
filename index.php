@@ -150,9 +150,11 @@ $LMS->lang = $_language;
 
 // Initialize Swekey class
 
-require_once(LIB_DIR . '/swekey/lms_integration.php');
-$SWEKEY = new LmsSwekeyIntegration($DB, $AUTH, $LMS);
-$SMARTY->assign('lms_swekey', $SWEKEY->GetIntegrationScript());
+if (chkconfig($CONFIG['phpui']['use_swekey'])) {
+	require_once(LIB_DIR . '/swekey/lms_integration.php');
+	$LMS_SWEKEY = new LmsSwekeyIntegration($DB, $AUTH, $LMS);
+	$SMARTY->assign('lms_swekey', $LMS_SWEKEY->GetIntegrationScript($AUTH->id));
+}
 
 // Set some template and layout variables
 

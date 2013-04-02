@@ -2635,4 +2635,6 @@ $_LANG['- new section -'] = '- nowa sekcja -';
 $_LANG['Enter section name'] = 'Podaj nazwę sekcji';
 $_LANG['Section name can\'t be empty'] = 'Nazwa sekcji nie może być pusta!';
 
+$_LANG['You must login with your Swekey'] = 'Aby się zalogować potrzebny jest klucz Swekey';
+
 ?>
