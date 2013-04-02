@@ -54,6 +54,18 @@
 			<INPUT TYPE="TEXT" NAME="userinfo[phone]" VALUE="{$userinfo.phone}" SIZE="40" {tip text="Enter phone number for SMS notification (optional)" trigger="phone"}>
 		</TD>
 	</TR>
+	{if $userinfo.swekey_id}
+	<TR CLASS="LIGHT">
+		<TD CLASS="FLEFT" style="white-space: nowrap;">
+			<IMG SRC="img/swekey/swekey-green-8x16.png"" ALT="">
+		</TD>
+		<TD><span class="bold">{trans("Swekey:")}</span></TD>
+		<TD CLASS="FRIGHT">
+			<INPUT TYPE="HIDDEN" NAME="userinfo[swekey_id]" VALUE="{$userinfo.swekey_id}">
+			{$userinfo.swekey_id}<INPUT TYPE="checkbox" NAME="userinfo[use_swekey]" VALUE="1" ID="swekey"{if $userinfo.swekey_id} checked{/if}><label for="swekey">{trans("Use Swekey")}</label>
+		</TD>
+	</TR>
+	{/if}
 	<TR CLASS="LIGHT">
 		<TD CLASS="FLEFT" style="white-space: nowrap;">
 			<IMG SRC="img/options.gif" ALT="">
