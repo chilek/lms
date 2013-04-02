@@ -25,7 +25,7 @@ $DB->BeginTrans();
 
 $DB->Execute("ALTER TABLE users ADD COLUMN swekey_id varchar(32) DEFAULT NULL;
 	ALTER TABLE users DROP CONSTRAINT users_login_key;
-	ALTER TABLE users ADD CONSTRAINT users_login_swekey_id_key UNIQUE (login, swekey_id);
+	ALTER TABLE users ADD CONSTRAINT users_login_key UNIQUE (login, swekey_id);
 ");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013040200', 'dbversion'));
