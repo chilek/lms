@@ -242,9 +242,10 @@ class Auth {
 				require_once(LIB_DIR . '/swekey/swekey_integration.php');
 				$SWEKEY = new SwekeyIntegration;
 				$this->swekeyauthenticated = $SWEKEY->IsSwekeyAuthenticated($this->swekeyid);
-				if (!$this->swekeyauthenticated) {
+				if (!$this->swekeyauthenticated && $this->swekeyid) {
 					$this->error = trans('You must login with your Swekey');
 					$this->islogged = false;
+					$SWEKEY->DestroySession();
 				}
 			}
 
