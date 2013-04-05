@@ -70,6 +70,7 @@ $_LANG['Userpanel hints style. Chose modern for animated assistant, classic for 
 $_LANG['Userpanel module <b>$a</b> not found!'] = 'Nie znaleziono modułu <b>$a</b>!';
 $_LANG['Userpanel Rights:'] = 'Uprawnienia w Userpanelu:';
 $_LANG['Userpanel style:'] = 'Styl Userpanela:';
+$_LANG['Select All'] = 'Zaznacz wszystko';
 $_LANG['VCS'] = 'wBOK';
 $_LANG['Virtual Customer Service'] = 'Wirtualne Biuro Obsługi Klienta';
 $_LANG['weekly'] = 'tygodniowo';
