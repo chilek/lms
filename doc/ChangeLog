@@ -153,7 +153,8 @@ version ? (????-??-??):
   - added possibility to disable the tariffs [red]
   - mysql schema fixes [LoLe/chilan]
   - it's possible to add new config sections from ui [chilan]
- 
+  - host owner selection for networks [red/chilan]
+
 version 1.11.13 Dira (2011-04-07)
 
   - contrib/cutoff2: Fixed "Column 'period' in where clause is ambiguous" [alec]
