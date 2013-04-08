@@ -121,6 +121,7 @@ if(isset($_POST['netadd']))
 $layout['pagetitle'] = trans('New Network');
 
 $SMARTY->assign('prefixlist', $LMS->GetPrefixList());
+$SMARTY->assign('hostlist', $LMS->DB->GetAll('SELECT id, name FROM hosts ORDER BY name'));
 $SMARTY->display('netadd.html');
 
 ?>

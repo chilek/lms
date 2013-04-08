@@ -186,7 +186,7 @@ $SMARTY->assign('network',$network);
 $SMARTY->assign('networks',$networks);
 $SMARTY->assign('netlistsize',sizeof($networks));
 $SMARTY->assign('prefixlist', $LMS->GetPrefixList());
-$SMARTY->assign('hostlist', $LMS->DB->GetAll("SELECT id, name FROM hosts ORDER BY name"));
+$SMARTY->assign('hostlist', $LMS->DB->GetAll('SELECT id, name FROM hosts ORDER BY name'));
 $SMARTY->assign('error',$error);
 $SMARTY->display('netinfo.html');
 

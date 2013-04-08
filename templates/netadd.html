@@ -48,6 +48,17 @@
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/dhcpend.gif" ALT=""> <B>{trans("End of DHCP range:")}</B></TD>
 		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[dhcpend]" VALUE="{$netadd.dhcpend}" {tip text="Enter end of DHCP range (optional)" trigger="dhcpend"}></TD>
 	</TR>
+	<tr class="light"> 
+		<td width="1%" class="fleft bold" style="white-space: nowrap;"><img src="img/host.gif" alt="">{trans("Host:")}</td>
+		<td class="fright">
+			<select size="1" name="netadd[hostid]" {tip text="Select host" trigger="hostid"}>
+				<option value="0">{trans("- none -")}</option>
+				{foreach $hostlist as $host}
+				<option value="{$host.id}"{if $host.id eq $netadd.hostid} selected{/if}>{$host.name}</option>
+				{/foreach}
+			</select>
+		</td>
+	</tr>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/info1.gif" ALT=""> <B>{trans("Notes:")}</B></TD>
 		<TD CLASS="fright">
