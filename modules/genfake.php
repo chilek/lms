@@ -1821,7 +1821,7 @@ function mkpw($nchars)
 		$return .= $allowed[mt_rand(0,strlen($allowed)-1)];
 	return $return;
 }
-				
+
 function makemac()
 {
 	for($i = 0; $i < 6; $i ++)
@@ -1843,6 +1843,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	$DB->Execute('DELETE FROM cash');
 	$DB->Execute('DELETE FROM assignments');
 	$DB->Execute('DELETE FROM networks');
+	$DB->Execute('DELETE FROM hosts');
 	$DB->Execute('DELETE FROM tariffs');
 	$DB->Execute('DELETE FROM payments');
 	$DB->Execute('DELETE FROM netdevices');
@@ -1851,7 +1852,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	$DB->Execute('DELETE FROM taxes');
 	$DB->Execute('DELETE FROM invoicecontents');
 	$DB->Execute('DELETE FROM receiptcontents');
-	
+
 	if($CONFIG['database']['type']=='postgres')
 	{
 		$DB->Execute('DROP SEQUENCE "nodes_id_seq"; CREATE SEQUENCE "nodes_id_seq"');
@@ -1861,6 +1862,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$DB->Execute('DROP SEQUENCE "cash_id_seq";  CREATE SEQUENCE "cash_id_seq"');
 		$DB->Execute('DROP SEQUENCE "assignments_id_seq";CREATE SEQUENCE "assignments_id_seq"');
 		$DB->Execute('DROP SEQUENCE "networks_id_seq";   CREATE SEQUENCE "networks_id_seq"');
+		$DB->Execute('DROP SEQUENCE "hosts_id_seq";   CREATE SEQUENCE "hosts_id_seq"');
 		$DB->Execute('DROP SEQUENCE "tariffs_id_seq";    CREATE SEQUENCE "tariffs_id_seq"');
 		$DB->Execute('DROP SEQUENCE "netdevices_id_seq"; CREATE SEQUENCE "netdevices_id_seq"');
 		$DB->Execute('DROP SEQUENCE "netlinks_id_seq";   CREATE SEQUENCE "netlinks_id_seq"');
@@ -1925,13 +1927,20 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	$LMS->PaymentAdd($paymentdata);
 	$paymentdata = array( 'name' => 'Domain', 'description' => 'Domain "our.net" subscription', 'value' => '150', 'creditor' => 'NASK', 'period' => YEARLY, 'at' => '31');
 	$LMS->PaymentAdd($paymentdata);
-	
+
+	echo ' [OK]<BR>';
+	echo '<B>'.trans('Generating host...').'</B>'; flush();
+	$DB->Execute('INSERT INTO hosts (name, description) VALUES(?, ?)',
+		array('test', 'test host'));
+	$hostid = $DB->GetLastInsertID('hosts');
+
 	echo ' [OK]<BR>';
 	echo '<B>'.trans('Generating network...').'</B>'; flush();
 	$prefix = ($_GET['l']*2>1024) ? 16 : 22;
 	$netdata = array( 'name' => 'LAN1', 'address' => '192.168.0.0', 'prefix' => $prefix, 'gateway' => '192.168.0.1',
 		'dns' => '192.168.0.1', 'dns2' => '192.168.3.254', 'domain' => 'ultralan.net', 'wins' => '192.168.0.2',
-		'dhcpstart' => '192.168.3.230', 'dhcpend' => '192.168.3.253', 'interface' => 'eth0', 'notes' => '');
+		'dhcpstart' => '192.168.3.230', 'dhcpend' => '192.168.3.253', 'interface' => 'eth0', 'hostid' => $hostid,
+		'notes' => '');
 	$LMS->NetworkAdd($netdata);
 
 	echo ' [OK]<BR>';
