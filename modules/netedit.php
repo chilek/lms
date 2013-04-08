@@ -165,6 +165,7 @@ if(isset($_POST['networkdata']))
 		$SESSION->redirect('?m=netinfo&id='.$networkdata['id']);
 	}	
 
+	$network['name'] = $networkdata['name'];
 	$network['interface'] = $networkdata['interface'];
 	$network['prefix'] = $networkdata['prefix'];
 	$network['address'] = $networkdata['address'];
