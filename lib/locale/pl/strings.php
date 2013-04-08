@@ -2640,5 +2640,6 @@ $_LANG['Use Swekey'] = 'Używaj klucza Swekey';
 $_LANG['You must login with your Swekey'] = 'Aby się zalogować potrzebny jest klucz Swekey';
 
 $_LANG['Select host'] = 'Wybierz hosta';
+$_LANG['Host should be selected!'] = 'Powinien zostać wybrany host!';
 
 ?>

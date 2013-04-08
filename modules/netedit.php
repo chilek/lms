@@ -152,7 +152,10 @@ if(isset($_POST['networkdata']))
 		if($networkdata['dhcpstart']!='' && $networkdata['dhcpend']!='' && !(ip_long($networkdata['dhcpend']) >= ip_long($networkdata['dhcpstart'])))
 			$error['dhcpend'] = trans('End of DHCP range has to be equal or greater than start!');
 	}
-	
+
+	if (empty($networkdata['hostid']))
+		$error['hostid'] = trans('Host should be selected!');
+
 	if(!$error)
 	{
 	        if(isset($networkdata['needshft']) && $networkdata['needshft'])
