@@ -240,6 +240,11 @@ while(my $row = $dbq->fetchrow_hashref())
 {
 	my $sender;
 	my $ua = LWP::UserAgent->new;
+	# fix problems with new version IO::Socket::SSL
+	my %ssl_opts;
+	$ssl_opts{'verify_hostname'} = 0;
+	$ssl_opts{'SSL_verify_mode'} = SSL_VERIFY_NONE;
+	$ua->ssl_opts(%ssl_opts);
 	my $response = $ua->get($lms_url.'/?m=invoice&override=1&original=1&id='.$row->{'id'}.'&loginform[login]='.$lms_user.'&loginform[pwd]='.$lms_password);
 	
 	if ($response->is_success)
