@@ -27,7 +27,7 @@ $DB->Execute("DELETE FROM assignments WHERE customerid NOT IN (SELECT id FROM cu
 $DB->Execute("UPDATE assignments SET numberplanid = NULL WHERE numberplanid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM numberplans WHERE id = numberplanid)");
 $DB->Execute("ALTER TABLE assignments ADD FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	ADD FOREIGN KEY (numberplanid) REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE");
-$DB->Execute("DELETE FROM location_districts WHERE stateid NOT IN (SELECT id FROM location_state)");
+$DB->Execute("DELETE FROM location_districts WHERE stateid NOT IN (SELECT id FROM location_states)");
 $DB->Execute("ALTER TABLE location_districts ADD FOREIGN KEY (stateid) REFERENCES location_states (id) ON DELETE CASCADE ON UPDATE CASCADE");
 $DB->Execute("DELETE FROM location_boroughs WHERE districtid NOT IN (SELECT id FROM location_districts)");
 $DB->Execute("ALTER TABLE location_boroughs ADD FOREIGN KEY (districtid) REFERENCES location_districts (id) ON DELETE CASCADE ON UPDATE CASCADE");
