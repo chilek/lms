@@ -337,8 +337,8 @@ function invoice_title() {
 		$pdf->Write(0, $title, '', 0, 'C', true, 0, false, false, 0);
 	}
 
-	$pdf->SetFont('arial', '', 16);
-	$pdf->Write(0, $type, '', 0, 'C', true, 0, false, false, 0);
+	//$pdf->SetFont('arial', '', 16);
+	//$pdf->Write(0, $type, '', 0, 'C', true, 0, false, false, 0);
 
 	if ($type == trans('DUPLICATE')) {
 		$pdf->SetFont('arial', '', 10);

@@ -161,8 +161,8 @@ function invoice_title($x,$y)
 	$y -= 5;
     }
     
-    $font_size = 16;
-    $y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",$type));
+    //$font_size = 16;
+    //$y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",$type));
 
     if($type==trans('DUPLICATE'))
     {
