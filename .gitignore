@@ -53,6 +53,14 @@ lib/Smarty/plugins/variablefilter.htmlspecialchars.php
 lib/Smarty/sysplugins
 nbproject/private
 lms.ini
+
+# Temporary files
 *~
 *.swp
 *.swo
+
+# Object files
+*.o
+
+# Shared objects
+*.so
