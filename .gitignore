@@ -53,6 +53,20 @@ lib/Smarty/plugins/variablefilter.htmlspecialchars.php
 lib/Smarty/sysplugins
 nbproject/private
 lms.ini
+backups/*
+documents/*
+!documents/templates
+
+# Temporary files
 *~
 *.swp
 *.swo
+
+# Object files
+*.o
+
+# Shared objects
+*.so
+
+# Executables
+daemon/lmsd
