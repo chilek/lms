@@ -55,6 +55,7 @@ nbproject/private
 lms.ini
 backups/*
 documents/*
+!documents/templates
 
 # Temporary files
 *~
