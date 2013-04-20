@@ -162,7 +162,7 @@ function parse_file($filename, $contents) {
 		return;
 	}
 
-	$file		= explode("\n", $contents);
+	$file		= preg_split('/\r?\n/', $contents);
 	$patterns_cnt	= isset($patterns) ? sizeof($patterns) : 0;
 	$ln		= 0;
 	$sum		= array();
