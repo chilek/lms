@@ -427,9 +427,14 @@ if (!$ih)
 	die("Cannot connect to mail server!\n");
 
 if (chkconfig($CONFIG['cashimport']['use_seen_flag'], true)) {
-	$posts = imap_search($ih, 'NOT SEEN');
-	if (empty($posts))
-		$posts = imap_search($ih, 'UNSEEN');
+	$posts = array();
+	$count = imap_num_msg($ih);
+	for ($postid = 1; $postid <= $count; $postid++) {
+		$headers = imap_headerinfo($ih, $postid);
+		if ($headers->Unseen == 'U')
+			$posts[] = $postid;
+	}
+	//$posts = imap_search($ih, 'UNSEEN');
 } else
 	$posts = imap_search($ih, 'ALL');
 if (!empty($posts))
