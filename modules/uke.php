@@ -437,8 +437,13 @@ foreach ($netnodes as $netnodename => $netnode) {
 			$teryt['area_simc'] = sprintf("%07d", $teryt['area_simc']);
 			$teryt['address_budynek'] = $range['location_house'];
 			if (empty($teryt['address_ulica'])) {
-				$teryt['address_ulica'] = "BRAK ULICY";
-				$teryt['address_symul'] = "99999";
+				if ($DB->GetOne("SELECT COUNT(*) FROM location_streets WHERE cityid = ?", array($range['location_city']))) {
+					$teryt['address_ulica'] = "ULICA SPOZA ZAKRESU";
+					$teryt['address_symul'] = "99998";
+				} else {
+					$teryt['address_ulica'] = "BRAK ULICY";
+					$teryt['address_symul'] = "99999";
+				}
 			}
 			if (empty($teryt['address_symul'])) {
 				$teryt['address_ulica'] = "ULICA SPOZA ZAKRESU";
