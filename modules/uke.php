@@ -354,19 +354,19 @@ foreach ($netnodes as $netnodename => $netnode) {
 		if ($netnode['cabledistports']) {
 			$snetinterfaces .= $netintid.",".$netnode['id'].",sieć szkieletowa lub dystrybucyjna,kablowe,,Ethernet,,0,100,0,"
 				.$netnode['cabledistports'].","
-				.$netnode['cabledistports'].",0,Nie,0,0\n";
+				.$netnode['cabledistports'].",0,Nie,,\n";
 			$netintid++;
 		}
 		if ($netnode['radiodistports']) {
 			$snetinterfaces .= $netintid.",".$netnode['id'].",sieć szkieletowa lub dystrybucyjna,radiowe,,Ethernet,,0,54,0,"
 				.$netnode['radiodistports'].","
-				.$netnode['radiodistports'].",0,Nie,0,0\n";
+				.$netnode['radiodistports'].",0,Nie,,\n";
 			$netintid++;
 		}
 		if ($netnode['fiberdistports']) {
 			$snetinterfaces .= $netintid.",".$netnode['id'].",sieć szkieletowa lub dystrybucyjna,światłowodowe niezwielokrotnione,,Ethernet,,0,1000,0,"
 				.$netnode['fiberdistports'].","
-				.$netnode['fiberdistports'].",0,Nie,0,0\n";
+				.$netnode['fiberdistports'].",0,Nie,,\n";
 			$netintid++;
 		}
 	}
@@ -378,21 +378,21 @@ foreach ($netnodes as $netnodename => $netnode) {
 				- $netnode['fiberpersonalaccessports'] - $netnode['fibercommercialaccessports']).","
 			.($netnode['cablepersonalaccessports'] + $netnode['cablecommercialaccessports']).","
 			.($netnode['ports'] - $netnode['cabledistports'] - $netnode['radiodistports'] - $netnode['fiberdistports']
-				- $netnode['personalaccessports'] - $netnode['commercialaccessports']).",Nie,0,0\n";
+				- $netnode['personalaccessports'] - $netnode['commercialaccessports']).",Nie,,\n";
 		$netintid++;
 	}
 	if ($netnode['radiopersonalaccessports'] + $netnode['radiocommercialaccessports']) {
 		$snetinterfaces .= $netintid.",".$netnode['id'].",sieć dostępowa,radiowe,,Ethernet,54,,,,"
 			.($netnode['radiopersonalaccessports'] + $netnode['radiocommercialaccessports']).","
 			.($netnode['radiopersonalaccessports'] + $netnode['radiocommercialaccessports']).","
-			."0,Nie,0,0\n";
+			."0,Nie,,\n";
 		$netintid++;
 	}
 	if ($netnode['fiberpersonalaccessports'] + $netnode['fibercommercialaccessports']) {
 		$snetinterfaces .= $netintid.",".$netnode['id'].",sieć dostępowa,światłowodowe niezwielokrotnione,,Ethernet,100,,,,"
 			.($netnode['fiberpersonalaccessports'] + $netnode['fibercommercialaccessports']).","
 			.($netnode['fiberpersonalaccessports'] + $netnode['fibercommercialaccessports']).","
-			."0,Nie,0,0\n";
+			."0,Nie,,\n";
 		$netintid++;
 	}
 
