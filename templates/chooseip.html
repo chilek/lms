@@ -23,7 +23,7 @@
 	<table width="100%" cellpadding="1">
 	{section name=iplist loop=$network.nodes.address}
 	{if $smarty.section.iplist.index is even}<TR>{/if}
-		<TD width="50%" align="center"  {if $network.nodes.name[iplist] eq ""} onClick="sendvalue(targetfield,'{$network.nodes.address[iplist]}');"{/if}class="highlight">
+		<TD width="50%" align="center" class="highlight" {if $network.nodes.name[iplist] eq ""} onClick="sendvalue(targetfield,'{$network.nodes.address[iplist]}');"{/if}>
 			{if $network.nodes.name[iplist] neq ""}
 				{if $device && $network.nodes.name[iplist] eq "<b>GATEWAY</b>"}
 					<A href="javascript: void(0);" onClick="sendvalue(targetfield,'{$network.nodes.address[iplist]}');">{$network.nodes.name[iplist]}</A>
