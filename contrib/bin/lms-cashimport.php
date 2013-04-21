@@ -426,12 +426,7 @@ $ih = @imap_open("{" . $CONFIG['cashimport']['server'] . "}INBOX", $CONFIG['cash
 if (!$ih)
 	die("Cannot connect to mail server!\n");
 
-if (chkconfig($CONFIG['cashimport']['use_seen_flag'], true)) {
-	$posts = imap_search($ih, 'NOT SEEN');
-	if (empty($posts))
-		$posts = imap_search($ih, 'UNSEEN');
-} else
-	$posts = imap_search($ih, 'ALL');
+$posts = imap_search($ih, chkconfig($CONFIG['cashimport']['use_seen_flag'], true) ? 'UNSEEN' : 'ALL');
 if (!empty($posts))
 	foreach ($posts as $postid) {
 		$post = imap_fetchstructure($ih, $postid);
