@@ -83,7 +83,7 @@
 	{/if}
 	{cycle values="light,lucid" print=false}
 	{section name=accountlist loop=$accountlist start=$start max=$pagelimit}
-	<TR class="{cycle}{if $accountlist[accountlist].expdate != 0 && $accountlist[accountlist].expdate < $smarty.now} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}{if $accountlist[accountlist].expdate != 0 && $accountlist[accountlist].expdate < $smarty.now} blend{/if}"  >
 		<TD class="fleft" OnClick="return self.location.href='?m=accountinfo&id={$accountlist[accountlist].id}';">
 			<NOBR><IMG src="img/account.gif" alt=""> <B>{$accountlist[accountlist].login}@{$accountlist[accountlist].domain}</B></NOBR>
 			{if $accountlist[accountlist].ownerid}

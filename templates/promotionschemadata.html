@@ -22,7 +22,7 @@
 			    </TR>
 				{cycle values="light,lucid" print=false name=tariffs}
 				{foreach from=$schema.tariffs item=tariff}
-				<TR id="row{$tariff.id}" class="{cycle name=tariffs}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+				<TR id="row{$tariff.id}" class="highlight {cycle name=tariffs}"  >
 					<TD style="vertical-align: top">
 						<A href="?m=tariffinfo&id={$tariff.tariffid}"><B>{$tariff.name}</B></A>
 					</TD>

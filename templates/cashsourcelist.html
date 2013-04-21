@@ -18,7 +18,7 @@
 	</TR>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$sourcelist item=source}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}"  >
 		<TD CLASS="fleft" onClick="return self.location.href='?m=cashsourceedit&id={$source.id}'" nowrap>
 			<IMG src="img/isource.gif" alt="">
 			<B>{$source.name}</B>

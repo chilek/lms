@@ -58,7 +58,7 @@ function setgroup(act)
 			</TR>
 			{cycle values="light,lucid" print=false name=nodes}
 			{section name=customernodes loop=$customernodes}
-    			<TR class="{cycle name=nodes}{if ! $customernodes[customernodes].access} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+    			<TR class="highlight {cycle name=nodes}{if ! $customernodes[customernodes].access} blend{/if}"  >
 			    <TD onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';">
 				{if $customernodes[customernodes].lastonline}
 				    {if ($smarty.now-$customernodes[customernodes].lastonline) > $lastonline_limit}

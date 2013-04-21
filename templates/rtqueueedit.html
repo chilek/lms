@@ -48,7 +48,7 @@
 			</TR>
 			{cycle values="light,lucid" print=false}
 			{foreach from=$queue.rights item=right}
-			<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+			<TR class="highlight {cycle}"  >
 			    <TD width="97%" class="fleft">
 				<A href="?m=userinfo&id={$right.id}">{$right.name}</A>
 				<INPUT type="hidden" name="queue[usernames][{$right.id}]" value="{$right.name}">

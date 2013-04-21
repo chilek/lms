@@ -125,7 +125,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 	{section name=invoicelist loop=$invoicelist start=$start max=$pagelimit}
 	{assign var=invoice value=$invoicelist[invoicelist]}
 	{assign var=invoiceid value=$invoice.id}
-	<TR class="{cycle}{if $invoice.closed} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}{if $invoice.closed} blend{/if}"  >
 		<TD WIDTH="1%" CLASS="fleft">
 			{$invoice.id|string_format:"%06d"}
 		</TD>

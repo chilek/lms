@@ -23,7 +23,7 @@
 				</TR>
 				{cycle values="light,lucid" print=false name=doc}
 				{foreach from=$documents item=doc}
-				<TR class="{cycle name=doc}{if $doc.closed} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+				<TR class="highlight {cycle name=doc}{if $doc.closed} blend{/if}"  >
 					<TD NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');"{if $doc.description} {tip text=$doc.description}{/if}>
 						<B>{number number=$doc.number template=$doc.template time=$doc.cdate}</B>
 					</TD>

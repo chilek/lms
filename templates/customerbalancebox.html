@@ -120,7 +120,7 @@
 				</TR>
 				{cycle name=bal values="light,lucid" print=false}
 				{section name=balancelist loop=$balancelist.id start=$limit}
-				<TR class="{cycle name=bal}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+				<TR class="highlight {cycle name=bal}"  >
 					<TD width="1%"><nobr>{$balancelist.date[balancelist]}</nobr></TD>
 					<TD width="1%" nowrap>{$balancelist.username[balancelist]|truncate:16:"...":true}</TD>
 					<TD width="1%" align="right" nowrap>{if !$balancelist.type[balancelist]}{($balancelist.value[balancelist]*-1)|money_format}{else}-{/if}</TD>

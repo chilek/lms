@@ -21,7 +21,7 @@
 	</TR>
 	{cycle values="light,lucid" print=false}
 	{section name=nodegroups loop=$nodegrouplist}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}"  >
 		<TD WIDTH="97%" CLASS="fleft" onClick="return self.location.href='?m=nodegroupinfo&id={$nodegrouplist[nodegroups].id}';" class="fleft">
 			<IMG SRC="img/nodegroup.gif" ALT="">&nbsp;<B>{$nodegrouplist[nodegroups].name}</B><BR>
 			{if $nodegrouplist[nodegroups].description}<IMG SRC="img/info1.gif" ALT="">&nbsp;{$nodegrouplist[nodegroups].description}{/if}

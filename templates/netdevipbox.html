@@ -22,7 +22,7 @@
 	{if $netdevips}
 	{cycle values="light,lucid" print=false}
 	{section name=list loop=$netdevips}
-	<TR class="{cycle}{if ! $netdevips[list].access} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}{if ! $netdevips[list].access} blend{/if}"  >
 		<TD WIDTH="96%" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
 			<B>{$netdevips[list].name}</B>
 			{if $netdevips[list].location}<BR>

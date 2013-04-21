@@ -201,7 +201,7 @@
 				</TR>
 				{cycle name=assign values="light,lucid" print=false}
 				{foreach from=$account.aliases item=alias}
-				<TR class="{cycle name=assign}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+				<TR class="highlight {cycle name=assign}"  >
 					<TD WIDTH="80%" NOWRAP OnClick="return self.location.href='?m=aliasinfo&id={$alias.id}'">
 					    <B>{$alias.login}@{$alias.domain}</B>
 					</TD>

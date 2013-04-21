@@ -19,7 +19,7 @@
 	</TR>
 	{cycle values="light,lucid" print=false}
 	{section name=customergroups loop=$customergrouplist}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}"  >
 		<TD WIDTH="97%" CLASS="fleft" onClick="return self.location.href='?m=customergroupinfo&id={$customergrouplist[customergroups].id}';" class="fleft">
 			<IMG SRC="img/group.gif" ALT="">&nbsp;<B>{$customergrouplist[customergroups].name}</B><BR>
 			{if $customergrouplist[customergroups].description}<IMG SRC="img/info1.gif" ALT="">&nbsp;{$customergrouplist[customergroups].description}{/if}

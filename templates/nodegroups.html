@@ -17,7 +17,7 @@
 				</TR>
 				{cycle name=groups values="light,lucid" print=false}
 				{foreach from=$nodegroups item=nodegroup}
-				<TR class="{cycle name=groups}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+				<TR class="highlight {cycle name=groups}"  >
 					<TD WIDTH="1%" NOWRAP><B><A HREF="?m=nodegroupinfo&id={$nodegroup.id}">{$nodegroup.name}</A></B></TD>
 					<TD WIDTH="1%" NOWRAP COLSPAN="2">{$nodegroup.description}</TD>
 					<TD WIDTH="97%" NOWRAP>({$nodegroup.id|string_format:"%04d"})</TD>

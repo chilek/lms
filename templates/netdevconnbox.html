@@ -28,7 +28,7 @@
 	</TR>
 	{cycle values="light,lucid" print=false}
 	{section name=netdevlist loop=$netdevlist start=$start}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}"  >
 		<TD style="width: 97%; vertical-align: top; white-space: nowrap;" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';">
 			<IMG src="img/netdev.gif" ALT=""> <a name="{$netdevlist[netdevlist].id}"><span class="bold">{$netdevlist[netdevlist].name} {if $netdevlist[netdevlist].producer}/ {$netdevlist[netdevlist].producer}{/if}</span></A><BR>
 			<IMG src="img/home.gif" ALT=""> {$netdevlist[netdevlist].location}

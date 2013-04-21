@@ -15,7 +15,7 @@
 	{/if}
 	{cycle values="light,lucid" print=false}
 	{foreach from=$typelist key=key item=item}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}"  >
 		<TD class="fleft" NOWRAP onClick="return self.location.href='?m=documenttypeedit&id={$key}';">
 			<IMG src="img/docum.gif" alt=""> <B>{$item}</B>
 		</TD>

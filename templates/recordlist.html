@@ -40,7 +40,7 @@
 	{/if}
 	{cycle values="light,lucid" print=false}
 	{section name=recordslist loop=$recordslist start=$start max=$pagelimit}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}"  >
 		<TD class="fleft" NOWRAP onclick="return location.href='?m=recordedit&id={$recordslist[recordslist].id}'">{$recordslist[recordslist].name}</TD>
 		<TD align="center">{$recordslist[recordslist].ttl}</TD>
 		<TD align="center" NOWRAP>{$recordslist[recordslist].type}</TD>

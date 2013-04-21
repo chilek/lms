@@ -118,7 +118,7 @@ window.open('?m=note&id={$note}');
 	{section name=notelist loop=$notelist start=$start max=$pagelimit}
 	{assign var=note value=$notelist[notelist]}
 	{assign var=noteid value=$note.id}
-	<TR class="{cycle}{if $note.closed} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}{if $note.closed} blend{/if}"  >
 		<TD WIDTH="1%" CLASS="fleft">
 			{$note.id|string_format:"%06d"}
 		</TD>

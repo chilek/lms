@@ -7,7 +7,7 @@
 	</TR>
 	{cycle values="light,lucid" print=false}
 	{section name=n loop=$nodes}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}"  >
 		<TD WIDTH="99%" CLASS="FLEFT" onClick="return self.location.href='?m=nodeadd&preip={$nodes[n].ipaddr}&premac={$nodes[n].mac}&prename={$nodes[n].name}{if $customerinfo}&ownerid={$customerinfo.id}{/if}';">
 			<IMG SRC="img/node.gif" ALT=""> <B>{$nodes[n].name}</B>
 		</TD>

@@ -27,7 +27,7 @@
 	</TR>
 	{cycle values="light,lucid" print=false}
 	{section name=netlist loop=$netlist}
-	<TR class="{cycle}{if $netlist[netlist].disabled == 1} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}{if $netlist[netlist].disabled == 1} blend{/if}"  >
 		<TD class="fleft" width="96%" onClick="return self.location.href='?m=netinfo&id={$netlist[netlist].id}';">
 		<A name="{$netlist[netlist].id}">
 			<nobr><IMG src="img/network.gif" ALT=""> <B>{$netlist[netlist].name|truncate:40:"...":true}</B><BR><IMG src="img/ip.gif" ALT=""> {$netlist[netlist].address} / {$netlist[netlist].prefix} {if $netlist[netlist].interface}({$netlist[netlist].interface}){/if}</nobr>

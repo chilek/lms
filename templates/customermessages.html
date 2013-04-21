@@ -30,7 +30,7 @@
 				</TR>
 				{cycle values="light,lucid" print=false name=messages}
 				{foreach from=$messagelist item=item}
-				<TR class="{cycle name=messages}{if $item.status==$smarty.const.MSG_ERROR} alert{elseif $item.status==$smarty.const.MSG_SENT} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+				<TR class="highlight {cycle name=messages}{if $item.status==$smarty.const.MSG_ERROR} alert{elseif $item.status==$smarty.const.MSG_SENT} blend{/if}"  >
 					<TD width="1%" nowrap onClick="return self.location.href='?m=messageinfo&id={$item.id}'">
 						{$item.cdate|date_format:"%Y/%m/%d"}
 					</TD>

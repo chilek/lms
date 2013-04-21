@@ -90,7 +90,7 @@
 				</TR>
 				{cycle values="light,lucid" print=false}
 				{foreach from=$channel.devices item=item}
-				<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+				<TR class="highlight {cycle}"  >
 					<TD onClick="return self.location.href='?m=netdevinfo&id={$item.id}';">
 						<img src="img/netdev.gif" align="left" ALT=""><B>{$item.name}</B>
 					</TD>

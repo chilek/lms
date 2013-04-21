@@ -115,7 +115,7 @@
 	{*{counter print=false}*}
 	{cycle values="light,lucid" print=false}
 	{foreach from=$contents item=item}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}"  >
 		<TD CLASS="fleft" WIDTH="1%">
 			<B>{counter}.</B>
 		</TD>

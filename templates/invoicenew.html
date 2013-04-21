@@ -230,7 +230,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 							</TR>
 							{cycle values="light,lucid" print=false}
 							{section name=covenantlist loop=$covenantlist}
-							<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+							<TR class="highlight {cycle}"  >
 							        <TD><nobr>{$covenantlist[covenantlist].time|date_format:"%Y/%m/%d"}</nobr></TD>
 								<TD>{$covenantlist[covenantlist].comment}</TD>
 							        <TD align="right"><INPUT type="text" name="l_prodid[{$covenantlist[covenantlist].cashid}]" value="" size="6"></TD>
@@ -294,7 +294,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 	</TR>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$contents item=item}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}"  >
 		<TD CLASS="fleft" WIDTH="1%">
 			<B>{counter}.</B>
 		</TD>

@@ -39,7 +39,7 @@
 				{foreach from=$assignments item=a}
 				<TR class="{cycle name=assign}
 					{if ($a.dateto < $today && $a.dateto) || ($a.liabilityid && $a.at < $today && $a.at > 365)} blend{elseif ($a.datefrom > $today && $a.datefrom && $a.period) && !($a.suspended)} alertblend{elseif ($a.suspended)}suspended{/if}"
-					onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')" >
+					  class="highlight">
 					{if !$a.tariffid && !$a.liabilityid}
 					<TD COLSPAN="7" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
 						<span class="bold">{trans("Suspending of all liabilities")}</span>

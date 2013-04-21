@@ -17,7 +17,7 @@
 	{/if}
 	{cycle values="light,lucid" print=false}
 	{section name=statelist loop=$statelist}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}"  >
 		<TD class="fleft" NOWRAP onClick="return self.location.href='?m=stateedit&id={$statelist[statelist].id}';">
 			<IMG src="img/state.gif" alt=""> <B>{$statelist[statelist].name}</B>
 		</TD>

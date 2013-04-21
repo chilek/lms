@@ -24,7 +24,7 @@
 	</TR>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$promotionlist item=promo}
-	<TR class="{cycle}{if $promo.disabled} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}{if $promo.disabled} blend{/if}"  >
 		<TD CLASS="fleft" nowrap onClick="return self.location.href='?m=promotioninfo&id={$promo.id}';">
 			<IMG src="img/promo.gif" ALT=""> <B>{$promo.name}</B>
 		</TD>

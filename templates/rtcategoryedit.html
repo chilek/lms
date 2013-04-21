@@ -36,7 +36,7 @@
 			</TR>
 			{cycle values="light,lucid" print=false}
 			{foreach from=$category.owners item=user}
-			<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+			<TR class="highlight {cycle}"  >
 			    <TD width="99%" class="fleft">
 				<A href="?m=userinfo&id={$user.id}">{$user.name}</A>
 			    </TD>

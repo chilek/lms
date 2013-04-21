@@ -21,7 +21,7 @@
 	{/if}
 	{cycle values="light,lucid" print=false}
 	{section name=numberplanlist loop=$numberplanlist}
-	<TR class="{cycle}{if ($numberplanlist[numberplanlist].validfrom !=0 && $numberplanlist[numberplanlist].validfrom > $smarty.now) || ($numberplanlist[numberplanlist].validto !=0 && $numberplanlist[numberplanlist].validto < $smarty.now)} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}{if ($numberplanlist[numberplanlist].validfrom !=0 && $numberplanlist[numberplanlist].validfrom > $smarty.now) || ($numberplanlist[numberplanlist].validto !=0 && $numberplanlist[numberplanlist].validto < $smarty.now)} blend{/if}"  >
 		<TD class="fleft" NOWRAP onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
 			<IMG src="img/id.gif" alt=""> <B>{$numberplanlist[numberplanlist].template}</B>
 		</TD>

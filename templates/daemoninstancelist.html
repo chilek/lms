@@ -40,7 +40,7 @@
 	</TR>		
 	{cycle values="light,lucid" print=false}
 	{foreach from=$instancelist item=instance}
-	<TR class="{cycle}{if $instance.disabled} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}{if $instance.disabled} blend{/if}"  >
 		<TD CLASS="fleft" onClick="return self.location.href='?m=daemoninstanceview&id={$instance.id}';" nowrap>
 			<IMG src="img/settings.gif" alt="">
 			<B>{$instance.name}</B>

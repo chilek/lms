@@ -96,7 +96,7 @@
 	{section loop=$documentlist name=documentlist start=$start max=$pagelimit}
 	{assign var=doc value=$documentlist[documentlist]}
 	{assign var=docid value=$doc.docid}
-	<TR class="{cycle}{if $doc.closed} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}{if $doc.closed} blend{/if}"  >
 		<TD CLASS="fleft" NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');"{if $doc.description} {tip text=$doc.description}{/if}>
 			{$doc.cdate|date_format:"%Y/%m/%d"}
 			{if $doc.number}<BR>

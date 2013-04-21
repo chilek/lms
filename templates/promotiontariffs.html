@@ -19,7 +19,7 @@
 			    </TR>
 				{cycle values="light,lucid" print=false name=tariffs}
 				{foreach from=$promotion.tariffs item=tariff}
-				<TR class="{cycle name=tariffs}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+				<TR class="highlight {cycle name=tariffs}"  >
 					<TD onClick="return self.location.href='?m=tariffinfo&id={$tariff.id}';" NOWRAP>
 						<B>{$tariff.name}</B>
 					</TD>

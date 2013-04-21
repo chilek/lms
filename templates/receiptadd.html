@@ -310,7 +310,7 @@
 							</TR>
 							{cycle values="light,lucid" print=false}
 							{foreach from=$invoicelist item=item}
-							<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+							<TR class="highlight {cycle}"  >
 							        <TD onclick="checkElement('mark{$item.id}')"><nobr>{$item.cdate|date_format:"%Y/%m/%d"}</nobr></TD>
 								<TD onclick="checkElement('mark{$item.id}')">{$item.number}</TD>
 							        <TD align="right" onclick="checkElement('mark{$item.id}')"><nobr>{$item.value|money_format}</nobr></TD>
@@ -358,7 +358,7 @@
 	</TR>
 	{cycle values="light,lucid" print=false name="items"}
 	{foreach from=$contents item=item}
-	<TR class="{cycle name="items"}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle name="items"}"  >
 		<TD CLASS="fleft" WIDTH="1%">
 			<B>{counter}.</B>
 		</TD>

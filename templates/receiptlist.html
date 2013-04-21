@@ -110,7 +110,7 @@
 	{section name=receiptlist loop=$receiptlist start=$start max=$pagelimit}
 	{assign var=receipt value=$receiptlist[receiptlist]}
 	{assign var=receiptid value=$receipt.id}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}"  >
 		<TD WIDTH="1%" class="fleft" NOWRAP><A id="{$receipt.id}"></A>
 			{if !$receipt.closed}<FONT class="alert">{/if}
 			{$receipt.cdate|date_format:"%Y/%m/%d %H:%M"}<BR>
