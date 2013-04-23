@@ -154,6 +154,7 @@ version ? (????-??-??):
   - mysql schema fixes [LoLe/chilan]
   - it's possible to add new config sections from ui [chilan]
   - host owner selection for networks [red/chilan]
+  - separation of privileges: finance management and cash registry administration [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
