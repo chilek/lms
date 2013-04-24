@@ -4681,6 +4681,20 @@ class LMS {
 		sort($sections);
 		return $sections;
 	}
+
+	function GetNodeSessions($nodeid) {
+		$nodesessions = $this->DB->GetAll('SELECT INET_NTOA(ipaddr) AS ipaddr, mac, start, stop, download, upload
+			FROM nodesessions WHERE nodeid = ? ORDER BY stop DESC LIMIT 10', array($nodeid));
+		if (!empty($nodesessions))
+			foreach ($nodesessions as $idx => $session) {
+				list ($number, $unit) = setunits($session['download']);
+				$nodesessions[$idx]['download'] = round($number, 2) . ' ' . $unit;
+				list ($number, $unit) = setunits($session['upload']);
+				$nodesessions[$idx]['upload'] = round($number, 2) . ' ' . $unit;
+				$nodesessions[$idx]['duration'] = uptimef($session['stop'] - $session['start']);
+			}
+		return $nodesessions;
+	}
 }
 
 ?>

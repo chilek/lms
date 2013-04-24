@@ -247,10 +247,12 @@ include(MODULES_DIR . '/nodexajax.inc.php');
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
+$SMARTY->assign('nodesessions', $LMS->GetNodeSessions($nodeid));
 $SMARTY->assign('netdevices', $LMS->GetNetDevNames());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNamesByNode($nodeid));
 $SMARTY->assign('othernodegroups', $LMS->GetNodeGroupNamesWithoutNode($nodeid));
 $SMARTY->assign('error', $error);
 $SMARTY->assign('nodeinfo', $nodeinfo);
 $SMARTY->display('nodeedit.html');
+
 ?>

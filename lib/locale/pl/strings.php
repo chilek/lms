@@ -2644,4 +2644,12 @@ $_LANG['Host should be selected!'] = 'Powinien zostać wybrany host!';
 
 $_LANG['cash registry administration'] = 'administracja rejestrami kasowymi';
 
+$_LANG['Node Sessions:'] = 'Sesje komputerów:';
+$_LANG['(last 10 sessions)'] = '(ostatnie 10 sesji)';
+$_LANG['Started:'] = 'Rozpoczęto:';
+$_LANG['Finished:'] = 'Zakończono:';
+$_LANG['Time Duration:'] = 'Czas trwania:';
+$_LANG['Downloaded:'] = 'Pobrano:';
+$_LANG['Uploaded:'] = 'Wysłano:';
+
 ?>

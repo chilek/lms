@@ -95,10 +95,12 @@ $nodeinfo = $LMS->ExecHook('node_info_init', $nodeinfo);
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
+$SMARTY->assign('nodesessions', $LMS->GetNodeSessions($nodeid));
 $SMARTY->assign('netdevices', $netdevices);
 $SMARTY->assign('nodestats', $nodestats);
 $SMARTY->assign('nodegroups', $nodegroups);
 $SMARTY->assign('othernodegroups', $othernodegroups);
 $SMARTY->assign('nodeinfo', $nodeinfo);
 $SMARTY->display('nodeinfo.html');
+
 ?>
