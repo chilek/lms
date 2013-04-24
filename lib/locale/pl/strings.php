@@ -2651,5 +2651,6 @@ $_LANG['Finished:'] = 'Zakończono:';
 $_LANG['Time Duration:'] = 'Czas trwania:';
 $_LANG['Downloaded:'] = 'Pobrano:';
 $_LANG['Uploaded:'] = 'Wysłano:';
+$_LANG['That are no sessions for this node.'] = 'Brak sesji dla tego komputera.';
 
 ?>

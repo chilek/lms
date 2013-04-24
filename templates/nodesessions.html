@@ -29,6 +29,14 @@
 					<TD style="width: 14%; white-space: nowrap;">{$nodesessions[session].download}</TD>
 					<TD style="width: 16%; white-space: nowrap;">{$nodesessions[session].upload}</TD>
 				</TR>
+				{sectionelse}
+				<TR>
+					<TD style="text-align: center; width: 100%;" colspan="7">
+						<P>&nbsp;</P>
+						<P><span class="bold">{trans("That are no sessions for this node.")}</span></P>
+						<P>&nbsp;</P>
+					</TD>
+				</TR>
 				{/section}
 			</TABLE>
 		</TD>
