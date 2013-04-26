@@ -54,30 +54,57 @@ if($instance)
 		$instance['priority'] = 0;
 	elseif(!is_numeric($instance['priority']))
 		$error['priority'] = trans('Priority must be integer!');
-	
-	if(!$error)
-	{
+
+	if(!$error) {
+		$args = array(
+			'name' => $instance['name'], 
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST] => $instance['hostid'],
+			'description' => $instance['description'],
+			'module' => $instance['module'],
+			'crontab' => $instance['crontab'],
+			'priority' => $instance['priority']
+		);
 		$DB->Execute('INSERT INTO daemoninstances (name, hostid, description, module, crontab, priority) VALUES (?,?,?,?,?,?)',
-				    array($instance['name'], 
-					    $instance['hostid'], 
-					    $instance['description'],
-					    $instance['module'],
-					    $instance['crontab'],
-					    $instance['priority']));
-		
-		if($instance['id'])
-		{
-			$id = $DB->GetLastInsertId('daemoninstances');
-			$DB->Execute('INSERT INTO daemonconfig (var, description, value, instanceid)
-					SELECT var, description, value, ? FROM daemonconfig
-					WHERE instanceid = ?', array($id, $instance['id']));
+				array_values($args));
+		$id = $DB->GetLastInsertId('daemoninstances');
+
+		if ($SYSLOG) {
+			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONINST]] = $id;
+			$SYSLOG->AddMessage(SYSLOG_RES_DAEMONINST, SYSLOG_OPER_ADD, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONINST]));
 		}
-		
+
+		if ($instance['id']) {
+			$configs = $DB->GetAll('SELECT var, description, value FROM daemonconfig
+					WHERE instanceid = ?', array($instance['id']));
+			if (!empty($configs))
+				foreach ($configs as $config) {
+					$args = array(
+						'var' => $config['var'],
+						'description' => $config['description'],
+						'value' => $config['value'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONINST] => $id
+					);
+					$DB->Execute('INSERT INTO daemonconfig (var, description, value, instanceid)
+							VALUES (?, ?, ?, ?)', array_values($args));
+					if ($SYSLOG) {
+						$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST]] = $instance['hostid'];
+						$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONCONF]] =
+							$DB->GetLastInsertID('daemonconfig');
+						$SYSLOG->AddMessage(SYSLOG_RES_DAEMONCONF, SYSLOG_OPER_ADD, $args,
+							array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST],
+								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONINST],
+								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONCONF]));
+					}
+				}
+		}
+
 		if(!isset($instance['reuse']))
 		{
 			$SESSION->redirect('?m=daemoninstancelist&id='.$instance['hostid']);
 		}
-		
+
 		unset($instance['id']);
 		unset($instance['name']);
 		unset($instance['module']);

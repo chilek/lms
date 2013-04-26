@@ -94,6 +94,10 @@ DROP TABLE IF EXISTS messages;
 DROP TABLE IF EXISTS messageitems;
 DROP TABLE IF EXISTS nastypes;
 DROP TABLE IF EXISTS managementurls;
+DROP TABLE IF EXISTS logtransactions;
+DROP TABLE IF EXISTS logmessages;
+DROP TABLE IF EXISTS logmessagekeys;
+DROP TABLE IF EXISTS logmessagedata;
 DROP TABLE IF EXISTS up_rights;
 DROP TABLE IF EXISTS up_rights_assignments;
 DROP TABLE IF EXISTS up_customers;
@@ -129,8 +133,9 @@ CREATE TABLE users (
   access tinyint(1) NOT NULL DEFAULT '1',
   accessfrom int(11) NOT NULL DEFAULT '0',
   accessto int(11) NOT NULL DEFAULT '0',
+  swekey_id varchar(32) NULL DEFAULT NULL,
   PRIMARY KEY  (id),
-  UNIQUE KEY login (login)
+  UNIQUE KEY login (login, swekey_id)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1530,6 +1535,63 @@ CREATE TABLE managementurls (
 
 # --------------------------------------------------------
 #
+# Structure of table logtransactions
+#
+CREATE TABLE logtransactions (
+	id int(11)		NOT NULL auto_increment,
+	userid int(11)		DEFAULT '0' NOT NULL,
+	time int(11)		DEFAULT '0' NOT NULL,
+	module varchar(50)	DEFAULT '' NOT NULL,
+	PRIMARY KEY (id),
+	INDEX userid (userid),
+	INDEX time (time)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table logmessages
+#
+CREATE TABLE logmessages (
+	id int(11)		NOT NULL auto_increment,
+	transactionid int(11)	NOT NULL,
+	resource int(11)	DEFAULT '0' NOT NULL,
+	operation int(11)	DEFAULT '0' NOT NULL,
+	PRIMARY KEY (id),
+	INDEX transactionid (transactionid),
+	INDEX resource (resource),
+	INDEX operation (operation),
+	FOREIGN KEY (transactionid) REFERENCES logtransactions (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table logmessagekeys
+#
+CREATE TABLE logmessagekeys (
+	logmessageid int(11)	NOT NULL,
+	name varchar(32)	NOT NULL,
+	value int(11)		NOT NULL,
+	INDEX logmessageid (logmessageid),
+	INDEX name (name),
+	INDEX value (value),
+	FOREIGN KEY (logmessageid) REFERENCES logmessages (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table logmessagedata
+#
+CREATE TABLE logmessagedata (
+	logmessageid int(11)	NOT NULL,
+	name varchar(32)	NOT NULL,
+	value text		DEFAULT '',
+	INDEX logmessageid (logmessageid),
+	INDEX name (name),
+	FOREIGN KEY (logmessageid) REFERENCES logmessages (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
 # Structure of table records
 #
 CREATE TABLE records (
@@ -1768,4 +1830,4 @@ INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2013032100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2013042600');

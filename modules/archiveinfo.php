@@ -24,22 +24,8 @@
  *  $Id$
  */
 
-$id = intval($_GET['id']);
-
-if ($id && $_GET['is_sure'] == '1') {
-	if ($SYSLOG) {
-		$config = $DB->GetRow('SELECT instanceid, hostid FROM daemonconfig c
-			JOIN daemoninstances i ON i.id = c.instanceid WHERE c.id = ?', array($id));
-		$args = array(
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONINST] => $config['instanceid'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST] => $config['hostid'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONCONF] => $id
-		);
-		$SYSLOG->AddMessage(SYSLOG_RES_DAEMONCONF, SYSLOG_OPER_DELETE, $args, array_keys($args));
-	}
-	$DB->Execute('DELETE FROM daemonconfig WHERE id = ?', array($id));
-}
-
-header('Location: ?'.$SESSION->get('backto'));
+$body = trans('Transaction logging is not supported in this LMS version.');
+$SMARTY->assign('body', $body);
+$SMARTY->display('dialog.html');
 
 ?>

@@ -55,14 +55,40 @@ if (isset($_POST['from']) && isset($_POST['to']))
 	{
 		$prio['from'] = $DB->GetOne('SELECT prio FROM nodegroups WHERE id=?', array($from));
 		$prio['to'] = $DB->GetOne('SELECT prio FROM nodegroups WHERE id=?', array($to));
-		if ($prio['to'] < $prio['from'])
+
+		if ($prio['to'] < $prio['from']) {
 			$DB->Execute('UPDATE nodegroups SET prio=prio+1 WHERE id<>? AND prio<? AND prio>=?',
 				array($from, $prio['from'], $prio['to']));
-		else
+
+			if ($SYSLOG)
+				$nodegroups = $DB->GetAll('SELECT id, prio FROM nodegroups WHERE id<>? AND prio<? AND prio>=?',
+					array($from, $prio['from'] + 1, $prio['to'] + 1));
+		} else {
 			$DB->Execute('UPDATE nodegroups SET prio=prio-1 WHERE id<>? AND prio<=? AND prio>?',
 				array($from, $prio['to'], $prio['from']));
-		$DB->Execute('UPDATE nodegroups SET prio=? WHERE id=?',
-			array($prio['to'], $from));
+
+			if ($SYSLOG)
+				$nodegroups = $DB->GetAll('SELECT id, prio FROM nodegroups WHERE id<>? AND prio<=? AND prio>?',
+					array($from, $prio['to'] - 1, $prio['from'] - 1));
+		}
+		if ($SYSLOG && isset($nodegroups))
+			foreach ($nodegroups as $nodegroup) {
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP] => $nodegroup['id'],
+					'prio' => $nodegroup['prio'],
+				);
+				$SYSLOG->AddMessage(SYSLOG_RES_NODEGROUP, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP]));
+			}
+
+		$args = array(
+			'prio' => $prio['to'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP] => $from,
+		);
+		$DB->Execute('UPDATE nodegroups SET prio=? WHERE id=?', array_values($args));
+
+		if ($SYSLOG)
+			$SYSLOG->AddMessage(SYSLOG_RES_NODEGROUP, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP]));
+
 		$LMS->CompactNodeGroups();
 	}
 }

@@ -36,10 +36,9 @@ if(!$customer)
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
-if($_GET['action'] == 'suspend')
-{
-    $LMS->SuspendAssignment($_GET['id'], $_GET['suspend']);
-    $SESSION->redirect('?'.$SESSION->get('backto'));
+if ($_GET['action'] == 'suspend') {
+	$LMS->SuspendAssignment($_GET['id'], $_GET['suspend']);
+	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
 if(isset($_POST['assignment']))
@@ -260,27 +259,52 @@ if(isset($_POST['assignment']))
 		{
 				if ($a['tariffid']) {
 					$DB->Execute('DELETE FROM liabilities WHERE id=?', array($a['liabilityid']));
+					if ($SYSLOG) {
+						$args = array(
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB] => $a['liabilityid'],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id']);
+						$SYSLOG->AddMessage(SYSLOG_RES_LIAB, SYSLOG_OPER_DELETE, $args, array_keys($args));
+					}
 					$a['liabilityid'] = 0;
 				}
-				else
-					$DB->Execute('UPDATE liabilities SET value=?, name=?, taxid=?, prodid=? WHERE id=?',
-						array(str_replace(',','.',$a['value']),
-							$a['name'],
-							intval($a['taxid']),
-							$a['prodid'],
-							$a['liabilityid']
-						));
+				else {
+					$args = array(
+						'value' => str_replace(',', '.', $a['value']),
+						'name' => $a['name'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => intval($a['taxid']),
+						'prodid' => $a['prodid'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB] => $a['liabilityid']
+					);
+					$DB->Execute('UPDATE liabilities SET value=?, name=?, taxid=?, prodid=? WHERE id=?', array_values($args));
+					if ($SYSLOG) {
+						$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $customer['id'];
+						$SYSLOG->AddMessage(SYSLOG_RES_LIAB, SYSLOG_OPER_UPDATE, $args,
+							array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB],
+								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX]));
+					}
+				}
 		}
 		else if (!$a['tariffid']) {
+			$args = array(
+				'name' => $a['name'],
+				'value' => $a['value'],
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => intval($a['taxid']),
+				'prodid' => $a['prodid']
+			);
 			$DB->Execute('INSERT INTO liabilities (name, value, taxid, prodid) 
-				VALUES (?, ?, ?, ?)',
-				array($a['name'],
-					$a['value'],
-					intval($a['taxid']),
-					$a['prodid']
-				));
+				VALUES (?, ?, ?, ?)', array_values($args));
 
-			$a['liabilityid'] = $DB->GetLastInsertID('liabilities'); 
+			$a['liabilityid'] = $DB->GetLastInsertID('liabilities');
+
+			if ($SYSLOG) {
+				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB]] = $a['liabilityid'];
+				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $customer['id'];
+				$SYSLOG->AddMessage(SYSLOG_RES_LIAB, SYSLOG_OPER_ADD, $args,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX]));
+			}
 		}
 
 		if ($a['tariffid'] == -1) {
@@ -292,33 +316,65 @@ if(isset($_POST['assignment']))
 			unset($a['settlement']);
 		}
 
+		$args = array(
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => intval($a['tariffid']),
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+			'period' => $period,
+			'at' => $at,
+			'invoice' => isset($a['invoice']) ? 1 : 0,
+			'settlement' => isset($a['settlement']) ? 1 : 0,
+			'datefrom' => $from,
+			'dateto' => $to,
+			'pdiscount' => str_replace(',', '.', $a['pdiscount']),
+			'vdiscount' => str_replace(',', '.', $a['vdiscount']),
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB] => $a['liabilityid'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => !empty($a['numberplanid']) ? $a['numberplanid'] : NULL,
+			'paytype' => !empty($a['paytype']) ? $a['paytype'] : NULL,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN] => $a['id']
+		);
 		$DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, period=?, at=?,
 			invoice=?, settlement=?, datefrom=?, dateto=?, pdiscount=?, vdiscount=?,
 			liabilityid=?, numberplanid=?, paytype=?
-			WHERE id=?',
-				array(intval($a['tariffid']),
-					$customer['id'],
-					$period,
-					$at,
-					isset($a['invoice']) ? 1 : 0,
-					isset($a['settlement']) ? 1 : 0,
-					$from,
-					$to,
-					str_replace(',', '.', $a['pdiscount']),
-					str_replace(',', '.', $a['vdiscount']),
-					$a['liabilityid'],
-					!empty($a['numberplanid']) ? $a['numberplanid'] : NULL,
-					!empty($a['paytype']) ? $a['paytype'] : NULL,
-					$a['id'],
-				));
+			WHERE id=?', array_values($args));
+		if ($SYSLOG) {
+			$SYSLOG->AddMessage(SYSLOG_RES_ASSIGN, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN]));
 
+			$nodeassigns = $DB->GetAll('SELECT id, nodeid FROM nodeassignments WHERE assignmentid=?', array($a['id']));
+			if (!empty($nodeassigns))
+				foreach ($nodeassigns as $nodeassign) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEASSIGN] => $nodeassign['id'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodeassign['nodeid'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN] => $a['id']
+					);
+					$SYSLOG->AddMessage(SYSLOG_RES_NODEASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+				}
+		}
 		$DB->Execute('DELETE FROM nodeassignments WHERE assignmentid=?', array($a['id']));
 
 		if (isset($a['nodes']) && sizeof($a['nodes']))
 		{
-			foreach($a['nodes'] as $nodeid)
+			foreach($a['nodes'] as $nodeid) {
 				$DB->Execute('INSERT INTO nodeassignments (nodeid, assignmentid) VALUES (?,?)',
 					array($nodeid, $a['id']));
+				if ($SYSLOG) {
+					$nodeaid = $DB->GetOne('SELECT id FROM nodeassignments WHERE nodeid = ? AND assignmentid = ?',
+						array($nodeid, $a['id']));
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEASSIGN] => $nodeaid,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodeid,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN] => $a['id']
+					);
+					$SYSLOG->AddMessage(SYSLOG_RES_NODEASSIGN, SYSLOG_OPER_ADD, $args, array_keys($args));
+				}
+			}
 		}
 
 		$DB->CommitTrans();

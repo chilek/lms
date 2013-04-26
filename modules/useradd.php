@@ -104,33 +104,38 @@ if(sizeof($useradd))
 
 	$useradd['rights'] = preg_replace('/^[0]*(.*)$/','\1',$outmask);
 
-    if (!empty($useradd['ntype'])) {
-        $useradd['ntype'] = array_sum(array_map('intval', $useradd['ntype']));
-    }
+	if (!empty($useradd['ntype']))
+		$useradd['ntype'] = array_sum(array_map('intval', $useradd['ntype']));
 
-	if(!$error)
-	{
+	if (!$error) {
 		$useradd['accessfrom'] = $accessfrom;
 		$useradd['accessto'] = $accessto;
 		$id = $LMS->UserAdd($useradd);
 
-                if(isset($_POST['selected']))
-                        foreach($_POST['selected'] as $idx => $name)
-                                $DB->Execute('INSERT INTO excludedgroups (customergroupid, userid)
-                                            VALUES(?, ?)', array($idx, $id));
+		if (isset($_POST['selected']))
+			foreach ($_POST['selected'] as $idx => $name) {
+				$DB->Execute('INSERT INTO excludedgroups (customergroupid, userid)
+					VALUES(?, ?)', array($idx, $id));
+				if ($SYSLOG) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_EXCLGROUP] =>
+							$DB->GetLastInsertID('excludedgroups'),
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $idx,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $id
+					);
+					$SYSLOG->AddMessage(SYSLOG_RES_EXCLGROUP, SYSLOG_OPER_ADD,
+						$args, array_keys($args));
+				}
+			}
 
 		$SESSION->redirect('?m=userinfo&id='.$id);
-	}
-	elseif(isset($_POST['selected']))
-	        foreach($_POST['selected'] as $idx => $name)
-	        {
-	                $useradd['selected'][$idx]['id'] = $idx;
-	                $useradd['selected'][$idx]['name'] = $name;
-	        }
-}
-else {
-    $useradd['ntype'] = MSG_MAIL | MSG_SMS;
-}
+	} elseif (isset($_POST['selected']))
+		foreach ($_POST['selected'] as $idx => $name) {
+			$useradd['selected'][$idx]['id'] = $idx;
+			$useradd['selected'][$idx]['name'] = $name;
+		}
+} else
+	$useradd['ntype'] = MSG_MAIL | MSG_SMS;
 
 foreach($access['table'] as $idx => $row)
 {

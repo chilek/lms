@@ -181,14 +181,41 @@ if (isset($_POST['customeradd']))
 		$id = $LMS->CustomerAdd($customeradd);
 
 		if(isset($im) && $id)
-			foreach($im as $idx => $val)
+			foreach($im as $idx => $val) {
 				$DB->Execute('INSERT INTO imessengers (customerid, uid, type)
 					VALUES(?, ?, ?)', array($id, $val, $idx));
+				if ($SYSLOG) {
+					$contactid = $DB->GetLastInsertID('imessengers');
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_IMCONTACT] => $contactid,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id,
+						'uid' => $val,
+						'type' => $idx
+					);
+					$SYSLOG->AddMessage(SYSLOG_RES_IMCONTACT, SYSLOG_OPER_ADD, $args,
+						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_IMCONTACT],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+				}
+			}
 
 		if(isset($contacts) && $id)
-			foreach($contacts as $contact)
+			foreach($contacts as $contact) {
 				$DB->Execute('INSERT INTO customercontacts (customerid, phone, name, type)
 					VALUES(?, ?, ?, ?)', array($id, $contact['phone'], $contact['name'], $contact['type']));
+				if ($SYSLOG) {
+					$contactid = $DB->GetLastInsertID('customercontacts');
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT] => $contactid,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id,
+						'phone' => $contact['phone'],
+						'name' => $contact['name'],
+						'type' => $contact['type']
+					);
+					$SYSLOG->AddMessage(SYSLOG_RES_CUSTCONTACT, SYSLOG_OPER_ADD, $args,
+						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+				}
+			}
 
 		if(!isset($customeradd['reuse']))
 		{

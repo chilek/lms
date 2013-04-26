@@ -46,12 +46,19 @@ if(isset($_POST['sourceedit']))
 	elseif($source['name'] != $sourceedit['name'])
 		if($DB->GetOne('SELECT 1 FROM cashsources WHERE name = ?', array($sourceedit['name'])))
 			$error['name'] = trans('Source with specified name exists!');
-	
-	if(!$error)
-	{
-		$DB->Execute('UPDATE cashsources SET name=?, description=? WHERE id=?',
-			array($sourceedit['name'], $sourceedit['description'], $_GET['id']));
-		
+
+	if (!$error) {
+		$args = array(
+			'name' => $sourceedit['name'],
+			'description' => $sourceedit['description'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE] => $_GET['id']
+		);
+		$DB->Execute('UPDATE cashsources SET name=?, description=? WHERE id=?', array_values($args));
+
+		if ($SYSLOG)
+			$SYSLOG->AddMessage(SYSLOG_RES_CASHSOURCE, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE]));
+
 		$SESSION->redirect('?m=cashsourcelist');
 	}
 

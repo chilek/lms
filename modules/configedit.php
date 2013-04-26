@@ -30,15 +30,21 @@ function ConfigOptionExists($id)
 	return ($DB->GetOne('SELECT id FROM uiconfig WHERE id = ?', array($id)) ? TRUE : FALSE);
 }
 
-$id = $_GET['id'];
+$id = intval($_GET['id']);
 
-if($id && !ConfigOptionExists($id))
-{
+if ($id && !ConfigOptionExists($id))
 	$SESSION->redirect('?m=configlist');
-}
 
-if(isset($_GET['statuschange']))
-{
+if (isset($_GET['statuschange'])) {
+	if ($SYSLOG) {
+		$disabled = $DB->GetOne('SELECT disabled FROM uiconfig WHERE id = ?', array($id));
+		$args = array(
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF] => $id,
+			'disabled' => $disabled ? 0 : 1
+		);
+		$SYSLOG->AddMessage(SYSLOG_RES_UICONF, SYSLOG_OPER_UPDATE, $args,
+			array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF]));
+	}
 	$DB->Execute('UPDATE uiconfig SET disabled = CASE disabled WHEN 0 THEN 1 ELSE 0 END WHERE id = ?',array($id));
 	$SESSION->redirect('?m=configlist');
 }
@@ -76,16 +82,21 @@ if(isset($_POST['config']))
 	
 	if(!isset($cfg['disabled'])) $cfg['disabled'] = 0;
 
-	if(!$error)
-	{
+	if (!$error) {
+		$args = array(
+			'section' => $cfg['section'],
+			'var' => $cfg['var'],
+			'value' => $cfg['value'],
+			'description' => $cfg['description'],
+			'disabled' => $cfg['disabled'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF] => $cfg['id']
+		);
 		$DB->Execute('UPDATE uiconfig SET section = ?, var = ?, value = ?, description = ?, disabled = ? WHERE id = ?', 
-				array(	$cfg['section'], 
-					$cfg['var'], 
-					$cfg['value'],
-					$cfg['description'],
-					$cfg['disabled'],
-					$cfg['id']
-					));
+			array_values($args));
+
+		if ($SYSLOG)
+			$SYSLOG->AddMessage(SYSLOG_RES_UICONF, SYSLOG_OPER_UPDATE,
+				$args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF]));
 
 		$SESSION->redirect('?m=configlist');
 	}

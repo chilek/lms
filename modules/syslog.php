@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2012 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,22 +24,17 @@
  *  $Id$
  */
 
-$id = intval($_GET['id']);
+$layout['popup'] = true;
+$type = isset($_GET['type']) ? $_GET['type'] : '';
+$userid = isset($_GET['userid']) ? intval($_GET['userid']) : 0;
 
-if ($id && $_GET['is_sure'] == '1') {
-	if ($SYSLOG) {
-		$config = $DB->GetRow('SELECT instanceid, hostid FROM daemonconfig c
-			JOIN daemoninstances i ON i.id = c.instanceid WHERE c.id = ?', array($id));
-		$args = array(
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONINST] => $config['instanceid'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST] => $config['hostid'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONCONF] => $id
-		);
-		$SYSLOG->AddMessage(SYSLOG_RES_DAEMONCONF, SYSLOG_OPER_DELETE, $args, array_keys($args));
-	}
-	$DB->Execute('DELETE FROM daemonconfig WHERE id = ?', array($id));
-}
+$trans = $SYSLOG->GetTransactions(array('userid' => $userid, 'limit' => 100));
+if (!empty($trans))
+	foreach ($trans as $idx => $tran)
+		$SYSLOG->DecodeTransaction($trans[$idx]);
+$SMARTY->assign('trans', $trans);
 
-header('Location: ?'.$SESSION->get('backto'));
+$SMARTY->assign('type', $type);
+$SMARTY->display('syslog.html');
 
 ?>

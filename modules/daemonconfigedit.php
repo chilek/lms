@@ -24,7 +24,9 @@
  *  $Id$
  */
 
-$config = $DB->GetRow('SELECT id, var, value, description, disabled, instanceid FROM daemonconfig WHERE id=?', array($_GET['id']));
+$id = intval($_GET['id']);
+$config = $DB->GetRow('SELECT hostid, c.id, var, value, c.description, c.disabled, instanceid FROM daemonconfig c
+			JOIN daemoninstances i ON i.id = c.instanceid WHERE c.id=?', array($id));
 
 if(isset($_POST['config'])) 
 {
@@ -41,30 +43,53 @@ if(isset($_POST['config']))
 	
 	if(!isset($configedit['disabled']))
 		$configedit['disabled'] = 0;
-		
-	if(!$error)
-	{
+
+	if (!$error) {
 		$configedit['value'] = str_replace("\r\n","\n", $configedit['value']);
-		
-		$DB->Execute('UPDATE daemonconfig SET var=?, description=?, value=?, disabled=? WHERE id=?',
-				    array($configedit['var'], 
-					    $configedit['description'],
-					    $configedit['value'],
-					    $configedit['disabled'],
-					    $_GET['id']));
-		
+
+		$args = array(
+			'var' => $configedit['var'], 
+			'description' => $configedit['description'],
+			'value' => $configedit['value'],
+			'disabled' => $configedit['disabled'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONCONF] => $_GET['id']
+		);
+		$DB->Execute('UPDATE daemonconfig SET var=?, description=?, value=?, disabled=? WHERE id=?', array_values($args));
+
+		if ($SYSLOG) {
+			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONINST]] = $config['instanceid'];
+			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST]] = $config['hostid'];
+			$SYSLOG->AddMessage(SYSLOG_RES_DAEMONCONF, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONCONF],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONINST],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST]));
+		}
+
 		$SESSION->redirect('?m=daemoninstanceview&id='.$config['instanceid']);
 	}
 }
 elseif(isset($_GET['statuschange']))
 {
-	if($config['disabled'])
+	if ($SYSLOG) {
+		$args = array(
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST] => $config['hostid'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONINST] => $config['instanceid'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONCONF] => $config['id'],
+			'disabled' => $config['disabled'] ? 0 : 1
+		);
+		$SYSLOG->AddMessage(SYSLOG_RES_DAEMONCONF, SYSLOG_OPER_UPDATE, $args,
+			array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST],
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONINST],
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONCONF]));
+	}
+
+	if ($config['disabled'])
 		$DB->Execute('UPDATE daemonconfig SET disabled=0 WHERE id=?', array($config['id']));
 	else
 		$DB->Execute('UPDATE daemonconfig SET disabled=1 WHERE id=?', array($config['id']));
-	
+
 	$SESSION->redirect('?m=daemoninstanceview&id='.$config['instanceid']);
-}	
+}
 
 $instance = $DB->GetRow('SELECT daemoninstances.name AS name, hosts.name AS hostname FROM daemoninstances, hosts WHERE hosts.id=hostid AND daemoninstances.id=?', array($config['instanceid']));
 

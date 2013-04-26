@@ -79,15 +79,21 @@ if(sizeof($taxrateadd))
 	if(!$error)
 	{
 
+		$args = array(
+			'label' => $taxrateadd['label'],
+			'value' => $taxrateadd['value'],
+			'taxed' => $taxrateadd['taxed'],
+			'validfrom' => $validfrom,
+			'validto' => $validto,
+		);
 		$DB->Execute('INSERT INTO taxes (label, value, taxed, validfrom, validto) 
-			    VALUES (?,?,?,?,?)',array(
-				    $taxrateadd['label'], 
-				    $taxrateadd['value'],
-				    $taxrateadd['taxed'],
-				    $validfrom,
-				    $validto,
-				    ));
-		
+				VALUES (?,?,?,?,?)', array_values($args));
+
+		if ($SYSLOG) {
+			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX]] = $DB->GetLastInsertID('taxes');
+			$SYSLOG->AddMessage(SYSLOG_RES_TAX, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX]));
+		}
+
 		if(!isset($taxrateadd['reuse']))
 		{
 			$SESSION->redirect('?m=taxratelist');

@@ -38,18 +38,21 @@ if(sizeof($stateadd))
 	if($stateadd['name'] == '')
 		$error['name'] = trans('State name is required!');
 
-	if(!$error)
-	{
-		$DB->Execute('INSERT INTO states (name, description) 
-			    VALUES (?,?)',array(
-				    $stateadd['name'],
-				    $stateadd['description'],
-				    ));
-		
-		if(!isset($stateadd['reuse']))
-		{
-			$SESSION->redirect('?m=statelist');
+	if (!$error) {
+		$args = array(
+			'name' => $stateadd['name'],
+			'description' => $stateadd['description']
+		);
+		$DB->Execute('INSERT INTO states (name, description)
+				VALUES (?,?)', array_values($args));
+
+		if ($SYSLOG) {
+			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_STATE]] = $DB->GetLastInsertID('states');
+			$SYSLOG->AddMessage(SYSLOG_RES_STATE, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_STATE]));
 		}
+
+		if (!isset($stateadd['reuse']))
+			$SESSION->redirect('?m=statelist');
 
 		unset($stateadd['name']);
 		unset($stateadd['description']);

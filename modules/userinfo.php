@@ -24,14 +24,13 @@
  *  $Id$
  */
 
-$userinfo = $LMS->GetUserInfo($_GET['id']);
+$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+$userinfo = $LMS->GetUserInfo($id);
 
 if (!$userinfo || $userinfo['deleted'])
-{
 	$SESSION->redirect('?m=userlist');
-}
 
-$rights = $LMS->GetUserRights($_GET['id']);
+$rights = $LMS->GetUserRights($id);
 foreach($rights as $right)
 	if($access['table'][$right]['name'])
 		$accesslist[] = $access['table'][$right]['name'];
@@ -46,6 +45,15 @@ $userinfo['ntype'] = implode(', ', $ntype);
 $layout['pagetitle'] = trans('User Info: $a', $userinfo['login']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
+
+if ($SYSLOG && get_conf('privileges.superuser')) {
+	$trans = $SYSLOG->GetTransactions(array('userid' => $id));
+	if (!empty($trans))
+		foreach ($trans as $idx => $tran)
+			$SYSLOG->DecodeTransaction($trans[$idx]);
+	$SMARTY->assign('transactions', $trans);
+	$SMARTY->assign('userid', $id);
+}
 
 $SMARTY->assign('userinfo', $userinfo);
 $SMARTY->assign('accesslist', $accesslist);

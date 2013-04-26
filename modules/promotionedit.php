@@ -27,51 +27,73 @@
 $promotion = isset($_POST['promotion']) ? $_POST['promotion'] : NULL;
 $action = isset($_GET['action']) ? $_GET['action'] : null;
 
-if ($action == 'tariffdel' && ($tariffid = intval($_GET['tid'])))
-{
-    $promotionid = intval($_GET['id']);
+if ($action == 'tariffdel' && ($tariffid = intval($_GET['tid']))) {
+	$promotionid = intval($_GET['id']);
 
-    $DB->Execute('DELETE FROM promotionassignments WHERE tariffid = ?
-        AND promotionschemaid IN (SELECT id FROM promotionschemas
-            WHERE promotionid = ?)', array($tariffid, $promotionid));
+	$args = array(
+		$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $tariffid,
+		$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO] => $promotionid
+	);
+	if ($SYSLOG) {
+		$assigns = $DB->GetAll('SELECT id, tariffid, promotionschemaid
+			FROM promotionassignments WHERE tariffid = ?
+			AND promotionschemaid IN (SELECT id FROM promotionschemas
+				WHERE promotionid = ?)', array_values($args));
+		if (!empty($assigns)) {
+			foreach ($assigns as $assign) {
+				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOASSIGN]] = $assign['id'];
+				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOSCHEMA]] = $assign['promotionschemaid'];
+				$SYSLOG->AddMessage(SYSLOG_RES_PROMOASSIGN, SYSLOG_OPER_DELETE,
+					$args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOASSIGN],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOSCHEMA],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO]));
+			}
+			unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOASSIGN]]);
+		}
+	}
 
-    $SESSION->redirect('?m=promotioninfo&id='.$promotionid);
+	$DB->Execute('DELETE FROM promotionassignments WHERE tariffid = ?
+		AND promotionschemaid IN (SELECT id FROM promotionschemas
+		WHERE promotionid = ?)', array_values($args));
+
+	$SESSION->redirect('?m=promotioninfo&id=' . $promotionid);
 }
 
-if ($promotion)
-{
+if ($promotion) {
 	foreach ($promotion as $key => $value)
 		$promotion[$key] = trim($value);
 
 	if ($promotion['name']=='' && $promotion['description']=='')
-	{
 		$SESSION->redirect('?m=promotionlist');
-	}
 
-    $promotion['id'] = intval($_GET['id']);
+	$promotion['id'] = intval($_GET['id']);
 
 	if ($promotion['name'] == '')
 		$error['name'] = trans('Promotion name is required!');
 	else if ($DB->GetOne('SELECT id FROM promotions WHERE name = ? AND id <> ?',
-	    array($promotion['name'], $promotion['id']))
-	) {
+			array($promotion['name'], $promotion['id']))) {
 		$error['name'] = trans('Specified name is in use!');
-    }
-
-	if (!$error)
-	{
-        $DB->Execute('UPDATE promotions SET name = ?, description = ?
-            WHERE id = ?',
-            array($promotion['name'], $promotion['description'],
-                $promotion['id']));
-
-		$SESSION->redirect('?m=promotioninfo&id='.$promotion['id']);
 	}
-}
-else
-{
-    $promotion = $DB->GetRow('SELECT * FROM promotions WHERE id = ?',
-        array(intval($_GET['id'])));
+
+	if (!$error) {
+		$args = array(
+			'name' => $promotion['name'],
+			'description' => $promotion['description'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO] => $promotion['id']
+		);
+		$DB->Execute('UPDATE promotions SET name = ?, description = ?
+			WHERE id = ?', array_values($args));
+
+		if ($SYSLOG)
+			$SYSLOG->AddMessage(SYSLOG_RES_PROMO, SYSLOG_OPER_UPDATE,
+				$args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO]));
+
+		$SESSION->redirect('?m=promotioninfo&id=' . $promotion['id']);
+	}
+} else {
+	$promotion = $DB->GetRow('SELECT * FROM promotions WHERE id = ?',
+		array(intval($_GET['id'])));
 }
 
 $layout['pagetitle'] = trans('Promotion Edit: $a', $promotion['name']);

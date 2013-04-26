@@ -36,24 +36,50 @@ function parse_cfg_val($value)
 
 $DB->BeginTrans();
 
-if(!empty($CONFIG['phpui']) && (!$section || $section == 'phpui'))
-foreach($CONFIG['phpui'] as $key => $val)
-{
-	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
-			array('phpui', $key, parse_cfg_val($val))
+foreach (array('phpui', 'invoices', 'notes', 'receipts', 'finances', 'sms', 'mail', 'zones') as $sec)
+	if (!empty($CONFIG[$sec]) && (!$section || $section == $sec))
+		foreach ($CONFIG[$sec] as $key => $val) {
+			$args = array(
+				'section' => $sec,
+				'var' => $key,
+				'value' => parse_cfg_val($val)
 			);
-}
+			$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
+				array_values($args));
 
-if(isset($CONFIG['userpanel']))
-{
+			if ($SYSLOG) {
+				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_OPER_ADD]] = $DB->GetLastInsertID('uiconfig');
+				$SYSLOG->AddMessage(SYSLOG_RES_UICONF, SYSLOG_OPER_ADD, $args,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF]));
+			}
+		}
+
+if (isset($CONFIG['userpanel'])) {
+	if ($SYSLOG) {
+		$configs = $DB->GetCol('SELECT id FROM uiconfig WHERE section = ?', array('userpanel'));
+		if (!empty($configs))
+			foreach ($configs as $config) {
+				$args = array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF] => $config);
+				$SYSLOG->AddMessage(SYSLOG_RES_UICONF, SYSLOG_OPER_DELETE, $args,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF]));
+			}
+	}
 	// it's possible that userpanel config is in database yet
 	$DB->Execute('DELETE FROM uiconfig WHERE section = \'userpanel\'');
 
-	foreach($CONFIG['userpanel'] as $key => $val)
-	{
-		$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
-			array('userpanel', $key, parse_cfg_val($val))
-			);
+	foreach ($CONFIG['userpanel'] as $key => $val) {
+		$args = array(
+			'section' => 'userpanel',
+			'var' => $key,
+			'value' => parse_cfg_val($val)
+		);
+		$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)', array_values($args));
+
+		if ($SYSLOG) {
+			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF]] = $DB->GetLastInsertID('uiconfig');
+			$SYSLOG->AddMessage(SYSLOG_RES_UICONF, SYSLOG_OPER_ADD, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF]));
+		}
 	}
 }
 
@@ -65,62 +91,6 @@ foreach($CONFIG['directories'] as $key => $val)
 			);
 }
 */
-
-if(!empty($CONFIG['invoices']) && (!$section || $section == 'invoices'))
-foreach($CONFIG['invoices'] as $key => $val)
-{
-	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
-			array('invoices', $key, parse_cfg_val($val))
-			);
-}
-
-if(!empty($CONFIG['notes']) && (!$section || $section == 'notes'))
-foreach($CONFIG['notes'] as $key => $val)
-{
-	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
-			array('notes', $key, parse_cfg_val($val))
-			);
-}
-
-if(!empty($CONFIG['receipts']) && (!$section || $section == 'receipts'))
-foreach($CONFIG['receipts'] as $key => $val)
-{
-	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
-			array('receipts', $key, parse_cfg_val($val))
-			);
-}
-
-if(!empty($CONFIG['finances']) && (!$section || $section == 'finances'))
-foreach($CONFIG['finances'] as $key => $val)
-{
-	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
-			array('finances', $key, parse_cfg_val($val))
-			);
-}
-
-if(!empty($CONFIG['sms']) && (!$section || $section == 'sms'))
-foreach($CONFIG['sms'] as $key => $val)
-{
-	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
-			array('sms', $key, parse_cfg_val($val))
-			);
-}
-
-if(!empty($CONFIG['mail']) && (!$section || $section == 'mail'))
-foreach($CONFIG['mail'] as $key => $val)
-{
-	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
-			array('mail', $key, parse_cfg_val($val))
-			);
-}
-
-if(!empty($CONFIG['zones']) && (!$section || $section == 'zones'))
-foreach($CONFIG['zones'] as $key => $val)
-{
-	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
-			array('zones', $key, parse_cfg_val($val))
-			);
-}
 
 $DB->CommitTrans();
 

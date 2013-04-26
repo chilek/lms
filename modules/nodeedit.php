@@ -32,29 +32,48 @@ if (!$LMS->NodeExists($_GET['id']))
 	else
 		header('Location: ?m=nodelist');
 
+$nodeid = intval($_GET['id']);
+$customerid = $LMS->GetNodeOwner($nodeid);
+
 switch ($action) {
 	case 'link':
 		if (empty($_GET['devid']) || !($netdev = $LMS->GetNetDev($_GET['devid']))) {
-			$SESSION->redirect('?m=nodeinfo&id=' . $_GET['id']);
+			$SESSION->redirect('?m=nodeinfo&id=' . $nodeid);
 		} else if ($netdev['ports'] > $netdev['takenports']) {
-			$LMS->NetDevLinkNode($_GET['id'], $_GET['devid'], isset($_GET['linktype']) ? intval($_GET['linktype']) : 0, isset($_GET['linkspeed']) ? intval($_GET['linkspeed']) : 100000, intval($_GET['port']));
-			$SESSION->redirect('?m=nodeinfo&id=' . $_GET['id']);
+			$LMS->NetDevLinkNode($nodeid, $_GET['devid'], isset($_GET['linktype']) ? intval($_GET['linktype']) : 0, isset($_GET['linkspeed']) ? intval($_GET['linkspeed']) : 100000, intval($_GET['port']));
+			$SESSION->redirect('?m=nodeinfo&id=' . $nodeid);
 		} else {
-			$SESSION->redirect('?m=nodeinfo&id=' . $_GET['id'] . '&devid=' . $_GET['devid']);
+			$SESSION->redirect('?m=nodeinfo&id=' . $nodeid . '&devid=' . $_GET['devid']);
 		}
 		break;
 	case 'chkmac':
-		$DB->Execute('UPDATE nodes SET chkmac=? WHERE id=?', array($_GET['chkmac'], $_GET['id']));
-		$SESSION->redirect('?m=nodeinfo&id=' . $_GET['id']);
+		$DB->Execute('UPDATE nodes SET chkmac=? WHERE id=?', array($_GET['chkmac'], $nodeid));
+		if ($SYSLOG) {
+			$args = array(
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodeid,
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+				'chkmac' => $_GET['chkmac']
+			);
+			$SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+		}
+		$SESSION->redirect('?m=nodeinfo&id=' . $nodeid);
 		break;
 	case 'duplex':
-		$DB->Execute('UPDATE nodes SET halfduplex=? WHERE id=?', array($_GET['duplex'], $_GET['id']));
-		$SESSION->redirect('?m=nodeinfo&id=' . $_GET['id']);
+		$DB->Execute('UPDATE nodes SET halfduplex=? WHERE id=?', array($_GET['duplex'], $nodeid));
+		if ($SYSLOG) {
+			$args = array(
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodeid,
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+				'halfduplex' => $_GET['duplex']
+			);
+			$SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+		}
+		$SESSION->redirect('?m=nodeinfo&id=' . $nodeid);
 		break;
 }
 
-$nodeid = intval($_GET['id']);
-$customerid = $LMS->GetNodeOwner($nodeid);
 $nodeinfo = $LMS->GetNode($nodeid);
 
 $macs = array();

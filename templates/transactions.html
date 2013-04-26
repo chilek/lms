@@ -1,0 +1,74 @@
+<!--// $Id$ //-->
+{*$xajax*}
+<FORM name="search" method="post" action="?m=archiveview">
+<INPUT type="submit" class="hiddenbtn">
+<INPUT type="hidden" name="search[resourcetype]" value="{$resourcetype}">
+<INPUT type="hidden" name="search[resourceid]" value="{$resourceid}">
+<INPUT type="hidden" name="search[userid]" value="{$userid}">
+<TABLE style="width: 100%;" CELLPADDING="3">
+	<TR class="dark hand">
+		<TD class="fleftu" onclick="showOrHide('transactionpanel');">
+			<IMG src="img/recover.gif" alt="">
+			<span class="bold"><A name="transactions">{trans("Transaction Log:")}</A></span>&nbsp;({t a=20}last $a transactions{/t})
+		</TD>
+		<TD class="frightu" style="text-align: right;">
+			<A href="javascript:document.search.submit();">{trans("More")} &raquo;</A>
+		</TD>
+	</TR>
+	<TR id="transactionpanel" style="display: none;">
+		<TD style="width: 100%;" class="fall" id="transactiontable" colspan="2">
+			<TABLE style="width: 100%;" cellpadding="5" cellspacing="0">
+			{if $transactions}
+				<TR class="dark">
+					<TD style="width: 1%; white-space: nowrap;" class="fleftu">{trans("Date:")}</TD>
+					<TD style="width: 1%; white-space: nowrap;" class="fbt">{trans("User:")}</TD>
+					<TD style="width: 1%; white-space: nowrap;" class="fbt">{trans("Module:")}</TD>
+					<TD style="width: 97%; white-space: nowrap;" class="fbt">{trans("Operations:")}</TD>
+				</TR>
+				{cycle values="light,lucid" print=false name=trans}
+				{foreach $transactions as $tr}
+				<TR class="{cycle name=trans}">
+					<TD style="width: 1%; white-space: nowrap; vertical-align: bottom;">
+						{$tr.time|date_format:"Y.m.d H.i.s"}
+					</TD>
+					<TD style="width: 1%; white-space: nowrap; text-align: center; vertical-align: bottom;">
+						<a href="?m=userinfo&id={$tr.userid}">{$tr.login}</a>
+					</TD>
+					<TD style="width: 1%; white-space: nowrap; text-align: center; vertical-align: bottom;">
+						{$tr.module}
+					</TD>
+					<TD style="width: 97%; vertical-align: bottom;">
+						{if $tr.messages}
+							{if count($tr.messages) > 10}{$start = 9 - count($tr.messages)}...<br>
+							{else}{$start=-1}{/if}
+							{section name=messages loop=$tr.messages start=$start step=-1}
+								{$message = $tr.messages[messages]}
+								<span class="bold">{$_SYSLOG_RESOURCES[$message.resource]}: {$_SYSLOG_OPERATIONS[$message.operation]}</span>
+								{foreach $message.keys as $key => $msgkey}{$key}: {if $msgkey.value}<a href="?m=archiveinfo&type={$msgkey.type}&id={$msgkey.value}&date={$tr.time}">{/if}{$msgkey.value}{if $msgkey.value}</a>{/if}{if !$msgkey@last}, {/if}{/foreach}
+								{foreach $message.data as $key => $value}{$key}: {$value}{if !$value@last}, {/if}{/foreach}
+								{if !$messages@last}<br>{/if}
+							{/section}
+						{/if}
+					</TD>
+				</TR>
+				{/foreach}
+			{else}
+			<TR>
+				<TD WIDTH="100%" COLSPAN="4" align="center">
+					<P>&nbsp;</P>
+					<P><B>{trans("There are not any transactions.")}</B></P>
+					<P>&nbsp;</P>
+				</TD>
+			</TR>
+			{/if}
+			</TABLE>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+<SCRIPT type="text/javascript">
+<!--
+if (getCookie('transactionpanel') == '1')
+	document.getElementById('transactionpanel').style.display = '';
+//-->
+</SCRIPT>

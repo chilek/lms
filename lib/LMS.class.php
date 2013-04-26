@@ -32,16 +32,18 @@ class LMS {
 	var $DB;   // database object
 	var $AUTH;   // object from Session.class.php (session management)
 	var $CONFIG;   // table including lms.ini options
+	var $SYSLOG;
 	var $cache = array();  // internal cache
 	var $hooks = array(); // registered plugin hooks
 	var $xajax;  // xajax object
 	var $_version = '1.11-git'; // class version
 	var $_revision = '$Revision$';
 
-	function LMS(&$DB, &$AUTH, &$CONFIG) { // class variables setting
+	function LMS(&$DB, &$AUTH, &$CONFIG, &$SYSLOG) { // class variables setting
 		$this->DB = &$DB;
 		$this->AUTH = &$AUTH;
 		$this->CONFIG = &$CONFIG;
+		$this->SYSLOG = &$SYSLOG;
 
 		//$this->_revision = preg_replace('/^.Revision: ([0-9.]+).*/', '\1', $this->_revision);
 		$this->_revision = '';
@@ -210,10 +212,17 @@ class LMS {
 
 	function DatabaseCreate($gzipped = FALSE, $stats = FALSE) { // create database backup
 		$basename = 'lms-' . time() . '-' . DBVERSION;
-		if (($gzipped) && (extension_loaded('zlib')))
-			return $this->DBDump($this->CONFIG['directories']['backup_dir'] . '/' . $basename . '.sql.gz', TRUE, $stats);
-		else
-			return $this->DBDump($this->CONFIG['directories']['backup_dir'] . '/' . $basename . '.sql', FALSE, $stats);
+		if (($gzipped) && (extension_loaded('zlib'))) {
+			$filename = $basename . '.sql.gz';
+			$res = $this->DBDump($this->CONFIG['directories']['backup_dir'] . '/' . $filename, TRUE, $stats);
+		} else {
+			$filename = $basename . '.sql';
+			$res = $this->DBDump($this->CONFIG['directories']['backup_dir'] . '/' . $filename, FALSE, $stats);
+		}
+		if ($this->SYSLOG)
+			$this->SYSLOG->AddMessage(SYSLOG_RES_DBBACKUP, SYSLOG_OPER_ADD,
+				array('filename' => $filename), null);
+		return $res;
 	}
 
 	/*
@@ -239,7 +248,17 @@ class LMS {
 	 */
 
 	function SetUserPassword($id, $passwd) {
-		$this->DB->Execute('UPDATE users SET passwd=?, passwdlastchange=?NOW? WHERE id=?', array(crypt($passwd), $id));
+		global $SYSLOG_RESOURCE_KEYS;
+		$args = array(
+			'passwd' => crypt($passwd),
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $id
+		);
+		$this->DB->Execute('UPDATE users SET passwd=?, passwdlastchange=?NOW? WHERE id=?', array_values($args));
+		if ($this->SYSLOG) {
+			unset($args['passwd']);
+			$this->SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_USERPASSWDCHANGE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
+		}
 	}
 
 	function GetUserName($id = null) { // returns user name
@@ -312,29 +331,49 @@ class LMS {
 	}
 
 	function UserAdd($user) {
+		global $SYSLOG_RESOURCE_KEYS;
+		$args = array(
+			'login' => $user['login'],
+			'name' =>  $user['name'],
+			'email' => $user['email'],
+			'passwd' => crypt($user['password']),
+			'rights' => $user['rights'],
+			'hosts' => $user['hosts'],
+			'position' => $user['position'],
+			'ntype' => !empty($user['ntype']) ? $user['ntype'] : null,
+			'phone' => !empty($user['phone']) ? $user['phone'] : null,
+			'passwdexpiration' => !empty($user['passwdexpiration']) ? $user['passwdexpiration'] : 0,
+			'access' => !empty($user['access']) ? 1 : 0,
+			'accessfrom' => !empty($user['accessfrom']) ? $user['accessfrom'] : 0,
+			'accessto' => !empty($user['accessto']) ? $user['accessto'] : 0,
+		);
 		if ($this->DB->Execute('INSERT INTO users (login, name, email, passwd, rights,
 				hosts, position, ntype, phone, passwdexpiration, access, accessfrom, accessto)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($user['login'],
-						$user['name'],
-						$user['email'],
-						crypt($user['password']),
-						$user['rights'],
-						$user['hosts'],
-						$user['position'],
-						!empty($user['ntype']) ? $user['ntype'] : null,
-						!empty($user['phone']) ? $user['phone'] : null,
-						!empty($user['passwdexpiration']) ? $user['passwdexpiration'] : 0,
-						!empty($user['access']) ? 1 : 0,
-						!empty($user['accessfrom']) ? $user['accessfrom'] : 0,
-						!empty($user['accessto']) ? $user['accessto'] : 0
-				)))
-			return $this->DB->GetOne('SELECT id FROM users WHERE login=?', array($user['login']));
-		else
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
+			$id = $this->DB->GetOne('SELECT id FROM users WHERE login=?', array($user['login']));
+			if ($this->SYSLOG) {
+				unset($args['passwd']);
+				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]] = $id;
+				$this->SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_ADD, $args,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
+			}
+			return $id;
+		} else
 			return FALSE;
 	}
 
 	function UserDelete($id) {
+		global $SYSLOG_RESOURCE_KEYS;
 		if ($this->DB->Execute('UPDATE users SET deleted=1, access=0 WHERE id=?', array($id))) {
+			if ($this->SYSLOG) {
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $id,
+					'deleted' => 1,
+					'access' => 0,
+				);
+				$this->SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_UPDATE,
+					$args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
+			}
 			$this->cache['users'][$id]['deleted'] = 1;
 			return true;
 		}
@@ -412,21 +451,29 @@ class LMS {
 	}
 
 	function UserUpdate($user) {
-		return $this->DB->Execute('UPDATE users SET login=?, name=?, email=?, rights=?,
-				hosts=?, position=?, ntype=?, phone=?, passwdexpiration=?, access=?, accessfrom=?, accessto=? WHERE id=?', array($user['login'],
-						$user['name'],
-						$user['email'],
-						$user['rights'],
-						$user['hosts'],
-						$user['position'],
-						!empty($user['ntype']) ? $user['ntype'] : null,
-						!empty($user['phone']) ? $user['phone'] : null,
-						!empty($user['passwdexpiration']) ? $user['passwdexpiration'] : 0,
-						!empty($user['access']) ? 1 : 0,
-						!empty($user['accessfrom']) ? $user['accessfrom'] : 0,
-						!empty($user['accessto']) ? $user['accessto'] : 0,
-						$user['id']
-				));
+		global $SYSLOG_RESOURCE_KEYS;
+		$args = array(
+			'login' => $user['login'],
+			'name' => $user['name'],
+			'email' => $user['email'],
+			'rights' => $user['rights'],
+			'hosts' => $user['hosts'],
+			'position' => $user['position'],
+			'ntype' => !empty($user['ntype']) ? $user['ntype'] : null,
+			'phone' => !empty($user['phone']) ? $user['phone'] : null,
+			'passwdexpiration' => !empty($user['passwdexpiration']) ? $user['passwdexpiration'] : 0,
+			'access' => !empty($user['access']) ? 1 : 0,
+			'accessfrom' => !empty($user['accessfrom']) ? $user['accessfrom'] : 0,
+			'accessto' => !empty($user['accessto']) ? $user['accessto'] : 0,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $user['id']
+		);
+		$res = $this->DB->Execute('UPDATE users SET login=?, name=?, email=?, rights=?,
+				hosts=?, position=?, ntype=?, phone=?, passwdexpiration=?, access=?, accessfrom=?, accessto=? WHERE id=?',
+				array_values($args));
+		if ($res && $this->SYSLOG)
+			$this->SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
+		return $res;
 	}
 
 	function GetUserRights($id) {
@@ -478,6 +525,41 @@ class LMS {
 	}
 
 	function CustomerAdd($customeradd) {
+		global $SYSLOG_RESOURCE_KEYS;
+		$args = array(
+			'name' => lms_ucwords($customeradd['name']),
+			'lastname' => $customeradd['lastname'],
+			'type' => empty($customeradd['type']) ? 0 : 1,
+			'address' => $customeradd['address'],
+			'zip' => $customeradd['zip'],
+			'city' => $customeradd['city'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $customeradd['countryid'],
+			'email' => $customeradd['email'],
+			'ten' => $customeradd['ten'],
+			'ssn' => $customeradd['ssn'],
+			'status' => $customeradd['status'],
+			'post_name' => $customeradd['post_name'],
+			'post_address' => $customeradd['post_address'],
+			'post_zip' => $customeradd['post_zip'],
+			'post_city' => $customeradd['post_city'],
+			'post_countryid' => $customeradd['post_countryid'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $this->AUTH->id,
+			'info' => $customeradd['info'],
+			'notes' => $customeradd['notes'],
+			'message' => $customeradd['message'],
+			'pin' => $customeradd['pin'],
+			'regon' => $customeradd['regon'],
+			'rbe' => $customeradd['rbe'],
+			'icn' => $customeradd['icn'],
+			'cutoffstop' => $customeradd['cutoffstop'],
+			'consentdate' => $customeradd['consentdate'],
+			'einvoice' => $customeradd['einvoice'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $customeradd['divisionid'],
+			'paytime' => $customeradd['paytime'],
+			'paytype' => !empty($customeradd['paytype']) ? $customeradd['paytype'] : NULL,
+			'invoicenotice' => $customeradd['invoicenotice'],
+			'mailingnotice' => $customeradd['mailingnotice'],
+		);
 		if ($this->DB->Execute('INSERT INTO customers (name, lastname, type,
 				    address, zip, city, countryid, email, ten, ssn, status, creationdate,
 				    post_name, post_address, post_zip, post_city, post_countryid,
@@ -485,62 +567,105 @@ class LMS {
 				    icn, cutoffstop, consentdate, einvoice, divisionid, paytime, paytype,
 				    invoicenotice, mailingnotice)
 				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?,
-				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array(lms_ucwords($customeradd['name']),
-						$customeradd['lastname'],
-						empty($customeradd['type']) ? 0 : 1,
-						$customeradd['address'],
-						$customeradd['zip'],
-						$customeradd['city'],
-						$customeradd['countryid'],
-						$customeradd['email'],
-						$customeradd['ten'],
-						$customeradd['ssn'],
-						$customeradd['status'],
-						$customeradd['post_name'],
-						$customeradd['post_address'],
-						$customeradd['post_zip'],
-						$customeradd['post_city'],
-						$customeradd['post_countryid'],
-						$this->AUTH->id,
-						$customeradd['info'],
-						$customeradd['notes'],
-						$customeradd['message'],
-						$customeradd['pin'],
-						$customeradd['regon'],
-						$customeradd['rbe'],
-						$customeradd['icn'],
-						$customeradd['cutoffstop'],
-						$customeradd['consentdate'],
-						$customeradd['einvoice'],
-						$customeradd['divisionid'],
-						$customeradd['paytime'],
-						!empty($customeradd['paytype']) ? $customeradd['paytype'] : NULL,
-						$customeradd['invoicenotice'],
-						$customeradd['mailingnotice'],
-				))
+				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))
 		) {
 			$this->UpdateCountryState($customeradd['zip'], $customeradd['stateid']);
 			if ($customeradd['post_zip'] != $customeradd['zip']) {
 				$this->UpdateCountryState($customeradd['post_zip'], $customeradd['post_stateid']);
 			}
-			return $this->DB->GetLastInsertID('customers');
+			$id = $this->DB->GetLastInsertID('customers');
+			if ($this->SYSLOG) {
+				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $id;
+				unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
+				$this->SYSLOG->AddMessage(SYSLOG_RES_CUST, SYSLOG_OPER_ADD, $args,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY]));
+			}
+			return $id;
 		} else
 			return FALSE;
 	}
 
 	function DeleteCustomer($id) {
+		global $SYSLOG_RESOURCE_KEYS;
 		$this->DB->BeginTrans();
 
 		$this->DB->Execute('UPDATE customers SET deleted=1, moddate=?NOW?, modid=?
 				WHERE id=?', array($this->AUTH->id, $id));
+
+		if ($this->SYSLOG) {
+			$this->SYSLOG->AddMessage(SYSLOG_RES_CUST, SYSLOG_OPER_UPDATE, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id, 'deleted' => 1),
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+			$assigns = $this->DB->GetAll('SELECT id, customergroupid FROM customerassignments WHERE customerid = ?', array($id));
+			if (!empty($assigns))
+				foreach ($assigns as $assign) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTASSIGN] => $assign['id'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $assign['customergroupid']
+					);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_CUSTASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+				}
+		}
+
 		$this->DB->Execute('DELETE FROM customerassignments WHERE customerid=?', array($id));
+
+		if ($this->SYSLOG) {
+			$assigns = $this->DB->GetAll('SELECT id, tariffid, liabilityid FROM assignments WHERE customerid = ?', array($id));
+			if (!empty($assigns))
+				foreach ($assigns as $assign) {
+					if ($assign['liabilityid']) {
+						$args = array(
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB] => $assign['liabilityid'],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id);
+						$this->SYSLOG->AddMessage(SYSLOG_RES_LIAB, SYSLOG_OPER_DELETE, $args, array_keys($args));
+					}
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN] => $assign['id'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $assign['tariffid'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB] => $assign['liabilityid'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id
+					);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_ASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+					$nodeassigns = $this->DB->GetAll('SELECT id, nodeid FROM nodeassignments WHERE assignmentid = ?', array($assign['id']));
+					if (!empty($nodeassigns))
+						foreach ($nodeassigns as $nodeassign) {
+							$args = array(
+								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEASSIGN] => $nodeassign['id'],
+								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodeassign['nodeid'],
+								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN] => $assign['id'],
+								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id
+							);
+							$this->SYSLOG->AddMessage(SYSLOG_RES_NODEASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+						}
+				}
+		}
 		$liabs = $this->DB->GetCol('SELECT liabilityid FROM assignments WHERE liabilityid <> 0 AND customerid = ?', array($id));
 		if (!empty($liabs))
-			$this->DB->Execute('DELETE FROM liabilities WHERE liabilityid IN (' . implode(',', $liabs) . ')');
+			$this->DB->Execute('DELETE FROM liabilities WHERE id IN (' . implode(',', $liabs) . ')');
+
 		$this->DB->Execute('DELETE FROM assignments WHERE customerid=?', array($id));
 		// nodes
 		$nodes = $this->DB->GetCol('SELECT id FROM nodes WHERE ownerid=?', array($id));
 		if ($nodes) {
+			if ($this->SYSLOG) {
+				$macs = $this->DB->GetAll('SELECT id, nodeid FROM macs WHERE nodeid IN (' . implode(',', $nodes) . ')');
+				foreach ($macs as $mac) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MAC] => $mac['id'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $mac['nodeid']);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_MAC, SYSLOG_OPER_DELETE, $args, array_keys($args));
+				}
+				foreach ($nodes as $node) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $node,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id
+					);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_DELETE, $args, array_keys($args));
+				}
+			}
+
 			$this->DB->Execute('DELETE FROM nodegroupassignments WHERE nodeid IN (' . join(',', $nodes) . ')');
 			$plugin_data = array();
 			foreach ($nodes as $node)
@@ -560,6 +685,42 @@ class LMS {
 	}
 
 	function CustomerUpdate($customerdata) {
+		global $SYSLOG_RESOURCE_KEYS;
+		$args = array(
+			'status' => $customerdata['status'],
+			'type' => empty($customerdata['type']) ? 0 : 1,
+			'address' => $customerdata['address'],
+			'zip' => $customerdata['zip'],
+			'city' => $customerdata['city'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $customerdata['countryid'],
+			'email' => $customerdata['email'],
+			'ten' => $customerdata['ten'],
+			'ssn' => $customerdata['ssn'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => isset($this->AUTH->id) ? $this->AUTH->id : 0,
+			'post_name' => $customerdata['post_name'],
+			'post_address' => $customerdata['post_address'],
+			'post_zip' => $customerdata['post_zip'],
+			'post_city' => $customerdata['post_city'],
+			'post_countryid' => $customerdata['post_countryid'],
+			'info' => $customerdata['info'],
+			'notes' => $customerdata['notes'],
+			'lastname' => $customerdata['lastname'],
+			'name' => lms_ucwords($customerdata['name']),
+			'message' => $customerdata['message'],
+			'pin' => $customerdata['pin'],
+			'regon' => $customerdata['regon'],
+			'icn' => $customerdata['icn'],
+			'rbe' => $customerdata['rbe'],
+			'cutoffstop' => $customerdata['cutoffstop'],
+			'consentdate' => $customerdata['consentdate'],
+			'einvoice' => $customerdata['einvoice'],
+			'invoicenotice' => $customerdata['invoicenotice'],
+			'mailingnotice' => $customerdata['mailingnotice'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $customerdata['divisionid'],
+			'paytime' => $customerdata['paytime'],
+			'paytype' => $customerdata['paytype'] ? $customerdata['paytype'] : null,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerdata['id']
+		);
 		$res = $this->DB->Execute('UPDATE customers SET status=?, type=?, address=?,
 				zip=?, city=?, countryid=?, email=?, ten=?, ssn=?, moddate=?NOW?, modid=?,
 				post_name=?, post_address=?, post_zip=?, post_city=?, post_countryid=?,
@@ -567,42 +728,16 @@ class LMS {
 				deleted=0, message=?, pin=?, regon=?, icn=?, rbe=?,
 				cutoffstop=?, consentdate=?, einvoice=?, invoicenotice=?, mailingnotice=?,
 				divisionid=?, paytime=?, paytype=?
-				WHERE id=?', array($customerdata['status'],
-				empty($customerdata['type']) ? 0 : 1,
-				$customerdata['address'],
-				$customerdata['zip'],
-				$customerdata['city'],
-				$customerdata['countryid'],
-				$customerdata['email'],
-				$customerdata['ten'],
-				$customerdata['ssn'],
-				isset($this->AUTH->id) ? $this->AUTH->id : 0,
-				$customerdata['post_name'],
-				$customerdata['post_address'],
-				$customerdata['post_zip'],
-				$customerdata['post_city'],
-				$customerdata['post_countryid'],
-				$customerdata['info'],
-				$customerdata['notes'],
-				$customerdata['lastname'],
-				lms_ucwords($customerdata['name']),
-				$customerdata['message'],
-				$customerdata['pin'],
-				$customerdata['regon'],
-				$customerdata['icn'],
-				$customerdata['rbe'],
-				$customerdata['cutoffstop'],
-				$customerdata['consentdate'],
-				$customerdata['einvoice'],
-				$customerdata['invoicenotice'],
-				$customerdata['mailingnotice'],
-				$customerdata['divisionid'],
-				$customerdata['paytime'],
-				$customerdata['paytype'] ? $customerdata['paytype'] : null,
-				$customerdata['id'],
-				));
+				WHERE id=?', array_values($args));
 
 		if ($res) {
+			if ($this->SYSLOG) {
+				unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
+				$this->SYSLOG->AddMessage(SYSLOG_RES_CUST, SYSLOG_OPER_UPDATE, $args,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV]));
+			}
 			$this->UpdateCountryState($customerdata['zip'], $customerdata['stateid']);
 			if ($customerdata['post_zip'] != $customerdata['zip']) {
 				$this->UpdateCountryState($customerdata['post_zip'], $customerdata['post_stateid']);
@@ -1114,22 +1249,55 @@ class LMS {
 	}
 
 	function CustomergroupAdd($customergroupdata) {
-		if ($this->DB->Execute('INSERT INTO customergroups (name, description) VALUES (?, ?)', array($customergroupdata['name'], $customergroupdata['description'])))
-			return $this->DB->GetOne('SELECT id FROM customergroups WHERE name=?', array($customergroupdata['name']));
+		global $SYSLOG_RESOURCE_KEYS;
+		if ($this->DB->Execute('INSERT INTO customergroups (name, description) VALUES (?, ?)', array($customergroupdata['name'], $customergroupdata['description']))) {
+			$id = $this->DB->GetLastInsertID('customergroups');
+			if ($this->SYSLOG) {
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $id,
+					'name' => $customergroupdata['name'],
+					'description' => $customergroupdata['description']
+				);
+				$this->SYSLOG->AddMessage(SYSLOG_RES_CUSTGROUP, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP]));
+			}
+			return $id;
+		}
 		else
 			return FALSE;
 	}
 
 	function CustomergroupUpdate($customergroupdata) {
+		global $SYSLOG_RESOURCE_KEYS;
+		$args = array(
+			'name' => $customergroupdata['name'],
+			'description' => $customergroupdata['description'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $customergroupdata['id']
+		);
+		if ($this->SYSLOG)
+			$this->SYSLOG->AddMessage(SYSLOG_RES_CUSTGROUP, SYSLOG_OPER_UPDATE,
+				$args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP]));
 		return $this->DB->Execute('UPDATE customergroups SET name=?, description=? 
-				WHERE id=?', array($customergroupdata['name'],
-						$customergroupdata['description'],
-						$customergroupdata['id']
-				));
+				WHERE id=?', array_values($args));
 	}
 
 	function CustomergroupDelete($id) {
+		global $SYSLOG_RESOURCE_KEYS;
 		if (!$this->CustomergroupWithCustomerGet($id)) {
+			if ($this->SYSLOG) {
+				$custassigns = $this->DB->Execute('SELECT id, customerid, customergroupid FROM customerassignments
+					WHERE customergroupid = ?', array($id));
+				if (!empty($custassigns))
+					foreach ($custassigns as $custassign) {
+						$args = array(
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTASSIGN] => $custassign['id'],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $custassign['customerid'],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $custassign['customergroupid']
+						);
+						$this->SYSLOG->AddMessage(SYSLOG_RES_CUSTASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+					}
+				$this->SYSLOG->AddMessage(SYSLOG_RES_CUSTGROUP, SYSLOG_OPER_DELETE,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $id), array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP]));
+			}
 			$this->DB->Execute('DELETE FROM customergroups WHERE id=?', array($id));
 			return TRUE;
 		}
@@ -1223,14 +1391,39 @@ class LMS {
 	}
 
 	function CustomerassignmentDelete($customerassignmentdata) {
+		global $SYSLOG_RESOURCE_KEYS;
+		if ($this->SYSLOG) {
+			$assign = $this->DB->GetRow('SELECT id, customerid FROM customerassignments
+				WHERE customergroupid = ? AND customerid = ?', array($customerassignmentdata['customergroupid'],
+							$customerassignmentdata['customerid']));
+			if ($assign) {
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTASSIGN] => $assign['id'],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $assign['customerid'],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $customerassignmentdata['customergroupid']
+				);
+				$this->SYSLOG->AddMessage(SYSLOG_RES_CUSTASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+			}
+		}
 		return $this->DB->Execute('DELETE FROM customerassignments 
 			WHERE customergroupid=? AND customerid=?', array($customerassignmentdata['customergroupid'],
 						$customerassignmentdata['customerid']));
 	}
 
 	function CustomerassignmentAdd($customerassignmentdata) {
-		return $this->DB->Execute('INSERT INTO customerassignments (customergroupid, customerid) VALUES (?, ?)', array($customerassignmentdata['customergroupid'],
+		global $SYSLOG_RESOURCE_KEYS;
+		$res = $this->DB->Execute('INSERT INTO customerassignments (customergroupid, customerid) VALUES (?, ?)', array($customerassignmentdata['customergroupid'],
 						$customerassignmentdata['customerid']));
+		if ($this->SYSLOG && $res) {
+			$id = $this->DB->GetLastInsertID('customerassignments');
+			$args = array(
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTASSIGN] => $id,
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerassignmentdata['customerid'],
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $customerassignmentdata['customergroupid']
+			);
+			$this->SYSLOG->AddMessage(SYSLOG_RES_CUSTASSIGN, SYSLOG_OPER_ADD, $args, array_keys($args));
+		}
+		return $res;
 	}
 
 	function CustomerassignmentExist($groupid, $customerid) {
@@ -1261,50 +1454,117 @@ class LMS {
 	}
 
 	function NodeUpdate($nodedata, $deleteassignments = FALSE) {
+		global $SYSLOG_RESOURCE_KEYS;
+		$args = array(
+			'name' => $nodedata['name'],
+			'ipaddr_pub' => $nodedata['ipaddr_pub'],
+			'ipaddr' => $nodedata['ipaddr'],
+			'passwd' => $nodedata['passwd'],
+			'netdev' => $nodedata['netdev'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $this->AUTH->id,
+			'access' => $nodedata['access'],
+			'warning' => $nodedata['warning'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $nodedata['ownerid'],
+			'info' => $nodedata['info'],
+			'location' => $nodedata['location'],
+			'location_city' => $nodedata['location_city'] ? $nodedata['location_city'] : null,
+			'location_street' => $nodedata['location_street'] ? $nodedata['location_street'] : null,
+			'location_house' => $nodedata['location_house'] ? $nodedata['location_house'] : null,
+			'location_flat' => $nodedata['location_flat'] ? $nodedata['location_flat'] : null,
+			'chkmac' => $nodedata['chkmac'],
+			'halfduplex' => $nodedata['halfduplex'],
+			'linktype' => isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
+			'linkspeed' => isset($nodedata['linkspeed']) ? intval($nodedata['linkspeed']) : 100000,
+			'port' => isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
+			'nas' => isset($nodedata['nas']) ? $nodedata['nas'] : 0,
+			'longitude' => !empty($nodedata['longitude']) ? str_replace(',', '.', $nodedata['longitude']) : null,
+			'latitude' => !empty($nodedata['latitude']) ? str_replace(',', '.', $nodedata['latitude']) : null,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodedata['id']
+		);
 		$this->DB->Execute('UPDATE nodes SET name=UPPER(?), ipaddr_pub=inet_aton(?),
 				ipaddr=inet_aton(?), passwd=?, netdev=?, moddate=?NOW?,
 				modid=?, access=?, warning=?, ownerid=?, info=?, location=?,
 				location_city=?, location_street=?, location_house=?, location_flat=?,
 				chkmac=?, halfduplex=?, linktype=?, linkspeed=?, port=?, nas=?,
 				longitude=?, latitude=? 
-				WHERE id=?', array($nodedata['name'],
-				$nodedata['ipaddr_pub'],
-				$nodedata['ipaddr'],
-				$nodedata['passwd'],
-				$nodedata['netdev'],
-				$this->AUTH->id,
-				$nodedata['access'],
-				$nodedata['warning'],
-				$nodedata['ownerid'],
-				$nodedata['info'],
-				$nodedata['location'],
-				$nodedata['location_city'] ? $nodedata['location_city'] : null,
-				$nodedata['location_street'] ? $nodedata['location_street'] : null,
-				$nodedata['location_house'] ? $nodedata['location_house'] : null,
-				$nodedata['location_flat'] ? $nodedata['location_flat'] : null,
-				$nodedata['chkmac'],
-				$nodedata['halfduplex'],
-				isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
-				isset($nodedata['linkspeed']) ? intval($nodedata['linkspeed']) : 100000,
-				isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
-				isset($nodedata['nas']) ? $nodedata['nas'] : 0,
-				!empty($nodedata['longitude']) ? str_replace(',', '.', $nodedata['longitude']) : null,
-				!empty($nodedata['latitude']) ? str_replace(',', '.', $nodedata['latitude']) : null,
-				$nodedata['id']
-		));
+				WHERE id=?', array_values($args));
 
+		if ($this->SYSLOG) {
+			unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
+			$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+
+			$macs = $this->DB->GetAll('SELECT id, nodeid FROM macs WHERE nodeid = ?', array($nodedata['id']));
+			if (!empty($macs))
+				foreach ($macs as $mac) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MAC] => $mac['id'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $mac['nodeid'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $nodedata['ownerid']
+					);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_MAC, SYSLOG_OPER_DELETE, $args, array_keys($args));
+				}
+		}
 		$this->DB->Execute('DELETE FROM macs WHERE nodeid=?', array($nodedata['id']));
 		foreach ($nodedata['macs'] as $mac) {
 			$this->DB->Execute('INSERT INTO macs (mac, nodeid) VALUES(?, ?)', array(strtoupper($mac), $nodedata['id']));
+			if ($this->SYSLOG) {
+				$macid = $this->DB->GetLastInsertID('macs');
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MAC] => $macid,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodedata['id'],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $nodedata['ownerid'],
+					'mac' => strtoupper($mac)
+				);
+				$this->SYSLOG->AddMessage(SYSLOG_RES_MAC, SYSLOG_OPER_ADD, $args,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MAC],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+			}
 		}
 
 		if ($deleteassignments) {
+			if ($this->SYSLOG) {
+				$nodeassigns = $this->DB->GetAll('SELECT id, nodeid, assignmentid FROM nodeassignments
+					WHERE nodeid = ?', array($nodedata['id']));
+				if (!empty($nodeassigns))
+					foreach ($nodeassigns as $nodeassign) {
+						$args = array(
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEASSIGN] => $nodeassign['id'],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodedata['id'],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN] => $nodedata['assignmentid'],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $nodedata['ownerid']
+						);
+						$this->SYSLOG->AddMessage(SYSLOG_RES_NODEASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+					}
+			}
 			$this->DB->Execute('DELETE FROM nodeassignments WHERE nodeid = ?', array($nodedata['id']));
 		}
 	}
 
 	function DeleteNode($id) {
+		global $SYSLOG_RESOURCE_KEYS;
 		$this->DB->BeginTrans();
+
+		if ($this->SYSLOG) {
+			$customerid = $this->DB->GetOne('SELECT ownerid FROM nodes WHERE id = ?', array($id));
+			$macs = $this->DB->GetCol('SELECT macid FROM vmacs WHERE id = ?', array($id));
+			if (!empty($macs))
+				foreach ($macs as $mac) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MAC] => $mac,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $id,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid
+					);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_MAC, SYSLOG_OPER_DELETE, $args, array_keys($args));
+				}
+			$args = array(
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $id,
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid
+			);
+			$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_DELETE, $args, array_keys($args));
+		}
+
 		$this->DB->Execute('DELETE FROM nodes WHERE id = ?', array($id));
 		$this->DB->Execute('DELETE FROM nodegroupassignments WHERE nodeid = ?', array($id));
 		$this->DB->CommitTrans();
@@ -1486,44 +1746,145 @@ class LMS {
 	}
 
 	function NodeSet($id, $access = -1) {
+		global $SYSLOG_RESOURCE_KEYS;
+		$keys = array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]);
+		$customerid = $this->DB->GetOne('SELECT ownerid FROM nodes WHERE id = ?', array($id));
+		$args = array(
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $id,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid
+		);
+
 		if ($access != -1) {
-			if ($access)
-				return $this->DB->Execute('UPDATE nodes SET access = 1 WHERE id = ?
-					AND EXISTS (SELECT 1 FROM customers WHERE id = ownerid 
-						AND status = 3)', array($id));
-			else
+			$args['access'] = $access;
+			if ($access) {
+				if ($this->DB->GetOne('SELECT 1 FROM nodes WHERE id = ? AND EXISTS
+					(SELECT 1 FROM customers WHERE id = ownerid AND status = 3)', array($id))) {
+					if ($this->SYSLOG)
+						$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE,
+							$args, $keys);
+					return $this->DB->Execute('UPDATE nodes SET access = 1 WHERE id = ?
+						AND EXISTS (SELECT 1 FROM customers WHERE id = ownerid 
+							AND status = 3)', array($id));
+				}
+				return 0;
+			} else {
+				if ($this->SYSLOG)
+					$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args, $keys);
 				return $this->DB->Execute('UPDATE nodes SET access = 0 WHERE id = ?', array($id));
+			}
 		}
-		elseif ($this->DB->GetOne('SELECT access FROM nodes WHERE id = ?', array($id)) == 1)
+		elseif ($this->DB->GetOne('SELECT access FROM nodes WHERE id = ?', array($id)) == 1) {
+			if ($this->SYSLOG) {
+				$args['access'] = 0;
+				$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args, $keys);
+			}
 			return $this->DB->Execute('UPDATE nodes SET access=0 WHERE id = ?', array($id));
-		else
-			return $this->DB->Execute('UPDATE nodes SET access = 1 WHERE id = ?
-					AND EXISTS (SELECT 1 FROM customers WHERE id = ownerid 
-						AND status = 3)', array($id));
+		} else {
+			if ($this->DB->GetOne('SELECT 1 FROM nodes WHERE id = ? AND EXISTS
+				(SELECT 1 FROM customers WHERE id = ownerid AND status = 3)', array($id))) {
+				if ($this->SYSLOG) {
+					$args['access'] = 1;
+					$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args, $keys);
+				}
+				return $this->DB->Execute('UPDATE nodes SET access = 1 WHERE id = ?
+						AND EXISTS (SELECT 1 FROM customers WHERE id = ownerid 
+							AND status = 3)', array($id));
+			}
+			return 0;
+		}
 	}
 
 	function NodeSetU($id, $access = FALSE) {
+		global $SYSLOG_RESOURCE_KEYS;
+		$keys = array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]);
+
 		if ($access) {
 			if ($this->DB->GetOne('SELECT status FROM customers WHERE id = ?', array($id)) == 3) {
+				if ($this->SYSLOG) {
+					$nodes = $this->DB->GetCol('SELECT id FROM nodes WHERE ownerid = ?', array($id));
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id,
+						'access' => $access
+					);
+					if (!empty($nodes))
+						foreach ($nodes as $nodeid) {
+							$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE]] = $nodeid;
+							$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args, $keys);
+						}
+				}
 				return $this->DB->Execute('UPDATE nodes SET access=1 WHERE ownerid=?', array($id));
 			}
 		}
-		else
+		else {
+			if ($this->SYSLOG) {
+				$nodes = $this->DB->GetCol('SELECT id FROM nodes WHERE ownerid = ?', array($id));
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id,
+					'access' => $access
+				);
+				if (!empty($nodes))
+					foreach ($nodes as $nodeid) {
+						$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE]] = $nodeid;
+						$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args, $keys);
+					}
+			}
 			return $this->DB->Execute('UPDATE nodes SET access=0 WHERE ownerid=?', array($id));
+		}
 	}
 
 	function NodeSetWarn($id, $warning = FALSE) {
+		global $SYSLOG_RESOURCE_KEYS;
+		if ($this->SYSLOG) {
+			$cids = $this->DB->GetAll('SELECT id, ownerid FROM nodes WHERE id IN ('
+				. (is_array($id) ? implode(',', $id) : $id) . ')');
+			if (!empty($cids))
+				foreach ($cids as $cid) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $cid['id'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $cid['ownerid'],
+						'warning' => $warning
+					);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
+						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+				}
+		}
 		return $this->DB->Execute('UPDATE nodes SET warning = ? WHERE id IN ('
 			. (is_array($id) ? implode(',', $id) : $id) . ')', array($warning ? 1 : 0));
 	}
 
 	function NodeSwitchWarn($id) {
+		global $SYSLOG_RESOURCE_KEYS;
+		if ($this->SYSLOG) {
+			$node = $this->DB->GetRow('SELECT ownerid, warning FROM nodes WHERE id = ?', array($id));
+			$args = array(
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $id,
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $node['ownerid'],
+				'warning' => ($node['warning'] ? 0 : 1)
+			);
+			$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+		}
 		return $this->DB->Execute('UPDATE nodes 
 			SET warning = (CASE warning WHEN 0 THEN 1 ELSE 0 END)
 			WHERE id = ?', array($id));
 	}
 
 	function NodeSetWarnU($id, $warning = FALSE) {
+		global $SYSLOG_RESOURCE_KEYS;
+		if ($this->SYSLOG) {
+			$nodes = $this->DB->GetAll('SELECT id, ownerid FROM nodes WHERE ownerid IN ('
+				. (is_array($id) ? implode(',', $id) : $id) . ')');
+			if (!empty($nodes))
+				foreach ($nodes as $node) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $node['id'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $node['ownerid'],
+						'warning' => $warning
+					);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
+						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+				}
+		}
 		return $this->DB->Execute('UPDATE nodes SET warning = ? WHERE ownerid IN ('
 			. (is_array($id) ? implode(',', $id) : $id) . ')', array($warning ? 1 : 0));
 	}
@@ -1536,35 +1897,39 @@ class LMS {
 	}
 
 	function NodeAdd($nodedata) {
+		global $SYSLOG_RESOURCE_KEYS;
+		$args = array(
+			'name' => strtoupper($nodedata['name']),
+			'ipaddr' => $nodedata['ipaddr'],
+			'ipaddr_pub' => $nodedata['ipaddr_pub'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $nodedata['ownerid'],
+			'passwd' => $nodedata['passwd'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $this->AUTH->id,
+			'access' => $nodedata['access'],
+			'warning' => $nodedata['warning'],
+			'info' => $nodedata['info'],
+			'netdev' => $nodedata['netdev'],
+			'location' => $nodedata['location'],
+			'location_city' => $nodedata['location_city'] ? $nodedata['location_city'] : null,
+			'location_street' => $nodedata['location_street'] ? $nodedata['location_street'] : null,
+			'location_house' => $nodedata['location_house'] ? $nodedata['location_house'] : null,
+			'location_flat' => $nodedata['location_flat'] ? $nodedata['location_flat'] : null,
+			'linktype' => isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
+			'linkspeed' => isset($nodedata['linkspeed']) ? intval($nodedata['linkspeed']) : 100000,
+			'port' => isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
+			'chkmac' => $nodedata['chkmac'],
+			'halfduplex' => $nodedata['halfduplex'],
+			'nas' => isset($nodedata['nas']) ? $nodedata['nas'] : 0,
+			'longitude' => !empty($nodedata['longitude']) ? str_replace(',', '.', $nodedata['longitude']) : null,
+			'latitude' => !empty($nodedata['latitude']) ? str_replace(',', '.', $nodedata['latitude']) : null
+		);
+
 		if ($this->DB->Execute('INSERT INTO nodes (name, ipaddr, ipaddr_pub, ownerid,
 			passwd, creatorid, creationdate, access, warning, info, netdev,
 			location, location_city, location_street, location_house, location_flat,
 			linktype, linkspeed, port, chkmac, halfduplex, nas, longitude, latitude)
 			VALUES (?, inet_aton(?), inet_aton(?), ?, ?, ?,
-			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array(strtoupper($nodedata['name']),
-						$nodedata['ipaddr'],
-						$nodedata['ipaddr_pub'],
-						$nodedata['ownerid'],
-						$nodedata['passwd'],
-						$this->AUTH->id,
-						$nodedata['access'],
-						$nodedata['warning'],
-						$nodedata['info'],
-						$nodedata['netdev'],
-						$nodedata['location'],
-						$nodedata['location_city'] ? $nodedata['location_city'] : null,
-						$nodedata['location_street'] ? $nodedata['location_street'] : null,
-						$nodedata['location_house'] ? $nodedata['location_house'] : null,
-						$nodedata['location_flat'] ? $nodedata['location_flat'] : null,
-						isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
-						isset($nodedata['linkspeed']) ? intval($nodedata['linkspeed']) : 100000,
-						isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
-						$nodedata['chkmac'],
-						$nodedata['halfduplex'],
-						isset($nodedata['nas']) ? $nodedata['nas'] : 0,
-						!empty($nodedata['longitude']) ? str_replace(',', '.', $nodedata['longitude']) : null,
-						!empty($nodedata['latitude']) ? str_replace(',', '.', $nodedata['latitude']) : null
-				))) {
+			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
 			$id = $this->DB->GetLastInsertID('nodes');
 
 			// EtherWerX support (devices have some limits)
@@ -1585,8 +1950,29 @@ class LMS {
 				$this->DB->CommitTrans();
 			}
 
+			if ($this->SYSLOG) {
+				unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
+				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE]] = $id;
+				$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_ADD, $args,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+			}
+
 			foreach ($nodedata['macs'] as $mac)
 				$this->DB->Execute('INSERT INTO macs (mac, nodeid) VALUES(?, ?)', array(strtoupper($mac), $id));
+			$macs = $this->DB->GetAll('SELECT id, mac FROM macs WHERE nodeid = ?', array($id));
+			if ($this->SYSLOG)
+				foreach ($macs as $mac) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MAC] => $mac['id'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $id,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $nodedata['ownerid'],
+						'mac' => $mac['mac']
+					);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_MAC, SYSLOG_OPER_ADD, $args,
+						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MAC],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+				}
 
 			return $id;
 		}
@@ -1675,12 +2061,21 @@ class LMS {
 	}
 
 	function CompactNodeGroups() {
+		global $SYSLOG_RESOURCE_KEYS;
 		$this->DB->BeginTrans();
 		$this->DB->LockTables('nodegroups');
 		if ($nodegroups = $this->DB->GetAll('SELECT id, prio FROM nodegroups ORDER BY prio ASC')) {
 			$prio = 1;
 			foreach ($nodegroups as $idx => $row) {
 				$this->DB->Execute('UPDATE nodegroups SET prio=? WHERE id=?', array($prio, $row['id']));
+				if ($this->SYSLOG) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP] => $row['id'],
+						'prio' => $prio
+					);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_NODEGROUP, SYSLOG_OPER_UPDATE, $args,
+						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP]));
+				}
 				$prio++;
 			}
 		}
@@ -1812,17 +2207,53 @@ class LMS {
 	}
 
 	function DeleteAssignment($id) {
+		global $SYSLOG_RESOURCE_KEYS;
 		$this->DB->BeginTrans();
 
-		if ($lid = $this->DB->GetOne('SELECT liabilityid FROM assignments WHERE id=?', array($id))) {
-			$this->DB->Execute('DELETE FROM liabilities WHERE id=?', array($lid));
+		if ($this->SYSLOG) {
+			$custid = $this->DB->GetOne('SELECT customerid FROM assignments WHERE id=?', array($id));
+
+			$nodeassigns = $this->DB->GetAll('SELECT id, nodeid FROM nodeassignments WHERE assignmentid = ?', array($id));
+			if (!empty($nodeassigns))
+				foreach ($nodeassigns as $nodeassign) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEASSIGN] => $nodeassign['id'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $custid,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodeassign['nodeid'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN] => $id
+					);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_NODEASSIGN, SYSLOG_OPER_DELETE,
+						$args, array_keys($args));
+				}
+
+			$assign = $this->DB->GetRow('SELECT tariffid, liabilityid FROM assignments WHERE id=?', array($id));
+			$lid = $assign['liabilityid'];
+			$tid = $assign['tariffid'];
+			if ($lid) {
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB] => $lid,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $custid
+				);
+				$this->SYSLOG->AddMessage(SYSLOG_RES_LIAB, SYSLOG_OPER_DELETE, $args, array_keys($args));
+			}
 		}
+		$this->DB->Execute('DELETE FROM liabilities WHERE id=(SELECT liabilityid FROM assignments WHERE id=?)', array($id));
 		$this->DB->Execute('DELETE FROM assignments WHERE id=?', array($id));
+		if ($this->SYSLOG) {
+			$args = array(
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $tid,
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB] => $lid,
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN] => $id,
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $custid
+			);
+			$this->SYSLOG->AddMessage(SYSLOG_RES_ASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+		}
 
 		$this->DB->CommitTrans();
 	}
 
 	function AddAssignment($data) {
+		global $SYSLOG_RESOURCE_KEYS;
 		$result = array();
 
 		// Create assignments according to promotion schema
@@ -1856,13 +2287,25 @@ class LMS {
 							$datefrom = mktime(0, 0, 0, $start_month + 1, $data['at'], $start_year);
 						}
 
+						$args = array(
+							'name' => trans('Activation payment'),
+							'value' => str_replace(',', '.', $value),
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => intval($tariff['taxid']),
+							'prodid' => $tariff['prodid']
+						);
 						$this->DB->Execute('INSERT INTO liabilities (name, value, taxid, prodid)
-		    			    VALUES (?, ?, ?, ?)', array(trans('Activation payment'),
-								str_replace(',', '.', $value),
-								intval($tariff['taxid']),
-								$tariff['prodid']
-						));
-						$lid = $this->DB->GetLastInsertID('liabilities');
+							VALUES (?, ?, ?, ?)', array_values($args));
+
+						if ($this->SYSLOG) {
+							$lid = $this->DB->GetLastInsertID('liabilities');
+							$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB]] = $lid;
+							$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $data['customerid'];
+							$this->SYSLOG->AddMessage(SYSLOG_RES_LIAB, SYSLOG_OPER_ADD, $args,
+								array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB],
+									$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+									$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX]));
+						}
+
 						$tariffid = 0;
 						$period = DISPOSABLE;
 						$at = $datefrom;
@@ -1887,8 +2330,8 @@ class LMS {
 
 					// Find tariff with specified name+value+period...
 					$tariffid = $this->DB->GetOne('SELECT id FROM tariffs
-                        WHERE name = ? AND value = ? AND period = ?
-                        LIMIT 1', array(
+						WHERE name = ? AND value = ? AND period = ?
+						LIMIT 1', array(
 							$tariff['name'],
 							str_replace(',', '.', $value),
 							$tariff['period'],
@@ -1896,44 +2339,70 @@ class LMS {
 
 					// ... if not found clone tariff
 					if (!$tariffid) {
-						$this->DB->Execute('INSERT INTO tariffs (name, value, period,
-                            taxid, type, upceil, downceil, uprate, downrate,
-                            prodid, plimit, climit, dlimit, upceil_n, downceil_n, uprate_n, downrate_n,
-                            domain_limit, alias_limit, sh_limit, www_limit, ftp_limit, mail_limit, sql_limit,
-                            quota_sh_limit, quota_www_limit, quota_ftp_limit, quota_mail_limit, quota_sql_limit)
-                            SELECT ?, ?, ?, taxid, type, upceil, downceil, uprate, downrate,
-                            prodid, plimit, climit, dlimit, upceil_n, downceil_n, uprate_n, downrate_n,
-                            domain_limit, alias_limit, sh_limit, www_limit, ftp_limit, mail_limit, sql_limit,
-                            quota_sh_limit, quota_www_limit, quota_ftp_limit, quota_mail_limit, quota_sql_limit
-                            FROM tariffs WHERE id = ?', array(
-								$tariff['name'],
-								str_replace(',', '.', $value),
-								$tariff['period'],
-								$tariff['id'],
+						$args = $this->DB->GetRow('SELECT name, value, period,
+							taxid, type, upceil, downceil, uprate, downrate,
+							prodid, plimit, climit, dlimit, upceil_n, downceil_n, uprate_n, downrate_n,
+							domain_limit, alias_limit, sh_limit, www_limit, ftp_limit, mail_limit, sql_limit,
+							quota_sh_limit, quota_www_limit, quota_ftp_limit, quota_mail_limit, quota_sql_limit
+							FROM tariffs WHERE id = ?', array($tariff['id']));
+						$args = array_merge($args, array(
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $args['taxid'],
+							'name' => $tariff['name'],
+							'value' => str_replace(',', '.', $value),
+							'period' => $tariff['period']
 						));
+						unset($args['taxid']);
+						$this->DB->Execute('INSERT INTO tariffs (name, value, period,
+							taxid, type, upceil, downceil, uprate, downrate,
+							prodid, plimit, climit, dlimit, upceil_n, downceil_n, uprate_n, downrate_n,
+							domain_limit, alias_limit, sh_limit, www_limit, ftp_limit, mail_limit, sql_limit,
+							quota_sh_limit, quota_www_limit, quota_ftp_limit, quota_mail_limit, quota_sql_limit)
+							VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+								array_values($args));
 						$tariffid = $this->DB->GetLastInsertId('tariffs');
+						if ($this->SYSLOG) {
+							$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF]] = $tariffid;
+							$this->SYSLOG->AddMessage(SYSLOG_RES_TARIFF, SYSLOG_OPER_ADD, $args,
+								array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF],
+									$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX]));
+						}
 					}
 				}
 
 				// Create assignment
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $tariffid,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $data['customerid'],
+					'period' => $period,
+					'at' => $at,
+					'invoice' => !empty($data['invoice']) ? 1 : 0,
+					'settlement' => !empty($data['settlement']) ? 1 : 0,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
+					'paytype' => !empty($data['paytype']) ? $data['paytype'] : NULL,
+					'datefrom' => $idx ? $datefrom : 0,
+					'dateto' => $idx ? $dateto : 0,
+					'pdiscount' => 0,
+					'vdiscount' => 0,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB] => $lid,
+				);
+
 				$this->DB->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice,
 					    settlement, numberplanid, paytype, datefrom, dateto, pdiscount, vdiscount, liabilityid)
-					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($tariffid,
-						$data['customerid'],
-						$period,
-						$at,
-						!empty($data['invoice']) ? 1 : 0,
-						!empty($data['settlement']) ? 1 : 0,
-						!empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
-						!empty($data['paytype']) ? $data['paytype'] : NULL,
-						$idx ? $datefrom : 0,
-						$idx ? $dateto : 0,
-						0,
-						0,
-						$lid,
-				));
+					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
-				$result[] = $this->DB->GetLastInsertID('assignments');
+				$id = $this->DB->GetLastInsertID('assignments');
+
+				if ($this->SYSLOG) {
+					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN]] = $id;
+					$this->SYSLOG->AddMessage(SYSLOG_RES_ASSIGN, SYSLOG_OPER_ADD, $args,
+						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN]));
+				}
+
+				$result[] = $id;
 				if ($idx) {
 					$datefrom = $dateto + 1;
 				}
@@ -1948,67 +2417,120 @@ class LMS {
 
 				// Create assignments
 				foreach ($tariffs as $t) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $t,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $data['customerid'],
+						'period' => $data['period'],
+						'at' => $this->CalcAt($data['period'], $datefrom),
+						'invoice' => !empty($data['invoice']) ? 1 : 0,
+						'settlement' => !empty($data['settlement']) ? 1 : 0,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
+						'paytype' => !empty($data['paytype']) ? $data['paytype'] : NULL,
+						'datefrom' => $datefrom,
+						'dateto' => 0,
+						'pdiscount' => 0,
+						'vdiscount' => 0,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB] => 0,
+					);
+
 					$this->DB->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice,
 					    settlement, numberplanid, paytype, datefrom, dateto, pdiscount, vdiscount, liabilityid)
-					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($t,
-							$data['customerid'],
-							$data['period'],
-							$this->CalcAt($data['period'], $datefrom),
-							!empty($data['invoice']) ? 1 : 0,
-							!empty($data['settlement']) ? 1 : 0,
-							!empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
-							!empty($data['paytype']) ? $data['paytype'] : NULL,
-							$datefrom, 0, 0, 0, 0,
-					));
+					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
-					$result[] = $this->DB->GetLastInsertID('assignments');
+					$id = $this->DB->GetLastInsertID('assignments');
+
+					if ($this->SYSLOG) {
+						$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN]] = $id;
+						$this->SYSLOG->AddMessage(SYSLOG_RES_ASSIGN, SYSLOG_OPER_ADD, $args,
+							array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN],
+								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF],
+								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB],
+								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN]));
+					}
+
+					$result[] = $id;
 				}
 			}
 		}
 		// Create one assignment record
 		else {
 			if (!empty($data['value'])) {
+				$args = array(
+					'name' => $data['name'],
+					'value' => str_replace(',', '.', $data['value']),
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => intval($data['taxid']),
+					'prodid' => $data['prodid']
+				);
 				$this->DB->Execute('INSERT INTO liabilities (name, value, taxid, prodid)
-					    VALUES (?, ?, ?, ?)', array($data['name'],
-						str_replace(',', '.', $data['value']),
-						intval($data['taxid']),
-						$data['prodid']
-				));
+					    VALUES (?, ?, ?, ?)', array_values($args));
 				$lid = $this->DB->GetLastInsertID('liabilities');
+				if ($this->SYSLOG) {
+					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB]] = $lid;
+					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $data['customerid'];
+					$this->SYSLOG->AddMessage(SYSLOG_RES_LIAB, SYSLOG_OPER_ADD, $args,
+						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX]));
+				}
 			}
 
+			$args = array(
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => intval($data['tariffid']),
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $data['customerid'],
+				'period' => $data['period'],
+				'at' => $data['at'],
+				'invoice' => !empty($data['invoice']) ? 1 : 0,
+				'settlement' => !empty($data['settlement']) ? 1 : 0,
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
+				'paytype' => !empty($data['paytype']) ? $data['paytype'] : NULL,
+				'datefrom' => $data['datefrom'],
+				'dateto' => $data['dateto'],
+				'pdiscount' => str_replace(',', '.', $data['pdiscount']),
+				'vdiscount' => str_replace(',', '.', $data['vdiscount']),
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB] => isset($lid) ? $lid : 0,
+			);
 			$this->DB->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice,
 					    settlement, numberplanid, paytype, datefrom, dateto, pdiscount, vdiscount, liabilityid)
-					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array(intval($data['tariffid']),
-					$data['customerid'],
-					$data['period'],
-					$data['at'],
-					!empty($data['invoice']) ? 1 : 0,
-					!empty($data['settlement']) ? 1 : 0,
-					!empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
-					!empty($data['paytype']) ? $data['paytype'] : NULL,
-					$data['datefrom'],
-					$data['dateto'],
-					str_replace(',', '.', $data['pdiscount']),
-					str_replace(',', '.', $data['vdiscount']),
-					isset($lid) ? $lid : 0,
-			));
+					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
-			$result[] = $this->DB->GetLastInsertID('assignments');
+			$id = $this->DB->GetLastInsertID('assignments');
+
+			if ($this->SYSLOG) {
+				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN]] = $id;
+				$this->SYSLOG->AddMessage(SYSLOG_RES_ASSIGN, SYSLOG_OPER_ADD, $args,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN]));
+			}
+
+			$result[] = $id;
 		}
 
 		if (!empty($result) && count($result = array_filter($result))) {
 			if (!empty($data['nodes'])) {
 				// Use multi-value INSERT query
 				$values = array();
-				foreach ((array) $data['nodes'] as $nodeid) {
-					foreach ($result as $aid) {
+				foreach ((array) $data['nodes'] as $nodeid)
+					foreach ($result as $aid)
 						$values[] = sprintf('(%d, %d)', $nodeid, $aid);
-					}
-				}
 
 				$this->DB->Execute('INSERT INTO nodeassignments (nodeid, assignmentid)
 					VALUES ' . implode(', ', $values));
+				if ($this->SYSLOG) {
+					$nodeassigns = $this->DB->GetAll('SELECT id, nodeid FROM nodeassignments WHERE assignmentid = ?', array($aid));
+					foreach ($nodeassigns as $nodeassign) {
+						$args = array(
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEASSIGN] => $nodeassign['id'],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $data['customerid'],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodeassign['nodeid'],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN] => $aid
+						);
+						$this->SYSLOG->AddMessage(SYSLOG_RES_NODEASSIGN, SYSLOG_OPER_ADD, $args, array_keys($args));
+					}
+				}
 			}
 		}
 
@@ -2016,6 +2538,22 @@ class LMS {
 	}
 
 	function SuspendAssignment($id, $suspend = TRUE) {
+		global $SYSLOG_RESOURCE_KEYS;
+		if ($this->SYSLOG) {
+			$assign = $this->DB->GetRow('SELECT id, tariffid, liabilityid, customerid FROM assignments WHERE id = ?', array($id));
+			$args = array(
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN] => $assign['id'],
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $assign['tariffid'],
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB] => $assign['liabilityid'],
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $assign['customerid'],
+				'suspend' => ($suspend ? 1 : 0)
+			);
+			$this->SYSLOG->AddMessage(SYSLOG_RES_ASSIGN, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+		}
 		return $this->DB->Execute('UPDATE assignments SET suspended=? WHERE id=?', array($suspend ? 1 : 0, $id));
 	}
 
@@ -2304,97 +2842,134 @@ class LMS {
 	}
 
 	function TariffAdd($tariff) {
+		global $SYSLOG_RESOURCE_KEYS;
+		$args = array(
+			'name' => $tariff['name'],
+			'description' => $tariff['description'],
+			'value' => $tariff['value'],
+			'period' => $tariff['period'] ? $tariff['period'] : null,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $tariff['taxid'],
+			'prodid' => $tariff['prodid'],
+			'uprate' => $tariff['uprate'],
+			'downrate' => $tariff['downrate'],
+			'upceil' => $tariff['upceil'],
+			'downceil' => $tariff['downceil'],
+			'climit' => $tariff['climit'],
+			'plimit' => $tariff['plimit'],
+			'uprate_n' => $tariff['uprate_n'],
+			'downrate_n' => $tariff['downrate_n'],
+			'upceil_n' => $tariff['upceil_n'],
+			'downceil_n' => $tariff['downceil_n'],
+			'climit_n' => $tariff['climit_n'],
+			'plimit_n' => $tariff['plimit_n'],
+			'dlimit' => $tariff['dlimit'],
+			'type' => $tariff['type'],
+			'sh_limit' => $tariff['sh_limit'],
+			'www_limit' => $tariff['www_limit'],
+			'mail_limit' => $tariff['mail_limit'],
+			'sql_limit' => $tariff['sql_limit'],
+			'ftp_limit' => $tariff['ftp_limit'],
+			'quota_sh_limit' => $tariff['quota_sh_limit'],
+			'quota_www_limit' => $tariff['quota_www_limit'],
+			'quota_mail_limit' => $tariff['quota_mail_limit'],
+			'quota_sql_limit' => $tariff['quota_sql_limit'],
+			'quota_ftp_limit' => $tariff['quota_ftp_limit'],
+			'domain_limit' => $tariff['domain_limit'],
+			'alias_limit' => $tariff['alias_limit'],
+		);
 		$result = $this->DB->Execute('INSERT INTO tariffs (name, description, value,
 				period, taxid, prodid, uprate, downrate, upceil, downceil, climit,
 				plimit, uprate_n, downrate_n, upceil_n, downceil_n, climit_n,
 				plimit_n, dlimit, type, sh_limit, www_limit, mail_limit, sql_limit,
 				ftp_limit, quota_sh_limit, quota_www_limit, quota_mail_limit,
 				quota_sql_limit, quota_ftp_limit, domain_limit, alias_limit)
-				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', array(
-				$tariff['name'],
-				$tariff['description'],
-				$tariff['value'],
-				$tariff['period'] ? $tariff['period'] : null,
-				$tariff['taxid'],
-				$tariff['prodid'],
-				$tariff['uprate'],
-				$tariff['downrate'],
-				$tariff['upceil'],
-				$tariff['downceil'],
-				$tariff['climit'],
-				$tariff['plimit'],
-				$tariff['uprate_n'],
-				$tariff['downrate_n'],
-				$tariff['upceil_n'],
-				$tariff['downceil_n'],
-				$tariff['climit_n'],
-				$tariff['plimit_n'],
-				$tariff['dlimit'],
-				$tariff['type'],
-				$tariff['sh_limit'],
-				$tariff['www_limit'],
-				$tariff['mail_limit'],
-				$tariff['sql_limit'],
-				$tariff['ftp_limit'],
-				$tariff['quota_sh_limit'],
-				$tariff['quota_www_limit'],
-				$tariff['quota_mail_limit'],
-				$tariff['quota_sql_limit'],
-				$tariff['quota_ftp_limit'],
-				$tariff['domain_limit'],
-				$tariff['alias_limit'],
-				));
-		if ($result)
-			return $this->DB->GetLastInsertID('tariffs');
+				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', array_values($args));
+		if ($result) {
+			$id = $this->DB->GetLastInsertID('tariffs');
+			if ($this->SYSLOG) {
+				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF]] = $id;
+				$this->SYSLOG->AddMessage(SYSLOG_RES_TARIFF, SYSLOG_OPER_ADD, $args,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX]));
+			}
+			return $id;
+		}
 		else
 			return FALSE;
 	}
 
 	function TariffUpdate($tariff) {
-		return $this->DB->Execute('UPDATE tariffs SET name=?, description=?, value=?,
+		global $SYSLOG_RESOURCE_KEYS;
+		$args = array(
+			'name' => $tariff['name'],
+			'description' => $tariff['description'],
+			'value' => $tariff['value'],
+			'period' => $tariff['period'] ? $tariff['period'] : null,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $tariff['taxid'],
+			'prodid' => $tariff['prodid'],
+			'uprate' => $tariff['uprate'],
+			'downrate' => $tariff['downrate'],
+			'upceil' => $tariff['upceil'],
+			'downceil' => $tariff['downceil'],
+			'climit' => $tariff['climit'],
+			'plimit' => $tariff['plimit'],
+			'uprate_n' => $tariff['uprate_n'],
+			'downrate_n' => $tariff['downrate_n'],
+			'upceil_n' => $tariff['upceil_n'],
+			'downceil_n' => $tariff['downceil_n'],
+			'climit_n' => $tariff['climit_n'],
+			'plimit_n' => $tariff['plimit_n'],
+			'dlimit' => $tariff['dlimit'],
+			'sh_limit' => $tariff['sh_limit'],
+			'www_limit' => $tariff['www_limit'],
+			'mail_limit' => $tariff['mail_limit'],
+			'sql_limit' => $tariff['sql_limit'],
+			'ftp_limit' => $tariff['ftp_limit'],
+			'quota_sh_limit' => $tariff['quota_sh_limit'],
+			'quota_www_limit' => $tariff['quota_www_limit'],
+			'quota_mail_limit' => $tariff['quota_mail_limit'],
+			'quota_sql_limit' => $tariff['quota_sql_limit'],
+			'quota_ftp_limit' => $tariff['quota_ftp_limit'],
+			'domain_limit' => $tariff['domain_limit'],
+			'alias_limit' => $tariff['alias_limit'],
+			'type' => $tariff['type'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $tariff['id']
+		);
+		$res = $this->DB->Execute('UPDATE tariffs SET name=?, description=?, value=?,
 				period=?, taxid=?, prodid=?, uprate=?, downrate=?, upceil=?, downceil=?,
 				climit=?, plimit=?, uprate_n=?, downrate_n=?, upceil_n=?, downceil_n=?,
 				climit_n=?, plimit_n=?, dlimit=?, sh_limit=?, www_limit=?, mail_limit=?,
 				sql_limit=?, ftp_limit=?, quota_sh_limit=?, quota_www_limit=?,
 				quota_mail_limit=?, quota_sql_limit=?, quota_ftp_limit=?,
-				domain_limit=?, alias_limit=?, type=? WHERE id=?', array($tariff['name'],
-						$tariff['description'],
-						$tariff['value'],
-						$tariff['period'] ? $tariff['period'] : null,
-						$tariff['taxid'],
-						$tariff['prodid'],
-						$tariff['uprate'],
-						$tariff['downrate'],
-						$tariff['upceil'],
-						$tariff['downceil'],
-						$tariff['climit'],
-						$tariff['plimit'],
-						$tariff['uprate_n'],
-						$tariff['downrate_n'],
-						$tariff['upceil_n'],
-						$tariff['downceil_n'],
-						$tariff['climit_n'],
-						$tariff['plimit_n'],
-						$tariff['dlimit'],
-						$tariff['sh_limit'],
-						$tariff['www_limit'],
-						$tariff['mail_limit'],
-						$tariff['sql_limit'],
-						$tariff['ftp_limit'],
-						$tariff['quota_sh_limit'],
-						$tariff['quota_www_limit'],
-						$tariff['quota_mail_limit'],
-						$tariff['quota_sql_limit'],
-						$tariff['quota_ftp_limit'],
-						$tariff['domain_limit'],
-						$tariff['alias_limit'],
-						$tariff['type'],
-						$tariff['id']
-				));
+				domain_limit=?, alias_limit=?, type=? WHERE id=?', array_values($args));
+		if ($res && $this->SYSLOG)
+			$this->SYSLOG->AddMessage(SYSLOG_RES_TARIFF, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX]));
+		return $res;
 	}
 
 	function TariffDelete($id) {
-		return $this->DB->Execute('DELETE FROM tariffs WHERE id=?', array($id));
+		global $SYSLOG_RESOURCE_KEYS;
+		if ($this->SYSLOG)
+			$assigns = $this->DB->GetAll('SELECT promotionid, a.id, promotionschemaid FROM promotionassignments a
+				JOIN promotionschemas s ON s.id = a.promotionschemaid
+				WHERE a.tariffid = ?', array($id));
+		$res = $this->DB->Execute('DELETE FROM tariffs WHERE id=?', array($id));
+		if ($res && $this->SYSLOG) {
+			$this->SYSLOG->AddMessage(SYSLOG_RES_TARIFF, SYSLOG_OPER_DELETE, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $id),
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF]));
+			if (!empty($assigns))
+				foreach ($assigns as $assign) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOASSIGN] => $assign['id'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOSCHEMA] => $assign['promotionschemaid'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO] => $assign['promotionid'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $id
+					);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_PROMOASSIGN, SYSLOG_OPER_DELETE,
+						$args, array_keys($args));
+				}
+		}
+		return $res;
 	}
 
 	function GetTariff($id, $network = NULL) {
@@ -4458,10 +5033,27 @@ class LMS {
 
 		$cstate = $this->DB->GetOne('SELECT stateid FROM zipcodes WHERE zip = ?', array($zip));
 
+		$args = array(
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_STATE] => $stateid,
+			'zip' => $zip
+		);
 		if ($cstate === NULL) {
-			$this->DB->Execute('INSERT INTO zipcodes (stateid, zip) VALUES (?, ?)', array($stateid, $zip));
+			$this->DB->Execute('INSERT INTO zipcodes (stateid, zip) VALUES (?, ?)', array_values($args));
+			if ($SYSLOG) {
+				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ZIP]] = $this->DB->GetLastInsertID('zipcodes');
+				$this->SYSLOG->AddMessage(SYSLOG_RES_ZIP, SYSLOG_OPER_ADD, $args,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_STATE],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ZIP]));
+			}
 		} else if ($cstate != $stateid) {
-			$this->DB->Execute('UPDATE zipcodes SET stateid = ? WHERE zip = ?', array($stateid, $zip));
+			$this->DB->Execute('UPDATE zipcodes SET stateid = ? WHERE zip = ?', array_values($args));
+			if ($SYSLOG) {
+				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ZIP]] =
+					$this->DB->GetOne('SELECT id FROM zipcodes WHERE zip = ?', array($zip));
+				$this->SYSLOG->AddMessage(SYSLOG_RES_ZIP, SYSLOG_OPER_UPDATE, $args,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_STATE],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ZIP]));
+			}
 		}
 	}
 

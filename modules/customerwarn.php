@@ -35,9 +35,19 @@ if (isset($setwarnings['mcustomerid']))
 	$cids = array_filter($setwarnings['mcustomerid'], 'is_natural');
 	if (!empty($cids)) {
 		$LMS->NodeSetWarnU($cids, $warnon ? 1 : 0);
-		if (isset($message))
+		if (isset($message)) {
 			$DB->Execute('UPDATE customers SET message = ? WHERE id IN (' . implode(',', $cids) . ')',
 				array($message));
+			if ($SYSLOG)
+				foreach ($cids as $cid) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $cid,
+						'message' => $message
+					);
+					$SYSLOG->AddMessage(SYSLOG_RES_CUST, SYSLOG_OPER_UPDATE, $args,
+						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+				}
+		}
 	}
 
 	$SESSION->save('warnmessage', $message);

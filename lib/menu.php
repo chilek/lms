@@ -66,6 +66,23 @@ $menu = array(
 			),
 		),
 
+		'log' => array(
+			'name' => trans('Transaction Log'),
+			'img' => 'recover.gif',
+			'link' => '?m=archiveview',
+			'tip' => trans('Transaction Log Management'),
+			'accesskey' => 't',
+			'prio' => 3,
+			'submenu' => array(
+				array(
+					'name' => trans('View'),
+					'link' =>'?m=archiveview',
+					'tip' => trans('Allows you to view transaction log'),
+					'prio' => 10,
+				),
+			),
+		),
+
 		'customers' => array(
 			'name' => trans('Customers'),
 			'img' =>'customer.gif',

@@ -24,18 +24,20 @@
  *  $Id$
  */
 
-$id = $_GET['id'];
+$id = intval($_GET['id']);
 
-if($_GET['is_sure']==1 && $id)
-{
-	if( (
-	    $DB->GetOne('SELECT 1 FROM cash WHERE taxid=? LIMIT 1',array($id))
-	    + $DB->GetOne('SELECT 1 FROM tariffs WHERE taxid=? LIMIT 1',array($id))
-	    + $DB->GetOne('SELECT 1 FROM invoicecontents WHERE taxid=? LIMIT 1',array($id))
-	    ) == 0
-	)
-	    $DB->Execute('DELETE FROM taxes WHERE id=?',array($id));
-}	
+if ($_GET['is_sure'] == 1 && $id) {
+	if (($DB->GetOne('SELECT 1 FROM cash WHERE taxid=? LIMIT 1', array($id))
+		+ $DB->GetOne('SELECT 1 FROM tariffs WHERE taxid=? LIMIT 1', array($id))
+		+ $DB->GetOne('SELECT 1 FROM invoicecontents WHERE taxid=? LIMIT 1', array($id))
+		) == 0) {
+		$DB->Execute('DELETE FROM taxes WHERE id=?', array($id));
+		if ($SYSLOG) {
+			$args = array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $id);
+			$SYSLOG->AddMessage(SYSLOG_RES_TAX, SYSLOG_OPER_DELETE, $args, array_keys($args));
+		}
+	}
+}
 
 $SESSION->redirect('?'.$SESSION->get('backto'));
 

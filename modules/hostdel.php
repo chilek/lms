@@ -24,16 +24,40 @@
  *  $Id$
  */
 
-$id = $_GET['id'];
+$id = intval($_GET['id']);
 
-if($id && $_GET['is_sure']=='1')
-{
+if ($id && $_GET['is_sure'] == '1') {
 	if($DB->Execute('DELETE FROM hosts WHERE id = ?', array($id)))
 	{
+		if ($SYSLOG) {
+			$args = array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST] => $id);
+			$SYSLOG->AddMessage(SYSLOG_RES_HOST, SYSLOG_OPER_DELETE, $args, array_keys($args));
+		}
+
 		if($instances = $DB->GetCol('SELECT id FROM daemoninstances WHERE hostid = ?', array($id)))
 		{
 			foreach($instances as $instance)
 			{
+				if ($SYSLOG) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST] => $id,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONINST] => $instance
+					);
+					$SYSLOG->AddMessage(SYSLOG_RES_DAEMONINST, SYSLOG_OPER_DELETE,
+						$args, array_keys($args));
+					$configs = $DB->GetCol('SELECT id FROM daemonconfig c WHERE instanceid = ?',
+						array($instance));
+					if (!empty($configs))
+						foreach ($configs as $config) {
+							$args = array(
+								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST] => $id,
+								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONCONF] => $config,
+								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONINST] => $instance
+							);
+							$SYSLOG->AddMessage(SYSLOG_RES_DAEMONCONF, SYSLOG_OPER_DELETE,
+								$args, array_keys($args));
+						}
+				}
 				$DB->Execute('DELETE FROM daemoninstances WHERE id = ?', array($instance));
 				$DB->Execute('DELETE FROM daemonconfig WHERE instanceid = ?', array($instance));
 			}

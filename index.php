@@ -139,12 +139,20 @@ require_once(LIB_DIR.'/LMS.class.php');
 require_once(LIB_DIR.'/Auth.class.php');
 require_once(LIB_DIR.'/accesstable.php');
 require_once(LIB_DIR.'/Session.class.php');
+@require_once(LIB_DIR . '/SYSLOG.class.php');
+
+if (check_conf('phpui.logging') && class_exists('SYSLOG'))
+	$SYSLOG = new SYSLOG($DB);
+else
+	$SYSLOG = null;
 
 // Initialize Session, Auth and LMS classes
 
 $SESSION = new Session($DB, $CONFIG['phpui']['timeout']);
-$AUTH = new Auth($DB, $SESSION);
-$LMS = new LMS($DB, $AUTH, $CONFIG);
+$AUTH = new Auth($DB, $SESSION, $SYSLOG);
+if ($SYSLOG)
+	$SYSLOG->SetAuth($AUTH);
+$LMS = new LMS($DB, $AUTH, $CONFIG, $SYSLOG);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
@@ -243,14 +251,20 @@ if ($AUTH->islogged) {
 					$CONFIG['privileges'][$access['table'][$level]['privilege']] = TRUE;
 			}
 
+		if ($SYSLOG)
+			$SYSLOG->NewTransaction($module);
+
 		if ($global_allow || ($allow && !$deny))
 		{
 			$layout['module'] = $module;
 			$LMS->InitUI();
 			include(MODULES_DIR.'/'.$module.'.php');
-		}
-		else
+		} else {
+			if ($SYSLOG)
+				$SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_USERNOACCESS,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id), array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
 			$SMARTY->display('noaccess.html');
+		}
 	}
 	else
 	{

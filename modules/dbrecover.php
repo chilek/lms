@@ -26,7 +26,7 @@
 
 function DBLoad($filename=NULL)
 {
-	global $DB, $CONFIG;
+	global $DB, $CONFIG, $SYSLOG;
 
 	if(!$filename)
 		return FALSE;
@@ -79,6 +79,9 @@ function DBLoad($filename=NULL)
 					$DB->Execute("SELECT setval('".$tablename."_id_seq',max(id)) FROM ".$tablename);
 		break;
 	}
+
+	$SYSLOG->AddMessage(SYSLOG_RES_DBBACKUP, SYSLOG_OPER_DBBACKUPRECOVER,
+		array('filename' => $filename), null);
 }
 
 if(isset($_GET['is_sure']))

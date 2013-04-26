@@ -48,22 +48,27 @@ if(isset($_POST['nodegroupadd']))
 	if(!$error)
 	{
 		$prio = $DB->GetOne('SELECT MAX(prio)+1 FROM nodegroups');
+		$args = array(
+			'name' => $nodegroupadd['name'],
+			'description' => $nodegroupadd['description'],
+			'prio' => ($prio != NULL ? $prio : 1)
+		);
 		$DB->Execute('INSERT INTO nodegroups (name, description, prio)
-				VALUES (?, ?, ?)', 
-				array($nodegroupadd['name'],
-					$nodegroupadd['description'],
-					($prio != NULL ? $prio : 1)
-				));
-	
+				VALUES (?, ?, ?)', array_values($args));
+		$id = $DB->GetLastInsertID('nodegroups');
+		if ($SYSLOG) {
+			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP]] = $id;
+			$SYSLOG->AddMessage(SYSLOG_RES_NODEGROUP, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP]));
+		}
+
 		if (isset($nodegroupadd['reuse'])) 
 		{
 			unset($nodegroupadd);
 			$nodegroupadd['reuse'] = 1;
 			$SMARTY->assign('nodegroupadd',$nodegroupadd);
 			$SMARTY->display('nodegroupadd.html');
-		} 
+		}
 
-		$id = $DB->GetLastInsertID('nodegroups');
 		$SESSION->redirect('?m=nodegrouplist&id='.$id);
 	}
 	

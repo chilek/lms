@@ -62,26 +62,54 @@ if(sizeof($numberplanedit))
 		{
 			$error['doctype'] = trans('Selected document type has already defined default plan!');
 		}
-	
-	if(!$error)
-	{
+
+	if (!$error) {
 		$DB->BeginTrans();
-		
+
+		$args = array(
+			'template' => $numberplanedit['template'],
+			'doctype' => $numberplanedit['doctype'],
+			'period' => $numberplanedit['period'],
+			'isdefault' => $numberplanedit['isdefault'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $numberplanedit['id']
+		);
 		$DB->Execute('UPDATE numberplans SET template=?, doctype=?, period=?, isdefault=? WHERE id=?',
-			    array(
-				    $numberplanedit['template'],
-				    $numberplanedit['doctype'],
-				    $numberplanedit['period'],
-				    $numberplanedit['isdefault'],
-				    $numberplanedit['id']
-			    ));
-		
+				array_values($args));
+
+		if ($SYSLOG) {
+			$SYSLOG->AddMessage(SYSLOG_RES_NUMPLAN, SYSLOG_OPER_UPDATE,
+				$args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN]));
+			$assigns = $DB->GetAll('SELECT * FROM numberplanassignments WHERE planid = ?',
+				array($numberplanedit['id']));
+			if (!empty($assigns))
+				foreach ($assigns as $assign) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLANASSIGN] => $assign['id'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $assign['planid'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $assign['divisionid']
+					);
+					$SYSLOG->AddMessage(SYSLOG_RES_NUMPLANASSIGN, SYSLOG_OPER_DELETE,
+						$args, array_keys($args));
+				}
+		}
+
 		$DB->Execute('DELETE FROM numberplanassignments WHERE planid = ?', array($numberplanedit['id']));
-	
-		if(!empty($_POST['selected']))
-			foreach($_POST['selected'] as $idx => $name)
+
+		if (!empty($_POST['selected']))
+			foreach ($_POST['selected'] as $idx => $name) {
 				$DB->Execute('INSERT INTO numberplanassignments (planid, divisionid)
 					VALUES (?, ?)', array($numberplanedit['id'], intval($idx)));
+				if ($SYSLOG) {
+					$id = $DB->GetLastInsertID('numberplanassignments');
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLANASSIGN] => $id,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $numberplanedit['id'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => intval($idx)
+					);
+					$SYSLOG->AddMessage(SYSLOG_RES_NUMPLANASSIGN, SYSLOG_OPER_ADD,
+						$args, array_keys($args));
+				}
+			}
 
 		$DB->CommitTrans();
 		

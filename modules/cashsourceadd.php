@@ -43,16 +43,22 @@ if($sourceadd)
 	elseif($DB->GetOne('SELECT 1 FROM cashsources WHERE name = ?', array($sourceadd['name'])))
 		$error['name'] = trans('Source with specified name exists!');
 
-	if(!$error)
-	{
-		$DB->Execute('INSERT INTO cashsources (name, description) VALUES (?,?)',
-			array($sourceadd['name'], $sourceadd['description']));
-		
-		if(!isset($sourceadd['reuse']))
-		{
-			$SESSION->redirect('?m=cashsourcelist');
+	if (!$error) {
+		$args = array(
+			'name' => $sourceadd['name'],
+			'description' => $sourceadd['description']
+		);
+		$DB->Execute('INSERT INTO cashsources (name, description) VALUES (?,?)', array_values($args));
+
+		if ($SYSLOG) {
+			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE]] = $DB->GetLastInsertID('cashsources');
+			$SYSLOG->AddMessage(SYSLOG_RES_CASHSOURCE, SYSLOG_OPER_ADD, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE]));
 		}
-		
+
+		if(!isset($sourceadd['reuse']))
+			$SESSION->redirect('?m=cashsourcelist');
+
 		unset($sourceadd['name']);
 		unset($sourceadd['description']);
 	}

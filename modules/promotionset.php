@@ -24,12 +24,19 @@
  *  $Id$
  */
 
-$id = isset($_GET['id']) ? $_GET['id'] : 0;
+$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-if($id)
-{
+if ($id) {
+	$args = array(
+		'disabled' => !empty($_GET['access']) ? 0 : 1,
+		$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO] => $id
+	);
 	$DB->Execute('UPDATE promotions SET disabled = ? WHERE id = ?',
-	    array(!empty($_GET['access']) ? 0 : 1, $id));
+		array_values($args));
+
+	if ($SYSLOG)
+		$SYSLOG->AddMessage(SYSLOG_RES_PROMO, SYSLOG_OPER_UPDATE,
+			$args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO]));
 }
 
 header('Location: ?'.$SESSION->get('backto'));

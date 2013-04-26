@@ -47,10 +47,12 @@ class Auth {
 	var $_revision = '$Revision$';
 	var $DB = NULL;
 	var $SESSION = NULL;
+	var $SYSLOG = NULL;
 
-	function Auth(&$DB, &$SESSION) {
+	function Auth(&$DB, &$SESSION, &$SYSLOG) {
 		$this->DB = &$DB;
 		$this->SESSION = &$SESSION;
+		$this->SYSLOG = &$SYSLOG;
 		//$this->_revision = preg_replace('/^.Revision: ([0-9.]+).*/', '\1', $this->_revision);
 		$this->_revision = '';
 
@@ -101,6 +103,12 @@ class Auth {
 			{
 				$this->DB->Execute('UPDATE users SET lastlogindate=?, lastloginip=? WHERE id=?', array(time(), $this->ip ,$this->id));
 				writesyslog('User '.$this->login.' logged in.', LOG_INFO);
+				if ($this->SYSLOG) {
+					$this->SYSLOG->NewTransaction('auth', $this->id);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_USERLOGIN,
+						array('userid' => $this->id, 'ip' => $this->ip, 'useragent' => $_SERVER['HTTP_USER_AGENT']),
+						array('userid'));
+				}
 			}
 
 			$this->SESSION->save('session_id', $this->id);
@@ -121,7 +129,13 @@ class Auth {
 						writesyslog('Bad password for ' . $this->login, LOG_WARNING);
 
 					$this->DB->Execute('UPDATE users SET failedlogindate=?, failedloginip=? WHERE id = ?',
-						array(time(), $this->ip, $this->id));
+						array(time(), ip2long($this->ip), $this->id));
+					if ($this->SYSLOG) {
+						$this->SYSLOG->NewTransaction('auth', $this->id);
+						$this->SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_USERLOGFAIL,
+							array('userid' => $this->id, 'ip' => $this->ip, 'useragent' => $_SERVER['HTTP_USER_AGENT']),
+							array('userid'));
+					}
 				} else {
 					writesyslog('Unknown login ' . $this->login . ' from ' . $this->ip, LOG_WARNING);
 				}
@@ -139,8 +153,15 @@ class Auth {
 	}
 
 	function LogOut() {
-		if ($this->islogged)
+		if ($this->islogged) {
 			writesyslog('User ' . $this->login . ' logged out.', LOG_INFO);
+			if ($this->SYSLOG) {
+				$this->SYSLOG->NewTransaction('auth', $this->id);
+				$this->SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_USERLOGOUT,
+					array('userid' => $this->id, 'ip' => $this->ip, 'useragent' => $_SERVER['HTTP_USER_AGENT']),
+					array('userid'));
+			}
+		}
 		$this->SESSION->finish();
 	}
 

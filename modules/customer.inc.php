@@ -50,6 +50,16 @@ $messagelist = $LMS->GetMessages($customerid, 10);
 $eventlist = $LMS->EventSearch(array('customerid' => $customerid), 'date,desc', true);
 $customernodes = $LMS->GetCustomerNodes($customerid);
 
+if ($SYSLOG && get_conf('privileges.superuser')) {
+	$trans = $SYSLOG->GetTransactions(array('key' => $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST], 'value' => $customerid));
+	if (!empty($trans))
+		foreach ($trans as $idx => $tran)
+			$SYSLOG->DecodeTransaction($trans[$idx]);
+	$SMARTY->assign('transactions', $trans);
+	$SMARTY->assign('resourcetype', SYSLOG_RES_CUST);
+	$SMARTY->assign('resourceid', $customerid);
+}
+
 if(!empty($documents))
 {
         $SMARTY->assign('docrights', $DB->GetAllByKey('SELECT doctype, rights

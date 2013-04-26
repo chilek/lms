@@ -27,8 +27,9 @@ CREATE TABLE users (
 	access smallint DEFAULT 1 NOT NULL,
 	accessfrom integer DEFAULT 0 NOT NULL,
 	accessto integer DEFAULT 0 NOT NULL,
+	swekey_id varchar(32) DEFAULT NULL,
 	PRIMARY KEY (id),
-	UNIQUE (login)
+	UNIQUE (login, swekey_id)
 );
 
 /* --------------------------------------------------------
@@ -1639,6 +1640,67 @@ CREATE TABLE managementurls (
 );
 
 /* ---------------------------------------------------
+ Structure of table "logtransactions"
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS logtransactions_id_seq;
+CREATE SEQUENCE logtransactions_id_seq;
+DROP TABLE IF EXISTS logtransactions;
+CREATE TABLE logtransactions (
+	id integer		DEFAULT nextval('logtransactions_id_seq'::text) NOT NULL,
+	userid integer		DEFAULT 0 NOT NULL,
+	time integer		DEFAULT 0 NOT NULL,
+	module varchar(50)	DEFAULT '' NOT NULL,
+	PRIMARY KEY (id)
+);
+CREATE INDEX logtransactions_userid_idx ON logtransactions (userid);
+CREATE INDEX logtransactions_time_idx ON logtransactions (time);
+
+/* ---------------------------------------------------
+ Structure of table "logmessages"
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS logmessages_id_seq;
+CREATE SEQUENCE logmessages_id_seq;
+DROP TABLE IF EXISTS logmessages;
+CREATE TABLE logmessages (
+	id integer		DEFAULT nextval('logmessages_id_seq'::text) NOT NULL,
+	transactionid integer	NOT NULL
+		REFERENCES logtransactions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	resource integer	DEFAULT 0 NOT NULL,
+	operation integer	DEFAULT 0 NOT NULL,
+	PRIMARY KEY (id)
+);
+CREATE INDEX logmessages_transactionid_idx ON logmessages (transactionid);
+CREATE INDEX logmessages_resource_idx ON logmessages (resource);
+CREATE INDEX logmessages_operation_idx ON logmessages (operation);
+
+/* ---------------------------------------------------
+ Structure of table "logmessagekeys"
+------------------------------------------------------*/
+DROP TABLE IF EXISTS logmessagekeys;
+CREATE TABLE logmessagekeys (
+	logmessageid integer	NOT NULL
+		REFERENCES logmessages (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	name varchar(32)	NOT NULL,
+	value integer		NOT NULL
+);
+CREATE INDEX logmessagekeys_logmessageid_idx ON logmessagekeys (logmessageid);
+CREATE INDEX logmessagekeys_name_idx ON logmessagekeys (name);
+CREATE INDEX logmessagekeys_value_idx ON logmessagekeys (value);
+
+/* ---------------------------------------------------
+ Structure of table "logmessagedata"
+------------------------------------------------------*/
+DROP TABLE IF EXISTS logmessagedata;
+CREATE TABLE logmessagedata (
+	logmessageid integer	NOT NULL
+		REFERENCES logmessages (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	name varchar(32)	NOT NULL,
+	value text		DEFAULT ''
+);
+CREATE INDEX logmessagedata_logmessageid_idx ON logmessagedata (logmessageid);
+CREATE INDEX logmessagedata_name_idx ON logmessagedata (name);
+
+/* ---------------------------------------------------
  Structure of table "up_rights" (Userpanel)
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS up_rights_id_seq;
@@ -1869,4 +1931,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2013032100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2013042600');

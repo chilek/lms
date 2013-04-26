@@ -96,23 +96,26 @@ if(sizeof($taxrateedit))
 			$validto = mktime(23, 59, 59, $tmonth, $tday, $tyear);
 	}
 
-	if(!$error)
-	{
+	if (!$error) {
+		$args = array(
+			'label' => $taxrateedit['label'], 
+			'value' => $taxrateedit['value'],
+			'taxed' => $taxrateedit['taxed'],
+			'validfrom' => $validfrom,
+			'validto' => $validto,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $taxrateedit['id']
+		);
 		$DB->Execute('UPDATE taxes SET label=?, value=?, taxed=?,validfrom=?,validto=? WHERE id=?',
-			    array(
-				    $taxrateedit['label'], 
-				    $taxrateedit['value'],
-				    $taxrateedit['taxed'],
-				    $validfrom,
-				    $validto,
-				    $taxrateedit['id']
-				    ));
-		
+			array_values($args));
+
+		if ($SYSLOG)
+			$SYSLOG->AddMessage(SYSLOG_RES_TAX, SYSLOG_OPER_UPDATE,
+				$args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX]));
+
 		$SESSION->redirect('?m=taxratelist');
-	}
-	else
+	} else
 		$taxrate = $taxrateedit;
-}	
+}
 
 $layout['pagetitle'] = trans('Tax Rate Edit: $a', $label);
 

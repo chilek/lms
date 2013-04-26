@@ -57,12 +57,15 @@ if(isset($_POST['nodegroup']))
 
 	if(!$error)
 	{
+		$args = array(
+			'name' => $nodegroupedit['name'],
+			'description' => $nodegroupedit['description'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP] => $nodegroupedit['id']
+		);
 		$LMS->DB->Execute('UPDATE nodegroups SET name=?, description=?
-				WHERE id=?',
-				array($nodegroupedit['name'],
-					$nodegroupedit['description'],
-					$nodegroupedit['id']
-				));
+				WHERE id=?', array_values($args));
+		if ($SYSLOG)
+			$SYSLOG->AddMessages(SYSLOG_RES_NODEGROUP, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP]));
 
 		$SESSION->redirect('?m=nodegroupinfo&id='.$id);
 	}

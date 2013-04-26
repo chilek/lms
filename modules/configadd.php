@@ -60,20 +60,26 @@ if(sizeof($config))
 	
 	if(!isset($config['disabled'])) $config['disabled'] = 0;
 
-	if(!$error)
-	{
-		$DB->Execute('INSERT INTO uiconfig (section, var, value, description, disabled) VALUES (?, ?, ?, ?, ?)', 
-				array($section, 
-					$config['name'], 
-					$config['value'],
-					$config['description'],
-					$config['disabled']
-					));
-		
-		if(!isset($config['reuse']))
-		{
-			$SESSION->redirect('?m=configlist');
+	if (!$error) {
+		$args = array(
+			'section' => $section,
+			'name' => $config['name'],
+			'value' => $config['value'],
+			'description' => $config['description'],
+			'disabled' => $config['disabled']
+		);
+		$DB->Execute('INSERT INTO uiconfig (section, var, value, description, disabled) VALUES (?, ?, ?, ?, ?)',
+			array_values($args));
+
+		if ($SYSLOG) {
+			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF]] = $DB->GetLastInsertID('uiconfig');
+			$SYSLOG->AddMessage(SYSLOG_RES_UICONF, SYSLOG_OPER_ADD, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF]));
 		}
+
+		if (!isset($config['reuse']))
+			$SESSION->redirect('?m=configlist');
+
 		unset($config['name']);
 		unset($config['value']);
 		unset($config['description']);

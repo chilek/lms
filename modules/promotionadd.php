@@ -41,18 +41,23 @@ if ($promotion)
 	else if ($DB->GetOne('SELECT id FROM promotions WHERE name = ?', array($promotion['name'])))
 		$error['name'] = trans('Specified name is in use!');
 
-	if (!$error)
-	{
-        $DB->Execute('INSERT INTO promotions (name, description)
-            VALUES (?, ?)',
-            array($promotion['name'], $promotion['description']));
+	if (!$error) {
+		$args = array(
+			'name' => $promotion['name'],
+			'description' => $promotion['description']
+		);
+		$DB->Execute('INSERT INTO promotions (name, description)
+			VALUES (?, ?)', array_values($args));
+		$pid = $DB->GetLastInsertId('promotions');
+
+		if ($SYSLOG) {
+			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO]] = $pid;
+			$SYSLOG->AddMessage(SYSLOG_RES_PROMO, SYSLOG_OPER_ADD, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO]));
+		}
 
 		if (empty($promotion['reuse']))
-		{
-            $pid = $DB->GetLastInsertId('promotions');
-
-			$SESSION->redirect('?m=promotioninfo&id='.$pid);
-		}
+			$SESSION->redirect('?m=promotioninfo&id=' . $pid);
 
 		unset($promotion);
 		$promotion['reuse'] = '1';

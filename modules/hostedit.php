@@ -30,7 +30,9 @@ function GetHostIdByName($name)
 	return $DB->GetOne('SELECT id FROM hosts WHERE name = ?', array($name));
 }
 
-$host = $DB->GetRow('SELECT id, name, description FROM hosts WHERE id=?', array($_GET['id']));
+$id = intval($_GET['id']);
+
+$host = $DB->GetRow('SELECT id, name, description FROM hosts WHERE id=?', array($id));
 
 $layout['pagetitle'] = trans('Host Edit: $a', $host['name']);
 
@@ -45,18 +47,25 @@ if(isset($_POST['hostedit']))
 	elseif($host['name']!=$hostedit['name'])
 		if(GetHostIdByName($hostedit['name']))
 			$error['name'] = trans('Host with specified name exists!');
-	
-	if(!$error)
-	{
-		$DB->Execute('UPDATE hosts SET name=?, description=? WHERE id=?',
-				    array($hostedit['name'], $hostedit['description'], $_GET['id']));
-		
+
+	if (!$error) {
+		$args = array(
+			'name' => $hostedit['name'],
+			'description' => $hostedit['description'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST] => $id
+		);
+		$DB->Execute('UPDATE hosts SET name=?, description=? WHERE id=?', array_values($args));
+
+		if ($SYSLOG)
+			$SYSLOG->AddMessage(SYSLOG_RES_HOST, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST]));
+
 		$SESSION->redirect('?m=hostlist');
 	}
-	
+
 	$host['name'] = $hostedit['name'];
 	$host['description'] = $hostedit['description'];
-}	
+}
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

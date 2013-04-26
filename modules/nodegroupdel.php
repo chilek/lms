@@ -34,6 +34,9 @@ if(isset($_GET['is_sure']))
 		$DB->BeginTrans();
 		$DB->Execute('DELETE FROM nodegroups WHERE id = ?', array($id));
 //		$DB->Execute('DELETE FROM nodegroupassignments WHERE nodegroupid = ?', array($id));
+		if ($SYSLOG)
+			$SYSLOG->AddMessage(SYSLOG_RES_NODEGROUP, SYSLOG_OPER_DELETE,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP] => $id), array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP]));
 		$DB->CommitTrans();
 		$LMS->CompactNodeGroups();
 	}

@@ -1,0 +1,198 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+{include file="calendar_js.html"}
+{$xajax}
+<SCRIPT type="text/javascript">
+<!--
+	function filter() {
+		document.page.action = "?m=archiveview";
+		document.page.target = "";
+		document.page.submit();
+	}
+
+	function clear_filter() {
+		xjx.$('datefrom').value = '';
+		xjx.$('dateto').value = '';
+		xjx.$('user').selectedIndex = 0;
+		xjx.$('resourcetype').selectedIndex = 0;
+		xjx.$('resourceid').value = '';
+		xjx.$('propertyvalue').value = '';
+		filter();
+	}
+
+	function GetPropertyNames(params) {
+		var restype = xjx.$('resourcetype');
+		var propname = xjx.$('propertyname');
+		var propvalue = xjx.$('propertyvalue');
+		if (restype.selectedIndex) {
+			propname.disabled = true;
+			propvalue.disabled = true;
+			xajax_GetPropertyNames(restype.options[restype.selectedIndex].value, params);
+		}
+	}
+
+	function GetPropertyValues(propvalue) {
+		var restype = xjx.$('resourcetype');
+		var propname = xjx.$('propertyname');
+		xajax_GetPropertyValues(restype.options[restype.selectedIndex].value,
+			propname.options[propname.selectedIndex].value, propvalue);
+	}
+//-->
+</SCRIPT>
+<FORM METHOD="POST" NAME="page">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR class="DARK">
+		<TD class="fall" colspan="4">
+			<TABLE style="width: 100%;" cellpadding="3">
+				<TR>
+					<TD style="width: 1%; white-space: nowrap;">
+						<A href="javascript:clear_filter();"><IMG src="img/delete.gif"></A>
+						<span class="bold">{trans("Filter:")} </span>
+						<label for="datefrom">{trans("From:")}</label>
+						<input type="text" size="10" name="datefrom" id="datefrom" onclick="cal1.popup();" value="{$listdata.datefrom|date_format:"Y/m/d"}" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
+						<label for="dateto">{trans("To:")}</label>
+						<input type="text" size="10" name="dateto" id="dateto" onclick="cal2.popup();" value="{$listdata.dateto|date_format:"Y/m/d"}" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
+						<label for="user">{trans("User:")}</label>
+						<SELECT size="1" name="user" id="user">
+							<OPTION value="0"{if $listdata.user eq "0"} SELECTED{/if}>{trans("- all -")}</OPTION>
+							{foreach $listdata.users as $idx => $user}
+							<OPTION value="{$idx}"{if $listdata.user eq "{$idx}"} SELECTED{/if}>{$user.login}</OPTION>
+							{/foreach}
+						</SELECT>&nbsp;
+					</TD>
+					<TD style="width: 1%; white-space: nowrap;">
+						<TABLE style="width: 100%;">
+							<TR>
+								<TD style="white-space: nowrap;">
+									<label for="resourcetype">{trans("Resource Type:")}</label>
+								</TD>
+								<TD>
+									<SELECT size="1" name="resourcetype" id="resourcetype" onchange="javascript:GetPropertyNames(null);">
+										<OPTION value="0"{if $listdata.resourcetype eq "0"} SELECTED{/if}>{trans("- all -")}</OPTION>
+										{foreach $_SYSLOG_RESOURCES as $idx => $resourcetype}
+										<OPTION value="{$idx}"{if $listdata.resourcetype eq "{$idx}"} SELECTED{/if}>{$resourcetype}</OPTION>
+										{/foreach}
+									</SELECT>
+								</TD>
+							</TR>
+							<TR>
+								<TD style="white-space: nowrap;">
+									<label for="resourceid">{trans("Resource ID:")}</label>
+								</TD>
+								<TD>
+									<input type="text" size="5" name="resourceid" id="resourceid" value="{if $listdata.resourceid}{$listdata.resourceid}{/if}" {tip text="Enter resource ID (empty means any ID)" trigger="resourceid"}>
+								</TD>
+							</TR>
+						</TABLE>
+					</TD>
+					<TD style="width: 1%; white-space: nowrap;">
+						<TABLE style="width: 100%;">
+							<TR>
+								<TD style="white-space: nowrap;">
+									<label for="propertyname">{trans("Property Name:")}</label>
+								</TD>
+								<TD>
+									<SELECT size="1" name="propertyname" id="propertyname" onchange="javascript:GetPropertyValues();">
+										<OPTION value=""{if $listdata.propertyname eq "0"} SELECTED{/if}>{trans("- all -")}</OPTION>
+									</SELECT>
+								</TD>
+							</TR>
+							<TR>
+								<TD style="white-space: nowrap;">
+									<label for="propertyvalue">{trans("Property Value:")}</label>
+								</TD>
+								<TD id="propertyvaluedata">
+									<input type="text" size="20" name="propertyvalue" id="propertyvalue" value="{if $listdata.propertyvalue}{$listdata.propertyvalue}{/if}" {tip text="Enter property value (empty means any value)" trigger="propertyvalue"}>
+								</TD>
+							</TR>
+						</TABLE>
+					</TD>
+					<TD style="width: 97%;">
+						<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR class="dark">
+		<TD class="fleftu">
+			{if $listdata.page}<A href="?m=archiveview&page={$listdata.page - 1}">&laquo;&laquo;&laquo; {trans("Next")}</A>{else}&nbsp;{/if}
+		</TD>
+		<TD class="frightu" colspan="3" style="text-align: right;">
+			{if $listdata.prev}<A href="?m=archiveview&page={$listdata.page + 1}">{trans("Previous")} &raquo;&raquo;&raquo;<A>{else}&nbsp;{/if}
+		</TD>
+	</TR>
+	<TR class="DARK">
+		<TD class="fleftu bold" style="width: 1%; white-space: nowrap; text-align: center;">
+			{trans("Date:")}
+		</TD>
+		<TD class="fbt bold" style="width: 1%; white-space: nowrap; text-align: center;">
+			{trans("User:")}
+		</TD>
+		<TD class="fbt bold" style="width: 1%; white-space: nowrap; text-align: center;">
+			{trans("Module:")}
+		</TD>
+		<TD class="frightu bold" style="width: 97%; white-space: nowrap;">
+			{trans("Operations:")}
+		</TD>
+	</TR>
+	{if $transactions}
+	{cycle values="light,lucid" print=false name=trans}
+	{foreach $transactions as $tr}
+	<TR class="{cycle name=trans}">
+		<TD style="width: 1%; white-space: nowrap; vertical-align: bottom;" class="fleft">
+			{$tr.time|date_format:"Y.m.d H.i.s"}
+		</TD>
+		<TD style="width: 1%; white-space: nowrap; text-align: center; vertical-align: bottom;">
+			<a href="?m=userinfo&id={$tr.userid}">{$tr.login}</a>
+		</TD>
+		<TD style="width: 1%; white-space: nowrap; text-align: center; vertical-align: bottom;">
+			{$tr.module}
+		</TD>
+		<TD style="width: 97%; vertical-align: bottom;" class="fright">
+			{if $tr.messages}
+				{if count($tr.messages) > 10}{$start = 9 - count($tr.messages)}...<br>
+				{else}{$start=-1}{/if}
+				{section name=messages loop=$tr.messages start=$start step=-1}
+					{$message = $tr.messages[messages]}
+					<span class="bold">{$_SYSLOG_RESOURCES[$message.resource]}: {$_SYSLOG_OPERATIONS[$message.operation]}</span>
+					{foreach $message.keys as $key => $msgkey}{$key}: {if $msgkey.value}<a href="?m=archiveinfo&type={$msgkey.type}&id={$msgkey.value}&date={$tr.time}">{/if}{$msgkey.value}{if $msgkey.value}</a>{/if}{if !$msgkey@last}, {/if}{/foreach}
+					{foreach $message.data as $key => $value}{$key}: {$value}{if !$value@last}, {/if}{/foreach}
+					{if !$messages@last}<br>{/if}
+				{/section}
+			{/if}
+		</TD>
+	</TR>
+	{/foreach}
+	{else}
+	<TR>
+		<TD style="width: 100%; text-align: center;" class="fall bold" colspan="4">
+			<P>&nbsp;</P>
+			<P>{trans("No such transactions in database.")}</P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	{/if}
+	<TR class="dark">
+		<TD class="fleftu">
+			{if $listdata.page}<A href="?m=archiveview&page={$listdata.page - 1}">&laquo;&laquo;&laquo; {trans("Next")}</A>{else}&nbsp;{/if}
+		</TD>
+		<TD class="frightu" colspan="3" style="text-align: right;">
+			{if $listdata.prev}<A href="?m=archiveview&page={$listdata.page + 1}">{trans("Previous")} &raquo;&raquo;&raquo;<A>{else}&nbsp;{/if}
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+<SCRIPT type="text/javascript">
+<!--
+var cal1 = new calendar(document.forms['page'].elements['datefrom']);
+cal1.time_comp = false;
+var cal2 = new calendar(document.forms['page'].elements['dateto']);
+cal2.time_comp = false;
+
+GetPropertyNames( { propertyname: '{$listdata.propertyname}', propertyvalue: '{$listdata.propertyvalue}' } );
+//-->
+</SCRIPT>
+{include file="footer.html"}

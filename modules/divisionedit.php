@@ -24,10 +24,21 @@
  *  $Id$
  */
 
-if(!empty($_GET['changestatus']))
-{
+$id = intval($_GET['id']);
+
+if (!empty($_GET['changestatus'])) {
+	if ($SYSLOG) {
+		$div = $DB->GetRow('SELECT countryid, status FROM divisions WHERE id = ?', array($id));
+		$args = array(
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $id,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $div['countryid'],
+			'status' => intval($div['status']) ? 0 : 1
+		);
+		$SYSLOG->AddMessage(SYSLOG_RES_DIV, SYSLOG_OPER_UPDATE, $args,
+			array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY]));
+	}
 	$DB->Execute('UPDATE divisions SET status = (CASE WHEN status > 0 THEN 0 ELSE 1 END)
-		WHERE id = ?', array(intval($_GET['id'])));
+		WHERE id = ?', array($id));
 	$SESSION->redirect('?m=divisionlist');
 }
 
@@ -84,37 +95,41 @@ if(!empty($_POST['division']))
 	if($division['inv_paytime'] == '')
                 $division['inv_paytime'] = NULL;
 
-	if(!$error)
-	{
+	if (!$error) {
+		$args = array(
+			'name' => $division['name'],
+			'shortname' => $division['shortname'],
+			'address' => $division['address'],
+			'city' => $division['city'],
+			'zip' => $division['zip'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $division['countryid'],
+			'ten' => $division['ten'],
+			'regon' => $division['regon'],
+			'account' => $division['account'],
+			'inv_header' => $division['inv_header'],
+			'inv_footer' => $division['inv_footer'],
+			'inv_author' => $division['inv_author'],
+			'inv_cplace' => $division['inv_cplace'],
+			'inv_paytime' => $division['inv_paytime'],
+			'inv_paytype' => $division['inv_paytype'] ? $division['inv_paytype'] : null,
+			'description' => $division['description'],
+			'status' => !empty($division['status']) ? 1 : 0,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $division['id']
+		);
 		$DB->Execute('UPDATE divisions SET name=?, shortname=?, address=?, 
 			city=?, zip=?, countryid=?, ten=?, regon=?, account=?, inv_header=?, 
 			inv_footer=?, inv_author=?, inv_cplace=?, inv_paytime=?,
 			inv_paytype=?, description=?, status=? 
-			WHERE id=?',
-			array(
-				    $division['name'],
-				    $division['shortname'],
-				    $division['address'],
-				    $division['city'],
-				    $division['zip'],
-				    $division['countryid'],
-				    $division['ten'],
-				    $division['regon'],
-				    $division['account'],
-				    $division['inv_header'],
-				    $division['inv_footer'],
-				    $division['inv_author'],
-				    $division['inv_cplace'],
-				    $division['inv_paytime'],
-				    $division['inv_paytype'] ? $division['inv_paytype'] : null,
-				    $division['description'],
-				    !empty($division['status']) ? 1 : 0,
-				    $division['id']
-			));
-		
+			WHERE id=?', array_values($args));
+
+		if ($SYSLOG)
+			$SYSLOG->AddMessage(SYSLOG_RES_DIV, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV]));
+
 		$SESSION->redirect('?m=divisionlist');
 	}
-}	
+}
 
 $layout['pagetitle'] = trans('Edit Division: $a', $olddiv['shortname']);
 

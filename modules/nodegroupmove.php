@@ -33,15 +33,46 @@ if($DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array($from))
 {
 	$DB->BeginTrans();
 	
+	if ($SYSLOG)
+		$nids = $DB->GetCol('SELECT noderid FROM nodegroupassignments a
+				WHERE a.nodegroupid = ?
+				AND NOT EXISTS (SELECT 1 FROM nodegroupassignments nga
+					WHERE nga.nodegroupid = a.nodegroupid AND nga.nodegroupid = ?)',
+				array($from, $to));
+
 	$DB->Execute('INSERT INTO nodegroupassignments (nodegroupid, nodeid)
 			SELECT ?, nodeid 
 			FROM nodegroupassignments a
 			JOIN nodes n ON (a.nodeid = n.id)
 			JOIN customersview c (n.ownerid = c.id)
-	                WHERE a.nodegroupid = ?
+			WHERE a.nodegroupid = ?
 			AND NOT EXISTS (SELECT 1 FROM nodegroupassignments na
 				WHERE na.nodeid = a.nodeid AND na.nodegroupid = ?)',
 			array($to, $from, $to));
+
+	if ($SYSLOG && $nids) {
+		foreach ($nids as $nid) {
+			$aid = $DB->GetOne('SELECT a.id FROM nodegroupassignments a
+				WHERE a.nodeid = ? AND a.nodegroupid = ?', array($nid, $to));
+			$args = array(
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUPASSIGN] => $aid,
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nid,
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP] => $to
+			);
+			$SYSLOG->AddMessage(SYSLOG_RES_NODEGROUPASSIGN, SYSLOG_OPER_ADD, $args, array_keys($args));
+		}
+
+		$assigns = $DB->GetAll('SELECT id, nodeid FROM nodegroupassignments WHERE nodegroupid = ?', array($from));
+		if (!empty($assigns))
+			foreach ($assigns as $assign) {
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUPASSIGN] => $assign['id'],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $assign['nodeid'],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP] => $from
+				);
+				$SYSLOG->AddMessage(SYSLOG_RES_NODEGROUPASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+			}
+	}
 	
 	$DB->Execute('DELETE FROM nodegroupassignments WHERE nodegroupid = ?', array($from));
 

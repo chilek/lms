@@ -46,22 +46,28 @@ if($hostadd)
 		$error['name'] = trans('Host name is required!');
 	elseif(GetHostIdByName($hostadd['name']))
 		$error['name'] = trans('Host with specified name exists!');
-	
-	if(!$error)
-	{
-		$DB->Execute('INSERT INTO hosts (name, description) VALUES (?,?)',
-				    array($hostadd['name'], $hostadd['description']));
-		
-		if(!isset($hostadd['reuse']))
-		{
-			$SESSION->redirect('?m=hostlist');
+
+	if (!$error) {
+		$args = array(
+			'name' => $hostadd['name'],
+			'description' => $hostadd['description']
+		);
+		$DB->Execute('INSERT INTO hosts (name, description) VALUES (?,?)', array_values($args));
+
+		if ($SYSLOG) {
+			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST]] = $DB->GetLastInsertID('hosts');
+			$SYSLOG->AddMessage(SYSLOG_RES_HOST, SYSLOG_OPER_ADD, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST]));
 		}
-		
+
+		if (!isset($hostadd['reuse']))
+			$SESSION->redirect('?m=hostlist');
+
 		unset($hostadd['name']);
 		unset($hostadd['description']);
 	}
 
-}	
+}
 
 $layout['pagetitle'] = trans('New Host');
 

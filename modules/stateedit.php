@@ -39,20 +39,23 @@ if(sizeof($stateedit))
 	if($stateedit['name'] == '')
 		$error['name'] = trans('State name is required!');
 
-	if(!$error)
-	{
-		$DB->Execute('UPDATE states SET name=?, description=? WHERE id=?',
-			    array(
-				    $stateedit['name'],
-				    $stateedit['description'],
-				    $stateedit['id']
-				    ));
-		
+	if (!$error) {
+		$args = array(
+			'name' => $stateedit['name'],
+			'description' => $stateedit['description'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_STATE] => $stateedit['id']
+		);
+		$DB->Execute('UPDATE states SET name=?, description=? WHERE id=?', array_values($args));
+
+		if ($SYSLOG)
+			$SYSLOG->AddMessage(SYSLOG_RES_STATE, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_STATE]));
+
 		$SESSION->redirect('?m=statelist');
 	}
-	
+
 	$state = $stateedit;
-}	
+}
 
 $layout['pagetitle'] = trans('State Edit: $a', $name);
 

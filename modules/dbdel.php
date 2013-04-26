@@ -27,15 +27,17 @@
 if(isset($_GET['is_sure']))
 {
 	$basename = 'lms-'.$_GET['db'];
-	
-	if(@file_exists($CONFIG['directories']['backup_dir'].'/'.$basename.'.sql'))
-	{
-		@unlink($CONFIG['directories']['backup_dir'].'/'.$basename.'.sql');
+
+	if(@file_exists($CONFIG['directories']['backup_dir'].'/'.$basename.'.sql')) {
+		$filename = $basename . '.sql';
+		@unlink($CONFIG['directories']['backup_dir'].'/' . $filename);
+	} elseif((extension_loaded('zlib'))&&((@file_exists($CONFIG['directories']['backup_dir'].'/'.$basename.'.sql.gz')))) {
+		$filename = $basename . '.sql.gz';
+		@unlink($CONFIG['directories']['backup_dir'].'/' . $filename);
 	}
-	elseif((extension_loaded('zlib'))&&((@file_exists($CONFIG['directories']['backup_dir'].'/'.$basename.'.sql.gz'))))
-	{
-		@unlink($CONFIG['directories']['backup_dir'].'/'.$basename.'.sql.gz');
-	}
+	if (isset($filename) && $SYSLOG)
+		$SYSLOG->AddMessage(SYSLOG_RES_DBBACKUP, SYSLOG_OPER_DELETE,
+			array('filename' => $filename), null);
 
 	$SESSION->redirect('?m=dblist');
 } 

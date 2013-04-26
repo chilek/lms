@@ -42,27 +42,36 @@ if($config)
 		$error['var'] = trans('Option name is required!');
 	elseif($DB->GetOne('SELECT id FROM daemonconfig WHERE var=? AND instanceid=?', array($config['var'], $config['instanceid'])))
 		$error['var'] = trans('Option with specified name exists in that instance!');
-	
-	if(!$error)
-	{
+
+	if (!$error) {
 		$config['value'] = str_replace("\r\n","\n",$config['value']);
-		
-		$DB->Execute('INSERT INTO daemonconfig (var, instanceid, description, value) VALUES (?,?,?,?)',
-				    array($config['var'], 
-					    $config['instanceid'], 
-					    $config['description'],
-					    $config['value']));
-		
-		if(!isset($config['reuse']))
-		{
-			$SESSION->redirect('?m=daemoninstanceview&id='.$config['instanceid']);
+
+		$args = array(
+			'var' => $config['var'], 
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONINST] => $config['instanceid'], 
+			'description' => $config['description'],
+			'value' => $config['value']
+		);
+		$DB->Execute('INSERT INTO daemonconfig (var, instanceid, description, value) VALUES (?,?,?,?)', array_values($args));
+
+		if ($SYSLOG) {
+			$hostid = $DB->GetOne('SELECT hostid FROM daemoninstances WHERE id = ?', array($config['instanceid']));
+			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONCONF]] = $DB->GetLastInsertID('daemonconfig');
+			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST]] = $hostid;
+			$SYSLOG->AddMessage(SYSLOG_RES_DAEMONCONF, SYSLOG_OPER_ADD, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONCONF],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONINST],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST]));
 		}
-		
+
+		if (!isset($config['reuse']))
+			$SESSION->redirect('?m=daemoninstanceview&id='.$config['instanceid']);
+
 		unset($config['var']);
 		unset($config['value']);
 		unset($config['description']);
 	}
-}	
+}
 
 $instance = $DB->GetRow('SELECT daemoninstances.name AS name, hosts.name AS hostname FROM daemoninstances, hosts WHERE hosts.id=hostid AND daemoninstances.id=?', array($_GET['id']));
 

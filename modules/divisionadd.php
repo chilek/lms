@@ -70,30 +70,35 @@ if(!empty($_POST['division']))
 	if($division['inv_paytime'] == '')
 		$division['inv_paytime'] = NULL;
 
-	if(!$error)
-	{
+	if (!$error) {
+		$args = array(
+			'name' => $division['name'],
+			'shortname' => $division['shortname'],
+			'address' => $division['address'],
+			'city' => $division['city'],
+			'zip' => $division['zip'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $division['countryid'],
+			'ten' => $division['ten'],
+			'regon' => $division['regon'],
+			'account' => $division['account'],
+			'inv_header' => $division['inv_header'],
+			'inv_footer' => $division['inv_footer'],
+			'inv_author' => $division['inv_author'],
+			'inv_cplace' => $division['inv_cplace'],
+			'inv_paytime' => $division['inv_paytime'],
+			'inv_paytype' => $division['inv_paytype'] ? $division['inv_paytype'] : null,
+			'description' => $division['description'],
+		);
 		$DB->Execute('INSERT INTO divisions (name, shortname, address, city, zip,
 			countryid, ten, regon, account, inv_header, inv_footer, inv_author,
 			inv_cplace, inv_paytime, inv_paytype, description) 
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-			array(
-				    $division['name'],
-				    $division['shortname'],
-				    $division['address'],
-				    $division['city'],
-				    $division['zip'],
-				    $division['countryid'],
-				    $division['ten'],
-				    $division['regon'],
-				    $division['account'],
-				    $division['inv_header'],
-				    $division['inv_footer'],
-				    $division['inv_author'],
-				    $division['inv_cplace'],
-				    $division['inv_paytime'],
-				    $division['inv_paytype'] ? $division['inv_paytype'] : null,
-				    $division['description'],
-			));
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+
+		if ($SYSLOG) {
+			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV]] = $DB->GetLastInsertID('divisions');
+			$SYSLOG->AddMessage(SYSLOG_RES_DIV, SYSLOG_OPER_ADD, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY]));
+		}
 
 		if(!isset($division['reuse']))
 		{

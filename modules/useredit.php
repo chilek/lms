@@ -24,17 +24,16 @@
  *  $Id$
  */
 
-if(!$LMS->UserExists($_GET['id']))
-{
+$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+if (!$LMS->UserExists($id))
 	$SESSION->redirect('?m=userlist');
-}
 
 $userinfo = isset($_POST['userinfo']) ? $_POST['userinfo'] : FALSE;
 
 if($userinfo)
 {
 	$acl = $_POST['acl'];
-	$userinfo['id'] = $_GET['id'];
+	$userinfo['id'] = $id;
 
 	foreach($userinfo as $key => $value)
 	    if (!is_array($value))
@@ -44,7 +43,7 @@ if($userinfo)
 		$error['login'] = trans('Login can\'t be empty!');
 	elseif(!preg_match('/^[a-z0-9._-]+$/i', $userinfo['login']))
 		$error['login'] = trans('Login contains forbidden characters!');
-	elseif($LMS->GetUserIDByLogin($userinfo['login']) && $LMS->GetUserIDByLogin($userinfo['login']) != $_GET['id'])
+	elseif($LMS->GetUserIDByLogin($userinfo['login']) && $LMS->GetUserIDByLogin($userinfo['login']) != $id)
 		$error['login'] = trans('User with specified login exists or that login was used in the past!');
 
 	if($userinfo['name'] == '')
@@ -98,26 +97,47 @@ if($userinfo)
 
 	$userinfo['rights'] = preg_replace('/^[0]*(.*)$/','\1',$outmask);
 
-    if (!empty($userinfo['ntype'])) {
-        $userinfo['ntype'] = array_sum(array_map('intval', $userinfo['ntype']));
-    }
+	if (!empty($userinfo['ntype']))
+		$userinfo['ntype'] = array_sum(array_map('intval', $userinfo['ntype']));
 
-	if(!$error)
-	{
+	if (!$error) {
 		$userinfo['accessfrom'] = $accessfrom;
 		$userinfo['accessto'] = $accessto;
 		$LMS->UserUpdate($userinfo);
 
+		if ($SYSLOG) {
+			$groups = $DB->GetAll('SELECT id, customergroupid FROM excludedgroups WHERE userid = ?',
+				array($userinfo['id']));
+			if (!empty($groups))
+				foreach ($groups as $group) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_EXCLGROUP] => $group['id'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $group['customergroupid'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $userinfo['id']
+					);
+					$SYSLOG->AddMessage(SYSLOG_RES_EXCLGROUP, SYSLOG_OPER_DELETE, $args,
+						array_keys($args));
+				}
+		}
 		$DB->Execute('DELETE FROM excludedgroups WHERE userid = ?', array($userinfo['id']));
-		if(isset($_POST['selected']))
-		        foreach($_POST['selected'] as $idx => $name)
+		if (isset($_POST['selected']))
+			foreach ($_POST['selected'] as $idx => $name) {
 				$DB->Execute('INSERT INTO excludedgroups (customergroupid, userid)
-				    		VALUES(?, ?)', array($idx, $userinfo['id']));
+						VALUES(?, ?)', array($idx, $userinfo['id']));
+				if ($SYSLOG) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_EXCLGROUP] =>
+							$DB->GetLastInsertID('excludedgroups'),
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $idx,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $userinfo['id']
+					);
+					$SYSLOG->AddMessage(SYSLOG_RES_EXCLGROUP, SYSLOG_OPER_ADD, $args,
+						array_keys($args));
+				}
+			}
 
 		$SESSION->redirect('?m=userinfo&id='.$userinfo['id']);
-	}
-	else
-	{
+	} else {
 		$userinfo['selected'] = array();
 		if(isset($_POST['selected']))
 		{
@@ -140,7 +160,7 @@ if($userinfo)
 }
 else
 {
-	$rights = $LMS->GetUserRights($_GET['id']);
+	$rights = $LMS->GetUserRights($id);
 
 	foreach($access['table'] as $idx => $row)
 	{
@@ -152,7 +172,7 @@ else
 	}
 }
 
-foreach($LMS->GetUserInfo($_GET['id']) as $key => $value)
+foreach($LMS->GetUserInfo($id) as $key => $value)
 	if(!isset($userinfo[$key]))
 		$userinfo[$key] = $value;
 
@@ -165,6 +185,15 @@ if(!isset($userinfo['selected']))
 $layout['pagetitle'] = trans('User Edit: $a', $userinfo['login']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
+
+if ($SYSLOG && get_conf('privileges.superuser')) {
+	$trans = $SYSLOG->GetTransactions(array('userid' => $id));
+	if (!empty($trans))
+		foreach ($trans as $idx => $tran)
+			$SYSLOG->DecodeTransaction($trans[$idx]);
+	$SMARTY->assign('transactions', $trans);
+	$SMARTY->assign('userid', $id);
+}
 
 $SMARTY->assign('accesslist', $accesslist);
 $SMARTY->assign('available', $DB->GetAllByKey('SELECT id, name FROM customergroups ORDER BY name', 'id'));

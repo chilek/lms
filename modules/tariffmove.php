@@ -39,11 +39,18 @@ if($LMS->TariffExists($from) && $LMS->TariffExists($to) && $_GET['is_sure'] == 1
 			.'WHERE customerid = c.id AND deleted = 0 AND tariffid = '.$from
 			.($network ? ' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '
 			.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')) ' : '')
-			))
-	{
-	        foreach($ids as $id)
-		        $DB->Execute('UPDATE assignments SET tariffid=?
-		    		WHERE id=? AND tariffid=?', array($to, $id, $from));
+			)) {
+		foreach ($ids as $id) {
+			$DB->Execute('UPDATE assignments SET tariffid=?
+					WHERE id=? AND tariffid=?', array($to, $id, $from));
+			if ($SYSLOG) {
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN] => $id,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $to
+				);
+				$SYSLOG->AddMessage(SYSLOG_RES_ASSIGN, SYSLOG_OPER_UPDATE, $args, array_keys($args));
+			}
+		}
 	}
 
 	$SESSION->redirect('?m=tariffinfo&id='.$to.($network ? '&netid='.$network : ''));

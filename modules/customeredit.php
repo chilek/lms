@@ -144,17 +144,66 @@ elseif (isset($_POST['customerdata']))
 
 		$LMS->CustomerUpdate($customerdata);
 
+		if ($SYSLOG) {
+			$imids = $DB->GetCol('SELECT id FROM imessengers WHERE customerid = ?', array($customerdata['id']));
+			if (!empty($imids))
+				foreach ($imids as $imid) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_IMCONTACT] => $imid,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerdata['id']
+					);
+					$SYSLOG->AddMessage(SYSLOG_RES_IMCONTACT, SYSLOG_OPER_DELETE, $args, array_keys($args));
+				}
+		}
 		$DB->Execute('DELETE FROM imessengers WHERE customerid = ?', array($customerdata['id']));
 		if(isset($im))
-			foreach($im as $idx => $val)
+			foreach($im as $idx => $val) {
 				$DB->Execute('INSERT INTO imessengers (customerid, uid, type)
 					VALUES(?, ?, ?)', array($customerdata['id'], $val, $idx));
+				if ($SYSLOG) {
+					$imid = $DB->GetLastInsertID('imessengers');
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_IMCONTACT] => $imid,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerdata['id'],
+						'uid' => $val,
+						'type' => $idx
+					);
+					$SYSLOG->AddMessage(SYSLOG_RES_IMCONTACT, SYSLOG_OPER_ADD, $args,
+						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_IMCONTACT],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+				}
+			}
 
+		if ($SYSLOG) {
+			$contactids = $DB->GetCol('SELECT id FROM customercontacts WHERE customerid = ?', array($customerdata['id']));
+			if (!empty($contactids))
+				foreach ($contactids as $contactid) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT] => $contactid,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerdata['id']
+					);
+					$SYSLOG->AddMessage(SYSLOG_RES_CUSTCONTACT, SYSLOG_OPER_DELETE, $args, array_keys($args));
+				}
+		}
 		$DB->Execute('DELETE FROM customercontacts WHERE customerid = ?', array($customerdata['id']));
 		if(isset($contacts))
-			foreach($contacts as $contact)
+			foreach($contacts as $contact) {
 				$DB->Execute('INSERT INTO customercontacts (customerid, phone, name, type)
 					VALUES(?, ?, ?, ?)', array($customerdata['id'], $contact['phone'], $contact['name'], $contact['type']));
+				if ($SYSLOG) {
+					$contactid = $DB->GetLastInsertID('customercontacts');
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT] => $contactid,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerdata['id'],
+						'phone' => $contact['phone'],
+						'name' => $contact['name'],
+						'type' => $contact['type']
+					);
+					$SYSLOG->AddMessage(SYSLOG_RES_CUSTCONTACT, SYSLOG_OPER_ADD, $args,
+						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+				}
+			}
 
 		$SESSION->redirect('?m=customerinfo&id='.$customerdata['id']);
 	}

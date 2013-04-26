@@ -128,7 +128,8 @@ require_once(LIB_DIR.'/common.php');
 require_once(LIB_DIR.'/LMS.class.php');
 
 $AUTH = NULL;
-$LMS = new LMS($DB, $AUTH, $CONFIG);
+$SYSLOG = null;
+$LMS = new LMS($DB, $AUTH, $CONFIG, $SYSLOG);
 
 require_once(USERPANEL_LIB_DIR.'/Session.class.php');
 require_once(USERPANEL_LIB_DIR.'/Userpanel.class.php');
@@ -137,7 +138,7 @@ require_once(USERPANEL_LIB_DIR.'/ULMS.class.php');
 
 unset($LMS); // reset LMS class to enable wrappers for LMS older versions
 
-$LMS = new ULMS($DB, $AUTH, $CONFIG);
+$LMS = new ULMS($DB, $AUTH, $CONFIG, $SYSLOG);
 $SESSION = new Session($DB, $_TIMEOUT);
 $USERPANEL = new USERPANEL($DB, $SESSION, $CONFIG);
 $LMS->ui_lang = $_ui_language;

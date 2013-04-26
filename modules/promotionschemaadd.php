@@ -26,76 +26,89 @@
 
 $schema = isset($_POST['schema']) ? $_POST['schema'] : NULL;
 
-if ($schema)
-{
+if ($schema) {
 	foreach ($schema as $key => $value)
-	    if (!is_array($value))
-    		$schema[$key] = trim($value);
+		if (!is_array($value))
+			$schema[$key] = trim($value);
 
-    $schema['promotionid'] = intval($_GET['id']);
+	$schema['promotionid'] = intval($_GET['id']);
 
 	if ($schema['name']=='' && $schema['description']=='')
-	{
 		$SESSION->redirect('?m=promotioninfo&id='.$schema['promotionid']);
-	}
 
 	if ($schema['name'] == '')
 		$error['name'] = trans('Schema name is required!');
 	else if ($DB->GetOne('SELECT id FROM promotionschemas
-	    WHERE name = ? AND promotionid = ?', array($schema['name'], $schema['promotionid']))
-	) {
+		WHERE name = ? AND promotionid = ?', array($schema['name'], $schema['promotionid'])))
 		$error['name'] = trans('Specified name is in use!');
-    }
 
-    if (empty($schema['continuation']) && !empty($schema['ctariffid']))
-        $error['ctariffid'] = trans('Additional subscription is useless when contract prolongation is not set!');
+	if (empty($schema['continuation']) && !empty($schema['ctariffid']))
+		$error['ctariffid'] = trans('Additional subscription is useless when contract prolongation is not set!');
 
-	if (!$error)
-	{
-        $data = array();
-        foreach ($schema['periods'] as $period) {
-            if ($period = intval($period))
-                $data[] = $period;
-            else
-                break;
-        }
-        $data = implode(';', $data);
+	if (!$error) {
+		$data = array();
+		foreach ($schema['periods'] as $period)
+			if ($period = intval($period))
+				$data[] = $period;
+			else
+				break;
+		$data = implode(';', $data);
 
-        $DB->Execute('INSERT INTO promotionschemas (promotionid, name,
-                description, data, continuation, ctariffid)
-            VALUES (?, ?, ?, ?, ?, ?)',
-            array($schema['promotionid'],
-                $schema['name'],
-                $schema['description'],
-                $data,
-                !empty($schema['continuation']) ? 1 : 0,
-                !empty($schema['ctariffid']) ? $schema['ctariffid'] : null,
-            ));
+		$args = array(
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO] => $schema['promotionid'],
+			'name' => $schema['name'],
+			'description' => $schema['description'],
+			'data' => $data,
+			'continuation' => !empty($schema['continuation']) ? 1 : 0,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => !empty($schema['ctariffid']) ? $schema['ctariffid'] : null
+		);
+		$DB->Execute('INSERT INTO promotionschemas (promotionid, name,
+			description, data, continuation, ctariffid)
+			VALUES (?, ?, ?, ?, ?, ?)', array_values($args));
 
-        $sid = $DB->GetLastInsertId('promotionschemas');
+		$sid = $DB->GetLastInsertId('promotionschemas');
 
-        // pre-fill promotionassignments with all tariffs in specified promotion
-        $DB->Execute('INSERT INTO promotionassignments (promotionschemaid, tariffid)
-            SELECT ?, tariffid
-            FROM promotionassignments
-            WHERE promotionschemaid IN (SELECT id FROM promotionschemas WHERE promotionid = ?)
-            GROUP BY tariffid', array($sid, $schema['promotionid']));
+		if ($SYSLOG) {
+			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOSCHEMA]] = $sid;
+			$SYSLOG->AddMessage(SYSLOG_RES_PROMOSCHEMA, SYSLOG_OPER_ADD, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOSCHEMA],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF]));
+		}
+
+		// pre-fill promotionassignments with all tariffs in specified promotion
+		$tariffs = $DB->GetCol('SELECT DISTINCT tariffid FROM promotionassignments
+			WHERE promotionschemaid IN (SELECT id FROM promotionschemas WHERE promotionid = ?)
+			GROUP BY tariffid', array($schema['promotionid']));
+		if (!empty($tariffs)) {
+			$args = array(
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO] => $schema['promotionid'],
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOSCHEMA] => $sid
+			);
+			foreach ($tariffs as $tariff) {
+				$DB->Execute('INSERT INTO promotionassignments (promotionschemaid, tariffid)
+					VALUES (?, ?)', array($sid, $tariff));
+				if ($SYSLOG) {
+					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF]] = $tariff;
+					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOASSIGN]] =
+						$DB->GetLastInsertID('promotionassignments');
+					$SYSLOG->AddMessage(SYSLOG_RES_PROMOASSIGN, SYSLOG_OPER_ADD, $args,
+						array_keys($args));
+				}
+			}
+		}
 
 		if (empty($schema['reuse']))
-		{
-			$SESSION->redirect('?m=promotionschemainfo&id='.$sid);
-		}
+			$SESSION->redirect('?m=promotionschemainfo&id=' . $sid);
 
 		unset($schema['name']);
 		unset($schema['description']);
 		$schema['reuse'] = '1';
 	}
-}
-else
-{
-    $schema['promotionid']  = $_GET['id'];
-    $schema['continuation'] = 1;
-    $schema['periods']      = array(0);
+} else {
+	$schema['promotionid'] = $_GET['id'];
+	$schema['continuation'] = 1;
+	$schema['periods'] = array(0);
 }
 
 $schema['selection'] = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,30,36,42,48,60);

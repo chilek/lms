@@ -59,23 +59,39 @@ if(sizeof($numberplanadd))
 			$error['doctype'] = trans('Selected document type has already defined default plan!');
 		}
 
-	if(!$error)
-	{
-		$DB->Execute('INSERT INTO numberplans (template, doctype, period, isdefault) 
-			    VALUES (?,?,?,?)',array(
-				    $numberplanadd['template'],
-				    $numberplanadd['doctype'],
-				    $numberplanadd['period'],
-				    isset($numberplanadd['isdefault']) ? 1 : 0
-				    ));
-	
+	if (!$error) {
+		$args = array(
+			'template' => $numberplanadd['template'],
+			'doctype' => $numberplanadd['doctype'],
+			'period' => $numberplanadd['period'],
+			'isdefault' => isset($numberplanadd['isdefault']) ? 1 : 0
+		);
+		$DB->Execute('INSERT INTO numberplans (template, doctype, period, isdefault)
+				VALUES (?,?,?,?)', array_values($args));
+
 		$id = $DB->GetLastInsertID('numberplans');
-	
-		if(!empty($_POST['selected']))
-	                foreach($_POST['selected'] as $idx => $name)
-		                $DB->Execute('INSERT INTO numberplanassignments (planid, divisionid)
-		                	VALUES (?, ?)', array($id, intval($idx)));
-		
+
+		if ($SYSLOG) {
+			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN]] = $id;
+			$SYSLOG->AddMessage(SYSLOG_RES_NUMPLAN, SYSLOG_OPER_ADD,
+				$args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN]));
+		}
+
+		if (!empty($_POST['selected']))
+			foreach ($_POST['selected'] as $idx => $name) {
+				$DB->Execute('INSERT INTO numberplanassignments (planid, divisionid)
+						VALUES (?, ?)', array($id, intval($idx)));
+				if ($SYSLOG) {
+					$planassignid = $DB->GetLastInsertID('numberplanassignments');
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLANASSIGN] => $planassignid,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $id,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => intval($idx)
+					);
+					$SYSLOG->AddMessage(SYSLOG_RES_NUMPLANASSIGN, SYSLOG_OPER_ADD, $args, array_keys($args));
+				}
+			}
+
 		if(!isset($numberplanadd['reuse']))
 		{
 			$SESSION->redirect('?m=numberplanlist');
