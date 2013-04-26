@@ -156,6 +156,7 @@ version ? (????-??-??):
   - host owner selection for networks [red/chilan]
   - separation of privileges: finance management and cash registry administration [chilan]
   - show last 10 node sessions in nodeinfo and nodedit [chilan]
+  - transaction logging engine introduced [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
