@@ -117,6 +117,10 @@ $access['table'][27]['privilege']	= 'reports';
 $access['table'][28]['name']		= trans('cash registry administration');
 $access['table'][28]['allow_reg']	= '^cashreg(add|edit|del)$';
 
+$access['table'][29]['name']		= trans('transaction logs');
+$access['table'][29]['allow_reg']	= '^archive(info|view)$';
+$access['table'][29]['privilege']	= 'transaction_logs';
+
 $access['table'][253]['name']		= trans('users edition and addition forbidden');
 $access['table'][253]['deny_reg']	= '^(user(add|del|edit|passwd))$';
 

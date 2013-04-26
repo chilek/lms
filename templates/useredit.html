@@ -7,7 +7,7 @@
 			{include file="usereditbox.html"}
 		</TD>
 	</TR>
-	{if get_conf('privileges.superuser')}
+	{if check_conf('privileges.superuser') || check_conf('privileges.transaction_logs')}
 	<TR>
 		<TD style="width: 100%;">
 			{include file="transactions.html"}

@@ -46,7 +46,7 @@ $layout['pagetitle'] = trans('User Info: $a', $userinfo['login']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-if ($SYSLOG && get_conf('privileges.superuser')) {
+if ($SYSLOG && (check_conf('privileges.superuser') || check_conf('privileges.transaction_logs'))) {
 	$trans = $SYSLOG->GetTransactions(array('userid' => $id));
 	if (!empty($trans))
 		foreach ($trans as $idx => $tran)

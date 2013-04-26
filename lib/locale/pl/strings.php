@@ -2673,6 +2673,7 @@ $_LANG['No such transactions in database.'] = 'Brak transakcji w bazie danych.';
 $_LANG['Property Name:'] = 'Nazwa właściwości:';
 $_LANG['Property Value:'] = 'Wartość właściwości:';
 $_LANG['More'] = 'Więcej';
+$_LANG['transaction logs'] = 'dzienniki transakcji';
 
 $_LANG['user<!syslog>'] = 'użytkownik';
 $_LANG['assignment<!syslog>'] = 'zobowiązanie';
