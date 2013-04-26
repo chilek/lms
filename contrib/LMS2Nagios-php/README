@@ -1,0 +1,15 @@
+Skrypt lms2nagios w wersji 1.0 
+
+Opis działania skryptu lms2nagios w wersji 1.0:
+1) Dodaje tylko te urządenia do nagiosa, które są połączone w LMS i posiadają jeden wspólny węzeł (startowy) zaczynjący się od podanego ID urządzenia ($start_id_netdevices).
+Inne urządzenia, które nie są podłączone pośrednio lub bezpośrednio do węzła startowego nie zostaną weksportowane do nagiosa. 
+2) Dla urządeń eksportowanych tworzone są grupy w nagios w zależności od producenta podanego w LMS
+3) Tworzona jest mapa połączeń, która zaczyna się od wezła startowego ( $start_id_netdevices )
+4) Jeżeli urządzenie posiada wpis z zakładce: Adresy URL do zarządzania -> http://1.2.3.4 i komentarz nagios to zostanie wybrane ip 1.2.3.4, inaczej wybrane zostanie 1 ip z listy.
+5) Skrypt uruchamiany na serwerze gdzie jest nagios lub zainstalowany OMD ( http://omdistro.org )
+
+Przykładowa Instalacja dla Nagios
+1) W katalogu konfiguracjnym nagiosa /etc/nagios3/conf.d tworzymy katalog lms, w którym będą wygenerowane pliki
+2) Ustawimy scieżke w pliku conf.php  np. $nagios_path_conf='/etc/nagios3/conf.d/lms' 
+3) Jeżeli chcemy mieć obrazki to edytujemy/zmieniamy $mapimages, $logoimages w zalezności od swoich potrzeb i dodajemy/usawamy obrazki w katalogu lms_img. Katalog z obrazkami kopiujemy do katalogu z obrazkami nagiosa.
+4) Katalog ze skryptem umieszczamy gdzie chcemy 
