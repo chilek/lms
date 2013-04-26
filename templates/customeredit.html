@@ -13,6 +13,13 @@
 			{include file="customernodesbox.html"}
 		</TD>
 	</TR>
+	{if get_conf('privileges.superuser')}
+	<TR>
+		<TD WIDTH="100%">
+			{include file="transactions.html"}
+		</TD>
+	</TR>
+	{/if}
 	<TR>
 		<TD WIDTH="100%">
 			{include file="customervoipaccountsbox.html"}
