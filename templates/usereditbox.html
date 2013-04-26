@@ -1,0 +1,178 @@
+<FORM NAME="useredit" METHOD="POST" ACTION="?m=useredit&id={$userinfo.id}">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD style="width: 1%; white-space: nowrap;" CLASS="fleftu">
+			<IMG SRC="img/pass.gif" ALT="">
+		</TD>
+		<TD style="width: 1%; white-space: nowrap;" CLASS="fbt">
+			<span class="bold">{trans("Login:")}</span>
+		</TD>
+		<TD style="width: 98%; white-space: nowrap;" CLASS="frightu">
+			<INPUT TYPE="TEXT" NAME="userinfo[login]" VALUE="{$userinfo.login}" {tip text="Enter user login" trigger="login" bold=1}> <span class="bold">({$userinfo.id|string_format:"%04d"})</span>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD CLASS="fleft">
+			<IMG SRC="img/users.gif" ALT="">
+		</TD>
+		<TD style="white-space: nowrap;">
+			<span class="bold">{trans("First/last name:")}</span>
+		</TD>
+		<TD CLASS="fright">
+			 <INPUT TYPE="TEXT" NAME="userinfo[name]" VALUE="{$userinfo.name}" SIZE="40" {tip text="Enter user name" trigger="name"}>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD CLASS="fleft">
+			<IMG SRC="img/info.gif" ALT="">
+		</TD>
+		<TD><span class="bold">{trans("Position:")}</span></TD>
+		<TD CLASS="fright">
+			<INPUT TYPE="TEXT" NAME="userinfo[position]" VALUE="{$userinfo.position}" SIZE="40" {tip text="Enter user position (optional)"}>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD CLASS="fleft">
+			<IMG SRC="img/mail.gif" ALT="">
+		</TD>
+		<TD><span class="bold">{trans("E-mail:")}</span></TD>
+		<TD CLASS="fright">
+			<INPUT TYPE="TEXT" NAME="userinfo[email]" VALUE="{$userinfo.email}" SIZE="40" {tip text="Enter e-mail address (optional)" trigger="email"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="FLEFT" style="white-space: nowrap;">
+			<IMG SRC="img/sms.gif" ALT="">
+		</TD>
+		<TD><span class="bold">{trans("Phone:")}</span></TD>
+		<TD CLASS="FRIGHT">
+			<INPUT TYPE="TEXT" NAME="userinfo[phone]" VALUE="{$userinfo.phone}" SIZE="40" {tip text="Enter phone number for SMS notification (optional)" trigger="phone"}>
+		</TD>
+	</TR>
+	{if $userinfo.swekey_id}
+	<TR CLASS="LIGHT">
+		<TD CLASS="FLEFT" style="white-space: nowrap;">
+			<IMG SRC="img/swekey/swekey-green-8x16.png"" ALT="">
+		</TD>
+		<TD><span class="bold">{trans("Swekey:")}</span></TD>
+		<TD CLASS="FRIGHT">
+			<INPUT TYPE="HIDDEN" NAME="userinfo[swekey_id]" VALUE="{$userinfo.swekey_id}">
+			{$userinfo.swekey_id}<INPUT TYPE="checkbox" NAME="userinfo[use_swekey]" VALUE="1" ID="swekey"{if $userinfo.swekey_id} checked{/if}><label for="swekey">{trans("Use Swekey")}</label>
+		</TD>
+	</TR>
+	{/if}
+	<TR CLASS="LIGHT">
+		<TD CLASS="FLEFT" style="white-space: nowrap;">
+			<IMG SRC="img/options.gif" ALT="">
+		</TD>
+		<TD><span class="bold">{trans("Notification:")}</span></TD>
+		<TD CLASS="FRIGHT">
+			<INPUT TYPE="checkbox" NAME="userinfo[ntype][]" VALUE="{$smarty.const.MSG_MAIL}" ID="ntypemail"{if ($userinfo.ntype & $smarty.const.MSG_MAIL)} checked{/if}><label for="ntypemail">{trans("email")}</label>
+			<INPUT TYPE="checkbox" NAME="userinfo[ntype][]" VALUE="{$smarty.const.MSG_SMS}" ID="ntypesms"{if ($userinfo.ntype & $smarty.const.MSG_SMS)} checked{/if}><label for="ntypesms">{trans("sms")}</label>
+		</TD>
+	</TR>
+	{if $layout.logid ne $userinfo.id}
+	<tr class="light">
+		<td class="FLEFT" style="white-space: nowrap;">
+			<img src="img/access.gif" alt="">
+		</td>
+		<td><span class="bold">{trans("Account active:")}</span></td>
+		<td class="FRIGHT">
+			<input type="radio" name="userinfo[access]" value="1" id="accessyes" {if $userinfo.access} checked{/if}><label for="accessyes">{trans("yes")}</label>
+			<input type="radio" name="userinfo[access]" value="0" id="accessno"  {if !$userinfo.access} checked{/if}><label for="accessno">{trans("no")}</label>
+		</td>
+	</tr>
+	<tr class="light">
+		<td class="fleft"><img src="img/calendar.gif"></td>
+		<td> <span class="bold">{trans("Account active:")}</span></td>
+		<td class="fright">
+			<span class="bold">{trans('from')}:</span><input type="text" name="userinfo[accessfrom]" value="{if $userinfo.accessfrom}{$userinfo.accessfrom}{/if}" size="10" {tip text="Enter access start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="accessfrom"} onclick="javascript:cal1.popup();">&nbsp;
+			<span class="bold">{trans('to')}:</span><input type="text" name="userinfo[accessto]" value="{if $userinfo.accessto}{$userinfo.accessto}{/if}" size="10"  {tip text="Enter access end date in YYYY/MM/DD format. If you don't want to define 'To' date leave this field empty" trigger="accessto"} onclick="javascript:cal2.popup();">
+		</td>
+	</tr>
+	{else}
+	<input type="hidden" name="userinfo[accessfrom]" value="{if $userinfo.accessfrom}{$userinfo.accessfrom}{/if}" >
+	<input type="hidden" name="userinfo[accessto]" value="{if $userinfo.accessto}{$userinfo.accessto}{/if}" >
+	<input type="hidden" name="userinfo[access]" value="{if $userinfo.access}1{else}0{/if}">
+	{/if}
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft">
+			<IMG SRC="img/ip.gif" ALT="">
+		</TD>
+		<TD style="white-space: nowrap;">
+			<span class="bold">{trans("Allowed hosts:")}</span>
+		</TD>
+		<TD CLASS="fright" style="white-space: nowrap;">
+			<INPUT TYPE="TEXT" SIZE="40" NAME="userinfo[hosts]" VALUE="{$userinfo.hosts}" {tip text="Enter comma-separated list of hosts or networks (optional)" trigger="hosts"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft">
+			<IMG SRC="img/passwd.gif" ALT="">
+		</TD>
+		<TD style="white-space: nowrap;">
+			<span class="bold">{trans("Password expiration:")}</span>
+		</TD>
+		<TD CLASS="fright" style="white-space: nowrap;">
+			<SELECT name="userinfo[passwdexpiration]" VALUE="{$userinfo.passwdexpiration}" {tip text="Select password expiration period" trigger="passwdexpiration"}>
+				{foreach from=$_PASSWDEXPIRATIONS item=item key=key}
+				<OPTION value="{$key}"{if $key == $userinfo.passwdexpiration} selected{/if}>{$item}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft">
+			<IMG SRC="img/pass.gif" ALT="">
+		</TD>
+		<TD style="white-space: nowrap;">
+			<span class="bold">{trans("Access rights:")}</span>
+		</TD>
+		<TD CLASS="fright" style="white-space: nowrap;">
+			<table style="width: 100%;">
+				<tr>
+					<td style="width: 50%; vertical-align: top; white-space: nowrap;">
+						{section name=acl loop=$accesslist}
+						{if $smarty.section.acl.index <= floor(sizeof($accesslist)/2) - 1}
+						<input type="checkbox" id="acl_{$accesslist[acl].id}" name="acl[{$accesslist[acl].id}]" value="1" {if $accesslist[acl].enabled} checked{/if}> <label for="acl_{$accesslist[acl].id}">{$accesslist[acl].name}</label><BR>
+						{/if}
+						{/section}
+					</td>
+					<td style="width: 50%; vertical-align: top; white-space: nowrap;">
+						{section name=acl loop=$accesslist}
+						{if $smarty.section.acl.index > floor(sizeof($accesslist)/2) - 1}
+						<input type="checkbox" id="acl_{$accesslist[acl].id}" name="acl[{$accesslist[acl].id}]" value="1" {if $accesslist[acl].enabled} checked{/if}> <label for="acl_{$accesslist[acl].id}">{$accesslist[acl].name}</label><BR>
+						{/if}
+						{/section}
+					</td>
+				</tr>
+			</table>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft">
+			<IMG SRC="img/group.gif" ALT="">
+		</TD>
+		<TD style="white-space: nowrap;">
+			<span class="bold">{trans("Groups:")}</span>
+		</TD>
+		<TD CLASS="fright" style="white-space: nowrap;">
+			{include file="multiselect.html" selected=$userinfo.selected available_tip="Enabled<!plural>:" selected_tip="Disabled<!plural>:"}
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD COLSPAN="3" CLASS="fbottomu" style="text-align: right;">
+			<A HREF="javascript:document.useredit.submit();" ACCESSKEY="S">{trans("Submit")} <IMG SRC="img/save.gif" ALT="">
+			<A HREF="?m=userinfo&id={$userinfo.id}">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+<SCRIPT type="text/javascript">
+<!--
+document.forms['useredit'].elements['userinfo[login]'].focus();
+var cal1=new calendar(document.forms['useredit'].elements['userinfo[accessfrom]']);cal1.time_comp = false;
+var cal2=new calendar(document.forms['useredit'].elements['userinfo[accessto]']);cal2.time_comp = false;
+//-->
+</SCRIPT>
