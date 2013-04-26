@@ -139,7 +139,7 @@ require_once(LIB_DIR.'/LMS.class.php');
 require_once(LIB_DIR.'/Auth.class.php');
 require_once(LIB_DIR.'/accesstable.php');
 require_once(LIB_DIR.'/Session.class.php');
-@require_once(LIB_DIR . '/SYSLOG.class.php');
+require_once(LIB_DIR . '/SYSLOG.class.php');
 
 if (check_conf('phpui.logging') && class_exists('SYSLOG'))
 	$SYSLOG = new SYSLOG($DB);
