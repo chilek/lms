@@ -1,0 +1,33 @@
+<!--// $Id$ //-->
+<TABLE style="width: 100%;" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD CLASS="fall" COLSPAN="2" style="white-space: nowrap;">
+			<IMG SRC="img/recover.gif" ALT="">
+			<span class="bold">{t a=$resource.name b=$resource.id|string_format:"%04d" c=$resource.date|date_format:"Y.m.d H:i:s"}$a ($b): status of $c{/t}</span>
+		</TD>
+	</TR>
+	{foreach $resource.properties as $key => $value}
+	<TR CLASS="light">
+		<TD style="width: 1%; white-space: nowrap;" class="fleft">
+			<span class="bold">{$key}:</span>
+		</TD>
+		<TD style="width: 99%;" CLASS="fright">
+			{$value}
+		</TD>
+	</TR>
+	{foreachelse}
+	<TR CLASS="light">
+		<TD colspan="2" style="text-align: center;" class="flr bold">
+			<p>&nbsp;</p>
+			<p>{trans("There are not any properties for this resource in archive.")}</p>
+			<p>&nbsp;</p>
+		</TD>
+	{/foreach}
+	<TR CLASS="light">
+		<TD COLSPAN="2" CLASS="fbottomu" style="text-align: right;">
+<!--
+			<A HREF="?m=useredit&id={$userinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG SRC="img/edit.gif" ALT=""></A>
+//-->
+		</TD>
+	</TR>
+</TABLE>
