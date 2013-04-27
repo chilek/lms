@@ -46,7 +46,7 @@ if(isset($_POST['tariff']))
 		$error['name'] = trans('Subscription name required!');
 	else if (!$error) {
 		if ($DB->GetOne('SELECT id FROM tariffs WHERE name = ? AND value = ? AND period = ?',
-            array($tariff['name'], str_replace(',', '.', $tariff['value']), $tariff['period']))
+            array($tariff['name'], str_replace(',', '.', $tariff['value']), $tariff['period'] == '' ? NULL : $tariff['period']))
         ) {
 			$error['name'] = trans('Subscription with specified name and value already exists!');
         }
