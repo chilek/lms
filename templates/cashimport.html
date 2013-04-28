@@ -75,6 +75,7 @@
 		    </TD>
 		    <TD ALIGN="RIGHT" CLASS="fright" COLSPAN="2" NOWRAP>
 			{if !$item.customerid}
+			<INPUT TYPE="text" SIZE="6" NAME="customer[{$item.id}]" VALUE="">
 			<SELECT NAME="customer[{$item.id}]" {tip text="Select customer" trigger=$item.id}>
 				<OPTION VALUE="0">{trans("- select customer -")}</OPTION>
 				{foreach from=$customerlist item=customer}
