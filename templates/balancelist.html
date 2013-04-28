@@ -98,7 +98,7 @@
 		</TD>
 		<TD width="1%" CLASS="frightu">&nbsp;</TD>
 	</TR>
-	<TR class="DARK">
+	<TR class="dark">
 		<TD class="fall" colspan="10">
 			<B>{trans("Filter:")} </B>
 				<INPUT type="text" name="search" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>
@@ -141,7 +141,7 @@
 	{/if}
 	{cycle values="light,lucid" print=false}
 	{section name=balancelist loop=$balancelist start=$start max=$pagelimit}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}"  >
 		<TD width="1%" class="fleft" nowrap>
 			{$balancelist[balancelist].time|date_format:"%Y/%m/%d %H:%M"}
 		</TD>

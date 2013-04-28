@@ -27,7 +27,7 @@
 	{cycle values="light,lucid" print=false}
 	{section name=payments loop=$paymentlist}
 	<FORM NAME="addbalance{$smarty.section.payments.index}" METHOD="POST" ACTION="?m=balanceadd">
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}"  >
 		<TD WIDTH="1%" CLASS="fleft" onClick="return self.location.href='?m=paymentinfo&id={$paymentlist[payments].id}';" class="fleft">
 			<IMG SRC="img/payment.gif" ALT=""><BR>
 			<IMG SRC="img/creditor.gif" ALT="">

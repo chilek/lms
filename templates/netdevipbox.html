@@ -1,6 +1,6 @@
 <!--// $Id$ //-->
 <TABLE WIDTH="100%" CELLPADDING="3">
-        <TR CLASS="DARK">
+        <TR CLASS="dark">
 	        <TD width="99%" class="fleftu hand" align="left" nowrap="nowrap" onClick="showOrHide('deviceips');">
 			<IMG SRC="img/ip.gif" ALT="">
 			<B>{t a=$netdevips|@count}IP addresses ($a):{/t}</B>
@@ -22,7 +22,7 @@
 	{if $netdevips}
 	{cycle values="light,lucid" print=false}
 	{section name=list loop=$netdevips}
-	<TR class="{cycle}{if ! $netdevips[list].access} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}{if ! $netdevips[list].access} blend{/if}"  >
 		<TD WIDTH="96%" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
 			<B>{$netdevips[list].name}</B>
 			{if $netdevips[list].location}<BR>
@@ -55,7 +55,7 @@
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="100%" COLSPAN="5" CLASS="ftop">
 			<IMG SRC="img/access.gif">
 			<A HREF="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset&access=1">{trans("Connect")}</A>/<A HREF="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset">{trans("Disconnect")}</A>

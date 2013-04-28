@@ -22,7 +22,7 @@
 			<NOBR><B>{t a=$listdata.total}Total: $a{/t}</B></NOBR>
 		</TD>
 	</TR>
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
 		<TD CLASS="fall" colspan="4">
 			<FORM METHOD="GET" ACTION="?m={$layout.module}" NAME="choosefilter">
 				<INPUT type="submit" class="hiddenbtn">
@@ -78,15 +78,15 @@
 		</TD>
 	</TR>		
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="4" CLASS="FALL">
+	<TR CLASS="dark">
+		<TD COLSPAN="4" CLASS="fall">
 			{include file="scroller.html" loop=$customerlist}
 		</TD>
 	</TR>
 	{/if}
 	{cycle values="light,lucid" print=false}
 	{section name=customerlist loop=$customerlist start=$start max=$pagelimit}
-	<TR class="{cycle}{if $customerlist[customerlist].account && !$customerlist[customerlist].nodeac} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}{if $customerlist[customerlist].account && !$customerlist[customerlist].nodeac} blend{/if}"  >
 		<TD onClick="return self.location.href='?m=customerinfo&id={$customerlist[customerlist].id}';" class="fleft" valign="top">
 			<IMG src="img/{if $customerlist[customerlist].status eq 1}unk{/if}{if $customerlist[customerlist].status eq 2}wait{/if}{if $customerlist[customerlist].status eq 3}customer{/if}.gif" alt="">{if $customerlist[customerlist].info}&nbsp;<img src="img/info1.gif" alt="" {tip text=$customerlist[customerlist].info}>{/if}<A name="{$customerlist[customerlist].id}" {tip a=$customerlist[customerlist].id dynpopup='?m=customerinfoshort&id=$a'}>&nbsp;<B>{$customerlist[customerlist].customername|escape}</B></A><BR>
 			<IMG src="img/home.gif" alt="">&nbsp;{$customerlist[customerlist].address}{if $customerlist[customerlist].city neq ""},{/if} {$customerlist[customerlist].zip} {$customerlist[customerlist].city}{if $customerlist[customerlist].country neq ""}, {t}{$customerlist[customerlist].country}{/t}{/if}
@@ -153,8 +153,8 @@
 	</TR>
 	{/section}
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="4" CLASS="FALL">
+	<TR CLASS="dark">
+		<TD COLSPAN="4" CLASS="fall">
 			{include file="scroller.html" loop=$customerlist}
 		</TD>
 	</TR>

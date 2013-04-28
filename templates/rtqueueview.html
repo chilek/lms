@@ -19,7 +19,7 @@
 			<B>{trans("Total:")} {$queuedata.total|default:"0"}</B>
 		</TD>
 	</TR>
-	<TR class="DARK">
+	<TR class="dark">
 		<TD class="fall" colspan="5">
 		    <TABLE cellpadding="0" cellspacing="0">
 			<TR>
@@ -69,15 +69,15 @@
 		</TD>
 	</TR>		
 	{if $queuedata.total != 0}
-	<TR class="DARK">
-		<TD colspan="5" class="FALL">
+	<TR class="dark">
+		<TD colspan="5" class="fall">
 			{include file="scroller.html" listdata=$queuedata loop=$queue}
 		</TD>
 	</TR>
 	{/if}
 	{cycle values="light,lucid" print=false}
 	{section name=ticket loop=$queue start=$start max=$pagelimit}
-	<TR class="{cycle}{if $queue[ticket].state == 2} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}{if $queue[ticket].state == 2} blend{/if}"  >
 		<TD class="fleft" onClick="return self.location.href='?m=rtticketview&id={$queue[ticket].id}';">
 			{if $queue[ticket].state == 0}
 				<IMG src="img/new.gif" alt="" {tip a=$queue[ticket].id dynpopup='?m=rtticketinfo&id=$a'}>
@@ -146,8 +146,8 @@
 	</TR>
 	{/section}
 	{if $queuedata.total != 0}
-	<TR class="DARK">
-		<TD colspan="5" class="FALL">
+	<TR class="dark">
+		<TD colspan="5" class="fall">
 			{include file="scroller.html" listdata=$queuedata loop=$queue}
 		</TD>
 	</TR>

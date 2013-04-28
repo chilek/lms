@@ -18,7 +18,7 @@
 	</TR>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$optionlist item=option}
-	<TR class="{cycle}{if $option.disabled} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}{if $option.disabled} blend{/if}"  >
 		<TD CLASS="fleft" valign="top" onClick="return self.location.href='?m=daemonconfigedit&id={$option.id}';" nowrap>
 			<IMG src="img/settings.gif" alt="">
 			<B>{$option.var}</B>

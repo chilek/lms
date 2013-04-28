@@ -46,7 +46,7 @@
 	<TR>
 		<TD WIDTH="1%" VALIGN="TOP">
 			<TABLE width="100%" cellpadding="3">
-				<TR CLASS="DARK">
+				<TR CLASS="dark">
 					<TD CLASS="fleftu" WIDTH="1%">
 						<IMG SRC="img/customer.gif" alt="">&nbsp;<B>{trans("Customers:")}</B>
 					</TD>
@@ -54,7 +54,7 @@
 						<IMG SRC="img/mail.gif" alt="">&nbsp;<B>{trans("Notice content:")}</B>
 					</TD>
 				</TR>
-				<TR CLASS="LIGHT">
+				<TR CLASS="light">
 					<TD CLASS="fleft">
 						<SELECT size="20" name="setwarnings[mcustomerid][]" id="customerslist" multiple {tip text="Select customers"}>
 							{foreach from=$customerlist key=key item=item}
@@ -70,7 +70,7 @@
 						</TABLE>
 					</TD>
 				</TR>
-				<TR CLASS="LIGHT">
+				<TR CLASS="light">
 					<TD CLASS="fbl" WIDTH="1%">
 						<INPUT TYPE="checkbox" NAME="customers" OnClick="javascript:SelectAllCustomers()"><A HREF="javascript:SelectAllCustomers2()">{trans("Select All<!masculine>")}</A></INPUT>
 					</TD>

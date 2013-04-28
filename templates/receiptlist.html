@@ -52,7 +52,7 @@
 <FORM METHOD="POST" NAME="page">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
 		<TD WIDTH="1%" CLASS="fleftu" nowrap>
 			<A href="?m=receiptlist&o=cdate{if $listdata.direction eq "asc" && $listdata.order eq "cdate"},desc{/if}">{trans("Date:")}</A> {if $listdata.order eq "cdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<A href="?m=receiptlist&o=user{if $listdata.direction eq "asc" && $listdata.order eq "user"},desc{/if}">{trans("User:")}</A> {if $listdata.order eq "user"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
@@ -79,7 +79,7 @@
 			</NOBR>
 		</TD>
 	</TR>
-	<TR class="DARK">
+	<TR class="dark">
 		<TD class="fall" colspan="7">
 				<B>{trans("Filter:")} </B> 
 				<INPUT name="search" type="text" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>&nbsp;
@@ -110,7 +110,7 @@
 	{section name=receiptlist loop=$receiptlist start=$start max=$pagelimit}
 	{assign var=receipt value=$receiptlist[receiptlist]}
 	{assign var=receiptid value=$receipt.id}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}"  >
 		<TD WIDTH="1%" class="fleft" NOWRAP><A id="{$receipt.id}"></A>
 			{if !$receipt.closed}<FONT class="alert">{/if}
 			{$receipt.cdate|date_format:"%Y/%m/%d %H:%M"}<BR>

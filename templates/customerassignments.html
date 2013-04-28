@@ -1,7 +1,7 @@
 <!--// $Id$ //-->
 {assign var=today value=$smarty.now|date_format:"%x 00:00:00"}{assign var=today value=$today|date_format:"%s"}
 <TABLE style="width: 100%;" CELLPADDING="3">
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
 		<TD style="width: 99%; white-space: nowrap; text-align: left;" class="fleftu hand" onClick="showOrHide('customerassignments');">
 			<IMG src="img/money.gif" alt="">
 			<span class="bold">{trans("Customer Liabilities:")}</span>
@@ -37,9 +37,8 @@
 				</TR>
 				{cycle name=assign values="light,lucid" print=false}
 				{foreach from=$assignments item=a}
-				<TR class="{cycle name=assign}
-					{if ($a.dateto < $today && $a.dateto) || ($a.liabilityid && $a.at < $today && $a.at > 365)} blend{elseif ($a.datefrom > $today && $a.datefrom && $a.period) && !($a.suspended)} alertblend{elseif ($a.suspended)}suspended{/if}"
-					onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')" >
+				<TR class="highlight {cycle name=assign}
+					{if ($a.dateto < $today && $a.dateto) || ($a.liabilityid && $a.at < $today && $a.at > 365)} blend{elseif ($a.datefrom > $today && $a.datefrom && $a.period) && !($a.suspended)} alertblend{elseif ($a.suspended)}suspended{/if}">
 					{if !$a.tariffid && !$a.liabilityid}
 					<TD COLSPAN="7" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
 						<span class="bold">{trans("Suspending of all liabilities")}</span>
@@ -103,7 +102,7 @@
 						({sum array=$assignments column="real_disc_value" string_format=$LANGDEFS.$_language.money_format})
 						{/if}
 					</TD>
-					<TD CLASS="FTOP">&nbsp;</TD>
+					<TD CLASS="ftop">&nbsp;</TD>
 					<TD CLASS="ftop" style="white-space: nowrap; text-align: right;">{sum array=$assignments column="real_downceil" assign=downceilsum}{if $downceilsum}{$downceilsum} kbit/s{/if}</TD>
 					<TD CLASS="ftop" style="white-space: nowrap; text-align: right;">{sum array=$assignments column="real_upceil" assign=upceilsum}{if $upceilsum}{$upceilsum} kbit/s{/if}</TD>
 					<TD CLASS="ftop" COLSPAN="3">&nbsp;</TD>

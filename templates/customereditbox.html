@@ -20,7 +20,7 @@
 		var nr = contactscountelem.value;
 		var lastcontactelem = document.getElementById('contact' + (nr - 1));
 		var newrow = lastcontactelem.parentNode.insertRow(lastcontactelem.rowIndex + 1);
-		newrow.className = 'LIGHT';
+		newrow.className = 'light';
 		newrow.id = 'contact' + nr;
 		var newcell1 = newrow.insertCell(0);
 		var newcell2 = newrow.insertCell(1);
@@ -44,8 +44,8 @@
 <FORM NAME="customeredit" id="customeredit" METHOD="POST" ACTION="?m=customeredit&id={$customerinfo.id}{if $recover}&action=recover{/if}"><INPUT TYPE="HIDDEN" NAME="customerdata[id]" VALUE="{$customerinfo.id}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD WIDTH="100%" CLASS="FALL" NOWRAP>
+	<TR CLASS="dark">
+		<TD WIDTH="100%" CLASS="fall" NOWRAP>
 		        <TABLE WIDTH="100%" CELLPADDING="1">
 				<TR>
 					<TD WIDTH="1%"><B>{trans("Name/Surname:")}</B></TD>
@@ -58,13 +58,13 @@
 			</TABLE>
 		</TD>
 	</TR>
-        <TR class="LIGHT">
+        <TR class="light">
             <TD WIDTH="100%" CLASS="flr container">
 		        <TABLE WIDTH="100%" CELLPADDING="0">
-				<TR CLASS="LIGHT">
+				<TR CLASS="light">
 					<TD WIDTH="50%" style="vertical-align:top;">
 						<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			{if $customerinfo.status eq "3"}<IMG SRC="img/customer.gif" ALT="">{/if}
 			{if $customerinfo.status eq "2"}<IMG SRC="img/wait.gif" ALT="">{/if}
@@ -79,7 +79,7 @@
 		</TD>
 	</TR>
 	{if $divisions}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/division.gif" ALT="">
 		</TD>
@@ -92,7 +92,7 @@
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/folder.gif" ALT="">
 		</TD>
@@ -101,7 +101,7 @@
 			<INPUT TYPE="radio" NAME="customerdata[type]" VALUE="1" ID="company" {tip text="Select legal personality type" trigger="type"}{if $customerinfo.type == $smarty.const.CTYPES_COMPANY} CHECKED{/if}><label for="company">{assign var='type' value=$smarty.const.CTYPES_COMPANY}{$_CTYPES.$type}</label>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%" style="vertical-align: top">
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
@@ -155,7 +155,7 @@
 		new AutoSuggest(document.getElementById('customeredit'),document.getElementById('city'),'?m=customeradd&ajax=1&mode=city&what=',0);
 		</script>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%" style="vertical-align: top">
 			<IMG SRC="img/post.gif" ALT="">
 		</TD>
@@ -214,7 +214,7 @@
 		</script>
 	</TR>
 	{foreach from=$customerinfo.contacts item=item key=key}
-	<TR CLASS="LIGHT" ID="contact{$key}">
+	<TR CLASS="light" ID="contact{$key}">
 		<TD WIDTH="1%" style="vertical-align: top">
 			<IMG SRC="img/phone.gif" ALT="">
 		</TD>
@@ -227,14 +227,14 @@
 		</TD>
 	</TR>
 	{/foreach}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%"></TD>
 		<TD WIDTH="99%">
 			<INPUT TYPE="HIDDEN" ID="contactscount" VALUE="{$item@total}">
 			<A href="javascript: newcontact()">{trans("Add contact field")} &raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/gg.gif" alt="Gadu-Gadu">
 		</TD>
@@ -243,7 +243,7 @@
 			<INPUT TYPE="TEXT" NAME="customerdata[uid][{$gg}]" VALUE="{if $customerinfo.uid.$gg}{$customerinfo.uid.$gg}{/if}" SIZE="20" {tip text="Enter Gadu-Gadu ID (optional)" trigger="gg"}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG src="img/yim.gif" alt="Yahoo">
 		</TD>
@@ -252,7 +252,7 @@
 			<INPUT TYPE="TEXT" NAME="customerdata[uid][{$yahoo}]" VALUE="{if $customerinfo.uid.$yahoo}{$customerinfo.uid.$yahoo}{/if}" SIZE="20" {tip text="Enter Yahoo Messenger ID (optional)" trigger="yahoo"}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG src="img/skype.gif" alt="Skype">
 		</TD>
@@ -261,7 +261,7 @@
 			<INPUT TYPE="TEXT" NAME="customerdata[uid][{$skype}]" VALUE="{if $customerinfo.uid.$skype}{$customerinfo.uid.$skype}{/if}" SIZE="20" {tip text="Enter Skype ID (optional)" trigger="skype"}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/mail.gif" ALT="">
 		</TD>
@@ -269,7 +269,7 @@
 			<INPUT TYPE="TEXT" NAME="customerdata[email]" VALUE="{$customerinfo.email}" SIZE="38" {tip text="Enter e-mail address (optional)" trigger="email" }><BR>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/pin.gif" ALT="">
 		</TD>
@@ -278,7 +278,7 @@
 			<A href="javascript: randomize()" {tip text="Generate PIN"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD width="1%" style="vertical-align: top">
 			<IMG src="img/serialnumber.gif" alt="">
 		</TD>
@@ -323,7 +323,7 @@
             </TABLE>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%" style="vertical-align: top">
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
@@ -381,7 +381,7 @@
 			</TABLE>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD width="1%" style="vertical-align: top">
 			<IMG src="img/options.gif" alt="">
 		</TD>
@@ -426,7 +426,7 @@
 					</TD>
 					<TD WIDTH="50%" style="vertical-align:top;">
 						<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/info1.gif" ALT="">
 		</TD>
@@ -434,7 +434,7 @@
 			<TEXTAREA NAME="customerdata[info]" COLS="60" ROWS="10" {tip text="Enter additional information (optional)"}>{$customerinfo.info|escape}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/warningon.gif" ALT="">
 		</TD>
@@ -442,7 +442,7 @@
 			<TEXTAREA NAME="customerdata[message]" COLS="60" ROWS="10" {tip text="Enter notice contents (optional)"}>{$customerinfo.message|escape}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/note.gif" ALT="">
 		</TD>
@@ -450,16 +450,16 @@
 			<TEXTAREA NAME="customerdata[notes]" COLS="60" ROWS="10" {tip text="Enter notes (optional)"}>{$customerinfo.notes|escape}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/money.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%">
 			<B>{trans("Balance:")}</B>
-			{if $customerinfo.balance < 0}<FONT CLASS="ALERT">{$customerinfo.balance|money_format}</FONT>{else}{$customerinfo.balance|money_format}{/if}
+			{if $customerinfo.balance < 0}<FONT CLASS="alert">{$customerinfo.balance|money_format}</FONT>{else}{$customerinfo.balance|money_format}{/if}
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/users.gif" ALT="">
 		</TD>
@@ -474,8 +474,8 @@
 			</TABLE>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" CLASS="FBOTTOMU" ALIGN="RIGHT">
+	<TR CLASS="light">
+		<TD WIDTH="100%" CLASS="fbottomu" ALIGN="RIGHT">
 			<A HREF="javascript:document.customeredit.submit();" ACCESSKEY="S">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
 			<A HREF="?m=customerinfo&id={$customerinfo.id}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
 		</TD>

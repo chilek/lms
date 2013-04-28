@@ -130,7 +130,7 @@
 <FORM NAME="save" METHOD="POST" ACTION="?m=invoicenote&action=save">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
 		<TD CLASS="fleftu" WIDTH="1%">
 			<B>{trans("No.")}</B>
 		</TD>
@@ -162,7 +162,7 @@
 	</TR>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$contents item=item}
-	<TR class="{cycle}{if $item.deleted} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}{if $item.deleted} blend{/if}"  >
 		<TD CLASS="fleft" WIDTH="1%">
 			<B>{$item.itemid}.</B>
 		</TD>

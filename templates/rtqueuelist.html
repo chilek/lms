@@ -27,7 +27,7 @@
 	</TR>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$queues item=queue}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}"  >
 		<TD CLASS="fleft" onClick="return self.location.href='?m=rtqueueview&id={$queue.id}';">
 			<IMG src="img/queue.gif" ALT="">
 			<B>{$queue.name}</B><BR>

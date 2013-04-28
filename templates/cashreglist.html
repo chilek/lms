@@ -25,7 +25,7 @@
 	</TR>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$reglist item=reg}
-	<TR class="{cycle}{if $reg.disabled} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}{if $reg.disabled} blend{/if}"  >
 		<TD CLASS="fleft" nowrap onClick="return self.location.href='?m=receiptlist&regid={$reg.id}';">
 			<IMG src="img/queue.gif" ALT=""> <B>{$reg.name}</B>
 		</TD>

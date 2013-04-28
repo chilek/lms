@@ -11,7 +11,7 @@
 </head>
 <body>
 <TABLE WIDTH="100%" CELLPADDING="3" id="table">
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
 		<TD WIDTH="1%">
 			<IMG SRC="img/nodegroup.gif" alt="">
 		</TD>
@@ -21,7 +21,7 @@
 	</TR>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$nodegroups item=nodegroup}
-	<tr class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<tr class="highlight {cycle}"  >
 		<TD WIDTH="1%">
 			<IMG src="img/nodegroup.gif" ALT="">
 			{*

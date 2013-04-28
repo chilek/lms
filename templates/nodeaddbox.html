@@ -2,21 +2,21 @@
 <FORM NAME="nodeadd" ID="nodeadd" METHOD="POST" ACTION="?m=nodeadd{if $customerinfo.id}&ownerid={$customerinfo.id}{/if}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE style="width: 100%;" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD style="width: 1%;" CLASS="FLEFTU">
+	<TR CLASS="dark">
+		<TD style="width: 1%;" CLASS="fleftu">
 			<IMG SRC="img/node.gif" ALT="{trans("Name:")}">
 		</TD>
-		<TD style="width: 99%;" CLASS="FRIGHTU">
+		<TD style="width: 99%;" CLASS="frightu">
 			<INPUT TYPE="TEXT" NAME="nodedata[name]" VALUE="{$nodedata.name}" MAXLENGTH="32" size="30" {tip text="Enter node name" trigger="name" bold=1}>
 		</TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
 		<TD style="width: 100%;" COLSPAN="2" CLASS="flr container">
 			<TABLE style="width: 100%;" CELLPADDING="0">
-				<TR CLASS="LIGHT">
+				<TR CLASS="light">
 					<TD style="width: 50%; vertical-align: top;">
 						<TABLE style="width: 100%;" CELLPADDING="3">
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD style="width: 1%;">
 			<IMG SRC="img/ip.gif" ALT="{trans("IP address:")}">
 		</TD>
@@ -25,7 +25,7 @@
 		</TD>
 	</TR>
 	{if check_conf('phpui.public_ip')}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD style="width: 1%;">
 			<IMG SRC="img/ip_pub.gif" ALT="{trans("Pub. IP address:")}">
 		</TD>
@@ -34,7 +34,7 @@
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD style="width: 1%;">
 			<IMG SRC="img/mac.gif" ALT="{trans("MAC address:")}">
 		</TD>
@@ -50,7 +50,7 @@
 			<A href="javascript: newmac()">{trans("Add MAC address")} &raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD style="width: 1%;">
 			<IMG SRC="img/passwd.gif" ALT="{trans("Password:")}">
 		</TD>
@@ -58,7 +58,7 @@
 			<INPUT TYPE="TEXT" NAME="nodedata[passwd]" VALUE="{$nodedata.passwd}" {tip text="Enter password (optional)" trigger="passwd"}> <a href="javascript: GenPasswd();" {tip text="Click to generate random password"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD style="width: 1%; vertical-align: top;">
 			<IMG SRC="img/home.gif" ALT="{trans("Location:")}">
 		</TD>
@@ -73,7 +73,7 @@
 			<INPUT TYPE="checkbox" name="nodedata[teryt]" id="teryt" ononchange="check_teryt('location')"{if $nodedata.teryt} checked{/if}> <label for="teryt">{trans("TERRIT-DB")}</label>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD style="width: 1%;">
 			<IMG SRC="img/nodegroup.gif" ALT="{trans("Node group:")}">
 		</TD>
@@ -87,7 +87,7 @@
 		</TD>
 	</TR>
 	{if $netdevices}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD style="width: 1%;">
 			<IMG SRC="img/netdev.gif" ALT="{trans("Net device:")}">
 		</TD>
@@ -113,7 +113,7 @@
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD style="width: 1%;">
 			<IMG SRC="img/customer.gif" ALT="{trans("Customer:")}">
 		</TD>
@@ -131,7 +131,7 @@
 		<A href="javascript: void(0);" onClick="return customerchoosewin(document.nodeadd.elements['nodedata[ownerid]']);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD style="width: 1%;">
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
@@ -176,7 +176,7 @@
 			<TEXTAREA NAME="nodedata[info]" COLS="50" ROWS="5" {tip text="Enter additional information (optional)"}>{$nodedata.info}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD style="width: 1%;">
 			<IMG SRC="img/{if ! $nodedata.access}no{/if}access.gif" ALT="">
 		</TD>
@@ -187,7 +187,7 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD style="width: 1%;">
 			<IMG SRC="img/warning{if !$nodedata.warning}off{else}on{/if}.gif" ALT="">
 		</TD>
@@ -204,8 +204,8 @@
 			</TABLE>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
-		<TD style="width: 100%; text-align: right;" CLASS="FBOTTOMU" COLSPAN="2">
+	<TR CLASS="light">
+		<TD style="width: 100%; text-align: right;" CLASS="fbottomu" COLSPAN="2">
 			<A HREF="?m=nodescan{if $customerinfo.id}&ownerid={$customerinfo.id}{/if}">{trans("Scan")} <IMG SRC="img/search.gif" alt=""></A>
 			<A HREF="javascript:document.nodeadd.submit();" ACCESSKEY="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
 			<A HREF="?m={if $customerinfo.id}customerinfo&id={$customerinfo.id}{else}nodelist{/if}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A><BR>

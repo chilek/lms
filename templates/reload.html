@@ -3,7 +3,7 @@
 <P><FORM name="reload" method="POST" action="?m=reload&setreloads">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
 		<TD class="fall">
 		<div style="float:left">
 			<span class="bold">{trans("Select hosts for configuration reload:")} </div> </span> <div id="reloadtxt" style="display:none; float:right"><span class="bold">{trans("Reload configuration in:")} </span> <span id="reloadtimer" class="bold"></span> </div>
@@ -21,7 +21,7 @@
 				</TR>
 				{cycle values="light,lucid" print=false}
 				{section name=hosts loop=$hosts}
-				<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+				<TR class="highlight {cycle}"  >
 					<TD nowrap onClick="return checkElement({$hosts[hosts].id});"><IMG src="img/host.gif" ALT=""> <span class="bold">{$hosts[hosts].name}</span></TD>
 					<TD onClick="return checkElement({$hosts[hosts].id});">{$hosts[hosts].description}</TD>
 					<TD align="right" nowrap onClick="return checkElement({$hosts[hosts].id});">{if $hosts[hosts].lastreload}{$hosts[hosts].lastreload|date_format:"%Y/%m/%d %H:%M"}{else}-{/if}</TD>

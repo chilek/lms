@@ -4,7 +4,7 @@
 <FORM METHOD="POST" NAME="customergroupadd" ACTION="?m=customergroupadd">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
 		<TD WIDTH="1%" CLASS="fleftu">
 			<IMG SRC="img/group.gif" ALT="">
 		</TD>
@@ -15,7 +15,7 @@
 			<INPUT TYPE="TEXT" NAME="customergroupadd[name]" VALUE="{$customergroupadd.name}" SIZE="50" {tip trigger="name" bold=1}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft">
 			<IMG SRC="img/info1.gif" ALT="">
 		</TD>
@@ -26,8 +26,8 @@
 			<TEXTAREA NAME="customergroupadd[description]" COLS="50" ROWS="5" {tip text="Enter additional information (optional)"}>{$customergroupadd.description}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT"> 
+	<TR CLASS="light">
+		<TD WIDTH="100%" COLSPAN="3" CLASS="fbottomu" ALIGN="RIGHT"> 
 			<A HREF="javascript:document.customergroupadd.submit();" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
 			<A HREF="?m=customergrouplist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
 		</TD>

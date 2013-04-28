@@ -12,7 +12,7 @@
 <body>
 {$lastonline_limit = get_conf('phpui.lastonline_limit')}
 <TABLE WIDTH="100%" CELLPADDING="3" id="table">
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
 		<TD WIDTH="1%">
 			<IMG SRC="img/node.gif" alt="">
 		</TD>
@@ -26,7 +26,7 @@
 	</TR>
 	{cycle values="light,lucid" print=false}
 	{section name=customernodes loop=$customernodes}
-	<tr class="{cycle}{if ! $customernodes[customernodes].access} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<tr class="highlight {cycle}{if ! $customernodes[customernodes].access} blend{/if}"  >
 		<TD WIDTH="1%">
 			<a href="?m=nodeset&id={$customernodes[customernodes].id}&shortlist=1&popup=1"><IMG src="img/{if ! $customernodes[customernodes].access}no{/if}access.gif" ALT="[ {if ! $customernodes[customernodes].access}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]"></a>
 			<a href="?m=nodewarn&id={$customernodes[customernodes].id}&shortlist=1&popup=1"><IMG src="img/warning{if ! $customernodes[customernodes].warning}off{else}on{/if}.gif" ALT="[ {if ! $customernodes[customernodes].warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if} ]"></a>
