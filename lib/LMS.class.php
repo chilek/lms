@@ -1959,8 +1959,8 @@ class LMS {
 
 			foreach ($nodedata['macs'] as $mac)
 				$this->DB->Execute('INSERT INTO macs (mac, nodeid) VALUES(?, ?)', array(strtoupper($mac), $id));
-			$macs = $this->DB->GetAll('SELECT id, mac FROM macs WHERE nodeid = ?', array($id));
-			if ($this->SYSLOG)
+			if ($this->SYSLOG) {
+				$macs = $this->DB->GetAll('SELECT id, mac FROM macs WHERE nodeid = ?', array($id));
 				foreach ($macs as $mac) {
 					$args = array(
 						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MAC] => $mac['id'],
@@ -1973,6 +1973,7 @@ class LMS {
 							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
 							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
 				}
+			}
 
 			return $id;
 		}
