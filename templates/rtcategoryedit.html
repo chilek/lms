@@ -4,7 +4,7 @@
 <FORM METHOD="POST" NAME="category" ACTION="?m=rtcategoryedit&id={$category.id}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
+	<TR class="dark">
 	    <TD width="1%" class="fleftu">
 		<IMG src="img/queue.gif" ALT="">
 	    </TD>
@@ -13,7 +13,7 @@
 		<INPUT TYPE="TEXT" NAME="category[name]" VALUE="{$category.name}" {tip text="Enter category name" trigger="name" bold=1}><B> ({$category.id|string_format:"%04d"})</B>
 	    </TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
 	    <TD width="1%" class="fleft">
 		<IMG src="img/info1.gif" ALT="">
 	    </TD>
@@ -22,14 +22,14 @@
 		<TEXTAREA NAME="category[description]" COLS="50" ROWS="3" {tip text="Enter additional information (optional)"}>{$category.description}</TEXTAREA>
 	    </TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
 	    <TD width="1%" class="fleft">
 		<IMG src="img/users.gif" ALT="">
 	    </TD>
 	    <TD width="1%"><B>{trans("Users:")}</B></TD>
 	    <TD width="98%" class="fright">
 		    <TABLE width="100%" cellpadding="3">
-			<TR class="DARK">
+			<TR class="dark">
 			    <TD width="99%" class="fleftu"><B>{trans("User")}</B>
 			    </TD>
 			    <TD width="1%" class="frightu" align="center" nowrap><B>{trans("Owner")}</B></TD>
@@ -45,15 +45,15 @@
 			    </TD>
 			</TR>
 			{/foreach}
-			<TR class="LIGHT">
+			<TR class="light">
 			    <TD width="99%" class="ftop"></TD>
 			    <TD width="1%" class="ftop"></TD>
 			</TR>
 		</TABLE>			
 	    </TD>
 	</TR>
-	<TR class="LIGHT">
-	    <TD width="100%" COLSPAN="3" class="FBOTTOMU" ALIGN="RIGHT"> 
+	<TR class="light">
+	    <TD width="100%" COLSPAN="3" class="fbottomu" ALIGN="RIGHT"> 
 	    	<A HREF="javascript:document.category.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 		<A HREF="?m=rtcategorydel&id={$category.id}" OnClick="return confirmLink(this, '{t a=$category.name}Are you sure, you want to remove category \'$a\'?{/t}');" accesskey="d">{trans("Delete")}<IMG src="img/delete.gif" alt=""></A>
 		<A HREF="?m=rtcategorylist">{trans("Cancel")}<IMG src="img/cancel.gif" alt=""></A>

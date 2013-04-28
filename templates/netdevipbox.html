@@ -1,6 +1,6 @@
 <!--// $Id$ //-->
 <TABLE WIDTH="100%" CELLPADDING="3">
-        <TR CLASS="DARK">
+        <TR CLASS="dark">
 	        <TD width="99%" class="fleftu hand" align="left" nowrap="nowrap" onClick="showOrHide('deviceips');">
 			<IMG SRC="img/ip.gif" ALT="">
 			<B>{t a=$netdevips|@count}IP addresses ($a):{/t}</B>
@@ -55,7 +55,7 @@
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="100%" COLSPAN="5" CLASS="ftop">
 			<IMG SRC="img/access.gif">
 			<A HREF="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset&access=1">{trans("Connect")}</A>/<A HREF="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset">{trans("Disconnect")}</A>

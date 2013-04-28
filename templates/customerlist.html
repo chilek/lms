@@ -22,7 +22,7 @@
 			<NOBR><B>{t a=$listdata.total}Total: $a{/t}</B></NOBR>
 		</TD>
 	</TR>
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
 		<TD CLASS="fall" colspan="4">
 			<FORM METHOD="GET" ACTION="?m={$layout.module}" NAME="choosefilter">
 				<INPUT type="submit" class="hiddenbtn">
@@ -78,8 +78,8 @@
 		</TD>
 	</TR>		
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="4" CLASS="FALL">
+	<TR CLASS="dark">
+		<TD COLSPAN="4" CLASS="fall">
 			{include file="scroller.html" loop=$customerlist}
 		</TD>
 	</TR>
@@ -153,8 +153,8 @@
 	</TR>
 	{/section}
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="4" CLASS="FALL">
+	<TR CLASS="dark">
+		<TD COLSPAN="4" CLASS="fall">
 			{include file="scroller.html" loop=$customerlist}
 		</TD>
 	</TR>

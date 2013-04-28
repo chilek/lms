@@ -3,7 +3,7 @@
  {if $layout.module=="aliassearch"}{assign var=suffix value="&s=1"}{/if}
 <H1>{$layout.pagetitle}</H1>
 <P><TABLE cellpadding="3" WIDTH="100%">
-	<TR class="DARK">
+	<TR class="dark">
 		<TD width="41%" class="fleftu" nowrap>
 			<IMG src="img/alias.gif" alt=""> <A href="?m={$layout.module}{$suffix}&o=login{if $listdata.direction eq "asc" && $listdata.order eq "login"},desc{/if}"><B>{trans("Login<!account>")}</B></A> {if $listdata.order eq "login"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 			<B>@</B>
@@ -19,7 +19,7 @@
 			 <B>{t a=$listdata.total}Total: $a{/t}</B>
 		</TD>
 	</TR>
-	<TR class="DARK">
+	<TR class="dark">
 		<TD class="fall" colspan="4">
 			<TABLE cellpadding="0" cellspacing="0">
 		    		<TR>
@@ -54,8 +54,8 @@
 		</TD>
 	</TR>		
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="4" CLASS="FALL">
+	<TR CLASS="dark">
+		<TD COLSPAN="4" CLASS="fall">
 			{include file="scroller.html" loop=$aliaslist adlink=$suffix}
 		</TD>
 	</TR>
@@ -90,8 +90,8 @@
 	</TR>
 	{/section}
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD colspan="4" class="FALL">
+	<TR CLASS="dark">
+		<TD colspan="4" class="fall">
 			{include file="scroller.html" loop=$aliaslist adlink=$suffix}
 		</TD>
 	</TR>

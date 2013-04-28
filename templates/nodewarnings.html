@@ -46,7 +46,7 @@
 	<TR>
 		<TD WIDTH="1%" VALIGN="TOP">
 			<TABLE width="100%" cellpadding="3">
-				<TR CLASS="DARK">
+				<TR CLASS="dark">
 					<TD CLASS="fleftu" WIDTH="1%">
 						<IMG SRC="img/node.gif" alt="">&nbsp;<B>{trans("Nodes:")}</B>
 					</TD>
@@ -54,7 +54,7 @@
 						<IMG SRC="img/mail.gif" alt="">&nbsp;<B>{trans("Notice content:")}</B>
 					</TD>
 				</TR>
-				<TR CLASS="LIGHT">
+				<TR CLASS="light">
 					<TD CLASS="fleft">
 						<SELECT size="20" name="setwarnings[mnodeid][]" id="nodeslist" multiple {tip text="Select nodes"}>
 							{section name=nodelist loop=$nodelist}
@@ -66,7 +66,7 @@
 						<TEXTAREA NAME="setwarnings[message]" id="setwarnings[message]" ROWS="20" COLS="75" {tip text="Enter notice content"}>{$warnmessage}</TEXTAREA>
 					</TD>
 				</TR>
-				<TR CLASS="LIGHT">
+				<TR CLASS="light">
 					<TD CLASS="fbl" WIDTH="1%" nowrap>
 						<INPUT TYPE="checkbox" NAME="nodes" OnClick="javascript:SelectAllNodes()"><A HREF="javascript:SelectAllNodes2()">{trans("Select All<!nodes>")}</A></INPUT>
 					</TD>

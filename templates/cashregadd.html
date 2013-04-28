@@ -4,7 +4,7 @@
 <FORM METHOD="POST" NAME="registry" ACTION="?m=cashregadd">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
+	<TR class="dark">
 	    <TD width="1%" class="fleftu">
 		<IMG src="img/queue.gif" ALT="">
 	    </TD>
@@ -13,7 +13,7 @@
 		<INPUT TYPE="TEXT" NAME="registry[name]" VALUE="{$registry.name}" SIZE="40" {tip text="Enter name" trigger="name" bold=1}>
 	    </TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
 	    <TD width="1%" class="fleft">
 		<IMG src="img/id.gif" ALT="">
 	    </TD>
@@ -28,7 +28,7 @@
 		    </SELECT>
 	    </TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
 	    <TD width="1%" class="fleft">
 		<IMG src="img/id.gif" ALT="">
 	    </TD>
@@ -43,7 +43,7 @@
 		    </SELECT>
 	    </TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
 	    <TD width="1%" class="fleft">
 		<IMG src="img/info1.gif" ALT="">
 	    </TD>
@@ -52,7 +52,7 @@
 		<TEXTAREA NAME="registry[description]" COLS="50" ROWS="3" {tip text="Enter additional information (optional)"}>{$registry.description}</TEXTAREA>
 	    </TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
 	    <TD width="1%" class="fleft">
 		<IMG src="img/wait.gif" ALT="">
 	    </TD>
@@ -61,20 +61,20 @@
 		    <INPUT type="checkbox" name="registry[disabled]" value="1" {if $registry.disabled} checked{/if}>
 	    </TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
 	    <TD width="1%" class="fleft">
 		<IMG src="img/users.gif" ALT="">
 	    </TD>
 	    <TD width="1%"><B>{trans("Permissions:")}</B></TD>
 	    <TD width="98%" class="fright">
 		    <TABLE width="100%" cellpadding="3">
-			<TR class="DARK">
+			<TR class="dark">
 			    <TD width="93%" class="ftl"><B>{trans("User")}</B></TD>
 			    <TD width="1%" class="ftop" align="center" nowrap><B>{trans("Read")}</B></TD>
 			    <TD width="5%" class="ftop" align="center" colspan="5" nowrap><B>{trans("Write (+R)")}</B></TD>
 			    <TD width="1%" class="ftr" align="center" nowrap><B>{trans("Advanced (+R)")}</B></TD>
 			</TR>
-			<TR class="DARK">
+			<TR class="dark">
 			    <TD width="93%" class="fbl"></TD>
 			    <TD width="1%" class="fbottom" align="center" nowrap></TD>
 			    <TD width="1%" class="fbottom" align="center">{trans("customer")}</TD>
@@ -114,15 +114,15 @@
 			    </TD>
 			</TR>
 			{/foreach}
-			<TR class="LIGHT">
+			<TR class="light">
 			    <TD width="93%" class="ftop"></TD>
 			    <TD width="7%" colspan="7" class="ftop"></TD>
 			</TR>
 		</TABLE>
 	    </TD>
 	</TR>
-	<TR class="LIGHT">
-	    <TD width="100%" COLSPAN="3" class="FBOTTOMU" ALIGN="RIGHT"> 
+	<TR class="light">
+	    <TD width="100%" COLSPAN="3" class="fbottomu" ALIGN="RIGHT"> 
 	    	<A HREF="javascript:document.registry.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 		<A HREF="?m=cashreglist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
 	    </TD>

@@ -2,7 +2,7 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <TABLE style="width: 100%;" CELLPADDING="3">
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
 		<TD CLASS="fall" COLSPAN="3" style="white-space: nowrap;">
 			<IMG SRC="img/pass.gif" ALT="">
 			<span class="bold">{$userinfo.login} ({$userinfo.id|string_format:"%04d"})</span>
@@ -93,7 +93,7 @@
 		</td>
 	</tr>
 {/if}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD style="width: 1%; white-space: nowrap;" CLASS="fleft">
 			<IMG SRC="img/ip.gif" ALT="">
 		</TD>
@@ -104,7 +104,7 @@
 			{if $userinfo.hosts}{$userinfo.hosts}{else}{trans("all")}{/if}
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD style="width: 1%; white-space: nowrap;" CLASS="fleft">
 			<IMG SRC="img/passwd.gif" ALT="">
 		</TD>
@@ -115,7 +115,7 @@
 			{$_PASSWDEXPIRATIONS[$userinfo.passwdexpiration]}
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD style="width: 1%; white-space: nowrap;" CLASS="fleft">
 			<IMG SRC="img/passwd.gif" ALT="">
 		</TD>

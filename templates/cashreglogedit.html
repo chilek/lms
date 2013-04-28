@@ -5,7 +5,7 @@
 <FORM METHOD="POST" NAME="reglog" ACTION="?m=cashreglogedit&id={$reglog.id}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
+	<TR class="dark">
 	    <TD width="1%" class="fleftu">
 		<IMG src="img/value.gif" ALT="">
 	    </TD>
@@ -14,7 +14,7 @@
 		<INPUT TYPE="TEXT" NAME="reglog[value]" VALUE="{if $reglog.value!=''}{$reglog.value|string_format:"%.2f"}{/if}" SIZE="16" {tip text="Enter real cash state value" trigger="value"}>
 	    </TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
 	    <TD width="1%" class="fleft">
 		<IMG src="img/time.gif" ALT="">
 	    </TD>
@@ -23,7 +23,7 @@
 		<INPUT TYPE="TEXT" NAME="reglog[time]" VALUE="{if $reglog.time}{$reglog.time}{/if}" SIZE="16" OnClick="javascript:cal.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="time"}>
 	    </TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
 	    <TD width="1%" class="fleft">
 		<IMG src="img/info1.gif" ALT="">
 	    </TD>
@@ -32,8 +32,8 @@
 		<TEXTAREA NAME="reglog[description]" COLS="50" ROWS="3" {tip text="Enter additional information (optional)"}>{$reglog.description}</TEXTAREA>
 	    </TD>
 	</TR>
-	<TR class="LIGHT">
-	    <TD width="100%" COLSPAN="3" class="FBOTTOMU" ALIGN="RIGHT"> 
+	<TR class="light">
+	    <TD width="100%" COLSPAN="3" class="fbottomu" ALIGN="RIGHT"> 
 	    	<A HREF="javascript:document.reglog.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 		<A HREF="?m=cashreglogview">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
 	    </TD>

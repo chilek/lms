@@ -4,7 +4,7 @@
 <P><FORM name="domainadd" method="POST" action="?m=domainadd">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE cellpadding="3" WIDTH="100%">
-	<TR class="DARK">
+	<TR class="dark">
 		<TD width="1%" class="fleftu">
 			<IMG src="img/domain.gif" alt="">
 		</TD>
@@ -15,7 +15,7 @@
 			<INPUT type="text" name="domainadd[name]" value="{$domainadd.name}" {tip text="Enter domain name" trigger="name"} size="20">
 		</TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
     		<TD width="1%" class="fleft">
             		<img src="img/customer.gif" alt="">
 	        </TD>
@@ -79,7 +79,7 @@
 			<INPUT type="checkbox" name="domainadd[mxbackup]" value="1"{if $domainadd.mxbackup} checked{/if}>
 		</TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
 		<TD width="1%" class="fleft">
 			<IMG src="img/info.gif" alt="">
 		</TD>
@@ -90,7 +90,7 @@
 			<TEXTAREA name="domainadd[description]" rows="5" cols="50" {tip text="Enter additional information (optional)"}>{$domainadd.description}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
 		<TD class="fbottomu" colspan="3" align="right" NOWRAP>
 			<A href="javascript: document.domainadd.submit();">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
 			<A href="?m=domainlist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A><BR>

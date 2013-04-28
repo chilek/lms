@@ -8,25 +8,25 @@
     <INPUT TYPE="hidden" NAME="ipadd[modifiedby]" VALUE="{$nodeipdata.modifiedby}">
     <INPUT TYPE="hidden" NAME="ipadd[moddateh]" VALUE="{$nodeipdata.moddateh}">
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD WIDTH="1%" CLASS="FLEFTU">
+	<TR CLASS="dark">
+		<TD WIDTH="1%" CLASS="fleftu">
 			<IMG SRC="img/ip.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" CLASS="FBT">
+		<TD WIDTH="1%" CLASS="fbt">
 			<B>{trans("Name:")}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHTU">
+		<TD WIDTH="98%" CLASS="frightu">
 			<INPUT TYPE="TEXT" NAME="ipadd[name]" VALUE="{$nodeipdata.name}" MAXLENGTH="32" size="30" {tip text="Enter address name" trigger="ipname" bold=1}>
 			<B>({$nodeipdata.id|string_format:"%04d"})</B>
 		</TD>
 	</TR>
-    <TR class="LIGHT">
+    <TR class="light">
         <TD WIDTH="100%" COLSPAN="3" CLASS="flr container">
 			<TABLE WIDTH="100%" CELLPADDING="0">
-				<TR CLASS="LIGHT">
+				<TR CLASS="light">
 					<TD WIDTH="50%" style="vertical-align:top;">
 						<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/ip.gif" ALT="">
 		</TD>
@@ -38,7 +38,7 @@
 		</TD>
 	</TR>
 	{if check_conf('phpui.public_ip')}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/ip_pub.gif" ALT="">
 		</TD>
@@ -50,7 +50,7 @@
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/mac.gif" ALT="">
 		</TD>
@@ -69,7 +69,7 @@
 			<A href="javascript: newmac()">{trans("Add MAC address")} &raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/passwd.gif" ALT="">
 		</TD>
@@ -80,7 +80,7 @@
 			<INPUT TYPE="TEXT" NAME="ipadd[passwd]" VALUE="{$nodeipdata.passwd}" {tip text="Enter password (optional)" trigger="passwd"}> <a href="javascript: GenPasswd();" {tip text="Click to generate random password"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/options.gif" ALT="{trans("Options:")}">
 		</TD>
@@ -96,7 +96,7 @@
 			{/if}
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/network.gif" ALT="">
 		</TD>
@@ -107,7 +107,7 @@
 			<B><A HREF="?m=netinfo&id={$netdevinfo.netid}">{$nodeipdata.netname}</A></B>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/{if ! $nodeipdata.access}no{/if}access.gif" ALT="">
 		</TD>
@@ -125,7 +125,7 @@
 					        </TD>
 					        <TD WIDTH="50%" style="vertical-align:top;">
 					                <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/info.gif" ALT="">
 		</TD>
@@ -136,7 +136,7 @@
 			<TEXTAREA NAME="ipadd[info]" ROWS="5" COLS="40" {tip text="Enter additional information (optional)"}>{$nodeipdata.info}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/users.gif" ALT="">
 		</TD>
@@ -155,8 +155,8 @@
 			</TABLE>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
+	<TR CLASS="light">
+		<TD WIDTH="100%" CLASS="fbottomu" COLSPAN="3" ALIGN="RIGHT">
 			<A HREF="javascript:document.editipaddr.submit();" ACCESSKEY="S">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
 			<A HREF="?m=netdevinfo&id={$netdevinfo.id}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
 		</TD>

@@ -5,7 +5,7 @@
 <FORM NAME="useredit" METHOD="POST" ACTION="?m=useredit&id={$userinfo.id}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
 		<TD style="width: 1%; white-space: nowrap;" CLASS="fleftu">
 			<IMG SRC="img/pass.gif" ALT="">
 		</TD>
@@ -45,44 +45,44 @@
 			<INPUT TYPE="TEXT" NAME="userinfo[email]" VALUE="{$userinfo.email}" SIZE="40" {tip text="Enter e-mail address (optional)" trigger="email"}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="FLEFT" style="white-space: nowrap;">
+	<TR CLASS="light">
+		<TD CLASS="fleft" style="white-space: nowrap;">
 			<IMG SRC="img/sms.gif" ALT="">
 		</TD>
 		<TD><span class="bold">{trans("Phone:")}</span></TD>
-		<TD CLASS="FRIGHT">
+		<TD CLASS="fright">
 			<INPUT TYPE="TEXT" NAME="userinfo[phone]" VALUE="{$userinfo.phone}" SIZE="40" {tip text="Enter phone number for SMS notification (optional)" trigger="phone"}>
 		</TD>
 	</TR>
 	{if $userinfo.swekey_id}
-	<TR CLASS="LIGHT">
-		<TD CLASS="FLEFT" style="white-space: nowrap;">
+	<TR CLASS="light">
+		<TD CLASS="fleft" style="white-space: nowrap;">
 			<IMG SRC="img/swekey/swekey-green-8x16.png"" ALT="">
 		</TD>
 		<TD><span class="bold">{trans("Swekey:")}</span></TD>
-		<TD CLASS="FRIGHT">
+		<TD CLASS="fright">
 			<INPUT TYPE="HIDDEN" NAME="userinfo[swekey_id]" VALUE="{$userinfo.swekey_id}">
 			{$userinfo.swekey_id}<INPUT TYPE="checkbox" NAME="userinfo[use_swekey]" VALUE="1" ID="swekey"{if $userinfo.swekey_id} checked{/if}><label for="swekey">{trans("Use Swekey")}</label>
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="LIGHT">
-		<TD CLASS="FLEFT" style="white-space: nowrap;">
+	<TR CLASS="light">
+		<TD CLASS="fleft" style="white-space: nowrap;">
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
 		<TD><span class="bold">{trans("Notification:")}</span></TD>
-		<TD CLASS="FRIGHT">
+		<TD CLASS="fright">
 			<INPUT TYPE="checkbox" NAME="userinfo[ntype][]" VALUE="{$smarty.const.MSG_MAIL}" ID="ntypemail"{if ($userinfo.ntype & $smarty.const.MSG_MAIL)} checked{/if}><label for="ntypemail">{trans("email")}</label>
 			<INPUT TYPE="checkbox" NAME="userinfo[ntype][]" VALUE="{$smarty.const.MSG_SMS}" ID="ntypesms"{if ($userinfo.ntype & $smarty.const.MSG_SMS)} checked{/if}><label for="ntypesms">{trans("sms")}</label>
 		</TD>
 	</TR>
 	{if $layout.logid ne $userinfo.id}
 	<tr class="light">
-	    <td class="FLEFT" style="white-space: nowrap;">
+	    <td class="fleft" style="white-space: nowrap;">
 			<img src="img/access.gif" alt="">
 		</td>
 		<td><span class="bold">{trans("Account active:")}</span></td>
-		<td class="FRIGHT">
+		<td class="fright">
 			<input type="radio" name="userinfo[access]" value="1" id="accessyes" {if $userinfo.access} checked{/if}><label for="accessyes">{trans("yes")}</label>
 			<input type="radio" name="userinfo[access]" value="0" id="accessno"  {if !$userinfo.access} checked{/if}><label for="accessno">{trans("no")}</label>
 		</td>
@@ -100,7 +100,7 @@
 	    <input type="hidden" name="userinfo[accessto]" value="{if $userinfo.accessto}{$userinfo.accessto}{/if}" >
 	    <input type="hidden" name="userinfo[access]" value="{if $userinfo.access}1{else}0{/if}">
 	{/if}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD CLASS="fleft">
 			<IMG SRC="img/ip.gif" ALT="">
 		</TD>
@@ -111,7 +111,7 @@
 			<INPUT TYPE="TEXT" SIZE="40" NAME="userinfo[hosts]" VALUE="{$userinfo.hosts}" {tip text="Enter comma-separated list of hosts or networks (optional)" trigger="hosts"}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD CLASS="fleft">
 			<IMG SRC="img/passwd.gif" ALT="">
 		</TD>
@@ -126,7 +126,7 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD CLASS="fleft">
 			<IMG SRC="img/pass.gif" ALT="">
 		</TD>
@@ -154,7 +154,7 @@
 			</table>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD CLASS="fleft">
 			<IMG SRC="img/group.gif" ALT="">
 		</TD>

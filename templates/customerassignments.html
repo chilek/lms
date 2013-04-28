@@ -1,7 +1,7 @@
 <!--// $Id$ //-->
 {assign var=today value=$smarty.now|date_format:"%x 00:00:00"}{assign var=today value=$today|date_format:"%s"}
 <TABLE style="width: 100%;" CELLPADDING="3">
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
 		<TD style="width: 99%; white-space: nowrap; text-align: left;" class="fleftu hand" onClick="showOrHide('customerassignments');">
 			<IMG src="img/money.gif" alt="">
 			<span class="bold">{trans("Customer Liabilities:")}</span>
@@ -102,7 +102,7 @@
 						({sum array=$assignments column="real_disc_value" string_format=$LANGDEFS.$_language.money_format})
 						{/if}
 					</TD>
-					<TD CLASS="FTOP">&nbsp;</TD>
+					<TD CLASS="ftop">&nbsp;</TD>
 					<TD CLASS="ftop" style="white-space: nowrap; text-align: right;">{sum array=$assignments column="real_downceil" assign=downceilsum}{if $downceilsum}{$downceilsum} kbit/s{/if}</TD>
 					<TD CLASS="ftop" style="white-space: nowrap; text-align: right;">{sum array=$assignments column="real_upceil" assign=upceilsum}{if $upceilsum}{$upceilsum} kbit/s{/if}</TD>
 					<TD CLASS="ftop" COLSPAN="3">&nbsp;</TD>

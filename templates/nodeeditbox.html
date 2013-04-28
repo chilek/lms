@@ -3,22 +3,22 @@
 <INPUT type="submit" class="hiddenbtn">
 <INPUT TYPE="hidden" NAME="nodeedit[id]" VALUE="{$nodeinfo.id}">
 <TABLE style="width: 100%;" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD style="width: 1%;" CLASS="FLEFTU">
+	<TR CLASS="dark">
+		<TD style="width: 1%;" CLASS="fleftu">
 			<IMG SRC="img/node.gif" ALT="">
 		</TD>
-		<TD style="width: 99%;" CLASS="FRIGHTU" COLSPAN="2">
+		<TD style="width: 99%;" CLASS="frightu" COLSPAN="2">
 			<INPUT TYPE="TEXT" NAME="nodeedit[name]" VALUE="{$nodeinfo.name}" MAXLENGTH="32" size="30" {tip text="Enter node name" trigger="name" bold=1}>
 			<span class="bold">({$nodeinfo.id|string_format:"%04d"})</span>
 		</TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
 		<TD style="width: 100%;" COLSPAN="3" CLASS="flr container">
 			<TABLE style="width: 100%;" CELLPADDING="0">
-				<TR CLASS="LIGHT">
+				<TR CLASS="light">
 					<TD style="width: 50%; vertical-align: top;">
 						<TABLE style="width: 100%;" CELLPADDING="3">
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD style="width: 1%;">
 			<IMG SRC="img/ip.gif" ALT="{trans("IP address:")}">
 		</TD>
@@ -26,7 +26,7 @@
 			<INPUT TYPE="TEXT" NAME="nodeeditipaddr" VALUE="{$nodeinfo.ip}" {tip text="Enter IP address" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editnode.nodeeditipaddr,{$nodeinfo.netid});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD style="width: 1%;">
 			<IMG SRC="img/ip_pub.gif" ALT="{trans("Pub. IP address:")}">
 		</TD>
@@ -34,7 +34,7 @@
 			<INPUT TYPE="TEXT" NAME="nodeeditipaddrpub" {if $nodeinfo.ip_pub != "0.0.0.0"}VALUE="{$nodeinfo.ip_pub}"{/if} {tip text="Enter IP address (optional)" trigger="ipaddr_pub"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editnode.nodeeditipaddrpub,{$nodeinfo.netid});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD style="width: 1%;">
 			<IMG SRC="img/mac.gif" ALT="{trans("MAC address:")}">
 		</TD>
@@ -50,7 +50,7 @@
 			<A href="javascript: newmac()">{trans("Add MAC address")} &raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD style="width: 1%;">
 			<IMG SRC="img/passwd.gif" ALT="{trans("Password:")}">
 		</TD>
@@ -58,7 +58,7 @@
 			<INPUT TYPE="TEXT" NAME="nodeedit[passwd]" VALUE="{$nodeinfo.passwd}" {tip text="Enter password (optional)" trigger="passwd"}> <a href="javascript: GenPasswd();" {tip text="Click to generate random password"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD style="width: 1%; vertical-align: top;">
 			<IMG SRC="img/home.gif" ALT="{trans("Location:")}">
 		</TD>
@@ -74,7 +74,7 @@
 		</TD>
 	</TR>
 {*
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD style="width: 1%;">
 			<IMG SRC="img/network.gif" ALT="{trans("Network:")}">
 		</TD>
@@ -84,7 +84,7 @@
 	</TR>
 *}
 {if $netdevices}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD style="width: 1%;">
 			<IMG SRC="img/netdev.gif" ALT="{trans("Net devices:")}">
 		</TD>
@@ -110,7 +110,7 @@
 		</TD>
 	</TR>
 {/if}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD style="width: 1%;">
 			<IMG SRC="img/customer.gif" ALT="{trans("Customer:")}">
 		</TD>
@@ -127,7 +127,7 @@
 			<A href="javascript: void(0);" onClick="return customerchoosewin(document.editnode.elements['nodeedit[ownerid]']);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD style="width: 1%;">
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
@@ -140,7 +140,7 @@
 				</TD>
 				<TD style="width: 50%; vertical-align: top;">
 					<TABLE style="width: 100%;" CELLPADDING="3">
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD style="width: 1%;">
 			<IMG SRC="img/home.gif" ALT="{trans("GPS coordinates:")}">
 		</TD>
@@ -152,7 +152,7 @@
 			<a href="javascript: void(0);" onClick="return gpscoordschoosewin(document.editnode.elements['nodeedit[longitude]'], document.editnode.elements['nodeedit[latitude]']);" {tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD style="width: 1%;">
 			<IMG SRC="img/home.gif" ALT="{trans("GPS coordinates:")}">
 		</TD>
@@ -164,7 +164,7 @@
 			<a href="javascript: void(0);" onClick="return gpscoordschoosewin(document.editnode.elements['nodeedit[longitude]'], document.editnode.elements['nodeedit[latitude]']);" {tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD style="width: 1%;">
 			<IMG SRC="img/info1.gif" ALT="{trans("Description:")}">
 		</TD>
@@ -172,7 +172,7 @@
 			<TEXTAREA NAME="nodeedit[info]" COLS="50" ROWS="5" {tip text="Enter additional information (optional)"}>{$nodeinfo.info}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD style="width: 1%;">
 			<IMG SRC="img/{if ! $nodeinfo.access}no{/if}access.gif" ALT="">
 		</TD>
@@ -183,7 +183,7 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD style="width: 1%;">
 			<IMG SRC="img/warning{if !$nodeinfo.warning}off{else}on{/if}.gif" ALT="">
 		</TD>
@@ -194,7 +194,7 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD style="width: 1%;">
 			<IMG SRC="img/users.gif" ALT="">
 		</TD>
@@ -213,8 +213,8 @@
 			</TABLE>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
-		<TD style="width: 100%; text-align: right;" CLASS="FBOTTOMU" COLSPAN="3">
+	<TR CLASS="light">
+		<TD style="width: 100%; text-align: right;" CLASS="fbottomu" COLSPAN="3">
 			<A HREF="javascript:document.editnode.submit();" ACCESSKEY="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
 			<A HREF="?m=nodeinfo&id={$nodeinfo.id}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
 		</TD>

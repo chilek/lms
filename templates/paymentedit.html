@@ -4,7 +4,7 @@
 <P><FORM METHOD="POST" NAME="paymentedit" ACTION="?m=paymentedit&id={$payment.id}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
 		<TD WIDTH="1%" CLASS="fleftu">
 			<IMG SRC="img/payment.gif" ALT="">
 		</TD>
@@ -15,7 +15,7 @@
 			<B>&nbsp;({$payment.id|string_format:"%04d"})</B>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft">
 			<IMG SRC="img/creditor.gif" ALT="">
 		</TD>
@@ -26,7 +26,7 @@
 			<INPUT TYPE="TEXT" SIZE="50" NAME="payment[creditor]" VALUE="{$payment.creditor}" {tip text="Enter creditor name" trigger="creditor"}>
 		</TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
 			<IMG SRC="img/value.gif" ALT="">
 		</TD>
@@ -36,7 +36,7 @@
 			<INPUT TYPE="text" NAME="payment[value]" VALUE="{$payment.value|string_format:"%01.2f"}" SIZE="8" {tip text="Enter value" trigger="value"}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft">
 			<IMG SRC="img/calendar.gif" ALT="">
 		</TD>

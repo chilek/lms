@@ -19,7 +19,7 @@
 			<B>{trans("Total:")} {$queuedata.total|default:"0"}</B>
 		</TD>
 	</TR>
-	<TR class="DARK">
+	<TR class="dark">
 		<TD class="fall" colspan="5">
 		    <TABLE cellpadding="0" cellspacing="0">
 			<TR>
@@ -69,8 +69,8 @@
 		</TD>
 	</TR>		
 	{if $queuedata.total != 0}
-	<TR class="DARK">
-		<TD colspan="5" class="FALL">
+	<TR class="dark">
+		<TD colspan="5" class="fall">
 			{include file="scroller.html" listdata=$queuedata loop=$queue}
 		</TD>
 	</TR>
@@ -146,8 +146,8 @@
 	</TR>
 	{/section}
 	{if $queuedata.total != 0}
-	<TR class="DARK">
-		<TD colspan="5" class="FALL">
+	<TR class="dark">
+		<TD colspan="5" class="fall">
 			{include file="scroller.html" listdata=$queuedata loop=$queue}
 		</TD>
 	</TR>

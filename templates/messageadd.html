@@ -54,27 +54,27 @@
 </SCRIPT>
 <TABLE style="width: 100%;" CELLPADDING="3">
 {if $message.customerid}
-	<TR CLASS="DARK">
-		<TD CLASS="FLEFTU" style="width: 1%;">
+	<TR CLASS="dark">
+		<TD CLASS="fleftu" style="width: 1%;">
 			<IMG SRC="img/customer.gif" ALT=""> 
 		</TD>
-		<TD CLASS="FBT" style="width: 1%; white-space: nowrap;">
+		<TD CLASS="fbt" style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("Recipient:")}</span>
 		</TD>
-		<TD CLASS="FRIGHTU" style="width: 98%;">
+		<TD CLASS="frightu" style="width: 98%;">
 			<span class="bold">{$message.customer} ({$message.customerid|string_format:"%04d"})</span>
 			<INPUT type="hidden" name="message[customerid]" value="{$message.customerid}">
 		</TD>
 	</TR>
 {else}
-	<TR CLASS="DARK">
-		<TD CLASS="FLEFTU" style="width: 1%;">
+	<TR CLASS="dark">
+		<TD CLASS="fleftu" style="width: 1%;">
 			<IMG SRC="img/group.gif" ALT=""> 
 		</TD>
-		<TD CLASS="FBT" style="width: 1%; white-space: nowrap;">
+		<TD CLASS="fbt" style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("Recipients:")}</span>
 		</TD>
-		<TD CLASS="FRIGHTU" style="width: 98%;">
+		<TD CLASS="frightu" style="width: 98%;">
 			<TABLE style="width: 100%;">
 				<TR>
 					<TD style="width: 1%; white-space: nowrap;" rowspan="2">{trans("Status:")}</TD>
@@ -133,14 +133,14 @@
 		</TD>
 	</TR>
 {/if}
-	<TR CLASS="LIGHT">
-		<TD CLASS="FLEFT" style="width: 1%;">
+	<TR CLASS="light">
+		<TD CLASS="fleft" style="width: 1%;">
 			<IMG SRC="img/mailsms.gif" ALT=""> 
 		</TD>
 		<TD style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("Type:")}</span>
 		</TD>
-		<TD CLASS="FRIGHT" style="width: 98%;">
+		<TD CLASS="fright" style="width: 98%;">
 			<INPUT type="radio" NAME="message[type]" id="typemail" value="{$smarty.const.MSG_MAIL}"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} CHECKED{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typemail"><span class="bold">{trans("email")}</span></label>
 			<INPUT type="radio" NAME="message[type]" id="typesms" value="{$smarty.const.MSG_SMS}"{if $message.type == $smarty.const.MSG_SMS} CHECKED{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typesms"><span class="bold">{trans("sms")}</span></label>
 			{if !$message.customerid}
@@ -148,38 +148,38 @@
 			{/if}
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT" ID="mailsender"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
-		<TD CLASS="FLEFT" style="width: 1%;">
+	<TR CLASS="light" ID="mailsender"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
+		<TD CLASS="fleft" style="width: 1%;">
 			<IMG SRC="img/email.gif" ALT=""> 
 		</TD>
 		<TD style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("Sender E-mail:")}</span>
 		</TD>
-		<TD CLASS="FRIGHT" style="width: 98%;">
+		<TD CLASS="fright" style="width: 98%;">
 			<INPUT type="text" NAME="message[sender]" SIZE="40" value="{if $message.sender}{$message.sender}{elseif $userinfo.email}{$userinfo.email}{/if}" {tip trigger="sender" text="Enter sender e-mail address"}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT" ID="mailfrom"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
-		<TD CLASS="FLEFT" style="width: 1%;">
+	<TR CLASS="light" ID="mailfrom"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
+		<TD CLASS="fleft" style="width: 1%;">
 			<IMG SRC="img/users.gif" ALT=""> 
 		</TD>
 		<TD style="width: 1%;">
 			<span class="bold">{trans("Sender:")}</span>
 		</TD>
-		<TD CLASS="FRIGHT" style="width: 98%;">
+		<TD CLASS="fright" style="width: 98%;">
 			<INPUT type="text" NAME="message[from]" SIZE="40"  VALUE="{if $message.from}{$message.from}{elseif $userinfo.name}{$userinfo.name}{/if}" {tip trigger="from" text="Enter sender name"}>
 		</TD>
 	</TR>
 {if !$message.customerid}
 	{if $users}
-	<TR CLASS="LIGHT" ID="users"{if $message.type != $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>
-		<TD CLASS="FLEFT" style="width: 1%;">
+	<TR CLASS="light" ID="users"{if $message.type != $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>
+		<TD CLASS="fleft" style="width: 1%;">
 			<IMG SRC="img/users.gif" ALT=""> 
 		</TD>
 		<TD style="width: 1%;">
 			<span class="bold">{trans("Users:")}</span>
 		</TD>
-		<TD CLASS="FRIGHT" style="width: 98%;">
+		<TD CLASS="fright" style="width: 98%;">
 			<SELECT size="4" name="message[users][]" MULTIPLE id="messageusers" {tip text="Select users"}>
 			{section name="users" loop=$users}
 				<OPTION value="{$users[users].phone}">{$users[users].name|truncate:30:"...":true}</OPTION>
@@ -187,59 +187,59 @@
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="LIGHT" ID="phonenumber"{if $message.type != $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>
-		<TD CLASS="FLEFT" style="width: 1%;">
+	<TR CLASS="light" ID="phonenumber"{if $message.type != $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>
+		<TD CLASS="fleft" style="width: 1%;">
 			<IMG SRC="img/sms.gif" ALT=""> 
 		</TD>
 		<TD style="width: 1%;">
 			<span class="bold">{trans("Phone number:")}</span>
 		</TD>
-		<TD CLASS="FRIGHT" style="width: 98%;">
+		<TD CLASS="fright" style="width: 98%;">
 			<INPUT type="text" NAME="message[phonenumber]" SIZE="60" VALUE="{$message.phonenumber}" {tip trigger="phonenumber" text="Enter phone numbers separated by commas"}>
 		</TD>
 	</TR>
 {/if}
-	<TR CLASS="LIGHT">
-		<TD CLASS="FLEFT" style="width: 1%;">
+	<TR CLASS="light">
+		<TD CLASS="fleft" style="width: 1%;">
 			<IMG SRC="img/mail.gif" ALT=""> 
 		</TD>
 		<TD style="width: 1%;">
 			<span class="bold">{trans("Subject:")}</span>
 		</TD>
-		<TD CLASS="FRIGHT" style="width: 98%;">
+		<TD CLASS="fright" style="width: 98%;">
 			<INPUT type="text" NAME="message[subject]" SIZE="60" VALUE="{$message.subject}" {tip trigger="subject" text="Enter message subject"}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT" ID="mailbody"{if $message.type > $smarty.const.MSG_MAIL} style="display: none"{/if}>
-		<TD CLASS="FLEFT" style="width: 1%;">
+	<TR CLASS="light" ID="mailbody"{if $message.type > $smarty.const.MSG_MAIL} style="display: none"{/if}>
+		<TD CLASS="fleft" style="width: 1%;">
 			<IMG SRC="img/edit.gif" ALT=""> 
 		</TD>
 		<TD style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("Message body:")}</span>
 		</TD>
-		<TD CLASS="FRIGHT" style="width: 98%;">
+		<TD CLASS="fright" style="width: 98%;">
 			<TEXTAREA NAME="message[mailbody]" COLS="80" ROWS="20" {tip text="Use carriage return for indentation only. LMS will reformat paragraphs and break long lines." trigger="body"}>{$message.body}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT" ID="smsbody"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} style="display: none"{/if}>
-		<TD CLASS="FLEFT" style="width: 1%;">
+	<TR CLASS="light" ID="smsbody"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} style="display: none"{/if}>
+		<TD CLASS="fleft" style="width: 1%;">
 			<IMG SRC="img/edit.gif" ALT=""> 
 		</TD>
 		<TD style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("Message body:")}</span>
 		</TD>
-		<TD CLASS="FRIGHT" style="width: 98%;">
+		<TD CLASS="fright" style="width: 98%;">
 			<TEXTAREA NAME="message[smsbody]" ID="smstext" COLS="60" ROWS="5" onkeydown="countChars(this)" onkeyup="countChars(this)" onmouseout="countChars(this)" {tip text="Enter message body" trigger="body"}>{$message.body}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT" ID="charscount"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} style="display: none"{/if}>
-		<TD CLASS="FLEFT" style="width: 1%;"></TD>
+	<TR CLASS="light" ID="charscount"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} style="display: none"{/if}>
+		<TD CLASS="fleft" style="width: 1%;"></TD>
 		<TD style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("Characters:")}</span>
 		</TD>
-		<TD CLASS="FRIGHT" style="width: 98%;" ID="charscounttext">0</TD>
+		<TD CLASS="fright" style="width: 98%;" ID="charscounttext">0</TD>
 	</TR>
-	<TR CLASS="LIGHT" ID="attachment"{if $message.type > $smarty.const.MSG_MAIL} style="display: none"{/if}>
+	<TR CLASS="light" ID="attachment"{if $message.type > $smarty.const.MSG_MAIL} style="display: none"{/if}>
 		<TD style="width: 1%;" CLASS="fleft">
 			<IMG src="img/attach.gif" alt="">
 		</TD>
@@ -250,8 +250,8 @@
 			<INPUT name="file" type="file" size="60" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="FBOTTOMU" COLSPAN="3" style="text-align: right;">
+	<TR CLASS="light">
+		<TD CLASS="fbottomu" COLSPAN="3" style="text-align: right;">
 			 <A HREF="javascript:document.message.submit();" accesskey="s">{trans("Send")} <IMG SRC="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>

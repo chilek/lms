@@ -2,7 +2,7 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <P><TABLE cellpadding="3" WIDTH="100%">
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
 		<TD width="1%" class="fleftu" NOWRAP>
 			<IMG src="img/time.gif" alt=""> <B>{trans("Time:")}</B><BR>
 			<IMG src="img/users.gif" alt=""> {trans("Created by:")}
@@ -19,7 +19,7 @@
 		</TD>
 		<TD width="1%" class="frightu" NOWRAP></TD>
 	</TR>
-	<TR class="DARK">
+	<TR class="dark">
 		<TD colspan="5" class="fall" align="center" NOWRAP>
 			<A href="?m=eventlist&day=1&month={if $month==1}12{else}{math equation="x-1" x=$month}{/if}&year={if $month==1}{math equation="x-1" x=$year}{else}{$year}{/if}">&laquo;&laquo;&laquo;&nbsp;</A>
 			{section name=days loop=$days.day}
@@ -28,7 +28,7 @@
 			<A href="?m=eventlist&day=1&month={if $month==12}1{else}{math equation="x+1" x=$month}{/if}&year={if $month==12}{math equation="x+1" x=$year}{else}{$year}{/if}">&raquo;&raquo;&raquo;&nbsp;</A>
 		</TD>
 	</TR>
-	<TR class="DARK">
+	<TR class="dark">
 		<TD class="fall" colspan="5" NOWRAP>
 			<FORM method="GET" action="?m=eventlist" name="filter">
 				<INPUT type="submit" class="hiddenbtn">
@@ -70,7 +70,7 @@
 	<TR>
 		<TD width="100%" colspan="5" class="fbt"><IMG src="img/empty.gif" alt="" height="1"></TD>
 	</TR>
-	<TR class="DARK">
+	<TR class="dark">
 		<TD width="1%" class="fleftu" nowrap>
 			<IMG src="img/calendar.gif" alt="">
 			<B>{$daylist[daylist]|date_format:"%A"}</B>

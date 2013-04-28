@@ -49,7 +49,7 @@
 <INPUT type="hidden" name="m" value="documentlist">
 <INPUT type="hidden" name="page" value="1">
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
 		<TD WIDTH="1%" NOWRAP class="fleftu"> <A href="?m=documentlist&o=cdate{if $listdata.direction eq "asc" && $listdata.order eq "cdate"},desc{/if}">{trans("Date:")}</A>{if $listdata.order eq "cdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR><B>{trans("Number:")}</B></TD>
 		<TD WIDTH="1%" NOWRAP class="fbt"> <A href="?m=documentlist&o=type{if $listdata.direction eq "asc" && $listdata.order eq "type"},desc{/if}"><B>{trans("Type:")}</B></A>{if $listdata.order eq "type"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</TD>
 		<TD WIDTH="1%" NOWRAP class="fbt"> <A href="?m=documentlist&o=title{if $listdata.direction eq "asc" && $listdata.order eq "title"},desc{/if}">{trans("Title:")}</A>{if $listdata.order eq "title"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>{trans("Period:")}</TD>
@@ -58,7 +58,7 @@
 			<A href="?m=documentadd&cid={$listdata.customer}&type={$listdata.type}">{trans("New Document")}</A> <IMG src="img/save.gif" alt="">
 		</TD>
 	</TR>
-	<TR class="DARK">
+	<TR class="dark">
 		<TD class="fall" colspan="5">
 				<B>{trans("Filter:")} </B> {trans("Customer:")}
                 {if $customerlist}
@@ -86,8 +86,8 @@
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="5" CLASS="FALL">
+	<TR CLASS="dark">
+		<TD COLSPAN="5" CLASS="fall">
 			{include file="scroller.html" loop=$documentlist}
 		</TD>
 	</TR>
@@ -138,8 +138,8 @@
 	</TR>
 	{/section}
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="5" CLASS="FALL">
+	<TR CLASS="dark">
+		<TD COLSPAN="5" CLASS="fall">
 			{include file="scroller.html" loop=$documentlist}
 		</TD>
 	</TR>

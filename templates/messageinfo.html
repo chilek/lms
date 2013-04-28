@@ -2,62 +2,62 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD CLASS="FLEFTU" WIDTH="1%">
+	<TR CLASS="dark">
+		<TD CLASS="fleftu" WIDTH="1%">
 			<IMG SRC="img/{if $message.type == $smarty.const.MSG_SMS}sms{else}email{/if}.gif" ALT=""> 
 		</TD>
-		<TD CLASS="FBT" WIDTH="1%" NOWRAP>
+		<TD CLASS="fbt" WIDTH="1%" NOWRAP>
 			<B>{trans("Subject:")}</B>
 		</TD>
-		<TD CLASS="FRIGHTU" WIDTH="98%">
+		<TD CLASS="frightu" WIDTH="98%">
 			<B>{$message.subject}</B>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="FLEFT" WIDTH="1%">
+	<TR CLASS="light">
+		<TD CLASS="fleft" WIDTH="1%">
 			<IMG SRC="img/users.gif" ALT=""> 
 		</TD>
 		<TD WIDTH="1%">
 			<B>{trans("User:")}</B>
 		</TD>
-		<TD CLASS="FRIGHT" WIDTH="98%">
+		<TD CLASS="fright" WIDTH="98%">
 			{if $message.userid}
 			<a href="?m=userinfo&id={$message.userid}">{$message.name}</a>
 			{else}LMS{/if}
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="FLEFT" WIDTH="1%">
+	<TR CLASS="light">
+		<TD CLASS="fleft" WIDTH="1%">
 			<IMG SRC="img/time.gif" ALT=""> 
 		</TD>
 		<TD WIDTH="1%">
 			<B>{trans("Creation date:")}</B>
 		</TD>
-		<TD CLASS="FRIGHT" WIDTH="98%">
+		<TD CLASS="fright" WIDTH="98%">
 			{$message.cdate|date_format:"%Y/%m/%d %H:%m"}
 		</TD>
 	</TR>
 {if $message.sender}
-	<TR CLASS="LIGHT">
-		<TD CLASS="FLEFT" WIDTH="1%">
+	<TR CLASS="light">
+		<TD CLASS="fleft" WIDTH="1%">
 			<IMG SRC="img/mail.gif" ALT=""> 
 		</TD>
 		<TD WIDTH="1%">
 			<B>{trans("Sender:")}</B>
 		</TD>
-		<TD CLASS="FRIGHT" WIDTH="98%">
+		<TD CLASS="fright" WIDTH="98%">
 			{$message.sender|escape:"html"}
 		</TD>
 	</TR>
 {/if}
-	<TR CLASS="LIGHT">
-		<TD CLASS="FLEFT" WIDTH="1%">
+	<TR CLASS="light">
+		<TD CLASS="fleft" WIDTH="1%">
 			<IMG SRC="img/edit.gif" ALT=""> 
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{trans("Message body:")}</B>
 		</TD>
-		<TD CLASS="FRIGHT" WIDTH="98%">
+		<TD CLASS="fright" WIDTH="98%">
 			<TABLE WIDTH="100%" CELLPADDING="5">
 		                <TR>
 			                <TD CLASS="fall superlight">
@@ -67,15 +67,15 @@
 			</TABLE>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
+	<TR CLASS="light">
+		<TD CLASS="fbottomu" COLSPAN="3" ALIGN="RIGHT">
 			 <A HREF="?m=messagelist">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>
 <BR>
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
 		<TD WIDTH="1%" CLASS="fleftu" nowrap>
 			<A href="?m=messageinfo&id={$message.id}&o=customer{if $listdata.direction eq "asc" && $listdata.order eq "customer"},desc{/if}">{trans("Customer:")}</A> {if $listdata.order eq "customer"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
@@ -89,7 +89,7 @@
 			<B>{t a=$listdata.total}Total: $a{/t}</B>&nbsp;
 		</TD>
 	</TR>
-	<TR class="DARK">
+	<TR class="dark">
 		<TD class="fall" colspan="4" nowrap>
 			<FORM METHOD="POST" NAME="page" action="?m=messageinfo&id={$message.id}">
 			<B>{trans("Filter:")} </B> 

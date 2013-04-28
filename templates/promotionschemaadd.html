@@ -4,7 +4,7 @@
 <FORM METHOD="POST" NAME="schemaadd" ACTION="?m=promotionschemaadd&id={$schema.promotionid}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
 		<TD WIDTH="1%" CLASS="fleftu">
 			<IMG SRC="img/promoschema.gif" ALT="">
 		</TD>
@@ -15,7 +15,7 @@
 			<INPUT TYPE="TEXT" NAME="schema[name]" VALUE="{$schema.name}" SIZE="40" {tip text="Enter schema name" trigger="name" bold=1}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft">
 			<IMG SRC="img/calendar.gif" ALT="">
 		</TD>
@@ -37,7 +37,7 @@
 			<A href="javascript:add_period_item()"><IMG src="img/add.gif" alt="" {tip text="Add"}></A>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft">
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
@@ -68,7 +68,7 @@
 		    </TABLE>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft">
 			<IMG SRC="img/info1.gif" ALT="">
 		</TD>
@@ -79,8 +79,8 @@
 			<TEXTAREA NAME="schema[description]" COLS="50" ROWS="5" {tip text="Enter additional information (optional)"}>{$schema.description}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT"> 
+	<TR CLASS="light">
+		<TD WIDTH="100%" COLSPAN="3" CLASS="fbottomu" ALIGN="RIGHT"> 
 			<A HREF="javascript:document.schemaadd.submit();" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
 			<A HREF="?m=promotioninfo&id={$schema.promotionid}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A><BR>
 			<INPUT TYPE="checkbox" NAME="schema[reuse]" VALUE="ON" id="reuse" {if $schema.reuse} checked{/if}><label for="reuse">{trans("Display this form again, when this schema is saved")}</label>

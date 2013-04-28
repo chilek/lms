@@ -24,12 +24,12 @@
 <TABLE WIDTH="100%" CELLPADDING="0">
     <TR><TD WIDTH="49%" style="vertical-align: top">
 	    <TABLE WIDTH="100%" CELLPADDING="3">
-		<TR CLASS="DARK">
+		<TR CLASS="dark">
 		    <TD WIDTH="100%" CLASS="fall" NOWRAP>
 			<IMG SRC="img/node.gif" ALT="">&nbsp;<B>{trans("Group members:")}</B>
 		    </TD>
 		</TR>
-		<TR CLASS="DARK">
+		<TR CLASS="dark">
 		    <TD CLASS="fall" colspan="4" ALIGN="CENTER">
 			    {trans("Network:")}
 			    <SELECT SIZE="1" NAME="nodeassignments[membersnetid]" ONCHANGE="javascript:changeMembersNetwork();">
@@ -40,7 +40,7 @@
 			    </SELECT>&nbsp;
 		    </TD>
 		</TR>
-		<TR CLASS="LIGHT">
+		<TR CLASS="light">
 		    <TD WIDTH="100%" CLASS="flr" ALIGN="CENTER">
 		    {if $nodegroup.nodescount}
 			<SELECT SIZE="20" NAME="nodeassignments[gmnodeid][]" multiple>
@@ -59,7 +59,7 @@
 		    {/if}
 		    </TD>
 		</TR>
-		<TR CLASS="LIGHT">
+		<TR CLASS="light">
 		    <TD WIDTH="100%" CLASS="fbottomu" ALIGN="RIGHT" NOWRAP>
 			<A HREF="javascript:removeNodes();">{trans("Delete")} <IMG SRC="img/cancel.gif" ALT=""></A>
 		    </TD>
@@ -70,12 +70,12 @@
     </TD>
     <TD WIDTH="49%" STYLE="vertical-align: top;">
 	    <TABLE WIDTH="100%" CELLPADDING="3">
-		<TR CLASS="DARK">
+		<TR CLASS="dark">
 		    <TD WIDTH="100%" CLASS="fall" NOWRAP>
 			<IMG SRC="img/node.gif" ALT="">&nbsp;<B>{trans("Add new member(s):")}</B>
 		    </TD>
 		</TR>
-		<TR CLASS="DARK">
+		<TR CLASS="dark">
 		    <TD CLASS="fall" colspan="4" ALIGN="CENTER">
 			    {trans("Network:")}
 			    <SELECT SIZE="1" NAME="nodeassignments[othersnetid]" ONCHANGE="javascript:changeOthersNetwork();">
@@ -86,7 +86,7 @@
 			    </SELECT>&nbsp;
 		    </TD>
 		</TR>
-		<TR CLASS="LIGHT">
+		<TR CLASS="light">
 		    <TD WIDTH="100%" CLASS="flr" ALIGN="CENTER">
 			{if $nodescount}
 			<SELECT SIZE="20" NAME="nodeassignments[mnodeid][]" multiple>
@@ -105,7 +105,7 @@
 			{/if}
 		    </TD>
 		</TR>
-		<TR CLASS="LIGHT">
+		<TR CLASS="light">
 		    <TD WIDTH="100%" CLASS="fbottomu" ALIGN="RIGHT" NOWRAP>
 			<A HREF="javascript:document.nodeassignments.submit();">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
 		    </TD>

@@ -1,21 +1,21 @@
 <!--// $Id$ //-->
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR{if $devicepanel} class="dark hand" onClick="showOrHide('devicepanel');"{else} class="dark"{/if}>
-		<TD WIDTH="1%" CLASS="FLEFTU">
+		<TD WIDTH="1%" CLASS="fleftu">
 			<IMG SRC="img/netdev.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHTU">
+		<TD WIDTH="99%" CLASS="frightu">
 			<B>{$netdevinfo.name} ({$netdevinfo.id|string_format:"%04d"})</B>
 		</TD>
 	</TR>
-	<TR class="LIGHT"{if $devicepanel} id="devicepanel" style="display:none;"{/if}>
+	<TR class="light"{if $devicepanel} id="devicepanel" style="display:none;"{/if}>
 	    <TD WIDTH="100%" COLSPAN="2"{if $devicepanel} CLASS="fall container" ALIGN="RIGHT"{else}CLASS="flr container"{/if}>
 			<TABLE WIDTH="100%" CELLPADDING="0">
-				<TR CLASS="LIGHT">
+				<TR CLASS="light">
 					<TD WIDTH="50%" style="vertical-align:top;">
 						<TABLE WIDTH="100%" CELLPADDING="3">
         {if $netdevinfo.producer}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/producer.gif" ALT="">
 		</TD>
@@ -28,7 +28,7 @@
 	</TR>
 	{/if}
 	{if $netdevinfo.model}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/netdev_model.gif" ALT="">
 		</TD>
@@ -41,7 +41,7 @@
 	</TR>
 	{/if}
 	{if $netdevinfo.serialnumber}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
@@ -53,7 +53,7 @@
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/port.gif" ALT="">
 		</TD>
@@ -64,7 +64,7 @@
 		        {$netdevinfo.ports}
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/netdev_takenports.gif" ALT="">
 		</TD>
@@ -76,7 +76,7 @@
 		</TD>
 	</TR>
 	{if $netdevinfo.location}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
@@ -89,7 +89,7 @@
 	</TR>
 	{/if}
 	{if $netdevinfo.longitude || $netdevinfo.latitude}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
@@ -101,7 +101,7 @@
 			{$netdevinfo.longitude}
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
@@ -113,7 +113,7 @@
 			{$netdevinfo.latitude}
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="2%" COLSPAN="2">
 		</TD>
 		<TD WIDTH="98%">
@@ -123,7 +123,7 @@
 	{/if}
 {if check_conf('phpui.radius')}
 	{if $netdevinfo.shortname}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
@@ -136,7 +136,7 @@
 	</TR>
 	{/if}
 	{if $netdevinfo.nastype}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
@@ -149,7 +149,7 @@
 	</TR>
 	{/if}
 	{if $netdevinfo.clients}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
@@ -162,7 +162,7 @@
 	</TR>
 	{/if}
 	{if $netdevinfo.secret}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
@@ -175,7 +175,7 @@
 	</TR>
 	{/if}
 	{if $netdevinfo.community}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
@@ -189,7 +189,7 @@
 	{/if}
 {/if}
 	{if $netdevinfo.channelid}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/channel.gif" ALT="">
 		</TD>
@@ -206,7 +206,7 @@
 				<TD WIDTH="50%" style="vertical-align:top;">
 				        <TABLE WIDTH="100%" CELLPADDING="3">
 	{if $netdevinfo.purchasetime}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/calendar.gif" ALT="">
 		</TD>
@@ -218,7 +218,7 @@
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/guarantee.png" ALT="">
 		</TD>
@@ -238,7 +238,7 @@
 		</TD>
 	</TR>
         {if $netdevinfo.description}
-        <TR CLASS="LIGHT">
+        <TR CLASS="light">
                 <TD WIDTH="1%">
                         <IMG SRC="img/desc.gif" ALT="">
                 </TD>
@@ -260,8 +260,8 @@
 {if !$devicepanel}
     		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
-	        <TD WIDTH="100%" COLSPAN="2" CLASS="FBOTTOMU" ALIGN="RIGHT">
+	<TR CLASS="light">
+	        <TD WIDTH="100%" COLSPAN="2" CLASS="fbottomu" ALIGN="RIGHT">
 {/if}
 			{if $replacelisttotal>1}
 			<FORM METHOD="GET" ACTION="?m=netdevedit" NAME="replace">
