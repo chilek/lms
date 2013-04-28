@@ -1,6 +1,6 @@
 <!-- $Id$ -->
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
 		<TD WIDTH="1%" CLASS="fleftu">
 			<IMG SRC="img/promo.gif" ALT="">
 		</TD>
@@ -8,7 +8,7 @@
 			<B>{$promotion.name} ({$promotion.id|string_format:"%04d"})</B>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft">
 			<A HREF="?m=promotionset&id={$promotion.id}&access={$promotion.disabled}"><IMG SRC="img/{if $promotion.disabled}no{/if}access.gif" ALT=""></A>
 		</TD>
@@ -30,8 +30,8 @@
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
+	<TR CLASS="light">
+		<TD WIDTH="100%" COLSPAN="3" CLASS="fbottomu" ALIGN="RIGHT">
 			<A HREF="?m=promotionedit&id={$promotion.id}">{trans("Edit")} <IMG SRC="img/edit.gif" alt=""></A>
 			<A HREF="?m=promotiondel&id={$promotion.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete this promotion?")}');">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A> 
 			</FORM>

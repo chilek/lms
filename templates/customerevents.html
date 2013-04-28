@@ -1,6 +1,6 @@
 <!--// $Id$ //-->
 <TABLE cellpadding="3" WIDTH="100%">
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
     	    <TD width="99%" class="fleftu hand" onCLick="showOrHide('eventspanel');">
                         <IMG src="img/calendar.gif" alt="">
                         <B>{trans("Customer Timetable:")}</B>
@@ -15,7 +15,7 @@
 	<TR id="eventspanel"  style="display:none;">
 		<TD width="100%" colspan="2" class="fall">
 			<TABLE cellpadding="5" cellspacing="0" width="100%">
-				<TR CLASS="DARK">
+				<TR CLASS="dark">
 					<TD width="1%" class="fleftu" NOWRAP>
 						{trans("Date:")}
 					</TD>
@@ -29,7 +29,7 @@
 				</TR>
 				{cycle values="light,lucid" print=false name=events}
 				{section name=eventlist loop=$eventlist max=$limit }
-				<TR class="{cycle name=events}{if $eventlist[eventlist].closed} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+				<TR class="highlight {cycle name=events}{if $eventlist[eventlist].closed} blend{/if}"  >
 					<TD width="1%" nowrap onClick="return self.location.href='?m=eventinfo&id={$eventlist[eventlist].id}'">
 						{$eventlist[eventlist].date|date_format:"%Y/%m/%d"}
 					</TD>

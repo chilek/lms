@@ -55,7 +55,7 @@
 <FORM method="POST" name="assignment" action="?m={$layout.module}{if $assignment.id}&id={$assignment.id}{if $assignment.liabilityid}&lid={$assignment.liabilityid}{/if}{else}&id={$customerinfo.id}{/if}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE style="width: 100%;" cellpadding="3">
-	<TR class="DARK">
+	<TR class="dark">
 		<TD class="fleftu" style="width: 1%;">
 			<IMG src="img/money.gif" alt="">
 		</TD>
@@ -78,7 +78,7 @@
 		</TD>
 	</TR>
 {if $promotionschemas}
-	<TR class="LIGHT" id="a_schema">
+	<TR class="light" id="a_schema">
 		<TD class="fleft" style="width: 1%;">
 			<IMG src="img/promoschema.gif" alt="">
 		</TD>
@@ -93,7 +93,7 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR class="LIGHT" id="a_schematariff">
+	<TR class="light" id="a_schematariff">
 		<TD class="fleft" style="width: 1%;">
 			<IMG src="img/money.gif" alt="">
 		</TD>
@@ -111,7 +111,7 @@
 		</TD>
 	</TR>
 {/if}
-	<TR class="LIGHT">
+	<TR class="light">
 	    <TD style="width: 100%;" colspan="3" class="flr container">
 	        <TABLE style="width: 100%;" cellpadding="0">
 	            <TR>
@@ -287,7 +287,7 @@
 			</TABLE>
 		</TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
 		<TD class="fbottomu" style="text-align: right;" colspan="3">
 			<A href="javascript:document.assignment.submit()">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>&nbsp;
 			<A href="?m=customerinfo&id={$customerinfo.id}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>

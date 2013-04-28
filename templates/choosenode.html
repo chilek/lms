@@ -35,7 +35,7 @@
 	{if $nodelist.total > 0}
 	{section name=nodelist loop=$nodelist}
 	{if $nodelist[nodelist].id}
-	<tr class="{cycle}{if ! $nodelist[nodelist].access} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<tr class="highlight {cycle}{if ! $nodelist[nodelist].access} blend{/if}"  >
 		<td width="1%">
 			<input type="checkbox" class="box {cycle print=false}{cycle}" name="nodes" value="{$nodelist[nodelist].id}">
 		</td>

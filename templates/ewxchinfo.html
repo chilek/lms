@@ -62,7 +62,7 @@
 		    {if $channel.cid}[{$channel.cid|string_format:"%04d"}]{else}-{/if}
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
         <TD width="100%" CLASS="fbottomu" COLSPAN="2" align="right">
             {if $channel.id}
             <A HREF="?m=ewxchedit&id={$channel.id}" accesskey="E">{trans("Edit")} <IMG SRC="img/edit.gif" ALT=""></A>
@@ -73,7 +73,7 @@
 </TABLE>
 <BR>
 <TABLE cellpadding="3" width="100%">
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
         	<TD width="100%" CLASS="fall">
 			<IMG SRC="img/netdev.gif" alt=""> <B>{trans("Devices:")}</B>
                 </TD>
@@ -81,7 +81,7 @@
 	<TR>
 		<TD width="100%" class="fall">
 			<TABLE width="100%" cellpadding="5" cellspacing="0">
-				<TR class="DARK">
+				<TR class="dark">
 					<TD WIDTH="30%" class="fleftu"><B>{trans("Name:")}</B></TD>
 	                <TD WIDTH="1%" class="fbt" align="right">{trans("ID:")}</TD>
 					<TD WIDTH="1%" class="fbt" align="right">{trans("Nodes:")}</TD>
@@ -90,7 +90,7 @@
 				</TR>
 				{cycle values="light,lucid" print=false}
 				{foreach from=$channel.devices item=item}
-				<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+				<TR class="highlight {cycle}"  >
 					<TD onClick="return self.location.href='?m=netdevinfo&id={$item.id}';">
 						<img src="img/netdev.gif" align="left" ALT=""><B>{$item.name}</B>
 					</TD>

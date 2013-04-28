@@ -4,7 +4,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 <FORM METHOD="POST" NAME="tedit" ACTION="?m=customergroupedit&id={$customergroup.id}">
 <INPUT type="submit" class="hiddenbtn">
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
 		<TD WIDTH="1%" CLASS="fleftu">
 			<IMG SRC="img/group.gif" alt="">
 		</TD>
@@ -16,20 +16,20 @@
 			<B>&nbsp;({$customergroup.id|string_format:"%04d"})</B>
 		</TD>
 	</TR>
-	<TR class="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+	<TR class="light">
+		<TD WIDTH="1%" CLASS="fleft">
 			<IMG SRC="img/info1.gif" alt="">
 		</TD>
 		<TD WIDTH="1%">
 			<B>{trans("Description:")}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
+		<TD WIDTH="98%" CLASS="fright">
 			<TEXTAREA ROWS="5" COLS="50" NAME="customergroup[description]" {tip text="Enter additional information (optional)"}>{$customergroup.description}</TEXTAREA>
 		</TD>
 	</TR>
 </FORM>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT" CLASS="FBOTTOMU">
+	<TR CLASS="light">
+		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT" CLASS="fbottomu">
 		        {if sizeof($customergroups) > 1 && $customergroup.count}
 			<FORM name="tmove" method="get" action="">
 			    <input type="hidden" name="is_sure" value="1">

@@ -33,7 +33,7 @@
 Niniejszym, zgodnie z zawartą Umową, obciążamy Państwa należnościami wg poniższego zestawienia:
 </P>
 <TABLE WIDTH="100%" CELLPADDING="3">
-    <TR CLASS="FALL">
+    <TR CLASS="fall">
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
 		<B>{trans("No.")}</B>
 	</TD>
@@ -48,11 +48,11 @@ Niniejszym, zgodnie z zawartą Umową, obciążamy Państwa należnościami wg p
 {counter start=0 print=false}
 {foreach from=$note.content item=item}
     <TR class="{cycle name=cycle2}">
-	<TD CLASS="FLR" ALIGN="RIGHT">{counter}.</TD>
-	<TD CLASS="FLR">
+	<TD CLASS="flr" ALIGN="RIGHT">{counter}.</TD>
+	<TD CLASS="flr">
 		{$item.description}
 	</TD>
-	<TD CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+	<TD CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{$item.value|money_format}
 	</TD>
     </TR>

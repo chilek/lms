@@ -17,7 +17,7 @@
 				</TR>
 				{cycle name=groups values="light,lucid" print=false}
 				{foreach from=$customergroups item=customergroup}
-				<TR class="{cycle name=groups}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+				<TR class="highlight {cycle name=groups}"  >
 					<TD WIDTH="1%" NOWRAP><B><A HREF="?m=customergroupinfo&id={$customergroup.id}">{$customergroup.name}</A></B></TD>
 					<TD WIDTH="1%" NOWRAP COLSPAN="2">{$customergroup.description}</TD>
 					<TD WIDTH="97%" NOWRAP>({$customergroup.id|string_format:"%04d"})</TD>

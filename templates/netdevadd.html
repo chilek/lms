@@ -5,23 +5,23 @@
 <FORM NAME="netdevadd" METHOD="POST" ACTION="?m=netdevadd">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD WIDTH="1%" CLASS="FLEFTU">
+	<TR CLASS="dark">
+		<TD WIDTH="1%" CLASS="fleftu">
 			<IMG SRC="img/netdev.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" CLASS="FBT">
+		<TD WIDTH="1%" CLASS="fbt">
 			<B>{trans("Name:")}</B>
-		<TD WIDTH="98%" CLASS="FRIGHTU">
+		<TD WIDTH="98%" CLASS="frightu">
 			<INPUT TYPE="TEXT" NAME="netdev[name]" VALUE="{$netdev.name}" MAXLENGTH="32" {tip trigger="name" text="Enter device name" bold=1}>
 		</TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
         <TD WIDTH="100%" COLSPAN="3" CLASS="flr container">
 		    <TABLE WIDTH="100%" CELLPADDING="0">
-				<TR CLASS="LIGHT">
+				<TR CLASS="light">
 					<TD WIDTH="50%" style="vertical-align:top;">
 					        <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/producer.gif" ALT="">
 		</TD>
@@ -32,7 +32,7 @@
 			<INPUT TYPE="TEXT" NAME="netdev[producer]" VALUE="{$netdev.producer}" {tip text="Enter producer name (optional)"}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/netdev_model.gif" ALT="">
 		</TD>
@@ -43,7 +43,7 @@
 			<INPUT TYPE="TEXT" NAME="netdev[model]" VALUE="{$netdev.model}" {tip text="Enter device model (optional)"}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
@@ -54,7 +54,7 @@
 			<INPUT TYPE="TEXT" NAME="netdev[serialnumber]" VALUE="{$netdev.serialnumber}" {tip text="Enter device serial number (optional)"}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/port.gif" ALT="">
 		</TD>
@@ -65,7 +65,7 @@
 			<INPUT TYPE="TEXT" NAME="netdev[ports]" VALUE="{if $netdev.ports}{$netdev.ports}{/if}" {tip trigger="ports" text="Enter number of ports (optional)"}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
@@ -108,7 +108,7 @@
 		</TD>
 	</TR>
 {if check_conf('phpui.radius')}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
@@ -119,7 +119,7 @@
 			<INPUT TYPE="TEXT" NAME="netdev[shortname]" VALUE="{$netdev.shortname}" MAXLENGTH="32" {tip trigger="shortname" text="Enter shortname (optional)"}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
@@ -135,7 +135,7 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
@@ -146,7 +146,7 @@
 			<INPUT TYPE="TEXT" NAME="netdev[clients]" VALUE="{if $netdev.clients}{$netdev.clients}{/if}" {tip trigger="clients" text="Enter max clients (optional)"}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
@@ -157,7 +157,7 @@
 			<INPUT TYPE="TEXT" NAME="netdev[secret]" VALUE="{$netdev.secret}" MAXLENGTH="60" {tip text="Enter secret (optional)"}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
@@ -170,7 +170,7 @@
 	</TR>
 {/if}
 {if isset($channels)}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/channel.gif" ALT="">
 		</TD>
@@ -191,7 +191,7 @@
 				</TD>
 				<TD WIDTH="50%" style="vertical-align:top;">
 					<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/calendar.gif" ALT="">
 		</TD>
@@ -202,7 +202,7 @@
 			<INPUT TYPE="TEXT" NAME="netdev[purchasedate]" VALUE="{if $netdev.purchasedate}{$netdev.purchasedate}{/if}" SIZE="10" MAXSIZE="10" OnClick="javascript:cal1.popup();" {tip trigger="purchasedate" text="Enter device purchase date in 'yyyy/mm/dd' format or click to choose date from calendar (optional)"}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/guarantee.png" ALT="">
 		</TD>
@@ -217,7 +217,7 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/desc.gif" ALT="">
 		</TD>
@@ -234,8 +234,8 @@
 			</TABLE>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
+	<TR CLASS="light">
+		<TD WIDTH="100%" CLASS="fbottomu" COLSPAN="3" ALIGN="RIGHT">
 			<A HREF="javascript:document.netdevadd.submit();" ACCESSKEY="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
 			<A HREF="?m=netdevlist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
 		</TD>

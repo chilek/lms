@@ -21,7 +21,7 @@
 		</TD>
 	</TR>
 {*
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
 		<TD CLASS="fall" colspan="5">
 			<FORM METHOD="GET" ACTION="?m={$layout.module}" NAME="choosefilter">
 				<INPUT type="submit" class="hiddenbtn">
@@ -48,7 +48,7 @@
 	{/if}
 	{cycle values="light,lucid" print=false}
 	{section name=voipaccountlist loop=$voipaccountlist start=$start max=$pagelimit}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}"  >
 		<TD width="96%" class="fleft" onClick="return self.location.href='?m=voipaccountinfo&id={$voipaccountlist[voipaccountlist].id}';" nowrap>
 			<img src="img/voip.gif" ALT="">
 			<B>{$voipaccountlist[voipaccountlist].login}</B><BR>

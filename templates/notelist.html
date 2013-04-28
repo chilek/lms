@@ -53,7 +53,7 @@ window.open('?m=note&id={$note}');
 <FORM METHOD="POST" NAME="page">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
 		<TD CLASS="fleftu" WIDTH="1%" nowrap>
 			<A href="?m=notelist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
@@ -76,7 +76,7 @@ window.open('?m=note&id={$note}');
 			&nbsp;
 		</TD>
 	</TR>
-	<TR class="DARK">
+	<TR class="dark">
 		<TD class="fall" colspan="7">
 				<B>{trans("Filter:")} </B> 
 				<INPUT type="text" name="search" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>&nbsp;
@@ -118,7 +118,7 @@ window.open('?m=note&id={$note}');
 	{section name=notelist loop=$notelist start=$start max=$pagelimit}
 	{assign var=note value=$notelist[notelist]}
 	{assign var=noteid value=$note.id}
-	<TR class="{cycle}{if $note.closed} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}{if $note.closed} blend{/if}"  >
 		<TD WIDTH="1%" CLASS="fleft">
 			{$note.id|string_format:"%06d"}
 		</TD>

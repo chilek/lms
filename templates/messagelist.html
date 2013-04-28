@@ -2,7 +2,7 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
 		<TD WIDTH="1%" CLASS="fleftu" nowrap>
 			<A href="?m=messagelist&o=cdate{if $listdata.direction eq "asc" && $listdata.order eq "cdate"},desc{/if}">{trans("Date:")}</A> {if $listdata.order eq "cdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
@@ -18,7 +18,7 @@
 			<B>{t a=$listdata.total}Total: $a{/t}</B>&nbsp;
 		</TD>
 	</TR>
-	<TR class="DARK">
+	<TR class="dark">
 		<TD class="fall" colspan="5" nowrap>
 			<FORM METHOD="POST" NAME="page" action="?m=messagelist">
 			<INPUT type="submit" class="hiddenbtn">
@@ -64,7 +64,7 @@
 	{cycle values="light,lucid" print=false}
 	{section name=messagelist loop=$messagelist start=$start max=$pagelimit}
 	{assign var=message value=$messagelist[messagelist]}
-	<TR class="{cycle}{if $message.error == $message.cnt} alert{elseif $message.error} blendalert{elseif $message.sent == $message.cnt} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}{if $message.error == $message.cnt} alert{elseif $message.error} blendalert{elseif $message.sent == $message.cnt} blend{/if}"  >
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP onclick="return self.location.href='?m=messageinfo&id={$message.id}';">
 			{$message.cdate|date_format:"%Y/%m/%d %H:%M"}
 		</TD>

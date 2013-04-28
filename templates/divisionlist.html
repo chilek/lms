@@ -10,15 +10,15 @@
 		<TD width="1%" class="frightu" align="right" NOWRAP><a href="?m=divisionadd">{trans("Add division")} <img src="img/save.gif" alt=""></a></TD>
 	</TR>
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="5" CLASS="FALL">
+	<TR CLASS="dark">
+		<TD COLSPAN="5" CLASS="fall">
 			{include file="scroller.html" loop=$divisionlist}
 		</TD>
 	</TR>
 	{/if}
 	{cycle values="light,lucid" print=false}
 	{section name=list loop=$divisionlist}
-	<TR class="{cycle}{if $divisionlist[list].status} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}{if $divisionlist[list].status} blend{/if}"  >
 		<TD class="fleft" NOWRAP onclick="return self.location.href='?m=divisionedit&id={$divisionlist[list].id}';">
 			<IMG src="img/division.gif" alt=""> <B>{$divisionlist[list].shortname}</B>
 		</TD>
@@ -47,8 +47,8 @@
 	</TR>
 	{/section}
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="5" CLASS="FALL">
+	<TR CLASS="dark">
+		<TD COLSPAN="5" CLASS="fall">
 			{include file="scroller.html" loop=$divisionlist}
 		</TD>
 	</TR>

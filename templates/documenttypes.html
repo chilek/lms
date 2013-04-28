@@ -7,15 +7,15 @@
 		<TD width="1%" class="frightu"></TD>
 	</TR>
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="2" CLASS="FALL">
+	<TR CLASS="dark">
+		<TD COLSPAN="2" CLASS="fall">
 			{include file="scroller.html" loop=$typelist}
 		</TD>
 	</TR>
 	{/if}
 	{cycle values="light,lucid" print=false}
 	{foreach from=$typelist key=key item=item}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}"  >
 		<TD class="fleft" NOWRAP onClick="return self.location.href='?m=documenttypeedit&id={$key}';">
 			<IMG src="img/docum.gif" alt=""> <B>{$item}</B>
 		</TD>
@@ -33,8 +33,8 @@
 	</TR>
 	{/foreach}
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="2" CLASS="FALL">
+	<TR CLASS="dark">
+		<TD COLSPAN="2" CLASS="fall">
 			{include file="scroller.html" loop=$typelist}
 		</TD>
 	</TR>

@@ -27,21 +27,21 @@
 //-->
 </SCRIPT>
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD WIDTH="1%" CLASS="FLEFTU">
+	<TR CLASS="dark">
+		<TD WIDTH="1%" CLASS="fleftu">
 			<IMG SRC="img/ip.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
+		<TD WIDTH="99%" CLASS="frightu" COLSPAN="2">
 			<B>{$nodeipdata.name} ({$nodeipdata.id|string_format:"%04d"})</B>
 		</TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
 		<TD WIDTH="100%" COLSPAN="3" CLASS="flr container">
 			<TABLE WIDTH="100%" CELLPADDING="0">
-				<TR CLASS="LIGHT">
+				<TR CLASS="light">
 					<TD WIDTH="50%" style="vertical-align:top;">
 						<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/ip.gif" ALT="{trans("IP address:")}">
 		</TD>
@@ -50,7 +50,7 @@
 		</TD>
 	</TR>
 	{if $nodeipdata.ip_pub != "0.0.0.0"}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/ip_pub.gif" ALT="{trans("Pub. IP address:")}">
 		</TD>
@@ -61,7 +61,7 @@
 	{/if}
 	{assign var="counter" value=0}
 	{foreach from=$nodeipdata.macs item=item}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<a href="javascript:changeMacFormat('mac{$counter}');"><IMG SRC="img/mac.gif" ALT="{trans("MAC address:")}"></a>
 		</TD>
@@ -71,7 +71,7 @@
 	</TR>
 	{math equation="x+1" x=$counter assign="counter"}
 	{/foreach}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/passwd.gif" ALT="{trans("Password:")}">
 		</TD>
@@ -79,7 +79,7 @@
 			{$nodeipdata.passwd}
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/options.gif" ALT="{trans("Options:")}">
 		</TD>
@@ -92,7 +92,7 @@
 			{/if}
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/network.gif" ALT="{trans("Network:")}">
 		</TD>
@@ -100,7 +100,7 @@
 			<B><A HREF="?m=netinfo&id={$nodeipdata.netid}">{$nodeipdata.netname}</A></B>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<A HREF="?m=netdevedit&id={$netdevinfo.id}&action=ipset&ip={$nodeipdata.id}"><IMG SRC="img/{if ! $nodeipdata.access}no{/if}access.gif" ALT=""></A>
 		</TD>
@@ -113,7 +113,7 @@
 					<TD WIDTH="50%" style="vertical-align:top;">
 						<TABLE WIDTH="100%" CELLPADDING="3">
 	{if $nodeipdata.info}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/info.gif" ALT="">
 		</TD>
@@ -125,7 +125,7 @@
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/time.gif" ALT="">
 		</TD>
@@ -136,7 +136,7 @@
 			{if $nodeipdata.lastonline}{$nodeipdata.lastonlinedate}{else}-{/if}
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/users.gif" ALT="">
 		</TD>
@@ -155,8 +155,8 @@
 			</TABLE>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
+	<TR CLASS="light">
+		<TD WIDTH="100%" CLASS="fbottomu" COLSPAN="3" ALIGN="RIGHT">
 			<A HREF="?m=netdevedit&id={$netdevinfo.id}&action=editip&ip={$nodeipdata.id}" ACCESSKEY="E">{trans("Edit")} <IMG SRC="img/edit.gif" ALT=""></A>
 			<A HREF="?m=netdevedit&id={$netdevinfo.id}&action=ipdel&ip={$nodeipdata.id}" onClick="return confirmLink(this, '{t a=$nodeipdata.name}Are you sure, you want to delete address \'$a\' from database?{/t}')">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
 		</TD>

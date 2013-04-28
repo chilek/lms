@@ -3,24 +3,24 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<FORM NAME="netdevedit" METHOD="POST" ACTION="?m=netdevedit&id={$netdevinfo.id}">
 	<INPUT type="submit" class="hiddenbtn">
-	<TR CLASS="DARK">
-		<TD WIDTH="1%" CLASS="FLEFTU">
+	<TR CLASS="dark">
+		<TD WIDTH="1%" CLASS="fleftu">
 			<IMG SRC="img/netdev.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" CLASS="FBT">
+		<TD WIDTH="1%" CLASS="fbt">
 			<B>{trans("Name:")}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHTU">
+		<TD WIDTH="98%" CLASS="frightu">
 			<INPUT TYPE="TEXT" NAME="netdev[name]" VALUE="{$netdevinfo.name}" MAXLENGTH="32" {tip trigger="name" text="Enter device name" bold=1}>
 		</TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
         <TD WIDTH="100%" COLSPAN="3" CLASS="flr container">
 		    <TABLE WIDTH="100%" CELLPADDING="0">
-		                <TR CLASS="LIGHT">
+		                <TR CLASS="light">
 		                        <TD WIDTH="50%" style="vertical-align:top;">
 		                                <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/producer.gif" ALT="">
 		</TD>
@@ -31,7 +31,7 @@
 			<INPUT TYPE="TEXT" NAME="netdev[producer]" VALUE="{$netdevinfo.producer}" {tip text="Enter device producer (optional)"}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/netdev_model.gif" ALT="">
 		</TD>
@@ -42,7 +42,7 @@
 			<INPUT TYPE="TEXT" NAME="netdev[model]" VALUE="{$netdevinfo.model}" {tip text="Enter model name (optional)" }>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
@@ -53,7 +53,7 @@
 			<INPUT TYPE="TEXT" NAME="netdev[serialnumber]" VALUE="{$netdevinfo.serialnumber}" {tip text="Enter serial number (optional)"}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/port.gif" ALT="">
 		</TD>
@@ -64,7 +64,7 @@
 			<INPUT TYPE="TEXT" NAME="netdev[ports]" VALUE="{if $netdevinfo.ports}{$netdevinfo.ports}{/if}" {tip trigger="ports" text="Enter number of ports (optional)"}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
@@ -107,7 +107,7 @@
 		</TD>
 	</TR>
 {if check_conf('phpui.radius')}
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
@@ -118,7 +118,7 @@
 			<INPUT TYPE="TEXT" NAME="netdev[shortname]" VALUE="{$netdevinfo.shortname}" {tip text="Enter shortname (optional)"}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
@@ -134,7 +134,7 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
@@ -145,7 +145,7 @@
 			<INPUT TYPE="TEXT" NAME="netdev[clients]" VALUE="{if $netdevinfo.clients}{$netdevinfo.clients}{/if}" {tip text="Enter max clients (optional)"}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
@@ -156,7 +156,7 @@
 			<INPUT TYPE="TEXT" NAME="netdev[secret]" VALUE="{$netdevinfo.secret}" {tip text="Enter secret (optional)"}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
@@ -169,7 +169,7 @@
 	</TR>
 {/if}
 {if isset($channels)}
-        <TR CLASS="LIGHT">
+        <TR CLASS="light">
 	        <TD WIDTH="1%">
 		        <IMG SRC="img/channel.gif" ALT="">
 		</TD>
@@ -190,7 +190,7 @@
 				</TD>
 			        <TD WIDTH="50%" style="vertical-align:top;">
 			                <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/calendar.gif" ALT="">
 		</TD>
@@ -201,7 +201,7 @@
 			<INPUT TYPE="TEXT" NAME="netdev[purchasedate]" VALUE="{if $netdevinfo.purchasedate}{$netdevinfo.purchasedate}{/if}" SIZE="10" MAXSIZE="10" OnClick="javascript:cal1.popup();" {tip trigger="purchasedate" text="Enter device purchase date in 'yyyy/mm/dd' format or click to choose date from calendar (optional)"}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/guarantee.png" ALT="">
 		</TD>
@@ -216,7 +216,7 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%">
 			<IMG SRC="img/desc.gif" ALT="">
 		</TD>
@@ -234,8 +234,8 @@
         	</TD>
 	</TR>
 	</FORM>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
+	<TR CLASS="light">
+		<TD WIDTH="100%" CLASS="fbottomu" COLSPAN="3" ALIGN="RIGHT">
 			{if $replacelisttotal>1}
 			<FORM METHOD="GET" ACTION="?m=netdevedit" NAME="replace">
 			<INPUT type="submit" class="hiddenbtn">

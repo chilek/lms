@@ -158,7 +158,7 @@ div.multiselectlayer ul li input { border: none; }
 .light		{ background-color: #DFD5BD; }
 .lucid		{ background-color: #EBE4D6; }
 .superlight	{ background-color: #F4F0EC; }
-.highlight	{ background-color: #CCFFCC; }
+.highlight:hover{ background-color: #CCFFCC; }
 .blendbg	{ background-color: #888888; }
 .blend		{ color: #888888; }
 .red		{ color: #FF0000; }
