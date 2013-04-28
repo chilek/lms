@@ -28,7 +28,7 @@
 	</TR>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$categories item=category}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}"  >
 		<TD CLASS="fleft" onClick="return self.location.href='?m=rtqueueview&catid={$category.id}';" COLSPAN="2">
 			<IMG src="img/queue.gif" ALT="">
 			<B>{$category.name}</B><BR>

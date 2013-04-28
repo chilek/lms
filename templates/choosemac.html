@@ -23,7 +23,7 @@
 <body>
 	<table width="100%" cellpadding="1">
 	{section name=maclist loop=$maclist.mac}
-	<TR onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')"{if $maclist.nodename[maclist] eq ""} onClick="sendvalue(targetfield,'{$maclist.mac[maclist]}');"{/if}>
+	<TR class="highlight" {if $maclist.nodename[maclist] eq ""} onClick="sendvalue(targetfield,'{$maclist.mac[maclist]}');"{/if}>
 		<TD align="center">
 			{if $maclist.nodename[maclist] eq ""}
 			<a href="javascript: void(0);" onclick="sendvalue(targetfield,'{$maclist.mac[maclist]}');">

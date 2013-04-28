@@ -16,7 +16,7 @@
 	    	{counter start=0 skip=1 print=false assign=msgidx}
 		{foreach from=$ticket.messages item=message}
 		    {if isset($message.customerid) && isset($message.subject)}
-		    <TR class="DARK">
+		    <TR class="dark">
 			<TD width="1%" class="fbt" ALIGN="RIGHT" NOWRAP style="vertical-align: top;">
 			    <B>{$message.createtime|date_format:"%Y/%m/%d %H:%M"}</B>
 			</TD>
@@ -52,14 +52,14 @@
 				{/if}
 			</TD>
 		    </TR>
-		    <TR class="LIGHT">
+		    <TR class="light">
 			<TD COLSPAN="4" class="fbt superlight">
 			    {$message.body|escape|replace:"\n":"<BR>"}
 			</TD>
 		    </TR>
 		{counter print=false}
 		{else}
-		    <TR class="DARK">
+		    <TR class="dark">
 			<TD width="1%" class="fbt" ALIGN="RIGHT" nowrap>
 				<B>{$message.createtime|date_format:"%Y/%m/%d %H:%M"}</B>
 			</TD>
@@ -73,7 +73,7 @@
 				<A href="?m=rtnotedel&id={$message.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that note?")}');">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
 			</TD>
 		    </TR>
-		    <TR class="LIGHT">
+		    <TR class="light">
 			<TD COLSPAN="4" class="fbt superlight blend">
 				{$message.body|escape|replace:"\n":"<BR>"}
 			</TD>

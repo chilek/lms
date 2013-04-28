@@ -1,26 +1,26 @@
 <!--// $Id$ //-->
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD CLASS="FALL" COLSPAN="3">
+	<TR CLASS="dark">
+		<TD CLASS="fall" COLSPAN="3">
 			<IMG SRC="img/node.gif" ALT=""> <B>{trans("Computers found:")}</B>
 		</TD>
 	</TR>
 	{cycle values="light,lucid" print=false}
 	{section name=n loop=$nodes}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD WIDTH="99%" CLASS="FLEFT" onClick="return self.location.href='?m=nodeadd&preip={$nodes[n].ipaddr}&premac={$nodes[n].mac}&prename={$nodes[n].name}{if $customerinfo}&ownerid={$customerinfo.id}{/if}';">
+	<TR class="highlight {cycle}"  >
+		<TD WIDTH="99%" CLASS="fleft" onClick="return self.location.href='?m=nodeadd&preip={$nodes[n].ipaddr}&premac={$nodes[n].mac}&prename={$nodes[n].name}{if $customerinfo}&ownerid={$customerinfo.id}{/if}';">
 			<IMG SRC="img/node.gif" ALT=""> <B>{$nodes[n].name}</B>
 		</TD>
 		<TD WIDTH="1%" onClick="return self.location.href='?m=nodeadd&preip={$nodes[n].ipaddr}&premac={$nodes[n].mac}&prename={$nodes[n].name}{if $customerinfo}&ownerid={$customerinfo.id}{/if}';">
 			{$nodes[n].ipaddr}
 		</TD>
-		<TD WIDTH="1%" CLASS="FRIGHT" onClick="return self.location.href='?m=nodeadd&preip={$nodes[n].ipaddr}&premac={$nodes[n].mac}&prename={$nodes[n].name}{if $customerinfo}&ownerid={$customerinfo.id}{/if}';">
+		<TD WIDTH="1%" CLASS="fright" onClick="return self.location.href='?m=nodeadd&preip={$nodes[n].ipaddr}&premac={$nodes[n].mac}&prename={$nodes[n].name}{if $customerinfo}&ownerid={$customerinfo.id}{/if}';">
 			{$nodes[n].mac}
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD COLSPAN="3" ALIGN="CENTER" CLASS="FALL">
+		<TD COLSPAN="3" ALIGN="CENTER" CLASS="fall">
 			<P>&nbsp;</P>
 			<P><B>{trans("No computers were found, either exists in the database or nbtscan binary not found.")}</B></P>
 			<P>&nbsp;</P>
@@ -29,7 +29,7 @@
 	{/section}
 {if $nodes}
 	<TR>
-		<TD COLSPAN="3" CLASS="FALL">{trans("Click on the Computer name above to get it records")}.</TD>
+		<TD COLSPAN="3" CLASS="fall">{trans("Click on the Computer name above to get it records")}.</TD>
 	</TR>
 {/if}
 </TABLE>

@@ -1,6 +1,6 @@
 <!--// $Id$ //-->
 <TABLE style="width: 100%;" CELLPADDING="3">
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
 		 <TD style="width: 100%; text-align: left; white-space: nowrap;" class="fall hand" onClick="showOrHide('devicenodes');">
 			<IMG SRC="img/node.gif" ALT="">
 			<span class="bold">{t a=$netcomplist|@count}Connected nodes ($a):{/t}</span>
@@ -26,7 +26,7 @@
 				</TR>
 				{cycle values="light,lucid" print=false}
 				{section name=netcomplist loop=$netcomplist start=$start}
-				<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+				<TR class="highlight {cycle}"  >
 					<TD style="width: 97%;" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';">
 						<IMG SRC="img/node.gif" ALT=""> <span class="bold">{$netcomplist[netcomplist].name}</span><BR>
 						<IMG SRC="img/customer.gif" ALT=""> <A href="?m=customerinfo&id={$netcomplist[netcomplist].ownerid}" {tip a=$netcomplist[netcomplist].ownerid dynpopup='?m=customerinfoshort&id=$a'}>{$netcomplist[netcomplist].owner}</A>

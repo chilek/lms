@@ -20,15 +20,15 @@
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="7" CLASS="FALL">
+	<TR CLASS="dark">
+		<TD COLSPAN="7" CLASS="fall">
 			{include file="scroller.html" loop=$taxratelist}
 		</TD>
 	</TR>
 	{/if}
 	{cycle values="light,lucid" print=false}
 	{section name=taxratelist loop=$taxratelist start=$start max=$pagelimit}
-	<TR class="{cycle}{if ($taxratelist[taxratelist].validfrom !=0 && $taxratelist[taxratelist].validfrom > $smarty.now) || ($taxratelist[taxratelist].validto !=0 && $taxratelist[taxratelist].validto < $smarty.now)} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}{if ($taxratelist[taxratelist].validfrom !=0 && $taxratelist[taxratelist].validfrom > $smarty.now) || ($taxratelist[taxratelist].validto !=0 && $taxratelist[taxratelist].validto < $smarty.now)} blend{/if}"  >
 		<TD class="fleft" NOWRAP onClick="return self.location.href='?m=taxrateedit&id={$taxratelist[taxratelist].id}';">
 			<IMG src="img/tax.gif" alt=""><B> {$taxratelist[taxratelist].label}</B>
 		</TD>
@@ -62,8 +62,8 @@
 	</TR>
 	{/section}
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="7" CLASS="FALL">
+	<TR CLASS="dark">
+		<TD COLSPAN="7" CLASS="fall">
 			{include file="scroller.html" loop=$taxratelist}
 		</TD>
 	</TR>

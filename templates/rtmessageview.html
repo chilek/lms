@@ -49,7 +49,7 @@
 		</TD>
 	</TR>
 	{if $message.headers}
-	<TR class="LIGHT">
+	<TR class="light">
 		<TD width="1%" class="fleft">
 			<IMG src="img/mail.gif" alt="">
 		</TD>
@@ -62,7 +62,7 @@
 	</TR>
 	{/if}
 	{if $message.messageid}
-	<TR class="LIGHT">
+	<TR class="light">
 		<TD width="1%" class="fleft">
 			<IMG src="img/mail.gif" alt="">
 		</TD>
@@ -75,7 +75,7 @@
 	</TR>
 	{/if}
 	{if $message.replyto}
-	<TR class="LIGHT">
+	<TR class="light">
 		<TD width="1%" class="fleft">
 			<IMG src="img/mail.gif" alt="">
 		</TD>
@@ -88,7 +88,7 @@
 	</TR>
 	{/if}
 	{if $message.inreplyto}
-	<TR class="LIGHT">
+	<TR class="light">
 		<TD width="1%" class="fleft">
 			<IMG src="img/mail.gif" alt="">
 		</TD>
@@ -100,7 +100,7 @@
 		</TD>
 	</TR>
 	{/if}
-	<TR class="LIGHT">
+	<TR class="light">
 		<TD width="1%" class="fleft">
 			<IMG src="img/edit.gif" alt="">
 		</TD>
@@ -112,7 +112,7 @@
 		</TD>
 	</TR>
 	{if $message.attachments}
-	<TR class="LIGHT">
+	<TR class="light">
 		<TD width="1%" class="fleft">
 			<IMG src="img/attach.gif" alt="">
 		</TD>
@@ -126,7 +126,7 @@
 		</TD>
 	</TR>
 	{/if}
-	<TR class="LIGHT">
+	<TR class="light">
 		<TD colspan="3" width="100%" class="fbottomu" align="right" NOWRAP>
 			<A href="?m=rtmessageadd&id={$message.id}&ticketid={$message.ticketid}">{trans("Reply")} <IMG src="img/edit.gif" alt=""></A>
 			<A href="?m=rtticketview&id={$message.ticketid}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>

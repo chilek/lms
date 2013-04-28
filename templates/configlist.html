@@ -17,7 +17,7 @@
 			<A href="?m=configadd{if $listdata.section}&section={$listdata.section}{/if}">{trans("Add option")} <IMG src="img/save.gif" alt=""> </A>
 		</TD>
 	</TR>
-	<TR class="DARK">
+	<TR class="dark">
 		<TD class="fall" colspan="4">
 			<FORM method="GET" action="?m=configlist" name="filter">
 				<INPUT type="submit" class="hiddenbtn">
@@ -37,15 +37,15 @@
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="4" CLASS="FALL">
+	<TR CLASS="dark">
+		<TD COLSPAN="4" CLASS="fall">
 			{include file="scroller.html" loop=$configlist}
 		</TD>
 	</TR>
 	{/if}
 	{cycle values="light,lucid" print=false}
 	{section name=configlist loop=$configlist start=$start max=$pagelimit}
-	<TR class="{cycle}{if $configlist[configlist].disabled} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}{if $configlist[configlist].disabled} blend{/if}"  >
 		<TD class="fleft" style="vertical-align: top; white-space: nowrap;" OnClick="return self.location.href='?m=configedit&id={$configlist[configlist].id}';">
 			<IMG src="img/settings.gif" alt=""><span class="bold"> {$configlist[configlist].var}</span><BR>
 			<IMG src="img/empty.gif" alt="" width="16" height="16"> [{$configlist[configlist].section}]
@@ -79,14 +79,14 @@
 	</TR>
 	{/section}
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="4" CLASS="FALL">
+	<TR CLASS="dark">
+		<TD COLSPAN="4" CLASS="fall">
 			{include file="scroller.html" loop=$configlist}
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="DARK">
-		<TD colspan="4" class="FALL" style="text-align: right;">
+	<TR CLASS="dark">
+		<TD colspan="4" class="fall" style="text-align: right;">
 			<A href="?m=configadd{if $listdata.section}&section={$listdata.section}{/if}">{trans("Add option")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>

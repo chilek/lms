@@ -59,7 +59,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 <FORM METHOD="POST" NAME="page">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
 		<TD CLASS="fleftu" WIDTH="1%" nowrap>
 			<A href="?m=invoicelist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
@@ -82,7 +82,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 			&nbsp;
 		</TD>
 	</TR>
-	<TR class="DARK">
+	<TR class="dark">
 		<TD class="fall" colspan="7">
 				<B>{trans("Filter:")} </B> 
 				<INPUT type="text" name="search" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>&nbsp;
@@ -125,7 +125,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 	{section name=invoicelist loop=$invoicelist start=$start max=$pagelimit}
 	{assign var=invoice value=$invoicelist[invoicelist]}
 	{assign var=invoiceid value=$invoice.id}
-	<TR class="{cycle}{if $invoice.closed} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}{if $invoice.closed} blend{/if}"  >
 		<TD WIDTH="1%" CLASS="fleft">
 			{$invoice.id|string_format:"%06d"}
 		</TD>

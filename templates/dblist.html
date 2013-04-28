@@ -34,7 +34,7 @@
 </TR>
 {cycle values="light,lucid" print=false}
 {section name=dblist loop=$dblist.time}
-<TR class="{cycle}{if $dblist.dbv[dblist] != $layout.dbschversion} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+<TR class="highlight {cycle}{if $dblist.dbv[dblist] != $layout.dbschversion} blend{/if}"  >
 	<TD class="fleft" width="98%" onClick="return self.location.href='?m=dbview&db={$dblist.name[dblist]}&file=/lms-{$dblist.time[dblist]|date_format:"%Y%m%d-%H%M%S"}.sql{if $dblist.type[dblist]=="gz"}.gz{elseif $dblist.type[dblist]=="plain"}{/if}';">
 		<IMG src="img/time.gif" alt=""> {$dblist.time[dblist]|date_format:"%x %X (%A)"}
 	</TD>

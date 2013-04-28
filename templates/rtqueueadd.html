@@ -4,7 +4,7 @@
 <FORM METHOD="POST" NAME="queue" ACTION="?m=rtqueueadd">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
+	<TR class="dark">
 	    <TD width="1%" class="fleftu">
 		<IMG src="img/queue.gif" ALT="">
 	    </TD>
@@ -13,7 +13,7 @@
 		<INPUT TYPE="TEXT" NAME="queue[name]" VALUE="{$queue.name}" {tip text="Enter name" trigger="name" bold=1}>
 	    </TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
 	    <TD width="1%" class="fleft">
 		<IMG src="img/mail.gif" ALT="">
 	    </TD>
@@ -22,7 +22,7 @@
 		    <INPUT TYPE="TEXT" SIZE="50" NAME="queue[email]" VALUE="{$queue.email}" {tip text="Enter e-mail address" trigger="email"}>
 	    </TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
 	    <TD width="1%" class="fleft">
 		<IMG src="img/info1.gif" ALT="">
 	    </TD>
@@ -31,14 +31,14 @@
 		<TEXTAREA NAME="queue[description]" COLS="50" ROWS="3" {tip text="Enter additional information (optional)"}>{$queue.description}</TEXTAREA>
 	    </TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
 	    <TD width="1%" class="fleft">
 		<IMG src="img/users.gif" ALT="">
 	    </TD>
 	    <TD width="1%"><B>{trans("Permissions:")}</B></TD>
 	    <TD width="98%" class="fright">
 		    <TABLE width="100%" cellpadding="3">
-			<TR class="DARK">
+			<TR class="dark">
 			    <TD width="96%" class="fleftu"><B>{trans("User")}</B>
 			    </TD>
 			    <TD width="1%" class="fbt" align="center" nowrap><B>{trans("Read")}</B></TD>
@@ -48,7 +48,7 @@
 			</TR>
 			{cycle values="light,lucid" print=false}
 			{foreach from=$queue.rights item=right}
-			<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+			<TR class="highlight {cycle}"  >
 			    <TD width="96%" class="fleft">
 				<A href="?m=userinfo&id={$right.id}">{$right.name}</A>
 				<INPUT type="hidden" name="queue[usernames][{$right.id}]" value="{$right.name}">
@@ -67,7 +67,7 @@
 			    </TD>
 			</TR>
 			{/foreach}
-			<TR class="LIGHT">
+			<TR class="light">
 			    <TD width="96%" class="ftop"></TD>
 			    <TD width="1%" class="ftop"></TD>
 			    <TD width="1%" class="ftop"></TD>
@@ -77,8 +77,8 @@
 		</TABLE>			
 	    </TD>
 	</TR>
-	<TR class="LIGHT">
-	    <TD width="100%" COLSPAN="3" class="FBOTTOMU" ALIGN="RIGHT"> 
+	<TR class="light">
+	    <TD width="100%" COLSPAN="3" class="fbottomu" ALIGN="RIGHT"> 
 	    	<A HREF="javascript:document.queue.submit();" accesskey="s">{trans("Submit")}<IMG src="img/save.gif" alt=""></A>
 		<A HREF="?m=rtqueuelist">{trans("Cancel")}<IMG src="img/cancel.gif" alt=""></A>
 	    </TD>

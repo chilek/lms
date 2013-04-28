@@ -2,7 +2,7 @@
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
 		<TD WIDTH="1%" CLASS="fleftu">
 			<IMG SRC="img/payment.gif" ALT="">
 		</TD>
@@ -10,7 +10,7 @@
 			<B>{$payment.name} ({$payment.id|string_format:"%04d"})</B>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft">
 			<IMG SRC="img/creditor.gif" ALT="">
 		</TD>
@@ -21,7 +21,7 @@
 			{$payment.creditor}
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft">
 			<IMG SRC="img/value.gif" ALT="">
 		</TD>
@@ -32,7 +32,7 @@
 			{$payment.value|money_format} 
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft">
 			<IMG SRC="img/calendar.gif" ALT="">
 		</TD>
@@ -57,8 +57,8 @@
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
+	<TR CLASS="light">
+		<TD WIDTH="100%" COLSPAN="3" CLASS="fbottomu" ALIGN="RIGHT">
 			<FORM NAME="addbalance" METHOD="POST" ACTION="?m=balanceadd">
 			<INPUT type="submit" class="hiddenbtn">
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="balanceadd">

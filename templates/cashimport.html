@@ -19,7 +19,7 @@
 <P><FORM NAME="cashimport" ACTION="?m=cashimport" METHOD="post">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
 		<TD CLASS="fleftu" WIDTH="1%">
 			{trans("ID:")}
 		</TD>
@@ -43,7 +43,7 @@
 		</TD>
 	</TR>
 	{foreach from=$divisions item=division}{if $division.list}
-	<TR class="DARK">
+	<TR class="dark">
 		<TD colspan="4" class="fleftu">
 		    <IMG src="img/division.gif" alt=""> <B>{$division.name}</B>
 		</TD>
@@ -115,7 +115,7 @@
 </FORM></P>
 {if $error.lines}
 <P><TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
+	<TR class="dark">
 		<TD class="fall" width="100%" colspan="2">
 			<B>{trans("Errors and Duplicated Entries")}:</B>
 		</TD>
@@ -154,12 +154,12 @@
 <P><FORM name="parser" enctype="multipart/form-data" method="post" action="?m=cashimportparser">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
+	<TR class="dark">
 		<TD class="fall" width="100%" colspan="2">
 			<B>{trans("Import from file")}:</B>
 		</TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
 		<TD class="fleft" width="1%" NOWRAP>
 			<IMG src="img/attach.gif" alt="">
 			<B>{trans("Import file:")} </B>
@@ -168,7 +168,7 @@
 			<INPUT name="file" type="file" size="70" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
 		</TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
 		<TD class="fleft" width="1%" NOWRAP>
 			<IMG src="img/isource.gif" alt="">
 			<B>{trans("Source:")} </B>
@@ -182,7 +182,7 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
 		<TD class="fbottomu" colspan="2" width="100%" align="right" nowrap>
 			<A href="javascript: document.parser.submit();">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
@@ -191,7 +191,7 @@
 </FORM></P>
 <P>
 <TABLE width="100%" CELLPADDING="3">
-	<TR class="DARK">
+	<TR class="dark">
 		<TD class="fall" width="100%">
 		    <IMG src="img/attach.gif" alt="">
 			<B>{trans("Packages:")}</B> ({t a=10}last $a packages{/t})

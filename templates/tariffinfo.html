@@ -17,7 +17,7 @@
 //-->
 </script>
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
 		<TD WIDTH="1%" CLASS="fleftu">
 			<IMG SRC="img/money.gif" ALT="">
 		</TD>
@@ -25,13 +25,13 @@
 			<B>{$tariff.name} ({$tariff.id|string_format:"%04d"})</B>
 		</TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
 	    <TD WIDTH="100%" COLSPAN="2" CLASS="flr container">
 		<TABLE WIDTH="100%" CELLPADDING="0">
-		<TR CLASS="LIGHT">
+		<TR CLASS="light">
 		    <TD WIDTH="50%" style="vertical-align: top;">
 			<TABLE WIDTH="100%" CELLPADDING="3">
-			    <TR CLASS="LIGHT">
+			    <TR CLASS="light">
 				<TD WIDTH="1%" NOWRAP>
 				    <IMG SRC="img/value.gif" ALT="">
 				</TD>
@@ -42,21 +42,21 @@
 				    {else}<font class="blend">({trans("period undefined")})</font>{/if}
 				</TD>
 			    </TR>
-			    <TR class="LIGHT">
+			    <TR class="light">
 				<TD WIDTH="1%" NOWRAP>
 				    <IMG SRC="img/tax.gif" ALT="">
 				</TD>
 				<TD WIDTH="1%"><B>{trans("Tax:")}</B></TD>
 				<TD WIDTH="98%">{$tariff.tax}</TD>
 			    </TR>
-			    <TR class="LIGHT">
+			    <TR class="light">
 				<TD WIDTH="1%" NOWRAP>
 				    <IMG SRC="img/money.gif" ALT="">
 				</TD>
 				<TD WIDTH="1%"><B>{trans("Type:")}</B></TD>
 				<TD WIDTH="98%">{assign var=typeid value=$tariff.type}{$_TARIFFTYPES.$typeid}</TD>
 			    </TR>
-			    <TR class="LIGHT">
+			    <TR class="light">
 				<TD WIDTH="1%" NOWRAP>
 				    <IMG SRC="img/class.gif" ALT="">
 				</TD>
@@ -89,7 +89,7 @@
 		    </TD>
 		    <TD WIDTH="50%" VALIGN="50%">
 			<TABLE WIDTH="100%" CELLPADDING="3">
-			    <TR CLASS="LIGHT">
+			    <TR CLASS="light">
 				<TD WIDTH="1%">
 				    <IMG SRC="img/uprate.gif" ALT="">
 				</TD>
@@ -99,7 +99,7 @@
 				    ({trans("night:")} {if $tariff.uprate_n}{$tariff.uprate_n|default:0} kbit/s{else}{trans("not defined")}{/if})
 				</TD>
 			    </TR>
-			    <TR CLASS="LIGHT">
+			    <TR CLASS="light">
 				<TD WIDTH="1%">
 				</TD>
 				<TD WIDTH="1%" NOWRAP><B>{trans("Upload ceil:")}</B></TD>
@@ -251,12 +251,12 @@
 			{/if}
 		</TD>
 	</TR>
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
 		<TD CLASS="fall" COLSPAN="2">
 			<B>{trans("Customers in Subscription:")}</B>
 		</TD>
 	</TR>
-	<TR CLASS="DARK">
+	<TR CLASS="dark">
 		<TD CLASS="fall" colspan="4" ALIGN="CENTER">
 		{trans("Network:")}
 		<FORM NAME="tinfo" METHOD="GET" ACTION="?m=tariffinfo">
@@ -273,13 +273,13 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="100%" CLASS="FALL" COLSPAN="2">
+		<TD WIDTH="100%" CLASS="fall" COLSPAN="2">
 			<TABLE WIDTH="100%" CELLPADDING="2">
 				{cycle values="light,lucid" print=false}
 				{section name=l1 loop=$tariff.customers max=$tariff.rows}
 				<TR>
 					{section name=l2 loop=$tariff.customers start=$smarty.section.l1.index step=$tariff.rows}
-					<TD WIDTH="33%" class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')" {cycle print=false} onclick="return self.location.href='?m=customerinfo&id={$tariff.customers[l2].id}'">
+					<TD WIDTH="33%" class="highlight {cycle}"   {cycle print=false} onclick="return self.location.href='?m=customerinfo&id={$tariff.customers[l2].id}'">
 					<IMG SRC="img/customer.gif" ALT=""> <A HREF="?m=customerinfo&id={$tariff.customers[l2].id}">({$tariff.customers[l2].id|string_format:"%04d"}) {$tariff.customers[l2].customername|truncate:50:" ..."} {if $tariff.customers[l2].cnt > 1}({$tariff.customers[l2].cnt}){/if}</A></TD>
 					{/section}{cycle print=false}
 				</TR>
@@ -295,8 +295,8 @@
 			</TABLE>
 		</TD>
 	</TR>
-	<TR CLASS="DARK">
-		<TD WIDTH="100%" CLASS="FALL" COLSPAN="2">
+	<TR CLASS="dark">
+		<TD WIDTH="100%" CLASS="fall" COLSPAN="2">
 			<P>
 			<FORM NAME="tmove" METHOD="GET" ACTION="?m=tariffmove">
 				<INPUT type="submit" class="hiddenbtn">

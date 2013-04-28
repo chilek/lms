@@ -22,7 +22,7 @@
 <FORM name="documentgen" method="POST" action="?m=documentgen">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE cellpadding="3" WIDTH="100%">
-	<TR class="DARK">
+	<TR class="dark">
 		<TD width="1%" class="fleftu">
 			<IMG src="img/docum.gif" alt="">
 		</TD>
@@ -33,7 +33,7 @@
 			<INPUT type="text" name="document[title]" value="{$document.title}" {tip text="Enter document title" trigger="title"} size="40">
 		</TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
 		<TD width="1%" class="fleft">
 			<IMG src="img/docum.gif" alt="">
 		</TD>
@@ -54,7 +54,7 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
 		<TD width="1%" class="fleft">
 			<IMG src="img/calendar.gif" alt="">
 		</TD>
@@ -66,7 +66,7 @@
 			{trans("to:")} <INPUT type="TEXT" name="document[todate]" value="{if $document.todate}{$document.todate}{/if}" OnClick="cal2.popup();" {tip text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"} size="10"><BR>
 		</TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
 		<TD width="1%" class="fleft">
 			<IMG src="img/info.gif" alt="">
 		</TD>
@@ -78,7 +78,7 @@
 		</TD>
 	</TR>
 {*
-	<TR class="LIGHT">
+	<TR class="light">
 		<TD width="1%" class="fleft">
 			<IMG src="img/save.gif" alt="">
 		</TD>
@@ -90,7 +90,7 @@
 		</TD>
 	</TR>
 *}
-	<TR class="LIGHT">
+	<TR class="light">
 		<TD width="1%" class="fleft">
 			<IMG src="img/info.gif" alt="">
 		</TD>
@@ -106,7 +106,7 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
 		<TD width="1%" class="fleft">
 			<IMG src="img/class.gif" alt="">
 		</TD>
@@ -122,7 +122,7 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
 		<TD width="1%" class="fleft">
 	        	<IMG src="img/confirm.gif" ALT="">
 		</TD>
@@ -131,7 +131,7 @@
 		        <INPUT type="checkbox" name="document[closed]" value="1" {if $document.closed} checked{/if}>
 		</TD>
 	</TR>
-	<TR class="LIGHT">
+	<TR class="light">
 		<TD width="1%" class="fleft">
 	        	<IMG src="img/customer.gif" ALT="">
 		</TD>
@@ -171,7 +171,7 @@
 			</TABLE>
 		</TD>
 	<TR>
-	<TR class="LIGHT">
+	<TR class="light">
 		<TD class="fbottomu" colspan="3" align="right" NOWRAP>
 			<A href="javascript: document.documentgen.submit();">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>&nbsp;
 		{*	<A href="?m=">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A> *}

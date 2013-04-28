@@ -6,7 +6,7 @@
 </TR>
 {cycle name=locks values="light,lucid" print=false}
 {foreach from=$mgmurls item=mgmurl}
-<TR class="{cycle name=managementurls}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+<TR class="highlight {cycle name=managementurls}"  >
 	<TD style="width: 1%; white-space: nowrap;" COLSPAN="2">
 		<a href="{$mgmurl.url}" target="_blank">{$mgmurl.url}</a>
 	</TD>

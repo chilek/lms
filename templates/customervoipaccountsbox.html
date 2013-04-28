@@ -21,7 +21,7 @@
 				</TR>
 				{cycle name=voips values="light,lucid" print=false}
 				{foreach from=$customervoipaccounts.accounts item=voipaccount}
-				<TR class="{cycle name=voips}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+				<TR class="highlight {cycle name=voips}"  >
 					<TD WIDTH="96%" NOWRAP onclick="return self.location.href='?m=voipaccountinfo&id={$voipaccount.id}'">
 					    <B>{$voipaccount.login}</B></TD>
 					<TD WIDTH="1%" NOWRAP onclick="return self.location.href='?m=voipaccountinfo&id={$voipaccount.id}'">

@@ -24,7 +24,7 @@
 	</TR>
 	{cycle values="light,lucid" print=false}
 	{section name=userslist loop=$userslist}{if $userslist[userslist].id}
-	<TR class="{cycle} {if !$userslist[userslist].access}blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle} {if !$userslist[userslist].access}blend{/if}"  >
 		<TD class="fleft" width="1%" onClick="return self.location.href='?m=userinfo&id={$userslist[userslist].id}';">
 			<NOBR><IMG SRC="img/users.gif" ALT=""> <B>{$userslist[userslist].login}</B></NOBR>
 		</TD>
@@ -57,8 +57,8 @@
 		</TD>
 	</TR>
 	{/if}{/section}
-	<TR CLASS="LIGHT">
-		<TD CLASS="FALL" COLSPAN="6">
+	<TR CLASS="light">
+		<TD CLASS="fall" COLSPAN="6">
 			&nbsp;
 		</TD>
 	</TR>

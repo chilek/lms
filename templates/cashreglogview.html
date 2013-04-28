@@ -23,15 +23,15 @@
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="6" CLASS="FALL">
+	<TR CLASS="dark">
+		<TD COLSPAN="6" CLASS="fall">
 			{include file="scroller.html" loop=$cashreglog}
 		</TD>
 	</TR>
 	{/if}
 	{cycle values="light,lucid" print=false}
 	{section name=cashreglog loop=$cashreglog start=$start max=$pagelimit}
-	<TR class="{cycle}{if ($cashreglog[cashreglog].validfrom !=0 && $cashreglog[cashreglog].validfrom > $smarty.now) || ($cashreglog[cashreglog].validto !=0 && $cashreglog[cashreglog].validto < $smarty.now)} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}{if ($cashreglog[cashreglog].validfrom !=0 && $cashreglog[cashreglog].validfrom > $smarty.now) || ($cashreglog[cashreglog].validto !=0 && $cashreglog[cashreglog].validto < $smarty.now)} blend{/if}"  >
 		<TD class="fleft" NOWRAP onclick="location.href='?m=cashregloginfo&id={$cashreglog[cashreglog].id}'">
 			<IMG src="img/time.gif" alt=""> {$cashreglog[cashreglog].time|date_format:"%x %H:%M"}
 		</TD>
@@ -63,8 +63,8 @@
 	</TR>
 	{/section}
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="6" CLASS="FALL">
+	<TR CLASS="dark">
+		<TD COLSPAN="6" CLASS="fall">
 			{include file="scroller.html" loop=$cashreglog}
 		</TD>
 	</TR>

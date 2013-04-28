@@ -75,7 +75,7 @@
 	</TR>
 </TABLE>
 <TABLE WIDTH="100%" CELLPADDING="3">
-    <TR CLASS="FALL">
+    <TR CLASS="fall">
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
 		<B>{trans("No.")}</B>
 	</TD>
@@ -122,37 +122,37 @@
 {counter start=0 print=false}
 {foreach from=$invoice.invoice.content item=item}
     <TR class="{cycle}">
-	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT">{counter}.</TD>
-	<TD WIDTH="{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}90{else}91{/if}%" CLASS="FLR">
+	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT">{counter}.</TD>
+	<TD WIDTH="{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}90{else}91{/if}%" CLASS="flr">
 		{$item.description}
 	</TD>
-	<TD WIDTH="1%" CLASS="FLR">
+	<TD WIDTH="1%" CLASS="flr">
 		{$item.prodid}
 	</TD>
-	<TD WIDTH="1%" CLASS="FLR" ALIGN="CENTER">
+	<TD WIDTH="1%" CLASS="flr" ALIGN="CENTER">
 		{$item.content}
 	</TD>
-	<TD WIDTH="1%" CLASS="FLR" ALIGN="CENTER">
+	<TD WIDTH="1%" CLASS="flr" ALIGN="CENTER">
 		{$item.count|string_format:"%.2f"}
 	</TD>
 	{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}
-	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f"} %{else}{$item.vdiscount|money_format}{/if}
 	</TD>
 	{/if}
-	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{$item.basevalue|money_format}
 	</TD>
-	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{$item.totalbase|money_format}
 	</TD>
-	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{$item.taxlabel}
 	</TD>
-	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{$item.totaltax|money_format}
 	</TD>
-	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{$item.total|money_format}
 	</TD>
     </TR>
@@ -211,37 +211,37 @@
 {counter start=0 print=false}
 {foreach from=$invoice.content item=item}
     <TR class="{cycle name=cycle2}">
-	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT">{counter}.</TD>
-	<TD WIDTH="{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}90{else}91{/if}%" CLASS="FLR">
+	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT">{counter}.</TD>
+	<TD WIDTH="{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}90{else}91{/if}%" CLASS="flr">
 		{$item.description}
 	</TD>
-	<TD WIDTH="1%" CLASS="FLR">
+	<TD WIDTH="1%" CLASS="flr">
 		{$item.prodid}
 	</TD>
-	<TD WIDTH="1%" CLASS="FLR" ALIGN="CENTER">
+	<TD WIDTH="1%" CLASS="flr" ALIGN="CENTER">
 		{$item.content}
 	</TD>
-	<TD WIDTH="1%" CLASS="FLR" ALIGN="CENTER">
+	<TD WIDTH="1%" CLASS="flr" ALIGN="CENTER">
 		{$item.count|string_format:"%.2f"}
 	</TD>
 	{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}
-	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f"} %{else}{$item.vdiscount|money_format}{/if}
 	</TD>
 	{/if}
-	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{$item.basevalue|money_format}
 	</TD>
-	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{$item.totalbase|money_format}
 	</TD>
-	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{$item.taxlabel}
 	</TD>
-	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{$item.totaltax|money_format}
 	</TD>
-	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{$item.total|money_format}
 	</TD>
     </TR>

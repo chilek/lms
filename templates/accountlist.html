@@ -25,7 +25,7 @@
 			 <B>{t a=$listdata.total}Total: $a{/t}</B>&nbsp;
 		</TD>
 	</TR>
-	<TR class="DARK">
+	<TR class="dark">
 	        <TD class="fall" colspan="5">
 			<TABLE cellpadding="0" cellspacing="0">
 				<TR>
@@ -75,15 +75,15 @@
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="5" CLASS="FALL">
+	<TR CLASS="dark">
+		<TD COLSPAN="5" CLASS="fall">
 			{include file="scroller.html" loop=$accountlist adlink=$suffix}
 		</TD>
 	</TR>
 	{/if}
 	{cycle values="light,lucid" print=false}
 	{section name=accountlist loop=$accountlist start=$start max=$pagelimit}
-	<TR class="{cycle}{if $accountlist[accountlist].expdate != 0 && $accountlist[accountlist].expdate < $smarty.now} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="highlight {cycle}{if $accountlist[accountlist].expdate != 0 && $accountlist[accountlist].expdate < $smarty.now} blend{/if}"  >
 		<TD class="fleft" OnClick="return self.location.href='?m=accountinfo&id={$accountlist[accountlist].id}';">
 			<NOBR><IMG src="img/account.gif" alt=""> <B>{$accountlist[accountlist].login}@{$accountlist[accountlist].domain}</B></NOBR>
 			{if $accountlist[accountlist].ownerid}
@@ -125,8 +125,8 @@
 	</TR>
 	{/section}
 	{if $listdata.total != 0}
-	<TR CLASS="DARK">
-		<TD COLSPAN="5" CLASS="FALL">
+	<TR CLASS="dark">
+		<TD COLSPAN="5" CLASS="fall">
 			{include file="scroller.html" loop=$accountlist adlink=$suffix}
 		</TD>
 	</TR>
