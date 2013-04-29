@@ -164,8 +164,8 @@ if ($update) {
                         $address = urlencode($row['location']." Poland");
                         $link = "http://maps.googleapis.com/maps/api/geocode/json?address=".$address."&sensor=false";
                         $page = json_decode(file_get_contents($link), true);
-                        $latitude = $page["results"][0]["geometry"]["location"]["lat"];
-                        $longitude = $page["results"][0]["geometry"]["location"]["lng"];
+                        $latitude = str_replace(',', '.', $page["results"][0]["geometry"]["location"]["lat"]);
+                        $longitude = str_replace(',', '.', $page["results"][0]["geometry"]["location"]["lng"]);
                         $status = $page["status"];
                         $accuracy = $page["results"][0]["geometry"]["location_type"];
                         if (($status == "OK") && ($accuracy == "ROOFTOP")) {
