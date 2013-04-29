@@ -6,25 +6,24 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 #pagecontent	{ margin-left: 172px; _width: 100%; margin-right: 10px; margin-bottom: 10px; padding: 5px 0px; }
 
 TD		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; vertical-align: middle; border-color: black; }
-TD.fleft	{ border-left-width: 1pt; border-left-style: solid; }
-TD.fright	{ border-right-width: 1pt; border-right-style: solid; }
-TD.ftop		{ border-top-width: 1pt; border-top-style: solid; }
-TD.fbottom	{ border-bottom-width: 1pt; border-bottom-style: solid; }
-TD.fleftu	{ border-top-width: 1pt; border-top-style: solid; border-bottom-width: 1pt; border-bottom-style: solid; border-left-width: 1pt; border-left-style: solid; }
-TD.frightu	{ border-top-width: 1pt; border-top-style: solid; border-bottom-width: 1pt; border-bottom-style: solid; border-right-width: 1pt; border-right-style: solid; }
-TD.ftopu	{ border-top-width: 1pt; border-top-style: solid; border-left-width: 1pt; border-left-style: solid; border-right-width: 1pt; border-right-style: solid; }
-TD.fbottomu	{ border-bottom-width: 1pt; border-bottom-style: solid; border-left-width: 1pt; border-left-style: solid; border-right-width: 1pt; border-right-style: solid; }
-TD.fall		{ border-width: 1pt; border-style: solid; }
-TD.fbt		{ border-bottom-width: 1pt; border-bottom-style: solid; border-top-width: 1pt; border-top-style: solid; }
-TD.fbl		{ border-bottom-width: 1pt; border-bottom-style: solid; border-left-width: 1pt; border-left-style: solid; }
-TD.fbr		{ border-bottom-width: 1pt; border-bottom-style: solid; border-right-width: 1pt; border-right-style: solid; }
-TD.ftl		{ border-top-width: 1pt; border-top-style: solid; border-left-width: 1pt; border-left-style: solid; }
-TD.ftr		{ border-top-width: 1pt; border-top-style: solid; border-right-width: 1pt; border-right-style: solid; }
-TD.flr		{ border-left-width: 1pt; border-left-style: solid; border-right-width: 1pt; border-right-style: solid; }
-TD.loginform	{ border-width: 1pt; border-style: solid; border-color: #888888; }
-TD.hand		{ cursor: pointer; }
-TR.hand		{ cursor: pointer; }
-TD.container { padding: 0; }
+.fleft           { border-left-width: 1pt; border-left-style: solid; }
+.fright          { border-right-width: 1pt; border-right-style: solid; }
+.ftop		{ border-top-width: 1pt; border-top-style: solid; }
+.fbottom         { border-bottom-width: 1pt; border-bottom-style: solid; }
+.fleftu          { border-top-width: 1pt; border-top-style: solid; border-bottom-width: 1pt; border-bottom-style: solid; border-left-width: 1pt; border-left-style: solid; }
+.frightu         { border-top-width: 1pt; border-top-style: solid; border-bottom-width: 1pt; border-bottom-style: solid; border-right-width: 1pt; border-right-style: solid; }
+.ftopu           { border-top-width: 1pt; border-top-style: solid; border-left-width: 1pt; border-left-style: solid; border-right-width: 1pt; border-right-style: solid; }
+.fbottomu	{ border-bottom-width: 1pt; border-bottom-style: solid; border-left-width: 1pt; border-left-style: solid; border-right-width: 1pt; border-right-style: solid; }
+.fall		{ border-width: 1pt; border-style: solid; }
+.fbt		{ border-bottom-width: 1pt; border-bottom-style: solid; border-top-width: 1pt; border-top-style: solid; }
+.fbl		{ border-bottom-width: 1pt; border-bottom-style: solid; border-left-width: 1pt; border-left-style: solid; }
+.fbr		{ border-bottom-width: 1pt; border-bottom-style: solid; border-right-width: 1pt; border-right-style: solid; }
+.ftl		{ border-top-width: 1pt; border-top-style: solid; border-left-width: 1pt; border-left-style: solid; }
+.ftr		{ border-top-width: 1pt; border-top-style: solid; border-right-width: 1pt; border-right-style: solid; }
+.flr		{ border-left-width: 1pt; border-left-style: solid; border-right-width: 1pt; border-right-style: solid; }
+.loginform	{ border-width: 1pt; border-style: solid; border-color: #888888; }
+.hand		{ cursor: pointer; }
+.container       { padding: 0; }
 FORM		{ display: inline; }
 
 LABEL       { cursor: pointer; }
@@ -192,4 +191,34 @@ div.multiselectlayer ul li input { border: none; }
     -moz-box-shadow: 1px 1px 12px #333;
     -webkit-box-shadow: #333 1px 1px 12px;
     behavior: url(img/pie.htc);
+}
+table.lmsbox, table.lmsbox-inner {
+    width: 100%;
+}
+
+table.lmsbox td {
+    padding: 3px;
+}
+
+table.lmsbox-inner * td {
+    padding: 5px;
+    border-spacing: 0px;
+}
+
+table.lmsbox > thead, table.lmsbox > tfoot, table.lmsbox-inner > thead, table.lmsbox-inner > tfoot {
+    background-color: #CEBD9B;
+    border-width: 1px;
+    border-style: solid;
+    border-color: black;    
+}
+
+table.lmsbox > tbody {
+    background-color: #DFD5BD;
+    border-width: 0 1px 1px 1px;
+    border-style: solid;
+    border-color: black;
+}
+
+table.lmsbox-inner > tbody {
+    background-color: #DFD5BD;
 }
