@@ -24,23 +24,28 @@
  *  $Id$
  */
 
-if(isset($_GET['is_sure']))
-{
-	$regid = $DB->GetOne('SELECT regid FROM cashreglog WHERE id = ?', array(intval($_GET['id'])));
+if (isset($_GET['is_sure'])) {
+	$id = intval($_GET['id']);
+	list ($regid, $userid) = array_values($DB->GetRow('SELECT regid, userid FROM cashreglog WHERE id = ?', array($id)));
 
-	if(!$regid)
-	{
-    		$SESSION->redirect('?m=cashreglist');
-	}
+	if (!$regid)
+		$SESSION->redirect('?m=cashreglist');
 
-	if($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $regid))<256)
-	{
-	        $SMARTY->display('noaccess.html');
+	if ($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $regid)) < 256) {
+		$SMARTY->display('noaccess.html');
 		$SESSION->close();
 		die;
 	}
 
-	$DB->Execute('DELETE FROM cashreglog WHERE id = ?', array(intval($_GET['id'])));
+	if ($SYSLOG) {
+		$args = array(
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREGHIST] => $id,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG] => $regid,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $userid,
+		);
+		$SYSLOG->AddMessage(SYSLOG_RES_CASHREGHIST, SYSLOG_OPER_DELETE, $args, array_keys($args));
+	}
+	$DB->Execute('DELETE FROM cashreglog WHERE id = ?', array($id));
 }
 
 $SESSION->redirect('?'.$SESSION->get('backto'));

@@ -43,24 +43,45 @@ if(isset($_POST['registry']))
 		foreach($registry['users'] as $key => $value)
 			$registry['rights'][] = array('id' => $key, 'rights' => array_sum($value), 'name' => $registry['usernames'][$key]);
 
-	if(!$error)
-	{
+	if (!$error) {
+		$args = array(
+			'name' => $registry['name'],
+			'description' => $registry['description'],
+			'in_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $registry['in_numberplanid'],
+			'out_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $registry['out_numberplanid'],
+			'disabled' => isset($registry['disabled']) ? 1 : 0,
+		);
 		$DB->Execute('INSERT INTO cashregs (name, description, in_numberplanid, out_numberplanid, disabled)
-				VALUES(?, ?, ?, ?, ?)',
-				array($registry['name'],
-					$registry['description'],
-					$registry['in_numberplanid'],
-					$registry['out_numberplanid'],
-					isset($registry['disabled']) ? 1 : 0
-				));
-				
+			VALUES(?, ?, ?, ?, ?)', array_values($args));
+
 		$id = $DB->GetOne('SELECT id FROM cashregs WHERE name=?', array($registry['name']));
-		
-		if(isset($registry['rights']))
-			foreach($registry['rights'] as $right)
-			        if($right['rights'])
-			                  $DB->Execute('INSERT INTO cashrights (regid, userid, rights) VALUES(?, ?, ?)', array($id, $right['id'], $right['rights']));
-		
+
+		if ($SYSLOG) {
+			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG]] = $id;
+			$SYSLOG->AddMessage(SYSLOG_RES_CASHREG, SYSLOG_OPER_ADD, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG],
+					'in_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN],
+					'out_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN]));
+		}
+
+		if (isset($registry['rights']))
+			foreach ($registry['rights'] as $right)
+				if ($right['rights']) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG] => $id,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $right['id'],
+						'rights' => $right['rights'],
+					);
+					$DB->Execute('INSERT INTO cashrights (regid, userid, rights) VALUES(?, ?, ?)', array_values($args));
+					if ($SYSLOG) {
+						$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHRIGHT]] = $DB->GetLastInsertID('cashrights');
+						$SYSLOG->AddMessage(SYSLOG_RES_CASHRIGHT, SYSLOG_OPER_ADD, $args,
+							array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHRIGHT],
+								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG],
+								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
+					}
+				}
+
 		$SESSION->redirect('?m=cashreginfo&id='.$id);
 	}
 }

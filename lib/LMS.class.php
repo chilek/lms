@@ -2341,13 +2341,13 @@ class LMS {
 					// ... if not found clone tariff
 					if (!$tariffid) {
 						$args = $this->DB->GetRow('SELECT name, value, period,
-							taxid, type, upceil, downceil, uprate, downrate,
+							taxid AS ' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] . ', type, upceil, downceil, uprate, downrate,
 							prodid, plimit, climit, dlimit, upceil_n, downceil_n, uprate_n, downrate_n,
 							domain_limit, alias_limit, sh_limit, www_limit, ftp_limit, mail_limit, sql_limit,
 							quota_sh_limit, quota_www_limit, quota_ftp_limit, quota_mail_limit, quota_sql_limit
 							FROM tariffs WHERE id = ?', array($tariff['id']));
 						$args = array_merge($args, array(
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $args['taxid'],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX]],
 							'name' => $tariff['name'],
 							'value' => str_replace(',', '.', $value),
 							'period' => $tariff['period']
@@ -2559,34 +2559,46 @@ class LMS {
 	}
 
 	function AddInvoice($invoice) {
+		global $SYSLOG_RESOURCE_KEYS;
+
 		$currtime = time();
 		$cdate = $invoice['invoice']['cdate'] ? $invoice['invoice']['cdate'] : $currtime;
 		$sdate = $invoice['invoice']['sdate'] ? $invoice['invoice']['sdate'] : $currtime;
 		$number = $invoice['invoice']['number'];
 		$type = $invoice['invoice']['type'];
 
+		$args = array(
+			'number' => $number,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $invoice['invoice']['numberplanid'] ? $invoice['invoice']['numberplanid'] : 0,
+			'type' => $type,
+			'cdate' => $cdate,
+			'sdate' => $sdate,
+			'paytime' => $invoice['invoice']['paytime'],
+			'paytype' => $invoice['invoice']['paytype'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $this->AUTH->id,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $invoice['customer']['id'],
+			'customername' => $invoice['customer']['customername'],
+			'address' => $invoice['customer']['address'],
+			'ten' => $invoice['customer']['ten'],
+			'ssn' => $invoice['customer']['ssn'],
+			'zip' => $invoice['customer']['zip'],
+			'city' => $invoice['customer']['city'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $invoice['customer']['countryid'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $invoice['customer']['divisionid'],
+		);
 		$this->DB->Execute('INSERT INTO documents (number, numberplanid, type,
 			cdate, sdate, paytime, paytype, userid, customerid, name, address, 
 			ten, ssn, zip, city, countryid, divisionid)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($number,
-				$invoice['invoice']['numberplanid'] ? $invoice['invoice']['numberplanid'] : 0,
-				$type,
-				$cdate,
-				$sdate,
-				$invoice['invoice']['paytime'],
-				$invoice['invoice']['paytype'],
-				$this->AUTH->id,
-				$invoice['customer']['id'],
-				$invoice['customer']['customername'],
-				$invoice['customer']['address'],
-				$invoice['customer']['ten'],
-				$invoice['customer']['ssn'],
-				$invoice['customer']['zip'],
-				$invoice['customer']['city'],
-				$invoice['customer']['countryid'],
-				$invoice['customer']['divisionid'],
-		));
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 		$iid = $this->DB->GetLastInsertID('documents');
+		if ($this->SYSLOG) {
+			unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
+			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC]] = $iid;
+			$this->SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_ADD, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV]));
+		}
 
 		$itemid = 0;
 		foreach ($invoice['contents'] as $idx => $item) {
@@ -2598,21 +2610,28 @@ class LMS {
 			$item['vdiscount'] = str_replace(',', '.', $item['vdiscount']);
 			$item['taxid'] = isset($item['taxid']) ? $item['taxid'] : 0;
 
+			$args =  array(
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $iid,
+				'itemid' => $itemid,
+				'value' => $item['valuebrutto'],
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $item['taxid'],
+				'prodid' => $item['prodid'],
+				'content' => $item['jm'],
+				'count' => $item['count'],
+				'pdiscount' => $item['pdiscount'],
+				'vdiscount' => $item['vdiscount'],
+				'description' => $item['name'],
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $item['tariffid'],
+			);
 			$this->DB->Execute('INSERT INTO invoicecontents (docid, itemid,
 				value, taxid, prodid, content, count, pdiscount, vdiscount, description, tariffid) 
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array(
-					$iid,
-					$itemid,
-					$item['valuebrutto'],
-					$item['taxid'],
-					$item['prodid'],
-					$item['jm'],
-					$item['count'],
-					$item['pdiscount'],
-					$item['vdiscount'],
-					$item['name'],
-					$item['tariffid']
-			));
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			if ($this->SYSLOG) {
+				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $invoice['customer']['id'];
+				$this->SYSLOG->AddMessage(SYSLOG_RES_INVOICECONT, SYSLOG_OPER_ADD, $args,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF]));
+			}
 
 			$this->AddBalance(array(
 					'time' => $cdate,
@@ -2629,7 +2648,35 @@ class LMS {
 	}
 
 	function InvoiceDelete($invoiceid) {
+		global $SYSLOG_RESOURCE_KEYS;
 		$this->DB->BeginTrans();
+		if ($this->SYSLOG) {
+			$customerid = $this->DB->GetOne('SELECT customerid FROM documents WHERE id = ?', array($invoiceid));
+			$args = array(
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $invoiceid,
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+			);
+			$this->SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_DELETE, $args, array_keys($args));
+			$cashids = $this->DB->GetCol('SELECT id FROM cash WHERE docid = ?', array($invoiceid));
+			foreach ($cashids as $cashid) {
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $cashid,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $invoiceid,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+				);
+				$this->SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args, array_keys($args));
+			}
+			$itemids = $this->DB->GetCol('SELECT itemid FROM invoicecontents WHERE docid = ?', array($invoiceid));
+			foreach ($itemids as $itemid) {
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $invoiceid,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+					'itemid' => $itemid,
+				);
+				$this->SYSLOG->AddMessage(SYSLOG_RES_INVOICECONT, SYSLOG_OPER_DELETE, $args,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+			}
+		}
 		$this->DB->Execute('DELETE FROM documents WHERE id = ?', array($invoiceid));
 		$this->DB->Execute('DELETE FROM invoicecontents WHERE docid = ?', array($invoiceid));
 		$this->DB->Execute('DELETE FROM cash WHERE docid = ?', array($invoiceid));
@@ -2637,15 +2684,46 @@ class LMS {
 	}
 
 	function InvoiceContentDelete($invoiceid, $itemid = 0) {
+		global $SYSLOG_RESOURCE_KEYS;
 		if ($itemid) {
 			$this->DB->BeginTrans();
+			if ($this->SYSLOG) {
+				$customerid = $this->DB->GetOne('SELECT customerid FROM documents
+					JOIN invoicecontents ON docid = id WHERE id = ?', array($invoiceid));
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $invoiceid,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+					'itemid' => $itemid,
+				);
+				$this->SYSLOG->AddMessage(SYSLOG_RES_INVOICECONT, SYSLOG_OPER_DELETE, $args,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+			}
 			$this->DB->Execute('DELETE FROM invoicecontents WHERE docid=? AND itemid=?', array($invoiceid, $itemid));
 
 			if (!$this->DB->GetOne('SELECT COUNT(*) FROM invoicecontents WHERE docid=?', array($invoiceid))) {
 				// if that was the last item of invoice contents
 				$this->DB->Execute('DELETE FROM documents WHERE id = ?', array($invoiceid));
+				if ($this->SYSLOG) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $invoiceid,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+					);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_DELETE, $args,
+						array_keys($args));
+				}
 			}
 
+			if ($this->SYSLOG) {
+				$cashid = $this->DB->GetOne('SELECT id FROM cash WHERE docid = ? AND itemid = ?',
+					array($invoiceid, $itemid));
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $cashid,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $invoiceid,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+				);
+				$this->SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args,
+					array_keys($args));
+			}
 			$this->DB->Execute('DELETE FROM cash WHERE docid = ? AND itemid = ?', array($invoiceid, $itemid));
 			$this->DB->CommitTrans();
 		}
@@ -3074,15 +3152,72 @@ class LMS {
 	}
 
 	function ReceiptContentDelete($docid, $itemid = 0) {
+		global $SYSLOG_RESOURCE_KEYS;
 		if ($itemid) {
+			if ($this->SYSLOG) {
+				$customerid = $this->DB->GetOne('SELECT customerid FROM documents WHERE id=?',
+					array($docid));
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+					'itemid' => $itemid,
+				);
+				$this->SYSLOG->AddMessage(SYSLOG_RES_RECEIPTCONT, SYSLOG_OPER_DELETE, $args,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+			}
 			$this->DB->Execute('DELETE FROM receiptcontents WHERE docid=? AND itemid=?', array($docid, $itemid));
 
 			if (!$this->DB->GetOne('SELECT COUNT(*) FROM receiptcontents WHERE docid=?', array($docid))) {
 				// if that was the last item of invoice contents
+				if ($this->SYSLOG) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+					);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_DELETE, $args,
+						array_keys($args));
+				}
 				$this->DB->Execute('DELETE FROM documents WHERE id = ?', array($docid));
+			}
+			if ($this->SYSLOG) {
+				$cashid = $this->DB->GetOne('SELECT id FROM cash WHERE docid = ? AND itemid = ?',
+					array($docid, $itemid));
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $cashid,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+				);
+				$this->SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args,
+					array_keys($args));
 			}
 			$this->DB->Execute('DELETE FROM cash WHERE docid = ? AND itemid = ?', array($docid, $itemid));
 		} else {
+			if ($this->SYSLOG) {
+				$customerid = $this->DB->GetOne('SELECT customerid FROM documents WHERE id=?', array($docid));
+				$itemids = $this->DB->GetCol('SELECT itemid FROM receiptcontents WHERE docid=?', array($docid));
+				foreach ($itemids as $itemid) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+						'itemid' => $itemid,
+					);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_RECEIPTCONT, SYSLOG_OPER_DELETE, $args, array_keys($args));
+				}
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+				);
+				$this->SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_DELETE, $args, array_keys($args));
+				$cashids = $this->GetCol('SELECT id FROM cash WHERE docid=?', array($docid));
+				foreach ($cashids as $itemid) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $itemid,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+					);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args, array_keys($args));
+				}
+			}
 			$this->DB->Execute('DELETE FROM receiptcontents WHERE docid=?', array($docid));
 			$this->DB->Execute('DELETE FROM documents WHERE id = ?', array($docid));
 			$this->DB->Execute('DELETE FROM cash WHERE docid = ?', array($docid));
@@ -3090,15 +3225,73 @@ class LMS {
 	}
 
 	function DebitNoteContentDelete($docid, $itemid = 0) {
+		global $SYSLOG_RESOURCE_KEYS;
 		if ($itemid) {
+			if ($this->SYSLOG) {
+				list ($dnotecontid, $customerid) = array_values($this->DB->GetRow('SELECT dn.id, customerid FROM debitnotecontents dn
+					JOIN documents d ON d.id = dn.docid WHERE docid=? AND itemid=?',
+					array($docid, $itemid)));
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DNOTECONT] => $dnotecontid,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+				);
+				$this->SYSLOG->AddMessage(SYSLOG_RES_DNOTECONT, SYSLOG_OPER_DELETE, $args,
+					array_keys($args));
+			}
 			$this->DB->Execute('DELETE FROM debitnotecontents WHERE docid=? AND itemid=?', array($docid, $itemid));
 
 			if (!$this->DB->GetOne('SELECT COUNT(*) FROM debitnotecontents WHERE docid=?', array($docid))) {
 				// if that was the last item of debit note contents
+				if ($this->SYSLOG) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+					);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_DELETE, $args,
+						array_keys($args));
+				}
 				$this->DB->Execute('DELETE FROM documents WHERE id = ?', array($docid));
+			}
+			if ($this->SYSLOG) {
+				$cashid = $this->DB->GetOne('SELECT id FROM cash WHERE docid = ? AND itemid = ?',
+					array($docid, $itemid));
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $cashid,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+				);
+				$this->SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args,
+					array_keys($args));
 			}
 			$this->DB->Execute('DELETE FROM cash WHERE docid = ? AND itemid = ?', array($docid, $itemid));
 		} else {
+			if ($this->SYSLOG) {
+				$customerid = $this->DB->GetOne('SELECT customerid FROM documents WHERE id=?', array($docid));
+				$dnotecontids = $this->DB->GetCol('SELECT id FROM debitnotecontents WHERE docid=?', array($docid));
+				foreach ($dnotecontids as $itemid) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DNOTECONT] => $itemid,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+					);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_DNOTECONT, SYSLOG_OPER_DELETE, $args, array_keys($args));
+				}
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+				);
+				$this->SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_DELETE, $args, array_keys($args));
+				$cashids = $this->GetCol('SELECT id FROM cash WHERE docid=?', array($docid));
+				foreach ($cashids as $itemid) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $itemid,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+					);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args, array_keys($args));
+				}
+			}
 			$this->DB->Execute('DELETE FROM debitnotecontents WHERE docid=?', array($docid));
 			$this->DB->Execute('DELETE FROM documents WHERE id = ?', array($docid));
 			$this->DB->Execute('DELETE FROM cash WHERE docid = ?', array($docid));
@@ -3106,26 +3299,39 @@ class LMS {
 	}
 
 	function AddBalance($addbalance) {
-		$addbalance['value'] = str_replace(',', '.', round($addbalance['value'], 2));
-
-		return $this->DB->Execute('INSERT INTO cash (time, userid, value, type, taxid,
+		global $SYSLOG_RESOURCE_KEYS;
+		$args = array(
+			'time' => isset($addbalance['time']) ? $addbalance['time'] : time(),
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => isset($addbalance['userid']) ? $addbalance['userid'] : $this->AUTH->id,
+			'value' => str_replace(',', '.', round($addbalance['value'], 2)),
+			'type' =>  isset($addbalance['type']) ? $addbalance['type'] : 0,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => isset($addbalance['taxid']) ? $addbalance['taxid'] : 0,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $addbalance['customerid'],
+			'comment' => $addbalance['comment'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => isset($addbalance['docid']) ? $addbalance['docid'] : 0,
+			'itemid' => isset($addbalance['itemid']) ? $addbalance['itemid'] : 0,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHIMPORT] => !empty($addbalance['importid']) ? $addbalance['importid'] : NULL,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE] => !empty($addbalance['sourceid']) ? $addbalance['sourceid'] : NULL,
+		);
+		$res = $this->DB->Execute('INSERT INTO cash (time, userid, value, type, taxid,
 			customerid, comment, docid, itemid, importid, sourceid)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array(isset($addbalance['time']) ? $addbalance['time'] : time(),
-						isset($addbalance['userid']) ? $addbalance['userid'] : $this->AUTH->id,
-						$addbalance['value'],
-						isset($addbalance['type']) ? $addbalance['type'] : 0,
-						isset($addbalance['taxid']) ? $addbalance['taxid'] : 0,
-						$addbalance['customerid'],
-						$addbalance['comment'],
-						isset($addbalance['docid']) ? $addbalance['docid'] : 0,
-						isset($addbalance['itemid']) ? $addbalance['itemid'] : 0,
-						!empty($addbalance['importid']) ? $addbalance['importid'] : NULL,
-						!empty($addbalance['sourceid']) ? $addbalance['sourceid'] : NULL,
-				));
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+		if ($res && $this->SYSLOG) {
+			unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
+			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH]] = $this->DB->GetLastInsertID('cash');
+			$this->SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_ADD, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHIMPORT],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE]));
+		}
+		return $res;
 	}
 
 	function DelBalance($id) {
-		$row = $this->DB->GetRow('SELECT docid, itemid, documents.type AS doctype, importid
+		global $SYSLOG_RESOURCE_KEYS;
+
+		$row = $this->DB->GetRow('SELECT cash.customerid, docid, itemid, documents.type AS doctype, importid
 					FROM cash
 					LEFT JOIN documents ON (docid = documents.id)
 					WHERE cash.id = ?', array($id));
@@ -3138,8 +3344,32 @@ class LMS {
 			$this->DebitNoteContentDelete($row['docid'], $row['itemid']);
 		else {
 			$this->DB->Execute('DELETE FROM cash WHERE id = ?', array($id));
-			if ($row['importid'])
+			if ($this->SYSLOG) {
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $id,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $row['customerid'],
+				);
+				$this->SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args, array_keys($args));
+			}
+			if ($row['importid']) {
+				if ($this->SYSLOG) {
+					$cashimport = $this->GetRow('SELECT customerid, sourceid, sourcefileid FROM cashimport WHERE id = ?',
+						array($row['importid']));
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHIMPORT] => $row['importid'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $cashimport['customerid'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE] => $cashimport['sourceid'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_SOURCEFILE] => $cashimport['sourcefileid'],
+						'closed' => 0,
+					);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_CASHIMPORT, SYSLOG_OPER_UPDATE, $args,
+						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHIMPORT],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_SOURCEFILE]));
+				}
 				$this->DB->Execute('UPDATE cashimport SET closed = 0 WHERE id = ?', array($row['importid']));
+			}
 		}
 	}
 
@@ -3218,36 +3448,52 @@ class LMS {
 	}
 
 	function PaymentAdd($paymentdata) {
+		global $SYSLOG_RESOURCE_KEYS;
+		$args = array(
+			'name' => $paymentdata['name'],
+			'creditor' => $paymentdata['creditor'],
+			'description' => $paymentdata['description'],
+			'value' => $paymentdata['value'],
+			'period' => $paymentdata['period'],
+			'at' => $paymentdata['at'],
+		);
 		if ($this->DB->Execute('INSERT INTO payments (name, creditor, description, value, period, at)
-			VALUES (?, ?, ?, ?, ?, ?)', array(
-						$paymentdata['name'],
-						$paymentdata['creditor'],
-						$paymentdata['description'],
-						$paymentdata['value'],
-						$paymentdata['period'],
-						$paymentdata['at'],
-						)
-		))
-			return $this->DB->GetLastInsertID('payments');
-		else
+			VALUES (?, ?, ?, ?, ?, ?)', array_values($args))) {
+			$id = $this->DB->GetLastInsertID('payments');
+			if ($this->SYSLOG) {
+				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PAYMENT]] = $id;
+				$this->SYSLOG->AddMessage(SYSLOG_RES_PAYMENT, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PAYMENT]));
+			}
+			return $id;
+		} else
 			return FALSE;
 	}
 
 	function PaymentDelete($id) {
+		global $SYSLOG_RESOURCE_KEYS;
+		if ($this->SYSLOG) {
+			$args = array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PAYMENT] => $id);
+			$this->SYSLOG->AddMessage(SYSLOG_RES_PAYMENT, SYSLOG_OPER_DELETE, $args, array_keys($args));
+		}
 		return $this->DB->Execute('DELETE FROM payments WHERE id=?', array($id));
 	}
 
 	function PaymentUpdate($paymentdata) {
-		return $this->DB->Execute('UPDATE payments SET name=?, creditor=?, description=?, value=?, period=?, at=? WHERE id=?', array(
-						$paymentdata['name'],
-						$paymentdata['creditor'],
-						$paymentdata['description'],
-						$paymentdata['value'],
-						$paymentdata['period'],
-						$paymentdata['at'],
-						$paymentdata['id']
-						)
+		global $SYSLOG_RESOURCE_KEYS;
+		$args = array(
+			'name' => $paymentdata['name'],
+			'creditor' => $paymentdata['creditor'],
+			'description' => $paymentdata['description'],
+			'value' => $paymentdata['value'],
+			'period' => $paymentdata['period'],
+			'at' => $paymentdata['at'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PAYMENT] => $paymentdata['id'],
 		);
+		$res = $this->DB->Execute('UPDATE payments SET name=?, creditor=?, description=?, value=?, period=?, at=? WHERE id=?',
+			array_values($args));
+		if ($res && $this->SYSLOG)
+			$this->SYSLOG->AddMessage(SYSLOG_RES_PAYMENT, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PAYMENT]));
+		return $res;
 	}
 
 	function ScanNodes() {

@@ -247,32 +247,42 @@ switch($action)
 				$cnote['number'] = $LMS->GetNewDocumentNumber(DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']);
 		}
 
+		$args = array(
+			'number' => $cnote['number'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $cnote['numberplanid'] ? $cnote['numberplanid'] : 0,
+			'type' => DOC_CNOTE,
+			'cdate' => $cnote['cdate'],
+			'sdate' => $cnote['sdate'],
+			'paytime' => $cnote['paytime'],
+			'paytype' => $cnote['paytype'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $invoice['customerid'],
+			'name' => $invoice['name'],
+			'address' => $invoice['address'],
+			'ten' => $invoice['ten'],
+			'ssn' => $invoice['ssn'],
+			'zip' => $invoice['zip'],
+			'city' => $invoice['city'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $invoice['countryid'],
+			'reference' => $invoice['id'],
+			'reason' => $cnote['reason'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => !empty($cnote['use_current_division']) ? $invoice['current_divisionid'] : $invoice['divisionid'],
+		);
 		$DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, sdate, paytime, paytype,
 				userid, customerid, name, address, ten, ssn, zip, city, countryid, reference, reason, divisionid)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-				array($cnote['number'],
-					$cnote['numberplanid'] ? $cnote['numberplanid'] : 0,
-					DOC_CNOTE,
-					$cnote['cdate'],
-					$cnote['sdate'],
-					$cnote['paytime'],
-					$cnote['paytype'],
-					$AUTH->id,
-					$invoice['customerid'],
-					$invoice['name'],
-					$invoice['address'],
-					$invoice['ten'],
-					$invoice['ssn'],
-					$invoice['zip'],
-					$invoice['city'],
-					$invoice['countryid'],
-					$invoice['id'],
-					$cnote['reason'],
-					!empty($cnote['use_current_division']) ? $invoice['current_divisionid'] : $invoice['divisionid'],
-		));
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
 		$id = $DB->GetOne('SELECT id FROM documents WHERE number = ? AND cdate = ? AND type = ?',
 			array($cnote['number'], $cnote['cdate'], DOC_CNOTE));
+
+		if ($SYSLOG) {
+			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC]] = $id;
+			unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
+			$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_ADD, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV]));
+		}
 
 		$DB->UnLockTables();
 
@@ -283,33 +293,50 @@ switch($action)
 			$item['pdiscount'] = str_replace(',', '.', $item['pdiscount']);
 			$item['vdiscount'] = str_replace(',', '.', $item['vdiscount']);
 
+			$args = array(
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $id,
+				'itemid' => $idx,
+				'value' => $item['valuebrutto'],
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $item['taxid'],
+				'prodid' => $item['prodid'],
+				'content' => $item['jm'],
+				'count' => $item['count'],
+				'pdiscount' => $item['pdiscount'],
+				'vdiscount' => $item['vdiscount'],
+				'description' => $item['name'],
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $item['tariffid'],
+			);
 			$DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxid, prodid, content, count, pdiscount, vdiscount, description, tariffid)
-					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-					array($id,
-						$idx,
-						$item['valuebrutto'],
-						$item['taxid'],
-						$item['prodid'],
-						$item['jm'],
-						$item['count'],
-						$item['pdiscount'],
-						$item['vdiscount'],
-						$item['name'],
-						$item['tariffid']
-			));
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
-			if (isset($item['cash']) && $item['cash'] != 0)
+			if ($SYSLOG) {
+				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $invoice['customerid'];
+				$SYSLOG->AddMessage(SYSLOG_RES_INVOICECONT, SYSLOG_OPER_ADD, $args,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+			}
+
+			if (isset($item['cash']) && $item['cash'] != 0) {
+				$args = array(
+					'time' => $cnote['cdate'],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id,
+					'value' => str_replace(',','.',$item['cash']),
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $item['taxid'],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $invoice['customerid'],
+					'comment' => $item['name'],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $id,
+					'itemid' => $idx,
+				);
 				$DB->Execute('INSERT INTO cash (time, userid, value, taxid, customerid, comment, docid, itemid)
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-					array($cnote['cdate'],
-						$AUTH->id,
-						str_replace(',','.',$item['cash']),
-						$item['taxid'],
-						$invoice['customerid'],
-						$item['name'],
-						$id,
-						$idx
-				));
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+				if ($SYSLOG) {
+					unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
+					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH]] = $DB->GetLastInsertID('cash');
+					$SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_ADD, $args,
+						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+				}
+			}
 		}
 
 		$DB->CommitTrans();
