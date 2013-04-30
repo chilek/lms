@@ -141,7 +141,7 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 			$comment = preg_replace($pattern['comment_replace']['from'], $pattern['comment_replace']['to'], $comment);
 
 		// remove unneeded spaces and cut $customer and $comment to fit into database (150 chars limit)
-		$customer = trim($lastname.' '.$name);                                                                                                                                           
+		$customer = trim($lastname.' '.$name);
 		$customer = preg_replace('/[ ]+/',' ',$customer);
 		$customer = substr($customer,0,150);
 
@@ -163,14 +163,28 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 
 			if(!$DB->GetOne('SELECT id FROM cashimport WHERE hash = ?', array($hash)))
 			{
-                // Add file
-                if (!$sourcefileid) {
-                    $DB->Execute('INSERT INTO sourcefiles (name, idate, userid)
-                        VALUES (?, ?NOW?, ?)',
-                        array($filename, $AUTH->id));
 
-                    $sourcefileid = $DB->GetLastInsertId('sourcefiles');
-                }
+				// Add file
+				if (!$sourcefileid) {
+					$time = time();
+					$DB->Execute('INSERT INTO sourcefiles (name, idate, userid)
+						VALUES (?, ?, ?)',
+						array($filename, $time, $AUTH->id));
+
+					$sourcefileid = $DB->GetLastInsertId('sourcefiles');
+
+					if ($SYSLOG) {
+						$args = array(
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_SOURCEFILE] => $sourcefileid,
+							'name' => $filename,
+							'idate' => $time,
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id,
+						);
+						$SYSLOG->AddMessage(SYSLOG_RES_SOURCEFILE, SYSLOG_OPER_ADD, $args,
+							array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_SOURCEFILE],
+								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
+					}
+				}
 
 				if(!empty($_POST['source']))
 					$sourceid = intval($_POST['source']);
@@ -179,19 +193,27 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 				else
 					$sourceid = NULL;
 
+				$args = array(
+					'date' => $time,
+					'value' => $value,
+					'customer' => $customer,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id,
+					'description' => $comment,
+					'hash' => $hash,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE] => $sourceid,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_SOURCEFILE] => $sourcefileid,
+				);
 				$DB->Execute('INSERT INTO cashimport (date, value, customer,
 					customerid, description, hash, sourceid, sourcefileid)
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-					array(
-					    $time,
-					    $value,
-					    $customer,
-					    $id,
-					    $comment,
-					    $hash,
-					    $sourceid,
-					    $sourcefileid,
-					));
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+				if ($SYSLOG) {
+					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHIMPORT]] = $DB->GetLastInsertID('cashimport');
+					$SYSLOG->AddMessage(SYSLOG_RES_CASHIMPORT, SYSLOG_OPER_ADD, $args,
+						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHIMPORT],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_SOURCEFILE]));
+				}
 			} else {
 				$error['lines'][$ln] = array(
 					'customer' => $customer,

@@ -93,54 +93,80 @@ elseif(isset($_GET['action']) && $_GET['action'] == 'txt')
 		}
 	}
 	die;
-}
-elseif(isset($_GET['action']) && $_GET['action'] == 'delete')
-{
+} elseif (isset($_GET['action']) && $_GET['action'] == 'delete') {
 	if($marks = $_POST['marks'])
-		foreach($marks as $id)
+		foreach ($marks as $id) {
 			$DB->Execute('UPDATE cashimport SET closed = 1 WHERE id = ?',
 				array($id));
-}
-elseif(isset($_GET['action']) && $_GET['action'] == 'save')
-{
+			if ($SYSLOG) {
+				list ($customerid, $sourceid, $sourcefileid) = array_values(
+					$DB->GetRow('SELECT customerid, sourceid, sourcefileid
+						FROM cashimport WHERE id = ?', array($id)));
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHIMPORT] => $id,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE] => $sourceid,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_SOURCEFILE] => $sourcefileid,
+					'closed' => 1,
+				);
+				$SYSLOG->AddMessage(SYSLOG_RES_CASHIMPORT, SYSLOG_OPER_UPDATE, $args,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHIMPORT],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_SOURCEFILE]));
+			}
+		}
+} elseif (isset($_GET['action']) && $_GET['action'] == 'save') {
 	if(!empty($_POST['customer']))
-		foreach($_POST['customer'] as $idx => $id) if($id)
-			$DB->Execute('UPDATE cashimport SET customerid = ? WHERE id = ?',
-				array($id, $idx));
-}
-elseif(isset($_POST['marks']))
-{
+		foreach ($_POST['customer'] as $idx => $id)
+			if ($id) {
+				$DB->Execute('UPDATE cashimport SET customerid = ? WHERE id = ?',
+					array($id, $idx));
+				if ($SYSLOG) {
+					list ($sourceid, $sourcefileid) = array_values(
+					$DB->GetRow('SELECT sourceid, sourcefileid
+						FROM cashimport WHERE id = ?', array($idx)));
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHIMPORT] => $idx,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE] => $sourceid,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_SOURCEFILE] => $sourcefileid,
+					);
+					$SYSLOG->AddMessage(SYSLOG_RES_CASHIMPORT, SYSLOG_OPER_UPDATE, $args,
+						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHIMPORT],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_SOURCEFILE]));
+				}
+			}
+} elseif (isset($_POST['marks'])) {
 	$marks = (array) $_POST['marks'];
 	$customers = $_POST['customer'];
 
-	foreach ($marks as $idx => $id)
-	{
+	foreach ($marks as $idx => $id) {
 		if (empty($customers[$id])) {
 			$error[$id] = trans('Customer not selected!');
 			unset($marks[$idx]);
-        }
-        else {
-            $marks[$idx] = intval($id);
-        }
-    }
+		} else
+			$marks[$idx] = intval($id);
+	}
 
-    if (!empty($marks)) {
-        $imports = $DB->GetAll('SELECT i.*, f.idate
-            FROM cashimport i
-            LEFT JOIN sourcefiles f ON (f.id = i.sourcefileid)
-            WHERE i.id IN ('.implode(',', $marks).')');
-    }
+	if (!empty($marks)) {
+		$imports = $DB->GetAll('SELECT i.*, f.idate
+			FROM cashimport i
+			LEFT JOIN sourcefiles f ON (f.id = i.sourcefileid)
+			WHERE i.id IN ('.implode(',', $marks).')');
+	}
 
-    if (!empty($imports)) {
-        $idate  = isset($CONFIG['finances']['cashimport_use_idate'])
-	    	&& chkconfig($CONFIG['finances']['cashimport_use_idate']);
-        $icheck = isset($CONFIG['finances']['cashimport_checkinvoices'])
-	    	&& chkconfig($CONFIG['finances']['cashimport_checkinvoices']);
+	if (!empty($imports)) {
+		$idate = isset($CONFIG['finances']['cashimport_use_idate'])
+			&& chkconfig($CONFIG['finances']['cashimport_use_idate']);
+		$icheck = isset($CONFIG['finances']['cashimport_checkinvoices'])
+			&& chkconfig($CONFIG['finances']['cashimport_checkinvoices']);
 
-        foreach ($imports as $import) {
-			
+		foreach ($imports as $import) {
 			// do not insert if the record is already closed (prevent multiple inserts of the same record)
-			if($import['closed'] == 1)
+			if ($import['closed'] == 1)
 				continue;
 
 			$DB->BeginTrans();
@@ -175,23 +201,51 @@ elseif(isset($_POST['marks']))
 					$value = f_round($bval + $import['value'] + $sum);
 
 					foreach($invoices as $inv) {
-					    $inv['value'] = f_round($inv['value']);
-						if($inv['value'] > $value)
+						$inv['value'] = f_round($inv['value']);
+						if ($inv['value'] > $value)
 							break;
-						else
-						{
+						else {
 							// close invoice and assigned credit notes
 							$DB->Execute('UPDATE documents SET closed = 1
 								WHERE id = ? OR reference = ?',
 								array($inv['id'], $inv['id']));
 
+							if ($SYSLOG) {
+								$docid = $DB->GetOne('SELECT id FROM documents
+									WHERE id = ? OR reference = ?',
+										array($inv['id'], $inv['id']));
+								$args = array(
+									$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
+									$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $balance['customerid'],
+									'closed' => 1,
+								);
+								$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_UPDATE, $args,
+									array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC],
+										$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+							}
+
 							$value -= $inv['value'];
 						}
-				    }
+					}
 				}
 			}
 
 			$DB->Execute('UPDATE cashimport SET closed = 1 WHERE id = ?', array($import['id']));
+			if ($SYSLOG) {
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHIMPORT] => $import['id'],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $balance['customerid'],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE] => $import['sourceid'],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_SOURCEFILE] => $import['sourcefileid'],
+					'closed' => 1,
+				);
+				$SYSLOG->AddMessage(SYSLOG_RES_CASHIMPORT, SYSLOG_OPER_UPDATE, $args,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHIMPORT],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_SOURCEFILE]));
+			}
+
 			$LMS->AddBalance($balance);
 
 			$DB->CommitTrans();

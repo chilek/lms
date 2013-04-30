@@ -31,6 +31,17 @@ define('SYSLOG_RES_PROMOSCHEMA', 28);
 define('SYSLOG_RES_PROMOASSIGN', 29);
 define('SYSLOG_RES_EXCLGROUP', 30);
 define('SYSLOG_RES_DBBACKUP', 31);
+define('SYSLOG_RES_PAYMENT', 32);
+define('SYSLOG_RES_CASHIMPORT', 33);
+define('SYSLOG_RES_SOURCEFILE', 34);
+define('SYSLOG_RES_CASH', 35);
+define('SYSLOG_RES_DOC', 36);
+define('SYSLOG_RES_INVOICECONT', 37);
+define('SYSLOG_RES_RECEIPTCONT', 38);
+define('SYSLOG_RES_DNOTECONT', 39);
+define('SYSLOG_RES_CASHREG', 40);
+define('SYSLOG_RES_CASHRIGHT', 41);
+define('SYSLOG_RES_CASHREGHIST', 42);
 
 $SYSLOG_RESOURCES = array(
 	SYSLOG_RES_USER => trans('user<!syslog>'),
@@ -64,6 +75,17 @@ $SYSLOG_RESOURCES = array(
 	SYSLOG_RES_PROMOASSIGN => trans('promotion schema assignment<!syslog>'),
 	SYSLOG_RES_EXCLGROUP => trans('customer group exclusion<!syslog>'),
 	SYSLOG_RES_DBBACKUP => trans('database backup<!syslog>'),
+	SYSLOG_RES_PAYMENT => trans('payment<!syslog>'),
+	SYSLOG_RES_CASHIMPORT => trans('imported financial operation<!syslog>'),
+	SYSLOG_RES_SOURCEFILE => trans('imported file with financial operations<!syslog>'),
+	SYSLOG_RES_CASH => trans('financial operation<!syslog>'),
+	SYSLOG_RES_DOC => trans('document<!syslog>'),
+	SYSLOG_RES_INVOICECONT => trans('invoice contents<!syslog>'),
+	SYSLOG_RES_RECEIPTCONT => trans('receipt contents<!syslog>'),
+	SYSLOG_RES_DNOTECONT => trans('debit note contents<!syslog>'),
+	SYSLOG_RES_CASHREG => trans('cash registry<!syslog>'),
+	SYSLOG_RES_CASHRIGHT => trans('cash registry rights<!syslog>'),
+	SYSLOG_RES_CASHREGHIST => trans('cash registry history<!syslog>'),
 );
 
 $SYSLOG_RESOURCE_KEYS = array(
@@ -98,6 +120,17 @@ $SYSLOG_RESOURCE_KEYS = array(
 	SYSLOG_RES_PROMOASSIGN => 'promotionassignmentid',
 	SYSLOG_RES_EXCLGROUP => 'excludedgroupid',
 	SYSLOG_RES_DBBACKUP => null,
+	SYSLOG_RES_PAYMENT => 'paymentid',
+	SYSLOG_RES_CASHIMPORT => 'importid',
+	SYSLOG_RES_SOURCEFILE => 'sourcefileid',
+	SYSLOG_RES_CASH => 'cashid',
+	SYSLOG_RES_DOC => 'documentid',
+	SYSLOG_RES_INVOICECONT => null,
+	SYSLOG_RES_RECEIPTCONT => null,
+	SYSLOG_RES_DNOTECONT => 'debitnotecontentid',
+	SYSLOG_RES_CASHREG => 'cashregistryid',
+	SYSLOG_RES_CASHRIGHT => 'cashrightid',
+	SYSLOG_RES_CASHREGHIST => 'cashreghistoryid',
 );
 
 ?>

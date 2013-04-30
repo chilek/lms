@@ -39,24 +39,32 @@ if(sizeof($ids))
 {
 	foreach($ids as $noteid)
 	{
+		list ($cid, $value, $closed) = array_values($DB->GetRow('SELECT customerid, 
+			(SELECT SUM(value) FROM debitnotecontents
+				WHERE docid = d.id) AS value, closed
+			FROM documents
+			WHERE id = ?', array($noteid)));
 		// add payment
-		if(chkconfig($CONFIG['phpui']['note_check_payment'])
-			&& ($row = $DB->GetRow('SELECT customerid,
-				(SELECT SUM(value) FROM debitnotecontents
-					WHERE docid = d.id) AS value
-				FROM documents d
-				WHERE d.id = ? AND d.closed = 0', array($noteid))))
-		{
-			if ($row['value'] != 0)
+		if (chkconfig($CONFIG['phpui']['note_check_payment']) && !$closed) {
+			if ($value != 0)
 				$LMS->AddBalance(array(
 					'type' => 1,
-				        'time' => time(),
-					'value' => $row['value'],
-					'customerid' => $row['customerid'],
+					'time' => time(),
+					'value' => $value,
+					'customerid' => $cid,
 					'comment' => trans('Accounted'),
 				));
 		}
 
+		if ($SYSLOG) {
+			$args = array(
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $noteid,
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $cid,
+				'closed' => intval(!$closed),
+			);
+			$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+		}
 		$DB->Execute('UPDATE documents SET closed = 
 			(CASE closed WHEN 0 THEN 1 ELSE 0 END)
 			WHERE id = ?', array($noteid));

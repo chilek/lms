@@ -26,10 +26,35 @@
 
 $id = intval($_GET['id']);
 
-if($id && $_GET['is_sure'] == '1')
-{
+if ($id && $_GET['is_sure'] == '1') {
 	$DB->BeginTrans();
-        $DB->Execute('DELETE FROM documents WHERE id = ?', array($id));
+	if ($SYSLOG) {
+		$customerid = $DB->GetOne('SELECT customerid FROM documents WHERE id = ?', array($id));
+		$args = array(
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $id,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+		);
+		$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_DELETE, $args, array_keys($args));
+		$dnoteitems = $DB->GetCol('SELECT id FROM debitnotecontents WHERE docid = ?', array($id));
+		foreach ($dnoteitems as $item) {
+			$args = array(
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DNOTECONT] => $item,
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $id,
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+			);
+			$SYSLOG->AddMessage(SYSLOG_RES_DNOTECONT, SYSLOG_OPER_DELETE, $args, array_keys($args));
+		}
+		$cashitems = $DB->GetCol('SELECT id FROM cash WHERE docid = ?', array($id));
+		foreach ($cashitems as $item) {
+			$args = array(
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $item,
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $id,
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+			);
+			$SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args, array_keys($args));
+		}
+	}
+	$DB->Execute('DELETE FROM documents WHERE id = ?', array($id));
 	$DB->Execute('DELETE FROM debitnotecontents WHERE docid = ?', array($id));
 	$DB->Execute('DELETE FROM cash WHERE docid = ?', array($id));
 	$DB->CommitTrans();
