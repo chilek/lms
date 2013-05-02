@@ -3,36 +3,40 @@
 <H1>{$layout.pagetitle}</H1>
 <FORM METHOD="POST" NAME="promotionadd" ACTION="?m=promotionadd">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD WIDTH="1%" CLASS="fleftu">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD WIDTH="1%">
 			<IMG SRC="img/promo.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" CLASS="fbt">
+		<TD WIDTH="1%">
 			<B>{trans("Name:")}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="frightu">
+		<TD WIDTH="98%">
 			<INPUT TYPE="TEXT" NAME="promotion[name]" VALUE="{$promotion.name}" SIZE="40" {tip text="Enter promotion name" trigger="name" bold=1}>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD WIDTH="1%">
 			<IMG SRC="img/info1.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
 			<B>{trans("Description:")}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="fright">
+		<TD WIDTH="98%">
 			<TEXTAREA NAME="promotion[description]" COLS="50" ROWS="5" {tip text="Enter additional information (optional)"}>{$promotion.description}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="100%" COLSPAN="3" CLASS="fbottomu" ALIGN="RIGHT"> 
+	<TR>
+		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT"> 
 			<A HREF="javascript:document.promotionadd.submit();" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
 			<A HREF="?m=promotionlist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A><BR>
 			<INPUT TYPE="checkbox" NAME="promotion[reuse]" VALUE="ON" id="reuse" {if $promotion.reuse} checked{/if}><label for="reuse">{trans("Display this form again, when this promotion is saved")}</label>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE></FORM>
 </P>
 <SCRIPT type="text/javascript">

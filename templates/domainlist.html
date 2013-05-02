@@ -2,31 +2,32 @@
 <!--// $Id$ //-->
 {if $layout.module=="domainsearch"}{assign var=suffix value="&s=1"}{/if}
 <H1>{$layout.pagetitle}</H1>
-<P><TABLE cellpadding="3" WIDTH="100%">
-	<TR class="dark">
-		<TD width="95%" class="fleftu" NOWRAP>
+<P><TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="95%" NOWRAP>
 			<IMG src="img/domain.gif" alt=""> <A href="?m={$layout.module}{$suffix}&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD width="1%" class="fbt" align="center" NOWRAP>
+		<TD width="1%" align="center" NOWRAP>
 			<IMG src="img/empty.gif" alt="" height="16"><A href="?m={$layout.module}{$suffix}&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-                <TD width="1%" class="fbt" NOWRAP>
+                <TD width="1%" NOWRAP>
                     <IMG src="img/empty.gif" alt="" height="16"><A href="?m={$layout.module}{$suffix}&o=type{if $listdata.direction eq "asc" && $listdata.order eq "type"},desc{/if}">{trans("Type:")}</A> {if $listdata.order eq "type"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
                 </TD>
-		<TD width="1%" class="fbt" NOWRAP>
+		<TD width="1%" NOWRAP>
 			<IMG src="img/customer.gif" alt=""> <A href="?m={$layout.module}{$suffix}&o=customer{if $listdata.direction eq "asc" && $listdata.order eq "customer"},desc{/if}">{trans("Customer:")}</A> {if $listdata.order eq "customer"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD width="1%" class="fbt" NOWRAP>
+		<TD width="1%" NOWRAP>
 		    <IMG src="img/empty.gif" alt="" height="16">
 		    <A href="?m={$layout.module}{$suffix}&o=cnt{if $listdata.direction eq "asc" && $listdata.order eq "cnt"},desc{/if}">{trans("Accounts:")}</A> {if $listdata.order eq "cnt"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD width="1%" class="frightu" NOWRAP>
+		<TD width="1%" NOWRAP>
 			<IMG src="img/empty.gif" alt="" height="16">
 			<B>{t a=$listdata.total}Total: $a{/t}</B>
 		</TD>
 	</TR>
-	<TR class="dark">
-	        <TD class="fall" colspan="6">
+	<TR>
+	        <TD colspan="6">
 			<TABLE cellpadding="0" cellspacing="0" width="100%">
 				<TR>
 					<TD width="1%" NOWRAP>
@@ -61,16 +62,18 @@
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
-	<TR CLASS="dark">
-		<TD COLSPAN="6" CLASS="fall">
+	<TR>
+		<TD COLSPAN="6">
 			{include file="scroller.html" loop=$domainlist adlink=$suffix}
 		</TD>
 	</TR>
 	{/if}
+    </THEAD>
+    <TBODY>
 	{cycle values="light,lucid" print=false}
 	{section name=domainlist loop=$domainlist start=$start max=$pagelimit}
 	<TR class="highlight {cycle}"  >
-		<TD class="fleft" NOWRAP onclick="return self.location.href='?m=domaininfo&id={$domainlist[domainlist].id}'">
+		<TD NOWRAP onclick="return self.location.href='?m=domaininfo&id={$domainlist[domainlist].id}'">
 			<IMG src="img/domain.gif" alt=""{if $domainlist[domainlist].description} {tip text=$domainlist[domainlist].description}{/if}><B> {$domainlist[domainlist].name}</B>
 		</TD>
 		
@@ -89,7 +92,7 @@
 		<TD align="right" onclick="return self.location.href='?m=domaininfo&id={$domainlist[domainlist].id}'">
 			{$domainlist[domainlist].cnt|default:0}
 		</TD>
-		<TD class="fright" align="right" NOWRAP>
+		<TD align="right" NOWRAP>
 			<A href="?m=domaindel&id={$domainlist[domainlist].id}" OnClick="return confirmLink(this, '{t a=$domainlist[domainlist].name}Are you sure, you want to delete domain: \'$a\' and all accounts/aliases in that domain?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 			<A href="?m=domainedit&id={$domainlist[domainlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 			<A href="?m=domaininfo&id={$domainlist[domainlist].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
@@ -97,28 +100,31 @@
 	</TR>
 	{sectionelse}
 	<TR>	
-		<TD colspan="6" align="center" class="fall">
+		<TD colspan="6" align="center">
 			<p>&nbsp;</p>
 			<p><B>{trans("No such domains in database.")}</B></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
 	{/section}
+    </TBODY>
+    <TFOOT>
 	{if $listdata.total != 0}
-	<TR CLASS="dark">
-		<TD COLSPAN="6" CLASS="fall">
+	<TR>
+		<TD COLSPAN="6">
 			{include file="scroller.html" loop=$domainlist adlink=$suffix}
 		</TD>
 	</TR>
 	{/if}
-	<TR class="light">
-		<TD colspan="5" class="fleftu" align="right">
+	<TR>
+		<TD colspan="5" align="right">
 			<B>{trans("Total:")} {sum array=$domainlist column="cnt"}</B>	
 		</TD>
-		<TD class="frightu" align="right" nowrap>
+		<TD align="right" nowrap>
 			<A href="?m=domainadd&cid={$listdata.customer}">{trans("New Domain")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
+    </TFOOT>
 </TABLE></P>
 {include file="footer.html"}
     

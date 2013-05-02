@@ -1,28 +1,31 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<P><TABLE cellpadding="3" WIDTH="100%">
-	<TR class="dark">
-		<TD width="93%" class="fleftu" NOWRAP><IMG src="img/id.gif" alt=""> <B>{trans("Template:")}</B></TD>
-		<TD width="1%" class="fbt" align="right" NOWRAP>{trans("ID:")}</TD>
-		<TD width="1%" class="fbt" align="right" NOWRAP>{trans("Example (next) number:")}</TD>
-		<TD width="1%" class="fbt" align="right" NOWRAP>{trans("No. of issued documents:")}</TD>
-		<TD width="1%" class="fbt" align="right" NOWRAP>{trans("Document type:")}</TD>
-		<TD width="1%" class="fbt" align="right" NOWRAP>{trans("Period:")}</TD>
-		<TD width="1%" class="fbt" align="right" NOWRAP>{trans("Default:")}</TD>
-		<TD width="1%" class="frightu" align="right"  NOWRAP><a href="?m=numberplanadd">{trans("Add plan")} <img src="img/save.gif" alt=""></a></TD>
+<P><TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="93%" NOWRAP><IMG src="img/id.gif" alt=""> <B>{trans("Template:")}</B></TD>
+		<TD width="1%" align="right" NOWRAP>{trans("ID:")}</TD>
+		<TD width="1%" align="right" NOWRAP>{trans("Example (next) number:")}</TD>
+		<TD width="1%" align="right" NOWRAP>{trans("No. of issued documents:")}</TD>
+		<TD width="1%" align="right" NOWRAP>{trans("Document type:")}</TD>
+		<TD width="1%" align="right" NOWRAP>{trans("Period:")}</TD>
+		<TD width="1%" align="right" NOWRAP>{trans("Default:")}</TD>
+		<TD width="1%" align="right"  NOWRAP><a href="?m=numberplanadd">{trans("Add plan")} <img src="img/save.gif" alt=""></a></TD>
 	</TR>
 	{if $listdata.total != 0}
-	<TR CLASS="dark">
-		<TD COLSPAN="8" CLASS="fall">
+	<TR>
+		<TD COLSPAN="8">
 			{include file="scroller.html" loop=$numberplanlist}
 		</TD>
 	</TR>
 	{/if}
+    </THEAD>
+    <TBODY>
 	{cycle values="light,lucid" print=false}
 	{section name=numberplanlist loop=$numberplanlist}
 	<TR class="highlight {cycle}{if ($numberplanlist[numberplanlist].validfrom !=0 && $numberplanlist[numberplanlist].validfrom > $smarty.now) || ($numberplanlist[numberplanlist].validto !=0 && $numberplanlist[numberplanlist].validto < $smarty.now)} blend{/if}"  >
-		<TD class="fleft" NOWRAP onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
+		<TD NOWRAP onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
 			<IMG src="img/id.gif" alt=""> <B>{$numberplanlist[numberplanlist].template}</B>
 		</TD>
 		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
@@ -45,31 +48,34 @@
 		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
 			{if $numberplanlist[numberplanlist].isdefault}{trans("yes")}{/if}
 		</TD>
-		<TD class="fright" align="right" NOWRAP>
+		<TD align="right" NOWRAP>
 			<A href="?m=numberplandel&id={$numberplanlist[numberplanlist].id}" OnClick="return confirmLink(this, '{t a=$numberplanlist[numberplanlist].template}Are you sure, you want to delete numberplan \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 			<A href="?m=numberplanedit&id={$numberplanlist[numberplanlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD colspan="8" align="center" class="fall">
+		<TD colspan="8" align="center">
 			<p>&nbsp;</p>
 			<p><B>{trans("No such numbering plans in database.")}</B></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
 	{/section}
+    </TBODY>
+    <TFOOT>
 	{if $listdata.total != 0}
-	<TR CLASS="dark">
-		<TD COLSPAN="8" CLASS="fall">
+	<TR>
+		<TD COLSPAN="8">
 			{include file="scroller.html" loop=$numberplanlist}
 		</TD>
 	</TR>
 	{/if}
-	<TR class="light">
-		<TD colspan="8" class="fall" align="right">
+	<TR>
+		<TD colspan="8" align="right">
 			<a href="?m=numberplanadd">{trans("Add plan")} <img src="img/save.gif" alt=""></a>
 		</TD>
 	</TR>
+    </TFOOT>
 </TABLE></P>
 {include file="footer.html"}

@@ -14,24 +14,27 @@
 </script>
 {/if}
 <H1>{$layout.pagetitle}</H1>
-<TABLE cellpadding="3" width="100%">
+<TABLE class="lmsbox">
 	{if $unlockedit}<FORM METHOD="POST" ACTION="?m=netedit&id={$network.id}" NAME="netedit"><INPUT type="submit" class="hiddenbtn">{/if}
-	<TR class="dark">
+    <THEAD>
+	<TR>
 		{if !$unlockedit}
-		<TD width="100%" class="fall" colspan="4">
+		<TD width="100%" colspan="4">
 			<IMG SRC="img/network.gif" alt=""> <B>{$network.name} ({$network.id|string_format:"%04d"})</B>
 		</TD>
 		{else}
-		<TD width="1%" class="fleftu" nowarp>
+		<TD width="1%" nowarp>
 			<IMG SRC="img/network.gif" alt=""> <B>{trans("Name:")}</B>
 		</TD>
-		<TD width="99%" class="frightu" colspan="3">
+		<TD width="99%" colspan="3">
 			 <INPUT TYPE="text" NAME="networkdata[name]" VALUE="{$network.name}" {tip trigger="name" bold=1}> <B>({$network.id|string_format:"%04d"})</B>
 		</TD>
 		{/if}
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD width="1%">
 			<nobr><IMG SRC="img/ip.gif" alt=""> <B>{trans("Address/prefix:")}</B></nobr>
 		</TD>
 		<TD width="48%">
@@ -40,7 +43,7 @@
 		<TD width="2%" rowspan="2">
 			<NOBR><IMG src="img/dhcp.gif" alt=""> <B>{trans("DHCP range:")}</B></NOBR>	
 		</TD>
-		<TD width="48%" class="fright" rowspan="2">
+		<TD width="48%" rowspan="2">
 			{if $unlockedit}<INPUT TYPE="text" NAME="networkdata[dhcpstart]" VALUE="{$network.dhcpstart}" {tip text="Enter first address of DHCP range (optional)" trigger="dhcpstart"}><BR>
 			<INPUT TYPE="text" NAME="networkdata[dhcpend]" VALUE="{$network.dhcpend}" {tip text="Enter last address of DHCP range (optional)" trigger="dhcpend"}>{else}
 			{$network.dhcpstart}<BR>
@@ -49,8 +52,8 @@
 		</TD>
 	</TR>
 	{if !$unlockedit}
-	<TR class="light">
-		<td width="1%" class="fleft">
+	<TR>
+		<td width="1%">
 			<nobr><img src="img/cmp.gif" alt=""> <B>{trans("Network size:")}</B>
 		</TD>
 		<TD width="49%">
@@ -58,11 +61,11 @@
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft">
+	<TR>
+		<TD WIDTH="1%">
 			<IMG SRC="img/mac.gif" ALT=""> <B>{trans("Interface:")}</B>
 		</TD>
-		<TD COLSPAN="3" CLASS="fright" WIDTH="99%">
+		<TD COLSPAN="3" WIDTH="99%">
 			{if $unlockedit}
 			<INPUT TYPE="text" NAME="networkdata[interface]" VALUE="{$network.interface}" {tip text="Enter interface where network is connected to (optional)" trigger="interface"}>
 			{else}
@@ -70,8 +73,8 @@
 			{/if}
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="2%" class="fleft">
+	<TR>
+		<TD width="2%">
 			<nobr><img src="img/gateway.gif" alt=""> <B>{trans("Gateway:")}</B></nobr>
 		</TD>		
 		<TD width="48%">
@@ -84,7 +87,7 @@
 		<TD width="2%">
 			<nobr><img src="img/dns.gif" alt=""> <B>{trans("DNS servers:")}</B></NOBR>
 		</TD>
-		<TD width="48%" class="fright">
+		<TD width="48%">
 			{if $unlockedit}
 			<INPUT TYPE="text" NAME="networkdata[dns]" VALUE="{$network.dns}" {tip text="Enter primary DNS address (optional)" trigger="dns"}><BR>
 			<INPUT TYPE="text" NAME="networkdata[dns2]" VALUE="{$network.dns2}" {tip text="Enter secondary DNS address (optional)" trigger="dns2"}>
@@ -94,8 +97,8 @@
 			{/if}
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="2%" class="fleft">
+	<TR>
+		<TD width="2%">
 			<nobr><img src="img/wins.gif" alt=""> <B>{trans("WINS server:")}</B></NOBR>
 		</TD>
 		<TD width="48%">
@@ -108,7 +111,7 @@
 		<TD width="2%">
 			<nobr><img src="img/node.gif" alt=""> <B>{trans("Domain:")}</B></NOBR>
 		</TD>
-		<TD width="48%" class="fright">
+		<TD width="48%">
 			{if $unlockedit}
 			<INPUT TYPE="text" NAME="networkdata[domain]" VALUE="{$network.domain}" {tip text="Enter network domain (optional)" trigger="domain"}>
 			{else}
@@ -117,11 +120,11 @@
 		</TD>
 	</TR>
 	{if $network.hostid || $unlockedit}
-	<tr class="light"> 
+	<tr> 
 		<td width="2%" class="fleft bold" style="white-space: nowrap;">
 			<img src="img/host.gif" alt=""> {trans("Host:")}
 		</td>
-		<td width="98%" class="fright" colspan="3">
+		<td width="98%" colspan="3">
 			{if $unlockedit}
 			<select size="1" name="networkdata[hostid]" {tip text="Select host" trigger="hostid"}>
 				<option value="0">{trans("- none -")}</option>
@@ -136,8 +139,8 @@
 	</tr>
 	{/if}
 	{if $network.notes || $unlockedit}
-	<TR class="light">
-		<TD width="50%" class="fleft" colspan="2">
+	<TR>
+		<TD width="50%" colspan="2">
 			<TABLE width="100%" cellpadding="5">
 				<TR>
 					<TD width="1%">
@@ -159,13 +162,13 @@
 				</TR>
 			  </TABLE>
 		</TD>
-		<TD width="50%" class="fright" colspan="2">
+		<TD width="50%" colspan="2">
 		</TD>
 	</TR>
 	{/if}
 {if $unlockedit}</form>{/if}
-	<TR class="light">
-		<TD width="100%" class="fbottomu" colspan="4" align="right">
+	<TR>
+		<TD width="100%" colspan="4" align="right">
 			{if $unlockedit}
 			<form name="remap" action="" method="get">
 				<INPUT type="submit" class="hiddenbtn">
@@ -194,18 +197,21 @@
 			{/if}
 	</TR>
 	{if $network.page}
-	<TR class="dark">
-		<TD width="50%" class="fleftu" colspan="2">
-			<img src="img/ip.gif" ALT=""> <B>{trans("IP addresses status:")}</B>
-		</TD>
-		<TD WIDTH="50%" CLASS="frightu" COLSPAN="2" ALIGN="RIGHT">
-			<B>{if $network.page > 1}<A HREF="?m=net{if $unlockedit}edit{else}info{/if}&id={$network.id}&page={math equation="x - 1" x=$network.page}">&laquo;&laquo;&laquo;</A>{else}<FONT CLASS="blend">&laquo;&laquo;&laquo;</FONT>{/if}
-			 {t a=$network.page b=$network.pages}Page $a of $b{/t} {if $network.page < $network.pages}<A HREF="?m=net{if $unlockedit}edit{else}info{/if}&id={$network.id}&page={math equation="x + 1" x=$network.page}">&raquo;&raquo;&raquo;</A>{else}<FONT CLASS="blend">&raquo;&raquo;&raquo;</FONT>{/if}</B>
-		</TD>		
-	</TR>
 	<TR>
-		<TD width="100%" class="fall" colspan="4">
-			<table width="100%" cellpadding="3">
+		<TD width="100%" colspan="4">
+			<table class="lmsbox-inner">
+                            <THEAD>
+                                <TR>
+                                        <TD width="50%" colspan="2">
+                                                <img src="img/ip.gif" ALT=""> <B>{trans("IP addresses status:")}</B>
+                                        </TD>
+                                        <TD WIDTH="50%" COLSPAN="2" ALIGN="RIGHT">
+                                                <B>{if $network.page > 1}<A HREF="?m=net{if $unlockedit}edit{else}info{/if}&id={$network.id}&page={math equation="x - 1" x=$network.page}">&laquo;&laquo;&laquo;</A>{else}<FONT CLASS="blend">&laquo;&laquo;&laquo;</FONT>{/if}
+                                                 {t a=$network.page b=$network.pages}Page $a of $b{/t} {if $network.page < $network.pages}<A HREF="?m=net{if $unlockedit}edit{else}info{/if}&id={$network.id}&page={math equation="x + 1" x=$network.page}">&raquo;&raquo;&raquo;</A>{else}<FONT CLASS="blend">&raquo;&raquo;&raquo;</FONT>{/if}</B>
+                                        </TD>		
+                                </TR>
+                            </THEAD>
+                            <TBODY>
 				{cycle values="light,lucid" print=false}
 				{section name=network loop=$network.nodes.id max=$network.rows}
 				<TR class="{cycle}">
@@ -229,18 +235,22 @@
 					{/section}
 				</TR>
 				{/section}
-				<TR class="light">
-					<TD CLASS="fleftu" COLSPAN="2">
+                            </TBODY>
+                            <TFOOT>
+				<TR>
+					<TD COLSPAN="2">
 						<B>{if $network.page > 1}<A HREF="?m=net{if $unlockedit}edit{else}info{/if}&id={$network.id}&page={math equation="x - 1" x=$network.page}">&laquo;&laquo;&laquo;</A>{else}<FONT CLASS="blend">&laquo;&laquo;&laquo;</FONT>{/if} 
 						{t a=$network.page b=$network.pages}Page $a of $b{/t} {if $network.page < $network.pages}<A HREF="?m=net{if $unlockedit}edit{else}info{/if}&id={$network.id}&page={math equation="x + 1" x=$network.page}">&raquo;&raquo;&raquo;</A>{else}<FONT CLASS="blend">&raquo;&raquo;&raquo;</FONT>{/if}</B>
 					</TD>
-					<TD ALIGN="RIGHT" CLASS="frightu" COLSPAN="2">
+					<TD ALIGN="RIGHT" COLSPAN="2">
 						<B>{t a=$network.assigned}Total: $a{/t} ({trans("this page:")} {$network.pageassigned|default:"0"}, {trans("free:")} {$network.free})</B>
 					</TD>
 				</TR>
+                            </TFOOT>
 			</table>
 		</TD>
 	</TR>
 	{/if}
+    </TBODY>
 </TABLE>
 {include file="footer.html"}

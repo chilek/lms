@@ -12,9 +12,10 @@
 <H1><B>{$layout.pagetitle}</B></H1>
 <P><FORM method="POST" name="ticket" action="?m=rtticketadd">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD WIDTH="50%" CLASS="fleftu">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD WIDTH="50%">
 			<TABLE WIDTH="50%" CELLPADDING="3">
 		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/ticket.gif" alt="">
@@ -25,13 +26,15 @@
 		</TD>
 			</TABLE>
 		</TD>
-		<TD WIDTH="50%" CLASS="frightu">
+		<TD WIDTH="50%">
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="50%" CLASS="fleft">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD WIDTH="50%">
 			<TABLE WIDTH="50%" CELLPADDING="3">
-				<TR CLASS="light">
+				<TR>
 		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/customer.gif" alt="">
 			<B>{trans("Submitter:")}</B>
@@ -71,7 +74,7 @@
 			</TABLE>
 		</TD>
 	</TR>
-	<TR CLASS="light">
+	<TR>
 		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/queue.gif" alt="">
 			<B>{trans("Queue:")}</B>
@@ -84,7 +87,7 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR CLASS="light">
+	<TR>
 		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/mail.gif" alt="">
 			<B>{trans("Content:")}</B>
@@ -93,7 +96,7 @@
 			<TEXTAREA name="ticket[body]" cols="50" rows="5" {tip text="Enter ticker content" trigger="body"} >{$ticket.body}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR CLASS="light">
+	<TR>
 		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/desc.gif" alt="">
 		        <B>{trans("Cause:")}</B>
@@ -107,9 +110,9 @@
 		</TD>
 			</TABLE>
 		</TD>
-		<TD WIDTH="50%" CLASS="fright" style="vertical-align:top;">
+		<TD WIDTH="50%" style="vertical-align:top;">
 			<TABLE WIDTH="50%" CELLPADDING="3">
-				<TR CLASS="light">
+				<TR>
 
 		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/queue.gif" alt="">
@@ -134,12 +137,13 @@
 			</TABLE>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="100%" CLASS="fbottomu" colspan="2" align="right">
+	<TR>
+		<TD WIDTH="100%" colspan="2" align="right">
 			<A href="javascript: document.ticket.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 			<A href="?m={if $queue}rtqueueview&id={$queue}{else}rtqueuelist{/if}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM>
 </P>

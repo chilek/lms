@@ -4,20 +4,23 @@
 <P align="CENTER">
 <FORM method="POST" action="?m=domainedit&id={$domain.id}" name="domain">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" cellpadding="3">
-	<TR class="dark">
-		<TD width="1%" class="fleftu">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
 			<img src="img/domain.gif" alt="">
 		</TD>
-		<TD width="1%" class="fbt">
+		<TD width="1%">
 			<B>{trans("Name:")}</B>
 		</TD>
-		<TD width="98%" class="frightu">
+		<TD width="98%">
 			<input name="domain[name]" value="{$domain.name}" size="30" readonly="readonly" {tip text="Enter domain name" trigger="name" bold="1"}>
 		</TD>
 	</TR>
-	<TR class="light">
-    		<TD width="1%" class="fleft">
+    </THEAD>
+    <TBODY>
+	<TR>
+    		<TD width="1%">
             		<img src="img/customer.gif" alt="">
 	        </TD>
 		<TD width="1%">
@@ -32,10 +35,10 @@
 			</SELECT>
 		</TD>
 	</TR>
-        <TR class="light">
-                <TD width="1%" class="fleft"><img src="img/dns.gif" alt=""></TD>
+        <TR>
+                <TD width="1%"><img src="img/dns.gif" alt=""></TD>
                 <TD width="1%" nowrap><B>{trans("Type:")}</B></TD>
-                <TD width="98%" class="fright">
+                <TD width="98%">
             		<SELECT SIZE="1" NAME="domain[type]"{tip text="Select domain type" trigger="type"} id="domain[type]" style="float: left;" onchange="if (this.value=='SLAVE') document.getElementById('ipmaster').style.display='block'; else document.getElementById('ipmaster').style.display='none';">
                     		<OPTION VALUE="NATIVE" {if $domain.type == NATIVE} SELECTED{/if}>NATIVE</OPTION>
                                 <OPTION VALUE="MASTER" {if $domain.type == MASTER} SELECTED{/if}>MASTER</OPTION>
@@ -51,34 +54,35 @@
 			</script>
                 </TD>
         </TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<img src="img/mail.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>
 			<B>{trans("Backup MX support:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<INPUT type="checkbox" name="domain[mxbackup]" value="1"{if $domain.mxbackup} checked{/if}>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<img src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>
 		        <B>{trans("Description:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<TEXTAREA name="domain[description]" rows="5" cols="50" {tip text="Enter additional information (optional)"}>{$domain.description}</TEXTAREA>
 	        </TD>
 	</TR>
-	<TR class="light">
-		<TD class="fbottomu" align="right" colspan="3">
+	<TR>
+		<TD align="right" colspan="3">
 			<A href="javascript:document.domain.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
 			<A href="?m=domainlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </P>
 <SCRIPT type="text/javascript">

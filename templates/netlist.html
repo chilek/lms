@@ -1,34 +1,37 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<table cellpadding="3" width="100%">
-	<TR class="dark">
-		<TD class="fleftu" width="96%">
+<table class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="96%">
 			<NOBR><IMG src="img/network.gif" ALT=""> <B>{trans("Name:")}</B><BR><IMG src="img/ip.gif" ALT=""> {trans("Network/prefix (interface):")}</NOBR>
 		</TD>
-		<TD class="fbt" valign="top" align="right" width="1%">
+		<TD valign="top" align="right" width="1%">
 			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALT="">{trans("ID:")}</NOBR><BR>
 			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALT="">{trans("Addresses (total/busy/online):")}</NOBR>
 		</TD>
-		<TD class="fbt" width="1%">
+		<TD width="1%">
 			<NOBR><IMG src="img/dns.gif" ALT=""> {trans("DNS servers:")}<BR>
 			<IMG src="img/domain.gif" ALT=""> {trans("Domain:")}</NOBR>
 		</TD>
-		<TD class="fbt" width="1%">
+		<TD width="1%">
 			<NOBR><IMG src="img/gateway.gif" ALT=""> {trans("Gateway:")}<BR>
 			<IMG src="img/wins.gif" ALT=""> {trans("WINS server:")}</NOBR>
 		</TD>
-		<TD class="fbt" valign="top" width="1%">
+		<TD valign="top" width="1%">
 			<NOBR><IMG src="img/dhcp.gif" ALT=""> {trans("DHCP range:")}</NOBR>
 		</TD>
-		<TD class="frightu" width="1%" align="right">
+		<TD width="1%" align="right">
 			<NOBR><B>{t a=$listdata.total}Total: $a{/t} </B></NOBR>
 		</TD>
 	</TR>
+    </THEAD>
+    <TBODY>
 	{cycle values="light,lucid" print=false}
 	{section name=netlist loop=$netlist}
 	<TR class="highlight {cycle}{if $netlist[netlist].disabled == 1} blend{/if}"  >
-		<TD class="fleft" width="96%" onClick="return self.location.href='?m=netinfo&id={$netlist[netlist].id}';">
+		<TD width="96%" onClick="return self.location.href='?m=netinfo&id={$netlist[netlist].id}';">
 		<A name="{$netlist[netlist].id}">
 			<nobr><IMG src="img/network.gif" ALT=""> <B>{$netlist[netlist].name|truncate:40:"...":true}</B><BR><IMG src="img/ip.gif" ALT=""> {$netlist[netlist].address} / {$netlist[netlist].prefix} {if $netlist[netlist].interface}({$netlist[netlist].interface}){/if}</nobr>
 		</TD>
@@ -46,7 +49,7 @@
 		<TD width="1%" onClick="return self.location.href='?m=netinfo&id={$netlist[netlist].id}';">
 			<nobr>{if $netlist[netlist].dhcpstart}<IMG src="img/dhcpstart.gif" ALT=""> {$netlist[netlist].dhcpstart}<BR><IMG src="img/dhcpend.gif" ALT=""> {$netlist[netlist].dhcpend}{/if}</nobr>
 		</TD>
-		<TD class="fright">
+		<TD>
 			<nobr>
 			<A href="?m=netedit&networkset&id={$netlist[netlist].id}">{if $netlist[netlist].disabled}<IMG src="img/noaccess.gif" alt="[ {trans("Enable")} ]" title="[ {trans("Enable")} ]">{else}<IMG src="img/access.gif" alt="[ {trans("Disable")} ]" title="[ {trans("Disable")} ]">{/if}</A>
 			<a href="?m=netdel&id={$netlist[netlist].id}" onClick="return confirmLink(this,'{t a=$netlist[netlist].name}Are you sure, you want to remove network \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Remove")} ]" title="[ {trans("Remove")} ]"></A>
@@ -57,18 +60,21 @@
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD colspan="6" class="flr" align="center" width="1%">
+		<TD colspan="6" align="center" width="1%">
 			<p>&nbsp;</p>
 			<p><B>{trans("You have no address pools. Use menu to add new networks.")}</B></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
 	{/section}
-	<TR class="dark">
-		<TD width="99%" colspan="2" class="fleftu" align="right"> 
+    </TBODY>
+    <TFOOT>
+	<TR>
+		<TD width="99%" colspan="2" align="right"> 
 			<B>{trans("Total:")} {$listdata.size|default:"0"}/{$listdata.assigned|default:"0"}/{$listdata.online|default:"0"}</B>
 		</TD>
-		<TD width="1%" colspan="4" class="frightu"></TD>
+		<TD width="1%" colspan="4"></TD>
 	</TR>
+    </TFOOT>
 </table>
 {include file="footer.html"}

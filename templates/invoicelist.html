@@ -58,32 +58,33 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 {$default_printpage = get_conf('invoices.default_printpage')}
 <FORM METHOD="POST" NAME="page">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD CLASS="fleftu" WIDTH="1%" nowrap>
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD WIDTH="1%" nowrap>
 			<A href="?m=invoicelist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="1%" CLASS="fbt" nowrap>
+		<TD WIDTH="1%" nowrap>
 			<A href="?m=invoicelist&o=cdate{if $listdata.direction eq "asc" && $listdata.order eq "cdate"},desc{/if}">{trans("Date:")}</A> {if $listdata.order eq "cdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="1%" CLASS="fbt" nowrap>
+		<TD WIDTH="1%" nowrap>
 			<A href="?m=invoicelist&o=number{if $listdata.direction eq "asc" && $listdata.order eq "number"},desc{/if}">{trans("Number:")}</A> {if $listdata.order eq "number"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="1%" CLASS="fbt" nowrap>
+		<TD WIDTH="1%" nowrap>
 			<A href="?m=invoicelist&o=value{if $listdata.direction eq "asc" && $listdata.order eq "value"},desc{/if}">{trans("Value:")}</A> {if $listdata.order eq "value"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="1%" CLASS="fbt" nowrap>
+		<TD WIDTH="1%" nowrap>
 			<A href="?m=invoicelist&o=count{if $listdata.direction eq "asc" && $listdata.order eq "count"},desc{/if}">{trans("Items:")}</A> {if $listdata.order eq "count"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="94%" CLASS="fbt" nowrap>
+		<TD WIDTH="94%" nowrap>
 			<A href="?m=invoicelist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}">{trans("For:")}</A> {if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="1%" CLASS="frightu">
+		<TD WIDTH="1%">
 			&nbsp;
 		</TD>
 	</TR>
-	<TR class="dark">
-		<TD class="fall" colspan="7">
+	<TR>
+		<TD colspan="7">
 				<B>{trans("Filter:")} </B> 
 				<INPUT type="text" name="search" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>&nbsp;
 				<SELECT size="1" name="cat">
@@ -115,18 +116,20 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 		</TD>
 	</TR>		
 	{if $listdata.total != 0}
-	<TR CLASS="dark">
-		<TD WIDTH="100%" class="fall" COLSPAN="7">
+	<TR>
+		<TD WIDTH="100%" COLSPAN="7">
 			{include file="scroller.html" loop=$invoicelist scrollerno=1}
 		</TD>
 	</TR>
 	{/if}
+    </THEAD>
+    <TBODY>
 	{cycle values="light,lucid" print=false}
 	{section name=invoicelist loop=$invoicelist start=$start max=$pagelimit}
 	{assign var=invoice value=$invoicelist[invoicelist]}
 	{assign var=invoiceid value=$invoice.id}
 	<TR class="highlight {cycle}{if $invoice.closed} blend{/if}"  >
-		<TD WIDTH="1%" CLASS="fleft">
+		<TD WIDTH="1%">
 			{$invoice.id|string_format:"%06d"}
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
@@ -144,7 +147,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 		<TD WIDTH="94%">
 			<A HREF="?m=customerinfo&id={$invoice.customerid}"{if $invoice.closed} class="blend"{/if}>{$invoice.name}, {$invoice.address}, {$invoice.zip} {$invoice.city}{if $invoice.country neq ""}, {t}{$invoice.country}{/t}{/if}</A>
 		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright">
+		<TD WIDTH="1%" ALIGN="RIGHT">
 			<NOBR>
 			{if $invoice.type == $smarty.const.DOC_INVOICE}
 			    <A HREF="?m=invoicenote&id={$invoice.id}&action=init"><IMG src="img/eraser.gif" alt="[ {trans("Revise")} ]" title="[ {trans("Revise")} ]"></A>
@@ -168,22 +171,24 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD WIDTH="100%" class="fall" ALIGN="center"  COLSPAN="7">
+		<TD WIDTH="100%" ALIGN="center"  COLSPAN="7">
 			<P>&nbsp;</P>
 			<P><B>{trans("No such invoices in database.")}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>	
 	{/section}
+    </TBODY>
+    <TFOOT>
 	{if $listdata.total != 0}
-	<TR CLASS="dark">
-		<TD WIDTH="100%" class="fall" COLSPAN="7">
+	<TR>
+		<TD WIDTH="100%" COLSPAN="7">
 			{include file="scroller.html" loop=$invoicelist scrollerno=2}
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="dark">
-		<TD CLASS="fall" COLSPAN="7">
+	<TR>
+		<TD COLSPAN="7">
 			<TABLE WIDTH="100%">
 				<TR>
 					<TD ALIGN="left">
@@ -200,6 +205,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 			</TABLE>
 		</TD>
 	</TR>
+    </TFOOT>
 </TABLE>
 </FORM>
 {include file="footer.html"}

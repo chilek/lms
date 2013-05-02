@@ -10,8 +10,9 @@
 <SCRIPT TYPE="text/javascript" SRC="img/common.js"></SCRIPT>
 </head>
 <body>
-<TABLE WIDTH="100%" CELLPADDING="3" id="table">
-	<TR CLASS="dark">
+<TABLE class="lmsbox" id="table">
+    <THEAD>
+	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/customer.gif" ALT="">
 		</TD>
@@ -19,6 +20,8 @@
 			<B>{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}){if $customerinfo.deleted} <FONT COLOR="RED">({trans("deleted customer")})</FONT>{/if}</B>
 		</TD>
 	</TR>
+    </THEAD>
+    <TBODY>
 	<TR>
 		<TD WIDTH="1%">
 			{if $customerinfo.status eq "3"}<IMG src="img/customer.gif" alt="">{/if}
@@ -173,6 +176,7 @@
 		</TD>
 	</TR>
 {/if}
+    </TBODY>
 </TABLE>
 <SCRIPT TYPE="text/javascript">
 <!--

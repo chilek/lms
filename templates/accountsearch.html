@@ -3,33 +3,36 @@
 <H1>{$layout.pagetitle}</H1>
 <FORM METHOD="POST" ACTION="?m=accountsearch&search=account" NAME="accountsearch">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD CLASS="fall" COLSPAN="2">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD COLSPAN="2">
 			<B>{trans("Find accounts matching the following search criteria:")}</B>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/account.gif" alt=""> <B>{trans("Login:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="99%">
+		<TD WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[login]" {tip text="Enter login or it's fragment"}>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/domain.gif" alt=""> <B>{trans("Domain:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="99%">
+		<TD WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[domain]" {tip text="Enter domain name or it's fragment"}>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/account.gif" alt=""> <B>{trans("Type:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="99%">
+		<TD WIDTH="99%">
 			<SELECT SIZE="1" NAME="search[type]" {tip text="Select account type"}>
     				<OPTION VALUE="0">{trans("- all types -")}</OPTION>
 				<OPTION VALUE="1">{trans("shell")}</OPTION>
@@ -40,11 +43,11 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/customer.gif" alt=""> <B>{trans("Owner:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="99%">
+		<TD WIDTH="99%">
 			<SELECT SIZE="1" NAME="search[ownerid]" {tip text="Select owner"}>
     				<OPTION VALUE="">{trans("- all owners -")}</OPTION>
 				<OPTION VALUE="0">{trans("SYSTEM ACCOUNT")}</OPTION>
@@ -54,27 +57,27 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/name.gif" alt=""> <B>{trans("First/last or Company name:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="99%">
+		<TD WIDTH="99%">
 			<INPUT type="text" name="search[realname]" {tip text="Enter optional account name"}>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/info.gif" width="16" alt=""> <B>{trans("Description:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="99%">
+		<TD WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[description]" {tip text="Enter additional information"}>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/wait.gif" alt=""> <B>{trans("Status:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="99%">
+		<TD WIDTH="99%">
 			<SELECT size="1" name="search[kind]">
                         	<OPTION value="0">{trans("- all -")}</OPTION>
 			        <OPTION value="1">{trans("expired")}</OPTION>
@@ -82,11 +85,12 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fbottomu" WIDTH="100%" COLSPAN="2" ALIGN="right">
+	<TR>
+		<TD WIDTH="100%" COLSPAN="2" ALIGN="right">
 			<A href="javascript:document.accountsearch.submit()" accesskey="s">{trans("Search")} <IMG SRC="img/search.gif" alt=""></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM>
 <SCRIPT type="text/javascript">
@@ -97,33 +101,36 @@ document.forms['accountsearch'].elements['search[login]'].focus();
 <BR>
 <FORM METHOD="POST" ACTION="?m=aliassearch&search" NAME="aliassearch">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD CLASS="fall" COLSPAN="2">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD COLSPAN="2">
 			<B>{trans("Find aliases matching the following search criteria:")}</B>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/alias.gif" alt=""> <B>{trans("Login:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="99%">
+		<TD WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[login]" {tip text="Enter login or it's fragment"}>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/domain.gif" alt=""> <B>{trans("Domain:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="99%">
+		<TD WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[domain]" {tip text="Enter domain name or it's fragment"}>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/customer.gif" alt=""> <B>{trans("Domain's owner:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="99%">
+		<TD WIDTH="99%">
 			<SELECT SIZE="1" NAME="search[ownerid]" {tip text="Select owner"}>
     				<OPTION VALUE="">{trans("- all owners -")}</OPTION>
 				<OPTION VALUE="0">{trans("SYSTEM DOMAIN")}</OPTION>
@@ -133,43 +140,47 @@ document.forms['accountsearch'].elements['search[login]'].focus();
 			</SELECT>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fbottomu" WIDTH="100%" COLSPAN="2" ALIGN="right">
+	<TR>
+		<TD WIDTH="100%" COLSPAN="2" ALIGN="right">
 			<A href="javascript:document.aliassearch.submit()" accesskey="s">{trans("Search")} <IMG SRC="img/search.gif" alt=""></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM>
 <BR>
 <FORM METHOD="POST" ACTION="?m=domainsearch&search" NAME="domainsearch">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD CLASS="fall" COLSPAN="2">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD COLSPAN="2">
 			<B>{trans("Find domain matching the following search criteria:")}</B>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/domain.gif" alt=""> <B>{trans("Name:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="99%">
+		<TD WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[domain]" {tip text="Enter domain name or it's fragment"}>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/info.gif" width="16" alt=""> <B>{trans("Description:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="99%">
+		<TD WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[description]" {tip text="Enter additional information"}>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/customer.gif" alt=""> <B>{trans("Owner:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="99%">
+		<TD WIDTH="99%">
 			<SELECT SIZE="1" NAME="search[ownerid]" {tip text="Select owner"}>
     				<OPTION VALUE="">{trans("- all owners -")}</OPTION>
 				<OPTION VALUE="0">{trans("SYSTEM ACCOUNT")}</OPTION>
@@ -179,11 +190,12 @@ document.forms['accountsearch'].elements['search[login]'].focus();
 			</SELECT>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fbottomu" WIDTH="100%" COLSPAN="2" ALIGN="right">
+	<TR>
+		<TD WIDTH="100%" COLSPAN="2" ALIGN="right">
 			<A href="javascript:document.domainsearch.submit()" accesskey="s">{trans("Search")} <IMG SRC="img/search.gif" alt=""></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM>
 {include file="footer.html"}

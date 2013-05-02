@@ -1,32 +1,35 @@
 {include file="header.html"}
 <!-- $Id$ -->
 <H1><B>{$layout.pagetitle}</B></H1>
-<TABLE cellpadding="5" WIDTH="100%">
-	<TR CLASS="dark">
-		<TD CLASS="fleftu" WIDTH="1%" NOWRAP>
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/queue.gif" ALT=""> <B>{trans("Name:")}</B>
 		</TD>
-		<TD CLASS="fbt" WIDTH="1%" NOWRAP>
+		<TD WIDTH="1%" NOWRAP>
 			{trans("ID:")}
 		</TD>
-		<TD CLASS="fbt" align="right" WIDTH="1%" NOWRAP>
+		<TD align="right" WIDTH="1%" NOWRAP>
 			{trans("Cash state:")}
 		</TD>
-		<TD CLASS="fbt" WIDTH="1%" ALIGN="right" NOWRAP>
+		<TD WIDTH="1%" ALIGN="right" NOWRAP>
 			{trans("Cash-in receipt numbering plan:")}<BR>
 			{trans("Cash-out receipt numbering plan:")}
 		</TD>
-		<TD CLASS="fbt" WIDTH="95%">
+		<TD WIDTH="95%">
 			{trans("Description:")}
 		</TD>
-		<TD CLASS="frightu" WIDTH="1%" align="right" nowrap>
+		<TD WIDTH="1%" align="right" nowrap>
 			<A href="?m=cashregadd">{trans("Add registry")} <IMG src="img/save.gif" alt=""> </A>
 		</TD>
 	</TR>
+    </THEAD>
+    <TBODY>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$reglist item=reg}
 	<TR class="highlight {cycle}{if $reg.disabled} blend{/if}"  >
-		<TD CLASS="fleft" nowrap onClick="return self.location.href='?m=receiptlist&regid={$reg.id}';">
+		<TD nowrap onClick="return self.location.href='?m=receiptlist&regid={$reg.id}';">
 			<IMG src="img/queue.gif" ALT=""> <B>{$reg.name}</B>
 		</TD>
 		<TD ALIGN="right">
@@ -44,7 +47,7 @@
 		<TD onClick="return self.location.href='?m=receiptlist&regid={$reg.id}';">
 			{$reg.description}
 		</TD>
-		<TD CLASS="fright" align="right" NOWRAP>
+		<TD align="right" NOWRAP>
 			<A HREF="?m=receiptlist&regid={$reg.id}"><IMG SRC="img/view.gif" alt="[ {trans("Browse")} ]" title="[ {trans("Browse")} ]"></A>
 			<A HREF="?m=cashregdel&id={$reg.id}" OnClick="return confirmLink(this, '{t a=$reg.name}Are you sure, you want to remove registry \'$a\' and all assigned receipts?{/t}');"><IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 			<A HREF="?m=cashregedit&id={$reg.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
@@ -53,25 +56,28 @@
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD colspan="6" align="center" class="flr">
+		<TD colspan="6" align="center">
 			<p>&nbsp;</p>
 			<p><B>{trans("There are no cash registries.")}<B></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
 	{/foreach}
-	<TR CLASS="light">
-		<TD COLSPAN="2" ALIGN="RIGHT" CLASS="fleftu">
+    </TBODY>
+    <TFOOT>
+	<TR>
+		<TD COLSPAN="2" ALIGN="RIGHT">
 			<IMG src="img/info2.gif" ALT="">
 			<B>{trans("Total:")}</B>
 		</TD>
-		<TD ALIGN="right" CLASS="fbt" nowrap>
+		<TD ALIGN="right" nowrap>
 			<B>{$listdata.sum|money_format}</B>
 		</TD>
-		<TD COLSPAN="2" CLASS="fbt"></TD>
-		<TD CLASS="frightu" align="right">
+		<TD COLSPAN="2"></TD>
+		<TD align="right">
 			<A href="?m=cashregadd">{trans("Add registry")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
+    </TFOOT>
 </TABLE>
 {include file="footer.html"}

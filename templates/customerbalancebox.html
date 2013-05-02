@@ -76,9 +76,10 @@
 {$default_taxrate   = get_conf('phpui.default_taxrate')}
 <FORM name="addbalance" method="POST" action="?m=balanceadd&id={$balancelist.customerid}">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-	<TD {if $limit}class="fleftu hand" onCLick="showOrHide('customerbalance');" {else}class="fleftu" {/if}nowrap>
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+                <TD {if $limit}class="hand" onCLick="showOrHide('customerbalance');" {else}class="fleftu" {/if}nowrap>
 			<IMG src="img/pay.gif" alt="">
 			<B>{trans("Customer Account:")}</B> 
 			{if $limit}
@@ -86,7 +87,7 @@
 				({t a=$n}last $a transactions{/t})
 			{/if}
 		</TD>
-		<TD class="frightu" align="right" nowrap>
+		<TD align="right" nowrap>
 			<A href="javascript: new_doc()">{trans("New document:")}</A>
 			<SELECT name="newdocument" id="newdocselect">
 				<OPTION value="?m=invoicenew&action=init&customerid={$balancelist.customerid}">{trans("invoice")}</OPTION>
@@ -104,20 +105,25 @@
 			</SELECT>
 		</TD>
 	</TR>
+    </THEAD>
+    <TBODY>
 	<TR id="customerbalance">
-		<TD width="100%" colspan="2" class="fall">
-			<TABLE cellpadding="5" cellspacing="0" width="100%">
-				<TR class="dark">
-					<TD width="1%" class="fleftu">{trans("Date:")}</TD>
-					<TD width="1%" class="fbt">{trans("User:")}</TD>
-					<TD width="1%" class="fbt" align="right">{trans("Liability:")}</TD>
-					<TD width="1%" class="fbt" align="right">{trans("Income:")}</TD>
-					<TD width="1%" class="fbt" align="right">{trans("Expense:")}</TD>
-					<TD width="1%" class="fbt" align="center">&raquo;</TD>
-					<TD width="1%" class="fbt" align="right">{trans("After:")}</TD>
-					<TD width="92%" class="fbt">{trans("Description:")}</TD>
-					<TD width="1%" class="frightu">&nbsp;</TD>
+		<TD width="100%" colspan="2">
+			<TABLE class="lmsbox-inner">
+                            <THEAD>
+				<TR>
+					<TD width="1%">{trans("Date:")}</TD>
+					<TD width="1%">{trans("User:")}</TD>
+					<TD width="1%" align="right">{trans("Liability:")}</TD>
+					<TD width="1%" align="right">{trans("Income:")}</TD>
+					<TD width="1%" align="right">{trans("Expense:")}</TD>
+					<TD width="1%" align="center">&raquo;</TD>
+					<TD width="1%" align="right">{trans("After:")}</TD>
+					<TD width="92%">{trans("Description:")}</TD>
+					<TD width="1%">&nbsp;</TD>
 				</TR>
+                            </THEAD>
+                            <TBODY>
 				{cycle name=bal values="light,lucid" print=false}
 				{section name=balancelist loop=$balancelist.id start=$limit}
 				<TR class="highlight {cycle name=bal}"  >
@@ -153,7 +159,7 @@
 					</TD>
 				</TR>
 				{/section}
-				<TR class="light">
+				<TR>
 					<TD CLASS="ftop" style="text-align: left;" colspan="9">
 						<TABLE style="width: 100%" cellpadding="0" cellspacing="0">
 							<TR><TD style="width: 99%; white-space: nowrap;">
@@ -173,7 +179,7 @@
 						</TABLE>
 					</TD>
 				</TR>
-				<TR class="light">
+				<TR>
 					<TD class="ftop">
 						<INPUT TYPE="hidden" NAME="addbalance[customerid]" VALUE="{$balancelist.customerid}">
 						<INPUT TYPE="text" name="addbalance[time]" size="15" maxsize="16" {tip text="Enter transaction time in 'yyyy/mm/dd hh:mm' format (empty field means current time). Click to select date from calendar."} onClick="cal3.popup();" {if $time}VALUE="{$time|date_format:"%Y/%m/%d %H:%M"}"{/if}>
@@ -206,7 +212,7 @@
 						<INPUT TYPE="text" size="30" align="left" name="addbalance[comment]" value="{$comment}" {tip text="Enter short description of transaction"}> 
 					</TD>
 				</TR>
-				<TR class="light">
+				<TR>
 					<TD colspan="7">
 						{if $customerinfo.balance < 0}
 						<A href="?m=customerbalanceok&id={$customerinfo.id}" OnClick="return confirmLink(this, '{t a=$customerinfo.customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$a\'?{/t}');">{trans("Clear Account")} <IMG src="img/edit.gif" alt=""></A>
@@ -216,9 +222,11 @@
 						<A href="javascript:AddBalance();">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 					</TD>
 				</TR>
+                            </TBODY>
 			</TABLE>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM>
 <SCRIPT type="text/javascript">

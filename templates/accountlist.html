@@ -2,31 +2,32 @@
 <!--// $Id$ //-->
 {if $layout.module=="accountsearch"}{assign var=suffix value="&s=1"}{/if}
 <H1>{$layout.pagetitle}</H1>
-<P><TABLE cellpadding="3" WIDTH="100%">
-	<TR class="dark"">
-		<TD width="96%" class="fleftu" NOWRAP>
+<P><TABLE class="lmsbox">
+    <THEAD>
+	<TR">
+		<TD width="96%" NOWRAP>
 			<IMG src="img/account.gif" alt=""> <A href="?m={$layout.module}{$suffix}&o=login{if $listdata.direction eq "asc" && $listdata.order eq "login"},desc{/if}"><B>{trans("Login<!account>")}</B></A> {if $listdata.order eq "login"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 			<B>@</B>
 			<A href="?m={$layout.module}{$suffix}&o=domain{if $listdata.direction eq "asc" && $listdata.order eq "domain"},desc{/if}">{trans("Domain:")}</A> {if $listdata.order eq "domain"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<IMG src="img/customer.gif" ALT=""> <A href="?m={$layout.module}{$suffix}&o=customername{if $listdata.direction eq "asc" && $listdata.order eq "customername"},desc{/if}">{trans("Owner:")}</A> {if $listdata.order eq "customername"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD width="1%" class="fbt" align="right" NOWRAP>
+		<TD width="1%" align="right" NOWRAP>
 			<A href="?m={$layout.module}{$suffix}&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 		</TD>
-		<TD width="1%" class="fbt" align="right" NOWRAP>
+		<TD width="1%" align="right" NOWRAP>
 			{trans("Type (sh/mail/www/ftp/sql):")}<BR>
 			{trans("Quota (sh/mail/www/ftp/sql):")}
 		</TD>
-		<TD width="1%" class="fbt" NOWRAP align="right">
+		<TD width="1%" NOWRAP align="right">
 			<A href="?m={$layout.module}{$suffix}&o=lastlogin{if $listdata.direction eq "asc" && $listdata.order eq "lastlogin"},desc{/if}">{trans("Last login:")}</A>{if $listdata.order eq "lastlogin"} <IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<A href="?m={$layout.module}{$suffix}&o=expdate{if $listdata.direction eq "asc" && $listdata.order eq "expdate"},desc{/if}">{trans("Expiration date:")}</A>{if $listdata.order eq "expdate"} <IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD width="1%" class="frightu" align="right" NOWRAP>
+		<TD width="1%" align="right" NOWRAP>
 			 <B>{t a=$listdata.total}Total: $a{/t}</B>&nbsp;
 		</TD>
 	</TR>
-	<TR class="dark">
-	        <TD class="fall" colspan="5">
+	<TR>
+	        <TD colspan="5">
 			<TABLE cellpadding="0" cellspacing="0">
 				<TR>
 					<TD width="1%" NOWRAP>
@@ -75,16 +76,18 @@
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
-	<TR CLASS="dark">
-		<TD COLSPAN="5" CLASS="fall">
+	<TR>
+		<TD COLSPAN="5">
 			{include file="scroller.html" loop=$accountlist adlink=$suffix}
 		</TD>
 	</TR>
 	{/if}
+    </THEAD>
+    <TBODY>
 	{cycle values="light,lucid" print=false}
 	{section name=accountlist loop=$accountlist start=$start max=$pagelimit}
 	<TR class="highlight {cycle}{if $accountlist[accountlist].expdate != 0 && $accountlist[accountlist].expdate < $smarty.now} blend{/if}"  >
-		<TD class="fleft" OnClick="return self.location.href='?m=accountinfo&id={$accountlist[accountlist].id}';">
+		<TD OnClick="return self.location.href='?m=accountinfo&id={$accountlist[accountlist].id}';">
 			<NOBR><IMG src="img/account.gif" alt=""> <B>{$accountlist[accountlist].login}@{$accountlist[accountlist].domain}</B></NOBR>
 			{if $accountlist[accountlist].ownerid}
 			<BR><IMG src="img/customer.gif" alt="">
@@ -104,7 +107,7 @@
 			<nobr>{if $accountlist[accountlist].lastlogin}{$accountlist[accountlist].lastlogin|date_format:"%Y/%m/%d %H:%M"}{/if}</nobr><BR>
 			<nobr>{if $accountlist[accountlist].expdate}{$accountlist[accountlist].expdate|date_format:"%Y/%m/%d"}{/if}</nobr>
 		</TD>
-		<TD class="fright" align="right">
+		<TD align="right">
 			{assign var=account value="`$accountlist[accountlist].login`@`$accountlist[accountlist].domain`"}
 			<NOBR>
 			<A href="?m=accountpasswd&id={$accountlist[accountlist].id}"><IMG src="img/pass.gif" alt="[ {trans("Change password")} ]" title="[ {trans("Change password")} ]"></A> 
@@ -117,27 +120,30 @@
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD colspan="5" align="center" class="flr">
+		<TD colspan="5" align="center">
 			<p>&nbsp;</p>
 			<p><B>{trans("No such accounts in database.")}</B></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
 	{/section}
+    </TBODY>
+    <TFOOT>
 	{if $listdata.total != 0}
-	<TR CLASS="dark">
-		<TD COLSPAN="5" CLASS="fall">
+	<TR>
+		<TD COLSPAN="5">
 			{include file="scroller.html" loop=$accountlist adlink=$suffix}
 		</TD>
 	</TR>
 	{/if}
-	<TR class="light">
-		<TD colspan="3" class="fleftu" align="right" valign="top">
+	<TR>
+		<TD colspan="3" align="right" valign="top">
 			<B>{trans("Total:")} {sum array=$accountlist column=quota_sh}/{sum array=$accountlist column=quota_mail}/{sum array=$accountlist column=quota_www}/{sum array=$accountlist column=quota_ftp}/{sum array=$accountlist column=quota_sql}</B>	
 		</TD>
-		<TD class="frightu" colspan="2" align="right">
+		<TD colspan="2" align="right">
 			<A href="?m=accountadd{if $listdata.customer}&cid={$listdata.customer}{/if}{if $listdata.domain}&did={$listdata.domain}{/if}">{trans("New Account")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
+    </TFOOT>
 </TABLE></P>
 {include file="footer.html"}
