@@ -1,20 +1,24 @@
 <!--// $Id$ //-->
 {$xajax}
-<TABLE style="width: 100%;" CELLPADDING="3">
-	<TR class="dark hand" onclick="showOrHide('managementurlspanel');">
-		<TD class="fall">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR class="hand" onclick="showOrHide('managementurlspanel');">
+		<TD>
 			<IMG src="img/network.gif" alt="">
 			<span class="bold"><A name="managementurls">{trans("Management URL's:")}</A></span>
 		</TD>
 	</TR>
+    </THEAD>
+    <TBODY>
 	<TR id="managementurlspanel" style="display: none;">
-		<TD style="width: 100%;" class="fall">
+		<TD style="width: 100%;">
 			<FORM id="managementurladd" name="managementurladd">
 			<DIV id="managementurltable">
 			</DIV>
 			</FORM>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--
