@@ -69,37 +69,38 @@
 </SCRIPT>
 <FORM METHOD="POST" NAME="page">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" cellpadding="3">
-	<TR class="dark">
-		<TD width="1%" class="fleftu">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
 			{trans("Date:")}
 		</TD>
-		<TD width="1%" class="fbt">
+		<TD width="1%">
 			{trans("User:")}
 		</TD>
-		<TD width="1%" class="fbt" align="right">
+		<TD width="1%" align="right">
 			{trans("Liability:")}
 		</TD>
-		<TD width="1%" class="fbt" align="right">
+		<TD width="1%" align="right">
 			{trans("Income:")}
 		</TD>
-		<TD width="1%" class="fbt" align="right">
+		<TD width="1%" align="right">
 			{trans("Expense:")}
 		</TD>
-		<TD width="1%" class="fbt" align="center">&raquo;</TD>
-		<TD width="1%" class="fbt" align="right">
+		<TD width="1%" align="center">&raquo;</TD>
+		<TD width="1%" align="right">
 			{trans("After:")}
 		</TD>
-		<TD width="1%" class="fbt">
+		<TD width="1%">
 			{trans("Customer:")}
 		</TD>
-		<TD width="91%" class="fbt">
+		<TD width="91%">
 			{trans("Description:")}
 		</TD>
-		<TD width="1%" CLASS="frightu">&nbsp;</TD>
+		<TD width="1%">&nbsp;</TD>
 	</TR>
-	<TR class="dark">
-		<TD class="fall" colspan="10">
+	<TR>
+		<TD colspan="10">
 			<B>{trans("Filter:")} </B>
 				<INPUT type="text" name="search" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>
 				<SELECT size="1" name="cat" style="width: 150px">
@@ -133,16 +134,18 @@
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
-	<TR class="dark">
-		<TD WIDTH="100%" class="fall" COLSPAN="10">
+	<TR>
+		<TD WIDTH="100%" COLSPAN="10">
 			{include file="scroller.html" loop=$balancelist scrollerno=1}
 		</TD>
 	</TR>
 	{/if}
+    </THEAD>
+    <TBODY>
 	{cycle values="light,lucid" print=false}
 	{section name=balancelist loop=$balancelist start=$start max=$pagelimit}
 	<TR class="highlight {cycle}"  >
-		<TD width="1%" class="fleft" nowrap>
+		<TD width="1%" nowrap>
 			{$balancelist[balancelist].time|date_format:"%Y/%m/%d %H:%M"}
 		</TD>
 		<TD width="1%" nowrap>
@@ -173,7 +176,7 @@
 		<TD width="91%">
 			{$balancelist[balancelist].comment}
 		</TD>
-		<TD width="1%" class="fright" align="right" nowrap>
+		<TD width="1%" align="right" nowrap>
 			{if $balancelist[balancelist].docid}
 				{if $balancelist[balancelist].doctype==$smarty.const.DOC_INVOICE}
 				<A HREF="?m=invoice&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/print.gif" ALT="[ {trans("Invoice")} ]" {tip a=$balancelist[balancelist].docid dynpopup='?m=number&id=$a'}></A>
@@ -190,15 +193,17 @@
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD WIDTH="100%" class="fall" ALIGN="center" COLSPAN="10">
-			<P>&nbsp;<?P>
+		<TD WIDTH="100%" ALIGN="center" COLSPAN="10">
+			<P>&nbsp;</P>
 			<P><B>{trans("No such transactions found in database.")}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>
 	{/section}
-	<TR class="dark">
-		<TD class="fleftu" COLSPAN="8" nowrap>
+    </TBODY>
+    <TFOOT>
+	<TR>
+		<TD COLSPAN="8" nowrap>
 			<A HREF="javascript:DeleteMarked();">{trans("Delete")} <IMG SRC="img/delete.gif" ALT="{trans("Delete")}" HSPACE="2"></A>&nbsp;
 			<A HREF="javascript:printi();">{trans("Print invoices")} <IMG SRC="img/print.gif" ALT="" HSPACE="2"></A>&nbsp;
 			<A HREF="javascript:printr();">{trans("Print cash receipts")} <IMG SRC="img/printr.gif" ALT="" HSPACE="2"></A>&nbsp;
@@ -206,41 +211,42 @@
 			<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i', get_conf('invoices.default_printpage'))} checked{/if}><label for="copy">{trans("copy")}</label>
 			<INPUT type="checkbox" name="duplicate" id="duplicate"{if preg_match('/duplicate/i', get_conf('invoices.default_printpage'))} checked{/if}><label for="duplicate">{trans("duplicate")}</label>
 		</TD>
-		<TD class="frightu" ALIGN="right" colspan="2">
+		<TD ALIGN="right" colspan="2">
 			<label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('page', this, ['original', 'duplicate', 'copy'])" VALUE="1">
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
-	<TR class="dark">
-		<TD WIDTH="100%" class="fall" COLSPAN="10">
+	<TR>
+		<TD WIDTH="100%" COLSPAN="10">
 			{include file="scroller.html" loop=$balancelist scrollerno=2}
 		</TD>
 	</TR>
 	{/if}
-	<TR class="light">
-		<TD colspan="2" align="right" class="fleftu" NOWRAP>
+	<TR>
+		<TD colspan="2" align="right" NOWRAP>
 			<B>{trans("Total:")}</B><BR>
 		</TD>
-		<TD nowrap class="fbt" align="right">
+		<TD nowrap align="right">
 			<B>{$listdata.liability|money_format}</B>
 		</TD>
-		<TD nowrap class="fbt" align="right">
+		<TD nowrap align="right">
 			<B>{$listdata.income|money_format}</B>
 		</TD>
-		<TD nowrap class="fbt" align="right">
+		<TD nowrap align="right">
 			<B>{$listdata.expense|money_format}</B>
 		</TD>
-		<TD nowrap class="fbt" align="right" colspan="2">
+		<TD nowrap align="right" colspan="2">
 		</TD>
-		<TD nowrap class="fbt" align="right">
+		<TD nowrap align="right">
 			<B>{trans("Balance:")}</B>
 		</TD>
-		<TD nowrap class="fbt" align="left">
+		<TD nowrap align="left">
 			<B>{$listdata.totalval|money_format}</B>
 		</TD>
-		<TD class="frightu">&nbsp;
+		<TD>&nbsp;
 		</TD>
 	</TR>
+    </TFOOT>
 </TABLE>
 </FORM>
 <SCRIPT type="text/javascript">
