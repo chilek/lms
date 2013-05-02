@@ -192,7 +192,9 @@ div.multiselectlayer ul li input { border: none; }
     -webkit-box-shadow: #333 1px 1px 12px;
     behavior: url(img/pie.htc);
 }
-table.lmsbox, table.lmsbox-inner {
+
+table.lmsbox,
+table.lmsbox-inner {
     width: 100%;
 }
 
@@ -205,20 +207,29 @@ table.lmsbox-inner * td {
     border-spacing: 0px;
 }
 
-table.lmsbox > thead, table.lmsbox > tfoot, table.lmsbox-inner > thead, table.lmsbox-inner > tfoot {
-    background-color: #CEBD9B;
+table.lmsbox > thead,
+table.lmsbox > tfoot,
+table.lmsbox > tbody,
+table.lmsbox-inner > thead,
+table.lmsbox-inner > tfoot {
     border-width: 1px;
     border-style: solid;
     border-color: black;    
 }
 
-table.lmsbox > tbody {
-    background-color: #DFD5BD;
-    border-width: 0 1px 1px 1px;
-    border-style: solid;
-    border-color: black;
+table.lmsbox > thead,
+table.lmsbox > tfoot,
+table.lmsbox-inner > thead,
+table.lmsbox-inner > tfoot {
+    background-color: #CEBD9B;
 }
 
+table.lmsbox > tbody,
 table.lmsbox-inner > tbody {
     background-color: #DFD5BD;
+}
+
+table.lmsbox > thead > tr,
+table.lmsbox > tfoot > tr {
+    border-top: 1px solid black;
 }
