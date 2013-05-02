@@ -1,31 +1,34 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<P><TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD WIDTH="1%" CLASS="fleftu">
+<P><TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD WIDTH="1%">
 			<IMG SRC="img/group.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" CLASS="frightu" COLSPAN="2" NOWRAP>
+		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
 			<B>{$customergroup.name} ({$customergroup.id|string_format:"%04d"})</B>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD WIDTH="1%">
 			<IMG SRC="img/customers.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP><B>{trans("Members Count:")}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="fright">
+		<TD WIDTH="98%">
 			{$customergroup.count}
 		</TD>
 	</TR>
 	{if $customergroup.description}
-	<TR CLASS="light">	
-		<TD WIDTH="1%" CLASS="fleft">
+	<TR>	
+		<TD WIDTH="1%">
 			<IMG SRC="img/info1.gif" ALT="">
 		</TD>
-		<TD WIDTH="98%" CLASS="fright" COLSPAN="2">
+		<TD WIDTH="98%" COLSPAN="2">
 			<TABLE WIDTH="100%" CELLPADDING="3"> 
 			    <TR><TD CLASS="fall superlight">
 				    {$customergroup.description|replace:"\n":"<BR>"}
@@ -34,12 +37,13 @@
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="light">
-	        <TD ALIGN="RIGHT" CLASS="fbottomu" COLSPAN="3">
+	<TR>
+	        <TD ALIGN="RIGHT" COLSPAN="3">
 			    <A HREF="?m=customergroupedit&id={$customergroup.id}{if $membersnetid}&membersnetid={$membersnetid}{/if}{if $othersnetid}&othersnetid={$othersnetid}{/if}" ACCESSKEY="E">{trans("Edit")} <IMG SRC="img/edit.gif" ALT=""></A>
 			    {if $customergroup.count eq 0} <A HREF="?m=customergroupdel&id={$customergroup.id}" onclick="return confirmLink(this,'{trans("Are you sure, you want to delete that group?")}');">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>{/if}
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE></P>
 {include file="customergroupassignments.html"}
 {include file="footer.html"}

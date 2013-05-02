@@ -3,15 +3,16 @@
 <H1>{$layout.pagetitle}</H1>
 <FORM method="POST" action="?m=configedit&id={$config.id}" name="config">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" cellpadding="3">
-	<TR class="dark">
-		<TD width="1%" class="fleftu">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
 			<img src="img/settings.gif" alt="">
 		</TD>
-		<TD width="1%" class="fbt">
+		<TD width="1%">
 			<B>{trans("Name:")}</B>
 		</TD>
-		<TD width="98%" class="frightu">
+		<TD width="98%">
 			<INPUT type="text" name="config[var]" value="{$config.var}" {tip text="Enter option name" trigger="var" bold=1}>&nbsp;
 			<B>{trans("Section:")}</B>
 			<SELECT size="1" name="config[section]" {tip text="Select section" trigger="section"}>
@@ -21,46 +22,49 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD width="1%">
 			<img src="img/producer.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Value:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<TEXTAREA rows="5" cols="50" name="config[value]" {tip text="Enter option value" trigger="value"}>{$config.value}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<img src="img/info1.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Comment:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<TEXTAREA rows="5" cols="50" name="config[description]" {tip text="Enter description (optional)" trigger="description"}>{$config.description}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<img src="img/wait.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Status:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<INPUT type="checkbox" value="1" id="disabled" name="config[disabled]" {if $config.disabled}CHECKED{/if} {tip text="You can turn it off"}><label for="disabled"> {trans("Off")}</label>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="fbottomu" align="right" colspan="3">
+	<TR>
+		<TD align="right" colspan="3">
 			<A href="javascript:document.config.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
 			<A href="?m=configdel&id={$config.id}" OnClick="return confirmLink(this, '{t a=$config.var}Are you sure, you want to delete option \'$a\' from database?{/t}')">{trans("Delete")} <img src="img/delete.gif" alt=""></A>
 			<A href="?m=configlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </P>
 <SCRIPT type="text/javascript">

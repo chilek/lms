@@ -73,47 +73,51 @@
 </script>
 <P><FORM method="POST" action="?m=daemonconfigadd&id={$instanceid}" name="config">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" cellpadding="3">
-	<TR class="dark">
-		<TD width="1%" class="fleftu">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
 			<img src="img/settings.gif" alt="">
 		</TD>
-		<TD width="1%" class="fbt">
+		<TD width="1%">
 			<B>{trans("Name:")}</B>
 		</TD>
-		<TD width="98%" class="frightu">
+		<TD width="98%">
 			<INPUT type="text" name="config[var]" value="{$config.var}" {tip text="Enter option name" trigger="var" bold=1}>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD width="1%">
 			<img src="img/settings.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Value:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<TEXTAREA rows="20" cols="100" name="config[value]" id="config[value]" onkeydown="return catchTab(this,event)" {tip text="Enter option value" trigger="value"}>{$config.value}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<img src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Description:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<TEXTAREA rows="5" cols="100" name="config[description]" {tip text="Enter additional information (optional)" trigger="description"}>{$config.description}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="fbottomu" align="right" colspan="3">
+	<TR>
+		<TD align="right" colspan="3">
 			<A href="javascript:document.config.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
 			<A href="?m=daemoninstanceview&id={$instanceid}">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A><BR>
 			<INPUT type="checkbox" name="config[reuse]" value="ON" {if $config.reuse}checked{/if}> {trans("Display this form again, when this option is saved")}
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </P>
 <SCRIPT type="text/javascript">

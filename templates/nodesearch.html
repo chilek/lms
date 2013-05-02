@@ -23,50 +23,53 @@
 <FORM METHOD="POST" ACTION="?m=nodesearch&search" NAME="nodesearch">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT TYPE="hidden" NAME="m" VALUE="nodesearch">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD CLASS="fall" COLSPAN="2">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD COLSPAN="2">
 			<B>{trans("Find nodes matching the following search criteria:")}</B>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/node.gif" width="16" alt=""> <B>{trans("Node name:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="99%">
+		<TD WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[name]" {tip text="Enter node name or it's fragment"}>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/mac.gif" width="16" alt=""> <B>{trans("MAC address:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="99%">
+		<TD WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[mac]" {tip text="Enter MAC address or it's fragment"}>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/ip.gif" width="16" alt=""> <B>{trans("IP address:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="99%">
+		<TD WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[ipaddr]" {tip text="Enter IP address or it's fragment"}>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/home.gif" width="16" alt=""> <B>{trans("Location:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="99%">
+		<TD WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[location]" {tip text="Enter node location"}>
 		</TD>
 	</TR>
 {if !empty($states)}
-	<tr class="light" id="state">
-		<td class="fleft" style="width: 1%; white-space: nowrap;">
+	<tr id="state">
+		<td style="width: 1%; white-space: nowrap;">
 			<IMG src="img/home.gif" width="16" alt=""> <span class="bold">{trans("State")}:</span>
 		</td>
-		<td class="fright" style="width: 99%;">
+		<td style="width: 99%;">
 			<select id="state_sel" name="search[state]" onchange="change_selection(this)" {tip text="Select state"} style="width: 20%;">
 				<option value="0"></option>
 				{foreach from=$states item=item}
@@ -75,11 +78,11 @@
 			</select>
 		</td>
 	</tr>
-	<tr class="light" id="district"{if empty($districts)} style="display:none"{/if}>
-		<td class="fleft" style="width: 1%; white-space: nowrap;">
+	<tr id="district"{if empty($districts)} style="display:none"{/if}>
+		<td style="width: 1%; white-space: nowrap;">
 			<IMG src="img/home.gif" width="16" alt=""> <span class="bold">{trans("District")}:</span>
 		</td>
-		<td class="fright" style="width: 99%;">
+		<td style="width: 99%;">
 			<select id="district_sel" name="search[district]" onchange="change_selection(this)" {tip text="Select district"} style="width: 20%;">
 				{if !$data.districtid}
 				<option value="0"></option>
@@ -90,11 +93,11 @@
 			</select>
 		</td>
 	</tr>
-	<tr class="light" id="borough"{if empty($boroughs)} style="display:none"{/if}>
-		<td class="fleft" style="width: 1%; white-space: nowrap;">
+	<tr id="borough"{if empty($boroughs)} style="display:none"{/if}>
+		<td style="width: 1%; white-space: nowrap;">
 			<IMG src="img/home.gif" width="16" alt=""> <span class="bold">{trans("Commune")}:</span>
 		</td>
-		<td class="fright" style="width: 99%;">
+		<td style="width: 99%;">
 			<select id="borough_sel" name="search[borough]" {tip text="Select commune"} style="width: 20%;">
 				{if !$data.boroughid}
 				<option value="0"></option>
@@ -106,29 +109,30 @@
 		</td>
 	</tr>
 {/if}
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/info1.gif" width="16" alt=""> <B>{trans("Description:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="99%">
+		<TD WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[info]" {tip text="Enter additional information"}>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/empty.gif" width="16" alt=""> <B>{trans("Qualification operator:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="99%">
+		<TD WIDTH="99%">
 			<INPUT class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} CHECKED{/if}><label for="operator0">{trans("AND")}</label>
 			<INPUT class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} CHECKED{/if}><label for="operator1">{trans("OR")}</label>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fbottomu" WIDTH="100%" COLSPAN="2" ALIGN="right">
+	<TR>
+		<TD WIDTH="100%" COLSPAN="2" ALIGN="right">
 			<A href="javascript:Search()" accesskey="s">{trans("Search")} <IMG SRC="img/search.gif" alt=""></A>
 			<A href="javascript:PrintList()">{trans("Print")} <IMG SRC="img/print.gif" alt=""></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM>
 </P>

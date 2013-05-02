@@ -80,8 +80,9 @@ function DBLoad($filename=NULL)
 		break;
 	}
 
-	$SYSLOG->AddMessage(SYSLOG_RES_DBBACKUP, SYSLOG_OPER_DBBACKUPRECOVER,
-		array('filename' => $filename), null);
+	if ($SYSLOG)
+		$SYSLOG->AddMessage(SYSLOG_RES_DBBACKUP, SYSLOG_OPER_DBBACKUPRECOVER,
+			array('filename' => $filename), null);
 }
 
 if(isset($_GET['is_sure']))

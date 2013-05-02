@@ -1,43 +1,44 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR class="dark" {tip text="Click on column name to change sorting order"}>
-		<TD WIDTH="93%" CLASS="fleftu" NOWRAP>
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR {tip text="Click on column name to change sorting order"}>
+		<TD WIDTH="93%" NOWRAP>
 			<IMG SRC="img/money.gif" ALT=""> <A href="?m=tarifflist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order eq "name"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<IMG SRC="img/info1.gif" ALT=""> <A href="?m=tarifflist&o=description{if $listdata.direction eq "asc" && $listdata.order eq "description"},desc{/if}">{trans("Description:")}</A> {if $listdata.order eq "description"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="1%" CLASS="fbt" align="right" NOWRAP>
+		<TD WIDTH="1%" align="right" NOWRAP>
 			<A href="?m=tarifflist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="1%" CLASS="fbt" align="right" NOWRAP>
+		<TD WIDTH="1%" align="right" NOWRAP>
 			<A href="?m=tarifflist&o=downrate{if $listdata.direction eq "asc" && $listdata.order eq "downrate"},desc{/if}">{trans("Downrate:")}</A> {if $listdata.order eq "downrate"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<A href="?m=tarifflist&o=uprate{if $listdata.direction eq "asc" && $listdata.order eq "uprate"},desc{/if}">{trans("Uprate")}:</A> {if $listdata.order eq "uprate"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="1%" CLASS="fbt" align="right" NOWRAP>
+		<TD WIDTH="1%" align="right" NOWRAP>
 			<A href="?m=tarifflist&o=uprate{if $listdata.direction eq "asc" && $listdata.order eq "downceil"},desc{/if}">{trans("Downceil:")}</A> {if $listdata.order eq "downceil"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<A href="?m=tarifflist&o=upceil{if $listdata.direction eq "asc" && $listdata.order eq "upceil"},desc{/if}">{trans("Upceil:")}</A> {if $listdata.order eq "upceil"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD NOWRAP WIDTH="1%" CLASS="fbt" align="right" NOWRAP>
+		<TD NOWRAP WIDTH="1%" align="right" NOWRAP>
 			<A href="?m=tarifflist&o=value{if $listdata.direction eq "asc" && $listdata.order eq "value"},desc{/if}"><B>{trans("Value:")}</B></A> {if $listdata.order eq "value"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			{trans("Tax:")}
 		</TD>
-		<TD WIDTH="1%" CLASS="fbt" align="right" NOWRAP>
+		<TD WIDTH="1%" align="right" NOWRAP>
 			<A href="?m=tarifflist&o=count{if $listdata.direction eq "asc" && $listdata.order eq "count"},desc{/if}">{trans("Assigned:")}</A> {if $listdata.order eq "count"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="1%" CLASS="fbt" align="right" NOWRAP>
+		<TD WIDTH="1%" align="right" NOWRAP>
 			{if !check_conf('privileges.hide_summaries')}
 			<A href="?m=tarifflist&o=income{if $listdata.direction eq "asc" && $listdata.order eq "income"},desc{/if}">{trans("Avg. monthly income:")}</A> {if $listdata.order eq "income"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 			{/if}
 		</TD>
-		<TD WIDTH="1%" CLASS="frightu" ALIGN="RIGHT">
+		<TD WIDTH="1%" ALIGN="RIGHT">
 			<NOBR>
 			<B>{t a=$listdata.total}Total: $a{/t}</B>
 			</NOBR>
 		</TD>
 	</TR>
-	<TR CLASS="dark">
-		<TD CLASS="fall" colspan="8">
+	<TR>
+		<TD colspan="8">
 			<FORM METHOD="GET" ACTION="?m={$layout.module}" NAME="choosefilter">
 				<INPUT type="submit" class="hiddenbtn">
 				<INPUT TYPE="HIDDEN" NAME="m" VALUE="tarifflist">
@@ -73,10 +74,12 @@
 			</FORM>
 		</TD>
 	</TR>
+    </THEAD>
+    <TBODY>
 	{cycle values="light,lucid" print=false}
 	{section name=tariffs loop=$tarifflist}
 	<TR class="highlight {cycle}{if $tarifflist[tariffs].disabled == 1 && !$listdata.state} blend{/if}"  >
-		<TD WIDTH="93%" CLASS="fleft" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';" class="fleft">
+		<TD WIDTH="93%" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
 			<IMG SRC="img/money.gif" ALT="">&nbsp;<B>{$tarifflist[tariffs].name}</B><BR>
 			{if $tarifflist[tariffs].description}<IMG SRC="img/info1.gif" ALT="">&nbsp;{$tarifflist[tariffs].description}{/if}
 		</TD>
@@ -114,7 +117,7 @@
 			{$tarifflist[tariffs].income|money_format}
 			{/if}
 		</TD>
-		<TD WIDTH="1%" CLASS="fright" ALIGN="right">
+		<TD WIDTH="1%" ALIGN="right">
 			<NOBR>
 				<a href="?m=tariffedit&set&id={$tarifflist[tariffs].id}">
 					{if $tarifflist[tariffs].disabled == 0}
@@ -132,28 +135,31 @@
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD COLSPAN="8" ALIGN="center" CLASS="fall">
+		<TD COLSPAN="8" ALIGN="center">
 			<p>&nbsp;</p>
 			<p><B>{trans("No such subscriptions in database.")}</B></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
 	{/section}
-	<TR CLASS="light">
-		<TD CLASS="fleftu" COLSPAN="5" WIDTH="97%" ALIGN="right">
+    </TBODY>
+    <TFOOT>
+	<TR>
+		<TD COLSPAN="5" WIDTH="97%" ALIGN="right">
 			<IMG SRC="img/info2.gif" ALT="">&nbsp;<B>{trans("Total:")}</B>
 		</TD>
-		<TD CLASS="fbt" WIDTH="1%" ALIGN="right" NOWRAP>
+		<TD WIDTH="1%" ALIGN="right" NOWRAP>
 			<B>{$listdata.totalcustomerscount}({$listdata.totalcount},{$listdata.totalactivecount})</B>
 		</TD>
-		<TD CLASS="fbt" WIDTH="1%" ALIGN="right" NOWRAP>
+		<TD WIDTH="1%" ALIGN="right" NOWRAP>
 			{if !check_conf('privileges.hide_summaries')}
 			<B>{$listdata.totalincome|money_format}</B>
 			{/if}
 		</TD>
-		<TD CLASS="frightu" WIDTH="1%">
+		<TD WIDTH="1%">
 			&nbsp;
 		</TD>
 	</TR>
+    </TFOOT>
 </TABLE>
 {include file="footer.html"}

@@ -1,24 +1,30 @@
 <!--// $Id$ //-->
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR class="dark hand">
-		<TD width="99%" class="fleftu hand" onclick="showOrHide('voipaccountspanel');">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR class="hand">
+		<TD width="99%" class="hand" onclick="showOrHide('voipaccountspanel');">
 			<IMG src="img/voip.gif" alt="">
 			<B>{t a=$customervoipaccounts.total|default:"0"}Voip Accounts ($a):{/t}</B> 
 		</TD>
-		<TD width="1%" class="frightu" align="right" nowrap>
+		<TD width="1%" align="right" nowrap>
 			{if $customerinfo.status neq "1" and ! $customerinfo.deleted}<A HREF="?m=voipaccountadd&ownerid={$customerinfo.id}">{trans("New Voip Account")} &raquo;</A>&nbsp;{/if}
 		</TD>
 	</TR>
+    </THEAD>
+    <TBODY>
 	<TR id="voipaccountspanel" style="display:none;">
-		<TD WIDTH="100%" colspan="2" class="fall">
-			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
-				<TR class="dark">
-					<TD WIDTH="96%" NOWRAP class="fleftu"><B>{trans("Login:")}</B></TD>
-					<TD WIDTH="1%" NOWRAP class="fbt">{trans("ID:")}</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt" COLSPAN="2">{trans("Password:")}</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt">{trans("Phone number:")}</TD>
-					<TD WIDTH="1%" class="frightu">&nbsp;</TD>
+		<TD WIDTH="100%" colspan="2">
+			<TABLE class="lmsbox-inner">
+                            <THEAD>
+				<TR>
+					<TD WIDTH="96%" NOWRAP><B>{trans("Login:")}</B></TD>
+					<TD WIDTH="1%" NOWRAP>{trans("ID:")}</TD>
+					<TD WIDTH="1%" NOWRAP COLSPAN="2">{trans("Password:")}</TD>
+					<TD WIDTH="1%" NOWRAP>{trans("Phone number:")}</TD>
+					<TD WIDTH="1%">&nbsp;</TD>
 				</TR>
+                            </THEAD>
+                            <TBODY>
 				{cycle name=voips values="light,lucid" print=false}
 				{foreach from=$customervoipaccounts.accounts item=voipaccount}
 				<TR class="highlight {cycle name=voips}"  >
@@ -45,9 +51,11 @@
 					</TD>
 				</TR>
 				{/foreach}
+                            </TBODY>
 			</TABLE>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--

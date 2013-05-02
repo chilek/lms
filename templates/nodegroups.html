@@ -1,20 +1,26 @@
 <!--// $Id$ //-->
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR class="dark hand" onclick="showOrHide('nodegroupspanel');">
-		<TD class="fall">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR class="hand" onclick="showOrHide('nodegroupspanel');">
+		<TD>
 			<IMG src="img/nodegroup.gif" alt="">
 			<B><A name="nodegroups">{trans("Node Groups:")}</A></B> 
 		</TD>
 	</TR>
+    </THEAD>
+    <TBODY>
 	<TR id="nodegroupspanel" style="display:none;">
-		<TD WIDTH="100%" class="fall">
-			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
-				<TR class="dark">
-					<TD WIDTH="1%" NOWRAP class="fleftu"><B>{trans("Name:")}</B></TD>
-					<TD WIDTH="1%" NOWRAP class="fbt" COLSPAN="2">{trans("Description:")}</TD>
-					<TD WIDTH="97%" NOWRAP class="fbt">{trans("ID:")}</TD>
-					<TD WIDTH="1%" class="frightu">&nbsp;</TD>
+		<TD WIDTH="100%">
+			<TABLE class="lmsbox-inner">
+                            <THEAD>
+				<TR>
+					<TD WIDTH="1%" NOWRAP><B>{trans("Name:")}</B></TD>
+					<TD WIDTH="1%" NOWRAP COLSPAN="2">{trans("Description:")}</TD>
+					<TD WIDTH="97%" NOWRAP>{trans("ID:")}</TD>
+					<TD WIDTH="1%">&nbsp;</TD>
 				</TR>
+                            </THEAD>
+                            <TBODY>
 				{cycle name=groups values="light,lucid" print=false}
 				{foreach from=$nodegroups item=nodegroup}
 				<TR class="highlight {cycle name=groups}"  >
@@ -34,8 +40,8 @@
 				{/foreach}
 				<FORM METHOD="POST" NAME="nodegroupassignment" ACTION="?m=nodegroup&action=add&id={$nodeinfo.id}">
 				<INPUT type="submit" class="hiddenbtn">
-				<TR class="light">
-					<TD COLSPAN="4" CLASS="ftop">
+				<TR class="ftop">
+					<TD COLSPAN="4">
 						<B>{trans("Add:")}</B>
 						<SELECT SIZE="1" NAME="nodegroupid" {tip text="Select group to attribute to node"}>
 							<OPTION VALUE="0">{trans("... select group ...")}</OPTION>
@@ -45,14 +51,16 @@
 						</SELECT>
 						<NOBR>
 					</TD>
-					<TD ALIGN="RIGHT" CLASS="ftop" ROWSPAN="2" NOWRAP>
+					<TD ALIGN="RIGHT" ROWSPAN="2" NOWRAP>
 						<A HREF="javascript:document.nodegroupassignment.submit()" {tip text="Add node to group"}>{trans("Add")} <IMG SRC="img/save.gif" alt=""></A>
 					</TD>
 				</TR>
 				</FORM>
+                            </TBODY>
 			</TABLE>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--

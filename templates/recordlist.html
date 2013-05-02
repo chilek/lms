@@ -1,16 +1,17 @@
 {include file="header.html"}
 <H1>{$layout.pagetitle}</H1>
-<P><TABLE cellpadding="3" WIDTH="100%">
-	<TR class="dark"">
-		<TD width="46%" class="fleftu" NOWRAP>{trans("Host:")}</TD>
-		<TD width="2%" class="fbt" NOWRAP align="right">{trans("TTL")}:</TD>
-		<TD width="2%" class="fbt" NOWRAP>{trans("Type")}:</TD>
-		<TD width="2%" class="fbt" NOWRAP>{trans("Priority:")}</TD>
-		<TD width="46%" class="fbt" NOWRAP>{trans("Content")}:</TD>
-		<TD width="2%" class="frightu" align="right" NOWRAP><B>{t a=$listdata.total}Total: $a{/t}</B>&nbsp;</TD>
+<P><TABLE class="lmsbox">
+    <THEAD>
+	<TR">
+		<TD width="46%" NOWRAP>{trans("Host:")}</TD>
+		<TD width="2%" NOWRAP align="right">{trans("TTL")}:</TD>
+		<TD width="2%" NOWRAP>{trans("Type")}:</TD>
+		<TD width="2%" NOWRAP>{trans("Priority:")}</TD>
+		<TD width="46%" NOWRAP>{trans("Content")}:</TD>
+		<TD width="2%" align="right" NOWRAP><B>{t a=$listdata.total}Total: $a{/t}</B>&nbsp;</TD>
 	</TR>
-	<TR class="dark">
-		<TD class="fall" colspan="6">
+	<TR>
+		<TD colspan="6">
 			<TABLE cellpadding="0" cellspacing="0" width="100%">
 			    <TR>
                     		<TD width="1%" NOWRAP>
@@ -32,21 +33,23 @@
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
-	<TR CLASS="dark">
-		<TD COLSPAN="6" CLASS="fall">
+	<TR>
+		<TD COLSPAN="6">
 			{include file="scroller.html" loop=$recordslist adlink=$suffix}
 		</TD>
 	</TR>
 	{/if}
+    </THEAD>
+    <TBODY>
 	{cycle values="light,lucid" print=false}
 	{section name=recordslist loop=$recordslist start=$start max=$pagelimit}
 	<TR class="highlight {cycle}"  >
-		<TD class="fleft" NOWRAP onclick="return location.href='?m=recordedit&id={$recordslist[recordslist].id}'">{$recordslist[recordslist].name}</TD>
+		<TD NOWRAP onclick="return location.href='?m=recordedit&id={$recordslist[recordslist].id}'">{$recordslist[recordslist].name}</TD>
 		<TD align="center">{$recordslist[recordslist].ttl}</TD>
 		<TD align="center" NOWRAP>{$recordslist[recordslist].type}</TD>
 		<TD align="center" NOWRAP>{$recordslist[recordslist].prio}</TD>
 		<TD align="left" NOWRAP onclick="return location.href='?m=recordedit&id={$recordslist[recordslist].id}'">{$recordslist[recordslist].content}</TD>
-		<TD class="fright" align="right">			
+		<TD align="right">			
 			{if $showaddedit}
 			<NOBR>
 			<A href="?m=recordedit&id={$recordslist[recordslist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A> 
@@ -59,27 +62,30 @@
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD colspan="6" align="center" class="flr">
+		<TD colspan="6" align="center">
 			<p>&nbsp;</p>
 			<p><B>{trans("No such records in database.")}</B></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
 	{/section}
+    </TBODY>
+    <TFOOT>
 	{if $listdata.total != 0}
-	<TR CLASS="dark">
-		<TD COLSPAN="7" CLASS="fall">
+	<TR>
+		<TD COLSPAN="7">
 			{include file="scroller.html" loop=$recordslist adlink=$suffix}
 		</TD>
 	</TR>
 	{/if}
-	<TR class="light">
-        	<TD colspan="3" class="fleftu" align="right" valign="top"></TD>
-		<TD class="frightu" colspan="3" align="right">
+	<TR>
+        	<TD colspan="3" align="right" valign="top"></TD>
+		<TD colspan="3" align="right">
 		{if $showaddedit}
 			<A href="?m=recordadd&d={$listdata.domain}">{trans("New Record")} <IMG src="img/save.gif" alt=""></A>
 		{/if}
 		</TD>
 	</TR>
+    </TFOOT>
 </TABLE></P>
 {include file="footer.html"}

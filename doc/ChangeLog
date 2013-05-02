@@ -158,6 +158,8 @@ version ? (????-??-??):
   - show last 10 node sessions in nodeinfo and nodedit [chilan]
   - transaction logging engine introduced [chilan]
   - transaction logging for finances [chilan]
+  - new css classes - lmsbox and lmsbox-inner - for separating content from presentation [maciejlew]
+  - common old css classes like fall, fright etc can now be applied to any block html element [maciejlew]
 
 version 1.11.13 Dira (2011-04-07)
 

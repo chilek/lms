@@ -10,8 +10,9 @@
 <SCRIPT TYPE="text/javascript" SRC="img/common.js"></SCRIPT>
 </head>
 <body>
-<TABLE WIDTH="100%" CELLPADDING="3" id="table">
-	<TR CLASS="dark">
+<TABLE class="lmsbox" id="table">
+    <THEAD>
+	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/netdev.gif" alt="">
 		</TD>
@@ -23,6 +24,8 @@
 			{/if}
 		</TD>
 	</TR>
+    </THEAD>
+    <TBODY>
 	{cycle values="light,lucid" print=false}
 	{section name=devices loop=$devices}
 	<TR class="highlight {cycle}"  >
@@ -44,6 +47,7 @@
 		</TD>
 	</TR>
 	{/section}
+    </TBODY>
 </TABLE>
 <SCRIPT TYPE="text/javascript">
 <!--

@@ -1,26 +1,29 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<TABLE width="100%" cellpadding="3">
-	<TR class="dark">
-		<TD width="1%" class="fleftu">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
 			<IMG src="img/calendar.gif" alt="">
 		</TD>
-		<TD width="1%" class="fbt">
+		<TD width="1%">
 			<B>{trans("Title:")}</B>
 		</TD>
-		<TD width="98%" class="frightu">
+		<TD width="98%">
 			<B>{$event.title}</B>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD width="1%">
 			<IMG src="img/time.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Creation time:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			{$event.date|date_format:"%x (%A)"}
 			{math equation="floor(x/100)" x=$event.begintime format="%02d"}:{math equation="x % 100" x=$event.begintime format="%02d"}
 			{if $event.begintime != $event.endtime}
@@ -29,28 +32,28 @@
 		</TD>
 	</TR>
 {if $event.moddate != 0}
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/time.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{t}Last modification time:{/t}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			{$event.moddate|date_format:"%x (%X)"}
 		</TD>
 	</TR>
 {/if}
 	     
 {if $event.description}
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Description:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<TABLE WIDTH="95%" CELLPADDING="5">
 				<TR>
 					<TD CLASS="fall superlight">
@@ -61,64 +64,64 @@
 		</TD>
 	</TR>
 {/if}
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/access.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Status:")}</B>
 		</TD>
-		<TD width="98%" class="fright" nowrap>
+		<TD width="98%" nowrap>
 			{if $event.private}{trans("private")}{else}{trans("public")}{/if}
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/users.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Created by:")}</B>
 		</TD>
-		<TD width="98%" class="fright" nowrap>
+		<TD width="98%" nowrap>
 			<A href="?m=userinfo&id={$event.userid}">{$event.username}</A>
 		</TD>
 	</TR>
 {if $event.moduserid != 0}
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/users.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{t}Last modified by:{/t}</B>
 		</TD>
-		<TD width="98%" class="fright" nowrap>
+		<TD width="98%" nowrap>
 			<A href="?m=userinfo&id={$event.moduserid}">{$event.modusername}</A>
 		</TD>
 	</TR>
 {/if}
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/customer.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Customer:")}</B>
 		</TD>
-		<TD width="98%" class="fright" nowrap>
+		<TD width="98%" nowrap>
 			<A href="?m=customerinfo&id={$event.customerid}">{$event.customername}</A>
 		</TD>
 	</TR>
 {if $event.note}
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Note:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<TABLE WIDTH="95%" CELLPADDING="5">
 				<TR>
-					<TD CLASS="fall" BGCOLOR="#F4F0EC">
+					<TD BGCOLOR="#F4F0EC">
 						{$event.note|replace:"\n":"<BR>"}
 					</TD>
 				</TR>
@@ -126,21 +129,21 @@
 		</TD>
 	</TR>
 {/if}
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/users.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Users:")}</B>
 		</TD>
-		<TD width="98%" class="fright" nowrap>
+		<TD width="98%" nowrap>
 			{foreach item=user from=$event.userlist}	
 				<NOBR><A href="?m=userinfo&id={$user.id}">{$user.name}</A></NOBR><BR>
 			{/foreach}
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="fbottomu" align="right" colspan="3">
+	<TR>
+		<TD align="right" colspan="3">
 			<A href="?m=eventedit&id={$event.id}">{trans("Edit")} <IMG src="img/edit.gif" alt=""></A>
 			{if !$event.closed}
 			<A href="?m=eventedit&id={$event.id}&action=close">{trans("Close")} <IMG src="img/dead.gif" alt=""></A>
@@ -149,5 +152,6 @@
 			{/if}
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 {include file="footer.html"}

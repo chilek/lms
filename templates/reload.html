@@ -2,23 +2,29 @@
 <H1><span class="bold">{$layout.pagetitle}</span></H1>
 <P><FORM name="reload" method="POST" action="?m=reload&setreloads">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD class="fall">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD>
 		<div style="float:left">
 			<span class="bold">{trans("Select hosts for configuration reload:")} </div> </span> <div id="reloadtxt" style="display:none; float:right"><span class="bold">{trans("Reload configuration in:")} </span> <span id="reloadtimer" class="bold"></span> </div>
 		</TD>
 	</TR>
+    </THEAD>
+    <TBODY>
 	<TR>
-		<TD width="100%" class="fall">
-			<TABLE cellpadding="5" cellspacing="0" width="100%">
-				<TR class="dark">
-					<TD width="1%" class="fleftu" nowrap><IMG src="img/host.gif" ALT=""> <span class="bold">{trans("Name:")}</span></TD>
-					<TD width="96%" class="fbt" nowrap>{trans("Description:")}</TD>
-					<TD width="1%" class="fbt" align="right" nowrap>{trans("Last Reload:")}</TD>
-					<TD width="1%" class="fbt" nowrap>{trans("Status:")}</TD>
-					<TD width="1%" class="frightu"></TD>
+		<TD width="100%">
+			<TABLE class="lmsbox-inner">
+                            <THEAD>
+				<TR>
+					<TD width="1%" nowrap><IMG src="img/host.gif" ALT=""> <span class="bold">{trans("Name:")}</span></TD>
+					<TD width="96%" nowrap>{trans("Description:")}</TD>
+					<TD width="1%" align="right" nowrap>{trans("Last Reload:")}</TD>
+					<TD width="1%" nowrap>{trans("Status:")}</TD>
+					<TD width="1%"></TD>
 				</TR>
+                            </THEAD>
+                            <TBODY>
 				{cycle values="light,lucid" print=false}
 				{section name=hosts loop=$hosts}
 				<TR class="highlight {cycle}"  >
@@ -41,17 +47,19 @@
 					</TD>
 				</TR>
 				{/section}
-				<TR class="light">
-					<TD CLASS="ftop" colspan="2"nowrap>
+				<TR>
+					<TD colspan="2"nowrap>
 						<INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('reload', this)" VALUE="1"><label for="allbox">{trans("Check All")}</label>
 					</TD>
-					<TD CLASS="ftop" ALIGN="right" colspan="3" nowrap>
+					<TD ALIGN="right" colspan="3" nowrap>
 						<A href="javascript:document.reload.submit();">{trans("Submit")} <IMG src="img/save.gif" ALT=""></A>
 					</TD>
 				</TR>
+                            </TBODY>
 			</TABLE>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM>
 </P>

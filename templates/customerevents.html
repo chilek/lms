@@ -1,32 +1,38 @@
 <!--// $Id$ //-->
-<TABLE cellpadding="3" WIDTH="100%">
-	<TR CLASS="dark">
-    	    <TD width="99%" class="fleftu hand" onCLick="showOrHide('eventspanel');">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+    	    <TD width="99%" class="hand" onCLick="showOrHide('eventspanel');">
                         <IMG src="img/calendar.gif" alt="">
                         <B>{trans("Customer Timetable:")}</B>
 			{if $limit}
                                 ({t a=$limit}last $a events{/t})
                         {/if}
                 </TD>
-                <TD width="1%" class="frightu" align="right" nowrap>
+                <TD width="1%" align="right" nowrap>
 			<A href="?m=eventadd&customerid={$customerinfo.id}">{trans("New Event")} &raquo;</A>&nbsp;
                 </TD>
         </TR>
+    </THEAD>
+    <TBODY>
 	<TR id="eventspanel"  style="display:none;">
-		<TD width="100%" colspan="2" class="fall">
-			<TABLE cellpadding="5" cellspacing="0" width="100%">
-				<TR CLASS="dark">
-					<TD width="1%" class="fleftu" NOWRAP>
+		<TD width="100%" colspan="2">
+			<TABLE class="lmsbox-inner">
+                            <THEAD>
+				<TR>
+					<TD width="1%" NOWRAP>
 						{trans("Date:")}
 					</TD>
-					<TD width="40%" class="fbt" NOWRAP>
+					<TD width="40%" NOWRAP>
 						<B>{trans("Title:")}</B>
 					</TD>
-					<TD width="50%" class="fbt" NOWRAP>
+					<TD width="50%" NOWRAP>
 						{trans("Description:")}
 					</TD>
-					<TD width="1%" class="frightu" NOWRAP></TD>
+					<TD width="1%" NOWRAP></TD>
 				</TR>
+                            </THEAD>
+                            <TBODY>
 				{cycle values="light,lucid" print=false name=events}
 				{section name=eventlist loop=$eventlist max=$limit }
 				<TR class="highlight {cycle name=events}{if $eventlist[eventlist].closed} blend{/if}"  >
@@ -58,9 +64,11 @@
 					</TD>
 				</TR>
 				{/section}
+                            </TBODY>
 			</TABLE>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--

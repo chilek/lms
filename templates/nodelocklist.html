@@ -1,10 +1,13 @@
-<TABLE style="width: 100%;" cellpadding="5" cellspacing="0">
-<TR class="dark">
-	<TD style="width: 1%; white-space: nowrap;" class="fleftu" COLSPAN="2">{trans("Days:")}</TD>
-	<TD style="width: 1%; white-space: nowrap;" class="fbt">{trans("From:")}</TD>
-	<TD style="width: 1%; white-space: nowrap;" class="fbt">{trans("To:")}</TD>
-	<TD style="width: 97%;" class="frightu">&nbsp;</TD>
+<TABLE class="lmsbox-inner">
+<THEAD>
+<TR>
+	<TD style="width: 1%; white-space: nowrap;" COLSPAN="2">{trans("Days:")}</TD>
+	<TD style="width: 1%; white-space: nowrap;">{trans("From:")}</TD>
+	<TD style="width: 1%; white-space: nowrap;">{trans("To:")}</TD>
+	<TD style="width: 97%;">&nbsp;</TD>
 </TR>
+</THEAD>
+<TBODY>
 {cycle name=locks values="light,lucid" print=false}
 {foreach from=$nodelocks item=nodelock}
 <TR class="highlight {cycle name=locks}"  >
@@ -32,14 +35,14 @@
 	</TD>
 </TR>
 {/foreach}
-<TR class="light">
+<TR class="ftop">
 	<TD COLSPAN="2" CLASS="ftop" style="white-space: nowrap;">
 		{foreach from=$_DAYS item=dayname key=daynr}
 		<input type="checkbox" name="days[{$daynr}]" id="lockdays_{$daynr}" value="1">
 		<label for="lockdays_{$daynr}">{$dayname}</label>
 		{/foreach}
 	</TD>
-	<TD class="ftop" style="white-space: nowrap;">
+	<TD style="white-space: nowrap;">
 		<select name="fhour">
 		{for $i = 0 to 23}
 			<option value="{$i}">{$i|string_format:"%02d"}</option>
@@ -50,7 +53,7 @@
 		{/for}
 		</select>
 	</TD>
-	<TD class="ftop" style="white-space: nowrap;">
+	<TD style="white-space: nowrap;">
 		<select name="thour">
 		{for $i = 0 to 23}
 			<option value="{$i}">{$i|string_format:"%02d"}</option>
@@ -65,4 +68,5 @@
 		<A id="nodelockaddlink" HREF="javascript:addNodeLock();" {tip text="Add new lock"}>{trans("Add")} <IMG SRC="img/save.gif" alt=""></A>
 	</TD>
 </TR>
+</TBODY>
 </TABLE>

@@ -1,24 +1,25 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<P><TABLE cellpadding="3" style="width: 100%;">
-	<TR class="dark">
-		<TD style="width: 1%; white-space: nowrap;" class="fleftu">
+<P><TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD style="width: 1%; white-space: nowrap;">
 			<IMG src="img/settings.gif" alt=""><A href="?m=configlist&o=var{if $listdata.direction eq "asc" && $listdata.order eq "var"},desc{/if}"> <span class="bold">{trans("Name:")}</span></A> {if $listdata.order eq "var"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<IMG src="img/empty.gif" alt="" width="16" height="16"><A href="?m=configlist&o=section{if $listdata.direction eq "asc" && $listdata.order eq "section"},desc{/if}"> {trans("Section:")}</A> {if $listdata.order eq "section"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD style="width: 1%; text-align: center;" class="fbt">
+		<TD style="width: 1%; text-align: center;">
 			{trans("Value:")}
 		</TD>
-		<TD style="width: 97%; text-align: center;" class="fbt">
+		<TD style="width: 97%; text-align: center;">
 			{trans("Comment:")}
 		</TD>
-		<TD style="width: 1%; text-align: right; white-space: nowrap;" class="frightu">
+		<TD style="width: 1%; text-align: right; white-space: nowrap;">
 			<A href="?m=configadd{if $listdata.section}&section={$listdata.section}{/if}">{trans("Add option")} <IMG src="img/save.gif" alt=""> </A>
 		</TD>
 	</TR>
-	<TR class="dark">
-		<TD class="fall" colspan="4">
+	<TR>
+		<TD colspan="4">
 			<FORM method="GET" action="?m=configlist" name="filter">
 				<INPUT type="submit" class="hiddenbtn">
 				<INPUT type="HIDDEN" name="m" value="configlist">
@@ -37,16 +38,18 @@
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
-	<TR CLASS="dark">
-		<TD COLSPAN="4" CLASS="fall">
+	<TR>
+		<TD COLSPAN="4">
 			{include file="scroller.html" loop=$configlist}
 		</TD>
 	</TR>
 	{/if}
+    </THEAD>
+    <TBODY>
 	{cycle values="light,lucid" print=false}
 	{section name=configlist loop=$configlist start=$start max=$pagelimit}
 	<TR class="highlight {cycle}{if $configlist[configlist].disabled} blend{/if}"  >
-		<TD class="fleft" style="vertical-align: top; white-space: nowrap;" OnClick="return self.location.href='?m=configedit&id={$configlist[configlist].id}';">
+		<TD style="vertical-align: top; white-space: nowrap;" OnClick="return self.location.href='?m=configedit&id={$configlist[configlist].id}';">
 			<IMG src="img/settings.gif" alt=""><span class="bold"> {$configlist[configlist].var}</span><BR>
 			<IMG src="img/empty.gif" alt="" width="16" height="16"> [{$configlist[configlist].section}]
 		</TD>
@@ -57,7 +60,7 @@
 			{$configlist[configlist].description|truncate:400:"..."}
 			{if $configlist[configlist].usercomment != ''}<BR><span class="bold">{trans("Comment:")}</span> {$configlist[configlist].usercomment|truncate:400:"..."}{/if}
 		</TD>
-		<TD class="fright" style="text-align: right; white-space: nowrap;">
+		<TD style="text-align: right; white-space: nowrap;">
 			<A href="?m=configedit&id={$configlist[configlist].id}&statuschange=1"><IMG src="img/wait.gif" alt="[ {if $configlist[configlist].disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]" title="[ {if $configlist[configlist].disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]"></A>
 			<A href="?m=configdel&id={$configlist[configlist].id}" OnClick="return confirmLink(this, '{t a=$configlist[configlist].var}Are you sure, you want to delete option \'$a\' from database?{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 			<A href="?m=configedit&id={$configlist[configlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
@@ -65,7 +68,7 @@
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD colspan="4" style="text-align: center;" class="fall">
+		<TD colspan="4" style="text-align: center;">
 			<p>&nbsp;</p>
 			<p><span class="bold">
 			    {if $listdata.search}
@@ -78,18 +81,20 @@
 		</TD>
 	</TR>
 	{/section}
+    </TBODY>
+    <TFOOT>
 	{if $listdata.total != 0}
-	<TR CLASS="dark">
-		<TD COLSPAN="4" CLASS="fall">
+	<TR>
+		<TD COLSPAN="4">
 			{include file="scroller.html" loop=$configlist}
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="dark">
-		<TD colspan="4" class="fall" style="text-align: right;">
+	<TR>
+		<TD colspan="4" style="text-align: right;">
 			<A href="?m=configadd{if $listdata.section}&section={$listdata.section}{/if}">{trans("Add option")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
-
+    </TFOOT>
 </TABLE></P>
 {include file="footer.html"}

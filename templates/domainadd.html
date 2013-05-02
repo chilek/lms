@@ -3,20 +3,23 @@
 <H1>{$layout.pagetitle}</H1>
 <P><FORM name="domainadd" method="POST" action="?m=domainadd">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE cellpadding="3" WIDTH="100%">
-	<TR class="dark">
-		<TD width="1%" class="fleftu">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
 			<IMG src="img/domain.gif" alt="">
 		</TD>
-		<TD width="150" class="fbt" align="left" NOWRAP>
+		<TD width="150" align="left" NOWRAP>
 			<B>{trans("Domain:")}</b>
 		</TD>
-		<TD width="98%" class="frightu" NOWRAP>
+		<TD width="98%" NOWRAP>
 			<INPUT type="text" name="domainadd[name]" value="{$domainadd.name}" {tip text="Enter domain name" trigger="name"} size="20">
 		</TD>
 	</TR>
-	<TR class="light">
-    		<TD width="1%" class="fleft">
+    </THEAD>
+    <TBODY>
+	<TR>
+    		<TD width="1%">
             		<img src="img/customer.gif" alt="">
 	        </TD>
 		<TD width="1%">
@@ -31,12 +34,12 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR class="light">
-                <TD width="1%" class="fleft">
+	<TR>
+                <TD width="1%">
                         <img src="img/dns.gif" alt="">
                 </TD>
                 <TD width="1%" nowrap><B>{trans("Type:")}</B></TD>
-                <TD width="98%" class="fright">
+                <TD width="98%">
                 <SELECT  SIZE="1" NAME="domainadd[type]" {tip text="Select domain type" trigger="type"} id="domainadd[type]" style="float:left;" onchange=" if (this.value=='SLAVE') showslave(); else hideslave();" >
                                 <OPTION VALUE="NATIVE" {if $domainadd.type == NATIVE} SELECTED{/if}>NATIVE</OPTION>
                                 <OPTION VALUE="MASTER" {if $domainadd.type == MASTER} SELECTED{/if}>MASTER</OPTION>
@@ -48,55 +51,56 @@
 	           </div>
                 </TD>
         </TR>
-	<TR class="light" id="ipwebserver">
-                <TD width="1%" class="fleft">
+	<TR id="ipwebserver">
+                <TD width="1%">
                         <img src="img/dns.gif" alt="">
                 </TD>
                 <TD width="1%" nowrap><B>{trans("IP address of webserver")}:</B></TD>
-                <TD width="98%" class="fright">
+                <TD width="98%">
 		<INPUT type="text"   name="domainadd[ipwebserver]" value="{$domainadd.ipwebserver}" {tip text="Enter IP address of webserver" trigger="ipwebserwer"} size="20">
 
                 </TD>
         </TR>
-	<TR class="light" id="ipmailserver">
-                <TD width="1%" class="fleft">
+	<TR id="ipmailserver">
+                <TD width="1%">
                         <img src="img/dns.gif" alt="">
                 </TD>
                 <TD width="1%" nowrap><B>{trans("IP address of mailserver")}:</B></TD>
-                <TD width="98%" class="fright">
+                <TD width="98%">
 		<INPUT type="text"   name="domainadd[ipmailserver]" value="{$domainadd.ipmailserver}" {tip text="Enter IP address of mailserver" trigger="ipmailserwer"} size="20">
 
                 </TD>
         </TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<img src="img/mail.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>
 			<B>{trans("Backup MX support:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<INPUT type="checkbox" name="domainadd[mxbackup]" value="1"{if $domainadd.mxbackup} checked{/if}>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%" align="left">
 			<B>{trans("Description:")}
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<TEXTAREA name="domainadd[description]" rows="5" cols="50" {tip text="Enter additional information (optional)"}>{$domainadd.description}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="fbottomu" colspan="3" align="right" NOWRAP>
+	<TR>
+		<TD colspan="3" align="right" NOWRAP>
 			<A href="javascript: document.domainadd.submit();">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
 			<A href="?m=domainlist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A><BR>
 			<INPUT type="checkbox" name="domainadd[reuse]" id="reuse" value="ON" {if $domainadd.reuse}checked{/if}> <label for="reuse">{trans("Display this form again, when this domain is saved")}</label>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM></P>
 <script type="text/javascript">

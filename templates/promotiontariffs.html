@@ -1,22 +1,28 @@
 <!--// $Id$ //-->
-<TABLE WIDTH="100%" CELLPADDING="3">
-    <TR CLASS="dark">
-	    <TD width="100%" class="fall hand" align="left" nowrap="nowrap" onClick="showOrHide('promotiontariffs');">
+<TABLE class="lmsbox">
+    <THEAD>
+    <TR>
+	    <TD width="100%" class="hand" align="left" nowrap="nowrap" onClick="showOrHide('promotiontariffs');">
 	        <IMG SRC="img/money.gif" ALT="">
 			<B>{t a=$promotion.tariffs|@count}Promotion's Tariffs ($a):{/t}</B>
         </TD>
     </TR>
+    </THEAD>
+    <TBODY>
 	<TR id="promotiontariffs" style="display:none;">
-	    <TD WIDTH="100%" class="fall">
-	        <TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
-				<TR class="dark">
-					<TD CLASS="fleftu" width="95%" NOWRAP><B>{trans("Name:")}</B></TD>
-					<TD CLASS="fbt" width="1%" align="right" NOWRAP>{trans("ID:")}</TD>
-					<TD CLASS="fbt" width="1%" align="right" NOWRAP><B>{trans("Value")}:</B></TD>
-					<TD CLASS="fbt" width="1%" align="right" NOWRAP>{trans("Downceil:")}</TD>
-					<TD CLASS="fbt" width="1%" align="right" NOWRAP>{trans("Upceil:")}</TD>
-					<TD CLASS="frightu" width="1%">&nbsp;</TD>
+	    <TD WIDTH="100%">
+	        <TABLE class="lmsbox-inner">
+                    <THEAD>
+				<TR>
+					<TD width="95%" NOWRAP><B>{trans("Name:")}</B></TD>
+					<TD width="1%" align="right" NOWRAP>{trans("ID:")}</TD>
+					<TD width="1%" align="right" NOWRAP><B>{trans("Value")}:</B></TD>
+					<TD width="1%" align="right" NOWRAP>{trans("Downceil:")}</TD>
+					<TD width="1%" align="right" NOWRAP>{trans("Upceil:")}</TD>
+					<TD width="1%">&nbsp;</TD>
 			    </TR>
+                    </THEAD>
+                    <TBODY>
 				{cycle values="light,lucid" print=false name=tariffs}
 				{foreach from=$promotion.tariffs item=tariff}
 				<TR class="highlight {cycle name=tariffs}"  >
@@ -48,9 +54,11 @@
 					</TD>
 				</TR>
 				{/foreach}
+                    </TBODY>
 			</TABLE>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--
