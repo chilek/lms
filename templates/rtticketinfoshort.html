@@ -10,15 +10,18 @@
 <script type="text/javascript" src="img/common.js"></script>
 </head>
 <BODY>
-<TABLE WIDTH="100%" CELLPADDING="3" id="table">
-	<TR CLASS="dark">
-		<TD COLSPAN="2" width="100%" CLASS="fall" NOWRAP>
+<TABLE class="lmsbox" id="table">
+    <THEAD>
+	<TR>
+		<TD COLSPAN="2" width="100%" NOWRAP>
 			<IMG src="img/ticket.gif" alt="">
 			<B>{t a=$ticket.id|string_format:"%06d"}Ticket No. $a{/t}</B>
 		</TD>
 	</TR>
+    </THEAD>
+    <TBODY>
 	{if $ticket.creatorid}
-	<TR CLASS="light">
+	<TR>
 		<TD WIDTH="1%" NOWRAP>
 		    	<IMG src="img/users.gif" alt="">
 			<B>{trans("Created by:")}</B>
@@ -28,7 +31,7 @@
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="light">
+	<TR>
 		<TD WIDTH="1%" NOWRAP>
 		    	<IMG src="img/time.gif" alt="">
 			<B>{trans("Uptime:")}</B>
@@ -37,7 +40,7 @@
 			{$ticket.uptime}
 		</TD>
 	</TR>
-	<TR CLASS="light">
+	<TR>
 		<TD WIDTH="1%" NOWRAP>
 		    	<IMG src="img/desc.gif" alt="">
 			<B>{trans("Cause:")}</B>
@@ -49,7 +52,7 @@
 		</TD>
 	</TR>
 	{if $ticket.message}
-	<TR CLASS="light">
+	<TR>
 		<TD WIDTH="1%" NOWRAP>
 		    	<IMG src="img/info.gif" alt="">
 			<B>{trans("Body:")}</B>
@@ -65,6 +68,7 @@
 		</TD>
 	</TR>
 	{/if}
+    </TBODY>
 </TABLE>
 <SCRIPT TYPE="text/javascript">
 <!--

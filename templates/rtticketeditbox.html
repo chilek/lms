@@ -10,15 +10,18 @@
 </script>
 <P><FORM method="POST" name="ticket" action="?m=rtticketedit&id={$ticket.ticketid}">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD width="100%" CLASS="fall">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="100%">
 			<IMG src="img/ticket.gif" alt="">
 			<B>{t a=$ticket.ticketid|string_format:"%06d"}Ticket No. $a{/t}</B>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD width="100%" class="flr">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD width="100%">
 <TABLE width="100%" cellpadding="0">
     <TR>
 	<TD width="50%">
@@ -157,11 +160,12 @@
 </TABLE>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fbottomu" ALIGN="RIGHT">
+	<TR>
+		<TD ALIGN="RIGHT">
 			<A href="javascript:document.ticket.submit()">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 			<A href="?m=rtqueueview&id={$ticket.queueid}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM></P>
