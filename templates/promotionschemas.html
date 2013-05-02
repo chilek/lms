@@ -1,22 +1,28 @@
 <!--// $Id$ //-->
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD width="99%" class="fleftu hand" onclick="showOrHide('promotionschemas');">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="99%" class="hand" onclick="showOrHide('promotionschemas');">
 			<IMG SRC="img/promoschema.gif" alt="">
 			<B>{t a=$promotion.schemas|@count}Promotion's Schemas ($a):{/t}</B>
 		</TD>
-		<TD width="1%" class="frightu" align="right" nowrap>
+		<TD width="1%" align="right" nowrap>
 			<A HREF="?m=promotionschemaadd&id={$promotion.id}">{trans("New Schema")} &raquo;</A>&nbsp;
 		</TD>
 	</TR>
+    </THEAD>
+    <TBODY>
         <TR id="promotionschemas" style="display:none;">
-	        <TD WIDTH="100%" colspan="2" class="fall">
-		    <TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
-		        <TR class="dark">
-	                <TD WIDTH="98%" class="fleftu"><B>{trans("Name:")}</B></TD>
-		    	    <TD WIDTH="1%" class="fbt">{trans("Description:")}</TD>
-		    	    <TD WIDTH="1%" class="frightu">&nbsp;</TD>
+	        <TD WIDTH="100%" colspan="2">
+		    <TABLE class="lmsbox-inner">
+                        <THEAD>
+		        <TR>
+	                <TD WIDTH="98%"><B>{trans("Name:")}</B></TD>
+		    	    <TD WIDTH="1%">{trans("Description:")}</TD>
+		    	    <TD WIDTH="1%">&nbsp;</TD>
 			</TR>
+                        </THEAD>
+                        <TBODY>
 			{cycle values="light,lucid" print=false name=schemas}
 			{foreach from=$promotion.schemas item=schema}
     		<TR class="highlight {cycle name=schemas}{if $schema.disabled} blend{/if}"  >
@@ -42,9 +48,11 @@
 			    </TD>
 			</TR>
 			{/foreach}
+                        </TBODY>
 		    </TABLE>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--
