@@ -1,33 +1,40 @@
 <!--// $Id$ //-->
-<TABLE style="width: 100%;" cellpadding="3">
-	<TR class="dark">
-		<TD class="fall" colspan="2" style="white-space: nowrap;">
+<TABLE class="lmsbox">
+	<THEAD>
+	<TR>
+		<TD colspan="2" style="white-space: nowrap;">
 			<IMG SRC="img/recover.gif" ALT="">
 			<span class="bold">{t a=$resource.name b=$resource.id|string_format:"%04d" c=$resource.date|date_format:"Y.m.d H:i:s"}$a ($b): status of $c{/t}</span>
 		</TD>
 	</TR>
+
+	</THEAD>
+	<TBODY>
+
 	{foreach $resource.properties as $key => $value}
-	<TR class="light">
-		<TD style="width: 1%; white-space: nowrap;" class="fleft">
+	<TR>
+		<TD style="width: 1%; white-space: nowrap;">
 			<span class="bold">{$key}:</span>
 		</TD>
-		<TD style="width: 99%;" class="fright">
+		<TD style="width: 99%;">
 			{$value}
 		</TD>
 	</TR>
 	{foreachelse}
-	<TR class="light">
-		<TD colspan="2" style="text-align: center;" class="flr bold">
+	<TR>
+		<TD colspan="2" style="text-align: center;" class="bold">
 			<p>&nbsp;</p>
 			<p>{trans("There are not any properties for this resource in archive.")}</p>
 			<p>&nbsp;</p>
 		</TD>
 	{/foreach}
-	<TR class="light">
-		<TD class="fbottomu" colspan="2" style="text-align: right;">
+	<TR>
+		<TD colspan="2" style="text-align: right;">
 <!--
 			<A HREF="?m=useredit&id={$userinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG SRC="img/edit.gif" ALT=""></A>
 //-->
 		</TD>
 	</TR>
+
+	</TBODY>
 </TABLE>
