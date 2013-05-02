@@ -1,26 +1,32 @@
 <!--// $Id$ //-->
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD width="99%" class="fleftu hand" onclick="showOrHide('docpanel');">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="99%" class="hand" onclick="showOrHide('docpanel');">
 			<IMG src="img/docum.gif" alt="">
 			<B>{trans("Customer's Documents:")}</B> ({t a=$limit}last $a documents{/t})
 		</TD>
-		<TD width="1%" class="frightu" align="right" nowrap>
+		<TD width="1%" align="right" nowrap>
 			<A href="?m=documentadd&cid={$customerinfo.id}">{trans("New Document")} &raquo;</A>
 			<A href="?m=documentlist&c={$customerinfo.id}">{trans("All Documents")} &raquo;</A>&nbsp;
 		</TD>
 	</TR>
+    </THEAD>
+    <TBODY>
 	<TR id="docpanel" style="display:none;">
-		<TD WIDTH="100%" class="fall" colspan="2">
-			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
-				<TR class="dark">
-					<TD WIDTH="1%" NOWRAP class="fleftu"><B>{trans("Number:")}</B></TD>
-					<TD WIDTH="1%" NOWRAP class="fbt">{trans("Created:")}</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt"><B>{trans("Type:")}</B></TD>
-					<TD WIDTH="95%" NOWRAP class="fbt">{trans("Title:")}</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt">{trans("Period:")}</TD>
-					<TD WIDTH="1%" NOWRAP class="frightu"></TD>
+		<TD WIDTH="100%" colspan="2">
+			<TABLE class="lmsbox-inner">
+                            <THEAD>
+				<TR>
+					<TD WIDTH="1%" NOWRAP><B>{trans("Number:")}</B></TD>
+					<TD WIDTH="1%" NOWRAP>{trans("Created:")}</TD>
+					<TD WIDTH="1%" NOWRAP><B>{trans("Type:")}</B></TD>
+					<TD WIDTH="95%" NOWRAP>{trans("Title:")}</TD>
+					<TD WIDTH="1%" NOWRAP>{trans("Period:")}</TD>
+					<TD WIDTH="1%" NOWRAP></TD>
 				</TR>
+                            </THEAD>
+                            <TBODY>
 				{cycle values="light,lucid" print=false name=doc}
 				{foreach from=$documents item=doc}
 				<TR class="highlight {cycle name=doc}{if $doc.closed} blend{/if}"  >
@@ -58,9 +64,11 @@
 					</TD>
 				</TR>
 				{/foreach}
+                            </TBODY>
 			</TABLE>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--
