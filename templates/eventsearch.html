@@ -4,76 +4,79 @@
 {include file="calendar_js.html"}
 <FORM method="POST" action="?m=eventsearch" name="event">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" cellpadding="3">
-	<TR class="dark">
-		<TD width="100%" colspan="3" class="fall">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="100%" colspan="3">
 			<B>{trans("Find events matching the following search criteria:")}</B>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD width="1%">
 			<IMG src="img/calendar.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Title:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<INPUT type="text" name="event[title]" value="{$event.title}" size="50" {tip text="Enter event title" trigger="title"}>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/time.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Date:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			{trans("From:")} <INPUT type="text" name="event[datefrom]" size="10" OnCLick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
 			{trans("To:")} <INPUT type="text" name="event[dateto]" size="10" OnCLick="javascript:cal2.popup();" {tip text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Description:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<INPUT type="text" name="event[description]" size="50" {tip text="Enter additional information"}>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Note:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<INPUT type="text" name="event[note]" size="50" {tip text="Enter note"}>
 		</TD>
 	</TR>
-{*	<TR class="light">
-		<TD width="1%" class="fleft">
+{*	<TR>
+		<TD width="1%">
 			<IMG src="img/access.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Status:")}</B>
 		</TD>
-		<TD width="98%" class="fright" nowrap>
+		<TD width="98%" nowrap>
 			<INPUT type="checkbox" name="event[private]" value="1" {tip text="Select event's status"}{if $event.private}CHECKED{/if}> {trans("private")}
 		</TD>
 	</TR>
-*}	<TR class="light">
-		<TD width="1%" class="fleft">
+*}	<TR>
+		<TD width="1%">
 			<IMG src="img/customer.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Customer:")}</B>
 		</TD>
-		<TD width="98%" class="fright" nowrap>
+		<TD width="98%" nowrap>
 			<SELECT name="event[customerid]">
 				<OPTION value="0" SELECTED>{trans("- select customer -")}</OPTION>
 				{foreach from=$customerlist item=customer}	
@@ -82,14 +85,14 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft" valign="top">
+	<TR>
+		<TD width="1%" valign="top">
 			<IMG src="img/users.gif" alt="">
 		</TD>
 		<TD width="1%" valign="top">
 			<B>{trans("User:")}</B>
 		</TD>
-		<TD width="98%" class="fright" nowrap>
+		<TD width="98%" nowrap>
 			<SELECT name="event[userid]">
 				<OPTION value="" SELECTED>{trans("- select user -")}</OPTION>
 				{section name=userlist loop=$userlist}	
@@ -98,12 +101,13 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="fbottomu" align="right" colspan="3">
+	<TR>
+		<TD align="right" colspan="3">
 			<A href="javascript:document.event.submit();" accesskey="s">{trans("Search")} <IMG src="img/save.gif" alt=""></A>
 			<A href="?m=eventlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </P>
 <SCRIPT type="text/javascript">
