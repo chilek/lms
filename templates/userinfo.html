@@ -1,148 +1,151 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<TABLE style="width: 100%;" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD CLASS="fall" COLSPAN="3" style="white-space: nowrap;">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD COLSPAN="3" style="white-space: nowrap;">
 			<IMG SRC="img/pass.gif" ALT="">
 			<span class="bold">{$userinfo.login} ({$userinfo.id|string_format:"%04d"})</span>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD style="width: 1%;" CLASS="fleft">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD style="width: 1%;">
 			<IMG SRC="img/users.gif" ALT="">
 		</TD>
 		<TD style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("First/last name:")}</span>
 		</TD>
-		<TD style="width: 98%;" CLASS="fright">
+		<TD style="width: 98%;">
 			<span class="bold">{$userinfo.name}</span>
 		</TD>
 	</TR>
 {if $userinfo.position}
-	<TR CLASS="light">
-		<TD style="width: 1%; white-space: nowrap;" CLASS="fleft">
+	<TR>
+		<TD style="width: 1%; white-space: nowrap;">
 			<IMG SRC="img/info.gif" ALT="">
 		</TD>
 		<TD style="width: 1%;"><span class="bold">{trans("Position:")}</span></TD>
-		<TD style="width: 98%;" CLASS="fright">
+		<TD style="width: 98%;">
 			{$userinfo.position}
 		</TD>
 	</TR>
 {/if}
 {if $userinfo.email}
-	<TR CLASS="light">
-		<TD style="width: 1%; white-space: nowrap;" CLASS="fleft">
+	<TR>
+		<TD style="width: 1%; white-space: nowrap;">
 			<IMG SRC="img/mail.gif" ALT="">
 		</TD>
 		<TD style="width: 1%;"><span class="bold">{trans("E-mail:")}</span></TD>
-		<TD style="width: 98%;" CLASS="fright">
+		<TD style="width: 98%;">
 			<A HREF="mailto:{$userinfo.email}">{$userinfo.email}</A>
 		</TD>
 	</TR>
 {/if}
 {if $userinfo.phone}
-	<TR CLASS="light">
-		<TD style="width: 1%; white-space: nowrap;" CLASS="fleft">
+	<TR>
+		<TD style="width: 1%; white-space: nowrap;">
 			<IMG SRC="img/sms.gif" ALT="">
 		</TD>
 		<TD style="width: 1%;"><span class="bold">{trans("Phone:")}</span></TD>
-		<TD style="width: 98%;" CLASS="fright">
+		<TD style="width: 98%;">
 			{$userinfo.phone}
 		</TD>
 	</TR>
 {/if}
 {if $userinfo.swekey_id}
-	<TR CLASS="light">
-		<TD style="width: 1%; white-space: nowrap;" CLASS="fleft">
+	<TR>
+		<TD style="width: 1%; white-space: nowrap;">
 			<IMG SRC="img/swekey/swekey-green-8x16.png"" ALT="">
 		</TD>
 		<TD style="width: 1%;"><span class="bold">{trans("Swekey:")}</span></TD>
-		<TD style="width: 98%;" CLASS="fright">
+		<TD style="width: 98%;">
 			{$userinfo.swekey_id}
 		</TD>
 	</TR>
 {/if}
-	<TR CLASS="light">
-		<TD style="width: 1%; white-space: nowrap;" CLASS="fleft">
+	<TR>
+		<TD style="width: 1%; white-space: nowrap;">
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
 		<TD style="width: 1%;"><span class="bold">{trans("Notification:")}</span></TD>
-		<TD style="width: 98%;" CLASS="fright">
+		<TD style="width: 98%;">
 			{if !$userinfo.ntype}{trans("none")}{else}{$userinfo.ntype}{/if}
 		</TD>
 	</TR>
-	<tr class="light">
-		<td style="width: 1%; white-space: nowrap;" class="fleft">
+	<tr>
+		<td style="width: 1%; white-space: nowrap;">
 			<img src="img/{if !$userinfo.access}no{/if}access.gif" alt="">
 		</td>
 		<td style="width: 1%;"><span class="bold">{trans("Account active:")}</span></td>
-		<td style="width: 98%;" class="fright">
+		<td style="width: 98%;">
 			{if !$userinfo.access}{trans("no")}{else}{trans("yes")}{/if}
 		</td>
 	</tr>
 {if $userinfo.accessfrom || $userinfo.accessto}
-	<tr class="light">
-		<td style="width: 1%; white-space: nowrap;" class="fleft">
+	<tr>
+		<td style="width: 1%; white-space: nowrap;">
 			<img src="img/calendar.gif" alt="">
 		</td>
 		<td style="width: 1%;"><span class="bold">{trans("Account active:")}</span></td>
-		<td style="width: 98%;" class="fright">
+		<td style="width: 98%;">
 			{if $userinfo.accessfrom}<span class="bold">{trans("from")}:</span> {$userinfo.accessfrom}{/if}
 			{if $userinfo.accessto}<span class="bold"> {trans("to")}:</span> {$userinfo.accessto}{/if}
 		</td>
 	</tr>
 {/if}
-	<TR CLASS="light">
-		<TD style="width: 1%; white-space: nowrap;" CLASS="fleft">
+	<TR>
+		<TD style="width: 1%; white-space: nowrap;">
 			<IMG SRC="img/ip.gif" ALT="">
 		</TD>
 		<TD style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("Allowed hosts:")}</span>
 		</TD>
-		<TD style="width: 98%; white-space: nowrap;" CLASS="fright">
+		<TD style="width: 98%; white-space: nowrap;">
 			{if $userinfo.hosts}{$userinfo.hosts}{else}{trans("all")}{/if}
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD style="width: 1%; white-space: nowrap;" CLASS="fleft">
+	<TR>
+		<TD style="width: 1%; white-space: nowrap;">
 			<IMG SRC="img/passwd.gif" ALT="">
 		</TD>
 		<TD style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("Password expiration:")}</span>
 		</TD>
-		<TD style="width: 98%; white-space: nowrap;" CLASS="fright">
+		<TD style="width: 98%; white-space: nowrap;">
 			{$_PASSWDEXPIRATIONS[$userinfo.passwdexpiration]}
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD style="width: 1%; white-space: nowrap;" CLASS="fleft">
+	<TR>
+		<TD style="width: 1%; white-space: nowrap;">
 			<IMG SRC="img/passwd.gif" ALT="">
 		</TD>
 		<TD style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("Last password change:")}</span>
 		</TD>
-		<TD style="width: 98%; white-space: nowrap;" CLASS="fright">
+		<TD style="width: 98%; white-space: nowrap;">
 			{$userinfo.passwdlastchange}
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD style="width: 1%;" CLASS="fleft">
+	<TR>
+		<TD style="width: 1%;">
 			<IMG SRC="img/pass.gif" ALT="">
 		</TD>
 		<TD style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Access rights:")}</span></TD>
-		<TD style="width: 98%;" CLASS="fright">
+		<TD style="width: 98%;">
 			{section name=acl loop=$accesslist}
 			<li type="square">{$accesslist[acl]}</li>
 			{/section}
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD style="width: 1%;" CLASS="fleft">
+	<TR>
+		<TD style="width: 1%;">
 			<IMG SRC="img/group.gif" ALT="">
 		</TD>
 		<TD style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Excluded groups:")}</span></TD>
-		<TD WIDTH="98%" CLASS="fright">
+		<TD WIDTH="98%">
 			{foreach from=$excludedgroups item=item}
 			<li type="square"><a href="?m=customergroupinfo&id={$item.id}">{$item.name}</a></li>
 			{foreachelse}
@@ -150,22 +153,22 @@
 			{/foreach}
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD style="width: 1%;" CLASS="fleft"></TD>
+	<TR>
+		<TD style="width: 1%;"></TD>
 		<TD style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Last login:")}</span></TD>
-		<TD style="width: 98%;" CLASS="fright">
+		<TD style="width: 98%;">
 			{$userinfo.lastlogin}, {$userinfo.lastloginip} {if $userinfo.lastloginip neq $userinfo.lastloginhost}({$userinfo.lastloginhost}){/if}
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD style="width: 1%;" CLASS="fleft"></TD>
+	<TR>
+		<TD style="width: 1%;"></TD>
 		<TD style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Last failed login:")}</span></TD>
-		<TD style="width: 98%;" CLASS="fright">
+		<TD style="width: 98%;">
 			{$userinfo.faillogin}, {$userinfo.failedloginip} {if $userinfo.failedloginip neq $userinfo.failedloginhost}({$userinfo.failedloginhost}){/if}
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD COLSPAN="3" CLASS="fbottomu" style="text-align: right;">
+	<TR>
+		<TD COLSPAN="3" style="text-align: right;">
 			{if $layout.logid ne $userinfo.id}
 			    {if !$userinfo.access}
 				<a href="?m=useraccess&id={$userinfo.id}&access=1">{trans("Connect")} <img src="img/noaccess.gif" alt=""></a>
@@ -179,5 +182,6 @@
 			<a href="?m=userlist">{trans("User list")} <img src="img/users.gif" alt=""></a>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 {include file="footer.html"}
