@@ -47,32 +47,60 @@ if(isset($_POST['registry']))
 		foreach($registry['users'] as $key => $value)
 			$registry['rights'][] = array('id' => $key, 'rights' => array_sum($value), 'name' => $registry['usernames'][$key]);
 
-	if(!$error)
-	{
+	if (!$error) {
 		$DB->BeginTrans();
+		$args = array(
+			'name' => $registry['name'],
+			'description' => $registry['description'],
+			'in_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $registry['in_numberplanid'],
+			'out_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $registry['out_numberplanid'],
+			'disabled' => isset($registry['disabled']) ? 1 : 0,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG] => $registry['id'],
+		);
 		$DB->Execute('UPDATE cashregs SET name=?, description=?, in_numberplanid=?, out_numberplanid=?, disabled=?
-				WHERE id=?',
-				array($registry['name'],
-					$registry['description'],
-					$registry['in_numberplanid'],
-					$registry['out_numberplanid'],
-					isset($registry['disabled']) ? 1 : 0,
-					$registry['id']
-				));
+			WHERE id=?', array_values($args));
+
+		if ($SYSLOG) {
+			$SYSLOG->AddMessage(SYSLOG_RES_CASHREG, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG],
+					'in_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN],
+					'out_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN]));
+			$cashrights = $DB->GetAll('SELECT id, userid FROM cashrights WHERE regid = ?', array($registry['id']));
+			if (!empty($cashrights))
+				foreach ($cashrights as $cashright) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHRIGHT] => $cashright['id'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG] => $registry['id'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $cashright['userid'],
+					);
+					$SYSLOG->AddMessage(SYSLOG_RES_CASHRIGHT, SYSLOG_OPER_DELETE, $args, array_keys($args));
+				}
+		}
 
 		$DB->Execute('DELETE FROM cashrights WHERE regid=?', array($registry['id']));
-		if($registry['rights'])
-			foreach($registry['rights'] as $right)
-			    if($right['rights'])
-			        $DB->Execute('INSERT INTO cashrights (regid, userid, rights) VALUES(?, ?, ?)',
-			            array($id, $right['id'], $right['rights']));
+		if ($registry['rights'])
+			foreach ($registry['rights'] as $right)
+				if ($right['rights']) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG] => $id,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $right['id'],
+						'rights' => $right['rights'],
+					);
+					$DB->Execute('INSERT INTO cashrights (regid, userid, rights) VALUES(?, ?, ?)',
+						array_values($args));
+					if ($SYSLOG) {
+						$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHRIGHT]] = $DB->GetLastInsertID('cashrights');
+						$SYSLOG->AddMessage(SYSLOG_RES_CASHRIGHT, SYSLOG_OPER_ADD, $args,
+							array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHRIGHT],
+								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG],
+								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
+					}
+				}
 
 		$DB->CommitTrans();
 		$SESSION->redirect('?m=cashreginfo&id='.$id);
 	}
-}
-else
-{
+} else {
 	$registry = $DB->GetRow('SELECT id, name, description, in_numberplanid, out_numberplanid, disabled
 			FROM cashregs WHERE id=?', array($id));
 

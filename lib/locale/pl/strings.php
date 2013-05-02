@@ -2706,6 +2706,17 @@ $_LANG['promotion schema<!syslog>'] = 'schemat promocyjny';
 $_LANG['promotion schema assignment<!syslog>'] = 'powiązanie schematu promocyjnego z taryfą';
 $_LANG['customer group exclusion<!syslog>'] = 'wykluczenie grupy klientów';
 $_LANG['database backup<!syslog>'] = 'kopia zapasowa bazy danych';
+$_LANG['payment<!syslog>'] = 'płatność';
+$_LANG['imported financial operation<!syslog>'] = 'zaimportowana operacja finansowa';
+$_LANG['imported file with financial operations<!syslog>'] = 'zaimportowany plik z operacjami finansowymi';
+$_LANG['financial operation<!syslog>'] = 'operacja finansowa';
+$_LANG['document<!syslog>'] = 'dokument';
+$_LANG['invoice contents<!syslog>'] = 'zawartość faktury';
+$_LANG['receipt contents<!syslog>'] = 'zawartość dokumentu kasowego';
+$_LANG['debit note contents<!syslog>'] = 'zawartość noty obciążeniowej';
+$_LANG['cash registry<!syslog>'] = 'rejestr kasowy';
+$_LANG['cash registry rights<!syslog>'] = 'uprawnienia do rejestru kasowego';
+$_LANG['cash registry history<!syslog>'] = 'historia rejestru kasowego';
 
 $_LANG['addition<!syslog>'] = 'dodanie';
 $_LANG['deletion<!syslog>'] = 'usunięcie';

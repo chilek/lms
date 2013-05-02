@@ -141,53 +141,89 @@ switch($action)
                         $DB->LockTables(array('documents', 'cash', 'debitnotecontents', 'numberplans'));
 
 			$cdate = !empty($note['cdate']) ? $note['cdate'] : time();
-			
+
+			$args = array(
+				'number' => $note['number'],
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => !empty($note['numberplanid']) ? $note['numberplanid'] : 0,
+				'cdate' => $cdate,
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+				'name' => $customer['customername'],
+				'address' => $customer['address'],
+				'paytime' => $note['paytime'],
+				'ten' => $customer['ten'],
+				'ssn' => $customer['ssn'],
+				'zip' => $customer['zip'],
+				'city' => $customer['city'],
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $customer['countryid'],
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $customer['divisionid'],
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $note['id'],
+			);
 			$DB->Execute('UPDATE documents SET number = ?, numberplanid = ?,
-                                cdate = ?, customerid = ?, name = ?, address = ?, paytime = ?,
+				cdate = ?, customerid = ?, name = ?, address = ?, paytime = ?,
 				ten = ?, ssn = ?, zip = ?, city = ?, countryid = ?, divisionid = ?
-				WHERE id = ?',
-				array($note['number'],
-				        !empty($note['numberplanid']) ? $note['numberplanid'] : 0,
-				        $cdate,
-				        $customer['id'],
-				        $customer['customername'],
-				        $customer['address'],
-					$note['paytime'],
-				        $customer['ten'],
-				        $customer['ssn'],
-				        $customer['zip'],
-				        $customer['city'],
-				        $customer['countryid'],
-				        $customer['divisionid'],
-					$note['id']
-			        ));
-			
+				WHERE id = ?', array_values($args));
+
+			if ($SYSLOG) {
+				$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_UPDATE, $args,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV]));
+				$dnoteconts = $DB->GetCol('SELECT id FROM debitnotecontents WHERE docid = ?', array($note['id']));
+				foreach ($dnoteconts as $item) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DNOTECONT] => $item,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $note['id'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+					);
+					$SYSLOG->AddMessage(SYSLOG_RES_DNOTECONT, SYSLOG_OPER_DELETE, $args, array_keys($args));
+				}
+				$cashids = $DB->GetCol('SELECT id FROM cash WHERE docid = ?', array($note['id']));
+				foreach ($cashids as $item) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $item,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $note['id'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+					);
+					$SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args, array_keys($args));
+				}
+			}
 			$DB->Execute('DELETE FROM debitnotecontents WHERE docid = ?', array($note['id']));
 			$DB->Execute('DELETE FROM cash WHERE docid = ?', array($note['id']));
-			
-			$itemid=0;
-                        foreach($contents as $idx => $item)
-                        {
-                                $itemid++;
-                                $item['value'] = str_replace(',','.', $item['value']);
 
-                                $DB->Execute('INSERT INTO debitnotecontents (docid, itemid, value, description)
-                                        VALUES (?, ?, ?, ?)',
-					array($note['id'], $itemid, $item['value'], $item['description']));
+			$itemid = 0;
+			foreach ($contents as $idx => $item) {
+				$itemid++;
+				$item['value'] = str_replace(',','.', $item['value']);
+
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $note['id'],
+					'itemid' => $itemid,
+					'value' => $item['value'],
+					'description' => $item['description']
+				);
+				$DB->Execute('INSERT INTO debitnotecontents (docid, itemid, value, description)
+					VALUES (?, ?, ?, ?)', array_values($args));
+				if ($SYSLOG) {
+					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DNOTECONT]] = $DB->GetLastInsertID('debitnotecontents');
+					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $customer['id'];
+					$SYSLOG->AddMessage(SYSLOG_RES_DNOTECONT, SYSLOG_OPER_ADD, $args,
+						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DNOTECONT], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+				}
 
 				$LMS->AddBalance(array(
-                                        'time' => $cdate,
-                                        'value' => $item['value']*-1,
-                                	'taxid' => 0,
-                                	'customerid' => $customer['id'],
-	                                'comment' => $item['description'],
-                                	'docid' => $note['id'],
-                                        'itemid'=> $itemid
-                        	));
-                        }
+					'time' => $cdate,
+					'value' => $item['value']*-1,
+					'taxid' => 0,
+					'customerid' => $customer['id'],
+					'comment' => $item['description'],
+					'docid' => $note['id'],
+					'itemid'=> $itemid
+				));
+			}
 
-                        $DB->UnLockTables();
-                        $DB->CommitTrans();
+			$DB->UnLockTables();
+			$DB->CommitTrans();
 
 			$SESSION->remove('notecontents');
 			$SESSION->remove('notecustomer');

@@ -218,7 +218,7 @@ if (is_leap_year($year) && $yearday > 31 + 28)
 if (!empty($fakedate))
 	$today = $currtime;
 else
-	$today = mktime(0, 0, 0, $dom, $month, $year);
+	$today = mktime(0, 0, 0, $month, $dom, $year);
 
 if ($month == 1 || $month == 4 || $month == 7 || $month == 10)
 	$quarter = $dom;

@@ -267,9 +267,9 @@ switch($action)
 	case 'save':
 
 		if (empty($contents) || empty($customer))
-		    break;
+			break;
 
-        unset($error);
+		unset($error);
 
 		// set paytime
 		if(!empty($invoice['paytime_default']))
@@ -296,8 +296,8 @@ switch($action)
 		        $error['paytype'] = trans('Default payment type not defined!');
 		}
 
-        if ($error)
-            break;
+		if ($error)
+			break;
 
 		$DB->BeginTrans();
 		$DB->LockTables(array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions'));
@@ -322,10 +322,20 @@ switch($action)
 		// usuwamy wczesniejsze zobowiazania bez faktury
 		foreach ($contents as $item)
 			if (!empty($item['cashid']))
-			    $ids[] = intval($item['cashid']);
+				$ids[] = intval($item['cashid']);
 
-        if (!empty($ids))
-				$DB->Execute('DELETE FROM cash WHERE id IN ('.implode(',', $ids).')');
+		if (!empty($ids)) {
+			if ($SYSLOG)
+				foreach ($ids as $cashid) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $cashid,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+					);
+					$SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args,
+						array_keys($args));
+				}
+			$DB->Execute('DELETE FROM cash WHERE id IN (' . implode(',', $ids) . ')');
+		}
 
 		$DB->UnLockTables();
 		$DB->CommitTrans();

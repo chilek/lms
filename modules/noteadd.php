@@ -186,47 +186,71 @@ switch($action)
 			}
 
 			$cdate = !empty($note['cdate']) ? $note['cdate'] : time();
-			
+
+			$args = array(
+				'number' => $note['number'],
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => !empty($note['numberplanid']) ? $note['numberplanid'] : 0,
+				'type' => DOC_DNOTE,
+				'cdate' => $cdate,
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id,
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+				'name' => $customer['customername'],
+				'address' => $customer['address'],
+				'paytime' => $note['paytime'],
+				'ten' => $customer['ten'],
+				'ssn' => $customer['ssn'],
+				'zip' => $customer['zip'],
+				'city' => $customer['city'],
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $customer['countryid'],
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $customer['divisionid'],
+			);
 			$DB->Execute('INSERT INTO documents (number, numberplanid, type,
-		                        cdate, userid, customerid, name, address, paytime,
-		                        ten, ssn, zip, city, countryid, divisionid)
-		                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-		                        array($note['number'],
-		                                !empty($note['numberplanid']) ? $note['numberplanid'] : 0,
-		                                DOC_DNOTE,
-		                                $cdate,
-		                                $AUTH->id,
-		                                $customer['id'],
-				                $customer['customername'],
-				                $customer['address'],
-						$note['paytime'],
-				                $customer['ten'],
-				                $customer['ssn'],
-				                $customer['zip'],
-				                $customer['city'],
-				                $customer['countryid'],
-				                $customer['divisionid'],
-					));
-			
+					cdate, userid, customerid, name, address, paytime,
+					ten, ssn, zip, city, countryid, divisionid)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+
 			$nid = $DB->GetLastInsertID('documents');
-			
-			$itemid=0;
-            		foreach($contents as $idx => $item)
-		        {
-			        $itemid++;
+
+			if ($SYSLOG) {
+				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC]] = $nid;
+				unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
+				$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_ADD, $args,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV]));
+			}
+
+			$itemid = 0;
+			foreach ($contents as $idx => $item) {
+				$itemid++;
 				$item['value'] = str_replace(',','.', $item['value']);
 
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $nid,
+					'itemid' => $itemid,
+					'value' => $item['value'],
+					'description' => $item['description']
+				);
 				$DB->Execute('INSERT INTO debitnotecontents (docid, itemid, value, description)
-					VALUES (?, ?, ?, ?)', array($nid, $itemid, $item['value'], $item['description']));
+					VALUES (?, ?, ?, ?)', array_values($args));
+
+				if ($SYSLOG) {
+					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DNOTECONT]] = $DB->GetLastInsertID('debitnotecontents');
+					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $customer['id'];
+					$SYSLOG->AddMessage(SYSLOG_RES_DNOTECONT, SYSLOG_OPER_ADD, $args,
+						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DNOTECONT],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+				}
 
 				$LMS->AddBalance(array(
-				        'time' => $cdate,
-				        'value' => $item['value']*-1,
-				        'taxid' => 0,
-				        'customerid' => $customer['id'],
-				        'comment' => $item['description'],
-				        'docid' => $nid,
-				        'itemid'=> $itemid
+					'time' => $cdate,
+					'value' => $item['value']*-1,
+					'taxid' => 0,
+					'customerid' => $customer['id'],
+					'comment' => $item['description'],
+					'docid' => $nid,
+					'itemid'=> $itemid
 				));
 			}
 

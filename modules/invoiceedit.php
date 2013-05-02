@@ -224,25 +224,52 @@ switch($action)
 
 		$DB->BeginTrans();
 
+		$args = array(
+			'cdate' => $cdate,
+			'sdate' => $sdate,
+			'paytime' => $invoice['paytime'],
+			'paytype' => $invoice['paytype'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+			'name' => $customer['customername'],
+			'address' => $customer['address'],
+			'ten' => $customer['ten'],
+			'ssn' => $customer['ssn'],
+			'zip' => $customer['zip'],
+			'city' => $customer['city'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $customer['divisionid'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $iid,
+		);
 		$DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, customerid = ?,
 				name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, divisionid = ?
-				WHERE id = ?',
-				array($cdate,
-					$sdate,
-					$invoice['paytime'],
-					$invoice['paytype'],
-					$customer['id'],
-					$customer['customername'],
-					$customer['address'],
-					$customer['ten'],
-					$customer['ssn'],
-					$customer['zip'],
-					$customer['city'],
-					$customer['divisionid'],
-					$iid
-				));
+				WHERE id = ?', array_values($args));
+		if ($SYSLOG)
+			$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV]));
 
 		if (!$invoice['closed']) {
+			if ($SYSLOG) {
+				$cashids = $DB->GetCol('SELECT id FROM cash WHERE docid = ?', array($iid));
+				foreach ($cashids as $cashid) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $cashid,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $iid,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+					);
+					$SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args,
+						array_keys($args));
+				}
+				$itemids = $DB->GetCol('SELECT itemid FROM invoicecontents WHERE docid = ?', array($iid));
+				foreach ($itemids as $itemid) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $iid,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+						'itemid' => $itemid,
+					);
+					$SYSLOG->AddMessage(SYSLOG_RES_INVOICECONT, SYSLOG_OPER_DELETE, $args,
+						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+				}
+			}
 			$DB->Execute('DELETE FROM invoicecontents WHERE docid = ?', array($iid));
 			$DB->Execute('DELETE FROM cash WHERE docid = ?', array($iid));
 
@@ -250,22 +277,28 @@ switch($action)
 			foreach ($contents as $idx => $item) {
 				$itemid++;
 
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $iid,
+					'itemid' => $itemid,
+					'value' => $item['valuebrutto'],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $item['taxid'],
+					'prodid' => $item['prodid'],
+					'content' => $item['jm'],
+					'count' => $item['count'],
+					'pdiscount' => $item['pdiscount'],
+					'vdiscount' => $item['vdiscount'],
+					'name' => $item['name'],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $item['tariffid'],
+				);
 				$DB->Execute('INSERT INTO invoicecontents (docid, itemid, value,
 					taxid, prodid, content, count, pdiscount, vdiscount, description, tariffid)
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-					array(
-						$iid,
-						$itemid,
-						$item['valuebrutto'],
-						$item['taxid'],
-						$item['prodid'],
-						$item['jm'],
-						$item['count'],
-						$item['pdiscount'],
-						$item['vdiscount'],
-						$item['name'],
-						$item['tariffid']
-					));
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+				if ($SYSLOG) {
+					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $customer['id'];
+					$SYSLOG->AddMessage(SYSLOG_RES_INVOICECONT, SYSLOG_OPER_ADD, $args,
+						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+				}
 
 				$LMS->AddBalance(array(
 					'time' => $cdate,
