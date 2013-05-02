@@ -6,17 +6,20 @@
 {if $printmenu=="customer"}
 <P><FORM method="POST" name="printcustomerlist" id="printcustomerlist" action="?m=customerprint&type=customerlist" target="_blank">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE style="width: 100%;" cellpadding="3">
-	<TR class="dark">
-		<TD class="fleftu" style="width: 1%;">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD style="width: 1%;">
 			<IMG src="img/customer.gif" alt="">
 		</TD>
-		<TD class="frightu" style="width: 99%;">
+		<TD style="width: 99%;">
 			<span class="bold">{trans("Customers List:")}</span>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="flr container" style="width: 100%;" colspan="2">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD class="container" style="width: 100%;" colspan="2">
 			<TABLE style="width: 100%;" cellpadding="3">
 				<TR>
 					<TD style="width: 1%; white-space: nowrap;">
@@ -180,11 +183,12 @@
 			</TABLE>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="fbottomu" style="width: 100%; text-align: right;" colspan="2">
+	<TR>
+		<TD style="width: 100%; text-align: right;" colspan="2">
 			<A href="javascript:document.printcustomerlist.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM>
 <SCRIPT type="text/javascript">
@@ -202,17 +206,20 @@ cal22.time_comp = false;
 {if $printmenu=="finances"}
 <P><FORM method="post" name="printbalancelist" id="printbalancelist" action="?m=print&type=balancelist" target="_blank">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="dark">
-		<TD class="fleftu" width="1%">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
 		    <IMG src="img/money.gif" alt="">
 		</TD>
-		<TD class="frightu" width="99%">
+		<TD width="99%">
 		    <B>{trans("Network Balance Sheet")}</B>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="flr container" width="100%" colspan="2">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD class="container" width="100%" colspan="2">
 			<TABLE width="100%">
 				<TR>
 					<TD width="1%" nowrap>
@@ -344,11 +351,12 @@ cal22.time_comp = false;
 			</TABLE>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="fbottomu" width="100%" colspan="2" align="right">
+	<TR>
+		<TD width="100%" colspan="2" align="right">
 			<A href="javascript:document.printbalancelist.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM>
 <SCRIPT type="text/javascript">
@@ -365,17 +373,20 @@ multiselect('printbalancelist', 'balancelisttype', '{trans("- all types -")}');
 {if ($printmenu=="customer" || $printmenu=="finances") && !check_conf('privileges.hide_finances')}
 <P><FORM method="post" name="printcustomerbalance" id="printcustomerbalance" action="?m=print&type=customerbalance" target="_blank">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="dark">
-		<TD class="fleftu" width="1%">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
 			<IMG src="img/money.gif" alt="">
 		</TD>
-		<TD class="frightu" width="99%">
+		<TD width="99%">
 			<B>{trans("Customer Balance Sheet")}</B>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="flr container" width="100%" colspan="2">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD class="container" width="100%" colspan="2">
 			<TABLE width="100%" cellpadding="3">
 				<TR>
 					<TD width="1%">
@@ -408,11 +419,12 @@ multiselect('printbalancelist', 'balancelisttype', '{trans("- all types -")}');
 			</TABLE>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="fbottomu" width="100%" colspan="2" align="right">
+	<TR>
+		<TD width="100%" colspan="2" align="right">
 			<A href="javascript:document.printcustomerbalance.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM>
 <SCRIPT type="text/javascript">
@@ -428,17 +440,20 @@ cal4.time_comp = false;
 {if $printmenu=="finances"}
 <P><FORM method="post" name="invoicereport" id="invoicereport" action="?m=invoicereport" target="_blank">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="dark">
-		<TD class="fleftu" width="1%">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
 			<IMG src="img/money.gif" alt="">
 		</TD>
-		<TD class="frightu" width="99%">
+		<TD width="99%">
 			<B>{trans("Sale Registry")}</B>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="flr container" width="100%" colspan="2">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD class="container" width="100%" colspan="2">
 			<TABLE width="100%" cellpadding="3">
 				<TR>
 					<TD width="1%">
@@ -532,11 +547,12 @@ cal4.time_comp = false;
 			</TABLE>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="fbottomu" width="100%" colspan="2" align="right">
+	<TR>
+		<TD width="100%" colspan="2" align="right">
 			<A href="javascript:document.invoicereport.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM>
 <SCRIPT type="text/javascript">
@@ -553,17 +569,20 @@ multiselect('invoicereport', 'invoicereportgroup', '{trans("- all groups -")}');
 {if $printmenu=="finances"}
 <P><FORM method="post" name="printreceiptlist" id="printreceiptlist" action="?m=print&type=receiptlist" target="_blank">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="dark">
-		<TD class="fleftu" width="1%">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
 			<IMG src="img/money.gif" alt="">
 		</TD>
-		<TD class="frightu" width="99%">
+		<TD width="99%">
 			<B>{trans("Cash Report")}</B>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="flr container" width="100%" colspan="2">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD class="container" width="100%" colspan="2">
 			<TABLE width="100%" cellpadding="3">
 				<TR>
 					<TD width="1%">
@@ -633,11 +652,12 @@ multiselect('invoicereport', 'invoicereportgroup', '{trans("- all groups -")}');
 			</TABLE>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="fbottomu" width="100%" colspan="2" align="right">
+	<TR>
+		<TD width="100%" colspan="2" align="right">
 			<A href="javascript:document.printreceiptlist.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM>
 <SCRIPT type="text/javascript">
@@ -668,17 +688,20 @@ cal13.time_comp = false;
 	}
 //-->
 </SCRIPT>
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="dark">
-		<TD class="fleftu" width="1%">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
 			<IMG src="img/money.gif" alt="">
 		</TD>
-		<TD class="frightu" width="99%">
+		<TD width="99%">
 			<B>{trans("Invoices")}</B>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="flr container" width="100%" colspan="2">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD class="container" width="100%" colspan="2">
 			<TABLE width="100%" cellpadding="3">
 				<TR>
 					<TD width="1%">
@@ -773,12 +796,13 @@ cal13.time_comp = false;
 			</TABLE>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="fbottomu" width="100%" colspan="2" align="right">
+	<TR>
+		<TD width="100%" colspan="2" align="right">
 			<A href="javascript:print_forms();">{trans("Print form of cash transfer")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 			<A href="javascript:print();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM>
 <SCRIPT type="text/javascript">
@@ -794,17 +818,20 @@ cal11.time_comp = false;
 {if $printmenu=="finances"}
 <P><FORM method="post" name="printforms" id="printforms" action="?m=print&type=transferforms2" target="_blank">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="dark">
-		<TD class="fleftu" width="1%">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
 			<IMG src="img/money.gif" alt="">
 		</TD>
-		<TD class="frightu" width="99%">
+		<TD width="99%">
 			<B>{trans("Transfer forms")}</B>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="flr container" width="100%" colspan="2">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD class="container" width="100%" colspan="2">
 			<TABLE width="100%" cellpadding="3">
 				<TR>
 					<TD width="1%">
@@ -859,11 +886,12 @@ cal11.time_comp = false;
 			</TABLE>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="fbottomu" width="100%" colspan="2" align="right">
+	<TR>
+		<TD width="100%" colspan="2" align="right">
 			<A href="javascript:document.printforms.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM>
 </P>
@@ -871,17 +899,20 @@ cal11.time_comp = false;
 {if $printmenu=="incomereport" || $printmenu=="finances"}
 <P><FORM method="post" name="printincomereport" id="printincomereport" action="?m=print&type=incomereport" target="_blank">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="dark">
-		<TD class="fleftu" width="1%">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
 			<IMG src="img/money.gif" alt="">
 		</TD>
-		<TD class="frightu" width="99%">
+		<TD width="99%">
 			<B>{trans("Total Invoiceless Income")}</B>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="flr container" width="100%" colspan="2">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD class="container" width="100%" colspan="2">
 			<TABLE width="100%" cellpadding="3">
 				<TR>
 					<TD width="1%">
@@ -896,11 +927,12 @@ cal11.time_comp = false;
 			</TABLE>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="fbottomu" width="100%" colspan="2" align="right">
+	<TR>
+		<TD width="100%" colspan="2" align="right">
 			<A href="javascript:document.printincomereport.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM>
 <SCRIPT type="text/javascript">
@@ -916,17 +948,20 @@ cal6.time_comp = false;
 {if ($printmenu=="customer" || $printmenu=="finances") && !check_conf('privileges.hide_finances')}
 <P><FORM method="post" name="liabilityreport" id="liabilityreport" action="?m=print&type=liabilityreport" target="_blank">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="dark">
-		<TD class="fleftu" width="1%">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
 			<IMG src="img/money.gif" alt="">
 		</TD>
-		<TD class="frightu" width="99%">
+		<TD width="99%">
 			<B>{trans("Liability Report")}</B>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="flr container" width="100%" colspan="2">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD class="container" width="100%" colspan="2">
 			<TABLE width="100%" cellpadding="3">
 				<TR>
 					<TD width="1%">
@@ -985,11 +1020,12 @@ cal6.time_comp = false;
 			</TABLE>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="fbottomu" width="100%" colspan="2" align="right">
+	<TR>
+		<TD width="100%" colspan="2" align="right">
 			<A href="javascript:document.liabilityreport.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM>
 <SCRIPT type="text/javascript">
@@ -1003,17 +1039,20 @@ cal7.time_comp = false;
 {if $printmenu=="finances"}
 <P><FORM method="post" name="printimportlist" id="printimportlist" action="?m=print&type=importlist" target="_blank">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="dark">
-		<TD class="fleftu" width="1%">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
 			<IMG src="img/money.gif" alt="">
 		</TD>
-		<TD class="frightu" width="99%">
+		<TD width="99%">
 			<B>{trans("Cash Import History")}</B>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="flr container" width="100%" colspan="2">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD class="container" width="100%" colspan="2">
 			<TABLE width="100%" cellpadding="3">
 				<TR>
 					<TD width="1%" nowrap>
@@ -1042,11 +1081,12 @@ cal7.time_comp = false;
 			</TABLE>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="fbottomu" width="100%" colspan="2" align="right">
+	<TR>
+		<TD width="100%" colspan="2" align="right">
 			<A href="javascript:document.printimportlist.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM>
 <SCRIPT type="text/javascript">
@@ -1062,17 +1102,20 @@ cal24.time_comp = false;
 {if $printmenu=="node"}
 <P><FORM method="post" name="printnodelist" id="printnodelist" action="?m=nodeprint&type=nodelist" target="_blank">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="dark">
-		<TD class="fleftu" width="1%">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
 			<IMG src="img/node.gif" alt="">
 		</TD>
-		<TD class="frightu" width="99%">
+		<TD width="99%">
 			<B>{trans("Nodes List")}</B>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="flr container" width="100%" colspan="2">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD class="container" width="100%" colspan="2">
 			<TABLE width="100%" cellpadding="3">
 				<TR>
 					<TD width="1%">
@@ -1149,11 +1192,12 @@ cal24.time_comp = false;
 			</TABLE>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="fbottomu" width="100%" colspan="2" align="right">
+	<TR>
+		<TD width="100%" colspan="2" align="right">
 			<A href="javascript:document.printnodelist.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM>
 </P>
@@ -1161,17 +1205,20 @@ cal24.time_comp = false;
 {if $printmenu=="traffic" || $printmenu=="customer"}
 <P><FORM method="post" name="printcustomertraffic" id="printcustomertraffic"  action="?m=trafficprint&type=customertraffic" target="_blank">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="dark">
-		<TD class="fleftu" width="1%">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
 			<IMG src="img/traffic.gif" alt="">
 		</TD>
-		<TD class="frightu" width="99%">
+		<TD width="99%">
 			<B>{trans("Stats")}</B>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="flr container" width="100%" colspan="2">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD class="container" width="100%" colspan="2">
 			<TABLE width="100%" cellpadding="3">
 				<TR>
 					<TD width="1%">
@@ -1220,11 +1267,12 @@ cal24.time_comp = false;
 			</TABLE>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="fbottomu" width="100%" colspan="2" align="right">
+	<TR>
+		<TD width="100%" colspan="2" align="right">
 			<A href="javascript:document.printcustomertraffic.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM>
 </P>
