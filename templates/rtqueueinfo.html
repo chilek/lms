@@ -1,29 +1,32 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="dark">
-	    <TD width="1%" class="fleftu">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+	    <TD width="1%">
 		<IMG src="img/queue.gif" ALT="">
 	    </TD>
-	    <TD width="99%" colspan="2" class="frightu"><B>{$queue.name} ({$queue.id|string_format:"%04d"})</B></TD>
+	    <TD width="99%" colspan="2"><B>{$queue.name} ({$queue.id|string_format:"%04d"})</B></TD>
 	</TR>
+    </THEAD>
+    <TBODY>
 	{if $queue.email}
-	<TR class="light">
-	    <TD width="1%" class="fleft">
+	<TR>
+	    <TD width="1%">
 		<IMG src="img/mail.gif" ALT="">
 	    </TD>
 	    <TD width="1%"><B>{trans("E-mail:")}</B></TD>
-	    <TD width="98%" class="fright">{$queue.email}</TD>
+	    <TD width="98%">{$queue.email}</TD>
 	</TR>
 	{/if}
 	{if $queue.description}
-	<TR class="light">
-	    <TD width="1%" class="fleft">
+	<TR>
+	    <TD width="1%">
 		<IMG src="img/info1.gif" ALT="">
 	    </TD>
 	    <TD width="1%"><B>{trans("Description:")}</B></TD>
-	    <TD width="98%" class="fright">
+	    <TD width="98%">
 		<TABLE width="100%" cellpadding="5">
 		    <TR>
 			<TD class="fall superlight">
@@ -34,26 +37,29 @@
 	    </TD>
 	</TR>
 	{/if}
-	<TR class="light">
-	    <TD width="1%" class="fleft">
+	<TR>
+	    <TD width="1%">
 		<IMG src="img/users.gif" ALT="">
 	    </TD>
 	    <TD width="1%"><B>{trans("Privileges:")}</B></TD>
-	    <TD width="98%" class="fright">
-		    <TABLE width="100%" cellpadding="3">
-			<TR class="dark">
-			    <TD width="96%" class="fleftu"><B>{trans("User")}</B>
+	    <TD width="98%">
+		    <TABLE class="lmsbox">
+                        <THEAD>
+			<TR>
+			    <TD width="96%"><B>{trans("User")}</B>
 			    </TD>
-			    <TD width="1%" class="fbt" align="center" nowrap><B>{trans("Read")}</B></TD>
-			    <TD width="1%" class="fbt" align="center" nowrap><B>{trans("Write (+R)")}</B></TD>
-			    <TD width="1%" class="fbt" align="center" nowrap><B>{trans("Delete (+R)")}</B></TD>
-			    <TD width="1%" class="frightu" align="center" nowrap><B>{trans("Notice (+R)")}</B></TD>
+			    <TD width="1%" align="center" nowrap><B>{trans("Read")}</B></TD>
+			    <TD width="1%" align="center" nowrap><B>{trans("Write (+R)")}</B></TD>
+			    <TD width="1%" align="center" nowrap><B>{trans("Delete (+R)")}</B></TD>
+			    <TD width="1%" align="center" nowrap><B>{trans("Notice (+R)")}</B></TD>
 			</TR>
+                        </THEAD>
+                        <TBODY>
 			{cycle values="light,lucid" print=false}
 			{foreach from=$queue.rights item=right}
 			{if $right.rights}
 			<TR class="highlight {cycle}"  >
-			    <TD width="96%" class="fleft">
+			    <TD width="96%">
 				<A href="?m=userinfo&id={$right.id}">{$right.name}</A>
 				<INPUT type="hidden" name="queue[usernames][{$right.id}]" value="{$right.name}">
 			    </TD>
@@ -66,28 +72,23 @@
 			    <TD width="1%" align="center">
 				{if ($right.rights & 4) == 4}<IMG src="img/pass.gif" alt="">{/if}
 			    </TD>
-			    <TD width="1%" align="center" class="fright">
+			    <TD width="1%" align="center">
 				{if ($right.rights & 8) == 8}<IMG src="img/pass.gif" alt="">{/if}
 			    </TD>
 			</TR>
 			{/if}
 			{/foreach}
-			<TR class=light">
-			    <TD width="96%" class="ftop"></TD>
-			    <TD width="1%" class="ftop"></TD>
-			    <TD width="1%" class="ftop"></TD>
-			    <TD width="1%" class="ftop"></TD>
-			    <TD width="1%" class="ftop"></TD>
-			</TR>
+                        </TBODY>
 		</TABLE>
 	    </TD>
 	</TR>
-	<TR class="light">
-	    <TD width="100%" COLSPAN="3" class="fbottomu" ALIGN="RIGHT"> 
+	<TR>
+	    <TD width="100%" COLSPAN="3" ALIGN="RIGHT"> 
 	        <A HREF="?m=rtqueueview&id={$queue.id}">{trans("Browse")} <IMG src="img/view.gif" alt=""></A>
 	    	<A HREF="?m=rtqueueedit&id={$queue.id}">{trans("Edit")} <IMG src="img/save.gif" alt=""></A>
 		<A HREF="?m=rtqueuedel&id={$queue.id}" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to remove queue \'$a\' and all assigned tickets and messages?{/t}');">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
 	    </TD>
 	</TR>
+    </TBODY>
 </TABLE></P>
 {include file="footer.html"}

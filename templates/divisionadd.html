@@ -3,37 +3,40 @@
 <H1>{$layout.pagetitle}</H1>
 <FORM method="POST" action="?m=divisionadd" name="division">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" cellpadding="3">
-	<TR class="dark">
-		<TD width="1%" class="fleftu">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
 			<IMG src="img/division.gif" alt="">
 		</TD>
-		<TD width="1%" class="fbt">
+		<TD width="1%">
 			<B>{trans("Name:")}</B>
 		</TD>
-		<TD width="98%" class="frightu">
+		<TD width="98%">
 			<INPUT type="text" name="division[shortname]" value="{$division.shortname|escape}" size="40" {tip text="Enter division short name" trigger="shortname" bold=1}>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD width="1%">
 			<IMG src="img/division.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>
 			<B>{trans("Long name:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<TEXTAREA NAME="division[name]" COLS="45" ROWS="4" {tip text="Enter division long name" trigger="name"}>{$division.name}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/home.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>
 			<B>{trans("Address:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<TABLE width="100%" cellpadding="2" cellspacing="0">
 			    <TR>
 				<TD width="1%" NOWRAP>{trans("Address:")}</TD>
@@ -61,105 +64,105 @@
 			</TABLE>    
 		</TD>
 	</TR>
-	<TR class="light">	
-		<TD width="%1" class="fleft">
+	<TR>	
+		<TD width="%1">
 			<IMG src="img/serialnumber.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>
 			<B>{trans("TEN")}</B>
 		</TD>
-		<TD width="99%" class="fright">
+		<TD width="99%">
 			<INPUT TYPE="text" size="40" value="{$division.ten}" name="division[ten]" {tip text="Enter Tax Exempt Number (optional)" trigger="ten"}>
 			{if $division.tenwarning}
 			<INPUT TYPE="HIDDEN" NAME="division[tenwarning]" VALUE="1">
 			{/if}
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="%1" class="fleft">
+	<TR>
+		<TD width="%1">
 			<IMG src="img/serialnumber.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>
 			<B>{trans("REGON")}</B>
 		</TD>
-		<TD width="99%" class="fright">
+		<TD width="99%">
 			<INPUT TYPE="text" size="40" value="{$division.regon}" name="division[regon]" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/card.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>
 			<B>{trans("Bank account:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<INPUT type="text" name="division[account]" VALUE="{$division.account}" SIZE="45" {tip text="Enter bank account or mass payments account prefix (optional)" trigger="account"}>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>
 			<B>{trans("Description:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<TEXTAREA NAME="division[description]" COLS="45" ROWS="4" {tip text="Enter additional information (optional)"}>{$division.description}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/print.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>
 			<B>{trans("Invoice header:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<TEXTAREA NAME="division[inv_header]" COLS="45" ROWS="4" {tip text="Enter invoice header (optional)" trigger="inv_header"}>{$division.inv_header}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/print.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>
 			<B>{trans("Invoice footer:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<TEXTAREA NAME="division[inv_footer]" COLS="45" ROWS="4" {tip text="Enter invoice footer (optional)" trigger="inv_footer"}>{$division.inv_footer}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/print.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>
 			<B>{trans("Invoice author:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<INPUT type="text" name="division[inv_author]" VALUE="{$division.inv_author}" SIZE="45" {tip text="Enter invoices author (optional)" trigger="inv_author"}>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/print.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>
 			<B>{trans("Invoice creation place:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<INPUT type="text" name="division[inv_cplace]" VALUE="{$division.inv_cplace}" SIZE="45" {tip text="Enter invoices creation place (optional)" trigger="inv_cplace"}>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/print.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>
 			<B>{trans("Payment type:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<SELECT name="division[inv_paytype]" {tip text="Select default invoices payment type" trigger="paytype"}>
 				<OPTION value=""{if !$division.inv_paytype} selected{/if}>- {trans("default")} -</OPTION>
 				{foreach from=$_PAYTYPES item=item key=key}
@@ -168,14 +171,14 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-                <TD WIDTH="1%" class="fleft">
+	<TR>
+                <TD WIDTH="1%">
 		        <IMG src="img/print.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
 		        <B>{trans("Deadline:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<SELECT name="division[inv_paytime]" {tip text="Select default deadline in days" trigger="inv_paytime"}>
 			        <OPTION value=""{if !strlen($division.inv_paytime)} selected{/if}>- {trans("default")} -</OPTION>
 			        <OPTION value="0"{if $division.inv_paytime=="0"} selected{/if}>0</OPTION>
@@ -187,13 +190,14 @@
 			</SELECT>
 	        </TD>
 	</TR>
-	<TR class="light">
-		<TD class="fbottomu" align="right" colspan="3">
+	<TR>
+		<TD align="right" colspan="3">
 			<A href="javascript:document.division.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 			<A href="?m=divisionlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A><BR>
 			<INPUT type="checkbox" name="division[reuse]" id="division_reuse" value="ON" {if $division.reuse}checked{/if}> <label for="division_reuse">{trans("Display this form again, when this division is saved")}</label>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--

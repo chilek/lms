@@ -3,35 +3,39 @@
 <H1>{$layout.pagetitle}</H1>
 <FORM METHOD="POST" NAME="customergroupadd" ACTION="?m=customergroupadd">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD WIDTH="1%" CLASS="fleftu">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD WIDTH="1%">
 			<IMG SRC="img/group.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" CLASS="fbt">
+		<TD WIDTH="1%">
 			<B>{trans("Name:")}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="frightu">
+		<TD WIDTH="98%">
 			<INPUT TYPE="TEXT" NAME="customergroupadd[name]" VALUE="{$customergroupadd.name}" SIZE="50" {tip trigger="name" bold=1}>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD WIDTH="1%">
 			<IMG SRC="img/info1.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
 			<B>{trans("Description:")}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="fright">
+		<TD WIDTH="98%">
 			<TEXTAREA NAME="customergroupadd[description]" COLS="50" ROWS="5" {tip text="Enter additional information (optional)"}>{$customergroupadd.description}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="100%" COLSPAN="3" CLASS="fbottomu" ALIGN="RIGHT"> 
+	<TR>
+		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT"> 
 			<A HREF="javascript:document.customergroupadd.submit();" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
 			<A HREF="?m=customergrouplist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE></FORM></P>
 <SCRIPT type="text/javascript">
 <!--

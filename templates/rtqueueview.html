@@ -1,26 +1,27 @@
 {include file="header.html"}
 <!-- $Id$ -->
 <H1><B>{$layout.pagetitle}</B></H1>
-<TABLE cellpadding="3" WIDTH="100%">
-	<TR class="dark" {tip text="Click on column name to change sorting order"}>
-		<TD class="fleftu" colspan="2" WIDTH="1%" NOWRAP>
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR {tip text="Click on column name to change sorting order"}>
+		<TD colspan="2" WIDTH="1%" NOWRAP>
 			<IMG src="img/ticket.gif" alt="">&nbsp;<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=ticketid{if $queuedata.direction eq "asc" && $queuedata.order eq "ticketid"},desc{/if}"><B>{trans("ID:")}</B></A> {if $queuedata.order eq "ticketid"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<IMG src="img/calendar.gif" alt="">&nbsp;<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=createtime{if $queuedata.direction eq "asc" && $queuedata.order eq "createtime"},desc{/if}">{trans("Create time:")}</A>{if $queuedata.order eq "createtime"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD class="fbt" WIDTH="97%">
+		<TD WIDTH="97%">
 			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=subject{if $queuedata.direction eq "asc" && $queuedata.order eq "subject"},desc{/if}"><B>{trans("Subject:")}</B></A> {if $queuedata.order eq "subject"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=requestor{if $queuedata.direction eq "asc" && $queuedata.order eq "requestor"},desc{/if}">{trans("Submitter:")}</A> {if $queuedata.order eq "requestor"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD class="fbt" WIDTH="1%" NOWRAP>
+		<TD WIDTH="1%" NOWRAP>
 			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=owner{if $queuedata.direction eq "asc" && $queuedata.order eq "owner"},desc{/if}"><B>{trans("Owner")}</B></A>{if $queuedata.order eq "owner"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}:<BR>
 			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=lastmodified{if $queuedata.direction eq "asc" && $queuedata.order eq "lastmodified"},desc{/if}">{trans("Last modified:")}</A> {if $queuedata.order eq "lastmodified"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD class="frightu" WIDTH="1%" NOWRAP>
+		<TD WIDTH="1%" NOWRAP>
 			<B>{trans("Total:")} {$queuedata.total|default:"0"}</B>
 		</TD>
 	</TR>
-	<TR class="dark">
-		<TD class="fall" colspan="5">
+	<TR>
+		<TD colspan="5">
 		    <TABLE cellpadding="0" cellspacing="0">
 			<TR>
 			    <TD width="1%" NOWRAP>
@@ -69,16 +70,18 @@
 		</TD>
 	</TR>		
 	{if $queuedata.total != 0}
-	<TR class="dark">
-		<TD colspan="5" class="fall">
+	<TR>
+		<TD colspan="5">
 			{include file="scroller.html" listdata=$queuedata loop=$queue}
 		</TD>
 	</TR>
 	{/if}
+    </THEAD>
+    <TBODY>
 	{cycle values="light,lucid" print=false}
 	{section name=ticket loop=$queue start=$start max=$pagelimit}
 	<TR class="highlight {cycle}{if $queue[ticket].state == 2} blend{/if}"  >
-		<TD class="fleft" onClick="return self.location.href='?m=rtticketview&id={$queue[ticket].id}';">
+		<TD onClick="return self.location.href='?m=rtticketview&id={$queue[ticket].id}';">
 			{if $queue[ticket].state == 0}
 				<IMG src="img/new.gif" alt="" {tip a=$queue[ticket].id dynpopup='?m=rtticketinfo&id=$a'}>
 			{elseif $queue[ticket].state == 1}
@@ -129,7 +132,7 @@
 			{$queue[ticket].lastmodified|date_format:"%Y/%m/%d %H:%M:%S"|default:"-"}
 			{if $queue[ticket].state == 0 || $queue[ticket].state == 3}</FONT>{/if}
 		</TD>
-		<TD class="fright" align="right" NOWRAP>
+		<TD align="right" NOWRAP>
 			<A href="?m=rtticketprint&id={$queue[ticket].id}" target="_BLANK"><IMG src="img/print.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]" title="[ {trans("Edit")} ]"> </A>
 			<A href="?m=rtticketdel&id={$queue[ticket].id}" onClick="return confirmLink(this, '{t a=$queue[ticket].id|string_format:"%06d"}Are you sure, you want to remove ticket $a?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 			<A href="?m=rtticketedit&id={$queue[ticket].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"> </A>
@@ -138,24 +141,27 @@
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD COLSPAN="5" class="flr" ALIGN="center">
+		<TD COLSPAN="5" ALIGN="center">
 			<p>&nbsp;</p>
 			<p><B>{trans("This queue is empty.")}</B></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
 	{/section}
+    </TBODY>
+    <TFOOT>
 	{if $queuedata.total != 0}
-	<TR class="dark">
-		<TD colspan="5" class="fall">
+	<TR>
+		<TD colspan="5">
 			{include file="scroller.html" listdata=$queuedata loop=$queue}
 		</TD>
 	</TR>
 	{/if}
-	<TR class="light">
-		<TD COLSPAN="5" class="fall" ALIGN="right">
+	<TR>
+		<TD COLSPAN="5" ALIGN="right">
 			<A HREF="?m=rtticketadd&id={$queuedata.id}">{trans("New Ticket")} <IMG src="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>
+    </TFOOT>
 </TABLE>
 {include file="footer.html"}

@@ -4,17 +4,20 @@
 {include file="calendar_js.html"}
 <P><FORM method="post" name="invoicereport" id="invoicereport" action="?m=export&type=invoices">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="dark">
-		<TD class="fleftu" width="1%">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
 			<IMG src="img/money.gif" alt="">
 		</TD>
-		<TD class="frightu" width="99%">
+		<TD width="99%">
 			<B>{trans("Sale Registry")}</B>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="flr" width="100%" colspan="2">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD width="100%" colspan="2">
 			<TABLE width="100%">
 				<TR>
 					<TD width="1%">
@@ -33,11 +36,12 @@
 			</TABLE>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="fbottomu" width="100%" colspan="2" align="right">
+	<TR>
+		<TD width="100%" colspan="2" align="right">
 			<A href="javascript:document.invoicereport.submit();">{trans("Save")} <IMG src="img/save.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM>
 <SCRIPT type="text/javascript">
@@ -50,17 +54,20 @@ cal9.time_comp = false;
 </SCRIPT>
 <P><FORM method="post" name="receiptlist" id="receiptlist" action="?m=export&type=cash">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="dark">
-		<TD class="fleftu" width="1%">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
 			<IMG src="img/money.gif" alt="">
 		</TD>
-		<TD class="frightu" width="99%">
+		<TD width="99%">
 			<B>{trans("Cash Report")}</B>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="flr" width="100%" colspan="2">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD width="100%" colspan="2">
 			<TABLE width="100%">
 				<TR>
 					<TD width="1%">
@@ -103,11 +110,12 @@ cal9.time_comp = false;
 			</TABLE>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="fbottomu" width="100%" colspan="2" align="right">
+	<TR>
+		<TD width="100%" colspan="2" align="right">
 			<A href="javascript:document.receiptlist.submit();">{trans("Save")} <IMG src="img/save.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM>
 <SCRIPT type="text/javascript">

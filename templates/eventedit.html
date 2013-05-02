@@ -25,26 +25,29 @@
 <P align="CENTER">
 <FORM method="POST" action="?m=eventedit&id={$event.id}" name="event">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" cellpadding="3">
-	<TR class="dark">
-		<TD width="1%" class="fleftu">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
 			<IMG src="img/calendar.gif" alt="">
 		</TD>
-		<TD width="1%" class="fbt">
+		<TD width="1%">
 			<B>{trans("Title:")}</B>
 		</TD>
-		<TD width="98%" class="frightu">
+		<TD width="98%">
 			<INPUT type="text" name="event[title]" value="{$event.title}" size="50" {tip text="Enter event title" trigger="title" bold=1}>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD width="1%">
 			<IMG src="img/time.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Time:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<INPUT type="text" name="event[date]" value="{$event.date}" size="10" OnCLick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="date"}>
 			{trans("Begin:")} <SELECT name="event[begintime]" size="1" {tip text="Select time of"} OnChange="javascript:SetEndtime();">
 				{section name=time loop=$hours}
@@ -58,36 +61,36 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Description:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<TEXTAREA name="event[description]" cols="50" rows="5" {tip text="Enter additional information (optional)"}>{$event.description}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/access.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Status:")}</B>
 		</TD>
-		<TD width="98%" class="fright" nowrap>
+		<TD width="98%" nowrap>
 			<INPUT type="checkbox" name="event[private]" id="event_private" value="1" {tip text="Select event's status"}{if $event.private}CHECKED{/if}> <label for="event_private">{trans("private")}</label>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/customer.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Customer:")}</B>
 		</TD>
-		<TD width="98%" class="fright" nowrap>
+		<TD width="98%" nowrap>
 			<SELECT name="event[customerid]" {tip text="Select customer (optional)"}>
 				<OPTION value="0"{if !$event.customerid} SELECTED{/if}>{trans("- select customer -")}</OPTION>
 				{foreach from=$customerlist item=customer}	
@@ -96,25 +99,25 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Note:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<TEXTAREA name="event[note]" cols="50" rows="5" {tip text="Enter note (optional)"}>{$event.note}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft" valign="top">
+	<TR>
+		<TD width="1%" valign="top">
 			<IMG src="img/users.gif" alt="">
 		</TD>
 		<TD width="1%" valign="top">
 			<B>{trans("Users:")}</B>
 		</TD>
-		<TD width="98%" class="fright" nowrap>
+		<TD width="98%" nowrap>
 			<SELECT name="event[user]" {tip text="Select user (optional)"}>
 				<OPTION value=""{if !$event.user} SELECTED{/if}>{trans("- select user -")}</OPTION>
 				{section name=userlist loop=$userlist}	
@@ -126,8 +129,8 @@
 			{/foreach}
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="fbottomu" align="right" colspan="3">
+	<TR>
+		<TD align="right" colspan="3">
 			<A href="javascript:document.event.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 			{if !$event.closed}
 			<A href="?m=eventedit&id={$event.id}&action=close">{trans("Close")} <IMG src="img/dead.gif" alt=""></A>
@@ -137,6 +140,7 @@
 			<A href="?m=eventlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </P>
 <SCRIPT type="text/javascript">

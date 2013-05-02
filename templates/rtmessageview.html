@@ -2,31 +2,34 @@
 <!-- $Id$ -->
 <H1><B>{$layout.pagetitle}</B></H1>
 <P>
-<TABLE width="100%" cellpadding="3">
-        <TR class="dark">
-		<TD class="fleftu" width="1%">
+<TABLE class="lmsbox">
+    <THEAD>
+        <TR>
+		<TD width="1%">
 		        <IMG src="img/open.gif" alt="">
 		</TD>
-		<TD class="fbt" width="1%">
+		<TD width="1%">
 			<B>{trans("Subject:")}</B>
 		</TD>
-		<TD class="frightu" width="98%">
+		<TD width="98%">
 			<B>{$message.subject|escape}</B>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD width="1%">
 			<IMG src="img/time.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Date:")}</B>
 		</TD>
-		<TD width="98%" class="fright" NOWRAP>
+		<TD width="98%" NOWRAP>
 			{$message.createtime|date_format:"%Y/%m/%d %H:%M.%S"}
 		</TD>
 	</TR>	
-	<TR class="light">
-		<TD width="1%" class="fleft" NOWRAP>
+	<TR>
+		<TD width="1%" NOWRAP>
 		        {if $message.userid}
 				<IMG src="img/users.gif" alt="">
 			{else}
@@ -36,7 +39,7 @@
 		<TD width="1%">
 			<B>{trans("Submitter:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			{if $message.customerid}
 				<A href="?m=customerinfo&id={$message.customerid}">{$message.customername} ({$message.customerid|escape|string_format:"%04d"})</A>
 			{elseif $message.userid}
@@ -49,89 +52,90 @@
 		</TD>
 	</TR>
 	{if $message.headers}
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/mail.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Headers:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<TEXTAREA rows="5" cols="100" readonly>{$message.headers|escape}</TEXTAREA>
 		</TD>
 	</TR>
 	{/if}
 	{if $message.messageid}
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/mail.gif" alt="">
 		</TD>
 		<TD width="1%" NOWRAP>
 			<B>Message-Id:</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			{$message.messageid|escape}
 		</TD>
 	</TR>
 	{/if}
 	{if $message.replyto}
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/mail.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>Reply-To:</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			{$message.replyto|escape}
 		</TD>
 	</TR>
 	{/if}
 	{if $message.inreplyto}
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/mail.gif" alt="">
 		</TD>
 		<TD width="1%" NOWRAP>
 			<B>In-Reply-To:</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<A href="?m=rtmessageview&id={$message.inreplyto}">{$message.inreplytoid|escape}</A>
 		</TD>
 	</TR>
 	{/if}
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/edit.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Message:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			<TEXTAREA rows="5" cols="100" readonly>{$message.body|escape}</TEXTAREA>
 		</TD>
 	</TR>
 	{if $message.attachments}
-	<TR class="light">
-		<TD width="1%" class="fleft">
+	<TR>
+		<TD width="1%">
 			<IMG src="img/attach.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Attachments:")}</B>
 		</TD>
-		<TD width="98%" class="fright">
+		<TD width="98%">
 			{foreach from=$message.attachments item=a}
 				<A href="?m=rtmessageview&tid={$message.ticketid}&mid={$message.id}&file={$a.filename}">{$a.filename} ({$a.size|string_format:"%.1f"} {$a.unit})</A><BR>
 			{/foreach}
 		</TD>
 	</TR>
 	{/if}
-	<TR class="light">
-		<TD colspan="3" width="100%" class="fbottomu" align="right" NOWRAP>
+	<TR>
+		<TD colspan="3" width="100%" align="right" NOWRAP>
 			<A href="?m=rtmessageadd&id={$message.id}&ticketid={$message.ticketid}">{trans("Reply")} <IMG src="img/edit.gif" alt=""></A>
 			<A href="?m=rtticketview&id={$message.ticketid}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </P>
 {include file="footer.html"}

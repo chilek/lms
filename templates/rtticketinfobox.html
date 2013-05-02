@@ -1,13 +1,16 @@
 <!-- $Id$ -->
-<P><TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD width="100%" CLASS="fall" colspan="3">
+<P><TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="100%" colspan="3">
 			<IMG src="img/ticket.gif" alt="">
 			<B>{t a=$ticket.ticketid|string_format:"%06d"}Ticket No. $a{/t}</B>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD width="100%" class="flr" colspan="3">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD width="100%" colspan="3">
 <TABLE width="100%" cellpadding="0">
     <TR>
 	<TD width="50%">
@@ -127,8 +130,8 @@
 </TABLE>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD class="flr" ALIGN="RIGHT" colspan="3">
+	<TR>
+		<TD ALIGN="RIGHT" colspan="3">
 			{if $ticket.state < 2}
 			<A href="?m=rtticketedit&id={$ticket.ticketid}&state=2">{trans("Resolve")} <IMG src="img/resolved.gif" alt=""></A>&nbsp;
 			{/if}
@@ -137,8 +140,10 @@
 			<A href="?m=rtticketprint&id={$ticket.ticketid}" target="_BLANK">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
 		</TD>
 	</TR>
-	<TR CLASS="dark">
-		<TD CLASS="fall" width="100%" align="center" colspan="3" NOWRAP>
+    </TBODY>
+    <TFOOT>
+	<TR>
+		<TD width="100%" align="center" colspan="3" NOWRAP>
 			{if $ticket.prev_ticketid neq NULL}
 				<A HREF="?m=rtticketview&id={$ticket.prev_ticketid}">&laquo;&laquo;&laquo;&nbsp;{trans("Previous ticket")}</A>
 			{else}
@@ -152,44 +157,49 @@
 			{/if}
 		</TD>
 	</TR>
+    </TFOOT>
 </TABLE>
 </P>
 {if $stats}
 <P>
-<TABLE WIDTH="100%" CELLPADDING="3">
-        <TR CLASS="dark">
-	        <TD CLASS="fleftu" WIDTH="1%" nowrap>
+<TABLE class="lmsbox">
+    <THEAD>
+        <TR>
+	        <TD WIDTH="1%" nowrap>
 		        <IMG SRC="img/ticket.gif" ALT=""> <B>{trans("Requests causes (last year):")}</B>
 		</TD>
-		<TD CLASS="frightu" WIDTH="99%">
+		<TD WIDTH="99%">
 		        {trans("company's side")}: <B>{$stats.2.num|default:0}</B>, 
 			{trans("customer's side")}: <B>{$stats.1.num|default:0}</B>,
 			{trans("unknown/other<!plural>")}: <B>{$stats.0.num|default:0}</B>,
 			{trans("all")}: <B>{$stats.0.num+$stats.1.num+$stats.2.num}</B>
 		</TD>
 	</TR>
+    </THEAD>
 </TABLE>
 </P>
 {/if}
 {if $customerinfo}
 <P>
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD CLASS="fleftu" WIDTH="1%" nowrap>
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD WIDTH="1%" nowrap>
 			<IMG SRC="img/customer.gif" ALT=""> <B>{trans("Customer:")}</B>
 		</TD>
-		<TD CLASS="fbt" WIDTH="1%" nowrap>
+		<TD WIDTH="1%" nowrap>
 			<B>{$customerinfo.customername}</B> 
 			&nbsp;&raquo;&nbsp; {$customerinfo.address} &nbsp; {$customerinfo.zip} {$customerinfo.city}
 			{if $customerinfo.phone}&nbsp;&raquo;&nbsp; {$customerinfo.phone}{/if}
 			&nbsp;&raquo;&nbsp; {if $customerinfo.balance < 0}<FONT class="red">{/if}{$customerinfo.balance|money_format}{if $customerinfo.balance < 0}</FONT>{/if}
 		</TD>
-		<TD CLASS="frightu" WIDTH="98%" align="right">
+		<TD WIDTH="98%" align="right">
 			{if $customerinfo.groups}<FONT class="red bold">
 			({foreach from=$customerinfo.groups item=item name=groups}{$item.name}{if $smarty.foreach.groups.iteration < sizeof($customerinfo.groups)}, {/if}{/foreach})
 			</FONT>{/if}
 		</TD>
 	</TR>
+    </THEAD>
 </TABLE>
 </P>
 {/if}

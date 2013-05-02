@@ -1,19 +1,22 @@
 <!--// $Id$ //-->
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR{if $customerpanel} class="dark hand" onClick="showOrHide('customerpanel');"{else} class="dark"{/if}>
-		<TD WIDTH="1%" CLASS="fall">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR{if $customerpanel} class="hand" onClick="showOrHide('customerpanel');"{/if}>
+		<TD WIDTH="1%">
 			<IMG SRC="img/customer.gif" ALT="">
 			{if $customerpanel}<B>{trans("Owner:")}</B>{/if}
 			<B>{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}){if $customerinfo.deleted} <FONT COLOR="RED">({trans("deleted customer")})</FONT>{/if}</B>
 		</TD>
 	</TR>
-    <TR class="light"{if $customerpanel} id="customerpanel" style="display:none;"{/if}>
-	    <TD WIDTH="100%" {if $customerpanel} CLASS="fall container" ALIGN="RIGHT"{else}CLASS="flr container"{/if}>
+    </THEAD>
+    <TBODY>
+    <TR {if $customerpanel} id="customerpanel" style="display:none;"{/if}>
+	    <TD WIDTH="100%" {if $customerpanel} CLASS="container" ALIGN="RIGHT"{else}CLASS="container"{/if}>
 			<TABLE WIDTH="100%" CELLPADDING="0">
-				<TR CLASS="light">
+				<TR>
 					<TD WIDTH="50%" style="vertical-align:top;">
 						<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="light">
+	<TR>
 		<TD WIDTH="1%">
 			{if $customerinfo.status eq "3"}<IMG src="img/customer.gif" alt="">{/if}
 			{if $customerinfo.status eq "2"}<IMG src="img/wait.gif" alt="">{/if}
@@ -26,7 +29,7 @@
 		</TD>
 	</TR>
 {if $customerinfo.division}
-	<TR CLASS="light">
+	<TR>
 		<TD WIDTH="1%">
 			<IMG src="img/division.gif" alt="">
 		</TD>
@@ -35,7 +38,7 @@
 		</TD>
 	</TR>
 {/if}
-	<TR CLASS="light">
+	<TR>
 		<TD WIDTH="1%">
 			<IMG src="img/folder.gif" alt="">
 		</TD>
@@ -43,7 +46,7 @@
 			{if $customerinfo.type == $smarty.const.CTYPES_COMPANY}{assign var='type' value=$smarty.const.CTYPES_COMPANY}{$_CTYPES.$type}{elseif $customerinfo.type == $smarty.const.CTYPES_PRIVATE}{assign var='type' value=$smarty.const.CTYPES_PRIVATE}{$_CTYPES.$type}{/if}
 		</TD>
 	</TR>
-	<TR CLASS="light">
+	<TR>
 		<TD WIDTH="1%" style="vertical-align: top">
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
@@ -55,7 +58,7 @@
 		</TD>
 	</TR>
 {if $customerinfo.post_name neq "" || $customerinfo.post_address neq ""}
-	<TR CLASS="light">
+	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/post.gif" ALT="">
 		</TD>
@@ -69,7 +72,7 @@
 	</TR>
 {/if}
 {foreach from=$customerinfo.contacts item=item}
-	<TR CLASS="light">
+	<TR>
 		<TD WIDTH="1%" style="vertical-align: top">
 			<IMG SRC="img/phone.gif" ALT="">
 		</TD>
@@ -81,7 +84,7 @@
 	</TR>
 {/foreach}
 {if $customerinfo.email neq ""}
-	<TR CLASS="light">
+	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/mail.gif" ALT="">
 		</TD>
@@ -91,7 +94,7 @@
 	</TR>
 {/if}
 {foreach from=$customerinfo.messengers item=item}
-	<TR CLASS="light">
+	<TR>
 		<TD>
 			{if $item.type == $smarty.const.IM_GG}
 			<IMG src="http://status.gadu-gadu.pl/users/status.asp?id={$item.uid}&styl=1" alt="">
@@ -117,7 +120,7 @@
 	</TR>
 {/foreach}
 {if $customerinfo.pin neq 0}
-	<TR CLASS="light">
+	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/pin.gif" ALT="">
 		</TD>
@@ -127,7 +130,7 @@
 	</TR>
 {/if}
 {if $customerinfo.icn neq ""}
-	<TR CLASS="light">
+	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
@@ -137,7 +140,7 @@
 	</TR>
 {/if}
 {if $customerinfo.ssn neq ""}
-	<TR CLASS="light">
+	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
@@ -147,7 +150,7 @@
 	</TR>
 {/if}
 {if $customerinfo.ten neq ""}
-	<TR CLASS="light">
+	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
@@ -157,7 +160,7 @@
 	</TR>
 {/if}
 {if $customerinfo.regon neq ""}
-	<TR CLASS="light">
+	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
@@ -167,7 +170,7 @@
 	</TR>
 {/if}
 {if $customerinfo.rbe neq ""}
-	<TR CLASS="light">
+	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
@@ -177,7 +180,7 @@
 	</TR>
 {/if}
 {if $customerinfo.bankaccount}
-	<TR CLASS="light">
+	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/card.gif" ALT="">
 		</TD>
@@ -186,7 +189,7 @@
 		</TD>
 	</TR>
 {/if}
-	<TR CLASS="light">
+	<TR>
 		<TD WIDTH="1%" style="vertical-align: top">
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
@@ -220,7 +223,7 @@
             </TABLE>
 		</TD>
 	</TR>
-	<TR CLASS="light">
+	<TR>
 		<TD WIDTH="1%" style="vertical-align: top">
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
@@ -267,7 +270,7 @@
 				<TD WIDTH="50%" style="vertical-align:top;">
 					<TABLE WIDTH="100%" CELLPADDING="3">
 	{if $customerinfo.info}
-	<TR CLASS="light">
+	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/info1.gif" ALT="">
 		</TD>
@@ -283,7 +286,7 @@
 	</TR>
 	{/if}
 	{if $customerinfo.message}
-	<TR CLASS="light">
+	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/warningon.gif" ALT="">
 		</TD>
@@ -299,7 +302,7 @@
 	</TR>
 	{/if}
 	{if $customerinfo.notes}
-	<TR CLASS="light">
+	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/note.gif" ALT="">
 		</TD>
@@ -315,7 +318,7 @@
 	</TR>
 	{/if}
 	{if !check_conf('privileges.hide_finances')}
-	<TR CLASS="light">
+	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/money.gif" ALT="">
 		</TD>
@@ -327,7 +330,7 @@
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="light">
+	<TR>
                 <TD WIDTH="1%">
 		        <IMG SRC="img/cms.gif" ALT="">
 		</TD>
@@ -340,7 +343,7 @@
 			{if $customerinfo.up_logins.failedlogindate}{$customerinfo.up_logins.failedlogindate|date_format:"%Y/%m/%d %H:%M"} ({$customerinfo.up_logins.failedloginip}){else}-{/if}
 		</TD>
 	</TR>
-	<TR CLASS="light">
+	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/users.gif" ALT="">
 		</TD>
@@ -360,8 +363,8 @@
 {if !$customerpanel}
 		</TD>
         </TR>
-	<TR CLASS="light">
-		<TD WIDTH="100%" CLASS="fbottomu" ALIGN="RIGHT">
+	<TR>
+		<TD WIDTH="100%" ALIGN="RIGHT">
 {/if}
 			{if $customerinfo.deleted}
 				<A HREF="?m=customeredit&id={$customerinfo.id}&action=recover">{trans("Restore")} <IMG SRC="img/recover.gif" ALT="[ {trans("Restore")} ]"></A>
@@ -382,6 +385,7 @@
 			{/if}
 		</TD>
 	</TR>
+        </TBODY>
 </TABLE>
 {if $customerpanel}
 <SCRIPT type="text/javascript">

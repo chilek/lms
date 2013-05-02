@@ -54,15 +54,16 @@
 </SCRIPT>
 <FORM method="POST" name="assignment" action="?m={$layout.module}{if $assignment.id}&id={$assignment.id}{if $assignment.liabilityid}&lid={$assignment.liabilityid}{/if}{else}&id={$customerinfo.id}{/if}">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE style="width: 100%;" cellpadding="3">
-	<TR class="dark">
-		<TD class="fleftu" style="width: 1%;">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD style="width: 1%;">
 			<IMG src="img/money.gif" alt="">
 		</TD>
-		<TD class="fbt" style="width: 1%;">
+		<TD style="width: 1%;">
 			<span class="bold">{trans("Type")}/{trans("Tariff")}:</span>
 		</TD>
-		<TD class="frightu" style="width: 98%;">
+		<TD style="width: 98%;">
 			<SELECT size="1" name="assignment[tariffid]" {tip text="Select liability type" trigger="tariffid"} onchange="set_tariff()">
 				<OPTION value=""{if !$assignment.tariffid} SELECTED{/if}>- {trans("tariffless liability")} -</OPTION>
 				<OPTION value="-1"{if $assignment.tariffid == -1} SELECTED{/if}>{trans("- all liabilities suspended -")}</OPTION>
@@ -77,15 +78,17 @@
 			</SELECT>
 		</TD>
 	</TR>
+    </THEAD>
+    <TBODY>
 {if $promotionschemas}
-	<TR class="light" id="a_schema">
-		<TD class="fleft" style="width: 1%;">
+	<TR id="a_schema">
+		<TD style="width: 1%;">
 			<IMG src="img/promoschema.gif" alt="">
 		</TD>
 		<TD style="width: 1%;">
 			<span class="bold">{trans("Schema")}:</span>
 		</TD>
-		<TD class="fright" style="width: 98%;">
+		<TD style="width: 98%;">
 			<SELECT size="1" name="assignment[schemaid]" {tip text="Select promotion schema"} onchange="set_schema()">
 				{foreach from=$promotionschemas item=schema}
 				<OPTION value="{$schema.id}"{if $assignment.schemaid == $schema.id} SELECTED{/if}>{$schema.promotion|truncate:40:"...":true} / {$schema.name|truncate:40:"...":true}</OPTION>
@@ -93,14 +96,14 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR class="light" id="a_schematariff">
-		<TD class="fleft" style="width: 1%;">
+	<TR id="a_schematariff">
+		<TD style="width: 1%;">
 			<IMG src="img/money.gif" alt="">
 		</TD>
 		<TD style="width: 1%;">
 			<span class="bold">{trans("Tariff")}:</span>
 		</TD>
-		<TD class="fright" style="width: 98%;">
+		<TD style="width: 98%;">
 			<SELECT size="1" name="assignment[stariffid]" {tip text="Select subscription" trigger="stariffid"}>
 				{section name=t loop=$tariffs}
 				<OPTION value="{$tariffs[t].id}" {if $tariffs[t].id==$assignment.stariffid}SELECTED{/if}>
@@ -111,8 +114,8 @@
 		</TD>
 	</TR>
 {/if}
-	<TR class="light">
-	    <TD style="width: 100%;" colspan="3" class="flr container">
+	<TR>
+	    <TD style="width: 100%;" colspan="3" class="container">
 	        <TABLE style="width: 100%;" cellpadding="0">
 	            <TR>
 	                <TD style="vertical-align: top; width: 50%;">
@@ -287,12 +290,13 @@
 			</TABLE>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="fbottomu" style="text-align: right;" colspan="3">
+	<TR>
+		<TD style="text-align: right;" colspan="3">
 			<A href="javascript:document.assignment.submit()">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>&nbsp;
 			<A href="?m=customerinfo&id={$customerinfo.id}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM>
 <BR>

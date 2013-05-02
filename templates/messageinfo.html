@@ -1,63 +1,66 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD CLASS="fleftu" WIDTH="1%">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD WIDTH="1%">
 			<IMG SRC="img/{if $message.type == $smarty.const.MSG_SMS}sms{else}email{/if}.gif" ALT=""> 
 		</TD>
-		<TD CLASS="fbt" WIDTH="1%" NOWRAP>
+		<TD WIDTH="1%" NOWRAP>
 			<B>{trans("Subject:")}</B>
 		</TD>
-		<TD CLASS="frightu" WIDTH="98%">
+		<TD WIDTH="98%">
 			<B>{$message.subject}</B>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD WIDTH="1%">
 			<IMG SRC="img/users.gif" ALT=""> 
 		</TD>
 		<TD WIDTH="1%">
 			<B>{trans("User:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="98%">
+		<TD WIDTH="98%">
 			{if $message.userid}
 			<a href="?m=userinfo&id={$message.userid}">{$message.name}</a>
 			{else}LMS{/if}
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%">
+	<TR>
+		<TD WIDTH="1%">
 			<IMG SRC="img/time.gif" ALT=""> 
 		</TD>
 		<TD WIDTH="1%">
 			<B>{trans("Creation date:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="98%">
+		<TD WIDTH="98%">
 			{$message.cdate|date_format:"%Y/%m/%d %H:%m"}
 		</TD>
 	</TR>
 {if $message.sender}
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%">
+	<TR>
+		<TD WIDTH="1%">
 			<IMG SRC="img/mail.gif" ALT=""> 
 		</TD>
 		<TD WIDTH="1%">
 			<B>{trans("Sender:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="98%">
+		<TD WIDTH="98%">
 			{$message.sender|escape:"html"}
 		</TD>
 	</TR>
 {/if}
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%">
+	<TR>
+		<TD WIDTH="1%">
 			<IMG SRC="img/edit.gif" ALT=""> 
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{trans("Message body:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="98%">
+		<TD WIDTH="98%">
 			<TABLE WIDTH="100%" CELLPADDING="5">
 		                <TR>
 			                <TD CLASS="fall superlight">
@@ -67,30 +70,32 @@
 			</TABLE>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fbottomu" COLSPAN="3" ALIGN="RIGHT">
+	<TR>
+		<TD COLSPAN="3" ALIGN="RIGHT">
 			 <A HREF="?m=messagelist">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 <BR>
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD WIDTH="1%" CLASS="fleftu" nowrap>
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD WIDTH="1%" nowrap>
 			<A href="?m=messageinfo&id={$message.id}&o=customer{if $listdata.direction eq "asc" && $listdata.order eq "customer"},desc{/if}">{trans("Customer:")}</A> {if $listdata.order eq "customer"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="1%" CLASS="fbt" nowrap>
+		<TD WIDTH="1%" nowrap>
 			<A href="?m=messageinfo&id={$message.id}&o=destination{if $listdata.direction eq "asc" && $listdata.order eq "destination"},desc{/if}">{trans("Destination:")}</A> {if $listdata.order eq "destination"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="97%" CLASS="fbt" align="right" nowrap>
+		<TD WIDTH="97%" align="right" nowrap>
 			<A href="?m=messageinfo&id={$message.id}&o=status{if $listdata.direction eq "asc" && $listdata.order eq "status"},desc{/if}">{trans("Status:")} ({trans("Error message")})</A> {if $listdata.order eq "status"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="1%" CLASS="frightu" nowrap>
+		<TD WIDTH="1%" nowrap>
 			<B>{t a=$listdata.total}Total: $a{/t}</B>&nbsp;
 		</TD>
 	</TR>
-	<TR class="dark">
-		<TD class="fall" colspan="4" nowrap>
+	<TR>
+		<TD colspan="4" nowrap>
 			<FORM METHOD="POST" NAME="page" action="?m=messageinfo&id={$message.id}">
 			<B>{trans("Filter:")} </B> 
 			<INPUT type="text" name="search" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>&nbsp;
@@ -115,17 +120,19 @@
 		</TD>
 	</TR>		
 	{if $listdata.total != 0}
-	<TR CLASS="dark">
-		<TD WIDTH="100%" class="fall" COLSPAN="4">
+	<TR>
+		<TD WIDTH="100%" COLSPAN="4">
 			{include file="scroller.html" loop=$itemlist scrollerno=1}
 		</TD>
 	</TR>
 	{/if}
+    </THEAD>
+    <TBODY>
 	{cycle values="light,lucid" print=false}
 	{section name=itemlist loop=$itemlist start=$start max=$pagelimit}
 	{assign var=item value=$itemlist[itemlist]}
 	<TR class="highlight {cycle}{if $item.status==$smarty.const.MSG_ERROR} alert{elseif $item.status==$smarty.const.MSG_SENT} blend{/if}"  >
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+		<TD WIDTH="1%" NOWRAP>
 			{if $item.customerid}
 				<A href="?m=customerinfo&id={$item.customerid}">{$item.customer|truncate:45:"...":true} ({$item.customerid|string_format:"%04d"})</A>
 			{else}
@@ -144,31 +151,34 @@
 				{trans("waiting")}
 			{/if}
 		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>
+		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD WIDTH="100%" class="fall" ALIGN="center" COLSPAN="4">
+		<TD WIDTH="100%" ALIGN="center" COLSPAN="4">
 			<P>&nbsp;</P>
 			<P><B>{trans("No such recipients in database.")}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>	
 	{/section}
+    </TBODY>
+    <TFOOT>
 	{if $listdata.total != 0}
-	<TR CLASS="dark">
-		<TD WIDTH="100%" class="fall" COLSPAN="4">
+	<TR>
+		<TD WIDTH="100%" COLSPAN="4">
 			{include file="scroller.html" loop=$itemlist scrollerno=2}
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="dark">
-		<TD WIDTH="2%" CLASS="fleftu" colspan="2" NOWRAP>
+	<TR>
+		<TD WIDTH="2%" colspan="2" NOWRAP>
 		</TD>
-		<TD CLASS="frightu" COLSPAN="2">
+		<TD COLSPAN="2">
 			<B>{t a=$listdata.total}Total: $a{/t}</B>
 		</TD>
 	</TR>
+    </TFOOT>
 </TABLE>
 {include file="footer.html"}

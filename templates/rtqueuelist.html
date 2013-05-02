@@ -1,34 +1,37 @@
 {include file="header.html"}
 <!-- $Id$ -->
 <H1><B>{$layout.pagetitle}</B></H1>
-<TABLE cellpadding="5" WIDTH="100%">
-	<TR CLASS="dark">
-		<TD CLASS="fleftu" WIDTH="95%">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD WIDTH="95%">
 			<IMG src="img/queue.gif" ALT="">
 			<B>{trans("Queue")}:</B><BR>
 			<IMG src="img/info1.gif" ALT="">
 			{trans("Description")}:
 		</TD>
-		<TD CLASS="fbt" WIDTH="1%" align="right" NOWRAP>
+		<TD WIDTH="1%" align="right" NOWRAP>
 			<B>{trans("E-mail:")}</B>
 		</TD>
-		<TD CLASS="fbt" align="right"  WIDTH="1%">
+		<TD align="right"  WIDTH="1%">
 			{trans("New:")}
 		</TD>
-		<TD CLASS="fbt" align="right" WIDTH="1%">
+		<TD align="right" WIDTH="1%">
 			{trans("Opened:")}
 		</TD>
-		<TD CLASS="fbt" align="right" WIDTH="1%" ALIGN="CENTER">
+		<TD align="right" WIDTH="1%" ALIGN="CENTER">
 			{trans("Last:")}
 		</TD>
-		<TD CLASS="frightu" WIDTH="1%">
+		<TD WIDTH="1%">
 			&nbsp;
 		</TD>
 	</TR>
+    </THEAD>
+    <TBODY>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$queues item=queue}
 	<TR class="highlight {cycle}"  >
-		<TD CLASS="fleft" onClick="return self.location.href='?m=rtqueueview&id={$queue.id}';">
+		<TD onClick="return self.location.href='?m=rtqueueview&id={$queue.id}';">
 			<IMG src="img/queue.gif" ALT="">
 			<B>{$queue.name}</B><BR>
 			{if $queue.description}
@@ -47,7 +50,7 @@
 		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&id={$queue.id}';" NOWRAP>
 			{if $queue.lastticket}{$queue.lastticket|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
 		</TD>
-		<TD CLASS="fright" NOWRAP>
+		<TD NOWRAP>
 			<A HREF="?m=rtqueueview&id={$queue.id}"><IMG SRC="img/view.gif" alt="[ {trans("Browse")} ]" title="[ {trans("Browse")} ]"></A>
 			<A HREF="?m=rtqueuedel&id={$queue.id}" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to remove queue \'$a\' and all assigned tickets and messages?{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 			<A HREF="?m=rtqueueedit&id={$queue.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
@@ -56,27 +59,30 @@
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD colspan="6" align="center" class="flr">
+		<TD colspan="6" align="center">
 			<p>&nbsp;</p>
 			<p><B>{trans("There are no queues.")}<B></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
 	{/foreach}
-	<TR CLASS="light">
-		<TD COLSPAN="2" ALIGN="RIGHT" CLASS="fleftu">
+        </TBODY>
+        <TFOOT>
+	<TR>
+		<TD COLSPAN="2" ALIGN="RIGHT">
 			<IMG src="img/info2.gif" ALT="">
 			<B>{trans("Total:")}</B>
 		</TD>
-		<TD ALIGN="CENTER" CLASS="fbt">
+		<TD ALIGN="CENTER">
 			<B>{sum array=$queues column=new}</B>
 		</TD>
-		<TD ALIGN="CENTER" CLASS="fbt">
+		<TD ALIGN="CENTER">
 			<B>{sum array=$queues column=open}</B>
 		</TD>
-		<TD CLASS="frightu" COLSPAN="2">
+		<TD COLSPAN="2">
 			&nbsp;
 		</TD>
 	</TR>
+        </TFOOT>
 </TABLE>
 {include file="footer.html"}

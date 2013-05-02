@@ -10,15 +10,18 @@
 <TABLE WIDTH="100%" ALIGN="center" CELLPADDING="3">
 	<TR>
 		<TD style="vertical-align:top" WIDTH="50%">
-			<TABLE WIDTH="100%" CELLPADDING="2">
-				<TR class="dark">
-					<TD class="fall" align="center" COLSPAN="2">
+			<TABLE class="lmsbox">
+                            <THEAD>
+				<TR>
+					<TD align="center" COLSPAN="2">
 						<P><B>{trans("Download")}</B></P>
 					</TD>
 				</TR>
+                            </THEAD>
+                            <TBODY>
 				{section name=download loop=$download.name}
 				<TR>
-					<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+					<TD WIDTH="1%" NOWRAP>
 						<B><A HREF="?m=nodeinfo&id={$download.nodeid[download]}">{if $showips}{$download.ipaddr[download]}{else}{$download.name[download]|truncate:25:"...":true}{/if}</A></B>
 					</TD>
 					<TD CLASS="fright hand" WIDTH="99%" NOWRAP>
@@ -27,23 +30,29 @@
 					</TD>
 				</TR>
 				{/section}
-				<TR class="light">
-					<TD ALIGN="center" class="fall" COLSPAN="2">
+                            </TBODY>
+                            <TFOOT>
+				<TR>
+					<TD ALIGN="center" COLSPAN="2">
 						<P><B>{trans("Total:")} {$download.sum.data|string_format:"%.2f "}{$download.sum.unit} ({$download.avgsum|string_format:"%d"}&nbsp;kbit/s)</B></P>
 					</TD>
 				</TR>
+                            </TFOOT>
 			</TABLE>
 		</TD>
 		<TD style="vertical-align:top" WIDTH="50%">
-			<TABLE WIDTH="100%" CELLPADDING="2">
-				<TR class="dark">
-					<TD class="fall" align="center" COLSPAN="2">
+			<TABLE class="lmsbox">
+                            <THEAD>
+				<TR>
+					<TD align="center" COLSPAN="2">
 						<P><B>{trans("Upload")}</B></P>
 					</TD>
 				</TR>
+                            </THEAD>
+                            <TBODY>
 				{section name=upload loop=$upload.name}
 				<TR>
-					<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+					<TD WIDTH="1%" NOWRAP>
 						<B><A HREF="?m=nodeinfo&id={$upload.nodeid[upload]}">{if $showips}{$upload.ipaddr[upload]}{else}{$upload.name[upload]|truncate:25:"...":true}{/if}</A></B>
 					</TD>
 					<TD CLASS="fright hand" WIDTH="99%" NOWRAP>
@@ -52,11 +61,14 @@
 					</TD>
 				</TR>
 				{/section}
-				<TR class="light">
-					<TD ALIGN="center" CLASS="fall" COLSPAN="2">
+                            </TBODY>
+                            <TFOOT>
+				<TR>
+					<TD ALIGN="center" COLSPAN="2">
 						<P><B>{trans("Total:")} {$upload.sum.data|string_format:"%.2f "}{$upload.sum.unit} ({$upload.avgsum|string_format:"%d"}&nbsp;kbit/s)</B></P>
 					</TD>
 				</TR>
+                            </TFOOT>
 			</TABLE>
 		</TD>
 	</TR>
@@ -67,46 +79,49 @@
 {else}
 <FORM NAME="traffic" METHOD="POST" ACTION="?m=traffic&bar=user">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE ALIGN="center" WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD COLSPAN="3" CLASS="fall">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD COLSPAN="3">
 			<B>{trans("Enter search criteria:")}</B>
 		</TD>
 	</TR>
-	<TR CLASS="light" {tip text="Limit results to selected period"}>
-		<TD WIDTH="1%" CLASS="fleft">
+    </THEAD>
+    <TBODY>
+	<TR {tip text="Limit results to selected period"}>
+		<TD WIDTH="1%">
 			<IMG src="img/calendar.gif">
 		</TD>
 		<TD WIDTH="1%" nowrap>
 			<B>{trans("From (day/month/year hh:mm):")}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="fright" nowrap>
+		<TD WIDTH="98%" nowrap>
 			{html_select_date field_array="from" prefix="" time=$starttime field_order="DMY" field_separator=" / " start_year=$startyear end_year=$endyear}
 			&nbsp;
 			{html_select_time field_array="from" prefix="" time=$starttime display_seconds=0}
 		</TD>
 	</TR>
-	<TR CLASS="light" {tip text="Limit results to selected period"}>
-		<TD WIDTH="1%" CLASS="fleft">
+	<TR {tip text="Limit results to selected period"}>
+		<TD WIDTH="1%">
 			<IMG src="img/calendar.gif">
 		</TD>
 		<TD nowrap>
 			<B>{trans("To (day/month/year hh:mm):")}</B>
 		</TD>
-		<TD CLASS="fright" nowrap>
+		<TD nowrap>
 			{html_select_date field_array="to" prefix="" time=$endtime field_order="DMY" field_separator=" / " start_year=$startyear end_year=$endyear}
 			&nbsp;
 			{html_select_time field_array="to" prefix="" time=$endtime display_seconds=0}
 		</TD>
 	</TR>
-	<TR CLASS="light" {tip text="Limit results to selected network"}>
-		<TD WIDTH="1%" CLASS="fleft">
+	<TR {tip text="Limit results to selected network"}>
+		<TD WIDTH="1%">
 			<IMG src="img/network.gif">
 		</TD>
 		<TD nowrap>
 			<B>{trans("Network:")}</B>
 		</TD>
-		<TD CLASS="fright">
+		<TD>
 			<SELECT SIZE="1" NAME="net">
 				<OPTION VALUE="0">{trans("- all -")}</OPTION>
 				{section name="netlist" loop=$netlist}
@@ -115,14 +130,14 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft">
+	<TR>
+		<TD WIDTH="1%">
 			<IMG src="img/customer.gif" alt="">
 		</TD>
 		<TD nowrap>
 			<B>{trans("Customer:")}</B>
 		</TD>
-		<TD CLASS="fright">
+		<TD>
 			{if $customers}
 			<SELECT size="1" name="customerid" {tip text="Select customer"}>
 				<OPTION VALUE="0">{trans("- all customers -")}</OPTION>
@@ -136,14 +151,14 @@
 			{/if}
 		</TD>
 	</TR>
-	<TR CLASS="light" {tip text="Select results sorting order"}>
-		<TD WIDTH="1%" CLASS="fleft">
+	<TR {tip text="Select results sorting order"}>
+		<TD WIDTH="1%">
 			<IMG src="img/view.gif">
 		</TD>
 		<TD nowrap>
 			<B>{trans("Sorting:")}</B>
 		</TD>
-		<TD CLASS="fright">
+		<TD>
 			<SELECT SIZE="1" NAME="order">
 				<OPTION VALUE="name"{if $trafficorder == "name"} SELECTED{/if}>{trans("Node name")}</OPTION>
 				<OPTION VALUE="ip"{if $trafficorder == "ip"} SELECTED{/if}>{trans("Node IP address")}</OPTION>
@@ -153,33 +168,34 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR CLASS="light" {tip text="Limit results to n computers"}>
-		<TD WIDTH="1%" CLASS="fleft">
+	<TR {tip text="Limit results to n computers"}>
+		<TD WIDTH="1%">
 			<IMG src="img/node.gif">
 		</TD>
 		<TD nowrap>
 			<B>{trans("Nodes limit:")}</B>
 		</TD>
-		<TD CLASS="fright">
+		<TD>
 			<INPUT TYPE="text" NAME="limit" SIZE="3"></INPUT>
 		</TD>
 	</TR>
-	<TR CLASS="light" {tip text="Nodes depiction way on charts"}>
-		<TD WIDTH="1%" CLASS="fleft">
+	<TR {tip text="Nodes depiction way on charts"}>
+		<TD WIDTH="1%">
 			<IMG src="img/ip.gif">
 		</TD>
 		<TD nowrap>
 			<B>{trans("IP addresses instead of nodes names")}</B>
 		</TD>
-		<TD CLASS="fright">
+		<TD>
 			<INPUT TYPE="checkbox" NAME="showips" VALUE="1"></INPUT>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD COLSPAN="3" ALIGN="right" CLASS="fbottomu">
+	<TR>
+		<TD COLSPAN="3" ALIGN="right">
 			<A HREF="javascript:document.traffic.submit();" ACCESSKEY="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM>
 {/if}

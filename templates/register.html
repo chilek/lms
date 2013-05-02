@@ -3,56 +3,60 @@
 <H1>{$layout.pagetitle}</H1>
 <form method="post" action="?m=register" name="registerform">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE cellpadding="3" WIDTH="100%">
-	<TR CLASS="dark">
-		<TD COLSPAN="2" CLASS="fall"><b>{trans("Enter/change your registration info")}</b></TD>
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD COLSPAN="2"><b>{trans("Enter/change your registration info")}</b></TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="flr" WIDTH="100%" colspan="2">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD WIDTH="100%" colspan="2">
 			<div align="justify">{trans("Why you should register? If you register, we will know who's using LMS. Also, you will be listed (your company name and url) on LMS website. It's free. We don't gather any e-mails, snails or other info. We just keep your company name, url, unique installation id and your LMS version (but only for statistical purposes - we can't track your version by your name or installation id). In future, we plan to make available something like 'Registered LMS site'. Summary: we will be happy if you fill form below and send it to us.")}</div>
 			<div align="right">
 				{trans("LMS Developers")}
 			</div>
 		</td>
 	</tr>
-	<tr class="light">
-		<td class="fleft" width="50%" align="right">
+	<tr>
+		<td width="50%" align="right">
 			<b>{trans("Your unique installation ID:")}</b>
 		</td>
-		<td class="fright" width="50%">
+		<td width="50%">
 			{$uiid}
 		</td>
 	</tr>
-	<tr class="light">
-		<td class="fleft" width="50%" align="right">
+	<tr>
+		<td width="50%" align="right">
 			<b>{trans("Your/company name or whatever you want to put here:")}</b>
 		</td>
-		<TD CLASS="fright" WIDTH="50%">
+		<TD WIDTH="50%">
 			<input type="text" name="name" value="{$regdata.name|escape}" size="32">
 		</td>
 	</tr>
-	<tr class="light">
-		<td class="fleft" width="50%" align="right">
+	<tr>
+		<td width="50%" align="right">
 			<b>{trans("URL of your homepage:")}</b><br>
 			{trans("(please note: it HAVE TO start with http://, otherwise, it will be considered invalid)")}
 		</td>
-		<td class="fright" width="50%">
+		<td width="50%">
 			<input type="text" name="url" value="{$regdata.url}" size="32">
 		</td>
 	</tr>
-	<tr class="light">
-		<td class="fleft" width="50%" align="right">
+	<tr>
+		<td width="50%" align="right">
 			<b>{trans("Check this box if you don't like to be visible on LMS homepage:")}</b>
 		</td>
-		<td class="fright" width="50%">
+		<td width="50%">
 			<input type="checkbox" name="hidden" value="1"{if $regdata.hidden} checked{/if}>
 		</td>
 	</tr>
-	<tr class="light">
-		<td class="fbottomu" width="100%" align="center" colspan="2">
+	<tr>
+		<td width="100%" align="center" colspan="2">
 			<a href="javascript:document.registerform.submit(); ">{trans("Send registration info")}</a>
 		</td>
 	</tr>
+    </TBODY>
 </TABLE>
 </form>
 {include file="footer.html"}

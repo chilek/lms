@@ -45,41 +45,45 @@
 <TABLE width="100%" cellpadding="3">
 	<TR>
 		<TD WIDTH="1%" VALIGN="TOP">
-			<TABLE width="100%" cellpadding="3">
-				<TR CLASS="dark">
-					<TD CLASS="fleftu" WIDTH="1%">
+			<TABLE class="lmsbox">
+                            <THEAD>
+				<TR>
+					<TD WIDTH="1%">
 						<IMG SRC="img/node.gif" alt="">&nbsp;<B>{trans("Nodes:")}</B>
 					</TD>
-					<TD CLASS="frightu" WIDTH="99%" COLSPAN="2">
+					<TD WIDTH="99%" COLSPAN="2">
 						<IMG SRC="img/mail.gif" alt="">&nbsp;<B>{trans("Notice content:")}</B>
 					</TD>
 				</TR>
-				<TR CLASS="light">
-					<TD CLASS="fleft">
+                            </THEAD>
+                            <TBODY>
+				<TR>
+					<TD>
 						<SELECT size="20" name="setwarnings[mnodeid][]" id="nodeslist" multiple {tip text="Select nodes"}>
 							{section name=nodelist loop=$nodelist}
 							<OPTION value="{$nodelist[nodelist].id}" {if $nodelist[nodelist].warning}CLASS="red"{/if}>{$nodelist[nodelist].name|truncate:40:"...":true} / {$nodelist[nodelist].ip} ({$nodelist[nodelist].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
 					</TD>
-					<TD CLASS="fright" COLSPAN="2">
+					<TD COLSPAN="2">
 						<TEXTAREA NAME="setwarnings[message]" id="setwarnings[message]" ROWS="20" COLS="75" {tip text="Enter notice content"}>{$warnmessage}</TEXTAREA>
 					</TD>
 				</TR>
-				<TR CLASS="light">
-					<TD CLASS="fbl" WIDTH="1%" nowrap>
+				<TR>
+					<TD WIDTH="1%" nowrap>
 						<INPUT TYPE="checkbox" NAME="nodes" OnClick="javascript:SelectAllNodes()"><A HREF="javascript:SelectAllNodes2()">{trans("Select All<!nodes>")}</A></INPUT>
 					</TD>
-					<TD CLASS="fbottom" ALIGN="left">
+					<TD ALIGN="left">
 						 <NOBR>
 						 <INPUT TYPE="checkbox" NAME="setwarnings[warnon]" ID="warnon" OnClick="switchbox(this);"{if $warnon}CHECKED{/if}><A HREF="javascript:switchbox1()">{trans("Enable")}</A></INPUT></NOBR>
 						 / <INPUT TYPE="checkbox" NAME="setwarnings[warnoff]" ID="warnoff" OnClick="switchbox(this);" {if $warnoff}CHECKED{/if}><A HREF="javascript:switchbox2()">{trans("Disable")}</A></INPUT>
 						 </NOBR>
 					</TD>
-					<TD CLASS="fbr" ALIGN="RIGHT">
+					<TD ALIGN="RIGHT">
 						<A HREF="javascript:document.setwarnings.submit()">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
 					</TD>
 				<TR>
+                            </TBODY>
 			</TABLE>
 		</TD>
 	</TR>

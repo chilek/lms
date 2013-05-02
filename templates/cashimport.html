@@ -18,43 +18,46 @@
 </SCRIPT>
 <P><FORM NAME="cashimport" ACTION="?m=cashimport" METHOD="post">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD CLASS="fleftu" WIDTH="1%">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD WIDTH="1%">
 			{trans("ID:")}
 		</TD>
-		<TD WIDTH="1%" CLASS="fbt">
+		<TD WIDTH="1%">
 			{trans("Date:")}
 		</TD>
-		<TD WIDTH="1%" CLASS="fbt">
+		<TD WIDTH="1%">
 			<B>{trans("Value:")}</B>
 		</TD>
-		<TD WIDTH="40%" CLASS="fbt">
+		<TD WIDTH="40%">
 			{trans("Customer:")}
 		</TD>
-		<TD WIDTH="55%" CLASS="fbt">
+		<TD WIDTH="55%">
 			{trans("Description:")}
 		</TD>
-		<TD WIDTH="1%" CLASS="fbt" nowrap>
+		<TD WIDTH="1%" nowrap>
 			{trans("Link to:")}
 		</TD>
-		<TD WIDTH="1%" CLASS="frightu" ALIGN="RIGHT" nowrap>
+		<TD WIDTH="1%" ALIGN="RIGHT" nowrap>
 			<B>{trans("Total:")} {$listdata.total}</B>&nbsp;
 		</TD>
 	</TR>
+    </THEAD>
+    <TBODY>
 	{foreach from=$divisions item=division}{if $division.list}
-	<TR class="dark">
-		<TD colspan="4" class="fleftu">
+	<TR>
+		<TD colspan="4">
 		    <IMG src="img/division.gif" alt=""> <B>{$division.name}</B>
 		</TD>
-		<TD colspan="3" class="frightu" align="right">
+		<TD colspan="3" align="right">
 		    <A href="?m=cashimport&action=csv&division={$division.id}">{trans("Download (CSV)")} <IMG src="img/save.gif" alt="">
 		</TD>
 	</TR>
 		{cycle values="light,lucid" print=false}
 		{foreach from=$division.list item=item}
 		<TR class="{cycle}">
-		    <TD CLASS="fleft">
+		    <TD>
 			{$item.id|string_format:"%04d"}
 		    </TD>
 		    <TD NOWRAP>
@@ -73,7 +76,7 @@
 		    <TD ALIGN="LEFT">
 			{$item.description}
 		    </TD>
-		    <TD ALIGN="RIGHT" CLASS="fright" COLSPAN="2" NOWRAP>
+		    <TD ALIGN="RIGHT" COLSPAN="2" NOWRAP>
 			{if !$item.customerid}
 			<SELECT NAME="customer[{$item.id}]" {tip text="Select customer" trigger=$item.id}>
 				<OPTION VALUE="0">{trans("- select customer -")}</OPTION>
@@ -91,42 +94,51 @@
 	{/if}{/foreach}
 	{if !$listdata.total}
 	<TR>
-		<TD class="fall" ALIGN="center"  COLSPAN="7">
+		<TD ALIGN="center"  COLSPAN="7">
 			<P>&nbsp;</P>
 			<P><B>{trans("No cash operations to import.")}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="dark">
-		<TD CLASS="fleftu" COLSPAN="3" nowrap>
+    </TBODY>
+    <TFOOT>
+	<TR>
+		<TD COLSPAN="3" nowrap>
 			<INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('cashimport', this)" VALUE="1"><label for="allbox">{trans("Check All")}</label>
 		</TD>
-		<TD CLASS="fbt" COLSPAN="2" ALIGN="center" nowrap>
+		<TD COLSPAN="2" ALIGN="center" nowrap>
 		    <A href="?m=cashimport&action=txt">{trans("Download all (TXT)")} <IMG src="img/save.gif" alt="">
 		</TD>
-		<TD CLASS="frightu" COLSPAN="2" align="right" nowrap>
+		<TD COLSPAN="2" align="right" nowrap>
 			<A HREF="javascript:Delete();">{trans("Delete")} <IMG src="img/delete.gif" ALT=""></A>
 			<A HREF="javascript:Save();">{trans("Save")} <IMG src="img/save.gif" ALT=""></A>
 			<A HREF="javascript:document.cashimport.submit();">{trans("<!do>Import")} <IMG src="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>
+    </TFOOT>
 </TABLE>
 </FORM></P>
 {if $error.lines}
-<P><TABLE width="100%" CELLPADDING="3">
-	<TR class="dark">
-		<TD class="fall" width="100%" colspan="2">
+<P><TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="100%" colspan="2">
 			<B>{trans("Errors and Duplicated Entries")}:</B>
 		</TD>
 	</TR>
+    </THEAD>
+    <TBODY>
 	<TR>
-		<TD class="fall" width="100%">
-			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
-                <TR class="dark">
-				    <TD width="1%" class="fleftu"><B>{trans("Line:")}</B></TD>
-				    <TD width="99%" class="frightu"><B>{trans("Content:")}</B></TD>
+		<TD width="100%">
+			<TABLE class="lmsbox-inner">
+                            <THEAD>
+                                <TR>
+				    <TD width="1%"><B>{trans("Line:")}</B></TD>
+				    <TD width="99%"><B>{trans("Content:")}</B></TD>
 				</TR>
+                            </THEAD>
+                            <TBODY>
 				{cycle name=err values="light,lucid" print=false}
 				{foreach from=$error.lines key=key item=item}
 				<TR class="{cycle name=err}">
@@ -146,6 +158,7 @@
 				    </TD>
 				</TR>
 				{/foreach}
+                            </TBODY>
 			</TABLE>
 		</TD>
 	</TR>
@@ -153,27 +166,30 @@
 {/if}
 <P><FORM name="parser" enctype="multipart/form-data" method="post" action="?m=cashimportparser">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="dark">
-		<TD class="fall" width="100%" colspan="2">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="100%" colspan="2">
 			<B>{trans("Import from file")}:</B>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="fleft" width="1%" NOWRAP>
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD width="1%" NOWRAP>
 			<IMG src="img/attach.gif" alt="">
 			<B>{trans("Import file:")} </B>
 		</TD>
-		<TD class="fright" width="99%" NOWRAP>
+		<TD width="99%" NOWRAP>
 			<INPUT name="file" type="file" size="70" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="fleft" width="1%" NOWRAP>
+	<TR>
+		<TD width="1%" NOWRAP>
 			<IMG src="img/isource.gif" alt="">
 			<B>{trans("Source:")} </B>
 		</TD>
-		<TD class="fright" width="99%" NOWRAP>
+		<TD width="99%" NOWRAP>
 			<SELECT name="source" {tip text="Select import source (optional)" trigger="source"}>
 			<OPTION value="0">{trans("- auto -")}</OPTION> 
 			{foreach from=$sourcelist item=item}
@@ -182,30 +198,34 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD class="fbottomu" colspan="2" width="100%" align="right" nowrap>
+	<TR>
+		<TD colspan="2" width="100%" align="right" nowrap>
 			<A href="javascript: document.parser.submit();">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM></P>
 <P>
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="dark">
-		<TD class="fall" width="100%">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="100%">
 		    <IMG src="img/attach.gif" alt="">
 			<B>{trans("Packages:")}</B> ({t a=10}last $a packages{/t})
 		</TD>
 	</TR>
+    </THEAD>
+    <TBODY>
 	<TR>
-		<TD WIDTH="100%" class="fall">
+		<TD WIDTH="100%">
 			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
-				<TR class="dark">
-					<TD WIDTH="1%" NOWRAP class="fleftu"><B>{trans("Date:")}</B></TD>
-					<TD WIDTH="96%" NOWRAP class="fbt">{trans("Filename:")}</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt">{trans("User:")}</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">{trans("Records:")}</TD>
-					<TD WIDTH="1%" class="frightu">&nbsp;</TD>
+				<TR>
+					<TD WIDTH="1%" NOWRAP><B>{trans("Date:")}</B></TD>
+					<TD WIDTH="96%" NOWRAP>{trans("Filename:")}</TD>
+					<TD WIDTH="1%" NOWRAP>{trans("User:")}</TD>
+					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{trans("Records:")}</TD>
+					<TD WIDTH="1%">&nbsp;</TD>
 				</TR>
 				{cycle name=files values="light,lucid" print=false}
 				{foreach from=$sourcefiles item=item}
@@ -230,6 +250,7 @@
 			</TABLE>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </P>
 {include file="footer.html"}

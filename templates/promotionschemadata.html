@@ -1,25 +1,31 @@
 <!--// $Id$ //-->
-<TABLE WIDTH="100%" CELLPADDING="3">
-    <TR CLASS="dark">
-	    <TD width="100%" class="fall hand" align="left" nowrap="nowrap" onClick="showOrHide('promotionschemadata');">
+<TABLE class="lmsbox">
+    <THEAD>
+    <TR>
+	    <TD width="100%" class="hand" align="left" nowrap="nowrap" onClick="showOrHide('promotionschemadata');">
 	        <IMG SRC="img/money.gif" ALT="">
 			<B>{t a=$schema.tariffs|@count}Schema's Tariffs ($a):{/t}</B>
         </TD>
     </TR>
+    </THEAD>
+    <TBODY>
     {assign value=$schema.periods|@count var=periodcnt}
 	<TR id="promotionschemadata" style="display:none;">
-	    <TD WIDTH="100%" class="fall">
+	    <TD WIDTH="100%">
 			<FORM METHOD="POST" NAME="tariffs" ACTION="?m=promotionschemaedit&id={$schema.id}&action=tariff">
             <INPUT type="submit" class="hiddenbtn">
-	        <TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
-				<TR class="dark">
-					<TD CLASS="fleftu" width="{math equation="98-x" x=$periodcnt}%" NOWRAP><B>{trans("Name:")}</B></TD>
-					<TD CLASS="fbt" width="1%" align="right" NOWRAP><B>{trans("Value")}:</B></TD>
+	        <TABLE class="lmsbox-inner">
+                    <THEAD>
+				<TR>
+					<TD width="{math equation="98-x" x=$periodcnt}%" NOWRAP><B>{trans("Name:")}</B></TD>
+					<TD width="1%" align="right" NOWRAP><B>{trans("Value")}:</B></TD>
 					{foreach from=$schema.periods item=period}
-					<TD CLASS="fbt" width="1%" align="right" NOWRAP>{$period}:</TD>
+					<TD width="1%" align="right" NOWRAP>{$period}:</TD>
 					{/foreach}
-					<TD CLASS="frightu" width="1%">&nbsp;</TD>
+					<TD width="1%">&nbsp;</TD>
 			    </TR>
+                    </THEAD>
+                    <TBODY>
 				{cycle values="light,lucid" print=false name=tariffs}
 				{foreach from=$schema.tariffs item=tariff}
 				<TR id="row{$tariff.id}" class="highlight {cycle name=tariffs}"  >
@@ -67,9 +73,11 @@
 					</TD>
 				</TR>
 				{/foreach}
+                    </TBODY>
+                    <TFOOT>
 				{if $tariffs}
-                <TR class="light">
-					<TD colspan="2" class="ftop" style="vertical-align: top">
+                <TR>
+					<TD colspan="2" style="vertical-align: top">
 					    <SELECT name="form[tariffid]" {tip text="Select subscription" trigger="tariffid"}>
 				        {foreach from=$tariffs item=t}
                             <OPTION value="{$t.id}" {if $t.id == $formdata.tariffid}SELECTED{/if}>
@@ -79,7 +87,7 @@
 					    </SELECT>
 					</TD>
 					{foreach from=$schema.periods item=period key=key}
-					<TD CLASS="ftop" align="right" NOWRAP style="vertical-align: top">
+					<TD align="right" NOWRAP style="vertical-align: top">
 					    {textformat assign=fkey}value{$key}{/textformat}
 					    <INPUT type="text" size="8" name="form[value{$key}]" value="{$formdata.$fkey}" {if $key}{tip text="Enter subscription value for specified period" trigger="value`$key`"}{else}{tip text="Enter activation value" trigger="value`$key`"}{/if}>
 					    {if $key}
@@ -95,15 +103,17 @@
 					    {/if}
 					</TD>
 					{/foreach}
-                    <TD class="ftop" align="right" style="vertical-align: top">
+                    <TD align="right" style="vertical-align: top">
 						<A HREF="javascript:document.tariffs.submit()"><IMG src="img/save.gif" alt="[ {trans("Add assignment")} ]" title="[ {trans("Add assignment")} ]"></A>
                     </TD>
                 </TR>
                 {/if}
+                    </TFOOT>
 			</TABLE>
             </FORM>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--
