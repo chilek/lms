@@ -41,9 +41,10 @@
 <P>
 <FORM name="customeradd" id="customeradd" method="POST" action="?m=customeradd">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE cellpadding="4" cellspacing="0" width="100%">
-	<TR class="dark">
-		<TD class="fall" width="100%" colspan="2">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="100%" colspan="2">
 			<TABLE>
 				<TR>
 					<TD>
@@ -66,8 +67,10 @@
 			</TABLE>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="50%" class="fleft container"  style="vertical-align: top;">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD width="50%" class="container"  style="vertical-align: top;">
 			<TABLE cellpadding="3" WIDTH="100%">
 				<TR>
 					<TD width="1%">
@@ -429,7 +432,7 @@
 			    </TR>
 			</TABLE>
 		</TD>
-		<TD width="50%" class="fright container" STYLE="vertical-align: top;">
+		<TD width="50%" class="container" STYLE="vertical-align: top;">
 			<TABLE WIDTH="100%" CELLPADDING="3">
 		    		<TR>
 			            <TD WIDTH="1%"><IMG src="img/info1.gif" alt=""></TD>
@@ -446,13 +449,14 @@
 			</TABLE>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD width="100%" colspan="2" class="fbottomu" align="right">
+	<TR>
+		<TD width="100%" colspan="2" align="right">
 			<A href="javascript:document.customeradd.submit();" ACCESSKEY="S">{trans("Submit")} <img src="img/save.gif" alt=""></A>
 			<A href="?m=customerlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A><BR>
 			<INPUT type="checkbox" name="customeradd[reuse]" id="customeradd_reuse" value="ON" {if $customeradd.reuse}checked{/if}><label for="customeradd_reuse"> {trans("Display this form again, when this customer is saved")}</label>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM>
 </P>

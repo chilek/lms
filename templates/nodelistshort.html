@@ -11,8 +11,9 @@
 </head>
 <body>
 {$lastonline_limit = get_conf('phpui.lastonline_limit')}
-<TABLE WIDTH="100%" CELLPADDING="3" id="table">
-	<TR CLASS="dark">
+<TABLE class="lmsbox" id="table">
+    <THEAD>
+	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/node.gif" alt="">
 		</TD>
@@ -24,6 +25,8 @@
 			{/if}
 		</TD>
 	</TR>
+    </THEAD>
+    <TBODY>
 	{cycle values="light,lucid" print=false}
 	{section name=customernodes loop=$customernodes}
 	<tr class="highlight {cycle}{if ! $customernodes[customernodes].access} blend{/if}"  >
@@ -55,6 +58,7 @@
 		</TD>
 	</TR>
 	{/section}
+    </TBODY>
 </TABLE>
 <SCRIPT TYPE="text/javascript">
 var table = document.getElementById('table');

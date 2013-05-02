@@ -1,34 +1,37 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="dark">
-	    <TD width="1%" class="fleftu">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+	    <TD width="1%">
 		<IMG src="img/queue.gif" ALT="">
 	    </TD>
-	    <TD width="99%" colspan="2" class="frightu"><B>{$registry.name} ({$registry.id|string_format:"%04d"})</B></TD>
+	    <TD width="99%" colspan="2"><B>{$registry.name} ({$registry.id|string_format:"%04d"})</B></TD>
 	</TR>
-	<TR class="light">
-	    <TD width="1%" class="fleft">
+    </THEAD>
+    <TBODY>
+	<TR>
+	    <TD width="1%">
 		<IMG src="img/id.gif" ALT="">
 	    </TD>
 	    <TD width="1%" nowrap><B>{trans("Cash-in receipt numbering plan:")}</B></TD>
-	    <TD width="98%" class="fright">{$registry.in_template|default:"%N/LMS/%Y"}</TD>
+	    <TD width="98%">{$registry.in_template|default:"%N/LMS/%Y"}</TD>
 	</TR>
-	<TR class="light">
-	    <TD width="1%" class="fleft">
+	<TR>
+	    <TD width="1%">
 		<IMG src="img/id.gif" ALT="">
 	    </TD>
 	    <TD width="1%" nowrap><B>{trans("Cash-out receipt numbering plan:")}</B></TD>
-	    <TD width="98%" class="fright">{$registry.out_template|default:"%N/LMS/%Y"}</TD>
+	    <TD width="98%">{$registry.out_template|default:"%N/LMS/%Y"}</TD>
 	</TR>
 	{if $registry.description}
-	<TR class="light">
-	    <TD width="1%" class="fleft">
+	<TR>
+	    <TD width="1%">
 		<IMG src="img/info1.gif" ALT="">
 	    </TD>
 	    <TD width="1%"><B>{trans("Description:")}</B></TD>
-	    <TD width="98%" class="fright">
+	    <TD width="98%">
 		<TABLE width="100%" cellpadding="5">
 		    <TR>
 			<TD class="fall superlight">
@@ -39,43 +42,46 @@
 	    </TD>
 	</TR>
 	{/if}
-	<TR class="light">
-	    <TD width="1%" class="fleft">
+	<TR>
+	    <TD width="1%">
 		<IMG src="img/wait.gif" ALT="">
 	    </TD>
 	    <TD width="1%"><B>{trans("Disabled summary:")}</B></TD>
-	    <TD width="98%" class="fright">
+	    <TD width="98%">
 		    {if $registry.disabled}{trans("yes")}{else}{trans("no")}{/if}
 	    </TD>
 	</TR>
-	<TR class="light">
-	    <TD width="1%" class="fleft">
+	<TR>
+	    <TD width="1%">
 		<IMG src="img/users.gif" ALT="">
 	    </TD>
 	    <TD width="1%"><B>{trans("Privileges:")}</B></TD>
-	    <TD width="98%" class="fright">
-		    <TABLE width="100%" cellpadding="3">
-			<TR class="dark">
-			    <TD width="93%" class="ftl"><B>{trans("User")}</B></TD>
-			    <TD width="1%" class="ftop" align="center" nowrap><B>{trans("Read")}</B></TD>
-			    <TD width="5%" class="ftop" align="center" colspan="5" nowrap><B>{trans("Write (+R)")}</B></TD>
-			    <TD width="1%" class="ftr" align="center" nowrap><B>{trans("Advanced (+R)")}</B></TD>
+	    <TD width="98%">
+		    <TABLE class="lmsbox">
+                        <THEAD>
+			<TR>
+			    <TD width="93%"><B>{trans("User")}</B></TD>
+			    <TD width="1%" align="center" nowrap><B>{trans("Read")}</B></TD>
+			    <TD width="5%" align="center" colspan="5" nowrap><B>{trans("Write (+R)")}</B></TD>
+			    <TD width="1%" align="center" nowrap><B>{trans("Advanced (+R)")}</B></TD>
 			</TR>
-			<TR class="dark">
-			    <TD width="93%" class="fbl"></TD>
-			    <TD width="1%" class="fbottom" align="center" nowrap></TD>
-			    <TD width="1%" class="fbottom" align="center">{trans("customer")}</TD>
-			    <TD width="1%" class="fbottom" align="center" nowrap>{trans("ass. move")}</TD>
-			    <TD width="1%" class="fbottom" align="center">{trans("advance")}</TD>
-			    <TD width="1%" class="fbottom" align="center">{trans("other")}</TD>
-			    <TD width="1%" class="fbottom" align="center">{trans("mod.")}</TD>
-			    <TD width="1%" class="fbr" align="center" nowrap></TD>
+			<TR>
+			    <TD width="93%"></TD>
+			    <TD width="1%" align="center" nowrap></TD>
+			    <TD width="1%" align="center">{trans("customer")}</TD>
+			    <TD width="1%" align="center" nowrap>{trans("ass. move")}</TD>
+			    <TD width="1%" align="center">{trans("advance")}</TD>
+			    <TD width="1%" align="center">{trans("other")}</TD>
+			    <TD width="1%" align="center">{trans("mod.")}</TD>
+			    <TD width="1%" align="center" nowrap></TD>
 			</TR>
+                        </THEAD>
+                        <TBODY>
 			{cycle values="light,lucid" print=false}
 			{foreach from=$registry.rights item=right}
 			{if $right.rights}
 			<TR class="highlight {cycle}"  >
-			    <TD width="93%" class="fleft">
+			    <TD width="93%">
 				<A href="?m=userinfo&id={$right.id}">{$right.name}</A>
 				<INPUT type="hidden" name="registry[usernames][{$right.id}]" value="{$right.name}">
 			    </TD>
@@ -97,24 +103,26 @@
 			    <TD width="1%" align="center">
                                 {if ($right.rights & 32)==32}<IMG src="img/pass.gif" alt="">{/if}
 			    </TD>
-			    <TD width="1%" align="center" class="fright">
+			    <TD width="1%" align="center">
 				{if ($right.rights & 256)==256}<IMG src="img/pass.gif" alt="">{/if}
 			    </TD>
 			</TR>
 			{/if}
 			{/foreach}
 			<TR class=light">
-			    <TD width="93%" class="ftop"></TD>
-			    <TD width="7%" class="ftop" colspan="7"></TD>
+			    <TD width="93%"></TD>
+			    <TD width="7%" colspan="7"></TD>
 			</TR>
+                        </TBODY>
 		</TABLE>
 	    </TD>
 	</TR>
-	<TR class="light">
-	    <TD width="100%" COLSPAN="3" class="fbottomu" ALIGN="RIGHT"> 
+	<TR>
+	    <TD width="100%" COLSPAN="3" ALIGN="RIGHT"> 
 	        <A HREF="?m=receiptlist&regid={$registry.id}">{trans("Browse")} <IMG src="img/view.gif" alt=""></A>
 	    	<A HREF="?m=cashregedit&id={$registry.id}">{trans("Edit")} <IMG src="img/save.gif" alt=""></A>
 	    </TD>
 	</TR>
+    </TBODY>
 </TABLE></P>
 {include file="footer.html"}

@@ -3,26 +3,29 @@
 <H1>{$layout.pagetitle}</H1>
 <FORM METHOD="POST" NAME="schemaadd" ACTION="?m=promotionschemaadd&id={$schema.promotionid}">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD WIDTH="1%" CLASS="fleftu">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD WIDTH="1%">
 			<IMG SRC="img/promoschema.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" CLASS="fbt">
+		<TD WIDTH="1%">
 			<B>{trans("Name:")}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="frightu">
+		<TD WIDTH="98%">
 			<INPUT TYPE="TEXT" NAME="schema[name]" VALUE="{$schema.name}" SIZE="40" {tip text="Enter schema name" trigger="name" bold=1}>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD WIDTH="1%">
 			<IMG SRC="img/calendar.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
 			<B>{trans("Periods:")}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="fright" ID="periodcont">
+		<TD WIDTH="98%" ID="periodcont">
 		    {foreach from=$schema.periods item=period key=key}
 			<SELECT NAME="schema[periods][]" {tip text="Select length of the period (in months)"}>
 			    {if !$key}
@@ -37,14 +40,14 @@
 			<A href="javascript:add_period_item()"><IMG src="img/add.gif" alt="" {tip text="Add"}></A>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft">
+	<TR>
+		<TD WIDTH="1%">
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
 			<B>{trans("Options:")}</B>
 		</TD>
-		<TD WIDTH="98%" class="fright">
+		<TD WIDTH="98%">
 		    <TABLE width="100%">
 		        <TR>
 		            <TD width="1%" NOWRAP>{trans("Contract prolongation after promotion period:")}</TD>
@@ -68,24 +71,25 @@
 		    </TABLE>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft">
+	<TR>
+		<TD WIDTH="1%">
 			<IMG SRC="img/info1.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
 			<B>{trans("Description:")}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="fright">
+		<TD WIDTH="98%">
 			<TEXTAREA NAME="schema[description]" COLS="50" ROWS="5" {tip text="Enter additional information (optional)"}>{$schema.description}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="100%" COLSPAN="3" CLASS="fbottomu" ALIGN="RIGHT"> 
+	<TR>
+		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT"> 
 			<A HREF="javascript:document.schemaadd.submit();" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
 			<A HREF="?m=promotioninfo&id={$schema.promotionid}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A><BR>
 			<INPUT TYPE="checkbox" NAME="schema[reuse]" VALUE="ON" id="reuse" {if $schema.reuse} checked{/if}><label for="reuse">{trans("Display this form again, when this schema is saved")}</label>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE></FORM>
 </P>
 <SCRIPT type="text/javascript">

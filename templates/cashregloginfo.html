@@ -1,50 +1,53 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="dark">
-	    <TD width="1%" class="fleftu">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+	    <TD width="1%">
 		<IMG src="img/value.gif" ALT="">
 	    </TD>
-	    <TD width="1%" class="fbt" NOWRAP><B>{trans("Real state:")}</B></TD>
-	    <TD width="98%" class="frightu">
+	    <TD width="1%" NOWRAP><B>{trans("Real state:")}</B></TD>
+	    <TD width="98%">
 		<B>{$reglog.value|money_format}</B>
 	    </TD>
 	</TR>
-	<TR class="light">
-	    <TD width="1%" class="fleft">
+    </THEAD>
+    <TBODY>
+	<TR>
+	    <TD width="1%">
 		<IMG src="img/queue.gif" ALT="">
 	    </TD>
 	    <TD width="1%" NOWRAP><B>{trans("Cash state:")}</B></TD>
-	    <TD width="98%" class="fright">
+	    <TD width="98%">
 		{$reglog.snapshot|money_format}
 	    </TD>
 	</TR>
-	<TR class="light">
-	    <TD width="1%" class="fleft">
+	<TR>
+	    <TD width="1%">
 		<IMG src="img/time.gif" ALT="">
 	    </TD>
 	    <TD width="1%"><B>{trans("Time:")}</B></TD>
-	    <TD width="98%" class="fright">
+	    <TD width="98%">
 		{$reglog.time}
 	    </TD>
 	</TR>
-	<TR class="light">
-	    <TD width="1%" class="fleft">
+	<TR>
+	    <TD width="1%">
 		<IMG src="img/users.gif" ALT="">
 	    </TD>
 	    <TD width="1%"><B>{trans("User:")}</B></TD>
-	    <TD width="98%" class="fright">
+	    <TD width="98%">
 		<A href="?m=userinfo&id={$reglog.userid}">{$reglog.username}</A>
 	    </TD>
 	</TR>
 	{if $reglog.description}
-	<TR class="light">
-	    <TD width="1%" class="fleft">
+	<TR>
+	    <TD width="1%">
 		<IMG src="img/info1.gif" ALT="">
 	    </TD>
 	    <TD width="1%"><B>{trans("Description")}:</B></TD>
-	    <TD width="98%" class="fright">
+	    <TD width="98%">
 		    <TABLE WIDTH="100%" CELLPADDING="5">
 	                    <TR>
 			            <TD CLASS="fall superlight">
@@ -55,11 +58,12 @@
 	    </TD>
 	</TR>
 	{/if}
-	<TR class="light">
-	    <TD width="100%" COLSPAN="3" class="fbottomu" ALIGN="RIGHT"> 
+	<TR>
+	    <TD width="100%" COLSPAN="3" ALIGN="RIGHT"> 
 	    	<A HREF="?m=cashreglogedit&id={$reglog.id}" accesskey="s">{trans("Edit")} <IMG src="img/save.gif" alt=""></A>
 		<A href="?m=cashreglogdel&id={$reglog.id}" onclick="return confirmLink(this, '{trans("Are you sure, you want to delete selected entry?")}')">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
 	    </TD>
 	</TR>
+    </TBODY>
 </TABLE>
 {include file="footer.html"}

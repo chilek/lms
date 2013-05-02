@@ -1,12 +1,13 @@
 <!--// $Id$ //-->
 {assign var=today value=$smarty.now|date_format:"%x 00:00:00"}{assign var=today value=$today|date_format:"%s"}
-<TABLE style="width: 100%;" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD style="width: 99%; white-space: nowrap; text-align: left;" class="fleftu hand" onClick="showOrHide('customerassignments');">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD style="width: 99%; white-space: nowrap; text-align: left;" class="hand" onClick="showOrHide('customerassignments');">
 			<IMG src="img/money.gif" alt="">
 			<span class="bold">{trans("Customer Liabilities:")}</span>
 		</TD>
-		<TD style="width: 1%; text-align: right; white-space: nowrap;" class="frightu">
+		<TD style="width: 1%; text-align: right; white-space: nowrap;">
 			{if !$customerinfo.deleted}
 			<A href="?m=customerassignmentadd&id={$customerinfo.id}">{trans("New Liability")} &raquo;</A>
 				{if $layout.module == 'customerassignmentedit'}
@@ -17,24 +18,29 @@
 			{/if}
 		</TD>
 	</TR>
+    </THEAD>
+    <TBODY>
 	<TR id="customerassignments" style="display: none;">
-		<TD style="width: 100%;" class="fall" colspan="2">
-			<TABLE cellpadding="5" cellspacing="0" style="width: 100%;">
-				<TR class="dark">
-					<TD style="width: 92%; white-space: nowrap;" class="fleftu"><span class="bold">{trans("Liability:")}</span></TD>
-					<TD style="width: 1%; white-space: nowrap; text-align: right;" class="fbt">
+		<TD style="width: 100%;" colspan="2">
+			<TABLE class="lmsbox-inner">
+                            <THEAD>
+				<TR>
+					<TD style="width: 92%; white-space: nowrap;"><span class="bold">{trans("Liability:")}</span></TD>
+					<TD style="width: 1%; white-space: nowrap; text-align: right;">
 						{if !check_conf('privileges.hide_finances')}{trans("Value:")}{/if}
 					</TD>
-					<TD style="width: 1%; white-space: nowrap; text-align: right;" class="fbt">
+					<TD style="width: 1%; white-space: nowrap; text-align: right;">
 						{if !check_conf('privileges.hide_finances')}{trans("Discount:")}{/if}
 					</TD>
-					<TD style="width: 1%; white-space: nowrap;" class="fbt">{trans("Accounting:")}</TD>
-					<TD style="width: 1%; white-space: nowrap; text-align: right;" class="fbt">{trans("Downceil:")}</TD>
-					<TD style="width: 1%; white-space: nowrap; text-align: right;" class="fbt">{trans("Upceil:")}</TD>
-					<TD style="width: 1%; white-space: nowrap;" class="fbt">{trans("Options:")}</TD>
-					<TD style="width: 1%; white-space: nowrap;" class="fbt">{trans("Period:")}</TD>
-					<TD style="width: 1%;" class="frightu">&nbsp;</TD>
+					<TD style="width: 1%; white-space: nowrap;">{trans("Accounting:")}</TD>
+					<TD style="width: 1%; white-space: nowrap; text-align: right;">{trans("Downceil:")}</TD>
+					<TD style="width: 1%; white-space: nowrap; text-align: right;">{trans("Upceil:")}</TD>
+					<TD style="width: 1%; white-space: nowrap;">{trans("Options:")}</TD>
+					<TD style="width: 1%; white-space: nowrap;">{trans("Period:")}</TD>
+					<TD style="width: 1%;">&nbsp;</TD>
 				</TR>
+                            </THEAD>
+                            <TBODY>
 				{cycle name=assign values="light,lucid" print=false}
 				{foreach from=$assignments item=a}
 				<TR class="highlight {cycle name=assign}
@@ -90,7 +96,7 @@
 					</TD>
 				</TR>
 				{/foreach}
-				<TR class="light">
+				<TR>
 					<TD CLASS="ftop" style="text-align: right;"><span class="bold">{trans("Total:")}</span></TD>
 					<TD CLASS="ftop" style="white-space: nowrap; text-align: right;">
 						{if !check_conf('privileges.hide_finances')}
@@ -107,9 +113,11 @@
 					<TD CLASS="ftop" style="white-space: nowrap; text-align: right;">{sum array=$assignments column="real_upceil" assign=upceilsum}{if $upceilsum}{$upceilsum} kbit/s{/if}</TD>
 					<TD CLASS="ftop" COLSPAN="3">&nbsp;</TD>
 				</TR>
+                            </TBODY>
 			</TABLE>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--

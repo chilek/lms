@@ -1,7 +1,8 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<TABLE cellpadding="3" width="100%">
+<TABLE class="lmsbox">
+    <THEAD>
 	<TR class="dark">
 		<TD width="100%" class="fall" colspan="2" NOWRAP>
 			<IMG SRC="img/channel.gif" alt="">
@@ -12,6 +13,8 @@
 			{/if}
 		</TD>
 	</TR>
+    </THEAD>
+    <TBODY>
 	<TR class="light">
 		<TD width="1%" class="fleft" NOWRAP>
 			<IMG SRC="img/downrate.gif" alt=""> <B>{trans("Downceil:")}</B>
@@ -70,17 +73,22 @@
             {/if}
         </TD>
     </TR>
+    </TBODY>
 </TABLE>
 <BR>
-<TABLE cellpadding="3" width="100%">
+<TABLE class="lmsbox">
+    <THEAD>
 	<TR CLASS="dark">
         	<TD width="100%" CLASS="fall">
 			<IMG SRC="img/netdev.gif" alt=""> <B>{trans("Devices:")}</B>
                 </TD>
         </TR>
+    </THEAD>
+    <TBODY>
 	<TR>
 		<TD width="100%" class="fall">
-			<TABLE width="100%" cellpadding="5" cellspacing="0">
+			<TABLE class="lmsbox-inner">
+                            <THEAD>
 				<TR class="dark">
 					<TD WIDTH="30%" class="fleftu"><B>{trans("Name:")}</B></TD>
 	                <TD WIDTH="1%" class="fbt" align="right">{trans("ID:")}</TD>
@@ -88,6 +96,8 @@
 					<TD WIDTH="67%" class="fbt">{trans("Location:")}</TD>
 					<TD WIDTH="1%" class="frightu">&nbsp;</TD>
 				</TR>
+                            </THEAD>
+                            <TBODY>
 				{cycle values="light,lucid" print=false}
 				{foreach from=$channel.devices item=item}
 				<TR class="highlight {cycle}"  >
@@ -136,8 +146,10 @@
 				</TR>
 				</FORM>
 				{/if}
+                            </TBODY>
 			</TABLE>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 {include file="footer.html"}

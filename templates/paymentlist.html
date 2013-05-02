@@ -1,34 +1,37 @@
 {include file="header.html"}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR class="dark">
-		<TD WIDTH="1%" CLASS="fleftu">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD WIDTH="1%">
 			<IMG SRC="img/payment.gif" ALT=""><BR>
 			<IMG SRC="img/creditor.gif" ALT="">
 		</TD>
-		<TD WIDTH="95%" CLASS="fbt" ALIGN="left">
+		<TD WIDTH="95%" ALIGN="left">
 			<B>{trans("Name:")}</B><BR>
 			{trans("Creditor:")}
 		</TD>
-		<TD WIDTH="1%" CLASS="fbt" ALIGN="right">
+		<TD WIDTH="1%" ALIGN="right">
 			{trans("ID:")}
 		</TD>
-		<TD WIDTH="1%" CLASS="fbt" ALIGN="right">
+		<TD WIDTH="1%" ALIGN="right">
 			{trans("Value:")}
 		</TD>	
-		<TD NOWRAP WIDTH="1%" CLASS="fbt" ALIGN="right">
+		<TD NOWRAP WIDTH="1%" ALIGN="right">
 			{trans("Payment day:")}
 		</TD>
-		<TD NOWRAP WIDTH="1%" CLASS="frightu" ALIGN="RIGHT">
+		<TD NOWRAP WIDTH="1%" ALIGN="RIGHT">
 			<B>{t a=$listdata.total}Total: $a{/t}</B>
 		</TD>
 	</TR>
+    </THEAD>
+    <TBODY>
 	{cycle values="light,lucid" print=false}
 	{section name=payments loop=$paymentlist}
 	<FORM NAME="addbalance{$smarty.section.payments.index}" METHOD="POST" ACTION="?m=balanceadd">
 	<TR class="highlight {cycle}"  >
-		<TD WIDTH="1%" CLASS="fleft" onClick="return self.location.href='?m=paymentinfo&id={$paymentlist[payments].id}';" class="fleft">
+		<TD WIDTH="1%" onClick="return self.location.href='?m=paymentinfo&id={$paymentlist[payments].id}';">
 			<IMG SRC="img/payment.gif" ALT=""><BR>
 			<IMG SRC="img/creditor.gif" ALT="">
 		</TD>
@@ -49,7 +52,7 @@
 			{$paymentlist[payments].payday} 
 			</NOBR>
 		</TD>
-		<TD WIDTH="1%" CLASS="fright" ALIGN="right" >
+		<TD WIDTH="1%" ALIGN="right" >
 			<INPUT type="submit" class="hiddenbtn">
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="balanceadd">
 			<INPUT TYPE="HIDDEN" NAME="addbalance[value]" VALUE="{math equation="x*-1" x=$paymentlist[payments].value}">
@@ -65,23 +68,26 @@
 	</FORM>
 	{sectionelse}
 	<TR>
-		<TD COLSPAN="6" ALIGN="center" CLASS="fall">
+		<TD COLSPAN="6" ALIGN="center">
 			<p>&nbsp;</p>
 			<p><B>{trans("No such standing payments in database.")}</B></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
 	{/section}
-	<TR CLASS="light">
-		<TD CLASS="fleftu" COLSPAN="4" WIDTH="98%">
+    </TBODY>
+    <TFOOT>
+	<TR>
+		<TD COLSPAN="4" WIDTH="98%">
 			&nbsp;
 		</TD>
-		<TD CLASS="fbt" WIDTH="1%" ALIGN="right">
+		<TD WIDTH="1%" ALIGN="right">
 			<IMG SRC="img/info2.gif" ALT="">&nbsp;<B>{trans("Total:")}</B>
 		</TD>
-		<TD CLASS="frightu" WIDTH="1%" ALIGN="left">
+		<TD WIDTH="1%" ALIGN="left">
 			<B>{$listdata.total}</B>
 		</TD>
 	</TR>
+    </TFOOT>
 </TABLE>
 {include file="footer.html"}

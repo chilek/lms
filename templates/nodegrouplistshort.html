@@ -10,8 +10,9 @@
 <SCRIPT TYPE="text/javascript" SRC="img/common.js"></SCRIPT>
 </head>
 <body>
-<TABLE WIDTH="100%" CELLPADDING="3" id="table">
-	<TR CLASS="dark">
+<TABLE class="lmsbox" id="table">
+    <THEAD>
+	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/nodegroup.gif" alt="">
 		</TD>
@@ -19,6 +20,8 @@
 			<B>{t a=$total|default:0}Node's Groups ($a):{/t}</B>
 		</TD>
 	</TR>
+    </THEAD>
+    <TBODY>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$nodegroups item=nodegroup}
 	<tr class="highlight {cycle}"  >
@@ -36,6 +39,7 @@
 		</TD>
 	</TR>
 	{/foreach}
+    </TBODY>
 </TABLE>
 <SCRIPT TYPE="text/javascript">
 <!--

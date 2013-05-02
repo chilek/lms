@@ -28,51 +28,58 @@
 <TABLE width="100%" cellpadding="3">
 	<TR>
 		<TD WIDTH="1%" style="vertical-align: top;">
-			<TABLE width="100%" cellpadding="3">
-				<TR CLASS="dark">
-					<TD CLASS="fall">
+			<TABLE class="lmsbox">
+                            <THEAD>
+				<TR>
+					<TD>
 						<IMG SRC="img/customer.gif" ALT="">&nbsp;<B>{trans("Customers:")}</B>
 					</TD>
 				</TR>
-				<TR CLASS="light">
-					<TD CLASS="fall">
+                            </THEAD>
+                            <TBODY>
+				<TR>
+					<TD>
 						{trans("Select customers which has to concern new payment or covenant operation or leave it not selected if you want to add network income/expense operation.")}<BR><BR>
 						<SELECT size="20" id="customerselect" name="addbalance[mcustomerid][]" onChange="javascript:CountSelectedCustomers();" multiple>
 							{foreach from=$customers item=customer}
 							<OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
 							{/foreach}
 						</SELECT><BR>
-						{trans("Selected:")} <INPUT TYPE="edit" NAME="selectededit" VALUE="0" SIZE="5" style="border: 0" class="light" readonly></INPUT>
+						{trans("Selected:")} <INPUT TYPE="edit" NAME="selectededit" VALUE="0" SIZE="5" style="border: 0" readonly></INPUT>
 					</TD>
 				</TR>
+                            </TBODY>
 			</TABLE>
 		</TD>
 		<TD WIDTH="99%" VALIGN="TOP" style="vertical-align: top;">
-			<TABLE width="100%" cellpadding="3">
-				<TR CLASS="dark">
-					<TD CLASS="fall" COLSPAN="3">
+			<TABLE class="lmsbox">
+                            <THEAD>
+				<TR>
+					<TD COLSPAN="3">
 						<IMG SRC="img/money.gif" ALT="">&nbsp;<B>{trans("Value and description:")}</B>
 					</TD>
 				</TR>
-				<TR CLASS="light">
-					<TD WIDTH="1%" CLASS="fleft">
+                            </THEAD>
+                            <TBODY>
+				<TR>
+					<TD WIDTH="1%">
 						<IMG SRC="img/value.gif" ALT="">
 					</TD>
 					<TD WIDTH="1%">
 						<B>{trans("Value:")}</B>
 					</TD>
-					<TD WIDTH="98%" CLASS="fright">
+					<TD WIDTH="98%">
 						<INPUT TYPE="TEXT" NAME="addbalance[value]" VALUE="{$value}" SIZE="15" {tip text="Enter value of operation"}><BR>
 					</TD>
 				</TR>
-				<TR CLASS="light">
-					<TD WIDTH="1%" CLASS="fleft">
+				<TR>
+					<TD WIDTH="1%">
 						<IMG SRC="img/tax.gif" ALT="">
 					</TD>
 					<TD WIDTH="1%">
 						<B>{trans("Tax:")}</B>
 					</TD>
-					<TD WIDTH="98%" CLASS="fright">
+					<TD WIDTH="98%">
 						<SELECT size="1" name="addbalance[taxid]" {tip text="Select Tax rate"}>
 						{foreach item=tax from=$taxeslist}
 							<OPTION value="{$tax.id}" {if ($taxid && $tax.id == $taxid) || (!$taxid && $tax.value == get_conf('phpui.default_taxrate'))}selected{/if}>{$tax.label}</OPTION>
@@ -80,38 +87,38 @@
 						</SELECT>
 					</TD>
 				</TR>
-				<TR CLASS="light">
-					<TD WIDTH="1%" CLASS="fleft">
+				<TR>
+					<TD WIDTH="1%">
 						<IMG SRC="img/payment.gif" ALT="">
 					</TD>
 					<TD WIDTH="1%">
 						<B>{trans("Type:")}</B>
 					</TD>
-					<TD WIDTH="98%" CLASS="fright">
+					<TD WIDTH="98%">
 						<INPUT TYPE="radio" NAME="addbalance[type]" ID="type0" VALUE="0" {tip text="Select type of operation"}><label for="type0">{trans("liability")}</label>
 						<INPUT TYPE="radio" NAME="addbalance[type]" ID="type1" VALUE="1" {tip text="Select type of operation"} checked><label for="type1">{trans("income/expense")}</label>
 					</TD>
 				</TR>
-				<TR CLASS="light">
-					<TD WIDTH="1%" class="fleft">
+				<TR>
+					<TD WIDTH="1%">
 						<IMG SRC="img/calendar.gif" ALT="">
 					</TD>
 					<TD WIDTH="1%">
 						<B>{trans("Date:")}</B>
 					</TD>
-					<TD WIDTH="98%" class="fright">
+					<TD WIDTH="98%">
 						<INPUT TYPE="TEXT" NAME="addbalance[time]" VALUE="{if $time}{$time|date_format:"%Y/%m/%d %H:%M"}{/if}" SIZE="15" MAXSIZE="15" OnClick="javascript:cal1.popup();" {tip text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
 					</TD>
 				</TR>
 				{if $sourcelist}
-				<TR class="light">
-					<TD class="fleft" width="1%">
+				<TR>
+					<TD width="1%">
 						<IMG src="img/isource.gif" alt="">
 					</TD>
 					<TD width="1%" NOWRAP>
 						<B>{trans("Source:")} </B>
 					</TD>
-					<TD class="fright" width="98%" NOWRAP>
+					<TD width="98%" NOWRAP>
 						<SELECT name="addbalance[sourceid]" {tip text="Select import source (optional)" trigger="source"}>
 						<OPTION value="0">{trans("- none -")}</OPTION> 
 						{foreach from=$sourcelist item=item}
@@ -121,99 +128,104 @@
 					</TD>
 				</TR>
 				{/if}
-				<TR CLASS="light">
-					<TD WIDTH="1%" class="fleft">
+				<TR>
+					<TD WIDTH="1%">
 						<IMG SRC="img/info1.gif" ALT="">
 					</TD>
 					<TD WIDTH="1%">
 						<B>{trans("Description:")}</B>
 					</TD>
-					<TD WIDTH="98%" class="fright">
+					<TD WIDTH="98%">
 						<TEXTAREA NAME="addbalance[comment]" rows="5" cols="50" {tip text="Enter comment"}>{$comment|replace:"\n":"<BR>"}</TEXTAREA>
 					</TD>
 				</TR>
-				<TR CLASS="light">
-					<TD CLASS="fbottomu" ALIGN="right" COLSPAN="3">
+				<TR>
+					<TD ALIGN="right" COLSPAN="3">
 						<A HREF="javascript:document.addbalance.submit();" ACCESSKEY="s" >{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
 					</TD>
 				</TR>
+                            </TBODY>
+                        </TABLE>
 			{if $last}
-				<TR><TD>&nbsp;</TD></TR>
-				<TR CLASS="dark">
-					<TD CLASS="fall" COLSPAN="3">
+                        <TABLE class="lmsbox" style="margin-top: 1em;">
+                            <THEAD>
+				<TR>
+					<TD COLSPAN="3">
 						<IMG SRC="img/money.gif" ALT="">&nbsp;<B>{trans("Last operation:")}</B>
 					</TD>
 				</TR>
-				<TR CLASS="light">
-					<TD WIDTH="1%" CLASS="fleft">
+                            </THEAD>
+                            <TBODY>
+				<TR>
+					<TD WIDTH="1%">
 						<IMG SRC="img/value.gif" ALT="">
 					</TD>
 					<TD WIDTH="1%">
 						<B>{trans("Value:")}</B>
 					</TD>
-					<TD WIDTH="98%" CLASS="fright">
+					<TD WIDTH="98%">
 						{$last.value|money_format}
 					</TD>
 				</TR>
 				{if $last.tax}
-				<TR CLASS="light">
-					<TD WIDTH="1%" CLASS="fleft">
+				<TR>
+					<TD WIDTH="1%">
 						<IMG SRC="img/tax.gif" ALT="">
 					</TD>
 					<TD WIDTH="1%">
 						<B>{trans("Tax:")}</B>
 					</TD>
-					<TD WIDTH="98%" CLASS="fright">
+					<TD WIDTH="98%">
 						{$last.tax}
 					</TD>
 				</TR>
 				{/if}
-				<TR CLASS="light">
-					<TD WIDTH="1%" class="fleft">
+				<TR>
+					<TD WIDTH="1%">
 						<IMG SRC="img/calendar.gif" ALT="">
 					</TD>
 					<TD WIDTH="1%">
 						<B>{trans("Date:")}</B>
 					</TD>
-					<TD WIDTH="98%" class="fright">
+					<TD WIDTH="98%">
 						{$last.time|date_format:"%Y/%m/%d %H:%M"}
 					</TD>
 				</TR>
 				{if $last.customerid}
-				<TR CLASS="light">
-					<TD WIDTH="1%" class="fleft">
+				<TR>
+					<TD WIDTH="1%">
 						<IMG SRC="img/customer.gif" ALT="">
 					</TD>
 					<TD WIDTH="1%">
 						<B>{trans("Customer:")}</B>
 					</TD>
-					<TD WIDTH="98%" class="fright">
+					<TD WIDTH="98%">
 						<A href="?m=customerinfo&id={$last.customerid}">{$last.customername}</A>
 					</TD>
 				</TR>
 				{/if}
 				{if $last.sourcename}
-				<TR CLASS="light">
-					<TD WIDTH="1%" class="fleft">
+				<TR>
+					<TD WIDTH="1%">
 						<IMG SRC="img/isource.gif" ALT="">
 					</TD>
 					<TD WIDTH="1%">
 						<B>{trans("Source:")}</B>
 					</TD>
-					<TD WIDTH="98%" class="fright">
+					<TD WIDTH="98%">
 						{$last.sourcename}
 					</TD>
 				</TR>
 				{/if}
 				{if $last.comment}
-				<TR CLASS="light">
-					<TD WIDTH="1%" class="fleft">
+				<TR>
+					<TD WIDTH="1%">
 						<IMG SRC="img/info1.gif" ALT="">
 					</TD>
 					<TD WIDTH="1%">
 						<B>{trans("Description:")}</B>
 					</TD>
-					<TD WIDTH="98%" class="fright">
+					<TD WIDTH="98%">
 						<TABLE WIDTH="100%" CELLPADDING="5">
 					                <TR>
 							        <TD CLASS="fall superlight">
@@ -224,12 +236,13 @@
 					</TD>
 				</TR>
 				{/if}
-				<TR CLASS="light">
-					<TD CLASS="fbottomu" ALIGN="right" COLSPAN="3">
+				<TR>
+					<TD ALIGN="right" COLSPAN="3">
 						<A HREF="javascript:del({$last.id});" ACCESSKEY="d" >{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
 					</TD>
 				</TR>
 			{/if}
+                            </TBODY>
 			</TABLE>
 		</TD>
 	</TR>

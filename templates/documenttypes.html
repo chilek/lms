@@ -1,31 +1,34 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<P><TABLE cellpadding="3" WIDTH="100%">
-	<TR class="dark">
-		<TD width="99%" class="fleftu" NOWRAP><IMG src="img/docum.gif" alt=""> <B>{trans("Name:")}</B></TD>
-		<TD width="1%" class="frightu"></TD>
+<P><TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="99%" NOWRAP><IMG src="img/docum.gif" alt=""> <B>{trans("Name:")}</B></TD>
+		<TD width="1%"></TD>
 	</TR>
 	{if $listdata.total != 0}
-	<TR CLASS="dark">
-		<TD COLSPAN="2" CLASS="fall">
+	<TR>
+		<TD COLSPAN="2">
 			{include file="scroller.html" loop=$typelist}
 		</TD>
 	</TR>
 	{/if}
+    </THEAD>
+    <TBODY>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$typelist key=key item=item}
 	<TR class="highlight {cycle}"  >
-		<TD class="fleft" NOWRAP onClick="return self.location.href='?m=documenttypeedit&id={$key}';">
+		<TD NOWRAP onClick="return self.location.href='?m=documenttypeedit&id={$key}';">
 			<IMG src="img/docum.gif" alt=""> <B>{$item}</B>
 		</TD>
-		<TD class="fright" align="right" NOWRAP>
+		<TD align="right" NOWRAP>
 			<A href="?m=documenttypeedit&id={$key}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 		</TD>
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD colspan="2" align="center" class="fall">
+		<TD colspan="2" align="center">
 			<p>&nbsp;</p>
 			<p><B>{trans("There are no types in database.")}</B></p>
 			<p>&nbsp;</p>
@@ -33,11 +36,12 @@
 	</TR>
 	{/foreach}
 	{if $listdata.total != 0}
-	<TR CLASS="dark">
-		<TD COLSPAN="2" CLASS="fall">
+	<TR>
+		<TD COLSPAN="2">
 			{include file="scroller.html" loop=$typelist}
 		</TD>
 	</TR>
 	{/if}
+    </TBODY>
 </TABLE></P>
 {include file="footer.html"}

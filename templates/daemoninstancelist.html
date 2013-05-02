@@ -1,30 +1,31 @@
 {include file="header.html"}
 <!-- $Id$ -->
 <H1><B>{$layout.pagetitle}</B></H1>
-<P><TABLE cellpadding="3" WIDTH="100%">
-	<TR CLASS="dark">
-		<TD CLASS="fleftu" WIDTH="1%" nowrap>
+<P><TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD WIDTH="1%" nowrap>
 			<IMG src="img/settings.gif" alt=""> <B>{trans("Name:")}</B>
 		</TD>
-		<TD CLASS="fbt" align="right" WIDTH="1%" NOWRAP>
+		<TD align="right" WIDTH="1%" NOWRAP>
 			{trans("Host:")}
 		</TD>
-		<TD CLASS="fbt" align="right" WIDTH="1%" NOWRAP>
+		<TD align="right" WIDTH="1%" NOWRAP>
 			{trans("Priority:")}
 		</TD>
-		<TD CLASS="fbt" align="right" WIDTH="1%" NOWRAP>
+		<TD align="right" WIDTH="1%" NOWRAP>
 			{trans("Module:")}<BR>
 			{trans("Crontab:")}
 		</TD>
-		<TD CLASS="fbt" WIDTH="95%">
+		<TD WIDTH="95%">
 			{trans("Description:")}
 		</TD>
-		<TD CLASS="frightu" WIDTH="1%" nowrap>
+		<TD WIDTH="1%" nowrap>
 			<A href="?m=daemoninstanceadd&hostid={$hostid}">{trans("Add instance")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
-	<TR class="dark">
-		<TD class="fall" colspan="6">
+	<TR>
+		<TD colspan="6">
 			<FORM method="GET" action="?m=daemoninstancelist" name="filter">
 				<INPUT type="submit" class="hiddenbtn">
 				<INPUT type="HIDDEN" name="m" value="daemoninstancelist">
@@ -37,11 +38,13 @@
 				</SELECT>
 			</FORM>
 		</TD>
-	</TR>		
+	</TR>
+    </THEAD>
+    <TBODY>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$instancelist item=instance}
 	<TR class="highlight {cycle}{if $instance.disabled} blend{/if}"  >
-		<TD CLASS="fleft" onClick="return self.location.href='?m=daemoninstanceview&id={$instance.id}';" nowrap>
+		<TD onClick="return self.location.href='?m=daemoninstanceview&id={$instance.id}';" nowrap>
 			<IMG src="img/settings.gif" alt="">
 			<B>{$instance.name}</B>
 		</TD>
@@ -57,7 +60,7 @@
 		<TD onClick="return self.location.href='?m=daemoninstanceview&id={$instance.id}';">
 			{$instance.description}
 		</TD>
-		<TD CLASS="fright" align="right" NOWRAP>
+		<TD align="right" NOWRAP>
 			<A HREF="?m=daemoninstanceview&id={$instance.id}"><IMG SRC="img/view.gif" alt="[ {trans("Browse Configuration")} ]" title="[ {trans("Browse Configuration")} ]"></A>
 			<A HREF="?m=daemoninstanceedit&id={$instance.id}&statuschange=1"><IMG SRC="img/wait.gif" alt="[ {if $instance.disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]" title="[ {if $instance.disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]"></A>
 			<A HREF="?m=daemoninstanceadd&id={$instance.id}"><IMG SRC="img/clone.gif" alt="[ {trans("Clone")} ]" title="[ {trans("Clone")} ]"></A>
@@ -67,17 +70,20 @@
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD colspan="6" align="center" class="flr">
+		<TD colspan="6" align="center">
 			<p>&nbsp;</p>
 			<p><B>{trans("There are no instances configured.")}<B></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
 	{/foreach}
-	<TR CLASS="dark">
-		<TD colspan="6" class="fall" align="right">
+    </TBODY>
+    <TFOOT>
+	<TR>
+		<TD colspan="6" align="right">
 			<A href="?m=daemoninstanceadd&hostid={$hostid}">{trans("Add instance")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
+    </TFOOT>
 </TABLE></P>
 {include file="footer.html"}

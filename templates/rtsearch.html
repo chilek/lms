@@ -3,27 +3,30 @@
 <H1><B>{$layout.pagetitle}</B></H1>
 <P><FORM method="POST" name="search" action="?m=rtsearch">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD WIDTH="100%" CLASS="fall" colspan="2" NOWRAP>
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD WIDTH="100%" colspan="2" NOWRAP>
 			<B>{trans("Display tickets matching the following criteria:")}:</B>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/ticket.gif" alt="">
 			<B>{trans("Subject:")}</B>
 		</TD>
-		<TD WIDTH="99%" CLASS="fright">
+		<TD WIDTH="99%">
 			<INPUT type="text" size="50" name="search[subject]" value="{$search.subject}" {tip text="Enter subject"}></INPUT>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/customer.gif" alt="">
 			<B>{trans("Submitter:")}</B>
 		</TD>
-		<TD WIDTH="99%" CLASS="fright">
+		<TD WIDTH="99%">
 			<TABLE width="100%" cellpadding="1">
 			    <TR>
 			    	<TD width="100%" colspan="2">
@@ -49,12 +52,12 @@
 			</TABLE>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/users.gif" alt="">
 			<B>{trans("Owner:")}</B>
 		</TD>
-		<TD WIDTH="99%" CLASS="fright">
+		<TD WIDTH="99%">
 			<SELECT size="1" name="search[owner]" {tip text="Select user/owner of the ticket"}>
 				<OPTION value="0">{trans("- all owners -")}</OPTION>
 				{foreach from=$userlist item=item}
@@ -63,12 +66,12 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/queue.gif" alt="">
 			<B>{trans("Queue:")}</B>
 		</TD>
-		<TD WIDTH="99%" CLASS="fright">
+		<TD WIDTH="99%">
 			<SELECT size="1" name="search[queue]" {tip text="Select queue" trigger="queue"}>
 				<OPTION value="0" SELECTED>{trans("- all -")}</OPTION>
 			{foreach from=$queuelist item=item}
@@ -77,12 +80,12 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/dead.gif" alt="">
 			<B>{trans("Status:")}</B>
 		</TD>
-		<TD WIDTH="99%" CLASS="fright">
+		<TD WIDTH="99%">
 			<SELECT SIZE="1" name="search[state]" {tip text="Select ticket status"}>
 				<OPTION value="" {if $search.state==""}SELECTED{/if}>{trans("- all -")}</OPTION>
 				<OPTION value="-1" {if $search.state=="-1"}SELECTED{/if}>{trans("not resolved")}</OPTION>
@@ -93,12 +96,12 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/time.gif" alt="">
 			<B>{trans("Min. Uptime")}</B>
 		</TD>
-		<TD WIDTH="99%" CLASS="fright">
+		<TD WIDTH="99%">
 			<SELECT SIZE="1" name="search[uptime]" {tip text="Select ticket uptime"}>
 				<OPTION value="" {if $search.uptime==""}SELECTED{/if}>{trans("- all -")}</OPTION>
 				<OPTION value="604800" {if $search.uptime=="604800"}SELECTED{/if}>{trans("7 days")}</OPTION>
@@ -107,23 +110,24 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft" style="vertical-align:top" NOWRAP>
+	<TR>
+		<TD WIDTH="1%" style="vertical-align:top" NOWRAP>
 			<IMG src="img/queue.gif" alt="">
 			<B>{trans("Categories:")}</B>
 		</TD>
-		<TD WIDTH="99%" CLASS="fright" NOWRAP>
+		<TD WIDTH="99%" NOWRAP>
 			{foreach from=$categories item=category}
 				<INPUT type="checkbox" name="search[categories][{$category.id}]" ID="cat{$category.id}" value="1" {if $category.checked > 0}CHECKED{/if}>
 				<label for="cat{$category.id}">{$category.name}</label><BR />
 			{/foreach}
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="100%" CLASS="fbottomu" colspan="2" align="right">
+	<TR>
+		<TD WIDTH="100%" colspan="2" align="right">
 			<A href="javascript: document.search.submit();" accesskey="s">{trans("Search")}<IMG src="img/search.gif" alt=""></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM></P>
 <SCRIPT type="text/javascript">

@@ -13,22 +13,25 @@
 <H1>{$layout.pagetitle}</H1>
 <FORM method="POST" action="?m=accountedit&id={$account.id}" name="account">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" cellpadding="3">
-	<TR class="dark">
-		<TD width="1%" class="fleftu">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
 			<img src="img/account.gif" alt="">
 		</TD>
-		<TD width="1%" class="fbt">
+		<TD width="1%">
 			<B>{trans("Login:")}</B>
 		</TD>
-		<TD width="98%" class="frightu">
+		<TD width="98%">
 			<input type="text" name="account[login]" value="{$account.login}" {tip text="Enter account name" trigger="login"} onkeyup="update_homedir();">
 		</TD>
 	</TR>
-	<TR class="light">
-	    <TD width="100%" colspan="3" class="flr">
+    </THEAD>
+    <TBODY>
+	<TR>
+	    <TD width="100%" colspan="3" class="">
 		<TABLE width="100%" cellpadding="0">
-		    <TR class="light">
+		    <TR>
 			<TD width="50%" style="vertical-align: top">
 			    <TABLE width="100%" cellpadding="3">
 				<TR>
@@ -168,12 +171,13 @@
 		</TABLE>
 	    </TD>
 	</TR>
-	<TR class="light">
-		<TD class="fbottomu" align="right" colspan="3">
+	<TR>
+		<TD align="right" colspan="3">
 			<A href="javascript:document.account.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
 			<A href="?m=accountlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM>
 <SCRIPT type="text/javascript">

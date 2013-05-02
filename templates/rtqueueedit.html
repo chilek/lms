@@ -3,53 +3,59 @@
 <H1>{$layout.pagetitle}</H1>
 <FORM METHOD="POST" NAME="queue" ACTION="?m=rtqueueedit&id={$queue.id}">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" CELLPADDING="3">
-	<TR class="dark">
-	    <TD width="1%" class="fleftu">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+	    <TD width="1%">
 		<IMG src="img/queue.gif" ALT="">
 	    </TD>
-	    <TD width="1%" class="fbt"><B>{trans("Name:")}</B></TD>
-	    <TD width="98%" class="frightu">
+	    <TD width="1%"><B>{trans("Name:")}</B></TD>
+	    <TD width="98%">
 		<INPUT TYPE="TEXT" NAME="queue[name]" VALUE="{$queue.name}" {tip text="Enter queue name" trigger="name" bold=1}><B> ({$queue.id|string_format:"%04d"})</B>
 	    </TD>
 	</TR>
-	<TR class="light">
-	    <TD width="1%" class="fleft">
+    </THEAD>
+    <TBODY>
+	<TR>
+	    <TD width="1%">
 		<IMG src="img/mail.gif" ALT="">
 	    </TD>
 	    <TD width="1%"><B>{trans("E-mail:")}</B></TD>
-	    <TD width="98%" class="fright">
+	    <TD width="98%">
 		    <INPUT TYPE="TEXT" SIZE="50" NAME="queue[email]" VALUE="{$queue.email}" {tip text="Enter e-mail address" trigger="email"}>
 	    </TD>
 	</TR>
-	<TR class="light">
-	    <TD width="1%" class="fleft">
+	<TR>
+	    <TD width="1%">
 		<IMG src="img/info1.gif" ALT="">
 	    </TD>
 	    <TD width="1%"><B>{trans("Description:")}</B></TD>
-	    <TD width="98%" class="fright">
+	    <TD width="98%">
 		<TEXTAREA NAME="queue[description]" COLS="50" ROWS="3" {tip text="Enter additional information (optional)"}>{$queue.description}</TEXTAREA>
 	    </TD>
 	</TR>
-	<TR class="light">
-	    <TD width="1%" class="fleft">
+	<TR>
+	    <TD width="1%">
 		<IMG src="img/users.gif" ALT="">
 	    </TD>
 	    <TD width="1%"><B>{trans("Privileges:")}</B></TD>
-	    <TD width="98%" class="fright">
-		    <TABLE width="100%" cellpadding="3">
-			<TR class="dark">
-			    <TD width="96%" class="fleftu"><B>{trans("User")}</B>
+	    <TD width="98%">
+		    <TABLE class="lmsbox">
+                        <THEAD>
+			<TR>
+			    <TD width="96%"><B>{trans("User")}</B>
 			    </TD>
-			    <TD width="1%" class="fbt" align="center" nowrap><B>{trans("Read")}</B></TD>
-			    <TD width="1%" class="fbt" align="center" nowrap><B>{trans("Write (+R)")}</B></TD>
-			    <TD width="1%" class="fbt" align="center" nowrap><B>{trans("Delete (+R)")}</B></TD>
-			    <TD width="1%" class="frightu" align="center" nowrap><B>{trans("Notice (+R)")}</B></TD>
+			    <TD width="1%" align="center" nowrap><B>{trans("Read")}</B></TD>
+			    <TD width="1%" align="center" nowrap><B>{trans("Write (+R)")}</B></TD>
+			    <TD width="1%" align="center" nowrap><B>{trans("Delete (+R)")}</B></TD>
+			    <TD width="1%" align="center" nowrap><B>{trans("Notice (+R)")}</B></TD>
 			</TR>
+                        </THEAD>
+                        <TBODY>
 			{cycle values="light,lucid" print=false}
 			{foreach from=$queue.rights item=right}
 			<TR class="highlight {cycle}"  >
-			    <TD width="97%" class="fleft">
+			    <TD width="97%">
 				<A href="?m=userinfo&id={$right.id}">{$right.name}</A>
 				<INPUT type="hidden" name="queue[usernames][{$right.id}]" value="{$right.name}">
 			    </TD>
@@ -62,28 +68,23 @@
 			    <TD width="1%" align="center">
 			    	    <INPUT type="checkbox" name="queue[users][{$right.id}][4]" value="4" {if ($right.rights & 4) == 4}CHECKED{/if}>
 			    </TD>
-			    <TD width="1%" align="center" class="fright">
+			    <TD width="1%" align="center">
 			    	    <INPUT type="checkbox" name="queue[users][{$right.id}][8]" value="8" {if ($right.rights & 8) == 8}CHECKED{/if}>
 			    </TD>
 			</TR>
 			{/foreach}
-			<TR class="light">
-			    <TD width="96%" class="ftop"></TD>
-			    <TD width="1%" class="ftop"></TD>
-			    <TD width="1%" class="ftop"></TD>
-			    <TD width="1%" class="ftop"></TD>
-			    <TD width="1%" class="ftop"></TD>
-			</TR>
+                        </TBODY>
 		</TABLE>			
 	    </TD>
 	</TR>
-	<TR class="light">
-	    <TD width="100%" COLSPAN="3" class="fbottomu" ALIGN="RIGHT"> 
+	<TR>
+	    <TD width="100%" COLSPAN="3" ALIGN="RIGHT"> 
 	    	<A HREF="javascript:document.queue.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 		<A HREF="?m=rtqueuedel&id={$queue.id}" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to remove queue \'$a\' and all assigned tickets and messages?{/t}');" accesskey="d">{trans("Delete")}<IMG src="img/delete.gif" alt=""></A>
 		<A HREF="?m=rtqueuelist">{trans("Cancel")}<IMG src="img/cancel.gif" alt=""></A>
 	    </TD>
 	</TR>
+    </TBODY>
 </TABLE></FORM></P>
 <SCRIPT type="text/javascript">
 <!--

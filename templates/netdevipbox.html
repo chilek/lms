@@ -1,24 +1,30 @@
 <!--// $Id$ //-->
-<TABLE WIDTH="100%" CELLPADDING="3">
-        <TR CLASS="dark">
-	        <TD width="99%" class="fleftu hand" align="left" nowrap="nowrap" onClick="showOrHide('deviceips');">
+<TABLE class="lmsbox">
+    <THEAD>
+        <TR>
+	        <TD width="99%" class="hand" align="left" nowrap="nowrap" onClick="showOrHide('deviceips');">
 			<IMG SRC="img/ip.gif" ALT="">
 			<B>{t a=$netdevips|@count}IP addresses ($a):{/t}</B>
 		</TD>
-	        <TD width="1%" class="frightu" align="right">
+	        <TD width="1%" align="right">
 			<NOBR><A HREF="?m=netdevedit&action=addip&id={$netdevinfo.id}">{trans("New address")} &raquo;</A></NOBR>
 		</TD>	
 	</TR>
+    </THEAD>
+    <TBODY>
 	<TR id="deviceips" style="display:none;">
-	        <TD WIDTH="100%" class="fall" colspan="2">
-		        <TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
-	<TR class="dark">
-	        <TD WIDTH="96%" class="fleftu"><B>{trans("Name:")}</B></TD>
-		<TD WIDTH="1%" class="fbt" align="right">{trans("ID:")}</TD>
-		<TD WIDTH="1%" class="fbt" align="right">{trans("Address:")}</TD>
-		<TD WIDTH="1%" class="fbt" align="right">{trans("MAC:")}</TD>
-		<TD WIDTH="1%" class="frightu">&nbsp;</TD>
+	        <TD WIDTH="100%" colspan="2">
+		        <TABLE class="lmsbox-inner">
+                            <THEAD>
+	<TR>
+	        <TD WIDTH="96%"><B>{trans("Name:")}</B></TD>
+		<TD WIDTH="1%" align="right">{trans("ID:")}</TD>
+		<TD WIDTH="1%" align="right">{trans("Address:")}</TD>
+		<TD WIDTH="1%" align="right">{trans("MAC:")}</TD>
+		<TD WIDTH="1%">&nbsp;</TD>
 	</TR>
+    </THEAD>
+    <TBODY>
 	{if $netdevips}
 	{cycle values="light,lucid" print=false}
 	{section name=list loop=$netdevips}
@@ -55,15 +61,17 @@
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="light">
-		<TD WIDTH="100%" COLSPAN="5" CLASS="ftop">
+	<TR>
+		<TD WIDTH="100%" COLSPAN="5">
 			<IMG SRC="img/access.gif">
 			<A HREF="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset&access=1">{trans("Connect")}</A>/<A HREF="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset">{trans("Disconnect")}</A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--

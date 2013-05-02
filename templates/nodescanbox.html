@@ -1,35 +1,41 @@
 <!--// $Id$ //-->
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD CLASS="fall" COLSPAN="3">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD COLSPAN="3">
 			<IMG SRC="img/node.gif" ALT=""> <B>{trans("Computers found:")}</B>
 		</TD>
 	</TR>
+    </THEAD>
+    <TBODY>
 	{cycle values="light,lucid" print=false}
 	{section name=n loop=$nodes}
 	<TR class="highlight {cycle}"  >
-		<TD WIDTH="99%" CLASS="fleft" onClick="return self.location.href='?m=nodeadd&preip={$nodes[n].ipaddr}&premac={$nodes[n].mac}&prename={$nodes[n].name}{if $customerinfo}&ownerid={$customerinfo.id}{/if}';">
+		<TD WIDTH="99%" onClick="return self.location.href='?m=nodeadd&preip={$nodes[n].ipaddr}&premac={$nodes[n].mac}&prename={$nodes[n].name}{if $customerinfo}&ownerid={$customerinfo.id}{/if}';">
 			<IMG SRC="img/node.gif" ALT=""> <B>{$nodes[n].name}</B>
 		</TD>
 		<TD WIDTH="1%" onClick="return self.location.href='?m=nodeadd&preip={$nodes[n].ipaddr}&premac={$nodes[n].mac}&prename={$nodes[n].name}{if $customerinfo}&ownerid={$customerinfo.id}{/if}';">
 			{$nodes[n].ipaddr}
 		</TD>
-		<TD WIDTH="1%" CLASS="fright" onClick="return self.location.href='?m=nodeadd&preip={$nodes[n].ipaddr}&premac={$nodes[n].mac}&prename={$nodes[n].name}{if $customerinfo}&ownerid={$customerinfo.id}{/if}';">
+		<TD WIDTH="1%" onClick="return self.location.href='?m=nodeadd&preip={$nodes[n].ipaddr}&premac={$nodes[n].mac}&prename={$nodes[n].name}{if $customerinfo}&ownerid={$customerinfo.id}{/if}';">
 			{$nodes[n].mac}
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD COLSPAN="3" ALIGN="CENTER" CLASS="fall">
+		<TD COLSPAN="3" ALIGN="CENTER">
 			<P>&nbsp;</P>
 			<P><B>{trans("No computers were found, either exists in the database or nbtscan binary not found.")}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>
 	{/section}
+    </TBODY>
+    <TFOOT>
 {if $nodes}
 	<TR>
-		<TD COLSPAN="3" CLASS="fall">{trans("Click on the Computer name above to get it records")}.</TD>
+		<TD COLSPAN="3">{trans("Click on the Computer name above to get it records")}.</TD>
 	</TR>
 {/if}
+    </TFOOT>
 </TABLE>
