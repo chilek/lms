@@ -43,17 +43,20 @@ window.open('?m=note&id={$newnoteid}');
 </script>
 <FORM NAME="setcustomer" METHOD="POST" ACTION="?m=noteadd&action=setcustomer">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD CLASS="fall" WIDTH="100%" COLSPAN="2">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD WIDTH="100%" COLSPAN="2">
 			<B>{trans("Main Information:")}</B>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<B>{trans("Debit note number:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+		<TD WIDTH="99%" NOWRAP>
 			<INPUT TYPE="TEXT" NAME="note[number]" VALUE="{$note.number}" SIZE="10" {tip text="Enter note number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
 			{if $numberplanlist}
 			<SELECT name="note[numberplanid]" {tip text="Select numbering plan"}>
@@ -67,22 +70,22 @@ window.open('?m=note&id={$newnoteid}');
 			{/if}
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<B>{trans("Settlement date:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+		<TD WIDTH="99%" NOWRAP>
 			<INPUT TYPE="TEXT" NAME="note[cdate]" VALUE="{$note.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} OnClick="javascript:cal1.popup();" >
 			{if $note.cdatewarning}
 			<INPUT TYPE="HIDDEN" NAME="note[cdatewarning]" VALUE="1">
 			{/if}
 		</TD>
 	</TR>
-	<TR CLASS="light">
-        <TD CLASS="fleft" WIDTH="1%" NOWRAP>
+	<TR>
+        <TD WIDTH="1%" NOWRAP>
 	        <B>{trans("Deadline:")}</B>
 	    </TD>
-	    <TD CLASS="fright" WIDTH="99%" NOWRAP>
+	    <TD WIDTH="99%" NOWRAP>
 			<INPUT type="radio" name="note[paytime_default]" value="1" id="type1" onchange="javascript:setPayTime(1)"{if !isset($note.paytime_default) || $note.paytime_default} checked{/if}><label for="type1">{trans("default")}</label>
             <INPUT type="radio" name="note[paytime_default]" value="0" id="type0" onchange="javascript:setPayTime(0)"{if isset($note.paytime_default) && !$note.paytime_default} checked{/if}><label for="type0">{trans("other")}</label>
 	        <INPUT TYPE="TEXT" NAME="note[paytime]" VALUE="{$note.paytime}" SIZE="5"
@@ -92,11 +95,11 @@ window.open('?m=note&id={$newnoteid}');
 	                {/if *}
 	        </TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<B>{trans("Customer:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+		<TD WIDTH="99%" NOWRAP>
 			{if $customers}
 			<SELECT SIZE="1" NAME="customer" onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value">
 				<OPTION VALUE="0">{trans("... select customer ...")}</OPTION>
@@ -110,49 +113,55 @@ window.open('?m=note&id={$newnoteid}');
 			<a href="javascript: void(0);" onClick="return customerchoosewin(document.setcustomer.customerid);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fbottomu" WIDTH="100%" ALIGN="right" COLSPAN="2">
+	<TR>
+		<TD WIDTH="100%" ALIGN="right" COLSPAN="2">
 			<A HREF="javascript: saveheader();">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM>
 {if $customer}
 <P>
-<TABLE WIDTH="100%" CELLPADDING="3">
-        <TR CLASS="dark">
-                <TD CLASS="fleftu" WIDTH="1%" nowrap>
+<TABLE class="lmsbox">
+    <THEAD>
+        <TR>
+                <TD WIDTH="1%" nowrap>
                         <IMG SRC="img/customer.gif" ALT=""> <B>{trans("Customer:")}</B>
                 </TD>
-                <TD CLASS="frightu" WIDTH="99%">
+                <TD WIDTH="99%">
                         <B>{$customer.customername}</B>
                         &nbsp;&raquo;&nbsp; {$customer.address} &nbsp; {$customer.zip} {$customer.city}
                         &nbsp;&raquo;&nbsp; {if $customer.balance < 0}<FONT class="red">{/if}{$customer.balance|money_format}{if $customer.balance < 0}</FONT>{/if}
                 </TD>
         </TR>
+    </THEAD>
 </TABLE>
 </P>
 {/if}
 <P>	
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD CLASS="fleftu" WIDTH="1%">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD WIDTH="1%">
 			<B>{trans("No.")}</B>
 		</TD>
-		<TD CLASS="fbt" WIDTH="97%">
+		<TD WIDTH="97%">
 			{trans("Title:")}
 		</TD>
-		<TD CLASS="fbt" WIDTH="1%" NOWRAP ALIGN="RIGHT">
+		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
 			{trans("Value:")}
 		</TD>
-		<TD CLASS="frightu" WIDTH="1%">
+		<TD WIDTH="1%">
 			&nbsp;
 		</TD>
 	</TR>
+    </THEAD>
+    <TBODY>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$contents item=item}
 	<TR class="highlight {cycle}"  >
-		<TD CLASS="fleft">
+		<TD>
 			<B>{counter}.</B>
 		</TD>
 		<TD>
@@ -161,13 +170,13 @@ window.open('?m=note&id={$newnoteid}');
 		<TD NOWRAP ALIGN="RIGHT">
 			{$item.value|money_format}
 		</TD>
-		<TD NOWRAP CLASS="fright">
+		<TD NOWRAP>
 			<A HREF="?m=noteadd&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
 		</TD>
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD COLSPAN="4" ALIGN="CENTER" CLASS="flr">
+		<TD COLSPAN="4" ALIGN="CENTER">
 			<P>&nbsp;</P>
 			<P><B>{trans("Debit note have no items. Use form below for items addition.")}</B></P>
 			<P>&nbsp;</P>
@@ -175,36 +184,38 @@ window.open('?m=note&id={$newnoteid}');
 	</TR>
 	{/foreach}
 	{if $contents}
-	<TR CLASS="light">
-		<TD COLSPAN="2" ALIGN="RIGHT" CLASS="fleftu">
+	<TR>
+		<TD COLSPAN="2" ALIGN="RIGHT">
 			<B>{trans("Total:")}</B>
 		</TD>
-		<TD NOWRAP ALIGN="RIGHT" CLASS="fbt">
+		<TD NOWRAP ALIGN="RIGHT">
 			<B>{sum array=$contents column=value string_format="%01.2f"}</B>
 		</TD>
-		<TD CLASS="frightu">
+		<TD>
 			&nbsp;
 		</TD>
 	</TR>
 	{/if}
+    </TBODY>
+    <TFOOT>
 	<FORM METHOD="POST" ACTION="?m=noteadd&action=additem" NAME="additem">
 	<INPUT type="submit" class="hiddenbtn">
-	<TR CLASS="light">
-		<TD CLASS="ftl" WIDTH="1%" NOWRAP>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<B>{counter}.</B>
 		</TD>
-		<TD CLASS="ftop" WIDTH="92%" NOWRAP>
+		<TD WIDTH="92%" NOWRAP>
 			<INPUT TYPE="text" NAME="description" SIZE="80" {tip text="Enter description" trigger="description"}>
 		</TD>
-		<TD CLASS="ftop" ALIGN="RIGHT" NOWRAP>
+		<TD ALIGN="RIGHT" NOWRAP>
 			<INPUT TYPE="text" NAME="value" SIZE="8" {tip text="Enter value" trigger="value"}>
 		</TD>
-		<TD CLASS="ftr">
+		<TD>
 			<A HREF="javascript:document.additem.submit(); "><IMG SRC="img/save.gif" ALT="" {tip text="Add item"}></A>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD COLSPAN="4" CLASS="fbottomu" ALIGN="RIGHT">
+	<TR>
+		<TD COLSPAN="4" ALIGN="RIGHT">
 			<A HREF="?m=notelist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
 			<A HREF="?m=noteadd&action=init">{trans("Clear Contents")} <IMG SRC="img/delete.gif" alt=""></A> 
 			{if !$customer}
@@ -220,6 +231,7 @@ window.open('?m=note&id={$newnoteid}');
 		</TD>
 	</TR>
 	</FORM>
+    </TFOOT>
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--
