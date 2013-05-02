@@ -48,17 +48,20 @@
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="receipt[type]" value="{$receipt.type}">
 <INPUT type="hidden" name="receipt[numberplanid]" value="{$receipt.numberplanid}">
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD CLASS="fall" WIDTH="100%" COLSPAN="2">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD WIDTH="100%" COLSPAN="2">
 			<B>{trans("Main Information:")}</B>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<B>{trans("Cash Registry:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+		<TD WIDTH="99%" NOWRAP>
 			<SELECT SIZE="1" NAME="receipt[regid]" {tip text="Select cash registry" trigger="regid"}>
 				{foreach from=$cashreglist item=c}
 				<OPTION VALUE="{$c.id}"{if $c.id eq $receipt.regid} SELECTED{/if}>{$c.name|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
@@ -66,11 +69,11 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<B>{trans("Receipt number:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+		<TD WIDTH="99%" NOWRAP>
 			<INPUT TYPE="TEXT" NAME="receipt[number]" VALUE="{$receipt.number}" SIZE="10" {tip text="Enter receipt number. WARNING! Changing this number can be DANGEROUS!" trigger="number"}>
 			{if $receipt.extnumber || $receipt.extended}
 			        {trans("Additional number:")}
@@ -79,22 +82,22 @@
 					
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<B>{trans("Settlement date:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+		<TD WIDTH="99%" NOWRAP>
 			<INPUT TYPE="TEXT" NAME="receipt[cdate]" VALUE="{$receipt.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} OnClick="javascript:cal1.popup();" >
 			{if $receipt.cdatewarning}
 			<INPUT TYPE="HIDDEN" NAME="receipt[cdatewarning]" VALUE="1">
 			{/if}
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%">
+	<TR>
+		<TD WIDTH="1%">
 			<B>{trans("Target:")}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+		<TD WIDTH="99%" NOWRAP>
 		    <TABLE>
 			<TR>
 			    <TD width="1%" nowrap>
@@ -133,105 +136,119 @@
 		    </TABLE>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fbottomu" WIDTH="100%" ALIGN="right" COLSPAN="2">
+	<TR>
+		<TD WIDTH="100%" ALIGN="right" COLSPAN="2">
 			<A HREF="javascript: saveheader();">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 </FORM>
 {if $error.nocash}<h2 align="center"><font class="alert">{$error.nocash}</font></h2>{/if}
 {if $receipt.selected && $customer}
 <P>
-<TABLE WIDTH="100%" CELLPADDING="3">
-        <TR CLASS="dark">
-	        <TD CLASS="fleftu" WIDTH="1%" nowrap>
+<TABLE class="lmsbox">
+    <THEAD>
+        <TR>
+	        <TD WIDTH="1%" nowrap>
 		        <IMG SRC="img/customer.gif" ALT=""> <B>{trans("Customer:")}</B>
 		</TD>
-		<TD CLASS="fbt" WIDTH="1%" nowrap>
+		<TD WIDTH="1%" nowrap>
 		        <B>{$customer.customername}</B>
 		        &nbsp;&raquo;&nbsp; {$customer.address} &nbsp; {$customer.zip} {$customer.city}
 		        &nbsp;&raquo;&nbsp; {if $customer.balance < 0}<FONT class="red">{/if}{$customer.balance|money_format}{if $customer.balance < 0}</FONT>{/if}
                 </TD>
-		<TD CLASS="frightu" WIDTH="98%" align="right">
+		<TD WIDTH="98%" align="right">
                         {if $customer.groups}<FONT class="red bold">
 			({foreach from=$customer.groups item=item name=groups}{$item.name}{if $smarty.foreach.groups.iteration < sizeof($customer.groups)}, {/if}{/foreach})
 			</FONT>{/if}
 		</TD>
         </TR>
+    </THEAD>
 </TABLE>
 {if $customer.notes}
 <BR>
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD CLASS="fleftu" width="1%" nowrap>
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%" nowrap>
 			<IMG SRC="img/note.gif" ALT=""> <B>{trans("Notes:")}</B>
 		</TD>
-		<TD CLASS="frightu">
+		<TD>
 		        <FONT class="red">{$customer.notes|replace:"\n":"<BR>"}</FONT>
 		</TD>
 	</TR>
+    </THEAD>
 </TABLE>
 {/if}
 {if $customer.docwarning}
 <BR>
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD CLASS="fleftu" width="1%" nowrap>
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%" nowrap>
 			<IMG SRC="img/docum.gif" ALT=""> <B>{trans("Documents:")}</B>
 		</TD>
-		<TD CLASS="frightu">
+		<TD>
 		        <FONT class="red">{$customer.docwarning}</FONT>
 		</TD>
 	</TR>
+    </THEAD>
 </TABLE>
 {/if}
 {if $customer.nodeswarning}
 <BR>
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD CLASS="fleftu" width="1%" nowrap>
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%" nowrap>
 			<IMG SRC="img/node.gif" ALT=""> <B>{trans("Nodes:")}</B>
 		</TD>
-		<TD CLASS="frightu">
+		<TD>
 		        <FONT class="red">{$customer.nodeswarning}</FONT>
 		</TD>
 	</TR>
+    </THEAD>
 </TABLE>
 {/if}
 {if $customer.nodegroupswarning}
 <BR>
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD CLASS="fleftu" width="1%" nowrap>
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%" nowrap>
 			<IMG SRC="img/nodegroup.gif" ALT=""> <B>{trans("Groups:")}</B>
 		</TD>
-		<TD CLASS="frightu">
+		<TD>
 		        <FONT class="red">{$customer.nodegroupswarning}</FONT>
 		</TD>
 	</TR>
+    </THEAD>
 </TABLE>
 {/if}
 </P>
 {/if}
 <P>
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD CLASS="fleftu" WIDTH="1%">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD WIDTH="1%">
 			<B>{trans("No.")}</B>
 		</TD>
-		<TD CLASS="fbt" WIDTH="97%" NOWRAP>
+		<TD WIDTH="97%" NOWRAP>
 			{trans("Name of product, commodity or service:")}
 		</TD>
-		<TD CLASS="fbt" WIDTH="1%" NOWRAP ALIGN="RIGHT">
+		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
 			{trans("Value:")}
 		</TD>
-		<TD WIDTH="1%" NOWRAP CLASS="frightu"></TD>
+		<TD WIDTH="1%" NOWRAP></TD>
 	</TR>
+    </THEAD>
+    <TBODY>
 	{cycle values="light,lucid" print=false name="items"}
 	{foreach from=$contents item=item}
 	<TR class="highlight {cycle name="items"}"  >
-		<TD CLASS="fleft" WIDTH="1%">
+		<TD WIDTH="1%">
 			<B>{counter}.</B>
 		</TD>
 		<TD WIDTH="93%">
@@ -240,13 +257,13 @@
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
 			{$item.value|money_format}<BR>
 		</TD>
-		<TD WIDTH="1%" NOWRAP CLASS="fright">
+		<TD WIDTH="1%" NOWRAP>
 			<A HREF="?m=receiptedit&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
 		</TD>			
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD COLSPAN="4" ALIGN="CENTER" CLASS="fall">
+		<TD COLSPAN="4" ALIGN="CENTER">
 			<P>&nbsp;</P>
 			<P><B>{trans("Receipt have no items. Use form below for items addition.")}</B></P>
 			<P>&nbsp;</P>
@@ -254,20 +271,22 @@
 	</TR>
 	{/foreach}
 	{if $contents}
-	<TR CLASS="light">
-		<TD COLSPAN="2" WIDTH="98%" ALIGN="RIGHT" CLASS="ftl">
+	<TR>
+		<TD COLSPAN="2" WIDTH="98%" ALIGN="RIGHT">
 			<B>{trans("Total:")}</B>
 		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" CLASS="ftop">
+		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
 			{sum array=$contents column=value string_format=$LANGDEFS.$_language.money_format}
 		</TD>
-		<TD WIDTH="1%" CLASS="ftr"></TD>
+		<TD WIDTH="1%"></TD>
 	</TR>
 	{/if}
+    </TBODY>
+    <TFOOT>
 	<FORM METHOD="POST" {*ACTION="?m=receiptedit&action=additem"*} NAME="additem">
 	<INPUT type="submit" class="hiddenbtn">
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<B>{counter}.</B>
 		</TD>
 		<TD WIDTH="94%">
@@ -276,11 +295,11 @@
 		<TD>
 			<INPUT TYPE="text" NAME="value" SIZE="10" {tip text="Enter item value"}>
 		</TD>
-		<TD CLASS="fright">
+		<TD>
 			<A HREF="javascript:additem(); "><IMG SRC="img/save.gif" ALT="" {tip text="Add item"}></A>
 		</TD>
 	</TR>
-	<TR CLASS="light">
+	<TR>
 		<TD COLSPAN="4" CLASS="{if $covenantlist}flr{else}fbottomu{/if}" ALIGN="RIGHT">
 			<INPUT type="checkbox" id="original" name="original" checked> <label for="original">{trans("original")}</label>&nbsp;
 			<INPUT type="checkbox" id="copy" name="copy" checked> <label for="copy">{trans("copy")}</label>&nbsp;
@@ -304,6 +323,7 @@
 		</TD>
 	</TR>
 	</FORM>
+    </TFOOT>
 </TABLE>
 </P>
 <SCRIPT type="text/javascript">
