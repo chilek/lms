@@ -1,35 +1,38 @@
 {include file="header.html"}
 <!--// $Id$ -->
 <H1>{$layout.pagetitle}</H1>
-<TABLE WIDTH="100%" CELLPADDING="3">
+<TABLE class="lmsbox">
 <FORM METHOD="POST" NAME="tedit" ACTION="?m=nodegroupedit&id={$nodegroup.id}">
 <INPUT type="submit" class="hiddenbtn">
-	<TR CLASS="dark">
-		<TD WIDTH="1%" CLASS="fleftu">
+    <THEAD>
+	<TR>
+		<TD WIDTH="1%">
 			<IMG SRC="img/nodegroup.gif" alt="">
 		</TD>
-		<TD WIDTH="1%" CLASS="fbt" NOWRAP>
+		<TD WIDTH="1%" NOWRAP>
 			<B>{trans("Name:")}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="frightu">
+		<TD WIDTH="98%">
 			<INPUT TYPE="TEXT" VALUE="{$nodegroup.name}" NAME="nodegroup[name]" {tip trigger="name" bold=1}>
 			<B>&nbsp;({$nodegroup.id|string_format:"%04d"})</B>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD WIDTH="1%" CLASS="fleft">
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD WIDTH="1%">
 			<IMG SRC="img/info1.gif" alt="">
 		</TD>
 		<TD WIDTH="1%">
 			<B>{trans("Description:")}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="fright">
+		<TD WIDTH="98%">
 			<TEXTAREA ROWS="5" COLS="50" NAME="nodegroup[description]" {tip text="Enter additional information (optional)"}>{$nodegroup.description}</TEXTAREA>
 		</TD>
 	</TR>
 </FORM>
-	<TR CLASS="light">
-		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT" CLASS="fbottomu">
+	<TR>
+		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT">
 			{if sizeof($nodegroups) > 1 && $nodegroup.count}
 			<FORM name="tmove" method="get" action="">
 			    <input type="hidden" name="is_sure" value="1">
@@ -47,6 +50,7 @@
 			<A HREF="?m=nodegroupinfo&id={$nodegroup.id}{if $membersnetid}&membersnetid={$membersnetid}{/if}{if $othersnetid}&othersnetid={$othersnetid}{/if}">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A> 
 		</TD>
 	</TR>
+    </TBODY>
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--

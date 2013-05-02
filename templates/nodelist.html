@@ -2,26 +2,27 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {$lastonline_limit = get_conf('phpui.lastonline_limit')}
-<TABLE cellpadding="3" width="100%">
-	<TR class="dark" {tip text="Click on column name to change sorting order"}>
-		<TD class="fleftu" width="97%">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR {tip text="Click on column name to change sorting order"}>
+		<TD width="97%">
 			<img src="img/node.gif" ALT=""> <A href="?m=nodelist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{trans("Name:")}</B></A>{if $listdata.order eq "name"} <IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<img src="img/customer.gif" ALT=""> <A href="?m=nodelist&o=owner{if $listdata.direction eq "asc" && $listdata.order eq "owner"},desc{/if}">{trans("Customer:")}</A>{if $listdata.order eq "owner"} <IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD Class="fbt" align="right" valign="top" width="1%" nowrap>
+		<TD align="right" valign="top" width="1%" nowrap>
 			<img src="img/empty.gif" ALT="" width="1" height="16"><A href="?m=nodelist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{trans("Node ID:")}</A>{if $listdata.order eq "id"} <IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<img src="img/empty.gif" ALT="" width="1" height="16"><A href="?m=nodelist&o=ownerid{if $listdata.direction eq "asc" && $listdata.order eq "ownerid"},desc{/if}">{trans("Customer ID:")}</A>{if $listdata.order eq "ownerid"} <IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD CLASS="fbt" width="1%" nowrap>
+		<TD width="1%" nowrap>
 			<img src="img/ip.gif" ALT="">&nbsp;<A href="?m=nodelist&o=ip{if $listdata.direction eq "asc" && $listdata.order eq "ip"},desc{/if}">{trans("IP address:")}</A>{if $listdata.order eq "ip"} <IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<A href="?m=nodelist&o=ip_pub{if $listdata.direction eq "asc" && $listdata.order eq "ip_pub"},desc{/if}">({trans("Pub. IP address:")})</A> {if $listdata.order eq "ip_pub"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<img src="img/mac.gif" ALT="">&nbsp;<A href="?m=nodelist&o=mac{if $listdata.direction eq "asc" && $listdata.order eq "mac"},desc{/if}">{trans("MAC address:")}</A>{if $listdata.order eq "mac"} <IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD CLASS="frightu" width="1%" align="right">
+		<TD width="1%" align="right">
 			<NOBR><B>{t a=$listdata.total}Total: $a{/t}</B></NOBR>
 		</TD>
 	</TR>
-	<TR CLASS="dark">
-		<TD CLASS="fall" colspan="4">
+	<TR class="ftop">
+		<TD colspan="4">
 			<FORM METHOD="GET" ACTION="?m={$layout.module}" NAME="choosefilter">
 				<INPUT type="submit" class="hiddenbtn">
 				<INPUT TYPE="HIDDEN" NAME="m" VALUE="nodelist">
@@ -59,16 +60,18 @@
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
-	<TR CLASS="dark">
-		<TD CLASS="fall" colspan="4">
+	<TR class="ftop">
+		<TD colspan="4">
 			{include file="scroller.html" loop=$nodelist}
 		</TD>
 	</TR>
 	{/if}
+    </THEAD>
+    <TBODY>
 	{cycle values="light,lucid" print=false}
 	{section name=nodelist loop=$nodelist start=$start max=$pagelimit}
 	<TR class="highlight {cycle}{if ! $nodelist[nodelist].access} blend{/if}"  >
-		<TD width="95%" class="fleft" onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';">
+		<TD width="95%" onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';">
 			<a name="{$nodelist[nodelist].id}">
 			{if $nodelist[nodelist].lastonline}
 			    {if ($smarty.now-$nodelist[nodelist].lastonline) > $lastonline_limit}
@@ -93,7 +96,7 @@
 			<img src="img/ip.gif" ALT="">&nbsp;{$nodelist[nodelist].ip} {if $nodelist[nodelist].ip_pub != "0.0.0.0"}({$nodelist[nodelist].ip_pub}){/if}<BR>
 			<nobr><img src="img/mac.gif" ALT="">&nbsp;{$nodelist[nodelist].mac|replace:",":"</nobr><BR><nobr><img src=\"img/mac.gif\" ALT=\"\">&nbsp;"}</nobr>
 		</TD>
-		<TD class="fright" width="1%">
+		<TD width="1%">
 			<nobr>
 			<a href="?m=nodeset&id={$nodelist[nodelist].id}"><img src="img/{if ! $nodelist[nodelist].access}no{/if}access.gif" alt="[ {if ! $nodelist[nodelist].access}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]" title="[ {if ! $nodelist[nodelist].access}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]"></A>
                         <a href="?m=nodewarn&id={$nodelist[nodelist].id}"><img src="img/warning{if ! $nodelist[nodelist].warning}off{else}on{/if}.gif" alt="[ {if ! $nodelist[nodelist].warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if} ]" title="[ {if ! $nodelist[nodelist].warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if} ]"></A>
@@ -106,7 +109,7 @@
 	{if $nodelist[nodelist.index_next].ownerid eq $nodelist[nodelist].ownerid && $listdata.order eq "owner"}{cycle print=false}{/if}
 	{sectionelse}
 	<TR>
-		<TD colspan="4" class="fall" align="center">
+		<TD colspan="4" align="center">
 			<p>&nbsp;</p>
 			<p><B>{trans("No such nodes in database.")}</b></p>
 			<p>&nbsp;</p>
@@ -114,27 +117,30 @@
 	</TR>
 	{/section}
 	{if $listdata.total != 0}
-	<TR CLASS="dark">
-		<TD CLASS="fall" colspan="4">
+    </TBODY>
+    <TFOOT>
+	<TR>
+		<TD colspan="4">
 			{include file="scroller.html" loop=$nodelist}
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="light">
-		<TD WIDTH="98%" COLSPAN="2" CLASS="fleftu" ALIGN="right">
+	<TR class="ftop">
+		<TD WIDTH="98%" COLSPAN="2" ALIGN="right">
 			<B>
 				{trans("Total:")}<BR>
 				{trans("Connected<!nodes>:")}<BR>
 				{trans("Disconnected:")}
 			</B>
 		</TD>
-		<TD WIDTH="2%" COLSPAN="2" CLASS="frightu" VALIGN="TOP">
+		<TD WIDTH="2%" COLSPAN="2" VALIGN="TOP">
 			<B>
 				{if $listdata.total}{$listdata.total}{else}0{/if}<BR>
 				{if $listdata.totalon}{$listdata.totalon}{else}0{/if}<BR>
 				{if $listdata.totaloff}{$listdata.totaloff}{else}0{/if}
 			</B>
 		</TD>				
-	</TR>			
+	</TR>
+    </TFOOT>
 </TABLE>
 {include file="footer.html"}
