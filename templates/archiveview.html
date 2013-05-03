@@ -42,10 +42,12 @@
 </SCRIPT>
 <FORM METHOD="POST" NAME="page">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE style="width: 100%;" cellpadding="3">
-	<TR class="dark">
-		<TD class="fall" colspan="4">
-			<TABLE style="width: 100%;" cellpadding="3">
+<TABLE class="lmsbox">
+	<THEAD>
+
+	<TR>
+		<TD class="container" colspan="4">
+			<TABLE>
 				<TR>
 					<TD style="width: 1%; white-space: nowrap;">
 						<A href="javascript:clear_filter();"><IMG src="img/delete.gif"></A>
@@ -116,33 +118,37 @@
 			</TABLE>
 		</TD>
 	</TR>
-	<TR class="dark">
-		<TD class="fleftu">
+	<TR>
+		<TD>
 			{if $listdata.page}<A href="?m=archiveview&page={$listdata.page - 1}">&laquo;&laquo;&laquo; {trans("Next")}</A>{else}&nbsp;{/if}
 		</TD>
-		<TD class="frightu" colspan="3" style="text-align: right;">
+		<TD colspan="3" style="text-align: right;">
 			{if $listdata.prev}<A href="?m=archiveview&page={$listdata.page + 1}">{trans("Previous")} &raquo;&raquo;&raquo;<A>{else}&nbsp;{/if}
 		</TD>
 	</TR>
-	<TR class="dark">
-		<TD class="fleftu bold" style="width: 1%; white-space: nowrap; text-align: center;">
+	<TR>
+		<TD class="bold" style="width: 1%; white-space: nowrap; text-align: center;">
 			{trans("Date:")}
 		</TD>
-		<TD class="fbt bold" style="width: 1%; white-space: nowrap; text-align: center;">
+		<TD class="bold" style="width: 1%; white-space: nowrap; text-align: center;">
 			{trans("User:")}
 		</TD>
-		<TD class="fbt bold" style="width: 1%; white-space: nowrap; text-align: center;">
+		<TD class="bold" style="width: 1%; white-space: nowrap; text-align: center;">
 			{trans("Module:")}
 		</TD>
-		<TD class="frightu bold" style="width: 97%; white-space: nowrap;">
+		<TD class="bold" style="width: 97%; white-space: nowrap;">
 			{trans("Operations:")}
 		</TD>
 	</TR>
+
+	</THEAD>
+	<TBODY>
+
 	{if $transactions}
 	{cycle values="light,lucid" print=false name=trans}
 	{foreach $transactions as $tr}
 	<TR class="{cycle name=trans}">
-		<TD style="width: 1%; white-space: nowrap; vertical-align: bottom;" class="fleft">
+		<TD style="width: 1%; white-space: nowrap; vertical-align: bottom;">
 			{$tr.time|date_format:"Y.m.d H.i.s"}
 		</TD>
 		<TD style="width: 1%; white-space: nowrap; text-align: center; vertical-align: bottom;">
@@ -151,7 +157,7 @@
 		<TD style="width: 1%; white-space: nowrap; text-align: center; vertical-align: bottom;">
 			{$tr.module}
 		</TD>
-		<TD style="width: 97%; vertical-align: bottom;" class="fright">
+		<TD style="width: 97%; vertical-align: bottom;">
 			{if $tr.messages}
 				{if count($tr.messages) > 10}{$start = 9 - count($tr.messages)}...<br>
 				{else}{$start=-1}{/if}
@@ -168,21 +174,27 @@
 	{/foreach}
 	{else}
 	<TR>
-		<TD style="width: 100%; text-align: center;" class="fall bold" colspan="4">
+		<TD style="width: 100%; text-align: center;" class="bold" colspan="4">
 			<P>&nbsp;</P>
 			<P>{trans("No such transactions in database.")}</P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>
 	{/if}
-	<TR class="dark">
-		<TD class="fleftu">
+
+	</TBODY>
+	<TFOOT>
+
+	<TR>
+		<TD>
 			{if $listdata.page}<A href="?m=archiveview&page={$listdata.page - 1}">&laquo;&laquo;&laquo; {trans("Next")}</A>{else}&nbsp;{/if}
 		</TD>
-		<TD class="frightu" colspan="3" style="text-align: right;">
+		<TD colspan="3" style="text-align: right;">
 			{if $listdata.prev}<A href="?m=archiveview&page={$listdata.page + 1}">{trans("Previous")} &raquo;&raquo;&raquo;<A>{else}&nbsp;{/if}
 		</TD>
 	</TR>
+
+	</TFOOT>
 </TABLE>
 </FORM>
 <SCRIPT type="text/javascript">
