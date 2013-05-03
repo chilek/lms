@@ -57,7 +57,7 @@
 	</TR>		
 	{if $listdata.total != 0}
 	<TR>
-		<TD WIDTH="100%" COLSPAN="5">
+		<TD class="pagination" WIDTH="100%" COLSPAN="5">
 			{include file="scroller.html" loop=$messagelist scrollerno=1}
 		</TD>
 	</TR>
@@ -101,7 +101,7 @@
     <TFOOT>
 	{if $listdata.total != 0}
 	<TR>
-		<TD WIDTH="100%" COLSPAN="5">
+		<TD class="pagination" WIDTH="100%" COLSPAN="5">
 			{include file="scroller.html" loop=$messagelist scrollerno=2}
 		</TD>
 	</TR>

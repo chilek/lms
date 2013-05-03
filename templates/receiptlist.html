@@ -102,7 +102,7 @@
 	</TR>		
 	{if $listdata.total != 0}
 	<TR>
-		<TD WIDTH="100%" COLSPAN="7">
+		<TD class="pagination" WIDTH="100%" COLSPAN="7">
 			{include file="scroller.html" loop=$receiptlist scrollerno=1}
 		</TD>
 	</TR>
@@ -162,7 +162,7 @@
     <TFOOT>
 	{if $listdata.total != 0}
 	<TR id="end">
-		<TD WIDTH="100%" COLSPAN="7">
+		<TD class="pagination" WIDTH="100%" COLSPAN="7">
 			{include file="scroller.html" loop=$receiptlist scrollerno=2}
 		</TD>
 	</TR>
