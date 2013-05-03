@@ -110,7 +110,7 @@ window.open('?m=note&id={$note}');
 	</TR>
 	{if $listdata.total != 0}
 	<TR>
-		<TD WIDTH="100%" COLSPAN="7">
+		<TD class="pagination" WIDTH="100%" COLSPAN="7">
 			{include file="scroller.html" loop=$notelist scrollerno=1}
 		</TD>
 	</TR>
@@ -164,7 +164,7 @@ window.open('?m=note&id={$note}');
     <TFOOT>
 	{if $listdata.total != 0}
 	<TR>
-		<TD WIDTH="100%" COLSPAN="7">
+		<TD class="pagination" WIDTH="100%" COLSPAN="7">
 			{include file="scroller.html" loop=$notelist scrollerno=2}
 		</TD>
 	</TR>
