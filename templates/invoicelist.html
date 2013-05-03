@@ -117,7 +117,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 	</TR>		
 	{if $listdata.total != 0}
 	<TR>
-		<TD WIDTH="100%" COLSPAN="7">
+		<TD class="pagination" WIDTH="100%" COLSPAN="7">
 			{include file="scroller.html" loop=$invoicelist scrollerno=1}
 		</TD>
 	</TR>
@@ -182,7 +182,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
     <TFOOT>
 	{if $listdata.total != 0}
 	<TR>
-		<TD WIDTH="100%" COLSPAN="7">
+		<TD class="pagination" WIDTH="100%" COLSPAN="7">
 			{include file="scroller.html" loop=$invoicelist scrollerno=2}
 		</TD>
 	</TR>

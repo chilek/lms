@@ -26,7 +26,7 @@
     <TBODY>
 	{if $listdata.total != 0}
 	<TR>
-		<TD colspan="4" WIDTH="100%">
+		<TD class="pagination" colspan="4" WIDTH="100%">
 			{include file="scroller.html" loop=$netdevlist adlink="&search=1"}
 		</TD>
 	</TR>
@@ -67,7 +67,7 @@
     <TFOOT>
 	{if $listdata.total != 0}
 	<TR>
-		<TD colspan="4" WIDTH="100%">
+		<TD class="pagination" colspan="4" WIDTH="100%">
 			{include file="scroller.html" loop=$netdevlist adlink="&search=1"}
 		</TD>
 	</TR>

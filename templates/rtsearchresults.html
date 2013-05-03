@@ -23,7 +23,7 @@
 	</TR>
 	{if $queuedata.total != 0}
 	<TR>
-		<TD colspan="5">
+		<TD class="pagination" colspan="5">
 			{include file="scroller.html" loop=$queue listdata=$queuedata adlink="&s=1"}
 		</TD>
 	</TR>
@@ -102,7 +102,7 @@
     <TFOOT>
 	{if $queuedata.total != 0}
 	<TR>
-		<TD colspan="5">
+		<TD class="pagination" colspan="5">
 			{include file="scroller.html" loop=$queue listdata=$queuedata adlink="&s=1"}
 		</TD>
 	</TR>

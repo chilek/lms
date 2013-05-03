@@ -218,18 +218,22 @@ table.lmsbox-inner > tfoot {
 }
 
 table.lmsbox > thead,
-table.lmsbox > tfoot,
-table.lmsbox-inner > thead,
-table.lmsbox-inner > tfoot {
+table.lmsbox-inner > thead {
     background-color: #CEBD9B;
 }
 
 table.lmsbox > tbody,
-table.lmsbox-inner > tbody {
+table.lmsbox > tfoot,
+table.lmsbox-inner > tbody,
+table.lmsbox-inner > tfoot {
     background-color: #DFD5BD;
 }
 
 table.lmsbox > thead > tr,
 table.lmsbox > tfoot > tr {
     border-top: 1px solid black;
+}
+
+.pagination {
+    background-color: #CEBD9B;
 }

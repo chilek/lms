@@ -71,7 +71,7 @@
 	</TR>		
 	{if $queuedata.total != 0}
 	<TR>
-		<TD colspan="5">
+		<TD class="pagination" colspan="5">
 			{include file="scroller.html" listdata=$queuedata loop=$queue}
 		</TD>
 	</TR>
@@ -152,7 +152,7 @@
     <TFOOT>
 	{if $queuedata.total != 0}
 	<TR>
-		<TD colspan="5">
+		<TD class="pagination" colspan="5">
 			{include file="scroller.html" listdata=$queuedata loop=$queue}
 		</TD>
 	</TR>
