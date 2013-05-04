@@ -160,6 +160,7 @@ version ? (????-??-??):
   - transaction logging for finances [chilan]
   - new css classes - lmsbox and lmsbox-inner - for separating content from presentation [maciejlew]
   - common old css classes like fall, fright etc can now be applied to any block html element [maciejlew]
+  - support of sms message length limits [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
