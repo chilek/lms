@@ -166,9 +166,19 @@ if (chkconfig($CONFIG['phpui']['use_swekey'])) {
 
 // Set some template and layout variables
 
-$SMARTY->template_dir = SMARTY_TEMPLATES_DIR;
-$SMARTY->compile_dir = SMARTY_COMPILE_DIR;
-$SMARTY->debugging = (isset($CONFIG['phpui']['smarty_debug']) ? chkconfig($CONFIG['phpui']['smarty_debug']) : FALSE);
+$SMARTY->setTemplateDir(null);
+$custom_templates_dir = get_conf('phpui.custom_templates_dir');
+if (!empty($custom_templates_dir) && file_exists(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir)
+	&& !is_file(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir))
+	$SMARTY->AddTemplateDir(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir);
+$SMARTY->AddTemplateDir(
+	array(
+		SMARTY_TEMPLATES_DIR . '/default',
+		SMARTY_TEMPLATES_DIR,
+	)
+);
+$SMARTY->setCompileDir(SMARTY_COMPILE_DIR);
+$SMARTY->debugging = check_conf('phpui.smarty_debug');
 
 $layout['logname'] = $AUTH->logname;
 $layout['logid'] = $AUTH->id;

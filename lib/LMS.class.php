@@ -4814,6 +4814,10 @@ class LMS {
 
 		$message = preg_replace("/\r/", "", $message);
 
+		if (!empty($this->CONFIG['sms']['max_length']) && intval($this->CONFIG['sms']['max_length']) > 6
+			&& $msg_len > intval($this->CONFIG['sms']['max_length']))
+			$message = mb_substr($message, 0, $this->CONFIG['sms']['max_length'] - 6) . ' [...]';
+
 		$data = array(
 				'number' => $number,
 				'message' => $message,
