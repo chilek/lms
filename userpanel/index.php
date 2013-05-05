@@ -158,8 +158,8 @@ while (false !== ($filename = readdir($dh))) {
 $SMARTY->assignByRef('LANGDEFS', $LANGDEFS);
 $SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
 $SMARTY->assignByRef('_language', $LMS->lang);
-$SMARTY->template_dir = USERPANEL_DIR.'/templates/';
-$SMARTY->compile_dir = SMARTY_COMPILE_DIR;
+$SMARTY->setTemplateDir(USERPANEL_DIR . '/templates');
+$SMARTY->setCompileDir(SMARTY_COMPILE_DIR);
 $SMARTY->debugging = check_conf('phpui.smarty_debug');
 require_once(USERPANEL_LIB_DIR.'/smarty_addons.php');
 
