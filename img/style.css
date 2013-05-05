@@ -237,3 +237,13 @@ table.lmsbox > tfoot > tr {
 .pagination {
     background-color: #CEBD9B;
 }
+
+table.lmsbox > thead { text-align: left; }
+
+td.empty-table { text-align: center; font-weight: bold; padding: 2em; }
+
+.nobr { white-space: nowrap; }
+.text-right { text-align: right; }
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.lighter { font-weight: lighter; }
