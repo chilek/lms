@@ -920,8 +920,8 @@ class LMS {
 				break;
 		}
 
-		if ($network)
-			$net = $this->GetNetworkParams($network);
+		//if ($network)
+		//	$net = $this->GetNetworkParams($network);
 
 		$over = 0;
 		$below = 0;
@@ -1073,9 +1073,7 @@ class LMS {
 				. ($indebted2 ? ' AND b.value < -t.value' : '')
 				. ($indebted3 ? ' AND b.value < -t.value * 2' : '')
 				. ($disabled ? ' AND s.ownerid IS NOT NULL AND s.account > s.acsum' : '')
-				. ($network ? ' AND EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id AND 
-							((ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ') 
-							OR (ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')))' : '')
+				. ($network ? ' AND EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id AND netid = ' . $network . ')' : '')
 				. ($customergroup ? ' AND customergroupid=' . intval($customergroup) : '')
 				. ($nodegroup ? ' AND EXISTS (SELECT 1 FROM nodegroupassignments na
 							JOIN nodes n ON (n.id = na.nodeid) 
@@ -1710,8 +1708,8 @@ class LMS {
 		$totalon = 0;
 		$totaloff = 0;
 
-		if ($network)
-			$net = $this->GetNetworkParams($network);
+		//if ($network)
+		//	$net = $this->GetNetworkParams($network);
 
 		if ($nodelist = $this->DB->GetAll('SELECT n.id AS id, n.ipaddr, inet_ntoa(n.ipaddr) AS ip, ipaddr_pub,
 				inet_ntoa(n.ipaddr_pub) AS ip_pub, n.mac, n.name, n.ownerid, n.access, n.warning,
@@ -1722,8 +1720,7 @@ class LMS {
 				. ($customergroup ? 'JOIN customerassignments ON (customerid = c.id) ' : '')
 				. ($nodegroup ? 'JOIN nodegroupassignments ON (nodeid = n.id) ' : '')
 				. ' WHERE 1=1 '
-				. ($network ? ' AND ((n.ipaddr > ' . $net['address'] . ' AND n.ipaddr < ' . $net['broadcast'] . ')
-				    OR (n.ipaddr_pub > ' . $net['address'] . ' AND n.ipaddr_pub < ' . $net['broadcast'] . '))' : '')
+				. ($network ? ' AND n.netid = ' . $network : '')
 				. ($status == 1 ? ' AND n.access = 1' : '') //connected
 				. ($status == 2 ? ' AND n.access = 0' : '') //disconnected
 				. ($status == 3 ? ' AND n.lastonline > ?NOW? - ' . intval($this->CONFIG['phpui']['lastonline_limit']) : '') //online
@@ -3611,7 +3608,7 @@ class LMS {
 	}
 
 	function GetNetworkList() {
-		if ($networks = $this->DB->GetAll('SELECT id, name, inet_ntoa(address) AS address, 
+		if ($networks = $this->DB->GetAll('SELECT n.id, h.name AS hostname, n.name, inet_ntoa(address) AS address, 
 				address AS addresslong, mask, interface, gateway, dns, dns2, 
 				domain, wins, dhcpstart, dhcpend,
 				mask2prefix(inet_aton(mask)) AS prefix,
@@ -3620,16 +3617,18 @@ class LMS {
 				pow(2,(32 - mask2prefix(inet_aton(mask)))) AS size, disabled,
 				(SELECT COUNT(*) 
 					FROM nodes 
-					WHERE (ipaddr >= address AND ipaddr <= broadcast(address, inet_aton(mask))) 
+					WHERE netid = n.id AND (ipaddr >= address AND ipaddr <= broadcast(address, inet_aton(mask))) 
 						OR (ipaddr_pub >= address AND ipaddr_pub <= broadcast(address, inet_aton(mask)))
 				) AS assigned,
 				(SELECT COUNT(*) 
 					FROM nodes 
-					WHERE ((ipaddr >= address AND ipaddr <= broadcast(address, inet_aton(mask))) 
+					WHERE netid = n.id AND ((ipaddr >= address AND ipaddr <= broadcast(address, inet_aton(mask))) 
 						OR (ipaddr_pub >= address AND ipaddr_pub <= broadcast(address, inet_aton(mask))))
 						AND (?NOW? - lastonline < ?)
 				) AS online
-				FROM networks ORDER BY name', array(intval($this->CONFIG['phpui']['lastonline_limit'])))) {
+				FROM networks n
+				JOIN hosts h ON h.id = n.hostid
+				ORDER BY n.name', array(intval($this->CONFIG['phpui']['lastonline_limit'])))) {
 			$size = 0;
 			$assigned = 0;
 			$online = 0;
@@ -3745,8 +3744,8 @@ class LMS {
 					break;
 			}
 
-			if (!$this->DB->Execute('UPDATE nodes SET ipaddr=? WHERE ipaddr=?', array($i, $ip)))
-				$this->DB->Execute('UPDATE nodes SET ipaddr_pub=? WHERE ipaddr_pub=?', array($i, $ip));
+			if (!$this->DB->Execute('UPDATE nodes SET ipaddr=? WHERE netid=? AND ipaddr=?', array($i, $id, $ip)))
+				$this->DB->Execute('UPDATE nodes SET ipaddr_pub=? WHERE netid=? AND ipaddr_pub=?', array($i, $id, $ip));
 		}
 	}
 
@@ -3770,8 +3769,8 @@ class LMS {
 			while (in_array($i, (array) $destnodes))
 				$i++;
 
-			if (!$this->DB->Execute('UPDATE nodes SET ipaddr=? WHERE ipaddr=?', array($i, $ip)))
-				$this->DB->Execute('UPDATE nodes SET ipaddr_pub=? WHERE ipaddr_pub=?', array($i, $ip));
+			if (!$this->DB->Execute('UPDATE nodes SET ipaddr=? WHERE netid=? AND ipaddr=?', array($i, $dst, $ip)))
+				$this->DB->Execute('UPDATE nodes SET ipaddr_pub=? WHERE netid=? AND ipaddr_pub=?', array($i, $dst, $ip));
 
 			$counter++;
 		}
@@ -3790,11 +3789,12 @@ class LMS {
 
 		$nodes = $this->DB->GetAllByKey('
 				SELECT id, name, ipaddr, ownerid, netdev 
-				FROM nodes WHERE ipaddr > ? AND ipaddr < ?
+				FROM nodes WHERE netid = ? AND ipaddr > ? AND ipaddr < ?
 				UNION ALL
 				SELECT id, name, ipaddr_pub AS ipaddr, ownerid, netdev 
-				FROM nodes WHERE ipaddr_pub > ? AND ipaddr_pub < ?', 'ipaddr', array($network['addresslong'], ip_long($network['broadcast']),
-				$network['addresslong'], ip_long($network['broadcast'])));
+				FROM nodes WHERE netid = ? AND ipaddr_pub > ? AND ipaddr_pub < ?', 'ipaddr',
+				array($id, $network['addresslong'], ip_long($network['broadcast']),
+					$id, $network['addresslong'], ip_long($network['broadcast'])));
 
 		if($network['hostid'])
 			$network['hostname'] = $this->DB->GetOne('SELECT name FROM hosts WHERE id=?', array($network['hostid']));
