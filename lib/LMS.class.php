@@ -3654,20 +3654,22 @@ class LMS {
 			AND broadcast(address, inet_aton(mask)) >' . ($checkbroadcast ? '=' : '') . ' ?', array(intval($ignoreid), $ip, $ip));
 	}
 
-	function NetworkOverlaps($network, $mask, $ignorenet = 0) {
+	function NetworkOverlaps($network, $mask, $hostid, $ignorenet = 0) {
 		$cnetaddr = ip_long($network);
 		$cbroadcast = ip_long(getbraddr($network, $mask));
 
 		return $this->DB->GetOne('SELECT 1 FROM networks
-			WHERE id != ? AND (
+			WHERE id != ? AND hostid = ? AND (
 				address = ? OR broadcast(address, inet_aton(mask)) = ?
 				OR (address > ? AND broadcast(address, inet_aton(mask)) < ?) 
 				OR (address < ? AND broadcast(address, inet_aton(mask)) > ?) 
-			)', array(intval($ignorenet),
-						$cnetaddr, $cbroadcast,
-						$cnetaddr, $cbroadcast,
-						$cnetaddr, $cbroadcast
-				));
+			)', array(
+				intval($ignorenet),
+				intval($hostid),
+				$cnetaddr, $cbroadcast,
+				$cnetaddr, $cbroadcast,
+				$cnetaddr, $cbroadcast
+			));
 	}
 
 	function NetworkShift($network = '0.0.0.0', $mask = '0.0.0.0', $shift = 0) {
