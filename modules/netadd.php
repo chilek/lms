@@ -54,7 +54,10 @@ if(isset($_POST['netadd']))
 	
 	if($netadd['domain'] != '' && !preg_match('/^[.a-z0-9-]+$/i', $netadd['domain']))
 		$error['domain'] = trans('Specified domain contains forbidden characters!');
-	
+
+	if (empty($netadd['hostid']))
+		$error['hostid'] = trans('Host should be selected!');
+
 	if(!check_ip($netadd['address']))
 		$error['address'] = trans('Incorrect network IP address!');
 	else
@@ -66,7 +69,7 @@ if(isset($_POST['netadd']))
 		}
 		else
 		{
-			if($LMS->NetworkOverlaps($netadd['address'], prefix2mask($netadd['prefix'])))
+			if($LMS->NetworkOverlaps($netadd['address'], prefix2mask($netadd['prefix']), $netadd['hostid']))
 				$error['address'] = trans('Specified IP address overlaps with other network!');
 		}
 	}
@@ -108,9 +111,6 @@ if(isset($_POST['netadd']))
 		if($netadd['dhcpstart'] != '' && $netadd['dhcpend'] != '' && !(ip_long($netadd['dhcpend']) >= ip_long($netadd['dhcpstart'])))
 			$error['dhcpend'] = trans('End of DHCP range has to be equal or greater than start!');
 	}
-
-	if (empty($netadd['hostid']))
-		$error['hostid'] = trans('Host should be selected!');
 
 	if(!$error)
 	{

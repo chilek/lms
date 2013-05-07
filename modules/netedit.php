@@ -55,7 +55,10 @@ if(isset($_POST['networkdata']))
 	$networkdata['size'] = pow(2,32-$networkdata['prefix']);
 	$networkdata['addresslong'] = ip_long($networkdata['address']);
 	$networkdata['mask'] = prefix2mask($networkdata['prefix']);
-	
+
+	if (empty($networkdata['hostid']))
+		$error['hostid'] = trans('Host should be selected!');
+
 	if(!check_ip($networkdata['address']))
 		$error['address'] = trans('Incorrect network IP address!');
 	else
@@ -67,7 +70,7 @@ if(isset($_POST['networkdata']))
 		}
 		else
 		{
-			if($LMS->NetworkOverlaps($networkdata['address'],prefix2mask($networkdata['prefix']),$networkdata['id']))
+			if($LMS->NetworkOverlaps($networkdata['address'],prefix2mask($networkdata['prefix']), $networkdata['hostid'], $networkdata['id']))
 				$error['address'] = trans('Specified IP address overlaps with other network!');
 			else
 			{
@@ -152,9 +155,6 @@ if(isset($_POST['networkdata']))
 		if($networkdata['dhcpstart']!='' && $networkdata['dhcpend']!='' && !(ip_long($networkdata['dhcpend']) >= ip_long($networkdata['dhcpstart'])))
 			$error['dhcpend'] = trans('End of DHCP range has to be equal or greater than start!');
 	}
-
-	if (empty($networkdata['hostid']))
-		$error['hostid'] = trans('Host should be selected!');
 
 	if(!$error)
 	{

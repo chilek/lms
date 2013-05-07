@@ -243,6 +243,7 @@ switch ($action) {
 		$subtitle = trans('New IP address');
 		$nodeipdata['access'] = 1;
 		$nodeipdata['macs'] = array(0 => '');
+		$SMARTY->assign('networks', $LMS->GetNetworks(true));
 		$SMARTY->assign('nodeipdata', $nodeipdata);
 		$edit = 'addip';
 		break;
@@ -256,6 +257,7 @@ switch ($action) {
 		foreach ($nodeipdata['macs'] as $key => $value)
 			$macs[] = $nodeipdata['macs'][$key]['mac'];
 		$nodeipdata['macs'] = $macs;
+		$SMARTY->assign('networks', $LMS->GetNetworks(true));
 		$SMARTY->assign('nodeipdata', $nodeipdata);
 		$edit = 'ip';
 		break;
@@ -310,8 +312,13 @@ switch ($action) {
 			$error['ipaddr'] = trans('Incorrect IP address!');
 		elseif (!$LMS->IsIPValid($nodeipdata['ipaddr']))
 			$error['ipaddr'] = trans('Specified address does not belongs to any network!');
-		elseif (!$LMS->IsIPFree($nodeipdata['ipaddr']))
-			$error['ipaddr'] = trans('Specified IP address is in use!');
+		else {
+			if (empty($nodeipadata['netid']))
+				$nodeipdata['netid'] = $DB->GetOne('SELECT id FROM networks WHERE INET_ATON(?) & mask = address ORDER BY id LIMIT 1',
+					array($nodeipdata['ipaddr']));
+			if (!$LMS->IsIPFree($nodeipdata['ipaddr'], $nodeipdata['netid']))
+				$error['ipaddr'] = trans('Specified IP address is in use!');
+		}
 
 		if ($nodeipdata['ipaddr_pub'] != '0.0.0.0' && $nodeipdata['ipaddr_pub'] != '') {
 			if (!check_ip($nodeipdata['ipaddr_pub']))
@@ -393,9 +400,14 @@ switch ($action) {
 			$error['ipaddr'] = trans('Incorrect IP address!');
 		elseif (!$LMS->IsIPValid($nodeipdata['ipaddr']))
 			$error['ipaddr'] = trans('Specified address does not belongs to any network!');
-		elseif (!$LMS->IsIPFree($nodeipdata['ipaddr']) &&
+		else {
+			if (empty($nodeipadata['netid']))
+				$nodeipdata['netid'] = $DB->GetOne('SELECT id FROM networks WHERE INET_ATON(?) & mask = address ORDER BY id LIMIT 1',
+					array($nodeipdata['ipaddr']));
+			if (!$LMS->IsIPFree($nodeipdata['ipaddr'], $nodeipdata['netid']) &&
 				$LMS->GetNodeIPByID($_GET['ip']) != $nodeipdata['ipaddr'])
-			$error['ipaddr'] = trans('IP address is in use!');
+				$error['ipaddr'] = trans('IP address is in use!');
+		}
 
 		if ($nodeipdata['ipaddr_pub'] != '0.0.0.0' && $nodeipdata['ipaddr_pub'] != '') {
 			if (check_ip($nodeipdata['ipaddr_pub'])) {

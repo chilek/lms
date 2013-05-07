@@ -343,18 +343,20 @@ CREATE TABLE nodes (
 	lastonline integer	DEFAULT 0 NOT NULL,
 	info text		    DEFAULT '' NOT NULL,
 	location varchar(255) DEFAULT NULL,
-    location_city integer DEFAULT NULL
-        REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    location_street integer DEFAULT NULL
-        REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    location_house varchar(8) DEFAULT NULL,
-    location_flat varchar(8) DEFAULT NULL,
+	location_city integer DEFAULT NULL
+		REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	location_street integer DEFAULT NULL
+		REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	location_house varchar(8) DEFAULT NULL,
+	location_flat varchar(8) DEFAULT NULL,
 	nas smallint 		DEFAULT 0 NOT NULL,
 	longitude numeric(10, 6) DEFAULT NULL,
 	latitude numeric(10, 6) DEFAULT NULL,
+	netid integer		DEFAULT 0 NOT NULL
+		REFERENCES networks (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id),
 	UNIQUE (name),
-	UNIQUE (ipaddr)
+	UNIQUE (ipaddr, netid)
 );
 CREATE INDEX nodes_netdev_idx ON nodes (netdev);
 CREATE INDEX nodes_ownerid_idx ON nodes (ownerid);
@@ -1931,4 +1933,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2013042600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2013050700');

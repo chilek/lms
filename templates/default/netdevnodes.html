@@ -24,7 +24,7 @@
 					</TD>
 					<TD style="width: 1%; white-space: nowrap;">
 						<img src="img/netdev_takenports.gif"> {trans("Port")}:<BR>
-						<img src="img/ip.gif" ALT=""> {trans("IP address:")}
+						<img src="img/ip.gif" ALT=""> {trans("Network")} / {trans("IP address:")}
 					</TD>
 					<TD style="width: 1%;">&nbsp;</TD>
 				</TR>
@@ -47,7 +47,7 @@
 						</span>
 						<span onclick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';">
 						[{if $netcomplist[netcomplist].port}{$netcomplist[netcomplist].port}{/if}]
-						<BR><IMG SRC="img/ip.gif" ALT=""> {$netcomplist[netcomplist].ip}{if $netcomplist[netcomplist].ip_pub != "0.0.0.0"} ({$netcomplist[netcomplist].ip_pub}){/if}
+						<BR><IMG SRC="img/ip.gif" ALT=""> {$netcomplist[netcomplist].netname} / {$netcomplist[netcomplist].ip}{if $netcomplist[netcomplist].ip_pub != "0.0.0.0"} ({$netcomplist[netcomplist].ip_pub}){/if}
 						</span>
 					</TD>
 					<TD style="width: 1%; text-align: right;">

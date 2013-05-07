@@ -24,6 +24,22 @@
 					<TD WIDTH="50%" style="vertical-align:top;">
 						<TABLE WIDTH="100%" CELLPADDING="3">
 	<TR>
+		<TD WIDTH="1"%">
+			<IMG SRC="img/network.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("Network:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<SELECT NAME="ipadd[netid]" {tip text="Choose network" trigger="netid"}>
+				<OPTION value="0">{trans("- automatic selection -")}</OPTION>
+				{foreach $networks as $net}
+				<OPTION VALUE="{$net.id}" {if $net.id eq $nodeipdata.netid} selected{/if}{if $net.disabled eq 1} class="alert"{/if}>{$net.name|truncate:20:"":true}: {$net.address}/{$net.prefix}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/ip.gif" ALT="">
 		</TD>
@@ -31,7 +47,7 @@
 			<B>{trans("IP address:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-			<INPUT TYPE="TEXT" NAME="ipadd[ipaddr]" VALUE="{$nodeipdata.ipaddr}" {tip text="Enter IP address" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editipaddr['ipadd[ipaddr]'],0,{$netdevinfo.id});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
+			<INPUT TYPE="TEXT" NAME="ipadd[ipaddr]" VALUE="{$nodeipdata.ipaddr}" {tip text="Enter IP address" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editipaddr['ipadd[ipaddr]'], document.editipaddr['ipadd[netid]'], 0, {$netdevinfo.id});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	{if check_conf('phpui.public_ip')}
@@ -43,7 +59,7 @@
 			<B>{trans("Pub. IP address:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-		        <INPUT TYPE="TEXT" NAME="ipadd[ipaddr_pub]" VALUE="{$nodeipdata.ipaddr_pub}" {tip text="Enter IP address (optional)" trigger="ipaddr_pub"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editipaddr['ipadd[ipaddr_pub]'],0,{$netdevinfo.id});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
+		        <INPUT TYPE="TEXT" NAME="ipadd[ipaddr_pub]" VALUE="{$nodeipdata.ipaddr_pub}" {tip text="Enter IP address (optional)" trigger="ipaddr_pub"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editipaddr['ipadd[ipaddr_pub]'], null, 0, {$netdevinfo.id});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	{/if}

@@ -91,6 +91,7 @@ $layout['pagetitle'] = trans('Node Edit: $a', $nodeinfo['name']);
 if (isset($_POST['nodeedit'])) {
 	$nodeedit = $_POST['nodeedit'];
 
+	$nodeedit['netid'] = $_POST['nodeeditnetid'];
 	$nodeedit['ipaddr'] = $_POST['nodeeditipaddr'];
 	$nodeedit['ipaddr_pub'] = $_POST['nodeeditipaddrpub'];
 	foreach ($nodeedit['macs'] as $key => $value)
@@ -106,8 +107,11 @@ if (isset($_POST['nodeedit'])) {
 
 	if (check_ip($nodeedit['ipaddr'])) {
 		if ($LMS->IsIPValid($nodeedit['ipaddr'])) {
+			if (empty($nodeedit['netid']))
+				$nodeedit['netid'] = $DB->GetOne('SELECT id FROM networks WHERE INET_ATON(?) & mask = address ORDER BY id LIMIT 1',
+					array($nodeedit['ipaddr']));
 			$ip = $LMS->GetNodeIPByID($nodeedit['id']);
-			if ($ip != $nodeedit['ipaddr'] && !$LMS->IsIPFree($nodeedit['ipaddr']))
+			if ($ip != $nodeedit['ipaddr'] && !$LMS->IsIPFree($nodeedit['ipaddr'], $nodeedit['netid']))
 				$error['ipaddr'] = trans('Specified IP address is in use!');
 			elseif ($ip != $nodeedit['ipaddr'] && $LMS->IsIPGateway($nodeedit['ipaddr']))
 				$error['ipaddr'] = trans('Specified IP address is network gateway!');
@@ -267,6 +271,7 @@ include(MODULES_DIR . '/nodexajax.inc.php');
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
 $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($nodeid));
+$SMARTY->assign('networks', $LMS->GetNetworks(true));
 $SMARTY->assign('netdevices', $LMS->GetNetDevNames());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNamesByNode($nodeid));
 $SMARTY->assign('othernodegroups', $LMS->GetNodeGroupNamesWithoutNode($nodeid));

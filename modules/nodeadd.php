@@ -52,6 +52,7 @@ if (isset($_POST['nodedata']))
 {
 	$nodedata = $_POST['nodedata'];
 
+	$nodedata['netid'] = $_POST['nodedatanetid'];
 	$nodedata['ipaddr'] = $_POST['nodedataipaddr'];
 	$nodedata['ipaddr_pub'] = $_POST['nodedataipaddr_pub'];
 	foreach($nodedata['macs'] as $key => $value)
@@ -84,10 +85,15 @@ if (isset($_POST['nodedata']))
 		$error['ipaddr'] = trans('Incorrect node IP address!');
 	elseif(!$LMS->IsIPValid($nodedata['ipaddr']))
 		$error['ipaddr'] = trans('Specified IP address doesn\'t overlap with any network!');
-	elseif(!$LMS->IsIPFree($nodedata['ipaddr']))
-		$error['ipaddr'] = trans('Specified IP address is in use!');
-	elseif($LMS->IsIPGateway($nodedata['ipaddr']))
-		$error['ipaddr'] = trans('Specified IP address is network gateway!');
+	else {
+		if (empty($nodedata['netid']))
+			$nodeedit['netid'] = $DB->GetOne('SELECT id FROM networks WHERE INET_ATON(?) & mask = address ORDER BY id LIMIT 1',
+				array($nodedata['ipaddr']));
+		if (!$LMS->IsIPFree($nodedata['ipaddr'], $nodedata['netid']))
+			$error['ipaddr'] = trans('Specified IP address is in use!');
+		elseif($LMS->IsIPGateway($nodedata['ipaddr']))
+			$error['ipaddr'] = trans('Specified IP address is network gateway!');
+	}
 
 	if($nodedata['ipaddr_pub']!='0.0.0.0' && $nodedata['ipaddr_pub']!='')
 	{
@@ -223,6 +229,7 @@ if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_
 
 $nodedata = $LMS->ExecHook('node_add_init', $nodedata);
 
+$SMARTY->assign('networks', $LMS->GetNetworks(true));
 $SMARTY->assign('netdevices', $LMS->GetNetDevNames());
 $SMARTY->assign('error', $error);
 $SMARTY->assign('nodedata', $nodedata);

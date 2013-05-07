@@ -42,6 +42,7 @@ define('SYSLOG_RES_DNOTECONT', 39);
 define('SYSLOG_RES_CASHREG', 40);
 define('SYSLOG_RES_CASHRIGHT', 41);
 define('SYSLOG_RES_CASHREGHIST', 42);
+define('SYSLOG_RES_NETWORK', 43);
 
 $SYSLOG_RESOURCES = array(
 	SYSLOG_RES_USER => trans('user<!syslog>'),
@@ -86,6 +87,7 @@ $SYSLOG_RESOURCES = array(
 	SYSLOG_RES_CASHREG => trans('cash registry<!syslog>'),
 	SYSLOG_RES_CASHRIGHT => trans('cash registry rights<!syslog>'),
 	SYSLOG_RES_CASHREGHIST => trans('cash registry history<!syslog>'),
+	SYSLOG_RES_NETWORK => trans('network<!syslog>'),
 );
 
 $SYSLOG_RESOURCE_KEYS = array(
@@ -131,6 +133,7 @@ $SYSLOG_RESOURCE_KEYS = array(
 	SYSLOG_RES_CASHREG => 'cashregistryid',
 	SYSLOG_RES_CASHRIGHT => 'cashrightid',
 	SYSLOG_RES_CASHREGHIST => 'cashreghistoryid',
+	SYSLOG_RES_NETWORK => 'networkid',
 );
 
 ?>

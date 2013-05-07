@@ -1,27 +1,35 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<table class="lmsbox">
+<TABLE class="lmsbox">
+    <COLGROUP>
+        <COL style="width: 1%;">
+        <COL style="width: 92%">
+        <COL style="width: 2%">
+        <COL style="width: 2%">
+        <COL style="width: 2%">
+        <COL style="width: 1%">
+    </COLGROUP>
     <THEAD>
-	<TR>
-		<TD width="1%">
-			<NOBR><IMG SRC="img/users.gif" ALT=""> <B>{trans("Login:")}</B></NOBR>
-		</TD>
-		<TD width="92%">
-			<NOBR><IMG SRC="img/info2.gif" ALT=""> <B>{trans("First/last name:")}</B></NOBR>
-		</TD>
-		<td width="2%">
-		    <nobr><img src="img/calendar.gif" alt=""> <b>{trans("Active from:")} </b> </nobr>
-		</td>
-		<td width="2%">
-		    <nobr><img src="img/calendar.gif" alt=""> <b>{trans("Active to:")} </b> </nobr>
-		</td>
-		<TD width="2%" NOWRAP>
-			<IMG SRC="img/time.gif" ALT=""> <B>{trans("Last login:")}</B>
-		</TD>
-		<TD width="1%">
-			<NOBR><B>{trans("Total:")} {$userslist.total}</B></NOBR>
-		</TD>
+        <TR>
+                <TH scope="col">
+			<SPAN class="nobr"><IMG SRC="img/users.gif" ALT=""> {trans("Login:")}</SPAN>
+		</TH>
+		<TH scope="col">
+			<SPAN class="nobr"><IMG SRC="img/info2.gif" ALT=""> {trans("First/last name:")}</SPAN>
+		</TH>
+		<TH scope="col">
+                        <SPAN class="nobr"><img src="img/calendar.gif" alt=""> {trans("Active from:")}</SPAN>
+		</TH>
+		<TH scope="col">
+                        <SPAN class="nobr"><img src="img/calendar.gif" alt=""> {trans("Active to:")}</SPAN>
+		</TH>
+		<TH scope="col">
+                        <SPAN class="nobr"><IMG SRC="img/time.gif" ALT=""> {trans("Last login:")}</SPAN>
+		</TH>
+		<TH scope="col">
+			<SPAN class="nobr">{trans("Total:")} {$userslist.total}</SPAN>
+		</TH>
 	</TR>
     </THEAD>
     <TFOOT><TR><TD colspan="6"></TD></TR></TFOOT>
@@ -29,24 +37,24 @@
 	{cycle values="light,lucid" print=false}
 	{section name=userslist loop=$userslist}{if $userslist[userslist].id}
 	<TR class="highlight {cycle} {if !$userslist[userslist].access}blend{/if}"  >
-		<TD width="1%" onClick="return self.location.href='?m=userinfo&id={$userslist[userslist].id}';">
-			<NOBR><IMG SRC="img/users.gif" ALT=""> <B>{$userslist[userslist].login}</B></NOBR>
+		<TD onClick="return self.location.href='?m=userinfo&id={$userslist[userslist].id}';">
+			<SPAN class="nobr bold"><IMG SRC="img/users.gif" ALT=""> {$userslist[userslist].login}</SPAN>
 		</TD>
-		<TD width="92%" onClick="return self.location.href='?m=userinfo&id={$userslist[userslist].id}';">
-			<NOBR><IMG SRC="img/info2.gif" ALT=""> {$userslist[userslist].name}</NOBR>
+		<TD onClick="return self.location.href='?m=userinfo&id={$userslist[userslist].id}';">
+			<SPAN class="nobr"><IMG SRC="img/info2.gif" ALT=""> {$userslist[userslist].name}</SPAN>
 		</TD>
-		<td width="2%"  onclick="return self.location.href='?m=userinfo&id={$userslist[userslist].id}';">
-			<nobr><img src="img/calendar.gif" ALT=""> {$userslist[userslist].accessfrom}</nobr>
+		<td onclick="return self.location.href='?m=userinfo&id={$userslist[userslist].id}';">
+			<SPAN class="nobr"><img src="img/calendar.gif" ALT=""> {$userslist[userslist].accessfrom}</SPAN>
 		</td>
-		<td width="2%"  onclick="return self.location.href='?m=userinfo&id={$userslist[userslist].id}';">
-			<nobr><img src="img/calendar.gif" ALT=""> {$userslist[userslist].accessto}</nobr>
+		<td onclick="return self.location.href='?m=userinfo&id={$userslist[userslist].id}';">
+			<SPAN class="nobr"><img src="img/calendar.gif" ALT=""> {$userslist[userslist].accessto}</SPAN>
 		</td>
-		<TD width="1%" onClick="return self.location.href='?m=userinfo&id={$userslist[userslist].id}';">
-			<NOBR><IMG SRC="img/time.gif" ALT=""> {$userslist[userslist].lastlogin}
-			{$userslist[userslist].lastloginip} {if $userslist[userslist].lastloginip neq $userslist[userslist].lastloginhost}({$userslist[userslist].lastloginhost}){/if}</NOBR>
+		<TD onClick="return self.location.href='?m=userinfo&id={$userslist[userslist].id}';">
+			<SPAN class="nobr"><IMG SRC="img/time.gif" ALT=""> {$userslist[userslist].lastlogin}
+			{$userslist[userslist].lastloginip} {if $userslist[userslist].lastloginip neq $userslist[userslist].lastloginhost}({$userslist[userslist].lastloginhost}){/if}</SPAN>
 		</TD>
-		<TD width="1%" style="text-align:right;">
-			<nobr>
+		<TD class="text-right">
+			<SPAN class="nobr">
 			{if $layout.logid ne $userslist[userslist].id}
 			    {if !$userslist[userslist].access}
 				<a href="?m=useraccess&id={$userslist[userslist].id}&access=1"><img src="img/noaccess.gif" alt="[ {trans('Connect')} ]" title="[ {trans('Connect')} ]" border="0"></a>
@@ -58,6 +66,7 @@
 			{if $userslist[userslist].id neq $layout.logid}<a href="?m=userdel&id={$userslist[userslist].id}" onClick="return confirmLink(this, '{trans("Are you sure, you want to irreversibly delete that user account?")}');">{/if}<img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 			<a href="?m=useredit&id={$userslist[userslist].id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 			<a href="?m=userinfo&id={$userslist[userslist].id}"><img src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
+                        </SPAN>
 		</TD>
 	</TR>
 	{/if}{/section}
