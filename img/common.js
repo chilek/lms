@@ -87,10 +87,10 @@ function openSelectWindow2(theURL, winName, myWidth, myHeight, isCenter, formfie
 	return false;
 }
 
-function ipchoosewin(formfield, netid, device)
+function ipchoosewin(formfield1, formfield2, netid, device)
 {
-    var url = '?m=chooseip' +  (netid ? '&netid=' + netid : '') + (device ? '&device=' + device : '');
-	return openSelectWindow(url,'chooseip',350,380,'true',formfield);
+	var url = '?m=chooseip' +  (netid ? '&netid=' + netid : '') + (device ? '&device=' + device : '');
+	return openSelectWindow2(url, 'chooseip', 350, 380, 'true', formfield1, formfield2);
 }
 
 function macchoosewin(formfield)

@@ -1479,6 +1479,7 @@ class LMS {
 			'nas' => isset($nodedata['nas']) ? $nodedata['nas'] : 0,
 			'longitude' => !empty($nodedata['longitude']) ? str_replace(',', '.', $nodedata['longitude']) : null,
 			'latitude' => !empty($nodedata['latitude']) ? str_replace(',', '.', $nodedata['latitude']) : null,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK] => $nodedata['netid'],
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodedata['id']
 		);
 		$this->DB->Execute('UPDATE nodes SET name=UPPER(?), ipaddr_pub=inet_aton(?),
@@ -1486,13 +1487,14 @@ class LMS {
 				modid=?, access=?, warning=?, ownerid=?, info=?, location=?,
 				location_city=?, location_street=?, location_house=?, location_flat=?,
 				chkmac=?, halfduplex=?, linktype=?, linkspeed=?, port=?, nas=?,
-				longitude=?, latitude=? 
+				longitude=?, latitude=?, netid=?
 				WHERE id=?', array_values($args));
 
 		if ($this->SYSLOG) {
 			unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
 			$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
 
 			$macs = $this->DB->GetAll('SELECT id, nodeid FROM macs WHERE nodeid = ?', array($nodedata['id']));
 			if (!empty($macs))
@@ -1629,10 +1631,9 @@ class LMS {
 				$result['macs'][] = array('mac' => $mac, 'producer' => get_producer($mac));
 			unset($result['mac']);
 
-			if ($net = $this->DB->GetRow('SELECT id, name FROM networks
-				WHERE address = (inet_aton(?) & inet_aton(mask))', array($result['ip']))) {
-				$result['netid'] = $net['id'];
-				$result['netname'] = $net['name'];
+			if ($netname = $this->DB->GetOne('SELECT name FROM networks
+				WHERE id = ?', array($result['netid']))) {
+				$result['netname'] = $netname;
 			}
 
 			return $result;
@@ -1921,15 +1922,17 @@ class LMS {
 			'halfduplex' => $nodedata['halfduplex'],
 			'nas' => isset($nodedata['nas']) ? $nodedata['nas'] : 0,
 			'longitude' => !empty($nodedata['longitude']) ? str_replace(',', '.', $nodedata['longitude']) : null,
-			'latitude' => !empty($nodedata['latitude']) ? str_replace(',', '.', $nodedata['latitude']) : null
+			'latitude' => !empty($nodedata['latitude']) ? str_replace(',', '.', $nodedata['latitude']) : null,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK] => $nodedata['netid'],
 		);
 
 		if ($this->DB->Execute('INSERT INTO nodes (name, ipaddr, ipaddr_pub, ownerid,
 			passwd, creatorid, creationdate, access, warning, info, netdev,
 			location, location_city, location_street, location_house, location_flat,
-			linktype, linkspeed, port, chkmac, halfduplex, nas, longitude, latitude)
+			linktype, linkspeed, port, chkmac, halfduplex, nas, longitude, latitude,
+			netid)
 			VALUES (?, inet_aton(?), inet_aton(?), ?, ?, ?,
-			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
+			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
 			$id = $this->DB->GetLastInsertID('nodes');
 
 			// EtherWerX support (devices have some limits)
@@ -1954,7 +1957,8 @@ class LMS {
 				unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
 				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE]] = $id;
 				$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_ADD, $args,
-					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
 			}
 
 			foreach ($nodedata['macs'] as $mac)
@@ -3539,8 +3543,11 @@ class LMS {
 			return $this->DB->Execute('UPDATE networks SET disabled = 1 WHERE id = ?', array($id));
 	}
 
-	function IsIPFree($ip) {
-		return !($this->DB->GetOne('SELECT id FROM nodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)', array($ip, $ip)) ? TRUE : FALSE);
+	function IsIPFree($ip, $netid = 0) {
+		if ($netid)
+			return !($this->DB->GetOne('SELECT id FROM nodes WHERE (ipaddr=inet_aton(?) AND netid=?) OR ipaddr_pub=inet_aton(?)', array($ip, $netid, $ip)) ? TRUE : FALSE);
+		else
+			return !($this->DB->GetOne('SELECT id FROM nodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)', array($ip, $ip)) ? TRUE : FALSE);
 	}
 
 	function IsIPGateway($ip) {

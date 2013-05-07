@@ -20,18 +20,29 @@
 {/if}
 {if $part eq "main"}
 <body>
+	<script type="text/javascript">
+	<!--
+	function send_address_settings(ipaddr) {
+		sendvalue(targetfield1, ipaddr);
+		if (targetfield2 != null)
+			for (var i = 0; i < targetfield2.options.length; i++)
+				if (targetfield2.options[i].value == '{$netid}')
+					targetfield2.options[i].selected = true;
+	}
+	//-->
+	</script>
 	<table width="100%" cellpadding="1">
 	{section name=iplist loop=$network.nodes.address}
 	{if $smarty.section.iplist.index is even}<TR>{/if}
-		<TD width="50%" align="center" class="highlight" {if $network.nodes.name[iplist] eq ""} onClick="sendvalue(targetfield,'{$network.nodes.address[iplist]}');"{/if}>
+		<TD width="50%" align="center" class="highlight" {if $network.nodes.name[iplist] eq ""} onClick="send_address_settings('{$network.nodes.address[iplist]}');"{/if}>
 			{if $network.nodes.name[iplist] neq ""}
 				{if $device && $network.nodes.name[iplist] eq "<b>GATEWAY</b>"}
-					<A href="javascript: void(0);" onClick="sendvalue(targetfield,'{$network.nodes.address[iplist]}');">{$network.nodes.name[iplist]}</A>
+					<A href="javascript: void(0);" onClick="send_address_settings('{$network.nodes.address[iplist]}');">{$network.nodes.name[iplist]}</A>
 				{else}
 					<FONT class="blend">{$network.nodes.name[iplist]}</FONT>
 				{/if}
 			{else}
-			<A href="javascript: void(0);" onClick="sendvalue(targetfield,'{$network.nodes.address[iplist]}');">{$network.nodes.address[iplist]}</A>
+			<A href="javascript: void(0);" onClick="send_address_settings('{$network.nodes.address[iplist]}');">{$network.nodes.address[iplist]}</A>
 			{/if}
 		</TD>
 	{if $smarty.section.iplist.index is not even}</TR>{/if}

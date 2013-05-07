@@ -2717,6 +2717,7 @@ $_LANG['debit note contents<!syslog>'] = 'zawartość noty obciążeniowej';
 $_LANG['cash registry<!syslog>'] = 'rejestr kasowy';
 $_LANG['cash registry rights<!syslog>'] = 'uprawnienia do rejestru kasowego';
 $_LANG['cash registry history<!syslog>'] = 'historia rejestru kasowego';
+$_LANG['network<!syslog>'] = 'sieć';
 
 $_LANG['addition<!syslog>'] = 'dodanie';
 $_LANG['deletion<!syslog>'] = 'usunięcie';
@@ -2727,5 +2728,8 @@ $_LANG['access denied<!syslog>'] = 'odmowa dostępu';
 $_LANG['log in failed<!syslog>'] = 'logowanie niepowodzeniem';
 $_LANG['log in<!syslog>'] = 'zalogowanie';
 $_LANG['log out<!syslog>'] = 'wylogowanie';
+
+$_LANG['Choose network'] = 'Wybierz sieć';
+$_LANG['- automatic selection -'] = '- wybór automatyczny -';
 
 ?>
