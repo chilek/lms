@@ -1941,7 +1941,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		'dns' => '192.168.0.1', 'dns2' => '192.168.3.254', 'domain' => 'ultralan.net', 'wins' => '192.168.0.2',
 		'dhcpstart' => '192.168.3.230', 'dhcpend' => '192.168.3.253', 'interface' => 'eth0', 'hostid' => $hostid,
 		'notes' => '');
-	$LMS->NetworkAdd($netdata);
+	$netid = $LMS->NetworkAdd($netdata);
 
 	echo ' [OK]<BR>';
 	echo '<B>'.trans('Generating customers...').'</B>';	flush();
@@ -2007,6 +2007,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			$nodedata['name'] = $nodenames[mt_rand(0,$nodsize-1)].$i;
 			$cnt++;
 			$startip++;
+			$nodedata['netid'] = $netid;
 			$nodedata['ipaddr'] = long2ip($startip);
 			$nodedata['ipaddr_pub'] = '0.0.0.0';
 			$nodedata['macs'] = (array) makemac();
