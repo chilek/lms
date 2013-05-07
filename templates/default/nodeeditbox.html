@@ -89,16 +89,6 @@
 			<INPUT TYPE="checkbox" name="nodeedit[teryt]" id="teryt" onchange="check_teryt('location')"{if $nodeinfo.teryt} checked{/if}><label for="teryt">{trans("TERRIT-DB")}</label>
 		</TD>
 	</TR>
-{*
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/network.gif" ALT="{trans("Network:")}">
-		</TD>
-		<TD style="width: 99%;" COLSPAN="2">
-			<span class="bold"><A HREF="?m=netinfo&id={$nodeinfo.netid}">{$nodeinfo.netname}</A></span>
-		</TD>
-	</TR>
-*}
 {if $netdevices}
 	<TR>
 		<TD style="width: 1%;">

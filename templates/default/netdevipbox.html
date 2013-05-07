@@ -17,8 +17,9 @@
 		        <TABLE class="lmsbox-inner">
                             <THEAD>
 	<TR>
-	        <TD WIDTH="96%"><B>{trans("Name:")}</B></TD>
+	        <TD WIDTH="95%"><B>{trans("Name:")}</B></TD>
 		<TD WIDTH="1%" align="right">{trans("ID:")}</TD>
+		<TD WIDTH="1%" align="right">{trans("Network")}</TD>
 		<TD WIDTH="1%" align="right">{trans("Address:")}</TD>
 		<TD WIDTH="1%" align="right">{trans("MAC:")}</TD>
 		<TD WIDTH="1%">&nbsp;</TD>
@@ -29,7 +30,7 @@
 	{cycle values="light,lucid" print=false}
 	{section name=list loop=$netdevips}
 	<TR class="highlight {cycle}{if ! $netdevips[list].access} blend{/if}"  >
-		<TD WIDTH="96%" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
+		<TD WIDTH="95%" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
 			<B>{$netdevips[list].name}</B>
 			{if $netdevips[list].location}<BR>
 			<NOBR>{$netdevips[list].info|truncate:50:"...":true}</NOBR>
@@ -37,6 +38,9 @@
 		</TD>
 		<TD WIDTH="1%" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
 			({$netdevips[list].id|string_format:"%04d"})
+		</TD>
+		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';" NOWRAP>
+			{$netdevips[list].netname}<BR>
 		</TD>
 		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';" NOWRAP>
 			{$netdevips[list].ip}{if $netdevips[list].ip_pub!="0.0.0.0"} ({$netdevips[list].ip_pub}){/if}<BR>
@@ -54,7 +58,7 @@
 	{/section}
 	{else}
         <TR>
-    		<TD colspan="5" align="center">
+    		<TD colspan="6" align="center">
 			<p>&nbsp;</p>
 			<p><B>{trans("No IP addresses on device.")}</b></p>
 			<p>&nbsp;</p>
@@ -62,7 +66,7 @@
 	</TR>
 	{/if}
 	<TR>
-		<TD WIDTH="100%" COLSPAN="5">
+		<TD WIDTH="100%" COLSPAN="6">
 			<IMG SRC="img/access.gif">
 			<A HREF="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset&access=1">{trans("Connect")}</A>/<A HREF="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset">{trans("Disconnect")}</A>
 		</TD>

@@ -1119,15 +1119,17 @@ class LMS {
 	}
 
 	function GetCustomerNodes($id, $count = NULL) {
-		if ($result = $this->DB->GetAll('SELECT id, name, mac, ipaddr,
+		if ($result = $this->DB->GetAll('SELECT n.id, n.name, mac, ipaddr,
 				inet_ntoa(ipaddr) AS ip, ipaddr_pub,
 				inet_ntoa(ipaddr_pub) AS ip_pub, passwd, access,
 				warning, info, ownerid, lastonline, location,
 				(SELECT COUNT(*) FROM nodegroupassignments
-					WHERE nodeid = vnodes.id) AS gcount
-				FROM vnodes
+					WHERE nodeid = n.id) AS gcount,
+				net.name AS netname
+				FROM vnodes n
+				JOIN networks net ON net.id = n.netid
 				WHERE ownerid = ?
-				ORDER BY name ASC ' . ($count ? 'LIMIT ' . $count : ''), array($id))) {
+				ORDER BY n.name ASC ' . ($count ? 'LIMIT ' . $count : ''), array($id))) {
 			// assign network(s) to node record
 			$networks = (array) $this->GetNetworks();
 
@@ -1717,9 +1719,10 @@ class LMS {
 		if ($nodelist = $this->DB->GetAll('SELECT n.id AS id, n.ipaddr, inet_ntoa(n.ipaddr) AS ip, ipaddr_pub,
 				inet_ntoa(n.ipaddr_pub) AS ip_pub, n.mac, n.name, n.ownerid, n.access, n.warning,
 				n.netdev, n.lastonline, n.info, '
-				. $this->DB->Concat('c.lastname', "' '", 'c.name') . ' AS owner
+				. $this->DB->Concat('c.lastname', "' '", 'c.name') . ' AS owner, net.name AS netname
 				FROM vnodes n
-				JOIN customersview c ON (n.ownerid = c.id) '
+				JOIN customersview c ON (n.ownerid = c.id)
+				JOIN networks net ON net.id = n.netid'
 				. ($customergroup ? 'JOIN customerassignments ON (customerid = c.id) ' : '')
 				. ($nodegroup ? 'JOIN nodegroupassignments ON (nodeid = n.id) ' : '')
 				. ' WHERE 1=1 '
@@ -2089,13 +2092,16 @@ class LMS {
 	}
 
 	function GetNetDevLinkedNodes($id) {
-		return $this->DB->GetAll('SELECT nodes.id AS id, nodes.name AS name, linktype, linkspeed, ipaddr, 
+		return $this->DB->GetAll('SELECT n.id AS id, n.name AS name, linktype, linkspeed, ipaddr, 
 			inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, 
 			netdev, port, ownerid,
-			' . $this->DB->Concat('c.lastname', "' '", 'c.name') . ' AS owner 
-			FROM nodes, customersview c 
-			WHERE ownerid = c.id AND netdev = ? AND ownerid > 0 
-			ORDER BY nodes.name ASC', array($id));
+			' . $this->DB->Concat('c.lastname', "' '", 'c.name') . ' AS owner,
+			net.name AS netname
+			FROM nodes n
+			JOIN customersview c ON c.id = ownerid
+			JOIN networks net ON net.id = n.netid
+			WHERE netdev = ? AND ownerid > 0 
+			ORDER BY n.name ASC', array($id));
 	}
 
 	function NetDevLinkNode($id, $devid, $type = 0, $speed = 100000, $port = 0) {
@@ -4118,14 +4124,17 @@ class LMS {
 	}
 
 	function GetUnlinkedNodes() {
-		return $this->DB->GetAll('SELECT *, inet_ntoa(ipaddr) AS ip 
-			FROM nodes WHERE netdev=0 ORDER BY name ASC');
+		return $this->DB->GetAll('SELECT n.*, inet_ntoa(n.ipaddr) AS ip, net.name AS netname
+			FROM nodes n
+			JOIN networks net ON net.id = n.netid
+			WHERE netdev=0 ORDER BY name ASC');
 	}
 
 	function GetNetDevIPs($id) {
-		return $this->DB->GetAll('SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, 
-			ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, access, info, port 
-			FROM vnodes 
+		return $this->DB->GetAll('SELECT n.id, n.name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, 
+			ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, access, info, port, net.name AS netname
+			FROM vnodes n
+			JOIN networks net ON net.id = n.netid
 			WHERE ownerid = 0 AND netdev = ?', array($id));
 	}
 
