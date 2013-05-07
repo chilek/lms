@@ -920,8 +920,8 @@ class LMS {
 				break;
 		}
 
-		//if ($network)
-		//	$net = $this->GetNetworkParams($network);
+		if ($network)
+			$net = $this->GetNetworkParams($network);
 
 		$over = 0;
 		$below = 0;
@@ -1073,7 +1073,9 @@ class LMS {
 				. ($indebted2 ? ' AND b.value < -t.value' : '')
 				. ($indebted3 ? ' AND b.value < -t.value * 2' : '')
 				. ($disabled ? ' AND s.ownerid IS NOT NULL AND s.account > s.acsum' : '')
-				. ($network ? ' AND EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id AND netid = ' . $network . ')' : '')
+				. ($network ? ' AND EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id 
+					AND (netid = ' . $network . '
+					OR (ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')))' : '')
 				. ($customergroup ? ' AND customergroupid=' . intval($customergroup) : '')
 				. ($nodegroup ? ' AND EXISTS (SELECT 1 FROM nodegroupassignments na
 							JOIN nodes n ON (n.id = na.nodeid) 
@@ -1708,8 +1710,8 @@ class LMS {
 		$totalon = 0;
 		$totaloff = 0;
 
-		//if ($network)
-		//	$net = $this->GetNetworkParams($network);
+		if ($network)
+			$net = $this->GetNetworkParams($network);
 
 		if ($nodelist = $this->DB->GetAll('SELECT n.id AS id, n.ipaddr, inet_ntoa(n.ipaddr) AS ip, ipaddr_pub,
 				inet_ntoa(n.ipaddr_pub) AS ip_pub, n.mac, n.name, n.ownerid, n.access, n.warning,
@@ -1720,7 +1722,8 @@ class LMS {
 				. ($customergroup ? 'JOIN customerassignments ON (customerid = c.id) ' : '')
 				. ($nodegroup ? 'JOIN nodegroupassignments ON (nodeid = n.id) ' : '')
 				. ' WHERE 1=1 '
-				. ($network ? ' AND n.netid = ' . $network : '')
+				. ($network ? ' AND (n.netid = ' . $network . '
+					OR (n.ipaddr_pub > ' . $net['address'] . ' AND n.ipaddr_pub < ' . $net['broadcast'] . '))' : '')
 				. ($status == 1 ? ' AND n.access = 1' : '') //connected
 				. ($status == 2 ? ' AND n.access = 0' : '') //disconnected
 				. ($status == 3 ? ' AND n.lastonline > ?NOW? - ' . intval($this->CONFIG['phpui']['lastonline_limit']) : '') //online
