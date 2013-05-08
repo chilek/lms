@@ -137,6 +137,12 @@ include_once(LIB_DIR.'/definitions.php');
 require_once(LIB_DIR.'/unstrip.php');
 require_once(LIB_DIR.'/common.php');
 require_once(LIB_DIR.'/LMS.class.php');
+require_once(LIB_DIR . '/SYSLOG.class.php');
+
+if (check_conf('phpui.logging') && class_exists('SYSLOG'))
+	$SYSLOG = new SYSLOG($DB);
+else
+	$SYSLOG = null;
 
 // Initialize Session, Auth and LMS classes
 
