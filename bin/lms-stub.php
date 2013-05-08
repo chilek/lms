@@ -32,9 +32,6 @@ $parameters = array(
 	'q' => 'quiet',
 	'h' => 'help',
 	'v' => 'version',
-	't' => 'test',
-	'f:' => 'fakedate:',
-	'i:' => 'invoiceid:',
 );
 
 foreach ($parameters as $key => $val) {
@@ -164,9 +161,9 @@ $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
 
-/* ***************************************************************
-   We should have all hard work which is being done by our script!
-   ***************************************************************/
+/* ********************************************************************
+   We should have all hard work here which is being done by our script!
+   ********************************************************************/
 
 
 ?>
