@@ -313,7 +313,7 @@ switch ($action) {
 		elseif (!$LMS->IsIPValid($nodeipdata['ipaddr']))
 			$error['ipaddr'] = trans('Specified address does not belongs to any network!');
 		else {
-			if (empty($nodeipadata['netid']))
+			if (empty($nodeipdata['netid']))
 				$nodeipdata['netid'] = $DB->GetOne('SELECT id FROM networks WHERE INET_ATON(?) & mask = address ORDER BY id LIMIT 1',
 					array($nodeipdata['ipaddr']));
 			if (!$LMS->IsIPFree($nodeipdata['ipaddr'], $nodeipdata['netid']))
@@ -401,7 +401,7 @@ switch ($action) {
 		elseif (!$LMS->IsIPValid($nodeipdata['ipaddr']))
 			$error['ipaddr'] = trans('Specified address does not belongs to any network!');
 		else {
-			if (empty($nodeipadata['netid']))
+			if (empty($nodeipdata['netid']))
 				$nodeipdata['netid'] = $DB->GetOne('SELECT id FROM networks WHERE INET_ATON(?) & mask = address ORDER BY id LIMIT 1',
 					array($nodeipdata['ipaddr']));
 			if (!$LMS->IsIPFree($nodeipdata['ipaddr'], $nodeipdata['netid']) &&
