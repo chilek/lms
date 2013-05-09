@@ -3643,7 +3643,7 @@ class LMS {
 						AND (?NOW? - lastonline < ?)
 				) AS online
 				FROM networks n
-				JOIN hosts h ON h.id = n.hostid
+				LEFT JOIN hosts h ON h.id = n.hostid
 				ORDER BY n.name', array(intval($this->CONFIG['phpui']['lastonline_limit'])))) {
 			$size = 0;
 			$assigned = 0;
