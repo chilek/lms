@@ -164,6 +164,7 @@ version ? (????-??-??):
   - phpui.custom_templates_dir setting allows to select used template set [chilan]
   - the same networks bound to different hosts can overlap [chilan]
   - network selection for node and netdev ip addresses [chilan]
+  - transaction logging for networks [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 

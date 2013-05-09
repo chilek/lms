@@ -156,14 +156,13 @@ if(isset($_POST['networkdata']))
 			$error['dhcpend'] = trans('End of DHCP range has to be equal or greater than start!');
 	}
 
-	if(!$error)
-	{
-	        if(isset($networkdata['needshft']) && $networkdata['needshft'])
-		        $LMS->NetworkShift($network['address'],$network['mask'],$networkdata['addresslong'] - $network['addresslong']);
+	if (!$error) {
+		if (isset($networkdata['needshft']) && $networkdata['needshft'])
+			$LMS->NetworkShift($network['hostid'], $network['address'], $network['mask'], $networkdata['addresslong'] - $network['addresslong']);
 
 		$LMS->NetworkUpdate($networkdata);
-		$SESSION->redirect('?m=netinfo&id='.$networkdata['id']);
-	}	
+		$SESSION->redirect('?m=netinfo&id=' . $networkdata['id']);
+	}
 
 	$network['name'] = $networkdata['name'];
 	$network['interface'] = $networkdata['interface'];
