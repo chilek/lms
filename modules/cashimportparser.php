@@ -147,7 +147,8 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 
 		$comment = trim($comment);
 		$comment = preg_replace('/[ ]+/',' ',$comment);
-		$comment = substr($comment,0,150);
+		if (strlen($comment) > 150)
+			$comment = substr($comment, 0, 150);
 
 		if(!empty($pattern['use_line_hash']))
 			$hash = md5($theline.(!empty($pattern['line_idx_hash']) ? $ln : ''));
