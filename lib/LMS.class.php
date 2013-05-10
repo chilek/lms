@@ -1125,7 +1125,7 @@ class LMS {
 				warning, info, ownerid, lastonline, location,
 				(SELECT COUNT(*) FROM nodegroupassignments
 					WHERE nodeid = n.id) AS gcount,
-				net.name AS netname
+				n.netid, net.name AS netname
 				FROM vnodes n
 				JOIN networks net ON net.id = n.netid
 				WHERE ownerid = ?
@@ -1137,11 +1137,11 @@ class LMS {
 				$ids[$node['id']] = $idx;
 				$result[$idx]['lastonlinedate'] = lastonline_date($node['lastonline']);
 
-				foreach ($networks as $net)
-					if (isipin($node['ip'], $net['address'], $net['mask'])) {
-						$result[$idx]['network'] = $net;
-						break;
-					}
+				//foreach ($networks as $net)
+				//	if (isipin($node['ip'], $net['address'], $net['mask'])) {
+				//		$result[$idx]['network'] = $net;
+				//		break;
+				//	}
 
 				if ($node['ipaddr_pub'])
 					foreach ($networks as $net)
@@ -4274,7 +4274,7 @@ class LMS {
 
 	function GetNetDevIPs($id) {
 		return $this->DB->GetAll('SELECT n.id, n.name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, 
-			ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, access, info, port, net.name AS netname
+			ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, access, info, port, n.netid, net.name AS netname
 			FROM vnodes n
 			JOIN networks net ON net.id = n.netid
 			WHERE ownerid = 0 AND netdev = ?', array($id));
