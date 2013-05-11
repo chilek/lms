@@ -152,14 +152,6 @@ class LMS {
 		if ($dumpfile) {
 			$tables = $this->DB->ListTables();
 
-			foreach ($tables as $tablename) {
-				// skip sessions table for security
-				if ($tablename == 'sessions' || ($tablename == 'stats' && $stats == FALSE))
-					continue;
-
-				fputs($dumpfile, "DELETE FROM $tablename;\n");
-			}
-
 			switch ($this->CONFIG['database']['type']) {
 				case 'postgres':
 					fputs($dumpfile, "SET CONSTRAINTS ALL DEFERRED;\n");
@@ -168,6 +160,14 @@ class LMS {
 				case 'mysqli':
 					fputs($dumpfile, "SET foreign_key_checks = 0;\n");
 					break;
+			}
+
+			foreach ($tables as $tablename) {
+				// skip sessions table for security
+				if ($tablename == 'sessions' || ($tablename == 'stats' && $stats == FALSE))
+					continue;
+
+				fputs($dumpfile, "DELETE FROM $tablename;\n");
 			}
 
 			// Since we're using foreign keys, order of tables is important
