@@ -160,8 +160,15 @@ class LMS {
 				fputs($dumpfile, "DELETE FROM $tablename;\n");
 			}
 
-			if ($this->CONFIG['database']['type'] == 'postgres')
-				fputs($dumpfile, "SET CONSTRAINTS ALL DEFERRED;\n");
+			switch ($this->CONFIG['database']['type']) {
+				case 'postgres':
+					fputs($dumpfile, "SET CONSTRAINTS ALL DEFERRED;\n");
+					break;
+				case 'mysql':
+				case 'mysqli':
+					fputs($dumpfile, "SET foreign_key_checks = 0;\n");
+					break;
+			}
 
 			// Since we're using foreign keys, order of tables is important
 			// Note: add all referenced tables to the list
@@ -200,6 +207,9 @@ class LMS {
 					unset($values);
 				}
 			}
+
+			if (preg_match('/^mysqli?$/', $this->CONFIG['database']['type']))
+				fputs($dumpfile, "SET foreign_key_checks = 1;\n");
 
 			if ($gzipped && extension_loaded('zlib'))
 				gzclose($dumpfile);
