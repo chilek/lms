@@ -49,12 +49,11 @@ function setgroup(act)
 		    <TABLE class="lmsbox-inner">
                         <THEAD>
                             <TR>
-                                <TD WIDTH="{math equation="x-y" x=94 y=$ewx}%"><B>{trans("Name:")}</B></TD>
+                                <TD WIDTH="{math equation="x-y" x=95 y=$ewx}%"><B>{trans("Name:")}</B></TD>
                                 <TD WIDTH="1%" align="right">{trans("ID:")}</TD>
                                 {if $ewx}
                                 <TD WIDTH="1%" align="right">{trans("Channel:")}</TD>
                                 {/if}
-                                <TD WIDTH="1%" align="right">{trans("Network")}</TD>
                                 <TD WIDTH="1%" align="right">{trans("Address:")}</TD>
                                 <TD WIDTH="1%" align="right">{trans("MAC:")}</TD>
                                 <TD WIDTH="1%" align="right">{trans("Groups:")}</TD>
@@ -102,9 +101,6 @@ function setgroup(act)
 			        </TD>
 			    {/if}
 			    <TD onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';" align="right" NOWRAP>
-				{$customernodes[customernodes].netname}
-			    </TD>
-			    <TD onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';" align="right" NOWRAP>
 				{$customernodes[customernodes].ip} {if $customernodes[customernodes].ip_pub != "0.0.0.0"} ({$customernodes[customernodes].ip_pub}){/if}
 			    </TD>
 		    	    <TD onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';">
@@ -116,7 +112,7 @@ function setgroup(act)
 				{/if}
 			    </TD>
 			    <TD align="right" NOWRAP>
-				<B><A HREF="?m=netinfo&id={$customernodes[customernodes].network.id}">{$customernodes[customernodes].network.name|truncate:"20":"...":true}</A></B> {if $customernodes[customernodes].network_pub} (<B><A HREF="?m=netinfo&id={$customernodes[customernodes].network_pub.id}">{$customernodes[customernodes].network_pub.name|truncate:"20":"...":true}</A></B>){/if}
+				<B><A HREF="?m=netinfo&id={$customernodes[customernodes].netid}">{$customernodes[customernodes].netname|truncate:"20":"...":true}</A></B> {if $customernodes[customernodes].network_pub} (<B><A HREF="?m=netinfo&id={$customernodes[customernodes].network_pub.id}">{$customernodes[customernodes].network_pub.name|truncate:"20":"...":true}</A></B>){/if}
 			    </TD>
 			    <TD NOWRAP>
 				<A HREF="?m=nodeset&id={$customernodes[customernodes].id}"><IMG src="img/{if ! $customernodes[customernodes].access}no{/if}access.gif" alt="[ {if ! $customernodes[customernodes].access}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]" title="[ {if ! $customernodes[customernodes].access}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]"></A>
@@ -129,7 +125,7 @@ function setgroup(act)
 			</TR>
 			{sectionelse}
 			<TR>
-			    <TD WIDTH="100%" COLSPAN="{math equation="x+y" x=7 y=$ewx}" align="center">
+			    <TD WIDTH="100%" COLSPAN="{math equation="x+y" x=6 y=$ewx}" align="center">
 				<P>&nbsp;</P>
 				<P><B>{if $customerinfo.deleted}<FONT class="red">{trans("That customer has been deleted.")}</FONT>{else}{trans("That customer hasn't got any node.")}{/if}</B></P>
 				<P>&nbsp;</P>
@@ -137,7 +133,7 @@ function setgroup(act)
 			</TR>
 			{/section}
 			<TR>
-			    <TD COLSPAN="{math equation="x+y" x=5 y=$ewx}" CLASS="ftop">
+			    <TD COLSPAN="{math equation="x+y" x=4 y=$ewx}" CLASS="ftop">
 				<IMG SRC="img/access.gif">
 				<A HREF="javascript: setstatus(1)"> {trans("Connect")}</A>/<A HREF="javascript: setstatus(0)">{trans("Disconnect")}</A>
 				<IMG SRC="img/warningon.gif">

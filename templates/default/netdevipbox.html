@@ -19,9 +19,9 @@
 	<TR>
 	        <TD WIDTH="95%"><B>{trans("Name:")}</B></TD>
 		<TD WIDTH="1%" align="right">{trans("ID:")}</TD>
-		<TD WIDTH="1%" align="right">{trans("Network")}</TD>
 		<TD WIDTH="1%" align="right">{trans("Address:")}</TD>
 		<TD WIDTH="1%" align="right">{trans("MAC:")}</TD>
+		<TD WIDTH="1%" align="right">{trans("Network")}</TD>
 		<TD WIDTH="1%">&nbsp;</TD>
 	</TR>
     </THEAD>
@@ -40,13 +40,13 @@
 			({$netdevips[list].id|string_format:"%04d"})
 		</TD>
 		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';" NOWRAP>
-			{$netdevips[list].netname}<BR>
-		</TD>
-		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';" NOWRAP>
 			{$netdevips[list].ip}{if $netdevips[list].ip_pub!="0.0.0.0"} ({$netdevips[list].ip_pub}){/if}<BR>
 		</TD>
 		<TD WIDTH="1%" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
 			{$netdevips[list].mac|replace:",":"<BR>"}
+		</TD>
+		<TD class="bold" WIDTH="1%" align="right" NOWRAP>
+			<a href="?m=netinfo&id={$netdevips[list].netid}">{$netdevips[list].netname|truncate:"20":"...":true}</a>
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<A href="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset&ip={$netdevips[list].id}"><IMG src="img/{if ! $netdevips[list].access}no{/if}access.gif" ALT="" {if ! $netdevips[list].access}{tip text="Connect"}{else}{tip text="Disconnect"}{/if}></A>

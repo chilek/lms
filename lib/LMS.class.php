@@ -152,6 +152,16 @@ class LMS {
 		if ($dumpfile) {
 			$tables = $this->DB->ListTables();
 
+			switch ($this->CONFIG['database']['type']) {
+				case 'postgres':
+					fputs($dumpfile, "SET CONSTRAINTS ALL DEFERRED;\n");
+					break;
+				case 'mysql':
+				case 'mysqli':
+					fputs($dumpfile, "SET foreign_key_checks = 0;\n");
+					break;
+			}
+
 			foreach ($tables as $tablename) {
 				// skip sessions table for security
 				if ($tablename == 'sessions' || ($tablename == 'stats' && $stats == FALSE))
@@ -159,9 +169,6 @@ class LMS {
 
 				fputs($dumpfile, "DELETE FROM $tablename;\n");
 			}
-
-			if ($this->CONFIG['database']['type'] == 'postgres')
-				fputs($dumpfile, "SET CONSTRAINTS ALL DEFERRED;\n");
 
 			// Since we're using foreign keys, order of tables is important
 			// Note: add all referenced tables to the list
@@ -200,6 +207,9 @@ class LMS {
 					unset($values);
 				}
 			}
+
+			if (preg_match('/^mysqli?$/', $this->CONFIG['database']['type']))
+				fputs($dumpfile, "SET foreign_key_checks = 1;\n");
 
 			if ($gzipped && extension_loaded('zlib'))
 				gzclose($dumpfile);
@@ -1125,7 +1135,7 @@ class LMS {
 				warning, info, ownerid, lastonline, location,
 				(SELECT COUNT(*) FROM nodegroupassignments
 					WHERE nodeid = n.id) AS gcount,
-				net.name AS netname
+				n.netid, net.name AS netname
 				FROM vnodes n
 				JOIN networks net ON net.id = n.netid
 				WHERE ownerid = ?
@@ -1137,11 +1147,11 @@ class LMS {
 				$ids[$node['id']] = $idx;
 				$result[$idx]['lastonlinedate'] = lastonline_date($node['lastonline']);
 
-				foreach ($networks as $net)
-					if (isipin($node['ip'], $net['address'], $net['mask'])) {
-						$result[$idx]['network'] = $net;
-						break;
-					}
+				//foreach ($networks as $net)
+				//	if (isipin($node['ip'], $net['address'], $net['mask'])) {
+				//		$result[$idx]['network'] = $net;
+				//		break;
+				//	}
 
 				if ($node['ipaddr_pub'])
 					foreach ($networks as $net)
@@ -3537,16 +3547,38 @@ class LMS {
 	}
 
 	function NetworkSet($id, $disabled = -1) {
-		if ($disabled != -1) {
-			if ($disabled == 1)
-				return $this->DB->Execute('UPDATE networks SET disabled = 1 WHERE id = ?', array($id));
-			else
-				return $this->DB->Execute('UPDATE networks SET disabled = 0 WHERE id = ?', array($id));
+		global $SYSLOG_RESOURCE_KEYS;
+
+		if ($this->SYSLOG) {
+			$args = array(
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK] => $id,
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST] =>
+					$this->DB->GetOne('SELECT hostid FROM networks WHERE id = ?', array($id)),
+			);
 		}
-		elseif ($this->DB->GetOne('SELECT disabled FROM networks WHERE id = ?', array($id)) == 1)
-			return $this->DB->Execute('UPDATE networks SET disabled = 0 WHERE id = ?', array($id));
-		else
-			return $this->DB->Execute('UPDATE networks SET disabled = 1 WHERE id = ?', array($id));
+		$res = null;
+		if ($disabled != -1) {
+			if ($this->SYSLOG)
+				$args['disabled'] = intval($disabled == 1);
+			if ($disabled == 1)
+				$res = $this->DB->Execute('UPDATE networks SET disabled = 1 WHERE id = ?', array($id));
+			else
+				$res = $this->DB->Execute('UPDATE networks SET disabled = 0 WHERE id = ?', array($id));
+		}
+		elseif ($this->DB->GetOne('SELECT disabled FROM networks WHERE id = ?', array($id)) == 1) {
+			if ($this->SYSLOG)
+				$args['disabled'] = 0;
+			$res = $this->DB->Execute('UPDATE networks SET disabled = 0 WHERE id = ?', array($id));
+		} else {
+			if ($this->SYSLOG)
+				$args['disabled'] = 1;
+			$res = $this->DB->Execute('UPDATE networks SET disabled = 1 WHERE id = ?', array($id));
+		}
+		if ($this->SYSLOG && $res)
+			$this->SYSLOG->AddMessage(SYSLOG_RES_NETWORK, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST]));
+		return $res;
 	}
 
 	function IsIPFree($ip, $netid = 0) {
@@ -3570,31 +3602,55 @@ class LMS {
 	}
 
 	function NetworkAdd($netadd) {
+		global $SYSLOG_RESOURCE_KEYS;
+
 		if ($netadd['prefix'] != '')
 			$netadd['mask'] = prefix2mask($netadd['prefix']);
 
+		$args = array(
+			'name' => strtoupper($netadd['name']),
+			'address' => $netadd['address'],
+			'mask' => $netadd['mask'],
+			'interface' => strtolower($netadd['interface']),
+			'gateway' => $netadd['gateway'],
+			'dns' => $netadd['dns'],
+			'dns2' => $netadd['dns2'],
+			'domain' => $netadd['domain'],
+			'wins' => $netadd['wins'],
+			'dhcpstart' => $netadd['dhcpstart'],
+			'dhcpend' => $netadd['dhcpend'],
+			'notes' => $netadd['notes'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST] => $netadd['hostid'],
+		);
 		if ($this->DB->Execute('INSERT INTO networks (name, address, mask, interface, gateway, 
-				dns, dns2, domain, wins, dhcpstart, dhcpend, notes) 
-				VALUES (?, inet_aton(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array(strtoupper($netadd['name']),
-						$netadd['address'],
-						$netadd['mask'],
-						strtolower($netadd['interface']),
-						$netadd['gateway'],
-						$netadd['dns'],
-						$netadd['dns2'],
-						$netadd['domain'],
-						$netadd['wins'],
-						$netadd['dhcpstart'],
-						$netadd['dhcpend'],
-						$netadd['notes']
-				)))
-			return $this->DB->GetOne('SELECT id FROM networks WHERE address = inet_aton(?)', array($netadd['address']));
-		else
+				dns, dns2, domain, wins, dhcpstart, dhcpend, notes, hostid) 
+				VALUES (?, inet_aton(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
+			$netid = $this->DB->GetOne('SELECT id FROM networks WHERE address = inet_aton(?) AND hostid = ?',
+				array($netadd['address'], $netadd['hostid']));
+			if ($this->SYSLOG && $netid) {
+				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK]] = $netid;
+				$this->SYSLOG->AddMessage(SYSLOG_RES_NETWORK, SYSLOG_OPER_ADD, $args,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST]));
+			}
+			return $netid;
+		} else
 			return FALSE;
 	}
 
 	function NetworkDelete($id) {
-		return $this->DB->Execute('DELETE FROM networks WHERE id=?', array($id));
+		global $SYSLOG_RESOURCE_KEYS;
+		if ($this->SYSLOG)
+			$hostid = $this->DB->GetOne('SELECT hostid FROM networks WHERE id=?', array($id));
+		$res = $this->DB->Execute('DELETE FROM networks WHERE id=?', array($id));
+		if ($this->SYSLOG && $res) {
+			$args = array(
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK] => $id,
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST] => $hostid,
+			);
+			$this->SYSLOG->AddMessage(SYSLOG_RES_NETWORK, SYSLOG_OPER_DELETE, $args, array_keys($args));
+		}
+		return $res;
 	}
 
 	function GetNetworkName($id) {
@@ -3687,34 +3743,70 @@ class LMS {
 			));
 	}
 
-	function NetworkShift($network = '0.0.0.0', $mask = '0.0.0.0', $shift = 0) {
+	function NetworkShift($netid, $network = '0.0.0.0', $mask = '0.0.0.0', $shift = 0) {
+		global $SYSLOG_RESOURCE_KEYS;
+
+		if ($this->SYSLOG) {
+			$nodes = array_merge(
+				(array) $this->DB->GetAll('SELECT id, ownerid, ipaddr FROM nodes
+					WHERE netid = ? AND ipaddr >= inet_aton(?) AND ipaddr <= inet_aton(?)', array($netid, $network, getbraddr($network, $mask))),
+				(array) $this->DB->GetAll('SELECT id, ownerid, ipaddr_pub FROM nodes
+					WHERE netid = ? AND ipaddr_pub >= inet_aton(?) AND ipaddr_pub <= inet_aton(?)', array($netid, $network, getbraddr($network, $mask)))
+			);
+			if (!empty($nodes))
+				foreach ($nodes as $node) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $node['id'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $node['ownerid'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK] => $netid,
+					);
+					unset($node['id']);
+					unset($node['ownerid']);
+					foreach ($node as $key => $value)
+						$args[$key] = $value + $shift;
+					$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
+						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+				}
+		}
 		return ($this->DB->Execute('UPDATE nodes SET ipaddr = ipaddr + ? 
 				WHERE ipaddr >= inet_aton(?) AND ipaddr <= inet_aton(?)', array($shift, $network, getbraddr($network, $mask)))
-				+ $this->DB->Execute('UPDATE nodes SET ipaddr_pub = ipaddr_pub + ? 
+			+ $this->DB->Execute('UPDATE nodes SET ipaddr_pub = ipaddr_pub + ? 
 				WHERE ipaddr_pub >= inet_aton(?) AND ipaddr_pub <= inet_aton(?)', array($shift, $network, getbraddr($network, $mask))));
 	}
 
 	function NetworkUpdate($networkdata) {
-		return $this->DB->Execute('UPDATE networks SET name=?, address=inet_aton(?), 
+		global $SYSLOG_RESOURCE_KEYS;
+
+		$args = array(
+			'name' => strtoupper($networkdata['name']),
+			'address' => $networkdata['address'],
+			'mask' => $networkdata['mask'],
+			'interface' => strtolower($networkdata['interface']),
+			'gateway' => $networkdata['gateway'],
+			'dns' => $networkdata['dns'],
+			'dns2' => $networkdata['dns2'],
+			'domain' => $networkdata['domain'],
+			'wins' => $networkdata['wins'],
+			'dhcpstart' => $networkdata['dhcpstart'],
+			'dhcpend' => $networkdata['dhcpend'],
+			'notes' => $networkdata['notes'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST] => $networkdata['hostid'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK] => $networkdata['id'],
+		);
+		$res = $this->DB->Execute('UPDATE networks SET name=?, address=inet_aton(?), 
 			mask=?, interface=?, gateway=?, dns=?, dns2=?, domain=?, wins=?, 
-			dhcpstart=?, dhcpend=?, notes=?, hostid=? WHERE id=?', array(strtoupper($networkdata['name']),
-						$networkdata['address'],
-						$networkdata['mask'],
-						strtolower($networkdata['interface']),
-						$networkdata['gateway'],
-						$networkdata['dns'],
-						$networkdata['dns2'],
-						$networkdata['domain'],
-						$networkdata['wins'],
-						$networkdata['dhcpstart'],
-						$networkdata['dhcpend'],
-						$networkdata['notes'],
-						$networkdata['hostid'],
-						$networkdata['id']
-				));
+			dhcpstart=?, dhcpend=?, notes=?, hostid=? WHERE id=?', array_values($args));
+		if ($this->SYSLOG && $res)
+			$this->SYSLOG->AddMessage(SYSLOG_RES_NETWORK, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST]));
 	}
 
 	function NetworkCompress($id, $shift = 0) {
+		global $SYSLOG_RESOURCE_KEYS;
+
 		$nodes = array();
 		$network = $this->GetNetworkRecord($id);
 		$address = $network['addresslong'] + $shift;
@@ -3760,12 +3852,43 @@ class LMS {
 					break;
 			}
 
-			if (!$this->DB->Execute('UPDATE nodes SET ipaddr=? WHERE netid=? AND ipaddr=?', array($i, $id, $ip)))
-				$this->DB->Execute('UPDATE nodes SET ipaddr_pub=? WHERE netid=? AND ipaddr_pub=?', array($i, $id, $ip));
+			if ($this->DB->Execute('UPDATE nodes SET ipaddr=? WHERE netid=? AND ipaddr=?', array($i, $id, $ip))) {
+				if ($this->SYSLOG) {
+					$node = $this->DB->GetRow('SELECT id, ownerid FROM nodes WHERE netid = ? AND ipaddr = ?',
+						array($id, $ip));
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $node['id'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $node['ownerid'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK] => $id,
+						'ipaddr' => $i,
+					);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
+						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK]));
+				}
+			} elseif ($this->DB->Execute('UPDATE nodes SET ipaddr_pub=? WHERE netid=? AND ipaddr_pub=?', array($i, $id, $ip))) {
+				if ($this->SYSLOG) {
+					$node = $this->DB->GetRow('SELECT id, ownerid FROM nodes WHERE netid = ? AND ipaddr_pub = ?',
+						array($id, $ip));
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $node['id'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $node['ownerid'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK] => $id,
+						'ipaddr_pub' => $i,
+					);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
+						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK]));
+				}
+			}
 		}
 	}
 
 	function NetworkRemap($src, $dst) {
+		global $SYSLOG_RESOURCE_KEYS;
+
 		$network['source'] = $this->GetNetworkRecord($src);
 		$network['dest'] = $this->GetNetworkRecord($dst);
 		$address = $network['dest']['addresslong'] + 1;
@@ -3785,8 +3908,37 @@ class LMS {
 			while (in_array($i, (array) $destnodes))
 				$i++;
 
-			if (!$this->DB->Execute('UPDATE nodes SET ipaddr=? WHERE netid=? AND ipaddr=?', array($i, $dst, $ip)))
-				$this->DB->Execute('UPDATE nodes SET ipaddr_pub=? WHERE netid=? AND ipaddr_pub=?', array($i, $dst, $ip));
+			if ($this->DB->Execute('UPDATE nodes SET ipaddr=? WHERE netid=? AND ipaddr=?', array($i, $dst, $ip))) {
+				if ($this->SYSLOG) {
+					$node = $this->DB->GetRow('SELECT id, ownerid FROM nodes WHERE netid = ? AND ipaddr = ?',
+						array($dst, $ip));
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $node['id'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $node['ownerid'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK] => $dst,
+						'ipaddr' => $i,
+					);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
+						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK]));
+				}
+			} elseif ($this->DB->Execute('UPDATE nodes SET ipaddr_pub=? WHERE netid=? AND ipaddr_pub=?', array($i, $dst, $ip))) {
+				if ($this->SYSLOG) {
+					$node = $this->DB->GetRow('SELECT id, ownerid FROM nodes WHERE netid = ? AND ipaddr_pub = ?',
+						array($dst, $ip));
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $node['id'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $node['ownerid'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK] => $dst,
+						'ipaddr' => $i,
+					);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
+						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK]));
+				}
+			}
 
 			$counter++;
 		}
@@ -4132,7 +4284,7 @@ class LMS {
 
 	function GetNetDevIPs($id) {
 		return $this->DB->GetAll('SELECT n.id, n.name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, 
-			ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, access, info, port, net.name AS netname
+			ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, access, info, port, n.netid, net.name AS netname
 			FROM vnodes n
 			JOIN networks net ON net.id = n.netid
 			WHERE ownerid = 0 AND netdev = ?', array($id));
