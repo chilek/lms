@@ -43,6 +43,8 @@ define('SYSLOG_RES_CASHREG', 40);
 define('SYSLOG_RES_CASHRIGHT', 41);
 define('SYSLOG_RES_CASHREGHIST', 42);
 define('SYSLOG_RES_NETWORK', 43);
+define('SYSLOG_RES_NETDEV', 44);
+define('SYSLOG_RES_NETLINK', 45);
 
 $SYSLOG_RESOURCES = array(
 	SYSLOG_RES_USER => trans('user<!syslog>'),
@@ -88,6 +90,8 @@ $SYSLOG_RESOURCES = array(
 	SYSLOG_RES_CASHRIGHT => trans('cash registry rights<!syslog>'),
 	SYSLOG_RES_CASHREGHIST => trans('cash registry history<!syslog>'),
 	SYSLOG_RES_NETWORK => trans('network<!syslog>'),
+	SYSLOG_RES_NETDEV => trans('network device<!syslog>'),
+	SYSLOG_RES_NETLINK => trans('network link<!syslog>'),
 );
 
 $SYSLOG_RESOURCE_KEYS = array(
@@ -134,6 +138,8 @@ $SYSLOG_RESOURCE_KEYS = array(
 	SYSLOG_RES_CASHRIGHT => 'cashrightid',
 	SYSLOG_RES_CASHREGHIST => 'cashreghistoryid',
 	SYSLOG_RES_NETWORK => 'networkid',
+	SYSLOG_RES_NETDEV => 'networkdeviceid',
+	SYSLOG_RES_NETLINK => 'networklinkid',
 );
 
 ?>

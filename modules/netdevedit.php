@@ -68,14 +68,29 @@ switch ($action) {
 
 			$DB->BeginTrans();
 
-			$DB->Execute('UPDATE netdevices SET location = ? WHERE id = ?', array($dev1['location'], $dev2['id']));
-			$DB->Execute('UPDATE netdevices SET location = ? WHERE id = ?', array($dev2['location'], $dev1['id']));
+			$DB->Execute('UPDATE netdevices SET location = ?, latitude = ?, longitude = ?
+				WHERE id = ?', array($dev1['location'], $dev1['latitude'], $dev1['longitude'], $dev2['id']));
+			$DB->Execute('UPDATE netdevices SET location = ?, latitude = ?, longitude = ?
+				WHERE id = ?', array($dev2['location'], $dev2['latitude'], $dev2['longitude'], $dev1['id']));
 
-			$DB->Execute('UPDATE netdevices SET latitude = ? WHERE id = ?', array($dev1['latitude'], $dev2['id']));
-			$DB->Execute('UPDATE netdevices SET latitude = ? WHERE id = ?', array($dev2['latitude'], $dev1['id']));
-
-			$DB->Execute('UPDATE netdevices SET longitude = ? WHERE id = ?', array($dev1['longitude'], $dev2['id']));
-			$DB->Execute('UPDATE netdevices SET longitude = ? WHERE id = ?', array($dev2['longitude'], $dev1['id']));
+			if ($SYSLOG) {
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $dev2['id'],
+					'location' => $dev1['location'],
+					'latitude' => $dev1['latitude'],
+					'longitude' => $dev1['longitude'],
+				);
+				$SYSLOG->AddMessage(SYSLOG_RES_NETDEV, SYSLOG_OPER_UPDATE, $args,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $dev1['id'],
+					'location' => $dev2['location'],
+					'latitude' => $dev2['latitude'],
+					'longitude' => $dev2['longitude'],
+				);
+				$SYSLOG->AddMessage(SYSLOG_RES_NETDEV, SYSLOG_OPER_UPDATE, $args,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
+			}
 
 			$LMS->NetDevDelLinks($dev1['id']);
 			$LMS->NetDevDelLinks($dev2['id']);
@@ -141,16 +156,44 @@ switch ($action) {
 		$SESSION->redirect('?m=netdevinfo&id=' . $_GET['id']);
 
 	case 'chkmac':
-
+		if ($SYSLOG) {
+			$args = array(
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $_GET['ip'],
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $_GET['id'],
+				'chkmac' => $_GET['chkmac'],
+			);
+			$SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
+		}
 		$DB->Execute('UPDATE nodes SET chkmac=? WHERE id=?', array($_GET['chkmac'], $_GET['ip']));
 		$SESSION->redirect('?m=netdevinfo&id=' . $_GET['id'] . '&ip=' . $_GET['ip']);
 
 	case 'duplex':
-
+		if ($SYSLOG) {
+			$args = array(
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $_GET['ip'],
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $_GET['id'],
+				'halfduplex' => $_GET['duplex'],
+			);
+			$SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
+		}
 		$DB->Execute('UPDATE nodes SET halfduplex=? WHERE id=?', array($_GET['duplex'], $_GET['ip']));
 		$SESSION->redirect('?m=netdevinfo&id=' . $_GET['id'] . '&ip=' . $_GET['ip']);
 
 	case 'nas':
+		if ($SYSLOG) {
+			$args = array(
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $_GET['ip'],
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $_GET['id'],
+				'nas' => $_GET['nas'],
+			);
+			$SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
+		}
 		$DB->Execute('UPDATE nodes SET nas=? WHERE id=?', array($_GET['nas'], $_GET['ip']));
 		$SESSION->redirect('?m=netdevinfo&id=' . $_GET['id'] . '&ip=' . $_GET['ip']);
 
@@ -263,19 +306,36 @@ switch ($action) {
 		break;
 
 	case 'ipdel':
-
 		if ($_GET['is_sure'] == '1' && !empty($_GET['ip'])) {
+			if ($SYSLOG) {
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $_GET['ip'],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $_GET['id'],
+				);
+				$SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args, array_keys($args));
+			}
 			$DB->Execute('DELETE FROM nodes WHERE id = ? AND ownerid = 0', array($_GET['ip']));
 		}
 
 		$SESSION->redirect('?m=netdevinfo&id=' . $_GET['id']);
 
 	case 'ipset':
-
-		if (!empty($_GET['ip']))
+		if (!empty($_GET['ip'])) {
+			if ($SYSLOG) {
+				$access = $DB->GetOne('SELECT access FROM nodes WHERE id = ? AND ownerid = 0',
+					array($_GET['ip']));
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $_GET['ip'],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $_GET['id'],
+					'access' => intval(!$access),
+				);
+				$SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
+			}
 			$DB->Execute('UPDATE nodes SET access = (CASE access WHEN 1 THEN 0 ELSE 1 END)
 			WHERE id = ? AND ownerid = 0', array($_GET['ip']));
-		else
+		} else
 			$LMS->IPSetU($_GET['id'], $_GET['access']);
 
 		header('Location: ?' . $SESSION->get('backto'));
