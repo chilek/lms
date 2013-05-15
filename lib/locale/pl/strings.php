@@ -2720,6 +2720,9 @@ $_LANG['cash registry<!syslog>'] = 'rejestr kasowy';
 $_LANG['cash registry rights<!syslog>'] = 'uprawnienia do rejestru kasowego';
 $_LANG['cash registry history<!syslog>'] = 'historia rejestru kasowego';
 $_LANG['network<!syslog>'] = 'sieć';
+$_LANG['network device<!syslog>'] = 'urządzenie sieciowe';
+$_LANG['network link<!syslog>'] = 'połączenie sieciowe';
+$_LANG['management url<!syslog>'] = 'adres url do zarządzania';
 
 $_LANG['addition<!syslog>'] = 'dodanie';
 $_LANG['deletion<!syslog>'] = 'usunięcie';

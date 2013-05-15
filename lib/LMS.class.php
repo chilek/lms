@@ -1472,7 +1472,7 @@ class LMS {
 			'ipaddr_pub' => $nodedata['ipaddr_pub'],
 			'ipaddr' => $nodedata['ipaddr'],
 			'passwd' => $nodedata['passwd'],
-			'netdev' => $nodedata['netdev'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $nodedata['netdev'],
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $this->AUTH->id,
 			'access' => $nodedata['access'],
 			'warning' => $nodedata['warning'],
@@ -1506,7 +1506,7 @@ class LMS {
 			unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
 			$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
 				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
 
 			$macs = $this->DB->GetAll('SELECT id, nodeid FROM macs WHERE nodeid = ?', array($nodedata['id']));
 			if (!empty($macs))
@@ -1904,10 +1904,25 @@ class LMS {
 	}
 
 	function IPSetU($netdev, $access = FALSE) {
+		global $SYSLOG_RESOURCE_KEYS;
 		if ($access)
-			return $this->DB->Execute('UPDATE nodes SET access=1 WHERE netdev=? AND ownerid=0', array($netdev));
+			$res = $this->DB->Execute('UPDATE nodes SET access=1 WHERE netdev=? AND ownerid=0', array($netdev));
 		else
-			return $this->DB->Execute('UPDATE nodes SET access=0 WHERE netdev=? AND ownerid=0', array($netdev));
+			$res = $this->DB->Execute('UPDATE nodes SET access=0 WHERE netdev=? AND ownerid=0', array($netdev));
+		if ($this->SYSLOG && $res) {
+			$nodes = $this->DB->GetCol('SELECT id FROM nodes WHERE netdev=? AND ownerid=0', array($netdev));
+			foreach ($nodes as $node) {
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $node,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netdev,
+					'access' => intval($access),
+				);
+				$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
+			}
+		}
+		return $res;
 	}
 
 	function NodeAdd($nodedata) {
@@ -1922,7 +1937,7 @@ class LMS {
 			'access' => $nodedata['access'],
 			'warning' => $nodedata['warning'],
 			'info' => $nodedata['info'],
-			'netdev' => $nodedata['netdev'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $nodedata['netdev'],
 			'location' => $nodedata['location'],
 			'location_city' => $nodedata['location_city'] ? $nodedata['location_city'] : null,
 			'location_street' => $nodedata['location_street'] ? $nodedata['location_street'] : null,
@@ -1971,7 +1986,7 @@ class LMS {
 				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE]] = $id;
 				$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_ADD, $args,
 					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
 			}
 
 			foreach ($nodedata['macs'] as $mac)
@@ -2115,21 +2130,68 @@ class LMS {
 	}
 
 	function NetDevLinkNode($id, $devid, $type = 0, $speed = 100000, $port = 0) {
-		return $this->DB->Execute('UPDATE nodes SET netdev=?, linktype=?, linkspeed=?, port=?
-			 WHERE id=?', array($devid,
-						intval($type),
-						intval($speed),
-						intval($port),
-						$id
-				));
+		global $SYSLOG_RESOURCE_KEYS;
+
+		$args = array(
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $devid,
+			'linktype' => intval($type),
+			'linkspeed' => intval($speed),
+			'port' => intval($port),
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $id,
+		);
+		$res = $this->DB->Execute('UPDATE nodes SET netdev=?, linktype=?, linkspeed=?, port=?
+			 WHERE id=?', array_values($args));
+		if ($this->SYSLOG && $res) {
+			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] =
+				$this->DB->GetOne('SELECT ownerid FROM nodes WHERE id=?', $id);
+			$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+		}
+		return $res;
 	}
 
 	function SetNetDevLinkType($dev1, $dev2, $type = 0, $speed = 100000) {
-		return $this->DB->Execute('UPDATE netlinks SET type=?, speed=? WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($type, $speed, $dev1, $dev2, $dev1, $dev2));
+		global $SYSLOG_RESOURCE_KEYS;
+
+		$res = $this->DB->Execute('UPDATE netlinks SET type=?, speed=? WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($type, $speed, $dev1, $dev2, $dev1, $dev2));
+		if ($this->SYSLOG && $res) {
+			$netlink = $this->DB->GetRow('SELECT id, src, dst FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($dev1, $dev2, $dev1, $dev2));
+			$args = array(
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETLINK] => $netlink['id'],
+				'src_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netlink['src'],
+				'dst_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netlink['dst'],
+				'type' => $type,
+				'speed' => $speed,
+			);
+			$this->SYSLOG->AddMessage(SYSLOG_RES_NETLINK, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETLINK],
+					'src_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV],
+					'dst_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
+		}
+		return $res;
 	}
 
 	function SetNodeLinkType($node, $type = 0, $speed = 100000) {
-		return $this->DB->Execute('UPDATE nodes SET linktype=?, linkspeed=? WHERE id=?', array($type, $speed, $node));
+		global $SYSLOG_RESOURCE_KEYS;
+
+		$res = $this->DB->Execute('UPDATE nodes SET linktype=?, linkspeed=? WHERE id=?', array($type, $speed, $node));
+		if ($this->SYSLOG && $res) {
+			$nodedata = $this->DB->GetRow('SELECT ownerid, netdev FROM nodes WHERE id=?', array($node));
+			$args = array(
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $node,
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $nodedata['ownerid'],
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $nodedata['netdev'],
+				'linktype' => $type,
+				'linkspeed' => $speed,
+			);
+			$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
+		}
+		return $res;
 	}
 
 	/*
@@ -4156,14 +4218,88 @@ class LMS {
 	}
 
 	function NetDevDelLinks($id) {
+		global $SYSLOG_RESOURCE_KEYS;
+
+		if ($this->SYSLOG) {
+			$netlinks = $this->DB->GetAll('SELECT id, src, dst FROM netlinks WHERE src=? OR dst=?', array($id, $id));
+			if (!empty($netlinks))
+				foreach ($netlinks as $netlink) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETLINK] => $netlink['id'],
+						'src_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netlink['src'],
+						'dst_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netlink['dst'],
+					);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_NETLINK, SYSLOG_OPER_DELETE, $args, array_keys($args));
+				}
+			$nodes = $this->DB->GetAll('SELECT id, netdev, ownerid FROM nodes WHERE netdev=? AND ownerid>0', array($id));
+			if (!empty($nodes))
+				foreach ($nodes as $node) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $node['id'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $node['ownerid'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => 0,
+						'port' => 0,
+					);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
+						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
+				}
+		}
 		$this->DB->Execute('DELETE FROM netlinks WHERE src=? OR dst=?', array($id, $id));
 		$this->DB->Execute('UPDATE nodes SET netdev=0, port=0 
 				WHERE netdev=? AND ownerid>0', array($id));
 	}
 
 	function DeleteNetDev($id) {
+		global $SYSLOG_RESOURCE_KEYS;
+
 		$this->DB->BeginTrans();
-		$this->DB->Execute('DELETE FROM netlinks WHERE src=? OR dst=?', array($id));
+		if ($this->SYSLOG) {
+			$netlinks = $this->DB->GetAll('SELECT id, src, dst FROM netlinks WHERE src = ? OR dst = ?',
+				array($id, $id));
+			if (!empty($netlinks))
+				foreach ($netlinks as $netlink) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETLINK] => $netlink['id'],
+						'src_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netlink['src'],
+						'dst_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netlink['dst'],
+					);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_NETLINK, SYSLOG_OPER_DELETE, $args, array_keys($args));
+				}
+			$nodes = $this->DB->GetCol('SELECT id FROM nodes WHERE ownerid = 0 AND netdev = ?', array($id));
+			if (!empty($nodes))
+				foreach ($nodes as $node) {
+					$macs = $this->DB->GetCol('SELECT id FROM macs WHERE nodeid = ?', array($node));
+					if (!empty($macs))
+						foreach ($macs as $mac) {
+							$args = array(
+								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MAC] => $mac,
+								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $node,
+							);
+							$this->SYSLOG->AddMessage(SYSLOG_RES_MAC, SYSLOG_OPER_DELETE,
+								$args, array_keys($args));
+						}
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $node,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $id,
+					);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_DELETE, $args, array_keys($args));
+				}
+			$nodes = $this->DB->GetAll('SELECT id, ownerid FROM nodes WHERE ownerid <> 0 AND netdev = ?', array($id));
+			if (!empty($nodes))
+				foreach ($nodes as $node) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $node['id'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $node['ownerid'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => 0,
+					);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args, array_keys($args));
+				}
+			$args = array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $id);
+			$this->SYSLOG->AddMessage(SYSLOG_RES_NETDEV, SYSLOG_OPER_DELETE, $args, array_keys($args));
+		}
+		$this->DB->Execute('DELETE FROM netlinks WHERE src=? OR dst=?', array($id, $id));
 		$this->DB->Execute('DELETE FROM nodes WHERE ownerid=0 AND netdev=?', array($id));
 		$this->DB->Execute('UPDATE nodes SET netdev=0 WHERE netdev=?', array($id));
 		$this->DB->Execute('DELETE FROM netdevices WHERE id=?', array($id));
@@ -4171,34 +4307,38 @@ class LMS {
 	}
 
 	function NetDevAdd($data) {
+		global $SYSLOG_RESOURCE_KEYS;
+
+		$args = array(
+			'name' => $data['name'],
+			'location' => $data['location'],
+			'location_city' => $data['location_city'] ? $data['location_city'] : null,
+			'location_street' => $data['location_street'] ? $data['location_street'] : null,
+			'location_house' => $data['location_house'] ? $data['location_house'] : null,
+			'location_flat' => $data['location_flat'] ? $data['location_flat'] : null,
+			'description' => $data['description'],
+			'producer' => $data['producer'],
+			'model' => $data['model'],
+			'serialnumber' => $data['serialnumber'],
+			'ports' => $data['ports'],
+			'purchasetime' => $data['purchasetime'],
+			'guaranteeperiod' => $data['guaranteeperiod'],
+			'shortname' => $data['shortname'],
+			'nastype' => $data['nastype'],
+			'clients' => $data['clients'],
+			'secret' => $data['secret'],
+			'community' => $data['community'],
+			'channelid' => !empty($data['channelid']) ? $data['channelid'] : NULL,
+			'longitude' => !empty($data['longitude']) ? str_replace(',', '.', $data['longitude']) : NULL,
+			'latitude' => !empty($data['latitude']) ? str_replace(',', '.', $data['latitude']) : NULL
+		);
 		if ($this->DB->Execute('INSERT INTO netdevices (name, location,
 				location_city, location_street, location_house, location_flat,
 				description, producer, model, serialnumber,
 				ports, purchasetime, guaranteeperiod, shortname,
 				nastype, clients, secret, community, channelid,
 				longitude, latitude)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($data['name'],
-						$data['location'],
-						$data['location_city'] ? $data['location_city'] : null,
-						$data['location_street'] ? $data['location_street'] : null,
-						$data['location_house'] ? $data['location_house'] : null,
-						$data['location_flat'] ? $data['location_flat'] : null,
-						$data['description'],
-						$data['producer'],
-						$data['model'],
-						$data['serialnumber'],
-						$data['ports'],
-						$data['purchasetime'],
-						$data['guaranteeperiod'],
-						$data['shortname'],
-						$data['nastype'],
-						$data['clients'],
-						$data['secret'],
-						$data['community'],
-						!empty($data['channelid']) ? $data['channelid'] : NULL,
-						!empty($data['longitude']) ? str_replace(',', '.', $data['longitude']) : NULL,
-						!empty($data['latitude']) ? str_replace(',', '.', $data['latitude']) : NULL
-				))) {
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
 			$id = $this->DB->GetLastInsertID('netdevices');
 
 			// EtherWerX support (devices have some limits)
@@ -4219,6 +4359,11 @@ class LMS {
 				$this->DB->CommitTrans();
 			}
 
+			if ($this->SYSLOG) {
+				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]] = $id;
+				$this->SYSLOG->AddMessage(SYSLOG_RES_NETDEV, SYSLOG_OPER_ADD, $args,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
+			}
 			return $id;
 		}
 		else
@@ -4226,33 +4371,40 @@ class LMS {
 	}
 
 	function NetDevUpdate($data) {
-		$this->DB->Execute('UPDATE netdevices SET name=?, description=?, producer=?, location=?,
+		global $SYSLOG_RESOURCE_KEYS;
+
+		$args = array(
+			'name' => $data['name'],
+			'description' => $data['description'],
+			'producer' => $data['producer'],
+			'location' => $data['location'],
+			'location_city' => $data['location_city'] ? $data['location_city'] : null,
+			'location_street' => $data['location_street'] ? $data['location_street'] : null,
+			'location_house' => $data['location_house'] ? $data['location_house'] : null,
+			'location_flat' => $data['location_flat'] ? $data['location_flat'] : null,
+			'model' => $data['model'],
+			'serialnumber' => $data['serialnumber'],
+			'ports' => $data['ports'],
+			'purchasetime' => $data['purchasetime'],
+			'guaranteeperiod' => $data['guaranteeperiod'],
+			'shortname' => $data['shortname'],
+			'nastype' => $data['nastype'],
+			'clients' => $data['clients'],
+			'secret' => $data['secret'],
+			'community' => $data['community'],
+			'channelid' => !empty($data['channelid']) ? $data['channelid'] : NULL,
+			'longitude' => !empty($data['longitude']) ? str_replace(',', '.', $data['longitude']) : null,
+			'latitude' => !empty($data['latitude']) ? str_replace(',', '.', $data['latitude']) : null,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $data['id'],
+		);
+		$res = $this->DB->Execute('UPDATE netdevices SET name=?, description=?, producer=?, location=?,
 				location_city=?, location_street=?, location_house=?, location_flat=?,
 				model=?, serialnumber=?, ports=?, purchasetime=?, guaranteeperiod=?, shortname=?,
 				nastype=?, clients=?, secret=?, community=?, channelid=?, longitude=?, latitude=? 
-				WHERE id=?', array($data['name'],
-				$data['description'],
-				$data['producer'],
-				$data['location'],
-				$data['location_city'] ? $data['location_city'] : null,
-				$data['location_street'] ? $data['location_street'] : null,
-				$data['location_house'] ? $data['location_house'] : null,
-				$data['location_flat'] ? $data['location_flat'] : null,
-				$data['model'],
-				$data['serialnumber'],
-				$data['ports'],
-				$data['purchasetime'],
-				$data['guaranteeperiod'],
-				$data['shortname'],
-				$data['nastype'],
-				$data['clients'],
-				$data['secret'],
-				$data['community'],
-				!empty($data['channelid']) ? $data['channelid'] : NULL,
-				!empty($data['longitude']) ? str_replace(',', '.', $data['longitude']) : null,
-				!empty($data['latitude']) ? str_replace(',', '.', $data['latitude']) : null,
-				$data['id']
-		));
+				WHERE id=?', array_values($args));
+		if ($this->SYSLOG && $res)
+			$this->SYSLOG->AddMessage(SYSLOG_RES_NETDEV, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
 	}
 
 	function IsNetDevLink($dev1, $dev2) {
@@ -4261,17 +4413,50 @@ class LMS {
 	}
 
 	function NetDevLink($dev1, $dev2, $type = 0, $speed = 100000, $sport = 0, $dport = 0) {
+		global $SYSLOG_RESOURCE_KEYS;
+
 		if ($dev1 != $dev2)
-			if (!$this->IsNetDevLink($dev1, $dev2))
-				return $this->DB->Execute('INSERT INTO netlinks 
+			if (!$this->IsNetDevLink($dev1, $dev2)) {
+				$args = array(
+					'src_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $dev1,
+					'dst_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $dev2,
+					'type' => $type,
+					'speed' => $speed,
+					'srcport' => intval($sport),
+					'dstport' => intval($dport)
+				);
+				$res = $this->DB->Execute('INSERT INTO netlinks 
 					(src, dst, type, speed, srcport, dstport) 
-					VALUES (?, ?, ?, ?, ?, ?)', array($dev1, $dev2, $type, $speed,
-								intval($sport), intval($dport)));
+					VALUES (?, ?, ?, ?, ?, ?)', array_values($args));
+				if ($this->SYSLOG && $res) {
+					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETLINK]] = $this->DB->GetLastInsertID('netlinks');
+					$this->SYSLOG->AddMessage(SYSLOG_RES_NETLINK, SYSLOG_OPER_ADD, $args,
+						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETLINK],
+							'src_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV],
+							'dst_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
+				}
+				return $res;
+			}
 
 		return FALSE;
 	}
 
 	function NetDevUnLink($dev1, $dev2) {
+		global $SYSLOG_RESOURCE_KEYS;
+
+		if ($this->SYSLOG) {
+			$netlinks = $this->DB->GetAll('SELECT id, src, dst FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)',
+				array($dev1, $dev2, $dev1, $dev2));
+			if (!empty($netlinks))
+				foreach ($netlinks as $netlink) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETLINK] => $netlink['id'],
+						'src_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netlink['src'],
+						'dst_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netlink['dst'],
+					);
+					$this->SYSLOG->AddMessage(SYSLOG_RES_NETLINK, SYSLOG_OPER_DELETE, $args, array_keys($args));
+				}
+		}
 		$this->DB->Execute('DELETE FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($dev1, $dev2, $dev1, $dev2));
 	}
 

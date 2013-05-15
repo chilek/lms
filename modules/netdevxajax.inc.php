@@ -39,7 +39,7 @@ function getManagementUrls($netdevid) {
 }
 
 function addManagementUrl($netdevid, $params) {
-	global $DB;
+	global $DB, $SYSLOG, $SYSLOG_RESOURCE_KEYS;
 
 	$result = new xajaxResponse();
 
@@ -49,7 +49,17 @@ function addManagementUrl($netdevid, $params) {
 	if (!preg_match('/^[[:alnum:]]+:\/\/.+/i', $params['url']))
 		$params['url'] = 'http://' . $params['url'];
 
-	$DB->Execute('INSERT INTO managementurls (netdevid, url, comment) VALUES (?, ?, ?)', array($netdevid, $params['url'], $params['comment']));
+	$args = array(
+		$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netdevid,
+		'url' => $params['url'],
+		'comment' => $params['comment'],
+	);
+	$DB->Execute('INSERT INTO managementurls (netdevid, url, comment) VALUES (?, ?, ?)', array_values($args));
+	if ($SYSLOG) {
+		$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MGMTURL]] = $DB->GetLastInsertID('managementurls');
+		$SYSLOG->AddMessage(SYSLOG_RES_MGMTURL, SYSLOG_OPER_ADD, $args,
+			array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MGMTURL], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
+	}
 	$result->call('xajax_getManagementUrls', $netdevid);
 	$result->assign('managementurladdlink', 'disabled', false);
 
@@ -57,10 +67,17 @@ function addManagementUrl($netdevid, $params) {
 }
 
 function delManagementUrl($netdevid, $id) {
-	global $DB;
+	global $DB, $SYSLOG, $SYSLOG_RESOURCE_KEYS;
 
 	$result = new xajaxResponse();
-	$DB->Execute('DELETE FROM managementurls WHERE id = ?', array($id));
+	$res = $DB->Execute('DELETE FROM managementurls WHERE id = ?', array($id));
+	if ($res && $SYSLOG) {
+		$args = array(
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MGMTURL] => $id,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netdevid,
+		);
+		$SYSLOG->AddMessage(SYSLOG_RES_MGMTURL, SYSLOG_OPER_DELETE, $args, array_keys($args));
+	}
 	$result->call('xajax_getManagementUrls', $netdevid);
 	$result->assign('managementurltable', 'disabled', false);
 
