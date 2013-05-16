@@ -511,6 +511,7 @@ function tinymce_init(ui_language) {
 		theme_advanced_resizing: true,
 		autoresize_max_height: 250,
 		dialog_type: "window",
+		skin: "lms",
 	});
 }
 
