@@ -52,12 +52,12 @@ if(isset($_POST['searchnode']) && $_POST['searchnode'])
 {
 	$search = $_POST['searchnode'];
 
-	$where_node = 'AND ('.(intval($search) ? 'nodes.id = '.intval($search).' OR ' : '')
+	$where_node = 'AND ('.(intval($search) ? 'vnodes.id = '.intval($search).' OR ' : '')
 			.'    INET_NTOA(ipaddr) LIKE '.$DB->Escape('%'.$search.'%')
 			.' OR INET_NTOA(ipaddr_pub) LIKE '.$DB->Escape('%'.$search.'%')
 			.' OR UPPER(mac) LIKE UPPER('.$DB->Escape('%'.$search.'%').')'
 			.' OR UPPER(location) LIKE UPPER('.$DB->Escape('%'.$search.'%').')'
-			.' OR UPPER(nodes.name) LIKE UPPER('.$DB->Escape('%'.$search.'%').')) ';
+			.' OR UPPER(vnodes.name) LIKE UPPER('.$DB->Escape('%'.$search.'%').')) ';
 
 	$SMARTY->assign('searchnode', $search);
 }
@@ -68,7 +68,7 @@ if(isset($where_node) || isset($where_cust))
 				FROM (SELECT DISTINCT c.id AS id, address, zip, city, email, ssn, 
 				'.$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername
 				FROM customersview c ' 
-				.(isset($where_node) ? 'LEFT JOIN nodes ON (c.id = ownerid) ' : '')
+				.(isset($where_node) ? 'LEFT JOIN vnodes ON (c.id = ownerid) ' : '')
 				.'WHERE deleted = 0 '
 				.(isset($where_cust) ? $where_cust : '')
 				.(isset($where_node) ? $where_node : '')
