@@ -2737,4 +2737,6 @@ $_LANG['log out<!syslog>'] = 'wylogowanie';
 $_LANG['Choose network'] = 'Wybierz sieć';
 $_LANG['- automatic selection -'] = '- wybór automatyczny -';
 
+$_LANG['visual editor'] = 'edytor wizualny';
+
 ?>

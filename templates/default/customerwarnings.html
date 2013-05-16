@@ -1,5 +1,6 @@
 {include file="header.html"}
 <!--// $Id$ //-->
+<script type="text/javascript" src="img/tinymce3/tiny_mce.js"> </script>
 <SCRIPT type="text/javascript">
 <!--
 	function SelectAllCustomers()
@@ -68,6 +69,8 @@
 					<TD COLSPAN="2">
 						<TABLE CELLPADDING="3">
 							<TD COLSPAN="3" {tip text="Customer notice content"}>
+								<input type="checkbox" id="message_label" onClick="javascript:toggle_visual_editor('setwarnings[message]');"{if get_conf('phpui.default_editor_type') == 'wysiwyg'} checked{/if}>
+								<label for="message_label">{trans("visual editor")}</label><br>
 								<TEXTAREA NAME="setwarnings[message]" id="setwarnings[message]" ROWS="20" COLS="75">{$warnmessage}</TEXTAREA>
 							</TD>
 						</TABLE>
@@ -97,6 +100,11 @@
 <SCRIPT type="text/javascript">
 <!--//
 document.forms['setwarnings'].elements['setwarnings[message]'].focus();
+
+tinymce_init('{$ui_language}');
+{if get_conf('phpui.default_editor_type') == 'wysiwyg'}
+toggle_visual_editor('setwarnings[message]');
+{/if}
 //-->
 </SCRIPT>
 
