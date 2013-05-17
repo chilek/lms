@@ -228,9 +228,7 @@ if(isset($_POST['message']))
 				$LMS->AddMessageTemplate($msgtmpltype, $msgtmplname, $message['body']);
 				break;
 		}
-		die('test');
 	}
-	die;
 
 	if($message['subject']=='')
 		$error['subject'] = trans('Message subject is required!');
