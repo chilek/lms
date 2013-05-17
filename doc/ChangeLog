@@ -168,6 +168,7 @@ version ? (????-??-??):
   - fixed mysql database dump - don't check foreign key constraints during database recover [chilan]
   - transaction logging for network devices [chilan]
   - tinymce3 integration: customer, node info, message and notes support [chilan]
+  - message templates: mail and sms messages [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 

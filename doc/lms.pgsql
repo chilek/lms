@@ -1703,6 +1703,19 @@ CREATE INDEX logmessagedata_logmessageid_idx ON logmessagedata (logmessageid);
 CREATE INDEX logmessagedata_name_idx ON logmessagedata (name);
 
 /* ---------------------------------------------------
+ Structure of table "messagetemplates"
+------------------------------------------------------*/
+CREATE SEQUENCE messagetemplates_id_seq;
+CREATE TABLE messagetemplates (
+	id integer		DEFAULT nextval('messagetemplates_id_seq'::text) NOT NULL,
+	type smallint		NOT NULL,
+	name varchar(50)	NOT NULL,
+	message	text		DEFAULT '' NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE (name)
+);
+
+/* ---------------------------------------------------
  Structure of table "up_rights" (Userpanel)
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS up_rights_id_seq;
@@ -1933,4 +1946,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2013050700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2013051700');

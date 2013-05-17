@@ -2723,6 +2723,7 @@ $_LANG['network<!syslog>'] = 'sieć';
 $_LANG['network device<!syslog>'] = 'urządzenie sieciowe';
 $_LANG['network link<!syslog>'] = 'połączenie sieciowe';
 $_LANG['management url<!syslog>'] = 'adres url do zarządzania';
+$_LANG['message template<!syslog>'] = 'szablon wiadomości';
 
 $_LANG['addition<!syslog>'] = 'dodanie';
 $_LANG['deletion<!syslog>'] = 'usunięcie';
@@ -2738,5 +2739,13 @@ $_LANG['Choose network'] = 'Wybierz sieć';
 $_LANG['- automatic selection -'] = '- wybór automatyczny -';
 
 $_LANG['visual editor'] = 'edytor wizualny';
+$_LANG['Message template:'] = 'Szablon wiadomości:';
+$_LANG['Message template operation:'] = 'Czyność na szablonie wiadomości:';
+$_LANG['message template update'] = 'aktualizacja szablonu wiadomości';
+$_LANG['message template creation'] = 'utworzenie szablonu wiadomości';
+$_LANG['New template name:'] = 'Nazwa nowego szablonu:';
+$_LANG['Select message template'] = 'Wybierz szablon wiadomości';
+$_LANG['Enter name of the new message template'] = 'Wprowadź nazwę nowego szablonu wiadomości';
+$_LANG['no operation on message template'] = 'brak czynności na szablonie wiadomości';
 
 ?>
