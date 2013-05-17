@@ -678,7 +678,7 @@ CREATE TABLE nodes (
   INDEX location_street (location_street),
   FOREIGN KEY (location_city) REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
   FOREIGN KEY (location_street) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  FOREIGN KEY (netid) REFERENCES networks (id) ON DELETE SET NULL ON UPDATE CASCADE
+  FOREIGN KEY (netid) REFERENCES networks (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
