@@ -88,7 +88,7 @@ if(isset($_POST['event']))
 
 		$DB->Execute('UPDATE events SET moddate=?, moduserid=? WHERE id=?',
 			array(
-				mktime(), 
+				time(), 
 				$AUTH->id,
 				$event['id']
 				));

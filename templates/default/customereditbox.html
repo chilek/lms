@@ -434,7 +434,9 @@
 			<IMG SRC="img/info1.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%">
-			<TEXTAREA NAME="customerdata[info]" COLS="60" ROWS="10" {tip text="Enter additional information (optional)"}>{$customerinfo.info|escape}</TEXTAREA>
+			<input type="checkbox" id="info_label" onclick="javascript:toggle_visual_editor('info');"{if get_conf('phpui.default_editor') == 'wysiwyg'} checked{/if}>
+			<label for="info_label">{trans("visual editor")}</label><br>
+			<TEXTAREA NAME="customerdata[info]" id="info" COLS="60" ROWS="10" {tip text="Enter additional information (optional)"}>{$customerinfo.info|escape}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>
@@ -442,7 +444,9 @@
 			<IMG SRC="img/warningon.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%">
-			<TEXTAREA NAME="customerdata[message]" COLS="60" ROWS="10" {tip text="Enter notice contents (optional)"}>{$customerinfo.message|escape}</TEXTAREA>
+			<input type="checkbox" id="message_label" onclick="javascript:toggle_visual_editor('message');"{if get_conf('phpui.default_editor') == 'wysiwyg'} checked{/if}>
+			<label for="message_label">{trans("visual editor")}</label><br>
+			<TEXTAREA NAME="customerdata[message]" id="message" COLS="60" ROWS="10" {tip text="Enter notice contents (optional)"}>{$customerinfo.message|escape}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>
@@ -450,7 +454,9 @@
 			<IMG SRC="img/note.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%">
-			<TEXTAREA NAME="customerdata[notes]" COLS="60" ROWS="10" {tip text="Enter notes (optional)"}>{$customerinfo.notes|escape}</TEXTAREA>
+			<input type="checkbox" id="notes_label" onclick="javascript:toggle_visual_editor('notes');"{if get_conf('phpui.default_editor') == 'wysiwyg'} checked{/if}>
+			<label for="notes_label">{trans("visual editor")}</label><br>
+			<TEXTAREA NAME="customerdata[notes]" id="notes" COLS="60" ROWS="10" {tip text="Enter notes (optional)"}>{$customerinfo.notes|escape}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>
@@ -489,6 +495,12 @@
 <SCRIPT type="text/javascript">
 <!--
 document.forms['customeredit'].elements['customerdata[lastname]'].focus();
+
+tinymce_init('{$_ui_language}');
+{if get_conf('phpui.default_editor') == 'wysiwyg'}
+toggle_visual_editor('info');
+toggle_visual_editor('message');
+toggle_visual_editor('notes');
+{/if}
 //-->
 </SCRIPT>
-

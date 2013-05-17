@@ -167,6 +167,7 @@ $DEFAULTS = array(
 		'public_ip' => 1,
 		'default_assignment_period' => 3,
 		'default_assignment_invoice' => 0,
+		'default_editor' => 'html',
 	),
 	'invoices' => array(
 		'template_file' => 'invoice.html',

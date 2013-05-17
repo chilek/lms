@@ -1,5 +1,6 @@
 {include file="header.html"}
 <!--// $Id$ //-->
+<script type="text/javascript" src="img/tinymce3/tiny_mce.js"> </script>
 <H1>{$layout.pagetitle}</H1>
 <FORM name="message" id="message" method="post" action="?m=messageadd" enctype="multipart/form-data">
 <INPUT type="submit" class="hiddenbtn">
@@ -40,7 +41,8 @@
 			document.getElementById('mailfrom').style.display = '';
 			document.getElementById('mailsender').style.display = '';
 			document.getElementById('attachment').style.display = '';
-			document.getElementById('phonenumber').style.display = 'none';
+			if (document.getElementById('phonenumber') != undefined)
+				document.getElementById('phonenumber').style.display = 'none';
 			document.getElementById('smsbody').style.display = 'none';
 			document.getElementById('charscount').style.display = 'none';
 		}
@@ -221,7 +223,9 @@
 			<span class="bold">{trans("Message body:")}</span>
 		</TD>
 		<TD style="width: 98%;">
-			<TEXTAREA NAME="message[mailbody]" COLS="80" ROWS="20" {tip text="Use carriage return for indentation only. LMS will reformat paragraphs and break long lines." trigger="body"}>{$message.body}</TEXTAREA>
+			<input type="checkbox" id="mailmessage_label" onClick="javascript:toggle_visual_editor('mailmessage');"{if get_conf('phpui.default_editor') == 'wysiwyg'} checked{/if}>
+			<label for="mailmessage_label">{trans("visual editor")}</label><br>
+			<TEXTAREA NAME="message[mailbody]" id="mailmessage" COLS="80" ROWS="20" {tip text="Use carriage return for indentation only. LMS will reformat paragraphs and break long lines." trigger="body"}>{$message.body}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR ID="smsbody"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} style="display: none"{/if}>
@@ -271,6 +275,11 @@ var users = [];
 	users.push('{$phone}');
 {/foreach}
 multiselect('message', 'messageusers', '{trans("- none -")}', users);
+
+tinymce_init('{$_ui_language}');
+{if get_conf('phpui.default_editor') == 'wysiwyg'}
+toggle_visual_editor('mailmessage');
+{/if}
 //-->
 </SCRIPT>
 {include file="footer.html"}
