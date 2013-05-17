@@ -103,16 +103,18 @@
 .lmsSkin .mceMenu span.mceText, .lmsSkin .mceMenu .mcePreview {font-size:11px}
 .lmsSkin .mceMenu pre.mceText {font-family:Monospace}
 .lmsSkin .mceMenu .mceIcon {position:absolute; top:0; left:0; width:22px;}
-.lmsSkin .mceMenu .mceMenuItemEnabled a:hover, .lmsSkin .mceMenu .mceMenuItemActive {background-color:#dbecf3}
+/*.lmsSkin .mceMenu .mceMenuItemEnabled a:hover, .lmsSkin .mceMenu .mceMenuItemActive {background-color:#dbecf3}*/
+.lmsSkin .mceMenu .mceMenuItemEnabled a:hover, .lmsSkin .mceMenu .mceMenuItemActive { background-color: #CEBD9B; }
 .lmsSkin td.mceMenuItemSeparator {background:#DDD; height:1px}
 .lmsSkin .mceMenuItemTitle a {border:0; background:#EEE; border-bottom:1px solid #DDD}
 .lmsSkin .mceMenuItemTitle span.mceText {color:#000; font-weight:bold; padding-left:4px}
 .lmsSkin .mceMenuItemDisabled .mceText {color:#888}
 .lmsSkin .mceMenuItemSelected .mceIcon {background:url(img/menu_check.gif)}
-.lmsSkin .mceNoIcons .mceMenuItemSelected a {background:url(img/menu_arrow.gif) no-repeat -6px center}
+.lmsSkin .mceNoIcons .mceMenuItemSelected a {background: #DFD5BD url(img/menu_arrow.gif) no-repeat -6px center}
 .lmsSkin .mceMenu span.mceMenuLine {display:none}
 .lmsSkin .mceMenuItemSub a {background:url(img/menu_arrow.gif) no-repeat top right;}
-.lmsSkin .mceMenuItem td, .lmsSkin .mceMenuItem th {line-height: normal}
+/*.lmsSkin .mceMenuItem td, .lmsSkin .mceMenuItem th {line-height: normal;}*/
+.lmsSkin .mceMenuItem td, .lmsSkin .mceMenuItem th {line-height: normal; background-color: #EBE4D6; }
 
 /* Progress,Resize */
 .lmsSkin .mceBlocker {position:absolute; left:0; top:0; z-index:1000; opacity:0.5; -ms-filter:'alpha(opacity=50)'; filter:alpha(opacity=50); background:#FFF}
@@ -123,7 +125,7 @@
 .mceRtl .mceMenuItem .mceText {text-align: right}
 
 /* Formats */
-.lmsSkin .mce_formatPreview a {font-size:10px}
+.lmsSkin .mce_formatPreview a {font-size:10px;}
 .lmsSkin .mce_p span.mceText {}
 .lmsSkin .mce_address span.mceText {font-style:italic}
 .lmsSkin .mce_pre span.mceText {font-family:monospace}
