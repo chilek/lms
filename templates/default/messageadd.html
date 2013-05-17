@@ -40,7 +40,8 @@
 			document.getElementById('mailfrom').style.display = '';
 			document.getElementById('mailsender').style.display = '';
 			document.getElementById('attachment').style.display = '';
-			document.getElementById('phonenumber').style.display = 'none';
+			if (document.getElementById('phonenumber') != undefined)
+				document.getElementById('phonenumber').style.display = 'none';
 			document.getElementById('smsbody').style.display = 'none';
 			document.getElementById('charscount').style.display = 'none';
 		}
