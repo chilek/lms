@@ -50,7 +50,7 @@ if(isset($_GET['ajax']))
 
 	$candidates = $DB->GetAll('SELECT '.$mode.' as item, count(id) as entries
 	    FROM customers
-	    WHERE '.$mode.' != \'\' AND lower('.$mode.') ?LIKE? lower(\'%'.$search.'%\')
+	    WHERE '.$mode.' != \'\' AND lower('.$mode.') ?LIKE? lower(' . $DB->Escape('%'.$search.'%') . ')
 	    GROUP BY item
 	    ORDER BY entries desc, item asc
 	    LIMIT 15');
