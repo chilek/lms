@@ -95,7 +95,7 @@
 		<TD style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("Recipient:")}</span>
 		</TD>
-		<TD>
+		<TD style="width: 98%;">
 			<span class="bold">{$message.customer} ({$message.customerid|string_format:"%04d"})</span>
 			<INPUT type="hidden" name="message[customerid]" value="{$message.customerid}">
 		</TD>
@@ -108,7 +108,7 @@
 		<TD style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("Recipients:")}</span>
 		</TD>
-		<TD>
+		<TD style="width: 98%;">
 			<TABLE style="width: 100%;">
 				<TR>
 					<TD style="width: 1%; white-space: nowrap;" rowspan="2">{trans("Status:")}</TD>
@@ -176,7 +176,7 @@
 		<TD style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("Type:")}</span>
 		</TD>
-		<TD>
+		<TD style="width: 98%;">
 			<INPUT type="radio" NAME="message[type]" id="typemail" value="{$smarty.const.MSG_MAIL}"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typemail"><span class="bold">{trans("email")}</span></label>
 			<INPUT type="radio" NAME="message[type]" id="typesms" value="{$smarty.const.MSG_SMS}"{if $message.type == $smarty.const.MSG_SMS} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typesms"><span class="bold">{trans("sms")}</span></label>
 			{if !$message.customerid}
@@ -191,7 +191,7 @@
 		<TD style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("Sender E-mail:")}</span>
 		</TD>
-		<TD>
+		<TD style="width: 98%;">
 			<INPUT type="text" NAME="message[sender]" SIZE="40" value="{if $message.sender}{$message.sender}{elseif $userinfo.email}{$userinfo.email}{/if}" {tip trigger="sender" text="Enter sender e-mail address"}>
 		</TD>
 	</TR>
@@ -202,7 +202,7 @@
 		<TD style="width: 1%;">
 			<span class="bold">{trans("Sender:")}</span>
 		</TD>
-		<TD>
+		<TD style="width: 98%;">
 			<INPUT type="text" NAME="message[from]" SIZE="40"  VALUE="{if $message.from}{$message.from}{elseif $userinfo.name}{$userinfo.name}{/if}" {tip trigger="from" text="Enter sender name"}>
 		</TD>
 	</TR>
@@ -215,7 +215,7 @@
 		<TD style="width: 1%;">
 			<span class="bold">{trans("Users:")}</span>
 		</TD>
-		<TD>
+		<TD style="width: 98%;">
 			<SELECT size="4" name="message[users][]" MULTIPLE id="messageusers" {tip text="Select users"}>
 			{section name="users" loop=$users}
 				<OPTION value="{$users[users].phone}">{$users[users].name|truncate:30:"...":true}</OPTION>
@@ -230,7 +230,7 @@
 		<TD style="width: 1%;">
 			<span class="bold">{trans("Phone number:")}</span>
 		</TD>
-		<TD>
+		<TD style="width: 98%;">
 			<INPUT type="text" NAME="message[phonenumber]" SIZE="60" VALUE="{$message.phonenumber}" {tip trigger="phonenumber" text="Enter phone numbers separated by commas"}>
 		</TD>
 	</TR>
@@ -242,7 +242,7 @@
 		<TD style="width: 1%;">
 			<span class="bold">{trans("Subject:")}</span>
 		</TD>
-		<TD>
+		<TD style="width: 98%;">
 			<INPUT type="text" NAME="message[subject]" SIZE="60" VALUE="{$message.subject}" {tip trigger="subject" text="Enter message subject"}>
 		</TD>
 	</TR>
@@ -253,7 +253,7 @@
 		<TD style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("Message body:")}</span>
 		</TD>
-		<TD>
+		<TD style="width: 98%;">
 			<TABLE class="lmsbox-inner">
 				<TBODY>
 					<TR>
@@ -291,7 +291,7 @@
 		<TD style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("Message body:")}</span>
 		</TD>
-		<TD>
+		<TD style="width: 98%;">
 			<TEXTAREA NAME="message[smsbody]" ID="smstext" COLS="60" ROWS="5" onkeydown="countChars(this)" onkeyup="countChars(this)" onmouseout="countChars(this)" {tip text="Enter message body" trigger="body"}>{$message.body}</TEXTAREA>
 		</TD>
 	</TR>
@@ -302,7 +302,7 @@
 		<TD class="bold" style="width: 1%; white-space: nowrap;">
 			&nbsp;
 		</TD>
-		<TD>
+		<TD style="width: 98%;">
 			<input type="radio" name="message[tmploper]" id="msgtmplradionone" value="1" onClick="javascript:document.getElementById('msgtmplname').style.display='none';" checked><label for="msgtmplradionone">{trans("no operation on message template")}</label><br>
 			<input type="radio" name="message[tmploper]" id="msgtmplradioupdate" value="2" onClick="javascript:document.getElementById('msgtmplname').style.display='none';"><label for="msgtmplradioupdate">{trans("message template update")}</label><br>
 			<input type="radio" name="message[tmploper]" id="msgtmplradionew" value="3" onClick="javascript:document.getElementById('msgtmplname').style.display='';"><label for="msgtmplradionew">{trans("message template creation")}</label>
@@ -314,7 +314,7 @@
 		<TD style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("Characters:")}</span>
 		</TD>
-		<TD id="charscounttext">0</TD>
+		<TD style="width: 98%;" id="charscounttext">0</TD>
 	</TR>
 	<TR ID="attachment"{if $message.type > $smarty.const.MSG_MAIL} style="display: none"{/if}>
 		<TD style="width: 1%;">
@@ -323,7 +323,7 @@
 		<TD style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("Attachment:")}</span>
 		</TD>
-		<TD>
+		<TD style="width: 98%;">
 			<INPUT name="file" type="file" size="60" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
 		</TD>
 	</TR>
