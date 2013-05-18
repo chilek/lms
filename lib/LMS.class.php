@@ -5942,7 +5942,7 @@ class LMS {
 		return $res;
 	}
 
-	function Gettemplates($type) {
+	function GetMessageTemplates($type) {
 		return $this->DB->GetAll('SELECT id, name FROM templates
 			WHERE type = ? ORDER BY name', array(intval($type)));
 	}
