@@ -1,5 +1,6 @@
 {include file="header.html"}
 <!--// $Id$ //-->
+{$xajax}
 <script type="text/javascript" src="img/tinymce3/tiny_mce.js"> </script>
 <H1>{$layout.pagetitle}</H1>
 <FORM name="message" id="message" method="post" action="?m=messageadd" enctype="multipart/form-data">
@@ -36,6 +37,7 @@
 			{/if}
 			document.getElementById('smsbody').style.display = '';
 			document.getElementById('charscount').style.display = '';
+			xajax_getMessageTemplates({$smarty.const.MSG_TMPL_SMS});
 		} else {
 			document.getElementById('mailbody').style.display = '';
 			document.getElementById('mailfrom').style.display = '';
@@ -45,12 +47,41 @@
 				document.getElementById('phonenumber').style.display = 'none';
 			document.getElementById('smsbody').style.display = 'none';
 			document.getElementById('charscount').style.display = 'none';
+			xajax_getMessageTemplates({$smarty.const.MSG_TMPL_MAIL});
 		}
+		xjx.$('msgtmplid').disabled = true;
+	}
+
+	function messageTemplatesReceived(templates) {
+		var elem = xjx.$('msgtmplid'), option;
+		while (elem.length > 1)
+			elem.remove(1);
+		if (templates)
+			for (i = 0; i < templates.length; i++) {
+				option = document.createElement('option');
+				option.text = templates[i].name;
+				option.value = templates[i].id;
+				elem.add(option, null);
+			}
+		elem.disabled = false;
 	}
 
 	function countChars(elem)
 	{
 		document.getElementById('charscounttext').innerHTML = elem.value.length;
+	}
+
+	function change_message_template(tmplid) {
+		if (tmplid)
+			xajax_getMessageTemplate(tmplid, xjx.$('typemail').checked ? 'mailmessage' : 'smstext');
+	}
+
+	function messageTemplateReceived(elem, message) {
+		if (tinyMCE.get(elem) != undefined) {
+			tinyMCE.get(elem).setContent(message);
+			xjx.$(elem).value = message;
+		} else
+			xjx.$(elem).value = message;
 	}
 -->
 </SCRIPT>
@@ -146,10 +177,10 @@
 			<span class="bold">{trans("Type:")}</span>
 		</TD>
 		<TD style="width: 98%;">
-			<INPUT type="radio" NAME="message[type]" id="typemail" value="{$smarty.const.MSG_MAIL}"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} CHECKED{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typemail"><span class="bold">{trans("email")}</span></label>
-			<INPUT type="radio" NAME="message[type]" id="typesms" value="{$smarty.const.MSG_SMS}"{if $message.type == $smarty.const.MSG_SMS} CHECKED{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typesms"><span class="bold">{trans("sms")}</span></label>
+			<INPUT type="radio" NAME="message[type]" id="typemail" value="{$smarty.const.MSG_MAIL}"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typemail"><span class="bold">{trans("email")}</span></label>
+			<INPUT type="radio" NAME="message[type]" id="typesms" value="{$smarty.const.MSG_SMS}"{if $message.type == $smarty.const.MSG_SMS} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typesms"><span class="bold">{trans("sms")}</span></label>
 			{if !$message.customerid}
-			<INPUT type="radio" NAME="message[type]" id="typeanysms" value="{$smarty.const.MSG_ANYSMS}"{if $message.type == $smarty.const.MSG_ANYSMS} CHECKED{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typeanysms"><span class="bold">{trans("any sms")}</span></label>
+			<INPUT type="radio" NAME="message[type]" id="typeanysms" value="{$smarty.const.MSG_ANYSMS}"{if $message.type == $smarty.const.MSG_ANYSMS} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typeanysms"><span class="bold">{trans("any sms")}</span></label>
 			{/if}
 		</TD>
 	</TR>
@@ -217,15 +248,40 @@
 	</TR>
 	<TR ID="mailbody"{if $message.type > $smarty.const.MSG_MAIL} style="display: none"{/if}>
 		<TD style="width: 1%;">
-			<IMG SRC="img/edit.gif" ALT=""> 
+			<IMG SRC="img/edit.gif" ALT="">
 		</TD>
 		<TD style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("Message body:")}</span>
 		</TD>
 		<TD style="width: 98%;">
-			<input type="checkbox" id="mailmessage_label" onClick="javascript:toggle_visual_editor('mailmessage');"{if get_conf('phpui.default_editor') == 'wysiwyg'} checked{/if}>
-			<label for="mailmessage_label">{trans("visual editor")}</label><br>
-			<TEXTAREA NAME="message[mailbody]" id="mailmessage" COLS="80" ROWS="20" {tip text="Use carriage return for indentation only. LMS will reformat paragraphs and break long lines." trigger="body"}>{$message.body}</TEXTAREA>
+			<TABLE class="lmsbox-inner">
+				<TBODY>
+					<TR>
+						<TD style="width: 1%; white-space: nowrap;">
+							<input type="checkbox" id="mailmessage_label" onClick="javascript:toggle_visual_editor('mailmessage');"{if get_conf('phpui.default_editor') == 'wysiwyg'} checked{/if}>
+							<label for="mailmessage_label">{trans("visual editor")}</label>
+						</TD>
+						<TD style="width: 1%; white-space: nowrap; text-align: right;">
+							{trans("Message template:")}
+							<SELECT name="message[tmplid]" id="msgtmplid" {tip trigger="msgtmplid" text="Select message template"} onChange="javascript:change_message_template(this.options[this.selectedIndex].value);">
+								<OPTION value="0">{trans("- none -")}</OPTION>
+								{foreach $messagetemplates as $msgtmpl}
+								<OPTION value="{$msgtmpl.id}">{$msgtmpl.name}</OPTION>
+								{/foreach}
+							</SELECT>
+						</TD>
+						<TD style="width: 98%;">
+						</TD>
+					</TR>
+					<TR>
+						<TD colspan="2">
+							<TEXTAREA NAME="message[mailbody]" id="mailmessage" COLS="80" ROWS="20" {tip text="Use carriage return for indentation only. LMS will reformat paragraphs and break long lines." trigger="body"}>{$message.body}</TEXTAREA>
+						</TD>
+						<TD>
+						</TD>
+					</TR>
+				</TBODY>
+			</TABLE>
 		</TD>
 	</TR>
 	<TR ID="smsbody"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} style="display: none"{/if}>
@@ -239,12 +295,26 @@
 			<TEXTAREA NAME="message[smsbody]" ID="smstext" COLS="60" ROWS="5" onkeydown="countChars(this)" onkeyup="countChars(this)" onmouseout="countChars(this)" {tip text="Enter message body" trigger="body"}>{$message.body}</TEXTAREA>
 		</TD>
 	</TR>
+	<TR>
+		<TD style="width: 1%;">
+			&nbsp;
+		</TD>
+		<TD class="bold" style="width: 1%; white-space: nowrap;">
+			&nbsp;
+		</TD>
+		<TD style="width: 98%;">
+			<input type="radio" name="message[tmploper]" id="msgtmplradionone" value="1" onClick="javascript:document.getElementById('msgtmplname').style.display='none';" checked><label for="msgtmplradionone">{trans("no operation on message template")}</label><br>
+			<input type="radio" name="message[tmploper]" id="msgtmplradioupdate" value="2" onClick="javascript:document.getElementById('msgtmplname').style.display='none';"><label for="msgtmplradioupdate">{trans("message template update")}</label><br>
+			<input type="radio" name="message[tmploper]" id="msgtmplradionew" value="3" onClick="javascript:document.getElementById('msgtmplname').style.display='';"><label for="msgtmplradionew">{trans("message template creation")}</label>
+			<input type="text" size="40" name="message[tmplname]" id="msgtmplname" style="display: none;" {tip trigger="tmplname" text="Enter name of the new message template"}>
+		</TD>
+	</TR>
 	<TR ID="charscount"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} style="display: none"{/if}>
 		<TD style="width: 1%;"></TD>
 		<TD style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("Characters:")}</span>
 		</TD>
-		<TD style="width: 98%;" ID="charscounttext">0</TD>
+		<TD style="width: 98%;" id="charscounttext">0</TD>
 	</TR>
 	<TR ID="attachment"{if $message.type > $smarty.const.MSG_MAIL} style="display: none"{/if}>
 		<TD style="width: 1%;">

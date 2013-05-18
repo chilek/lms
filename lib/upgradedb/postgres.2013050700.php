@@ -23,6 +23,8 @@
 
 $DB->BeginTrans();
 
+$DB->Execute("SET CONSTRAINTS ALL IMMEDIATE");
+
 $DB->Execute("
 	DROP VIEW vnodes;
 	DROP VIEW vmacs;

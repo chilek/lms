@@ -24,6 +24,30 @@
  *  $Id$
  */
 
+function getMessageTemplate($tmplid, $elem) {
+	global $DB;
+
+	$result = new xajaxResponse();
+	$message = $DB->GetOne('SELECT message FROM messagetemplates WHERE id = ?', array($tmplid));
+	$result->call('messageTemplateReceived', $elem, $message);
+
+	return $result;
+}
+
+function getMessageTemplates($tmpltype) {
+	global $LMS;
+
+	$result = new xajaxResponse();
+	$templates = $LMS->GetMessageTemplates($tmpltype);
+	$result->call('messageTemplatesReceived', $templates);
+
+	return $result;
+}
+
+$LMS->InitXajax();
+$LMS->RegisterXajaxFunction(array('getMessageTemplate', 'getMessageTemplates'));
+$SMARTY->assign('xajax', $LMS->RunXajax());
+
 function GetRecipients($filter, $type=MSG_MAIL)
 {
 	global $LMS;
@@ -184,6 +208,25 @@ if(isset($_POST['message']))
 				$phonenumbers = array_merge($phonenumbers, $message['users']);
 			if (empty($phonenumbers))
 				$error['phonenumber'] = trans('Specified phone number is not correct!');
+		}
+	}
+
+	$msgtmplid = intval($message['tmplid']);
+	$msgtmploper = intval($message['tmploper']);
+	$msgtmplname = $message['tmplname'];
+	if ($msgtmploper > 1) {
+		$msgtmpltype = $message['type'] == MSG_MAIL ? MSG_TMPL_MAIL : MSG_TMPL_SMS;
+		switch ($msgtmploper) {
+			case 2:
+				if (empty($msgtmplid))
+					break;
+				$LMS->UpdateMessageTemplate($msgtmplid, $msgtmpltype, null, $message['body']);
+				break;
+			case 3:
+				if (!strlen($msgtmplname))
+					break;
+				$LMS->AddMessageTemplate($msgtmpltype, $msgtmplname, $message['body']);
+				break;
 		}
 	}
 
@@ -372,6 +415,14 @@ else if (!empty($_GET['customerid']))
 	$SMARTY->assign('message', $message);
 }
 
+if (isset($message['type'])) {
+	if ($message['type'] == MSG_MAIL)
+		$msgtmpltype = MSG_TMPL_MAIL;
+	else
+		$msgtmpltype = MSG_TMPL_SMS;
+} else
+	$msgtmpltype = MSG_TMPL_MAIL;
+$SMARTY->assign('messagetemplates', $LMS->GetMessageTemplates($msgtmpltype));
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());

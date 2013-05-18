@@ -5896,6 +5896,56 @@ class LMS {
 			}
 		return $nodesessions;
 	}
+
+	function AddMessageTemplate($type, $name, $message) {
+		global $SYSLOG_RESOURCE_KEYS;
+
+		$args = array(
+			'type' => $type,
+			'name' => $name,
+			'message' => $message,
+		);
+		if ($this->DB->Execute('INSERT INTO messagetemplates (type, name, message)
+			VALUES (?, ?, ?)', array_values($args))) {
+			$id = $this->DB->GetLastInsertID('messagetemplates');
+			if ($this->SYSLOG) {
+				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MSGTMPL]] = $id;
+				$this->SYSLOG->AddMessage(SYSLOG_RES_MSGTMPL, SYSLOG_OPER_ADD, $args,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MSGTMPL]));
+			}
+			return $id;
+		}
+		return false;
+	}
+
+	function UpdateMessageTemplate($id, $type, $name, $message) {
+		global $SYSLOG_RESOURCE_KEYS;
+
+		$args = array(
+			'type' => $type,
+			'name' => $name,
+			'message' => $message,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MSGTMPL] => intval($id),
+		);
+		if (empty($name)) {
+			unset($args['name']);
+			$res = $this->DB->Execute('UPDATE messagetemplates SET type = ?, message = ?
+				WHERE id = ?', array_values($args));
+		} else
+			$res = $this->DB->Execute('UPDATE messagetemplates SET type = ?, name = ?, message = ?
+				WHERE id = ?', array_values($args));
+		if ($res && $this->SYSLOG) {
+			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MSGTMPL]] = $id;
+			$this->SYSLOG->AddMessage(SYSLOG_RES_MSGTMPL, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MSGTMPL]));
+		}
+		return $res;
+	}
+
+	function GetMessageTemplates($type) {
+		return $this->DB->GetAll('SELECT id, name FROM messagetemplates
+			WHERE type = ? ORDER BY name', array(intval($type)));
+	}
 }
 
 ?>

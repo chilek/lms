@@ -1,5 +1,6 @@
 {include file="header.html"}
 <!--// $Id$ //-->
+{$xajax}
 <script type="text/javascript" src="img/tinymce3/tiny_mce.js"> </script>
 <SCRIPT type="text/javascript">
 <!--
@@ -38,6 +39,22 @@
 		document.setwarnings.elements['setwarnings[warnoff]'].checked = !document.setwarnings.elements['setwarnings[warnoff]'].checked;
 		switchbox(document.setwarnings.elements['setwarnings[warnoff]']);
 	}
+
+	function change_message_template(tmplid) {
+		if (tmplid) {
+			xjx.$('msgtmplid').disable = true;
+			xajax_getMessageTemplate(tmplid);
+		}
+	}
+
+	function messageTemplateReceived(message) {
+		if (tinyMCE.get('message') != undefined) {
+			tinyMCE.get('message').setContent(message);
+			xjx.$('message').value = message;
+		} else
+			xjx.$('message').value = message;
+		xjx.$('msgtmplid').disabled = false;
+	}
 //-->
 </SCRIPT>
 <H1>{$layout.pagetitle}</H1>
@@ -60,7 +77,7 @@
                             <TBODY>
 				<TR>
 					<TD>
-						<SELECT size="20" name="setwarnings[mcustomerid][]" id="customerslist" multiple {tip text="Select customers"}>
+						<SELECT size="30" name="setwarnings[mcustomerid][]" id="customerslist" multiple {tip text="Select customers"}>
 							{foreach from=$customerlist key=key item=item}
 							<OPTION value="{$key}" {if $item.warning}CLASS="red"{/if}{if isset($selected.$key)} SELECTED{/if}>{$item.customername|truncate:40:"...":true} ({$key|string_format:"%04d"})</OPTION>
 							{/foreach}
@@ -68,11 +85,34 @@
 					</TD>
 					<TD COLSPAN="2">
 						<TABLE CELLPADDING="3">
-							<TD COLSPAN="3" {tip text="Customer notice content"}>
-								<input type="checkbox" id="message_label" onClick="javascript:toggle_visual_editor('setwarnings[message]');"{if get_conf('phpui.default_editor') == 'wysiwyg'} checked{/if}>
-								<label for="message_label">{trans("visual editor")}</label><br>
-								<TEXTAREA NAME="setwarnings[message]" id="setwarnings[message]" ROWS="20" COLS="75">{$warnmessage}</TEXTAREA>
-							</TD>
+							<TR>
+								<TD>
+									<input type="checkbox" id="message_label" onClick="javascript:toggle_visual_editor('message');"{if get_conf('phpui.default_editor') == 'wysiwyg'} checked{/if}>
+									<label for="message_label">{trans("visual editor")}</label>
+								</TD>
+								<TD colspan="2" style="text-align: right;">
+									<label for="">{trans("Message template:")}</label>
+									<select name="setwarnings[msgtmplid]" id="msgtmplid" {tip trigger="msgtmplid" text="Select message template"} onChange="javascript:change_message_template(this.options[this.selectedIndex].value);">
+										<option value="0">{trans("- none -")}</option>
+										{foreach $messagetemplates as $msgtmpl}
+										<option value="{$msgtmpl.id}">{$msgtmpl.name}</option>
+										{/foreach}
+									</select>
+								</TD> 
+							</TR>
+							<TR>
+								<TD COLSPAN="3" {tip text="Customer notice content"}>
+									<TEXTAREA NAME="setwarnings[message]" id="message" ROWS="20" COLS="75">{$warnmessage}</TEXTAREA>
+								</TD>
+							</TR>
+							<TR>
+								<td colspan="3">
+									<input type="radio" name="setwarnings[tmploper]" id="msgtmplradionone" value="1" onClick="javascript:document.getElementById('msgtmplname').style.display='none';" checked><label for="msgtmplradionone">{trans("no operation on message template")}</label><br>
+									<input type="radio" name="setwarnings[tmploper]" id="msgtmplradioupdate" value="2" onClick="javascript:document.getElementById('msgtmplname').style.display='none';"><label for="msgtmplradioupdate">{trans("message template update")}</label><br>
+									<input type="radio" name="setwarnings[tmploper]" id="msgtmplradionew" value="3" onClick="javascript:document.getElementById('msgtmplname').style.display='';"><label for="msgtmplradionew">{trans("message template creation")}</label>
+									<input type="text" size="40" name="setwarnings[tmplname]" id="msgtmplname" style="display: none;" {tip trigger="tmplname" text="Enter name of the new message template"}>
+								</td>
+							</TR>
 						</TABLE>
 					</TD>
 				</TR>
@@ -103,7 +143,7 @@ document.forms['setwarnings'].elements['setwarnings[message]'].focus();
 
 tinymce_init('{$_ui_language}');
 {if get_conf('phpui.default_editor') == 'wysiwyg'}
-toggle_visual_editor('setwarnings[message]');
+toggle_visual_editor('message');
 {/if}
 //-->
 </SCRIPT>
