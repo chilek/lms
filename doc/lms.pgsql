@@ -1712,7 +1712,7 @@ CREATE TABLE messagetemplates (
 	name varchar(50)	NOT NULL,
 	message	text		DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
-	UNIQUE (name)
+	UNIQUE (type, name)
 );
 
 /* ---------------------------------------------------
