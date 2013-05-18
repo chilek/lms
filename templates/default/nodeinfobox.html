@@ -158,7 +158,7 @@
 					</TABLE>
 				</TD>
 				<TD style="width: 50%; vertical-align: top;">
-					<TABLE style="width: 100%;" CELLPADDING="3">
+					<TABLE style="width: 100%;" CELLPADDING="3" id="nodeinfo">
 {if $nodeinfo.info}
 	<TR>
 		<TD style="width: 1%;">
@@ -327,3 +327,8 @@
 	</TR>	
     </TBODY>
 </TABLE>
+<script type="text/javascript">
+<!--
+	xajax_getNodeStats({$nodeinfo.id});
+//-->
+</script>
