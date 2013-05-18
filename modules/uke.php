@@ -342,14 +342,14 @@ foreach ($netnodes as $netnodename => $netnode) {
 				$netnode['address_ulica'], $netnode['address_symul'], $netnode['address_budynek'], ZIP_CODE))
 			: "LMS netdevinfo ID's: ".implode(' ', $netnode['netdevices']).",".implode(',', array_fill(0, 10, '')))
 		.",0,".(isset($netnode['longitude']) ? $netnode['latitude'].",".$netnode['longitude'] : ",")
-		.",Nie,".($netnode['cabledistports'] + $netnode['radiodistports'] + $netnode['fiberdistports'] > 1
+		.",Nie,".($netnode['cabledistports'] + $netnode['radiodistports'] + $netnode['fiberdistports'] > 0
 			|| $netnode['personalaccessports'] + $netnode['commercialaccessports'] == 0 ? "Tak" : "Nie").","
 		.($netnode['cablepersonalaccessports'] || $netnode['cablecommercialaccessports']
 			|| $netnode['radiopersonalaccessports'] || $netnode['radiocommercialaccessports']
 			|| $netnode['fiberpersonalaccessports'] || $netnode['fibercommercialaccessports'] ? "Tak" : "Nie").",\n";
 
 	// save info about network interfaces located in distribution layer
-	if ($netnode['cabledistports'] + $netnode['radiodistports'] + $netnode['fiberdistports'] > 1
+	if ($netnode['cabledistports'] + $netnode['radiodistports'] + $netnode['fiberdistports'] > 0
 		|| $netnode['personalaccessports'] + $netnode['commercialaccessports'] == 0) {
 		if ($netnode['cabledistports']) {
 			$snetinterfaces .= $netintid.",".$netnode['id'].",sieć szkieletowa lub dystrybucyjna,kablowe,,Ethernet,,0,100,0,"
