@@ -2723,7 +2723,7 @@ $_LANG['network<!syslog>'] = 'sieć';
 $_LANG['network device<!syslog>'] = 'urządzenie sieciowe';
 $_LANG['network link<!syslog>'] = 'połączenie sieciowe';
 $_LANG['management url<!syslog>'] = 'adres url do zarządzania';
-$_LANG['message template<!syslog>'] = 'szablon wiadomości';
+$_LANG['template<!syslog>'] = 'szablon';
 
 $_LANG['addition<!syslog>'] = 'dodanie';
 $_LANG['deletion<!syslog>'] = 'usunięcie';

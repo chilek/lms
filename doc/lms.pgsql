@@ -1703,11 +1703,11 @@ CREATE INDEX logmessagedata_logmessageid_idx ON logmessagedata (logmessageid);
 CREATE INDEX logmessagedata_name_idx ON logmessagedata (name);
 
 /* ---------------------------------------------------
- Structure of table "messagetemplates"
+ Structure of table "templates"
 ------------------------------------------------------*/
-CREATE SEQUENCE messagetemplates_id_seq;
-CREATE TABLE messagetemplates (
-	id integer		DEFAULT nextval('messagetemplates_id_seq'::text) NOT NULL,
+CREATE SEQUENCE templates_id_seq;
+CREATE TABLE templates (
+	id integer		DEFAULT nextval('templates_id_seq'::text) NOT NULL,
 	type smallint		NOT NULL,
 	name varchar(50)	NOT NULL,
 	message	text		DEFAULT '' NOT NULL,

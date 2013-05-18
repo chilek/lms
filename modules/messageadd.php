@@ -215,7 +215,7 @@ if(isset($_POST['message']))
 	$msgtmploper = intval($message['tmploper']);
 	$msgtmplname = $message['tmplname'];
 	if ($msgtmploper > 1) {
-		$msgtmpltype = $message['type'] == MSG_MAIL ? MSG_TMPL_MAIL : MSG_TMPL_SMS;
+		$msgtmpltype = $message['type'] == MSG_MAIL ? TMPL_MAIL : TMPL_SMS;
 		switch ($msgtmploper) {
 			case 2:
 				if (empty($msgtmplid))
@@ -417,11 +417,11 @@ else if (!empty($_GET['customerid']))
 
 if (isset($message['type'])) {
 	if ($message['type'] == MSG_MAIL)
-		$msgtmpltype = MSG_TMPL_MAIL;
+		$msgtmpltype = TMPL_MAIL;
 	else
-		$msgtmpltype = MSG_TMPL_SMS;
+		$msgtmpltype = TMPL_SMS;
 } else
-	$msgtmpltype = MSG_TMPL_MAIL;
+	$msgtmpltype = TMPL_MAIL;
 $SMARTY->assign('messagetemplates', $LMS->GetMessageTemplates($msgtmpltype));
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());

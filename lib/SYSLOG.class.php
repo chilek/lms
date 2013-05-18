@@ -46,7 +46,7 @@ define('SYSLOG_RES_NETWORK', 43);
 define('SYSLOG_RES_NETDEV', 44);
 define('SYSLOG_RES_NETLINK', 45);
 define('SYSLOG_RES_MGMTURL', 46);
-define('SYSLOG_RES_MSGTMPL', 47);
+define('SYSLOG_RES_TMPL', 47);
 
 $SYSLOG_RESOURCES = array(
 	SYSLOG_RES_USER => trans('user<!syslog>'),
@@ -95,7 +95,7 @@ $SYSLOG_RESOURCES = array(
 	SYSLOG_RES_NETDEV => trans('network device<!syslog>'),
 	SYSLOG_RES_NETLINK => trans('network link<!syslog>'),
 	SYSLOG_RES_MGMTURL => trans('management url<!syslog>'),
-	SYSLOG_RES_MSGTMPL => trans('message template<!syslog>'),
+	SYSLOG_RES_TMPL => trans('template<!syslog>'),
 );
 
 $SYSLOG_RESOURCE_KEYS = array(
@@ -145,7 +145,7 @@ $SYSLOG_RESOURCE_KEYS = array(
 	SYSLOG_RES_NETDEV => 'networkdeviceid',
 	SYSLOG_RES_NETLINK => 'networklinkid',
 	SYSLOG_RES_MGMTURL => 'managementurlid',
-	SYSLOG_RES_MSGTMPL => 'messagetemplateid',
+	SYSLOG_RES_TMPL => 'templateid',
 );
 
 ?>

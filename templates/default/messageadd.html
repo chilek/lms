@@ -37,7 +37,7 @@
 			{/if}
 			document.getElementById('smsbody').style.display = '';
 			document.getElementById('charscount').style.display = '';
-			xajax_getMessageTemplates({$smarty.const.MSG_TMPL_SMS});
+			xajax_getMessageTemplates({$smarty.const.TMPL_SMS});
 		} else {
 			document.getElementById('mailbody').style.display = '';
 			document.getElementById('mailfrom').style.display = '';
@@ -47,7 +47,7 @@
 				document.getElementById('phonenumber').style.display = 'none';
 			document.getElementById('smsbody').style.display = 'none';
 			document.getElementById('charscount').style.display = 'none';
-			xajax_getMessageTemplates({$smarty.const.MSG_TMPL_MAIL});
+			xajax_getMessageTemplates({$smarty.const.TMPL_MAIL});
 		}
 		xjx.$('msgtmplid').disabled = true;
 	}
