@@ -28,7 +28,7 @@ function getMessageTemplate($tmplid) {
 	global $DB;
 
 	$result = new xajaxResponse();
-	$message = $DB->GetOne('SELECT message FROM messagetemplates WHERE id = ?', array($tmplid));
+	$message = $DB->GetOne('SELECT message FROM templates WHERE id = ?', array($tmplid));
 	$result->call('messageTemplateReceived', $message);
 
 	return $result;
