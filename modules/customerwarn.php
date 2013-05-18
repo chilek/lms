@@ -24,6 +24,20 @@
  *  $Id$
  */
 
+function getMessageTemplate($tmplid) {
+	global $DB;
+
+	$result = new xajaxResponse();
+	$message = $DB->GetOne('SELECT message FROM messagetemplates WHERE id = ?', array($tmplid));
+	$result->call('messageTemplateReceived', $message);
+
+	return $result;
+}
+
+$LMS->InitXajax();
+$LMS->RegisterXajaxFunction(array('getMessageTemplate'));
+$SMARTY->assign('xajax', $LMS->RunXajax());
+
 $setwarnings = isset($_POST['setwarnings']) ? $_POST['setwarnings'] : array();
 
 if (isset($setwarnings['mcustomerid']))
@@ -31,6 +45,23 @@ if (isset($setwarnings['mcustomerid']))
 	$warnon = isset($setwarnings['warnon']) ? $setwarnings['warnon'] : FALSE;
 	$warnoff = isset($setwarnings['warnoff']) ? $setwarnings['warnoff'] : FALSE;
 	$message = isset($setwarnings['message']) ? $setwarnings['message'] : NULL;
+
+	$msgtmplid = intval($setwarnings['tmplid']);
+	$msgtmploper = intval($setwarnings['tmploper']);
+	$msgtmplname = $setwarnings['tmplname'];
+	if ($msgtmploper > 1)
+		switch ($msgtmploper) {
+			case 2:
+				if (empty($msgtmplid))
+					break;
+				$LMS->UpdateMessageTemplate($msgtmplid, MSG_TMPL_WARNING, null, $setwarnings['message']);
+				break;
+			case 3:
+				if (!strlen($msgtmplname))
+					break;
+				$LMS->AddMessageTemplate(MSG_TMPL_WARNING, $msgtmplname, $setwarnings['message']);
+				break;
+		}
 
 	$cids = array_filter($setwarnings['mcustomerid'], 'is_natural');
 	if (!empty($cids)) {
@@ -95,6 +126,7 @@ $customerlist = $DB->GetAllByKey('SELECT c.id AS id, MAX(warning) AS warning, '.
 		    GROUP BY c.id, lastname, c.name 
 		    ORDER BY customername ASC', 'id');
 
+$SMARTY->assign('messagetemplates', $LMS->GetMessageTemplates(MSG_TMPL_WARNING));
 $SMARTY->assign('warnmessage', $SESSION->get('warnmessage'));
 $SMARTY->assign('warnon', $SESSION->get('warnon'));
 $SMARTY->assign('warnoff', $SESSION->get('warnoff'));

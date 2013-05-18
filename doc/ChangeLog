@@ -169,6 +169,7 @@ version ? (????-??-??):
   - transaction logging for network devices [chilan]
   - tinymce3 integration: customer, node info, message and notes support [chilan]
   - message templates: mail and sms messages [chilan]
+  - message templates: customer and node warnings [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
