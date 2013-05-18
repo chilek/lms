@@ -127,7 +127,7 @@ function getThroughput($ip) {
 }
 
 function getNodeStats($nodeid) {
-	global $SMARTY;
+	global $SMARTY, $DB;
 
 	$nodeid = intval($nodeid);
 	$result = new xajaxResponse();
