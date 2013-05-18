@@ -56,12 +56,13 @@
 		var elem = xjx.$('msgtmplid'), option;
 		while (elem.length > 1)
 			elem.remove(1);
-		for (i = 0; i < templates.length; i++) {
-			option = document.createElement('option');
-			option.text = templates[i].name;
-			option.value = templates[i].id;
-			elem.add(option, null);
-		}
+		if (templates)
+			for (i = 0; i < templates.length; i++) {
+				option = document.createElement('option');
+				option.text = templates[i].name;
+				option.value = templates[i].id;
+				elem.add(option, null);
+			}
 		elem.disabled = false;
 	}
 
