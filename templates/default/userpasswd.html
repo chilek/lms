@@ -1,42 +1,43 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<DIV align="CENTER">
 <FORM method="POST" action="{if $target}{$target}{else}?m=userpasswd&id={$passwd.id}{/if}" name="password">
+<p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
+</p>
 <TABLE class="lmsbox">
-    <THEAD>
+	<THEAD>
 	<TR>
-		<TD colspan="2" style="white-space: nowrap;">
-			<img src="img/pass.gif" alt=""> <span class="bold">{trans("Enter new password:")}</span>
+		<TD colspan="2" class="bold nobr">
+			<img src="img/pass.gif" alt=""> {trans("Enter new password:")}
 		</TD>
 	</TR>
-    </THEAD>
-    <TBODY>
+	</THEAD>
+	<TBODY>
 	<TR>
-		<TD style="text-align: right; white-space: nowrap;">
-			<span class="bold">{trans("New password:")}</span>
+		<TD class="text-right bold nobr">
+			{trans("New password:")}
 		</TD>
-		<TD style="white-space: nowrap;">
+		<TD class="nobr">
 			<input type="password" name="passwd[passwd]" {tip text="Enter password" trigger="password"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD style="text-align: right; white-space: nowrap;">
-			<span class="bold">{trans("Repeat password:")}</span>
+		<TD class="text-right bold nobr">
+			{trans("Repeat password:")}
 		</TD>
-		<TD style="white-space: nowrap;">
+		<TD class="nobr">
 			<input type="password" name="passwd[confirm]" {tip text="Confirm password" trigger="password"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD style="text-align: right;" colspan="2">
+		<TD class="text-right" colspan="2">
 			<A href="javascript:document.password.submit();" accesskey="s">{trans("Submit")} <img src="img/pass.gif" alt=""></A>
 		</TD>
 	</TR>
-    </TBODY>
+	</TBODY>
 </TABLE>
-</DIV>
+</FORM>
 <SCRIPT type="text/javascript">
 <!--
 document.forms['password'].elements['passwd[passwd]'].focus();

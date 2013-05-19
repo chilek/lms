@@ -1,17 +1,17 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<h1 align="center" class="alert">{trans("Access denied!")}</h1>
+<h1 class="text-center alert">{trans("Access denied!")}</h1>
 <table width="100%">
-    <tr>
-	<td align="center">
-	    <img src="img/accessdenied.gif" alt="">
-	</td>
-    </tr>
-    <tr>
-	<td align="center" class="alert">
-	    <br>{trans("You have no access rights to this part of system.")}
-	</td>
-    </tr>
+	<tr>
+		<td class="text-center">
+			<img src="img/accessdenied.gif" alt="">
+		</td>
+	</tr>
+	<tr>
+		<td class="text-center alert">
+			<br>{trans("You have no access rights to this part of system.")}
+		</td>
+	</tr>
 </table>
 {if $layout.popup}
 <script type="text/javascript" src="img/autoiframe.js"></script>
