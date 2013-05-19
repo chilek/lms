@@ -743,6 +743,7 @@ class LMS {
 		if ($res) {
 			if ($this->SYSLOG) {
 				unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
+				$args['deleted'] = 0;
 				$this->SYSLOG->AddMessage(SYSLOG_RES_CUST, SYSLOG_OPER_UPDATE, $args,
 					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
 						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY],
