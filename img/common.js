@@ -523,3 +523,16 @@ function toggle_visual_editor(id) {
 	else
 		tinyMCE.execCommand('mceAddControl', true, id);
 }
+
+function init_links() {
+	for (i in document.links) {
+		link = document.links[i];
+		if (link.rel && link.rel.indexOf('external') != -1) {
+			link.onclick = function() { window.open(this.href); return false; }
+			link.onkeypress = function() { window.open(this.href); return false; }
+		}
+	}
+}
+
+if (window.addEventListener) window.addEventListener("load", init_links, false);
+else if (window.attachEvent) window.attachEvent("onload", init_links);

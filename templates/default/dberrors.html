@@ -1,18 +1,18 @@
 <!--// $Id$ //-->
 <P>
-<TABLE WIDTH="100%" CELLPADDING="10">
+<TABLE width="100%" cellpadding="10" class="fall">
 	<TR class="superlight">
-		<TD WIDTH="1%" CLASS="fleftu">
+		<TD style="width: 1%;">
 			<IMG SRC="img/warning.png" ALT="[ {trans("Error!")} ]">
 		</TD>
-		<TD WIDTH="99%" CLASS="frightu">
-			<FONT class="alert">{trans("Database errors occurred!")}</FONT><BR>
+		<TD style="width: 99%;">
+			<span class="alert">{trans("Database errors occurred!")}</span><BR>
 			{foreach from=$layout.dberrors item=dberror}
-                {if $layout.dbdebug}
-				    <B>({math equation="x*1000" x=$dberror.time format="%.4f"} ms):</B> {$dberror.query}<BR>
-                {else}
-				    <B>{trans("Query:")}</B> {$dberror.query}<BR>
-    				<B>{trans("Error:")}</B> {$dberror.error}<BR>
+				{if $layout.dbdebug}
+					<span class="bold">({math equation="x*1000" x=$dberror.time format="%.4f"} ms):</span> {$dberror.query}<BR>
+				{else}
+					<span class="bold">{trans("Query:")}</span> {$dberror.query}<BR>
+					<span class="bold">{trans("Error:")}</span> {$dberror.error}<BR>
 				{/if}
 			{/foreach}
 		</TD>
