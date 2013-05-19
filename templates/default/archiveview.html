@@ -40,17 +40,20 @@
 	}
 //-->
 </SCRIPT>
-<FORM METHOD="POST" NAME="page">
+<FORM method="post" name="page" action="">
+<p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
+</p>
 <TABLE class="lmsbox">
 	<THEAD>
 
 	<TR>
 		<TD class="container" colspan="4">
 			<TABLE>
+				<TBODY>
 				<TR>
-					<TD style="width: 1%; white-space: nowrap;">
-						<A href="javascript:clear_filter();"><IMG src="img/delete.gif"></A>
+					<TD style="width: 1%;" class="nobr">
+						<A href="javascript:clear_filter();"><IMG src="img/delete.gif" alt=""></A>
 						<span class="bold">{trans("Filter:")} </span>
 						<label for="datefrom">{trans("From:")}</label>
 						<input type="text" size="10" name="datefrom" id="datefrom" onclick="cal1.popup();" value="{$listdata.datefrom|date_format:"Y/m/d"}" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
@@ -64,10 +67,10 @@
 							{/foreach}
 						</SELECT>&nbsp;
 					</TD>
-					<TD style="width: 1%; white-space: nowrap;">
+					<TD style="width: 1%;" class="nobr">
 						<TABLE style="width: 100%;">
 							<TR>
-								<TD style="white-space: nowrap;">
+								<TD class="nobr">
 									<label for="resourcetype">{trans("Resource Type:")}</label>
 								</TD>
 								<TD>
@@ -80,7 +83,7 @@
 								</TD>
 							</TR>
 							<TR>
-								<TD style="white-space: nowrap;">
+								<TD class="nobr">
 									<label for="resourceid">{trans("Resource ID:")}</label>
 								</TD>
 								<TD>
@@ -89,10 +92,10 @@
 							</TR>
 						</TABLE>
 					</TD>
-					<TD style="width: 1%; white-space: nowrap;">
+					<TD style="width: 1%;" class="nobr">
 						<TABLE style="width: 100%;">
 							<TR>
-								<TD style="white-space: nowrap;">
+								<TD class="nobr">
 									<label for="propertyname">{trans("Property Name:")}</label>
 								</TD>
 								<TD>
@@ -102,7 +105,7 @@
 								</TD>
 							</TR>
 							<TR>
-								<TD style="white-space: nowrap;">
+								<TD class="nobr">
 									<label for="propertyvalue">{trans("Property Value:")}</label>
 								</TD>
 								<TD id="propertyvaluedata">
@@ -115,56 +118,69 @@
 						<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>
 					</TD>
 				</TR>
+				</TBODY>
 			</TABLE>
 		</TD>
 	</TR>
 	<TR>
 		<TD>
-			{if $listdata.page}<A href="?m=archiveview&page={$listdata.page - 1}">&laquo;&laquo;&laquo; {trans("Next")}</A>{else}&nbsp;{/if}
+			{if $listdata.page}<A href="?m=archiveview&amp;page={$listdata.page - 1}">&laquo;&laquo;&laquo; {trans("Next")}</A>{else}&nbsp;{/if}
 		</TD>
-		<TD colspan="3" style="text-align: right;">
-			{if $listdata.prev}<A href="?m=archiveview&page={$listdata.page + 1}">{trans("Previous")} &raquo;&raquo;&raquo;<A>{else}&nbsp;{/if}
+		<TD colspan="3" class="text-right">
+			{if $listdata.prev}<A href="?m=archiveview&amp;page={$listdata.page + 1}">{trans("Previous")} &raquo;&raquo;&raquo;</A>{else}&nbsp;{/if}
 		</TD>
 	</TR>
 	<TR>
-		<TD class="bold" style="width: 1%; white-space: nowrap; text-align: center;">
+		<TD class="text-center bold nobr" style="width: 1%;">
 			{trans("Date:")}
 		</TD>
-		<TD class="bold" style="width: 1%; white-space: nowrap; text-align: center;">
+		<TD class="text-center bold nobr" style="width: 1%;">
 			{trans("User:")}
 		</TD>
-		<TD class="bold" style="width: 1%; white-space: nowrap; text-align: center;">
+		<TD class="text-center bold nobr" style="width: 1%;">
 			{trans("Module:")}
 		</TD>
-		<TD class="bold" style="width: 97%; white-space: nowrap;">
+		<TD class="bold nobr" style="width: 97%;">
 			{trans("Operations:")}
 		</TD>
 	</TR>
 
 	</THEAD>
+	<TFOOT>
+
+	<TR>
+		<TD>
+			{if $listdata.page}<A href="?m=archiveview&amp;page={$listdata.page - 1}">&laquo;&laquo;&laquo; {trans("Next")}</A>{else}&nbsp;{/if}
+		</TD>
+		<TD colspan="3" class="text-right">
+			{if $listdata.prev}<A href="?m=archiveview&amp;page={$listdata.page + 1}">{trans("Previous")} &raquo;&raquo;&raquo;</A>{else}&nbsp;{/if}
+		</TD>
+	</TR>
+
+	</TFOOT>
 	<TBODY>
 
 	{if $transactions}
 	{cycle values="light,lucid" print=false name=trans}
 	{foreach $transactions as $tr}
 	<TR class="{cycle name=trans}">
-		<TD style="width: 1%; white-space: nowrap; vertical-align: bottom;">
+		<TD style="width: 1%;" class="valign-bottom nobr">
 			{$tr.time|date_format:"Y.m.d H.i.s"}
 		</TD>
-		<TD style="width: 1%; white-space: nowrap; text-align: center; vertical-align: bottom;">
-			<a href="?m=userinfo&id={$tr.userid}">{$tr.login}</a>
+		<TD style="width: 1%;" class="text-center valign-bottom nobr">
+			<a href="?m=userinfo&amp;id={$tr.userid}">{$tr.login}</a>
 		</TD>
-		<TD style="width: 1%; white-space: nowrap; text-align: center; vertical-align: bottom;">
+		<TD style="width: 1%;" class="text-center valign-bottom nobr">
 			{$tr.module}
 		</TD>
-		<TD style="width: 97%; vertical-align: bottom;">
+		<TD style="width: 97%;" class="valign-bottom">
 			{if $tr.messages}
 				{if count($tr.messages) > 10}{$start = 9 - count($tr.messages)}...<br>
 				{else}{$start=-1}{/if}
 				{section name=messages loop=$tr.messages start=$start step=-1}
 					{$message = $tr.messages[messages]}
 					<span class="bold">{$_SYSLOG_RESOURCES[$message.resource]}: {$_SYSLOG_OPERATIONS[$message.operation]}</span>
-					{foreach $message.keys as $key => $msgkey}{$key}: {if $msgkey.value}<a href="?m=archiveinfo&type={$msgkey.type}&id={$msgkey.value}&date={$tr.time}">{/if}{$msgkey.value}{if $msgkey.value}</a>{/if}{if !$msgkey@last}, {/if}{/foreach}
+					{foreach $message.keys as $key => $msgkey}{$key}: {if $msgkey.value}<a href="?m=archiveinfo&amp;type={$msgkey.type}&amp;id={$msgkey.value}&amp;date={$tr.time}">{/if}{$msgkey.value}{if $msgkey.value}</a>{/if}{if !$msgkey@last}, {/if}{/foreach}
 					{foreach $message.data as $key => $value}{$key}: {$value}{if !$value@last}, {/if}{/foreach}
 					{if !$messages@last}<br>{/if}
 				{/section}
@@ -174,7 +190,7 @@
 	{/foreach}
 	{else}
 	<TR>
-		<TD style="width: 100%; text-align: center;" class="bold" colspan="4">
+		<TD class="empty-table" colspan="4">
 			<P>&nbsp;</P>
 			<P>{trans("No such transactions in database.")}</P>
 			<P>&nbsp;</P>
@@ -183,18 +199,6 @@
 	{/if}
 
 	</TBODY>
-	<TFOOT>
-
-	<TR>
-		<TD>
-			{if $listdata.page}<A href="?m=archiveview&page={$listdata.page - 1}">&laquo;&laquo;&laquo; {trans("Next")}</A>{else}&nbsp;{/if}
-		</TD>
-		<TD colspan="3" style="text-align: right;">
-			{if $listdata.prev}<A href="?m=archiveview&page={$listdata.page + 1}">{trans("Previous")} &raquo;&raquo;&raquo;<A>{else}&nbsp;{/if}
-		</TD>
-	</TR>
-
-	</TFOOT>
 </TABLE>
 </FORM>
 <SCRIPT type="text/javascript">
