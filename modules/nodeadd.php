@@ -87,7 +87,7 @@ if (isset($_POST['nodedata']))
 		$error['ipaddr'] = trans('Specified IP address doesn\'t overlap with any network!');
 	else {
 		if (empty($nodedata['netid']))
-			$nodeedit['netid'] = $DB->GetOne('SELECT id FROM networks WHERE INET_ATON(?) & INET_ATON(mask) = address ORDER BY id LIMIT 1',
+			$nodedata['netid'] = $DB->GetOne('SELECT id FROM networks WHERE INET_ATON(?) & INET_ATON(mask) = address ORDER BY id LIMIT 1',
 				array($nodedata['ipaddr']));
 		if (!$LMS->IsIPFree($nodedata['ipaddr'], $nodedata['netid']))
 			$error['ipaddr'] = trans('Specified IP address is in use!');
