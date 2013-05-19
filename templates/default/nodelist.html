@@ -25,7 +25,7 @@
 			<img src="img/empty.gif" alt="" width="1" height="16"><A href="?m=nodelist&amp;o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{trans("Node ID:")}</A>{if $listdata.order eq "id"} <IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<img src="img/empty.gif" alt="" width="1" height="16"><A href="?m=nodelist&amp;o=ownerid{if $listdata.direction eq "asc" && $listdata.order eq "ownerid"},desc{/if}">{trans("Customer ID:")}</A>{if $listdata.order eq "ownerid"} <IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</td>
-		<td scope="col" class="text-right lighter nobr">
+		<td scope="col" class="lighter nobr">
 			<img src="img/ip.gif" alt=""> {trans("Network:")} / <A href="?m=nodelist&amp;o=ip{if $listdata.direction eq "asc" && $listdata.order eq "ip"},desc{/if}">{trans("IP address:")}</A>{if $listdata.order eq "ip"} <IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<A href="?m=nodelist&amp;o=ip_pub{if $listdata.direction eq "asc" && $listdata.order eq "ip_pub"},desc{/if}">({trans("Pub. IP address:")})</A> {if $listdata.order eq "ip_pub"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<img src="img/mac.gif" alt=""> <A href="?m=nodelist&amp;o=mac{if $listdata.direction eq "asc" && $listdata.order eq "mac"},desc{/if}">{trans("MAC address:")}</A>{if $listdata.order eq "mac"} <IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</td>
