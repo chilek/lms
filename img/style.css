@@ -247,3 +247,5 @@ td.empty-table { text-align: center; font-weight: bold; padding: 2em; }
 .text-left { text-align: left; }
 .text-center { text-align: center; }
 .lighter { font-weight: lighter; }
+.valign-top { vertical-align: top; }
+.valign-bottom { vertical-align: bottom; }
