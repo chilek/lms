@@ -24,6 +24,18 @@
  *  $Id: nodelocks.php,v 1.1 2012/04/07 23:12:01 chilek Exp $
  */
 
+function NodeStats($id, $dt) {
+	global $DB;
+	if ($stats = $DB->GetRow('SELECT SUM(download) AS download, SUM(upload) AS upload 
+		FROM stats WHERE nodeid=? AND dt>?', array($id, time() - $dt))) {
+			list($result['download']['data'], $result['download']['units']) = setunits($stats['download']);
+			list($result['upload']['data'], $result['upload']['units']) = setunits($stats['upload']);
+			$result['downavg'] = $stats['download'] * 8 / 1000 / $dt;
+			$result['upavg'] = $stats['upload'] * 8 / 1000 / $dt;
+		}
+	return $result;
+}
+
 function getNodeLocks($nodeid) {
 	global $SMARTY, $DB;
 
@@ -114,7 +126,26 @@ function getThroughput($ip) {
 	return $result;
 }
 
+function getNodeStats($nodeid) {
+	global $SMARTY, $DB;
+
+	$nodeid = intval($nodeid);
+	$result = new xajaxResponse();
+
+	$nodestats['hour'] = NodeStats($nodeid, 60 * 60);
+	$nodestats['day'] = NodeStats($nodeid, 60 * 60 * 24);
+	$nodestats['month'] = NodeStats($nodeid, 60 * 60 * 24 * 30);
+
+	$SMARTY->assign('nodeid', $nodeid);
+	$SMARTY->assign('nodeip', $DB->GetOne('SELECT INET_NTOA(ipaddr) FROM nodes WHERE id = ?', array($nodeid)));
+	$SMARTY->assign('nodestats', $nodestats);
+	$contents = $SMARTY->fetch('nodestats.html');
+	$result->append('nodeinfo', 'innerHTML', $contents);
+
+	return $result;
+}
+
 $LMS->InitXajax();
-$LMS->RegisterXajaxFunction(array('getNodeLocks', 'addNodeLock', 'delNodeLock', 'getThroughput'));
+$LMS->RegisterXajaxFunction(array('getNodeLocks', 'addNodeLock', 'delNodeLock', 'getThroughput', 'getNodeStats'));
 
 ?>

@@ -24,9 +24,9 @@
 $DB->BeginTrans();
 
 $DB->Execute("
-	CREATE SEQUENCE messagetemplates_id_seq;
-	CREATE TABLE messagetemplates (
-		id integer		DEFAULT nextval('messagetemplates_id_seq'::text) NOT NULL,
+	CREATE SEQUENCE templates_id_seq;
+	CREATE TABLE templates (
+		id integer		DEFAULT nextval('templates_id_seq'::text) NOT NULL,
 		type smallint		NOT NULL,
 		name varchar(50)	NOT NULL,
 		message	text		DEFAULT '' NOT NULL,

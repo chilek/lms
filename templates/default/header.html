@@ -15,13 +15,13 @@
 </head>
 <body onload="start_login_timeout({get_conf('phpui.timeout')})">
 <div id="overDiv" style="position:absolute; visibility:hidden; z-index:100;"></div>
-<script type="text/javascript" language="JavaScript" src="img/overlib.js"></script>
+<script type="text/javascript" src="img/overlib.js"></script>
 {if !$layout.popup}
 <div id="pagecontainer">
     <div id="pageleftbar">
 	<table width="100%">
 		<tr>
-			<td align="center" style="border-bottom-style: dashed; border-bottom-width: 1px;" valign="top">
+			<td class="text-center valign-top" style="border-bottom-style: dashed; border-bottom-width: 1px;">
 				<br>
 				<img src="{get_conf('phpui.logo', 'img/logo-40.png')}" alt="LMS {$layout.lmsv}"><br>
 				<B>LMS {$layout.lmsv}</B><br>
@@ -34,13 +34,13 @@
 		<tr>
 			<td class="click-menu">
 				<div class="tip"{if $menuitem.tip} {tip text="<B>\$a</B>" a=$menuitem.tip}{/if}{if ! $menuitem.submenu} onClick="{if $menuitem.windowopen}window.open('{$menuitem.link}');{else}return self.location.href='{$menuitem.link}';{/if}"{/if}>
-					<div class="box1"><img src="img/{$menuitem.img}" alt="*" style="position: absolute"><font style="margin-left: 21px">{$menuitem.name}</font></div>
+					<div class="box1"><img src="img/{$menuitem.img}" alt="*" style="position: absolute"><span style="margin-left: 21px">{$menuitem.name}</span></div>
 				</div>
 				<div class="section">
 				{if $menuitem.submenu}
 				{foreach from=$menuitem.submenu item=submenuitem}
 					<div class="tip"{if $submenuitem.tip} {tip text="<B>\$a</B>" a=$submenuitem.tip}{/if}>
-						<div class="box2" onClick="return self.location.href='{$submenuitem.link}';">&raquo;&nbsp;<a href="{$submenuitem.link}">{$submenuitem.name}</a></div>
+						<div class="box2" onClick="return self.location.href='{$submenuitem.link|replace:"&":"&amp;"}';">&raquo;&nbsp;<a href="{$submenuitem.link|replace:"&":"&amp;"}">{$submenuitem.name}</a></div>
 					</div>
 				{/foreach}
 				{/if}
@@ -50,13 +50,13 @@
 		{/foreach}
 		<tr>
 			<td class="click-menu" style="border-bottom-style: dashed; border-bottom-width: 1pt;">
-				<div class="tip" {tip text="<B>Allows you to logout</B>"} onClick="if(confirm('{trans("Are you sure that you want to logout?")}')) { return self.location.href='?m=logout&is_sure=1'; } ">
-					<div class="box1"><img src="img/logout.gif" alt="*" style="position: absolute"><NOBR><font style="margin-left: 21px">{trans("Logout")} {$layout.logname|truncate:10:"..."}</font></NOBR></div>
+				<div class="tip" {tip text="<B>Allows you to logout</B>"} onClick="if(confirm('{trans("Are you sure that you want to logout?")}')) { return self.location.href='?m=logout&amp;is_sure=1'; } ">
+					<div class="box1"><img src="img/logout.gif" alt="*" style="position: absolute"><span class="nobr" style="margin-left: 21px">{trans("Logout")} {$layout.logname|truncate:10:"..."}</span></div>
 				</div>
 			</td>
 		</tr>
 		<tr>
-			<td nowrap align="center"><font style="font-size: 7pt;">&nbsp;<br><B>LMS {$layout.lmsv}<br>{if $layout.lmsvr}({$layout.lmsvr})<br>{/if}DB: {$layout.dbschversion}<br>@ {$layout.hostname}</B></font>&nbsp;<br>&nbsp;<br></td>
+			<td class="text-center bold nobr" style="font-size: 7pt;">&nbsp;<br>LMS {$layout.lmsv}<br>{if $layout.lmsvr}({$layout.lmsvr})<br>{/if}DB: {$layout.dbschversion}<br>@ {$layout.hostname}&nbsp;<br>&nbsp;<br></td>
 		</tr>
 	</table>
 	<script type="text/javascript">
@@ -65,11 +65,11 @@
 	</script>
     </div>
     <div id="pagecontent">
-    	<div id="autosuggest"><ul></ul></div>
+    	<div id="autosuggest"><ul><li></li></ul></div>
     	<form method="post" name="quicksearch" action="?m=quicksearch" id="quicksearch">
 	<table width="100%" cellpadding="0" cellspacing="0">
 		<tr>
-		    <td width="1%" nowrap>
+		    <td style="width: 1%" class="nobr">
 			{trans("Search:")}
 			<img src="img/customer.gif" alt="">
 			<input class="blend" type="text" id="customerinput" name="qscustomer" value="" size="15" {tip text="Enter customer ID, first/lastname, email or address and press Enter"}>
@@ -86,9 +86,9 @@
 				new AutoSuggest(document.getElementById('quicksearch'),document.getElementById('accountinput'),'?m=quicksearch&ajax=1&mode=account&what=',1);
 			</script>
 			{* Enter key submit hack for IE *}
-			<input type="image" src="img/empty.gif" width="0" height="0" style="border: none;">
+			{*<input type="image" src="img/empty.gif" width="0" height="0" style="border: none;">*}
 		    </td>
-		    <td width="99%" align="right" nowrap>
+		    <td style="width: 99%" class="text-right nobr">
 			&nbsp;<A href="?m=copyrights">&copy; 2001-{$smarty.now|date_format:'%Y'} LMS Developers</A>
 		    </td>
 		</tr>

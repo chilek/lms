@@ -158,7 +158,7 @@
 					</TABLE>
 				</TD>
 				<TD style="width: 50%; vertical-align: top;">
-					<TABLE style="width: 100%;" CELLPADDING="3">
+					<TABLE style="width: 100%;" CELLPADDING="3" id="nodeinfo">
 {if $nodeinfo.info}
 	<TR>
 		<TD style="width: 1%;">
@@ -248,71 +248,6 @@
 			{if $nodeinfo.moddate}{$nodeinfo.modifiedby}, {$nodeinfo.moddateh}{else}-{/if}
 		</TD>
 	</TR>
-{if $nodestats.month.download.data || $nodestats.month.upload.data}
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/traffic.gif" ALT="">
-		</TD>
-		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
-			<span class="bold">{trans("Traffic stats from last (download/upload):")}</span>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;"></TD>
-		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
-			<TABLE style="width: 100%;" cellpadding="3">
-				<TR>
-					<TD style="width: 1%; white-space: nowrap;">
-						<A HREF="javascript:popup('?m=trafficgraph&nodeid={$nodeinfo.id}&bar=hour',1,1,10,10)"><span class="bold">{trans("hour:")}</span></A>
-					</TD>
-					<TD style="width: 99%; white-space: nowrap;">
-						{$nodestats.hour.download.data|string_format:"%.2f"} {$nodestats.hour.download.units} ({$nodestats.hour.downavg|string_format:"%d"} kbit/s) / {$nodestats.hour.upload.data|string_format:"%.2f"} {$nodestats.hour.upload.units} ({$nodestats.hour.upavg|string_format:"%d"} kbit/s) 
-					</TD>
-				</TR>
-				<TR>
-					<TD style="width:1%; white-space: nowrap;">
-						<A HREF="javascript:popup('?m=trafficgraph&nodeid={$nodeinfo.id}&bar=day',1,1,10,10)"><span class="bold">{trans("24 hour:")}</span></A>
-					</TD>
-					<TD style="width: 99%; white-space: nowrap;">
-						{$nodestats.day.download.data|string_format:"%.2f"} {$nodestats.day.download.units} ({$nodestats.day.downavg|string_format:"%d"} kbit/s) / {$nodestats.day.upload.data|string_format:"%.2f"} {$nodestats.day.upload.units} ({$nodestats.day.upavg|string_format:"%d"} kbit/s)
-					</TD>
-				</TR>
-				<TR>
-					<TD style="width: 1%; white-space: nowrap;">
-						<A HREF="javascript:popup('?m=trafficgraph&nodeid={$nodeinfo.id}&bar=month',1,1,10,10)"><span class="bold">{trans("30 days:")}</span></A>
-					</TD>
-					<TD style="width: 99%; white-space: nowrap;">
-						{$nodestats.month.download.data|string_format:"%.2f"} {$nodestats.month.download.units} ({$nodestats.month.downavg|string_format:"%d"} kbit/s) / {$nodestats.month.upload.data|string_format:"%.2f"} {$nodestats.month.upload.units} ({$nodestats.month.upavg|string_format:"%d"} kbit/s)
-					</TD>
-				</TR>
-				{if get_conf('phpui.live_traffic_helper')}
-				<TR>
-					<TD style="width: 1%; white-space: nowrap;">
-						<span class="bold">{trans("current:")}</span>
-					</TD>
-					<TD style="width: 99%; white-space: nowrap;" ID="livetraffic">
-					</TD>
-				</TR>
-				<SCRIPT TYPE="text/javascript">
-				<!--
-					function live_traffic_start() {
-						xajax.config.waitCursor = false;
-						xajax_getThroughput('{$nodeinfo.ip}');
-					}
-
-					function live_traffic_finished() {
-						xajax.config.waitCursor = true;
-						setTimeout("live_traffic_start()", 3000);
-					}
-
-					live_traffic_start();
-				//-->
-				</SCRIPT>
-				{/if}
-			</TABLE>
-		</TD>
-	</TR>
-{/if}
 						</TABLE>
 					</TD>
 				</TR>
@@ -327,3 +262,8 @@
 	</TR>	
     </TBODY>
 </TABLE>
+<script type="text/javascript">
+<!--
+	xajax_getNodeStats({$nodeinfo.id});
+//-->
+</script>

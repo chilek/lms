@@ -178,6 +178,8 @@ div.multiselectlayer ul li input { border: none; }
 .suggestion_list .selected a { color: black; }
 #autosuggest { display: none; z-index: 10000; }
 
+.acl		{ list-style-type: square; }
+
 .overlib {
     width: 150px;
     font-family: Tahoma, Verdana, Arial, Helvetica;
@@ -247,3 +249,5 @@ td.empty-table { text-align: center; font-weight: bold; padding: 2em; }
 .text-left { text-align: left; }
 .text-center { text-align: center; }
 .lighter { font-weight: lighter; }
+.valign-top { vertical-align: top; }
+.valign-bottom { vertical-align: bottom; }

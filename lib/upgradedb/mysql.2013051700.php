@@ -24,7 +24,7 @@
 $DB->BeginTrans();
 
 $DB->Execute("
-	CREATE TABLE messagetemplates (
+	CREATE TABLE templates (
 		id int(11)		NOT NULL auto_increment,
 		type tinyint		NOT NULL,
 		name varchar(50)	NOT NULL,

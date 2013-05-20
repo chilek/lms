@@ -37,7 +37,7 @@
 			{/if}
 			document.getElementById('smsbody').style.display = '';
 			document.getElementById('charscount').style.display = '';
-			xajax_getMessageTemplates({$smarty.const.MSG_TMPL_SMS});
+			xajax_getMessageTemplates({$smarty.const.TMPL_SMS});
 		} else {
 			document.getElementById('mailbody').style.display = '';
 			document.getElementById('mailfrom').style.display = '';
@@ -47,7 +47,7 @@
 				document.getElementById('phonenumber').style.display = 'none';
 			document.getElementById('smsbody').style.display = 'none';
 			document.getElementById('charscount').style.display = 'none';
-			xajax_getMessageTemplates({$smarty.const.MSG_TMPL_MAIL});
+			xajax_getMessageTemplates({$smarty.const.TMPL_MAIL});
 		}
 		xjx.$('msgtmplid').disabled = true;
 	}
@@ -246,6 +246,22 @@
 			<INPUT type="text" NAME="message[subject]" SIZE="60" VALUE="{$message.subject}" {tip trigger="subject" text="Enter message subject"}>
 		</TD>
 	</TR>
+	<TR>
+		<TD style="width: 1%;">
+			<IMG src="img/docum.gif" ALT="">
+		</TD>
+		<TD class="bold" style="width: 1%; white-space: nowrap;">
+			{trans("Message template:")}
+		</TD>
+		<TD style="width: 98%;">
+			<SELECT name="message[tmplid]" id="msgtmplid" {tip trigger="msgtmplid" text="Select message template"} onChange="javascript:change_message_template(this.options[this.selectedIndex].value);">
+				<OPTION value="0">{trans("- none -")}</OPTION>
+				{foreach $messagetemplates as $msgtmpl}
+				<OPTION value="{$msgtmpl.id}">{$msgtmpl.name}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
 	<TR ID="mailbody"{if $message.type > $smarty.const.MSG_MAIL} style="display: none"{/if}>
 		<TD style="width: 1%;">
 			<IMG SRC="img/edit.gif" ALT="">
@@ -256,30 +272,15 @@
 		<TD style="width: 98%;">
 			<TABLE class="lmsbox-inner">
 				<TBODY>
-					<TR>
-						<TD style="width: 1%; white-space: nowrap;">
-							<input type="checkbox" id="mailmessage_label" onClick="javascript:toggle_visual_editor('mailmessage');"{if get_conf('phpui.default_editor') == 'wysiwyg'} checked{/if}>
-							<label for="mailmessage_label">{trans("visual editor")}</label>
-						</TD>
-						<TD style="width: 1%; white-space: nowrap; text-align: right;">
-							{trans("Message template:")}
-							<SELECT name="message[tmplid]" id="msgtmplid" {tip trigger="msgtmplid" text="Select message template"} onChange="javascript:change_message_template(this.options[this.selectedIndex].value);">
-								<OPTION value="0">{trans("- none -")}</OPTION>
-								{foreach $messagetemplates as $msgtmpl}
-								<OPTION value="{$msgtmpl.id}">{$msgtmpl.name}</OPTION>
-								{/foreach}
-							</SELECT>
-						</TD>
-						<TD style="width: 98%;">
-						</TD>
-					</TR>
-					<TR>
-						<TD colspan="2">
-							<TEXTAREA NAME="message[mailbody]" id="mailmessage" COLS="80" ROWS="20" {tip text="Use carriage return for indentation only. LMS will reformat paragraphs and break long lines." trigger="body"}>{$message.body}</TEXTAREA>
-						</TD>
-						<TD>
-						</TD>
-					</TR>
+					<TR><TD>
+						<input type="checkbox" id="mailmessage_label" onClick="javascript:toggle_visual_editor('mailmessage');"{if get_conf('phpui.default_editor') == 'wysiwyg'} checked{/if}>
+						<label for="mailmessage_label">{trans("visual editor")}</label>
+					</TD></TR>
+					<TR><TD>
+						<TEXTAREA NAME="message[mailbody]" id="mailmessage" COLS="80" ROWS="20" {tip text="Use carriage return for indentation only. LMS will reformat paragraphs and break long lines." trigger="body"}>{$message.body}</TEXTAREA>
+					</TD></TR>
+					<TR><TD>
+					</TD></TR>
 				</TBODY>
 			</TABLE>
 		</TD>
@@ -314,7 +315,7 @@
 		<TD style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("Characters:")}</span>
 		</TD>
-		<TD style="width: 98%;" id="charscounttext">0</TD>
+		<TD style="width: 98%;" ID="charscounttext">0</TD>
 	</TR>
 	<TR ID="attachment"{if $message.type > $smarty.const.MSG_MAIL} style="display: none"{/if}>
 		<TD style="width: 1%;">
