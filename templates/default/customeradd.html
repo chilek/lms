@@ -1,5 +1,6 @@
 {include file="header.html"}
 <!--// $Id$ //-->
+<script type="text/javascript" src="img/tinymce3/tiny_mce.js"> </script>
 <H1>{$layout.pagetitle}</H1>
 <SCRIPT type="text/javascript">
 <!--
@@ -26,136 +27,139 @@
 		newcell1.innerHTML = '<IMG src="img/phone.gif" alt="">';
 		newcell2.style.width = '99%';
 		newcell2.style.whiteSpace = 'nowrap';
-		newcell2.innerHTML = '<INPUT TYPE="text" size="15" value="" name="customeradd[contacts][' + nr + '][phone]"'
+		newcell2.innerHTML = '<INPUT type="text" size="15" value="" name="customeradd[contacts][' + nr + '][phone]"'
 				+ ' onmouseover="popup(\'{trans("Enter contact phone")}\')" onmouseout="pophide()">'
-			+ '<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_MOBILE}" ID="chkmobile' + nr + '"'
+			+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_MOBILE}" ID="chkmobile' + nr + '"'
 				+ ' name="customeradd[contacts][' + nr + '][type][]"><label for="chkmobile' + nr + '">{trans("mobile")}</label>'
-			+ '<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_FAX}" ID="chkfax' + nr + '"'
+			+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_FAX}" ID="chkfax' + nr + '"'
 				+ ' name="customeradd[contacts][' + nr + '][type][]"><label for="chkfax' + nr + '">{trans("fax")}</label>'
-			+ '<BR><INPUT TYPE="text" size="38" value="" name="customeradd[contacts][' + nr + '][name]"'
+			+ '<BR><INPUT type="text" size="38" value="" name="customeradd[contacts][' + nr + '][name]"'
 				+ ' onmouseover="popup(\'{trans("Enter contact name/description (optional)")}\')" onmouseout="pophide()">';
 		contactscountelem.value = parseInt(nr) + 1;
 	}
 //-->
 </SCRIPT>
-<P>
 <FORM name="customeradd" id="customeradd" method="POST" action="?m=customeradd">
+<p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
+</p>
 <TABLE class="lmsbox">
-    <THEAD>
+	<THEAD>
 	<TR>
-		<TD width="100%" colspan="2">
+		<TD style="width: 100%;" colspan="2">
 			<TABLE>
 				<TR>
-					<TD>
-						<B>{trans("Name/Surname:")}</B>
+					<TD class="bold">
+						{trans("Name/Surname:")}
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
-						<INPUT TYPE="TEXT" NAME="customeradd[lastname]" VALUE="{$customeradd.lastname}" SIZE="50" {tip text="Enter customer last name or company name" trigger="lastname" bold=1}>
+						<INPUT type="text" name="customeradd[lastname]" value="{$customeradd.lastname}" SIZE="50" {tip text="Enter customer last name or company name" trigger="lastname" bold=1}>
 					</TD>
 				</TR>
 				<TR>
-					<TD>
-						<B>{trans("First name:")}</B>
+					<TD class="bold">
+						{trans("First name:")}
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
-						<INPUT TYPE="TEXT" NAME="customeradd[name]" VALUE="{$customeradd.name}" SIZE="50" {tip text="Enter customer name" trigger="name" bold=1}>
+						<INPUT type="text" name="customeradd[name]" value="{$customeradd.name}" SIZE="50" {tip text="Enter customer name" trigger="name" bold=1}>
 					</TD>
 				</TR>
 			</TABLE>
 		</TD>
 	</TR>
-    </THEAD>
-    <TBODY>
+	</THEAD>
+	<TBODY>
 	<TR>
-		<TD width="50%" class="container"  style="vertical-align: top;">
-			<TABLE cellpadding="3" WIDTH="100%">
+		<TD style="width: 50%;" class="container valign-top">
+			<TABLE cellpadding="3" width="100%">
 				<TR>
-					<TD width="1%">
+					<TD style="width: 1%;">
 						{if $customeradd.status eq "3" || !$customeradd.status}<img src="img/customer.gif" alt="">{/if}
 						{if $customeradd.status eq "2"}<img src="img/wait.gif" alt="">{/if}
 						{if $customeradd.status eq "1"}<img src="img/unk.gif" alt="">{/if}
 					</TD>
-					<TD width="99%">
+					<TD style="width: 99%;">
 						<SELECT size="1" name="customeradd[status]" {tip text="Select customer state" trigger="status"}>
-							<OPTION VALUE="3"{if $customeradd.status eq "3"} SELECTED{/if}>{trans("connected<!singular>")}</OPTION>
-							<OPTION VALUE="2"{if $customeradd.status eq "2"} SELECTED{/if}>{trans("waiting")}</option>
-							<OPTION VALUE="1"{if $customeradd.status eq "1"} SELECTED{/if}>{trans("interested<!singular>")}</OPTION>
+							<OPTION value="3"{if $customeradd.status eq "3"} SELECTED{/if}>{trans("connected<!singular>")}</OPTION>
+							<OPTION value="2"{if $customeradd.status eq "2"} SELECTED{/if}>{trans("waiting")}</option>
+							<OPTION value="1"{if $customeradd.status eq "1"} SELECTED{/if}>{trans("interested<!singular>")}</OPTION>
 						</SELECT>
 					</TD>
 				</TR>
 				{if $divisions}
 				<TR>
-					<TD width="1%">
+					<TD style="width: 1%;">
 						<img src="img/division.gif" alt="">
 					</TD>
-					<TD width="99%">
+					<TD style="width: 99%;">
 						<SELECT size="1" name="customeradd[divisionid]" {tip text="Select division" trigger="divisionid"}>
 							{foreach from=$divisions item=item}{if !$item.status}
-							<OPTION VALUE="{$item.id}"{if $customeradd.divisionid == $item.id} SELECTED{/if}>{$item.shortname}</OPTION>
+							<OPTION value="{$item.id}"{if $customeradd.divisionid == $item.id} SELECTED{/if}>{$item.shortname}</OPTION>
 							{/if}{/foreach}
 						</SELECT>
 					</TD>
 				</TR>
 				{/if}
 				<TR>
-					<TD WIDTH="1%">
-						<IMG SRC="img/folder.gif" ALT="">
+					<TD style="width: 1%;">
+						<IMG SRC="img/folder.gif" alt="">
 					</TD>
-					<TD WIDTH="99%" COLSPAN="2" NOWRAP>
-						<INPUT TYPE="radio" NAME="customeradd[type]" VALUE="0" ID="private" {tip text="Select legal personality type" trigger="type"}{if $customeradd.type == $smarty.const.CTYPES_PRIVATE} CHECKED{/if}><label for="private">{assign var='type' value=$smarty.const.CTYPES_PRIVATE}{$_CTYPES.$type}</label>
-						<INPUT TYPE="radio" NAME="customeradd[type]" VALUE="1" ID="company" {tip text="Select legal personality type" trigger="type"}{if $customeradd.type == $smarty.const.CTYPES_COMPANY} CHECKED{/if}><label for="company">{assign var='type' value=$smarty.const.CTYPES_COMPANY}{$_CTYPES.$type}</label>
+					<TD style="width: 99%;" class="nobr" colspan="2">
+						<INPUT type="radio" name="customeradd[type]" value="0" id="private" {tip text="Select legal personality type" trigger="type"}{if $customeradd.type == $smarty.const.CTYPES_PRIVATE} CHECKED{/if}><label for="private">{assign var='type' value=$smarty.const.CTYPES_PRIVATE}{$_CTYPES.$type}</label>
+						<INPUT type="radio" name="customeradd[type]" value="1" id="company" {tip text="Select legal personality type" trigger="type"}{if $customeradd.type == $smarty.const.CTYPES_COMPANY} CHECKED{/if}><label for="company">{assign var='type' value=$smarty.const.CTYPES_COMPANY}{$_CTYPES.$type}</label>
 					</TD>
 				</TR>
 				<TR>
-					<TD width="1%" style="vertical-align: top">
+					<TD style="width: 1%;" class="valign-top">
 						<IMG src="img/home.gif" alt="">
 					</TD>
-					<TD width="99%" nowrap>
+					<TD style="width: 99%;" class="nobr">
 						<TABLE width="100%" cellpadding="1">
-						    <TR>
-							<TD width="1%" NOWRAP>{trans("Address:")}</TD>
-							<TD width="99%"><INPUT TYPE="text" size="30" value="{$customeradd.address}" name="customeradd[address]" id="address" {tip text="Enter customer address" trigger="address"}></TD>
-						    </TR>
-						    <TR>
-							<TD width="1%" NOWRAP>{trans("City:")}</TD>
-							<TD width="99%"><INPUT TYPE="TEXT" SIZE="30" VALUE="{$customeradd.city}" NAME="customeradd[city]" id="city" {tip text="Enter customer city" trigger="city"}></TD>
-						    </TR>
-						    <TR>
-							<TD width="1%" NOWRAP>{trans("Zip:")}</TD>
-							<TD width="99%"><INPUT TYPE="text" SIZE="10" VALUE="{$customeradd.zip}" NAME="customeradd[zip]" id="zip" {tip text="Enter zip code" trigger="zip"}></TD>
-							{if $customeradd.zipwarning}
-							<INPUT TYPE="HIDDEN" NAME="customeradd[zipwarning]" VALUE="1">
+							<TR>
+								<TD style="width: 1%;" class="nobr">{trans("Address:")}</TD>
+								<TD style="width: 99%;"><INPUT type="text" size="30" value="{$customeradd.address}" name="customeradd[address]" id="address" {tip text="Enter customer address" trigger="address"}></TD>
+							</TR>
+							<TR>
+								<TD style="width: 1%;" class="nobr">{trans("City:")}</TD>
+								<TD style="width: 99%;"><INPUT type="text" SIZE="30" value="{$customeradd.city}" name="customeradd[city]" id="city" {tip text="Enter customer city" trigger="city"}></TD>
+							</TR>
+							<TR>
+								<TD style="width: 1%;" class="nobr">{trans("Zip:")}</TD>
+								<TD style="width: 99%;">
+									<INPUT type="text" SIZE="10" value="{$customeradd.zip}" name="customeradd[zip]" id="zip" {tip text="Enter zip code" trigger="zip"}>
+									{if $customeradd.zipwarning}
+									<INPUT type="hidden" name="customeradd[zipwarning]" value="1">
+									{/if}
+								</TD>
+							</TR>
+							{if $cstateslist}
+							<TR>
+								<TD style="width: 1%;" class="nobr">{trans("State:")}</TD>
+								<TD style="width: 99%;">
+									<SELECT name="customeradd[stateid]" {tip text="Select country state (optional)" trigger="stateid"}>
+										<OPTION value="0"></OPTION>
+										{foreach from=$cstateslist item=item key=key}
+										<OPTION value="{$key}"{if $key==$customeradd.stateid} SELECTED{/if}>{$item.name}</OPTION>
+										{/foreach}
+									</SELECT>
+								</TD>
+							</TR>
 							{/if}
-						    </TR>
-						{if $cstateslist}
-						    <TR>
-							<TD width="1%" NOWRAP>{trans("State:")}</TD>
-							<TD width="99%">
-							    <SELECT NAME="customeradd[stateid]" {tip text="Select country state (optional)" trigger="stateid"}>
-								<OPTION value="0"></OPTION>
-								{foreach from=$cstateslist item=item key=key}
-								<OPTION value="{$key}"{if $key==$customeradd.stateid} SELECTED{/if}>{$item.name}</OPTION>
-								{/foreach}
-							    </SELECT>
-							</TD>
-						    </TR>
-						{/if}
-						{if $countrieslist}
-						    <TR>
-						        <TD width="1%" NOWRAP>{trans("Country:")}</TD>
-						        <TD width="99%">
-						            <SELECT NAME="customeradd[countryid]" {tip text="Select country (optional)" trigger="countryid"}>
-						                <OPTION value="0"></OPTION>
-								{foreach from=$countrieslist item=item key=key}
-						                <OPTION value="{$key}"{if $key==$customeradd.countryid} SELECTED{/if}>{t}{$item.name}{/t}</OPTION>
-								{/foreach}
-						            </SELECT>
-							    </TD>
-						    </TR>
-						{/if}
+							{if $countrieslist}
+							<TR>
+								<TD style="width: 1%;" class="nobr">{trans("Country:")}</TD>
+								<TD style="width: 99%;">
+									<SELECT name="customeradd[countryid]" {tip text="Select country (optional)" trigger="countryid"}>
+										<OPTION value="0"></OPTION>
+										{foreach from=$countrieslist item=item key=key}
+										<OPTION value="{$key}"{if $key==$customeradd.countryid} SELECTED{/if}>{t}{$item.name}{/t}</OPTION>
+										{/foreach}
+									</SELECT>
+								</TD>
+							</TR>
+							{/if}
 						</TABLE>
 						<script type="text/javascript">
 							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('address'),'?m=customeradd&ajax=1&mode=address&what=',0);
@@ -165,56 +169,58 @@
 					</TD>
 				</TR>
 				<TR>
-					<TD width="1%" style="vertical-align: top">
+					<TD style="width: 1%;" class="valign-top">
 						<IMG src="img/post.gif" alt="">
 					</TD>
-					<TD width="99%" nowrap>
+					<TD style="width: 99%;" class="nobr">
 						<TABLE width="100%" cellpadding="1">
-						    <TR>
-							<TD width="1%" NOWRAP>{trans("Name:")}</TD>
-							<TD width="99%"><INPUT TYPE="text" size="30" value="{$customeradd.post_name}" name="customeradd[post_name]" id="post_name" {tip text="Enter service name (optional)" trigger="post_name"}></TD>
-						    </TR>
-						    <TR>
-							<TD width="1%" NOWRAP>{trans("Address:")}</TD>
-							<TD width="99%"><INPUT TYPE="text" size="30" value="{$customeradd.post_address}" name="customeradd[post_address]" id="post_address" {tip text="Enter service address (optional)" trigger="post_address"}></TD>
-						    </TR>
-						    <TR>
-							<TD width="1%" NOWRAP>{trans("City:")}</TD>
-							<TD width="99%"><INPUT TYPE="TEXT" SIZE="30" VALUE="{$customeradd.post_city}" NAME="customeradd[post_city]" id="post_city" {tip text="Enter city of service address (optional)" trigger="post_city"}></TD>
-						    </TR>
-						    <TR>
-							<TD width="1%" NOWRAP>{trans("Zip:")}</TD>
-							<TD width="99%"><INPUT TYPE="text" SIZE="10" VALUE="{$customeradd.post_zip}" NAME="customeradd[post_zip]" id="post_zip" {tip text="Enter zip code of service address (optional)" trigger="post_zip"}></TD>
-							{if $customeradd.post_zipwarning}
-							<INPUT TYPE="HIDDEN" NAME="customeradd[post_zipwarning]" VALUE="1">
+							<TR>
+								<TD style="width: 1%;" class="nobr">{trans("Name:")}</TD>
+								<TD style="width: 99%;"><INPUT type="text" size="30" value="{$customeradd.post_name}" name="customeradd[post_name]" id="post_name" {tip text="Enter service name (optional)" trigger="post_name"}></TD>
+							</TR>
+							<TR>
+								<TD style="width: 1%;" class="nobr">{trans("Address:")}</TD>
+								<TD style="width: 99%;"><INPUT type="text" size="30" value="{$customeradd.post_address}" name="customeradd[post_address]" id="post_address" {tip text="Enter service address (optional)" trigger="post_address"}></TD>
+							</TR>
+							<TR>
+								<TD style="width: 1%;" class="nobr">{trans("City:")}</TD>
+								<TD style="width: 99%;"><INPUT type="text" SIZE="30" value="{$customeradd.post_city}" name="customeradd[post_city]" id="post_city" {tip text="Enter city of service address (optional)" trigger="post_city"}></TD>
+							</TR>
+							<TR>
+								<TD style="width: 1%;" class="nobr">{trans("Zip:")}</TD>
+								<TD style="width: 99%;">
+									<INPUT type="text" SIZE="10" value="{$customeradd.post_zip}" name="customeradd[post_zip]" id="post_zip" {tip text="Enter zip code of service address (optional)" trigger="post_zip"}>
+									{if $customeradd.post_zipwarning}
+									<INPUT type="hidden" name="customeradd[post_zipwarning]" value="1">
+									{/if}
+								</TD>
+							</TR>
+							{if $cstateslist}
+							<TR>
+								<TD style="width: 1%;" class="nobr">{trans("State:")}</TD>
+								<TD style="width: 99%;">
+									<SELECT name="customeradd[post_stateid]" {tip text="Select country state (optional)" trigger="post_stateid"}>
+										<OPTION value="0"></OPTION>
+										{foreach from=$cstateslist item=item key=key}
+										<OPTION value="{$key}"{if $key==$customeradd.post_stateid} SELECTED{/if}>{$item.name}</OPTION>
+										{/foreach}
+									</SELECT>
+								</TD>
+							</TR>
 							{/if}
-						    </TR>
-						{if $cstateslist}
-						    <TR>
-							<TD width="1%" NOWRAP>{trans("State:")}</TD>
-							<TD width="99%">
-							    <SELECT NAME="customeradd[post_stateid]" {tip text="Select country state (optional)" trigger="post_stateid"}>
-								<OPTION value="0"></OPTION>
-								{foreach from=$cstateslist item=item key=key}
-								<OPTION value="{$key}"{if $key==$customeradd.post_stateid} SELECTED{/if}>{$item.name}</OPTION>
-								{/foreach}
-							    </SELECT>
-							</TD>
-						    </TR>
-						{/if}
-						{if $countrieslist}
-						    <TR>
-						        <TD width="1%" NOWRAP>{trans("Country:")}</TD>
-						        <TD width="99%">
-						            <SELECT NAME="customeradd[post_countryid]" {tip text="Select country (optional)" trigger="post_countryid"}>
-						                <OPTION value="0"></OPTION>
-								{foreach from=$countrieslist item=item key=key}
-						                <OPTION value="{$key}"{if $key==$customeradd.post_countryid} SELECTED{/if}>{t}{$item.name}{/t}</OPTION>
-								{/foreach}
-						            </SELECT>
-							    </TD>
-						    </TR>
-						{/if}
+							{if $countrieslist}
+							<TR>
+								<TD style="width: 1%;" class="nobr">{trans("Country:")}</TD>
+								<TD style="width: 99%;">
+									<SELECT name="customeradd[post_countryid]" {tip text="Select country (optional)" trigger="post_countryid"}>
+										<OPTION value="0"></OPTION>
+										{foreach from=$countrieslist item=item key=key}
+										<OPTION value="{$key}"{if $key==$customeradd.post_countryid} SELECTED{/if}>{t}{$item.name}{/t}</OPTION>
+										{/foreach}
+									</SELECT>
+								</TD>
+							</TR>
+							{/if}
 						</TABLE>
 						<script type="text/javascript">
 							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('post_address'),'?m=customeradd&ajax=1&mode=address&what=',0);
@@ -224,246 +230,265 @@
 					</TD>
 				</TR>
 				{foreach from=$customeradd.contacts item=item key=key}
-				<TR ID="contact{$key}">
-					<TD width="1%" style="vertical-align: top">
+				<TR id="contact{$key}">
+					<TD style="width: 1%;" class="valign-top">
 						<IMG src="img/phone.gif" alt="">
 					</TD>
-					<TD width="99%" NOWRAP>
-						<INPUT TYPE="text" size="15" value="{$item.phone}" name="customeradd[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}>
-						<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_MOBILE}" ID="chkmobile{$key}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & CONTACT_MOBILE)} checked{/if}><label for="chkmobile{$key}">{trans("mobile")}</label>
-						<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_FAX}" ID="chkfax{$key}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & CONTACT_FAX)} checked{/if}><label for="chkfax{$key}">{trans("fax")}</label>
+					<TD style="width: 99%;" class="nobr">
+						<INPUT type="text" size="15" value="{$item.phone}" name="customeradd[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}>
+						<INPUT type="checkbox" value="{$smarty.const.CONTACT_MOBILE}" id="chkmobile{$key}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & CONTACT_MOBILE)} checked{/if}><label for="chkmobile{$key}">{trans("mobile")}</label>
+						<INPUT type="checkbox" value="{$smarty.const.CONTACT_FAX}" id="chkfax{$key}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & CONTACT_FAX)} checked{/if}><label for="chkfax{$key}">{trans("fax")}</label>
 						<BR>
-						<INPUT TYPE="text" size="38" value="{$item.name}" name="customeradd[contacts][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
+						<INPUT type="text" size="38" value="{$item.name}" name="customeradd[contacts][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
 					</TD>
 				</TR>
 				{/foreach}
 				<TR>
-					<TD width="1%"></TD>
-					<TD width="99%" NOWRAP>
-						<INPUT TYPE="HIDDEN" ID="contactscount" VALUE="{$item@total}">
+					<TD style="width: 1%;"></TD>
+					<TD style="width: 99%;" class="nobr">
+						<INPUT type="hidden" id="contactscount" value="{$item@total}">
 						<A href="javascript: newcontact()">{trans("Add contact field")} &raquo;&raquo;&raquo;</A>
 					</TD>
 				</TR>
 				<TR>
-					<TD WIDTH="1%">
+					<TD style="width: 1%;">
 						<IMG SRC="img/gg.gif" alt="Gadu-Gadu">
 					</TD>
-					<TD WIDTH="99%">
-		    			{assign var=gg value=$smarty.const.IM_GG}
-						<INPUT TYPE="TEXT" NAME="customeradd[uid][{$gg}]" VALUE="{if $customeradd.uid.$gg}{$customeradd.uid.$gg}{/if}" SIZE="20" {tip text="Enter Gadu-Gadu ID (optional)" trigger="gg"}>
+					<TD style="width: 99%;">
+						{assign var=gg value=$smarty.const.IM_GG}
+						<INPUT type="text" name="customeradd[uid][{$gg}]" value="{if $customeradd.uid.$gg}{$customeradd.uid.$gg}{/if}" SIZE="20" {tip text="Enter Gadu-Gadu ID (optional)" trigger="gg"}>
 					</TD>
 				</TR>
-    				<TR>
-					<TD WIDTH="1%">
+				<TR>
+					<TD style="width: 1%;">
 						<IMG src="img/yim.gif" alt="Yahoo">
 					</TD>
-					<TD WIDTH="99%">
-				    	{assign var=yahoo value=$smarty.const.IM_YAHOO}
-						<INPUT TYPE="TEXT" NAME="customeradd[uid][{$yahoo}]" VALUE="{if $customeradd.uid.$yahoo}{$customeradd.uid.$yahoo}{/if}" SIZE="20" {tip text="Enter Yahoo Messenger ID (optional)" trigger="yahoo"}>
+					<TD style="width: 99%;">
+					{assign var=yahoo value=$smarty.const.IM_YAHOO}
+						<INPUT type="text" name="customeradd[uid][{$yahoo}]" value="{if $customeradd.uid.$yahoo}{$customeradd.uid.$yahoo}{/if}" SIZE="20" {tip text="Enter Yahoo Messenger ID (optional)" trigger="yahoo"}>
 					</TD>
 				</TR>
-    				<TR>
-					<TD WIDTH="1%">
+				<TR>
+					<TD style="width: 1%;">
 						<IMG src="img/skype.gif" alt="Skype">
 					</TD>
-					<TD WIDTH="99%">
+					<TD style="width: 99%;">
 					{assign var=skype value=$smarty.const.IM_SKYPE}
-						<INPUT TYPE="TEXT" NAME="customeradd[uid][{$skype}]" VALUE="{if $customeradd.uid.$skype}{$customeradd.uid.$skype}{/if}" SIZE="20" {tip text="Enter Skype ID (optional)" trigger="skype"}>
+						<INPUT type="text" name="customeradd[uid][{$skype}]" value="{if $customeradd.uid.$skype}{$customeradd.uid.$skype}{/if}" SIZE="20" {tip text="Enter Skype ID (optional)" trigger="skype"}>
 					</TD>
 				</TR>
 				<TR>
-					<TD width="1%">
+					<TD style="width: 1%;">
 						<IMG src="img/mail.gif" alt="">
 					</TD>
-					<TD width="99%">
-						<INPUT TYPE="text" size="38" value="{$customeradd.email}" name="customeradd[email]" {tip text="Enter customer e-mail address (optional)" trigger="email"}>
+					<TD style="width: 99%;">
+						<INPUT type="text" size="38" value="{$customeradd.email}" name="customeradd[email]" {tip text="Enter customer e-mail address (optional)" trigger="email"}>
 					</TD>
 				</TR>
 				<TR>
-					<TD width="1%">
+					<TD style="width: 1%;">
 						<IMG src="img/pin.gif" alt="">
 					</TD>
-					<TD width="99%">
-						<INPUT TYPE="text" size="6" value="{if $customeradd.pin}{$customeradd.pin}{/if}" name="customeradd[pin]" {tip text="Enter 4 to 6 digits PIN number (optional)" trigger="pin"}>&nbsp;<A href="javascript: randomize()" {tip text="Generate random PIN"}>&raquo;&raquo;&raquo;</A>
+					<TD style="width: 99%;">
+						<INPUT type="text" size="6" value="{if $customeradd.pin}{$customeradd.pin}{/if}" name="customeradd[pin]" {tip text="Enter 4 to 6 digits PIN number (optional)" trigger="pin"}>&nbsp;<A href="javascript: randomize()" {tip text="Generate random PIN"}>&raquo;&raquo;&raquo;</A>
 					</TD>
 				</TR>
 				<TR>
-					<TD width="1%" style="vertical-align: top">
+					<TD style="width: 1%;" class="valign-top">
 						<IMG src="img/serialnumber.gif" alt="">
 					</TD>
-					<TD width="99%">
-					    <TABLE WIDTH="100%">
-					        <TR>
-					            <TD width="1%" NOWRAP>{trans("ICN")}:</TD>
-					            <TD width="99%">
-						<INPUT TYPE="text" size="30" value="{$customeradd.icn}" name="customeradd[icn]" {tip text="Enter Identity Card Number (optional)" trigger="icn"}>
-					            </TD>
-				            </TR>
-				            <TR>
-					            <TD width="1%" NOWRAP>{trans("SSN")}:</TD>
-					            <TD width="99%">
-						<INPUT TYPE="text" size="30" value="{$customeradd.ssn}" name="customeradd[ssn]" {tip text="Enter customer Social Security Number (optional)" trigger="ssn"}>
-						{if $customeradd.ssnwarning}
-						<INPUT TYPE="HIDDEN" NAME="customeradd[ssnwarning]" VALUE="1">
-						{/if}
-					            </TD>
-				            </TR>
-				            <TR>
-					            <TD width="1%" NOWRAP>{trans("TEN")}:</TD>
-					            <TD width="99%">
-						<INPUT TYPE="text" size="30" value="{$customeradd.ten}" name="customeradd[ten]" {tip text="Enter customer Tax Exempt Number (optional)" trigger="ten"}>
-						{if $customeradd.tenwarning}
-						<INPUT TYPE="HIDDEN" NAME="customeradd[tenwarning]" VALUE="1">
-						{/if}
-					            </TD>
-				            </TR>
-				            <TR>
-					            <TD width="1%" NOWRAP>{trans("REGON")}:</TD>
-					            <TD width="99%">
-						<INPUT TYPE="text" size="30" value="{$customeradd.regon}" name="customeradd[regon]" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
-					            </TD>
-				            </TR>
-				            <TR>
-					            <TD width="1%" NOWRAP>{trans("RBE")}:</TD>
-					            <TD width="99%">
-						<INPUT TYPE="text" size="30" value="{$customeradd.rbe}" name="customeradd[rbe]" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
-					            </TD>
-				            </TR>
-				        </TABLE>
+					<TD style="width: 99%;">
+						<TABLE width="100%">
+							<TR>
+								<TD style="width: 1%;" class="nobr">{trans("ICN")}:</TD>
+								<TD style="width: 99%;">
+									<INPUT type="text" size="30" value="{$customeradd.icn}" name="customeradd[icn]" {tip text="Enter Identity Card Number (optional)" trigger="icn"}>
+								</TD>
+							</TR>
+							<TR>
+								<TD style="width: 1%;" class="nobr">{trans("SSN")}:</TD>
+								<TD style="width: 99%;">
+									<INPUT type="text" size="30" value="{$customeradd.ssn}" name="customeradd[ssn]" {tip text="Enter customer Social Security Number (optional)" trigger="ssn"}>
+									{if $customeradd.ssnwarning}
+									<INPUT type="hidden" name="customeradd[ssnwarning]" value="1">
+									{/if}
+								</TD>
+							</TR>
+							<TR>
+								<TD style="width: 1%;" class="nobr">{trans("TEN")}:</TD>
+								<TD style="width: 99%;">
+									<INPUT type="text" size="30" value="{$customeradd.ten}" name="customeradd[ten]" {tip text="Enter customer Tax Exempt Number (optional)" trigger="ten"}>
+									{if $customeradd.tenwarning}
+									<INPUT type="hidden" name="customeradd[tenwarning]" value="1">
+									{/if}
+								</TD>
+							</TR>
+							<TR>
+								<TD style="width: 1%;" class="nobr">{trans("REGON")}:</TD>
+								<TD style="width: 99%;">
+									<INPUT type="text" size="30" value="{$customeradd.regon}" name="customeradd[regon]" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
+								</TD>
+							</TR>
+							<TR>
+								<TD style="width: 1%;" class="nobr">{trans("RBE")}:</TD>
+								<TD style="width: 99%;">
+									<INPUT type="text" size="30" value="{$customeradd.rbe}" name="customeradd[rbe]" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
+								</TD>
+							</TR>
+						</TABLE>
 					</TD>
 				</TR>
 				<TR>
-					<TD width="1%" style="vertical-align: top">
+					<TD style="width: 1%;" class="valign-top">
 						<IMG src="img/options.gif" alt="">
 					</TD>
-					<TD width="99%">
-					    <TABLE>
-					        <TR>
-					            <TD>
-						{trans("Deadline:")}
-						        </TD>
-						        <TD>
-						<SELECT name="customeradd[paytime]" {tip text="Select default deadline in days" trigger="paytime"}>
-							<OPTION value="-1"{if !isset($customeradd.paytime) || $customeradd.paytime==-1} selected{/if}>- {trans("default")} -</OPTION>
-							<OPTION value="0"{if isset($customeradd.paytime) && $customeradd.paytime==0} selected{/if}>0</OPTION>
-							<OPTION value="7"{if $customeradd.paytime==7} selected{/if}>7</OPTION>
-							<OPTION value="10"{if $customeradd.paytime==10} selected{/if}>10</OPTION>
-							<OPTION value="14"{if $customeradd.paytime==14} selected{/if}>14</OPTION>
-							<OPTION value="21"{if $customeradd.paytime==21} selected{/if}>21</OPTION>
-							<OPTION value="30"{if $customeradd.paytime==30} selected{/if}>30</OPTION>
-						</SELECT>
-					            </TD>
-				            </TR>
-				            <TR>
-					            <TD>
-						{trans("Payment type:")}
-						        </TD>
-						        <TD>
-						<SELECT name="customeradd[paytype]" {tip text="Select default invoices payment type" trigger="paytype"}>
-							<OPTION value=""{if !$customeradd.paytype} selected{/if}>- {trans("default")} -</OPTION>
-							{foreach from=$_PAYTYPES item=item key=key}
-							<OPTION value="{$key}"{if $customeradd.paytype==$key} selected{/if}>{$item}</OPTION>
-							{/foreach}
-						</SELECT>
-					            </TD>
-				            </TR>
-				            <TR>
-				                <TD>
-						{trans("Cutoff suspending:")}
-						        </TD>
-						        <TD>
-						<SELECT name="customeradd[cutoffstop]" {tip text="Select days number of cutoff suspending (optional)" trigger="cutoffstop"}>
-						    <OPTION value="0"{if !$customeradd.cutoffstop} selected{/if}>0</OPTION>
-						    <OPTION value="1"{if $customeradd.cutoffstop==1} selected{/if}>1</OPTION>
-						    <OPTION value="2"{if $customeradd.cutoffstop==2} selected{/if}>2</OPTION>
-						    <OPTION value="3"{if $customeradd.cutoffstop==3} selected{/if}>3</OPTION>
-						    <OPTION value="4"{if $customeradd.cutoffstop==4} selected{/if}>4</OPTION>
-						    <OPTION value="5"{if $customeradd.cutoffstop==5} selected{/if}>5</OPTION>
-						    <OPTION value="6"{if $customeradd.cutoffstop==6} selected{/if}>6</OPTION>
-						    <OPTION value="7"{if $customeradd.cutoffstop==7} selected{/if}>7</OPTION>
-						    <OPTION value="14"{if $customeradd.cutoffstop==14} selected{/if}>14</OPTION>
-						    <OPTION value="21"{if $customeradd.cutoffstop==21} selected{/if}>21</OPTION>
-						    <OPTION value="30"{if $customeradd.cutoffstop==30} selected{/if}>30</OPTION>
-						</SELECT>
-					            </TD>
-				            </TR>
-				        </TABLE>
-				    </TD>
+					<TD style="width: 99%;">
+						<TABLE>
+							<TR>
+								<TD>
+									{trans("Deadline:")}
+								</TD>
+								<TD>
+									<SELECT name="customeradd[paytime]" {tip text="Select default deadline in days" trigger="paytime"}>
+										<OPTION value="-1"{if !isset($customeradd.paytime) || $customeradd.paytime==-1} selected{/if}>- {trans("default")} -</OPTION>
+										<OPTION value="0"{if isset($customeradd.paytime) && $customeradd.paytime==0} selected{/if}>0</OPTION>
+										<OPTION value="7"{if $customeradd.paytime==7} selected{/if}>7</OPTION>
+										<OPTION value="10"{if $customeradd.paytime==10} selected{/if}>10</OPTION>
+										<OPTION value="14"{if $customeradd.paytime==14} selected{/if}>14</OPTION>
+										<OPTION value="21"{if $customeradd.paytime==21} selected{/if}>21</OPTION>
+										<OPTION value="30"{if $customeradd.paytime==30} selected{/if}>30</OPTION>
+									</SELECT>
+								</TD>
+							</TR>
+							<TR>
+								<TD>
+									{trans("Payment type:")}
+								</TD>
+								<TD>
+									<SELECT name="customeradd[paytype]" {tip text="Select default invoices payment type" trigger="paytype"}>
+										<OPTION value=""{if !$customeradd.paytype} selected{/if}>- {trans("default")} -</OPTION>
+										{foreach from=$_PAYTYPES item=item key=key}
+										<OPTION value="{$key}"{if $customeradd.paytype==$key} selected{/if}>{$item}</OPTION>
+										{/foreach}
+									</SELECT>
+								</TD>
+							</TR>
+							<TR>
+								<TD>
+									{trans("Cutoff suspending:")}
+								</TD>
+								<TD>
+									<SELECT name="customeradd[cutoffstop]" {tip text="Select days number of cutoff suspending (optional)" trigger="cutoffstop"}>
+										<OPTION value="0"{if !$customeradd.cutoffstop} selected{/if}>0</OPTION>
+										<OPTION value="1"{if $customeradd.cutoffstop==1} selected{/if}>1</OPTION>
+										<OPTION value="2"{if $customeradd.cutoffstop==2} selected{/if}>2</OPTION>
+										<OPTION value="3"{if $customeradd.cutoffstop==3} selected{/if}>3</OPTION>
+										<OPTION value="4"{if $customeradd.cutoffstop==4} selected{/if}>4</OPTION>
+										<OPTION value="5"{if $customeradd.cutoffstop==5} selected{/if}>5</OPTION>
+										<OPTION value="6"{if $customeradd.cutoffstop==6} selected{/if}>6</OPTION>
+										<OPTION value="7"{if $customeradd.cutoffstop==7} selected{/if}>7</OPTION>
+										<OPTION value="14"{if $customeradd.cutoffstop==14} selected{/if}>14</OPTION>
+										<OPTION value="21"{if $customeradd.cutoffstop==21} selected{/if}>21</OPTION>
+										<OPTION value="30"{if $customeradd.cutoffstop==30} selected{/if}>30</OPTION>
+									</SELECT>
+								</TD>
+							</TR>
+						</TABLE>
+					</TD>
+				</TR>
 				<TR>
-					<TD width="1%" style="vertical-align: top">
+					<TD style="width: 1%'" class="valign-top">
 						<IMG src="img/options.gif" alt="">
 					</TD>
-					<TD width="99%">
-                        <TABLE cellpadding="0">
-                            <TR>
-                                <TD>
-            						<label for="chkconsent">{trans("Consent to personal data processing:")}</label>
-                                </TD>
-                                <TD>
-			            			<INPUT TYPE="checkbox" NAME="customeradd[consentdate]" VALUE="{$smarty.now}" ID="chkconsent"{if $customeradd.consentdate} checked{/if}>
-                                </TD>
-                            </TR>
-                            <TR>
-					            <TD>
-				            		<label for="chkeinvoice">{trans("Consent to electronic invoices:")}</label>
-                                </TD>
-                                <TD>
-                					<INPUT TYPE="checkbox" NAME="customeradd[einvoice]" VALUE="1" ID="chkeinvoice"{if $customeradd.einvoice} checked{/if}>
-					            </TD>
-				            </TR>
-				            <TR>
-					            <TD>
-						            <label for="chkinvoicenotice">{trans("Consent to invoices delivery via e-mail:")}</label>
-                                </TD>
-                                <TD>
-			            			<INPUT TYPE="checkbox" NAME="customeradd[invoicenotice]" VALUE="1" ID="chkinvoicenotice"{if $customeradd.invoicenotice} checked{/if}>
-					            </TD>
-				            </TR>
-				            <TR>
-					            <TD>
-            						<label for="chkmailingnotice">{trans("Consent to messages delivery via e-mail or sms:")}</label>
-                                </TD>
-                                <TD>
-   						            <INPUT TYPE="checkbox" NAME="customeradd[mailingnotice]" VALUE="1" ID="chkmailingnotice"{if $customeradd.mailingnotice} checked{/if}>
-            					</TD>
-			            	</TR>
-			            </TABLE>
-			        </TD>
-			    </TR>
+					<TD style="width: 99%'">
+						<TABLE cellpadding="0">
+							<TR>
+								<TD>
+									<label for="chkconsent">{trans("Consent to personal data processing:")}</label>
+								</TD>
+								<TD>
+									<INPUT type="checkbox" name="customeradd[consentdate]" value="{$smarty.now}" id="chkconsent"{if $customeradd.consentdate} checked{/if}>
+								</TD>
+							</TR>
+							<TR>
+								<TD>
+									<label for="chkeinvoice">{trans("Consent to electronic invoices:")}</label>
+								</TD>
+								<TD>
+									<INPUT type="checkbox" name="customeradd[einvoice]" value="1" id="chkeinvoice"{if $customeradd.einvoice} checked{/if}>
+								</TD>
+							</TR>
+							<TR>
+								<TD>
+									<label for="chkinvoicenotice">{trans("Consent to invoices delivery via e-mail:")}</label>
+								</TD>
+								<TD>
+									<INPUT type="checkbox" name="customeradd[invoicenotice]" value="1" id="chkinvoicenotice"{if $customeradd.invoicenotice} checked{/if}>
+								</TD>
+							</TR>
+							<TR>
+								<TD>
+									<label for="chkmailingnotice">{trans("Consent to messages delivery via e-mail or sms:")}</label>
+								</TD>
+								<TD>
+									<INPUT type="checkbox" name="customeradd[mailingnotice]" value="1" id="chkmailingnotice"{if $customeradd.mailingnotice} checked{/if}>
+								</TD>
+							</TR>
+						</TABLE>
+					</TD>
+				</TR>
 			</TABLE>
 		</TD>
-		<TD width="50%" class="container" STYLE="vertical-align: top;">
-			<TABLE WIDTH="100%" CELLPADDING="3">
-		    		<TR>
-			            <TD WIDTH="1%"><IMG src="img/info1.gif" alt=""></TD>
-				    <TD WIDTH="99%"><TEXTAREA rows="10" cols="60" name="customeradd[info]" {tip text="Enter additional information (optional)"}>{$customeradd.info|escape}</TEXTAREA></TD>
-		    		</TR>
+		<TD style="width: 50%;" class="container valign-top">
+			<TABLE width="100%" cellpadding="3">
 				<TR>
-			            <TD WIDTH="1%"><IMG src="img/warningon.gif" alt=""></TD>
-				    <TD WIDTH="99%"><TEXTAREA rows="10" cols="60" name="customeradd[message]" {tip text="Enter notice contents (optional)"}>{$customeradd.message|escape}</TEXTAREA></TD>
-		    		</TR>
+					<TD style="width: 1%;"><IMG src="img/info1.gif" alt=""></TD>
+					<TD style="width: 99%;">
+						<input type="checkbox" id="info_label" onclick="javascript:toggle_visual_editor('info');"{if get_conf('phpui.default_editor') == 'wysiwyg'} checked{/if}>
+						<label for="info_label">{trans("visual editor")}</label><br>
+						<TEXTAREA rows="10" cols="60" name="customeradd[info]" id="info" {tip text="Enter additional information (optional)"}>{$customeradd.info|escape}</TEXTAREA>
+					</TD>
+				</TR>
 				<TR>
-			            <TD WIDTH="1%"><IMG src="img/note.gif" alt=""></TD>
-				    <TD WIDTH="99%"><TEXTAREA rows="10" cols="60" name="customeradd[notes]" {tip text="Enter notes (optional)"}>{$customeradd.notes|escape}</TEXTAREA></TD>
+					<TD style="width: 1%;"><IMG src="img/warningon.gif" alt=""></TD>
+					<TD style="width: 99%;">
+						<input type="checkbox" id="message_label" onclick="javascript:toggle_visual_editor('message');"{if get_conf('phpui.default_editor') == 'wysiwyg'} checked{/if}>
+						<label for="message_label">{trans("visual editor")}</label><br>
+						<TEXTAREA rows="10" cols="60" name="customeradd[message]" id="message" {tip text="Enter notice contents (optional)"}>{$customeradd.message|escape}</TEXTAREA>
+					</TD>
+				</TR>
+				<TR>
+					<TD style="width: 1%;"><IMG src="img/note.gif" alt=""></TD>
+					<TD style="width: 99%;">
+						<input type="checkbox" id="notes_label" onclick="javascript:toggle_visual_editor('notes');"{if get_conf('phpui.default_editor') == 'wysiwyg'} checked{/if}>
+						<label for="notes_label">{trans("visual editor")}</label><br>
+						<TEXTAREA rows="10" cols="60" name="customeradd[notes]" id="notes" {tip text="Enter notes (optional)"}>{$customeradd.notes|escape}</TEXTAREA>
+					</TD>
 				</TR>
 			</TABLE>
 		</TD>
 	</TR>
 	<TR>
-		<TD width="100%" colspan="2" align="right">
-			<A href="javascript:document.customeradd.submit();" ACCESSKEY="S">{trans("Submit")} <img src="img/save.gif" alt=""></A>
+		<TD style="width: 100%;" class="text-right" colspan="2">
+			<A href="javascript:document.customeradd.submit();" accesskey="S">{trans("Submit")} <img src="img/save.gif" alt=""></A>
 			<A href="?m=customerlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A><BR>
 			<INPUT type="checkbox" name="customeradd[reuse]" id="customeradd_reuse" value="ON" {if $customeradd.reuse}checked{/if}><label for="customeradd_reuse"> {trans("Display this form again, when this customer is saved")}</label>
 		</TD>
 	</TR>
-    </TBODY>
+	</TBODY>
 </TABLE>
 </FORM>
-</P>
 <SCRIPT type="text/javascript">
 <!--
 	document.forms['customeradd'].elements['customeradd[lastname]'].focus();
 	if(document.forms['customeradd'].elements['customeradd[pin]'].value == '') randomize();
+
+	tinymce_init('{$_ui_language}');
+	{if get_conf('phpui.default_editor') == 'wysiwyg'}
+	toggle_visual_editor('info');
+	toggle_visual_editor('message');
+	toggle_visual_editor('notes');
+	{/if}
 //-->
 </SCRIPT>
 {include file="footer.html"}
