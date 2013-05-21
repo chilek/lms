@@ -18,109 +18,112 @@
 
 	//-->
 </script>
-<P>
-<FORM NAME="customerassignments" METHOD="POST" ACTION="?m=customergroup&id={$customergroup.id}">
+<br>
+<FORM name="customerassignments" method="POST" action="?m=customergroup&amp;id={$customergroup.id}">
+<p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
-<INPUT TYPE="hidden" NAME="oper" VALUE="1">
-<TABLE WIDTH="100%" CELLPADDING="0">
-    <TR><TD WIDTH="49%" style="vertical-align: top">
-	    <TABLE class="lmsbox">
-                <THEAD>
-		<TR>
-		    <TD WIDTH="100%" NOWRAP>
-			<IMG SRC="img/customer.gif" ALT="">&nbsp;<B>{trans("Group members:")}</B>
-		    </TD>
-		</TR>
-		<TR>
-		    <TD colspan="4" ALIGN="CENTER">
-			    {trans("Network:")}
-			    <SELECT SIZE="1" NAME="customerassignments[membersnetid]" ONCHANGE="javascript:changeMembersNetwork();">
-			    	<OPTION value="0" {if !$membersnetid}SELECTED{/if}>{trans("- all networks -")}</OPTION>
-				{section name=networks loop=$networks}
-				<OPTION value="{$networks[networks].id}" {if $networks[networks].id eq $membersnetid}SELECTED{/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
-				{/section}
-			    </SELECT>&nbsp;
-		    </TD>
-		</TR>
-                </THEAD>
-                <TBODY>
-		<TR>
-		    <TD WIDTH="100%" ALIGN="CENTER">
-		    {if $customergroup.customerscount}
-			<SELECT SIZE="20" NAME="customerassignments[gmcustomerid][]" multiple>
-				{section name=customer loop=$customergroup.customers}
-					<OPTION VALUE="{$customergroup.customers[customer].id}">
-					{$customergroup.customers[customer].customername|truncate:40:"...":true} ({$customergroup.customers[customer].id|string_format:"%04d"})
-					</OPTION>
-				{/section}
-			</SELECT>
-		    {else}
-			<BR>
-			<BR>
-			<B>{trans("This group hasn't got any members.")}</B><BR>
-			<BR>
-			<BR>
-		    {/if}
-		    </TD>
-		</TR>
-		<TR>
-		    <TD WIDTH="100%" ALIGN="RIGHT" NOWRAP>
-			<A HREF="javascript:removeCustomers();">{trans("Delete")} <IMG SRC="img/cancel.gif" ALT=""></A>
-		    </TD>
-		</TR>
-                </TBODY>
-	    </TABLE>
-    </TD>
-    <TD WIDTH="2%">
-    </TD>
-    <TD WIDTH="49%" style="vertical-align: top">
-	    <TABLE class="lmsbox">
-                <THEAD>
-		<TR>
-		    <TD WIDTH="100%" NOWRAP>
-			<IMG SRC="img/customer.gif" ALT="">&nbsp;<B>{trans("Add new member(s):")}</B>
-		    </TD>
-		</TR>
-		<TR>
-		    <TD colspan="4" ALIGN="CENTER">
-			    {trans("Network:")}
-			    <SELECT SIZE="1" NAME="customerassignments[othersnetid]" ONCHANGE="javascript:changeOthersNetwork();">
-			    	<OPTION value="0" {if !$othersnetid}SELECTED{/if}>{trans("- all networks -")}</OPTION>
-				{section name=networks loop=$networks}
-				<OPTION value="{$networks[networks].id}" {if $networks[networks].id eq $othersnetid}SELECTED{/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
-				{/section}
-			    </SELECT>&nbsp;
-		    </TD>
-		</TR>
-                </THEAD>
-                <TBODY>
-		<TR>
-		    <TD WIDTH="100%" ALIGN="CENTER">
-			{if $customerscount}
-			<SELECT SIZE="20" NAME="customerassignments[mcustomerid][]" multiple>
-				{section name=customer loop=$customers}
-					<OPTION VALUE="{$customers[customer].id}">
-					{$customers[customer].customername|truncate:40:"...":true} ({$customers[customer].id|string_format:"%04d"})
-					</OPTION>
-				{/section}
-			</SELECT>
-			{else}
-			<BR>
-			<BR>
-			<B>{trans("All customers are members of this group.")}</B><BR>
-			<BR>
-			<BR>
-			{/if}
-		    </TD>
-		</TR>
-		<TR>
-		    <TD WIDTH="100%" ALIGN="RIGHT" NOWRAP>
-			<A HREF="javascript:document.customerassignments.submit();">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
-		    </TD>
-		</TR>
-                </TBODY>
-	</TABLE>
-    </TD></TR>
+<INPUT type="hidden" name="oper" value="1">
+</p>
+<TABLE width="100%" cellpadding="0">
+	<TR>
+		<TD style="width: 49%;" class="valign-top">
+			<TABLE class="lmsbox">
+				<THEAD>
+				<TR>
+					<TD style="width: 100;" class="bold nobr">
+						<IMG src="img/customer.gif" alt="">&nbsp;{trans("Group members:")}
+					</TD>
+				</TR>
+				<TR>
+					<TD style="width: 100%;" class="text-center">
+						{trans("Network:")}
+						<SELECT size="1" name="customerassignments[membersnetid]" onchange="javascript:changeMembersNetwork();">
+						 	<OPTION value="0" {if !$membersnetid}selected{/if}>{trans("- all networks -")}</OPTION>
+							{section name=networks loop=$networks}
+							<OPTION value="{$networks[networks].id}" {if $networks[networks].id eq $membersnetid}selected{/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
+							{/section}
+						</SELECT>&nbsp;
+					</TD>
+				</TR>
+				</THEAD>
+				<TBODY>
+				<TR>
+					<TD style="width: 100%;" class="text-center">
+						{if $customergroup.customerscount}
+						<SELECT size="20" name="customerassignments[gmcustomerid][]" multiple>
+							{section name=customer loop=$customergroup.customers}
+							<OPTION value="{$customergroup.customers[customer].id}">
+							{$customergroup.customers[customer].customername|truncate:40:"...":true} ({$customergroup.customers[customer].id|string_format:"%04d"})
+							</OPTION>
+							{/section}
+						</SELECT>
+						{else}
+						<BR>
+						<BR>
+						<span class="bold">{trans("This group hasn't got any members.")}</span><BR>
+						<BR>
+						<BR>
+						{/if}
+					</TD>
+				</TR>
+				<TR>
+					<TD style="width: 100%;" class="text-right nobr">
+						<A href="javascript:removeCustomers();">{trans("Delete")} <IMG src="img/cancel.gif" alt=""></A>
+					</TD>
+				</TR>
+				</TBODY>
+			</TABLE>
+		</TD>
+		<TD style="width: 2%;">
+		</TD>
+		<TD style="width: 49%;" class="valign-top">
+			<TABLE class="lmsbox">
+				<THEAD>
+				<TR>
+					<TD style="width: 100%;" class="bold nobr">
+						<IMG src="img/customer.gif" alt="">&nbsp;{trans("Add new member(s):")}
+					</TD>
+				</TR>
+				<TR>
+					<TD style="width: 100%;" class="text-center">
+						{trans("Network:")}
+						<SELECT size="1" name="customerassignments[othersnetid]" onchange="javascript:changeOthersNetwork();">
+							<OPTION value="0" {if !$othersnetid}selected{/if}>{trans("- all networks -")}</OPTION>
+							{section name=networks loop=$networks}
+							<OPTION value="{$networks[networks].id}" {if $networks[networks].id eq $othersnetid}selected{/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
+							{/section}
+						</SELECT>&nbsp;
+					</TD>
+				</TR>
+				</THEAD>
+				<TBODY>
+				<TR>
+					<TD style="width: 100%;" class="text-center">
+						{if $customerscount}
+						<SELECT size="20" name="customerassignments[mcustomerid][]" multiple>
+							{section name=customer loop=$customers}
+							<OPTION value="{$customers[customer].id}">
+							{$customers[customer].customername|truncate:40:"...":true} ({$customers[customer].id|string_format:"%04d"})
+							</OPTION>
+							{/section}
+						</SELECT>
+						{else}
+						<BR>
+						<BR>
+						<span class="bold">{trans("All customers are members of this group.")}</span><BR>
+						<BR>
+						<BR>
+						{/if}
+					</TD>
+				</TR>
+				<TR>
+					<TD style="width: 100%;" class="text-right nobr">
+						<A href="javascript:document.customerassignments.submit();">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
+					</TD>
+				</TR>
+				</TBODY>
+			</TABLE>
+		</TD>
+	</TR>
 </TABLE>
 </FORM>
-</P>
