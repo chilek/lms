@@ -171,6 +171,7 @@ version ? (????-??-??):
   - message templates: mail and sms messages [chilan]
   - message templates: customer and node warnings [chilan]
   - node traffic statistics are loaded in background [chilan]
+  - messageadd: selection of multiple customer groups is possible [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
