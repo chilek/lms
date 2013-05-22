@@ -205,7 +205,7 @@ table.lmsbox td {
 }
 
 table.lmsbox-inner * td {
-    padding: 5px;
+    padding: 3px;
     border-spacing: 0px;
 }
 
@@ -216,7 +216,7 @@ table.lmsbox-inner > thead,
 table.lmsbox-inner > tfoot {
     border-width: 1px;
     border-style: solid;
-    border-color: black;    
+    border-color: black;
 }
 
 table.lmsbox > thead,
@@ -242,7 +242,7 @@ table.lmsbox > tfoot > tr {
 
 table.lmsbox > thead { text-align: left; }
 
-td.empty-table { text-align: center; font-weight: bold; padding: 2em; }
+td.empty-table { text-align: center; font-weight: bold; padding: 2em; background-color: #EBE4D6; }
 
 .nobr { white-space: nowrap; }
 .text-right { text-align: right; }
