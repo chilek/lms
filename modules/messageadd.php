@@ -48,13 +48,16 @@ $LMS->InitXajax();
 $LMS->RegisterXajaxFunction(array('getMessageTemplate', 'getMessageTemplates'));
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
-function GetRecipients($filter, $type=MSG_MAIL)
-{
+function GetRecipients($filter, $type = MSG_MAIL) {
 	global $LMS;
 
 	$group = $filter['group'];
 	$network = $filter['network'];
-	$customergroup = $filter['customergroup'];
+	if (is_array($filter['customergroup'])) {
+		$customergroup = array_map('intval', $filter['customergroup']);
+		$customergroup = implode(',', $customergroup);
+	} else
+		$customergroup = intval($filter['customergroup']);
 	$nodegroup = $filter['nodegroup'];
 	$linktype = $filter['linktype'];
 
@@ -102,7 +105,7 @@ function GetRecipients($filter, $type=MSG_MAIL)
 			(ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') 
 			OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
 		.($customergroup ? ' AND c.id IN (SELECT customerid FROM customerassignments
-			WHERE customergroupid = '.intval($customergroup).')' : '')
+			WHERE customergroupid IN (' . $customergroup . '))' : '')
 		.($nodegroup ? ' AND c.id IN (SELECT ownerid FROM nodes
 			JOIN nodegroupassignments ON (nodeid = nodes.id)
 			WHERE nodegroupid = '.intval($nodegroup).')' : '')
