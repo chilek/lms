@@ -2379,9 +2379,9 @@ class LMS {
 						);
 						$this->DB->Execute('INSERT INTO liabilities (name, value, taxid, prodid)
 							VALUES (?, ?, ?, ?)', array_values($args));
+						$lid = $this->DB->GetLastInsertID('liabilities');
 
 						if ($this->SYSLOG) {
-							$lid = $this->DB->GetLastInsertID('liabilities');
 							$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB]] = $lid;
 							$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $data['customerid'];
 							$this->SYSLOG->AddMessage(SYSLOG_RES_LIAB, SYSLOG_OPER_ADD, $args,
