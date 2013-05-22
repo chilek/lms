@@ -1,49 +1,50 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<P><TABLE class="lmsbox">
-    <THEAD>
+<TABLE class="lmsbox">
+	<THEAD>
 	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/group.gif" ALT="">
+		<TD style="width: 1%;">
+			<IMG src="img/group.gif" alt="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
-			<B>{$customergroup.name} ({$customergroup.id|string_format:"%04d"})</B>
+		<TD style="width: 99%;" class="bold nobr" colspan="2">
+			{$customergroup.name} ({$customergroup.id|string_format:"%04d"})
 		</TD>
 	</TR>
-    </THEAD>
-    <TBODY>
+	</THEAD>
+	<TBODY>
 	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/customers.gif" ALT="">
+		<TD style="width: 1%;">
+			<IMG src="img/customers.gif" alt="">
 		</TD>
-		<TD WIDTH="1%" NOWRAP><B>{trans("Members Count:")}</B>
+		<TD style="width: 1%;" class="bold nobr">
+			{trans("Members Count:")}
 		</TD>
-		<TD WIDTH="98%">
+		<TD style="width: 98%;">
 			{$customergroup.count}
 		</TD>
 	</TR>
 	{if $customergroup.description}
-	<TR>	
-		<TD WIDTH="1%">
-			<IMG SRC="img/info1.gif" ALT="">
+	<TR>
+		<TD style="width: 1%;">
+			<IMG src="img/info1.gif" alt="">
 		</TD>
-		<TD WIDTH="98%" COLSPAN="2">
-			<TABLE WIDTH="100%" CELLPADDING="3"> 
-			    <TR><TD CLASS="fall superlight">
-				    {$customergroup.description|replace:"\n":"<BR>"}
-			    </TD></TR>
+		<TD style="width: 98%;" colspan="2">
+			<TABLE width="100%" cellpadding="3"> 
+				<TR><TD class="fall superlight">
+					{$customergroup.description|replace:"\n":"<BR>"}
+				</TD></TR>
 			</TABLE>
 		</TD>
 	</TR>
 	{/if}
 	<TR>
-	        <TD ALIGN="RIGHT" COLSPAN="3">
-			    <A HREF="?m=customergroupedit&id={$customergroup.id}{if $membersnetid}&membersnetid={$membersnetid}{/if}{if $othersnetid}&othersnetid={$othersnetid}{/if}" ACCESSKEY="E">{trans("Edit")} <IMG SRC="img/edit.gif" ALT=""></A>
-			    {if $customergroup.count eq 0} <A HREF="?m=customergroupdel&id={$customergroup.id}" onclick="return confirmLink(this,'{trans("Are you sure, you want to delete that group?")}');">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>{/if}
+		<TD class="text-right" colspan="3">
+			<A href="?m=customergroupedit&amp;id={$customergroup.id}{if $membersnetid}&amp;membersnetid={$membersnetid}{/if}{if $othersnetid}&amp;othersnetid={$othersnetid}{/if}" accesskey="E">{trans("Edit")} <IMG src="img/edit.gif" alt=""></A>
+			{if $customergroup.count eq 0} <A href="?m=customergroupdel&amp;id={$customergroup.id}" onclick="return confirmLink(this,'{trans("Are you sure, you want to delete that group?")}');">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>{/if}
 		</TD>
 	</TR>
-    </TBODY>
-</TABLE></P>
+	</TBODY>
+</TABLE>
 {include file="customergroupassignments.html"}
 {include file="footer.html"}

@@ -43,7 +43,7 @@
 	{section name=customergroups loop=$customergrouplist}
 	<TR class="highlight {cycle}"  >
 		<TD onClick="return self.location.href='?m=customergroupinfo&amp;id={$customergrouplist[customergroups].id}';">
-			<IMG src="img/group.gif" alt="">&nbsp;<B>{$customergrouplist[customergroups].name}</B><BR>
+			<IMG src="img/group.gif" alt="">&nbsp;<span class="bold">{$customergrouplist[customergroups].name}</span><BR>
 			{if $customergrouplist[customergroups].description}<IMG src="img/info1.gif" alt="">&nbsp;{$customergrouplist[customergroups].description}{/if}
 		</TD>
 		<TD class="text-right" onClick="return self.location.href='?m=customergroupinfo&amp;id={$customergrouplist[customergroups].id}';">
@@ -56,11 +56,11 @@
 			{if $customergrouplist[customergroups].customers}
 			<A href="javascript:alert('{trans("Group with members cannot be deleted!")}');">
 			{else}
-			<A href="?m=customergroupdel&id={$customergrouplist[customergroups].id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to remove this group?")}');">
+			<A href="?m=customergroupdel&amp;id={$customergrouplist[customergroups].id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to remove this group?")}');">
 			{/if}
 			<IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A href="?m=customergroupedit&id={$customergrouplist[customergroups].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-			<A href="?m=customergroupinfo&id={$customergrouplist[customergroups].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
+			<A href="?m=customergroupedit&amp;id={$customergrouplist[customergroups].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			<A href="?m=customergroupinfo&amp;id={$customergrouplist[customergroups].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
 		</TD>
 	</TR>
 	{sectionelse}

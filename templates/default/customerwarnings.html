@@ -58,40 +58,42 @@
 //-->
 </SCRIPT>
 <H1>{$layout.pagetitle}</H1>
-<P><FORM NAME="setwarnings" METHOD="POST" ACTION="?m=customerwarn" id="setwarnings">
+<FORM name="setwarnings" method="post" action="?m=customerwarn" id="setwarnings">
+<p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
+</p>
 <TABLE width="100%" cellpadding="3">
 	<TR>
-		<TD WIDTH="1%" VALIGN="TOP">
+		<TD style="width: 1%;" class="valign-top">
 			<TABLE class="lmsbox">
-                            <THEAD>
+				<THEAD>
 				<TR>
-					<TD WIDTH="1%">
-						<IMG SRC="img/customer.gif" alt="">&nbsp;<B>{trans("Customers:")}</B>
+					<TD style="width: 1%;" class="bold">
+						<IMG src="img/customer.gif" alt="">&nbsp;{trans("Customers:")}
 					</TD>
-					<TD WIDTH="99%" COLSPAN="2">
-						<IMG SRC="img/mail.gif" alt="">&nbsp;<B>{trans("Notice content:")}</B>
+					<TD style="width: 99%;" class="bold" colspan="2">
+						<IMG src="img/mail.gif" alt="">&nbsp;{trans("Notice content:")}
 					</TD>
 				</TR>
-                            </THEAD>
-                            <TBODY>
+				</THEAD>
+				<TBODY>
 				<TR>
 					<TD>
 						<SELECT size="30" name="setwarnings[mcustomerid][]" id="customerslist" multiple {tip text="Select customers"}>
 							{foreach from=$customerlist key=key item=item}
-							<OPTION value="{$key}" {if $item.warning}CLASS="red"{/if}{if isset($selected.$key)} SELECTED{/if}>{$item.customername|truncate:40:"...":true} ({$key|string_format:"%04d"})</OPTION>
+							<OPTION value="{$key}"{if $item.warning} class="red"{/if}{if isset($selected.$key)} selected{/if}>{$item.customername|truncate:40:"...":true} ({$key|string_format:"%04d"})</OPTION>
 							{/foreach}
 						</SELECT>
 					</TD>
-					<TD COLSPAN="2">
-						<TABLE CELLPADDING="3">
+					<TD colspan="2">
+						<TABLE cellpadding="3">
 							<TR>
 								<TD>
 									<input type="checkbox" id="message_label" onClick="javascript:toggle_visual_editor('message');"{if get_conf('phpui.default_editor') == 'wysiwyg'} checked{/if}>
 									<label for="message_label">{trans("visual editor")}</label>
 								</TD>
-								<TD colspan="2" style="text-align: right;">
-									<label for="">{trans("Message template:")}</label>
+								<TD colspan="2" class="text-right">
+									<label for="msgtmplid">{trans("Message template:")}</label>
 									<select name="setwarnings[tmplid]" id="msgtmplid" {tip trigger="msgtmplid" text="Select message template"} onChange="javascript:change_message_template(this.options[this.selectedIndex].value);">
 										<option value="0">{trans("- none -")}</option>
 										{foreach $messagetemplates as $msgtmpl}
@@ -101,8 +103,8 @@
 								</TD> 
 							</TR>
 							<TR>
-								<TD COLSPAN="3" {tip text="Customer notice content"}>
-									<TEXTAREA NAME="setwarnings[message]" id="message" ROWS="20" COLS="75">{$warnmessage}</TEXTAREA>
+								<TD colspan="3" {tip text="Customer notice content"}>
+									<TEXTAREA name="setwarnings[message]" id="message" rows="20" cols="75">{$warnmessage}</TEXTAREA>
 								</TD>
 							</TR>
 							<TR>
@@ -117,26 +119,23 @@
 					</TD>
 				</TR>
 				<TR>
-					<TD WIDTH="1%">
-						<INPUT TYPE="checkbox" NAME="customers" OnClick="javascript:SelectAllCustomers()"><A HREF="javascript:SelectAllCustomers2()">{trans("Select All<!masculine>")}</A></INPUT>
+					<TD style="width: 1%;">
+						<INPUT type="checkbox" name="customers" OnClick="javascript:SelectAllCustomers()"><A href="javascript:SelectAllCustomers2()">{trans("Select All<!masculine>")}</A>
 					</TD>
-					<TD ALIGN="left">
-						 <NOBR>
-						 <INPUT TYPE="checkbox" NAME="setwarnings[warnon]" ID="warnon" OnClick="switchbox(this);"{if $warnon}CHECKED{/if}><A HREF="javascript:switchbox1()">{trans("Enable")}</A></INPUT>
-						 / <INPUT TYPE="checkbox" NAME="setwarnings[warnoff]" ID="warnoff" OnClick="switchbox(this);" {if $warnoff}CHECKED{/if}><A HREF="javascript:switchbox2()">{trans("Disable")}</A></INPUT>
-						 </NOBR>
+					<TD class="text-left nobr">
+						<INPUT type="checkbox" name="setwarnings[warnon]" id="warnon" OnClick="switchbox(this);"{if $warnon} checked{/if}><A href="javascript:switchbox1()">{trans("Enable")}</A>
+						/ <INPUT type="checkbox" name="setwarnings[warnoff]" id="warnoff" OnClick="switchbox(this);"{if $warnoff} checked{/if}><A href="javascript:switchbox2()">{trans("Disable")}</A>
 					</TD>
-					<TD ALIGN="RIGHT">
-						<A HREF="javascript:document.setwarnings.submit()" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
+					<TD class="text-right">
+						<A href="javascript:document.setwarnings.submit()" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 					</TD>
-				<TR>
-                            </TBODY>
+				</TR>
+				</TBODY>
 			</TABLE>
 		</TD>
 	</TR>
 </TABLE>
 </FORM>
-</P>
 <SCRIPT type="text/javascript">
 <!--//
 document.forms['setwarnings'].elements['setwarnings[message]'].focus();
@@ -147,5 +146,4 @@ toggle_visual_editor('message');
 {/if}
 //-->
 </SCRIPT>
-
 {include file="footer.html"}

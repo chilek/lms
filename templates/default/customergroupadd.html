@@ -1,42 +1,45 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<FORM METHOD="POST" NAME="customergroupadd" ACTION="?m=customergroupadd">
+<FORM method="post" name="customergroupadd" action="?m=customergroupadd">
+<p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
+</p>
 <TABLE class="lmsbox">
-    <THEAD>
+	<THEAD>
 	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/group.gif" ALT="">
+		<TD style="width: 1%">
+			<IMG src="img/group.gif" alt="">
 		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("Name:")}</B>
+		<TD style="width: 1%" class="bold">
+			{trans("Name:")}
 		</TD>
-		<TD WIDTH="98%">
-			<INPUT TYPE="TEXT" NAME="customergroupadd[name]" VALUE="{$customergroupadd.name}" SIZE="50" {tip trigger="name" bold=1}>
+		<TD style="width: 98%">
+			<INPUT type="text" name="customergroupadd[name]" value="{$customergroupadd.name}" size="50" {tip trigger="name" bold=1}>
 		</TD>
 	</TR>
-    </THEAD>
-    <TBODY>
+	</THEAD>
+	<TBODY>
 	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/info1.gif" ALT="">
+		<TD style="width: 1%">
+			<IMG src="img/info1.gif" alt="">
 		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("Description:")}</B>
+		<TD style="width: 1%" class="bold">
+			{trans("Description:")}
 		</TD>
-		<TD WIDTH="98%">
-			<TEXTAREA NAME="customergroupadd[description]" COLS="50" ROWS="5" {tip text="Enter additional information (optional)"}>{$customergroupadd.description}</TEXTAREA>
+		<TD style="width: 98%">
+			<TEXTAREA name="customergroupadd[description]" cols="50" rows="5" {tip text="Enter additional information (optional)"}>{$customergroupadd.description}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT"> 
-			<A HREF="javascript:document.customergroupadd.submit();" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
-			<A HREF="?m=customergrouplist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
+		<TD style="width: 100%" class="text-right" colspan="3">
+			<A href="javascript:document.customergroupadd.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=customergrouplist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
-    </TBODY>
-</TABLE></FORM></P>
+	</TBODY>
+</TABLE>
+</FORM>
 <SCRIPT type="text/javascript">
 <!--
 document.forms['customergroupadd'].elements['customergroupadd[name]'].focus();
