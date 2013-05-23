@@ -201,11 +201,11 @@ table.lmsbox-inner {
 }
 
 table.lmsbox td {
-    padding: 1px;
+    padding: 2px;
 }
 
 table.lmsbox-inner * td {
-    padding: 1px;
+    padding: 2px;
     border-spacing: 0px;
 }
 
