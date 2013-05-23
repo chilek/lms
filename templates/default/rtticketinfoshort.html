@@ -11,41 +11,41 @@
 </head>
 <BODY>
 <TABLE class="lmsbox" id="table">
-    <THEAD>
+	<THEAD>
 	<TR>
-		<TD COLSPAN="2" width="100%" NOWRAP>
+		<TD style="width: 100%;" class="bold nobr" colspan="2">
 			<IMG src="img/ticket.gif" alt="">
-			<B>{t a=$ticket.id|string_format:"%06d"}Ticket No. $a{/t}</B>
+			{t a=$ticket.id|string_format:"%06d"}Ticket No. $a{/t}
 		</TD>
 	</TR>
-    </THEAD>
-    <TBODY>
+	</THEAD>
+	<TBODY>
 	{if $ticket.creatorid}
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
-		    	<IMG src="img/users.gif" alt="">
-			<B>{trans("Created by:")}</B>
+		<TD style="width: 1%;" class="bold nobr">
+			<IMG src="img/users.gif" alt="">
+			{trans("Created by:")}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
+		<TD style="width: 99%;" class="nobr">
 			<A href="?m=userinfo&id={$ticket.creatorid}">{$ticket.creator}</a>
 		</TD>
 	</TR>
 	{/if}
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
-		    	<IMG src="img/time.gif" alt="">
-			<B>{trans("Uptime:")}</B>
+		<TD style="width: 1%;" class="bold nobr">
+			<IMG src="img/time.gif" alt="">
+			{trans("Uptime:")}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
+		<TD style="width: 99%;" class="nobr">
 			{$ticket.uptime}
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
-		    	<IMG src="img/desc.gif" alt="">
-			<B>{trans("Cause:")}</B>
+		<TD style="width: 1%;"  class="bold nobr">
+			<IMG src="img/desc.gif" alt="">
+			{trans("Cause:")}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
+		<TD style="width: 99%;" class="nobr">
 			{if $ticket.cause==2}{trans("company's side")}
 			{elseif $ticket.cause==1}{trans("customer's side")}
 			{else}{trans("unknown/other")}{/if}
@@ -53,14 +53,14 @@
 	</TR>
 	{if $ticket.message}
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
-		    	<IMG src="img/info.gif" alt="">
-			<B>{trans("Body:")}</B>
+		<TD style="width: 1%;" class="bold nobr">
+			<IMG src="img/info.gif" alt="">
+			{trans("Body:")}
 		</TD>
-		<TD WIDTH="99%">
-			<TABLE WIDTH="{if strlen($ticket.message)<50}100%{else}300{/if}" CELLPADDING="5">
-                                <TR>
-				        <TD CLASS="fall superlight">
+		<TD style="width: 99%;">
+			<TABLE width="{if strlen($ticket.message)<50}100%{else}300{/if}" cellpadding="5">
+				<TR>
+					<TD class="fall superlight">
 						{$ticket.message|replace:"\n":"<BR>"}
 					</TD>
 				</TR>
@@ -68,9 +68,9 @@
 		</TD>
 	</TR>
 	{/if}
-    </TBODY>
+	</TBODY>
 </TABLE>
-<SCRIPT TYPE="text/javascript">
+<SCRIPT type="text/javascript">
 <!--
 var table = document.getElementById('table');
 autoiframe_setsize('autoiframe', table.offsetWidth < 450 ? table.offsetWidth : 450, table.offsetHeight);

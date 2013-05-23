@@ -236,6 +236,20 @@ table.lmsbox > tfoot > tr {
     border-top: 1px solid black;
 }
 
+.summary {
+	text-align: right;
+}
+
+.buttons {
+	text-align: right;
+}
+
+.navigation {
+	text-align: center;
+	white-space: nowrap;
+	background-color: #CEBD9B;
+}
+
 .pagination {
     background-color: #CEBD9B;
 }

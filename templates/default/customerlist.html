@@ -101,23 +101,23 @@
 		</TD>
 	</TR>
 	{/if}
-	<TR>
-		<TD class="text-right">
+	<TR class="summary">
+		<TD>
 			&nbsp;
 		</TD>
-		<TD class="text-right bold">
+		<TD class="bold">
 			{if !check_conf('privileges.hide_finances') && !check_conf('privileges.hide_summaries')}
 			{trans("Outstandings")}:<BR>
 			{trans("Overcharges")}:
 			{/if}
 		</TD>
-		<TD class="text-right bold nobr">
+		<TD class="bold nobr">
 			{if !check_conf('privileges.hide_finances') && !check_conf('privileges.hide_summaries')}
 			{$listdata.below|money_format}<BR>
 			{$listdata.over|money_format}
 			{/if}
 		</TD>
-		<TD class="text-right bold">
+		<TD class="bold">
 			{trans("Total:")} {$listdata.total}
 		</TD>
 	</TR>
