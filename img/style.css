@@ -238,6 +238,7 @@ table.lmsbox > tfoot > tr {
 
 .summary {
 	text-align: right;
+	font-weight: bold;
 }
 
 .buttons {
