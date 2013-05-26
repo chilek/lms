@@ -91,7 +91,6 @@ $layout['pagetitle'] = trans('Schema Info: $a', $schema['name']);
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('tariffs', $tariffs);
-$SMARTY->assign('activations', $activations);
 $SMARTY->assign('schema', $schema);
 $SMARTY->display('promotionschemainfo.html');
 
