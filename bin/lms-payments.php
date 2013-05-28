@@ -561,6 +561,8 @@ foreach($assigns as $assign)
 			$sdesc = preg_replace("/\%desc/", $assign['description'], $sdesc);
 			$sdesc = preg_replace("/\%period/", $period, $sdesc);
 			$sdesc = preg_replace("/\%current_month/", $current_month, $sdesc);
+			$sdesc = preg_replace("/\%current_period/", $current_period, $sdesc);
+			$sdesc = preg_replace("/\%next_period/", $next_period, $sdesc);
 
 			if ($assign['invoice'])
 			{
