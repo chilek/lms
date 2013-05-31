@@ -2748,4 +2748,8 @@ $_LANG['Select message template'] = 'Wybierz szablon wiadomości';
 $_LANG['Enter name of the new message template'] = 'Wprowadź nazwę nowego szablonu wiadomości';
 $_LANG['no operation on message template'] = 'brak czynności na szablonie wiadomości';
 
+$_LANG['Assign to me'] = 'Przypisz do mnie';
+$_LANG['Ticket has been assigned to user $a.'] = 'Zgłoszenie zostało przypisane do użytkownika $a.';
+$_LANG['Ticket has been moved from queue $a to queue $b.'] = 'Zgłoszenie zostało przeniesione z kolejki $a do kolejki $b.';
+
 ?>

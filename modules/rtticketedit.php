@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-if(($id = $_GET['id']) && !isset($_POST['ticket']))
-{
+$id = intval($_GET['id']);
+if ($id && !isset($_POST['ticket'])) {
 	if(($LMS->GetUserRightsRT($AUTH->id, 0, $id) & 2) != 2 || !$LMS->GetUserRightsToCategory($AUTH->id, 0, $id))
 	{
 		$SMARTY->display('noaccess.html');
@@ -33,10 +33,18 @@ if(($id = $_GET['id']) && !isset($_POST['ticket']))
 		die;
 	}
 
-	if(isset($_GET['state']) && $_GET['state'])
-	{
+	if (isset($_GET['state']) && $_GET['state']) {
 		$LMS->SetTicketState($id, $_GET['state']);
 		$SESSION->redirect('?m=rtticketview&id='.$id);
+	}
+
+	if (isset($_GET['assign'])) {
+		$DB->Execute('UPDATE rttickets SET owner = ? WHERE id = ?',
+			array($AUTH->id, $id));
+		$DB->Execute('INSERT INTO rtnotes (userid, ticketid, body, createtime)
+			VALUES(?, ?, ?, ?NOW?)',
+			array($AUTH->id, $id, trans('Ticket has been assigned to user $a.', $AUTH->logname)));
+		$SESSION->redirect('?m=rtticketview&id=' . $id);
 	}
 }
 
@@ -107,6 +115,18 @@ if(isset($_POST['ticket']))
 						));
 			}
 		}
+
+		if ($ticketedit['queueid'] != $ticket['queueid'])
+			$DB->Execute('INSERT INTO rtnotes (userid, ticketid, body, createtime)
+				VALUES(?, ?, ?, ?NOW?)',
+				array($AUTH->id, $id,
+					trans('Ticket has been moved from queue $a to queue $b.',
+						$LMS->GetQueueName($ticket['queueid']), $LMS->GetQueueName($ticketedit['queueid']))));
+
+		if ($ticketedit['owner'] != $ticket['owner'])
+			$DB->Execute('INSERT INTO rtnotes (userid, ticketid, body, createtime)
+				VALUES(?, ?, ?, ?NOW?)',
+				array($AUTH->id, $id, trans('Ticket has been assigned to user $a.', $LMS->GetUserName($ticketedit['owner']))));
 
 		$DB->Execute('DELETE FROM rtticketcategories WHERE ticketid = ?', array($id));
 		foreach($ticketedit['categories'] as $categoryid => $val)

@@ -149,6 +149,9 @@
 	</TR>
 	<TR>
 		<TD class="buttons" colspan="3">
+			{if $ticket.owner != $layout.logid}
+			<A href="?m=rtticketedit&amp;id={$ticket.ticketid}&amp;assign">{trans("Assign to me")} <IMG src="img/users.gif" alt=""></A>
+			{/if}
 			{if $ticket.state < 2}
 			<A href="?m=rtticketedit&amp;id={$ticket.ticketid}&amp;state=2">{trans("Resolve")} <IMG src="img/resolved.gif" alt=""></A>&nbsp;
 			{/if}

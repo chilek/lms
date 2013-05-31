@@ -172,6 +172,8 @@ version ? (????-??-??):
   - message templates: customer and node warnings [chilan]
   - node traffic statistics are loaded in background [chilan]
   - messageadd: selection of multiple customer groups is possible [chilan]
+  - helpdesk: notes with proper info are automatically added when ticket changes owner or is moved
+    from one queue to another [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
