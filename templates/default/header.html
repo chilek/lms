@@ -24,7 +24,7 @@
 			<td class="text-center valign-top" style="border-bottom-style: dashed; border-bottom-width: 1px;">
 				<br>
 				<img src="{get_conf('phpui.logo', 'img/logo-40.png')}" alt="LMS {$layout.lmsv}"><br>
-				<B>LMS {$layout.lmsv}</B><br>
+				<span class="bold">LMS {$layout.lmsv}</span><br>
 				&nbsp;<br>
 			</td>
 		</tr>
@@ -86,7 +86,7 @@
 				new AutoSuggest(document.getElementById('quicksearch'),document.getElementById('accountinput'),'?m=quicksearch&ajax=1&mode=account&what=',1);
 			</script>
 			{* Enter key submit hack for IE *}
-			{*<input type="image" src="img/empty.gif" width="0" height="0" style="border: none;">*}
+			<input type="image" src="img/empty.gif" width="0" height="0" style="border: none;">
 		    </td>
 		    <td style="width: 99%" class="text-right nobr">
 			&nbsp;<A href="?m=copyrights">&copy; 2001-{$smarty.now|date_format:'%Y'} LMS Developers</A>
