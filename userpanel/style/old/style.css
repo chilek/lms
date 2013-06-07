@@ -22,6 +22,12 @@ IMG		{ border: 0; vertical-align: middle; }
 .darkest	{ background-color: #DECEA5; }
 
 .nobr		{ white-space: nowrap; }
+.bold		{ font-weight: bold; }
+.text-right	{ text-align: right; }
+.text-left	{ text-align: left; }
+.text-center	{ text-align: center; }
+.valign-top	{ vertical-align: top; }
+.valign-bottom	{ vertical-align: bottom; }
 
 .BOOK		{ padding: 5pt; }
 .SCREEN		{ font-size: 10pt; background: #F4F0EC; border: 1px solid #333333; padding: 3pt; font-family: Courier; }

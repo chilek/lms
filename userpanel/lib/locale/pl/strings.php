@@ -79,4 +79,19 @@ $_LANG['Rights'] = 'Uprawnienia';
 $_LANG['Hiding some modules useless when customer hasn\'t got any nodes'] = 'Ukrycie niektórych modułów, bezużytecznych gdy klient nie posiada komputerów';
 $_LANG['Disabling modules:'] = 'Wyłączenie modułów:';
 
+$_LANG['Remind credentials'] = 'Przypomnienie danych do logowania';
+$_LANG['Remind'] = 'Przypomnij';
+$_LANG['Login form'] = 'Formularz logowania';
+$_LANG['SSN or TEN:'] = 'PESEL lub NIP:';
+$_LANG['Credential reminder has been sent!'] = 'Dane do logowania zostały wysłane!';
+$_LANG['credential reminder'] = 'przypomnienie danych do logowania';
+$_LANG['Reminder mail sender:'] = 'Nadawca listu z danymi do logowania:';
+$_LANG['Enter reminder mail sender'] = 'Wprowadź nadawcę listu z danymi do logowania';
+$_LANG['Reminder mail subject:'] = 'Temat listu z danymi do logowania:';
+$_LANG['Enter reminder mail subject'] = 'Wprowadź temat listu z danymi do logowania';
+$_LANG['Reminder mail body:'] = 'Treść listu z danymi do logowania:';
+$_LANG['Enter reminder mail body'] = 'Wprowadź treść listu z danymi do logowania';
+$_LANG['Reminder sms body:'] = 'Treść sms-a z danymi do logowania:';
+$_LANG['Enter reminder sms body'] = 'Wprowadź treść sms-a z danymi do logowania';
+
 ?>

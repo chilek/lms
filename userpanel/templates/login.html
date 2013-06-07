@@ -7,6 +7,29 @@
 <link type="text/css" rel="stylesheet" href="{stylefile}" />
 </head>
 <body>
+<script type="text/javascript">
+<!--
+	function switch_form(type) {
+		if (type == 'login') {
+			document.getElementById('logindata').style.display = '';
+			document.getElementById('reminddata').style.display = 'none';
+		} else {
+			document.getElementById('logindata').style.display = 'none';
+			document.getElementById('reminddata').style.display = '';
+		}
+	}
+
+	function show_email_phone(type) {
+		if (type == 'email') {
+			document.getElementById('email').style.display = '';
+			document.getElementById('phone').style.display = 'none';
+		} else {
+			document.getElementById('email').style.display = 'none';
+			document.getElementById('phone').style.display = '';
+		}
+	}
+//-->
+</script>
 <div class="login">
 <table style="vertical-align: middle; width:100%; height: 100%; margin:auto">
     <tr>
@@ -19,32 +42,82 @@
 		    <td>&nbsp;</td>
 		    <td align="center">
 			{box title="VCS"}
-			<div style="white-space: nowrap; text-align: center;"><b>{trans("Virtual Customer Service")}</b></div><br/>
-			{if $error}<div style="color:red;text-align: center;"><b>{$error}</b></div>{else}&nbsp;{/if}
-			<br/><br/>
+			<div class="text-center bold nobr">{trans("Virtual Customer Service")}</div><br />
+			{if $error}<div style="color: red;" class="text-center bold">{$error}</div>{else}&nbsp;{/if}
+			<br /><br />
 			<form id="login" method="post" action="{$target}">
-			<table style="height: 100%; width: 100%;">
-			    <tr>
-				<td align="right" style="white-space: nowrap;">
-				    <b>{trans("Customer ID:")}</b>
-				</td>
-				<td align="left">
-				    <input type="text" name="loginform[login]" style="width: 50pt" />
-				</td>
-			    </tr>
-			    <tr>
-				<td align="right" style="white-space: nowrap;">
-				    <b>{trans("PIN:")}</b>
-				</td>
-				<td align="left">
-				    <input type="password" name="loginform[pwd]" style="width: 50pt" />
-				</td>
-			    </tr>
-			    <tr>
-				<td colspan="2" align="center">
-				    <br/><input type="submit" name="loginform[submit]" style="font-weight: bold;" value="{trans("Login")}"/>
-				</td>
-			    </tr>
+			<table id="logindata" style="height: 100%; width: 100%;">
+				<tr>
+					<td class="text-right bold nobr">
+						{trans("Customer ID:")}
+					</td>
+					<td class="text-left">
+						<input type="text" name="loginform[login]" style="width: 50pt;" />
+					</td>
+				</tr>
+				<tr>
+					<td class="text-right bold nobr">
+						{trans("PIN:")}
+					</td>
+					<td class="text-left">
+						<input type="password" name="loginform[pwd]" style="width: 50pt;" />
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" class="text-center">
+						<br /><input type="submit" name="loginform[submit]" class="bold" value="{trans("Login")}" />
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" class="text-center bold nobr">
+						<br /><a href="javascript:switch_form('remind');">{trans("Remind credentials")}</a>
+					</td>
+				</tr>
+			</table>
+			</form>
+			<form id="remind" method="post" action="{$target}">
+			<table id="reminddata" style="height: 100%; width: 100%; display: none;">
+				<tr>
+					<td colspan="2" class="text-center bold nobr">
+						<input type="radio" id="emailradio" name="remindform[type]" value="1" onclick="javascript:show_email_phone('email');" checked /><label for="emailradio">{trans("E-mail")}</label>
+						<input type="radio" id="smsradio" name="remindform[type]" value="2" onclick="javascript:show_email_phone('phone');" /><label for="smsradio">{trans("SMS")}</label>
+						<br />&nbsp;
+					</td>
+				</tr>
+				<tr id="email">
+					<td class="text-right bold nobr">
+						{trans("E-Mail:")}
+					</td>
+					<td class="text-left">
+						<input type="text" name="remindform[email]" style="width: 120pt;" />
+					</td>
+				</tr>
+				<tr id="phone" style="display: none;">
+					<td class="text-right bold nobr">
+						{trans("Phone:")}
+					</td>
+					<td class="text-left">
+						<input type="text" name="remindform[phone]" style="width: 120pt;" />
+					</td>
+				</tr>
+				<tr>
+					<td class="text-right bold nobr">
+						{trans("SSN or TEN:")}
+					</td>
+					<td class="text-left">
+						<input type="text" name="remindform[ten]" style="width: 120pt;" />
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" class="text-center">
+						<br /><input type="submit" name="remindform[submit]" class="bold" value="{trans("Remind")}" />
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" class="text-center bold nobr">
+						<br /><a href="javascript:switch_form('login');">{trans("Login form")}</a>
+					</td>
+				</tr>
 			</table>
 			</form>
 			{/box}

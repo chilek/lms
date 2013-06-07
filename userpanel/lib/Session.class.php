@@ -37,43 +37,84 @@ class Session {
 	var $_version = '1.11-git';
 	var $_revision = '$Revision$';
 
-	function Session(&$DB,$timeout = 600)
-	{
+	function Session(&$DB, $timeout = 600) {
+		global $LMS;
+
 		session_start();
 		$this->DB = &$DB;
 		$this->_revision = preg_replace('/^.Revision: ([0-9.]+).*/i', '\1', $this->_revision);
 		$this->ip = str_replace('::ffff:', '', $_SERVER['REMOTE_ADDR']);
 
-		if(isset($_GET['override']))
+		if (isset($_GET['override']))
 			$loginform = $_GET['loginform'];
-		elseif(isset($_POST['loginform']))
+		elseif (isset($_POST['loginform']))
 			$loginform = $_POST['loginform'];
-		
-		if(isset($loginform))
-		{
+		elseif (isset($_POST['remindform']))
+			$remindform = $_POST['remindform'];
+
+		if (isset($remindform)) {
+			$ten = preg_replace('/-/', '', $remindform['ten']);
+			$params = array($ten, $ten);
+			switch ($remindform['type']) {
+				case 1:
+					if (!check_email($remindform['email']))
+						return;
+					$join = '';
+					$where = ' AND email = ?';
+					$params[] = $remindform['email'];
+					break;
+				case 2:
+					if (!preg_match('/^[0-9]+$/', $remindform['phone']))
+						return;
+					$join = 'JOIN customercontacts cc ON cc.customerid = c.id';
+					$where = ' AND phone = ? AND cc.type & ? = ?';
+					$params = array_merge($params,
+						array(preg_replace('/ -/', '', $remindform['phone']),
+							CONTACT_MOBILE, CONTACT_MOBILE));
+					break;
+				default:
+					return;
+			}
+			$customer = $this->DB->GetRow("SELECT c.id, pin FROM customers c $join WHERE (REPLACE(ten, '-', '') = ? OR ssn = ?)"
+				. $where, $params);
+			if ($remindform['type'] == 1) {
+				$subject = $LMS->CONFIG['userpanel']['reminder_mail_subject'];
+				$body = $LMS->CONFIG['userpanel']['reminder_mail_body'];
+			} else
+				$body = $LMS->CONFIG['userpanel']['reminder_sms_body'];
+			$body = str_replace('%id', $customer['id'], $body);
+			$body = str_replace('%pin', $customer['pin'], $body);
+			if ($remindform['type'] == 1)
+				$LMS->SendMail($remindform['email'],
+					array('From' => '<' . $LMS->CONFIG['userpanel']['reminder_mail_sender'] . '>',
+						'To' => '<' . $remindform['email'] . '>',
+						'Subject' => $subject), $body);
+			else
+				$LMS->SendSMS($remindform['phone'], $body);
+			$this->error = trans('Credential reminder has been sent!');
+			return;
+		}
+
+		if (isset($loginform)) {
 			$this->login = trim($loginform['login']);
 			$this->passwd = trim($loginform['pwd']);
 			$_SESSION['session_timestamp'] = time();
-		}
-		else
-		{
+		} else {
 			$this->login = isset($_SESSION['session_login']) ? $_SESSION['session_login'] : NULL;
 			$this->passwd = isset($_SESSION['session_passwd']) ? $_SESSION['session_passwd'] : NULL;
 			$this->id = isset($_SESSION['session_id']) ? $_SESSION['session_id'] : 0;
 		}
 
 		$authdata = $this->VerifyPassword();
-		
-		if($authdata != NULL)
-		{
+
+		if ($authdata != NULL) {
 			$authinfo = GetCustomerAuthInfo($authdata['id']);
-			if ($authinfo != NULL && isset($authinfo['enabled']) 
+			if ($authinfo != NULL && isset($authinfo['enabled'])
 				&& $authinfo['enabled'] == 0
-				&& time() - $authinfo['failedlogindate'] < 600
-			)
+				&& time() - $authinfo['failedlogindate'] < 600)
 				$authdata['passwd'] = NULL;
 		}
-		
+
 		if($authdata != NULL && $authdata['passwd'] != NULL && $this->TimeOut($timeout))
 		{
 			$this->islogged = TRUE;
@@ -96,7 +137,7 @@ class Session {
 				$authinfo['enabled'] = 3;
 				SetCustomerAuthInfo($authinfo);
 			}
-		}else{
+		} else {
 			$this->islogged = FALSE;
 			if (isset($loginform))
 			{

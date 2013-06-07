@@ -176,6 +176,7 @@ version ? (????-??-??):
     from one queue to another [chilan]
   - assignment edit: autoselect tax value for tariffless assignments when assignment
     tax value is already defined [chilan]
+  - userpanel: added credential reminder support [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
