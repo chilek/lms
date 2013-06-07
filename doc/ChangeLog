@@ -174,6 +174,8 @@ version ? (????-??-??):
   - messageadd: selection of multiple customer groups is possible [chilan]
   - helpdesk: notes with proper info are automatically added when ticket changes owner or is moved
     from one queue to another [chilan]
+  - assignment edit: autoselect tax value for tariffless assignments when assignment
+    tax value is already defined [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
