@@ -93,5 +93,6 @@ $_LANG['Reminder mail body:'] = 'Treść listu z danymi do logowania:';
 $_LANG['Enter reminder mail body'] = 'Wprowadź treść listu z danymi do logowania';
 $_LANG['Reminder sms body:'] = 'Treść sms-a z danymi do logowania:';
 $_LANG['Enter reminder sms body'] = 'Wprowadź treść sms-a z danymi do logowania';
+$_LANG['Credential reminder couldn\'t be sent!'] = 'Przypomnienie danych do logowania nie mogło zostać wysłane!';
 
 ?>

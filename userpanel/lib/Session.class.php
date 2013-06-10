@@ -77,8 +77,10 @@ class Session {
 			}
 			$customer = $this->DB->GetRow("SELECT c.id, pin FROM customers c $join WHERE (REPLACE(ten, '-', '') = ? OR ssn = ?)"
 				. $where, $params);
-			if (!$customer)
+			if (!$customer) {
+				$this->error = trans('Credential reminder couldn\'t be sent!');
 				return;
+			}
 			if ($remindform['type'] == 1) {
 				$subject = $LMS->CONFIG['userpanel']['reminder_mail_subject'];
 				$body = $LMS->CONFIG['userpanel']['reminder_mail_body'];
