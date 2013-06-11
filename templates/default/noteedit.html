@@ -51,13 +51,14 @@
 		</TD>
 	</TR>
 	<TR>
-                <TD WIDTH="1%" NOWRAP>
+		<TD WIDTH="1%" NOWRAP>
 	                <B>{trans("Deadline:")}</B>
 	        </TD>
 	        <TD WIDTH="99%" NOWRAP>
 	                <INPUT TYPE="TEXT" NAME="note[paytime]" VALUE="{$note.paytime}" SIZE="10" {tip text="Enter deadline in days (optional)"}>
-	                ({$note.cdate+$note.paytime*86400|date_format:"%Y/%m/%d"})
-	        </TD>																							        </TR>
+	                ({($note.cdate+$note.paytime*86400)|date_format:"%Y/%m/%d"})
+	        </TD>
+	</TR>
 	<TR>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{trans("Customer:")}</B>
