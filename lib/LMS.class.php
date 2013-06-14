@@ -2220,7 +2220,7 @@ class LMS {
 			LEFT JOIN liabilities l ON (a.liabilityid = l.id)
 			WHERE a.customerid=? '
 				. (!$show_expired ? 'AND (a.dateto > ' . $now . ' OR a.dateto = 0)
-			    AND (a.liabilityid = 0 OR (a.liabilityid != 0 AND (a.at >= ' . $now . ' OR a.at < 531)))' : '')
+			    AND (a.at >= ' . $now . ' OR a.at < 531)' : '')
 				. ' ORDER BY a.datefrom, value', array($id))) {
 			foreach ($assignments as $idx => $row) {
 				switch ($row['period']) {
