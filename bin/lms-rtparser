@@ -468,6 +468,7 @@ if(! $prev_tid) # generate new ticket if previous not found
 			authid => $smtp_user,
 			authpwd => $smtp_pass,
 			on_errors => undef,
+			tls_allowed => 0,
 #			debug_level => 4,
 #			debug => './log.txt',
 			subject => $autoreply_subject,
@@ -475,7 +476,7 @@ if(! $prev_tid) # generate new ticket if previous not found
 			to => $replytoemail || $fromemail,
 			fake_to => $mailto,
 			encoding => 'quoted-printable',
-			charset => 'UTF-8',
+#			charset => 'UTF-8',
 			messageid => "<confirm.$ticket_id.$queue.$timestamp\@rtsystem.$hostname>",
 			headers => 
 				"References: $mh_references $mh_msgid\n"
@@ -568,6 +569,7 @@ if($notify)
 			authid => $smtp_user,
 			authpwd => $smtp_pass,
 			on_errors => undef,
+			tls_allowed => 0,
 #			debug_level => 4,
 #			debug => './log.txt',
 			subject => "[RT#$ticketid] $mail_mh_subject",
@@ -575,7 +577,7 @@ if($notify)
 			to => $row->{'email'},
 			fake_to => "\"$row->{'name'}\" <$row->{'email'}>",
 			encoding => '8bit',
-			charset => 'UTF-8',
+#			charset => 'UTF-8',
 			headers => 
 				"References: $mh_references $mh_msgid\n"
 				."In-Reply-To: $mh_msgid",
