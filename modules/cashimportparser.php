@@ -167,10 +167,10 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 
 				// Add file
 				if (!$sourcefileid) {
-					$time = time();
+					$idate = time();
 					$DB->Execute('INSERT INTO sourcefiles (name, idate, userid)
 						VALUES (?, ?, ?)',
-						array($filename, $time, $AUTH->id));
+						array($filename, $idate, $AUTH->id));
 
 					$sourcefileid = $DB->GetLastInsertId('sourcefiles');
 
@@ -178,7 +178,7 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 						$args = array(
 							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_SOURCEFILE] => $sourcefileid,
 							'name' => $filename,
-							'idate' => $time,
+							'idate' => $idate,
 							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id,
 						);
 						$SYSLOG->AddMessage(SYSLOG_RES_SOURCEFILE, SYSLOG_OPER_ADD, $args,
