@@ -128,7 +128,7 @@
 					</TD>
 					<TD style="width: 1%;" class="nobr">{trans("Group:")}</TD>
 					<TD style="width: 1%;">
-						<SELECT name="message[customergroup]" multiple id="customergroups" {tip trigger="customergroup" text="Select customers group"}>
+						<SELECT name="message[customergroup][]" multiple id="customergroups" {tip trigger="customergroup" text="Select customers group"}>
 							{*<option value="0">{trans("- all groups -")}</option>*}
 							{section name="customergroups" loop=$customergroups}
 							<option value="{$customergroups[customergroups].id}"{if $message.customergroup == $customergroups[customergroups].id} selected{/if}>{$customergroups[customergroups].name|truncate:"30":"...":true}</option>
