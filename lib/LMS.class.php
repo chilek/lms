@@ -1649,6 +1649,12 @@ class LMS {
 				$result['netname'] = $netname;
 			}
 
+			if ($result['ip_pub'] != '0.0.0.0') {
+				$result['netpubid'] = $this->GetNetIDByIP($result['ip_pub']);
+				$result['netpubname'] = $this->DB->GetOne('SELECT name FROM networks
+					WHERE id = ?', array($result['netpubid']));
+			}
+
 			return $result;
 		} else
 			return FALSE;
@@ -4023,9 +4029,9 @@ class LMS {
 				FROM nodes WHERE netid = ? AND ipaddr > ? AND ipaddr < ?
 				UNION ALL
 				SELECT id, name, ipaddr_pub AS ipaddr, ownerid, netdev 
-				FROM nodes WHERE netid = ? AND ipaddr_pub > ? AND ipaddr_pub < ?', 'ipaddr',
+				FROM nodes WHERE ipaddr_pub > ? AND ipaddr_pub < ?', 'ipaddr',
 				array($id, $network['addresslong'], ip_long($network['broadcast']),
-					$id, $network['addresslong'], ip_long($network['broadcast'])));
+					$network['addresslong'], ip_long($network['broadcast'])));
 
 		if($network['hostid'])
 			$network['hostname'] = $this->DB->GetOne('SELECT name FROM hosts WHERE id=?', array($network['hostid']));
