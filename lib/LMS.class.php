@@ -1739,7 +1739,7 @@ class LMS {
 				. $this->DB->Concat('c.lastname', "' '", 'c.name') . ' AS owner, net.name AS netname
 				FROM vnodes n
 				JOIN customersview c ON (n.ownerid = c.id)
-				JOIN networks net ON net.id = n.netid'
+				JOIN networks net ON net.id = n.netid '
 				. ($customergroup ? 'JOIN customerassignments ON (customerid = c.id) ' : '')
 				. ($nodegroup ? 'JOIN nodegroupassignments ON (nodeid = n.id) ' : '')
 				. ' WHERE 1=1 '
