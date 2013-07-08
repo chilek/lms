@@ -132,7 +132,7 @@
 					<TD style="width: 1%;" class="nobr">{$balancelist.date[balancelist]}</TD>
 					<TD style="width: 1%;" class="nobr">{$balancelist.username[balancelist]|truncate:16:"...":true}</TD>
 					<TD style="width: 1%;" class="text-right nobr">{if !$balancelist.type[balancelist]}{($balancelist.value[balancelist]*-1)|money_format}{else}-{/if}</TD>
-					<TD style="width: 1%;" class="text-right nobr">{if $balancelist.type[balancelist] && $balancelist.value[balancelist] > 0}{$balancelist.value[balancelist]|money_format}{else}-{/if}</TD>
+					<TD style="width: 1%;" class="text-right nobr{if $balancelist.type[balancelist] && $balancelist.value[balancelist] > 0} green{/if}">{if $balancelist.type[balancelist] && $balancelist.value[balancelist] > 0}+{$balancelist.value[balancelist]|money_format}{else}-{/if}</TD>
 					<TD style="width: 1%;" class="text-right nobr">{if $balancelist.type[balancelist] && $balancelist.value[balancelist] < 0}{($balancelist.value[balancelist]*-1)|money_format}{else}-{/if}</TD>
 					<TD style="width: 1%;" class="text-center">&raquo;</TD>
 					<TD style="width: 1%;" class="text-right nobr{if $balancelist.after[balancelist] < 0} red{/if}">{$balancelist.after[balancelist]|money_format}</TD>
