@@ -160,6 +160,7 @@ div.multiselectlayer ul li input { border: none; }
 .highlight:hover{ background-color: #CCFFCC; }
 .blendbg	{ background-color: #888888; }
 .blend		{ color: #888888; }
+.green		{ color: green; }
 .red		{ color: #FF0000; }
 .brown		{ color: #A52A2A; }
 .white		{ color: #FFFFFF; }
