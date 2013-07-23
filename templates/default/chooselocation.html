@@ -90,13 +90,13 @@
 	    <tr class="light" id="house"{if empty($data.streetid) && empty($data.cityid)} style="display:none"{/if}>
 		    <td nowrap>{trans("House No.")}:</td>
 		    <td>
-                <input type="text" size="8" id="house_input" name="house" value="" {tip text="Enter house number"}>
+                <input type="text" size="8" maxlength="8" id="house_input" name="house" value="" {tip text="Enter house number"}>
 		    </td>
 	    </tr>
 	    <tr class="light" id="flat"{if empty($data.streetid) && empty($data.cityid)} style="display:none"{/if}>
 		    <td nowrap>{trans("Flat No.")}:</td>
 		    <td>
-                <input type="text" size="8" id="flat_input" name="flat" value="" {tip text="Enter flat number"}>
+                <input type="text" size="8" maxlength="8" id="flat_input" name="flat" value="" {tip text="Enter flat number"}>
 		    </td>
 	    </tr>
         <tr class="light">
