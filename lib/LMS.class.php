@@ -2227,7 +2227,7 @@ class LMS {
 			WHERE a.customerid=? '
 				. (!$show_expired ? 'AND (a.dateto > ' . $now . ' OR a.dateto = 0)
 			    AND (a.at >= ' . $now . ' OR a.at < 531)' : '')
-				. ' ORDER BY a.datefrom, value', array($id))) {
+				. ' ORDER BY t.name, a.datefrom, value', array($id))) {
 			foreach ($assignments as $idx => $row) {
 				switch ($row['period']) {
 					case DISPOSABLE:
