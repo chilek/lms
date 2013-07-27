@@ -52,7 +52,7 @@ switch($_RELOAD_TYPE)
 				if(in_array($host['id'], $_POST['hosts']))
 				{
 					echo '<H3>'.trans('Host:').' '.$host['name'].'</H3>';
-					echo '<TABLE WIDTH="100%" CLASS="superlight" CELLPADDING="5"><TR><TD CLASS="FALL">';
+					echo '<TABLE WIDTH="100%" class="superlight" CELLPADDING="5"><TR><TD class="fall">';
 					foreach($execlist as $execcmd)
 					{
 						$execcmd = str_replace('%host', $host['name'], $execcmd);
@@ -100,7 +100,7 @@ switch($_RELOAD_TYPE)
 					if(in_array($host['id'], $_POST['hosts']))
 					{
 						echo '<H3>'.trans('Host:').' '.$host['name'].'</H3>';
-						echo '<TABLE WIDTH="100%" CLASS="superlight" CELLPADDING="5"><TR><TD CLASS="FALL">';
+						echo '<TABLE WIDTH="100%" class="superlight" CELLPADDING="5"><TR><TD class="fall">';
 						foreach($sqlqueries as $query)
 						{
 							$query = str_replace('%TIME%', '?NOW?', $query);
