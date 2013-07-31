@@ -63,10 +63,12 @@
 			{include file="customerassignments.html"}
 		</TD>
 	</TR>
+	{if !check_conf('privileges.hide_finances')}
 	<TR>
 		<TD WIDTH="100%">
 			{include file="customerbalancebox.html" limit=-10}
 		</TD>
 	</TR>
+	{/if}
 </TABLE>
 {include file="footer.html"}
