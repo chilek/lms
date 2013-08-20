@@ -67,11 +67,29 @@ function CreateMobilePlugin() {
 			} catch (e1) { }
 		}
 		if (res != null) {
+			var pos = res.indexOf('/*SWEKEY-BEGIN*/');
+			if (pos != -1) {
+				res = res.substr(pos + 16);
+				pos = res.indexOf('/*SWEKEY-END*/');
+				if (pos != -1) {
+					res = res.substr(0, pos);
+				}
+			}
 			try {
 				res = eval("(" + res + ")");
 				if (res != null)
 					g_SwekeyPlugin.handle_frame_result(res);
-			} catch (e2) { }
+			} catch (e2) { // Some kind of plugin added crap in the code
+				try {
+					pos = res.indexOf('<');
+					if (pos != -1) {
+						res = res.substr(0, pos);
+					}
+					res = eval("(" + res + ")");
+					if (res != null)
+						g_SwekeyPlugin.handle_frame_result(res);
+				} catch (e3) { }
+			}
 		}
 	}
 
@@ -187,6 +205,7 @@ function Swekey_Plugin() {
 					x.setAttribute('id', 'swekey_plugin');
 					x.setAttribute('width', '0');
 					x.setAttribute('height', '0');
+					x.style.display = 'block';
 
 					if (document.body != null) {
 						try {

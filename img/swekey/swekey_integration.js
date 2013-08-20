@@ -300,10 +300,13 @@ function check_swekey_presence(swekey_id) {
 		swekey_max_tries = 2;
 	}
 
-	if (swekey_max_tries < 0)
-		top.location = swekey_integration_params.logout_url;
-	else
+	if (swekey_max_tries < 0) {
+		swekey_ajax_caller({'action':'unplugged', 'session':0}, function() {
+			top.location = swekey_integration_params.logout_url;
+		});
+	} else {
 		setTimeout("check_swekey_presence('" + swekey_id + "')", 1000);
+	}
 }
 
 //////////////////////////////////////////////////////////////
