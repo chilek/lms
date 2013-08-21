@@ -559,7 +559,7 @@ function docnumber($number=NULL, $template=NULL, $time=NULL, $ext_num='')
 	// main document number
 	$result = preg_replace_callback(
 		'/%(\\d*)N/',
-		create_function("$m", "return sprintf('%0$m[1]d', $number);"),
+		create_function('$m', "return sprintf(\"%0\$m[1]d\", $number);"),
 		$result);
 	
 	// time conversion specifiers
