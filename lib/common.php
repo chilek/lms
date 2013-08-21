@@ -618,21 +618,20 @@ function fetch_url($url)
 }
 
 // quoted-printable encoding
-function qp_encode($string)
-{
-        // ASCII only - don't encode
-        if(!preg_match('#[\x80-\xFF]{1}#', $string))
-        	return $string;
+function qp_encode($string) {
+	// ASCII only - don't encode
+	if (!preg_match('#[\x80-\xFF]{1}#', $string))
+		return $string;
 
-        $encoded = preg_replace_callback(
-            '/([\x2C\x3F\x80-\xFF])/',
-            create_function("$m", "return '='.sprintf('%02X', ord($m[1]));"),
-            $string);
+	$encoded = preg_replace_callback(
+		'/([\x2C\x3F\x80-\xFF])/',
+		create_function('$m', 'return "=".sprintf("%02X", ord($m[1]));'),
+		$string);
 
-        // replace spaces with _
-        $encoded = str_replace(' ', '_', $encoded);
+	// replace spaces with _
+	$encoded = str_replace(' ', '_', $encoded);
 
-        return '=?UTF-8?Q?'.$encoded.'?=';
+	return '=?UTF-8?Q?'.$encoded.'?=';
 }
 
 // escape quotes and backslashes, newlines, etc.
