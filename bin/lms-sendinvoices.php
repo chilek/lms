@@ -296,12 +296,12 @@ if (!empty($docs))
 			if (!$quiet || $test)
 				printf("Invoice No. $invoice_number for " . $doc['name'] . " <$custemail>\n");
 
-			if (!$test)
-			{
-				$res = $LMS->SendMail($custemail . ',' . $notify_email,
-					array('From' => $from, 'To' => $doc['name'] . ' <' . $custemail . '>',
-						'Cc' => $notify_email,
-						'Subject' => $subject), $body,
+			if (!$test) {
+				$headers = array('From' => $from, 'To' => $doc['name'] . ' <' . $custemail . '>',
+					'Subject' => $subject);
+				if (!empty($notify_email))
+					$headers['Cc'] = $notify_email;
+				$res = $LMS->SendMail($custemail . ',' . $notify_email, $headers, $body,
 					array(0 => array('content_type' => $ftype, 'filename' => $filename . '.' . $fext,
 						'data' => $res)));
 

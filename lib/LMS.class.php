@@ -48,7 +48,6 @@ class LMS {
 		//$this->_revision = preg_replace('/^.Revision: ([0-9.]+).*/', '\1', $this->_revision);
 		$this->_revision = '';
 		//$this->_version = $this->_version.' ('.$this->_revision.')';
-		$this->_version = '';
 	}
 
 	function _postinit() {
@@ -5106,8 +5105,10 @@ class LMS {
 			$params['auth'] = false;
 
 		$headers['X-Mailer'] = 'LMS-' . $this->_version;
-		$headers['X-Remote-IP'] = $_SERVER['REMOTE_ADDR'];
-		$headers['X-HTTP-User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
+		if (isset($_SERVER)) {
+			$headers['X-Remote-IP'] = $_SERVER['REMOTE_ADDR'];
+			$headers['X-HTTP-User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
+		}
 		$headers['Mime-Version'] = '1.0';
 		$headers['Subject'] = qp_encode($headers['Subject']);
 
