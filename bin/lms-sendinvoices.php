@@ -297,7 +297,7 @@ if (!empty($docs))
 				printf("Invoice No. $invoice_number for " . $doc['name'] . " <$custemail>\n");
 
 			if (!$test) {
-				$headers = array('From' => $from, 'To' => $doc['name'] . ' <' . $custemail . '>',
+				$headers = array('From' => $from, 'To' => qp_encode($doc['name']) . ' <' . $custemail . '>',
 					'Subject' => $subject);
 				if (!empty($notify_email))
 					$headers['Cc'] = $notify_email;
