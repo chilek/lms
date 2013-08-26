@@ -177,6 +177,7 @@ version ? (????-??-??):
   - assignment edit: autoselect tax value for tariffless assignments when assignment
     tax value is already defined [chilan]
   - userpanel: added credential reminder support [chilan]
+  - sms message can be sent to more than one phone for single customer [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 

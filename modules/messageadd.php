@@ -81,7 +81,7 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 
 	if($type == MSG_SMS)
 	{
-		$smstable = 'JOIN (SELECT MIN(phone) AS phone, customerid
+		$smstable = 'JOIN (SELECT ' . $LMS->DB->GroupConcat('phone') . ' AS phone, customerid
 				FROM customercontacts
 				WHERE (type & '.CONTACT_MOBILE.') = '.CONTACT_MOBILE.'
 				GROUP BY customerid
@@ -126,11 +126,10 @@ function GetRecipient($customerid, $type=MSG_MAIL)
 
 	if($type == MSG_SMS)
 	{
-		$smstable = 'JOIN (SELECT phone, customerid
+		$smstable = 'JOIN (SELECT ' . $LMS->DB->GroupConcat('phone') . ' AS phone, customerid
 				FROM customercontacts 
 				WHERE customerid = '.$customerid.'
 				    AND (type & '.CONTACT_MOBILE.') = '.CONTACT_MOBILE.'
-				ORDER BY phone LIMIT 1
 			) x ON (x.customerid = c.id)';
 	}
 
@@ -305,21 +304,21 @@ if(isset($_POST['message']))
 
 		$msgid = $DB->GetLastInsertID('messages');
 
-		foreach($recipients as $key => $row)
-		{
-			if($message['type'] == MSG_MAIL)
-				$recipients[$key]['destination'] = $row['email'];
+		foreach ($recipients as $key => $row) {
+			if ($message['type'] == MSG_MAIL)
+				$recipients[$key]['destination'] = explode(',', $row['email']);
 			else
-				$recipients[$key]['destination'] = $row['phone'];
+				$recipients[$key]['destination'] = explode(',', $row['phone']);
 
-			$DB->Execute('INSERT INTO messageitems (messageid, customerid,
-				destination, status)
-				VALUES (?, ?, ?, ?)', array(
-					$msgid,
-					isset($row['id']) ? $row['id'] : 0,
-					$recipients[$key]['destination'],
-					MSG_NEW,
-				));
+			foreach ($recipients[$key]['destination'] as $destination)
+				$DB->Execute('INSERT INTO messageitems (messageid, customerid,
+					destination, status)
+					VALUES (?, ?, ?, ?)', array(
+						$msgid,
+						isset($row['id']) ? $row['id'] : 0,
+						$destination,
+						MSG_NEW,
+					));
 		}
 
 		$DB->CommitTrans();
@@ -346,51 +345,52 @@ if(isset($_POST['message']))
 				echo '<B>'.trans('Warning! Debug mode (using phone $a).',$CONFIG['sms']['debug_phone']).'</B><BR>';
 		}
 
-		foreach($recipients as $key => $row)
-		{
+		foreach ($recipients as $key => $row) {
 			$body = $message['body'];
 
 			BodyVars($body, $row);
 
-			if($message['type'] == MSG_MAIL)
-			{
-				$headers['To'] = '<'.$row['destination'].'>';
-				echo '<img src="img/mail.gif" border="0" align="absmiddle" alt=""> ';
+			foreach ($row['destination'] as $destination) {
+				$orig_destination = $destination;
+				if ($message['type'] == MSG_MAIL) {
+					$headers['To'] = '<' . $destination . '>';
+					echo '<img src="img/mail.gif" border="0" align="absmiddle" alt=""> ';
+				} else {
+					$destination = preg_replace('/[^0-9]/', '', $destination);
+					echo '<img src="img/sms.gif" border="0" align="absmiddle" alt=""> ';
+				}
+
+				echo trans('$a of $b ($c) $d:', ($key + 1), sizeof($recipients),
+				sprintf('%02.1f%%', round((100 / sizeof($recipients)) * ($key + 1), 1)),
+					$row['customername'] . ' &lt;' . $destination . '&gt;');
+				flush();
+
+				if ($message['type'] == MSG_MAIL)
+					$result = $LMS->SendMail($destination, $headers, $body, $files);
+				else
+					$result = $LMS->SendSMS($destination, $body, $msgid);
+
+				if (is_string($result))
+					echo " <font color=red>$result</font>";
+				else if ($result == MSG_SENT)
+					echo ' ['.trans('sent').']';
+				else 
+					echo ' ['.trans('added').']';
+
+				echo "<BR>\n";
+
+				if (!is_int($result) || $result == MSG_SENT)
+					$DB->Execute('UPDATE messageitems SET status = ?, lastdate = ?NOW?,
+						error = ? WHERE messageid = ? AND customerid = ?
+							AND destination = ?',
+						array(
+							is_int($result) ? $result : MSG_ERROR,
+							is_int($result) ? null : $result,
+							$msgid,
+							$row['id'],
+							$orig_destination,
+						));
 			}
-			else
-			{
-				$row['destination'] = preg_replace('/[^0-9]/', '', $row['destination']);
-				echo '<img src="img/sms.gif" border="0" align="absmiddle" alt=""> ';
-			}
-
-			echo trans('$a of $b ($c) $d:', ($key+1), sizeof($recipients),
-				sprintf('%02.1f%%',round((100/sizeof($recipients))*($key+1),1)),
-				$row['customername'].' &lt;'.$row['destination'].'&gt;');
-			flush();
-
-			if($message['type'] == MSG_MAIL)
-				$result = $LMS->SendMail($row['destination'], $headers, $body, $files);
-			else
-				$result = $LMS->SendSMS($row['destination'], $body, $msgid);
-
-			if (is_string($result))
-				echo " <font color=red>$result</font>";
-			else if ($result == MSG_SENT)
-				echo ' ['.trans('sent').']';
-			else 
-				echo ' ['.trans('added').']';
-
-			echo "<BR>\n";
-
-			if (!is_int($result) || $result == MSG_SENT)
-				$DB->Execute('UPDATE messageitems SET status = ?, lastdate = ?NOW?,
-					error = ? WHERE messageid = ? AND customerid = ?',
-					array(
-						is_int($result) ? $result : MSG_ERROR,
-						is_int($result) ? null : $result,
-						$msgid,
-						$row['id'],
-					));
 		}
 
 		$SMARTY->display('footer.html');
