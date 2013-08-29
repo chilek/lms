@@ -171,7 +171,7 @@ $deadline_subject = (!empty($CONFIG['notify']['deadline_subject']) ? $CONFIG['no
 $deadline_days = (!empty($CONFIG['notify']['deadline_days']) ? intval($CONFIG['notify']['deadline_days']) : 0);
 
 if (empty($mail_from))
-	die("Fatal error: mailfrom unset! Con't continue, exiting.\n");
+	die("Fatal error: mailfrom unset! Can't continue, exiting.\n");
 
 if (!empty($CONFIG['notify']['smtp_auth']) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $CONFIG['notify']['smtp_auth']))
 	die("Fatal error: smtp_auth setting not supported! Can't continue, exiting.\n");
