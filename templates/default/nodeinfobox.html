@@ -129,7 +129,7 @@
 				<BR>
 				<SELECT name="linktype" id="linktype" {tip trigger="linktype" text="Select link type"}>
 					{foreach from=$_LINKTYPES item=item key=key}
-					<OPTION VAlUE="{$key}"{if $key==100000} selected{/if}>{$item}</OPTION>
+					<OPTION VAlUE="{$key}">{$item}</OPTION>
 					{/foreach}
 				</SELECT>
 				<SElECT name="linkspeed" id="linkspeed" {tip trigger="linkspeed" text="Select link speed"}>
