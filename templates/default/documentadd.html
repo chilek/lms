@@ -5,20 +5,24 @@
 {$xajax}
 <script type="text/javascript">
 <!--
-	function getplugin()
-	{
-	    reset_login_timeout();
+	function getplugin() {
+		reset_login_timeout();
 		xajax_plugin(document.forms['documentadd'].elements['document[templ]'].value, document.forms['documentadd'].elements['customerid'].value);
 	}
-	
+
+	function gettemplates() {
+		reset_login_timeout();
+		var doctype = document.forms['documentadd'].elements['document[type]'].value;
+		xajax_GetTemplates(doctype);
+	}
+
 	function print_document()
 	{
 		document.forms['documentadd'].action += '&print=1';
 		document.forms['documentadd'].submit();
 	}
 
-	function setnumberplans()
-	{
+	function setnumberplans() {
 		var type = document.forms['documentadd'].elements['document[type]'].value,
 		    plans = document.getElementById('numberplans');
 
@@ -59,6 +63,8 @@
 
 			plans.style.display = 'inline';
 		}
+
+		gettemplates();
 	}
 
 	function reset_customer()
@@ -153,10 +159,10 @@
 			<B>{trans("Template:")}
 		</TD>
 		<TD width="98%">
-			<SELECT SIZE="1" NAME="document[templ]" {tip text="Select template to generate new document if you haven't got prepared file" trigger="template"} onchange="getplugin();">
+			<SELECT SIZE="1" NAME="document[templ]" {tip text="Select template to generate new document if you haven't got prepared file" trigger="templ"} id="template" onchange="getplugin();">
 				<OPTION VALUE="">... {trans("select template")} ...</OPTION>
-				{foreach from=$docengines item=item}
-				<OPTION VALUE="{$item.name}"{if $document.templ==$item.name} SELECTED{/if}>{$item.title}</OPTION>
+				{foreach $docengines as $docengine}
+				<OPTION VALUE="{$docengine.name}"{if $document.templ==$docengine.name} SELECTED{/if}>{$docengine.title}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>

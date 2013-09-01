@@ -24,30 +24,7 @@
  *  $Id$
  */
 
-$_DOC_DIR = DOC_DIR;
-
-function plugin($template, $customer) {
-	global $_DOC_DIR;
-
-	$result = '';
-
-	// xajax response object, can be used in the plugin
-	$JSResponse = new xajaxResponse();
-
-	// read template information
-	if (file_exists($file = DOC_DIR . '/templates/' . $template . '/info.php'))
-		include($file);
-	// call plugin
-	if (!empty($engine['plugin']) && file_exists($file = DOC_DIR . '/templates/' . $engine['name'] . '/' . $engine['plugin'] . '.php'))
-		include($file);
-
-	$JSResponse->assign('plugin', 'innerHTML', $result);
-	return $JSResponse;
-}
-
-$LMS->InitXajax();
-$LMS->RegisterXajaxFunction('plugin');
-$SMARTY->assign('xajax', $LMS->RunXajax());
+include(MODULES_DIR . '/document.inc.php');
 
 if (isset($_POST['document'])) {
 	$document = $_POST['document'];
@@ -272,18 +249,7 @@ if (isset($document['numberplanid'])) {
 			$numberplans[] = $plan;
 }
 
-if ($dirs = getdir(DOC_DIR . '/templates', '^[a-z0-9_-]+$'))
-	foreach ($dirs as $dir) {
-		$infofile = DOC_DIR . '/templates/' . $dir . '/info.php';
-		if (file_exists($infofile)) {
-			unset($engine);
-			include($infofile);
-			$docengines[$dir] = $engine;
-		}
-	}
-
-if ($docengines)
-	ksort($docengines);
+$docengines = GetDocumentTemplates($rights, isset($document['type']) ? $document['type'] : NULL);
 
 $layout['pagetitle'] = trans('New Document');
 
@@ -299,6 +265,6 @@ $SMARTY->assign('docrights', $rights);
 $SMARTY->assign('allnumberplans', $allnumberplans);
 $SMARTY->assign('docengines', $docengines);
 $SMARTY->assign('document', $document);
-
 $SMARTY->display('documentadd.html');
+
 ?>

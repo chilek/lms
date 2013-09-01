@@ -24,28 +24,7 @@
  *  $Id$
  */
 
-$_DOC_DIR = DOC_DIR;
-
-function plugin($template, $customer) {
-	global $_DOC_DIR;
-
-	$result = '';
-
-	// xajax response
-	$JSResponse = new xajaxResponse();
-
-	// read template information
-	@include(DOC_DIR . '/templates/' . $template . '/info.php');
-	// call plugin
-	@include(DOC_DIR . '/templates/' . $engine['name'] . '/' . $engine['plugin'] . '.php');
-
-	$JSResponse->assign('plugin', 'innerHTML', $result);
-	return $JSResponse;
-}
-
-$LMS->InitXajax();
-$LMS->RegisterXajaxFunction('plugin');
-$SMARTY->assign('xajax', $LMS->RunXajax());
+include(MODULES_DIR . '/document.inc.php');
 
 $layout['pagetitle'] = trans('Documents Generator');
 
@@ -269,18 +248,7 @@ if ($templist = $LMS->GetNumberPlans())
 		if ($item['doctype'] < 0)
 			$numberplans[] = $item;
 
-if ($dirs = getdir(DOC_DIR . '/templates', '^[a-z0-9_-]+$'))
-	foreach ($dirs as $dir) {
-		$infofile = DOC_DIR . '/templates/' . $dir . '/info.php';
-		if (file_exists($infofile)) {
-			unset($engine);
-			include($infofile);
-			$docengines[] = $engine;
-		}
-	}
-
-if ($docengines)
-	asort($docengines);
+$docengines = GetDocumentTemplates($rights, isset($document['type']) ? $document['type'] : NULL);
 
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
@@ -290,4 +258,5 @@ $SMARTY->assign('docrights', $rights);
 $SMARTY->assign('docengines', $docengines);
 $SMARTY->assign('document', $document);
 $SMARTY->display('documentgen.html');
+
 ?>

@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$_DOC_DIR = DOC_DIR;
-
 if(isset($_GET['action']) && $_GET['action'] == 'confirm')
 {
 	if(!empty($_POST['marks']))

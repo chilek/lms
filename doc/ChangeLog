@@ -178,6 +178,7 @@ version ? (????-??-??):
     tax value is already defined [chilan]
   - userpanel: added credential reminder support [chilan]
   - sms message can be sent to more than one phone for single customer [chilan]
+  - show only document templates which match chosen document type [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 

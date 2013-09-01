@@ -5,10 +5,15 @@
 {$xajax}
 <script type="text/javascript">
 <!--
-	function getplugin()
-	{
+	function getplugin() {
 		reset_login_timeout();
 		xajax_plugin(document.forms['documentgen'].elements['document[templ]'].value, 0);
+	}
+
+	function gettemplates() {
+		reset_login_timeout();
+		var doctype = document.forms['documentgen'].elements['document[type]'].value;
+		xajax_GetTemplates(doctype);
 	}
 
 	function printdoc()
@@ -101,7 +106,7 @@
 			<B>{trans("Type:")}
 		</TD>
 		<TD width="98%">
-			<SELECT SIZE="1" NAME="document[type]" {tip text="Select document type" trigger="type"}>
+			<SELECT SIZE="1" NAME="document[type]" {tip text="Select document type" trigger="type"} onchange="gettemplates();">
 				<OPTION VALUE="0">... {trans("select type")} ...</OPTION>
 				{foreach from=$_DOCTYPES key=key item=item}{if $key < 0 && in_array($key, $docrights)}
 				<OPTION VALUE="{$key}"{if $document.type==$key} SELECTED{/if}>{$item}</OPTION>
@@ -117,10 +122,10 @@
 			<B>{trans("Template:")}
 		</TD>
 		<TD width="98%">
-			<SELECT SIZE="1" NAME="document[templ]" {tip text="Select document template" trigger="template"} onchange="getplugin();">
+			<SELECT SIZE="1" NAME="document[templ]" {tip text="Select document template" trigger="templ"} id="template" onchange="getplugin();">
 				<OPTION VALUE="0">... {trans("select template")} ...</OPTION>
-				{foreach from=$docengines item=item}
-				<OPTION VALUE="{$item.name}"{if $document.templ==$item.name} SELECTED{/if}>{$item.title}</OPTION>
+				{foreach $docengines as $docengine}
+				<OPTION VALUE="{$docengine.name}"{if $document.templ==$docengine.name} SELECTED{/if}>{$docengine.title}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
