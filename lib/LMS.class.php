@@ -4756,7 +4756,7 @@ class LMS {
 		return $ticket;
 	}
 
-	function TicketAdd($ticket) {
+	function TicketAdd($ticket, $files = NULL) {
 		$ts = time();
 		$this->DB->Execute('INSERT INTO rttickets (queueid, customerid, requestor, subject, 
 				state, owner, createtime, cause, creatorid)
@@ -4784,6 +4784,19 @@ class LMS {
 			$this->DB->Execute('INSERT INTO rtticketcategories (ticketid, categoryid) 
 				VALUES (?, ?)', array($id, $catid));
 
+		if (!empty($files) && $this->CONFIG['rt']['mail_dir']) {
+			$msgid = $this->DB->GetLastInsertID('rtmessages');
+			$dir = $this->CONFIG['rt']['mail_dir'] . sprintf('/%06d/%06d', $id, $msgid);
+			@mkdir($this->CONFIG['rt']['mail_dir'] . sprintf('/%06d', $id), 0700);
+			@mkdir($dir, 0700);
+			foreach ($files as $file) {
+				$newfile = $dir . '/' . $file['name'];
+				if(@rename($file['tmp_name'], $newfile))
+					$this->DB->Execute('INSERT INTO rtattachments (messageid, filename, contenttype) 
+							VALUES (?,?,?)', array($msgid, $file['name'], $file['type']));
+			}
+		}
+
 		return $id;
 	}
 
@@ -4806,19 +4819,23 @@ class LMS {
 		$ticket['messages'] = $this->DB->GetAll(
 				'(SELECT rtmessages.id AS id, mailfrom, subject, body, createtime, '
 				. $this->DB->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername, 
-				    userid, users.name AS username, customerid, rtattachments.filename AS attachment
+				    userid, users.name AS username, customerid
 				FROM rtmessages
 				LEFT JOIN customers ON (customers.id = customerid)
 				LEFT JOIN users ON (users.id = userid)
-				LEFT JOIN rtattachments ON (rtmessages.id = rtattachments.messageid)
 				WHERE ticketid = ?)
 				UNION
 				(SELECT rtnotes.id AS id, NULL, NULL, body, createtime, NULL,
-				    userid, users.name AS username, NULL, NULL
+				    userid, users.name AS username, NULL
 				FROM rtnotes
 				LEFT JOIN users ON (users.id = userid)
 				WHERE ticketid = ?)
 				ORDER BY createtime ASC', array($id, $id));
+
+		foreach ($ticket['messages'] as $idx => $message)
+			$ticket['messages'][$idx]['attachments'] =
+				$this->DB->GetCol('SELECT filename FROM rtattachments WHERE messageid = ?',
+					array($message['id']));
 
 		if (!$ticket['customerid'])
 			list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['requestor'], "%[^<]<%[^>]");

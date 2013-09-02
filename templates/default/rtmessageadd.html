@@ -51,10 +51,10 @@
 	<TR>
 		<TD WIDTH="1%" NOWRAP>
 			<IMG src="img/attach.gif" alt="">
-			<B>{trans("Attachment:")}</B>
+			<B>{trans("Attachments:")}</B>
 		</TD>
 		<TD WIDTH="99%">
-			<INPUT name="file" type="file" size="55" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
+			<INPUT name="files[]" type="file" size="55" {tip text="Enter path to file or click 'Browse' button" trigger="files"} multiple>
 		</TD>
 	</TR>
 	<TR>

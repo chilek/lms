@@ -67,9 +67,41 @@ if(isset($_POST['ticket']))
 	
 	$ticket['mailfrom'] = $ticket['email'] ? $ticket['email'] : '';
 
+	$files = array();
+	foreach ($_FILES['files']['name'] as $fileidx => $filename)
+		if (!empty($filename)) {
+			if (is_uploaded_file($_FILES['files']['tmp_name'][$fileidx]) && $_FILES['files']['size'][$fileidx]) {
+				$filecontents = '';
+				$fd = fopen($_FILES['files']['tmp_name'][$fileidx], 'r');
+				if ($fd) {
+					while (!feof($fd))
+						$filecontents .= fread($fd,256);
+					fclose($fd);
+				}
+				$files[] = array(
+					'name' => $filename,
+					'tmp_name' => $_FILES['files']['tmp_name'][$fileidx],
+					'type' => $_FILES['files']['type'][$fileidx],
+					'contents' => $filecontents,
+				);
+			} else { // upload errors
+				if (isset($error['files']))
+					$error['files'] .= "\n";
+				else
+					$error['files'] = '';
+				switch ($_FILES['files']['error'][$fileidx]) {
+					case 1:
+					case 2: $error['files'] .= trans('File is too large: $a', $filename); break;
+					case 3: $error['files'] .= trans('File upload has finished prematurely: $a', $filename); break;
+					case 4: $error['files'] .= trans('Path to file was not specified: $a', $filename); break;
+					default: $error['files'] .= trans('Problem during file upload: $a', $filename); break;
+				}
+			}
+		}
+
 	if (!$error)
 	{
-		$id = $LMS->TicketAdd($ticket);
+		$id = $LMS->TicketAdd($ticket, $files);
 
 		if (isset($CONFIG['phpui']['newticket_notify']) && chkconfig($CONFIG['phpui']['newticket_notify']))
 		{

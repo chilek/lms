@@ -9,7 +9,7 @@
 //-->
 </script>
 <H1>{$layout.pagetitle}</H1>
-<FORM method="POST" name="ticket" action="?m=rtticketadd">
+<FORM method="POST" name="ticket" action="?m=rtticketadd" enctype="multipart/form-data">
 <p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
 </p>
@@ -97,6 +97,15 @@
 		</TD>
 		<TD style="width: 99%;">
 			<TEXTAREA name="ticket[body]" cols="50" rows="5" {tip text="Enter ticker content" trigger="body"} >{$ticket.body}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR>
+		<TD style="width: 1%;" class="bold nobr">
+			<IMG src="img/attach.gif" alt="">
+			{trans("Attachments:")}
+		</TD>
+		<TD style="width: 99%;">
+			<INPUT name="files[]" type="file" size="55" {tip text="Enter path to file or click 'Browse' button" trigger="files"} multiple>
 		</TD>
 	</TR>
 	<TR>

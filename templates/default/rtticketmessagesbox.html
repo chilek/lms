@@ -62,9 +62,11 @@
 						<BR>
 						{$message.subject|escape}
 					</TD>
-					<TD style="width: 97%;" class="text-right nobr">
-						{if $message.attachment}
-						<A href="?m=rtmessageview&amp;tid={$ticket.ticketid}&amp;mid={$message.id}&amp;file={$message.attachment}">{trans("Open attachment")} <IMG src="img/attach.gif" alt=""></A>
+					<TD style="width: 97%;" class="text-right">
+						{if $message.attachments}
+						{foreach $message.attachments as $attachment}
+						<A href="?m=rtmessageview&amp;tid={$ticket.ticketid}&amp;mid={$message.id}&amp;file={$attachment}">{$attachment} <IMG src="img/attach.gif" alt=""></A>
+						{/foreach}
 						{/if}
 						<A href="?m=rtmessageview&amp;id={$message.id}">{trans("Details")} <IMG src="img/view.gif" alt=""></A>
 						{if $msgidx > 0}

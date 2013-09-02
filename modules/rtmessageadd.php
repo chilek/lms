@@ -24,18 +24,17 @@
  *  $Id$
  */
 
-function MessageAdd($msg, $headers, $file=NULL)
-{
+function MessageAdd($msg, $headers, $files = NULL) {
 	global $DB, $LMS, $CONFIG;
 	$time = time();
 
 	$head = '';
 	if($headers)
-		foreach($headers as $idx => $header)
-			$head .= $idx.": ".$header."\n";
+		foreach ($headers as $idx => $header)
+			$head .= $idx . ": " . $header . "\n";
 
 	$DB->Execute('INSERT INTO rtmessages (ticketid, createtime, subject, body, userid, customerid, mailfrom, inreplyto, messageid, replyto, headers)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			array(
 				$msg['ticketid'],
 				$time,
@@ -49,16 +48,17 @@ function MessageAdd($msg, $headers, $file=NULL)
 				(isset($msg['replyto']) ? $msg['replyto'] : $headers['Reply-To']),
 				$head));
 
-	if(isset($file['name']) && isset($CONFIG['rt']['mail_dir']))
-	{
+	if (!empty($files) && isset($CONFIG['rt']['mail_dir'])) {
 		$id = $DB->GetLastInsertId('rtmessages');
-		$dir = $CONFIG['rt']['mail_dir'].sprintf('/%06d/%06d',$msg['ticketid'],$id);
-		@mkdir($CONFIG['rt']['mail_dir'].sprintf('/%06d',$msg['ticketid']), 0700);
+		$dir = $CONFIG['rt']['mail_dir'] . sprintf('/%06d/%06d', $msg['ticketid'], $id);
+		@mkdir($CONFIG['rt']['mail_dir'] . sprintf('/%06d', $msg['ticketid']), 0700);
 		@mkdir($dir, 0700);
-		$newfile = $dir.'/'.$file['name'];
-		if(@rename($file['tmp_name'], $newfile))
-			$DB->Execute('INSERT INTO rtattachments (messageid, filename, contenttype) 
-					VALUES (?,?,?)', array($id, $file['name'], $file['type']));
+		foreach ($files as $file) {
+			$newfile = $dir . '/' . $file['name'];
+			if(@rename($file['tmp_name'], $newfile))
+				$DB->Execute('INSERT INTO rtattachments (messageid, filename, contenttype) 
+						VALUES (?,?,?)', array($id, $file['name'], $file['type']));
+		}
 	}
 }
 
@@ -78,29 +78,37 @@ if(isset($_POST['message']))
 	if($message['destination']!='' && $message['sender']=='customer')
 		$error['destination'] = trans('Customer cannot send message!');
 
-	if($filename = $_FILES['file']['name'])
-	{
-		if(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
-		{
-			$file = '';
-			$fd = fopen($_FILES['file']['tmp_name'], 'r');
-			if($fd)
-			{
-				while(!feof($fd))
-					$file .= fread($fd,256);
-				fclose($fd);
+	$files = array();
+	foreach ($_FILES['files']['name'] as $fileidx => $filename)
+		if (!empty($filename)) {
+			if (is_uploaded_file($_FILES['files']['tmp_name'][$fileidx]) && $_FILES['files']['size'][$fileidx]) {
+				$filecontents = '';
+				$fd = fopen($_FILES['files']['tmp_name'][$fileidx], 'r');
+				if ($fd) {
+					while (!feof($fd))
+						$filecontents .= fread($fd,256);
+					fclose($fd);
+				}
+				$files[] = array(
+					'name' => $filename,
+					'tmp_name' => $_FILES['files']['tmp_name'][$fileidx],
+					'type' => $_FILES['files']['type'][$fileidx],
+					'contents' => $filecontents,
+				);
+			} else { // upload errors
+				if (isset($error['files']))
+					$error['files'] .= "\n";
+				else
+					$error['files'] = '';
+				switch ($_FILES['files']['error'][$fileidx]) {
+					case 1:
+					case 2: $error['files'] .= trans('File is too large: $a', $filename); break;
+					case 3: $error['files'] .= trans('File upload has finished prematurely: $a', $filename); break;
+					case 4: $error['files'] .= trans('Path to file was not specified: $a', $filename); break;
+					default: $error['files'] .= trans('Problem during file upload: $a', $filename); break;
+				}
 			}
-		} 
-		else // upload errors
-			switch($_FILES['file']['error'])
-			{
-				case 1:
-				case 2: $error['file'] = trans('File is too large.'); break;
-				case 3: $error['file'] = trans('File upload has finished prematurely.'); break;
-				case 4: $error['file'] = trans('Path to file was not specified.'); break;
-				default: $error['file'] = trans('Problem during file upload.'); break;
-			}
-	}
+		}
 
 	if(!$error)
 	{
@@ -159,15 +167,16 @@ if(isset($_POST['message']))
 
 				$body = $message['body'];
 
-				$files = NULL;
-				if (isset($file))
-				{
-					$files[0]['content_type'] = $_FILES['file']['type'];
-					$files[0]['filename'] = $filename;
-					$files[0]['data'] = $file;
-				}
+				$attachments = NULL;
+				if (!empty($files))
+					foreach ($files as $file)
+						$attachments[] = array(
+							'content_type' => $file['type'],
+							'filename' => $file['name'],
+							'data' => $file['contents'],
+						);
 
-				$LMS->SendMail($recipients, $headers, $body, $files);
+				$LMS->SendMail($recipients, $headers, $body, $attachments);
 			}
 			else
 			{
@@ -175,10 +184,10 @@ if(isset($_POST['message']))
 				if($message['customerid'] || $message['userid'])
 					$message['mailfrom'] = '';
 				$message['headers'] = '';
-			    	$message['replyto'] = '';
+				$message['replyto'] = '';
 			}
 
-			MessageAdd($message, $headers, $_FILES['file']);
+			MessageAdd($message, $headers, $files);
 		}
 		else //sending to backend
 		{
@@ -210,18 +219,19 @@ if(isset($_POST['message']))
 				$body .= "\n\nhttp".($_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
 					.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 					.'?m=rtticketview&id='.$message['ticketid'];
-			$files = NULL;
-			if ($file)
-			{
-				$files[0]['content_type'] = $_FILES['file']['type'];
-				$files[0]['filename'] = $filename;
-				$files[0]['data'] = $file;
-			}
-			$LMS->SendMail($recipients, $headers, $body, $files);
+			$attachments = NULL;
+			if (!empty($files))
+				foreach ($files as $file)
+					$attachments[] = array(
+						'content_type' => $file['type'],
+						'filename' => $file['name'],
+						'data' => $file['contents'],
+					);
+			$LMS->SendMail($recipients, $headers, $body, $attachments);
 
 			// message to customer is written to database
 			if($message['userid'] && $addmsg) 
-				MessageAdd($message, $headers, $_FILES['file']);
+				MessageAdd($message, $headers, $files);
 		}
 
 		// setting status and the ticket owner
