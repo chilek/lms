@@ -4834,7 +4834,7 @@ class LMS {
 
 		foreach ($ticket['messages'] as $idx => $message)
 			$ticket['messages'][$idx]['attachments'] =
-				$this->DB->GetCol('SELECT filename FROM rtattachments WHERE messageid = ?',
+				$this->DB->GetAll('SELECT filename, contenttype FROM rtattachments WHERE messageid = ?',
 					array($message['id']));
 
 		if (!$ticket['customerid'])
