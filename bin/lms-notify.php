@@ -271,7 +271,7 @@ function create_message($subject, $template) {
 if ($debtors_message && (empty($types) || in_array('debtors', $types))) {
 	// @TODO: check 'messages' table and don't send notifies to often
 	$customers = $DB->GetAll("SELECT c.id, c.pin, c.lastname, c.name,
-			SUM(value) AS balance, c.email,
+			SUM(value) AS balance, c.email
 		FROM customers c
 		JOIN cash ON (c.id = cash.customerid)
 		LEFT JOIN documents d ON d.id = cash.docid
