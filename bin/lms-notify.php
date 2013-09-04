@@ -33,7 +33,7 @@ $parameters = array(
 	'h' => 'help',
 	'v' => 'version',
 	'd' => 'debug',
-	't' => 'type:',
+	't:' => 'type:',
 );
 
 foreach ($parameters as $key => $val) {
