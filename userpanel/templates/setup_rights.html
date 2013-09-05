@@ -19,12 +19,12 @@
 	<FORM NAME="setdefaultrights" METHOD="POST" ACTION="?m=userpanel&f=submit_rights_default">
 		<TD WIDTH="1%" VALIGN="TOP">
 			<TABLE width="100%" cellpadding="3">
-				<TR CLASS="DARK">
+				<TR CLASS="dark">
 					<TD CLASS="fall" WIDTH="99%" COLSPAN="3">
 						<IMG SRC="img/settings.gif" alt="">&nbsp;<B>{trans("Default Userpanel Rights:")}</B>
 					</TD>
 				</TR>
-				<TR CLASS="LIGHT">
+				<TR CLASS="light">
 					<TD CLASS="flr" COLSPAN="3" VALIGN="TOP">
 						<TABLE cellpadding="3" cellspacing="0" WIDTH="100%">
 							<TR class="dark">
@@ -54,7 +54,7 @@
 						</TABLE>
 					</TD>
 				</TR>
-				<TR CLASS="LIGHT">
+				<TR CLASS="light">
 					<TD CLASS="fbottomu" ALIGN="RIGHT" COLSPAN="3">
 						<A HREF="javascript:document.setdefaultrights.submit()" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
 					</TD>
@@ -67,7 +67,7 @@
 	<FORM NAME="setrights" METHOD="POST" ACTION="?m=userpanel&f=submit_rights">
 		<TD WIDTH="1%" VALIGN="TOP">
 			<TABLE width="100%" cellpadding="3">
-				<TR CLASS="DARK">
+				<TR CLASS="dark">
 					<TD CLASS="fleftu" WIDTH="1%">
 						<IMG SRC="img/{if $layout.lmsv.2 == 6}user{else}customer{/if}.gif" alt="">&nbsp;<B>{trans("Customers:")}</B>
 					</TD>
@@ -75,7 +75,7 @@
 						<IMG SRC="img/settings.gif" alt="">&nbsp;<B>{trans("Userpanel Rights:")}</B>
 					</TD>
 				</TR>
-				<TR CLASS="LIGHT">
+				<TR CLASS="light">
 					<TD CLASS="fleft">
 						<SELECT size="20" name="setrights[mcustomerid][]" multiple {tip text="Select customers"}>
 							{foreach from=$customerlist item=item}
@@ -112,7 +112,7 @@
 						</TABLE>
 					</TD>
 				</TR>
-				<TR CLASS="LIGHT">
+				<TR CLASS="light">
 					<TD CLASS="fbl" WIDTH="1%">
 						<INPUT TYPE="checkbox" NAME="customers" CLASS="box light" id="selectall" onchange="SelectAllCustomers()"></INPUT><label for="selectall">{trans("Select All")}</label>
 					</TD>
