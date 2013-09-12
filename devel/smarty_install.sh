@@ -3,7 +3,7 @@
 # Smarty templates library quick installation (with sources download)
 #
 
-SMARTYVER="3.1.13"
+SMARTYVER="3.1.14"
 
 cd ../lib
 # download
