@@ -19,7 +19,7 @@
 		else if(!document.addbalance.original.checked && document.addbalance.copy.checked)
 			add = "&amp;which=copy";
 
-		document.addbalance.action = "?m=receipt&amp;print=cached&cash=1" + add;
+		document.addbalance.action = "?m=receipt&print=cached&cash=1" + add;
 		document.addbalance.target = "_blank";
 		document.addbalance.submit();
 	}
@@ -34,7 +34,7 @@
 		if(document.addbalance.duplicate.checked)
 			add += "&amp;duplicate=1";
 
-		document.addbalance.action="?m=" + type + "&amp;print=cached&amp;cash=1" + add;
+		document.addbalance.action="?m=" + type + "&print=cached&cash=1" + add;
 		document.addbalance.target="_blank";
 		document.addbalance.submit();
 	}
