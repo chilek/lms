@@ -15,9 +15,9 @@
 		if(document.addbalance.original.checked && document.addbalance.copy.checked)
 			add = "";
 		else if(document.addbalance.original.checked && !document.addbalance.copy.checked)
-			add = "&amp;which=original";
+			add = "&which=original";
 		else if(!document.addbalance.original.checked && document.addbalance.copy.checked)
-			add = "&amp;which=copy";
+			add = "&which=copy";
 
 		document.addbalance.action = "?m=receipt&print=cached&cash=1" + add;
 		document.addbalance.target = "_blank";
@@ -28,11 +28,11 @@
 	{
 		var add = "";
 		if(document.addbalance.original.checked)
-			add = "&amp;original=1";
+			add = "&original=1";
 		if(document.addbalance.copy.checked)
-			add += "&amp;copy=1";
+			add += "&copy=1";
 		if(document.addbalance.duplicate.checked)
-			add += "&amp;duplicate=1";
+			add += "&duplicate=1";
 
 		document.addbalance.action="?m=" + type + "&print=cached&cash=1" + add;
 		document.addbalance.target="_blank";
