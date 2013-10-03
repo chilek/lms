@@ -105,7 +105,7 @@ if (isset($_POST['document'])) {
 		$error['customer'] = trans('Customers list is empty!');
 
 	if (!$document['templ'])
-		$error['template'] = trans('Document template not selected!');
+		$error['templ'] = trans('Document template not selected!');
 
 	if (!$error) {
 		$header = '';
