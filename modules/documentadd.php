@@ -135,7 +135,7 @@ if (isset($_POST['document'])) {
 			$document['contenttype'] = $engine['content_type'];
 			$document['filename'] = $engine['output'];
 		} else if (empty($error))
-			$error['template'] = trans('Problem during file generation!');
+			$error['templ'] = trans('Problem during file generation!');
 	}
 	else
 		$error['file'] = trans('You must to specify file for upload or select document template!');
