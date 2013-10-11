@@ -37,8 +37,7 @@ function smarty_modifier_striphtml($args)
 			"'&(iexcl|#161);'i",
 			"'&(cent|#162);'i",
 			"'&(pound|#163);'i",
-			"'&(copy|#169);'i",
-			"'&#(\d+);'e");                    // evaluate as php
+			"'&(copy|#169);'i");
 	
 	$replace = array ("",
 			"\\1",
@@ -50,8 +49,7 @@ function smarty_modifier_striphtml($args)
 			chr(161),
 			chr(162),
 			chr(163),
-			chr(169),
-			"chr(\\1)");
+			chr(169));
 
 	return preg_replace ($search, $replace, $args);
 	
