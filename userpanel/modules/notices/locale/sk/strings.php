@@ -24,11 +24,11 @@
  *  $Id$
  */
 
-$_LANG['I confirm reading of message'] = 'Potvrdzujem prečítanie správy';
-$_LANG['Message to you'] = 'Správa pre vás';
-$_LANG['Messages'] = 'Správy';
-$_LANG['Shows administrative messages'] = 'Ukáž administratívne správy';
-$_LANG['This module is for showing administrative informations for your customer'] = 'Tento modul je určený pre zobrazovanie informácií pre správu vašich zákazníkov';
-$_LANG['We don\'t have any messages to you.'] = 'Nemáte žiadne nové správy.';
+$_LANG['I confirm reading of notice'] = 'Potvrdzujem prečítanie správy';
+$_LANG['Notice to you'] = 'Správa pre vás';
+$_LANG['Notices'] = 'Správy';
+$_LANG['Shows administrative notices'] = 'Ukáž administratívne správy';
+$_LANG['This module is for showing notices for your customer'] = 'Tento modul je určený pre zobrazovanie informácií pre správu vašich zákazníkov';
+$_LANG['We don\'t have any notices to you.'] = 'Nemáte žiadne nové správy.';
 
 ?>
