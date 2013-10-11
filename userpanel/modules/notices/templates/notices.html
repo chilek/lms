@@ -3,23 +3,23 @@
 <table width="100%" cellpadding="10">
     <tr>
 	<td>
-{box title="Message to you"}
-{if $message}
+{box title="Notice to you"}
+{if $notice}
 <table width="100%">
 	<tr>
 		<td align="center">
-			{$message}
+			{$notice}
 		</td>
 	</tr>
 	<tr>
 		<td align="right">
-			<a href="?m=messages&amp;confirm=1">{trans("I confirm reading of message")} {img src="save.gif" alt=""}</a>
+			<a href="?m=notice&amp;confirm=1">{trans("I confirm reading of notices")} {img src="save.gif" alt=""}</a>
 		</td>
 	</tr>
 </table>
 {else}
 	<p>&nbsp;</p>
-	<p align="center"><b>{trans("We don't have any messages to you.")}</b></p>
+	<p align="center"><b>{trans("We don't have any notices to you.")}</b></p>
 	<p>&nbsp;</p>
 {/if}
 {/box}

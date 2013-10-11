@@ -24,11 +24,11 @@
  *  $Id$
  */
 
-$_LANG['I confirm reading of message'] = 'Potwierdzam przeczytanie wiadomości';
-$_LANG['Message to you'] = 'Wiadomość do Ciebie';
-$_LANG['Messages'] = 'Wiadomości';
-$_LANG['Shows administrative messages'] = 'Pokazuje wiadomości administracyjne';
-$_LANG['This module is for showing administrative informations for your customer'] = 'Ten moduł ma za zadanie pokazać wiadomości administrcyjne skierowane do Twojego klienta';
-$_LANG['We don\'t have any messages to you.'] = 'Nie ma do Ciebie żadnych wiadomości.';
+$_LANG['I confirm reading of notice'] = 'Potwierdzam przeczytanie powiadomień';
+$_LANG['Notice to you'] = 'Powiadomienia dla Ciebie';
+$_LANG['Notices'] = 'Powiadomienia';
+$_LANG['Shows notices'] = 'Pokazuje powiadomienia';
+$_LANG['This module is for showing notices for your customer'] = 'Ten moduł ma za zadanie pokazać powiadomienia skierowane do Twojego klienta';
+$_LANG['We don\'t have any notices to you.'] = 'Nie ma do Ciebie żadnych powiadomień.';
 
 ?>

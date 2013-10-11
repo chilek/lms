@@ -24,20 +24,11 @@
  *  $Id$
  */
 
-function module_main()
-{
-    global $DB,$LMS,$SESSION,$SMARTY;
-    if(isset($_GET['confirm']))
-    {
-	$DB->Execute('UPDATE nodes SET warning=0 WHERE ownerid = ?', array($SESSION->id));
-    }
-    elseif($DB->GetOne('SELECT MAX(warning) FROM nodes WHERE ownerid = ?', array($SESSION->id)))
-    {
-	$message = $LMS->GetCustomerMessage($SESSION->id);
-	$SMARTY->assign('message', $message);
-    }
-
-    $SMARTY->display('module:messages.html');
-}
+$_LANG['I confirm reading of notice'] = 'Patvirtinu, jog žinutę perskaičiau';
+$_LANG['Notice to you'] = 'Žinutės Tau';
+$_LANG['Notices'] = 'Žinutės';
+$_LANG['Shows administrative notices'] = 'Rodo administracines žinutes';
+$_LANG['This module is for showing notices for your customer'] = 'Šis modulis rodo administracines žinutes skirtas Tavo klientui';
+$_LANG['We don\'t have any notices to you.'] = 'Neturi žinučių.';
 
 ?>
