@@ -1,0 +1,31 @@
+OPIS:
+
+Skrypt do płatności dla Banku Pocztowego.
+
+INSTALACJA:
+
+Plik cashimportcfg-bankpocztowy-elixir.php należy umieścić np. w lms/modules/
+W LMS-GIT w katalogu contrib znajduje się lms-cashimport.php który prawie działa :)
+Żeby działał z Bankiem Pocztowym należy w linii 437 zmienić "0" na "3" czyli powinno być tak:
+
+437            if ($part->ifdisposition && strtoupper($part->disposition) == 'ATTACHMENT' && $part->type == 3) {
+
+Teraz w /etc/lms/lms.ini ustawiamy dane do konta pocztowego, na które przychodzą maile od banku pocztowego:
+
+[cashimport]
+server = serwer.pl:993/novalidate-cert/ssl // (lub inna składnia, w zależności czy używamy SSL czy nie)
+username = "platnosci@serwer.pl"
+password = "haslo"
+autocommit = true // Ta opcja sprawia, że dane wczytane przez skrypt od razu będą wrzucane do LMS-a (w przeciwnym wypadku będą wisieć w Finanse > Import)
+
+Kolejną kwestią jest dodanie do LMS > Konfiguracja dwóch parametrów:
+
+Sekcja phpui: import_config i jako wartość podać ścieżkę do pliku cashimportcfg-bankpocztowy-elixir.php np. /home/www/lms/modules/cashimportcfg-bankpocztowy-elixir.php
+Sekcja finances: cashimport_checkinvoices i jako wartość: true // dzięki temu faktury również będą rozliczane a nie tylko samo saldo
+
+Ostatnia rzecz jaką należy zrobić to w LMS > Konfiguracja > Źródła importu dodać nowe źródło o nazwie np. "Bank pocztowy" i tyle.
+
+Voilla! Wszystko pięknie śmiga.
+
+UWAGA: Na testy polecam zrobić sobie drugą baze danych i sprawdzić czy wszystko jest OK, ewentualnie nie dawać autocommit = true na początku.
+Dodatkowo najlepiej najpierw przykładowy plik z banku wczytać ręcznie poprzez LMS > Finanse > Importuj i zobaczyć czy nie będzie błędów.
