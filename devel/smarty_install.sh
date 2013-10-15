@@ -18,8 +18,8 @@ echo "done."
 
 # merging
 echo -n "Merging... "
-mv Smarty-$SMARTYVER/libs/* Smarty/
-mv Smarty-$SMARTYVER/libs/plugins/* Smarty/plugins/
+cp -r Smarty-$SMARTYVER/libs/* Smarty/
+cp -r Smarty-$SMARTYVER/libs/plugins/* Smarty/plugins/
 echo "done."
 
 # cleanup
