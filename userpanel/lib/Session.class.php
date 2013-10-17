@@ -164,7 +164,8 @@ class Session {
 					}
 					else
 						$authinfo['enabled'] = 2;
-					
+
+					$authinfo['id'] = $authdata['id'];
 					$authinfo['failedlogindate'] = time();
 					$authinfo['failedloginip'] = $this->ip;
 					SetCustomerAuthInfo($authinfo);
