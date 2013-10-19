@@ -496,6 +496,8 @@ function changeMacFormat(id)
 }
 
 function tinymce_init(ui_language) {
+	if (ui_language == 'cz')
+		ui_language = 'cs';
 	tinyMCE.init({
 		mode: "none",
 		language: ui_language,
