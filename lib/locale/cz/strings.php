@@ -23,7 +23,7 @@
  *
  *  $Id$
  */
-
+$_LANG['billing'] = 'fakturace';
 $_LANG['Incorrect ZIP code!'] = 'Špatné PSČ! Nepoužívejte mezery!';
 $_LANG['Incorrect ZIP code! If you are sure you want to accept it, then click "Submit" again.'] = 'Špatné PSČ! Dalším klepnutím na Uložit se použije tato špatná hodnota.';
 $_LANG['ICN'] = 'OP';
