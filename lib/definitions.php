@@ -90,7 +90,7 @@ define('DOC_SHEET', -5);
 define('DOC_OTHER', -10);
 
 $DOCTYPES = array(
-    DOC_BILLING		=>	trans)'billing'),
+    DOC_BILLING		=>	trans('billing'),
     DOC_INVOICE 	=>	trans('invoice'),
     DOC_INVOICE_PRO	=>	trans('pro-forma invoice'),
     DOC_INVOICE_PURCHASE =>	trans('purchase invoice'),
