@@ -80,6 +80,7 @@ define('DOC_CNOTE', 3);
 define('DOC_DNOTE', 5);
 define('DOC_INVOICE_PRO',6);
 define('DOC_INVOICE_PURCHASE',7);
+define('DOC_BILLING',8);
 
 define('DOC_CONTRACT', -1);
 define('DOC_ANNEX', -2);
@@ -89,6 +90,7 @@ define('DOC_SHEET', -5);
 define('DOC_OTHER', -10);
 
 $DOCTYPES = array(
+    DOC_BILLING		=>	trans('billing'),
     DOC_INVOICE 	=>	trans('invoice'),
     DOC_INVOICE_PRO	=>	trans('pro-forma invoice'),
     DOC_INVOICE_PURCHASE =>	trans('purchase invoice'),

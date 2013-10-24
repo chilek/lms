@@ -23,7 +23,7 @@
  *
  *  $Id$
  */
-
+$_LANG['billing'] = 'fakturácia';
 $_LANG['$a ($b addresses)'] = '$a ($b adresy)';
 $_LANG['$a addresses'] = '$a adresy';
 $_LANG['$a ago ($b)'] = '$a pred ($b)';

@@ -23,7 +23,7 @@
  *
  *  $Id$
  */
-
+$_LANG['billing'] = 'atsiskaitymo';
 $_LANG['$a ($b addresses)'] = '$a ($b adresas)';
 $_LANG['$a addresses'] = '$a adresu';
 $_LANG['$a ago ($b)'] = '$a šitam ($b)';
