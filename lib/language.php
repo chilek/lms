@@ -93,12 +93,12 @@ $LANGDEFS = array(
 			'money_format' => '%01.2f RON',
 //			'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
 			),
-		'cz' => array(
+		'cs' => array(
 			'name' => 'Czech',
 			'orig' => 'Česky',
 			'locale' => 'cs_CZ.UTF-8',
 			'charset' => 'UTF-8',
-			'html' => 'cz',
+			'html' => 'cs',
 			'money_format' => '%01.2f Kč',
 //			'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
 			),
@@ -122,7 +122,7 @@ foreach ($langs as $val)
 		case 'sk':
 		case 'ro':
 		case 'en':
-		case 'cz':
+		case 'cs':
 			$_ui_language = $val;
 			break 2;
 	}
