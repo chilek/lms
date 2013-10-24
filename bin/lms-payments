@@ -559,15 +559,27 @@ while(my $assign = $dbq->fetchrow_hashref())
 						FROM customers WHERE id = ?");
 				$udbq->execute($uid);
 				my $urow = $udbq->fetchrow_hashref();
+				
+				my $ddbq = $dbase->prepare("SELECT name, address, city, zip, countryid, ten, regon, account, inv_header, inv_footer, inv_author, inv_cplace
+						FROM divisions WHERE id = ?");
+				$ddbq -> execute($urow->{'divisionid'});
+				my $drow = $ddbq->fetchrow_hashref();
+				
 				my $paytime = $urow->{'paytime'};
 				if($paytime eq -1) { $paytime = $deadline; }
 
 				my $idbq = $dbase->prepare("INSERT INTO documents (number, numberplanid, type, countryid, divisionid,
-						customerid, name, address, zip, city, ten, ssn, cdate, sdate, paytime, paytype)
-						VALUES (?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+						customerid, name, address, zip, city, ten, ssn, cdate, sdate, paytime, paytype,
+						div_name, div_address, div_city, div_zip, div_countryid, div_ten, div_regon, div_account, 
+						div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace)
+						VALUES (?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
 				$idbq->execute($numbers{$plan}, $plan, $urow->{'countryid'}, $urow->{'divisionid'}, $uid,
 						$urow->{'lastname'}.' '.$urow->{'name'}, $urow->{'address'}, $urow->{'zip'},
-						$urow->{'city'}, $urow->{'ten'}, $urow->{'ssn'}, $currtime, $saledate, $paytime, $inv_paytype);
+						$urow->{'city'}, $urow->{'ten'}, $urow->{'ssn'}, $currtime, $saledate, $paytime, $inv_paytype,
+						$drow->{'name'}, $drow->{'address'}, $drow->{'city'}, $drow->{'zip'}, $drow->{'countryid'},
+						$drow->{'ten'}, $drow->{'regon'}, $drow->{'account'}, $drow->{'inv_header'}, $drow->{'inv_footer'},
+						$drow->{'inv_author'}, $drow->{'inv_cplace'});
 
 				$idbq = $dbase->prepare("SELECT id FROM documents
 						WHERE cdate = ? AND number = ? AND type = 1 AND customerid = ?");

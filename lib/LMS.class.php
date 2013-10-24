@@ -2654,7 +2654,11 @@ class LMS {
 		$sdate = $invoice['invoice']['sdate'] ? $invoice['invoice']['sdate'] : $currtime;
 		$number = $invoice['invoice']['number'];
 		$type = $invoice['invoice']['type'];
-
+		
+		$division = $this->DB->GetRow('SELECT name, address, city, zip, countryid, ten, regon,
+				account, inv_header, inv_footer, inv_author, inv_cplace 
+				FROM divisions WHERE id = ? ;',array($invoice['customer']['divisionid']));
+		
 		$args = array(
 			'number' => $number,
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $invoice['invoice']['numberplanid'] ? $invoice['invoice']['numberplanid'] : 0,
@@ -2673,11 +2677,26 @@ class LMS {
 			'city' => $invoice['customer']['city'],
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $invoice['customer']['countryid'],
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $invoice['customer']['divisionid'],
+			'div_name' => ($division['name'] ? $division['name'] : ''),
+			'div_address' => ($division['address'] ? $division['address'] : ''), 
+			'div_city' => ($division['city'] ? $division['city'] : ''), 
+			'div_zip' => ($division['zip'] ? $division['zip'] : ''),
+			'div_countryid' => ($division['countryid'] ? $division['countryid'] : 0),
+			'div_ten'=> ($division['ten'] ? $division['ten'] : ''), 
+			'div_regone' => ($division['regon'] ? $division['regon'] : ''), 
+			'div_account' => ($division['account'] ? $division['account'] : ''),
+			'div_inv_header' => ($division['inv_header'] ? $division['inv_header'] : ''), 
+			'div_inv_footer' => ($division['inv_footer'] ? $division['inv_footer'] : ''), 
+			'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''), 
+			'div_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
 		);
+		
 		$this->DB->Execute('INSERT INTO documents (number, numberplanid, type,
 			cdate, sdate, paytime, paytype, userid, customerid, name, address, 
-			ten, ssn, zip, city, countryid, divisionid)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			ten, ssn, zip, city, countryid, divisionid,
+			div_name, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
+			div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 		$iid = $this->DB->GetLastInsertID('documents');
 		if ($this->SYSLOG) {
 			unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
@@ -2827,18 +2846,17 @@ class LMS {
 				d.ten, d.ssn, d.cdate, d.sdate, d.paytime, d.paytype, d.numberplanid,
 				d.closed, d.reference, d.reason, d.divisionid,
 				(SELECT name FROM users WHERE id = d.userid) AS user, n.template,
-				ds.name AS division_name, ds.shortname AS division_shortname,
-				ds.address AS division_address, ds.zip AS division_zip,
-				ds.city AS division_city, ds.countryid AS division_countryid, 
-				ds.ten AS division_ten, ds.regon AS division_regon, ds.account AS account,
-				ds.inv_header AS division_header, ds.inv_footer AS division_footer,
-				ds.inv_author AS division_author, ds.inv_cplace AS division_cplace,
+				d.div_name AS division_name, d.div_name AS division_shortname,
+				d.div_address AS division_address, d.div_zip AS division_zip,
+				d.div_city AS division_city, d.div_countryid AS division_countryid, 
+				d.div_ten AS division_ten, d.div_regon AS division_regon, d.div_account AS account,
+				d.div_inv_header AS division_header, d.div_inv_footer AS division_footer,
+				d.div_inv_author AS division_author, d.div_inv_cplace AS division_cplace,
 				c.pin AS customerpin, c.divisionid AS current_divisionid,
 				c.post_name, c.post_address, c.post_zip, c.post_city, c.post_countryid
 				FROM documents d
 				JOIN customers c ON (c.id = d.customerid)
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
-				LEFT JOIN divisions ds ON (ds.id = d.divisionid)
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 				WHERE d.id = ? AND (d.type = ? OR d.type = ?)', array($invoiceid, DOC_INVOICE, DOC_CNOTE))) {
 			$result['pdiscount'] = 0;
@@ -2947,18 +2965,17 @@ class LMS {
 				d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
 				d.ten, d.ssn, d.cdate, d.numberplanid, d.closed, d.divisionid, d.paytime, 
 				(SELECT name FROM users WHERE id = d.userid) AS user, n.template,
-				ds.name AS division_name, ds.shortname AS division_shortname,
-				ds.address AS division_address, ds.zip AS division_zip,
-				ds.city AS division_city, ds.countryid AS division_countryid, 
-				ds.ten AS division_ten, ds.regon AS division_regon, ds.account AS account,
-				ds.inv_header AS division_header, ds.inv_footer AS division_footer,
-				ds.inv_author AS division_author, ds.inv_cplace AS division_cplace,
+				d.div_name AS division_name, d.div_name AS division_shortname,
+				d.div_address AS division_address, d.div_zip AS division_zip,
+				d.div_city AS division_city, d.div_countryid AS division_countryid, 
+				d.div_ten AS division_ten, d.div_regon AS division_regon, d.div_account AS account,
+				d.div_inv_header AS division_header, d.div_inv_footer AS division_footer,
+				d.div_inv_author AS division_author, d.div_inv_cplace AS division_cplace,
 				c.pin AS customerpin, c.divisionid AS current_divisionid,
 				c.post_name, c.post_address, c.post_zip, c.post_city, c.post_countryid
 				FROM documents d
 				JOIN customers c ON (c.id = d.customerid)
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
-				LEFT JOIN divisions ds ON (ds.id = d.divisionid)
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 				WHERE d.id = ? AND d.type = ?', array($id, DOC_DNOTE))) {
 			$result['value'] = 0;
