@@ -165,10 +165,16 @@ if (isset($_POST['document'])) {
 		$time = time();
 
 		$DB->BeginTrans();
+		
+		$division = $this->DB->GetRow('SELECT name, address, city, zip, countryid, ten, regon,
+				account, inv_header, inv_footer, inv_author, inv_cplace 
+				FROM divisions WHERE id = ? ;',array($customer['divisionid']));
 
 		$DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, 
-			customerid, userid, name, address, zip, city, ten, ssn, divisionid, closed)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($document['type'],
+			customerid, userid, name, address, zip, city, ten, ssn, divisionid, 
+			div_name, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
+			div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, closed)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($document['type'],
 				$document['number'],
 				$document['numberplanid'],
 				$time,
@@ -181,6 +187,18 @@ if (isset($_POST['document'])) {
 				$customer['ten'] ? $customer['ten'] : '',
 				$customer['ssn'] ? $customer['ssn'] : '',
 				$customer['divisionid'],
+				($division['name'] ? $division['name'] : ''),
+				($division['address'] ? $division['address'] : ''), 
+				($division['city'] ? $division['city'] : ''), 
+				($division['zip'] ? $division['zip'] : ''),
+				($division['countryid'] ? $division['countryid'] : 0),
+				($division['ten'] ? $division['ten'] : ''), 
+				($division['regon'] ? $division['regon'] : ''), 
+				($division['account'] ? $division['account'] : ''),
+				($division['inv_header'] ? $division['inv_header'] : ''), 
+				($division['inv_footer'] ? $division['inv_footer'] : ''), 
+				($division['inv_author'] ? $division['inv_author'] : ''), 
+				($division['inv_cplace'] ? $division['inv_cplace'] : ''),
 				isset($document['closed']) ? 1 : 0
 		));
 

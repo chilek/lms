@@ -182,6 +182,7 @@ version ? (????-??-??):
   - add attachments support for new tickets [chilan]
   - multi attachments for new tickets and new ticket messages [chilan]
   - helpdesk messages: image attachment preview in popup [chilan]
+  - documents: copy division data to documents [michu006/chilan]
 
 version 1.11.13 Dira (2011-04-07)
 

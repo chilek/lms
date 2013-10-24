@@ -620,6 +620,18 @@ CREATE TABLE documents (
 	closed smallint		DEFAULT 0 NOT NULL,
 	reference integer	DEFAULT 0 NOT NULL,
 	reason varchar(255)	DEFAULT '' NOT NULL,
+	div_name text		DEFAULT '' NOT NULL,
+	div_address varchar(255) DEFAULT '' NOT NULL,
+	div_city varchar(255)	DEFAULT '' NOT NULL,
+	div_zip varchar(255)	DEFAULT '' NOT NULL,
+	div_countryid integer	DEFAULT 0 NOT NULL,
+	div_ten varchar(255)	DEFAULT '' NOT NULL,
+	div_regon varchar(255)	DEFAULT '' NOT NULL,
+	div_account varchar(48)	DEFAULT '' NOT NULL,
+	div_inv_header text	DEFAULT '' NOT NULL,
+	div_inv_footer text	DEFAULT '' NOT NULL,
+	div_inv_author text	DEFAULT '' NOT NULL,
+	div_inv_cplace text	DEFAULT '' NOT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX documents_cdate_idx ON documents(cdate);
@@ -1946,4 +1958,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2013051700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2013101400');
