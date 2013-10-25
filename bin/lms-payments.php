@@ -642,7 +642,7 @@ if (!empty($assigns))
 	}
 
 // delete old assignments
-$DB->Execute("DELETE FROM Liabilities WHERE id IN ( 
+$DB->Execute("DELETE FROM liabilities WHERE id IN ( 
 	SELECT liabilityid FROM assignments 
 	WHERE dateto < ?NOW? - 86400 * 30 AND dateto <> 0 AND at < $today - 86400 * 30 
 		AND liabilityid != 0)");
