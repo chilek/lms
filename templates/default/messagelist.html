@@ -85,6 +85,7 @@
 			{$message.cnt|default:0}
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+			<A onclick="return confirmLink(this, '{trans("Are you sure, you want to delete that message?")}')" href="?m=messagelist&delid={$message.id}"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 			<A href="?m=messageinfo&id={$message.id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
 		</TD>
 	</TR>

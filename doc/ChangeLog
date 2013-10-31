@@ -183,6 +183,7 @@ version ? (????-??-??):
   - multi attachments for new tickets and new ticket messages [chilan]
   - helpdesk messages: image attachment preview in popup [chilan]
   - documents: copy division data to documents [michu006/chilan]
+  - message deletion is possible on message list [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 

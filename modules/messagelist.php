@@ -128,6 +128,14 @@ function GetMessagesList($order='cdate,desc', $search=NULL, $cat=NULL, $type='',
 	return $result;
 }
 
+if (isset($_GET['delid'])) {
+	$delid = intval($_GET['delid']);
+	if ($delid) {
+		$DB->Execute('DELETE FROM messageitems WHERE messageid = ?', array($delid));
+		$DB->Execute('DELETE FROM messages WHERE id = ?', array($delid));
+	}
+}
+
 $layout['pagetitle'] = trans('Messages List');
 
 if(isset($_POST['search']))
