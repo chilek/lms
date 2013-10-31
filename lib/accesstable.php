@@ -54,7 +54,7 @@ $access['table'][7]['name']    	     	= trans('traffic stats');
 $access['table'][7]['allow_reg']	= '^(traffic|traffic(print|graph))$';
 
 $access['table'][8]['name']         	= trans('messaging (email, sms)');
-$access['table'][8]['allow_reg']    	= '^message(add|list|info)$';
+$access['table'][8]['allow_reg']    	= '^message(add|del|list|info)$';
 
 $access['table'][9]['name']         	= trans('Helpdesk (RT) administration');
 $access['table'][9]['allow_reg']    	= '^(rtsearch|rtprint|(rtqueue|rtticket|rtmessage|rtnote|rtcategory)(add|del|edit|info|view|list|print))$';
