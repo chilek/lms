@@ -1830,7 +1830,7 @@ SELECT c.* FROM customers c
 	        SELECT 1 FROM customerassignments a 
 	        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid) 
 	        WHERE e.userid = lms_current_user() AND a.customerid = c.id) 
-	        AND c.type IN ('0','1');
+	        AND c.type < 2;
 
 CREATE VIEW contractorview AS
 SELECT c.* FROM customers c
@@ -1958,4 +1958,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2013101400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2013110500');
