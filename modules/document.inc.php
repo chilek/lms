@@ -83,7 +83,7 @@ function GetTemplates($type) {
 	$contents = $SMARTY->fetch('documenttemplateoptions.html');
 
 	$JSResponse = new xajaxResponse();
-	$JSResponse->assign('template', 'innerHTML', $contents);
+	$JSResponse->assign('templ', 'innerHTML', $contents);
 
 	return $JSResponse;
 }
