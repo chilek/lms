@@ -178,7 +178,7 @@ CREATE TABLE customers (
   invoicenotice tinyint(1)   DEFAULT NULL,
   mailingnotice tinyint(1)   DEFAULT NULL,
   divisionid int(11)   	NOT NULL DEFAULT '0',
-  paytime tinyint	NOT NULL DEFAULT '-1',
+  paytime smallint	NOT NULL DEFAULT '-1',
   paytype smallint  DEFAULT NULL,
   PRIMARY KEY  (id),
   INDEX zip (zip),
@@ -343,7 +343,7 @@ CREATE TABLE documents (
 	countryid int(11) NOT NULL DEFAULT '0',
 	ten varchar(16) NOT NULL DEFAULT '',
 	ssn varchar(11) NOT NULL DEFAULT '',
-	paytime tinyint NOT NULL DEFAULT '0',
+	paytime smallint NOT NULL DEFAULT '0',
 	paytype smallint DEFAULT NULL,
 	closed tinyint(1) NOT NULL DEFAULT '0',
 	reference int(11) NOT NULL DEFAULT '0',
@@ -1449,7 +1449,7 @@ CREATE TABLE divisions (
 	inv_footer      text    	NOT NULL DEFAULT '',
 	inv_author      text    	NOT NULL DEFAULT '',
 	inv_cplace      text    	NOT NULL DEFAULT '',
-	inv_paytime 	tinyint         DEFAULT NULL,
+	inv_paytime 	smallint         DEFAULT NULL,
 	inv_paytype 	smallint    DEFAULT NULL,
 	description     text    	NOT NULL DEFAULT '',
 	status 		tinyint(1) 	NOT NULL DEFAULT 0,
@@ -1857,4 +1857,4 @@ INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2013110500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2013111900');

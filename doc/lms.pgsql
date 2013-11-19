@@ -1958,4 +1958,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2013110500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2013111900');
