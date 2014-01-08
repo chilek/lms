@@ -250,9 +250,9 @@ if ($y_month > 12)
 $txts[DAY] = strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom, $year));
 $txts[WEEK] = strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom, $year))." - ".strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom + 6, $year));
 $txts[MONTH] = strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom, $year))." - ".strftime("%Y/%m/%d", mktime(12, 0, 0, $month + 1, $dom - 1, $year));
-$txts[QUARTER] = strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom, $year))." - ".strftime("%Y/%m/%d", mktime(12, 0, 0, $q_month, $dom - 1, $q_year));
-$txts[HALFYEAR] = strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom, $year))." - ".strftime("%Y/%m/%d", mktime(12, 0, 0, $y_month, $dom - 1, $y_year));
-$txts[YEAR] = strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom, $year))." - ".strftime("%Y/%m/%d", mktime(12, 0, 0, $month - 1, $dom - 1, $year + 1));
+$txts[QUARTER] = strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom, $year))." - ".strftime("%Y/%m/%d", mktime(12, 0, 0, $q_month + 1, $dom - 1, $q_year));
+$txts[HALFYEAR] = strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom, $year))." - ".strftime("%Y/%m/%d", mktime(12, 0, 0, $y_month + 1, $dom - 1, $y_year));
+$txts[YEAR] = strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom, $year))." - ".strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom - 1, $year + 1));
 $txts[DISPOSABLE] = strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom, $year));
 
 // Special case, ie. you have 01.01.2005-01.31.2005 on invoice, but invoice/
@@ -485,7 +485,7 @@ foreach($assigns as $assign)
 				$customer = $DB->GetRow("SELECT lastname, name, address, city, zip, ssn, ten, countryid, divisionid, paytime 
 						FROM customers WHERE id = $cid");
 				
-				$division = $this->DB->GetRow('SELECT name, address, city, zip, countryid, ten, regon,
+				$division = $DB->GetRow('SELECT name, address, city, zip, countryid, ten, regon,
 						account, inv_header, inv_footer, inv_author, inv_cplace 
 						FROM divisions WHERE id = ? ;',array($customer['divisionid']));
 				
