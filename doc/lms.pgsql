@@ -638,6 +638,7 @@ CREATE INDEX documents_cdate_idx ON documents(cdate);
 CREATE INDEX documents_numberplanid_idx ON documents(numberplanid);
 CREATE INDEX documents_customerid_idx ON documents(customerid);
 CREATE INDEX documents_closed_idx ON documents(closed);
+CREATE INDEX documents_reference_idx ON documents(reference);
 
 /* -------------------------------------------------------- 
   Structure of table "documentcontents" 
@@ -1958,4 +1959,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2013111900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014012700');
