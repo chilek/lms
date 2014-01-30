@@ -31,38 +31,38 @@
 		</TD>
 	</TR>
 	{cycle values="white,grey" print=false}
-	{section name=list loop=$list}
+	{foreach $list as $ticket}
 	<TR class="{cycle}">
 		<TD ALIGN="CENTER">
 			{counter}.
 		</TD>
 		<TD ALIGN="CENTER">
-			<B>{$list[list].id|string_format:"%08d"}</B>
+			<B>{$ticket.id|string_format:"%08d"}</B>
 		</TD>
 		<TD ALIGN="CENTER">
-			{$list[list].createtime|date_format:"%Y/%m/%d"}
+			{$ticket.createtime|date_format:"%Y/%m/%d"}
 		</TD>
 		<TD>
-			{$list[list].subject|escape}
+			{$ticket.subject|escape}
 		</TD>
 		<TD NOWRAP>
-			{if $list[list].customerid}
-			{$list[list].customername|truncate:"50":"...":true} ({$list[list].customerid|string_format:"%04d"})
-			{if $list[list].address}<BR>{$list[list].address}{/if}
-			{if $list[list].phone}<BR>{trans("phone:")} {$list[list].phone}{/if}
+			{if $ticket.customerid}
+			{$ticket.customername|truncate:"50":"...":true} ({$ticket.customerid|string_format:"%04d"})
+			{if $ticket.address}<BR>{$ticket.address}{/if}
+			{if $ticket.phone}<BR>{trans("phone:")} {$ticket.phone}{/if}
 			{else}
-			{$list[list].requestor|truncate:"50":"...":true}
+			{$ticket.requestor|truncate:"50":"...":true}
 			{/if}
 		</TD>
 	</TR>
-	{sectionelse}
+	{foreachelse}
 	<TR>
-	        <TD ALIGN="center" WIDTH="100%" COLSPAN="7">
+		<TD ALIGN="center" WIDTH="100%" COLSPAN="7">
 			<P>&nbsp;</P>
 			<P><B>{trans("No such requests in database.")}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>
-	{/section}
+	{/foreach}
 </TABLE>
 {include file="clearfooter.html"}

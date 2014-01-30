@@ -12,17 +12,17 @@
 		</TD>
 	</TR>
 </TABLE>
-{foreach from=$list item=request}
+{foreach $list as $ticket}
 <TABLE WIDTH="640" CELLPADDING="3" ALIGN="CENTER">
 	<TR>
 		<TD CLASS="grey bb fleftu" ALIGN="CENTER" WIDTH="1%" NOWRAP>
 			<IMG src="img/ticket.gif" alt="">
 		</TD>
 		<TD CLASS="grey bb fbt" ALIGN="CENTER" WIDTH="1%" NOWRAP>
-			<B>{$request.id|string_format:"%08d"}:</B>
+			<B>{$ticket.id|string_format:"%08d"}:</B>
 		</TD>
 		<TD CLASS="grey bb fbt" WIDTH="97%">
-			<B>{$request.subject|escape}</B>
+			<B>{$ticket.subject|escape}</B>
 		</TD>
 		<TD CLASS="grey bb frightu" ALIGN="CENTER" WIDTH="1%">
 			#{counter}
@@ -34,25 +34,25 @@
 			    <TR>
 				<TD WIDTH="1%">{trans("Date:")}</TD>
 				<TD WIDTH="99%">
-				    {$request.createtime|date_format:"%Y/%m/%d %H:%M"}
+				    {$ticket.createtime|date_format:"%Y/%m/%d %H:%M"}
 				</TD>
 			    </TR>
 			    <TR>
 				<TD WIDTH="1%">{trans("Submitter:")}</TD>
 				<TD WIDTH="99%">
-				    {if $request.customerid}
-				    {$request.customername} ({$request.customerid|string_format:"%04d"})
+				    {if $ticket.customerid}
+				    {$ticket.customername} ({$ticket.customerid|string_format:"%04d"})
 				    {else}
-				    {$request.requestor}
+				    {$ticket.requestor}
 				    {/if}
 				</TD>
 			    </TR>
-			    {if $request.address}
+			    {if $ticket.address}
 			    <TR>
 				<TD WIDTH="1%">{trans("Address:")}</TD>
 				<TD WIDTH="99%">
-				    {$request.address}
-				    {if $request.phone}({trans("phone:")} {$request.phone}){/if}
+				    {$ticket.address}
+				    {if $ticket.phone}({trans("phone:")} {$ticket.phone}){/if}
 				</TD>
 			    </TR>
 			    {/if}
@@ -62,7 +62,7 @@
 	<TR>
 		<TD COLSPAN="4" CLASS="fbottomu bb">
 			<TABLE WIDTH="100%" CELLPADDING="3">
-			    {foreach from=$request.content item=item}
+			    {foreach $ticket.content as $item}
 			    <TR>
 				<TD WIDTH="100%" CLASS="ftop{if $item.note} blend{/if}">
 				    {$item.body|escape|replace:"\n":"<BR>"}
