@@ -184,6 +184,7 @@ version ? (????-??-??):
   - helpdesk messages: image attachment preview in popup [chilan]
   - documents: copy division data to documents [michu006/chilan]
   - message deletion is possible on message list [chilan]
+  - configuration of visible queues for userpanel is possible [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 

@@ -72,7 +72,7 @@ function module_main()
     {
         $ticket = $_POST['helpdesk'];
 
-	$ticket['queue'] = $CONFIG['userpanel']['default_queue'];
+	$ticket['queue'] = intval($ticket['queue']);
 	$ticket['categories'] = $CONFIG['userpanel']['default_categories'];
 	$ticket['subject'] = strip_tags($ticket['subject']);
 	$ticket['body'] = strip_tags($ticket['body']);
@@ -267,7 +267,8 @@ function module_main()
 
 	$ticket['id'] = $_GET['id'];
 
-	$SMARTY->assign('title', trans('Request No. $a', sprintf('%06d',$ticket['ticketid'])));
+	$SMARTY->assign('title', trans('Request No. $a / Queue: $b',
+		sprintf('%06d',$ticket['ticketid']), $ticket['queuename']));
 	
 	if($ticket['customerid'] == $SESSION->id)
 	{
@@ -293,7 +294,8 @@ function module_main()
 	        $SMARTY->assign('helpdesk', $helpdesk);
 	}
 
-        $SMARTY->assign('title', trans('Request No. $a', sprintf('%06d',$ticket['ticketid'])));
+	$SMARTY->assign('title', trans('Request No. $a / Queue: $b',
+		sprintf('%06d',$ticket['ticketid']), $ticket['queuename']));
         if($ticket['customerid'] == $SESSION->id)
         {
         	$SMARTY->assign('ticket', $ticket);
@@ -302,12 +304,15 @@ function module_main()
 	}
     }
 
-    if($helpdesklist = $LMS->GetCustomerTickets($SESSION->id))
-	foreach($helpdesklist as $idx => $key)
-	    $helpdesklist[$idx]['lastmod'] = $LMS->DB->GetOne('SELECT MAX(createtime) FROM rtmessages WHERE ticketid = ?', array($key['id']));
+	if ($helpdesklist = $LMS->GetCustomerTickets($SESSION->id))
+		foreach($helpdesklist as $idx => $key)
+			$helpdesklist[$idx]['lastmod'] = $LMS->DB->GetOne('SELECT MAX(createtime) FROM rtmessages WHERE ticketid = ?',
+				array($key['id']));
 
-    $SMARTY->assign('helpdesklist', $helpdesklist);
-    $SMARTY->display('module:helpdesk.html');
+	$queues = $LMS->DB->GetAll('SELECT id, name FROM rtqueues WHERE id IN (' . str_replace(';', ',', $CONFIG['userpanel']['queues']) . ')');
+	$SMARTY->assign('queues', $queues);
+	$SMARTY->assign('helpdesklist', $helpdesklist);
+	$SMARTY->display('module:helpdesk.html');
 }
 
 ?>

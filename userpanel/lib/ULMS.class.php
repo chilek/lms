@@ -62,7 +62,11 @@ class ULMS extends LMS
 	
 	function GetCustomerTickets($id)
 	{
-		return $this->DB->GetAll('SELECT * FROM rttickets WHERE customerid=? ORDER BY createtime DESC', array($id));
+		$tickets = $this->DB->GetAll('SELECT * FROM rttickets WHERE customerid=? ORDER BY createtime DESC', array($id));
+		if (!empty($tickets))
+			foreach ($tickets as $idx => $ticket)
+				$tickets[$idx]['queuename'] = $this->DB->GetOne('SELECT name FROM rtqueues WHERE id = ?', array($ticket['queueid']));
+		return $tickets;
 	}
 
 	function GetTicketContents($id)
@@ -86,7 +90,8 @@ class ULMS extends LMS
 				LEFT JOIN customers ON (customers.id = customerid)
 				LEFT JOIN users ON (users.id = userid)
 				WHERE ticketid = ? ORDER BY createtime ASC', array($id));
-		
+		$ticket['queuename'] = $this->DB->GetOne('SELECT name FROM rtqueues WHERE id = ?', array($ticket['queueid']));
+
 		list($ticket['requestoremail']) = sscanf($ticket['requestor'], "<%[^>]");
 
 		return $ticket;
