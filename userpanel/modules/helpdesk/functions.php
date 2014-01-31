@@ -42,7 +42,7 @@ if (defined('USERPANEL_SETUPMODE'))
 
 	$SMARTY->assign('userlist', $LMS->GetUserNames());
 	$SMARTY->assign('queuelist', $LMS->GetQueueNames());
-	$SMARTY->assign('default_queue', $LMS->CONFIG['userpanel']['default_queue']);
+	$SMARTY->assign('queues', explode(';', $LMS->CONFIG['userpanel']['queues']));
         $SMARTY->assign('default_userid', $LMS->CONFIG['userpanel']['default_userid']);
         $SMARTY->assign('lms_url', $LMS->CONFIG['userpanel']['lms_url']);
         $SMARTY->assign('categories', $categories);
@@ -52,7 +52,8 @@ if (defined('USERPANEL_SETUPMODE'))
     function module_submit_setup()
     {
 	global $DB;
-        $DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'default_queue\'',array($_POST['default_queue']));
+	if (!empty($_POST['queues']) && array_walk($_POST['queues'], 'intval'))
+		$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'queues\'', array(implode(';', $_POST['queues'])));
 	$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'default_userid\'',array($_POST['default_userid']));
 	$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'lms_url\'',array($_POST['lms_url']));
 	$categories = array_keys((isset($_POST['lms_categories']) ? $_POST['lms_categories'] : array()));
