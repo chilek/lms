@@ -525,6 +525,8 @@ function GetConfigList($order='var,asc', $section='', $search='')
 				$config[$idx]['description'] = trans('Unknown option. No description.');
 			break;
 		} //end: section
+		if (!empty($config[$idx]['usercomment']))
+			$config[$idx]['usercomment'] = str_replace("\n", '<br>', $config[$idx]['usercomment']);
 	} //end: foreach
 
 	$config['total'] = sizeof($config);
