@@ -36,7 +36,7 @@ version ?.??.?? (????-??-??):
   - configuration of visible queues for userpanel is possible [chilan]
   - www message type added [chilan]
 
-version 1.11.14 (2014-03-25):
+version 1.11.14 (2013-03-25):
 
   - Fixed nodes list in Userpanel [alec]
   - lmsd/ewx-pt: Fixed issues on nodes deletion [alec]
