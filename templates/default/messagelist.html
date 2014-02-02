@@ -40,6 +40,7 @@
 				<OPTION value="{$smarty.const.MSG_MAIL}"{if $listdata.type == $smarty.const.MSG_MAIL} SELECTED{/if}>{trans("email")}</OPTION>
 				<OPTION value="{$smarty.const.MSG_SMS}"{if $listdata.type == $smarty.const.MSG_SMS} SELECTED{/if}>{trans("sms")}</OPTION>
 				<OPTION value="{$smarty.const.MSG_ANYSMS}"{if $listdata.type == $smarty.const.MSG_ANYSMS} SELECTED{/if}>{trans("any sms")}</OPTION>
+				<OPTION value="{$smarty.const.MSG_WWW}"{if $listdata.type == $smarty.const.MSG_WWW} SELECTED{/if}>{trans("www")}</OPTION>
 			</SELECT>&nbsp;
 			{trans("Status:")}
 			<SELECT size="1" name="status">
@@ -72,10 +73,12 @@
 			{$message.cdate|date_format:"%Y/%m/%d %H:%M"}
 		</TD>
 		<TD WIDTH="1%" ALIGN="right" NOWRAP onclick="return self.location.href='?m=messageinfo&id={$message.id}';">
-			{if $message.type > $smarty.const.MSG_MAIL}
-			<img src="img/sms.gif" alt="sms">
-			{else}
+			{if $message.type == $smarty.const.MSG_MAIL}
 			<img src="img/email.gif" alt="email">
+			{elseif $message.type == $smarty.const.MSG_WWW}
+			<img src="img/network.gif" alt="www">
+			{else}
+			<img src="img/sms.gif" alt="sms">
 			{/if}
 		</TD>
 		<TD WIDTH="96%" onclick="return self.location.href='?m=messageinfo&id={$message.id}';">

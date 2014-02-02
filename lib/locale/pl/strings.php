@@ -2753,4 +2753,6 @@ $_LANG['Assign to me'] = 'Przypisz do mnie';
 $_LANG['Ticket has been assigned to user $a.'] = 'Zgłoszenie zostało przypisane do użytkownika $a.';
 $_LANG['Ticket has been moved from queue $a to queue $b.'] = 'Zgłoszenie zostało przeniesione z kolejki $a do kolejki $b.';
 
+$_LANG['www'] = 'www';
+
 ?>

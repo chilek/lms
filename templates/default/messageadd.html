@@ -22,8 +22,7 @@
 
 	function typesel(elem)
 	{
-		if(elem == 'typesms' || elem == 'typeanysms') {
-			document.getElementById('mailbody').style.display = 'none';
+		if(elem == 'typesms' || elem == 'typeanysms' || elem == 'typewww') {
 			document.getElementById('mailfrom').style.display = 'none';
 			document.getElementById('mailsender').style.display = 'none';
 			document.getElementById('attachment').style.display = 'none';
@@ -37,9 +36,17 @@
 				if (users) users.style.display = 'none';
 			}
 			{/if}
-			document.getElementById('smsbody').style.display = '';
-			document.getElementById('charscount').style.display = '';
-			xajax_getMessageTemplates({$smarty.const.TMPL_SMS});
+			if (elem == 'typewww') {
+				document.getElementById('mailbody').style.display = '';
+				document.getElementById('smsbody').style.display = 'none';
+				document.getElementById('charscount').style.display = 'none';
+				xajax_getMessageTemplates({$smarty.const.TMPL_WWW});
+			} else {
+				document.getElementById('mailbody').style.display = 'none';
+				document.getElementById('smsbody').style.display = '';
+				document.getElementById('charscount').style.display = '';
+				xajax_getMessageTemplates({$smarty.const.TMPL_SMS});
+			}
 		} else {
 			document.getElementById('mailbody').style.display = '';
 			document.getElementById('mailfrom').style.display = '';
@@ -184,6 +191,7 @@
 			{if !$message.customerid}
 			<INPUT type="radio" name="message[type]" id="typeanysms" value="{$smarty.const.MSG_ANYSMS}"{if $message.type == $smarty.const.MSG_ANYSMS} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typeanysms"><span class="bold">{trans("any sms")}</span></label>
 			{/if}
+			<INPUT type="radio" name="message[type]" id="typewww" value="{$smarty.const.MSG_WWW}"{if $message.type == $smarty.const.MSG_WWW} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typewww"><span class="bold">{trans("www")}</span></label>
 		</TD>
 	</TR>
 	<TR ID="mailsender"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
@@ -264,7 +272,7 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR ID="mailbody"{if $message.type > $smarty.const.MSG_MAIL} style="display: none"{/if}>
+	<TR ID="mailbody"{if $message.type > $smarty.const.MSG_MAIL && $message.type < $smarty.const.MSG_WWW} style="display: none"{/if}>
 		<TD style="width: 1%;">
 			<IMG src="img/edit.gif" alt="">
 		</TD>

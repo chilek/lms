@@ -5,7 +5,7 @@
     <THEAD>
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/{if $message.type == $smarty.const.MSG_SMS}sms{else}email{/if}.gif" ALT=""> 
+			<IMG SRC="img/{if $message.type == $smarty.const.MSG_SMS}sms{elseif $message.type == $smarty.const.MSG_WWW}network{else}email{/if}.gif" ALT=""> 
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{trans("Subject:")}</B>

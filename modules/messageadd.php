@@ -178,25 +178,29 @@ if(isset($_POST['message']))
 {
 	$message = $_POST['message'];
 
-	$message['type'] = $message['type'] == MSG_MAIL ? MSG_MAIL : ($message['type'] == MSG_SMS ? MSG_SMS : MSG_ANYSMS);
+	if ($message['type'] == MSG_MAIL)
+		$message['type'] == MSG_MAIL;
+	elseif ($message['type'] == MSG_SMS)
+		$message['type'] == MSG_SMS;
+	elseif ($message['type'] == MSG_ANYSMS)
+		$message['type'] == MSG_ANYSMS;
+	else
+		$message['type'] == MSG_WWW;
 
 	if(empty($message['customerid']) && ($message['group'] < 0 || $message['group'] > 7))
 		$error['group'] = trans('Incorrect customers group!');
 
-	if($message['type'] == MSG_MAIL)
-	{
+	if ($message['type'] == MSG_MAIL) {
 		$message['body'] = $message['mailbody'];
-
-		if($message['sender']=='')
+		if ($message['sender'] == '')
 			$error['sender'] = trans('Sender e-mail is required!');
-		elseif(!check_email($message['sender']))
+		elseif (!check_email($message['sender']))
 			$error['sender'] = trans('Specified e-mail is not correct!');
-
-		if($message['from']=='')
+		if ($message['from'] == '')
 			$error['from'] = trans('Sender name is required!');
-	}
-	else
-	{
+	} elseif ($message['type'] == MSG_WWW)
+		$message['body'] = $message['mailbody'];
+	else {
 		$message['body'] = $message['smsbody'];
 		$message['sender'] = '';
 		$message['from'] = '';
@@ -217,7 +221,18 @@ if(isset($_POST['message']))
 	$msgtmploper = intval($message['tmploper']);
 	$msgtmplname = $message['tmplname'];
 	if ($msgtmploper > 1) {
-		$msgtmpltype = $message['type'] == MSG_MAIL ? TMPL_MAIL : TMPL_SMS;
+		switch ($message['type']) {
+			case MSG_MAIL:
+				$msgtmpltype = TMPL_MAIL;
+				break;
+			case MSG_SMS:
+			case MSG_ANYSMS:
+				$msgtmpltype = TMPL_SMS;
+				break;
+			case MSG_WWW:
+				$msgtmpltype = TMPL_WWW;
+				break;
+		}
 		switch ($msgtmploper) {
 			case 2:
 				if (empty($msgtmplid))
@@ -266,10 +281,10 @@ if(isset($_POST['message']))
 	{
 		$recipients = array();
 		if(empty($message['customerid']))
-			if ($message['type'] == MSG_SMS || $message['type'] == MSG_MAIL)
+			if ($message['type'] != MSG_ANYSMS)
 				$recipients = GetRecipients($message, $message['type']);
 			else
-				foreach($phonenumbers as $phone)
+				foreach ($phonenumbers as $phone)
 					$recipients[]['phone'] = $phone;
 		else
 			$recipients = GetRecipient($message['customerid'], $message['type']);
@@ -299,7 +314,7 @@ if(isset($_POST['message']))
 				$message['subject'],
 				$message['body'],
 				$AUTH->id,
-				$message['type']==MSG_MAIL ? '"'.$message['from'].'" <'.$message['sender'].'>' : '',
+				$message['type'] == MSG_MAIL ? '"' . $message['from'] . '" <' . $message['sender'] . '>' : '',
 			));
 
 		$msgid = $DB->GetLastInsertID('messages');
@@ -307,6 +322,8 @@ if(isset($_POST['message']))
 		foreach ($recipients as $key => $row) {
 			if ($message['type'] == MSG_MAIL)
 				$recipients[$key]['destination'] = explode(',', $row['email']);
+			elseif ($message['type'] == MSG_WWW)
+				$recipients[$key]['destination'] = array(trans('www'));
 			else
 				$recipients[$key]['destination'] = explode(',', $row['phone']);
 
@@ -339,8 +356,7 @@ if(isset($_POST['message']))
 			$headers['From'] = '"'.$message['from'].'" <'.$message['sender'].'>';
 			$headers['Subject'] = $message['subject'];
 			$headers['Reply-To'] = $headers['From'];
-		}
-		else {
+		} elseif ($message['type'] != MSG_WWW) {
 			if (!empty($CONFIG['sms']['debug_phone']))
 				echo '<B>'.trans('Warning! Debug mode (using phone $a).',$CONFIG['sms']['debug_phone']).'</B><BR>';
 		}
@@ -355,7 +371,9 @@ if(isset($_POST['message']))
 				if ($message['type'] == MSG_MAIL) {
 					$headers['To'] = '<' . $destination . '>';
 					echo '<img src="img/mail.gif" border="0" align="absmiddle" alt=""> ';
-				} else {
+				} elseif ($message['type'] == MSG_WWW)
+					echo '<img src="img/network.gif" border="0" align="absmiddle" alt=""> ';
+				else {
 					$destination = preg_replace('/[^0-9]/', '', $destination);
 					echo '<img src="img/sms.gif" border="0" align="absmiddle" alt=""> ';
 				}
@@ -367,6 +385,8 @@ if(isset($_POST['message']))
 
 				if ($message['type'] == MSG_MAIL)
 					$result = $LMS->SendMail($destination, $headers, $body, $files);
+				elseif ($message['type'] == MSG_WWW)
+					$result = MSG_NEW;
 				else
 					$result = $LMS->SendSMS($destination, $body, $msgid);
 
@@ -419,10 +439,18 @@ else if (!empty($_GET['customerid']))
 }
 
 if (isset($message['type'])) {
-	if ($message['type'] == MSG_MAIL)
-		$msgtmpltype = TMPL_MAIL;
-	else
-		$msgtmpltype = TMPL_SMS;
+	switch ($message['type']) {
+		case MSG_MAIL:
+			$msgtmpltype = TMPL_MAIL;
+			break;
+		case MSG_SMS:
+		case MSG_ANYSMS:
+			$msgtmpltype = TMPL_SMS;
+			break;
+		case MSG_WWW:
+			$msgtmpltype = TMPL_WWW;
+			break;
+	}
 } else
 	$msgtmpltype = TMPL_MAIL;
 $SMARTY->assign('messagetemplates', $LMS->GetMessageTemplates($msgtmpltype));

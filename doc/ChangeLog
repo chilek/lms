@@ -1,6 +1,42 @@
-$Id: ChangeLog,v 1.1637 2012/04/19 10:00:00 chilek Exp $
+$Id$
 
-version ? (????-??-??):
+version ?.??.?? (????-??-??):
+
+  - host owner selection for networks [red/chilan]
+  - separation of privileges: finance management and cash registry administration [chilan]
+  - show last 10 node sessions in nodeinfo and nodedit [chilan]
+  - transaction logging engine introduced [chilan]
+  - transaction logging for finances [chilan]
+  - new css classes - lmsbox and lmsbox-inner - for separating content from presentation [maciejlew]
+  - common old css classes like fall, fright etc can now be applied to any block html element [maciejlew]
+  - support of sms message length limits [chilan]
+  - phpui.custom_templates_dir setting allows to select used template set [chilan]
+  - the same networks bound to different hosts can overlap [chilan]
+  - network selection for node and netdev ip addresses [chilan]
+  - transaction logging for networks [chilan]
+  - fixed mysql database dump - don't check foreign key constraints during database recover [chilan]
+  - transaction logging for network devices [chilan]
+  - tinymce3 integration: customer, node info, message and notes support [chilan]
+  - message templates: mail and sms messages [chilan]
+  - message templates: customer and node warnings [chilan]
+  - node traffic statistics are loaded in background [chilan]
+  - messageadd: selection of multiple customer groups is possible [chilan]
+  - helpdesk: notes with proper info are automatically added when ticket changes owner or is moved
+    from one queue to another [chilan]
+  - assignment edit: autoselect tax value for tariffless assignments when assignment
+    tax value is already defined [chilan]
+  - userpanel: added credential reminder support [chilan]
+  - sms message can be sent to more than one phone for single customer [chilan]
+  - show only document templates which match chosen document type [chilan]
+  - add attachments support for new tickets [chilan]
+  - multi attachments for new tickets and new ticket messages [chilan]
+  - helpdesk messages: image attachment preview in popup [chilan]
+  - documents: copy division data to documents [michu006/chilan]
+  - message deletion is possible on message list [chilan]
+  - configuration of visible queues for userpanel is possible [chilan]
+  - www message type added [chilan]
+
+version 1.11.14 (2014-03-25):
 
   - Fixed nodes list in Userpanel [alec]
   - lmsd/ewx-pt: Fixed issues on nodes deletion [alec]
@@ -153,38 +189,6 @@ version ? (????-??-??):
   - added possibility to disable the tariffs [red]
   - mysql schema fixes [LoLe/chilan]
   - it's possible to add new config sections from ui [chilan]
-  - host owner selection for networks [red/chilan]
-  - separation of privileges: finance management and cash registry administration [chilan]
-  - show last 10 node sessions in nodeinfo and nodedit [chilan]
-  - transaction logging engine introduced [chilan]
-  - transaction logging for finances [chilan]
-  - new css classes - lmsbox and lmsbox-inner - for separating content from presentation [maciejlew]
-  - common old css classes like fall, fright etc can now be applied to any block html element [maciejlew]
-  - support of sms message length limits [chilan]
-  - phpui.custom_templates_dir setting allows to select used template set [chilan]
-  - the same networks bound to different hosts can overlap [chilan]
-  - network selection for node and netdev ip addresses [chilan]
-  - transaction logging for networks [chilan]
-  - fixed mysql database dump - don't check foreign key constraints during database recover [chilan]
-  - transaction logging for network devices [chilan]
-  - tinymce3 integration: customer, node info, message and notes support [chilan]
-  - message templates: mail and sms messages [chilan]
-  - message templates: customer and node warnings [chilan]
-  - node traffic statistics are loaded in background [chilan]
-  - messageadd: selection of multiple customer groups is possible [chilan]
-  - helpdesk: notes with proper info are automatically added when ticket changes owner or is moved
-    from one queue to another [chilan]
-  - assignment edit: autoselect tax value for tariffless assignments when assignment
-    tax value is already defined [chilan]
-  - userpanel: added credential reminder support [chilan]
-  - sms message can be sent to more than one phone for single customer [chilan]
-  - show only document templates which match chosen document type [chilan]
-  - add attachments support for new tickets [chilan]
-  - multi attachments for new tickets and new ticket messages [chilan]
-  - helpdesk messages: image attachment preview in popup [chilan]
-  - documents: copy division data to documents [michu006/chilan]
-  - message deletion is possible on message list [chilan]
-  - configuration of visible queues for userpanel is possible [chilan]
 
 version 1.11.13 Dira (2011-04-07)
 
