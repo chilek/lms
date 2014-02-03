@@ -553,8 +553,9 @@ foreach($assigns as $assign)
 		{
 			$alldays = 1;
 			$diffdays = sprintf("%d", ($today - $assign['datefrom']) / 86400);
-			$period = strftime("%Y/%m/%d", mktime(0, 0, 0, $month, $dom - $diffdays, $year))." - "
-				.strftime("%Y/%m/%d", mktime(0, 0, 0, $month, $dom - 1, $year));
+			$period_start = mktime(0, 0, 0, $month, $dom - $diffdays, $year);
+			$period_end = mktime(0, 0, 0, $month, $dom - 1, $year);
+			$period = strftime("%Y/%m/%d", $period_start) . " - " . strftime("%Y/%m/%d", $period_end);
 
 			switch ($assign['period'])
 			{
@@ -562,7 +563,12 @@ foreach($assigns as $assign)
 				case WEEK:
 					$alldays = 7; break;
 				case MONTH:
-					$alldays = 30; break;
+					$day = strftime("%d", $period_end);
+					if ($dom == 1)
+						$alldays = $day;
+					else
+						$alldays = 30;
+					break;
 				case QUARTER:
 					$alldays = 90; break;
 				case HALFYEAR:
