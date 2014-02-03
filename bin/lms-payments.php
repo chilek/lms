@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2014 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -58,7 +58,7 @@ if (array_key_exists('version', $options))
 {
 	print <<<EOF
 lms-payments.php
-(C) 2001-2013 LMS Developers
+(C) 2001-2014 LMS Developers
 
 EOF;
 	exit(0);
@@ -68,7 +68,7 @@ if (array_key_exists('help', $options))
 {
 	print <<<EOF
 lms-payments.php
-(C) 2001-2013 LMS Developers
+(C) 2001-2014 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -85,7 +85,7 @@ if (!$quiet)
 {
 	print <<<EOF
 lms-payments.php
-(C) 2001-2013 LMS Developers
+(C) 2001-2014 LMS Developers
 
 EOF;
 }
@@ -552,22 +552,36 @@ foreach($assigns as $assign)
 		if ($assign['settlement'] && $assign['datefrom'])
 		{
 			$alldays = 1;
+
 			$diffdays = sprintf("%d", ($today - $assign['datefrom']) / 86400);
 			$period_start = mktime(0, 0, 0, $month, $dom - $diffdays, $year);
 			$period_end = mktime(0, 0, 0, $month, $dom - 1, $year);
 			$period = strftime("%Y/%m/%d", $period_start) . " - " . strftime("%Y/%m/%d", $period_end);
 
-			switch ($assign['period'])
-			{
-				// there are no disposable Or daily liabilities with settlement
+			switch ($assign['period']) {
 				case WEEK:
 					$alldays = 7; break;
 				case MONTH:
-					$day = strftime("%d", $period_end);
-					if ($dom == 1)
-						$alldays = $day;
-					else
-						$alldays = 30;
+					$alldays = 30;
+					$d = $dom;
+					$m = $month;
+					$y = $year;
+					$value = 0;
+					$month_days = strftime("%d", mktime(0, 0, 0, $m + 1, 0, $y));
+					while ($diffdays) {
+						if ($d - $diffdays <= 0) {
+							$value += ($d - 1) * $val / $month_days;
+							$diffdays -= ($d - 1);
+						} else {
+							$value += $diffdays * $val / $month_days;
+							$diffdays = 0;
+						}
+						$date = mktime(0, 0, 0, $m, 0, $y);
+						$month_days = strftime("%d", $date);
+						$d = $month_days + 1;
+						$m = strftime("%m", $date);
+						$y = strftime("%Y", $date);
+					}
 					break;
 				case QUARTER:
 					$alldays = 90; break;
@@ -577,7 +591,7 @@ foreach($assigns as $assign)
 					$alldays = 365; break;
 			}
 
-			$value = sprintf("%.2f", $diffdays * $val / $alldays);
+			$value = sprintf("%.2f", $alldays != 30 ? $diffdays * $val / $alldays : $value);
 
 			//print "value: $val diffdays: $diffdays alldays: $alldays settl_value: $value\n";
 

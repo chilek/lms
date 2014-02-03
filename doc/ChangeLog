@@ -35,6 +35,8 @@ version ?.??.?? (????-??-??):
   - message deletion is possible on message list [chilan]
   - configuration of visible queues for userpanel is possible [chilan]
   - www message type added [chilan]
+  - lms-payments.php: monthly liability settlements support exact value calculations
+    determined independently by number of days in each month [chilan]
 
 version 1.11.14 (2013-03-25):
 
