@@ -2756,4 +2756,19 @@ $_LANG['Ticket has been moved from queue $a to queue $b.'] = 'Zgłoszenie zosta�
 
 $_LANG['www'] = 'www';
 
+$_LANG['New ticket customer notification subject:'] = 'Temat listu z powiadomieniem klienta o nowym zgłoszeniu:';
+$_LANG['New ticket customer notification body:'] = 'Treść listu z powiadomieniem klienta o nowym zgłoszeniu:';
+$_LANG['Subject of mail which is sent to customer when new ticket is created'] = 'Temat listu wysyłanego do klienta, gdy tworzone jest nowe zgłoszenie';
+$_LANG['Body of mail which is sent to customer when new ticket is created'] = 'Treść listu wysyłanego do klienta, gdy tworzone jest nowe zgłoszenie';
+
+$_LANG['New message customer notification subject:'] = 'Temat listu z powiadomieniem klienta o nowej wiadomości:';
+$_LANG['New message customer notification body:'] = 'Treść listu z powiadomieniem klienta o nowej wiadomości:';
+$_LANG['Subject of mail which is sent to customer when new message is added'] = 'Temat listu wysyłanego do klienta, gdy dodawana jest wiadomość do zgłoszenia';
+$_LANG['Body of mail which is sent to customer when new message is added'] = 'Treść listu wysyłanego do klienta, gdy dodawana jest wiadomość do zgłoszenia';
+
+$_LANG['Resolve ticket customer notification subject:'] = 'Temat listu z powiadomieniem klienta o rozwiązaniu zgłoszenia:';
+$_LANG['Resolve ticket customer notification body:'] = 'Treść listu z powiadomieniem klienta o rozwiązaniu zgłoszenia:';
+$_LANG['Subject of mail which is sent to customer when the ticket is resolved'] = 'Temat listu wysyłanego do klienta, gdy zgłoszenie jest rozwiązywane';
+$_LANG['Body of mail which is sent to customer when the ticket is resolved'] = 'Treść listu wysyłanego do klienta, gdy zgłoszenie jest rozwiązywane';
+
 ?>

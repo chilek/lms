@@ -853,6 +853,12 @@ CREATE TABLE rtqueues (
   name varchar(255) 	DEFAULT '' NOT NULL,
   email varchar(255) 	DEFAULT '' NOT NULL,
   description text	DEFAULT '' NOT NULL,
+  newticketsubject varchar(255) NOT NULL DEFAULT '',
+  newticketbody text NOT NULL DEFAULT '',
+  newmessagesubject varchar(255) NOT NULL DEFAULT '',
+  newmessagebody text NOT NULL DEFAULT '',
+  resolveticketsubject varchar(255) NOT NULL DEFAULT '',
+  resolveticketbody text NOT NULL DEFAULT '',
   PRIMARY KEY (id),
   UNIQUE (name)
 );
@@ -1959,4 +1965,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014013100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014020400');

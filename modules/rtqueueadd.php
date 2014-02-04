@@ -46,10 +46,14 @@ if(isset($_POST['queue']))
 		foreach($queue['users'] as $key => $value)
 			$queue['rights'][] = array('id' => $key, 'rights' => array_sum($value), 'name' => $queue['usernames'][$key]);
 
-	if(!$error)
-	{
-                $DB->Execute('INSERT INTO rtqueues (name, email, description) VALUES (?, ?, ?)',
-		                array($queue['name'], $queue['email'], $queue['description']));
+	if (!$error) {
+		$DB->Execute('INSERT INTO rtqueues (name, email, description, newticketsubject, newticketbody,
+				newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				array($queue['name'], $queue['email'], $queue['description'],
+					$queue['newticketsubject'], $queue['newticketbody'],
+					$queue['newmessagesubject'], $queue['newmessagebody'],
+					$queue['resolveticketsubject'], $queue['resolveticketbody']));
 
 		$id = $DB->GetLastInsertId('rtqueues');
 
