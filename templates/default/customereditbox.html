@@ -383,19 +383,7 @@
 						{trans("Cutoff suspending:")}
 					</TD>
 					<TD>
-						<SELECT name="customerdata[cutoffstop]" {tip text="Select days number of cutoff suspending (optional)" trigger="cutoffstop"}>
-							<OPTION value="0"{if !$customerinfo.cutoffstop} selected{/if}>0</OPTION>
-							<OPTION value="1"{if $customerinfo.cutoffstop==1} selected{/if}>1</OPTION>
-							<OPTION value="2"{if $customerinfo.cutoffstop==2} selected{/if}>2</OPTION>
-							<OPTION value="3"{if $customerinfo.cutoffstop==3} selected{/if}>3</OPTION>
-							<OPTION value="4"{if $customerinfo.cutoffstop==4} selected{/if}>4</OPTION>
-							<OPTION value="5"{if $customerinfo.cutoffstop==5} selected{/if}>5</OPTION>
-							<OPTION value="6"{if $customerinfo.cutoffstop==6} selected{/if}>6</OPTION>
-							<OPTION value="7"{if $customerinfo.cutoffstop==7} selected{/if}>7</OPTION>
-							<OPTION value="14"{if $customerinfo.cutoffstop==14} selected{/if}>14</OPTION>
-							<OPTION value="21"{if $customerinfo.cutoffstop==21} selected{/if}>21</OPTION>
-							<OPTION value="30"{if $customerinfo.cutoffstop==30} selected{/if}>30</OPTION>
-						</SELECT>
+						<INPUT type="text" name="customerdata[cutoffstop]" id="cutoffstop" {if $customerinfo.cutoffstop}value="{$customerinfo.cutoffstop}"{/if} size="10" onclick="cal1.popup()" {tip text="Select date of cutoff suspending (optional)" trigger="cutoffstop"}>
 					</TD>
 				</TR>
 			</TABLE>
@@ -511,6 +499,9 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
+var cal1 = new calendar(document.forms['customeredit'].elements['customerdata[cutoffstop]']);
+cal1.time_comp = false;
+
 document.forms['customeredit'].elements['customerdata[lastname]'].focus();
 
 tinymce_init('{$_ui_language}');

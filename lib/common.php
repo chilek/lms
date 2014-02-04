@@ -904,4 +904,8 @@ function access_denied() {
 	die;
 }
 
+function check_date($date) {
+	return preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $date);
+}
+
 ?>
