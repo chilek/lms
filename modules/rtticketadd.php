@@ -139,17 +139,38 @@ if(isset($_POST['ticket']))
 			if (chkconfig($CONFIG['phpui']['helpdesk_customerinfo']))
 				if ($ticket['customerid'])
 				{
-					$info = $DB->GetRow('SELECT '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
+					$info = $DB->GetRow('SELECT pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
 							email, address, zip, city, (SELECT phone FROM customercontacts 
 								WHERE customerid = customers.id ORDER BY id LIMIT 1) AS phone
 							FROM customers WHERE id = ?', array($ticket['customerid']));
 
 					$body .= "\n\n-- \n";
-						$body .= trans('Customer:').' '.$info['customername']."\n";
-						$body .= trans('ID:').' '.sprintf('%04d', $ticket['customerid'])."\n";
-						$body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
-						$body .= trans('Phone:').' '.$info['phone']."\n";
-						$body .= trans('E-mail:').' '.$info['email'];
+					$body .= trans('Customer:').' '.$info['customername']."\n";
+					$body .= trans('ID:').' '.sprintf('%04d', $ticket['customerid'])."\n";
+					$body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
+					$body .= trans('Phone:').' '.$info['phone']."\n";
+					$body .= trans('E-mail:').' '.$info['email'];
+
+					$queuedata = $LMS->GetQueue($queue);
+					if (!empty($queuedata['newticketsubject']) && !empty($queuedata['newticketbody'])
+						&& !empty($info['email'])) {
+						$custmail_subject = $queuedata['newticketsubject'];
+						$custmail_subject = str_replace('%tid', $id, $custmail_subject);
+						$custmail_subject = str_replace('%title', $ticket['subject'], $custmail_subject);
+						$custmail_body = $queuedata['newticketbody'];
+						$custmail_body = str_replace('%tid', $id, $custmail_body);
+						$custmail_body = str_replace('%cid', $ticket['customerid'], $custmail_body);
+						$custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
+						$custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
+						$custmail_body = str_replace('%title', $ticket['subject'], $custmail_body);
+						$custmail_headers = array(
+							'From' => $headers['From'],
+							'To' => '<' . $info['email'] . '>',
+							'Reply-To' => $headers['From'],
+							'Subject' => $custmail_subject,
+						);
+						$LMS->SendMail($info['email'], $custmail_headers, $custmail_body);
+					}
 
 					$sms_body .= "\n";
 					$sms_body .= trans('Customer:').' '.$info['customername'];
