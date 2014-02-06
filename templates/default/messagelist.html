@@ -68,7 +68,7 @@
 	{cycle values="light,lucid" print=false}
 	{section name=messagelist loop=$messagelist start=$start max=$pagelimit}
 	{assign var=message value=$messagelist[messagelist]}
-	<TR class="highlight {cycle}{if $message.error == $message.cnt} alert{elseif $message.error} blendalert{elseif $message.sent == $message.cnt} blend{/if}"  >
+	<TR class="{cycle}{if $message.error == $message.cnt} alert{elseif $message.error} blendalert{elseif $message.sent == $message.cnt} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD WIDTH="1%" NOWRAP onclick="return self.location.href='?m=messageinfo&id={$message.id}';">
 			{$message.cdate|date_format:"%Y/%m/%d %H:%M"}
 		</TD>

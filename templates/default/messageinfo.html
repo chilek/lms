@@ -131,7 +131,7 @@
 	{cycle values="light,lucid" print=false}
 	{section name=itemlist loop=$itemlist start=$start max=$pagelimit}
 	{assign var=item value=$itemlist[itemlist]}
-	<TR class="highlight {cycle}{if $item.status==$smarty.const.MSG_ERROR} alert{elseif $item.status==$smarty.const.MSG_SENT} blend{/if}"  >
+	<TR class="{cycle}{if $item.status==$smarty.const.MSG_ERROR} alert{elseif $item.status==$smarty.const.MSG_SENT} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD WIDTH="1%" NOWRAP>
 			{if $item.customerid}
 				<A href="?m=customerinfo&id={$item.customerid}">{$item.customer|truncate:45:"...":true} ({$item.customerid|string_format:"%04d"})</A>
