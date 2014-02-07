@@ -2771,4 +2771,6 @@ $_LANG['Resolve ticket customer notification body:'] = 'Treść listu z powiadom
 $_LANG['Subject of mail which is sent to customer when the ticket is resolved'] = 'Temat listu wysyłanego do klienta, gdy zgłoszenie jest rozwiązywane';
 $_LANG['Body of mail which is sent to customer when the ticket is resolved'] = 'Treść listu wysyłanego do klienta, gdy zgłoszenie jest rozwiązywane';
 
+$_LANG['backup access forbidden'] = 'brak dostępu do kopii zapasowych';
+
 ?>

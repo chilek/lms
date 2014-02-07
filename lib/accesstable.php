@@ -121,6 +121,9 @@ $access['table'][29]['name']		= trans('transaction logs');
 $access['table'][29]['allow_reg']	= '^archive(info|view)$';
 $access['table'][29]['privilege']	= 'transaction_logs';
 
+$access['table'][250]['name']		= trans('backup access forbidden');
+$access['table'][250]['deny_reg']	= '^db(del|list|new|recover|view)$';
+
 $access['table'][253]['name']		= trans('users edition and addition forbidden');
 $access['table'][253]['deny_reg']	= '^(user(add|del|edit|passwd))$';
 
