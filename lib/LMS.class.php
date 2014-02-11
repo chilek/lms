@@ -5356,6 +5356,64 @@ class LMS {
 
 				return MSG_NEW;
 				break;
+			case 'serwersms':
+				if (!function_exists('curl_init'))
+					return trans('Curl extension not loaded!');
+				if (empty($this->CONFIG['sms']['username']))
+					return trans('SMSCenter username not set!');
+				if (empty($this->CONFIG['sms']['password']))
+					return trans('SMSCenter username not set!');
+				if (empty($this->CONFIG['sms']['from']))
+					return trans('SMS "from" not set!');
+				else
+					$from = $this->CONFIG['sms']['from'];
+
+				if (strlen($number) > 16 || strlen($number) < 4)
+					return trans('Wrong phone number format!');
+
+				$args = array(
+						'akcja' => 'wyslij_sms',
+						'login' => $this->CONFIG['sms']['username'],
+						'haslo' => $this->CONFIG['sms']['password'],
+						'numer' => $number,
+						'wiadomosc' => $message,
+						'nadawca' => $from,
+				);
+				if ($messageid)
+					$args['usmsid'] = $messageid;
+
+				$encodedargs = http_build_query($args);
+
+				$curl = curl_init();
+				curl_setopt($curl, CURLOPT_URL, 'https://api1.serwersms.pl/zdalnie/index.php');
+				curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+				curl_setopt($curl, CURLOPT_POST, 1);
+				curl_setopt($curl, CURLOPT_POSTFIELDS, $encodedargs);
+				curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+
+				$page = curl_exec($curl);
+				if (curl_error($curl))
+					return 'SMS communication error. ' . curl_error($curl);
+
+				$info = curl_getinfo($curl);
+				if ($info['http_code'] != '200')
+					return 'SMS communication error. Http code: ' . $info['http_code'];
+
+				curl_close($curl);
+
+				$lines = explode("\n", $page);
+				foreach ($lines as $lineidx => $line)
+					$lines[$lineidx] = trim($line);
+				$page = implode('', $lines);
+
+				if (preg_match('/<Blad>([^<]*)<\/Blad>/i', $page, $matches))
+					return 'Serwersms error: ' . $matches[1];
+
+				if (!preg_match('/<Skolejkowane><SMS id="[^"]+" numer="[^"]+" godzina_skolejkowania="[^"]+"\/><\/Skolejkowane>/', $page))
+					return 'Serwersms error: message has not been sent!';
+
+				return MSG_SENT;
+				break;
 			default:
 				return trans('Unknown SMS service!');
 		}
