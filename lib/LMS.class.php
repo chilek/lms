@@ -5240,28 +5240,30 @@ class LMS {
 		else
 			$service = $this->CONFIG['sms']['service'];
 
+		if (in_array($service, array('smscenter', 'serversms', 'smsapi'))) {
+			if (!function_exists('curl_init'))
+				return trans('Curl extension not loaded!');
+			if (empty($this->CONFIG['sms']['username']))
+				return trans('SMSCenter username not set!');
+			if (empty($this->CONFIG['sms']['password']))
+				return trans('SMSCenter username not set!');
+			if (empty($this->CONFIG['sms']['from']))
+				return trans('SMS "from" not set!');
+			else
+				$from = $this->CONFIG['sms']['from'];
+
+			if (strlen($number) > 16 || strlen($number) < 4)
+				return trans('Wrong phone number format!');
+		}
+
 		switch ($service) {
 			case 'smscenter':
-				if (!function_exists('curl_init'))
-					return trans('Curl extension not loaded!');
-				if (empty($this->CONFIG['sms']['username']))
-					return trans('SMSCenter username not set!');
-				if (empty($this->CONFIG['sms']['password']))
-					return trans('SMSCenter username not set!');
-				if (empty($this->CONFIG['sms']['from']))
-					return trans('SMS "from" not set!');
-				else
-					$from = $this->CONFIG['sms']['from'];
-
 				if ($msg_len < 160)
 					$type_sms = 'sms';
 				else if ($msg_len <= 459)
 					$type_sms = 'concat';
 				else
 					return trans('SMS Message too long!');
-
-				if (strlen($number) > 16 || strlen($number) < 4)
-					return trans('Wrong phone number format!');
 
 				$type = !empty($this->CONFIG['sms']['smscenter_type']) ? $this->CONFIG['sms']['smscenter_type'] : 'dynamic';
 				$message .= ($type == 'static') ? "\n\n" . $from : '';
@@ -5357,30 +5359,18 @@ class LMS {
 				return MSG_NEW;
 				break;
 			case 'serwersms':
-				if (!function_exists('curl_init'))
-					return trans('Curl extension not loaded!');
-				if (empty($this->CONFIG['sms']['username']))
-					return trans('SMSCenter username not set!');
-				if (empty($this->CONFIG['sms']['password']))
-					return trans('SMSCenter username not set!');
-				if (empty($this->CONFIG['sms']['from']))
-					return trans('SMS "from" not set!');
-				else
-					$from = $this->CONFIG['sms']['from'];
-
-				if (strlen($number) > 16 || strlen($number) < 4)
-					return trans('Wrong phone number format!');
-
 				$args = array(
-						'akcja' => 'wyslij_sms',
-						'login' => $this->CONFIG['sms']['username'],
-						'haslo' => $this->CONFIG['sms']['password'],
-						'numer' => $number,
-						'wiadomosc' => $message,
-						'nadawca' => $from,
+					'akcja' => 'wyslij_sms',
+					'login' => $this->CONFIG['sms']['username'],
+					'haslo' => $this->CONFIG['sms']['password'],
+					'numer' => $number,
+					'wiadomosc' => $message,
+					'nadawca' => $from,
 				);
 				if ($messageid)
 					$args['usmsid'] = $messageid;
+				if (!empty($this->CONFIG['sms']['fast']))
+					$args['speed'] = 1;
 
 				$encodedargs = http_build_query($args);
 
@@ -5413,6 +5403,45 @@ class LMS {
 					return 'Serwersms error: message has not been sent!';
 
 				return MSG_SENT;
+				break;
+			case 'smsapi':
+				$args = array(
+					'username' => $this->CONFIG['sms']['username'],
+					'password' => md5($this->CONFIG['sms']['password']),
+					'to' => $number,
+					'message' => $message,
+					'from' => !empty($from) ? $from : 'ECO',
+				);
+				if (!empty($this->CONFIG['sms']['fast']))
+					$args['fast'] = 1;
+				if ($messageid)
+					$args['idx'] = $messageid;
+
+				$encodedargs = http_build_query($args);
+
+				$curl = curl_init();
+				curl_setopt($curl, CURLOPT_URL, 'https://ssl.smsapi.pl/sms.do');
+				curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+				curl_setopt($curl, CURLOPT_POST, 1);
+				curl_setopt($curl, CURLOPT_POSTFIELDS, $encodedargs);
+				curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+
+				$page = curl_exec($curl);
+				if (curl_error($curl))
+					return 'SMS communication error. ' . curl_error($curl);
+
+				$info = curl_getinfo($curl);
+				if ($info['http_code'] != '200')
+					return 'SMS communication error. Http code: ' . $info['http_code'];
+
+				curl_close($curl);
+
+				if (preg_match('/^OK:/', $page))
+					return MSG_SENT;
+				if (preg_match('/^ERROR:([0-9]+)/', $page, $matches))
+					return 'Smsapi error: ' . $matches[1];
+
+				return 'Smsapi error: message has not been sent!';
 				break;
 			default:
 				return trans('Unknown SMS service!');

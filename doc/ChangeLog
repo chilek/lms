@@ -41,6 +41,7 @@ version ?.??.?? (????-??-??):
   - customer cutoff of block suspending is displayed as calendar date [chilan]
   - rtqueues: customers notifications about new ticket, new message and resolve ticket [chilan]
   - basic serwersms.pl api support [chilan]
+  - basic smsapi.pl api support [chilan]
 
 version 1.11.14 (2013-03-25):
 
