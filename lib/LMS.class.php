@@ -5240,7 +5240,7 @@ class LMS {
 		else
 			$service = $this->CONFIG['sms']['service'];
 
-		if (in_array($service, array('smscenter', 'serversms', 'smsapi'))) {
+		if (in_array($service, array('smscenter', 'serwersms', 'smsapi'))) {
 			if (!function_exists('curl_init'))
 				return trans('Curl extension not loaded!');
 			if (empty($this->CONFIG['sms']['username']))
