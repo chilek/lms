@@ -3993,7 +3993,7 @@ class LMS {
 			while (in_array($i, (array) $destnodes))
 				$i++;
 
-			if ($this->DB->Execute('UPDATE nodes SET ipaddr=? WHERE netid=? AND ipaddr=?', array($i, $dst, $ip))) {
+			if ($this->DB->Execute('UPDATE nodes SET ipaddr=?, netid=? WHERE netid=? AND ipaddr=?', array($i, $dst, $src, $ip))) {
 				if ($this->SYSLOG) {
 					$node = $this->DB->GetRow('SELECT id, ownerid FROM nodes WHERE netid = ? AND ipaddr = ?',
 						array($dst, $ip));
@@ -4008,20 +4008,18 @@ class LMS {
 							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
 							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK]));
 				}
-			} elseif ($this->DB->Execute('UPDATE nodes SET ipaddr_pub=? WHERE netid=? AND ipaddr_pub=?', array($i, $dst, $ip))) {
+			} elseif ($this->DB->Execute('UPDATE nodes SET ipaddr_pub=? WHERE ipaddr_pub=?', array($i, $ip))) {
 				if ($this->SYSLOG) {
 					$node = $this->DB->GetRow('SELECT id, ownerid FROM nodes WHERE netid = ? AND ipaddr_pub = ?',
 						array($dst, $ip));
 					$args = array(
 						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $node['id'],
 						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $node['ownerid'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK] => $dst,
 						'ipaddr' => $i,
 					);
 					$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
 						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK]));
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
 				}
 			}
 
