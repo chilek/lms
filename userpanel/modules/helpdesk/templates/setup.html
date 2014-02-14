@@ -21,6 +21,14 @@
 	    </TR>
 	    <TR>
 		<TD WIDTH="1%" NOWRAP>
+			<label for="tickets_from_selected_queues">{trans("Show tickets from selected queues only:")}</label>
+		</TD>
+		<TD WIDTH="99%" NOWRAP>
+			<INPUT type="checkbox" name="tickets_from_selected_queues" id="tickets_from_selected_queues" value="1" {if $tickets_from_selected_queues}CHECKED{/if}>
+    		</TD>
+	    </TR>
+	    <TR>
+		<TD WIDTH="1%" NOWRAP>
 		    {trans("Default user:")}
 		</TD>
 		<TD WIDTH="99%" NOWRAP>

@@ -63,5 +63,6 @@ $_LANG['Ticket must have its title!'] = 'Zgłoszenie musi mieć tytuł!';
 $_LANG['Message'] = 'Wiadomość';
 
 $_LANG['Default categories:'] = 'Domyślne kategorie:';
+$_LANG['Show tickets from selected queues only:'] = 'Pokaż zgłoszenia jedynie z wybranych kolejek:';
 
 ?>
