@@ -2390,6 +2390,7 @@ $_LANG['Select default invoices payment type'] = 'Wybierz domyślny typ płatno�
 $_LANG['Select payment type'] = 'Wybierz typ płatności';
 $_LANG['Tariff'] = 'Taryfa';
 $_LANG['mobile'] = 'tel.kom.';
+$_LANG['phone<!plural>'] = 'telefon';
 $_LANG['fax'] = 'fax';
 $_LANG['Select domain type'] = 'Wybierz typ domeny';
 $_LANG['Enter city of service address (optional)'] = 'Wprowadź nazwę miasta dla adresu dodoręczeń (opcjonalnie)';
