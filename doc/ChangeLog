@@ -44,6 +44,7 @@ version ?.??.?? (????-??-??):
   - basic smsapi.pl api support [chilan]
   - userpanel: helpdesk: selection if all tickets are visible or only
     those from selected queues [chilan]
+  - messages: selection of customer tariff type is possible [chilan]
 
 version 1.11.14 (2013-03-25):
 

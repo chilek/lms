@@ -51,15 +51,16 @@ $SMARTY->assign('xajax', $LMS->RunXajax());
 function GetRecipients($filter, $type = MSG_MAIL) {
 	global $LMS;
 
-	$group = $filter['group'];
-	$network = $filter['network'];
+	$group = intval($filter['group']);
+	$network = intval($filter['network']);
 	if (is_array($filter['customergroup'])) {
 		$customergroup = array_map('intval', $filter['customergroup']);
 		$customergroup = implode(',', $customergroup);
 	} else
 		$customergroup = intval($filter['customergroup']);
-	$nodegroup = $filter['nodegroup'];
-	$linktype = $filter['linktype'];
+	$nodegroup = intval($filter['nodegroup']);
+	$linktype = intval($filter['linktype']);
+	$tarifftype = intval($filter['tarifftype']);
 
 	if($group == 4)
 	{
@@ -85,7 +86,18 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 				FROM customercontacts
 				WHERE (type & '.CONTACT_MOBILE.') = '.CONTACT_MOBILE.'
 				GROUP BY customerid
-			) x ON (x.customerid = c.id)';
+			) x ON (x.customerid = c.id) ';
+	}
+
+	if ($tarifftype) {
+		$tarifftable = 'JOIN (
+			SELECT DISTINCT a.customerid FROM assignments a
+			JOIN tariffs t ON t.id = a.tariffid
+			WHERE a.suspended = 0
+				AND (a.datefrom = 0 OR a.datefrom < ?NOW?)
+				AND (a.dateto = 0 OR a.dateto > ?NOW?)
+				AND t.type = ' . $tarifftype . '
+		) a ON a.customerid = c.id ';
 	}
 
 	$recipients = $LMS->DB->GetAll('SELECT c.id, email, pin, '
@@ -98,6 +110,7 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 			FROM cash GROUP BY customerid
 		) b ON (b.customerid = c.id) '
 		.(!empty($smstable) ? $smstable : '')
+		. ($tarifftype ? $tarifftable : '')
 		.'WHERE deleted = '.$deleted
 		.($type == MSG_MAIL ? ' AND email != \'\'' : '')
 		.($group!=0 ? ' AND status = '.$group : '')
@@ -115,6 +128,10 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 			GROUP BY ownerid HAVING (SUM(access) != COUNT(access)))' : '')
 		.($indebted ? ' AND COALESCE(b.value, 0) < 0' : '')
 		.($notindebted ? ' AND COALESCE(b.value, 0) >= 0' : '')
+		. ($tarifftype ? ' AND NOT EXISTS (SELECT id FROM assignments
+			WHERE customerid = c.id AND tariffid = 0 AND liabilityid = 0
+				AND (datefrom = 0 OR datefrom < ?NOW?)
+				AND (dateto = 0 OR dateto > ?NOW?))' : '')
 		.' ORDER BY customername');
 
 	return $recipients;

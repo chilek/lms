@@ -143,12 +143,21 @@
 						</SELECT>
 					</TD>
 					<TD style="width: 1%;" class="nobr">{trans("Network:")}</TD>
-					<TD style="width: 95%;">
+					<TD style="width: 1%;">
 						<SELECT name="message[network]" {tip trigger="network" text="Select IP network"}>
 							<option value="0">{trans("- all networks -")}</option>
 							{section name="networks" loop=$networks}
 							<option value="{$networks[networks].id}"{if $message.network == $networks[networks].id} selected{/if}>{$networks[networks].name|truncate:"30":"...":true}</option>
 							{/section}
+						</SELECT>
+					</TD>
+					<TD style="width: 1%;" class="nobr">{trans("Tariff type:")}</TD>
+					<TD style="width: 93%;">
+						<SELECT name="message[tarifftype]" {tip trigger="network" text="Select tariff type"}>
+							<option value="0">{trans("- all -")}</option>
+							{foreach $_TARIFFTYPES as $key => $type}
+							<option value="{$key}"{if $message.tarifftype == $key} selected{/if}>{$type}</option>
+							{/foreach}
 						</SELECT>
 					</TD>
 				</TR>
@@ -163,7 +172,7 @@
 						</SELECT>
 					</TD>
 					<TD style="width: 1%;" class="nobr">{trans("Link type:")}</TD>
-					<TD style="width: 95%;">
+					<TD style="width: 95%;" colspan="3">
 						<SELECT size="1" name="message[linktype]" {tip trigger="linktype" text="Select link type"}>
 							<OPTION value="">{trans("- all -")}</OPTION>
 							<OPTION value="0">{trans("wire")}</OPTION>

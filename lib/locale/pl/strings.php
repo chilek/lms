@@ -2775,4 +2775,6 @@ $_LANG['Body of mail which is sent to customer when the ticket is resolved'] = '
 
 $_LANG['backup access forbidden'] = 'brak dostępu do kopii zapasowych';
 
+$_LANG['Tariff type:'] = 'Typ taryfy:';
+
 ?>
