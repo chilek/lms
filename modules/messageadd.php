@@ -121,9 +121,9 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 			WHERE customergroupid IN (' . $customergroup . '))' : '')
 		.($nodegroup ? ' AND c.id IN (SELECT ownerid FROM nodes
 			JOIN nodegroupassignments ON (nodeid = nodes.id)
-			WHERE nodegroupid = '.intval($nodegroup).')' : '')
+			WHERE nodegroupid = ' . $nodegroup . ')' : '')
 		.($linktype != '' ? ' AND c.id IN (SELECT ownerid FROM nodes
-			WHERE linktype = '.intval($linktype).')' : '')
+			WHERE linktype = ' . $linktype . ')' : '')
 		.($disabled ? ' AND EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id
 			GROUP BY ownerid HAVING (SUM(access) != COUNT(access)))' : '')
 		.($indebted ? ' AND COALESCE(b.value, 0) < 0' : '')
