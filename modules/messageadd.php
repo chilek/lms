@@ -146,8 +146,9 @@ function GetRecipient($customerid, $type=MSG_MAIL)
 		$smstable = 'JOIN (SELECT ' . $LMS->DB->GroupConcat('phone') . ' AS phone, customerid
 				FROM customercontacts 
 				WHERE customerid = '.$customerid.'
-				    AND (type & '.CONTACT_MOBILE.') = '.CONTACT_MOBILE.'
-			) x ON (x.customerid = c.id)';
+					AND (type & '.CONTACT_MOBILE.') = '.CONTACT_MOBILE.'
+				GROUP BY customerid
+			) x ON (x.customerid = c.id) ';
 	}
 
 	return $LMS->DB->GetAll('SELECT c.id, email, pin, '
