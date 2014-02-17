@@ -303,8 +303,17 @@ if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_
         $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
 }
 
+$queuelist = $LMS->GetQueueNames();
+if (get_conf('userpanel.limit_ticket_movements_to_selected_queues')) {
+	$selectedqueues = explode(';', get_conf('userpanel.queues'));
+	if (in_array($ticket['queueid'], $selectedqueues))
+		foreach ($queuelist as $idx => $queue)
+			if (!in_array($queue['id'], $selectedqueues))
+				unset($queuelist[$idx]);
+}
+
 $SMARTY->assign('ticket', $ticket);
-$SMARTY->assign('queuelist', $LMS->GetQueueNames());
+$SMARTY->assign('queuelist', $queuelist);
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('error', $error);
