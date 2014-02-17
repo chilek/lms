@@ -37,6 +37,14 @@
 	    </TR>
 	    <TR>
 		<TD WIDTH="1%" NOWRAP>
+			<label for="limit_ticket_movements_to_selected_queues">{trans("Limit ticket movements to selected queues:")}</label>
+		</TD>
+		<TD WIDTH="99%" NOWRAP>
+			<INPUT type="checkbox" name="limit_ticket_movements_to_selected_queues" id="limit_ticket_movements_to_selected_queues" value="1" {if $limit_ticket_movements_to_selected_queues}CHECKED{/if}>
+    		</TD>
+	    </TR>
+	    <TR>
+		<TD WIDTH="1%" NOWRAP>
 		    {trans("Default user:")}
 		</TD>
 		<TD WIDTH="99%" NOWRAP>

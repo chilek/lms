@@ -1927,6 +1927,8 @@ INSERT INTO uiconfig (section, var, value, description, disabled)
 INSERT INTO uiconfig (section, var, value, description, disabled)
 	VALUES ('userpanel', 'allow_message_add_to_closed_tickets', '1', '', 0);
 INSERT INTO uiconfig (section, var, value, description, disabled)
+	VALUES ('userpanel', 'limit_ticket_movements_to_selected_queues', '0', '', 0);
+INSERT INTO uiconfig (section, var, value, description, disabled)
 	VALUES ('userpanel', 'default_userid', '0', '', 0);
 INSERT INTO uiconfig (section, var, value, description, disabled)
 	VALUES ('userpanel', 'debug_email', '', '', 0);

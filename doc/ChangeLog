@@ -48,6 +48,7 @@ version ?.??.?? (????-??-??):
   - support customer search by tariff type [chilan]
   - customer search: export results to csv [chilan]
   - userpanel: helpdesk: allow message add to closed tickets setting [chilan]
+  - userpanel: helpdesk: limit ticket movements to selected queues setting [chilan]
 
 version 1.11.14 (2013-03-25):
 
