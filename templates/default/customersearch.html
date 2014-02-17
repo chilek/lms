@@ -198,6 +198,19 @@
 	</TR>
 	<TR>
 		<TD style="width: 1%;" class="bold nobr">
+			<IMG src="img/money.gif" alt=""> {trans("Tariff type:")}
+		</TD>
+		<TD style="width: 99%;">
+			<SELECT SIZE="1" name="search[tarifftype]">
+				<OPTION VALUE="" SELECTED>{trans("- all -")}</OPTION>
+				{foreach $_TARIFFTYPES as $id => $name}
+				 	<OPTION VALUE="{$id}">{$name}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR>
+		<TD style="width: 1%;" class="bold nobr">
 			<IMG src="img/empty.gif" width="16" alt=""> {trans("Created:")}
 		</TD>
 		<TD style="width: 99%;">

@@ -1014,6 +1014,14 @@ class LMS {
 							AND (dateto >= ?NOW? OR dateto = 0)
 							AND (tariffid IN (' . $value . ')))';
 							break;
+						case 'tarifftype':
+							$searchargs[] = 'EXISTS (SELECT 1 FROM assignments a 
+							JOIN tariffs t ON t.id = a.tariffid
+							WHERE a.customerid = c.id
+							AND (datefrom <= ?NOW? OR datefrom = 0) 
+							AND (dateto >= ?NOW? OR dateto = 0)
+							AND (t.type = ' . intval($value) . '))';
+							break;
 						default:
 							$searchargs[] = "$key ?LIKE? " . $this->DB->Escape("%$value%");
 					}
