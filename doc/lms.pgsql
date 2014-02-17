@@ -1925,6 +1925,8 @@ INSERT INTO uiconfig (section, var, value, description, disabled)
 INSERT INTO uiconfig (section, var, value, description, disabled)
 	VALUES ('userpanel', 'tickets_from_selected_queues', '0', '', 0);
 INSERT INTO uiconfig (section, var, value, description, disabled)
+	VALUES ('userpanel', 'allow_message_add_to_closed_tickets', '1', '', 0);
+INSERT INTO uiconfig (section, var, value, description, disabled)
 	VALUES ('userpanel', 'default_userid', '0', '', 0);
 INSERT INTO uiconfig (section, var, value, description, disabled)
 	VALUES ('userpanel', 'debug_email', '', '', 0);
@@ -1967,4 +1969,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014021400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014021700');

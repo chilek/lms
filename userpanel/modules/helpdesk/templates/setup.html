@@ -29,6 +29,14 @@
 	    </TR>
 	    <TR>
 		<TD WIDTH="1%" NOWRAP>
+			<label for="allow_message_add_to_closed_tickets">{trans("Allow message add to closed tickets:")}</label>
+		</TD>
+		<TD WIDTH="99%" NOWRAP>
+			<INPUT type="checkbox" name="allow_message_add_to_closed_tickets" id="allow_message_add_to_closed_tickets" value="1" {if $allow_message_add_to_closed_tickets}CHECKED{/if}>
+    		</TD>
+	    </TR>
+	    <TR>
+		<TD WIDTH="1%" NOWRAP>
 		    {trans("Default user:")}
 		</TD>
 		<TD WIDTH="99%" NOWRAP>

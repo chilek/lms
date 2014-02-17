@@ -64,5 +64,6 @@ $_LANG['Message'] = 'Wiadomość';
 
 $_LANG['Default categories:'] = 'Domyślne kategorie:';
 $_LANG['Show tickets from selected queues only:'] = 'Pokaż zgłoszenia jedynie z wybranych kolejek:';
+$_LANG['Allow message add to closed tickets:'] = 'Pozwól na dodawanie wiadomości do zamkniętych zgłoszeń:';
 
 ?>

@@ -44,6 +44,7 @@ if (defined('USERPANEL_SETUPMODE'))
 	$SMARTY->assign('queuelist', $LMS->GetQueueNames());
 	$SMARTY->assign('queues', explode(';', $LMS->CONFIG['userpanel']['queues']));
 	$SMARTY->assign('tickets_from_selected_queues', $LMS->CONFIG['userpanel']['tickets_from_selected_queues']);
+	$SMARTY->assign('allow_message_add_to_closed_tickets', $LMS->CONFIG['userpanel']['allow_message_add_to_closed_tickets']);
         $SMARTY->assign('default_userid', $LMS->CONFIG['userpanel']['default_userid']);
         $SMARTY->assign('lms_url', $LMS->CONFIG['userpanel']['lms_url']);
         $SMARTY->assign('categories', $categories);
@@ -57,6 +58,8 @@ if (defined('USERPANEL_SETUPMODE'))
 		$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'queues\'', array(implode(';', $_POST['queues'])));
 	$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'tickets_from_selected_queues\'',
 		array(intval($_POST['tickets_from_selected_queues'])));
+	$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'allow_message_add_to_closed_tickets\'',
+		array(intval($_POST['allow_message_add_to_closed_tickets'])));
 	$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'default_userid\'',array($_POST['default_userid']));
 	$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'lms_url\'',array($_POST['lms_url']));
 	$categories = array_keys((isset($_POST['lms_categories']) ? $_POST['lms_categories'] : array()));
@@ -231,9 +234,9 @@ function module_main()
 		$SMARTY->assign('helpdesk', $ticket);
 	}
     }
-    elseif(isset($_POST['helpdesk']) && !empty($_GET['id']))
+    elseif(isset($_POST['helpdesk']) && !empty($_GET['id']) && $CONFIG['userpanel']['allow_message_add_to_closed_tickets'])
     {
-        $ticket = $_POST['helpdesk'];
+	$ticket = $_POST['helpdesk'];
 
 	$ticket['body'] = strip_tags($ticket['body']);
 	$ticket['subject'] = strip_tags($ticket['subject']);
