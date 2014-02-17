@@ -46,6 +46,7 @@ version ?.??.?? (????-??-??):
     those from selected queues [chilan]
   - messages: selection of customer tariff type is possible [chilan]
   - support customer search by tariff type [chilan]
+  - customer search: export results to csv [chilan]
 
 version 1.11.14 (2013-03-25):
 
