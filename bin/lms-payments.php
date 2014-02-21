@@ -141,6 +141,7 @@ if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0
 
 //require_once(LIB_DIR.'/definitions.php');
 require_once(LIB_DIR.'/common.php');
+require_once(LIB_DIR.'/language.php');
 
 if (empty($CONFIG['payments']['deadline']))
 	$CONFIG['payments']['deadline'] = 14;
