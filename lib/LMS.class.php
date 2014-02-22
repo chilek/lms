@@ -5160,21 +5160,22 @@ class LMS {
 		if (empty($headers['Date']))
 			$headers['Date'] = date('r');
 
-		if ($files) {
+		if ($files || $headers['X-LMS-Format'] == 'html') {
 			$boundary = '-LMS-' . str_replace(' ', '.', microtime());
 			$headers['Content-Type'] = "multipart/mixed;\n  boundary=\"" . $boundary . '"';
 			$buf = "\nThis is a multi-part message in MIME format.\n\n";
 			$buf .= '--' . $boundary . "\n";
-			$buf .= "Content-Type: text/plain; charset=UTF-8\n\n";
+			$buf .= "Content-Type: text/" . ($headers['X-LMS-Format'] == 'html' ? "html" : "plain") . "; charset=UTF-8\n\n";
 			$buf .= $body . "\n";
-			while (list(, $chunk) = each($files)) {
-				$buf .= '--' . $boundary . "\n";
-				$buf .= "Content-Transfer-Encoding: base64\n";
-				$buf .= "Content-Type: " . $chunk['content_type'] . "; name=\"" . $chunk['filename'] . "\"\n";
-				$buf .= "Content-Description:\n";
-				$buf .= "Content-Disposition: attachment; filename=\"" . $chunk['filename'] . "\"\n\n";
-				$buf .= chunk_split(base64_encode($chunk['data']), 60, "\n");
-			}
+			if ($files)
+				while (list(, $chunk) = each($files)) {
+					$buf .= '--' . $boundary . "\n";
+					$buf .= "Content-Transfer-Encoding: base64\n";
+					$buf .= "Content-Type: " . $chunk['content_type'] . "; name=\"" . $chunk['filename'] . "\"\n";
+					$buf .= "Content-Description:\n";
+					$buf .= "Content-Disposition: attachment; filename=\"" . $chunk['filename'] . "\"\n\n";
+					$buf .= chunk_split(base64_encode($chunk['data']), 60, "\n");
+				}
 			$buf .= '--' . $boundary . '--';
 		} else {
 			$headers['Content-Type'] = 'text/plain; charset=UTF-8';

@@ -374,6 +374,8 @@ if(isset($_POST['message']))
 			$headers['From'] = '"'.$message['from'].'" <'.$message['sender'].'>';
 			$headers['Subject'] = $message['subject'];
 			$headers['Reply-To'] = $headers['From'];
+			if (!empty($message['wysiwyg']))
+				$headers['X-LMS-Format'] = 'html';
 		} elseif ($message['type'] != MSG_WWW) {
 			if (!empty($CONFIG['sms']['debug_phone']))
 				echo '<B>'.trans('Warning! Debug mode (using phone $a).',$CONFIG['sms']['debug_phone']).'</B><BR>';
