@@ -343,6 +343,11 @@ class TCPDFpl extends TCPDF {
 
 }
 
+function new_page() {
+	global $pdf;
+	$pdf->AddPage();
+}
+
 function init_pdf($pagesize, $orientation, $title) {
 	global $layout, $CONFIG;
 
