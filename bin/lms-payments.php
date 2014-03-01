@@ -452,7 +452,7 @@ foreach($assigns as $assign)
 				$val = $val / 30.0;
 		}
 
-		$val = sprintf("%.2f", $val);
+		$val = str_replace(',', '.', sprintf("%.2f", $val));
 
 		if ($assign['invoice'])
 		{
@@ -592,7 +592,7 @@ foreach($assigns as $assign)
 					$alldays = 365; break;
 			}
 
-			$value = sprintf("%.2f", $alldays != 30 ? $diffdays * $val / $alldays : $value);
+			$value = str_replace(',', '.', sprintf("%.2f", $alldays != 30 ? $diffdays * $val / $alldays : $value));
 
 			//print "value: $val diffdays: $diffdays alldays: $alldays settl_value: $value\n";
 
