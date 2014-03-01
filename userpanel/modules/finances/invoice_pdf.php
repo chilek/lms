@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2014 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,37 +24,39 @@
  *  $Id$
  */
 
-function invoice_body() 
-{
-    global $invoice,$pdf,$CONFIG;
+function invoice_body() {
+	global $invoice,$pdf,$CONFIG;
 
-    if(isset($invoice['invoice']))
-	    $template = $CONFIG['invoices']['cnote_template_file'];
-    else
-	    $template = $CONFIG['invoices']['template_file'];
+	if (isset($invoice['invoice']))
+		$template = $CONFIG['invoices']['cnote_template_file'];
+	else
+		$template = $CONFIG['invoices']['template_file'];
 
-    switch ($template)
-    {
-	case "standard":
-	    invoice_body_standard();
-	break;
-	case "FT-0100":
-	    invoice_body_ft0100();
-	break;
-	default:
-	    if(file_exists($template))
-                    require($template);
-	    else //go to LMS modules directory
-	            require(MODULES_DIR.'/'.$template);
-    }
+	switch ($template) {
+		case "standard":
+			invoice_body_standard();
+			break;
+		case "FT-0100":
+			invoice_body_ft0100();
+			break;
+		default:
+			if (file_exists($template))
+				require($template);
+			else //go to LMS modules directory
+				require(MODULES_DIR . '/' . $template);
+	 }
 
-    if(!isset($invoice['last'])) $pdf->ezNewPage();
+	if (!isset($invoice['last']))
+		new_page();
 }
 
 global $pdf;
 
-require_once(LIB_DIR.'/pdf.php');
-require_once(MODULES_DIR.'/invoice_pdf.inc.php');
+$pdf_type = get_conf('invoices.pdf_type', 'pdf');
+if (!in_array($pdf_type, array('pdf', 'tcpdf')))
+	$pdf_type = 'pdf';
+require_once(LIB_DIR . '/' . $pdf_type . '.php');
+require_once(MODULES_DIR . '/invoice_' . $pdf_type . '.inc.php');
 
 // handle multi-invoice print
 if(!empty($_POST['inv']))
