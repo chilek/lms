@@ -48,6 +48,8 @@ function invoice_body() {
 }
 
 $pdf_type = get_conf('invoices.pdf_type', 'pdf');
+if (!in_array($pdf_type, array('pdf', 'tcpdf')))
+	$pdf_type = 'pdf';
 require_once(LIB_DIR . '/' . $pdf_type . '.php');
 require_once(MODULES_DIR . '/invoice_' . $pdf_type . '.inc.php');
 
