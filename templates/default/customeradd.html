@@ -237,8 +237,8 @@
 					</TD>
 					<TD style="width: 99%;" class="nobr">
 						<INPUT type="text" size="15" value="{$item.phone}" name="customeradd[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}>
-						<INPUT type="checkbox" value="{$smarty.const.CONTACT_MOBILE}" id="chkmobile{$key}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & CONTACT_MOBILE)} checked{/if}><label for="chkmobile{$key}">{trans("mobile")}</label>
-						<INPUT type="checkbox" value="{$smarty.const.CONTACT_FAX}" id="chkfax{$key}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & CONTACT_FAX)} checked{/if}><label for="chkfax{$key}">{trans("fax")}</label>
+						<INPUT type="checkbox" value="{$smarty.const.CONTACT_MOBILE}" id="chkmobile{$key}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_MOBILE)} checked{/if}><label for="chkmobile{$key}">{trans("mobile")}</label>
+						<INPUT type="checkbox" value="{$smarty.const.CONTACT_FAX}" id="chkfax{$key}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_FAX)} checked{/if}><label for="chkfax{$key}">{trans("fax")}</label>
 						<BR>
 						<INPUT type="text" size="38" value="{$item.name}" name="customeradd[contacts][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
 					</TD>
