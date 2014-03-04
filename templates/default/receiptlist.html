@@ -185,22 +185,28 @@
 	</TR>
         <TR>
 		<TD colspan="2" align="right" NOWRAP style="vertical-align: top;">
-		        <B>{trans("Total:")}</B><HR>
-		        <B>{trans("Initial balance:")}</B><BR>
-		        <B>{trans("Final balance:")}</B><BR>
-    		</TD>
-	        <TD nowrap align="right" style="vertical-align: top;">
-		        <NOBR>
+			{if !check_conf('privileges.hide_summaries')}
+			<B>{trans("Total:")}</B><HR>
+			<B>{trans("Initial balance:")}</B><BR>
+			<B>{trans("Final balance:")}</B><BR>
+			{/if}
+		</TD>
+		<TD nowrap align="right" style="vertical-align: top;">
+			{if !check_conf('privileges.hide_summaries')}
+			<NOBR>
 			{$listdata.totalincome|money_format}<HR>
 			{$listdata.startbalance|money_format}<BR>
 			{$listdata.endbalance|money_format}
 			</NOBR>
+			{/if}
 		</TD>
 		<TD nowrap align="right" style="vertical-align: top;">
+			{if !check_conf('privileges.hide_summaries')}
 			{$listdata.totalexpense|money_format}<HR>
+			{/if}
 		</TD>
 		<TD colspan="3" align="right">
-			<H1>{trans("Cash state:")} <B>{$listdata.cashstate|money_format}</B></H1>
+			{if !check_conf('privileges.hide_summaries')}<H1>{trans("Cash state:")} <B>{$listdata.cashstate|money_format}</B></H1>{/if}
 			<A href="?m=cashreglogview&regid={$listdata.regid}">{trans("Cash history")} <img src="img/value.gif" alt=""></A>&nbsp;
 			<A href="?m=receiptadd&type=in&action=init&regid={$listdata.regid}">{trans("New Cash-in Receipt")} <img src="img/save.gif" alt=""></A>&nbsp;
 			<A href="?m=receiptadd&type=out&action=init&regid={$listdata.regid}">{trans("New Cash-out Receipt")} <img src="img/save.gif" alt=""></A>

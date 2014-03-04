@@ -19,7 +19,9 @@
                         <SPAN class="nobr lighter">{trans("ID:")}</SPAN>
 		</TH>
 		<TH scope="col" class="text-right">
-                        <SPAN class="nobr lighter">{trans("Cash state:")}</SPAN>
+			{if !check_conf('privileges.hide_summaries')}
+			<SPAN class="nobr lighter">{trans("Cash state:")}</SPAN>
+			{/if}
 		</TH>
 		<TH scope="col" class="text-right lighter">
                         <SPAN class="nobr">{trans("Cash-in receipt numbering plan:")}</SPAN><BR>
@@ -44,7 +46,9 @@
 			({$reg.id|string_format:"%04d"})
 		</TD>
 		<TD  class="text-right{if $reg.balance < 0} alert{/if}" onClick="return self.location.href='?m=receiptlist&regid={$reg.id}';">
-                        <SPAN class="nobr">{$reg.balance|money_format}</SPAN>
+			{if !check_conf('privileges.hide_summaries')}
+			<SPAN class="nobr">{$reg.balance|money_format}</SPAN>
+			{/if}
 		</TD>
 		<TD class="text-right" onClick="return self.location.href='?m=receiptlist&regid={$reg.id}';">
 			{$reg.in_template|default:"%N/LMS/%Y"}<BR>
@@ -54,12 +58,12 @@
 			{$reg.description}
 		</TD>
 		<TD class="text-right">
-                        <SPAN class="nobr">
+			<SPAN class="nobr">
 			<A HREF="?m=receiptlist&regid={$reg.id}"><IMG SRC="img/view.gif" alt="[ {trans("Browse")} ]" title="[ {trans("Browse")} ]"></A>
 			<A HREF="?m=cashregdel&id={$reg.id}" OnClick="return confirmLink(this, '{t a=$reg.name}Are you sure, you want to remove registry \'$a\' and all assigned receipts?{/t}');"><IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 			<A HREF="?m=cashregedit&id={$reg.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 			<A HREF="?m=cashreginfo&id={$reg.id}"><IMG SRC="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
-                        </SPAN>
+			</SPAN>
 		</TD>
 	</TR>
 	{foreachelse}
@@ -73,10 +77,14 @@
     <TFOOT>
 	<TR>
 		<TD COLSPAN="2" class="text-right">
+			{if !check_conf('privileges.hide_summaries')}
 			<SPAN class="nobr bold"><IMG src="img/info2.gif" ALT=""> {trans("Total:")}</SPAN>
+			{/if}
 		</TD>
 		<TD class="text-right">
+			{if !check_conf('privileges.hide_summaries')}
 			<SPAN class="nobr bold">{$listdata.sum|money_format}</SPAN>
+			{/if}
 		</TD>
 		<TD COLSPAN="2"></TD>
 		<TD class="text-right">
