@@ -79,7 +79,7 @@ elseif (isset($_POST['customerdata']))
 		$post_zipwarning = 1;
 	}
 
-	if($customerdata['email']!='' && !check_email($customerdata['email']))
+	if($customerdata['email']!='' && !check_emails($customerdata['email']))
 		$error['email'] = trans('Incorrect email!');
 
 	if($customerdata['pin'] == '')
