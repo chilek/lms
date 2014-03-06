@@ -77,7 +77,8 @@ function module_main()
 
     $error = NULL;
 
-    if(isset($_POST['helpdesk']) && empty($_GET['id']))
+	$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+    if (!$id && isset($_POST['helpdesk']))
     {
         $ticket = $_POST['helpdesk'];
 
@@ -236,9 +237,9 @@ function module_main()
 	        $SMARTY->assign('error', $error);
 		$SMARTY->assign('helpdesk', $ticket);
 	}
-    }
-    elseif(isset($_POST['helpdesk']) && !empty($_GET['id']) && $CONFIG['userpanel']['allow_message_add_to_closed_tickets'])
-    {
+    } elseif ($id && isset($_POST['helpdesk'])
+	&& ($DB->GetOne('SELECT state FROM rttickets WHERE id = ?', array($id)) != RT_RESOLVED
+		|| $CONFIG['userpanel']['allow_message_add_to_closed_tickets'])) {
 	$ticket = $_POST['helpdesk'];
 
 	$ticket['body'] = strip_tags($ticket['body']);
