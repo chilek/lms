@@ -61,6 +61,7 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 	$nodegroup = intval($filter['nodegroup']);
 	$linktype = intval($filter['linktype']);
 	$tarifftype = intval($filter['tarifftype']);
+	$consent = isset($filter['consent']);
 
 	if($group == 4)
 	{
@@ -111,7 +112,8 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 		) b ON (b.customerid = c.id) '
 		.(!empty($smstable) ? $smstable : '')
 		. ($tarifftype ? $tarifftable : '')
-		.'WHERE deleted = '.$deleted
+		.'WHERE deleted = ' . $deleted
+		. ($consent ? ' AND c.mailingnotice = 1' : '')
 		.($type == MSG_MAIL ? ' AND email != \'\'' : '')
 		.($group!=0 ? ' AND status = '.$group : '')
 		.($network ? ' AND c.id IN (SELECT ownerid FROM nodes WHERE 

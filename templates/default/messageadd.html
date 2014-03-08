@@ -172,13 +172,17 @@
 						</SELECT>
 					</TD>
 					<TD style="width: 1%;" class="nobr">{trans("Link type:")}</TD>
-					<TD style="width: 95%;" colspan="3">
+					<TD style="width: 1%;">
 						<SELECT size="1" name="message[linktype]" {tip trigger="linktype" text="Select link type"}>
 							<OPTION value="">{trans("- all -")}</OPTION>
 							<OPTION value="0">{trans("wire")}</OPTION>
 							<OPTION value="1">{trans("wireless")}</OPTION>
 							<OPTION value="2">{trans("fiber")}</OPTION>
 						</SELECT>
+					</TD>
+					<TD style="width: 1%;" class="nobr"><label for="consent">{trans("Consent required:")}</label></TD>
+					<TD style="width: 93%;">
+						<INPUT type="checkbox" id="consent" name="message[consent]" value="1" {tip text="Check if customer consent to messages delivery via e-mail or sms is required" trigger="consent"}{if $message.consent} checked{/if}>
 					</TD>
 				</TR>
 			</TABLE>
