@@ -115,7 +115,7 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 		.($type == MSG_MAIL ? ' AND email != \'\'' : '')
 		.($group!=0 ? ' AND status = '.$group : '')
 		.($network ? ' AND c.id IN (SELECT ownerid FROM nodes WHERE 
-			(ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') 
+			(netid = ' . $net['id'] . ' AND ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ')
 			OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
 		.($customergroup ? ' AND c.id IN (SELECT customerid FROM customerassignments
 			WHERE customergroupid IN (' . $customergroup . '))' : '')
