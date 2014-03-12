@@ -62,14 +62,11 @@ class ULMS extends LMS
 	
 	function GetCustomerTickets($id)
 	{
-		if ($this->CONFIG['userpanel']['tickets_from_selected_queues'])
-			$queues = $this->DB->GetCol('SELECT id FROM rtqueues'
-				. (!empty($this->CONFIG['userpanel']['queues'])
-					? ' WHERE id IN (' . str_replace(';', ',', $this->CONFIG['userpanel']['queues']) . ')'
-					: ''));
-		$tickets = $this->DB->GetAll('SELECT * FROM rttickets WHERE customerid=? '
-			. ($this->CONFIG['userpanel']['tickets_from_selected_queues'] ?
-				'AND queueid IN (' . implode(',', $queues) . ')' : '')
+		if ($this->CONFIG['userpanel']['tickets_from_selected_queues'] && !empty($this->CONFIG['userpanel']['queues']))
+			$queues = $this->DB->GetCol('SELECT id FROM rtqueues
+				WHERE id IN (' . str_replace(';', ',', $this->CONFIG['userpanel']['queues']) . ')');
+		$tickets = $this->DB->GetAll('SELECT * FROM rttickets WHERE customerid=?'
+			. (isset($queues) && !empty($queues) ? ' AND queueid IN (' . implode(',', $queues) . ')' : '')
 			. ' ORDER BY createtime DESC', array($id));
 		if (!empty($tickets))
 			foreach ($tickets as $idx => $ticket)
