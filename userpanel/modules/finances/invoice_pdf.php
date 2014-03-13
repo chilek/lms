@@ -52,9 +52,9 @@ function invoice_body() {
 
 global $pdf;
 
-$pdf_type = get_conf('invoices.pdf_type', 'pdf');
-if (!in_array($pdf_type, array('pdf', 'tcpdf')))
-	$pdf_type = 'pdf';
+$pdf_type = get_conf('invoices.pdf_type', 'tcpdf');
+if (!in_array($pdf_type, array('ezpdf', 'tcpdf')))
+	$pdf_type = 'tcpdf';
 require_once(LIB_DIR . '/' . $pdf_type . '.php');
 require_once(MODULES_DIR . '/invoice_' . $pdf_type . '.inc.php');
 
