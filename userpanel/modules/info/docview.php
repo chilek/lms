@@ -27,12 +27,12 @@
 global $LMS, $SESSION;
 
 if(!empty($_GET['id'])) {
-	$doc = $LMS->DB->GetRow('SELECT c.filename, c.md5sum, c.contenttype, d.number, d.cdate, d.type, d.customerid, n.template
+	$doc = $LMS->DB->GetRow('SELECT c.filename, c.md5sum, c.contenttype, d.id, d.number, d.cdate, d.type, d.customerid, n.template
 		FROM documentcontents c
 		JOIN documents d ON (d.id = c.docid)
 		LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 		LEFT JOIN divisions ds ON (ds.id = d.divisionid)
-		WHERE c.docid = ?', array($_GET['id']));
+		WHERE c.docid = ?', array(intval($_GET['id'])));
 
 	if($doc['customerid'] != $SESSION->id)
 	{

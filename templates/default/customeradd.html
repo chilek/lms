@@ -2,6 +2,7 @@
 <!--// $Id$ //-->
 <script type="text/javascript" src="img/tinymce3/tiny_mce.js"> </script>
 <H1>{$layout.pagetitle}</H1>
+{include file="calendar_js.html"}
 <SCRIPT type="text/javascript">
 <!--
 	function randomize()
@@ -236,8 +237,8 @@
 					</TD>
 					<TD style="width: 99%;" class="nobr">
 						<INPUT type="text" size="15" value="{$item.phone}" name="customeradd[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}>
-						<INPUT type="checkbox" value="{$smarty.const.CONTACT_MOBILE}" id="chkmobile{$key}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & CONTACT_MOBILE)} checked{/if}><label for="chkmobile{$key}">{trans("mobile")}</label>
-						<INPUT type="checkbox" value="{$smarty.const.CONTACT_FAX}" id="chkfax{$key}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & CONTACT_FAX)} checked{/if}><label for="chkfax{$key}">{trans("fax")}</label>
+						<INPUT type="checkbox" value="{$smarty.const.CONTACT_MOBILE}" id="chkmobile{$key}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_MOBILE)} checked{/if}><label for="chkmobile{$key}">{trans("mobile")}</label>
+						<INPUT type="checkbox" value="{$smarty.const.CONTACT_FAX}" id="chkfax{$key}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_FAX)} checked{/if}><label for="chkfax{$key}">{trans("fax")}</label>
 						<BR>
 						<INPUT type="text" size="38" value="{$item.name}" name="customeradd[contacts][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
 					</TD>
@@ -378,19 +379,7 @@
 									{trans("Cutoff suspending:")}
 								</TD>
 								<TD>
-									<SELECT name="customeradd[cutoffstop]" {tip text="Select days number of cutoff suspending (optional)" trigger="cutoffstop"}>
-										<OPTION value="0"{if !$customeradd.cutoffstop} selected{/if}>0</OPTION>
-										<OPTION value="1"{if $customeradd.cutoffstop==1} selected{/if}>1</OPTION>
-										<OPTION value="2"{if $customeradd.cutoffstop==2} selected{/if}>2</OPTION>
-										<OPTION value="3"{if $customeradd.cutoffstop==3} selected{/if}>3</OPTION>
-										<OPTION value="4"{if $customeradd.cutoffstop==4} selected{/if}>4</OPTION>
-										<OPTION value="5"{if $customeradd.cutoffstop==5} selected{/if}>5</OPTION>
-										<OPTION value="6"{if $customeradd.cutoffstop==6} selected{/if}>6</OPTION>
-										<OPTION value="7"{if $customeradd.cutoffstop==7} selected{/if}>7</OPTION>
-										<OPTION value="14"{if $customeradd.cutoffstop==14} selected{/if}>14</OPTION>
-										<OPTION value="21"{if $customeradd.cutoffstop==21} selected{/if}>21</OPTION>
-										<OPTION value="30"{if $customeradd.cutoffstop==30} selected{/if}>30</OPTION>
-									</SELECT>
+									<INPUT type="text" name="customeradd[cutoffstop]" id="cutoffstop" {if $customerinfo.cutoffstop}value="{$customerinfo.cutoffstop}"{/if} size="10" onclick="cal1.popup()" {tip text="Select date of cutoff suspending (optional)" trigger="cutoffstop"}>
 								</TD>
 							</TR>
 						</TABLE>
@@ -480,6 +469,9 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
+	var cal1 = new calendar(document.forms['customeradd'].elements['customeradd[cutoffstop]']);
+	cal1.time_comp = false;
+
 	document.forms['customeradd'].elements['customeradd[lastname]'].focus();
 	if(document.forms['customeradd'].elements['customeradd[pin]'].value == '') randomize();
 

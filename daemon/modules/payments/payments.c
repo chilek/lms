@@ -661,7 +661,9 @@ void reload(GLOBAL *g, struct payments_module *p)
 			g->str_replace(&description, "%tariff", g->db_get_data(res,i,"name"));
 			g->str_replace(&description, "%next_mon", nextmon);
 			g->str_replace(&description, "%month", monthname);
+			g->str_replace(&description, "%currentm", month);
 			g->str_replace(&description, "%year", year);
+			g->str_replace(&description, "%currenty", year);
 
 			if( atoi(g->db_get_data(res,i,"invoice")) )
 			{

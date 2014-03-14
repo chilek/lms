@@ -638,6 +638,7 @@ CREATE INDEX documents_cdate_idx ON documents(cdate);
 CREATE INDEX documents_numberplanid_idx ON documents(numberplanid);
 CREATE INDEX documents_customerid_idx ON documents(customerid);
 CREATE INDEX documents_closed_idx ON documents(closed);
+CREATE INDEX documents_reference_idx ON documents(reference);
 
 /* -------------------------------------------------------- 
   Structure of table "documentcontents" 
@@ -852,6 +853,12 @@ CREATE TABLE rtqueues (
   name varchar(255) 	DEFAULT '' NOT NULL,
   email varchar(255) 	DEFAULT '' NOT NULL,
   description text	DEFAULT '' NOT NULL,
+  newticketsubject varchar(255) NOT NULL DEFAULT '',
+  newticketbody text NOT NULL DEFAULT '',
+  newmessagesubject varchar(255) NOT NULL DEFAULT '',
+  newmessagebody text NOT NULL DEFAULT '',
+  resolveticketsubject varchar(255) NOT NULL DEFAULT '',
+  resolveticketbody text NOT NULL DEFAULT '',
   PRIMARY KEY (id),
   UNIQUE (name)
 );
@@ -1914,7 +1921,13 @@ INSERT INTO uiconfig (section, var, value)
 INSERT INTO uiconfig (section, var, value)
 	VALUES ('userpanel', 'show_speeds', '1');
 INSERT INTO uiconfig (section, var, value, description, disabled)
-	VALUES ('userpanel', 'default_queue', '1', '', 0);
+	VALUES ('userpanel', 'queues', '1', '', 0);
+INSERT INTO uiconfig (section, var, value, description, disabled)
+	VALUES ('userpanel', 'tickets_from_selected_queues', '0', '', 0);
+INSERT INTO uiconfig (section, var, value, description, disabled)
+	VALUES ('userpanel', 'allow_message_add_to_closed_tickets', '1', '', 0);
+INSERT INTO uiconfig (section, var, value, description, disabled)
+	VALUES ('userpanel', 'limit_ticket_movements_to_selected_queues', '0', '', 0);
 INSERT INTO uiconfig (section, var, value, description, disabled)
 	VALUES ('userpanel', 'default_userid', '0', '', 0);
 INSERT INTO uiconfig (section, var, value, description, disabled)
@@ -1958,4 +1971,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2013110500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014021700');

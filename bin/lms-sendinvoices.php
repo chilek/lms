@@ -175,7 +175,7 @@ $invoice_filename = (!empty($CONFIG['sendinvoices']['invoice_filename']) ? $CONF
 $notify_email = (!empty($CONFIG['sendinvoices']['notify_email']) ? $CONFIG['sendinvoices']['notify_email'] : '');
 
 if (empty($sender_email))
-	die("Fatal error: sender_email unset! Con't continue, exiting.\n");
+	die("Fatal error: sender_email unset! Can't continue, exiting.\n");
 
 if (!empty($CONFIG['mail']['smtp_auth_type']) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $CONFIG['mail']['smtp_auth_type']))
 	die("Fatal error: smtp_auth setting not supported! Can't continue, exiting.\n");

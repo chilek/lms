@@ -168,10 +168,19 @@ if (isset($_POST['customeradd']))
 			$contacts[] = array('name' => $name, 'phone' => $phone, 'type' => $type);
 	}
 
-	if(!$error)
-	{
-		if($customeradd['cutoffstop'])
-			$customeradd['cutoffstop'] = mktime(23,59,59,date('m'), date('d') + $customeradd['cutoffstop']);
+	if ($customeradd['cutoffstop'] == '')
+		$cutoffstop = 0;
+	elseif (check_date($customeradd['cutoffstop'])) {
+			list ($y, $m, $d) = explode('/', $customeradd['cutoffstop']);
+			if (checkdate($m, $d, $y))
+				$cutoffstop = mktime(23, 59, 59, $m, $d, $y);
+			else
+				$error['cutoffstop'] = trans('Incorrect date of cutoff suspending!');
+	} else
+		$error['cutoffstop'] = trans('Incorrect date of cutoff suspending!');
+
+	if (!$error) {
+		$customeradd['cutoffstop'] = $cutoffstop;
 
 		if(!isset($customeradd['consentdate']))
 			$customeradd['consentdate'] = 0;

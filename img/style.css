@@ -72,6 +72,8 @@ INPUT[type="radio"] {
 }
 
 INPUT.alert	{ background-color: #FF9B9B; }
+INPUT[type="checkbox"].alert	{ outline: 2px solid #FF6060; }
+INPUT[type="radio"].alert	{ outline: 2px solid #FF6060; }
 INPUT.alert { /* IE fix */
 	background-color: expression(this.type=='checkbox' || this.type=='radio' ? 'transparent' : '#FF9B9B');
 }

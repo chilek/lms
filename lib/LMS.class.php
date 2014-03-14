@@ -1014,6 +1014,14 @@ class LMS {
 							AND (dateto >= ?NOW? OR dateto = 0)
 							AND (tariffid IN (' . $value . ')))';
 							break;
+						case 'tarifftype':
+							$searchargs[] = 'EXISTS (SELECT 1 FROM assignments a 
+							JOIN tariffs t ON t.id = a.tariffid
+							WHERE a.customerid = c.id
+							AND (datefrom <= ?NOW? OR datefrom = 0) 
+							AND (dateto >= ?NOW? OR dateto = 0)
+							AND (t.type = ' . intval($value) . '))';
+							break;
 						default:
 							$searchargs[] = "$key ?LIKE? " . $this->DB->Escape("%$value%");
 					}
@@ -3993,7 +4001,7 @@ class LMS {
 			while (in_array($i, (array) $destnodes))
 				$i++;
 
-			if ($this->DB->Execute('UPDATE nodes SET ipaddr=? WHERE netid=? AND ipaddr=?', array($i, $dst, $ip))) {
+			if ($this->DB->Execute('UPDATE nodes SET ipaddr=?, netid=? WHERE netid=? AND ipaddr=?', array($i, $dst, $src, $ip))) {
 				if ($this->SYSLOG) {
 					$node = $this->DB->GetRow('SELECT id, ownerid FROM nodes WHERE netid = ? AND ipaddr = ?',
 						array($dst, $ip));
@@ -4008,20 +4016,18 @@ class LMS {
 							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
 							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK]));
 				}
-			} elseif ($this->DB->Execute('UPDATE nodes SET ipaddr_pub=? WHERE netid=? AND ipaddr_pub=?', array($i, $dst, $ip))) {
+			} elseif ($this->DB->Execute('UPDATE nodes SET ipaddr_pub=? WHERE ipaddr_pub=?', array($i, $ip))) {
 				if ($this->SYSLOG) {
 					$node = $this->DB->GetRow('SELECT id, ownerid FROM nodes WHERE netid = ? AND ipaddr_pub = ?',
 						array($dst, $ip));
 					$args = array(
 						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $node['id'],
 						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $node['ownerid'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK] => $dst,
 						'ipaddr' => $i,
 					);
 					$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
 						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK]));
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
 				}
 			}
 
@@ -5154,21 +5160,22 @@ class LMS {
 		if (empty($headers['Date']))
 			$headers['Date'] = date('r');
 
-		if ($files) {
+		if ($files || $headers['X-LMS-Format'] == 'html') {
 			$boundary = '-LMS-' . str_replace(' ', '.', microtime());
 			$headers['Content-Type'] = "multipart/mixed;\n  boundary=\"" . $boundary . '"';
 			$buf = "\nThis is a multi-part message in MIME format.\n\n";
 			$buf .= '--' . $boundary . "\n";
-			$buf .= "Content-Type: text/plain; charset=UTF-8\n\n";
+			$buf .= "Content-Type: text/" . ($headers['X-LMS-Format'] == 'html' ? "html" : "plain") . "; charset=UTF-8\n\n";
 			$buf .= $body . "\n";
-			while (list(, $chunk) = each($files)) {
-				$buf .= '--' . $boundary . "\n";
-				$buf .= "Content-Transfer-Encoding: base64\n";
-				$buf .= "Content-Type: " . $chunk['content_type'] . "; name=\"" . $chunk['filename'] . "\"\n";
-				$buf .= "Content-Description:\n";
-				$buf .= "Content-Disposition: attachment; filename=\"" . $chunk['filename'] . "\"\n\n";
-				$buf .= chunk_split(base64_encode($chunk['data']), 60, "\n");
-			}
+			if ($files)
+				while (list(, $chunk) = each($files)) {
+					$buf .= '--' . $boundary . "\n";
+					$buf .= "Content-Transfer-Encoding: base64\n";
+					$buf .= "Content-Type: " . $chunk['content_type'] . "; name=\"" . $chunk['filename'] . "\"\n";
+					$buf .= "Content-Description:\n";
+					$buf .= "Content-Disposition: attachment; filename=\"" . $chunk['filename'] . "\"\n\n";
+					$buf .= chunk_split(base64_encode($chunk['data']), 60, "\n");
+				}
 			$buf .= '--' . $boundary . '--';
 		} else {
 			$headers['Content-Type'] = 'text/plain; charset=UTF-8';
@@ -5240,28 +5247,30 @@ class LMS {
 		else
 			$service = $this->CONFIG['sms']['service'];
 
+		if (in_array($service, array('smscenter', 'serwersms', 'smsapi'))) {
+			if (!function_exists('curl_init'))
+				return trans('Curl extension not loaded!');
+			if (empty($this->CONFIG['sms']['username']))
+				return trans('SMSCenter username not set!');
+			if (empty($this->CONFIG['sms']['password']))
+				return trans('SMSCenter username not set!');
+			if (empty($this->CONFIG['sms']['from']))
+				return trans('SMS "from" not set!');
+			else
+				$from = $this->CONFIG['sms']['from'];
+
+			if (strlen($number) > 16 || strlen($number) < 4)
+				return trans('Wrong phone number format!');
+		}
+
 		switch ($service) {
 			case 'smscenter':
-				if (!function_exists('curl_init'))
-					return trans('Curl extension not loaded!');
-				if (empty($this->CONFIG['sms']['username']))
-					return trans('SMSCenter username not set!');
-				if (empty($this->CONFIG['sms']['password']))
-					return trans('SMSCenter username not set!');
-				if (empty($this->CONFIG['sms']['from']))
-					return trans('SMS "from" not set!');
-				else
-					$from = $this->CONFIG['sms']['from'];
-
 				if ($msg_len < 160)
 					$type_sms = 'sms';
 				else if ($msg_len <= 459)
 					$type_sms = 'concat';
 				else
 					return trans('SMS Message too long!');
-
-				if (strlen($number) > 16 || strlen($number) < 4)
-					return trans('Wrong phone number format!');
 
 				$type = !empty($this->CONFIG['sms']['smscenter_type']) ? $this->CONFIG['sms']['smscenter_type'] : 'dynamic';
 				$message .= ($type == 'static') ? "\n\n" . $from : '';
@@ -5355,6 +5364,91 @@ class LMS {
 					return trans('Unable to create file $a!', $filename);
 
 				return MSG_NEW;
+				break;
+			case 'serwersms':
+				$args = array(
+					'akcja' => 'wyslij_sms',
+					'login' => $this->CONFIG['sms']['username'],
+					'haslo' => $this->CONFIG['sms']['password'],
+					'numer' => $number,
+					'wiadomosc' => $message,
+					'nadawca' => $from,
+				);
+				if ($messageid)
+					$args['usmsid'] = $messageid;
+				if (!empty($this->CONFIG['sms']['fast']))
+					$args['speed'] = 1;
+
+				$encodedargs = http_build_query($args);
+
+				$curl = curl_init();
+				curl_setopt($curl, CURLOPT_URL, 'https://api1.serwersms.pl/zdalnie/index.php');
+				curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+				curl_setopt($curl, CURLOPT_POST, 1);
+				curl_setopt($curl, CURLOPT_POSTFIELDS, $encodedargs);
+				curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+
+				$page = curl_exec($curl);
+				if (curl_error($curl))
+					return 'SMS communication error. ' . curl_error($curl);
+
+				$info = curl_getinfo($curl);
+				if ($info['http_code'] != '200')
+					return 'SMS communication error. Http code: ' . $info['http_code'];
+
+				curl_close($curl);
+
+				$lines = explode("\n", $page);
+				foreach ($lines as $lineidx => $line)
+					$lines[$lineidx] = trim($line);
+				$page = implode('', $lines);
+
+				if (preg_match('/<Blad>([^<]*)<\/Blad>/i', $page, $matches))
+					return 'Serwersms error: ' . $matches[1];
+
+				if (!preg_match('/<Skolejkowane><SMS id="[^"]+" numer="[^"]+" godzina_skolejkowania="[^"]+"\/><\/Skolejkowane>/', $page))
+					return 'Serwersms error: message has not been sent!';
+
+				return MSG_SENT;
+				break;
+			case 'smsapi':
+				$args = array(
+					'username' => $this->CONFIG['sms']['username'],
+					'password' => md5($this->CONFIG['sms']['password']),
+					'to' => $number,
+					'message' => $message,
+					'from' => !empty($from) ? $from : 'ECO',
+				);
+				if (!empty($this->CONFIG['sms']['fast']))
+					$args['fast'] = 1;
+				if ($messageid)
+					$args['idx'] = $messageid;
+
+				$encodedargs = http_build_query($args);
+
+				$curl = curl_init();
+				curl_setopt($curl, CURLOPT_URL, 'https://ssl.smsapi.pl/sms.do');
+				curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+				curl_setopt($curl, CURLOPT_POST, 1);
+				curl_setopt($curl, CURLOPT_POSTFIELDS, $encodedargs);
+				curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+
+				$page = curl_exec($curl);
+				if (curl_error($curl))
+					return 'SMS communication error. ' . curl_error($curl);
+
+				$info = curl_getinfo($curl);
+				if ($info['http_code'] != '200')
+					return 'SMS communication error. Http code: ' . $info['http_code'];
+
+				curl_close($curl);
+
+				if (preg_match('/^OK:/', $page))
+					return MSG_SENT;
+				if (preg_match('/^ERROR:([0-9]+)/', $page, $matches))
+					return 'Smsapi error: ' . $matches[1];
+
+				return 'Smsapi error: message has not been sent!';
 				break;
 			default:
 				return trans('Unknown SMS service!');

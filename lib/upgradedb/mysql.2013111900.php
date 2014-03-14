@@ -5,8 +5,6 @@
  *
  *  (C) Copyright 2001-2013 LMS Developers
  *
- *  Please, see the doc/AUTHORS for more information about authors!
- *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
  *  published by the Free Software Foundation.
@@ -21,30 +19,27 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id$
  */
 
-$customerid = intval($_GET['customerid']);
+$DB->BeginTrans();
 
-if (!$LMS->CustomerExists($customerid))
-	$SESSION->redirect('?m=customerlist');
+$DB->Execute("ALTER TABLE customers CHANGE paytime paytime smallint NOT NULL DEFAULT '-1'");
 
-if (isset($_GET['cutoffstop'])) {
-	if ($_GET['cutoffstop'] == '')
-		$cutoffstop = 0;
-	elseif (check_date($_GET['cutoffstop'])) {
-		list ($y, $m, $d) = explode('/', $_GET['cutoffstop']);
-		if (checkdate($m, $d, $y))
-			$cutoffstop = mktime(23, 59, 59, $m, $d, $y);
-	}
-	// excluded groups check
-	if (!$DB->GetOne('SELECT 1 FROM customerassignments a
+$DB->Execute("DROP VIEW IF EXISTS customersview");
+
+$DB->Execute("CREATE VIEW customersview AS
+		SELECT c.* FROM customers c
+		WHERE NOT EXISTS (
+			SELECT 1 FROM customerassignments a
 			JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-			WHERE e.userid = lms_current_user() AND a.customerid = ?',
-			array($customerid)))
-		$DB->Execute('UPDATE customers SET cutoffstop = ? WHERE id = ?', array($cutoffstop, $customerid));
-}
+			WHERE e.userid = lms_current_user() AND a.customerid = c.id)
+				AND c.type < ?", array(2));
 
-$SESSION->redirect('?'.$SESSION->get('backto'));
+$DB->Execute("ALTER TABLE documents CHANGE paytime paytime smallint NOT NULL DEFAULT '0'");
+$DB->Execute("ALTER TABLE divisions CHANGE inv_paytime inv_paytime smallint DEFAULT NULL");
+
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013111900', 'dbversion'));
+
+$DB->CommitTrans();
 
 ?>

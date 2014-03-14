@@ -720,7 +720,7 @@ $_LANG['Invoice Edit: $a'] = 'Edycja Faktury: $a';
 $_LANG['Invoice have no items!'] = 'Brak pozycji na fakturze!';
 $_LANG['Invoice have no items. Use form below for items addition.'] = 'Faktura nie ma żadnych pozycji. Użyj poniższego formularza aby je dodać.';
 $_LANG['Invoice No.'] = 'Numer faktury';
-$_LANG['Invoice No. $a'] = 'Faktura Nr $a';
+$_LANG['Invoice No. $a'] = 'Faktura nr $a';
 $_LANG['Invoice number:'] = 'Nr faktury:';
 $_LANG['Invoice number $a already exists!'] = 'Faktura o numerze $a już istnieje!';
 $_LANG['Invoice number must be integer!'] = 'Numer faktury musi być liczbą całkowitą!';
@@ -1516,6 +1516,7 @@ $_LANG['Was:'] = 'Było:';
 $_LANG['Credit note template file. Default: "invoice.html". Should be placed in templates directory.'] = 'Szablon faktury korygującej. Domyślnie:"invoice.html". Powinien być umieszczony w katalogu templates.';
 $_LANG['To repay:'] = 'Do zwrotu:';
 $_LANG['Credit note date cannot be earlier than invoice date!'] = 'Data wystawienia korekty nie może być wcześniejsza od daty wystawienia korygowanej faktury';
+$_LANG['Credit note sale date cannot be earlier than invoice sale date!'] = 'Data sprzedaży korekty nie może być wcześniejsza od daty sprzedaży korygowanej faktury';
 $_LANG['Incorrect date format! Using current date.'] = 'Nieprawidłowy format daty! Przyjęto bieżącą datę.';
 $_LANG['show only credit notes'] = 'pokaż tylko korekty';
 $_LANG['There are errors in credit note main information!'] = 'W podstawowych informacjach korekty są błędy!';
@@ -1849,7 +1850,8 @@ $_LANG['service'] = 'usługa';
 $_LANG['Select tariff type'] = 'Wybierz typ taryfy';
 $_LANG['Date from the future not allowed!'] = 'Data z przyszłości nie jest dozwolona!';
 $_LANG['no guarantee'] = 'brak';
-$_LANG['Select days number of cutoff suspending (optional)'] = 'Wybierz ilość dni zawieszenia blokowania (opcjonalnie)';
+$_LANG['Select date of cutoff suspending (optional)'] = 'Wybierz datę zawieszenia blokowania (opcjonalnie)';
+$_LANG['Incorrect date of cutoff suspending!'] = 'Nieprawidłowa data zawieszenia blokowania!';
 $_LANG['Cutoff suspended to $a'] = 'Blokowanie zawieszone do dnia $a';
 $_LANG['Customer has got disconnected nodes!'] = 'Klient posiada odłączone komputery!';
 $_LANG['Clone'] = 'Klonuj';
@@ -2388,6 +2390,7 @@ $_LANG['Select default invoices payment type'] = 'Wybierz domyślny typ płatno�
 $_LANG['Select payment type'] = 'Wybierz typ płatności';
 $_LANG['Tariff'] = 'Taryfa';
 $_LANG['mobile'] = 'tel.kom.';
+$_LANG['phone<!plural>'] = 'telefon';
 $_LANG['fax'] = 'fax';
 $_LANG['Select domain type'] = 'Wybierz typ domeny';
 $_LANG['Enter city of service address (optional)'] = 'Wprowadź nazwę miasta dla adresu dodoręczeń (opcjonalnie)';
@@ -2752,5 +2755,29 @@ $_LANG['no operation on message template'] = 'brak czynności na szablonie wiado
 $_LANG['Assign to me'] = 'Przypisz do mnie';
 $_LANG['Ticket has been assigned to user $a.'] = 'Zgłoszenie zostało przypisane do użytkownika $a.';
 $_LANG['Ticket has been moved from queue $a to queue $b.'] = 'Zgłoszenie zostało przeniesione z kolejki $a do kolejki $b.';
+
+$_LANG['www'] = 'www';
+
+$_LANG['New ticket customer notification subject:'] = 'Temat listu z powiadomieniem klienta o nowym zgłoszeniu:';
+$_LANG['New ticket customer notification body:'] = 'Treść listu z powiadomieniem klienta o nowym zgłoszeniu:';
+$_LANG['Subject of mail which is sent to customer when new ticket is created'] = 'Temat listu wysyłanego do klienta, gdy tworzone jest nowe zgłoszenie';
+$_LANG['Body of mail which is sent to customer when new ticket is created'] = 'Treść listu wysyłanego do klienta, gdy tworzone jest nowe zgłoszenie';
+
+$_LANG['New message customer notification subject:'] = 'Temat listu z powiadomieniem klienta o nowej wiadomości:';
+$_LANG['New message customer notification body:'] = 'Treść listu z powiadomieniem klienta o nowej wiadomości:';
+$_LANG['Subject of mail which is sent to customer when new message is added'] = 'Temat listu wysyłanego do klienta, gdy dodawana jest wiadomość do zgłoszenia';
+$_LANG['Body of mail which is sent to customer when new message is added'] = 'Treść listu wysyłanego do klienta, gdy dodawana jest wiadomość do zgłoszenia';
+
+$_LANG['Resolve ticket customer notification subject:'] = 'Temat listu z powiadomieniem klienta o rozwiązaniu zgłoszenia:';
+$_LANG['Resolve ticket customer notification body:'] = 'Treść listu z powiadomieniem klienta o rozwiązaniu zgłoszenia:';
+$_LANG['Subject of mail which is sent to customer when the ticket is resolved'] = 'Temat listu wysyłanego do klienta, gdy zgłoszenie jest rozwiązywane';
+$_LANG['Body of mail which is sent to customer when the ticket is resolved'] = 'Treść listu wysyłanego do klienta, gdy zgłoszenie jest rozwiązywane';
+
+$_LANG['backup access forbidden'] = 'brak dostępu do kopii zapasowych';
+
+$_LANG['Tariff type:'] = 'Typ taryfy:';
+
+$_LANG['Consent required:'] = 'Wymagana zgoda:';
+$_LANG['Check if customer consent to messages delivery via e-mail or sms is required'] = 'Zaznacz jeśli wymagana jest zgoda klienta na dostarczanie informacji pocztą elektr. lub sms-em';
 
 ?>

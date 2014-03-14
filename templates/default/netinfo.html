@@ -15,13 +15,8 @@
 </script>
 {/if}
 <H1>{$layout.pagetitle}</H1>
-{if $unlockedit}
-<FORM method="post" action="?m=netedit&amp;id={$network.id}" name="netedit">
-<p style="display: none;">
-<INPUT type="submit" class="hiddenbtn">
-</p>
-{/if}
 <TABLE class="lmsbox">
+	{if $unlockedit}<FORM method="post" action="?m=netedit&amp;id={$network.id}" name="netedit"><INPUT type="submit" class="hiddenbtn">{/if}
 	<THEAD>
 	<TR>
 		{if !$unlockedit}
@@ -172,13 +167,19 @@
 		</TD>
 	</TR>
 	{/if}
+	{if $unlockedit}</form>{/if}
 	<TR>
 		<TD style="width: 100%;" class="text-right" colspan="4">
 			{if $unlockedit}
+			<form name="remap" action="" method="get">
+			<INPUT type="submit" class="hiddenbtn">
 			<A href="?m=netcmp&amp;id={$network.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to assign new addresses for all computers? Remember, it can make problems for your network!")}');">{trans("Put in order")} <img src="img/cmp.gif" alt="[ {trans("Put in order")} ]"></A>
+			<input type="hidden" name="is_sure" value="1">
+			<input type="hidden" name="m" value="netremap">
+			<input type="hidden" name="id" value="{$network.id}">
 			{if $netlistsize > 1}
-			<a href="?m=netremap&amp;id={$network.id}&amp;is_sure=1" onClick="return confirmLink(this, '{t a=$network.name}Are you sure, you want to change network $a to network '+getText('mapto')+'?{/t}');">{trans("Reassign to network:")}</A> 
-			<select size="1" id="mapto" {tip text="Select network to which you want to move computers"}>
+			<a href="javascript:document.remap.submit();" onClick="return confirmLink(this, '{t a=$network.name}Are you sure, you want to change network $a to network '+getText(document.remap.mapto.value)+'?{/t}');">{trans("Reassign to network:")}</A> 
+			<select size="1" name="mapto" {tip text="Select network to which you want to move computers"}>
 				{section name=networks loop=$networks}
 				{if $networks[networks].id neq $network.id}
 				<option value="{$networks[networks].id}">{$networks[networks].name} ({$networks[networks].address}/{$networks[networks].prefix})</option>
@@ -189,6 +190,7 @@
 			<A href="javascript:document.netedit.submit()" accesskey="S">{trans("Submit")} <IMG src="img/save.gif" alt="[ {trans("Submit")} ]"></a>
 			<A href="?m=netdel&amp;id={$network.id}" onClick="return confirmLink(this,'{t a=$network.name}Are you sure, you want to remove network \'$a\'?{/t}')">{trans("Remove")} <img src="img/delete.gif" alt="[ {trans("Remove")} ]"></A>
 			<A href="?m=netinfo&amp;id={$network.id}">{trans("Cancel")} <img src="img/cancel.gif" alt="[ {trans("Cancel")} ]"></A>
+			</form>
 			{else}
 			<A href="?m=netedit&amp;id={$network.id}" accesskey="E">{trans("Edit")} <img src="img/edit.gif" alt="[ {trans("Edit")} ]"></A>
 			<A href="?m=netdel&amp;id={$network.id}" onClick="return confirmLink(this,'{t a=$network.name}Are you sure, you want to remove network \'$a\'?{/t}')">{trans("Remove")} <img src="img/delete.gif" alt="[ {trans("Remove")} ]"></A>

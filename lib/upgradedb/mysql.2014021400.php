@@ -3,9 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
- *
- *  Please, see the doc/AUTHORS for more information about authors!
+ *  (C) Copyright 2001-2014 LMS Developers
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
@@ -21,20 +19,15 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id$
  */
 
-$customerid = intval($_GET['id']);
+$DB->BeginTrans();
 
-include(MODULES_DIR.'/customer.inc.php');
+$DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)",
+	array('userpanel', 'tickets_from_selected_queues', '0'));
 
-//if($customerinfo['cutoffstop'] > mktime(0,0,0))
-//        $customerinfo['cutoffstopnum'] = floor(($customerinfo['cutoffstop'] - mktime(23,59,59))/86400);
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014021400', 'dbversion'));
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-
-$layout['pagetitle'] = trans('Customer Info: $a',$customerinfo['customername']);
-
-$SMARTY->display('customerinfo.html');
+$DB->CommitTrans();
 
 ?>

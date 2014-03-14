@@ -59,11 +59,13 @@ define('MSG_DRAFT', 4);
 define('MSG_MAIL', 1);
 define('MSG_SMS', 2);
 define('MSG_ANYSMS', 3);
+define('MSG_WWW', 4);
 
 // Template types
 define('TMPL_WARNING', 1);
 define('TMPL_MAIL', 2);
 define('TMPL_SMS', 3);
+define('TMPL_WWW', 4);
 
 // Account types
 define('ACCOUNT_SHELL', 1);
@@ -175,7 +177,7 @@ define('TARIFF_OTHER', -1);
 
 $TARIFFTYPES = array(
 	TARIFF_INTERNET	=> isset($CONFIG['tarifftypes']['internet']) ? $CONFIG['tarifftypes']['internet'] : trans('internet'),
-	TARIFF_HOSTING	=> isset($CONFIG['tarifftypes']['hosting']) ? $CONFIG['tarifftypes']['config'] : trans('hosting'),
+	TARIFF_HOSTING	=> isset($CONFIG['tarifftypes']['hosting']) ? $CONFIG['tarifftypes']['hosting'] : trans('hosting'),
 	TARIFF_SERVICE	=> isset($CONFIG['tarifftypes']['service']) ? $CONFIG['tarifftypes']['service'] : trans('service'),
 	TARIFF_PHONE	=> isset($CONFIG['tarifftypes']['phone']) ? $CONFIG['tarifftypes']['phone'] : trans('phone'),
 	TARIFF_TV	=> isset($CONFIG['tarifftypes']['tv']) ? $CONFIG['tarifftypes']['tv'] : trans('tv'),

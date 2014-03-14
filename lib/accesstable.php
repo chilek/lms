@@ -32,7 +32,7 @@ $access['table'][0]['name']		= trans('full access');
 $access['table'][0]['allow_reg']	= '^.*$';
 
 $access['table'][1]['name']		= trans('read only (excluding helpdesk)');
-$access['table'][1]['allow_reg']	= '^(([a-z]+(list|info|view|search|balance|infoshort))|netdevmap|eventprint|nodelistshort|number)$';
+$access['table'][1]['allow_reg']	= '^(([a-z]+(list|info|view|search|balance|infoshort))|netdevmap|eventprint|nodelistshort|number|choose[a-z]+)$';
 
 $access['table'][2]['name']		= trans('nodes connection/disconnection');
 $access['table'][2]['allow_reg']	= '^nodeset$';
@@ -120,6 +120,9 @@ $access['table'][28]['allow_reg']	= '^cashreg(add|edit|del)$';
 $access['table'][29]['name']		= trans('transaction logs');
 $access['table'][29]['allow_reg']	= '^archive(info|view)$';
 $access['table'][29]['privilege']	= 'transaction_logs';
+
+$access['table'][249]['name']		= trans('backup access forbidden');
+$access['table'][249]['deny_reg']	= '^db(del|list|new|recover|view)$';
 
 $access['table'][253]['name']		= trans('users edition and addition forbidden');
 $access['table'][253]['deny_reg']	= '^(user(add|del|edit|passwd))$';

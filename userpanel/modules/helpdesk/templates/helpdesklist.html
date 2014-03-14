@@ -5,8 +5,9 @@
 		<td width="1%"></td>
 		<td width="1%">{trans("Number:")}</td>
 		<td width="1%">{trans("Date:")}</td>
-		<td width="95%">{trans("Subject:")}</td>
-		<td width="1%" align="right" class="nobr">{trans("Last modified:")}</td>
+		<td width="1%">{trans("Queue:")}</td>
+		<td width="94%">{trans("Subject:")}</td>
+		<td width="1%" class="text-right nobr">{trans("Last modified:")}</td>
 		<td width="1%">{trans("Status:")}</td>
 	</tr>
 	{section name=helpdesklist loop=$helpdesklist start=$limit}
@@ -14,20 +15,21 @@
 		<td width="1%">
 			<a href="?m=helpdesk&amp;op=view&amp;id={$helpdesklist[helpdesklist].id}">{img src="ticket.gif" alt="[ Details ]"}</a>
 		</td>
-		<td width="1%"><b>{$helpdesklist[helpdesklist].id|string_format:"%06d"}</b></td>
+		<td width="1%" class="bold">{$helpdesklist[helpdesklist].id|string_format:"%06d"}</td>
 		<td width="1%" class="nobr">{$helpdesklist[helpdesklist].createtime|date_format:"%Y/%m/%d %H:%M"}</td>
-		<td width="95%"><b>{$helpdesklist[helpdesklist].subject|escape}</b></td>
+		<td width="1%" class="bold nobr">{$helpdesklist[helpdesklist].queuename}</td>
+		<td width="94%" class="bold">{$helpdesklist[helpdesklist].subject|escape}</td>
 		<td width="1%" class="nobr">{$helpdesklist[helpdesklist].lastmod|date_format:"%Y/%m/%d %H:%M"}</td>
-    		<td width="1%"><b>
+    		<td width="1%" class="bold">
 			{if $helpdesklist[helpdesklist].state == 0}{trans("new")}
 			{elseif $helpdesklist[helpdesklist].state == 1}{trans("open")}
 			{elseif $helpdesklist[helpdesklist].state == 2}{trans("resolved")}
 			{else}{trans("dead")}
-			{/if}</b>
+			{/if}
 		</td>
 	{sectionelse}
 	<tr>
-		<td align="center" width="100%" colspan="6">
+		<td align="center" width="100%" colspan="7">
 			<p>&nbsp;</p>
 			<p><b>{trans("No such requests in database.")}</b></p>
 			<p>&nbsp;</p>

@@ -42,7 +42,10 @@ if (defined('USERPANEL_SETUPMODE'))
 
 	$SMARTY->assign('userlist', $LMS->GetUserNames());
 	$SMARTY->assign('queuelist', $LMS->GetQueueNames());
-	$SMARTY->assign('default_queue', $LMS->CONFIG['userpanel']['default_queue']);
+	$SMARTY->assign('queues', explode(';', $LMS->CONFIG['userpanel']['queues']));
+	$SMARTY->assign('tickets_from_selected_queues', $LMS->CONFIG['userpanel']['tickets_from_selected_queues']);
+	$SMARTY->assign('allow_message_add_to_closed_tickets', $LMS->CONFIG['userpanel']['allow_message_add_to_closed_tickets']);
+	$SMARTY->assign('limit_ticket_movements_to_selected_queues', $LMS->CONFIG['userpanel']['limit_ticket_movements_to_selected_queues']);
         $SMARTY->assign('default_userid', $LMS->CONFIG['userpanel']['default_userid']);
         $SMARTY->assign('lms_url', $LMS->CONFIG['userpanel']['lms_url']);
         $SMARTY->assign('categories', $categories);
@@ -52,7 +55,14 @@ if (defined('USERPANEL_SETUPMODE'))
     function module_submit_setup()
     {
 	global $DB;
-        $DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'default_queue\'',array($_POST['default_queue']));
+	if (!empty($_POST['queues']) && array_walk($_POST['queues'], 'intval'))
+		$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'queues\'', array(implode(';', $_POST['queues'])));
+	$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'tickets_from_selected_queues\'',
+		array(intval($_POST['tickets_from_selected_queues'])));
+	$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'allow_message_add_to_closed_tickets\'',
+		array(intval($_POST['allow_message_add_to_closed_tickets'])));
+	$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'limit_ticket_movements_to_selected_queues\'',
+		array(intval($_POST['limit_ticket_movements_to_selected_queues'])));
 	$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'default_userid\'',array($_POST['default_userid']));
 	$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'lms_url\'',array($_POST['lms_url']));
 	$categories = array_keys((isset($_POST['lms_categories']) ? $_POST['lms_categories'] : array()));
@@ -67,11 +77,12 @@ function module_main()
 
     $error = NULL;
 
-    if(isset($_POST['helpdesk']) && empty($_GET['id']))
+	$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+    if (!$id && isset($_POST['helpdesk']))
     {
         $ticket = $_POST['helpdesk'];
 
-	$ticket['queue'] = $CONFIG['userpanel']['default_queue'];
+	$ticket['queue'] = intval($ticket['queue']);
 	$ticket['categories'] = $CONFIG['userpanel']['default_categories'];
 	$ticket['subject'] = strip_tags($ticket['subject']);
 	$ticket['body'] = strip_tags($ticket['body']);
@@ -143,34 +154,55 @@ function module_main()
 				$mailfrom =  $ticket['mailfrom'];
 
 			$headers['Date'] = date('r');
-	        $headers['From'] = $mailfname.' <'.$mailfrom.'>';
+			$headers['From'] = $mailfname.' <'.$mailfrom.'>';
 			$headers['Subject'] = sprintf("[RT#%06d] %s", $id, $ticket['subject']);
 			$headers['Reply-To'] = $headers['From'];
 
-            $sms_body = $headers['Subject']."\n".$ticket['body'];
+			$sms_body = $headers['Subject']."\n".$ticket['body'];
 			$body = $ticket['body']."\n\n".$CONFIG['userpanel']['lms_url'].'/?m=rtticketview&id='.$id;
 
-            if (check_conf('phpui.helpdesk_customerinfo')) {
-                $info = $DB->GetRow('SELECT id AS customerid, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
-                        email, address, zip, city, (SELECT phone FROM customercontacts
-                            WHERE customerid = customers.id ORDER BY id LIMIT 1) AS phone
-                        FROM customers WHERE id = ?', array($SESSION->id));
+			$info = $DB->GetRow('SELECT id AS customerid, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
+					email, address, zip, city, (SELECT phone FROM customercontacts
+					WHERE customerid = customers.id ORDER BY id LIMIT 1) AS phone
+				FROM customers WHERE id = ?', array($SESSION->id));
 
-                $body .= "\n\n-- \n";
-                $body .= trans('Customer:').' '.$info['customername']."\n";
-                $body .= trans('ID:').' '.sprintf('%04d', $info['customerid'])."\n";
-                $body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
-                $body .= trans('Phone:').' '.$info['phone']."\n";
-                $body .= trans('E-mail:').' '.$info['email'];
+			if (check_conf('phpui.helpdesk_customerinfo')) {
+				$body .= "\n\n-- \n";
+				$body .= trans('Customer:').' '.$info['customername']."\n";
+				$body .= trans('ID:').' '.sprintf('%04d', $info['customerid'])."\n";
+				$body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
+				$body .= trans('Phone:').' '.$info['phone']."\n";
+				$body .= trans('E-mail:').' '.$info['email'];
 
-                $sms_body .= "\n";
-                $sms_body .= trans('Customer:').' '.$info['customername'];
-                $sms_body .= ' '.sprintf('(%04d)', $ticket['customerid']).'. ';
-                $sms_body .= $info['address'].', '.$info['zip'].' '.$info['city'].'. ';
-                $sms_body .= $info['phone'];
-            }
+				$sms_body .= "\n";
+				$sms_body .= trans('Customer:').' '.$info['customername'];
+				$sms_body .= ' '.sprintf('(%04d)', $ticket['customerid']).'. ';
+				$sms_body .= $info['address'].', '.$info['zip'].' '.$info['city'].'. ';
+				$sms_body .= $info['phone'];
+			}
 
-            // send email
+			$queuedata = $LMS->GetQueue($ticket['queue']);
+			if (!empty($queuedata['newticketsubject']) && !empty($queuedata['newticketbody'])
+				&& !empty($info['email'])) {
+				$custmail_subject = $queuedata['newticketsubject'];
+				$custmail_subject = str_replace('%tid', $id, $custmail_subject);
+				$custmail_subject = str_replace('%title', $ticket['subject'], $custmail_subject);
+				$custmail_body = $queuedata['newticketbody'];
+				$custmail_body = str_replace('%tid', $id, $custmail_body);
+				$custmail_body = str_replace('%cid', $SESSION->id, $custmail_body);
+				$custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
+				$custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
+				$custmail_body = str_replace('%title', $ticket['subject'], $custmail_body);
+				$custmail_headers = array(
+					'From' => $headers['From'],
+					'To' => '<' . $info['email'] . '>',
+					'Reply-To' => $headers['From'],
+					'Subject' => $custmail_subject,
+				);
+				$LMS->SendMail($info['email'], $custmail_headers, $custmail_body);
+			}
+
+			// send email
 			if ($recipients = $DB->GetCol('SELECT DISTINCT email
 			    FROM users, rtrights
 			    WHERE users.id = userid AND email != \'\' AND (rtrights.rights & 8) = 8
@@ -182,7 +214,7 @@ function module_main()
 
 					$LMS->SendMail($email, $headers, $body);
 				}
-            }
+			}
 
             // send sms
 			if (!empty($CONFIG['sms']['service']) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
@@ -205,10 +237,10 @@ function module_main()
 	        $SMARTY->assign('error', $error);
 		$SMARTY->assign('helpdesk', $ticket);
 	}
-    }
-    elseif(isset($_POST['helpdesk']) && !empty($_GET['id']))
-    {
-        $ticket = $_POST['helpdesk'];
+    } elseif ($id && isset($_POST['helpdesk'])
+	&& ($DB->GetOne('SELECT state FROM rttickets WHERE id = ?', array($id)) != RT_RESOLVED
+		|| $CONFIG['userpanel']['allow_message_add_to_closed_tickets'])) {
+	$ticket = $_POST['helpdesk'];
 
 	$ticket['body'] = strip_tags($ticket['body']);
 	$ticket['subject'] = strip_tags($ticket['subject']);
@@ -248,6 +280,79 @@ function module_main()
 				WHEN 3 THEN 1 END 
 			WHERE id = ?', array($ticket['id']));
 
+		$user = $LMS->GetUserInfo($CONFIG['userpanel']['default_userid']);
+		$ticket['queue'] = $LMS->GetQueueByTicketId($ticket['id']);
+
+		if ($mailfname = $CONFIG['phpui']['helpdesk_sender_name']) {
+			if ($mailfname == 'queue')
+				$mailfname = $ticket['queue']['name'];
+			if ($mailfname == 'user')
+				$mailfname = $user['name'];
+			$mailfname = '"' . $mailfname . '"';
+		}
+
+		$ticket['email'] = $LMS->GetCustomerEmail($SESSION->id);
+		$ticket['mailfrom'] = $ticket['email'] ? $ticket['email'] : '';
+
+		if ($user['email'])
+			$mailfrom = $user['email'];
+		elseif (!empty($ticket['queue']['email']))
+			$mailfrom = $ticket['queue']['email'];
+		else
+			$mailfrom = $ticket['mailfrom'];
+
+		$headers['Date'] = date('r');
+		$headers['From'] = $mailfname . ' <' . $mailfrom . '>';
+		$headers['Subject'] = sprintf("[RT#%06d] %s", $ticket['id'], $ticket['subject']);
+		$headers['Reply-To'] = $headers['From'];
+
+		$sms_body = $headers['Subject'] . "\n" . $ticket['body'];
+		$body = $ticket['body']."\n\n".$CONFIG['userpanel']['lms_url'] . '/?m=rtticketview&id=' . $ticket['id'];
+
+		if (check_conf('phpui.helpdesk_customerinfo')) {
+			$info = $DB->GetRow('SELECT id AS customerid, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
+				email, address, zip, city,
+				(SELECT phone FROM customercontacts
+					WHERE customerid = customers.id ORDER BY id LIMIT 1) AS phone
+				FROM customers WHERE id = ?', array($SESSION->id));
+
+			$body .= "\n\n-- \n";
+			$body .= trans('Customer:').' '.$info['customername']."\n";
+			$body .= trans('ID:').' '.sprintf('%04d', $info['customerid'])."\n";
+			$body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
+			$body .= trans('Phone:').' '.$info['phone']."\n";
+			$body .= trans('E-mail:').' '.$info['email'];
+
+			$sms_body .= "\n";
+			$sms_body .= trans('Customer:').' '.$info['customername'];
+			$sms_body .= ' '.sprintf('(%04d)', $ticket['customerid']).'. ';
+			$sms_body .= $info['address'].', '.$info['zip'].' '.$info['city'].'. ';
+			$sms_body .= $info['phone'];
+		}
+
+		//print_r($headers);die;
+		// send email
+		if ($recipients = $DB->GetCol('SELECT DISTINCT email
+			FROM users, rtrights
+			WHERE users.id = userid AND email != \'\' AND (rtrights.rights & 8) = 8
+				AND (ntype & ?) = ? AND queueid = ?',
+			array(MSG_MAIL, MSG_MAIL, intval($ticket['queue']['id'])))) {
+			foreach ($recipients as $email) {
+				$headers['To'] = '<' . $email . '>';
+				$LMS->SendMail($email, $headers, $body);
+			}
+		}
+
+		// send sms
+		if (!empty($CONFIG['sms']['service']) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
+			FROM users, rtrights
+			WHERE users.id = userid AND phone != \'\' AND (rtrights.rights & 8) = 8
+				AND (ntype & ?) = ? AND queueid = ?',
+			array(MSG_SMS, MSG_SMS, intval($ticket['queue']['id']))))) {
+			foreach ($recipients as $phone)
+				$LMS->SendSMS($phone, $sms_body);
+		}
+
 		header('Location: ?m=helpdesk&op=view&id='.$ticket['id']);
 		die;
 	}
@@ -266,7 +371,8 @@ function module_main()
 
 	$ticket['id'] = $_GET['id'];
 
-	$SMARTY->assign('title', trans('Request No. $a', sprintf('%06d',$ticket['ticketid'])));
+	$SMARTY->assign('title', trans('Request No. $a / Queue: $b',
+		sprintf('%06d',$ticket['ticketid']), $ticket['queuename']));
 	
 	if($ticket['customerid'] == $SESSION->id)
 	{
@@ -292,7 +398,8 @@ function module_main()
 	        $SMARTY->assign('helpdesk', $helpdesk);
 	}
 
-        $SMARTY->assign('title', trans('Request No. $a', sprintf('%06d',$ticket['ticketid'])));
+	$SMARTY->assign('title', trans('Request No. $a / Queue: $b',
+		sprintf('%06d',$ticket['ticketid']), $ticket['queuename']));
         if($ticket['customerid'] == $SESSION->id)
         {
         	$SMARTY->assign('ticket', $ticket);
@@ -301,12 +408,15 @@ function module_main()
 	}
     }
 
-    if($helpdesklist = $LMS->GetCustomerTickets($SESSION->id))
-	foreach($helpdesklist as $idx => $key)
-	    $helpdesklist[$idx]['lastmod'] = $LMS->DB->GetOne('SELECT MAX(createtime) FROM rtmessages WHERE ticketid = ?', array($key['id']));
+	if ($helpdesklist = $LMS->GetCustomerTickets($SESSION->id))
+		foreach($helpdesklist as $idx => $key)
+			$helpdesklist[$idx]['lastmod'] = $LMS->DB->GetOne('SELECT MAX(createtime) FROM rtmessages WHERE ticketid = ?',
+				array($key['id']));
 
-    $SMARTY->assign('helpdesklist', $helpdesklist);
-    $SMARTY->display('module:helpdesk.html');
+	$queues = $LMS->DB->GetAll('SELECT id, name FROM rtqueues WHERE id IN (' . str_replace(';', ',', $CONFIG['userpanel']['queues']) . ')');
+	$SMARTY->assign('queues', $queues);
+	$SMARTY->assign('helpdesklist', $helpdesklist);
+	$SMARTY->display('module:helpdesk.html');
 }
 
 ?>

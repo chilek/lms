@@ -5,7 +5,7 @@
     <THEAD>
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/{if $message.type == $smarty.const.MSG_SMS}sms{else}email{/if}.gif" ALT=""> 
+			<IMG SRC="img/{if $message.type == $smarty.const.MSG_SMS}sms{elseif $message.type == $smarty.const.MSG_WWW}network{else}email{/if}.gif" ALT=""> 
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{trans("Subject:")}</B>
@@ -37,7 +37,7 @@
 			<B>{trans("Creation date:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-			{$message.cdate|date_format:"%Y/%m/%d %H:%m"}
+			{$message.cdate|date_format:"%Y/%m/%d %H:%M"}
 		</TD>
 	</TR>
 {if $message.sender}
@@ -131,7 +131,7 @@
 	{cycle values="light,lucid" print=false}
 	{section name=itemlist loop=$itemlist start=$start max=$pagelimit}
 	{assign var=item value=$itemlist[itemlist]}
-	<TR class="highlight {cycle}{if $item.status==$smarty.const.MSG_ERROR} alert{elseif $item.status==$smarty.const.MSG_SENT} blend{/if}"  >
+	<TR class="{cycle}{if $item.status==$smarty.const.MSG_ERROR} alert{elseif $item.status==$smarty.const.MSG_SENT} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD WIDTH="1%" NOWRAP>
 			{if $item.customerid}
 				<A href="?m=customerinfo&id={$item.customerid}">{$item.customer|truncate:45:"...":true} ({$item.customerid|string_format:"%04d"})</A>

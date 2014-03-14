@@ -122,10 +122,11 @@ switch($action)
 			list($syear, $smonth, $sday) = explode('/', $cnote['sdate']);
 			if(checkdate($smonth, $sday, $syear))
 			{
+				$sdate = mktime(23, 59, 59, $smonth, $sday, $syear);
 				$cnote['sdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $smonth, $sday, $syear);
-				if($cnote['sdate'] < $invoice['cdate'])
+				if($sdate < $invoice['sdate'])
 				{
-					$error['sdate'] = trans('Credit note date cannot be earlier than invoice date!');
+					$error['sdate'] = trans('Credit note sale date cannot be earlier than invoice sale date!');
 				}
 			}
 			else
@@ -233,7 +234,7 @@ switch($action)
 		}
 
 		$DB->BeginTrans();
-		$DB->LockTables(array('documents', 'numberplans'));
+		$DB->LockTables(array('documents', 'numberplans', 'divisions'));
 
 		if(!isset($cnote['number']) || !$cnote['number'])
 			$cnote['number'] = $LMS->GetNewDocumentNumber(DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']);
@@ -246,6 +247,11 @@ switch($action)
 			if ($error)
 				$cnote['number'] = $LMS->GetNewDocumentNumber(DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']);
 		}
+
+		$division = $DB->GetRow('SELECT name, address, city, zip, countryid, ten, regon,
+						account, inv_header, inv_footer, inv_author, inv_cplace 
+						FROM divisions WHERE id = ?',
+						array(!empty($cnote['use_current_division']) ? $invoice['current_divisionid'] : $invoice['divisionid']));
 
 		$args = array(
 			'number' => $cnote['number'],
@@ -267,10 +273,25 @@ switch($action)
 			'reference' => $invoice['id'],
 			'reason' => $cnote['reason'],
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => !empty($cnote['use_current_division']) ? $invoice['current_divisionid'] : $invoice['divisionid'],
+			'div_name' => $division['name'] ? $division['name'] : '',
+			'div_address' => $division['address'] ? $division['address'] : '',
+			'div_city' => $division['city'] ? $division['city'] : '',
+			'div_zip' => $division['zip'] ? $division['zip'] : '',
+			'div_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $division['countryid'] ? $division['countryid'] : 0,
+			'div_ten' => $division['ten'] ? $division['ten'] : '',
+			'div_regon' => $division['regon'] ? $division['regon'] : '',
+			'div_account' => $division['account'] ? $division['account'] : '',
+			'div_inv_header' => $division['inv_header'] ? $division['inv_header'] : '',
+			'div_inv_footer' => $division['inv_footer'] ? $division['inv_footer'] : '',
+			'div_inv_author' => $division['inv_author'] ? $division['inv_author'] : '',
+			'div_inv_cplace' => $division['inv_cplace'] ? $division['inv_cplace'] : '',
 		);
 		$DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, sdate, paytime, paytype,
-				userid, customerid, name, address, ten, ssn, zip, city, countryid, reference, reason, divisionid)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+				userid, customerid, name, address, ten, ssn, zip, city, countryid, reference, reason, divisionid,
+				div_name, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
+				div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+					?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
 		$id = $DB->GetOne('SELECT id FROM documents WHERE number = ? AND cdate = ? AND type = ?',
 			array($cnote['number'], $cnote['cdate'], DOC_CNOTE));
@@ -281,7 +302,7 @@ switch($action)
 			$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_ADD, $args,
 				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN],
 					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV]));
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV], 'div_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV]));
 		}
 
 		$DB->UnLockTables();

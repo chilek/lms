@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2014 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,56 +24,55 @@
  *  $Id$
  */
 
-function invoice_body() 
-{
-    global $invoice,$pdf,$CONFIG;
-    
-    if(isset($invoice['invoice']))
-	    $template = $CONFIG['invoices']['cnote_template_file'];
-    else
-	    $template = $CONFIG['invoices']['template_file'];
+function invoice_body() {
+	global $invoice, $pdf, $CONFIG;
 
-    switch ($template)
-    {
-	case "standard":
-	    invoice_body_standard();
-	break;
-	case "FT-0100":
-	    invoice_body_ft0100();
-	break;
-	default:
-	    require($template);
-    }
+	if (isset($invoice['invoice']))
+		$template = $CONFIG['invoices']['cnote_template_file'];
+	else
+		$template = $CONFIG['invoices']['template_file'];
 
-    if(!isset($invoice['last'])) $pdf->ezNewPage();
+	switch ($template) {
+		case "standard":
+			invoice_body_standard();
+			break;
+		case "FT-0100":
+			invoice_body_ft0100();
+			break;
+		default:
+			require($template);
+	}
+
+	if (!isset($invoice['last']))
+		new_page();
 }
 
-require_once(LIB_DIR.'/pdf.php');
-require_once(MODULES_DIR.'/invoice_pdf.inc.php');
+$pdf_type = get_conf('invoices.pdf_type', 'tcpdf');
+if (!in_array($pdf_type, array('ezpdf', 'tcpdf')))
+	$pdf_type = 'tcpdf';
+require_once(LIB_DIR . '/' . $pdf_type . '.php');
+require_once(MODULES_DIR . '/invoice_' . $pdf_type . '.inc.php');
 
 $pdf = init_pdf('A4', 'portrait', trans('Invoices'));
 
-if(isset($_GET['print']) && $_GET['print'] == 'cached')
-{
+if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	$SESSION->restore('ilm', $ilm);
 	$SESSION->remove('ilm');
 
-	if(isset($_POST['marks']))
-		foreach($_POST['marks'] as $idx => $mark)
+	if (isset($_POST['marks']))
+		foreach ($_POST['marks'] as $idx => $mark)
 			$ilm[$idx] = intval($mark);
 
-	if(sizeof($ilm))
-		foreach($ilm as $mark)
+	if (sizeof($ilm))
+		foreach ($ilm as $mark)
 			$ids[] = $mark;
 
-	if(!isset($ids))
-	{
+	if (!isset($ids)) {
 		$SESSION->close();
 		die;
 	}
 
-	if(isset($_GET['cash']))
-	{
+	if (isset($_GET['cash'])) {
 		$ids = $DB->GetCol('SELECT DISTINCT docid
 			FROM cash, documents
 			WHERE docid = documents.id AND (documents.type = ? OR documents.type = ?)
@@ -82,29 +81,25 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached')
 			array(DOC_INVOICE, DOC_CNOTE));
 	}
 
-	if(!empty($_GET['original'])) $which[] = trans('ORIGINAL');
-        if(!empty($_GET['copy'])) $which[] = trans('COPY');
-        if(!empty($_GET['duplicate'])) $which[] = trans('DUPLICATE');
+	if (!empty($_GET['original'])) $which[] = trans('ORIGINAL');
+	if (!empty($_GET['copy'])) $which[] = trans('COPY');
+	if (!empty($_GET['duplicate'])) $which[] = trans('DUPLICATE');
 
-	if(!sizeof($which)) $which[] = trans('ORIGINAL');
+	if (!sizeof($which)) $which[] = trans('ORIGINAL');
 
 	$count = sizeof($ids) * sizeof($which);
-	$i=0;
+	$i = 0;
 
-	foreach($ids as $idx => $invoiceid)
-	{
+	foreach ($ids as $idx => $invoiceid) {
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
 
-		foreach($which as $type)
-		{
+		foreach ($which as $type) {
 			$i++;
-			if($i == $count) $invoice['last'] = TRUE;
+			if ($i == $count) $invoice['last'] = TRUE;
 			invoice_body();
 		}
 	}
-}
-elseif(isset($_GET['fetchallinvoices']))
-{
+} elseif (isset($_GET['fetchallinvoices'])) {
 	$offset = intval(date('Z'));
 	$ids = $DB->GetCol('SELECT id FROM documents d
 				WHERE cdate >= ? AND cdate <= ? AND (type = ? OR type = ?)'
@@ -117,71 +112,61 @@ elseif(isset($_GET['fetchallinvoices']))
 					WHERE a.customergroupid = '.intval($_GET['groupid']).'
 						AND a.customerid = d.customerid)' : '')
 				.' AND NOT EXISTS (
-				        SELECT 1 FROM customerassignments a
-				        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-				        WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)'
+					SELECT 1 FROM customerassignments a
+					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+					WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)'
 				.' ORDER BY CEIL(cdate/86400), id',
 				array(intval($_GET['from']) - $offset, intval($_GET['to']) - $offset, DOC_INVOICE, DOC_CNOTE));
-	if(!$ids)
-	{
+	if (!$ids) {
 		$SESSION->close();
 		die;
 	}
 
-	if(!empty($_GET['original'])) $which[] = trans('ORIGINAL');
-        if(!empty($_GET['copy'])) $which[] = trans('COPY');
-        if(!empty($_GET['duplicate'])) $which[] = trans('DUPLICATE');
-	
-	if(!sizeof($which)) $which[] = trans('ORIGINAL');
-	
-	$count = sizeof($ids) * sizeof($which);
-	$i=0;
+	if (!empty($_GET['original'])) $which[] = trans('ORIGINAL');
+	if (!empty($_GET['copy'])) $which[] = trans('COPY');
+	if (!empty($_GET['duplicate'])) $which[] = trans('DUPLICATE');
 
-	foreach($ids as $idx => $invoiceid)
-	{
+	if (!sizeof($which)) $which[] = trans('ORIGINAL');
+
+	$count = sizeof($ids) * sizeof($which);
+	$i = 0;
+
+	foreach ($ids as $idx => $invoiceid) {
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
 
-		foreach($which as $type)
-		{
+		foreach ($which as $type) {
 			$i++;
-			if($i == $count) $invoice['last'] = TRUE;
+			if ($i == $count) $invoice['last'] = TRUE;
 			invoice_body();
 		}
 	}
-}
-elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
-{
+} elseif ($invoice = $LMS->GetInvoiceContent($_GET['id'])) {
 	$which = array();
 
-	if(!empty($_GET['original'])) $which[] = trans('ORIGINAL');
-        if(!empty($_GET['copy'])) $which[] = trans('COPY');
-        if(!empty($_GET['duplicate'])) $which[] = trans('DUPLICATE');
+	if (!empty($_GET['original'])) $which[] = trans('ORIGINAL');
+	if (!empty($_GET['copy'])) $which[] = trans('COPY');
+	if (!empty($_GET['duplicate'])) $which[] = trans('DUPLICATE');
 
-	if(!sizeof($which))
-	{
+	if (!sizeof($which)) {
 		$tmp = explode(',', $CONFIG['invoices']['default_printpage']);
-		foreach($tmp as $t)
-			if(trim($t) == 'original') $which[] = trans('ORIGINAL');
-			elseif(trim($t) == 'copy') $which[] = trans('COPY');
-			elseif(trim($t) == 'duplicate') $which[] = trans('DUPLICATE');
+		foreach ($tmp as $t)
+			if (trim($t) == 'original') $which[] = trans('ORIGINAL');
+			elseif (trim($t) == 'copy') $which[] = trans('COPY');
+			elseif (trim($t) == 'duplicate') $which[] = trans('DUPLICATE');
 
-		if(!sizeof($which)) $which[] = trans('ORIGINAL');
+		if (!sizeof($which)) $which[] = trans('ORIGINAL');
 	}
-	
-	$count = sizeof($which);
-	$i=0;
 
-	foreach($which as $type)
-	{
+	$count = sizeof($which);
+	$i = 0;
+
+	foreach ($which as $type) {
 		$i++;
-		if($i == $count) $invoice['last'] = TRUE;
+		if ($i == $count) $invoice['last'] = TRUE;
 		invoice_body();
 	}
-}
-else
-{
+} else
 	$SESSION->redirect('?m=invoicelist');
-}
 
 close_pdf($pdf);
 

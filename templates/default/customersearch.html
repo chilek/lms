@@ -4,15 +4,19 @@
 {include file="calendar_js.html"}
 <SCRIPT type="text/javascript">
 <!-- 
-	function PrintList()
-	{
+	function PrintList() {
 		document.customersearch.action = "?m=customersearch&search=1&print=1";
 		document.customersearch.target = "_BLANK";
 		document.customersearch.submit();
 	}
 
-	function Search()
-	{
+	function ExportCSV() {
+		document.customersearch.action = "?m=customersearch&search=1&export=1";
+		document.customersearch.target = "_BLANK";
+		document.customersearch.submit();
+	}
+
+	function Search() {
 		document.customersearch.action = "?m=customersearch&search=1";
 		document.customersearch.target = "";
 		document.customersearch.submit();
@@ -198,6 +202,19 @@
 	</TR>
 	<TR>
 		<TD style="width: 1%;" class="bold nobr">
+			<IMG src="img/money.gif" alt=""> {trans("Tariff type:")}
+		</TD>
+		<TD style="width: 99%;">
+			<SELECT SIZE="1" name="search[tarifftype]">
+				<OPTION VALUE="" SELECTED>{trans("- all -")}</OPTION>
+				{foreach $_TARIFFTYPES as $id => $name}
+				 	<OPTION VALUE="{$id}">{$name}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR>
+		<TD style="width: 1%;" class="bold nobr">
 			<IMG src="img/empty.gif" width="16" alt=""> {trans("Created:")}
 		</TD>
 		<TD style="width: 99%;">
@@ -303,6 +320,7 @@
 	<TR>
 		<TD style="width: 100%;" class="text-right" colspan="2">
 			<A accesskey="S" href="javascript:Search();">{trans("Search")} <IMG src="img/search.gif" alt=""></A>&nbsp;
+			<A href="javascript:ExportCSV();">{trans("Download (CSV)")} <IMG src="img/save.gif" alt=""></A>&nbsp;
 			<A href="javascript:PrintList();">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
 		</TD>
 	</TR>
