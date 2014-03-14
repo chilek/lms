@@ -30,7 +30,7 @@ $type = check_conf('userpanel.invoice_duplicate') ? trans('DUPLICATE') : trans('
 
 if(strtolower($CONFIG['invoices']['type']) == 'pdf')
 {
-    include('invoice_tcpdf.php');
+    include('invoice_pdf.php');
     die;
 }
 
