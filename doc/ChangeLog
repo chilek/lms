@@ -51,6 +51,7 @@ version ?.??.?? (????-??-??):
   - userpanel: helpdesk: limit ticket movements to selected queues setting [chilan]
   - support html mail send [chilan]
   - messageadd: possibility of checking if customer consent is required [chilan]
+  - daemon: payments: copy division info to new invoice [chilan]
 
 version 1.11.14 (2013-03-25):
 

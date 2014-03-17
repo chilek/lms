@@ -505,6 +505,10 @@ void reload(GLOBAL *g, struct payments_module *p)
 		"c.paytype, a.paytype AS a_paytype, a.numberplanid, d.inv_paytype AS d_paytype, "
 		"UPPER(c.lastname) AS lastname, c.name AS custname, c.address, c.zip, c.city, c.ten, c.ssn, "
 		"c.countryid, c.divisionid, c.paytime, "
+		"d.name AS div_name, d.address AS div_address, d.city AS div_city, d.zip AS div_zip, "
+		"d.countryid AS div_countryid, d.ten AS div_ten, d.regon AS div_regon, "
+		"d.account AS div_account, d.inv_header AS div_inv_header, d.inv_footer AS div_inv_footer, "
+		"d.inv_author AS div_inv_author, d.inv_cplace AS div_inv_cplace, "
 		"(CASE a.liabilityid WHEN 0 THEN t.type ELSE -1 END) AS tarifftype, "
 		"(CASE a.liabilityid WHEN 0 THEN t.name ELSE li.name END) AS name, "
 		"(CASE a.liabilityid WHEN 0 THEN t.taxid ELSE li.taxid END) AS taxid, "
@@ -755,8 +759,11 @@ void reload(GLOBAL *g, struct payments_module *p)
 
 					// prepare insert to 'invoices' table
 					g->db_pexec(g->conn, "INSERT INTO documents (number, numberplanid, type, countryid, divisionid, "
-						"customerid, name, address, zip, city, ten, ssn, cdate, sdate, paytime, paytype) "
-						"VALUES (?, ?, 1, ?, ?, ?, '? ?', '?', '?', '?', '?', '?', ?, ?, ?, ?)",
+						"customerid, name, address, zip, city, ten, ssn, cdate, sdate, paytime, paytype, "
+						"div_name, div_address, div_city, div_zip, div_countryid, div_ten, div_regon, "
+						"div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace) "
+						"VALUES (?, ?, 1, ?, ?, ?, '? ?', '?', '?', '?', '?', '?', ?, ?, ?, ?, "
+						"'?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?')",
 						itoa(number),
 						numberplanid,
 						countryid,
@@ -772,7 +779,19 @@ void reload(GLOBAL *g, struct payments_module *p)
 						currtime,
 						currtime,
 						paytime,
-						paytype_str
+						paytype_str,
+						g->db_get_data(res, i, "div_name"),
+						g->db_get_data(res, i, "div_address"),
+						g->db_get_data(res, i, "div_city"),
+						g->db_get_data(res, i, "div_zip"),
+						g->db_get_data(res, i, "div_countryid"),
+						g->db_get_data(res, i, "div_ten"),
+						g->db_get_data(res, i, "div_regon"),
+						g->db_get_data(res, i, "div_account"),
+						g->db_get_data(res, i, "div_inv_header"),
+						g->db_get_data(res, i, "div_inv_footer"),
+						g->db_get_data(res, i, "div_inv_author"),
+						g->db_get_data(res, i, "div_inv_cplace")
 					);
 
 					docid = g->db_last_insert_id(g->conn, "documents");
