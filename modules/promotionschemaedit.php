@@ -57,8 +57,8 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
 			}
 			// values
 			else {
-				if (empty($form[$key]))
-					$data[$m[2]]['value'] = 0;
+				if (!strlen($form[$key]))
+					$data[$m[2]]['value'] = 'NULL';
 				else if (!preg_match('/^[-]?[0-9.,]+$/', $form[$key]))
 					$error[$key] = trans('Incorrect value!');
 				else

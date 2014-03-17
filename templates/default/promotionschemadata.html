@@ -40,7 +40,7 @@
 					{foreach from=$schema.periods item=period key=key}
 					<TD class="text-right valign-top nobr">
 						<SPAN id="tariffval{$tariff.id}_{$key}"{if $error && $formdata.aid == $tariff.id} style="display:none"{/if}>
-						{$tariff.data.value.$key|string_format:"%.2f"}
+						{if $tariff.data.value.$key != 'NULL'}{$tariff.data.value.$key|string_format:"%.2f"}{/if}
 						{if $tariff.data.period.$key}{assign var=pkey value=$tariff.data.period.$key}({$_PERIODS.$pkey}){/if}
 						</SPAN>
 						{if $error && $formdata.aid == $tariff.id}
