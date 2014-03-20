@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2014 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -22,7 +22,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
  *  USA.
  *
- *  $Id: lms-pna.php,v 1.1 2012/03/03 15:27:16 chilek Exp $
+ *  $Id$
  */
 
 ini_set('error_reporting', E_ALL&~E_NOTICE);
@@ -34,6 +34,7 @@ $parameters = array(
 	'v' => 'version',
 	'f' => 'fetch',
 	'u' => 'update',
+	'l:' => 'list:',
 );
 
 foreach ($parameters as $key => $val) {
@@ -53,7 +54,7 @@ if (array_key_exists('version', $options))
 {
 	print <<<EOF
 lms-pna.php
-(C) 2001-2013 LMS Developers
+(C) 2001-2014 LMS Developers
 
 EOF;
 	exit(0);
@@ -63,11 +64,12 @@ if (array_key_exists('help', $options))
 {
 	print <<<EOF
 lms-pna.php
-(C) 2001-2013 LMS Developers
+(C) 2001-2014 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -f, --fetch                     fetch PNA file from server;
 -u, --update                    update PNA database using PNA file;
+-l, --list=<list>               comma-separated list of state IDs;
 -h, --help                      print this help and exit;
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
@@ -81,7 +83,7 @@ if (!$quiet)
 {
 	print <<<EOF
 lms-pna.php
-(C) 2001-2013 LMS Developers
+(C) 2001-2014 LMS Developers
 
 EOF;
 }
@@ -165,6 +167,31 @@ define('HOUSE', 3);
 define('BOROUGH', 4);
 define('DISTRICT', 5);
 define('STATE', 6);
+
+$states = array(
+	2 => 'dolnosląskie',
+	4 => 'kujawsko-pomorskie',
+	6 => 'lubelskie',
+	8 => 'lubuskie',
+	10 => 'łódzkie',
+	12 => 'małopolskie',
+	14 => 'mazowieckie',
+	16 => 'opolskie',
+	18 => 'podkarpackie',
+	20 => 'podlaskie',
+	22 => 'pomorskie',
+	24 => 'sląskie',
+	26 => 'świętokrzyskie',
+	28 => 'warmińsko-mazurskie',
+	30 => 'wielkopolskie',
+	32 => 'zachodniopomorskie',
+);
+
+$list = array_key_exists('list', $options) ? $options['list'] : '';
+if (preg_match('/^[0-9]+(,[0-9]+)*$/', $list)) {
+	$list = array_flip(explode(',', $list));
+	$states = array_intersect_key($states, $list);
+}
 
 $cols = array(
 	PNA => "PNA",
@@ -320,7 +347,7 @@ if ($update) {
 		$line = fgets($fh, 200);
 		$line = mb_ereg_replace("\n$", "", $line);
 		$data = mb_split(";", $line);
-		if (mb_ereg_match("^[[:digit:]]{2}-[[:digit:]]{3}$", $data[PNA]))
+		if (mb_ereg_match("^[0-9]{2}-[0-9]{3}$", $data[PNA]) && in_array($data[STATE], $states))
 			convert_pna_to_teryt($data);
 	}
 
