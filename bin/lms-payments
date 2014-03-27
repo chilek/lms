@@ -233,6 +233,47 @@ $txts{+HALFYEAR} = strftime("%Y/%m/%d", 0, 0, 12, $dom, $month - 1, $year - 1900
 $txts{+YEAR} = strftime("%Y/%m/%d", 0, 0, 12, $dom, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $dom - 1, $month - 1, $year - 1900 + 1);
 $txts{+DISPOSABLE} = strftime("%Y/%m/%d", 0, 0, 12, $dom, $month - 1, $year - 1900);
 
+sub period_format($$$) {
+	my $period = shift;
+	my $tip = shift;
+	my $format = shift;
+
+	if ($tip eq "begin") {
+		return strftime($format, 0, 0, 12, $dom, $month - 1, $year - 1900);
+	};
+
+	$_ = $period;
+	/@{[DAY]}/ && do {
+		return strftime($format, 0, 0, 12, $dom, $month - 1, $year - 1900);
+	};
+
+	/@{[WEEK]}/ && do {
+		return strftime($format, 0, 0, 12, $dom + 6, $month - 1, $year - 1900);
+	};
+
+	/@{[MONTH]}/ && do {
+		return strftime($format, 0, 0, 12, $dom - 1, $month, $year - 1900);
+	};
+
+	/@{[QUARTER]}/ && do {
+		return strftime($format, 0, 0, 12, $dom - 1, $q_month, $q_year - 1900);
+	};
+
+	/@{[HALFYEAR]}/ && do {
+		return strftime($format, 0, 0, 12, $dom - 1, $y_month - 1, $y_year - 1900);
+	};
+
+	/@{[YEAR]}/ && do {
+		return strftime($format, 0, 0, 12, $dom - 1, $month - 1, $year - 1900 + 1);
+	};
+
+	/@{[DISPOSABLE]}/ && do {
+		return strftime($format, 0, 0, 12, $dom, $month - 1, $year - 1900);
+	};
+
+	return "<unknown>";
+}
+
 # special case, ie. you have 01.01.2005-01.31.2005 on invoice, but invoice/
 # assignment is made not January, the 1st:
 
@@ -471,6 +512,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 	$desc =~ s/\%tariff/$assign->{'name'}/g;
 	$desc =~ s/\%desc/$assign->{'description'}/g;
 	$desc =~ s/\%type/$tarifftypes{$assign->{'tarifftype'}}/g;
+	$desc =~ s/\%period_(begin|end)\(\s*["'](.*?)["']\s*\)/&period_format($assign->{'period'}, $1, $2)/ge;
 	$desc =~ s/\%period/$txts{$assign->{'period'}}/g;
 	$desc =~ s/\%current_month/$current_month/g;
 	$desc =~ s/\%current_period/$current_period/g;
