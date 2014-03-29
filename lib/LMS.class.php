@@ -990,6 +990,10 @@ class LMS {
 							$searchargs[] = 'EXISTS (SELECT 1 FROM nodes
 								WHERE ownerid = c.id AND linktype = ' . intval($value) . ')';
 							break;
+						case 'linktechnology':
+							$searchargs[] = 'EXISTS (SELECT 1 FROM nodes
+								WHERE ownerid = c.id AND linktechnology = ' . intval($value) . ')';
+							break;
 						case 'linkspeed':
 							$searchargs[] = 'EXISTS (SELECT 1 FROM nodes
 								WHERE ownerid = c.id AND linkspeed = ' . intval($value) . ')';
@@ -1494,6 +1498,7 @@ class LMS {
 			'chkmac' => $nodedata['chkmac'],
 			'halfduplex' => $nodedata['halfduplex'],
 			'linktype' => isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
+			'linktechnology' => isset($nodedata['linktechnology']) ? intval($nodedata['linktechnology']) : 0,
 			'linkspeed' => isset($nodedata['linkspeed']) ? intval($nodedata['linkspeed']) : 100000,
 			'port' => isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
 			'nas' => isset($nodedata['nas']) ? $nodedata['nas'] : 0,
@@ -1506,8 +1511,8 @@ class LMS {
 				ipaddr=inet_aton(?), passwd=?, netdev=?, moddate=?NOW?,
 				modid=?, access=?, warning=?, ownerid=?, info=?, location=?,
 				location_city=?, location_street=?, location_house=?, location_flat=?,
-				chkmac=?, halfduplex=?, linktype=?, linkspeed=?, port=?, nas=?,
-				longitude=?, latitude=?, netid=?
+				chkmac=?, halfduplex=?, linktype=?, linktechnology=?, linkspeed=?,
+				port=?, nas=?, longitude=?, latitude=?, netid=?
 				WHERE id=?', array_values($args));
 
 		if ($this->SYSLOG) {
@@ -1958,6 +1963,7 @@ class LMS {
 			'location_house' => $nodedata['location_house'] ? $nodedata['location_house'] : null,
 			'location_flat' => $nodedata['location_flat'] ? $nodedata['location_flat'] : null,
 			'linktype' => isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
+			'linktechnology' => isset($nodedata['linktechnology']) ? intval($nodedata['linktechnology']) : 0,
 			'linkspeed' => isset($nodedata['linkspeed']) ? intval($nodedata['linkspeed']) : 100000,
 			'port' => isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
 			'chkmac' => $nodedata['chkmac'],
@@ -1971,10 +1977,10 @@ class LMS {
 		if ($this->DB->Execute('INSERT INTO nodes (name, ipaddr, ipaddr_pub, ownerid,
 			passwd, creatorid, creationdate, access, warning, info, netdev,
 			location, location_city, location_street, location_house, location_flat,
-			linktype, linkspeed, port, chkmac, halfduplex, nas, longitude, latitude,
-			netid)
+			linktype, linktechnology, linkspeed, port, chkmac, halfduplex, nas,
+			longitude, latitude, netid)
 			VALUES (?, inet_aton(?), inet_aton(?), ?, ?, ?,
-			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
+			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
 			$id = $this->DB->GetLastInsertID('nodes');
 
 			// EtherWerX support (devices have some limits)
@@ -2131,8 +2137,8 @@ class LMS {
 	}
 
 	function GetNetDevLinkedNodes($id) {
-		return $this->DB->GetAll('SELECT n.id AS id, n.name AS name, linktype, linkspeed, ipaddr, 
-			inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, 
+		return $this->DB->GetAll('SELECT n.id AS id, n.name AS name, linktype, linktechnology, linkspeed,
+			ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, 
 			netdev, port, ownerid,
 			' . $this->DB->Concat('c.lastname', "' '", 'c.name') . ' AS owner,
 			net.name AS netname
@@ -2143,18 +2149,20 @@ class LMS {
 			ORDER BY n.name ASC', array($id));
 	}
 
-	function NetDevLinkNode($id, $devid, $type = 0, $speed = 100000, $port = 0) {
+	function NetDevLinkNode($id, $devid, $type = 0, $technology = 0, $speed = 100000, $port = 0) {
 		global $SYSLOG_RESOURCE_KEYS;
 
 		$args = array(
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $devid,
 			'linktype' => intval($type),
+			'linktechnology' => intval($technology),
 			'linkspeed' => intval($speed),
 			'port' => intval($port),
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $id,
 		);
-		$res = $this->DB->Execute('UPDATE nodes SET netdev=?, linktype=?, linkspeed=?, port=?
-			 WHERE id=?', array_values($args));
+		$res = $this->DB->Execute('UPDATE nodes SET netdev=?, linktype=?,
+			linktechnology=?, linkspeed=?, port=?
+			WHERE id=?', array_values($args));
 		if ($this->SYSLOG && $res) {
 			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] =
 				$this->DB->GetOne('SELECT ownerid FROM nodes WHERE id=?', $id);
@@ -2166,10 +2174,11 @@ class LMS {
 		return $res;
 	}
 
-	function SetNetDevLinkType($dev1, $dev2, $type = 0, $speed = 100000) {
+	function SetNetDevLinkType($dev1, $dev2, $type = 0, $technology = 0, $speed = 100000) {
 		global $SYSLOG_RESOURCE_KEYS;
 
-		$res = $this->DB->Execute('UPDATE netlinks SET type=?, speed=? WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($type, $speed, $dev1, $dev2, $dev1, $dev2));
+		$res = $this->DB->Execute('UPDATE netlinks SET type=?, technology=?, speed=? WHERE (src=? AND dst=?) OR (dst=? AND src=?)',
+			array($type, $technology, $speed, $dev1, $dev2, $dev1, $dev2));
 		if ($this->SYSLOG && $res) {
 			$netlink = $this->DB->GetRow('SELECT id, src, dst FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($dev1, $dev2, $dev1, $dev2));
 			$args = array(
@@ -2187,10 +2196,11 @@ class LMS {
 		return $res;
 	}
 
-	function SetNodeLinkType($node, $type = 0, $speed = 100000) {
+	function SetNodeLinkType($node, $type = 0, $technology = 0, $speed = 100000) {
 		global $SYSLOG_RESOURCE_KEYS;
 
-		$res = $this->DB->Execute('UPDATE nodes SET linktype=?, linkspeed=? WHERE id=?', array($type, $speed, $node));
+		$res = $this->DB->Execute('UPDATE nodes SET linktype=?, linktechnology=?, linkspeed=? WHERE id=?',
+			array($type, $technology, $speed, $node));
 		if ($this->SYSLOG && $res) {
 			$nodedata = $this->DB->GetRow('SELECT ownerid, netdev FROM nodes WHERE id=?', array($node));
 			$args = array(
@@ -2198,6 +2208,7 @@ class LMS {
 				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $nodedata['ownerid'],
 				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $nodedata['netdev'],
 				'linktype' => $type,
+				'linktechnology' => $technology,
 				'linkspeed' => $speed,
 			);
 			$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
@@ -4139,19 +4150,19 @@ class LMS {
 	}
 
 	function GetNetDevLinkType($dev1, $dev2) {
-		return $this->DB->GetRow('SELECT type, speed FROM netlinks 
+		return $this->DB->GetRow('SELECT type, technology, speed FROM netlinks 
 			WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($dev1, $dev2, $dev1, $dev2));
 	}
 
 	function GetNetDevConnectedNames($id) {
 		return $this->DB->GetAll('SELECT d.id, d.name, d.description,
 			d.location, d.producer, d.ports, l.type AS linktype,
-			l.speed AS linkspeed, l.srcport, l.dstport,
+			l.technology AS linktechnology, l.speed AS linkspeed, l.srcport, l.dstport,
 			(SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id) 
 			+ (SELECT COUNT(*) FROM nodes WHERE netdev = d.id AND ownerid > 0)
 			AS takenports 
 			FROM netdevices d
-			JOIN (SELECT DISTINCT type, speed, 
+			JOIN (SELECT DISTINCT type, technology, speed, 
 				(CASE src WHEN ? THEN dst ELSE src END) AS dev, 
 				(CASE src WHEN ? THEN dstport ELSE srcport END) AS srcport, 
 				(CASE src WHEN ? THEN srcport ELSE dstport END) AS dstport 

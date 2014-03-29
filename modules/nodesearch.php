@@ -69,14 +69,15 @@ function select_location($what, $id) {
 	return $JSResponse;
 }
 
-function connect_nodes($nodeids, $deviceid, $linktype, $linkspeed) {
+function connect_nodes($nodeids, $deviceid, $linktype, $linktechnology, $linkspeed) {
 	global $DB;
 
 	$JSResponse = new xajaxResponse();
 
 	$DB->BeginTrans();
 	foreach ($nodeids as $nodeid)
-		$DB->Execute("UPDATE nodes SET netdev = ?, port = 0, linktype = ?, linkspeed = ? WHERE id = ?", array($deviceid, $linktype, $linkspeed, $nodeid));
+		$DB->Execute("UPDATE nodes SET netdev = ?, port = 0, linktype = ?, linktechnology = ?, linkspeed = ? WHERE id = ?",
+			array($deviceid, $linktype, $linktechnology, $linkspeed, $nodeid));
 	$DB->CommitTrans();
 
 	$JSResponse->call('operation_finished');

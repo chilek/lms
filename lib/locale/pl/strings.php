@@ -2780,4 +2780,7 @@ $_LANG['Tariff type:'] = 'Typ taryfy:';
 $_LANG['Consent required:'] = 'Wymagana zgoda:';
 $_LANG['Check if customer consent to messages delivery via e-mail or sms is required'] = 'Zaznacz jeśli wymagana jest zgoda klienta na dostarczanie informacji pocztą elektr. lub sms-em';
 
+$_LANG['Select link technology'] = 'Wybierz technologię łącza';
+$_LANG['Link technology:'] = 'Technologia łącza:';
+
 ?>

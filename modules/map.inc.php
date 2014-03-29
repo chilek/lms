@@ -53,7 +53,7 @@ if ($devices)
 
 	$devids = implode(',', array_keys($devices));
 
-	$devlinks = $DB->GetAll('SELECT src, dst, type, speed FROM netlinks WHERE src IN ('.$devids.') AND dst IN ('.$devids.')');
+	$devlinks = $DB->GetAll('SELECT src, dst, type, technology, speed FROM netlinks WHERE src IN ('.$devids.') AND dst IN ('.$devids.')');
 	if ($devlinks)
 		foreach ($devlinks as $devlinkidx => $devlink)
 		{
@@ -62,6 +62,7 @@ if ($devices)
 			$devlinks[$devlinkidx]['dstlat'] = $devices[$devlink['dst']]['lat'];
 			$devlinks[$devlinkidx]['dstlon'] = $devices[$devlink['dst']]['lon'];
 			$devlinks[$devlinkidx]['typename'] = trans("Link type:")." ".$LINKTYPES[$devlink['type']];
+			$devlinks[$devlinkidx]['technologyname'] = ($devlink['technology'] ? trans("Link technology:")." ".$LINKTECHNOLOGIES[$devlink['type']][$devlink['technology']] : '');
 			$devlinks[$devlinkidx]['speedname'] = trans("Link speed:")." ".$LINKSPEEDS[$devlink['speed']];
 		}
 }
@@ -85,7 +86,8 @@ if ($nodes)
 
 	if ($devices)
 	{
-		$nodelinks = $DB->GetAll('SELECT n.id AS nodeid, netdev, linktype AS type, linkspeed AS speed FROM nodes n WHERE netdev > 0 AND ownerid > 0 
+		$nodelinks = $DB->GetAll('SELECT n.id AS nodeid, netdev, linktype AS type, linktechnology AS technology,
+			linkspeed AS speed FROM nodes n WHERE netdev > 0 AND ownerid > 0 
 			AND n.id IN ('.$nodeids.') AND netdev IN ('.$devids.')');
 		if ($nodelinks)
 			foreach ($nodelinks as $nodelinkidx => $nodelink)
@@ -95,6 +97,7 @@ if ($nodes)
 				$nodelinks[$nodelinkidx]['netdevlat'] = $devices[$nodelink['netdev']]['lat'];
 				$nodelinks[$nodelinkidx]['netdevlon'] = $devices[$nodelink['netdev']]['lon'];
 				$nodelinks[$nodelinkidx]['typename'] = trans("Link type:")." ".$LINKTYPES[$nodelink['type']];
+				$nodelinks[$nodelinkidx]['technologyname'] = ($nodelink['technology'] ? trans("Link technology:")." ".$LINKTECHNOLOGIES[$nodelink['type']][$nodelink['technology']] : '');
 				$nodelinks[$nodelinkidx]['speedname'] = trans("Link speed:")." ".$LINKSPEEDS[$nodelink['speed']];
 			}
 	}

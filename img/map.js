@@ -334,7 +334,9 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 										'</div><div class="lmsMapPopupAddress">') + '</div>'
 									: '');
 						else
-							content += '<span class="bold">' + features[i].data.typename + '<br>' + features[i].data.speedname + '</span>';
+							content += '<span class="bold">' + features[i].data.typename + '<br>'
+								+ (features[i].data.technologyname.length ? '<span class="bold">' + features[i].data.technologyname + '<br>' : '')
+								+ features[i].data.speedname + '</span>';
 					}
 					content += '</div>';
 					mappopup = new OpenLayers.Popup.Anchored(null, mapLonLat, new OpenLayers.Size(10, 10), content);

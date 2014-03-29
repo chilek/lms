@@ -234,6 +234,50 @@ $LINKTYPES = array(
 	2		=> trans('fiber'),
 );
 
+$LINKTECHNOLOGIES = array(
+	0 => array(
+		1 => 'ADSL',
+		2 => 'ADSL2',
+		3 => 'ADSL2+',
+		4 => 'VDSL',
+		5 => 'VDSL2',
+		6 => '10 Mbit/s Ethernet',
+		7 => '100 Mbit/s Fast Ethernet',
+		8 => '1 Gbit Ethernet',
+		9 => '10 Gbit Ethernet',
+		50 => '(EURO)DOCSIS 1.x',
+		51 => '(EURO)DOCSIS 2.x',
+		52 => '(EURO)DOCSIS 3.x',
+	),
+	1 => array(
+		100 => 'WiFi - 2,4 GHz',
+		101 => 'WiFi - 5 GHz',
+		102 => 'WiMAX',
+		103 => 'LMDS',
+		104 => 'radiolinia',
+		105 => 'CDMA',
+		106 => 'GPRS',
+		107 => 'EDGE',
+		108 => 'HSPA',
+		109 => 'HSPA+',
+		110 => 'DC-HSPA+',
+		111 => 'MC-HSPA+',
+		112 => 'LTE',
+	),
+	2 => array(
+		200 => 'CWDM',
+		201 => 'DWDM',
+		202 => 'SDH',
+		203 => '10 Mbit/s Ethernet',
+		204 => '100 Mbit/s Fast Ethernet',
+		205 => '1 Gbit Ethernet',
+		206 => '10 Gbit Ethernet',
+		207 => '100 Gbit Ethernet',
+		208 => 'EPON',
+		209 => 'GPON',
+	),
+);
+
 $LINKSPEEDS = array(
 	10000		=> trans('10Mbit/s'),
 	25000		=> trans('25Mbit/s'),
@@ -282,6 +326,7 @@ if(isset($SMARTY))
 	$SMARTY->assign('_DISCOUNTTYPES', $DISCOUNTTYPES);
 	$SMARTY->assign('_DAYS', $DAYS);
 	$SMARTY->assign('_LINKTYPES', $LINKTYPES);
+	$SMARTY->assign('_LINKTECHNOLOGIES', $LINKTECHNOLOGIES);
 	$SMARTY->assign('_LINKSPEEDS', $LINKSPEEDS);
 	$SMARTY->assign('_BOROUGHTYPES', $BOROUGHTYPES);
 	$SMARTY->assign('_PASSWDEXPIRATIONS', $PASSWDEXPIRATIONS);
