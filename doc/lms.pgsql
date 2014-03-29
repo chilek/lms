@@ -331,6 +331,7 @@ CREATE TABLE nodes (
 	netdev integer 		DEFAULT 0 NOT NULL,
 	linktype smallint	DEFAULT 0 NOT NULL,
 	linkspeed integer	DEFAULT 100000 NOT NULL,
+	linktechnology integer	DEFAULT 0 NOT NULL,
 	port smallint		DEFAULT 0 NOT NULL,
 	creationdate integer 	DEFAULT 0 NOT NULL,
 	moddate integer 	DEFAULT 0 NOT NULL,
@@ -803,6 +804,7 @@ CREATE TABLE netlinks (
 	dst integer 		DEFAULT 0 NOT NULL,
 	type smallint		DEFAULT 0 NOT NULL,
 	speed integer		DEFAULT 100000 NOT NULL,
+	technology integer	DEFAULT 0 NOT NULL,
 	srcport smallint	DEFAULT 0 NOT NULL,
 	dstport smallint	DEFAULT 0 NOT NULL,
 	PRIMARY KEY  (id),
@@ -1971,4 +1973,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014021700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014032900');
