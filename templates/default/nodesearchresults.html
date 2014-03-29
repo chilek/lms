@@ -127,7 +127,7 @@
 							{/foreach}
 						</select>
 						<select id="linktechnology">
-							<option value="0">{trans("- none -")}</option>
+							<option value="0">{trans("- unknown -")}</option>
 							{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
 							<option value="{$linktechnologyidx}">{$linktechnology}</option>
 							{/foreach}
@@ -199,7 +199,7 @@
 		var options = document.getElementById('linktechnology').options;
 		while (options.length)
 			options.remove(0);
-		options.add(new Option('{trans("- none -")}', 0));
+		options.add(new Option('{trans("- unknown -")}', 0));
 		switch (linktype) {
 			case 0:
 				{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}

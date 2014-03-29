@@ -97,7 +97,7 @@
 							{/foreach}
 						</SELECT>
 						<SELECT NAME="linktechnology" id="connboxlinktechnology" {tip trigger="connboxlinktechnology" text="Select link technology"}>
-							<OPTION value="0">{trans("- none -")}</OPTION>
+							<OPTION value="0">{trans("- unknown -")}</OPTION>
 							{if !$devlinktype}{$devlinktype = 0}{/if}
 							{foreach $_LINKTECHNOLOGIES[$devlinktype] as $linktechnologyidx => $linktechnology}
 							<OPTION value="{$linktechnologyidx}"{if $linktechnologyidx == $devlinktechnology} selected{/if}>{$linktechnology}</OPTION>
@@ -131,7 +131,7 @@ function change_devlinktype(linktype) {
 	var options = document.getElementById('devlinktechnology').options;
 	while (options.length)
 		options.remove(0);
-	options.add(new Option('{trans("- none -")}', 0));
+	options.add(new Option('{trans("- unknown -")}', 0));
 	switch (linktype) {
 		case 0:
 			{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}

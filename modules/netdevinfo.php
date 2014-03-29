@@ -21,7 +21,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id: netdevinfo.php,v 1.36 2012/01/02 11:01:35 alec Exp $
+ *  $Id$
  */
 
 if (!$LMS->NetDevExists($_GET['id'])) {

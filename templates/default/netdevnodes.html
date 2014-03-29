@@ -92,7 +92,7 @@
 									</SELECT>
 									{if !$devnodeslinktype}{$devnodeslinktype = 0}{/if}
 									<SELECT NAME="linktechnology" id="devnodeslinktechnology" {tip trigger="devnodeslinktechnology" text="Select link technology"}>
-										<OPTION value="0">{trans("- none -")}</OPTION>
+										<OPTION value="0">{trans("- unknown -")}</OPTION>
 										{foreach $_LINKTECHNOLOGIES[$devnodeslinktype] as $linktechnologyidx => $linktechnology}
 										<OPTION value="{$linktechnologyidx}"{if $linktechnologyidx == $nodelinktechnology} selected{/if}>{$linktechnology}</OPTION>
 										{/foreach}
@@ -124,7 +124,7 @@ function change_nodelinktype(linktype) {
 	var options = document.getElementById('devnodeslinktechnology').options;
 	while (options.length)
 		options.remove(0);
-	options.add(new Option('{trans("- none -")}', 0));
+	options.add(new Option('{trans("- unknown -")}', 0));
 	switch (linktype) {
 		case 0:
 			{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}

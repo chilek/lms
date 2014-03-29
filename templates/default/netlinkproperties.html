@@ -29,7 +29,7 @@
 			<td class="nobr">{trans("Link technology:")}</td>
 			<td>
 				<SELECT NAME="linktechnology" id="linktechnology" {tip trigger="linktechnology" text="Select link technology"}>
-					<OPTION value="0">{trans("- none -")}</OPTION>
+					<OPTION value="0">{trans("- unknown -")}</OPTION>
 					{foreach $_LINKTECHNOLOGIES[$link.type] as $linktechnologyidx => $linktechnology}
 					<OPTION value="{$linktechnologyidx}"{if $link.technology == $linktechnologyidx} selected{/if}>{$linktechnology}</OPTION>
 					{/foreach}
@@ -61,7 +61,7 @@ function change_linktype(linktype) {
 	var options = document.getElementById('linktechnology').options;
 	while (options.length)
 		options.remove(0);
-	options.add(new Option('{trans("- none -")}', 0));
+	options.add(new Option('{trans("- unknown -")}', 0));
 	switch (linktype) {
 		case 0:
 			{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}

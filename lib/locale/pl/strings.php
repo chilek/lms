@@ -2782,5 +2782,6 @@ $_LANG['Check if customer consent to messages delivery via e-mail or sms is requ
 
 $_LANG['Select link technology'] = 'Wybierz technologię łącza';
 $_LANG['Link technology:'] = 'Technologia łącza:';
+$_LANG['- unknown -'] = 'nieznana';
 
 ?>
