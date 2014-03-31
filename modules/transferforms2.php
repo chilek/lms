@@ -115,7 +115,7 @@ $_TITLE = (!isset($CONFIG['finances']['pay_title']) ? trans('Not set') : $CONFIG
 $_LMARGIN = (!isset($CONFIG['finances']['leftmargin']) ? 0 : $CONFIG['finances']['leftmargin']);
 $_BMARGIN = (!isset($CONFIG['finances']['bottommargin']) ? 0 : $CONFIG['finances']['bottommargin']);
 
-require_once(LIB_DIR.'/pdf.php');
+require_once(LIB_DIR . '/ezpdf.php');
 
 $pdf = init_pdf('A4', 'landscape', trans('Form of Cash Transfer'));
 
