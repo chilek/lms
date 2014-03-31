@@ -120,7 +120,7 @@
 				{if $rtstatscounter mod 5 == 0}
 				<TR>
 				<TD width="{(100 / $hboxesinrow)|round}%" style="padding: 0px 2px 0px 0px;">
-				{elseif $rtstatscounter mod 5 == 4}
+				{elseif $rtstatscounter mod 5 == 4 || $rtstatscounter + 1 == $rtstats|@count}
 				<TD width="{(100 / $hboxesinrow)|round}%" style="padding: 0px 0px 0px 2px;">
 				{else}
 				<TD width="{(100 / $hboxesinrow)|round}%" style="padding: 0px 2px 0px 2px;">
