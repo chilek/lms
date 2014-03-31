@@ -2784,4 +2784,6 @@ $_LANG['Select link technology'] = 'Wybierz technologię łącza';
 $_LANG['Link technology:'] = 'Technologia łącza:';
 $_LANG['- unknown -'] = '- nieznana -';
 
+$_LANG['Hide toolbar from user interface. Default: false.'] = 'Ukryj górne menu w interfejsie użytkownika. Domyślnie: 0 (wyłączone).';
+$_LANG['Does this LMS have transaction log support (not opensource). Default: false.'] = 'Czy ta instalacja LMS posiada log transakcji (opcja nie opensource). Domyślnie: 0 (wyłączone).';
 ?>

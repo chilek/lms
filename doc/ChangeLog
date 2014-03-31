@@ -53,6 +53,8 @@ version ?.??.?? (????-??-??):
   - messageadd: possibility of checking if customer consent is required [chilan]
   - daemon: payments: copy division info to new invoice [chilan]
   - added link technology support [chilan]
+  - UI: transaction_log_support and hide_toolbar options [maniac]
+  - fixup wellcome screen helpdex boxes alignment and other minor fixes [maniac]
 
 version 1.11.14 (2013-03-25):
 

@@ -168,6 +168,8 @@ $DEFAULTS = array(
 		'default_assignment_period' => 3,
 		'default_assignment_invoice' => 0,
 		'default_editor' => 'html',
+		'transaction_log_support' => false,
+		'hide_toolbar' => false
 	),
 	'invoices' => array(
 		'template_file' => 'invoice.html',
