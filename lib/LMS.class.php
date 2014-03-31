@@ -2165,7 +2165,7 @@ class LMS {
 			WHERE id=?', array_values($args));
 		if ($this->SYSLOG && $res) {
 			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] =
-				$this->DB->GetOne('SELECT ownerid FROM nodes WHERE id=?', $id);
+				$this->DB->GetOne('SELECT ownerid FROM nodes WHERE id=?', array($id));
 			$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
 				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
 					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV],
