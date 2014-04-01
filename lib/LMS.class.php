@@ -4775,7 +4775,7 @@ class LMS {
 				    LEFT JOIN rtticketcategories tc ON c.id = tc.categoryid
 				    LEFT JOIN rttickets t ON t.id = tc.ticketid
 				    WHERE c.id IN (' . implode(',', $catids) . ')
-				    GROUP BY tc.categoryid, c.name
+				    GROUP BY c.id, c.name
 				    ORDER BY c.name');
 	}
 
