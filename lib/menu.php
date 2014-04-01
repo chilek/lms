@@ -729,7 +729,7 @@ if (chkconfig($CONFIG['phpui']['ewx_support'])) {
 	);
 }
 
-if (chkconfig($CONFIG['phpui']['transaction_log_support'])) {
+if (chkconfig($CONFIG['phpui']['logging'])) {
 	$menu['log'] = array(
 		'name' => trans('Transaction Log'),
 		'img' => 'recover.gif',
