@@ -94,7 +94,9 @@
 		</tr>
 	</table>
 	</form>
-	{include file="toolbar.html"}
+	{if ! check_conf('phpui.hide_toolbar')}
+		{include file="toolbar.html"}
+	{/if}
 	<hr>
 <SCRIPT type="text/javascript">
 <!--//

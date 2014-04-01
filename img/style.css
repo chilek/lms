@@ -200,7 +200,10 @@ div.multiselectlayer ul li input { border: none; }
     behavior: url(img/pie.htc);
 }
 
-table.lmsbox,
+table.lmsbox {
+    width: 100%;
+    margin: 0px 2px 4px 0px;
+}
 table.lmsbox-inner {
     width: 100%;
 }
