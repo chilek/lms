@@ -112,9 +112,9 @@ switch ($action) {
 					}
 
 					if (isset($row['dstport'])) // device
-						$LMS->NetDevLink($dev2['id'], $row['id'], $row['type'], $sport, $row['dstport']);
+						$LMS->NetDevLink($dev2['id'], $row['id'], $row['type'], $row['technology'], $row['speed'], $sport, $row['dstport']);
 					else // node
-						$LMS->NetDevLinkNode($row['id'], $dev2['id'], $row['type'], $sport);
+						$LMS->NetDevLinkNode($row['id'], $dev2['id'], $row['type'], $row['technology'], $row['speed'], $sport);
 				}
 
 			$ports = array();
@@ -133,9 +133,9 @@ switch ($action) {
 					}
 
 					if (isset($row['dstport'])) // device
-						$LMS->NetDevLink($dev1['id'], $row['id'], $row['type'], $sport, $row['dstport']);
+						$LMS->NetDevLink($dev1['id'], $row['id'], $row['type'], $row['technology'], $row['speed'], $sport, $row['dstport']);
 					else // node
-						$LMS->NetDevLinkNode($row['id'], $dev1['id'], $row['type'], $sport);
+						$LMS->NetDevLinkNode($row['id'], $dev1['id'], $row['type'], $row['technology'], $row['speed'], $sport);
 				}
 
 			$DB->CommitTrans();

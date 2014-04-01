@@ -622,6 +622,7 @@ CREATE TABLE documents (
 	reference integer	DEFAULT 0 NOT NULL,
 	reason varchar(255)	DEFAULT '' NOT NULL,
 	div_name text		DEFAULT '' NOT NULL,
+	div_shortname text	DEFAULT '' NOT NULL,
 	div_address varchar(255) DEFAULT '' NOT NULL,
 	div_city varchar(255)	DEFAULT '' NOT NULL,
 	div_zip varchar(255)	DEFAULT '' NOT NULL,
@@ -1973,4 +1974,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014032900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014040100');

@@ -485,23 +485,24 @@ foreach($assigns as $assign)
 
 				$customer = $DB->GetRow("SELECT lastname, name, address, city, zip, ssn, ten, countryid, divisionid, paytime 
 						FROM customers WHERE id = $cid");
-				
-				$division = $DB->GetRow('SELECT name, address, city, zip, countryid, ten, regon,
+
+				$division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
 						account, inv_header, inv_footer, inv_author, inv_cplace 
 						FROM divisions WHERE id = ? ;',array($customer['divisionid']));
-				
+
 				$paytime = $customer['paytime'];
 				if ($paytime == -1) $paytime = $deadline;
 
 				$DB->Execute("INSERT INTO documents (number, numberplanid, type, countryid, divisionid, 
 					customerid, name, address, zip, city, ten, ssn, cdate, sdate, paytime, paytype,
-					div_name, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
+					div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 					div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace) 
-					VALUES(?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+					VALUES(?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 					array($numbers[$plan], $plan, $customer['countryid'], $customer['divisionid'], $cid,
 					$customer['lastname']." ".$customer['name'], $customer['address'], $customer['zip'],
 					$customer['city'], $customer['ten'], $customer['ssn'], $currtime, $saledate, $paytime, $inv_paytype,
 					($division['name'] ? $division['name'] : ''),
+					($division['shortname'] ? $division['shortname'] : ''),
 					($division['address'] ? $division['address'] : ''), 
 					($division['city'] ? $division['city'] : ''), 
 					($division['zip'] ? $division['zip'] : ''),

@@ -110,17 +110,17 @@
 			</TABLE>
 			{if $rtstats}
 			<TABLE width="100%" celpadding="0">
-			{counter start=0 skip=1 assign=rtstatscounter print=false}
-			{if $rtstats|@count > 4}
-				{assign var="hboxesinrow" value="5"}
+			{if $rtstats|@count >= 3}
+				{assign var="hboxesinrow" value="3"}
 			{else}
-				{assign var="hboxesinrow" value=$rtstats|@count mod 5}
+				{assign var="hboxesinrow" value=$rtstats|@count mod 3}
 			{/if}
+			{counter start=0 skip=1 assign=rtstatscounter print=false}
 			{foreach from=$rtstats item=rtcategorystats}
-				{if $rtstatscounter mod 5 == 0}
+				{if $rtstatscounter mod 3 == 0}
 				<TR>
 				<TD width="{(100 / $hboxesinrow)|round}%" style="padding: 0px 2px 0px 0px;">
-				{elseif $rtstatscounter mod 5 == 4 || $rtstatscounter + 1 == $rtstats|@count}
+				{elseif $rtstatscounter mod 3 == 2 || $rtstatscounter + 1 == $rtstats|@count}
 				<TD width="{(100 / $hboxesinrow)|round}%" style="padding: 0px 0px 0px 2px;">
 				{else}
 				<TD width="{(100 / $hboxesinrow)|round}%" style="padding: 0px 2px 0px 2px;">

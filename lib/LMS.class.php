@@ -2674,10 +2674,10 @@ class LMS {
 		$number = $invoice['invoice']['number'];
 		$type = $invoice['invoice']['type'];
 		
-		$division = $this->DB->GetRow('SELECT name, address, city, zip, countryid, ten, regon,
+		$division = $this->DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
 				account, inv_header, inv_footer, inv_author, inv_cplace 
 				FROM divisions WHERE id = ? ;',array($invoice['customer']['divisionid']));
-		
+
 		$args = array(
 			'number' => $number,
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $invoice['invoice']['numberplanid'] ? $invoice['invoice']['numberplanid'] : 0,
@@ -2697,6 +2697,7 @@ class LMS {
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $invoice['customer']['countryid'],
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $invoice['customer']['divisionid'],
 			'div_name' => ($division['name'] ? $division['name'] : ''),
+			'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),
 			'div_address' => ($division['address'] ? $division['address'] : ''), 
 			'div_city' => ($division['city'] ? $division['city'] : ''), 
 			'div_zip' => ($division['zip'] ? $division['zip'] : ''),
@@ -2709,13 +2710,13 @@ class LMS {
 			'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''), 
 			'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
 		);
-		
+
 		$this->DB->Execute('INSERT INTO documents (number, numberplanid, type,
 			cdate, sdate, paytime, paytype, userid, customerid, name, address, 
 			ten, ssn, zip, city, countryid, divisionid,
-			div_name, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
+			div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 			div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 		$iid = $this->DB->GetLastInsertID('documents');
 		if ($this->SYSLOG) {
 			unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
@@ -2865,7 +2866,7 @@ class LMS {
 				d.ten, d.ssn, d.cdate, d.sdate, d.paytime, d.paytype, d.numberplanid,
 				d.closed, d.reference, d.reason, d.divisionid,
 				(SELECT name FROM users WHERE id = d.userid) AS user, n.template,
-				d.div_name AS division_name, d.div_name AS division_shortname,
+				d.div_name AS division_name, d.div_shortname AS division_shortname,
 				d.div_address AS division_address, d.div_zip AS division_zip,
 				d.div_city AS division_city, d.div_countryid AS division_countryid, 
 				d.div_ten AS division_ten, d.div_regon AS division_regon, d.div_account AS account,
@@ -2984,7 +2985,7 @@ class LMS {
 				d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
 				d.ten, d.ssn, d.cdate, d.numberplanid, d.closed, d.divisionid, d.paytime, 
 				(SELECT name FROM users WHERE id = d.userid) AS user, n.template,
-				d.div_name AS division_name, d.div_name AS division_shortname,
+				d.div_name AS division_name, d.div_shortname AS division_shortname,
 				d.div_address AS division_address, d.div_zip AS division_zip,
 				d.div_city AS division_city, d.div_countryid AS division_countryid, 
 				d.div_ten AS division_ten, d.div_regon AS division_regon, d.div_account AS account,
@@ -4452,7 +4453,7 @@ class LMS {
 			WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($dev1, $dev2, $dev1, $dev2));
 	}
 
-	function NetDevLink($dev1, $dev2, $type = 0, $speed = 100000, $sport = 0, $dport = 0) {
+	function NetDevLink($dev1, $dev2, $type = 0, $technology = 0, $speed = 100000, $sport = 0, $dport = 0) {
 		global $SYSLOG_RESOURCE_KEYS;
 
 		if ($dev1 != $dev2)
@@ -4461,13 +4462,14 @@ class LMS {
 					'src_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $dev1,
 					'dst_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $dev2,
 					'type' => $type,
+					'technology' => $technology,
 					'speed' => $speed,
 					'srcport' => intval($sport),
 					'dstport' => intval($dport)
 				);
 				$res = $this->DB->Execute('INSERT INTO netlinks 
-					(src, dst, type, speed, srcport, dstport) 
-					VALUES (?, ?, ?, ?, ?, ?)', array_values($args));
+					(src, dst, type, technology, speed, srcport, dstport) 
+					VALUES (?, ?, ?, ?, ?, ?, ?)', array_values($args));
 				if ($this->SYSLOG && $res) {
 					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETLINK]] = $this->DB->GetLastInsertID('netlinks');
 					$this->SYSLOG->AddMessage(SYSLOG_RES_NETLINK, SYSLOG_OPER_ADD, $args,
@@ -4763,16 +4765,16 @@ class LMS {
 			return NULL;
 		foreach ($categories as $category)
 			$catids[] = $category['id'];
-		return $this->DB->GetAll('SELECT tc.categoryid AS id, c.name,
+		return $this->DB->GetAll('SELECT c.id AS id, c.name,
 				    COUNT(CASE state WHEN ' . RT_NEW . ' THEN 1 END) AS new,
 				    COUNT(CASE state WHEN ' . RT_OPEN . ' THEN 1 END) AS opened,
 				    COUNT(CASE state WHEN ' . RT_RESOLVED . ' THEN 1 END) AS resolved,
 				    COUNT(CASE state WHEN ' . RT_DEAD . ' THEN 1 END) AS dead,
 				    COUNT(CASE WHEN state != ' . RT_RESOLVED . ' THEN 1 END) AS unresolved
-				    FROM rttickets t
-				    LEFT JOIN rtticketcategories tc ON t.id = tc.ticketid
-				    LEFT JOIN rtcategories c ON c.id = tc.categoryid
-				    WHERE tc.categoryid IN (' . implode(',', $catids) . ')
+				    FROM rtcategories c  
+				    LEFT JOIN rtticketcategories tc ON c.id = tc.categoryid
+				    LEFT JOIN rttickets t ON t.id = tc.ticketid
+				    WHERE c.id IN (' . implode(',', $catids) . ')
 				    GROUP BY tc.categoryid, c.name
 				    ORDER BY c.name');
 	}
