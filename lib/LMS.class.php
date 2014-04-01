@@ -4453,7 +4453,7 @@ class LMS {
 			WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($dev1, $dev2, $dev1, $dev2));
 	}
 
-	function NetDevLink($dev1, $dev2, $type = 0, $speed = 100000, $sport = 0, $dport = 0) {
+	function NetDevLink($dev1, $dev2, $type = 0, $technology = 0, $speed = 100000, $sport = 0, $dport = 0) {
 		global $SYSLOG_RESOURCE_KEYS;
 
 		if ($dev1 != $dev2)
@@ -4462,13 +4462,14 @@ class LMS {
 					'src_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $dev1,
 					'dst_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $dev2,
 					'type' => $type,
+					'technology' => $technology,
 					'speed' => $speed,
 					'srcport' => intval($sport),
 					'dstport' => intval($dport)
 				);
 				$res = $this->DB->Execute('INSERT INTO netlinks 
-					(src, dst, type, speed, srcport, dstport) 
-					VALUES (?, ?, ?, ?, ?, ?)', array_values($args));
+					(src, dst, type, technology, speed, srcport, dstport) 
+					VALUES (?, ?, ?, ?, ?, ?, ?)', array_values($args));
 				if ($this->SYSLOG && $res) {
 					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETLINK]] = $this->DB->GetLastInsertID('netlinks');
 					$this->SYSLOG->AddMessage(SYSLOG_RES_NETLINK, SYSLOG_OPER_ADD, $args,
