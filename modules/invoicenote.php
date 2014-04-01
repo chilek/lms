@@ -289,7 +289,7 @@ switch($action)
 		);
 		$DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, sdate, paytime, paytype,
 				userid, customerid, name, address, ten, ssn, zip, city, countryid, reference, reason, divisionid,
-				div_name, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
+				div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 				div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
 					?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
