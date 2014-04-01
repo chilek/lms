@@ -53,6 +53,7 @@ version ?.??.?? (????-??-??):
   - messageadd: possibility of checking if customer consent is required [chilan]
   - daemon: payments: copy division info to new invoice [chilan]
   - added link technology support [chilan]
+  - copy shortname from divisions to documents [chilan]
 
 version 1.11.14 (2013-03-25):
 

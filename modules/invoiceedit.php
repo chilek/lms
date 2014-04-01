@@ -224,7 +224,7 @@ switch($action)
 
 		$DB->BeginTrans();
 
-		$division = $DB->GetRow('SELECT name, address, city, zip, countryid, ten, regon,
+		$division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
 			account, inv_header, inv_footer, inv_author, inv_cplace 
 			FROM divisions WHERE id = ? ;',array($customer['divisionid']));
 
@@ -242,6 +242,7 @@ switch($action)
 			'city' => $customer['city'],
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $customer['divisionid'],
 			'div_name' => ($division['name'] ? $division['name'] : ''),
+			'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),
 			'div_address' => ($division['address'] ? $division['address'] : ''), 
 			'div_city' => ($division['city'] ? $division['city'] : ''), 
 			'div_zip' => ($division['zip'] ? $division['zip'] : ''),
@@ -257,7 +258,7 @@ switch($action)
 		);
 		$DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, customerid = ?,
 				name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, divisionid = ?,
-				div_name = ?, div_address = ?, div_city = ?, div_zip = ?, div_countryid = ?,
+				div_name = ?, div_shortname = ?, div_address = ?, div_city = ?, div_zip = ?, div_countryid = ?,
 				div_ten = ?, div_regon = ?, div_account = ?, div_inv_header = ?, div_inv_footer = ?,
 				div_inv_author = ?, div_inv_cplace = ?
 				WHERE id = ?', array_values($args));
