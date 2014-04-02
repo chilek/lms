@@ -4,21 +4,9 @@
 AC_DEFUN([LOCATE_POSTGRESQL],
 [
     # Try to locate postgresql
-    PG_HOME=/usr/local/pgsql
-    if test ! -f "${PG_HOME}/bin/pg_config" ; then
-        PG_HOME=/usr/local
-        if test ! -f "${PG_HOME}/bin/pg_config" ; then
-            PG_HOME=/usr
-            if test ! -f "${PG_HOME}/bin/pg_config" ; then
-                # Search the path
-                AC_PATH_PROGS(PG_CONFIG, pg_config)
-                if test ! -f "${PG_CONFIG}" ; then
-                    AC_MSG_ERROR([Could not find your PostgreSQL installation. You might need to use the --with-pgsql=DIR configure option])
-                else
-                    PG_HOME=`${PG_CONFIG} --bindir | sed "s/\/bin$//"`
-                fi
-            fi
-        fi
+    AC_PATH_PROGS(PG_CONFIG, pg_config)
+    if test -f "${PG_CONFIG}" ; then
+        PG_HOME=`${PG_CONFIG} --bindir | sed "s/\/bin$//"`
     fi
 
     # If provided path try to use it
@@ -151,31 +139,32 @@ AC_DEFUN([SETUP_POSTGRESQL],
 AC_DEFUN([LOCATE_MYSQL],
 [
     # first try to find MySQL config
-    AC_CHECK_PROG(MYSQL_CONFIG, mysql_config, [yes], [no])           # test if mysql_config is in %PATH
-    if test $MYSQL_CONFIG = "yes" ; then                             # if ues set variables
-        MYSQL_INC_DIR=`mysql_config --variable=pkgincludedir`
-        MYSQL_LIB_DIR=`mysql_config --variable=pkglibdir`
-    fi
+    AC_PATH_PROGS(MYSQL_CONFIG, mysql_config)
 
     AC_ARG_WITH(mysql,
-                AC_HELP_STRING([--with-mysql],[path to mysql_config binary [[/usr/bin/mysql_config]]]),
+                AC_HELP_STRING([--with-mysql=PATH],[path to mysql_config binary [[/usr/bin/mysql_config]]]),
     [
         # We have to use MySQL
         if test "$withval" != "yes"  ;  then               # If provided path to MySQL use it
             if test -f $withval ; then
-                MYSQL_INC_DIR=`$withval --variable=pkgincludedir`
-                MYSQL_LIB_DIR=`$withval --variable=pkglibdir`
+                MYSQL_CONFIG=$withval
             else
-                AC_MSG_ERROR(Cannot find mysql_config binary in provided location ($withval).  Use --with-mysql= to specify non-default path.)
+                AC_MSG_ERROR(Cannot find mysql_config binary in provided location ($withval).)
             fi
         else                                               # If check we have found mysql_config earlier
-            if test $MYSQL_CONFIG != "yes" ; then
-                AC_MSG_ERROR(Could not find mysql_config binary)
+            if test ! -f "${MYSQL_CONFIG}" ; then
+                AC_MSG_ERROR(Could not find mysql_config binary. Use --with-mysql= to specify non-default path to mysql_config binary.)
             fi
         fi
         with_mysql=yes
     ])
 
+    # If we have pg_config then we have pgsql
+    if test -f "${MYSQL_CONFIG}"; then
+        MYSQL_INC_DIR=`$MYSQL_CONFIG --variable=pkgincludedir`
+        MYSQL_LIB_DIR=`$MYSQL_CONFIG --variable=pkglibdir`
+        have_mysql=yes;
+    fi
 ])
 
 

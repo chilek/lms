@@ -1437,7 +1437,7 @@ Optional Packages:
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
   --with-sysroot=DIR Search for dependent libraries within DIR
                         (or the compiler's sysroot if not specified).
-  --with-mysql            path to mysql_config binary
+  --with-mysql=PATH       path to mysql_config binary
                           [[/usr/bin/mysql_config]]
   --with-pgsql=DIR        enables use of PostgreSQL database (conflits with
                           mysql, autodetection is run if DIR is not present)
@@ -16852,24 +16852,28 @@ done
 
 
     # first try to find MySQL config
-    # Extract the first word of "mysql_config", so it can be a program name with args.
-set dummy mysql_config; ac_word=$2
+    for ac_prog in mysql_config
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
 $as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_prog_MYSQL_CONFIG+:} false; then :
+if ${ac_cv_path_MYSQL_CONFIG+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  if test -n "$MYSQL_CONFIG"; then
-  ac_cv_prog_MYSQL_CONFIG="$MYSQL_CONFIG" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+  case $MYSQL_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_MYSQL_CONFIG="$MYSQL_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
 for as_dir in $PATH
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
     for ac_exec_ext in '' $ac_executable_extensions; do
   if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_prog_MYSQL_CONFIG="yes"
+    ac_cv_path_MYSQL_CONFIG="$as_dir/$ac_word$ac_exec_ext"
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
@@ -16877,10 +16881,10 @@ done
   done
 IFS=$as_save_IFS
 
-  test -z "$ac_cv_prog_MYSQL_CONFIG" && ac_cv_prog_MYSQL_CONFIG="no"
+  ;;
+esac
 fi
-fi
-MYSQL_CONFIG=$ac_cv_prog_MYSQL_CONFIG
+MYSQL_CONFIG=$ac_cv_path_MYSQL_CONFIG
 if test -n "$MYSQL_CONFIG"; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: $MYSQL_CONFIG" >&5
 $as_echo "$MYSQL_CONFIG" >&6; }
@@ -16889,11 +16893,10 @@ else
 $as_echo "no" >&6; }
 fi
 
-           # test if mysql_config is in %PATH
-    if test $MYSQL_CONFIG = "yes" ; then                             # if ues set variables
-        MYSQL_INC_DIR=`mysql_config --variable=pkgincludedir`
-        MYSQL_LIB_DIR=`mysql_config --variable=pkglibdir`
-    fi
+
+  test -n "$MYSQL_CONFIG" && break
+done
+
 
 
 # Check whether --with-mysql was given.
@@ -16902,14 +16905,13 @@ if test "${with_mysql+set}" = set; then :
         # We have to use MySQL
         if test "$withval" != "yes"  ;  then               # If provided path to MySQL use it
             if test -f $withval ; then
-                MYSQL_INC_DIR=`$withval --variable=pkgincludedir`
-                MYSQL_LIB_DIR=`$withval --variable=pkglibdir`
+                MYSQL_CONFIG=$withval
             else
-                as_fn_error $? "Cannot find mysql_config binary in provided location ($withval).  Use --with-mysql= to specify non-default path." "$LINENO" 5
+                as_fn_error $? "Cannot find mysql_config binary in provided location ($withval)." "$LINENO" 5
             fi
         else                                               # If check we have found mysql_config earlier
-            if test $MYSQL_CONFIG != "yes" ; then
-                as_fn_error $? "Could not find mysql_config binary" "$LINENO" 5
+            if test ! -f "${MYSQL_CONFIG}" ; then
+                as_fn_error $? "Could not find mysql_config binary. Use --with-mysql= to specify non-default path to mysql_config binary." "$LINENO" 5
             fi
         fi
         with_mysql=yes
@@ -16917,17 +16919,16 @@ if test "${with_mysql+set}" = set; then :
 fi
 
 
+    # If we have pg_config then we have pgsql
+    if test -f "${MYSQL_CONFIG}"; then
+        MYSQL_INC_DIR=`$MYSQL_CONFIG --variable=pkgincludedir`
+        MYSQL_LIB_DIR=`$MYSQL_CONFIG --variable=pkglibdir`
+        have_mysql=yes;
+    fi
 
 
     # Try to locate postgresql
-    PG_HOME=/usr/local/pgsql
-    if test ! -f "${PG_HOME}/bin/pg_config" ; then
-        PG_HOME=/usr/local
-        if test ! -f "${PG_HOME}/bin/pg_config" ; then
-            PG_HOME=/usr
-            if test ! -f "${PG_HOME}/bin/pg_config" ; then
-                # Search the path
-                for ac_prog in pg_config
+    for ac_prog in pg_config
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
@@ -16972,13 +16973,8 @@ fi
   test -n "$PG_CONFIG" && break
 done
 
-                if test ! -f "${PG_CONFIG}" ; then
-                    as_fn_error $? "Could not find your PostgreSQL installation. You might need to use the --with-pgsql=DIR configure option" "$LINENO" 5
-                else
-                    PG_HOME=`${PG_CONFIG} --bindir | sed "s/\/bin$//"`
-                fi
-            fi
-        fi
+    if test -f "${PG_CONFIG}" ; then
+        PG_HOME=`${PG_CONFIG} --bindir | sed "s/\/bin$//"`
     fi
 
     # If provided path try to use it
@@ -17074,6 +17070,8 @@ else
 fi
 
 
+
+echo "m $have_mysql p $have_pgsql"
 
 if test "x$with_mysql" = "xyes" && test "x$with_pgsql" = "xyes"; then :
   as_fn_error $? "You can use mysql or postgresql. You can not use both" "$LINENO" 5

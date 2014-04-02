@@ -74,6 +74,8 @@ LOCATE_MYSQL
 LOCATE_POSTGRESQL
 LOCATE_SNMP
 
+echo "m $have_mysql p $have_pgsql"
+
 AS_IF([test "x$with_mysql" = "xyes" && test "x$with_pgsql" = "xyes"], AC_MSG_ERROR([You can use mysql or postgresql. You can not use both]),
       [test "x$with_mysql" = "xyes" ], [SETUP_MYSQL],
       [test "x$with_pgsql" = "xyes" ], [SETUP_POSTGRESQL],
