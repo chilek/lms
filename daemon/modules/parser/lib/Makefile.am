@@ -2,7 +2,7 @@ noinst_LIBRARIES = libtscript.a
 
 
 BUILT_SOURCES = tscript_parser.h tscript_lexical.c
-AM_YFLAGS = -d -r lookahead
+AM_YFLAGS = -d -p tscript_yy -r lookahead
 AM_LFLAGS = -o$(LEX_OUTPUT_ROOT).c -Ptscript_yy 
 
 
