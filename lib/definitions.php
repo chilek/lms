@@ -90,7 +90,7 @@ define('DOC_PROTOCOL', -3);
 define('DOC_ORDER', -4);
 define('DOC_SHEET', -5);
 define('DOC_OTHER', -255); //poprzednia wartosc -10
-define('DOC_BILLING', -11)
+define('DOC_BILLING', -11);
 
 $DOCTYPES = array(
     DOC_BILLING		=>	trans('billing'),
@@ -111,7 +111,7 @@ $DOCTYPES = array(
     -8  =>	trans('payment summons'), // wezwanie do zapłaty
     -9	=>	trans('payment pre-summons'), // przedsądowe wezw. do zapłaty
     DOC_OTHER       =>	trans('other'),
-    -10 =>	trans('other'), //nie zmieniać, wartość -10 wpisana jest w bazie danych dla DOC_OTHER
+    -10 =>	trans('other') //nie zmieniać, wartość -10 wpisana jest w bazie danych dla DOC_OTHER
 );
 
 // Guarantee periods
