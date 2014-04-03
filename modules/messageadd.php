@@ -429,7 +429,7 @@ if(isset($_POST['message']))
 							is_int($result) ? $result : MSG_ERROR,
 							is_int($result) ? null : $result,
 							$msgid,
-							$row['id'],
+							isset($row['id']) ? $row['id'] : 0,
 							$orig_destination,
 						));
 			}

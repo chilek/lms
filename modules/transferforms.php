@@ -98,7 +98,7 @@ function address_box($x,$y,$scale)
     $pdf->addtext(5*$scale+$x,240*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',$invoice['zip']." ".$invoice['city']));
 }
 
-require_once(LIB_DIR.'/pdf.php');
+require_once(LIB_DIR . '/ezpdf.php');
 
 $pdf = init_pdf('A4', 'portrait', trans('Form of Cash Transfer'));
 

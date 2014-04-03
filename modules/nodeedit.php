@@ -40,7 +40,11 @@ switch ($action) {
 		if (empty($_GET['devid']) || !($netdev = $LMS->GetNetDev($_GET['devid']))) {
 			$SESSION->redirect('?m=nodeinfo&id=' . $nodeid);
 		} else if ($netdev['ports'] > $netdev['takenports']) {
-			$LMS->NetDevLinkNode($nodeid, $_GET['devid'], isset($_GET['linktype']) ? intval($_GET['linktype']) : 0, isset($_GET['linkspeed']) ? intval($_GET['linkspeed']) : 100000, intval($_GET['port']));
+			$LMS->NetDevLinkNode($nodeid, $_GET['devid'],
+				isset($_GET['linktype']) ? intval($_GET['linktype']) : 0,
+				isset($_GET['linktechnology']) ? intval($_GET['linktechnology']) : 0,
+				isset($_GET['linkspeed']) ? intval($_GET['linkspeed']) : 100000,
+				intval($_GET['port']));
 			$SESSION->redirect('?m=nodeinfo&id=' . $nodeid);
 		} else {
 			$SESSION->redirect('?m=nodeinfo&id=' . $nodeid . '&devid=' . $_GET['devid']);

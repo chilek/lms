@@ -103,9 +103,15 @@
 			</SELECT>
 			<INPUT type="text" name="nodeedit[port]" value="{if $nodeinfo.port}{$nodeinfo.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
 			<BR>
-			<SELECT NAME="nodeedit[linktype]" id="linktype" {tip trigger="linktype" text="Select link type"}>
+			<SELECT NAME="nodeedit[linktype]" id="linktype" {tip trigger="linktype" text="Select link type"} onchange="change_linktype(this.options[this.selectedIndex].value)">
 				{foreach from=$_LINKTYPES item=item key=key}
 				<OPTION value="{$key}"{if $key==$nodeinfo.linktype} selected{/if}>{$item}</OPTION>
+				{/foreach}
+			</SELECT>
+			<SELECT NAME="nodeedit[linktechnology]" id="linktechnology" {tip trigger="linktechnology" text="Select link technology"}>
+				<OPTION value="0">{trans("- unknown -")}</OPTION>
+				{foreach $_LINKTECHNOLOGIES[$nodeinfo.linktype] as $linktechnologyidx => $linktechnology}
+				<OPTION value="{$linktechnologyidx}"{if $linktechnologyidx == $nodeinfo.linktechnology} selected{/if}>{$linktechnology}</OPTION>
 				{/foreach}
 			</SELECT>
 			<SELECT NAME="nodeedit[linkspeed]" id="linkspeed" {tip trigger="linkspeed" text="Select link speed"}>
@@ -274,6 +280,31 @@
 		var val;
 		if (val = document.forms['editnode'].elements['nodeedit[ownerid]'].value)
 			document.forms['editnode'].elements['nodeedit[customerid]'].value = val;
+	}
+
+	function change_linktype(linktype) {
+		linktype = parseInt(linktype);
+		var options = document.getElementById('linktechnology').options;
+		while (options.length)
+			options.remove(0);
+		options.add(new Option('{trans("- unknown -")}', 0));
+		switch (linktype) {
+			case 0:
+				{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
+				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+				{/foreach}
+				break;
+			case 1:
+				{foreach $_LINKTECHNOLOGIES[1] as $linktechnologyidx => $linktechnology}
+				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+				{/foreach}
+				break;
+			case 2:
+				{foreach $_LINKTECHNOLOGIES[2] as $linktechnologyidx => $linktechnology}
+				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+				{/foreach}
+				break;
+		}
 	}
 
 	check_teryt('location', true);

@@ -51,6 +51,14 @@ version ?.??.?? (????-??-??):
   - userpanel: helpdesk: limit ticket movements to selected queues setting [chilan]
   - support html mail send [chilan]
   - messageadd: possibility of checking if customer consent is required [chilan]
+  - daemon: payments: copy division info to new invoice [chilan]
+  - added link technology support [chilan]
+  - hide_toolbar option [maniac]
+  - phpui.logging option set to 0/false now hides UI elements [maniac]
+  - fixup wellcome screen helpdex boxes alignment and other minor fixes [maniac]
+  - copy shortname from divisions to documents [chilan]
+  - do not miss categories without tickets on wellcome screen [maniac]
+  - rearange ticket category stats to for lower resolution compatibility [maniac]
 
 version 1.11.14 (2013-03-25):
 

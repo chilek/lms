@@ -21,7 +21,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id: netdevinfo.php,v 1.36 2012/01/02 11:01:35 alec Exp $
+ *  $Id$
  */
 
 if (!$LMS->NetDevExists($_GET['id'])) {
@@ -57,8 +57,10 @@ $SMARTY->assign('nodelist', $nodelist);
 $SMARTY->assign('replacelist', $replacelist);
 $SMARTY->assign('replacelisttotal', $replacelisttotal);
 $SMARTY->assign('devlinktype', $SESSION->get('devlinktype'));
+$SMARTY->assign('devlinktechnology', $SESSION->get('devlinktechnology'));
 $SMARTY->assign('devlinkspeed', $SESSION->get('devlinkspeed'));
 $SMARTY->assign('nodelinktype', $SESSION->get('nodelinktype'));
+$SMARTY->assign('nodelinktechnology', $SESSION->get('nodelinktechnology'));
 $SMARTY->assign('nodelinkspeed', $SESSION->get('nodelinkspeed'));
 
 include(MODULES_DIR . '/netdevxajax.inc.php');
