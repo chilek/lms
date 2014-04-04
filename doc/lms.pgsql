@@ -313,7 +313,7 @@ CREATE TABLE networks (
 	UNIQUE (name),
 	CONSTRAINT networks_address_key UNIQUE (address, hostid)
 );
-CREATE INDEX networks_hostid_idx ON networks (hostid)
+CREATE INDEX networks_hostid_idx ON networks (hostid);
 
 /* -------------------------------------------------------- 
   Structure of table "nodes"
