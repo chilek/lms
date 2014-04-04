@@ -1812,17 +1812,6 @@ CREATE TABLE up_info_changes (
 );
 
 /* ---------------------------------------------------
- Aggregates
-------------------------------------------------------*/
-DROP AGGREGATE IF EXISTS array_agg(anyelement);
-CREATE AGGREGATE array_agg (
-    BASETYPE=anyelement,
-	SFUNC=array_append,
-	STYPE=anyarray,
-	INITCOND='{}'
-);
-
-/* ---------------------------------------------------
  Functions and Views
 ------------------------------------------------------*/
 CREATE OR REPLACE FUNCTION lms_current_user() RETURNS integer AS '

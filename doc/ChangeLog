@@ -62,7 +62,7 @@ version ?.??.?? (????-??-??):
   - report all problems with directiories and privileges at once [maniac]
   - report missing Smarty library [maniac]
   - make script for devel/smarty-install.sh path independend [maniac]
-
+  - minimal supported version of postgresql is now 8.4 [maniac]
 
 version 1.11.14 (2013-03-25):
 

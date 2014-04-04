@@ -334,7 +334,7 @@ Chapter 2. Installation and configuration
    MySQL server in version 5.x is supported. Probably LMS won't work
    correctly with older versions.
 
-   PostgreSQL in version 8.2.x or higher is supported.
+   PostgreSQL in version 8.4.x or higher is supported.
      __________________________________________________________________
 
 2.2.4. Smarty Library
@@ -493,7 +493,7 @@ password = your_password
 
 2.5.2.1. Intro
 
-   LMS require PostgreSQL 8.2 or higher. If you have not installed
+   LMS require PostgreSQL 8.4 or higher. If you have not installed
    PostgreSQL server, you can compile it yourself from sources available
    on www.postgresql.org.
      __________________________________________________________________

@@ -71,14 +71,7 @@ if(isset($_GET['level']))
 
     if ($mintime = $DB->GetOne('SELECT MIN(dt) FROM stats'))
     {
-	    if ($CONFIG['database']['type'] != 'postgres')
-    	    $multi_insert = true;
-	    else if (version_compare($DB->GetDBVersion(), '8.2') >= 0)
-	        $multi_insert = true;
-	    else
-	        $multi_insert = false;
-
-	    $nodes = $DB->GetAll('SELECT id, name FROM nodes ORDER BY name');
+        $nodes = $DB->GetAll('SELECT id, name FROM nodes ORDER BY name');
 
         foreach ($nodes as $node)
         {
@@ -130,14 +123,8 @@ if(isset($_GET['level']))
                     if (!$record['download'] && !$record['upload'])
                         continue;
 
-                    if ($multi_insert)
-                        $values[] = sprintf('(%d, %d, %d, %d)',
-                            $node['id'], $record['maxtime'], $record['upload'], $record['download']);
-                    else
-                        $inserted += $DB->Execute('INSERT INTO stats
-                            (nodeid, dt, upload, download) VALUES (?, ?, ?, ?)',
-                            array($node['id'], $record['maxtime'],
-                                $record['upload'], $record['download']));
+                    $values[] = sprintf('(%d, %d, %d, %d)',
+                        $node['id'], $record['maxtime'], $record['upload'], $record['download']);
                 }
 
                 if (!empty($values))

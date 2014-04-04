@@ -356,7 +356,7 @@ Rozdział 2. Instalacja i konfiguracja
 
    LMS nie będzie działał prawidłowo na wersjach MySQL starszych od 5.0.
 
-   LMS współpracuje także z PostgreSQL w wersji 8.2.x lub nowszych.
+   LMS współpracuje także z PostgreSQL w wersji 8.4.x lub nowszych.
      __________________________________________________________________
 
 2.2.4. Biblioteka Smarty
@@ -540,7 +540,7 @@ password = hasło_z_pkt.3
 
 2.5.2.1. Wstęp
 
-   LMS jest testowany na PostgreSQL 8.2.x i nowszych, możesz mieć problemy
+   LMS jest testowany na PostgreSQL 8.4.x i nowszych, możesz mieć problemy
    korzystając ze starszych wersji. Jeżeli nie masz zainstalowanego
    serwera PostgreSQL, możesz np. własnoręcznie skompilować go ze źródeł
    dostępnych na stronie www.postgresql.org.

@@ -57,7 +57,7 @@
            <title>Database Server</title>
            <para>MySQL server in version 5.x is supported. Probably LMS won't work correctly
            with older versions.</para>
-           <para>PostgreSQL in version 8.2.x or higher is supported.</para>
+           <para>PostgreSQL in version 8.4.x or higher is supported.</para>
          </sect2>
          <sect2 id="install-req-smarty">
              <title>Smarty Library</title>
@@ -223,7 +223,7 @@ password = your_password</screen>
           <title>PostgreSQL</title>
           <sect3 id="install-pgsql-intro">
           <title>Intro</title>
-               <para>LMS require PostgreSQL 8.2 or higher. If you have not installed PostgreSQL server, 
+               <para>LMS require PostgreSQL 8.4 or higher. If you have not installed PostgreSQL server, 
 	       you can compile it yourself from sources available on <ulink url="http://www.postgresql.org">
                www.postgresql.org</ulink>.</para>
           </sect3>
