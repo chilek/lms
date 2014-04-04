@@ -5,25 +5,33 @@
 
 SMARTYVER="3.1.17"
 
-cd ../lib
+set -e
+
+LIB_DIR="`dirname $0`/../lib/"
+TMP=`mktemp -d`
+
 # download
 echo -n "Downloading Smarty sources... "
-wget http://www.smarty.net/files/Smarty-$SMARTYVER.tar.gz
+wget -q -O $TMP/Smarty-$SMARTYVER.tar.gz  http://www.smarty.net/files/Smarty-$SMARTYVER.tar.gz
 echo "done."
 
 # extracting package
 echo -n "Extracting... "
-tar -xzf Smarty-$SMARTYVER.tar.gz
+tar -C $TMP -xzf $TMP/Smarty-$SMARTYVER.tar.gz
 echo "done."
 
 # merging
 echo -n "Merging... "
-cp -r Smarty-$SMARTYVER/libs/* Smarty/
-cp -r Smarty-$SMARTYVER/libs/plugins/* Smarty/plugins/
+cp -r $TMP/Smarty-$SMARTYVER/libs/*         $LIB_DIR/Smarty/
+cp -r $TMP/Smarty-$SMARTYVER/libs/plugins/* $LIB_DIR/Smarty/plugins/
 echo "done."
+
 
 # cleanup
 echo -n "Cleaning up... " 
-rm -Rf Smarty-$SMARTYVER Smarty-$SMARTYVER.tar.gz
+rm -Rf $TMP/Smarty-$SMARTYVER $TMP/Smarty-$SMARTYVER.tar.gz
+rmdir $TMP
 echo "done."
 cd ../devel
+
+exit;

@@ -44,8 +44,11 @@ if(!is_dir(DOC_DIR))
 if(!is_writable(DOC_DIR))
 	$startup_errors[] = 'chown '.posix_geteuid().':'.posix_getegid().' '.DOC_DIR."\nchmod 755 ".DOC_DIR;
 
+if(!is_readable(LIB_DIR.'/Smarty/Smarty.class.php'));
+	$startup_errors[] = SYS_DIR.'/devel/smarty_install.sh';
+
 if (count($startup_errors) > 0) {
-	print('Can not start because of directory problems. Please run:<PRE>');
+	print('Can not start because detected some problems. Please run:<PRE>');
 	foreach ($startup_errors as &$err) {
             print ($err."\n");
         }

@@ -59,6 +59,10 @@ version ?.??.?? (????-??-??):
   - copy shortname from divisions to documents [chilan]
   - do not miss categories without tickets on wellcome screen [maniac]
   - rearange ticket category stats to for lower resolution compatibility [maniac]
+  - report all problems with directiories and privileges at once [maniac]
+  - report missing Smarty library [maniac]
+  - make script for devel/smarty-install.sh path independend [maniac]
+
 
 version 1.11.14 (2013-03-25):
 
