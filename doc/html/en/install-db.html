@@ -144,9 +144,7 @@ Enter password:[just enter password :)]
 mysql&#62; CREATE DATABASE lms CHARACTER SET utf8 COLLATE utf8_polish_ci;
 mysql&#62; GRANT USAGE ON lms.* TO lms@localhost;
 mysql&#62; GRANT ALL ON lms.* TO lms@localhost IDENTIFIED BY '[your_password]';
-mysql&#62; flush privileges;
-mysql&#62; use lms;
-mysql&#62; source doc/lms.mysql;</PRE
+mysql&#62; flush privileges;</PRE
 >
           </P
 ></DIV
@@ -278,8 +276,7 @@ NAME="INSTALL-PGSQL-DBCREATE"
                <PRE
 CLASS="SCREEN"
 >$ /usr/local/pgsql/bin/createuser -DPRS lms
-$ /usr/local/pgsql/bin/createdb -E UNICODE -O lms lms
-$ /usr/local/pgsql/bin/psql -d lms -U lms -f /lms/doc/lms.pgsql</PRE
+$ /usr/local/pgsql/bin/createdb -E UNICODE -O lms lms</PRE
 >
           </P
 ></DIV

@@ -63,6 +63,8 @@ version ?.??.?? (????-??-??):
   - report missing Smarty library [maniac]
   - make script for devel/smarty-install.sh path independend [maniac]
   - minimal supported version of postgresql is now 8.4 [maniac]
+  - simplified installation procedure - UI loads schema if there are no tables in db [maniac]
+
 
 version 1.11.14 (2013-03-25):
 

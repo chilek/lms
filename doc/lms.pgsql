@@ -1898,44 +1898,9 @@ SELECT st.ident AS woj, d.ident AS pow, b.ident AS gmi, b.type AS rodz_gmi,
 /* ---------------------------------------------------
  Data records
 ------------------------------------------------------*/
-INSERT INTO rtcategories (name, description)
-	VALUES ('default', 'default category');
-INSERT INTO uiconfig (section, var)
-	VALUES ('userpanel', 'data_consent_text');
-INSERT INTO uiconfig (section, var, value, description, disabled) 
-	VALUES ('userpanel', 'disable_transferform', '0', '', 0);
-INSERT INTO uiconfig (section, var, value, description, disabled)
-	VALUES ('userpanel', 'disable_invoices', '0', '', 0);
-INSERT INTO uiconfig (section, var, value, description, disabled)
-	VALUES ('userpanel', 'invoice_duplicate', '0', '', 0);
-INSERT INTO uiconfig (section, var, value)
-	VALUES ('userpanel', 'show_tariffname', '1');
-INSERT INTO uiconfig (section, var, value)
-	VALUES ('userpanel', 'show_speeds', '1');
-INSERT INTO uiconfig (section, var, value, description, disabled)
-	VALUES ('userpanel', 'queues', '1', '', 0);
-INSERT INTO uiconfig (section, var, value, description, disabled)
-	VALUES ('userpanel', 'tickets_from_selected_queues', '0', '', 0);
-INSERT INTO uiconfig (section, var, value, description, disabled)
-	VALUES ('userpanel', 'allow_message_add_to_closed_tickets', '1', '', 0);
-INSERT INTO uiconfig (section, var, value, description, disabled)
-	VALUES ('userpanel', 'limit_ticket_movements_to_selected_queues', '0', '', 0);
-INSERT INTO uiconfig (section, var, value, description, disabled)
-	VALUES ('userpanel', 'default_userid', '0', '', 0);
-INSERT INTO uiconfig (section, var, value, description, disabled)
-	VALUES ('userpanel', 'debug_email', '', '', 0);
-INSERT INTO uiconfig (section, var, value, description, disabled)
-	VALUES ('userpanel', 'lms_url', '', '', 0);
-INSERT INTO uiconfig (section, var, value, description, disabled)
-	VALUES ('userpanel', 'hide_nodesbox', '0', '', 0);
-INSERT INTO uiconfig (section, var, value, description, disabled)
-	VALUES ('userpanel', 'logout_url', '', '', 0);
-INSERT INTO uiconfig (section, var, value, description, disabled)
-	VALUES ('userpanel', 'owner_stats', '0', '', 0);
-INSERT INTO uiconfig (section, var, value)
-	VALUES ('userpanel', 'default_categories', (SELECT MAX(id) FROM rtcategories));
+INSERT INTO rtcategories (name, description) VALUES ('default', 'default category');
 INSERT INTO up_rights(module, name, description)
-	VALUES ('info', 'edit_addr_ack', 'Customer can change address information with admin acknowlegment');
+        VALUES ('info', 'edit_addr_ack', 'Customer can change address information with admin acknowlegment');
 INSERT INTO up_rights(module, name, description)
         VALUES ('info', 'edit_addr', 'Customer can change address information');
 INSERT INTO up_rights(module, name, description, setdefault)
@@ -1963,4 +1928,120 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
+INSERT INTO uiconfig VALUES (18, 'phpui', 'lang', '', '', 0);
+INSERT INTO uiconfig VALUES (19, 'phpui', 'allow_from', '', '', 0);
+INSERT INTO uiconfig VALUES (20, 'phpui', 'default_module', 'welcome', '', 0);
+INSERT INTO uiconfig VALUES (21, 'phpui', 'timeout', '600', '', 0);
+INSERT INTO uiconfig VALUES (22, 'phpui', 'customerlist_pagelimit', '100', '', 0);
+INSERT INTO uiconfig VALUES (23, 'phpui', 'nodelist_pagelimit', '100', '', 0);
+INSERT INTO uiconfig VALUES (24, 'phpui', 'balancelist_pagelimit', '100', '', 0);
+INSERT INTO uiconfig VALUES (25, 'phpui', 'invoicelist_pagelimit', '100', '', 0);
+INSERT INTO uiconfig VALUES (26, 'phpui', 'debitnotelist_pagelimit', '100', '', 0);
+INSERT INTO uiconfig VALUES (27, 'phpui', 'ticketlist_pagelimit', '100', '', 0);
+INSERT INTO uiconfig VALUES (28, 'phpui', 'accountlist_pagelimit', '100', '', 0);
+INSERT INTO uiconfig VALUES (29, 'phpui', 'domainlist_pagelimit', '100', '', 0);
+INSERT INTO uiconfig VALUES (30, 'phpui', 'aliaslist_pagelimit', '100', '', 0);
+INSERT INTO uiconfig VALUES (31, 'phpui', 'configlist_pagelimit', '100', '', 0);
+INSERT INTO uiconfig VALUES (32, 'phpui', 'receiptlist_pagelimit', '100', '', 0);
+INSERT INTO uiconfig VALUES (33, 'phpui', 'taxratelist_pagelimit', '100', '', 0);
+INSERT INTO uiconfig VALUES (34, 'phpui', 'numberplanlist_pagelimit', '100', '', 0);
+INSERT INTO uiconfig VALUES (35, 'phpui', 'divisionlist_pagelimit', '100', '', 0);
+INSERT INTO uiconfig VALUES (36, 'phpui', 'documentlist_pagelimit', '100', '', 0);
+INSERT INTO uiconfig VALUES (37, 'phpui', 'voipaccountlist_pagelimit', '100', '', 0);
+INSERT INTO uiconfig VALUES (38, 'phpui', 'networkhosts_pagelimit', '256', '', 0);
+INSERT INTO uiconfig VALUES (39, 'phpui', 'messagelist_pagelimit', '100', '', 0);
+INSERT INTO uiconfig VALUES (40, 'phpui', 'recordlist_pagelimit', '100', '', 0);
+INSERT INTO uiconfig VALUES (41, 'phpui', 'cashreglog_pagelimit', '100', '', 0);
+INSERT INTO uiconfig VALUES (42, 'phpui', 'reload_type', 'sql', '', 0);
+INSERT INTO uiconfig VALUES (43, 'phpui', 'reload_execcmd', '/bin/true', '', 0);
+INSERT INTO uiconfig VALUES (44, 'phpui', 'reload_sqlquery', '', '', 0);
+INSERT INTO uiconfig VALUES (45, 'phpui', 'lastonline_limit', '600', '', 0);
+INSERT INTO uiconfig VALUES (46, 'phpui', 'timetable_days_forward', '7', '', 0);
+INSERT INTO uiconfig VALUES (47, 'phpui', 'gd_translate_to', 'ISO-8859-2', '', 0);
+INSERT INTO uiconfig VALUES (48, 'phpui', 'check_for_updates_period', '86400', '', 0);
+INSERT INTO uiconfig VALUES (49, 'phpui', 'homedir_prefix', '/home/', '', 0);
+INSERT INTO uiconfig VALUES (50, 'phpui', 'default_taxrate', '23', '', 0);
+INSERT INTO uiconfig VALUES (51, 'phpui', 'default_zip', '', '', 0);
+INSERT INTO uiconfig VALUES (52, 'phpui', 'default_city', '', '', 0);
+INSERT INTO uiconfig VALUES (53, 'phpui', 'default_address', '', '', 0);
+INSERT INTO uiconfig VALUES (54, 'phpui', 'smarty_debug', 'false', '', 0);
+INSERT INTO uiconfig VALUES (55, 'phpui', 'force_ssl', 'false', '', 0);
+INSERT INTO uiconfig VALUES (56, 'phpui', 'allow_mac_sharing', 'false', '', 0);
+INSERT INTO uiconfig VALUES (57, 'phpui', 'big_networks', 'false', '', 0);
+INSERT INTO uiconfig VALUES (58, 'phpui', 'short_pagescroller', 'false', '', 0);
+INSERT INTO uiconfig VALUES (59, 'phpui', 'helpdesk_stats', 'true', '', 0);
+INSERT INTO uiconfig VALUES (60, 'phpui', 'helpdesk_customerinfo', 'true', '', 0);
+INSERT INTO uiconfig VALUES (61, 'phpui', 'helpdesk_backend_mode', 'false', '', 0);
+INSERT INTO uiconfig VALUES (62, 'phpui', 'helpdesk_sender_name', '', '', 0);
+INSERT INTO uiconfig VALUES (63, 'phpui', 'helpdesk_reply_body', 'false', '', 0);
+INSERT INTO uiconfig VALUES (64, 'phpui', 'use_invoices', 'false', '', 0);
+INSERT INTO uiconfig VALUES (65, 'phpui', 'ticket_template_file', 'rtticketprint.html', '', 0);
+INSERT INTO uiconfig VALUES (66, 'phpui', 'use_current_payday', 'false', '', 0);
+INSERT INTO uiconfig VALUES (67, 'phpui', 'default_monthly_payday', '', '', 0);
+INSERT INTO uiconfig VALUES (68, 'phpui', 'newticket_notify', 'false', '', 0);
+INSERT INTO uiconfig VALUES (69, 'phpui', 'to_words_short_version', 'false', '', 0);
+INSERT INTO uiconfig VALUES (70, 'phpui', 'ticketlist_status', '', '', 0);
+INSERT INTO uiconfig VALUES (71, 'phpui', 'ewx_support', 'false', '', 0);
+INSERT INTO uiconfig VALUES (72, 'phpui', 'invoice_check_payment', 'false', '', 0);
+INSERT INTO uiconfig VALUES (73, 'phpui', 'note_check_payment', 'false', '', 0);
+INSERT INTO uiconfig VALUES (74, 'phpui', 'radius', '1', '', 0);
+INSERT INTO uiconfig VALUES (75, 'phpui', 'public_ip', '1', '', 0);
+INSERT INTO uiconfig VALUES (76, 'phpui', 'default_assignment_period', '3', '', 0);
+INSERT INTO uiconfig VALUES (77, 'phpui', 'default_assignment_invoice', '0', '', 0);
+INSERT INTO uiconfig VALUES (78, 'phpui', 'default_editor', 'html', '', 0);
+INSERT INTO uiconfig VALUES (79, 'phpui', 'logging', 'false', '', 0);
+INSERT INTO uiconfig VALUES (80, 'phpui', 'hide_toolbar', 'false', '', 0);
+INSERT INTO uiconfig VALUES (81, 'invoices', 'template_file', 'invoice.html', '', 0);
+INSERT INTO uiconfig VALUES (82, 'invoices', 'content_type', 'text/html', '', 0);
+INSERT INTO uiconfig VALUES (83, 'invoices', 'cnote_template_file', 'invoice.html', '', 0);
+INSERT INTO uiconfig VALUES (84, 'invoices', 'print_balance_history', 'false', '', 0);
+INSERT INTO uiconfig VALUES (85, 'invoices', 'print_balance_history_limit', '10', '', 0);
+INSERT INTO uiconfig VALUES (86, 'invoices', 'default_printpage', 'original,copy', '', 0);
+INSERT INTO uiconfig VALUES (87, 'invoices', 'type', 'html', '', 0);
+INSERT INTO uiconfig VALUES (88, 'invoices', 'attachment_name', '', '', 0);
+INSERT INTO uiconfig VALUES (89, 'invoices', 'paytime', '14', '', 0);
+INSERT INTO uiconfig VALUES (90, 'invoices', 'paytype', '1', '', 0);
+INSERT INTO uiconfig VALUES (91, 'notes', 'template_file', 'note.html', '', 0);
+INSERT INTO uiconfig VALUES (92, 'notes', 'content_type', 'text/html', '', 0);
+INSERT INTO uiconfig VALUES (93, 'notes', 'type', 'html', '', 0);
+INSERT INTO uiconfig VALUES (94, 'notes', 'attachment_name', '', '', 0);
+INSERT INTO uiconfig VALUES (95, 'notes', 'paytime', '14', '', 0);
+INSERT INTO uiconfig VALUES (96, 'receipts', 'template_file', 'receipt.html', '', 0);
+INSERT INTO uiconfig VALUES (97, 'receipts', 'content_type', 'text/html', '', 0);
+INSERT INTO uiconfig VALUES (98, 'receipts', 'type', 'html', '', 0);
+INSERT INTO uiconfig VALUES (99, 'receipts', 'attachment_name', '', '', 0);
+INSERT INTO uiconfig VALUES (100, 'finances', 'suspension_percentage', '0', '', 0);
+INSERT INTO uiconfig VALUES (101, 'mail', 'debug_email', '', '', 0);
+INSERT INTO uiconfig VALUES (102, 'mail', 'smtp_host', '127.0.0.1', '', 0);
+INSERT INTO uiconfig VALUES (103, 'mail', 'smtp_port', '25', '', 0);
+INSERT INTO uiconfig VALUES (104, 'zones', 'hostmaster_mail', 'hostmaster.localhost', '', 0);
+INSERT INTO uiconfig VALUES (105, 'zones', 'master_dns', 'localhost', '', 0);
+INSERT INTO uiconfig VALUES (106, 'zones', 'slave_dns', 'localhost', '', 0);
+INSERT INTO uiconfig VALUES (107, 'zones', 'default_ttl', '3600', '', 0);
+INSERT INTO uiconfig VALUES (108, 'zones', 'ttl_refresh', '28800', '', 0);
+INSERT INTO uiconfig VALUES (109, 'zones', 'ttl_retry', '7200', '', 0);
+INSERT INTO uiconfig VALUES (110, 'zones', 'ttl_expire', '604800', '', 0);
+INSERT INTO uiconfig VALUES (111, 'zones', 'ttl_minimum', '86400', '', 0);
+INSERT INTO uiconfig VALUES (112, 'zones', 'default_webserver_ip', '127.0.0.1', '', 0);
+INSERT INTO uiconfig VALUES (113, 'zones', 'default_mailserver_ip', '127.0.0.1', '', 0);
+INSERT INTO uiconfig VALUES (114, 'zones', 'default_mx', 'localhost', '', 0);
+INSERT INTO uiconfig VALUES (115, 'userpanel', 'data_consent_text', '', '', 0);
+INSERT INTO uiconfig VALUES (116, 'userpanel', 'disable_transferform', '0', '', 0);
+INSERT INTO uiconfig VALUES (117, 'userpanel', 'disable_invoices', '0', '', 0);
+INSERT INTO uiconfig VALUES (118, 'userpanel', 'invoice_duplicate', '0', '', 0);
+INSERT INTO uiconfig VALUES (119, 'userpanel', 'show_tariffname', '1', '', 0);
+INSERT INTO uiconfig VALUES (120, 'userpanel', 'show_speeds', '1', '', 0);
+INSERT INTO uiconfig VALUES (121, 'userpanel', 'queues', '1', '', 0);
+INSERT INTO uiconfig VALUES (122, 'userpanel', 'tickets_from_selected_queues', '0', '', 0);
+INSERT INTO uiconfig VALUES (123, 'userpanel', 'allow_message_add_to_closed_tickets', '1', '', 0);
+INSERT INTO uiconfig VALUES (124, 'userpanel', 'limit_ticket_movements_to_selected_queues', '0', '', 0);
+INSERT INTO uiconfig VALUES (125, 'userpanel', 'default_userid', '0', '', 0);
+INSERT INTO uiconfig VALUES (126, 'userpanel', 'debug_email', '', '', 0);
+INSERT INTO uiconfig VALUES (127, 'userpanel', 'lms_url', '', '', 0);
+INSERT INTO uiconfig VALUES (128, 'userpanel', 'hide_nodesbox', '0', '', 0);
+INSERT INTO uiconfig VALUES (129, 'userpanel', 'logout_url', '', '', 0);
+INSERT INTO uiconfig VALUES (130, 'userpanel', 'owner_stats', '0', '', 0);
+INSERT INTO uiconfig VALUES (131, 'userpanel', 'default_categories', '1', '', 0);
+
 INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014040400');
+

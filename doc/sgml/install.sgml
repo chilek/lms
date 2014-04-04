@@ -191,9 +191,7 @@ Enter password:[just enter password :)]
 mysql> CREATE DATABASE lms CHARACTER SET utf8 COLLATE utf8_polish_ci;
 mysql> GRANT USAGE ON lms.* TO lms@localhost;
 mysql> GRANT ALL ON lms.* TO lms@localhost IDENTIFIED BY '[your_password]';
-mysql> flush privileges;
-mysql> use lms;
-mysql> source doc/lms.mysql;</screen>
+mysql> flush privileges;</screen>
           </para>
           </sect3>
           <sect3 id="install-mysql-lms">
@@ -252,8 +250,7 @@ $ /usr/local/pgsql/bin/postmaster -D /usr/local/pgsql/data >logfile 2>&1 &</scre
                named 'lms' and loading database schema:
                <screen>
 $ /usr/local/pgsql/bin/createuser -DPRS lms
-$ /usr/local/pgsql/bin/createdb -E UNICODE -O lms lms
-$ /usr/local/pgsql/bin/psql -d lms -U lms -f /lms/doc/lms.pgsql</screen>
+$ /usr/local/pgsql/bin/createdb -E UNICODE -O lms lms</screen>
           </para>
           </sect3>
           <sect3 id="install-pgsql-lms">
