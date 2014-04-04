@@ -32,6 +32,5 @@ echo -n "Cleaning up... "
 rm -Rf $TMP/Smarty-$SMARTYVER $TMP/Smarty-$SMARTYVER.tar.gz
 rmdir $TMP
 echo "done."
-cd ../devel
 
 exit;
