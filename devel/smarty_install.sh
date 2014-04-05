@@ -3,7 +3,7 @@
 # Smarty templates library quick installation (with sources download)
 #
 
-SMARTYVER="3.1.17"
+SMARTYVER="stable"
 
 set -e
 
@@ -33,4 +33,5 @@ rm -Rf $TMP/Smarty-$SMARTYVER $TMP/Smarty-$SMARTYVER.tar.gz
 rmdir $TMP
 echo "done."
 
-exit;
+exit
+
