@@ -23,9 +23,9 @@ echo "done."
 # merging
 echo -n "Merging... "
 
-VER=$(find $TMP -maxdepth 1 -mindepth 1 -type d -exec basename {} \; |sed -e 's/smarty-//gi')
-cp -r $TMP/Smarty-$VER/libs/*         $LIB_DIR/Smarty/
-cp -r $TMP/Smarty-$VER/libs/plugins/* $LIB_DIR/Smarty/plugins/
+SMARTY_DIR=$(find $TMP -maxdepth 1 -mindepth 1 -type d -exec basename {} \;)
+cp -r $TMP/${SMARTY_DIR}/libs/*		${LIB_DIR}/Smarty/
+cp -r $TMP/${SMARTY_DIR}/libs/plugins/*	${LIB_DIR}/Smarty/plugins/
 echo "done."
 
 
