@@ -22,16 +22,16 @@ echo "done."
 
 # merging
 echo -n "Merging... "
-VER=`find $TMP -maxdepth 1 -mindepth 1 -type d |perl -p -i -e 's/^.*(\d\.\d\.\d+)$/$1/g'`
+
+VER=$(find $TMP -maxdepth 1 -mindepth 1 -type d -exec basename {} \; |sed -e 's/smarty-//gi')
 cp -r $TMP/Smarty-$VER/libs/*         $LIB_DIR/Smarty/
 cp -r $TMP/Smarty-$VER/libs/plugins/* $LIB_DIR/Smarty/plugins/
 echo "done."
 
 
 # cleanup
-echo -n "Cleaning up... " 
-rm -Rf $TMP/Smarty-$VER $TMP/Smarty.tar.gz
-rmdir $TMP
+echo -n "Cleaning up... "
+rm -Rf $TMP
 echo "done."
 
 exit
