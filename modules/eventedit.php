@@ -27,12 +27,12 @@
 if(isset($_GET['action']) && $_GET['action'] == 'open')
 {
 	$DB->Execute('UPDATE events SET closed = 0 WHERE id = ?',array($_GET['id']));
-	$SESSION->redirect('?m=eventlist');
+	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 elseif(isset($_GET['action']) && $_GET['action'] == 'close')
 {
 	$DB->Execute('UPDATE events SET closed = 1 WHERE id = ?',array($_GET['id']));
-	$SESSION->redirect('?m=eventlist');
+	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 elseif(isset($_GET['action']) && $_GET['action'] == 'dropuser')
 {
