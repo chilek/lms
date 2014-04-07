@@ -145,14 +145,14 @@ div.multiselectlayer ul li input { border: none; }
 
 .click-menu     { width: 150px; padding: 0px 0px; margin-top: 0; margin-bottom: 0; }
 .click-menu .box1       { background-color: #CEBD9B; color: #000000; font-weight: bold; padding: 5px 5px; cursor: default; position: relative; white-space: nowrap; }
-.click-menu .box1-hover { background-color: #CCFFCC; color: #800000; font-weight: bold; padding: 5px 5px; cursor: default; position: relative; white-space: nowrap; }
+.click-menu .box1-hover { background-color: #DDD; color: #000; font-weight: bold; padding: 5px 5px; cursor: default; position: relative; white-space: nowrap; }
 .click-menu .box1-open  { background-color: #DACAB2; color: #800000; font-weight: bold; padding: 5px 5px; cursor: default; position: relative; white-space: nowrap; }
 .click-menu .box1-open-hover    { background-color: #CCFFCC; color: #800000; font-weight: bold; padding: 5px 5px; cursor: default; position: relative; white-space: nowrap; }
 .click-menu .section    { background-color: #EBE4D6; line-height: 15px; padding: 0px 0px 0px 0px; display: none; }
 .click-menu .section a  { color: #800000; text-decoration: none; white-space: nowrap; }
 .click-menu .section a:hover    { color: #336600; text-decoration: none; white-space: nowrap; }
-.click-menu .box2       { padding: 0px 0px 0px 21px; }
-.click-menu .box2-hover { background-color: #CCFFCC; padding: 0px 0px 0px 21px; }
+.click-menu .box2       { padding: 2px 0 2px 15px; }
+.click-menu .box2-hover { background-color: #FFF; padding: 2px 0 2px 15px; }
 .click-menu .section .active,
 .click-menu .section .active:hover { color: yellow; }
 .tip		{ width: 162px; }
