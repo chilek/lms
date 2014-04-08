@@ -237,6 +237,18 @@ $LMS = new LMS($DB, $AUTH, $CONFIG, $SYSLOG);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
+define('USER_AGENT', "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
+define('COOKIE_FILE', tempnam('/tmp', 'lms-sendinvoices-cookies-'));
+
+if (array_key_exists('test', $options)) {
+	$test = TRUE;
+	printf("WARNING! You are using test mode.\n");
+}
+
+$ch = curl_init();
+if (!$ch)
+	die("Fatal error: Can't init curl library!\n");
+
 $query = "SELECT d.id, d.number, d.cdate, c.email, d.name, d.customerid, n.template 
 		FROM documents d 
 		LEFT JOIN customers c ON c.id = d.customerid 
@@ -247,20 +259,7 @@ $query = "SELECT d.id, d.number, d.cdate, c.email, d.name, d.customerid, n.templ
 		. " ORDER BY d.number";
 $docs = $DB->GetAll($query);
 
-define('USER_AGENT', "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
-define('COOKIE_FILE', tempnam('/tmp', 'lms-sendinvoices-cookies-'));
-
-$ch = curl_init();
-if (!$ch)
-	die("Fatal error: Can't init curl library!\n");
-
-if (!empty($docs))
-{
-	if (array_key_exists('test', $options))
-	{
-		$test = TRUE;
-		printf("WARNING! You are using test mode.\n");
-	}
+if (!empty($docs)) {
 	foreach ($docs as $doc) {
 		curl_setopt_array($ch, array(
 			CURLOPT_URL => $lms_url . '/?m=invoice&override=1&original=1&id=' . $doc['id']
@@ -311,6 +310,7 @@ if (!empty($docs))
 		}
 	}
 }
+
 curl_close($ch);
 
 unlink(COOKIE_FILE);
