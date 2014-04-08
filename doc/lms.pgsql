@@ -539,6 +539,8 @@ CREATE TABLE promotionassignments (
     tariffid integer    DEFAULT NULL
         REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
     data text           DEFAULT NULL,
+    optional smallint   DEFAULT 0 NOT NULL,
+    selectionid smallint DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT promotionassignments_promotionschemaid_key UNIQUE (promotionschemaid, tariffid)
 );
@@ -2046,4 +2048,4 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('userpanel', 'owner_stats', '0', '', 0),
 ('userpanel', 'default_categories', '1', '', 0);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014040400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014040700');
