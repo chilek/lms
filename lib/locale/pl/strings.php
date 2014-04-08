@@ -2786,4 +2786,10 @@ $_LANG['- unknown -'] = '- nieznana -';
 
 $_LANG['Hide toolbar from user interface. Default: false.'] = 'Ukryj górne menu w interfejsie użytkownika. Domyślnie: 0 (wyłączone).';
 $_LANG['Does this LMS have transaction log support (not opensource). Default: false.'] = 'Czy ta instalacja LMS posiada log transakcji (opcja nie opensource). Domyślnie: 0 (wyłączone).';
+
+$_LANG['Optional'] = 'Opcjonalna';
+$_LANG['Selection list'] = 'Lista wyboru';
+$_LANG['Check if tariff should be optional'] = 'Zaznacz, jeśli taryfa powinna być opcjonalna';
+$_LANG['Choose selection list'] = 'Wybierz listę wyboru';
+
 ?>
