@@ -5,31 +5,32 @@ AC_DEFUN([LOCATE_POSTGRESQL],
 [
     # Try to locate postgresql
     AC_PATH_PROGS(PG_CONFIG, pg_config)
-    if test -f "${PG_CONFIG}" ; then
-        PG_HOME=`${PG_CONFIG} --bindir | sed "s/\/bin$//"`
-    fi
 
     # If provided path try to use it
     AC_ARG_WITH(pgsql, AS_HELP_STRING([--with-pgsql=DIR], [enables use of PostgreSQL database (conflits with mysql, autodetection is run if DIR is not present)]),
     [
         if test "$withval" != "yes"  ;  then
-            PG_HOME="$withval"
-            if test ! -f "${PG_HOME}/bin/pg_config" ; then
-                AC_MSG_ERROR([Could not find your PostgreSQL installation in ${PG_HOME}])
+            PG_CONFIG="$withval"
+            if test ! -f "${PG_CONFIG}" ; then
+                AC_MSG_ERROR([Could not find your PostgreSQL pg_config binary in ${PG_CONFIG}])
             fi
         else
-            if test ! -f "${PG_HOME}/bin/pg_config" ; then
-                AC_MSG_ERROR([Could not find your PostgreSQL installation. You might need to use the --with-pgsql=DIR configure option])
+            if test ! -f "${PG_CONFIG}" ; then
+                AC_MSG_ERROR([Could not find your PostgreSQL installation (pg_config not detected). You might need to use the --with-pgsql=DIR configure option])
             fi
         fi
-        PG_CONFIG=${PG_HOME}/bin/pg_config
         with_pgsql=yes
     ])
 
-    # If we have pg_config then we have pgsql
-    if test -f "${PG_CONFIG}"; then
-        have_pgsql=yes
+    if test -f "${PG_CONFIG}" ; then
+        PG_INCLUDE=`${PG_CONFIG} --includedir`
+        if test -d "${PG_INCLUDE}" ; then
+            have_pgsql=yes
+        else
+            AC_MSG_ERROR([pg_config pointed on non existent directory. Yourr PostgreSQL installation may be broken or you might need to use the --with-pgsql=DIR configure option to point right pg_config])
+        fi
     fi
+    AM_CONDITIONAL([PGSQL], [test x$with_pgsql = xyes])
 ])
 
 
@@ -90,7 +91,6 @@ AC_DEFUN([SETUP_POSTGRESQL],
 
     AC_LANG_RESTORE
 
-    PG_INCLUDE=`${PG_CONFIG} --includedir` 
     CPPFLAGS="$CPPFLAGS -I${PG_INCLUDE} -Idbdrivers/pgsql"
     PG_VERSION=`${PG_CONFIG} --version`
 
@@ -112,10 +112,10 @@ AC_DEFUN([SETUP_POSTGRESQL],
     AC_LANG_RESTORE
 
     if test "$PG_LIBPQ" = "yes" ; then
-        AC_MSG_CHECKING(PostgreSQL in ${PG_HOME})
+        AC_MSG_CHECKING(PostgreSQL)
         AC_MSG_RESULT(ok)
     else
-        AC_MSG_CHECKING(PostgreSQL in ${PG_HOME})
+        AC_MSG_CHECKING(PostgreSQL)
         AC_MSG_RESULT(failed)
         LDFLAGS="$PGSQL_OLD_LDFLAGS"
         CPPFLAGS="$PGSQL_OLD_CPPFLAGS"
@@ -129,6 +129,8 @@ AC_DEFUN([SETUP_POSTGRESQL],
     CFLAGS="-DUSE_PGSQL $CFLAGS"
     AC_SUBST([DBDRIVER], [pgsql])
     AC_SUBST(PG_CONFIG)
+
+    lmsdefaultdriver=pgsql
 ])
 
 
@@ -157,14 +159,17 @@ AC_DEFUN([LOCATE_MYSQL],
             fi
         fi
         with_mysql=yes
+
     ])
 
-    # If we have pg_config then we have pgsql
     if test -f "${MYSQL_CONFIG}"; then
         MYSQL_INC_DIR=`$MYSQL_CONFIG --variable=pkgincludedir`
         MYSQL_LIB_DIR=`$MYSQL_CONFIG --variable=pkglibdir`
         have_mysql=yes;
     fi
+
+    AM_CONDITIONAL([MYSQL], [test x$with_mysql = xyes])
+
 ])
 
 
@@ -193,7 +198,11 @@ AC_DEFUN([SETUP_MYSQL],
     )
 
     CFLAGS="-DUSE_MYSQL $CFLAGS"
+    AC_MSG_CHECKING(MySQL)
+    AC_MSG_RESULT(ok)
     AC_SUBST([DBDRIVER], [mysql])
+
+    lmsdefaultdriver=mysql
 ])
 
 AC_DEFUN([MYSQL_LIB_CHK],

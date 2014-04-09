@@ -1,4 +1,6 @@
-noinst_LIBRARIES = libparser_extensions.a
+#noinst_LIBRARIES = libparser_extensions.a
+
+pkglib_LIBRARIES = libparser_extensions.a
 
 AM_CPPFLAGS = -I$(top_srcdir)/modules/parser/lib
 DEFAULT_INCLUDES =

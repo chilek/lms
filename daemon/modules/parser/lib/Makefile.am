@@ -1,4 +1,4 @@
-noinst_LIBRARIES = libtscript.a
+pkglib_LIBRARIES = libtscript.a
 
 
 BUILT_SOURCES = tscript_parser.h tscript_lexical.c

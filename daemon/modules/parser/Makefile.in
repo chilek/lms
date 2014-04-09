@@ -91,7 +91,8 @@ am__uninstall_files_from_dir = { \
   }
 am__installdirs = "$(DESTDIR)$(pkglibdir)"
 LTLIBRARIES = $(pkglib_LTLIBRARIES)
-parser_la_LIBADD =
+parser_la_DEPENDENCIES = lib/libtscript.a \
+	extensions/libparser_extensions.a
 am_parser_la_OBJECTS = parser_la-parser.lo
 parser_la_OBJECTS = $(am_parser_la_OBJECTS)
 parser_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -268,7 +269,6 @@ infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
-lmslibdir = @lmslibdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
 mandir = @mandir@
@@ -291,6 +291,7 @@ pkglib_LTLIBRARIES = parser.la
 parser_la_SOURCES = parser.c lib/libtscript.a extensions/tscript_extensions.a
 parser_la_LDFLAGS = -no-undefined -module -avoid-version -flm -lfl
 parser_la_CFLAGS = -Ilib
+parser_la_LIBADD = lib/libtscript.a extensions/libparser_extensions.a
 all: all-recursive
 
 .SUFFIXES:
@@ -304,9 +305,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu modules/parser/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign modules/parser/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu modules/parser/Makefile
+	  $(AUTOMAKE) --foreign modules/parser/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \

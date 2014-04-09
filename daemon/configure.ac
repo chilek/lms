@@ -1,8 +1,8 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.67])
-AC_INIT([lmsd], [1.11], [http://bts.lms.org.pl/])
+AC_PREREQ([2.69])
+AC_INIT([lmsd],[1.11],[http://bts.lms.org.pl/])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR([lmsd.c])
 AM_INIT_AUTOMAKE(lmsd, 2.6)
@@ -11,6 +11,9 @@ AC_CANONICAL_HOST
 AC_PREFIX_DEFAULT([/usr/local/lmsd])
 
 AC_CONFIG_FILES(Makefile
+                dbdrivers/Makefile
+                dbdrivers/mysql/Makefile
+                dbdrivers/postgres/Makefile
                 modules/Makefile
                 modules/parser/Makefile
                 modules/parser/lib/Makefile
@@ -47,6 +50,7 @@ AC_PROG_YACC
 
 AC_PROG_CC
 AC_PROG_LIBTOOL
+AC_PROG_MKDIR_P
 
 # Checks for libraries.
 #AC_CHECK_LIB([pq], [PQconnectdb], [have_pgsql=yes])
@@ -74,15 +78,12 @@ LOCATE_MYSQL
 LOCATE_POSTGRESQL
 LOCATE_SNMP
 
-echo "m $have_mysql p $have_pgsql"
+# Second detected database will be used as default (LMS_DEFAULT_DRIVER).
+AS_IF([test "x$with_pgsql" = "xyes" -o "x$have_pgsql" = "xyes" ], [SETUP_POSTGRESQL])
+AS_IF([test "x$with_mysql" = "xyes" -o "x$have_mysql" = "xyes"],  [SETUP_MYSQL])
 
-AS_IF([test "x$with_mysql" = "xyes" && test "x$with_pgsql" = "xyes"], AC_MSG_ERROR([You can use mysql or postgresql. You can not use both]),
-      [test "x$with_mysql" = "xyes" ], [SETUP_MYSQL],
-      [test "x$with_pgsql" = "xyes" ], [SETUP_POSTGRESQL],
-      [test "x$have_mysql" = "xyes" ], [SETUP_MYSQL],
-      [test "x$have_pgsql" = "xyes" ], [SETUP_POSTGRESQL],
-      AC_MSG_ERROR([Database include files not found. Try to use --with-mysql or --with-pgsql])
-)
+AS_IF([test "x$have_mysql" != "xyes" -a "x$have_pgsql" != "xyes"],
+      AC_MSG_ERROR([Database include files not found. Try to use --with-mysql or --with-pgsql]))
 
 SETUP_SNMP
 SETUP_LIBGADU
@@ -113,14 +114,9 @@ AC_ARG_ENABLE([debug0],
     AS_HELP_STRING([--enable-debug0], [SQL query logging (disabled)]))
 AC_ARG_ENABLE([debug1],
     AS_HELP_STRING([--enable-debug1], [events logging (disabled)]))
-AC_ARG_WITH(lmslibdir,
-    [AC_HELP_STRING([--with-lmslibdir=DIR], [sets location of target LMS modules (PREFIX/lms/lib)])],
-    [lmslibdir="$withval"],
-    [lmslibdir=$ac_default_prefix/lib/lms]
-)
-AC_SUBST(lmslibdir)
 
-CFLAGS="$CFLAGS -DLMS_LIB_DIR=\\\"$lmslibdir\\\""
+
+CFLAGS="$CFLAGS -DLMS_LIB_DIR=\\\"$libdir/lmsd\\\" -DLMS_DEFAULT_DRIVER=\\\"$lmsdefaultdriver\\\" -DLMS_CONF_DIR=\\\"$sysconfdir/lms\\\""
 
 AC_MSG_NOTICE([**********************************])
 AC_MSG_NOTICE([Host os: $host_os])

@@ -28,7 +28,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "db.h"
+#include "mysql.h"
 #include "../../util.h"
 
 /* Private function for SELECT query result fetching */
@@ -466,4 +466,21 @@ int db_ncols(QueryHandle *query)
 	    return query->ncols;
     else
 	    return 0;
+}
+
+// concat strings specific to mysql
+char * db_concat(int cnt, ...)
+{
+    const char prefix[] = "CONCAT(";
+    const char suffix[] = ")";
+    va_list vs;
+    va_start(vs, cnt);
+    char * body = va_list_join(cnt, ", ", vs);
+    va_end(vs);
+
+    char * result = malloc(strlen(body) + strlen(prefix) + strlen(suffix));
+    sprintf(result, "%s%s%s", body, prefix, suffix);
+
+    free(body);
+    return result;
 }

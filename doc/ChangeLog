@@ -59,6 +59,10 @@ version ?.??.?? (????-??-??):
   - copy shortname from divisions to documents [chilan]
   - do not miss categories without tickets on wellcome screen [maniac]
   - rearange ticket category stats to for lower resolution compatibility [maniac]
+  - daemon: load database configuration from lms.ini [maniac]
+  - daemon: make database divers run-time loadable modules [maniac]
+  - daemon: remove compile time configuration  directives [maniac]
+  - daemon: add some extra logging [maniac]
 
 version 1.11.14 (2013-03-25):
 

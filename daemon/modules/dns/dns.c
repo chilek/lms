@@ -300,6 +300,8 @@ void reload(GLOBAL *g, struct dns_module *dns)
 
             if (!forwardzone) forwardzone = load_file(dns->fgeneric);
             if (!reversezone) reversezone = load_file(dns->rgeneric);
+            if (!forwardzone) syslog(LOG_WARNING, "[%s/dns] Unable to open file '%s'.", dns->base.instance, dns->fgeneric);
+            if (!forwardzone) syslog(LOG_WARNING, "[%s/dns] Unable to open file '%s'.", dns->base.instance, dns->rgeneric);
 
             free(finfile);
             free(rinfile);
@@ -423,6 +425,7 @@ void reload(GLOBAL *g, struct dns_module *dns)
                     syslog(LOG_WARNING, "[%s/dns] Unable to open output forward zone file '%s' for domain '%s', skipping forward zone for this domain.", dns->base.instance, finfile, name);
                 }
                 else if (!domainmatch) {
+                    syslog(LOG_INFO, "[%s/dns] Created forward zone file '%s' for domain '%s'.", dns->base.instance, finfile, name);
                     char *zone, *tmpconf;
                     zone = strdup(dns->confforward);
                     g->str_replace(&zone, "%n", name);
@@ -440,6 +443,7 @@ void reload(GLOBAL *g, struct dns_module *dns)
                     syslog(LOG_WARNING, "[%s/dns] Unable to open output reverse zone file '%s' for domain '%s', skipping reverse zone for this domain.", dns->base.instance, rinfile, name);
                 }
                 else if (!reversematch) {
+                    syslog(LOG_INFO, "[%s/dns] Created reverse zone file '%s' for domain '%s'.", dns->base.instance, rinfile, name);
                     char *zone, *tmpconf;
                     zone = strdup(dns->confreverse);
                     g->str_replace(&zone, "%n", name);
@@ -534,15 +538,15 @@ struct dns_module * init(GLOBAL *g, MODULE *m)
 
     dns->fpatterns = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "forward-patterns", "forward"));
     dns->rpatterns = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "reverse-patterns", "reverse"));
-    dns->fgeneric = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "generic-forward", "modules/dns/sample/forward/generic"));
-    dns->rgeneric = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "generic-reverse", "modules/dns/sample/reverse/generic"));
-    dns->fzones = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "forward-zones", "modules/dns/sample/out/forward"));
-    dns->rzones = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "reverse-zones", "modules/dns/sample/out/reverse"));
+    dns->fgeneric = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "generic-forward", LMS_CONF_DIR "/daemon/dns/sample/forward/generic"));
+    dns->rgeneric = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "generic-reverse", LMS_CONF_DIR "/daemon/dns/sample/reverse/generic"));
+    dns->fzones = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "forward-zones", LMS_CONF_DIR "/daemon/dns/sample/out/forward"));
+    dns->rzones = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "reverse-zones", LMS_CONF_DIR "/daemon/dns/sample/out/reverse"));
     dns->forward = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "host-forward", "%n IN A %i\n"));
     dns->reverse= strdup(g->config_getstring(dns->base.ini, dns->base.instance, "host-reverse", "%c IN PTR %n.%d.\n"));
     dns->command = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "command", ""));
-    dns->confpattern = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "conf-pattern", "modules/dns/sample/named.conf"));
-    dns->confout = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "conf-output", "/tmp/named.conf"));
+    dns->confpattern = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "conf-pattern", LMS_CONF_DIR "/daemon/dns/sample/named.conf"));
+    dns->confout = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "conf-output", "/tmp/named.conf"));   // FIXME: shoud be created with random file name
     dns->confforward = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "conf-forward-entry", "zone \"%n\" {\ntype master;\nfile \"forward/%n\";\nnotify yes;\n};\n"));
     dns->confreverse = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "conf-reverse-entry", "zone \"%c.in-addr.arpa\" {\ntype master;\nfile \"reverse/%c\";\nnotify yes;\n};\n"));
     dns->networks = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "networks", ""));

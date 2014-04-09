@@ -51,7 +51,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-subdir = modules/hostfile
+subdir = dbdrivers/postgres
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
@@ -91,12 +91,12 @@ am__uninstall_files_from_dir = { \
   }
 am__installdirs = "$(DESTDIR)$(pkglibdir)"
 LTLIBRARIES = $(pkglib_LTLIBRARIES)
-hostfile_la_LIBADD =
-am_hostfile_la_OBJECTS = hostfile.lo
-hostfile_la_OBJECTS = $(am_hostfile_la_OBJECTS)
-hostfile_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
+postgres_la_LIBADD =
+am_postgres_la_OBJECTS = postgres.lo
+postgres_la_OBJECTS = $(am_postgres_la_OBJECTS)
+postgres_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
-	$(hostfile_la_LDFLAGS) $(LDFLAGS) -o $@
+	$(postgres_la_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -110,8 +110,8 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(hostfile_la_SOURCES)
-DIST_SOURCES = $(hostfile_la_SOURCES)
+SOURCES = $(postgres_la_SOURCES)
+DIST_SOURCES = $(postgres_la_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -247,9 +247,11 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-pkglib_LTLIBRARIES = hostfile.la
-hostfile_la_SOURCES = hostfile.c
-hostfile_la_LDFLAGS = -no-undefined -module -avoid-version
+
+#if PGSQL
+pkglib_LTLIBRARIES = postgres.la
+postgres_la_SOURCES = postgres.c
+postgres_la_LDFLAGS = -no-undefined -module -avoid-version
 all: all-am
 
 .SUFFIXES:
@@ -263,9 +265,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign modules/hostfile/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign dbdrivers/postgres/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign modules/hostfile/Makefile
+	  $(AUTOMAKE) --foreign dbdrivers/postgres/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -316,8 +318,8 @@ clean-pkglibLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-hostfile.la: $(hostfile_la_OBJECTS) $(hostfile_la_DEPENDENCIES) $(EXTRA_hostfile_la_DEPENDENCIES) 
-	$(hostfile_la_LINK) -rpath $(pkglibdir) $(hostfile_la_OBJECTS) $(hostfile_la_LIBADD) $(LIBS)
+postgres.la: $(postgres_la_OBJECTS) $(postgres_la_DEPENDENCIES) $(EXTRA_postgres_la_DEPENDENCIES) 
+	$(postgres_la_LINK) -rpath $(pkglibdir) $(postgres_la_OBJECTS) $(postgres_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -325,7 +327,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hostfile.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/postgres.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -560,6 +562,7 @@ uninstall-am: uninstall-pkglibLTLIBRARIES
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	tags uninstall uninstall-am uninstall-pkglibLTLIBRARIES
 
+#endif
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

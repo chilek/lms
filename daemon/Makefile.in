@@ -71,8 +71,7 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_lmsd_OBJECTS = util.$(OBJEXT) cronparse.$(OBJEXT) cron.$(OBJEXT) \
-	dictionary.$(OBJEXT) config.$(OBJEXT) lmsd.$(OBJEXT) \
-	db.$(OBJEXT)
+	dictionary.$(OBJEXT) config.$(OBJEXT) lmsd.$(OBJEXT)
 lmsd_OBJECTS = $(am_lmsd_OBJECTS)
 lmsd_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I.@am__isrc@
@@ -260,7 +259,6 @@ infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
-lmslibdir = @lmslibdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
 mandir = @mandir@
@@ -280,8 +278,8 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = modules
-lmsd_SOURCES = util.c cron/cronparse.c cron/cron.c config/dictionary.c config/config.c lmsd.c dbdrivers/@DBDRIVER@/db.c
+SUBDIRS = modules dbdrivers
+lmsd_SOURCES = util.c cron/cronparse.c cron/cron.c config/dictionary.c config/config.c lmsd.c
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -395,7 +393,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/config.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cron.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cronparse.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/db.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dictionary.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lmsd.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util.Po@am__quote@
@@ -476,20 +473,6 @@ config.obj: config/config.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='config/config.c' object='config.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o config.obj `if test -f 'config/config.c'; then $(CYGPATH_W) 'config/config.c'; else $(CYGPATH_W) '$(srcdir)/config/config.c'; fi`
-
-db.o: dbdrivers/@DBDRIVER@/db.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT db.o -MD -MP -MF $(DEPDIR)/db.Tpo -c -o db.o `test -f 'dbdrivers/@DBDRIVER@/db.c' || echo '$(srcdir)/'`dbdrivers/@DBDRIVER@/db.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/db.Tpo $(DEPDIR)/db.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dbdrivers/@DBDRIVER@/db.c' object='db.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o db.o `test -f 'dbdrivers/@DBDRIVER@/db.c' || echo '$(srcdir)/'`dbdrivers/@DBDRIVER@/db.c
-
-db.obj: dbdrivers/@DBDRIVER@/db.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT db.obj -MD -MP -MF $(DEPDIR)/db.Tpo -c -o db.obj `if test -f 'dbdrivers/@DBDRIVER@/db.c'; then $(CYGPATH_W) 'dbdrivers/@DBDRIVER@/db.c'; else $(CYGPATH_W) '$(srcdir)/dbdrivers/@DBDRIVER@/db.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/db.Tpo $(DEPDIR)/db.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dbdrivers/@DBDRIVER@/db.c' object='db.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o db.obj `if test -f 'dbdrivers/@DBDRIVER@/db.c'; then $(CYGPATH_W) 'dbdrivers/@DBDRIVER@/db.c'; else $(CYGPATH_W) '$(srcdir)/dbdrivers/@DBDRIVER@/db.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

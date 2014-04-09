@@ -3,14 +3,9 @@
 
 #include "tscript_context.h"
 
-#ifdef USE_PGSQL
-#include "../../../dbdrivers/pgsql/db.h"
-#endif
-#ifdef USE_MYSQL
-#include "../../../dbdrivers/mysql/db.h"
-#endif
+#include "../../../lmsd.h"
 
-void tscript_ext_sql_init(tscript_context *, ConnHandle *);
+void tscript_ext_sql_init(tscript_context *, GLOBAL *);
 void tscript_ext_sql_close(tscript_context *);
 
 #define CUSTOMERS "SELECT customers.id AS id, customers.lastname AS lastname, \

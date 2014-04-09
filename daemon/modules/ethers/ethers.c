@@ -129,14 +129,13 @@ void reload(GLOBAL *g, struct ethers_module *fm)
 				}
 				g->db_free(&res1);
 			}
-				
 			if( j!=nc && (gc==0 || m!=gc) )
 			{
 				if( atoi(g->db_get_data(res,i,"access")) )
-					fprintf(fh, "%s\t%s\n", g->db_get_data(res,i,"mac"), inet_ntoa(inet_makeaddr(htonl(inet), 0)));
+					fprintf(fh, "%s\t%s\n", g->db_get_data(res,i,"mac"), inet_ntoa(inet_makeaddr(htonl(inet), 0))); 
 				else
 					if( fm->dummy_macs )
-						fprintf(fh, "00:00:00:00:00:00\t%s\n", inet_ntoa(inet_makeaddr(htonl(inet), 0)));	
+						fprintf(fh, "00:00:00:00:00:00\t%s\n", inet_ntoa(inet_makeaddr(htonl(inet), 0)));
 			}
 		}
 

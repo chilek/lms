@@ -1,7 +1,7 @@
 /* $Id$ */
 
-#ifndef _DB_H_
-#define _DB_H_
+#ifndef _DB_MYSQL_H_
+#define _DB_MYSQL_H_
 
 #include <mysql/mysql.h>
 #include <mysql/mysqld_error.h>
@@ -73,20 +73,17 @@ QueryHandle * db_query(ConnHandle *, char *);
 /* Prepares and executes SELECT query. Returns handle to query results. */
 QueryHandle * db_pquery(ConnHandle *, char *, ...);
 
+/* Free memory allocated in db_query() */
+void db_free(QueryHandle **);
+
 /* Executes UPDATE, INSERT, DELETE query. Returns number of affected rows */
 int db_exec(ConnHandle *, char *);
 
 /* Preparse and executes UPDATE, INSERT, DELETE query. Returns number of affected rows */
 int db_pexec(ConnHandle *, char *, ...);
 
-/* Escapes a string for use within an SQL command. Returns allocated string */
-char *db_escape(ConnHandle *, const char *);
-
 /* Gets last insert id. Returns int. */
 int db_last_insert_id(ConnHandle *, const char *);
-
-/* Free memory allocated in db_query() and etc */
-void db_free(QueryHandle **);
 
 /* Begin transaction */
 int db_begin(ConnHandle *);
@@ -100,11 +97,17 @@ int db_abort(ConnHandle *);
 /* Get string data from query results. Params: handle, row number, column name. */
 char * db_get_data(QueryHandle *, int, const char *);
 
+/* Escaping strings for use within an SQL command. Returns allocated string */
+char * db_escape(ConnHandle *, const char *);
+
 /* Get number of rows and cols */
 int db_nrows(QueryHandle *);
 int db_ncols(QueryHandle *);
 
 /* Get column name */
 char * db_colname(QueryHandle *, int);
+
+// concat strings specific to mysql
+char * db_concat(int cnt, ...);
 
 #endif

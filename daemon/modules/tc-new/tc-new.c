@@ -159,11 +159,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 			"t.upceil AS upceil, t.climit AS climit, t.plimit AS plimit, "
 			"n.id, n.ownerid, n.name, INET_NTOA(n.ipaddr) AS ip, n.mac, "
 			"na.assignmentid, "
-#ifdef USE_PGSQL
-			"TRIM(c.lastname || ' ' || c.name) AS customer "
-#else
-			"TRIM(CONCAT(c.lastname, ' ', c.name)) AS customer "
-#endif
+			"TRIM(%cfullname) AS customer "
 		"FROM nodeassignments na "
 		"JOIN assignments a ON (na.assignmentid = a.id) "
 		"JOIN tariffs t ON (a.tariffid = t.id) "
@@ -177,6 +173,10 @@ void reload(GLOBAL *g, struct tc_module *tc)
 			"AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0) "
 			"%groups"
 		"ORDER BY a.customerid, a.id");
+
+        char * cfullname = g->db_concat(3, "c.lastname", "' '", "c.name");
+        g->str_replace(&query, "%cfullname", cfullname);
+        free(cfullname);
 
 	if (night)
 	{

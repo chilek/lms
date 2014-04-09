@@ -6,15 +6,13 @@
 #include "cron/cron.h"
 #include "config/config.h"
 
-#ifdef USE_PGSQL
-#include "dbdrivers/pgsql/db.h"
-#endif
-#ifdef USE_MYSQL
-#include "dbdrivers/mysql/db.h"
-#endif
+typedef struct dictionary Config;
 
 #define APIVERSION 5
 #define PROGNAME "lmsd"
+
+typedef void (*ConnHandle)();
+typedef void (*QueryHandle)();
 
 struct global
 {
@@ -36,6 +34,9 @@ struct global
 	int (*db_nrows)(QueryHandle *);
 	int (*db_ncols)(QueryHandle *);
 	char * (*db_get_data)(QueryHandle *, int, const char *);
+	char * (*db_concat)(int cnt, ...);
+	char * (*db_escape)(ConnHandle *, const char *);
+	char * (*db_colname)(QueryHandle *, int);
 
 	// config  functions
 	char * (*config_getstring)(Config *, char *, char *, char *);
@@ -49,6 +50,8 @@ struct global
 	char * (*str_concat)(const char *, const char *);
 	char * (*str_upc)(const char *);
 	char * (*str_lwc)(const char *);
+	char * (*va_list_join)(int cnt, char * delim, va_list vl);
+
 };
 
 struct lmsd_module
