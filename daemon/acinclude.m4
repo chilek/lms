@@ -142,7 +142,7 @@ AC_DEFUN([LOCATE_MYSQL],
     AC_PATH_PROGS(MYSQL_CONFIG, mysql_config)
 
     AC_ARG_WITH(mysql,
-                AC_HELP_STRING([--with-mysql=PATH],[path to mysql_config binary [[/usr/bin/mysql_config]]]),
+                AC_HELP_STRING([--with-mysql=PATH],[path to mysql_config binary [/usr/bin/mysql_config]]),
     [
         # We have to use MySQL
         if test "$withval" != "yes"  ;  then               # If provided path to MySQL use it
@@ -161,8 +161,8 @@ AC_DEFUN([LOCATE_MYSQL],
 
     # If we have pg_config then we have pgsql
     if test -f "${MYSQL_CONFIG}"; then
-        MYSQL_INC_DIR=`$MYSQL_CONFIG --variable=pkgincludedir`
-        MYSQL_LIB_DIR=`$MYSQL_CONFIG --variable=pkglibdir`
+        MYSQL_INC=`$MYSQL_CONFIG --include`
+        MYSQL_LIB=`$MYSQL_CONFIG --libs`
         have_mysql=yes;
     fi
 ])
@@ -174,19 +174,12 @@ AC_DEFUN([LOCATE_MYSQL],
 ##################################################
 AC_DEFUN([SETUP_MYSQL],
 [
-    for i in $MYSQL_DIR /usr/lib/x86_64-linux-gnu/ /usr /usr/local /opt /opt/mysql /usr/pkg /usr/local/mysql; do
-        MYSQL_LIB_CHK($i/lib64)
-        MYSQL_LIB_CHK($i/lib64/mysql)
-        MYSQL_LIB_CHK($i/lib)
-        MYSQL_LIB_CHK($i/lib/mysql)
-    done
-
-    if test -z "$MYSQL_LIB_DIR"; then
+    if test -z "$MYSQL_LIB"; then
         AC_MSG_ERROR(Cannot find MySQL library)
     fi
 
-    LDFLAGS="-L$MYSQL_LIB_DIR $LDFLAGS"
-    CPPFLAGS="-I$MYSQL_INC_DIR $CPPFLAGS"
+    LDFLAGS="$MYSQL_LIB $LDFLAGS"
+    CPPFLAGS="$MYSQL_INC $CPPFLAGS"
 
     AC_CHECK_LIB(mysqlclient_r ,mysql_init, LIBS="-lmysqlclient_r $LIBS",
       AC_MSG_ERROR([MySQL libraries not found])
@@ -195,17 +188,6 @@ AC_DEFUN([SETUP_MYSQL],
     CFLAGS="-DUSE_MYSQL $CFLAGS"
     AC_SUBST([DBDRIVER], [mysql])
 ])
-
-AC_DEFUN([MYSQL_LIB_CHK],
-  [ str="$1/libmysqlclient_r.*"
-    for j in `echo $str`; do
-      if test -r $j; then
-        MYSQL_LIB_DIR=$1
-        break 2
-      fi
-    done
-  ]
-)
 
 
 ############################

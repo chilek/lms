@@ -1437,8 +1437,7 @@ Optional Packages:
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
   --with-sysroot=DIR Search for dependent libraries within DIR
                         (or the compiler's sysroot if not specified).
-  --with-mysql=PATH       path to mysql_config binary
-                          [[/usr/bin/mysql_config]]
+  --with-mysql=PATH       path to mysql_config binary [/usr/bin/mysql_config]
   --with-pgsql=DIR        enables use of PostgreSQL database (conflits with
                           mysql, autodetection is run if DIR is not present)
   --with-snmp=DIR         SNMP include base directory [[/usr/(local/)include]]
@@ -16921,8 +16920,8 @@ fi
 
     # If we have pg_config then we have pgsql
     if test -f "${MYSQL_CONFIG}"; then
-        MYSQL_INC_DIR=`$MYSQL_CONFIG --variable=pkgincludedir`
-        MYSQL_LIB_DIR=`$MYSQL_CONFIG --variable=pkglibdir`
+        MYSQL_INC=`$MYSQL_CONFIG --include`
+        MYSQL_LIB=`$MYSQL_CONFIG --libs`
         have_mysql=yes;
     fi
 
@@ -17071,57 +17070,16 @@ fi
 
 
 
-echo "m $have_mysql p $have_pgsql"
-
 if test "x$with_mysql" = "xyes" && test "x$with_pgsql" = "xyes"; then :
   as_fn_error $? "You can use mysql or postgresql. You can not use both" "$LINENO" 5
 elif test "x$with_mysql" = "xyes" ; then :
 
-    for i in $MYSQL_DIR /usr/lib/x86_64-linux-gnu/ /usr /usr/local /opt /opt/mysql /usr/pkg /usr/local/mysql; do
-         str="$i/lib64/libmysqlclient_r.*"
-    for j in `echo $str`; do
-      if test -r $j; then
-        MYSQL_LIB_DIR=$i/lib64
-        break 2
-      fi
-    done
-
-
-         str="$i/lib64/mysql/libmysqlclient_r.*"
-    for j in `echo $str`; do
-      if test -r $j; then
-        MYSQL_LIB_DIR=$i/lib64/mysql
-        break 2
-      fi
-    done
-
-
-         str="$i/lib/libmysqlclient_r.*"
-    for j in `echo $str`; do
-      if test -r $j; then
-        MYSQL_LIB_DIR=$i/lib
-        break 2
-      fi
-    done
-
-
-         str="$i/lib/mysql/libmysqlclient_r.*"
-    for j in `echo $str`; do
-      if test -r $j; then
-        MYSQL_LIB_DIR=$i/lib/mysql
-        break 2
-      fi
-    done
-
-
-    done
-
-    if test -z "$MYSQL_LIB_DIR"; then
+    if test -z "$MYSQL_LIB"; then
         as_fn_error $? "Cannot find MySQL library" "$LINENO" 5
     fi
 
-    LDFLAGS="-L$MYSQL_LIB_DIR $LDFLAGS"
-    CPPFLAGS="-I$MYSQL_INC_DIR $CPPFLAGS"
+    LDFLAGS="$MYSQL_LIB $LDFLAGS"
+    CPPFLAGS="$MYSQL_INC $CPPFLAGS"
 
     as_ac_Lib=`$as_echo "ac_cv_lib_mysqlclient_r ''_mysql_init" | $as_tr_sh`
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for mysql_init in -lmysqlclient_r " >&5
@@ -17447,51 +17405,12 @@ $as_echo "failed" >&6; }
 
 elif test "x$have_mysql" = "xyes" ; then :
 
-    for i in $MYSQL_DIR /usr/lib/x86_64-linux-gnu/ /usr /usr/local /opt /opt/mysql /usr/pkg /usr/local/mysql; do
-         str="$i/lib64/libmysqlclient_r.*"
-    for j in `echo $str`; do
-      if test -r $j; then
-        MYSQL_LIB_DIR=$i/lib64
-        break 2
-      fi
-    done
-
-
-         str="$i/lib64/mysql/libmysqlclient_r.*"
-    for j in `echo $str`; do
-      if test -r $j; then
-        MYSQL_LIB_DIR=$i/lib64/mysql
-        break 2
-      fi
-    done
-
-
-         str="$i/lib/libmysqlclient_r.*"
-    for j in `echo $str`; do
-      if test -r $j; then
-        MYSQL_LIB_DIR=$i/lib
-        break 2
-      fi
-    done
-
-
-         str="$i/lib/mysql/libmysqlclient_r.*"
-    for j in `echo $str`; do
-      if test -r $j; then
-        MYSQL_LIB_DIR=$i/lib/mysql
-        break 2
-      fi
-    done
-
-
-    done
-
-    if test -z "$MYSQL_LIB_DIR"; then
+    if test -z "$MYSQL_LIB"; then
         as_fn_error $? "Cannot find MySQL library" "$LINENO" 5
     fi
 
-    LDFLAGS="-L$MYSQL_LIB_DIR $LDFLAGS"
-    CPPFLAGS="-I$MYSQL_INC_DIR $CPPFLAGS"
+    LDFLAGS="$MYSQL_LIB $LDFLAGS"
+    CPPFLAGS="$MYSQL_INC $CPPFLAGS"
 
     as_ac_Lib=`$as_echo "ac_cv_lib_mysqlclient_r ''_mysql_init" | $as_tr_sh`
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for mysql_init in -lmysqlclient_r " >&5
