@@ -65,6 +65,7 @@ version ?.??.?? (????-??-??):
   - minimal supported version of postgresql is now 8.4 [maniac]
   - simplified installation procedure - UI loads schema if there are no tables in db [maniac]
   - optional and selectable components of promotion schemas [chilan]
+  - daemon: fixed mysql 5.1 detection in configure [maniac]
 
 version 1.11.14 (2013-03-25):
 
