@@ -30,7 +30,7 @@ $type = check_conf('userpanel.invoice_duplicate') ? trans('DUPLICATE') : trans('
 
 if(strtolower($CONFIG['invoices']['type']) == 'pdf')
 {
-    include('invoice_tcpdf.php');
+    include('invoice_pdf.php');
     die;
 }
 
@@ -41,7 +41,18 @@ if(isset($CONFIG['invoices']['attachment_name']) && $CONFIG['invoices']['attachm
 $SMARTY->assign('css', file($CONFIG['directories']['sys_dir'].'/img/style_print.css')); 
 
 // use LMS templates directory
-$SMARTY->template_dir = !isset($CONFIG['directories']['smarty_templates_dir']) ? $CONFIG['directories']['sys_dir'].'/templates' : $CONFIG['directories']['smarty_templates_dir'];
+define('SMARTY_TEMPLATES_DIR', !isset($CONFIG['directories']['smarty_templates_dir']) ? $CONFIG['directories']['sys_dir'].'/templates' : $CONFIG['directories']['smarty_templates_dir']);
+$SMARTY->setTemplateDir(null);
+$custom_templates_dir = get_conf('phpui.custom_templates_dir');
+if (!empty($custom_templates_dir) && file_exists(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir)
+	&& !is_file(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir))
+	$SMARTY->AddTemplateDir(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir);
+$SMARTY->AddTemplateDir(
+	array(
+		SMARTY_TEMPLATES_DIR . '/default',
+		SMARTY_TEMPLATES_DIR,
+	)
+);
 
 // handle multi-invoices print
 if(!empty($_POST['inv']))

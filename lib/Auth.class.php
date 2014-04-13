@@ -31,6 +31,7 @@ class Auth {
 	var $logname;
 	var $passwd;
 	var $islogged = FALSE;
+	var $nousers = FALSE;
 	var $passverified = FALSE;
 	var $hostverified = FALSE;
 	var $access = FALSE;
@@ -83,6 +84,7 @@ class Auth {
 		elseif ($this->DB->GetOne('SELECT COUNT(id) FROM users') == 0)
 		{
 			$this->islogged = TRUE;
+			$this->nousers = TRUE;
 			$_GET['m'] = 'useradd';
 			return TRUE;
 		}

@@ -43,21 +43,6 @@
 					<TD style="width: 99%; white-space: nowrap;" id="livetraffic">
 					</TD>
 				</TR>
-				<SCRIPT TYPE="text/javascript">
-				<!--
-					function live_traffic_start() {
-						xajax.config.waitCursor = false;
-						xajax_getThroughput('{$nodeip}');
-					}
-
-					function live_traffic_finished() {
-						xajax.config.waitCursor = true;
-						setTimeout("live_traffic_start()", 3000);
-					}
-
-					live_traffic_start();
-				//-->
-				</SCRIPT>
 				{/if}
 			</TABLE>
 		</TD>

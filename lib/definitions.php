@@ -59,11 +59,13 @@ define('MSG_DRAFT', 4);
 define('MSG_MAIL', 1);
 define('MSG_SMS', 2);
 define('MSG_ANYSMS', 3);
+define('MSG_WWW', 4);
 
 // Template types
 define('TMPL_WARNING', 1);
 define('TMPL_MAIL', 2);
 define('TMPL_SMS', 3);
+define('TMPL_WWW', 4);
 
 // Account types
 define('ACCOUNT_SHELL', 1);
@@ -80,34 +82,34 @@ define('DOC_CNOTE', 3);
 define('DOC_DNOTE', 5);
 define('DOC_INVOICE_PRO',6);
 define('DOC_INVOICE_PURCHASE',7);
-define('DOC_BILLING',8);
 
 define('DOC_CONTRACT', -1);
 define('DOC_ANNEX', -2);
 define('DOC_PROTOCOL', -3);
 define('DOC_ORDER', -4);
 define('DOC_SHEET', -5);
-define('DOC_OTHER', -10);
+define('DOC_OTHER', -128);
+define('DOC_BILLING',-10);
 
 $DOCTYPES = array(
-    DOC_BILLING		=>	trans('billing'),
-    DOC_INVOICE 	=>	trans('invoice'),
-    DOC_INVOICE_PRO	=>	trans('pro-forma invoice'),
-    DOC_INVOICE_PURCHASE =>	trans('purchase invoice'),
-    DOC_RECEIPT 	=>	trans('cash receipt'),
-    DOC_CNOTE	    =>	trans('credit note'), // faktura korygujaca
-//    DOC_CMEMO	    =>	trans('credit memo'), // nota korygujaca
-    DOC_DNOTE	    =>	trans('debit note'), // nota obciazeniowa/debetowa/odsetkowa
-    DOC_CONTRACT	=>	trans('contract'),
-    DOC_ANNEX	    =>	trans('annex'),
-    DOC_PROTOCOL	=>	trans('protocol'),
-    DOC_ORDER       =>	trans('order'),
-    DOC_SHEET       =>	trans('customer sheet'), // karta klienta 
-    -6  =>	trans('contract termination'),
-    -7  =>	trans('payments book'), // ksiazeczka oplat
-    -8  =>	trans('payment summons'), // wezwanie do zapłaty
-    -9	=>	trans('payment pre-summons'), // przedsądowe wezw. do zapłaty
-    DOC_OTHER       =>	trans('other'),
+    DOC_BILLING         =>      trans('billing'),
+    DOC_INVOICE         =>      trans('invoice'),
+    DOC_INVOICE_PRO     =>      trans('pro-forma invoice'),
+    DOC_INVOICE_PURCHASE =>     trans('purchase invoice'),
+    DOC_RECEIPT         =>      trans('cash receipt'),
+    DOC_CNOTE       =>  trans('credit note'), // faktura korygujaca
+//    DOC_CMEMO     =>  trans('credit memo'), // nota korygujaca
+    DOC_DNOTE       =>  trans('debit note'), // nota obciazeniowa/debetowa/odsetkowa
+    DOC_CONTRACT        =>      trans('contract'),
+    DOC_ANNEX       =>  trans('annex'),
+    DOC_PROTOCOL        =>      trans('protocol'),
+    DOC_ORDER       =>  trans('order'),
+    DOC_SHEET       =>  trans('customer sheet'), // karta klienta
+    -6  =>      trans('contract termination'),
+    -7  =>      trans('payments book'), // ksiazeczka oplat
+    -8  =>      trans('payment summons'), // wezwanie do zapłaty
+    -9  =>      trans('payment pre-summons'), // przedsądowe wezw. do zapłaty
+    DOC_OTHER       =>  trans('other'),
 );
 
 // Guarantee periods
@@ -173,7 +175,7 @@ define('TARIFF_OTHER', -1);
 
 $TARIFFTYPES = array(
 	TARIFF_INTERNET	=> isset($CONFIG['tarifftypes']['internet']) ? $CONFIG['tarifftypes']['internet'] : trans('internet'),
-	TARIFF_HOSTING	=> isset($CONFIG['tarifftypes']['hosting']) ? $CONFIG['tarifftypes']['config'] : trans('hosting'),
+	TARIFF_HOSTING	=> isset($CONFIG['tarifftypes']['hosting']) ? $CONFIG['tarifftypes']['hosting'] : trans('hosting'),
 	TARIFF_SERVICE	=> isset($CONFIG['tarifftypes']['service']) ? $CONFIG['tarifftypes']['service'] : trans('service'),
 	TARIFF_PHONE	=> isset($CONFIG['tarifftypes']['phone']) ? $CONFIG['tarifftypes']['phone'] : trans('phone'),
 	TARIFF_TV	=> isset($CONFIG['tarifftypes']['tv']) ? $CONFIG['tarifftypes']['tv'] : trans('tv'),
@@ -232,6 +234,50 @@ $LINKTYPES = array(
 	2		=> trans('fiber'),
 );
 
+$LINKTECHNOLOGIES = array(
+	0 => array(
+		1 => 'ADSL',
+		2 => 'ADSL2',
+		3 => 'ADSL2+',
+		4 => 'VDSL',
+		5 => 'VDSL2',
+		6 => '10 Mb/s Ethernet',
+		7 => '100 Mb/s Fast Ethernet',
+		8 => '1 Gigabit Ethernet',
+		9 => '10 Gigabit Ethernet',
+		50 => '(EURO)DOCSIS 1.x',
+		51 => '(EURO)DOCSIS 2.x',
+		52 => '(EURO)DOCSIS 3.x',
+	),
+	1 => array(
+		100 => 'WiFi - 2,4 GHz',
+		101 => 'WiFi - 5 GHz',
+		102 => 'WiMAX',
+		103 => 'LMDS',
+		104 => 'radiolinia',
+		105 => 'CDMA',
+		106 => 'GPRS',
+		107 => 'EDGE',
+		108 => 'HSPA',
+		109 => 'HSPA+',
+		110 => 'DC-HSPA+',
+		111 => 'MC-HSPA+',
+		112 => 'LTE',
+	),
+	2 => array(
+		200 => 'CWDM',
+		201 => 'DWDM',
+		202 => 'SDH',
+		203 => '10 Mb/s Ethernet',
+		204 => '100 Mb/s Fast Ethernet',
+		205 => '1 Gigabit Ethernet',
+		206 => '10 Gigabit Ethernet',
+		207 => '100 Gigabit Ethernet',
+		208 => 'EPON',
+		209 => 'GPON',
+	),
+);
+
 $LINKSPEEDS = array(
 	10000		=> trans('10Mbit/s'),
 	25000		=> trans('25Mbit/s'),
@@ -280,6 +326,7 @@ if(isset($SMARTY))
 	$SMARTY->assign('_DISCOUNTTYPES', $DISCOUNTTYPES);
 	$SMARTY->assign('_DAYS', $DAYS);
 	$SMARTY->assign('_LINKTYPES', $LINKTYPES);
+	$SMARTY->assign('_LINKTECHNOLOGIES', $LINKTECHNOLOGIES);
 	$SMARTY->assign('_LINKSPEEDS', $LINKSPEEDS);
 	$SMARTY->assign('_BOROUGHTYPES', $BOROUGHTYPES);
 	$SMARTY->assign('_PASSWDEXPIRATIONS', $PASSWDEXPIRATIONS);

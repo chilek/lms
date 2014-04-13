@@ -100,6 +100,11 @@ class LMSDB_driver_postgres extends LMSDB_common
 		return $this->_result;
 	}
 
+        function _driver_multi_execute($query)
+        {
+                return $this->_driver_execute($query);
+        }
+
 	function _driver_fetchrow_assoc($result = NULL)
 	{
 		if(! $this->_error)

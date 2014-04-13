@@ -356,7 +356,7 @@ Rozdział 2. Instalacja i konfiguracja
 
    LMS nie będzie działał prawidłowo na wersjach MySQL starszych od 5.0.
 
-   LMS współpracuje także z PostgreSQL w wersji 8.2.x lub nowszych.
+   LMS współpracuje także z PostgreSQL w wersji 8.4.x lub nowszych.
      __________________________________________________________________
 
 2.2.4. Biblioteka Smarty
@@ -505,8 +505,6 @@ mysql> CREATE DATABASE lms CHARACTER SET utf8 COLLATE utf8_polish_ci;
 mysql> GRANT USAGE ON lms.* TO lms@localhost;
 mysql> GRANT ALL ON lms.* TO lms@localhost IDENTIFIED BY 'twoje_hasło';
 mysql> flush privileges;
-mysql> use lms;
-mysql> source doc/lms.mysql;
      __________________________________________________________________
 
 2.5.1.4. Konfiguracja LMS (lms.ini)
@@ -540,7 +538,7 @@ password = hasło_z_pkt.3
 
 2.5.2.1. Wstęp
 
-   LMS jest testowany na PostgreSQL 8.2.x i nowszych, możesz mieć problemy
+   LMS jest testowany na PostgreSQL 8.4.x i nowszych, możesz mieć problemy
    korzystając ze starszych wersji. Jeżeli nie masz zainstalowanego
    serwera PostgreSQL, możesz np. własnoręcznie skompilować go ze źródeł
    dostępnych na stronie www.postgresql.org.
@@ -574,7 +572,6 @@ $ /usr/local/pgsql/bin/postmaster -D /usr/local/pgsql/data >logfile 2>&1 &
    'lms', której właścicielem będzie użytkownik z loginem 'lms'.
 $ /usr/local/pgsql/bin/createuser -DPRS lms
 $ /usr/local/pgsql/bin/createdb -E UNICODE -O lms lms
-$ /usr/local/pgsql/bin/psql -d lms -U lms -f /lms/doc/lms.pgsql
      __________________________________________________________________
 
 2.5.2.4. Konfiguracja LMS (lms.ini)

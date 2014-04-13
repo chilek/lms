@@ -107,6 +107,27 @@ class LMSDB_driver_mysql extends LMSDB_common
 		return $this->_result;
 	}
 
+        function _driver_multi_execute($query)
+        {
+                $this->_query = $query;
+                $total_result = FALSE;
+                $db_errors = array();
+
+                $queries = preg_split("/;+(?=([^'|^\\\']*['|\\\'][^'|^\\\']*['|\\\'])*[^'|^\\\']*[^'|^\\\']$)/", $query);
+                foreach ($queries as $q)
+                        if (strlen(trim($q)) > 0) {
+                                $this->_driver_execute($q);
+                                if ($this->_error == TRUE) {
+                                    $total_result = TRUE;
+                                    $db_errors = array_merge($db_errors, $this->errors);
+                                }
+                        }
+                $this->_error = $total_result;
+                $this->errors = $db_errors;
+                return $total_result;
+        }
+
+
 	function _driver_fetchrow_assoc($result = NULL)
 	{
 		if(! $this->_error)

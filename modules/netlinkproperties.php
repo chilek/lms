@@ -24,15 +24,15 @@
  *  $Id$
  */
 
-function update_netlink_properties($id, $devid, $linktype, $linkspeed) {
-	global $LMS, $LINKTYPES, $LINKSPEEDS;
+function update_netlink_properties($id, $devid, $linktype, $linktechnology, $linkspeed) {
+	global $LMS, $LINKTYPES, $LINKTECHNOLOGIES, $LINKSPEEDS;
 
 	$result = new xajaxResponse();
 
 	if ($_GET['isnetlink'])
-		$LMS->SetNetDevLinkType($id, $devid, $linktype, $linkspeed);
+		$LMS->SetNetDevLinkType($id, $devid, $linktype, $linktechnology, $linkspeed);
 	else
-		$LMS->SetNodeLinkType($devid, $linktype, $linkspeed);
+		$LMS->SetNodeLinkType($devid, $linktype, $linktechnology, $linkspeed);
 
 	switch ($linktype) {
 		case 0: case 2:
@@ -45,6 +45,7 @@ function update_netlink_properties($id, $devid, $linktype, $linkspeed) {
 	$contents = "<IMG src=\"img/" . $bitmap
 			. "\" alt=\"[ " . trans("Change connection properties") . " ]\" title=\"[ " . trans("Change connection properties") . " ]\""
 			. " onmouseover=\"popup('<span style=&quot;white-space: nowrap;&quot;>" . trans("Link type:") . " " . $LINKTYPES[$linktype] . "<br>"
+			. ($linktechnology ? trans("Link technology:") . " " . $LINKTECHNOLOGIES[$linktype][$linktechnology] . "<br>" : '')
 			. trans("Link speed:") . " " . $LINKSPEEDS[$linkspeed]
 			. "</span>');\" onmouseout=\"pophide();\">";
 	$result->call('update_netlink_info', $contents);
@@ -65,7 +66,8 @@ $isnetlink = isset($_GET['isnetlink']) ? intval($_GET['isnetlink']) : 0;
 if ($isnetlink)
 	$link = $LMS->GetNetDevLinkType($id, $devid);
 else
-	$link = $DB->GetRow("SELECT linktype AS type, linkspeed AS speed FROM nodes WHERE netdev = ? AND id = ?", array($id, $devid));
+	$link = $DB->GetRow("SELECT linktype AS type, linktechnology AS technology,
+		linkspeed AS speed FROM nodes WHERE netdev = ? AND id = ?", array($id, $devid));
 
 $link['id'] = $id;
 $link['devid'] = $devid;

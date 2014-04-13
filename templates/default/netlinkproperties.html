@@ -18,11 +18,22 @@
 		<tr class="light">
 			<td style="width: 1%; white-space: nowrap;">{trans("Link type:")}</td>
 			<td style="width: 99%;">
-				<select name="linktype" {tip text="Select link type"} style="width: 100%;">
+				<select name="linktype" {tip text="Select link type"} style="width: 100%;" onchange="change_linktype(this.options[this.selectedIndex].value)">
 					<option value="0"{if $link.type==0} selected{/if}>{trans("wire")}</option>
 					<option value="1"{if $link.type==1} selected{/if}>{trans("wireless")}</option>
 					<option value="2"{if $link.type==2} selected{/if}>{trans("fiber")}</option>
 				</select>
+			</td>
+		</tr>
+		<tr class="light">
+			<td class="nobr">{trans("Link technology:")}</td>
+			<td>
+				<SELECT NAME="linktechnology" id="linktechnology" {tip trigger="linktechnology" text="Select link technology"}>
+					<OPTION value="0">{trans("- unknown -")}</OPTION>
+					{foreach $_LINKTECHNOLOGIES[$link.type] as $linktechnologyidx => $linktechnology}
+					<OPTION value="{$linktechnologyidx}"{if $link.technology == $linktechnologyidx} selected{/if}>{$linktechnology}</OPTION>
+					{/foreach}
+				</SELECT>
 			</td>
 		</tr>
 		<tr class="light">
@@ -45,12 +56,38 @@
 	</FORM>
 <script type="text/javascript">
 <!--
+function change_linktype(linktype) {
+	linktype = parseInt(linktype);
+	var options = document.getElementById('linktechnology').options;
+	while (options.length)
+		options.remove(0);
+	options.add(new Option('{trans("- unknown -")}', 0));
+	switch (linktype) {
+		case 0:
+			{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
+			options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+			{/foreach}
+			break;
+		case 1:
+			{foreach $_LINKTECHNOLOGIES[1] as $linktechnologyidx => $linktechnology}
+			options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+			{/foreach}
+			break;
+		case 2:
+			{foreach $_LINKTECHNOLOGIES[2] as $linktechnologyidx => $linktechnology}
+			options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+			{/foreach}
+			break;
+	}
+}
+
 function submit_netlink_properties() {
 	var form = document.forms['netlinkproperties'];
 	var linktype = form.elements['linktype'].value;
+	var linktechnology = form.elements['linktechnology'].value;
 	var linkspeed = form.elements['linkspeed'].value;
 
-	xajax_update_netlink_properties({$link.id}, {$link.devid}, linktype, linkspeed);
+	xajax_update_netlink_properties({$link.id}, {$link.devid}, linktype, linktechnology, linkspeed);
 }
 
 function update_netlink_info(newcontent) {

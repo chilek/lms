@@ -40,6 +40,7 @@
 				<OPTION value="{$smarty.const.MSG_MAIL}"{if $listdata.type == $smarty.const.MSG_MAIL} SELECTED{/if}>{trans("email")}</OPTION>
 				<OPTION value="{$smarty.const.MSG_SMS}"{if $listdata.type == $smarty.const.MSG_SMS} SELECTED{/if}>{trans("sms")}</OPTION>
 				<OPTION value="{$smarty.const.MSG_ANYSMS}"{if $listdata.type == $smarty.const.MSG_ANYSMS} SELECTED{/if}>{trans("any sms")}</OPTION>
+				<OPTION value="{$smarty.const.MSG_WWW}"{if $listdata.type == $smarty.const.MSG_WWW} SELECTED{/if}>{trans("www")}</OPTION>
 			</SELECT>&nbsp;
 			{trans("Status:")}
 			<SELECT size="1" name="status">
@@ -67,15 +68,17 @@
 	{cycle values="light,lucid" print=false}
 	{section name=messagelist loop=$messagelist start=$start max=$pagelimit}
 	{assign var=message value=$messagelist[messagelist]}
-	<TR class="highlight {cycle}{if $message.error == $message.cnt} alert{elseif $message.error} blendalert{elseif $message.sent == $message.cnt} blend{/if}"  >
+	<TR class="{cycle}{if $message.error == $message.cnt} alert{elseif $message.error} blendalert{elseif $message.sent == $message.cnt} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD WIDTH="1%" NOWRAP onclick="return self.location.href='?m=messageinfo&id={$message.id}';">
 			{$message.cdate|date_format:"%Y/%m/%d %H:%M"}
 		</TD>
 		<TD WIDTH="1%" ALIGN="right" NOWRAP onclick="return self.location.href='?m=messageinfo&id={$message.id}';">
-			{if $message.type > $smarty.const.MSG_MAIL}
-			<img src="img/sms.gif" alt="sms">
-			{else}
+			{if $message.type == $smarty.const.MSG_MAIL}
 			<img src="img/email.gif" alt="email">
+			{elseif $message.type == $smarty.const.MSG_WWW}
+			<img src="img/network.gif" alt="www">
+			{else}
+			<img src="img/sms.gif" alt="sms">
 			{/if}
 		</TD>
 		<TD WIDTH="96%" onclick="return self.location.href='?m=messageinfo&id={$message.id}';">
@@ -85,6 +88,7 @@
 			{$message.cnt|default:0}
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+			<A onclick="return confirmLink(this, '{trans("Are you sure, you want to delete that message?")}')" href="?m=messagedel&id={$message.id}"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 			<A href="?m=messageinfo&id={$message.id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
 		</TD>
 	</TR>

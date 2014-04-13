@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-define('DBVERSION', '2013101400'); // here should be always the newest version of database!
+define('DBVERSION', '2014040700'); // here should be always the newest version of database!
 				 // it placed here to avoid read disk every time when we call this file.
 
 /*
@@ -73,6 +73,30 @@ if($dbversion = $DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype = ?',arra
 			}
 		}
 	}
+} else {
+    $err_tmp = $DB->errors; // save current errors
+    $DB->errors = array();
+
+    $dbinfo = $DB->GetOne('SELECT COUNT(*) FROM information_schema.tables WHERE table_name = ?', array('dbinfo'));                                            // check if dbinfo table exists (call by name)
+    $tables = $DB->GetOne('SELECT COUNT(*) FROM information_schema.tables WHERE table_schema NOT IN (?, ?)', array('information_schema', 'pg_catalog'));      // check if any tables exists in this database
+    if ($dbinfo == 0 && $tables == 0 && count($DB->errors) == 0) {  // if there are no tables we can install lms database
+        // detect database type and select schema dump file to load
+        $schema = '';
+        if ($DB->_dbtype == 'postgres') {
+            $schema = 'lms.pgsql';
+        } elseif ($DB->_dbtype == 'mysql' || $DB->_dbtype == 'mysqli') {
+            $schema = 'lms.mysql';
+        } else
+            die ('Could not determine database type!');
+
+        if (! $sql = file_get_contents(SYS_DIR . '/doc/' . $schema))
+            die ('Could not open database schema file '.SYS_DIR.'/'.$schema);
+
+        if (! $DB->MultiExecute($sql))    // execute
+            die ('Could not load database schema!');
+    } else {
+        $DB->errors = array_merge($err_tmp, $DB->errors); // database might be installed so don't miss any error
+    }
 }
 
 $layout['dbschversion'] = isset($lastupgrade) ? $lastupgrade : DBVERSION;

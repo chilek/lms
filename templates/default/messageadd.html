@@ -22,8 +22,7 @@
 
 	function typesel(elem)
 	{
-		if(elem == 'typesms' || elem == 'typeanysms') {
-			document.getElementById('mailbody').style.display = 'none';
+		if(elem == 'typesms' || elem == 'typeanysms' || elem == 'typewww') {
 			document.getElementById('mailfrom').style.display = 'none';
 			document.getElementById('mailsender').style.display = 'none';
 			document.getElementById('attachment').style.display = 'none';
@@ -37,9 +36,17 @@
 				if (users) users.style.display = 'none';
 			}
 			{/if}
-			document.getElementById('smsbody').style.display = '';
-			document.getElementById('charscount').style.display = '';
-			xajax_getMessageTemplates({$smarty.const.TMPL_SMS});
+			if (elem == 'typewww') {
+				document.getElementById('mailbody').style.display = '';
+				document.getElementById('smsbody').style.display = 'none';
+				document.getElementById('charscount').style.display = 'none';
+				xajax_getMessageTemplates({$smarty.const.TMPL_WWW});
+			} else {
+				document.getElementById('mailbody').style.display = 'none';
+				document.getElementById('smsbody').style.display = '';
+				document.getElementById('charscount').style.display = '';
+				xajax_getMessageTemplates({$smarty.const.TMPL_SMS});
+			}
 		} else {
 			document.getElementById('mailbody').style.display = '';
 			document.getElementById('mailfrom').style.display = '';
@@ -136,12 +143,21 @@
 						</SELECT>
 					</TD>
 					<TD style="width: 1%;" class="nobr">{trans("Network:")}</TD>
-					<TD style="width: 95%;">
+					<TD style="width: 1%;">
 						<SELECT name="message[network]" {tip trigger="network" text="Select IP network"}>
 							<option value="0">{trans("- all networks -")}</option>
 							{section name="networks" loop=$networks}
 							<option value="{$networks[networks].id}"{if $message.network == $networks[networks].id} selected{/if}>{$networks[networks].name|truncate:"30":"...":true}</option>
 							{/section}
+						</SELECT>
+					</TD>
+					<TD style="width: 1%;" class="nobr">{trans("Tariff type:")}</TD>
+					<TD style="width: 93%;">
+						<SELECT name="message[tarifftype]" {tip trigger="network" text="Select tariff type"}>
+							<option value="0">{trans("- all -")}</option>
+							{foreach $_TARIFFTYPES as $key => $type}
+							<option value="{$key}"{if $message.tarifftype == $key} selected{/if}>{$type}</option>
+							{/foreach}
 						</SELECT>
 					</TD>
 				</TR>
@@ -156,13 +172,17 @@
 						</SELECT>
 					</TD>
 					<TD style="width: 1%;" class="nobr">{trans("Link type:")}</TD>
-					<TD style="width: 95%;">
+					<TD style="width: 1%;">
 						<SELECT size="1" name="message[linktype]" {tip trigger="linktype" text="Select link type"}>
 							<OPTION value="">{trans("- all -")}</OPTION>
 							<OPTION value="0">{trans("wire")}</OPTION>
 							<OPTION value="1">{trans("wireless")}</OPTION>
 							<OPTION value="2">{trans("fiber")}</OPTION>
 						</SELECT>
+					</TD>
+					<TD style="width: 1%;" class="nobr"><label for="consent">{trans("Consent required:")}</label></TD>
+					<TD style="width: 93%;">
+						<INPUT type="checkbox" id="consent" name="message[consent]" value="1" {tip text="Check if customer consent to messages delivery via e-mail or sms is required" trigger="consent"}{if $message.consent} checked{/if}>
 					</TD>
 				</TR>
 			</TABLE>
@@ -184,6 +204,7 @@
 			{if !$message.customerid}
 			<INPUT type="radio" name="message[type]" id="typeanysms" value="{$smarty.const.MSG_ANYSMS}"{if $message.type == $smarty.const.MSG_ANYSMS} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typeanysms"><span class="bold">{trans("any sms")}</span></label>
 			{/if}
+			<INPUT type="radio" name="message[type]" id="typewww" value="{$smarty.const.MSG_WWW}"{if $message.type == $smarty.const.MSG_WWW} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typewww"><span class="bold">{trans("www")}</span></label>
 		</TD>
 	</TR>
 	<TR ID="mailsender"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
@@ -264,7 +285,7 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR ID="mailbody"{if $message.type > $smarty.const.MSG_MAIL} style="display: none"{/if}>
+	<TR ID="mailbody"{if $message.type > $smarty.const.MSG_MAIL && $message.type < $smarty.const.MSG_WWW} style="display: none"{/if}>
 		<TD style="width: 1%;">
 			<IMG src="img/edit.gif" alt="">
 		</TD>
@@ -275,7 +296,7 @@
 			<TABLE class="lmsbox-inner">
 				<TBODY>
 					<TR><TD>
-						<input type="checkbox" id="mailmessage_label" onClick="javascript:toggle_visual_editor('mailmessage');"{if get_conf('phpui.default_editor') == 'wysiwyg'} checked{/if}>
+						<input type="checkbox" id="mailmessage_label" name="message[wysiwyg]" onClick="javascript:toggle_visual_editor('mailmessage');"{if get_conf('phpui.default_editor') == 'wysiwyg'} checked{/if}>
 						<label for="mailmessage_label">{trans("visual editor")}</label>
 					</TD></TR>
 					<TR><TD>

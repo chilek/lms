@@ -4,6 +4,21 @@
 <table width="100%" cellpadding="3" class="light">
 	<tr class="light">
 		<td width="1%">
+			{img src="queue.gif" alt=""}
+		</td>
+		<td width="1%">
+			<b>{trans("Queue:")}</b>
+		</td>
+		<td width="98%">
+			<SELECT name="helpdesk[queue]" {userpaneltip text="Select queue" trigger="queue"}>
+				{foreach $queues as $queue}
+				<OPTION value="{$queue.id}"{if $helpdesk.queue == $queue.id} selected{/if}>{$queue.name}</OPTION>
+				{/foreach}
+			</SELECT>
+		</td>
+	</tr>
+	<tr class="light">
+		<td width="1%">
 			{img src="helpdesk.gif" alt=""}
 		</td>
 		<td width="1%">

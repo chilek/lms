@@ -16,11 +16,13 @@
 			<TABLE class="lmsbox-inner">
 				<THEAD>
 				<TR>
-					<TD style="width: {math equation="98-x" x=$periodcnt}%;" class="bold nobr">
+					<TD style="width: {math equation="96-x" x=$periodcnt}%;" class="bold nobr">
 						<INPUT type="submit" class="hiddenbtn">
 						{trans("Name:")}
 					</TD>
 					<TD style="width: 1%;" class="text-right bold nobr">{trans("Value")}:</TD>
+					<TD style="width: 1%;" class="text-right nobr">{trans("Optional")}:</TD>
+					<TD style="width: 1%;" class="text-right nobr">{trans("Selection list")}:</TD>
 					{foreach from=$schema.periods item=period}
 					<TD style="width: 1%;" class="text-right nobr">{$period}:</TD>
 					{/foreach}
@@ -37,10 +39,31 @@
 					<TD class="text-right valign-top bold nobr">
 						{$tariff.value|string_format:"%.2f"}
 					</TD>
+					<TD class="text-right valign-top nobr">
+						<SPAN id="tariffopt{$tariff.id}"{if $error && $formdata.aid == $tariff.id} style="display:none"{/if}>
+						{if $tariff.optional}{trans("yes")}{else}{trans("no")}{/if}
+						</SPAN>
+						{if $error && $formdata.aid == $tariff.id}
+						<INPUT type="checkbox" id="tariffopt" name="form[tariffopt]" value="1" {tip text="Check if tariff should be optional" trigger="tariffopt"}{if $formdata.tariffopt} checked{/if}>
+						{/if}
+					</TD>
+					<TD class="text-right valign-top nobr">
+						<SPAN id="tariffsel{$tariff.id}"{if $error && $formdata.aid == $tariff.id} style="display:none"{/if}>
+						{if $tariff.selectionid}{$tariff.selectionid}{/if}
+						</SPAN>
+						{if $error && $formdata.aid == $tariff.id}
+						<SELECT name="form[tariffsel]" id="tariffsel" {tip text="Choose selection list" trigger="tariffsel"}>
+							<OPTION value="0" {if !$formdata.tariffsel}selected{/if}>{trans("- none -")}</OPTION>
+							{foreach array(1,2,3,4,5,6,7,8,9) as $selid}
+							<OPTION value="{$selid}"{if $selid == $formdata.tariffsel} selected{/if}>{$selid}</OPTION>
+							{/foreach}
+						</SELECT>
+						{/if}
+					</TD>
 					{foreach from=$schema.periods item=period key=key}
 					<TD class="text-right valign-top nobr">
 						<SPAN id="tariffval{$tariff.id}_{$key}"{if $error && $formdata.aid == $tariff.id} style="display:none"{/if}>
-						{$tariff.data.value.$key|string_format:"%.2f"}
+						{if $tariff.data.value.$key != 'NULL'}{$tariff.data.value.$key|string_format:"%.2f"}{/if}						
 						{if $tariff.data.period.$key}{assign var=pkey value=$tariff.data.period.$key}({$_PERIODS.$pkey}){/if}
 						</SPAN>
 						{if $error && $formdata.aid == $tariff.id}
@@ -69,7 +92,7 @@
 				</TR>
 				{foreachelse}
 				<TR>
-					<TD colspan="{$periodcnt+3}" class="empty-table">
+					<TD colspan="{$periodcnt+5}" class="empty-table">
 						<p>&nbsp;</p>
 						<p>{trans("This schema has no assigned tariffs.")}</p>
 						<p>&nbsp;</p>
@@ -84,6 +107,17 @@
 							<OPTION value="{$t.id}" {if $t.id == $formdata.tariffid}selected{/if}>
 							{$t.name|truncate:40:"...":true} ({$t.value|money_format}{if $t.upceil || $t.downceil}, {$t.downceil}/{$t.upceil} kbit/s{/if})
 							</OPTION>
+							{/foreach}
+						</SELECT>
+					</TD>
+					<TD class="ftop text-right valign-top nobr">
+						<INPUT type="checkbox" name="form[opt]" value="1" {tip text="Check if tariff should be optional" trigger="opt"}{if $formdata.opt} checked{/if}>
+					</TD>
+					<TD class="ftop text-right valign-top nobr">
+						<SELECT name="form[sel]" {tip text="Choose selection list" trigger="sel"}>
+							<OPTION value="0" {if !$formdata.sel}selected{/if}>{trans("- none -")}</OPTION>
+							{foreach array(1,2,3,4,5,6,7,8,9) as $selid}
+							<OPTION value="{$selid}"{if $selid == $formdata.sel} selected{/if}>{$selid}</OPTION>
 							{/foreach}
 						</SELECT>
 					</TD>
@@ -140,43 +174,74 @@ function edit_tariff(id) {
 
 	edited_row = id;
 
+	k = 0;
 	for (i=0; i<tds.length; i++) {
-		n  = tds[i].id.replace(/^tariffval[0-9]+_/, '');
 		pn = tds[i].parentNode;
 		v  = tds[i].innerHTML.replace(/^\s+/, '').replace(/\s+$/, '');
 
-		if (v.match(/^([0-9,.+-]+)\s+\(([^)]+)\)/)) {
-			v = RegExp.$1;
-			period = periods[RegExp.$2];
-		} else {
-			period = 0;
-		}
+		if (/^tariffval[0-9]+_/.test(tds[i].id)) {
+			n  = tds[i].id.replace(/^tariffval[0-9]+_/, '');
 
-		input = document.createElement('INPUT');
-		input.setAttribute('type', 'text');
-		input.setAttribute('size', '8');
-		input.name = 'form[tariffval' + n + ']';
-		input.id = 'tariffval' + n;
-		input.value = v;
-		pn.appendChild(input);
-		// move cursor to activation field
-		if (!i) {
-			input.focus(); input.select();
-		// add period selector
-		} else {
-			sel = document.createElement('BR');
-			pn.appendChild(sel);
+			if (v.match(/^([0-9,.+-]+)\s+\(([^)]+)\)/)) {
+				v = RegExp.$1;
+				period = periods[RegExp.$2];
+			} else
+				period = 0;
+
+			input = document.createElement('INPUT');
+			input.setAttribute('type', 'text');
+			input.setAttribute('size', '8');
+			input.name = 'form[tariffval' + n + ']';
+			input.id = 'tariffval' + n;
+			input.value = v;
+			pn.appendChild(input);
+			// move cursor to activation field
+			if (!k) {
+				input.focus(); input.select();
+			// add period selector
+			} else {
+				sel = document.createElement('BR');
+				pn.appendChild(sel);
+				sel = document.createElement('SELECT');
+				sel.name = 'form[tariffperiod' + n + ']';
+				sel.id = 'tariffperiod' + n;
+
+				for (j in periods) {
+					opt = document.createElement('OPTION');
+					opt.value = periods[j];
+					opt.innerHTML = j;
+					sel.appendChild(opt);
+				}
+				sel.value = period;
+				pn.appendChild(sel);
+			}
+			k++;
+		} else if (/^tariffopt[0-9]+$/.test(tds[i].id)) {
+			input = document.createElement('INPUT');
+			input.setAttribute('type', 'checkbox');
+			if (v == '{trans("yes")}')
+				input.setAttribute('checked', '');
+			input.name = 'form[tariffopt]';
+			input.id = 'tariffopt';
+			input.value = '1';
+			pn.appendChild(input);
+		} else if (/^tariffsel[0-9]+$/.test(tds[i].id)) {
 			sel = document.createElement('SELECT');
-			sel.name = 'form[tariffperiod' + n + ']';
-			sel.id = 'tariffperiod' + n;
+			sel.name = 'form[tariffsel]';
+			sel.id = 'tariffsel';
 
-			for (j in periods) {
+			opt = document.createElement('OPTION');
+			opt.value = 0;
+			opt.innerHTML = '{trans("- none -")}';
+			sel.appendChild(opt);
+			for (j = 1; j < 10; j++) {
 				opt = document.createElement('OPTION');
-				opt.value = periods[j];
+				opt.value = j;
 				opt.innerHTML = j;
 				sel.appendChild(opt);
 			}
-			sel.value = period;
+			if (parseInt(v) != NaN)
+				sel.value = parseInt(v);
 			pn.appendChild(sel);
 		}
 		tds[i].style.display = 'none';
@@ -201,12 +266,20 @@ function cancel_tariff(id) {
 
 	for (i=0; i<tds.length; i++) {
 		tds[i].style.display = '';
-		n = tds[i].id.replace(/^tariffval[0-9]+_/, '');
-		v = document.getElementById('tariffval'+n);
-		v.parentNode.removeChild(v);
-		if (i) {
+		if (/^tariffval[0-9]+_/.test(tds[i].id)) {
+			n = tds[i].id.replace(/^tariffval[0-9]+_/, '');
+			v = document.getElementById('tariffval'+n);
+			v.parentNode.removeChild(v);
 			v = document.getElementById('tariffperiod'+n);
-			v.parentNode.removeChild(v.previousSibling); // BR
+			if (v) {
+				v.parentNode.removeChild(v.previousSibling); // BR
+				v.parentNode.removeChild(v);
+			}
+		} else if (/^tariffopt[0-9]+$/.test(tds[i].id)) {
+			v = document.getElementById('tariffopt');
+			v.parentNode.removeChild(v);
+		} else if (/^tariffsel[0-9]+$/.test(tds[i].id)) {
+			v = document.getElementById('tariffsel');
 			v.parentNode.removeChild(v);
 		}
 	}

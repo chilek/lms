@@ -33,10 +33,12 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
 
 	$data = array();
 	$regexp = '/^(' . ($assignmentid ? 'tariffval|tariffperiod' : 'value|period') .')([0-9]+)$/';
+	$regexp2 = '/^(' . ($assignmentid ? 'tariffopt|tariffsel' : 'opt|sel') .')$/';
 	$mons = array(YEARLY => 12, HALFYEARLY => 6, QUARTERLY => 3, MONTHLY => 1);
 	$schema = $DB->GetOne('SELECT data FROM promotionschemas WHERE id = ?', array($schemaid));
 	$schema = explode(';', $schema);
 
+	$optional = $selectionid = 0;
 	foreach ($form as $key => $value) {
 		$form[$key] = trim($value);
 
@@ -57,13 +59,18 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
 			}
 			// values
 			else {
-				if (empty($form[$key]))
-					$data[$m[2]]['value'] = 0;
+				if (!strlen($form[$key]))
+					$data[$m[2]]['value'] = 'NULL';
 				else if (!preg_match('/^[-]?[0-9.,]+$/', $form[$key]))
 					$error[$key] = trans('Incorrect value!');
 				else
 					$data[$m[2]]['value'] = str_replace(',', '.', $form[$key]);
 			}
+		} elseif (preg_match($regexp2, $key)) {
+			if (preg_match('/opt$/', $key) && intval($value))
+				$optional = 1;
+			elseif (preg_match('/sel$/', $key))
+				$selectionid = intval($value);
 		}
 	}
 
@@ -76,14 +83,16 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
 			array($schemaid));
 		if (!empty($assignmentid)) {
 			$DB->Execute('UPDATE promotionassignments
-				SET data = ? WHERE id = ?',
-				array($datastr, $assignmentid));
+				SET optional = ?, selectionid = ?, data = ? WHERE id = ?',
+				array($optional, $selectionid, $datastr, $assignmentid));
 			if ($SYSLOG) {
 				$args = array(
 					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOASSIGN] => $assignmentid,
 					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOSCHEMA] => $schemaid,
 					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $form['tariffid'],
 					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO] => $promotionid,
+					'optional' => $optional,
+					'selectionid' => $selectionid,
 					'data' => $datastr
 				);
 				$SYSLOG->AddMessage(SYSLOG_RES_PROMOASSIGN, SYSLOG_OPER_UPDATE, $args,
@@ -96,11 +105,13 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
 			$args =	array(
 				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOSCHEMA] => $schemaid,
 				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => intval($form['tariffid']),
+				'optional' => $optional,
+				'selectionid' => $selectionid,
 				'data' => $datastr
 			);
 			$DB->Execute('INSERT INTO promotionassignments
-				(promotionschemaid, tariffid, data)
-				VALUES (?, ?, ?)', array_values($args));
+				(promotionschemaid, tariffid, optional, selectionid, data)
+				VALUES (?, ?, ?, ?, ?)', array_values($args));
 			if ($SYSLOG) {
 				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO]] = $promotionid;
 				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOASSIGN]] =

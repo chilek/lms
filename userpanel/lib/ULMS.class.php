@@ -62,7 +62,16 @@ class ULMS extends LMS
 	
 	function GetCustomerTickets($id)
 	{
-		return $this->DB->GetAll('SELECT * FROM rttickets WHERE customerid=? ORDER BY createtime DESC', array($id));
+		if ($this->CONFIG['userpanel']['tickets_from_selected_queues'] && !empty($this->CONFIG['userpanel']['queues']))
+			$queues = $this->DB->GetCol('SELECT id FROM rtqueues
+				WHERE id IN (' . str_replace(';', ',', $this->CONFIG['userpanel']['queues']) . ')');
+		$tickets = $this->DB->GetAll('SELECT * FROM rttickets WHERE customerid=?'
+			. (isset($queues) && !empty($queues) ? ' AND queueid IN (' . implode(',', $queues) . ')' : '')
+			. ' ORDER BY createtime DESC', array($id));
+		if (!empty($tickets))
+			foreach ($tickets as $idx => $ticket)
+				$tickets[$idx]['queuename'] = $this->DB->GetOne('SELECT name FROM rtqueues WHERE id = ?', array($ticket['queueid']));
+		return $tickets;
 	}
 
 	function GetTicketContents($id)
@@ -86,7 +95,8 @@ class ULMS extends LMS
 				LEFT JOIN customers ON (customers.id = customerid)
 				LEFT JOIN users ON (users.id = userid)
 				WHERE ticketid = ? ORDER BY createtime ASC', array($id));
-		
+		$ticket['queuename'] = $this->DB->GetOne('SELECT name FROM rtqueues WHERE id = ?', array($ticket['queueid']));
+
 		list($ticket['requestoremail']) = sscanf($ticket['requestor'], "<%[^>]");
 
 		return $ticket;

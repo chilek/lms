@@ -58,8 +58,10 @@ function refresh($params)
 			$reply_detailed_regexp = '/^([0-9]+).+icmp_[rs]eq=([0-9]+).+ttl=([0-9]+).+time=([0-9\.]+.+)$/';
 			break;
 	}
-	$cmd = preg_replace('/%if/', $iface, $cmd);
-	$cmd = preg_replace('/%i/', $ipaddr, $cmd);
+	if (preg_match('/^[a-zA-Z0-9\.:]+$/', $iface))
+		$cmd = preg_replace('/%if/', $iface, $cmd);
+	if (check_ip($ipaddr))
+		$cmd = preg_replace('/%i/', $ipaddr, $cmd);
 	exec($cmd, $output);
 	$sent = preg_grep($summary_regexp, $output);
 	$replies = preg_grep($reply_regexp, $output);

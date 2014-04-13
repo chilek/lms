@@ -2,7 +2,7 @@
 #
 #  LMS version 1.11-git
 #
-#  Copyright (C) 2001-2013 LMS Developers
+#  Copyright (C) 2001-2014 LMS Developers
 #
 #  Please, see the doc/AUTHORS for more information about authors!
 #
@@ -50,7 +50,7 @@ if($help)
 {
 	print STDERR <<EOF;
 lms-teryt, version $_version
-(C) 2001-2013 LMS Developers
+(C) 2001-2014 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini	alternate config file (default: /etc/lms/lms.ini);
 -h, --help			print this help and exit;
@@ -68,7 +68,7 @@ if($version)
 {
 	print STDERR <<EOF;
 lms-teryt, version $_version
-(C) 2001-2013 LMS Developers
+(C) 2001-2014 LMS Developers
 
 EOF
 	exit 0;
@@ -82,7 +82,7 @@ if(!$configfile)
 if(!$quiet)
 {
 	print STDOUT "lms-teryt, version $_version\n";
-	print STDOUT "(C) 2001-2013 LMS Developers\n";
+	print STDOUT "(C) 2001-2014 LMS Developers\n";
 	print STDOUT "Using file $configfile as config.\n";
 }
 
@@ -632,11 +632,13 @@ sub location_update
 	elsif ($addr =~ /\s([0-9-]+\s*[a-z]*\s*)$/i) {
 		$addr = substr($addr, 0, -1 * length($1));
 		$house = $1;
+		$house =~ s/^\s*([^\s]+)\s*$/$1/g;
 	}
 	elsif ($addr =~ /\s(([0-9-]+\s*[a-z]*)\/([0-9a-z]+))$/i) {
 		$addr = substr($addr, 0, -1 * length($1));
 		$house = $2;
 		$flat = $3;
+		$house =~ s/^\s*([^\s]+)\s*$/$1/g;
 	}
 
 	# assume format: <City>, <Street>

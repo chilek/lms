@@ -17,6 +17,31 @@
 		else
 			location.href = '?m=nodeedit&id={$nodeinfo.id}&action=duplex&duplex=0';
 	}
+
+	function change_linktype(linktype) {
+		linktype = parseInt(linktype);
+		var options = document.getElementById('linktechnology').options;
+		while (options.length)
+			options.remove(0);
+		options.add(new Option('{trans("- unknown -")}', 0));
+		switch (linktype) {
+			case 0:
+				{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
+				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+				{/foreach}
+				break;
+			case 1:
+				{foreach $_LINKTECHNOLOGIES[1] as $linktechnologyidx => $linktechnology}
+				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+				{/foreach}
+				break;
+			case 2:
+				{foreach $_LINKTECHNOLOGIES[2] as $linktechnologyidx => $linktechnology}
+				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+				{/foreach}
+				break;
+		}
+	}
 //-->
 </SCRIPT>
 <TABLE class="lmsbox">
@@ -113,7 +138,7 @@
 				<A HREF="?m=netdevinfo&id={$netdevices.id}">{$netdevices.name} {$netdevices.producer}{if $netdevices.location} / {$netdevices.location}{/if}</A>
 				</span>
 				{if $nodeinfo.port}[{$nodeinfo.port}]{/if}
-				<IMG src="img/{if $nodeinfo.linktype == 1}wireless.gif{elseif $nodeinfo.linktype == 2}netdev_takenports.gif{else}netdev_takenports.gif{/if}" alt="{$_LINKTYPES[$nodeinfo.linktype]}" {tip text=$_LINKSPEEDS[$nodeinfo.linkspeed]}>
+				<IMG src="img/{if $nodeinfo.linktype == 1}wireless.gif{elseif $nodeinfo.linktype == 2}netdev_takenports.gif{else}netdev_takenports.gif{/if}" alt="{$_LINKTYPES[$nodeinfo.linktype]}" {tip text="{if $nodeinfo.linktechnology}{$_LINKTECHNOLOGIES[$nodeinfo.linktype][$nodeinfo.linktechnology]} / {/if}{$_LINKSPEEDS[$nodeinfo.linkspeed]}"}>
 			{else}
 				{if $netdevices}
 				<SELECT SIZE="1" style="width: 300px;" NAME="devid" {tip trigger="netdev"}>
@@ -127,9 +152,15 @@
 				</SELECT>
 				<INPUT type="text" name="port" value="{if $nodeinfo.port}{$nodeinfo.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
 				<BR>
-				<SELECT name="linktype" id="linktype" {tip trigger="linktype" text="Select link type"}>
+				<SELECT name="linktype" id="linktype" {tip trigger="linktype" text="Select link type"} onchange="change_linktype(this.options[this.selectedIndex].value)">
 					{foreach from=$_LINKTYPES item=item key=key}
 					<OPTION VAlUE="{$key}">{$item}</OPTION>
+					{/foreach}
+				</SELECT>
+				<SELECT NAME="linktechnology" id="linktechnology" {tip trigger="linktechnology" text="Select link technology"}>
+					<OPTION value="0">{trans("- unknown -")}</OPTION>
+					{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
+					<OPTION value="{$linktechnologyidx}">{$linktechnology}</OPTION>
 					{/foreach}
 				</SELECT>
 				<SElECT name="linkspeed" id="linkspeed" {tip trigger="linkspeed" text="Select link speed"}>

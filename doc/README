@@ -334,7 +334,7 @@ Chapter 2. Installation and configuration
    MySQL server in version 5.x is supported. Probably LMS won't work
    correctly with older versions.
 
-   PostgreSQL in version 8.2.x or higher is supported.
+   PostgreSQL in version 8.4.x or higher is supported.
      __________________________________________________________________
 
 2.2.4. Smarty Library
@@ -462,8 +462,6 @@ mysql> CREATE DATABASE lms CHARACTER SET utf8 COLLATE utf8_polish_ci;
 mysql> GRANT USAGE ON lms.* TO lms@localhost;
 mysql> GRANT ALL ON lms.* TO lms@localhost IDENTIFIED BY '[your_password]';
 mysql> flush privileges;
-mysql> use lms;
-mysql> source doc/lms.mysql;
      __________________________________________________________________
 
 2.5.1.4. LMS Configuration (lms.ini)
@@ -493,7 +491,7 @@ password = your_password
 
 2.5.2.1. Intro
 
-   LMS require PostgreSQL 8.2 or higher. If you have not installed
+   LMS require PostgreSQL 8.4 or higher. If you have not installed
    PostgreSQL server, you can compile it yourself from sources available
    on www.postgresql.org.
      __________________________________________________________________
@@ -526,7 +524,6 @@ $ /usr/local/pgsql/bin/postmaster -D /usr/local/pgsql/data >logfile 2>&1 &
    owner, both named 'lms' and loading database schema:
 $ /usr/local/pgsql/bin/createuser -DPRS lms
 $ /usr/local/pgsql/bin/createdb -E UNICODE -O lms lms
-$ /usr/local/pgsql/bin/psql -d lms -U lms -f /lms/doc/lms.pgsql
      __________________________________________________________________
 
 2.5.2.4. LMS Configuration (lms.ini)

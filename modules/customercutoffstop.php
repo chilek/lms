@@ -26,26 +26,23 @@
 
 $customerid = intval($_GET['customerid']);
 
-if(! $LMS->CustomerExists($customerid))
-{
+if (!$LMS->CustomerExists($customerid))
 	$SESSION->redirect('?m=customerlist');
-}
 
-if(isset($_GET['cutoffstop']))
-{
-	if(!intval($_GET['cutoffstop']))
-	        $cutoffstop = 0;
-	else
-		$cutoffstop = mktime(23,59,59,date('m'), date('d') + intval($_GET['cutoffstop']));
-	
+if (isset($_GET['cutoffstop'])) {
+	if ($_GET['cutoffstop'] == '')
+		$cutoffstop = 0;
+	elseif (check_date($_GET['cutoffstop'])) {
+		list ($y, $m, $d) = explode('/', $_GET['cutoffstop']);
+		if (checkdate($m, $d, $y))
+			$cutoffstop = mktime(23, 59, 59, $m, $d, $y);
+	}
 	// excluded groups check
-	if(!$DB->GetOne('SELECT 1 FROM customerassignments a
-	                JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+	if (!$DB->GetOne('SELECT 1 FROM customerassignments a
+			JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 			WHERE e.userid = lms_current_user() AND a.customerid = ?',
 			array($customerid)))
-	{
 		$DB->Execute('UPDATE customers SET cutoffstop = ? WHERE id = ?', array($cutoffstop, $customerid));
-	}
 }
 
 $SESSION->redirect('?'.$SESSION->get('backto'));

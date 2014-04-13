@@ -43,7 +43,7 @@
 					</TD>
 					<TD style="width: 1%; white-space: nowrap;">
 						<span id="nodelinkproperties_{$netcomplist[netcomplist].id}" onClick="javascript:netlinkpropertieschoosewin('{$netdevinfo.id}', '{$netcomplist[netcomplist].id}', false);" >
-							<IMG src="{if $netcomplist[netcomplist].linktype == 1}img/wireless.gif{elseif $netcomplist[netcomplist].linktype == 2}img/netdev_takenports.gif{else}img/netdev_takenports.gif{/if}" alt="[ {trans("Change connection properties ")} ]" title="[ {trans("Change connection properties")} ]" {tip trigger="nodelinkproperties_$netcomplist[netcomplist].id" text="<span style=\"white-space: nowrap;\">{trans("Link type:")} {$_LINKTYPES[$netcomplist[netcomplist].linktype]}<br>{trans("Link speed:")} {$_LINKSPEEDS[$netcomplist[netcomplist].linkspeed]}</span>"}>
+							<IMG src="{if $netcomplist[netcomplist].linktype == 1}img/wireless.gif{elseif $netcomplist[netcomplist].linktype == 2}img/netdev_takenports.gif{else}img/netdev_takenports.gif{/if}" alt="[ {trans("Change connection properties ")} ]" title="[ {trans("Change connection properties")} ]" {tip trigger="nodelinkproperties_$netcomplist[netcomplist].id" text="<span style=\"white-space: nowrap;\">{trans("Link type:")} {$_LINKTYPES[$netcomplist[netcomplist].linktype]}<br>{if $netcomplist[netcomplist].linktechnology}{trans("Link technology:")} {$_LINKTECHNOLOGIES[$netcomplist[netcomplist].linktype][$netcomplist[netcomplist].linktechnology]}<br>{/if}{trans("Link speed:")} {$_LINKSPEEDS[$netcomplist[netcomplist].linkspeed]}</span>"}>
 						</span>
 						<span onclick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';">
 						[{if $netcomplist[netcomplist].port}{$netcomplist[netcomplist].port}{/if}]
@@ -85,9 +85,16 @@
 									{/section}
 									</SELECT>
 									<label for="port">{trans("Dest. port")}:<INPUT name="port" id="port" value="{if $connectnode.port}{$connectnode.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
-									<SELECT NAME="linktype" id="devnodeslinktype" {tip trigger="devnodeslinktype" text="Select link type"}>
+									<SELECT NAME="linktype" id="devnodeslinktype" {tip trigger="devnodeslinktype" text="Select link type"} onchange="change_nodelinktype(this.options[this.selectedIndex].value)">
 										{foreach from=$_LINKTYPES item=item key=key}
 										<OPTION value="{$key}"{if $key==$nodelinktype} selected{/if}>{$item}</OPTION>
+										{/foreach}
+									</SELECT>
+									{if !$devnodeslinktype}{$devnodeslinktype = 0}{/if}
+									<SELECT NAME="linktechnology" id="devnodeslinktechnology" {tip trigger="devnodeslinktechnology" text="Select link technology"}>
+										<OPTION value="0">{trans("- unknown -")}</OPTION>
+										{foreach $_LINKTECHNOLOGIES[$devnodeslinktype] as $linktechnologyidx => $linktechnology}
+										<OPTION value="{$linktechnologyidx}"{if $linktechnologyidx == $nodelinktechnology} selected{/if}>{$linktechnology}</OPTION>
 										{/foreach}
 									</SELECT>
 									<SELECT NAME="linkspeed" id="devnodeslinkspeed" {tip trigger="devnodeslinkspeed" test="Select link speed"}>
@@ -112,9 +119,32 @@
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--
-if (getCookie('devicenodes') == '1')
-{
-	document.getElementById('devicenodes').style.display = '';
+function change_nodelinktype(linktype) {
+	linktype = parseInt(linktype);
+	var options = document.getElementById('devnodeslinktechnology').options;
+	while (options.length)
+		options.remove(0);
+	options.add(new Option('{trans("- unknown -")}', 0));
+	switch (linktype) {
+		case 0:
+			{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
+			options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+			{/foreach}
+			break;
+		case 1:
+			{foreach $_LINKTECHNOLOGIES[1] as $linktechnologyidx => $linktechnology}
+			options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+			{/foreach}
+			break;
+		case 2:
+			{foreach $_LINKTECHNOLOGIES[2] as $linktechnologyidx => $linktechnology}
+			options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+			{/foreach}
+			break;
+	}
 }
+
+if (getCookie('devicenodes') == '1')
+	document.getElementById('devicenodes').style.display = '';
 //-->
 </SCRIPT>

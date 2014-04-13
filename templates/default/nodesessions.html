@@ -3,35 +3,35 @@
 	<TR class="dark hand" onclick="showOrHide('nodesessionpanel');">
 		<TD class="fall">
 			<IMG src="img/calendar.gif" alt="">
-			<B><A name="nodesessions">{t}Node Sessions:{/t}</A></B> {t}(last 10 sessions){/t}
+			<B><A name="nodesessions">{trans("Node Sessions:")}</A></B> {trans("(last 10 sessions)")}
 		</TD>
 	</TR>
 	<TR id="nodesessionpanel" style="display:none;">
 		<TD WIDTH="100%" class="fall">
 			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
 				<TR class="dark">
-					<TD class="fleftu bold" style="width: 14%; white-space: nowrap;">{t}IP Address:{/t}</TD>
-					<TD class="fbt" style="width: 14%; white-space: nowrap;">{t}MAC:{/t}</TD>
-					<TD class="fbt bold" style="width: 14%; white-space: nowrap;">{t}Started:{/t}</TD>
-					<TD class="fbt bold" style="width: 14%; white-space: nowrap;">{t}Finished:{/t}</TD>
-					<TD class="fbt bold" style="width: 14%; white-space: nowrap;">{t}Time Duration:{/t}</TD>
-					<TD class="fbt" style="width: 14%; white-space: nowrap;">{t}Downloaded:{/t}</TD>
-					<TD class="frightu" style="width: 16%; white-space: nowrap;">{t}Uploaded:{/t}</TD>
+					<TD class="fleftu bold nobr" style="width: 14%;">{trans("IP Address:")}</TD>
+					<TD class="fbt nobr" style="width: 14%;">{trans("MAC:")}</TD>
+					<TD class="fbt bold nobr" style="width: 14%;">{trans("Started:")}</TD>
+					<TD class="fbt bold nobr" style="width: 14%;">{trans("Finished:")}</TD>
+					<TD class="fbt bold nobr" style="width: 14%;">{trans("Time Duration:")}</TD>
+					<TD class="fbt nobr" style="width: 14%;">{trans("Downloaded:")}</TD>
+					<TD class="frightu nobr" style="width: 16%;">{trans("Uploaded:")}</TD>
 				</TR>
 				{section loop=$nodesessions name=session}
 				{cycle name=sessionclass values="light,lucid" print=false}
 				<TR class="{cycle name=sessionclass}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-					<TD class="bold" style="width: 14%; white-space: nowrap;">{$nodesessions[session].ipaddr}</TD>
-					<TD style="width: 14%; white-space: nowrap;">{$nodesessions[session].mac}</TD>
-					<TD style="width: 14%; white-space: nowrap;"><span class="bold">{$nodesessions[session].start|date_format:"%Y.%m.%d"}</span> {$nodesessions[session].start|date_format:"%H:%M:%S"}</TD>
-					<TD style="width: 14%; white-space: nowrap;"><span class="bold">{$nodesessions[session].stop|date_format:"%Y.%m.%d"}</span> {$nodesessions[session].stop|date_format:"%H:%M:%S"}</TD>
-					<TD class="bold" style="width: 14%; white-space: nowrap;">{$nodesessions[session].duration}</TD>
-					<TD style="width: 14%; white-space: nowrap;">{$nodesessions[session].download}</TD>
-					<TD style="width: 16%; white-space: nowrap;">{$nodesessions[session].upload}</TD>
+					<TD class="bold nobr" style="width: 14%;">{$nodesessions[session].ipaddr}</TD>
+					<TD class="nobr" style="width: 14%;">{$nodesessions[session].mac}</TD>
+					<TD class="nobr" style="width: 14%;"><span class="bold">{$nodesessions[session].start|date_format:"%Y.%m.%d"}</span> {$nodesessions[session].start|date_format:"%H:%M:%S"}</TD>
+					<TD class="nobr" style="width: 14%;"><span class="bold">{$nodesessions[session].stop|date_format:"%Y.%m.%d"}</span> {$nodesessions[session].stop|date_format:"%H:%M:%S"}</TD>
+					<TD class="bold nobr" style="width: 14%;">{$nodesessions[session].duration}</TD>
+					<TD class="nobr" style="width: 14%;">{$nodesessions[session].download}</TD>
+					<TD class="nobr" style="width: 16%;">{$nodesessions[session].upload}</TD>
 				</TR>
 				{sectionelse}
 				<TR>
-					<TD style="text-align: center; width: 100%;" colspan="7">
+					<TD class="text-center" style="width: 100%;" colspan="7">
 						<P>&nbsp;</P>
 						<P><span class="bold">{trans("That are no sessions for this node.")}</span></P>
 						<P>&nbsp;</P>

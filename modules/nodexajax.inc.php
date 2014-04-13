@@ -137,10 +137,28 @@ function getNodeStats($nodeid) {
 	$nodestats['month'] = NodeStats($nodeid, 60 * 60 * 24 * 30);
 
 	$SMARTY->assign('nodeid', $nodeid);
-	$SMARTY->assign('nodeip', $DB->GetOne('SELECT INET_NTOA(ipaddr) FROM nodes WHERE id = ?', array($nodeid)));
+	$nodeip = $DB->GetOne('SELECT INET_NTOA(ipaddr) FROM nodes WHERE id = ?', array($nodeid));
+	$SMARTY->assign('nodeip', $nodeip);
 	$SMARTY->assign('nodestats', $nodestats);
 	$contents = $SMARTY->fetch('nodestats.html');
 	$result->append('nodeinfo', 'innerHTML', $contents);
+
+	if (get_conf('phpui.live_traffic_helper')) {
+		$script = '
+			live_traffic_start = function() {
+				xajax.config.waitCursor = false;
+				xajax_getThroughput(\'' . $nodeip . '\');
+			}
+
+			live_traffic_finished = function() {
+				xajax.config.waitCursor = true;
+				setTimeout("live_traffic_start()", 3000);
+			}
+		';
+
+		$result->script($script);
+		$result->script("live_traffic_start()");
+	}
 
 	return $result;
 }

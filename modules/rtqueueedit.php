@@ -45,14 +45,18 @@ if(isset($_POST['queue']))
 		foreach($queue['users'] as $key => $value)
 			$queue['rights'][] = array('id' => $key, 'rights' => array_sum($value), 'name' => $queue['usernames'][$key]);
 
-	if(!$error)
-	{
-	        $DB->Execute('UPDATE rtqueues SET name=?, email=?, description=? WHERE id=?', 
-				array($queue['name'], 
-					$queue['email'], 
-					$queue['description'], 
+	if (!$error) {
+		$DB->Execute('UPDATE rtqueues SET name=?, email=?, description=?,
+				newticketsubject=?, newticketbody=?,
+				newmessagesubject=?, newmessagebody=?,
+				resolveticketsubject=?, resolveticketbody=? WHERE id=?',
+				array($queue['name'],
+					$queue['email'], $queue['description'],
+					$queue['newticketsubject'], $queue['newticketbody'],
+					$queue['newmessagesubject'], $queue['newmessagebody'],
+					$queue['resolveticketsubject'], $queue['resolveticketbody'],
 					$queue['id']));
-		
+
 		$DB->Execute('DELETE FROM rtrights WHERE queueid=?', array($queue['id']));
 		
 		if($queue['rights'])

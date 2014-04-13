@@ -58,7 +58,7 @@
         <sect2 id="install-req-db">
            <title>Serwer baz danych</title>
            <para>LMS nie bêdzie dzia³a³ prawid³owo na wersjach MySQL starszych od 5.0.</para>
-           <para>LMS wspó³pracuje tak¿e z PostgreSQL w wersji 8.2.x lub nowszych.</para>
+           <para>LMS wspó³pracuje tak¿e z PostgreSQL w wersji 8.4.x lub nowszych.</para>
          </sect2>
          <sect2 id="install-req-smarty">
              <title>Biblioteka Smarty</title>
@@ -217,9 +217,7 @@ Enter password:[podaj has³o]
 mysql> CREATE DATABASE lms CHARACTER SET utf8 COLLATE utf8_polish_ci;
 mysql> GRANT USAGE ON lms.* TO lms@localhost;
 mysql> GRANT ALL ON lms.* TO lms@localhost IDENTIFIED BY 'twoje_has³o';
-mysql> flush privileges;
-mysql> use lms;
-mysql> source doc/lms.mysql;</screen>
+mysql> flush privileges;</screen>
           </para>
           </sect3>
           <sect3 id="install-mysql-lms">
@@ -254,7 +252,7 @@ password = has³o_z_pkt.3
           <title>PostgreSQL</title>
           <sect3 id="install-pgsql-intro">
           <title>Wstêp</title>
-               <para>LMS jest testowany na PostgreSQL 8.2.x i nowszych, mo¿esz mieæ
+               <para>LMS jest testowany na PostgreSQL 8.4.x i nowszych, mo¿esz mieæ
 		problemy korzystaj±c ze starszych wersji. Je¿eli nie masz zainstalowanego serwera
                PostgreSQL, mo¿esz np. w³asnorêcznie skompilowaæ go
                ze ¼róde³ dostêpnych na stronie <ulink url="http://www.postgresql.org">
@@ -285,8 +283,7 @@ $ /usr/local/pgsql/bin/postmaster -D /usr/local/pgsql/data >logfile 2>&1 &</scre
                której w³a¶cicielem bêdzie u¿ytkownik z loginem 'lms'. 
                <screen>
 $ /usr/local/pgsql/bin/createuser -DPRS lms
-$ /usr/local/pgsql/bin/createdb -E UNICODE -O lms lms
-$ /usr/local/pgsql/bin/psql -d lms -U lms -f /lms/doc/lms.pgsql</screen>
+$ /usr/local/pgsql/bin/createdb -E UNICODE -O lms lms</screen>
           </para>
           </sect3>
           <sect3 id="install-pgsql-lms">

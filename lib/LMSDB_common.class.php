@@ -104,6 +104,27 @@ Class LMSDB_common
 		return $this->_driver_affected_rows();
 	}
 
+	//Execute multiple queries delimited by semicollon
+	function MultiExecute($query, $inputarray = NULL)
+	{
+	    if ($this->debug)
+    	    $start = microtime(true);
+
+		if (!$this->_driver_multi_execute($this->_query_parser($query, $inputarray)))
+			$this->errors[] = array(
+					'query' => $this->_query,
+					'error' => $this->_driver_geterror(),
+					);
+		elseif($this->debug)
+			$this->errors[] = array(
+					'query' => $this->_query,
+					'error' => 'DEBUG: NOERROR',
+					'time'  => microtime(true) - $start,
+					);
+
+		return $this->_driver_affected_rows();
+	}
+
 	function GetAll($query = NULL, $inputarray = NULL)
 	{
 		if($query)

@@ -30,14 +30,14 @@ $_LANG['Cancel'] = 'Anuluj';
 $_LANG['Click icon on the left to see request details'] = 'Kliknij ikonę po lewej stronie aby zobaczyć szczegóły zgłoszenia';
 $_LANG['Date:'] = 'Data:';
 $_LANG['dead'] = 'martwy';
-$_LANG['Default queue:'] = 'Domyślna kolejka:';
+$_LANG['Queues:'] = 'Kolejki:';
 $_LANG['Default user:'] = 'Domyślny użytkownik:';
 $_LANG['Details'] = 'Szczegóły';
 $_LANG['Enter request contents'] = 'Wprowadź treść zgłoszenia';
 $_LANG['Enter request subject'] = 'Wprowadź temat zgłoszenia';
 $_LANG['From:'] = 'Od:';
 $_LANG['Helpdesk'] = 'Helpdesk';
-$_LANG['Helpdesk queue for tickets requested in Userpanel'] = 'Kolejka Helpdesku dla zgłoszeń z Userpanela';
+$_LANG['Helpdesk queues for tickets requested in Userpanel'] = 'Kolejki Helpdesku dla zgłoszeń z Userpanela';
 $_LANG['Last modified:'] = 'Ostatnio zmodyfikowany:';
 $_LANG['LMS address needed to build link to new ticket in notification message'] = 'Adres LMSa potrzebny do utworzenia w powiadomieniu linku do nowego zgłoszenia';
 $_LANG['LMS url:'] = 'URL LMSa:';
@@ -48,9 +48,9 @@ $_LANG['No such requests in database.'] = 'Nie ma żadnych zgłoszeń w bazie da
 $_LANG['Number:'] = 'Numer:';
 $_LANG['open'] = 'otwarty';
 $_LANG['Request history'] = 'Historia zgłoszeń';
-$_LANG['Request No. $a'] = 'Zgłoszenie Nr $a';
+$_LANG['Request No. $a / Queue: $b'] = 'Zgłoszenie Nr $a / Kolejka: $b';
 $_LANG['resolved'] = 'rozwiązany';
-$_LANG['- select queue -'] = '- wybierz kolejkę -';
+$_LANG['- select queues -'] = '- wybierz kolejki -';
 $_LANG['- select user -'] = '- wybierz użytkownika -';
 $_LANG['Sender of new request notifications and his email. If not specified notifications goes from queue address.'] = 'Nadawca powiadomień o nowych zgłoszeniach (i jego email). Jeśli nie podano zostanie użyty adres kolejki.';
 $_LANG['Status:'] = 'Status:';
@@ -63,5 +63,8 @@ $_LANG['Ticket must have its title!'] = 'Zgłoszenie musi mieć tytuł!';
 $_LANG['Message'] = 'Wiadomość';
 
 $_LANG['Default categories:'] = 'Domyślne kategorie:';
+$_LANG['Show tickets from selected queues only:'] = 'Pokaż zgłoszenia jedynie z wybranych kolejek:';
+$_LANG['Allow message add to closed tickets:'] = 'Pozwól na dodawanie wiadomości do zamkniętych zgłoszeń:';
+$_LANG['Limit ticket movements to selected queues:'] = 'Ogranicz przesunięcia zgłoszenia do wybranych kolejek:';
 
 ?>

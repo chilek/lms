@@ -382,6 +382,7 @@
 		    <member>quota_ftp_limit - limit quoty dla konta ftp</member>
 		    <member>quota_sql_limit - limit quoty dla konta sql</member>
 		    <member>description - opis</member>
+		    <member>disabled - status taryfy: w³±czona/wy³±czona (0/1)</member>
                </simplelist>
           </sect2>
           <sect2 id="promotions">

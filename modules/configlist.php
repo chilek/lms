@@ -277,6 +277,14 @@ function GetConfigList($order='var,asc', $section='', $search='')
 					$config[$idx]['description'] = trans('Documents type. You can use "html" or "pdf". Default: html.');
 				break;
 
+				case 'hide_toolbar':
+					$config[$idx]['description'] = trans('Hide toolbar from user interface. Default: false.');
+				break;
+
+				case 'logging':
+					$config[$idx]['description'] = trans('Does this LMS have transaction log support (not opensource). Default: false.');
+				break;
+
 				default:
 					$config[$idx]['description'] = trans('Unknown option. No description.');
 				break;
@@ -525,6 +533,8 @@ function GetConfigList($order='var,asc', $section='', $search='')
 				$config[$idx]['description'] = trans('Unknown option. No description.');
 			break;
 		} //end: section
+		if (!empty($config[$idx]['usercomment']))
+			$config[$idx]['usercomment'] = str_replace("\n", '<br>', $config[$idx]['usercomment']);
 	} //end: foreach
 
 	$config['total'] = sizeof($config);

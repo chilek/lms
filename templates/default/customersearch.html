@@ -4,18 +4,53 @@
 {include file="calendar_js.html"}
 <SCRIPT type="text/javascript">
 <!-- 
-	function PrintList()
-	{
+	function PrintList() {
 		document.customersearch.action = "?m=customersearch&search=1&print=1";
 		document.customersearch.target = "_BLANK";
 		document.customersearch.submit();
 	}
 
-	function Search()
-	{
+	function ExportCSV() {
+		document.customersearch.action = "?m=customersearch&search=1&export=1";
+		document.customersearch.target = "_BLANK";
+		document.customersearch.submit();
+	}
+
+	function Search() {
 		document.customersearch.action = "?m=customersearch&search=1";
 		document.customersearch.target = "";
 		document.customersearch.submit();
+	}
+
+	function change_linktype(linktype) {
+		var options = document.getElementById('linktechnology').options;
+		while (options.length)
+			options.remove(0);
+		options.add(new Option('{trans("- none -")}', 0));
+		switch (linktype) {
+			case '':
+				{foreach array(0, 1, 2) as $linktype}
+					{foreach $_LINKTECHNOLOGIES[$linktype] as $linktechnologyidx => $linktechnology}
+					options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+					{/foreach}
+				{/foreach}
+				break;
+			case '0':
+				{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
+				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+				{/foreach}
+				break;
+			case '1':
+				{foreach $_LINKTECHNOLOGIES[1] as $linktechnologyidx => $linktechnology}
+				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+				{/foreach}
+				break;
+			case '2':
+				{foreach $_LINKTECHNOLOGIES[2] as $linktechnologyidx => $linktechnology}
+				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+				{/foreach}
+				break;
+		}
 	}
 //-->
 </SCRIPT>
@@ -162,10 +197,25 @@
 			<IMG src="img/netdev.gif" alt=""> {trans("Link type:")}
 		</TD>
 		<TD style="width: 99%;">
-			<SELECT SIZE="1" name="search[linktype]">
+			<SELECT SIZE="1" name="search[linktype]" onchange="change_linktype(this.options[this.selectedIndex].value)">
 				<OPTION VALUE="">{trans("- all -")}</OPTION>
 				{foreach from=$_LINKTYPES item=item key=key}
 					<OPTION VALUE="{$key}">{$item}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR>
+		<TD style="width: 1%;" class="bold nobr">
+			<IMG src="img/netdev.gif" alt=""> {trans("Link technology:")}
+		</TD>
+		<TD style="width: 99%;">
+			<SELECT SIZE="1" name="search[linktechnology]" id="linktechnology">
+				<OPTION VALUE="">{trans("- all -")}</OPTION>
+				{foreach array(0, 1, 2) as $linktype}
+					{foreach $_LINKTECHNOLOGIES[$linktype] as $linktechnologyidx => $linktechnology}
+					<OPTION VALUE="{$linktechnologyidx}">{$linktechnology}</OPTION>
+					{/foreach}
 				{/foreach}
 			</SELECT>
 		</TD>
@@ -192,6 +242,19 @@
 				<OPTION VALUE="" SELECTED>{trans("- all -")}</OPTION>
 				{foreach from=$tariffs item=item}
 				 	<OPTION VALUE="{$item.id}">{$item.name}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR>
+		<TD style="width: 1%;" class="bold nobr">
+			<IMG src="img/money.gif" alt=""> {trans("Tariff type:")}
+		</TD>
+		<TD style="width: 99%;">
+			<SELECT SIZE="1" name="search[tarifftype]">
+				<OPTION VALUE="" SELECTED>{trans("- all -")}</OPTION>
+				{foreach $_TARIFFTYPES as $id => $name}
+				 	<OPTION VALUE="{$id}">{$name}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
@@ -303,6 +366,7 @@
 	<TR>
 		<TD style="width: 100%;" class="text-right" colspan="2">
 			<A accesskey="S" href="javascript:Search();">{trans("Search")} <IMG src="img/search.gif" alt=""></A>&nbsp;
+			<A href="javascript:ExportCSV();">{trans("Download (CSV)")} <IMG src="img/save.gif" alt=""></A>&nbsp;
 			<A href="javascript:PrintList();">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
 		</TD>
 	</TR>

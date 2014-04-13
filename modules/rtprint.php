@@ -118,7 +118,7 @@ switch($type)
     				$where[] = 'rttickets.state = '.intval($status);
 		}
 
-    		$list = $DB->GetAll('SELECT rttickets.id, createtime, customerid, subject, requestor, '
+    		$list = $DB->GetAllByKey('SELECT rttickets.id, createtime, customerid, subject, requestor, '
 			.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername '
 			.(!empty($_POST['contacts']) || !empty($_GET['contacts'])
 				? ', address, (SELECT phone
@@ -129,7 +129,7 @@ switch($type)
 			LEFT JOIN customers ON (customerid = customers.id)
 			WHERE state != '.RT_RESOLVED
 			.(isset($where) ? ' AND '.implode(' AND ', $where) : '')
-			.' ORDER BY createtime');
+			.' ORDER BY createtime', 'id');
 
 		if ($list && $extended)
 		{

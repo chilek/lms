@@ -22,21 +22,9 @@
 					<TD width="1%">
 					    <IMG src="img/options.gif" alt="">
 					</TD>
-					<TD width="98%">
-					    {trans("Cutoff suspending:")}
-					    <SELECT name="cutoffstop" {tip text="Select days number of cutoff suspending"}>
-						<OPTION value="0"{if !$customerinfo.cutoffstopnum} selected{/if}>0</OPTION>
-						<OPTION value="1"{if $customerinfo.cutoffstopnum==1} selected{/if}>1</OPTION>
-						<OPTION value="2"{if $customerinfo.cutoffstopnum==2} selected{/if}>2</OPTION>
-						<OPTION value="3"{if $customerinfo.cutoffstopnum==3} selected{/if}>3</OPTION>
-						<OPTION value="4"{if $customerinfo.cutoffstopnum==4} selected{/if}>4</OPTION>
-						<OPTION value="5"{if $customerinfo.cutoffstopnum==5} selected{/if}>5</OPTION>
-						<OPTION value="6"{if $customerinfo.cutoffstopnum==6} selected{/if}>6</OPTION>
-						<OPTION value="7"{if $customerinfo.cutoffstopnum==7} selected{/if}>7</OPTION>
-						<OPTION value="14"{if $customerinfo.cutoffstopnum==14} selected{/if}>14</OPTION>
-						<OPTION value="21"{if $customerinfo.cutoffstopnum==21} selected{/if}>21</OPTION>
-						<OPTION value="30"{if $customerinfo.cutoffstopnum==30} selected{/if}>30</OPTION>
-					    </SELECT>
+					<TD style="width: 98%;">
+						{trans("Cutoff suspending:")}
+						<INPUT type="text" name="cutoffstop" id="cutoffstop" {if $customerinfo.cutoffstop}value="{$customerinfo.cutoffstop|date_format:"%Y/%m/%d"}"{/if} size="10" onclick="cal1.popup()" {tip text="Select date of cutoff suspending (optional)" trigger="cutoffstop"}>
 					</TD>
 					<TD width="1%" NOWRAP align="RIGHT">
 						<A href="javascript: document.cutoffstopaction.submit()">{trans("Submit")} <img src="img/save.gif" alt=""></a>
@@ -68,17 +56,17 @@
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--
-if(getCookie('customeractions') == '1')
-{
+if (getCookie('customeractions') == '1')
 	document.getElementById('customeractions').style.display = '';
-}
 
-function switchbox(id)
-{
+var cal1 = new calendar(document.forms['cutoffstopaction'].elements['cutoffstop']);
+cal1.time_comp = false;
+
+function switchbox(id) {
 	var elem = document.getElementById(id);
-	if((elem.name == 'setwarnings[warnon]') && elem.checked) 
+	if ((elem.name == 'setwarnings[warnon]') && elem.checked)
 		document.warningaction.elements['setwarnings[warnoff]'].checked = false;
-	if((elem.name == 'setwarnings[warnoff]') && elem.checked) 
+	if ((elem.name == 'setwarnings[warnoff]') && elem.checked)
 		document.warningaction.elements['setwarnings[warnon]'].checked = false;
 }
 //-->

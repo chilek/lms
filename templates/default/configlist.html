@@ -64,7 +64,7 @@
 		</TD>
 		<TD OnClick="return self.location.href='?m=configedit&id={$configlist[configlist].id}';">
 			{$configlist[configlist].description|truncate:400:"..."}
-			{if $configlist[configlist].usercomment != ''}<BR><SPAN class="bold">{trans("Comment:")}</SPAN> {$configlist[configlist].usercomment|truncate:400:"..."}{/if}
+			{if $configlist[configlist].usercomment != ''}<BR><SPAN class="bold">{trans("Comment:")}</SPAN> {$configlist[configlist].usercomment|truncate:1000:"..."}{/if}
 		</TD>
 		<TD class="text-right">
                         <SPAN class="nobr">

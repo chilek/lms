@@ -990,6 +990,10 @@ class LMS {
 							$searchargs[] = 'EXISTS (SELECT 1 FROM nodes
 								WHERE ownerid = c.id AND linktype = ' . intval($value) . ')';
 							break;
+						case 'linktechnology':
+							$searchargs[] = 'EXISTS (SELECT 1 FROM nodes
+								WHERE ownerid = c.id AND linktechnology = ' . intval($value) . ')';
+							break;
 						case 'linkspeed':
 							$searchargs[] = 'EXISTS (SELECT 1 FROM nodes
 								WHERE ownerid = c.id AND linkspeed = ' . intval($value) . ')';
@@ -1013,6 +1017,14 @@ class LMS {
 							AND (datefrom <= ?NOW? OR datefrom = 0) 
 							AND (dateto >= ?NOW? OR dateto = 0)
 							AND (tariffid IN (' . $value . ')))';
+							break;
+						case 'tarifftype':
+							$searchargs[] = 'EXISTS (SELECT 1 FROM assignments a 
+							JOIN tariffs t ON t.id = a.tariffid
+							WHERE a.customerid = c.id
+							AND (datefrom <= ?NOW? OR datefrom = 0) 
+							AND (dateto >= ?NOW? OR dateto = 0)
+							AND (t.type = ' . intval($value) . '))';
 							break;
 						default:
 							$searchargs[] = "$key ?LIKE? " . $this->DB->Escape("%$value%");
@@ -1486,6 +1498,7 @@ class LMS {
 			'chkmac' => $nodedata['chkmac'],
 			'halfduplex' => $nodedata['halfduplex'],
 			'linktype' => isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
+			'linktechnology' => isset($nodedata['linktechnology']) ? intval($nodedata['linktechnology']) : 0,
 			'linkspeed' => isset($nodedata['linkspeed']) ? intval($nodedata['linkspeed']) : 100000,
 			'port' => isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
 			'nas' => isset($nodedata['nas']) ? $nodedata['nas'] : 0,
@@ -1498,8 +1511,8 @@ class LMS {
 				ipaddr=inet_aton(?), passwd=?, netdev=?, moddate=?NOW?,
 				modid=?, access=?, warning=?, ownerid=?, info=?, location=?,
 				location_city=?, location_street=?, location_house=?, location_flat=?,
-				chkmac=?, halfduplex=?, linktype=?, linkspeed=?, port=?, nas=?,
-				longitude=?, latitude=?, netid=?
+				chkmac=?, halfduplex=?, linktype=?, linktechnology=?, linkspeed=?,
+				port=?, nas=?, longitude=?, latitude=?, netid=?
 				WHERE id=?', array_values($args));
 
 		if ($this->SYSLOG) {
@@ -1950,6 +1963,7 @@ class LMS {
 			'location_house' => $nodedata['location_house'] ? $nodedata['location_house'] : null,
 			'location_flat' => $nodedata['location_flat'] ? $nodedata['location_flat'] : null,
 			'linktype' => isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
+			'linktechnology' => isset($nodedata['linktechnology']) ? intval($nodedata['linktechnology']) : 0,
 			'linkspeed' => isset($nodedata['linkspeed']) ? intval($nodedata['linkspeed']) : 100000,
 			'port' => isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
 			'chkmac' => $nodedata['chkmac'],
@@ -1963,10 +1977,10 @@ class LMS {
 		if ($this->DB->Execute('INSERT INTO nodes (name, ipaddr, ipaddr_pub, ownerid,
 			passwd, creatorid, creationdate, access, warning, info, netdev,
 			location, location_city, location_street, location_house, location_flat,
-			linktype, linkspeed, port, chkmac, halfduplex, nas, longitude, latitude,
-			netid)
+			linktype, linktechnology, linkspeed, port, chkmac, halfduplex, nas,
+			longitude, latitude, netid)
 			VALUES (?, inet_aton(?), inet_aton(?), ?, ?, ?,
-			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
+			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
 			$id = $this->DB->GetLastInsertID('nodes');
 
 			// EtherWerX support (devices have some limits)
@@ -2123,8 +2137,8 @@ class LMS {
 	}
 
 	function GetNetDevLinkedNodes($id) {
-		return $this->DB->GetAll('SELECT n.id AS id, n.name AS name, linktype, linkspeed, ipaddr, 
-			inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, 
+		return $this->DB->GetAll('SELECT n.id AS id, n.name AS name, linktype, linktechnology, linkspeed,
+			ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, 
 			netdev, port, ownerid,
 			' . $this->DB->Concat('c.lastname', "' '", 'c.name') . ' AS owner,
 			net.name AS netname
@@ -2135,21 +2149,23 @@ class LMS {
 			ORDER BY n.name ASC', array($id));
 	}
 
-	function NetDevLinkNode($id, $devid, $type = 0, $speed = 100000, $port = 0) {
+	function NetDevLinkNode($id, $devid, $type = 0, $technology = 0, $speed = 100000, $port = 0) {
 		global $SYSLOG_RESOURCE_KEYS;
 
 		$args = array(
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $devid,
 			'linktype' => intval($type),
+			'linktechnology' => intval($technology),
 			'linkspeed' => intval($speed),
 			'port' => intval($port),
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $id,
 		);
-		$res = $this->DB->Execute('UPDATE nodes SET netdev=?, linktype=?, linkspeed=?, port=?
-			 WHERE id=?', array_values($args));
+		$res = $this->DB->Execute('UPDATE nodes SET netdev=?, linktype=?,
+			linktechnology=?, linkspeed=?, port=?
+			WHERE id=?', array_values($args));
 		if ($this->SYSLOG && $res) {
 			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] =
-				$this->DB->GetOne('SELECT ownerid FROM nodes WHERE id=?', $id);
+				$this->DB->GetOne('SELECT ownerid FROM nodes WHERE id=?', array($id));
 			$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
 				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
 					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV],
@@ -2158,10 +2174,11 @@ class LMS {
 		return $res;
 	}
 
-	function SetNetDevLinkType($dev1, $dev2, $type = 0, $speed = 100000) {
+	function SetNetDevLinkType($dev1, $dev2, $type = 0, $technology = 0, $speed = 100000) {
 		global $SYSLOG_RESOURCE_KEYS;
 
-		$res = $this->DB->Execute('UPDATE netlinks SET type=?, speed=? WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($type, $speed, $dev1, $dev2, $dev1, $dev2));
+		$res = $this->DB->Execute('UPDATE netlinks SET type=?, technology=?, speed=? WHERE (src=? AND dst=?) OR (dst=? AND src=?)',
+			array($type, $technology, $speed, $dev1, $dev2, $dev1, $dev2));
 		if ($this->SYSLOG && $res) {
 			$netlink = $this->DB->GetRow('SELECT id, src, dst FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($dev1, $dev2, $dev1, $dev2));
 			$args = array(
@@ -2179,10 +2196,11 @@ class LMS {
 		return $res;
 	}
 
-	function SetNodeLinkType($node, $type = 0, $speed = 100000) {
+	function SetNodeLinkType($node, $type = 0, $technology = 0, $speed = 100000) {
 		global $SYSLOG_RESOURCE_KEYS;
 
-		$res = $this->DB->Execute('UPDATE nodes SET linktype=?, linkspeed=? WHERE id=?', array($type, $speed, $node));
+		$res = $this->DB->Execute('UPDATE nodes SET linktype=?, linktechnology=?, linkspeed=? WHERE id=?',
+			array($type, $technology, $speed, $node));
 		if ($this->SYSLOG && $res) {
 			$nodedata = $this->DB->GetRow('SELECT ownerid, netdev FROM nodes WHERE id=?', array($node));
 			$args = array(
@@ -2190,6 +2208,7 @@ class LMS {
 				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $nodedata['ownerid'],
 				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $nodedata['netdev'],
 				'linktype' => $type,
+				'linktechnology' => $technology,
 				'linkspeed' => $speed,
 			);
 			$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
@@ -2226,7 +2245,7 @@ class LMS {
 			WHERE a.customerid=? '
 				. (!$show_expired ? 'AND (a.dateto > ' . $now . ' OR a.dateto = 0)
 			    AND (a.at >= ' . $now . ' OR a.at < 531)' : '')
-				. ' ORDER BY t.name, a.datefrom, value', array($id))) {
+				. ' ORDER BY a.datefrom, t.name, value', array($id))) {
 			foreach ($assignments as $idx => $row) {
 				switch ($row['period']) {
 					case DISPOSABLE:
@@ -2655,10 +2674,10 @@ class LMS {
 		$number = $invoice['invoice']['number'];
 		$type = $invoice['invoice']['type'];
 		
-		$division = $this->DB->GetRow('SELECT name, address, city, zip, countryid, ten, regon,
+		$division = $this->DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
 				account, inv_header, inv_footer, inv_author, inv_cplace 
 				FROM divisions WHERE id = ? ;',array($invoice['customer']['divisionid']));
-		
+
 		$args = array(
 			'number' => $number,
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $invoice['invoice']['numberplanid'] ? $invoice['invoice']['numberplanid'] : 0,
@@ -2678,6 +2697,7 @@ class LMS {
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $invoice['customer']['countryid'],
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $invoice['customer']['divisionid'],
 			'div_name' => ($division['name'] ? $division['name'] : ''),
+			'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),
 			'div_address' => ($division['address'] ? $division['address'] : ''), 
 			'div_city' => ($division['city'] ? $division['city'] : ''), 
 			'div_zip' => ($division['zip'] ? $division['zip'] : ''),
@@ -2690,13 +2710,13 @@ class LMS {
 			'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''), 
 			'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
 		);
-		
+
 		$this->DB->Execute('INSERT INTO documents (number, numberplanid, type,
 			cdate, sdate, paytime, paytype, userid, customerid, name, address, 
 			ten, ssn, zip, city, countryid, divisionid,
-			div_name, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
+			div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 			div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 		$iid = $this->DB->GetLastInsertID('documents');
 		if ($this->SYSLOG) {
 			unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
@@ -2846,7 +2866,7 @@ class LMS {
 				d.ten, d.ssn, d.cdate, d.sdate, d.paytime, d.paytype, d.numberplanid,
 				d.closed, d.reference, d.reason, d.divisionid,
 				(SELECT name FROM users WHERE id = d.userid) AS user, n.template,
-				d.div_name AS division_name, d.div_name AS division_shortname,
+				d.div_name AS division_name, d.div_shortname AS division_shortname,
 				d.div_address AS division_address, d.div_zip AS division_zip,
 				d.div_city AS division_city, d.div_countryid AS division_countryid, 
 				d.div_ten AS division_ten, d.div_regon AS division_regon, d.div_account AS account,
@@ -2965,7 +2985,7 @@ class LMS {
 				d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
 				d.ten, d.ssn, d.cdate, d.numberplanid, d.closed, d.divisionid, d.paytime, 
 				(SELECT name FROM users WHERE id = d.userid) AS user, n.template,
-				d.div_name AS division_name, d.div_name AS division_shortname,
+				d.div_name AS division_name, d.div_shortname AS division_shortname,
 				d.div_address AS division_address, d.div_zip AS division_zip,
 				d.div_city AS division_city, d.div_countryid AS division_countryid, 
 				d.div_ten AS division_ten, d.div_regon AS division_regon, d.div_account AS account,
@@ -3993,7 +4013,7 @@ class LMS {
 			while (in_array($i, (array) $destnodes))
 				$i++;
 
-			if ($this->DB->Execute('UPDATE nodes SET ipaddr=? WHERE netid=? AND ipaddr=?', array($i, $dst, $ip))) {
+			if ($this->DB->Execute('UPDATE nodes SET ipaddr=?, netid=? WHERE netid=? AND ipaddr=?', array($i, $dst, $src, $ip))) {
 				if ($this->SYSLOG) {
 					$node = $this->DB->GetRow('SELECT id, ownerid FROM nodes WHERE netid = ? AND ipaddr = ?',
 						array($dst, $ip));
@@ -4008,20 +4028,18 @@ class LMS {
 							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
 							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK]));
 				}
-			} elseif ($this->DB->Execute('UPDATE nodes SET ipaddr_pub=? WHERE netid=? AND ipaddr_pub=?', array($i, $dst, $ip))) {
+			} elseif ($this->DB->Execute('UPDATE nodes SET ipaddr_pub=? WHERE ipaddr_pub=?', array($i, $ip))) {
 				if ($this->SYSLOG) {
 					$node = $this->DB->GetRow('SELECT id, ownerid FROM nodes WHERE netid = ? AND ipaddr_pub = ?',
 						array($dst, $ip));
 					$args = array(
 						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $node['id'],
 						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $node['ownerid'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK] => $dst,
 						'ipaddr' => $i,
 					);
 					$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
 						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK]));
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
 				}
 			}
 
@@ -4133,19 +4151,19 @@ class LMS {
 	}
 
 	function GetNetDevLinkType($dev1, $dev2) {
-		return $this->DB->GetRow('SELECT type, speed FROM netlinks 
+		return $this->DB->GetRow('SELECT type, technology, speed FROM netlinks 
 			WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($dev1, $dev2, $dev1, $dev2));
 	}
 
 	function GetNetDevConnectedNames($id) {
 		return $this->DB->GetAll('SELECT d.id, d.name, d.description,
 			d.location, d.producer, d.ports, l.type AS linktype,
-			l.speed AS linkspeed, l.srcport, l.dstport,
+			l.technology AS linktechnology, l.speed AS linkspeed, l.srcport, l.dstport,
 			(SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id) 
 			+ (SELECT COUNT(*) FROM nodes WHERE netdev = d.id AND ownerid > 0)
 			AS takenports 
 			FROM netdevices d
-			JOIN (SELECT DISTINCT type, speed, 
+			JOIN (SELECT DISTINCT type, technology, speed, 
 				(CASE src WHEN ? THEN dst ELSE src END) AS dev, 
 				(CASE src WHEN ? THEN dstport ELSE srcport END) AS srcport, 
 				(CASE src WHEN ? THEN srcport ELSE dstport END) AS dstport 
@@ -4435,7 +4453,7 @@ class LMS {
 			WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($dev1, $dev2, $dev1, $dev2));
 	}
 
-	function NetDevLink($dev1, $dev2, $type = 0, $speed = 100000, $sport = 0, $dport = 0) {
+	function NetDevLink($dev1, $dev2, $type = 0, $technology = 0, $speed = 100000, $sport = 0, $dport = 0) {
 		global $SYSLOG_RESOURCE_KEYS;
 
 		if ($dev1 != $dev2)
@@ -4444,13 +4462,14 @@ class LMS {
 					'src_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $dev1,
 					'dst_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $dev2,
 					'type' => $type,
+					'technology' => $technology,
 					'speed' => $speed,
 					'srcport' => intval($sport),
 					'dstport' => intval($dport)
 				);
 				$res = $this->DB->Execute('INSERT INTO netlinks 
-					(src, dst, type, speed, srcport, dstport) 
-					VALUES (?, ?, ?, ?, ?, ?)', array_values($args));
+					(src, dst, type, technology, speed, srcport, dstport) 
+					VALUES (?, ?, ?, ?, ?, ?, ?)', array_values($args));
 				if ($this->SYSLOG && $res) {
 					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETLINK]] = $this->DB->GetLastInsertID('netlinks');
 					$this->SYSLOG->AddMessage(SYSLOG_RES_NETLINK, SYSLOG_OPER_ADD, $args,
@@ -4746,17 +4765,17 @@ class LMS {
 			return NULL;
 		foreach ($categories as $category)
 			$catids[] = $category['id'];
-		return $this->DB->GetAll('SELECT tc.categoryid AS id, c.name,
+		return $this->DB->GetAll('SELECT c.id AS id, c.name,
 				    COUNT(CASE state WHEN ' . RT_NEW . ' THEN 1 END) AS new,
 				    COUNT(CASE state WHEN ' . RT_OPEN . ' THEN 1 END) AS opened,
 				    COUNT(CASE state WHEN ' . RT_RESOLVED . ' THEN 1 END) AS resolved,
 				    COUNT(CASE state WHEN ' . RT_DEAD . ' THEN 1 END) AS dead,
 				    COUNT(CASE WHEN state != ' . RT_RESOLVED . ' THEN 1 END) AS unresolved
-				    FROM rttickets t
-				    LEFT JOIN rtticketcategories tc ON t.id = tc.ticketid
-				    LEFT JOIN rtcategories c ON c.id = tc.categoryid
-				    WHERE tc.categoryid IN (' . implode(',', $catids) . ')
-				    GROUP BY tc.categoryid, c.name
+				    FROM rtcategories c  
+				    LEFT JOIN rtticketcategories tc ON c.id = tc.categoryid
+				    LEFT JOIN rttickets t ON t.id = tc.ticketid
+				    WHERE c.id IN (' . implode(',', $catids) . ')
+				    GROUP BY c.id, c.name
 				    ORDER BY c.name');
 	}
 
@@ -5154,21 +5173,22 @@ class LMS {
 		if (empty($headers['Date']))
 			$headers['Date'] = date('r');
 
-		if ($files) {
+		if ($files || $headers['X-LMS-Format'] == 'html') {
 			$boundary = '-LMS-' . str_replace(' ', '.', microtime());
 			$headers['Content-Type'] = "multipart/mixed;\n  boundary=\"" . $boundary . '"';
 			$buf = "\nThis is a multi-part message in MIME format.\n\n";
 			$buf .= '--' . $boundary . "\n";
-			$buf .= "Content-Type: text/plain; charset=UTF-8\n\n";
+			$buf .= "Content-Type: text/" . ($headers['X-LMS-Format'] == 'html' ? "html" : "plain") . "; charset=UTF-8\n\n";
 			$buf .= $body . "\n";
-			while (list(, $chunk) = each($files)) {
-				$buf .= '--' . $boundary . "\n";
-				$buf .= "Content-Transfer-Encoding: base64\n";
-				$buf .= "Content-Type: " . $chunk['content_type'] . "; name=\"" . $chunk['filename'] . "\"\n";
-				$buf .= "Content-Description:\n";
-				$buf .= "Content-Disposition: attachment; filename=\"" . $chunk['filename'] . "\"\n\n";
-				$buf .= chunk_split(base64_encode($chunk['data']), 60, "\n");
-			}
+			if ($files)
+				while (list(, $chunk) = each($files)) {
+					$buf .= '--' . $boundary . "\n";
+					$buf .= "Content-Transfer-Encoding: base64\n";
+					$buf .= "Content-Type: " . $chunk['content_type'] . "; name=\"" . $chunk['filename'] . "\"\n";
+					$buf .= "Content-Description:\n";
+					$buf .= "Content-Disposition: attachment; filename=\"" . $chunk['filename'] . "\"\n\n";
+					$buf .= chunk_split(base64_encode($chunk['data']), 60, "\n");
+				}
 			$buf .= '--' . $boundary . '--';
 		} else {
 			$headers['Content-Type'] = 'text/plain; charset=UTF-8';
@@ -5240,28 +5260,30 @@ class LMS {
 		else
 			$service = $this->CONFIG['sms']['service'];
 
+		if (in_array($service, array('smscenter', 'serwersms', 'smsapi'))) {
+			if (!function_exists('curl_init'))
+				return trans('Curl extension not loaded!');
+			if (empty($this->CONFIG['sms']['username']))
+				return trans('SMSCenter username not set!');
+			if (empty($this->CONFIG['sms']['password']))
+				return trans('SMSCenter username not set!');
+			if (empty($this->CONFIG['sms']['from']))
+				return trans('SMS "from" not set!');
+			else
+				$from = $this->CONFIG['sms']['from'];
+
+			if (strlen($number) > 16 || strlen($number) < 4)
+				return trans('Wrong phone number format!');
+		}
+
 		switch ($service) {
 			case 'smscenter':
-				if (!function_exists('curl_init'))
-					return trans('Curl extension not loaded!');
-				if (empty($this->CONFIG['sms']['username']))
-					return trans('SMSCenter username not set!');
-				if (empty($this->CONFIG['sms']['password']))
-					return trans('SMSCenter username not set!');
-				if (empty($this->CONFIG['sms']['from']))
-					return trans('SMS "from" not set!');
-				else
-					$from = $this->CONFIG['sms']['from'];
-
 				if ($msg_len < 160)
 					$type_sms = 'sms';
 				else if ($msg_len <= 459)
 					$type_sms = 'concat';
 				else
 					return trans('SMS Message too long!');
-
-				if (strlen($number) > 16 || strlen($number) < 4)
-					return trans('Wrong phone number format!');
 
 				$type = !empty($this->CONFIG['sms']['smscenter_type']) ? $this->CONFIG['sms']['smscenter_type'] : 'dynamic';
 				$message .= ($type == 'static') ? "\n\n" . $from : '';
@@ -5355,6 +5377,91 @@ class LMS {
 					return trans('Unable to create file $a!', $filename);
 
 				return MSG_NEW;
+				break;
+			case 'serwersms':
+				$args = array(
+					'akcja' => 'wyslij_sms',
+					'login' => $this->CONFIG['sms']['username'],
+					'haslo' => $this->CONFIG['sms']['password'],
+					'numer' => $number,
+					'wiadomosc' => $message,
+					'nadawca' => $from,
+				);
+				if ($messageid)
+					$args['usmsid'] = $messageid;
+				if (!empty($this->CONFIG['sms']['fast']))
+					$args['speed'] = 1;
+
+				$encodedargs = http_build_query($args);
+
+				$curl = curl_init();
+				curl_setopt($curl, CURLOPT_URL, 'https://api1.serwersms.pl/zdalnie/index.php');
+				curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+				curl_setopt($curl, CURLOPT_POST, 1);
+				curl_setopt($curl, CURLOPT_POSTFIELDS, $encodedargs);
+				curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+
+				$page = curl_exec($curl);
+				if (curl_error($curl))
+					return 'SMS communication error. ' . curl_error($curl);
+
+				$info = curl_getinfo($curl);
+				if ($info['http_code'] != '200')
+					return 'SMS communication error. Http code: ' . $info['http_code'];
+
+				curl_close($curl);
+
+				$lines = explode("\n", $page);
+				foreach ($lines as $lineidx => $line)
+					$lines[$lineidx] = trim($line);
+				$page = implode('', $lines);
+
+				if (preg_match('/<Blad>([^<]*)<\/Blad>/i', $page, $matches))
+					return 'Serwersms error: ' . $matches[1];
+
+				if (!preg_match('/<Skolejkowane><SMS id="[^"]+" numer="[^"]+" godzina_skolejkowania="[^"]+"\/><\/Skolejkowane>/', $page))
+					return 'Serwersms error: message has not been sent!';
+
+				return MSG_SENT;
+				break;
+			case 'smsapi':
+				$args = array(
+					'username' => $this->CONFIG['sms']['username'],
+					'password' => md5($this->CONFIG['sms']['password']),
+					'to' => $number,
+					'message' => $message,
+					'from' => !empty($from) ? $from : 'ECO',
+				);
+				if (!empty($this->CONFIG['sms']['fast']))
+					$args['fast'] = 1;
+				if ($messageid)
+					$args['idx'] = $messageid;
+
+				$encodedargs = http_build_query($args);
+
+				$curl = curl_init();
+				curl_setopt($curl, CURLOPT_URL, 'https://ssl.smsapi.pl/sms.do');
+				curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+				curl_setopt($curl, CURLOPT_POST, 1);
+				curl_setopt($curl, CURLOPT_POSTFIELDS, $encodedargs);
+				curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+
+				$page = curl_exec($curl);
+				if (curl_error($curl))
+					return 'SMS communication error. ' . curl_error($curl);
+
+				$info = curl_getinfo($curl);
+				if ($info['http_code'] != '200')
+					return 'SMS communication error. Http code: ' . $info['http_code'];
+
+				curl_close($curl);
+
+				if (preg_match('/^OK:/', $page))
+					return MSG_SENT;
+				if (preg_match('/^ERROR:([0-9]+)/', $page, $matches))
+					return 'Smsapi error: ' . $matches[1];
+
+				return 'Smsapi error: message has not been sent!';
 				break;
 			default:
 				return trans('Unknown SMS service!');
