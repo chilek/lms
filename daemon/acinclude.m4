@@ -162,7 +162,7 @@ AC_DEFUN([LOCATE_MYSQL],
     # If we have pg_config then we have pgsql
     if test -f "${MYSQL_CONFIG}"; then
         MYSQL_INC=`$MYSQL_CONFIG --include`
-        MYSQL_LIB=`$MYSQL_CONFIG --libs`
+        MYSQL_LIB=`$MYSQL_CONFIG --libs_r`
         have_mysql=yes;
     fi
 ])
@@ -212,13 +212,13 @@ AC_DEFUN([LOCATE_SNMP],
         fi
 
         # Accomodate 64-Bit Libraries
-        test -f $SNMP_DIR/lib64/libsnmp.a -o -f $SNMP_DIR/lib64/libsnmp.$ShLib       && SNMP_LIBDIR=$SNMP_DIR/lib64
-        test -f $SNMP_DIR/lib64/libnetsnmp.a -o -f $SNMP_DIR/lib64/libnetsnmp.$ShLib && SNMP_LIBDIR=$SNMP_DIR/lib64
+        test -f $SNMP_DIR/lib64/libsnmp.a -o -f $SNMP_DIR/lib64/libsnmp.so       && SNMP_LIBDIR=$SNMP_DIR/lib64
+        test -f $SNMP_DIR/lib64/libnetsnmp.a -o -f $SNMP_DIR/lib64/libnetsnmp.so && SNMP_LIBDIR=$SNMP_DIR/lib64
 
         if test -z "$SNMP_LIBDIR"; then
             # Accomodate 32-Bit Libraries
-            test -f $SNMP_DIR/lib/libsnmp.a -o -f $SNMP_DIR/lib/libsnmp.$ShLib       && SNMP_LIBDIR=$SNMP_DIR/lib
-            test -f $SNMP_DIR/lib/libnetsnmp.a -o -f $SNMP_DIR/lib/libnetsnmp.$ShLib && SNMP_LIBDIR=$SNMP_DIR/lib
+            test -f $SNMP_DIR/lib/libsnmp.a -o -f $SNMP_DIR/lib/libsnmp.so       && SNMP_LIBDIR=$SNMP_DIR/lib
+            test -f $SNMP_DIR/lib/libnetsnmp.a -o -f $SNMP_DIR/lib/libnetsnmp.so && SNMP_LIBDIR=$SNMP_DIR/lib
         fi
         if test -z "$SNMP_INCDIR"; then
             AC_MSG_ERROR(Cannot find SNMP header files under $SNMP_DIR)
@@ -239,18 +239,23 @@ AC_DEFUN([LOCATE_SNMP],
 
         # Accomodate 64-Bit Libraries
         for i in /usr /usr/local /usr/pkg /usr/snmp /opt /opt/net-snmp /opt/ucd-snmp /opt/snmp /usr/local/snmp; do
-            test -f $i/lib64/libsnmp.a -o -f $i/lib64/libsnmp.$ShLib       && SNMP_LIBDIR=$i/lib64 && break
-            test -f $i/lib64/libnetsnmp.a -o -f $i/lib64/libnetsnmp.$ShLib && SNMP_LIBDIR=$i/lib64 && break
+            test -f $i/lib64/libsnmp.a -o -f $i/lib64/libsnmp.so       && SNMP_LIBDIR=$i/lib64 && break
+            test -f $i/lib64/libnetsnmp.a -o -f $i/lib64/libnetsnmp.so && SNMP_LIBDIR=$i/lib64 && break
         done
 
         # Only check for 32 Bit libraries if the 64 bit are not found
         if test -z "$SNMP_LIBDIR"; then
             # Accomodate 32-Bit Libraries
             for i in /usr /usr/local /usr/pkg /usr/snmp /opt /opt/net-snmp /opt/ucd-snmp /opt/snmp /usr/local/snmp; do
-                test -f $i/lib/libsnmp.a -o -f $i/lib/libsnmp.$ShLib       && SNMP_LIBDIR=$i/lib && break
-                test -f $i/lib/libnetsnmp.a -o -f $i/lib/libnetsnmp.$ShLib && SNMP_LIBDIR=$i/lib && break
+                test -f $i/lib/libsnmp.a -o -f $i/lib/libsnmp.so       && SNMP_LIBDIR=$i/lib && break
+                test -f $i/lib/libnetsnmp.a -o -f $i/lib/libnetsnmp.so && SNMP_LIBDIR=$i/lib && break
             done
         fi
+
+        if test -z "$SNMP_LIBDIR"; then
+            AC_MSG_ERROR(Cannot find SNMP library files under $SNMP_DIR)
+        fi
+
         if test -z "$SNMP_INCDIR"; then
             AC_MSG_ERROR(Cannot find SNMP headers.  Use --with-snmp= to specify non-default path.)
         fi

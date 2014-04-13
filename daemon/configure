@@ -4670,10 +4670,6 @@ fi
     fi
 fi
 
-
-#AM_MISSING_PROG([YACC], [$YACC])
-#AC_PROG_YACC
-
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -16049,13 +16045,6 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
-# Checks for libraries.
-#AC_CHECK_LIB([pq], [PQconnectdb], [have_pgsql=yes])
-#AC_CHECK_LIB([mysqlclient], [mysql_real_connect],
-#  [have_mysql=yes
-#   LIBS="-lmysqlclient $LIBS"])
-
-
 # Checks for header files.
 for ac_header in arpa/inet.h fcntl.h limits.h locale.h netinet/in.h stdlib.h string.h sys/ioctl.h sys/socket.h sys/time.h syslog.h unistd.h
 do :
@@ -16930,7 +16919,7 @@ fi
     # If we have pg_config then we have pgsql
     if test -f "${MYSQL_CONFIG}"; then
         MYSQL_INC=`$MYSQL_CONFIG --include`
-        MYSQL_LIB=`$MYSQL_CONFIG --libs`
+        MYSQL_LIB=`$MYSQL_CONFIG --libs_r`
         have_mysql=yes;
     fi
 
@@ -17030,13 +17019,13 @@ if test "${with_snmp+set}" = set; then :
         fi
 
         # Accomodate 64-Bit Libraries
-        test -f $SNMP_DIR/lib64/libsnmp.a -o -f $SNMP_DIR/lib64/libsnmp.$ShLib       && SNMP_LIBDIR=$SNMP_DIR/lib64
-        test -f $SNMP_DIR/lib64/libnetsnmp.a -o -f $SNMP_DIR/lib64/libnetsnmp.$ShLib && SNMP_LIBDIR=$SNMP_DIR/lib64
+        test -f $SNMP_DIR/lib64/libsnmp.a -o -f $SNMP_DIR/lib64/libsnmp.so       && SNMP_LIBDIR=$SNMP_DIR/lib64
+        test -f $SNMP_DIR/lib64/libnetsnmp.a -o -f $SNMP_DIR/lib64/libnetsnmp.so && SNMP_LIBDIR=$SNMP_DIR/lib64
 
         if test -z "$SNMP_LIBDIR"; then
             # Accomodate 32-Bit Libraries
-            test -f $SNMP_DIR/lib/libsnmp.a -o -f $SNMP_DIR/lib/libsnmp.$ShLib       && SNMP_LIBDIR=$SNMP_DIR/lib
-            test -f $SNMP_DIR/lib/libnetsnmp.a -o -f $SNMP_DIR/lib/libnetsnmp.$ShLib && SNMP_LIBDIR=$SNMP_DIR/lib
+            test -f $SNMP_DIR/lib/libsnmp.a -o -f $SNMP_DIR/lib/libsnmp.so       && SNMP_LIBDIR=$SNMP_DIR/lib
+            test -f $SNMP_DIR/lib/libnetsnmp.a -o -f $SNMP_DIR/lib/libnetsnmp.so && SNMP_LIBDIR=$SNMP_DIR/lib
         fi
         if test -z "$SNMP_INCDIR"; then
             as_fn_error $? "Cannot find SNMP header files under $SNMP_DIR" "$LINENO" 5
@@ -17058,18 +17047,23 @@ else
 
         # Accomodate 64-Bit Libraries
         for i in /usr /usr/local /usr/pkg /usr/snmp /opt /opt/net-snmp /opt/ucd-snmp /opt/snmp /usr/local/snmp; do
-            test -f $i/lib64/libsnmp.a -o -f $i/lib64/libsnmp.$ShLib       && SNMP_LIBDIR=$i/lib64 && break
-            test -f $i/lib64/libnetsnmp.a -o -f $i/lib64/libnetsnmp.$ShLib && SNMP_LIBDIR=$i/lib64 && break
+            test -f $i/lib64/libsnmp.a -o -f $i/lib64/libsnmp.so       && SNMP_LIBDIR=$i/lib64 && break
+            test -f $i/lib64/libnetsnmp.a -o -f $i/lib64/libnetsnmp.so && SNMP_LIBDIR=$i/lib64 && break
         done
 
         # Only check for 32 Bit libraries if the 64 bit are not found
         if test -z "$SNMP_LIBDIR"; then
             # Accomodate 32-Bit Libraries
             for i in /usr /usr/local /usr/pkg /usr/snmp /opt /opt/net-snmp /opt/ucd-snmp /opt/snmp /usr/local/snmp; do
-                test -f $i/lib/libsnmp.a -o -f $i/lib/libsnmp.$ShLib       && SNMP_LIBDIR=$i/lib && break
-                test -f $i/lib/libnetsnmp.a -o -f $i/lib/libnetsnmp.$ShLib && SNMP_LIBDIR=$i/lib && break
+                test -f $i/lib/libsnmp.a -o -f $i/lib/libsnmp.so       && SNMP_LIBDIR=$i/lib && break
+                test -f $i/lib/libnetsnmp.a -o -f $i/lib/libnetsnmp.so && SNMP_LIBDIR=$i/lib && break
             done
         fi
+
+        if test -z "$SNMP_LIBDIR"; then
+            as_fn_error $? "Cannot find SNMP library files under $SNMP_DIR" "$LINENO" 5
+        fi
+
         if test -z "$SNMP_INCDIR"; then
             as_fn_error $? "Cannot find SNMP headers.  Use --with-snmp= to specify non-default path." "$LINENO" 5
         fi
