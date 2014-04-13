@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <syslog.h>
 #include <ctype.h>
+#include <stdarg.h>
 
 #include "util.h"
 
@@ -124,5 +125,26 @@ char * str_upc(const char *s)
     }
     l[ASCIILINESZ] = (char) 0;
     return l;
+}
+
+/* join vlist elements with delmimiter */
+char * va_list_join(int cnt, char * delim, va_list vl)
+{
+    int i;
+    char * result = strdup("");
+    char * arg;
+
+    for (i=0; i < cnt; i++)
+    {
+        arg = va_arg(vl, char *);
+        result = (char *) realloc(result, strlen(result) + strlen(arg));
+        strcat(result, arg);
+        if (i < cnt - 1 ) {
+            result = (char *) realloc(result, strlen(result) + strlen(delim));
+            strcat(result, delim);
+        }
+    }
+
+    return result;
 }
 

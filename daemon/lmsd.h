@@ -35,6 +35,7 @@ struct global
 	int (*db_abort)(ConnHandle *);
 	int (*db_nrows)(QueryHandle *);
 	int (*db_ncols)(QueryHandle *);
+	char * (*db_concat)(int cnt, ...);
 	char * (*db_get_data)(QueryHandle *, int, const char *);
 
 	// config  functions
@@ -49,6 +50,7 @@ struct global
 	char * (*str_concat)(const char *, const char *);
 	char * (*str_upc)(const char *);
 	char * (*str_lwc)(const char *);
+	char * (*va_list_join)(int cnt, char * delim, va_list vl);
 };
 
 struct lmsd_module

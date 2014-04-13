@@ -148,4 +148,7 @@ int db_ncols(QueryHandle *);
 /* Get column name */
 char * db_colname(QueryHandle *, int);
 
+/* concat strings specific to pgsql */
+char * db_concat(int cnt, ...);
+
 #endif
