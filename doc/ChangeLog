@@ -66,6 +66,7 @@ version ?.??.?? (????-??-??):
   - simplified installation procedure - UI loads schema if there are no tables in db [maniac]
   - optional and selectable components of promotion schemas [chilan]
   - daemon: fixed mysql 5.1 detection in configure [maniac]
+  - daemon: configure will fail if bison is not detected [maniac]
 
 version 1.11.14 (2013-03-25):
 

@@ -41,19 +41,17 @@ AC_CHECK_PROG([FLEX], [flex lex], [flex])
 AM_MISSING_PROG([LEX], [$FLEX])
 AM_PROG_LEX
 
-AC_CHECK_PROG([YACC], [yacc bison], [yacc])
-AM_MISSING_PROG([YACC], [$YACC])
 AC_PROG_YACC
+
+if test x"$YACC" = "xyacc"; then
+    AC_CHECK_PROG([YACC_EXISTS], [yacc], [yes], [no])
+    if test x"$YACC_EXISTS" != xyes; then
+        AC_MSG_ERROR([[bison/byacc/yacc not found. Please install bison]])
+    fi
+fi
 
 AC_PROG_CC
 AC_PROG_LIBTOOL
-
-# Checks for libraries.
-#AC_CHECK_LIB([pq], [PQconnectdb], [have_pgsql=yes])
-#AC_CHECK_LIB([mysqlclient], [mysql_real_connect],
-#  [have_mysql=yes
-#   LIBS="-lmysqlclient $LIBS"])
-
 
 # Checks for header files.
 AC_CHECK_HEADERS([arpa/inet.h fcntl.h limits.h locale.h netinet/in.h stdlib.h string.h sys/ioctl.h sys/socket.h sys/time.h syslog.h unistd.h])
