@@ -112,6 +112,7 @@ int main(int argc, char *argv[], char **envp)
     	g->db_get_data = &db_get_data;
 	g->db_nrows = &db_nrows;
 	g->db_ncols = &db_ncols;
+	g->db_concat = &db_concat;
 
     	g->str_replace = &str_replace;
     	g->str_save = &str_save;

@@ -356,13 +356,13 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 		g->str_replace(&query, "%devjoin", hm->join_devices ? 
 			"LEFT JOIN netdevices d ON (d.id = n.netdev) " : "");
 		g->str_replace(&query, "%devloc", hm->join_devices ? "d.location" : "''");
-#ifdef USE_PGSQL
 		g->str_replace(&query, "%custcols", hm->join_customers ?
-			", c.id AS cid, TRIM(UPPER(c.lastname) || ' ' || c.name) AS customer " : "");
-#else
-		g->str_replace(&query, "%custcols", hm->join_customers ?
-			", c.id AS cid, TRIM(CONCAT(UPPER(c.lastname), ' ', c.name)) AS customer " : "");
-#endif
+			", c.id AS cid, TRIM(%cfullname) AS customer " : "");
+
+		char * cfullname = g->db_concat(3, "UPPER(c.lastname)", "' '", "c.name");
+		g->str_replace(&query, "%cfullname", cfullname);
+		free(cfullname);
+
 		g->str_replace(&query, "%pubip", hm->share_netdev_pubip && !hm->skip_dev_ips ? 
 			"(CASE WHEN n.ipaddr_pub != 0 THEN n.ipaddr_pub "
 				"ELSE COALESCE(s.ipaddr_pub, 0) END)" : "n.ipaddr_pub");

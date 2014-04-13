@@ -492,3 +492,14 @@ char * db_colname(QueryHandle *query, int column)
     
     return query->col[column].name; 
 }
+
+/* concat strings specific to pgsql */
+char * db_concat(int cnt, ...)
+{
+    va_list vs;
+    va_start(vs, cnt);
+    char * result = va_list_join(cnt, " || ", vs);
+    va_end(vs);
+
+    return result;
+}
