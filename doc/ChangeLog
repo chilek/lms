@@ -69,6 +69,7 @@ version ?.??.?? (????-??-??):
   - daemon: configure will fail if bison is not detected [maniac]
   - daemon: fix snmp library detection [maniac]
   - daemon: add to dbdrivers db_concat function [maniac]
+  - daemon (payments, cutoff): changed usage of BROADCAST macro to database function [maniac]
 
 version 1.11.14 (2013-03-25):
 

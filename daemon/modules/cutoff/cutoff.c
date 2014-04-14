@@ -56,15 +56,15 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 
 	char *nets = strdup(" AND EXISTS (SELECT 1 FROM networks net "
 				"WHERE (%nets) "
-	                        "AND ((ipaddr > net.address AND ipaddr < ("BROADCAST")) "
-				"OR (ipaddr_pub > net.address AND ipaddr_pub < ("BROADCAST"))) "
+	                        "AND ((ipaddr > net.address AND ipaddr < broadcast(net.address, inet_aton(net.mask))) "
+				"OR (ipaddr_pub > net.address AND ipaddr_pub < broadcast(net.address, inet_aton(net.mask)))) "
 				")");
 
 	char *nets_cust = strdup(" AND EXISTS (SELECT 1 FROM nodes n, networks net "
 				"WHERE n.ownerid = c.id "
 				"AND (%nets) "
-	                        "AND ((ipaddr > net.address AND ipaddr < ("BROADCAST")) "
-				"OR (ipaddr_pub > net.address AND ipaddr_pub < ("BROADCAST"))) "
+	                        "AND ((ipaddr > net.address AND ipaddr < broadcast(net.address, inet_aton(net.mask))) "
+				"OR (ipaddr_pub > net.address AND ipaddr_pub < broadcast(net.address, inet_aton(net.mask)))) "
 				")");
 				
 	char *netnames = strdup(c->networks);
@@ -73,15 +73,15 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 
 	char *enets = strdup(" AND NOT EXISTS (SELECT 1 FROM networks net "
 				"WHERE (%enets) "
-	                        "AND ((ipaddr > net.address AND ipaddr < ("BROADCAST")) "
-				"OR (ipaddr_pub > net.address AND ipaddr_pub < ("BROADCAST"))) "
+	                        "AND ((ipaddr > net.address AND ipaddr < broadcast(net.address, inet_aton(net.mask))) "
+				"OR (ipaddr_pub > net.address AND ipaddr_pub < broadcast(net.address, inet_aton(net.mask)))) "
 				")");
 
 	char *enets_cust = strdup(" AND NOT EXISTS (SELECT 1 FROM nodes n, networks net "
 				"WHERE n.ownerid = c.id "
 				"AND (%enets) "
-	                        "AND ((ipaddr > net.address AND ipaddr < ("BROADCAST")) "
-				"OR (ipaddr_pub > net.address AND ipaddr_pub < ("BROADCAST"))) "
+	                        "AND ((ipaddr > net.address AND ipaddr < broadcast(net.address, inet_aton(net.mask))) "
+				"OR (ipaddr_pub > net.address AND ipaddr_pub < broadcast(net.address, inet_aton(net.mask)))) "
 				")");
 				
 	char *enetnames = strdup(c->excluded_networks);
