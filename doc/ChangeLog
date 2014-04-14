@@ -70,8 +70,9 @@ version ?.??.?? (????-??-??):
   - daemon: fix snmp library detection [maniac]
   - daemon: add to dbdrivers db_concat function [maniac]
   - daemon (payments, cutoff): changed usage of BROADCAST macro to database function [maniac]
-  - daemon/parser/sql: allways call database by global object [maniac]
+  - daemon/parser/sql: always call database by global object [maniac]
   - daemon/parser/sql: replace USE_PGSQL macro with driver's db_concat function [maniac]
+  - daemon/cutoff: removed unnecessary database dependent, compilation time typecast [maniac]
   
 version 1.11.14 (2013-03-25):
 

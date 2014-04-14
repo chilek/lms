@@ -405,11 +405,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 			") t ON (t.customerid = c.id) "
 			"WHERE c.deleted = 0 "
 				"AND c.cutoffstop < %NOW% "
-#ifdef USE_PGSQL
-				"AND balance * -1 > (?/100::numeric * tariff) "
-#else
 				"AND balance * -1 > (?/100 * tariff) "
-#endif
 				"%groups%egroups%nets%enets" 
 		);
 	else
