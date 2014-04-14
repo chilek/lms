@@ -37,6 +37,8 @@ struct global
 	int (*db_ncols)(QueryHandle *);
 	char * (*db_concat)(int cnt, ...);
 	char * (*db_get_data)(QueryHandle *, int, const char *);
+	char * (*db_escape)(ConnHandle *, const char *);
+	char * (*db_colname)(QueryHandle *, int);
 
 	// config  functions
 	char * (*config_getstring)(Config *, char *, char *, char *);
