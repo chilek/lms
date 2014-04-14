@@ -71,7 +71,8 @@ version ?.??.?? (????-??-??):
   - daemon: add to dbdrivers db_concat function [maniac]
   - daemon (payments, cutoff): changed usage of BROADCAST macro to database function [maniac]
   - daemon/parser/sql: allways call database by global object [maniac]
-
+  - daemon/parser/sql: replace USE_PGSQL macro with driver's db_concat function [maniac]
+  
 version 1.11.14 (2013-03-25):
 
   - Fixed nodes list in Userpanel [alec]
