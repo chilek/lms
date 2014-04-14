@@ -289,8 +289,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 	char *nets = strdup(" AND EXISTS (SELECT 1 FROM nodes, networks n "
 				"WHERE ownerid = a.customerid "
 				    "AND (%nets) "
-	                "AND ((ipaddr > address AND ipaddr < ("BROADCAST")) "
-				        "OR (ipaddr_pub > address AND ipaddr_pub < ("BROADCAST"))) )");
+	                "AND ((ipaddr > address AND ipaddr < broadcast(address, inet_aton(mask))) "
+				        "OR (ipaddr_pub > address AND ipaddr_pub < broadcast(address, inet_aton(mask)))) )");
 
 	char *netnames = strdup(p->networks);
 	char *netname = strdup(netnames);
@@ -299,8 +299,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 	char *enets = strdup(" AND NOT EXISTS (SELECT 1 FROM nodes, networks n "
 				"WHERE ownerid = a.customerid "
 				    "AND (%enets) "
-	                "AND ((ipaddr > address AND ipaddr < ("BROADCAST")) "
-				        "OR (ipaddr_pub > address AND ipaddr_pub < ("BROADCAST"))) )");
+	                "AND ((ipaddr > address AND ipaddr < broadcast(address, inet_aton(mask))) "
+				        "OR (ipaddr_pub > address AND ipaddr_pub < broadcast(address, inet_aton(mask)))) )");
 
 	char *enetnames = strdup(p->excluded_networks);
 	char *enetname = strdup(enetnames);

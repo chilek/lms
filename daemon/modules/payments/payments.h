@@ -34,10 +34,3 @@ struct plan
 	int isdefault;
 };
 
-#ifdef USE_PGSQL
-#define BROADCAST "cast(cast(address as bit(32)) | ~ cast(inet_aton(mask) as bit(32)) as bigint)"
-#define CURRVAL "SELECT currval('')"
-#else
-#define BROADCAST "address | 4294967295>>bit_count(inet_aton(mask))"
-#define LAST_INSERT_ID SELECT LAST_INSERT_ID()
-#endif
