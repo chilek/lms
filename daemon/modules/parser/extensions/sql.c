@@ -195,10 +195,16 @@ tscript_value * tscript_ext_sql_nodes()
 {
 	tscript_value *res, **res_row, *index;
 	int r, c;
-	char *colname, *value;
+	char *colname, *value, *query;
 	QueryHandle *q = NULL;
-	
-	q = g->db_query(g->conn, NODES);
+
+        query = strdup(NODES);
+
+        char * cfullname = g->db_concat(3, "c.lastname", "' '", "c.name");
+        g->str_replace(&query, "%cfullname", cfullname);
+        free(cfullname);
+
+	q = g->db_query(g->conn, query);
 
 	res = tscript_value_create_array();
 
@@ -217,7 +223,8 @@ tscript_value * tscript_ext_sql_nodes()
 		}
 	}
 	g->db_free(&q);
-	
+        free(query);
+
 	return res;
 }
 
