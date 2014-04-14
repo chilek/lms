@@ -148,3 +148,13 @@ char * va_list_join(int cnt, char * delim, va_list vl)
     return result;
 }
 
+int file_exists(const char * filename)
+{
+    FILE * file = fopen(filename, "r");
+    if (file)
+    {
+        fclose(file);
+        return 1;
+    }
+    return 0;
+}
