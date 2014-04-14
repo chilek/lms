@@ -39,11 +39,12 @@
 #include "lmsd.h"
 
 int quit = 0, runall = 0, port = 0, dontfork = 0, ssl = 0;
-char *db, *user, *passwd;
+char *configfile, *db, *user, *passwd;
 char host[255], dhost[255];
 char *pidfile = NULL;
 char *command = NULL;
 char *iopt = NULL;
+Config *ini;
 struct sigaction sa, orig;
 
 static char **Argv = NULL;
@@ -67,14 +68,19 @@ int main(int argc, char *argv[], char **envp)
 	int fval = 0, i = 0, reload = 0;
 	char *inst, *instance; 
 	FILE *pidf;
-#ifdef CONFIGFILE
-	Config *ini;
-#endif
 	openlog(PROGNAME, 0, LOG_INFO | LOG_CRIT | LOG_ERR);
-    	syslog(LOG_INFO, "LMS Daemon started.");
+	syslog(LOG_INFO, "LMS Daemon started.");
+
+        // initialize global structure
+        g = (GLOBAL *) realloc(NULL, sizeof(GLOBAL));
+        g->api_version = APIVERSION;
+        g->conn = NULL;
 
 	// initialize proces name change 
 	init_set_proc_title(argc, argv, envp);
+
+        // configuration load sequence - check if LMSini is set
+        configfile = ( getenv("LMSINI") ? getenv("LMSINI") : "/etc/lms/lms.ini" );
 
     	// read environment and command line
 	passwd = ( getenv("LMSDBPASS") ? getenv("LMSDBPASS") : "" );
@@ -90,13 +96,18 @@ int main(int argc, char *argv[], char **envp)
 	// command line arguments
 	parse_command_line(argc, argv);
 
+        // load configuration file if exist (if not it will use default parameters - only database section)
+        ini = config_load(configfile, g, dhost, "database");
+        // assign variables
+        passwd = config_getstring(ini, "database", "password", passwd);
+        db = config_getstring(ini, "database", "database", db);
+        user = config_getstring(ini, "database", "user", user);
+        port = config_getint(ini, "database", "port", port);
+        strcpy(host, config_getstring(ini, "database", "host", host));
+
 	// change process name (hide command line args)
 	set_proc_title(PROGNAME);
 
-	// initialize global structure
-	g = (GLOBAL *) realloc(NULL, sizeof(GLOBAL));
-	g->api_version = APIVERSION;
-	g->conn = NULL;
 	
 	g->db_connect = &db_connect;
 	g->db_disconnect = &db_disconnect;
@@ -210,7 +221,6 @@ int main(int argc, char *argv[], char **envp)
 		// get instances list even if reload == 0
 		// maybe we should do that once before main loop, but in
 		// this way we can change configuration without daemon restart
-#ifndef CONFIGFILE
 		if( iopt ) // from command line...
 		{
 			inst = strdup(iopt);
@@ -254,48 +264,6 @@ int main(int argc, char *argv[], char **envp)
 			}
 			db_free(&res);
 		}
-#else 
-		// read config from ini file
-		ini = config_load(g->conn, dhost, NULL);
-		if( iopt ) // from command line...
-		{
-			inst = strdup(iopt);
-			for( instance=strtok(inst," "); instance!=NULL; instance=strtok(NULL, " ") )
-			{
-				char *name = strdup(instance);
-				str_replace(&name, "\\s", " ");
-				
-				char *crontab = config_getstring(ini, name, "crontab", "");
-				if( runall || (reload && !strlen(crontab)) || (!quit && crontab_match(tt, crontab)) )
-				{
-					instances = (INSTANCE *) realloc(instances, sizeof(INSTANCE)*(i_no+1));
-					instances[i_no].name = strdup(name);
-					instances[i_no].module = strdup(config_getstring(ini, name, "module", ""));
-					instances[i_no].crontab = strdup(crontab);
-					i_no++;
-				}
-				free(name);
-			}
-			free(inst);	
-		}		
-		else // ... or from file
-		{
-			inst = strdup(config_getstring(ini, "lmsd", "instances", ""));
-			for( instance=strtok(inst," "); instance!=NULL; instance=strtok(NULL, " ") )
-			{
-				char *crontab = config_getstring(ini, instance, "crontab", "");
-				if( runall || (reload && !strlen(crontab)) || (!quit && crontab_match(tt, crontab)) )
-				{
-					instances = (INSTANCE *) realloc(instances, sizeof(INSTANCE)*(i_no+1));
-					instances[i_no].name = strdup(instance);
-					instances[i_no].module = strdup(config_getstring(ini, instance, "module", ""));
-					instances[i_no].crontab = strdup(crontab);
-					i_no++;
-				}
-			}
-		}
-		config_free(ini);
-#endif
 		db_disconnect(g->conn);
 
 		if( i_no )
@@ -343,7 +311,7 @@ int main(int argc, char *argv[], char **envp)
 					char path[strlen(LMS_LIB_DIR) + strlen(instances[i].module) + 4];
 			
 					// get instance configuration and members
-					mod->ini = config_load(g->conn, dhost, instances[i].name);
+					mod->ini = config_load(configfile, g, dhost, instances[i].name);
 					mod->instance = strdup(instances[i].name);
 					
 					// set path to module if not specified
@@ -426,6 +394,7 @@ static void parse_command_line(int argc, char **argv)
 	char revision[10];
 
 	static struct option options[] = {
+   	    { "config-file", 1, 0, 'C' },
    	    { "dbhost", 1, 0, 'h' },
 	    { "dbname", 1, 0, 'd' },
         { "dbuser", 1, 0, 'u' },
@@ -445,7 +414,7 @@ static void parse_command_line(int argc, char **argv)
 
 	sscanf(REVISION, "$Id: lmsd.c,v %s", revision);
 
-	while( (opt = getopt_long(argc, argv, "xsqrfvi:h:p:d:u:H:c:P:", options, &option_index)) != -1 )
+	while( (opt = getopt_long(argc, argv, "xsqrfvi:h:p:d:u:C:H:c:P:", options, &option_index)) != -1 )
 	{
 		switch(opt) 
 		{
@@ -480,6 +449,9 @@ static void parse_command_line(int argc, char **argv)
 		case 'u':
 			user = strdup(optarg);
 			break;
+		case 'C':
+			configfile = strdup(optarg);
+			break;
 		case 'H':
 			strcpy(dhost, optarg);
 			break;
@@ -492,6 +464,7 @@ static void parse_command_line(int argc, char **argv)
 		case 'x':
         default:
 			printf("LMS Daemon version 1.11-git (%s). Command line options:\n", revision);
+        	printf(" --config-file -C file\t\tpath to ini file (default: /etc/lms/lms.ini)\n");
         	printf(" --dbhost -h host[:port]\tdatabase host (default: 'localhost')\n");
         	printf(" --dbname -d db_name\t\tdatabase name (default: 'lms')\n");
         	printf(" --dbuser -u db_user\t\tdatabase user (default: 'lms')\n");

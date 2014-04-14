@@ -16,6 +16,8 @@
 #define APIVERSION 5
 #define PROGNAME "lmsd"
 
+typedef struct dictionary Config;
+
 struct global
 {
 	int api_version;
