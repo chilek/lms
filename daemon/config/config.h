@@ -4,14 +4,6 @@
 #define _CONFIG_H_
 
 #include "dictionary.h"
-
-#ifdef USE_MYSQL
-#include "../dbdrivers/mysql/db.h"
-#endif
-#ifdef USE_PGSQL
-#include "../dbdrivers/pgsql/db.h"
-#endif
-
 #include "../lmsd.h"
 
 /* Maximum size of variable name or section name*/
