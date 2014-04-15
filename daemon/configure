@@ -16922,7 +16922,7 @@ fi
         have_mysql=yes;
     fi
 
-     if test x$with_mysql = xyes; then
+     if test x$have_mysql = xyes; then
   MYSQL_TRUE=
   MYSQL_FALSE='#'
 else
@@ -17009,7 +17009,7 @@ fi
         fi
     fi
 
-     if test x$with_pgsql = xyes; then
+     if test x$have_pgsql = xyes; then
   PGSQL_TRUE=
   PGSQL_FALSE='#'
 else

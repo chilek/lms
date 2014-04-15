@@ -32,7 +32,7 @@ AC_DEFUN([LOCATE_POSTGRESQL],
         fi
     fi
 
-    AM_CONDITIONAL([PGSQL], [test x$with_pgsql = xyes])
+    AM_CONDITIONAL([PGSQL], [test x$have_pgsql = xyes])
 ])
 
 
@@ -168,7 +168,7 @@ AC_DEFUN([LOCATE_MYSQL],
         have_mysql=yes;
     fi
 
-    AM_CONDITIONAL([MYSQL], [test x$with_mysql = xyes])
+    AM_CONDITIONAL([MYSQL], [test x$have_mysql = xyes])
 ])
 
 
