@@ -1,7 +1,7 @@
 /* $Id$ */
 
-#ifndef _DB_H_
-#define _DB_H_
+#ifndef _DB_POSTGRES_H_
+#define _DB_POSTGRES_H_
 
 #include <libpq-fe.h>
 

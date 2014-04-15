@@ -1,7 +1,7 @@
 /* $Id$ */
 
-#ifndef _DB_H_
-#define _DB_H_
+#ifndef _DB_MYSQL_H_
+#define _DB_MYSQL_H_
 
 #include <mysql/mysql.h>
 #include <mysql/mysqld_error.h>

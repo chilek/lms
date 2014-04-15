@@ -11,6 +11,9 @@ AC_CANONICAL_HOST
 AC_PREFIX_DEFAULT([/usr/local/lmsd])
 
 AC_CONFIG_FILES(Makefile
+                dbdrivers/Makefile
+                dbdrivers/mysql/Makefile
+                dbdrivers/pgsql/Makefile
                 modules/Makefile
                 modules/parser/Makefile
                 modules/parser/lib/Makefile
@@ -72,13 +75,9 @@ LOCATE_MYSQL
 LOCATE_POSTGRESQL
 LOCATE_SNMP
 
-AS_IF([test "x$with_mysql" = "xyes" && test "x$with_pgsql" = "xyes"], AC_MSG_ERROR([You can use mysql or postgresql. You can not use both]),
-      [test "x$with_mysql" = "xyes" ], [SETUP_MYSQL],
-      [test "x$with_pgsql" = "xyes" ], [SETUP_POSTGRESQL],
-      [test "x$have_mysql" = "xyes" ], [SETUP_MYSQL],
-      [test "x$have_pgsql" = "xyes" ], [SETUP_POSTGRESQL],
-      AC_MSG_ERROR([Database include files not found. Try to use --with-mysql or --with-pgsql])
-)
+# Second detected database will be used as default (LMS_DEFAULT_DRIVER).
+AS_IF([test "x$with_pgsql" = "xyes" -o "x$have_pgsql" = "xyes" ], [SETUP_POSTGRESQL])
+AS_IF([test "x$with_mysql" = "xyes" -o "x$have_mysql" = "xyes"],  [SETUP_MYSQL])
 
 SETUP_SNMP
 SETUP_LIBGADU
@@ -109,14 +108,8 @@ AC_ARG_ENABLE([debug0],
     AS_HELP_STRING([--enable-debug0], [SQL query logging (disabled)]))
 AC_ARG_ENABLE([debug1],
     AS_HELP_STRING([--enable-debug1], [events logging (disabled)]))
-AC_ARG_WITH(lmslibdir,
-    [AC_HELP_STRING([--with-lmslibdir=DIR], [sets location of target LMS modules (PREFIX/lms/lib)])],
-    [lmslibdir="$withval"],
-    [lmslibdir=$ac_default_prefix/lib/lms]
-)
-AC_SUBST(lmslibdir)
 
-CFLAGS="$CFLAGS -DLMS_LIB_DIR=\\\"$lmslibdir\\\""
+CFLAGS="$CFLAGS -DLMS_LIB_DIR=\\\"$libdir/lmsd\\\" -DLMS_DEFAULT_DRIVER=\\\"$lmsdefaultdriver\\\" -DLMS_CONF_DIR=\\\"$sysconfdir/lms\\\""
 
 AC_MSG_NOTICE([**********************************])
 AC_MSG_NOTICE([Host os: $host_os])
