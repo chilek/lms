@@ -28,7 +28,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "db.h"
+#include "mysql.h"
 #include "../../util.h"
 
 /* Private function for SELECT query result fetching */

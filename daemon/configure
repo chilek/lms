@@ -638,13 +638,15 @@ ac_func_list=
 ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
-lmslibdir
 BUILD_PINGER_FALSE
 BUILD_PINGER_TRUE
 LIBGADU_FALSE
 LIBGADU_TRUE
-DBDRIVER
+PGSQL_FALSE
+PGSQL_TRUE
 PG_CONFIG
+MYSQL_FALSE
+MYSQL_TRUE
 MYSQL_CONFIG
 LIBOBJS
 CXXCPP
@@ -785,7 +787,6 @@ with_pgsql
 with_snmp
 enable_debug0
 enable_debug1
-with_lmslibdir
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1442,7 +1443,6 @@ Optional Packages:
   --with-pgsql=DIR        enables use of PostgreSQL database (conflits with
                           mysql, autodetection is run if DIR is not present)
   --with-snmp=DIR         SNMP include base directory [[/usr/(local/)include]]
-  --with-lmslibdir=DIR    sets location of target LMS modules (PREFIX/lms/lib)
 
 Some influential environment variables:
   CXX         C++ compiler command
@@ -3008,7 +3008,7 @@ case $host_os in *\ *) host_os=`echo "$host_os" | sed 's/ /-/g'`;; esac
 
 
 
-ac_config_files="$ac_config_files Makefile modules/Makefile modules/parser/Makefile modules/parser/lib/Makefile modules/parser/extensions/Makefile modules/cutoff/Makefile modules/dhcp/Makefile modules/dns/Makefile modules/ethers/Makefile modules/ewx-pt/Makefile modules/ewx-stm-channels/Makefile modules/ewx-stm/Makefile modules/ggnotify/Makefile modules/hostfile/Makefile modules/notify/Makefile modules/oident/Makefile modules/payments/Makefile modules/pinger/Makefile modules/system/Makefile modules/tc/Makefile modules/tc-new/Makefile modules/traffic/Makefile"
+ac_config_files="$ac_config_files Makefile dbdrivers/Makefile dbdrivers/mysql/Makefile dbdrivers/pgsql/Makefile modules/Makefile modules/parser/Makefile modules/parser/lib/Makefile modules/parser/extensions/Makefile modules/cutoff/Makefile modules/dhcp/Makefile modules/dns/Makefile modules/ethers/Makefile modules/ewx-pt/Makefile modules/ewx-stm-channels/Makefile modules/ewx-stm/Makefile modules/ggnotify/Makefile modules/hostfile/Makefile modules/notify/Makefile modules/oident/Makefile modules/payments/Makefile modules/pinger/Makefile modules/system/Makefile modules/tc/Makefile modules/tc-new/Makefile modules/traffic/Makefile"
 
 
 # Checks for programs.
@@ -16916,12 +16916,20 @@ if test "${with_mysql+set}" = set; then :
 fi
 
 
-    # If we have pg_config then we have pgsql
     if test -f "${MYSQL_CONFIG}"; then
         MYSQL_INC=`$MYSQL_CONFIG --include`
         MYSQL_LIB=`$MYSQL_CONFIG --libs_r`
         have_mysql=yes;
     fi
+
+     if test x$with_mysql = xyes; then
+  MYSQL_TRUE=
+  MYSQL_FALSE='#'
+else
+  MYSQL_TRUE='#'
+  MYSQL_FALSE=
+fi
+
 
 
     # Try to locate postgresql
@@ -16970,9 +16978,6 @@ fi
   test -n "$PG_CONFIG" && break
 done
 
-    if test -f "${PG_CONFIG}" ; then
-        PG_HOME=`${PG_CONFIG} --bindir | sed "s/\/bin$//"`
-    fi
 
     # If provided path try to use it
 
@@ -16980,25 +16985,38 @@ done
 if test "${with_pgsql+set}" = set; then :
   withval=$with_pgsql;
         if test "$withval" != "yes"  ;  then
-            PG_HOME="$withval"
-            if test ! -f "${PG_HOME}/bin/pg_config" ; then
-                as_fn_error $? "Could not find your PostgreSQL installation in ${PG_HOME}" "$LINENO" 5
+            PG_CONFIG="$withval"
+            if test ! -f "${PG_CONFIG}" ; then
+                as_fn_error $? "Could not find your PostgreSQL pg_config binary in ${PG_CONFIG}" "$LINENO" 5
             fi
         else
-            if test ! -f "${PG_HOME}/bin/pg_config" ; then
-                as_fn_error $? "Could not find your PostgreSQL installation. You might need to use the --with-pgsql=DIR configure option" "$LINENO" 5
+            if test ! -f "${PG_CONFIG}" ; then
+                as_fn_error $? "Could not find your PostgreSQL installation (pg_config not detected). You might need to use the --with-pgsql=DIR configure option" "$LINENO" 5
             fi
         fi
-        PG_CONFIG=${PG_HOME}/bin/pg_config
         with_pgsql=yes
 
 fi
 
 
-    # If we have pg_config then we have pgsql
-    if test -f "${PG_CONFIG}"; then
-        have_pgsql=yes
+
+    if test -f "${PG_CONFIG}" ; then
+        PG_INCLUDE=`${PG_CONFIG} --includedir`
+        if test -d "${PG_INCLUDE}" ; then
+            have_pgsql=yes
+        else
+            as_fn_error $? "pg_config pointed on non existent directory. Yourr PostgreSQL installation may be broken or you might need to use the --with-pgsql=DIR configure option to point right pg_config" "$LINENO" 5
+        fi
     fi
+
+     if test x$with_pgsql = xyes; then
+  PGSQL_TRUE=
+  PGSQL_FALSE='#'
+else
+  PGSQL_TRUE='#'
+  PGSQL_FALSE=
+fi
+
 
 
 
@@ -17073,68 +17091,8 @@ fi
 
 
 
-if test "x$with_mysql" = "xyes" && test "x$with_pgsql" = "xyes"; then :
-  as_fn_error $? "You can use mysql or postgresql. You can not use both" "$LINENO" 5
-elif test "x$with_mysql" = "xyes" ; then :
-
-    if test -z "$MYSQL_LIB"; then
-        as_fn_error $? "Cannot find MySQL library" "$LINENO" 5
-    fi
-
-    LDFLAGS="$MYSQL_LIB $LDFLAGS"
-    CPPFLAGS="$MYSQL_INC $CPPFLAGS"
-
-    as_ac_Lib=`$as_echo "ac_cv_lib_mysqlclient_r ''_mysql_init" | $as_tr_sh`
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for mysql_init in -lmysqlclient_r " >&5
-$as_echo_n "checking for mysql_init in -lmysqlclient_r ... " >&6; }
-if eval \${$as_ac_Lib+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lmysqlclient_r   $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char mysql_init ();
-int
-main ()
-{
-return mysql_init ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  eval "$as_ac_Lib=yes"
-else
-  eval "$as_ac_Lib=no"
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-eval ac_res=\$$as_ac_Lib
-	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
-$as_echo "$ac_res" >&6; }
-if eval test \"x\$"$as_ac_Lib"\" = x"yes"; then :
-  LIBS="-lmysqlclient_r $LIBS"
-else
-  as_fn_error $? "MySQL libraries not found" "$LINENO" 5
-
-fi
-
-
-    CFLAGS="-DUSE_MYSQL $CFLAGS"
-    DBDRIVER=mysql
-
-
-elif test "x$with_pgsql" = "xyes" ; then :
+# Second detected database will be used as default (LMS_DEFAULT_DRIVER).
+if test "x$with_pgsql" = "xyes" -o "x$have_pgsql" = "xyes" ; then :
 
 
     PG_LIB=`${PG_CONFIG} --libdir`
@@ -17344,7 +17302,6 @@ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
-    PG_INCLUDE=`${PG_CONFIG} --includedir`
     CPPFLAGS="$CPPFLAGS -I${PG_INCLUDE} -Idbdrivers/pgsql"
     PG_VERSION=`${PG_CONFIG} --version`
 
@@ -17383,13 +17340,13 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
     if test "$PG_LIBPQ" = "yes" ; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking PostgreSQL in ${PG_HOME}" >&5
-$as_echo_n "checking PostgreSQL in ${PG_HOME}... " >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking PostgreSQL" >&5
+$as_echo_n "checking PostgreSQL... " >&6; }
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: ok" >&5
 $as_echo "ok" >&6; }
     else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking PostgreSQL in ${PG_HOME}" >&5
-$as_echo_n "checking PostgreSQL in ${PG_HOME}... " >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking PostgreSQL" >&5
+$as_echo_n "checking PostgreSQL... " >&6; }
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: failed" >&5
 $as_echo "failed" >&6; }
         LDFLAGS="$PGSQL_OLD_LDFLAGS"
@@ -17402,11 +17359,12 @@ $as_echo "failed" >&6; }
     fi
 
     CFLAGS="-DUSE_PGSQL $CFLAGS"
-    DBDRIVER=pgsql
 
 
+    lmsdefaultdriver=pgsql
 
-elif test "x$have_mysql" = "xyes" ; then :
+fi
+if test "x$with_mysql" = "xyes" -o "x$have_mysql" = "xyes"; then :
 
     if test -z "$MYSQL_LIB"; then
         as_fn_error $? "Cannot find MySQL library" "$LINENO" 5
@@ -17462,283 +17420,12 @@ fi
 
 
     CFLAGS="-DUSE_MYSQL $CFLAGS"
-    DBDRIVER=mysql
-
-
-elif test "x$have_pgsql" = "xyes" ; then :
-
-
-    PG_LIB=`${PG_CONFIG} --libdir`
-    PGSQL_OLD_LDFLAGS="$LDFLAGS"
-    PGSQL_OLD_CPPFLAGS="$CPPFLAGS"
-
-
-    ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for SSL_library_init in -lssl" >&5
-$as_echo_n "checking for SSL_library_init in -lssl... " >&6; }
-if ${ac_cv_lib_ssl_SSL_library_init+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lssl  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char SSL_library_init ();
-int
-main ()
-{
-return SSL_library_init ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_ssl_SSL_library_init=yes
-else
-  ac_cv_lib_ssl_SSL_library_init=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ssl_SSL_library_init" >&5
-$as_echo "$ac_cv_lib_ssl_SSL_library_init" >&6; }
-if test "x$ac_cv_lib_ssl_SSL_library_init" = xyes; then :
-  LIB_SSL=yes
-else
-  LIB_SSL=no
-fi
-
-    ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-
-    # Solaris needs -lssl for this test
-    case "${host}" in
-        *solaris*)
-            if test "$LIB_SSL" = "yes" ; then
-                LDFLAGS="$LDFLAGS -L${PG_LIB} -lssl"
-            else
-                LDFLAGS="$LDFLAGS -L${PG_LIB}"
-            fi
-            ;;
-        *)
-            LDFLAGS="$LDFLAGS -L${PG_LIB}"
-            ;;
-    esac
-
-
-    ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for PQexec in -lpq" >&5
-$as_echo_n "checking for PQexec in -lpq... " >&6; }
-if ${ac_cv_lib_pq_PQexec+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lpq  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char PQexec ();
-int
-main ()
-{
-return PQexec ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_pq_PQexec=yes
-else
-  ac_cv_lib_pq_PQexec=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_pq_PQexec" >&5
-$as_echo "$ac_cv_lib_pq_PQexec" >&6; }
-if test "x$ac_cv_lib_pq_PQexec" = xyes; then :
-  PG_LIBPQ=yes
-else
-  PG_LIBPQ=no
-fi
-
-    ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-
-
-    ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-
-    if test "$LIB_SSL" = "yes" ; then
-        # Check for SSL support
-        if test "$build_cpu-$build_vendor" = "powerpc-apple" -o "$build_cpu-$build_vendor" = "i386-apple" -o "$build_cpu-$build_vendor" = "i686-apple" ; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for SSL_connect in -lpq" >&5
-$as_echo_n "checking for SSL_connect in -lpq... " >&6; }
-            if test "$(otool -L ${PG_LIB}/libpq.?.dylib | grep -c libssl)" -gt 0 ; then
-                { $as_echo "$as_me:${as_lineno-$LINENO}: result: present" >&5
-$as_echo "present" >&6; }
-                PG_SSL="yes"
-            else
-                { $as_echo "$as_me:${as_lineno-$LINENO}: result: not present" >&5
-$as_echo "not present" >&6; }
-                PG_SSL="no"
-            fi
-        else
-            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for SSL_connect in -lpq" >&5
-$as_echo_n "checking for SSL_connect in -lpq... " >&6; }
-if ${ac_cv_lib_pq_SSL_connect+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lpq  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char SSL_connect ();
-int
-main ()
-{
-return SSL_connect ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_pq_SSL_connect=yes
-else
-  ac_cv_lib_pq_SSL_connect=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_pq_SSL_connect" >&5
-$as_echo "$ac_cv_lib_pq_SSL_connect" >&6; }
-if test "x$ac_cv_lib_pq_SSL_connect" = xyes; then :
-  PG_SSL=yes
-else
-  PG_SSL=no
-fi
-
-        fi
-    else
-        PG_SSL="no"
-    fi
-
-    ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-
-    PG_INCLUDE=`${PG_CONFIG} --includedir`
-    CPPFLAGS="$CPPFLAGS -I${PG_INCLUDE} -Idbdrivers/pgsql"
-    PG_VERSION=`${PG_CONFIG} --version`
-
-    if test "$build_os" = "mingw32" ; then
-        CRYPTO_LIB=""
-    else
-        CRYPTO_LIB="-lcrypto"
-    fi
-
-    if test "$PG_SSL" = "yes" ; then
-        LIBS="$LIBS -L${PG_LIB} -lpq"
-    else
-        LIBS="$LIBS -L${PG_LIB} $CRYPTO_LIB -lpq"
-    fi
-
-
-    ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-    ac_fn_c_check_header_mongrel "$LINENO" "libpq-fe.h" "ac_cv_header_libpq_fe_h" "$ac_includes_default"
-if test "x$ac_cv_header_libpq_fe_h" = xyes; then :
-  PG_LIBPQFE=yes
-else
-  PG_LIBPQFE=no
-fi
-
-
-    ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-
-    if test "$PG_LIBPQ" = "yes" ; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking PostgreSQL in ${PG_HOME}" >&5
-$as_echo_n "checking PostgreSQL in ${PG_HOME}... " >&6; }
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: ok" >&5
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking MySQL" >&5
+$as_echo_n "checking MySQL... " >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: ok" >&5
 $as_echo "ok" >&6; }
-    else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking PostgreSQL in ${PG_HOME}" >&5
-$as_echo_n "checking PostgreSQL in ${PG_HOME}... " >&6; }
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: failed" >&5
-$as_echo "failed" >&6; }
-        LDFLAGS="$PGSQL_OLD_LDFLAGS"
-        CPPFLAGS="$PGSQL_OLD_CPPFLAGS"
-        as_fn_error $? "you must specify a valid PostgreSQL installation with --with-pgsql=DIR" "$LINENO" 5
-    fi
 
-    if test "$PG_SSL" = "yes" ; then
-        CPPFLAGS="$CPPFLAGS -DSSL"
-    fi
-
-    CFLAGS="-DUSE_PGSQL $CFLAGS"
-    DBDRIVER=pgsql
-
-
-
-else
-  as_fn_error $? "Database include files not found. Try to use --with-mysql or --with-pgsql" "$LINENO" 5
+    lmsdefaultdriver=mysql
 
 fi
 
@@ -17951,17 +17638,7 @@ if test "${enable_debug1+set}" = set; then :
 fi
 
 
-# Check whether --with-lmslibdir was given.
-if test "${with_lmslibdir+set}" = set; then :
-  withval=$with_lmslibdir; lmslibdir="$withval"
-else
-  lmslibdir=$ac_default_prefix/lib/lms
-
-fi
-
-
-
-CFLAGS="$CFLAGS -DLMS_LIB_DIR=\\\"$lmslibdir\\\""
+CFLAGS="$CFLAGS -DLMS_LIB_DIR=\\\"$libdir/lmsd\\\" -DLMS_DEFAULT_DRIVER=\\\"$lmsdefaultdriver\\\" -DLMS_CONF_DIR=\\\"$sysconfdir/lms\\\""
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: **********************************" >&5
 $as_echo "$as_me: **********************************" >&6;}
@@ -18100,6 +17777,14 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${am__fastdepCC_TRUE}" && test -z "${am__fastdepCC_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepCC\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${MYSQL_TRUE}" && test -z "${MYSQL_FALSE}"; then
+  as_fn_error $? "conditional \"MYSQL\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${PGSQL_TRUE}" && test -z "${PGSQL_FALSE}"; then
+  as_fn_error $? "conditional \"PGSQL\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${LIBGADU_TRUE}" && test -z "${LIBGADU_FALSE}"; then
@@ -19079,6 +18764,9 @@ do
   case $ac_config_target in
     "config.h") CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
+    "dbdrivers/Makefile") CONFIG_FILES="$CONFIG_FILES dbdrivers/Makefile" ;;
+    "dbdrivers/mysql/Makefile") CONFIG_FILES="$CONFIG_FILES dbdrivers/mysql/Makefile" ;;
+    "dbdrivers/pgsql/Makefile") CONFIG_FILES="$CONFIG_FILES dbdrivers/pgsql/Makefile" ;;
     "modules/Makefile") CONFIG_FILES="$CONFIG_FILES modules/Makefile" ;;
     "modules/parser/Makefile") CONFIG_FILES="$CONFIG_FILES modules/parser/Makefile" ;;
     "modules/parser/lib/Makefile") CONFIG_FILES="$CONFIG_FILES modules/parser/lib/Makefile" ;;

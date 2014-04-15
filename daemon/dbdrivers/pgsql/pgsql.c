@@ -27,7 +27,7 @@
 #include <syslog.h>
 #include <stdarg.h>
 #include <unistd.h>
-#include "db.h"
+#include "pgsql.h"
 #include "../../util.h"
 
 /* Private function for SELECT query result fetching */

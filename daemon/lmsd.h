@@ -6,17 +6,13 @@
 #include "cron/cron.h"
 #include "config/config.h"
 
-#ifdef USE_PGSQL
-#include "dbdrivers/pgsql/db.h"
-#endif
-#ifdef USE_MYSQL
-#include "dbdrivers/mysql/db.h"
-#endif
-
 #define APIVERSION 5
 #define PROGNAME "lmsd"
 
 typedef struct dictionary Config;
+
+typedef void (*ConnHandle)();
+typedef void (*QueryHandle)();
 
 struct global
 {
