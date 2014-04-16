@@ -2791,5 +2791,6 @@ $_LANG['Optional'] = 'Opcjonalna';
 $_LANG['Selection list'] = 'Lista wyboru';
 $_LANG['Check if tariff should be optional'] = 'Zaznacz, jeśli taryfa powinna być opcjonalna';
 $_LANG['Choose selection list'] = 'Wybierz listę wyboru';
+$_LANG['All rights'] = 'Pełne prawa';
 
 ?>
