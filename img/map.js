@@ -110,7 +110,9 @@ function ping_any_host(id)
 	if (!ip.match(/^([0-9]{1,3}\.){3}[0-9]{1,3}$/))
 		return false;
 
-	ping_host(id, ip);
+	var type = document.forms[id + '_ipform'].type.value;
+
+	ping_host(id, ip, type);
 
 	return false;
 }
