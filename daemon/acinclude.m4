@@ -62,6 +62,7 @@ AC_DEFUN([SETUP_POSTGRESQL],
             ;;
         *)
             LDFLAGS="$LDFLAGS -L${PG_LIB}"
+            PGSQL_LDFLAGS="$PGSQL_LDFLAGS -L${PG_LIB}";
             ;;
     esac
 
@@ -94,6 +95,7 @@ AC_DEFUN([SETUP_POSTGRESQL],
     AC_LANG_RESTORE
 
     CPPFLAGS="$CPPFLAGS -I${PG_INCLUDE} -Idbdrivers/pgsql"
+    PGSQL_CPPFLAGS="$PGLSQL_CPPFLAGS -I${PG_INCLUDE}"
     PG_VERSION=`${PG_CONFIG} --version`
 
     if test "$build_os" = "mingw32" ; then
@@ -103,9 +105,9 @@ AC_DEFUN([SETUP_POSTGRESQL],
     fi
 
     if test "$PG_SSL" = "yes" ; then
-        LIBS="$LIBS -L${PG_LIB} -lpq"
+        PGSQL_LDFLAGS="$PGSQL_LDFLAGS -L${PG_LIB} -lpq"
     else
-        LIBS="$LIBS -L${PG_LIB} $CRYPTO_LIB -lpq"
+        PGSQL_LDFLAGS="$PGSQL_LDFLAGS -L${PG_LIB} $CRYPTO_LIB -lpq"
     fi
 
     AC_LANG_SAVE
@@ -119,17 +121,19 @@ AC_DEFUN([SETUP_POSTGRESQL],
     else
         AC_MSG_CHECKING(PostgreSQL)
         AC_MSG_RESULT(failed)
-        LDFLAGS="$PGSQL_OLD_LDFLAGS"
-        CPPFLAGS="$PGSQL_OLD_CPPFLAGS"
         AC_MSG_ERROR([you must specify a valid PostgreSQL installation with --with-pgsql=DIR])
     fi
 
     if test "$PG_SSL" = "yes" ; then
-        CPPFLAGS="$CPPFLAGS -DSSL"
+        PGSQL_CPPFLAGS="$PGSQL_CPPFLAGS -DSSL"
     fi
 
-    CFLAGS="-DUSE_PGSQL $CFLAGS"
+    LDFLAGS="$PGSQL_OLD_LDFLAGS"
+    CPPFLAGS="$PGSQL_OLD_CPPFLAGS"
+
     AC_SUBST(PG_CONFIG)
+    AC_SUBST([PGSQL_LDFLAGS], [$PGSQL_LDFLAGS])
+    AC_SUBST([PGSQL_CPPFLAGS], [$PGSQL_CPPFLAGS])
 
     lmsdefaultdriver=pgsql
 ])
@@ -165,7 +169,6 @@ AC_DEFUN([LOCATE_MYSQL],
     if test -f "${MYSQL_CONFIG}"; then
         MYSQL_INC=`$MYSQL_CONFIG --include`
         MYSQL_LIB=`$MYSQL_CONFIG --libs_r`
-        have_mysql=yes;
     fi
 
     AM_CONDITIONAL([MYSQL], [test x$have_mysql = xyes])
@@ -182,16 +185,15 @@ AC_DEFUN([SETUP_MYSQL],
         AC_MSG_ERROR(Cannot find MySQL library)
     fi
 
-    LDFLAGS="$MYSQL_LIB $LDFLAGS"
-    CPPFLAGS="$MYSQL_INC $CPPFLAGS"
-
-    AC_CHECK_LIB(mysqlclient_r ,mysql_init, LIBS="-lmysqlclient_r $LIBS",
+    AC_CHECK_LIB(mysqlclient_r ,mysql_init, have_mysql=yes,
       AC_MSG_ERROR([MySQL libraries not found])
     )
 
-    CFLAGS="-DUSE_MYSQL $CFLAGS"
     AC_MSG_CHECKING(MySQL)
     AC_MSG_RESULT(ok)
+
+    AC_SUBST([MYSQL_CPPFLAGS], [`$MYSQL_CONFIG --include`])
+    AC_SUBST([MYSQL_LDFLAGS], [`$MYSQL_CONFIG --libs_r`])
 
     lmsdefaultdriver=mysql
 ])
@@ -275,8 +277,8 @@ AC_DEFUN([LOCATE_SNMP],
 #####################################################
 AC_DEFUN([SETUP_SNMP],
 [
-    LDFLAGS="-L$SNMP_LIBDIR $LDFLAGS"
-    CFLAGS="-I$SNMP_INCDIR -I$SNMP_INCDIR/.. $CFLAGS"
+    SNMP_LDFLAGS="-L$SNMP_LIBDIR"
+    SNMP_CFLAGS="-I$SNMP_INCDIR -I$SNMP_INCDIR/.."
 
     # Net/UCD-SNMP includes v3 support and insists on crypto unless compiled --without-openssl
     AC_MSG_CHECKING([if UCD-SNMP needs crypto support])
@@ -297,7 +299,7 @@ AC_DEFUN([SETUP_SNMP],
     )
 
     AC_CHECK_LIB(netsnmp, snmp_timeout,
-      [ LIBS="-lnetsnmp $LIBS"
+      [ SNMP_LDFLAGS="$SNMP_LDFLAGS -lnetsnmp"
         AC_DEFINE(USE_NET_SNMP, 1, New Net SNMP Version)
         USE_NET_SNMP=yes ],
         [ AC_MSG_RESULT(Cannot find NET-SNMP libraries(snmp)... checking UCD-SNMP)
@@ -305,9 +307,12 @@ AC_DEFUN([SETUP_SNMP],
 
     if test "$USE_NET_SNMP" = "no"; then
       AC_CHECK_LIB(snmp, snmp_timeout,
-        LIBS="-lsnmp $LIBS",
+        SNMP_LDFLAGS="$SNMP_LDFLAGS -lsnmp",
         AC_MSG_ERROR(Cannot find UCD-SNMP libraries(snmp)))
     fi
+
+    AC_SUBST([SNMP_LDFLAGS], [$SNMP_LDFLAGS])
+    AC_SUBST([SNMP_CFLAGS], [$SNMP_CFLAGS])
 ])
 
 ###########################################

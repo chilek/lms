@@ -642,6 +642,12 @@ BUILD_PINGER_FALSE
 BUILD_PINGER_TRUE
 LIBGADU_FALSE
 LIBGADU_TRUE
+SNMP_CFLAGS
+SNMP_LDFLAGS
+MYSQL_LDFLAGS
+MYSQL_CPPFLAGS
+PGSQL_CPPFLAGS
+PGSQL_LDFLAGS
 PGSQL_FALSE
 PGSQL_TRUE
 PG_CONFIG
@@ -16919,7 +16925,6 @@ fi
     if test -f "${MYSQL_CONFIG}"; then
         MYSQL_INC=`$MYSQL_CONFIG --include`
         MYSQL_LIB=`$MYSQL_CONFIG --libs_r`
-        have_mysql=yes;
     fi
 
      if test x$have_mysql = xyes; then
@@ -17166,6 +17171,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
             ;;
         *)
             LDFLAGS="$LDFLAGS -L${PG_LIB}"
+            PGSQL_LDFLAGS="$PGSQL_LDFLAGS -L${PG_LIB}";
             ;;
     esac
 
@@ -17303,6 +17309,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
     CPPFLAGS="$CPPFLAGS -I${PG_INCLUDE} -Idbdrivers/pgsql"
+    PGSQL_CPPFLAGS="$PGLSQL_CPPFLAGS -I${PG_INCLUDE}"
     PG_VERSION=`${PG_CONFIG} --version`
 
     if test "$build_os" = "mingw32" ; then
@@ -17312,9 +17319,9 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
     fi
 
     if test "$PG_SSL" = "yes" ; then
-        LIBS="$LIBS -L${PG_LIB} -lpq"
+        PGSQL_LDFLAGS="$PGSQL_LDFLAGS -L${PG_LIB} -lpq"
     else
-        LIBS="$LIBS -L${PG_LIB} $CRYPTO_LIB -lpq"
+        PGSQL_LDFLAGS="$PGSQL_LDFLAGS -L${PG_LIB} $CRYPTO_LIB -lpq"
     fi
 
 
@@ -17349,16 +17356,20 @@ $as_echo "ok" >&6; }
 $as_echo_n "checking PostgreSQL... " >&6; }
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: failed" >&5
 $as_echo "failed" >&6; }
-        LDFLAGS="$PGSQL_OLD_LDFLAGS"
-        CPPFLAGS="$PGSQL_OLD_CPPFLAGS"
         as_fn_error $? "you must specify a valid PostgreSQL installation with --with-pgsql=DIR" "$LINENO" 5
     fi
 
     if test "$PG_SSL" = "yes" ; then
-        CPPFLAGS="$CPPFLAGS -DSSL"
+        PGSQL_CPPFLAGS="$PGSQL_CPPFLAGS -DSSL"
     fi
 
-    CFLAGS="-DUSE_PGSQL $CFLAGS"
+    LDFLAGS="$PGSQL_OLD_LDFLAGS"
+    CPPFLAGS="$PGSQL_OLD_CPPFLAGS"
+
+
+    PGSQL_LDFLAGS=$PGSQL_LDFLAGS
+
+    PGSQL_CPPFLAGS=$PGSQL_CPPFLAGS
 
 
     lmsdefaultdriver=pgsql
@@ -17369,9 +17380,6 @@ if test "x$with_mysql" = "xyes" -o "x$have_mysql" = "xyes"; then :
     if test -z "$MYSQL_LIB"; then
         as_fn_error $? "Cannot find MySQL library" "$LINENO" 5
     fi
-
-    LDFLAGS="$MYSQL_LIB $LDFLAGS"
-    CPPFLAGS="$MYSQL_INC $CPPFLAGS"
 
     as_ac_Lib=`$as_echo "ac_cv_lib_mysqlclient_r ''_mysql_init" | $as_tr_sh`
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for mysql_init in -lmysqlclient_r " >&5
@@ -17412,26 +17420,30 @@ eval ac_res=\$$as_ac_Lib
 	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
 $as_echo "$ac_res" >&6; }
 if eval test \"x\$"$as_ac_Lib"\" = x"yes"; then :
-  LIBS="-lmysqlclient_r $LIBS"
+  have_mysql=yes
 else
   as_fn_error $? "MySQL libraries not found" "$LINENO" 5
 
 fi
 
 
-    CFLAGS="-DUSE_MYSQL $CFLAGS"
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking MySQL" >&5
 $as_echo_n "checking MySQL... " >&6; }
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: ok" >&5
 $as_echo "ok" >&6; }
+
+    MYSQL_CPPFLAGS=`$MYSQL_CONFIG --include`
+
+    MYSQL_LDFLAGS=`$MYSQL_CONFIG --libs_r`
+
 
     lmsdefaultdriver=mysql
 
 fi
 
 
-    LDFLAGS="-L$SNMP_LIBDIR $LDFLAGS"
-    CFLAGS="-I$SNMP_INCDIR -I$SNMP_INCDIR/.. $CFLAGS"
+    SNMP_LDFLAGS="-L$SNMP_LIBDIR"
+    SNMP_CFLAGS="-I$SNMP_INCDIR -I$SNMP_INCDIR/.."
 
     # Net/UCD-SNMP includes v3 support and insists on crypto unless compiled --without-openssl
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking if UCD-SNMP needs crypto support" >&5
@@ -17522,7 +17534,7 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_netsnmp_snmp_timeout" >&5
 $as_echo "$ac_cv_lib_netsnmp_snmp_timeout" >&6; }
 if test "x$ac_cv_lib_netsnmp_snmp_timeout" = xyes; then :
-   LIBS="-lnetsnmp $LIBS"
+   SNMP_LDFLAGS="$SNMP_LDFLAGS -lnetsnmp"
 
 $as_echo "#define USE_NET_SNMP 1" >>confdefs.h
 
@@ -17572,12 +17584,17 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_snmp_snmp_timeout" >&5
 $as_echo "$ac_cv_lib_snmp_snmp_timeout" >&6; }
 if test "x$ac_cv_lib_snmp_snmp_timeout" = xyes; then :
-  LIBS="-lsnmp $LIBS"
+  SNMP_LDFLAGS="$SNMP_LDFLAGS -lsnmp"
 else
   as_fn_error $? "Cannot find UCD-SNMP libraries(snmp)" "$LINENO" 5
 fi
 
     fi
+
+    SNMP_LDFLAGS=$SNMP_LDFLAGS
+
+    SNMP_CFLAGS=$SNMP_CFLAGS
+
 
 
     ac_fn_c_check_header_mongrel "$LINENO" "libgadu.h" "ac_cv_header_libgadu_h" "$ac_includes_default"
