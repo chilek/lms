@@ -28,9 +28,24 @@ $layout['pagetitle'] = trans('Event Search');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-if(isset($_POST['event']))
+if (isset($_POST['event']))
 {
 	$event = $_POST['event'];
+	$SESSION->save('event', $event);
+}
+else
+{
+	$SESSION->restore('event', $event);
+}
+
+$SMARTY->display('header.html');
+$SMARTY->assign('userlist',$LMS->GetUserNames());
+$SMARTY->assign('customerlist',$LMS->GetCustomerNames());
+$SMARTY->assign('event', $event);
+$SMARTY->display('eventsearch.html');
+
+if ($event)
+{
 	
 	if($event['datefrom'])
 	{
@@ -55,12 +70,6 @@ if(isset($_POST['event']))
 	$SMARTY->assign('eventlist', $eventlist);
 	$SMARTY->assign('daylist', $daylist);
 	$SMARTY->display('eventsearchresults.html');
-	$SESSION->close();
-	die;
 }
-
-$SMARTY->assign('userlist',$LMS->GetUserNames());
-$SMARTY->assign('customerlist',$LMS->GetCustomerNames());
-$SMARTY->display('eventsearch.html');
-
+$SMARTY->display('footer.html');
 ?>
