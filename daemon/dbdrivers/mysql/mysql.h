@@ -1,7 +1,7 @@
 /* $Id$ */
 
-#ifndef _DB_H_
-#define _DB_H_
+#ifndef _DB_MYSQL_H_
+#define _DB_MYSQL_H_
 
 #include <mysql/mysql.h>
 #include <mysql/mysqld_error.h>
@@ -106,5 +106,8 @@ int db_ncols(QueryHandle *);
 
 /* Get column name */
 char * db_colname(QueryHandle *, int);
+
+/* concat strings specific to mysql */
+char * db_concat(int cnt, ...);
 
 #endif

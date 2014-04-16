@@ -1,7 +1,7 @@
 /* $Id$ */
 
-#ifndef _DB_H_
-#define _DB_H_
+#ifndef _DB_POSTGRES_H_
+#define _DB_POSTGRES_H_
 
 #include <libpq-fe.h>
 
@@ -147,5 +147,8 @@ int db_ncols(QueryHandle *);
 
 /* Get column name */
 char * db_colname(QueryHandle *, int);
+
+/* concat strings specific to pgsql */
+char * db_concat(int cnt, ...);
 
 #endif

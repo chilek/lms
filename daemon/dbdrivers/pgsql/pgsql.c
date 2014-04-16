@@ -27,7 +27,7 @@
 #include <syslog.h>
 #include <stdarg.h>
 #include <unistd.h>
-#include "db.h"
+#include "pgsql.h"
 #include "../../util.h"
 
 /* Private function for SELECT query result fetching */
@@ -491,4 +491,15 @@ char * db_colname(QueryHandle *query, int column)
     }
     
     return query->col[column].name; 
+}
+
+/* concat strings specific to pgsql */
+char * db_concat(int cnt, ...)
+{
+    va_list vs;
+    va_start(vs, cnt);
+    char * result = va_list_join(cnt, " || ", vs);
+    va_end(vs);
+
+    return result;
 }

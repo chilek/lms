@@ -65,6 +65,16 @@ version ?.??.?? (????-??-??):
   - minimal supported version of postgresql is now 8.4 [maniac]
   - simplified installation procedure - UI loads schema if there are no tables in db [maniac]
   - optional and selectable components of promotion schemas [chilan]
+  - daemon: fixed mysql 5.1 detection in configure [maniac]
+  - daemon: configure will fail if bison is not detected [maniac]
+  - daemon: fix snmp library detection [maniac]
+  - daemon: add to dbdrivers db_concat function [maniac]
+  - daemon (payments, cutoff): changed usage of BROADCAST macro to database function [maniac]
+  - daemon/parser/sql: always call database by global object [maniac]
+  - daemon/parser/sql: replace USE_PGSQL macro with driver's db_concat function [maniac]
+  - daemon/cutoff: removed unnecessary database dependent, compilation time typecast [maniac]
+  - daemon is now able to load database configuration from lms.ini (-C option) [maniac]
+  - daemon: database drivers are now loadable modules. [maniac]
 
 version 1.11.14 (2013-03-25):
 

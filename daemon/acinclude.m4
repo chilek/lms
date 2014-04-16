@@ -5,31 +5,34 @@ AC_DEFUN([LOCATE_POSTGRESQL],
 [
     # Try to locate postgresql
     AC_PATH_PROGS(PG_CONFIG, pg_config)
-    if test -f "${PG_CONFIG}" ; then
-        PG_HOME=`${PG_CONFIG} --bindir | sed "s/\/bin$//"`
-    fi
 
     # If provided path try to use it
     AC_ARG_WITH(pgsql, AS_HELP_STRING([--with-pgsql=DIR], [enables use of PostgreSQL database (conflits with mysql, autodetection is run if DIR is not present)]),
     [
         if test "$withval" != "yes"  ;  then
-            PG_HOME="$withval"
-            if test ! -f "${PG_HOME}/bin/pg_config" ; then
-                AC_MSG_ERROR([Could not find your PostgreSQL installation in ${PG_HOME}])
+            PG_CONFIG="$withval"
+            if test ! -f "${PG_CONFIG}" ; then
+                AC_MSG_ERROR([Could not find your PostgreSQL pg_config binary in ${PG_CONFIG}])
             fi
         else
-            if test ! -f "${PG_HOME}/bin/pg_config" ; then
-                AC_MSG_ERROR([Could not find your PostgreSQL installation. You might need to use the --with-pgsql=DIR configure option])
+            if test ! -f "${PG_CONFIG}" ; then
+                AC_MSG_ERROR([Could not find your PostgreSQL installation (pg_config not detected). You might need to use the --with-pgsql=DIR configure option])
             fi
         fi
-        PG_CONFIG=${PG_HOME}/bin/pg_config
         with_pgsql=yes
     ])
 
-    # If we have pg_config then we have pgsql
-    if test -f "${PG_CONFIG}"; then
-        have_pgsql=yes
+
+    if test -f "${PG_CONFIG}" ; then
+        PG_INCLUDE=`${PG_CONFIG} --includedir`
+        if test -d "${PG_INCLUDE}" ; then
+            have_pgsql=yes
+        else
+            AC_MSG_ERROR([pg_config pointed on non existent directory. Yourr PostgreSQL installation may be broken or you might need to use the --with-pgsql=DIR configure option to point right pg_config])
+        fi
     fi
+
+    AM_CONDITIONAL([PGSQL], [test x$have_pgsql = xyes])
 ])
 
 
@@ -90,7 +93,6 @@ AC_DEFUN([SETUP_POSTGRESQL],
 
     AC_LANG_RESTORE
 
-    PG_INCLUDE=`${PG_CONFIG} --includedir` 
     CPPFLAGS="$CPPFLAGS -I${PG_INCLUDE} -Idbdrivers/pgsql"
     PG_VERSION=`${PG_CONFIG} --version`
 
@@ -112,10 +114,10 @@ AC_DEFUN([SETUP_POSTGRESQL],
     AC_LANG_RESTORE
 
     if test "$PG_LIBPQ" = "yes" ; then
-        AC_MSG_CHECKING(PostgreSQL in ${PG_HOME})
+        AC_MSG_CHECKING(PostgreSQL)
         AC_MSG_RESULT(ok)
     else
-        AC_MSG_CHECKING(PostgreSQL in ${PG_HOME})
+        AC_MSG_CHECKING(PostgreSQL)
         AC_MSG_RESULT(failed)
         LDFLAGS="$PGSQL_OLD_LDFLAGS"
         CPPFLAGS="$PGSQL_OLD_CPPFLAGS"
@@ -127,8 +129,9 @@ AC_DEFUN([SETUP_POSTGRESQL],
     fi
 
     CFLAGS="-DUSE_PGSQL $CFLAGS"
-    AC_SUBST([DBDRIVER], [pgsql])
     AC_SUBST(PG_CONFIG)
+
+    lmsdefaultdriver=pgsql
 ])
 
 
@@ -142,7 +145,7 @@ AC_DEFUN([LOCATE_MYSQL],
     AC_PATH_PROGS(MYSQL_CONFIG, mysql_config)
 
     AC_ARG_WITH(mysql,
-                AC_HELP_STRING([--with-mysql=PATH],[path to mysql_config binary [[/usr/bin/mysql_config]]]),
+                AC_HELP_STRING([--with-mysql=PATH],[path to mysql_config binary [/usr/bin/mysql_config]]),
     [
         # We have to use MySQL
         if test "$withval" != "yes"  ;  then               # If provided path to MySQL use it
@@ -159,12 +162,13 @@ AC_DEFUN([LOCATE_MYSQL],
         with_mysql=yes
     ])
 
-    # If we have pg_config then we have pgsql
     if test -f "${MYSQL_CONFIG}"; then
-        MYSQL_INC_DIR=`$MYSQL_CONFIG --variable=pkgincludedir`
-        MYSQL_LIB_DIR=`$MYSQL_CONFIG --variable=pkglibdir`
+        MYSQL_INC=`$MYSQL_CONFIG --include`
+        MYSQL_LIB=`$MYSQL_CONFIG --libs_r`
         have_mysql=yes;
     fi
+
+    AM_CONDITIONAL([MYSQL], [test x$have_mysql = xyes])
 ])
 
 
@@ -174,38 +178,23 @@ AC_DEFUN([LOCATE_MYSQL],
 ##################################################
 AC_DEFUN([SETUP_MYSQL],
 [
-    for i in $MYSQL_DIR /usr/lib/x86_64-linux-gnu/ /usr /usr/local /opt /opt/mysql /usr/pkg /usr/local/mysql; do
-        MYSQL_LIB_CHK($i/lib64)
-        MYSQL_LIB_CHK($i/lib64/mysql)
-        MYSQL_LIB_CHK($i/lib)
-        MYSQL_LIB_CHK($i/lib/mysql)
-    done
-
-    if test -z "$MYSQL_LIB_DIR"; then
+    if test -z "$MYSQL_LIB"; then
         AC_MSG_ERROR(Cannot find MySQL library)
     fi
 
-    LDFLAGS="-L$MYSQL_LIB_DIR $LDFLAGS"
-    CPPFLAGS="-I$MYSQL_INC_DIR $CPPFLAGS"
+    LDFLAGS="$MYSQL_LIB $LDFLAGS"
+    CPPFLAGS="$MYSQL_INC $CPPFLAGS"
 
     AC_CHECK_LIB(mysqlclient_r ,mysql_init, LIBS="-lmysqlclient_r $LIBS",
       AC_MSG_ERROR([MySQL libraries not found])
     )
 
     CFLAGS="-DUSE_MYSQL $CFLAGS"
-    AC_SUBST([DBDRIVER], [mysql])
-])
+    AC_MSG_CHECKING(MySQL)
+    AC_MSG_RESULT(ok)
 
-AC_DEFUN([MYSQL_LIB_CHK],
-  [ str="$1/libmysqlclient_r.*"
-    for j in `echo $str`; do
-      if test -r $j; then
-        MYSQL_LIB_DIR=$1
-        break 2
-      fi
-    done
-  ]
-)
+    lmsdefaultdriver=mysql
+])
 
 
 ############################
@@ -230,13 +219,13 @@ AC_DEFUN([LOCATE_SNMP],
         fi
 
         # Accomodate 64-Bit Libraries
-        test -f $SNMP_DIR/lib64/libsnmp.a -o -f $SNMP_DIR/lib64/libsnmp.$ShLib       && SNMP_LIBDIR=$SNMP_DIR/lib64
-        test -f $SNMP_DIR/lib64/libnetsnmp.a -o -f $SNMP_DIR/lib64/libnetsnmp.$ShLib && SNMP_LIBDIR=$SNMP_DIR/lib64
+        test -f $SNMP_DIR/lib64/libsnmp.a -o -f $SNMP_DIR/lib64/libsnmp.so       && SNMP_LIBDIR=$SNMP_DIR/lib64
+        test -f $SNMP_DIR/lib64/libnetsnmp.a -o -f $SNMP_DIR/lib64/libnetsnmp.so && SNMP_LIBDIR=$SNMP_DIR/lib64
 
         if test -z "$SNMP_LIBDIR"; then
             # Accomodate 32-Bit Libraries
-            test -f $SNMP_DIR/lib/libsnmp.a -o -f $SNMP_DIR/lib/libsnmp.$ShLib       && SNMP_LIBDIR=$SNMP_DIR/lib
-            test -f $SNMP_DIR/lib/libnetsnmp.a -o -f $SNMP_DIR/lib/libnetsnmp.$ShLib && SNMP_LIBDIR=$SNMP_DIR/lib
+            test -f $SNMP_DIR/lib/libsnmp.a -o -f $SNMP_DIR/lib/libsnmp.so       && SNMP_LIBDIR=$SNMP_DIR/lib
+            test -f $SNMP_DIR/lib/libnetsnmp.a -o -f $SNMP_DIR/lib/libnetsnmp.so && SNMP_LIBDIR=$SNMP_DIR/lib
         fi
         if test -z "$SNMP_INCDIR"; then
             AC_MSG_ERROR(Cannot find SNMP header files under $SNMP_DIR)
@@ -257,18 +246,23 @@ AC_DEFUN([LOCATE_SNMP],
 
         # Accomodate 64-Bit Libraries
         for i in /usr /usr/local /usr/pkg /usr/snmp /opt /opt/net-snmp /opt/ucd-snmp /opt/snmp /usr/local/snmp; do
-            test -f $i/lib64/libsnmp.a -o -f $i/lib64/libsnmp.$ShLib       && SNMP_LIBDIR=$i/lib64 && break
-            test -f $i/lib64/libnetsnmp.a -o -f $i/lib64/libnetsnmp.$ShLib && SNMP_LIBDIR=$i/lib64 && break
+            test -f $i/lib64/libsnmp.a -o -f $i/lib64/libsnmp.so       && SNMP_LIBDIR=$i/lib64 && break
+            test -f $i/lib64/libnetsnmp.a -o -f $i/lib64/libnetsnmp.so && SNMP_LIBDIR=$i/lib64 && break
         done
 
         # Only check for 32 Bit libraries if the 64 bit are not found
         if test -z "$SNMP_LIBDIR"; then
             # Accomodate 32-Bit Libraries
             for i in /usr /usr/local /usr/pkg /usr/snmp /opt /opt/net-snmp /opt/ucd-snmp /opt/snmp /usr/local/snmp; do
-                test -f $i/lib/libsnmp.a -o -f $i/lib/libsnmp.$ShLib       && SNMP_LIBDIR=$i/lib && break
-                test -f $i/lib/libnetsnmp.a -o -f $i/lib/libnetsnmp.$ShLib && SNMP_LIBDIR=$i/lib && break
+                test -f $i/lib/libsnmp.a -o -f $i/lib/libsnmp.so       && SNMP_LIBDIR=$i/lib && break
+                test -f $i/lib/libnetsnmp.a -o -f $i/lib/libnetsnmp.so && SNMP_LIBDIR=$i/lib && break
             done
         fi
+
+        if test -z "$SNMP_LIBDIR"; then
+            AC_MSG_ERROR(Cannot find SNMP library files under $SNMP_DIR)
+        fi
+
         if test -z "$SNMP_INCDIR"; then
             AC_MSG_ERROR(Cannot find SNMP headers.  Use --with-snmp= to specify non-default path.)
         fi

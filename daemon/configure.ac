@@ -11,6 +11,9 @@ AC_CANONICAL_HOST
 AC_PREFIX_DEFAULT([/usr/local/lmsd])
 
 AC_CONFIG_FILES(Makefile
+                dbdrivers/Makefile
+                dbdrivers/mysql/Makefile
+                dbdrivers/pgsql/Makefile
                 modules/Makefile
                 modules/parser/Makefile
                 modules/parser/lib/Makefile
@@ -41,19 +44,17 @@ AC_CHECK_PROG([FLEX], [flex lex], [flex])
 AM_MISSING_PROG([LEX], [$FLEX])
 AM_PROG_LEX
 
-AC_CHECK_PROG([YACC], [yacc bison], [yacc])
-AM_MISSING_PROG([YACC], [$YACC])
 AC_PROG_YACC
+
+if test x"$YACC" = "xyacc"; then
+    AC_CHECK_PROG([YACC_EXISTS], [yacc], [yes], [no])
+    if test x"$YACC_EXISTS" != xyes; then
+        AC_MSG_ERROR([[bison/byacc/yacc not found. Please install bison]])
+    fi
+fi
 
 AC_PROG_CC
 AC_PROG_LIBTOOL
-
-# Checks for libraries.
-#AC_CHECK_LIB([pq], [PQconnectdb], [have_pgsql=yes])
-#AC_CHECK_LIB([mysqlclient], [mysql_real_connect],
-#  [have_mysql=yes
-#   LIBS="-lmysqlclient $LIBS"])
-
 
 # Checks for header files.
 AC_CHECK_HEADERS([arpa/inet.h fcntl.h limits.h locale.h netinet/in.h stdlib.h string.h sys/ioctl.h sys/socket.h sys/time.h syslog.h unistd.h])
@@ -74,15 +75,9 @@ LOCATE_MYSQL
 LOCATE_POSTGRESQL
 LOCATE_SNMP
 
-echo "m $have_mysql p $have_pgsql"
-
-AS_IF([test "x$with_mysql" = "xyes" && test "x$with_pgsql" = "xyes"], AC_MSG_ERROR([You can use mysql or postgresql. You can not use both]),
-      [test "x$with_mysql" = "xyes" ], [SETUP_MYSQL],
-      [test "x$with_pgsql" = "xyes" ], [SETUP_POSTGRESQL],
-      [test "x$have_mysql" = "xyes" ], [SETUP_MYSQL],
-      [test "x$have_pgsql" = "xyes" ], [SETUP_POSTGRESQL],
-      AC_MSG_ERROR([Database include files not found. Try to use --with-mysql or --with-pgsql])
-)
+# Second detected database will be used as default (LMS_DEFAULT_DRIVER).
+AS_IF([test "x$with_pgsql" = "xyes" -o "x$have_pgsql" = "xyes" ], [SETUP_POSTGRESQL])
+AS_IF([test "x$with_mysql" = "xyes" -o "x$have_mysql" = "xyes"],  [SETUP_MYSQL])
 
 SETUP_SNMP
 SETUP_LIBGADU
@@ -113,14 +108,8 @@ AC_ARG_ENABLE([debug0],
     AS_HELP_STRING([--enable-debug0], [SQL query logging (disabled)]))
 AC_ARG_ENABLE([debug1],
     AS_HELP_STRING([--enable-debug1], [events logging (disabled)]))
-AC_ARG_WITH(lmslibdir,
-    [AC_HELP_STRING([--with-lmslibdir=DIR], [sets location of target LMS modules (PREFIX/lms/lib)])],
-    [lmslibdir="$withval"],
-    [lmslibdir=$ac_default_prefix/lib/lms]
-)
-AC_SUBST(lmslibdir)
 
-CFLAGS="$CFLAGS -DLMS_LIB_DIR=\\\"$lmslibdir\\\""
+CFLAGS="$CFLAGS -DLMS_LIB_DIR=\\\"$libdir/lmsd\\\" -DLMS_DEFAULT_DRIVER=\\\"$lmsdefaultdriver\\\" -DLMS_CONF_DIR=\\\"$sysconfdir/lms\\\""
 
 AC_MSG_NOTICE([**********************************])
 AC_MSG_NOTICE([Host os: $host_os])

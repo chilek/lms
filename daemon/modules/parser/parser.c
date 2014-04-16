@@ -58,7 +58,7 @@ void reload(GLOBAL *g, struct parser_module *p)
 	tscript_ext_sysinfo_init(context);
 	tscript_ext_string_init(context);
 	tscript_ext_syslog_init(context);
-	tscript_ext_sql_init(context, g->conn);
+	tscript_ext_sql_init(context, g);
 
 //	tscript_set_debug_callback(context, debug_callback);
 
