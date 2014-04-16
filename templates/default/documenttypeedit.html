@@ -1,5 +1,20 @@
 {include file="header.html"}
 <!--// $Id$ //-->
+<SCRIPT type="text/javascript">
+<!--
+	function set_all_rights(user_id, all_checkbox) {
+                
+                var document_rights_form = document.forms['typeedit'];
+                var rights_values = new Array('1', '2', '4', '8', '16', 'all');
+                
+                for (i = 0; i < rights_values.length; i++) {
+                        var checkbox_name = 'rights[' + user_id + '][' + rights_values[i] + ']';
+                        document_rights_form.elements[checkbox_name].checked = all_checkbox.checked;
+                }
+                
+	}
+//-->
+</SCRIPT>
 <H1>{$layout.pagetitle}</H1>
 <FORM method="POST" action="?m=documenttypeedit&id={$documenttype.id}" name="typeedit">
 <INPUT type="submit" class="hiddenbtn">
@@ -30,6 +45,7 @@
 			    <TD width="1%" align="center" nowrap><B>{trans("Confirming")}</B></TD>
 			    <TD width="1%" align="center" nowrap><B>{trans("Editing")}</B></TD>
 			    <TD width="1%" align="center" nowrap><B>{trans("Deleting")}</B></TD>
+                            <TD width="1%" align="center" nowrap><B>{trans("All rights")}</B></TD>
 			</TR>
                         </THEAD>
                         <TBODY>
@@ -54,11 +70,14 @@
 			    <TD width="1%" align="center">
 			    	    <INPUT type="checkbox" name="rights[{$key}][16]" value="16" {if ($right.rights & 16)==16}CHECKED{/if}>
 			    </TD>
+                            <TD width="1%" align="center">
+			    	    <INPUT type="checkbox" name="rights[{$key}][all]" value="all"  onclick='set_all_rights({$key}, this)' {if $right.rights == 31}CHECKED{/if}>
+			    </TD>
 			</TR>
 			{/foreach}
 			<TR>
 			    <TD width="95%"></TD>
-			    <TD width="5%" colspan="5"></TD>
+			    <TD width="5%" colspan="6"></TD>
 			</TR>
                         </TBODY>
 		</TABLE>			
