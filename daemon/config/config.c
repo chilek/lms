@@ -233,7 +233,7 @@ void config_load_from_file(const char *configfile, const char *section)
     free(msg);
 
     fclose(ini);
-    return c ;
+    return;
 }
 
 char * strskp(char * s)
