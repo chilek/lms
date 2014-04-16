@@ -638,6 +638,7 @@ ac_func_list=
 ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
+LMSD_CFLAGS
 BUILD_PINGER_FALSE
 BUILD_PINGER_TRUE
 LIBGADU_FALSE
@@ -17655,7 +17656,8 @@ if test "${enable_debug1+set}" = set; then :
 fi
 
 
-CFLAGS="$CFLAGS -DLMS_LIB_DIR=\\\"$libdir/lmsd\\\" -DLMS_DEFAULT_DRIVER=\\\"$lmsdefaultdriver\\\" -DLMS_CONF_DIR=\\\"$sysconfdir/lms\\\""
+LMSD_CFLAGS="-DLMS_LIB_DIR=\\\"$libdir/lmsd\\\" -DLMS_DEFAULT_DRIVER=\\\"$lmsdefaultdriver\\\" -DLMS_CONF_DIR=\\\"$sysconfdir/lms\\\""
+
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: **********************************" >&5
 $as_echo "$as_me: **********************************" >&6;}

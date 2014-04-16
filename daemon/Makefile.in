@@ -70,10 +70,14 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_lmsd_OBJECTS = util.$(OBJEXT) cronparse.$(OBJEXT) cron.$(OBJEXT) \
-	dictionary.$(OBJEXT) config.$(OBJEXT) lmsd.$(OBJEXT)
+am_lmsd_OBJECTS = lmsd-util.$(OBJEXT) lmsd-cronparse.$(OBJEXT) \
+	lmsd-cron.$(OBJEXT) lmsd-dictionary.$(OBJEXT) \
+	lmsd-config.$(OBJEXT) lmsd-lmsd.$(OBJEXT)
 lmsd_OBJECTS = $(am_lmsd_OBJECTS)
 lmsd_LDADD = $(LDADD)
+lmsd_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
+	--mode=link $(CCLD) $(lmsd_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -193,6 +197,7 @@ LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
+LMSD_CFLAGS = @LMSD_CFLAGS@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
@@ -286,6 +291,7 @@ AUTOMAKE_OPTIONS = foreign
 ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = modules dbdrivers
 lmsd_SOURCES = util.c cron/cronparse.c cron/cron.c config/dictionary.c config/config.c lmsd.c
+lmsd_CFLAGS = @LMSD_CFLAGS@
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -388,7 +394,7 @@ clean-binPROGRAMS:
 	rm -f $$list
 lmsd$(EXEEXT): $(lmsd_OBJECTS) $(lmsd_DEPENDENCIES) $(EXTRA_lmsd_DEPENDENCIES) 
 	@rm -f lmsd$(EXEEXT)
-	$(LINK) $(lmsd_OBJECTS) $(lmsd_LDADD) $(LIBS)
+	$(lmsd_LINK) $(lmsd_OBJECTS) $(lmsd_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -396,12 +402,12 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/config.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cron.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cronparse.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dictionary.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lmsd.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lmsd-config.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lmsd-cron.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lmsd-cronparse.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lmsd-dictionary.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lmsd-lmsd.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lmsd-util.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -424,61 +430,89 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
-cronparse.o: cron/cronparse.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT cronparse.o -MD -MP -MF $(DEPDIR)/cronparse.Tpo -c -o cronparse.o `test -f 'cron/cronparse.c' || echo '$(srcdir)/'`cron/cronparse.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cronparse.Tpo $(DEPDIR)/cronparse.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cron/cronparse.c' object='cronparse.o' libtool=no @AMDEPBACKSLASH@
+lmsd-util.o: util.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lmsd_CFLAGS) $(CFLAGS) -MT lmsd-util.o -MD -MP -MF $(DEPDIR)/lmsd-util.Tpo -c -o lmsd-util.o `test -f 'util.c' || echo '$(srcdir)/'`util.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/lmsd-util.Tpo $(DEPDIR)/lmsd-util.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='util.c' object='lmsd-util.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o cronparse.o `test -f 'cron/cronparse.c' || echo '$(srcdir)/'`cron/cronparse.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lmsd_CFLAGS) $(CFLAGS) -c -o lmsd-util.o `test -f 'util.c' || echo '$(srcdir)/'`util.c
 
-cronparse.obj: cron/cronparse.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT cronparse.obj -MD -MP -MF $(DEPDIR)/cronparse.Tpo -c -o cronparse.obj `if test -f 'cron/cronparse.c'; then $(CYGPATH_W) 'cron/cronparse.c'; else $(CYGPATH_W) '$(srcdir)/cron/cronparse.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cronparse.Tpo $(DEPDIR)/cronparse.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cron/cronparse.c' object='cronparse.obj' libtool=no @AMDEPBACKSLASH@
+lmsd-util.obj: util.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lmsd_CFLAGS) $(CFLAGS) -MT lmsd-util.obj -MD -MP -MF $(DEPDIR)/lmsd-util.Tpo -c -o lmsd-util.obj `if test -f 'util.c'; then $(CYGPATH_W) 'util.c'; else $(CYGPATH_W) '$(srcdir)/util.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/lmsd-util.Tpo $(DEPDIR)/lmsd-util.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='util.c' object='lmsd-util.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o cronparse.obj `if test -f 'cron/cronparse.c'; then $(CYGPATH_W) 'cron/cronparse.c'; else $(CYGPATH_W) '$(srcdir)/cron/cronparse.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lmsd_CFLAGS) $(CFLAGS) -c -o lmsd-util.obj `if test -f 'util.c'; then $(CYGPATH_W) 'util.c'; else $(CYGPATH_W) '$(srcdir)/util.c'; fi`
 
-cron.o: cron/cron.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT cron.o -MD -MP -MF $(DEPDIR)/cron.Tpo -c -o cron.o `test -f 'cron/cron.c' || echo '$(srcdir)/'`cron/cron.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cron.Tpo $(DEPDIR)/cron.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cron/cron.c' object='cron.o' libtool=no @AMDEPBACKSLASH@
+lmsd-cronparse.o: cron/cronparse.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lmsd_CFLAGS) $(CFLAGS) -MT lmsd-cronparse.o -MD -MP -MF $(DEPDIR)/lmsd-cronparse.Tpo -c -o lmsd-cronparse.o `test -f 'cron/cronparse.c' || echo '$(srcdir)/'`cron/cronparse.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/lmsd-cronparse.Tpo $(DEPDIR)/lmsd-cronparse.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cron/cronparse.c' object='lmsd-cronparse.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o cron.o `test -f 'cron/cron.c' || echo '$(srcdir)/'`cron/cron.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lmsd_CFLAGS) $(CFLAGS) -c -o lmsd-cronparse.o `test -f 'cron/cronparse.c' || echo '$(srcdir)/'`cron/cronparse.c
 
-cron.obj: cron/cron.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT cron.obj -MD -MP -MF $(DEPDIR)/cron.Tpo -c -o cron.obj `if test -f 'cron/cron.c'; then $(CYGPATH_W) 'cron/cron.c'; else $(CYGPATH_W) '$(srcdir)/cron/cron.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/cron.Tpo $(DEPDIR)/cron.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cron/cron.c' object='cron.obj' libtool=no @AMDEPBACKSLASH@
+lmsd-cronparse.obj: cron/cronparse.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lmsd_CFLAGS) $(CFLAGS) -MT lmsd-cronparse.obj -MD -MP -MF $(DEPDIR)/lmsd-cronparse.Tpo -c -o lmsd-cronparse.obj `if test -f 'cron/cronparse.c'; then $(CYGPATH_W) 'cron/cronparse.c'; else $(CYGPATH_W) '$(srcdir)/cron/cronparse.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/lmsd-cronparse.Tpo $(DEPDIR)/lmsd-cronparse.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cron/cronparse.c' object='lmsd-cronparse.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o cron.obj `if test -f 'cron/cron.c'; then $(CYGPATH_W) 'cron/cron.c'; else $(CYGPATH_W) '$(srcdir)/cron/cron.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lmsd_CFLAGS) $(CFLAGS) -c -o lmsd-cronparse.obj `if test -f 'cron/cronparse.c'; then $(CYGPATH_W) 'cron/cronparse.c'; else $(CYGPATH_W) '$(srcdir)/cron/cronparse.c'; fi`
 
-dictionary.o: config/dictionary.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT dictionary.o -MD -MP -MF $(DEPDIR)/dictionary.Tpo -c -o dictionary.o `test -f 'config/dictionary.c' || echo '$(srcdir)/'`config/dictionary.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/dictionary.Tpo $(DEPDIR)/dictionary.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='config/dictionary.c' object='dictionary.o' libtool=no @AMDEPBACKSLASH@
+lmsd-cron.o: cron/cron.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lmsd_CFLAGS) $(CFLAGS) -MT lmsd-cron.o -MD -MP -MF $(DEPDIR)/lmsd-cron.Tpo -c -o lmsd-cron.o `test -f 'cron/cron.c' || echo '$(srcdir)/'`cron/cron.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/lmsd-cron.Tpo $(DEPDIR)/lmsd-cron.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cron/cron.c' object='lmsd-cron.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o dictionary.o `test -f 'config/dictionary.c' || echo '$(srcdir)/'`config/dictionary.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lmsd_CFLAGS) $(CFLAGS) -c -o lmsd-cron.o `test -f 'cron/cron.c' || echo '$(srcdir)/'`cron/cron.c
 
-dictionary.obj: config/dictionary.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT dictionary.obj -MD -MP -MF $(DEPDIR)/dictionary.Tpo -c -o dictionary.obj `if test -f 'config/dictionary.c'; then $(CYGPATH_W) 'config/dictionary.c'; else $(CYGPATH_W) '$(srcdir)/config/dictionary.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/dictionary.Tpo $(DEPDIR)/dictionary.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='config/dictionary.c' object='dictionary.obj' libtool=no @AMDEPBACKSLASH@
+lmsd-cron.obj: cron/cron.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lmsd_CFLAGS) $(CFLAGS) -MT lmsd-cron.obj -MD -MP -MF $(DEPDIR)/lmsd-cron.Tpo -c -o lmsd-cron.obj `if test -f 'cron/cron.c'; then $(CYGPATH_W) 'cron/cron.c'; else $(CYGPATH_W) '$(srcdir)/cron/cron.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/lmsd-cron.Tpo $(DEPDIR)/lmsd-cron.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cron/cron.c' object='lmsd-cron.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o dictionary.obj `if test -f 'config/dictionary.c'; then $(CYGPATH_W) 'config/dictionary.c'; else $(CYGPATH_W) '$(srcdir)/config/dictionary.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lmsd_CFLAGS) $(CFLAGS) -c -o lmsd-cron.obj `if test -f 'cron/cron.c'; then $(CYGPATH_W) 'cron/cron.c'; else $(CYGPATH_W) '$(srcdir)/cron/cron.c'; fi`
 
-config.o: config/config.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT config.o -MD -MP -MF $(DEPDIR)/config.Tpo -c -o config.o `test -f 'config/config.c' || echo '$(srcdir)/'`config/config.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/config.Tpo $(DEPDIR)/config.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='config/config.c' object='config.o' libtool=no @AMDEPBACKSLASH@
+lmsd-dictionary.o: config/dictionary.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lmsd_CFLAGS) $(CFLAGS) -MT lmsd-dictionary.o -MD -MP -MF $(DEPDIR)/lmsd-dictionary.Tpo -c -o lmsd-dictionary.o `test -f 'config/dictionary.c' || echo '$(srcdir)/'`config/dictionary.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/lmsd-dictionary.Tpo $(DEPDIR)/lmsd-dictionary.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='config/dictionary.c' object='lmsd-dictionary.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o config.o `test -f 'config/config.c' || echo '$(srcdir)/'`config/config.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lmsd_CFLAGS) $(CFLAGS) -c -o lmsd-dictionary.o `test -f 'config/dictionary.c' || echo '$(srcdir)/'`config/dictionary.c
 
-config.obj: config/config.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT config.obj -MD -MP -MF $(DEPDIR)/config.Tpo -c -o config.obj `if test -f 'config/config.c'; then $(CYGPATH_W) 'config/config.c'; else $(CYGPATH_W) '$(srcdir)/config/config.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/config.Tpo $(DEPDIR)/config.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='config/config.c' object='config.obj' libtool=no @AMDEPBACKSLASH@
+lmsd-dictionary.obj: config/dictionary.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lmsd_CFLAGS) $(CFLAGS) -MT lmsd-dictionary.obj -MD -MP -MF $(DEPDIR)/lmsd-dictionary.Tpo -c -o lmsd-dictionary.obj `if test -f 'config/dictionary.c'; then $(CYGPATH_W) 'config/dictionary.c'; else $(CYGPATH_W) '$(srcdir)/config/dictionary.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/lmsd-dictionary.Tpo $(DEPDIR)/lmsd-dictionary.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='config/dictionary.c' object='lmsd-dictionary.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o config.obj `if test -f 'config/config.c'; then $(CYGPATH_W) 'config/config.c'; else $(CYGPATH_W) '$(srcdir)/config/config.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lmsd_CFLAGS) $(CFLAGS) -c -o lmsd-dictionary.obj `if test -f 'config/dictionary.c'; then $(CYGPATH_W) 'config/dictionary.c'; else $(CYGPATH_W) '$(srcdir)/config/dictionary.c'; fi`
+
+lmsd-config.o: config/config.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lmsd_CFLAGS) $(CFLAGS) -MT lmsd-config.o -MD -MP -MF $(DEPDIR)/lmsd-config.Tpo -c -o lmsd-config.o `test -f 'config/config.c' || echo '$(srcdir)/'`config/config.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/lmsd-config.Tpo $(DEPDIR)/lmsd-config.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='config/config.c' object='lmsd-config.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lmsd_CFLAGS) $(CFLAGS) -c -o lmsd-config.o `test -f 'config/config.c' || echo '$(srcdir)/'`config/config.c
+
+lmsd-config.obj: config/config.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lmsd_CFLAGS) $(CFLAGS) -MT lmsd-config.obj -MD -MP -MF $(DEPDIR)/lmsd-config.Tpo -c -o lmsd-config.obj `if test -f 'config/config.c'; then $(CYGPATH_W) 'config/config.c'; else $(CYGPATH_W) '$(srcdir)/config/config.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/lmsd-config.Tpo $(DEPDIR)/lmsd-config.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='config/config.c' object='lmsd-config.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lmsd_CFLAGS) $(CFLAGS) -c -o lmsd-config.obj `if test -f 'config/config.c'; then $(CYGPATH_W) 'config/config.c'; else $(CYGPATH_W) '$(srcdir)/config/config.c'; fi`
+
+lmsd-lmsd.o: lmsd.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lmsd_CFLAGS) $(CFLAGS) -MT lmsd-lmsd.o -MD -MP -MF $(DEPDIR)/lmsd-lmsd.Tpo -c -o lmsd-lmsd.o `test -f 'lmsd.c' || echo '$(srcdir)/'`lmsd.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/lmsd-lmsd.Tpo $(DEPDIR)/lmsd-lmsd.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='lmsd.c' object='lmsd-lmsd.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lmsd_CFLAGS) $(CFLAGS) -c -o lmsd-lmsd.o `test -f 'lmsd.c' || echo '$(srcdir)/'`lmsd.c
+
+lmsd-lmsd.obj: lmsd.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lmsd_CFLAGS) $(CFLAGS) -MT lmsd-lmsd.obj -MD -MP -MF $(DEPDIR)/lmsd-lmsd.Tpo -c -o lmsd-lmsd.obj `if test -f 'lmsd.c'; then $(CYGPATH_W) 'lmsd.c'; else $(CYGPATH_W) '$(srcdir)/lmsd.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/lmsd-lmsd.Tpo $(DEPDIR)/lmsd-lmsd.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='lmsd.c' object='lmsd-lmsd.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lmsd_CFLAGS) $(CFLAGS) -c -o lmsd-lmsd.obj `if test -f 'lmsd.c'; then $(CYGPATH_W) 'lmsd.c'; else $(CYGPATH_W) '$(srcdir)/lmsd.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

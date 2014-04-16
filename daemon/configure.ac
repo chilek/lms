@@ -109,7 +109,7 @@ AC_ARG_ENABLE([debug0],
 AC_ARG_ENABLE([debug1],
     AS_HELP_STRING([--enable-debug1], [events logging (disabled)]))
 
-CFLAGS="$CFLAGS -DLMS_LIB_DIR=\\\"$libdir/lmsd\\\" -DLMS_DEFAULT_DRIVER=\\\"$lmsdefaultdriver\\\" -DLMS_CONF_DIR=\\\"$sysconfdir/lms\\\""
+AC_SUBST([LMSD_CFLAGS], ["-DLMS_LIB_DIR=\\\"$libdir/lmsd\\\" -DLMS_DEFAULT_DRIVER=\\\"$lmsdefaultdriver\\\" -DLMS_CONF_DIR=\\\"$sysconfdir/lms\\\""])
 
 AC_MSG_NOTICE([**********************************])
 AC_MSG_NOTICE([Host os: $host_os])
