@@ -323,3 +323,17 @@ AC_DEFUN([SETUP_LIBGADU],
     AC_CHECK_HEADER(libgadu.h, [libgadu=yes], [libgadu=no])
     AM_CONDITIONAL([LIBGADU], [test x$libgadu = xyes])
 ])
+
+
+############################
+# Generate revision number #
+############################
+AC_DEFUN([GET_REVISION],
+[
+    AC_PATH_PROGS(GIT, git)
+    if test -f "${GIT}" ; then  # last commit time
+        LMSD_REVISION=`date -d @\`git show -s --format=%at\` "+%Y%m%d%H%m"`
+    else                        # or compile time if git is not found
+        LMSD_REVISION=`date "+%Y%m%d%H%m"`
+    fi
+])

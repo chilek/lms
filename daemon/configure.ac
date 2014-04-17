@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.67])
-AC_INIT([lmsd], [1.11], [http://bts.lms.org.pl/])
+AC_INIT([lmsd], [1.11-git], [http://bts.lms.org.pl/])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR([lmsd.c])
 AM_INIT_AUTOMAKE(lmsd, 2.6)
@@ -108,6 +108,9 @@ AC_ARG_ENABLE([debug0],
     AS_HELP_STRING([--enable-debug0], [SQL query logging (disabled)]))
 AC_ARG_ENABLE([debug1],
     AS_HELP_STRING([--enable-debug1], [events logging (disabled)]))
+
+GET_REVISION
+AC_DEFINE_UNQUOTED(LMSD_REVISION, ["$LMSD_REVISION"], Directore where lmsd should look for configuration - including lms.ini)
 
 AC_SUBST([LMSD_CFLAGS], ["-DLMS_LIB_DIR=\\\"$libdir/lmsd\\\" -DLMS_DEFAULT_DRIVER=\\\"$lmsdefaultdriver\\\" -DLMS_CONF_DIR=\\\"$sysconfdir/lms\\\""])
 

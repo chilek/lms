@@ -75,6 +75,7 @@ version ?.??.?? (????-??-??):
   - daemon/cutoff: removed unnecessary database dependent, compilation time typecast [maniac]
   - daemon is now able to load database configuration from lms.ini (-C option) [maniac]
   - daemon: database drivers are now loadable modules. [maniac]
+  - daemon: printing revision number in -v and -h [maniac]
 
 version 1.11.14 (2013-03-25):
 

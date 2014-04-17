@@ -20,8 +20,6 @@
  *  USA.
  */
 
-#define REVISION "$Id$"
-
 #include <time.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -37,6 +35,7 @@
 #include <sys/wait.h>
   
 #include "lmsd.h"
+#include "config.h"
 
 int quit = 0, runall = 0, port = 0, dontfork = 0, ssl = 0;
 char *configfile, *driver, *db, *user, *passwd;
@@ -436,7 +435,7 @@ int main(int argc, char *argv[], char **envp)
 static void parse_command_line(int argc, char **argv)
 {
 	int opt, option_index = 0;
-	char revision[10];
+	char revision[16];
 
 	static struct option options[] = {
    	    { "config-file", 1, 0, 'C' },
@@ -458,14 +457,12 @@ static void parse_command_line(int argc, char **argv)
    	    { 0, 0, 0, 0 }
 	};
 
-	sscanf(REVISION, "$Id: lmsd.c,v %s", revision);
-
 	while( (opt = getopt_long(argc, argv, "xsqrfvi:h:t:p:d:u:C:H:c:P:", options, &option_index)) != -1 )
 	{
 		switch(opt) 
 		{
     		case 'v':
-            		printf("LMS Daemon version 1.11-git (%s)\nCopyright (c) 2001-2013 LMS Developers\n", revision);
+            		printf("LMS Daemon version %s (%s)\nCopyright (c) 2001-2013 LMS Developers\n", PACKAGE_VERSION, LMSD_REVISION);
             		exit(0);
     		case 's':
             		ssl = 1;
@@ -512,7 +509,7 @@ static void parse_command_line(int argc, char **argv)
 			break;
 		case 'x':
         default:
-			printf("LMS Daemon version 1.11-git (%s). Command line options:\n", revision);
+		printf("LMS Daemon version %s (%s). Command line options:\n", PACKAGE_VERSION, LMSD_REVISION);
         	printf(" --config-file -C file\t\tpath to ini file (default: /etc/lms/lms.ini)\n");
         	printf(" --type -t [dbtype]\tdatabase type (default: mysql)\n");
         	printf(" --dbhost -h host[:port]\tdatabase host (default: 'localhost')\n");
