@@ -1690,8 +1690,8 @@ class LMS {
 				$sqlord = ' ORDER BY owner';
 				break;
 			case 'location':
-         $sqlord = ' ORDER BY location';
-         break;	
+				$sqlord = ' ORDER BY location';
+				break;	
 		}
 
 		if (sizeof($search))
