@@ -1702,6 +1702,9 @@ class LMS {
 			case 'owner':
 				$sqlord = ' ORDER BY owner';
 				break;
+			case 'location':
+				$sqlord = ' ORDER BY location';
+				break;	
 		}
 
 		if (sizeof($search))
@@ -1748,7 +1751,7 @@ class LMS {
 		if ($nodelist = $this->DB->GetAll('SELECT n.id AS id, n.ipaddr, inet_ntoa(n.ipaddr) AS ip, ipaddr_pub,
 				inet_ntoa(n.ipaddr_pub) AS ip_pub, n.mac, n.name, n.ownerid, n.access, n.warning,
 				n.netdev, n.lastonline, n.info, '
-				. $this->DB->Concat('c.lastname', "' '", 'c.name') . ' AS owner, net.name AS netname
+				. $this->DB->Concat('c.lastname', "' '", 'c.name') . ' AS owner, net.name AS netname, n.location
 				FROM vnodes n
 				JOIN customersview c ON (n.ownerid = c.id)
 				JOIN networks net ON net.id = n.netid '
