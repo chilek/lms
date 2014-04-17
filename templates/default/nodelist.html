@@ -21,6 +21,9 @@
 			<SPAN class="nobr"><img src="img/node.gif" alt=""> <A href="?m=nodelist&amp;o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}">{trans("Name:")}</A>{if $listdata.order eq "name"} <IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN><BR>
 			<SPAN class="nobr lighter"><img src="img/customer.gif" alt=""> <A href="?m=nodelist&amp;o=owner{if $listdata.direction eq "asc" && $listdata.order eq "owner"},desc{/if}">{trans("Customer:")}</A>{if $listdata.order eq "owner"} <IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN>
 		</td>
+		<td scope="col">
+		<SPAN class="nobr"><A href="?m=nodelist&amp;o=location{if $listdata.direction eq "asc" && $listdata.order eq "location"},desc{/if}">{trans("Address:")}</A>{if $listdata.order eq "location"} <IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN>
+		</td>
 		<td scope="col" class="text-right lighter nobr">
 			<img src="img/empty.gif" alt="" width="1" height="16"><A href="?m=nodelist&amp;o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{trans("Node ID:")}</A>{if $listdata.order eq "id"} <IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<img src="img/empty.gif" alt="" width="1" height="16"><A href="?m=nodelist&amp;o=ownerid{if $listdata.direction eq "asc" && $listdata.order eq "ownerid"},desc{/if}">{trans("Customer ID:")}</A>{if $listdata.order eq "ownerid"} <IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
@@ -34,7 +37,7 @@
 		</td>
 	</TR>
 	<TR>
-		<TD colspan="4">
+		<TD colspan="5">
 				<SPAN class="bold">{trans("Filter:")}</SPAN> 
 				<SPAN class="nobr">{trans("Status:")}
 				<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
@@ -68,7 +71,7 @@
 	</TR>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" colspan="4">
+		<TD class="pagination" colspan="5">
 			{include file="scroller.html" loop=$nodelist}
 		</TD>
 	</TR>
@@ -77,13 +80,13 @@
 	<TFOOT>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" colspan="4">
+		<TD class="pagination" colspan="5">
 			{include file="scroller.html" loop=$nodelist}
 		</TD>
 	</TR>
 	{/if}
 	<TR>
-		<TD colspan="2" class="text-right bold">
+		<TD colspan="3" class="text-right bold">
 			{trans("Total:")}<BR>
 			{trans("Connected<!nodes>:")}<BR>
 			{trans("Disconnected:")}
@@ -117,6 +120,9 @@
 			{$nodelist[nodelist].name}</A></span><BR>
 			<span class="nobr{if ! $nodelist[nodelist].access} blend{/if}"><img src="img/customer.gif" alt=""> <A href="?m=customerinfo&amp;id={$nodelist[nodelist].ownerid}" {tip a=$nodelist[nodelist].ownerid dynpopup='?m=customerinfoshort&amp;id=$a'}>{$nodelist[nodelist].owner|truncate:40:"...":true|replace:" ":"&nbsp;"}</A></span>
 		</TD>
+		<TD class="nobr" onClick="return self.location.href='?m=nodeinfo&amp;id={$nodelist[nodelist].id}';">
+		{$nodelist[nodelist].location}
+		</TD>
 		<TD class="text-right" onClick="return self.location.href='?m=nodeinfo&amp;id={$nodelist[nodelist].id}';">
 			({$nodelist[nodelist].id|string_format:"%04d"})<BR>
 			<SPAN class="blend">({$nodelist[nodelist].ownerid|string_format:"%04d"})</span>
@@ -136,7 +142,7 @@
 	{if $nodelist[nodelist.index_next].ownerid eq $nodelist[nodelist].ownerid && $listdata.order eq "owner"}{cycle print=false}{/if}
 	{sectionelse}
 	<TR>
-		<TD colspan="4" class="empty-table">
+		<TD colspan="5" class="empty-table">
 			<p>&nbsp;</p>
 			<p>{trans("No such nodes in database.")}</p>
 			<p>&nbsp;</p>
