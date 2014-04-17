@@ -169,6 +169,7 @@ AC_DEFUN([LOCATE_MYSQL],
     if test -f "${MYSQL_CONFIG}"; then
         MYSQL_INC=`$MYSQL_CONFIG --include`
         MYSQL_LIB=`$MYSQL_CONFIG --libs_r`
+        have_mysql=yes
     fi
 
     AM_CONDITIONAL([MYSQL], [test x$have_mysql = xyes])
