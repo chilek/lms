@@ -91,7 +91,8 @@ am__uninstall_files_from_dir = { \
   }
 am__installdirs = "$(DESTDIR)$(pkglibdir)"
 LTLIBRARIES = $(pkglib_LTLIBRARIES)
-parser_la_LIBADD =
+parser_la_DEPENDENCIES = lib/libtscript.a \
+	extensions/libparser_extensions.a
 am_parser_la_OBJECTS = parser_la-parser.lo
 parser_la_OBJECTS = $(am_parser_la_OBJECTS)
 parser_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -296,8 +297,9 @@ top_srcdir = @top_srcdir@
 SUBDIRS = lib extensions
 pkglib_LTLIBRARIES = parser.la
 parser_la_SOURCES = parser.c lib/libtscript.a extensions/tscript_extensions.a
-parser_la_LDFLAGS = -no-undefined -module -avoid-version -flm -lfl
+parser_la_LDFLAGS = -no-undefined -module -avoid-version -flm -lfl -lm
 parser_la_CFLAGS = -Ilib
+parser_la_LIBADD = lib/libtscript.a extensions/libparser_extensions.a
 all: all-recursive
 
 .SUFFIXES:
