@@ -112,7 +112,9 @@ AC_ARG_ENABLE([debug1],
 GET_REVISION
 AC_DEFINE_UNQUOTED(LMSD_REVISION, ["$LMSD_REVISION"], Directore where lmsd should look for configuration - including lms.ini)
 
-AC_SUBST([LMSD_CFLAGS], ["-DLMS_LIB_DIR=\\\"$libdir/lmsd\\\" -DLMS_DEFAULT_DRIVER=\\\"$lmsdefaultdriver\\\" -DLMS_CONF_DIR=\\\"$sysconfdir/lms\\\""])
+AC_SUBST([LMSD_LIB_DIR], ["-DLMS_LIB_DIR=\\\"$libdir/lmsd\\\""])
+AC_SUBST([LMSD_DEFAULT_DRIVER], ["-DLMS_DEFAULT_DRIVER=\\\"$lmsdefaultdriver\\\""])
+AC_SUBST([LMS_CONF_DIR], ["-DLMS_CONF_DIR=\\\"$sysconfdir/lms\\\""])
 
 AC_MSG_NOTICE([**********************************])
 AC_MSG_NOTICE([Host os: $host_os])

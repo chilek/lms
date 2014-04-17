@@ -15,6 +15,7 @@
 
 @SET_MAKE@
 
+
 VPATH = @srcdir@
 am__make_dryrun = \
   { \
@@ -89,14 +90,17 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
-am__installdirs = "$(DESTDIR)$(pkglibdir)"
+am__installdirs = "$(DESTDIR)$(pkglibdir)" \
+	"$(DESTDIR)$(dns_la_sampledir)" \
+	"$(DESTDIR)$(dns_la_sampleforwarddir)" \
+	"$(DESTDIR)$(dns_la_samplereversedir)"
 LTLIBRARIES = $(pkglib_LTLIBRARIES)
 dns_la_LIBADD =
-am_dns_la_OBJECTS = dns.lo
+am_dns_la_OBJECTS = dns_la-dns.lo
 dns_la_OBJECTS = $(am_dns_la_OBJECTS)
 dns_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(dns_la_LDFLAGS) \
-	$(LDFLAGS) -o $@
+	--mode=link $(CCLD) $(dns_la_CFLAGS) $(CFLAGS) \
+	$(dns_la_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -117,6 +121,8 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
+DATA = $(dns_la_sample_DATA) $(dns_la_sampleforward_DATA) \
+	$(dns_la_samplereverse_DATA)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -165,7 +171,9 @@ LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
-LMSD_CFLAGS = @LMSD_CFLAGS@
+LMSD_DEFAULT_DRIVER = @LMSD_DEFAULT_DRIVER@
+LMSD_LIB_DIR = @LMSD_LIB_DIR@
+LMS_CONF_DIR = @LMS_CONF_DIR@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
@@ -258,6 +266,13 @@ top_srcdir = @top_srcdir@
 pkglib_LTLIBRARIES = dns.la
 dns_la_SOURCES = dns.c
 dns_la_LDFLAGS = -no-undefined -module -avoid-version
+dns_la_CFLAGS = @LMS_CONF_DIR@
+dns_la_sampledir = $(sysconfdir)/lms/daemon/dns/sample
+dns_la_sample_DATA = sample/named.conf
+dns_la_sampleforwarddir = $(sysconfdir)/lms/daemon/dns/sample/forward
+dns_la_sampleforward_DATA = sample/forward/generic
+dns_la_samplereversedir = $(sysconfdir)/lms/daemon/dns/sample/reverse
+dns_la_samplereverse_DATA = sample/reverse/generic
 all: all-am
 
 .SUFFIXES:
@@ -333,7 +348,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_la-dns.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -356,11 +371,81 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
+dns_la-dns.lo: dns.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dns_la_CFLAGS) $(CFLAGS) -MT dns_la-dns.lo -MD -MP -MF $(DEPDIR)/dns_la-dns.Tpo -c -o dns_la-dns.lo `test -f 'dns.c' || echo '$(srcdir)/'`dns.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/dns_la-dns.Tpo $(DEPDIR)/dns_la-dns.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns.c' object='dns_la-dns.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dns_la_CFLAGS) $(CFLAGS) -c -o dns_la-dns.lo `test -f 'dns.c' || echo '$(srcdir)/'`dns.c
+
 mostlyclean-libtool:
 	-rm -f *.lo
 
 clean-libtool:
 	-rm -rf .libs _libs
+install-dns_la_sampleDATA: $(dns_la_sample_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(dns_la_sample_DATA)'; test -n "$(dns_la_sampledir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(dns_la_sampledir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(dns_la_sampledir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(dns_la_sampledir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(dns_la_sampledir)" || exit $$?; \
+	done
+
+uninstall-dns_la_sampleDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(dns_la_sample_DATA)'; test -n "$(dns_la_sampledir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(dns_la_sampledir)'; $(am__uninstall_files_from_dir)
+install-dns_la_sampleforwardDATA: $(dns_la_sampleforward_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(dns_la_sampleforward_DATA)'; test -n "$(dns_la_sampleforwarddir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(dns_la_sampleforwarddir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(dns_la_sampleforwarddir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(dns_la_sampleforwarddir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(dns_la_sampleforwarddir)" || exit $$?; \
+	done
+
+uninstall-dns_la_sampleforwardDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(dns_la_sampleforward_DATA)'; test -n "$(dns_la_sampleforwarddir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(dns_la_sampleforwarddir)'; $(am__uninstall_files_from_dir)
+install-dns_la_samplereverseDATA: $(dns_la_samplereverse_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(dns_la_samplereverse_DATA)'; test -n "$(dns_la_samplereversedir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(dns_la_samplereversedir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(dns_la_samplereversedir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(dns_la_samplereversedir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(dns_la_samplereversedir)" || exit $$?; \
+	done
+
+uninstall-dns_la_samplereverseDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(dns_la_samplereverse_DATA)'; test -n "$(dns_la_samplereversedir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(dns_la_samplereversedir)'; $(am__uninstall_files_from_dir)
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -446,9 +531,9 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LTLIBRARIES)
+all-am: Makefile $(LTLIBRARIES) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(pkglibdir)"; do \
+	for dir in "$(DESTDIR)$(pkglibdir)" "$(DESTDIR)$(dns_la_sampledir)" "$(DESTDIR)$(dns_la_sampleforwarddir)" "$(DESTDIR)$(dns_la_samplereversedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -504,7 +589,9 @@ info: info-am
 
 info-am:
 
-install-data-am:
+install-data-am: install-data-local install-dns_la_sampleDATA \
+	install-dns_la_sampleforwardDATA \
+	install-dns_la_samplereverseDATA
 
 install-dvi: install-dvi-am
 
@@ -550,7 +637,9 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-pkglibLTLIBRARIES
+uninstall-am: uninstall-dns_la_sampleDATA \
+	uninstall-dns_la_sampleforwardDATA \
+	uninstall-dns_la_samplereverseDATA uninstall-pkglibLTLIBRARIES
 
 .MAKE: install-am install-strip
 
@@ -558,16 +647,24 @@ uninstall-am: uninstall-pkglibLTLIBRARIES
 	clean-libtool clean-pkglibLTLIBRARIES ctags distclean \
 	distclean-compile distclean-generic distclean-libtool \
 	distclean-tags distdir dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am install-man \
-	install-pdf install-pdf-am install-pkglibLTLIBRARIES \
-	install-ps install-ps-am install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am uninstall-pkglibLTLIBRARIES
+	install install-am install-data install-data-am \
+	install-data-local install-dns_la_sampleDATA \
+	install-dns_la_sampleforwardDATA \
+	install-dns_la_samplereverseDATA install-dvi install-dvi-am \
+	install-exec install-exec-am install-html install-html-am \
+	install-info install-info-am install-man install-pdf \
+	install-pdf-am install-pkglibLTLIBRARIES install-ps \
+	install-ps-am install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
+	uninstall-am uninstall-dns_la_sampleDATA \
+	uninstall-dns_la_sampleforwardDATA \
+	uninstall-dns_la_samplereverseDATA uninstall-pkglibLTLIBRARIES
 
+
+install-data-local:
+	$(MKDIR_P) $(sysconfdir)/lms/daemon/dns/sample/out/forward $(sysconfdir)/lms/daemon/dns/sample/out/reverse
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

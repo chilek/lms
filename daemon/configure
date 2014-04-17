@@ -638,7 +638,9 @@ ac_func_list=
 ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
-LMSD_CFLAGS
+LMS_CONF_DIR
+LMSD_DEFAULT_DRIVER
+LMSD_LIB_DIR
 GIT
 BUILD_PINGER_FALSE
 BUILD_PINGER_TRUE
@@ -17715,7 +17717,11 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 
-LMSD_CFLAGS="-DLMS_LIB_DIR=\\\"$libdir/lmsd\\\" -DLMS_DEFAULT_DRIVER=\\\"$lmsdefaultdriver\\\" -DLMS_CONF_DIR=\\\"$sysconfdir/lms\\\""
+LMSD_LIB_DIR="-DLMS_LIB_DIR=\\\"$libdir/lmsd\\\""
+
+LMSD_DEFAULT_DRIVER="-DLMS_DEFAULT_DRIVER=\\\"$lmsdefaultdriver\\\""
+
+LMS_CONF_DIR="-DLMS_CONF_DIR=\\\"$sysconfdir/lms\\\""
 
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: **********************************" >&5

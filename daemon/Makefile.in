@@ -198,7 +198,9 @@ LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
-LMSD_CFLAGS = @LMSD_CFLAGS@
+LMSD_DEFAULT_DRIVER = @LMSD_DEFAULT_DRIVER@
+LMSD_LIB_DIR = @LMSD_LIB_DIR@
+LMS_CONF_DIR = @LMS_CONF_DIR@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
@@ -292,7 +294,7 @@ AUTOMAKE_OPTIONS = foreign
 ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = modules dbdrivers
 lmsd_SOURCES = util.c cron/cronparse.c cron/cron.c config/dictionary.c config/config.c lmsd.c
-lmsd_CFLAGS = @LMSD_CFLAGS@
+lmsd_CFLAGS = @LMSD_LIB_DIR@ @LMSD_DEFAULT_DRIVER@ @LMS_CONF_DIR@
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
