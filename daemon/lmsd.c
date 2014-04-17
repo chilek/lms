@@ -285,7 +285,10 @@ int main(int argc, char *argv[], char **envp)
 						instances[i_no].crontab = strdup(crontab);
 						i_no++;
 					}
-				}
+				} else {
+					syslog(LOG_CRIT, "Host '%s' and/or instance '%s' not found in database!", dhost, name);
+					fprintf(stderr, "Host '%s' and/or instance '%s' not found in database!\n", dhost, name);
+                                }
 				g->db_free(&res);
 				free(name);
 			}
