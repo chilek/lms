@@ -394,6 +394,7 @@ int main(int argc, char *argv[], char **envp)
 						continue;
 					}
 
+					syslog(LOG_INFO, "Running module: %s", instances[i].module);
 					// now run module
 					m->reload(g, m);
 					
