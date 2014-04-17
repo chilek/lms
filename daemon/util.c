@@ -137,10 +137,10 @@ char * va_list_join(int cnt, char * delim, va_list vl)
     for (i=0; i < cnt; i++)
     {
         arg = va_arg(vl, char *);
-        result = (char *) realloc(result, strlen(result) + strlen(arg));
+        result = (char *) realloc(result, strlen(result) + strlen(arg) + sizeof(char));
         strcat(result, arg);
         if (i < cnt - 1 ) {
-            result = (char *) realloc(result, strlen(result) + strlen(delim));
+            result = (char *) realloc(result, strlen(result) + strlen(delim) + sizeof(char));
             strcat(result, delim);
         }
     }
