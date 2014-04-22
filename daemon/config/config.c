@@ -125,10 +125,7 @@ Config * config_load(const char *configfile, GLOBAL *g, const char *hostname, co
     }
     else if ( g->conn == NULL )
     {
-        char * msg = malloc(255);
-        sprintf(msg, "File '%s' not found. I will use default parameters when connecting to database.", configfile);
-        syslog(LOG_INFO, msg);
-        free(msg);
+        syslog(LOG_INFO, "File '%s' not found. I will use default parameters when connecting to database.", configfile);
     }
     if( g->conn != NULL )
         config_load_from_db(g, hostname, section);
@@ -227,10 +224,7 @@ void config_load_from_file(const char *configfile, const char *section)
     	    }
     }
 
-    char * msg = malloc(255);
-    sprintf(msg, "Configuration file '%s' loaded.", configfile);
-    syslog(LOG_INFO, msg);
-    free(msg);
+    syslog(LOG_INFO, "Configuration file '%s' loaded.", configfile);
 
     fclose(ini);
     return;
