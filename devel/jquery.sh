@@ -3,7 +3,7 @@
 # Install JQuery <LMS_DIR>/assets/twbs/jquery/
 #
 
-echo $(tput setaf 7)"JQUERY $RELEASE"$(tput sgr0)
+echo $(tput setaf 7)"JQUERY"$(tput sgr0)
 
 # download
 echo -n $(tput setaf 4)"Go to LMS root dir: "$(tput sgr0)
