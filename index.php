@@ -104,10 +104,13 @@ if (defined('Smarty::SMARTY_VERSION'))
 	$ver_chunks = preg_split('/[- ]/', Smarty::SMARTY_VERSION);
 else
 	$ver_chunks = NULL;
-if (count($ver_chunks) != 2 || version_compare('3.0', $ver_chunks[1]) > 0)
-	die('<B>Wrong version of Smarty engine! We support only Smarty-3.x greater than 3.0.</B>');
+if (count($ver_chunks) < 2 || version_compare('3.1', $ver_chunks[1]) > 0)
+	die('<B>Wrong version of Smarty engine! We support only Smarty-3.x greater than 3.1.</B>');
 
 define('SMARTY_VERSION', $ver_chunks[1]);
+
+// add LMS's custom plugins directory
+$SMARTY->addPluginsDir(LIB_DIR.'/SmartyPlugins');
 
 // uncomment this line if you're not gonna change template files no more
 //$SMARTY->compile_check = false;
