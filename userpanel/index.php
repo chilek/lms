@@ -101,6 +101,9 @@ if (count($ver_chunks) != 2 || version_compare('3.0', $ver_chunks[1]) > 0)
 
 define('SMARTY_VERSION', $ver_chunks[1]);
 
+// add LMS's custom plugins directory
+$SMARTY->addPluginsDir(LIB_DIR.'/SmartyPlugins');
+
 // Read configuration of LMS-UI from database
 
 if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0'))
