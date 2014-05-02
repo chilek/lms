@@ -54,7 +54,6 @@ else
 $CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'].'/lib' : $CONFIG['directories']['lib_dir']);
 $CONFIG['directories']['modules_dir'] = (!isset($CONFIG['directories']['modules_dir']) ? $CONFIG['directories']['sys_dir'].'/modules' : $CONFIG['directories']['modules_dir']);
 $CONFIG['directories']['userpanel_dir'] = (!isset($CONFIG['directories']['userpanel_dir']) ? getcwd() : $CONFIG['directories']['userpanel_dir']);
-$CONFIG['directories']['smarty_dir'] = (!isset($CONFIG['directories']['smarty_dir']) ? $CONFIG['directories']['lib_dir'] . '/Smarty' : $CONFIG['directories']['smarty_dir']);
 $CONFIG['directories']['smarty_compile_dir'] = $CONFIG['directories']['userpanel_dir'].'/templates_c';
 
 define('USERPANEL_DIR', $CONFIG['directories']['userpanel_dir']);
@@ -65,7 +64,6 @@ define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 define('DOC_DIR', $CONFIG['directories']['doc_dir']);
 define('MODULES_DIR', $CONFIG['directories']['modules_dir']);
-define('SMARTY_DIR', $CONFIG['directories']['smarty_dir']);
 define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir']);
 
 // include required files
@@ -88,7 +86,7 @@ if (!$DB) die;
 
 // Initialize templates engine (must be before locale settings)
 
-require_once(SMARTY_DIR . '/Smarty.class.php');
+require_once(LIB_DIR.'/Smarty/Smarty.class.php');
 
 $SMARTY = new Smarty;
 
@@ -103,14 +101,11 @@ if (count($ver_chunks) != 2 || version_compare('3.0', $ver_chunks[1]) > 0)
 
 define('SMARTY_VERSION', $ver_chunks[1]);
 
-// add LMS's custom plugins directory
-$SMARTY->addPluginsDir(LIB_DIR . '/SmartyPlugins');
-
 // Read configuration of LMS-UI from database
 
 if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0'))
-	foreach($cfg as $row)
-		$CONFIG[$row['section']][$row['var']] = $row['value'];
+        foreach($cfg as $row)
+                $CONFIG[$row['section']][$row['var']] = $row['value'];
 
 // Redirect to SSL
 
