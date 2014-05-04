@@ -40,16 +40,21 @@ AC_CONFIG_FILES(Makefile
 # Checks for programs.
 AC_PROG_CXX
 
-AC_CHECK_PROG([FLEX], [flex lex], [flex])
-AM_MISSING_PROG([LEX], [$FLEX])
-AM_PROG_LEX
+# check lex
+AC_PROG_LEX
+if test x"$LEX" = "x:"; then
+    AC_CHECK_PROG([FLEX_EXISTS], [flex], [yes], [no])
+    if test x"$FLEX_EXISTS" != xyes; then
+        AC_MSG_ERROR([[flex not found. Please install it.]])
+    fi
+fi
 
+# check bison
 AC_PROG_YACC
-
 if test x"$YACC" = "xyacc"; then
     AC_CHECK_PROG([YACC_EXISTS], [yacc], [yes], [no])
     if test x"$YACC_EXISTS" != xyes; then
-        AC_MSG_ERROR([[bison/byacc/yacc not found. Please install bison]])
+        AC_MSG_ERROR([[bison/byacc/yacc not found. Please install bison.]])
     fi
 fi
 
