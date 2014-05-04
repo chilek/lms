@@ -16932,7 +16932,7 @@ fi
         if test -d `echo $MYSQL_INC |cut -c 3-` ; then
             have_mysql=yes
         else
-            as_fn_error $? "mysql_config pointed on non existent directory. Your MySQL installation may be broken or you might need to use the --with-pgsql=PATH configure option to point right mysql_config" "$LINENO" 5
+            as_fn_error $? "mysql_config pointed on non existent directory. Your MySQL installation may be broken or you might need to use the --with-mysql=PATH configure option to point right mysql_config" "$LINENO" 5
         fi
     fi
 
@@ -17455,6 +17455,10 @@ $as_echo "ok" >&6; }
 
     lmsdefaultdriver=mysql
 
+fi
+# Error when there is no database
+if test ! "x$have_mysql" = "xyes" -a ! "x$have_pgsql" = "xyes"; then :
+  as_fn_error $? "No database libraries detected. Try to use --with-mysql and/or --with-pgsql options." "$LINENO" 5
 fi
 
 
