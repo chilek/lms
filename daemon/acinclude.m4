@@ -7,7 +7,7 @@ AC_DEFUN([LOCATE_POSTGRESQL],
     AC_PATH_PROGS(PG_CONFIG, pg_config)
 
     # If provided path try to use it
-    AC_ARG_WITH(pgsql, AS_HELP_STRING([--with-pgsql=DIR], [enables use of PostgreSQL database (autodetection is run if DIR is not present)]),
+    AC_ARG_WITH(pgsql, AS_HELP_STRING([--with-pgsql=PATH], [path to pg_config binary (autodetection is run if PATH is not present)]),
     [
         if test "$withval" != "yes"  ;  then
             PG_CONFIG="$withval"
@@ -28,7 +28,7 @@ AC_DEFUN([LOCATE_POSTGRESQL],
         if test -d "${PG_INCLUDE}" ; then
             have_pgsql=yes
         else
-            AC_MSG_ERROR([pg_config pointed on non existent directory. Yourr PostgreSQL installation may be broken or you might need to use the --with-pgsql=DIR configure option to point right pg_config])
+            AC_MSG_ERROR([pg_config pointed on non existent directory. Your PostgreSQL installation may be broken or you might need to use the --with-pgsql=PATH configure option to point right pg_config])
         fi
     fi
 
@@ -149,7 +149,7 @@ AC_DEFUN([LOCATE_MYSQL],
     AC_PATH_PROGS(MYSQL_CONFIG, mysql_config)
 
     AC_ARG_WITH(mysql,
-                AC_HELP_STRING([--with-mysql=PATH],[path to mysql_config binary [/usr/bin/mysql_config]]),
+                AC_HELP_STRING([--with-mysql=PATH],[path to mysql_config binary (autodetection is run if PATH is not present)]),
     [
         # We have to use MySQL
         if test "$withval" != "yes"  ;  then               # If provided path to MySQL use it
@@ -160,7 +160,7 @@ AC_DEFUN([LOCATE_MYSQL],
             fi
         else                                               # If check we have found mysql_config earlier
             if test ! -f "${MYSQL_CONFIG}" ; then
-                AC_MSG_ERROR(Could not find mysql_config binary. Use --with-mysql= to specify non-default path to mysql_config binary.)
+                AC_MSG_ERROR(Could not find MySQL installation (mysql_config not detected). You might need to use the --with-mysql= configure option.)
             fi
         fi
         with_mysql=yes
@@ -168,8 +168,11 @@ AC_DEFUN([LOCATE_MYSQL],
 
     if test -f "${MYSQL_CONFIG}"; then
         MYSQL_INC=`$MYSQL_CONFIG --include`
-        MYSQL_LIB=`$MYSQL_CONFIG --libs_r`
-        have_mysql=yes
+        if test -d `echo $MYSQL_INC |cut -c 3-` ; then
+            have_mysql=yes
+        else
+            AC_MSG_ERROR([mysql_config pointed on non existent directory. Your MySQL installation may be broken or you might need to use the --with-pgsql=PATH configure option to point right mysql_config])
+        fi
     fi
 
     AM_CONDITIONAL([MYSQL], [test x$have_mysql = xyes])
@@ -182,6 +185,8 @@ AC_DEFUN([LOCATE_MYSQL],
 ##################################################
 AC_DEFUN([SETUP_MYSQL],
 [
+    MYSQL_LIB=`$MYSQL_CONFIG --libs_r`
+
     if test -z "$MYSQL_LIB"; then
         AC_MSG_ERROR(Cannot find MySQL library)
     fi
