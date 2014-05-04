@@ -78,6 +78,8 @@ LOCATE_SNMP
 # Second detected database will be used as default (LMS_DEFAULT_DRIVER).
 AS_IF([test "x$with_pgsql" = "xyes" -o "x$have_pgsql" = "xyes" ], [SETUP_POSTGRESQL])
 AS_IF([test "x$with_mysql" = "xyes" -o "x$have_mysql" = "xyes"],  [SETUP_MYSQL])
+# Error when there is no database
+AS_IF([test ! "x$have_mysql" = "xyes" -a ! "x$have_pgsql" = "xyes"], AC_MSG_ERROR([No database libraries detected. Try to use --with-mysql and/or --with-pgsql options.]))
 
 SETUP_SNMP
 SETUP_LIBGADU
