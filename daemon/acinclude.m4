@@ -7,7 +7,7 @@ AC_DEFUN([LOCATE_POSTGRESQL],
     AC_PATH_PROGS(PG_CONFIG, pg_config)
 
     # If provided path try to use it
-    AC_ARG_WITH(pgsql, AS_HELP_STRING([--with-pgsql=DIR], [enables use of PostgreSQL database (conflits with mysql, autodetection is run if DIR is not present)]),
+    AC_ARG_WITH(pgsql, AS_HELP_STRING([--with-pgsql=DIR], [enables use of PostgreSQL database (autodetection is run if DIR is not present)]),
     [
         if test "$withval" != "yes"  ;  then
             PG_CONFIG="$withval"
