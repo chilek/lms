@@ -186,10 +186,11 @@ AC_DEFUN([LOCATE_MYSQL],
 AC_DEFUN([SETUP_MYSQL],
 [
     MYSQL_LIB=`$MYSQL_CONFIG --libs_r`
+    MYSQL_OLD_LDFLAGS="$LDFLAGS"
+    MYSQL_OLD_CPPFLAGS="$CPPFLAGS"
 
-    if test -z "$MYSQL_LIB"; then
-        AC_MSG_ERROR(Cannot find MySQL library)
-    fi
+    LDFLAGS="$LDFLAGS $MYSQL_LIB"
+    CPPFLAGS="$CPPFLAGS $MYSQL_INC"
 
     AC_CHECK_LIB(mysqlclient_r ,mysql_init, have_mysql=yes,
       AC_MSG_ERROR([MySQL libraries not found])
@@ -200,6 +201,10 @@ AC_DEFUN([SETUP_MYSQL],
 
     AC_SUBST([MYSQL_CPPFLAGS], [`$MYSQL_CONFIG --include`])
     AC_SUBST([MYSQL_LDFLAGS], [`$MYSQL_CONFIG --libs_r`])
+
+    LDFLAGS="$MYSQL_OLD_LDFLAGS"
+    CPPFLAGS="$MYSQL_OLD_CPPFLAGS"
+
 
     lmsdefaultdriver=mysql
 ])
