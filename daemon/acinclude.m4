@@ -171,7 +171,7 @@ AC_DEFUN([LOCATE_MYSQL],
         if test -d `echo $MYSQL_INC |cut -c 3-` ; then
             have_mysql=yes
         else
-            AC_MSG_ERROR([mysql_config pointed on non existent directory. Your MySQL installation may be broken or you might need to use the --with-pgsql=PATH configure option to point right mysql_config])
+            AC_MSG_ERROR([mysql_config pointed on non existent directory. Your MySQL installation may be broken or you might need to use the --with-mysql=PATH configure option to point right mysql_config])
         fi
     fi
 
