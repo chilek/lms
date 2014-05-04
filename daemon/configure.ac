@@ -61,6 +61,9 @@ if test x"$FILE" != x"yes" ; then
     AC_MSG_ERROR([Program 'file' not found. Please install it.])
 fi
 
+# Check if gnu make is present
+CHECK_GNU_MAKE
+
 AC_PROG_CC
 AC_PROG_LIBTOOL
 
