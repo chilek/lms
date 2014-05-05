@@ -255,24 +255,24 @@ void reload(GLOBAL *g, struct cutoff_module *c)
     		g->str_replace(&query, "%suspended", suspended);
     		g->str_replace(&query, "%ownerid", "n.ownerid");
 	
-		res = g->db_pquery(g->conn, query);
+		res = g->db->pquery(g->db->conn, query);
 
-		for(i=0; i<g->db_nrows(res); i++) 
+		for(i=0; i<g->db->nrows(res); i++) 
 		{
-			char *nodeid = g->db_get_data(res,i,"id");
-			char *ownerid = g->db_get_data(res,i,"ownerid");
+			char *nodeid = g->db->get_data(res,i,"id");
+			char *ownerid = g->db->get_data(res,i,"ownerid");
 		
-			n = g->db_pexec(g->conn, "UPDATE nodes SET access = 0 WHERE id = ?", nodeid);
+			n = g->db->pexec(g->db->conn, "UPDATE nodes SET access = 0 WHERE id = ?", nodeid);
 
 			execn = 1;
 			
 			if(*c->expwarning && n)
 			{
-				u = g->db_pexec(g->conn, "UPDATE customers SET message = '?' WHERE id = ?", c->expwarning, ownerid);
+				u = g->db->pexec(g->db->conn, "UPDATE customers SET message = '?' WHERE id = ?", c->expwarning, ownerid);
 				execu = 1;
 			}
 		}	
-		g->db_free(&res);
+		g->db->free(&res);
 
 		free(query);
 	}
@@ -301,23 +301,23 @@ void reload(GLOBAL *g, struct cutoff_module *c)
     		g->str_replace(&query, "%suspended", suspended);
     		g->str_replace(&query, "%ownerid", "c.id");
 
-		res = g->db_pquery(g->conn, query);
+		res = g->db->pquery(g->db->conn, query);
 
-		for(i=0; i<g->db_nrows(res); i++) 
+		for(i=0; i<g->db->nrows(res); i++) 
 		{
-			char *customerid = g->db_get_data(res,i,"id");
+			char *customerid = g->db->get_data(res,i,"id");
 
-			n = g->db_pexec(g->conn, "UPDATE nodes SET access = 0 WHERE ownerid = ?", customerid);
+			n = g->db->pexec(g->db->conn, "UPDATE nodes SET access = 0 WHERE ownerid = ?", customerid);
 
 			execn = 1;
 			
 			if(*c->expwarning && n)
 			{
-				u = g->db_pexec(g->conn, "UPDATE customers SET message = '?' WHERE id = ?", c->expwarning, customerid);
+				u = g->db->pexec(g->db->conn, "UPDATE customers SET message = '?' WHERE id = ?", c->expwarning, customerid);
 				execu = 1;
 			}
 		}	
-		g->db_free(&res);
+		g->db->free(&res);
 
 		free(query);
 	}
@@ -343,16 +343,16 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 		g->str_replace(&query, "%enets", strlen(enetsql) ? enets_cust : "");	
     		g->str_replace(&query, "%ownerid", "d.customerid");
 
-		res = g->db_pquery(g->conn, query, itoa(c->deadline)); 
+		res = g->db->pquery(g->db->conn, query, itoa(c->deadline)); 
 	
-		for(i=0; i<g->db_nrows(res); i++) 
+		for(i=0; i<g->db->nrows(res); i++) 
 		{
-			char *customerid = g->db_get_data(res,i,"id");
+			char *customerid = g->db->get_data(res,i,"id");
 		
 			if(c->warn_only)
-				n = g->db_pexec(g->conn, "UPDATE nodes SET warning = 1 WHERE ownerid = ? AND warning = 0", customerid);
+				n = g->db->pexec(g->db->conn, "UPDATE nodes SET warning = 1 WHERE ownerid = ? AND warning = 0", customerid);
 			else if(c->nodegroup_only)
-				n = g->db_pexec(g->conn, "INSERT INTO nodegroupassignments (nodegroupid, nodeid) "
+				n = g->db->pexec(g->db->conn, "INSERT INTO nodegroupassignments (nodegroupid, nodeid) "
 			                "SELECT ?, n.id "
 					"FROM nodes n "
 					"WHERE n.ownerid = ? "
@@ -362,17 +362,17 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 					group, customerid, group	
 					);
 			else 
-				n = g->db_pexec(g->conn, "UPDATE nodes SET access = 0 ? WHERE ownerid = ? AND access = 1", (*c->warning ? ", warning = 1" : ""), customerid);
+				n = g->db->pexec(g->db->conn, "UPDATE nodes SET access = 0 ? WHERE ownerid = ? AND access = 1", (*c->warning ? ", warning = 1" : ""), customerid);
 
 			execn = n ? 1 : execn;
 			
 			if(*c->warning && !c->nodegroup_only && n)
 			{
-				u = g->db_pexec(g->conn, "UPDATE customers SET message = '?' WHERE id = ?", c->warning, customerid);
+				u = g->db->pexec(g->db->conn, "UPDATE customers SET message = '?' WHERE id = ?", c->warning, customerid);
 				execu = u ? 1 : execu;
 			}
 		}	
-		g->db_free(&res);
+		g->db->free(&res);
 
 		free(query);
 	}
@@ -427,18 +427,18 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	g->str_replace(&query, "%ownerid", "c.id");
 
 	if(plimit)
-		res = g->db_pquery(g->conn, query, itoa(plimit)); 
+		res = g->db->pquery(g->db->conn, query, itoa(plimit)); 
 	else
-		res = g->db_pquery(g->conn, query, itoa(limit)); 
+		res = g->db->pquery(g->db->conn, query, itoa(limit)); 
 	
-	for(i=0; i<g->db_nrows(res); i++) 
+	for(i=0; i<g->db->nrows(res); i++) 
 	{
-		char *customerid = g->db_get_data(res,i,"id");
+		char *customerid = g->db->get_data(res,i,"id");
 		
 		if(c->warn_only)
-			n = g->db_pexec(g->conn, "UPDATE nodes SET warning = 1 WHERE ownerid = ? AND warning = 0", customerid);
+			n = g->db->pexec(g->db->conn, "UPDATE nodes SET warning = 1 WHERE ownerid = ? AND warning = 0", customerid);
 		else if(c->nodegroup_only)
-			n = g->db_pexec(g->conn, "INSERT INTO nodegroupassignments (nodegroupid, nodeid) "
+			n = g->db->pexec(g->db->conn, "INSERT INTO nodegroupassignments (nodegroupid, nodeid) "
 			                "SELECT ?, n.id "
 					"FROM nodes n "
 					"WHERE n.ownerid = ? "
@@ -448,25 +448,25 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 					group, customerid, group	
 					);
 		else 
-			n = g->db_pexec(g->conn, "UPDATE nodes SET access = 0 ? WHERE ownerid = ? AND access = 1", (*c->warning ? ", warning = 1" : ""), customerid);
+			n = g->db->pexec(g->db->conn, "UPDATE nodes SET access = 0 ? WHERE ownerid = ? AND access = 1", (*c->warning ? ", warning = 1" : ""), customerid);
 
 		execn = n ? 1 : execn;
 			
 		if(*c->warning && !c->nodegroup_only && n)
 		{
 			char *warning = strdup(c->warning);
-			char *balance = g->db_get_data(res,i,"balance");
+			char *balance = g->db->get_data(res,i,"balance");
 
 			g->str_replace(&warning, "%B", balance);
 			g->str_replace(&warning, "%b", balance[0] == '-' ? balance+1 : balance);
 
-			u = g->db_pexec(g->conn, "UPDATE customers SET message = '?' WHERE id = ?", warning, customerid);
+			u = g->db->pexec(g->db->conn, "UPDATE customers SET message = '?' WHERE id = ?", warning, customerid);
 			execu = u ? 1 : execu;
 
 			free(warning);
 		}
 	}	
-	g->db_free(&res);
+	g->db->free(&res);
 
 	free(query);
 
@@ -530,9 +530,9 @@ struct cutoff_module * init(GLOBAL *g, MODULE *m)
 	nodegroup = g->config_getstring(c->base.ini, c->base.instance, "setnodegroup_only", "");
 	if(strlen(nodegroup))
 	{
-		res = g->db_pquery(g->conn, "SELECT id FROM nodegroups WHERE UPPER(name) = UPPER('?')", nodegroup);
-		if(g->db_nrows(res))
-			c->nodegroup_only = atoi(g->db_get_data(res,0,"id"));
+		res = g->db->pquery(g->db->conn, "SELECT id FROM nodegroups WHERE UPPER(name) = UPPER('?')", nodegroup);
+		if(g->db->nrows(res))
+			c->nodegroup_only = atoi(g->db->get_data(res,0,"id"));
 	}
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [%s/cutoff] initialized", c->base.instance);

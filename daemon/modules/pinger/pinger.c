@@ -292,37 +292,37 @@ void reload(GLOBAL *g, struct pinger_module *p)
 
 		if( strlen(netname) ) 
 		{
-			res = g->db_pquery(g->conn, "SELECT name, domain, address, INET_ATON(mask) AS mask, interface, gateway FROM networks WHERE UPPER(name)=UPPER('?')", netname);
-			if(g->db_nrows(res))
+			res = g->db->pquery(g->db->conn, "SELECT name, domain, address, INET_ATON(mask) AS mask, interface, gateway FROM networks WHERE UPPER(name)=UPPER('?')", netname);
+			if(g->db->nrows(res))
 			{
 				nets = (struct net *) realloc(nets, (sizeof(struct net) * (nc+1)));
-				nets[nc].address = inet_addr(g->db_get_data(res,0,"address"));
-				nets[nc].mask = inet_addr(g->db_get_data(res,0,"mask"));
+				nets[nc].address = inet_addr(g->db->get_data(res,0,"address"));
+				nets[nc].mask = inet_addr(g->db->get_data(res,0,"mask"));
 				nc++;
 			}
-	    		g->db_free(&res);
+	    		g->db->free(&res);
 		}
 	}
 	free(netname); free(netnames);
 
 	if(!nc)
 	{
-		res = g->db_query(g->conn, "SELECT name, domain, address, INET_ATON(mask) AS mask, interface, gateway FROM networks");
+		res = g->db->query(g->db->conn, "SELECT name, domain, address, INET_ATON(mask) AS mask, interface, gateway FROM networks");
 
-		for(nc=0; nc<g->db_nrows(res); nc++) 
+		for(nc=0; nc<g->db->nrows(res); nc++) 
 		{
 			nets = (struct net*) realloc(nets, (sizeof(struct net) * (nc+1)));
-			nets[nc].address = inet_addr(g->db_get_data(res,nc,"address"));
-			nets[nc].mask = inet_addr(g->db_get_data(res,nc,"mask"));
+			nets[nc].address = inet_addr(g->db->get_data(res,nc,"address"));
+			nets[nc].mask = inet_addr(g->db->get_data(res,nc,"mask"));
 		}
-		g->db_free(&res);
+		g->db->free(&res);
 	}
 
-	res = g->db_pquery(g->conn, "SELECT id, INET_NTOA(ipaddr) AS ip FROM nodes");
+	res = g->db->pquery(g->db->conn, "SELECT id, INET_NTOA(ipaddr) AS ip FROM nodes");
 
-	for(i=0; i<g->db_nrows(res); i++) 
+	for(i=0; i<g->db->nrows(res); i++) 
 	{
-		unsigned long ip = inet_addr(g->db_get_data(res,i,"ip"));
+		unsigned long ip = inet_addr(g->db->get_data(res,i,"ip"));
 			
 		for(j=0; j<nc; j++)
 			if((ip & nets[j].mask) == nets[j].address)
@@ -331,13 +331,13 @@ void reload(GLOBAL *g, struct pinger_module *p)
 		if(j!=nc) 
 		{
 			hosts = (struct host*) realloc(hosts, sizeof(struct host) * (nh + 1));
-			hosts[nh].id = strdup(g->db_get_data(res,i,"id"));
+			hosts[nh].id = strdup(g->db->get_data(res,i,"id"));
 			hosts[nh].ipaddr = ip;
 			hosts[nh].active = 0;
 			nh++;
 		}
 	}
-	g->db_free(&res);
+	g->db->free(&res);
 
 	/***********************************************************/
 	get_ifaces();
@@ -381,9 +381,9 @@ void reload(GLOBAL *g, struct pinger_module *p)
 			{
 				if(p->use_secure_function)
 					// works with postgres only
-					g->db_pexec(g->conn, "SELECT set_lastonline(ARRAY[?])", hoststr);
+					g->db->pexec(g->db->conn, "SELECT set_lastonline(ARRAY[?])", hoststr);
 				else
-					g->db_pexec(g->conn, "UPDATE nodes SET lastonline=%NOW% WHERE id IN (?)", hoststr);
+					g->db->pexec(g->db->conn, "UPDATE nodes SET lastonline=%NOW% WHERE id IN (?)", hoststr);
 			}
 			
 			free(hoststr);

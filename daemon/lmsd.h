@@ -2,41 +2,18 @@
 #ifndef _LMSD_H_
 #define _LMSD_H_
 
+#include "db.h"
 #include "util.h"
 #include "cron/cron.h"
 #include "config/config.h"
 
-#define APIVERSION 5
+#define APIVERSION 6
 #define PROGNAME "lmsd"
-
-typedef struct dictionary Config;
-
-typedef void (*ConnHandle)();
-typedef void (*QueryHandle)();
 
 struct global
 {
 	int api_version;
-	ConnHandle *conn;
-
-	// db functions
-	ConnHandle * (*db_connect)(const char *, const char *, const char *, const char *, int, int);
-	int (*db_disconnect)(ConnHandle *);
-	QueryHandle * (*db_query)(ConnHandle *, char *);
-	QueryHandle * (*db_pquery)(ConnHandle *, char *, ...);
-	void (*db_free)(QueryHandle **);
-	int (*db_exec)(ConnHandle *, char *);
-	int (*db_pexec)(ConnHandle *, char *, ...);
-	int (*db_last_insert_id)(ConnHandle *, const char *);
-	int (*db_begin)(ConnHandle *);
-	int (*db_commit)(ConnHandle *);
-	int (*db_abort)(ConnHandle *);
-	int (*db_nrows)(QueryHandle *);
-	int (*db_ncols)(QueryHandle *);
-	char * (*db_concat)(int cnt, ...);
-	char * (*db_get_data)(QueryHandle *, int, const char *);
-	char * (*db_escape)(ConnHandle *, const char *);
-	char * (*db_colname)(QueryHandle *, int);
+	struct dbs * db;
 
 	// config  functions
 	char * (*config_getstring)(Config *, char *, char *, char *);

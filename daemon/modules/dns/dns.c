@@ -116,14 +116,14 @@ void reload(GLOBAL *g, struct dns_module *dns)
         n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
 
         if (strlen(netname)) {
-            res = g->db_pquery(g->conn, "SELECT name, address FROM networks WHERE UPPER(name)=UPPER('?')",netname);
-            if (g->db_nrows(res)) {
+            res = g->db->pquery(g->db->conn, "SELECT name, address FROM networks WHERE UPPER(name)=UPPER('?')",netname);
+            if (g->db->nrows(res)) {
                 nets = (struct net *) realloc(nets, (sizeof(struct net) * (nc+1)));
-                nets[nc].name = strdup(g->db_get_data(res,0,"name"));
-                nets[nc].address = inet_addr(g->db_get_data(res,0,"address"));
+                nets[nc].name = strdup(g->db->get_data(res,0,"name"));
+                nets[nc].address = inet_addr(g->db->get_data(res,0,"address"));
                 nc++;
             }
-            g->db_free(&res);
+            g->db->free(&res);
         }
     }
     free(netname); free(netnames);
@@ -132,41 +132,41 @@ void reload(GLOBAL *g, struct dns_module *dns)
         k = sscanf(groupnames, "%s %[._a-zA-Z0-9- ]", groupname, groupnames);
 
         if (strlen(groupname)) {
-            res = g->db_pquery(g->conn, "SELECT name, id FROM customergroups WHERE UPPER(name)=UPPER('?')",groupname);
+            res = g->db->pquery(g->db->conn, "SELECT name, id FROM customergroups WHERE UPPER(name)=UPPER('?')",groupname);
 
-            if (g->db_nrows(res)) {
+            if (g->db->nrows(res)) {
                 ugps = (struct group *) realloc(ugps, (sizeof(struct group) * (gc+1)));
-                ugps[gc].name = strdup(g->db_get_data(res,0,"name"));
-                ugps[gc].id = atoi(g->db_get_data(res,0,"id"));
+                ugps[gc].name = strdup(g->db->get_data(res,0,"name"));
+                ugps[gc].id = atoi(g->db->get_data(res,0,"id"));
                 gc++;
             }
-            g->db_free(&res);
+            g->db->free(&res);
         }
     }
     free(groupname); free(groupnames);
 
-    res = g->db_query(g->conn, "SELECT LOWER(name) AS name, ipaddr, ipaddr_pub, ownerid FROM nodes ORDER BY ipaddr");
+    res = g->db->query(g->db->conn, "SELECT LOWER(name) AS name, ipaddr, ipaddr_pub, ownerid FROM nodes ORDER BY ipaddr");
 
-    for (i=0; i<g->db_nrows(res); i++) {
-        int ownerid      = atoi(g->db_get_data(res,i,"ownerid"));
-        char *name       = g->db_get_data(res,i,"name");
-        char *ipaddr     = g->db_get_data(res,i,"ipaddr");
-        char *ipaddr_pub = g->db_get_data(res,i,"ipaddr_pub");
+    for (i=0; i<g->db->nrows(res); i++) {
+        int ownerid      = atoi(g->db->get_data(res,i,"ownerid"));
+        char *name       = g->db->get_data(res,i,"name");
+        char *ipaddr     = g->db->get_data(res,i,"ipaddr");
+        char *ipaddr_pub = g->db->get_data(res,i,"ipaddr_pub");
 
         // groups test
         if (gc) {
             if (!ownerid)
                 continue;
             m = gc;
-            res1 = g->db_pquery(g->conn, "SELECT customergroupid FROM customerassignments WHERE customerid=?", g->db_get_data(res,i,"ownerid"));
-            for (k=0; k<g->db_nrows(res1); k++) {
-                int groupid = atoi(g->db_get_data(res1, k, "customergroupid"));
+            res1 = g->db->pquery(g->db->conn, "SELECT customergroupid FROM customerassignments WHERE customerid=?", g->db->get_data(res,i,"ownerid"));
+            for (k=0; k<g->db->nrows(res1); k++) {
+                int groupid = atoi(g->db->get_data(res1, k, "customergroupid"));
                 for(m=0; m<gc; m++)
                     if(ugps[m].id==groupid)
                         break;
                 if(m!=gc) break;
             }
-            g->db_free(&res1);
+            g->db->free(&res1);
             if (m==gc)
                 continue;
         }
@@ -183,23 +183,23 @@ void reload(GLOBAL *g, struct dns_module *dns)
             nh++;
         }
     }
-    g->db_free(&res);
+    g->db->free(&res);
 
-    res = g->db_query(g->conn, "SELECT inet_ntoa(address) AS address, mask, domain, dns "
+    res = g->db->query(g->db->conn, "SELECT inet_ntoa(address) AS address, mask, domain, dns "
         "FROM networks WHERE domain <> ''");
 
-    if (g->db_nrows(res)) {
+    if (g->db->nrows(res)) {
         // Load main config file pattern
         configfile = load_file(dns->confpattern);
 
-        for (i=0; i<g->db_nrows(res); i++) {
+        for (i=0; i<g->db->nrows(res); i++) {
             int domainmatch  = 0;
             int reversematch = 0;
 
-            char *e       = g->db_get_data(res,i,"address");
-            char *d       = g->db_get_data(res,i,"mask");
-            char *name    = g->db_get_data(res,i,"domain");
-            char *dnsserv = g->db_get_data(res,i,"dns");
+            char *e       = g->db->get_data(res,i,"address");
+            char *d       = g->db->get_data(res,i,"mask");
+            char *name    = g->db->get_data(res,i,"domain");
+            char *dnsserv = g->db->get_data(res,i,"dns");
 
             unsigned long network = inet_addr(e);
             unsigned long netmask = inet_addr(d);
@@ -484,7 +484,7 @@ void reload(GLOBAL *g, struct dns_module *dns)
     else
         syslog(LOG_ERR, "[%s/dns] Unable to open DNS pattern file '%s'", dns->base.instance, dns->confpattern);
 
-    g->db_free(&res);
+    g->db->free(&res);
 
     //cleanup
     for(i = 0; i<nh; i++)

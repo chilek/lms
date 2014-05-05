@@ -109,7 +109,7 @@ void reload(GLOBAL *g, struct ggnotify_module *n)
 		syslog(LOG_INFO, "DEBUG: [%s/ggnotify] Connected to Gadu-Gadu server.",n->base.instance);
 #endif
 	
-		res = g->db_query(g->conn, 
+		res = g->db->query(g->db->conn, 
 				"SELECT customers.id AS id, pin, name, lastname, "
 				"SUM(cash.value) AS balance, imessengers.uid AS im "
 				"FROM customers "
@@ -118,13 +118,13 @@ void reload(GLOBAL *g, struct ggnotify_module *n)
 				"WHERE deleted = 0 AND imessengers.type = 0 "
 				"GROUP BY customers.id, imessengers.uid, pin, name, lastname");
 
-		if( g->db_nrows(res) )
+		if( g->db->nrows(res) )
 		{
-			for(i=0; i<g->db_nrows(res); i++)
+			for(i=0; i<g->db->nrows(res); i++)
 			{
-				if( atoi(g->db_get_data(res,i,"im")) )
+				if( atoi(g->db->get_data(res,i,"im")) )
 				{
-					balance = atof(g->db_get_data(res,i,"balance"));
+					balance = atof(g->db->get_data(res,i,"balance"));
 			
 					if( balance < n->limit )
 					{
@@ -138,13 +138,13 @@ void reload(GLOBAL *g, struct ggnotify_module *n)
 								
 								last_ten = strdup("");
 								
-								result = g->db_pquery(g->conn, "SELECT value, comment, time FROM cash WHERE customerid = ? ORDER BY time DESC LIMIT 10", g->db_get_data(res,i,"id"));
+								result = g->db->pquery(g->db->conn, "SELECT value, comment, time FROM cash WHERE customerid = ? ORDER BY time DESC LIMIT 10", g->db->get_data(res,i,"id"));
 							
-								for(j=0; j<g->db_nrows(result); j++)
+								for(j=0; j<g->db->nrows(result); j++)
 								{
-									date = utoc(atof(g->db_get_data(result,j,"time")));
-									value = g->db_get_data(result,j,"value");
-									comment = g->db_get_data(result,j,"comment");
+									date = utoc(atof(g->db->get_data(result,j,"time")));
+									value = g->db->get_data(result,j,"value");
+									comment = g->db->get_data(result,j,"comment");
 							
 									temp = (char *) malloc(strlen(date)+strlen(value)+strlen(comment)+12);	
 									sprintf(temp, "%s\t | %s\t\t | %s\n", date, value, comment);
@@ -158,16 +158,16 @@ void reload(GLOBAL *g, struct ggnotify_module *n)
 								}
 						
 								g->str_replace(&message, "%last_10_in_a_table", last_ten);
-								g->db_free(&result);
+								g->db->free(&result);
 								free(last_ten);
 							}
 						
-							g->str_replace(&message, "%saldo", g->db_get_data(res,i,"balance"));
-							g->str_replace(&message, "%B", g->db_get_data(res,i,"balance"));
-							g->str_replace(&message, "%b", balance < 0 ? ftoa(balance * -1) : g->db_get_data(res,i,"balance"));
-							g->str_replace(&message, "%pin", g->db_get_data(res,i,"pin"));
-							g->str_replace(&message, "%name", g->db_get_data(res,i,"name"));
-							g->str_replace(&message, "%lastname", g->db_get_data(res,i,"lastname"));
+							g->str_replace(&message, "%saldo", g->db->get_data(res,i,"balance"));
+							g->str_replace(&message, "%B", g->db->get_data(res,i,"balance"));
+							g->str_replace(&message, "%b", balance < 0 ? ftoa(balance * -1) : g->db->get_data(res,i,"balance"));
+							g->str_replace(&message, "%pin", g->db->get_data(res,i,"pin"));
+							g->str_replace(&message, "%name", g->db->get_data(res,i,"name"));
+							g->str_replace(&message, "%lastname", g->db->get_data(res,i,"lastname"));
 
 							// Konwersja na windows
 								
@@ -187,7 +187,7 @@ void reload(GLOBAL *g, struct ggnotify_module *n)
 									gg_free_session(sess);
 								}
 							} else {
-								if (gg_send_message(sess, GG_CLASS_MSG, atoi(g->db_get_data(res,i,"im")), message) == -1)
+								if (gg_send_message(sess, GG_CLASS_MSG, atoi(g->db->get_data(res,i,"im")), message) == -1)
 								{
 									syslog(LOG_INFO, "DEBUG: [%s/ggnotify] Connection broken..",n->base.instance);								
 									gg_free_session(sess);
@@ -204,7 +204,7 @@ void reload(GLOBAL *g, struct ggnotify_module *n)
 		} else 
 			syslog(LOG_ERR, "[%s/ggnotify] Unable to read database", n->base.instance);
 		
-		g->db_free(&res);
+		g->db->free(&res);
 		gg_logoff(sess);
 		gg_free_session(sess);
 
