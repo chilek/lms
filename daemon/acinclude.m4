@@ -335,6 +335,25 @@ AC_DEFUN([SETUP_LIBGADU],
     AM_CONDITIONAL([LIBGADU], [test x$libgadu = xyes])
 ])
 
+######################
+# Check for GNU Make #
+######################
+AC_DEFUN([CHECK_GNU_MAKE], [ AC_CACHE_CHECK( for GNU make,_cv_gnu_make_command,
+        _cv_gnu_make_command='' ;
+        for a in "$MAKE" make gmake gnumake ; do
+            if test -z "$a" ; then continue ; fi ;
+                if  ( sh -c "$a --version" 2> /dev/null | grep GNU  2>&1 > /dev/null ) ;  then
+                    _cv_gnu_make_command=$a ;
+                break;
+            fi
+        done ;
+    );
+
+    if test  "x$_cv_gnu_make_command" == "x"  ; then
+        AC_MSG_ERROR(Cannot find GNU Make.)
+    fi
+])
+
 
 ############################
 # Generate revision number #
@@ -348,3 +367,4 @@ AC_DEFUN([GET_REVISION],
         LMSD_REVISION=`date "+%Y%m%d%H%m"`
     fi
 ])
+
