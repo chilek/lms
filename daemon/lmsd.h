@@ -7,7 +7,7 @@
 #include "cron/cron.h"
 #include "config/config.h"
 
-#define APIVERSION 5
+#define APIVERSION 6
 #define PROGNAME "lmsd"
 
 struct global

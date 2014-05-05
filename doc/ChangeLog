@@ -78,6 +78,7 @@ version ?.??.?? (????-??-??):
   - daemon: printing revision number in -v and -h [maniac]
   - daemon/dns: module now is looking additional files in LMS_CONF_DIR/daemon/dns [maniac]
   - move custom plugins to lib/SmartyPlugins - bumps min. smarty ver. to 3.1 [maniac]
+  - daemon: resolve source dependency problem for gcc 4.4 - bumps api version [maniac]
 
 version 1.11.14 (2013-03-25):
 
