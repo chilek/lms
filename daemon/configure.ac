@@ -37,9 +37,6 @@ AC_CONFIG_FILES(Makefile
                 modules/traffic/Makefile
                 )
 
-# Checks for programs.
-AC_PROG_CXX
-
 # check lex
 AC_PROG_LEX
 if test x"$LEX" = "x:"; then
