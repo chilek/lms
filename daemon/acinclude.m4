@@ -228,7 +228,7 @@ AC_DEFUN([LOCATE_SNMP],
             test -f $SNMP_DIR/$i/net-snmp-config.h  && SNMP_INCDIR=$SNMP_DIR$i && break
         done
         if test -z "$SNMP_INCDIR" ; then
-            AC_MSG_ERROR(Cannot find Net-SNMP header files under $SNMP_DIR)
+            AC_MSG_ERROR(Cannot find Net-SNMP header files.)
         fi
 
         # Accomodate 64-Bit Libraries
