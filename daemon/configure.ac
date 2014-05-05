@@ -58,6 +58,12 @@ if test x"$YACC" = "xyacc"; then
     fi
 fi
 
+# file - we don't use it but other tests do.
+AC_CHECK_PROG(FILE,file,yes)
+if test x"$FILE" != x"yes" ; then
+    AC_MSG_ERROR([Program 'file' not found. Please install it.])
+fi
+
 AC_PROG_CC
 AC_PROG_LIBTOOL
 
