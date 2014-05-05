@@ -64,16 +64,16 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
     struct host *hosts = (struct host *) malloc(sizeof(struct host));
 
 	// get all networks params
-    res = g->db_pquery(g->conn, "SELECT UPPER(name) AS name, address, INET_ATON(mask) AS mask, interface FROM networks");
+    res = g->db->pquery(g->db->conn, "SELECT UPPER(name) AS name, address, INET_ATON(mask) AS mask, interface FROM networks");
 
-	for(anc=0; anc<g->db_nrows(res); anc++)
+	for(anc=0; anc<g->db->nrows(res); anc++)
 	{
 	        all_nets = (struct net*) realloc(all_nets, (sizeof(struct net) * (anc+1)));
-		all_nets[anc].name = strdup(g->db_get_data(res, anc, "name"));
-		all_nets[anc].address = inet_addr(g->db_get_data(res, anc, "address"));
-	        all_nets[anc].mask = inet_addr(g->db_get_data(res, anc, "mask"));
+		all_nets[anc].name = strdup(g->db->get_data(res, anc, "name"));
+		all_nets[anc].address = inet_addr(g->db->get_data(res, anc, "address"));
+	        all_nets[anc].mask = inet_addr(g->db->get_data(res, anc, "mask"));
 	}
-	g->db_free(&res);
+	g->db->free(&res);
 
 	netnames = strdup(ewx->networks);
 	netname = strdup(netnames);
@@ -164,21 +164,21 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	// NOTE: to re-create terminator's configuration do DELETE FROM ewx_pt_config;
 
     // nodes existing in config
-	res = g->db_query(g->conn, "SELECT id, nodeid, name, mac, passwd, ipaddr, INET_NTOA(ipaddr) AS ip FROM ewx_pt_config");
+	res = g->db->query(g->db->conn, "SELECT id, nodeid, name, mac, passwd, ipaddr, INET_NTOA(ipaddr) AS ip FROM ewx_pt_config");
 
-	for (hc=0; hc<g->db_nrows(res); hc++)
+	for (hc=0; hc<g->db->nrows(res); hc++)
 	{
 	    hosts = (struct host*) realloc(hosts, (sizeof(struct host) * (hc+1)));
-        hosts[hc].id     = atoi(g->db_get_data(res, hc, "nodeid"));
-        hosts[hc].nodeid = atoi(g->db_get_data(res, hc, "id"));
-		hosts[hc].name   = strdup(g->db_get_data(res, hc, "name"));
-		hosts[hc].mac    = strdup(g->db_get_data(res, hc, "mac"));
-		hosts[hc].passwd = strdup(g->db_get_data(res, hc, "passwd"));
-	    hosts[hc].ip     = strdup(g->db_get_data(res, hc, "ip"));
-	    hosts[hc].ipaddr = inet_addr(g->db_get_data(res, hc, "ipaddr"));
+        hosts[hc].id     = atoi(g->db->get_data(res, hc, "nodeid"));
+        hosts[hc].nodeid = atoi(g->db->get_data(res, hc, "id"));
+		hosts[hc].name   = strdup(g->db->get_data(res, hc, "name"));
+		hosts[hc].mac    = strdup(g->db->get_data(res, hc, "mac"));
+		hosts[hc].passwd = strdup(g->db->get_data(res, hc, "passwd"));
+	    hosts[hc].ip     = strdup(g->db->get_data(res, hc, "ip"));
+	    hosts[hc].ipaddr = inet_addr(g->db->get_data(res, hc, "ipaddr"));
 	    hosts[hc].status = UNKNOWN;
 	}
-	g->db_free(&res);
+	g->db->free(&res);
 
     // existing nodes with current config for insert, update or delete (if access=0)
 	query = strdup("SELECT n.id, n.ipaddr, n.access, "
@@ -201,11 +201,11 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	g->str_replace(&query, "%disabled", ewx->skip_disabled ? "AND n.access = 1 " : "");
 	g->str_replace(&query, "%noa", ewx->skip_noa ? noa : "");
 
-	res = g->db_query(g->conn, query);
+	res = g->db->query(g->db->conn, query);
 
 	free(query);
 
-	if(!g->db_nrows(res))
+	if(!g->db->nrows(res))
 	{
 	    syslog(LOG_ERR, "[%s/ewx-pt] Unable to read database or nodes table is empty", ewx->base.instance);
 		return;
@@ -235,9 +235,9 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	}
 
 	// Nodes main loop
-	for (i=0; i<g->db_nrows(res); i++)
+	for (i=0; i<g->db->nrows(res); i++)
     {
-		unsigned long inet = inet_addr(g->db_get_data(res,i,"ipaddr"));
+		unsigned long inet = inet_addr(g->db->get_data(res,i,"ipaddr"));
 
 		// Networks test
 		if (nc && inet)
@@ -254,11 +254,11 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		int dummy_mac = 0;
 		struct host h;
 
-       	h.id = atoi(g->db_get_data(res,i,"id"));
-       	h.ip = g->db_get_data(res,i,"ip");
-       	h.mac = g->db_get_data(res,i,"mac");
-        h.name = g->db_get_data(res,i,"name");
-       	h.passwd = g->db_get_data(res,i,"passwd");
+       	h.id = atoi(g->db->get_data(res,i,"id"));
+       	h.ip = g->db->get_data(res,i,"ip");
+       	h.mac = g->db->get_data(res,i,"mac");
+        h.name = g->db->get_data(res,i,"name");
+       	h.passwd = g->db->get_data(res,i,"passwd");
        	h.ipaddr = inet;
 
 		// Networks test for dummy_mac
@@ -271,7 +271,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 			if (n != mnc) dummy_mac = 1;
 		}
 
-		if (!atoi(g->db_get_data(res,i,"chkmac")))
+		if (!atoi(g->db->get_data(res,i,"chkmac")))
         {
 		        dummy_mac = 1;
 		}
@@ -345,7 +345,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 
 	snmp_close(sh);
 
-	g->db_free(&res);
+	g->db->free(&res);
 
     for(i=0;i<nc;i++)
 	{
@@ -449,7 +449,7 @@ int del_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, struct 
 		for (vars = response->variables; vars; vars = vars->next_variable)
 			print_variable(vars->name, vars->name_length, vars);
 #endif
-		g->db_pexec(g->conn, "DELETE FROM ewx_pt_config WHERE nodeid = ?", itoa(h.id));
+		g->db->pexec(g->db->conn, "DELETE FROM ewx_pt_config WHERE nodeid = ?", itoa(h.id));
 #ifdef DEBUG1
 		syslog(LOG_INFO, "DEBUG: [%s/ewx-pt] Deleted node %s (%05d)", ewx->base.instance, h.name, h.id);
 #endif
@@ -516,7 +516,7 @@ int add_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, struct 
 			print_variable(vars->name, vars->name_length, vars);
 #endif
 
-		g->db_pexec(g->conn, "INSERT INTO ewx_pt_config (nodeid, name, passwd, ipaddr, mac) "
+		g->db->pexec(g->db->conn, "INSERT INTO ewx_pt_config (nodeid, name, passwd, ipaddr, mac) "
 		    "VALUES (?, '?', '?', INET_ATON('?'), '?')",
 		    itoa(h.id), h.name, h.passwd, h.ip, h.mac);
 #ifdef DEBUG1
@@ -638,7 +638,7 @@ int update_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, stru
 		for (vars = response->variables; vars; vars = vars->next_variable)
 			print_variable(vars->name, vars->name_length, vars);
 #endif
-		g->db_pexec(g->conn, "UPDATE ewx_pt_config SET "
+		g->db->pexec(g->db->conn, "UPDATE ewx_pt_config SET "
 		    "name = '?', passwd = '?', ipaddr = INET_ATON('?'), mac = '?' "
 		    "WHERE nodeid = ?", h.name, h.passwd, h.ip, h.mac, itoa(h.id));
 #ifdef DEBUG1

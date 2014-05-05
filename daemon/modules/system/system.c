@@ -34,7 +34,7 @@ void reload(GLOBAL *g, struct system_module *s)
 {
 	if(*s->sql)
 	{
-		g->db_exec(g->conn, s->sql);
+		g->db->exec(g->db->conn, s->sql);
 	}
 
 	if(*s->command)

@@ -99,17 +99,17 @@ void reload(GLOBAL *g, struct tc_module *tc)
 
 		if( strlen(netname) )
 		{
-			res = g->db_pquery(g->conn, "SELECT name, address, INET_ATON(mask) AS mask, interface FROM networks WHERE UPPER(name)=UPPER('?')",netname);
-			if( g->db_nrows(res) )
+			res = g->db->pquery(g->db->conn, "SELECT name, address, INET_ATON(mask) AS mask, interface FROM networks WHERE UPPER(name)=UPPER('?')",netname);
+			if( g->db->nrows(res) )
 			{
 		    		nets = (struct net *) realloc(nets, (sizeof(struct net) * (nc+1)));
-				nets[nc].name = strdup(g->db_get_data(res,0,"name"));
-				nets[nc].interface = strdup(g->db_get_data(res,0,"interface"));
-				nets[nc].address = inet_addr(g->db_get_data(res,0,"address"));
-				nets[nc].mask = inet_addr(g->db_get_data(res,0,"mask"));
+				nets[nc].name = strdup(g->db->get_data(res,0,"name"));
+				nets[nc].interface = strdup(g->db->get_data(res,0,"interface"));
+				nets[nc].address = inet_addr(g->db->get_data(res,0,"address"));
+				nets[nc].mask = inet_addr(g->db->get_data(res,0,"mask"));
 				nc++;
 			}
-    			g->db_free(&res);
+    			g->db->free(&res);
 		}
 	}
 	free(netname); free(netnames);
@@ -117,16 +117,16 @@ void reload(GLOBAL *g, struct tc_module *tc)
 	// get table of networks (if 'networks' variable is not set)
 	if(!nc)
 	{
-	        res = g->db_pquery(g->conn, "SELECT name, address, INET_ATON(mask) AS mask, interface FROM networks");
-		for(nc=0; nc<g->db_nrows(res); nc++)
+	        res = g->db->pquery(g->db->conn, "SELECT name, address, INET_ATON(mask) AS mask, interface FROM networks");
+		for(nc=0; nc<g->db->nrows(res); nc++)
 		{
 		        nets = (struct net*) realloc(nets, (sizeof(struct net) * (nc+1)));
-			nets[nc].name = strdup(g->db_get_data(res,nc,"name"));
-			nets[nc].interface = strdup(g->db_get_data(res,nc,"interface"));
-			nets[nc].address = inet_addr(g->db_get_data(res,nc,"address"));
-			nets[nc].mask = inet_addr(g->db_get_data(res,nc,"mask"));
+			nets[nc].name = strdup(g->db->get_data(res,nc,"name"));
+			nets[nc].interface = strdup(g->db->get_data(res,nc,"interface"));
+			nets[nc].address = inet_addr(g->db->get_data(res,nc,"address"));
+			nets[nc].mask = inet_addr(g->db->get_data(res,nc,"mask"));
 		}
-		g->db_free(&res);
+		g->db->free(&res);
 	}
 
 	// handle night-time tariffs
@@ -174,7 +174,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 			"%groups"
 		"ORDER BY a.customerid, a.id");
 
-	char * cfullname = g->db_concat(3, "c.lastname", "' '", "c.name");
+	char * cfullname = g->db->concat(3, "c.lastname", "' '", "c.name");
 	g->str_replace(&query, "%cfullname", cfullname);
 	free(cfullname);
 
@@ -211,20 +211,20 @@ void reload(GLOBAL *g, struct tc_module *tc)
     g->str_replace(&query, "%nodes", tc->multi_mac ? "vmacs" : "vnodes");
 	g->str_replace(&query, "%groups", strlen(groupsql) ? groups : "");
 
-	res = g->db_query(g->conn, query);
+	res = g->db->query(g->db->conn, query);
 	free(query);
 
-	if(!g->db_nrows(res))
+	if(!g->db->nrows(res))
 	{
         syslog(LOG_ERR, "[%s/tc-new] Unable to read database or assignments table is empty", tc->base.instance);
 		return;
 	}
 
 	// adding nodes to channels array
-	for(i=0; i<g->db_nrows(res); i++)
+	for(i=0; i<g->db->nrows(res); i++)
     {
-		int assignmentid 	= atoi(g->db_get_data(res,i,"assignmentid"));
-		char *ip 		= g->db_get_data(res,i,"ip");
+		int assignmentid 	= atoi(g->db->get_data(res,i,"assignmentid"));
+		char *ip 		= g->db->get_data(res,i,"ip");
 		unsigned long inet 	= inet_addr(ip);
 
 		// Networks test
@@ -239,13 +239,13 @@ void reload(GLOBAL *g, struct tc_module *tc)
 			if(channels[j].id == assignmentid)
 				break;
 
-       	int nodeid 	 = atoi(g->db_get_data(res,i,"id"));
-		int uprate 	 = atoi(g->db_get_data(res,i,"uprate"));
-		int downrate = atoi(g->db_get_data(res,i,"downrate"));
-		int upceil 	 = atoi(g->db_get_data(res,i,"upceil"));
-		int downceil = atoi(g->db_get_data(res,i,"downceil"));
-		int climit 	 = atoi(g->db_get_data(res,i,"climit"));
-		int plimit 	 = atoi(g->db_get_data(res,i,"plimit"));
+       	int nodeid 	 = atoi(g->db->get_data(res,i,"id"));
+		int uprate 	 = atoi(g->db->get_data(res,i,"uprate"));
+		int downrate = atoi(g->db->get_data(res,i,"downrate"));
+		int upceil 	 = atoi(g->db->get_data(res,i,"upceil"));
+		int downceil = atoi(g->db->get_data(res,i,"downceil"));
+		int climit 	 = atoi(g->db->get_data(res,i,"climit"));
+		int plimit 	 = atoi(g->db->get_data(res,i,"plimit"));
 
 		if(j == cc) // channel (assignment) not found
 		{
@@ -297,8 +297,8 @@ void reload(GLOBAL *g, struct tc_module *tc)
 			channels[cc].nodes = NULL;
 			channels[cc].subno = 0;
 			channels[cc].subs = NULL;
-			channels[cc].cid = atoi(g->db_get_data(res,i,"ownerid"));
-			channels[cc].customer = strdup(g->db_get_data(res,i,"customer"));
+			channels[cc].cid = atoi(g->db->get_data(res,i,"ownerid"));
+			channels[cc].customer = strdup(g->db->get_data(res,i,"customer"));
 
 			channels[cc].uprate = uprate;
 			channels[cc].upceil = upceil;
@@ -314,11 +314,11 @@ void reload(GLOBAL *g, struct tc_module *tc)
 		channels[j].nodes[k].id = nodeid;
 		channels[j].nodes[k].network = n;
 		channels[j].nodes[k].ip = strdup(ip);
-		channels[j].nodes[k].name = strdup(g->db_get_data(res,i,"name"));
-		channels[j].nodes[k].mac = strdup(g->db_get_data(res,i,"mac"));
+		channels[j].nodes[k].name = strdup(g->db->get_data(res,i,"name"));
+		channels[j].nodes[k].mac = strdup(g->db->get_data(res,i,"mac"));
 		channels[j].no++;
 	}
-	g->db_free(&res);
+	g->db->free(&res);
 
 	// open file
 	fh = fopen(tc->file, "w");

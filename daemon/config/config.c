@@ -117,29 +117,29 @@ void config_add(Config *c, char *sec, char * key, char *val)
     free(value);
 }
 
-Config * config_load(const char *configfile, GLOBAL *g, const char *hostname, const char *section)
+Config * config_load(const char *configfile, DB *db, const char *hostname, const char *section)
 {
     if( file_exists(configfile) )
     {
         config_load_from_file(configfile, section);
     }
-    else if ( g->conn == NULL )
+    else if ( db->conn == NULL )
     {
         syslog(LOG_INFO, "File '%s' not found. I will use default parameters when connecting to database.", configfile);
     }
-    if( g->conn != NULL )
-        config_load_from_db(g, hostname, section);
+    if( db->conn != NULL )
+        config_load_from_db(db, hostname, section);
 
     return c;
 }
 
-void config_load_from_db(GLOBAL *g, const char *hostname, const char *section)
+void config_load_from_db(DB *db, const char *hostname, const char *section)
 {
     QueryHandle *res;
     char *sec, *var, *val;
     int i;
 
-    if( !g->conn )
+    if( !db->conn )
     {
         syslog(LOG_ERR, "ERROR: [config_load] Lost connection handle.");
         return;
@@ -150,19 +150,19 @@ void config_load_from_db(GLOBAL *g, const char *hostname, const char *section)
         c = config_new(0);
 
     if( ! section )
-            res = g->db_pquery(g->conn, "SELECT daemoninstances.name AS section, var, value FROM daemonconfig, hosts, daemoninstances WHERE hostid=hosts.id AND instanceid=daemoninstances.id AND hosts.name='?' AND daemonconfig.disabled=0", hostname);
+            res = db->pquery(db->conn, "SELECT daemoninstances.name AS section, var, value FROM daemonconfig, hosts, daemoninstances WHERE hostid=hosts.id AND instanceid=daemoninstances.id AND hosts.name='?' AND daemonconfig.disabled=0", hostname);
     else
-            res = g->db_pquery(g->conn, "SELECT daemoninstances.name AS section, var, value FROM daemonconfig, hosts, daemoninstances WHERE hostid=hosts.id AND instanceid=daemoninstances.id AND hosts.name='?' AND daemoninstances.name='?' AND daemonconfig.disabled=0", hostname, section);
+            res = db->pquery(db->conn, "SELECT daemoninstances.name AS section, var, value FROM daemonconfig, hosts, daemoninstances WHERE hostid=hosts.id AND instanceid=daemoninstances.id AND hosts.name='?' AND daemoninstances.name='?' AND daemonconfig.disabled=0", hostname, section);
 
-    for(i=0; i<g->db_nrows(res); i++) 
+    for(i=0; i<db->nrows(res); i++) 
     {
-        sec = g->db_get_data(res, i, "section");
-        var = g->db_get_data(res, i, "var");
-        val = g->db_get_data(res, i, "value");
+        sec = db->get_data(res, i, "section");
+        var = db->get_data(res, i, "var");
+        val = db->get_data(res, i, "value");
         config_add(c, sec, var, val);
     }
 
-    g->db_free(&res);
+    db->free(&res);
 }
 
 void config_load_from_file(const char *configfile, const char *section)

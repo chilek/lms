@@ -38,7 +38,7 @@
 #include "config.h"
 
 int quit = 0, runall = 0, port = 0, dontfork = 0, ssl = 0;
-char *configfile, *driver, *db, *user, *passwd;
+char *configfile, *driver, *dbname, *user, *passwd;
 char host[255], dhost[255];
 char *pidfile = NULL;
 char *command = NULL;
@@ -73,7 +73,8 @@ int main(int argc, char *argv[], char **envp)
         // initialize global structure
         g = (GLOBAL *) realloc(NULL, sizeof(GLOBAL));
         g->api_version = APIVERSION;
-        g->conn = NULL;
+        g->db = (DB *) realloc(NULL, sizeof(DB));
+        g->db->conn = NULL;
 
 	// initialize proces name change 
 	init_set_proc_title(argc, argv, envp);
@@ -84,7 +85,7 @@ int main(int argc, char *argv[], char **envp)
     	// read environment and command line
 	driver = ( getenv("LMSDBTYPE") ? getenv("DBTYPE") : "mysql" );
 	passwd = ( getenv("LMSDBPASS") ? getenv("LMSDBPASS") : "" );
-	db = ( getenv("LMSDBNAME") ? getenv("LMSDBNAME") : "lms" );
+	dbname = ( getenv("LMSDBNAME") ? getenv("LMSDBNAME") : "lms" );
 	user = ( getenv("LMSDBUSER") ? getenv("LMSDBUSER") : "lms" );
 	port = ( getenv("LMSDBPORT") ? atoi(getenv("LMSDBPORT")) : 0 );
 	if( getenv("LMSDBHOST") ) strcpy(host, getenv("LMSDBHOST")); else strcpy(host, "localhost");
@@ -97,11 +98,11 @@ int main(int argc, char *argv[], char **envp)
 	parse_command_line(argc, argv);
 
         // load configuration file if exist (if not it will use default parameters - only database section)
-        ini = config_load(configfile, g, dhost, "database");
+        ini = config_load(configfile, g->db, dhost, "database");
         // assign variables
         driver = config_getstring(ini, "database", "type", driver);
         passwd = config_getstring(ini, "database", "password", passwd);
-        db = config_getstring(ini, "database", "database", db);
+        dbname = config_getstring(ini, "database", "database", dbname);
         user = config_getstring(ini, "database", "user", user);
         port = config_getint(ini, "database", "port", port);
         strcpy(host, config_getstring(ini, "database", "host", host));
@@ -136,38 +137,38 @@ int main(int argc, char *argv[], char **envp)
                 syslog(LOG_INFO, "Database driver '%s' loaded.", driver);
         }
 
-	g->db_connect = dlsym(dbdrv, "db_connect");
-	g->db_disconnect = dlsym(dbdrv, "db_disconnect");
-   	g->db_query = dlsym(dbdrv, "db_query");
-	g->db_pquery = dlsym(dbdrv, "db_pquery");
-    	g->db_exec = dlsym(dbdrv, "db_exec");
-	g->db_pexec = dlsym(dbdrv, "db_pexec");
-	g->db_last_insert_id = dlsym(dbdrv, "db_last_insert_id");
-	g->db_free = dlsym(dbdrv, "db_free");
-    	g->db_begin = dlsym(dbdrv, "db_begin");
-    	g->db_commit = dlsym(dbdrv, "db_commit");
-	g->db_abort = dlsym(dbdrv, "db_abort");
-    	g->db_get_data = dlsym(dbdrv, "db_get_data");
-	g->db_nrows = dlsym(dbdrv, "db_nrows");
-	g->db_ncols = dlsym(dbdrv, "db_ncols");
-	g->db_concat = dlsym(dbdrv, "db_concat");
-	g->db_escape = dlsym(dbdrv, "db_escape");
-	g->db_colname = dlsym(dbdrv, "db_colname");
+	g->db->connect = dlsym(dbdrv, "db_connect");
+	g->db->disconnect = dlsym(dbdrv, "db_disconnect");
+   	g->db->query = dlsym(dbdrv, "db_query");
+	g->db->pquery = dlsym(dbdrv, "db_pquery");
+    	g->db->exec = dlsym(dbdrv, "db_exec");
+	g->db->pexec = dlsym(dbdrv, "db_pexec");
+	g->db->last_insert_id = dlsym(dbdrv, "db_last_insert_id");
+	g->db->free = dlsym(dbdrv, "db_free");
+    	g->db->begin = dlsym(dbdrv, "db_begin");
+    	g->db->commit = dlsym(dbdrv, "db_commit");
+	g->db->abort = dlsym(dbdrv, "db_abort");
+    	g->db->get_data = dlsym(dbdrv, "db_get_data");
+	g->db->nrows = dlsym(dbdrv, "db_nrows");
+	g->db->ncols = dlsym(dbdrv, "db_ncols");
+	g->db->concat = dlsym(dbdrv, "db_concat");
+	g->db->escape = dlsym(dbdrv, "db_escape");
+	g->db->colname = dlsym(dbdrv, "db_colname");
 
         // test database connection
-        if( !(g->conn = g->db_connect(db,user,passwd,host,port,ssl)) )
+        if( !(g->db->conn = g->db->connect(dbname,user,passwd,host,port,ssl)) )
         {
                 fprintf(stderr, "CRITICAL: Could not connect to database. See logs for details.\n");
                 termination_handler(1);
         }
-        res = g->db_pquery(g->conn, "SELECT count(*) FROM dbinfo");
-        if( ! g->db_nrows(res) )
+        res = g->db->pquery(g->db->conn, "SELECT count(*) FROM dbinfo");
+        if( ! g->db->nrows(res) )
         {
                 fprintf(stderr, "CRITICAL: Could not query database. See logs for details.\n");
                 termination_handler(1);
         }
-        g->db_free(&res);
-        g->db_disconnect(g->conn);
+        g->db->free(&res);
+        g->db->disconnect(g->db->conn);
 
 
     	g->str_replace = &str_replace;
@@ -243,7 +244,7 @@ int main(int argc, char *argv[], char **envp)
 		}
 
 		// try to connect to database
-		if( !(g->conn = g->db_connect(db,user,passwd,host,port,ssl)) )
+		if( !(g->db->conn = g->db->connect(dbname,user,passwd,host,port,ssl)) )
 		{
 			if( quit ) termination_handler(1);
 			continue;
@@ -252,12 +253,12 @@ int main(int argc, char *argv[], char **envp)
 		if( !reload )
 		{
 			// check reload order
-			res = g->db_pquery(g->conn, "SELECT reload FROM hosts WHERE name = '?' AND reload != 0", dhost);
-			if( g->db_nrows(res) )
+			res = g->db->pquery(g->db->conn, "SELECT reload FROM hosts WHERE name = '?' AND reload != 0", dhost);
+			if( g->db->nrows(res) )
 			{
 				reload = 1;
 			}
-			g->db_free(&res);
+			g->db->free(&res);
 		}
 		
 		instances = (INSTANCE *) malloc(sizeof(INSTANCE));
@@ -273,15 +274,15 @@ int main(int argc, char *argv[], char **envp)
 				char *name = strdup(instance);
 				str_replace(&name, "\\s", " "); // instance name with spaces
 				
-				res = g->db_pquery(g->conn, "SELECT module, crontab FROM daemoninstances, hosts WHERE hosts.id = hostid AND disabled = 0 AND hosts.name = '?' AND daemoninstances.name = '?'", dhost, name);
-				if( g->db_nrows(res) )
+				res = g->db->pquery(g->db->conn, "SELECT module, crontab FROM daemoninstances, hosts WHERE hosts.id = hostid AND disabled = 0 AND hosts.name = '?' AND daemoninstances.name = '?'", dhost, name);
+				if( g->db->nrows(res) )
 				{
-					char *crontab = g->db_get_data(res, 0, "crontab");
+					char *crontab = g->db->get_data(res, 0, "crontab");
 					if( runall || (reload && !strlen(crontab)) || (!quit && crontab_match(tt, crontab)) )
 					{
 						instances = (INSTANCE *) realloc(instances, sizeof(INSTANCE)*(i_no+1));
 						instances[i_no].name = strdup(name);
-						instances[i_no].module = strdup(g->db_get_data(res, 0, "module"));
+						instances[i_no].module = strdup(g->db->get_data(res, 0, "module"));
 						instances[i_no].crontab = strdup(crontab);
 						i_no++;
 					}
@@ -289,29 +290,29 @@ int main(int argc, char *argv[], char **envp)
 					syslog(LOG_CRIT, "Host '%s' and/or instance '%s' not found in database!", dhost, name);
 					fprintf(stderr, "Host '%s' and/or instance '%s' not found in database!\n", dhost, name);
                                 }
-				g->db_free(&res);
+				g->db->free(&res);
 				free(name);
 			}
 			free(inst);	
 		}		
 		else // ... or from database
 		{
-			res = g->db_pquery(g->conn, "SELECT module, crontab, daemoninstances.name AS name FROM daemoninstances, hosts WHERE hosts.id = hostid AND disabled = 0 AND hosts.name = '?' ORDER BY priority", dhost);
-			for(i=0; i<g->db_nrows(res); i++)
+			res = g->db->pquery(g->db->conn, "SELECT module, crontab, daemoninstances.name AS name FROM daemoninstances, hosts WHERE hosts.id = hostid AND disabled = 0 AND hosts.name = '?' ORDER BY priority", dhost);
+			for(i=0; i<g->db->nrows(res); i++)
 			{
-				char *crontab = g->db_get_data(res, i, "crontab");
+				char *crontab = g->db->get_data(res, i, "crontab");
 				if( runall || (reload && !strlen(crontab)) || (!quit && crontab_match(tt, crontab)) )
 				{
 					instances = (INSTANCE *) realloc(instances, sizeof(INSTANCE)*(i_no+1));
-					instances[i_no].name = strdup(g->db_get_data(res, i, "name"));
-					instances[i_no].module = strdup(g->db_get_data(res, i, "module"));
+					instances[i_no].name = strdup(g->db->get_data(res, i, "name"));
+					instances[i_no].module = strdup(g->db->get_data(res, i, "module"));
 					instances[i_no].crontab = strdup(crontab);
 					i_no++;
 				}
 			}
-			g->db_free(&res);
+			g->db->free(&res);
 		}
-		g->db_disconnect(g->conn);
+		g->db->disconnect(g->db->conn);
 
 		if( i_no )
 		{
@@ -337,7 +338,7 @@ int main(int argc, char *argv[], char **envp)
 				syslog(LOG_INFO, "DEBUG: [lmsd] Reloading...");
 #endif
 				// try to connect to database again
-				if( !(g->conn = g->db_connect(db,user,passwd,host,port,ssl)) )
+				if( !(g->db->conn = g->db->connect(dbname,user,passwd,host,port,ssl)) )
 				{
 					if( quit ) 
 						termination_handler(1);
@@ -347,7 +348,7 @@ int main(int argc, char *argv[], char **envp)
 				
 				// write reload timestamp and disable reload order
 				if( reload )
-					g->db_pexec(g->conn, "UPDATE hosts SET lastreload = %NOW%, reload = 0 WHERE name = '?'", dhost);
+					g->db->pexec(g->db->conn, "UPDATE hosts SET lastreload = %NOW%, reload = 0 WHERE name = '?'", dhost);
 				
 				for(i=0; i<i_no; i++)
 				{
@@ -358,7 +359,7 @@ int main(int argc, char *argv[], char **envp)
 					char path[strlen(LMS_LIB_DIR) + strlen(instances[i].module) + 4];
 			
 					// get instance configuration and members
-					mod->ini = config_load(configfile, g, dhost, instances[i].name);
+					mod->ini = config_load(configfile, g->db, dhost, instances[i].name);
 					mod->instance = strdup(instances[i].name);
 					
 					// set path to module if not specified
@@ -405,7 +406,7 @@ int main(int argc, char *argv[], char **envp)
 					free_module(m);
 				}
 				
-				g->db_disconnect(g->conn);
+				g->db->disconnect(g->db->conn);
 	
 				// exit child (reload) thread
 				if( !quit ) 
@@ -491,7 +492,7 @@ static void parse_command_line(int argc, char **argv)
 			passwd = strdup(optarg);
 			break;
 		case 'd':
-			db = strdup(optarg);
+			dbname = strdup(optarg);
 			break;
 		case 'u':
 			user = strdup(optarg);

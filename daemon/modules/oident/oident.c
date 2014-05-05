@@ -49,29 +49,29 @@ void reload(GLOBAL *g, struct oident_module *o)
 
 		if( strlen(netname) )
 		{
-			res = g->db_pquery(g->conn, "SELECT name, domain, address, INET_ATON(mask) AS mask FROM networks WHERE UPPER(name)=UPPER('?')", netname);
-			if( g->db_nrows(res) )
+			res = g->db->pquery(g->db->conn, "SELECT name, domain, address, INET_ATON(mask) AS mask FROM networks WHERE UPPER(name)=UPPER('?')", netname);
+			if( g->db->nrows(res) )
 			{
 		    		nets = (struct net *) realloc(nets, (sizeof(struct net) * (nc+1)));
-				nets[nc].address = inet_addr(g->db_get_data(res,0,"address"));
-				nets[nc].mask = inet_addr(g->db_get_data(res,0,"mask"));
+				nets[nc].address = inet_addr(g->db->get_data(res,0,"address"));
+				nets[nc].mask = inet_addr(g->db->get_data(res,0,"mask"));
 				nc++;
 			}
-    			g->db_free(&res);
+    			g->db->free(&res);
 		}
 	}
 	free(netname); free(netnames);
 
 	if(!nc)
 	{
-		res = g->db_query(g->conn, "SELECT address, INET_ATON(mask) AS mask FROM networks");
-		for(nc=0; nc<g->db_nrows(res); nc++)
+		res = g->db->query(g->db->conn, "SELECT address, INET_ATON(mask) AS mask FROM networks");
+		for(nc=0; nc<g->db->nrows(res); nc++)
 		{
 			nets = (struct net*) realloc(nets, (sizeof(struct net) * (nc+1)));
-			nets[nc].address = inet_addr(g->db_get_data(res,nc,"address"));
-			nets[nc].mask = inet_addr(g->db_get_data(res,nc,"mask"));
+			nets[nc].address = inet_addr(g->db->get_data(res,nc,"address"));
+			nets[nc].mask = inet_addr(g->db->get_data(res,nc,"mask"));
 		}
-		g->db_free(&res);
+		g->db->free(&res);
 	}
 		
 	fh = fopen(o->file, "w");
@@ -79,15 +79,15 @@ void reload(GLOBAL *g, struct oident_module *o)
 	{
 		fprintf(fh, "%s\n", o->prefix);
 
-		res = g->db_query(g->conn, "SELECT LOWER(name) AS name, mac, ipaddr FROM vmacs ORDER BY ipaddr");
+		res = g->db->query(g->db->conn, "SELECT LOWER(name) AS name, mac, ipaddr FROM vmacs ORDER BY ipaddr");
 		
-		for(i=0; i<g->db_nrows(res); i++)
+		for(i=0; i<g->db->nrows(res); i++)
 		{
 			char *name, *mac, *ipaddr;
 			
-			name 	= g->db_get_data(res,i,"name");
-			mac 	= g->db_get_data(res,i,"mac");
-			ipaddr 	= g->db_get_data(res,i,"ipaddr");
+			name 	= g->db->get_data(res,i,"name");
+			mac 	= g->db->get_data(res,i,"mac");
+			ipaddr 	= g->db->get_data(res,i,"ipaddr");
 				
 			if( name && mac && ipaddr )
 			{
@@ -117,7 +117,7 @@ void reload(GLOBAL *g, struct oident_module *o)
 			}
 		}
 		
-		g->db_free(&res);
+		g->db->free(&res);
 		fprintf(fh, "%s", o->append);
 		fclose(fh);
 		system(o->command);
