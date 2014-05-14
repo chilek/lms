@@ -28,7 +28,7 @@
  * LMSDB - klasa wspólna.
  */
 
-Class LMSDB_common
+class LMSDB_common
 {
 	var $_version = '1.11-git';
 	var $_revision = '$Revision$';
@@ -53,7 +53,7 @@ Class LMSDB_common
 	var $errors = array();
 	var $debug = FALSE;
 
-	function LMSDB_common()
+	public function __construct()
 	{
 		// zabezpieczmy się przed inicjowaniem tej klasy samej w sobie
 		die();
