@@ -93,9 +93,10 @@ Config * config_new(int size)
 	return dictionary_new(size);
 }
 
-void config_free(Config *c)
+void config_free(Config *_c)
 {
-	dictionary_free(c);
+	dictionary_free(_c);
+	c = NULL;
 }
 
 /* Add an entry to the config object */
