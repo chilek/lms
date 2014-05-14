@@ -26,21 +26,21 @@
 
 class Session {
 
-	var $SID = NULL;			// session unique ID
-	var $_version = '1.11-git';		// library version
-	var $_revision = '$Revision$';	// library revision
-	var $_content = array();		// session content array
-	var $_updated = FALSE;			// indicates that content has
+	public $SID = NULL;			// session unique ID
+	public $_version = '1.11-git';		// library version
+	public $_revision = '$Revision$';	// library revision
+	public $_content = array();		// session content array
+	public $_updated = FALSE;			// indicates that content has
 						// been altered
-	var $DB = NULL;				// database library object
-	var $timeout = 600;			// timeout since session will
+	public $DB = NULL;				// database library object
+	public $timeout = 600;			// timeout since session will
 						// be destroyed
-	var $autoupdate = FALSE;		// do automatic update on each
+	public $autoupdate = FALSE;		// do automatic update on each
 						// save() or save_by_ref() ?
-	var $GCprob = 10;			// probality (in percent) of
+	public $GCprob = 10;			// probality (in percent) of
 						// garbage collector procedure
 	
-	function Session(&$DB, $timeout = 0)
+	public function __construct(&$DB, $timeout = 0)
 	{
 		$this->DB =& $DB;
 		
@@ -56,25 +56,25 @@ class Session {
 			$this->_garbageCollector();
 	}
 
-	function close()
+	public function close()
 	{
 		$this->_saveSession();
 		$this->SID = NULL;
 		$this->_content = array();
 	}
 
-	function finish()
+	public function finish()
 	{
 		$this->_destroySession();
 	}
 
-	function makeSID()
+	public function makeSID()
 	{
 		list($usec, $sec) = explode(' ', microtime());
 		return md5(uniqid(rand(), true)).sprintf('%09x', $sec).sprintf('%07x', ($usec * 10000000));
 	}
 
-	function save($variable, $content)
+	public function save($variable, $content)
 	{
 		$this->_content[$variable] = $content;
 		if($this->autoupdate)
@@ -83,7 +83,7 @@ class Session {
 			$this->_updated = TRUE;
 	}
 
-	function save_by_ref($variable, &$content)
+	public function save_by_ref($variable, &$content)
 	{
 		$this->_content[$variable] =& $content;
 		if($this->autoupdate)
@@ -92,7 +92,7 @@ class Session {
 			$this->_updated = TRUE;
 	}
 
-	function restore($variable, &$content)
+	public function restore($variable, &$content)
 	{
 		if(isset($this->_content[$variable]))
 			$content = $this->_content[$variable];
@@ -100,7 +100,7 @@ class Session {
 			$content = NULL;
 	}
 
-	function get($variable)
+	public function get($variable)
 	{
 		if(isset($this->_content[$variable]))
 			return $this->_content[$variable];
@@ -108,7 +108,7 @@ class Session {
 			return NULL;
 	}
 
-	function remove($variable)
+	public function remove($variable)
 	{
 		if(isset($this->_content[$variable]))
 		{
@@ -123,7 +123,7 @@ class Session {
 			return FALSE;
 	}
 
-	function is_set($variable)
+	public function is_set($variable)
 	{
 		if(isset($this->_content[$variable]))
 			return TRUE;
@@ -131,7 +131,7 @@ class Session {
 			return FALSE;
 	}
 
-	function _createSession()
+	public function _createSession()
 	{
 		$this->SID = $this->makeSID();
 		$this->_content = array();
@@ -139,7 +139,7 @@ class Session {
 		setcookie('SID', $this->SID);
 	}
 
-	function _restoreSession()
+	public function _restoreSession()
 	{
 		$this->SID = $_COOKIE['SID'];
 		
@@ -162,27 +162,27 @@ class Session {
 		$this->_createSession();
 	}
 
-	function _saveSession()
+	public function _saveSession()
 	{
 		if($this->autoupdate || $this->_updated)
 			$this->DB->Execute('UPDATE sessions SET content = ?, mtime = ?NOW? WHERE id = ?', array(serialize($this->_content), $this->SID));
 	}
 
-	function _destroySession()
+	public function _destroySession()
 	{
 		$this->DB->Execute('DELETE FROM sessions WHERE id = ?', array($this->SID));
 		$this->_content = array();
 		$this->SID = NULL;
 	}
 
-	function _garbageCollector()
+	public function _garbageCollector()
 	{
 		// deleting sessions with timeout exceeded
 		$this->DB->Execute('DELETE FROM sessions WHERE atime < ?NOW? - ? AND mtime < ?NOW? - ?', array($this->timeout, $this->timeout)); 
 		return TRUE;
 	}
 
-	function makeVData()
+	public function makeVData()
 	{
 		foreach(array('REMOTE_ADDR', 'REMOTE_HOST', 'HTTP_USER_AGENT', 'HTTP_VIA', 'HTTP_X_FORWARDED_FOR', 'SERVER_NAME', 'SERVER_PORT') as $vkey)
 			if(isset($_SERVER[$vkey]))
@@ -193,7 +193,7 @@ class Session {
 			return NULL;
 	}
 
-	function redirect($location)
+	public function redirect($location)
 	{
 		$this->close();
 		header('Location: '.$location);
