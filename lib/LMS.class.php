@@ -39,7 +39,7 @@ class LMS {
 	var $_version = '1.11-git'; // class version
 	var $_revision = '$Revision$';
 
-	function LMS(&$DB, &$AUTH, &$CONFIG, &$SYSLOG) { // class variables setting
+	public function __construct(&$DB, &$AUTH, &$CONFIG, &$SYSLOG) { // class variables setting
 		$this->DB = &$DB;
 		$this->AUTH = &$AUTH;
 		$this->CONFIG = &$CONFIG;
