@@ -29,15 +29,15 @@
 
 class LMS {
 
-	var $DB;   // database object
-	var $AUTH;   // object from Session.class.php (session management)
-	var $CONFIG;   // table including lms.ini options
-	var $SYSLOG;
-	var $cache = array();  // internal cache
-	var $hooks = array(); // registered plugin hooks
-	var $xajax;  // xajax object
-	var $_version = '1.11-git'; // class version
-	var $_revision = '$Revision$';
+	public $DB;   // database object
+	public $AUTH;   // object from Session.class.php (session management)
+	public $CONFIG;   // table including lms.ini options
+	public $SYSLOG;
+	public $cache = array();  // internal cache
+	public $hooks = array(); // registered plugin hooks
+	public $xajax;  // xajax object
+	public $_version = '1.11-git'; // class version
+	public $_revision = '$Revision$';
 
 	public function __construct(&$DB, &$AUTH, &$CONFIG, &$SYSLOG) { // class variables setting
 		$this->DB = &$DB;
