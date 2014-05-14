@@ -30,28 +30,28 @@
 
 class LMSDB_common
 {
-	var $_version = '1.11-git';
-	var $_revision = '$Revision$';
+	public $_version = '1.11-git';
+	public $_revision = '$Revision$';
 
 	// Driver powinien nadpisać tą zmienną wartością TRUE, żeby
 	// funkcja inicjująca baze danych wiedziała że driver się poprawnie
 	// załadował
 
-	var $_loaded = FALSE;
+	public $_loaded = FALSE;
 
 	// Wewnętrzne zmienne bazy danych, tj, resource, link, itp.
 
-	var $_dbtype = 'NONE';
-	var $_dblink = NULL;
-	var $_dbhost = NULL;
-	var $_dbuser = NULL;
-	var $_dbname = NULL;
-	var $_error = FALSE;
-	var $_query = NULL;
-	var $_result = NULL;
+	public $_dbtype = 'NONE';
+	public $_dblink = NULL;
+	public $_dbhost = NULL;
+	public $_dbuser = NULL;
+	public $_dbname = NULL;
+	public $_error = FALSE;
+	public $_query = NULL;
+	public $_result = NULL;
 
-	var $errors = array();
-	var $debug = FALSE;
+	public $errors = array();
+	public $debug = FALSE;
 
 	public function __construct()
 	{
