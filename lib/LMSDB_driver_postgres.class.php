@@ -30,10 +30,10 @@
 
 class LMSDB_driver_postgres extends LMSDB_common
 {
-	var $_loaded = TRUE;
-	var $_dbtype = 'postgres';
+	public $_loaded = TRUE;
+	public $_dbtype = 'postgres';
 
-	function LMSDB_driver_postgres($dbhost,$dbuser,$dbpasswd,$dbname)
+	public function __construct($dbhost,$dbuser,$dbpasswd,$dbname)
 	{
 		if(!extension_loaded('pgsql'))
 		{
@@ -47,12 +47,12 @@ class LMSDB_driver_postgres extends LMSDB_common
 		$this->Connect($dbhost,$dbuser,$dbpasswd,$dbname);
 	}
 
-	function _driver_dbversion()
+	public function _driver_dbversion()
 	{
 		return $this->GetOne("SELECT split_part(version(),' ',2)");
 	}
 
-	function _driver_connect($dbhost,$dbuser,$dbpasswd,$dbname)
+	public function _driver_connect($dbhost,$dbuser,$dbpasswd,$dbname)
 	{
 		$cstring = join(' ',array(
 			($dbhost != '' && $dbhost != 'localhost' ? 'host='.$dbhost : ''),
@@ -75,13 +75,13 @@ class LMSDB_driver_postgres extends LMSDB_common
 		return $this->_dblink;
 	}
 
-	function _driver_disconnect()
+	public function _driver_disconnect()
 	{
 		$this->_loaded = FALSE;
 		@pg_close($this->_dblink);
 	}
 
-	function _driver_geterror()
+	public function _driver_geterror()
 	{
 		if($this->_dblink)
                         return pg_last_error($this->_dblink);
@@ -89,7 +89,7 @@ class LMSDB_driver_postgres extends LMSDB_common
             		return 'We\'re not connected!';
 	}
 	
-	function _driver_execute($query)
+	public function _driver_execute($query)
 	{
 		$this->_query = $query;
 
@@ -100,12 +100,12 @@ class LMSDB_driver_postgres extends LMSDB_common
 		return $this->_result;
 	}
 
-        function _driver_multi_execute($query)
+        public function _driver_multi_execute($query)
         {
                 return $this->_driver_execute($query);
         }
 
-	function _driver_fetchrow_assoc($result = NULL)
+	public function _driver_fetchrow_assoc($result = NULL)
 	{
 		if(! $this->_error)
 			return @pg_fetch_array($result ? $result : $this->_result,NULL, PGSQL_ASSOC);
@@ -113,7 +113,7 @@ class LMSDB_driver_postgres extends LMSDB_common
 			return FALSE;
 	}
 
-	function _driver_fetchrow_num()
+	public function _driver_fetchrow_num()
 	{
 		if(! $this->_error)
 			return @pg_fetch_array($this->_result,NULL,PGSQL_NUM);
@@ -121,7 +121,7 @@ class LMSDB_driver_postgres extends LMSDB_common
 			return FALSE;
 	}
 	
-	function _driver_affected_rows()
+	public function _driver_affected_rows()
 	{
 		if(! $this->_error)
 			return @pg_affected_rows($this->_result);
@@ -129,7 +129,7 @@ class LMSDB_driver_postgres extends LMSDB_common
 			return FALSE;
 	}
 
-	function _driver_num_rows()
+	public function _driver_num_rows()
 	{
 		if(! $this->_error)
 			return @pg_num_rows($this->_result);
@@ -137,7 +137,7 @@ class LMSDB_driver_postgres extends LMSDB_common
 			return FALSE;
 	}
 
-	function _quote_value($input)
+	public function _quote_value($input)
 	{
 		if($input === NULL)
 			return 'NULL';
@@ -147,43 +147,43 @@ class LMSDB_driver_postgres extends LMSDB_common
 			return $input;
 	}
 
-	function _driver_now()
+	public function _driver_now()
 	{
 		return 'EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer';
 	}
 
-	function _driver_like()
+	public function _driver_like()
 	{
 		return 'ILIKE';
 	}
 
-	function _driver_concat($input)
+	public function _driver_concat($input)
 	{
 		return implode(' || ',$input);
 	}
 
-	function _driver_listtables()
+	public function _driver_listtables()
 	{
 		return $this->GetCol('SELECT relname AS name FROM pg_class WHERE relkind = \'r\' and relname !~ \'^pg_\' and relname !~ \'^sql_\'');
 	}
 
-	function _driver_begintrans()
+	public function _driver_begintrans()
 	{
 		return $this->Execute('BEGIN');
 	}
 
-	function _driver_committrans()
+	public function _driver_committrans()
 	{
 		return $this->Execute('COMMIT');
 	}
 
-	function _driver_rollbacktrans()
+	public function _driver_rollbacktrans()
 	{
 		return $this->Execute('ROLLBACK');
 	}
 
 	// @todo: locktype
-	function _driver_locktables($table, $locktype=null)
+	public function _driver_locktables($table, $locktype=null)
         {
 	        if(is_array($table))
 		        $this->Execute('LOCK '.implode(', ', $table));
@@ -191,17 +191,17 @@ class LMSDB_driver_postgres extends LMSDB_common
 		        $this->Execute('LOCK '.$table);
 	}
 
-	function _driver_unlocktables()
+	public function _driver_unlocktables()
 	{
 		return TRUE;
 	}
 
-	function _driver_lastinsertid($table)
+	public function _driver_lastinsertid($table)
 	{
                return $this->GetOne('SELECT currval(\''.$table.'_id_seq\')');
 	}
 
-	function _driver_groupconcat($field, $separator = ',')
+	public function _driver_groupconcat($field, $separator = ',')
 	{
 		return 'array_to_string(array_agg('.$field.'), \''.$separator.'\')';
 	}
