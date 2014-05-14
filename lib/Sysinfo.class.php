@@ -25,13 +25,15 @@
  */
 
 /*
- * System information - u¿ywane przez welcome.php
+ * System information - uï¿½ywane przez welcome.php
  * Bazowane na projekcie phpsysinfo - http://phpsysinfo.sourceforge.net/
  */
 
 class Sysinfo {
 	
-	function get_sysinfo()
+        public function __construct() { }
+    
+	public function get_sysinfo()
 	{
 		$return['hostname'] = $this->hostname();
 		$return['uptime'] = $this->uptime();
@@ -42,12 +44,12 @@ class Sysinfo {
 		return $return;
 	}
 
-	function bsd_grab_key ($key)
+	public function bsd_grab_key ($key)
 	{
 		return $this->execute_program('sysctl', "-n $key");
 	}
 
-	function execute_program ($program, $args = '')
+	public function execute_program ($program, $args = '')
 	{
 		$buffer = '';
 		$program = $this->find_program($program);
@@ -82,7 +84,7 @@ class Sysinfo {
 		}
 	}
 
-	function find_program ($program)
+	public function find_program ($program)
 	{
 		$path = array('/bin', '/sbin', '/usr/bin', '/usr/sbin', '/usr/local/bin', '/usr/local/sbin');
 		while ($this_path = current($path))
@@ -96,7 +98,7 @@ class Sysinfo {
 		return;
 	}
 
-	function hostname()
+	public function hostname()
 	{
 		switch(PHP_OS)
 		{
@@ -120,7 +122,7 @@ class Sysinfo {
 		return $hostname;
 	}
 		
-	function uptime()
+	public function uptime()
 	{
 		// Uptime function.
 		// Taken afair from PHPSysinfo
@@ -159,7 +161,7 @@ class Sysinfo {
 		return $result;
 	}
 
-	function kernel()
+	public function kernel()
 	{
 		switch(PHP_OS)
 		{
@@ -183,7 +185,7 @@ class Sysinfo {
 		return $result;
 	}
 
-	function users()
+	public function users()
 	{
 		switch(PHP_OS)
 		{
@@ -200,7 +202,7 @@ class Sysinfo {
 		return $result;
 	}
 
-	function loadavg()
+	public function loadavg()
 	{
 		switch(PHP_OS)
 		{
