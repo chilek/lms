@@ -28,38 +28,38 @@
  * LMSDB - klasa wspólna.
  */
 
-Class LMSDB_common
+class LMSDB_common
 {
-	var $_version = '1.11-git';
-	var $_revision = '$Revision$';
+	public $_version = '1.11-git';
+	public $_revision = '$Revision$';
 
 	// Driver powinien nadpisać tą zmienną wartością TRUE, żeby
 	// funkcja inicjująca baze danych wiedziała że driver się poprawnie
 	// załadował
 
-	var $_loaded = FALSE;
+	public $_loaded = FALSE;
 
 	// Wewnętrzne zmienne bazy danych, tj, resource, link, itp.
 
-	var $_dbtype = 'NONE';
-	var $_dblink = NULL;
-	var $_dbhost = NULL;
-	var $_dbuser = NULL;
-	var $_dbname = NULL;
-	var $_error = FALSE;
-	var $_query = NULL;
-	var $_result = NULL;
+	public $_dbtype = 'NONE';
+	public $_dblink = NULL;
+	public $_dbhost = NULL;
+	public $_dbuser = NULL;
+	public $_dbname = NULL;
+	public $_error = FALSE;
+	public $_query = NULL;
+	public $_result = NULL;
 
-	var $errors = array();
-	var $debug = FALSE;
+	public $errors = array();
+	public $debug = FALSE;
 
-	function LMSDB_common()
+	public function __construct()
 	{
 		// zabezpieczmy się przed inicjowaniem tej klasy samej w sobie
 		die();
 	}
 
-	function Connect($dbhost,$dbuser,$dbpasswd,$dbname)
+	public function Connect($dbhost,$dbuser,$dbpasswd,$dbname)
 	{
 		if(method_exists($this, '_driver_shutdown'))
 			register_shutdown_function(array($this, '_driver_shutdown'));
@@ -79,12 +79,12 @@ Class LMSDB_common
 		}
 	}
 
-	function Destroy()
+	public function Destroy()
 	{
 		return $this->_driver_disconnect();
 	}
 
-	function Execute($query, $inputarray = NULL)
+	public function Execute($query, $inputarray = NULL)
 	{
 	    if ($this->debug)
     	    $start = microtime(true);
@@ -105,7 +105,7 @@ Class LMSDB_common
 	}
 
 	//Execute multiple queries delimited by semicollon
-	function MultiExecute($query, $inputarray = NULL)
+	public function MultiExecute($query, $inputarray = NULL)
 	{
 	    if ($this->debug)
     	    $start = microtime(true);
@@ -125,7 +125,7 @@ Class LMSDB_common
 		return $this->_driver_affected_rows();
 	}
 
-	function GetAll($query = NULL, $inputarray = NULL)
+	public function GetAll($query = NULL, $inputarray = NULL)
 	{
 		if($query)
 			$this->Execute($query, $inputarray);
@@ -138,7 +138,7 @@ Class LMSDB_common
 		return $result;
 	}
 
-	function GetAllByKey($query = NULL, $key = NULL, $inputarray = NULL)
+	public function GetAllByKey($query = NULL, $key = NULL, $inputarray = NULL)
 	{
 		if($query)
 			$this->Execute($query, $inputarray);
@@ -151,7 +151,7 @@ Class LMSDB_common
 		return $result;
 	}
 
-	function GetRow($query = NULL, $inputarray = NULL)
+	public function GetRow($query = NULL, $inputarray = NULL)
 	{
 		if($query)
 			$this->Execute($query, $inputarray);
@@ -159,7 +159,7 @@ Class LMSDB_common
 		return $this->_driver_fetchrow_assoc();
 	}
 
-	function GetCol($query = NULL, $inputarray = NULL)
+	public function GetCol($query = NULL, $inputarray = NULL)
 	{
 		if($query)
 			$this->Execute($query, $inputarray);
@@ -172,7 +172,7 @@ Class LMSDB_common
 		return $result;
 	}
 
-	function GetOne($query = NULL, $inputarray = NULL)
+	public function GetOne($query = NULL, $inputarray = NULL)
 	{
 		if($query)
 			$this->Execute($query, $inputarray);
@@ -186,7 +186,7 @@ Class LMSDB_common
 
 	// with Exec() & FetchRow() we can do big results looping
 	// in less memory consumptive way than using GetAll() & foreach()
-	function Exec($query, $inputarray = NULL)
+	public function Exec($query, $inputarray = NULL)
 	{
 	    if ($this->debug)
     	    $start = microtime(true);
@@ -209,72 +209,72 @@ Class LMSDB_common
 			return NULL;
 	}
 
-	function FetchRow($result)
+	public function FetchRow($result)
 	{
 		return $this->_driver_fetchrow_assoc($result);
 	}
 
-	function Concat()
+	public function Concat()
 	{
 		return $this->_driver_concat(func_get_args());
 	}
 
-	function Now()
+	public function Now()
 	{
 		return $this->_driver_now();
 	}
 
-	function ListTables()
+	public function ListTables()
 	{
 		return $this->_driver_listtables();
 	}
 
-	function BeginTrans()
+	public function BeginTrans()
 	{
 		return $this->_driver_begintrans();
 	}
 
-	function CommitTrans()
+	public function CommitTrans()
 	{
 		return $this->_driver_committrans();
 	}
 
-	function RollbackTrans()
+	public function RollbackTrans()
 	{
 		return $this->_driver_rollbacktrans();
 	}
 
-	function LockTables($table, $locktype=null)
+	public function LockTables($table, $locktype=null)
 	{
 		return $this->_driver_locktables($table, $locktype);
 	}
 
-	function UnLockTables()
+	public function UnLockTables()
 	{
 		return $this->_driver_unlocktables();
 	}
 
-	function GetDBVersion()
+	public function GetDBVersion()
 	{
 		return $this->_driver_dbversion();
 	}
 
-	function SetEncoding($name)
+	public function SetEncoding($name)
 	{
 		return $this->_driver_setencoding($name);
 	}
 
-	function GetLastInsertID($table = NULL)
+	public function GetLastInsertID($table = NULL)
 	{
 		return $this->_driver_lastinsertid($table);
 	}
 
-	function Escape($input)
+	public function Escape($input)
 	{
 		return $this->_quote_value($input);
 	}
 
-	function _query_parser($query, $inputarray = NULL)
+	public function _query_parser($query, $inputarray = NULL)
 	{
 		// najpierw sparsujmy wszystkie specjalne meta śmieci.
 		$query = preg_replace('/\?NOW\?/i',$this->_driver_now(),$query);
@@ -297,7 +297,7 @@ Class LMSDB_common
 		return $query;
 	}
 
-	function _quote_value($input)
+	public function _quote_value($input)
 	{
 		// jeżeli baza danych wymaga innego eskejpowania niż to, driver
 		// powinien nadpisać tą funkcję
@@ -313,22 +313,22 @@ Class LMSDB_common
 	// Funkcje bezpieczeństwa, tj. na wypadek gdyby driver ich nie
 	// zdefiniował.
 
-	function _driver_now()
+	public function _driver_now()
 	{
 		return time();
 	}
 
-	function _driver_like()
+	public function _driver_like()
 	{
 		return 'LIKE';
 	}
 
-	function _driver_setencoding($name)
+	public function _driver_setencoding($name)
 	{
 		$this->Execute('SET NAMES ?', array($name));
 	}
 
-	function GroupConcat($field, $separator = ',')
+	public function GroupConcat($field, $separator = ',')
 	{
 		return $this->_driver_groupconcat($field, $separator);
 	}

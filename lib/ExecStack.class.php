@@ -26,16 +26,16 @@
 		      
 class ExecStack
 {
-	var $version = '1.11-git';
-	var $_MODINFO = array();
-	var $_BINDTABLE = array();
-	var $_EXECSTACK = array();
-	var $_STATUS = array();
-	var $module;
-	var $action;
-	var $modules_dir;
+	public $version = '1.11-git';
+	public $_MODINFO = array();
+	public $_BINDTABLE = array();
+	public $_EXECSTACK = array();
+	public $_STATUS = array();
+	public $module;
+	public $action;
+	public $modules_dir;
 
-	function ExecStack($directory = 'modules/', $module, $action)
+	public function __construct($directory = 'modules/', $module, $action)
 	{
 		$this->module = $module;
 		$this->action = $action;
@@ -44,7 +44,7 @@ class ExecStack
 		$this->buildExecStack($module, $action);
 	}
 	
-	function loadModules($modules_dir)
+	public function loadModules($modules_dir)
 	{
 		$this->modules_dir = $modules_dir;
 		$this->_MODINFO = array();
@@ -106,7 +106,7 @@ class ExecStack
 		return $this->_MODINFO;
 	}
 
-	function getDefaultModule()
+	public function getDefaultModule()
 	{
 		if($this->_MODINFO)
 			foreach($this->_MODINFO as $module_name => $module_info)
@@ -114,7 +114,7 @@ class ExecStack
 					return $module_name;
 	}
 
-	function getDefaultAction($module)
+	public function getDefaultAction($module)
 	{
 		if(isset($this->_MODINFO[$module]) && $this->_MODINFO[$module]['actions'])
 			foreach($this->_MODINFO[$module]['actions'] as $action_name => $action_info)
@@ -122,7 +122,7 @@ class ExecStack
 					return $action_name;
 	}					
 
-	function buildBindTable()
+	public function buildBindTable()
 	{
 		$this->_BINDTABLE = array(
 			'pre/*:*' => array(),
@@ -140,22 +140,22 @@ class ExecStack
 		return $this->_BINDTABLE;
 	}
 
-	function needExec($module, $action)
+	public function needExec($module, $action)
 	{
 		return ! $this->_MODINFO[$module]['actions'][$action]['dontexec'];
 	}
 
-	function needTemplate($module, $action)
+	public function needTemplate($module, $action)
 	{
 		return ! $this->_MODINFO[$module]['actions'][$action]['notemplate'];
 	}
 	
-	function getTemplate($module, $action)
+	public function getTemplate($module, $action)
 	{
 		return $this->_MODINFO[$module]['actions'][$action]['template'];
 	}
 
-	function replaceTemplate($src_mod, $src_tpl, $dst_mod, $dst_tpl)
+	public function replaceTemplate($src_mod, $src_tpl, $dst_mod, $dst_tpl)
 	{
 		foreach($this->_EXECSTACK['templates'] as $idx => $template)
 			if($template['module'] == $src_mod && $template['template'] == $src_tpl)
@@ -165,7 +165,7 @@ class ExecStack
 			}
 	}
 
-	function dropTemplate($module, $template)
+	public function dropTemplate($module, $template)
 	{
 		$templates = $this->_EXECSTACK['templates'];
 		foreach($templates as $idx => $tpl)
@@ -176,7 +176,7 @@ class ExecStack
 			}
 	}
 
-	function dropAction($module, $action)
+	public function dropAction($module, $action)
 	{
 		$actions = $this->_EXECSTACK['actions'];
 		foreach($actions as $idx => $act)
@@ -187,27 +187,27 @@ class ExecStack
 			}
 	}
 
-	function moduleExists($module)
+	public function moduleExists($module)
 	{
 		return isset($this->_MODINFO[$module]) && is_array($this->_MODINFO[$module]) && is_readable($this->modules_dir.'/'.$module.'/modinfo.php');
 	}
 
-	function moduleIsPublic($module)
+	public function moduleIsPublic($module)
 	{
 		return ! $this->_MODINFO[$module]['notpublic'];
 	}
 
-	function actionExists($module, $action)
+	public function actionExists($module, $action)
 	{
 		return is_array($this->_MODINFO[$module]['actions'][$action]) && ($this->needExec($module, $action) ? is_readable($this->modules_dir.'/'.$module.'/actions/'.$action.'.php') : TRUE);
 	}
 
-	function actionIsPublic($module, $action)
+	public function actionIsPublic($module, $action)
 	{
 		return ! $this->_MODINFO[$module]['actions'][$action]['notpublic'];
 	}
 
-	function buildExecStack($module, $action, $depth = 0)
+	public function buildExecStack($module, $action, $depth = 0)
 	{
 		if($depth == 0)
 		{	

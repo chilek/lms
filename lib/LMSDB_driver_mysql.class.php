@@ -30,10 +30,10 @@
 
 class LMSDB_driver_mysql extends LMSDB_common
 {
-	var $_loaded = TRUE;
-	var $_dbtype = 'mysql';
+	public $_loaded = TRUE;
+	public $_dbtype = 'mysql';
 
-	function LMSDB_driver_mysql($dbhost, $dbuser, $dbpasswd, $dbname)
+	public function __construct($dbhost, $dbuser, $dbpasswd, $dbname)
 	{
 		if(!extension_loaded('mysql'))
 		{
@@ -47,12 +47,12 @@ class LMSDB_driver_mysql extends LMSDB_common
 		$this->Connect($dbhost, $dbuser, $dbpasswd, $dbname);
 	}
 
-	function _driver_dbversion()
+	public function _driver_dbversion()
 	{
 		return mysql_get_server_info();
 	}
 
-	function _driver_connect($dbhost, $dbuser, $dbpasswd, $dbname)
+	public function _driver_connect($dbhost, $dbuser, $dbpasswd, $dbname)
 	{
 		if($this->_dblink = @mysql_connect($dbhost, $dbuser, $dbpasswd, true))
 		{
@@ -68,13 +68,13 @@ class LMSDB_driver_mysql extends LMSDB_common
 		return $this->_dblink;
 	}
 
-	function _driver_shutdown()
+	public function _driver_shutdown()
 	{
 		$this->_loaded = FALSE;
 		@mysql_close($this->_dblink); // apparently, mysql_close() is automagicly called after end of the script...
 	}
 	
-	function _driver_geterror()
+	public function _driver_geterror()
 	{
 		if($this->_dblink)
 			return mysql_error($this->_dblink);
@@ -84,19 +84,19 @@ class LMSDB_driver_mysql extends LMSDB_common
 			return mysql_error();
 	}
 
-	function _driver_disconnect()
+	public function _driver_disconnect()
 	{
 		return @mysql_close($this->_dblink);
 	}
 	
-	function _driver_selectdb($dbname)
+	public function _driver_selectdb($dbname)
 	{
 		if($result = mysql_select_db($dbname, $this->_dblink))
 			$this->_dbname = $dbname;
 		return $result;
 	}
 
-	function _driver_execute($query)
+	public function _driver_execute($query)
 	{
 		$this->_query = $query;
 
@@ -107,7 +107,7 @@ class LMSDB_driver_mysql extends LMSDB_common
 		return $this->_result;
 	}
 
-        function _driver_multi_execute($query)
+        public function _driver_multi_execute($query)
         {
                 $this->_query = $query;
                 $total_result = FALSE;
@@ -128,7 +128,7 @@ class LMSDB_driver_mysql extends LMSDB_common
         }
 
 
-	function _driver_fetchrow_assoc($result = NULL)
+	public function _driver_fetchrow_assoc($result = NULL)
 	{
 		if(! $this->_error)
 			return mysql_fetch_array($result ? $result : $this->_result, MYSQL_ASSOC);
@@ -136,7 +136,7 @@ class LMSDB_driver_mysql extends LMSDB_common
 			return FALSE;
 	}
 
-	function _driver_fetchrow_num()
+	public function _driver_fetchrow_num()
 	{
 		if(! $this->_error)
 			return mysql_fetch_array($this->_result, MYSQL_NUM);
@@ -144,7 +144,7 @@ class LMSDB_driver_mysql extends LMSDB_common
 			return FALSE;
 	}
 
-	function _driver_affected_rows()
+	public function _driver_affected_rows()
 	{
 		if(! $this->_error)
 			return mysql_affected_rows();
@@ -152,7 +152,7 @@ class LMSDB_driver_mysql extends LMSDB_common
 			return FALSE;
 	}
 
-	function _driver_num_rows()
+	public function _driver_num_rows()
 	{
 		if(! $this->_error)
 			return mysql_num_rows($this->_result);
@@ -160,45 +160,45 @@ class LMSDB_driver_mysql extends LMSDB_common
 			return FALSE;
 	}
 	
-	function _driver_now()
+	public function _driver_now()
 	{
 		return 'UNIX_TIMESTAMP()';
 	}
 
-	function _driver_like()
+	public function _driver_like()
 	{
 		return 'LIKE';
 	}
 
-	function _driver_concat($input)
+	public function _driver_concat($input)
 	{
 		$return = implode(', ', $input);
 		return 'CONCAT('.$return.')';
 	}
 
-	function _driver_listtables()
+	public function _driver_listtables()
 	{
 		return $this->GetCol('SELECT table_name FROM information_schema.tables
 	                        WHERE table_type = ? AND table_schema = ?',
 				array('BASE TABLE', $this->_dbname));
 	}
 
-	function _driver_begintrans()
+	public function _driver_begintrans()
 	{
 		return $this->Execute('BEGIN');
 	}
 
-	function _driver_committrans()
+	public function _driver_committrans()
 	{
 		return $this->Execute('COMMIT');
 	}
 	
-	function _driver_rollbacktrans()
+	public function _driver_rollbacktrans()
         {
 	        return $this->Execute('ROLLBACK');
 	}
 
-	function _driver_locktables($table, $locktype=null)
+	public function _driver_locktables($table, $locktype=null)
 	{
 		$locktype = $locktype ? strtoupper($locktype) : 'WRITE';
 
@@ -208,17 +208,17 @@ class LMSDB_driver_mysql extends LMSDB_common
 			$this->Execute('LOCK TABLES '.$table.' '.$locktype);
 	}
 
-	function _driver_unlocktables()
+	public function _driver_unlocktables()
 	{
 		$this->Execute('UNLOCK TABLES');
 	}
 
-	function _driver_lastinsertid($table = NULL)
+	public function _driver_lastinsertid($table = NULL)
         {
 	        return $this->GetOne('SELECT LAST_INSERT_ID()');
 	}
 
-	function _driver_groupconcat($field, $separator = ',')
+	public function _driver_groupconcat($field, $separator = ',')
 	{
 		return 'GROUP_CONCAT('.$field.' SEPARATOR \''.$separator.'\')';
 	}
