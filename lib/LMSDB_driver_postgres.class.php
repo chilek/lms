@@ -24,12 +24,15 @@
  *  $Id$
  */
 
-/*
- * To jest pseudo-driver dla LMSDB, dla bazy danych 'postgres'.
+/**
+ * LMSDB_driver_postgres
+ * 
+ * PostgreSQL engine driver wrapper for LMS.
+ * 
+ * @package LMS
  */
-
-class LMSDB_driver_postgres extends LMSDB_common
-{
+class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface {
+    
 	public $_loaded = TRUE;
 	public $_dbtype = 'postgres';
 
@@ -75,10 +78,21 @@ class LMSDB_driver_postgres extends LMSDB_common
 		return $this->_dblink;
 	}
 
+        public function _driver_shutdown()
+	{
+		$this->_loaded = FALSE;
+		$this->_driver_disconnect();
+	}
+        
 	public function _driver_disconnect()
 	{
 		$this->_loaded = FALSE;
 		@pg_close($this->_dblink);
+	}
+        
+        public function _driver_selectdb($dbname)
+	{
+		throw new Exception('PostgreSQL driver cannot change dbname. Sorry...');
 	}
 
 	public function _driver_geterror()
@@ -204,6 +218,11 @@ class LMSDB_driver_postgres extends LMSDB_common
 	public function _driver_groupconcat($field, $separator = ',')
 	{
 		return 'array_to_string(array_agg('.$field.'), \''.$separator.'\')';
+	}
+        
+        public function _driver_setencoding($name)
+	{
+		$this->Execute('SET NAMES ?', array($name));
 	}
 }
 

@@ -24,12 +24,15 @@
  *  $Id$
  */
 
-/*
- * LMSDB pseudo-driver for MySQL database using mysqli extension
+/**
+ * LMSDB_driver_mysqli
+ * 
+ * MySQLi engine driver wrapper for LMS.
+ * 
+ * @package LMS 
  */
-
-class LMSDB_driver_mysqli extends LMSDB_common
-{
+class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface {
+    
 	public $_loaded = TRUE;
 	public $_dbtype = 'mysqli';
 
@@ -86,6 +89,13 @@ class LMSDB_driver_mysqli extends LMSDB_common
 	public function _driver_disconnect()
 	{
 		return @mysqli_close($this->_dblink);
+	}
+        
+        public function _driver_selectdb($dbname)
+	{
+		if($result = mysqli_select_db($dbname, $this->_dblink))
+			$this->_dbname = $dbname;
+		return $result;
 	}
 	
 	public function _driver_execute($query)
@@ -213,6 +223,12 @@ class LMSDB_driver_mysqli extends LMSDB_common
 	{
 		return 'GROUP_CONCAT('.$field.' SEPARATOR \''.$separator.'\')';
 	}
+        
+        public function _driver_setencoding($name)
+	{
+		$this->Execute('SET NAMES ?', array($name));
+	}
+        
 }
 
 ?>

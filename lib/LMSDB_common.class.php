@@ -24,12 +24,16 @@
  *  $Id$
  */
 
-/*
- * LMSDB - klasa wspólna.
+/**
+ * LMSDB_driver_mysqli
+ * 
+ * Database access layer abstraction for LMS. LMSDB drivers should extend this
+ * class.
+ * 
+ * @package LMS 
  */
-
-abstract class LMSDB_common
-{
+abstract class LMSDB_common implements LMSDBInterface
+{    
 	public $_version = '1.11-git';
 	public $_revision = '$Revision$';
 
@@ -267,8 +271,13 @@ abstract class LMSDB_common
 	{
 		return $this->_quote_value($input);
 	}
+        
+	public function GroupConcat($field, $separator = ',')
+	{
+		return $this->_driver_groupconcat($field, $separator);
+	}
 
-	public function _query_parser($query, $inputarray = NULL)
+	protected function _query_parser($query, $inputarray = NULL)
 	{
 		// najpierw sparsujmy wszystkie specjalne meta śmieci.
 		$query = preg_replace('/\?NOW\?/i',$this->_driver_now(),$query);
@@ -291,7 +300,7 @@ abstract class LMSDB_common
 		return $query;
 	}
 
-	public function _quote_value($input)
+	protected function _quote_value($input)
 	{
 		// jeżeli baza danych wymaga innego eskejpowania niż to, driver
 		// powinien nadpisać tą funkcję
@@ -304,28 +313,6 @@ abstract class LMSDB_common
 			return $input;
 	}
 
-	// Funkcje bezpieczeństwa, tj. na wypadek gdyby driver ich nie
-	// zdefiniował.
-
-	public function _driver_now()
-	{
-		return time();
-	}
-
-	public function _driver_like()
-	{
-		return 'LIKE';
-	}
-
-	public function _driver_setencoding($name)
-	{
-		$this->Execute('SET NAMES ?', array($name));
-	}
-
-	public function GroupConcat($field, $separator = ',')
-	{
-		return $this->_driver_groupconcat($field, $separator);
-	}
 }
 
 ?>

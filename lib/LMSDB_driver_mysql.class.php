@@ -24,12 +24,15 @@
  *  $Id$
  */
 
-/*
- * To jest pseudo-driver dla LMSDB, dla bazy danych 'mysql'.
+/**
+ * LMSDB_driver_mysqli
+ * 
+ * MySQL engine driver wrapper for LMS.
+ * 
+ * @package LMS 
  */
-
-class LMSDB_driver_mysql extends LMSDB_common
-{
+class LMSDB_driver_mysql extends LMSDB_common implements LMSDBDriverInterface {
+    
 	public $_loaded = TRUE;
 	public $_dbtype = 'mysql';
 
@@ -222,6 +225,12 @@ class LMSDB_driver_mysql extends LMSDB_common
 	{
 		return 'GROUP_CONCAT('.$field.' SEPARATOR \''.$separator.'\')';
 	}
+        
+        public function _driver_setencoding($name)
+	{
+		$this->Execute('SET NAMES ?', array($name));
+	}
+        
 }
 
 ?>
