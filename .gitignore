@@ -57,6 +57,7 @@ lms.ini
 backups/*
 documents/*
 !documents/templates
+cache/*
 
 # Temporary files
 *~

@@ -64,8 +64,10 @@ define('MODULES_DIR', $CONFIG['directories']['modules_dir']);
 define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir']);
 define('SMARTY_TEMPLATES_DIR', $CONFIG['directories']['smarty_templates_dir']);
 
-// Do some checks and load config defaults
+// Load autloader
+require_once(LIB_DIR.'/autoloader.php');
 
+// Do some checks and load config defaults
 require_once(LIB_DIR.'/checkdirs.php');
 require_once(LIB_DIR.'/config.php');
 
