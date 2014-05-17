@@ -33,7 +33,6 @@
  */
 class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface {
     
-	public $_loaded = TRUE;
 	public $_dbtype = 'postgres';
 
         /**
@@ -96,6 +95,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
 			$this->_dbuser = $dbuser;
 			$this->_dbname = $dbname;
 			$this->_error = FALSE;
+                        $this->_loaded = TRUE;
 		}
 		else
 			$this->_error = TRUE;
@@ -108,7 +108,6 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
          */
         public function _driver_shutdown()
 	{
-		$this->_loaded = FALSE;
 		$this->_driver_disconnect();
 	}
         

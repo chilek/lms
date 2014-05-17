@@ -33,7 +33,6 @@
  */
 class LMSDB_driver_mysql extends LMSDB_common implements LMSDBDriverInterface {
     
-	public $_loaded = TRUE;
 	public $_dbtype = 'mysql';
 
         /**
@@ -87,6 +86,7 @@ class LMSDB_driver_mysql extends LMSDB_common implements LMSDBDriverInterface {
 			$this->_dbhost = $dbhost;
 			$this->_dbuser = $dbuser;
 			$this->_driver_selectdb($dbname);
+                        $this->_loaded = TRUE;
 		}
 		else
 		{

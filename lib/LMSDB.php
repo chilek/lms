@@ -73,7 +73,7 @@ class LMSDB {
                 throw new Exception('Unable to load driver for "' . $dbtype . '" database!');
         }
 
-        if (!$db->_loaded) {
+        if (!$db->IsLoaded()) {
             throw new Exception('PHP Driver for "' . $dbtype . '" database doesn\'t seems to be loaded.');
         }
 

@@ -38,11 +38,8 @@ abstract class LMSDB_common implements LMSDBInterface
 	protected $_version = '1.11-git';
 	protected $_revision = '$Revision$';
 
-	// Driver powinien nadpisać tą zmienną wartością TRUE, żeby
-	// funkcja inicjująca baze danych wiedziała że driver się poprawnie
-	// załadował
-
-	public $_loaded = FALSE;
+        /** @var boolean Driver load state. Should be changed by driver after successful loading. */
+	protected $_loaded = FALSE;
 
 	// Wewnętrzne zmienne bazy danych, tj, resource, link, itp.
 
@@ -501,6 +498,19 @@ abstract class LMSDB_common implements LMSDBInterface
             
         }
 
+        /**
+         * Returns driver load state.
+         * 
+         * If driver is loaded returns true otherwise returns false.
+         * 
+         * @return boolean
+         */
+        public function IsLoaded() {
+            
+            return $this->_loaded;
+            
+        }
+        
 }
 
 ?>
