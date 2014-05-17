@@ -82,9 +82,9 @@ if($dbversion = $DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype = ?',arra
     if ($dbinfo == 0 && $tables == 0 && count($DB->errors) == 0) {  // if there are no tables we can install lms database
         // detect database type and select schema dump file to load
         $schema = '';
-        if ($DB->_dbtype == 'postgres') {
+        if ($DB->GetDbType() == LMSDB::POSTGRESQL) {
             $schema = 'lms.pgsql';
-        } elseif ($DB->_dbtype == 'mysql' || $DB->_dbtype == 'mysqli') {
+        } elseif ($DB->GetDbType() == LMSDB::MYSQL || $DB->GetDbType() == LMSDB::MYSQLI) {
             $schema = 'lms.mysql';
         } else
             die ('Could not determine database type!');

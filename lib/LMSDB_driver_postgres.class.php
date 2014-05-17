@@ -31,9 +31,8 @@
  * 
  * @package LMS
  */
-class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface {
-    
-	public $_dbtype = 'postgres';
+class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
+{
 
         /**
          * Constructs driver.
@@ -54,6 +53,8 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
 			$this->_loaded = FALSE;
 			return;
 		}
+                
+                $this->_dbtype = LMSDB::POSTGRESQL;
 
 		//$this->_version .= ' ('.preg_replace('/^.Revision: ([0-9.]+).*/','\1',$this->_revision).'/'.preg_replace('/^.Revision: ([0-9.]+).*/','\1','$Revision$').')';
 		$this->_version .= '';

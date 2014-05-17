@@ -32,8 +32,6 @@
  * @package LMS 
  */
 class LMSDB_driver_mysql extends LMSDB_common implements LMSDBDriverInterface {
-    
-	public $_dbtype = 'mysql';
 
         /**
          * Constructs driver.
@@ -54,6 +52,8 @@ class LMSDB_driver_mysql extends LMSDB_common implements LMSDBDriverInterface {
 			$this->_loaded = FALSE;
 	                return;
 	        }
+                
+                $this->_dbtype = LMSDB::MYSQL;
 
 	    //$this->_version .= ' ('.preg_replace('/^.Revision: ([0-9.]+).*/','\1',$this->_revision).'/'.preg_replace('/^.Revision: ([0-9.]+).*/','\1','$Revision$').')';
 		$this->_version .= '';

@@ -31,9 +31,8 @@
  * 
  * @package LMS 
  */
-class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface {
-    
-	public $_dbtype = 'mysqli';
+class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
+{
 
         /**
          * Constructs driver.
@@ -55,6 +54,8 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface {
 		        return;
                 }
 
+                $this->_dbtype = LMSDB::MYSQLI;
+                
 		//$this->_version .= ' ('.preg_replace('/^.Revision: ([0-9.]+).*/','\1',$this->_revision).'/'.preg_replace('/^.Revision: ([0-9.]+).*/','\1','$Revision$').'-mysqli)';
 		$this->_version .= '';
 		$this->Connect($dbhost, $dbuser, $dbpasswd, $dbname);
