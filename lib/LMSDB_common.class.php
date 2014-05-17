@@ -36,7 +36,7 @@ abstract class LMSDB_common implements LMSDBInterface
 {
     
 	protected $_version = '1.11-git';
-	public $_revision = '$Revision$';
+	protected $_revision = '$Revision$';
 
 	// Driver powinien nadpisać tą zmienną wartością TRUE, żeby
 	// funkcja inicjująca baze danych wiedziała że driver się poprawnie
@@ -487,6 +487,17 @@ abstract class LMSDB_common implements LMSDBInterface
         public function GetVersion() {
             
             return $this->_version;
+            
+        }
+        
+        /**
+         * Returns revision.
+         * 
+         * @return string
+         */
+        public function GetRevision() {
+            
+            return $this->_revision;
             
         }
 
