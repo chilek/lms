@@ -68,6 +68,9 @@ define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir']);
 
 // include required files
 
+// Load autloader
+require_once(LIB_DIR.'/autoloader.php');
+
 require_once(USERPANEL_LIB_DIR.'/checkdirs.php');
 require_once(LIB_DIR.'/config.php');
 
@@ -78,11 +81,20 @@ $_DBUSER = $CONFIG['database']['user'];
 $_DBPASS = $CONFIG['database']['password'];
 $_DBNAME = $CONFIG['database']['database'];
 
-require_once(LIB_DIR.'/LMSDB.php');
+$DB = null;
 
-$DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
+try {
 
-if (!$DB) die;
+    $DB = LMSDB::getDB($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
+
+} catch (Exception $ex) {
+    
+    trigger_error($ex->getMessage(), E_USER_WARNING);
+    
+    // can't working without database
+    die("Fatal error: cannot connect to database!\n");
+    
+}
 
 // Initialize templates engine (must be before locale settings)
 
