@@ -33,8 +33,9 @@
  * @package LMS 
  */
 abstract class LMSDB_common implements LMSDBInterface
-{    
-	public $_version = '1.11-git';
+{
+    
+	protected $_version = '1.11-git';
 	public $_revision = '$Revision$';
 
 	// Driver powinien nadpisać tą zmienną wartością TRUE, żeby
@@ -477,6 +478,17 @@ abstract class LMSDB_common implements LMSDBInterface
 		else
 			return $input;
 	}
+        
+        /**
+         * Returns version.
+         * 
+         * @return string
+         */
+        public function GetVersion() {
+            
+            return $this->_version;
+            
+        }
 
 }
 

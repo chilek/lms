@@ -179,7 +179,7 @@ $SMARTY->debugging = check_conf('phpui.smarty_debug');
 require_once(USERPANEL_LIB_DIR.'/smarty_addons.php');
 
 $layout['upv'] = $USERPANEL->_version.' ('.$USERPANEL->_revision.'/'.$SESSION->_revision.')';
-$layout['lmsdbv'] = $DB->_version;
+$layout['lmsdbv'] = $DB->GetVersion();
 $layout['lmsv'] = $LMS->_version;
 $layout['smarty_version'] = SMARTY_VERSION;
 $layout['hostname'] = hostname();

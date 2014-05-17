@@ -192,7 +192,7 @@ $SMARTY->debugging = check_conf('phpui.smarty_debug');
 
 $layout['logname'] = $AUTH->logname;
 $layout['logid'] = $AUTH->id;
-$layout['lmsdbv'] = $DB->_version;
+$layout['lmsdbv'] = $DB->GetVersion();
 $layout['smarty_version'] = SMARTY_VERSION;
 $layout['hostname'] = hostname();
 $layout['lmsv'] = '1.11-git';

@@ -51,7 +51,7 @@ $SMARTY->assign('_dochref', is_dir('doc/html/'.$LMS->ui_lang) ? 'doc/html/'.$LMS
 $SMARTY->assign('_config',$CONFIG);
 
 $layout['logname'] = $AUTH->logname;
-$layout['lmsdbv'] = $DB->_version;
+$layout['lmsdbv'] = $DB->GetVersion();
 $layout['smarty_version'] = $SMARTY->_version;
 $layout['hostname'] = hostname();
 $layout['lmsv'] = '1.11-git';
