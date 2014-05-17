@@ -44,7 +44,7 @@ abstract class LMSDB_common implements LMSDBInterface
 	// Wewnętrzne zmienne bazy danych, tj, resource, link, itp.
 
 	protected $_dbtype = 'NONE';
-	public $_dblink = NULL;
+	protected $_dblink = NULL;
 	public $_dbhost = NULL;
 	public $_dbuser = NULL;
 	public $_dbname = NULL;
@@ -519,6 +519,17 @@ abstract class LMSDB_common implements LMSDBInterface
         public function GetDbType() {
             
             return $this->_dbtype;
+            
+        }
+        
+        /**
+         * Returns database link.
+         * 
+         * @return resource|boolean|null
+         */
+        public function GetDbLink() {
+            
+            return $this->_dblink;
             
         }
         

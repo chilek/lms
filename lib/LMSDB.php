@@ -77,7 +77,7 @@ class LMSDB {
             throw new Exception('PHP Driver for "' . $dbtype . '" database doesn\'t seems to be loaded.');
         }
 
-        if (!$db->_dblink) {
+        if (!$db->GetDbLink()) {
             throw new Exception('Unable to connect to database!');
         }
 
