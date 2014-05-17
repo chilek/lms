@@ -57,6 +57,15 @@ abstract class LMSDB_common implements LMSDBInterface
 	public $errors = array();
 	public $debug = FALSE;
 
+        /**
+         * Connects to database.
+         * 
+         * @param string $dbhost
+         * @param string $dbuser
+         * @param string $dbpasswd
+         * @param string $dbname
+         * @return boolean
+         */
 	public function Connect($dbhost,$dbuser,$dbpasswd,$dbname)
 	{
 		if(method_exists($this, '_driver_shutdown'))
@@ -77,12 +86,24 @@ abstract class LMSDB_common implements LMSDBInterface
 		}
 	}
 
+        /**
+         * Disconnects from database.
+         * 
+         * @return bool
+         */
 	public function Destroy()
 	{
 		return $this->_driver_disconnect();
 	}
 
-	public function Execute($query, $inputarray = NULL)
+        /**
+         * Executes sql query.
+         * 
+         * @param string $query
+         * @param array $inputarray
+         * @return int|false
+         */
+	public function Execute($query, array $inputarray = NULL)
 	{
 	    if ($this->debug)
     	    $start = microtime(true);
@@ -102,8 +123,14 @@ abstract class LMSDB_common implements LMSDBInterface
 		return $this->_driver_affected_rows();
 	}
 
-	//Execute multiple queries delimited by semicollon
-	public function MultiExecute($query, $inputarray = NULL)
+	/**
+         * Executes multiple queries delimited by semicollon.
+         * 
+         * @param string $query
+         * @param array $inputarray
+         * @return int|false
+         */
+	public function MultiExecute($query, array $inputarray = NULL)
 	{
 	    if ($this->debug)
     	    $start = microtime(true);
@@ -123,7 +150,14 @@ abstract class LMSDB_common implements LMSDBInterface
 		return $this->_driver_affected_rows();
 	}
 
-	public function GetAll($query = NULL, $inputarray = NULL)
+        /**
+         * Executes query and returns all rows.
+         * 
+         * @param string $query
+         * @param array $inputarray
+         * @return array
+         */
+	public function GetAll($query = NULL, array $inputarray = NULL)
 	{
 		if($query)
 			$this->Execute($query, $inputarray);
@@ -136,7 +170,16 @@ abstract class LMSDB_common implements LMSDBInterface
 		return $result;
 	}
 
-	public function GetAllByKey($query = NULL, $key = NULL, $inputarray = NULL)
+        /**
+         * Executes query and returns results as assciative array where key is 
+         * row value for given key.
+         * 
+         * @param string $query
+         * @param string $key
+         * @param array $inputarray
+         * @return array
+         */
+	public function GetAllByKey($query = NULL, $key = NULL, array $inputarray = NULL)
 	{
 		if($query)
 			$this->Execute($query, $inputarray);
@@ -149,7 +192,14 @@ abstract class LMSDB_common implements LMSDBInterface
 		return $result;
 	}
 
-	public function GetRow($query = NULL, $inputarray = NULL)
+        /**
+         * Executes query and return single row.
+         * 
+         * @param string $query
+         * @param array $inputarray
+         * @return array
+         */
+	public function GetRow($query = NULL, array $inputarray = NULL)
 	{
 		if($query)
 			$this->Execute($query, $inputarray);
@@ -157,7 +207,14 @@ abstract class LMSDB_common implements LMSDBInterface
 		return $this->_driver_fetchrow_assoc();
 	}
 
-	public function GetCol($query = NULL, $inputarray = NULL)
+        /**
+         * Executes query and returns single, first column.
+         * 
+         * @param string $query
+         * @param array $inputarray
+         * @return array
+         */
+	public function GetCol($query = NULL, array $inputarray = NULL)
 	{
 		if($query)
 			$this->Execute($query, $inputarray);
@@ -170,7 +227,14 @@ abstract class LMSDB_common implements LMSDBInterface
 		return $result;
 	}
 
-	public function GetOne($query = NULL, $inputarray = NULL)
+        /**
+         * Executes query and returns single value.
+         * 
+         * @param srting $query
+         * @param array $inputarray
+         * @return string|int|null
+         */
+	public function GetOne($query = NULL, array $inputarray = NULL)
 	{
 		if($query)
 			$this->Execute($query, $inputarray);
@@ -182,9 +246,17 @@ abstract class LMSDB_common implements LMSDBInterface
 		return $result;
 	}
 
-	// with Exec() & FetchRow() we can do big results looping
-	// in less memory consumptive way than using GetAll() & foreach()
-	public function Exec($query, $inputarray = NULL)
+        /**
+         * Executes query in more optimized way.
+         * 
+         * With Exec() & FetchRow() we can do big results looping in less memory
+         * consumptive way than using GetAll() & foreach().
+         * 
+         * @param string $query
+         * @param array $inputarray
+         * @return null
+         */
+	public function Exec($query, array $inputarray = NULL)
 	{
 	    if ($this->debug)
     	    $start = microtime(true);
@@ -207,79 +279,166 @@ abstract class LMSDB_common implements LMSDBInterface
 			return NULL;
 	}
 
+        /**
+         * Fetches single row from result set. Returns it as associative array.
+         * 
+         * @param type $result
+         * @return array
+         */
 	public function FetchRow($result)
 	{
 		return $this->_driver_fetchrow_assoc($result);
 	}
 
+        /**
+         * Creates concat statement for query.
+         * 
+         * @return string
+         */
 	public function Concat()
 	{
 		return $this->_driver_concat(func_get_args());
 	}
 
+        /**
+         * Returns name of sql function used to get time.
+         * 
+         * @return string
+         */
 	public function Now()
 	{
 		return $this->_driver_now();
 	}
 
+        /**
+         * Returns list of tables in database.
+         * 
+         * @return array
+         */
 	public function ListTables()
 	{
 		return $this->_driver_listtables();
 	}
 
+        /**
+         * Begins transaction.
+         * 
+         * @return int|false
+         */
 	public function BeginTrans()
 	{
 		return $this->_driver_begintrans();
 	}
 
+        /**
+         * Commits transaction.
+         * 
+         * @return int|false
+         */
 	public function CommitTrans()
 	{
 		return $this->_driver_committrans();
 	}
 
+        /**
+         * Rollbacks transaction.
+         * 
+         * @return int|false
+         */
 	public function RollbackTrans()
 	{
 		return $this->_driver_rollbacktrans();
 	}
 
+        /**
+         * Locks table.
+         * 
+         * @param string $table
+         * @param string $locktype
+         * @return int|false
+         */
 	public function LockTables($table, $locktype=null)
 	{
 		return $this->_driver_locktables($table, $locktype);
 	}
 
+        /**
+         * Unlocks table.
+         * 
+         * @return int|false
+         */
 	public function UnLockTables()
 	{
 		return $this->_driver_unlocktables();
 	}
 
+        /**
+         * Returns database engine info.
+         * 
+         * @return string
+         */
 	public function GetDBVersion()
 	{
 		return $this->_driver_dbversion();
 	}
 
+        /**
+         * Sets connection encoding.
+         * 
+         * @param string $name
+         * @return int|false
+         */
 	public function SetEncoding($name)
 	{
 		return $this->_driver_setencoding($name);
 	}
 
+        /**
+         * Returns id of last inserted element in table.
+         * 
+         * @param string $table
+         * @return int
+         */
 	public function GetLastInsertID($table = NULL)
 	{
 		return $this->_driver_lastinsertid($table);
 	}
 
+        /**
+         * Escapes string for query.
+         * 
+         * @param string $input
+         * @return string
+         */
 	public function Escape($input)
 	{
 		return $this->_quote_value($input);
 	}
         
+        /**
+         * Creates group concat string for query.
+         * 
+         * @param string $field
+         * @param string $separator
+         * @return string
+         */
 	public function GroupConcat($field, $separator = ',')
 	{
 		return $this->_driver_groupconcat($field, $separator);
 	}
 
-	protected function _query_parser($query, $inputarray = NULL)
+        /**
+         * Prepares query before execution.
+         * 
+         * Replaces metadata and placeholders.
+         * 
+         * @param string $query
+         * @param array $inputarray
+         * @return string
+         */
+	protected function _query_parser($query, array $inputarray = NULL)
 	{
-		// najpierw sparsujmy wszystkie specjalne meta śmieci.
+		// replace metadata
 		$query = preg_replace('/\?NOW\?/i',$this->_driver_now(),$query);
 		$query = preg_replace('/\?LIKE\?/i',$this->_driver_like(),$query);
 
@@ -300,11 +459,17 @@ abstract class LMSDB_common implements LMSDBInterface
 		return $query;
 	}
 
+        /**
+         * Quotes value.
+         * 
+         * @param string|null $input
+         * @return string
+         */
 	protected function _quote_value($input)
 	{
-		// jeżeli baza danych wymaga innego eskejpowania niż to, driver
-		// powinien nadpisać tą funkcję
-
+		// override this method in driver class if it requires other 
+                // escaping technique
+            
 		if($input === NULL)
 			return 'NULL';
 		elseif(is_string($input))
