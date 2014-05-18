@@ -24,6 +24,9 @@
  *  $Id$
  */
 
+// Load autloader
+require_once(LIB_DIR.'/autoloader.php');
+
 $_MAILDBTYPE = $CONFIG['database']['mail_db_type'];
 $_MAILDBHOST = $CONFIG['database']['mail_db_host'];
 $_MAILDBUSER = $CONFIG['database']['mail_db_user'];
@@ -31,7 +34,21 @@ $_MAILDBPASS = $CONFIG['database']['mail_db_password'];
 $_MAILDBNAME = $CONFIG['database']['mail_db_database'];
 
 // Initialize mail database
-$DB_MAIL = DBInit($_MAILDBTYPE, $_MAILDBHOST, $_MAILDBUSER, $_MAILDBPASS, $_MAILDBNAME);
+
+$DB_MAIL = null;
+
+try {
+
+    $DB_MAIL = LMSDB::getDB($_MAILDBTYPE, $_MAILDBHOST, $_MAILDBUSER, $_MAILDBPASS, $_MAILDBNAME);
+
+} catch (Exception $ex) {
+    
+    trigger_error($ex->getMessage(), E_USER_WARNING);
+    
+    // can't working without database
+    die("Fatal error: cannot connect to database!\n");
+    
+}
 
 
 if (defined('USERPANEL_SETUPMODE'))

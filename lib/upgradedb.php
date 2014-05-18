@@ -66,7 +66,7 @@ if($dbversion = $DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype = ?',arra
 			foreach($pendingupgrades as $upgrade)
 			{
 				include(LIB_DIR.'/upgradedb/'.$_dbtype.'.'.$upgrade.'.php');
-				if(!sizeof($DB->errors))
+				if(!sizeof($DB->GetErrors()))
 					$lastupgrade = $upgrade;
 				else
 					break;
@@ -74,17 +74,17 @@ if($dbversion = $DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype = ?',arra
 		}
 	}
 } else {
-    $err_tmp = $DB->errors; // save current errors
-    $DB->errors = array();
+    $err_tmp = $DB->GetErrors(); // save current errors
+    $DB->SetErrors();
 
     $dbinfo = $DB->GetOne('SELECT COUNT(*) FROM information_schema.tables WHERE table_name = ?', array('dbinfo'));                                            // check if dbinfo table exists (call by name)
     $tables = $DB->GetOne('SELECT COUNT(*) FROM information_schema.tables WHERE table_schema NOT IN (?, ?)', array('information_schema', 'pg_catalog'));      // check if any tables exists in this database
-    if ($dbinfo == 0 && $tables == 0 && count($DB->errors) == 0) {  // if there are no tables we can install lms database
+    if ($dbinfo == 0 && $tables == 0 && count($DB->GetErrors()) == 0) {  // if there are no tables we can install lms database
         // detect database type and select schema dump file to load
         $schema = '';
-        if ($DB->_dbtype == 'postgres') {
+        if ($DB->GetDbType() == LMSDB::POSTGRESQL) {
             $schema = 'lms.pgsql';
-        } elseif ($DB->_dbtype == 'mysql' || $DB->_dbtype == 'mysqli') {
+        } elseif ($DB->GetDbType() == LMSDB::MYSQL || $DB->GetDbType() == LMSDB::MYSQLI) {
             $schema = 'lms.mysql';
         } else
             die ('Could not determine database type!');
@@ -95,7 +95,7 @@ if($dbversion = $DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype = ?',arra
         if (! $DB->MultiExecute($sql))    // execute
             die ('Could not load database schema!');
     } else {
-        $DB->errors = array_merge($err_tmp, $DB->errors); // database might be installed so don't miss any error
+        $DB->SetErrors(array_merge($err_tmp, $DB->GetErrors())); // database might be installed so don't miss any error
     }
 }
 

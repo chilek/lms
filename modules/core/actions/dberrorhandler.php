@@ -1,5 +1,5 @@
 <?php
 
-$layout['dberrors'] = &$DB->errors;
+$layout['dberrors'] = &$DB->GetErrors();
 
 ?>

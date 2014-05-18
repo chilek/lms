@@ -64,8 +64,10 @@ define('MODULES_DIR', $CONFIG['directories']['modules_dir']);
 define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir']);
 define('SMARTY_TEMPLATES_DIR', $CONFIG['directories']['smarty_templates_dir']);
 
-// Do some checks and load config defaults
+// Load autloader
+require_once(LIB_DIR.'/autoloader.php');
 
+// Do some checks and load config defaults
 require_once(LIB_DIR.'/checkdirs.php');
 require_once(LIB_DIR.'/config.php');
 
@@ -78,14 +80,19 @@ $_DBPASS = $CONFIG['database']['password'];
 $_DBNAME = $CONFIG['database']['database'];
 $_DBDEBUG = (isset($CONFIG['database']['debug']) ? chkconfig($CONFIG['database']['debug']) : FALSE);
 
-require(LIB_DIR.'/LMSDB.php');
+$DB = null;
 
-$DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME, $_DBDEBUG);
+try {
 
-if(!$DB)
-{
-	// can't working without database
-	die();
+    $DB = LMSDB::getDB($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME, $_DBDEBUG);
+
+} catch (Exception $ex) {
+    
+    trigger_error($ex->getMessage(), E_USER_WARNING);
+    
+    // can't working without database
+    die("Fatal error: cannot connect to database!\n");
+    
 }
 
 // Call any of upgrade process before anything else
@@ -185,13 +192,13 @@ $SMARTY->debugging = check_conf('phpui.smarty_debug');
 
 $layout['logname'] = $AUTH->logname;
 $layout['logid'] = $AUTH->id;
-$layout['lmsdbv'] = $DB->_version;
+$layout['lmsdbv'] = $DB->GetVersion();
 $layout['smarty_version'] = SMARTY_VERSION;
 $layout['hostname'] = hostname();
 $layout['lmsv'] = '1.11-git';
 //$layout['lmsvr'] = $LMS->_revision.'/'.$AUTH->_revision;
 $layout['lmsvr'] = '';
-$layout['dberrors'] =& $DB->errors;
+$layout['dberrors'] =& $DB->GetErrors();
 $layout['dbdebug'] = $_DBDEBUG;
 $layout['popup'] = isset($_GET['popup']) ? true : false;
 

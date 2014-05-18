@@ -24,195 +24,382 @@
  *  $Id$
  */
 
-/*
- * LMSDB pseudo-driver for MySQL database using mysqli extension
+/**
+ * LMSDB_driver_mysqli
+ * 
+ * MySQLi engine driver wrapper for LMS.
+ * 
+ * @package LMS 
  */
-
-class LMSDB_driver_mysqli extends LMSDB_common
+class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
 {
-	public $_loaded = TRUE;
-	public $_dbtype = 'mysqli';
 
-	public function __construct($dbhost, $dbuser, $dbpasswd, $dbname)
-	{
-		if(!extension_loaded('mysqli'))
-		{
-		        trigger_error('MySQLi extension not loaded!', E_USER_WARNING);
-		        $this->_loaded = FALSE;
-		        return;
-                }
-
-		//$this->_version .= ' ('.preg_replace('/^.Revision: ([0-9.]+).*/','\1',$this->_revision).'/'.preg_replace('/^.Revision: ([0-9.]+).*/','\1','$Revision$').'-mysqli)';
-		$this->_version .= '';
-		$this->Connect($dbhost, $dbuser, $dbpasswd, $dbname);
-	}
-
-	public function _driver_dbversion()
-	{
-		return @mysqli_get_server_info($this->_dblink);
-	}
-
-	public function _driver_connect($dbhost, $dbuser, $dbpasswd, $dbname)
-	{
-		if($this->_dblink = @mysqli_connect($dbhost,$dbuser,$dbpasswd,$dbname))
-		{
-			$this->_dbhost = $dbhost;
-			$this->_dbuser = $dbuser;
-			$this->_dbname = $dbname;
-		}
-		else
-		{
-			$this->_error = TRUE;
-		}
-		return $this->_dblink;
-	}
-
-	public function _driver_shutdown()
-	{
-		$this->_loaded = FALSE;
-		@mysqli_close($this->_dblink); // apparently, mysqli_close() is automagicly called after end of the script...
-	}
-
-	public function _driver_geterror()
-	{
-		if($this->_dblink)
-			return mysqli_error($this->_dblink);
-		elseif($this->_query)
-			return 'We\'re not connected!';
-		else
-			return mysqli_connect_error();
-	}
-
-	public function _driver_disconnect()
-	{
-		return @mysqli_close($this->_dblink);
-	}
-	
-	public function _driver_execute($query)
-	{
-		$this->_query = $query;
-
-		if($this->_result = @mysqli_query($this->_dblink, $query))
-			$this->_error = FALSE;
-		else
-			$this->_error = TRUE;
-		return $this->_result;
-	}
-
-        public function _driver_multi_execute($query)
-        {
-                $this->_query = $query;
-                $total_result = FALSE;
-                $db_errors = array();
-
-                $queries = preg_split("/;+(?=([^'|^\\\']*['|\\\'][^'|^\\\']*['|\\\'])*[^'|^\\\']*[^'|^\\\']$)/", $query);
-                foreach ($queries as $q)
-                        if (strlen(trim($q)) > 0) {
-                                $this->_driver_execute($q);           // can not use mysqli_multi_query because it returns 'error 2014 - Commands out of sync; you can't run this command now'
-                                if ($this->_error == TRUE) {
-                                    $total_result = TRUE;
-                                    $db_errors = array_merge($db_errors, $this->errors);
-                                }
-                        }
-                $this->_error = $total_result;
-                $this->errors = $db_errors;
-                return $total_result;
+    /**
+     * Constructs driver.
+     * 
+     * Connects to database.
+     * 
+     * @param string $dbhost
+     * @param string $dbuser
+     * @param string $dbpasswd
+     * @param string $dbname
+     * @return void
+     */
+    public function __construct($dbhost, $dbuser, $dbpasswd, $dbname)
+    {
+        if (!extension_loaded('mysqli')) {
+            trigger_error('MySQLi extension not loaded!', E_USER_WARNING);
+            $this->_loaded = FALSE;
+            return;
         }
 
-	public function _driver_fetchrow_assoc($result = NULL)
-	{
-		if(! $this->_error)
-			return mysqli_fetch_array($result ? $result : $this->_result, MYSQLI_ASSOC);
-		else
-			return FALSE;
-	}
+        $this->_dbtype = LMSDB::MYSQLI;
 
-	public function _driver_fetchrow_num()
-	{
-		if(! $this->_error)
-			return mysqli_fetch_array($this->_result, MYSQLI_NUM);
-		else
-			return FALSE;
-	}
+        //$this->_version .= ' ('.preg_replace('/^.Revision: ([0-9.]+).*/','\1',$this->_revision).'/'.preg_replace('/^.Revision: ([0-9.]+).*/','\1','$Revision$').'-mysqli)';
+        $this->_version .= '';
+        $this->Connect($dbhost, $dbuser, $dbpasswd, $dbname);
 
-	public function _driver_affected_rows()
-	{
-		if(! $this->_error)
-			return mysqli_affected_rows($this->_dblink);
-		else
-			return FALSE;
-	}
+    }
 
-	public function _driver_num_rows()
-	{
-		if(! $this->_error)
-			return mysqli_num_rows($this->_result);
-		else
-			return FALSE;
-	}
-	
-	public function _driver_now()
-	{
-		return 'UNIX_TIMESTAMP()';
-	}
+    /**
+     * Returns database engine info.
+     * 
+     * @return string
+     */
+    public function _driver_dbversion()
+    {
+        return @mysqli_get_server_info($this->_dblink);
 
-	public function _driver_like()
-	{
-		return 'LIKE';
-	}
+    }
 
-	public function _driver_concat($input)
-	{
-		$return = implode(', ', $input);
-		return 'CONCAT('.$return.')';
-	}
+    /**
+     * Connects to database.
+     * 
+     * @param string $dbhost
+     * @param string $dbuser
+     * @param string $dbpasswd
+     * @param string $dbname
+     * @return void
+     */
+    public function _driver_connect($dbhost, $dbuser, $dbpasswd, $dbname)
+    {
+        $this->_dblink = @mysqli_connect($dbhost, $dbuser, $dbpasswd, $dbname);
+        if ($this->_dblink) {
+            $this->_dbhost = $dbhost;
+            $this->_dbuser = $dbuser;
+            $this->_dbname = $dbname;
+            $this->_loaded = TRUE;
+        } else {
+            $this->_error = TRUE;
+        }
+        return $this->_dblink;
 
-	public function _driver_listtables()
-	{
-		return $this->GetCol('SELECT table_name FROM information_schema.tables 
-				WHERE table_type = ? AND table_schema = ?',
-				array('BASE TABLE', $this->_dbname));
-	}
+    }
 
-	public function _driver_begintrans()
-	{
-		return $this->Execute('BEGIN');
-	}
+    /**
+     * Closes driver.
+     */
+    public function _driver_shutdown()
+    {
+        $this->_loaded = FALSE;
+        @mysqli_close($this->_dblink); // apparently, mysqli_close() is automagicly called after end of the script...
 
-	public function _driver_committrans()
-	{
-		return $this->Execute('COMMIT');
-	}
+    }
 
-	public function _driver_rollbacktrans()
-        {
-	        return $this->Execute('ROLLBACK');
-	}
+    /**
+     * Returns errors.
+     * 
+     * @return string
+     */
+    public function _driver_geterror()
+    {
+        if ($this->_dblink) {
+            return mysqli_error($this->_dblink);
+        } elseif ($this->_query) {
+            return 'We\'re not connected!';
+        } else {
+            return mysqli_connect_error();
+        }
 
-	public function _driver_locktables($table, $locktype=null)
-	{
-		$locktype = $locktype ? strtoupper($locktype) : 'WRITE';
+    }
 
-		if(is_array($table))
-			$this->Execute('LOCK TABLES '.implode(' '.$locktype.', ', $table).' '.$locktype);
-		else
-			$this->Execute('LOCK TABLES '.$table.' '.$locktype);
-	}
+    /**
+     * Disconnects driver from database.
+     * 
+     * @return bool
+     */
+    public function _driver_disconnect()
+    {
+        return @mysqli_close($this->_dblink);
 
-	public function _driver_unlocktables()
-	{
-		$this->Execute('UNLOCK TABLES');
-	}
+    }
 
-	public function _driver_lastinsertid($table = NULL)
-        {
-	        return $this->GetOne('SELECT LAST_INSERT_ID()');
-	}
+    /**
+     * Selects database.
+     * 
+     * @param string $dbname
+     * @return bool
+     */
+    public function _driver_selectdb($dbname)
+    {
+        $result = mysqli_select_db($dbname, $this->_dblink);
+        if ($result) {
+            $this->_dbname = $dbname;
+        }
+        return $result;
 
-	public function _driver_groupconcat($field, $separator = ',')
-	{
-		return 'GROUP_CONCAT('.$field.' SEPARATOR \''.$separator.'\')';
-	}
+    }
+
+    /**
+     * Executes query.
+     * 
+     * @param string $query
+     * @return resource
+     */
+    public function _driver_execute($query)
+    {
+        $this->_query = $query;
+
+        $this->_result = @mysqli_query($this->_dblink, $query);
+        if ($this->_result) {
+            $this->_error = FALSE;
+        } else {
+            $this->_error = TRUE;
+        }
+        return $this->_result;
+
+    }
+
+    /**
+     * Executes multiple queries at once.
+     * 
+     * @param string $query
+     * @return boolean
+     */
+    public function _driver_multi_execute($query)
+    {
+        $this->_query = $query;
+        $total_result = FALSE;
+        $db_errors = array();
+
+        $queries = preg_split("/;+(?=([^'|^\\\']*['|\\\'][^'|^\\\']*['|\\\'])*[^'|^\\\']*[^'|^\\\']$)/", $query);
+        foreach ($queries as $q) {
+            if (strlen(trim($q)) > 0) {
+                $this->_driver_execute($q);           // can not use mysqli_multi_query because it returns 'error 2014 - Commands out of sync; you can't run this command now'
+                if ($this->_error == TRUE) {
+                    $total_result = TRUE;
+                    $db_errors = array_merge($db_errors, $this->errors);
+                }
+            }
+        }
+        $this->_error = $total_result;
+        $this->errors = $db_errors;
+        return $total_result;
+
+    }
+
+    /**
+     * Returns single row from resource as associative array.
+     * 
+     * @param resource $result
+     * @return array|boolean
+     */
+    public function _driver_fetchrow_assoc($result = NULL)
+    {
+        if (!$this->_error) {
+            return mysqli_fetch_array($result ? $result : $this->_result, MYSQLI_ASSOC);
+        } else {
+            return FALSE;
+        }
+
+    }
+
+    /**
+     * Returns single row from resource as array.
+     * 
+     * @return array|boolean
+     */
+    public function _driver_fetchrow_num()
+    {
+        if (!$this->_error) {
+            return mysqli_fetch_array($this->_result, MYSQLI_NUM);
+        } else {
+            return FALSE;
+        }
+
+    }
+
+    /**
+     * Returns number of affected rows or false on query failure.
+     * 
+     * @return int|boolean
+     */
+    public function _driver_affected_rows()
+    {
+        if (!$this->_error) {
+            return mysqli_affected_rows($this->_dblink);
+        } else {
+            return FALSE;
+        }
+
+    }
+
+    /**
+     * Returns number of rows in result reqource or false on failure.
+     * 
+     * @return int|boolean
+     */
+    public function _driver_num_rows()
+    {
+        if (!$this->_error) {
+            return mysqli_num_rows($this->_result);
+        } else {
+            return FALSE;
+        }
+
+    }
+
+    /**
+     * Returns name of sql function used to get time.
+     * 
+     * @return string
+     */
+    public function _driver_now()
+    {
+        return 'UNIX_TIMESTAMP()';
+
+    }
+
+    /**
+     * Returns name of sql function used for "like" statement.
+     * 
+     * @return string
+     */
+    public function _driver_like()
+    {
+        return 'LIKE';
+
+    }
+
+    /**
+     * Returns concat sql part.
+     * 
+     * @param string $input
+     * @return string
+     */
+    public function _driver_concat($input)
+    {
+        $return = implode(', ', $input);
+        return 'CONCAT(' . $return . ')';
+
+    }
+
+    /**
+     * Returns list of tables in database.
+     * 
+     * @return array
+     */
+    public function _driver_listtables()
+    {
+        return $this->GetCol('SELECT table_name FROM information_schema.tables 
+				WHERE table_type = ? AND table_schema = ?', array('BASE TABLE', $this->_dbname));
+
+    }
+
+    /**
+     * Begins transaction.
+     * 
+     * @return int|false
+     */
+    public function _driver_begintrans()
+    {
+        return $this->Execute('BEGIN');
+
+    }
+
+    /**
+     * Commits transaction.
+     * 
+     * @return int|false
+     */
+    public function _driver_committrans()
+    {
+        return $this->Execute('COMMIT');
+
+    }
+
+    /**
+     * Rollbacks transactions.
+     * 
+     * @return int|false
+     */
+    public function _driver_rollbacktrans()
+    {
+        return $this->Execute('ROLLBACK');
+
+    }
+
+    /**
+     * Locks table.
+     * 
+     * @param string $table
+     * @param string $locktype
+     */
+    public function _driver_locktables($table, $locktype = null)
+    {
+        $locktype = $locktype ? strtoupper($locktype) : 'WRITE';
+
+        if (is_array($table)) {
+            $this->Execute('LOCK TABLES ' . implode(' ' . $locktype . ', ', $table) . ' ' . $locktype);
+        } else {
+            $this->Execute('LOCK TABLES ' . $table . ' ' . $locktype);
+        }
+
+    }
+
+    /**
+     * Unlocks tables.
+     */
+    public function _driver_unlocktables()
+    {
+        $this->Execute('UNLOCK TABLES');
+
+    }
+
+    /**
+     * Returns last inserted element id.
+     * 
+     * @param string $table
+     * @return int
+     */
+    public function _driver_lastinsertid($table = NULL)
+    {
+        return $this->GetOne('SELECT LAST_INSERT_ID()');
+
+    }
+
+    /**
+     * Creates group concat sql part.
+     * 
+     * @param string $field
+     * @param string $separator
+     * @return string
+     */
+    public function _driver_groupconcat($field, $separator = ',')
+    {
+        return 'GROUP_CONCAT(' . $field . ' SEPARATOR \'' . $separator . '\')';
+
+    }
+
+    /**
+     * Sets connection encoding.
+     * 
+     * @param string $name Connection name
+     */
+    public function _driver_setencoding($name)
+    {
+        $this->Execute('SET NAMES ?', array($name));
+
+    }
+
 }
-
-?>

@@ -24,43 +24,68 @@
  *  $Id$
  */
 
-/*
- * Simple database abstraction layer for LMS. Mainly inspirated by ADOdb,
- * but not so much powerfull. Hope that this bit of code will work stable.
- *
- * This file include required files and do some nasty things ;>
+/**
+ * LMSDB
+ * 
+ * LMS database provider. Factory pattern.
+ * 
+ * @package LMS
  */
+class LMSDB {
 
-define('LMSDB_DIR', dirname(__FILE__));
+    const MYSQL = 'mysql';
+    const MYSQLI = 'mysqli';
+    const POSTGRESQL = 'postgres';
 
-require_once(LMSDB_DIR.'/LMSDB_common.class.php');
+    /**
+     * Returns databse object.
+     * 
+     * Tries to connect to specified database and returns connection handler 
+     * object. If connection cannot be opened or databbase type is unknown 
+     * throws exception.
+     * 
+     * @param string $dbtype Database engine name
+     * @param string $dbhost Database host
+     * @param string $dbuser Database user
+     * @param string $dbpasswd Database user password
+     * @param string $dbname Database name
+     * @param boolean $debug Debug flag
+     * @return \LMSDBInterface
+     * @throws Exception
+     */
+    public static function getDB($dbtype, $dbhost, $dbuser, $dbpasswd, $dbname, $debug = false) {
 
-function DBInit($dbtype, $dbhost, $dbuser, $dbpasswd, $dbname, $debug = false)
-{
-    $dbtype = strtolower($dbtype);
+        $dbtype = strtolower($dbtype);
 
-	if (!file_exists(LMSDB_DIR."/LMSDB_driver_$dbtype.class.php") )
-		trigger_error('Unable to load driver for "'.$dbtype.'" database!', E_USER_WARNING);
-	else {
-		require_once(LMSDB_DIR."/LMSDB_driver_$dbtype.class.php");
-		$drvname = "LMSDB_driver_$dbtype";
-		$DB = new $drvname($dbhost, $dbuser, $dbpasswd, $dbname);
+        $db = null;
 
-		if (!$DB->_loaded)
-			trigger_error('PHP Driver for "'.$dbtype.'" database doesn\'t seems to be loaded.', E_USER_WARNING);
-		else if (!$DB->_dblink)
-			trigger_error('Unable to connect to database!', E_USER_WARNING);
-		else {
-            $DB->debug = $debug;
+        switch ($dbtype) {
+            case self::MYSQL:
+                $db = new LMSDB_driver_mysql($dbhost, $dbuser, $dbpasswd, $dbname);
+                break;
+            case self::MYSQLI:
+                $db = new LMSDB_driver_mysqli($dbhost, $dbuser, $dbpasswd, $dbname);
+                break;
+            case self::POSTGRESQL:
+                $db = new LMSDB_driver_postgres($dbhost, $dbuser, $dbpasswd, $dbname);
+                break;
+            default:
+                throw new Exception('Unable to load driver for "' . $dbtype . '" database!');
+        }
 
-            // set client encoding
-            $DB->SetEncoding('UTF8');
+        if (!$db->IsLoaded()) {
+            throw new Exception('PHP Driver for "' . $dbtype . '" database doesn\'t seems to be loaded.');
+        }
 
-			return $DB;
-	    }
+        if (!$db->GetDbLink()) {
+            throw new Exception('Unable to connect to database!');
+        }
+
+        $db->SetDebug($debug);
+
+        $db->SetEncoding('UTF8');
+
+        return $db;
     }
 
-	return FALSE;
 }
-
-?>
