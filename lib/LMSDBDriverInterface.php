@@ -31,54 +31,54 @@
  * 
  * @package LMS
  */
-interface LMSDBDriverInterface extends LMSDBInterface {
-    
+interface LMSDBDriverInterface extends LMSDBInterface
+{
+
     public function _driver_dbversion();
-    
+
     public function _driver_connect($dbhost, $dbuser, $dbpasswd, $dbname);
-    
+
     public function _driver_shutdown();
-    
+
     public function _driver_geterror();
-    
+
     public function _driver_disconnect();
-    
+
     public function _driver_selectdb($dbname);
-    
+
     public function _driver_execute($query);
-    
+
     public function _driver_multi_execute($query);
-    
+
     public function _driver_fetchrow_assoc($result = NULL);
-    
+
     public function _driver_fetchrow_num();
-    
+
     public function _driver_affected_rows();
-    
+
     public function _driver_num_rows();
-    
+
     public function _driver_now();
-    
+
     public function _driver_like();
-    
+
     public function _driver_concat($input);
-    
+
     public function _driver_listtables();
-    
+
     public function _driver_begintrans();
-    
+
     public function _driver_committrans();
-    
+
     public function _driver_rollbacktrans();
-    
-    public function _driver_locktables($table, $locktype=null);
-    
+
+    public function _driver_locktables($table, $locktype = null);
+
     public function _driver_unlocktables();
-    
+
     public function _driver_lastinsertid($table = NULL);
-    
+
     public function _driver_groupconcat($field, $separator = ',');
-    
+
     public function _driver_setencoding($name);
-    
 }
