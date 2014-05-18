@@ -85,9 +85,9 @@ abstract class LMSDB_common implements LMSDBInterface
      */
     public function Connect($dbhost, $dbuser, $dbpasswd, $dbname)
     {
-        if (method_exists($this, '_driver_shutdown')) {
-            register_shutdown_function(array($this, '_driver_shutdown'));
-        }
+        
+        register_shutdown_function(array($this, '_driver_shutdown'));
+        
 
         // Inicjuje połączenie do bazy danych, nie musimy zwracać
         // dblinka na zewnątrz gdyż jest to niepotrzebne.
