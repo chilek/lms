@@ -81,7 +81,7 @@ class LMSDB {
             throw new Exception('Unable to connect to database!');
         }
 
-        $db->debug = $debug;
+        $db->SetDebug($debug);
 
         $db->SetEncoding('UTF8');
 

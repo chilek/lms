@@ -51,9 +51,8 @@ abstract class LMSDB_common implements LMSDBInterface
 	protected $_error = FALSE;
 	protected $_query = NULL;
 	protected $_result = NULL;
-
 	protected $errors = array();
-	public $debug = FALSE;
+	protected $debug = FALSE;
 
         /**
          * Connects to database.
@@ -563,6 +562,17 @@ abstract class LMSDB_common implements LMSDBInterface
         public function SetErrors(array $errors = array()) {
             
             $this->errors = $errors;
+            
+        }
+        
+        /**
+         * Sets debug flag.
+         * 
+         * @param boolean $debug
+         */
+        public function SetDebug($debug = true) {
+            
+            $this->debug = $debug;
             
         }
         
