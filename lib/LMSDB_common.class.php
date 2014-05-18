@@ -52,7 +52,7 @@ abstract class LMSDB_common implements LMSDBInterface
 	protected $_query = NULL;
 	protected $_result = NULL;
 
-	public $errors = array();
+	protected $errors = array();
 	public $debug = FALSE;
 
         /**
@@ -541,6 +541,28 @@ abstract class LMSDB_common implements LMSDBInterface
         public function GetResult() {
             
             return $this->_result;
+            
+        }
+        
+        /**
+         * Returns errors.
+         * 
+         * @return array
+         */
+        public function GetErrors() {
+            
+            return $this->errors;
+            
+        }
+        
+        /**
+         * Sets errors.
+         * 
+         * @param array $errors
+         */
+        public function SetErrors(array $errors = array()) {
+            
+            $this->errors = $errors;
             
         }
         

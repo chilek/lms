@@ -39,7 +39,7 @@ if($query = $_POST['query'])
 	$rows = $LMS->DB->Execute($query);
 	$duration = getmicrotime() - $t;
 
-	if(sizeof($DB->errors)) 
+	if(sizeof($DB->GetErrors())) 
 	{
 		$error['query'] = trans('Query is not correct!');
 		$SMARTY->assign('error', $error);

@@ -56,7 +56,7 @@ $layout['smarty_version'] = $SMARTY->_version;
 $layout['hostname'] = hostname();
 $layout['lmsv'] = '1.11-git';
 $layout['lmsvr'] = $LMS->_revision;
-$layout['dberrors'] =& $DB->errors;
+$layout['dberrors'] =& $DB->GetErrors();
 $layout['popup'] = isset($_GET['popup']) ? true : false;
 
 $SMARTY->assignByRef('layout', $layout);
