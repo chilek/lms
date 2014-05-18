@@ -61,21 +61,21 @@ if($query = $_POST['query'])
 		switch($CONFIG['database']['type'])
 		{
 		case 'postgres':
-			$cols = pg_num_fields($DB->_result);
+			$cols = pg_num_fields($DB->GetResult());
 			for($i=0; $i < $cols; $i++)
-				$colnames[] = pg_field_name($DB->_result, $i);
+				$colnames[] = pg_field_name($DB->GetResult(), $i);
 		break;
 		case 'mysql':
-			$cols = mysql_num_fields($DB->_result);
+			$cols = mysql_num_fields($DB->GetResult());
 			for($i=0; $i < $cols; $i++)
-				$colnames[] = mysql_field_name($DB->_result, $i);
+				$colnames[] = mysql_field_name($DB->GetResult(), $i);
 		break;
 		case 'mysqli':
-			$cols = mysqli_num_fields($DB->_result);
+			$cols = mysqli_num_fields($DB->GetResult());
 			for($i=0; $i < $cols; $i++)
 			{
-				mysqli_field_seek($DB->_result, $i);
-				$finfo = mysqli_fetch_field($DB->_result);
+				mysqli_field_seek($DB->GetResult(), $i);
+				$finfo = mysqli_fetch_field($DB->GetResult());
 				$colnames[] = $finfo->name;
 			}
 		break;

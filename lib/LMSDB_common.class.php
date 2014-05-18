@@ -50,7 +50,7 @@ abstract class LMSDB_common implements LMSDBInterface
 	protected $_dbname = NULL;
 	protected $_error = FALSE;
 	protected $_query = NULL;
-	public $_result = NULL;
+	protected $_result = NULL;
 
 	public $errors = array();
 	public $debug = FALSE;
@@ -530,6 +530,17 @@ abstract class LMSDB_common implements LMSDBInterface
         public function GetDbLink() {
             
             return $this->_dblink;
+            
+        }
+        
+        /**
+         * Returns query result.
+         * 
+         * @return resource|null
+         */
+        public function GetResult() {
+            
+            return $this->_result;
             
         }
         
