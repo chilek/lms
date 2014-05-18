@@ -35,23 +35,43 @@
 abstract class LMSDB_common implements LMSDBInterface
 {
     
+        /** @var string LMS version **/
 	protected $_version = '1.11-git';
+        
+        /** @var string LMS revision **/
 	protected $_revision = '$Revision$';
-
+        
         /** @var boolean Driver load state. Should be changed by driver after successful loading. */
 	protected $_loaded = FALSE;
-
-	// Wewnętrzne zmienne bazy danych, tj, resource, link, itp.
-
+        
+        /** @var string Database engine type **/
 	protected $_dbtype = 'NONE';
+        
+        /** @var resource|null Database link **/
 	protected $_dblink = NULL;
+        
+        /** @var string|null Database host **/
 	protected $_dbhost = NULL;
+        
+        /** @var string|null Database user **/
 	protected $_dbuser = NULL;
+        
+        /** @var string|null Database name **/
 	protected $_dbname = NULL;
+        
+        /** @var boolean Query error **/
 	protected $_error = FALSE;
+        
+        /** @var string|null Database query **/
 	protected $_query = NULL;
+        
+        /** @var resource|null Query result **/
 	protected $_result = NULL;
+        
+        /** @var array Query errors **/
 	protected $errors = array();
+        
+        /** @var boolean Debug flag **/
 	protected $debug = FALSE;
 
         /**
