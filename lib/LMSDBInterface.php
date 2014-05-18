@@ -31,72 +31,72 @@
  * 
  * @package LMS
  */
-interface LMSDBInterface {
-    
+interface LMSDBInterface
+{
+
     public function Connect($dbhost, $dbuser, $dbpasswd, $dbname);
-    
+
     public function Destroy();
-    
+
     public function Execute($query, array $inputarray = NULL);
-    
+
     public function MultiExecute($query, array $inputarray = NULL);
-            
+
     public function GetAll($query = NULL, array $inputarray = NULL);
-            
+
     public function GetAllByKey($query = NULL, $key = NULL, array $inputarray = NULL);
-    
+
     public function GetRow($query = NULL, array $inputarray = NULL);
-    
+
     public function GetCol($query = NULL, array $inputarray = NULL);
-    
+
     public function GetOne($query = NULL, array $inputarray = NULL);
-    
+
     public function Exec($query, array $inputarray = NULL);
-    
+
     public function FetchRow($result);
-    
+
     public function Concat();
-    
+
     public function Now();
-    
+
     public function ListTables();
-    
+
     public function BeginTrans();
-    
+
     public function CommitTrans();
-    
+
     public function RollbackTrans();
-    
-    public function LockTables($table, $locktype=null);
-    
+
+    public function LockTables($table, $locktype = null);
+
     public function UnLockTables();
-    
+
     public function GetDBVersion();
-    
+
     public function SetEncoding($name);
-    
+
     public function GetLastInsertID($table = NULL);
-    
+
     public function Escape($input);
-    
+
     public function GroupConcat($field, $separator = ',');
-    
+
     public function GetVersion();
-    
+
     public function GetRevision();
-    
+
     public function IsLoaded();
-    
+
     public function GetDbType();
-    
+
     public function GetDbLink();
-    
+
     public function GetResult();
-    
+
     public function GetErrors();
-    
+
     public function SetErrors(array $errors = array());
-    
+
     public function SetDebug($debug = true);
-    
 }
