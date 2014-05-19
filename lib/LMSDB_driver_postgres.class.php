@@ -370,7 +370,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
      * @param string $table
      * @return int
      */
-    public function _driver_lastinsertid($table)
+    public function _driver_lastinsertid($table = null)
     {
         return $this->GetOne('SELECT currval(\'' . $table . '_id_seq\')');
 
