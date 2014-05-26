@@ -114,11 +114,16 @@ if (isset($_POST['nodeedit'])) {
 			if (empty($nodeedit['netid']))
 				$nodeedit['netid'] = $DB->GetOne('SELECT id FROM networks WHERE INET_ATON(?) & INET_ATON(mask) = address ORDER BY id LIMIT 1',
 					array($nodeedit['ipaddr']));
-			$ip = $LMS->GetNodeIPByID($nodeedit['id']);
-			if ($ip != $nodeedit['ipaddr'] && !$LMS->IsIPFree($nodeedit['ipaddr'], $nodeedit['netid']))
-				$error['ipaddr'] = trans('Specified IP address is in use!');
-			elseif ($ip != $nodeedit['ipaddr'] && $LMS->IsIPGateway($nodeedit['ipaddr']))
-				$error['ipaddr'] = trans('Specified IP address is network gateway!');
+			if (!$LMS->IsIPInNetwork($nodeedit['ipaddr'], $nodeedit['netid']))
+				$error['ipaddr'] = trans('Specified IP address doesn\'t belong to selected network!');
+			else {
+				$ip = $LMS->GetNodeIPByID($nodeedit['id']);
+				if ($ip != $nodeedit['ipaddr'])
+					if (!$LMS->IsIPFree($nodeedit['ipaddr'], $nodeedit['netid']))
+						$error['ipaddr'] = trans('Specified IP address is in use!');
+					elseif ($LMS->IsIPGateway($nodeedit['ipaddr']))
+						$error['ipaddr'] = trans('Specified IP address is network gateway!');
+			}
 		}
 		else
 			$error['ipaddr'] = trans('Specified IP address doesn\'t overlap with any network!');
@@ -231,6 +236,7 @@ if (isset($_POST['nodeedit'])) {
 	$nodeinfo['name'] = $nodeedit['name'];
 	$nodeinfo['macs'] = $nodeedit['macs'];
 	$nodeinfo['ip'] = $nodeedit['ipaddr'];
+	$nodeinfo['netid'] = $nodeedit['netid'];
 	$nodeinfo['ip_pub'] = $nodeedit['ipaddr_pub'];
 	$nodeinfo['passwd'] = $nodeedit['passwd'];
 	$nodeinfo['access'] = $nodeedit['access'];

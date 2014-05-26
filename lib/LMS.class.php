@@ -3696,6 +3696,10 @@ class LMS {
 			return !($this->DB->GetOne('SELECT id FROM nodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)', array($ip, $ip)) ? TRUE : FALSE);
 	}
 
+	public function IsIPInNetwork($ip, $netid) {
+		return $this->DB->GetOne('SELECT id FROM networks WHERE INET_ATON(?) & INET_ATON(mask) = address AND id = ? LIMIT 1', array($ip, $netid));
+	}
+
 	public function IsIPGateway($ip) {
 		return ($this->DB->GetOne('SELECT gateway FROM networks WHERE gateway = ?', array($ip)) ? TRUE : FALSE);
 	}

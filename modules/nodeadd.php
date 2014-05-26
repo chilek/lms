@@ -89,7 +89,9 @@ if (isset($_POST['nodedata']))
 		if (empty($nodedata['netid']))
 			$nodedata['netid'] = $DB->GetOne('SELECT id FROM networks WHERE INET_ATON(?) & INET_ATON(mask) = address ORDER BY id LIMIT 1',
 				array($nodedata['ipaddr']));
-		if (!$LMS->IsIPFree($nodedata['ipaddr'], $nodedata['netid']))
+		if (!$LMS->IsIPInNetwork($nodedata['ipaddr'], $nodedata['netid']))
+			$error['ipaddr'] = trans('Specified IP address doesn\'t belong to selected network!');
+		elseif (!$LMS->IsIPFree($nodedata['ipaddr'], $nodedata['netid']))
 			$error['ipaddr'] = trans('Specified IP address is in use!');
 		elseif($LMS->IsIPGateway($nodedata['ipaddr']))
 			$error['ipaddr'] = trans('Specified IP address is network gateway!');

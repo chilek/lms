@@ -2793,4 +2793,6 @@ $_LANG['Check if tariff should be optional'] = 'Zaznacz, jeśli taryfa powinna b
 $_LANG['Choose selection list'] = 'Wybierz listę wyboru';
 $_LANG['All rights'] = 'Pełne prawa';
 
+$_LANG['Specified IP address doesn\'t belong to selected network!'] = 'Podany adres IP nie należy do wybranej sieci!';
+
 ?>
