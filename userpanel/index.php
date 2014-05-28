@@ -173,7 +173,12 @@ while (false !== ($filename = readdir($dh))) {
 $SMARTY->assignByRef('LANGDEFS', $LANGDEFS);
 $SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
 $SMARTY->assignByRef('_language', $LMS->lang);
-$SMARTY->setTemplateDir(USERPANEL_DIR . '/templates');
+$SMARTY->setTemplateDir(null);
+$style = $CONFIG['userpanel']['style'] ? $CONFIG['userpanel']['style'] : 'default';
+$SMARTY->addTemplateDir(array(
+	USERPANEL_DIR . '/style/' .  $style . '/templates',
+	USERPANEL_DIR . '/templates',
+));
 $SMARTY->setCompileDir(SMARTY_COMPILE_DIR);
 $SMARTY->debugging = check_conf('phpui.smarty_debug');
 require_once(USERPANEL_LIB_DIR.'/smarty_addons.php');
