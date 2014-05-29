@@ -44,6 +44,18 @@
 								</TD>
 							</TR>
 							<TR>
+								<TD style="width: 1%;" class="nobr"><IMG src="img/division.gif" alt=""></TD>
+								<TD style="width: 1%;" class="bold nobr">{trans("Division")}:</TD>
+								<TD style="width: 98%;" class="nobr">
+									<SELECT size="1" name="division" {tip text="Select division"}>
+										<OPTION value="0">- {trans("all")} -</OPTION>
+										{foreach from=$divisions item=item}
+										<OPTION value="{$item.id}">{$item.shortname}</OPTION>
+										{/foreach}
+									</SELECT>
+								</TD>
+							</TR>
+							<TR>
 								<TD style="width: 1%;" class="nobr"><IMG src="img/folder.gif" alt=""></TD>
 								<TD style="width: 1%;" class="bold nobr">{trans("Legal personality:")}</TD>
 								<TD style="width: 98%;" class="nobr">

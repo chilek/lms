@@ -37,6 +37,11 @@ switch($type)
 		$search['type'] = $_POST['type'];
 		$search['linktype'] = $_POST['linktype'];
 
+		if (isset($_POST['division']))
+			$division = intval($_POST['division']);
+		else
+			$division = NULL;
+
 		if($_POST['day'])
 		{
 			list($year, $month, $day) = explode('/', $_POST['day']);
@@ -72,33 +77,33 @@ switch($type)
 		{
 			case 0:
 				$layout['pagetitle'] = trans('Customers List $a$b',($_POST['network'] ? trans(' (Net: $a)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['customergroup'] ? trans('(Group: $a)',$LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
-				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['customergroup'], $search, $date, 'AND', $_POST['nodegroup']));
+				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['customergroup'], $search, $date, 'AND', $_POST['nodegroup'], $division));
 			break;
 			case 1:
 				$layout['pagetitle'] = trans('Interested Customers List $a', ($_POST['customergroup'] ? trans('(Group: $a)', $LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
-				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], NULL, $_POST['customergroup'], $search, $date));
+				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], NULL, $_POST['customergroup'], $search, $date, 'AND', NULL, $division));
 			break;
 			case 2:
 				$layout['pagetitle'] = trans('List of awaiting customers $a', ($_POST['customergroup'] ? trans('(Group: $a)', $LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
-				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], NULL, $_POST['customergroup'], $search, $date));
+				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], NULL, $_POST['customergroup'], $search, $date, 'AND', NULL, $division));
 			break;
 			case 3:
 				$layout['pagetitle'] = trans('List of Connected Customers $a$b',($_POST['network'] ? trans(' (Net: $a)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['customergroup'] ? trans('(Group: $a)',$LMS->CustomergroupGetName($_POST['customergroup'])) : '')); 
-				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['customergroup'], $search, $date, 'AND', $_POST['nodegroup']));
+				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['customergroup'], $search, $date, 'AND', $_POST['nodegroup'], $division));
 			break;
 			case 5:
 				$layout['pagetitle'] = trans('List of Disconnected Customers $a$b',($_POST['network'] ? trans(' (Net: $a)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['customergroup'] ? trans('(Group: $a)',$LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
-				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['customergroup'], $search, $date, 'AND', $_POST['nodegroup']));
+				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['customergroup'], $search, $date, 'AND', $_POST['nodegroup'], $division));
 			break;
 			case 6:
 			case 11:
 			case 12:
 				$layout['pagetitle'] = trans('Indebted Customers List $a$b',($_POST['network'] ? trans(' (Net: $a)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['customergroup'] ? trans('(Group: $a)',$LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
-				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['customergroup'], $search, $date, 'AND', $_POST['nodegroup']));
+				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['customergroup'], $search, $date, 'AND', $_POST['nodegroup'], $division));
 			break;
 			case -1:
 				$layout['pagetitle'] = trans('Customers Without Nodes List $a$b',($_POST['network'] ? trans(' (Net: $a)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['customergroup'] ? trans('(Group: $a)',$LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
-				if($customerlist = $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], NULL, NULL, $_POST['customergroup'], $search, $date))
+				if($customerlist = $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], NULL, NULL, $_POST['customergroup'], $search, $date, 'AND', NULL, $division))
 				{
 					unset($customerlist['total']);
 					unset($customerlist['state']);
@@ -220,6 +225,7 @@ switch($type)
 		$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 		$SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 		$SMARTY->assign('cstateslist', $LMS->GetCountryStates());
+		$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions ORDER BY shortname'));
 		$SMARTY->assign('printmenu', 'customer');
 		$SMARTY->display('printindex.html');
 	break;

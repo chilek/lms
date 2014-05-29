@@ -80,6 +80,7 @@ version ?.??.?? (????-??-??):
   - move custom plugins to lib/SmartyPlugins - bumps min. smarty ver. to 3.1 [maniac]
   - daemon: resolve source dependency problem for gcc 4.4 - bumps api version [maniac]
   - allow for separated template files in userpanel style [chilan]
+  - print customer list from selected division is possible [chilan]
 
 version 1.11.14 (2013-03-25):
 
