@@ -192,7 +192,7 @@ $layout['hostname'] = hostname();
 $layout['lmsv'] = '1.11-git';
 //$layout['lmsvr'] = $LMS->_revision.'/'.$AUTH->_revision;
 $layout['lmsvr'] = '';
-$layout['dberrors'] =& $DB->GetErrors();
+$layout['dberrors'] = $DB->GetErrors();
 $layout['dbdebug'] = $_DBDEBUG;
 $layout['popup'] = isset($_GET['popup']) ? true : false;
 
