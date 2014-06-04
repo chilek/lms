@@ -188,7 +188,7 @@ function module_get_template($tpl_name, &$tpl_source, $template)
 	global $CONFIG;
 	$module = $_GET['m'];
 	$style = $CONFIG['userpanel']['style'] ? $CONFIG['userpanel']['style'] : 'default';
-	$template_path = $CONFIG['directories']['userpanel_dir'] . '/style/' . $style . '/templates/modules/' . $module . '/' . $tpl_name;
+	$template_path = $CONFIG['directories']['userpanel_dir'] . '/modules/' . $module . '/style/' . $style . '/templates/' . $tpl_name;
 	if (file_exists($template_path))
 	{
 		$tpl_source = file_get_contents($template_path);
@@ -208,7 +208,7 @@ function module_get_timestamp($tpl_name, &$tpl_timestamp, $template)
 	global $CONFIG;
 	$module = $_GET['m'];
 	$style = $CONFIG['userpanel']['style'] ? $CONFIG['userpanel']['style'] : 'default';
-	$template_path = $CONFIG['directories']['userpanel_dir'] . '/style/' . $style . '/templates/modules/' . $module . '/' . $tpl_name;
+	$template_path = $CONFIG['directories']['userpanel_dir'] . '/modules/' . $module . '/style/' . $style . '/templates/' . $tpl_name;
 	if (file_exists($template_path))
 	{
 		$tpl_timestamp = filectime($template_path);
