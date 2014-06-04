@@ -80,9 +80,6 @@ try {
 }
 
 // Initialize templates engine
-
-require_once(LIB_DIR.'/Smarty/Smarty.class.php');
-
 $SMARTY = new Smarty;
 $SESSION = NULL;
 
