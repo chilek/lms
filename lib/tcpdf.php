@@ -31,7 +31,6 @@
  */
 
 require_once(LIB_DIR . '/tcpdf/config/lang/pol.php');
-require_once(LIB_DIR . '/tcpdf/tcpdf.php');
 
 class TCPDFpl extends TCPDF {
 
