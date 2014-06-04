@@ -99,7 +99,6 @@ function check_page_length(&$y, $len=0)
 // brzydkie hacki dla ezpdf 
 @setlocale(LC_NUMERIC, 'C');
 mb_internal_encoding('ISO-8859-2'); // can't be set to UTF-8
-require_once(LIB_DIR.'/ezpdf/class.ezpdf.php');
 
 function new_page() {
 	global $pdf;
