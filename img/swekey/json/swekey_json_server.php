@@ -69,7 +69,6 @@ try {
 
 // Include required files
 require_once(LIB_DIR . '/language.php');
-require_once(LIB_DIR . '/Session.class.php');
 
 // Initialize Session, Auth and LMS classes
 $SESSION = new Session($DB, $CONFIG['phpui']['timeout']);
