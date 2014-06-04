@@ -96,7 +96,6 @@ require_once(LIB_DIR.'/unstrip.php');
 require_once(LIB_DIR.'/language.php');
 require_once(LIB_DIR.'/definitions.php');
 require_once(LIB_DIR.'/common.php');
-require_once(LIB_DIR.'/LMS.class.php');
 
 // Initialize LMS class
 

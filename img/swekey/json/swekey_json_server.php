@@ -69,7 +69,6 @@ try {
 
 // Include required files
 require_once(LIB_DIR . '/language.php');
-require_once(LIB_DIR . '/LMS.class.php');
 require_once(LIB_DIR . '/Auth.class.php');
 require_once(LIB_DIR . '/Session.class.php');
 
