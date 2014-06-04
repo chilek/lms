@@ -122,8 +122,6 @@ if ($_FORCE_SSL && $_SERVER['HTTPS'] != 'on') {
 
 $_LMSDIR = dirname(__FILE__);
 
-require_once(LIB_DIR . '/ExecStack.class.php');
-
 $ExecStack = new ExecStack($_LMSDIR . '/modules/', (isset($_GET['m']) ? $_GET['m'] : NULL), (isset($_GET['a']) ? $_GET['a'] : NULL));
 
 // don't use foreach() below, because privileges checking action
