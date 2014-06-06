@@ -610,7 +610,7 @@ abstract class LMSDB_common implements LMSDBInterface
      * 
      * @return array
      */
-    public function GetErrors()
+    public function &GetErrors()
     {
 
         return $this->errors;
