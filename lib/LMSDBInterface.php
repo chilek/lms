@@ -94,7 +94,7 @@ interface LMSDBInterface
 
     public function GetResult();
 
-    public function GetErrors();
+    public function &GetErrors();
 
     public function SetErrors(array $errors = array());
 
