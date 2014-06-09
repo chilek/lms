@@ -262,9 +262,9 @@ if ($templist = $LMS->GetNumberPlans())
 		if ($item['doctype'] < 0)
 			$allnumberplans[] = $item;
 
-if (isset($document['numberplanid'])) {
+if (isset($document['type'])) {
 	foreach ($allnumberplans as $plan)
-		if ($plan['doctype'] == $document['numberplanid'])
+		if ($plan['doctype'] == $document['type'])
 			$numberplans[] = $plan;
 }
 
