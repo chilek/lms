@@ -142,6 +142,10 @@ switch($action)
 
 			$cdate = !empty($note['cdate']) ? $note['cdate'] : time();
 
+			$division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
+				account, inv_header, inv_footer, inv_author, inv_cplace 
+				FROM divisions WHERE id = ? ;',array($customer['divisionid']));
+
 			$args = array(
 				'number' => $note['number'],
 				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => !empty($note['numberplanid']) ? $note['numberplanid'] : 0,
@@ -156,11 +160,27 @@ switch($action)
 				'city' => $customer['city'],
 				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $customer['countryid'],
 				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $customer['divisionid'],
+				'div_name' => ($division['name'] ? $division['name'] : ''),
+				'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),
+				'div_address' => ($division['address'] ? $division['address'] : ''), 
+				'div_city' => ($division['city'] ? $division['city'] : ''), 
+				'div_zip' => ($division['zip'] ? $division['zip'] : ''),
+				'div_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => ($division['countryid'] ? $division['countryid'] : 0),
+				'div_ten'=> ($division['ten'] ? $division['ten'] : ''),
+				'div_regon' => ($division['regon'] ? $division['regon'] : ''),
+				'div_account' => ($division['account'] ? $division['account'] : ''),
+				'div_inv_header' => ($division['inv_header'] ? $division['inv_header'] : ''),
+				'div_inv_footer' => ($division['inv_footer'] ? $division['inv_footer'] : ''),
+				'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
+				'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
 				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $note['id'],
 			);
 			$DB->Execute('UPDATE documents SET number = ?, numberplanid = ?,
 				cdate = ?, customerid = ?, name = ?, address = ?, paytime = ?,
-				ten = ?, ssn = ?, zip = ?, city = ?, countryid = ?, divisionid = ?
+				ten = ?, ssn = ?, zip = ?, city = ?, countryid = ?, divisionid = ?,
+				div_name = ?, div_shortname = ?, div_address = ?, div_city = ?, div_zip = ?, div_countryid = ?,
+				div_ten = ?, div_regon = ?, div_account = ?, div_inv_header = ?, div_inv_footer = ?,
+				div_inv_author = ?, div_inv_cplace = ?
 				WHERE id = ?', array_values($args));
 
 			if ($SYSLOG) {
