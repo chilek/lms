@@ -97,9 +97,6 @@ try {
 }
 
 // Initialize templates engine (must be before locale settings)
-
-require_once(LIB_DIR.'/Smarty/Smarty.class.php');
-
 $SMARTY = new Smarty;
 
 // test for proper version of Smarty
@@ -140,7 +137,6 @@ require_once(LIB_DIR.'/language.php');
 include_once(LIB_DIR.'/definitions.php');
 require_once(LIB_DIR.'/unstrip.php');
 require_once(LIB_DIR.'/common.php');
-require_once(LIB_DIR.'/LMS.class.php');
 
 $AUTH = NULL;
 $SYSLOG = null;

@@ -772,7 +772,6 @@ function register_plugin($handle, $plugin)
 function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $orientation='P', $margins=array(5, 10, 5, 10), $save=false, $copy=false)
 {
 	global $layout, $DB;
-	require_once(LIB_DIR.'/html2pdf/html2pdf.class.php');
 
 	if (isset($margins))
 		if (!is_array($margins))

@@ -88,9 +88,6 @@ if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0
 		$CONFIG[$row['section']][$row['var']] = $row['value'];
 
 // Initialize templates engine
-
-require_once(LIB_DIR.'/Smarty/Smarty.class.php');
-
 $SMARTY = new Smarty;
 
 // Include required files (including sequence is important)
@@ -99,7 +96,6 @@ require_once(LIB_DIR.'/unstrip.php');
 require_once(LIB_DIR.'/language.php');
 require_once(LIB_DIR.'/definitions.php');
 require_once(LIB_DIR.'/common.php');
-require_once(LIB_DIR.'/LMS.class.php');
 
 // Initialize LMS class
 

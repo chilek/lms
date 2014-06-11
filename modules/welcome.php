@@ -48,7 +48,6 @@ $SMARTY->assign('_dochref', is_dir('doc/html/'.$LMS->ui_lang) ? 'doc/html/'.$LMS
 $SMARTY->assign('rtstats', $LMS->RTStats());
 
 if (!check_conf('privileges.hide_sysinfo')) {
-	require_once LIB_DIR.'/Sysinfo.class.php';
 	$SI = new Sysinfo;
 	$SMARTY->assign('sysinfo', $SI->get_sysinfo());
 }

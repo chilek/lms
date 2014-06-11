@@ -80,9 +80,6 @@ try {
 }
 
 // Initialize templates engine
-
-require_once(LIB_DIR.'/Smarty/Smarty.class.php');
-
 $SMARTY = new Smarty;
 $SESSION = NULL;
 
@@ -90,7 +87,6 @@ $SESSION = NULL;
 
 require_once(LIB_DIR.'/language.php');
 require_once(LIB_DIR.'/common.php');
-require_once(LIB_DIR.'/LMS.class.php');
 
 // Initialize LMS class
 

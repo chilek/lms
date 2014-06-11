@@ -1,7 +1,5 @@
 <?php
 
-include_once('class.pdf.php');
-
 class Cezpdf extends Cpdf {
 //==============================================================================
 // this class will take the basic interaction facilities of the Cpdf class

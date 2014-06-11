@@ -9,8 +9,6 @@
  * @version   4.03
  */
 
-require_once(LIB_DIR.'/tcpdf/tcpdf.php');
-
 class HTML2PDF_myPdf extends TCPDF
 {
     protected $_footerParam = array();

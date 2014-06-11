@@ -100,9 +100,6 @@ try {
 require_once(LIB_DIR.'/upgradedb.php');
 
 // Initialize templates engine (must be before locale settings)
-
-require_once(LIB_DIR.'/Smarty/Smarty.class.php');
-
 $SMARTY = new Smarty;
 
 // test for proper version of Smarty
@@ -145,10 +142,7 @@ require_once(LIB_DIR.'/unstrip.php');
 require_once(LIB_DIR.'/definitions.php');
 require_once(LIB_DIR.'/common.php');
 require_once(LIB_DIR.'/checkip.php');
-require_once(LIB_DIR.'/LMS.class.php');
-require_once(LIB_DIR.'/Auth.class.php');
 require_once(LIB_DIR.'/accesstable.php');
-require_once(LIB_DIR.'/Session.class.php');
 require_once(LIB_DIR . '/SYSLOG.class.php');
 
 if (check_conf('phpui.logging') && class_exists('SYSLOG'))
@@ -198,7 +192,7 @@ $layout['hostname'] = hostname();
 $layout['lmsv'] = '1.11-git';
 //$layout['lmsvr'] = $LMS->_revision.'/'.$AUTH->_revision;
 $layout['lmsvr'] = '';
-$layout['dberrors'] =& $DB->GetErrors();
+$layout['dberrors'] = $DB->GetErrors();
 $layout['dbdebug'] = $_DBDEBUG;
 $layout['popup'] = isset($_GET['popup']) ? true : false;
 
