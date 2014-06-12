@@ -82,15 +82,16 @@
 
 	function change_message_template(tmplid) {
 		if (tmplid)
-			xajax_getMessageTemplate(tmplid, xjx.$('typemail').checked ? 'mailmessage' : 'smstext');
+			xajax_getMessageTemplate(tmplid, 'subject', xjx.$('typemail').checked ? 'mailmessage' : 'smstext');
 	}
 
-	function messageTemplateReceived(elem, message) {
-		if (tinyMCE.get(elem) != undefined) {
-			tinyMCE.get(elem).setContent(message);
-			xjx.$(elem).value = message;
+	function messageTemplateReceived(subjectelem, subject, messageelem, message) {
+		xjx.$(subjectelem).value = subject;
+		if (tinyMCE.get(messageelem) != undefined) {
+			tinyMCE.get(messageelem).setContent(message);
+			xjx.$(messageelem).value = message;
 		} else
-			xjx.$(elem).value = message;
+			xjx.$(messageelem).value = message;
 	}
 -->
 </SCRIPT>
@@ -266,7 +267,7 @@
 			{trans("Subject:")}
 		</TD>
 		<TD style="width: 98%;">
-			<INPUT type="text" name="message[subject]" size="60" value="{$message.subject}" {tip trigger="subject" text="Enter message subject"}>
+			<INPUT type="text" name="message[subject]" id="subject" size="60" value="{$message.subject}" {tip trigger="subject" text="Enter message subject"}>
 		</TD>
 	</TR>
 	<TR>

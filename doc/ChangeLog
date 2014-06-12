@@ -81,6 +81,7 @@ version ?.??.?? (????-??-??):
   - daemon: resolve source dependency problem for gcc 4.4 - bumps api version [maniac]
   - allow for separated template files in userpanel style [chilan]
   - print customer list from selected division is possible [chilan]
+  - save also message subjects in message templates [chilan]
 
 version 1.11.14 (2013-03-25):
 

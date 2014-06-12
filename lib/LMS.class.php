@@ -6053,16 +6053,17 @@ class LMS {
 		return $nodesessions;
 	}
 
-	public function AddMessageTemplate($type, $name, $message) {
+	public function AddMessageTemplate($type, $name, $subject, $message) {
 		global $SYSLOG_RESOURCE_KEYS;
 
 		$args = array(
 			'type' => $type,
 			'name' => $name,
+			'subject' => $subject,
 			'message' => $message,
 		);
-		if ($this->DB->Execute('INSERT INTO templates (type, name, message)
-			VALUES (?, ?, ?)', array_values($args))) {
+		if ($this->DB->Execute('INSERT INTO templates (type, name, subject, message)
+			VALUES (?, ?, ?, ?)', array_values($args))) {
 			$id = $this->DB->GetLastInsertID('templates');
 			if ($this->SYSLOG) {
 				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TMPL]] = $id;
@@ -6074,21 +6075,22 @@ class LMS {
 		return false;
 	}
 
-	public function UpdateMessageTemplate($id, $type, $name, $message) {
+	public function UpdateMessageTemplate($id, $type, $name, $subject, $message) {
 		global $SYSLOG_RESOURCE_KEYS;
 
 		$args = array(
 			'type' => $type,
 			'name' => $name,
+			'subject' => $subject,
 			'message' => $message,
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TMPL] => intval($id),
 		);
 		if (empty($name)) {
 			unset($args['name']);
-			$res = $this->DB->Execute('UPDATE templates SET type = ?, message = ?
+			$res = $this->DB->Execute('UPDATE templates SET type = ?, subject = ?, message = ?
 				WHERE id = ?', array_values($args));
 		} else
-			$res = $this->DB->Execute('UPDATE templates SET type = ?, name = ?, message = ?
+			$res = $this->DB->Execute('UPDATE templates SET type = ?, name = ?, subject = ?, message = ?
 				WHERE id = ?', array_values($args));
 		if ($res && $this->SYSLOG) {
 			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TMPL]] = $id;
