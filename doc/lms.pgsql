@@ -1734,6 +1734,7 @@ CREATE TABLE templates (
 	id integer		DEFAULT nextval('templates_id_seq'::text) NOT NULL,
 	type smallint		NOT NULL,
 	name varchar(50)	NOT NULL,
+	subject varchar(255)	DEFAULT '' NOT NULL,
 	message	text		DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (type, name)
@@ -2048,4 +2049,4 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('userpanel', 'owner_stats', '0', '', 0),
 ('userpanel', 'default_categories', '1', '', 0);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014040700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014061200');
