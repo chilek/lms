@@ -7,6 +7,7 @@
         
     },
     "require_dev": {
-        
+        "phpunit/phpunit": "4.1.*",
+        "phpunit/phpunit-skeleton-generator": "*"
     }
 }
