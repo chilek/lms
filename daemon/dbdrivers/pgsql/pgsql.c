@@ -29,6 +29,7 @@
 #include <unistd.h>
 #include "pgsql.h"
 #include "../../util.h"
+#include "../../config.h"
 
 /* Private function for SELECT query result fetching */
 static QueryHandle * get_query_result(ResultHandle *res)

@@ -14013,11 +14013,16 @@ fi
 # Check whether --enable-debug0 was given.
 if test "${enable_debug0+set}" = set; then :
   enableval=$enable_debug0;
+$as_echo "#define DEBUG0 1" >>confdefs.h
+
 fi
+
 
 # Check whether --enable-debug1 was given.
 if test "${enable_debug1+set}" = set; then :
   enableval=$enable_debug1;
+$as_echo "#define DEBUG1 1" >>confdefs.h
+
 fi
 
 
