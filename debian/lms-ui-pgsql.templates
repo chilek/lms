@@ -1,0 +1,10 @@
+Template: lms-ui-pgsql/custom_variables
+Type: note
+Description: Non-standard Postgres configuration required.
+ LMS makes usage of custom variable classes funcionality in postgres. It is
+ required to define it in configuration file. To do this add following option
+ to Your postgresql.conf:
+ .
+ custom_variable_classes = 'lms'
+ .
+ Without this change lms will not be operational.

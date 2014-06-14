@@ -82,6 +82,7 @@ version ?.??.?? (????-??-??):
   - allow for separated template files in userpanel style [chilan]
   - print customer list from selected division is possible [chilan]
   - save also message subjects in message templates [chilan]
+  - added debian package config - build can be done by dpkg-buildpackage [maniac]
 
 version 1.11.14 (2013-03-25):
 

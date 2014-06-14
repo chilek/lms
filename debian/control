@@ -1,0 +1,127 @@
+Source: lms
+Section: unknown
+Priority: extra
+Maintainer: LMS Developersi <lms-dev@lists.lms.org.pl>
+Build-Depends: debhelper (>= 8.0.0)
+Standards-Version: 3.9.3
+Homepage: http://lms.org.pl/
+
+Package: lms
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: LMS is integrated networkmanagement system for ISP
+ "LMS" (LAN Management System) is integrated network managment system dedicated to variable size internet service providers (ISP)
+ Software is written in PHP, Perl and C, and it can use PostgreSQL or MySQL database. It compounds with friendly user interface (frontend)
+ and dedicated software installed on access server (backend). System have following features:
+ - management of internet access (including bandwidtch and statistics),
+ - record of customers and hardware (network map)
+ - financial and accounting modules with invocing
+ - bulk mailink and administrative messages to customers
+ - management of acconts and hosting
+ - request tracking system (helpdesk),
+ - management of any services
+ - time management (timetable),
+ - User panel for customers.
+
+Package: lms-common
+Architecture: any
+Depends: dbconfig-common
+Description: LMS common support files
+ "LMS" (LAN Management System) is integrated network managment system dedicated to variable size internet service providers (ISP)
+ This package contains common support files including default config file.
+
+Package: lms-daemon
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, lms-daemon-mysql | lms-daemon-pgsql, lms-common
+Description: LMS backend daemon
+ "LMS" (LAN Management System) is integrated network managment system dedicated to variable size internet service providers (ISP)
+ This package contains written in C backend daemon with most popular modules withch include:
+ - cutoff
+ - dhcp
+ - dns
+ - ethers
+ - hostfile
+ - notify
+ - parser
+ - payments
+ - pinger
+ - system
+ - tc
+ - tc-new
+ - traffic
+
+Package: lms-daemon-mysql
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, lms-daemon
+Recommends: mysql-server
+Description: LMS backend daemon MySQL driver
+ "LMS" (LAN Management System) is integrated network managment system dedicated to variable size internet service providers (ISP)
+ This package contains MySQL driver for lms daemon.
+
+Package: lms-daemon-pgsql
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, lms-daemon
+Recommends: postgresql
+Description: LMS backend daemon MySQL driver
+ "LMS" (LAN Management System) is integrated network managment system dedicated to variable size internet service providers (ISP)
+ This package contains Postgresql driver for lms daemon.
+
+Package: lms-ui
+Architecture: any
+Depends: lms-ui-mysql | lms-ui-pgsql, lms-common, apache2 | lighttpd | httpd, php5, php5-gd, php-xajax, smarty3
+Description: LMS User Interface
+ "LMS" (LAN Management System) is integrated network managment system dedicated to variable size internet service providers (ISP)
+ This package contains user interface which is main component of whole LMS system.
+
+Package: lms-ui-mysql
+Architecture: any
+Depends: php5-mysql, lms-ui, lms-tools-mysql
+Recommends: mysql-server
+Description: LMS User Interface
+ "LMS" (LAN Management System) is integrated network managment system dedicated to variable size internet service providers (ISP)
+ This package contains MySQL driver for LMS user interface.
+
+Package: lms-ui-pgsql
+Architecture: any
+Depends: php5-pgsql, lms-ui, lms-tools-pgsql
+Recommends: postgresql
+Description: LMS User Interface
+ "LMS" (LAN Management System) is integrated network managment system dedicated to variable size internet service providers (ISP)
+ This package contains PostgreSQL driver for LMS user interface.
+
+Package: lms-tools
+Architecture: any
+Depends: perl, perl-base, perl-modules, libnet-server-perl, libconfig-inifiles-perl, lms-tools-mysql | lms-tools-pgsql, libmail-sender-perl, libtext-iconv-perl, libmime-tools-perl, libwww-perl, libio-socket-ssl-perl, libnet-ssleay-perl, php5-cli, dbconfig-common, bash
+Description: LMS User Interface
+ "LMS" (LAN Management System) is integrated network managment system dedicated to variable size internet service providers (ISP)
+ This package contains command line tools.
+
+Package: lms-tools-mysql
+Architecture: any
+Depends: lms-tools, libdbd-mysql-perl
+Description: LMS User Interface
+ "LMS" (LAN Management System) is integrated network managment system dedicated to variable size internet service providers (ISP)
+ This is dummy package to for MySQL support
+
+Package: lms-tools-pgsql
+Architecture: any
+Depends: lms-tools, libdbd-pg-perl
+Description: LMS User Interface
+ "LMS" (LAN Management System) is integrated network managment system dedicated to variable size internet service providers (ISP)
+ This is dummy package to for PostgreSQL support
+
+Package: lms-doc
+Architecture: all
+Description: documentation for lms
+ "LMS" (LAN Management System) is integrated network managment system dedicated to variable size internet service providers (ISP)
+ Software is written in PHP, Perl and C, and it can use PostgreSQL or MySQL database. It compounds with friendly user interface (frontend)
+ and dedicated software installed on access server (backend). System have following features:
+ - management of internet access (including bandwidtch and statistics),
+ - record of customers and hardware (network map)
+ - financial and accounting modules with invocing
+ - bulk mailink and administrative messages to customers
+ - management of acconts and hosting
+ - request tracking system (helpdesk),
+ - management of any services
+ - time management (timetable),
+ - User panel for customers.
