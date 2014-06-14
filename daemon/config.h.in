@@ -1,5 +1,11 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* SQL Query debugging */
+#undef DEBUG0
+
+/* events logging */
+#undef DEBUG1
+
 /* Define to 1 if you have the `alarm' function. */
 #undef HAVE_ALARM
 

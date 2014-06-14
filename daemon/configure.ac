@@ -118,9 +118,12 @@ AM_CONDITIONAL([BUILD_PINGER], [test x$OS = xlinux])
 
 
 AC_ARG_ENABLE([debug0],
-    AS_HELP_STRING([--enable-debug0], [SQL query logging (disabled)]))
+    AS_HELP_STRING([--enable-debug0], [SQL query logging (disabled)]),
+    AC_DEFINE(DEBUG0, 1, SQL Query debugging))
+
 AC_ARG_ENABLE([debug1],
-    AS_HELP_STRING([--enable-debug1], [events logging (disabled)]))
+    AS_HELP_STRING([--enable-debug1], [events logging (disabled)]),
+    AC_DEFINE(DEBUG1, 1, events logging))
 
 GET_REVISION
 AC_DEFINE_UNQUOTED(LMSD_REVISION, ["$LMSD_REVISION"], Directore where lmsd should look for configuration - including lms.ini)
