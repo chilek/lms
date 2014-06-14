@@ -1,0 +1,6 @@
+var/lib/lms/backups                 usr/share/lms/backups
+var/lib/lms/documents               usr/share/lms/documents
+var/spool/lms/templates_c           usr/share/lms/templates_c
+var/cache/lms                       usr/share/lms/cache
+usr/share/php/smarty3               usr/share/lms/lib/Smarty
+usr/share/php/xajax                 usr/share/lms/lib/xajax

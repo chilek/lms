@@ -1,0 +1,2 @@
+lib/LMSDB_driver_mysql.class.php    /usr/share/lms/lib
+lib/LMSDB_driver_mysqli.class.php    /usr/share/lms/lib
