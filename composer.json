@@ -1,0 +1,12 @@
+{
+    "name": "lmsgit/lms",
+    "description": "Lan Management System (LMS)",
+    "homepage": "http://lms.org.pl/",
+    "license": "GPL-2.0",
+    "require": {
+        
+    },
+    "require_dev": {
+        
+    }
+}
