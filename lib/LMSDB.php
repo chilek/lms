@@ -61,8 +61,6 @@ class LMSDB
         return self::$db;
     }
 
-
-    
     /**
      * Returns databse object.
      * 
@@ -112,6 +110,19 @@ class LMSDB
         $db->SetEncoding('UTF8');
 
         return $db;
+    }
+    
+    /**
+     * Destroys database handler and singleton instance.
+     * 
+     * Useful for unit tests.
+     */
+    public static function destroyInstance()
+    {
+        if (self::$db !== null) {
+            self::$db->Destroy();
+            self::$db = null;
+        }
     }
 
 }
