@@ -116,6 +116,7 @@ class LMSDB
      * Destroys database handler and singleton instance.
      * 
      * Useful for unit tests.
+     * @return null Null database handler
      */
     public static function destroyInstance()
     {
@@ -123,6 +124,7 @@ class LMSDB
             self::$db->Destroy();
             self::$db = null;
         }
+        return self::$db;
     }
 
 }
