@@ -48,13 +48,15 @@ class LMSDB
     public static function getInstance()
     {
         if (self::$db === null) {
-            global $CONFIG;
-            $_DBTYPE = $CONFIG['database']['type'];
-            $_DBHOST = $CONFIG['database']['host'];
-            $_DBUSER = $CONFIG['database']['user'];
-            $_DBPASS = $CONFIG['database']['password'];
-            $_DBNAME = $CONFIG['database']['database'];
-            $_DBDEBUG = (isset($CONFIG['database']['debug']) ? chkconfig($CONFIG['database']['debug']) : FALSE);
+            $_DBTYPE = LMSConfig::getIniConfig()->getSection('database')->getVariable('type')->getValue();
+            $_DBHOST = LMSConfig::getIniConfig()->getSection('database')->getVariable('host')->getValue();
+            $_DBUSER = LMSConfig::getIniConfig()->getSection('database')->getVariable('user')->getValue();
+            $_DBPASS = LMSConfig::getIniConfig()->getSection('database')->getVariable('password')->getValue();
+            $_DBNAME = LMSConfig::getIniConfig()->getSection('database')->getVariable('database')->getValue();
+            $_DBDEBUG = false;
+            if (LMSConfig::getIniConfig()->getSection('database')->hasVariable('debug')) {
+                $_DBDEBUG = chkconfig(LMSConfig::getIniConfig()->getSection('database')->getVariable('debug')->getValue());
+            }
             self::$db = self::getDB($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME, $_DBDEBUG);
         }
         
