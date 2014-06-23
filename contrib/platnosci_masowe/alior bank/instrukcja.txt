@@ -5,7 +5,9 @@ OPIS:
 	
 INSTALACJA:
 
-	cashimportcfg-aliorbank.php należy umieścić np. w lms/modules/
+	
+	cashimportcfg-aliorbank.php należy edytować w 26 lini i uzupełnić o numer rozliczeniowy banku dla MPT.
+	Następnie umieścić np. w lms/modules/
 
 	W sekcji phpui: import_config jako wartość podać ścieżkę do pliku cashimportcfg-aliorbank.php
 	
