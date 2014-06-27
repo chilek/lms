@@ -7,7 +7,7 @@ Standards-Version: 3.9.3
 Homepage: http://lms.org.pl/
 
 Package: lms
-Architecture: any
+Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: LMS is integrated networkmanagement system for ISP
  "LMS" (LAN Management System) is integrated network managment system dedicated to variable size internet service providers (ISP)
@@ -24,7 +24,7 @@ Description: LMS is integrated networkmanagement system for ISP
  - User panel for customers.
 
 Package: lms-common
-Architecture: any
+Architecture: all
 Depends: dbconfig-common
 Description: LMS common support files
  "LMS" (LAN Management System) is integrated network managment system dedicated to variable size internet service providers (ISP)
@@ -67,14 +67,14 @@ Description: LMS backend daemon MySQL driver
  This package contains Postgresql driver for lms daemon.
 
 Package: lms-ui
-Architecture: any
+Architecture: all
 Depends: lms-ui-mysql | lms-ui-pgsql, lms-common, apache2 | lighttpd | httpd, php5, php5-gd, php-xajax, smarty3
 Description: LMS User Interface
  "LMS" (LAN Management System) is integrated network managment system dedicated to variable size internet service providers (ISP)
  This package contains user interface which is main component of whole LMS system.
 
 Package: lms-ui-mysql
-Architecture: any
+Architecture: all
 Depends: php5-mysql, lms-ui, lms-tools-mysql
 Recommends: mysql-server
 Description: LMS User Interface
@@ -82,7 +82,7 @@ Description: LMS User Interface
  This package contains MySQL driver for LMS user interface.
 
 Package: lms-ui-pgsql
-Architecture: any
+Architecture: all
 Depends: php5-pgsql, lms-ui, lms-tools-pgsql
 Recommends: postgresql
 Description: LMS User Interface
@@ -90,14 +90,14 @@ Description: LMS User Interface
  This package contains PostgreSQL driver for LMS user interface.
 
 Package: lms-tools
-Architecture: any
+Architecture: all
 Depends: perl, perl-base, perl-modules, libnet-server-perl, libconfig-inifiles-perl, lms-tools-mysql | lms-tools-pgsql, libmail-sender-perl, libtext-iconv-perl, libmime-tools-perl, libwww-perl, libio-socket-ssl-perl, libnet-ssleay-perl, php5-cli, dbconfig-common, bash
 Description: LMS User Interface
  "LMS" (LAN Management System) is integrated network managment system dedicated to variable size internet service providers (ISP)
  This package contains command line tools.
 
 Package: lms-tools-mysql
-Architecture: any
+Architecture: all
 Depends: lms-tools, libdbd-mysql-perl
 Description: LMS User Interface
  "LMS" (LAN Management System) is integrated network managment system dedicated to variable size internet service providers (ISP)
