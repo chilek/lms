@@ -1,6 +1,6 @@
 Source: lms
-Section: unknown
-Priority: extra
+Section: admin
+Priority: optional
 Maintainer: LMS Developersi <lms-dev@lists.lms.org.pl>
 Build-Depends: debhelper (>= 8.0.0)
 Standards-Version: 3.9.3
