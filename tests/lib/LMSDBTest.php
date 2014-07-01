@@ -17,7 +17,9 @@ class LMSDBTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        
+        if (!defined('CONFIG_FILE')) {
+            define('CONFIG_FILE', '../lms.ini');
+        }
     }
 
     /**
