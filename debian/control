@@ -8,7 +8,8 @@ Homepage: http://lms.org.pl/
 
 Package: lms
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: lms-ui, lms-tools
+Recommends: lms-daemon
 Description: LMS is integrated networkmanagement system for ISP
  "LMS" (LAN Management System) is integrated network managment system dedicated to variable size internet service providers (ISP)
  Software is written in PHP, Perl and C, and it can use PostgreSQL or MySQL database. It compounds with friendly user interface (frontend)
