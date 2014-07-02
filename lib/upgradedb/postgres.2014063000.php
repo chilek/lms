@@ -146,8 +146,8 @@ $DEFAULTS = array(
 foreach ($DEFAULTS as $section => $values) {
     foreach ($values as $variable => $value) {
         $DB->Execute(
-            "INSERT INTO uiconfig (section, var, value) SELECT ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM uiconfig WHERE section = ? AND var = ? AND value = ?)",
-            array($section, $variable, $value, $section, $variable, $value)
+            "INSERT INTO uiconfig (section, var, value) (SELECT ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM uiconfig WHERE section = ? AND var = ?))",
+            array($section, $variable, strval($value), $section, $variable)
         );
     }
 }
