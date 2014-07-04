@@ -24,12 +24,14 @@
 $DB->BeginTrans();
 
 $DEFAULTS = array(
+/*
 	'database' => array(
 		'type' => 'mysql',
 		'host' => 'localhost',
 		'user' => 'mysql',
 		'database' => 'lms'
 	),
+*/
 	'phpui' => array(
 		'lang' => '',
 		'allow_from' => '',
