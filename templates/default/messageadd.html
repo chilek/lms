@@ -82,7 +82,7 @@
 
 	function change_message_template(tmplid) {
 		if (tmplid)
-			xajax_getMessageTemplate(tmplid, 'subject', xjx.$('typemail').checked ? 'mailmessage' : 'smstext');
+			xajax_getMessageTemplate(tmplid, 'subject', xjx.$('typemail').checked || xjx.$('typewww') ? 'mailmessage' : 'smstext');
 	}
 
 	function messageTemplateReceived(subjectelem, subject, messageelem, message) {
