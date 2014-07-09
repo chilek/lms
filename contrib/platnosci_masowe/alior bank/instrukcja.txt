@@ -1,0 +1,36 @@
+OPIS:
+
+	Skrypt obsługi płatności MPT Alior Banku.
+
+	
+INSTALACJA:
+
+	
+	cashimportcfg-aliorbank.php należy edytować w 26 lini i uzupełnić o numer rozliczeniowy banku dla MPT.
+	Następnie umieścić np. w lms/modules/
+
+	W sekcji phpui: import_config jako wartość podać ścieżkę do pliku cashimportcfg-aliorbank.php
+	
+	Sekcja finances: cashimport_checkinvoices, jako wartość: true - dzięki temu faktury, będą rozliczane. W przeciwym wypadku rozliczane będzie tylko saldo.
+
+	W contrib/bin znajduje się lms-cashimport.php, który pobiera maile poprzez IMAP, rozpakowuje 7zip i rozlicza płatności. Najlepiej dodać go do cron-a.
+	
+	W LMS -> Konfiguracja -> Źródła importu dodać nowe źródło o nazwie np. "Alior bank".
+
+
+KONFIGURACJA LMS.ini
+
+	[cashimport]
+	server = serwer.pl:993/novalidate-cert/ssl 	// (lub inna składnia, w zależności czy używamy SSL)
+	username = "platnosci@serwer.pl"			//	Login do konta email
+	password = "haslo_do_konta_email"			//	Hasło do email-a
+	autocommit = true 							//	Ta opcja sprawia, że dane wczytane przez skrypt od razu będą rozliczane w LMS-a. W przeciwnym wypadku będą zimportowane i nie rozliczone w Finanse > Import
+	use_seen_flag = true						//	Oznacza email-e jako odczytane
+	bank = aliorbank							//	To chyba nie wymaga komnentarza :)
+	7zpasswd = HaslodoMPT24						//	Hasło wypakowania załącznika .7z
+	raport_type = rpt							//	Typ raportu jaki wybraliśmy w banku. W tej chwili pattern obsługuje tylko RPT. 
+
+
+Voilla! Wszystko powinno śmigać. :)
+Na testy warto zrobić sobie drugą baze danych i sprawdzić czy wszystko jest OK, ewentualnie nie dawać autocommit = true na początku.
+Dodatkowo najlepiej najpierw przykładowy plik z banku wczytać ręcznie poprzez LMS > Finanse > Importuj i zobaczyć czy nie będzie błędów.

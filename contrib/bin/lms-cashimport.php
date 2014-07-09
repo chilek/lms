@@ -192,11 +192,12 @@ function parse_file($filename, $contents) {
 		if($patterns_cnt) foreach($patterns as $idx => $pattern)
 		{
 			$theline = $line;
-
 			if(strtoupper($pattern['encoding']) != 'UTF-8')
 			{
 				$theline = @iconv($pattern['encoding'], 'UTF-8//TRANSLIT', $theline);
 			}
+
+			$theline = str_replace('þ',' ',$theline);	//usuniêcie krzaków alior-a
 
 			if (preg_match($pattern['pattern'], $theline, $matches))
 				break;
@@ -206,7 +207,6 @@ function parse_file($filename, $contents) {
 			}
 			$count++;
 		}
-
 		// line isn't matching to any pattern
 		if($count == $patterns_cnt)
 		{
@@ -443,23 +443,68 @@ if (!$ih)
 $posts = imap_search($ih, chkconfig($CONFIG['cashimport']['use_seen_flag'], true) ? 'UNSEEN' : 'ALL');
 if (!empty($posts))
 	foreach ($posts as $postid) {
-		$post = imap_fetchstructure($ih, $postid);
-		if ($post->type == 1) {
-			$parts = $post->parts;
-			//print_r($parts);
-			foreach ($parts as $partid => $part )
-				if ($part->ifdisposition && strtoupper($part->disposition) == 'ATTACHMENT' && $part->type == 0) {
-					$fname = $part->dparameters[0]->value;
-					$msg = imap_fetchbody($ih, $postid, $partid + 1);
-					if ($part->encoding == 3)
-						$msg = imap_base64($msg);
-					if (chkconfig($CONFIG['cashimport']['use_seen_flag'], true))
-						imap_setflag_full($ih, $postid, "\\Seen");
-					parse_file($fname, $msg);
-					if (chkconfig($CONFIG['cashimport']['autocommit']))
-						commit_cashimport();
-				}
-		}
+		if ($CONFIG['cashimport']['bank'] == 'aliorbank') {
+            $imap_structure = imap_fetchstructure($ih, $postid);
+            if ($imap_structure->type == 1) {                   //1 = multipart
+                $parts = $imap_structure->parts;
+                foreach ($parts as $partid => $part ){
+                    if ($part->type == 1 && count($part->parts)){                   // Czy element wiadomoœæ zawiera zagnie¿d¿one czêœci?  
+                        foreach ($part->parts as $multipartid => $multipart){                   // Poszukiwanie za³¹cznika .7z 
+                            if ($multipart->type ==3 && strpos($multipart->dparameters[0]->value, '.7z')){
+                                $attachments[$partid][filename] = $multipart->dparameters[0]->value;
+                                $attachments[$partid][bytes] = $multipart->bytes;
+                                $attachments[$partid][pos] = ($partid+1).".".($multipartid+1);
+                                $attachments[$partid][id] = $postid;
+                                } 
+                            }                  
+                    }else{                  // Poszukiwanie za³¹cznika .7z 
+                        if ($part->type == 3 && strpos($part->dparameters[0]->value, '.7z')){
+                            $attachments[$partid][filename] = $part->dparameters[0]->value;
+                            $attachments[$partid][bytes] = $part->bytes;
+                            $attachments[$partid][pos] = $partid+1;
+                            $attachments[$partid][id] = $postid;
+                            }
+                    }
+                }
+            }
+            if ($attachments){
+                foreach ($attachments as $attachment){                  // zapis za³¹czników
+                    $filename = '/tmp/'.$attachment[filename];
+                    $file = fopen($filename,'w');
+                stream_filter_append($file,'convert.base64-decode',STREAM_FILTER_WRITE);
+                    if (chkconfig($CONFIG['cashimport']['use_seen_flag'])) 
+                    imap_savebody ($ih, $file, $attachment[id], $attachment[pos] );
+                    else
+                    imap_savebody ($ih, $file, $attachment[id], $attachment[pos], FT_PEEK);
+                    exec('7za e '. $filename .' -p'. $CONFIG['cashimport']['7zpasswd'] .' -o/tmp -y', $debug);                   // rozpakowanie pliku
+                    //print_r($debug);
+                    fclose($file);
+                    $file_content = file_get_contents(str_replace('.7z', '.'. $CONFIG['cashimport']['raport_type'], $filename));
+                parse_file($attachment[filename], $file_content);
+                    if (chkconfig($CONFIG['cashimport']['autocommit']))
+                    commit_cashimport();
+                }
+            }
+        }
+        else{
+            $post = imap_fetchstructure($ih, $postid);
+            if ($post->type == 1) {
+                $parts = $post->parts;
+                //print_r($parts);
+                foreach ($parts as $partid => $part )
+                    if ($part->ifdisposition && strtoupper($part->disposition) == 'ATTACHMENT' && $part->type == 0) {
+                        $fname = $part->dparameters[0]->value;
+                        $msg = imap_fetchbody($ih, $postid, $partid + 1);
+                        if ($part->encoding == 3)
+                            $msg = imap_base64($msg);
+                        if (chkconfig($CONFIG['cashimport']['use_seen_flag'], true))
+                            imap_setflag_full($ih, $postid, "\\Seen");
+                        parse_file($fname, $msg);
+                        if (chkconfig($CONFIG['cashimport']['autocommit']))
+                            commit_cashimport();
+                    }
+            }
+        }
 	}
 
 imap_close($ih);
