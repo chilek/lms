@@ -1,6 +1,6 @@
 {include file="clearheader.html" landscape=true}
 <!--// $Id$ //-->
-{$report_type = get_conf('phpui.report_type')}
+{$report_type = ConfigHelper::getConfig('phpui.report_type')}
 {foreach from=$pages item=item}
 {assign var=previtem value=$item-1}
 {if $report_type == 'pdf'}

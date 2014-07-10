@@ -2,7 +2,7 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {include file="calendar_js.html"}
-{$default_printpage = get_conf('invoices.default_printpage')}
+{$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
 {if $printmenu=="customer"}
 <FORM method="POST" name="printcustomerlist" id="printcustomerlist" action="?m=customerprint&amp;type=customerlist">
 <p style="display: none;">
@@ -383,7 +383,7 @@ multiselect('printbalancelist', 'balancelisttype', '{trans("- all types -")}');
 </SCRIPT>
 </P>
 {/if}
-{if ($printmenu=="customer" || $printmenu=="finances") && !check_conf('privileges.hide_finances')}
+{if ($printmenu=="customer" || $printmenu=="finances") && !ConfigHelper::checkConfig('privileges.hide_finances')}
 <br>
 <FORM method="post" name="printcustomerbalance" id="printcustomerbalance" action="?m=print&amp;type=customerbalance">
 <p style="display: none;">
@@ -962,7 +962,7 @@ cal6.time_comp = false;
 </SCRIPT>
 </P>
 {/if}
-{if ($printmenu=="customer" || $printmenu=="finances") && !check_conf('privileges.hide_finances')}
+{if ($printmenu=="customer" || $printmenu=="finances") && !ConfigHelper::checkConfig('privileges.hide_finances')}
 <br>
 <FORM method="post" name="liabilityreport" id="liabilityreport" action="?m=print&amp;type=liabilityreport">
 <p style="display: none;">

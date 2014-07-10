@@ -147,7 +147,7 @@ require_once(LIB_DIR.'/unstrip.php');
 require_once(LIB_DIR.'/common.php');
 require_once(LIB_DIR . '/SYSLOG.class.php');
 
-if (check_conf('phpui.logging') && class_exists('SYSLOG'))
+if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG'))
 	$SYSLOG = new SYSLOG($DB);
 else
 	$SYSLOG = null;
@@ -372,10 +372,9 @@ function commit_cashimport()
 		WHERE i.closed = 0 AND i.customerid <> 0');
 
 	if (!empty($imports)) {
-		$idate  = isset($CONFIG['finances']['cashimport_use_idate'])
-			&& chkconfig($CONFIG['finances']['cashimport_use_idate']);
-		$icheck = isset($CONFIG['finances']['cashimport_checkinvoices'])
-			&& chkconfig($CONFIG['finances']['cashimport_checkinvoices']);
+            
+		$idate  = ConfigHelper::checkValue(ConfigHelper::getConfig('finances.cashimport_use_idate', false));
+		$icheck = ConfigHelper::checkValue(ConfigHelper::getConfig('finances.cashimport_checkinvoices', false));
 
 		foreach ($imports as $import) {
 
@@ -440,7 +439,7 @@ $ih = @imap_open("{" . $CONFIG['cashimport']['server'] . "}INBOX", $CONFIG['cash
 if (!$ih)
 	die("Cannot connect to mail server!\n");
 
-$posts = imap_search($ih, chkconfig($CONFIG['cashimport']['use_seen_flag'], true) ? 'UNSEEN' : 'ALL');
+$posts = imap_search($ih, ConfigHelper::checkValue(ConfigHelper::getConfig('cashimport.use_seen_flag', true)) ? 'UNSEEN' : 'ALL');
 if (!empty($posts))
 	foreach ($posts as $postid) {
 		$post = imap_fetchstructure($ih, $postid);
@@ -453,10 +452,10 @@ if (!empty($posts))
 					$msg = imap_fetchbody($ih, $postid, $partid + 1);
 					if ($part->encoding == 3)
 						$msg = imap_base64($msg);
-					if (chkconfig($CONFIG['cashimport']['use_seen_flag'], true))
+					if (ConfigHelper::checkValue(ConfigHelper::getConfig('cashimport.use_seen_flag', true)))
 						imap_setflag_full($ih, $postid, "\\Seen");
 					parse_file($fname, $msg);
-					if (chkconfig($CONFIG['cashimport']['autocommit']))
+					if (ConfigHelper::checkValue(ConfigHelper::getConfig('cashimport.autocommit', false)))
 						commit_cashimport();
 				}
 		}

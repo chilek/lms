@@ -100,8 +100,8 @@
 
 //-->
 </script>
-{$default_printpage = get_conf('invoices.default_printpage')}
-{$default_taxrate   = get_conf('phpui.default_taxrate')}
+{$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
+{$default_taxrate   = ConfigHelper::getConfig('phpui.default_taxrate')}
 <FORM NAME="setcustomer" METHOD="POST" ACTION="?m=invoiceedit&action=setcustomer">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="HIDDEN" name="invoice[number]" value="{$invoice.number}">

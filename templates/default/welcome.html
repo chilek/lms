@@ -3,7 +3,7 @@
 <H1>{$layout.pagetitle}</H1>
 <TABLE width="100%">
 	<TR>
-		{if !check_conf('privileges.hide_sysinfo')}
+		{if !ConfigHelper::checkConfig('privileges.hide_sysinfo')}
 		<TD style="width: 50%;" class="valign-top">
 			<TABLE class="lmsbox">
                             <THEAD>
@@ -95,13 +95,13 @@
 				<TR>
 					<TD style="width: 50%;" class="text-right bold">
 						<A href="?m=customerlist&amp;s=0">{trans("Total:")}</A><BR>
-						{if !check_conf('privileges.hide_finances')}
+						{if !ConfigHelper::checkConfig('privileges.hide_finances')}
 							<A href="?m=customerlist&amp;s=6">{trans("Total Dues:")}</A>
 						{/if}
 					</TD>
 					<TD style="width: 50%;" class="nobr">
 						{$customerstats.total}<BR>
-						{if !check_conf('privileges.hide_finances')}
+						{if !ConfigHelper::checkConfig('privileges.hide_finances')}
 							{$customerstats.debt} ({trans("amount")} {$customerstats.debtvalue|money_format})
 						{/if}
 					</TD>
@@ -247,7 +247,7 @@
                             </TBODY>
 			</TABLE>
 		{/if}
-		{if !check_conf('privileges.hide_summaries')}
+		{if !ConfigHelper::checkConfig('privileges.hide_summaries')}
 			<TABLE class="lmsbox">
                             <THEAD>
 				<TR>
@@ -292,7 +292,7 @@
                             </TBODY>
 			</TABLE>
 		{/if}
-		{if !check_conf('privileges.hide_links')}
+		{if !ConfigHelper::checkConfig('privileges.hide_links')}
                         <TABLE class="lmsbox">
                         <THEAD>
 				<TR>
@@ -315,7 +315,7 @@
                         </TBODY>
 			</TABLE>
 		{/if}
-		{if check_conf('privileges.superuser')}
+		{if ConfigHelper::checkConfig('privileges.superuser')}
 			<TABLE class="lmsbox">
                             <THEAD>
 				<TR>

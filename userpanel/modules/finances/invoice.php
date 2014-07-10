@@ -26,7 +26,7 @@
 
 global $LMS,$SESSION,$CONFIG,$_CONFIG,$SMARTY,$invoice, $layout, $type;
 
-$type = check_conf('userpanel.invoice_duplicate') ? trans('DUPLICATE') : trans('ORIGINAL');
+$type = ConfigHelper::checkConfig('userpanel.invoice_duplicate') ? trans('DUPLICATE') : trans('ORIGINAL');
 
 if(strtolower($CONFIG['invoices']['type']) == 'pdf')
 {
@@ -43,7 +43,7 @@ $SMARTY->assign('css', file($CONFIG['directories']['sys_dir'].'/img/style_print.
 // use LMS templates directory
 define('SMARTY_TEMPLATES_DIR', !isset($CONFIG['directories']['smarty_templates_dir']) ? $CONFIG['directories']['sys_dir'].'/templates' : $CONFIG['directories']['smarty_templates_dir']);
 $SMARTY->setTemplateDir(null);
-$custom_templates_dir = get_conf('phpui.custom_templates_dir');
+$custom_templates_dir = ConfigHelper::getConfig('phpui.custom_templates_dir');
 if (!empty($custom_templates_dir) && file_exists(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir)
 	&& !is_file(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir))
 	$SMARTY->AddTemplateDir(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir);

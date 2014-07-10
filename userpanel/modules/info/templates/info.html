@@ -1,7 +1,7 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <table width="100%" cellpadding="10">
-{if !$usernodes.total && check_conf('userpanel.hide_nodesbox')}
+{if !$usernodes.total && ConfigHelper::checkConfig('userpanel.hide_nodesbox')}
 	<tr>
 		<td valign="top" width="100%">
 			{include file="module:userinfobox.html"}
@@ -9,7 +9,7 @@
 			{include file="module:userdocsbox.html"}
 		</td>
 	</tr>
-	{if get_conf('userpanel.data_consent_text') && !$userinfo.consentdate}
+	{if ConfigHelper::getConfig('userpanel.data_consent_text') && !$userinfo.consentdate}
 	<tr>
 		<td valign="top" width="100%">
 		{include file="module:consentbox.html"}
@@ -24,7 +24,7 @@
 			{include file="module:userdocsbox.html"}
 		</td>
 		<td valign="top" width="50%">
-			{if get_conf('userpanel.data_consent_text') && !$userinfo.consentdate}
+			{if ConfigHelper::getConfig('userpanel.data_consent_text') && !$userinfo.consentdate}
 			{include file="module:consentbox.html"}<br />
 			{/if}
 			{include file="module:usernodesbox.html"}

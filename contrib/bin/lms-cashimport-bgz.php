@@ -524,10 +524,10 @@ function commit_cashimport()
 		WHERE i.closed = 0 AND i.customerid <> 0');
 
 	if (!empty($imports)) {
-		$idate  = isset($CONFIG['finances']['cashimport_use_idate'])
-			&& chkconfig($CONFIG['finances']['cashimport_use_idate']);
-		$icheck = isset($CONFIG['finances']['cashimport_checkinvoices'])
-			&& chkconfig($CONFIG['finances']['cashimport_checkinvoices']);
+            
+		$idate  = ConfigHelper::checkValue(ConfigHelper::getConfig('finances.cashimport_use_idate', false));
+                
+		$icheck = ConfigHelper::checkValue(ConfigHelper::getConfig('finances.cashimport_checkinvoices', false));
 
 		foreach ($imports as $import) {
 

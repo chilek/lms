@@ -2,11 +2,11 @@
 <!--// $Id$ //-->
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{$_ui_language}"> 
   <meta content="text/html; charset={$LANGDEFS.$_ui_language.charset}" http-equiv="content-type" />
-  <meta http-equiv="refresh" content="{get_conf('phpui.timeout')+5}">
+  <meta http-equiv="refresh" content="{ConfigHelper::getConfig('phpui.timeout')+5}">
   <title>{trans("Virtual Customer Service")}</title>
 <link type="text/css" rel="stylesheet" href="{stylefile}" />
 <script type="text/javascript" language="JavaScript" src="style/default/common.js"></script>
-{$hint_mode = get_conf('userpanel.hint')}
+{$hint_mode = ConfigHelper::getConfig('userpanel.hint')}
 {if $hint_mode neq 'classic' and $hint_mode neq 'none'}
 <script type="text/javascript" language="JavaScript" src="style/default/avatar.js"></script>
 </head>

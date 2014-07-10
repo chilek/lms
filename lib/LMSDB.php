@@ -55,7 +55,7 @@ class LMSDB
             $_DBNAME = LMSConfig::getIniConfig()->getSection('database')->getVariable('database')->getValue();
             $_DBDEBUG = false;
             if (LMSConfig::getIniConfig()->getSection('database')->hasVariable('debug')) {
-                $_DBDEBUG = chkconfig(LMSConfig::getIniConfig()->getSection('database')->getVariable('debug')->getValue());
+                $_DBDEBUG = ConfigHelper::checkValue(LMSConfig::getIniConfig()->getSection('database')->getVariable('debug')->getValue());
             }
             self::$db = self::getDB($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME, $_DBDEBUG);
         }
@@ -127,6 +127,20 @@ class LMSDB
             self::$db = null;
         }
         return self::$db;
+    }
+    
+    /**
+     * Checks if database connection exists
+     * 
+     * @return boolean
+     */
+    public static function checkIfInstanceExists()
+    {
+        if (self::$db !== null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

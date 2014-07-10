@@ -346,7 +346,7 @@
 	<TR>
 		<TD WIDTH="50%" ALIGN="RIGHT" CLASS="SDR">
 			{trans("In words:")}
-			{if check_conf('phpui.to_words_short_version')}
+			{if ConfigHelper::checkConfig('phpui.to_words_short_version')}
 				{$invoice.value|string_format:"%d"|to_words:0:"":1} {$invoice.valuep|string_format:"%02d"}/100
 			{else}
 				{t a=$invoice.value|string_format:"%d"|to_words b=$invoice.valuep|to_words}$a dollars $b cents{/t}

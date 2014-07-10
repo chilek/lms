@@ -301,7 +301,7 @@ if($action)
 	$SESSION->redirect('?m=noteadd');
 }
 
-if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
+if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
 {
         $SMARTY->assign('customers', $LMS->GetCustomerNames());
 }

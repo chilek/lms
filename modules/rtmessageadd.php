@@ -143,9 +143,7 @@ if(isset($_POST['message']))
 			$mailfname = '"'.$mailfname.'"';
 		}
 
-		if(!isset($CONFIG['phpui']['helpdesk_backend_mode']) || !chkconfig($CONFIG['phpui']['helpdesk_backend_mode'])
-		    || $message['destination'] == ''
-		) {
+		if(!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_backend_mode', false)) || $message['destination'] == '') {
 			$headers = array();
 
 			if($message['destination'] && $message['userid']
@@ -275,7 +273,7 @@ if(isset($_POST['message']))
 				.substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 				.'?m=rtticketview&id='.$message['ticketid'];
 
-			if (chkconfig($CONFIG['phpui']['helpdesk_customerinfo']))
+			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_customerinfo', false)))
 				if ($cid = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($message['ticketid'])))
 				{
 					$info = $DB->GetRow('SELECT pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
@@ -390,7 +388,7 @@ else
 		$message['inreplyto'] = $reply['id'];
 		$message['references'] = $reply['messageid'];
 		
-		if(isset($CONFIG['phpui']['helpdesk_reply_body']) && chkconfig($CONFIG['phpui']['helpdesk_reply_body']))
+		if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_reply_body', false)))
 		{
 			$body = explode("\n",textwrap(strip_tags($reply['body']),74));
 			foreach($body as $line)

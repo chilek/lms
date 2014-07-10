@@ -27,11 +27,11 @@
 			{trans("Phone")}
 		</TD>
 		<TD WIDTH="150" CLASS="HEAD" ALIGN="RIGHT">
-			{if !check_conf('privileges.hide_finances')}{trans("Subscription")}<BR>{/if}
+			{if !ConfigHelper::checkConfig('privileges.hide_finances')}{trans("Subscription")}<BR>{/if}
 			{trans("E-mail")}<BR>
 			{trans("TEN/SSN")}
 		</TD>
-		{if !check_conf('privileges.hide_finances')}
+		{if !ConfigHelper::checkConfig('privileges.hide_finances')}
 		<TD WIDTH="50" CLASS="HEAD" ALIGN="RIGHT">
 			{trans("Balance")}
 		</TD>
@@ -52,18 +52,18 @@
 			{if $contactlist.$cid.type}{trans("mobile")}{else}{trans("phone<!plural>")}{/if} {$contactlist.$cid.phone}
 		</TD>
 		<TD ALIGN="RIGHT">
-			{if !check_conf('privileges.hide_finances')}{$customerlist[customerlist].tariffvalue|money_format}<BR>{/if}
+			{if !ConfigHelper::checkConfig('privileges.hide_finances')}{$customerlist[customerlist].tariffvalue|money_format}<BR>{/if}
 			{if $customerlist[customerlist].email}{$customerlist[customerlist].email}<BR>{/if}
 			{if $customerlist[customerlist].ten}{trans("TEN:")} {$customerlist[customerlist].ten}{elseif $customerlist[customerlist].ssn}{trans("SSN:")} {$customerlist[customerlist].ssn}{/if}
 		</TD>
-		{if !check_conf('privileges.hide_finances')}
+		{if !ConfigHelper::checkConfig('privileges.hide_finances')}
 		<TD ALIGN="RIGHT" NOWRAP>
 			{$customerlist[customerlist].balance|money_format}
 		</TD>
 		{/if}
 	</TR>
 	{/if}{/section}
-	{if !check_conf('privileges.hide_finances') && !check_conf('privileges.hide_summaries')}
+	{if !ConfigHelper::checkConfig('privileges.hide_finances') && !ConfigHelper::checkConfig('privileges.hide_summaries')}
 	<TR>
 		<TD CLASS="HEADGREY" COLSPAN="3" ALIGN="RIGHT"><B>{trans("Total:")}</B></TD>
 		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP><B>{sum array=$customerlist column="tariffvalue" string_format=$LANGDEFS.$_language.money_format}</B></TD>

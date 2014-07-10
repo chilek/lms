@@ -31,7 +31,7 @@ $_EXECCMD = $CONFIG['phpui']['reload_execcmd'];
 
 $serverTime = date("r");
 
-if (check_conf('phpui.reload_timer'))
+if (ConfigHelper::checkConfig('phpui.reload_timer'))
 	$SMARTY->assign('serverTime', $serverTime);
 
 switch($_RELOAD_TYPE)

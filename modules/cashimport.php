@@ -159,10 +159,9 @@ elseif(isset($_GET['action']) && $_GET['action'] == 'txt')
 	}
 
 	if (!empty($imports)) {
-		$idate = isset($CONFIG['finances']['cashimport_use_idate'])
-			&& chkconfig($CONFIG['finances']['cashimport_use_idate']);
-		$icheck = isset($CONFIG['finances']['cashimport_checkinvoices'])
-			&& chkconfig($CONFIG['finances']['cashimport_checkinvoices']);
+            
+		$idate = ConfigHelper::checkValue(ConfigHelper::getConfig('finances.cashimport_use_idate', false));
+		$icheck = ConfigHelper::checkValue(ConfigHelper::getConfig('finances.cashimport_checkinvoices', false));
 
 		foreach ($imports as $import) {
 			// do not insert if the record is already closed (prevent multiple inserts of the same record)

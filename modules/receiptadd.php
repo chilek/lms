@@ -174,11 +174,11 @@ switch($action)
 		{
 			$customer = $LMS->GetCustomer($receipt['customerid'], true);
 			$customer['groups'] = $LMS->CustomergroupGetForCustomer($receipt['customerid']);
-			if(!isset($CONFIG['receipts']['show_notes']) || !chkconfig($CONFIG['receipts']['show_notes']))
+			if (!ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_notes', false)))
 				unset($customer['notes']);
 			
 			// niezatwierdzone dokumenty klienta
-			if(isset($CONFIG['receipts']['show_documents_warning']) && chkconfig($CONFIG['receipts']['show_documents_warning']))
+			if(ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_documents_warning', false)))
 				if($DB->GetOne('SELECT COUNT(*) FROM documents WHERE customerid = ? AND closed = 0 AND type < 0', array($receipt['customerid'])))
 				{
 					if(!empty($CONFIG['receipts']['documents_warning']))
@@ -189,7 +189,7 @@ switch($action)
 
 			// jesli klient posiada zablokowane komputery poinformujmy
 			// o tym kasjera, moze po wplacie trzeba bedzie zmienic ich status
-			if(isset($CONFIG['receipts']['show_nodes_warning']) && chkconfig($CONFIG['receipts']['show_nodes_warning']))
+			if (ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_nodes_warning', false)))
 				if($DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ownerid = ? AND access = 0', array($receipt['customerid'])))
 				{
 					if(!empty($CONFIG['receipts']['nodes_warning']))
@@ -486,11 +486,11 @@ switch($action)
 				{
 					$customer = $LMS->GetCustomer($cid, true);
 					$customer['groups'] = $LMS->CustomergroupGetForCustomer($cid);
-					if(!isset($CONFIG['receipts']['show_notes']) || !chkconfig($CONFIG['receipts']['show_notes']))
+					if(!ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_notes', false)))
 						unset($customer['notes']);
 
 					// niezatwierdzone dokumenty klienta
-					if(isset($CONFIG['receipts']['show_documents_warning']) && chkconfig($CONFIG['receipts']['show_documents_warning']))
+					if (ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_documents_warning', false)))
 						if($DB->GetOne('SELECT COUNT(*) FROM documents WHERE customerid = ? AND closed = 0 AND type < 0', array($cid)))
 						{
 							if(!empty($CONFIG['receipts']['documents_warning']))
@@ -501,7 +501,8 @@ switch($action)
 
 					// jesli klient posiada zablokowane komputery poinformujmy
 	    				// o tym kasjera, moze po wplacie trzeba bedzie zmienic ich status
-					if(isset($CONFIG['receipts']['show_nodes_warning']) && chkconfig($CONFIG['receipts']['show_nodes_warning']))
+                                                
+					if (ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_nodes_warning', false)))
 						if($DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ownerid = ? AND access = 0', array($cid)))
 						{
 							if(!empty($CONFIG['receipts']['nodes_warning']))
@@ -955,7 +956,7 @@ if(isset($list))
 	$invoicelist = array_slice($invoicelist, 0, 10);
 }
 
-if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
+if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
 {
         $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 }

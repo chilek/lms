@@ -45,7 +45,7 @@ if(sizeof($ids))
 			FROM documents
 			WHERE id = ?', array($noteid)));
 		// add payment
-		if (chkconfig($CONFIG['phpui']['note_check_payment']) && !$closed) {
+		if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.note_check_payment', false)) && !$closed) {
 			if ($value != 0)
 				$LMS->AddBalance(array(
 					'type' => 1,

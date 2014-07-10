@@ -99,7 +99,7 @@ function getThroughput($ip) {
 	global $CONFIG;
 
 	$result = new xajaxResponse();
-	$cmd = get_conf('phpui.live_traffic_helper');
+	$cmd = ConfigHelper::getConfig('phpui.live_traffic_helper');
 	if (empty($cmd))
 		return $result;
 
@@ -143,7 +143,7 @@ function getNodeStats($nodeid) {
 	$contents = $SMARTY->fetch('nodestats.html');
 	$result->append('nodeinfo', 'innerHTML', $contents);
 
-	if (get_conf('phpui.live_traffic_helper')) {
+	if (ConfigHelper::getConfig('phpui.live_traffic_helper')) {
 		$script = '
 			live_traffic_start = function() {
 				xajax.config.waitCursor = false;

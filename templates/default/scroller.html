@@ -1,4 +1,4 @@
-{if check_conf('phpui.short_pagescroller')}
+{if ConfigHelper::checkConfig('phpui.short_pagescroller')}
     <B>{trans("Page:")}
     {if $page > 1}<A HREF="?m={$layout.module}{$adlink}{if $listdata.id}&id={$listdata.id}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}&s={$listdata.state}{/if}{if $listdata.kind}&amp;k={$listdata.kind}{/if}{if $listdata.order}&amp;o={$listdata.order},{$listdata.direction}{/if}&amp;page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{/if}
     {math assign=lastpage equation="ceil(x/y)" x=$listdata.total y=$pagelimit}
