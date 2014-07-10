@@ -280,7 +280,7 @@
 	{/if}
 	<TR>
 		<TD COLSPAN="9" ALIGN="RIGHT">
-		    {$default_printpage = get_conf('invoices.default_printpage')}
+		    {$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
 			<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i', $default_printpage)} checked{/if}><label for="original">{trans("original")}</label>
             <INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}><label for="copy">{trans("copy")}</label>&nbsp;
 			<A HREF="?m=invoicelist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>

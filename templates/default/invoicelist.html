@@ -39,7 +39,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 		document.page.submit();
 	}
 
-{if check_conf('phpui.short_pagescroller')}
+{if ConfigHelper::checkConfig('phpui.short_pagescroller')}
 	function pagechange1()
 	{
 		document.page.action="?m=invoicelist&page=" + document.forms['page'].elements['page1'].value;
@@ -55,7 +55,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 {/if}
 //-->
 </SCRIPT>
-{$default_printpage = get_conf('invoices.default_printpage')}
+{$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
 <FORM METHOD="POST" NAME="page">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">

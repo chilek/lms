@@ -50,6 +50,11 @@ class LMSConfig
     private static $ini_config;
     
     /**
+     * @var ConfigContainer User rights config (privileges)
+     */
+    private static $user_rights_config;
+    
+    /**
      * Returns ini config
      * 
      * Avaliable options are:
@@ -79,9 +84,13 @@ class LMSConfig
      * 
      * @param array $options Associative array of options
      * @return ConfigContainer Config
+     * @throws Exception Exception if databse connection doesn't exist
      */
     public static function getUiConfig(array $options = array())
     {
+        if (!LMSDB::checkIfInstanceExists()) {
+            throw new Exception('Cannot load uiconfig while database connection does not exist!');
+        }
         $force = (isset($options['force'])) ? $options['force'] : false;
         if ($force || self::$ui_config === null) {
             $options['provider'] = UiConfigProvider::NAME;
@@ -90,6 +99,36 @@ class LMSConfig
             self::$ui_config = $config_loader->loadConfig($options);
         }
         return self::$ui_config;
+    }
+    
+    /**
+     * Returns user rights configuration
+     * 
+     * Avaliable options are:
+     * force - forces to reload whole ini config
+     * user_id - user id
+     * access_table - access table
+     * 
+     * @param array $options Associative array of options
+     * @return ConfigContainer User rights configuration
+     * @throws Exception Throws exception when required parameters are not set
+     */
+    public static function getUserRightsConfig(array $options = array())
+    {
+        if (!LMSDB::checkIfInstanceExists()) {
+            throw new Exception('Cannot load uiconfig while database connection does not exist!');
+        }
+        if (!isset($options['user_id']) || !isset($options['access_table'])) {
+            throw new Exception('Cannot load user rights config without user id and access table!');
+        }
+        $force = (isset($options['force'])) ? $options['force'] : false;
+        if ($force || self::$user_rights_config === null) {
+            $options['provider'] = UserRightsConfigProvider::NAME;
+            $options['parser'] = UserRightsConfigParser::NAME;
+            $config_loader = new ConfigLoader();
+            self::$user_rights_config = $config_loader->loadConfig($options);
+        }
+        return self::$user_rights_config;
     }
     
     /**
@@ -127,8 +166,35 @@ class LMSConfig
      */
     private static function mergeConfigs(array $options = array())
     {
-        $ui_config = self::getIniConfig($options);
-        $ini_config = self::getUiConfig($options);
+        $ini_config = null;
+        $ui_config = null;
+        $rights_config = null;
+        
+        if (isset($options['force_ini_only'])) {
+            $ini_config = self::getUiConfig($options);
+            $ui_config = self::$ui_config;
+            $rights_config = self::$user_rights_config;
+        } elseif (isset($options['force_ui_only'])) {
+            $ui_config = self::getUiConfig($options);
+            $ini_config = self::$ini_config;
+            $rights_config = self::$user_rights_config;
+        } elseif (isset($options['force_user_rights_only'])) {
+            try {
+                $rights_config = self::getUserRightsConfig($options);
+            } catch (Exception $ex) {
+                $rights_config = new ConfigContainer();
+            }
+            $ini_config = self::$ini_config;
+            $ui_config = self::$ui_config;
+        } else {
+            $ini_config = self::getUiConfig($options);
+            $ui_config = self::getIniConfig($options);
+            try {
+                $rights_config = self::getUserRightsConfig($options);
+            } catch (Exception $ex) {
+                $rights_config = new ConfigContainer();
+            }
+        }
         
         $ui_merge_priority = self::default_ui_merge_priority;
         if (isset($options['ui_merge_priority'])) {
@@ -140,11 +206,15 @@ class LMSConfig
             $ui_merge_priority = $options['ini_merge_priority'];
         }
         
+        $config = null;
+        
         if ($ini_merge_priority < $ui_merge_priority) {
-            return self::overrideConfigs($ui_config, $ini_config);
+            $config = self::overrideConfigs($ui_config, $ini_config);
         } else {
-            return self::overrideConfigs($ini_config, $ui_config);
+            $config = self::overrideConfigs($ini_config, $ui_config);
         }
+        
+        return self::appendOneConfigSectionsToAnother($config, $rights_config);
     }
     
     /**
@@ -168,6 +238,19 @@ class LMSConfig
         }
         
         return $config;
+    }
+    
+    /**
+     * Adds sections from one config to another
+     * 
+     * @param ConfigContainer $primary_config Primary config
+     * @param ConfigContainer $secondary_config Secondary config
+     * @return \ConfigContainer Primary config
+     */
+    private static function appendOneConfigSectionsToAnother(ConfigContainer $primary_config, ConfigContainer $secondary_config)
+    {
+        $primary_config->addSections($secondary_config->getSections());
+        return $primary_config;
     }
     
 }

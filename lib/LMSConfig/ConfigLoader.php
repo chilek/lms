@@ -79,6 +79,9 @@ class ConfigLoader
             case UiConfigProvider::NAME:
                 $provider = new UiConfigProvider();
                 break;
+            case UserRightsConfigProvider::NAME:
+                $provider = new UserRightsConfigProvider();
+                break;
             default:
                 throw new Exception('Unknown config provider!');
         }
@@ -114,11 +117,14 @@ class ConfigLoader
             case UiConfigParser::NAME:
                 $parser = new UiConfigParser();
                 break;
+            case UserRightsConfigParser::NAME:
+                $parser = new UserRightsConfigParser();
+                break;
             default:
                 throw new Exception('Unknown config parser!');
         }
         
-        return $parser->objectify($raw_config);
+        return $parser->objectify($raw_config, $options);
     }
     
 }

@@ -59,7 +59,7 @@
 		location.href = document.getElementById('newdocselect').value;
 	}
 
-{if check_conf('phpui.delete_link_in_customerbalancebox')}
+{if ConfigHelper::checkConfig('phpui.delete_link_in_customerbalancebox')}
 	function delpos()
 	{
 		if (!confirm('{trans("Are you sure, you want to delete selected operation(s) and document item(s)?")}'))
@@ -72,8 +72,8 @@
 {/if}
 	//-->
 </SCRIPT>
-{$default_printpage = get_conf('invoices.default_printpage')}
-{$default_taxrate   = get_conf('phpui.default_taxrate')}
+{$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
+{$default_taxrate   = ConfigHelper::getConfig('phpui.default_taxrate')}
 <FORM name="addbalance" method="POST" action="?m=balanceadd&amp;id={$balancelist.customerid}">
 <p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
@@ -165,7 +165,7 @@
 					<TD class="ftop text-left" colspan="9">
 						<TABLE width="100%" cellpadding="0" cellspacing="0">
 							<TR><TD style="width: 99%;" class="nobr">
-							{if check_conf('phpui.delete_link_in_customerbalancebox')}
+							{if ConfigHelper::checkConfig('phpui.delete_link_in_customerbalancebox')}
 							<A href="javascript:delpos();">{trans("Delete")} <IMG src="img/delete.gif" alt="{trans("Delete")}"></A>&nbsp;
 							{/if}
 							{trans("Print")}:

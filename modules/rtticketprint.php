@@ -38,7 +38,7 @@ if(! $LMS->GetUserRightsRT($AUTH->id, 0, $_GET['id']))
 
 $ticket = $LMS->GetTicketContents($_GET['id']);
 
-if($ticket['customerid'] && isset($CONFIG['phpui']['helpdesk_stats']) && chkconfig($CONFIG['phpui']['helpdesk_stats']))
+if ($ticket['customerid'] && ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_stats', false)))
 {
         $yearago = mktime(0, 0, 0, date('n'), date('j'), date('Y')-1);
 	$stats = $DB->GetAllByKey('SELECT COUNT(*) AS num, cause FROM rttickets

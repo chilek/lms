@@ -27,7 +27,7 @@
 			<A href="?m=tarifflist&o=count{if $listdata.direction eq "asc" && $listdata.order eq "count"},desc{/if}">{trans("Assigned:")}</A> {if $listdata.order eq "count"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" align="right" NOWRAP>
-			{if !check_conf('privileges.hide_summaries')}
+			{if !ConfigHelper::checkConfig('privileges.hide_summaries')}
 			<A href="?m=tarifflist&o=income{if $listdata.direction eq "asc" && $listdata.order eq "income"},desc{/if}">{trans("Avg. monthly income:")}</A> {if $listdata.order eq "income"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 			{/if}
 		</TD>
@@ -113,7 +113,7 @@
 			({$tarifflist[tariffs].count|default:0},{$tarifflist[tariffs].activecount|default:0})
 		</TD>
 		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
-			{if !check_conf('privileges.hide_summaries')}
+			{if !ConfigHelper::checkConfig('privileges.hide_summaries')}
 			{$tarifflist[tariffs].income|money_format}
 			{/if}
 		</TD>
@@ -152,7 +152,7 @@
 			<B>{$listdata.totalcustomerscount}({$listdata.totalcount},{$listdata.totalactivecount})</B>
 		</TD>
 		<TD WIDTH="1%" ALIGN="right" NOWRAP>
-			{if !check_conf('privileges.hide_summaries')}
+			{if !ConfigHelper::checkConfig('privileges.hide_summaries')}
 			<B>{$listdata.totalincome|money_format}</B>
 			{/if}
 		</TD>

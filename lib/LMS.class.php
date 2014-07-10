@@ -1174,7 +1174,7 @@ class LMS {
 			}
 
 			// get EtherWerX channels
-			if (chkconfig($this->CONFIG['phpui']['ewx_support'])) {
+			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false))) {
 				$channels = $this->DB->GetAllByKey('SELECT nodeid, channelid, c.name, c.id, cid,
 				        nc.upceil, nc.downceil
 					FROM ewx_stm_nodes
@@ -1988,7 +1988,7 @@ class LMS {
 
 			// EtherWerX support (devices have some limits)
 			// We must to replace big ID with smaller (first free)
-			if ($id > 99999 && chkconfig($this->CONFIG['phpui']['ewx_support'])) {
+			if ($id > 99999 && ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false))) {
 				$this->DB->BeginTrans();
 				$this->DB->LockTables('nodes');
 
@@ -2953,11 +2953,12 @@ class LMS {
 			$result['valuep'] = round(($result['value'] - floor($result['value'])) * 100);
 
 			// NOTE: don't waste CPU/mem when printing history is not set:
-			if (chkconfig($this->CONFIG['invoices']['print_balance_history'])) {
-				if (isset($this->CONFIG['invoices']['print_balance_history_save']) && chkconfig($this->CONFIG['invoices']['print_balance_history_save']))
+			if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.print_balance_history', false))) {
+				if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.print_balance_history_save', false))) {
 					$result['customerbalancelist'] = $this->GetCustomerBalanceList($result['customerid'], $result['cdate']);
-				else
+                                } else {
 					$result['customerbalancelist'] = $this->GetCustomerBalanceList($result['customerid']);
+                                }
 				$result['customerbalancelistlimit'] = $this->CONFIG['invoices']['print_balance_history_limit'];
 			}
 
@@ -3025,11 +3026,12 @@ class LMS {
 			$result['pdate'] = $result['cdate'] + ($result['paytime'] * 86400);
 
 			// NOTE: don't waste CPU/mem when printing history is not set:
-			if (!empty($this->CONFIG['notes']['print_balance_history']) && chkconfig($this->CONFIG['notes']['print_balance_history'])) {
-				if (isset($this->CONFIG['notes']['print_balance_history_save']) && chkconfig($this->CONFIG['notes']['print_balance_history_save']))
+			if (ConfigHelper::checkValue(ConfigHelper::getConfig('notes.print_balance', false))) {
+				if (ConfigHelper::checkValue(ConfigHelper::getConfig('notes.print_balance_history', false))) {
 					$result['customerbalancelist'] = $this->GetCustomerBalanceList($result['customerid'], $result['cdate']);
-				else
+                                } else {
 					$result['customerbalancelist'] = $this->GetCustomerBalanceList($result['customerid']);
+                                }
 				$result['customerbalancelistlimit'] = $this->CONFIG['notes']['print_balance_history_limit'];
 			}
 
@@ -4391,7 +4393,7 @@ class LMS {
 
 			// EtherWerX support (devices have some limits)
 			// We must to replace big ID with smaller (first free)
-			if ($id > 99999 && chkconfig($this->CONFIG['phpui']['ewx_support'])) {
+			if ($id > 99999 && ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false))) {
 				$this->DB->BeginTrans();
 				$this->DB->LockTables('ewx_channels');
 
@@ -4643,7 +4645,7 @@ class LMS {
 	public function GetQueueList($stats = true) {
 		if ($result = $this->DB->GetAll('SELECT q.id, name, email, description 
 				FROM rtqueues q'
-				. (!check_conf('privileges.superuser') ? ' JOIN rtrights r ON r.queueid = q.id
+				. (!ConfigHelper::checkConfig('privileges.superuser') ? ' JOIN rtrights r ON r.queueid = q.id
 					WHERE r.rights <> 0 AND r.userid = ?' : '') . ' ORDER BY name', array($this->AUTH->id))) {
 			if ($stats)
 				foreach ($result as $idx => $row)
@@ -4655,7 +4657,7 @@ class LMS {
 
 	public function GetQueueNames() {
 		return $this->DB->GetAll('SELECT q.id, name FROM rtqueues q'
-			. (!check_conf('privileges.superuser') ? ' JOIN rtrights r ON r.queueid = q.id 
+			. (!ConfigHelper::checkConfig('privileges.superuser') ? ' JOIN rtrights r ON r.queueid = q.id 
 				WHERE r.rights <> 0 AND r.userid = ?' : '') . ' ORDER BY name', array($this->AUTH->id));
 	}
 

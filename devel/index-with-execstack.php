@@ -110,8 +110,7 @@ if ($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=
 		$CONFIG[$row['section']][$row['var']] = $row['value'];
 
 // Redirect to SSL
-
-$_FORCE_SSL = (isset($CONFIG['phpui']['force_ssl']) ? chkconfig($CONFIG['phpui']['force_ssl']) : FALSE);
+$_FORCE_SSL = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.force_ssl', false));
 
 if ($_FORCE_SSL && $_SERVER['HTTPS'] != 'on') {
 	header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);

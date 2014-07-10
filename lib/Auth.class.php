@@ -261,7 +261,7 @@ class Auth {
 			$this->accessto = $this->VerifyAccessTo($user['accessto']);
 			$this->islogged = ($this->passverified && $this->hostverified && $this->access && $this->accessfrom && $this->accessto);
 
-			if (chkconfig($CONFIG['phpui']['use_swekey'])) {
+			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.use_swekey', false))) {
 				require_once(LIB_DIR . '/swekey/swekey_integration.php');
 				$SWEKEY = new SwekeyIntegration;
 				$this->swekeyauthenticated = $SWEKEY->IsSwekeyAuthenticated($this->swekeyid);

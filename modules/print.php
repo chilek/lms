@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if (!check_conf('privileges.reports'))
+if (!ConfigHelper::checkConfig('privileges.reports'))
 	access_denied();
 
 $type = isset($_GET['type']) ? $_GET['type'] : '';
@@ -33,7 +33,7 @@ switch($type)
 {
 	case 'customerbalance': /********************************************/
 
-		if (!check_conf('privileges.finances_management'))
+		if (!ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
 		$from = $_POST['from'];
@@ -134,7 +134,7 @@ switch($type)
 	
 	case 'balancelist': /********************************************/
 
-		if (!check_conf('privileges.finances_management'))
+		if (!ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
 		$from = $_POST['balancefrom'];
@@ -305,7 +305,7 @@ switch($type)
 
 	case 'incomereport': /********************************************/
 
-		if (!check_conf('privileges.finances_management'))
+		if (!ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
 		$from = $_POST['from'];
@@ -346,7 +346,7 @@ switch($type)
 
 	case 'importlist': /********************************************/
 
-		if (!check_conf('privileges.finances_management'))
+		if (!ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
 		$from = $_POST['importfrom'];
@@ -393,7 +393,7 @@ switch($type)
 
 	case 'invoices': /********************************************/
 
-		if (!check_conf('privileges.finances_management'))
+		if (!ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
 		$from = $_POST['invoicefrom'];
@@ -413,7 +413,7 @@ switch($type)
 			$date['from'] = mktime(0,0,0,$month,$day,$year);
 		} else { 
 			$from = date('Y/m/d',time());
-			$date['from'] = mktime(0,0,0); //pocz±tek dnia dzisiejszego
+			$date['from'] = mktime(0,0,0); //poczï¿½tek dnia dzisiejszego
 		}
 
 		$type = '';
@@ -438,7 +438,7 @@ switch($type)
 
 	case 'transferforms': /********************************************/
 
-		if (!check_conf('privileges.finances_management'))
+		if (!ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
 		$from = $_POST['invoicefrom'];
@@ -457,7 +457,7 @@ switch($type)
 			$date['from'] = mktime(0,0,0,$month,$day,$year);
 		} else { 
 			$from = date('Y/m/d',time());
-			$date['from'] = mktime(0,0,0); //pocz±tek dnia dzisiejszego
+			$date['from'] = mktime(0,0,0); //poczï¿½tek dnia dzisiejszego
 		}
 		
 		$_GET['from'] = $date['from'];
@@ -474,7 +474,7 @@ switch($type)
 
 	case 'transferforms2': /********************************************/
 
-		if (!check_conf('privileges.finances_management'))
+		if (!ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
 		require_once(MODULES_DIR.'/transferforms2.php');
@@ -482,7 +482,7 @@ switch($type)
 
 	case 'liabilityreport': /********************************************/
 
-		if (!check_conf('privileges.finances_management'))
+		if (!ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
 		if (isset($_POST['day']) && $_POST['day']) 
@@ -662,7 +662,7 @@ switch($type)
 	
 	case 'receiptlist':
 
-		if (!check_conf('privileges.cash_operations'))
+		if (!ConfigHelper::checkConfig('privileges.cash_operations'))
 			access_denied();
 
 		if($_POST['from'])
@@ -801,14 +801,14 @@ switch($type)
 			// (summaries and page size calculations)
 			$maxrows = $rows * 2;	// dwie linie na rekord
 			$counter = $maxrows;
-			$rows = 0;		// rzeczywista liczba rekordów na stronie
+			$rows = 0;		// rzeczywista liczba rekordï¿½w na stronie
 			$i = 1;
 			$x = 1;
 
 			foreach($list as $row)
 			{
-				// tutaj musimy trochê pokombinowaæ, bo liczba
-				// rekordów na stronie bêdzie zmienna
+				// tutaj musimy trochï¿½ pokombinowaï¿½, bo liczba
+				// rekordï¿½w na stronie bï¿½dzie zmienna
 				$tmp = is_array($row['title']) ? sizeof($row['title']) : 2;
 				$counter -= max($tmp,2);
 				if($counter<0)
@@ -864,7 +864,7 @@ switch($type)
 
 		$layout['pagetitle'] = trans('Reports');
 
-		if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
+		if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
 		{
 			$SMARTY->assign('customers', $LMS->GetCustomerNames());
 		}

@@ -182,7 +182,7 @@ if(isset($_POST['ticket']))
 		// przy zmianie kolejki powiadamiamy o "nowym" zgloszeniu
 		if ($ticket['queueid'] != $ticketedit['queueid']
 			&& isset($CONFIG['phpui']['newticket_notify'])
-			&& chkconfig($CONFIG['phpui']['newticket_notify'])) {
+			&& ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.newticket_notify', false))) {
 			$user = $LMS->GetUserInfo($AUTH->id);
 			$queue = $LMS->GetQueueByTicketId($ticket['ticketid']);
 			$mailfname = '';
@@ -209,7 +209,7 @@ if(isset($_POST['ticket']))
 				.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 				.'?m=rtticketview&id='.$ticket['ticketid'];
 
-			if(chkconfig($CONFIG['phpui']['helpdesk_customerinfo']) && $ticketedit['customerid'])
+			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_customerinfo', false)) && $ticketedit['customerid'])
 			{
 				$info = $DB->GetRow('SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
 						email, address, zip, city, (SELECT phone FROM customercontacts 
@@ -298,14 +298,14 @@ $layout['pagetitle'] = trans('Ticket Edit: $a',sprintf("%06d",$ticket['ticketid'
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
+if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
 {
         $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
 }
 
 $queuelist = $LMS->GetQueueNames();
-if (get_conf('userpanel.limit_ticket_movements_to_selected_queues')) {
-	$selectedqueues = explode(';', get_conf('userpanel.queues'));
+if (ConfigHelper::getConfig('userpanel.limit_ticket_movements_to_selected_queues')) {
+	$selectedqueues = explode(';', ConfigHelper::getConfig('userpanel.queues'));
 	if (in_array($ticket['queueid'], $selectedqueues))
 		foreach ($queuelist as $idx => $queue)
 			if (!in_array($queue['id'], $selectedqueues))

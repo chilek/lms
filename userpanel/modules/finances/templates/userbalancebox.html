@@ -1,6 +1,6 @@
 <!--// $Id$ //-->
 {box title="Your balance"}
-{$disable_invoices = check_conf('userpanel.disable_invoices')}
+{$disable_invoices = ConfigHelper::checkConfig('userpanel.disable_invoices')}
 <form name="invoices" action="?m=finances&f=invoice" method="POST" target="_blank">
 <table style="width: 100%;" cellpadding="3">
 	<tr class="darkest">

@@ -33,7 +33,7 @@ window.open('?m=note&id={$note}');
 		document.page.submit();
 	}
 
-{if check_conf('phpui', 'short_pagescroller')}
+{if ConfigHelper::checkConfig('phpui.short_pagescroller')}
 	function pagechange1()
 	{
 		document.page.action="?m=notelist&page=" + document.forms['page'].elements['page1'].value;

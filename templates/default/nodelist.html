@@ -1,7 +1,7 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-{$lastonline_limit = get_conf('phpui.lastonline_limit')}
+{$lastonline_limit = ConfigHelper::getConfig('phpui.lastonline_limit')}
 <FORM method="get" action="?m={$layout.module}" name="choosefilter">
 <p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">

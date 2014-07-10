@@ -186,7 +186,7 @@ $layout['pagetitle'] = trans('User Edit: $a', $userinfo['login']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-if ($SYSLOG && (check_conf('privileges.superuser') || check_conf('privileges.transaction_logs'))) {
+if ($SYSLOG && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))) {
 	$trans = $SYSLOG->GetTransactions(array('userid' => $id));
 	if (!empty($trans))
 		foreach ($trans as $idx => $tran)

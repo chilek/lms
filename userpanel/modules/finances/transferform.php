@@ -46,7 +46,7 @@ if ($division) {
 
 $USER_T1 = (!isset($CONFIG['finances']['pay_title']) ? 'Abonament - ID:%CID% %LongCID%' : $CONFIG['finances']['pay_title']);
 $CURR = 'PLN';
-$SHORT_TO_WORDS = check_conf('phpui.to_words_short_version');
+$SHORT_TO_WORDS = ConfigHelper::checkConfig('phpui.to_words_short_version');
 
 $Before = array ("%CID%", "%LongCID%");
 $After = array ($customer['id'], sprintf('%04d',$customer['id']));

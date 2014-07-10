@@ -115,7 +115,7 @@ if (isset($_POST['nodedata']))
 	foreach($nodedata['macs'] as $key => $value)
 		if(check_mac($value))
 		{
-			if($value!='00:00:00:00:00:00' && (!isset($CONFIG['phpui']['allow_mac_sharing']) || !chkconfig($CONFIG['phpui']['allow_mac_sharing'])))
+			if($value!='00:00:00:00:00:00' && !ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.allow_mac_sharing', false)))
 			{
 				if($LMS->GetNodeIDByMAC($value))
 					$error['mac'.$key] = trans('Specified MAC address is in use!');
@@ -224,7 +224,7 @@ if($customerid = $nodedata['ownerid'])
 else
 	$SMARTY->assign('allnodegroups', $LMS->GetNodeGroupNames());
 
-if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
+if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
 {
     $SMARTY->assign('customers', $LMS->GetCustomerNames());
 }

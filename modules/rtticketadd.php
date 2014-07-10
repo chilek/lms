@@ -103,7 +103,7 @@ if(isset($_POST['ticket']))
 	{
 		$id = $LMS->TicketAdd($ticket, $files);
 
-		if (isset($CONFIG['phpui']['newticket_notify']) && chkconfig($CONFIG['phpui']['newticket_notify']))
+		if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.newticket_notify', false)))
 		{
 			$user = $LMS->GetUserInfo($AUTH->id);
 
@@ -136,7 +136,7 @@ if(isset($_POST['ticket']))
 				.substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 				.'?m=rtticketview&id='.$id;
 
-			if (chkconfig($CONFIG['phpui']['helpdesk_customerinfo']))
+			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_customerinfo', false)))
 				if ($ticket['customerid'])
 				{
 					$info = $DB->GetRow('SELECT pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
@@ -245,7 +245,7 @@ $layout['pagetitle'] = trans('New Ticket');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
+if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
 {
 	$SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
 }

@@ -194,10 +194,11 @@ $c="month";
 }
 $SESSION->save('ilc', $c);
 
-if(isset($_POST['search']))
+if (isset($_POST['search'])) {
 	$h = isset($_POST['hideclosed']) ? true : false;
-elseif (($h = $SESSION->get('ilh')) === NULL)
-	$h = isset($CONFIG['invoices']['hide_closed']) ? chkconfig($CONFIG['invoices']['hide_closed']) : false;
+} elseif (($h = $SESSION->get('ilh')) === NULL) {
+	$h = ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.hide_closed', false));
+}
 $SESSION->save('ilh', $h);
 
 if(isset($_POST['group'])) {

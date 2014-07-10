@@ -1,7 +1,7 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <table width="100%" cellpadding="10">
-{if !$usernodes.total && check_conf('userpanel.hide_nodesbox')}
+{if !$usernodes.total && ConfigHelper::checkConfig('userpanel.hide_nodesbox')}
 	<tr>
 		<td valign="top" width="100%">
 			{include file="module:updateuserinfobox.html"}

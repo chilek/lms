@@ -79,7 +79,7 @@ Niniejszym, zgodnie z zawartą Umową, obciążamy Państwa należnościami wg p
 	<TR>
 		<TD WIDTH="50%" ALIGN="RIGHT" CLASS="sdr">
 			{trans("In words:")}
-			{if check_conf('phpui.to_words_short_version')}
+			{if ConfigHelper::checkConfig('phpui.to_words_short_version')}
 				{$note.value|string_format:"%d"|to_words:0:"":1} {$note.valuep|string_format:"%02d"}/100
 			{else}
 				{t a=$note.value|string_format:"%d"|to_words b=$note.valuep|to_words}$a dollars $b cents{/t}

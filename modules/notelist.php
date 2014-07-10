@@ -179,7 +179,7 @@ $SESSION->save('dnlc', $c);
 if(isset($_POST['search']))
 	$h = isset($_POST['hideclosed']) ? true : false;
 elseif (($h = $SESSION->get('dnlh')) === NULL)
-	$h = isset($CONFIG['notes']['hide_closed']) ? chkconfig($CONFIG['notes']['hide_closed']) : false;
+	$h = ConfigHelper::checkValue(ConfigHelper::getConfig('notes.hide_closed', false));
 $SESSION->save('dnlh', $h);
 
 if(isset($_POST['group'])) {

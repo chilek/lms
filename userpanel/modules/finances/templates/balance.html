@@ -8,7 +8,7 @@
     {/if}
 </h1>
 {if $userinfo.balance < 0}
-	{if !check_conf('userpanel.disable_transferform')}
+	{if !ConfigHelper::checkConfig('userpanel.disable_transferform')}
 	<a href="?m=finances&amp;f=transferform" target="_blank">
 	<font color="red">{trans("Click here to print payment form")}</font>
 	</a>

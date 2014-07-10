@@ -114,7 +114,7 @@
 	map = createMap(devices, devlinks, nodes, nodelinks, true);
 	{/if}
 
-	set_lastonline_limit({get_conf('phpui.lastonline_limit')});
+	set_lastonline_limit({ConfigHelper::getConfig('phpui.lastonline_limit')});
 	setTimeout("netdevmap_refresh()", lastonline_limit * 1000);
 //-->
 </script>

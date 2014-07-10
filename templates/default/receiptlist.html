@@ -32,7 +32,7 @@
 		document.page.submit();
 	}
 
-{if check_conf('phpui.short_pagescroller')}
+{if ConfigHelper::checkConfig('phpui.short_pagescroller')}
 	function pagechange1()
 	{
 		document.page.action="?m=receiptlist&page=" + document.forms['page'].elements['page1'].value;
@@ -185,14 +185,14 @@
 	</TR>
         <TR>
 		<TD colspan="2" align="right" NOWRAP style="vertical-align: top;">
-			{if !check_conf('privileges.hide_summaries')}
+			{if !ConfigHelper::checkConfig('privileges.hide_summaries')}
 			<B>{trans("Total:")}</B><HR>
 			<B>{trans("Initial balance:")}</B><BR>
 			<B>{trans("Final balance:")}</B><BR>
 			{/if}
 		</TD>
 		<TD nowrap align="right" style="vertical-align: top;">
-			{if !check_conf('privileges.hide_summaries')}
+			{if !ConfigHelper::checkConfig('privileges.hide_summaries')}
 			<NOBR>
 			{$listdata.totalincome|money_format}<HR>
 			{$listdata.startbalance|money_format}<BR>
@@ -201,12 +201,12 @@
 			{/if}
 		</TD>
 		<TD nowrap align="right" style="vertical-align: top;">
-			{if !check_conf('privileges.hide_summaries')}
+			{if !ConfigHelper::checkConfig('privileges.hide_summaries')}
 			{$listdata.totalexpense|money_format}<HR>
 			{/if}
 		</TD>
 		<TD colspan="3" align="right">
-			{if !check_conf('privileges.hide_summaries')}<H1>{trans("Cash state:")} <B>{$listdata.cashstate|money_format}</B></H1>{/if}
+			{if !ConfigHelper::checkConfig('privileges.hide_summaries')}<H1>{trans("Cash state:")} <B>{$listdata.cashstate|money_format}</B></H1>{/if}
 			<A href="?m=cashreglogview&regid={$listdata.regid}">{trans("Cash history")} <img src="img/value.gif" alt=""></A>&nbsp;
 			<A href="?m=receiptadd&type=in&action=init&regid={$listdata.regid}">{trans("New Cash-in Receipt")} <img src="img/save.gif" alt=""></A>&nbsp;
 			<A href="?m=receiptadd&type=out&action=init&regid={$listdata.regid}">{trans("New Cash-out Receipt")} <img src="img/save.gif" alt=""></A>

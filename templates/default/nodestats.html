@@ -35,7 +35,7 @@
 						{$nodestats.month.download.data|string_format:"%.2f"} {$nodestats.month.download.units} ({$nodestats.month.downavg|string_format:"%d"} kbit/s) / {$nodestats.month.upload.data|string_format:"%.2f"} {$nodestats.month.upload.units} ({$nodestats.month.upavg|string_format:"%d"} kbit/s)
 					</TD>
 				</TR>
-				{if get_conf('phpui.live_traffic_helper')}
+				{if ConfigHelper::getConfig('phpui.live_traffic_helper')}
 				<TR>
 					<TD style="width: 1%; white-space: nowrap;">
 						<span class="bold">{trans("current:")}</span>

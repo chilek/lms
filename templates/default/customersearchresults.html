@@ -46,7 +46,7 @@
 			{trans("Services:")}
 		</TD>
 		<TD width="1%" ALIGN="right" valign="top">
-			{if !check_conf('privileges.hide_finances')}<a href="?m=customersearch&search=1&o=balance{if $listdata.direction eq "asc" && $listdata.order eq "balance"},desc{/if}">{trans("Balance:")}</A>&nbsp;{if $listdata.order eq "balance"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			{if !ConfigHelper::checkConfig('privileges.hide_finances')}<a href="?m=customersearch&search=1&o=balance{if $listdata.direction eq "asc" && $listdata.order eq "balance"},desc{/if}">{trans("Balance:")}</A>&nbsp;{if $listdata.order eq "balance"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<a href="?m=customersearch&search=1&o=tariff{if $listdata.direction eq "asc" && $listdata.order eq "tariff"},desc{/if}">{trans("Subscription:")}</A>&nbsp;{if $listdata.order eq "tariff"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}{/if}
 		</TD>
 		<TD width="1%" align="right" nowrap>
@@ -81,7 +81,7 @@
 			{/if}
 		</TD>
 		<TD align="right" valign="top" NOWRAP>
-			{if !check_conf('privileges.hide_finances')}
+			{if !ConfigHelper::checkConfig('privileges.hide_finances')}
 			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALT="">{if $customerlist[customerlist].balance < 0}<font class="alert">{/if}{$customerlist[customerlist].balance|money_format}{if $customerlist[customerlist].balance < 0}</FONT>{/if}<BR><IMG src="img/empty.gif" width="1" height="16" ALT=""><FONT CLASS="blend">{$customerlist[customerlist].tariffvalue|money_format}</FONT></NOBR>
 			{/if}
 		</TD>
@@ -163,13 +163,13 @@
 			&nbsp;
 		</TD>
 		<TD align="right">
-			{if !check_conf('privileges.hide_finances') && !check_conf('privileges.hide_summaries')}
+			{if !ConfigHelper::checkConfig('privileges.hide_finances') && !ConfigHelper::checkConfig('privileges.hide_summaries')}
 			<B>{trans("Outstandings")}:<BR>
 			{trans("Overcharges")}:</B>
 			{/if}
 		</TD>
 		<TD align="right" nowrap>
-			{if !check_conf('privileges.hide_finances') && !check_conf('privileges.hide_summaries')}
+			{if !ConfigHelper::checkConfig('privileges.hide_finances') && !ConfigHelper::checkConfig('privileges.hide_summaries')}
 			<B>{$listdata.below|money_format}<BR>
 			{$listdata.over|money_format}</B>
 			{/if}

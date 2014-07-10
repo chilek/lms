@@ -181,7 +181,7 @@
 			<IMG SRC="img/info1.gif" ALT="{trans("Description:")}">
 		</TD>
 		<TD style="width: 99%;" COLSPAN="2">
-			<input type="checkbox" id="info_label" onclick="javascript:toggle_visual_editor('info');"{if get_conf('phpui.default_editor') == 'wysiwyg'} checked{/if}>
+			<input type="checkbox" id="info_label" onclick="javascript:toggle_visual_editor('info');"{if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'} checked{/if}>
 			<label for="info_label">{trans("visual editor")}</label><br>
 			<TEXTAREA NAME="nodeedit[info]" id="info" COLS="50" ROWS="5" {tip text="Enter additional information (optional)"}>{$nodeinfo.info}</TEXTAREA>
 		</TD>
@@ -247,7 +247,7 @@
 
 		var passwd = new Array();
 		var items = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-		var length = {get_conf('phpui.nodepassword_length', '16')};
+		var length = {ConfigHelper::getConfig('phpui.nodepassword_length', '16')};
 		if (length > 32) length = 32;
 
 		for (var i=0; i<length; i++)
@@ -310,7 +310,7 @@
 	check_teryt('location', true);
 
 	tinymce_init('{$_ui_language}');
-	{if get_conf('phpui.default_editor') == 'wysiwyg'}
+	{if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'}
 	toggle_visual_editor('info');
 	{/if}
 //-->

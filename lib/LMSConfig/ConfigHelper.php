@@ -46,15 +46,15 @@ class ConfigHelper
             return $default;
         }
 
-        if (!LMSConfig::getIniConfig()->hasSection($section_name)) {
+        if (!LMSConfig::getConfig()->hasSection($section_name)) {
             return $default;
         }
 
-        if (!LMSConfig::getIniConfig()->getSection($section_name)->hasVariable($variable_name)) {
+        if (!LMSConfig::getConfig()->getSection($section_name)->hasVariable($variable_name)) {
             return $default;
         }
 
-        $value = LMSConfig::getIniConfig()->getSection($section_name)->getVariable($variable_name);
+        $value = LMSConfig::getConfig()->getSection($section_name)->getVariable($variable_name)->getValue();
 
         return $value == '' ? $default : $value;
     }
@@ -72,15 +72,9 @@ class ConfigHelper
         if (empty($variable_name)) {
             return false;
         }
-
-        if ($section_name === 'privileges'
-            && LMSConfig::getConfig()->hasSection($section_name)
-            && LMSConfig::getConfig()->getSection($section_name)->hasVariable('superuser')
-            && !empty(LMSConfig::getConfig()->getSection($section_name)->getVariable('superuser'))
-            && preg_match('/^hide/', $variable_name)) {
-            return false;
-        } else {
-            return true;
+        
+        if ($section_name === 'privileges' && !self::getConfig($name)) {
+            return preg_match('/^hide/', $variable_name) ? false : true;
         }
 
         if (!LMSConfig::getConfig()->hasSection($section_name)) {
@@ -90,8 +84,8 @@ class ConfigHelper
         if (!LMSConfig::getConfig()->getSection($section_name)->hasVariable($variable_name)) {
             return false;
         }
-
-        return self::checkValue(LMSConfig::getConfig()->getSection($section_name)->getVariable($variable_name));
+        
+        return self::checkValue(LMSConfig::getConfig()->getSection($section_name)->getVariable($variable_name)->getValue());
     }
     
     /**

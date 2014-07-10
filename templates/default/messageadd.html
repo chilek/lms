@@ -309,7 +309,7 @@
 			<TABLE class="lmsbox-inner">
 				<TBODY>
 					<TR><TD>
-						<input type="checkbox" id="mailmessage_label" name="message[wysiwyg]" onClick="javascript:toggle_visual_editor('mailmessage');"{if get_conf('phpui.default_editor') == 'wysiwyg'} checked{/if}>
+						<input type="checkbox" id="mailmessage_label" name="message[wysiwyg]" onClick="javascript:toggle_visual_editor('mailmessage');"{if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'} checked{/if}>
 						<label for="mailmessage_label">{trans("visual editor")}</label>
 					</TD></TR>
 					<TR><TD>
@@ -385,7 +385,7 @@ multiselect('message', 'messageusers', '{trans("- none -")}', users);
 multiselect('message', 'customergroups', '{trans("- all groups -")}');
 
 tinymce_init('{$_ui_language}');
-{if get_conf('phpui.default_editor') == 'wysiwyg'}
+{if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'}
 toggle_visual_editor('mailmessage');
 {/if}
 

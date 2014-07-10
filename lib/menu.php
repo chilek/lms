@@ -714,7 +714,7 @@ $menu = array(
 	);
 
 // menu item for EtherWerX STM channels management
-if (chkconfig($CONFIG['phpui']['ewx_support'])) {
+if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false))) {
 	$menu['netdevices']['submenu'][] = array(
 		'name' => trans('Channels List'),
 		'link' => '?m=ewxchlist',
@@ -729,7 +729,7 @@ if (chkconfig($CONFIG['phpui']['ewx_support'])) {
 	);
 }
 
-if (chkconfig($CONFIG['phpui']['logging'])) {
+if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.logging', false))) {
 	$menu['log'] = array(
 		'name' => trans('Transaction Log'),
 		'img' => 'recover.gif',

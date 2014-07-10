@@ -121,7 +121,7 @@ if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0
 
 // Redirect to SSL
 
-$_FORCE_SSL = check_conf('phpui.force_ssl');
+$_FORCE_SSL = ConfigHelper::checkConfig('phpui.force_ssl');
 
 if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
 {
@@ -176,7 +176,7 @@ $SMARTY->addTemplateDir(array(
 	USERPANEL_DIR . '/templates',
 ));
 $SMARTY->setCompileDir(SMARTY_COMPILE_DIR);
-$SMARTY->debugging = check_conf('phpui.smarty_debug');
+$SMARTY->debugging = ConfigHelper::checkConfig('phpui.smarty_debug');
 require_once(USERPANEL_LIB_DIR.'/smarty_addons.php');
 
 $layout['upv'] = $USERPANEL->_version.' ('.$USERPANEL->_revision.'/'.$SESSION->_revision.')';
@@ -201,7 +201,7 @@ if($SESSION->islogged)
 	$rights = $USERPANEL->GetCustomerRights($SESSION->id);
 	$SMARTY->assign('rights', $rights);
 
-	if(check_conf('userpanel.hide_nodes_modules'))
+	if(ConfigHelper::checkConfig('userpanel.hide_nodes_modules'))
 	{
 		if(!$DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ownerid = ? LIMIT 1', array($SESSION->id)))
 		{
