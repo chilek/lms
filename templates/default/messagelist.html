@@ -41,6 +41,8 @@
 				<OPTION value="{$smarty.const.MSG_SMS}"{if $listdata.type == $smarty.const.MSG_SMS} SELECTED{/if}>{trans("sms")}</OPTION>
 				<OPTION value="{$smarty.const.MSG_ANYSMS}"{if $listdata.type == $smarty.const.MSG_ANYSMS} SELECTED{/if}>{trans("any sms")}</OPTION>
 				<OPTION value="{$smarty.const.MSG_WWW}"{if $listdata.type == $smarty.const.MSG_WWW} SELECTED{/if}>{trans("www")}</OPTION>
+				<OPTION value="{$smarty.const.MSG_USERPANEL}"{if $listdata.type == $smarty.const.MSG_USERPANEL} SELECTED{/if}>{trans("userpanel")}</OPTION>
+				<OPTION value="{$smarty.const.MSG_USERPANEL_URGENT}"{if $listdata.type == $smarty.const.MSG_USERPANEL_URGENT} SELECTED{/if}>{trans("userpanel urgent")}</OPTION>
 			</SELECT>&nbsp;
 			{trans("Status:")}
 			<SELECT size="1" name="status">
@@ -77,6 +79,8 @@
 			<img src="img/email.gif" alt="email">
 			{elseif $message.type == $smarty.const.MSG_WWW}
 			<img src="img/network.gif" alt="www">
+			{elseif $message.type == $smarty.const.MSG_USERPANEL || $message.type == $smarty.const.MSG_USERPANEL_URGENT}
+			<img src="img/cms.gif" alt="userpanel">
 			{else}
 			<img src="img/sms.gif" alt="sms">
 			{/if}

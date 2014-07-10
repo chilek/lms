@@ -22,7 +22,7 @@
 
 	function typesel(elem)
 	{
-		if(elem == 'typesms' || elem == 'typeanysms' || elem == 'typewww') {
+		if(elem == 'typesms' || elem == 'typeanysms' || elem == 'typewww' || elem == 'typeuserpanel' || elem == 'typeuserpanelurgent') {
 			document.getElementById('mailfrom').style.display = 'none';
 			document.getElementById('mailsender').style.display = 'none';
 			document.getElementById('attachment').style.display = 'none';
@@ -41,7 +41,17 @@
 				document.getElementById('smsbody').style.display = 'none';
 				document.getElementById('charscount').style.display = 'none';
 				xajax_getMessageTemplates({$smarty.const.TMPL_WWW});
-			} else {
+			}	else if (elem == 'typeuserpanel') {
+				document.getElementById('mailbody').style.display = '';
+				document.getElementById('smsbody').style.display = 'none';
+				document.getElementById('charscount').style.display = 'none';
+				xajax_getMessageTemplates({$smarty.const.TMPL_USERPANEL});
+			}	else if (elem == 'typeuserpanelurgent') {
+				document.getElementById('mailbody').style.display = '';
+				document.getElementById('smsbody').style.display = 'none';
+				document.getElementById('charscount').style.display = 'none';
+				xajax_getMessageTemplates({$smarty.const.TMPL_USERPANEL_URGENT});
+			}	else {
 				document.getElementById('mailbody').style.display = 'none';
 				document.getElementById('smsbody').style.display = '';
 				document.getElementById('charscount').style.display = '';
@@ -82,7 +92,7 @@
 
 	function change_message_template(tmplid) {
 		if (tmplid)
-			xajax_getMessageTemplate(tmplid, 'subject', xjx.$('typemail').checked || xjx.$('typewww') ? 'mailmessage' : 'smstext');
+			xajax_getMessageTemplate(tmplid, 'subject', xjx.$('typemail').checked || xjx.$('typewww').checked || xjx.$('typeuserpanel').checked || xjx.$('typeuserpanelurgent').checked ? 'mailmessage' : 'smstext');
 	}
 
 	function messageTemplateReceived(subjectelem, subject, messageelem, message) {
@@ -206,6 +216,8 @@
 			<INPUT type="radio" name="message[type]" id="typeanysms" value="{$smarty.const.MSG_ANYSMS}"{if $message.type == $smarty.const.MSG_ANYSMS} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typeanysms"><span class="bold">{trans("any sms")}</span></label>
 			{/if}
 			<INPUT type="radio" name="message[type]" id="typewww" value="{$smarty.const.MSG_WWW}"{if $message.type == $smarty.const.MSG_WWW} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typewww"><span class="bold">{trans("www")}</span></label>
+			<INPUT type="radio" name="message[type]" id="typeuserpanel" value="{$smarty.const.MSG_USERPANEL}"{if $message.type == $smarty.const.MSG_USERPANEL} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typeuserpanel"><span class="bold">{trans("userpanel")}</span></label>
+			<INPUT type="radio" name="message[type]" id="typeuserpanelurgent" value="{$smarty.const.MSG_USERPANEL_URGENT}"{if $message.type == $smarty.const.MSG_USERPANEL_URGENT} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typeuserpanelurgent"><span class="bold">{trans("userpanel urgent")}</span></label>
 		</TD>
 	</TR>
 	<TR ID="mailsender"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
@@ -286,7 +298,7 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR ID="mailbody"{if $message.type > $smarty.const.MSG_MAIL && $message.type < $smarty.const.MSG_WWW} style="display: none"{/if}>
+	<TR ID="mailbody"{if $message.type > $smarty.const.MSG_MAIL && $message.type < $smarty.const.MSG_USERPANEL_URGENT} style="display: none"{/if}>
 		<TD style="width: 1%;">
 			<IMG src="img/edit.gif" alt="">
 		</TD>

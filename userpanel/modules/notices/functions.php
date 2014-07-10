@@ -27,17 +27,39 @@
 function module_main()
 {
     global $DB,$LMS,$SESSION,$SMARTY;
-    if(isset($_GET['confirm']))
+    
+  if(isset($_GET['confirm_old']))
     {
-	$DB->Execute('UPDATE nodes SET warning=0 WHERE ownerid = ?', array($SESSION->id));
+       $DB->Execute('UPDATE nodes SET warning=0 WHERE ownerid = ?', array($SESSION->id));
     }
     elseif($DB->GetOne('SELECT MAX(warning) FROM nodes WHERE ownerid = ?', array($SESSION->id)))
     {
-	$notice = $LMS->GetCustomerMessage($SESSION->id);
-	$SMARTY->assign('notice', $notice);
+       $warning = $LMS->GetCustomerMessage($SESSION->id);
+       $SMARTY->assign('warning', $warning);
     }
+    
+       
+  if(isset($_GET['confirm']))
+    {
+       $confirm = $_GET['confirm'];
+       $DB->Execute('UPDATE messageitems SET status = 2 WHERE id = ?', array($confirm));
+					header('Location: ?m=notices');
+    }
+    
+  else
+  {
+       $notice = $DB->GetAll('SELECT m.subject, m.cdate, m.body, m.type, mi.id, mi.messageid, mi.destination, mi.status 
+                              FROM customers c, messageitems mi, messages m 
+                              WHERE c.id=mi.customerid 
+                              AND m.id=mi.messageid
+                              AND m.type in (5,6)
+                              AND c.id=?
+                              ORDER BY mi.status asc, m.cdate desc'
+                              , array($SESSION->id));
+					$SMARTY->assign('notice', $notice);
+  }
 
-    $SMARTY->display('module:notices.html');
-}
+       $SMARTY->display('module:notices.html');
+ }
 
 ?>

@@ -204,8 +204,12 @@ if(isset($_POST['message']))
 		$message['type'] == MSG_SMS;
 	elseif ($message['type'] == MSG_ANYSMS)
 		$message['type'] == MSG_ANYSMS;
-	else
+	elseif ($message['type'] == MSG_WWW)
 		$message['type'] == MSG_WWW;
+	elseif ($message['type'] == MSG_USERPANEL)
+		$message['type'] == MSG_USERPANEL;
+	else
+		$message['type'] == MSG_USERPANEL_URGENT;
 
 	if(empty($message['customerid']) && ($message['group'] < 0 || $message['group'] > 7))
 		$error['group'] = trans('Incorrect customers group!');
@@ -218,7 +222,7 @@ if(isset($_POST['message']))
 			$error['sender'] = trans('Specified e-mail is not correct!');
 		if ($message['from'] == '')
 			$error['from'] = trans('Sender name is required!');
-	} elseif ($message['type'] == MSG_WWW)
+	} elseif ($message['type'] == MSG_WWW || $message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT)
 		$message['body'] = $message['mailbody'];
 	else {
 		$message['body'] = $message['smsbody'];
@@ -251,6 +255,12 @@ if(isset($_POST['message']))
 				break;
 			case MSG_WWW:
 				$msgtmpltype = TMPL_WWW;
+				break;
+			case MSG_USERPANEL:
+				$msgtmpltype = TMPL_USERPANEL;
+				break;
+			case MSG_USERPANEL_URGENT:
+				$msgtmpltype = TMPL_USERPANEL_URGENT;
 				break;
 		}
 		switch ($msgtmploper) {
@@ -344,6 +354,10 @@ if(isset($_POST['message']))
 				$recipients[$key]['destination'] = explode(',', $row['email']);
 			elseif ($message['type'] == MSG_WWW)
 				$recipients[$key]['destination'] = array(trans('www'));
+			elseif ($message['type'] == MSG_USERPANEL)
+				$recipients[$key]['destination'] = array(trans('userpanel'));
+			elseif ($message['type'] == MSG_USERPANEL_URGENT)
+				$recipients[$key]['destination'] = array(trans('userpanel urgent'));
 			else
 				$recipients[$key]['destination'] = explode(',', $row['phone']);
 
@@ -395,6 +409,8 @@ if(isset($_POST['message']))
 					echo '<img src="img/mail.gif" border="0" align="absmiddle" alt=""> ';
 				} elseif ($message['type'] == MSG_WWW)
 					echo '<img src="img/network.gif" border="0" align="absmiddle" alt=""> ';
+				elseif ($message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT)
+					echo '<img src="img/cms.gif" border="0" align="absmiddle" alt=""> ';
 				else {
 					$destination = preg_replace('/[^0-9]/', '', $destination);
 					echo '<img src="img/sms.gif" border="0" align="absmiddle" alt=""> ';
@@ -407,7 +423,7 @@ if(isset($_POST['message']))
 
 				if ($message['type'] == MSG_MAIL)
 					$result = $LMS->SendMail($destination, $headers, $body, $files);
-				elseif ($message['type'] == MSG_WWW)
+				elseif ($message['type'] == MSG_WWW || $message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT)
 					$result = MSG_NEW;
 				else
 					$result = $LMS->SendSMS($destination, $body, $msgid);
@@ -471,6 +487,12 @@ if (isset($message['type'])) {
 			break;
 		case MSG_WWW:
 			$msgtmpltype = TMPL_WWW;
+			break;
+		case MSG_USERPANEL:
+			$msgtmpltype = TMPL_USERPANEL;
+			break;
+		case MSG_USERPANEL_URGENT:
+			$msgtmpltype = TMPL_USERPANEL_URGENT;
 			break;
 	}
 } else

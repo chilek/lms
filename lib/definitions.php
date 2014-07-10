@@ -60,12 +60,16 @@ define('MSG_MAIL', 1);
 define('MSG_SMS', 2);
 define('MSG_ANYSMS', 3);
 define('MSG_WWW', 4);
+define('MSG_USERPANEL', 5);
+define('MSG_USERPANEL_URGENT', 6);
 
 // Template types
 define('TMPL_WARNING', 1);
 define('TMPL_MAIL', 2);
 define('TMPL_SMS', 3);
 define('TMPL_WWW', 4);
+define('TMPL_USERPANEL', 5);
+define('TMPL_USERPANEL_URGENT', 6);
 
 // Account types
 define('ACCOUNT_SHELL', 1);
