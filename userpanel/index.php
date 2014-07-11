@@ -43,6 +43,8 @@ elseif(is_readable('/etc/lms/lms-'.$_SERVER['HTTP_HOST'].'.ini'))
 elseif(!is_readable($CONFIG_FILE))
         die('Unable to read configuration file ['.$CONFIG_FILE.']!');
 
+define('CONFIG_FILE', $CONFIG_FILE);
+
 // Parse configuration file
 $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 
@@ -85,7 +87,7 @@ $DB = null;
 
 try {
 
-    $DB = LMSDB::getDB($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
+    $DB = LMSDB::getInstance();
 
 } catch (Exception $ex) {
     
