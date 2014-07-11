@@ -209,6 +209,13 @@ if ($AUTH->islogged) {
 	$res = $LMS->ExecHook('access_table_init', array('accesstable' => $access['table']));
 	if (isset($res['accesstable']))
 		$access['table'] = $res['accesstable'];
+        
+        LMSConfig::getConfig(array(
+            'force' => true,
+            'force_user_rights_only' => true,
+            'access_table' => $access['table'],
+            'user_id' => $AUTH->id,
+        ));
 
 	$module = isset($_GET['m']) ? preg_replace('/[^a-zA-Z0-9_-]/', '', $_GET['m']) : '';
 	$deny = $allow = FALSE;
@@ -236,17 +243,12 @@ if ($AUTH->islogged) {
 		if ($AUTH->id && ($rights = $LMS->GetUserRights($AUTH->id)))
 			foreach ($rights as $level)
 			{
-				if ($level === 0) {
-					$CONFIG['privileges']['superuser'] = true;
-				}
 
 				if (!$global_allow && !$deny && isset($access['table'][$level]['deny_reg']))
 					$deny = (bool) preg_match('/'.$access['table'][$level]['deny_reg'].'/i', $module);
 				elseif (!$allow && isset($access['table'][$level]['allow_reg']))
 					$allow = (bool) preg_match('/'.$access['table'][$level]['allow_reg'].'/i', $module);
 
-				if (isset($access['table'][$level]['privilege']))
-					$CONFIG['privileges'][$access['table'][$level]['privilege']] = TRUE;
 			}
 
 		if ($SYSLOG)
