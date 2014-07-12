@@ -103,16 +103,9 @@ $SMARTY->addPluginsDir(LIB_DIR.'/SmartyPlugins');
 // uncomment this line if you're not gonna change template files no more
 //$SMARTY->compile_check = false;
 
-// Read configuration of LMS-UI from database
-
-if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0'))
-	foreach($cfg as $row)
-		$CONFIG[$row['section']][$row['var']] = $row['value'];
-
 // Redirect to SSL
 
-$_FORCE_SSL = (isset($CONFIG['phpui']['force_ssl']) ? chkconfig($CONFIG['phpui']['force_ssl']) : FALSE);
-
+$_FORCE_SSL = ConfigHelper::checkConfig('phpui.force_ssl');
 if($_FORCE_SSL && (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on'))
 {
 	header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
@@ -129,24 +122,25 @@ require_once(LIB_DIR.'/checkip.php');
 require_once(LIB_DIR.'/accesstable.php');
 require_once(LIB_DIR . '/SYSLOG.class.php');
 
-if (check_conf('phpui.logging') && class_exists('SYSLOG'))
+if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG')) {
 	$SYSLOG = new SYSLOG($DB);
-else
+} else {
 	$SYSLOG = null;
+}
 
 // Initialize Session, Auth and LMS classes
 
-$SESSION = new Session($DB, $CONFIG['phpui']['timeout']);
+$SESSION = new Session($DB, ConfigHelper::getConfig('phpui.timeout'));
 $AUTH = new Auth($DB, $SESSION, $SYSLOG);
 if ($SYSLOG)
 	$SYSLOG->SetAuth($AUTH);
-$LMS = new LMS($DB, $AUTH, $CONFIG, $SYSLOG);
+$LMS = new LMS($DB, $AUTH, $SYSLOG);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
 // Initialize Swekey class
 
-if (chkconfig($CONFIG['phpui']['use_swekey'])) {
+if (ConfigHelper::checkConfig('phpui.use_swekey')) {
 	require_once(LIB_DIR . '/swekey/lms_integration.php');
 	$LMS_SWEKEY = new LmsSwekeyIntegration($DB, $AUTH, $LMS);
 	$SMARTY->assign('lms_swekey', $LMS_SWEKEY->GetIntegrationScript($AUTH->id));
@@ -155,7 +149,7 @@ if (chkconfig($CONFIG['phpui']['use_swekey'])) {
 // Set some template and layout variables
 
 $SMARTY->setTemplateDir(null);
-$custom_templates_dir = get_conf('phpui.custom_templates_dir');
+$custom_templates_dir = ConfigHelper::getConfig('phpui.custom_templates_dir');
 if (!empty($custom_templates_dir) && file_exists(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir)
 	&& !is_file(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir))
 	$SMARTY->AddTemplateDir(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir);
@@ -166,7 +160,7 @@ $SMARTY->AddTemplateDir(
 	)
 );
 $SMARTY->setCompileDir(SMARTY_COMPILE_DIR);
-$SMARTY->debugging = check_conf('phpui.smarty_debug');
+$SMARTY->debugging = ConfigHelper::checkConfig('phpui.smarty_debug');
 
 $layout['logname'] = $AUTH->logname;
 $layout['logid'] = $AUTH->id;
@@ -200,7 +194,7 @@ header('X-Powered-By: LMS/'.$layout['lmsv']);
 // Check privileges and execute modules
 if ($AUTH->islogged) {
 	// Load plugin files and register hook callbacks
-	$plugins = preg_split('/[;,\s\t\n]+/', $CONFIG['phpui']['plugins'], -1, PREG_SPLIT_NO_EMPTY);
+	$plugins = preg_split('/[;,\s\t\n]+/', ConfigHelper::getConfig('phpui.plugins'), -1, PREG_SPLIT_NO_EMPTY);
 	if (!empty($plugins))
 		foreach ($plugins as $plugin_name)
 			if(is_readable(LIB_DIR . '/plugins/' . $plugin_name . '.php'))
@@ -233,7 +227,7 @@ if ($AUTH->islogged) {
 
 	if ($module == '')
 	{
-		$module = $CONFIG['phpui']['default_module'];
+		$module = ConfigHelper::getConfig('phpui.default_module');
 	}
 
 	if (file_exists(MODULES_DIR.'/'.$module.'.php'))

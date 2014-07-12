@@ -23,13 +23,13 @@
  *
  *  $Id$
  */
-// Faktury w PDF, do u¿ycia z formularzami FT-0100 (c) Polarnet
-// w razie pytañ mailto:lexx@polarnet.org
+// PDF invoices with FT-0100 forms (c) Polarnet
+// mailto:lexx@polarnet.org
 
 function invoice_simple_form_fill($x,$y,$scale)  
 {
-    global $pdf,$invoice,$CONFIG;
-    $finances = $CONFIG['finances'];
+    global $pdf,$invoice;
+    $finances = LMSConfig::getConfig()->getSection('finances');
     $pdf->setlinestyle(1);
 
     $pdf->line(7*$scale+$x,724*$scale+$y,7*$scale+$x,694*$scale+$y);
@@ -41,10 +41,10 @@ function invoice_simple_form_fill($x,$y,$scale)
     $pdf->line(370*$scale+$x,197*$scale+$y,370*$scale+$x,227*$scale+$y);
     $pdf->line(370*$scale+$x,197*$scale+$y,340*$scale+$x,197*$scale+$y);
     
-    text_autosize(15*$scale+$x,568*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2",$finances['shortname']),350*$scale);
-    text_autosize(15*$scale+$x,534*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2",$finances['address']),350*$scale);
-    text_autosize(15*$scale+$x,500*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2",$finances['zip']." ".$finances['city']),350*$scale);
-    $tmp = iconv("UTF-8","ISO-8859-2",$finances['account']);
+    text_autosize(15*$scale+$x,568*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2",$finances->getVariable('shortname')->getValue()),350*$scale);
+    text_autosize(15*$scale+$x,534*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2",$finances->getVariable('address')->getValue()),350*$scale);
+    text_autosize(15*$scale+$x,500*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2",$finances->getVariable('zip')->getValue()." ".$finances->getVariable('city')->getValue()),350*$scale);
+    $tmp = iconv("UTF-8","ISO-8859-2",$finances->getVariable('account')->getValue());
     //text_autosize(15*$scale+$x,683*$scale+$y,30*$scale, substr($tmp,0,17),350*$scale);
     //text_autosize(15*$scale+$x,626*$scale+$y,30*$scale, substr($tmp,18,200),350*$scale);
     text_autosize(15*$scale+$x,683*$scale+$y,30*$scale, $tmp,350*$scale);
@@ -61,8 +61,8 @@ function invoice_simple_form_fill($x,$y,$scale)
 
 function invoice_main_form_fill($x,$y,$scale)	
 {
-    global $pdf,$invoice,$CONFIG;
-    $finances = $CONFIG['finances'];
+    global $pdf,$invoice;
+    $finances = LMSConfig::getConfig()->getSection('finances');
     $pdf->setlinestyle(1);
 
     $pdf->line(7*$scale+$x,724*$scale+$y,7*$scale+$x,694*$scale+$y);
@@ -72,9 +72,9 @@ function invoice_main_form_fill($x,$y,$scale)
     $pdf->line(7*$scale+$x,172*$scale+$y,7*$scale+$x,202*$scale+$y);
     $pdf->line(7*$scale+$x,172*$scale+$y,37*$scale+$x,172*$scale+$y);
 
-    text_autosize(15*$scale+$x,680*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2",$finances['name']),950*$scale);
-    text_autosize(15*$scale+$x,617*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2",$finances['address']." ".$finances['zip']." ".$finances['city']),950*$scale);
-    text_autosize(15*$scale+$x,555*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2",$finances['account']),950*$scale);
+    text_autosize(15*$scale+$x,680*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2",$finances->getVariable('name')->getValue()),950*$scale);
+    text_autosize(15*$scale+$x,617*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2",$finances->getVariable('address')->getValue()." ".$finances->getVariable('zip')->getValue()." ".$finances->getVariable('city')->getValue()),950*$scale);
+    text_autosize(15*$scale+$x,555*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2",$finances->getVariable('account')->getValue()),950*$scale);
     $pdf->addtext(330*$scale+$x,495*$scale+$y,30*$scale,'X');
     text_autosize(550*$scale+$x,495*$scale+$y,30*$scale,"*".number_format($invoice['total'],2,',','')."*",400*$scale);
     text_autosize(15*$scale+$x,434*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2",trans('$a dollars $b cents',to_words(floor($invoice['total'])),to_words(round(($invoice['total']-floor($invoice['total']))*100)))),950*$scale);
@@ -145,7 +145,7 @@ function invoice_seller($x,$y)
     global $pdf,$CONFIG;
     $font_size=10;
     $y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2",trans('Seller:')).'</b>');
-    $tmp = iconv("UTF-8","ISO-8859-2",$CONFIG['invoices']['header']);
+    $tmp = iconv("UTF-8","ISO-8859-2",ConfigHelper::getConfig('invoices.header'));
     $tmp = str_replace('\n',"\n",$tmp);
     $tmp = explode("\n",$tmp);
     foreach ($tmp as $line) $y=$y-text_align_left($x,$y,$font_size,$line);
@@ -240,7 +240,7 @@ function invoice_data($x,$y,$width,$font_size,$margin)
     $t_data[10] = '<b>'.iconv("UTF-8","ISO-8859-2",trans('Gross Value:')).'</b>';
     for ($i = 1; $i <= 10; $i++) $t_justify[$i]="left";
     for ($i = 1; $i <= 10; $i++) $t_width[$i]=$pdf->getTextWidth($font_size,$t_data[$i])+2*$margin+1;
-    // tutaj jeszcze trzeba bêdzie sprawdziæ jak± szeroko¶æ maj± pola w tabelce pu¼niej
+    // tutaj jeszcze trzeba bï¿½dzie sprawdziï¿½ jakï¿½ szerokoï¿½ï¿½ majï¿½ pola w tabelce puï¿½niej
     if ($invoice['content']) foreach ($invoice['content'] as $item) {
 	$tt_width[2] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2",$item['description']));
 	$tt_width[3] = $pdf->getTextWidth($font_size,$item['prodid']);
@@ -253,7 +253,7 @@ function invoice_data($x,$y,$width,$font_size,$margin)
 	$tt_width[10] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2",moneyf($item['total'])));
 	for ($i = 2; $i <= 5; $i++) if (($tt_width[$i]+2*margin+2)>$t_width[$i]) $t_width[$i]=$tt_width[$i]+2*margin+2;
     }    
-    // Kolumna 2 bêdzie mia³a rozmiar ustalany dynamicznie
+    // Kolumna 2 bï¿½dzie miaï¿½a rozmiar ustalany dynamicznie
     $t_width[2] = $width-($t_width[1]+$t_width[3]+$t_width[4]+$t_width[5]+$t_width[6]+$t_width[7]+$t_width[8]+$t_width[9]+$t_width[10]+20*$margin);
     $y = invoice_data_row($x,$y,$width,$font_size,$margin,$t_data,$t_width,$t_justify);
     $t_justify[10] = $t_justify[9] = $t_justify[8] = $t_justify[7] = $t_justify[6] = $t_justify[5] = "right";
@@ -317,17 +317,17 @@ function invoice_to_pay($x,$y)
 function invoice_expositor ($x,$y) 
 {
     global $pdf, $CONFIG;
-    $y = $y - text_align_left($x,$y,10,iconv("UTF-8","ISO-8859-2",trans('Expositor:')).' '.iconv("UTF-8","ISO-8859-2",$CONFIG['invoices']['default_author']));
+    $y = $y - text_align_left($x,$y,10,iconv("UTF-8","ISO-8859-2",trans('Expositor:')).' '.iconv("UTF-8","ISO-8859-2",ConfigHelper::getConfig('invoices.default_author')));
     return $y;
 }
 
 function invoice_footnote($x, $y, $width, $font_size) 
 {
     global $pdf, $CONFIG;
-    if ($CONFIG['invoices']['footer']) {
+    if (ConfigHelper::getConfig('invoices.footer')) {
 	$y = $y - $pdf->getFontHeight($font_size);
 	$y = $y - text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2",trans('Notes:')).'</b>');
-	$tmp = iconv("UTF-8","ISO-8859-2",$CONFIG['invoices']['footer']);
+	$tmp = iconv("UTF-8","ISO-8859-2",ConfigHelper::getConfig('invoices.footer'));
         $tmp = explode("\n",$tmp);
 	foreach ($tmp as $line) $y = text_wrap($x,$y,$width,$font_size,$line,"full");
     }
@@ -336,7 +336,7 @@ function invoice_footnote($x, $y, $width, $font_size)
 function invoice_body() 
 {
     global $invoice,$pdf,$id,$CONFIG;
-    switch ($CONFIG['invoices']['template_file']) {
+    switch (ConfigHelper::getConfig('invoices.template_file')) {
 	case "standard":
 	    $top=800;
 	    invoice_dates(500,800);    
@@ -373,7 +373,7 @@ function invoice_body()
 	    invoice_simple_form_fill(14,3,0.4);
 	    break;
 	default:
-	    require(MODULES_DIR.'/'.$CONFIG['invoices']['template_file']);
+	    require(MODULES_DIR.'/'.ConfigHelper::getConfig('invoices.template_file'));
     }
     if (!($invoice['last'])) $id=$pdf->newPage(1,$id,'after');
 }

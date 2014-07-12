@@ -65,9 +65,9 @@ elseif(isset($_POST['note']))
 			$queue = $LMS->GetQueueByTicketId($note['ticketid']);
 			$mailfname = '';
 
-			if(!empty($CONFIG['phpui']['helpdesk_sender_name']))
+			if(!empty(ConfigHelper::getConfig('phpui.helpdesk_sender_name')))
 			{
-				$mailfname = $CONFIG['phpui']['helpdesk_sender_name'];
+				$mailfname = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
 
 				if($mailfname == 'queue')
 					$mailfname = $queue['name'];
@@ -128,7 +128,7 @@ elseif(isset($_POST['note']))
 			}
 
             // send sms
-			if (!empty($CONFIG['sms']['service']) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
+			if (!empty(ConfigHelper::getConfig('sms.service')) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
 			        FROM users, rtrights
 					WHERE users.id=userid AND queueid = ? AND phone != \'\'
 						AND (rtrights.rights & 8) = 8 AND users.id != ?

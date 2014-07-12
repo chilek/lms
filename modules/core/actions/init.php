@@ -37,9 +37,9 @@ require_once(LIB_DIR.'/LMS.class.php');
 
 // Initialize main classes
 
-$SESSION = new Session($DB, $CONFIG['phpui']['timeout']);
+$SESSION = new Session($DB, ConfigHelper::getConfig('phpui.timeout'));
 $AUTH = new Auth($DB, $SESSION);
-$LMS = new LMS($DB, $AUTH, $CONFIG);
+$LMS = new LMS($DB, $AUTH);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
@@ -48,7 +48,6 @@ $SMARTY->assignByRef('LANGDEFS', $LANGDEFS);
 $SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
 $SMARTY->assignByRef('_language', $LMS->lang);
 $SMARTY->assign('_dochref', is_dir('doc/html/'.$LMS->ui_lang) ? 'doc/html/'.$LMS->ui_lang.'/' : 'doc/html/en/');
-$SMARTY->assign('_config',$CONFIG);
 
 $layout['logname'] = $AUTH->logname;
 $layout['lmsdbv'] = $DB->GetVersion();

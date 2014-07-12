@@ -24,22 +24,6 @@
  *  $Id$
  */
 
-if($temp = $DB->GetOne('SELECT value FROM uiconfig WHERE section=? AND var=? AND disabled=0', 
-		array('invoices', 'number_template')))
-	$CONFIG['invoices']['number_template'] = $temp;
-
-if($temp = $DB->GetOne('SELECT value FROM uiconfig WHERE section=? AND var=? AND disabled=0', 
-		array('receipts', 'number_template')))
-	$CONFIG['receipts']['number_template'] = $temp;
-
-if($temp = $DB->GetOne('SELECT value FROM uiconfig WHERE section=? AND var=? AND disabled=0', 
-		array('invoices', 'monthly_numbering')))
-	$CONFIG['invoices']['monthly_numbering'] = $temp;
-
-if($temp = $DB->GetOne('SELECT value FROM uiconfig WHERE section=? AND var=? AND disabled=0', 
-		array('receipts', 'monthly_numbering')))
-	$CONFIG['receipts']['monthly_numbering'] = $temp;
-
 $DB->BeginTrans();
 
 $DB->Execute("
@@ -53,9 +37,9 @@ $DB->Execute("
 ");
 
 $DB->Execute("INSERT INTO numberplans (template, period, doctype, isdefault) VALUES(?,?,1,1)", 
-		array(str_replace('%M','%m',$CONFIG['invoices']['number_template']), $CONFIG['invoices']['monthly_numbering'] ? 3 : 5));
+		array(str_replace('%M','%m',ConfigHelper::getConfig('invoices.number_template')), ConfigHelper::getConfig('invoices.monthly_numbering') ? 3 : 5));
 $DB->Execute("INSERT INTO numberplans (template, period, doctype, isdefault) VALUES(?,?,2,1)", 
-		array(str_replace('%M','%m',$CONFIG['receipts']['number_template']), $CONFIG['receipts']['monthly_numbering'] ? 3 : 5));
+		array(str_replace('%M','%m',ConfigHelper::getConfig('receipts.number_template')), ConfigHelper::getConfig('receipts.monthly_numbering') ? 3 : 5));
 
 $DB->Execute("ALTER TABLE documents ADD numberplanid int(11) NOT NULL DEFAULT '0'");
 $DB->Execute("UPDATE documents SET numberplanid = 0");

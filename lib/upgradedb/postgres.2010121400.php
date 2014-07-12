@@ -38,9 +38,7 @@ $DB->Execute("
     UPDATE customercontacts SET type = 2 WHERE name ILIKE '%fax%';
 ");
 
-$lang = $DB->GetOne("SELECT value FROM uiconfig WHERE var='lang' AND section='phpui' AND disabled=0");
-if (!$lang)
-    $lang = $CONFIG['phpui']['lang'];
+$lang = ConfigHelper::getConfig('phpui.lang');
 
 if ($lang == 'pl') {
     $DB->Execute("UPDATE customercontacts SET type = COALESCE(type, 0) + 1

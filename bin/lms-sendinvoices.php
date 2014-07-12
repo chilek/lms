@@ -117,18 +117,12 @@ require_once(LIB_DIR.'/autoloader.php');
 require_once(LIB_DIR.'/config.php');
 
 // Init database
- 
-$_DBTYPE = $CONFIG['database']['type'];
-$_DBHOST = $CONFIG['database']['host'];
-$_DBUSER = $CONFIG['database']['user'];
-$_DBPASS = $CONFIG['database']['password'];
-$_DBNAME = $CONFIG['database']['database'];
 
 $DB = null;
 
 try {
 
-    $DB = LMSDB::getDB($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
+    $DB = LMSDB::getInstance();
 
 } catch (Exception $ex) {
     
@@ -138,12 +132,6 @@ try {
     die("Fatal error: cannot connect to database!\n");
     
 }
-
-// Read configuration from database
-
-if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0'))
-	foreach($cfg as $row)
-		$CONFIG[$row['section']][$row['var']] = $row['value'];
 
 // Include required files (including sequence is important)
 
@@ -158,34 +146,29 @@ if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG'))
 else
 	$SYSLOG = null;
 
-$lms_url = (!empty($CONFIG['sendinvoices']['lms_url']) ? $CONFIG['sendinvoices']['lms_url'] : 'http://localhost/lms/');
-$lms_user = (!empty($CONFIG['sendinvoices']['lms_user']) ? $CONFIG['sendinvoices']['lms_user'] : '');
-$lms_password = (!empty($CONFIG['sendinvoices']['lms_password']) ? $CONFIG['sendinvoices']['lms_password'] : '');
+$lms_url = ConfigHelper::getConfig('sendinvoices.lms_url', 'http://localhost/lms/');
+$lms_user = ConfigHelper::getConfig('sendinvoices.lms_user', '');
+$lms_password = ConfigHelper::getConfig('sendinvoices.lms_password', '');
 
-if (!empty($CONFIG['sendinvoices']['smtp_host']))
-	$CONFIG['mail']['smtp_host'] = $CONFIG['sendinvoices']['smtp_host'];
-if (!empty($CONFIG['sendinvoices']['smtp_port']))
-	$CONFIG['mail']['smtp_port'] = $CONFIG['sendinvoices']['smtp_port'];
-if (!empty($CONFIG['sendinvoices']['smtp_user']))
-	$CONFIG['mail']['smtp_username'] = $CONFIG['sendinvoices']['smtp_user'];
-if (!empty($CONFIG['sendinvoices']['smtp_pass']))
-	$CONFIG['mail']['smtp_password'] = $CONFIG['sendinvoices']['smtp_pass'];
-if (!empty($CONFIG['sendinvoices']['smtp_auth']))
-	$CONFIG['mail']['smtp_auth_type'] = $CONFIG['sendinvoices']['smtp_auth'];
+$host = ConfigHelper::getConfig('sendinvoices.smtp_host');
+$port = ConfigHelper::getConfig('sendinvoices.smtp_port');
+$user = ConfigHelper::getConfig('sendinvoices.smtp_user');
+$pass = ConfigHelper::getConfig('sendinvoices.smtp_pass');
+$auth = ConfigHelper::getConfig('sendinvoices.smtp_auth');
 
-$filetype = (!empty($CONFIG['invoices']['type']) ? $CONFIG['invoices']['type'] : '');
-$debug_email = (!empty($CONFIG['sendinvoices']['debug_email']) ? $CONFIG['sendinvoices']['debug_email'] : '');
-$sender_name = (!empty($CONFIG['sendinvoices']['sender_name']) ? $CONFIG['sendinvoices']['sender_name'] : '');
-$sender_email = (!empty($CONFIG['sendinvoices']['sender_email']) ? $CONFIG['sendinvoices']['sender_email'] : '');
-$mail_subject = (!empty($CONFIG['sendinvoices']['mail_subject']) ? $CONFIG['sendinvoices']['mail_subject'] : 'Invoice No. %invoice');
-$mail_body = (!empty($CONFIG['sendinvoices']['mail_body']) ? $CONFIG['sendinvoices']['mail_body'] : $CONFIG['mail']['sendinvoice_mail_body']);
-$invoice_filename = (!empty($CONFIG['sendinvoices']['invoice_filename']) ? $CONFIG['sendinvoices']['invoice_filename'] : 'invoice_%docid');
-$notify_email = (!empty($CONFIG['sendinvoices']['notify_email']) ? $CONFIG['sendinvoices']['notify_email'] : '');
+$filetype = ConfigHelper::getConfig('invoices.type', '');
+$debug_email = ConfigHelper::getConfig('sendinvoices.debug_email', '');
+$sender_name = ConfigHelper::getConfig('sendinvoices.sender_name', '');
+$sender_email = ConfigHelper::getConfig('sendinvoices.sender_email', '');
+$mail_subject = ConfigHelper::getConfig('sendinvoices.mail_subject', 'Invoice No. %invoice');
+$mail_body = ConfigHelper::getConfig('sendinvoices.mail_body', ConfigHelper::getConfig('mail.sendinvoice_mail_body'));
+$invoice_filename = ConfigHelper::getConfig('sendinvoices.invoice_filename', 'invoice_%docid');
+$notify_email = ConfigHelper::getConfig('sendinvoices.notify_email', '');
 
 if (empty($sender_email))
 	die("Fatal error: sender_email unset! Can't continue, exiting.\n");
 
-if (!empty($CONFIG['mail']['smtp_auth_type']) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $CONFIG['mail']['smtp_auth_type']))
+if (($auth || !empty(ConfigHelper::getConfig('mail.smtp_auth_type'))) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', ConfigHelper::getConfig('mail.smtp_auth_type')))
 	die("Fatal error: smtp_auth setting not supported! Can't continue, exiting.\n");
 
 $fakedate = (array_key_exists('fakedate', $options) ? $options['fakedate'] : NULL);
@@ -226,7 +209,7 @@ $customergroups = " AND EXISTS (SELECT 1 FROM customergroups g, customerassignme
 	WHERE c.id = ca.customerid 
 	AND g.id = ca.customergroupid 
 	AND (%groups)) ";
-$groupnames = $CONFIG['sendinvoices']['customergroups'];
+$groupnames = ConfigHelper::getConfig('sendinvoices.customergroups');
 $groupsql = "";
 $groups = preg_split("/[[:blank:]]+/", $groupnames, -1, PREG_SPLIT_NO_EMPTY);
 foreach ($groups as $group)
@@ -241,7 +224,7 @@ if (!empty($groupsql))
 // Initialize Session, Auth and LMS classes
 
 $AUTH = NULL;
-$LMS = new LMS($DB, $AUTH, $CONFIG, $SYSLOG);
+$LMS = new LMS($DB, $AUTH, $SYSLOG);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 

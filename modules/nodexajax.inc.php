@@ -96,7 +96,6 @@ function delNodeLock($nodeid, $id) {
 }
 
 function getThroughput($ip) {
-	global $CONFIG;
 
 	$result = new xajaxResponse();
 	$cmd = ConfigHelper::getConfig('phpui.live_traffic_helper');

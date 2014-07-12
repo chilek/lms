@@ -348,10 +348,10 @@ function new_page() {
 }
 
 function init_pdf($pagesize, $orientation, $title) {
-	global $layout, $CONFIG;
+	global $layout;
 
 	$pdf = new TCPDFpl($orientation, PDF_UNIT, $pagesize, true, 'UTF-8', false, false);
-	$pdf->invoice_type = $CONFIG['invoices']['template_file'];
+	$pdf->invoice_type = ConfigHelper::getConfig('invoices.template_file');
 
 	$pdf->SetProducer('LMS Developers');
 	$pdf->SetSubject($title);

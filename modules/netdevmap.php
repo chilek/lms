@@ -26,7 +26,7 @@
 
 function drawtext($x, $y, $text, $r, $g, $b)
 {
-	global $m, $font, $CONFIG;
+	global $m, $font;
 
 	if(!$text) return;
 
@@ -46,9 +46,8 @@ function drawtext($x, $y, $text, $r, $g, $b)
 
 function pngdrawtext($image, $font, $x, $y, $text, $color, $bgcolor)
 {
-	global $CONFIG;
-	if($CONFIG['phpui']['gd_translate_to'])
-		$text = iconv('UTF-8', $CONFIG['phpui']['gd_translate_to'], $text);
+	if(ConfigHelper::getConfig('phpui.gd_translate_to'))
+		$text = iconv('UTF-8', ConfigHelper::getConfig('phpui.gd_translate_to'), $text);
 	imagestring($image, $font, $x + 1, $y + 1, $text, $bgcolor);
 	imagestring($image, $font, $x + 1, $y - 1, $text, $bgcolor);
 	imagestring($image, $font, $x - 1, $y + 1, $text, $bgcolor);
@@ -316,7 +315,7 @@ if($links = $DB->GetAll('SELECT src, dst FROM netlinks'))
 	}
 }
 
-$type = strtolower(isset($CONFIG['phpui']['map_type']) ? $CONFIG['phpui']['map_type'] : '');
+$type = strtolower(ConfigHelper::getConfig('phpui.map_type', ''));
 
 if ($type == 'openlayers')
 {
@@ -552,7 +551,7 @@ elseif ($graph == 'flash')
 		$n = $nodes[$nodeid];
 		
 		if ($n['lastonline']) {	
-			if ((time()-$n['lastonline'])>$CONFIG['phpui']['lastonline_limit']) {
+			if ((time()-$n['lastonline'])>ConfigHelper::getConfig('phpui.lastonline_limit')) {
 				$myfill = $squareshape->addFill($im_n_off,SWFFILL_TILED_BITMAP);
 			} else {
 				$myfill = $squareshape->addFill($im_n_on,SWFFILL_TILED_BITMAP);
@@ -593,7 +592,7 @@ elseif ($graph == 'flash')
 		
 		if ($d['lastonline']) 
 		{	
-			if ((time()-$d['lastonline'])>$CONFIG['phpui']['lastonline_limit']) {
+			if ((time()-$d['lastonline'])>ConfigHelper::getConfig('phpui.lastonline_limit')) {
 				$myfill = $squareshape->addFill($im_d_off,SWFFILL_TILED_BITMAP);
 			} else {
 				$myfill = $squareshape->addFill($im_d_on,SWFFILL_TILED_BITMAP);
@@ -758,7 +757,7 @@ else
 		$n = $nodes[$nodeid];
 
 		if ($n['lastonline']) {	
-			if ((time()-$n['lastonline'])>$CONFIG['phpui']['lastonline_limit'])
+			if ((time()-$n['lastonline'])>ConfigHelper::getConfig('phpui.lastonline_limit'))
 				imagecopy($im,$im_n_off,$px,$py,0,0,16,16);
 			else 
 				imagecopy($im,$im_n_on,$px,$py,0,0,16,16);
@@ -784,7 +783,7 @@ else
 		$d = $devices[$deviceid];
 		
 		if ($d['lastonline']) {	
-			if ((time()-$d['lastonline'])>$CONFIG['phpui']['lastonline_limit'])
+			if ((time()-$d['lastonline'])>ConfigHelper::getConfig('phpui.lastonline_limit'))
 				imagecopy($im,$im_d_off,$px,$py,0,0,16,16);
 			else 
 				imagecopy($im,$im_d_on,$px,$py,0,0,16,16);

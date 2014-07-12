@@ -129,8 +129,8 @@ foreach ($langs as $val)
 }
 
 // System language
-if(!empty($CONFIG['phpui']['lang']))
-	$_language = $CONFIG['phpui']['lang'];
+if(!empty(ConfigHelper::getConfig('phpui.lang')))
+	$_language = ConfigHelper::getConfig('phpui.lang');
 else if (!empty($_ui_language))
 	$_language = $_ui_language;
 else

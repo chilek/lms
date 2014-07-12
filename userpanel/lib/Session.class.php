@@ -82,15 +82,15 @@ class Session {
 				return;
 			}
 			if ($remindform['type'] == 1) {
-				$subject = $LMS->CONFIG['userpanel']['reminder_mail_subject'];
-				$body = $LMS->CONFIG['userpanel']['reminder_mail_body'];
+				$subject = ConfigHelper::getConfig('userpanel.reminder_mail_subject');
+				$body = ConfigHelper::getConfig('userpanel.reminder_mail_body');
 			} else
-				$body = $LMS->CONFIG['userpanel']['reminder_sms_body'];
+				$body = ConfigHelper::getConfig('userpanel.reminder_sms_body');
 			$body = str_replace('%id', $customer['id'], $body);
 			$body = str_replace('%pin', $customer['pin'], $body);
 			if ($remindform['type'] == 1)
 				$LMS->SendMail($remindform['email'],
-					array('From' => '<' . $LMS->CONFIG['userpanel']['reminder_mail_sender'] . '>',
+					array('From' => '<' . ConfigHelper::getConfig('userpanel.reminder_mail_sender') . '>',
 						'To' => '<' . $remindform['email'] . '>',
 						'Subject' => $subject), $body);
 			else

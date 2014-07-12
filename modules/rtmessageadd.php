@@ -25,7 +25,7 @@
  */
 
 function MessageAdd($msg, $headers, $files = NULL) {
-	global $DB, $LMS, $CONFIG;
+	global $DB, $LMS;
 	$time = time();
 
 	$head = '';
@@ -48,10 +48,10 @@ function MessageAdd($msg, $headers, $files = NULL) {
 				(isset($msg['replyto']) ? $msg['replyto'] : $headers['Reply-To']),
 				$head));
 
-	if (!empty($files) && isset($CONFIG['rt']['mail_dir'])) {
+	if (!empty($files) && isset(ConfigHelper::getConfig('rt.mail_dir'))) {
 		$id = $DB->GetLastInsertId('rtmessages');
-		$dir = $CONFIG['rt']['mail_dir'] . sprintf('/%06d/%06d', $msg['ticketid'], $id);
-		@mkdir($CONFIG['rt']['mail_dir'] . sprintf('/%06d', $msg['ticketid']), 0700);
+		$dir = ConfigHelper::getConfig('rt.mail_dir') . sprintf('/%06d/%06d', $msg['ticketid'], $id);
+		@mkdir(ConfigHelper::getConfig('rt.mail_dir') . sprintf('/%06d', $msg['ticketid']), 0700);
 		@mkdir($dir, 0700);
 		foreach ($files as $file) {
 			$newfile = $dir . '/' . $file['name'];
@@ -136,7 +136,7 @@ if(isset($_POST['message']))
 
 		$mailfname = '';
 
-		if(isset($CONFIG['phpui']['helpdesk_sender_name']) && ($mailfname = $CONFIG['phpui']['helpdesk_sender_name']))
+		if(isset(ConfigHelper::getConfig('phpui.helpdesk_sender_name')) && ($mailfname = ConfigHelper::getConfig('phpui.helpdesk_sender_name')))
 		{
 			if($mailfname == 'queue') $mailfname = $queue['name'];
 			if($mailfname == 'customer') $mailfname = $user['name'];
@@ -248,9 +248,9 @@ if(isset($_POST['message']))
 		{
 			$mailfname = '';
 
-			if(!empty($CONFIG['phpui']['helpdesk_sender_name']))
+			if(!empty(ConfigHelper::getConfig('phpui.helpdesk_sender_name')))
 			{
-				$mailfname = $CONFIG['phpui']['helpdesk_sender_name'];
+				$mailfname = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
 
 				if($mailfname == 'queue')
 					$mailfname = $queue['name'];
@@ -343,7 +343,7 @@ if(isset($_POST['message']))
 			}
 
 			// send sms
-			if (!empty($CONFIG['sms']['service']) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
+			if (!empty(ConfigHelper::getConfig('sms.service')) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
 			        FROM users, rtrights
 					WHERE users.id=userid AND queueid = ? AND phone != \'\'
 						AND (rtrights.rights & 8) = 8 AND users.id != ?

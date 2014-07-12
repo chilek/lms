@@ -106,7 +106,7 @@ function receipt_buyer($x,$y)
 
 function receipt_footer($x,$y) 
 {
-    global $pdf, $CONFIG, $receipt;
+    global $pdf, $receipt;
 
     $font_size = 8;
     $yy = $y;
@@ -217,9 +217,9 @@ function receipt_data($x,$y)
 
 function receipt_body()
 {
-	global $receipt,$pdf,$id,$CONFIG, $type;
+	global $receipt,$pdf,$id, $type;
 
-	$template = $CONFIG['receipts']['template_file'];
+	$template = ConfigHelper::getConfig('receipts.template_file');
 
 	switch ($template)
 	{

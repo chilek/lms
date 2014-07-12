@@ -111,18 +111,12 @@ require_once(LIB_DIR.'/autoloader.php');
 require_once(LIB_DIR.'/config.php');
 
 // Init database
- 
-$_DBTYPE = $CONFIG['database']['type'];
-$_DBHOST = $CONFIG['database']['host'];
-$_DBUSER = $CONFIG['database']['user'];
-$_DBPASS = $CONFIG['database']['password'];
-$_DBNAME = $CONFIG['database']['database'];
 
 $DB = null;
 
 try {
 
-    $DB = LMSDB::getDB($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
+    $DB = LMSDB::getInstance();
 
 } catch (Exception $ex) {
     
@@ -132,12 +126,6 @@ try {
     die("Fatal error: cannot connect to database!\n");
     
 }
-
-// Read configuration from database
-
-if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0'))
-	foreach($cfg as $row)
-		$CONFIG[$row['section']][$row['var']] = $row['value'];
 
 // Include required files (including sequence is important)
 
@@ -155,17 +143,17 @@ else
 // Initialize Session, Auth and LMS classes
 
 $AUTH = NULL;
-$LMS = new LMS($DB, $AUTH, $CONFIG, $SYSLOG);
+$LMS = new LMS($DB, $AUTH, $SYSLOG);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
-if (empty($CONFIG['cashimport']['server']) || empty($CONFIG['cashimport']['username']) || empty($CONFIG['cashimport']['password']))
+if (empty(ConfigHelper::getConfig('cashimport.server')) || empty(ConfigHelper::getConfig('cashimport.username')) || empty(ConfigHelper::getConfig('cashimport.password')))
 	die("Fatal error: mailbox credentials are not set!\n");
 
-@include(!empty($CONFIG['phpui']['import_config']) ? $CONFIG['phpui']['import_config'] : 'cashimportcfg.php');
+@include(ConfigHelper::getConfig('phpui.import_config', 'cashimportcfg.php'));
 
 function parse_file($filename, $contents) {
-	global $CONFIG, $DB, $quiet, $patterns;
+	global $DB, $quiet, $patterns;
 
 	if (!$quiet)
 		printf("Getting cash import file ".$filename." ... ");
@@ -364,7 +352,7 @@ function parse_file($filename, $contents) {
 
 function commit_cashimport()
 {
-	global $DB, $LMS, $CONFIG;
+	global $DB, $LMS;
 
 	$imports = $DB->GetAll('SELECT i.*, f.idate
 		FROM cashimport i
@@ -435,7 +423,7 @@ function commit_cashimport()
 	}
 }
 
-$ih = @imap_open("{" . $CONFIG['cashimport']['server'] . "}INBOX", $CONFIG['cashimport']['username'], $CONFIG['cashimport']['password']);
+$ih = @imap_open("{" . ConfigHelper::getConfig('cashimport.server') . "}INBOX", ConfigHelper::getConfig('cashimport.username'), ConfigHelper::getConfig('cashimport.password'));
 if (!$ih)
 	die("Cannot connect to mail server!\n");
 

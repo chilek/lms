@@ -100,7 +100,7 @@ switch($type)
 					    .($sqlord != '' ? $sqlord.' '.$direction : ''));
 				
 				$SMARTY->assign('nodelist', $nodelist);
-				if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
+				if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
 					$output = $SMARTY->fetch('printindebtnodelist.html');
 					html2pdf($output, trans('Reports'), $layout['pagetitle']);
 				} else {
@@ -118,7 +118,7 @@ switch($type)
 		unset($nodelist['totaloff']);
 		
 		$SMARTY->assign('nodelist', $nodelist);
-		if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
+		if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
 			$output = $SMARTY->fetch('printnodelist.html');
 			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {

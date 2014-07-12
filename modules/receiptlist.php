@@ -26,7 +26,7 @@
 
 function GetReceiptList($registry, $order='', $search=NULL, $cat=NULL, $from=0, $to=0, $advances=0)
 {
-	global $CONFIG, $DB;
+	global $DB;
 
 	list($order,$direction) = sscanf($order, '%[^,],%s');
 
@@ -234,7 +234,7 @@ if($from > 0)
 
 $listdata['endbalance'] = $listdata['startbalance'] + $listdata['totalincome'] - $listdata['totalexpense'];
 
-$pagelimit = $CONFIG['phpui']['receiptlist_pagelimit'];
+$pagelimit = ConfigHelper::getConfig('phpui.receiptlist_pagelimit');
 $page = (!isset($_GET['page']) ? ceil($listdata['total']/$pagelimit) : $_GET['page']);
 $start = ($page - 1) * $pagelimit;
 

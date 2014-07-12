@@ -31,7 +31,6 @@ class LMS {
 
 	public $DB;   // database object
 	public $AUTH;   // object from Session.class.php (session management)
-	public $CONFIG;   // table including lms.ini options
 	public $SYSLOG;
 	public $cache = array();  // internal cache
 	public $hooks = array(); // registered plugin hooks
@@ -39,10 +38,9 @@ class LMS {
 	public $_version = '1.11-git'; // class version
 	public $_revision = '$Revision$';
 
-	public function __construct(&$DB, &$AUTH, &$CONFIG, &$SYSLOG) { // class variables setting
+	public function __construct(&$DB, &$AUTH, &$SYSLOG) { // class variables setting
 		$this->DB = &$DB;
 		$this->AUTH = &$AUTH;
-		$this->CONFIG = &$CONFIG;
 		$this->SYSLOG = &$SYSLOG;
 
 		//$this->_revision = preg_replace('/^.Revision: ([0-9.]+).*/', '\1', $this->_revision);
@@ -56,7 +54,7 @@ class LMS {
 
 	public function InitUI() {
 		// set current user
-		switch ($this->CONFIG['database']['type']) {
+		switch (ConfigHelper::getConfig('database.type')) {
 			case 'postgres':
 				$this->DB->Execute('SELECT set_config(\'lms.current_user\', ?, false)', array($this->AUTH->id));
 				break;
@@ -106,7 +104,7 @@ class LMS {
 	/*
 	  public function Log($loglevel=0, $message=NULL)
 	  {
-	  if( $loglevel <= $this->CONFIG['phpui']['loglevel'] && $message )
+	  if( $loglevel <= ConfigHelper::getConfig('phpui.loglevel') && $message )
 	  {
 	  $this->DB->Execute('INSERT INTO syslog (time, userid, level, message)
 	  VALUES (?NOW?, ?, ?, ?)', array($this->AUTH->id, $loglevel, $message));
@@ -151,7 +149,7 @@ class LMS {
 		if ($dumpfile) {
 			$tables = $this->DB->ListTables();
 
-			switch ($this->CONFIG['database']['type']) {
+			switch (ConfigHelper::getConfig('database.type')) {
 				case 'postgres':
 					fputs($dumpfile, "SET CONSTRAINTS ALL DEFERRED;\n");
 					break;
@@ -207,7 +205,7 @@ class LMS {
 				}
 			}
 
-			if (preg_match('/^mysqli?$/', $this->CONFIG['database']['type']))
+			if (preg_match('/^mysqli?$/', ConfigHelper::getConfig('database.type')))
 				fputs($dumpfile, "SET foreign_key_checks = 1;\n");
 
 			if ($gzipped && extension_loaded('zlib'))
@@ -223,10 +221,10 @@ class LMS {
 		$basename = 'lms-' . time() . '-' . DBVERSION;
 		if (($gzipped) && (extension_loaded('zlib'))) {
 			$filename = $basename . '.sql.gz';
-			$res = $this->DBDump($this->CONFIG['directories']['backup_dir'] . '/' . $filename, TRUE, $stats);
+			$res = $this->DBDump(ConfigHelper::getConfig('directories.backup_dir') . '/' . $filename, TRUE, $stats);
 		} else {
 			$filename = $basename . '.sql';
-			$res = $this->DBDump($this->CONFIG['directories']['backup_dir'] . '/' . $filename, FALSE, $stats);
+			$res = $this->DBDump(ConfigHelper::getConfig('directories.backup_dir') . '/' . $filename, FALSE, $stats);
 		}
 		if ($this->SYSLOG)
 			$this->SYSLOG->AddMessage(SYSLOG_RES_DBBACKUP, SYSLOG_OPER_ADD,
@@ -687,7 +685,7 @@ class LMS {
 		$this->DB->Execute('UPDATE passwd SET ownerid=0 WHERE ownerid=?', array($id));
 		$this->DB->Execute('UPDATE domains SET ownerid=0 WHERE ownerid=?', array($id));
 		// Remove Userpanel rights
-		if (!empty($this->CONFIG['directories']['userpanel_dir']))
+		if (!empty(ConfigHelper::getConfig('directories.userpanel_dir')))
 			$this->DB->Execute('DELETE FROM up_rights_assignments WHERE customerid=?', array($id));
 
 		$this->DB->CommitTrans();
@@ -1035,7 +1033,7 @@ class LMS {
 		if (isset($searchargs))
 			$sqlsarg = implode(' ' . $sqlskey . ' ', $searchargs);
 
-		$suspension_percentage = f_round($this->CONFIG['finances']['suspension_percentage']);
+		$suspension_percentage = f_round(ConfigHelper::getConfig('finances.suspension_percentage'));
 
 		if ($customerlist = $this->DB->GetAll(
 				'SELECT c.id AS id, ' . $this->DB->Concat('UPPER(lastname)', "' '", 'c.name') . ' AS customername, 
@@ -1081,7 +1079,7 @@ class LMS {
 				LEFT JOIN (SELECT ownerid,
 					SUM(access) AS acsum, COUNT(access) AS account,
 					SUM(warning) AS warnsum, COUNT(warning) AS warncount, 
-					(CASE WHEN MAX(lastonline) > ?NOW? - ' . intval($this->CONFIG['phpui']['lastonline_limit']) . '
+					(CASE WHEN MAX(lastonline) > ?NOW? - ' . intval(ConfigHelper::getConfig('phpui.lastonline_limit')) . '
 						THEN 1 ELSE 0 END) AS online
 					FROM nodes
 					WHERE ownerid > 0
@@ -1762,7 +1760,7 @@ class LMS {
 					OR (n.ipaddr_pub > ' . $net['address'] . ' AND n.ipaddr_pub < ' . $net['broadcast'] . '))' : '')
 				. ($status == 1 ? ' AND n.access = 1' : '') //connected
 				. ($status == 2 ? ' AND n.access = 0' : '') //disconnected
-				. ($status == 3 ? ' AND n.lastonline > ?NOW? - ' . intval($this->CONFIG['phpui']['lastonline_limit']) : '') //online
+				. ($status == 3 ? ' AND n.lastonline > ?NOW? - ' . intval(ConfigHelper::getConfig('phpui.lastonline_limit')) : '') //online
 				. ($customergroup ? ' AND customergroupid = ' . intval($customergroup) : '')
 				. ($nodegroup ? ' AND nodegroupid = ' . intval($nodegroup) : '')
 				. (isset($searchargs) ? $searchargs : '')
@@ -2049,7 +2047,7 @@ class LMS {
 		$result = $this->DB->GetRow('SELECT COUNT(CASE WHEN access=1 THEN 1 END) AS connected, 
 				COUNT(CASE WHEN access=0 THEN 1 END) AS disconnected,
 				COUNT(CASE WHEN ?NOW?-lastonline < ? THEN 1 END) AS online
-				FROM nodes WHERE ownerid > 0', array($this->CONFIG['phpui']['lastonline_limit']));
+				FROM nodes WHERE ownerid > 0', array(ConfigHelper::getConfig('phpui.lastonline_limit')));
 
 		$result['total'] = $result['connected'] + $result['disconnected'];
 		return $result;
@@ -2294,7 +2292,7 @@ class LMS {
 				$assignments[$idx]['discounted_value'] = (((100 - $row['pdiscount']) * $row['value']) / 100) - $row['vdiscount'];
 
 				if ($row['suspended'] == 1)
-					$assignments[$idx]['discounted_value'] = $assignments[$idx]['discounted_value'] * $this->CONFIG['finances']['suspension_percentage'] / 100;
+					$assignments[$idx]['discounted_value'] = $assignments[$idx]['discounted_value'] * ConfigHelper::getConfig('finances.suspension_percentage') / 100;
 
 				$assignments[$idx]['discounted_value'] = round($assignments[$idx]['discounted_value'], 2);
 
@@ -2959,7 +2957,7 @@ class LMS {
                                 } else {
 					$result['customerbalancelist'] = $this->GetCustomerBalanceList($result['customerid']);
                                 }
-				$result['customerbalancelistlimit'] = $this->CONFIG['invoices']['print_balance_history_limit'];
+				$result['customerbalancelistlimit'] = ConfigHelper::getConfig('invoices.print_balance_history_limit');
 			}
 
 			$result['paytypename'] = $PAYTYPES[$result['paytype']];
@@ -3032,7 +3030,7 @@ class LMS {
                                 } else {
 					$result['customerbalancelist'] = $this->GetCustomerBalanceList($result['customerid']);
                                 }
-				$result['customerbalancelistlimit'] = $this->CONFIG['notes']['print_balance_history_limit'];
+				$result['customerbalancelistlimit'] = ConfigHelper::getConfig('notes.print_balance_history_limit');
 			}
 
 			// for backward compatibility
@@ -3814,7 +3812,7 @@ class LMS {
 				) AS online
 				FROM networks n
 				LEFT JOIN hosts h ON h.id = n.hostid
-				ORDER BY n.name', array(intval($this->CONFIG['phpui']['lastonline_limit'])))) {
+				ORDER BY n.name', array(intval(ConfigHelper::getConfig('phpui.lastonline_limit'))))) {
 			$size = 0;
 			$assigned = 0;
 			$online = 0;
@@ -4829,10 +4827,10 @@ class LMS {
 			$this->DB->Execute('INSERT INTO rtticketcategories (ticketid, categoryid) 
 				VALUES (?, ?)', array($id, $catid));
 
-		if (!empty($files) && $this->CONFIG['rt']['mail_dir']) {
+		if (!empty($files) && ConfigHelper::getConfig('rt.mail_dir')) {
 			$msgid = $this->DB->GetLastInsertID('rtmessages');
-			$dir = $this->CONFIG['rt']['mail_dir'] . sprintf('/%06d/%06d', $id, $msgid);
-			@mkdir($this->CONFIG['rt']['mail_dir'] . sprintf('/%06d', $id), 0700);
+			$dir = ConfigHelper::getConfig('rt.mail_dir') . sprintf('/%06d/%06d', $id, $msgid);
+			@mkdir(ConfigHelper::getConfig('rt.mail_dir') . sprintf('/%06d', $id), 0700);
 			@mkdir($dir, 0700);
 			foreach ($files as $file) {
 				$newfile = $dir . '/' . $file['name'];
@@ -5029,8 +5027,8 @@ class LMS {
 
 	public function GetMACs() {
 		$result = array();
-		if ($this->CONFIG['phpui']['arp_table_backend'] != '') {
-			exec($this->CONFIG['phpui']['arp_table_backend'], $result);
+		if (ConfigHelper::getConfig('phpui.arp_table_backend') != '') {
+			exec(ConfigHelper::getConfig('phpui.arp_table_backend'), $result);
 			foreach ($result as $arpline) {
 				list($ip, $mac) = explode(' ', $arpline);
 				$result['mac'][] = $mac;
@@ -5096,7 +5094,7 @@ class LMS {
 			$lastcheck = 0;
 		elseif (!($lastcheck = $this->DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype=?', array('last_check_for_updates_timestamp'))))
 			$lastcheck = 0;
-		if ($lastcheck + $this->CONFIG['phpui']['check_for_updates_period'] < $time) {
+		if ($lastcheck + ConfigHelper::getConfig('phpui.check_for_updates_period') < $time) {
 			list($v, ) = explode(' ', $this->_version);
 
 			if ($content = fetch_url('http://register.lms.org.pl/update.php?uiid=' . $uiid . '&v=' . $v)) {
@@ -5150,21 +5148,42 @@ class LMS {
 		return FALSE;
 	}
 
-	public function SendMail($recipients, $headers, $body, $files = NULL) {
+	public function SendMail($recipients, $headers, $body, $files = NULL, $host = null, $port = null, $user = null, $pass = null, $auth = null) {
 		@include_once('Mail.php');
 		if (!class_exists('Mail'))
 			return trans('Can\'t send message. PEAR::Mail not found!');
 
-		$params['host'] = $this->CONFIG['mail']['smtp_host'];
-		$params['port'] = $this->CONFIG['mail']['smtp_port'];
+                if (!$host) {
+                    $params['host'] = ConfigHelper::getConfig('mail.smtp_host');
+                } else {
+                    $params['host'] = $host;
+                }
+                
+                if (!$port) {
+                    $params['port'] = ConfigHelper::getConfig('mail.smtp_port');
+                } else {
+                    $params['port'] = $port;
+                }
 
-		if (!empty($this->CONFIG['mail']['smtp_username'])) {
-			$params['auth'] = !empty($this->CONFIG['mail']['smtp_auth_type']) ? $this->CONFIG['mail']['smtp_auth_type'] : true;
-			$params['username'] = $this->CONFIG['mail']['smtp_username'];
-			$params['password'] = $this->CONFIG['mail']['smtp_password'];
-		}
-		else
+		if (!empty(ConfigHelper::getConfig('mail.smtp_username')) || $user) {
+                        if (!$auth) {
+                            $params['auth'] = ConfigHelper::getConfig('mail.smtp_auth_type', true);
+                        } else {
+                            $params['auth'] = $auth;
+                        }
+                        if (!$user) {
+                            $params['username'] = ConfigHelper::getConfig('mail.smtp_username');
+                        } else {
+                            $params['username'] = $user;
+                        }
+                        if (!$pass) {
+                            $params['password'] = ConfigHelper::getConfig('mail.smtp_password');
+                        } else {
+                            $params['password'] = $pass;
+                        }
+		} else {
 			$params['auth'] = false;
+                }
 
 		$headers['X-Mailer'] = 'LMS-' . $this->_version;
 		if (!empty($_SERVER['REMOTE_ADDR']))
@@ -5174,8 +5193,8 @@ class LMS {
 		$headers['Mime-Version'] = '1.0';
 		$headers['Subject'] = qp_encode($headers['Subject']);
 
-		if (!empty($this->CONFIG['mail']['debug_email'])) {
-			$recipients = $this->CONFIG['mail']['debug_email'];
+		if (!empty(ConfigHelper::getConfig('mail.debug_email'))) {
+			$recipients = ConfigHelper::getConfig('mail.debug_email');
 			$headers['To'] = '<' . $recipients . '>';
 		}
 
@@ -5217,18 +5236,18 @@ class LMS {
 			return MSG_SENT;
 	}
 
-	public function SendSMS($number, $message, $messageid = 0) {
+	public function SendSMS($number, $message, $messageid = 0, $script_service = null) {
 		$msg_len = mb_strlen($message);
 
 		if (!$msg_len) {
 			return trans('SMS message is empty!');
 		}
 
-		if (!empty($this->CONFIG['sms']['debug_phone'])) {
-			$number = $this->CONFIG['sms']['debug_phone'];
+		if (!empty(ConfigHelper::getConfig('sms.debug_phone'))) {
+			$number = ConfigHelper::getConfig('sms.debug_phone');
 		}
 
-		$prefix = !empty($this->CONFIG['sms']['prefix']) ? $this->CONFIG['sms']['prefix'] : '';
+		$prefix = ConfigHelper::getConfig('sms.prefix', '');
 		$number = preg_replace('/[^0-9]/', '', $number);
 		$number = preg_replace('/^0+/', '', $number);
 
@@ -5243,9 +5262,9 @@ class LMS {
 
 		$message = preg_replace("/\r/", "", $message);
 
-		if (!empty($this->CONFIG['sms']['max_length']) && intval($this->CONFIG['sms']['max_length']) > 6
-			&& $msg_len > intval($this->CONFIG['sms']['max_length']))
-			$message = mb_substr($message, 0, $this->CONFIG['sms']['max_length'] - 6) . ' [...]';
+		if (!empty(ConfigHelper::getConfig('sms.max_length')) && intval(ConfigHelper::getConfig('sms.max_length')) > 6
+			&& $msg_len > intval(ConfigHelper::getConfig('sms.max_length')))
+			$message = mb_substr($message, 0, ConfigHelper::getConfig('sms.max_length') - 6) . ' [...]';
 
 		$data = array(
 				'number' => $number,
@@ -5264,22 +5283,25 @@ class LMS {
 		$message = $data['message'];
 		$messageid = $data['messageid'];
 
-		if (empty($this->CONFIG['sms']['service']))
+                if ($script_service) {
+                        $service = $script_service;
+                } elseif (empty(ConfigHelper::getConfig('sms.service'))) {
 			return trans('SMS "service" not set!');
-		else
-			$service = $this->CONFIG['sms']['service'];
+                } else {
+			$service = ConfigHelper::getConfig('sms.service');
+                }
 
 		if (in_array($service, array('smscenter', 'serwersms', 'smsapi'))) {
 			if (!function_exists('curl_init'))
 				return trans('Curl extension not loaded!');
-			if (empty($this->CONFIG['sms']['username']))
+			if (empty(ConfigHelper::getConfig('sms.username')))
 				return trans('SMSCenter username not set!');
-			if (empty($this->CONFIG['sms']['password']))
+			if (empty(ConfigHelper::getConfig('sms.password')))
 				return trans('SMSCenter username not set!');
-			if (empty($this->CONFIG['sms']['from']))
+			if (empty(ConfigHelper::getConfig('sms.from')))
 				return trans('SMS "from" not set!');
 			else
-				$from = $this->CONFIG['sms']['from'];
+				$from = ConfigHelper::getConfig('sms.from');
 
 			if (strlen($number) > 16 || strlen($number) < 4)
 				return trans('Wrong phone number format!');
@@ -5294,12 +5316,12 @@ class LMS {
 				else
 					return trans('SMS Message too long!');
 
-				$type = !empty($this->CONFIG['sms']['smscenter_type']) ? $this->CONFIG['sms']['smscenter_type'] : 'dynamic';
+				$type = ConfigHelper::getConfig('sms.smscenter_type', 'dynamic');
 				$message .= ($type == 'static') ? "\n\n" . $from : '';
 
 				$args = array(
-						'user' => $this->CONFIG['sms']['username'],
-						'pass' => $this->CONFIG['sms']['password'],
+						'user' => ConfigHelper::getConfig('sms.username'),
+						'pass' => ConfigHelper::getConfig('sms.password'),
 						'type' => $type_sms,
 						'number' => $number,
 						'text' => $message,
@@ -5361,7 +5383,7 @@ class LMS {
 				}
 				break;
 			case 'smstools':
-				$dir = !empty($this->CONFIG['sms']['smstools_outdir']) ? $this->CONFIG['sms']['smstools_outdir'] : '/var/spool/sms/outgoing';
+				$dir = ConfigHelper::getConfig('sms.smstools_outdir', '/var/spool/sms/outgoing');
 
 				if (!file_exists($dir))
 					return trans('SMSTools outgoing directory not exists ($a)!', $dir);
@@ -5390,15 +5412,15 @@ class LMS {
 			case 'serwersms':
 				$args = array(
 					'akcja' => 'wyslij_sms',
-					'login' => $this->CONFIG['sms']['username'],
-					'haslo' => $this->CONFIG['sms']['password'],
+					'login' => ConfigHelper::getConfig('sms.username'),
+					'haslo' => ConfigHelper::getConfig('sms.password'),
 					'numer' => $number,
 					'wiadomosc' => $message,
 					'nadawca' => $from,
 				);
 				if ($messageid)
 					$args['usmsid'] = $messageid;
-				if (!empty($this->CONFIG['sms']['fast']))
+				if (!empty(ConfigHelper::getConfig('sms.fast')))
 					$args['speed'] = 1;
 
 				$encodedargs = http_build_query($args);
@@ -5435,13 +5457,13 @@ class LMS {
 				break;
 			case 'smsapi':
 				$args = array(
-					'username' => $this->CONFIG['sms']['username'],
-					'password' => md5($this->CONFIG['sms']['password']),
+					'username' => ConfigHelper::getConfig('sms.username'),
+					'password' => md5(ConfigHelper::getConfig('sms.password')),
 					'to' => $number,
 					'message' => $message,
 					'from' => !empty($from) ? $from : 'ECO',
 				);
-				if (!empty($this->CONFIG['sms']['fast']))
+				if (!empty(ConfigHelper::getConfig('sms.fast')))
 					$args['fast'] = 1;
 				if ($messageid)
 					$args['idx'] = $messageid;

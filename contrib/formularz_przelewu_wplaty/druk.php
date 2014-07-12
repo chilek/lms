@@ -37,11 +37,6 @@ require_once(LIB_DIR.'/autoloader.php');
 require_once(LIB_DIR.'/config.php');
 
 // Init database
-$_DBTYPE = $CONFIG['database']['type'];
-$_DBHOST = $CONFIG['database']['host'];
-$_DBUSER = $CONFIG['database']['user'];
-$_DBPASS = $CONFIG['database']['password'];
-$_DBNAME = $CONFIG['database']['database'];
 
 // funkcja to_words()
 require_once(LIB_DIR.'/locale/pl/ui.php');
@@ -50,7 +45,7 @@ $DB = null;
 
 try {
 
-    $DB = LMSDB::getDB($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
+    $DB = LMSDB::getInstance();
 
 } catch (Exception $ex) {
     
@@ -61,15 +56,9 @@ try {
     
 }
 
-// Read configuration of LMS-UI from database
-
-if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0'))
-        foreach($cfg as $row)
-                $CONFIG[$row['section']][$row['var']] = $row['value'];
-
-$ISP1_DO = (!isset($CONFIG['finances']['line_1']) ? 'LINIA1xxxxxxxxxxxxxxxxxxxyz' : $CONFIG['finances']['line_1']);
-$ISP2_DO = (!isset($CONFIG['finances']['line_2']) ? 'linia2xxxxxxxxxxxxxxxxxxxyz' : $CONFIG['finances']['line_2']);
-$USER_T1 = (!isset($CONFIG['finances']['pay_title']) ? 'Abonament - ID:%CID% %LongCID%' : $CONFIG['finances']['pay_title']);
+$ISP1_DO = ConfigHelper::getConfig('finances.line_1', 'LINIA1xxxxxxxxxxxxxxxxxxxyz');
+$ISP2_DO = ConfigHelper::getConfig('finances.line_2', 'linia2xxxxxxxxxxxxxxxxxxxyz');
+$USER_T1 = ConfigHelper::getConfig('finances.pay_title', 'Abonament - ID:%CID% %LongCID%');
 $UID = isset($_GET['UID']) ? intval($_GET['UID']) : 0;
 
 $Before = array ("%CID%","%LongCID%");
@@ -78,7 +67,7 @@ $After = array ($UID, sprintf('%04d', $UID));
 $USER_TY = str_replace($Before,$After,$USER_T1);
 
 //  NRB 26 cyfr, 2 kontrolne, 8 nr banku, 16 nr konta 
-$KONTO_DO = (!isset($CONFIG['finances']['account']) ? '98700000000000000000000123' : $CONFIG['finances']['account']);
+$KONTO_DO = ConfigHelper::getConfig('finances.account', '98700000000000000000000123');
 $CURR = 'PLN';		// oznaczenie waluty
 $SHORT_TO_WORDS = 0;	// 1 - krótki format kwoty słownej 'jed dwa trz 15/100'
 			// 0 - długi format kwoty słownej 'sto dwadzieścia trzy 15/100 zł'
