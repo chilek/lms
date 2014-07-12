@@ -2540,7 +2540,6 @@ $_LANG['Enter IP address:'] = 'Podaj adres IP:';
 $_LANG['Ping to $a'] = 'Ping do $a';
 $_LANG['Enabled'] = 'Włączony';
 
-$_LANG['any sms'] = 'dowolny sms';
 $_LANG['Enter phone numbers separated by commas'] = 'Podaj numery telefonów oddzielone przecinkami';
 $_LANG['Specified phone number is not correct!'] = 'Podany numer telefonu nie jest poprawny!';
 $_LANG['Characters:'] = 'Znaków:';
@@ -2757,6 +2756,13 @@ $_LANG['Ticket has been assigned to user $a.'] = 'Zgłoszenie zostało przypisan
 $_LANG['Ticket has been moved from queue $a to queue $b.'] = 'Zgłoszenie zostało przeniesione z kolejki $a do kolejki $b.';
 
 $_LANG['www'] = 'www';
+$_LANG['any sms'] = 'dowolny sms';
+$_LANG['userpanel'] = 'panel abonencki';
+$_LANG['userpanel urgent'] = 'panel abonencki (pilne)';
+$_LANG['I confirm reading of notices'] = 'Zapoznałem się z treścią powiadomienia';
+$_LANG['Urgent'] = 'Pilna';
+$_LANG['Casual'] = 'Zwykła';
+
 
 $_LANG['New ticket customer notification subject:'] = 'Temat listu z powiadomieniem klienta o nowym zgłoszeniu:';
 $_LANG['New ticket customer notification body:'] = 'Treść listu z powiadomieniem klienta o nowym zgłoszeniu:';
