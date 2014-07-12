@@ -59,6 +59,6 @@ $layout['pagetitle'] = trans('Ticket No. $a',sprintf("%06d",$ticket['ticketid'])
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('ticket', $ticket);
-$SMARTY->display($CONFIG['phpui']['ticket_template_file']);
+$SMARTY->display(ConfigHelper::getConfig('phpui.ticket_template_file'));
 
 ?>

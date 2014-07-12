@@ -199,7 +199,7 @@ if(isset($search) || isset($_GET['s']))
 		unset($queue['direction']);
 
 		$page = (! isset($_GET['page']) ? 1 : $_GET['page']); 
-		$pagelimit = (! $CONFIG['phpui']['ticketlist_pagelimit'] ? $queuedata['total'] : $CONFIG['phpui']['ticketlist_pagelimit']);
+		$pagelimit = ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $queuedata['total']);
 		$start = ($page - 1) * $pagelimit;
 
 		$SESSION->save('rtp', $page);

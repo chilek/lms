@@ -29,7 +29,7 @@
 $layout['pagetitle'] = 'LAN Management System';
 
 $layout['dbversion'] = $DB->GetDBVersion();
-$layout['dbtype'] = $CONFIG['database']['type'];
+$layout['dbtype'] = ConfigHelper::getConfig('database.type');
 
 if (ConfigHelper::checkConfig('privileges.superuser')) {
     $content = $LMS->CheckUpdates();

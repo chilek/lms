@@ -25,12 +25,12 @@
  */
 
 function invoice_body() {
-	global $invoice,$pdf,$CONFIG;
+	global $invoice,$pdf;
 
 	if (isset($invoice['invoice']))
-		$template = $CONFIG['invoices']['cnote_template_file'];
+		$template = ConfigHelper::getConfig('invoices.cnote_template_file');
 	else
-		$template = $CONFIG['invoices']['template_file'];
+		$template = ConfigHelper::getConfig('invoices.template_file');
 
 	switch ($template) {
 		case "standard":

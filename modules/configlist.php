@@ -582,7 +582,7 @@ unset($configlist['direction']);
 unset($configlist['section']);
 
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
-$pagelimit = (! $LMS->CONFIG['phpui']['configlist_pagelimit'] ? $listdata['total'] : $LMS->CONFIG['phpui']['configlist_pagelimit']);
+$pagelimit = ConfigHelper::getConfig('phpui.configlist_pagelimit', $listdata['total']);
 $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('conlp', $page);

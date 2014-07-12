@@ -42,7 +42,6 @@ class LMSDB
     /**
      * Returns singleton database handler.
      * 
-     * @global array $CONFIG
      * @return \LMSDBInterface
      */
     public static function getInstance()

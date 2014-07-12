@@ -65,7 +65,7 @@ if(isset($_GET['search']))
 		
 	$page = (!isset($_GET['page']) ? 1 : $_GET['page']);
 	
-	$pagelimit = (! $CONFIG['phpui']['voipaccountlist_pagelimit'] ? $listdata['total'] : $CONFIG['phpui']['voipaccountlist_pagelimit']);
+	$pagelimit = ConfigHelper::getConfig('phpui.voipaccountlist_pagelimit', $listdata['total']);
 	$start = ($page - 1) * $pagelimit;
 	$SESSION->save('vaslp', $page);
 	

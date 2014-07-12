@@ -45,10 +45,10 @@ if ($id && !isset($_POST['ticket'])) {
 					$user = $LMS->GetUserInfo($AUTH->id);
 					$mailfname = '';
 
-					if (isset($CONFIG['phpui']['helpdesk_sender_name'])) {
-						if ($CONFIG['phpui']['helpdesk_sender_name'] == 'queue')
+					if (isset(ConfigHelper::getConfig('phpui.helpdesk_sender_name'))) {
+						if (ConfigHelper::getConfig('phpui.helpdesk_sender_name') == 'queue')
 							$mailfname = $$queue['name'];
-						elseif ($CONFIG['phpui']['helpdesk_sender_name'] == 'user')
+						elseif (ConfigHelper::getConfig('phpui.helpdesk_sender_name') == 'user')
 							$mailfname = $user['name'];
 
 						$mailfname = '"' . $mailfname . '"';
@@ -181,16 +181,16 @@ if(isset($_POST['ticket']))
 
 		// przy zmianie kolejki powiadamiamy o "nowym" zgloszeniu
 		if ($ticket['queueid'] != $ticketedit['queueid']
-			&& isset($CONFIG['phpui']['newticket_notify'])
+			&& isset(ConfigHelper::getConfig('phpui.newticket_notify'))
 			&& ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.newticket_notify', false))) {
 			$user = $LMS->GetUserInfo($AUTH->id);
 			$queue = $LMS->GetQueueByTicketId($ticket['ticketid']);
 			$mailfname = '';
 
-			if (isset($CONFIG['phpui']['helpdesk_sender_name'])) {
-				if ($CONFIG['phpui']['helpdesk_sender_name'] == 'queue')
+			if (isset(ConfigHelper::getConfig('phpui.helpdesk_sender_name'))) {
+				if (ConfigHelper::getConfig('phpui.helpdesk_sender_name') == 'queue')
 					$mailfname = $$queue['name'];
-				elseif ($CONFIG['phpui']['helpdesk_sender_name'] == 'user')
+				elseif (ConfigHelper::getConfig('phpui.helpdesk_sender_name') == 'user')
 					$mailfname = $user['name'];
 
 				$mailfname = '"' . $mailfname . '"';
@@ -254,7 +254,7 @@ if(isset($_POST['ticket']))
 			}
 
             // send sms
-			if (!empty($CONFIG['sms']['service']) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
+			if (!empty(ConfigHelper::getConfig('sms.service')) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
 			        FROM users, rtrights
 					WHERE users.id = userid AND queueid = ? AND phone != \'\'
 						AND (rtrights.rights & 8) = 8 AND users.id != ?

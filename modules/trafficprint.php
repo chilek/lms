@@ -82,7 +82,7 @@ switch($type)
 			$SMARTY->assign('listdata', $listdata);
 		}
 
-		if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
+		if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
 			$output = $SMARTY->fetch('printcustomertraffic.html');
 			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {

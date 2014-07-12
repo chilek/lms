@@ -100,12 +100,12 @@ $year = (isset($year) ? $year : date('Y',time()));
 
 $layout['pagetitle'] = trans('Timetable');
 
-$eventlist = GetEventList($year, $month, $day, $CONFIG['phpui']['timetable_days_forward'], $u, $a);
+$eventlist = GetEventList($year, $month, $day, ConfigHelper::getConfig('phpui.timetable_days_forward'), $u, $a);
 $SESSION->restore('elu', $listdata['customerid']);
 $SESSION->restore('ela', $listdata['userid']);
 
 // create calendars
-for($i=0; $i<$CONFIG['phpui']['timetable_days_forward']; $i++)
+for($i=0; $i<ConfigHelper::getConfig('phpui.timetable_days_forward'); $i++)
 {
 	$dt = mktime(0, 0, 0, $month, $day+$i, $year);
 	$daylist[$i] = $dt;

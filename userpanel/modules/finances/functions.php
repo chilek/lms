@@ -30,11 +30,11 @@ if (defined('USERPANEL_SETUPMODE'))
     {
 	global $SMARTY,$LMS;
 
-	$SMARTY->assign('disable_transferform', $LMS->CONFIG['userpanel']['disable_transferform']);
-	$SMARTY->assign('disable_invoices', $LMS->CONFIG['userpanel']['disable_invoices']);
-	$SMARTY->assign('invoice_duplicate', $LMS->CONFIG['userpanel']['invoice_duplicate']);
-	$SMARTY->assign('show_tariffname', $LMS->CONFIG['userpanel']['show_tariffname']);
-	$SMARTY->assign('show_speeds', $LMS->CONFIG['userpanel']['show_speeds']);
+	$SMARTY->assign('disable_transferform', ConfigHelper::getConfig('userpanel.disable_transferform'));
+	$SMARTY->assign('disable_invoices', ConfigHelper::getConfig('userpanel.disable_invoices'));
+	$SMARTY->assign('invoice_duplicate', ConfigHelper::getConfig('userpanel.invoice_duplicate'));
+	$SMARTY->assign('show_tariffname', ConfigHelper::getConfig('userpanel.show_tariffname'));
+	$SMARTY->assign('show_speeds', ConfigHelper::getConfig('userpanel.show_speeds'));
 	$SMARTY->display('module:finances:setup.html');
     }
 

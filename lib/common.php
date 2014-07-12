@@ -667,13 +667,11 @@ function clear_utf($str)
 
 function lastonline_date($timestamp)
 {
-    global $CONFIG;
-
     if (!$timestamp)
         return null;
 
     $delta = time()-$timestamp;
-    if ($delta > $CONFIG['phpui']['lastonline_limit']) {
+    if ($delta > ConfigHelper::getConfig('phpui.lastonline_limit')) {
         if($delta>59)
             return trans('$a ago ($b)', uptimef($delta), date('Y/m/d, H:i', $timestamp));
         else
@@ -709,7 +707,7 @@ function location_str($data)
     $location = $data['city_name'];
 
     if ($data['location_flat']) {
-        $h = $CONFIG['phpui']['house_template'] ? $CONFIG['phpui']['house_template'] : '%h/%f';
+        $h = ConfigHelper::getConfig('phpui.house_template', '%h/%f');
         $h = str_replace('%h', $data['location_house'], $h);
         $h = str_replace('%f', $data['location_flat'], $h);
     }

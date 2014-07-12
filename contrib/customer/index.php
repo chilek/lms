@@ -58,19 +58,13 @@ require_once(LIB_DIR.'/autoloader.php');
 
 require_once(LIB_DIR.'/config.php');
 
-// Init database 
-
-$_DBTYPE = $CONFIG['database']['type'];
-$_DBHOST = $CONFIG['database']['host'];
-$_DBUSER = $CONFIG['database']['user'];
-$_DBPASS = $CONFIG['database']['password'];
-$_DBNAME = $CONFIG['database']['database'];
+// Init database
 
 $DB = null;
 
 try {
 
-    $DB = LMSDB::getDB($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
+    $DB = LMSDB::getInstance();
 
 } catch (Exception $ex) {
     
@@ -80,12 +74,6 @@ try {
     die("Fatal error: cannot connect to database!\n");
     
 }
-
-// Read configuration of LMS-UI from database
-
-if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0'))
-	foreach($cfg as $row)
-		$CONFIG[$row['section']][$row['var']] = $row['value'];
 
 // Initialize templates engine
 $SMARTY = new Smarty;
@@ -100,7 +88,7 @@ require_once(LIB_DIR.'/common.php');
 // Initialize LMS class
 
 $AUTH = NULL;
-$LMS = new LMS($DB, $AUTH, $CONFIG);
+$LMS = new LMS($DB, $AUTH);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 

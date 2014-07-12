@@ -238,8 +238,6 @@ class Auth {
 	}
 
 	public function VerifyUser() {
-		global $CONFIG;
-
 		$this->islogged = false;
 
 		if ($user = $this->DB->GetRow('SELECT id, name, passwd, hosts, lastlogindate, lastloginip, 

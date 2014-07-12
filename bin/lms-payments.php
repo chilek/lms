@@ -118,18 +118,12 @@ require_once(LIB_DIR.'/autoloader.php');
 require_once(LIB_DIR.'/config.php');
 
 // Init database
- 
-$_DBTYPE = $CONFIG['database']['type'];
-$_DBHOST = $CONFIG['database']['host'];
-$_DBUSER = $CONFIG['database']['user'];
-$_DBPASS = $CONFIG['database']['password'];
-$_DBNAME = $CONFIG['database']['database'];
 
 $DB = null;
 
 try {
 
-    $DB = LMSDB::getDB($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
+    $DB = LMSDB::getInstance();
 
 } catch (Exception $ex) {
     
@@ -140,40 +134,19 @@ try {
     
 }
 
-// Read configuration from database
-
-if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0'))
-	foreach($cfg as $row)
-		$CONFIG[$row['section']][$row['var']] = $row['value'];
-
 // Include required files (including sequence is important)
 
 //require_once(LIB_DIR.'/definitions.php');
 require_once(LIB_DIR.'/common.php');
 require_once(LIB_DIR.'/language.php');
 
-if (empty($CONFIG['payments']['deadline']))
-	$CONFIG['payments']['deadline'] = 14;
-if (empty($CONFIG['payments']['paytype']))
-	$CONFIG['payments']['paytype'] = 2; // TRANSFER
-if (empty($CONFIG['payments']['saledate_next_month']))
-	$CONFIG['payments']['saledate_next_month'] = 0;
-if (empty($CONFIG['payments']['comment']))
-	$CONFIG['payments']['comment'] = "Tariff %tariff subscription for period %period";
-if (empty($CONFIG['payments']['settlement_comment']))
-	$CONFIG['payments']['settlement_comment'] = $CONFIG['payments']['comment'];
-if (empty($CONFIG['payments']['suspension_description']))
-	$CONFIG['payments']['suspension_description'] = "";
-if (empty($CONFIG['finances']['suspension_percentage']))
-	$CONFIG['finances']['suspension_percentage'] = 0;
-
-$deadline = $CONFIG['payments']['deadline'];
-$sdate_next = $CONFIG['payments']['saledate_next_month'];
-$paytype = $CONFIG['payments']['paytype'];
-$comment = $CONFIG['payments']['comment'];
-$s_comment = $CONFIG['payments']['settlement_comment'];
-$suspension_description = $CONFIG['payments']['suspension_description'];
-$suspension_percentage = $CONFIG['finances']['suspension_percentage'];
+$deadline = ConfigHelper::getConfig('payments.deadline', 14);
+$sdate_next = ConfigHelper::getConfig('payments.saledate_next_month', 0);
+$paytype = ConfigHelper::getConfig('payments.paytype', 2); // TRANSFER
+$comment = ConfigHelper::getConfig('payments.comment', "Tariff %tariff subscription for period %period");
+$s_comment = ConfigHelper::getConfig('payments.settlement_comment', ConfigHelper::getConfig('payments.comment'));
+$suspension_description = ConfigHelper::getConfig('payments.suspension_description', '');
+$suspension_percentage = ConfigHelper::getConfig('finances.suspension_percentage', 0);
 
 function localtime2()
 {
@@ -205,12 +178,12 @@ define('TARIFF_TV', 5);
 define('TARIFF_OTHER', -1);
 
 $TARIFFTYPES = array(
-	TARIFF_INTERNET	=> isset($CONFIG['tarifftypes']['internet']) ? $CONFIG['tarifftypes']['internet'] : trans('internet'),
-	TARIFF_HOSTING	=> isset($CONFIG['tarifftypes']['hosting']) ? $CONFIG['tarifftypes']['hosting'] : trans('hosting'),
-	TARIFF_SERVICE	=> isset($CONFIG['tarifftypes']['service']) ? $CONFIG['tarifftypes']['service'] : trans('service'),
-	TARIFF_PHONE	=> isset($CONFIG['tarifftypes']['phone']) ? $CONFIG['tarifftypes']['phone'] : trans('phone'),
-	TARIFF_TV	=> isset($CONFIG['tarifftypes']['tv']) ? $CONFIG['tarifftypes']['tv'] : trans('tv'),
-	TARIFF_OTHER	=> isset($CONFIG['tarifftypes']['other']) ? $CONFIG['tarifftypes']['other'] : trans('other'),
+	TARIFF_INTERNET	=> isset(ConfigHelper::getConfig('tarifftypes.internet')) ? ConfigHelper::getConfig('tarifftypes.internet') : trans('internet'),
+	TARIFF_HOSTING	=> isset(ConfigHelper::getConfig('tarifftypes.hosting')) ? ConfigHelper::getConfig('tarifftypes.hosting') : trans('hosting'),
+	TARIFF_SERVICE	=> isset(ConfigHelper::getConfig('tarifftypes.service')) ? ConfigHelper::getConfig('tarifftypes.service') : trans('service'),
+	TARIFF_PHONE	=> isset(ConfigHelper::getConfig('tarifftypes.phone')) ? ConfigHelper::getConfig('tarifftypes.phone') : trans('phone'),
+	TARIFF_TV	=> isset(ConfigHelper::getConfig('tarifftypes.tv')) ? ConfigHelper::getConfig('tarifftypes.tv') : trans('tv'),
+	TARIFF_OTHER	=> isset(ConfigHelper::getConfig('tarifftypes.other')) ? ConfigHelper::getConfig('tarifftypes.other') : trans('other'),
 );
 
 $fakedate = (array_key_exists('fakedate', $options) ? $options['fakedate'] : NULL);
@@ -349,7 +322,7 @@ $customergroups = " AND EXISTS (SELECT 1 FROM customergroups g, customerassignme
 	WHERE c.id = ca.customerid 
 	AND g.id = ca.customergroupid 
 	AND (%groups)) ";
-$groupnames = $CONFIG['payments']['customergroups'];
+$groupnames = ConfigHelper::getConfig('payments.customergroups');
 $groupsql = "";
 $groups = preg_split("/[[:blank:]]+/", $groupnames, -1, PREG_SPLIT_NO_EMPTY);
 foreach ($groups as $group)
@@ -420,7 +393,7 @@ foreach($assigns as $assign)
 	if ($assign['liabilityid'])
 		$desc = $assign['name'];
 	else
-		$desc = $CONFIG['payments']['comment'];
+		$desc = $comment;
 	$desc = preg_replace("/\%type/", $assign['tarifftype'] != TARIFF_OTHER ? $TARIFFTYPES[$assign['tarifftype']] : '', $desc);
 	$desc = preg_replace("/\%tariff/", $assign['name'], $desc);
 	$desc = preg_replace("/\%desc/", $assign['description'], $desc);

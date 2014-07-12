@@ -28,13 +28,11 @@
 
 function _smarty_block_box($params, $content, &$template, &$repeat)
 {
-	global $CONFIG;
-
 	if (!empty($content))
 	{
 		$title = trans(array_merge(array($params['title']), $params));
 
-		$style = $CONFIG['userpanel']['style'] ? $CONFIG['userpanel']['style'] : 'default';
+		$style = ConfigHelper::getConfig('userpanel.style', 'default');
 
 		if(file_exists('style/'.$style.'/box.html'))
 			$file = 'style/'.$style.'/box.html';
@@ -44,15 +42,13 @@ function _smarty_block_box($params, $content, &$template, &$repeat)
 		$template->assignGlobal('boxtitle', $title);
 		$template->assignGlobal('boxcontent', $content);
 
-		return $template->fetch($CONFIG['directories']['userpanel_dir'].'/'.$file);
+		return $template->fetch(ConfigHelper::getConfig('directories.userpanel_dir').'/'.$file);
 	}
 }
 
 function _smarty_function_stylefile($params, $template)
 {
-	global $CONFIG;
-
-	$style = $CONFIG['userpanel']['style'] ? $CONFIG['userpanel']['style'] : 'default';
+	$style = ConfigHelper::getConfig('userpanel.style', 'default');
 
         if(file_exists('style/'.$style.'/style.css'))
 	        return 'style/'.$style.'/style.css';
@@ -63,22 +59,18 @@ function _smarty_function_stylefile($params, $template)
 
 function _smarty_function_body($params, $template)
 {
-	global $CONFIG;
-
-	$style = $CONFIG['userpanel']['style'] ? $CONFIG['userpanel']['style'] : 'default';
+	$style = ConfigHelper::getConfig('userpanel.style', 'default');
 
         if(file_exists('style/'.$style.'/body.html'))
 	        $file = 'style/'.$style.'/body.html';
         elseif(file_exists('style/default/body.html'))
 	        $file = 'style/default/body.html';
 
-	return $template->fetch($CONFIG['directories']['userpanel_dir'].'/'.$file);
+	return $template->fetch(ConfigHelper::getConfig('directories.userpanel_dir').'/'.$file);
 }
 
 function _smarty_function_userpaneltip($params, $template)
 {
-    global $CONFIG;
-
     $repeat = FALSE;
     $text = trans(array_merge(array($params['text']), $params));
 
@@ -93,7 +85,7 @@ function _smarty_function_userpaneltip($params, $template)
     $text = str_replace("\r", '', $text);
     $text = str_replace("\n", '<BR>', $text);
 
-    if ($CONFIG['userpanel']['hint']=='classic')
+    if (ConfigHelper::getConfig('userpanel.hint')=='classic')
     {
 	if($tpl[$params['trigger']])
 	    $result = ' onmouseover="return overlib(\'<b><font color=red>'.$error.'</font></b>\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onmouseout="nd();" ';
@@ -101,7 +93,7 @@ function _smarty_function_userpaneltip($params, $template)
 	    $result = 'onmouseover="return overlib(\''.$text.'\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onmouseout="nd();"';
 	$result .= ($tpl[$params['trigger']] ? ($params['bold'] ? ' CLASS="alert bold" ' : ' CLASS="alert" ') : ($params['bold'] ? ' CLASS="bold" ' : ''));
     } 
-    elseif ($CONFIG['userpanel']['hint']=='none')
+    elseif (ConfigHelper::getConfig('userpanel.hint')=='none')
     {
 	$result = "";
     }
@@ -118,9 +110,9 @@ function _smarty_function_userpaneltip($params, $template)
 
 function _smarty_function_img($params, $template)
 {
-    global $CONFIG, $_GET;
+    global $_GET;
 
-    $style = $CONFIG['userpanel']['style'] ? $CONFIG['userpanel']['style'] : 'default';
+    $style = ConfigHelper::getConfig('userpanel.style', 'default');
 
     if(file_exists('modules/'.$_GET['m'].'/style/'.$style.'/'.$params['src']))
 	    $file = 'modules/'.$_GET['m'].'/style/'.$style.'/'.$params['src'];
@@ -155,7 +147,7 @@ function _smarty_function_img($params, $template)
 	    $text = str_replace("\r", '', $text);
 	    $text = str_replace("\n", '<BR>', $text);
 
-	    if ($CONFIG['userpanel']['hint']=='classic')
+	    if (ConfigHelper::getConfig('userpanel.hint')=='classic')
 	    {
 		if($tpl[$params['trigger']])
 		    $result .= 'onmouseover="return overlib(\'<b><font color=red>'.$error.'</font></b>\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onmouseout="nd();" ';
@@ -163,7 +155,7 @@ function _smarty_function_img($params, $template)
 		    $result .= 'onmouseover="return overlib(\''.$text.'\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onmouseout="nd();" ';
 		$result .= ($tpl[$params['trigger']] ? ($params['bold'] ? ' class="alert bold" ' : ' class="alert" ') : ($params['bold'] ? ' class="bold" ' : ''));
 	    } 
-	    elseif ($CONFIG['userpanel']['hint']=='none')
+	    elseif (ConfigHelper::getConfig('userpanel.hint')=='none')
 	    {
 		    $result .= ' ';
 	    }
@@ -185,16 +177,15 @@ function _smarty_function_img($params, $template)
 
 function module_get_template($tpl_name, &$tpl_source, $template)
 {
-	global $CONFIG;
 	$module = $_GET['m'];
-	$style = $CONFIG['userpanel']['style'] ? $CONFIG['userpanel']['style'] : 'default';
-	$template_path = $CONFIG['directories']['userpanel_dir'] . '/modules/' . $module . '/style/' . $style . '/templates/' . $tpl_name;
+	$style = ConfigHelper::getConfig('userpanel.style', 'default');
+	$template_path = ConfigHelper::getConfig('directories.userpanel_dir') . '/modules/' . $module . '/style/' . $style . '/templates/' . $tpl_name;
 	if (file_exists($template_path))
 	{
 		$tpl_source = file_get_contents($template_path);
 		return true;
 	} else {
-		$template_path = $CONFIG['directories']['userpanel_dir'].'/modules/'.$module.'/templates/'.$tpl_name;
+		$template_path = ConfigHelper::getConfig('directories.userpanel_dir').'/modules/'.$module.'/templates/'.$tpl_name;
 		if (file_exists($template_path)) {
 			$tpl_source = file_get_contents($template_path);
 			return true;
@@ -205,16 +196,15 @@ function module_get_template($tpl_name, &$tpl_source, $template)
 
 function module_get_timestamp($tpl_name, &$tpl_timestamp, $template)
 {
-	global $CONFIG;
 	$module = $_GET['m'];
-	$style = $CONFIG['userpanel']['style'] ? $CONFIG['userpanel']['style'] : 'default';
-	$template_path = $CONFIG['directories']['userpanel_dir'] . '/modules/' . $module . '/style/' . $style . '/templates/' . $tpl_name;
+	$style = ConfigHelper::getConfig('userpanel.style', 'default');
+	$template_path = ConfigHelper::getConfig('directories.userpanel_dir') . '/modules/' . $module . '/style/' . $style . '/templates/' . $tpl_name;
 	if (file_exists($template_path))
 	{
 		$tpl_timestamp = filectime($template_path);
 		return true;
 	} else {
-		$template_path = $CONFIG['directories']['userpanel_dir'].'/modules/'.$module.'/templates/'.$tpl_name;
+		$template_path = ConfigHelper::getConfig('directories.userpanel_dir').'/modules/'.$module.'/templates/'.$tpl_name;
 		if (file_exists($template_path)) {
 			$tpl_timestamp = filectime($template_path);
 			return true;

@@ -162,7 +162,7 @@ if (isset($_GET['search'])) {
 
 	$page = (!isset($_GET['page']) ? 1 : $_GET['page']);
 
-	$pagelimit = (!$CONFIG['phpui']['nodelist_pagelimit'] ? $listdata['total'] : $CONFIG['phpui']['nodelist_pagelimit']);
+	$pagelimit = ConfigHelper::getConfig('phpui.nodelist_pagelimit', $listdata['total']);
 	$start = ($page - 1) * $pagelimit;
 	$SESSION->save('nslp', $page);
 

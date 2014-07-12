@@ -28,17 +28,15 @@ class USERPANEL
 {
 	var $DB;
 	var $SESSION;
-	var $CONFIG;
 	var $MODULES = array();
         var $_version = '1.11-git'; 
         var $_revision = '$Revision$';
 			
-	function USERPANEL(&$DB, &$SESSION, &$CONFIG) // ustawia zmienne klasy
+	function USERPANEL(&$DB, &$SESSION) // ustawia zmienne klasy
 	{
 	        $this->_revision = preg_replace('/^.Revision: ([0-9.]+).*/i', '\1', $this->_revision);
 		$this->DB = &$DB;
 		$this->SESSION = &$SESSION;
-		$this->CONFIG = &$CONFIG;
 	}
 
 	function _postinit()

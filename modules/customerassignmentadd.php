@@ -69,9 +69,9 @@ if(isset($_POST['assignment']))
 				$at = date('j', time());
 
 			if(!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.use_current_payday', false)) 
-				&& $CONFIG['phpui']['default_monthly_payday']>0 && $at==0)
+				&& ConfigHelper::getConfig('phpui.default_monthly_payday')>0 && $at==0)
 			{
-				$at = $CONFIG['phpui']['default_monthly_payday'];
+				$at = ConfigHelper::getConfig('phpui.default_monthly_payday');
 			}
 
 			$a['at'] = $at;
@@ -286,14 +286,14 @@ if(isset($_POST['assignment']))
 }
 else
 {
-	if (!empty($CONFIG['phpui']['default_assignment_invoice']))
+	if (!empty(ConfigHelper::getConfig('phpui.default_assignment_invoice')))
 		$a['invoice'] = true;
-	if (!empty($CONFIG['phpui']['default_assignment_settlement']))
+	if (!empty(ConfigHelper::getConfig('phpui.default_assignment_settlement')))
 		$a['settlement'] = true;
-	if (!empty($CONFIG['phpui']['default_assignment_period']))
-		$a['period'] = $CONFIG['phpui']['default_assignment_period'];
-	if (!empty($CONFIG['phpui']['default_assignment_at']))
-		$a['at'] = $CONFIG['phpui']['default_assignment_at'];
+	if (!empty(ConfigHelper::getConfig('phpui.default_assignment_period')))
+		$a['period'] = ConfigHelper::getConfig('phpui.default_assignment_period');
+	if (!empty(ConfigHelper::getConfig('phpui.default_assignment_at')))
+		$a['at'] = ConfigHelper::getConfig('phpui.default_assignment_at');
 }
 
 $expired = isset($_GET['expired']) ? $_GET['expired'] : false;

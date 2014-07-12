@@ -170,7 +170,7 @@ if(sizeof($search) || isset($_GET['s']))
 		unset($accountlist['direction']);
     
 		$page = (! isset($_GET['page']) ? 1 : $_GET['page']); 
-		$pagelimit = (! $CONFIG['phpui']['accountlist_pagelimit'] ? $queuedata['total'] : $CONFIG['phpui']['accountlist_pagelimit']);
+		$pagelimit = ConfigHelper::getConfig('phpui.accountlist_pagelimit', $queuedata['total']);
 		$start = ($page - 1) * $pagelimit;
 
 		$SESSION->save('asp', $page);

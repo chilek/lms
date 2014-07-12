@@ -102,8 +102,8 @@ if(isset($_GET['s']))
 	$s = $_GET['s'];
 elseif($SESSION->is_set('rts'))
 	$SESSION->restore('rts', $s);
-elseif(isset($CONFIG['phpui']['ticketlist_status']))
-	$s = $CONFIG['phpui']['ticketlist_status'];
+elseif(isset(ConfigHelper::getConfig('phpui.ticketlist_status')))
+	$s = ConfigHelper::getConfig('phpui.ticketlist_status');
 else
 	$s = NULL;
 $SESSION->save('rts', $s);
@@ -129,7 +129,7 @@ unset($queue['direction']);
 unset($queue['owner']);
 
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
-$pagelimit = (!isset($CONFIG['phpui']['ticketlist_pagelimit']) ? $queuedata['total'] : $CONFIG['phpui']['ticketlist_pagelimit']);
+$pagelimit = ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $queuedata['total']);
 $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('rtp', $page);

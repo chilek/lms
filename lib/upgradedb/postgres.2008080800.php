@@ -52,7 +52,7 @@ INSERT INTO zipcodes (zip) SELECT DISTINCT zip FROM customers;
 
 ");
 
-if($CONFIG['phpui']['lang'] == 'pl'
+if(ConfigHelper::getConfig('phpui.lang') == 'pl'
 	|| $DB->GetOne("SELECT 1 FROM uiconfig WHERE var='lang' AND section='phpui' AND disabled=0 AND value='pl'"))
 {
 	$DB->Execute("
