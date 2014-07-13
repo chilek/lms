@@ -48,7 +48,7 @@ if($dbversion = $DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype = ?',arra
 	{
 		set_time_limit(0);
 		$lastupgrade = $dbversion;
-		$_dbtype = $CONFIG['database']['type'] == 'mysqli' ? 'mysql' : $CONFIG['database']['type'];
+		$_dbtype = ConfigHelper::getConfig('database.type') == 'mysqli' ? 'mysql' : ConfigHelper::getConfig('database.type');
 
 		$upgradelist = getdir(LIB_DIR.'/upgradedb/', '^'.$_dbtype.'.[0-9]{10}.php$');
 		if(sizeof($upgradelist))

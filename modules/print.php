@@ -124,7 +124,7 @@ switch($type)
 		}
 		
 		$SMARTY->assign('balancelist', $list);
-		if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
+		if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
 			$output = $SMARTY->fetch('printcustomerbalance.html');
 			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {
@@ -295,7 +295,7 @@ switch($type)
 		if($source)
 			$SMARTY->assign('source', $DB->GetOne('SELECT name FROM cashsources WHERE id = ?', array($source)));
 
-		if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
+		if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
 			$output = $SMARTY->fetch('printbalancelist.html');
 			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {
@@ -336,7 +336,7 @@ switch($type)
 			array($date['from'], $date['to']));
 
 		$SMARTY->assign('incomelist', $incomelist);
-		if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
+		if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
 			$output = $SMARTY->fetch('printincomereport.html');
 			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {
@@ -383,7 +383,7 @@ switch($type)
 		if ($source)
 			$SMARTY->assign('source', $DB->GetOne('SELECT name FROM cashsources WHERE id = ?', array($source)));
 		$SMARTY->assign('importlist', $importlist);
-		if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
+		if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
 			$output = $SMARTY->fetch('printimportlist.html');
 			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {
@@ -528,7 +528,7 @@ switch($type)
 		if (is_leap_year($year) && $yearday > 31 + 28)
 			$yearday -= 1;
 
-		$suspension_percentage = $CONFIG['finances']['suspension_percentage'];
+		$suspension_percentage = ConfigHelper::getConfig('finances.suspension_percentage');
 
 		if ($taxes = $LMS->GetTaxes($reportday, $reportday))
 		{
@@ -652,7 +652,7 @@ switch($type)
 			$SMARTY->assign('taxescount', sizeof($taxes));
 		}
 
-		if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
+		if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
 			$output = $SMARTY->fetch('printliabilityreport.html');
 			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {
@@ -795,7 +795,7 @@ switch($type)
 
 			// hidden option: max records count for one page of printout
 			// I think 20 records is fine, but someone needs 19.
-			$rows = isset($CONFIG['phpui']['printout_pagelimit']) ? $CONFIG['phpui']['printout_pagelimit'] : 20;
+			$rows = ConfigHelper::getConfig('phpui.printout_pagelimit', 20);
 
 			// create a new array and do some calculations 
 			// (summaries and page size calculations)
@@ -842,7 +842,7 @@ switch($type)
 			$SMARTY->assign('totals', $totals);
 			$SMARTY->assign('pagescount', sizeof($pages));
 			$SMARTY->assign('reccount', sizeof($list));
-			if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
+			if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
 				$output = $SMARTY->fetch('printreceiptlist-ext.html');
 				html2pdf($output, trans('Reports'), $layout['pagetitle']);
 			} else {
@@ -851,7 +851,7 @@ switch($type)
 		}
 		else
 		{
-			if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
+			if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
 				$output = $SMARTY->fetch('printreceiptlist.html');
 				html2pdf($output, trans('Reports'), $layout['pagetitle']);
 			} else {

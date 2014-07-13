@@ -116,7 +116,7 @@ if(sizeof($search) || isset($_GET['s']))
 		unset($domainlist['direction']);
     
 		$page = (! isset($_GET['page']) ? 1 : $_GET['page']); 
-		$pagelimit = (! $CONFIG['phpui']['domainlist_pagelimit'] ? $queuedata['total'] : $CONFIG['phpui']['domainlist_pagelimit']);
+		$pagelimit = ConfigHelper::getConfig('phpui.domainlist_pagelimit', $queuedata['total']);
 		$start = ($page - 1) * $pagelimit;
 
 		$SESSION->save('dsp', $page);

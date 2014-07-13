@@ -112,7 +112,7 @@ function TrafficGraph($nodeid, $net = NULL, $customer = NULL, $bar = NULL, $from
 		$tto += $add;
 	}
 
-	$freq = $LMS->CONFIG['phpui']['stat_freq'] ? $LMS->CONFIG['phpui']['stat_freq'] : 12;
+	$freq = ConfigHelper::getConfig('phpui.stat_freq', 12);
 
 	if($nodeid)
 	{

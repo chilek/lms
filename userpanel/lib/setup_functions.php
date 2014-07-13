@@ -29,13 +29,13 @@ function module_setup()
     global $SMARTY, $DB, $USERPANEL, $layout, $LMS;
     $layout['pagetitle'] = trans('Userpanel Configuration');
     $SMARTY->assign('stylelist', getdir(USERPANEL_DIR.'/style', '^[a-z0-9]*$'));
-    $SMARTY->assign('style', isset($LMS->CONFIG['userpanel']['style']) ? $LMS->CONFIG['userpanel']['style'] : 'default');
-    $SMARTY->assign('hint', isset($LMS->CONFIG['userpanel']['hint']) ? $LMS->CONFIG['userpanel']['hint'] : 'modern');
-    $SMARTY->assign('hide_nodes_modules', isset($LMS->CONFIG['userpanel']['hide_nodes_modules']) ? $LMS->CONFIG['userpanel']['hide_nodes_modules'] : 0);
-    $SMARTY->assign('reminder_mail_sender', isset($LMS->CONFIG['userpanel']['reminder_mail_sender']) ? $LMS->CONFIG['userpanel']['reminder_mail_sender'] : '');
-    $SMARTY->assign('reminder_mail_subject', isset($LMS->CONFIG['userpanel']['reminder_mail_subject']) ? $LMS->CONFIG['userpanel']['reminder_mail_subject'] : trans('credential reminder'));
-    $SMARTY->assign('reminder_mail_body', isset($LMS->CONFIG['userpanel']['reminder_mail_body']) ? $LMS->CONFIG['userpanel']['reminder_mail_body'] : "ID: %id\nPIN: %pin");
-    $SMARTY->assign('reminder_sms_body', isset($LMS->CONFIG['userpanel']['reminder_sms_body']) ? $LMS->CONFIG['userpanel']['reminder_sms_body'] : "ID: %id, PIN: %pin");
+    $SMARTY->assign('style', ConfigHelper::getConfig('userpanel.style', 'default'));
+    $SMARTY->assign('hint', ConfigHelper::getConfig('userpanel.hint', 'modern'));
+    $SMARTY->assign('hide_nodes_modules', ConfigHelper::getConfig('userpanel.hide_nodes_modules', 0));
+    $SMARTY->assign('reminder_mail_sender', ConfigHelper::getConfig('userpanel.reminder_mail_sender', ''));
+    $SMARTY->assign('reminder_mail_subject', ConfigHelper::getConfig('userpanel.reminder_mail_subject', trans('credential reminder')));
+    $SMARTY->assign('reminder_mail_body', ConfigHelper::getConfig('userpanel.reminder_mail_body', "ID: %id\nPIN: %pin"));
+    $SMARTY->assign('reminder_sms_body', ConfigHelper::getConfig('userpanel.reminder_sms_body', "ID: %id, PIN: %pin"));
     $SMARTY->assign('total', sizeof($USERPANEL->MODULES));
     $SMARTY->display(USERPANEL_DIR.'/templates/setup.html');
 }
@@ -48,46 +48,42 @@ function module_submit_setup()
         $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'hint'", array($_POST['hint']));
     else
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'hint', ?)", array($_POST['hint']));
-    $LMS->CONFIG['userpanel']['hint'] = $_POST['hint'];
-
 
     if($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'style'"))
         $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'style'", array($_POST['style']));
     else
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'style', ?)", array($_POST['style']));
-    $LMS->CONFIG['userpanel']['style'] = $_POST['style'];
     
     if($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'hide_nodes_modules'"))
         $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'hide_nodes_modules'", array(isset($_POST['hide_nodes_modules']) ? 1 : 0));
     else
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'hide_nodes_modules', ?)", array(isset($_POST['hide_nodes_modules']) ? 1 : 0));
 
-    $LMS->CONFIG['userpanel']['hide_nodes_modules'] = isset($_POST['hide_nodes_modules']) ? 1 : 0;
-
     if ($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'reminder_mail_sender'"))
         $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'reminder_mail_sender'", array($_POST['reminder_mail_sender']));
     else
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'reminder_mail_sender', ?)", array($_POST['reminder_mail_sender']));
-    $LMS->CONFIG['userpanel']['reminder_mail_sender'] = $_POST['reminder_mail_sender'];
 
     if ($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'reminder_mail_subject'"))
         $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'reminder_mail_subject'", array($_POST['reminder_mail_subject']));
     else
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'reminder_mail_subject', ?)", array($_POST['reminder_mail_subject']));
-    $LMS->CONFIG['userpanel']['reminder_mail_subject'] = $_POST['reminder_mail_subject'];
 
     if ($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'reminder_mail_body'"))
         $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'reminder_mail_body'", array($_POST['reminder_mail_body']));
     else
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'reminder_mail_body', ?)", array($_POST['reminder_mail_body']));
-    $LMS->CONFIG['userpanel']['reminder_mail_body'] = $_POST['reminder_mail_body'];
 
     if ($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'reminder_sms_body'"))
         $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'reminder_sms_body'", array($_POST['reminder_sms_body']));
     else
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'reminder_sms_body', ?)", array($_POST['reminder_sms_body']));
-    $LMS->CONFIG['userpanel']['reminder_sms_body'] = $_POST['reminder_sms_body'];
 
+    LMSConfig::getConfig(array(
+        'force' => true,
+        'force_ui_only' => true,
+    ));
+    
     module_setup();
 }
 

@@ -373,8 +373,8 @@ if(defined('USERPANEL_SETUPMODE'))
 	{
 		global $SMARTY, $LMS;
 		
-		$SMARTY->assign('hide_nodesbox', $LMS->CONFIG['userpanel']['hide_nodesbox']);
-		$SMARTY->assign('consent_text', $LMS->CONFIG['userpanel']['data_consent_text']);
+		$SMARTY->assign('hide_nodesbox', ConfigHelper::getConfig('userpanel.hide_nodesbox'));
+		$SMARTY->assign('consent_text', ConfigHelper::getConfig('userpanel.data_consent_text'));
     		$SMARTY->display('module:info:setup.html');
         }
 	

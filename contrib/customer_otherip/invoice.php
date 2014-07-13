@@ -37,15 +37,15 @@ if($_SESSION['uid'] != $DB->GetOne('SELECT customerid FROM documents WHERE id=?'
 	die;
 }
 
-if (strtolower($CONFIG['invoices']['type']) == 'pdf')
+if (strtolower(ConfigHelper::getConfig('invoices.type')) == 'pdf')
 {
     include('invoice_pdf.php');
     die;
 }
 
-header('Content-Type: '.$LMS->CONFIG['invoices']['content_type']);
-if($LMS->CONFIG['invoices']['attachment_name'] != '')
-	header('Content-Disposition: attachment; filename='.$LMS->CONFIG['invoices']['attachment_name']);
+header('Content-Type: '.ConfigHelper::getConfig('invoices.content_type'));
+if(ConfigHelper::getConfig('invoices.attachment_name') != '')
+	header('Content-Disposition: attachment; filename='.ConfigHelper::getConfig('invoices.attachment_name'));
 
 $invoice = $LMS->GetInvoiceContent($_GET['id']);
 
@@ -55,7 +55,7 @@ $invoice['last'] = TRUE;
 $SMARTY->assign('invoice',$invoice);
 $SMARTY->display(SMARTY_TEMPLATES_DIR.'/clearheader.html');
 $SMARTY->assign('type',trans('ORIGINAL'));
-$SMARTY->display(SMARTY_TEMPLATES_DIR.'/'.$LMS->CONFIG['invoices']['template_file']);
+$SMARTY->display(SMARTY_TEMPLATES_DIR.'/'.ConfigHelper::getConfig('invoices.template_file'));
 $SMARTY->display(SMARTY_TEMPLATES_DIR.'/clearfooter.html');
 
 ?>

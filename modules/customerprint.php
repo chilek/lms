@@ -123,7 +123,7 @@ switch($type)
 		$SMARTY->assign('contactlist', $DB->GetAllByKey('SELECT customerid, MIN(phone) AS phone
 						FROM customercontacts WHERE phone != \'\' GROUP BY customerid', 'customerid'));
 
-		if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
+		if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
 			$output = $SMARTY->fetch('printcustomerlist.html');
 			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {
@@ -194,7 +194,7 @@ switch($type)
 		$list['customerid'] = $id;
 
 		$SMARTY->assign('balancelist', $list);
-		if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
+		if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
 			$output = $SMARTY->fetch('printcustomerbalance.html');
 			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {

@@ -25,7 +25,7 @@
  */
 
 // variables
-define('USERPANEL_DIR', $LMS->CONFIG['directories']['userpanel_dir']);
+define('USERPANEL_DIR', ConfigHelper::getConfig('directories.userpanel_dir'));
 define('USERPANEL_MODULES_DIR', USERPANEL_DIR.'/modules/');
 define('USERPANEL_LIB_DIR', USERPANEL_DIR.'/lib/');
 
@@ -55,7 +55,7 @@ $submenu[] =
 
 // Include userpanel.class
 require_once(USERPANEL_DIR.'/lib/Userpanel.class.php');
-$USERPANEL = new USERPANEL($DB, $SESSION, $CONFIG);
+$USERPANEL = new USERPANEL($DB, $SESSION);
 
 // Initialize modules
 $dh  = opendir(USERPANEL_MODULES_DIR);

@@ -36,7 +36,7 @@ if ($devices)
 {
 	foreach ($devices as $devidx => $device) {
 		if ($device['lastonline'])
-			if (time() - $device['lastonline'] > $CONFIG['phpui']['lastonline_limit'])
+			if (time() - $device['lastonline'] > ConfigHelper::getConfig('phpui.lastonline_limit'))
 				$devices[$devidx]['state'] = 2;
 			else
 				$devices[$devidx]['state'] = 1;
@@ -75,7 +75,7 @@ if ($nodes)
 {
 	foreach ($nodes as $nodeidx => $node)
 		if ($node['lastonline'])
-			if (time() - $node['lastonline'] > $CONFIG['phpui']['lastonline_limit'])
+			if (time() - $node['lastonline'] > ConfigHelper::getConfig('phpui.lastonline_limit'))
 				$nodes[$nodeidx]['state'] = 2;
 			else
 				$nodes[$nodeidx]['state'] = 1;

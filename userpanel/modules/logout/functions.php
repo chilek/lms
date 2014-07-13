@@ -30,9 +30,9 @@ function module_main()
     
     $SESSION->LogOut();
 
-    if ($LMS->CONFIG['userpanel']['logout_url']!='')
+    if (ConfigHelper::getConfig('userpanel.logout_url')!='')
     {
-	header('Location: '.$LMS->CONFIG['userpanel']['logout_url']);
+	header('Location: '.ConfigHelper::getConfig('userpanel.logout_url'));
     } 
     else
     {
@@ -45,7 +45,7 @@ if (defined('USERPANEL_SETUPMODE'))
     function module_setup() 
     {
 	global $SMARTY,$LMS;
-        $SMARTY->assign('logouturl', $LMS->CONFIG['userpanel']['logout_url']);
+        $SMARTY->assign('logouturl', ConfigHelper::getConfig('userpanel.logout_url'));
 	$SMARTY->display('module:logout:setup.html');
     }
 

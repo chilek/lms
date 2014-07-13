@@ -134,8 +134,8 @@ else
 	$tariff['quota_ftp_limit'] = 0;
 	$tariff['quota_sql_limit'] = 0;
 
-    if (!empty($CONFIG['phpui']['default_assignment_period']))
-        $tariff['period'] = $CONFIG['phpui']['default_assignment_period'];
+    if (!empty(ConfigHelper::getConfig('phpui.default_assignment_period')))
+        $tariff['period'] = ConfigHelper::getConfig('phpui.default_assignment_period');
 }
 
 $layout['pagetitle'] = trans('New Subscription');

@@ -231,7 +231,7 @@ if(isset($_POST['extended']))
 
 	// hidden option: records count for one page of printout
 	// I thinks 20 records is fine, but someone needs 19.
-	$rows = isset($CONFIG['phpui']['printout_pagelimit']) ? $CONFIG['phpui']['printout_pagelimit'] : 20;
+	$rows = ConfigHelper::getConfig('phpui.printout_pagelimit', 20);
 
 	// create a new array for use with {section}
 	// and do some calculations (summaries)
@@ -274,7 +274,7 @@ if(isset($_POST['extended']))
 	$SMARTY->assign('totals', $totals);
 	$SMARTY->assign('pagescount', sizeof($pages));
 	$SMARTY->assign('reccount', $reccount);
-	if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
+	if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
 		$output = $SMARTY->fetch('invoicereport-ext.html');
 		html2pdf($output, trans('Reports'), $layout['pagetitle'], NULL, NULL, 'L', array(5, 5, 5, 5), ($_GET['save'] == 1) ? true : false);
 	} else {
@@ -282,7 +282,7 @@ if(isset($_POST['extended']))
 	}
 }
 else {
-	if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
+	if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
 		$output = $SMARTY->fetch('invoicereport.html');
 		html2pdf($output, trans('Reports'), $layout['pagetitle'], NULL, NULL, 'L', array(5, 5, 5, 5), ($_GET['save'] == 1) ? true : false);
 	} else {

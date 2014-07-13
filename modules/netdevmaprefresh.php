@@ -25,10 +25,10 @@
  */
 
 if (isset($_GET['live'])) {
-	if (empty($CONFIG['phpui']['netdevmaprefresh_helper']))
+	if (empty(ConfigHelper::getConfig('phpui.netdevmaprefresh_helper')))
 		$cmd = 'sudo /sbin/pinger-addresses';
 	else
-		$cmd = $CONFIG['phpui']['netdevmaprefresh_helper'];
+		$cmd = ConfigHelper::getConfig('phpui.netdevmaprefresh_helper');
 	exec($cmd, $output);
 	if (count($output)) {
 		$curtime = time();
@@ -36,7 +36,6 @@ if (isset($_GET['live'])) {
 			if (check_ip($ip))
 				$DB->Execute('UPDATE nodes SET lastonline = ? WHERE ipaddr = INET_ATON(?)',
 					array($curtime, $ip));
-		$CONFIG['phpui']['lastonline_limit'] = 20;
 	}
 }
 

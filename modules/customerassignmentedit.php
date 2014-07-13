@@ -81,9 +81,9 @@ if(isset($_POST['assignment']))
 				$at = date('j', time());
 			}
 			elseif (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.use_current_payday', false))
-				 && $CONFIG['phpui']['default_monthly_payday']>0 && $at==0)
+				 && ConfigHelper::getConfig('phpui.default_monthly_payday')>0 && $at==0)
 			{
-				$at = $CONFIG['phpui']['default_monthly_payday'];
+				$at = ConfigHelper::getConfig('phpui.default_monthly_payday');
 			}
 
 			$a['at'] = $at;

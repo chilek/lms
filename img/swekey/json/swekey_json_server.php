@@ -64,9 +64,9 @@ try {
 require_once(LIB_DIR . '/language.php');
 
 // Initialize Session, Auth and LMS classes
-$SESSION = new Session($DB, $CONFIG['phpui']['timeout']);
+$SESSION = new Session($DB, ConfigHelper::getConfig('phpui.timeout'));
 $AUTH = new Auth($DB, $SESSION);
-$LMS = new LMS($DB, $AUTH, $CONFIG);
+$LMS = new LMS($DB, $AUTH);
 $LMS->lang = $_language;
 
 // Initialize Swekey class

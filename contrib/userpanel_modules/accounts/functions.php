@@ -27,11 +27,11 @@
 // Load autloader
 require_once(LIB_DIR.'/autoloader.php');
 
-$_MAILDBTYPE = $CONFIG['database']['mail_db_type'];
-$_MAILDBHOST = $CONFIG['database']['mail_db_host'];
-$_MAILDBUSER = $CONFIG['database']['mail_db_user'];
-$_MAILDBPASS = $CONFIG['database']['mail_db_password'];
-$_MAILDBNAME = $CONFIG['database']['mail_db_database'];
+$_MAILDBTYPE = ConfigHelper::getConfig('database.mail_db_type');
+$_MAILDBHOST = ConfigHelper::getConfig('database.mail_db_host');
+$_MAILDBUSER = ConfigHelper::getConfig('database.mail_db_user');
+$_MAILDBPASS = ConfigHelper::getConfig('database.mail_db_password');
+$_MAILDBNAME = ConfigHelper::getConfig('database.mail_db_database');
 
 // Initialize mail database
 
@@ -57,8 +57,8 @@ if (defined('USERPANEL_SETUPMODE'))
     {
 	global $SMARTY, $LMS;
 	
-	$SMARTY->assign('mail_limit', $LMS->CONFIG['userpanel']['mail_limit']);
-	$SMARTY->assign('mail_allowed_domains', $LMS->CONFIG['userpanel']['mail_allowed_domains']);
+	$SMARTY->assign('mail_limit', ConfigHelper::getConfig('userpanel.mail_limit'));
+	$SMARTY->assign('mail_allowed_domains', ConfigHelper::getConfig('userpanel.mail_allowed_domains'));
 
 	$SMARTY->display('module:accounts:setup.html');
     }
@@ -133,8 +133,8 @@ function module_mailadd()
 {
     global $SMARTY,$_GET,$SESSION,$DB_MAIL,$LMS,$_POST;
 
-    $mail_limit = $LMS->CONFIG['userpanel']['mail_limit'];
-    $mail_allowed_domains = $LMS->CONFIG['userpanel']['mail_allowed_domains'];
+    $mail_limit = ConfigHelper::getConfig('userpanel.mail_limit');
+    $mail_allowed_domains = ConfigHelper::getConfig('userpanel.mail_allowed_domains');
 
     $mailboxes = GetCustomerMailBoxes($SESSION->id);
 
@@ -221,7 +221,7 @@ function module_main()
     global $SMARTY,$_GET,$SESSION,$LMS;
 
     $mailboxes = GetCustomerMailBoxes($SESSION->id);
-    $SMARTY->assign('mail_limit', $LMS->CONFIG['userpanel']['mail_limit']);
+    $SMARTY->assign('mail_limit', ConfigHelper::getConfig('userpanel.mail_limit'));
     $SMARTY->assign('mailboxes', $mailboxes);
     $SMARTY->display('module:accounts.html');
 

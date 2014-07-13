@@ -142,7 +142,7 @@ unset($documentlist['total']);
 unset($documentlist['order']);
 unset($documentlist['direction']);
 
-$pagelimit = $CONFIG['phpui']['documentlist_pagelimit'];
+$pagelimit = ConfigHelper::getConfig('phpui.documentlist_pagelimit');
 $page = !isset($_GET['page']) ? ceil($listdata['total']/$pagelimit) : intval($_GET['page']);
 $start = ($page - 1) * $pagelimit;
 

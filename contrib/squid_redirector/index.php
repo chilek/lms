@@ -90,7 +90,7 @@ require_once(LIB_DIR.'/common.php');
 
 // Initialize LMS class
 
-$LMS = new LMS($DB, $SESSION, $CONFIG);
+$LMS = new LMS($DB, $SESSION);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 

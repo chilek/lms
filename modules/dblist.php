@@ -26,7 +26,7 @@
 
 $layout['pagetitle'] = trans('Database Backups');
 
-if ($handle = opendir($CONFIG['directories']['backup_dir']))
+if ($handle = opendir(ConfigHelper::getConfig('directories.backup_dir')))
 {
 	while (false !== ($file = readdir($handle)))
 	{
@@ -54,7 +54,7 @@ if ($handle = opendir($CONFIG['directories']['backup_dir']))
 					}
 					
 					$dblist['name'][] = $name;
-					$dblist['size'][] = filesize($CONFIG['directories']['backup_dir'].'/'.$file);
+					$dblist['size'][] = filesize(ConfigHelper::getConfig('directories.backup_dir').'/'.$file);
 					$dblist['type'][] = 'plain';
 				}
 			}
@@ -74,7 +74,7 @@ if ($handle = opendir($CONFIG['directories']['backup_dir']))
 						$dblist['time'][] = (int) $name;
 					}
 					$dblist['name'][] = $name;
-					$dblist['size'][] = filesize($CONFIG['directories']['backup_dir'].'/'.$file);
+					$dblist['size'][] = filesize(ConfigHelper::getConfig('directories.backup_dir').'/'.$file);
 					$dblist['type'][] = 'gz';
 				}
 			}

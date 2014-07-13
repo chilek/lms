@@ -44,7 +44,7 @@ switch($action)
 
 		// get default note's numberplanid and next number
 		$note['cdate'] = time();
-		$note['paytime'] = $CONFIG['notes']['paytime'];
+		$note['paytime'] = ConfigHelper::getConfig('notes.paytime');
 		if(isset($_GET['customerid']) && $_GET['customerid'] != '' && $LMS->CustomerExists($_GET['customerid']))
 		{
 			$customer = $LMS->GetCustomer($_GET['customerid'], true);
@@ -182,7 +182,7 @@ switch($action)
 			                WHERE id = ?', array($customer['divisionid']))) !== NULL)
 				        $note['paytime'] = $paytime;
 				else
-				        $note['paytime'] = $CONFIG['notes']['paytime'];
+				        $note['paytime'] = ConfigHelper::getConfig('notes.paytime');
 			}
 
 			$cdate = !empty($note['cdate']) ? $note['cdate'] : time();

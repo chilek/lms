@@ -171,7 +171,7 @@ switch($mode)
 		{
 		    // Build different query for each database engine,
 		    // MySQL is slow here when vnodes view is used
-		    if ($CONFIG['database']['type'] == 'postgres')
+		    if (ConfigHelper::getConfig('database.type') == 'postgres')
 			    $sql_query = 'SELECT n.id, n.name, INET_NTOA(ipaddr) as ip,
 			        INET_NTOA(ipaddr_pub) AS ip_pub, mac
 				    FROM vnodes n

@@ -25,12 +25,12 @@
  */
 
 function invoice_body() {
-	global $invoice, $pdf, $CONFIG;
+	global $invoice, $pdf;
 
 	if (isset($invoice['invoice']))
-		$template = $CONFIG['invoices']['cnote_template_file'];
+		$template = ConfigHelper::getConfig('invoices.cnote_template_file');
 	else
-		$template = $CONFIG['invoices']['template_file'];
+		$template = ConfigHelper::getConfig('invoices.template_file');
 
 	switch ($template) {
 		case "standard":
@@ -148,7 +148,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	if (!empty($_GET['duplicate'])) $which[] = trans('DUPLICATE');
 
 	if (!sizeof($which)) {
-		$tmp = explode(',', $CONFIG['invoices']['default_printpage']);
+		$tmp = explode(',', ConfigHelper::getConfig('invoices.default_printpage'));
 		foreach ($tmp as $t)
 			if (trim($t) == 'original') $which[] = trans('ORIGINAL');
 			elseif (trim($t) == 'copy') $which[] = trans('COPY');

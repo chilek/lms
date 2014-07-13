@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if(file_exists($CONFIG['directories']['userpanel_dir']."/lib/LMS.setup.php"))
-	include($CONFIG['directories']['userpanel_dir']."/lib/LMS.setup.php");
+if(file_exists(ConfigHelper::getConfig('directories.userpanel_dir')."/lib/LMS.setup.php"))
+	include(ConfigHelper::getConfig('directories.userpanel_dir')."/lib/LMS.setup.php");
 
 ?>

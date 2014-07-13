@@ -32,7 +32,7 @@ function module_get_template($tpl_name, &$tpl_source, $smarty_obj)
 {
 	global $LMS;
 	$template = explode(':', $tpl_name);
-	$template_path = $LMS->CONFIG['directories']['userpanel_dir'].'/modules/'.$template[0].'/templates/'.$template[1];
+	$template_path = ConfigHelper::getConfig('directories.userpanel_dir').'/modules/'.$template[0].'/templates/'.$template[1];
 	if (file_exists($template_path))
 	{
 		$tpl_source = file_get_contents($template_path);
@@ -45,7 +45,7 @@ function module_get_timestamp($tpl_name, &$tpl_timestamp, $smarty_obj)
 {
 	global $LMS;
 	$template = explode(':', $tpl_name);
-	$template_path = $LMS->CONFIG['directories']['userpanel_dir'].'/modules/'.$template[0].'/templates/'.$template[1];
+	$template_path = ConfigHelper::getConfig('directories.userpanel_dir').'/modules/'.$template[0].'/templates/'.$template[1];
 	if (file_exists($template_path))
 	{
 		$tpl_timestamp = filectime($template_path);
@@ -76,7 +76,7 @@ $SMARTY->registerResource('module', array('module_get_template',
 
 // Include userpanel.class
 require_once(USERPANEL_DIR.'/lib/Userpanel.class.php');
-$USERPANEL = new USERPANEL($DB, $SESSION, $CONFIG);
+$USERPANEL = new USERPANEL($DB, $SESSION);
 
 // Initialize modules
 $dh  = opendir(USERPANEL_MODULES_DIR);
@@ -116,17 +116,17 @@ if (isset($modulefile_include))
 	{
 		if ($function=='setup') {
 			$layout['info'] = trans('This module does not have any configuration settings');
-			$SMARTY->display($LMS->CONFIG['directories']['userpanel_dir'].'/templates/setup_error.html');
+			$SMARTY->display(ConfigHelper::getConfig('directories.userpanel_dir').'/templates/setup_error.html');
 		} else {
 			$layout['error'] = trans('Function <b>$a</b> in module <b>$b</b> not found!', $function, $module);
-			$SMARTY->display($LMS->CONFIG['directories']['userpanel_dir'].'/templates/setup_error.html');
+			$SMARTY->display(ConfigHelper::getConfig('directories.userpanel_dir').'/templates/setup_error.html');
 		}
 	}
 } 
 else
 {
 	$layout['error'] = trans('Userpanel module <b>$a</b> not found!', $module);
-	$SMARTY->display($LMS->CONFIG['directories']['userpanel_dir'].'/templates/setup_error.html');
+	$SMARTY->display(ConfigHelper::getConfig('directories.userpanel_dir').'/templates/setup_error.html');
 }
 
 ?>
