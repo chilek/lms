@@ -1,5 +1,6 @@
 {include file="header.html"}
 <!--// $Id$ //-->
+<script type="text/javascript" src="img/tinymce3/tiny_mce.js"></script>
 <H1>{$layout.pagetitle}</H1>
 <FORM method="POST" action="?m=configedit&id={$config.id}" name="config">
 <INPUT type="submit" class="hiddenbtn">
@@ -72,6 +73,8 @@
 <SCRIPT type="text/javascript">
 <!--
 	document.forms['config'].elements['config[var]'].focus();
+
+	tinymce_init('{$_ui_language}');
 //-->
 </SCRIPT>
 {include file="footer.html"}

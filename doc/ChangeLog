@@ -86,6 +86,7 @@ version ?.??.?? (????-??-??):
   - new message types added (userpanel, userpanel urgent [chilan]
   - new database access layer [maciejlew]
   - new configuration system [maciejlew]
+  - wysiwyg edition of config values is possible [chilan]
 
 version 1.11.14 (2013-03-25):
 
