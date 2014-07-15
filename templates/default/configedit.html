@@ -32,7 +32,9 @@
 			<B>{trans("Value:")}</B>
 		</TD>
 		<TD width="98%">
-			<TEXTAREA rows="5" cols="50" name="config[value]" {tip text="Enter option value" trigger="value"}>{$config.value}</TEXTAREA>
+			<input type="checkbox" id="value_label" onclick="javascript:toggle_visual_editor('value');">
+			<label for="value_label">{trans("visual editor")}</label><br>
+			<TEXTAREA rows="5" cols="50" name="config[value]" id="value" {tip text="Enter option value" trigger="value"}>{$config.value}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>
