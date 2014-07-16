@@ -2759,7 +2759,7 @@ $_LANG['www'] = 'www';
 $_LANG['any sms'] = 'dowolny sms';
 $_LANG['userpanel'] = 'panel abonencki';
 $_LANG['userpanel urgent'] = 'panel abonencki (pilne)';
-$_LANG['I confirm reading of notices'] = 'Zapoznałem się z treścią powiadomienia';
+$_LANG['I confirm reading'] = 'Zapoznałem się';
 $_LANG['Urgent'] = 'Pilna';
 $_LANG['Casual'] = 'Zwykła';
 
