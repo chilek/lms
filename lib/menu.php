@@ -749,16 +749,18 @@ if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.logging', false))) {
 }
 
 // Adding Userpanel menu items
-if(!empty(ConfigHelper::getConfig('directories.userpanel_dir')))
+$userpanel_dir = ConfigHelper::getConfig('directories.userpanel_dir');
+if(!empty($userpanel_dir))
         // be sure that Userpanel exists
-	if(file_exists(ConfigHelper::getConfig('directories.userpanel_dir').'/lib/LMS.menu.php'))
-	        require_once(ConfigHelper::getConfig('directories.userpanel_dir').'/lib/LMS.menu.php');
+	if(file_exists($userpanel_dir.'/lib/LMS.menu.php'))
+	        require_once($userpanel_dir.'/lib/LMS.menu.php');
 
 // Adding user-defined menu items
-if(!empty(ConfigHelper::getConfig('phpui.custom_menu')))
+$custom_menu = ConfigHelper::getConfig('phpui.custom_menu');
+if(!empty($custom_menu))
         // be sure that file exists
-	if(file_exists(ConfigHelper::getConfig('phpui.custom_menu')))
-	        require_once(ConfigHelper::getConfig('phpui.custom_menu'));
+	if(file_exists($custom_menu))
+	        require_once($custom_menu);
 
 /* Example for custom_menu file
 <?php

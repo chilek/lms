@@ -685,7 +685,8 @@ class LMS {
 		$this->DB->Execute('UPDATE passwd SET ownerid=0 WHERE ownerid=?', array($id));
 		$this->DB->Execute('UPDATE domains SET ownerid=0 WHERE ownerid=?', array($id));
 		// Remove Userpanel rights
-		if (!empty(ConfigHelper::getConfig('directories.userpanel_dir')))
+		$userpanel_dir = ConfigHelper::getConfig('directories.userpanel_dir');
+		if (!empty($userpanel_dir))
 			$this->DB->Execute('DELETE FROM up_rights_assignments WHERE customerid=?', array($id));
 
 		$this->DB->CommitTrans();
@@ -5165,7 +5166,8 @@ class LMS {
                     $params['port'] = $port;
                 }
 
-		if (!empty(ConfigHelper::getConfig('mail.smtp_username')) || $user) {
+		$smtp_username = ConfigHelper::getConfig('mail.smtp_username');
+		if (!empty($smtp_username) || $user) {
                         if (!$auth) {
                             $params['auth'] = ConfigHelper::getConfig('mail.smtp_auth_type', true);
                         } else {
@@ -5193,7 +5195,8 @@ class LMS {
 		$headers['Mime-Version'] = '1.0';
 		$headers['Subject'] = qp_encode($headers['Subject']);
 
-		if (!empty(ConfigHelper::getConfig('mail.debug_email'))) {
+		$debug_email = ConfigHelper::getConfig('mail.debug_email');
+		if (!empty($debug_email)) {
 			$recipients = ConfigHelper::getConfig('mail.debug_email');
 			$headers['To'] = '<' . $recipients . '>';
 		}
@@ -5243,7 +5246,8 @@ class LMS {
 			return trans('SMS message is empty!');
 		}
 
-		if (!empty(ConfigHelper::getConfig('sms.debug_phone'))) {
+		$debug_phone = ConfigHelper::getConfig('sms.debug_phone');
+		if (!empty($debug_phone)) {
 			$number = ConfigHelper::getConfig('sms.debug_phone');
 		}
 
@@ -5262,9 +5266,10 @@ class LMS {
 
 		$message = preg_replace("/\r/", "", $message);
 
-		if (!empty(ConfigHelper::getConfig('sms.max_length')) && intval(ConfigHelper::getConfig('sms.max_length')) > 6
-			&& $msg_len > intval(ConfigHelper::getConfig('sms.max_length')))
-			$message = mb_substr($message, 0, ConfigHelper::getConfig('sms.max_length') - 6) . ' [...]';
+		$max_length = ConfigHelper::getConfig('sms.max_length');
+		if (!empty($max_length) && intval($max_length) > 6
+			&& $msg_len > intval($max_length))
+			$message = mb_substr($message, 0, $max_length - 6) . ' [...]';
 
 		$data = array(
 				'number' => $number,
@@ -5283,25 +5288,24 @@ class LMS {
 		$message = $data['message'];
 		$messageid = $data['messageid'];
 
+		$service = ConfigHelper::getConfig('sms.service');
                 if ($script_service) {
                         $service = $script_service;
-                } elseif (empty(ConfigHelper::getConfig('sms.service'))) {
+                } elseif (empty($service))
 			return trans('SMS "service" not set!');
-                } else {
-			$service = ConfigHelper::getConfig('sms.service');
-                }
 
 		if (in_array($service, array('smscenter', 'serwersms', 'smsapi'))) {
 			if (!function_exists('curl_init'))
 				return trans('Curl extension not loaded!');
-			if (empty(ConfigHelper::getConfig('sms.username')))
+			$username = ConfigHelper::getConfig('sms.username');
+			if (empty($username))
 				return trans('SMSCenter username not set!');
-			if (empty(ConfigHelper::getConfig('sms.password')))
+			$password = ConfigHelper::getConfig('sms.password');
+			if (empty($password))
 				return trans('SMSCenter username not set!');
-			if (empty(ConfigHelper::getConfig('sms.from')))
+			$from = ConfigHelper::getConfig('sms.from');
+			if (empty($from))
 				return trans('SMS "from" not set!');
-			else
-				$from = ConfigHelper::getConfig('sms.from');
 
 			if (strlen($number) > 16 || strlen($number) < 4)
 				return trans('Wrong phone number format!');
@@ -5420,7 +5424,8 @@ class LMS {
 				);
 				if ($messageid)
 					$args['usmsid'] = $messageid;
-				if (!empty(ConfigHelper::getConfig('sms.fast')))
+				$fast = ConfigHelper::getConfig('sms.fast');
+				if (!empty($fast))
 					$args['speed'] = 1;
 
 				$encodedargs = http_build_query($args);
@@ -5463,7 +5468,8 @@ class LMS {
 					'message' => $message,
 					'from' => !empty($from) ? $from : 'ECO',
 				);
-				if (!empty(ConfigHelper::getConfig('sms.fast')))
+				$fast = ConfigHelper::getConfig('sms.fast');
+				if (!empty($fast))
 					$args['fast'] = 1;
 				if ($messageid)
 					$args['idx'] = $messageid;
