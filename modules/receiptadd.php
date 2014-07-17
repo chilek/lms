@@ -181,8 +181,9 @@ switch($action)
 			if(ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_documents_warning', false)))
 				if($DB->GetOne('SELECT COUNT(*) FROM documents WHERE customerid = ? AND closed = 0 AND type < 0', array($receipt['customerid'])))
 				{
-					if(!empty(ConfigHelper::getConfig('receipts.documents_warning')))
-						$customer['docwarning'] = ConfigHelper::getConfig('receipts.documents_warning');
+					$documents_warning = ConfigHelper::getConfig('receipts.documents_warning');
+					if(!empty($documents_warning))
+						$customer['docwarning'] = $documents_warning;
 					else
 						$customer['docwarning'] = trans('Customer has got unconfirmed documents!');
 				}
@@ -192,17 +193,19 @@ switch($action)
 			if (ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_nodes_warning', false)))
 				if($DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ownerid = ? AND access = 0', array($receipt['customerid'])))
 				{
-					if(!empty(ConfigHelper::getConfig('receipts.nodes_warning')))
-						$customer['nodeswarning'] = ConfigHelper::getConfig('receipts.nodes_warning');
+					$nodes_warning = ConfigHelper::getConfig('receipts.nodes_warning');
+					if(!empty($nodes_warning))
+						$customer['nodeswarning'] = $nodes_warning;
 					else
 						$customer['nodeswarning'] = trans('Customer has got disconnected nodes!');
 				}
 
 			// jesli klient posiada komputery przypisane do wybranych grup..., u mnie
 			// komputery zadluzonych dodawane sa do grupy "zadluzenie"
-			if(!empty(ConfigHelper::getConfig('receipts.show_nodegroups_warning')))
+			$show_nodegroups_warning = ConfigHelper::getConfig('receipts.show_nodegroups_warning');
+			if(!empty($show_nodegroups_warning))
 			{
-				$list = preg_split("/\s+/", ConfigHelper::getConfig('receipts.show_nodegroups_warning'));
+				$list = preg_split("/\s+/", $show_nodegroups_warning);
 				if($DB->GetOne('SELECT COUNT(*) FROM nodes n
 						JOIN nodegroupassignments a ON (n.id = a.nodeid)
 						JOIN nodegroups g ON (g.id = a.nodegroupid)
@@ -210,11 +213,11 @@ switch($action)
 						.implode("'),UPPER('", $list).'\'))', 
 						array($receipt['customerid'])))
 				{
-					if(!empty(ConfigHelper::getConfig('receipts.nodegroups_warning')))
-						$customer['nodegroupswarning'] = ConfigHelper::getConfig('receipts.nodegroups_warning');
+					$nodegroups_warning = ConfigHelper::getConfig('receipts.nodegroups_warning');
+					if(!empty($nodegroups_warning))
+						$customer['nodegroupswarning'] = $nodegroups_warning;
 					else
-						$customer['nodegroupswarning'] = trans('Customer has got nodes in groups: <b>$a</b>!', 
-							ConfigHelper::getConfig('receipts.show_nodegroups_warning'));
+						$customer['nodegroupswarning'] = trans('Customer has got nodes in groups: <b>$a</b>!', $show_nodegroups_warning);
 				}
 			}
 		}
@@ -493,8 +496,9 @@ switch($action)
 					if (ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_documents_warning', false)))
 						if($DB->GetOne('SELECT COUNT(*) FROM documents WHERE customerid = ? AND closed = 0 AND type < 0', array($cid)))
 						{
-							if(!empty(ConfigHelper::getConfig('receipts.documents_warning')))
-								$customer['docwarning'] = ConfigHelper::getConfig('receipts.documents_warning');
+							$documents_warning = ConfigHelper::getConfig('receipts.documents_warning');
+							if(!empty($documents_warning))
+								$customer['docwarning'] = $documents_warning;
 							else
 								$customer['docwarning'] = trans('Customer has got unconfirmed documents!');
 						}
@@ -505,17 +509,19 @@ switch($action)
 					if (ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_nodes_warning', false)))
 						if($DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ownerid = ? AND access = 0', array($cid)))
 						{
-							if(!empty(ConfigHelper::getConfig('receipts.nodes_warning')))
-								$customer['nodeswarning'] = ConfigHelper::getConfig('receipts.nodes_warning');
+							$nodes_warning = ConfigHelper::getConfig('receipts.nodes_warning');
+							if(!empty($nodes_warning))
+								$customer['nodeswarning'] = $nodes_warning;
 							else
 								$customer['nodeswarning'] = trans('Customer has got disconnected nodes!');
 						}
 
 					// jesli klient posiada komputery przypisane do wybranych grup, u mnie
 					// komputery zadluzonych dodawane sa do grupy "zadluzenie"
-	    				if(!empty(ConfigHelper::getConfig('receipts.show_nodegroups_warning')))
+					$show_nodegroups_warning = ConfigHelper::getConfig('receipts.show_nodegroups_warning');
+	    				if(!empty($show_nodegroups_warning))
 					{
-						$list = preg_split("/\s+/", ConfigHelper::getConfig('receipts.show_nodegroups_warning'));
+						$list = preg_split("/\s+/", $show_nodegroups_warning);
 
 						if($DB->GetOne('SELECT COUNT(*) FROM nodes n
 			    				JOIN nodegroupassignments a ON (n.id = a.nodeid)
@@ -524,10 +530,11 @@ switch($action)
 						    	.implode("'),UPPER('", $list).'\'))', 
 	    						array($cid)))
 						{
-							if(!empty(ConfigHelper::getConfig('receipts.nodegroups_warning')))
-								$customer['nodegroupswarning'] = ConfigHelper::getConfig('receipts.nodegroups_warning');
+							$nodegroups_warning = ConfigHelper::getConfig('receipts.nodegroups_warning');
+							if(!empty($nodegroups_warning))
+								$customer['nodegroupswarning'] = $nodegroups_warning;
 							else
-								$customer['nodegroupswarning'] = trans('Customer has got nodes in group(s): <b>$a</b>!', ConfigHelper::getConfig('receipts.show_nodegroups_warning'));
+								$customer['nodegroupswarning'] = trans('Customer has got nodes in group(s): <b>$a</b>!', $show_nodegroups_warning);
 						}
 					}
 

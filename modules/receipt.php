@@ -71,8 +71,9 @@ if(strtolower(ConfigHelper::getConfig('receipts.type')) == 'pdf')
 }
 
 header('Content-Type: '.ConfigHelper::getConfig('receipts.content_type'));
-if(!empty(ConfigHelper::getConfig('receipts.attachment_name')))
-	header('Content-Disposition: attachment; filename='.ConfigHelper::getConfig('receipts.attachment_name'));
+$attachment_name = ConfigHelper::getConfig('receipts.attachment_name');
+if(!empty($attachment_name))
+	header('Content-Disposition: attachment; filename='.$attachment_name);
 
 if(isset($_GET['print']) && $_GET['print'] == 'cached' && sizeof($_POST['marks']))
 {

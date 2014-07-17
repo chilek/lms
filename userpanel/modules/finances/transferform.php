@@ -38,10 +38,12 @@ if ($division) {
 	$ISP1_DO = $division['name'];
 	$ISP2_DO = trim($division['zip'].' '.$division['city'].' '.$division['address']);
 } else {
-	if (!empty(ConfigHelper::getConfig('finances.line_1')))
-		$ISP1_DO = ConfigHelper::getConfig('finances.line_1');
-	if (!empty(ConfigHelper::getConfig('finances.line_2')))
-		$ISP2_DO = ConfigHelper::getConfig('finances.line_2');
+	$line_1 = ConfigHelper::getConfig('finances.line_1');
+	if (!empty($line_1))
+		$ISP1_DO = $line_1;
+	$line_2 = ConfigHelper::getConfig('finances.line_2');
+	if (!empty($line_2))
+		$ISP2_DO = $line_2;
 }
 
 $USER_T1 = ConfigHelper::getConfig('finances.pay_title', 'Abonament - ID:%CID% %LongCID%');

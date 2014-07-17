@@ -165,7 +165,8 @@ $deadline_days = intval(ConfigHelper::getConfig('notify.deadline_days', 0));
 if (empty($mail_from))
 	die("Fatal error: mailfrom unset! Can't continue, exiting.\n");
 
-if (!empty(ConfigHelper::getConfig('notify.smtp_auth')) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', ConfigHelper::getConfig('notify.smtp_auth')))
+$smtp_auth = ConfigHelper::getConfig('notify.smtp_auth');
+if (!empty($smtp_auth) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', ConfigHelper::getConfig('notify.smtp_auth')))
 	die("Fatal error: smtp_auth setting not supported! Can't continue, exiting.\n");
 
 // Include required files (including sequence is important)

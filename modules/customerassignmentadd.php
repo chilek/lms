@@ -286,14 +286,18 @@ if(isset($_POST['assignment']))
 }
 else
 {
-	if (!empty(ConfigHelper::getConfig('phpui.default_assignment_invoice')))
+	$default_assignment_invoice = ConfigHelper::getConfig('phpui.default_assignment_invoice');
+	if (!empty($default_assignment_invoice))
 		$a['invoice'] = true;
-	if (!empty(ConfigHelper::getConfig('phpui.default_assignment_settlement')))
+	$default_assignment_settlement = ConfigHelper::getConfig('phpui.default_assignment_settlement');
+	if (!empty($default_assignment_settlement))
 		$a['settlement'] = true;
-	if (!empty(ConfigHelper::getConfig('phpui.default_assignment_period')))
-		$a['period'] = ConfigHelper::getConfig('phpui.default_assignment_period');
-	if (!empty(ConfigHelper::getConfig('phpui.default_assignment_at')))
-		$a['at'] = ConfigHelper::getConfig('phpui.default_assignment_at');
+	$default_assignment_period = ConfigHelper::getConfig('phpui.default_assignment_period');
+	if (!empty($default_assignment_period))
+		$a['period'] = $default_assignment_period;
+	 = ConfigHelper::getConfig('phpui.default_assignment_at');
+	if (!empty())
+		$a['at'] = $default_assignment_at;
 }
 
 $expired = isset($_GET['expired']) ? $_GET['expired'] : false;

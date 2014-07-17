@@ -143,7 +143,10 @@ $LMS = new LMS($DB, $AUTH, $SYSLOG);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
-if (empty(ConfigHelper::getConfig('finances.bgz_username')) || empty(ConfigHelper::getConfig('finances.bgz_password')) || empty(ConfigHelper::getConfig('finances.bgz_firm')))
+$bgz_username = ConfigHelper::getConfig('finances.bgz_username');
+$bgz_password = ConfigHelper::getConfig('finances.bgz_password');
+$bgz_firm = ConfigHelper::getConfig('finances.bgz_firm');
+if (empty($bgz_username) || empty($bgz_password) || empty($bgz_firm))
 	die("Fatal error: BGZ credentials are not set!\n");
 
 define('USER_AGENT', "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
@@ -642,8 +645,9 @@ if (!$lastchange || time() - $lastchange > 30 * 86400)
 			array($newpass));
 		$DB->Execute("DELETE FROM uiconfig WHERE section = 'finances' AND var = 'bgz_password_lastchange'");
 		$DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('finances', 'bgz_password_lastchange', ?NOW?)");
-		if (!empty(ConfigHelper::getConfig('finances.bgz_newpassword_email')))
-			$LMS->SendMail(ConfigHelper::getConfig('finances.bgz_newpassword_email'),
+		$bgz_newpassword_email = ConfigHelper::getConfig('finances.bgz_newpassword_email');
+		if (!empty($bgz_newpassword_email))
+			$LMS->SendMail($bgz_newpassword_email,
 				array('From' => 'lms-cashimport-bgz.php', 'Subject' => 'Aktualne hasło do panelu BGŻ'), $newpass);
 	}
 	if (!$quiet)

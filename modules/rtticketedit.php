@@ -254,7 +254,8 @@ if(isset($_POST['ticket']))
 			}
 
             // send sms
-			if (!empty(ConfigHelper::getConfig('sms.service')) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
+			$service = ConfigHelper::getConfig('sms.service');
+			if (!empty($service) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
 			        FROM users, rtrights
 					WHERE users.id = userid AND queueid = ? AND phone != \'\'
 						AND (rtrights.rights & 8) = 8 AND users.id != ?

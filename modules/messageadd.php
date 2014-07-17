@@ -384,7 +384,8 @@ if(isset($_POST['message']))
 				$files[0]['data'] = $file;
 			}
 
-			if(!empty(ConfigHelper::getConfig('mail.debug_email')))
+			$debug_email = ConfigHelper::getConfig('mail.debug_email');
+			if(!empty($debug_email))
 				echo '<B>'.trans('Warning! Debug mode (using address $a).',ConfigHelper::getConfig('mail.debug_email')).'</B><BR>';
 
 			$headers['From'] = '"'.$message['from'].'" <'.$message['sender'].'>';
@@ -393,8 +394,9 @@ if(isset($_POST['message']))
 			if (!empty($message['wysiwyg']))
 				$headers['X-LMS-Format'] = 'html';
 		} elseif ($message['type'] != MSG_WWW) {
-			if (!empty(ConfigHelper::getConfig('sms.debug_phone')))
-				echo '<B>'.trans('Warning! Debug mode (using phone $a).',ConfigHelper::getConfig('sms.debug_phone')).'</B><BR>';
+			$debug_phone = ConfigHelper::getConfig('sms.debug_phone');
+			if (!empty($debug_phone))
+				echo '<B>'.trans('Warning! Debug mode (using phone $a).',$debug_phone).'</B><BR>';
 		}
 
 		foreach ($recipients as $key => $row) {

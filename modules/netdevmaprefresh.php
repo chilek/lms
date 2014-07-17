@@ -25,10 +25,11 @@
  */
 
 if (isset($_GET['live'])) {
-	if (empty(ConfigHelper::getConfig('phpui.netdevmaprefresh_helper')))
+	$netdevmaprefresh_helper = ConfigHelper::getConfig('phpui.netdevmaprefresh_helper');
+	if (empty($netdevmaprefresh_helper))
 		$cmd = 'sudo /sbin/pinger-addresses';
 	else
-		$cmd = ConfigHelper::getConfig('phpui.netdevmaprefresh_helper');
+		$cmd = $netdevmaprefresh_helper;
 	exec($cmd, $output);
 	if (count($output)) {
 		$curtime = time();

@@ -209,8 +209,9 @@ else
                 }
 	}
 
-	if(!empty(ConfigHelper::getConfig('phpui.account_type')))
-		$account['type'] = intval(ConfigHelper::getConfig('phpui.account_type'));
+	$account_type = ConfigHelper::getConfig('phpui.account_type');
+	if(!empty($account_type))
+		$account['type'] = intval($account_type);
 }
 
 $layout['pagetitle'] = trans('New Account');

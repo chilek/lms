@@ -57,18 +57,28 @@ $DB->Execute("CREATE VIEW customersview AS
 	        WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 ");
 
+$shortname = ConfigHelper::getConfig('finances.shortname');
+$header = ConfigHelper::getConfig('invoices.header');
+$footer = ConfigHelper::getConfig('invoices.footer');
+$default_author = ConfigHelper::getConfig('invoices.default_author');
+$cplace = ConfigHelper::getConfig('invoices.cplace');
+$name = ConfigHelper::getConfig('finances.name');
+$address = ConfigHelper::getConfig('finances.address');
+$city = ConfigHelper::getConfig('finances.city');
+$zip = ConfigHelper::getConfig('finances.zip');
+$account = ConfigHelper::getConfig('finances.account');
 $DB->Execute("INSERT INTO divisions (shortname, inv_header, inv_footer, inv_author, inv_cplace, name, 
 	address, city, zip, account) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-	array(!empty(ConfigHelper::getConfig('finances.shortname')) && ConfigHelper::getConfig('finances.shortname') != 'finances/shortname' ? ConfigHelper::getConfig('finances.shortname') : 'default',
-	        !empty(ConfigHelper::getConfig('invoices.header')) ? str_replace("\\n", "\n", ConfigHelper::getConfig('invoices.header')) : '',
-	        !empty(ConfigHelper::getConfig('invoices.footer')) ? str_replace("\\n", "\n", ConfigHelper::getConfig('invoices.footer')) : '',
-	        !empty(ConfigHelper::getConfig('invoices.default_author')) ? ConfigHelper::getConfig('invoices.default_author') : '',
-	        !empty(ConfigHelper::getConfig('invoices.cplace')) ? ConfigHelper::getConfig('invoices.cplace') : '',
-	        !empty(ConfigHelper::getConfig('finances.name')) && ConfigHelper::getConfig('finances.name') != 'finances/name' ? ConfigHelper::getConfig('finances.name') : 'default',
-	        !empty(ConfigHelper::getConfig('finances.address')) && ConfigHelper::getConfig('finances.address') != 'finances/address'  ? ConfigHelper::getConfig('finances.address') : '',
-	        !empty(ConfigHelper::getConfig('finances.city')) && ConfigHelper::getConfig('finances.city') != 'finances/city'  ? ConfigHelper::getConfig('finances.city') : '',
-	        !empty(ConfigHelper::getConfig('finances.zip')) && ConfigHelper::getConfig('finances.zip') != 'finances/zip'  ? ConfigHelper::getConfig('finances.zip') : '',
-	        !empty(ConfigHelper::getConfig('finances.account')) ? ConfigHelper::getConfig('finances.account') : '',
+	array(!empty($shortname) && $shortname != 'finances/shortname' ? $shortname : 'default',
+	        !empty($header) ? str_replace("\\n", "\n", $header) : '',
+	        !empty($footer) ? str_replace("\\n", "\n", $footer) : '',
+	        !empty($default_author) ? $default_author : '',
+	        !empty($cplace) ? $cplace : '',
+	        !empty($name) && $name != 'finances/name' ? $name : 'default',
+	        !empty($address) && $address != 'finances/address'  ? $address : '',
+	        !empty($city) && $city != 'finances/city'  ? $city : '',
+	        !empty($zip) && $zip != 'finances/zip'  ? $zip : '',
+	        !empty($account) ? $account : '',
 	));
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008102000', 'dbversion'));

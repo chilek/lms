@@ -168,7 +168,8 @@ $notify_email = ConfigHelper::getConfig('sendinvoices.notify_email', '');
 if (empty($sender_email))
 	die("Fatal error: sender_email unset! Can't continue, exiting.\n");
 
-if (($auth || !empty(ConfigHelper::getConfig('mail.smtp_auth_type'))) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', ConfigHelper::getConfig('mail.smtp_auth_type')))
+$smtp_auth_type = ConfigHelper::getConfig('mail.smtp_auth_type');
+if (($auth || !empty($smtp_auth_type)) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', ConfigHelper::getConfig('mail.smtp_auth_type')))
 	die("Fatal error: smtp_auth setting not supported! Can't continue, exiting.\n");
 
 $fakedate = (array_key_exists('fakedate', $options) ? $options['fakedate'] : NULL);

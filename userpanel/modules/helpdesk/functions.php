@@ -217,7 +217,8 @@ function module_main()
 			}
 
             // send sms
-			if (!empty(ConfigHelper::getConfig('sms.service')) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
+			$service = ConfigHelper::getConfig('sms.service');
+			if (!empty($service) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
 			    FROM users, rtrights
 			    WHERE users.id = userid AND phone != \'\' AND (rtrights.rights & 8) = 8
 			        AND (ntype & ?) = ? AND queueid = ?',
@@ -344,7 +345,8 @@ function module_main()
 		}
 
 		// send sms
-		if (!empty(ConfigHelper::getConfig('sms.service')) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
+		$service = ConfigHelper::getConfig('sms.service');
+		if (!empty($service) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
 			FROM users, rtrights
 			WHERE users.id = userid AND phone != \'\' AND (rtrights.rights & 8) = 8
 				AND (ntype & ?) = ? AND queueid = ?',

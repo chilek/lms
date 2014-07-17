@@ -34,8 +34,9 @@ if(strtolower(ConfigHelper::getConfig('notes.type')) == 'pdf')
 */
 
 header('Content-Type: '.ConfigHelper::getConfig('notes.content_type'));
-if(!empty(ConfigHelper::getConfig('notes.attachment_name')))
-	header('Content-Disposition: attachment; filename='.ConfigHelper::getConfig('notes.attachment_name'));
+$attachment_name = ConfigHelper::getConfig('notes.attachment_name');
+if(!empty($attachment_name))
+	header('Content-Disposition: attachment; filename='.$attachment_name);
 
 $SMARTY->assign('css', file('img/style_print.css')); 
 

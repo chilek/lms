@@ -86,13 +86,14 @@ switch($_RELOAD_TYPE)
 	
 		$hosts = $DB->GetAll('SELECT id, name, lastreload, reload, description FROM hosts ORDER BY name');
 		
-		if(!empty(ConfigHelper::getConfig('phpui.reload_sqlquery')) && $hosts)
+		$reload_sqlquery = ConfigHelper::getConfig('phpui.reload_sqlquery');
+		if(!empty($reload_sqlquery) && $hosts)
 		{
 			$SMARTY->display('header.html');
 			
 			if(isset($_GET['setreloads']) && isset($_POST['hosts']))
 			{
-				$sqlqueries = explode(';', ConfigHelper::getConfig('phpui.reload_sqlquery'));
+				$sqlqueries = explode(';', $reload_sqlquery);
 				
 				echo '<H1>'.$layout['pagetitle'].'</H1>';
 

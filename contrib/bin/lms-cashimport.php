@@ -147,7 +147,10 @@ $LMS = new LMS($DB, $AUTH, $SYSLOG);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
-if (empty(ConfigHelper::getConfig('cashimport.server')) || empty(ConfigHelper::getConfig('cashimport.username')) || empty(ConfigHelper::getConfig('cashimport.password')))
+$server = ConfigHelper::getConfig('cashimport.server');
+$username = ConfigHelper::getConfig('cashimport.username');
+$password = ConfigHelper::getConfig('cashimport.password');
+if (empty($server) || empty($username) || empty($password))
 	die("Fatal error: mailbox credentials are not set!\n");
 
 @include(ConfigHelper::getConfig('phpui.import_config', 'cashimportcfg.php'));
