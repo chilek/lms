@@ -295,8 +295,8 @@ else
 	$default_assignment_period = ConfigHelper::getConfig('phpui.default_assignment_period');
 	if (!empty($default_assignment_period))
 		$a['period'] = $default_assignment_period;
-	 = ConfigHelper::getConfig('phpui.default_assignment_at');
-	if (!empty())
+	$default_assignment_at = ConfigHelper::getConfig('phpui.default_assignment_at');
+	if (!empty($default_assignment_at))
 		$a['at'] = $default_assignment_at;
 }
 

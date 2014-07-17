@@ -45,10 +45,11 @@ if ($id && !isset($_POST['ticket'])) {
 					$user = $LMS->GetUserInfo($AUTH->id);
 					$mailfname = '';
 
-					if (isset(ConfigHelper::getConfig('phpui.helpdesk_sender_name'))) {
-						if (ConfigHelper::getConfig('phpui.helpdesk_sender_name') == 'queue')
+					$helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
+					if (!empty($helpdesk_sender_name)) {
+						if ($helpdesk_sender_name == 'queue')
 							$mailfname = $$queue['name'];
-						elseif (ConfigHelper::getConfig('phpui.helpdesk_sender_name') == 'user')
+						elseif ($helpdesk_sender_name == 'user')
 							$mailfname = $user['name'];
 
 						$mailfname = '"' . $mailfname . '"';
@@ -180,17 +181,18 @@ if(isset($_POST['ticket']))
 				array($id, $categoryid));
 
 		// przy zmianie kolejki powiadamiamy o "nowym" zgloszeniu
+		$newticket_notify = ConfigHelper::getConfig('phpui.newticket_notify', false);
 		if ($ticket['queueid'] != $ticketedit['queueid']
-			&& isset(ConfigHelper::getConfig('phpui.newticket_notify'))
-			&& ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.newticket_notify', false))) {
+			&& !empty($netticket_notify)) {
 			$user = $LMS->GetUserInfo($AUTH->id);
 			$queue = $LMS->GetQueueByTicketId($ticket['ticketid']);
 			$mailfname = '';
 
-			if (isset(ConfigHelper::getConfig('phpui.helpdesk_sender_name'))) {
-				if (ConfigHelper::getConfig('phpui.helpdesk_sender_name') == 'queue')
-					$mailfname = $$queue['name'];
-				elseif (ConfigHelper::getConfig('phpui.helpdesk_sender_name') == 'user')
+			$helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
+			if (!empty($helpdesk_sender_name)) {
+				if ($helpdesk_sender_name == 'queue')
+					$mailfname = $queue['name'];
+				elseif ($helpdesk_sender_name == 'user')
 					$mailfname = $user['name'];
 
 				$mailfname = '"' . $mailfname . '"';

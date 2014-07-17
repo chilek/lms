@@ -102,10 +102,8 @@ if(isset($_GET['s']))
 	$s = $_GET['s'];
 elseif($SESSION->is_set('rts'))
 	$SESSION->restore('rts', $s);
-elseif(isset(ConfigHelper::getConfig('phpui.ticketlist_status')))
-	$s = ConfigHelper::getConfig('phpui.ticketlist_status');
 else
-	$s = NULL;
+	$s = ConfigHelper::getConfig('phpui.ticketlist_status');
 $SESSION->save('rts', $s);
 
 $layout['pagetitle'] = trans('Tickets List');

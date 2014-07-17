@@ -48,10 +48,11 @@ function MessageAdd($msg, $headers, $files = NULL) {
 				(isset($msg['replyto']) ? $msg['replyto'] : $headers['Reply-To']),
 				$head));
 
-	if (!empty($files) && isset(ConfigHelper::getConfig('rt.mail_dir'))) {
+	$mail_dir = ConfigHelper::getConfig('rt.mail_dir');
+	if (!empty($files) && !empty($mail_dir)) {
 		$id = $DB->GetLastInsertId('rtmessages');
-		$dir = ConfigHelper::getConfig('rt.mail_dir') . sprintf('/%06d/%06d', $msg['ticketid'], $id);
-		@mkdir(ConfigHelper::getConfig('rt.mail_dir') . sprintf('/%06d', $msg['ticketid']), 0700);
+		$dir = $mail_dir . sprintf('/%06d/%06d', $msg['ticketid'], $id);
+		@mkdir($mail_dir . sprintf('/%06d', $msg['ticketid']), 0700);
 		@mkdir($dir, 0700);
 		foreach ($files as $file) {
 			$newfile = $dir . '/' . $file['name'];
@@ -136,7 +137,8 @@ if(isset($_POST['message']))
 
 		$mailfname = '';
 
-		if(isset(ConfigHelper::getConfig('phpui.helpdesk_sender_name')) && ($mailfname = ConfigHelper::getConfig('phpui.helpdesk_sender_name')))
+		$helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
+		if (!empty($helpdesk_sender_name) && ($mailfname = $helpdesk_sender_name))
 		{
 			if($mailfname == 'queue') $mailfname = $queue['name'];
 			if($mailfname == 'customer') $mailfname = $user['name'];

@@ -178,12 +178,12 @@ define('TARIFF_TV', 5);
 define('TARIFF_OTHER', -1);
 
 $TARIFFTYPES = array(
-	TARIFF_INTERNET	=> isset(ConfigHelper::getConfig('tarifftypes.internet')) ? ConfigHelper::getConfig('tarifftypes.internet') : trans('internet'),
-	TARIFF_HOSTING	=> isset(ConfigHelper::getConfig('tarifftypes.hosting')) ? ConfigHelper::getConfig('tarifftypes.hosting') : trans('hosting'),
-	TARIFF_SERVICE	=> isset(ConfigHelper::getConfig('tarifftypes.service')) ? ConfigHelper::getConfig('tarifftypes.service') : trans('service'),
-	TARIFF_PHONE	=> isset(ConfigHelper::getConfig('tarifftypes.phone')) ? ConfigHelper::getConfig('tarifftypes.phone') : trans('phone'),
-	TARIFF_TV	=> isset(ConfigHelper::getConfig('tarifftypes.tv')) ? ConfigHelper::getConfig('tarifftypes.tv') : trans('tv'),
-	TARIFF_OTHER	=> isset(ConfigHelper::getConfig('tarifftypes.other')) ? ConfigHelper::getConfig('tarifftypes.other') : trans('other'),
+	TARIFF_INTERNET	=> ConfigHelper::getConfig('tarifftypes.internet', trans('internet')),
+	TARIFF_HOSTING	=> ConfigHelper::getConfig('tarifftypes.hosting', trans('hosting')),
+	TARIFF_SERVICE	=> ConfigHelper::getConfig('tarifftypes.service', trans('service')),
+	TARIFF_PHONE	=> ConfigHelper::getConfig('tarifftypes.phone', trans('phone')),
+	TARIFF_TV	=> ConfigHelper::getConfig('tarifftypes.tv', trans('tv')),
+	TARIFF_OTHER	=> ConfigHelper::getConfig('tarifftypes.other', trans('other')),
 );
 
 $fakedate = (array_key_exists('fakedate', $options) ? $options['fakedate'] : NULL);

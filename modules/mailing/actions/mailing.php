@@ -157,7 +157,7 @@ if(isset($_POST['mailing']))
 			
 			foreach($emails as $key => $row)
 			{
-				if(!empty($debug_email)))
+				if(!empty($debug_email))
 					$row['email'] = $debug_email;
 				
 				$body = $mailing['body'];
