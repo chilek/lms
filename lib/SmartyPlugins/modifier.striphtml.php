@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2014 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,8 +24,11 @@
  *  $Id$
  */
 
-function smarty_modifier_striphtml($args)
-{
+function _preg_replace_callback($matches) {
+	return chr($matches[1]);
+}
+
+function smarty_modifier_striphtml($args) {
 	$search = array ("'<script[^>]*?>.*?</script>'si",  // Strip out javascript
 			"'<[\/\!]*?[^<>]*?>'si",           // Strip out html tags
 			"'([\r\n])[\s]+'",                 // Strip out white space
@@ -37,9 +40,8 @@ function smarty_modifier_striphtml($args)
 			"'&(iexcl|#161);'i",
 			"'&(cent|#162);'i",
 			"'&(pound|#163);'i",
-			"'&(copy|#169);'i",
-			"'&#(\d+);'e");                    // evaluate as php
-	
+			"'&(copy|#169);'i");
+
 	$replace = array ("",
 			"\\1",
 			"\"",
@@ -50,11 +52,10 @@ function smarty_modifier_striphtml($args)
 			chr(161),
 			chr(162),
 			chr(163),
-			chr(169),
-			"chr(\\1)");
+			chr(169));
 
-	return preg_replace ($search, $replace, $args);
-	
+	$args = preg_replace ($search, $replace, $args);
+	return preg_replace_callback("'&#(\d+);'", _preg_replace_callback, $args);
 }
 
 ?>
