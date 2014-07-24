@@ -46,8 +46,9 @@ if ($_GET['is_sure'] == '1' && (isset($id) || isset($cid))) {
 	if (!$customer)
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 
-	foreach ($ids as $id)
-		$LMS->DeleteAssignment($id);
+	if (!empty($ids))
+		foreach ($ids as $id)
+			$LMS->DeleteAssignment($id);
 
 	$backto = $SESSION->get('backto');
 	// infinite loop prevention
