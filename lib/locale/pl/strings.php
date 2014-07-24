@@ -2801,4 +2801,7 @@ $_LANG['All rights'] = 'Pełne prawa';
 
 $_LANG['Specified IP address doesn\'t belong to selected network!'] = 'Podany adres IP nie należy do wybranej sieci!';
 
+$_LANG['Delete all'] = 'Usuń wszystkie';
+$_LANG['Are you sure, you want to delete all liabilities?'] = 'Jesteś pewien, że chcesz usunąć wszystkie zobowiązania?';
+
 ?>

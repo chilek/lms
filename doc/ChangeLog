@@ -87,6 +87,7 @@ version ?.??.?? (????-??-??):
   - new database access layer [maciejlew]
   - new configuration system [maciejlew]
   - wysiwyg edition of config values is possible [chilan]
+  - we can delete all customer liabilities by one click [chilan]
 
 version 1.11.14 (2013-03-25):
 
