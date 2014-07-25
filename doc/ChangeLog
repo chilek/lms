@@ -12,6 +12,7 @@ version ?.??.?? (????-??-??):
   - wysiwyg edition of config values is possible [chilan]
   - we can delete all customer liabilities by one click [chilan]
   - add fullnumber with dispatched document full number in documents table [chilan]
+  - documentlist: selection of numberplan is possible [chilan]
 
 version 1.11.15 (2014-05-15):
 
