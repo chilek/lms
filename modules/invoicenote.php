@@ -253,6 +253,13 @@ switch($action)
 						FROM divisions WHERE id = ?',
 						array(!empty($cnote['use_current_division']) ? $invoice['current_divisionid'] : $invoice['divisionid']));
 
+		if ($cnote['numberplanid'])
+			$fullnumber = docnumber($cnote['number'],
+				$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($cnote['numberplanid'])),
+				$cnote['cdate']);
+		else
+			$fullnumber = null;
+
 		$args = array(
 			'number' => $cnote['number'],
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $cnote['numberplanid'] ? $cnote['numberplanid'] : 0,
@@ -286,13 +293,14 @@ switch($action)
 			'div_inv_footer' => $division['inv_footer'] ? $division['inv_footer'] : '',
 			'div_inv_author' => $division['inv_author'] ? $division['inv_author'] : '',
 			'div_inv_cplace' => $division['inv_cplace'] ? $division['inv_cplace'] : '',
+			'fullnumber' => $fullnumber,
 		);
 		$DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, sdate, paytime, paytype,
 				userid, customerid, name, address, ten, ssn, zip, city, countryid, reference, reason, divisionid,
 				div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
-				div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace)
+				div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-					?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+					?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
 		$id = $DB->GetOne('SELECT id FROM documents WHERE number = ? AND cdate = ? AND type = ?',
 			array($cnote['number'], $cnote['cdate'], DOC_CNOTE));

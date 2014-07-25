@@ -460,6 +460,7 @@ foreach($assigns as $assign)
 					$numbers[$plan] = (($number = $DB->GetOne("SELECT MAX(number) AS number FROM documents 
 							WHERE cdate >= ? AND cdate <= ? AND type = 1 AND numberplanid = ?",
 							array($period['start'], $period['end'], $plan))) != 0 ? $number : 0);
+					$numbertemplates[$plan] = $DB->GetOne("SELECT template FROM numberplans WHERE id = ?", array($plan));
 				}
 
 				$itemid = 0;
@@ -475,11 +476,12 @@ foreach($assigns as $assign)
 				$paytime = $customer['paytime'];
 				if ($paytime == -1) $paytime = $deadline;
 
+				$fullnumber = docnumber($numbers[$plan], $numbertemplates[$plan], $currtime);
 				$DB->Execute("INSERT INTO documents (number, numberplanid, type, countryid, divisionid, 
 					customerid, name, address, zip, city, ten, ssn, cdate, sdate, paytime, paytype,
 					div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
-					div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace) 
-					VALUES(?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+					div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber) 
+					VALUES(?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 					array($numbers[$plan], $plan, $customer['countryid'], $customer['divisionid'], $cid,
 					$customer['lastname']." ".$customer['name'], $customer['address'], $customer['zip'],
 					$customer['city'], $customer['ten'], $customer['ssn'], $currtime, $saledate, $paytime, $inv_paytype,
@@ -496,6 +498,7 @@ foreach($assigns as $assign)
 					($division['inv_footer'] ? $division['inv_footer'] : ''), 
 					($division['inv_author'] ? $division['inv_author'] : ''), 
 					($division['inv_cplace'] ? $division['inv_cplace'] : ''),
+					$fullnumber,
 					));
 
 				$invoices[$cid] = $DB->GetLastInsertID("documents");

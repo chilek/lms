@@ -26,6 +26,7 @@
 #include <syslog.h>
 #include <string.h>
 #include <time.h>
+#include <regex.h>
 
 #include "lmsd.h"
 #include "payments.h"
@@ -273,12 +274,51 @@ char *get_tarifftype_str(struct payments_module *p, int tarifftype)
 	}
 }
 
+char *docnumber(const int number, const char *numbertemplate, const time_t currtime) {
+	char tmp[51];
+
+	regex_t regex;
+	regmatch_t matches[2];
+	regcomp(&regex, "%([0-9]*)N", REG_EXTENDED);
+	if (!regexec(&regex, numbertemplate, 2, matches, 0)) {
+		memcpy(tmp, numbertemplate + matches[1].rm_so, matches[1].rm_eo - matches[1].rm_so);
+		tmp[matches[1].rm_eo - matches[1].rm_so] = 0;
+		int digitcount = atoi(tmp);
+
+		char tmp1[51], tmp2[51], tmp3[51];
+		memcpy(tmp1, numbertemplate, matches[0].rm_so);
+		tmp1[matches[0].rm_so] = 0;
+
+		char format[51];
+		strcat(format, "%");
+		if (digitcount) {
+			int i = strlen(format);
+			format[i++] = '0';
+			sprintf(format + i, "%d", digitcount);
+		}
+		strcat(format, "d");
+		sprintf(tmp2, format, number);
+
+		memcpy(tmp3, numbertemplate + matches[0].rm_eo, strlen(numbertemplate) - matches[0].rm_eo);
+		tmp3[strlen(numbertemplate) - matches[0].rm_eo] = 0;
+		sprintf(tmp, "%s%s%s", tmp1, tmp2, tmp3);
+	}
+	regfree(&regex);
+
+	char data[51];
+	strftime(data, 51, tmp, localtime(&currtime));
+
+	char *result = malloc(strlen(data) + 1);
+	memcpy(result, data, strlen(data) + 1);
+	return result;
+}
+
 void reload(GLOBAL *g, struct payments_module *p)
 {
 	QueryHandle *res, *result;
 	char *insert, *description, *invoiceid, *value, *taxid, *currtime;
 	char *d_period, *w_period, *m_period, *q_period, *y_period, *h_period;
-	int i, imonth, imday, today, n=2, k=2, m=2, o=2, pl=0;
+	int i, j, imonth, imday, today, n=2, k=2, m=2, o=2, pl=0;
 	int docid=0, last_cid=0, last_paytype=0, last_plan=0, exec=0, suspended=0, itemid=0;
 
 	time_t t;
@@ -553,13 +593,14 @@ void reload(GLOBAL *g, struct payments_module *p)
 	{
 		struct plan *plans = (struct plan *) malloc(sizeof(struct plan));
 		int invoice_number = 0;
+		char *invoice_numbertemplate = NULL;
 
 		if( g->db->nrows(res) )
 		{
 			if (!p->numberplanid)
 			{
 				// get numbering plans for all divisions
-				result = g->db->query(g->db->conn, "SELECT n.id, n.period, COALESCE(a.divisionid, 0) AS divid, isdefault "
+				result = g->db->query(g->db->conn, "SELECT n.id, n.period, template, COALESCE(a.divisionid, 0) AS divid, isdefault "
 					"FROM numberplans n "
 					"LEFT JOIN numberplanassignments a ON (a.planid = n.id) "
 					"WHERE doctype = 1");
@@ -572,6 +613,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 					plans[pl].division = atoi(g->db->get_data(result, i, "divid"));
 					plans[pl].isdefault = atoi(g->db->get_data(result, i, "isdefault"));
 					plans[pl].number = 0;
+					plans[pl].numbertemplate = strdup(g->db->get_data(result, i, "template"));
 					pl++;
 				}
 				g->db->free(&result);
@@ -705,6 +747,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 				{
 					char *countryid = g->db->get_data(res,i,"countryid");
 					char *numberplanid, *paytime, *paytype_str = strdup(itoa(paytype));
+					char *numbertemplate;
 					int period, number = 0;
 
 					last_paytype = paytype;
@@ -716,12 +759,14 @@ void reload(GLOBAL *g, struct payments_module *p)
 						numberplanid = strdup(itoa(plans[numberplan].plan));
 						period = plans[numberplan].period;
 						number = plans[numberplan].number;
+						numbertemplate = plans[numberplan].numbertemplate;
 					}
 					else // not found, use default/shared plan
 					{
 						numberplanid = strdup(itoa(p->numberplanid));
 						period = p->num_period;
 						number = invoice_number;
+						numbertemplate = invoice_numbertemplate;
 					}
 
 					if(!number)
@@ -737,6 +782,12 @@ void reload(GLOBAL *g, struct payments_module *p)
 						if( g->db->nrows(result) )
 							number = atoi(g->db->get_data(result,0,"number"));
 						g->db->free(&result);
+
+						// search for number template
+						for (j = 0; j < pl; j++)
+							if (plans[j].plan == atoi(numberplanid))
+								break;
+						numbertemplate = plans[j].numbertemplate;
 					}
 
 					++number;
@@ -747,9 +798,10 @@ void reload(GLOBAL *g, struct payments_module *p)
 						for(m=0; m<pl; m++)
 							if(plans[m].plan == plans[n].plan)
 								plans[m].number = number;
-					}
-					else
+					} else {
 						invoice_number = number;
+						invoice_numbertemplate = numbertemplate;
+					}
 
 					// deadline
 					if(atoi(g->db->get_data(res,i,"paytime")) < 0)
@@ -757,13 +809,14 @@ void reload(GLOBAL *g, struct payments_module *p)
 					else
 						paytime = g->db->get_data(res,i,"paytime");
 
+					char *fullnumber = docnumber(number, numbertemplate, (time_t) atoi(currtime));
 					// prepare insert to 'invoices' table
 					g->db->pexec(g->db->conn, "INSERT INTO documents (number, numberplanid, type, countryid, divisionid, "
 						"customerid, name, address, zip, city, ten, ssn, cdate, sdate, paytime, paytype, "
 						"div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon, "
-						"div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace) "
+						"div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber) "
 						"VALUES (?, ?, 1, ?, ?, ?, '? ?', '?', '?', '?', '?', '?', ?, ?, ?, ?, "
-						"'?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?')",
+						"'?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?')",
 						itoa(number),
 						numberplanid,
 						countryid,
@@ -792,8 +845,10 @@ void reload(GLOBAL *g, struct payments_module *p)
 						g->db->get_data(res, i, "div_inv_header"),
 						g->db->get_data(res, i, "div_inv_footer"),
 						g->db->get_data(res, i, "div_inv_author"),
-						g->db->get_data(res, i, "div_inv_cplace")
+						g->db->get_data(res, i, "div_inv_cplace"),
+						fullnumber
 					);
+					free(fullnumber);
 
 					docid = g->db->last_insert_id(g->db->conn, "documents");
 					itemid = 0;
@@ -967,6 +1022,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 		free(w_period);
 		free(d_period);
 
+		for (i = 0; i < pl; i++)
+			free(plans[i].numbertemplate);
 		free(plans);
 #ifdef DEBUG1
 		syslog(LOG_INFO, "DEBUG: [%s/payments] Customer payments reloaded", p->base.instance);

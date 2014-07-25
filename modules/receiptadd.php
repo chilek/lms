@@ -568,6 +568,10 @@ switch($action)
 					$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
 			}
 
+			$fullnumber = docnumber($receipt['number'],
+				$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
+				$receipt['cdate']);
+
 			$args = array(
 				'type' => DOC_RECEIPT,
 				'number' => $receipt['number'],
@@ -580,9 +584,11 @@ switch($action)
 				'address' => $customer['address'],
 				'zip' => $customer['zip'],
 				'city' => $customer['city'],
+				'fullnumber' => $fullnumber,
 			);
-			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, customerid, userid, name, address, zip, city, closed)
-					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)', array_values($args));
+			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, customerid, userid, name, address, zip, city, closed,
+					fullnumber)
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)', array_values($args));
 			$DB->UnLockTables();
 
 			$rid = $DB->GetLastInsertId('documents');
@@ -700,6 +706,10 @@ switch($action)
 					$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
 			}
 
+			$fullnumber = docnumber($receipt['number'],
+				$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
+				$receipt['cdate']);
+
 			$args = array(
 				'type' => DOC_RECEIPT,
 				'number' => $receipt['number'],
@@ -709,9 +719,10 @@ switch($action)
 				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id,
 				'name' => $receipt['o_type'] == 'advance' ? $receipt['adv_name'] : $receipt['other_name'],
 				'closed' => $receipt['o_type'] == 'advance' ? 0 : 1,
+				'fullnumber' => $fullnumber,
 			);
-			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed)
-					VALUES(?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed, fullnumber)
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 			$DB->UnLockTables();
 
 			$rid = $DB->GetLastInsertId('documents');
@@ -820,6 +831,10 @@ switch($action)
 			// cash-out
 			$description = trans('Moving assets to registry $a',$DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($dest)));
 
+			$fullnumber = docnumber($receipt['number'],
+				$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
+				$receipt['cdate']);
+
 			$args = array(
 				'type' => DOC_RECEIPT,
 				'number' => $receipt['number'],
@@ -829,9 +844,10 @@ switch($action)
 				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id,
 				'name' => '',
 				'closed' => 1,
+				'fullnumber' => $fullnumber,
 			);
-			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed)
-					VALUES(?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed, fullnumber)
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
 			$rid = $DB->GetOne('SELECT id FROM documents WHERE type=? AND number=? AND cdate=? AND numberplanid=?', array(DOC_RECEIPT, $receipt['number'], $receipt['cdate'], $receipt['numberplanid'])); 
 
@@ -867,6 +883,13 @@ switch($action)
 			$numberplan = $DB->GetOne('SELECT in_numberplanid FROM cashregs WHERE id=?', array($dest));
 			$number = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $numberplan, $receipt['cdate']);
 
+			if ($numberplan)
+				$fullnumber = docnumber($number,
+					$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($numberplan)),
+					$receipt['cdate']);
+			else
+				$fullnumber = null;
+
 			$args = array(
 				'type' => DOC_RECEIPT,
 				'number' => $number,
@@ -874,9 +897,10 @@ switch($action)
 				'cdate' => $receipt['cdate'],
 				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id,
 				'closed' => 1,
+				'fullnumber' => $fullnumber,
 			);
-			$DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, userid, closed)
-					VALUES(?, ?, ?, ?, ?, ?)', array_values($args));
+			$DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, userid, closed, fullnumber)
+					VALUES(?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
 			$did = $DB->GetOne('SELECT id FROM documents WHERE type=? AND number=? AND cdate=? AND numberplanid=?', array(DOC_RECEIPT, $number, $receipt['cdate'], $numberplan)); 
 

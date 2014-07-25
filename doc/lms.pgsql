@@ -636,6 +636,7 @@ CREATE TABLE documents (
 	div_inv_footer text	DEFAULT '' NOT NULL,
 	div_inv_author text	DEFAULT '' NOT NULL,
 	div_inv_cplace text	DEFAULT '' NOT NULL,
+	fullnumber varchar(50)	DEFAULT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX documents_cdate_idx ON documents(cdate);
@@ -2049,4 +2050,4 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('userpanel', 'owner_stats', '0', '', 0),
 ('userpanel', 'default_categories', '1', '', 0);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014061200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014072500');

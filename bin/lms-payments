@@ -313,6 +313,24 @@ sub get_period($)
 	return ('start' => $start, 'end' => $end);
 }
 
+use constant DEFAULT_NUMBER_TEMPLATE => '%N/LMS/%Y';
+
+sub docnumber($$$) {
+	my $number = shift;
+	my $template = shift;
+	my $time = shift;
+
+	$number = $number ? $number : 1;
+	$template = length($template) ? $template : DEFAULT_NUMBER_TEMPLATE;
+	$time = $time ? $time : strftime("%s", localtime2());
+
+	# main document number
+	$template =~ s/%(\d*)N/sprintf("%0$1d", $number)/eg;
+
+	# time conversion specifiers
+	return strftime($template, localtime($time));
+}
+
 my $dbq;
 my $row;
 
@@ -329,6 +347,7 @@ if(! $suspension_percentage)
 my %periods;
 my %plans;
 my %numbers;
+my %numbertemplates;
 my %invoices;
 my %paytypes;
 my %numberplans;
@@ -550,6 +569,13 @@ while(my $assign = $dbq->fetchrow_hashref())
 					$row = $dbqn->fetchrow_hashref();
 					$numbers{$plan} = $row->{'number'} || 0;
 					$dbqn->finish();
+
+					$dbqn = $dbase->prepare("SELECT template FROM numberplans WHERE id = ?");
+					$dbqn->execute($plan);
+
+					$row = $dbqn->fetchrow_hashref();
+					$numbertemplates{$plan} = $row->{'template'};
+					$dbqn->finish();
 				}
 
 				$itemid = 0;
@@ -568,18 +594,19 @@ while(my $assign = $dbq->fetchrow_hashref())
 				my $paytime = $urow->{'paytime'};
 				if($paytime eq -1) { $paytime = $deadline; }
 
+				my $fullnumber = docnumber($numbers{$plan}, $numbertemplates{$plan}, $currtime);
 				my $idbq = $dbase->prepare("INSERT INTO documents (number, numberplanid, type, countryid, divisionid,
 						customerid, name, address, zip, city, ten, ssn, cdate, sdate, paytime, paytype,
 						div_name, div_address, div_city, div_zip, div_countryid, div_ten, div_regon, div_account, 
-						div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace)
-						VALUES (?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+						div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber)
+						VALUES (?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 				$idbq->execute($numbers{$plan}, $plan, $urow->{'countryid'}, $urow->{'divisionid'}, $uid,
 						$urow->{'lastname'}.' '.$urow->{'name'}, $urow->{'address'}, $urow->{'zip'},
 						$urow->{'city'}, $urow->{'ten'}, $urow->{'ssn'}, $currtime, $saledate, $paytime, $inv_paytype,
 						$drow->{'name'}, $drow->{'address'}, $drow->{'city'}, $drow->{'zip'}, $drow->{'countryid'},
 						$drow->{'ten'}, $drow->{'regon'}, $drow->{'account'}, $drow->{'inv_header'}, $drow->{'inv_footer'},
-						$drow->{'inv_author'}, $drow->{'inv_cplace'});
+						$drow->{'inv_author'}, $drow->{'inv_cplace'}, $fullnumber);
 
 				$idbq = $dbase->prepare("SELECT id FROM documents
 						WHERE cdate = ? AND number = ? AND type = 1 AND customerid = ?");

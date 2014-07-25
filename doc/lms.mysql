@@ -361,6 +361,7 @@ CREATE TABLE documents (
 	div_inv_footer text NOT NULL DEFAULT '',
 	div_inv_author text NOT NULL DEFAULT '',
 	div_inv_cplace text NOT NULL DEFAULT '',
+	fullnumber varchar(50) DEFAULT NULL,
 	PRIMARY KEY (id),
 	INDEX cdate (cdate),
 	INDEX numberplanid (numberplanid),
@@ -1959,4 +1960,4 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('userpanel','owner_stats','0','',0),
 ('userpanel','default_categories','1','',0);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014061200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014072500');

@@ -146,6 +146,13 @@ switch($action)
 				account, inv_header, inv_footer, inv_author, inv_cplace 
 				FROM divisions WHERE id = ? ;',array($customer['divisionid']));
 
+			if ($note['numberplanid'])
+				$fullnumber = docnumber($note['number'],
+					$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($note['numberplanid'])),
+					$cdate);
+			else
+				$fullnumber = null;
+
 			$args = array(
 				'number' => $note['number'],
 				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => !empty($note['numberplanid']) ? $note['numberplanid'] : 0,
@@ -173,6 +180,7 @@ switch($action)
 				'div_inv_footer' => ($division['inv_footer'] ? $division['inv_footer'] : ''),
 				'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
 				'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
+				'fullnumber' => $fullnumber,
 				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $note['id'],
 			);
 			$DB->Execute('UPDATE documents SET number = ?, numberplanid = ?,
@@ -180,7 +188,7 @@ switch($action)
 				ten = ?, ssn = ?, zip = ?, city = ?, countryid = ?, divisionid = ?,
 				div_name = ?, div_shortname = ?, div_address = ?, div_city = ?, div_zip = ?, div_countryid = ?,
 				div_ten = ?, div_regon = ?, div_account = ?, div_inv_header = ?, div_inv_footer = ?,
-				div_inv_author = ?, div_inv_cplace = ?
+				div_inv_author = ?, div_inv_cplace = ?, fullnumber = ?
 				WHERE id = ?', array_values($args));
 
 			if ($SYSLOG) {

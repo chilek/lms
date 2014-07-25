@@ -372,6 +372,10 @@ switch($action)
 					array_keys($args));
 			}
 
+			$fullnumber = docnumber($receipt['number'],
+				$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
+				$receipt['cdate']);
+
 			// re-add receipt 
 			$args = array(
 				'type' => DOC_RECEIPT,
@@ -385,10 +389,12 @@ switch($action)
 				'address' => $customer['address'],
 				'zip' => $customer['zip'],
 				'city' => $customer['city'],
-				'closed' => $receipt['closed']
+				'closed' => $receipt['closed'],
+				'fullnumber' => $fullnumber,
 			);
-			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, customerid, userid, name, address, zip, city, closed)
-					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, customerid, userid, name, address, zip, city, closed,
+					fullnumber)
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 			$DB->UnLockTables();
 
 			$rid = $DB->GetLastInsertId('documents');
@@ -495,6 +501,10 @@ switch($action)
 					array_keys($args));
 			}
 
+			$fullnumber = docnumber($receipt['number'],
+				$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
+				$receipt['cdate']);
+
 			$args = array(
 				'type' => DOC_RECEIPT,
 				'number' => $receipt['number'],
@@ -504,9 +514,11 @@ switch($action)
 				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id,
 				'name' => $receipt['o_type'] == 'advance' ? $receipt['adv_name'] : $receipt['other_name'],
 				'closed' => $receipt['closed'],
+				'fullnumber' => $fullnumber,
 			);
-			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed)
-					VALUES(?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed,
+					fullnumber)
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 			$DB->UnLockTables();
 
 			$rid = $DB->GetLastInsertId('documents');

@@ -167,16 +167,21 @@ if(isset($_POST['receipt']))
 			$in_extnumber = isset($receipt['in_extnumber']) ? $receipt['in_extnumber'] : '';
 		}
 
+		$fullnumber = docnumber($in_number,
+			$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($in_plan)),
+			$receipt['cdate']);
+
 		// add cash-in receipt 
-		$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed)
-					VALUES(?, ?, ?, ?, ?, ?, ?, 1)',
+		$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed, fullnumber)
+					VALUES(?, ?, ?, ?, ?, ?, ?, 1, ?)',
 					array(	DOC_RECEIPT,
 						$in_number,
 						$in_extnumber,
 						$in_plan,
 						$receipt['cdate'],
 						$AUTH->id,
-						$record['name']
+						$record['name'],
+						$fullnumber,
 						));
 						
 		$rid = $DB->GetLastInsertId('documents');
@@ -187,15 +192,20 @@ if(isset($_POST['receipt']))
 			if(!$receipt['out_number'])
 				$receipt['out_number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $record['numberplanid'], $receipt['cdate']);
 
-			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed)
-					VALUES(?, ?, ?, ?, ?, ?, ?, 1)',
+			$fullnumber = docnumber($receipt['out_number'],
+				$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($record['numberplanid'])),
+				$receipt['cdate']);
+
+			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed, fullnumber)
+					VALUES(?, ?, ?, ?, ?, ?, ?, 1, ?)',
 					array(	DOC_RECEIPT,
 						$receipt['out_number'],
 						isset($receipt['out_extnumber']) ? $receipt['out_extnumber'] : '',
 						$record['numberplanid'],
 						$receipt['cdate'],
 						$AUTH->id,
-						$receipt['name']
+						$receipt['name'],
+						$fullnumber,
 						));
 						
 			$rid2 = $DB->GetLastInsertId('documents');

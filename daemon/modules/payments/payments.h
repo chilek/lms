@@ -31,6 +31,7 @@ struct plan
 	int period;
 	int plan;
 	int number;
+	char *numbertemplate;
 	int isdefault;
 };
 
