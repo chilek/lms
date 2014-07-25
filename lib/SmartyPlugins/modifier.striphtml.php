@@ -24,10 +24,6 @@
  *  $Id$
  */
 
-function _preg_replace_callback($matches) {
-	return chr($matches[1]);
-}
-
 function smarty_modifier_striphtml($args) {
 	$search = array ("'<script[^>]*?>.*?</script>'si",  // Strip out javascript
 			"'<[\/\!]*?[^<>]*?>'si",           // Strip out html tags
@@ -55,7 +51,9 @@ function smarty_modifier_striphtml($args) {
 			chr(169));
 
 	$args = preg_replace ($search, $replace, $args);
-	return preg_replace_callback("'&#(\d+);'", _preg_replace_callback, $args);
+	return preg_replace_callback("'&#(\d+);'",
+		create_function('$m', "return chr(\$m[1]);"),
+		$args);
 }
 
 ?>
