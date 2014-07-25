@@ -28,12 +28,14 @@ $DB->Execute("ALTER TABLE documents ADD fullnumber varchar(50) DEFAULT NULL");
 $docs = $DB->GetAll('SELECT d.id, cdate, number, template FROM documents d
 	JOIN numberplans n ON n.id = d.numberplanid
 	WHERE numberplanid <> 0 ORDER BY id');
-if (!empty($docs))
+if (!empty($docs)) {
+	include(LIB_DIR . '/common.php');
 	foreach ($docs as $doc) {
 		$fullnumber = docnumber($doc['number'], $doc['template'], $doc['cdate']);
 		$DB->Execute('UPDATE documents SET fullnumber = ? WHERE id = ?',
 			array($fullnumber, $doc['id']));
 	}
+}
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014072500', 'dbversion'));
 
