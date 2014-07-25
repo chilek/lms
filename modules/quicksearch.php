@@ -71,6 +71,9 @@ if(!empty($_POST['qscustomer'])) {
 } elseif(!empty($_POST['qsaccount'])) {
 	$mode = 'account'; 
 	$search = urldecode(trim($_POST['qsaccount']));
+} elseif(!empty($_POST['qsdocument'])) {
+	$mode = 'document'; 
+	$search = urldecode(trim($_POST['qsdocument']));
 } elseif(!empty($_GET['what'])) {
 	$search = urldecode(trim($_GET['what']));
 	$mode = $_GET['mode'];
@@ -375,6 +378,78 @@ switch($mode)
 
 		$SESSION->save('accountsearch', $search);
 		$target = '?m=accountsearch&s=1';
+	break;
+
+	case 'document':
+		if (isset($_GET['ajax'])) {
+			$candidates = $DB->GetAll("SELECT d.id, d.type, d.fullnumber,
+					d.customerid AS cid, d.name AS customername
+				FROM documents d
+				JOIN customersview c on d.customerid = c.id
+				WHERE (LOWER(d.fullnumber) ?LIKE? LOWER($sql_search)
+					OR 1 = 0)
+					ORDER BY d.fullnumber
+					LIMIT 15");
+
+			$eglible = array(); $actions = array(); $descriptions = array();
+			if ($candidates)
+				foreach ($candidates as $idx => $row) {
+/*
+					switch ($row['type']) {
+						case DOC_INVOICE:
+							$actions[$row['id']] = '?m=invoice&id=' . $row['id'];
+							break;
+						case DOC_RECEIPT:
+							$actions[$row['id']] = '?m=receipt&id=' . $row['id'];
+							break;
+						case DOC_CNOTE:
+							$actions[$row['id']] = '?m=note&id=' . $row['id'];
+							break;
+						default:
+							$actions[$row['id']] = '?m=documentview&id=' . $row['id'];
+					}
+*/
+					$actions[$row['id']] = '?m=customerinfo&id=' . $row['cid'];
+					$eglible[$row['id']] = escape_js($row['fullnumber']);
+					$descriptions[$row['id']] = escape_js(truncate_str($row['customername'], 35));
+					//$descriptions[$row['id']] = trans('Document id:') . ' ' . $row['id'];
+				}
+			header('Content-type: text/plain');
+			if ($eglible) {
+				print "this.eligible = [\"".implode('","',$eglible)."\"];\n";
+				print "this.descriptions = [\"".implode('","',$descriptions)."\"];\n";
+				print "this.actions = [\"".implode('","',$actions)."\"];\n";
+			} else {
+				print "false;\n";
+			}
+			exit;
+		}
+
+		$docs = $DB->GetAll("SELECT d.id, d.type, d.customerid AS cid, d.name AS customername
+			FROM documents d
+			JOIN customersview c ON c.id = d.customerid
+			WHERE LOWER(fullnumber) ?LIKE? LOWER($sql_search)");
+		if (count($docs) == 1) {
+			$cid = $docs[0]['cid'];
+/*
+			$docid = $docs[0]['id'];
+			$type = $docs[0]['type'];
+			switch ($type) {
+				case DOC_INVOICE:
+					$target = '?m=invoice&id=' . $docid;
+					break;
+				case DOC_RECEIPT:
+					$target = '?m=receipt&id=' . $docid;
+					break;
+				case DOC_CNOTE:
+					$target = '?m=note&id=' . $docid;
+					break;
+				default:
+					$target = '?m=documentview&id=' . $docid;
+			}
+*/
+			$target = '?m=customerinfo&id=' . $cid;
+		}
 	break;
 }
 

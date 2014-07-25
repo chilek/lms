@@ -2804,4 +2804,7 @@ $_LANG['Specified IP address doesn\'t belong to selected network!'] = 'Podany ad
 $_LANG['Delete all'] = 'Usuń wszystkie';
 $_LANG['Are you sure, you want to delete all liabilities?'] = 'Jesteś pewien, że chcesz usunąć wszystkie zobowiązania?';
 
+$_LANG['Enter document number and press Enter'] = 'Wprowadź numer dokumentu i naciśnij Enter';
+$_LANG['Document id:'] = 'Id dokumentu:';
+
 ?>
