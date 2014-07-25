@@ -24,6 +24,7 @@
 $DB->BeginTrans();
 
 $DB->Execute("ALTER TABLE documents ADD fullnumber varchar(50) DEFAULT NULL");
+$DB->Execute("ALTER TABLE documents ADD INDEX fullnumber (fullnumber)");
 
 $docs = $DB->GetAll('SELECT d.id, cdate, number, template FROM documents d
 	JOIN numberplans n ON n.id = d.numberplanid
