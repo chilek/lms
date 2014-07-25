@@ -2,6 +2,19 @@ $Id$
 
 version ?.??.?? (????-??-??):
 
+  - allow for separated template files in userpanel style [chilan]
+  - print customer list from selected division is possible [chilan]
+  - save also message subjects in message templates [chilan]
+  - added debian package config - build can be done by dpkg-buildpackage [maniac]
+  - new message types added (userpanel, userpanel urgent [chilan]
+  - new database access layer [maciejlew]
+  - new configuration system [maciejlew]
+  - wysiwyg edition of config values is possible [chilan]
+  - we can delete all customer liabilities by one click [chilan]
+  - add fullnumber with dispatched document full number in documents table [chilan]
+
+version 1.11.15 (2014-05-15):
+
   - host owner selection for networks [red/chilan]
   - separation of privileges: finance management and cash registry administration [chilan]
   - show last 10 node sessions in nodeinfo and nodedit [chilan]
@@ -79,15 +92,6 @@ version ?.??.?? (????-??-??):
   - daemon/dns: module now is looking additional files in LMS_CONF_DIR/daemon/dns [maniac]
   - move custom plugins to lib/SmartyPlugins - bumps min. smarty ver. to 3.1 [maniac]
   - daemon: resolve source dependency problem for gcc 4.4 - bumps api version [maniac]
-  - allow for separated template files in userpanel style [chilan]
-  - print customer list from selected division is possible [chilan]
-  - save also message subjects in message templates [chilan]
-  - added debian package config - build can be done by dpkg-buildpackage [maniac]
-  - new message types added (userpanel, userpanel urgent [chilan]
-  - new database access layer [maciejlew]
-  - new configuration system [maciejlew]
-  - wysiwyg edition of config values is possible [chilan]
-  - we can delete all customer liabilities by one click [chilan]
 
 version 1.11.14 (2013-03-25):
 
