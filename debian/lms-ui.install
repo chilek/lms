@@ -16,6 +16,7 @@ lib/SmartyPlugins               /usr/share/lms/lib/
 lib/swekey                      /usr/share/lms/lib/
 lib/tcpdf                       /usr/share/lms/lib/
 lib/upgradedb                   /usr/share/lms/lib/
+lib/LMSConfig                   /usr/share/lms/lib/
 
 lib/accesstable.php             /usr/share/lms/lib/
 lib/autoloader.php              /usr/share/lms/lib/
