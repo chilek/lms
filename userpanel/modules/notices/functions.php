@@ -45,7 +45,7 @@ function module_main()
        $DB->Execute('UPDATE messageitems SET status = 2 WHERE id = ?', array($confirm));
 					header('Location: ?m=notices');
     }
-    
+
   else
   {
        $notice = $DB->GetAll('SELECT m.subject, m.cdate, m.body, m.type, mi.id, mi.messageid, mi.destination, mi.status 
@@ -57,6 +57,13 @@ function module_main()
                               ORDER BY mi.status asc, m.cdate desc'
                               , array($SESSION->id));
 					$SMARTY->assign('notice', $notice);
+  }
+
+  if(isset($_GET['confirm_urgent']))
+  {
+					$confirm_urgent = $_GET['confirm_urgent'];
+					$DB->Execute('UPDATE messageitems SET status = 2 WHERE id = ?', array($confirm_urgent));
+                                      header('Location: ?');
   }
 
        $SMARTY->display('module:notices.html');

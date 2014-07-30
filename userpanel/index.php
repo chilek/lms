@@ -209,6 +209,9 @@ if($SESSION->islogged)
 		}
 	}
 
+	// Userpanel popup for urgent notice
+	$res = $LMS->ExecHook('userpanel_module_call_before', array('module' => $USERPANEL->MODULES['notices']));
+
 	if( file_exists(USERPANEL_MODULES_DIR.$module.'/functions.php')
 	    && isset($USERPANEL->MODULES[$module]) )
         {
