@@ -27,6 +27,7 @@ Description: LMS is integrated networkmanagement system for ISP
 Package: lms-common
 Architecture: all
 Depends: dbconfig-common
+Recommends: mysql-server | postgresql
 Description: LMS common support files
  "LMS" (LAN Management System) is integrated network managment system dedicated to variable size internet service providers (ISP)
  This package contains common support files including default config file.
