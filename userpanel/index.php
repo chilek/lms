@@ -196,7 +196,7 @@ if($SESSION->islogged)
 	{
 		if(!$DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ownerid = ? LIMIT 1', array($SESSION->id)))
 		{
-			unset($USERPANEL->MODULES['messages']);
+			unset($USERPANEL->MODULES['notices']);
 			unset($USERPANEL->MODULES['stats']);
 		}
 	}
