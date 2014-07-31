@@ -154,6 +154,14 @@ while (false !== ($filename = readdir($dh))) {
     {
 	@include(USERPANEL_MODULES_DIR.$filename.'/locale/'.$_ui_language.'/strings.php');
 	include(USERPANEL_MODULES_DIR.$filename.'/configuration.php');
+	if (is_dir(USERPANEL_MODULES_DIR.$filename.'/plugins/'))
+	{
+		$plugins = glob(USERPANEL_MODULES_DIR.$filename.'/plugins/*.php');
+		if (!empty($plugins))
+			foreach ($plugins as $plugin_name)
+				if(is_readable($plugin_name))
+					include($plugin_name);
+	}
     }
 };
 
@@ -196,10 +204,13 @@ if($SESSION->islogged)
 	{
 		if(!$DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ownerid = ? LIMIT 1', array($SESSION->id)))
 		{
-			unset($USERPANEL->MODULES['messages']);
+			unset($USERPANEL->MODULES['notices']);
 			unset($USERPANEL->MODULES['stats']);
 		}
 	}
+
+	// Userpanel popup for urgent notice
+	$res = $LMS->ExecHook('userpanel_module_call_before', array('module' => $USERPANEL->MODULES['notices']));
 
 	if( file_exists(USERPANEL_MODULES_DIR.$module.'/functions.php')
 	    && isset($USERPANEL->MODULES[$module]) )
