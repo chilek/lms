@@ -28,6 +28,7 @@ case "$1" in
     chown www-data.www-data /var/lib/lms/backups
     chown www-data.www-data /var/lib/lms/documents
     chown www-data.www-data /var/spool/lms/templates_c
+    chown www-data.www-data /var/spool/lms/userpanel_templates_c
     chown www-data.www-data /var/cache/lms/
 
     # install default apache configuration
