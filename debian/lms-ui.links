@@ -4,3 +4,4 @@ var/spool/lms/templates_c           usr/share/lms/templates_c
 var/cache/lms                       usr/share/lms/cache
 usr/share/php/smarty3               usr/share/lms/lib/Smarty
 usr/share/php/xajax                 usr/share/lms/lib/xajax
+var/spool/lms/userpanel_templates_c usr/share/lms/userpanel/templates_c
