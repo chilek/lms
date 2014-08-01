@@ -49,13 +49,10 @@ define('CONFIG_FILE', $CONFIG_FILE);
 $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 
 // Check for configuration vars and set default values
-if(empty($CONFIG['directories']['sys_dir']) || !file_exists($CONFIG['directories']['sys_dir']))
-	die('System directory is not set or not exists!');
-else
-	$CONFIG['directories']['sys_dir'] = $CONFIG['directories']['sys_dir'];
+$CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
 $CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'].'/lib' : $CONFIG['directories']['lib_dir']);
-$CONFIG['directories']['modules_dir'] = (!isset($CONFIG['directories']['modules_dir']) ? $CONFIG['directories']['sys_dir'].'/modules' : $CONFIG['directories']['modules_dir']);
 $CONFIG['directories']['userpanel_dir'] = (!isset($CONFIG['directories']['userpanel_dir']) ? getcwd() : $CONFIG['directories']['userpanel_dir']);
+$CONFIG['directories']['modules_dir'] = (!isset($CONFIG['directories']['modules_dir']) ? $CONFIG['directories']['userpanel_dir'].'/modules' : $CONFIG['directories']['modules_dir']);
 $CONFIG['directories']['smarty_compile_dir'] = $CONFIG['directories']['userpanel_dir'].'/templates_c';
 
 define('USERPANEL_DIR', $CONFIG['directories']['userpanel_dir']);
