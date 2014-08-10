@@ -272,10 +272,6 @@ AC_DEFUN([LOCATE_SNMP],
             done
         fi
 
-        if test -z "$SNMP_LIBDIR"; then
-            AC_MSG_ERROR(Cannot find SNMP library files under $SNMP_DIR)
-        fi
-
         if test -z "$SNMP_INCDIR"; then
             AC_MSG_ERROR(Cannot find SNMP headers.  Use --with-snmp= to specify non-default path.)
         fi
@@ -288,7 +284,9 @@ AC_DEFUN([LOCATE_SNMP],
 #####################################################
 AC_DEFUN([SETUP_SNMP],
 [
-    SNMP_LDFLAGS="-L$SNMP_LIBDIR"
+    if test -n "$SNMP_LIBDIR"; then
+        SNMP_LDFLAGS="-L$SNMP_LIBDIR $LDFLAGS"
+    fi
     SNMP_CFLAGS="-I$SNMP_INCDIR -I$SNMP_INCDIR/.."
 
     # Net/UCD-SNMP includes v3 support and insists on crypto unless compiled --without-openssl
