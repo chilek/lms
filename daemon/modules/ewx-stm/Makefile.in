@@ -92,11 +92,13 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(pkglibdir)"
 LTLIBRARIES = $(pkglib_LTLIBRARIES)
 ewx_stm_la_LIBADD =
-am_ewx_stm_la_OBJECTS = ewx_stm_la-ewx-stm.lo
+am__ewx_stm_la_SOURCES_DIST = ewx-stm.c
+@LIBSNMP_TRUE@am_ewx_stm_la_OBJECTS = ewx_stm_la-ewx-stm.lo
 ewx_stm_la_OBJECTS = $(am_ewx_stm_la_OBJECTS)
 ewx_stm_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(ewx_stm_la_CFLAGS) \
 	$(CFLAGS) $(ewx_stm_la_LDFLAGS) $(LDFLAGS) -o $@
+@LIBSNMP_TRUE@am_ewx_stm_la_rpath = -rpath $(pkglibdir)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -111,7 +113,7 @@ LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 SOURCES = $(ewx_stm_la_SOURCES)
-DIST_SOURCES = $(ewx_stm_la_SOURCES)
+DIST_SOURCES = $(am__ewx_stm_la_SOURCES_DIST)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -253,10 +255,10 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-pkglib_LTLIBRARIES = ewx-stm.la
-ewx_stm_la_SOURCES = ewx-stm.c
-ewx_stm_la_LDFLAGS = -no-undefined -module -avoid-version -lm @SNMP_LDFLAGS@
-ewx_stm_la_CFLAGS = @SNMP_CFLAGS@
+@LIBSNMP_TRUE@pkglib_LTLIBRARIES = ewx-stm.la
+@LIBSNMP_TRUE@ewx_stm_la_SOURCES = ewx-stm.c
+@LIBSNMP_TRUE@ewx_stm_la_LDFLAGS = -no-undefined -module -avoid-version -lm @SNMP_LDFLAGS@
+@LIBSNMP_TRUE@ewx_stm_la_CFLAGS = @SNMP_CFLAGS@
 all: all-am
 
 .SUFFIXES:
@@ -324,7 +326,7 @@ clean-pkglibLTLIBRARIES:
 	  rm -f "$${dir}/so_locations"; \
 	done
 ewx-stm.la: $(ewx_stm_la_OBJECTS) $(ewx_stm_la_DEPENDENCIES) $(EXTRA_ewx_stm_la_DEPENDENCIES) 
-	$(ewx_stm_la_LINK) -rpath $(pkglibdir) $(ewx_stm_la_OBJECTS) $(ewx_stm_la_LIBADD) $(LIBS)
+	$(ewx_stm_la_LINK) $(am_ewx_stm_la_rpath) $(ewx_stm_la_OBJECTS) $(ewx_stm_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)

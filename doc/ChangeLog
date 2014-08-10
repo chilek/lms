@@ -14,6 +14,7 @@ version ?.??.?? (????-??-??):
   - add fullnumber with dispatched document full number in documents table [chilan]
   - documentlist: selection of numberplan is possible [chilan]
   - added quick search by document full number [chilan]
+  - daemon: if snmp.h is not available then don't build ewx-* modules [maniac]
 
 version 1.11.15 (2014-05-15):
 

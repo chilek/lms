@@ -92,11 +92,13 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(pkglibdir)"
 LTLIBRARIES = $(pkglib_LTLIBRARIES)
 ewx_stm_channels_la_LIBADD =
-am_ewx_stm_channels_la_OBJECTS = ewx-stm-channels.lo
+am__ewx_stm_channels_la_SOURCES_DIST = ewx-stm-channels.c
+@LIBSNMP_TRUE@am_ewx_stm_channels_la_OBJECTS = ewx-stm-channels.lo
 ewx_stm_channels_la_OBJECTS = $(am_ewx_stm_channels_la_OBJECTS)
 ewx_stm_channels_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(ewx_stm_channels_la_LDFLAGS) $(LDFLAGS) -o $@
+@LIBSNMP_TRUE@am_ewx_stm_channels_la_rpath = -rpath $(pkglibdir)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -111,7 +113,7 @@ LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 SOURCES = $(ewx_stm_channels_la_SOURCES)
-DIST_SOURCES = $(ewx_stm_channels_la_SOURCES)
+DIST_SOURCES = $(am__ewx_stm_channels_la_SOURCES_DIST)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -253,10 +255,10 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-pkglib_LTLIBRARIES = ewx-stm-channels.la
-ewx_stm_channels_la_SOURCES = ewx-stm-channels.c
-ewx_stm_channels_la_LDFLAGS = -no-undefined -module -avoid-version @SNMP_LDFLAGS@
-ewx_stm_channels_la_CFLGS = @SNMP_CFLAGS@
+@LIBSNMP_TRUE@pkglib_LTLIBRARIES = ewx-stm-channels.la
+@LIBSNMP_TRUE@ewx_stm_channels_la_SOURCES = ewx-stm-channels.c
+@LIBSNMP_TRUE@ewx_stm_channels_la_LDFLAGS = -no-undefined -module -avoid-version @SNMP_LDFLAGS@
+@LIBSNMP_TRUE@ewx_stm_channels_la_CFLGS = @SNMP_CFLAGS@
 all: all-am
 
 .SUFFIXES:
@@ -324,7 +326,7 @@ clean-pkglibLTLIBRARIES:
 	  rm -f "$${dir}/so_locations"; \
 	done
 ewx-stm-channels.la: $(ewx_stm_channels_la_OBJECTS) $(ewx_stm_channels_la_DEPENDENCIES) $(EXTRA_ewx_stm_channels_la_DEPENDENCIES) 
-	$(ewx_stm_channels_la_LINK) -rpath $(pkglibdir) $(ewx_stm_channels_la_OBJECTS) $(ewx_stm_channels_la_LIBADD) $(LIBS)
+	$(ewx_stm_channels_la_LINK) $(am_ewx_stm_channels_la_rpath) $(ewx_stm_channels_la_OBJECTS) $(ewx_stm_channels_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)

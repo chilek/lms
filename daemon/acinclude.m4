@@ -215,6 +215,7 @@ AC_DEFUN([SETUP_MYSQL],
 ############################
 AC_DEFUN([LOCATE_SNMP],
 [
+    AC_MSG_CHECKING([for libsnmp])
     AC_ARG_WITH(snmp,
                 AC_HELP_STRING([--with-snmp=DIR], [SNMP include base directory [[/usr/(local/)include]]]),
     [
@@ -242,6 +243,9 @@ AC_DEFUN([LOCATE_SNMP],
         fi
         if test -z "$SNMP_INCDIR"; then
             AC_MSG_ERROR(Cannot find SNMP header files under $SNMP_DIR)
+        else
+            AC_MSG_RESULT(ok)
+            have_snmp=yes
         fi
     ],
     [
@@ -273,7 +277,11 @@ AC_DEFUN([LOCATE_SNMP],
         fi
 
         if test -z "$SNMP_INCDIR"; then
-            AC_MSG_ERROR(Cannot find SNMP headers.  Use --with-snmp= to specify non-default path.)
+            AC_MSG_RESULT(no)
+            have_snmp=no
+        else
+            AC_MSG_RESULT(yes)
+            have_snmp=yes
         fi
 
     ])

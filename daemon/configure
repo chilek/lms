@@ -646,6 +646,8 @@ BUILD_PINGER_FALSE
 BUILD_PINGER_TRUE
 LIBGADU_FALSE
 LIBGADU_TRUE
+LIBSNMP_FALSE
+LIBSNMP_TRUE
 SNMP_CFLAGS
 SNMP_LDFLAGS
 MYSQL_LDFLAGS
@@ -13379,6 +13381,8 @@ fi
 
 
 
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for libsnmp" >&5
+$as_echo_n "checking for libsnmp... " >&6; }
 
 # Check whether --with-snmp was given.
 if test "${with_snmp+set}" = set; then :
@@ -13407,6 +13411,10 @@ if test "${with_snmp+set}" = set; then :
         fi
         if test -z "$SNMP_INCDIR"; then
             as_fn_error $? "Cannot find SNMP header files under $SNMP_DIR" "$LINENO" 5
+        else
+            { $as_echo "$as_me:${as_lineno-$LINENO}: result: ok" >&5
+$as_echo "ok" >&6; }
+            have_snmp=yes
         fi
 
 else
@@ -13439,7 +13447,13 @@ else
         fi
 
         if test -z "$SNMP_INCDIR"; then
-            as_fn_error $? "Cannot find SNMP headers.  Use --with-snmp= to specify non-default path." "$LINENO" 5
+            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+            have_snmp=no
+        else
+            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+            have_snmp=yes
         fi
 
 
@@ -13802,7 +13816,8 @@ fi
 if test ! "x$have_mysql" = "xyes" -a ! "x$have_pgsql" = "xyes"; then :
   as_fn_error $? "No database client libraries detected. Try to use --with-mysql and/or --with-pgsql options." "$LINENO" 5
 fi
-
+# setup libsnmp
+if test "x$have_snmp" = "xyes"; then :
 
     if test -n "$SNMP_LIBDIR"; then
         SNMP_LDFLAGS="-L$SNMP_LIBDIR $LDFLAGS"
@@ -13958,6 +13973,17 @@ fi
     SNMP_LDFLAGS=$SNMP_LDFLAGS
 
     SNMP_CFLAGS=$SNMP_CFLAGS
+
+
+fi
+echo HAVE_SNMP: $have_snmp
+ if test x$have_snmp = xyes; then
+  LIBSNMP_TRUE=
+  LIBSNMP_FALSE='#'
+else
+  LIBSNMP_TRUE='#'
+  LIBSNMP_FALSE=
+fi
 
 
 
@@ -14230,6 +14256,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${PGSQL_TRUE}" && test -z "${PGSQL_FALSE}"; then
   as_fn_error $? "conditional \"PGSQL\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${LIBSNMP_TRUE}" && test -z "${LIBSNMP_FALSE}"; then
+  as_fn_error $? "conditional \"LIBSNMP\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${LIBGADU_TRUE}" && test -z "${LIBGADU_FALSE}"; then
