@@ -93,7 +93,6 @@ AS_IF([test "x$with_mysql" = "xyes" -o "x$have_mysql" = "xyes"],  [SETUP_MYSQL])
 AS_IF([test ! "x$have_mysql" = "xyes" -a ! "x$have_pgsql" = "xyes"], AC_MSG_ERROR([No database client libraries detected. Try to use --with-mysql and/or --with-pgsql options.]))
 # setup libsnmp
 AS_IF([test "x$have_snmp" = "xyes"], [SETUP_SNMP])
-echo HAVE_SNMP: $have_snmp
 AM_CONDITIONAL([LIBSNMP], [test x$have_snmp = xyes])
 
 SETUP_LIBGADU

@@ -13976,7 +13976,6 @@ fi
 
 
 fi
-echo HAVE_SNMP: $have_snmp
  if test x$have_snmp = xyes; then
   LIBSNMP_TRUE=
   LIBSNMP_FALSE='#'
