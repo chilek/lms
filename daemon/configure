@@ -13438,10 +13438,6 @@ else
             done
         fi
 
-        if test -z "$SNMP_LIBDIR"; then
-            as_fn_error $? "Cannot find SNMP library files under $SNMP_DIR" "$LINENO" 5
-        fi
-
         if test -z "$SNMP_INCDIR"; then
             as_fn_error $? "Cannot find SNMP headers.  Use --with-snmp= to specify non-default path." "$LINENO" 5
         fi
@@ -13808,7 +13804,9 @@ if test ! "x$have_mysql" = "xyes" -a ! "x$have_pgsql" = "xyes"; then :
 fi
 
 
-    SNMP_LDFLAGS="-L$SNMP_LIBDIR"
+    if test -n "$SNMP_LIBDIR"; then
+        SNMP_LDFLAGS="-L$SNMP_LIBDIR $LDFLAGS"
+    fi
     SNMP_CFLAGS="-I$SNMP_INCDIR -I$SNMP_INCDIR/.."
 
     # Net/UCD-SNMP includes v3 support and insists on crypto unless compiled --without-openssl
