@@ -97,8 +97,11 @@ if (!$quiet) {
 	echo "Using file ".$CONFIG_FILE." as config.\n";
 }
 
-if (!is_readable($CONFIG_FILE))
+if (!is_readable($CONFIG_FILE)) {
 	die("Unable to read configuration file [".$CONFIG_FILE."]!\n");
+}
+
+define('CONFIG_FILE', $CONFIG_FILE);
 
 $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 

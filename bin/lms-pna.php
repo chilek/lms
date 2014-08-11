@@ -103,6 +103,8 @@ $update = array_key_exists('update', $options);
 if (!is_readable($CONFIG_FILE))
 	die("Unable to read configuration file [".$CONFIG_FILE."]!\n");
 
+define('CONFIG_FILE', $CONFIG_FILE);
+
 $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 
 // Check for configuration vars and set default values
