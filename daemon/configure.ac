@@ -100,17 +100,17 @@ SETUP_LIBGADU
 case "$host_os" in
         linux*)
                 OS="linux"
-                LIBS+=" -ldl"
-                CFLAGS+=" -fPIC -DGNU"
+                LIBS="$LIBS -ldl"
+                CFLAGS="$CFLAGS -fPIC -DGNU"
                 ;;
         CYGWIN* | Cygwin* | cygwin* )
                 OS="cygwin"
-                LIBS+=" -ldl -lz"
+                LIBS="$LIBS -ldl -lz"
 #                LMSDBIN="lmsd.exe"
                 ;;
         FreeBSD )
                 OS="freebsd"
-                CFLAGS+=" -fPIC"
+                CFLAGS="$CFLAGS -fPIC"
                 ;;
         *)
                 ;;
