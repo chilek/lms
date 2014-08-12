@@ -53,22 +53,30 @@ define('MODULES_DIR', $CONFIG['directories']['modules_dir']);
 define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir']);
 define('SMARTY_TEMPLATES_DIR', $CONFIG['directories']['smarty_templates_dir']);
 
+// Load autloader
+require_once(LIB_DIR.'/autoloader.php');
+
 // Do some checks and load config defaults
 
 require_once(LIB_DIR . '/checkdirs.php');
 require_once(LIB_DIR . '/config.php');
 
-// Init database 
+// Init database
 
-$_DBTYPE = $CONFIG['database']['type'];
-$_DBHOST = $CONFIG['database']['host'];
-$_DBUSER = $CONFIG['database']['user'];
-$_DBPASS = $CONFIG['database']['password'];
-$_DBNAME = $CONFIG['database']['database'];
+$DB = null;
 
-require_once(LIB_DIR . '/LMSDB.php');
+try {
 
-$DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
+    $DB = LMSDB::getInstance();
+
+} catch (Exception $ex) {
+    
+    trigger_error($ex->getMessage(), E_USER_WARNING);
+    
+    // can't working without database
+    die("Fatal error: cannot connect to database!\n");
+    
+}
 
 // Call any of upgrade process before anything else
 
@@ -89,15 +97,8 @@ define('SMARTY_VERSION', $ver_chunks[1]);
 
 require_once(LIB_DIR . '/language.php');
 
-// Read configuration of LMS-UI from database
-
-if ($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0'))
-	foreach ($cfg as $row)
-		$CONFIG[$row['section']][$row['var']] = $row['value'];
-
 // Redirect to SSL
-
-$_FORCE_SSL = (isset($CONFIG['phpui']['force_ssl']) ? chkconfig($CONFIG['phpui']['force_ssl']) : FALSE);
+$_FORCE_SSL = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.force_ssl', false));
 
 if ($_FORCE_SSL && $_SERVER['HTTPS'] != 'on') {
 	header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
@@ -107,8 +108,6 @@ if ($_FORCE_SSL && $_SERVER['HTTPS'] != 'on') {
 // EXPERIMENTAL CODE! USE WITH CAUTION ;-)
 
 $_LMSDIR = dirname(__FILE__);
-
-require_once(LIB_DIR . '/ExecStack.class.php');
 
 $ExecStack = new ExecStack($_LMSDIR . '/modules/', (isset($_GET['m']) ? $_GET['m'] : NULL), (isset($_GET['a']) ? $_GET['a'] : NULL));
 

@@ -106,7 +106,7 @@ function receipt_buyer($x,$y)
 
 function receipt_footer($x,$y) 
 {
-    global $pdf, $CONFIG, $receipt;
+    global $pdf, $receipt;
 
     $font_size = 8;
     $yy = $y;
@@ -217,9 +217,9 @@ function receipt_data($x,$y)
 
 function receipt_body()
 {
-	global $receipt,$pdf,$id,$CONFIG, $type;
+	global $receipt,$pdf,$id, $type;
 
-	$template = $CONFIG['receipts']['template_file'];
+	$template = ConfigHelper::getConfig('receipts.template_file');
 
 	switch ($template)
 	{
@@ -245,7 +245,7 @@ function receipt_body()
 	if (!($receipt['last'])) $id = $pdf->newPage(1,$id,'after');
 }
 
-require_once(LIB_DIR.'/pdf.php');
+require_once(LIB_DIR.'/ezpdf.php');
 
 $pdf = init_pdf('A4', 'portrait', trans('Receipts'));
 

@@ -107,7 +107,7 @@ if (defined('USERPANEL_SETUPMODE'))
     function module_setup() {
 	global $SMARTY,$LMS;
         $questions = fetch_questions(0);
-	$treefile = $LMS->CONFIG['directories']['userpanel_dir'].'/modules/help/templates/tree.html';
+	$treefile = ConfigHelper::getConfig('directories.userpanel_dir').'/modules/help/templates/tree.html';
         $SMARTY->assign('tree', $questions);
 	$SMARTY->assign('treefile', $treefile);
         $SMARTY->display('module:help:setup.html');

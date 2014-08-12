@@ -29,20 +29,18 @@
 
 class LMS {
 
-	var $DB;   // database object
-	var $AUTH;   // object from Session.class.php (session management)
-	var $CONFIG;   // table including lms.ini options
-	var $SYSLOG;
-	var $cache = array();  // internal cache
-	var $hooks = array(); // registered plugin hooks
-	var $xajax;  // xajax object
-	var $_version = '1.11-git'; // class version
-	var $_revision = '$Revision$';
+	public $DB;   // database object
+	public $AUTH;   // object from Session.class.php (session management)
+	public $SYSLOG;
+	public $cache = array();  // internal cache
+	public $hooks = array(); // registered plugin hooks
+	public $xajax;  // xajax object
+	public $_version = '1.11-git'; // class version
+	public $_revision = '$Revision$';
 
-	function LMS(&$DB, &$AUTH, &$CONFIG, &$SYSLOG) { // class variables setting
+	public function __construct(&$DB, &$AUTH, &$SYSLOG) { // class variables setting
 		$this->DB = &$DB;
 		$this->AUTH = &$AUTH;
-		$this->CONFIG = &$CONFIG;
 		$this->SYSLOG = &$SYSLOG;
 
 		//$this->_revision = preg_replace('/^.Revision: ([0-9.]+).*/', '\1', $this->_revision);
@@ -50,13 +48,13 @@ class LMS {
 		//$this->_version = $this->_version.' ('.$this->_revision.')';
 	}
 
-	function _postinit() {
+	public function _postinit() {
 		return TRUE;
 	}
 
-	function InitUI() {
+	public function InitUI() {
 		// set current user
-		switch ($this->CONFIG['database']['type']) {
+		switch (ConfigHelper::getConfig('database.type')) {
 			case 'postgres':
 				$this->DB->Execute('SELECT set_config(\'lms.current_user\', ?, false)', array($this->AUTH->id));
 				break;
@@ -67,7 +65,7 @@ class LMS {
 		}
 	}
 
-	function InitXajax() {
+	public function InitXajax() {
 		if (!$this->xajax) {
 			require(LIB_DIR . '/xajax/xajax_core/xajax.inc.php');
 			$this->xajax = new xajax();
@@ -76,7 +74,7 @@ class LMS {
 		}
 	}
 
-	function RunXajax() {
+	public function RunXajax() {
 		$xajax_js = NULL;
 		if ($this->xajax) {
 			$xajax_js = $this->xajax->getJavascript();
@@ -85,7 +83,7 @@ class LMS {
 		return $xajax_js;
 	}
 
-	function RegisterXajaxFunction($funcname) {
+	public function RegisterXajaxFunction($funcname) {
 		if ($this->xajax) {
 			if (is_array($funcname))
 				foreach ($funcname as $func)
@@ -104,9 +102,9 @@ class LMS {
 	 * 	4 - as above, and all modules calls (paranoid)
 	 */
 	/*
-	  function Log($loglevel=0, $message=NULL)
+	  public function Log($loglevel=0, $message=NULL)
 	  {
-	  if( $loglevel <= $this->CONFIG['phpui']['loglevel'] && $message )
+	  if( $loglevel <= ConfigHelper::getConfig('phpui.loglevel') && $message )
 	  {
 	  $this->DB->Execute('INSERT INTO syslog (time, userid, level, message)
 	  VALUES (?NOW?, ?, ?, ?)', array($this->AUTH->id, $loglevel, $message));
@@ -118,14 +116,14 @@ class LMS {
 	 * Plugins
 	 */
 
-	function RegisterHook($hook_name, $callback) {
+	public function RegisterHook($hook_name, $callback) {
 		$this->hooks[] = array(
 				'name' => $hook_name,
 				'callback' => $callback,
 		);
 	}
 
-	function ExecHook($hook_name, $vars = null) {
+	public function ExecHook($hook_name, $vars = null) {
 		foreach ($this->hooks as $hook) {
 			if ($hook['name'] == $hook_name) {
 				$vars = call_user_func($hook['callback'], $vars);
@@ -139,7 +137,7 @@ class LMS {
 	 *  Database functions (backups)
 	 */
 
-	function DBDump($filename = NULL, $gzipped = FALSE, $stats = FALSE) { // dump database to file
+	public function DBDump($filename = NULL, $gzipped = FALSE, $stats = FALSE) { // dump database to file
 		if (!$filename)
 			return FALSE;
 
@@ -151,7 +149,7 @@ class LMS {
 		if ($dumpfile) {
 			$tables = $this->DB->ListTables();
 
-			switch ($this->CONFIG['database']['type']) {
+			switch (ConfigHelper::getConfig('database.type')) {
 				case 'postgres':
 					fputs($dumpfile, "SET CONSTRAINTS ALL DEFERRED;\n");
 					break;
@@ -207,7 +205,7 @@ class LMS {
 				}
 			}
 
-			if (preg_match('/^mysqli?$/', $this->CONFIG['database']['type']))
+			if (preg_match('/^mysqli?$/', ConfigHelper::getConfig('database.type')))
 				fputs($dumpfile, "SET foreign_key_checks = 1;\n");
 
 			if ($gzipped && extension_loaded('zlib'))
@@ -219,14 +217,14 @@ class LMS {
 			return FALSE;
 	}
 
-	function DatabaseCreate($gzipped = FALSE, $stats = FALSE) { // create database backup
+	public function DatabaseCreate($gzipped = FALSE, $stats = FALSE) { // create database backup
 		$basename = 'lms-' . time() . '-' . DBVERSION;
 		if (($gzipped) && (extension_loaded('zlib'))) {
 			$filename = $basename . '.sql.gz';
-			$res = $this->DBDump($this->CONFIG['directories']['backup_dir'] . '/' . $filename, TRUE, $stats);
+			$res = $this->DBDump(ConfigHelper::getConfig('directories.backup_dir') . '/' . $filename, TRUE, $stats);
 		} else {
 			$filename = $basename . '.sql';
-			$res = $this->DBDump($this->CONFIG['directories']['backup_dir'] . '/' . $filename, FALSE, $stats);
+			$res = $this->DBDump(ConfigHelper::getConfig('directories.backup_dir') . '/' . $filename, FALSE, $stats);
 		}
 		if ($this->SYSLOG)
 			$this->SYSLOG->AddMessage(SYSLOG_RES_DBBACKUP, SYSLOG_OPER_ADD,
@@ -238,7 +236,7 @@ class LMS {
 	 *  Internal cache
 	 */
 
-	function GetCache($key, $idx = null, $name = null) {
+	public function GetCache($key, $idx = null, $name = null) {
 		if (array_key_exists($key, $this->cache)) {
 			if (!$idx)
 				return $this->cache[$key];
@@ -256,7 +254,7 @@ class LMS {
 	 * Users
 	 */
 
-	function SetUserPassword($id, $passwd) {
+	public function SetUserPassword($id, $passwd) {
 		global $SYSLOG_RESOURCE_KEYS;
 		$args = array(
 			'passwd' => crypt($passwd),
@@ -270,7 +268,7 @@ class LMS {
 		}
 	}
 
-	function GetUserName($id = null) { // returns user name
+	public function GetUserName($id = null) { // returns user name
 		if ($id === null)
 			$id = $this->AUTH->id;
 		else if (!$id)
@@ -286,11 +284,11 @@ class LMS {
 		return $name;
 	}
 
-	function GetUserNames() { // returns short list of users
+	public function GetUserNames() { // returns short list of users
 		return $this->DB->GetAll('SELECT id, name FROM users WHERE deleted=0 ORDER BY login ASC');
 	}
 
-	function GetUserList() { // returns list of users
+	public function GetUserList() { // returns list of users
 		if ($userlist = $this->DB->GetAll('SELECT id, login, name, lastlogindate, lastloginip, 
 				passwdexpiration, passwdlastchange, access, accessfrom, accessto  
 				FROM users WHERE deleted=0 ORDER BY login ASC')) {
@@ -335,11 +333,11 @@ class LMS {
 		return $userlist;
 	}
 
-	function GetUserIDByLogin($login) {
+	public function GetUserIDByLogin($login) {
 		return $this->DB->GetOne('SELECT id FROM users WHERE login=?', array($login));
 	}
 
-	function UserAdd($user) {
+	public function UserAdd($user) {
 		global $SYSLOG_RESOURCE_KEYS;
 		$args = array(
 			'login' => $user['login'],
@@ -371,7 +369,7 @@ class LMS {
 			return FALSE;
 	}
 
-	function UserDelete($id) {
+	public function UserDelete($id) {
 		global $SYSLOG_RESOURCE_KEYS;
 		if ($this->DB->Execute('UPDATE users SET deleted=1, access=0 WHERE id=?', array($id))) {
 			if ($this->SYSLOG) {
@@ -388,7 +386,7 @@ class LMS {
 		}
 	}
 
-	function UserExists($id) {
+	public function UserExists($id) {
 		switch ($this->DB->GetOne('SELECT deleted FROM users WHERE id=?', array($id))) {
 			case '0':
 				return TRUE;
@@ -403,12 +401,12 @@ class LMS {
 		}
 	}
 
-	function UserAccess($id,$access)
+	public function UserAccess($id,$access)
 	{
 	    $this->DB->Execute('UPDATE users SET access = ? WHERE id = ? ;',array($access,$id));
 	}
 
-	function GetUserInfo($id) {
+	public function GetUserInfo($id) {
 		if ($userinfo = $this->DB->GetRow('SELECT * FROM users WHERE id = ?', array($id))) {
 			$this->cache['users'][$id] = $userinfo;
 
@@ -459,7 +457,7 @@ class LMS {
 		return $userinfo;
 	}
 
-	function UserUpdate($user) {
+	public function UserUpdate($user) {
 		global $SYSLOG_RESOURCE_KEYS;
 		$args = array(
 			'login' => $user['login'],
@@ -485,7 +483,7 @@ class LMS {
 		return $res;
 	}
 
-	function GetUserRights($id) {
+	public function GetUserRights($id) {
 		if (!($mask = $this->GetCache('users', $id, 'rights'))) {
 			$mask = $this->DB->GetOne('SELECT rights FROM users WHERE id = ?', array($id));
 		}
@@ -509,16 +507,16 @@ class LMS {
 	 *  Customers functions
 	 */
 
-	function GetCustomerName($id) {
+	public function GetCustomerName($id) {
 		return $this->DB->GetOne('SELECT ' . $this->DB->Concat('lastname', "' '", 'name') . ' 
 			    FROM customers WHERE id=?', array($id));
 	}
 
-	function GetCustomerEmail($id) {
+	public function GetCustomerEmail($id) {
 		return $this->DB->GetOne('SELECT email FROM customers WHERE id=?', array($id));
 	}
 
-	function CustomerExists($id) {
+	public function CustomerExists($id) {
 		switch ($this->DB->GetOne('SELECT deleted FROM customersview WHERE id=?', array($id))) {
 			case '0':
 				return TRUE;
@@ -533,7 +531,7 @@ class LMS {
 		}
 	}
 
-	function CustomerAdd($customeradd) {
+	public function CustomerAdd($customeradd) {
 		global $SYSLOG_RESOURCE_KEYS;
 		$args = array(
 			'name' => lms_ucwords($customeradd['name']),
@@ -596,7 +594,7 @@ class LMS {
 			return FALSE;
 	}
 
-	function DeleteCustomer($id) {
+	public function DeleteCustomer($id) {
 		global $SYSLOG_RESOURCE_KEYS;
 		$this->DB->BeginTrans();
 
@@ -687,13 +685,14 @@ class LMS {
 		$this->DB->Execute('UPDATE passwd SET ownerid=0 WHERE ownerid=?', array($id));
 		$this->DB->Execute('UPDATE domains SET ownerid=0 WHERE ownerid=?', array($id));
 		// Remove Userpanel rights
-		if (!empty($this->CONFIG['directories']['userpanel_dir']))
+		$userpanel_dir = ConfigHelper::getConfig('directories.userpanel_dir');
+		if (!empty($userpanel_dir))
 			$this->DB->Execute('DELETE FROM up_rights_assignments WHERE customerid=?', array($id));
 
 		$this->DB->CommitTrans();
 	}
 
-	function CustomerUpdate($customerdata) {
+	public function CustomerUpdate($customerdata) {
 		global $SYSLOG_RESOURCE_KEYS;
 		$args = array(
 			'status' => $customerdata['status'],
@@ -757,25 +756,25 @@ class LMS {
 		return $res;
 	}
 
-	function GetCustomerNodesNo($id) {
+	public function GetCustomerNodesNo($id) {
 		return $this->DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ownerid=?', array($id));
 	}
 
-	function GetCustomerIDByIP($ipaddr) {
+	public function GetCustomerIDByIP($ipaddr) {
 		return $this->DB->GetOne('SELECT ownerid FROM nodes 
 			    WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)', array($ipaddr, $ipaddr));
 	}
 
-	function GetCashByID($id) {
+	public function GetCashByID($id) {
 		return $this->DB->GetRow('SELECT time, userid, value, taxid, customerid, comment 
 			    FROM cash WHERE id=?', array($id));
 	}
 
-	function GetCustomerStatus($id) {
+	public function GetCustomerStatus($id) {
 		return $this->DB->GetOne('SELECT status FROM customers WHERE id=?', array($id));
 	}
 
-	function GetCustomer($id, $short = false) {
+	public function GetCustomer($id, $short = false) {
 		global $CONTACTTYPES;
 
 		if ($result = $this->DB->GetRow('SELECT c.*, '
@@ -845,19 +844,19 @@ class LMS {
 			return FALSE;
 	}
 
-	function GetCustomerNames() {
+	public function GetCustomerNames() {
 		return $this->DB->GetAllByKey('SELECT id, ' . $this->DB->Concat('lastname', "' '", 'name') . ' AS customername 
 				FROM customersview WHERE status > 1 AND deleted = 0 
 				ORDER BY lastname, name', 'id');
 	}
 
-	function GetAllCustomerNames() {
+	public function GetAllCustomerNames() {
 		return $this->DB->GetAllByKey('SELECT id, ' . $this->DB->Concat('lastname', "' '", 'name') . ' AS customername 
 				FROM customersview WHERE deleted = 0
 				ORDER BY lastname, name', 'id');
 	}
 
-	function GetCustomerNodesAC($id) {
+	public function GetCustomerNodesAC($id) {
 		if ($acl = $this->DB->GetALL('SELECT access FROM nodes WHERE ownerid=?', array($id))) {
 			foreach ($acl as $value)
 				if ($value['access'])
@@ -876,7 +875,7 @@ class LMS {
 			return FALSE;
 	}
 
-	function GetCustomerList($order = 'customername,asc', $state = NULL, $network = NULL, $customergroup = NULL, $search = NULL, $time = NULL, $sqlskey = 'AND', $nodegroup = NULL, $division = NULL) {
+	public function GetCustomerList($order = 'customername,asc', $state = NULL, $network = NULL, $customergroup = NULL, $search = NULL, $time = NULL, $sqlskey = 'AND', $nodegroup = NULL, $division = NULL) {
 		list($order, $direction) = sscanf($order, '%[^,],%s');
 
 		($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
@@ -990,6 +989,10 @@ class LMS {
 							$searchargs[] = 'EXISTS (SELECT 1 FROM nodes
 								WHERE ownerid = c.id AND linktype = ' . intval($value) . ')';
 							break;
+						case 'linktechnology':
+							$searchargs[] = 'EXISTS (SELECT 1 FROM nodes
+								WHERE ownerid = c.id AND linktechnology = ' . intval($value) . ')';
+							break;
 						case 'linkspeed':
 							$searchargs[] = 'EXISTS (SELECT 1 FROM nodes
 								WHERE ownerid = c.id AND linkspeed = ' . intval($value) . ')';
@@ -1031,7 +1034,7 @@ class LMS {
 		if (isset($searchargs))
 			$sqlsarg = implode(' ' . $sqlskey . ' ', $searchargs);
 
-		$suspension_percentage = f_round($this->CONFIG['finances']['suspension_percentage']);
+		$suspension_percentage = f_round(ConfigHelper::getConfig('finances.suspension_percentage'));
 
 		if ($customerlist = $this->DB->GetAll(
 				'SELECT c.id AS id, ' . $this->DB->Concat('UPPER(lastname)', "' '", 'c.name') . ' AS customername, 
@@ -1077,7 +1080,7 @@ class LMS {
 				LEFT JOIN (SELECT ownerid,
 					SUM(access) AS acsum, COUNT(access) AS account,
 					SUM(warning) AS warnsum, COUNT(warning) AS warncount, 
-					(CASE WHEN MAX(lastonline) > ?NOW? - ' . intval($this->CONFIG['phpui']['lastonline_limit']) . '
+					(CASE WHEN MAX(lastonline) > ?NOW? - ' . intval(ConfigHelper::getConfig('phpui.lastonline_limit')) . '
 						THEN 1 ELSE 0 END) AS online
 					FROM nodes
 					WHERE ownerid > 0
@@ -1136,7 +1139,7 @@ class LMS {
 		return $customerlist;
 	}
 
-	function GetCustomerNodes($id, $count = NULL) {
+	public function GetCustomerNodes($id, $count = NULL) {
 		if ($result = $this->DB->GetAll('SELECT n.id, n.name, mac, ipaddr,
 				inet_ntoa(ipaddr) AS ip, ipaddr_pub,
 				inet_ntoa(ipaddr_pub) AS ip_pub, passwd, access,
@@ -1170,7 +1173,7 @@ class LMS {
 			}
 
 			// get EtherWerX channels
-			if (chkconfig($this->CONFIG['phpui']['ewx_support'])) {
+			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false))) {
 				$channels = $this->DB->GetAllByKey('SELECT nodeid, channelid, c.name, c.id, cid,
 				        nc.upceil, nc.downceil
 					FROM ewx_stm_nodes
@@ -1194,11 +1197,11 @@ class LMS {
 
 	/* added balance totime - tcpdf invoice */
 
-	function GetCustomerBalance($id, $totime = NULL) {
+	public function GetCustomerBalance($id, $totime = NULL) {
 		return $this->DB->GetOne('SELECT SUM(value) FROM cash WHERE customerid = ?' . ($totime ? ' AND time < ' . intval($totime) : ''), array($id));
 	}
 
-	function GetCustomerBalanceList($id, $totime = NULL, $direction = 'ASC') {
+	public function GetCustomerBalanceList($id, $totime = NULL, $direction = 'ASC') {
 		($direction == 'ASC' || $direction == 'asc') ? $direction == 'ASC' : $direction == 'DESC';
 
 		$saldolist = array();
@@ -1237,7 +1240,7 @@ class LMS {
 		return $saldolist;
 	}
 
-	function CustomerStats() {
+	public function CustomerStats() {
 		$result = $this->DB->GetRow('SELECT COUNT(id) AS total,
 				COUNT(CASE WHEN status = 3 THEN 1 END) AS connected,
 				COUNT(CASE WHEN status = 2 THEN 1 END) AS awaiting,
@@ -1263,12 +1266,12 @@ class LMS {
 	 * Customer groups
 	 */
 
-	function CustomergroupWithCustomerGet($id) {
+	public function CustomergroupWithCustomerGet($id) {
 		return $this->DB->GetOne('SELECT COUNT(*) FROM customerassignments
 				WHERE customergroupid = ?', array($id));
 	}
 
-	function CustomergroupAdd($customergroupdata) {
+	public function CustomergroupAdd($customergroupdata) {
 		global $SYSLOG_RESOURCE_KEYS;
 		if ($this->DB->Execute('INSERT INTO customergroups (name, description) VALUES (?, ?)', array($customergroupdata['name'], $customergroupdata['description']))) {
 			$id = $this->DB->GetLastInsertID('customergroups');
@@ -1286,7 +1289,7 @@ class LMS {
 			return FALSE;
 	}
 
-	function CustomergroupUpdate($customergroupdata) {
+	public function CustomergroupUpdate($customergroupdata) {
 		global $SYSLOG_RESOURCE_KEYS;
 		$args = array(
 			'name' => $customergroupdata['name'],
@@ -1300,7 +1303,7 @@ class LMS {
 				WHERE id=?', array_values($args));
 	}
 
-	function CustomergroupDelete($id) {
+	public function CustomergroupDelete($id) {
 		global $SYSLOG_RESOURCE_KEYS;
 		if (!$this->CustomergroupWithCustomerGet($id)) {
 			if ($this->SYSLOG) {
@@ -1325,19 +1328,19 @@ class LMS {
 			return FALSE;
 	}
 
-	function CustomergroupExists($id) {
+	public function CustomergroupExists($id) {
 		return ($this->DB->GetOne('SELECT id FROM customergroups WHERE id=?', array($id)) ? TRUE : FALSE);
 	}
 
-	function CustomergroupGetId($name) {
+	public function CustomergroupGetId($name) {
 		return $this->DB->GetOne('SELECT id FROM customergroups WHERE name=?', array($name));
 	}
 
-	function CustomergroupGetName($id) {
+	public function CustomergroupGetName($id) {
 		return $this->DB->GetOne('SELECT name FROM customergroups WHERE id=?', array($id));
 	}
 
-	function CustomergroupGetAll() {
+	public function CustomergroupGetAll() {
 		return $this->DB->GetAll('SELECT g.id, g.name, g.description 
 				FROM customergroups g
 				WHERE NOT EXISTS (
@@ -1346,7 +1349,7 @@ class LMS {
 				ORDER BY g.name ASC');
 	}
 
-	function CustomergroupGet($id, $network = NULL) {
+	public function CustomergroupGet($id, $network = NULL) {
 		if ($network)
 			$net = $this->GetNetworkParams($network);
 
@@ -1368,7 +1371,7 @@ class LMS {
 		return $result;
 	}
 
-	function CustomergroupGetList() {
+	public function CustomergroupGetList() {
 		if ($customergrouplist = $this->DB->GetAll('SELECT id, name, description,
 				(SELECT COUNT(*)
 					FROM customerassignments 
@@ -1388,14 +1391,14 @@ class LMS {
 		return $customergrouplist;
 	}
 
-	function CustomergroupGetForCustomer($id) {
+	public function CustomergroupGetForCustomer($id) {
 		return $this->DB->GetAll('SELECT customergroups.id AS id, name, description 
 			    FROM customergroups, customerassignments 
 			    WHERE customergroups.id=customergroupid AND customerid=? 
 			    ORDER BY name ASC', array($id));
 	}
 
-	function GetGroupNamesWithoutCustomer($customerid) {
+	public function GetGroupNamesWithoutCustomer($customerid) {
 		return $this->DB->GetAll('SELECT customergroups.id AS id, name, customerid
 			FROM customergroups 
 			LEFT JOIN customerassignments ON (customergroups.id=customergroupid AND customerid = ?)
@@ -1403,14 +1406,14 @@ class LMS {
 			HAVING customerid IS NULL ORDER BY name', array($customerid));
 	}
 
-	function CustomerassignmentGetForCustomer($id) {
+	public function CustomerassignmentGetForCustomer($id) {
 		return $this->DB->GetAll('SELECT customerassignments.id AS id, customergroupid, customerid 
 			FROM customerassignments, customergroups 
 			WHERE customerid=? AND customergroups.id = customergroupid 
 			ORDER BY customergroupid ASC', array($id));
 	}
 
-	function CustomerassignmentDelete($customerassignmentdata) {
+	public function CustomerassignmentDelete($customerassignmentdata) {
 		global $SYSLOG_RESOURCE_KEYS;
 		if ($this->SYSLOG) {
 			$assign = $this->DB->GetRow('SELECT id, customerid FROM customerassignments
@@ -1430,7 +1433,7 @@ class LMS {
 						$customerassignmentdata['customerid']));
 	}
 
-	function CustomerassignmentAdd($customerassignmentdata) {
+	public function CustomerassignmentAdd($customerassignmentdata) {
 		global $SYSLOG_RESOURCE_KEYS;
 		$res = $this->DB->Execute('INSERT INTO customerassignments (customergroupid, customerid) VALUES (?, ?)', array($customerassignmentdata['customergroupid'],
 						$customerassignmentdata['customerid']));
@@ -1446,11 +1449,11 @@ class LMS {
 		return $res;
 	}
 
-	function CustomerassignmentExist($groupid, $customerid) {
+	public function CustomerassignmentExist($groupid, $customerid) {
 		return $this->DB->GetOne('SELECT 1 FROM customerassignments WHERE customergroupid=? AND customerid=?', array($groupid, $customerid));
 	}
 
-	function GetCustomerWithoutGroupNames($groupid, $network = NULL) {
+	public function GetCustomerWithoutGroupNames($groupid, $network = NULL) {
 		if ($network)
 			$net = $this->GetNetworkParams($network);
 
@@ -1469,11 +1472,11 @@ class LMS {
 	 *  Nodes functions
 	 */
 
-	function GetNodeOwner($id) {
+	public function GetNodeOwner($id) {
 		return $this->DB->GetOne('SELECT ownerid FROM nodes WHERE id=?', array($id));
 	}
 
-	function NodeUpdate($nodedata, $deleteassignments = FALSE) {
+	public function NodeUpdate($nodedata, $deleteassignments = FALSE) {
 		global $SYSLOG_RESOURCE_KEYS;
 		$args = array(
 			'name' => $nodedata['name'],
@@ -1494,6 +1497,7 @@ class LMS {
 			'chkmac' => $nodedata['chkmac'],
 			'halfduplex' => $nodedata['halfduplex'],
 			'linktype' => isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
+			'linktechnology' => isset($nodedata['linktechnology']) ? intval($nodedata['linktechnology']) : 0,
 			'linkspeed' => isset($nodedata['linkspeed']) ? intval($nodedata['linkspeed']) : 100000,
 			'port' => isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
 			'nas' => isset($nodedata['nas']) ? $nodedata['nas'] : 0,
@@ -1506,8 +1510,8 @@ class LMS {
 				ipaddr=inet_aton(?), passwd=?, netdev=?, moddate=?NOW?,
 				modid=?, access=?, warning=?, ownerid=?, info=?, location=?,
 				location_city=?, location_street=?, location_house=?, location_flat=?,
-				chkmac=?, halfduplex=?, linktype=?, linkspeed=?, port=?, nas=?,
-				longitude=?, latitude=?, netid=?
+				chkmac=?, halfduplex=?, linktype=?, linktechnology=?, linkspeed=?,
+				port=?, nas=?, longitude=?, latitude=?, netid=?
 				WHERE id=?', array_values($args));
 
 		if ($this->SYSLOG) {
@@ -1564,7 +1568,7 @@ class LMS {
 		}
 	}
 
-	function DeleteNode($id) {
+	public function DeleteNode($id) {
 		global $SYSLOG_RESOURCE_KEYS;
 		$this->DB->BeginTrans();
 
@@ -1592,43 +1596,43 @@ class LMS {
 		$this->DB->CommitTrans();
 	}
 
-	function GetNodeNameByMAC($mac) {
+	public function GetNodeNameByMAC($mac) {
 		return $this->DB->GetOne('SELECT name FROM vnodes WHERE mac=UPPER(?)', array($mac));
 	}
 
-	function GetNodeIDByIP($ipaddr) {
+	public function GetNodeIDByIP($ipaddr) {
 		return $this->DB->GetOne('SELECT id FROM nodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)', array($ipaddr, $ipaddr));
 	}
 
-	function GetNodeIDByMAC($mac) {
+	public function GetNodeIDByMAC($mac) {
 		return $this->DB->GetOne('SELECT nodeid FROM macs WHERE mac=UPPER(?)', array($mac));
 	}
 
-	function GetNodeIDByName($name) {
+	public function GetNodeIDByName($name) {
 		return $this->DB->GetOne('SELECT id FROM nodes WHERE name=UPPER(?)', array($name));
 	}
 
-	function GetNodeIPByID($id) {
+	public function GetNodeIPByID($id) {
 		return $this->DB->GetOne('SELECT inet_ntoa(ipaddr) FROM nodes WHERE id=?', array($id));
 	}
 
-	function GetNodePubIPByID($id) {
+	public function GetNodePubIPByID($id) {
 		return $this->DB->GetOne('SELECT inet_ntoa(ipaddr_pub) FROM nodes WHERE id=?', array($id));
 	}
 
-	function GetNodeMACByID($id) {
+	public function GetNodeMACByID($id) {
 		return $this->DB->GetOne('SELECT mac FROM vnodes WHERE id=?', array($id));
 	}
 
-	function GetNodeName($id) {
+	public function GetNodeName($id) {
 		return $this->DB->GetOne('SELECT name FROM nodes WHERE id=?', array($id));
 	}
 
-	function GetNodeNameByIP($ipaddr) {
+	public function GetNodeNameByIP($ipaddr) {
 		return $this->DB->GetOne('SELECT name FROM nodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)', array($ipaddr, $ipaddr));
 	}
 
-	function GetNode($id) {
+	public function GetNode($id) {
 		if ($result = $this->DB->GetRow('SELECT n.*,
 		    inet_ntoa(n.ipaddr) AS ip, inet_ntoa(n.ipaddr_pub) AS ip_pub,
 		    lc.name AS city_name,
@@ -1667,7 +1671,7 @@ class LMS {
 			return FALSE;
 	}
 
-	function GetNodeList($order = 'name,asc', $search = NULL, $sqlskey = 'AND', $network = NULL, $status = NULL, $customergroup = NULL, $nodegroup = NULL) {
+	public function GetNodeList($order = 'name,asc', $search = NULL, $sqlskey = 'AND', $network = NULL, $status = NULL, $customergroup = NULL, $nodegroup = NULL) {
 		if ($order == '')
 			$order = 'name,asc';
 
@@ -1697,6 +1701,9 @@ class LMS {
 			case 'owner':
 				$sqlord = ' ORDER BY owner';
 				break;
+			case 'location':
+				$sqlord = ' ORDER BY location';
+				break;	
 		}
 
 		if (sizeof($search))
@@ -1743,7 +1750,7 @@ class LMS {
 		if ($nodelist = $this->DB->GetAll('SELECT n.id AS id, n.ipaddr, inet_ntoa(n.ipaddr) AS ip, ipaddr_pub,
 				inet_ntoa(n.ipaddr_pub) AS ip_pub, n.mac, n.name, n.ownerid, n.access, n.warning,
 				n.netdev, n.lastonline, n.info, '
-				. $this->DB->Concat('c.lastname', "' '", 'c.name') . ' AS owner, net.name AS netname
+				. $this->DB->Concat('c.lastname', "' '", 'c.name') . ' AS owner, net.name AS netname, n.location
 				FROM vnodes n
 				JOIN customersview c ON (n.ownerid = c.id)
 				JOIN networks net ON net.id = n.netid '
@@ -1754,7 +1761,7 @@ class LMS {
 					OR (n.ipaddr_pub > ' . $net['address'] . ' AND n.ipaddr_pub < ' . $net['broadcast'] . '))' : '')
 				. ($status == 1 ? ' AND n.access = 1' : '') //connected
 				. ($status == 2 ? ' AND n.access = 0' : '') //disconnected
-				. ($status == 3 ? ' AND n.lastonline > ?NOW? - ' . intval($this->CONFIG['phpui']['lastonline_limit']) : '') //online
+				. ($status == 3 ? ' AND n.lastonline > ?NOW? - ' . intval(ConfigHelper::getConfig('phpui.lastonline_limit')) : '') //online
 				. ($customergroup ? ' AND customergroupid = ' . intval($customergroup) : '')
 				. ($nodegroup ? ' AND nodegroupid = ' . intval($nodegroup) : '')
 				. (isset($searchargs) ? $searchargs : '')
@@ -1773,7 +1780,7 @@ class LMS {
 		return $nodelist;
 	}
 
-	function NodeSet($id, $access = -1) {
+	public function NodeSet($id, $access = -1) {
 		global $SYSLOG_RESOURCE_KEYS;
 		$keys = array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]);
 		$customerid = $this->DB->GetOne('SELECT ownerid FROM nodes WHERE id = ?', array($id));
@@ -1822,7 +1829,7 @@ class LMS {
 		}
 	}
 
-	function NodeSetU($id, $access = FALSE) {
+	public function NodeSetU($id, $access = FALSE) {
 		global $SYSLOG_RESOURCE_KEYS;
 		$keys = array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]);
 
@@ -1860,7 +1867,7 @@ class LMS {
 		}
 	}
 
-	function NodeSetWarn($id, $warning = FALSE) {
+	public function NodeSetWarn($id, $warning = FALSE) {
 		global $SYSLOG_RESOURCE_KEYS;
 		if ($this->SYSLOG) {
 			$cids = $this->DB->GetAll('SELECT id, ownerid FROM nodes WHERE id IN ('
@@ -1880,7 +1887,7 @@ class LMS {
 			. (is_array($id) ? implode(',', $id) : $id) . ')', array($warning ? 1 : 0));
 	}
 
-	function NodeSwitchWarn($id) {
+	public function NodeSwitchWarn($id) {
 		global $SYSLOG_RESOURCE_KEYS;
 		if ($this->SYSLOG) {
 			$node = $this->DB->GetRow('SELECT ownerid, warning FROM nodes WHERE id = ?', array($id));
@@ -1897,7 +1904,7 @@ class LMS {
 			WHERE id = ?', array($id));
 	}
 
-	function NodeSetWarnU($id, $warning = FALSE) {
+	public function NodeSetWarnU($id, $warning = FALSE) {
 		global $SYSLOG_RESOURCE_KEYS;
 		if ($this->SYSLOG) {
 			$nodes = $this->DB->GetAll('SELECT id, ownerid FROM nodes WHERE ownerid IN ('
@@ -1917,7 +1924,7 @@ class LMS {
 			. (is_array($id) ? implode(',', $id) : $id) . ')', array($warning ? 1 : 0));
 	}
 
-	function IPSetU($netdev, $access = FALSE) {
+	public function IPSetU($netdev, $access = FALSE) {
 		global $SYSLOG_RESOURCE_KEYS;
 		if ($access)
 			$res = $this->DB->Execute('UPDATE nodes SET access=1 WHERE netdev=? AND ownerid=0', array($netdev));
@@ -1939,7 +1946,7 @@ class LMS {
 		return $res;
 	}
 
-	function NodeAdd($nodedata) {
+	public function NodeAdd($nodedata) {
 		global $SYSLOG_RESOURCE_KEYS;
 		$args = array(
 			'name' => strtoupper($nodedata['name']),
@@ -1958,6 +1965,7 @@ class LMS {
 			'location_house' => $nodedata['location_house'] ? $nodedata['location_house'] : null,
 			'location_flat' => $nodedata['location_flat'] ? $nodedata['location_flat'] : null,
 			'linktype' => isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
+			'linktechnology' => isset($nodedata['linktechnology']) ? intval($nodedata['linktechnology']) : 0,
 			'linkspeed' => isset($nodedata['linkspeed']) ? intval($nodedata['linkspeed']) : 100000,
 			'port' => isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
 			'chkmac' => $nodedata['chkmac'],
@@ -1971,15 +1979,15 @@ class LMS {
 		if ($this->DB->Execute('INSERT INTO nodes (name, ipaddr, ipaddr_pub, ownerid,
 			passwd, creatorid, creationdate, access, warning, info, netdev,
 			location, location_city, location_street, location_house, location_flat,
-			linktype, linkspeed, port, chkmac, halfduplex, nas, longitude, latitude,
-			netid)
+			linktype, linktechnology, linkspeed, port, chkmac, halfduplex, nas,
+			longitude, latitude, netid)
 			VALUES (?, inet_aton(?), inet_aton(?), ?, ?, ?,
-			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
+			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
 			$id = $this->DB->GetLastInsertID('nodes');
 
 			// EtherWerX support (devices have some limits)
 			// We must to replace big ID with smaller (first free)
-			if ($id > 99999 && chkconfig($this->CONFIG['phpui']['ewx_support'])) {
+			if ($id > 99999 && ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false))) {
 				$this->DB->BeginTrans();
 				$this->DB->LockTables('nodes');
 
@@ -2027,7 +2035,7 @@ class LMS {
 		return FALSE;
 	}
 
-	function NodeExists($id) {
+	public function NodeExists($id) {
 		return ($this->DB->GetOne('SELECT n.id FROM nodes n
 			WHERE n.id = ? AND n.ownerid > 0 AND NOT EXISTS (
 		        	SELECT 1 FROM customerassignments a
@@ -2036,36 +2044,36 @@ class LMS {
 						, array($id)) ? TRUE : FALSE);
 	}
 
-	function NodeStats() {
+	public function NodeStats() {
 		$result = $this->DB->GetRow('SELECT COUNT(CASE WHEN access=1 THEN 1 END) AS connected, 
 				COUNT(CASE WHEN access=0 THEN 1 END) AS disconnected,
 				COUNT(CASE WHEN ?NOW?-lastonline < ? THEN 1 END) AS online
-				FROM nodes WHERE ownerid > 0', array($this->CONFIG['phpui']['lastonline_limit']));
+				FROM nodes WHERE ownerid > 0', array(ConfigHelper::getConfig('phpui.lastonline_limit')));
 
 		$result['total'] = $result['connected'] + $result['disconnected'];
 		return $result;
 	}
 
-	function GetNodeGroupNames() {
+	public function GetNodeGroupNames() {
 		return $this->DB->GetAllByKey('SELECT id, name, description FROM nodegroups
 				ORDER BY name ASC', 'id');
 	}
 
-	function GetNodeGroupNamesByNode($nodeid) {
+	public function GetNodeGroupNamesByNode($nodeid) {
 		return $this->DB->GetAllByKey('SELECT id, name, description FROM nodegroups
 				WHERE id IN (SELECT nodegroupid FROM nodegroupassignments
 					WHERE nodeid = ?)
 				ORDER BY name', 'id', array($nodeid));
 	}
 
-	function GetNodeGroupNamesWithoutNode($nodeid) {
+	public function GetNodeGroupNamesWithoutNode($nodeid) {
 		return $this->DB->GetAllByKey('SELECT id, name FROM nodegroups
 				WHERE id NOT IN (SELECT nodegroupid FROM nodegroupassignments
 					WHERE nodeid = ?)
 				ORDER BY name', 'id', array($nodeid));
 	}
 
-	function GetNodesWithoutGroup($groupid, $network = NULL) {
+	public function GetNodesWithoutGroup($groupid, $network = NULL) {
 		if ($network)
 			$net = $this->GetNetworkParams($network);
 
@@ -2080,7 +2088,7 @@ class LMS {
 						. ' ORDER BY nodename', array($groupid));
 	}
 
-	function GetNodesWithGroup($groupid, $network = NULL) {
+	public function GetNodesWithGroup($groupid, $network = NULL) {
 		if ($network)
 			$net = $this->GetNetworkParams($network);
 
@@ -2095,7 +2103,7 @@ class LMS {
 						. ' ORDER BY nodename', array($groupid));
 	}
 
-	function GetNodeGroup($id, $network = NULL) {
+	public function GetNodeGroup($id, $network = NULL) {
 		$result = $this->DB->GetRow('SELECT id, name, description, prio,
 				(SELECT COUNT(*) FROM nodegroupassignments 
 					WHERE nodegroupid = nodegroups.id) AS count
@@ -2107,7 +2115,7 @@ class LMS {
 		return $result;
 	}
 
-	function CompactNodeGroups() {
+	public function CompactNodeGroups() {
 		global $SYSLOG_RESOURCE_KEYS;
 		$this->DB->BeginTrans();
 		$this->DB->LockTables('nodegroups');
@@ -2130,9 +2138,9 @@ class LMS {
 		$this->DB->CommitTrans();
 	}
 
-	function GetNetDevLinkedNodes($id) {
-		return $this->DB->GetAll('SELECT n.id AS id, n.name AS name, linktype, linkspeed, ipaddr, 
-			inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, 
+	public function GetNetDevLinkedNodes($id) {
+		return $this->DB->GetAll('SELECT n.id AS id, n.name AS name, linktype, linktechnology, linkspeed,
+			ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, 
 			netdev, port, ownerid,
 			' . $this->DB->Concat('c.lastname', "' '", 'c.name') . ' AS owner,
 			net.name AS netname
@@ -2143,21 +2151,23 @@ class LMS {
 			ORDER BY n.name ASC', array($id));
 	}
 
-	function NetDevLinkNode($id, $devid, $type = 0, $speed = 100000, $port = 0) {
+	public function NetDevLinkNode($id, $devid, $type = 0, $technology = 0, $speed = 100000, $port = 0) {
 		global $SYSLOG_RESOURCE_KEYS;
 
 		$args = array(
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $devid,
 			'linktype' => intval($type),
+			'linktechnology' => intval($technology),
 			'linkspeed' => intval($speed),
 			'port' => intval($port),
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $id,
 		);
-		$res = $this->DB->Execute('UPDATE nodes SET netdev=?, linktype=?, linkspeed=?, port=?
-			 WHERE id=?', array_values($args));
+		$res = $this->DB->Execute('UPDATE nodes SET netdev=?, linktype=?,
+			linktechnology=?, linkspeed=?, port=?
+			WHERE id=?', array_values($args));
 		if ($this->SYSLOG && $res) {
 			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] =
-				$this->DB->GetOne('SELECT ownerid FROM nodes WHERE id=?', $id);
+				$this->DB->GetOne('SELECT ownerid FROM nodes WHERE id=?', array($id));
 			$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
 				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
 					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV],
@@ -2166,10 +2176,11 @@ class LMS {
 		return $res;
 	}
 
-	function SetNetDevLinkType($dev1, $dev2, $type = 0, $speed = 100000) {
+	public function SetNetDevLinkType($dev1, $dev2, $type = 0, $technology = 0, $speed = 100000) {
 		global $SYSLOG_RESOURCE_KEYS;
 
-		$res = $this->DB->Execute('UPDATE netlinks SET type=?, speed=? WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($type, $speed, $dev1, $dev2, $dev1, $dev2));
+		$res = $this->DB->Execute('UPDATE netlinks SET type=?, technology=?, speed=? WHERE (src=? AND dst=?) OR (dst=? AND src=?)',
+			array($type, $technology, $speed, $dev1, $dev2, $dev1, $dev2));
 		if ($this->SYSLOG && $res) {
 			$netlink = $this->DB->GetRow('SELECT id, src, dst FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($dev1, $dev2, $dev1, $dev2));
 			$args = array(
@@ -2187,10 +2198,11 @@ class LMS {
 		return $res;
 	}
 
-	function SetNodeLinkType($node, $type = 0, $speed = 100000) {
+	public function SetNodeLinkType($node, $type = 0, $technology = 0, $speed = 100000) {
 		global $SYSLOG_RESOURCE_KEYS;
 
-		$res = $this->DB->Execute('UPDATE nodes SET linktype=?, linkspeed=? WHERE id=?', array($type, $speed, $node));
+		$res = $this->DB->Execute('UPDATE nodes SET linktype=?, linktechnology=?, linkspeed=? WHERE id=?',
+			array($type, $technology, $speed, $node));
 		if ($this->SYSLOG && $res) {
 			$nodedata = $this->DB->GetRow('SELECT ownerid, netdev FROM nodes WHERE id=?', array($node));
 			$args = array(
@@ -2198,6 +2210,7 @@ class LMS {
 				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $nodedata['ownerid'],
 				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $nodedata['netdev'],
 				'linktype' => $type,
+				'linktechnology' => $technology,
 				'linkspeed' => $speed,
 			);
 			$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
@@ -2212,14 +2225,14 @@ class LMS {
 	 *  Tarrifs and finances
 	 */
 
-	function GetCustomerTariffsValue($id) {
+	public function GetCustomerTariffsValue($id) {
 		return $this->DB->GetOne('SELECT SUM(tariffs.value)
 		    FROM assignments, tariffs
 			WHERE tariffid = tariffs.id AND customerid = ? AND suspended = 0
 			    AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0)', array($id));
 	}
 
-	function GetCustomerAssignments($id, $show_expired = false) {
+	public function GetCustomerAssignments($id, $show_expired = false) {
 		$now = mktime(0, 0, 0, date('n'), date('d'), date('Y'));
 
 		if ($assignments = $this->DB->GetAll('SELECT a.id AS id, a.tariffid,
@@ -2280,7 +2293,7 @@ class LMS {
 				$assignments[$idx]['discounted_value'] = (((100 - $row['pdiscount']) * $row['value']) / 100) - $row['vdiscount'];
 
 				if ($row['suspended'] == 1)
-					$assignments[$idx]['discounted_value'] = $assignments[$idx]['discounted_value'] * $this->CONFIG['finances']['suspension_percentage'] / 100;
+					$assignments[$idx]['discounted_value'] = $assignments[$idx]['discounted_value'] * ConfigHelper::getConfig('finances.suspension_percentage') / 100;
 
 				$assignments[$idx]['discounted_value'] = round($assignments[$idx]['discounted_value'], 2);
 
@@ -2303,7 +2316,7 @@ class LMS {
 		return $assignments;
 	}
 
-	function DeleteAssignment($id) {
+	public function DeleteAssignment($id) {
 		global $SYSLOG_RESOURCE_KEYS;
 		$this->DB->BeginTrans();
 
@@ -2349,7 +2362,7 @@ class LMS {
 		$this->DB->CommitTrans();
 	}
 
-	function AddAssignment($data) {
+	public function AddAssignment($data) {
 		global $SYSLOG_RESOURCE_KEYS;
 		$result = array();
 
@@ -2634,7 +2647,7 @@ class LMS {
 		return $result;
 	}
 
-	function SuspendAssignment($id, $suspend = TRUE) {
+	public function SuspendAssignment($id, $suspend = TRUE) {
 		global $SYSLOG_RESOURCE_KEYS;
 		if ($this->SYSLOG) {
 			$assign = $this->DB->GetRow('SELECT id, tariffid, liabilityid, customerid FROM assignments WHERE id = ?', array($id));
@@ -2654,7 +2667,7 @@ class LMS {
 		return $this->DB->Execute('UPDATE assignments SET suspended=? WHERE id=?', array($suspend ? 1 : 0, $id));
 	}
 
-	function AddInvoice($invoice) {
+	public function AddInvoice($invoice) {
 		global $SYSLOG_RESOURCE_KEYS;
 
 		$currtime = time();
@@ -2662,11 +2675,17 @@ class LMS {
 		$sdate = $invoice['invoice']['sdate'] ? $invoice['invoice']['sdate'] : $currtime;
 		$number = $invoice['invoice']['number'];
 		$type = $invoice['invoice']['type'];
-		
-		$division = $this->DB->GetRow('SELECT name, address, city, zip, countryid, ten, regon,
+		if ($invoice['invoice']['numberplanid'])
+			$fullnumber = docnumber($number,
+				$this->DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($invoice['invoice']['numberplanid'])),
+				$cdate);
+		else
+			$fullnumber = null;
+
+		$division = $this->DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
 				account, inv_header, inv_footer, inv_author, inv_cplace 
 				FROM divisions WHERE id = ? ;',array($invoice['customer']['divisionid']));
-		
+
 		$args = array(
 			'number' => $number,
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $invoice['invoice']['numberplanid'] ? $invoice['invoice']['numberplanid'] : 0,
@@ -2686,6 +2705,7 @@ class LMS {
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $invoice['customer']['countryid'],
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $invoice['customer']['divisionid'],
 			'div_name' => ($division['name'] ? $division['name'] : ''),
+			'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),
 			'div_address' => ($division['address'] ? $division['address'] : ''), 
 			'div_city' => ($division['city'] ? $division['city'] : ''), 
 			'div_zip' => ($division['zip'] ? $division['zip'] : ''),
@@ -2697,14 +2717,15 @@ class LMS {
 			'div_inv_footer' => ($division['inv_footer'] ? $division['inv_footer'] : ''), 
 			'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''), 
 			'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
+			'fullnumber' => $fullnumber,
 		);
-		
+
 		$this->DB->Execute('INSERT INTO documents (number, numberplanid, type,
 			cdate, sdate, paytime, paytype, userid, customerid, name, address, 
 			ten, ssn, zip, city, countryid, divisionid,
-			div_name, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
-			div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
+			div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 		$iid = $this->DB->GetLastInsertID('documents');
 		if ($this->SYSLOG) {
 			unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
@@ -2762,7 +2783,7 @@ class LMS {
 		return $iid;
 	}
 
-	function InvoiceDelete($invoiceid) {
+	public function InvoiceDelete($invoiceid) {
 		global $SYSLOG_RESOURCE_KEYS;
 		$this->DB->BeginTrans();
 		if ($this->SYSLOG) {
@@ -2798,7 +2819,7 @@ class LMS {
 		$this->DB->CommitTrans();
 	}
 
-	function InvoiceContentDelete($invoiceid, $itemid = 0) {
+	public function InvoiceContentDelete($invoiceid, $itemid = 0) {
 		global $SYSLOG_RESOURCE_KEYS;
 		if ($itemid) {
 			$this->DB->BeginTrans();
@@ -2846,7 +2867,7 @@ class LMS {
 			$this->InvoiceDelete($invoiceid);
 	}
 
-	function GetInvoiceContent($invoiceid) {
+	public function GetInvoiceContent($invoiceid) {
 		global $PAYTYPES;
 
 		if ($result = $this->DB->GetRow('SELECT d.id, d.number, d.name, d.customerid,
@@ -2854,7 +2875,7 @@ class LMS {
 				d.ten, d.ssn, d.cdate, d.sdate, d.paytime, d.paytype, d.numberplanid,
 				d.closed, d.reference, d.reason, d.divisionid,
 				(SELECT name FROM users WHERE id = d.userid) AS user, n.template,
-				d.div_name AS division_name, d.div_name AS division_shortname,
+				d.div_name AS division_name, d.div_shortname AS division_shortname,
 				d.div_address AS division_address, d.div_zip AS division_zip,
 				d.div_city AS division_city, d.div_countryid AS division_countryid, 
 				d.div_ten AS division_ten, d.div_regon AS division_regon, d.div_account AS account,
@@ -2938,12 +2959,13 @@ class LMS {
 			$result['valuep'] = round(($result['value'] - floor($result['value'])) * 100);
 
 			// NOTE: don't waste CPU/mem when printing history is not set:
-			if (chkconfig($this->CONFIG['invoices']['print_balance_history'])) {
-				if (isset($this->CONFIG['invoices']['print_balance_history_save']) && chkconfig($this->CONFIG['invoices']['print_balance_history_save']))
+			if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.print_balance_history', false))) {
+				if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.print_balance_history_save', false))) {
 					$result['customerbalancelist'] = $this->GetCustomerBalanceList($result['customerid'], $result['cdate']);
-				else
+                                } else {
 					$result['customerbalancelist'] = $this->GetCustomerBalanceList($result['customerid']);
-				$result['customerbalancelistlimit'] = $this->CONFIG['invoices']['print_balance_history_limit'];
+                                }
+				$result['customerbalancelistlimit'] = ConfigHelper::getConfig('invoices.print_balance_history_limit');
 			}
 
 			$result['paytypename'] = $PAYTYPES[$result['paytype']];
@@ -2968,12 +2990,12 @@ class LMS {
 			return FALSE;
 	}
 
-	function GetNoteContent($id) {
+	public function GetNoteContent($id) {
 		if ($result = $this->DB->GetRow('SELECT d.id, d.number, d.name, d.customerid,
 				d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
 				d.ten, d.ssn, d.cdate, d.numberplanid, d.closed, d.divisionid, d.paytime, 
 				(SELECT name FROM users WHERE id = d.userid) AS user, n.template,
-				d.div_name AS division_name, d.div_name AS division_shortname,
+				d.div_name AS division_name, d.div_shortname AS division_shortname,
 				d.div_address AS division_address, d.div_zip AS division_zip,
 				d.div_city AS division_city, d.div_countryid AS division_countryid, 
 				d.div_ten AS division_ten, d.div_regon AS division_regon, d.div_account AS account,
@@ -3010,12 +3032,13 @@ class LMS {
 			$result['pdate'] = $result['cdate'] + ($result['paytime'] * 86400);
 
 			// NOTE: don't waste CPU/mem when printing history is not set:
-			if (!empty($this->CONFIG['notes']['print_balance_history']) && chkconfig($this->CONFIG['notes']['print_balance_history'])) {
-				if (isset($this->CONFIG['notes']['print_balance_history_save']) && chkconfig($this->CONFIG['notes']['print_balance_history_save']))
+			if (ConfigHelper::checkValue(ConfigHelper::getConfig('notes.print_balance', false))) {
+				if (ConfigHelper::checkValue(ConfigHelper::getConfig('notes.print_balance_history', false))) {
 					$result['customerbalancelist'] = $this->GetCustomerBalanceList($result['customerid'], $result['cdate']);
-				else
+                                } else {
 					$result['customerbalancelist'] = $this->GetCustomerBalanceList($result['customerid']);
-				$result['customerbalancelistlimit'] = $this->CONFIG['notes']['print_balance_history_limit'];
+                                }
+				$result['customerbalancelistlimit'] = ConfigHelper::getConfig('notes.print_balance_history_limit');
 			}
 
 			// for backward compatibility
@@ -3033,7 +3056,7 @@ class LMS {
 			return FALSE;
 	}
 
-	function TariffAdd($tariff) {
+	public function TariffAdd($tariff) {
 		global $SYSLOG_RESOURCE_KEYS;
 		$args = array(
 			'name' => $tariff['name'],
@@ -3089,7 +3112,7 @@ class LMS {
 			return FALSE;
 	}
 
-	function TariffUpdate($tariff) {
+	public function TariffUpdate($tariff) {
 		global $SYSLOG_RESOURCE_KEYS;
 		$args = array(
 			'name' => $tariff['name'],
@@ -3139,7 +3162,7 @@ class LMS {
 		return $res;
 	}
 
-	function TariffDelete($id) {
+	public function TariffDelete($id) {
 		global $SYSLOG_RESOURCE_KEYS;
 		if ($this->SYSLOG)
 			$assigns = $this->DB->GetAll('SELECT promotionid, a.id, promotionschemaid FROM promotionassignments a
@@ -3164,7 +3187,7 @@ class LMS {
 		return $res;
 	}
 
-	function GetTariff($id, $network = NULL) {
+	public function GetTariff($id, $network = NULL) {
 		if ($network)
 			$net = $this->GetNetworkParams($network);
 
@@ -3243,7 +3266,7 @@ class LMS {
 		return $result;
 	}
 
-	function GetTariffs() {
+	public function GetTariffs() {
 		return $this->DB->GetAll('SELECT t.id, t.name, t.value, uprate, taxid, prodid,
 				downrate, upceil, downceil, climit, plimit, taxes.value AS taxvalue,
 				taxes.label AS tax, t.period
@@ -3253,18 +3276,18 @@ class LMS {
 				ORDER BY t.name, t.value DESC');
 	}
 
-	function TariffSet($id) {
+	public function TariffSet($id) {
 		if($this->DB->GetOne('SELECT disabled FROM tariffs WHERE id = ?', array($id)) == 1 )
 			return $this->DB->Execute('UPDATE tariffs SET disabled = 0 WHERE id = ?', array($id));
 		else
 			return $this->DB->Execute('UPDATE tariffs SET disabled = 1 WHERE id = ?', array($id));
 	}
 
-	function TariffExists($id) {
+	public function TariffExists($id) {
 		return ($this->DB->GetOne('SELECT id FROM tariffs WHERE id=?', array($id)) ? TRUE : FALSE);
 	}
 
-	function ReceiptContentDelete($docid, $itemid = 0) {
+	public function ReceiptContentDelete($docid, $itemid = 0) {
 		global $SYSLOG_RESOURCE_KEYS;
 		if ($itemid) {
 			if ($this->SYSLOG) {
@@ -3337,7 +3360,7 @@ class LMS {
 		}
 	}
 
-	function DebitNoteContentDelete($docid, $itemid = 0) {
+	public function DebitNoteContentDelete($docid, $itemid = 0) {
 		global $SYSLOG_RESOURCE_KEYS;
 		if ($itemid) {
 			if ($this->SYSLOG) {
@@ -3411,7 +3434,7 @@ class LMS {
 		}
 	}
 
-	function AddBalance($addbalance) {
+	public function AddBalance($addbalance) {
 		global $SYSLOG_RESOURCE_KEYS;
 		$args = array(
 			'time' => isset($addbalance['time']) ? $addbalance['time'] : time(),
@@ -3441,7 +3464,7 @@ class LMS {
 		return $res;
 	}
 
-	function DelBalance($id) {
+	public function DelBalance($id) {
 		global $SYSLOG_RESOURCE_KEYS;
 
 		$row = $this->DB->GetRow('SELECT cash.customerid, docid, itemid, documents.type AS doctype, importid
@@ -3490,7 +3513,7 @@ class LMS {
 	 *   Payments
 	 */
 
-	function GetPaymentList() {
+	public function GetPaymentList() {
 		if ($paymentlist = $this->DB->GetAll('SELECT id, name, creditor, value, period, at, description FROM payments ORDER BY name ASC'))
 			foreach ($paymentlist as $idx => $row) {
 				switch ($row['period']) {
@@ -3522,7 +3545,7 @@ class LMS {
 		return $paymentlist;
 	}
 
-	function GetPayment($id) {
+	public function GetPayment($id) {
 		$payment = $this->DB->GetRow('SELECT id, name, creditor, value, period, at, description FROM payments WHERE id=?', array($id));
 
 		switch ($payment['period']) {
@@ -3548,19 +3571,19 @@ class LMS {
 		return $payment;
 	}
 
-	function GetPaymentName($id) {
+	public function GetPaymentName($id) {
 		return $this->DB->GetOne('SELECT name FROM payments WHERE id=?', array($id));
 	}
 
-	function GetPaymentIDByName($name) {
+	public function GetPaymentIDByName($name) {
 		return $this->DB->GetOne('SELECT id FROM payments WHERE name=?', array($name));
 	}
 
-	function PaymentExists($id) {
+	public function PaymentExists($id) {
 		return ($this->DB->GetOne('SELECT id FROM payments WHERE id=?', array($id)) ? TRUE : FALSE);
 	}
 
-	function PaymentAdd($paymentdata) {
+	public function PaymentAdd($paymentdata) {
 		global $SYSLOG_RESOURCE_KEYS;
 		$args = array(
 			'name' => $paymentdata['name'],
@@ -3582,7 +3605,7 @@ class LMS {
 			return FALSE;
 	}
 
-	function PaymentDelete($id) {
+	public function PaymentDelete($id) {
 		global $SYSLOG_RESOURCE_KEYS;
 		if ($this->SYSLOG) {
 			$args = array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PAYMENT] => $id);
@@ -3591,7 +3614,7 @@ class LMS {
 		return $this->DB->Execute('DELETE FROM payments WHERE id=?', array($id));
 	}
 
-	function PaymentUpdate($paymentdata) {
+	public function PaymentUpdate($paymentdata) {
 		global $SYSLOG_RESOURCE_KEYS;
 		$args = array(
 			'name' => $paymentdata['name'],
@@ -3609,7 +3632,7 @@ class LMS {
 		return $res;
 	}
 
-	function ScanNodes() {
+	public function ScanNodes() {
 		$result = array();
 		$networks = $this->GetNetworks();
 		if ($networks)
@@ -3635,11 +3658,11 @@ class LMS {
 	 *  IP Networks
 	 */
 
-	function NetworkExists($id) {
+	public function NetworkExists($id) {
 		return ($this->DB->GetOne('SELECT * FROM networks WHERE id=?', array($id)) ? TRUE : FALSE);
 	}
 
-	function NetworkSet($id, $disabled = -1) {
+	public function NetworkSet($id, $disabled = -1) {
 		global $SYSLOG_RESOURCE_KEYS;
 
 		if ($this->SYSLOG) {
@@ -3674,18 +3697,22 @@ class LMS {
 		return $res;
 	}
 
-	function IsIPFree($ip, $netid = 0) {
+	public function IsIPFree($ip, $netid = 0) {
 		if ($netid)
 			return !($this->DB->GetOne('SELECT id FROM nodes WHERE (ipaddr=inet_aton(?) AND netid=?) OR ipaddr_pub=inet_aton(?)', array($ip, $netid, $ip)) ? TRUE : FALSE);
 		else
 			return !($this->DB->GetOne('SELECT id FROM nodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)', array($ip, $ip)) ? TRUE : FALSE);
 	}
 
-	function IsIPGateway($ip) {
+	public function IsIPInNetwork($ip, $netid) {
+		return $this->DB->GetOne('SELECT id FROM networks WHERE INET_ATON(?) & INET_ATON(mask) = address AND id = ? LIMIT 1', array($ip, $netid));
+	}
+
+	public function IsIPGateway($ip) {
 		return ($this->DB->GetOne('SELECT gateway FROM networks WHERE gateway = ?', array($ip)) ? TRUE : FALSE);
 	}
 
-	function GetPrefixList() {
+	public function GetPrefixList() {
 		for ($i = 30; $i > 15; $i--) {
 			$prefixlist['id'][] = $i;
 			$prefixlist['value'][] = trans('$a ($b addresses)', $i, pow(2, 32 - $i));
@@ -3694,7 +3721,7 @@ class LMS {
 		return $prefixlist;
 	}
 
-	function NetworkAdd($netadd) {
+	public function NetworkAdd($netadd) {
 		global $SYSLOG_RESOURCE_KEYS;
 
 		if ($netadd['prefix'] != '')
@@ -3731,7 +3758,7 @@ class LMS {
 			return FALSE;
 	}
 
-	function NetworkDelete($id) {
+	public function NetworkDelete($id) {
 		global $SYSLOG_RESOURCE_KEYS;
 		if ($this->SYSLOG)
 			$hostid = $this->DB->GetOne('SELECT hostid FROM networks WHERE id=?', array($id));
@@ -3746,16 +3773,16 @@ class LMS {
 		return $res;
 	}
 
-	function GetNetworkName($id) {
+	public function GetNetworkName($id) {
 		return $this->DB->GetOne('SELECT name FROM networks WHERE id=?', array($id));
 	}
 
-	function GetNetIDByIP($ipaddr) {
+	public function GetNetIDByIP($ipaddr) {
 		return $this->DB->GetOne('SELECT id FROM networks 
 				WHERE address = (inet_aton(?) & inet_aton(mask))', array($ipaddr));
 	}
 
-	function GetNetworks($with_disabled = true) {
+	public function GetNetworks($with_disabled = true) {
 		if ($with_disabled == false)
 			return $this->DB->GetAll('SELECT id, name, inet_ntoa(address) AS address, 
 				address AS addresslong, mask, mask2prefix(inet_aton(mask)) AS prefix, disabled 
@@ -3766,13 +3793,13 @@ class LMS {
 				FROM networks ORDER BY name');
 	}
 
-	function GetNetworkParams($id) {
+	public function GetNetworkParams($id) {
 		return $this->DB->GetRow('SELECT *, inet_ntoa(address) AS netip, 
 			broadcast(address, inet_aton(mask)) AS broadcast
 			FROM networks WHERE id = ?', array($id));
 	}
 
-	function GetNetworkList() {
+	public function GetNetworkList() {
 		if ($networks = $this->DB->GetAll('SELECT n.id, h.name AS hostname, n.name, inet_ntoa(address) AS address, 
 				address AS addresslong, mask, interface, gateway, dns, dns2, 
 				domain, wins, dhcpstart, dhcpend,
@@ -3793,7 +3820,7 @@ class LMS {
 				) AS online
 				FROM networks n
 				LEFT JOIN hosts h ON h.id = n.hostid
-				ORDER BY n.name', array(intval($this->CONFIG['phpui']['lastonline_limit'])))) {
+				ORDER BY n.name', array(intval(ConfigHelper::getConfig('phpui.lastonline_limit'))))) {
 			$size = 0;
 			$assigned = 0;
 			$online = 0;
@@ -3811,14 +3838,14 @@ class LMS {
 		return $networks;
 	}
 
-	function IsIPValid($ip, $checkbroadcast = FALSE, $ignoreid = 0) {
+	public function IsIPValid($ip, $checkbroadcast = FALSE, $ignoreid = 0) {
 		$ip = ip_long($ip);
 		return $this->DB->GetOne('SELECT 1 FROM networks
 			WHERE id != ? AND address < ?
 			AND broadcast(address, inet_aton(mask)) >' . ($checkbroadcast ? '=' : '') . ' ?', array(intval($ignoreid), $ip, $ip));
 	}
 
-	function NetworkOverlaps($network, $mask, $hostid, $ignorenet = 0) {
+	public function NetworkOverlaps($network, $mask, $hostid, $ignorenet = 0) {
 		$cnetaddr = ip_long($network);
 		$cbroadcast = ip_long(getbraddr($network, $mask));
 
@@ -3836,7 +3863,7 @@ class LMS {
 			));
 	}
 
-	function NetworkShift($netid, $network = '0.0.0.0', $mask = '0.0.0.0', $shift = 0) {
+	public function NetworkShift($netid, $network = '0.0.0.0', $mask = '0.0.0.0', $shift = 0) {
 		global $SYSLOG_RESOURCE_KEYS;
 
 		if ($this->SYSLOG) {
@@ -3869,7 +3896,7 @@ class LMS {
 				WHERE ipaddr_pub >= inet_aton(?) AND ipaddr_pub <= inet_aton(?)', array($shift, $network, getbraddr($network, $mask))));
 	}
 
-	function NetworkUpdate($networkdata) {
+	public function NetworkUpdate($networkdata) {
 		global $SYSLOG_RESOURCE_KEYS;
 
 		$args = array(
@@ -3897,7 +3924,7 @@ class LMS {
 					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST]));
 	}
 
-	function NetworkCompress($id, $shift = 0) {
+	public function NetworkCompress($id, $shift = 0) {
 		global $SYSLOG_RESOURCE_KEYS;
 
 		$nodes = array();
@@ -3979,7 +4006,7 @@ class LMS {
 		}
 	}
 
-	function NetworkRemap($src, $dst) {
+	public function NetworkRemap($src, $dst) {
 		global $SYSLOG_RESOURCE_KEYS;
 
 		$network['source'] = $this->GetNetworkRecord($src);
@@ -4037,7 +4064,7 @@ class LMS {
 		return $counter;
 	}
 
-	function GetNetworkRecord($id, $page = 0, $plimit = 4294967296, $firstfree = false) {
+	public function GetNetworkRecord($id, $page = 0, $plimit = 4294967296, $firstfree = false) {
 		$network = $this->DB->GetRow('SELECT id, name, inet_ntoa(address) AS address, 
 				address AS addresslong, mask, interface, gateway, dns, dns2, 
 				domain, wins, dhcpstart, dhcpend, hostid,
@@ -4125,33 +4152,33 @@ class LMS {
 	 *   Network Devices
 	 */
 
-	function NetDevExists($id) {
+	public function NetDevExists($id) {
 		return ($this->DB->GetOne('SELECT * FROM netdevices WHERE id=?', array($id)) ? TRUE : FALSE);
 	}
 
-	function GetNetDevIDByNode($id) {
+	public function GetNetDevIDByNode($id) {
 		return $this->DB->GetOne('SELECT netdev FROM nodes WHERE id=?', array($id));
 	}
 
-	function CountNetDevLinks($id) {
+	public function CountNetDevLinks($id) {
 		return $this->DB->GetOne('SELECT COUNT(*) FROM netlinks WHERE src = ? OR dst = ?', array($id, $id))
 				+ $this->DB->GetOne('SELECT COUNT(*) FROM nodes WHERE netdev = ? AND ownerid > 0', array($id));
 	}
 
-	function GetNetDevLinkType($dev1, $dev2) {
-		return $this->DB->GetRow('SELECT type, speed FROM netlinks 
+	public function GetNetDevLinkType($dev1, $dev2) {
+		return $this->DB->GetRow('SELECT type, technology, speed FROM netlinks 
 			WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($dev1, $dev2, $dev1, $dev2));
 	}
 
-	function GetNetDevConnectedNames($id) {
+	public function GetNetDevConnectedNames($id) {
 		return $this->DB->GetAll('SELECT d.id, d.name, d.description,
 			d.location, d.producer, d.ports, l.type AS linktype,
-			l.speed AS linkspeed, l.srcport, l.dstport,
+			l.technology AS linktechnology, l.speed AS linkspeed, l.srcport, l.dstport,
 			(SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id) 
 			+ (SELECT COUNT(*) FROM nodes WHERE netdev = d.id AND ownerid > 0)
 			AS takenports 
 			FROM netdevices d
-			JOIN (SELECT DISTINCT type, speed, 
+			JOIN (SELECT DISTINCT type, technology, speed, 
 				(CASE src WHEN ? THEN dst ELSE src END) AS dev, 
 				(CASE src WHEN ? THEN dstport ELSE srcport END) AS srcport, 
 				(CASE src WHEN ? THEN srcport ELSE dstport END) AS dstport 
@@ -4160,7 +4187,7 @@ class LMS {
 			ORDER BY name', array($id, $id, $id, $id, $id));
 	}
 
-	function GetNetDevList($order = 'name,asc') {
+	public function GetNetDevList($order = 'name,asc') {
 		list($order, $direction) = sscanf($order, '%[^,],%s');
 
 		($direction == 'desc') ? $direction = 'desc' : $direction = 'asc';
@@ -4207,12 +4234,12 @@ class LMS {
 		return $netdevlist;
 	}
 
-	function GetNetDevNames() {
+	public function GetNetDevNames() {
 		return $this->DB->GetAll('SELECT id, name, location, producer 
 			FROM netdevices ORDER BY name');
 	}
 
-	function GetNotConnectedDevices($id) {
+	public function GetNotConnectedDevices($id) {
 		return $this->DB->GetAll('SELECT d.id, d.name, d.description,
 			d.location, d.producer, d.ports
 			FROM netdevices d
@@ -4224,7 +4251,7 @@ class LMS {
 			ORDER BY name', array($id, $id, $id, $id));
 	}
 
-	function GetNetDev($id) {
+	public function GetNetDev($id) {
 		$result = $this->DB->GetRow('SELECT d.*, t.name AS nastypename, c.name AS channel,
 		        lc.name AS city_name,
 				(CASE WHEN ls.name2 IS NOT NULL THEN ' . $this->DB->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END) AS street_name, lt.name AS street_type
@@ -4246,7 +4273,7 @@ class LMS {
 		return $result;
 	}
 
-	function NetDevDelLinks($id) {
+	public function NetDevDelLinks($id) {
 		global $SYSLOG_RESOURCE_KEYS;
 
 		if ($this->SYSLOG) {
@@ -4280,7 +4307,7 @@ class LMS {
 				WHERE netdev=? AND ownerid>0', array($id));
 	}
 
-	function DeleteNetDev($id) {
+	public function DeleteNetDev($id) {
 		global $SYSLOG_RESOURCE_KEYS;
 
 		$this->DB->BeginTrans();
@@ -4335,7 +4362,7 @@ class LMS {
 		$this->DB->CommitTrans();
 	}
 
-	function NetDevAdd($data) {
+	public function NetDevAdd($data) {
 		global $SYSLOG_RESOURCE_KEYS;
 
 		$args = array(
@@ -4372,7 +4399,7 @@ class LMS {
 
 			// EtherWerX support (devices have some limits)
 			// We must to replace big ID with smaller (first free)
-			if ($id > 99999 && chkconfig($this->CONFIG['phpui']['ewx_support'])) {
+			if ($id > 99999 && ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false))) {
 				$this->DB->BeginTrans();
 				$this->DB->LockTables('ewx_channels');
 
@@ -4399,7 +4426,7 @@ class LMS {
 			return FALSE;
 	}
 
-	function NetDevUpdate($data) {
+	public function NetDevUpdate($data) {
 		global $SYSLOG_RESOURCE_KEYS;
 
 		$args = array(
@@ -4436,12 +4463,12 @@ class LMS {
 				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
 	}
 
-	function IsNetDevLink($dev1, $dev2) {
+	public function IsNetDevLink($dev1, $dev2) {
 		return $this->DB->GetOne('SELECT COUNT(id) FROM netlinks 
 			WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($dev1, $dev2, $dev1, $dev2));
 	}
 
-	function NetDevLink($dev1, $dev2, $type = 0, $speed = 100000, $sport = 0, $dport = 0) {
+	public function NetDevLink($dev1, $dev2, $type = 0, $technology = 0, $speed = 100000, $sport = 0, $dport = 0) {
 		global $SYSLOG_RESOURCE_KEYS;
 
 		if ($dev1 != $dev2)
@@ -4450,13 +4477,14 @@ class LMS {
 					'src_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $dev1,
 					'dst_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $dev2,
 					'type' => $type,
+					'technology' => $technology,
 					'speed' => $speed,
 					'srcport' => intval($sport),
 					'dstport' => intval($dport)
 				);
 				$res = $this->DB->Execute('INSERT INTO netlinks 
-					(src, dst, type, speed, srcport, dstport) 
-					VALUES (?, ?, ?, ?, ?, ?)', array_values($args));
+					(src, dst, type, technology, speed, srcport, dstport) 
+					VALUES (?, ?, ?, ?, ?, ?, ?)', array_values($args));
 				if ($this->SYSLOG && $res) {
 					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETLINK]] = $this->DB->GetLastInsertID('netlinks');
 					$this->SYSLOG->AddMessage(SYSLOG_RES_NETLINK, SYSLOG_OPER_ADD, $args,
@@ -4470,7 +4498,7 @@ class LMS {
 		return FALSE;
 	}
 
-	function NetDevUnLink($dev1, $dev2) {
+	public function NetDevUnLink($dev1, $dev2) {
 		global $SYSLOG_RESOURCE_KEYS;
 
 		if ($this->SYSLOG) {
@@ -4489,14 +4517,14 @@ class LMS {
 		$this->DB->Execute('DELETE FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($dev1, $dev2, $dev1, $dev2));
 	}
 
-	function GetUnlinkedNodes() {
+	public function GetUnlinkedNodes() {
 		return $this->DB->GetAll('SELECT n.*, inet_ntoa(n.ipaddr) AS ip, net.name AS netname
 			FROM nodes n
 			JOIN networks net ON net.id = n.netid
 			WHERE netdev=0 ORDER BY name ASC');
 	}
 
-	function GetNetDevIPs($id) {
+	public function GetNetDevIPs($id) {
 		return $this->DB->GetAll('SELECT n.id, n.name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, 
 			ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, access, info, port, n.netid, net.name AS netname
 			FROM vnodes n
@@ -4508,7 +4536,7 @@ class LMS {
 	 *   Request Tracker (Helpdesk)
 	 */
 
-	function GetQueue($id) {
+	public function GetQueue($id) {
 		if ($queue = $this->DB->GetRow('SELECT * FROM rtqueues WHERE id=?', array($id))) {
 			$users = $this->DB->GetAll('SELECT id, name FROM users WHERE deleted=0');
 			foreach ($users as $user) {
@@ -4521,7 +4549,7 @@ class LMS {
 			return NULL;
 	}
 
-	function GetQueueContents($ids, $order = 'createtime,desc', $state = NULL, $owner = 0, $catids = NULL) {
+	public function GetQueueContents($ids, $order = 'createtime,desc', $state = NULL, $owner = 0, $catids = NULL) {
 		if (!$order)
 			$order = 'createtime,desc';
 
@@ -4606,7 +4634,7 @@ class LMS {
 		return $result;
 	}
 
-	function GetUserRightsRT($user, $queue, $ticket = NULL) {
+	public function GetUserRightsRT($user, $queue, $ticket = NULL) {
 		if (!$queue && $ticket) {
 			if (!($queue = $this->GetCache('rttickets', $ticket, 'queueid')))
 				$queue = $this->DB->GetOne('SELECT queueid FROM rttickets WHERE id=?', array($ticket));
@@ -4620,10 +4648,10 @@ class LMS {
 		return ($rights ? $rights : 0);
 	}
 
-	function GetQueueList($stats = true) {
+	public function GetQueueList($stats = true) {
 		if ($result = $this->DB->GetAll('SELECT q.id, name, email, description 
 				FROM rtqueues q'
-				. (!check_conf('privileges.superuser') ? ' JOIN rtrights r ON r.queueid = q.id
+				. (!ConfigHelper::checkConfig('privileges.superuser') ? ' JOIN rtrights r ON r.queueid = q.id
 					WHERE r.rights <> 0 AND r.userid = ?' : '') . ' ORDER BY name', array($this->AUTH->id))) {
 			if ($stats)
 				foreach ($result as $idx => $row)
@@ -4633,29 +4661,29 @@ class LMS {
 		return $result;
 	}
 
-	function GetQueueNames() {
+	public function GetQueueNames() {
 		return $this->DB->GetAll('SELECT q.id, name FROM rtqueues q'
-			. (!check_conf('privileges.superuser') ? ' JOIN rtrights r ON r.queueid = q.id 
+			. (!ConfigHelper::checkConfig('privileges.superuser') ? ' JOIN rtrights r ON r.queueid = q.id 
 				WHERE r.rights <> 0 AND r.userid = ?' : '') . ' ORDER BY name', array($this->AUTH->id));
 	}
 
-	function QueueExists($id) {
+	public function QueueExists($id) {
 		return ($this->DB->GetOne('SELECT * FROM rtqueues WHERE id=?', array($id)) ? TRUE : FALSE);
 	}
 
-	function GetQueueIdByName($queue) {
+	public function GetQueueIdByName($queue) {
 		return $this->DB->GetOne('SELECT id FROM rtqueues WHERE name=?', array($queue));
 	}
 
-	function GetQueueName($id) {
+	public function GetQueueName($id) {
 		return $this->DB->GetOne('SELECT name FROM rtqueues WHERE id=?', array($id));
 	}
 
-	function GetQueueEmail($id) {
+	public function GetQueueEmail($id) {
 		return $this->DB->GetOne('SELECT email FROM rtqueues WHERE id=?', array($id));
 	}
 
-	function GetQueueStats($id) {
+	public function GetQueueStats($id) {
 		if ($result = $this->DB->GetAll('SELECT state, COUNT(state) AS scount 
 			FROM rttickets WHERE queueid = ? GROUP BY state ORDER BY state ASC', array($id))) {
 			foreach ($result as $row)
@@ -4669,7 +4697,7 @@ class LMS {
 		return $stats;
 	}
 
-	function GetCategory($id) {
+	public function GetCategory($id) {
 		if ($category = $this->DB->GetRow('SELECT * FROM rtcategories WHERE id=?', array($id))) {
 			$users = $this->DB->GetAll('SELECT id, name FROM users WHERE deleted=0 ORDER BY login asc');
 			foreach ($users as $user) {
@@ -4682,7 +4710,7 @@ class LMS {
 			return NULL;
 	}
 
-	function GetUserRightsToCategory($user, $category, $ticket = NULL) {
+	public function GetUserRightsToCategory($user, $category, $ticket = NULL) {
 		if (!$category && $ticket) {
 			if (!($category = $this->GetCache('rttickets', $ticket, 'categoryid')))
 				$category = $this->DB->GetCol('SELECT categoryid FROM rtticketcategories WHERE ticketid=?', array($ticket));
@@ -4698,7 +4726,7 @@ class LMS {
 		return ($owner === '1');
 	}
 
-	function GetCategoryList($stats = true) {
+	public function GetCategoryList($stats = true) {
 		if ($result = $this->DB->GetAll('SELECT id, name, description 
 				FROM rtcategories ORDER BY name')) {
 			if ($stats)
@@ -4713,7 +4741,7 @@ class LMS {
 		return $result;
 	}
 
-	function GetCategoryStats($id) {
+	public function GetCategoryStats($id) {
 		if ($result = $this->DB->GetAll('SELECT state, COUNT(state) AS scount 
 			FROM rttickets LEFT JOIN rtticketcategories ON rttickets.id = rtticketcategories.ticketid 
 			WHERE rtticketcategories.categoryid = ? GROUP BY state ORDER BY state ASC', array($id))) {
@@ -4729,15 +4757,15 @@ class LMS {
 		return $stats;
 	}
 
-	function CategoryExists($id) {
+	public function CategoryExists($id) {
 		return ($this->DB->GetOne('SELECT * FROM rtcategories WHERE id=?', array($id)) ? TRUE : FALSE);
 	}
 
-	function GetCategoryIdByName($category) {
+	public function GetCategoryIdByName($category) {
 		return $this->DB->GetOne('SELECT id FROM rtcategories WHERE name=?', array($category));
 	}
 
-	function GetCategoryListByUser($userid = NULL) {
+	public function GetCategoryListByUser($userid = NULL) {
 		return $this->DB->GetAll('SELECT c.id, name
 		    FROM rtcategories c
 		    LEFT JOIN rtcategoryusers cu 
@@ -4746,40 +4774,40 @@ class LMS {
 						. ' ORDER BY name');
 	}
 
-	function RTStats() {
+	public function RTStats() {
 		$categories = $this->GetCategoryListByUser($this->AUTH->id);
 		if (empty($categories))
 			return NULL;
 		foreach ($categories as $category)
 			$catids[] = $category['id'];
-		return $this->DB->GetAll('SELECT tc.categoryid AS id, c.name,
+		return $this->DB->GetAll('SELECT c.id AS id, c.name,
 				    COUNT(CASE state WHEN ' . RT_NEW . ' THEN 1 END) AS new,
 				    COUNT(CASE state WHEN ' . RT_OPEN . ' THEN 1 END) AS opened,
 				    COUNT(CASE state WHEN ' . RT_RESOLVED . ' THEN 1 END) AS resolved,
 				    COUNT(CASE state WHEN ' . RT_DEAD . ' THEN 1 END) AS dead,
 				    COUNT(CASE WHEN state != ' . RT_RESOLVED . ' THEN 1 END) AS unresolved
-				    FROM rttickets t
-				    LEFT JOIN rtticketcategories tc ON t.id = tc.ticketid
-				    LEFT JOIN rtcategories c ON c.id = tc.categoryid
-				    WHERE tc.categoryid IN (' . implode(',', $catids) . ')
-				    GROUP BY tc.categoryid, c.name
+				    FROM rtcategories c  
+				    LEFT JOIN rtticketcategories tc ON c.id = tc.categoryid
+				    LEFT JOIN rttickets t ON t.id = tc.ticketid
+				    WHERE c.id IN (' . implode(',', $catids) . ')
+				    GROUP BY c.id, c.name
 				    ORDER BY c.name');
 	}
 
-	function GetQueueByTicketId($id) {
+	public function GetQueueByTicketId($id) {
 		if ($queueid = $this->DB->GetOne('SELECT queueid FROM rttickets WHERE id=?', array($id)))
 			return $this->DB->GetRow('SELECT * FROM rtqueues WHERE id=?', array($queueid));
 		else
 			return NULL;
 	}
 
-	function TicketExists($id) {
+	public function TicketExists($id) {
 		$ticket = $this->DB->GetOne('SELECT * FROM rttickets WHERE id = ?', array($id));
 		$this->cache['rttickets'][$id] = $ticket;
 		return $ticket;
 	}
 
-	function TicketAdd($ticket, $files = NULL) {
+	public function TicketAdd($ticket, $files = NULL) {
 		$ts = time();
 		$this->DB->Execute('INSERT INTO rttickets (queueid, customerid, requestor, subject, 
 				state, owner, createtime, cause, creatorid)
@@ -4807,10 +4835,10 @@ class LMS {
 			$this->DB->Execute('INSERT INTO rtticketcategories (ticketid, categoryid) 
 				VALUES (?, ?)', array($id, $catid));
 
-		if (!empty($files) && $this->CONFIG['rt']['mail_dir']) {
+		if (!empty($files) && ConfigHelper::getConfig('rt.mail_dir')) {
 			$msgid = $this->DB->GetLastInsertID('rtmessages');
-			$dir = $this->CONFIG['rt']['mail_dir'] . sprintf('/%06d/%06d', $id, $msgid);
-			@mkdir($this->CONFIG['rt']['mail_dir'] . sprintf('/%06d', $id), 0700);
+			$dir = ConfigHelper::getConfig('rt.mail_dir') . sprintf('/%06d/%06d', $id, $msgid);
+			@mkdir(ConfigHelper::getConfig('rt.mail_dir') . sprintf('/%06d', $id), 0700);
 			@mkdir($dir, 0700);
 			foreach ($files as $file) {
 				$newfile = $dir . '/' . $file['name'];
@@ -4823,7 +4851,7 @@ class LMS {
 		return $id;
 	}
 
-	function GetTicketContents($id) {
+	public function GetTicketContents($id) {
 		global $RT_STATES;
 
 		$ticket = $this->DB->GetRow('SELECT t.id AS ticketid, t.queueid, rtqueues.name AS queuename, 
@@ -4872,7 +4900,7 @@ class LMS {
 		return $ticket;
 	}
 
-	function SetTicketState($ticket, $state) {
+	public function SetTicketState($ticket, $state) {
 		($state == 2 ? $resolvetime = time() : $resolvetime = 0);
 
 		if ($this->DB->GetOne('SELECT owner FROM rttickets WHERE id=?', array($ticket)))
@@ -4881,7 +4909,7 @@ class LMS {
 			$this->DB->Execute('UPDATE rttickets SET state=?, owner=?, resolvetime=? WHERE id=?', array($state, $this->AUTH->id, $resolvetime, $ticket));
 	}
 
-	function GetMessage($id) {
+	public function GetMessage($id) {
 		if ($message = $this->DB->GetRow('SELECT * FROM rtmessages WHERE id=?', array($id)))
 			$message['attachments'] = $this->DB->GetAll('SELECT * FROM rtattachments WHERE messageid = ?', array($id));
 		return $message;
@@ -4891,11 +4919,11 @@ class LMS {
 	 * Konfiguracja LMS-UI
 	 */
 
-	function GetConfigOptionId($var, $section) {
+	public function GetConfigOptionId($var, $section) {
 		return $this->DB->GetOne('SELECT id FROM uiconfig WHERE section = ? AND var = ?', array($section, $var));
 	}
 
-	function CheckOption($var, $value) {
+	public function CheckOption($var, $value) {
 		switch ($var) {
 			case 'accountlist_pagelimit':
 			case 'ticketlist_pagelimit':
@@ -4946,7 +4974,7 @@ class LMS {
 	 *  Miscalenous
 	 */
 
-	function GetHostingLimits($customerid) {
+	public function GetHostingLimits($customerid) {
 		$result = array('alias_limit' => 0,
 				'domain_limit' => 0,
 				'sh_limit' => 0,
@@ -4980,7 +5008,7 @@ class LMS {
 		return $result;
 	}
 
-	function GetRemoteMACs($host = '127.0.0.1', $port = 1029) {
+	public function GetRemoteMACs($host = '127.0.0.1', $port = 1029) {
 		$inputbuf = '';
 		$result = array();
 
@@ -5005,10 +5033,10 @@ class LMS {
 		return $result;
 	}
 
-	function GetMACs() {
+	public function GetMACs() {
 		$result = array();
-		if ($this->CONFIG['phpui']['arp_table_backend'] != '') {
-			exec($this->CONFIG['phpui']['arp_table_backend'], $result);
+		if (ConfigHelper::getConfig('phpui.arp_table_backend') != '') {
+			exec(ConfigHelper::getConfig('phpui.arp_table_backend'), $result);
 			foreach ($result as $arpline) {
 				list($ip, $mac) = explode(' ', $arpline);
 				$result['mac'][] = $mac;
@@ -5057,7 +5085,7 @@ class LMS {
 		return $result;
 	}
 
-	function GetUniqueInstallationID() {
+	public function GetUniqueInstallationID() {
 		if (!($uiid = $this->DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype=?', array('unique_installation_id')))) {
 			list($usec, $sec) = explode(' ', microtime());
 			$uiid = md5(uniqid(rand(), true)) . sprintf('%09x', $sec) . sprintf('%07x', ($usec * 10000000));
@@ -5066,7 +5094,7 @@ class LMS {
 		return $uiid;
 	}
 
-	function CheckUpdates($force = FALSE) {
+	public function CheckUpdates($force = FALSE) {
 		$uiid = $this->GetUniqueInstallationID();
 		$time = $this->DB->GetOne('SELECT ?NOW?');
 		$content = FALSE;
@@ -5074,7 +5102,7 @@ class LMS {
 			$lastcheck = 0;
 		elseif (!($lastcheck = $this->DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype=?', array('last_check_for_updates_timestamp'))))
 			$lastcheck = 0;
-		if ($lastcheck + $this->CONFIG['phpui']['check_for_updates_period'] < $time) {
+		if ($lastcheck + ConfigHelper::getConfig('phpui.check_for_updates_period') < $time) {
 			list($v, ) = explode(' ', $this->_version);
 
 			if ($content = fetch_url('http://register.lms.org.pl/update.php?uiid=' . $uiid . '&v=' . $v)) {
@@ -5098,7 +5126,7 @@ class LMS {
 		return $content;
 	}
 
-	function GetRegisterData() {
+	public function GetRegisterData() {
 		if ($regdata = $this->DB->GetAll('SELECT * FROM dbinfo WHERE keytype LIKE ?', array('regdata_%'))) {
 			foreach ($regdata as $regline)
 				$registerdata[str_replace('regdata_', '', $regline['keytype'])] = $regline['keyvalue'];
@@ -5107,7 +5135,7 @@ class LMS {
 		return NULL;
 	}
 
-	function UpdateRegisterData($name, $url, $hidden) {
+	public function UpdateRegisterData($name, $url, $hidden) {
 		$name = rawurlencode($name);
 		$url = rawurlencode($url);
 		$uiid = $this->GetUniqueInstallationID();
@@ -5128,21 +5156,43 @@ class LMS {
 		return FALSE;
 	}
 
-	function SendMail($recipients, $headers, $body, $files = NULL) {
+	public function SendMail($recipients, $headers, $body, $files = NULL, $host = null, $port = null, $user = null, $pass = null, $auth = null) {
 		@include_once('Mail.php');
 		if (!class_exists('Mail'))
 			return trans('Can\'t send message. PEAR::Mail not found!');
 
-		$params['host'] = $this->CONFIG['mail']['smtp_host'];
-		$params['port'] = $this->CONFIG['mail']['smtp_port'];
+                if (!$host) {
+                    $params['host'] = ConfigHelper::getConfig('mail.smtp_host');
+                } else {
+                    $params['host'] = $host;
+                }
+                
+                if (!$port) {
+                    $params['port'] = ConfigHelper::getConfig('mail.smtp_port');
+                } else {
+                    $params['port'] = $port;
+                }
 
-		if (!empty($this->CONFIG['mail']['smtp_username'])) {
-			$params['auth'] = !empty($this->CONFIG['mail']['smtp_auth_type']) ? $this->CONFIG['mail']['smtp_auth_type'] : true;
-			$params['username'] = $this->CONFIG['mail']['smtp_username'];
-			$params['password'] = $this->CONFIG['mail']['smtp_password'];
-		}
-		else
+		$smtp_username = ConfigHelper::getConfig('mail.smtp_username');
+		if (!empty($smtp_username) || $user) {
+                        if (!$auth) {
+                            $params['auth'] = ConfigHelper::getConfig('mail.smtp_auth_type', true);
+                        } else {
+                            $params['auth'] = $auth;
+                        }
+                        if (!$user) {
+                            $params['username'] = ConfigHelper::getConfig('mail.smtp_username');
+                        } else {
+                            $params['username'] = $user;
+                        }
+                        if (!$pass) {
+                            $params['password'] = ConfigHelper::getConfig('mail.smtp_password');
+                        } else {
+                            $params['password'] = $pass;
+                        }
+		} else {
 			$params['auth'] = false;
+                }
 
 		$headers['X-Mailer'] = 'LMS-' . $this->_version;
 		if (!empty($_SERVER['REMOTE_ADDR']))
@@ -5152,8 +5202,9 @@ class LMS {
 		$headers['Mime-Version'] = '1.0';
 		$headers['Subject'] = qp_encode($headers['Subject']);
 
-		if (!empty($this->CONFIG['mail']['debug_email'])) {
-			$recipients = $this->CONFIG['mail']['debug_email'];
+		$debug_email = ConfigHelper::getConfig('mail.debug_email');
+		if (!empty($debug_email)) {
+			$recipients = ConfigHelper::getConfig('mail.debug_email');
 			$headers['To'] = '<' . $recipients . '>';
 		}
 
@@ -5195,18 +5246,19 @@ class LMS {
 			return MSG_SENT;
 	}
 
-	function SendSMS($number, $message, $messageid = 0) {
+	public function SendSMS($number, $message, $messageid = 0, $script_service = null) {
 		$msg_len = mb_strlen($message);
 
 		if (!$msg_len) {
 			return trans('SMS message is empty!');
 		}
 
-		if (!empty($this->CONFIG['sms']['debug_phone'])) {
-			$number = $this->CONFIG['sms']['debug_phone'];
+		$debug_phone = ConfigHelper::getConfig('sms.debug_phone');
+		if (!empty($debug_phone)) {
+			$number = ConfigHelper::getConfig('sms.debug_phone');
 		}
 
-		$prefix = !empty($this->CONFIG['sms']['prefix']) ? $this->CONFIG['sms']['prefix'] : '';
+		$prefix = ConfigHelper::getConfig('sms.prefix', '');
 		$number = preg_replace('/[^0-9]/', '', $number);
 		$number = preg_replace('/^0+/', '', $number);
 
@@ -5221,9 +5273,10 @@ class LMS {
 
 		$message = preg_replace("/\r/", "", $message);
 
-		if (!empty($this->CONFIG['sms']['max_length']) && intval($this->CONFIG['sms']['max_length']) > 6
-			&& $msg_len > intval($this->CONFIG['sms']['max_length']))
-			$message = mb_substr($message, 0, $this->CONFIG['sms']['max_length'] - 6) . ' [...]';
+		$max_length = ConfigHelper::getConfig('sms.max_length');
+		if (!empty($max_length) && intval($max_length) > 6
+			&& $msg_len > intval($max_length))
+			$message = mb_substr($message, 0, $max_length - 6) . ' [...]';
 
 		$data = array(
 				'number' => $number,
@@ -5242,22 +5295,24 @@ class LMS {
 		$message = $data['message'];
 		$messageid = $data['messageid'];
 
-		if (empty($this->CONFIG['sms']['service']))
+		$service = ConfigHelper::getConfig('sms.service');
+                if ($script_service) {
+                        $service = $script_service;
+                } elseif (empty($service))
 			return trans('SMS "service" not set!');
-		else
-			$service = $this->CONFIG['sms']['service'];
 
 		if (in_array($service, array('smscenter', 'serwersms', 'smsapi'))) {
 			if (!function_exists('curl_init'))
 				return trans('Curl extension not loaded!');
-			if (empty($this->CONFIG['sms']['username']))
+			$username = ConfigHelper::getConfig('sms.username');
+			if (empty($username))
 				return trans('SMSCenter username not set!');
-			if (empty($this->CONFIG['sms']['password']))
+			$password = ConfigHelper::getConfig('sms.password');
+			if (empty($password))
 				return trans('SMSCenter username not set!');
-			if (empty($this->CONFIG['sms']['from']))
+			$from = ConfigHelper::getConfig('sms.from');
+			if (empty($from))
 				return trans('SMS "from" not set!');
-			else
-				$from = $this->CONFIG['sms']['from'];
 
 			if (strlen($number) > 16 || strlen($number) < 4)
 				return trans('Wrong phone number format!');
@@ -5272,12 +5327,12 @@ class LMS {
 				else
 					return trans('SMS Message too long!');
 
-				$type = !empty($this->CONFIG['sms']['smscenter_type']) ? $this->CONFIG['sms']['smscenter_type'] : 'dynamic';
+				$type = ConfigHelper::getConfig('sms.smscenter_type', 'dynamic');
 				$message .= ($type == 'static') ? "\n\n" . $from : '';
 
 				$args = array(
-						'user' => $this->CONFIG['sms']['username'],
-						'pass' => $this->CONFIG['sms']['password'],
+						'user' => ConfigHelper::getConfig('sms.username'),
+						'pass' => ConfigHelper::getConfig('sms.password'),
 						'type' => $type_sms,
 						'number' => $number,
 						'text' => $message,
@@ -5339,7 +5394,7 @@ class LMS {
 				}
 				break;
 			case 'smstools':
-				$dir = !empty($this->CONFIG['sms']['smstools_outdir']) ? $this->CONFIG['sms']['smstools_outdir'] : '/var/spool/sms/outgoing';
+				$dir = ConfigHelper::getConfig('sms.smstools_outdir', '/var/spool/sms/outgoing');
 
 				if (!file_exists($dir))
 					return trans('SMSTools outgoing directory not exists ($a)!', $dir);
@@ -5368,15 +5423,16 @@ class LMS {
 			case 'serwersms':
 				$args = array(
 					'akcja' => 'wyslij_sms',
-					'login' => $this->CONFIG['sms']['username'],
-					'haslo' => $this->CONFIG['sms']['password'],
+					'login' => ConfigHelper::getConfig('sms.username'),
+					'haslo' => ConfigHelper::getConfig('sms.password'),
 					'numer' => $number,
 					'wiadomosc' => $message,
 					'nadawca' => $from,
 				);
 				if ($messageid)
 					$args['usmsid'] = $messageid;
-				if (!empty($this->CONFIG['sms']['fast']))
+				$fast = ConfigHelper::getConfig('sms.fast');
+				if (!empty($fast))
 					$args['speed'] = 1;
 
 				$encodedargs = http_build_query($args);
@@ -5413,13 +5469,14 @@ class LMS {
 				break;
 			case 'smsapi':
 				$args = array(
-					'username' => $this->CONFIG['sms']['username'],
-					'password' => md5($this->CONFIG['sms']['password']),
+					'username' => ConfigHelper::getConfig('sms.username'),
+					'password' => md5(ConfigHelper::getConfig('sms.password')),
 					'to' => $number,
 					'message' => $message,
 					'from' => !empty($from) ? $from : 'ECO',
 				);
-				if (!empty($this->CONFIG['sms']['fast']))
+				$fast = ConfigHelper::getConfig('sms.fast');
+				if (!empty($fast))
 					$args['fast'] = 1;
 				if ($messageid)
 					$args['idx'] = $messageid;
@@ -5455,7 +5512,7 @@ class LMS {
 		}
 	}
 
-	function GetMessages($customerid, $limit = NULL) {
+	public function GetMessages($customerid, $limit = NULL) {
 		return $this->DB->GetAll('SELECT i.messageid AS id, i.status, i.error,
 		        i.destination, m.subject, m.type, m.cdate
 			FROM messageitems i
@@ -5465,7 +5522,7 @@ class LMS {
 						. ($limit ? ' LIMIT ' . $limit : ''), array($customerid));
 	}
 
-	function GetDocuments($customerid = NULL, $limit = NULL) {
+	public function GetDocuments($customerid = NULL, $limit = NULL) {
 		if (!$customerid)
 			return NULL;
 
@@ -5489,7 +5546,7 @@ class LMS {
 		}
 	}
 
-	function GetTaxes($from = NULL, $to = NULL) {
+	public function GetTaxes($from = NULL, $to = NULL) {
 		$from = $from ? $from : mktime(0, 0, 0);
 		$to = $to ? $to : mktime(23, 59, 59);
 
@@ -5499,7 +5556,7 @@ class LMS {
 			ORDER BY value', 'id', array($from, $to));
 	}
 
-	function EventSearch($search, $order = 'date,asc', $simple = false) {
+	public function EventSearch($search, $order = 'date,asc', $simple = false) {
 		list($order, $direction) = sscanf($order, '%[^,],%s');
 
 		(strtolower($direction) != 'desc') ? $direction = 'ASC' : $direction = 'DESC';
@@ -5546,7 +5603,7 @@ class LMS {
 		}
 	}
 
-	function GetNumberPlans($doctype = NULL, $cdate = NULL, $division = NULL, $next = true) {
+	public function GetNumberPlans($doctype = NULL, $cdate = NULL, $division = NULL, $next = true) {
 		if (is_array($doctype))
 			$where[] = 'doctype IN (' . implode(',', $doctype) . ')';
 		else if ($doctype)
@@ -5629,7 +5686,7 @@ class LMS {
 		return $list;
 	}
 
-	function GetNewDocumentNumber($doctype = NULL, $planid = NULL, $cdate = NULL) {
+	public function GetNewDocumentNumber($doctype = NULL, $planid = NULL, $cdate = NULL) {
 		if ($planid)
 			$period = $this->DB->GetOne('SELECT period FROM numberplans WHERE id=?', array($planid));
 		else
@@ -5698,7 +5755,7 @@ class LMS {
 		return $number ? ++$number : 1;
 	}
 
-	function DocumentExists($number, $doctype = NULL, $planid = 0, $cdate = NULL) {
+	public function DocumentExists($number, $doctype = NULL, $planid = 0, $cdate = NULL) {
 		if ($planid)
 			$period = $this->DB->GetOne('SELECT period FROM numberplans WHERE id=?', array($planid));
 
@@ -5759,19 +5816,19 @@ class LMS {
 				WHERE cdate >= ? AND cdate < ? AND type = ? AND number = ? AND numberplanid = ?', array($start, $end, $doctype, $number, $planid)) ? TRUE : FALSE;
 	}
 
-	function GetCountryStates() {
+	public function GetCountryStates() {
 		return $this->DB->GetAllByKey('SELECT id, name FROM states ORDER BY name', 'id');
 	}
 
-	function GetCountries() {
+	public function GetCountries() {
 		return $this->DB->GetAllByKey('SELECT id, name FROM countries ORDER BY name', 'id');
 	}
 
-	function GetCountryName($id) {
+	public function GetCountryName($id) {
 		return $this->DB->GetOne('SELECT name FROM countries WHERE id = ?', array($id));
 	}
 
-	function UpdateCountryState($zip, $stateid) {
+	public function UpdateCountryState($zip, $stateid) {
 		if (empty($zip) || empty($stateid)) {
 			return;
 		}
@@ -5802,11 +5859,11 @@ class LMS {
 		}
 	}
 
-	function GetNAStypes() {
+	public function GetNAStypes() {
 		return $this->DB->GetAllByKey('SELECT id, name FROM nastypes ORDER BY name', 'id');
 	}
 
-	function CalcAt($period, $date) {
+	public function CalcAt($period, $date) {
 		$m = date('n', $date);
 
 		if ($period == YEARLY) {
@@ -5836,7 +5893,7 @@ class LMS {
 	/**
 	 * VoIP functions
 	 */
-	function GetVoipAccountList($order = 'login,asc', $search = NULL, $sqlskey = 'AND') {
+	public function GetVoipAccountList($order = 'login,asc', $search = NULL, $sqlskey = 'AND') {
 		if ($order == '')
 			$order = 'login,asc';
 
@@ -5902,7 +5959,7 @@ class LMS {
 		return $voipaccountlist;
 	}
 
-	function VoipAccountSet($id, $access = -1) {
+	public function VoipAccountSet($id, $access = -1) {
 		if ($access != -1) {
 			if ($access)
 				return $this->DB->Execute('UPDATE voipaccounts SET access = 1 WHERE id = ?
@@ -5919,7 +5976,7 @@ class LMS {
 						AND status = 3)', array($id));
 	}
 
-	function VoipAccountSetU($id, $access = FALSE) {
+	public function VoipAccountSetU($id, $access = FALSE) {
 		if ($access) {
 			if ($this->DB->GetOne('SELECT status FROM customers WHERE id = ?', array($id)) == 3) {
 				return $this->DB->Execute('UPDATE voipaccounts SET access=1 WHERE ownerid=?', array($id));
@@ -5929,7 +5986,7 @@ class LMS {
 			return $this->DB->Execute('UPDATE voipaccounts SET access=0 WHERE ownerid=?', array($id));
 	}
 
-	function VoipAccountAdd($voipaccountdata) {
+	public function VoipAccountAdd($voipaccountdata) {
 		if ($this->DB->Execute('INSERT INTO voipaccounts (ownerid, login, passwd, phone, creatorid, creationdate, access)
 					VALUES (?, ?, ?, ?, ?, ?NOW?, ?)', array($voipaccountdata['ownerid'],
 						$voipaccountdata['login'],
@@ -5945,7 +6002,7 @@ class LMS {
 			return FALSE;
 	}
 
-	function VoipAccountExists($id) {
+	public function VoipAccountExists($id) {
 		return ($this->DB->GetOne('SELECT v.id FROM voipaccounts v
 				WHERE v.id = ? AND NOT EXISTS (
 		            		SELECT 1 FROM customerassignments a
@@ -5953,11 +6010,11 @@ class LMS {
 					WHERE e.userid = lms_current_user() AND a.customerid = v.ownerid)', array($id)) ? TRUE : FALSE);
 	}
 
-	function GetVoipAccountOwner($id) {
+	public function GetVoipAccountOwner($id) {
 		return $this->DB->GetOne('SELECT ownerid FROM voipaccounts WHERE id=?', array($id));
 	}
 
-	function GetVoipAccount($id) {
+	public function GetVoipAccount($id) {
 		if ($result = $this->DB->GetRow('SELECT id, ownerid, login, passwd, phone,
 					creationdate, moddate, creatorid, modid, access
 					FROM voipaccounts WHERE id = ?', array($id))) {
@@ -5972,25 +6029,25 @@ class LMS {
 			return FALSE;
 	}
 
-	function GetVoipAccountIDByLogin($login) {
+	public function GetVoipAccountIDByLogin($login) {
 		return $this->DB->GetAll('SELECT id FROM voipaccounts WHERE login=?', array($login));
 	}
 
-	function GetVoipAccountIDByPhone($phone) {
+	public function GetVoipAccountIDByPhone($phone) {
 		return $this->DB->GetOne('SELECT id FROM voipaccounts WHERE phone=?', array($phone));
 	}
 
-	function GetVoipAccountLogin($id) {
+	public function GetVoipAccountLogin($id) {
 		return $this->DB->GetOne('SELECT login FROM voipaccounts WHERE id=?', array($id));
 	}
 
-	function DeleteVoipAccount($id) {
+	public function DeleteVoipAccount($id) {
 		$this->DB->BeginTrans();
 		$this->DB->Execute('DELETE FROM voipaccounts WHERE id = ?', array($id));
 		$this->DB->CommitTrans();
 	}
 
-	function VoipAccountUpdate($voipaccountdata) {
+	public function VoipAccountUpdate($voipaccountdata) {
 		$this->DB->Execute('UPDATE voipaccounts SET login=?, passwd=?, phone=?, moddate=?NOW?, access=?, 
 				modid=?, ownerid=? WHERE id=?', array($voipaccountdata['login'],
 				$voipaccountdata['passwd'],
@@ -6002,7 +6059,7 @@ class LMS {
 		));
 	}
 
-	function GetCustomerVoipAccounts($id) {
+	public function GetCustomerVoipAccounts($id) {
 		if ($result['accounts'] = $this->DB->GetAll('SELECT id, login, passwd, phone, ownerid, access
 				FROM voipaccounts WHERE ownerid=? 
 				ORDER BY login ASC', array($id))) {
@@ -6011,7 +6068,7 @@ class LMS {
 		return $result;
 	}
 
-	function GetConfigSections() {
+	public function GetConfigSections() {
 		$sections = $this->DB->GetCol('SELECT DISTINCT section FROM uiconfig ORDER BY section');
 		$sections = array_unique(array_merge($sections,
 			array('phpui', 'finances', 'invoices', 'receipts', 'mail', 'sms', 'zones', 'tarifftypes')));
@@ -6019,7 +6076,7 @@ class LMS {
 		return $sections;
 	}
 
-	function GetNodeSessions($nodeid) {
+	public function GetNodeSessions($nodeid) {
 		$nodesessions = $this->DB->GetAll('SELECT INET_NTOA(ipaddr) AS ipaddr, mac, start, stop, download, upload
 			FROM nodesessions WHERE nodeid = ? ORDER BY stop DESC LIMIT 10', array($nodeid));
 		if (!empty($nodesessions))
@@ -6033,16 +6090,17 @@ class LMS {
 		return $nodesessions;
 	}
 
-	function AddMessageTemplate($type, $name, $message) {
+	public function AddMessageTemplate($type, $name, $subject, $message) {
 		global $SYSLOG_RESOURCE_KEYS;
 
 		$args = array(
 			'type' => $type,
 			'name' => $name,
+			'subject' => $subject,
 			'message' => $message,
 		);
-		if ($this->DB->Execute('INSERT INTO templates (type, name, message)
-			VALUES (?, ?, ?)', array_values($args))) {
+		if ($this->DB->Execute('INSERT INTO templates (type, name, subject, message)
+			VALUES (?, ?, ?, ?)', array_values($args))) {
 			$id = $this->DB->GetLastInsertID('templates');
 			if ($this->SYSLOG) {
 				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TMPL]] = $id;
@@ -6054,21 +6112,22 @@ class LMS {
 		return false;
 	}
 
-	function UpdateMessageTemplate($id, $type, $name, $message) {
+	public function UpdateMessageTemplate($id, $type, $name, $subject, $message) {
 		global $SYSLOG_RESOURCE_KEYS;
 
 		$args = array(
 			'type' => $type,
 			'name' => $name,
+			'subject' => $subject,
 			'message' => $message,
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TMPL] => intval($id),
 		);
 		if (empty($name)) {
 			unset($args['name']);
-			$res = $this->DB->Execute('UPDATE templates SET type = ?, message = ?
+			$res = $this->DB->Execute('UPDATE templates SET type = ?, subject = ?, message = ?
 				WHERE id = ?', array_values($args));
 		} else
-			$res = $this->DB->Execute('UPDATE templates SET type = ?, name = ?, message = ?
+			$res = $this->DB->Execute('UPDATE templates SET type = ?, name = ?, subject = ?, message = ?
 				WHERE id = ?', array_values($args));
 		if ($res && $this->SYSLOG) {
 			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TMPL]] = $id;
@@ -6078,7 +6137,7 @@ class LMS {
 		return $res;
 	}
 
-	function GetMessageTemplates($type) {
+	public function GetMessageTemplates($type) {
 		return $this->DB->GetAll('SELECT id, name FROM templates
 			WHERE type = ? ORDER BY name', array(intval($type)));
 	}

@@ -2,40 +2,18 @@
 #ifndef _LMSD_H_
 #define _LMSD_H_
 
+#include "db.h"
 #include "util.h"
 #include "cron/cron.h"
 #include "config/config.h"
 
-#ifdef USE_PGSQL
-#include "dbdrivers/pgsql/db.h"
-#endif
-#ifdef USE_MYSQL
-#include "dbdrivers/mysql/db.h"
-#endif
-
-#define APIVERSION 5
+#define APIVERSION 6
 #define PROGNAME "lmsd"
 
 struct global
 {
 	int api_version;
-	ConnHandle *conn;
-
-	// db functions
-	ConnHandle * (*db_connect)(const char *, const char *, const char *, const char *, int, int);
-	int (*db_disconnect)(ConnHandle *);
-	QueryHandle * (*db_query)(ConnHandle *, char *);
-	QueryHandle * (*db_pquery)(ConnHandle *, char *, ...);
-	void (*db_free)(QueryHandle **);
-	int (*db_exec)(ConnHandle *, char *);
-	int (*db_pexec)(ConnHandle *, char *, ...);
-	int (*db_last_insert_id)(ConnHandle *, const char *);
-	int (*db_begin)(ConnHandle *);
-	int (*db_commit)(ConnHandle *);
-	int (*db_abort)(ConnHandle *);
-	int (*db_nrows)(QueryHandle *);
-	int (*db_ncols)(QueryHandle *);
-	char * (*db_get_data)(QueryHandle *, int, const char *);
+	struct dbs * db;
 
 	// config  functions
 	char * (*config_getstring)(Config *, char *, char *, char *);
@@ -49,6 +27,7 @@ struct global
 	char * (*str_concat)(const char *, const char *);
 	char * (*str_upc)(const char *);
 	char * (*str_lwc)(const char *);
+	char * (*va_list_join)(int cnt, char * delim, va_list vl);
 };
 
 struct lmsd_module

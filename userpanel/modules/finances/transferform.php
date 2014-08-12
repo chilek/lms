@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-global $LMS,$CONFIG,$SESSION;
+global $LMS,$SESSION;
 
 $customer = $LMS->GetCustomer($SESSION->id);
 $division = $LMS->DB->GetRow('SELECT account, name, address, zip, city
@@ -38,15 +38,17 @@ if ($division) {
 	$ISP1_DO = $division['name'];
 	$ISP2_DO = trim($division['zip'].' '.$division['city'].' '.$division['address']);
 } else {
-	if (!empty($CONFIG['finances']['line_1']))
-		$ISP1_DO = $CONFIG['finances']['line_1'];
-	if (!empty($CONFIG['finances']['line_2']))
-		$ISP2_DO = $CONFIG['finances']['line_2'];
+	$line_1 = ConfigHelper::getConfig('finances.line_1');
+	if (!empty($line_1))
+		$ISP1_DO = $line_1;
+	$line_2 = ConfigHelper::getConfig('finances.line_2');
+	if (!empty($line_2))
+		$ISP2_DO = $line_2;
 }
 
-$USER_T1 = (!isset($CONFIG['finances']['pay_title']) ? 'Abonament - ID:%CID% %LongCID%' : $CONFIG['finances']['pay_title']);
+$USER_T1 = ConfigHelper::getConfig('finances.pay_title', 'Abonament - ID:%CID% %LongCID%');
 $CURR = 'PLN';
-$SHORT_TO_WORDS = check_conf('phpui.to_words_short_version');
+$SHORT_TO_WORDS = ConfigHelper::checkConfig('phpui.to_words_short_version');
 
 $Before = array ("%CID%", "%LongCID%");
 $After = array ($customer['id'], sprintf('%04d',$customer['id']));

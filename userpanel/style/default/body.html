@@ -1,3 +1,22 @@
+{if $notice_urgent}
+<div id="dialog">
+	<div id="dialog-bg">
+		<div id="dialog-title">{$notice_urgent.cdate|date_format:"%Y/%m/%d %H:%M"}<br />{$notice_urgent.subject}</div>
+           <div id="dialog-description">
+ {box}
+<table style="width: 100%;" cellpadding="3" class="light">
+<tr >
+	<td  style="word-break:break-all;">{$notice_urgent.body}</td>
+</tr>
+<tr class="darkest">
+	<td align="center"><a href="?m=notices&amp;confirm_urgent={$notice_urgent.id}">{trans("I confirm reading")}</a></td>
+	</tr>
+</table>
+ {/box}
+           </div>
+	</div>
+</div>
+{/if}
 <table width="100%" cellspacing="0" cellpadding="0" style="background-image:url('style/default/keyboard.jpg'); background-repeat:no-repeat; background-color: #ECECEC;">
     <tr style="height:100px;">
 	<td align="right" style="padding-right:15px;">

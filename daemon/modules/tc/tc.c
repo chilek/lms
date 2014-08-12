@@ -68,17 +68,17 @@ void reload(GLOBAL *g, struct tc_module *tc)
 
 		if( strlen(netname) ) 
 		{
-			res = g->db_pquery(g->conn, "SELECT name, address, INET_ATON(mask) AS mask, interface FROM networks WHERE UPPER(name)=UPPER('?')",netname);
-			if( g->db_nrows(res) ) 
+			res = g->db->pquery(g->db->conn, "SELECT name, address, INET_ATON(mask) AS mask, interface FROM networks WHERE UPPER(name)=UPPER('?')",netname);
+			if( g->db->nrows(res) ) 
 			{
 		    		nets = (struct net *) realloc(nets, (sizeof(struct net) * (nc+1)));
-				nets[nc].name = strdup(g->db_get_data(res,0,"name"));
-				nets[nc].interface = strdup(g->db_get_data(res,0,"interface"));
-				nets[nc].address = inet_addr(g->db_get_data(res,0,"address"));
-				nets[nc].mask = inet_addr(g->db_get_data(res,0,"mask"));
+				nets[nc].name = strdup(g->db->get_data(res,0,"name"));
+				nets[nc].interface = strdup(g->db->get_data(res,0,"interface"));
+				nets[nc].address = inet_addr(g->db->get_data(res,0,"address"));
+				nets[nc].mask = inet_addr(g->db->get_data(res,0,"mask"));
 				nc++;
 			}
-    			g->db_free(&res);
+    			g->db->free(&res);
 		}
 	}
 	free(netname); free(netnames);
@@ -86,16 +86,16 @@ void reload(GLOBAL *g, struct tc_module *tc)
 	// get table of networks (if 'networks' variable is not set)
 	if(!nc)
 	{
-	        res = g->db_pquery(g->conn, "SELECT name, address, INET_ATON(mask) AS mask, interface FROM networks");
-		for(nc=0; nc<g->db_nrows(res); nc++)
+	        res = g->db->pquery(g->db->conn, "SELECT name, address, INET_ATON(mask) AS mask, interface FROM networks");
+		for(nc=0; nc<g->db->nrows(res); nc++)
 		{
 		        nets = (struct net*) realloc(nets, (sizeof(struct net) * (nc+1)));
-			nets[nc].name = strdup(g->db_get_data(res,nc,"name"));
-			nets[nc].interface = strdup(g->db_get_data(res,nc,"interface"));
-			nets[nc].address = inet_addr(g->db_get_data(res,nc,"address"));
-			nets[nc].mask = inet_addr(g->db_get_data(res,nc,"mask"));
+			nets[nc].name = strdup(g->db->get_data(res,nc,"name"));
+			nets[nc].interface = strdup(g->db->get_data(res,nc,"interface"));
+			nets[nc].address = inet_addr(g->db->get_data(res,nc,"address"));
+			nets[nc].mask = inet_addr(g->db->get_data(res,nc,"mask"));
 		}
-		g->db_free(&res);
+		g->db->free(&res);
 	 }
 
 	// get table of customergroups
@@ -105,15 +105,15 @@ void reload(GLOBAL *g, struct tc_module *tc)
 
 		if( strlen(groupname) )
 		{
-			res = g->db_pquery(g->conn, "SELECT name, id FROM customergroups WHERE UPPER(name)=UPPER('?')", groupname);
-			if( g->db_nrows(res) )
+			res = g->db->pquery(g->db->conn, "SELECT name, id FROM customergroups WHERE UPPER(name)=UPPER('?')", groupname);
+			if( g->db->nrows(res) )
 			{
 				ugps = (struct group *) realloc(ugps, (sizeof(struct group) * (gc+1)));
-				ugps[gc].name = strdup(g->db_get_data(res,0,"name"));
-				ugps[gc].id = atoi(g->db_get_data(res,0,"id"));
+				ugps[gc].name = strdup(g->db->get_data(res,0,"name"));
+				ugps[gc].id = atoi(g->db->get_data(res,0,"id"));
 				gc++;
 			}
-    			g->db_free(&res);
+    			g->db->free(&res);
 		}
 	}
 	free(groupname); free(groupnames);
@@ -124,7 +124,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 	{
 		// get (htb) data for any customer with connected nodes and active assignments
 		// we need customer ID and average data values for nodes
-		ures = g->db_query(g->conn, "\
+		ures = g->db->query(g->db->conn, "\
 			SELECT customerid AS id, \
 			    COUNT(DISTINCT nodes.id) AS cnt, \
 				ROUND(SUM(uprate)/COUNT(DISTINCT nodes.id)) AS uprate, \
@@ -140,56 +140,56 @@ void reload(GLOBAL *g, struct tc_module *tc)
 			GROUP BY customerid \
 			ORDER BY customerid");
 		
-		if( g->db_nrows(ures) )
+		if( g->db->nrows(ures) )
 		{
 			fprintf(fh, "%s", tc->begin);
 		
-			for(i=0; i<g->db_nrows(ures); i++) 
+			for(i=0; i<g->db->nrows(ures); i++) 
 			{
 				// test customer's membership in customergroups
 				if(gc)
 				{
-					res = g->db_pquery(g->conn, "SELECT customergroupid FROM customerassignments WHERE customerid=?", g->db_get_data(ures,i,"id"));
-					for(k=0; k<g->db_nrows(res); k++) 
+					res = g->db->pquery(g->db->conn, "SELECT customergroupid FROM customerassignments WHERE customerid=?", g->db->get_data(ures,i,"id"));
+					for(k=0; k<g->db->nrows(res); k++) 
 					{
-						int groupid = atoi(g->db_get_data(res, k, "customergroupid"));
+						int groupid = atoi(g->db->get_data(res, k, "customergroupid"));
 						for(m=0; m<gc; m++) 
 							if(ugps[m].id==groupid) 
 								break;
 						if(m!=gc) break;
 					}
-					g->db_free(&res);
+					g->db->free(&res);
 				}
 					
 				if( !gc || m!=gc )
 				{
-					char *uprate = g->db_get_data(ures,i,"uprate");
-					char *downrate = g->db_get_data(ures,i,"downrate");
-					char *upceil = g->db_get_data(ures,i,"upceil");
-					char *downceil = g->db_get_data(ures,i,"downceil");
-					char *climit = g->db_get_data(ures,i,"climit");
-					char *plimit = g->db_get_data(ures,i,"plimit");
+					char *uprate = g->db->get_data(ures,i,"uprate");
+					char *downrate = g->db->get_data(ures,i,"downrate");
+					char *upceil = g->db->get_data(ures,i,"upceil");
+					char *downceil = g->db->get_data(ures,i,"downceil");
+					char *climit = g->db->get_data(ures,i,"climit");
+					char *plimit = g->db->get_data(ures,i,"plimit");
 					int n_upceil = atoi(upceil);
 					int n_downceil = atoi(downceil);
 					int n_uprate = atoi(uprate);
 					int n_downrate = atoi(downrate);
 					int n_climit = atoi(climit);
 					int n_plimit = atoi(plimit);
-					int cnt = atoi(g->db_get_data(ures,i,"cnt"));
+					int cnt = atoi(g->db->get_data(ures,i,"cnt"));
 					
 					int got_node = 0;
 
-					nres = g->db_pquery(g->conn, " \
+					nres = g->db->pquery(g->db->conn, " \
 						SELECT INET_NTOA(ipaddr) AS ip, mac, name \
 						FROM vmacs \
 						WHERE ownerid = ? AND access = 1 \
-						ORDER BY ipaddr", g->db_get_data(ures,i,"id"));
+						ORDER BY ipaddr", g->db->get_data(ures,i,"id"));
 					
-					for(j=0; j<g->db_nrows(nres); j++) 
+					for(j=0; j<g->db->nrows(nres); j++) 
 					{
-						char *ipaddr = g->db_get_data(nres,j,"ip");
-						char *mac = g->db_get_data(nres,j,"mac");
-						char *name = g->db_get_data(nres,j,"name");
+						char *ipaddr = g->db->get_data(nres,j,"ip");
+						char *mac = g->db->get_data(nres,j,"mac");
+						char *name = g->db->get_data(nres,j,"name");
 						char *mark_up = strdup(tc->host_mark_up);
 						char *mark_down = strdup(tc->host_mark_down);
 						char *htb_up = strdup(tc->host_htb_up);
@@ -399,7 +399,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 							if(tc->one_class_per_host) x++;
 						}
 
-						if(!tc->one_class_per_host && j==g->db_nrows(nres)-1 && got_node && n_downrate && n_uprate)
+						if(!tc->one_class_per_host && j==g->db->nrows(nres)-1 && got_node && n_downrate && n_uprate)
 						{
 							g->str_replace(&htb_up, "%n", name);
 							g->str_replace(&htb_up, "%x", itoa(x));
@@ -429,7 +429,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 						free(o1); free(o2); free(o3); free(o4);
 						free(h1); free(h2); free(h3); free(h4);
 					}
-					g->db_free(&nres);
+					g->db->free(&nres);
 				}
 			}
 		
@@ -438,7 +438,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 		else
 			syslog(LOG_ERR, "[%s/tc] Unable to read database", tc->base.instance);
 		
-		g->db_free(&ures);
+		g->db->free(&ures);
 		fclose(fh);
 		system(tc->command);
 #ifdef DEBUG1

@@ -100,6 +100,8 @@ $update = array_key_exists('update', $options);
 if (!is_readable($CONFIG_FILE))
         die("Unable to read configuration file [".$CONFIG_FILE."]!\n");
 
+define('CONFIG_FILE', $CONFIG_FILE);
+
 $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 
 // Check for configuration vars and set default values
@@ -108,33 +110,30 @@ $CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ?
 
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
+
+// Load autloader
+require_once(LIB_DIR.'/autoloader.php');
+
 // Do some checks and load config defaults
 
 require_once(LIB_DIR.'/config.php');
 
 // Init database
 
-$_DBTYPE = $CONFIG['database']['type'];
-$_DBHOST = $CONFIG['database']['host'];
-$_DBUSER = $CONFIG['database']['user'];
-$_DBPASS = $CONFIG['database']['password'];
-$_DBNAME = $CONFIG['database']['database'];
+$DB = null;
 
-require(LIB_DIR.'/LMSDB.php');
+try {
 
-$DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
+    $DB = LMSDB::getInstance();
 
-if(!$DB)
-{
-        // can't working without database
-        die("Fatal error: cannot connect to database!\n");
+} catch (Exception $ex) {
+    
+    trigger_error($ex->getMessage(), E_USER_WARNING);
+    
+    // can't working without database
+    die("Fatal error: cannot connect to database!\n");
+    
 }
-
-// Read configuration from database
-
-if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0'))
-        foreach($cfg as $row)
-                $CONFIG[$row['section']][$row['var']] = $row['value'];
 
 // Include required files (including sequence is important)
 
@@ -142,10 +141,9 @@ require_once(LIB_DIR.'/language.php');
 include_once(LIB_DIR.'/definitions.php');
 require_once(LIB_DIR.'/unstrip.php');
 require_once(LIB_DIR.'/common.php');
-require_once(LIB_DIR.'/LMS.class.php');
 require_once(LIB_DIR . '/SYSLOG.class.php');
 
-if (check_conf('phpui.logging') && class_exists('SYSLOG'))
+if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG'))
 	$SYSLOG = new SYSLOG($DB);
 else
 	$SYSLOG = null;
@@ -153,11 +151,11 @@ else
 // Initialize Session, Auth and LMS classes
 
 $AUTH = NULL;
-$LMS = new LMS($DB, $AUTH, $CONFIG, $SYSLOG);
+$LMS = new LMS($DB, $AUTH, $SYSLOG);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
-$_APIKEY = $CONFIG['google']['apikey'];
+$_APIKEY = ConfigHelper::getConfig('google.apikey');
 if (!$_APIKEY) {
         echo "Unable to read apikey from configuration file.\n";
 }

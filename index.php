@@ -25,7 +25,6 @@
  */
 
 // REPLACE THIS WITH PATH TO YOUR CONFIG FILE
-
 $CONFIG_FILE = '/etc/lms/lms.ini';
 
 // PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
@@ -36,15 +35,16 @@ define('START_TIME', microtime(true));
 define('LMS-UI', true);
 ini_set('error_reporting', E_ALL&~E_NOTICE);
 
-// find alternative config files:
-if(is_readable('lms.ini'))
-	$CONFIG_FILE = 'lms.ini';
-elseif(is_readable('/etc/lms/lms-'.$_SERVER['HTTP_HOST'].'.ini'))
-	$CONFIG_FILE = '/etc/lms/lms-'.$_SERVER['HTTP_HOST'].'.ini';
-elseif(!is_readable($CONFIG_FILE))
-	die('Unable to read configuration file ['.$CONFIG_FILE.']!'); 
+if(is_readable('/etc/lms/lms-'.$_SERVER['HTTP_HOST'].'.ini'))
+        $CONFIG_FILE = '/etc/lms/lms-'.$_SERVER['HTTP_HOST'].'.ini';
+elseif(is_readable('/etc/lms/lms.ini'))
+        $CONFIG_FILE = '/etc/lms/lms.ini';
+else
+        die('Unable to read configuration file [/etc/lms/lms.ini]!');
 
-$CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
+define('CONFIG_FILE', $CONFIG_FILE);
+
+$CONFIG = (array) parse_ini_file(CONFIG_FILE, true);
 
 // Check for configuration vars and set default values
 $CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
@@ -64,28 +64,28 @@ define('MODULES_DIR', $CONFIG['directories']['modules_dir']);
 define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir']);
 define('SMARTY_TEMPLATES_DIR', $CONFIG['directories']['smarty_templates_dir']);
 
-// Do some checks and load config defaults
+// Load autloader
+require_once(LIB_DIR.'/autoloader.php');
 
+// Do some checks and load config defaults
 require_once(LIB_DIR.'/checkdirs.php');
 require_once(LIB_DIR.'/config.php');
 
 // Init database
 
-$_DBTYPE = $CONFIG['database']['type'];
-$_DBHOST = $CONFIG['database']['host'];
-$_DBUSER = $CONFIG['database']['user'];
-$_DBPASS = $CONFIG['database']['password'];
-$_DBNAME = $CONFIG['database']['database'];
-$_DBDEBUG = (isset($CONFIG['database']['debug']) ? chkconfig($CONFIG['database']['debug']) : FALSE);
+$DB = null;
 
-require(LIB_DIR.'/LMSDB.php');
+try {
 
-$DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME, $_DBDEBUG);
+    $DB = LMSDB::getInstance();
 
-if(!$DB)
-{
-	// can't working without database
-	die();
+} catch (Exception $ex) {
+    
+    trigger_error($ex->getMessage(), E_USER_WARNING);
+    
+    // can't working without database
+    die("Fatal error: cannot connect to database!\n");
+    
 }
 
 // Call any of upgrade process before anything else
@@ -93,9 +93,6 @@ if(!$DB)
 require_once(LIB_DIR.'/upgradedb.php');
 
 // Initialize templates engine (must be before locale settings)
-
-require_once(LIB_DIR.'/Smarty/Smarty.class.php');
-
 $SMARTY = new Smarty;
 
 // test for proper version of Smarty
@@ -104,24 +101,20 @@ if (defined('Smarty::SMARTY_VERSION'))
 	$ver_chunks = preg_split('/[- ]/', Smarty::SMARTY_VERSION);
 else
 	$ver_chunks = NULL;
-if (count($ver_chunks) != 2 || version_compare('3.0', $ver_chunks[1]) > 0)
-	die('<B>Wrong version of Smarty engine! We support only Smarty-3.x greater than 3.0.</B>');
+if (count($ver_chunks) < 2 || version_compare('3.1', $ver_chunks[1]) > 0)
+	die('<B>Wrong version of Smarty engine! We support only Smarty-3.x greater than 3.1.</B>');
 
 define('SMARTY_VERSION', $ver_chunks[1]);
+
+// add LMS's custom plugins directory
+$SMARTY->addPluginsDir(LIB_DIR.'/SmartyPlugins');
 
 // uncomment this line if you're not gonna change template files no more
 //$SMARTY->compile_check = false;
 
-// Read configuration of LMS-UI from database
-
-if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0'))
-	foreach($cfg as $row)
-		$CONFIG[$row['section']][$row['var']] = $row['value'];
-
 // Redirect to SSL
 
-$_FORCE_SSL = (isset($CONFIG['phpui']['force_ssl']) ? chkconfig($CONFIG['phpui']['force_ssl']) : FALSE);
-
+$_FORCE_SSL = ConfigHelper::checkConfig('phpui.force_ssl');
 if($_FORCE_SSL && (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on'))
 {
 	header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
@@ -135,30 +128,28 @@ require_once(LIB_DIR.'/unstrip.php');
 require_once(LIB_DIR.'/definitions.php');
 require_once(LIB_DIR.'/common.php');
 require_once(LIB_DIR.'/checkip.php');
-require_once(LIB_DIR.'/LMS.class.php');
-require_once(LIB_DIR.'/Auth.class.php');
 require_once(LIB_DIR.'/accesstable.php');
-require_once(LIB_DIR.'/Session.class.php');
 require_once(LIB_DIR . '/SYSLOG.class.php');
 
-if (check_conf('phpui.logging') && class_exists('SYSLOG'))
+if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG')) {
 	$SYSLOG = new SYSLOG($DB);
-else
+} else {
 	$SYSLOG = null;
+}
 
 // Initialize Session, Auth and LMS classes
 
-$SESSION = new Session($DB, $CONFIG['phpui']['timeout']);
+$SESSION = new Session($DB, ConfigHelper::getConfig('phpui.timeout'));
 $AUTH = new Auth($DB, $SESSION, $SYSLOG);
 if ($SYSLOG)
 	$SYSLOG->SetAuth($AUTH);
-$LMS = new LMS($DB, $AUTH, $CONFIG, $SYSLOG);
+$LMS = new LMS($DB, $AUTH, $SYSLOG);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
 // Initialize Swekey class
 
-if (chkconfig($CONFIG['phpui']['use_swekey'])) {
+if (ConfigHelper::checkConfig('phpui.use_swekey')) {
 	require_once(LIB_DIR . '/swekey/lms_integration.php');
 	$LMS_SWEKEY = new LmsSwekeyIntegration($DB, $AUTH, $LMS);
 	$SMARTY->assign('lms_swekey', $LMS_SWEKEY->GetIntegrationScript($AUTH->id));
@@ -167,7 +158,7 @@ if (chkconfig($CONFIG['phpui']['use_swekey'])) {
 // Set some template and layout variables
 
 $SMARTY->setTemplateDir(null);
-$custom_templates_dir = get_conf('phpui.custom_templates_dir');
+$custom_templates_dir = ConfigHelper::getConfig('phpui.custom_templates_dir');
 if (!empty($custom_templates_dir) && file_exists(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir)
 	&& !is_file(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir))
 	$SMARTY->AddTemplateDir(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir);
@@ -178,17 +169,17 @@ $SMARTY->AddTemplateDir(
 	)
 );
 $SMARTY->setCompileDir(SMARTY_COMPILE_DIR);
-$SMARTY->debugging = check_conf('phpui.smarty_debug');
+$SMARTY->debugging = ConfigHelper::checkConfig('phpui.smarty_debug');
 
 $layout['logname'] = $AUTH->logname;
 $layout['logid'] = $AUTH->id;
-$layout['lmsdbv'] = $DB->_version;
+$layout['lmsdbv'] = $DB->GetVersion();
 $layout['smarty_version'] = SMARTY_VERSION;
 $layout['hostname'] = hostname();
 $layout['lmsv'] = '1.11-git';
 //$layout['lmsvr'] = $LMS->_revision.'/'.$AUTH->_revision;
 $layout['lmsvr'] = '';
-$layout['dberrors'] =& $DB->errors;
+$layout['dberrors'] = $DB->GetErrors();
 $layout['dbdebug'] = $_DBDEBUG;
 $layout['popup'] = isset($_GET['popup']) ? true : false;
 
@@ -212,7 +203,7 @@ header('X-Powered-By: LMS/'.$layout['lmsv']);
 // Check privileges and execute modules
 if ($AUTH->islogged) {
 	// Load plugin files and register hook callbacks
-	$plugins = preg_split('/[;,\s\t\n]+/', $CONFIG['phpui']['plugins'], -1, PREG_SPLIT_NO_EMPTY);
+	$plugins = preg_split('/[;,\s\t\n]+/', ConfigHelper::getConfig('phpui.plugins'), -1, PREG_SPLIT_NO_EMPTY);
 	if (!empty($plugins))
 		foreach ($plugins as $plugin_name)
 			if(is_readable(LIB_DIR . '/plugins/' . $plugin_name . '.php'))
@@ -221,6 +212,13 @@ if ($AUTH->islogged) {
 	$res = $LMS->ExecHook('access_table_init', array('accesstable' => $access['table']));
 	if (isset($res['accesstable']))
 		$access['table'] = $res['accesstable'];
+        
+        LMSConfig::getConfig(array(
+            'force' => true,
+            'force_user_rights_only' => true,
+            'access_table' => $access['table'],
+            'user_id' => $AUTH->id,
+        ));
 
 	$module = isset($_GET['m']) ? preg_replace('/[^a-zA-Z0-9_-]/', '', $_GET['m']) : '';
 	$deny = $allow = FALSE;
@@ -238,7 +236,7 @@ if ($AUTH->islogged) {
 
 	if ($module == '')
 	{
-		$module = $CONFIG['phpui']['default_module'];
+		$module = ConfigHelper::getConfig('phpui.default_module');
 	}
 
 	if (file_exists(MODULES_DIR.'/'.$module.'.php'))
@@ -248,17 +246,12 @@ if ($AUTH->islogged) {
 		if ($AUTH->id && ($rights = $LMS->GetUserRights($AUTH->id)))
 			foreach ($rights as $level)
 			{
-				if ($level === 0) {
-					$CONFIG['privileges']['superuser'] = true;
-				}
 
 				if (!$global_allow && !$deny && isset($access['table'][$level]['deny_reg']))
 					$deny = (bool) preg_match('/'.$access['table'][$level]['deny_reg'].'/i', $module);
 				elseif (!$allow && isset($access['table'][$level]['allow_reg']))
 					$allow = (bool) preg_match('/'.$access['table'][$level]['allow_reg'].'/i', $module);
 
-				if (isset($access['table'][$level]['privilege']))
-					$CONFIG['privileges'][$access['table'][$level]['privilege']] = TRUE;
 			}
 
 		if ($SYSLOG)

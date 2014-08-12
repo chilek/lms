@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if (!check_conf('privileges.reports'))
+if (!ConfigHelper::checkConfig('privileges.reports'))
 	access_denied();
 
 $type = isset($_GET['type']) ? $_GET['type'] : '';
@@ -165,7 +165,7 @@ switch($type)
 
 		$layout['pagetitle'] = trans('Reports');
 		
-		if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
+		if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
 		{
 			$SMARTY->assign('customers', $LMS->GetCustomerNames());
 		}

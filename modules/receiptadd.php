@@ -26,7 +26,7 @@
 
 function GetCustomerCovenants($id)
 {
-	global $CONFIG, $DB;
+	global $DB;
 
 	if(!$id) return NULL;
 
@@ -81,7 +81,7 @@ function GetCustomerCovenants($id)
 
 function GetCustomerNotes($id)
 {
-	global $CONFIG, $DB;
+	global $DB;
 
 	if(!$id) return NULL;
 
@@ -174,35 +174,38 @@ switch($action)
 		{
 			$customer = $LMS->GetCustomer($receipt['customerid'], true);
 			$customer['groups'] = $LMS->CustomergroupGetForCustomer($receipt['customerid']);
-			if(!isset($CONFIG['receipts']['show_notes']) || !chkconfig($CONFIG['receipts']['show_notes']))
+			if (!ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_notes', false)))
 				unset($customer['notes']);
 			
 			// niezatwierdzone dokumenty klienta
-			if(isset($CONFIG['receipts']['show_documents_warning']) && chkconfig($CONFIG['receipts']['show_documents_warning']))
+			if(ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_documents_warning', false)))
 				if($DB->GetOne('SELECT COUNT(*) FROM documents WHERE customerid = ? AND closed = 0 AND type < 0', array($receipt['customerid'])))
 				{
-					if(!empty($CONFIG['receipts']['documents_warning']))
-						$customer['docwarning'] = $CONFIG['receipts']['documents_warning'];
+					$documents_warning = ConfigHelper::getConfig('receipts.documents_warning');
+					if(!empty($documents_warning))
+						$customer['docwarning'] = $documents_warning;
 					else
 						$customer['docwarning'] = trans('Customer has got unconfirmed documents!');
 				}
 
 			// jesli klient posiada zablokowane komputery poinformujmy
 			// o tym kasjera, moze po wplacie trzeba bedzie zmienic ich status
-			if(isset($CONFIG['receipts']['show_nodes_warning']) && chkconfig($CONFIG['receipts']['show_nodes_warning']))
+			if (ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_nodes_warning', false)))
 				if($DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ownerid = ? AND access = 0', array($receipt['customerid'])))
 				{
-					if(!empty($CONFIG['receipts']['nodes_warning']))
-						$customer['nodeswarning'] = $CONFIG['receipts']['nodes_warning'];
+					$nodes_warning = ConfigHelper::getConfig('receipts.nodes_warning');
+					if(!empty($nodes_warning))
+						$customer['nodeswarning'] = $nodes_warning;
 					else
 						$customer['nodeswarning'] = trans('Customer has got disconnected nodes!');
 				}
 
 			// jesli klient posiada komputery przypisane do wybranych grup..., u mnie
 			// komputery zadluzonych dodawane sa do grupy "zadluzenie"
-			if(!empty($CONFIG['receipts']['show_nodegroups_warning']))
+			$show_nodegroups_warning = ConfigHelper::getConfig('receipts.show_nodegroups_warning');
+			if(!empty($show_nodegroups_warning))
 			{
-				$list = preg_split("/\s+/", $CONFIG['receipts']['show_nodegroups_warning']);
+				$list = preg_split("/\s+/", $show_nodegroups_warning);
 				if($DB->GetOne('SELECT COUNT(*) FROM nodes n
 						JOIN nodegroupassignments a ON (n.id = a.nodeid)
 						JOIN nodegroups g ON (g.id = a.nodegroupid)
@@ -210,11 +213,11 @@ switch($action)
 						.implode("'),UPPER('", $list).'\'))', 
 						array($receipt['customerid'])))
 				{
-					if(!empty($CONFIG['receipts']['nodegroups_warning']))
-						$customer['nodegroupswarning'] = $CONFIG['receipts']['nodegroups_warning'];
+					$nodegroups_warning = ConfigHelper::getConfig('receipts.nodegroups_warning');
+					if(!empty($nodegroups_warning))
+						$customer['nodegroupswarning'] = $nodegroups_warning;
 					else
-						$customer['nodegroupswarning'] = trans('Customer has got nodes in groups: <b>$a</b>!', 
-							$CONFIG['receipts']['show_nodegroups_warning']);
+						$customer['nodegroupswarning'] = trans('Customer has got nodes in groups: <b>$a</b>!', $show_nodegroups_warning);
 				}
 			}
 		}
@@ -486,35 +489,39 @@ switch($action)
 				{
 					$customer = $LMS->GetCustomer($cid, true);
 					$customer['groups'] = $LMS->CustomergroupGetForCustomer($cid);
-					if(!isset($CONFIG['receipts']['show_notes']) || !chkconfig($CONFIG['receipts']['show_notes']))
+					if(!ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_notes', false)))
 						unset($customer['notes']);
 
 					// niezatwierdzone dokumenty klienta
-					if(isset($CONFIG['receipts']['show_documents_warning']) && chkconfig($CONFIG['receipts']['show_documents_warning']))
+					if (ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_documents_warning', false)))
 						if($DB->GetOne('SELECT COUNT(*) FROM documents WHERE customerid = ? AND closed = 0 AND type < 0', array($cid)))
 						{
-							if(!empty($CONFIG['receipts']['documents_warning']))
-								$customer['docwarning'] = $CONFIG['receipts']['documents_warning'];
+							$documents_warning = ConfigHelper::getConfig('receipts.documents_warning');
+							if(!empty($documents_warning))
+								$customer['docwarning'] = $documents_warning;
 							else
 								$customer['docwarning'] = trans('Customer has got unconfirmed documents!');
 						}
 
 					// jesli klient posiada zablokowane komputery poinformujmy
 	    				// o tym kasjera, moze po wplacie trzeba bedzie zmienic ich status
-					if(isset($CONFIG['receipts']['show_nodes_warning']) && chkconfig($CONFIG['receipts']['show_nodes_warning']))
+                                                
+					if (ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_nodes_warning', false)))
 						if($DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ownerid = ? AND access = 0', array($cid)))
 						{
-							if(!empty($CONFIG['receipts']['nodes_warning']))
-								$customer['nodeswarning'] = $CONFIG['receipts']['nodes_warning'];
+							$nodes_warning = ConfigHelper::getConfig('receipts.nodes_warning');
+							if(!empty($nodes_warning))
+								$customer['nodeswarning'] = $nodes_warning;
 							else
 								$customer['nodeswarning'] = trans('Customer has got disconnected nodes!');
 						}
 
 					// jesli klient posiada komputery przypisane do wybranych grup, u mnie
 					// komputery zadluzonych dodawane sa do grupy "zadluzenie"
-	    				if(!empty($CONFIG['receipts']['show_nodegroups_warning']))
+					$show_nodegroups_warning = ConfigHelper::getConfig('receipts.show_nodegroups_warning');
+	    				if(!empty($show_nodegroups_warning))
 					{
-						$list = preg_split("/\s+/", $CONFIG['receipts']['show_nodegroups_warning']);
+						$list = preg_split("/\s+/", $show_nodegroups_warning);
 
 						if($DB->GetOne('SELECT COUNT(*) FROM nodes n
 			    				JOIN nodegroupassignments a ON (n.id = a.nodeid)
@@ -523,10 +530,11 @@ switch($action)
 						    	.implode("'),UPPER('", $list).'\'))', 
 	    						array($cid)))
 						{
-							if(!empty($CONFIG['receipts']['nodegroups_warning']))
-								$customer['nodegroupswarning'] = $CONFIG['receipts']['nodegroups_warning'];
+							$nodegroups_warning = ConfigHelper::getConfig('receipts.nodegroups_warning');
+							if(!empty($nodegroups_warning))
+								$customer['nodegroupswarning'] = $nodegroups_warning;
 							else
-								$customer['nodegroupswarning'] = trans('Customer has got nodes in group(s): <b>$a</b>!', $CONFIG['receipts']['show_nodegroups_warning']);
+								$customer['nodegroupswarning'] = trans('Customer has got nodes in group(s): <b>$a</b>!', $show_nodegroups_warning);
 						}
 					}
 
@@ -560,6 +568,10 @@ switch($action)
 					$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
 			}
 
+			$fullnumber = docnumber($receipt['number'],
+				$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
+				$receipt['cdate']);
+
 			$args = array(
 				'type' => DOC_RECEIPT,
 				'number' => $receipt['number'],
@@ -572,9 +584,11 @@ switch($action)
 				'address' => $customer['address'],
 				'zip' => $customer['zip'],
 				'city' => $customer['city'],
+				'fullnumber' => $fullnumber,
 			);
-			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, customerid, userid, name, address, zip, city, closed)
-					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)', array_values($args));
+			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, customerid, userid, name, address, zip, city, closed,
+					fullnumber)
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)', array_values($args));
 			$DB->UnLockTables();
 
 			$rid = $DB->GetLastInsertId('documents');
@@ -692,6 +706,10 @@ switch($action)
 					$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
 			}
 
+			$fullnumber = docnumber($receipt['number'],
+				$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
+				$receipt['cdate']);
+
 			$args = array(
 				'type' => DOC_RECEIPT,
 				'number' => $receipt['number'],
@@ -701,9 +719,10 @@ switch($action)
 				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id,
 				'name' => $receipt['o_type'] == 'advance' ? $receipt['adv_name'] : $receipt['other_name'],
 				'closed' => $receipt['o_type'] == 'advance' ? 0 : 1,
+				'fullnumber' => $fullnumber,
 			);
-			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed)
-					VALUES(?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed, fullnumber)
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 			$DB->UnLockTables();
 
 			$rid = $DB->GetLastInsertId('documents');
@@ -812,6 +831,10 @@ switch($action)
 			// cash-out
 			$description = trans('Moving assets to registry $a',$DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($dest)));
 
+			$fullnumber = docnumber($receipt['number'],
+				$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
+				$receipt['cdate']);
+
 			$args = array(
 				'type' => DOC_RECEIPT,
 				'number' => $receipt['number'],
@@ -821,9 +844,10 @@ switch($action)
 				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id,
 				'name' => '',
 				'closed' => 1,
+				'fullnumber' => $fullnumber,
 			);
-			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed)
-					VALUES(?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed, fullnumber)
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
 			$rid = $DB->GetOne('SELECT id FROM documents WHERE type=? AND number=? AND cdate=? AND numberplanid=?', array(DOC_RECEIPT, $receipt['number'], $receipt['cdate'], $receipt['numberplanid'])); 
 
@@ -859,6 +883,13 @@ switch($action)
 			$numberplan = $DB->GetOne('SELECT in_numberplanid FROM cashregs WHERE id=?', array($dest));
 			$number = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $numberplan, $receipt['cdate']);
 
+			if ($numberplan)
+				$fullnumber = docnumber($number,
+					$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($numberplan)),
+					$receipt['cdate']);
+			else
+				$fullnumber = null;
+
 			$args = array(
 				'type' => DOC_RECEIPT,
 				'number' => $number,
@@ -866,9 +897,10 @@ switch($action)
 				'cdate' => $receipt['cdate'],
 				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id,
 				'closed' => 1,
+				'fullnumber' => $fullnumber,
 			);
-			$DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, userid, closed)
-					VALUES(?, ?, ?, ?, ?, ?)', array_values($args));
+			$DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, userid, closed, fullnumber)
+					VALUES(?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
 			$did = $DB->GetOne('SELECT id FROM documents WHERE type=? AND number=? AND cdate=? AND numberplanid=?', array(DOC_RECEIPT, $number, $receipt['cdate'], $numberplan)); 
 
@@ -955,7 +987,7 @@ if(isset($list))
 	$invoicelist = array_slice($invoicelist, 0, 10);
 }
 
-if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
+if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
 {
         $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 }

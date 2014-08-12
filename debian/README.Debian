@@ -1,0 +1,9 @@
+README for lms
+-----------------
+
+  Database is configured in lms-common package whitch creates also /etc/lms/lms.ini
+  file. System can work with MySQL or PostgreSQL database. They require drivers
+  so if you choose database type make sure that proper driver packages are installed
+  for all lms components.
+
+ -- LMS Developers <lms-dev@lists.lms.org.pl>  Wed, 30 Apr 2014 14:44:05 +0200

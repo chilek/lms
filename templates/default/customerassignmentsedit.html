@@ -20,7 +20,7 @@
 		document.getElementById('a_options').style.display = val == -1 ? 'none' : '';
 		document.getElementById('a_nodes').style.display = val == -1 ? 'none' : '';
 		document.getElementById('a_day').style.display = val == -1 ? 'none' : '';
-		{if !check_conf('privileges.hide_finances')}
+		{if !ConfigHelper::checkConfig('privileges.hide_finances')}
 		document.getElementById('a_discount').style.display = val < -1 ? 'none' : '';
 		{/if}
 	}
@@ -72,7 +72,7 @@
 				{/if}
 				{section name=t loop=$tariffs}
 				<OPTION value="{$tariffs[t].id}" {if $tariffs[t].id==$assignment.tariffid}SELECTED{/if}>
-				{$tariffs[t].name} ({if !check_conf('privileges.hide_finances')}{$tariffs[t].value|money_format}, {/if}{if $tariffs[t].upceil || $tariffs[t].downceil}{$tariffs[t].downceil}/{$tariffs[t].upceil} kbit/s{/if})
+				{$tariffs[t].name} ({if !ConfigHelper::checkConfig('privileges.hide_finances')}{$tariffs[t].value|money_format}, {/if}{if $tariffs[t].upceil || $tariffs[t].downceil}{$tariffs[t].downceil}/{$tariffs[t].upceil} kbit/s{/if})
 				</OPTION>
 				{/section}
 			</SELECT>
@@ -174,13 +174,13 @@
 		</TD>
 	</TR>
 	<TR id="a_discount">
-		<TD style="width: 1%;{if check_conf('privileges.hide_finances')} display: none;{/if}">
+		<TD style="width: 1%;{if ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
 			<IMG src="img/value.gif" alt="">
 		</TD>
-		<TD style="width: 1%;{if check_conf('privileges.hide_finances')} display: none;{/if}">
+		<TD style="width: 1%;{if ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
 			<span class="bold">{trans("Discount:")}</span>
 		</TD>
-		<TD style="width: 98%;{if check_conf('privileges.hide_finances')} display: none;{/if}">
+		<TD style="width: 98%;{if ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
 			<INPUT type="text" size="8" name="assignment[discount]" value="{if $assignment.pdiscount != 0}{$assignment.pdiscount|string_format:"%.2f"}{else}{if $assignment.vdiscount != 0}{$assignment.vdiscount|string_format:"%.2f"}{/if}{/if}" {tip text="Enter discount percentage or amount" trigger="discount"}>
 			<SELECT name="assignment[discount_type]">
 				{foreach from=$_DISCOUNTTYPES item=item key=key}
@@ -199,7 +199,7 @@
 		<TD style="width: 98%;">
 			<SELECT SIZE="1" name="assignment[taxid]" {tip text="Select Tax value"}>
 				{foreach item=tax from=$taxeslist}
-					<OPTION value="{$tax.id}"{if ($assignment.taxid && $tax.id == $assignment.taxid) || (!$assignment.taxid && $tax.value == get_conf('phpui.default_taxrate'))} selected{/if}>{$tax.label}</OPTION>
+					<OPTION value="{$tax.id}"{if ($assignment.taxid && $tax.id == $assignment.taxid) || (!$assignment.taxid && $tax.value == ConfigHelper::getConfig('phpui.default_taxrate'))} selected{/if}>{$tax.label}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>

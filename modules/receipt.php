@@ -26,7 +26,7 @@
 
 function GetReceipt($id)
 {
-	global $CONFIG, $DB;
+	global $DB;
 
 	if ($receipt = $DB->GetRow('SELECT d.*, u.name AS user, n.template,
 					ds.name AS d_name, ds.address AS d_address,
@@ -63,16 +63,17 @@ function GetReceipt($id)
 	}
 }
 
-if(strtolower($CONFIG['receipts']['type']) == 'pdf')
+if(strtolower(ConfigHelper::getConfig('receipts.type')) == 'pdf')
 {
     include('receipt_pdf.php');
     $SESSION->close();
     die;
 }
 
-header('Content-Type: '.$CONFIG['receipts']['content_type']);
-if(!empty($CONFIG['receipts']['attachment_name']))
-	header('Content-Disposition: attachment; filename='.$CONFIG['receipts']['attachment_name']);
+header('Content-Type: '.ConfigHelper::getConfig('receipts.content_type'));
+$attachment_name = ConfigHelper::getConfig('receipts.attachment_name');
+if(!empty($attachment_name))
+	header('Content-Disposition: attachment; filename='.$attachment_name);
 
 if(isset($_GET['print']) && $_GET['print'] == 'cached' && sizeof($_POST['marks']))
 {
@@ -116,7 +117,7 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached' && sizeof($_POST['marks']
 			$receipt['first'] = $i > 1 ? FALSE : TRUE;
 
 			$SMARTY->assign('receipt',$receipt);
-			$SMARTY->display($CONFIG['receipts']['template_file']);
+			$SMARTY->display(ConfigHelper::getConfig('receipts.template_file'));
 		}
 	}
 	$SMARTY->display('clearfooter.html');
@@ -138,7 +139,7 @@ elseif($receipt = GetReceipt($_GET['id']))
 	$SMARTY->assign('type', isset($_GET['which']) ? $_GET['which'] : NULL);
 	$SMARTY->assign('receipt',$receipt);
 	$SMARTY->display('receiptheader.html');
-	$SMARTY->display($CONFIG['receipts']['template_file']);
+	$SMARTY->display(ConfigHelper::getConfig('receipts.template_file'));
 	$SMARTY->display('clearfooter.html');
 }
 else

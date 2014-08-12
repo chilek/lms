@@ -33,9 +33,10 @@ if(isset($_GET['ajax']))
 	{
 	        case 'address':
 			$mode='address';
-			if ($CONFIG['database']['type'] == 'mysql' || $CONFIG['database']['type'] == 'mysqli') 
+                        $database_type = ConfigHelper::getConfig('database.type');
+			if ($database_type == 'mysql' || $database_type == 'mysqli') 
 				$mode = 'substring(address from 1 for length(address)-locate(\' \',reverse(address))+1)';
-			elseif($CONFIG['database']['type'] == 'postgres') 
+			elseif($database_type == 'postgres') 
 				$mode = 'substring(address from \'^.* \')';
 		break;
 	        case 'zip':
@@ -243,12 +244,17 @@ else
 	$customeradd['contacts'][] = array();
 }
 
-if(!isset($customeradd['zip']) && isset($CONFIG['phpui']['default_zip']))
-	$customeradd['zip'] = $CONFIG['phpui']['default_zip'];
-if(!isset($customeradd['city']) && isset($CONFIG['phpui']['default_city']))
-	$customeradd['city'] = $CONFIG['phpui']['default_city'];
-if(!isset($customeradd['address']) && isset($CONFIG['phpui']['default_address']))
-	$customeradd['address'] = $CONFIG['phpui']['default_address'];
+$default_zip = ConfigHelper::getConfig('phpui.default_zip');
+$default_city = ConfigHelper::getConfig('phpui.default_city');
+$default_address = ConfigHelper::getConfig('phpui.default_address');
+
+if (!isset($customeradd['zip']) && $default_zip) {
+	$customeradd['zip'] = $default_zip;
+} if (!isset($customeradd['city']) && $default_city) {
+	$customeradd['city'] = $default_city;
+} if (!isset($customeradd['address']) && $default_address) {
+	$customeradd['address'] = $default_address;
+}
 
 $layout['pagetitle'] = trans('New Customer');
 

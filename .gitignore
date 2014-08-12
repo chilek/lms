@@ -1,4 +1,4 @@
-assets/bootstrap/*
+assets/*
 templates_c/*
 userpanel/templates_c/*
 lib/Smarty/Smarty.class.php
@@ -57,6 +57,7 @@ lms.ini
 backups/*
 documents/*
 !documents/templates
+cache/*
 
 # Temporary files
 *~
@@ -71,3 +72,4 @@ documents/*
 
 # Executables
 daemon/lmsd
+/vendor/

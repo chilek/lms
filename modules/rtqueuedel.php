@@ -43,12 +43,13 @@ else
 	{
 		$queue = intval($_GET['id']);
 
-        if (isset($CONFIG['rt']['mail_dir'])) {
+	$mail_dir = ConfigHelper::getConfig('rt.mail_dir');
+        if (!empty($mail_dir)) {
             // remove attachment files
             if ($tickets = $DB->GetCol('SELECT id FROM rttickets WHERE queueid = ?', array($queue)))
             {
                 foreach ($tickets as $ticket) {
-                    rrmdir($CONFIG['rt']['mail_dir'].sprintf('/%06d', $ticket));
+                    rmdir($mail_dir.sprintf('/%06d', $ticket));
                 }
             }
         }

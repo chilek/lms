@@ -146,8 +146,9 @@ if(isset($_POST['mailing']))
 				$files[0]['data'] = $file;
 			}
 
-			if(!empty($CONFIG['mail']['debug_email']))
-				echo '<B>'.trans('Warning! Debug mode (using address $a).',$CONFIG['mail']['debug_email']).'</B><BR>';
+			$debug_email = ConfigHelper::getConfig('mail.debug_email');
+			if(!empty($debug_email))
+				echo '<B>'.trans('Warning! Debug mode (using address $a).',$debug_email).'</B><BR>';
 			
 			$headers['Date'] = date('D, d F Y H:i:s T');
 			$headers['From'] = '"'.$mailing['from'].'" <'.$mailing['sender'].'>';
@@ -156,8 +157,8 @@ if(isset($_POST['mailing']))
 			
 			foreach($emails as $key => $row)
 			{
-				if(!empty($CONFIG['mail']['debug_email']))
-					$row['email'] = $CONFIG['mail']['debug_email'];
+				if(!empty($debug_email))
+					$row['email'] = $debug_email;
 				
 				$body = $mailing['body'];
 				

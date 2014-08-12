@@ -24,182 +24,380 @@
  *  $Id$
  */
 
-/*
- * To jest pseudo-driver dla LMSDB, dla bazy danych 'postgres'.
+/**
+ * LMSDB_driver_postgres
+ * 
+ * PostgreSQL engine driver wrapper for LMS.
+ * 
+ * @package LMS
  */
-
-class LMSDB_driver_postgres extends LMSDB_common
+class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
 {
-	var $_loaded = TRUE;
-	var $_dbtype = 'postgres';
 
-	function LMSDB_driver_postgres($dbhost,$dbuser,$dbpasswd,$dbname)
-	{
-		if(!extension_loaded('pgsql'))
-		{
-			trigger_error('PostgreSQL extension not loaded!', E_USER_WARNING);
-			$this->_loaded = FALSE;
-			return;
-		}
+    /**
+     * Constructs driver.
+     * 
+     * Connects to database.
+     * 
+     * @param string $dbhost
+     * @param string $dbuser
+     * @param string $dbpasswd
+     * @param string $dbname
+     * @return void
+     */
+    public function __construct($dbhost, $dbuser, $dbpasswd, $dbname)
+    {
+        if (!extension_loaded('pgsql')) {
+            trigger_error('PostgreSQL extension not loaded!', E_USER_WARNING);
+            $this->_loaded = FALSE;
+            return;
+        }
 
-		//$this->_version .= ' ('.preg_replace('/^.Revision: ([0-9.]+).*/','\1',$this->_revision).'/'.preg_replace('/^.Revision: ([0-9.]+).*/','\1','$Revision$').')';
-		$this->_version .= '';
-		$this->Connect($dbhost,$dbuser,$dbpasswd,$dbname);
-	}
+        $this->_dbtype = LMSDB::POSTGRESQL;
 
-	function _driver_dbversion()
-	{
-		return $this->GetOne("SELECT split_part(version(),' ',2)");
-	}
+        //$this->_version .= ' ('.preg_replace('/^.Revision: ([0-9.]+).*/','\1',$this->_revision).'/'.preg_replace('/^.Revision: ([0-9.]+).*/','\1','$Revision$').')';
+        $this->_version .= '';
+        $this->Connect($dbhost, $dbuser, $dbpasswd, $dbname);
 
-	function _driver_connect($dbhost,$dbuser,$dbpasswd,$dbname)
-	{
-		$cstring = join(' ',array(
-			($dbhost != '' && $dbhost != 'localhost' ? 'host='.$dbhost : ''),
-			($dbuser != '' ? 'user='.$dbuser : ''),
-			($dbpasswd != '' ? 'password='.$dbpasswd : ''),
-			($dbname != '' ? 'dbname='.$dbname : ''),
-			'connect_timeout=10'
-		));
+    }
 
-		if($this->_dblink = @pg_connect($cstring, PGSQL_CONNECT_FORCE_NEW))
-		{
-			$this->_dbhost = $dbhost;
-			$this->_dbuser = $dbuser;
-			$this->_dbname = $dbname;
-			$this->_error = FALSE;
-		}
-		else
-			$this->_error = TRUE;
+    /**
+     * Returns database engine info.
+     * 
+     * @return string
+     */
+    public function _driver_dbversion()
+    {
+        return $this->GetOne("SELECT split_part(version(),' ',2)");
 
-		return $this->_dblink;
-	}
+    }
 
-	function _driver_disconnect()
-	{
-		$this->_loaded = FALSE;
-		@pg_close($this->_dblink);
-	}
+    /**
+     * Connects to database.
+     * 
+     * @param string $dbhost
+     * @param string $dbuser
+     * @param string $dbpasswd
+     * @param string $dbname
+     * @return void
+     */
+    public function _driver_connect($dbhost, $dbuser, $dbpasswd, $dbname)
+    {
+        $cstring = join(' ', array(
+            ($dbhost != '' && $dbhost != 'localhost' ? 'host=' . $dbhost : ''),
+            ($dbuser != '' ? 'user=' . $dbuser : ''),
+            ($dbpasswd != '' ? 'password=' . $dbpasswd : ''),
+            ($dbname != '' ? 'dbname=' . $dbname : ''),
+            'connect_timeout=10'
+        ));
 
-	function _driver_geterror()
-	{
-		if($this->_dblink)
-                        return pg_last_error($this->_dblink);
-                else
-            		return 'We\'re not connected!';
-	}
-	
-	function _driver_execute($query)
-	{
-		$this->_query = $query;
+        $this->_dblink = @pg_connect($cstring, PGSQL_CONNECT_FORCE_NEW);
+        if ($this->_dblink) {
+            $this->_dbhost = $dbhost;
+            $this->_dbuser = $dbuser;
+            $this->_dbname = $dbname;
+            $this->_error = FALSE;
+            $this->_loaded = TRUE;
+        } else {
+            $this->_error = TRUE;
+        }
 
-		if($this->_result = @pg_query($this->_dblink,$query))
-			$this->_error = FALSE;
-		else
-			$this->_error = TRUE;
-		return $this->_result;
-	}
+        return $this->_dblink;
 
-	function _driver_fetchrow_assoc($result = NULL)
-	{
-		if(! $this->_error)
-			return @pg_fetch_array($result ? $result : $this->_result,NULL, PGSQL_ASSOC);
-		else
-			return FALSE;
-	}
+    }
 
-	function _driver_fetchrow_num()
-	{
-		if(! $this->_error)
-			return @pg_fetch_array($this->_result,NULL,PGSQL_NUM);
-		else
-			return FALSE;
-	}
-	
-	function _driver_affected_rows()
-	{
-		if(! $this->_error)
-			return @pg_affected_rows($this->_result);
-		else
-			return FALSE;
-	}
+    /**
+     * Closes driver.
+     */
+    public function _driver_shutdown()
+    {
+        $this->_driver_disconnect();
 
-	function _driver_num_rows()
-	{
-		if(! $this->_error)
-			return @pg_num_rows($this->_result);
-		else
-			return FALSE;
-	}
+    }
 
-	function _quote_value($input)
-	{
-		if($input === NULL)
-			return 'NULL';
-		elseif(gettype($input) == 'string')
-			return '\''.@pg_escape_string($this->_dblink, $input).'\'';
-		else
-			return $input;
-	}
+    /**
+     * Disconnects driver from database.
+     * 
+     * @return bool
+     */
+    public function _driver_disconnect()
+    {
+        $this->_loaded = FALSE;
+        @pg_close($this->_dblink);
 
-	function _driver_now()
-	{
-		return 'EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer';
-	}
+    }
 
-	function _driver_like()
-	{
-		return 'ILIKE';
-	}
+    /**
+     * Selects database.
+     * 
+     * @param string $dbname
+     * @throws Exception
+     */
+    public function _driver_selectdb($dbname)
+    {
+        throw new Exception('PostgreSQL driver cannot change dbname. Sorry...');
 
-	function _driver_concat($input)
-	{
-		return implode(' || ',$input);
-	}
+    }
 
-	function _driver_listtables()
-	{
-		return $this->GetCol('SELECT relname AS name FROM pg_class WHERE relkind = \'r\' and relname !~ \'^pg_\' and relname !~ \'^sql_\'');
-	}
+    /**
+     * Returns errors.
+     * 
+     * @return string
+     */
+    public function _driver_geterror()
+    {
+        if ($this->_dblink) {
+            return pg_last_error($this->_dblink);
+        } else {
+            return 'We\'re not connected!';
+        }
 
-	function _driver_begintrans()
-	{
-		return $this->Execute('BEGIN');
-	}
+    }
 
-	function _driver_committrans()
-	{
-		return $this->Execute('COMMIT');
-	}
+    /**
+     * Executes query.
+     * 
+     * @param string $query
+     * @return resource
+     */
+    public function _driver_execute($query)
+    {
+        $this->_query = $query;
+        $this->_result = @pg_query($this->_dblink, $query);
+        if ($this->_result) {
+            $this->_error = FALSE;
+        } else {
+            $this->_error = TRUE;
+        }
+        return $this->_result;
 
-	function _driver_rollbacktrans()
-	{
-		return $this->Execute('ROLLBACK');
-	}
+    }
 
-	// @todo: locktype
-	function _driver_locktables($table, $locktype=null)
-        {
-	        if(is_array($table))
-		        $this->Execute('LOCK '.implode(', ', $table));
-		else
-		        $this->Execute('LOCK '.$table);
-	}
+    /**
+     * Executes multiple queries at once.
+     * 
+     * @param string $query
+     * @return boolean
+     */
+    public function _driver_multi_execute($query)
+    {
+        return $this->_driver_execute($query);
 
-	function _driver_unlocktables()
-	{
-		return TRUE;
-	}
+    }
 
-	function _driver_lastinsertid($table)
-	{
-               return $this->GetOne('SELECT currval(\''.$table.'_id_seq\')');
-	}
+    /**
+     * Returns single row from resource as associative array.
+     * 
+     * @param resource $result
+     * @return array|boolean
+     */
+    public function _driver_fetchrow_assoc($result = NULL)
+    {
+        if (!$this->_error) {
+            return @pg_fetch_array($result ? $result : $this->_result, NULL, PGSQL_ASSOC);
+        } else {
+            return FALSE;
+        }
 
-	function _driver_groupconcat($field, $separator = ',')
-	{
-		return 'array_to_string(array_agg('.$field.'), \''.$separator.'\')';
-	}
+    }
+
+    /**
+     * Returns single row from resource as array.
+     * 
+     * @return array|boolean
+     */
+    public function _driver_fetchrow_num()
+    {
+        if (!$this->_error) {
+            return @pg_fetch_array($this->_result, NULL, PGSQL_NUM);
+        } else {
+            return FALSE;
+        }
+
+    }
+
+    /**
+     * Returns number of affected rows or false on query failure.
+     * 
+     * @return int|boolean
+     */
+    public function _driver_affected_rows()
+    {
+        if (!$this->_error) {
+            return @pg_affected_rows($this->_result);
+        } else {
+            return FALSE;
+        }
+
+    }
+
+    /**
+     * Returns number of rows in result reqource or false on failure.
+     * 
+     * @return int|boolean
+     */
+    public function _driver_num_rows()
+    {
+        if (!$this->_error) {
+            return @pg_num_rows($this->_result);
+        } else {
+            return FALSE;
+        }
+
+    }
+
+    public function _quote_value($input)
+    {
+        if ($input === NULL) {
+            return 'NULL';
+        } elseif (gettype($input) == 'string') {
+            return '\'' . @pg_escape_string($this->_dblink, $input) . '\'';
+        } else {
+            return $input;
+        }
+
+    }
+
+    /**
+     * Returns name of sql function used to get time.
+     * 
+     * @return string
+     */
+    public function _driver_now()
+    {
+        return 'EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer';
+
+    }
+
+    /**
+     * Returns name of sql function used for "like" statement.
+     * 
+     * @return string
+     */
+    public function _driver_like()
+    {
+        return 'ILIKE';
+
+    }
+
+    /**
+     * Returns concat sql part.
+     * 
+     * @param string $input
+     * @return string
+     */
+    public function _driver_concat($input)
+    {
+        return implode(' || ', $input);
+
+    }
+
+    /**
+     * Returns list of tables in database.
+     * 
+     * @return array
+     */
+    public function _driver_listtables()
+    {
+        return $this->GetCol('SELECT relname AS name FROM pg_class WHERE relkind = \'r\' and relname !~ \'^pg_\' and relname !~ \'^sql_\'');
+
+    }
+
+    /**
+     * Begins transaction.
+     * 
+     * @return int|false
+     */
+    public function _driver_begintrans()
+    {
+        return $this->Execute('BEGIN');
+
+    }
+
+    /**
+     * Commits transaction.
+     * 
+     * @return int|false
+     */
+    public function _driver_committrans()
+    {
+        return $this->Execute('COMMIT');
+
+    }
+
+    /**
+     * Rollbacks transactions.
+     * 
+     * @return int|false
+     */
+    public function _driver_rollbacktrans()
+    {
+        return $this->Execute('ROLLBACK');
+
+    }
+
+    /**
+     * Locks table.
+     * 
+     * @param string $table
+     * @param string $locktype
+     * @todo: locktype
+     */
+    public function _driver_locktables($table, $locktype = null)
+    {
+        if (is_array($table)) {
+            $this->Execute('LOCK ' . implode(', ', $table));
+        } else {
+            $this->Execute('LOCK ' . $table);
+        }
+
+    }
+
+    /**
+     * Unlocks tables.
+     * 
+     * @return boolean
+     */
+    public function _driver_unlocktables()
+    {
+        return TRUE;
+
+    }
+
+    /**
+     * Returns last inserted element id.
+     * 
+     * @param string $table
+     * @return int
+     */
+    public function _driver_lastinsertid($table = null)
+    {
+        return $this->GetOne('SELECT currval(\'' . $table . '_id_seq\')');
+
+    }
+
+    /**
+     * Creates group concat sql part.
+     * 
+     * @param string $field
+     * @param string $separator
+     * @return string
+     */
+    public function _driver_groupconcat($field, $separator = ',')
+    {
+        return 'array_to_string(array_agg(' . $field . '), \'' . $separator . '\')';
+
+    }
+
+    /**
+     * Sets connection encoding.
+     * 
+     * @param string $name Connection name
+     */
+    public function _driver_setencoding($name)
+    {
+        $this->Execute('SET NAMES ?', array($name));
+
+    }
+
 }
-
-?>

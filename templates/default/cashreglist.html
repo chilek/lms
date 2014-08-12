@@ -19,7 +19,7 @@
                         <SPAN class="nobr lighter">{trans("ID:")}</SPAN>
 		</TH>
 		<TH scope="col" class="text-right">
-			{if !check_conf('privileges.hide_summaries')}
+			{if !ConfigHelper::checkConfig('privileges.hide_summaries')}
 			<SPAN class="nobr lighter">{trans("Cash state:")}</SPAN>
 			{/if}
 		</TH>
@@ -46,7 +46,7 @@
 			({$reg.id|string_format:"%04d"})
 		</TD>
 		<TD  class="text-right{if $reg.balance < 0} alert{/if}" onClick="return self.location.href='?m=receiptlist&regid={$reg.id}';">
-			{if !check_conf('privileges.hide_summaries')}
+			{if !ConfigHelper::checkConfig('privileges.hide_summaries')}
 			<SPAN class="nobr">{$reg.balance|money_format}</SPAN>
 			{/if}
 		</TD>
@@ -77,12 +77,12 @@
     <TFOOT>
 	<TR>
 		<TD COLSPAN="2" class="text-right">
-			{if !check_conf('privileges.hide_summaries')}
+			{if !ConfigHelper::checkConfig('privileges.hide_summaries')}
 			<SPAN class="nobr bold"><IMG src="img/info2.gif" ALT=""> {trans("Total:")}</SPAN>
 			{/if}
 		</TD>
 		<TD class="text-right">
-			{if !check_conf('privileges.hide_summaries')}
+			{if !ConfigHelper::checkConfig('privileges.hide_summaries')}
 			<SPAN class="nobr bold">{$listdata.sum|money_format}</SPAN>
 			{/if}
 		</TD>

@@ -43,43 +43,43 @@ define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 define('DOC_DIR', $CONFIG['directories']['doc_dir']);
 define('MODULES_DIR', $CONFIG['directories']['modules_dir']);
 
+// Load autloader
+require_once(LIB_DIR.'/autoloader.php');
+
 require_once(LIB_DIR.'/config.php');
 
-// Init database 
-$_DBTYPE = $CONFIG['database']['type'];
-$_DBHOST = $CONFIG['database']['host'];
-$_DBUSER = $CONFIG['database']['user'];
-$_DBPASS = $CONFIG['database']['password'];
-$_DBNAME = $CONFIG['database']['database'];
+// Init database
 
-require_once(LIB_DIR.'/LMSDB.php');
+$DB = null;
 
-$DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
+try {
 
-if (!$DB) die;
+    $DB = LMSDB::getInstance();
 
-// Read configuration of LMS-UI from database
-
-if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0'))
-	foreach($cfg as $row)
-		$CONFIG[$row['section']][$row['var']] = $row['value'];
+} catch (Exception $ex) {
+    
+    trigger_error($ex->getMessage(), E_USER_WARNING);
+    
+    // can't working without database
+    die("Fatal error: cannot connect to database!\n");
+    
+}
 
 // Include required files (including sequence is important)
 
 require_once(LIB_DIR.'/language.php');
 require_once(LIB_DIR.'/definitions.php');
 require_once(LIB_DIR.'/common.php');
-require_once(LIB_DIR.'/LMS.class.php');
 require_once(LIB_DIR . '/SYSLOG.class.php');
 
-if (check_conf('phpui.logging') && class_exists('SYSLOG'))
+if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG'))
 	$SYSLOG = new SYSLOG($DB);
 else
 	$SYSLOG = null;
 
 $AUTH = NULL;
 
-$LMS = new LMS($DB, $AUTH, $CONFIG, $SYSLOG);
+$LMS = new LMS($DB, $AUTH, $SYSLOG);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 

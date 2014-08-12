@@ -103,9 +103,15 @@
 			</SELECT>
 			<INPUT type="text" name="nodeedit[port]" value="{if $nodeinfo.port}{$nodeinfo.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
 			<BR>
-			<SELECT NAME="nodeedit[linktype]" id="linktype" {tip trigger="linktype" text="Select link type"}>
+			<SELECT NAME="nodeedit[linktype]" id="linktype" {tip trigger="linktype" text="Select link type"} onchange="change_linktype(this.options[this.selectedIndex].value)">
 				{foreach from=$_LINKTYPES item=item key=key}
 				<OPTION value="{$key}"{if $key==$nodeinfo.linktype} selected{/if}>{$item}</OPTION>
+				{/foreach}
+			</SELECT>
+			<SELECT NAME="nodeedit[linktechnology]" id="linktechnology" {tip trigger="linktechnology" text="Select link technology"}>
+				<OPTION value="0">{trans("- unknown -")}</OPTION>
+				{foreach $_LINKTECHNOLOGIES[$nodeinfo.linktype] as $linktechnologyidx => $linktechnology}
+				<OPTION value="{$linktechnologyidx}"{if $linktechnologyidx == $nodeinfo.linktechnology} selected{/if}>{$linktechnology}</OPTION>
 				{/foreach}
 			</SELECT>
 			<SELECT NAME="nodeedit[linkspeed]" id="linkspeed" {tip trigger="linkspeed" text="Select link speed"}>
@@ -175,7 +181,7 @@
 			<IMG SRC="img/info1.gif" ALT="{trans("Description:")}">
 		</TD>
 		<TD style="width: 99%;" COLSPAN="2">
-			<input type="checkbox" id="info_label" onclick="javascript:toggle_visual_editor('info');"{if get_conf('phpui.default_editor') == 'wysiwyg'} checked{/if}>
+			<input type="checkbox" id="info_label" onclick="javascript:toggle_visual_editor('info');"{if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'} checked{/if}>
 			<label for="info_label">{trans("visual editor")}</label><br>
 			<TEXTAREA NAME="nodeedit[info]" id="info" COLS="50" ROWS="5" {tip text="Enter additional information (optional)"}>{$nodeinfo.info}</TEXTAREA>
 		</TD>
@@ -241,7 +247,7 @@
 
 		var passwd = new Array();
 		var items = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-		var length = {get_conf('phpui.nodepassword_length', '16')};
+		var length = {ConfigHelper::getConfig('phpui.nodepassword_length', '16')};
 		if (length > 32) length = 32;
 
 		for (var i=0; i<length; i++)
@@ -276,10 +282,35 @@
 			document.forms['editnode'].elements['nodeedit[customerid]'].value = val;
 	}
 
+	function change_linktype(linktype) {
+		linktype = parseInt(linktype);
+		var options = document.getElementById('linktechnology').options;
+		while (options.length)
+			options.remove(0);
+		options.add(new Option('{trans("- unknown -")}', 0));
+		switch (linktype) {
+			case 0:
+				{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
+				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+				{/foreach}
+				break;
+			case 1:
+				{foreach $_LINKTECHNOLOGIES[1] as $linktechnologyidx => $linktechnology}
+				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+				{/foreach}
+				break;
+			case 2:
+				{foreach $_LINKTECHNOLOGIES[2] as $linktechnologyidx => $linktechnology}
+				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+				{/foreach}
+				break;
+		}
+	}
+
 	check_teryt('location', true);
 
 	tinymce_init('{$_ui_language}');
-	{if get_conf('phpui.default_editor') == 'wysiwyg'}
+	{if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'}
 	toggle_visual_editor('info');
 	{/if}
 //-->

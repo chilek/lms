@@ -34,7 +34,7 @@ if ($SESSION->is_set('cdlp') && !isset($_GET['page']))
 	$SESSION->restore('cdlp', $_GET['page']);
 
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
-$pagelimit = (!isset($CONFIG['phpui']['divisionlist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['divisionlist_pagelimit']);
+$pagelimit = ConfigHelper::getConfig('phpui.divisionlist_pagelimit', $listdata['total']);
 $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('cdlp', $page);

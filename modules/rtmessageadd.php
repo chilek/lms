@@ -25,7 +25,7 @@
  */
 
 function MessageAdd($msg, $headers, $files = NULL) {
-	global $DB, $LMS, $CONFIG;
+	global $DB, $LMS;
 	$time = time();
 
 	$head = '';
@@ -48,10 +48,11 @@ function MessageAdd($msg, $headers, $files = NULL) {
 				(isset($msg['replyto']) ? $msg['replyto'] : $headers['Reply-To']),
 				$head));
 
-	if (!empty($files) && isset($CONFIG['rt']['mail_dir'])) {
+	$mail_dir = ConfigHelper::getConfig('rt.mail_dir');
+	if (!empty($files) && !empty($mail_dir)) {
 		$id = $DB->GetLastInsertId('rtmessages');
-		$dir = $CONFIG['rt']['mail_dir'] . sprintf('/%06d/%06d', $msg['ticketid'], $id);
-		@mkdir($CONFIG['rt']['mail_dir'] . sprintf('/%06d', $msg['ticketid']), 0700);
+		$dir = $mail_dir . sprintf('/%06d/%06d', $msg['ticketid'], $id);
+		@mkdir($mail_dir . sprintf('/%06d', $msg['ticketid']), 0700);
 		@mkdir($dir, 0700);
 		foreach ($files as $file) {
 			$newfile = $dir . '/' . $file['name'];
@@ -136,16 +137,15 @@ if(isset($_POST['message']))
 
 		$mailfname = '';
 
-		if(isset($CONFIG['phpui']['helpdesk_sender_name']) && ($mailfname = $CONFIG['phpui']['helpdesk_sender_name']))
+		$helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
+		if (!empty($helpdesk_sender_name) && ($mailfname = $helpdesk_sender_name))
 		{
 			if($mailfname == 'queue') $mailfname = $queue['name'];
 			if($mailfname == 'customer') $mailfname = $user['name'];
 			$mailfname = '"'.$mailfname.'"';
 		}
 
-		if(!isset($CONFIG['phpui']['helpdesk_backend_mode']) || !chkconfig($CONFIG['phpui']['helpdesk_backend_mode'])
-		    || $message['destination'] == ''
-		) {
+		if(!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_backend_mode', false)) || $message['destination'] == '') {
 			$headers = array();
 
 			if($message['destination'] && $message['userid']
@@ -250,9 +250,10 @@ if(isset($_POST['message']))
 		{
 			$mailfname = '';
 
-			if(!empty($CONFIG['phpui']['helpdesk_sender_name']))
+			$helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
+			if(!empty($helpdesk_sender_name))
 			{
-				$mailfname = $CONFIG['phpui']['helpdesk_sender_name'];
+				$mailfname = $helpdesk_sender_name;
 
 				if($mailfname == 'queue')
 					$mailfname = $queue['name'];
@@ -275,7 +276,7 @@ if(isset($_POST['message']))
 				.substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 				.'?m=rtticketview&id='.$message['ticketid'];
 
-			if (chkconfig($CONFIG['phpui']['helpdesk_customerinfo']))
+			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_customerinfo', false)))
 				if ($cid = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($message['ticketid'])))
 				{
 					$info = $DB->GetRow('SELECT pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
@@ -345,7 +346,8 @@ if(isset($_POST['message']))
 			}
 
 			// send sms
-			if (!empty($CONFIG['sms']['service']) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
+			$service = ConfigHelper::getConfig('sms.service');
+			if (!empty($service) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
 			        FROM users, rtrights
 					WHERE users.id=userid AND queueid = ? AND phone != \'\'
 						AND (rtrights.rights & 8) = 8 AND users.id != ?
@@ -390,7 +392,7 @@ else
 		$message['inreplyto'] = $reply['id'];
 		$message['references'] = $reply['messageid'];
 		
-		if(isset($CONFIG['phpui']['helpdesk_reply_body']) && chkconfig($CONFIG['phpui']['helpdesk_reply_body']))
+		if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_reply_body', false)))
 		{
 			$body = explode("\n",textwrap(strip_tags($reply['body']),74));
 			foreach($body as $line)

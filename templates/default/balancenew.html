@@ -82,7 +82,7 @@
 					<TD WIDTH="98%">
 						<SELECT size="1" name="addbalance[taxid]" {tip text="Select Tax rate"}>
 						{foreach item=tax from=$taxeslist}
-							<OPTION value="{$tax.id}" {if ($taxid && $tax.id == $taxid) || (!$taxid && $tax.value == get_conf('phpui.default_taxrate'))}selected{/if}>{$tax.label}</OPTION>
+							<OPTION value="{$tax.id}" {if ($taxid && $tax.id == $taxid) || (!$taxid && $tax.value == ConfigHelper::getConfig('phpui.default_taxrate'))}selected{/if}>{$tax.label}</OPTION>
 						{/foreach}
 						</SELECT>
 					</TD>

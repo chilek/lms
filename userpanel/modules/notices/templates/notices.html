@@ -1,29 +1,59 @@
 <!-- $Id$ -->
 {include file="header.html"}
+{if $warning}
 <table width="100%" cellpadding="10">
     <tr>
-	<td>
-{box title="Notice to you"}
-{if $notice}
-<table width="100%">
-	<tr>
-		<td align="center">
-			{$notice}
-		</td>
-	</tr>
-	<tr>
-		<td align="right">
-			<a href="?m=notice&amp;confirm=1">{trans("I confirm reading of notices")} {img src="save.gif" alt=""}</a>
-		</td>
-	</tr>
+       <td>
+						{box title="Warning to you"}
+						
+						<table width="100%">
+						 <tr>
+				      <td align="center">
+									{$warning}
+				      </td>
+						 </tr>
+						 <tr>
+						   <td align="right">
+										<a href="?m=notices&amp;confirm_old=1">{trans("I confirm reading")} {img src="save.gif" alt=""}</a>
+						   </td>
+						 </tr>
+						</table>
+						{/box}
+       </td>
+    </tr>
 </table>
-{else}
-	<p>&nbsp;</p>
-	<p align="center"><b>{trans("We don't have any notices to you.")}</b></p>
-	<p>&nbsp;</p>
 {/if}
-{/box}
-	</td>
+
+<table width="100%" cellpadding="10">
+    <tr>
+       <td>
+						{box title="Notice to you"}
+						{if $notice}
+						<table style="width: 100%;" cellpadding="3" class="light">
+							 <tr class="darkest">
+							   <td width="2%">{trans("Date:")}</td>
+							   <td width="30%">{trans("Subject:")}</td>
+							   <td width="56%">{trans("Body:")}</td>
+							   <td width="2%">{trans("Status:")}</td>
+							   <td width="10%">&nbsp;</td>
+							 </tr>
+							 {cycle values="light,lucid" print=false name=messages}
+							 {foreach $notice as $items}
+							 <tr class="dark {cycle name=messages}{if $items.status==$smarty.const.MSG_ERROR} alert{elseif $items.status==$smarty.const.MSG_SENT} blend{/if}">
+									<td width="2%" class="nobr">{$items.cdate|date_format:"%Y/%m/%d %H:%M"}</td>
+							   <td width="30%" style="word-break:break-all;">{$items.subject}</td>
+							   <td width="56%" style="word-break:break-all;">{$items.body}</td>
+							   <td width="2%" >{if $items.type==6 }<b>{trans("Urgent")}</b>{else}{trans("Casual")}{/if}</td>
+							   <td width="10%" align="center">{if $items.status !=2}<a href="?m=notices&amp;confirm={$items.id}">{trans("I confirm reading")} {img src="save.gif" alt=""}</a>{else}&nbsp;{/if}</td>
+							 {/foreach}
+						</table>
+						{else}
+			       <p>&nbsp;</p>
+			       <p align="center"><b>{trans("We don't have any notices to you.")}</b></p>
+			       <p>&nbsp;</p>
+						{/if}
+						{/box}
+					</td>
     </tr>
 </table>
 {include file="footer.html"}

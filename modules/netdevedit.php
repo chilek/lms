@@ -51,7 +51,7 @@ switch ($action) {
 			(CASE src WHEN ? THEN dstport ELSE srcport END) AS dstport
 			FROM netlinks WHERE src = ? OR dst = ?)
 			UNION
-			(SELECT linktype AS type, linkspeed AS speed, id, port AS srcport, NULL AS dstport
+			(SELECT linktype AS type, linktechnology AS technology, linkspeed AS speed, id, port AS srcport, NULL AS dstport
 			FROM nodes WHERE netdev = ? AND ownerid > 0)
 			ORDER BY srcport', array($dev1['id'], $dev1['id'], $dev1['id'],
 					$dev1['id'], $dev1['id'], $dev1['id']));
@@ -61,7 +61,7 @@ switch ($action) {
 			(CASE src WHEN ? THEN dstport ELSE srcport END) AS dstport
 			FROM netlinks WHERE src = ? OR dst = ?)
 			UNION
-			(SELECT linktype AS type, linkspeed AS speed, id, port AS srcport, NULL AS dstport
+			(SELECT linktype AS type, linktechnology AS technology, linkspeed AS speed, id, port AS srcport, NULL AS dstport
 			FROM nodes WHERE netdev = ? AND ownerid > 0)
 			ORDER BY srcport', array($dev2['id'], $dev2['id'], $dev2['id'],
 					$dev2['id'], $dev2['id'], $dev2['id']));
@@ -112,9 +112,9 @@ switch ($action) {
 					}
 
 					if (isset($row['dstport'])) // device
-						$LMS->NetDevLink($dev2['id'], $row['id'], $row['type'], $sport, $row['dstport']);
+						$LMS->NetDevLink($dev2['id'], $row['id'], $row['type'], $row['technology'], $row['speed'], $sport, $row['dstport']);
 					else // node
-						$LMS->NetDevLinkNode($row['id'], $dev2['id'], $row['type'], $sport);
+						$LMS->NetDevLinkNode($row['id'], $dev2['id'], $row['type'], $row['technology'], $row['speed'], $sport);
 				}
 
 			$ports = array();
@@ -133,9 +133,9 @@ switch ($action) {
 					}
 
 					if (isset($row['dstport'])) // device
-						$LMS->NetDevLink($dev1['id'], $row['id'], $row['type'], $sport, $row['dstport']);
+						$LMS->NetDevLink($dev1['id'], $row['id'], $row['type'], $row['technology'], $row['speed'], $sport, $row['dstport']);
 					else // node
-						$LMS->NetDevLinkNode($row['id'], $dev1['id'], $row['type'], $sport);
+						$LMS->NetDevLinkNode($row['id'], $dev1['id'], $row['type'], $row['technology'], $row['speed'], $sport);
 				}
 
 			$DB->CommitTrans();
@@ -200,6 +200,7 @@ switch ($action) {
 	case 'connect':
 
 		$linktype = !empty($_GET['linktype']) ? intval($_GET['linktype']) : '0';
+		$linktechnology = !empty($_GET['linktechnology']) ? intval($_GET['linktechnology']) : '0';
 		$linkspeed = !empty($_GET['linkspeed']) ? intval($_GET['linkspeed']) : '100000';
 		$dev['srcport'] = !empty($_GET['srcport']) ? intval($_GET['srcport']) : '0';
 		$dev['dstport'] = !empty($_GET['dstport']) ? intval($_GET['dstport']) : '0';
@@ -236,10 +237,11 @@ switch ($action) {
 		}
 
 		$SESSION->save('devlinktype', $linktype);
+		$SESSION->save('devlinktechnology', $linktechnology);
 		$SESSION->save('devlinkspeed', $linkspeed);
 
 		if (!$error) {
-			$LMS->NetDevLink($dev['id'], $_GET['id'], $linktype, $linkspeed, $dev['srcport'], $dev['dstport']);
+			$LMS->NetDevLink($dev['id'], $_GET['id'], $linktype, $linktechnology, $linkspeed, $dev['srcport'], $dev['dstport']);
 			$SESSION->redirect('?m=netdevinfo&id=' . $_GET['id']);
 		}
 
@@ -250,6 +252,7 @@ switch ($action) {
 	case 'connectnode':
 
 		$linktype = !empty($_GET['linktype']) ? intval($_GET['linktype']) : '0';
+		$linktechnology = !empty($_GET['linktechnology']) ? intval($_GET['linktechnology']) : '0';
 		$linkspeed = !empty($_GET['linkspeed']) ? intval($_GET['linkspeed']) : '0';
 		$node['port'] = !empty($_GET['port']) ? intval($_GET['port']) : '0';
 		$node['id'] = !empty($_GET['nodeid']) ? intval($_GET['nodeid']) : '0';
@@ -270,10 +273,11 @@ switch ($action) {
 		}
 
 		$SESSION->save('nodelinktype', $linktype);
+		$SESSION->save('nodelinktechnology', $linktechnology);
 		$SESSION->save('nodelinkspeed', $linkspeed);
 
 		if (!$error) {
-			$LMS->NetDevLinkNode($node['id'], $_GET['id'], $linktype, $linkspeed, $node['port']);
+			$LMS->NetDevLinkNode($node['id'], $_GET['id'], $linktype, $linktechnology, $linkspeed, $node['port']);
 			$SESSION->redirect('?m=netdevinfo&id=' . $_GET['id']);
 		}
 
@@ -394,7 +398,7 @@ switch ($action) {
 		$macs = array();
 		foreach ($nodeipdata['macs'] as $key => $value)
 			if (check_mac($value)) {
-				if ($value != '00:00:00:00:00:00' && !chkconfig($CONFIG['phpui']['allow_mac_sharing']))
+				if ($value != '00:00:00:00:00:00' && !ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.allow_mac_sharing', false)))
 					if ($LMS->GetNodeIDByMAC($value))
 						$error['mac' . $key] = trans('MAC address is in use!');
 				$macs[] = $value;
@@ -488,7 +492,7 @@ switch ($action) {
 		$macs = array();
 		foreach ($nodeipdata['macs'] as $key => $value)
 			if (check_mac($value)) {
-				if ($value != '00:00:00:00:00:00' && isset($CONFIG['phpui']['allow_mac_sharing']) && !chkconfig($CONFIG['phpui']['allow_mac_sharing']))
+				if ($value != '00:00:00:00:00:00' && !ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.allow_mac_sharing', true)))
 					if (($nodeid = $LMS->GetNodeIDByMAC($value)) != NULL && $nodeid != $_GET['ip'])
 						$error['mac' . $key] = trans('MAC address is in use!');
 				$macs[] = $value;
@@ -640,8 +644,10 @@ $SMARTY->assign('restnetdevlist', $netdevlist);
 $SMARTY->assign('replacelist', $replacelist);
 $SMARTY->assign('replacelisttotal', $replacelisttotal);
 $SMARTY->assign('devlinktype', $SESSION->get('devlinktype'));
+$SMARTY->assign('devlinktechnology', $SESSION->get('devlinktechnology'));
 $SMARTY->assign('devlinkspeed', $SESSION->get('devlinkspeed'));
 $SMARTY->assign('nodelinktype', $SESSION->get('nodelinktype'));
+$SMARTY->assign('nodelinktechnology', $SESSION->get('nodelinktechnology'));
 $SMARTY->assign('nodelinkspeed', $SESSION->get('nodelinkspeed'));
 $SMARTY->assign('nastype', $LMS->GetNAStypes());
 
@@ -649,7 +655,7 @@ include(MODULES_DIR . '/netdevxajax.inc.php');
 
 switch ($edit) {
 	case 'data':
-		if (chkconfig($CONFIG['phpui']['ewx_support']))
+		if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false)))
 			$SMARTY->assign('channels', $DB->GetAll('SELECT id, name FROM ewx_channels ORDER BY name'));
 
 		$SMARTY->display('netdevedit.html');

@@ -20,8 +20,6 @@
  *  USA.
  */
 
-#define REVISION "$Id$"
-
 #include <time.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -37,13 +35,15 @@
 #include <sys/wait.h>
   
 #include "lmsd.h"
+#include "config.h"
 
 int quit = 0, runall = 0, port = 0, dontfork = 0, ssl = 0;
-char *db, *user, *passwd;
+char *configfile, *driver, *dbname, *user, *passwd;
 char host[255], dhost[255];
 char *pidfile = NULL;
 char *command = NULL;
 char *iopt = NULL;
+Config *ini;
 struct sigaction sa, orig;
 
 static char **Argv = NULL;
@@ -67,18 +67,25 @@ int main(int argc, char *argv[], char **envp)
 	int fval = 0, i = 0, reload = 0;
 	char *inst, *instance; 
 	FILE *pidf;
-#ifdef CONFIGFILE
-	Config *ini;
-#endif
 	openlog(PROGNAME, 0, LOG_INFO | LOG_CRIT | LOG_ERR);
-    	syslog(LOG_INFO, "LMS Daemon started.");
+	syslog(LOG_INFO, "LMS Daemon started.");
+
+        // initialize global structure
+        g = (GLOBAL *) realloc(NULL, sizeof(GLOBAL));
+        g->api_version = APIVERSION;
+        g->db = (DB *) realloc(NULL, sizeof(DB));
+        g->db->conn = NULL;
 
 	// initialize proces name change 
 	init_set_proc_title(argc, argv, envp);
 
+        // configuration load sequence - check if LMSini is set
+        configfile = ( getenv("LMSINI") ? getenv("LMSINI") : "/etc/lms/lms.ini" );
+
     	// read environment and command line
+	driver = ( getenv("LMSDBTYPE") ? getenv("DBTYPE") : "mysql" );
 	passwd = ( getenv("LMSDBPASS") ? getenv("LMSDBPASS") : "" );
-	db = ( getenv("LMSDBNAME") ? getenv("LMSDBNAME") : "lms" );
+	dbname = ( getenv("LMSDBNAME") ? getenv("LMSDBNAME") : "lms" );
 	user = ( getenv("LMSDBUSER") ? getenv("LMSDBUSER") : "lms" );
 	port = ( getenv("LMSDBPORT") ? atoi(getenv("LMSDBPORT")) : 0 );
 	if( getenv("LMSDBHOST") ) strcpy(host, getenv("LMSDBHOST")); else strcpy(host, "localhost");
@@ -90,34 +97,86 @@ int main(int argc, char *argv[], char **envp)
 	// command line arguments
 	parse_command_line(argc, argv);
 
+        // load configuration file if exist (if not it will use default parameters - only database section)
+        ini = config_load(configfile, g->db, dhost, "database");
+        // assign variables
+        driver = config_getstring(ini, "database", "type", driver);
+        passwd = config_getstring(ini, "database", "password", passwd);
+        dbname = config_getstring(ini, "database", "database", dbname);
+        user = config_getstring(ini, "database", "user", user);
+        port = config_getint(ini, "database", "port", port);
+        strcpy(host, config_getstring(ini, "database", "host", host));
+
 	// change process name (hide command line args)
 	set_proc_title(PROGNAME);
 
-	// initialize global structure
-	g = (GLOBAL *) realloc(NULL, sizeof(GLOBAL));
-	g->api_version = APIVERSION;
-	g->conn = NULL;
-	
-	g->db_connect = &db_connect;
-	g->db_disconnect = &db_disconnect;
-   	g->db_query = &db_query;
-	g->db_pquery = &db_pquery;
-    	g->db_exec = &db_exec;
-	g->db_pexec = &db_pexec;
-	g->db_last_insert_id = &db_last_insert_id;
-	g->db_free = &db_free;
-    	g->db_begin = &db_begin;
-    	g->db_commit = &db_commit;
-	g->db_abort = &db_abort;
-    	g->db_get_data = &db_get_data;
-	g->db_nrows = &db_nrows;
-	g->db_ncols = &db_ncols;
+        str_replace(&driver, "postgres", "pgsql"); // postgres in ini file is pgsql
+        str_replace(&driver, "mysqli", "mysql");   // mysqli in ini file is mysql
+
+        char dbdrv_path[strlen(LMS_LIB_DIR) + strlen(driver) + 4];
+        sprintf(dbdrv_path, LMS_LIB_DIR "/%s.so", driver);
+
+        if( !file_exists(dbdrv_path))
+        {
+                syslog(LOG_CRIT, "Database driver '%s' does not exist. Could not find '%s'.", driver, dbdrv_path);
+                fprintf(stderr, "Database driver '%s' does not exist. Could not find '%s'.\n", driver, dbdrv_path);
+                exit(1);
+        }
+
+        void    *dbdrv;
+        dbdrv = dlopen(dbdrv_path, RTLD_NOW);
+
+        if( !dbdrv )
+        {
+                syslog(LOG_CRIT, "Unable to load database driver '%s': %s", dbdrv_path, dlerror());
+                fprintf(stderr, "Unable to load database driver '%s': %s.\n", dbdrv_path, dlerror());
+                exit(1);
+        }
+        else
+        {
+                syslog(LOG_INFO, "Database driver '%s' loaded.", driver);
+        }
+
+	g->db->connect = dlsym(dbdrv, "db_connect");
+	g->db->disconnect = dlsym(dbdrv, "db_disconnect");
+   	g->db->query = dlsym(dbdrv, "db_query");
+	g->db->pquery = dlsym(dbdrv, "db_pquery");
+    	g->db->exec = dlsym(dbdrv, "db_exec");
+	g->db->pexec = dlsym(dbdrv, "db_pexec");
+	g->db->last_insert_id = dlsym(dbdrv, "db_last_insert_id");
+	g->db->free = dlsym(dbdrv, "db_free");
+    	g->db->begin = dlsym(dbdrv, "db_begin");
+    	g->db->commit = dlsym(dbdrv, "db_commit");
+	g->db->abort = dlsym(dbdrv, "db_abort");
+    	g->db->get_data = dlsym(dbdrv, "db_get_data");
+	g->db->nrows = dlsym(dbdrv, "db_nrows");
+	g->db->ncols = dlsym(dbdrv, "db_ncols");
+	g->db->concat = dlsym(dbdrv, "db_concat");
+	g->db->escape = dlsym(dbdrv, "db_escape");
+	g->db->colname = dlsym(dbdrv, "db_colname");
+
+        // test database connection
+        if( !(g->db->conn = g->db->connect(dbname,user,passwd,host,port,ssl)) )
+        {
+                fprintf(stderr, "CRITICAL: Could not connect to database. See logs for details.\n");
+                termination_handler(1);
+        }
+        res = g->db->pquery(g->db->conn, "SELECT count(*) FROM dbinfo");
+        if( ! g->db->nrows(res) )
+        {
+                fprintf(stderr, "CRITICAL: Could not query database. See logs for details.\n");
+                termination_handler(1);
+        }
+        g->db->free(&res);
+        g->db->disconnect(g->db->conn);
+
 
     	g->str_replace = &str_replace;
     	g->str_save = &str_save;
     	g->str_concat = &str_concat;
 	g->str_lwc = &str_lwc;
 	g->str_upc = &str_upc;
+	g->va_list_join = &va_list_join;
 
     	g->config_getstring = &config_getstring;
 	g->config_getint = &config_getint;
@@ -185,7 +244,7 @@ int main(int argc, char *argv[], char **envp)
 		}
 
 		// try to connect to database
-		if( !(g->conn = db_connect(db,user,passwd,host,port,ssl)) )
+		if( !(g->db->conn = g->db->connect(dbname,user,passwd,host,port,ssl)) )
 		{
 			if( quit ) termination_handler(1);
 			continue;
@@ -194,12 +253,12 @@ int main(int argc, char *argv[], char **envp)
 		if( !reload )
 		{
 			// check reload order
-			res = db_pquery(g->conn, "SELECT reload FROM hosts WHERE name = '?' AND reload != 0", dhost);
-			if( db_nrows(res) )
+			res = g->db->pquery(g->db->conn, "SELECT reload FROM hosts WHERE name = '?' AND reload != 0", dhost);
+			if( g->db->nrows(res) )
 			{
 				reload = 1;
 			}
-			db_free(&res);
+			g->db->free(&res);
 		}
 		
 		instances = (INSTANCE *) malloc(sizeof(INSTANCE));
@@ -207,7 +266,6 @@ int main(int argc, char *argv[], char **envp)
 		// get instances list even if reload == 0
 		// maybe we should do that once before main loop, but in
 		// this way we can change configuration without daemon restart
-#ifndef CONFIGFILE
 		if( iopt ) // from command line...
 		{
 			inst = strdup(iopt);
@@ -216,84 +274,45 @@ int main(int argc, char *argv[], char **envp)
 				char *name = strdup(instance);
 				str_replace(&name, "\\s", " "); // instance name with spaces
 				
-				res = db_pquery(g->conn, "SELECT module, crontab FROM daemoninstances, hosts WHERE hosts.id = hostid AND disabled = 0 AND hosts.name = '?' AND daemoninstances.name = '?'", dhost, name);
-				if( db_nrows(res) )
+				res = g->db->pquery(g->db->conn, "SELECT module, crontab FROM daemoninstances, hosts WHERE hosts.id = hostid AND disabled = 0 AND hosts.name = '?' AND daemoninstances.name = '?'", dhost, name);
+				if( g->db->nrows(res) )
 				{
-					char *crontab = db_get_data(res, 0, "crontab");
+					char *crontab = g->db->get_data(res, 0, "crontab");
 					if( runall || (reload && !strlen(crontab)) || (!quit && crontab_match(tt, crontab)) )
 					{
 						instances = (INSTANCE *) realloc(instances, sizeof(INSTANCE)*(i_no+1));
 						instances[i_no].name = strdup(name);
-						instances[i_no].module = strdup(db_get_data(res, 0, "module"));
+						instances[i_no].module = strdup(g->db->get_data(res, 0, "module"));
 						instances[i_no].crontab = strdup(crontab);
 						i_no++;
 					}
-				}
-				db_free(&res);
+				} else {
+					syslog(LOG_CRIT, "Host '%s' and/or instance '%s' not found in database!", dhost, name);
+					fprintf(stderr, "Host '%s' and/or instance '%s' not found in database!\n", dhost, name);
+                                }
+				g->db->free(&res);
 				free(name);
 			}
 			free(inst);	
 		}		
 		else // ... or from database
 		{
-			res = db_pquery(g->conn, "SELECT module, crontab, daemoninstances.name AS name FROM daemoninstances, hosts WHERE hosts.id = hostid AND disabled = 0 AND hosts.name = '?' ORDER BY priority", dhost);
-			for(i=0; i<db_nrows(res); i++)
+			res = g->db->pquery(g->db->conn, "SELECT module, crontab, daemoninstances.name AS name FROM daemoninstances, hosts WHERE hosts.id = hostid AND disabled = 0 AND hosts.name = '?' ORDER BY priority", dhost);
+			for(i=0; i<g->db->nrows(res); i++)
 			{
-				char *crontab = db_get_data(res, i, "crontab");
+				char *crontab = g->db->get_data(res, i, "crontab");
 				if( runall || (reload && !strlen(crontab)) || (!quit && crontab_match(tt, crontab)) )
 				{
 					instances = (INSTANCE *) realloc(instances, sizeof(INSTANCE)*(i_no+1));
-					instances[i_no].name = strdup(db_get_data(res, i, "name"));
-					instances[i_no].module = strdup(db_get_data(res, i, "module"));
+					instances[i_no].name = strdup(g->db->get_data(res, i, "name"));
+					instances[i_no].module = strdup(g->db->get_data(res, i, "module"));
 					instances[i_no].crontab = strdup(crontab);
 					i_no++;
 				}
 			}
-			db_free(&res);
+			g->db->free(&res);
 		}
-#else 
-		// read config from ini file
-		ini = config_load(g->conn, dhost, NULL);
-		if( iopt ) // from command line...
-		{
-			inst = strdup(iopt);
-			for( instance=strtok(inst," "); instance!=NULL; instance=strtok(NULL, " ") )
-			{
-				char *name = strdup(instance);
-				str_replace(&name, "\\s", " ");
-				
-				char *crontab = config_getstring(ini, name, "crontab", "");
-				if( runall || (reload && !strlen(crontab)) || (!quit && crontab_match(tt, crontab)) )
-				{
-					instances = (INSTANCE *) realloc(instances, sizeof(INSTANCE)*(i_no+1));
-					instances[i_no].name = strdup(name);
-					instances[i_no].module = strdup(config_getstring(ini, name, "module", ""));
-					instances[i_no].crontab = strdup(crontab);
-					i_no++;
-				}
-				free(name);
-			}
-			free(inst);	
-		}		
-		else // ... or from file
-		{
-			inst = strdup(config_getstring(ini, "lmsd", "instances", ""));
-			for( instance=strtok(inst," "); instance!=NULL; instance=strtok(NULL, " ") )
-			{
-				char *crontab = config_getstring(ini, instance, "crontab", "");
-				if( runall || (reload && !strlen(crontab)) || (!quit && crontab_match(tt, crontab)) )
-				{
-					instances = (INSTANCE *) realloc(instances, sizeof(INSTANCE)*(i_no+1));
-					instances[i_no].name = strdup(instance);
-					instances[i_no].module = strdup(config_getstring(ini, instance, "module", ""));
-					instances[i_no].crontab = strdup(crontab);
-					i_no++;
-				}
-			}
-		}
-		config_free(ini);
-#endif
-		db_disconnect(g->conn);
+		g->db->disconnect(g->db->conn);
 
 		if( i_no )
 		{
@@ -319,7 +338,7 @@ int main(int argc, char *argv[], char **envp)
 				syslog(LOG_INFO, "DEBUG: [lmsd] Reloading...");
 #endif
 				// try to connect to database again
-				if( !(g->conn = db_connect(db,user,passwd,host,port,ssl)) )
+				if( !(g->db->conn = g->db->connect(dbname,user,passwd,host,port,ssl)) )
 				{
 					if( quit ) 
 						termination_handler(1);
@@ -329,7 +348,7 @@ int main(int argc, char *argv[], char **envp)
 				
 				// write reload timestamp and disable reload order
 				if( reload )
-					db_pexec(g->conn, "UPDATE hosts SET lastreload = %NOW%, reload = 0 WHERE name = '?'", dhost);
+					g->db->pexec(g->db->conn, "UPDATE hosts SET lastreload = %NOW%, reload = 0 WHERE name = '?'", dhost);
 				
 				for(i=0; i<i_no; i++)
 				{
@@ -340,7 +359,7 @@ int main(int argc, char *argv[], char **envp)
 					char path[strlen(LMS_LIB_DIR) + strlen(instances[i].module) + 4];
 			
 					// get instance configuration and members
-					mod->ini = config_load(g->conn, dhost, instances[i].name);
+					mod->ini = config_load(configfile, g->db, dhost, instances[i].name);
 					mod->instance = strdup(instances[i].name);
 					
 					// set path to module if not specified
@@ -379,6 +398,7 @@ int main(int argc, char *argv[], char **envp)
 						continue;
 					}
 
+					syslog(LOG_INFO, "Running module: %s", instances[i].module);
 					// now run module
 					m->reload(g, m);
 					
@@ -386,7 +406,7 @@ int main(int argc, char *argv[], char **envp)
 					free_module(m);
 				}
 				
-				db_disconnect(g->conn);
+				g->db->disconnect(g->db->conn);
 	
 				// exit child (reload) thread
 				if( !quit ) 
@@ -420,9 +440,11 @@ int main(int argc, char *argv[], char **envp)
 static void parse_command_line(int argc, char **argv)
 {
 	int opt, option_index = 0;
-	char revision[10];
+	char revision[16];
 
 	static struct option options[] = {
+   	    { "config-file", 1, 0, 'C' },
+   	    { "dbtype", 1, 0, 't' },
    	    { "dbhost", 1, 0, 'h' },
 	    { "dbname", 1, 0, 'd' },
         { "dbuser", 1, 0, 'u' },
@@ -440,14 +462,12 @@ static void parse_command_line(int argc, char **argv)
    	    { 0, 0, 0, 0 }
 	};
 
-	sscanf(REVISION, "$Id: lmsd.c,v %s", revision);
-
-	while( (opt = getopt_long(argc, argv, "xsqrfvi:h:p:d:u:H:c:P:", options, &option_index)) != -1 )
+	while( (opt = getopt_long(argc, argv, "xsqrfvi:h:t:p:d:u:C:H:c:P:", options, &option_index)) != -1 )
 	{
 		switch(opt) 
 		{
     		case 'v':
-            		printf("LMS Daemon version 1.11-git (%s)\nCopyright (c) 2001-2013 LMS Developers\n", revision);
+            		printf("LMS Daemon version %s (%s)\nCopyright (c) 2001-2013 LMS Developers\n", PACKAGE_VERSION, LMSD_REVISION);
             		exit(0);
     		case 's':
             		ssl = 1;
@@ -472,10 +492,16 @@ static void parse_command_line(int argc, char **argv)
 			passwd = strdup(optarg);
 			break;
 		case 'd':
-			db = strdup(optarg);
+			dbname = strdup(optarg);
 			break;
 		case 'u':
 			user = strdup(optarg);
+			break;
+		case 't':
+			driver = strdup(optarg);
+			break;
+		case 'C':
+			configfile = strdup(optarg);
 			break;
 		case 'H':
 			strcpy(dhost, optarg);
@@ -488,7 +514,9 @@ static void parse_command_line(int argc, char **argv)
 			break;
 		case 'x':
         default:
-			printf("LMS Daemon version 1.11-git (%s). Command line options:\n", revision);
+		printf("LMS Daemon version %s (%s). Command line options:\n", PACKAGE_VERSION, LMSD_REVISION);
+        	printf(" --config-file -C file\t\tpath to ini file (default: /etc/lms/lms.ini)\n");
+        	printf(" --type -t [dbtype]\tdatabase type (default: mysql)\n");
         	printf(" --dbhost -h host[:port]\tdatabase host (default: 'localhost')\n");
         	printf(" --dbname -d db_name\t\tdatabase name (default: 'lms')\n");
         	printf(" --dbuser -u db_user\t\tdatabase user (default: 'lms')\n");

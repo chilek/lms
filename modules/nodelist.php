@@ -79,7 +79,7 @@ if ($SESSION->is_set('nlp') && !isset($_GET['page']))
 	$SESSION->restore('nlp', $_GET['page']);
 	
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']);
-$pagelimit = (!isset($CONFIG['phpui']['nodelist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['nodelist_pagelimit']);
+$pagelimit = ConfigHelper::getConfig('phpui.nodelist_pagelimit', $listdata['total']);
 $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('nlp', $page);

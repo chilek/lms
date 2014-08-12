@@ -66,8 +66,8 @@ switch($action)
 		$currtime = time();
 		$invoice['cdate'] = $currtime;
 		$invoice['sdate'] = $currtime;
-		$invoice['paytime'] = $CONFIG['invoices']['paytime'];
-//		$invoice['paytype'] = $CONFIG['invoices']['paytype'];
+		$invoice['paytime'] = ConfigHelper::getConfig('invoices.paytime');
+//		$invoice['paytype'] = ConfigHelper::getConfig('invoices.paytype');
 
 		if(!empty($_GET['customerid']) && $LMS->CustomerExists($_GET['customerid']))
 		{
@@ -280,7 +280,7 @@ switch($action)
 				WHERE id = ?', array($customer['divisionid']))) !== NULL)
 				$invoice['paytime'] = $paytime;
 			else
-				$invoice['paytime'] = $CONFIG['invoices']['paytime'];
+				$invoice['paytime'] = ConfigHelper::getConfig('invoices.paytime');
 		}
 		// set paytype
 		if(empty($invoice['paytype']))
@@ -290,7 +290,7 @@ switch($action)
 			elseif($paytype = $DB->GetOne('SELECT inv_paytype FROM divisions 
 				WHERE id = ?', array($customer['divisionid'])))
 				$invoice['paytype'] = $paytype;
-			else if (($paytype = intval($CONFIG['invoices']['paytype'])) && isset($PAYTYPES[$paytype]))
+			else if (($paytype = intval(ConfigHelper::getConfig('invoices.paytype'))) && isset($PAYTYPES[$paytype]))
 				$invoice['paytype'] = $paytype;
 		    else
 		        $error['paytype'] = trans('Default payment type not defined!');
@@ -386,7 +386,7 @@ if(isset($list))
 	else
 		$covenantlist = $list;
 
-if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
+if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
 {
         $SMARTY->assign('customers', $LMS->GetCustomerNames());
 }

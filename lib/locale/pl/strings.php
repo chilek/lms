@@ -878,7 +878,7 @@ $_LANG['Network name:'] = 'Nazwa sieci:';
 $_LANG['Network name contains forbidden characters!'] = 'Nazwa sieci zawiera niedozwolone znaki!';
 $_LANG['Network name is required!'] = 'Nazwa sieci jest wymagana!';
 $_LANG['Host/network/prefix (interface):'] = 'Host/sieć/prefiks (interfejs):';
-$_LANG['networks and devices management'] = 'zarządzenie sieciami i urządzeniami';
+$_LANG['networks and devices management'] = 'zarządzanie sieciami i urządzeniami';
 $_LANG['Network size:'] = 'Rozmiar sieci:';
 $_LANG['Network Statistics'] = 'Statystyki sieci';
 $_LANG['Network Statistics Compacting'] = 'Kompaktowanie statystyk sieci';
@@ -2540,7 +2540,6 @@ $_LANG['Enter IP address:'] = 'Podaj adres IP:';
 $_LANG['Ping to $a'] = 'Ping do $a';
 $_LANG['Enabled'] = 'Włączony';
 
-$_LANG['any sms'] = 'dowolny sms';
 $_LANG['Enter phone numbers separated by commas'] = 'Podaj numery telefonów oddzielone przecinkami';
 $_LANG['Specified phone number is not correct!'] = 'Podany numer telefonu nie jest poprawny!';
 $_LANG['Characters:'] = 'Znaków:';
@@ -2757,6 +2756,13 @@ $_LANG['Ticket has been assigned to user $a.'] = 'Zgłoszenie zostało przypisan
 $_LANG['Ticket has been moved from queue $a to queue $b.'] = 'Zgłoszenie zostało przeniesione z kolejki $a do kolejki $b.';
 
 $_LANG['www'] = 'www';
+$_LANG['any sms'] = 'dowolny sms';
+$_LANG['userpanel'] = 'panel abonencki';
+$_LANG['userpanel urgent'] = 'panel abonencki (pilne)';
+$_LANG['I confirm reading'] = 'Zapoznałem się';
+$_LANG['Urgent'] = 'Pilna';
+$_LANG['Casual'] = 'Zwykła';
+
 
 $_LANG['New ticket customer notification subject:'] = 'Temat listu z powiadomieniem klienta o nowym zgłoszeniu:';
 $_LANG['New ticket customer notification body:'] = 'Treść listu z powiadomieniem klienta o nowym zgłoszeniu:';
@@ -2779,5 +2785,26 @@ $_LANG['Tariff type:'] = 'Typ taryfy:';
 
 $_LANG['Consent required:'] = 'Wymagana zgoda:';
 $_LANG['Check if customer consent to messages delivery via e-mail or sms is required'] = 'Zaznacz jeśli wymagana jest zgoda klienta na dostarczanie informacji pocztą elektr. lub sms-em';
+
+$_LANG['Select link technology'] = 'Wybierz technologię łącza';
+$_LANG['Link technology:'] = 'Technologia łącza:';
+$_LANG['- unknown -'] = '- nieznana -';
+
+$_LANG['Hide toolbar from user interface. Default: false.'] = 'Ukryj górne menu w interfejsie użytkownika. Domyślnie: 0 (wyłączone).';
+$_LANG['Does this LMS have transaction log support (not opensource). Default: false.'] = 'Czy ta instalacja LMS posiada log transakcji (opcja nie opensource). Domyślnie: 0 (wyłączone).';
+
+$_LANG['Optional'] = 'Opcjonalna';
+$_LANG['Selection list'] = 'Lista wyboru';
+$_LANG['Check if tariff should be optional'] = 'Zaznacz, jeśli taryfa powinna być opcjonalna';
+$_LANG['Choose selection list'] = 'Wybierz listę wyboru';
+$_LANG['All rights'] = 'Pełne prawa';
+
+$_LANG['Specified IP address doesn\'t belong to selected network!'] = 'Podany adres IP nie należy do wybranej sieci!';
+
+$_LANG['Delete all'] = 'Usuń wszystkie';
+$_LANG['Are you sure, you want to delete all liabilities?'] = 'Jesteś pewien, że chcesz usunąć wszystkie zobowiązania?';
+
+$_LANG['Enter document number and press Enter'] = 'Wprowadź numer dokumentu i naciśnij Enter';
+$_LANG['Document id:'] = 'Id dokumentu:';
 
 ?>

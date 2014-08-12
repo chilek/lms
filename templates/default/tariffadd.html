@@ -8,7 +8,7 @@
 	}
 //-->
 </SCRIPT>
-{$default_taxrate = get_conf('phpui.default_taxrate')}
+{$default_taxrate = ConfigHelper::getConfig('phpui.default_taxrate')}
 <H1>{$layout.pagetitle}</H1>
 <FORM METHOD="POST" NAME="tariff" ACTION="?m=tariffadd">
 <INPUT type="submit" class="hiddenbtn">

@@ -6,14 +6,14 @@
     <meta name="GENERATOR" content="LMS {$layout.lmsv}">
     <meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
     <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
-    <link href="{get_conf('phpui.style', 'img/style.css')}" rel="stylesheet" type="text/css">
+    <link href="{ConfigHelper::getConfig('phpui.style', 'img/style.css')}" rel="stylesheet" type="text/css">
     <link href="img/map.css" rel="stylesheet" type="text/css">
     <link href="img/lms-net.gif" rel="shortcut icon">
     <script type="text/javascript" src="img/common.js"> </script>
     <script type="text/javascript" src="img/ClickShowHideMenu.js"> </script>
     <script type="text/javascript" src="img/autosuggest.js"> </script>
 </head>
-<body onload="start_login_timeout({get_conf('phpui.timeout')})">
+<body onload="start_login_timeout({ConfigHelper::getConfig('phpui.timeout')})">
 <div id="overDiv" style="position:absolute; visibility:hidden; z-index:100;"></div>
 <script type="text/javascript" src="img/overlib.js"></script>
 {if !$layout.popup}
@@ -23,7 +23,7 @@
 		<tr>
 			<td class="text-center valign-top bottomline">
 				<br>
-				<img src="{get_conf('phpui.logo', 'img/logo-40.png')}" alt="LMS {$layout.lmsv}"><br>
+				<img src="{ConfigHelper::getConfig('phpui.logo', 'img/logo-40.png')}" alt="LMS {$layout.lmsv}"><br>
 				<span class="bold">LMS {$layout.lmsv}</span><br>
 				&nbsp;<br>
 			</td>
@@ -79,11 +79,14 @@
 			<input class="blend" type="text" id="rtinput" name="qsticket" value="" size="15" {tip text="Enter request tracker ID, subject or requestor name and press Enter"}>
 			&nbsp;<img src="img/account.gif" alt="">
 			<input class="blend" type="text" id="accountinput" name="qsaccount" value="" size="15" {tip text="Enter account or alias name and press Enter"}>
+			&nbsp;<img src="img/docum.gif" alt="">
+			<input class="blend" type="text" id="documentinput" name="qsdocument" value="" size="15" {tip text="Enter document number and press Enter"}>
 			<script type="text/javascript">
 				new AutoSuggest(document.getElementById('quicksearch'),document.getElementById('customerinput'),'?m=quicksearch&ajax=1&mode=customer&what=',1);
 				new AutoSuggest(document.getElementById('quicksearch'),document.getElementById('nodeinput'),'?m=quicksearch&ajax=1&mode=node&what=',1);
 				new AutoSuggest(document.getElementById('quicksearch'),document.getElementById('rtinput'),'?m=quicksearch&ajax=1&mode=ticket&what=',1);
 				new AutoSuggest(document.getElementById('quicksearch'),document.getElementById('accountinput'),'?m=quicksearch&ajax=1&mode=account&what=',1);
+				new AutoSuggest(document.getElementById('quicksearch'),document.getElementById('documentinput'),'?m=quicksearch&ajax=1&mode=document&what=',1);
 			</script>
 			{* Enter key submit hack for IE *}
 			<input type="image" src="img/empty.gif" width="0" height="0" style="border: none;">
@@ -94,7 +97,9 @@
 		</tr>
 	</table>
 	</form>
-	{include file="toolbar.html"}
+	{if ! ConfigHelper::checkConfig('phpui.hide_toolbar')}
+		{include file="toolbar.html"}
+	{/if}
 	<hr>
 <SCRIPT type="text/javascript">
 <!--//

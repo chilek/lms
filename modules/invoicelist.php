@@ -194,10 +194,11 @@ $c="month";
 }
 $SESSION->save('ilc', $c);
 
-if(isset($_POST['search']))
+if (isset($_POST['search'])) {
 	$h = isset($_POST['hideclosed']) ? true : false;
-elseif (($h = $SESSION->get('ilh')) === NULL)
-	$h = isset($CONFIG['invoices']['hide_closed']) ? chkconfig($CONFIG['invoices']['hide_closed']) : false;
+} elseif (($h = $SESSION->get('ilh')) === NULL) {
+	$h = ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.hide_closed', false));
+}
 $SESSION->save('ilh', $h);
 
 if(isset($_POST['group'])) {
@@ -221,7 +222,7 @@ elseif($c == 'month' && $s && preg_match('/^[0-9]{4}\/[0-9]{2}$/', $s))
         $s = mktime(0,0,0, $month, 1, $year);
 }
 
-$pagelimit = $CONFIG['phpui']['invoicelist_pagelimit'];
+$pagelimit = ConfigHelper::getConfig('phpui.invoicelist_pagelimit');
 $page = !isset($_GET['page']) ? 0 : intval($_GET['page']);
 
 $invoicelist = GetInvoicesList($s, $c, array('group' => $g, 'exclude'=> $ge), $h, $o, $pagelimit, $page);

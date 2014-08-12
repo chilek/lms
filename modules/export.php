@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-include(isset($CONFIG['phpui']['export_config']) && $CONFIG['phpui']['export_config'] ? $CONFIG['phpui']['export_config'] : 'exportcfg.php');
+include(ConfigHelper::getConfig('phpui.export_config', 'exportcfg.php'));
 
 function form_num($num)
 {
@@ -61,7 +61,6 @@ if(isset($_GET['type']) && $_GET['type'] == 'cash')
 	if($user)
 		$where .= ' AND userid = '.intval($user);
 
-    	// wysy³amy ...
 	header('Content-Type: application/octetstream');
 	header('Content-Disposition: attachment; filename='.$cash_filename);
 	header('Pragma: public');
@@ -142,7 +141,7 @@ if(isset($_GET['type']) && $_GET['type'] == 'cash')
 					$type = $cash_in_type;
 				
 				// fragment dla systemu Enova: rozpoznawanie
-				// wyci±gów bankowych na podstawie przedrostka
+				// wyciï¿½gï¿½w bankowych na podstawie przedrostka
 				// planu numeracyjnego
 				if(strpos($number, 'PB')===0)
 					$type += 2;
@@ -213,7 +212,7 @@ elseif(isset($_GET['type']) && $_GET['type'] == 'invoices')
 	        LEFT JOIN numberplans ON numberplanid = numberplans.id
 		WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?) ', 'id', array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto));
 
-    	// wysy³amy ...
+    	// wysyï¿½amy ...
 	header('Content-Type: application/octetstream');
 	header('Content-Disposition: attachment; filename='.$inv_filename);
 	header('Pragma: public');

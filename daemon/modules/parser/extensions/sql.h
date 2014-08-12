@@ -2,15 +2,9 @@
 #define SQL_H
 
 #include "tscript_context.h"
+#include "../../../lmsd.h"
 
-#ifdef USE_PGSQL
-#include "../../../dbdrivers/pgsql/db.h"
-#endif
-#ifdef USE_MYSQL
-#include "../../../dbdrivers/mysql/db.h"
-#endif
-
-void tscript_ext_sql_init(tscript_context *, ConnHandle *);
+void tscript_ext_sql_init(tscript_context *,  GLOBAL *);
 void tscript_ext_sql_close(tscript_context *);
 
 #define CUSTOMERS "SELECT customers.id AS id, customers.lastname AS lastname, \
@@ -32,25 +26,14 @@ void tscript_ext_sql_close(tscript_context *);
 		    ten, ssn, customers.info, message, regon, \
 		    rbe, icn"
 
-#ifdef USE_MYSQL
 #define NODES "SELECT n.id, n.name, n.ownerid, n.access, \
 		    n.warning, n.netdev, n.lastonline, n.info, n.port, \
-		    CONCAT(c.lastname, ' ', c.name) AS owner, \
+		    %cfullname AS owner, \
 		    c.message, n.mac, n.passwd, n.linktype, \
 		    INET_NTOA(n.ipaddr) AS ip, INET_NTOA(n.ipaddr_pub) AS ip_pub, \
 		    n.chkmac, n.halfduplex \
 		    FROM vnodes n \
 		    LEFT JOIN customers c ON (c.id = n.ownerid)"
-#else
-#define NODES "SELECT n.id, n.name, n.ownerid, n.access, \
-		    n.warning, n.netdev, n.lastonline, n.info, n.port, \
-		    c.lastname || ' ' || c.name AS owner, \
-		    c.message, n.mac, n.passwd, n.linktype, \
-		    INET_NTOA(n.ipaddr) AS ip, INET_NTOA(n.ipaddr_pub) AS ip_pub, \
-		    n.chkmac, n.halfduplex \
-		    FROM vnodes n \
-		    LEFT JOIN customers c ON (c.id = n.ownerid)"
-#endif
 
 #define NETWORKS "SELECT id, name, INET_NTOA(address) AS address, \
 		    mask, interface, gateway, dns, dns2, wins, domain, \

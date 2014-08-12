@@ -101,7 +101,7 @@ unset($channels['order']);
 unset($channels['direction']);
 
 $page = (empty($_GET['page']) ? 1 : $_GET['page']);
-$pagelimit = (empty($CONFIG['phpui']['channellist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['channellist_pagelimit']);
+$pagelimit = ConfigHelper::getConfig('phpui.channellist_pagelimit', $listdata['total']);
 $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('eclp', $page);

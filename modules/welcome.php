@@ -29,9 +29,9 @@
 $layout['pagetitle'] = 'LAN Management System';
 
 $layout['dbversion'] = $DB->GetDBVersion();
-$layout['dbtype'] = $CONFIG['database']['type'];
+$layout['dbtype'] = ConfigHelper::getConfig('database.type');
 
-if (check_conf('privileges.superuser')) {
+if (ConfigHelper::checkConfig('privileges.superuser')) {
     $content = $LMS->CheckUpdates();
 
     if(isset($content['newer_version'])) {
@@ -47,13 +47,12 @@ if (check_conf('privileges.superuser')) {
 $SMARTY->assign('_dochref', is_dir('doc/html/'.$LMS->ui_lang) ? 'doc/html/'.$LMS->ui_lang.'/' : 'doc/html/en/');
 $SMARTY->assign('rtstats', $LMS->RTStats());
 
-if (!check_conf('privileges.hide_sysinfo')) {
-	require_once LIB_DIR.'/Sysinfo.class.php';
+if (!ConfigHelper::checkConfig('privileges.hide_sysinfo')) {
 	$SI = new Sysinfo;
 	$SMARTY->assign('sysinfo', $SI->get_sysinfo());
 }
 
-if (!check_conf('privileges.hide_summaries')) {
+if (!ConfigHelper::checkConfig('privileges.hide_summaries')) {
 	$SMARTY->assign('customerstats', $LMS->CustomerStats());
 	$SMARTY->assign('nodestats', $LMS->NodeStats());
 }

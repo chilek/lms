@@ -179,7 +179,7 @@ $SESSION->save('dnlc', $c);
 if(isset($_POST['search']))
 	$h = isset($_POST['hideclosed']) ? true : false;
 elseif (($h = $SESSION->get('dnlh')) === NULL)
-	$h = isset($CONFIG['notes']['hide_closed']) ? chkconfig($CONFIG['notes']['hide_closed']) : false;
+	$h = ConfigHelper::checkValue(ConfigHelper::getConfig('notes.hide_closed', false));
 $SESSION->save('dnlh', $h);
 
 if(isset($_POST['group'])) {
@@ -203,7 +203,7 @@ elseif($c == 'month' && $s && preg_match('/^[0-9]{4}\/[0-9]{2}$/', $s))
         $s = mktime(0,0,0, $month, 1, $year);
 }
 
-$pagelimit = $CONFIG['phpui']['debitnotelist_pagelimit'];
+$pagelimit = ConfigHelper::getConfig('phpui.debitnotelist_pagelimit');
 $page = !isset($_GET['page']) ? 0 : intval($_GET['page']);
 
 $notelist = GetNotesList($s, $c, array('group' => $g, 'exclude'=> $ge), $h, $o, $pagelimit, $page);

@@ -101,6 +101,8 @@ if (!$quiet)
 if (!is_readable($CONFIG_FILE))
 	die('Unable to read configuration file ['.$CONFIG_FILE.']!'); 
 
+define('CONFIG_FILE', $CONFIG_FILE);
+
 $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 
 // Check for configuration vars and set default values
@@ -109,33 +111,30 @@ $CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ?
 
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
+
+// Load autloader
+require_once(LIB_DIR.'/autoloader.php');
+
 // Do some checks and load config defaults
 
 require_once(LIB_DIR.'/config.php');
 
 // Init database
- 
-$_DBTYPE = $CONFIG['database']['type'];
-$_DBHOST = $CONFIG['database']['host'];
-$_DBUSER = $CONFIG['database']['user'];
-$_DBPASS = $CONFIG['database']['password'];
-$_DBNAME = $CONFIG['database']['database'];
 
-require(LIB_DIR.'/LMSDB.php');
+$DB = null;
 
-$DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
+try {
 
-if(!$DB)
-{
-	// can't working without database
-	die("Fatal error: cannot connect to database!\n");
+    $DB = LMSDB::getInstance();
+
+} catch (Exception $ex) {
+    
+    trigger_error($ex->getMessage(), E_USER_WARNING);
+    
+    // can't working without database
+    die("Fatal error: cannot connect to database!\n");
+    
 }
-
-// Read configuration from database
-
-if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0'))
-	foreach($cfg as $row)
-		$CONFIG[$row['section']][$row['var']] = $row['value'];
 
 // Include required files (including sequence is important)
 
@@ -143,28 +142,13 @@ if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0
 require_once(LIB_DIR.'/common.php');
 require_once(LIB_DIR.'/language.php');
 
-if (empty($CONFIG['payments']['deadline']))
-	$CONFIG['payments']['deadline'] = 14;
-if (empty($CONFIG['payments']['paytype']))
-	$CONFIG['payments']['paytype'] = 2; // TRANSFER
-if (empty($CONFIG['payments']['saledate_next_month']))
-	$CONFIG['payments']['saledate_next_month'] = 0;
-if (empty($CONFIG['payments']['comment']))
-	$CONFIG['payments']['comment'] = "Tariff %tariff subscription for period %period";
-if (empty($CONFIG['payments']['settlement_comment']))
-	$CONFIG['payments']['settlement_comment'] = $CONFIG['payments']['comment'];
-if (empty($CONFIG['payments']['suspension_description']))
-	$CONFIG['payments']['suspension_description'] = "";
-if (empty($CONFIG['finances']['suspension_percentage']))
-	$CONFIG['finances']['suspension_percentage'] = 0;
-
-$deadline = $CONFIG['payments']['deadline'];
-$sdate_next = $CONFIG['payments']['saledate_next_month'];
-$paytype = $CONFIG['payments']['paytype'];
-$comment = $CONFIG['payments']['comment'];
-$s_comment = $CONFIG['payments']['settlement_comment'];
-$suspension_description = $CONFIG['payments']['suspension_description'];
-$suspension_percentage = $CONFIG['finances']['suspension_percentage'];
+$deadline = ConfigHelper::getConfig('payments.deadline', 14);
+$sdate_next = ConfigHelper::getConfig('payments.saledate_next_month', 0);
+$paytype = ConfigHelper::getConfig('payments.paytype', 2); // TRANSFER
+$comment = ConfigHelper::getConfig('payments.comment', "Tariff %tariff subscription for period %period");
+$s_comment = ConfigHelper::getConfig('payments.settlement_comment', ConfigHelper::getConfig('payments.comment'));
+$suspension_description = ConfigHelper::getConfig('payments.suspension_description', '');
+$suspension_percentage = ConfigHelper::getConfig('finances.suspension_percentage', 0);
 
 function localtime2()
 {
@@ -196,12 +180,12 @@ define('TARIFF_TV', 5);
 define('TARIFF_OTHER', -1);
 
 $TARIFFTYPES = array(
-	TARIFF_INTERNET	=> isset($CONFIG['tarifftypes']['internet']) ? $CONFIG['tarifftypes']['internet'] : trans('internet'),
-	TARIFF_HOSTING	=> isset($CONFIG['tarifftypes']['hosting']) ? $CONFIG['tarifftypes']['hosting'] : trans('hosting'),
-	TARIFF_SERVICE	=> isset($CONFIG['tarifftypes']['service']) ? $CONFIG['tarifftypes']['service'] : trans('service'),
-	TARIFF_PHONE	=> isset($CONFIG['tarifftypes']['phone']) ? $CONFIG['tarifftypes']['phone'] : trans('phone'),
-	TARIFF_TV	=> isset($CONFIG['tarifftypes']['tv']) ? $CONFIG['tarifftypes']['tv'] : trans('tv'),
-	TARIFF_OTHER	=> isset($CONFIG['tarifftypes']['other']) ? $CONFIG['tarifftypes']['other'] : trans('other'),
+	TARIFF_INTERNET	=> ConfigHelper::getConfig('tarifftypes.internet', trans('internet')),
+	TARIFF_HOSTING	=> ConfigHelper::getConfig('tarifftypes.hosting', trans('hosting')),
+	TARIFF_SERVICE	=> ConfigHelper::getConfig('tarifftypes.service', trans('service')),
+	TARIFF_PHONE	=> ConfigHelper::getConfig('tarifftypes.phone', trans('phone')),
+	TARIFF_TV	=> ConfigHelper::getConfig('tarifftypes.tv', trans('tv')),
+	TARIFF_OTHER	=> ConfigHelper::getConfig('tarifftypes.other', trans('other')),
 );
 
 $fakedate = (array_key_exists('fakedate', $options) ? $options['fakedate'] : NULL);
@@ -340,7 +324,7 @@ $customergroups = " AND EXISTS (SELECT 1 FROM customergroups g, customerassignme
 	WHERE c.id = ca.customerid 
 	AND g.id = ca.customergroupid 
 	AND (%groups)) ";
-$groupnames = $CONFIG['payments']['customergroups'];
+$groupnames = ConfigHelper::getConfig('payments.customergroups');
 $groupsql = "";
 $groups = preg_split("/[[:blank:]]+/", $groupnames, -1, PREG_SPLIT_NO_EMPTY);
 foreach ($groups as $group)
@@ -358,7 +342,7 @@ $query = "SELECT a.tariffid, a.liabilityid, a.customerid,
 		a.invoice, t.description AS description, a.id AS assignmentid, 
 		c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid, 
 		d.inv_paytype AS d_paytype, t.period AS t_period, 
-		(CASE a.liabilityid WHEN 0 THEN -1 ELSE t.type END) AS tarifftype, 
+		(CASE a.liabilityid WHEN 0 THEN t.type ELSE -1 END) AS tarifftype, 
 		(CASE a.liabilityid WHEN 0 THEN t.name ELSE l.name END) AS name, 
 		(CASE a.liabilityid WHEN 0 THEN t.taxid ELSE l.taxid END) AS taxid, 
 		(CASE a.liabilityid WHEN 0 THEN t.prodid ELSE l.prodid END) AS prodid, 
@@ -411,7 +395,7 @@ foreach($assigns as $assign)
 	if ($assign['liabilityid'])
 		$desc = $assign['name'];
 	else
-		$desc = $CONFIG['payments']['comment'];
+		$desc = $comment;
 	$desc = preg_replace("/\%type/", $assign['tarifftype'] != TARIFF_OTHER ? $TARIFFTYPES[$assign['tarifftype']] : '', $desc);
 	$desc = preg_replace("/\%tariff/", $assign['name'], $desc);
 	$desc = preg_replace("/\%desc/", $assign['description'], $desc);
@@ -478,6 +462,7 @@ foreach($assigns as $assign)
 					$numbers[$plan] = (($number = $DB->GetOne("SELECT MAX(number) AS number FROM documents 
 							WHERE cdate >= ? AND cdate <= ? AND type = 1 AND numberplanid = ?",
 							array($period['start'], $period['end'], $plan))) != 0 ? $number : 0);
+					$numbertemplates[$plan] = $DB->GetOne("SELECT template FROM numberplans WHERE id = ?", array($plan));
 				}
 
 				$itemid = 0;
@@ -485,23 +470,25 @@ foreach($assigns as $assign)
 
 				$customer = $DB->GetRow("SELECT lastname, name, address, city, zip, ssn, ten, countryid, divisionid, paytime 
 						FROM customers WHERE id = $cid");
-				
-				$division = $DB->GetRow('SELECT name, address, city, zip, countryid, ten, regon,
+
+				$division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
 						account, inv_header, inv_footer, inv_author, inv_cplace 
 						FROM divisions WHERE id = ? ;',array($customer['divisionid']));
-				
+
 				$paytime = $customer['paytime'];
 				if ($paytime == -1) $paytime = $deadline;
 
+				$fullnumber = docnumber($numbers[$plan], $numbertemplates[$plan], $currtime);
 				$DB->Execute("INSERT INTO documents (number, numberplanid, type, countryid, divisionid, 
 					customerid, name, address, zip, city, ten, ssn, cdate, sdate, paytime, paytype,
-					div_name, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
-					div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace) 
-					VALUES(?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+					div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
+					div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber) 
+					VALUES(?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 					array($numbers[$plan], $plan, $customer['countryid'], $customer['divisionid'], $cid,
 					$customer['lastname']." ".$customer['name'], $customer['address'], $customer['zip'],
 					$customer['city'], $customer['ten'], $customer['ssn'], $currtime, $saledate, $paytime, $inv_paytype,
 					($division['name'] ? $division['name'] : ''),
+					($division['shortname'] ? $division['shortname'] : ''),
 					($division['address'] ? $division['address'] : ''), 
 					($division['city'] ? $division['city'] : ''), 
 					($division['zip'] ? $division['zip'] : ''),
@@ -513,6 +500,7 @@ foreach($assigns as $assign)
 					($division['inv_footer'] ? $division['inv_footer'] : ''), 
 					($division['inv_author'] ? $division['inv_author'] : ''), 
 					($division['inv_cplace'] ? $division['inv_cplace'] : ''),
+					$fullnumber,
 					));
 
 				$invoices[$cid] = $DB->GetLastInsertID("documents");
@@ -663,7 +651,7 @@ if (!empty($assigns))
 	}
 
 // delete old assignments
-$DB->Execute("DELETE FROM Liabilities WHERE id IN ( 
+$DB->Execute("DELETE FROM liabilities WHERE id IN ( 
 	SELECT liabilityid FROM assignments 
 	WHERE dateto < ?NOW? - 86400 * 30 AND dateto <> 0 AND at < $today - 86400 * 30 
 		AND liabilityid != 0)");

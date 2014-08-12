@@ -187,7 +187,7 @@ if ($SESSION->is_set('mlp') && !isset($_GET['page']))
         $SESSION->restore('mlp', $_GET['page']);
 	
 $page = (empty($_GET['page']) ? 1 : $_GET['page']);
-$pagelimit = (empty($CONFIG['phpui']['messagelist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['messagelist_pagelimit']);
+$pagelimit = ConfigHelper::getConfig('phpui.messagelist_pagelimit', $listdata['total']);
 $SESSION->save('mlp', $page);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);

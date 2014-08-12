@@ -21,6 +21,37 @@
 		document.customersearch.target = "";
 		document.customersearch.submit();
 	}
+
+	function change_linktype(linktype) {
+		var options = document.getElementById('linktechnology').options;
+		while (options.length)
+			options.remove(0);
+		options.add(new Option('{trans("- none -")}', 0));
+		switch (linktype) {
+			case '':
+				{foreach array(0, 1, 2) as $linktype}
+					{foreach $_LINKTECHNOLOGIES[$linktype] as $linktechnologyidx => $linktechnology}
+					options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+					{/foreach}
+				{/foreach}
+				break;
+			case '0':
+				{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
+				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+				{/foreach}
+				break;
+			case '1':
+				{foreach $_LINKTECHNOLOGIES[1] as $linktechnologyidx => $linktechnology}
+				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+				{/foreach}
+				break;
+			case '2':
+				{foreach $_LINKTECHNOLOGIES[2] as $linktechnologyidx => $linktechnology}
+				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+				{/foreach}
+				break;
+		}
+	}
 //-->
 </SCRIPT>
 <FORM method="post" action="?m=customersearch&amp;search=1" name="customersearch" id="customersearch">
@@ -166,10 +197,25 @@
 			<IMG src="img/netdev.gif" alt=""> {trans("Link type:")}
 		</TD>
 		<TD style="width: 99%;">
-			<SELECT SIZE="1" name="search[linktype]">
+			<SELECT SIZE="1" name="search[linktype]" onchange="change_linktype(this.options[this.selectedIndex].value)">
 				<OPTION VALUE="">{trans("- all -")}</OPTION>
 				{foreach from=$_LINKTYPES item=item key=key}
 					<OPTION VALUE="{$key}">{$item}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR>
+		<TD style="width: 1%;" class="bold nobr">
+			<IMG src="img/netdev.gif" alt=""> {trans("Link technology:")}
+		</TD>
+		<TD style="width: 99%;">
+			<SELECT SIZE="1" name="search[linktechnology]" id="linktechnology">
+				<OPTION VALUE="">{trans("- all -")}</OPTION>
+				{foreach array(0, 1, 2) as $linktype}
+					{foreach $_LINKTECHNOLOGIES[$linktype] as $linktechnologyidx => $linktechnology}
+					<OPTION VALUE="{$linktechnologyidx}">{$linktechnology}</OPTION>
+					{/foreach}
 				{/foreach}
 			</SELECT>
 		</TD>

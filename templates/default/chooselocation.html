@@ -204,7 +204,7 @@ function submit_location()
 
 	locform.elements[varname+'[location_city]'].value = city.value;
 	locform.elements[varname+'[location_street]'].value = street.value;
-	locform.elements[varname+'[location_house]'].value = house.value;
+	locform.elements[varname+'[location_house]'].value = house.value.trim();
 	locform.elements[varname+'[location_flat]'].value = flat.value;
 
 	if (loc) {

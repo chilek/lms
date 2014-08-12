@@ -11,10 +11,11 @@
 			{if !$customerinfo.deleted}
 			<A href="?m=customerassignmentadd&amp;id={$customerinfo.id}">{trans("New Liability")} &raquo;</A>
 				{if $layout.module == 'customerassignmentedit'}
-				<A href="?m={$layout.module}&amp;expired={if $expired}0{else}1{/if}&amp;id={$assignment.id}">{if $expired}{trans("Hide expired")}{else}{trans("Show expired")}{/if} &raquo;</A>&nbsp;
+				<A href="?m={$layout.module}&amp;expired={if $expired}0{else}1{/if}&amp;id={$assignment.id}">{if $expired}{trans("Hide expired")}{else}{trans("Show expired")}{/if} &raquo;</A>
 				{else}
-				<A href="?m={$layout.module}&amp;expired={if $expired}0{else}1{/if}&amp;id={if $nodeinfo}{$nodeinfo.id}{else}{$customerinfo.id}{/if}">{if $expired}{trans("Hide expired")}{else}{trans("Show expired")}{/if} &raquo;</A>&nbsp;
+				<A href="?m={$layout.module}&amp;expired={if $expired}0{else}1{/if}&amp;id={if $nodeinfo}{$nodeinfo.id}{else}{$customerinfo.id}{/if}">{if $expired}{trans("Hide expired")}{else}{trans("Show expired")}{/if} &raquo;</A>
 				{/if}
+			<A onClick="return confirmLink(this, '{trans("Are you sure, you want to delete all liabilities?")}')" href="?m=customerassignmentdel&amp;cid={$customerinfo.id}">{trans("Delete all")} &raquo;</A>
 			{/if}
 		</TD>
 	</TR>
@@ -27,10 +28,10 @@
 				<TR>
 					<TD style="width: 92%;" class="bold nobr">{trans("Liability:")}</TD>
 					<TD style="width: 1%;" class="text-right nobr">
-						{if !check_conf('privileges.hide_finances')}{trans("Value:")}{/if}
+						{if !ConfigHelper::checkConfig('privileges.hide_finances')}{trans("Value:")}{/if}
 					</TD>
 					<TD style="width: 1%;" class="text-right nobr">
-						{if !check_conf('privileges.hide_finances')}{trans("Discount:")}{/if}
+						{if !ConfigHelper::checkConfig('privileges.hide_finances')}{trans("Discount:")}{/if}
 					</TD>
 					<TD style="width: 1%;" class="nobr">{trans("Accounting:")}</TD>
 					<TD style="width: 1%;" class="text-right nobr">{trans("Downceil:")}</TD>
@@ -59,10 +60,10 @@
 						{if $a.nodes}({foreach from=$a.nodes item=item key=key}{$item.name}{if $key+1<sizeof($a.nodes)}, {/if}{/foreach}){/if}
 					</TD>
 					<TD class="text-right nobr" OnClick="return self.location.href='?m=customerassignmentedit&amp;id={$a.id}'">
-						{if !check_conf('privileges.hide_finances')}{$a.value|money_format}{/if}
+						{if !ConfigHelper::checkConfig('privileges.hide_finances')}{$a.value|money_format}{/if}
 					</TD>
 					<TD class="nobr" OnClick="return self.location.href='?m=customerassignmentedit&amp;id={$a.id}'">
-						{if !check_conf('privileges.hide_finances')}{if $a.pdiscount != 0}{$a.pdiscount}%{else}{if $a.vdiscount != 0}{$a.vdiscount|money_format}{else}-{/if}{/if}{/if}
+						{if !ConfigHelper::checkConfig('privileges.hide_finances')}{if $a.pdiscount != 0}{$a.pdiscount}%{else}{if $a.vdiscount != 0}{$a.vdiscount|money_format}{else}-{/if}{/if}{/if}
 					</TD>
 					<TD class="nobr" OnClick="return self.location.href='?m=customerassignmentedit&amp;id={$a.id}'">{$a.payday}</TD>
 					<TD class="text-right nobr" OnClick="return self.location.href='?m=customerassignmentedit&amp;id={$a.id}'">
@@ -99,12 +100,12 @@
 				<TR>
 					<TD class="ftop text-right bold">{trans("Total:")}</TD>
 					<TD class="ftop text-right nobr">
-						{if !check_conf('privileges.hide_finances')}
+						{if !ConfigHelper::checkConfig('privileges.hide_finances')}
 						{sum array=$assignments column="real_value" string_format=$LANGDEFS.$_language.money_format}
 						{/if}
 					</TD>
 					<TD class="ftop text-left nobr">
-						{if !check_conf('privileges.hide_finances')}
+						{if !ConfigHelper::checkConfig('privileges.hide_finances')}
 						({sum array=$assignments column="real_disc_value" string_format=$LANGDEFS.$_language.money_format})
 						{/if}
 					</TD>

@@ -92,8 +92,8 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 	}
 //-->
 </script>
-{$default_printpage = get_conf('invoices.default_printpage')}
-{$default_taxrate   = get_conf('phpui.default_taxrate')}
+{$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
+{$default_taxrate   = ConfigHelper::getConfig('phpui.default_taxrate')}
 <FORM name="setcustomer" method="POST" action="?m=invoicenew&amp;action=setcustomer">
 <p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">

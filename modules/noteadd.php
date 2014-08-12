@@ -44,7 +44,7 @@ switch($action)
 
 		// get default note's numberplanid and next number
 		$note['cdate'] = time();
-		$note['paytime'] = $CONFIG['notes']['paytime'];
+		$note['paytime'] = ConfigHelper::getConfig('notes.paytime');
 		if(isset($_GET['customerid']) && $_GET['customerid'] != '' && $LMS->CustomerExists($_GET['customerid']))
 		{
 			$customer = $LMS->GetCustomer($_GET['customerid'], true);
@@ -182,10 +182,21 @@ switch($action)
 			                WHERE id = ?', array($customer['divisionid']))) !== NULL)
 				        $note['paytime'] = $paytime;
 				else
-				        $note['paytime'] = $CONFIG['notes']['paytime'];
+				        $note['paytime'] = ConfigHelper::getConfig('notes.paytime');
 			}
 
 			$cdate = !empty($note['cdate']) ? $note['cdate'] : time();
+
+			$division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
+				account, inv_header, inv_footer, inv_author, inv_cplace 
+				FROM divisions WHERE id = ? ;',array($customer['divisionid']));
+
+			if ($note['numberplanid'])
+				$fullnumber = docnumber($note['number'],
+					$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($note['numberplanid'])),
+					$cdate);
+			else
+				$fullnumber = null;
 
 			$args = array(
 				'number' => $note['number'],
@@ -203,11 +214,28 @@ switch($action)
 				'city' => $customer['city'],
 				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $customer['countryid'],
 				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $customer['divisionid'],
+				'div_name' => ($division['name'] ? $division['name'] : ''),
+				'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),
+				'div_address' => ($division['address'] ? $division['address'] : ''), 
+				'div_city' => ($division['city'] ? $division['city'] : ''), 
+				'div_zip' => ($division['zip'] ? $division['zip'] : ''),
+				'div_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => ($division['countryid'] ? $division['countryid'] : 0),
+				'div_ten'=> ($division['ten'] ? $division['ten'] : ''),
+				'div_regon' => ($division['regon'] ? $division['regon'] : ''),
+				'div_account' => ($division['account'] ? $division['account'] : ''),
+				'div_inv_header' => ($division['inv_header'] ? $division['inv_header'] : ''),
+				'div_inv_footer' => ($division['inv_footer'] ? $division['inv_footer'] : ''),
+				'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
+				'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
+				'fullnumber' => $fullnumber,
 			);
 			$DB->Execute('INSERT INTO documents (number, numberplanid, type,
 					cdate, userid, customerid, name, address, paytime,
-					ten, ssn, zip, city, countryid, divisionid)
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+					ten, ssn, zip, city, countryid, divisionid,
+					div_name, div_shortname, div_address, div_city, div_zip, div_countryid,
+					div_ten, div_regon, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+						?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
 			$nid = $DB->GetLastInsertID('documents');
 
@@ -281,7 +309,7 @@ if($action)
 	$SESSION->redirect('?m=noteadd');
 }
 
-if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
+if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
 {
         $SMARTY->assign('customers', $LMS->GetCustomerNames());
 }

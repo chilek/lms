@@ -66,8 +66,10 @@
 				dstlon: {$devlink.dstlon},
 				dstlat: {$devlink.dstlat},
 				type: {$devlink.type},
+				technology: {$devlink.technology},
 				speed: {$devlink.speed},
 				typename: "{$devlink.typename}",
+				technologyname: "{$devlink.technologyname}",
 				speedname: "{$devlink.speedname}"
 			});
 		{/foreach}
@@ -97,8 +99,10 @@
 				netdevlon: {$nodelink.netdevlon},
 				netdevlat: {$nodelink.netdevlat},
 				type: {$nodelink.type},
+				technology: {$nodelink.technology},
 				speed: {$nodelink.speed},
 				typename: "{$nodelink.typename}",
+				technologyname: "{$nodelink.technologyname}",
 				speedname: "{$nodelink.speedname}"
 			});
 		{/foreach}
@@ -110,7 +114,7 @@
 	map = createMap(devices, devlinks, nodes, nodelinks, true);
 	{/if}
 
-	set_lastonline_limit({get_conf('phpui.lastonline_limit')});
+	set_lastonline_limit({ConfigHelper::getConfig('phpui.lastonline_limit')});
 	setTimeout("netdevmap_refresh()", lastonline_limit * 1000);
 //-->
 </script>

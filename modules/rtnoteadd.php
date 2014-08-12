@@ -65,9 +65,10 @@ elseif(isset($_POST['note']))
 			$queue = $LMS->GetQueueByTicketId($note['ticketid']);
 			$mailfname = '';
 
-			if(!empty($CONFIG['phpui']['helpdesk_sender_name']))
+			$helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
+			if(!empty($helpdesk_sender_name))
 			{
-				$mailfname = $CONFIG['phpui']['helpdesk_sender_name'];
+				$mailfname = $helpdesk_sender_name;
 
 				if($mailfname == 'queue')
 					$mailfname = $queue['name'];
@@ -90,7 +91,7 @@ elseif(isset($_POST['note']))
 				.substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 				.'?m=rtticketview&id='.$note['ticketid'];
 
-			if(chkconfig($CONFIG['phpui']['helpdesk_customerinfo']) 
+			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_customerinfo', false)) 
 				&& ($cid = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($note['ticketid']))))
 			{
 				$info = $DB->GetRow('SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
@@ -128,7 +129,8 @@ elseif(isset($_POST['note']))
 			}
 
             // send sms
-			if (!empty($CONFIG['sms']['service']) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
+			$service = ConfigHelper::getConfig('sms.service');
+			if (!empty($service) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
 			        FROM users, rtrights
 					WHERE users.id=userid AND queueid = ? AND phone != \'\'
 						AND (rtrights.rights & 8) = 8 AND users.id != ?

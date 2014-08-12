@@ -26,7 +26,7 @@
 
 function DBLoad($filename=NULL)
 {
-	global $DB, $CONFIG, $SYSLOG;
+	global $DB, $SYSLOG;
 
 	if(!$filename)
 		return FALSE;
@@ -61,7 +61,7 @@ function DBLoad($filename=NULL)
 	// Postgres sux ! (warden)
 	// Tak, a łyżka na to 'niemożliwe' i poleciała za wanną potrącając bannanem musztardę (lukasz)
 
-	switch($CONFIG['database']['type'])
+	switch(ConfigHelper::getConfig('database.type'))
 	{
 		case 'postgres':
 			// actualize postgres sequences ...
@@ -96,13 +96,13 @@ if(isset($_GET['is_sure']))
 
 	$db = $_GET['db'];
 
-	if(file_exists($CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql'))
+	if(file_exists(ConfigHelper::getConfig('directories.backup_dir').'/lms-'.$db.'.sql'))
 	{
-		DBLoad($CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql');
+		DBLoad(ConfigHelper::getConfig('directories.backup_dir').'/lms-'.$db.'.sql');
 	}
-	elseif (extension_loaded('zlib') && file_exists($CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz'))
+	elseif (extension_loaded('zlib') && file_exists(ConfigHelper::getConfig('directories.backup_dir').'/lms-'.$db.'.sql.gz'))
 	{
-		DBLoad($CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz');
+		DBLoad(ConfigHelper::getConfig('directories.backup_dir').'/lms-'.$db.'.sql.gz');
 	}
 
     include(MODULES_DIR . '/dblist.php');

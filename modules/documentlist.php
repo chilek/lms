@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetDocumentList($order='cdate,asc', $type=NULL, $customer=NULL, $from=0, $to=0)
+function GetDocumentList($order='cdate,asc', $type=NULL, $customer=NULL, $numberplan = NULL, $from=0, $to=0)
 {
 	global $DB, $AUTH;
 
@@ -64,6 +64,7 @@ function GetDocumentList($order='cdate,asc', $type=NULL, $customer=NULL, $from=0
 			WHERE e.customerid IS NULL '
 			.($customer ? 'AND d.customerid = '.intval($customer) : '')
 			.($type ? ' AND d.type = '.intval($type) : '')
+			. ($numberplan ? ' AND d.numberplanid = ' . intval($numberplan) : '')
 			.($from ? ' AND d.cdate >= '.intval($from) : '')
 			.($to ? ' AND d.cdate <= '.intval($to) : '')
 			.$sqlord, array($AUTH->id));
@@ -94,6 +95,12 @@ if (empty($_GET['init']))
     else
 	    $c = $_GET['c'];
     $SESSION->save('doclc', $c);
+
+	if(!isset($_GET['p']))
+		$SESSION->restore('doclp', $p);
+	else
+		$p = $_GET['p'];
+	$SESSION->save('doclp', $p);
 
     if(isset($_GET['from']))
     {
@@ -128,13 +135,14 @@ if (empty($_GET['init']))
     $SESSION->save('doclto', $to);
 }
 
-$documentlist = GetDocumentList($o, $t, $c, $from, $to);
+$documentlist = GetDocumentList($o, $t, $c, $p, $from, $to);
 
 $listdata['total'] = $documentlist['total'];
 $listdata['order'] = $documentlist['order'];
 $listdata['direction'] = $documentlist['direction'];
 $listdata['type'] = $t;
 $listdata['customer'] = $c;
+$listdata['numberplan'] = $p;
 $listdata['from'] = $from;
 $listdata['to'] = $to;
 
@@ -142,7 +150,7 @@ unset($documentlist['total']);
 unset($documentlist['order']);
 unset($documentlist['direction']);
 
-$pagelimit = $CONFIG['phpui']['documentlist_pagelimit'];
+$pagelimit = ConfigHelper::getConfig('phpui.documentlist_pagelimit');
 $page = !isset($_GET['page']) ? ceil($listdata['total']/$pagelimit) : intval($_GET['page']);
 $start = ($page - 1) * $pagelimit;
 
@@ -162,11 +170,12 @@ if($listdata['total'])
 			FROM docrights WHERE userid = ? AND rights > 1', 'doctype', array($AUTH->id)));
 }
 
-if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
+if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
 {
     $SMARTY->assign('customers', $LMS->GetCustomerNames());
 }
 
+$SMARTY->assign('numberplans', $LMS->GetNumberPlans(array(DOC_CONTRACT, DOC_ANNEX, DOC_PROTOCOL, DOC_ORDER, DOC_SHEET, -6, -7, -8, -9, -99, DOC_OTHER)));
 $SMARTY->assign('documentlist', $documentlist);
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('page', $page);

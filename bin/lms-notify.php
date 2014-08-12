@@ -104,6 +104,8 @@ if (!$quiet) {
 if (!is_readable($CONFIG_FILE))
 	die("Unable to read configuration file [".$CONFIG_FILE."]!\n");
 
+define('CONFIG_FILE', $CONFIG_FILE);
+
 $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 
 // Check for configuration vars and set default values
@@ -112,68 +114,61 @@ $CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ?
 
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
+
+// Load autloader
+require_once(LIB_DIR.'/autoloader.php');
+
 // Do some checks and load config defaults
 
 require_once(LIB_DIR.'/config.php');
 
 // Init database
- 
-$_DBTYPE = $CONFIG['database']['type'];
-$_DBHOST = $CONFIG['database']['host'];
-$_DBUSER = $CONFIG['database']['user'];
-$_DBPASS = $CONFIG['database']['password'];
-$_DBNAME = $CONFIG['database']['database'];
 
-require(LIB_DIR.'/LMSDB.php');
+$DB = null;
 
-$DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
+try {
 
-if(!$DB)
-{
-	// can't working without database
-	die("Fatal error: cannot connect to database!\n");
+    $DB = LMSDB::getInstance();
+
+} catch (Exception $ex) {
+    
+    trigger_error($ex->getMessage(), E_USER_WARNING);
+    
+    // can't working without database
+    die("Fatal error: cannot connect to database!\n");
+    
 }
 
-// Read configuration from database
+$host = ConfigHelper::getConfig('notify.smtp_host');
+$port = ConfigHelper::getConfig('notify.smtp_port');
+$user = ConfigHelper::getConfig('notify.smtp_user');
+$pass = ConfigHelper::getConfig('notify.smtp_pass');
+$auth = ConfigHelper::getConfig('notify.smtp_auth');
 
-if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0'))
-	foreach($cfg as $row)
-		$CONFIG[$row['section']][$row['var']] = $row['value'];
-
-if (!empty($CONFIG['notify']['smtp_host']))
-	$CONFIG['mail']['smtp_host'] = $CONFIG['notify']['smtp_host'];
-if (!empty($CONFIG['notify']['smtp_port']))
-	$CONFIG['mail']['smtp_port'] = $CONFIG['notify']['smtp_port'];
-if (!empty($CONFIG['notify']['smtp_user']))
-	$CONFIG['mail']['smtp_user'] = $CONFIG['notify']['smtp_user'];
-if (!empty($CONFIG['notify']['smtp_pass']))
-	$CONFIG['mail']['smtp_pass'] = $CONFIG['notify']['smtp_pass'];
-if (!empty($CONFIG['notify']['smtp_auth']))
-	$CONFIG['mail']['smtp_auth_type'] = $CONFIG['notify']['smtp_auth'];
-
-$debug_email = !empty($CONFIG['notify']['debug_email']) ? $CONFIG['notify']['debug_email'] : '';
-$mail_from = !empty($CONFIG['notify']['mailfrom']) ? $CONFIG['notify']['mailfrom'] : '';
-$mail_fname = !empty($CONFIG['notify']['mailfname']) ? $CONFIG['notify']['mailfname'] : '';
+$debug_email = ConfigHelper::getConfig('notify.debug_email', '');
+$mail_from = ConfigHelper::getConfig('notify.mailfrom', '');
+$mail_fname = ConfigHelper::getConfig('notify.mailfname', '');
 
 // debtors notify
-$limit = (!empty($CONFIG['notify']['limit']) ? intval($CONFIG['notify']['limit']) : 0);
-$debtors_message = (!empty($CONFIG['notify']['debtors_message']) ? $CONFIG['notify']['debtors_message'] : '');
-$debtors_subject = (!empty($CONFIG['notify']['debtors_subject']) ? $CONFIG['notify']['debtors_subject'] : 'Debtors notification');
+$limit = intval(ConfigHelper::getConfig('notify.limit', 0));
+$debtors_message = ConfigHelper::getConfig('notify.debtors_message', '');
+$debtors_subject = ConfigHelper::getConfig('notify.debtors_subject', 'Debtors notification');
 // new debit note notify
-$notes_message = (!empty($CONFIG['notify']['notes_message']) ? $CONFIG['notify']['notes_message'] : '');
-$notes_subject = (!empty($CONFIG['notify']['notes_subject']) ? $CONFIG['notify']['notes_subject'] : 'New debit note notification');
+$notes_message = ConfigHelper::getConfig('notify.notes_message', '');
+$notes_subject = ConfigHelper::getConfig('notify.notes_subject', 'New debit note notification');
 // new invoice notify
-$invoices_message = (!empty($CONFIG['notify']['invoices_message']) ? $CONFIG['notify']['invoices_message'] : '');
-$invoices_subject = (!empty($CONFIG['notify']['invoices_subject']) ? $CONFIG['notify']['invoices_subject'] : 'New invoice notification');
+$invoices_message = ConfigHelper::getConfig('notify.invoices_message', '');
+$invoices_subject = ConfigHelper::getConfig('notify.invoices_subject', 'New invoice notification');
 // before deadline notify
-$deadline_message = (!empty($CONFIG['notify']['deadline_message']) ? $CONFIG['notify']['deadline_message'] : '');
-$deadline_subject = (!empty($CONFIG['notify']['deadline_subject']) ? $CONFIG['notify']['deadline_subject'] : 'Invoice deadline notification');
-$deadline_days = (!empty($CONFIG['notify']['deadline_days']) ? intval($CONFIG['notify']['deadline_days']) : 0);
+$deadline_message = ConfigHelper::getConfig('notify.deadline_message', '');
+$deadline_subject = ConfigHelper::getConfig('notify.deadline_subject', 'Invoice deadline notification');
+$deadline_days = intval(ConfigHelper::getConfig('notify.deadline_days', 0));
 
 if (empty($mail_from))
 	die("Fatal error: mailfrom unset! Can't continue, exiting.\n");
 
-if (!empty($CONFIG['notify']['smtp_auth']) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $CONFIG['notify']['smtp_auth']))
+$smtp_auth = ConfigHelper::getConfig('notify.smtp_auth');
+if (!empty($smtp_auth) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', ConfigHelper::getConfig('notify.smtp_auth')))
 	die("Fatal error: smtp_auth setting not supported! Can't continue, exiting.\n");
 
 // Include required files (including sequence is important)
@@ -182,10 +177,9 @@ require_once(LIB_DIR.'/language.php');
 include_once(LIB_DIR.'/definitions.php');
 require_once(LIB_DIR.'/unstrip.php');
 require_once(LIB_DIR.'/common.php');
-require_once(LIB_DIR.'/LMS.class.php');
 require_once(LIB_DIR . '/SYSLOG.class.php');
 
-if (check_conf('phpui.logging') && class_exists('SYSLOG'))
+if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG'))
 	$SYSLOG = new SYSLOG($DB);
 else
 	$SYSLOG = null;
@@ -193,7 +187,7 @@ else
 // Initialize Session, Auth and LMS classes
 
 $AUTH = NULL;
-$LMS = new LMS($DB, $AUTH, $CONFIG, $SYSLOG);
+$LMS = new LMS($DB, $AUTH, $SYSLOG);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
@@ -234,7 +228,7 @@ function parse_data($data, $row) {
 	return $data;
 }
 
-function send_message($msgid, $cid, $rmail, $rname, $subject, $body) {
+function send_message($msgid, $cid, $rmail, $rname, $subject, $body, $host = null, $port = null, $user = null, $pass = null, $auth = null) {
 	global $LMS, $DB, $mail_from;
 	$DB->Execute("INSERT INTO messageitems
 		(messageid, customerid, destination, status)
@@ -243,7 +237,7 @@ function send_message($msgid, $cid, $rmail, $rname, $subject, $body) {
 
 	$headers = array('From' => $mail_from, 'To' => qp_encode($rname) . ' <' . $rmail . '>',
 		'Subject' => $subject);
-	$result = $LMS->SendMail($rmail, $headers, $body);
+	$result = $LMS->SendMail($rmail, $headers, $body, null, $host, $port, $user, $pass, $auth);
 
 	$query = "UPDATE messageitems
 		SET status = ?, lastdate = ?NOW?, error = ?
@@ -295,7 +289,7 @@ if ($debtors_message && (empty($types) || in_array('debtors', $types))) {
 
 			if (!$debug)
 				send_message($msgid, $row['id'], $recipient_mail, $recipient_name,
-					$debtors_subject, parse_data($debtors_message, $row));
+					$debtors_subject, parse_data($debtors_message, $row), $host, $port, $user, $pass, $auth);
 		}
 	}
 }
@@ -335,7 +329,7 @@ if ($invoices_message && (empty($types) || in_array('invoices', $types))) {
 
 			if (!$debug)
 				send_message($msgid, $row['id'], $recipient_mail, $row['name'],
-					$invoices_subject, parse_data($invoices_message, $row));
+					$invoices_subject, parse_data($invoices_message, $row), $host, $port, $user, $pass, $auth);
 		}
 	}
 }
@@ -382,7 +376,7 @@ if ($deadline_message && (empty($types) || in_array('deadline', $types))) {
 
 			if (!$debug)
 				send_message($msgid, $row['id'], $recipient_mail, $row['name'],
-					$deadline_subject, parse_data($deadline_message, $row));
+					$deadline_subject, parse_data($deadline_message, $row), $host, $port, $user, $pass, $auth);
 		}
 	}
 }
@@ -421,7 +415,7 @@ if ($notes_message && (empty($types) || in_array('notes', $types))) {
 
 			if (!$debug)
 				send_message($msgid, $row['id'], $recipient_mail, $row['name'],
-					$notes_subject, parse_data($notes_message, $row));
+					$notes_subject, parse_data($notes_message, $row), $host, $port, $user, $pass, $auth);
 		}
 	}
 }

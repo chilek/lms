@@ -89,7 +89,9 @@ if (isset($_POST['nodedata']))
 		if (empty($nodedata['netid']))
 			$nodedata['netid'] = $DB->GetOne('SELECT id FROM networks WHERE INET_ATON(?) & INET_ATON(mask) = address ORDER BY id LIMIT 1',
 				array($nodedata['ipaddr']));
-		if (!$LMS->IsIPFree($nodedata['ipaddr'], $nodedata['netid']))
+		if (!$LMS->IsIPInNetwork($nodedata['ipaddr'], $nodedata['netid']))
+			$error['ipaddr'] = trans('Specified IP address doesn\'t belong to selected network!');
+		elseif (!$LMS->IsIPFree($nodedata['ipaddr'], $nodedata['netid']))
 			$error['ipaddr'] = trans('Specified IP address is in use!');
 		elseif($LMS->IsIPGateway($nodedata['ipaddr']))
 			$error['ipaddr'] = trans('Specified IP address is network gateway!');
@@ -113,7 +115,7 @@ if (isset($_POST['nodedata']))
 	foreach($nodedata['macs'] as $key => $value)
 		if(check_mac($value))
 		{
-			if($value!='00:00:00:00:00:00' && (!isset($CONFIG['phpui']['allow_mac_sharing']) || !chkconfig($CONFIG['phpui']['allow_mac_sharing'])))
+			if($value!='00:00:00:00:00:00' && !ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.allow_mac_sharing', false)))
 			{
 				if($LMS->GetNodeIDByMAC($value))
 					$error['mac'.$key] = trans('Specified MAC address is in use!');
@@ -222,7 +224,7 @@ if($customerid = $nodedata['ownerid'])
 else
 	$SMARTY->assign('allnodegroups', $LMS->GetNodeGroupNames());
 
-if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
+if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
 {
     $SMARTY->assign('customers', $LMS->GetCustomerNames());
 }

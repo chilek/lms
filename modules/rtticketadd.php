@@ -103,13 +103,14 @@ if(isset($_POST['ticket']))
 	{
 		$id = $LMS->TicketAdd($ticket, $files);
 
-		if (isset($CONFIG['phpui']['newticket_notify']) && chkconfig($CONFIG['phpui']['newticket_notify']))
+		if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.newticket_notify', false)))
 		{
 			$user = $LMS->GetUserInfo($AUTH->id);
 
-			if (!empty($CONFIG['phpui']['helpdesk_sender_name']))
+			$helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
+			if (!empty($helpdesk_sender_name))
 			{
-				$mailfname = $CONFIG['phpui']['helpdesk_sender_name'];
+				$mailfname = $helpdesk_sender_name;
 
 				if($mailfname == 'queue') $mailfname = $LMS->GetQueueName($queue);
 				elseif($mailfname == 'user') $mailfname = $user['name'];
@@ -136,7 +137,7 @@ if(isset($_POST['ticket']))
 				.substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 				.'?m=rtticketview&id='.$id;
 
-			if (chkconfig($CONFIG['phpui']['helpdesk_customerinfo']))
+			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_customerinfo', false)))
 				if ($ticket['customerid'])
 				{
 					$info = $DB->GetRow('SELECT pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
@@ -203,7 +204,8 @@ if(isset($_POST['ticket']))
 			}
 
 			// send sms
-			if (!empty($CONFIG['sms']['service']) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
+			$service = ConfigHelper::getConfig('sms.service');
+			if (!empty($service) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
 				FROM users, rtrights
 					WHERE users.id = userid AND queueid = ? AND phone != \'\'
 						AND (rtrights.rights & 8) = 8 AND deleted = 0
@@ -245,7 +247,7 @@ $layout['pagetitle'] = trans('New Ticket');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
+if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
 {
 	$SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
 }

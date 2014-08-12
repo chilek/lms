@@ -26,6 +26,7 @@
 
 $_LANG['I confirm reading of notice'] = 'Potwierdzam przeczytanie powiadomień';
 $_LANG['Notice to you'] = 'Powiadomienia dla Ciebie';
+$_LANG['Warning to you'] = 'Ostrzeżenia dla Ciebie';
 $_LANG['Notices'] = 'Powiadomienia';
 $_LANG['Shows notices'] = 'Pokazuje powiadomienia';
 $_LANG['This module is for showing notices for your customer'] = 'Ten moduł ma za zadanie pokazać powiadomienia skierowane do Twojego klienta';

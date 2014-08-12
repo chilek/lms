@@ -368,6 +368,7 @@
                     <member>quota_ftp_limit - quota limit of ftp account</member>
                     <member>quota_sql_limit - quota limit of sql account</member>
                     <member>description - description for subscription</member>
+                    <member>disabled - disabled/enabled flag (1/0)</member>
                </simplelist>
           </sect2>
           <sect2 id="promotions">

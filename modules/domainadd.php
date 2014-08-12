@@ -96,45 +96,45 @@ if(isset($_POST['domainadd']))
 
 			$DB->Execute('INSERT INTO records(domain_id,name,ttl,type,prio,content)
 				VALUES (?, ?, ?, \'SOA\', 0, ?)',
-				array($lid, $domainadd['name'], $CONFIG['zones']['default_ttl'],
-					$CONFIG['zones']['master_dns'].' '.$CONFIG['zones']['hostmaster_mail'].' '
-					.date('Ymd').'00 '.$CONFIG['zones']['ttl_refresh'].' '
-					.$CONFIG['zones']['ttl_retry'].' '.$CONFIG['zones']['ttl_expire'].' '
-					.$CONFIG['zones']['ttl_minimum']));
+				array($lid, $domainadd['name'], ConfigHelper::getConfig('zones.default_ttl'),
+					ConfigHelper::getConfig('zones.master_dns').' '.ConfigHelper::getConfig('zones.hostmaster_mail').' '
+					.date('Ymd').'00 '.ConfigHelper::getConfig('zones.ttl_refresh').' '
+					.ConfigHelper::getConfig('zones.ttl_retry').' '.ConfigHelper::getConfig('zones.ttl_expire').' '
+					.ConfigHelper::getConfig('zones.ttl_minimum')));
 
 			$DB->Execute('INSERT INTO records(domain_id,name,ttl,type,prio,content)
 				VALUES (?, ?, ?, \'NS\', 0, ?)',
-				array($lid, $domainadd['name'], $CONFIG['zones']['default_ttl'],
-					$CONFIG['zones']['master_dns']));
+				array($lid, $domainadd['name'], ConfigHelper::getConfig('zones.default_ttl'),
+					ConfigHelper::getConfig('zones.master_dns')));
 
 			$DB->Execute('INSERT INTO records(domain_id,name,ttl,type,prio,content)
 				VALUES (?, ?, ?, \'NS\', 0, ?)', 
-				array($lid, $domainadd['name'], $CONFIG['zones']['default_ttl'],
-					$CONFIG['zones']['slave_dns']));
+				array($lid, $domainadd['name'], ConfigHelper::getConfig('zones.default_ttl'),
+					ConfigHelper::getConfig('zones.slave_dns')));
 		
 			if ($tlds[count($tlds)-2].$tlds[count($tlds)-1] != 'in-addrarpa')
 			{
 				$DB->Execute('INSERT INTO records(domain_id,name,ttl,type,prio,content)
 					VALUES (?, ?, ?, \'A\', 0, ?)',
-					array($lid, $domainadd['name'], $CONFIG['zones']['default_ttl'],
+					array($lid, $domainadd['name'], ConfigHelper::getConfig('zones.default_ttl'),
 						$domainadd['ipwebserver']));
 				$DB->Execute('INSERT INTO records(domain_id,name,ttl,type,prio,content)
 					VALUES (?, ?, ?, \'A\', 0, ?)',
-					array($lid,'www.'.$domainadd['name'], $CONFIG['zones']['default_ttl'],
+					array($lid,'www.'.$domainadd['name'], ConfigHelper::getConfig('zones.default_ttl'),
 						$domainadd['ipwebserver']));
 				$DB->Execute('INSERT INTO records(domain_id,name,ttl,type,prio,content)
 					VALUES (?, ?, ?, \'A\', 0, ?)',
-					array($lid, 'mail.'.$domainadd['name'], $CONFIG['zones']['default_ttl'],
+					array($lid, 'mail.'.$domainadd['name'], ConfigHelper::getConfig('zones.default_ttl'),
 						$domainadd['ipmailserver']));
 				$DB->Execute('INSERT INTO records(domain_id,name,ttl,type,prio,content)
 					VALUES (?, ?, ?, \'MX\', 10, ?)',
-					array($lid, $domainadd['name'], $CONFIG['zones']['default_ttl'],
-						$CONFIG['zones']['default_mx']));
-				if($CONFIG['zones']['default_spf']) {
+					array($lid, $domainadd['name'], ConfigHelper::getConfig('zones.default_ttl'),
+						ConfigHelper::getConfig('zones.default_mx')));
+				if(ConfigHelper::getConfig('zones.default_spf')) {
 					$DB->Execute('INSERT INTO records(domain_id,name,ttl,type,prio,content)
 						VALUES (?, ?, ?, \'TXT\', 0, ?)',
-						array($lid, $domainadd['name'], $CONFIG['zones']['default_ttl'],
-							$CONFIG['zones']['default_spf']));
+						array($lid, $domainadd['name'], ConfigHelper::getConfig('zones.default_ttl'),
+							ConfigHelper::getConfig('zones.default_spf')));
 				}
 			}
 		}
@@ -156,9 +156,9 @@ elseif(isset($_GET['cid']))
 }
 
 if (empty($domainadd['ipwebserver']))
-	$domainadd['ipwebserver'] = $CONFIG['zones']['default_webserver_ip'];
+	$domainadd['ipwebserver'] = ConfigHelper::getConfig('zones.default_webserver_ip');
 if (empty($domainadd['ipmailserver']))
-	$domainadd['ipmailserver'] = $CONFIG['zones']['default_mailserver_ip'];
+	$domainadd['ipmailserver'] = ConfigHelper::getConfig('zones.default_mailserver_ip');
 
 $layout['pagetitle'] = trans('New Domain');
 

@@ -30,7 +30,7 @@
 			    {$message.subject|escape}
 		</td>
 		<td width="1%">
-			{if $ticket.state != $smarty.const.RT_RESOLVED || get_conf('userpanel.allow_message_add_to_closed_tickets')}
+			{if $ticket.state != $smarty.const.RT_RESOLVED || ConfigHelper::getConfig('userpanel.allow_message_add_to_closed_tickets')}
 			<a href="?m=helpdesk&op=message&id={$ticket.id}&msgid={$message.id}">{trans("Reply")}</a>
 			{else}&nbsp;{/if}
 		</td>

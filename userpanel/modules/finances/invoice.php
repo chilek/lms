@@ -24,26 +24,26 @@
  *  $Id$
  */
 
-global $LMS,$SESSION,$CONFIG,$_CONFIG,$SMARTY,$invoice, $layout, $type;
+global $LMS,$SESSION,$SMARTY,$invoice, $layout, $type;
 
-$type = check_conf('userpanel.invoice_duplicate') ? trans('DUPLICATE') : trans('ORIGINAL');
+$type = ConfigHelper::checkConfig('userpanel.invoice_duplicate') ? trans('DUPLICATE') : trans('ORIGINAL');
 
-if(strtolower($CONFIG['invoices']['type']) == 'pdf')
+if(strtolower(ConfigHelper::getConfig('invoices.type')) == 'pdf')
 {
     include('invoice_pdf.php');
     die;
 }
 
-header('Content-Type: '.$CONFIG['invoices']['content_type']);
-if(isset($CONFIG['invoices']['attachment_name']) && $CONFIG['invoices']['attachment_name'] != '')
-	header('Content-Disposition: attachment; filename='.$CONFIG['invoices']['attachment_name']);
+header('Content-Type: '.ConfigHelper::getConfig('invoices.content_type'));
+if (ConfigHelper::getConfig('invoices.attachment_name') != '')
+	header('Content-Disposition: attachment; filename='.ConfigHelper::getConfig('invoices.attachment_name'));
 
-$SMARTY->assign('css', file($CONFIG['directories']['sys_dir'].'/img/style_print.css')); 
+$SMARTY->assign('css', file(ConfigHelper::getConfig('directories.sys_dir').'/img/style_print.css')); 
 
 // use LMS templates directory
-define('SMARTY_TEMPLATES_DIR', !isset($CONFIG['directories']['smarty_templates_dir']) ? $CONFIG['directories']['sys_dir'].'/templates' : $CONFIG['directories']['smarty_templates_dir']);
+define('SMARTY_TEMPLATES_DIR', ConfigHelper::getConfig('directories.smarty_templates_dir', ConfigHelper::getConfig('directories.sys_dir').'/templates'));
 $SMARTY->setTemplateDir(null);
-$custom_templates_dir = get_conf('phpui.custom_templates_dir');
+$custom_templates_dir = ConfigHelper::getConfig('phpui.custom_templates_dir');
 if (!empty($custom_templates_dir) && file_exists(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir)
 	&& !is_file(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir))
 	$SMARTY->AddTemplateDir(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir);
@@ -79,9 +79,9 @@ if(!empty($_POST['inv']))
 		$SMARTY->assign('type', $type);
 
 		if(isset($invoice['invoice']))
-			$SMARTY->display($CONFIG['invoices']['cnote_template_file']);
+			$SMARTY->display(ConfigHelper::getConfig('invoices.cnote_template_file'));
 		else
-			$SMARTY->display($CONFIG['invoices']['template_file']);
+			$SMARTY->display(ConfigHelper::getConfig('invoices.template_file'));
 	}
 
 	$SMARTY->display('clearfooter.html');
@@ -111,9 +111,9 @@ $SMARTY->assign('invoice', $invoice);
 $SMARTY->assign('type', $type);
 
 if(isset($invoice['invoice']))
-	$SMARTY->display($CONFIG['invoices']['cnote_template_file']);
+	$SMARTY->display(ConfigHelper::getConfig('invoices.cnote_template_file'));
 else
-	$SMARTY->display($CONFIG['invoices']['template_file']);
+	$SMARTY->display(ConfigHelper::getConfig('invoices.template_file'));
 
 $SMARTY->display('clearfooter.html');
 

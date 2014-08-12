@@ -89,7 +89,7 @@
 						<TABLE cellpadding="3">
 							<TR>
 								<TD>
-									<input type="checkbox" id="message_label" onClick="javascript:toggle_visual_editor('message');"{if get_conf('phpui.default_editor') == 'wysiwyg'} checked{/if}>
+									<input type="checkbox" id="message_label" onClick="javascript:toggle_visual_editor('message');"{if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'} checked{/if}>
 									<label for="message_label">{trans("visual editor")}</label>
 								</TD>
 								<TD colspan="2" class="text-right">
@@ -141,7 +141,7 @@
 document.forms['setwarnings'].elements['setwarnings[message]'].focus();
 
 tinymce_init('{$_ui_language}');
-{if get_conf('phpui.default_editor') == 'wysiwyg'}
+{if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'}
 toggle_visual_editor('message');
 {/if}
 //-->

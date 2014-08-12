@@ -25,7 +25,7 @@
  */
 
 /*
-if(strtolower($CONFIG['notes']['type']) == 'pdf')
+if(strtolower(ConfigHelper::getConfig('notes.type')) == 'pdf')
 {
     include('notee_pdf.php');
     $SESSION->close();
@@ -33,9 +33,10 @@ if(strtolower($CONFIG['notes']['type']) == 'pdf')
 }
 */
 
-header('Content-Type: '.$CONFIG['notes']['content_type']);
-if(!empty($CONFIG['notes']['attachment_name']))
-	header('Content-Disposition: attachment; filename='.$CONFIG['notes']['attachment_name']);
+header('Content-Type: '.ConfigHelper::getConfig('notes.content_type'));
+$attachment_name = ConfigHelper::getConfig('notes.attachment_name');
+if(!empty($attachment_name))
+	header('Content-Disposition: attachment; filename='.$attachment_name);
 
 $SMARTY->assign('css', file('img/style_print.css')); 
 
@@ -80,7 +81,7 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached')
 		$i++;
 		if($i == $count) $note['last'] = TRUE;
 		$SMARTY->assign('note', $note);
-		$SMARTY->display($CONFIG['notes']['template_file']);
+		$SMARTY->display(ConfigHelper::getConfig('notes.template_file'));
 	}
 	$SMARTY->display('clearfooter.html');
 }
@@ -120,7 +121,7 @@ elseif(isset($_GET['fetchallnotes']))
 		$note = $LMS->GetNoteContent($noteid);
 
 		$SMARTY->assign('note',$note);
-		$SMARTY->display($CONFIG['notes']['template_file']);
+		$SMARTY->display(ConfigHelper::getConfig('notes.template_file'));
 	}
 	$SMARTY->display('clearfooter.html');
 }
@@ -133,7 +134,7 @@ elseif($note = $LMS->GetNoteContent($_GET['id']))
 
 	$note['last'] = TRUE;
 	$SMARTY->assign('note',$note);
-	$SMARTY->display($CONFIG['notes']['template_file']);
+	$SMARTY->display(ConfigHelper::getConfig('notes.template_file'));
 	$SMARTY->display('clearfooter.html');
 }
 else

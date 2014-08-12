@@ -25,7 +25,7 @@
  */
 
 function GetDomainList($order = 'name,asc', $customer = '', $filtr = '') {
-	global $DB, $CONFIG;
+	global $DB;
 
 	list($order, $direction) = sscanf($order, '%[^,],%s');
 
@@ -50,7 +50,7 @@ function GetDomainList($order = 'name,asc', $customer = '', $filtr = '') {
 	}
 
 	if ($filtr == '0-9') {
-		if ($CONFIG['database']['type'] == 'postgres')
+		if (ConfigHelper::getConfig('database.type') == 'postgres')
 			$where[] = "d.name ~ '^[0-9]'";
 		else
 			$where[] = "d.name REGEXP '^[0-9]'";
@@ -134,7 +134,7 @@ unset($domainlist['direction']);
 unset($domainlist['customer']);
 
 $page = (empty($_GET['page']) ? 1 : $_GET['page']);
-$pagelimit = (empty($CONFIG['phpui']['domainlist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['domainlist_pagelimit']);
+$pagelimit = ConfigHelper::getConfig('phpui.domainlist_pagelimit', $listdata['total']);
 
 if ($page > ceil($listdata['total'] / $pagelimit))
 	$page = 1;

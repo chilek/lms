@@ -52,7 +52,7 @@ else
 	$showAddEdit = true;
 
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']);
-$pagelimit = (!isset($CONFIG['phpui']['recordlist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['recordlist_pagelimit']);
+$pagelimit = ConfigHelper::getConfig('phpui.recordlist_pagelimit', $listdata['total']);
 $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('alp', $page);

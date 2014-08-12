@@ -1,11 +1,10 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-{*<P>*}
-<TABLE width="100%" cellpadding="3">
+<TABLE width="100%">
 	<TR>
-		{if !check_conf('privileges.hide_sysinfo')}
-		<TD style="width: 50%;" class="valign-top" colspan="5">
+		{if !ConfigHelper::checkConfig('privileges.hide_sysinfo')}
+		<TD style="width: 50%;" class="valign-top">
 			<TABLE class="lmsbox">
                             <THEAD>
 				<TR>
@@ -60,65 +59,6 @@
 				</TR>
                             </TBODY>
 			</TABLE>
-		</TD>
-		<TD style="width: 50%;" class="valign-top" colspan="6">
-			<TABLE class="lmsbox">
-                            <THEAD>
-				<TR>
-					<TD class="text-center bold nobr" colspan="2">
-						<IMG src="img/info1.gif" alt=""> {trans("About system:")}
-					</TD>
-				</TR>
-                            </THEAD>
-                            <TBODY>
-				<TR>
-					<TD style="width: 50%;" class="text-right bold">
-						{trans("Hostname:")}
-					</TD>
-					<TD style="width: 50%;">
-						{$sysinfo.hostname}
-					</TD>
-				</TR>
-				<TR>
-					<TD style="width: 50%;" class="text-right bold">
-						{trans("System version:")}
-					</TD>
-					<TD style="width: 50%;">
-						{$sysinfo.kernel}
-					</TD>
-				</TR>
-				<TR>
-					<TD style="width: 50%;" class="text-right bold">
-						{trans("Uptime:")}
-					</TD>
-					<TD style="width: 50%;">
-						{$sysinfo.uptime}
-					</TD>
-				</TR>
-				<TR>
-					<TD style="width: 50%;" class="text-right bold">
-						{trans("Users logged in:")}
-					</TD>
-					<TD style="width: 50%;">
-						{$sysinfo.users}
-					</TD>
-				</TR>
-				<TR>
-					<TD style="width: 50%;" class="text-right bold">
-						{trans("Load:")}
-					</TD>
-					<TD style="width: 50%;">
-						{$sysinfo.loadavg.0} {$sysinfo.loadavg.1} {$sysinfo.loadavg.2}
-					</TD>
-				</TR>
-                            </TBODY>
-			</TABLE>
-		</TD>
-		{/if}
-	</TR>
-	<TR>
-		{if !check_conf('privileges.hide_summaries')}
-		<TD style="width: 50%;" class="valign-top" colspan="5">
 			<TABLE class="lmsbox">
                             <THEAD>
 				<TR>
@@ -155,78 +95,36 @@
 				<TR>
 					<TD style="width: 50%;" class="text-right bold">
 						<A href="?m=customerlist&amp;s=0">{trans("Total:")}</A><BR>
-						{if !check_conf('privileges.hide_finances')}
+						{if !ConfigHelper::checkConfig('privileges.hide_finances')}
 							<A href="?m=customerlist&amp;s=6">{trans("Total Dues:")}</A>
 						{/if}
 					</TD>
 					<TD style="width: 50%;" class="nobr">
 						{$customerstats.total}<BR>
-						{if !check_conf('privileges.hide_finances')}
+						{if !ConfigHelper::checkConfig('privileges.hide_finances')}
 							{$customerstats.debt} ({trans("amount")} {$customerstats.debtvalue|money_format})
 						{/if}
 					</TD>
 				</TR>
                             </TBODY>
 			</TABLE>
-		</TD>
-		<TD style="width: 50%;" class="valign-top" colspan="6">
-			<TABLE class="lmsbox">
-                            <THEAD>
-				<TR>
-					<TD colspan="2" class="text-center bold">
-						<IMG src="img/node.gif" alt=""> {trans("Nodes:")}
-					</TD>
-				</TR>
-                            </THEAD>
-                            <TBODY>
-				<TR>
-					<TD style="width: 50%;" class="text-right bold">
-						<A href="?m=nodelist&amp;s=3">{trans("Online:")}</A>
-					</TD>
-					<TD style="width: 50%;">
-						{$nodestats.online}
-					</TD>
-				</TR>
-				<TR>
-					<TD style="width: 50%;" class="text-right bold">
-						<A href="?m=nodelist&amp;s=1">{trans("Connected<!nodes>:")}</A>
-					</TD>
-					<TD style="width: 50%;">
-						{$nodestats.connected}
-					</TD>
-				</TR>
-				<TR>
-					<TD style="width: 50%;" class="text-right bold">
-						<A href="?m=nodelist&amp;s=2">{trans("Disconnected:")}</A>
-					</TD>
-					<TD style="width: 50%;">
-						{$nodestats.disconnected}
-					</TD>
-				</TR>
-				<TR>
-					<TD style="width: 50%;" class="text-right bold">
-						<A href="?m=nodelist">{trans("Total:")}</A>
-					</TD>
-					<TD style="width: 50%;">
-						{$nodestats.total}
-					</TD>
-				</TR>
-                            </TBODY>
-			</TABLE>
-		</TD>
-		{/if}
-	</TR>
-	<TR>
-		<TD style="width: 50%;" class="valign-top" colspan="5">
 			{if $rtstats}
-			<TABLE width="100%" cellpadding="3">
+			<TABLE width="100%" celpadding="0">
+			{if $rtstats|@count >= 3}
+				{assign var="hboxesinrow" value="3"}
+			{else}
+				{assign var="hboxesinrow" value=$rtstats|@count mod 3}
+			{/if}
 			{counter start=0 skip=1 assign=rtstatscounter print=false}
 			{foreach from=$rtstats item=rtcategorystats}
-				{if $rtstatscounter is div by 5}
+				{if $rtstatscounter mod 3 == 0}
 				<TR>
+				<TD width="{(100 / $hboxesinrow)|round}%" style="padding: 0px 2px 0px 0px;">
+				{elseif $rtstatscounter mod 3 == 2 || $rtstatscounter + 1 == $rtstats|@count}
+				<TD width="{(100 / $hboxesinrow)|round}%" style="padding: 0px 0px 0px 2px;">
+				{else}
+				<TD width="{(100 / $hboxesinrow)|round}%" style="padding: 0px 2px 0px 2px;">
 				{/if}
-					<TD width="20%">
-
 			<TABLE class="lmsbox">
                             <THEAD>
 				<TR>
@@ -293,20 +191,108 @@
 				{/if}
 				{counter}
 			{/foreach}
-			{if $rtstatscounter is not div by 5}
-				{assign var=loop value=$rtstatscounter%5*-1+5}
-				{section name=filler loop=$loop}
-				<TD width="20%">
-				</TD>
-				{/section}
-			</TR>
-			</TR>
-			{/if}
 			</TABLE>
 			{/if}
 		</TD>
-		{if !check_conf('privileges.hide_links')}
-		<TD style="width: 50%;" class="valign-top" colspan="6">
+		<TD style="width: 50%;" class="valign-top">
+			<TABLE class="lmsbox">
+                            <THEAD>
+				<TR>
+					<TD class="text-center bold nobr" colspan="2">
+						<IMG src="img/info1.gif" alt=""> {trans("About system:")}
+					</TD>
+				</TR>
+                            </THEAD>
+                            <TBODY>
+				<TR>
+					<TD style="width: 50%;" class="text-right bold">
+						{trans("Hostname:")}
+					</TD>
+					<TD style="width: 50%;">
+						{$sysinfo.hostname}
+					</TD>
+				</TR>
+				<TR>
+					<TD style="width: 50%;" class="text-right bold">
+						{trans("System version:")}
+					</TD>
+					<TD style="width: 50%;">
+						{$sysinfo.kernel}
+					</TD>
+				</TR>
+				<TR>
+					<TD style="width: 50%;" class="text-right bold">
+						{trans("Uptime:")}
+					</TD>
+					<TD style="width: 50%;">
+						{$sysinfo.uptime}
+					</TD>
+				</TR>
+				<TR>
+					<TD style="width: 50%;" class="text-right bold">
+						{trans("Users logged in:")}
+					</TD>
+					<TD style="width: 50%;">
+						{$sysinfo.users}
+					</TD>
+				</TR>
+				<TR>
+					<TD style="width: 50%;" class="text-right bold">
+						{trans("Load:")}
+					</TD>
+					<TD style="width: 50%;">
+						{$sysinfo.loadavg.0} {$sysinfo.loadavg.1} {$sysinfo.loadavg.2}
+					</TD>
+				</TR>
+                            </TBODY>
+			</TABLE>
+		{/if}
+		{if !ConfigHelper::checkConfig('privileges.hide_summaries')}
+			<TABLE class="lmsbox">
+                            <THEAD>
+				<TR>
+					<TD colspan="2" class="text-center bold">
+						<IMG src="img/node.gif" alt=""> {trans("Nodes:")}
+					</TD>
+				</TR>
+                            </THEAD>
+                            <TBODY>
+				<TR>
+					<TD style="width: 50%;" class="text-right bold">
+						<A href="?m=nodelist&amp;s=3">{trans("Online:")}</A>
+					</TD>
+					<TD style="width: 50%;">
+						{$nodestats.online}
+					</TD>
+				</TR>
+				<TR>
+					<TD style="width: 50%;" class="text-right bold">
+						<A href="?m=nodelist&amp;s=1">{trans("Connected<!nodes>:")}</A>
+					</TD>
+					<TD style="width: 50%;">
+						{$nodestats.connected}
+					</TD>
+				</TR>
+				<TR>
+					<TD style="width: 50%;" class="text-right bold">
+						<A href="?m=nodelist&amp;s=2">{trans("Disconnected:")}</A>
+					</TD>
+					<TD style="width: 50%;">
+						{$nodestats.disconnected}
+					</TD>
+				</TR>
+				<TR>
+					<TD style="width: 50%;" class="text-right bold">
+						<A href="?m=nodelist">{trans("Total:")}</A>
+					</TD>
+					<TD style="width: 50%;">
+						{$nodestats.total}
+					</TD>
+				</TR>
+                            </TBODY>
+			</TABLE>
+		{/if}
+		{if !ConfigHelper::checkConfig('privileges.hide_links')}
                         <TABLE class="lmsbox">
                         <THEAD>
 				<TR>
@@ -328,14 +314,8 @@
 				</TR>
                         </TBODY>
 			</TABLE>
-		</TD>
 		{/if}
-	</TR>
-	{if check_conf('privileges.superuser')}
-	<TR>
-		<TD style="width: 50%;" class="valign-top" colspan="6">
-		</TD>
-		<TD style="width: 50%;" class="valign-top">
+		{if ConfigHelper::checkConfig('privileges.superuser')}
 			<TABLE class="lmsbox">
                             <THEAD>
 				<TR>
@@ -360,25 +340,26 @@
 				</TR>
                             </TBODY>
 			</TABLE>
+		{/if}
+		</TD>
+	</TR>
+	{if $layout.fortune}
+	<TR>
+		<TD colspan="2">
+			<TABLE width="100%" class="fall" cellpadding="10">
+			<TR class="superlight">
+				<TD style="width: 1%;">
+					<IMG src="img/totd.gif" alt="">
+				</TD>
+				<TD style="width: 99%;">
+					<P class="txt">{$layout.fortune|replace:"\n":"<BR>"}</P>
+				</TD>
+				</TR>
+			</TABLE>
 		</TD>
 	</TR>
 	{/if}
 </TABLE>
-{*</P>*}
-{if $layout.fortune}
-{*<P>*}
-<TABLE width="100%" class="fall" cellpadding="10">
-	<TR class="superlight">
-		<TD style="width: 1%;">
-			<IMG src="img/totd.gif" alt="">
-		</TD>
-		<TD style="width: 99%;">
-			<P class="txt">{$layout.fortune|replace:"\n":"<BR>"}</P>
-		</TD>
-	</TR>
-</TABLE>
-{*</P>*}
-{/if}
 {if $newer_version}
 <SCRIPT TYPE="text/javascript">
 alert('{t a=$newer_version b="http://lms.org.pl/download"}There is newer version of LMS ($a) available for download from $b.{/t}');

@@ -97,7 +97,7 @@
 		<TD WIDTH="99%" COLSPAN="2">
 			<label for="chkmac">{trans("MAC checking")}:</label><INPUT TYPE="checkbox" NAME="chkmac" VALUE="1" ID="chkmac" {if $nodeipdata.chkmac} checked{/if} onchange="chkmac_change();">&nbsp;
 			<label for="chkduplex">{trans("Half duplex")}:</label><INPUT TYPE="checkbox" NAME="duplex" VALUE="1" ID="chkduplex" {if $nodeipdata.halfduplex} checked{/if} onchange="duplex_change();">
-			{if check_conf('phpui.radius')}
+			{if ConfigHelper::checkConfig('phpui.radius')}
 			&nbsp;
 			<label for="chknas">{trans("NAS")}:</label><INPUT TYPE="checkbox" NAME="nas" ID="chknas" VALUE="1" {if $nodeipdata.nas} checked{/if} onchange="nas_change();">
 			{/if}

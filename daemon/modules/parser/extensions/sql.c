@@ -29,13 +29,15 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include "../../../lmsd.h"
 
-ConnHandle *conn = NULL;
+GLOBAL *g;
+
 int rows;
 
 void tscript_ext_sql_exec(char* query)
 {
-	rows = db_exec(conn, query);
+	rows = g->db->exec(g->db->conn, query);
 }
 
 tscript_value * tscript_ext_sql_escape(tscript_value *arg)
@@ -43,7 +45,7 @@ tscript_value * tscript_ext_sql_escape(tscript_value *arg)
 	char *tmp;
 	tscript_value *res;
 
-	tmp = db_escape(conn, tscript_value_as_string(tscript_value_convert_to_string(arg)));
+	tmp = g->db->escape(g->db->conn, tscript_value_as_string(tscript_value_convert_to_string(arg)));
 	res = tscript_value_create(TSCRIPT_TYPE_STRING, tmp);
 	free(tmp);
 
@@ -60,9 +62,9 @@ tscript_value * tscript_ext_sql_rows(tscript_value *arg)
 	if( (strncmp("SELECT", query, 6)==0) ||
 	    (strncmp("select", query, 6)==0) )
 	{
-		q = db_query(conn, query);
-		rows = db_nrows(q);
-		db_free(&q);
+		q = g->db->query(g->db->conn, query);
+		rows = g->db->nrows(q);
+		g->db->free(&q);
 	}
 	else
 		tscript_ext_sql_exec(query);
@@ -133,28 +135,28 @@ tscript_value * tscript_ext_sql_select(tscript_value *arg)
 	QueryHandle *q = NULL;
 	
 	asprintf(&query, "SELECT %s", tscript_value_as_string(tscript_value_convert_to_string(arg)));
-	q = db_query(conn, query);
+	q = g->db->query(g->db->conn, query);
 
 	res = tscript_value_create_array();
 
-	for(r = 0; r<db_nrows(q); r++)
+	for(r = 0; r<g->db->nrows(q); r++)
 	{
 		index = tscript_value_create_number(r);
 		res_row = tscript_value_array_item_ref(&res, index);
 		tscript_value_free(index);
 		*res_row = tscript_value_create_array();
 
-		for(c = 0; c<db_ncols(q); c++)
+		for(c = 0; c<g->db->ncols(q); c++)
 		{
-			colname = db_colname(q, c);
-			value = db_get_data(q, r, colname);
+			colname = g->db->colname(q, c);
+			value = g->db->get_data(q, r, colname);
 			index = tscript_value_create_number(c);
 			(*tscript_value_array_item_ref(res_row, index)) = tscript_value_create_string(value);
 			(*tscript_value_subvar_ref(*res_row, colname)) = tscript_value_create_string(value);
 			tscript_value_free(index);
 		}
 	}
-	db_free(&q);
+	g->db->free(&q);
 	
 	return res;
 }
@@ -166,25 +168,25 @@ tscript_value * tscript_ext_sql_customers()
 	char *colname, *value;
 	QueryHandle *q = NULL;
 	
-	q = db_query(conn, CUSTOMERS);
+	q = g->db->query(g->db->conn, CUSTOMERS);
 
 	res = tscript_value_create_array();
 
-	for(r = 0; r<db_nrows(q); r++)
+	for(r = 0; r<g->db->nrows(q); r++)
 	{
 		index = tscript_value_create_number(r);
 		res_row = tscript_value_array_item_ref(&res, index);
 		tscript_value_free(index);
 		*res_row = tscript_value_create_array();
 
-		for(c = 0; c<db_ncols(q); c++)
+		for(c = 0; c<g->db->ncols(q); c++)
 		{
-			colname = db_colname(q, c);
-			value = db_get_data(q, r, colname);
+			colname = g->db->colname(q, c);
+			value = g->db->get_data(q, r, colname);
 			(*tscript_value_subvar_ref(*res_row, colname)) = tscript_value_create_string(value);
 		}
 	}
-	db_free(&q);
+	g->db->free(&q);
 	
 	return res;
 }
@@ -193,29 +195,36 @@ tscript_value * tscript_ext_sql_nodes()
 {
 	tscript_value *res, **res_row, *index;
 	int r, c;
-	char *colname, *value;
+	char *colname, *value, *query;
 	QueryHandle *q = NULL;
-	
-	q = db_query(conn, NODES);
+
+        query = strdup(NODES);
+
+        char * cfullname = g->db->concat(3, "c.lastname", "' '", "c.name");
+        g->str_replace(&query, "%cfullname", cfullname);
+        free(cfullname);
+
+	q = g->db->query(g->db->conn, query);
 
 	res = tscript_value_create_array();
 
-	for(r = 0; r<db_nrows(q); r++)
+	for(r = 0; r<g->db->nrows(q); r++)
 	{
 		index = tscript_value_create_number(r);
 		res_row = tscript_value_array_item_ref(&res, index);
 		tscript_value_free(index);
 		*res_row = tscript_value_create_array();
 
-		for(c = 0; c<db_ncols(q); c++)
+		for(c = 0; c<g->db->ncols(q); c++)
 		{
-			colname = db_colname(q, c);
-			value = db_get_data(q, r, colname);
+			colname = g->db->colname(q, c);
+			value = g->db->get_data(q, r, colname);
 			(*tscript_value_subvar_ref(*res_row, colname)) = tscript_value_create_string(value);
 		}
 	}
-	db_free(&q);
-	
+	g->db->free(&q);
+        free(query);
+
 	return res;
 }
 
@@ -226,36 +235,36 @@ tscript_value * tscript_ext_sql_networks()
 	char *colname, *value;
 	QueryHandle *q = NULL;
 	
-	q = db_query(conn, NETWORKS);
+	q = g->db->query(g->db->conn, NETWORKS);
 
 	res = tscript_value_create_array();
 
-	for(r = 0; r<db_nrows(q); r++)
+	for(r = 0; r<g->db->nrows(q); r++)
 	{
 		index = tscript_value_create_number(r);
 		res_row = tscript_value_array_item_ref(&res, index);
 		tscript_value_free(index);
 		*res_row = tscript_value_create_array();
 
-		for(c = 0; c<db_ncols(q); c++)
+		for(c = 0; c<g->db->ncols(q); c++)
 		{
-			colname = db_colname(q, c);
-			value = db_get_data(q, r, colname);
+			colname = g->db->colname(q, c);
+			value = g->db->get_data(q, r, colname);
 			(*tscript_value_subvar_ref(*res_row, colname)) = tscript_value_create_string(value);
 		}
 
-		c = mask2prefix(db_get_data(q, r, "mask"));
+		c = mask2prefix(g->db->get_data(q, r, "mask"));
 		(*tscript_value_subvar_ref(*res_row, "prefix")) = tscript_value_create_number(c);
 		(*tscript_value_subvar_ref(*res_row, "size")) = tscript_value_create_number(pow(2,32 - c));
 	}
-	db_free(&q);
+	g->db->free(&q);
 	
 	return res;
 }
 
-void tscript_ext_sql_init(tscript_context *context, ConnHandle *c)
+void tscript_ext_sql_init(tscript_context *context, GLOBAL *gl)
 {
-	conn = c;
+	g = gl;
 	tscript_add_extension(context, "CREATE", tscript_ext_sql_create, 1, 1);
 	tscript_add_extension(context, "DROP", tscript_ext_sql_drop, 1, 1);
 	tscript_add_extension(context, "INSERT", tscript_ext_sql_insert, 1, 1);

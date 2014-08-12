@@ -28,8 +28,8 @@ function setgroup(act)
 }
 //-->
 </SCRIPT>
-{$lastonline_limit=get_conf('phpui.lastonline_limit')}
-{if check_conf('phpui.ewx_support')}{assign var=ewx value=1}{else}{assign var=ewx value=0}{/if}
+{$lastonline_limit=ConfigHelper::getConfig('phpui.lastonline_limit')}
+{if ConfigHelper::checkConfig('phpui.ewx_support')}{assign var=ewx value=1}{else}{assign var=ewx value=0}{/if}
 <TABLE class="lmsbox">
 	<THEAD>
 	<TR>

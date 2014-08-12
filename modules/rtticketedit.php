@@ -45,10 +45,11 @@ if ($id && !isset($_POST['ticket'])) {
 					$user = $LMS->GetUserInfo($AUTH->id);
 					$mailfname = '';
 
-					if (isset($CONFIG['phpui']['helpdesk_sender_name'])) {
-						if ($CONFIG['phpui']['helpdesk_sender_name'] == 'queue')
+					$helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
+					if (!empty($helpdesk_sender_name)) {
+						if ($helpdesk_sender_name == 'queue')
 							$mailfname = $$queue['name'];
-						elseif ($CONFIG['phpui']['helpdesk_sender_name'] == 'user')
+						elseif ($helpdesk_sender_name == 'user')
 							$mailfname = $user['name'];
 
 						$mailfname = '"' . $mailfname . '"';
@@ -180,17 +181,18 @@ if(isset($_POST['ticket']))
 				array($id, $categoryid));
 
 		// przy zmianie kolejki powiadamiamy o "nowym" zgloszeniu
+		$newticket_notify = ConfigHelper::getConfig('phpui.newticket_notify', false);
 		if ($ticket['queueid'] != $ticketedit['queueid']
-			&& isset($CONFIG['phpui']['newticket_notify'])
-			&& chkconfig($CONFIG['phpui']['newticket_notify'])) {
+			&& !empty($netticket_notify)) {
 			$user = $LMS->GetUserInfo($AUTH->id);
 			$queue = $LMS->GetQueueByTicketId($ticket['ticketid']);
 			$mailfname = '';
 
-			if (isset($CONFIG['phpui']['helpdesk_sender_name'])) {
-				if ($CONFIG['phpui']['helpdesk_sender_name'] == 'queue')
-					$mailfname = $$queue['name'];
-				elseif ($CONFIG['phpui']['helpdesk_sender_name'] == 'user')
+			$helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
+			if (!empty($helpdesk_sender_name)) {
+				if ($helpdesk_sender_name == 'queue')
+					$mailfname = $queue['name'];
+				elseif ($helpdesk_sender_name == 'user')
 					$mailfname = $user['name'];
 
 				$mailfname = '"' . $mailfname . '"';
@@ -209,7 +211,7 @@ if(isset($_POST['ticket']))
 				.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 				.'?m=rtticketview&id='.$ticket['ticketid'];
 
-			if(chkconfig($CONFIG['phpui']['helpdesk_customerinfo']) && $ticketedit['customerid'])
+			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_customerinfo', false)) && $ticketedit['customerid'])
 			{
 				$info = $DB->GetRow('SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
 						email, address, zip, city, (SELECT phone FROM customercontacts 
@@ -254,7 +256,8 @@ if(isset($_POST['ticket']))
 			}
 
             // send sms
-			if (!empty($CONFIG['sms']['service']) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
+			$service = ConfigHelper::getConfig('sms.service');
+			if (!empty($service) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
 			        FROM users, rtrights
 					WHERE users.id = userid AND queueid = ? AND phone != \'\'
 						AND (rtrights.rights & 8) = 8 AND users.id != ?
@@ -298,14 +301,14 @@ $layout['pagetitle'] = trans('Ticket Edit: $a',sprintf("%06d",$ticket['ticketid'
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
+if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
 {
         $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
 }
 
 $queuelist = $LMS->GetQueueNames();
-if (get_conf('userpanel.limit_ticket_movements_to_selected_queues')) {
-	$selectedqueues = explode(';', get_conf('userpanel.queues'));
+if (ConfigHelper::getConfig('userpanel.limit_ticket_movements_to_selected_queues')) {
+	$selectedqueues = explode(';', ConfigHelper::getConfig('userpanel.queues'));
 	if (in_array($ticket['queueid'], $selectedqueues))
 		foreach ($queuelist as $idx => $queue)
 			if (!in_array($queue['id'], $selectedqueues))

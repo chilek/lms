@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-include(!empty($CONFIG['phpui']['import_config']) ? $CONFIG['phpui']['import_config'] : 'cashimportcfg.php');
+include(ConfigHelper::getConfig('phpui.import_config', 'cashimportcfg.php'));
 
 if(!isset($patterns) || !is_array($patterns))
 {

@@ -10,8 +10,8 @@
 <SCRIPT TYPE="text/javascript" SRC="img/common.js"></SCRIPT>
 </head>
 <body>
-{$lastonline_limit = get_conf('phpui.lastonline_limit')}
-<TABLE class="lmsbox" id="table">
+{$lastonline_limit = ConfigHelper::getConfig('phpui.lastonline_limit')}
+<TABLE class="lmsbox-inner" id="table">
     <THEAD>
 	<TR>
 		<TD WIDTH="1%">
