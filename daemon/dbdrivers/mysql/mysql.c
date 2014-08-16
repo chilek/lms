@@ -480,7 +480,7 @@ char * db_concat(int cnt, ...)
     va_end(vs);
 
     char * result = malloc(strlen(body) + strlen(prefix) + strlen(suffix));
-    sprintf(result, "%s%s%s", body, prefix, suffix);
+    sprintf(result, "%s%s%s", prefix, body, suffix);
 
     free(body);
     return result;
