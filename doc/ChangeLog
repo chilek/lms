@@ -16,6 +16,7 @@ version ?.??.?? (????-??-??):
   - added quick search by document full number [chilan]
   - daemon: if snmp.h is not available then don't build ewx-* modules [maniac]
   - daemon: fixed daemon start on some platforms. Closes: #239 [maniac]
+  - tariffs: 500M is new maximum allowed bandwidth [chilan]
 
 version 1.11.15 (2014-05-15):
 
