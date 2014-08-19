@@ -109,6 +109,14 @@ switch ($_POST['datetype']) {
 		$sortcol = 'd.cdate';
 }
 
+if (!empty($_POST['numberplanid'])) {
+	if (is_array($_POST['numberplanid'])) {
+		$numberplans = array_map('intval', $_POST['numberplanid']);
+		$numberplans = implode(',', $numberplans);
+	} else
+		$numberplans = intval($_POST['numberplanid']);
+}
+
 // we can't simply get documents with SUM(value*count)
 // because we need here incoices-like round-off
 
@@ -120,7 +128,7 @@ $items = $DB->GetAll('SELECT c.docid, c.itemid, c.taxid, c.value, c.count,
 	    LEFT JOIN invoicecontents c ON c.docid = d.id
 	    LEFT JOIN numberplans n ON d.numberplanid = n.id
 	    WHERE (d.type = ? OR d.type = ?) AND ('.$sortcol.' BETWEEN ? AND ?) '
-	    .($_POST['numberplanid'] ? 'AND d.numberplanid = '.intval($_POST['numberplanid']) : '')
+	    .(isset($numberplans) ? 'AND d.numberplanid IN (' . $numberplans . ')' : '')
 	    .(isset($divwhere) ? $divwhere : '')
 	    .(isset($groupwhere) ? $groupwhere : '')
 	    .' AND NOT EXISTS (

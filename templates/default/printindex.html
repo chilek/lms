@@ -515,7 +515,7 @@ cal4.time_comp = false;
 							<B>{trans("Plan:")}</B>
 						    </TD>
 						    <TD style="width: 98%;" colspan="2" nowrap>
-							<SELECT name="numberplanid" {tip text="Select numbering plan"}>
+							<SELECT name="numberplanid[]" id="numberplanid" {tip text="Select numbering plan"} multiple>
 							    <OPTION value="0">- {trans("all")} -</OPTION>
     							    {foreach item=plan from=$numberplans}
 					    		    {assign var=period value=$plan.period}
@@ -577,6 +577,7 @@ cal8.time_comp = false;
 var cal9 = new calendar(document.forms['invoicereport'].elements['to']);
 cal9.time_comp = false;
 multiselect('invoicereport', 'invoicereportgroup', '{trans("- all groups -")}');
+multiselect('invoicereport', 'numberplanid', '{trans("all")}');
 //-->
 </SCRIPT>
 </P>
