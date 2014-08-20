@@ -2811,7 +2811,7 @@ $_LANG['prefix'] = 'prefiks';
 $_LANG['interface'] = 'interfejs';
 $_LANG['network'] = 'sieć';
 $_LANG['Addresses'] = 'Adresy';
-$_LANG['all'] = 'wszystkie';
+$_LANG['total'] = 'wszystkie';
 $_LANG['busy'] = 'zajęte';
 $_LANG['on-line'] = 'włączone';
 ?>

@@ -18,7 +18,7 @@
 			<IMG src="img/empty.gif" width="1" height="16" alt="">
 				<A href="?m=netlist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}"> <span class="bold">{trans("ID:")}</span></A>{if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<IMG src="img/empty.gif" width="1" height="16" alt="">{trans("Addresses")}
-				(<A href="?m=netlist&o=size{if $listdata.direction eq "asc" && $listdata.order eq "size"},desc{/if}">{trans("all")}</A>{if $listdata.order eq "size"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} /
+				(<A href="?m=netlist&o=size{if $listdata.direction eq "asc" && $listdata.order eq "size"},desc{/if}">{trans("total")}</A>{if $listdata.order eq "size"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} /
 				<A href="?m=netlist&o=assigned{if $listdata.direction eq "asc" && $listdata.order eq "assigned"},desc{/if}">{trans("busy")}</A>{if $listdata.order eq "assigned"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} /
 				<A href="?m=netlist&o=online{if $listdata.direction eq "asc" && $listdata.order eq "online"},desc{/if}">{trans("on-line")}</A>{if $listdata.order eq "online"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if})
 		</TD>
