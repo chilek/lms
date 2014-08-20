@@ -2807,4 +2807,11 @@ $_LANG['Are you sure, you want to delete all liabilities?'] = 'Jesteś pewien, �
 $_LANG['Enter document number and press Enter'] = 'Wprowadź numer dokumentu i naciśnij Enter';
 $_LANG['Document id:'] = 'Id dokumentu:';
 
+$_LANG['prefix'] = 'prefiks';
+$_LANG['interface'] = 'interfejs';
+$_LANG['network'] = 'sieć';
+$_LANG['Addresses'] = 'Adresy';
+$_LANG['all'] = 'wszystkie';
+$_LANG['busy'] = 'zajęte';
+$_LANG['on-line'] = 'włączone';
 ?>
