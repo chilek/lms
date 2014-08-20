@@ -3799,7 +3799,45 @@ class LMS {
 			FROM networks WHERE id = ?', array($id));
 	}
 
-	public function GetNetworkList() {
+	public function GetNetworkList($order='id,asc') {
+		if($order=='')
+			$order='id,asc';
+
+		list($order,$direction) = sscanf($order, '%[^,],%s');
+
+		($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
+
+		switch($order)
+		{
+			case 'name':
+				$sqlord = ' ORDER BY n.name';
+			break;
+			case 'id':
+				$sqlord = ' ORDER BY n.id';
+			break;
+			case 'address':
+				$sqlord = ' ORDER BY n.address';
+			break;
+			case 'mask':
+				$sqlord = ' ORDER BY n.mask';
+			break;
+			case 'interface':
+				$sqlord = ' ORDER BY n.interface';
+			break;
+			case 'host':
+				$sqlord = ' ORDER BY hostname';
+			break;
+			case 'size':
+				$sqlord = ' ORDER BY size';
+			break;
+			case 'assigned':
+				$sqlord = ' ORDER BY assigned';
+			break;
+			case 'online':
+				$sqlord = ' ORDER BY online';
+			break;
+		}
+
 		if ($networks = $this->DB->GetAll('SELECT n.id, h.name AS hostname, n.name, inet_ntoa(address) AS address, 
 				address AS addresslong, mask, interface, gateway, dns, dns2, 
 				domain, wins, dhcpstart, dhcpend,
@@ -3819,8 +3857,8 @@ class LMS {
 						AND (?NOW? - lastonline < ?)
 				) AS online
 				FROM networks n
-				LEFT JOIN hosts h ON h.id = n.hostid
-				ORDER BY n.name', array(intval(ConfigHelper::getConfig('phpui.lastonline_limit'))))) {
+				LEFT JOIN hosts h ON h.id = n.hostid'.($sqlord != '' ? $sqlord.' '.$direction : ''),
+				array(intval(ConfigHelper::getConfig('phpui.lastonline_limit'))))) {
 			$size = 0;
 			$assigned = 0;
 			$online = 0;
@@ -3834,6 +3872,8 @@ class LMS {
 			$networks['size'] = $size;
 			$networks['assigned'] = $assigned;
 			$networks['online'] = $online;
+			$networks['order'] = $order;
+			$networks['direction'] = $direction;
 		}
 		return $networks;
 	}
