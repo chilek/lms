@@ -22,7 +22,7 @@
 		document.forms['documentadd'].submit();
 	}
 
-	function setnumberplans(get_templates) {
+	function setnumberplans() {
 		var type = document.forms['documentadd'].elements['document[type]'].value,
 		    plans = document.getElementById('numberplans');
 
@@ -64,8 +64,7 @@
 			plans.style.display = 'inline';
 		}
 
-		if (get_templates)
-			gettemplates();
+		gettemplates();
 	}
 
 	function reset_customer()
@@ -144,7 +143,7 @@
 			<B>{trans("Type:")}
 		</TD>
 		<TD width="98%">
-			<SELECT SIZE="1" NAME="document[type]" onchange="setnumberplans(1);" {tip text="Select document type" trigger="type"}>
+			<SELECT SIZE="1" NAME="document[type]" onchange="setnumberplans();" {tip text="Select document type" trigger="type"}>
 				<OPTION VALUE="0">... {trans("select type")} ...</OPTION>
 				{foreach from=$_DOCTYPES key=key item=item}{if $key < 0 && in_array($key, $docrights)}
 				<OPTION VALUE="{$key}"{if $document.type==$key} SELECTED{/if}>{$item}</OPTION>
@@ -231,7 +230,7 @@ cal1.time_comp = false;
 var cal2 = new calendar(document.forms['documentadd'].elements['document[todate]']);
 cal2.time_comp = false;
 document.forms['documentadd'].elements['document[title]'].focus();
-setnumberplans(0);
+//setnumberplans();
 //-->
 </SCRIPT>
 {include file="footer.html"}
