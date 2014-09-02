@@ -4848,14 +4848,13 @@ class LMS {
 	}
 
 	public function TicketAdd($ticket, $files = NULL) {
-		$ts = time();
 		$this->DB->Execute('INSERT INTO rttickets (queueid, customerid, requestor, subject, 
 				state, owner, createtime, cause, creatorid)
-				VALUES (?, ?, ?, ?, 0, 0, ?, ?, ?)', array($ticket['queue'],
+				VALUES (?, ?, ?, ?, 0, ?, ?NOW?, ?, ?)', array($ticket['queue'],
 				$ticket['customerid'],
 				$ticket['requestor'],
 				$ticket['subject'],
-				$ts,
+				$ticket['owner'],
 				isset($ticket['cause']) ? $ticket['cause'] : 0,
 				isset($this->AUTH->id) ? $this->AUTH->id : 0
 		));
@@ -4864,9 +4863,8 @@ class LMS {
 
 		$this->DB->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime, 
 				subject, body, mailfrom)
-				VALUES (?, ?, ?, ?, ?, ?)', array($id,
+				VALUES (?, ?, ?NOW?, ?, ?, ?)', array($id,
 				$ticket['customerid'],
-				$ts,
 				$ticket['subject'],
 				preg_replace("/\r/", "", $ticket['body']),
 				$ticket['mailfrom']));

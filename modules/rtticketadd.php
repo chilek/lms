@@ -261,6 +261,7 @@ $SMARTY->assign('queue', $queue);
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('customerid', $ticket['customerid']);
+$SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->display('rtticketadd.html');
 
 ?>

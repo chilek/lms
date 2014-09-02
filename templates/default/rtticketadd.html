@@ -79,19 +79,6 @@
 	</TR>
 	<TR>
 		<TD style="width: 1%;" class="bold nobr">
-			<IMG src="img/queue.gif" alt="">
-			{trans("Queue:")}
-		</TD>
-		<TD style="width: 99%;">
-			<SELECT size="1" name="ticket[queue]" {tip text="Select queue" trigger="queue"}>
-				{foreach from=$queuelist item=item}
-				<OPTION value="{$item.id}" {if $item.id == $queue}SELECTED{/if}>{$item.name}</OPTION>
-				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;" class="bold nobr">
 			<IMG src="img/mail.gif" alt="">
 			{trans("Content:")}
 		</TD>
@@ -110,23 +97,6 @@
 	</TR>
 	<TR>
 		<TD style="width: 1%;" class="bold nobr">
-			<IMG src="img/desc.gif" alt="">
-			{trans("Cause:")}
-		</TD>
-		<TD style="width: 99%;">
-			<SELECT size="1" name="ticket[cause]" {tip text="Select request cause" trigger="cause"}>
-				<OPTION value="0" {if !$ticket.cause}selected{/if}>{trans("unknown/other")}</OPTION>
-				<OPTION value="1" {if $ticket.cause == 1}selected{/if}>{trans("customer's side")}</OPTION>
-				<OPTION value="2" {if $ticket.cause == 2}selected{/if}>{trans("company's side")}</OPTION>
-			</SELECT>
-		</TD>
-			</TABLE>
-		</TD>
-		<TD style="width: 50%;" class="valign-top">
-			<TABLE width="50%" cellpadding="3">
-				<TR>
-
-		<TD style="width: 1%;" class="bold nobr">
 			<IMG src="img/queue.gif" alt="">
 			{trans("Categories:")}
 		</TD>
@@ -144,8 +114,52 @@
 				{/foreach}
 			</TABLE>
 		</TD>
+			</TABLE>
+		</TD>
+		<TD style="width: 50%;" class="valign-top">
+			<TABLE width="50%" cellpadding="3">
 
-				</TR>
+	<TR>
+		<TD style="width: 1%;" class="bold nobr">
+			<IMG src="img/users.gif" alt="">
+			{trans("Owner:")}
+		</TD>
+		<TD style="width: 99%;">
+			<SELECT size="1" name="ticket[owner]" {tip text="Select user" trigger="owner"}>
+				<OPTION value="0">- {trans("select user")} -</OPTION>
+				{foreach from=$userlist item=item}
+				<OPTION value="{$item.id}"{if $item.id == $ticket.owner} selected{/if}>{$item.name}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR>
+		<TD style="width: 1%;" class="bold nobr">
+			<IMG src="img/queue.gif" alt="">
+			{trans("Queue:")}
+		</TD>
+		<TD style="width: 99%;">
+			<SELECT size="1" name="ticket[queue]" {tip text="Select queue" trigger="queue"}>
+				{foreach from=$queuelist item=item}
+				<OPTION value="{$item.id}" {if $item.id == $queue}SELECTED{/if}>{$item.name}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR>
+		<TD style="width: 1%;" class="bold nobr">
+			<IMG src="img/desc.gif" alt="">
+			{trans("Cause:")}
+		</TD>
+		<TD style="width: 99%;">
+			<SELECT size="1" name="ticket[cause]" {tip text="Select request cause" trigger="cause"}>
+				<OPTION value="0" {if !$ticket.cause}selected{/if}>{trans("unknown/other")}</OPTION>
+				<OPTION value="1" {if $ticket.cause == 1}selected{/if}>{trans("customer's side")}</OPTION>
+				<OPTION value="2" {if $ticket.cause == 2}selected{/if}>{trans("company's side")}</OPTION>
+			</SELECT>
+		</TD>
+	</TR>
+
 			</TABLE>
 		</TD>
 	</TR>

@@ -18,6 +18,7 @@ version ?.??.?? (????-??-??):
   - daemon: fixed daemon start on some platforms. Closes: #239 [maniac]
   - tariffs: 500M is new maximum allowed bandwidth [chilan]
   - invoicereport: multi selection of numberplans is possible [chilan]
+  - helpdesk ticket add: make form layout more similar to ticket edit form [chilan]
 
 version 1.11.15 (2014-05-15):
 
