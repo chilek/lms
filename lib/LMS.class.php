@@ -37,6 +37,7 @@ class LMS {
 	public $xajax;  // xajax object
 	public $_version = '1.11-git'; // class version
 	public $_revision = '$Revision$';
+        protected $plugins_manager;
 
 	public function __construct(&$DB, &$AUTH, &$SYSLOG) { // class variables setting
 		$this->DB = &$DB;
@@ -132,6 +133,16 @@ class LMS {
 
 		return $vars;
 	}
+        
+        public function setPluginsManager(LMSPluginsManager $plugins_manager)
+        {
+            $this->plugins_manager = $plugins_manager;
+        }
+        
+        public function executeHook($hook_name, &$hook_data)
+        {
+            $this->plugins_manager->executeHook($hook_name, $hook_data);
+        }
 
 	/*
 	 *  Database functions (backups)

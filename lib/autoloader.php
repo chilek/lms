@@ -98,16 +98,22 @@ function application_autoloader($class) {
                                 require_once $path_cache[$class];
                         }
                 } else {
-                        // try to find class file in LIB_DIR
-                        $directories = new RecursiveDirectoryIterator(LIB_DIR);
-                        $suspicious_file_names = array(
-                                $class.'.php',
-                                $class.'.class.php',
-                                strtolower($class).'.php',
-                                strtolower($class).'.class.php',
-                                strtoupper($class).'.php',
-                                strtoupper($class).'.class.php',
-                        );
+                    // try to find class file in LIB_DIR, PLUGINS_DIR and VENDOR_DIR
+                    $suspicious_file_names = array(
+                            $class.'.php',
+                            $class.'.class.php',
+                            strtolower($class).'.php',
+                            strtolower($class).'.class.php',
+                            strtoupper($class).'.php',
+                            strtoupper($class).'.class.php',
+                    );
+                    $search_paths = array(LIB_DIR);
+                    $file_found = false;
+                    foreach ($search_paths as $search_path) {
+                        if ($file_found === true) {
+                            break;
+                        }
+                        $directories = new RecursiveDirectoryIterator($search_path);
                         foreach (new RecursiveIteratorIterator($directories) as $file) {
                                 if (in_array($file->getFilename(), $suspicious_file_names)) {
                                         // get class file path
@@ -116,9 +122,11 @@ function application_autoloader($class) {
                                         $path_cache[$class] = $full_path;
                                         // load class file
                                         require_once $full_path;
+                                        $file_found = true;
                                         break;
                                 }
                         }
+                    }
                 }
                 // serialize cache
                 $serialized_paths = serialize($path_cache);
@@ -131,3 +139,7 @@ function application_autoloader($class) {
 
 // register autoloader
 spl_autoload_register('application_autoloader');
+
+if (file_exists(SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php')) {
+    require_once(SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php');
+}
