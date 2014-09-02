@@ -29,7 +29,7 @@ if(!$_GET['id'])
 	$SESSION->redirect('?m=eventlist');
 }
 
-$event = $DB->GetRow('SELECT events.id AS id, title, description, note, userid, customerid, begintime, endtime, date, private, closed, '
+$event = $DB->GetRow('SELECT events.id AS id, title, description, note, userid, customerid, date, begintime, enddate, endtime, private, closed, '
 			    .$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername,
 			    users.name AS username, events.moddate, events.moduserid, 
 			    (SELECT name FROM users WHERE id=events.moduserid) AS modusername 

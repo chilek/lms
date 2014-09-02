@@ -1202,6 +1202,7 @@ CREATE TABLE events (
     note text NOT NULL DEFAULT '',
     date int(11) NOT NULL DEFAULT '0',
     begintime smallint(4) NOT NULL DEFAULT '0',
+    enddate int(11) NOT NULL DEFAULT '0',
     endtime smallint(4) NOT NULL DEFAULT '0',
     userid int(11) NOT NULL DEFAULT '0',
     customerid int(11) NOT NULL DEFAULT '0',
@@ -1960,4 +1961,4 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('userpanel','owner_stats','0','',0),
 ('userpanel','default_categories','1','',0);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014072500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014090200');

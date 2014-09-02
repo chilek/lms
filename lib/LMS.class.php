@@ -5606,7 +5606,7 @@ class LMS {
 		}
 
 		$list = $this->DB->GetAll(
-				'SELECT events.id AS id, title, description, date, begintime, endtime, customerid, closed, '
+				'SELECT events.id AS id, title, description, date, begintime, enddate, endtime, customerid, closed, '
 				. $this->DB->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername
 			FROM events
 			LEFT JOIN customers ON (customerid = customers.id)

@@ -2814,4 +2814,7 @@ $_LANG['Addresses'] = 'Adresy';
 $_LANG['total'] = 'wszystkie';
 $_LANG['busy'] = 'zajęte';
 $_LANG['on-line'] = 'włączone';
+
+$_LANG['End time:'] = 'Czas zakończenia:';
+
 ?>

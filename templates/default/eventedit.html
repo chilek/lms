@@ -48,13 +48,14 @@
 			<B>{trans("Time:")}</B>
 		</TD>
 		<TD width="98%">
-			<INPUT type="text" name="event[date]" value="{$event.date}" size="10" OnCLick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="date"}>
-			{trans("Begin:")} <SELECT name="event[begintime]" size="1" {tip text="Select time of"} OnChange="javascript:SetEndtime();">
+			{trans("Begin:")} <INPUT type="text" name="event[date]" value="{$event.date}" size="10" OnCLick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="date"}>
+			<SELECT name="event[begintime]" size="1" {tip text="Select time of"} OnChange="javascript:SetEndtime();">
 				{section name=time loop=$hours}
 				<OPTION value="{$hours[time]}" {if $hours[time] == $event.begintime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</OPTION>
 				{/section}
 			</SELECT>
-			{trans("End:")} <SELECT name="event[endtime]" size="1" {tip text="Select time of"} OnChange="javascript:CheckEndtime();">
+			{trans("End:")} <INPUT type="text" name="event[enddate]" value="{$event.enddate}" size="10" OnCLick="javascript:cal2.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="enddate"}>
+			<SELECT name="event[endtime]" size="1" {tip text="Select time of"} OnChange="javascript:CheckEndtime();">
 				{section name=time loop=$hours}
 				<OPTION value="{$hours[time]}" {if $hours[time] == $event.endtime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</OPTION>
 				{/section}
@@ -147,6 +148,8 @@
 <!--
 var cal1 = new calendar(document.forms['event'].elements['event[date]']);
 cal1.time_comp = false;
+var cal2 = new calendar(document.forms['event'].elements['event[enddate]']);
+cal2.time_comp = false;
 document.forms['event'].elements['event[title]'].focus();
 //-->
 </SCRIPT>

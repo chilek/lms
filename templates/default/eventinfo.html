@@ -20,24 +20,35 @@
 		<TD width="1%">
 			<IMG src="img/time.gif" alt="">
 		</TD>
-		<TD width="1%">
+		<TD width="1%" class="nobr">
 			<B>{trans("Creation time:")}</B>
 		</TD>
 		<TD width="98%">
 			{$event.date|date_format:"%x (%A)"}
 			{math equation="floor(x/100)" x=$event.begintime format="%02d"}:{math equation="x % 100" x=$event.begintime format="%02d"}
-			{if $event.begintime != $event.endtime}
-			- {math equation="floor(x/100)" x=$event.endtime format="%02d"}:{math equation="x % 100" x=$event.endtime format="%02d"}
-			{/if}
 		</TD>
 	</TR>
+	{if $event.begintime != $event.endtime || $event.enddate > $event.date}
+	<TR>
+		<TD width="1%">
+			<IMG src="img/time.gif" alt="">
+		</TD>
+		<TD width="1%" class="nobr">
+			<B>{trans("End time:")}</B>
+		</TD>
+		<TD width="98%">
+			{$event.enddate|date_format:"%x (%A)"}
+			{math equation="floor(x/100)" x=$event.endtime format="%02d"}:{math equation="x % 100" x=$event.endtime format="%02d"}
+		</TD>
+	</TR>
+	{/if}
 {if $event.moddate != 0}
 	<TR>
 		<TD width="1%">
 			<IMG src="img/time.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{t}Last modification time:{/t}</B>
+		<TD width="1%" class="nobr">
+			<B>{trans("Last modification time:")}</B>
 		</TD>
 		<TD width="98%">
 			{$event.moddate|date_format:"%x (%X)"}
@@ -79,7 +90,7 @@
 		<TD width="1%">
 			<IMG src="img/users.gif" alt="">
 		</TD>
-		<TD width="1%">
+		<TD width="1%" class="nobr">
 			<B>{trans("Created by:")}</B>
 		</TD>
 		<TD width="98%" nowrap>
@@ -91,8 +102,8 @@
 		<TD width="1%">
 			<IMG src="img/users.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{t}Last modified by:{/t}</B>
+		<TD width="1%" class="nobr">
+			<B>{trans("Last modified by:")}</B>
 		</TD>
 		<TD width="98%" nowrap>
 			<A href="?m=userinfo&id={$event.moduserid}">{$event.modusername}</A>
