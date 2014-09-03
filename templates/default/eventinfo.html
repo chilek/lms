@@ -37,7 +37,11 @@
 			<B>{trans("End time:")}</B>
 		</TD>
 		<TD width="98%">
+			{if $event.enddate}
 			{$event.enddate|date_format:"%x (%A)"}
+			{else}
+			{$event.date|date_format:"%x (%A)"}
+			{/if}
 			{math equation="floor(x/100)" x=$event.endtime format="%02d"}:{math equation="x % 100" x=$event.endtime format="%02d"}
 		</TD>
 	</TR>
