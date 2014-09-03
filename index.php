@@ -41,8 +41,8 @@ elseif(is_readable('/etc/lms/lms.ini'))
         $CONFIG_FILE = '/etc/lms/lms.ini';
 elseif (!is_readable($CONFIG_FILE))
         die('Unable to read configuration file ['.$CONFIG_FILE.']!');
-else
-        define('CONFIG_FILE', $CONFIG_FILE);
+
+define('CONFIG_FILE', $CONFIG_FILE);
 
 $CONFIG = (array) parse_ini_file(CONFIG_FILE, true);
 
