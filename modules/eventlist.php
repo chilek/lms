@@ -42,7 +42,7 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 		FROM events 
 		LEFT JOIN customers ON (customerid = customers.id)
 		LEFT JOIN users ON (userid = users.id)
-		WHERE ((date >= ? AND date < ?) OR (enddate <> 0 AND enddate >= ? AND enddate < ?) OR (date < ? AND enddate >= ?))
+		WHERE ((date >= ? AND date < ?) OR (enddate <> 0 AND date < ? AND enddate >= ?))
 			AND (private = 0 OR (private = 1 AND userid = ?)) '
 		.($customerid ? ' AND customerid = '.intval($customerid) : '')
 		.($userid ? ' AND EXISTS (
@@ -50,7 +50,7 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 			WHERE eventid = events.id AND userid = '.intval($userid).'
 			)' : '')
 		.' ORDER BY date, begintime',
-		 array($startdate, $enddate, $startdate, $enddate, $enddate, $startdate, $AUTH->id));
+		 array($startdate, $enddate, $enddate, $startdate, $AUTH->id));
 
 	$list2 = array();
 	if ($list)
