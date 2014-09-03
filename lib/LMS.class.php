@@ -5605,14 +5605,17 @@ class LMS {
 				break;
 		}
 
+		$datefrom = intval($search['datefrom']);
+		$dateto = intval($search['dateto']);
+
 		$list = $this->DB->GetAll(
 				'SELECT events.id AS id, title, description, date, begintime, enddate, endtime, customerid, closed, '
 				. $this->DB->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername
 			FROM events
 			LEFT JOIN customers ON (customerid = customers.id)
 			WHERE (private = 0 OR (private = 1 AND userid = ?)) '
-				. (!empty($search['datefrom']) ? ' AND date >= ' . intval($search['datefrom']) : '')
-				. (!empty($search['dateto']) ? ' AND date <= ' . intval($search['dateto']) : '')
+				. ($datefrom ? " AND (date >= $datefrom OR (enddate <> 0 AND enddate >= $datefrom))" : '')
+				. ($dateto ? " AND (date <= $dateto OR (enddate <> 0 AND enddate <= $dateto))" : '')
 				. (!empty($search['customerid']) ? ' AND customerid = ' . intval($search['customerid']) : '')
 				. (!empty($search['title']) ? ' AND title ?LIKE? ' . $this->DB->Escape('%' . $search['title'] . '%') : '')
 				. (!empty($search['description']) ? ' AND description ?LIKE? ' . $this->DB->Escape('%' . $search['description'] . '%') : '')
@@ -5637,27 +5640,34 @@ class LMS {
 				if ($row['enddate']) {
 					$days = ($row['enddate'] - $row['date']) / 86400;
 					$row['endtime'] = 0;
-					$list2[] = $row;
-
-					if ($userfilter)
-						$list3[] = $row;
+					if ((!$datefrom || $row['date'] >= $datefrom) &&
+						(!$dateto || $row['date'] <= $dateto)) {
+						$list2[] = $row;
+						if ($userfilter)
+							$list3[] = $row;
+					}
 
 					while ($days) {
 						if ($days == 1)
 							$row['endtime'] = $endtime;
 						$row['date'] += 86400;
-						$list2[] = $row;
 
-						if ($userfilter)
-							$list3[] = $row;
+						if ((!$datefrom || $row['date'] >= $datefrom) &&
+							(!$dateto || $row['date'] <= $dateto)) {
+							$list2[] = $row;
+							if ($userfilter)
+								$list3[] = $row;
+						}
 
 						$days--;
 					}
-				} else {
-					$list2[] = $row;
-					if ($userfilter)
-						$list3[] = $row;
-				}
+				} else
+					if ((!$datefrom || $row['date'] >= $datefrom) &&
+						(!$dateto || $row['date'] <= $dateto)) {
+						$list2[] = $row;
+						if ($userfilter)
+							$list3[] = $row;
+					}
 			}
 
 			if ($search['userid'])
