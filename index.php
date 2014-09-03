@@ -25,7 +25,7 @@
  */
 
 // REPLACE THIS WITH PATH TO YOUR CONFIG FILE
-$CONFIG_FILE = '/etc/lms/lms.ini';
+$CONFIG_FILE = '';
 
 // PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
 // *EXACTLY* WHAT ARE YOU DOING!!!
@@ -39,10 +39,10 @@ if(is_readable('/etc/lms/lms-'.$_SERVER['HTTP_HOST'].'.ini'))
         $CONFIG_FILE = '/etc/lms/lms-'.$_SERVER['HTTP_HOST'].'.ini';
 elseif(is_readable('/etc/lms/lms.ini'))
         $CONFIG_FILE = '/etc/lms/lms.ini';
+elseif (!is_readable($CONFIG_FILE))
+        die('Unable to read configuration file ['.$CONFIG_FILE.']!');
 else
-        die('Unable to read configuration file [/etc/lms/lms.ini]!');
-
-define('CONFIG_FILE', $CONFIG_FILE);
+        define('CONFIG_FILE', $CONFIG_FILE);
 
 $CONFIG = (array) parse_ini_file(CONFIG_FILE, true);
 
