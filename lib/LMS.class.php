@@ -5622,6 +5622,14 @@ class LMS {
 				. (!empty($search['note']) ? ' AND note ?LIKE? ' . $this->DB->Escape('%' . $search['note'] . '%') : '')
 				. $sqlord, array($this->AUTH->id));
 
+		if ($search['userid'])
+			if (is_array($search['userid']))
+				$users = array_filter($search['userid'], 'is_natural');
+			else
+				$users = array(intval($search['userid']));
+		else
+			$users = array();
+
 		$list2 = $list3 = array();
 		if ($list) {
 			foreach ($list as $idx => $row) {
@@ -5632,9 +5640,9 @@ class LMS {
 				$endtime = $row['endtime'];
 
 				$userfilter = false;
-				if ($search['userid'] && !empty($row['userlist']))
+				if (!empty($users) && !empty($row['userlist']))
 					foreach ($row['userlist'] as $user)
-						if ($user['id'] == $search['userid'])
+						if (in_array($user['id'], $users))
 							$userfilter = true;
 
 				if ($row['enddate']) {
