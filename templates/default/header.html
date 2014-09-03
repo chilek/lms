@@ -40,7 +40,7 @@
 				{if $menuitem.submenu}
 				{foreach from=$menuitem.submenu item=submenuitem}
 					<div class="tip"{if $submenuitem.tip} {tip text="<B>\$a</B>" a=$submenuitem.tip}{/if}>
-						<div class="box2" onClick="return self.location.href='{$submenuitem.link|replace:"&":"&amp;"}';">&raquo;&nbsp;<a href="{$submenuitem.link|replace:"&":"&amp;"}">{$submenuitem.name}</a></div>
+						<div class="box2"><a href="{$submenuitem.link|replace:"&":"&amp;"}">{$submenuitem.name}</a></div>
 					</div>
 				{/foreach}
 				{/if}
