@@ -36,7 +36,7 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 	$enddate = mktime(0,0,0, $month, $day+$forward, $year);
 
 	$list = $DB->GetAll(
-	        'SELECT events.id AS id, title, description, date, begintime, endtime, customerid, closed, '
+		'SELECT events.id AS id, title, description, date, begintime, enddate, endtime, customerid, closed, '
 		.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername,
 		userid, users.name AS username 
 		FROM events 
@@ -51,16 +51,30 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 		.' ORDER BY date, begintime',
 		 array($startdate, $enddate, $AUTH->id));
 
-	if($list)
-		foreach($list as $idx => $row)
-		{
-			$list[$idx]['userlist'] = $DB->GetAll('SELECT userid AS id, users.name
+	$list2 = array();
+	if ($list)
+		foreach ($list as $idx => $row) {
+			$row['userlist'] = $DB->GetAll('SELECT userid AS id, users.name
 					FROM eventassignments, users
 					WHERE userid = users.id AND eventid = ? ',
 					array($row['id']));
+			$endtime = $row['endtime'];
+			if ($row['enddate']) {
+				$days = ($row['enddate'] - $row['date']) / 86400;
+				$row['endtime'] = 0;
+				$list2[] = $row;
+				while ($days) {
+					if ($days == 1)
+						$row['endtime'] = $endtime;
+					$row['date'] += 86400;
+					$list2[] = $row;
+					$days--;
+				}
+			} else
+				$list2[] = $row;
 		}
 
-	return $list;
+	return $list2;
 }
 
 if(!isset($_GET['a']))
