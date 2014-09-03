@@ -19,7 +19,7 @@ version ?.??.?? (????-??-??):
   - tariffs: 500M is new maximum allowed bandwidth [chilan]
   - invoicereport: multi selection of numberplans is possible [chilan]
   - helpdesk ticket add: make form layout more similar to ticket edit form [chilan]
-  - events: end date preliminary support [chilan]
+  - events: multi-day event support [chilan]
 
 version 1.11.15 (2014-05-15):
 

@@ -5619,25 +5619,51 @@ class LMS {
 				. (!empty($search['note']) ? ' AND note ?LIKE? ' . $this->DB->Escape('%' . $search['note'] . '%') : '')
 				. $sqlord, array($this->AUTH->id));
 
+		$list2 = $list3 = array();
 		if ($list) {
 			foreach ($list as $idx => $row) {
 				if (!$simple)
-					$list[$idx]['userlist'] = $this->DB->GetAll('SELECT userid AS id, users.name
+					$row['userlist'] = $this->DB->GetAll('SELECT userid AS id, users.name
 						FROM eventassignments, users
 						WHERE userid = users.id AND eventid = ? ', array($row['id']));
+				$endtime = $row['endtime'];
 
-				if ($search['userid'] && !empty($list[$idx]['userlist']))
-					foreach ($list[$idx]['userlist'] as $user)
-						if ($user['id'] == $search['userid']) {
-							$list2[] = $list[$idx];
-							break;
-						}
+				$userfilter = false;
+				if ($search['userid'] && !empty($row['userlist']))
+					foreach ($row['userlist'] as $user)
+						if ($user['id'] == $search['userid'])
+							$userfilter = true;
+
+				if ($row['enddate']) {
+					$days = ($row['enddate'] - $row['date']) / 86400;
+					$row['endtime'] = 0;
+					$list2[] = $row;
+
+					if ($userfilter)
+						$list3[] = $row;
+
+					while ($days) {
+						if ($days == 1)
+							$row['endtime'] = $endtime;
+						$row['date'] += 86400;
+						$list2[] = $row;
+
+						if ($userfilter)
+							$list3[] = $row;
+
+						$days--;
+					}
+				} else {
+					$list2[] = $row;
+					if ($userfilter)
+						$list3[] = $row;
+				}
 			}
 
 			if ($search['userid'])
-				return $list2;
+				return $list3;
 			else
-				return $list;
+				return $list2;
 		}
 	}
 
