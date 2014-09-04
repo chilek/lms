@@ -34,11 +34,6 @@ elseif(isset($_GET['action']) && $_GET['action'] == 'close')
 	$DB->Execute('UPDATE events SET closed = 1 WHERE id = ?',array($_GET['id']));
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
-elseif(isset($_GET['action']) && $_GET['action'] == 'dropuser')
-{
-	$DB->Execute('DELETE FROM eventassignments WHERE eventid = ? AND userid = ?',array($_GET['eid'], $_GET['aid']));
-	$SESSION->redirect('?'.$SESSION->get('backto'));
-}
 
 $event = $DB->GetRow('SELECT events.id AS id, title, description, note, 
 			date, begintime, enddate, endtime, customerid, private, closed, ' 
@@ -52,10 +47,10 @@ if (empty($event['enddate']))
 else
 	$event['enddate'] = sprintf('%04d/%02d/%02d', date('Y',$event['enddate']),date('n',$event['enddate']),date('j',$event['enddate']));
 
-$eventuserlist = $DB->GetAll('SELECT userid AS id, users.name
-					FROM users, eventassignments
-					WHERE users.id = userid
-					AND eventid = ?', array($event['id']));
+$eventuserlist = $DB->GetCol('SELECT userid AS id
+				FROM users, eventassignments
+				WHERE users.id = userid
+				AND eventid = ?', array($event['id']));
 
 if(isset($_POST['event']))
 {
@@ -90,29 +85,27 @@ if(isset($_POST['event']))
 	if (!$error) {
 		$event['private'] = isset($event['private']) ? 1 : 0;
 
+		$DB->BeginTrans();
+
 		$DB->Execute('UPDATE events SET title=?, description=?, date=?, begintime=?, enddate=?, endtime=?, private=?, note=?, customerid=? WHERE id=?',
 				array($event['title'], $event['description'], $date, $event['begintime'], $enddate, $event['endtime'], $event['private'], $event['note'], $event['customerid'], $event['id']));
 				
-		if($event['user'])
-		{
-			if(!$DB->GetOne('SELECT 1 FROM eventassignments WHERE eventid = ? AND userid = ?',array($event['id'], $event['user'])))
-			{
-				$DB->Execute('INSERT INTO eventassignments (eventid, userid) VALUES(?,?)',array($event['id'], $event['user']));
-			}
+		if (!empty($event['userlist']) && is_array($event['userlist'])) {
+			$DB->Execute('DELETE FROM eventassignments WHERE eventid = ?', array($event['id']));
+			foreach ($event['userlist'] as $userid)
+				$DB->Execute('INSERT INTO eventassignments (eventid, userid) VALUES (?, ?)',
+					array($event['id'], $userid));
 		}
 
 		$DB->Execute('UPDATE events SET moddate=?, moduserid=? WHERE id=?',
-			array(
-				time(), 
-				$AUTH->id,
-				$event['id']
-				));
+			array(time(), $AUTH->id, $event['id']));
+
+		$DB->CommitTrans();
 
 		$SESSION->redirect('?m=eventlist');
 	}
-}
-
-$event['userlist'] = $eventuserlist;
+} else
+	$event['userlist'] = $eventuserlist;
 
 $layout['pagetitle'] = trans('Event Edit');
 

@@ -112,22 +112,18 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%" valign="top">
+		<TD width="1%" class="valign-top">
 			<IMG src="img/users.gif" alt="">
 		</TD>
-		<TD width="1%" valign="top">
+		<TD width="1%" class="valign-top">
 			<B>{trans("Users:")}</B>
 		</TD>
-		<TD width="98%" nowrap>
-			<SELECT name="event[user]" {tip text="Select user (optional)"}>
-				<OPTION value=""{if !$event.user} SELECTED{/if}>{trans("- select user -")}</OPTION>
-				{section name=userlist loop=$userlist}	
-				<OPTION value="{$userlist[userlist].id}"{if $event.user == $userlist[userlist].id} SELECTED{/if}>{$userlist[userlist].name}</OPTION>
-				{/section}
-			</SELECT><BR>
-			{foreach item=user from=$event.userlist}	
-				<NOBR><A href="?m=userinfo&id={$user.id}">{$user.name}</A>&nbsp;<A href="?m=eventedit&action=dropuser&eid={$event.id}&aid={$user.id}"><IMG src="img/delete.gif" ALT="[ {trans("Delete")} ]" OnClick="return confirm('{t a=$user.name}Are you sure, you want to drop user $a from that event?{/t}')"></A></NOBR><BR>
-			{/foreach}
+		<TD width="98%" class="nobr">
+			<SELECT size="{if $userlistsize > 5}5{else}{size of=$userlist}{/if}" name="event[userlist][]" {tip text="Select user(s) (optional)"} multiple>
+				{foreach $userlist as $user}
+				<OPTION value="{$user.id}"{if in_array($user.id, $event.userlist)} selected{/if}>{$user.name}</OPTION>
+				{/foreach}
+			</SELECT>
 		</TD>
 	</TR>
 	<TR>
