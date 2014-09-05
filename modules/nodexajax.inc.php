@@ -21,7 +21,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id: nodelocks.php,v 1.1 2012/04/07 23:12:01 chilek Exp $
+ *  $Id$
  */
 
 function NodeStats($id, $dt) {
