@@ -1554,11 +1554,13 @@ CREATE TABLE nastypes (
 #
 CREATE TABLE managementurls (
 	id int(11)		NOT NULL auto_increment,
-	netdevid int(11)	NOT NULL,
+	netdevid int(11)	NULL DEFAULT NULL,
+	nodeid int(11)		NULL DEFAULT NULL,
 	url text		DEFAULT '' NOT NULL,
 	comment varchar(100)	DEFAULT NULL,
 	PRIMARY KEY (id),
-	FOREIGN KEY (netdevid) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE
+	FOREIGN KEY (netdevid) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=INNODB;
 
 # --------------------------------------------------------
@@ -1961,4 +1963,4 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('userpanel','owner_stats','0','',0),
 ('userpanel','default_categories','1','',0);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014090200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014090600');

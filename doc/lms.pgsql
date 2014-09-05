@@ -1660,8 +1660,10 @@ CREATE SEQUENCE managementurls_id_seq;
 DROP TABLE IF EXISTS managementurls;
 CREATE TABLE managementurls (
 	id integer		DEFAULT nextval('managementurls_id_seq'::text) NOT NULL,
-	netdevid integer	NOT NULL
+	netdevid integer	DEFAULT NULL
 		REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	nodeid integer		DEFAULT NULL
+		REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	url text		DEFAULT '' NOT NULL,
 	comment varchar(100)	DEFAULT NULL,
 	PRIMARY KEY (id)
@@ -2051,4 +2053,4 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('userpanel', 'owner_stats', '0', '', 0),
 ('userpanel', 'default_categories', '1', '', 0);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014090200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014090600');
