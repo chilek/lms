@@ -21,13 +21,16 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id: netdevxajax.inc.php,v 1.1 2012/04/11 23:12:01 chilek Exp $
+ *  $Id$
  */
 
 function getManagementUrls($netdevid) {
 	global $SMARTY, $DB;
 
 	$result = new xajaxResponse();
+
+	$netdevid = intval($netdevid);
+
 	$mgmurls = NULL;
 	$mgmurls = $DB->GetAll('SELECT id, url, comment FROM managementurls WHERE netdevid = ? ORDER BY id', array($netdevid));
 	$SMARTY->assign('mgmurls', $mgmurls);
@@ -45,6 +48,8 @@ function addManagementUrl($netdevid, $params) {
 
 	if (empty($params['url']))
 		return $result;
+
+	$netdevid = intval($netdevid);
 
 	if (!preg_match('/^[[:alnum:]]+:\/\/.+/i', $params['url']))
 		$params['url'] = 'http://' . $params['url'];
@@ -70,6 +75,10 @@ function delManagementUrl($netdevid, $id) {
 	global $DB, $SYSLOG, $SYSLOG_RESOURCE_KEYS;
 
 	$result = new xajaxResponse();
+
+	$netdevid = intval($netdevid);
+	$id = intval($id);
+
 	$res = $DB->Execute('DELETE FROM managementurls WHERE id = ?', array($id));
 	if ($res && $SYSLOG) {
 		$args = array(
