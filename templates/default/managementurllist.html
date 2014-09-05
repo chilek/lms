@@ -11,7 +11,7 @@
 {foreach from=$mgmurls item=mgmurl}
 <TR class="highlight {cycle name=managementurls}"  >
 	<TD style="width: 1%; white-space: nowrap;" COLSPAN="2">
-		<a href="{$mgmurl.url}" target="_blank">{$mgmurl.url}</a>
+		<a href="{$mgmurl.url}"{if preg_match("/^(https?|ftp):/", $mgmurl.url)} target="_blank"{/if}>{$mgmurl.url}</a>
 	</TD>
 	<TD style="width: 1%; white-space: nowrap;">
 		{$mgmurl.comment}
