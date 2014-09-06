@@ -287,6 +287,7 @@ $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNamesByNode($nodeid));
 $SMARTY->assign('othernodegroups', $LMS->GetNodeGroupNamesWithoutNode($nodeid));
 $SMARTY->assign('error', $error);
 $SMARTY->assign('nodeinfo', $nodeinfo);
+$SMARTY->assign('objectid', $nodeinfo['id']);
 $SMARTY->display('nodeedit.html');
 
 ?>

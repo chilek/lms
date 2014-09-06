@@ -49,6 +49,7 @@ $layout['pagetitle'] = trans('Device Info: $a $b $c', $netdevinfo['name'], $netd
 $netdevinfo['id'] = $_GET['id'];
 
 $SMARTY->assign('netdevinfo', $netdevinfo);
+$SMARTY->assign('objectid', $netdevinfo['id']);
 $SMARTY->assign('netdevlist', $netdevconnected);
 $SMARTY->assign('netcomplist', $netcomplist);
 $SMARTY->assign('restnetdevlist', $netdevlist);

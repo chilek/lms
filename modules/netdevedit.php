@@ -636,6 +636,7 @@ if ($subtitle)
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('netdevinfo', $netdevdata);
+$SMARTY->assign('objectid', $netdevdata['id']);
 $SMARTY->assign('netdevlist', $netdevconnected);
 $SMARTY->assign('netcomplist', $netcomplist);
 $SMARTY->assign('nodelist', $nodelist);

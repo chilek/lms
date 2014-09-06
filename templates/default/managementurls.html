@@ -31,14 +31,14 @@ function addManagementUrl() {
 	if (xajax.$('url').value.length < 10)
 		return;
 	xajax.$('managementurladdlink').disabled = true;
-	xajax_addManagementUrl({$netdevinfo.id}, xajax.getFormValues('managementurladd'));
+	xajax_addManagementUrl({$objectid}, xajax.getFormValues('managementurladd'));
 }
 
 function delManagementUrl(id) {
 	xajax.$('managementurltable').disabled = true;
-	xajax_delManagementUrl({$netdevinfo.id}, id);
+	xajax_delManagementUrl({$objectid}, id);
 }
 
-xajax_getManagementUrls({$netdevinfo.id});
+xajax_getManagementUrls({$objectid});
 //-->
 </SCRIPT>

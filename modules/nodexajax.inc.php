@@ -162,7 +162,78 @@ function getNodeStats($nodeid) {
 	return $result;
 }
 
+function getManagementUrls($nodeid) {
+	global $SMARTY, $DB;
+
+	$result = new xajaxResponse();
+
+	$nodeid = intval($nodeid);
+
+	$mgmurls = NULL;
+	$mgmurls = $DB->GetAll('SELECT id, url, comment FROM managementurls WHERE nodeid = ? ORDER BY id', array($nodeid));
+	$SMARTY->assign('mgmurls', $mgmurls);
+	$mgmurllist = $SMARTY->fetch('managementurllist.html');
+
+	$result->assign('managementurltable', 'innerHTML', $mgmurllist);
+
+	return $result;
+}
+
+function addManagementUrl($nodeid, $params) {
+	global $DB, $SYSLOG, $SYSLOG_RESOURCE_KEYS;
+
+	$result = new xajaxResponse();
+
+	if (empty($params['url']))
+		return $result;
+
+	$nodeid = intval($nodeid);
+
+	if (!preg_match('/^[[:alnum:]]+:\/\/.+/i', $params['url']))
+		$params['url'] = 'http://' . $params['url'];
+
+	$args = array(
+		$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodeid,
+		'url' => $params['url'],
+		'comment' => $params['comment'],
+	);
+	$DB->Execute('INSERT INTO managementurls (nodeid, url, comment) VALUES (?, ?, ?)', array_values($args));
+	if ($SYSLOG) {
+		$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MGMTURL]] = $DB->GetLastInsertID('managementurls');
+		$SYSLOG->AddMessage(SYSLOG_RES_MGMTURL, SYSLOG_OPER_ADD, $args,
+			array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MGMTURL], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE]));
+	}
+	$result->call('xajax_getManagementUrls', $nodeid);
+	$result->assign('managementurladdlink', 'disabled', false);
+
+	return $result;
+}
+
+function delManagementUrl($nodeid, $id) {
+	global $DB, $SYSLOG, $SYSLOG_RESOURCE_KEYS;
+
+	$result = new xajaxResponse();
+
+	$nodeid = intval($nodeid);
+	$id = intval($id);
+
+	$res = $DB->Execute('DELETE FROM managementurls WHERE id = ?', array($id));
+	if ($res && $SYSLOG) {
+		$args = array(
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MGMTURL] => $id,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodeid,
+		);
+		$SYSLOG->AddMessage(SYSLOG_RES_MGMTURL, SYSLOG_OPER_DELETE, $args, array_keys($args));
+	}
+	$result->call('xajax_getManagementUrls', $nodeid);
+	$result->assign('managementurltable', 'disabled', false);
+
+	return $result;
+}
+
 $LMS->InitXajax();
-$LMS->RegisterXajaxFunction(array('getNodeLocks', 'addNodeLock', 'delNodeLock', 'getThroughput', 'getNodeStats'));
+$LMS->RegisterXajaxFunction(array('getNodeLocks', 'addNodeLock', 'delNodeLock', 'getThroughput', 'getNodeStats',
+	'getManagementUrls', 'addManagementUrl', 'delManagementUrl'));
+$SMARTY->assign('xajax', $LMS->RunXajax());
 
 ?>

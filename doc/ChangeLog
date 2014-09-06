@@ -21,6 +21,7 @@ version ?.??.?? (????-??-??):
   - helpdesk ticket add: make form layout more similar to ticket edit form [chilan]
   - events: multi-day event support [chilan]
   - events: multi user selection is possible in event search form [chilan]
+  - management urls can be also assigned to nodes [chilan]
 
 version 1.11.15 (2014-05-15):
 
