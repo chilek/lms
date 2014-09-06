@@ -420,11 +420,12 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 								+ features[i].data.ipaddr + '</a></div>';
 						content += '<div class="lmsInfoPopupDetails"><a href="?m=' + features[i].data.type + '&id=' + features[i].data.id + '">'
 							+ '<img src="img/info1.gif" alt="">&nbsp;Info</a></div>';
-						if (features[i].data.type == 'netdevinfo' && features[i].data.url) {
+						if (features[i].data.url) {
 							var urls = features[i].data.url.split(',');
 							var comments = features[i].data.comment.split(',');
 							for (var j in urls) {
-								content += '<div class="lmsInfoPopupDetails"><a href="' + urls[j] + '" target="_blank">'
+								content += '<div class="lmsInfoPopupDetails"><a href="' + urls[j] + '"'
+									+ (urls[j].match(/^(https?|ftp):/) ? ' target="_blank"' : '') + '>'
 									+ '<img src="img/network.gif" alt=""> '
 									+ (comments[j].length ? comments[j] : urls[j]) + '</a></div>';
 							}
