@@ -37,6 +37,7 @@ class LMS {
 	public $xajax;  // xajax object
 	public $_version = '1.11-git'; // class version
 	public $_revision = '$Revision$';
+	private $mail_object = NULL;
 
 	public function __construct(&$DB, &$AUTH, &$SYSLOG) { // class variables setting
 		$this->DB = &$DB;
@@ -5194,43 +5195,28 @@ class LMS {
 		return FALSE;
 	}
 
-	public function SendMail($recipients, $headers, $body, $files = NULL, $host = null, $port = null, $user = null, $pass = null, $auth = null) {
+	public function SendMail($recipients, $headers, $body, $files = NULL, $host = null, $port = null, $user = null, $pass = null, $auth = null, $persist = null) {
 		@include_once('Mail.php');
 		if (!class_exists('Mail'))
 			return trans('Can\'t send message. PEAR::Mail not found!');
 
-                if (!$host) {
-                    $params['host'] = ConfigHelper::getConfig('mail.smtp_host');
-                } else {
-                    $params['host'] = $host;
-                }
-                
-                if (!$port) {
-                    $params['port'] = ConfigHelper::getConfig('mail.smtp_port');
-                } else {
-                    $params['port'] = $port;
-                }
+		if (!is_object($this->mail_object)) {
+			$params['host'] = (!$host ? ConfigHelper::getConfig('mail.smtp_host') : $host);
+			$params['port'] = (!$port ? ConfigHelper::getConfig('mail.smtp_port') : $port);
+			$smtp_username = ConfigHelper::getConfig('mail.smtp_username');
+			if (!empty($smtp_username) || $user) {
+				$params['auth'] = (!$auth ? ConfigHelper::getConfig('mail.smtp_auth_type', true) : $auth);
+				$params['username'] = (!$user ? $smtp_username : $user);
+				$params['password'] = (!$pass ? ConfigHelper::getConfig('mail.smtp_password') : $pass);
+			} else
+				$params['auth'] = false;
+			$params['persist'] = (is_null($persist) ? ConfigHelper::getConfig('mail.smtp_persist', true) : $persist);
 
-		$smtp_username = ConfigHelper::getConfig('mail.smtp_username');
-		if (!empty($smtp_username) || $user) {
-                        if (!$auth) {
-                            $params['auth'] = ConfigHelper::getConfig('mail.smtp_auth_type', true);
-                        } else {
-                            $params['auth'] = $auth;
-                        }
-                        if (!$user) {
-                            $params['username'] = ConfigHelper::getConfig('mail.smtp_username');
-                        } else {
-                            $params['username'] = $user;
-                        }
-                        if (!$pass) {
-                            $params['password'] = ConfigHelper::getConfig('mail.smtp_password');
-                        } else {
-                            $params['password'] = $pass;
-                        }
-		} else {
-			$params['auth'] = false;
-                }
+			$error = $this->mail_object = & Mail::factory('smtp', $params);
+			//if (PEAR::isError($error))
+			if (is_a($error, 'PEAR_Error'))
+				return $error->getMessage();
+		}
 
 		$headers['X-Mailer'] = 'LMS-' . $this->_version;
 		if (!empty($_SERVER['REMOTE_ADDR']))
@@ -5271,12 +5257,8 @@ class LMS {
 			$buf = $body;
 		}
 
-		$error = $mail_object = & Mail::factory('smtp', $params);
-		//if (PEAR::isError($error))
-		if (is_a($error, 'PEAR_Error'))
-			return $error->getMessage();
 
-		$error = $mail_object->send($recipients, $headers, $buf);
+		$error = $this->mail_object->send($recipients, $headers, $buf);
 		//if (PEAR::isError($error))
 		if (is_a($error, 'PEAR_Error'))
 			return $error->getMessage();
