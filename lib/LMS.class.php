@@ -5200,7 +5200,8 @@ class LMS {
 		if (!class_exists('Mail'))
 			return trans('Can\'t send message. PEAR::Mail not found!');
 
-		if (!is_object($this->mail_object)) {
+		$persist = is_null($persist) ? ConfigHelper::getConfig('mail.smtp_persist', true) : $persist;
+		if (!is_object($this->mail_object) || !$persist) {
 			$params['host'] = (!$host ? ConfigHelper::getConfig('mail.smtp_host') : $host);
 			$params['port'] = (!$port ? ConfigHelper::getConfig('mail.smtp_port') : $port);
 			$smtp_username = ConfigHelper::getConfig('mail.smtp_username');
@@ -5210,7 +5211,7 @@ class LMS {
 				$params['password'] = (!$pass ? ConfigHelper::getConfig('mail.smtp_password') : $pass);
 			} else
 				$params['auth'] = false;
-			$params['persist'] = (is_null($persist) ? ConfigHelper::getConfig('mail.smtp_persist', true) : $persist);
+			$params['persist'] = $persist;
 
 			$error = $this->mail_object = & Mail::factory('smtp', $params);
 			//if (PEAR::isError($error))
