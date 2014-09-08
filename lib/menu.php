@@ -236,7 +236,7 @@ $menu = array(
 				array(
 					'name' => trans('UKE report'),
 					'link' => '?m=uke',
-					'tip' => trans('Allows you to prepare SIIS v3 report for UKE'),
+					'tip' => trans('Allows you to prepare SIIS v4 report for UKE'),
 					'prio' => 50,
 				),
 			),

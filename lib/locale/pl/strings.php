@@ -2568,7 +2568,7 @@ $_LANG['Remove lock'] = 'Usuń blokadę';
 $_LANG['Days:'] = 'Dni:';
 
 $_LANG['UKE report'] = 'Raport do UKE';
-$_LANG['Allows you to prepare SIIS v3 report for UKE'] = 'Wygenerowanie raportu SIIS w wersji 3 do UKE';
+$_LANG['Allows you to prepare SIIS v4 report for UKE'] = 'Wygenerowanie raportu SIIS w wersji 4 do UKE';
 
 $_LANG['Link speed:'] = 'Szybkość łącza:';
 $_LANG['Select link speed'] = 'Wybierz szybkość łącza';
