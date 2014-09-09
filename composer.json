@@ -4,7 +4,8 @@
     "homepage": "http://lms.org.pl/",
     "license": "GPL-2.0",
     "require": {
-        
+        "phine/observer": "2.0",
+        "phine/exception": "1.0"
     },
     "require_dev": {
         "phpunit/phpunit": "4.1.*",

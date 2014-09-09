@@ -38,6 +38,7 @@ class LMS {
 	public $_version = '1.11-git'; // class version
 	public $_revision = '$Revision$';
 	private $mail_object = NULL;
+        protected $plugins_manager;
 
 	public function __construct(&$DB, &$AUTH, &$SYSLOG) { // class variables setting
 		$this->DB = &$DB;
@@ -133,6 +134,28 @@ class LMS {
 
 		return $vars;
 	}
+        
+        /**
+         * Sets plugin manager
+         * 
+         * @param LMSPluginsManager $plugins_manager Plugin manager
+         */
+        public function setPluginsManager(LMSPluginsManager $plugins_manager)
+        {
+            $this->plugins_manager = $plugins_manager;
+        }
+        
+        /**
+         * Executes hook
+         * 
+         * @param string $hook_name Hook name
+         * @param mixed $hook_data Hook data
+         * @return mixed Modfied hook data
+         */
+        public function executeHook($hook_name, $hook_data = null)
+        {
+            return $this->plugins_manager->executeHook($hook_name, $hook_data);
+        }
 
 	/*
 	 *  Database functions (backups)
