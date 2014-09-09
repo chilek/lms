@@ -37,6 +37,11 @@ class LMSPluginsManager extends Subject implements SubjectInterface
     protected $hook_name;
     protected $hook_data;
     
+    /**
+     * Loads plugins
+     * 
+     * @throws Exception Throws exception if plugin not found
+     */
     public function __construct()
     {
         $plugins_config = ConfigHelper::getConfig('phpui.plugins');
@@ -55,22 +60,49 @@ class LMSPluginsManager extends Subject implements SubjectInterface
         }
     }
     
-    public function executeHook($hook_name, &$hook_data)
+    /**
+     * Executes hook
+     * 
+     * @param mixed $hook_name Hook name
+     * @param mixed $hook_data Hook data
+     * @return mixed Modified hook data
+     */
+    public function executeHook($hook_name, $hook_data = null)
     {
-        error_log('hook executed' . $hook_name);
         $this->hook_name = $hook_name;
         $this->hook_data = $hook_data;
         $this->notifyObservers();
+        return $this->hook_data;
     }
     
+    /**
+     * Returns hook name
+     * 
+     * @return string Hook name
+     */
     public function getHookName()
     {
         return $this->hook_name;
     }
     
+    /**
+     * Returns hook data
+     * 
+     * @return mixed Hook data
+     */
     public function getHookData()
     {
         return $this->hook_data;
+    }
+    
+    /**
+     * Sets hook data
+     * 
+     * @param mixed $hook_data Hook data
+     */
+    public function setHookData($hook_data)
+    {
+        $this->hook_data = $hook_data;
     }
     
 }

@@ -134,14 +134,26 @@ class LMS {
 		return $vars;
 	}
         
+        /**
+         * Sets plugin manager
+         * 
+         * @param LMSPluginsManager $plugins_manager Plugin manager
+         */
         public function setPluginsManager(LMSPluginsManager $plugins_manager)
         {
             $this->plugins_manager = $plugins_manager;
         }
         
-        public function executeHook($hook_name, &$hook_data)
+        /**
+         * Executes hook
+         * 
+         * @param string $hook_name Hook name
+         * @param mixed $hook_data Hook data
+         * @return mixed Modfied hook data
+         */
+        public function executeHook($hook_name, $hook_data = null)
         {
-            $this->plugins_manager->executeHook($hook_name, $hook_data);
+            return $this->plugins_manager->executeHook($hook_name, $hook_data);
         }
 
 	/*
