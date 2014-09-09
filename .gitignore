@@ -58,6 +58,7 @@ backups/*
 documents/*
 !documents/templates
 cache/*
+contrib/LMS2Nagios-php/generated/*
 
 # Temporary files
 *~
