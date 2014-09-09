@@ -194,7 +194,7 @@ div.multiselectlayer ul li input { border: none; }
 .acl		{ list-style-type: square; }
 
 .overlib {
-    width: 150px;
+    min-width: 150px;
     font-family: Tahoma, Verdana, Arial, Helvetica;
     background-color: #F4F0EC;
     padding: 2px 4px;
