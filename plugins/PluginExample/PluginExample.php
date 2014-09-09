@@ -46,6 +46,14 @@ class PluginExample implements ObserverInterface
                 'class' => 'WelcomeHandler',
                 'method' => 'welcomeBeforeDisplay'
             ),
+            'useradd_validation_before_submit' => array(
+                'class' => 'UseraddHandler',
+                'method' => 'useraddValidationBeforeSubmit'
+            ),
+            'useradd_after_submit' => array(
+                'class' => 'UseraddHandler',
+                'method' => 'useraddAfterSubmit'
+            ),
         );
     }
     
@@ -53,12 +61,12 @@ class PluginExample implements ObserverInterface
     {
         $hook_name = $lms_plugin_manager->getHookName();
         $hook_data = $lms_plugin_manager->getHookData();
-        $this->dispatcher($hook_name, $hook_data);
+        $new_hook_data = $this->dispatcher($hook_name, $hook_data);
+        $lms_plugin_manager->setHookData($new_hook_data);
     }
     
     protected function dispatcher($hook_name, $hook_data)
     {
-        error_log('dispatcher');
         if ($hook_name === null) {
             throw new Exception('Hook name must be set!');
         }
@@ -72,7 +80,7 @@ class PluginExample implements ObserverInterface
             $handler_class = $this->getHandlerClass($hook_name);
             $handler_method = $this->getHandlerMethod($hook_name);
             $handler = new $handler_class();
-            $handler->$handler_method($hook_data);
+            return $handler->$handler_method($hook_data);
         }
         
     }

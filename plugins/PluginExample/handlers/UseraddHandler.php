@@ -25,34 +25,36 @@
  */
 
 /**
- * WelcomeHandler
+ * UseraddHandler
  *
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
-class WelcomeHandler
+class UseraddHandler
 {
     /**
-     * Example handler that does nothing
-     * 
-     * @param type $hook_data
-     */
-    public function welcomeOnLoad($hook_data)
-    {
-        error_log('welcome on load hook trigered');
-        return null;
-    }
-    
-    /**
-     * Example of template switch
+     * Example of additional validation
      * 
      * @param mixed $hook_data
      * @return mixed
      */
-    public function welcomeBeforeDisplay($hook_data)
+    public function useraddValidationBeforeSubmit($hook_data)
     {
-        error_log('welcome before display hook trigered');
-        return 'copyrights.html';
+        if (strpos($hook_data['useradd']['name'], 'X') !== 0) {
+            $hook_data['error']['name'] = 'Name must start with "X" ;-)';
+        }
+        return $hook_data['error'];
     }
     
+    /**
+     * Example of additional logging
+     * 
+     * @param mixed $hook_data
+     * @return null
+     */
+    public function useraddAfterSubmit($hook_data)
+    {
+        error_log("User with id $hook_data added");
+        return null;
+    }
     
 }
