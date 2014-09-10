@@ -29,6 +29,9 @@ $useradd = isset($_POST['useradd']) ? $_POST['useradd'] : array();
 
 if(sizeof($useradd))
 {
+    
+        $error = array();
+    
 	foreach($useradd as $key => $value)
 	    if (!is_array($value))
 		    $useradd[$key] = trim($value);
@@ -107,6 +110,12 @@ if(sizeof($useradd))
 	if (!empty($useradd['ntype']))
 		$useradd['ntype'] = array_sum(array_map('intval', $useradd['ntype']));
 
+        $hook_data = array(
+            'useradd' => $useradd,
+            'error' => $error
+        );
+        $error = $LMS->executeHook('useradd_validation_before_submit', $hook_data);
+        
 	if (!$error) {
 		$useradd['accessfrom'] = $accessfrom;
 		$useradd['accessto'] = $accessto;
@@ -128,6 +137,7 @@ if(sizeof($useradd))
 				}
 			}
 
+                $LMS->executeHook('useradd_after_submit', $id);
 		$SESSION->redirect('?m=userinfo&id='.$id);
 	} elseif (isset($_POST['selected']))
 		foreach ($_POST['selected'] as $idx => $name) {

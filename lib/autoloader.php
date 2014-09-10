@@ -59,74 +59,86 @@ if (!defined('CACHE_DIR')) {
  * @package LMS
  */
 function application_autoloader($class) {
-    
-        $base_classes = array(
-                'LMSDB_common' => 'LMSDB_common.class.php',
-                'LMSDB_driver_mysql' => 'LMSDB_driver_mysql.class.php',
-                'LMSDB_driver_mysqli' => 'LMSDB_driver_mysqli.class.php',
-                'LMSDB_driver_postgres' => 'LMSDB_driver_postgres.class.php',
-                'LMS' => 'LMS.class.php',
-                'Auth' => 'Auth.class.php',
-                'ExecStack' => 'ExecStack.class.php',
-                'Session' => 'Session.class.php',
-                'Sysinfo' => 'Sysinfo.class.php',
-                'TCPDFpl' => 'tcpdf.php',
-                'Smarty' => 'Smarty/Smarty.class.php',
-                'SmartyBC' => 'Smarty/SmartyBC.class.php',
-                'Cezpdf' => 'ezpdf/class.ezpdf.php',
-                'Cpdf' => 'ezpdf/class.pdf.php',
-                'HTML2PDF' => 'html2pdf/html2pdf.class.php',
-                'TCPDF' => 'tcpdf/tcpdf.php'
-        );
-        
-        if (array_key_exists($class, $base_classes)) {
-                require_once LIB_DIR . DIRECTORY_SEPARATOR . $base_classes[$class];
-        } else {
-                // set cache file path
-                $cache_file = CACHE_DIR . "/classpaths.cache";
-                // read cache
-                $path_cache = (file_exists($cache_file)) ? unserialize(file_get_contents($cache_file)) : array();
-                // create empty cache container if cache is empty
-                if (!is_array($path_cache)) {
-                        $path_cache = array();
-                }
 
-                // check if class path exists in cache
-                if (array_key_exists($class, $path_cache)) {
-                        // try to load file
-                        if (file_exists($path_cache[$class])) {
-                                require_once $path_cache[$class];
-                        }
-                } else {
-                        // try to find class file in LIB_DIR
-                        $directories = new RecursiveDirectoryIterator(LIB_DIR);
-                        $suspicious_file_names = array(
-                                $class.'.php',
-                                $class.'.class.php',
-                                strtolower($class).'.php',
-                                strtolower($class).'.class.php',
-                                strtoupper($class).'.php',
-                                strtoupper($class).'.class.php',
-                        );
-                        foreach (new RecursiveIteratorIterator($directories) as $file) {
-                                if (in_array($file->getFilename(), $suspicious_file_names)) {
-                                        // get class file path
-                                        $full_path = $file->getRealPath();
-                                        // store path in cache
-                                        $path_cache[$class] = $full_path;
-                                        // load class file
-                                        require_once $full_path;
-                                        break;
-                                }
-                        }
-                }
-                // serialize cache
-                $serialized_paths = serialize($path_cache);
-                // if cache changed save it
-                if ($serialized_paths != $path_cache) {
-                        file_put_contents($cache_file, $serialized_paths);
-                }
+    $namespace = explode('\\', $class);
+    
+    $class = $namespace[count($namespace) - 1];
+    
+    $base_classes = array(
+        'LMSDB_common' => 'LMSDB_common.class.php',
+        'LMSDB_driver_mysql' => 'LMSDB_driver_mysql.class.php',
+        'LMSDB_driver_mysqli' => 'LMSDB_driver_mysqli.class.php',
+        'LMSDB_driver_postgres' => 'LMSDB_driver_postgres.class.php',
+        'LMS' => 'LMS.class.php',
+        'Auth' => 'Auth.class.php',
+        'ExecStack' => 'ExecStack.class.php',
+        'Session' => 'Session.class.php',
+        'Sysinfo' => 'Sysinfo.class.php',
+        'TCPDFpl' => 'tcpdf.php',
+        'Smarty' => 'Smarty/Smarty.class.php',
+        'SmartyBC' => 'Smarty/SmartyBC.class.php',
+        'Cezpdf' => 'ezpdf/class.ezpdf.php',
+        'Cpdf' => 'ezpdf/class.pdf.php',
+        'HTML2PDF' => 'html2pdf/html2pdf.class.php',
+        'TCPDF' => 'tcpdf/tcpdf.php'
+    );
+
+    if (array_key_exists($class, $base_classes)) {
+        require_once LIB_DIR . DIRECTORY_SEPARATOR . $base_classes[$class];
+    } else {
+        // set cache file path
+        $cache_file = CACHE_DIR . "/classpaths.cache";
+        // read cache
+        $path_cache = (file_exists($cache_file)) ? unserialize(file_get_contents($cache_file)) : array();
+        // create empty cache container if cache is empty
+        if (!is_array($path_cache)) {
+            $path_cache = array();
         }
+
+        // check if class path exists in cache
+        if (array_key_exists($class, $path_cache)) {
+            // try to load file
+            if (file_exists($path_cache[$class])) {
+                require_once $path_cache[$class];
+            }
+        } else {
+            // try to find class file in LIB_DIR, PLUGINS_DIR and VENDOR_DIR
+            $suspicious_file_names = array(
+                $class . '.php',
+                $class . '.class.php',
+                strtolower($class) . '.php',
+                strtolower($class) . '.class.php',
+                strtoupper($class) . '.php',
+                strtoupper($class) . '.class.php',
+            );
+            $search_paths = array(LIB_DIR, PLUGINS_DIR);
+            $file_found = false;
+            foreach ($search_paths as $search_path) {
+                if ($file_found === true) {
+                    break;
+                }
+                $directories = new RecursiveDirectoryIterator($search_path);
+                foreach (new RecursiveIteratorIterator($directories) as $file) {
+                    if (in_array($file->getFilename(), $suspicious_file_names)) {
+                        // get class file path
+                        $full_path = $file->getRealPath();
+                        // store path in cache
+                        $path_cache[$class] = $full_path;
+                        // load class file
+                        require_once $full_path;
+                        $file_found = true;
+                        break;
+                    }
+                }
+            }
+        }
+        // serialize cache
+        $serialized_paths = serialize($path_cache);
+        // if cache changed save it
+        if ($serialized_paths != $path_cache) {
+            file_put_contents($cache_file, $serialized_paths);
+        }
+    }
 }
 
 // register autoloader
