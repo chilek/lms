@@ -24,6 +24,9 @@ echo "done."
 echo -n "Merging... "
 
 SMARTY_DIR=$(find $TMP -maxdepth 1 -mindepth 1 -type d -exec basename {} \;)
+if [ ! -d "${LIB_DIR}/Smarty" ]; then
+    mkdir -p "${LIB_DIR}/Smarty"
+fi
 cp -r $TMP/${SMARTY_DIR}/libs/*		${LIB_DIR}/Smarty/
 cp -r $TMP/${SMARTY_DIR}/libs/plugins/*	${LIB_DIR}/Smarty/plugins/
 echo "done."
