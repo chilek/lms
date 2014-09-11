@@ -59,7 +59,7 @@ class LMSPluginsManager extends Subject implements SubjectInterface
                 if ($plugin_priority === null) {
                     $plugin_priority = SubjectInterface::LAST_PRIORITY;
                 }
-                $this->registerObserver(new $plugin_name(), $plugin_priority);
+                $this->registerObserver($plugin, $plugin_priority);
             }
         }
     }
