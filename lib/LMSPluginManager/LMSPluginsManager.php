@@ -52,10 +52,14 @@ class LMSPluginsManager extends Subject implements SubjectInterface
                 if (!class_exists($plugin_name)) {
                     throw new Exception("Unknown plugin $plugin_name at position $position");
                 }
+                $plugin = new $plugin_name();
+                if (!($plugin instanceof LMSPlugin)) {
+                    throw new Exception("Plugin object must be instance of LMSPlugin class");
+                }
                 if ($plugin_priority === null) {
                     $plugin_priority = SubjectInterface::LAST_PRIORITY;
                 }
-                $this->registerObserver(new $plugin_name(), $plugin_priority);
+                $this->registerObserver($plugin, $plugin_priority);
             }
         }
     }
