@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2014 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -38,7 +38,7 @@ class LMS {
 	public $_version = '1.11-git'; // class version
 	public $_revision = '$Revision$';
 	private $mail_object = NULL;
-        protected $plugins_manager;
+	protected $plugin_manager;
 
 	public function __construct(&$DB, &$AUTH, &$SYSLOG) { // class variables setting
 		$this->DB = &$DB;
@@ -138,11 +138,11 @@ class LMS {
         /**
          * Sets plugin manager
          * 
-         * @param LMSPluginsManager $plugins_manager Plugin manager
+         * @param LMSPluginManager $plugin_manager Plugin manager
          */
-        public function setPluginsManager(LMSPluginsManager $plugins_manager)
+        public function setPluginManager(LMSPluginManager $plugin_manager)
         {
-            $this->plugins_manager = $plugins_manager;
+            $this->plugin_manager = $plugin_manager;
         }
         
         /**
@@ -154,7 +154,7 @@ class LMS {
          */
         public function executeHook($hook_name, $hook_data = null)
         {
-            return $this->plugins_manager->executeHook($hook_name, $hook_data);
+            return $this->plugin_manager->executeHook($hook_name, $hook_data);
         }
 
 	/*

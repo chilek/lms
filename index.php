@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2014 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -151,8 +151,8 @@ $LMS = new LMS($DB, $AUTH, $SYSLOG);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
-$plugins_manager = new LMSPluginsManager();
-$LMS->setPluginsManager($plugins_manager);
+$plugin_manager = new LMSPluginManager();
+$LMS->setPluginManager($plugin_manager);
 
 // Initialize Swekey class
 
