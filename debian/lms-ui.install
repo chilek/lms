@@ -56,3 +56,5 @@ userpanel/style                 /usr/share/lms/userpanel/
 userpanel/templates             /usr/share/lms/userpanel/
 userpanel/index.php             /usr/share/lms/userpanel/
 userpanel/templates_c/.htaccess /var/spool/lms/userpanel_templates_c/
+
+plugins                         /usr/share/lms/
