@@ -110,12 +110,11 @@ if(sizeof($useradd))
 	if (!empty($useradd['ntype']))
 		$useradd['ntype'] = array_sum(array_map('intval', $useradd['ntype']));
 
-        $hook_data = array(
-            'useradd' => $useradd,
-            'error' => $error
-        );
-        $error = $LMS->executeHook('useradd_validation_before_submit', $hook_data);
-        
+        $hook_data = $LMS->executeHook('useradd_validation_before_submit', array('useradd' => $useradd,
+                                                                                 'error' => $error));
+        $useradd = $hook_data['useradd'];
+        $error   = $hook_data['error'];
+
 	if (!$error) {
 		$useradd['accessfrom'] = $accessfrom;
 		$useradd['accessto'] = $accessto;
