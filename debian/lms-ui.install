@@ -36,6 +36,8 @@ lib/LMSDB.php                   /usr/share/lms/lib/
 lib/LMSDBDriverInterface.php    /usr/share/lms/lib/
 lib/LMSDBInterface.php          /usr/share/lms/lib/
 lib/LMSPluginManager            /usr/share/lms/lib/
+lib/phine/observer/src/lib/Phine/Observer         /usr/share/lms/lib/phine/
+lib/phine/exception/src/lib/Phine/Exception       /usr/share/lms/lib/phine/
 lib/menu.php                    /usr/share/lms/lib/
 lib/Session.class.php           /usr/share/lms/lib/
 lib/Sysinfo.class.php           /usr/share/lms/lib/
