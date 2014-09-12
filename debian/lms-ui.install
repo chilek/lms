@@ -35,6 +35,7 @@ lib/LMSDB_common.class.php      /usr/share/lms/lib/
 lib/LMSDB.php                   /usr/share/lms/lib/
 lib/LMSDBDriverInterface.php    /usr/share/lms/lib/
 lib/LMSDBInterface.php          /usr/share/lms/lib/
+lib/LMSPluginManager.php        /usr/share/lms/lib/
 lib/menu.php                    /usr/share/lms/lib/
 lib/Session.class.php           /usr/share/lms/lib/
 lib/Sysinfo.class.php           /usr/share/lms/lib/
