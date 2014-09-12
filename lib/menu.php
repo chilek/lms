@@ -749,7 +749,7 @@ if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.logging', false))) {
 }
 
 // Adding Userpanel menu items
-$userpanel_dir = ConfigHelper::getConfig('directories.userpanel_dir');
+$userpanel_dir = ConfigHelper::getConfig('directories.userpanel_dir') ? ConfigHelper::getConfig('directories.userpanel_dir') : USERPANEL_DIR;
 if(!empty($userpanel_dir))
         // be sure that Userpanel exists
 	if(file_exists($userpanel_dir.'/lib/LMS.menu.php'))
