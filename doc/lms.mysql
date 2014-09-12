@@ -1961,6 +1961,7 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('userpanel','hide_nodesbox','0','',0),
 ('userpanel','logout_url','','',0),
 ('userpanel','owner_stats','0','',0),
-('userpanel','default_categories','1','',0);
+('userpanel','default_categories','1','',0),
+('directories','userpanel_dir','userpanel','',0);
 
 INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014090600');
