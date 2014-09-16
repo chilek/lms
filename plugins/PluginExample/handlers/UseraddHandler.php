@@ -42,7 +42,7 @@ class UseraddHandler
         if (strpos($hook_data['useradd']['name'], 'X') !== 0) {
             $hook_data['error']['name'] = 'Name must start with "X" ;-)';
         }
-        return $hook_data['error'];
+        return $hook_data;
     }
     
     /**
@@ -54,7 +54,7 @@ class UseraddHandler
     public function useraddAfterSubmit($hook_data)
     {
         error_log("User with id $hook_data added");
-        return null;
+        return $hook_data;
     }
     
 }
