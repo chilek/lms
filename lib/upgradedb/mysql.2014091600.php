@@ -32,12 +32,12 @@ $DB->Execute("
 ) ENGINE=INNODB");
 
 $DB->Execute("
-    CREATE TABLE netdevclusters (
+    CREATE TABLE netnodes (
         id int(11) NOT NULL auto_increment,
 	name varchar(255) NOT NULL, 
-	type int(2) DEFAULT 0,
-	invprojectid int(11)  REFERENCES invprojects (id),
-	status int(2) DEFAULT 0,
+	type tinyint DEFAULT 0,
+	invprojectid int(11),
+	status tinyint DEFAULT 0,
 	location varchar(255) DEFAULT '',
 	location_city int(11) DEFAULT NULL,
 	location_street int(11) DEFAULT NULL,
@@ -45,12 +45,13 @@ $DB->Execute("
 	location_flat varchar(8) DEFAULT NULL,
 	longitude decimal(10,6) DEFAULT NULL,
 	latitude decimal(10,6) DEFAULT NULL,
-	PRIMARY KEY (id)
+	PRIMARY KEY (id),
+	FOREIGN KEY (invprojectid) REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=INNODB");
 
 
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014091601', 'dbversion'));
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014091600', 'dbversion'));
 
 $DB->CommitTrans();
 

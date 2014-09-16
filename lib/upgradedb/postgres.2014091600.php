@@ -34,12 +34,12 @@ $DB->Execute("
 ");
 
 $DB->Execute("
-	CREATE SEQUENCE netdevclusters_id_seq;
-	CREATE TABLE netdevclusters (
-		id integer DEFAULT nextval('netdevclusters_id_seq'::text) NOT NULL,
+	CREATE SEQUENCE netnodes_id_seq;
+	CREATE TABLE netnodes (
+		id integer DEFAULT nextval('netnodes_id_seq'::text) NOT NULL,
 		name varchar(255) NOT NULL,
 		type smallint DEFAULT 0,
-		invprojectid integer  REFERENCES invprojects (id),
+		invprojectid integer  REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE,
 		status smallint DEFAULT 0,
 		location varchar(255) DEFAULT '',
 		location_city integer DEFAULT NULL,
@@ -52,7 +52,7 @@ $DB->Execute("
 	);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014091601', 'dbversion'));
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014091600', 'dbversion'));
 
 $DB->CommitTrans();
 
