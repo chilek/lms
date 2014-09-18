@@ -48,6 +48,10 @@ $DB->Execute("
 		location_flat varchar(8) DEFAULT NULL,
 		longitude numeric(10,6) DEFAULT NULL,
 		latitude numeric(10,6) DEFAULT NULL,
+		ww smallint,
+		ww_ident varchar(255),
+		uip smallint,
+		miar smallint,
 		PRIMARY KEY(id)
 	);
 ");

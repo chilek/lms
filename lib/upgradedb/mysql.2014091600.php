@@ -45,6 +45,10 @@ $DB->Execute("
 	location_flat varchar(8) DEFAULT NULL,
 	longitude decimal(10,6) DEFAULT NULL,
 	latitude decimal(10,6) DEFAULT NULL,
+	ww tinyint(1),
+	ww_ident varchar(255),
+	uip tinyint(1),
+	miar tinyint(1),
 	PRIMARY KEY (id),
 	FOREIGN KEY (invprojectid) REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=INNODB");
