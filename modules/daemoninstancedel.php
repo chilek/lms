@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('daemoninstancedel_on_load');
+
 $id = intval($_GET['id']);
 
 if ($id && $_GET['is_sure'] == '1') {

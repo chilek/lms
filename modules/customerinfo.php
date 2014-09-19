@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('customerinfo_on_load');
+
 $customerid = intval($_GET['id']);
 
 include(MODULES_DIR.'/customer.inc.php');

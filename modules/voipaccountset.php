@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('voipaccountset_on_load');
+
 $ownerid = isset($_GET['ownerid']) ? $_GET['ownerid'] : 0;
 $access  = isset($_GET['access']) ? 1 : 0;
 $id      = isset($_GET['id']) ? $_GET['id'] : 0;

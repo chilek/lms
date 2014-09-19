@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('rtcategoryadd_on_load');
+
 if(isset($_POST['category']))
 {
 	$category = $_POST['category'];

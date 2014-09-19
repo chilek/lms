@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('ewxchlist_on_load');
+
 function GetChannelsList($order='name,asc')
 {
 	global $DB, $LMS;

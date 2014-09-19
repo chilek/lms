@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('configadd_on_load');
+
 $layout['pagetitle'] = trans('New Config Option');
 
 $config = isset($_POST['config']) ? $_POST['config'] : array();

@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('choosemac_on_load');
+
 $layout['pagetitle'] = trans('Select MAC address');
 
 $p = isset($_GET['p']) ? $_GET['p'] : '';

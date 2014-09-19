@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('documentdel_on_load');
+
 if($_GET['is_sure']=='1')
 {
         if(isset($_POST['marks']))

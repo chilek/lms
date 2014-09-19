@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('stateedit_on_load');
+
 $state = $DB->GetRow('SELECT * FROM states WHERE id=?', array($_GET['id']));
 
 $name = $state['name'];

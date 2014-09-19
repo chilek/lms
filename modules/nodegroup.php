@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('nodegroup_on_load');
+
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
 if ($action == 'delete') {

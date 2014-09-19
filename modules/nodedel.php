@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('nodedel_on_load');
+
 $nodeid = intval($_GET['id']);
 
 if (!$LMS->NodeExists($nodeid))

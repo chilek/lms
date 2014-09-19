@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('userinfo_on_load');
+
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $userinfo = $LMS->GetUserInfo($id);
 

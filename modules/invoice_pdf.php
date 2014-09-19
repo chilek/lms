@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('invoice_pdf_on_load');
+
 function invoice_body() {
 	global $invoice, $pdf;
 

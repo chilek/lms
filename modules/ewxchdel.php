@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('ewxchdel_on_load');
+
 if(!empty($_GET['is_sure']))
 {
 	$DB->Execute('DELETE FROM ewx_channels WHERE id = ?', array(intval($_GET['id'])));

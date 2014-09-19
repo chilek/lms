@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('rtnoteadd_on_load');
+
 if(isset($_GET['ticketid']))
 {
 	$note['ticketid'] = intval($_GET['ticketid']);

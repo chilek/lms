@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('netadd_on_load');
+
 if(isset($_POST['netadd']))
 {
 	$netadd = $_POST['netadd'];

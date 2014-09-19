@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('rtticketdel_on_load');
+
 $ticket = intval($_GET['id']);
 $queue = $DB->GetOne('SELECT queueid FROM rttickets WHERE id = ?', array($ticket));
 $right = $LMS->GetUserRightsRT($AUTH->id, $queue);

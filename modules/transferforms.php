@@ -24,6 +24,7 @@
  *  $Id$
  */
 
+$LMS->executeHook('transferforms_on_load');
 
 function main_fill($x,$y,$scale)
 {

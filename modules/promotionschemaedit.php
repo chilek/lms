@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('promotionschemaedit_on_load');
+
 $action = !empty($_GET['action']) ? $_GET['action'] : null;
 
 if ($action == 'tariff' && !empty($_POST['form'])) {

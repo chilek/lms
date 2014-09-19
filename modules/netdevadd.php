@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('netdevadd_on_load');
+
 if(isset($_POST['netdev']))
 {
 	$netdevdata = $_POST['netdev'];

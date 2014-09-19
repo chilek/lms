@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('accountadd_on_load');
+
 /*
  * types of account:
  *    shell = 1 (0000000000000001)

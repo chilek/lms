@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('promotionadd_on_load');
+
 $promotion = isset($_POST['promotion']) ? $_POST['promotion'] : NULL;
 
 if ($promotion)

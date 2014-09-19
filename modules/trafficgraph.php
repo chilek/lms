@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('trafficgraph_on_load');
+
 if(!function_exists('imagecreate'))
 	die;
 

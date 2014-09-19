@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('dblist_on_load');
+
 $layout['pagetitle'] = trans('Database Backups');
 
 if ($handle = opendir(ConfigHelper::getConfig('directories.backup_dir')))

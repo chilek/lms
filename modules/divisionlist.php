@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('divisionlist_on_load');
+
 $divisionlist = $DB->GetAll('SELECT d.id, d.name, d.shortname, d.status,
 	(SELECT COUNT(*) FROM customers WHERE divisionid = d.id) AS cnt 
 	FROM divisions d ORDER BY d.shortname');

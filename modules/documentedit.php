@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('documentedit_on_load');
+
 if(isset($_GET['action']) && $_GET['action'] == 'confirm')
 {
 	if(!empty($_POST['marks']))

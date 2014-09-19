@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('voipaccountdel_on_load');
+
 $voipaccountid = intval($_GET['id']);
 $voipaccountlogin = $LMS->GetVoipAccountLogin($voipaccountid);
 

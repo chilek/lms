@@ -24,6 +24,9 @@
  *  $Id$
  */
 
+
+$LMS->executeHook('netdevxajax.inc_on_load');
+
 function getManagementUrls($netdevid) {
 	global $SMARTY, $DB;
 

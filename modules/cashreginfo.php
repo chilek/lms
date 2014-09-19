@@ -24,6 +24,7 @@
  *  $Id$
  */
 
+$LMS->executeHook('cashreginfo_on_load');
 
 $id = intval($_GET['id']);
 

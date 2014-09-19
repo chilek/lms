@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('netdevmap_on_load');
+
 function drawtext($x, $y, $text, $r, $g, $b)
 {
 	global $m, $font;

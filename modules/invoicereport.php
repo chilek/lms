@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('invoicereport_on_load');
+
 function set_taxes($taxid)
 {
 	global $taxes, $DB;

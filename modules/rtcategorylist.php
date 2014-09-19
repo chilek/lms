@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('rtcategorylist_on_load');
+
 $layout['pagetitle'] = trans('Categories List');
 
 $categories = $LMS->GetCategoryList();

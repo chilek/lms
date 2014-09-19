@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('customerinfoshort_on_load');
+
 $id = intval($_GET['id']);
 
 $customerinfo = $LMS->GetCustomer($id, true);

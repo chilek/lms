@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('numberplanadd_on_load');
+
 $numberplanadd = isset($_POST['numberplanadd']) ? $_POST['numberplanadd'] : NULL;
 
 if(sizeof($numberplanadd)) 

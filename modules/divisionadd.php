@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('divisionadd_on_load');
+
 if(!empty($_POST['division'])) 
 {
 	$division = $_POST['division'];

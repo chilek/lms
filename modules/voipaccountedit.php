@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('voipaccountedit_on_load');
+
 if(!$LMS->VoipAccountExists($_GET['id']))
 	if(isset($_GET['ownerid']))
 		header('Location: ?m=customerinfo&id='.$_GET['ownerid']);

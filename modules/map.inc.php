@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('map.inc_on_load');
+
 $devices = $DB->GetAllByKey('SELECT n.id, n.name, n.location, '.$DB->GroupConcat('INET_NTOA(CASE WHEN nodes.ownerid = 0 THEN nodes.ipaddr ELSE NULL END)')
 				.' AS ipaddr, '.$DB->GroupConcat('CASE WHEN nodes.ownerid = 0 THEN nodes.id ELSE NULL END').' AS nodeid, 
 				MAX(lastonline) AS lastonline, n.latitude AS lat, n.longitude AS lon 

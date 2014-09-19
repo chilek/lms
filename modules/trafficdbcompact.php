@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('trafficdbcompact_on_load');
+
 $layout['pagetitle'] = trans('Network Statistics Compacting');
 
 if (!isset($_GET['level']) && !isset($_GET['removeold']) && !isset($_GET['removedeleted']))

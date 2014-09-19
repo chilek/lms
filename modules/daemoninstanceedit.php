@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('daemoninstanceedit_on_load');
+
 $id = intval($_GET['id']);
 $instance = $DB->GetRow('SELECT id, name, hostid, description, module, crontab, priority, disabled FROM daemoninstances WHERE id=?', array($id));
 

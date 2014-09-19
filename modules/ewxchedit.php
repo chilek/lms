@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('ewxchedit_on_load');
+
 if (!empty($_GET['action']))
 {
 	if ($_GET['action'] == 'remove')

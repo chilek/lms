@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('documentlist_on_load');
+
 function GetDocumentList($order='cdate,asc', $type=NULL, $customer=NULL, $numberplan = NULL, $from=0, $to=0)
 {
 	global $DB, $AUTH;

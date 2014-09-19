@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('voipaccountadd_on_load');
+
 $voipaccountdata['access'] = 1;
 $voipaccountdata['ownerid'] = 0;
 

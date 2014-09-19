@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('tariffadd_on_load');
+
 if(isset($_POST['tariff']))
 {
 	$tariff = $_POST['tariff'];

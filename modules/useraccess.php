@@ -24,6 +24,7 @@
  *  $Id: useraccess.php,v 1.0 2012/09/20 06:24:16 sylwek Exp $
  */
 
+$LMS->executeHook('useraccess_on_load');
 
 $LMS->UserAccess(intval($_GET['id']),intval($_GET['access']));
 

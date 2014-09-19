@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('customerbalance_on_load');
+
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if(!$LMS->CustomerExists($_GET['id']))

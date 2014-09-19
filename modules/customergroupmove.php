@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('customergroupmove_on_load');
+
 $from = !empty($_GET['from']) ? intval($_GET['from']) : 0;
 $to = !empty($_GET['to']) ? intval($_GET['to']) : 0;
 

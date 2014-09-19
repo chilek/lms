@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('logout_on_load');
+
 if($_GET['is_sure'] == '1') 
 {
 	$AUTH->LogOut();

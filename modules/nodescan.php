@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('nodescan_on_load');
+
 if($_GET['ownerid'] && $LMS->CustomerExists($_GET['ownerid']))
 {
 	$customerid = $_GET['ownerid'];

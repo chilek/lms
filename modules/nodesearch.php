@@ -24,6 +24,8 @@
  *  $Id: nodesearch.php,v 1.46 2012/01/02 11:01:35 alec Exp $
  */
 
+$LMS->executeHook('nodesearch_on_load');
+
 function get_loc_boroughs($districtid) {
 	global $DB, $BOROUGHTYPES;
 

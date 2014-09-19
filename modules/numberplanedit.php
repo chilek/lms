@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('numberplanedit_on_load');
+
 $numberplan = $DB->GetRow('SELECT id, period, template, doctype, isdefault
 			    FROM numberplans WHERE id=?', array($_GET['id']));
 

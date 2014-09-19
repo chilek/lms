@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('receiptadv_on_load');
+
 if(isset($_GET['id']))
 {
 	$id = intval($_GET['id']);

@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('daemoninstanceadd_on_load');
+
 $instance = isset($_POST['instance']) ? $_POST['instance'] : NULL;
 
 if($instance) 

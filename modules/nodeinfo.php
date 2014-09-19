@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('nodeinfo_on_load');
+
 if (isset($_GET['nodegroups'])) {
 	$nodegroups = $LMS->GetNodeGroupNamesByNode(intval($_GET['id']));
 

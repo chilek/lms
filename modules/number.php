@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('number_on_load');
+
 if($doc = $DB->GetRow('SELECT number, cdate, type, template, extnumber 
 			FROM documents 
 			LEFT JOIN numberplans ON (numberplanid = numberplans.id)

@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('eventsearch_on_load');
+
 $layout['pagetitle'] = trans('Event Search');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);

@@ -26,6 +26,8 @@
 // Faktury w PDF, do użycia z formularzami FT-0100 (c) Polarnet
 // w razie pytań mailto:lexx@polarnet.org
 
+$LMS->executeHook('invoice_ezpdf.inc_on_load');
+
 function invoice_simple_form_fill($x,$y,$scale)  
 {
     global $pdf,$invoice;

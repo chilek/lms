@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('statelist_on_load');
+
 $statelist = $DB->GetAll('SELECT * FROM states ORDER BY name');
 $listdata['total'] = sizeof($statelist);
 

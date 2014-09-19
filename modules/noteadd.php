@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('noteadd_on_load');
+
 //$taxeslist = $LMS->GetTaxes();
 
 $SESSION->restore('notecontents', $contents);

@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('daemonconfigadd_on_load');
+
 $config = isset($_POST['config']) ? $_POST['config'] : NULL;
 
 if($config) 

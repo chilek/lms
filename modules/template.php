@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('template_on_load');
+
 $layout['pagetitle'] = trans('Module Title');
 
 $SMARTY->display('header.html');

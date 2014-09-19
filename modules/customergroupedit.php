@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('customergroupedit_on_load');
+
 if(!$LMS->CustomergroupExists($_GET['id']))
 {
 	$SESSION->redirect('?m=customergrouplist');

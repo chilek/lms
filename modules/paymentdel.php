@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('paymentdel_on_load');
+
 if($_GET['is_sure']=='1')
 	$LMS->PaymentDelete($_GET['id']);	
 

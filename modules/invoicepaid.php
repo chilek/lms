@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('invoicepaid_on_load');
+
 $SESSION->restore('ilm', $ilm);
 $SESSION->remove('ilm');
 

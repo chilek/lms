@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('tariffinfo_on_load');
+
 $netid = isset($_GET['netid']) ? intval($_GET['netid']) : NULL;
 
 if(!$LMS->TariffExists($_GET['id']) || ($netid != 0 && !$LMS->NetworkExists($netid)))

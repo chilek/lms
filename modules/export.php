@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('export_on_load');
+
 include(ConfigHelper::getConfig('phpui.export_config', 'exportcfg.php'));
 
 function form_num($num)

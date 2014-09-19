@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('promotioninfo_on_load');
+
 
 $promotion = $DB->GetRow('SELECT * FROM promotions WHERE id = ?',
     array(intval($_GET['id'])));

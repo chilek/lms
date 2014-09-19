@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('ewxdevlist_on_load');
+
 $channelid = intval($_GET['id']);
 
 if ($channelid)

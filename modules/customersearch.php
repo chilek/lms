@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('customersearch_on_load');
+
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if(isset($_POST['search']))

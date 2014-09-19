@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('stateadd_on_load');
+
 $stateadd = isset($_POST['stateadd']) ? $_POST['stateadd'] : NULL;
 
 if(sizeof($stateadd)) 

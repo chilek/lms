@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('cashreglogview_on_load');
+
 function GetCashLog($order='time,asc', $regid=0)
 {
 	global $DB;

@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('promotionschemadel_on_load');
+
 $id = intval($_GET['id']);
 $promotionid = $DB->GetOne('SELECT promotionid FROM promotionschemas
     WHERE id = ?', array($id));

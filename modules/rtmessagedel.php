@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('rtmessagedel_on_load');
+
 $msg = intval($_GET['id']);
 $ticket = $DB->GetOne('SELECT ticketid FROM rtmessages WHERE id = ?', array($msg));
 $rights = $LMS->GetUserRightsRT($AUTH->id, 0, $ticket);

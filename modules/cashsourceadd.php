@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('cashsourceadd_on_load');
+
 $sourceadd = isset($_POST['sourceadd']) ? $_POST['sourceadd'] : NULL;
 
 if($sourceadd) 

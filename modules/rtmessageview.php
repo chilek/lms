@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('rtmessageview_on_load');
+
 if(isset($_GET['file']))
 {
 	$filename = $_GET['file'];

@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('netlinkproperties_on_load');
+
 function update_netlink_properties($id, $devid, $linktype, $linktechnology, $linkspeed) {
 	global $LMS, $LINKTYPES, $LINKTECHNOLOGIES, $LINKSPEEDS;
 

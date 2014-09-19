@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('ping_on_load');
+
 function refresh($params)
 {
 	global $SESSION;

@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('eventadd_on_load');
+
 if(isset($_POST['event']))
 {
 	$event = $_POST['event'];

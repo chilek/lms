@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('eventedit_on_load');
+
 if(isset($_GET['action']) && $_GET['action'] == 'open')
 {
 	$DB->Execute('UPDATE events SET closed = 0 WHERE id = ?',array($_GET['id']));

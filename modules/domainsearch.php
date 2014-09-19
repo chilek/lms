@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('domainsearch_on_load');
+
 function GetDomainList($order='name,asc', $search, $customer='')
 {
 	global $DB;

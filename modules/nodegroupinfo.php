@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('nodegroupinfo_on_load');
+
 if( !($id = $DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array(intval($_GET['id'])))))
 {
 	$SESSION->redirect('?m=nodegrouplist');

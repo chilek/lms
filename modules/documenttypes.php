@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('documenttypes_on_load');
+
 $typelist = $DOCTYPES;
 
 foreach($typelist as $idx => $name)

@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('dbview_on_load');
+
 function readfile_chunked($filename,$retbytes=true)
 {
 	$chunksize = 1*(1024*1024); // how many bytes per chunk

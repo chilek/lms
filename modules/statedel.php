@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('statedel_on_load');
+
 $id = intval($_GET['id']);
 
 if (isset($_GET['is_sure']) && $_GET['is_sure'] == 1 && $id) {

@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('document.inc_on_load');
+
 function plugin($template, $customer) {
 	$result = '';
 

@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('invoice_tcpdf.inc_on_load');
+
 function invoice_simple_form_draw() {
 	global $pdf;
 

@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('cashregedit_on_load');
+
 $id = intval($_GET['id']);
 
 if(isset($_POST['registry']))

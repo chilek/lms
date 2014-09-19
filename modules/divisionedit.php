@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('divisionedit_on_load');
+
 $id = intval($_GET['id']);
 
 if (!empty($_GET['changestatus'])) {

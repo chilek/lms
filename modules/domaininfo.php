@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('domaininfo_on_load');
+
 $id = $_GET['id'];
 
 $domain = $DB->GetRow('SELECT d.id, d.name, d.ownerid, d.description, d.mxbackup, d.type,

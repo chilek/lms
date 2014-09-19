@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('messageadd_on_load');
+
 function getMessageTemplate($tmplid, $subjectelem, $messageelem) {
 	global $DB;
 

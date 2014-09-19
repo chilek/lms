@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('aliasinfo_on_load');
+
 $alias = $DB->GetRow('SELECT a.id, a.login, a.domainid, d.name AS domain
 		FROM aliases a JOIN domains d ON (a.domainid = d.id)
 		WHERE a.id = ?', array(intval($_GET['id'])));

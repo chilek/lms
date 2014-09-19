@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('register_on_load');
+
 if($_SERVER['REQUEST_METHOD'] == 'POST')
 {
 	$LMS->UpdateRegisterData($_POST['name'], $_POST['url'], ($_POST['hidden'] == 1 ? TRUE : FALSE));

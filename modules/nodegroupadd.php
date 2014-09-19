@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('nodegroupadd_on_load');
+
 if(isset($_POST['nodegroupadd']))
 {
 	$nodegroupadd = $_POST['nodegroupadd'];

@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('rtmessageadd_on_load');
+
 function MessageAdd($msg, $headers, $files = NULL) {
 	global $DB, $LMS;
 	$time = time();

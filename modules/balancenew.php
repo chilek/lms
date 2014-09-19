@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('balancenew_on_load');
+
 $layout['pagetitle'] = trans('New Balance');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

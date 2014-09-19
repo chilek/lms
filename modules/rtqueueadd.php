@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('rtqueueadd_on_load');
+
 if(isset($_POST['queue']))
 {
 	$queue = $_POST['queue'];

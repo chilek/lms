@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('nodeadd_on_load');
+
 $nodedata['access'] = 1;
 $nodedata['ownerid'] = 0;
 

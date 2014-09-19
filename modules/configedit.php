@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('configedit_on_load');
+
 function ConfigOptionExists($id) 
 {
 	global $DB;

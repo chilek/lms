@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('receipt_on_load');
+
 function GetReceipt($id)
 {
 	global $DB;

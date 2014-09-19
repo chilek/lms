@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('useradd_on_load');
+
 $acl = isset($_POST['acl']) ? $_POST['acl'] : array();
 $useradd = isset($_POST['useradd']) ? $_POST['useradd'] : array();
 

@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('chooselocation_on_load');
+
 function get_loc_streets($cityid) {
 	global $DB;
 

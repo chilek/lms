@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('quicksearch_on_load');
+
 function macformat($mac, $escape=false)
 {
 	global $DB;

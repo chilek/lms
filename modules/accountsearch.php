@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('accountsearch_on_load');
+
 function GetAccountList($order='login,asc', $search, $customer=NULL, $type=NULL, $kind=NULL, $domain='')
 {
 	global $DB;

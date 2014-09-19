@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('cashreglist_on_load');
+
 $layout['pagetitle'] = trans('Cash Registries List');
 
 $reglist = $DB->GetAll('SELECT cashregs.id AS id, cashregs.name AS name, 

@@ -23,6 +23,9 @@
  *
  *  $Id$
  */
+
+$LMS->executeHook('customeredit_on_load');
+
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 $exists = $LMS->CustomerExists($_GET['id']);
 

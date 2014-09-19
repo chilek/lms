@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('messagelist_on_load');
+
 function GetMessagesList($order='cdate,desc', $search=NULL, $cat=NULL, $type='', $status=NULL)
 {
 	global $DB;

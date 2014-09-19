@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('choosegpscoords_on_load');
+
 $layout['pagetitle'] = trans('Select gps coordinates');
 
 $p = isset($_GET['p']) ? $_GET['p'] : '';

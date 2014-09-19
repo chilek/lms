@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('customercutoffstop_on_load');
+
 $customerid = intval($_GET['customerid']);
 
 if (!$LMS->CustomerExists($customerid))

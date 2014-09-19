@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('receiptedit_on_load');
+
 if(isset($_GET['id']))
 {
 	$regid = $DB->GetOne('SELECT DISTINCT regid FROM receiptcontents WHERE docid=?', array($_GET['id']));

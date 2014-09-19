@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('promotionschemainfo_on_load');
+
 
 $schema = $DB->GetRow('SELECT s.*, p.id AS pid, p.name AS promotion,
     t.name AS tariff, t.value

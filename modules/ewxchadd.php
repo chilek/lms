@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('ewxchadd_on_load');
+
 if(isset($_POST['channel']))
 {
 	$channel = $_POST['channel'];

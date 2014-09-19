@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('daemonconfigedit_on_load');
+
 $id = intval($_GET['id']);
 $config = $DB->GetRow('SELECT hostid, c.id, var, value, c.description, c.disabled, instanceid FROM daemonconfig c
 			JOIN daemoninstances i ON i.id = c.instanceid WHERE c.id=?', array($id));

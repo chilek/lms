@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('archiveview_on_load');
+
 $body = trans('Transaction logging is not supported in this LMS version.');
 $SMARTY->assign('body', $body);
 $SMARTY->display('dialog.html');

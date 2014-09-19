@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('netdevmaprefresh_on_load');
+
 if (isset($_GET['live'])) {
 	$netdevmaprefresh_helper = ConfigHelper::getConfig('phpui.netdevmaprefresh_helper');
 	if (empty($netdevmaprefresh_helper))

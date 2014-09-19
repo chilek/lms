@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('domainedit_on_load');
+
 function GetDomainIdByName($name)
 {
 	global $DB;

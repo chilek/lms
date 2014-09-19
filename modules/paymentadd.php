@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('paymentadd_on_load');
+
 $payment = isset($_POST['payment']) ? $_POST['payment'] : NULL;
 
 if($payment)

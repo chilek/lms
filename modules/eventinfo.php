@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('eventinfo_on_load');
+
 if(!$_GET['id'])
 {
 	$SESSION->redirect('?m=eventlist');

@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('cashreglogadd_on_load');
+
 $regid = isset($_GET['regid']) ? $_GET['regid'] : 0;
 
 if(!$regid)

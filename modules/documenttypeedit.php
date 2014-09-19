@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->executeHook('documenttypeedit_on_load');
+
 //$type = $DB->GetRow('SELECT * FROM types WHERE id=?', array($_GET['id']));
 
 $id = intval($_GET['id']);
