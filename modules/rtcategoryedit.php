@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('rtcategoryedit_on_load');
-
 if(! $LMS->CategoryExists($_GET['id']))
 {
 	$SESSION->redirect('?m=rtcategorylist');

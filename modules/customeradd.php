@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('customeradd_on_load');
-
 if(isset($_GET['ajax'])) 
 {
 	header('Content-type: text/plain');

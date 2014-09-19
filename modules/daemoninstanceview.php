@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('daemoninstanceview_on_load');
-
 function GetOptionList($instanceid)
 {
 	global $DB;

@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('daemoninstancelist_on_load');
-
 function GetInstanceList($hostid)
 {
 	global $DB;

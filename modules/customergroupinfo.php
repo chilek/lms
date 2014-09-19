@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('customergroupinfo_on_load');
-
 $id = !empty($_GET['id']) ? $_GET['id'] : NULL;
 
 if (!$id || !$LMS->CustomergroupExists($id))

@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('nodexajax.inc_on_load');
-
 function NodeStats($id, $dt) {
 	global $DB;
 	if ($stats = $DB->GetRow('SELECT SUM(download) AS download, SUM(upload) AS upload 

@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('cashsourcelist_on_load');
-
 function GetSourceList()
 {
 	global $DB;

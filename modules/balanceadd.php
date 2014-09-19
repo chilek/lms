@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('balanceadd_on_load');
-
 $addbalance = $_POST['addbalance'];
 
 foreach($addbalance as $key=>$value)

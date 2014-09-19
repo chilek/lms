@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('eventlist_on_load');
-
 function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customerid=0, $userid=0)
 {
 	global $DB, $AUTH;

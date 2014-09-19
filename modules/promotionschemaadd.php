@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('promotionschemaadd_on_load');
-
 $schema = isset($_POST['schema']) ? $_POST['schema'] : NULL;
 
 if ($schema) {

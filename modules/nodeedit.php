@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('nodeedit_on_load');
-
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
 if (!$LMS->NodeExists($_GET['id']))

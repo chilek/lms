@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('netdevsearch_on_load');
-
 function NetDevSearch($order='name,asc', $search=NULL, $sqlskey='AND')
 {
 	global $DB;

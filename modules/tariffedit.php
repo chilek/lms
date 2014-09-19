@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('tariffedit_on_load');
-
 if(!$LMS->TariffExists($_GET['id']))
 {
 	$SESSION->redirect('?m=tarifflist');

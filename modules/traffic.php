@@ -23,8 +23,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('traffic_on_load');
-
 function Traffic($from = 0, $to = 0, $net = 0, $customerid = 0, $order = '', $limit = 0)
 {
 	global $DB, $LMS;

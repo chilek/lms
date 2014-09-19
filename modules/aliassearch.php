@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('aliassearch_on_load');
-
 function GetAliasList($order='login,asc', $search, $customer='', $domain='')
 {
 	global $DB;

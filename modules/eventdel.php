@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('eventdel_on_load');
-
 $id = $_GET['id'];
 
 if($id && $_GET['is_sure']=='1')

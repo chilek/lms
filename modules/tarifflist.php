@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('tarifflist_on_load');
-
 function GetTariffList($order = 'name,asc', $type = NULL, $customergroupid = NULL, $promotionid = NULL, $state = NULL)
 {
 	global $DB, $LMS;

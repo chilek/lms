@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('invoice_on_load');
-
 if(strtolower(ConfigHelper::getConfig('invoices.type')) == 'pdf')
 {
     include('invoice_pdf.php');

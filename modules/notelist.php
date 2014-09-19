@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('notelist_on_load');
-
 function GetNotesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL, $order, $pagelimit=100, $page=NULL)
 {
 	global $DB;

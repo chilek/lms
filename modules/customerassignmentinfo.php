@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('customerassignmentinfo_on_load');
-
 $a = $DB->GetRow('SELECT a.invoice, a.settlement,
         a.numberplanid, a.paytype, n.template, n.period
 		FROM assignments a

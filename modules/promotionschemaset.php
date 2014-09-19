@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('promotionschemaset_on_load');
-
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
 if ($id) {

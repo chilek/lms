@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('customergroupadd_on_load');
-
 if(isset($_POST['customergroupadd']))
 {
 	$customergroupadd = $_POST['customergroupadd'];

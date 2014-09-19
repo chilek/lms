@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('ewxnodelist_on_load');
-
 $nodes = $DB->GetAll('SELECT n.id, n.name, n.mac,
         inet_ntoa(n.ipaddr) AS ip, inet_ntoa(n.ipaddr_pub) AS ip_pub,
         n.access, n.warning, n.info, n.lastonline

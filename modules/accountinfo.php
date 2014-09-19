@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('accountinfo_on_load');
-
 // LEFT join with domains for bckward compat.
 $account = $DB->GetRow('SELECT p.*, d.name AS domain, ' 
 		.$DB->Concat('c.lastname', "' '", 'c.name').' AS customername 

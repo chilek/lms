@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('taxratelist_on_load');
-
 function GetTaxRateList($order='name,asc')
 {
 	global $DB;

@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('documentgen_on_load');
-
 include(MODULES_DIR . '/document.inc.php');
 
 $layout['pagetitle'] = trans('Documents Generator');

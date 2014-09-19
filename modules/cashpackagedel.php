@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('cashpackagedel_on_load');
-
 $sourcefileid = intval($_GET['id']);
 $name = $DB->GetOne('SELECT name FROM sourcefiles WHERE id = ?', array($sourcefileid));
 $layout['pagetitle'] = trans('Removing package "$a"', $name);

@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('reload_on_load');
-
 $layout['pagetitle'] = trans('Configuration Reload');
 
 $_RELOAD_TYPE = ConfigHelper::getConfig('phpui.reload_type');

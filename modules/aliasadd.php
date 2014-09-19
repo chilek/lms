@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('aliasadd_on_load');
-
 function AliasExists($login, $domain)
 {
 	global $DB;

@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('nodegroupdel_on_load');
-
 if(isset($_GET['is_sure']))
 {
 	$id = intval($_GET['id']);

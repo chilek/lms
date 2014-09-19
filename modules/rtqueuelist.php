@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('rtqueuelist_on_load');
-
 $layout['pagetitle'] = trans('Queues List');
 
 $queues = $LMS->GetQueueList();

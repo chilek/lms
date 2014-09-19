@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('messagedel_on_load');
-
 if (isset($_GET['id']) && $_GET['is_sure'] == '1') {
 	$id = intval($_GET['id']);
 	if ($id) {

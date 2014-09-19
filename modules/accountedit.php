@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('accountedit_on_load');
-
 $id = intval($_GET['id']);
 
 // LEFT join with domains for backward compat.

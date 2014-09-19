@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('tariffmove_on_load');
-
 $from = intval($_GET['from']);
 $to = intval($_GET['to']);
 

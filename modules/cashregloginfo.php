@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('cashregloginfo_on_load');
-
 $reglog = $DB->GetRow('SELECT l.*, users.name AS username
 			FROM cashreglog l 
 			LEFT JOIN users ON (l.userid = users.id)

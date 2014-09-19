@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('rtqueuedel_on_load');
-
 $layout['pagetitle'] = trans('Remove queue ID: $a',sprintf("%04d",$_GET['id']));
 
 if(!$LMS->QueueExists($_GET['id']))

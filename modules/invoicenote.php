@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('invoicenote_on_load');
-
 $numberplanlist = $LMS->GetNumberPlans(DOC_CNOTE);
 
 $action = isset($_GET['action']) ? $_GET['action'] : NULL;

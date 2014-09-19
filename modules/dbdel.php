@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('dbdel_on_load');
-
 if(isset($_GET['is_sure']))
 {
 	$basename = 'lms-'.$_GET['db'];

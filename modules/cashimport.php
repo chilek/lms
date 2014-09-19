@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('cashimport_on_load');
-
 $layout['pagetitle'] = trans('Cash Operations Import');
 
 if(isset($_GET['action']) && $_GET['action'] == 'csv')

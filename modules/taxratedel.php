@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('taxratedel_on_load');
-
 $id = intval($_GET['id']);
 
 if ($_GET['is_sure'] == 1 && $id) {

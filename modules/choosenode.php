@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('choosenode_on_load');
-
 $layout['pagetitle'] = trans('Select node');
 
 $SMARTY->assign('nodelist',$LMS->GetCustomerNodes(intval($_GET['id'])));

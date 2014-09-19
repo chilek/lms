@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('cashsourceedit_on_load');
-
 $source = $DB->GetRow('SELECT id, name, description FROM cashsources WHERE id=?', array($_GET['id']));
 
 if(!$source)

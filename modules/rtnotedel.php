@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('rtnotedel_on_load');
-
 if(!($ticketid = $DB->GetOne('SELECT ticketid FROM rtnotes WHERE id = ?', array(intval($_GET['id'])))))
 {
 	$SESSION->redirect('?'.$SESSION->get('backto'));

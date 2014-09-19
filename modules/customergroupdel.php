@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('customergroupdel_on_load');
-
 if(isset($_GET['is_sure']))
 {
 	$LMS->CustomergroupDelete($_GET['id']);	

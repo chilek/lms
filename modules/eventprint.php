@@ -24,9 +24,6 @@
  *  $Id$
  */
 
-
-$LMS->executeHook('eventprint_on_load');
-
 function GetEvents($date=NULL, $userid=0, $customerid=0)
 {
 	global $DB, $AUTH;

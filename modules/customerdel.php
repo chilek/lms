@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('customerdel_on_load');
-
 $layout['pagetitle'] = trans('Customer Remove: $a',sprintf("%04d",$_GET['id']));
 $SMARTY->assign('customerid',$_GET['id']);
 

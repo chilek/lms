@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('nodelistshort_on_load');
-
 $customernodes = $LMS->GetCustomerNodes($_GET['id']);
 
 $SMARTY->assign('customernodes', $customernodes);

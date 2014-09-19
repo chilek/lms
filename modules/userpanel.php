@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('userpanel_on_load');
-
 if(file_exists(ConfigHelper::getConfig('directories.userpanel_dir')."/lib/LMS.setup.php"))
 	include(ConfigHelper::getConfig('directories.userpanel_dir')."/lib/LMS.setup.php");
 

@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('choosecustomer_on_load');
-
 $layout['pagetitle'] = trans('Select customer');
 
 $p = isset($_GET['p']) ? $_GET['p'] : '';

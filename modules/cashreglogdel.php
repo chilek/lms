@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('cashreglogdel_on_load');
-
 if (isset($_GET['is_sure'])) {
 	$id = intval($_GET['id']);
 	list ($regid, $userid) = array_values($DB->GetRow('SELECT regid, userid FROM cashreglog WHERE id = ?', array($id)));

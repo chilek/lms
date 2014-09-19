@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('netdevlist_on_load');
-
 $layout['pagetitle'] = trans('Network Devices');
 
 if(!isset($_GET['o']))

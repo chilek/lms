@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('copyrights_on_load');
-
 $layout['pagetitle'] = trans('Copyrights');
 
 $authors = array(

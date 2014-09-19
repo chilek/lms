@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('rtqueueedit_on_load');
-
 if(! $LMS->QueueExists($_GET['id']))
 {
 	$SESSION->redirect('?m=rtqueuelist');

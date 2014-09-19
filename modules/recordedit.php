@@ -22,8 +22,6 @@
  *
  */
 
-$LMS->executeHook('recordedit_on_load');
-
 include(LIB_DIR.'/dns.php');
 
 $id = $_GET['id']*1;

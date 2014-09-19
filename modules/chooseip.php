@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('chooseip_on_load');
-
 $layout['pagetitle'] = trans('Select IP address');
 
 $networks = $LMS->GetNetworks(true);

@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('dbrecover_on_load');
-
 function DBLoad($filename=NULL)
 {
 	global $DB, $SYSLOG;

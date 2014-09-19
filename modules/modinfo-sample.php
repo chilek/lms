@@ -23,9 +23,7 @@
  *
  *  $Id$
  */
-
-$LMS->executeHook('modinfo-sample_on_load');
-
+		      
 $_MODINFO['sample'] = array(
 		'summary' => array( // module name, summary
 			'en' => 'Example template for modinfo.php',

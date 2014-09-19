@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('rtticketinfo_on_load');
-
 $id = $_GET['id'];
 
 if(! $LMS->TicketExists($id))

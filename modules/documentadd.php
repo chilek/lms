@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('documentadd_on_load');
-
 include(MODULES_DIR . '/document.inc.php');
 
 if (isset($_POST['document'])) {

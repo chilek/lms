@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('receiptlist_on_load');
-
 function GetReceiptList($registry, $order='', $search=NULL, $cat=NULL, $from=0, $to=0, $advances=0)
 {
 	global $DB;

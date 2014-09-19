@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('confirm_on_load');
-
 $layout['pagetitle'] = trans('Question');
 
 $SMARTY->assign('text', stripslashes($_GET['text']));

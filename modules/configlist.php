@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('configlist_on_load');
-
 function GetConfigList($order='var,asc', $section='', $search='')
 {
 	global $DB;

@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('hostedit_on_load');
-
 function GetHostIdByName($name)
 {
 	global $DB;

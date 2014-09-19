@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('uke_on_load');
-
 /*
 ini_set('error_reporting', E_ALL&~E_NOTICE);
 

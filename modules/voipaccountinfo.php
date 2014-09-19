@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('voipaccountinfo_on_load');
-
 if(!preg_match('/^[0-9]+$/', $_GET['id']))
 {
 	$SESSION->redirect('?m=voipaccountlist');

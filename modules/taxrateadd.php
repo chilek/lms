@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('taxrateadd_on_load');
-
 $taxrateadd = isset($_POST['taxrateadd']) ? $_POST['taxrateadd'] : NULL;
 
 if(sizeof($taxrateadd)) 

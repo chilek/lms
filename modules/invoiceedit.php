@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('invoiceedit_on_load');
-
 $taxeslist = $LMS->GetTaxes();
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 

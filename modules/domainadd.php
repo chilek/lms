@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('domainadd_on_load');
-
 include(LIB_DIR.'/dns.php');
 
 function GetDomainIdByName($name)

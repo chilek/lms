@@ -22,8 +22,6 @@
  *  USA.
  */
 
-$LMS->executeHook('recorddel_on_load');
-
 $id = $_GET['id']*1;
 
 if($id)

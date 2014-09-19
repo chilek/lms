@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('nodegrouplist_on_load');
-
 function GroupList()
 {
 	global $DB;

@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('genfake_on_load');
-
 // Lastnames
 
 $lastnames[] = "Abbott";

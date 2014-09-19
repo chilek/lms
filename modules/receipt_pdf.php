@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('receipt_pdf_on_load');
-
 function receipt_header($x, $y)
 {
 	global $receipt, $pdf;

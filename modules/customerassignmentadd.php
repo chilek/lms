@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('customerassignmentadd_on_load');
-
 // get customer name and check privileges using customersview
 $customer = $DB->GetRow('SELECT id, divisionid, '
     .$DB->Concat('lastname',"' '",'name').' AS name

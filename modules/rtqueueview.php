@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('rtqueueview_on_load');
-
 if(isset($_GET['id']))
 	$queuedata['id'] = intval($_GET['id']);
 

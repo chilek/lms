@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('customer.inc_on_load');
-
 if($layout['module'] != 'customeredit')
 {
 	$customerinfo = $LMS->GetCustomer($customerid);

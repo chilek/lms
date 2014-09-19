@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('note_on_load');
-
 /*
 if(strtolower(ConfigHelper::getConfig('notes.type')) == 'pdf')
 {

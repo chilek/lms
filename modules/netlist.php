@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('netlist_on_load');
-
 $layout['pagetitle'] = trans('IP Networks');
 
 if (isset($_GET['o']))

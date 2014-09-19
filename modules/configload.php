@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('configload_on_load');
-
 $SESSION->restore('conls', $section);
 
 function parse_cfg_val($value)

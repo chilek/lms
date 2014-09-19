@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('balancedel_on_load');
-
 if(!empty($_GET['id']))
 {
 	$LMS->DelBalance($_GET['id']);

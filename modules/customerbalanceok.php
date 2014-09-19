@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('customerbalanceok_on_load');
-
 $customerid = $_GET['id'];
 
 if($LMS->CustomerExists($customerid))

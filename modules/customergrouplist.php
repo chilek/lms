@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('customergrouplist_on_load');
-
 $layout['pagetitle'] = trans('Customer Groups List');
 
 $customergrouplist = $LMS->CustomergroupGetList();

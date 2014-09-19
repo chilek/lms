@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('receiptadd_on_load');
-
 function GetCustomerCovenants($id)
 {
 	global $DB;

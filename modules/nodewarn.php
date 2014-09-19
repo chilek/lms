@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('nodewarn_on_load');
-
 function getMessageTemplate($tmplid) {
 	global $DB;
 

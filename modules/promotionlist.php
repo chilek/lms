@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('promotionlist_on_load');
-
 $layout['pagetitle'] = trans('Promotions List');
 
 $promolist = $DB->GetAll('SELECT p.id, p.name, p.description, disabled,

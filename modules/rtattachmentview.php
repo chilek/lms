@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('rtattachmentview_on_load');
-
 if (isset($_GET['mid']))
 	$msgid = intval($_GET['mid']);
 

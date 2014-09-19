@@ -24,8 +24,6 @@
  *  $Id: domainlist.php,v 1.34 2012/01/02 11:01:34 alec Exp $
  */
 
-$LMS->executeHook('domainlist_on_load');
-
 function GetDomainList($order = 'name,asc', $customer = '', $filtr = '') {
 	global $DB;
 

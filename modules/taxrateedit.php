@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('taxrateedit_on_load');
-
 $taxrate = $DB->GetRow('SELECT * FROM taxes WHERE id=?', array($_GET['id']));
 
 if(!$taxrate)

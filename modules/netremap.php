@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('netremap_on_load');
-
 if(!$LMS->NetworkExists($_GET['id'])||!$LMS->NetworkExists($_GET['mapto']))
 {
 	$SESSION->redirect('?m=netlist');

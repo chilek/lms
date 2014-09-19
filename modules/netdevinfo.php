@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('netdevinfo_on_load');
-
 if (!$LMS->NetDevExists($_GET['id'])) {
 	$SESSION->redirect('?m=netdevlist');
 }

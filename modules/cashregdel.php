@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('cashregdel_on_load');
-
 $name = $DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($_GET['id']));
 $layout['pagetitle'] = trans('Removing registry "$a"', $name);
 

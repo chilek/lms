@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('hostlist_on_load');
-
 function GetHostList()
 {
 	global $DB;

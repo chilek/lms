@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('userlist_on_load');
-
 $layout['pagetitle'] = trans('Users List');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);

@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('rtcategorydel_on_load');
-
 $layout['pagetitle'] = trans('Remove category ID: $a',sprintf("%04d",$_GET['id']));
 
 if(!$LMS->CategoryExists($_GET['id']))

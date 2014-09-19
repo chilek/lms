@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('rtticketprint_on_load');
-
 if(! $LMS->TicketExists($_GET['id']))
 {
 	$SESSION->redirect('?m=rtqueuelist');

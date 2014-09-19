@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('messageinfo_on_load');
-
 function GetItemList($id, $order='id,desc', $search=NULL, $cat=NULL, $status=NULL)
 {
 	global $DB;

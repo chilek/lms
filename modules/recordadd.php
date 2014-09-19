@@ -22,8 +22,6 @@
  *
  */
 
-$LMS->executeHook('recordadd_on_load');
-
 include(LIB_DIR.'/dns.php');
 
 $d = $_GET['d']*1;

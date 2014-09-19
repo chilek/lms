@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('paymentedit_on_load');
-
 if(!$LMS->PaymentExists($_GET['id']))
 {
 	$SESSION->redirect('?m=paymentlist');

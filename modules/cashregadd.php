@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('cashregadd_on_load');
-
 if(isset($_POST['registry']))
 {
 	$registry = $_POST['registry'];

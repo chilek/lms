@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('numberplanlist_on_load');
-
 function GetNumberPlanList()
 {
 	global $DB;

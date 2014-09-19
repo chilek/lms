@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('documentview_on_load');
-
 if(!empty($_POST['marks']))
 {
 	$marks = array();

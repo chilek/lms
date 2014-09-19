@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('rtsearch_on_load');
-
 function RTSearch($search, $order='createtime,desc')
 {
 	global $DB;

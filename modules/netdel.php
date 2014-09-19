@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('netdel_on_load');
-
 if(!$LMS->NetworkExists($_GET['id']))
 {
 	$SESSION->redirect('?m=netlist');

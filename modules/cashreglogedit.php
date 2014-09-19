@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('cashreglogedit_on_load');
-
 $reglog = $DB->GetRow('SELECT * FROM cashreglog WHERE id = ?', array(intval($_GET['id'])));
 
 $regid = $reglog['regid'];

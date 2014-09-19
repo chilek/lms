@@ -23,8 +23,6 @@
  *
  */
 
-$LMS->executeHook('recordlist_on_load');
-
 if(!isset($_GET['d']))
 	$SESSION->restore('ald', $d);
 else

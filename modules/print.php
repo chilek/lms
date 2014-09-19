@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('print_on_load');
-
 if (!ConfigHelper::checkConfig('privileges.reports'))
 	access_denied();
 

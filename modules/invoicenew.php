@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('invoicenew_on_load');
-
 // Invoiceless liabilities: Zobowiazania/obciazenia na ktore nie zostala wystawiona faktura
 function GetCustomerCovenants($customerid)
 {

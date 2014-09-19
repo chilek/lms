@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('balancelist_on_load');
-
 function GetBalanceList($search=NULL, $cat=NULL, $group=NULL, $pagelimit=100, $page=NULL, $from, $to)
 {
 	global $DB;

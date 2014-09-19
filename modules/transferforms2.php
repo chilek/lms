@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('transferforms2_on_load');
-
 // Przygotowane dla druków firmy Michalczyk i Prokop Sp. z o.o.
 // dla drukarki HP LJ 1010 zostawił leftmargin = 0, bottommargin = 0
 

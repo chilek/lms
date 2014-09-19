@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('nodelist_on_load');
-
 $layout['pagetitle'] = trans('Nodes List');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);

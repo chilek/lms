@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('promotionedit_on_load');
-
 $promotion = isset($_POST['promotion']) ? $_POST['promotion'] : NULL;
 $action = isset($_GET['action']) ? $_GET['action'] : null;
 

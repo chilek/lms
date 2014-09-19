@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('cashimportcfg_on_load');
-
 $patterns[] = array(
     'id' => NULL,	// import source identifier (from 'cashsources' table)
     'pattern' => "/^([^ ]+)\t([^ ]+)[\s\t]+([^ ]+)\t([^ ]+)\t(.*)/",

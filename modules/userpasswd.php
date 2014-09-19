@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('userpasswd_on_load');
-
 $id = (isset($_GET['id'])) ? $_GET['id'] : $AUTH->id;
 
 if ($LMS->UserExists($id)) {

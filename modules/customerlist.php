@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('customerlist_on_load');
-
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $layout['pagetitle'] = trans('Customers List');

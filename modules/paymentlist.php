@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('paymentlist_on_load');
-
 $layout['pagetitle'] = trans('Payments List');
 
 $paymentlist = $LMS->GetPaymentList();

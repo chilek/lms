@@ -24,9 +24,6 @@
  *  $Id$
  */
 
-
-$LMS->executeHook('dbnew_on_load');
-
 set_time_limit(0);
 
 $gz = isset($_GET['gz']);

@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('customerassignmentdel_on_load');
-
 if (isset($_GET['id']))
 	$id = intval($_GET['id']);
 if (isset($_GET['cid']))

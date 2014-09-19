@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('rtticketadd_on_load');
-
 $queue = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $ticket['customerid'] = isset($_GET['customerid']) ? intval($_GET['customerid']) : 0;
 

@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('voipaccountlist_on_load');
-
 $layout['pagetitle'] = trans('Voip Accounts List');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);

@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('chpasswd_on_load');
-
 $id = $AUTH->id;
 
 if ($LMS->UserExists($id))

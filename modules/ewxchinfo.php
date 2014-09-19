@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('ewxchinfo_on_load');
-
 $cid = intval($_GET['id']);
 
 if ($cid)
