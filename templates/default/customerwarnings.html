@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 {$xajax}
 <script type="text/javascript" src="img/tinymce3/tiny_mce.js"> </script>
@@ -146,4 +148,4 @@ toggle_visual_editor('message');
 {/if}
 //-->
 </SCRIPT>
-{include file="footer.html"}
+{/block}

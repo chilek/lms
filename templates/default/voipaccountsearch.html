@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 <SCRIPT language="javaScript">
 <!-- 
@@ -79,4 +81,4 @@
 document.forms['voipaccountsearch'].elements['search[login]'].focus();
 //-->
 </SCRIPT>
-{include file="footer.html"}
+{/block}

@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <FORM NAME="search" METHOD="POST" ACTION="?m=netdevsearch&search=1">
@@ -134,4 +136,4 @@
 document.forms['search'].elements['search[name]'].focus();
 //-->
 </SCRIPT>
-{include file="footer.html"}
+{/block}

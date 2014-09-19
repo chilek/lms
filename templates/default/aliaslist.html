@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
  {if $layout.module=="aliassearch"}{assign var=suffix value="&s=1"}{/if}
 <H1>{$layout.pagetitle}</H1>
@@ -116,4 +118,4 @@
     </TFOOT>
 </TABLE>
 </P>
-{include file="footer.html"}
+{/block}

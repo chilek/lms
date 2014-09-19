@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <FORM method="get" action="?m={$layout.module}" name="choosefilter">
@@ -194,4 +196,4 @@
 	</TBODY>
 </TABLE>
 </FORM>
-{include file="footer.html"}
+{/block}

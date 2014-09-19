@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <FORM method="POST" action="?m=stateadd" name="stateadd">
@@ -43,4 +45,4 @@
 document.forms['stateadd'].elements['stateadd[name]'].focus();
 //-->
 </SCRIPT>
-{include file="footer.html"}
+{/block}

@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 {include file="calendar_js.html"}
 <SCRIPT type="text/javascript">
@@ -149,4 +151,4 @@ cal2.time_comp = false;
 document.forms['event'].elements['event[title]'].focus();
 //-->
 </SCRIPT>
-{include file="footer.html"}
+{/block}

@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 <SCRIPT type="text/javascript">
 <!--
@@ -279,4 +281,4 @@
 document.forms['tariff'].elements['tariff[name]'].focus();
 //-->
 </SCRIPT>
-{include file="footer.html"}
+{/block}
