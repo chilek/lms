@@ -61,7 +61,7 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 					array($row['id']));
 			$endtime = $row['endtime'];
 			if ($row['enddate']) {
-				$days = ($row['enddate'] - $row['date']) / 86400;
+				$days = round(($row['enddate'] - $row['date']) / 86400);
 				$row['endtime'] = 0;
 				$list2[] = $row;
 				while ($days) {
