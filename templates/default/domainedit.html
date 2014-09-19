@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <P align="CENTER">
@@ -90,4 +92,4 @@
 document.forms['domain'].elements['domain[name]'].focus();
 //-->
 </SCRIPT>
-{include file="footer.html"}
+{/block}

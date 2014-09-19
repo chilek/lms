@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {$lastonline_limit = ConfigHelper::getConfig('phpui.lastonline_limit')}
@@ -152,4 +154,4 @@
 	</TBODY>
 </TABLE>
 </FORM>
-{include file="footer.html"}
+{/block}

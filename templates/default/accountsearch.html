@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <FORM METHOD="POST" ACTION="?m=accountsearch&search=account" NAME="accountsearch">
@@ -198,4 +200,4 @@ document.forms['accountsearch'].elements['search[login]'].focus();
     </TBODY>
 </TABLE>
 </FORM>
-{include file="footer.html"}
+{/block}

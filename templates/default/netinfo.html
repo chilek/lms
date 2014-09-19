@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 {if $unlockedit}
 <script type="text/javascript">
@@ -257,4 +259,4 @@
 {if $unlockedit}
 </form>
 {/if}
-{include file="footer.html"}
+{/block}

@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 {include file="calendar_js.html"}
 <H1>{$layout.pagetitle}</H1>
@@ -81,4 +83,4 @@ cal2.time_comp = false;
 document.forms['taxrateadd'].elements['taxrateadd[label]'].focus();
 //-->
 </SCRIPT>
-{include file="footer.html"}
+{/block}

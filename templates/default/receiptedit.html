@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {include file="calendar_js.html"}
@@ -333,4 +335,4 @@ cal1.time_comp = false;
 document.forms['setcustomer'].elements['receipt[cdate]'].focus();
 //-->
 </SCRIPT>
-{include file="footer.html"}
+{/block}

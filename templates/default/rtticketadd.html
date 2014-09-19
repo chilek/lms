@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!-- $Id$ -->
 <script type="text/javascript">
 <!--
@@ -178,4 +180,4 @@
 document.forms['ticket'].elements['ticket[subject]'].focus();
 //-->
 </SCRIPT>
-{include file="footer.html"}
+{/block}

@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 {$xajax}
 <SCRIPT type="text/javascript">
@@ -174,4 +176,4 @@ function update_selection(type, data, selected)
 document.forms['nodesearch'].elements['search[name]'].focus();
 //-->
 </SCRIPT>
-{include file="footer.html"}
+{/block}

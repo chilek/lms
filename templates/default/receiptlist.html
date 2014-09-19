@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {if $receipt.receipt}
@@ -244,4 +246,4 @@ var cal2 = new calendar(document.page.elements['to']);
 cal2.time_comp = false;
 //-->
 </SCRIPT>
-{include file="footer.html"}
+{/block}
