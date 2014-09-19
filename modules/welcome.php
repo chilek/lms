@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('welcome_on_load');
-
 @include(LIB_DIR.'/locale/'.$_language.'/fortunes.php');
 
 $layout['pagetitle'] = 'LAN Management System';
