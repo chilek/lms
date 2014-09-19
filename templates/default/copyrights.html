@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 <H1 class="text-center">{trans("LMS version")} {$layout.lmsv} ({$layout.lmsvr})</H1>
 <P class="text-center bold">Copyright &copy; 2001-{$smarty.now|date_format:'%Y'} LMS Developers</P>
@@ -55,4 +57,4 @@
 </P>
 <P class="text-center bold"><a href="http://www.smarty.net/">{trans("LMS uses Smarty Template Engine - http://www.smarty.net/")}</A></P>
 <P class="text-center"><a href="http://www.smarty.net/"><img src="img/smarty_icon.gif" alt="Smarty"></A></p>
-{include file="footer.html"}
+{/block}

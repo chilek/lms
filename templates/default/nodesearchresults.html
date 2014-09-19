@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 {$xajax}
 <H1>{$layout.pagetitle}</H1>
@@ -220,4 +222,4 @@
 	}
 //-->
 </SCRIPT>
-{include file="footer.html"}
+{/block}

@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <FORM method="POST" action="?m=divisionedit&id={$division.id}" name="division">
@@ -214,5 +216,5 @@
 document.forms['division'].elements['division[shortname]'].focus();
 //-->
 </SCRIPT>
-{include file="footer.html"}
+{/block}
 

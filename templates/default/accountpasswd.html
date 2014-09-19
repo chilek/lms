@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <DIV align="CENTER">
@@ -42,4 +44,4 @@
 document.forms['password'].elements['passwd[passwd]'].focus();
 //-->
 </SCRIPT>
-{include file="footer.html"}
+{/block}

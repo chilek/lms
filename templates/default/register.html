@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <form method="post" action="?m=register" name="registerform">
@@ -59,4 +61,4 @@
     </TBODY>
 </TABLE>
 </form>
-{include file="footer.html"}
+{/block}

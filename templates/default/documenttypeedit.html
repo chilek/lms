@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 <SCRIPT type="text/javascript">
 <!--
@@ -91,4 +93,4 @@
 	</TR>
     </TBODY>
 </TABLE>
-{include file="footer.html"}
+{/block}

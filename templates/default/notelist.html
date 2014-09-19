@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {if $note}
@@ -187,4 +189,4 @@ window.open('?m=note&id={$note}');
     </TFOOT>
 </TABLE>
 </FORM>
-{include file="footer.html"}
+{/block}
