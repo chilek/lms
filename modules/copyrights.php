@@ -62,6 +62,12 @@ $authors = array(
 			'www' => 'www.lexx.w.pl',
 			'realname' => 'Marcin Król',
 		     ),
+    
+                'Lion' => array(
+			'realname' => 'Maciej Lew',
+			'info' => 'PHP, HTML, CSS, JavaScript',
+			'www' => 'www.lion.net.pl'
+			),
 	
 		);
 

@@ -268,6 +268,7 @@ if ($AUTH->islogged) {
 		{
 			$layout['module'] = $module;
 			$LMS->InitUI();
+                        $LMS->executeHook($module.'_on_load');
 			include(MODULES_DIR.'/'.$module.'.php');
 		} else {
 			if ($SYSLOG)

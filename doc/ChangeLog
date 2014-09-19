@@ -23,6 +23,7 @@ version ?.??.?? (????-??-??):
   - events: multi user selection is possible in event search form [chilan]
   - management urls can be also assigned to nodes [chilan]
   - LMS class is able to send many posts via single smtp session [chilan]
+  - new plugins management system [maciejlew]
 
 version 1.11.15 (2014-05-15):
 
