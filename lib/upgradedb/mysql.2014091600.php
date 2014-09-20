@@ -31,6 +31,8 @@ $DB->Execute("
 	PRIMARY KEY (id)
 ) ENGINE=INNODB");
 
+$DB->Execute("INSERT INTO invprojects (name,type) VALUES ('inherited','SYS')");
+
 $DB->Execute("
     CREATE TABLE netnodes (
         id int(11) NOT NULL auto_increment,
@@ -45,13 +47,23 @@ $DB->Execute("
 	location_flat varchar(8) DEFAULT NULL,
 	longitude decimal(10,6) DEFAULT NULL,
 	latitude decimal(10,6) DEFAULT NULL,
-	ww tinyint(1),
-	ww_ident varchar(255),
-	uip tinyint(1),
-	miar tinyint(1),
+	ownership tinyint(1) DEFAULT 0,
+	coowner varchar(255) DEFAULT '',
+	uip tinyint(1) DEFAULT 0,
+	miar tinyint(1) DEFAULT 0,
 	PRIMARY KEY (id),
 	FOREIGN KEY (invprojectid) REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=INNODB");
+
+
+$DB->Execute("ALTER TABLE netdevices ADD COLUMN netnodeid int(11) DEFAULT NULL");
+$DB->Execute("ALTER TABLE netdevices ADD FOREIGN KEY (netnodeid) REFERENCES netnodes(id) ON DELETE SET NULL ON UPDATE CASCADE");
+
+$DB->Execute("ALTER TABLE netdevices ADD COLUMN invprojectid int(11) DEFAULT NULL");
+$DB->Execute("ALTER TABLE netdevices ADD FOREIGN KEY (invprojectid) REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE");
+
+$DB->Execute("ALTER TABLE nodes ADD COLUMN invprojectid int(11) DEFAULT NULL");
+$DB->Execute("ALTER TABLE nodes ADD FOREIGN KEY (invprojectid) REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE");
 
 
 

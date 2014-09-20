@@ -33,6 +33,8 @@ $DB->Execute("
 	);
 ");
 
+$DB->Execute("INSERT INTO invprojects (name,type) VALUES ('inherited','SYS')");
+
 $DB->Execute("
 	CREATE SEQUENCE netnodes_id_seq;
 	CREATE TABLE netnodes (
@@ -48,13 +50,23 @@ $DB->Execute("
 		location_flat varchar(8) DEFAULT NULL,
 		longitude numeric(10,6) DEFAULT NULL,
 		latitude numeric(10,6) DEFAULT NULL,
-		ww smallint,
-		ww_ident varchar(255),
-		uip smallint,
-		miar smallint,
+		ownership smallint DEFAULT 0,
+		coowner varchar(255) DEFAULT '',
+		uip smallint DEFAULT 0,
+		miar smallint DEFAULT 0,
 		PRIMARY KEY(id)
 	);
 ");
+
+$DB->Execute("ALTER TABLE netdevices ADD COLUMN netnodeid integer DEFAULT NULL");
+$DB->Execute("ALTER TABLE netdevices ADD CONSTRAINT netdevices_netnode_fkey FOREIGN KEY (netnodeid) REFERENCES netnodes(id) ON DELETE SET NULL ON UPDATE CASCADE");
+
+$DB->Execute("ALTER TABLE netdevices ADD COLUMN invprojectid integer DEFAULT NULL");
+$DB->Execute("ALTER TABLE netdevices ADD CONSTRAINT netdevices_invproject_fkey FOREIGN KEY (invprojectid) REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE");
+
+$DB->Execute("ALTER TABLE nodes ADD COLUMN invprojectid integer DEFAULT NULL");
+$DB->Execute("ALTER TABLE nodes ADD CONSTRAINT nodes_invproject_fkey FOREIGN KEY (invprojectid) REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE");
+
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014091600', 'dbversion'));
 

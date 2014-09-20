@@ -239,6 +239,18 @@ $menu = array(
 					'tip' => trans('Allows you to prepare SIIS v4 report for UKE'),
 					'prio' => 50,
 				),
+				array(
+					'name' => trans('Nodes list'),
+					'link' => '?m=netnodelist',
+					'tip' => trans('Network device nodes list'),
+					'prio' => 60,
+				),
+				array(
+					'name' => trans('New node'),
+					'link' => '?m=netnodeadd',
+					'tip' => trans('Add new network device node'),
+					'prio' => 70,
+				),
 			),
 		),
 
