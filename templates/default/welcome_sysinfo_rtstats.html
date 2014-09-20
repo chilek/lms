@@ -1,0 +1,87 @@
+{if !ConfigHelper::checkConfig('privileges.hide_sysinfo')}
+{if $rtstats}
+<table width="100%" celpadding="0">
+    {if $rtstats|@count >= 3}
+    {assign var="hboxesinrow" value="3"}
+    {else}
+    {assign var="hboxesinrow" value=$rtstats|@count mod 3}
+    {/if}
+    {counter start=0 skip=1 assign=rtstatscounter print=false}
+    {foreach from=$rtstats item=rtcategorystats}
+    {if $rtstatscounter mod 3 == 0}
+    <tr>
+        <td width="{(100 / $hboxesinrow)|round}%" style="padding: 0px 2px 0px 0px;">
+            {elseif $rtstatscounter mod 3 == 2 || $rtstatscounter + 1 == $rtstats|@count}
+        <td width="{(100 / $hboxesinrow)|round}%" style="padding: 0px 0px 0px 2px;">
+            {else}
+        <td width="{(100 / $hboxesinrow)|round}%" style="padding: 0px 2px 0px 2px;">
+            {/if}
+            <table class="lmsbox">
+                <thead>
+                    <tr>
+                        <td colspan="2" class="text-center bold nobr">
+                            <a href="?m=rtticketadd&amp;catid={$rtcategorystats.id}" {tip text="Add new ticket" trigger="newticket"}><img src="img/ticket.gif" alt=""></a>&nbsp;{trans("Helpdesk:")}&nbsp;<a href="?m=rtqueueview&amp;catid={$rtcategorystats.id}">{$rtcategorystats.name}</a>
+                        </td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="text-right bold wh">
+                            <a href="?m=rtqueueview&catid={$rtcategorystats.id}&s=0&o=lastmodified,desc">{trans("New:")}</a>
+                        </td>
+                        <td class="wh">
+                            {$rtcategorystats.new|default:"0"}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-right bold wh">
+                            <a href="?m=rtqueueview&catid={$rtcategorystats.id}&s=1&o=lastmodified,desc">{trans("Opened:")}</a>
+                        </td>
+                        <td class="wh">
+                            {$rtcategorystats.opened|default:"0"}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-right bold wh">
+                            <a href="?m=rtqueueview&catid={$rtcategorystats.id}&s=3&o=lastmodified,desc">{trans("Dead:")}</a>
+                        </td>
+                        <td class="wh">
+                            {$rtcategorystats.dead|default:"0"}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-right bold nobr wh">
+                            <a href="?m=rtqueueview&catid={$rtcategorystats.id}&s=-1&o=lastmodified,desc">{trans("Unresolved:")}</a>
+                        </td>
+                        <td class="wh">
+                            {$rtcategorystats.unresolved|default:"0"}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-right bold wh">
+                            <a href="?m=rtqueueview&catid={$rtcategorystats.id}&s=2&o=lastmodified,desc">{trans("Resolved:")}</a>
+                        </td>
+                        <td class="wh">
+                            {$rtcategorystats.resolved|default:"0"}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-right bold wh">
+                            <a href="?m=rtqueuelist">{trans("Total:")}</a>
+                        </td>
+                        <td class="wh">
+                            {math equation="a+b+c+d" a=$rtcategorystats.opened b=$rtcategorystats.new c=$rtcategorystats.dead d=$rtcategorystats.resolved}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </td>
+        {if $rtstatscounter mod 5 == 4}
+    </tr>
+    {/if}
+    {counter}
+    {/foreach}
+</table>
+{/if}
+{/if}

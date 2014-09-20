@@ -1,0 +1,56 @@
+{if !ConfigHelper::checkConfig('privileges.hide_sysinfo')}
+<table class="lmsbox">
+    <thead>
+        <tr>
+            <th class="text-center" colspan="2">
+                <img src="img/logo-ico.gif" alt=""> {trans("About LMS:")}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="text-right bold wh">
+                <a href="http://www.lms.org.pl" rel="external">{trans("LMS version:")}</a>
+            </td>
+            <td class="wh">
+                {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right bold wh">
+                <a href="http://www.lms.org.pl" rel="external">{trans("LMSDB version:")}</a>
+            </td>
+            <td class="wh">
+                {$layout.lmsdbv}
+            </td>
+        <tr>
+            <td class="text-right bold wh">
+                {if $layout.dbtype == "mysql" || $layout.dbtype == "mysqli"}
+                <a href="http://www.mysql.com" rel="external">{trans("MySQL version:")}</a>
+                {elseif $layout.dbtype == "postgres"}
+                <a href="http://www.postgresql.org" rel="external">{trans("PostgreSQL version:")}</a>
+                {/if}
+            </td>
+            <td class="wh">
+                {$layout.dbversion}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right bold wh">
+                <a href="http://www.php.net/" rel="external">{trans("PHP version:")}</a>
+            </td>
+            <td class="wh">
+                {$sysinfo.phpversion}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right bold wh">
+                <a href="http://www.smarty.net" rel="external">{trans("Smarty version:")}</a>
+            </td>
+            <td class="wh">
+                {$layout.smarty_version}
+            </td>
+        </tr>
+    </tbody>
+</table>
+{/if}
