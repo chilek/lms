@@ -1,0 +1,45 @@
+{if !ConfigHelper::checkConfig('privileges.hide_summaries')}
+<table class="lmsbox">
+    <thead>
+        <tr>
+            <td colspan="2" class="text-center bold">
+                <img src="img/node.gif" alt=""> {trans("Nodes:")}
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="text-right bold wh">
+                <a href="?m=nodelist&amp;s=3">{trans("Online:")}</a>
+            </td>
+            <td class="wh">
+                {$nodestats.online}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right bold wh">
+                <a href="?m=nodelist&amp;s=1">{trans("Connected<!nodes>:")}</a>
+            </td>
+            <td class="wh">
+                {$nodestats.connected}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right bold wh">
+                <a href="?m=nodelist&amp;s=2">{trans("Disconnected:")}</a>
+            </td>
+            <td class="wh">
+                {$nodestats.disconnected}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right bold wh">
+                <a href="?m=nodelist">{trans("Total:")}</a>
+            </td>
+            <td class="wh">
+                {$nodestats.total}
+            </td>
+        </tr>
+    </tbody>
+</table>
+{/if}

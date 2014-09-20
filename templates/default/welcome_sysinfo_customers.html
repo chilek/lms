@@ -1,0 +1,51 @@
+{if !ConfigHelper::checkConfig('privileges.hide_sysinfo')}
+<table class="lmsbox">
+    <thead>
+        <tr>
+            <th colspan="2" class="text-center bold">
+                <img src="img/customer.gif" alt=""> {trans("Customers:")}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="text-right bold wh">
+                <a href="?m=customerlist&amp;s=3">{trans("Connected:")}</a>
+            </td>
+            <td class="wh">
+                {$customerstats.connected}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right bold wh">
+                <a href="?m=customerlist&amp;s=2">{trans("Waiting:")}</a>
+            </td>
+            <td class="wh">
+                {$customerstats.awaiting}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right bold wh">
+                <a href="?m=customerlist&amp;s=1">{trans("Interested:")}</a>
+            </td>
+            <td class="wh">
+                {$customerstats.interested}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right bold wh">
+                <a href="?m=customerlist&amp;s=0">{trans("Total:")}</a><br>
+                {if !ConfigHelper::checkConfig('privileges.hide_finances')}
+                <a href="?m=customerlist&amp;s=6">{trans("Total Dues:")}</a>
+                {/if}
+            </td>
+            <td class="nobr wh">
+                {$customerstats.total}<br>
+                {if !ConfigHelper::checkConfig('privileges.hide_finances')}
+                {$customerstats.debt} ({trans("amount")} {$customerstats.debtvalue|money_format})
+                {/if}
+            </td>
+        </tr>
+    </tbody>
+</table>
+{/if}
