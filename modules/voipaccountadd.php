@@ -121,6 +121,6 @@ if($customerid = $voipaccountdata['ownerid'])
 $SMARTY->assign('customers', $customers);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('voipaccountdata', $voipaccountdata);
-$SMARTY->display('voipaccountadd.html');
+$SMARTY->display('voipaccount/voipaccountadd.html');
 
 ?>

@@ -1,0 +1,88 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<script language="javaScript">
+<!-- 
+    function PrintList()
+    {
+        document.voipaccountsearch.action = "?m=voipaccountsearch&search=1&print=1";
+        document.voipaccountsearch.target = "_BLANK";
+        document.voipaccountsearch.submit();
+    }
+
+    function Search()
+    {
+        document.voipaccountsearch.action = "?m=voipaccountsearch&search=1";
+        document.voipaccountsearch.target = "";
+        document.voipaccountsearch.submit();
+    }
+//-->
+</script>
+<h1>{$layout.pagetitle}</h1>
+<form method="post" action="?m=voipaccountsearch&search" name="voipaccountsearch">
+    <input type="submit" class="hiddenbtn">
+    <input type="hidden" name="m" value="voipaccountsearch">
+    <table class="lmsbox">
+        <thead>
+            <tr>
+                <td class="bold" colspan="2">
+                    {trans("Find voip accounts matching the following search criteria:")}
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="bold nobr" width="1%">
+                    <img src="img/voip.gif" width="16" alt=""> {trans("Login:")}
+                </td>
+                <td width="99%">
+                    <input type="text" name="search[login]" {tip text="Enter login or it's fragment"}>
+                </td>
+            </tr>
+            <tr>
+                <td class="bold nobr" width="1%">
+                    <img src="img/passwd.gif" width="16" alt=""> {trans("Password:")}
+                </td>
+                <td width="99%">
+                    <input type="text" name="search[password]" {tip text="Enter password or it's fragment"}>
+                </td>
+            </tr>
+            <tr>
+                <td class="bold nobr" width="1%">
+                    <img src="img/phone.gif" width="16" alt=""> {trans("Phone number:")}
+                </td>
+                <td width="99%">
+                    <input type="text" name="search[phone]" {tip text="Enter phone number or it's fragment"}>
+                </td>
+            </tr>
+            <tr>
+                <td class="bold nobr" width="1%">
+                    <img src="img/empty.gif" width="16" alt=""> {trans("Qualification operator:")}
+                </td>
+                <td width="99%">
+                    <input class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} CHECKED{/if}>
+                    <label for="operator0">{trans("AND")}</label>
+                    <input class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} CHECKED{/if}>
+                    <label for="operator1">{trans("OR")}</label>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right" colspan="2">
+                    <a href="javascript:Search()" accesskey="s">
+                        {trans("Search")} <img src="img/search.gif" alt="">
+                    </a>
+                    <a href="javascript:PrintList()">
+                        {trans("Print")} <img src="img/print.gif" alt="">
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</form>
+<script language="javaScript">
+<!--
+    document.forms['voipaccountsearch'].elements['search[login]'].focus();
+//-->
+</script>
+{/block}

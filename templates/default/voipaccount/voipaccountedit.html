@@ -1,0 +1,18 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<h1>{$layout.pagetitle}</h1>
+{include file="calendar_js.html"}
+{include file="voipaccount/voipaccounteditbox.html"}
+{include file="customerinfobox.html" customerpanel=1}
+{include file="customernodesbox.html"}
+{include file="customervoipaccountsbox.html"}
+{include file="customerdocuments.html" limit=10}
+{include file="customermessages.html" limit=10}
+{include file="customerevents.html" limit=10}
+{include file="customergroups.html"}
+{include file="customerassignments.html"}
+{include file="customerbalancebox.html" limit=-10}
+{block name=extra_content}{/block}
+{/block}
