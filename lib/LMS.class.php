@@ -1528,14 +1528,15 @@ class LMS {
 			'longitude' => !empty($nodedata['longitude']) ? str_replace(',', '.', $nodedata['longitude']) : null,
 			'latitude' => !empty($nodedata['latitude']) ? str_replace(',', '.', $nodedata['latitude']) : null,
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK] => $nodedata['netid'],
+			'invprojectid' => $nodedata['invprojectid'],
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodedata['id']
 		);
 		$this->DB->Execute('UPDATE nodes SET name=UPPER(?), ipaddr_pub=inet_aton(?),
 				ipaddr=inet_aton(?), passwd=?, netdev=?, moddate=?NOW?,
 				modid=?, access=?, warning=?, ownerid=?, info=?, location=?,
 				location_city=?, location_street=?, location_house=?, location_flat=?,
-				chkmac=?, halfduplex=?, linktype=?, linktechnology=?, linkspeed=?,
-				port=?, nas=?, longitude=?, latitude=?, netid=?
+				chkmac=?, halfduplex=?, linktype=?, linktechnology=?, linkspeed=?, 
+				port=?, nas=?, longitude=?, latitude=?, netid=?, invprojectid=?
 				WHERE id=?', array_values($args));
 
 		if ($this->SYSLOG) {
@@ -4515,12 +4516,14 @@ class LMS {
 			'channelid' => !empty($data['channelid']) ? $data['channelid'] : NULL,
 			'longitude' => !empty($data['longitude']) ? str_replace(',', '.', $data['longitude']) : null,
 			'latitude' => !empty($data['latitude']) ? str_replace(',', '.', $data['latitude']) : null,
+			'invprojectid' => $data['invprojectid'],
+			'netnodeid' => $data['netnodeid'],
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $data['id'],
 		);
 		$res = $this->DB->Execute('UPDATE netdevices SET name=?, description=?, producer=?, location=?,
 				location_city=?, location_street=?, location_house=?, location_flat=?,
 				model=?, serialnumber=?, ports=?, purchasetime=?, guaranteeperiod=?, shortname=?,
-				nastype=?, clients=?, secret=?, community=?, channelid=?, longitude=?, latitude=? 
+				nastype=?, clients=?, secret=?, community=?, channelid=?, longitude=?, latitude=?, invprojectid=?, netnodeid=? 
 				WHERE id=?', array_values($args));
 		if ($this->SYSLOG && $res)
 			$this->SYSLOG->AddMessage(SYSLOG_RES_NETDEV, SYSLOG_OPER_UPDATE, $args,

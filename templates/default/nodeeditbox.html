@@ -1,4 +1,5 @@
 <!--// $Id$ //-->
+<script type="text/javascript" src="img/netnodehelper.js"></script>
 <FORM NAME="editnode" ID="editnode" METHOD="POST" ACTION="?m=nodeedit&id={$nodeinfo.id}">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT TYPE="hidden" NAME="nodeedit[id]" VALUE="{$nodeinfo.id}">
@@ -221,6 +222,24 @@
 			{if $nodeinfo.moddate}{$nodeinfo.modifiedby}, {$nodeinfo.moddateh}{else}-{/if}
 		</TD>
 	</TR>
+	<TR>
+		<TD WIDTH="2%" NOWRAP COLSPAN="2">
+		 <B>{trans("Investment project:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<SELECT NAME="nodeedit[invprojectid]" ID="NNproject" VALUE="{$nodeinfo.invprojectid}" {tip text="Select project"} onchange="setNNProject();">
+				<OPTION value="-2" {if ($nodeinfo.invprojectid == '-2' ) } selected="selected" {/if} >{trans("None")}</OPTION>
+				<OPTION value="-1" {if ($nodeinfo.invprojectid == '-1' ) } selected="selected" {/if}>{trans("New project")}</OPTION>
+				<OPTION value="1" {if ($nodeinfo.invprojectid == '1' ) } selected="selected" {/if}>{trans("From root device")}</OPTION>
+				{section name=project loop=$NNprojects}
+				<OPTION VALUE="{$NNprojects[project].id}" {if ($nodeinfo.invprojectid == $NNprojects[project].id ) } selected="selected" {/if} >{$NNprojects[project].name}</OPTION>
+				{/section}
+			</SELECT>
+			<INPUT TYPE="TEXT" NAME="nodeedit[projectname]" VALUE="{$nodeinfo.projectname}" {tip text="Enter new project name" trigger="projectname" } ID="NNprojectname"  />
+			 
+		</TD>
+	</TR>
+
 						</TABLE>
 					</TD>
 				</TR>
@@ -313,6 +332,7 @@
 	{if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'}
 	toggle_visual_editor('info');
 	{/if}
+	setNNProject();
 //-->
 </SCRIPT>
 

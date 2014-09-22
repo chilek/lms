@@ -65,7 +65,16 @@ $DB->Execute("ALTER TABLE netdevices ADD FOREIGN KEY (invprojectid) REFERENCES i
 $DB->Execute("ALTER TABLE nodes ADD COLUMN invprojectid int(11) DEFAULT NULL");
 $DB->Execute("ALTER TABLE nodes ADD FOREIGN KEY (invprojectid) REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE");
 
-
+$DB->Execute("DROP VIEW vnodes");
+$DB->Execute("DROP VIEW vmacs");
+$DB->Execute("CREATE VIEW vnodes AS
+		SELECT n.*, m.mac
+		FROM nodes n
+		LEFT JOIN vnodes_mac m ON (n.id = m.nodeid)");
+$DB->Execute("CREATE VIEW vmacs AS
+		SELECT n.*, m.mac, m.id AS macid
+		FROM nodes n
+		JOIN macs m ON (n.id = m.nodeid)");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014091600', 'dbversion'));
 

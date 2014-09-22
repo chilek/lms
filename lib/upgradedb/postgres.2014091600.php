@@ -67,6 +67,17 @@ $DB->Execute("ALTER TABLE netdevices ADD CONSTRAINT netdevices_invproject_fkey F
 $DB->Execute("ALTER TABLE nodes ADD COLUMN invprojectid integer DEFAULT NULL");
 $DB->Execute("ALTER TABLE nodes ADD CONSTRAINT nodes_invproject_fkey FOREIGN KEY (invprojectid) REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE");
 
+$DB->Execute("DROP VIEW vnodes; DROP VIEW vmacs;");
+$DB->Execute("CREATE VIEW vnodes AS
+		SELECT n.*, m.mac
+		FROM nodes n
+		LEFT JOIN (SELECT nodeid, array_to_string(array_agg(mac), ',') AS mac
+			FROM macs GROUP BY nodeid) m ON (n.id = m.nodeid);
+	CREATE VIEW vmacs AS
+	SELECT n.*, m.mac, m.id AS macid
+		FROM nodes n
+		JOIN macs m ON (n.id = m.nodeid);");
+
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014091600', 'dbversion'));
 

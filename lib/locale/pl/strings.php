@@ -2854,4 +2854,8 @@ $_LANG['Add devices to node'] = 'Dodaj urządzenia do węzła';
 $_LANG['Net devices are missing.'] = 'Brak urządzeń sieciowych';
 $_LANG['Filter devices by name'] = 'Filtruj urządzenia po nazwie';
 $_LANG['Are you sure, you want to remove net device  \\\'$a\\\' from node?'] = 'Na pewno usunąć urządzenie \\\'$a\\\' z węzła?';
+$_LANG['Investment project:'] = 'Projekt inwestycyjny:';
+$_LANG['From root device'] = 'Z jednostki nadrzędnej';
+$_LANG['Net node:'] = 'Węzeł sieciowy:';
+$_LANG['Select project'] = 'Wybierz projekt';
 ?>

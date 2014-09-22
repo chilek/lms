@@ -79,6 +79,25 @@ $nodeinfo = $LMS->ExecHook('node_info_init', $nodeinfo);
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
+$nodeinfo['projectname'] = 'Brak';
+if ($nodeinfo['invprojectid']) {
+	$prj = $DB->GetRow("SELECT * FROM invprojects WHERE id=".$nodeinfo['invprojectid']);
+}
+if ($prj) {
+	if ($prj['type'] == 'SYS' && intval($prj['id']==1)) {
+		/* TODO inherited 
+		if ($nodeinfo['']) {
+			
+			$prj = $DB->GetAll("SELECT * FROM invprojects WHERE id=".$netnode['invprojectid']);
+			if ($prj && count($prj)>0) {
+				$netdevinfo['projectname'] = $prj[0]['name']." (".$netnode['name'].")";
+			}  			
+		} */
+	} else {
+		$nodeinfo['projectname'] = $prj['name'];
+	}	
+} 
+
 $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($nodeid));
 $SMARTY->assign('netdevices', $netdevices);
 $SMARTY->assign('nodegroups', $nodegroups);

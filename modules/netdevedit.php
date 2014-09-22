@@ -575,6 +575,16 @@ if (isset($_POST['netdev'])) {
 		$error['purchasedate'] = trans('Purchase date cannot be empty when guarantee period is set!');
 	}
 
+	if ($netdevdata['invprojectid'] == '-1') { // nowy projekt
+		if (empty(trim($netdevdata['projectname']))) {
+		 $error['projectname'] = trans('Project name is required');
+		}
+		$l = $DB->GetOne("SELECT * FROM invprojects WHERE name=? AND type<>'SYS'",array($netdevdata['projectname']));
+		if (sizeof($l)>0) {
+			$error['projectname'] = trans('Project with that name already exists');
+		}
+	}
+
 	if (!$error) {
 		if ($netdevdata['guaranteeperiod'] == -1)
 			$netdevdata['guaranteeperiod'] = NULL;
@@ -593,6 +603,19 @@ if (isset($_POST['netdev'])) {
 			$netdevdata['location_street'] = null;
 			$netdevdata['location_house'] = null;
 			$netdevdata['location_flat'] = null;
+		}
+		$ipi = $netdevdata['invprojectid'];
+		if ($ipi == '-1') {
+			$DB->Execute("INSERT INTO invprojects (name,type) VALUES (?,'PROG')",array($netdevdata['projectname']));
+			$ipi = $DB->GetLastInsertID('invprojects');
+		} 
+		if ($netdevdata['invprojectid'] == '-1' || intval($ipi)>0) {
+			$netdevdata['invprojectid'] = intval($ipi);	
+		} else {
+			$netdevdata['invprojectid'] = NULL;
+		}
+		if ($netdevdata['netnodeid']=="-1") {
+			$netdevdata['netnodeid']=NULL;
 		}
 
 		$LMS->NetDevUpdate($netdevdata);
@@ -633,6 +656,12 @@ $layout['pagetitle'] = trans('Device Edit: $a ($b)', $netdevdata['name'], $netde
 
 if ($subtitle)
 	$layout['pagetitle'] .= ' - ' . $subtitle;
+
+$nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>'SYS' ORDER BY name");
+$SMARTY->assign('NNprojects',$nprojects);
+$netnodes = $DB->GetAll("SELECT * FROM netnodes ORDER BY name");
+$SMARTY->assign('NNnodes',$netnodes);
+
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('netdevinfo', $netdevdata);

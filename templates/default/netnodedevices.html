@@ -49,7 +49,8 @@
 						{$netdevlist[netdevlist].serialnumber}
 					</td>
 					<td>
-						<A href="?m=netnodedeldev&id={$objectid}&did={$netdevlist[netdevlist].id}" OnClick="return confirmLink(this, '{t a=$netdevlist[netdevlist].name}Are you sure, you want to remove net device  \'$a\' from node?{/t}');"><img src="img/delete.gif" ALT=""></A>
+						<nobr><A href="?m=netnodedeldev&id={$objectid}&did={$netdevlist[netdevlist].id}" OnClick="return confirmLink(this, '{t a=$netdevlist[netdevlist].name}Are you sure, you want to remove net device  \'$a\' from node?{/t}');"><img src="img/delete.gif"  alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+						<a href="?m=netdevinfo&amp;id={$netdevlist[netdevlist].id}"><img src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A></nobr>
 					</td>
 				</tr>
 				{sectionelse}
