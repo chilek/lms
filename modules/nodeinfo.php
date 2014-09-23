@@ -85,14 +85,13 @@ if ($nodeinfo['invprojectid']) {
 }
 if ($prj) {
 	if ($prj['type'] == 'SYS' && intval($prj['id']==1)) {
-		/* TODO inherited 
-		if ($nodeinfo['']) {
-			
-			$prj = $DB->GetAll("SELECT * FROM invprojects WHERE id=".$netnode['invprojectid']);
-			if ($prj && count($prj)>0) {
-				$netdevinfo['projectname'] = $prj[0]['name']." (".$netnode['name'].")";
+		/* inherited */ 
+		if ($nodeinfo['netdev']) {
+			$prj = $DB->GetRow("SELECT * FROM invprojects WHERE id=".$netdevices['invprojectid']);
+			if ($prj) {
+				$nodeinfo['projectname'] = $prj['name']." (".$netdevices['name'].")";
 			}  			
-		} */
+		} 
 	} else {
 		$nodeinfo['projectname'] = $prj['name'];
 	}	
