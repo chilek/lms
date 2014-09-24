@@ -32,7 +32,7 @@ class LMS {
 	public $DB;   // database object
 	public $AUTH;   // object from Session.class.php (session management)
 	public $SYSLOG;
-	public $cache = array();  // internal cache
+	public $cache;  // internal cache
 	public $hooks = array(); // registered plugin hooks
 	public $xajax;  // xajax object
 	public $_version = '1.11-git'; // class version
@@ -45,6 +45,8 @@ class LMS {
 		$this->AUTH = &$AUTH;
 		$this->SYSLOG = &$SYSLOG;
 
+                $this->cache = new LMSCache();
+                
 		//$this->_revision = preg_replace('/^.Revision: ([0-9.]+).*/', '\1', $this->_revision);
 		$this->_revision = '';
 		//$this->_version = $this->_version.' ('.$this->_revision.')';
@@ -257,24 +259,6 @@ class LMS {
 	}
 
 	/*
-	 *  Internal cache
-	 */
-
-	public function GetCache($key, $idx = null, $name = null) {
-		if (array_key_exists($key, $this->cache)) {
-			if (!$idx)
-				return $this->cache[$key];
-			elseif (is_array($this->cache[$key]) && array_key_exists($idx, $this->cache[$key])) {
-				if (!$name)
-					return $this->cache[$key][$idx];
-				elseif (is_array($this->cache[$key][$idx]) && array_key_exists($name, $this->cache[$key][$idx]))
-					return $this->cache[$key][$idx][$name];
-			}
-		}
-		return NULL;
-	}
-
-	/*
 	 * Users
 	 */
 
@@ -298,12 +282,13 @@ class LMS {
 		else if (!$id)
 			return '';
 
-		if (!($name = $this->GetCache('users', $id, 'name'))) {
-			if ($this->AUTH && $this->AUTH->id == $id)
+		if (!($name = $this->cache->getCache('users', $id, 'name'))) {
+			if ($this->AUTH && $this->AUTH->id == $id) {
 				$name = $this->AUTH->logname;
-			else
+                        } else {
 				$name = $this->DB->GetOne('SELECT name FROM users WHERE id=?', array($id));
-			$this->cache['users'][$id]['name'] = $name;
+                        }
+			$this->cache->setCache('users', $id, 'name', $name);
 		}
 		return $name;
 	}
@@ -405,7 +390,7 @@ class LMS {
 				$this->SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_UPDATE,
 					$args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
 			}
-			$this->cache['users'][$id]['deleted'] = 1;
+			$this->cache->setCache('users', $idx, 'deleted', 1);
 			return true;
 		}
 	}
@@ -432,7 +417,7 @@ class LMS {
 
 	public function GetUserInfo($id) {
 		if ($userinfo = $this->DB->GetRow('SELECT * FROM users WHERE id = ?', array($id))) {
-			$this->cache['users'][$id] = $userinfo;
+                        $this->cache->setCache('users', $id, null, $userinfo);
 
 			if ($userinfo['id'] == $this->AUTH->id) {
 				$userinfo['lastlogindate'] = $this->AUTH->last;
@@ -508,7 +493,7 @@ class LMS {
 	}
 
 	public function GetUserRights($id) {
-		if (!($mask = $this->GetCache('users', $id, 'rights'))) {
+		if (!($mask = $this->cache->getCache('users', $id, 'rights'))) {
 			$mask = $this->DB->GetOne('SELECT rights FROM users WHERE id = ?', array($id));
 		}
 
@@ -4700,7 +4685,7 @@ class LMS {
 
 	public function GetUserRightsRT($user, $queue, $ticket = NULL) {
 		if (!$queue && $ticket) {
-			if (!($queue = $this->GetCache('rttickets', $ticket, 'queueid')))
+			if (!($queue = $this->cache->getCache('rttickets', $ticket, 'queueid')))
 				$queue = $this->DB->GetOne('SELECT queueid FROM rttickets WHERE id=?', array($ticket));
 		}
 
@@ -4776,7 +4761,7 @@ class LMS {
 
 	public function GetUserRightsToCategory($user, $category, $ticket = NULL) {
 		if (!$category && $ticket) {
-			if (!($category = $this->GetCache('rttickets', $ticket, 'categoryid')))
+			if (!($category = $this->cache->getCache('rttickets', $ticket, 'categoryid')))
 				$category = $this->DB->GetCol('SELECT categoryid FROM rtticketcategories WHERE ticketid=?', array($ticket));
 		}
 
@@ -4867,7 +4852,7 @@ class LMS {
 
 	public function TicketExists($id) {
 		$ticket = $this->DB->GetOne('SELECT * FROM rttickets WHERE id = ?', array($id));
-		$this->cache['rttickets'][$id] = $ticket;
+                $this->cache->setCache('rttickets', $id, null, $ticket);
 		return $ticket;
 	}
 
