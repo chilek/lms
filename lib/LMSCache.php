@@ -71,8 +71,6 @@ class LMSCache
      */
     public function setCache($key = null, $idx = null, $name = null, $value = null)
     {
-        error_log($key);
-        
         if ($key === null) {
             $this->clearCache();
         } elseif ($idx === null) {
