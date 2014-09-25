@@ -53,6 +53,6 @@ if(!isset($_GET['ownerid']))
 $layout['pagetitle'] = trans('Voip Account Info: $a', $voipaccountinfo['login']);
 
 $SMARTY->assign('voipaccountinfo',$voipaccountinfo);
-$SMARTY->display('voipaccountinfo.html');
+$SMARTY->display('voipaccount/voipaccountinfo.html');
 
 ?>

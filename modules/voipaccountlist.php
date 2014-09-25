@@ -57,6 +57,6 @@ $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('start',$start);
 $SMARTY->assign('voipaccountlist',$voipaccountlist);
 $SMARTY->assign('listdata',$listdata);
-$SMARTY->display('voipaccountlist.html');
+$SMARTY->display('voipaccount/voipaccountlist.html');
 
 ?>
