@@ -42,6 +42,7 @@ class LMS {
 
         protected $user_manager;
         protected $customer_manager;
+        protected $voip_account_manager;
         
 	public function __construct(&$DB, &$AUTH, &$SYSLOG) { // class variables setting
 		$this->DB = &$DB;
@@ -5794,77 +5795,77 @@ class LMS {
 	 */
 	public function GetVoipAccountList($order = 'login,asc', $search = NULL, $sqlskey = 'AND')
         {
-            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getVoipAccountManager();
             return $manager->getVoipAccountList($order, $search, $sqlskey);
 	}
 
 	public function VoipAccountSet($id, $access = -1)
         {
-            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getVoipAccountManager();
             return $manager->voipAccountSet($id, $access);
 	}
 
 	public function VoipAccountSetU($id, $access = false)
         {
-            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getVoipAccountManager();
             return $manager->voipAccountSetU($id, $access);
 	}
 
 	public function VoipAccountAdd($voipaccountdata)
         {
-            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getVoipAccountManager();
             return $manager->VoipAccountAdd($voipaccountdata);
 	}
 
 	public function VoipAccountExists($id)
         {
-            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getVoipAccountManager();
             return $manager->voipAccountExists($id);
 	}
 
 	public function GetVoipAccountOwner($id)
         {
-            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getVoipAccountManager();
             return $manager->getVoipAccountOwner($id);
         }
 
 	public function GetVoipAccount($id)
         {
-            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getVoipAccountManager();
 	    return $manager->getVoipAccount($id);
 	}
 
 	public function GetVoipAccountIDByLogin($login)
         {
-            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getVoipAccountManager();
 	    return $manager->GetVoipAccountIDByLogin($login);
 	}
 
 	public function GetVoipAccountIDByPhone($phone)
         {
-            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getVoipAccountManager();
 	    return $manager->getVoipAccountIDByPhone($phone);
 	}
 
 	public function GetVoipAccountLogin($id)
         {
-            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getVoipAccountManager();
 	    return $manager->getVoipAccountLogin($id);
 	}
 
 	public function DeleteVoipAccount($id)
         {
-            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getVoipAccountManager();
             return $manager->deleteVoipAccount($id);
 	}
 
 	public function VoipAccountUpdate($voipaccountdata) {
-            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getVoipAccountManager();
             return $manager->voipAccountUpdate($voipaccountdata);
 	}
 
 	public function GetCustomerVoipAccounts($id) {
-            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getVoipAccountManager();
             return $manager->getCustomerVoipAccounts($id);
 	}
 
@@ -5958,7 +5959,7 @@ class LMS {
         /**
          * Returns customer manager
          * 
-         * @return \LMSCuetomermanager Customer manager
+         * @return \LMSCustomerManager Customer manager
          */
         protected function getCustomerManager()
         {
@@ -5966,6 +5967,19 @@ class LMS {
                 $this->customer_manager = new LMSCustomerManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
             }
             return $this->customer_manager;
+        }
+        
+        /**
+         * Returns VoIP account manager
+         * 
+         * @return LMSVoipAccountManager VoIP account manager
+         */
+        protected function getVoipAccountManager()
+        {
+            if (!isset($this->voip_account_manager)) {
+                $this->voip_account_manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            }
+            return $this->voip_account_manager;
         }
 }
 
