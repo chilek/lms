@@ -40,6 +40,8 @@ class LMS {
 	private $mail_object = NULL;
 	protected $plugin_manager;
 
+        protected $user_manager;
+        
 	public function __construct(&$DB, &$AUTH, &$SYSLOG) { // class variables setting
 		$this->DB = &$DB;
 		$this->AUTH = &$AUTH;
@@ -264,73 +266,73 @@ class LMS {
 
 	public function SetUserPassword($id, $passwd)
         {
-            $manager = new LMSUserManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getUserManager();
             return $manager->setUserPassword($id, $passwd);
 	}
 
 	public function GetUserName($id = null)
         {
-	    $manager = new LMSUserManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+	    $manager = $this->getUserManager();
             return $manager->getUserName($id);
 	}
 
 	public function GetUserNames()
         {
-            $manager = new LMSUserManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getUserManager();
             return $manager->getUserNames();
 	}
 
 	public function GetUserList()
         {
-            $manager = new LMSUserManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getUserManager();
             return $manager->getUserList();
 	}
 
 	public function GetUserIDByLogin($login)
         {
-            $manager = new LMSUserManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getUserManager();
             return $manager->getUserIDByLogin($login);
 	}
 
 	public function UserAdd($user)
         {
-            $manager = new LMSUserManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getUserManager();
             return $manager->userAdd($user);
 	}
 
 	public function UserDelete($id)
         {
-            $manager = new LMSUserManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getUserManager();
             return $manager->userDelete($id);
 	}
 
 	public function UserExists($id)
         {
-            $manager = new LMSUserManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getUserManager();
             return $manager->userExists($id);
 	}
 
 	public function UserAccess($id, $access)
 	{
-	    $manager = new LMSUserManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+	    $manager = $this->getUserManager();
             return $manager->userAccess($id, $access);
 	}
 
 	public function GetUserInfo($id)
         {
-            $manager = new LMSUserManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getUserManager();
             return $manager->getUserInfo($id);
 	}
 
 	public function UserUpdate($user)
         {
-            $manager = new LMSUserManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getUserManager();
             return $manager->userUpdate($user);
 	}
 
 	public function GetUserRights($id)
         {
-            $manager = new LMSUserManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getUserManager();
             return $manager->getUserRights($id);
 	}
 
@@ -5938,6 +5940,19 @@ class LMS {
 		return $this->DB->GetAll('SELECT id, name FROM templates
 			WHERE type = ? ORDER BY name', array(intval($type)));
 	}
+        
+        /**
+         * Returns user manager
+         * 
+         * @return \LMSUserManager User manager
+         */
+        protected function getUserManager()
+        {
+            if (!isset($this->user_manager)) {
+                $this->user_manager = new LMSUserManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            }
+            return $this->user_manager;
+        }
 }
 
 ?>
