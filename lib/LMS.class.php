@@ -262,18 +262,10 @@ class LMS {
 	 * Users
 	 */
 
-	public function SetUserPassword($id, $passwd) {
-		global $SYSLOG_RESOURCE_KEYS;
-		$args = array(
-			'passwd' => crypt($passwd),
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $id
-		);
-		$this->DB->Execute('UPDATE users SET passwd=?, passwdlastchange=?NOW? WHERE id=?', array_values($args));
-		if ($this->SYSLOG) {
-			unset($args['passwd']);
-			$this->SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_USERPASSWDCHANGE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
-		}
+	public function SetUserPassword($id, $passwd)
+        {
+            $manager = new LMSUserManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            return $manager->setUserPassword($id, $passwd);
 	}
 
 	public function GetUserName($id = null)
@@ -282,223 +274,64 @@ class LMS {
             return $manager->getUserName($id);
 	}
 
-	public function GetUserNames() { // returns short list of users
-		return $this->DB->GetAll('SELECT id, name FROM users WHERE deleted=0 ORDER BY login ASC');
+	public function GetUserNames()
+        {
+            $manager = new LMSUserManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            return $manager->getUserNames();
 	}
 
-	public function GetUserList() { // returns list of users
-		if ($userlist = $this->DB->GetAll('SELECT id, login, name, lastlogindate, lastloginip, 
-				passwdexpiration, passwdlastchange, access, accessfrom, accessto  
-				FROM users WHERE deleted=0 ORDER BY login ASC')) {
-			foreach ($userlist as $idx => $row) {
-				if ($row['id'] == $this->AUTH->id) {
-					$row['lastlogindate'] = $this->AUTH->last;
-					$userlist[$idx]['lastlogindate'] = $this->AUTH->last;
-					$row['lastloginip'] = $this->AUTH->lastip;
-					$userlist[$idx]['lastloginip'] = $this->AUTH->lastip;
-				}
-
-				if ($row['accessfrom'])
-					$userlist[$idx]['accessfrom'] = date('Y/m/d',$row['accessfrom']);
-				else
-				    $userlist[$idx]['accessfrom'] = '-';
-				
-				if ($row['accessto'])
-					$userlist[$idx]['accessto'] = date('Y/m/d',$row['accessto']);
-				else
-				    $userlist[$idx]['accessto'] = '-';
-
-				if ($row['lastlogindate'])
-					$userlist[$idx]['lastlogin'] = date('Y/m/d H:i', $row['lastlogindate']);
-				else
-					$userlist[$idx]['lastlogin'] = '-';
-
-				if ($row['passwdlastchange'])
-					$userlist[$idx]['passwdlastchange'] = date('Y/m/d H:i', $row['passwdlastchange']);
-				else
-					$userlist[$idx]['passwdlastchange'] = '-';
-
-				if (check_ip($row['lastloginip']))
-					$userlist[$idx]['lastloginhost'] = gethostbyaddr($row['lastloginip']);
-				else {
-					$userlist[$idx]['lastloginhost'] = '-';
-					$userlist[$idx]['lastloginip'] = '-';
-				}
-			}
-		}
-
-		$userlist['total'] = sizeof($userlist);
-		return $userlist;
+	public function GetUserList()
+        {
+            $manager = new LMSUserManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            return $manager->getUserList();
 	}
 
-	public function GetUserIDByLogin($login) {
-		return $this->DB->GetOne('SELECT id FROM users WHERE login=?', array($login));
+	public function GetUserIDByLogin($login)
+        {
+            $manager = new LMSUserManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            return $manager->getUserIDByLogin($login);
 	}
 
-	public function UserAdd($user) {
-		global $SYSLOG_RESOURCE_KEYS;
-		$args = array(
-			'login' => $user['login'],
-			'name' =>  $user['name'],
-			'email' => $user['email'],
-			'passwd' => crypt($user['password']),
-			'rights' => $user['rights'],
-			'hosts' => $user['hosts'],
-			'position' => $user['position'],
-			'ntype' => !empty($user['ntype']) ? $user['ntype'] : null,
-			'phone' => !empty($user['phone']) ? $user['phone'] : null,
-			'passwdexpiration' => !empty($user['passwdexpiration']) ? $user['passwdexpiration'] : 0,
-			'access' => !empty($user['access']) ? 1 : 0,
-			'accessfrom' => !empty($user['accessfrom']) ? $user['accessfrom'] : 0,
-			'accessto' => !empty($user['accessto']) ? $user['accessto'] : 0,
-		);
-		if ($this->DB->Execute('INSERT INTO users (login, name, email, passwd, rights,
-				hosts, position, ntype, phone, passwdexpiration, access, accessfrom, accessto)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
-			$id = $this->DB->GetOne('SELECT id FROM users WHERE login=?', array($user['login']));
-			if ($this->SYSLOG) {
-				unset($args['passwd']);
-				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]] = $id;
-				$this->SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_ADD, $args,
-					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
-			}
-			return $id;
-		} else
-			return FALSE;
+	public function UserAdd($user)
+        {
+            $manager = new LMSUserManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            return $manager->userAdd($user);
 	}
 
-	public function UserDelete($id) {
-		global $SYSLOG_RESOURCE_KEYS;
-		if ($this->DB->Execute('UPDATE users SET deleted=1, access=0 WHERE id=?', array($id))) {
-			if ($this->SYSLOG) {
-				$args = array(
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $id,
-					'deleted' => 1,
-					'access' => 0,
-				);
-				$this->SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_UPDATE,
-					$args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
-			}
-			$this->cache->setCache('users', $id, 'deleted', 1);
-			return true;
-		}
+	public function UserDelete($id)
+        {
+            $manager = new LMSUserManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            return $manager->userDelete($id);
 	}
 
-	public function UserExists($id) {
-		switch ($this->DB->GetOne('SELECT deleted FROM users WHERE id=?', array($id))) {
-			case '0':
-				return TRUE;
-				break;
-			case '1':
-				return -1;
-				break;
-			case '':
-			default:
-				return FALSE;
-				break;
-		}
+	public function UserExists($id)
+        {
+            $manager = new LMSUserManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            return $manager->userExists($id);
 	}
 
-	public function UserAccess($id,$access)
+	public function UserAccess($id, $access)
 	{
-	    $this->DB->Execute('UPDATE users SET access = ? WHERE id = ? ;',array($access,$id));
+	    $manager = new LMSUserManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            return $manager->userAccess($id, $access);
 	}
 
-	public function GetUserInfo($id) {
-		if ($userinfo = $this->DB->GetRow('SELECT * FROM users WHERE id = ?', array($id))) {
-                        $this->cache->setCache('users', $id, null, $userinfo);
-
-			if ($userinfo['id'] == $this->AUTH->id) {
-				$userinfo['lastlogindate'] = $this->AUTH->last;
-				$userinfo['lastloginip'] = $this->AUTH->lastip;
-			}
-
-			if ($userinfo['accessfrom'])
-				$userinfo['accessfrom'] = date('Y/m/d', $userinfo['accessfrom']);
-			else
-				$userinfo['accessfrom'] = '';
-
-			if ($userinfo['accessto'])
-				$userinfo['accessto'] = date('Y/m/d', $userinfo['accessto']);
-			else
-				$userinfo['accessot'] = '';
-
-			if ($userinfo['lastlogindate'])
-				$userinfo['lastlogin'] = date('Y/m/d H:i', $userinfo['lastlogindate']);
-			else
-				$userinfo['lastlogin'] = '-';
-
-			if ($userinfo['failedlogindate'])
-				$userinfo['faillogin'] = date('Y/m/d H:i', $userinfo['failedlogindate']);
-			else
-				$userinfo['faillogin'] = '-';
-
-			if ($userinfo['passwdlastchange'])
-				$userinfo['passwdlastchange'] = date('Y/m/d H:i', $userinfo['passwdlastchange']);
-			else
-				$userinfo['passwdlastchange'] = '-';
-
-			if (check_ip($userinfo['lastloginip']))
-				$userinfo['lastloginhost'] = gethostbyaddr($userinfo['lastloginip']);
-			else {
-				$userinfo['lastloginhost'] = '-';
-				$userinfo['lastloginip'] = '-';
-			}
-
-			if (check_ip($userinfo['failedloginip']))
-				$userinfo['failedloginhost'] = gethostbyaddr($userinfo['failedloginip']);
-			else {
-				$userinfo['failedloginhost'] = '-';
-				$userinfo['failedloginip'] = '-';
-			}
-		}
-		return $userinfo;
+	public function GetUserInfo($id)
+        {
+            $manager = new LMSUserManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            return $manager->getUserInfo($id);
 	}
 
-	public function UserUpdate($user) {
-		global $SYSLOG_RESOURCE_KEYS;
-		$args = array(
-			'login' => $user['login'],
-			'name' => $user['name'],
-			'email' => $user['email'],
-			'rights' => $user['rights'],
-			'hosts' => $user['hosts'],
-			'position' => $user['position'],
-			'ntype' => !empty($user['ntype']) ? $user['ntype'] : null,
-			'phone' => !empty($user['phone']) ? $user['phone'] : null,
-			'passwdexpiration' => !empty($user['passwdexpiration']) ? $user['passwdexpiration'] : 0,
-			'access' => !empty($user['access']) ? 1 : 0,
-			'accessfrom' => !empty($user['accessfrom']) ? $user['accessfrom'] : 0,
-			'accessto' => !empty($user['accessto']) ? $user['accessto'] : 0,
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $user['id']
-		);
-		$res = $this->DB->Execute('UPDATE users SET login=?, name=?, email=?, rights=?,
-				hosts=?, position=?, ntype=?, phone=?, passwdexpiration=?, access=?, accessfrom=?, accessto=? WHERE id=?',
-				array_values($args));
-		if ($res && $this->SYSLOG)
-			$this->SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
-		return $res;
+	public function UserUpdate($user)
+        {
+            $manager = new LMSUserManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            return $manager->userUpdate($user);
 	}
 
-	public function GetUserRights($id) {
-		if (!($mask = $this->cache->getCache('users', $id, 'rights'))) {
-			$mask = $this->DB->GetOne('SELECT rights FROM users WHERE id = ?', array($id));
-		}
-
-		$len = strlen($mask);
-		$bin = '';
-		$result = array();
-
-		for ($cnt = $len; $cnt > 0; $cnt--)
-			$bin = sprintf('%04b', hexdec($mask[$cnt - 1])) . $bin;
-
-		$len = strlen($bin);
-		for ($cnt = $len - 1; $cnt >= 0; $cnt--)
-			if ($bin[$cnt] == '1')
-				$result[] = $len - $cnt - 1;
-
-		return $result;
+	public function GetUserRights($id)
+        {
+            $manager = new LMSUserManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            return $manager->getUserRights($id);
 	}
 
 	/*
