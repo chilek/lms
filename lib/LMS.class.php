@@ -41,6 +41,7 @@ class LMS {
 	protected $plugin_manager;
 
         protected $user_manager;
+        protected $customer_manager;
         
 	public function __construct(&$DB, &$AUTH, &$SYSLOG) { // class variables setting
 		$this->DB = &$DB;
@@ -342,7 +343,7 @@ class LMS {
 
 	public function GetCustomerName($id)
         {
-            $manager = new LMSCustomerManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getCustomerManager();
             return $manager->getCustomerName($id);
 	}
 
@@ -5952,6 +5953,19 @@ class LMS {
                 $this->user_manager = new LMSUserManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
             }
             return $this->user_manager;
+        }
+        
+        /**
+         * Returns customer manager
+         * 
+         * @return \LMSCuetomermanager Customer manager
+         */
+        protected function getCustomerManager()
+        {
+            if (!isset($this->customer_manager)) {
+                $this->customer_manager = new LMSCustomerManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            }
+            return $this->customer_manager;
         }
 }
 
