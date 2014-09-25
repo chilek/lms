@@ -379,7 +379,7 @@ class LMS {
 				$this->SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_UPDATE,
 					$args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
 			}
-			$this->cache->setCache('users', $idx, 'deleted', 1);
+			$this->cache->setCache('users', $id, 'deleted', 1);
 			return true;
 		}
 	}
