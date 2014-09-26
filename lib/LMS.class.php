@@ -32,7 +32,7 @@ class LMS {
 	public $DB;   // database object
 	public $AUTH;   // object from Session.class.php (session management)
 	public $SYSLOG;
-	public $cache = array();  // internal cache
+	public $cache;  // internal cache
 	public $hooks = array(); // registered plugin hooks
 	public $xajax;  // xajax object
 	public $_version = '1.11-git'; // class version
@@ -45,6 +45,8 @@ class LMS {
 		$this->AUTH = &$AUTH;
 		$this->SYSLOG = &$SYSLOG;
 
+                $this->cache = new LMSCache();
+                
 		//$this->_revision = preg_replace('/^.Revision: ([0-9.]+).*/', '\1', $this->_revision);
 		$this->_revision = '';
 		//$this->_version = $this->_version.' ('.$this->_revision.')';
@@ -257,24 +259,6 @@ class LMS {
 	}
 
 	/*
-	 *  Internal cache
-	 */
-
-	public function GetCache($key, $idx = null, $name = null) {
-		if (array_key_exists($key, $this->cache)) {
-			if (!$idx)
-				return $this->cache[$key];
-			elseif (is_array($this->cache[$key]) && array_key_exists($idx, $this->cache[$key])) {
-				if (!$name)
-					return $this->cache[$key][$idx];
-				elseif (is_array($this->cache[$key][$idx]) && array_key_exists($name, $this->cache[$key][$idx]))
-					return $this->cache[$key][$idx][$name];
-			}
-		}
-		return NULL;
-	}
-
-	/*
 	 * Users
 	 */
 
@@ -292,20 +276,10 @@ class LMS {
 		}
 	}
 
-	public function GetUserName($id = null) { // returns user name
-		if ($id === null)
-			$id = $this->AUTH->id;
-		else if (!$id)
-			return '';
-
-		if (!($name = $this->GetCache('users', $id, 'name'))) {
-			if ($this->AUTH && $this->AUTH->id == $id)
-				$name = $this->AUTH->logname;
-			else
-				$name = $this->DB->GetOne('SELECT name FROM users WHERE id=?', array($id));
-			$this->cache['users'][$id]['name'] = $name;
-		}
-		return $name;
+	public function GetUserName($id = null)
+        {
+	    $manager = new LMSUserManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            return $manager->getUserName($id);
 	}
 
 	public function GetUserNames() { // returns short list of users
@@ -405,7 +379,7 @@ class LMS {
 				$this->SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_UPDATE,
 					$args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
 			}
-			$this->cache['users'][$id]['deleted'] = 1;
+			$this->cache->setCache('users', $id, 'deleted', 1);
 			return true;
 		}
 	}
@@ -432,7 +406,7 @@ class LMS {
 
 	public function GetUserInfo($id) {
 		if ($userinfo = $this->DB->GetRow('SELECT * FROM users WHERE id = ?', array($id))) {
-			$this->cache['users'][$id] = $userinfo;
+                        $this->cache->setCache('users', $id, null, $userinfo);
 
 			if ($userinfo['id'] == $this->AUTH->id) {
 				$userinfo['lastlogindate'] = $this->AUTH->last;
@@ -508,7 +482,7 @@ class LMS {
 	}
 
 	public function GetUserRights($id) {
-		if (!($mask = $this->GetCache('users', $id, 'rights'))) {
+		if (!($mask = $this->cache->getCache('users', $id, 'rights'))) {
 			$mask = $this->DB->GetOne('SELECT rights FROM users WHERE id = ?', array($id));
 		}
 
@@ -531,9 +505,10 @@ class LMS {
 	 *  Customers functions
 	 */
 
-	public function GetCustomerName($id) {
-		return $this->DB->GetOne('SELECT ' . $this->DB->Concat('lastname', "' '", 'name') . ' 
-			    FROM customers WHERE id=?', array($id));
+	public function GetCustomerName($id)
+        {
+            $manager = new LMSCustomerManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            return $manager->getCustomerName($id);
 	}
 
 	public function GetCustomerEmail($id) {
@@ -4700,7 +4675,7 @@ class LMS {
 
 	public function GetUserRightsRT($user, $queue, $ticket = NULL) {
 		if (!$queue && $ticket) {
-			if (!($queue = $this->GetCache('rttickets', $ticket, 'queueid')))
+			if (!($queue = $this->cache->getCache('rttickets', $ticket, 'queueid')))
 				$queue = $this->DB->GetOne('SELECT queueid FROM rttickets WHERE id=?', array($ticket));
 		}
 
@@ -4776,7 +4751,7 @@ class LMS {
 
 	public function GetUserRightsToCategory($user, $category, $ticket = NULL) {
 		if (!$category && $ticket) {
-			if (!($category = $this->GetCache('rttickets', $ticket, 'categoryid')))
+			if (!($category = $this->cache->getCache('rttickets', $ticket, 'categoryid')))
 				$category = $this->DB->GetCol('SELECT categoryid FROM rtticketcategories WHERE ticketid=?', array($ticket));
 		}
 
@@ -4867,7 +4842,7 @@ class LMS {
 
 	public function TicketExists($id) {
 		$ticket = $this->DB->GetOne('SELECT * FROM rttickets WHERE id = ?', array($id));
-		$this->cache['rttickets'][$id] = $ticket;
+                $this->cache->setCache('rttickets', $id, null, $ticket);
 		return $ticket;
 	}
 
@@ -5981,179 +5956,80 @@ class LMS {
 	/**
 	 * VoIP functions
 	 */
-	public function GetVoipAccountList($order = 'login,asc', $search = NULL, $sqlskey = 'AND') {
-		if ($order == '')
-			$order = 'login,asc';
-
-		list($order, $direction) = sscanf($order, '%[^,],%s');
-
-		($direction == 'desc') ? $direction = 'desc' : $direction = 'asc';
-
-		switch ($order) {
-			case 'login':
-				$sqlord = ' ORDER BY v.login';
-				break;
-			case 'passwd':
-				$sqlord = ' ORDER BY v.passwd';
-				break;
-			case 'phone':
-				$sqlord = ' ORDER BY v.phone';
-				break;
-			case 'id':
-				$sqlord = ' ORDER BY v.id';
-				break;
-			case 'ownerid':
-				$sqlord = ' ORDER BY v.ownerid';
-				break;
-			case 'owner':
-				$sqlord = ' ORDER BY owner';
-				break;
-		}
-
-		if (sizeof($search))
-			foreach ($search as $idx => $value) {
-				if ($value != '') {
-					switch ($idx) {
-						case 'login' :
-							$searchargs[] = 'v.login ?LIKE? ' . $this->DB->Escape("%$value%");
-							break;
-						case 'phone' :
-							$searchargs[] = 'v.phone ?LIKE? ' . $this->DB->Escape("%$value%");
-							break;
-						case 'password' :
-							$searchargs[] = 'v.passwd ?LIKE? ' . $this->DB->Escape("%$value%");
-							break;
-						default :
-							$searchargs[] = $idx . ' ?LIKE? ' . $this->DB->Escape("%$value%");
-					}
-				}
-			}
-
-		if (isset($searchargs))
-			$searchargs = ' WHERE ' . implode(' ' . $sqlskey . ' ', $searchargs);
-
-		$voipaccountlist =
-				$this->DB->GetAll('SELECT v.id, v.login, v.passwd, v.phone, v.ownerid, '
-				. $this->DB->Concat('c.lastname', "' '", 'c.name') . ' AS owner, v.access
-				FROM voipaccounts v 
-				JOIN customersview c ON (v.ownerid = c.id) '
-				. (isset($searchargs) ? $searchargs : '')
-				. ($sqlord != '' ? $sqlord . ' ' . $direction : ''));
-
-		$voipaccountlist['total'] = sizeof($voipaccountlist);
-		$voipaccountlist['order'] = $order;
-		$voipaccountlist['direction'] = $direction;
-
-		return $voipaccountlist;
+	public function GetVoipAccountList($order = 'login,asc', $search = NULL, $sqlskey = 'AND')
+        {
+            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            return $manager->getVoipAccountList($order, $search, $sqlskey);
 	}
 
-	public function VoipAccountSet($id, $access = -1) {
-		if ($access != -1) {
-			if ($access)
-				return $this->DB->Execute('UPDATE voipaccounts SET access = 1 WHERE id = ?
-					AND EXISTS (SELECT 1 FROM customers WHERE id = ownerid 
-						AND status = 3)', array($id));
-			else
-				return $this->DB->Execute('UPDATE voipaccounts SET access = 0 WHERE id = ?', array($id));
-		}
-		elseif ($this->DB->GetOne('SELECT access FROM voipaccounts WHERE id = ?', array($id)) == 1)
-			return $this->DB->Execute('UPDATE voipaccounts SET access=0 WHERE id = ?', array($id));
-		else
-			return $this->DB->Execute('UPDATE voipaccounts SET access = 1 WHERE id = ?
-					AND EXISTS (SELECT 1 FROM customers WHERE id = ownerid 
-						AND status = 3)', array($id));
+	public function VoipAccountSet($id, $access = -1)
+        {
+            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            return $manager->voipAccountSet($id, $access);
 	}
 
-	public function VoipAccountSetU($id, $access = FALSE) {
-		if ($access) {
-			if ($this->DB->GetOne('SELECT status FROM customers WHERE id = ?', array($id)) == 3) {
-				return $this->DB->Execute('UPDATE voipaccounts SET access=1 WHERE ownerid=?', array($id));
-			}
-		}
-		else
-			return $this->DB->Execute('UPDATE voipaccounts SET access=0 WHERE ownerid=?', array($id));
+	public function VoipAccountSetU($id, $access = false)
+        {
+            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            return $manager->voipAccountSetU($id, $access);
 	}
 
-	public function VoipAccountAdd($voipaccountdata) {
-		if ($this->DB->Execute('INSERT INTO voipaccounts (ownerid, login, passwd, phone, creatorid, creationdate, access)
-					VALUES (?, ?, ?, ?, ?, ?NOW?, ?)', array($voipaccountdata['ownerid'],
-						$voipaccountdata['login'],
-						$voipaccountdata['passwd'],
-						$voipaccountdata['phone'],
-						$this->AUTH->id,
-						$voipaccountdata['access']
-				))) {
-			$id = $this->DB->GetLastInsertID('voipaccounts');
-			return $id;
-		}
-		else
-			return FALSE;
+	public function VoipAccountAdd($voipaccountdata)
+        {
+            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            return $manager->VoipAccountAdd($voipaccountdata);
 	}
 
-	public function VoipAccountExists($id) {
-		return ($this->DB->GetOne('SELECT v.id FROM voipaccounts v
-				WHERE v.id = ? AND NOT EXISTS (
-		            		SELECT 1 FROM customerassignments a
-				        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-					WHERE e.userid = lms_current_user() AND a.customerid = v.ownerid)', array($id)) ? TRUE : FALSE);
+	public function VoipAccountExists($id)
+        {
+            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            return $manager->voipAccountExists($id);
 	}
 
-	public function GetVoipAccountOwner($id) {
-		return $this->DB->GetOne('SELECT ownerid FROM voipaccounts WHERE id=?', array($id));
+	public function GetVoipAccountOwner($id)
+        {
+            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            return $manager->getVoipAccountOwner($id);
+        }
+
+	public function GetVoipAccount($id)
+        {
+            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+	    return $manager->getVoipAccount($id);
 	}
 
-	public function GetVoipAccount($id) {
-		if ($result = $this->DB->GetRow('SELECT id, ownerid, login, passwd, phone,
-					creationdate, moddate, creatorid, modid, access
-					FROM voipaccounts WHERE id = ?', array($id))) {
-			$result['createdby'] = $this->GetUserName($result['creatorid']);
-			$result['modifiedby'] = $this->GetUserName($result['modid']);
-			$result['creationdateh'] = date('Y/m/d, H:i', $result['creationdate']);
-			$result['moddateh'] = date('Y/m/d, H:i', $result['moddate']);
-			$result['owner'] = $this->GetCustomerName($result['ownerid']);
-			return $result;
-		}
-		else
-			return FALSE;
+	public function GetVoipAccountIDByLogin($login)
+        {
+            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+	    return $manager->GetVoipAccountIDByLogin($login);
 	}
 
-	public function GetVoipAccountIDByLogin($login) {
-		return $this->DB->GetAll('SELECT id FROM voipaccounts WHERE login=?', array($login));
+	public function GetVoipAccountIDByPhone($phone)
+        {
+            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+	    return $manager->getVoipAccountIDByPhone($phone);
 	}
 
-	public function GetVoipAccountIDByPhone($phone) {
-		return $this->DB->GetOne('SELECT id FROM voipaccounts WHERE phone=?', array($phone));
+	public function GetVoipAccountLogin($id)
+        {
+            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+	    return $manager->getVoipAccountLogin($id);
 	}
 
-	public function GetVoipAccountLogin($id) {
-		return $this->DB->GetOne('SELECT login FROM voipaccounts WHERE id=?', array($id));
-	}
-
-	public function DeleteVoipAccount($id) {
-		$this->DB->BeginTrans();
-		$this->DB->Execute('DELETE FROM voipaccounts WHERE id = ?', array($id));
-		$this->DB->CommitTrans();
+	public function DeleteVoipAccount($id)
+        {
+            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            return $manager->deleteVoipAccount($id);
 	}
 
 	public function VoipAccountUpdate($voipaccountdata) {
-		$this->DB->Execute('UPDATE voipaccounts SET login=?, passwd=?, phone=?, moddate=?NOW?, access=?, 
-				modid=?, ownerid=? WHERE id=?', array($voipaccountdata['login'],
-				$voipaccountdata['passwd'],
-				$voipaccountdata['phone'],
-				$voipaccountdata['access'],
-				$this->AUTH->id,
-				$voipaccountdata['ownerid'],
-				$voipaccountdata['id']
-		));
+            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            return $manager->voipAccountUpdate($voipaccountdata);
 	}
 
 	public function GetCustomerVoipAccounts($id) {
-		if ($result['accounts'] = $this->DB->GetAll('SELECT id, login, passwd, phone, ownerid, access
-				FROM voipaccounts WHERE ownerid=? 
-				ORDER BY login ASC', array($id))) {
-			$result['total'] = sizeof($result['accounts']);
-		}
-		return $result;
+            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            return $manager->getCustomerVoipAccounts($id);
 	}
 
 	public function GetConfigSections() {

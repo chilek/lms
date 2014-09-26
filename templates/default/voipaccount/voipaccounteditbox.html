@@ -1,0 +1,100 @@
+<!--// $Id$ //-->
+<form name="editvoipaccount" method="post" action="?m=voipaccountedit&id={$voipaccountinfo.id}">
+    <input type="submit" class="hiddenbtn">
+    <input type="hidden" name="voipaccountedit[id]" value="{$voipaccountinfo.id}">
+    <table class="lmsbox">
+        <thead>
+            <tr>
+                <td width="1%">
+                    <img src="img/voip.gif" alt="{trans("Login:")}">
+                </td>
+                <td class="bold" width="1%">
+                    {trans("Login:")}
+                </td>
+                <td width="98%">
+                    <input type="text" name="voipaccountedit[login]" value="{$voipaccountinfo.login}" maxlength="32" size="30" {tip text="Enter voip account login" trigger="login" bold=1}>
+                    ({$voipaccountinfo.id|string_format:"%04d"})
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td width="1%">
+                    <img src="img/passwd.gif" alt="{trans("Password:")}">
+                </td>
+                <td class="bold" width="1%">
+                    {trans("Password:")}
+                </td>
+                <td width="98%">
+                    <input type="text" name="voipaccountedit[passwd]" value="{$voipaccountinfo.passwd}" {tip text="Enter password" trigger="passwd"}>
+                </td>
+            </tr>
+            <tr>
+                <td width="1%">
+                    <img src="img/phone.gif" alt="{trans("Phone number:")}">
+                </td>
+                <td class="bold" width="1%">
+                    {trans("Phone number:")}
+                </td>
+                <td width="98%">
+                    <input type="text" name="voipaccountedit[phone]" value="{$voipaccountinfo.phone}" {tip text="Enter phone number" trigger="phone"}>
+                </td>
+            </tr>
+            <tr>
+                <td width="1%">
+                    <img src="img/{if ! $voipaccountinfo.access}no{/if}access.gif" alt="">
+                </td>
+                <td class="bold" width="1%">
+                    {trans("Status:")}
+                </td>
+                <td width="99%">
+                    <select size="1" name="voipaccountedit[access]" {tip text="Select node status" trigger="access"}>
+                        <option value="1"{if $voipaccountinfo.access} selected{/if}>{trans("connected<!singular>")}</option>
+                        <option value="0"{if ! $voipaccountinfo.access} selected{/if}>{trans("disconnected<!singular>")}</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td width="1%">
+                    <img src="img/customer.gif" alt="{trans("Customer:")}">
+                </td>
+                <td class="bold" width="1%">
+                    {trans("Customer:")}
+                </td>
+                <td width="98%">
+                    <select size="1" name="voipaccountedit[ownerid]" {tip text="Assign voip account to customer"} style="max-width:250px;">
+                        {foreach from=$customers item=c}
+                        <option value="{$c.id}"{if $voipaccountinfo.ownerid eq $c.id} selected{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</option>
+                        {/foreach}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td width="1%">
+                    <img src="img/users.gif" alt="">
+                </td>
+                <td class="bold" width="1%">
+                    {trans("Created:")}<BR>
+                    {trans("Modified:")}
+                </td>
+                <td width="98%">
+                    {$voipaccountinfo.createdby}, {$voipaccountinfo.creationdateh}<BR>
+                    {if $voipaccountinfo.moddate}
+                        {$voipaccountinfo.modifiedby}, {$voipaccountinfo.moddateh}
+                    {else}-{/if}
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right" width="100%" colspan="3">
+                    <a href="javascript:document.editvoipaccount.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+                    <a href="?m=voipaccountinfo&id={$voipaccountinfo.id}">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
+                </td>
+            </tr>	
+        </tbody>
+    </table>
+</form>
+<script type="text/javascript">
+<!--
+    document.forms['editvoipaccount'].elements['voipaccountedit[login]'].focus();
+//-->
+</script>

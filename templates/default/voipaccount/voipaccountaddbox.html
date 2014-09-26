@@ -1,0 +1,90 @@
+<!--// $Id$ //-->
+<form name="voipaccountadd" method="post" action="?m=voipaccountadd{if $customerinfo.id}&ownerid={$customerinfo.id}{/if}">
+    <input type="submit" class="hiddenbtn">
+    <table class="lmsbox">
+        <thead>
+            <tr>
+                <td width="1%">
+                    <img src="img/voip.gif" alt="{trans("Login:")}">
+                </td>
+                <td class="bold" width="1%">
+                    {trans("Login:")}
+                </td>
+                <td width="98%">
+                    <input type="text" name="voipaccountdata[login]" value="{$voipaccountdata.login}" maxlength="32" size="30" {tip text="Enter voip account login" trigger="login" bold=1}>
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td width="1%">
+                    <img src="img/passwd.gif" alt="{trans("Password:")}">
+                </td>
+                <td class="bold nobr" width="1%">
+                    {trans("Password:")}
+                </td>
+                <td width="98%">
+                    <input type="text" name="voipaccountdata[passwd]" value="{$voipaccountdata.passwd}" {tip text="Enter password" trigger="passwd"}>
+                </td>
+            </tr>
+            <tr>
+                <td width="1%">
+                    <img src="img/phone.gif" alt="{trans("Phone number:")}">
+                </td>
+                <td class="bold nobr" width="1%">
+                    {trans("Phone number:")}
+                </td>
+                <td width="98%">
+                    <input type="text" name="voipaccountdata[phone]" value="{$voipaccountdata.phone}" {tip text="Enter phone number" trigger="phone"}>
+                </td>
+            </tr>
+            <tr>
+                <td width="1%">
+                    <img src="img/{if ! $voipaccountdata.access}no{/if}access.gif" alt="">
+                </td>
+                <td class="bold nobr" width="1%">
+                    {trans("Status:")}
+                </td>
+                <td width="1%">
+                    <select size="1" name="voipaccountdata[access]" {tip text="Select status" trigger="access"}>
+                        <option value="1"{if $voipaccountdata.access} selected{/if}>{trans("connected<!singular>")}</option>
+                        <option value="0"{if ! $voipaccountdata.access} selected{/if}>{trans("disconnected<!singular>")}</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td width="1%">
+                    <img src="img/customer.gif" alt="{trans("Customer:")}">
+                </td>
+                <td class="bold nobr" width="1%">
+                    {trans("Customer:")}
+                </td>
+                <td width="98%">
+                    <select size="1" name="voipaccountdata[ownerid]" {tip text="Assign voip account to customer" trigger="customer"} style="max-width:250px;">
+                        {foreach from=$customers item=c}
+                        <option value="{$c.id}"{if $voipaccountdata.ownerid == $c.id} selected{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</option>
+                        {/foreach}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right" colspan="3">
+                    <a href="javascript:document.voipaccountadd.submit();" accesskey="s">
+                        {trans("Submit")} <img src="img/save.gif" alt="">
+                    </a>
+                    <a href="?m={if $customerinfo.id}customerinfo&id={$customerinfo.id}{else}voipaccountlist{/if}">
+                        {trans("Cancel")} <img src="img/cancel.gif" alt="">
+                    </a>
+                    <br>
+                    <input type="checkbox" name="voipaccountdata[reuse]" id="reuse" value="ON" id="reuse" {if $voipaccountdata.reuse}checked{/if}>
+                    <label for="reuse">{trans("Display this form again, when this voip account is saved")}</label>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</form>
+<SCRIPT type="text/javascript">
+<!--
+    document.forms['voipaccountadd'].elements['voipaccountdata[login]'].focus();
+//-->
+</SCRIPT>

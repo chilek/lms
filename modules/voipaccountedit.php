@@ -127,6 +127,6 @@ $SMARTY->assign('customervoipaccounts',$customervoipaccounts);
 $SMARTY->assign('error',$error);
 $SMARTY->assign('voipaccountinfo',$voipaccountinfo);
 $SMARTY->assign('customers',$customers);
-$SMARTY->display('voipaccountedit.html');
+$SMARTY->display('voipaccount/voipaccountedit.html');
 
 ?>

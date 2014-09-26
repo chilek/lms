@@ -1,0 +1,83 @@
+<!--// $Id$ //-->
+<table class="lmsbox">
+    <thead>
+        <tr>
+            <td width="1%">
+                <img src="img/voip.gif" alt="">
+            </td>
+            <td class="bold" width="99%" colspan="2">
+                {$voipaccountinfo.login} ({$voipaccountinfo.id|string_format:"%04d"})
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td colspan="3">
+                <table>
+                    <tr>
+                        <td>
+                            <table cellpadding="3">
+                                <tr>
+                                    <td width="1%">
+                                        <img src="img/passwd.gif" alt="{trans("Password:")}">
+                                    </td>
+                                    <td class="bold nobr" width="1%">
+                                        {trans("Password:")}
+                                    </td>
+                                    <td class="nobr" width="98%">
+                                        {$voipaccountinfo.passwd}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="1%">
+                                        <img src="img/phone.gif" alt="{trans("Phone number:")}">
+                                    </td>
+                                    <td class="bold nobr" width="1%">
+                                        {trans("Phone number:")}
+                                    </td>
+                                    <td class="nobr" width="98%">
+                                        {$voipaccountinfo.phone}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="1%">
+                                        <a href="?m=voipaccountset&id={$voipaccountinfo.id}"><img src="img/{if ! $voipaccountinfo.access}no{/if}access.gif" alt=""></a>
+                                    </td>
+                                    <td class="bold nobr" width="1%">
+                                        {trans("Status:")}
+                                    </td>
+                                    <td class="bold" width="1%" colspan="1">
+                                        {if $voipaccountinfo.access}{trans("connected<!singular>")}{else}{trans("disconnected<!singular>")}{/if}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="1%">
+                                        <img src="img/users.gif" alt="">
+                                    </td>
+                                    <td class="bold" width="1%">
+                                        {trans("Created:")}<br>
+                                        {trans("Modified:")}
+                                    </td>
+                                    <td width="98%">
+                                        {$voipaccountinfo.createdby}, {$voipaccountinfo.creationdateh}<br>
+                                        {if $voipaccountinfo.moddate}{$voipaccountinfo.modifiedby}, {$voipaccountinfo.moddateh}{else}-{/if}
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right" colspan="3">
+                <a href="?m=voipaccountedit&id={$voipaccountinfo.id}" accesskey="E">
+                {trans("Edit")} <img src="img/edit.gif" alt="">
+                </a>
+                <a href="?m=voipaccountdel&id={$voipaccountinfo.id}" onClick="return confirmLink(this, '{t a=$voipaccountinfo.login}Are you sure, you want to remove voip account \'$a\' from database?{/t}')">
+                {trans("Delete")} <img src="img/delete.gif" alt="">
+                </a>
+            </td>
+        </tr>	
+    </tbody>
+</table>
