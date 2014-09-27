@@ -72,6 +72,17 @@ if(isset($_POST['netdev']))
 		$error['purchasedate'] = trans('Purchase date cannot be empty when guarantee period is set!');
 	}
 
+
+	if ($netdevdata['invprojectid'] == '-1') { // nowy projekt
+		if (!strlen(trim($netdevdata['projectname']))) {
+		 $error['projectname'] = trans('Project name is required');
+		}
+		$l = $DB->GetOne("SELECT * FROM invprojects WHERE name=? AND type<>'SYS'",array($netdevdata['projectname']));
+		if (sizeof($l)>0) {
+			$error['projectname'] = trans('Project with that name already exists');
+		}
+	}
+
     if(!$error)
     {
 		if($netdevdata['guaranteeperiod'] == -1)
@@ -87,7 +98,20 @@ if(isset($_POST['netdev']))
             $netdevdata['location_street'] = null;
             $netdevdata['location_house'] = null;
             $netdevdata['location_flat'] = null;
-        }
+	}
+	$ipi = $netdevdata['invprojectid'];
+	if ($ipi == '-1') {
+			$DB->Execute("INSERT INTO invprojects (name,type) VALUES (?,'PROG')",array($netdevdata['projectname']));
+			$ipi = $DB->GetLastInsertID('invprojects');
+	} 
+	if ($netdevdata['invprojectid'] == '-1' || intval($ipi)>0) {
+			$netdevdata['invprojectid'] = intval($ipi);	
+	} else {
+			$netdevdata['invprojectid'] = NULL;
+	}
+	if ($netdevdata['netnodeid']=="-1") {
+			$netdevdata['netnodeid']=NULL;
+	}
 
 		$netdevid = $LMS->NetDevAdd($netdevdata);
 
@@ -101,6 +125,11 @@ if(isset($_POST['netdev']))
 $layout['pagetitle'] = trans('New Device');
 
 $SMARTY->assign('nastype', $LMS->GetNAStypes());
+
+$nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>'SYS' ORDER BY name");
+$SMARTY->assign('NNprojects',$nprojects);
+$netnodes = $DB->GetAll("SELECT * FROM netnodes ORDER BY name");
+$SMARTY->assign('NNnodes',$netnodes);
 
 if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false))) {
 	$SMARTY->assign('channels', $DB->GetAll('SELECT id, name FROM ewx_channels ORDER BY name'));

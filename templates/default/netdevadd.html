@@ -1,6 +1,7 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 {include file="calendar_js.html"}
+<script type="text/javascript" src="img/netnodehelper.js"></script>
 <H1>{$layout.pagetitle}</H1>
 <FORM NAME="netdevadd" METHOD="POST" ACTION="?m=netdevadd">
 <INPUT type="submit" class="hiddenbtn">
@@ -231,6 +232,37 @@
 			<TEXTAREA NAME="netdev[description]" COLS="40" ROWS="5" {tip text="Enter additional information (optional)"}>{$netdev.description}</TEXTAREA>
 		</TD>
 	</TR>
+	<TR>
+		<TD WIDTH="2%" NOWRAP COLSPAN="2">
+		 <B>{trans("Investment project:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<SELECT NAME="netdev[invprojectid]" ID="NNproject" VALUE="{$netdevinfo.invprojectid}" {tip text="Select project for this node"} onchange="setNNProject();">
+				<OPTION value="-2" {if ($netdevinfo.invprojectid == '-2' ) } selected="selected" {/if} >{trans("None")}</OPTION>
+				<OPTION value="-1" {if ($netdevinfo.invprojectid == '-1' ) } selected="selected" {/if}>{trans("New project")}</OPTION>
+				<OPTION value="1" {if ($netdevinfo.invprojectid == '1' ) } selected="selected" {/if}>{trans("From root device")}</OPTION>
+				{section name=project loop=$NNprojects}
+				<OPTION VALUE="{$NNprojects[project].id}" {if ($netdevinfo.invprojectid == $NNprojects[project].id ) } selected="selected" {/if} >{$NNprojects[project].name}</OPTION>
+				{/section}
+			</SELECT>
+			<INPUT TYPE="TEXT" NAME="netdev[projectname]" VALUE="{$netdevinfo.projectname}" {tip text="Enter new project name" trigger="projectname" } ID="NNprojectname"  />
+			 
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="2%" NOWRAP COLSPAN="2">
+		 <B>{trans("Net node:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<SELECT NAME="netdev[netnodeid]" VALUE="{$netdevinfo.netnodeid}" {tip text="Select node"} >
+				<OPTION VALUE="-1">{trans("None")}</OPTION>
+				{section name=nd loop=$NNnodes}
+				<OPTION VALUE="{$NNnodes[nd].id}" {if ($netdevinfo.netnodeid == $NNnodes[nd].id ) } selected="selected" {/if} >{$NNnodes[nd].name}</OPTION>
+				{/section}
+			</SELECT>
+		</TD>
+	</TR>
+	
 	                                        </TABLE>
 					</TD>
 				</TR>
@@ -252,6 +284,7 @@ document.forms['netdevadd'].elements['netdev[name]'].focus();
 BUL_TIMECOMPONENT = false;
 var cal1 = new calendar(document.forms['netdevadd'].elements['netdev[purchasedate]']);
 check_teryt('location', true);
+setNNProject();
 //-->
 </SCRIPT>
 {include file="footer.html"}

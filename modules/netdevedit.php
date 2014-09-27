@@ -576,7 +576,7 @@ if (isset($_POST['netdev'])) {
 	}
 
 	if ($netdevdata['invprojectid'] == '-1') { // nowy projekt
-		if (empty(trim($netdevdata['projectname']))) {
+		if (!strlen(trim($netdevdata['projectname']))) {
 		 $error['projectname'] = trans('Project name is required');
 		}
 		$l = $DB->GetOne("SELECT * FROM invprojects WHERE name=? AND type<>'SYS'",array($netdevdata['projectname']));

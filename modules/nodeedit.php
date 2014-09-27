@@ -217,7 +217,7 @@ if (isset($_POST['nodeedit'])) {
 		$error['access'] = trans('Node owner is not connected!');
 
 	if ($nodeedit['invprojectid'] == '-1') { // nowy projekt
-		if (empty(trim($nodeedit['projectname']))) {
+		if (!strlen(trim($nodeedit['projectname']))) {
 		 $error['projectname'] = trans('Project name is required');
 		}
 		$l = $DB->GetOne("SELECT * FROM invprojects WHERE name=? AND type<>'SYS'",array($nodeedit['projectname']));

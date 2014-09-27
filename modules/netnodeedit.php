@@ -42,7 +42,7 @@ if (isset($_POST['netnode'])) {
 		$error['name'] = trans('Net node name is required!');
 
 	if ($netnodedata['invprojectid'] == '-1') { // nowy projekt
-		if (empty(trim($netnodedata['projectname']))) {
+		if (!strlen(trim($netnodedata['projectname']))) {
 		 $error['projectname'] = trans('Project name is required');
 		}
 		$l = $DB->GetOne("SELECT * FROM invprojects WHERE name=? AND type<>'SYS'",array($netnodedata['projectname']));
@@ -52,7 +52,7 @@ if (isset($_POST['netnode'])) {
 	}
 
 	if ($netnodedata['ownership'] == '1') { // węzeł współdzielony
-		if (empty(trim($netnodedata['coowner']))) {
+		if (!strlen(trim($netnodedata['coowner']))) {
 		 $error['coowner'] = trans('Co-owner identifier is required');
 		}
 	}

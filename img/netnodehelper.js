@@ -6,9 +6,9 @@ function setNNProject() {
   var s = document.getElementById('NNproject');
   var n = document.getElementById('NNprojectname');
   if (s && s.value == '-1') {
-    n.style = '';
-  } else {
-    n.style = 'display:none';
+    n.style.display = 'inline-block';
+  } else {	  
+    n.style.display = 'none';
   } 
  }
 
@@ -17,9 +17,9 @@ function setNNProject() {
   var n = document.getElementById('NNcoowner');
   
   if (s && s.value == '1') {
-    n.style = '';
+    n.style.display = 'inline-block';
   } else {
-    n.style = 'display:none';
+    n.style.display = 'none';
   } 
 
  }

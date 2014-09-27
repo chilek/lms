@@ -173,6 +173,16 @@ if (isset($_POST['nodedata']))
 	if(!isset($nodedata['chkmac']))	$nodedata['chkmac'] = 0;
 	if(!isset($nodedata['halfduplex'])) $nodedata['halfduplex'] = 0;
 
+	if ($nodedata['invprojectid'] == '-1') { // nowy projekt
+		if (!strlen(trim($nodedata['projectname']))) {
+		 $error['projectname'] = trans('Project name is required');
+		}
+		$l = $DB->GetOne("SELECT * FROM invprojects WHERE name=? AND type<>'SYS'",array($nodedata['projectname']));
+		if (sizeof($l)>0) {
+			$error['projectname'] = trans('Project with that name already exists');
+		}
+	}
+
 	if(!$error)
 	{
         if (empty($nodedata['teryt'])) {
@@ -183,6 +193,18 @@ if (isset($_POST['nodedata']))
         }
 
         $nodedata = $LMS->ExecHook('node_add_before', $nodedata);
+
+
+	$ipi = $nodedata['invprojectid'];
+	if ($ipi == '-1') {
+			$DB->Execute("INSERT INTO invprojects (name,type) VALUES (?,'PROG')",array($nodedata['projectname']));
+			$ipi = $DB->GetLastInsertID('invprojects');
+	} 
+	if ($nodedata['invprojectid'] == '-1' || intval($ipi)>0) {
+			$nodedata['invprojectid'] = intval($ipi);	
+	} else {
+			$nodedata['invprojectid'] = NULL;
+	}
 
 		$nodeid = $LMS->NodeAdd($nodedata);
 
@@ -228,6 +250,10 @@ if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', fals
 {
     $SMARTY->assign('customers', $LMS->GetCustomerNames());
 }
+
+$nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>'SYS' ORDER BY name");
+$SMARTY->assign('NNprojects',$nprojects);
+
 
 $nodedata = $LMS->ExecHook('node_add_init', $nodedata);
 
