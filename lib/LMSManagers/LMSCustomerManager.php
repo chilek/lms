@@ -40,9 +40,21 @@ class LMSCustomerManager extends LMSManager
     public function getCustomerName($id)
     {
         return $this->db->GetOne(
-            'SELECT ' . $this->db->Concat('lastname', "' '", 'name') 
+            'SELECT ' . $this->db->Concat('lastname', "' '", 'name')
             . ' FROM customers WHERE id=?', 
             array($id)
         );
     }
+
+    /**
+     * Returns customer email
+     * 
+     * @param int $id Customer id
+     * @return string Customer email
+     */
+    public function getCustomerEmail($id)
+    {
+        return $this->db->GetOne('SELECT email FROM customers WHERE id=?', array($id));
+    }
+
 }
