@@ -4454,15 +4454,16 @@ class LMS {
 			'longitude' => !empty($data['longitude']) ? str_replace(',', '.', $data['longitude']) : NULL,
 			'latitude' => !empty($data['latitude']) ? str_replace(',', '.', $data['latitude']) : NULL,
 			'invprojectid' => $data['invprojectid'],
-			'netnodeid' => $data['netnodeid']
+			'netnodeid' => $data['netnodeid'],
+			'status' => $data['status'],
 		);
 		if ($this->DB->Execute('INSERT INTO netdevices (name, location,
 				location_city, location_street, location_house, location_flat,
 				description, producer, model, serialnumber,
 				ports, purchasetime, guaranteeperiod, shortname,
 				nastype, clients, secret, community, channelid,
-				longitude, latitude, invprojectid, netnodeid)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)', array_values($args))) {
+				longitude, latitude, invprojectid, netnodeid, status)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
 			$id = $this->DB->GetLastInsertID('netdevices');
 
 			// EtherWerX support (devices have some limits)
@@ -4521,12 +4522,14 @@ class LMS {
 			'latitude' => !empty($data['latitude']) ? str_replace(',', '.', $data['latitude']) : null,
 			'invprojectid' => $data['invprojectid'],
 			'netnodeid' => $data['netnodeid'],
+			'status' => $data['status'],
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $data['id'],
 		);
 		$res = $this->DB->Execute('UPDATE netdevices SET name=?, description=?, producer=?, location=?,
 				location_city=?, location_street=?, location_house=?, location_flat=?,
 				model=?, serialnumber=?, ports=?, purchasetime=?, guaranteeperiod=?, shortname=?,
-				nastype=?, clients=?, secret=?, community=?, channelid=?, longitude=?, latitude=?, invprojectid=?, netnodeid=? 
+				nastype=?, clients=?, secret=?, community=?, channelid=?, longitude=?, latitude=?,
+				invprojectid=?, netnodeid=?, status=?
 				WHERE id=?', array_values($args));
 		if ($this->SYSLOG && $res)
 			$this->SYSLOG->AddMessage(SYSLOG_RES_NETDEV, SYSLOG_OPER_UPDATE, $args,

@@ -29,6 +29,21 @@
 			<IMG SRC="img/producer.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("Status:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<SELECT NAME="netdev[status]"  {tip text="Enter device status"}>
+				{foreach $_NETELEMENTSTATUSES as $idx => $status}
+				<OPTION VALUE="{$idx}"{if $netdevinfo.status == $idx} selected{/if}>{$status}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/producer.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
 			<B>{trans("Producer:")}</B>
 		</TD>
 		<TD WIDTH="98%">

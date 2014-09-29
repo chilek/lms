@@ -17,6 +17,17 @@
 				<TR>
 					<TD WIDTH="50%" style="vertical-align:top;">
 						<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/producer.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+		        <B>{trans("Status:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+		        {$_NETELEMENTSTATUSES[$netdevinfo.status]}
+		</TD>
+	</TR>
         {if $netdevinfo.producer}
 	<TR>
 		<TD WIDTH="1%">
