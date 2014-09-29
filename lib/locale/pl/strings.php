@@ -2862,4 +2862,6 @@ $_LANG['Select project'] = 'Wybierz projekt';
 $_LANG['Select investment projects'] = 'Wybierz projekty inwestycyjne';
 $_LANG['Investment project:'] = 'Projekt inwestycyjny:';
 
+$_LANG['Select device status'] = 'Wybierz status urządzenia';
+
 ?>

@@ -32,7 +32,7 @@
 			<B>{trans("Status:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-			<SELECT NAME="netdev[status]"  {tip text="Enter device status"}>
+			<SELECT NAME="netdev[status]"  {tip text="Select device status"}>
 				{foreach $_NETELEMENTSTATUSES as $idx => $status}
 				<OPTION VALUE="{$idx}"{if $netdevinfo.status == $idx} selected{/if}>{$status}</OPTION>
 				{/foreach}
