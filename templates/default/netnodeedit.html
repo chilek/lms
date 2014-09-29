@@ -36,7 +36,7 @@
 			<SELECT NAME="netnode[type]"   {tip text="Enter node type"} >
 				{foreach $_NETELEMENTTYPES as $idx => $type}
 				<OPTION VALUE="{$idx}"{if $netnode.type == $idx} selected{/if}>{$type}</OPTION>
-				{/section}
+				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>
