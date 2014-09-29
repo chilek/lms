@@ -36,7 +36,7 @@
                     {foreach from=$newmenu item=menuitem name=menu}
                     <tr>
                         <td class="click-menu bottomline">
-                            <div class="tip"{if $menuitem.tip} {tip text="<B>\$a</B>" a=$menuitem.tip}{/if}{if ! $menuitem.submenu} onClick="{if $menuitem.windowopen}window.open('{$menuitem.link}'); { else}return self.location.href = '{$menuitem.link}'; {/if}"{/if}>
+                            <div class="tip"{if $menuitem.tip} {tip text="<B>\$a</B>" a=$menuitem.tip}{/if}{if ! $menuitem.submenu} onClick="{if $menuitem.windowopen}window.open('{$menuitem.link}'); {else}return self.location.href = '{$menuitem.link}'; {/if}"{/if}>
                                  <div class="box1"><img src="img/{$menuitem.img}" alt="*" style="position: absolute"><span style="margin-left: 21px">{$menuitem.name}</span></div>
                             </div>
                             <div class="section">
