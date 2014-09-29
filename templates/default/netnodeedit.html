@@ -34,8 +34,8 @@
 		</TD>
 		<TD WIDTH="98%">
 			<SELECT NAME="netnode[type]"   {tip text="Enter node type"} >
-				{section name=type loop=$NNtype}
-				<OPTION VALUE="{$smarty.section.type.index}" {if ($netnode.type == $smarty.section.type.index ) } selected="selected" {/if} >{$NNtype[type]}</OPTION>
+				{foreach $_NETELEMENTTYPES as $idx => $type}
+				<OPTION VALUE="{$idx}"{if $netnode.type == $idx} selected{/if}>{$type}</OPTION>
 				{/section}
 			</SELECT>
 		</TD>
@@ -49,9 +49,9 @@
 		</TD>
 		<TD WIDTH="98%">
 			<SELECT NAME="netnode[status]"  {tip text="Enter node status"} >
-			{section name=status loop=$NNstatus}
-			<OPTION VALUE="{$smarty.section.status.index}" {if ($netnode.status == $smarty.section.status.index ) } selected="selected" {/if}>{$NNstatus[status]}</OPTION>
-			{/section}
+			{foreach $_NETELEMENTSTATUSES as $idx => $status}
+			<OPTION VALUE="{$idx}"{if $netnode.status == $idx} selected{/if}>{$status}</OPTION>
+			{/foreach}
 			</SELECT>
 		</TD>
 	</TR>
@@ -86,9 +86,9 @@
 		</TD>
 		<TD WIDTH="98%">
 			<SELECT NAME="netnode[ownership]" ID="NNownership" VALUE="{$netnode.ownership}" {tip text="Select ownership for this node"} onchange="setNNOwner();">
-				{section name=os loop=$NNownership}
-				<OPTION VALUE="{$smarty.section.os.index}" {if ($netnode.ownership == $smarty.section.os.index)} selected="selected" {/if}>{$NNownership[os]}</OPTION>
-				{/section}
+				{foreach $_NETELEMENTOWNERSHIPS as $idx => $ownership}
+				<OPTION VALUE="{$idx}"{if $netnode.ownership == $idx} selected{/if}>{$ownership}</OPTION>
+				{/foreach}
 			</SELECT>
 			<INPUT TYPE="TEXT" NAME="netnode[coowner]" VALUE="{$netnode.coowner}" {tip trigger="coowner" text="Enter co-owner identifier"} ID="NNcoowner" />
 		</TD>

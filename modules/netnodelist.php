@@ -24,11 +24,6 @@
  *  $Id$
  */
 
-require ('lib/netnodehelper.php');
-
-
-
-
 $layout['pagetitle'] = trans('Network Device Nodes');
 
 if(!isset($_GET['o']))
@@ -78,8 +73,6 @@ $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('start',$start);
 $SMARTY->assign('nlist',$nlist);
 $SMARTY->assign('listdata',$listdata);
-$SMARTY->assign('NNstatus',$NNstatus);
-$SMARTY->assign('NNtype',$NNtype);
 
 $SMARTY->display('netnodelist.html');
 

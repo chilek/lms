@@ -37,7 +37,7 @@
 	<TR class="highlight {cycle}"  >
 		<TD width="67%" onClick="return self.location.href='?m=netnodeinfo&id={$nlist[nlist].id}';" VALIGN="TOP">
 			<IMG src="img/netdev.gif" ALT=""> <a name="{$nlist[nlist].id}"><B>{$nlist[nlist].name}</B></A><BR>
-			<IMG src="img/producer.gif" ALT=""> {$NNtype[$nlist[nlist].type]} / {$NNstatus[$nlist[nlist].status]}
+			<IMG src="img/producer.gif" ALT=""> {$_NETELEMENTTYPES[$nlist[nlist].type]} / {$_NETELEMENTSTATUSES[$nlist[nlist].status]}
 		</TD>
 		<TD width="30%">
 			{if ($nlist[nlist].invprojectid==1)} DD {else} {$nlist[nlist].project} {/if}

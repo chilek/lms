@@ -315,6 +315,31 @@ $PASSWDEXPIRATIONS = array(
 	365	=> trans('year'),
 );
 
+$NETELEMENTSTATUSES = array(
+	0	=> trans('existing'),
+	1	=> trans('under construction'),
+	2	=> trans('planned'),
+);
+
+$NETELEMENTTYPES = array(
+	0	=> 'budynek biurowy',
+	1	=> 'budynek przemysłowy',
+	2	=> 'budynek mieszkalny',
+	3	=> 'obiekt sakralny',
+	4	=> 'maszt',
+	5	=> 'wieża',
+	6	=> 'kontener',
+	7	=> 'szafa uliczna',
+	8	=> 'skrzynka',
+	9	=> 'studnia kablowa',
+	10	=> 'komin',
+);
+
+$NETELEMENTOWNERSHIPS = array(
+	0	=> 'węzeł własny',
+	1	=> 'węzeł współdzielony z innym podmiotem',
+);
+
 if(isset($SMARTY))
 {
 	$SMARTY->assign('_CTYPES',$CTYPES);
@@ -334,6 +359,9 @@ if(isset($SMARTY))
 	$SMARTY->assign('_LINKSPEEDS', $LINKSPEEDS);
 	$SMARTY->assign('_BOROUGHTYPES', $BOROUGHTYPES);
 	$SMARTY->assign('_PASSWDEXPIRATIONS', $PASSWDEXPIRATIONS);
+	$SMARTY->assign('_NETELEMENTSTATUSES', $NETELEMENTSTATUSES);
+	$SMARTY->assign('_NETELEMENTTYPES', $NETELEMENTTYPES);
+	$SMARTY->assign('_NETELEMENTOWNERSHIPS', $NETELEMENTOWNERSHIPS);
 }
 
 define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');

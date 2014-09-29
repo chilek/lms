@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-require ('lib/netnodehelper.php');
-
 $id = intval($_GET['id']);
 if (empty($id)) {
  $id = intval($_POST['id']);
@@ -124,9 +122,6 @@ if ($subtitle)
 $SMARTY->assign('error', $error);
 $SMARTY->assign('netnode', $netnodedata);
 $SMARTY->assign('objectid', $netnodedata['id']);
-$SMARTY->assign('NNstatus',$NNstatus);
-$SMARTY->assign('NNtype',$NNtype);
-$SMARTY->assign('NNownership',$NNownership);
 $nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>'SYS' ORDER BY name");
 $SMARTY->assign('NNprojects',$nprojects);
 

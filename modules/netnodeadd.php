@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-require ('lib/netnodehelper.php');
-
 if(isset($_POST['netnode']))
 {
 	$netnodedata = $_POST['netnode'];
@@ -110,9 +108,6 @@ $SMARTY->assign('netnode', $netnodedata);
 $nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>'SYS' ORDER BY name");
 
 $layout['pagetitle'] = trans('New Net Device Node');
-$SMARTY->assign('NNstatus',$NNstatus);
-$SMARTY->assign('NNtype',$NNtype);
-$SMARTY->assign('NNownership',$NNownership);
 $SMARTY->assign('NNprojects',$nprojects);
 
 $SMARTY->display('netnodeadd.html');

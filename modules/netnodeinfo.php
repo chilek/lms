@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-require('lib/netnodehelper.php');
-
 $id = intval($_GET['id']);
 $result = $DB->GetRow('SELECT n.*,p.name AS projectname FROM netnodes n LEFT JOIN invprojects p ON n.invprojectid=p.id WHERE n.id=? ',array($id));
 if (!$result)
@@ -41,9 +39,6 @@ $layout['pagetitle'] = trans('Net Device Node Info: $a', $info['name']);
 
 $SMARTY->assign('nodeinfo', $result);
 $SMARTY->assign('objectid', $result['id']);
-$SMARTY->assign('NNtype', $NNtype);
-$SMARTY->assign('NNstatus', $NNstatus);
-$SMARTY->assign('NNownership', $NNownership);
 
 $nlist = $DB->GetAll("SELECT * FROM netdevices WHERE netnodeid=".$id." ORDER BY NAME");
 $SMARTY->assign('netdevlist', $nlist);
