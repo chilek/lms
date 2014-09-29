@@ -79,5 +79,16 @@ class LMSCustomerManager extends LMSManager
                 break;
         }
     }
+    
+    /**
+     * Returns number of customer nodes
+     * 
+     * @param int $id Customer id
+     * @return int Number of nodes
+     */
+    public function getCustomerNodesNo($id)
+    {
+        return $this->db->GetOne('SELECT COUNT(*) FROM nodes WHERE ownerid=?', array($id));
+    }
 
 }
