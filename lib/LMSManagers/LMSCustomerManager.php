@@ -56,5 +56,28 @@ class LMSCustomerManager extends LMSManager
     {
         return $this->db->GetOne('SELECT email FROM customers WHERE id=?', array($id));
     }
+    
+    /**
+     * Checks if customer exists
+     * 
+     * @param int $id Customer id
+     * @return boolean|int True if customer exists, false id not, -1 if exists but is deleted
+     */
+    public function customerExists($id)
+    {
+        $customer_deleted = $this->db->GetOne('SELECT deleted FROM customersview WHERE id=?', array($id));
+        switch ($customer_deleted) {
+            case '0':
+                return true;
+                break;
+            case '1':
+                return -1;
+                break;
+            case '':
+            default:
+                return false;
+                break;
+        }
+    }
 
 }
