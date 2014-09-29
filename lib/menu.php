@@ -246,9 +246,9 @@ $menu = array(
 					'prio' => 60,
 				),
 				array(
-					'name' => trans('UKE report'),
-					'link' => '?m=uke',
-					'tip' => trans('Allows you to prepare SIIS v4 report for UKE'),
+					'name' => trans('Reports'),
+					'link' => '?m=netdevprint',
+					'tip' => trans('Lists and reports printing'),
 					'prio' => 70,
 				),
 			),
