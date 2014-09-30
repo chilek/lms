@@ -563,6 +563,17 @@ CREATE TABLE ewx_channels (
 
 # --------------------------------------------------------
 #
+# Structure of table invprojects
+#
+CREATE TABLE invprojects (
+        id int(11) NOT NULL auto_increment,
+	name varchar(255) NOT NULL, 
+	type tinyint DEFAULT 0, 
+	PRIMARY KEY (id)
+) ENGINE=INNODB;
+
+# --------------------------------------------------------
+#
 # Structure of table  netdevices
 #
 CREATE TABLE netdevices (
@@ -1827,17 +1838,6 @@ CREATE TABLE up_info_changes (
 
 # --------------------------------------------------------
 #
-# Structure of table invprojects
-#
-CREATE TABLE invprojects (
-        id int(11) NOT NULL auto_increment,
-	name varchar(255) NOT NULL, 
-	type tinyint DEFAULT 0, 
-	PRIMARY KEY (id)
-) ENGINE=INNODB
-
-# --------------------------------------------------------
-#
 # Structure of table netnodes
 #
 CREATE TABLE netnodes (
@@ -1859,10 +1859,7 @@ CREATE TABLE netnodes (
 	miar tinyint(1) DEFAULT 0,
 	PRIMARY KEY (id),
 	FOREIGN KEY (invprojectid) REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=INNODB
-
-
-
+) ENGINE=INNODB;
 
 INSERT INTO rtcategories (name, description)
 	VALUES ('default', 'default category');

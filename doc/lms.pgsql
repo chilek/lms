@@ -315,6 +315,19 @@ CREATE TABLE networks (
 );
 CREATE INDEX networks_hostid_idx ON networks (hostid);
 
+/* ---------------------------------------------------
+ Structure of table "invprojects" 
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS invprojects_id_seq;
+CREATE SEQUENCE invprojects_id_seq;
+DROP TABLE IF EXISTS invprojects CASCADE;
+CREATE TABLE invprojects (
+	id integer DEFAULT nextval('invprojects_id_seq'::text) NOT NULL,
+	name varchar(255) NOT NULL,
+	type smallint DEFAULT 0,
+	PRIMARY KEY(id)
+);
+
 /* -------------------------------------------------------- 
   Structure of table "nodes"
 -------------------------------------------------------- */
@@ -1823,19 +1836,6 @@ CREATE TABLE up_info_changes (
 	fieldname varchar(255) 	DEFAULT 0 NOT NULL,
 	fieldvalue varchar(255) DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
-);
-
-/* ---------------------------------------------------
- Structure of table "invprojects" 
-------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS invprojects_id_seq;
-CREATE SEQUENCE invprojects_id_seq;
-DROP TABLE IF EXISTS invprojects CASCADE;
-CREATE TABLE invprojects (
-	id integer DEFAULT nextval('invprojects_id_seq'::text) NOT NULL,
-	name varchar(255) NOT NULL,
-	type smallint DEFAULT 0,
-	PRIMARY KEY(id)
 );
 
 /* ---------------------------------------------------
