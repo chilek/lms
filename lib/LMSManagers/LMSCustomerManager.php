@@ -707,4 +707,83 @@ class LMSCustomerManager extends LMSManager
         return $result;
     }
 
+    /**
+     * Returns customer data
+     * 
+     * @global array $CONTACTTYPES
+     * @param int $id Customer id
+     * @param boolean $short Basic or expanded data
+     * @return array|boolean Customer data or false on failure
+     */
+    public function GetCustomer($id, $short = false)
+    {
+        global $CONTACTTYPES;
+
+        if ($result = $this->db->GetRow('SELECT c.*, '
+                . $this->db->Concat('UPPER(c.lastname)', "' '", 'c.name') . ' AS customername,
+			d.shortname AS division, d.account
+			FROM customers' . (defined('LMS-UI') ? 'view' : '') . ' c 
+			LEFT JOIN divisions d ON (d.id = c.divisionid)
+			WHERE c.id = ?', array($id))) {
+            if (!$short) {
+                $user_manager = new LMSUserManager($this->db, $this->auth, $this->cache, $this->syslog);
+                $result['createdby'] = $user_manager->getUserName($result['creatorid']);
+                $result['modifiedby'] = $user_manager->getUserName($result['modid']);
+                $result['creationdateh'] = date('Y/m/d, H:i', $result['creationdate']);
+                $result['moddateh'] = date('Y/m/d, H:i', $result['moddate']);
+                $result['consentdate'] = $result['consentdate'] ? date('Y/m/d', $result['consentdate']) : '';
+                $result['up_logins'] = $this->db->GetRow('SELECT lastlogindate, lastloginip, 
+					failedlogindate, failedloginip
+					FROM up_customers WHERE customerid = ?', array($result['id']));
+
+                // Get country name
+                if ($result['countryid']) {
+                    $result['country'] = $this->db->GetOne('SELECT name FROM countries WHERE id = ?', array($result['countryid']));
+                    if ($result['countryid'] == $result['post_countryid'])
+                        $result['post_country'] = $result['country'];
+                    else if ($result['post_countryid'])
+                        $result['country'] = $this->db->GetOne('SELECT name FROM countries WHERE id = ?', array($result['post_countryid']));
+                }
+
+                // Get state name
+                if ($cstate = $this->db->GetRow('SELECT s.id, s.name
+					FROM states s, zipcodes
+					WHERE zip = ? AND stateid = s.id', array($result['zip']))) {
+                    $result['stateid'] = $cstate['id'];
+                    $result['cstate'] = $cstate['name'];
+                }
+                if ($result['zip'] == $result['post_zip']) {
+                    $result['post_stateid'] = $result['stateid'];
+                    $result['post_cstate'] = $result['cstate'];
+                } else if ($result['post_zip'] && ($cstate = $this->db->GetRow('SELECT s.id, s.name
+					FROM states s, zipcodes
+					WHERE zip = ? AND stateid = s.id', array($result['post_zip'])))) {
+                    $result['post_stateid'] = $cstate['id'];
+                    $result['post_cstate'] = $cstate['name'];
+                }
+            }
+            $result['balance'] = $this->getCustomerBalance($result['id']);
+            $result['bankaccount'] = bankaccount($result['id'], $result['account']);
+
+            $result['messengers'] = $this->db->GetAllByKey('SELECT uid, type 
+					FROM imessengers WHERE customerid = ? ORDER BY type', 'type', array($result['id']));
+            $result['contacts'] = $this->db->GetAll('SELECT phone, name, type
+					FROM customercontacts WHERE customerid = ? ORDER BY id', array($result['id']));
+
+            if (is_array($result['contacts']))
+                foreach ($result['contacts'] as $idx => $row) {
+                    $types = array();
+                    foreach ($CONTACTTYPES as $tidx => $tname)
+                        if ($row['type'] & $tidx)
+                            $types[] = $tname;
+
+                    if ($types)
+                        $result['contacts'][$idx]['typestr'] = implode('/', $types);
+                }
+
+            return $result;
+        } else
+            return false;
+    }
+    
 }
