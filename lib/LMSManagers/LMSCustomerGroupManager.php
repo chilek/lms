@@ -47,6 +47,13 @@ class LMSCustomerGroupManager extends LMSManager
         );
     }
     
+    /**
+     * Adds customer group
+     * 
+     * @global array $SYSLOG_RESOURCE_KEYS
+     * @param array $customergroupdata Customer group data
+     * @return boolean|int Customer group id on success, false on failure
+     */
     public function CustomergroupAdd($customergroupdata)
     {
         global $SYSLOG_RESOURCE_KEYS;
@@ -65,5 +72,7 @@ class LMSCustomerGroupManager extends LMSManager
             return FALSE;
         }
     }
+    
+    
 
 }
