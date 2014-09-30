@@ -168,11 +168,12 @@ class LMSCustomerManager extends LMSManager
                     $n++;
                 }
 
-            if ($y && !$n) {
-                return true;
-            }
-            if ($n && !$y) {
-                return false;
+                if ($y && !$n) {
+                    return true;
+                }
+                if ($n && !$y) {
+                    return false;
+                }
             }
         }
         if ($this->db->GetOne('SELECT COUNT(*) FROM nodes WHERE ownerid=?', array($id))) {
@@ -181,5 +182,7 @@ class LMSCustomerManager extends LMSManager
             return false;
         }
     }
+    
+    
     
 }
