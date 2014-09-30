@@ -84,17 +84,17 @@ if ($nodeinfo['invprojectid']) {
 	$prj = $DB->GetRow("SELECT * FROM invprojects WHERE id=".$nodeinfo['invprojectid']);
 }
 if ($prj) {
-	if ($prj['type'] == 'SYS' && intval($prj['id']==1)) {
+	if ($prj['type'] == INV_PROJECT_SYSTEM && intval($prj['id']==1)) {
 		/* inherited */ 
 		if ($nodeinfo['netdev']) {
-			$prj = $DB->GetRow("SELECT * FROM invprojects WHERE id=".$netdevices['invprojectid']);
-			if ($prj) {
+			$prj = $DB->GetRow("SELECT * FROM invprojects WHERE id=?",
+				array($netdevices['invprojectid']));
+			if ($prj)
 				$nodeinfo['projectname'] = $prj['name']." (".$netdevices['name'].")";
-			}  			
-		} 
+		}
 	} else {
 		$nodeinfo['projectname'] = $prj['name'];
-	}	
+	}
 } 
 
 $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($nodeid));

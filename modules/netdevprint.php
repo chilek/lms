@@ -44,7 +44,7 @@ switch($type) {
 	default:
 		$layout['pagetitle'] = trans('Reports');
 
-		$SMARTY->assign('invprojects', $DB->GetAll('SELECT id, name FROM invprojects WHERE type <> ?', array('SYS')));
+		$SMARTY->assign('invprojects', $DB->GetAll('SELECT id, name FROM invprojects WHERE type <> ?', array(INV_PROJECT_SYSTEM)));
 		$SMARTY->assign('printmenu', 'netdev');
 		$SMARTY->display('printindex.html');
 	break;
