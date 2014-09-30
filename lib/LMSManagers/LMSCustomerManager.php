@@ -642,5 +642,69 @@ class LMSCustomerManager extends LMSManager
         return $customerlist;
     }
 
-    
+    /**
+     * Returns customer nodes
+     * 
+     * @param int $id Customer id
+     * @param int $count Limit
+     * @return array Nodes
+     */
+    public function getCustomerNodes($id, $count = null)
+    {
+        if ($result = $this->db->GetAll('SELECT n.id, n.name, mac, ipaddr,
+				inet_ntoa(ipaddr) AS ip, ipaddr_pub,
+				inet_ntoa(ipaddr_pub) AS ip_pub, passwd, access,
+				warning, info, ownerid, lastonline, location,
+				(SELECT COUNT(*) FROM nodegroupassignments
+					WHERE nodeid = n.id) AS gcount,
+				n.netid, net.name AS netname
+				FROM vnodes n
+				JOIN networks net ON net.id = n.netid
+				WHERE ownerid = ?
+				ORDER BY n.name ASC ' . ($count ? 'LIMIT ' . $count : ''), array($id))) {
+            // assign network(s) to node record
+            $network_manager = new LMSNetworkManager($this->db, $this->auth, $this->cache);
+            $networks = (array) $network_manager->GetNetworks();
+
+            foreach ($result as $idx => $node) {
+                $ids[$node['id']] = $idx;
+                $result[$idx]['lastonlinedate'] = lastonline_date($node['lastonline']);
+
+                //foreach ($networks as $net)
+                //	if (isipin($node['ip'], $net['address'], $net['mask'])) {
+                //		$result[$idx]['network'] = $net;
+                //		break;
+                //	}
+
+                if ($node['ipaddr_pub'])
+                    foreach ($networks as $net)
+                        if (isipin($node['ip_pub'], $net['address'], $net['mask'])) {
+                            $result[$idx]['network_pub'] = $net;
+                            break;
+                        }
+            }
+
+            // get EtherWerX channels
+            if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false))) {
+                $channels = $this->db->GetAllByKey('SELECT nodeid, channelid, c.name, c.id, cid,
+				        nc.upceil, nc.downceil
+					FROM ewx_stm_nodes
+					JOIN ewx_stm_channels nc ON (channelid = nc.id)
+					LEFT JOIN ewx_channels c ON (c.id = nc.cid)
+					WHERE nodeid IN (' . implode(',', array_keys($ids)) . ')', 'nodeid');
+
+                if ($channels)
+                    foreach ($channels as $channel) {
+                        $idx = $ids[$channel['nodeid']];
+                        $result[$idx]['channelid'] = $channel['id'] ? $channel['id'] : $channel['channelid'];
+                        $result[$idx]['channelname'] = $channel['name'];
+                        $result[$idx]['cid'] = $channel['cid'];
+                        $result[$idx]['downceil'] = $channel['downceil'];
+                        $result[$idx]['upceil'] = $channel['upceil'];
+                    }
+            }
+        }
+        return $result;
+    }
+
 }
