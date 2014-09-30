@@ -151,4 +151,35 @@ class LMSCustomerManager extends LMSManager
         );
     }
     
+    /**
+     * Checks if all customer nodes have access
+     * 
+     * @param int $id Customer id
+     * @return boolean|int True if all have access, false if not, 2 if some have access and some not
+     */
+    public function getCustomerNodesAC($id)
+    {
+        $acl = $this->db->GetAll('SELECT access FROM nodes WHERE ownerid=?', array($id));
+        if ($acl) {
+            foreach ($acl as $value) {
+                if ($value['access']) {
+                    $y++;
+                } else {
+                    $n++;
+                }
+
+            if ($y && !$n) {
+                return true;
+            }
+            if ($n && !$y) {
+                return false;
+            }
+        }
+        if ($this->db->GetOne('SELECT COUNT(*) FROM nodes WHERE ownerid=?', array($id))) {
+            return 2;
+        } else {
+            return false;
+        }
+    }
+    
 }
