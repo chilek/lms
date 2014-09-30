@@ -28,12 +28,12 @@ $DB->Execute("
 	CREATE TABLE invprojects (
 		id integer DEFAULT nextval('invprojects_id_seq'::text) NOT NULL,
 		name varchar(255) NOT NULL,
-		type varchar(255) DEFAULT '',
+		type smallint DEFAULT 0,
 		PRIMARY KEY(id)
 	);
 ");
 
-$DB->Execute("INSERT INTO invprojects (name,type) VALUES ('inherited','SYS')");
+$DB->Execute("INSERT INTO invprojects (name,type) VALUES ('inherited',1)");
 
 $DB->Execute("
 	CREATE SEQUENCE netnodes_id_seq;

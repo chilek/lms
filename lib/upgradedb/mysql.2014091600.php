@@ -27,11 +27,11 @@ $DB->Execute("
     CREATE TABLE invprojects (
         id int(11) NOT NULL auto_increment,
 	name varchar(255) NOT NULL, 
-	type varchar(255), 
+	type tinyint DEFAULT 0, 
 	PRIMARY KEY (id)
 ) ENGINE=INNODB");
 
-$DB->Execute("INSERT INTO invprojects (name,type) VALUES ('inherited','SYS')");
+$DB->Execute("INSERT INTO invprojects (name,type) VALUES ('inherited',1)");
 
 $DB->Execute("
     CREATE TABLE netnodes (

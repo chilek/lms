@@ -366,4 +366,8 @@ if(isset($SMARTY))
 
 define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');
 
+// Investment project types
+define('INV_PROJECT_REGULAR', 0);
+define('INV_PROJECT_SYSTEM', 1)
+
 ?>

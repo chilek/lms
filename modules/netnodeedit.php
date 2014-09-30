@@ -43,7 +43,7 @@ if (isset($_POST['netnode'])) {
 		if (!strlen(trim($netnodedata['projectname']))) {
 		 $error['projectname'] = trans('Project name is required');
 		}
-		$l = $DB->GetOne("SELECT * FROM invprojects WHERE name=? AND type<>'SYS'",array($netnodedata['projectname']));
+		$l = $DB->GetOne("SELECT * FROM invprojects WHERE name=? AND type<>".INV_PROJECT_SYSTEM,array($netnodedata['projectname']));
 		if (sizeof($l)>0) {
 			$error['projectname'] = trans('Project with that name already exists');
 		}
@@ -66,7 +66,7 @@ if (isset($_POST['netnode'])) {
 
 		$ipi = $netnodedata['invprojectid'];
 		if ($ipi == '-1') {
-			$DB->Execute("INSERT INTO invprojects (name,type) VALUES (?,'PROG')",array($netnodedata['projectname']));
+			$DB->Execute("INSERT INTO invprojects (name,type) VALUES (?,".INV_PROJECT_REGULAR.")",array($netnodedata['projectname']));
 			$ipi = $DB->GetLastInsertID('invprojects');
 		} 
 
@@ -122,7 +122,11 @@ if ($subtitle)
 $SMARTY->assign('error', $error);
 $SMARTY->assign('netnode', $netnodedata);
 $SMARTY->assign('objectid', $netnodedata['id']);
-$nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>'SYS' ORDER BY name");
+
+if ($CONFIG['phpui']['auto_remove_investment_project']) {
+	$DB->Execute("DELETE FROM invprojects WHERE id NOT IN (SELECT DISTINCT invprojectid FROM netdevices WHERE invprojectid IS NOT NULL UNION SELECT id FROM invprojects WHERE type=1 UNION SELECT DISTINCT invprojectid FROM nodes WHERE invprojectid IS NOT NULL UNION SELECT DISTINCT invprojectid FROM netnodes WHERE invprojectid IS NOT NULL) ");
+}
+$nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>".INV_PROJECT_SYSTEM." ORDER BY name");
 $SMARTY->assign('NNprojects',$nprojects);
 
 
