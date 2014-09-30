@@ -286,4 +286,32 @@ class LMSCustomerGroupManager extends LMSManager
         );
     }
 
+    /**
+     * Deletes customer assignment
+     * 
+     * @global array $SYSLOG_RESOURCE_KEYS
+     * @param array $customerassignmentdata Customer assignment data
+     * @return type
+     */
+    public function CustomerassignmentDelete($customerassignmentdata)
+    {
+        global $SYSLOG_RESOURCE_KEYS;
+        if ($this->syslog) {
+            $assign = $this->db->GetRow('SELECT id, customerid FROM customerassignments
+				WHERE customergroupid = ? AND customerid = ?', array($customerassignmentdata['customergroupid'],
+                $customerassignmentdata['customerid']));
+            if ($assign) {
+                $args = array(
+                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTASSIGN] => $assign['id'],
+                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $assign['customerid'],
+                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $customerassignmentdata['customergroupid']
+                );
+                $this->syslog->AddMessage(SYSLOG_RES_CUSTASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+            }
+        }
+        return $this->db->Execute('DELETE FROM customerassignments 
+			WHERE customergroupid=? AND customerid=?', array($customerassignmentdata['customergroupid'],
+                    $customerassignmentdata['customerid']));
+    }
+
 }
