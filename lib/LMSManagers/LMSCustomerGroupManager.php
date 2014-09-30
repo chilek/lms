@@ -125,4 +125,15 @@ class LMSCustomerGroupManager extends LMSManager
             return FALSE;
     }
 
+    /**
+     * Checks if customer group exists
+     * 
+     * @param int $id Customer group id
+     * @return boolean True on success, false otherwise 
+     */
+    public function CustomergroupExists($id)
+    {
+        return ($this->DB->GetOne('SELECT id FROM customergroups WHERE id=?', array($id)) ? TRUE : FALSE);
+    }
+
 }
