@@ -250,5 +250,23 @@ class LMSCustomerGroupManager extends LMSManager
             array($id)
         );
     }
+    
+    /**
+     * Returns customer groups without customer
+     * 
+     * @param int $customerid Customer id
+     * @return array Customer groups
+     */
+    public function GetGroupNamesWithoutCustomer($customerid)
+    {
+        return $this->DB->GetAll(
+            'SELECT customergroups.id AS id, name, customerid
+            FROM customergroups 
+            LEFT JOIN customerassignments ON (customergroups.id=customergroupid AND customerid = ?)
+            GROUP BY customergroups.id, name, customerid 
+            HAVING customerid IS NULL ORDER BY name', 
+            array($customerid)
+        );
+    }
 
 }
