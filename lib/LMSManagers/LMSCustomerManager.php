@@ -119,6 +119,20 @@ class LMSCustomerManager extends LMSManager
         );
     }
     
-
+    /**
+     * Returns list of customers id and customers full name
+     * 
+     * @return array Customers data
+     */
+    public function getCustomerNames()
+    {
+        return $this->db->GetAllByKey(
+            'SELECT id, ' . $this->db->Concat('lastname', "' '", 'name')  . ' AS customername 
+            FROM customersview 
+            WHERE status > 1 AND deleted = 0 
+            ORDER BY lastname, name', 
+            'id'
+        );
+    }
     
 }
