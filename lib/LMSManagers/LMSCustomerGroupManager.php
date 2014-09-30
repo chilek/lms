@@ -337,5 +337,17 @@ class LMSCustomerGroupManager extends LMSManager
         }
         return $res;
     }
+    
+    /**
+     * Checks if customer assignment exists
+     * 
+     * @param int $groupid Customer group id
+     * @param int $customerid Customer id
+     * @return int|null 1 if exists, null otherwise
+     */
+    public function CustomerassignmentExist($groupid, $customerid)
+    {
+        return $this->db->GetOne('SELECT 1 FROM customerassignments WHERE customergroupid=? AND customerid=?', array($groupid, $customerid));
+    }
 
 }
