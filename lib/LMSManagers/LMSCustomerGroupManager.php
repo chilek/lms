@@ -207,5 +207,31 @@ class LMSCustomerGroupManager extends LMSManager
 
         return $result;
     }
+    
+    /**
+     * Returns customer groups
+     * 
+     * @return array Customer groups
+     */
+    public function CustomergroupGetList()
+    {
+        if ($customergrouplist = $this->db->GetAll('SELECT id, name, description,
+				(SELECT COUNT(*)
+					FROM customerassignments 
+					WHERE customergroupid = customergroups.id
+				) AS customerscount
+				FROM customergroups ORDER BY name ASC')) {
+            $totalcount = 0;
+
+            foreach ($customergrouplist as $idx => $row) {
+                $totalcount += $row['customerscount'];
+            }
+
+            $customergrouplist['total'] = sizeof($customergrouplist);
+            $customergrouplist['totalcount'] = $totalcount;
+        }
+
+        return $customergrouplist;
+    }
 
 }
