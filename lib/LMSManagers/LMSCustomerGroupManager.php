@@ -233,5 +233,22 @@ class LMSCustomerGroupManager extends LMSManager
 
         return $customergrouplist;
     }
+    
+    /**
+     * Returns customer groups assigned to customer
+     * 
+     * @param int $id Customer id
+     * @return array Customer groups
+     */
+    public function CustomergroupGetForCustomer($id)
+    {
+        return $this->db->GetAll(
+            'SELECT customergroups.id AS id, name, description 
+            FROM customergroups, customerassignments 
+            WHERE customergroups.id=customergroupid AND customerid=? 
+            ORDER BY name ASC', 
+            array($id)
+        );
+    }
 
 }
