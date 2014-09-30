@@ -349,5 +349,29 @@ class LMSCustomerGroupManager extends LMSManager
     {
         return $this->db->GetOne('SELECT 1 FROM customerassignments WHERE customergroupid=? AND customerid=?', array($groupid, $customerid));
     }
+    
+    /**
+     * Returns customers without groups
+     * 
+     * @param int $groupid Customer group id
+     * @param int $network Network id
+     * @return array Customers
+     */
+    public function GetCustomerWithoutGroupNames($groupid, $network = NULL)
+    {
+        if ($network) {
+            $net = $this->GetNetworkParams($network);
+        }
+
+        return $this->db->GetAll('SELECT c.id AS id, ' . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS customername
+			FROM customersview c '
+                        . ($network ? 'LEFT JOIN nodes ON (c.id = nodes.ownerid) ' : '')
+                        . 'WHERE c.deleted = 0 AND c.id NOT IN (
+				SELECT customerid FROM customerassignments WHERE customergroupid = ?) '
+                        . ($network ? 'AND ((ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ') OR (ipaddr_pub > '
+                                . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')) ' : '')
+                        . 'GROUP BY c.id, c.lastname, c.name
+			ORDER BY c.lastname, c.name', array($groupid));
+    }
 
 }
