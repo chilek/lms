@@ -91,4 +91,18 @@ class LMSCustomerManager extends LMSManager
         return $this->db->GetOne('SELECT COUNT(*) FROM nodes WHERE ownerid=?', array($id));
     }
 
+        /**
+     * Returns customer id by node IP
+     * 
+     * @param string $ipaddr Node IP
+     * @return int Customer id
+     */
+    public function getCustomerIDByIP($ipaddr)
+    {
+        return $this->db->GetOne(
+            'SELECT ownerid FROM nodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)',
+            array($ipaddr, $ipaddr)
+        );
+    }
+    
 }
