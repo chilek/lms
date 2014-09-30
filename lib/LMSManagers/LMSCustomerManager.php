@@ -253,4 +253,40 @@ class LMSCustomerManager extends LMSManager
         return $saldolist;
     }
     
+    
+    /**
+     * Returns customer statistics
+     * 
+     * @return array Statistics
+     */
+    public function customerStats()
+    {
+        $result = $this->db->GetRow(
+            'SELECT COUNT(id) AS total,
+                COUNT(CASE WHEN status = 3 THEN 1 END) AS connected,
+                COUNT(CASE WHEN status = 2 THEN 1 END) AS awaiting,
+                COUNT(CASE WHEN status = 1 THEN 1 END) AS interested
+            FROM customersview 
+            WHERE deleted=0'
+        );
+
+        $tmp = $this->db->GetRow(
+            'SELECT SUM(a.value)*-1 AS debtvalue, COUNT(*) AS debt 
+            FROM (
+                SELECT SUM(value) AS value 
+                FROM cash 
+                LEFT JOIN customersview ON (customerid = customersview.id) 
+                WHERE deleted = 0 
+                GROUP BY customerid 
+                HAVING SUM(value) < 0
+            ) a'
+        );
+
+        if (is_array($tmp)) {
+            $result = array_merge($result, $tmp);
+        }
+
+        return $result;
+    }
+    
 }
