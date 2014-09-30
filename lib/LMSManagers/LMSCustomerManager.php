@@ -183,6 +183,21 @@ class LMSCustomerManager extends LMSManager
         }
     }
     
-    
+    /**
+     * Returns customer balance
+     * 
+     * @param int $id Customer id
+     * @param int $totime Timestamp
+     * @return int Balance
+     */
+    public function getCustomerBalance($id, $totime = null)
+    {
+        return $this->db->GetOne(
+            'SELECT SUM(value) 
+            FROM cash 
+            WHERE customerid = ?' . ($totime ? ' AND time < ' . intval($totime) : ''), 
+            array($id)
+        );
+    }
     
 }
