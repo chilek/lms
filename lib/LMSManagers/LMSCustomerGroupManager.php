@@ -94,4 +94,35 @@ class LMSCustomerGroupManager extends LMSManager
 				WHERE id=?', array_values($args));
     }
 
+    /**
+     * Deletes customer group
+     * 
+     * @global array $SYSLOG_RESOURCE_KEYS
+     * @param type $id
+     * @return boolean
+     */
+    public function CustomergroupDelete($id)
+    {
+        global $SYSLOG_RESOURCE_KEYS;
+        if (!$this->CustomergroupWithCustomerGet($id)) {
+            if ($this->syslog) {
+                $custassigns = $this->db->Execute('SELECT id, customerid, customergroupid FROM customerassignments
+					WHERE customergroupid = ?', array($id));
+                if (!empty($custassigns))
+                    foreach ($custassigns as $custassign) {
+                        $args = array(
+                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTASSIGN] => $custassign['id'],
+                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $custassign['customerid'],
+                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $custassign['customergroupid']
+                        );
+                        $this->syslog->AddMessage(SYSLOG_RES_CUSTASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                    }
+                $this->syslog->AddMessage(SYSLOG_RES_CUSTGROUP, SYSLOG_OPER_DELETE, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $id), array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP]));
+            }
+            $this->db->Execute('DELETE FROM customergroups WHERE id=?', array($id));
+            return TRUE;
+        } else
+            return FALSE;
+    }
+
 }
