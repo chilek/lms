@@ -39,11 +39,29 @@ class LMSNetworkManager extends LMSManager
      */
     public function getNetworkParams($id)
     {
-        return $this->DB->GetRow(
+        return $this->db->GetRow(
             'SELECT *, inet_ntoa(address) AS netip, broadcast(address, inet_aton(mask)) AS broadcast
             FROM networks WHERE id = ?', 
             array($id)
         );
+    }
+    
+    /**
+     * Returns networks
+     * 
+     * @param boolean $with_disabled With disabled (default true)
+     * @return array Networks
+     */
+    public function GetNetworks($with_disabled = true)
+    {
+        if ($with_disabled == false)
+            return $this->db->GetAll('SELECT id, name, inet_ntoa(address) AS address, 
+				address AS addresslong, mask, mask2prefix(inet_aton(mask)) AS prefix, disabled 
+				FROM networks WHERE disabled=0 ORDER BY name');
+        else
+            return $this->db->GetAll('SELECT id, name, inet_ntoa(address) AS address, 
+				address AS addresslong, mask, mask2prefix(inet_aton(mask)) AS prefix, disabled 
+				FROM networks ORDER BY name');
     }
 
 }
