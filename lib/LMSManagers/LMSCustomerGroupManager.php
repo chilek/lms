@@ -157,5 +157,23 @@ class LMSCustomerGroupManager extends LMSManager
     {
         return $this->db->GetOne('SELECT name FROM customergroups WHERE id=?', array($id));
     }
+    
+    /**
+     * Returns all customer groups
+     * 
+     * @return array Customer groups
+     */
+    public function CustomergroupGetAll()
+    {
+        return $this->db->GetAll(
+            'SELECT g.id, g.name, g.description 
+            FROM customergroups g
+            WHERE NOT EXISTS (
+                SELECT 1 
+                FROM excludedgroups 
+                WHERE userid = lms_current_user() AND customergroupid = g.id) 
+                ORDER BY g.name ASC'
+        );
+    }
 
 }
