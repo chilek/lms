@@ -12,11 +12,15 @@ lib/ezpdf                       /usr/share/lms/lib/
 lib/html2pdf                    /usr/share/lms/lib/
 lib/locale                      /usr/share/lms/lib/
 lib/plugins                     /usr/share/lms/lib/
+lib/phine/observer/src/lib/Phine/Observer         /usr/share/lms/lib/phine/
+lib/phine/exception/src/lib/Phine/Exception       /usr/share/lms/lib/phine/
 lib/SmartyPlugins               /usr/share/lms/lib/
 lib/swekey                      /usr/share/lms/lib/
 lib/tcpdf                       /usr/share/lms/lib/
 lib/upgradedb                   /usr/share/lms/lib/
 lib/LMSConfig                   /usr/share/lms/lib/
+lib/LMSManagers                 /usr/share/lms/lib/
+lib/LMSPluginManager            /usr/share/lms/lib/
 
 lib/accesstable.php             /usr/share/lms/lib/
 lib/autoloader.php              /usr/share/lms/lib/
@@ -35,9 +39,8 @@ lib/LMSDB_common.class.php      /usr/share/lms/lib/
 lib/LMSDB.php                   /usr/share/lms/lib/
 lib/LMSDBDriverInterface.php    /usr/share/lms/lib/
 lib/LMSDBInterface.php          /usr/share/lms/lib/
-lib/LMSPluginManager            /usr/share/lms/lib/
-lib/phine/observer/src/lib/Phine/Observer         /usr/share/lms/lib/phine/
-lib/phine/exception/src/lib/Phine/Exception       /usr/share/lms/lib/phine/
+lib/LMSCache.php                /usr/share/lms/lib/
+
 lib/menu.php                    /usr/share/lms/lib/
 lib/Session.class.php           /usr/share/lms/lib/
 lib/Sysinfo.class.php           /usr/share/lms/lib/
