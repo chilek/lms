@@ -200,4 +200,57 @@ class LMSCustomerManager extends LMSManager
         );
     }
     
+    /**
+     * Returns customer balance list
+     * 
+     * @param int $id Customer id
+     * @param int $totime Timestamp
+     * @param string $direction Order
+     * @return array Balance list
+     */
+    public function getCustomerBalanceList($id, $totime = null, $direction = 'ASC')
+    {
+        ($direction == 'ASC' || $direction == 'asc') ? $direction == 'ASC' : $direction == 'DESC';
+
+        $saldolist = array();
+
+        $tslist = $this->db->GetAll(
+            'SELECT cash.id AS id, time, cash.type AS type, 
+                cash.value AS value, taxes.label AS tax, cash.customerid AS customerid, 
+                comment, docid, users.name AS username,
+                documents.type AS doctype, documents.closed AS closed
+            FROM cash
+            LEFT JOIN users ON users.id = cash.userid
+            LEFT JOIN documents ON documents.id = docid
+            LEFT JOIN taxes ON cash.taxid = taxes.id
+            WHERE cash.customerid = ?'
+            . ($totime ? ' AND time <= ' . intval($totime) : '')
+            . ' ORDER BY time ' . $direction,
+            array($id)
+        );
+        
+        if ($tslist) {
+            $saldolist['balance'] = 0;
+            $saldolist['total'] = 0;
+            $i = 0;
+
+            foreach ($tslist as $row) {
+                // old format wrapper
+                foreach ($row as $column => $value)
+                    $saldolist[$column][$i] = $value;
+
+                $saldolist['after'][$i] = round($saldolist['balance'] + $row['value'], 2);
+                $saldolist['balance'] += $row['value'];
+                $saldolist['date'][$i] = date('Y/m/d H:i', $row['time']);
+
+                $i++;
+            }
+
+            $saldolist['total'] = sizeof($tslist);
+        }
+
+        $saldolist['customerid'] = $id;
+        return $saldolist;
+    }
+    
 }
