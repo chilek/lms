@@ -857,5 +857,111 @@ class LMSCustomerManager extends LMSManager
 
         return $res;
     }
+    
+    /**
+     * Deletes customer
+     * 
+     * @global array $SYSLOG_RESOURCE_KEYS
+     * @global type $LMS
+     * @param int $id Customer id
+     */
+    public function deleteCustomer($id)
+    {
+        
+        global $SYSLOG_RESOURCE_KEYS, $LMS;
+        $this->db->BeginTrans();
+
+        $this->db->Execute('UPDATE customers SET deleted=1, moddate=?NOW?, modid=?
+                                    WHERE id=?', array($this->auth->id, $id));
+
+        if ($this->syslog) {
+            $this->syslog->AddMessage(SYSLOG_RES_CUST, SYSLOG_OPER_UPDATE, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id, 'deleted' => 1), array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+            $assigns = $this->db->GetAll('SELECT id, customergroupid FROM customerassignments WHERE customerid = ?', array($id));
+            if (!empty($assigns))
+                foreach ($assigns as $assign) {
+                    $args = array(
+                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTASSIGN] => $assign['id'],
+                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id,
+                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $assign['customergroupid']
+                    );
+                    $this->syslog->AddMessage(SYSLOG_RES_CUSTASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                }
+        }
+
+        $this->db->Execute('DELETE FROM customerassignments WHERE customerid=?', array($id));
+
+        if ($this->syslog) {
+            $assigns = $this->db->GetAll('SELECT id, tariffid, liabilityid FROM assignments WHERE customerid = ?', array($id));
+            if (!empty($assigns))
+                foreach ($assigns as $assign) {
+                    if ($assign['liabilityid']) {
+                        $args = array(
+                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB] => $assign['liabilityid'],
+                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id);
+                        $this->syslog->AddMessage(SYSLOG_RES_LIAB, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                    }
+                    $args = array(
+                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN] => $assign['id'],
+                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $assign['tariffid'],
+                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB] => $assign['liabilityid'],
+                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id
+                    );
+                    $this->syslog->AddMessage(SYSLOG_RES_ASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                    $nodeassigns = $this->db->GetAll('SELECT id, nodeid FROM nodeassignments WHERE assignmentid = ?', array($assign['id']));
+                    if (!empty($nodeassigns))
+                        foreach ($nodeassigns as $nodeassign) {
+                            $args = array(
+                                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEASSIGN] => $nodeassign['id'],
+                                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodeassign['nodeid'],
+                                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN] => $assign['id'],
+                                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id
+                            );
+                            $this->syslog->AddMessage(SYSLOG_RES_NODEASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                        }
+                }
+        }
+        $liabs = $this->db->GetCol('SELECT liabilityid FROM assignments WHERE liabilityid <> 0 AND customerid = ?', array($id));
+        if (!empty($liabs))
+            $this->db->Execute('DELETE FROM liabilities WHERE id IN (' . implode(',', $liabs) . ')');
+
+        $this->db->Execute('DELETE FROM assignments WHERE customerid=?', array($id));
+        // nodes
+        $nodes = $this->db->GetCol('SELECT id FROM nodes WHERE ownerid=?', array($id));
+        if ($nodes) {
+            if ($this->syslog) {
+                $macs = $this->db->GetAll('SELECT id, nodeid FROM macs WHERE nodeid IN (' . implode(',', $nodes) . ')');
+                foreach ($macs as $mac) {
+                    $args = array(
+                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MAC] => $mac['id'],
+                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $mac['nodeid']);
+                    $this->syslog->AddMessage(SYSLOG_RES_MAC, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                }
+                foreach ($nodes as $node) {
+                    $args = array(
+                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $node,
+                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id
+                    );
+                    $this->syslog->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                }
+            }
+
+            $this->db->Execute('DELETE FROM nodegroupassignments WHERE nodeid IN (' . join(',', $nodes) . ')');
+            $plugin_data = array();
+            foreach ($nodes as $node)
+                $plugin_data[] = array('id' => $node, 'ownerid' => $id);
+            $LMS->ExecHook('node_del_before', $plugin_data);
+            $this->db->Execute('DELETE FROM nodes WHERE ownerid=?', array($id));
+            $LMS->ExecHook('node_del_after', $plugin_data);
+        }
+        // hosting
+        $this->db->Execute('UPDATE passwd SET ownerid=0 WHERE ownerid=?', array($id));
+        $this->db->Execute('UPDATE domains SET ownerid=0 WHERE ownerid=?', array($id));
+        // Remove Userpanel rights
+        $userpanel_dir = ConfigHelper::getConfig('directories.userpanel_dir');
+        if (!empty($userpanel_dir))
+            $this->db->Execute('DELETE FROM up_rights_assignments WHERE customerid=?', array($id));
+
+        $this->db->CommitTrans();
+    }
 
 }
