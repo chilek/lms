@@ -289,4 +289,76 @@ class LMSCustomerManager extends LMSManager
         return $result;
     }
     
+    /**
+     * Adds customer
+     * 
+     * @global array $SYSLOG_RESOURCE_KEYS
+     * @param array $customeradd Customer data
+     * @return boolean False on failure, customer id on success
+     */
+    public function customerAdd($customeradd)
+    {
+        global $SYSLOG_RESOURCE_KEYS;
+        $args = array(
+            'name' => lms_ucwords($customeradd['name']),
+            'lastname' => $customeradd['lastname'],
+            'type' => empty($customeradd['type']) ? 0 : 1,
+            'address' => $customeradd['address'],
+            'zip' => $customeradd['zip'],
+            'city' => $customeradd['city'],
+            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $customeradd['countryid'],
+            'email' => $customeradd['email'],
+            'ten' => $customeradd['ten'],
+            'ssn' => $customeradd['ssn'],
+            'status' => $customeradd['status'],
+            'post_name' => $customeradd['post_name'],
+            'post_address' => $customeradd['post_address'],
+            'post_zip' => $customeradd['post_zip'],
+            'post_city' => $customeradd['post_city'],
+            'post_countryid' => $customeradd['post_countryid'],
+            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $this->auth->id,
+            'info' => $customeradd['info'],
+            'notes' => $customeradd['notes'],
+            'message' => $customeradd['message'],
+            'pin' => $customeradd['pin'],
+            'regon' => $customeradd['regon'],
+            'rbe' => $customeradd['rbe'],
+            'icn' => $customeradd['icn'],
+            'cutoffstop' => $customeradd['cutoffstop'],
+            'consentdate' => $customeradd['consentdate'],
+            'einvoice' => $customeradd['einvoice'],
+            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $customeradd['divisionid'],
+            'paytime' => $customeradd['paytime'],
+            'paytype' => !empty($customeradd['paytype']) ? $customeradd['paytype'] : null,
+            'invoicenotice' => $customeradd['invoicenotice'],
+            'mailingnotice' => $customeradd['mailingnotice'],
+        );
+        if ($this->db->Execute('INSERT INTO customers (name, lastname, type,
+				    address, zip, city, countryid, email, ten, ssn, status, creationdate,
+				    post_name, post_address, post_zip, post_city, post_countryid,
+				    creatorid, info, notes, message, pin, regon, rbe,
+				    icn, cutoffstop, consentdate, einvoice, divisionid, paytime, paytype,
+				    invoicenotice, mailingnotice)
+				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?,
+				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))
+        ) {
+            $zip_code_manager = new LMSZipCodeManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $zip_code_manager->UpdateCountryState($customeradd['zip'], $customeradd['stateid']);
+            if ($customeradd['post_zip'] != $customeradd['zip']) {
+                $zip_code_manager->UpdateCountryState($customeradd['post_zip'], $customeradd['post_stateid']);
+            }
+            $id = $this->db->GetLastInsertID('customers');
+            if ($this->syslog) {
+                $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $id;
+                unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
+                $this->syslog->AddMessage(SYSLOG_RES_CUST, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV],
+                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY]));
+            }
+            return $id;
+        } else {
+            return false;
+        }
+    }
+    
 }
