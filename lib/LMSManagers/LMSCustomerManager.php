@@ -91,7 +91,7 @@ class LMSCustomerManager extends LMSManager
         return $this->db->GetOne('SELECT COUNT(*) FROM nodes WHERE ownerid=?', array($id));
     }
 
-        /**
+    /**
      * Returns customer id by node IP
      * 
      * @param string $ipaddr Node IP
@@ -104,5 +104,21 @@ class LMSCustomerManager extends LMSManager
             array($ipaddr, $ipaddr)
         );
     }
+    
+    /**
+     * Returns customer status
+     * 
+     * @param int $id Customer id
+     * @return int Status
+     */
+    public function getCustomerStatus($id)
+    {
+        return $this->db->GetOne(
+            'SELECT status FROM customers WHERE id=?', 
+            array($id)
+        );
+    }
+    
+
     
 }
