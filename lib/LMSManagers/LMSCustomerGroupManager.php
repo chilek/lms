@@ -39,12 +39,31 @@ class LMSCustomerGroupManager extends LMSManager
      */
     public function CustomergroupWithCustomerGet($id)
     {
-        return $this->DB->GetOne(
+        return $this->db->GetOne(
             'SELECT COUNT(*) 
             FROM customerassignments
             WHERE customergroupid = ?', 
             array($id)
         );
+    }
+    
+    public function CustomergroupAdd($customergroupdata)
+    {
+        global $SYSLOG_RESOURCE_KEYS;
+        if ($this->db->Execute('INSERT INTO customergroups (name, description) VALUES (?, ?)', array($customergroupdata['name'], $customergroupdata['description']))) {
+            $id = $this->db->GetLastInsertID('customergroups');
+            if ($this->syslog) {
+                $args = array(
+                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $id,
+                    'name' => $customergroupdata['name'],
+                    'description' => $customergroupdata['description']
+                );
+                $this->syslog->AddMessage(SYSLOG_RES_CUSTGROUP, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP]));
+            }
+            return $id;
+        } else {
+            return FALSE;
+        }
     }
 
 }
