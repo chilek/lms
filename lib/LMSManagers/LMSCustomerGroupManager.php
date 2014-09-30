@@ -313,5 +313,29 @@ class LMSCustomerGroupManager extends LMSManager
 			WHERE customergroupid=? AND customerid=?', array($customerassignmentdata['customergroupid'],
                     $customerassignmentdata['customerid']));
     }
+    
+    /**
+     * Adds customer assignment
+     * 
+     * @global array $SYSLOG_RESOURCE_KEYS
+     * @param array  $customerassignmentdata Customer assignment data
+     * @return type
+     */
+    public function CustomerassignmentAdd($customerassignmentdata)
+    {
+        global $SYSLOG_RESOURCE_KEYS;
+        $res = $this->db->Execute('INSERT INTO customerassignments (customergroupid, customerid) VALUES (?, ?)', array($customerassignmentdata['customergroupid'],
+            $customerassignmentdata['customerid']));
+        if ($this->syslog && $res) {
+            $id = $this->db->GetLastInsertID('customerassignments');
+            $args = array(
+                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTASSIGN] => $id,
+                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerassignmentdata['customerid'],
+                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $customerassignmentdata['customergroupid']
+            );
+            $this->syslog->AddMessage(SYSLOG_RES_CUSTASSIGN, SYSLOG_OPER_ADD, $args, array_keys($args));
+        }
+        return $res;
+    }
 
 }
