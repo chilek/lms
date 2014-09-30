@@ -56,7 +56,7 @@ class LMSZipCodeManager extends LMSManager
                 'INSERT INTO zipcodes (stateid, zip) VALUES (?, ?)', 
                 array_values($args)
             );
-            if ($SYSLOG) {
+            if ($this->syslog) {
                 $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ZIP]] = $this->db->GetLastInsertID('zipcodes');
                 $this->syslog->AddMessage(
                     SYSLOG_RES_ZIP, 
@@ -73,7 +73,7 @@ class LMSZipCodeManager extends LMSManager
                 'UPDATE zipcodes SET stateid = ? WHERE zip = ?', 
                 array_values($args)
             );
-            if ($SYSLOG) {
+            if ($this->syslog) {
                 $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ZIP]] = $this->db->GetOne('SELECT id FROM zipcodes WHERE zip = ?', array($zip));
                 $this->syslog->AddMessage(
                     SYSLOG_RES_ZIP, 
