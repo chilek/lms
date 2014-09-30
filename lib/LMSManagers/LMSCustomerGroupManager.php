@@ -73,6 +73,25 @@ class LMSCustomerGroupManager extends LMSManager
         }
     }
     
-    
+    /**
+     * Updates customer group
+     * 
+     * @global array $SYSLOG_RESOURCE_KEYS
+     * @param array $customergroupdata Customer group data
+     * @return type
+     */
+    public function CustomergroupUpdate($customergroupdata)
+    {
+        global $SYSLOG_RESOURCE_KEYS;
+        $args = array(
+            'name' => $customergroupdata['name'],
+            'description' => $customergroupdata['description'],
+            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $customergroupdata['id']
+        );
+        if ($this->syslog)
+            $this->syslog->AddMessage(SYSLOG_RES_CUSTGROUP, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP]));
+        return $this->db->Execute('UPDATE customergroups SET name=?, description=? 
+				WHERE id=?', array_values($args));
+    }
 
 }
