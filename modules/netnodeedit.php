@@ -43,10 +43,9 @@ if (isset($_POST['netnode'])) {
 		if (!strlen(trim($netnodedata['projectname']))) {
 		 $error['projectname'] = trans('Project name is required');
 		}
-		$l = $DB->GetOne("SELECT * FROM invprojects WHERE name=? AND type<>".INV_PROJECT_SYSTEM,array($netnodedata['projectname']));
-		if (sizeof($l)>0) {
+		if ($DB->GetOne("SELECT * FROM invprojects WHERE name=? AND type<>?",
+			array($netnodedata['projectname'], INV_PROJECT_SYSTEM)))
 			$error['projectname'] = trans('Project with that name already exists');
-		}
 	}
 
 	if ($netnodedata['ownership'] == '1') { // węzeł współdzielony
@@ -66,8 +65,11 @@ if (isset($_POST['netnode'])) {
 
 		$ipi = $netnodedata['invprojectid'];
 		if ($ipi == '-1') {
-			$DB->Execute("INSERT INTO invprojects (name,type) VALUES (?,".INV_PROJECT_REGULAR.")",array($netnodedata['projectname']));
+			$DB->BeginTrans();
+			$DB->Execute("INSERT INTO invprojects (name, type) VALUES (?, ?)",
+				array($netnodedata['projectname'], INV_PROJECT_REGULAR));
 			$ipi = $DB->GetLastInsertID('invprojects');
+			$DB->CommitTrans();
 		} 
 
 		$args = array('name'=>$netnodedata['name'],
@@ -123,10 +125,15 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('netnode', $netnodedata);
 $SMARTY->assign('objectid', $netnodedata['id']);
 
-if ($CONFIG['phpui']['auto_remove_investment_project']) {
-	$DB->Execute("DELETE FROM invprojects WHERE id NOT IN (SELECT DISTINCT invprojectid FROM netdevices WHERE invprojectid IS NOT NULL UNION SELECT id FROM invprojects WHERE type=1 UNION SELECT DISTINCT invprojectid FROM nodes WHERE invprojectid IS NOT NULL UNION SELECT DISTINCT invprojectid FROM netnodes WHERE invprojectid IS NOT NULL) ");
-}
-$nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>".INV_PROJECT_SYSTEM." ORDER BY name");
+if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.auto_remove_investment_project', true)))
+	$DB->Execute("DELETE FROM invprojects WHERE id NOT IN
+		(SELECT DISTINCT invprojectid FROM netdevices WHERE invprojectid IS NOT NULL
+			UNION SELECT id FROM invprojects WHERE type=?
+			UNION SELECT DISTINCT invprojectid FROM nodes WHERE invprojectid IS NOT NULL
+			UNION SELECT DISTINCT invprojectid FROM netnodes WHERE invprojectid IS NOT NULL)",
+		array(INV_PROJECT_SYSTEM));
+$nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name",
+	array(INV_PROJECT_SYSTEM));
 $SMARTY->assign('NNprojects',$nprojects);
 
 

@@ -1444,10 +1444,11 @@ CREATE TABLE netdevices (
 	    REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	longitude numeric(10, 6) DEFAULT NULL,
 	latitude numeric(10, 6) DEFAULT NULL,
-	netnodeid integer DEFAULT NULL
+	netnodeid integer	DEFAULT NULL
 	    REFERENCES netnodes(id) ON DELETE SET NULL ON UPDATE CASCADE,
-	invprojectid integer DEFAULT NULL
+	invprojectid integer	DEFAULT NULL
 	    REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE,
+	status smallint		DEFAULT 0,
 	PRIMARY KEY (id)
 );
 CREATE INDEX netdevices_channelid_idx ON netdevices (channelid);
@@ -2101,4 +2102,4 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('userpanel', 'default_categories', '1', '', 0),
 ('directories', 'userpanel_dir', 'userpanel', '', 0);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014090600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014092900');

@@ -77,7 +77,8 @@ if(isset($_POST['netdev']))
 		if (!strlen(trim($netdevdata['projectname']))) {
 		 $error['projectname'] = trans('Project name is required');
 		}
-		$l = $DB->GetOne("SELECT * FROM invprojects WHERE name=? AND type<>".INV_PROJECT_SYSTEM,array($netdevdata['projectname']));
+		$l = $DB->GetOne("SELECT * FROM invprojects WHERE name=? AND type<>?",
+			array($netdevdata['projectname'], INV_PROJECT_SYSTEM));
 		if (sizeof($l)>0) {
 			$error['projectname'] = trans('Project with that name already exists');
 		}
@@ -101,17 +102,18 @@ if(isset($_POST['netdev']))
 	}
 	$ipi = $netdevdata['invprojectid'];
 	if ($ipi == '-1') {
-			$DB->Execute("INSERT INTO invprojects (name,type) VALUES (?,".INV_PROJECT_REGULAR.")",array($netdevdata['projectname']));
-			$ipi = $DB->GetLastInsertID('invprojects');
+		$DB->BeginTrans();
+		$DB->Execute("INSERT INTO invprojects (name, type) VALUES (?, ?)",
+			array($netdevdata['projectname'], INV_PROJECT_REGULAR));
+		$ipi = $DB->GetLastInsertID('invprojects');
+		$DB->CommitTrans();
 	} 
-	if ($netdevdata['invprojectid'] == '-1' || intval($ipi)>0) {
-			$netdevdata['invprojectid'] = intval($ipi);	
-	} else {
-			$netdevdata['invprojectid'] = NULL;
-	}
-	if ($netdevdata['netnodeid']=="-1") {
-			$netdevdata['netnodeid']=NULL;
-	}
+	if ($netdevdata['invprojectid'] == '-1' || intval($ipi)>0)
+		$netdevdata['invprojectid'] = intval($ipi);
+	else
+		$netdevdata['invprojectid'] = NULL;
+	if ($netdevdata['netnodeid']=="-1")
+		$netdevdata['netnodeid']=NULL;
 
 		$netdevid = $LMS->NetDevAdd($netdevdata);
 
@@ -126,10 +128,15 @@ $layout['pagetitle'] = trans('New Device');
 
 $SMARTY->assign('nastype', $LMS->GetNAStypes());
 
-if ($CONFIG['phpui']['auto_remove_investment_project']) {
-	$DB->Execute("DELETE FROM invprojects WHERE id NOT IN (SELECT DISTINCT invprojectid FROM netdevices WHERE invprojectid IS NOT NULL UNION SELECT id FROM invprojects WHERE type=1 UNION SELECT DISTINCT invprojectid FROM nodes WHERE invprojectid IS NOT NULL UNION SELECT DISTINCT invprojectid FROM netnodes WHERE invprojectid IS NOT NULL) ");
-}
-$nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>".INV_PROJECT_SYSTEM." ORDER BY name");
+if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.auto_remove_investment_project', true)))
+	$DB->Execute("DELETE FROM invprojects WHERE id NOT IN
+		(SELECT DISTINCT invprojectid FROM netdevices WHERE invprojectid IS NOT NULL
+			UNION SELECT id FROM invprojects WHERE type=?
+			UNION SELECT DISTINCT invprojectid FROM nodes WHERE invprojectid IS NOT NULL
+			UNION SELECT DISTINCT invprojectid FROM netnodes WHERE invprojectid IS NOT NULL)",
+		array(INV_PROJECT_SYSTEM));
+
+$nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name", array(INV_PROJECT_SYSTEM));
 $SMARTY->assign('NNprojects',$nprojects);
 $netnodes = $DB->GetAll("SELECT * FROM netnodes ORDER BY name");
 $SMARTY->assign('NNnodes',$netnodes);

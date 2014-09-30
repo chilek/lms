@@ -586,10 +586,11 @@ CREATE TABLE netdevices (
   secret 	varchar(60) 	NOT NULL DEFAULT '',
   community 	varchar(50) 	NOT NULL DEFAULT '',
   channelid 	int(11) 	DEFAULT NULL,
-  longitude decimal(10, 6) DEFAULT NULL,
-  latitude decimal(10, 6) DEFAULT NULL,
-  netnodeid int(11) DEFAULT NULL,
-  invprojectid int(11) DEFAULT NULL,
+  longitude	decimal(10, 6)	DEFAULT NULL,
+  latitude	decimal(10, 6)	DEFAULT NULL,
+  netnodeid	int(11)		DEFAULT NULL,
+  invprojectid	int(11)		DEFAULT NULL,
+  status	tinyint		DEFAULT '0',
   PRIMARY KEY (id),
   INDEX channelid (channelid),
   INDEX location_city (location_city, location_street, location_house, location_flat),
@@ -2013,4 +2014,4 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('userpanel','default_categories','1','',0),
 ('directories','userpanel_dir','userpanel','',0);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014090600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014092900');
