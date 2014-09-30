@@ -786,4 +786,76 @@ class LMSCustomerManager extends LMSManager
             return false;
     }
     
+    /**
+    * Updates customer
+    * 
+    * @global array $SYSLOG_RESOURCE_KEYS
+    * @param array $customerdata Customer data
+    * @return int Affected rows
+    */
+    public function customerUpdate($customerdata)
+    {
+        global $SYSLOG_RESOURCE_KEYS;
+        $args = array(
+            'status' => $customerdata['status'],
+            'type' => empty($customerdata['type']) ? 0 : 1,
+            'address' => $customerdata['address'],
+            'zip' => $customerdata['zip'],
+            'city' => $customerdata['city'],
+            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $customerdata['countryid'],
+            'email' => $customerdata['email'],
+            'ten' => $customerdata['ten'],
+            'ssn' => $customerdata['ssn'],
+            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => isset($this->auth->id) ? $this->auth->id : 0,
+            'post_name' => $customerdata['post_name'],
+            'post_address' => $customerdata['post_address'],
+            'post_zip' => $customerdata['post_zip'],
+            'post_city' => $customerdata['post_city'],
+            'post_countryid' => $customerdata['post_countryid'],
+            'info' => $customerdata['info'],
+            'notes' => $customerdata['notes'],
+            'lastname' => $customerdata['lastname'],
+            'name' => lms_ucwords($customerdata['name']),
+            'message' => $customerdata['message'],
+            'pin' => $customerdata['pin'],
+            'regon' => $customerdata['regon'],
+            'icn' => $customerdata['icn'],
+            'rbe' => $customerdata['rbe'],
+            'cutoffstop' => $customerdata['cutoffstop'],
+            'consentdate' => $customerdata['consentdate'],
+            'einvoice' => $customerdata['einvoice'],
+            'invoicenotice' => $customerdata['invoicenotice'],
+            'mailingnotice' => $customerdata['mailingnotice'],
+            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $customerdata['divisionid'],
+            'paytime' => $customerdata['paytime'],
+            'paytype' => $customerdata['paytype'] ? $customerdata['paytype'] : null,
+            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerdata['id']
+        );
+        $res = $this->db->Execute('UPDATE customers SET status=?, type=?, address=?,
+                               zip=?, city=?, countryid=?, email=?, ten=?, ssn=?, moddate=?NOW?, modid=?,
+                               post_name=?, post_address=?, post_zip=?, post_city=?, post_countryid=?,
+                               info=?, notes=?, lastname=UPPER(?), name=?,
+                               deleted=0, message=?, pin=?, regon=?, icn=?, rbe=?,
+                               cutoffstop=?, consentdate=?, einvoice=?, invoicenotice=?, mailingnotice=?,
+                               divisionid=?, paytime=?, paytype=?
+                               WHERE id=?', array_values($args));
+
+        if ($res) {
+            if ($this->syslog) {
+                unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
+                $args['deleted'] = 0;
+                $this->syslog->AddMessage(SYSLOG_RES_CUST, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY],
+                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV]));
+            }
+            $zip_code_manager = new LMSZipCodeManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $zip_code_manager->UpdateCountryState($customerdata['zip'], $customerdata['stateid']);
+            if ($customerdata['post_zip'] != $customerdata['zip']) {
+                $zip_code_manager->UpdateCountryState($customerdata['post_zip'], $customerdata['post_stateid']);
+            }
+        }
+
+        return $res;
+    }
+
 }
