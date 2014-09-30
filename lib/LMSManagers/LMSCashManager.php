@@ -39,7 +39,7 @@ class LMSCashManager extends LMSManager
      */
     public function GetCashByID($id)
     {
-        return $this->DB->GetRow(
+        return $this->db->GetRow(
             'SELECT time, userid, value, taxid, customerid, comment 
             FROM cash WHERE id=?', 
             array($id)
