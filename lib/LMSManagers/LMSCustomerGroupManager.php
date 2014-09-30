@@ -175,5 +175,37 @@ class LMSCustomerGroupManager extends LMSManager
                 ORDER BY g.name ASC'
         );
     }
+    
+    /**
+     * Returns customer group
+     * 
+     * @param int $id Customer group id
+     * @param int $network Network id
+     * @return array Customer group
+     */
+    public function CustomergroupGet($id, $network = NULL)
+    {
+        if ($network) {
+            $network_manager = new LMSNetworkManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $net = $network_manager->GetNetworkParams($network);
+        }
+
+        $result = $this->db->GetRow('SELECT id, name, description 
+			FROM customergroups WHERE id=?', array($id));
+
+        $result['customers'] = $this->db->GetAll('SELECT c.id AS id,'
+                . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS customername 
+			FROM customerassignments, customers c '
+                . ($network ? 'LEFT JOIN nodes ON c.id = nodes.ownerid ' : '')
+                . 'WHERE c.id = customerid AND customergroupid = ? '
+                . ($network ? 'AND ((ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ') OR
+			(ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')) ' : '')
+                . ' GROUP BY c.id, c.lastname, c.name ORDER BY c.lastname, c.name', array($id));
+
+        $result['customerscount'] = sizeof($result['customers']);
+        $result['count'] = $network ? $this->CustomergroupWithCustomerGet($id) : $result['customerscount'];
+
+        return $result;
+    }
 
 }
