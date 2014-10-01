@@ -40,7 +40,7 @@ if(isset($_POST['netnode']))
 			$error['projectname'] = trans('Project with that name already exists');
 	}
 
-	if ($netnodedata['ownership'] == '1') { // węzeł współdzielony
+	if (in_array($netnodedata['ownership'], array('1', '2'))) { // węzeł współdzielony lub obcy
 		if (!strlen(trim($netnodedata['coowner']))) {
 		 $error['coowner'] = trans('Co-owner identifier is required');
 		}
