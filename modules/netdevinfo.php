@@ -57,20 +57,19 @@ if ($netdevinfo['netnodeid']) {
 
 $netdevinfo['projectname'] = trans('none');
 if ($netdevinfo['invprojectid']) {
-	$prj = $DB->GetRow("SELECT * FROM invprojects WHERE id=".$netdevinfo['invprojectid']);
-}
-if ($prj) {
-	if ($prj['type'] == INV_PROJECT_SYSTEM && intval($prj['id']==1)) {
-		/* inherited */
-		if ($netnode) {
-			$prj = $DB->GetRow("SELECT * FROM invprojects WHERE id=?",
-				array($netnode['invprojectid']));
-			if ($prj)
-				$netdevinfo['projectname'] = $prj['name']." (".$netnode['name'].")";
-		}
-	} else {
-		$netdevinfo['projectname'] = $prj['name'];
-	}	
+	$prj = $DB->GetRow("SELECT * FROM invprojects WHERE id = ?", array($netdevinfo['invprojectid']));
+	if ($prj) {
+		if ($prj['type'] == INV_PROJECT_SYSTEM && intval($prj['id']==1)) {
+			/* inherited */
+			if ($netnode) {
+				$prj = $DB->GetRow("SELECT * FROM invprojects WHERE id=?",
+					array($netnode['invprojectid']));
+				if ($prj)
+					$netdevinfo['projectname'] = $prj['name']." (".$netnode['name'].")";
+			}
+		} else
+			$netdevinfo['projectname'] = $prj['name'];
+	}
 } 
 
 $SMARTY->assign('netdevinfo', $netdevinfo);

@@ -81,21 +81,20 @@ $SMARTY->assign('xajax', $LMS->RunXajax());
 
 $nodeinfo['projectname'] = trans('none');
 if ($nodeinfo['invprojectid']) {
-	$prj = $DB->GetRow("SELECT * FROM invprojects WHERE id=".$nodeinfo['invprojectid']);
-}
-if ($prj) {
-	if ($prj['type'] == INV_PROJECT_SYSTEM && intval($prj['id']==1)) {
-		/* inherited */ 
-		if ($nodeinfo['netdev']) {
-			$prj = $DB->GetRow("SELECT * FROM invprojects WHERE id=?",
-				array($netdevices['invprojectid']));
-			if ($prj)
-				$nodeinfo['projectname'] = $prj['name']." (".$netdevices['name'].")";
-		}
-	} else {
-		$nodeinfo['projectname'] = $prj['name'];
+	$prj = $DB->GetRow("SELECT * FROM invprojects WHERE id=?", array($nodeinfo['invprojectid']));
+	if ($prj) {
+		if ($prj['type'] == INV_PROJECT_SYSTEM && intval($prj['id']==1)) {
+			/* inherited */ 
+			if ($nodeinfo['netdev']) {
+				$prj = $DB->GetRow("SELECT * FROM invprojects WHERE id=?",
+					array($netdevices['invprojectid']));
+				if ($prj)
+					$nodeinfo['projectname'] = $prj['name']." (".$netdevices['name'].")";
+			}
+		} else
+			$nodeinfo['projectname'] = $prj['name'];
 	}
-} 
+}
 
 $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($nodeid));
 $SMARTY->assign('netdevices', $netdevices);
