@@ -48,7 +48,6 @@ $layout['pagetitle'] = trans('Device Info: $a $b $c', $netdevinfo['name'], $netd
 
 $netdevinfo['id'] = $_GET['id'];
 
-$netdevinfo['nodename'] = '-';
 if ($netdevinfo['netnodeid']) {
 	$netnode = $DB->GetRow("SELECT * FROM netnodes WHERE id=".$netdevinfo['netnodeid']);
 	if ($netnode) {

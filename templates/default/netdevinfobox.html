@@ -280,7 +280,8 @@
 			<b>{trans("Net node:")}</b>	
 		</TD>
 		<TD>
-			{$netdevinfo.nodename}
+			{if $netdevinfo.netnodeid}<a href="?m=netnodeinfo&id={$netdevinfo.netnodeid}" class="bold">{$netdevinfo.nodename}</a>
+			{else}-{/if}
 		</TD>
 	</TR>
 
