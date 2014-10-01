@@ -338,6 +338,7 @@ $NETELEMENTTYPES = array(
 $NETELEMENTOWNERSHIPS = array(
 	0	=> 'węzeł własny',
 	1	=> 'węzeł współdzielony z innym podmiotem',
+	2	=> 'węzeł obcy',
 );
 
 if(isset($SMARTY))

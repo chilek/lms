@@ -16,7 +16,7 @@ function setNNProject() {
   var s = document.getElementById('NNownership');
   var n = document.getElementById('NNcoowner');
   
-  if (s && s.value == '1') {
+  if (s && (s.value == '1' || s.value == '2')) {
     n.style.display = 'inline-block';
   } else {
     n.style.display = 'none';
