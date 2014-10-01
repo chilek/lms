@@ -92,8 +92,7 @@ if (isset($_POST['netnode'])) {
 		} else {
 			$args['invprojectid'] = 'NULL';
 		}
-		error_log(json_encode($netnodedata));
-	error_log(json_encode($args));	
+		
 		$fields = array();
 		foreach ($args as $key=>$value) {
 			if ($key == 'name' || $key == 'location' ||$key == 'location_house' 
@@ -104,7 +103,6 @@ if (isset($_POST['netnode'])) {
 						array_push($fields,$key."=".$value);
 			}
 		}
-		error_log("UPDATE netnodes SET ".join($fields,",")." WHERE id=?");
 		$DB->Execute("UPDATE netnodes SET ".join($fields,",")." WHERE id=?",array($id));
 		$SESSION->redirect('?m=netnodeinfo&id=' . $id);
 	}

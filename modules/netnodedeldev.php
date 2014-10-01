@@ -28,7 +28,8 @@ $did = intval($_GET['did']);
 
 
 if (!empty($id)) {
-	$DB->Execute("UPDATE netdevices SET netnodeid=NULL WHERE id=".$did);
+	$DB->Execute("UPDATE netdevices SET netnodeid=NULL,location='',location_city=NULL,
+			location_street=NULL,location_house=NULL,location_flat=NULL,longitude=NULL,latitude=NULL WHERE id=".$did);
 	header('Location: ?m=netnodeinfo&id='.$id);	
 } else {
 	header('Location: ?m=netnodelist');
