@@ -40,6 +40,14 @@ class LMS {
 	private $mail_object = NULL;
 	protected $plugin_manager;
 
+        protected $user_manager;
+        protected $customer_manager;
+        protected $voip_account_manager;
+        protected $zip_code_manager;
+        protected $cash_manager;
+        protected $customer_group_manager;
+        protected $network_manager;
+        
 	public function __construct(&$DB, &$AUTH, &$SYSLOG) { // class variables setting
 		$this->DB = &$DB;
 		$this->AUTH = &$AUTH;
@@ -262,243 +270,76 @@ class LMS {
 	 * Users
 	 */
 
-	public function SetUserPassword($id, $passwd) {
-		global $SYSLOG_RESOURCE_KEYS;
-		$args = array(
-			'passwd' => crypt($passwd),
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $id
-		);
-		$this->DB->Execute('UPDATE users SET passwd=?, passwdlastchange=?NOW? WHERE id=?', array_values($args));
-		if ($this->SYSLOG) {
-			unset($args['passwd']);
-			$this->SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_USERPASSWDCHANGE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
-		}
+	public function SetUserPassword($id, $passwd)
+        {
+            $manager = $this->getUserManager();
+            return $manager->setUserPassword($id, $passwd);
 	}
 
 	public function GetUserName($id = null)
         {
-	    $manager = new LMSUserManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+	    $manager = $this->getUserManager();
             return $manager->getUserName($id);
 	}
 
-	public function GetUserNames() { // returns short list of users
-		return $this->DB->GetAll('SELECT id, name FROM users WHERE deleted=0 ORDER BY login ASC');
+	public function GetUserNames()
+        {
+            $manager = $this->getUserManager();
+            return $manager->getUserNames();
 	}
 
-	public function GetUserList() { // returns list of users
-		if ($userlist = $this->DB->GetAll('SELECT id, login, name, lastlogindate, lastloginip, 
-				passwdexpiration, passwdlastchange, access, accessfrom, accessto  
-				FROM users WHERE deleted=0 ORDER BY login ASC')) {
-			foreach ($userlist as $idx => $row) {
-				if ($row['id'] == $this->AUTH->id) {
-					$row['lastlogindate'] = $this->AUTH->last;
-					$userlist[$idx]['lastlogindate'] = $this->AUTH->last;
-					$row['lastloginip'] = $this->AUTH->lastip;
-					$userlist[$idx]['lastloginip'] = $this->AUTH->lastip;
-				}
-
-				if ($row['accessfrom'])
-					$userlist[$idx]['accessfrom'] = date('Y/m/d',$row['accessfrom']);
-				else
-				    $userlist[$idx]['accessfrom'] = '-';
-				
-				if ($row['accessto'])
-					$userlist[$idx]['accessto'] = date('Y/m/d',$row['accessto']);
-				else
-				    $userlist[$idx]['accessto'] = '-';
-
-				if ($row['lastlogindate'])
-					$userlist[$idx]['lastlogin'] = date('Y/m/d H:i', $row['lastlogindate']);
-				else
-					$userlist[$idx]['lastlogin'] = '-';
-
-				if ($row['passwdlastchange'])
-					$userlist[$idx]['passwdlastchange'] = date('Y/m/d H:i', $row['passwdlastchange']);
-				else
-					$userlist[$idx]['passwdlastchange'] = '-';
-
-				if (check_ip($row['lastloginip']))
-					$userlist[$idx]['lastloginhost'] = gethostbyaddr($row['lastloginip']);
-				else {
-					$userlist[$idx]['lastloginhost'] = '-';
-					$userlist[$idx]['lastloginip'] = '-';
-				}
-			}
-		}
-
-		$userlist['total'] = sizeof($userlist);
-		return $userlist;
+	public function GetUserList()
+        {
+            $manager = $this->getUserManager();
+            return $manager->getUserList();
 	}
 
-	public function GetUserIDByLogin($login) {
-		return $this->DB->GetOne('SELECT id FROM users WHERE login=?', array($login));
+	public function GetUserIDByLogin($login)
+        {
+            $manager = $this->getUserManager();
+            return $manager->getUserIDByLogin($login);
 	}
 
-	public function UserAdd($user) {
-		global $SYSLOG_RESOURCE_KEYS;
-		$args = array(
-			'login' => $user['login'],
-			'name' =>  $user['name'],
-			'email' => $user['email'],
-			'passwd' => crypt($user['password']),
-			'rights' => $user['rights'],
-			'hosts' => $user['hosts'],
-			'position' => $user['position'],
-			'ntype' => !empty($user['ntype']) ? $user['ntype'] : null,
-			'phone' => !empty($user['phone']) ? $user['phone'] : null,
-			'passwdexpiration' => !empty($user['passwdexpiration']) ? $user['passwdexpiration'] : 0,
-			'access' => !empty($user['access']) ? 1 : 0,
-			'accessfrom' => !empty($user['accessfrom']) ? $user['accessfrom'] : 0,
-			'accessto' => !empty($user['accessto']) ? $user['accessto'] : 0,
-		);
-		if ($this->DB->Execute('INSERT INTO users (login, name, email, passwd, rights,
-				hosts, position, ntype, phone, passwdexpiration, access, accessfrom, accessto)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
-			$id = $this->DB->GetOne('SELECT id FROM users WHERE login=?', array($user['login']));
-			if ($this->SYSLOG) {
-				unset($args['passwd']);
-				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]] = $id;
-				$this->SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_ADD, $args,
-					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
-			}
-			return $id;
-		} else
-			return FALSE;
+	public function UserAdd($user)
+        {
+            $manager = $this->getUserManager();
+            return $manager->userAdd($user);
 	}
 
-	public function UserDelete($id) {
-		global $SYSLOG_RESOURCE_KEYS;
-		if ($this->DB->Execute('UPDATE users SET deleted=1, access=0 WHERE id=?', array($id))) {
-			if ($this->SYSLOG) {
-				$args = array(
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $id,
-					'deleted' => 1,
-					'access' => 0,
-				);
-				$this->SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_UPDATE,
-					$args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
-			}
-			$this->cache->setCache('users', $id, 'deleted', 1);
-			return true;
-		}
+	public function UserDelete($id)
+        {
+            $manager = $this->getUserManager();
+            return $manager->userDelete($id);
 	}
 
-	public function UserExists($id) {
-		switch ($this->DB->GetOne('SELECT deleted FROM users WHERE id=?', array($id))) {
-			case '0':
-				return TRUE;
-				break;
-			case '1':
-				return -1;
-				break;
-			case '':
-			default:
-				return FALSE;
-				break;
-		}
+	public function UserExists($id)
+        {
+            $manager = $this->getUserManager();
+            return $manager->userExists($id);
 	}
 
-	public function UserAccess($id,$access)
+	public function UserAccess($id, $access)
 	{
-	    $this->DB->Execute('UPDATE users SET access = ? WHERE id = ? ;',array($access,$id));
+	    $manager = $this->getUserManager();
+            return $manager->userAccess($id, $access);
 	}
 
-	public function GetUserInfo($id) {
-		if ($userinfo = $this->DB->GetRow('SELECT * FROM users WHERE id = ?', array($id))) {
-                        $this->cache->setCache('users', $id, null, $userinfo);
-
-			if ($userinfo['id'] == $this->AUTH->id) {
-				$userinfo['lastlogindate'] = $this->AUTH->last;
-				$userinfo['lastloginip'] = $this->AUTH->lastip;
-			}
-
-			if ($userinfo['accessfrom'])
-				$userinfo['accessfrom'] = date('Y/m/d', $userinfo['accessfrom']);
-			else
-				$userinfo['accessfrom'] = '';
-
-			if ($userinfo['accessto'])
-				$userinfo['accessto'] = date('Y/m/d', $userinfo['accessto']);
-			else
-				$userinfo['accessot'] = '';
-
-			if ($userinfo['lastlogindate'])
-				$userinfo['lastlogin'] = date('Y/m/d H:i', $userinfo['lastlogindate']);
-			else
-				$userinfo['lastlogin'] = '-';
-
-			if ($userinfo['failedlogindate'])
-				$userinfo['faillogin'] = date('Y/m/d H:i', $userinfo['failedlogindate']);
-			else
-				$userinfo['faillogin'] = '-';
-
-			if ($userinfo['passwdlastchange'])
-				$userinfo['passwdlastchange'] = date('Y/m/d H:i', $userinfo['passwdlastchange']);
-			else
-				$userinfo['passwdlastchange'] = '-';
-
-			if (check_ip($userinfo['lastloginip']))
-				$userinfo['lastloginhost'] = gethostbyaddr($userinfo['lastloginip']);
-			else {
-				$userinfo['lastloginhost'] = '-';
-				$userinfo['lastloginip'] = '-';
-			}
-
-			if (check_ip($userinfo['failedloginip']))
-				$userinfo['failedloginhost'] = gethostbyaddr($userinfo['failedloginip']);
-			else {
-				$userinfo['failedloginhost'] = '-';
-				$userinfo['failedloginip'] = '-';
-			}
-		}
-		return $userinfo;
+	public function GetUserInfo($id)
+        {
+            $manager = $this->getUserManager();
+            return $manager->getUserInfo($id);
 	}
 
-	public function UserUpdate($user) {
-		global $SYSLOG_RESOURCE_KEYS;
-		$args = array(
-			'login' => $user['login'],
-			'name' => $user['name'],
-			'email' => $user['email'],
-			'rights' => $user['rights'],
-			'hosts' => $user['hosts'],
-			'position' => $user['position'],
-			'ntype' => !empty($user['ntype']) ? $user['ntype'] : null,
-			'phone' => !empty($user['phone']) ? $user['phone'] : null,
-			'passwdexpiration' => !empty($user['passwdexpiration']) ? $user['passwdexpiration'] : 0,
-			'access' => !empty($user['access']) ? 1 : 0,
-			'accessfrom' => !empty($user['accessfrom']) ? $user['accessfrom'] : 0,
-			'accessto' => !empty($user['accessto']) ? $user['accessto'] : 0,
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $user['id']
-		);
-		$res = $this->DB->Execute('UPDATE users SET login=?, name=?, email=?, rights=?,
-				hosts=?, position=?, ntype=?, phone=?, passwdexpiration=?, access=?, accessfrom=?, accessto=? WHERE id=?',
-				array_values($args));
-		if ($res && $this->SYSLOG)
-			$this->SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
-		return $res;
+	public function UserUpdate($user)
+        {
+            $manager = $this->getUserManager();
+            return $manager->userUpdate($user);
 	}
 
-	public function GetUserRights($id) {
-		if (!($mask = $this->cache->getCache('users', $id, 'rights'))) {
-			$mask = $this->DB->GetOne('SELECT rights FROM users WHERE id = ?', array($id));
-		}
-
-		$len = strlen($mask);
-		$bin = '';
-		$result = array();
-
-		for ($cnt = $len; $cnt > 0; $cnt--)
-			$bin = sprintf('%04b', hexdec($mask[$cnt - 1])) . $bin;
-
-		$len = strlen($bin);
-		for ($cnt = $len - 1; $cnt >= 0; $cnt--)
-			if ($bin[$cnt] == '1')
-				$result[] = $len - $cnt - 1;
-
-		return $result;
+	public function GetUserRights($id)
+        {
+            $manager = $this->getUserManager();
+            return $manager->getUserRights($id);
 	}
 
 	/*
@@ -507,964 +348,211 @@ class LMS {
 
 	public function GetCustomerName($id)
         {
-            $manager = new LMSCustomerManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getCustomerManager();
             return $manager->getCustomerName($id);
 	}
 
-	public function GetCustomerEmail($id) {
-		return $this->DB->GetOne('SELECT email FROM customers WHERE id=?', array($id));
+	public function GetCustomerEmail($id)
+        {
+            $manager = $this->getCustomerManager();
+            return $manager->getCustomerEmail($id);
 	}
 
-	public function CustomerExists($id) {
-		switch ($this->DB->GetOne('SELECT deleted FROM customersview WHERE id=?', array($id))) {
-			case '0':
-				return TRUE;
-				break;
-			case '1':
-				return -1;
-				break;
-			case '':
-			default:
-				return FALSE;
-				break;
-		}
+	public function CustomerExists($id)
+        {
+            $manager = $this->getCustomerManager();
+            return $manager->customerExists($id);
 	}
 
-	public function CustomerAdd($customeradd) {
-		global $SYSLOG_RESOURCE_KEYS;
-		$args = array(
-			'name' => lms_ucwords($customeradd['name']),
-			'lastname' => $customeradd['lastname'],
-			'type' => empty($customeradd['type']) ? 0 : 1,
-			'address' => $customeradd['address'],
-			'zip' => $customeradd['zip'],
-			'city' => $customeradd['city'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $customeradd['countryid'],
-			'email' => $customeradd['email'],
-			'ten' => $customeradd['ten'],
-			'ssn' => $customeradd['ssn'],
-			'status' => $customeradd['status'],
-			'post_name' => $customeradd['post_name'],
-			'post_address' => $customeradd['post_address'],
-			'post_zip' => $customeradd['post_zip'],
-			'post_city' => $customeradd['post_city'],
-			'post_countryid' => $customeradd['post_countryid'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $this->AUTH->id,
-			'info' => $customeradd['info'],
-			'notes' => $customeradd['notes'],
-			'message' => $customeradd['message'],
-			'pin' => $customeradd['pin'],
-			'regon' => $customeradd['regon'],
-			'rbe' => $customeradd['rbe'],
-			'icn' => $customeradd['icn'],
-			'cutoffstop' => $customeradd['cutoffstop'],
-			'consentdate' => $customeradd['consentdate'],
-			'einvoice' => $customeradd['einvoice'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $customeradd['divisionid'],
-			'paytime' => $customeradd['paytime'],
-			'paytype' => !empty($customeradd['paytype']) ? $customeradd['paytype'] : NULL,
-			'invoicenotice' => $customeradd['invoicenotice'],
-			'mailingnotice' => $customeradd['mailingnotice'],
-		);
-		if ($this->DB->Execute('INSERT INTO customers (name, lastname, type,
-				    address, zip, city, countryid, email, ten, ssn, status, creationdate,
-				    post_name, post_address, post_zip, post_city, post_countryid,
-				    creatorid, info, notes, message, pin, regon, rbe,
-				    icn, cutoffstop, consentdate, einvoice, divisionid, paytime, paytype,
-				    invoicenotice, mailingnotice)
-				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?,
-				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))
-		) {
-			$this->UpdateCountryState($customeradd['zip'], $customeradd['stateid']);
-			if ($customeradd['post_zip'] != $customeradd['zip']) {
-				$this->UpdateCountryState($customeradd['post_zip'], $customeradd['post_stateid']);
-			}
-			$id = $this->DB->GetLastInsertID('customers');
-			if ($this->SYSLOG) {
-				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $id;
-				unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
-				$this->SYSLOG->AddMessage(SYSLOG_RES_CUST, SYSLOG_OPER_ADD, $args,
-					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY]));
-			}
-			return $id;
-		} else
-			return FALSE;
+	public function CustomerAdd($customeradd)
+        {
+            $manager = $this->getCustomerManager();
+            return $manager->CustomerAdd($customeradd);
 	}
 
-	public function DeleteCustomer($id) {
-		global $SYSLOG_RESOURCE_KEYS;
-		$this->DB->BeginTrans();
+        public function DeleteCustomer($id)
+        {
+            $manager = $this->getCustomerManager();
+            return $manager->DeleteCustomer($id);
+        }
+        
+        public function CustomerUpdate($customerdata)
+        {
+            $manager = $this->getCustomerManager();
+            return $manager->CustomerUpdate($customerdata);
+        }
 
-		$this->DB->Execute('UPDATE customers SET deleted=1, moddate=?NOW?, modid=?
-				WHERE id=?', array($this->AUTH->id, $id));
-
-		if ($this->SYSLOG) {
-			$this->SYSLOG->AddMessage(SYSLOG_RES_CUST, SYSLOG_OPER_UPDATE, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id, 'deleted' => 1),
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
-			$assigns = $this->DB->GetAll('SELECT id, customergroupid FROM customerassignments WHERE customerid = ?', array($id));
-			if (!empty($assigns))
-				foreach ($assigns as $assign) {
-					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTASSIGN] => $assign['id'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $assign['customergroupid']
-					);
-					$this->SYSLOG->AddMessage(SYSLOG_RES_CUSTASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
-				}
-		}
-
-		$this->DB->Execute('DELETE FROM customerassignments WHERE customerid=?', array($id));
-
-		if ($this->SYSLOG) {
-			$assigns = $this->DB->GetAll('SELECT id, tariffid, liabilityid FROM assignments WHERE customerid = ?', array($id));
-			if (!empty($assigns))
-				foreach ($assigns as $assign) {
-					if ($assign['liabilityid']) {
-						$args = array(
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB] => $assign['liabilityid'],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id);
-						$this->SYSLOG->AddMessage(SYSLOG_RES_LIAB, SYSLOG_OPER_DELETE, $args, array_keys($args));
-					}
-					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN] => $assign['id'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $assign['tariffid'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB] => $assign['liabilityid'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id
-					);
-					$this->SYSLOG->AddMessage(SYSLOG_RES_ASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
-					$nodeassigns = $this->DB->GetAll('SELECT id, nodeid FROM nodeassignments WHERE assignmentid = ?', array($assign['id']));
-					if (!empty($nodeassigns))
-						foreach ($nodeassigns as $nodeassign) {
-							$args = array(
-								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEASSIGN] => $nodeassign['id'],
-								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodeassign['nodeid'],
-								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN] => $assign['id'],
-								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id
-							);
-							$this->SYSLOG->AddMessage(SYSLOG_RES_NODEASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
-						}
-				}
-		}
-		$liabs = $this->DB->GetCol('SELECT liabilityid FROM assignments WHERE liabilityid <> 0 AND customerid = ?', array($id));
-		if (!empty($liabs))
-			$this->DB->Execute('DELETE FROM liabilities WHERE id IN (' . implode(',', $liabs) . ')');
-
-		$this->DB->Execute('DELETE FROM assignments WHERE customerid=?', array($id));
-		// nodes
-		$nodes = $this->DB->GetCol('SELECT id FROM nodes WHERE ownerid=?', array($id));
-		if ($nodes) {
-			if ($this->SYSLOG) {
-				$macs = $this->DB->GetAll('SELECT id, nodeid FROM macs WHERE nodeid IN (' . implode(',', $nodes) . ')');
-				foreach ($macs as $mac) {
-					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MAC] => $mac['id'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $mac['nodeid']);
-					$this->SYSLOG->AddMessage(SYSLOG_RES_MAC, SYSLOG_OPER_DELETE, $args, array_keys($args));
-				}
-				foreach ($nodes as $node) {
-					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $node,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id
-					);
-					$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_DELETE, $args, array_keys($args));
-				}
-			}
-
-			$this->DB->Execute('DELETE FROM nodegroupassignments WHERE nodeid IN (' . join(',', $nodes) . ')');
-			$plugin_data = array();
-			foreach ($nodes as $node)
-				$plugin_data[] = array('id' => $node, 'ownerid' => $id);
-			$this->ExecHook('node_del_before', $plugin_data);
-			$this->DB->Execute('DELETE FROM nodes WHERE ownerid=?', array($id));
-			$this->ExecHook('node_del_after', $plugin_data);
-		}
-		// hosting
-		$this->DB->Execute('UPDATE passwd SET ownerid=0 WHERE ownerid=?', array($id));
-		$this->DB->Execute('UPDATE domains SET ownerid=0 WHERE ownerid=?', array($id));
-		// Remove Userpanel rights
-		$userpanel_dir = ConfigHelper::getConfig('directories.userpanel_dir');
-		if (!empty($userpanel_dir))
-			$this->DB->Execute('DELETE FROM up_rights_assignments WHERE customerid=?', array($id));
-
-		$this->DB->CommitTrans();
+	public function GetCustomerNodesNo($id)
+        {
+            $manager = $this->getCustomerManager();
+            return $manager->getCustomerNodesNo($id);
 	}
 
-	public function CustomerUpdate($customerdata) {
-		global $SYSLOG_RESOURCE_KEYS;
-		$args = array(
-			'status' => $customerdata['status'],
-			'type' => empty($customerdata['type']) ? 0 : 1,
-			'address' => $customerdata['address'],
-			'zip' => $customerdata['zip'],
-			'city' => $customerdata['city'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $customerdata['countryid'],
-			'email' => $customerdata['email'],
-			'ten' => $customerdata['ten'],
-			'ssn' => $customerdata['ssn'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => isset($this->AUTH->id) ? $this->AUTH->id : 0,
-			'post_name' => $customerdata['post_name'],
-			'post_address' => $customerdata['post_address'],
-			'post_zip' => $customerdata['post_zip'],
-			'post_city' => $customerdata['post_city'],
-			'post_countryid' => $customerdata['post_countryid'],
-			'info' => $customerdata['info'],
-			'notes' => $customerdata['notes'],
-			'lastname' => $customerdata['lastname'],
-			'name' => lms_ucwords($customerdata['name']),
-			'message' => $customerdata['message'],
-			'pin' => $customerdata['pin'],
-			'regon' => $customerdata['regon'],
-			'icn' => $customerdata['icn'],
-			'rbe' => $customerdata['rbe'],
-			'cutoffstop' => $customerdata['cutoffstop'],
-			'consentdate' => $customerdata['consentdate'],
-			'einvoice' => $customerdata['einvoice'],
-			'invoicenotice' => $customerdata['invoicenotice'],
-			'mailingnotice' => $customerdata['mailingnotice'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $customerdata['divisionid'],
-			'paytime' => $customerdata['paytime'],
-			'paytype' => $customerdata['paytype'] ? $customerdata['paytype'] : null,
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerdata['id']
-		);
-		$res = $this->DB->Execute('UPDATE customers SET status=?, type=?, address=?,
-				zip=?, city=?, countryid=?, email=?, ten=?, ssn=?, moddate=?NOW?, modid=?,
-				post_name=?, post_address=?, post_zip=?, post_city=?, post_countryid=?,
-				info=?, notes=?, lastname=UPPER(?), name=?,
-				deleted=0, message=?, pin=?, regon=?, icn=?, rbe=?,
-				cutoffstop=?, consentdate=?, einvoice=?, invoicenotice=?, mailingnotice=?,
-				divisionid=?, paytime=?, paytype=?
-				WHERE id=?', array_values($args));
-
-		if ($res) {
-			if ($this->SYSLOG) {
-				unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
-				$args['deleted'] = 0;
-				$this->SYSLOG->AddMessage(SYSLOG_RES_CUST, SYSLOG_OPER_UPDATE, $args,
-					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV]));
-			}
-			$this->UpdateCountryState($customerdata['zip'], $customerdata['stateid']);
-			if ($customerdata['post_zip'] != $customerdata['zip']) {
-				$this->UpdateCountryState($customerdata['post_zip'], $customerdata['post_stateid']);
-			}
-		}
-
-		return $res;
+	public function GetCustomerIDByIP($ipaddr)
+        {
+            $manager = $this->getCustomerManager();
+            return $manager->GetCustomerIDByIP($ipaddr);
 	}
 
-	public function GetCustomerNodesNo($id) {
-		return $this->DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ownerid=?', array($id));
+	public function GetCashByID($id)
+        {
+            $manager = $this->getCashManager();
+            return $manager->GetCashByID($id);
 	}
 
-	public function GetCustomerIDByIP($ipaddr) {
-		return $this->DB->GetOne('SELECT ownerid FROM nodes 
-			    WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)', array($ipaddr, $ipaddr));
+	public function GetCustomerStatus($id)
+        {
+            $manager = $this->getCustomerManager();
+            return $manager->getCustomerStatus($id);
 	}
 
-	public function GetCashByID($id) {
-		return $this->DB->GetRow('SELECT time, userid, value, taxid, customerid, comment 
-			    FROM cash WHERE id=?', array($id));
+        public function GetCustomer($id, $short = false) {
+            $manager = $this->getCustomerManager();
+            return $manager->GetCustomer($id, $short);
+        }
+
+	public function GetCustomerNames()
+        {
+            $manager = $this->getCustomerManager();
+            return $manager->getCustomerNames();
 	}
 
-	public function GetCustomerStatus($id) {
-		return $this->DB->GetOne('SELECT status FROM customers WHERE id=?', array($id));
+	public function GetAllCustomerNames()
+        {
+            $manager = $this->getCustomerManager();
+            return $manager->getAllCustomerNames();
 	}
 
-	public function GetCustomer($id, $short = false) {
-		global $CONTACTTYPES;
-
-		if ($result = $this->DB->GetRow('SELECT c.*, '
-				. $this->DB->Concat('UPPER(c.lastname)', "' '", 'c.name') . ' AS customername,
-			d.shortname AS division, d.account
-			FROM customers' . (defined('LMS-UI') ? 'view' : '') . ' c 
-			LEFT JOIN divisions d ON (d.id = c.divisionid)
-			WHERE c.id = ?', array($id))) {
-			if (!$short) {
-				$result['createdby'] = $this->GetUserName($result['creatorid']);
-				$result['modifiedby'] = $this->GetUserName($result['modid']);
-				$result['creationdateh'] = date('Y/m/d, H:i', $result['creationdate']);
-				$result['moddateh'] = date('Y/m/d, H:i', $result['moddate']);
-				$result['consentdate'] = $result['consentdate'] ? date('Y/m/d', $result['consentdate']) : '';
-				$result['up_logins'] = $this->DB->GetRow('SELECT lastlogindate, lastloginip, 
-					failedlogindate, failedloginip
-					FROM up_customers WHERE customerid = ?', array($result['id']));
-
-				// Get country name
-				if ($result['countryid']) {
-					$result['country'] = $this->DB->GetOne('SELECT name FROM countries WHERE id = ?', array($result['countryid']));
-					if ($result['countryid'] == $result['post_countryid'])
-						$result['post_country'] = $result['country'];
-					else if ($result['post_countryid'])
-						$result['country'] = $this->DB->GetOne('SELECT name FROM countries WHERE id = ?', array($result['post_countryid']));
-				}
-
-				// Get state name
-				if ($cstate = $this->DB->GetRow('SELECT s.id, s.name
-					FROM states s, zipcodes
-					WHERE zip = ? AND stateid = s.id', array($result['zip']))) {
-					$result['stateid'] = $cstate['id'];
-					$result['cstate'] = $cstate['name'];
-				}
-				if ($result['zip'] == $result['post_zip']) {
-					$result['post_stateid'] = $result['stateid'];
-					$result['post_cstate'] = $result['cstate'];
-				} else if ($result['post_zip'] && ($cstate = $this->DB->GetRow('SELECT s.id, s.name
-					FROM states s, zipcodes
-					WHERE zip = ? AND stateid = s.id', array($result['post_zip'])))) {
-					$result['post_stateid'] = $cstate['id'];
-					$result['post_cstate'] = $cstate['name'];
-				}
-			}
-			$result['balance'] = $this->GetCustomerBalance($result['id']);
-			$result['bankaccount'] = bankaccount($result['id'], $result['account']);
-
-			$result['messengers'] = $this->DB->GetAllByKey('SELECT uid, type 
-					FROM imessengers WHERE customerid = ? ORDER BY type', 'type', array($result['id']));
-			$result['contacts'] = $this->DB->GetAll('SELECT phone, name, type
-					FROM customercontacts WHERE customerid = ? ORDER BY id', array($result['id']));
-
-			if (is_array($result['contacts']))
-				foreach ($result['contacts'] as $idx => $row) {
-					$types = array();
-					foreach ($CONTACTTYPES as $tidx => $tname)
-						if ($row['type'] & $tidx)
-							$types[] = $tname;
-
-					if ($types)
-						$result['contacts'][$idx]['typestr'] = implode('/', $types);
-				}
-
-			return $result;
-		}
-		else
-			return FALSE;
+	public function GetCustomerNodesAC($id)
+        {
+            $manager = $this->getCustomerManager();
+            return $manager->GetCustomerNodesAC($id);
 	}
 
-	public function GetCustomerNames() {
-		return $this->DB->GetAllByKey('SELECT id, ' . $this->DB->Concat('lastname', "' '", 'name') . ' AS customername 
-				FROM customersview WHERE status > 1 AND deleted = 0 
-				ORDER BY lastname, name', 'id');
+	public function GetCustomerList($order = 'customername,asc', $state = null, $network = null, $customergroup = null, $search = null, $time = null, $sqlskey = 'AND', $nodegroup = null, $division = null)
+        {
+            $manager = $this->getCustomerManager();
+            return $manager->getCustomerList($order, $state, $network, $customergroup, $search, $time, $sqlskey, $nodegroup, $division);
 	}
 
-	public function GetAllCustomerNames() {
-		return $this->DB->GetAllByKey('SELECT id, ' . $this->DB->Concat('lastname', "' '", 'name') . ' AS customername 
-				FROM customersview WHERE deleted = 0
-				ORDER BY lastname, name', 'id');
+	public function GetCustomerNodes($id, $count = null)
+        {
+            $manager = $this->getCustomerManager();
+            return $manager->getCustomerNodes($id, $count);
 	}
 
-	public function GetCustomerNodesAC($id) {
-		if ($acl = $this->DB->GetALL('SELECT access FROM nodes WHERE ownerid=?', array($id))) {
-			foreach ($acl as $value)
-				if ($value['access'])
-					$y++;
-				else
-					$n++;
-
-			if ($y && !$n)
-				return TRUE;
-			if ($n && !$y)
-				return FALSE;
-		}
-		if ($this->DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ownerid=?', array($id)))
-			return 2;
-		else
-			return FALSE;
+	public function GetCustomerBalance($id, $totime = null)
+        {
+            $manager = $this->getCustomerManager();
+            return $manager->getCustomerBalance($id, $totime);
 	}
 
-	public function GetCustomerList($order = 'customername,asc', $state = NULL, $network = NULL, $customergroup = NULL, $search = NULL, $time = NULL, $sqlskey = 'AND', $nodegroup = NULL, $division = NULL) {
-		list($order, $direction) = sscanf($order, '%[^,],%s');
-
-		($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
-
-		switch ($order) {
-			case 'id':
-				$sqlord = ' ORDER BY c.id';
-				break;
-			case 'address':
-				$sqlord = ' ORDER BY address';
-				break;
-			case 'balance':
-				$sqlord = ' ORDER BY balance';
-				break;
-			case 'tariff':
-				$sqlord = ' ORDER BY tariffvalue';
-				break;
-			default:
-				$sqlord = ' ORDER BY customername';
-				break;
-		}
-
-		switch ($state) {
-			case 4:
-				// When customer is deleted we have no assigned groups or nodes, see DeleteCustomer().
-				// Return empty list in this case
-				if (!empty($network) || !empty($customergroup) || !empty($nodegroup)) {
-					$customerlist['total'] = 0;
-					$customerlist['state'] = 0;
-					$customerlist['order'] = $order;
-					$customerlist['direction'] = $direction;
-					return $customerlist;
-				}
-				$deleted = 1;
-				break;
-			case 5: $disabled = 1;
-				break;
-			case 6: $indebted = 1;
-				break;
-			case 7: $online = 1;
-				break;
-			case 8: $groupless = 1;
-				break;
-			case 9: $tariffless = 1;
-				break;
-			case 10: $suspended = 1;
-				break;
-			case 11: $indebted2 = 1;
-				break;
-			case 12: $indebted3 = 1;
-				break;
-		}
-
-		if ($network)
-			$net = $this->GetNetworkParams($network);
-
-		$over = 0;
-		$below = 0;
-
-		if (sizeof($search))
-			foreach ($search as $key => $value) {
-				if ($value != '') {
-					switch ($key) {
-						case 'phone':
-							$searchargs[] = 'EXISTS (SELECT 1 FROM customercontacts
-								WHERE customerid = c.id AND phone ?LIKE? ' . $this->DB->Escape("%$value%") . ')';
-							break;
-						case 'zip':
-						case 'city':
-						case 'address':
-							// UPPER here is a workaround for postgresql ILIKE bug
-							$searchargs[] = "(UPPER($key) ?LIKE? UPPER(" . $this->DB->Escape("%$value%") . ")
-								OR UPPER(post_$key) ?LIKE? UPPER(" . $this->DB->Escape("%$value%") . '))';
-							break;
-						case 'customername':
-							// UPPER here is a workaround for postgresql ILIKE bug
-							$searchargs[] = $this->DB->Concat('UPPER(c.lastname)', "' '", 'UPPER(c.name)') . ' ?LIKE? UPPER(' . $this->DB->Escape("%$value%") . ')';
-							break;
-						case 'createdfrom':
-							if ($search['createdto']) {
-								$searchargs['createdfrom'] = '(creationdate >= ' . intval($value)
-										. ' AND creationdate <= ' . intval($search['createdto']) . ')';
-								unset($search['createdto']);
-							}
-							else
-								$searchargs[] = 'creationdate >= ' . intval($value);
-							break;
-						case 'createdto':
-							if (!isset($searchargs['createdfrom']))
-								$searchargs[] = 'creationdate <= ' . intval($value);
-							break;
-						case 'deletedfrom':
-							if ($search['deletedto']) {
-								$searchargs['deletedfrom'] = '(moddate >= ' . intval($value)
-										. ' AND moddate <= ' . intval($search['deletedto']) . ')';
-								unset($search['deletedto']);
-							}
-							else
-								$searchargs[] = 'moddate >= ' . intval($value);
-							$deleted = 1;
-							break;
-						case 'deletedto':
-							if (!isset($searchargs['deletedfrom']))
-								$searchargs[] = 'moddate <= ' . intval($value);
-							$deleted = 1;
-							break;
-						case 'type':
-							$searchargs[] = 'type = ' . intval($value);
-							break;
-						case 'linktype':
-							$searchargs[] = 'EXISTS (SELECT 1 FROM nodes
-								WHERE ownerid = c.id AND linktype = ' . intval($value) . ')';
-							break;
-						case 'linktechnology':
-							$searchargs[] = 'EXISTS (SELECT 1 FROM nodes
-								WHERE ownerid = c.id AND linktechnology = ' . intval($value) . ')';
-							break;
-						case 'linkspeed':
-							$searchargs[] = 'EXISTS (SELECT 1 FROM nodes
-								WHERE ownerid = c.id AND linkspeed = ' . intval($value) . ')';
-							break;
-						case 'doctype':
-							$val = explode(':', $value); // <doctype>:<fromdate>:<todate>
-							$searchargs[] = 'EXISTS (SELECT 1 FROM documents
-								WHERE customerid = c.id'
-									. (!empty($val[0]) ? ' AND type = ' . intval($val[0]) : '')
-									. (!empty($val[1]) ? ' AND cdate >= ' . intval($val[1]) : '')
-									. (!empty($val[2]) ? ' AND cdate <= ' . intval($val[2]) : '')
-									. ')';
-							break;
-						case 'stateid':
-							$searchargs[] = 'EXISTS (SELECT 1 FROM zipcodes z
-								WHERE z.zip = c.zip AND z.stateid = ' . intval($value) . ')';
-							break;
-						case 'tariffs':
-							$searchargs[] = 'EXISTS (SELECT 1 FROM assignments a 
-							WHERE a.customerid = c.id
-							AND (datefrom <= ?NOW? OR datefrom = 0) 
-							AND (dateto >= ?NOW? OR dateto = 0)
-							AND (tariffid IN (' . $value . ')))';
-							break;
-						case 'tarifftype':
-							$searchargs[] = 'EXISTS (SELECT 1 FROM assignments a 
-							JOIN tariffs t ON t.id = a.tariffid
-							WHERE a.customerid = c.id
-							AND (datefrom <= ?NOW? OR datefrom = 0) 
-							AND (dateto >= ?NOW? OR dateto = 0)
-							AND (t.type = ' . intval($value) . '))';
-							break;
-						default:
-							$searchargs[] = "$key ?LIKE? " . $this->DB->Escape("%$value%");
-					}
-				}
-			}
-
-		if (isset($searchargs))
-			$sqlsarg = implode(' ' . $sqlskey . ' ', $searchargs);
-
-		$suspension_percentage = f_round(ConfigHelper::getConfig('finances.suspension_percentage'));
-
-		if ($customerlist = $this->DB->GetAll(
-				'SELECT c.id AS id, ' . $this->DB->Concat('UPPER(lastname)', "' '", 'c.name') . ' AS customername, 
-				status, address, zip, city, countryid, countries.name AS country, email, ten, ssn, c.info AS info, 
-				message, c.divisionid, c.paytime AS paytime, COALESCE(b.value, 0) AS balance,
-				COALESCE(t.value, 0) AS tariffvalue, s.account, s.warncount, s.online,
-				(CASE WHEN s.account = s.acsum THEN 1
-					WHEN s.acsum > 0 THEN 2	ELSE 0 END) AS nodeac,
-				(CASE WHEN s.warncount = s.warnsum THEN 1
-					WHEN s.warnsum > 0 THEN 2 ELSE 0 END) AS nodewarn
-				FROM customersview c
-				LEFT JOIN countries ON (c.countryid = countries.id) '
-				. ($customergroup ? 'LEFT JOIN customerassignments ON (c.id = customerassignments.customerid) ' : '')
-				. 'LEFT JOIN (SELECT
-					SUM(value) AS value, customerid
-					FROM cash'
-				. ($time ? ' WHERE time < ' . $time : '') . '
-					GROUP BY customerid
-				) b ON (b.customerid = c.id)
-				LEFT JOIN (SELECT a.customerid,
-					SUM((CASE a.suspended
-						WHEN 0 THEN (((100 - a.pdiscount) * (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) / 100) - a.vdiscount)
-						ELSE ((((100 - a.pdiscount) * (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) / 100) - a.vdiscount) * ' . $suspension_percentage . ' / 100) END)
-					* (CASE t.period
-						WHEN ' . MONTHLY . ' THEN 1
-						WHEN ' . YEARLY . ' THEN 1/12.0
-						WHEN ' . HALFYEARLY . ' THEN 1/6.0
-						WHEN ' . QUARTERLY . ' THEN 1/3.0
-						ELSE (CASE a.period
-						    WHEN ' . MONTHLY . ' THEN 1
-						    WHEN ' . YEARLY . ' THEN 1/12.0
-						    WHEN ' . HALFYEARLY . ' THEN 1/6.0
-						    WHEN ' . QUARTERLY . ' THEN 1/3.0
-						    ELSE 0 END)
-						END)
-					) AS value 
-					FROM assignments a
-					LEFT JOIN tariffs t ON (t.id = a.tariffid)
-					LEFT JOIN liabilities l ON (l.id = a.liabilityid AND a.period != ' . DISPOSABLE . ')
-					WHERE (a.datefrom <= ?NOW? OR a.datefrom = 0) AND (a.dateto > ?NOW? OR a.dateto = 0) 
-					GROUP BY a.customerid
-				) t ON (t.customerid = c.id)
-				LEFT JOIN (SELECT ownerid,
-					SUM(access) AS acsum, COUNT(access) AS account,
-					SUM(warning) AS warnsum, COUNT(warning) AS warncount, 
-					(CASE WHEN MAX(lastonline) > ?NOW? - ' . intval(ConfigHelper::getConfig('phpui.lastonline_limit')) . '
-						THEN 1 ELSE 0 END) AS online
-					FROM nodes
-					WHERE ownerid > 0
-					GROUP BY ownerid
-				) s ON (s.ownerid = c.id)
-				WHERE c.deleted = ' . intval($deleted)
-				. ($state <= 3 && $state > 0 ? ' AND c.status = ' . intval($state) : '')
-				. ($division ? ' AND c.divisionid = ' . intval($division) : '')
-				. ($online ? ' AND s.online = 1' : '')
-				. ($indebted ? ' AND b.value < 0' : '')
-				. ($indebted2 ? ' AND b.value < -t.value' : '')
-				. ($indebted3 ? ' AND b.value < -t.value * 2' : '')
-				. ($disabled ? ' AND s.ownerid IS NOT NULL AND s.account > s.acsum' : '')
-				. ($network ? ' AND EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id 
-					AND (netid = ' . $network . '
-					OR (ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')))' : '')
-				. ($customergroup ? ' AND customergroupid=' . intval($customergroup) : '')
-				. ($nodegroup ? ' AND EXISTS (SELECT 1 FROM nodegroupassignments na
-							JOIN nodes n ON (n.id = na.nodeid) 
-							WHERE n.ownerid = c.id AND na.nodegroupid = ' . intval($nodegroup) . ')' : '')
-				. ($groupless ? ' AND NOT EXISTS (SELECT 1 FROM customerassignments a 
-							WHERE c.id = a.customerid)' : '')
-				. ($tariffless ? ' AND NOT EXISTS (SELECT 1 FROM assignments a 
-							WHERE a.customerid = c.id
-								AND (datefrom <= ?NOW? OR datefrom = 0) 
-								AND (dateto >= ?NOW? OR dateto = 0)
-								AND (tariffid != 0 OR liabilityid != 0))' : '')
-				. ($suspended ? ' AND EXISTS (SELECT 1 FROM assignments a
-							WHERE a.customerid = c.id AND (
-								(tariffid = 0 AND liabilityid = 0
-								    AND (datefrom <= ?NOW? OR datefrom = 0)
-								    AND (dateto >= ?NOW? OR dateto = 0)) 
-								OR ((datefrom <= ?NOW? OR datefrom = 0)
-								    AND (dateto >= ?NOW? OR dateto = 0)
-								    AND suspended = 1)
-								))' : '')
-				. (isset($sqlsarg) ? ' AND (' . $sqlsarg . ')' : '')
-				. ($sqlord != '' ? $sqlord . ' ' . $direction : '')
-		)) {
-			foreach ($customerlist as $idx => $row) {
-				// summary
-				if ($row['balance'] > 0)
-					$over += $row['balance'];
-				elseif ($row['balance'] < 0)
-					$below += $row['balance'];
-			}
-		}
-
-		$customerlist['total'] = sizeof($customerlist);
-		$customerlist['state'] = $state;
-		$customerlist['order'] = $order;
-		$customerlist['direction'] = $direction;
-		$customerlist['below'] = $below;
-		$customerlist['over'] = $over;
-
-		return $customerlist;
+	public function GetCustomerBalanceList($id, $totime = null, $direction = 'ASC')
+        {
+            $manager = $this->getCustomerManager();
+            return $manager->getCustomerBalanceList($id, $totime, $direction);
 	}
 
-	public function GetCustomerNodes($id, $count = NULL) {
-		if ($result = $this->DB->GetAll('SELECT n.id, n.name, mac, ipaddr,
-				inet_ntoa(ipaddr) AS ip, ipaddr_pub,
-				inet_ntoa(ipaddr_pub) AS ip_pub, passwd, access,
-				warning, info, ownerid, lastonline, location,
-				(SELECT COUNT(*) FROM nodegroupassignments
-					WHERE nodeid = n.id) AS gcount,
-				n.netid, net.name AS netname
-				FROM vnodes n
-				JOIN networks net ON net.id = n.netid
-				WHERE ownerid = ?
-				ORDER BY n.name ASC ' . ($count ? 'LIMIT ' . $count : ''), array($id))) {
-			// assign network(s) to node record
-			$networks = (array) $this->GetNetworks();
-
-			foreach ($result as $idx => $node) {
-				$ids[$node['id']] = $idx;
-				$result[$idx]['lastonlinedate'] = lastonline_date($node['lastonline']);
-
-				//foreach ($networks as $net)
-				//	if (isipin($node['ip'], $net['address'], $net['mask'])) {
-				//		$result[$idx]['network'] = $net;
-				//		break;
-				//	}
-
-				if ($node['ipaddr_pub'])
-					foreach ($networks as $net)
-						if (isipin($node['ip_pub'], $net['address'], $net['mask'])) {
-							$result[$idx]['network_pub'] = $net;
-							break;
-						}
-			}
-
-			// get EtherWerX channels
-			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false))) {
-				$channels = $this->DB->GetAllByKey('SELECT nodeid, channelid, c.name, c.id, cid,
-				        nc.upceil, nc.downceil
-					FROM ewx_stm_nodes
-					JOIN ewx_stm_channels nc ON (channelid = nc.id)
-					LEFT JOIN ewx_channels c ON (c.id = nc.cid)
-					WHERE nodeid IN (' . implode(',', array_keys($ids)) . ')', 'nodeid');
-
-				if ($channels)
-					foreach ($channels as $channel) {
-						$idx = $ids[$channel['nodeid']];
-						$result[$idx]['channelid'] = $channel['id'] ? $channel['id'] : $channel['channelid'];
-						$result[$idx]['channelname'] = $channel['name'];
-						$result[$idx]['cid'] = $channel['cid'];
-						$result[$idx]['downceil'] = $channel['downceil'];
-						$result[$idx]['upceil'] = $channel['upceil'];
-					}
-			}
-		}
-		return $result;
-	}
-
-	/* added balance totime - tcpdf invoice */
-
-	public function GetCustomerBalance($id, $totime = NULL) {
-		return $this->DB->GetOne('SELECT SUM(value) FROM cash WHERE customerid = ?' . ($totime ? ' AND time < ' . intval($totime) : ''), array($id));
-	}
-
-	public function GetCustomerBalanceList($id, $totime = NULL, $direction = 'ASC') {
-		($direction == 'ASC' || $direction == 'asc') ? $direction == 'ASC' : $direction == 'DESC';
-
-		$saldolist = array();
-
-		if ($tslist = $this->DB->GetAll('SELECT cash.id AS id, time, cash.type AS type, 
-					cash.value AS value, taxes.label AS tax, cash.customerid AS customerid, 
-					comment, docid, users.name AS username,
-					documents.type AS doctype, documents.closed AS closed
-					FROM cash
-					LEFT JOIN users ON users.id = cash.userid
-					LEFT JOIN documents ON documents.id = docid
-					LEFT JOIN taxes ON cash.taxid = taxes.id
-					WHERE cash.customerid = ?'
-				. ($totime ? ' AND time <= ' . intval($totime) : '')
-				. ' ORDER BY time ' . $direction, array($id))) {
-			$saldolist['balance'] = 0;
-			$saldolist['total'] = 0;
-			$i = 0;
-
-			foreach ($tslist as $row) {
-				// old format wrapper
-				foreach ($row as $column => $value)
-					$saldolist[$column][$i] = $value;
-
-				$saldolist['after'][$i] = round($saldolist['balance'] + $row['value'], 2);
-				$saldolist['balance'] += $row['value'];
-				$saldolist['date'][$i] = date('Y/m/d H:i', $row['time']);
-
-				$i++;
-			}
-
-			$saldolist['total'] = sizeof($tslist);
-		}
-
-		$saldolist['customerid'] = $id;
-		return $saldolist;
-	}
-
-	public function CustomerStats() {
-		$result = $this->DB->GetRow('SELECT COUNT(id) AS total,
-				COUNT(CASE WHEN status = 3 THEN 1 END) AS connected,
-				COUNT(CASE WHEN status = 2 THEN 1 END) AS awaiting,
-				COUNT(CASE WHEN status = 1 THEN 1 END) AS interested
-				FROM customersview WHERE deleted=0');
-
-		$tmp = $this->DB->GetRow('SELECT SUM(a.value)*-1 AS debtvalue, COUNT(*) AS debt 
-				FROM (SELECT SUM(value) AS value 
-				    FROM cash 
-				    LEFT JOIN customersview ON (customerid = customersview.id) 
-				    WHERE deleted = 0 
-				    GROUP BY customerid 
-				    HAVING SUM(value) < 0
-				) a');
-
-		if (is_array($tmp))
-			$result = array_merge($result, $tmp);
-
-		return $result;
+	public function CustomerStats()
+        {
+            $manager = $this->getCustomerManager();
+            return $manager->customerStats();
 	}
 
 	/*
 	 * Customer groups
 	 */
 
-	public function CustomergroupWithCustomerGet($id) {
-		return $this->DB->GetOne('SELECT COUNT(*) FROM customerassignments
-				WHERE customergroupid = ?', array($id));
+	public function CustomergroupWithCustomerGet($id)
+        {
+            $manager = $this->getCustomerGroupManager();
+            return $manager->CustomergroupWithCustomerGet();
 	}
 
-	public function CustomergroupAdd($customergroupdata) {
-		global $SYSLOG_RESOURCE_KEYS;
-		if ($this->DB->Execute('INSERT INTO customergroups (name, description) VALUES (?, ?)', array($customergroupdata['name'], $customergroupdata['description']))) {
-			$id = $this->DB->GetLastInsertID('customergroups');
-			if ($this->SYSLOG) {
-				$args = array(
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $id,
-					'name' => $customergroupdata['name'],
-					'description' => $customergroupdata['description']
-				);
-				$this->SYSLOG->AddMessage(SYSLOG_RES_CUSTGROUP, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP]));
-			}
-			return $id;
-		}
-		else
-			return FALSE;
+	public function CustomergroupAdd($customergroupdata)
+        {
+            $manager = $this->getCustomerGroupManager();
+            return $manager->CustomergroupAdd($customergroupdata);
 	}
 
-	public function CustomergroupUpdate($customergroupdata) {
-		global $SYSLOG_RESOURCE_KEYS;
-		$args = array(
-			'name' => $customergroupdata['name'],
-			'description' => $customergroupdata['description'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $customergroupdata['id']
-		);
-		if ($this->SYSLOG)
-			$this->SYSLOG->AddMessage(SYSLOG_RES_CUSTGROUP, SYSLOG_OPER_UPDATE,
-				$args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP]));
-		return $this->DB->Execute('UPDATE customergroups SET name=?, description=? 
-				WHERE id=?', array_values($args));
+	public function CustomergroupUpdate($customergroupdata)
+        {
+            $manager = $this->getCustomerGroupManager();
+            return $manager->CustomergroupUpdate($customergroupdata);
 	}
 
-	public function CustomergroupDelete($id) {
-		global $SYSLOG_RESOURCE_KEYS;
-		if (!$this->CustomergroupWithCustomerGet($id)) {
-			if ($this->SYSLOG) {
-				$custassigns = $this->DB->Execute('SELECT id, customerid, customergroupid FROM customerassignments
-					WHERE customergroupid = ?', array($id));
-				if (!empty($custassigns))
-					foreach ($custassigns as $custassign) {
-						$args = array(
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTASSIGN] => $custassign['id'],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $custassign['customerid'],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $custassign['customergroupid']
-						);
-						$this->SYSLOG->AddMessage(SYSLOG_RES_CUSTASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
-					}
-				$this->SYSLOG->AddMessage(SYSLOG_RES_CUSTGROUP, SYSLOG_OPER_DELETE,
-					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $id), array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP]));
-			}
-			$this->DB->Execute('DELETE FROM customergroups WHERE id=?', array($id));
-			return TRUE;
-		}
-		else
-			return FALSE;
+	public function CustomergroupDelete($id)
+        {
+	    $manager = $this->getCustomerGroupManager();
+            return $manager->CustomergroupDelete($id);
 	}
 
-	public function CustomergroupExists($id) {
-		return ($this->DB->GetOne('SELECT id FROM customergroups WHERE id=?', array($id)) ? TRUE : FALSE);
+	public function CustomergroupExists($id)
+        {
+            $manager = $this->getCustomerGroupManager();
+            return $manager->CustomergroupExists($id);
 	}
 
-	public function CustomergroupGetId($name) {
-		return $this->DB->GetOne('SELECT id FROM customergroups WHERE name=?', array($name));
+	public function CustomergroupGetId($name)
+        {
+            $manager = $this->getCustomerGroupManager();
+            return $manager->CustomergroupGetId($name);
 	}
 
-	public function CustomergroupGetName($id) {
-		return $this->DB->GetOne('SELECT name FROM customergroups WHERE id=?', array($id));
+	public function CustomergroupGetName($id)
+        {
+            $manager = $this->getCustomerGroupManager();
+            return $manager->CustomergroupGetName($id);
 	}
 
 	public function CustomergroupGetAll() {
-		return $this->DB->GetAll('SELECT g.id, g.name, g.description 
-				FROM customergroups g
-				WHERE NOT EXISTS (
-					SELECT 1 FROM excludedgroups 
-					WHERE userid = lms_current_user() AND customergroupid = g.id) 
-				ORDER BY g.name ASC');
+            $manager = $this->getCustomerGroupManager();
+            return $manager->CustomergroupGetAll();
 	}
 
 	public function CustomergroupGet($id, $network = NULL) {
-		if ($network)
-			$net = $this->GetNetworkParams($network);
-
-		$result = $this->DB->GetRow('SELECT id, name, description 
-			FROM customergroups WHERE id=?', array($id));
-
-		$result['customers'] = $this->DB->GetAll('SELECT c.id AS id,'
-				. $this->DB->Concat('c.lastname', "' '", 'c.name') . ' AS customername 
-			FROM customerassignments, customers c '
-				. ($network ? 'LEFT JOIN nodes ON c.id = nodes.ownerid ' : '')
-				. 'WHERE c.id = customerid AND customergroupid = ? '
-				. ($network ? 'AND ((ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ') OR
-			(ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')) ' : '')
-				. ' GROUP BY c.id, c.lastname, c.name ORDER BY c.lastname, c.name', array($id));
-
-		$result['customerscount'] = sizeof($result['customers']);
-		$result['count'] = $network ? $this->CustomergroupWithCustomerGet($id) : $result['customerscount'];
-
-		return $result;
+		$manager = $this->getCustomerGroupManager();
+            return $manager->CustomergroupGet($id, $network);
 	}
 
 	public function CustomergroupGetList() {
-		if ($customergrouplist = $this->DB->GetAll('SELECT id, name, description,
-				(SELECT COUNT(*)
-					FROM customerassignments 
-					WHERE customergroupid = customergroups.id
-				) AS customerscount
-				FROM customergroups ORDER BY name ASC')) {
-			$totalcount = 0;
-
-			foreach ($customergrouplist as $idx => $row) {
-				$totalcount += $row['customerscount'];
-			}
-
-			$customergrouplist['total'] = sizeof($customergrouplist);
-			$customergrouplist['totalcount'] = $totalcount;
-		}
-
-		return $customergrouplist;
+		$manager = $this->getCustomerGroupManager();
+            return $manager->CustomergroupGetList();
 	}
 
 	public function CustomergroupGetForCustomer($id) {
-		return $this->DB->GetAll('SELECT customergroups.id AS id, name, description 
-			    FROM customergroups, customerassignments 
-			    WHERE customergroups.id=customergroupid AND customerid=? 
-			    ORDER BY name ASC', array($id));
+		$manager = $this->getCustomerGroupManager();
+            return $manager->CustomergroupGetForCustomer($id);
 	}
 
 	public function GetGroupNamesWithoutCustomer($customerid) {
-		return $this->DB->GetAll('SELECT customergroups.id AS id, name, customerid
-			FROM customergroups 
-			LEFT JOIN customerassignments ON (customergroups.id=customergroupid AND customerid = ?)
-			GROUP BY customergroups.id, name, customerid 
-			HAVING customerid IS NULL ORDER BY name', array($customerid));
+		$manager = $this->getCustomerGroupManager();
+            return $manager->GetGroupNamesWithoutCustomer($customerid);
 	}
 
 	public function CustomerassignmentGetForCustomer($id) {
-		return $this->DB->GetAll('SELECT customerassignments.id AS id, customergroupid, customerid 
-			FROM customerassignments, customergroups 
-			WHERE customerid=? AND customergroups.id = customergroupid 
-			ORDER BY customergroupid ASC', array($id));
+		$manager = $this->getCustomerGroupManager();
+            return $manager->CustomerassignmentGetForCustomer($id);
 	}
 
 	public function CustomerassignmentDelete($customerassignmentdata) {
-		global $SYSLOG_RESOURCE_KEYS;
-		if ($this->SYSLOG) {
-			$assign = $this->DB->GetRow('SELECT id, customerid FROM customerassignments
-				WHERE customergroupid = ? AND customerid = ?', array($customerassignmentdata['customergroupid'],
-							$customerassignmentdata['customerid']));
-			if ($assign) {
-				$args = array(
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTASSIGN] => $assign['id'],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $assign['customerid'],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $customerassignmentdata['customergroupid']
-				);
-				$this->SYSLOG->AddMessage(SYSLOG_RES_CUSTASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
-			}
-		}
-		return $this->DB->Execute('DELETE FROM customerassignments 
-			WHERE customergroupid=? AND customerid=?', array($customerassignmentdata['customergroupid'],
-						$customerassignmentdata['customerid']));
+		$manager = $this->getCustomerGroupManager();
+            return $manager->CustomerassignmentDelete($customerassignmentdata);
 	}
 
 	public function CustomerassignmentAdd($customerassignmentdata) {
-		global $SYSLOG_RESOURCE_KEYS;
-		$res = $this->DB->Execute('INSERT INTO customerassignments (customergroupid, customerid) VALUES (?, ?)', array($customerassignmentdata['customergroupid'],
-						$customerassignmentdata['customerid']));
-		if ($this->SYSLOG && $res) {
-			$id = $this->DB->GetLastInsertID('customerassignments');
-			$args = array(
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTASSIGN] => $id,
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerassignmentdata['customerid'],
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $customerassignmentdata['customergroupid']
-			);
-			$this->SYSLOG->AddMessage(SYSLOG_RES_CUSTASSIGN, SYSLOG_OPER_ADD, $args, array_keys($args));
-		}
-		return $res;
+		$manager = $this->getCustomerGroupManager();
+            return $manager->CustomerassignmentAdd($customerassignmentdata);
 	}
 
 	public function CustomerassignmentExist($groupid, $customerid) {
-		return $this->DB->GetOne('SELECT 1 FROM customerassignments WHERE customergroupid=? AND customerid=?', array($groupid, $customerid));
+		$manager = $this->getCustomerGroupManager();
+            return $manager->CustomerassignmentExist($groupid, $customerid);
 	}
 
 	public function GetCustomerWithoutGroupNames($groupid, $network = NULL) {
-		if ($network)
-			$net = $this->GetNetworkParams($network);
-
-		return $this->DB->GetAll('SELECT c.id AS id, ' . $this->DB->Concat('c.lastname', "' '", 'c.name') . ' AS customername
-			FROM customersview c '
-						. ($network ? 'LEFT JOIN nodes ON (c.id = nodes.ownerid) ' : '')
-						. 'WHERE c.deleted = 0 AND c.id NOT IN (
-				SELECT customerid FROM customerassignments WHERE customergroupid = ?) '
-						. ($network ? 'AND ((ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ') OR (ipaddr_pub > '
-								. $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')) ' : '')
-						. 'GROUP BY c.id, c.lastname, c.name
-			ORDER BY c.lastname, c.name', array($groupid));
+		$manager = $this->getCustomerGroupManager();
+            return $manager->GetCustomerWithoutGroupNames($groupid, $network);
 	}
 
 	/*
@@ -3782,20 +2870,14 @@ class LMS {
 	}
 
 	public function GetNetworks($with_disabled = true) {
-		if ($with_disabled == false)
-			return $this->DB->GetAll('SELECT id, name, inet_ntoa(address) AS address, 
-				address AS addresslong, mask, mask2prefix(inet_aton(mask)) AS prefix, disabled 
-				FROM networks WHERE disabled=0 ORDER BY name');
-		else
-			return $this->DB->GetAll('SELECT id, name, inet_ntoa(address) AS address, 
-				address AS addresslong, mask, mask2prefix(inet_aton(mask)) AS prefix, disabled 
-				FROM networks ORDER BY name');
+		$manager = $this->getNetworkManager();
+            return $manager->GetNetworks($with_disabled);
 	}
 
-	public function GetNetworkParams($id) {
-		return $this->DB->GetRow('SELECT *, inet_ntoa(address) AS netip, 
-			broadcast(address, inet_aton(mask)) AS broadcast
-			FROM networks WHERE id = ?', array($id));
+	public function GetNetworkParams($id)
+        {
+            $manager = $this->getNetworkManager();
+            return $manager->GetNetworkParams($id);
 	}
 
 	public function GetNetworkList($order='id,asc') {
@@ -5891,38 +4973,13 @@ class LMS {
 		return $this->DB->GetOne('SELECT name FROM countries WHERE id = ?', array($id));
 	}
 
-	public function UpdateCountryState($zip, $stateid) {
-		if (empty($zip) || empty($stateid)) {
-			return;
-		}
+	public function UpdateCountryState($zip, $stateid)
+        {
+            $manager = $this->getZipCodeManager();
+            return $manager->UpdateCountryState($zip, $stateid);
+        }
 
-		$cstate = $this->DB->GetOne('SELECT stateid FROM zipcodes WHERE zip = ?', array($zip));
-
-		$args = array(
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_STATE] => $stateid,
-			'zip' => $zip
-		);
-		if ($cstate === NULL) {
-			$this->DB->Execute('INSERT INTO zipcodes (stateid, zip) VALUES (?, ?)', array_values($args));
-			if ($SYSLOG) {
-				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ZIP]] = $this->DB->GetLastInsertID('zipcodes');
-				$this->SYSLOG->AddMessage(SYSLOG_RES_ZIP, SYSLOG_OPER_ADD, $args,
-					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_STATE],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ZIP]));
-			}
-		} else if ($cstate != $stateid) {
-			$this->DB->Execute('UPDATE zipcodes SET stateid = ? WHERE zip = ?', array_values($args));
-			if ($SYSLOG) {
-				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ZIP]] =
-					$this->DB->GetOne('SELECT id FROM zipcodes WHERE zip = ?', array($zip));
-				$this->SYSLOG->AddMessage(SYSLOG_RES_ZIP, SYSLOG_OPER_UPDATE, $args,
-					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_STATE],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ZIP]));
-			}
-		}
-	}
-
-	public function GetNAStypes() {
+    public function GetNAStypes() {
 		return $this->DB->GetAllByKey('SELECT id, name FROM nastypes ORDER BY name', 'id');
 	}
 
@@ -5958,77 +5015,77 @@ class LMS {
 	 */
 	public function GetVoipAccountList($order = 'login,asc', $search = NULL, $sqlskey = 'AND')
         {
-            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getVoipAccountManager();
             return $manager->getVoipAccountList($order, $search, $sqlskey);
 	}
 
 	public function VoipAccountSet($id, $access = -1)
         {
-            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getVoipAccountManager();
             return $manager->voipAccountSet($id, $access);
 	}
 
 	public function VoipAccountSetU($id, $access = false)
         {
-            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getVoipAccountManager();
             return $manager->voipAccountSetU($id, $access);
 	}
 
 	public function VoipAccountAdd($voipaccountdata)
         {
-            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getVoipAccountManager();
             return $manager->VoipAccountAdd($voipaccountdata);
 	}
 
 	public function VoipAccountExists($id)
         {
-            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getVoipAccountManager();
             return $manager->voipAccountExists($id);
 	}
 
 	public function GetVoipAccountOwner($id)
         {
-            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getVoipAccountManager();
             return $manager->getVoipAccountOwner($id);
         }
 
 	public function GetVoipAccount($id)
         {
-            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getVoipAccountManager();
 	    return $manager->getVoipAccount($id);
 	}
 
 	public function GetVoipAccountIDByLogin($login)
         {
-            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getVoipAccountManager();
 	    return $manager->GetVoipAccountIDByLogin($login);
 	}
 
 	public function GetVoipAccountIDByPhone($phone)
         {
-            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getVoipAccountManager();
 	    return $manager->getVoipAccountIDByPhone($phone);
 	}
 
 	public function GetVoipAccountLogin($id)
         {
-            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getVoipAccountManager();
 	    return $manager->getVoipAccountLogin($id);
 	}
 
 	public function DeleteVoipAccount($id)
         {
-            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getVoipAccountManager();
             return $manager->deleteVoipAccount($id);
 	}
 
 	public function VoipAccountUpdate($voipaccountdata) {
-            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getVoipAccountManager();
             return $manager->voipAccountUpdate($voipaccountdata);
 	}
 
 	public function GetCustomerVoipAccounts($id) {
-            $manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            $manager = $this->getVoipAccountManager();
             return $manager->getCustomerVoipAccounts($id);
 	}
 
@@ -6105,6 +5162,97 @@ class LMS {
 		return $this->DB->GetAll('SELECT id, name FROM templates
 			WHERE type = ? ORDER BY name', array(intval($type)));
 	}
+        
+        /**
+         * Returns user manager
+         * 
+         * @return \LMSUserManager User manager
+         */
+        protected function getUserManager()
+        {
+            if (!isset($this->user_manager)) {
+                $this->user_manager = new LMSUserManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            }
+            return $this->user_manager;
+        }
+        
+        /**
+         * Returns customer manager
+         * 
+         * @return \LMSCustomerManager Customer manager
+         */
+        protected function getCustomerManager()
+        {
+            if (!isset($this->customer_manager)) {
+                $this->customer_manager = new LMSCustomerManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            }
+            return $this->customer_manager;
+        }
+        
+        /**
+         * Returns VoIP account manager
+         * 
+         * @return LMSVoipAccountManager VoIP account manager
+         */
+        protected function getVoipAccountManager()
+        {
+            if (!isset($this->voip_account_manager)) {
+                $this->voip_account_manager = new LMSVoipAccountManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            }
+            return $this->voip_account_manager;
+        }
+        
+        /**
+         * Returns zip code manager
+         * 
+         * @return LMSZipCodeManager Zip code manager
+         */
+        protected function getZipCodeManager()
+        {
+            if (!isset($this->zip_code_manager)) {
+                $this->zip_code_manager = new LMSZipCodeManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            }
+            return $this->zip_code_manager;
+        }
+        
+        /**
+         * Returns cash manager
+         * 
+         * @return LMSCashManager Cash manager
+         */
+        protected function getCashManager()
+        {
+            if (!isset($this->cash_manager)) {
+                $this->cash_manager = new LMSCashManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            }
+            return $this->cash_manager;
+        }
+        
+        /**
+         * Returns customer group manager
+         * 
+         * @return LMSCustomerGroupManager Customer group manager
+         */
+        protected function getCustomerGroupManager()
+        {
+            if (!isset($this->customer_group_manager)) {
+                $this->customer_group_manager = new LMSCustomerGroupManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            }
+            return $this->customer_group_manager;
+        }
+        
+        /**
+         * Returns customer group manager
+         * 
+         * @return LMSCustomerGroupManager Customer group manager
+         */
+        protected function getNetworkManager()
+        {
+            if (!isset($this->network_manager)) {
+                $this->network_manager = new LMSNetworkManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            }
+            return $this->network_manager;
+        }
 }
 
 ?>
