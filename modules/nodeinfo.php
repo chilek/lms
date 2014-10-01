@@ -88,8 +88,20 @@ if ($nodeinfo['invprojectid']) {
 			if ($nodeinfo['netdev']) {
 				$prj = $DB->GetRow("SELECT * FROM invprojects WHERE id=?",
 					array($netdevices['invprojectid']));
-				if ($prj)
-					$nodeinfo['projectname'] = $prj['name']." (".$netdevices['name'].")";
+				if ($prj) {
+					if ($prj['type'] == INV_PROJECT_SYSTEM && intval($prj['id'])==1) {
+						/* inherited */
+						if ($netdevices['netnodeid']) {
+							$prj = $DB->GetRow("SELECT p.*, n.name AS nodename FROM invprojects p
+								JOIN netnodes n ON n.invprojectid = p.id
+								WHERE n.id=?",
+								array($netdevices['netnodeid']));
+							if ($prj)
+								$nodeinfo['projectname'] = trans('$a (from network node $b)', $prj['name'], $prj['nodename']);
+						}
+					} else
+						$nodeinfo['projectname'] = trans('$a (from network device $b)', $prj['name'], $netdevices['name']);
+				}
 			}
 		} else
 			$nodeinfo['projectname'] = $prj['name'];

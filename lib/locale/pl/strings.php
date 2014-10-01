@@ -2863,5 +2863,7 @@ $_LANG['Select investment projects'] = 'Wybierz projekty inwestycyjne';
 $_LANG['Investment project:'] = 'Projekt inwestycyjny:';
 
 $_LANG['Select device status'] = 'Wybierz status urządzenia';
+$_LANG['$a (from network node $b)'] = '$a (z węzła sieciowego $b)';
+$_LANG['$a (from network device $b)'] = '$a (z urządzenia sieciowego $b)';
 
 ?>
