@@ -79,7 +79,7 @@ $nodeinfo = $LMS->ExecHook('node_info_init', $nodeinfo);
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
-$nodeinfo['projectname'] = 'Brak';
+$nodeinfo['projectname'] = trans('none');
 if ($nodeinfo['invprojectid']) {
 	$prj = $DB->GetRow("SELECT * FROM invprojects WHERE id=".$nodeinfo['invprojectid']);
 }

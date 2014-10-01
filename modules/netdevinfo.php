@@ -55,7 +55,7 @@ if ($netdevinfo['netnodeid']) {
 	}
 }
 
-$netdevinfo['projectname'] = 'Brak';
+$netdevinfo['projectname'] = trans('none');
 if ($netdevinfo['invprojectid']) {
 	$prj = $DB->GetRow("SELECT * FROM invprojects WHERE id=".$netdevinfo['invprojectid']);
 }
