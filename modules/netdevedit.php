@@ -626,8 +626,8 @@ if (isset($_POST['netdev'])) {
 				$netdevdata['location_street'] = null;
 				$netdevdata['location_house'] = null;
 				$netdevdata['location_flat'] = null;
-				$netdevdata['longitude'] = $dev['longitude'];
-            			$netdevdata['latitude'] = $dev['latitude'];
+				$netdevdata['longitude'] = null;
+            			$netdevdata['latitude'] = null;
 			}
 		} else {
 			/* dziedziczenie lokalizacji */
