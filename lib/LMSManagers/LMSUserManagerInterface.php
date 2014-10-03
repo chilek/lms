@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
+ *  Copyright (C); 2001-2013 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,25 +25,33 @@
  */
 
 /**
- * LMSCashManager
- *
+ * LMSUserManagerInterface
+ * 
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
-class LMSCashManager extends LMSManager implements LMSCashManagerInterface
+interface LMSUserManagerInterface
 {
-    /**
-     * Returns cash
-     * 
-     * @param int $id Cash id
-     * @return array Cash data
-     */
-    public function GetCashByID($id)
-    {
-        return $this->db->GetRow(
-            'SELECT time, userid, value, taxid, customerid, comment 
-            FROM cash WHERE id=?', 
-            array($id)
-        );
-    }
+    public function setUserPassword($id, $passwd);
 
+    public function getUserName($id = null);
+
+    public function getUserNames();
+
+    public function getUserList();
+
+    public function getUserIDByLogin($login);
+
+    public function userAdd($user);
+
+    public function userDelete($id);
+
+    public function userExists($id);
+
+    public function userAccess($id, $access);
+
+    public function getUserInfo($id);
+
+    public function userUpdate($user);
+
+    public function getUserRights($id);
 }

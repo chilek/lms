@@ -29,7 +29,7 @@
  *
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
-class LMSVoipAccountManager extends LMSManager
+class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerInterface
 {
     /**
      * Returns VoIP account list
