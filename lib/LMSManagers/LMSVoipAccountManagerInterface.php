@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
+ *  Copyright (C); 2001-2013 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,25 +25,35 @@
  */
 
 /**
- * LMSCashManager
- *
+ * LMSVoipAccountManagerInterface
+ * 
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
-class LMSCashManager extends LMSManager implements LMSCashManagerInterface
+interface LMSVoipAccountManagerInterface
 {
-    /**
-     * Returns cash
-     * 
-     * @param int $id Cash id
-     * @return array Cash data
-     */
-    public function GetCashByID($id)
-    {
-        return $this->db->GetRow(
-            'SELECT time, userid, value, taxid, customerid, comment 
-            FROM cash WHERE id=?', 
-            array($id)
-        );
-    }
+    public function getVoipAccountList($order = 'login,asc', $search = null, $sqlskey = 'AND');
 
+    public function voipAccountSet($id, $access = -1);
+
+    public function voipAccountSetU($id, $access = false);
+
+    public function voipAccountAdd($voipaccountdata);
+
+    public function voipAccountExists($id);
+
+    public function getVoipAccountOwner($id);
+
+    public function getVoipAccount($id);
+
+    public function getVoipAccountIDByLogin($login);
+
+    public function getVoipAccountIDByPhone($phone);
+
+    public function getVoipAccountLogin($id);
+
+    public function deleteVoipAccount($id);
+
+    public function voipAccountUpdate($voipaccountdata);
+
+    public function getCustomerVoipAccounts($id);
 }

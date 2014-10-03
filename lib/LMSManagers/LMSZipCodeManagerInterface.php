@@ -25,25 +25,11 @@
  */
 
 /**
- * LMSCashManager
- *
+ * LMSZipCodeManagerInterface
+ * 
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
-class LMSCashManager extends LMSManager implements LMSCashManagerInterface
+interface LMSZipCodeManagerInterface
 {
-    /**
-     * Returns cash
-     * 
-     * @param int $id Cash id
-     * @return array Cash data
-     */
-    public function GetCashByID($id)
-    {
-        return $this->db->GetRow(
-            'SELECT time, userid, value, taxid, customerid, comment 
-            FROM cash WHERE id=?', 
-            array($id)
-        );
-    }
-
+    public function UpdateCountryState($zip, $stateid);
 }

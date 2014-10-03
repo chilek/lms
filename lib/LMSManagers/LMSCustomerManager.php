@@ -29,7 +29,7 @@
  *
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
-class LMSCustomerManager extends LMSManager
+class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterface
 {
     /**
      * Returns customer name

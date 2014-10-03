@@ -29,7 +29,7 @@
  *
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
-class LMSZipCodeManager extends LMSManager
+class LMSZipCodeManager extends LMSManager implements LMSZipCodeManagerInterface
 {
 
     /**

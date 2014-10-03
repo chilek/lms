@@ -29,7 +29,7 @@
  *
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
-class LMSUserManager extends LMSManager
+class LMSUserManager extends LMSManager implements LMSUserManagerInterface
 {
 
     /**

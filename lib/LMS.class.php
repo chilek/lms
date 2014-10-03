@@ -5166,7 +5166,7 @@ class LMS {
         /**
          * Returns user manager
          * 
-         * @return \LMSUserManager User manager
+         * @return \LMSUserManagerInterface User manager
          */
         protected function getUserManager()
         {
@@ -5179,7 +5179,7 @@ class LMS {
         /**
          * Returns customer manager
          * 
-         * @return \LMSCustomerManager Customer manager
+         * @return \LMSCustomerManagerInterface Customer manager
          */
         protected function getCustomerManager()
         {
@@ -5192,7 +5192,7 @@ class LMS {
         /**
          * Returns VoIP account manager
          * 
-         * @return LMSVoipAccountManager VoIP account manager
+         * @return LMSVoipAccountManagerInterface VoIP account manager
          */
         protected function getVoipAccountManager()
         {
@@ -5205,7 +5205,7 @@ class LMS {
         /**
          * Returns zip code manager
          * 
-         * @return LMSZipCodeManager Zip code manager
+         * @return LMSZipCodeManagerInterface Zip code manager
          */
         protected function getZipCodeManager()
         {
@@ -5218,7 +5218,7 @@ class LMS {
         /**
          * Returns cash manager
          * 
-         * @return LMSCashManager Cash manager
+         * @return LMSCashManagerInterface Cash manager
          */
         protected function getCashManager()
         {
@@ -5231,7 +5231,7 @@ class LMS {
         /**
          * Returns customer group manager
          * 
-         * @return LMSCustomerGroupManager Customer group manager
+         * @return LMSCustomerGroupManagerInterface Customer group manager
          */
         protected function getCustomerGroupManager()
         {
@@ -5244,7 +5244,7 @@ class LMS {
         /**
          * Returns customer group manager
          * 
-         * @return LMSCustomerGroupManager Customer group manager
+         * @return LMSCustomerGroupManagerInterface Customer group manager
          */
         protected function getNetworkManager()
         {
@@ -5252,6 +5252,76 @@ class LMS {
                 $this->network_manager = new LMSNetworkManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
             }
             return $this->network_manager;
+        }
+        
+        /**
+         * Sets user manager
+         * 
+         * @param LMSUserManagerInterface $manager Manager
+         */
+        public function setUserManager(LMSUserManagerInterface $manager)
+        {
+            $this->user_manager = $manager;
+        }
+        
+        /**
+         * Sets customer manager
+         * 
+         * @param LMSCustomerManagerInterface $manager Manager
+         */
+        public function setCustomerManager(LMSCustomerManagerInterface $manager)
+        {
+            $this->customer_manager = $manager;
+        }
+        
+        /**
+         * Sets customer manager
+         * 
+         * @param LMSCustomerGroupManagerInterface $manager Manager
+         */
+        public function setCustomerGroupManager(LMSCustomerGroupManagerInterface $manager)
+        {
+            $this->customer_group_manager = $manager;
+        }
+        
+        /**
+         * Sets cash manager
+         * 
+         * @param LMSCashManagerInterface $manager Manager
+         */
+        public function setCashManager(LMSCashManagerInterface $manager)
+        {
+            $this->cash_manager = $manager;
+        }
+        
+        /**
+         * Sets network manager
+         * 
+         * @param LMSNetworkManagerInterface $manager Manager
+         */
+        public function setNetworkManager(LMSNetworkManagerInterface $manager)
+        {
+            $this->network_manager = $manager;
+        }
+        
+        /**
+         * Sets voip account manager
+         * 
+         * @param LMSVoipAccountManagerInterface $manager Manager
+         */
+        public function setVoipAccountManager(LMSVoipAccountManagerInterface $manager)
+        {
+            $this->voip_account_manager = $manager;
+        }
+        
+        /**
+         * Sets zip code manager
+         * 
+         * @param LMSZipCodeManagerInterface $manager Manager
+         */
+        public function setZipCodeManager(LMSZipCodeManagerInterface $manager)
+        {
+            $this->zip_code_manager = $manager;
         }
 }
 
