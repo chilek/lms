@@ -63,5 +63,11 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 				address AS addresslong, mask, mask2prefix(inet_aton(mask)) AS prefix, disabled 
 				FROM networks ORDER BY name');
     }
+    
+    public function GetNetIDByIP($ipaddr)
+    {
+        return $this->DB->GetOne('SELECT id FROM networks 
+				WHERE address = (inet_aton(?) & inet_aton(mask))', array($ipaddr));
+    }
 
 }

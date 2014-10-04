@@ -25,15 +25,23 @@
  */
 
 /**
- * LMSNetworkManagerInterface
+ * LMSNodeGroupManagerInterface
  * 
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
-interface LMSNetworkManagerInterface
+interface LMSNodeGroupManagerInterface
 {
-    public function getNetworkParams($id);
+    public function GetNodeGroupNames();
 
-    public function GetNetworks($with_disabled = true);
-    
-    public function GetNetIDByIP($ipaddr);
+    public function GetNodeGroupNamesByNode($nodeid);
+
+    public function GetNodeGroupNamesWithoutNode($nodeid);
+
+    public function GetNodesWithoutGroup($groupid, $network = NULL);
+
+    public function GetNodesWithGroup($groupid, $network = NULL);
+
+    public function GetNodeGroup($id, $network = NULL);
+
+    public function CompactNodeGroups();
 }
