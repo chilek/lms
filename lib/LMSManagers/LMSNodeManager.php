@@ -631,5 +631,27 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         $result['total'] = $result['connected'] + $result['disconnected'];
         return $result;
     }
+    
+    public function SetNodeLinkType($node, $type = 0, $technology = 0, $speed = 100000)
+    {
+        global $SYSLOG_RESOURCE_KEYS;
+
+        $res = $this->db->Execute('UPDATE nodes SET linktype=?, linktechnology=?, linkspeed=? WHERE id=?', array($type, $technology, $speed, $node));
+        if ($this->syslog && $res) {
+            $nodedata = $this->db->GetRow('SELECT ownerid, netdev FROM nodes WHERE id=?', array($node));
+            $args = array(
+                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $node,
+                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $nodedata['ownerid'],
+                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $nodedata['netdev'],
+                'linktype' => $type,
+                'linktechnology' => $technology,
+                'linkspeed' => $speed,
+            );
+            $this->syslog->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
+                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
+        }
+        return $res;
+    }
 
 }

@@ -49,8 +49,10 @@ class LMS {
         protected $network_manager;
         protected $node_manager;
         protected $node_group_manager;
-        
-	public function __construct(&$DB, &$AUTH, &$SYSLOG) { // class variables setting
+        protected $net_dev_manager;
+
+
+        public function __construct(&$DB, &$AUTH, &$SYSLOG) { // class variables setting
 		$this->DB = &$DB;
 		$this->AUTH = &$AUTH;
 		$this->SYSLOG = &$SYSLOG;
@@ -712,86 +714,23 @@ class LMS {
 	}
 
 	public function GetNetDevLinkedNodes($id) {
-		return $this->DB->GetAll('SELECT n.id AS id, n.name AS name, linktype, linktechnology, linkspeed,
-			ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, 
-			netdev, port, ownerid,
-			' . $this->DB->Concat('c.lastname', "' '", 'c.name') . ' AS owner,
-			net.name AS netname
-			FROM nodes n
-			JOIN customersview c ON c.id = ownerid
-			JOIN networks net ON net.id = n.netid
-			WHERE netdev = ? AND ownerid > 0 
-			ORDER BY n.name ASC', array($id));
+            $manager = $this->getNetDevManager();
+            return $manager->GetNetDevLinkedNodes($id);
 	}
 
 	public function NetDevLinkNode($id, $devid, $type = 0, $technology = 0, $speed = 100000, $port = 0) {
-		global $SYSLOG_RESOURCE_KEYS;
-
-		$args = array(
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $devid,
-			'linktype' => intval($type),
-			'linktechnology' => intval($technology),
-			'linkspeed' => intval($speed),
-			'port' => intval($port),
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $id,
-		);
-		$res = $this->DB->Execute('UPDATE nodes SET netdev=?, linktype=?,
-			linktechnology=?, linkspeed=?, port=?
-			WHERE id=?', array_values($args));
-		if ($this->SYSLOG && $res) {
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] =
-				$this->DB->GetOne('SELECT ownerid FROM nodes WHERE id=?', array($id));
-			$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
-		}
-		return $res;
+            $manager = $this->getNetDevManager();
+            return $manager->NetDevLinkNode($id, $devid, $type, $technology, $speed, $port);
 	}
 
 	public function SetNetDevLinkType($dev1, $dev2, $type = 0, $technology = 0, $speed = 100000) {
-		global $SYSLOG_RESOURCE_KEYS;
-
-		$res = $this->DB->Execute('UPDATE netlinks SET type=?, technology=?, speed=? WHERE (src=? AND dst=?) OR (dst=? AND src=?)',
-			array($type, $technology, $speed, $dev1, $dev2, $dev1, $dev2));
-		if ($this->SYSLOG && $res) {
-			$netlink = $this->DB->GetRow('SELECT id, src, dst FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($dev1, $dev2, $dev1, $dev2));
-			$args = array(
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETLINK] => $netlink['id'],
-				'src_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netlink['src'],
-				'dst_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netlink['dst'],
-				'type' => $type,
-				'speed' => $speed,
-			);
-			$this->SYSLOG->AddMessage(SYSLOG_RES_NETLINK, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETLINK],
-					'src_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV],
-					'dst_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
-		}
-		return $res;
+            $manager = $this->getNetDevManager();
+            return $manager->SetNetDevLinkType($dev1, $dev2, $type, $technology, $speed);
 	}
 
 	public function SetNodeLinkType($node, $type = 0, $technology = 0, $speed = 100000) {
-		global $SYSLOG_RESOURCE_KEYS;
-
-		$res = $this->DB->Execute('UPDATE nodes SET linktype=?, linktechnology=?, linkspeed=? WHERE id=?',
-			array($type, $technology, $speed, $node));
-		if ($this->SYSLOG && $res) {
-			$nodedata = $this->DB->GetRow('SELECT ownerid, netdev FROM nodes WHERE id=?', array($node));
-			$args = array(
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $node,
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $nodedata['ownerid'],
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $nodedata['netdev'],
-				'linktype' => $type,
-				'linktechnology' => $technology,
-				'linkspeed' => $speed,
-			);
-			$this->SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
-		}
-		return $res;
+            $manager = $this->getNodeManager();
+            return $manager->SetNodeLinkType($node, $type, $technology, $speed);
 	}
 
 	/*
@@ -4757,7 +4696,7 @@ class LMS {
         /**
          * Returns node group manager
          * 
-         * @return LMSNodeGroupManager Node group manager
+         * @return LMSNodeGroupManagerInterface Node group manager
          */
         protected function getNodeGroupManager()
         {
@@ -4765,6 +4704,19 @@ class LMS {
                 $this->node_group_manager = new LMSNodeGroupManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
             }
             return $this->node_group_manager;
+        }
+        
+        /**
+         * Returns net dev manager
+         * 
+         * @return LMSNetDevManagerInterface Node group manager
+         */
+        protected function getNetDevManager()
+        {
+            if (!isset($this->net_dev_manager)) {
+                $this->net_dev_manager = new LMSNetDevManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+            }
+            return $this->net_dev_manager;
         }
         
         /**
@@ -4855,5 +4807,15 @@ class LMS {
         public function setNodeGroupManager(LMSNodeGroupManagerInterface $manager)
         {
             $this->node_group_manager = $manager;
+        }
+        
+        /**
+         * Sets net dev manager
+         * 
+         * @param LMSNetDevManagerInterface $manager Manager
+         */
+        public function setNetDevManager(LMSNetDevManagerInterface $manager)
+        {
+            $this->net_dev_manager = $manager;
         }
 }

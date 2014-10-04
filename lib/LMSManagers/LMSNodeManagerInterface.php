@@ -76,4 +76,6 @@ interface LMSNodeManagerInterface
     public function NodeExists($id);
 
     public function NodeStats();
+    
+    public function SetNodeLinkType($node, $type = 0, $technology = 0, $speed = 100000);
 }
