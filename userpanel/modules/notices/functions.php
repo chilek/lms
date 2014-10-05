@@ -42,7 +42,7 @@ function module_main()
   if(isset($_GET['confirm']))
     {
        $confirm = $_GET['confirm'];
-       $DB->Execute('UPDATE messageitems SET status = 2 WHERE id = ?', array($confirm));
+       $DB->Execute('UPDATE messageitems SET status = 2, lastdate = ?NOW? WHERE id = ?', array($confirm));
 					header('Location: ?m=notices');
     }
 
@@ -62,7 +62,7 @@ function module_main()
   if(isset($_GET['confirm_urgent']))
   {
 					$confirm_urgent = $_GET['confirm_urgent'];
-					$DB->Execute('UPDATE messageitems SET status = 2 WHERE id = ?', array($confirm_urgent));
+					$DB->Execute('UPDATE messageitems SET status = 2, lastdate = ?NOW? WHERE id = ?', array($confirm_urgent));
                                       header('Location: ?');
   }
 
