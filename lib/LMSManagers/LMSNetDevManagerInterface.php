@@ -36,4 +36,36 @@ interface LMSNetDevManagerInterface
     public function NetDevLinkNode($id, $devid, $type = 0, $technology = 0, $speed = 100000, $port = 0);
 
     public function SetNetDevLinkType($dev1, $dev2, $type = 0, $technology = 0, $speed = 100000);
+    
+    public function IsNetDevLink($dev1, $dev2);
+    
+    public function NetDevLink($dev1, $dev2, $type = 0, $technology = 0, $speed = 100000, $sport = 0, $dport = 0);
+    
+    public function NetDevUnLink($dev1, $dev2);
+    
+    public function NetDevUpdate($data);
+    
+    public function NetDevAdd($data);
+    
+    public function DeleteNetDev($id);
+    
+    public function NetDevDelLinks($id);
+    
+    public function GetNetDev($id);
+    
+    public function GetNotConnectedDevices($id);
+    
+    public function GetNetDevNames();
+    
+    public function GetNetDevList($order = 'name,asc');
+    
+    public function GetNetDevConnectedNames($id);
+    
+    public function GetNetDevLinkType($dev1, $dev2);
+    
+    public function CountNetDevLinks($id);
+    
+    public function GetNetDevIDByNode($id);
+    
+    public function NetDevExists($id);
 }
