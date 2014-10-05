@@ -25,11 +25,11 @@
  */
 
 /**
- * LMSZipCodeManager
+ * LMSLocationManager
  *
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
-class LMSZipCodeManager extends LMSManager implements LMSZipCodeManagerInterface
+class LMSLocationManager extends LMSManager implements LMSLocationManagerInterface
 {
 
     /**
@@ -86,6 +86,21 @@ class LMSZipCodeManager extends LMSManager implements LMSZipCodeManagerInterface
                 );
             }
         }
+    }
+
+    public function GetCountryStates()
+    {
+        return $this->db->GetAllByKey('SELECT id, name FROM states ORDER BY name', 'id');
+    }
+
+    public function GetCountries()
+    {
+        return $this->db->GetAllByKey('SELECT id, name FROM countries ORDER BY name', 'id');
+    }
+
+    public function GetCountryName($id)
+    {
+        return $this->db->GetOne('SELECT name FROM countries WHERE id = ?', array($id));
     }
 
 }

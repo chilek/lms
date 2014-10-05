@@ -342,10 +342,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?,
 				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))
         ) {
-            $zip_code_manager = new LMSZipCodeManager($this->db, $this->auth, $this->cache, $this->syslog);
-            $zip_code_manager->UpdateCountryState($customeradd['zip'], $customeradd['stateid']);
+            $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $location_manager->UpdateCountryState($customeradd['zip'], $customeradd['stateid']);
             if ($customeradd['post_zip'] != $customeradd['zip']) {
-                $zip_code_manager->UpdateCountryState($customeradd['post_zip'], $customeradd['post_stateid']);
+                $location_manager->UpdateCountryState($customeradd['post_zip'], $customeradd['post_stateid']);
             }
             $id = $this->db->GetLastInsertID('customers');
             if ($this->syslog) {
@@ -848,10 +848,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY],
                     $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV]));
             }
-            $zip_code_manager = new LMSZipCodeManager($this->db, $this->auth, $this->cache, $this->syslog);
-            $zip_code_manager->UpdateCountryState($customerdata['zip'], $customerdata['stateid']);
+            $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $location_manager->UpdateCountryState($customerdata['zip'], $customerdata['stateid']);
             if ($customerdata['post_zip'] != $customerdata['zip']) {
-                $zip_code_manager->UpdateCountryState($customerdata['post_zip'], $customerdata['post_stateid']);
+                $location_manager->UpdateCountryState($customerdata['post_zip'], $customerdata['post_stateid']);
             }
         }
 

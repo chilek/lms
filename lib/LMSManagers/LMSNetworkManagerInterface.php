@@ -31,7 +31,49 @@
  */
 interface LMSNetworkManagerInterface
 {
+    public function NetworkExists($id);
+
+    public function NetworkSet($id, $disabled = -1);
+
+    public function IsIPFree($ip, $netid = 0);
+
+    public function IsIPInNetwork($ip, $netid);
+
+    public function IsIPGateway($ip);
+
+    public function GetPrefixList();
+
+    public function NetworkAdd($netadd);
+
+    public function NetworkDelete($id);
+
+    public function GetNetworkName($id);
+
     public function getNetworkParams($id);
 
     public function GetNetworks($with_disabled = true);
+
+    public function GetNetIDByIP($ipaddr);
+
+    public function GetUnlinkedNodes();
+
+    public function GetNetDevIPs($id);
+
+    public function GetNetworkList($order = 'id,asc');
+
+    public function IsIPValid($ip, $checkbroadcast = FALSE, $ignoreid = 0);
+
+    public function NetworkOverlaps($network, $mask, $hostid, $ignorenet = 0);
+
+    public function NetworkShift($netid, $network = '0.0.0.0', $mask = '0.0.0.0', $shift = 0);
+
+    public function NetworkUpdate($networkdata);
+
+    public function NetworkCompress($id, $shift = 0);
+
+    public function NetworkRemap($src, $dst);
+
+    public function GetNetworkRecord($id, $page = 0, $plimit = 4294967296, $firstfree = false);
+    
+    public function ScanNodes();
 }

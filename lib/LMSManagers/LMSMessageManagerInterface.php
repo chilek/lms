@@ -25,11 +25,17 @@
  */
 
 /**
- * LMSZipCodeManagerInterface
+ * LMSMessageManagerInterface
  * 
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
-interface LMSZipCodeManagerInterface
+interface LMSMessageManagerInterface
 {
-    public function UpdateCountryState($zip, $stateid);
+    public function GetMessages($customerid, $limit = NULL);
+    
+    public function AddMessageTemplate($type, $name, $subject, $message);
+    
+    public function UpdateMessageTemplate($id, $type, $name, $subject, $message);
+    
+    public function GetMessageTemplates($type);
 }
