@@ -25,11 +25,17 @@
  */
 
 /**
- * LMSZipCodeManagerInterface
+ * LMSLocationManagerInterface
  * 
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
-interface LMSZipCodeManagerInterface
+interface LMSLocationManagerInterface
 {
     public function UpdateCountryState($zip, $stateid);
+
+    public function GetCountryStates();
+
+    public function GetCountries();
+
+    public function GetCountryName($id);
 }
