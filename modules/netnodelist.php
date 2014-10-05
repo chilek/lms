@@ -76,28 +76,25 @@ switch ($order) {
 		break;
 	default:
 		$ostr = 'ORDER BY name';
-		break;		
+		break;
 }
 
-$warr = [];
+$warr = array();
 if (strlen(trim($t)) && $t!=-1) {
-	array_push($warr,'n.type='.$t);
+	$warr[] = "n.type=$t";
 }
 if (strlen(trim($s)) && $s!=-1) {
-	array_push($warr,'n.status='.$s);
+	$warr[] = "n.status=$s";
 }
 if (strlen(trim($p)) && $p!=-1) {
-	array_push($warr,'n.invprojectid='.$p);
+	$warr[] = "n.invprojectid=$p";
 }
 if (strlen(trim($w)) && $w!=-1) {
-	array_push($warr,'n.ownership='.$w);
+	$warr[] = "n.ownership=$w";
 }
 
 
-$fstr = '';
-if (count($warr)>0) {
-	$fstr = ' WHERE '.join($warr,' AND ');
-}
+$fstr = empty($warr) ? '' : ' WHERE ' . implode(' AND ', $warr);
 
 $nlist = $DB->GetAll('SELECT n.id,n.name,n.type,n.status,n.invprojectid,p.name AS project FROM netnodes n LEFT JOIN invprojects p ON (n.invprojectid = p.id) '.$fstr.' '.$ostr.' '.$dir);
 
