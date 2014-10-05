@@ -2,8 +2,12 @@
 <script type="text/javascript" src="img/netnodehelper.js"></script>
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
+<FORM method="get" action="?m=netnodelist" name="choosefilter">
+<INPUT type="hidden" NAME="m" VALUE="netnodelist">
+<INPUT type="hidden" NAME="page" VALUE="1">
 <TABLE class="lmsbox">
     <THEAD>
+	
 	<TR {tip text="Click on column name to change sorting order"}>
 		<TD width="67%">
 			<IMG src="img/netdev.gif" ALT="">&nbsp;<A href="?m=netnodelist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
@@ -23,6 +27,39 @@
 			<B>{trans("Total:")} {$listdata.total|default:"0"}</B>
 		</TD>
 	</TR>
+	<TR>
+		<TD colspan="5" class="nobr">
+			<span class="bold">{trans("Filter:")}</span> {trans("Type:")}
+			<SELECT SIZE="1" NAME="t" ONCHANGE="document.choosefilter.submit();">
+				<OPTION VALUE="-1" {if $listdata.type==-1} SELECTED {/if} >- {trans("all")} -</OPTION>
+				{foreach $_NETELEMENTTYPES as $idx => $type}
+					<OPTION VALUE="{$idx}"{if $listdata.type == $idx} SELECTED{/if} >{$type}</OPTION>
+				{/foreach}
+			</SELECT>
+			{trans("Status")}:
+			<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
+				<OPTION VALUE="-1" {if $listdata.status == -1}  SELECTED {/if}>- {trans("all")} -</OPTION>
+				{foreach $_NETELEMENTSTATUSES as $idx => $status}
+					<OPTION VALUE="{$idx}"{if $listdata.status == $idx} SELECTED{/if}>{$status}</OPTION>
+				{/foreach}
+			</SELECT>
+			{trans("Project:")}
+			<SELECT SIZE="1" NAME="p" ONCHANGE="document.choosefilter.submit();">
+				<OPTION VALUE="-1" {if $listdata.invprojectid == -1 } SELECTED {/if}>- {trans("all")} -</OPTION>
+				{section name=project loop=$NNprojects}
+				<OPTION VALUE="{$NNprojects[project].id}" {if ($listdata.invprojectid == $NNprojects[project].id ) } SELECTED {/if} >{$NNprojects[project].name}</OPTION>
+				{/section}
+			</SELECT>
+			{trans("Ownership:")}
+			<SELECT SIZE="1" NAME="w" ONCHANGE="document.choosefilter.submit();">
+				<OPTION VALUE="-1" {if !$listdata.ownership == -1 } SELECTED {/if}>- {trans("all")} -</OPTION>
+				{foreach $_NETELEMENTOWNERSHIPS as $idx => $ownership}
+				<OPTION VALUE="{$idx}"{if $listdata.ownership == $idx} SELECTED {/if}>{$ownership}</OPTION>
+				{/foreach}
+			</SELECT>
+			
+		</TD>
+	</TR>    
 	{if $listdata.total != 0}
 	<TR>
 		<TD class="pagination" colspan="5" WIDTH="100%">
@@ -32,6 +69,7 @@
 	{/if}
     </THEAD>
     <TBODY>
+    	
 	{cycle values="light,lucid" print=false}
 	{section name=nlist loop=$nlist start=$start max=$pagelimit}
 	<TR class="highlight {cycle}"  >
@@ -65,6 +103,9 @@
 		</TD>
 	</TR>
 	{/section}
+
+
+
 	{if $listdata.total != 0}
 	<TR>
 		<TD class="pagination" colspan="5" WIDTH="100%">
@@ -82,4 +123,5 @@
 	</TR>			
     </TBODY>
 </TABLE>
+</FORM>
 {include file="footer.html"}
