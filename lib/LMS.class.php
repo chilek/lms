@@ -2284,6 +2284,46 @@ class LMS
         }
         return $this->config_manager;
     }
+    
+    /**
+     * Returns database handler
+     * 
+     * @return LMSDBInterface Database handler
+     */
+    public function getDb()
+    {
+        return $this->DB;
+    }
+    
+    /**
+     * Returns authorization handler
+     * 
+     * @return Auth Authorization handler
+     */
+    public function getAuth()
+    {
+        return $this->AUTH;
+    }
+    
+    /**
+     * Returns internal cache handler
+     * 
+     * @return LMSCache Internal cache handler
+     */
+    public function getCache()
+    {
+        return $this->cache;
+    }
+    
+    /**
+     * Returns syslog
+     * 
+     * @return Syslog Syslog
+     */
+    public function getSyslog()
+    {
+        return $this->SYSLOG;
+    }
 
     /**
      * Sets user manager
@@ -2443,6 +2483,46 @@ class LMS
     public function setConfigManager(LMSConfigManagerInterface $manager)
     {
         $this->config_manager = $manager;
+    }
+    
+    /**
+     * Sets database connection handler
+     * 
+     * @param LMSDBInterface $db Database connection handler
+     */
+    public function setDb(LMSDBInterface $db)
+    {
+        $this->DB = $db;
+    }
+    
+    /**
+     * Sets authorization handler
+     * 
+     * @param AUTH $auth Authorization handler
+     */
+    public function setAuth(AUTH $auth)
+    {
+        $this->AUTH = $auth;
+    }
+    
+    /**
+     * Sets internal cache handler
+     * 
+     * @param LMSCache $cache Internal cache handler
+     */
+    public function setCache(LMSCache $cache)
+    {
+        $this->cache = $cache;
+    }
+    
+    /**
+     * Sets syslog
+     * 
+     * @param Syslog $syslog Syslog
+     */
+    public function setSyslog(Syslog $syslog)
+    {
+        $this->SYSLOG = $syslog;
     }
 
 }
