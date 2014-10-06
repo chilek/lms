@@ -210,6 +210,8 @@ header('X-Powered-By: LMS/'.$layout['lmsv']);
 $modules_dirs = array(MODULES_DIR);
 $modules_dirs = $plugin_manager->executeHook('modules_dir_initialized', $modules_dirs);
 
+$plugin_manager->executeHook('lms_initialized', $LMS);
+
 // Check privileges and execute modules
 if ($AUTH->islogged) {
 	// Load plugin files and register hook callbacks
