@@ -731,13 +731,13 @@ if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false)
 		'name' => trans('Channels List'),
 		'link' => '?m=ewxchlist',
 		'tip' => trans('List of STM channels'),
-		'prio' => 50,
+		'prio' => 80,
 	);
 	$menu['netdevices']['submenu'][] = array(
 		'name' => trans('New Channel'),
 		'link' => '?m=ewxchadd',
 		'tip' => trans('Add new STM channel'),
-		'prio' => 51,
+		'prio' => 81,
 	);
 }
 
