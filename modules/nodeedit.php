@@ -305,7 +305,7 @@ include(MODULES_DIR . '/nodexajax.inc.php');
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
 
-if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.auto_remove_investment_project')))
+if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.auto_remove_investment_project', true)))
 	$DB->Execute("DELETE FROM invprojects WHERE id NOT IN
 		(SELECT DISTINCT invprojectid FROM netdevices WHERE invprojectid IS NOT NULL
 			UNION SELECT id FROM invprojects WHERE type=?
