@@ -212,6 +212,8 @@ $modules_dirs = $plugin_manager->executeHook('modules_dir_initialized', $modules
 
 $plugin_manager->executeHook('lms_initialized', $LMS);
 
+$plugin_manager->executeHook('smarty_initialized', $SMARTY);
+
 // Check privileges and execute modules
 if ($AUTH->islogged) {
 	// Load plugin files and register hook callbacks
