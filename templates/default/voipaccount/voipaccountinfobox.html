@@ -25,7 +25,7 @@
                                         {trans("Password:")}
                                     </td>
                                     <td class="nobr" width="98%">
-                                        {$voipaccountinfo.passwd}
+                                        {if !ConfigHelper::checkConfig('privileges.hide_voip_passwords')}{$voipaccountinfo.passwd}{else}{'*'|str_repeat:8}{/if}
                                     </td>
                                 </tr>
                                 <tr>

@@ -2816,5 +2816,6 @@ $_LANG['busy'] = 'zajęte';
 $_LANG['on-line'] = 'włączone';
 
 $_LANG['End time:'] = 'Czas zakończenia:';
+$_LANG['hide VoIP passwords'] = 'ukrywanie haseł VoIP';
 
 ?>

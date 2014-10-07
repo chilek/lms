@@ -121,6 +121,9 @@ $access['table'][29]['name']		= trans('transaction logs');
 $access['table'][29]['allow_reg']	= '^archive(info|view)$';
 $access['table'][29]['privilege']	= 'transaction_logs';
 
+$access['table'][30]['name']		= trans('hide VoIP passwords');
+$access['table'][30]['privilege']     = 'hide_voip_passwords';
+
 $access['table'][249]['name']		= trans('backup access forbidden');
 $access['table'][249]['deny_reg']	= '^db(del|list|new|recover|view)$';
 
