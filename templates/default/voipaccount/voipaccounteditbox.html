@@ -26,7 +26,7 @@
                     {trans("Password:")}
                 </td>
                 <td width="98%">
-                    <input type="text" name="voipaccountedit[passwd]" value="{$voipaccountinfo.passwd}" {tip text="Enter password" trigger="passwd"}>
+                    <input type="text" name="voipaccountedit[passwd]" value="{if !ConfigHelper::checkConfig('privileges.hide_voip_passwords')}{$voipaccountinfo.passwd}{else}{'*'|str_repeat:8}{/if}" {tip text="Enter password" trigger="passwd"}>
                 </td>
             </tr>
             <tr>
