@@ -6,6 +6,7 @@
 #include "util.h"
 #include "cron/cron.h"
 #include "config/config.h"
+#include <stdarg.h>
 
 #define APIVERSION 6
 #define PROGNAME "lmsd"
