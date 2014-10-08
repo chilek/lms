@@ -55,6 +55,7 @@ $CONFIG['directories']['userpanel_dir'] = (!isset($CONFIG['directories']['userpa
 $CONFIG['directories']['modules_dir'] = (!isset($CONFIG['directories']['modules_dir']) ? $CONFIG['directories']['userpanel_dir'].'/modules' : $CONFIG['directories']['modules_dir']);
 $CONFIG['directories']['smarty_compile_dir'] = $CONFIG['directories']['userpanel_dir'].'/templates_c';
 $CONFIG['directories']['plugins_dir'] = (!isset($CONFIG['directories']['plugins_dir']) ? $CONFIG['directories']['sys_dir'].'/plugins' : $CONFIG['directories']['plugins_dir']);
+$CONFIG['directories']['doc_dir'] = (!isset($CONFIG['directories']['doc_dir']) ? $CONFIG['directories']['sys_dir'].'/documents' : $CONFIG['directories']['doc_dir']);
 
 define('USERPANEL_DIR', $CONFIG['directories']['userpanel_dir']);
 define('USERPANEL_LIB_DIR', USERPANEL_DIR.'/lib/');
