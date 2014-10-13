@@ -446,7 +446,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     switch ($key) {
                         case 'phone':
                             $searchargs[] = 'EXISTS (SELECT 1 FROM customercontacts
-								WHERE customerid = c.id AND phone ?LIKE? ' . $this->db->Escape("%$value%") . ')';
+								WHERE customerid = c.id AND REPLACE(phone, \'-\', \'\') ?LIKE? ' . $this->db->Escape("%$value%") . ')';
                             break;
                         case 'zip':
                         case 'city':
