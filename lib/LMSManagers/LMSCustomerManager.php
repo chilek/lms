@@ -225,7 +225,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             LEFT JOIN taxes ON cash.taxid = taxes.id
             WHERE cash.customerid = ?'
             . ($totime ? ' AND time <= ' . intval($totime) : '')
-            . ' ORDER BY time ' . $direction,
+            . ' ORDER BY time ' . $direction . ', cash.id',
             array($id)
         );
         
