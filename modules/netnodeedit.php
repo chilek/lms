@@ -104,6 +104,7 @@ if (isset($_POST['netnode'])) {
 			}
 		}
 		$DB->Execute("UPDATE netnodes SET ".join($fields,",")." WHERE id=?",array($id));
+		$LMS->CleanupInvprojects();
 		$SESSION->redirect('?m=netnodeinfo&id=' . $id);
 	}
 } else {
@@ -122,8 +123,6 @@ if ($subtitle)
 $SMARTY->assign('error', $error);
 $SMARTY->assign('netnode', $netnodedata);
 $SMARTY->assign('objectid', $netnodedata['id']);
-
-$LMS->CleanupInvprojects();
 
 $nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name",
 	array(INV_PROJECT_SYSTEM));

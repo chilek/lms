@@ -31,6 +31,7 @@ if (!$DB->GetOne('SELECT * FROM netnodes WHERE id=?',array($id)))
 $DB->BeginTrans();
 
 $DB->Execute("DELETE FROM netnodes WHERE id=?",array($id));
+$LMS->CleanupInvprojects();
 
 $DB->CommitTrans();
 

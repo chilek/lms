@@ -252,8 +252,6 @@ if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', fals
     $SMARTY->assign('customers', $LMS->GetCustomerNames());
 }
 
-$LMS->CleanupInvprojects();
-
 $nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name",
 	array(INV_PROJECT_SYSTEM));
 $SMARTY->assign('NNprojects',$nprojects);

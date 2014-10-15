@@ -250,6 +250,7 @@ if (isset($_POST['nodeedit'])) {
 			$nodeedit['invprojectid'] = NULL;
 		}
 		$LMS->NodeUpdate($nodeedit, ($customerid != $nodeedit['ownerid']));
+		$LMS->CleanupInvprojects();
 
 		$nodeedit = $LMS->ExecHook('node_edit_after', $nodeedit);
 
@@ -303,8 +304,6 @@ $nodeinfo = $LMS->ExecHook('node_edit_init', $nodeinfo);
 include(MODULES_DIR . '/nodexajax.inc.php');
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
-
-$LMS->CleanupInvprojects();
 
 $nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name",
 	array(INV_PROJECT_SYSTEM));

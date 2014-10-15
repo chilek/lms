@@ -644,6 +644,7 @@ if (isset($_POST['netdev'])) {
 		}
 
 		$LMS->NetDevUpdate($netdevdata);
+		$LMS->CleanupInvprojects();
 		$SESSION->redirect('?m=netdevinfo&id=' . $_GET['id']);
 	}
 } else {
@@ -681,8 +682,6 @@ $layout['pagetitle'] = trans('Device Edit: $a ($b)', $netdevdata['name'], $netde
 
 if ($subtitle)
 	$layout['pagetitle'] .= ' - ' . $subtitle;
-
-$LMS->CleanupInvprojects();
 
 $nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name",
 	array(INV_PROJECT_SYSTEM));

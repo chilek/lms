@@ -142,8 +142,6 @@ $layout['pagetitle'] = trans('New Device');
 
 $SMARTY->assign('nastype', $LMS->GetNAStypes());
 
-$LMS->CleanupInvprojects();
-
 $nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name", array(INV_PROJECT_SYSTEM));
 $SMARTY->assign('NNprojects',$nprojects);
 $netnodes = $DB->GetAll("SELECT * FROM netnodes ORDER BY name");
