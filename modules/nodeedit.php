@@ -304,13 +304,8 @@ include(MODULES_DIR . '/nodexajax.inc.php');
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
+$LMS->CleanupInvprojects();
 
-if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.auto_remove_investment_project', true)))
-	$DB->Execute("DELETE FROM invprojects WHERE type <> ? AND id NOT IN
-		(SELECT DISTINCT invprojectid FROM netdevices WHERE invprojectid IS NOT NULL
-			UNION SELECT DISTINCT invprojectid FROM nodes WHERE invprojectid IS NOT NULL
-			UNION SELECT DISTINCT invprojectid FROM netnodes WHERE invprojectid IS NOT NULL)",
-		array(INV_PROJECT_SYSTEM));
 $nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name",
 	array(INV_PROJECT_SYSTEM));
 $SMARTY->assign('NNprojects',$nprojects);
