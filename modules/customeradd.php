@@ -180,6 +180,17 @@ if (isset($_POST['customeradd']))
 	} else
 		$error['cutoffstop'] = trans('Incorrect date of cutoff suspending!');
 
+        $hook_data = $LMS->executeHook(
+            'customeradd_validation_before_submit', 
+            array(
+                'customeradd' => $customeradd,
+                'error' => $error
+            )
+        );
+        $customeradd = $hook_data['customeradd'];
+        $error = $hook_data['error'];
+        
+        
 	if (!$error) {
 		$customeradd['cutoffstop'] = $cutoffstop;
 
@@ -190,6 +201,16 @@ if (isset($_POST['customeradd']))
 
 		$id = $LMS->CustomerAdd($customeradd);
 
+                $hook_data = $LMS->executeHook(
+                    'customeradd_after_submit', 
+                    array(
+                        'id' => $id,
+                        'customeradd' => $customeradd,
+                    )
+                );
+                $customeradd = $hook_data['customeradd'];
+                $id = $hook_data['id'];
+                
 		if(isset($im) && $id)
 			foreach($im as $idx => $val) {
 				$DB->Execute('INSERT INTO imessengers (customerid, uid, type)
@@ -258,11 +279,22 @@ if (!isset($customeradd['zip']) && $default_zip) {
 
 $layout['pagetitle'] = trans('New Customer');
 
+$hook_data = $LMS->executeHook(
+    'customeradd_before_display',
+    array(
+        'customeradd' => $customeradd,
+        'smarty' => $SMARTY
+    )
+);
+$customeradd = $hook_data['customeradd'];
+
 $SMARTY->assign('cstateslist', $LMS->GetCountryStates());
 $SMARTY->assign('countrieslist', $LMS->GetCountries());
 $SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname, status FROM divisions ORDER BY shortname'));
 $SMARTY->assign('customeradd', $customeradd);
 $SMARTY->assign('error', $error);
+
+
 $SMARTY->display('customeradd.html');
 
 ?>

@@ -111,6 +111,16 @@ if(isset($_POST['voipaccountedit']))
 	$voipaccountinfo['phone'] = $voipaccountedit['phone'];
 	$voipaccountinfo['ownerid'] = $voipaccountedit['ownerid'];
 
+        $hook_data = $plugin_manager->executeHook(
+            'voipaccountedit_before_submit',
+            array(
+                'voipaccountedit' => $voipaccountedit,
+                'error' => $error
+            )
+        );
+        $voipaccountedit = $hook_data['voipaccountedit'];
+        $error = $hook_data['error'];
+        
 	if(!$error)
 	{
 		$LMS->VoipAccountUpdate($voipaccountedit);
@@ -122,6 +132,16 @@ if(isset($_POST['voipaccountedit']))
 $customers = $LMS->GetCustomerNames();
 
 include(MODULES_DIR.'/customer.inc.php');
+
+$hook_data = $plugin_manager->executeHook(
+    'voipaccountedit_before_display', 
+    array(
+        'voipaccountinfo' => $voipaccountinfo,
+        'smarty' => $SMARTY,
+    )
+);
+
+$voipaccountinfo = $hook_data['voipaccountinfo'];
 
 $SMARTY->assign('customervoipaccounts',$customervoipaccounts);
 $SMARTY->assign('error',$error);
