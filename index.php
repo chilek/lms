@@ -202,6 +202,9 @@ $error = NULL; // initialize error variable needed for (almost) all modules
 if(!$layout['popup'])
 {
 	require_once(LIB_DIR.'/menu.php');
+        
+        $menu = $plugin_manager->executeHook('menu_initialized', $menu);
+        
 	$SMARTY->assign('newmenu', $menu);
 }
 
