@@ -267,6 +267,16 @@ if(isset($_POST['assignment']))
 		unset($a['schemaid']);
 	}
 
+        $hook_data = $LMS->executeHook(
+            'customerassignmentadd_validation_before_submit', 
+            array(
+                'a' => $a,
+                'error' => $error
+            )
+        );
+        $a = $hook_data['a'];
+        $error = $hook_data['error'];
+        
 	if (!$error)
 	{
 		$a['customerid'] = $customer['id'];
@@ -319,6 +329,14 @@ $schemas = $DB->GetAll('SELECT p.name AS promotion, s.name, s.id,
 		AND EXISTS (SELECT 1 FROM promotionassignments
 		WHERE promotionschemaid = s.id LIMIT 1)
 	ORDER BY p.name, s.name');
+
+$LMS->executeHook(
+    'customerassignmentadd_before_display', 
+    array(
+        'a' => $a,
+        'smarty' => $SMARTY,
+    )
+);
 
 $SMARTY->assign('assignment', $a);
 $SMARTY->assign('customernodes', $customernodes);
