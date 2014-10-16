@@ -250,6 +250,16 @@ if(isset($_POST['assignment']))
 		elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['value']))
 			$error['value'] = trans('Incorrect value!');
 	}
+        
+        $hook_data = $LMS->executeHook(
+            'customerassignmentedit_validation_before_submit', 
+            array(
+                'a' => $a,
+                'error' => $error
+            )
+        );
+        $a = $hook_data['a'];
+        $error = $hook_data['error'];
 
 	if(!$error) 
 	{
@@ -376,6 +386,13 @@ if(isset($_POST['assignment']))
 				}
 			}
 		}
+                
+                $LMS->executeHook(
+                    'customerassignmentedit_after_submit', 
+                    array(
+                        'a' => $a,
+                    )
+                );
 
 		$DB->CommitTrans();
 
@@ -444,6 +461,14 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $customernodes = $LMS->GetCustomerNodes($customer['id']);
 unset($customernodes['total']);
+
+$LMS->executeHook(
+    'customerassignmentedit_before_display', 
+    array(
+        'a' => $a,
+        'smarty' => $SMARTY,
+    )
+);
 
 $SMARTY->assign('customernodes', $customernodes);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
