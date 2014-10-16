@@ -52,6 +52,16 @@ if(!isset($_GET['ownerid']))
 
 $layout['pagetitle'] = trans('Voip Account Info: $a', $voipaccountinfo['login']);
 
+$hook_data = $plugin_manager->executeHook(
+    'voipaccountinfo_before_display', 
+    array(
+        'voipaccountinfo' => $voipaccountinfo,
+        'smarty' => $SMARTY,
+    )
+);
+
+$voipaccountinfo = $hook_data['voipaccountinfo'];
+
 $SMARTY->assign('voipaccountinfo',$voipaccountinfo);
 $SMARTY->display('voipaccount/voipaccountinfo.html');
 
