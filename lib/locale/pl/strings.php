@@ -2762,6 +2762,9 @@ $_LANG['userpanel urgent'] = 'panel abonencki (pilne)';
 $_LANG['I confirm reading'] = 'Zapoznałem się';
 $_LANG['Urgent'] = 'Pilna';
 $_LANG['Casual'] = 'Zwykła';
+$_LANG['Unread'] = 'Nieprzeczytana';
+$_LANG['Read status:'] = 'Status przeczytania:';
+$_LANG['Was read on:'] = 'Przeczytana dnia:';
 
 
 $_LANG['New ticket customer notification subject:'] = 'Temat listu z powiadomieniem klienta o nowym zgłoszeniu:';
