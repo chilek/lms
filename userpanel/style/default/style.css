@@ -26,6 +26,7 @@ TEXTAREA.alert 	{ border-width: 1pt; border-color: #000000; border-style: solid;
 .light		{ background-color: #DDDDDD; }
 .dark		{ background-color: #CCCCCC; }
 .darkest	{ background-color: #BBBBBB; }
+.hand		{ cursor: pointer; }
 
 .nobr		{ white-space: nowrap; }
 .bold		{ font-weight: bold; }
