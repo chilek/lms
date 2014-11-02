@@ -119,6 +119,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('registry', $registry);
 $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_RECEIPT));
 $SMARTY->assign('error', $error);
-$SMARTY->display('cashregedit.html');
+$SMARTY->display('cash/cashregedit.html');
 
 ?>

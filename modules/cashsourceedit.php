@@ -70,6 +70,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('sourceedit', $source);
 $SMARTY->assign('error', $error);
-$SMARTY->display('cashsourceedit.html');
+$SMARTY->display('cash/cashsourceedit.html');
 
 ?>
