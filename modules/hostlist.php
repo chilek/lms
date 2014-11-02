@@ -38,5 +38,5 @@ $hostlist = GetHostList();
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('hostlist', $hostlist);
-$SMARTY->display('hostlist.html');
+$SMARTY->display('host/hostlist.html');
 ?>
