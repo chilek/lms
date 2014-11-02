@@ -295,6 +295,6 @@ $SMARTY->assign('customeradd', $customeradd);
 $SMARTY->assign('error', $error);
 
 
-$SMARTY->display('customeradd.html');
+$SMARTY->display('customer/customeradd.html');
 
 ?>

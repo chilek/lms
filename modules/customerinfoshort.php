@@ -32,6 +32,6 @@ $customergroups = $LMS->CustomergroupGetForCustomer($id);
 $SMARTY->assign('customergroups', $customergroups);
 $SMARTY->assign('customerinfo', $customerinfo);
 
-$SMARTY->display('customerinfoshort.html');
+$SMARTY->display('customer/customerinfoshort.html');
 
 ?>

@@ -103,6 +103,6 @@ $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('page',$page);
 $SMARTY->assign('start',$start);
 
-$SMARTY->display('customerlist.html');
+$SMARTY->display('customer/customerlist.html');
 
 ?>

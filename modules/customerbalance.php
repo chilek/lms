@@ -38,6 +38,6 @@ $SMARTY->assign('balancelist', $LMS->GetCustomerBalanceList($_GET['id']));
 $SMARTY->assign('taxeslist', $LMS->GetTaxes());
 $SMARTY->assign('customername',$customername);
 $SMARTY->assign('id',$id);
-$SMARTY->display('customerbalance.html');
+$SMARTY->display('customer/customerbalance.html');
 
 ?>

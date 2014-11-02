@@ -478,6 +478,6 @@ $SMARTY->assign('assignment', $a);
 $SMARTY->assign('assignments', $LMS->GetCustomerAssignments($customer['id'], $expired));
 $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_INVOICE, NULL, $customer['divisionid'], false));
 $SMARTY->assign('customerinfo', $customer);
-$SMARTY->display('customerassignmentsedit.html');
+$SMARTY->display('customer/customerassignmentsedit.html');
 
 ?>
