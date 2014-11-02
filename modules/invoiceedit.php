@@ -366,6 +366,6 @@ $SMARTY->assign('customer', $customer);
 $SMARTY->assign('invoice', $invoice);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->assign('taxeslist', $taxeslist);
-$SMARTY->display('invoiceedit.html');
+$SMARTY->display('invoice/invoiceedit.html');
 
 ?>

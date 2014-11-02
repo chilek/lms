@@ -403,6 +403,6 @@ $SMARTY->assign('cnote', $cnote);
 $SMARTY->assign('invoice', $invoice);
 $SMARTY->assign('taxeslist', $taxeslist);
 $SMARTY->assign('numberplanlist', $numberplanlist);
-$SMARTY->display('invoicenote.html');
+$SMARTY->display('invoice/invoicenote.html');
 
 ?>
