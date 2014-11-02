@@ -52,6 +52,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('instancelist', $instancelist);
 $SMARTY->assign('hostid', $hostid);
 $SMARTY->assign('hosts', $DB->GetAll('SELECT id, name FROM hosts ORDER BY name'));
-$SMARTY->display('daemoninstancelist.html');
+$SMARTY->display('daemon/daemoninstancelist.html');
 
 ?>
