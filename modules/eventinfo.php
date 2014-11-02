@@ -47,6 +47,6 @@ $layout['pagetitle'] = trans('Event Info');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('event', $event);
-$SMARTY->display('eventinfo.html');
+$SMARTY->display('event/eventinfo.html');
 
 ?>
