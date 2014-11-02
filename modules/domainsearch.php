@@ -131,7 +131,7 @@ if(sizeof($search) || isset($_GET['s']))
 		$SMARTY->assign('start',$start);
 		$SMARTY->assign('search', $search);
 		$SMARTY->assign('domainlist',$domainlist);
-		$SMARTY->display('domainlist.html');
+		$SMARTY->display('domain/domainlist.html');
 		$SESSION->close();
 		die;
 	}

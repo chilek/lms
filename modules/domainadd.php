@@ -167,6 +167,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('domainadd', $domainadd);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('customers', $LMS->GetCustomerNames());
-$SMARTY->display('domainadd.html');
+$SMARTY->display('domain/domainadd.html');
 
 ?>

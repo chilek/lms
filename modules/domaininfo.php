@@ -45,6 +45,6 @@ $layout['pagetitle'] = trans('Domain Info: $a', $domain['name']);
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('domain', $domain);
-$SMARTY->display('domaininfo.html');
+$SMARTY->display('domain/domaininfo.html');
 
 ?>
