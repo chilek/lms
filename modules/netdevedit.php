@@ -659,16 +659,16 @@ switch ($edit) {
 		if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false)))
 			$SMARTY->assign('channels', $DB->GetAll('SELECT id, name FROM ewx_channels ORDER BY name'));
 
-		$SMARTY->display('netdevedit.html');
+		$SMARTY->display('netdev/netdevedit.html');
 		break;
 	case 'ip':
-		$SMARTY->display('netdevipedit.html');
+		$SMARTY->display('netdev/netdevipedit.html');
 		break;
 	case 'addip':
-		$SMARTY->display('netdevipadd.html');
+		$SMARTY->display('netdev/netdevipadd.html');
 		break;
 	default:
-		$SMARTY->display('netdevinfo.html');
+		$SMARTY->display('netdev/netdevinfo.html');
 		break;
 }
 ?>

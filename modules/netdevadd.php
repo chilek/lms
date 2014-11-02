@@ -106,6 +106,6 @@ if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false)
 	$SMARTY->assign('channels', $DB->GetAll('SELECT id, name FROM ewx_channels ORDER BY name'));
 }
 
-$SMARTY->display('netdevadd.html');
+$SMARTY->display('netdev/netdevadd.html');
 
 ?>

@@ -56,6 +56,6 @@ $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('start',$start);
 $SMARTY->assign('netdevlist',$netdevlist);
 $SMARTY->assign('listdata',$listdata);
-$SMARTY->display('netdevlist.html');
+$SMARTY->display('netdev/netdevlist.html');
 
 ?>
