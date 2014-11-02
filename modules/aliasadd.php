@@ -187,6 +187,6 @@ $SMARTY->assign('alias', $alias);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('accountlist', $accountlist);
 $SMARTY->assign('domainlist', $DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
-$SMARTY->display('aliasadd.html');
+$SMARTY->display('alias/aliasadd.html');
 
 ?>

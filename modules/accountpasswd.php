@@ -61,6 +61,6 @@ $layout['pagetitle'] = trans('Password Change for Account: $a',$account['login']
 $SMARTY->assign('error', $error);
 $SMARTY->assign('account', $account);
 
-$SMARTY->display('accountpasswd.html');
+$SMARTY->display('account/accountpasswd.html');
 
 ?>
