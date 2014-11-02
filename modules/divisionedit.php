@@ -138,6 +138,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('division', !empty($division) ? $division : $olddiv);
 $SMARTY->assign('countries', $LMS->GetCountries());
 $SMARTY->assign('error', $error);
-$SMARTY->display('divisionedit.html');
+$SMARTY->display('division/divisionedit.html');
 
 ?>
