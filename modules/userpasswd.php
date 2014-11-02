@@ -51,7 +51,7 @@ if ($LMS->UserExists($id)) {
 
 	$SMARTY->assign('error', $error);
 	$SMARTY->assign('passwd', $passwd);
-	$SMARTY->display('userpasswd.html');
+	$SMARTY->display('user/userpasswd.html');
 } else
 	$SESSION->redirect('?m='. $SESSION->get('lastmodule'));
 
