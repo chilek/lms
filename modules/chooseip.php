@@ -98,6 +98,6 @@ $SMARTY->assign('networks',$networks);
 $SMARTY->assign('network',$network);
 $SMARTY->assign('netid',$netid);
 $SMARTY->assign('device', isset($_GET['device']) ? $_GET['device'] : NULL);
-$SMARTY->display('chooseip.html');
+$SMARTY->display('choose/chooseip.html');
 
 ?>

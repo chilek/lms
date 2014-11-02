@@ -83,6 +83,6 @@ if(isset($where_node) || isset($where_cust))
 }
 
 $SMARTY->assign('part', $p);
-$SMARTY->display('choosecustomer.html');
+$SMARTY->display('choose/choosecustomer.html');
 
 ?>
