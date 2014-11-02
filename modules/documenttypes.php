@@ -50,6 +50,6 @@ $SMARTY->assign('page', $page);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->assign('typelist', $typelist);
-$SMARTY->display('documenttypes.html');
+$SMARTY->display('document/documenttypes.html');
 
 ?>

@@ -181,6 +181,6 @@ $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('page', $page);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('listdata', $listdata);
-$SMARTY->display('documentlist.html');
+$SMARTY->display('document/documentlist.html');
 
 ?>
