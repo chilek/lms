@@ -172,7 +172,7 @@ function getManagementUrls($nodeid) {
 	$mgmurls = NULL;
 	$mgmurls = $DB->GetAll('SELECT id, url, comment FROM managementurls WHERE nodeid = ? ORDER BY id', array($nodeid));
 	$SMARTY->assign('mgmurls', $mgmurls);
-	$mgmurllist = $SMARTY->fetch('managementurllist.html');
+	$mgmurllist = $SMARTY->fetch('managementurl/managementurllist.html');
 
 	$result->assign('managementurltable', 'innerHTML', $mgmurllist);
 

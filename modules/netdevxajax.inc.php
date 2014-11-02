@@ -34,7 +34,7 @@ function getManagementUrls($netdevid) {
 	$mgmurls = NULL;
 	$mgmurls = $DB->GetAll('SELECT id, url, comment FROM managementurls WHERE netdevid = ? ORDER BY id', array($netdevid));
 	$SMARTY->assign('mgmurls', $mgmurls);
-	$mgmurllist = $SMARTY->fetch('managementurllist.html');
+	$mgmurllist = $SMARTY->fetch('managementurl/managementurllist.html');
 
 	$result->assign('managementurltable', 'innerHTML', $mgmurllist);
 
