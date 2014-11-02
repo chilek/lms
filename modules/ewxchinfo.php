@@ -75,6 +75,6 @@ $channel['nodecnt'] = $DB->GetOne('SELECT COUNT(*) FROM ewx_stm_nodes n
     WHERE channelid = ?', array($channel['cid']));
 
 $SMARTY->assign('channel', $channel);
-$SMARTY->display('ewxchinfo.html');
+$SMARTY->display('ewxch/ewxchinfo.html');
 
 ?>
