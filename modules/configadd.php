@@ -95,6 +95,6 @@ if(isset($_GET['section']))
 $SMARTY->assign('sections', $LMS->GetConfigSections());
 $SMARTY->assign('error', $error);
 $SMARTY->assign('config', $config);
-$SMARTY->display('configadd.html');
+$SMARTY->display('config/configadd.html');
 
 ?>
