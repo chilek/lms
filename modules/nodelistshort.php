@@ -27,6 +27,6 @@
 $customernodes = $LMS->GetCustomerNodes($_GET['id']);
 
 $SMARTY->assign('customernodes', $customernodes);
-$SMARTY->display('nodelistshort.html');
+$SMARTY->display('node/nodelistshort.html');
 
 ?>

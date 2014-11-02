@@ -3,12 +3,31 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-{if $customerinfo}
 {include file="calendar_js.html"}
-<TABLE WIDTH="100%" CELLPADDING="3">
+<TABLE WIDTH="100%">
 	<TR>
 		<TD WIDTH="100%">
-			{include file="nodeaddbox.html"}
+			{include file="node/nodeinfobox.html"}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%">
+			{include file="node/nodesessions.html"}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%">
+			{include file="managementurls.html"}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%">
+			{include file="node/nodegroups.html"}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%">
+			{include file="node/nodelocks.html"}
 		</TD>
 	</TR>
 	<TR>
@@ -57,7 +76,4 @@
 		</TD>
 	</TR>
 </TABLE>
-{else}
-{include file="nodeaddbox.html"}
-{/if}
 {/block}

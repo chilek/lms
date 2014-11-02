@@ -2,33 +2,13 @@
 {block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<script type="text/javascript" src="img/tinymce3/tiny_mce.js"> </script>
 <H1>{$layout.pagetitle}</H1>
+{if $customerinfo}
 {include file="calendar_js.html"}
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR>
 		<TD WIDTH="100%">
-			{include file="nodeeditbox.html"}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="nodesessions.html"}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="managementurls.html"}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="nodegroups.html"}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="nodelocks.html"}
+			{include file="node/nodeaddbox.html"}
 		</TD>
 	</TR>
 	<TR>
@@ -77,4 +57,7 @@
 		</TD>
 	</TR>
 </TABLE>
+{else}
+{include file="node/nodeaddbox.html"}
+{/if}
 {/block}
