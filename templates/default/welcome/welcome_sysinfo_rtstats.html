@@ -1,6 +1,6 @@
 {if !ConfigHelper::checkConfig('privileges.hide_sysinfo')}
 {if $rtstats}
-<table width="100%" celpadding="0">
+<table width="100%">
     {if $rtstats|@count >= 3}
     {assign var="hboxesinrow" value="3"}
     {else}
@@ -17,6 +17,10 @@
         <td width="{(100 / $hboxesinrow)|round}%" style="padding: 0px 2px 0px 2px;">
             {/if}
             <table class="lmsbox">
+                <colgroup>
+                    <col style="width: 50%;"/>
+                    <col style="width: 50%;"/>
+                </colgroup>
                 <thead>
                     <tr>
                         <td colspan="2" class="text-center bold nobr">
@@ -26,50 +30,50 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="text-right bold wh">
+                        <td class="text-right bold">
                             <a href="?m=rtqueueview&catid={$rtcategorystats.id}&s=0&o=lastmodified,desc">{trans("New:")}</a>
                         </td>
-                        <td class="wh">
+                        <td>
                             {$rtcategorystats.new|default:"0"}
                         </td>
                     </tr>
                     <tr>
-                        <td class="text-right bold wh">
+                        <td class="text-right bold">
                             <a href="?m=rtqueueview&catid={$rtcategorystats.id}&s=1&o=lastmodified,desc">{trans("Opened:")}</a>
                         </td>
-                        <td class="wh">
+                        <td>
                             {$rtcategorystats.opened|default:"0"}
                         </td>
                     </tr>
                     <tr>
-                        <td class="text-right bold wh">
+                        <td class="text-right bold">
                             <a href="?m=rtqueueview&catid={$rtcategorystats.id}&s=3&o=lastmodified,desc">{trans("Dead:")}</a>
                         </td>
-                        <td class="wh">
+                        <td>
                             {$rtcategorystats.dead|default:"0"}
                         </td>
                     </tr>
                     <tr>
-                        <td class="text-right bold nobr wh">
+                        <td class="text-right bold nobr">
                             <a href="?m=rtqueueview&catid={$rtcategorystats.id}&s=-1&o=lastmodified,desc">{trans("Unresolved:")}</a>
                         </td>
-                        <td class="wh">
+                        <td>
                             {$rtcategorystats.unresolved|default:"0"}
                         </td>
                     </tr>
                     <tr>
-                        <td class="text-right bold wh">
+                        <td class="text-right bold">
                             <a href="?m=rtqueueview&catid={$rtcategorystats.id}&s=2&o=lastmodified,desc">{trans("Resolved:")}</a>
                         </td>
-                        <td class="wh">
+                        <td>
                             {$rtcategorystats.resolved|default:"0"}
                         </td>
                     </tr>
                     <tr>
-                        <td class="text-right bold wh">
+                        <td class="text-right bold">
                             <a href="?m=rtqueuelist">{trans("Total:")}</a>
                         </td>
-                        <td class="wh">
+                        <td>
                             {math equation="a+b+c+d" a=$rtcategorystats.opened b=$rtcategorystats.new c=$rtcategorystats.dead d=$rtcategorystats.resolved}
                         </td>
                     </tr>

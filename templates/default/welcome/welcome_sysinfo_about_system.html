@@ -1,5 +1,9 @@
 {if !ConfigHelper::checkConfig('privileges.hide_sysinfo')}
 <table class="lmsbox">
+    <colgroup>
+        <col style="width: 50%;"/>
+        <col style="width: 50%;"/>
+    </colgroup>
     <thead>
         <tr>
             <td class="text-center bold nobr" colspan="2">
@@ -9,42 +13,42 @@
     </thead>
     <tbody>
         <tr>
-            <td class="text-right bold wh">
+            <td class="text-right bold">
                 {trans("Hostname:")}
             </td>
-            <td class="wh">
+            <td>
                 {$sysinfo.hostname}
             </td>
         </tr>
         <tr>
-            <td class="text-right bold wh">
+            <td class="text-right bold">
                 {trans("System version:")}
             </td>
-            <td class="wh">
+            <td>
                 {$sysinfo.kernel}
             </td>
         </tr>
         <tr>
-            <td class="text-right bold wh">
+            <td class="text-right bold">
                 {trans("Uptime:")}
             </td>
-            <td class="wh">
+            <td>
                 {$sysinfo.uptime}
             </td>
         </tr>
         <tr>
-            <td class="text-right bold wh">
+            <td class="text-right bold">
                 {trans("Users logged in:")}
             </td>
-            <td class="wh">
+            <td>
                 {$sysinfo.users}
             </td>
         </tr>
         <tr>
-            <td class="text-right bold wh">
+            <td class="text-right bold">
                 {trans("Load:")}
             </td>
-            <td class="wh">
+            <td>
                 {$sysinfo.loadavg.0} {$sysinfo.loadavg.1} {$sysinfo.loadavg.2}
             </td>
         </tr>

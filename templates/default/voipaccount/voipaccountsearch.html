@@ -24,6 +24,10 @@
     <input type="submit" class="hiddenbtn">
     <input type="hidden" name="m" value="voipaccountsearch">
     <table class="lmsbox">
+        <colgroup>
+            <col style="width: 1%;"/>
+            <col style="width: 99%;"/>
+        </colgroup>
         <thead>
             <tr>
                 <td class="bold" colspan="2">
@@ -33,34 +37,34 @@
         </thead>
         <tbody>
             <tr>
-                <td class="bold nobr" width="1%">
+                <td class="bold nobr">
                     <img src="img/voip.gif" width="16" alt=""> {trans("Login:")}
                 </td>
-                <td width="99%">
+                <td>
                     <input type="text" name="search[login]" {tip text="Enter login or it's fragment"}>
                 </td>
             </tr>
             <tr>
-                <td class="bold nobr" width="1%">
+                <td class="bold nobr">
                     <img src="img/passwd.gif" width="16" alt=""> {trans("Password:")}
                 </td>
-                <td width="99%">
+                <td>
                     <input type="text" name="search[password]" {tip text="Enter password or it's fragment"}>
                 </td>
             </tr>
             <tr>
-                <td class="bold nobr" width="1%">
+                <td class="bold nobr">
                     <img src="img/phone.gif" width="16" alt=""> {trans("Phone number:")}
                 </td>
-                <td width="99%">
+                <td>
                     <input type="text" name="search[phone]" {tip text="Enter phone number or it's fragment"}>
                 </td>
             </tr>
             <tr>
-                <td class="bold nobr" width="1%">
+                <td class="bold nobr">
                     <img src="img/empty.gif" width="16" alt=""> {trans("Qualification operator:")}
                 </td>
-                <td width="99%">
+                <td>
                     <input class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} CHECKED{/if}>
                     <label for="operator0">{trans("AND")}</label>
                     <input class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} CHECKED{/if}>

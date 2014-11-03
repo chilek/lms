@@ -1,5 +1,9 @@
 {if !ConfigHelper::checkConfig('privileges.hide_summaries')}
 <table class="lmsbox">
+    <colgroup>
+        <col style="width: 50%;"/>
+        <col style="width: 50%;"/>
+    </colgroup>
     <thead>
         <tr>
             <td colspan="2" class="text-center bold">
@@ -9,34 +13,34 @@
     </thead>
     <tbody>
         <tr>
-            <td class="text-right bold wh">
+            <td class="text-right bold">
                 <a href="?m=nodelist&amp;s=3">{trans("Online:")}</a>
             </td>
-            <td class="wh">
+            <td>
                 {$nodestats.online}
             </td>
         </tr>
         <tr>
-            <td class="text-right bold wh">
+            <td class="text-right bold">
                 <a href="?m=nodelist&amp;s=1">{trans("Connected<!nodes>:")}</a>
             </td>
-            <td class="wh">
+            <td>
                 {$nodestats.connected}
             </td>
         </tr>
         <tr>
-            <td class="text-right bold wh">
+            <td class="text-right bold">
                 <a href="?m=nodelist&amp;s=2">{trans("Disconnected:")}</a>
             </td>
-            <td class="wh">
+            <td>
                 {$nodestats.disconnected}
             </td>
         </tr>
         <tr>
-            <td class="text-right bold wh">
+            <td class="text-right bold">
                 <a href="?m=nodelist">{trans("Total:")}</a>
             </td>
-            <td class="wh">
+            <td>
                 {$nodestats.total}
             </td>
         </tr>

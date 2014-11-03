@@ -2,50 +2,55 @@
 <form name="voipaccountadd" method="post" action="?m=voipaccountadd{if $customerinfo.id}&ownerid={$customerinfo.id}{/if}">
     <input type="submit" class="hiddenbtn">
     <table class="lmsbox">
+        <colgroup>
+            <col style="width: 1%;"/>
+            <col style="width: 1%;"/>
+            <col style="width: 98%;"/>
+        </colgroup>
         <thead>
             <tr>
-                <td width="1%">
+                <td>
                     <img src="img/voip.gif" alt="{trans("Login:")}">
                 </td>
-                <td class="bold" width="1%">
+                <td class="bold">
                     {trans("Login:")}
                 </td>
-                <td width="98%">
+                <td>
                     <input type="text" name="voipaccountdata[login]" value="{$voipaccountdata.login}" maxlength="32" size="30" {tip text="Enter voip account login" trigger="login" bold=1}>
                 </td>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td width="1%">
+                <td>
                     <img src="img/passwd.gif" alt="{trans("Password:")}">
                 </td>
-                <td class="bold nobr" width="1%">
+                <td class="bold nobr">
                     {trans("Password:")}
                 </td>
-                <td width="98%">
+                <td>
                     <input type="text" name="voipaccountdata[passwd]" value="{$voipaccountdata.passwd}" {tip text="Enter password" trigger="passwd"}>
                 </td>
             </tr>
             <tr>
-                <td width="1%">
+                <td>
                     <img src="img/phone.gif" alt="{trans("Phone number:")}">
                 </td>
-                <td class="bold nobr" width="1%">
+                <td class="bold nobr">
                     {trans("Phone number:")}
                 </td>
-                <td width="98%">
+                <td>
                     <input type="text" name="voipaccountdata[phone]" value="{$voipaccountdata.phone}" {tip text="Enter phone number" trigger="phone"}>
                 </td>
             </tr>
             <tr>
-                <td width="1%">
+                <td>
                     <img src="img/{if ! $voipaccountdata.access}no{/if}access.gif" alt="">
                 </td>
-                <td class="bold nobr" width="1%">
+                <td class="bold nobr">
                     {trans("Status:")}
                 </td>
-                <td width="1%">
+                <td>
                     <select size="1" name="voipaccountdata[access]" {tip text="Select status" trigger="access"}>
                         <option value="1"{if $voipaccountdata.access} selected{/if}>{trans("connected<!singular>")}</option>
                         <option value="0"{if ! $voipaccountdata.access} selected{/if}>{trans("disconnected<!singular>")}</option>
@@ -53,13 +58,13 @@
                 </td>
             </tr>
             <tr>
-                <td width="1%">
+                <td>
                     <img src="img/customer.gif" alt="{trans("Customer:")}">
                 </td>
-                <td class="bold nobr" width="1%">
+                <td class="bold nobr">
                     {trans("Customer:")}
                 </td>
-                <td width="98%">
+                <td>
                     <select size="1" name="voipaccountdata[ownerid]" {tip text="Assign voip account to customer" trigger="customer"} style="max-width:250px;">
                         {foreach from=$customers item=c}
                         <option value="{$c.id}"{if $voipaccountdata.ownerid == $c.id} selected{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</option>
