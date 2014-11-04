@@ -41,7 +41,15 @@
 						{$item.cdate|date_format:"%Y/%m/%d"}
 					</TD>
 					<TD style="width: 97%;" class="bold" onClick="return self.location.href='?m=messageinfo&amp;id={$item.id}'">
-						<img src="img/{if $item.type == $smarty.const.MSG_SMS}sms{else}mail{/if}.gif" alt="">
+                                                {if $item.type == $smarty.const.MSG_MAIL}
+                                                        <img src="img/email.gif" alt="email">
+                                                {elseif $item.type == $smarty.const.MSG_WWW}
+                                                        <img src="img/network.gif" alt="www">
+                                                {elseif $item.type == $smarty.const.MSG_USERPANEL || $item.type == $smarty.const.MSG_USERPANEL_URGENT}
+                                                        <img src="img/cms.gif" alt="userpanel">
+                                                {else}
+                                                        <img src="img/sms.gif" alt="sms">
+                                                {/if}
 						{$item.subject}
 					</TD>
 					<TD style="width: 1%;" class="text-right nobr" onClick="return self.location.href='?m=messageinfo&amp;id={$item.id}'">
