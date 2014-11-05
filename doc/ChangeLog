@@ -24,6 +24,8 @@ version ?.??.?? (????-??-??):
   - management urls can be also assigned to nodes [chilan]
   - LMS class is able to send many posts via single smtp session [chilan]
   - new plugins management system [maciejlew]
+  - many sms service providers can be set in sms.service
+    setting (separated by colon) [chilan]
 
 version 1.11.15 (2014-05-15):
 
