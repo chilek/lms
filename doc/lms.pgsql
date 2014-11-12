@@ -1632,7 +1632,8 @@ CREATE TABLE messageitems (
 	destination 	varchar(255) 	DEFAULT '' NOT NULL,
 	lastdate 	integer		DEFAULT 0 NOT NULL,
 	status 		smallint	DEFAULT 0 NOT NULL,
-	error 		text		DEFAULT NULL, 
+	error 		text		DEFAULT NULL,
+	lastreaddate 	integer		DEFAULT 0 NOT NULL, 
         PRIMARY KEY (id)
 ); 
 
@@ -2054,4 +2055,4 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('userpanel', 'default_categories', '1', '', 0),
 ('directories', 'userpanel_dir', 'userpanel', '', 0);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014090600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014111200');

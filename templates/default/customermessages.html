@@ -24,11 +24,17 @@
 					<TD style="width: 1%;" class="nobr">
 						{trans("Date:")}
 					</TD>
-					<TD style="width: 97%;" class="bold nobr">
+					<TD style="width: 95%;" class="bold nobr">
 						{trans("Subject:")}
 					</TD>
 					<TD style="width: 1%;" class="nobr">
 						{trans("Destination:")}
+					</TD>
+					<TD style="width: 1%;" class="nobr">
+						{trans("Last read on:")} ({trans("only userpanel message")})
+					</TD>
+					<TD style="width: 1%;" class="nobr">
+						{trans("Was confirm on:")} ({trans("only userpanel message")})
 					</TD>
 					<TD style="width: 1%;" class="nobr"></TD>
 				</TR>
@@ -40,7 +46,7 @@
 					<TD style="width: 1%;" class="nobr" onClick="return self.location.href='?m=messageinfo&amp;id={$item.id}'">
 						{$item.cdate|date_format:"%Y/%m/%d"}
 					</TD>
-					<TD style="width: 97%;" class="bold" onClick="return self.location.href='?m=messageinfo&amp;id={$item.id}'">
+					<TD style="width: 95%;" class="bold" onClick="return self.location.href='?m=messageinfo&amp;id={$item.id}'">
                                                 {if $item.type == $smarty.const.MSG_MAIL}
                                                         <img src="img/email.gif" alt="email">
                                                 {elseif $item.type == $smarty.const.MSG_WWW}
@@ -54,6 +60,12 @@
 					</TD>
 					<TD style="width: 1%;" class="text-right nobr" onClick="return self.location.href='?m=messageinfo&amp;id={$item.id}'">
 						{$item.destination}
+					</TD>
+					<TD style="width: 1%;" class="text-right nobr" onClick="return self.location.href='?m=messageinfo&amp;id={$item.id}'">
+						{if ({$item.destination} == 'userpanel' || {$item.destination} == 'userpanel urgent') && {$item.lastreaddate} != 0}{$item.lastreaddate|date_format:"%Y/%m/%d %H:%M"}{else}&nbsp;{/if}
+					</TD>
+					<TD style="width: 1%;" class="text-right nobr" onClick="return self.location.href='?m=messageinfo&amp;id={$item.id}'">
+						{if $item.status == $smarty.const.MSG_SENT && ({$item.destination} == 'userpanel' || {$item.destination} == 'userpanel urgent') && {$item.lastdate} != 0}{$item.lastdate|date_format:"%Y/%m/%d %H:%M"}{else}&nbsp;{/if}
 					</TD>
 					<TD style="width: 1%;" class="text-right nobr">
 					</TD>

@@ -35,7 +35,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
     public function GetMessages($customerid, $limit = NULL)
     {
         return $this->db->GetAll('SELECT i.messageid AS id, i.status, i.error,
-		        i.destination, m.subject, m.type, m.cdate
+		        i.destination, i.lastdate, i.lastreaddate, m.subject, m.type, m.cdate
 			FROM messageitems i
 			JOIN messages m ON (m.id = i.messageid)
 			WHERE i.customerid = ?
