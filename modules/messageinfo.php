@@ -79,7 +79,7 @@ function GetItemList($id, $order='id,desc', $search=NULL, $cat=NULL, $status=NUL
 		$where = ' AND '.implode(' AND ', $where);
 
 	$result = $DB->GetAll('SELECT i.id, i.customerid, i.status, i.error,
-			i.destination, i.lastdate, '
+			i.destination, i.lastdate, i.lastreaddate,'
 			.$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customer
 		FROM messageitems i
 		LEFT JOIN customers c ON (c.id = i.customerid)
