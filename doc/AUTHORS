@@ -24,6 +24,7 @@ Marcin 'Lexx' Krol
 Aleksander 'A.L.E.C' Machniak
 Tomasz 'Chilek' Chilinski
 Grzegorz 'Ceho' Chwesewicz
+Maciej 'Lion' Lew
                
 C Code:
 
@@ -50,6 +51,7 @@ Pawel 'Bob_R' Czerski
 Pawel 'sickone' Kisiela
 Tomasz 'Chilek' Chilinski
 Grzegorz 'Ceho' Chwesewicz
+Maciej 'Lion' Lew
           
 Images:
                
@@ -90,3 +92,4 @@ ezpdf (www.ros.co.nz/pdf),
 Tigra Calendar (www.softcomplex.com/products/tigra_calendar),
 Piotr Kleban's number-to-words conversion procedures and
 code examples from PHP manual (http://www.php.net/manual).
+phine/lib-observer (http://github.com/phine/lib-observer),

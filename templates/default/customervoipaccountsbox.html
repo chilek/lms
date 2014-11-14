@@ -35,7 +35,7 @@
 						({$voipaccount.id|string_format:"%04d"})
 					</TD>
 					<TD style="width: 1%;" class="nobr" colspan="2" onclick="return self.location.href='?m=voipaccountinfo&amp;id={$voipaccount.id}'">
-						{$voipaccount.passwd}
+						{if !ConfigHelper::checkConfig('privileges.hide_voip_passwords')}{$voipaccount.passwd}{else}{'*'|str_repeat:8}{/if}
 					</TD>
 					<TD style="width: 1%;" class="nobr" onclick="return self.location.href='?m=voipaccountinfo&amp;id={$voipaccount.id}'">
 						{$voipaccount.phone}

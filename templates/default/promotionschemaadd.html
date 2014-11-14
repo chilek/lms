@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
 <FORM method="post" name="schemaadd" action="?m=promotionschemaadd&amp;id={$schema.promotionid}">
@@ -122,4 +124,4 @@ function del_period_item() {
 }
 //-->
 </SCRIPT>
-{include file="footer.html"}
+{/block}

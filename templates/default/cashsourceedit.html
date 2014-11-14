@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <P><FORM method="POST" action="?m=cashsourceedit&id={$sourceedit.id}" name="sourceedit">
@@ -43,4 +45,4 @@
 document.forms['sourceedit'].elements['sourceedit[name]'].focus();
 //-->
 </SCRIPT>
-{include file="footer.html"}
+{/block}

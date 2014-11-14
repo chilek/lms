@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <H1>{$layout.pagetitle}</H1>
 <FORM name="record" method="POST" action="{if $layout.module == 'recordedit'}?m=recordedit&id={$record.id}{else}?m=recordadd&d={$record.domain_id}{/if}">
 <INPUT type="submit" class="hiddenbtn">
@@ -222,4 +224,4 @@ elem.focus();
 change_rec_type(elem);
 //-->
 </SCRIPT>
-{include file="footer.html"}
+{/block}

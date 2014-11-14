@@ -34,12 +34,12 @@ class WelcomeHandler
     /**
      * Example handler that does nothing
      * 
-     * @param type $hook_data
+     * @param mixed $hook_data
      */
     public function welcomeOnLoad($hook_data)
     {
         error_log('welcome on load hook trigered');
-        return null;
+        return $hook_data;
     }
     
     /**

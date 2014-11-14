@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 {include file="calendar_js.html"}
 <script type="text/javascript" src="img/netnodehelper.js"></script>
@@ -302,4 +304,4 @@ check_teryt('location', true);
 setNNProject();
 //-->
 </SCRIPT>
-{include file="footer.html"}
+{/block}

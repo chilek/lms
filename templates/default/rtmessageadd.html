@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
 <P><FORM method="POST" name="message" action="?m=rtmessageadd" enctype="multipart/form-data">
@@ -102,7 +104,7 @@
     </TBODY>
 </TABLE>
 </FORM></P>
-{include file="footer.html"}
+{/block}
 <SCRIPT type="text/javascript">
 <!--
 document.forms['message'].elements['message[subject]'].focus();

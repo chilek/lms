@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 <H1 class="text-center">{trans("LMS version")} {$layout.lmsv} ({$layout.lmsvr})</H1>
 <P class="text-center bold">Copyright &copy; 2001-{$smarty.now|date_format:'%Y'} LMS Developers</P>
@@ -18,7 +20,8 @@
 <a href="http://www.ros.co.nz/pdf/">ezpdf</A><BR>
 <a href="http://www.xajaxproject.org/">xajax</A><BR>
 <a href="http://www.softcomplex.com/products/tigra_calendar/">Tigra Calendar</A><BR>
-<a href="http://gosu.pl/dhtml/mygosumenu.html">Cezary Tomczak's mygosuMenu published under revised BSD license.</a><br>
+<a href="http://gosu.pl/dhtml/mygosumenu.html">Cezary Tomczak's mygosuMenu published under revised BSD license</a><br>
+<a href="http://github.com/phine/lib-observer">phine/lib-observer</a><br>
 {t}Piotr Kleban's number-to-words conversion procedures<BR>and code examples from <a href="http://www.php.net/manual">PHP Manual</A>{/t}</P>
 <p class="text-center bold">{trans("LMS developers (in alphabetical order):")}</P>
 <TABLE width="100%" cellpadding="5">
@@ -54,4 +57,4 @@
 </P>
 <P class="text-center bold"><a href="http://www.smarty.net/">{trans("LMS uses Smarty Template Engine - http://www.smarty.net/")}</A></P>
 <P class="text-center"><a href="http://www.smarty.net/"><img src="img/smarty_icon.gif" alt="Smarty"></A></p>
-{include file="footer.html"}
+{/block}

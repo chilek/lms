@@ -121,6 +121,9 @@ $access['table'][29]['name']		= trans('transaction logs');
 $access['table'][29]['allow_reg']	= '^archive(info|view)$';
 $access['table'][29]['privilege']	= 'transaction_logs';
 
+$access['table'][30]['name']		= trans('hide VoIP passwords');
+$access['table'][30]['privilege']     = 'hide_voip_passwords';
+
 $access['table'][249]['name']		= trans('backup access forbidden');
 $access['table'][249]['deny_reg']	= '^db(del|list|new|recover|view)$';
 
@@ -131,9 +134,7 @@ $access['table'][255]['name']		= trans('no access');
 $access['table'][255]['deny_reg']	= '^.*$';
 
 // read user-defined access rights table
-if (ConfigHelper::checkConfig('phpui.custom_accesstable')) {
-    $custom_access_table = ConfigHelper::getConfig('phpui.custom_accesstable');
-    if (is_readable($custom_access_table)) {
-        @include_once($custom_access_table);
-    }
-}
+$custom_access_table = ConfigHelper::getConfig('phpui.custom_accesstable');
+if (!is_null($custom_access_table))
+	if (is_readable($custom_access_table))
+		@include_once($custom_access_table);

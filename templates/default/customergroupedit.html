@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ -->
 <H1>{$layout.pagetitle}</H1>
 <TABLE class="lmsbox">
@@ -58,4 +60,4 @@ document.forms['tedit'].elements['customergroup[name]'].focus();
 //-->
 </SCRIPT>
 {include file="customergroupassignments.html"}
-{include file="footer.html"}
+{/block}

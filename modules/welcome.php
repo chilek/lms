@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$LMS->executeHook('welcome_on_load');
-
 @include(LIB_DIR.'/locale/'.$_language.'/fortunes.php');
 
 $layout['pagetitle'] = 'LAN Management System';
@@ -59,7 +57,7 @@ if (!ConfigHelper::checkConfig('privileges.hide_summaries')) {
 	$SMARTY->assign('nodestats', $LMS->NodeStats());
 }
 
-$template_file = 'welcome.html';
+$template_file = 'welcome/welcome.html';
 
 $template_file = $LMS->executeHook('welcome_before_display', $template_file);
 

@@ -202,10 +202,20 @@ $error = NULL; // initialize error variable needed for (almost) all modules
 if(!$layout['popup'])
 {
 	require_once(LIB_DIR.'/menu.php');
+        
+        $menu = $plugin_manager->executeHook('menu_initialized', $menu);
+        
 	$SMARTY->assign('newmenu', $menu);
 }
 
 header('X-Powered-By: LMS/'.$layout['lmsv']);
+
+$modules_dirs = array(MODULES_DIR);
+$modules_dirs = $plugin_manager->executeHook('modules_dir_initialized', $modules_dirs);
+
+$plugin_manager->executeHook('lms_initialized', $LMS);
+
+$plugin_manager->executeHook('smarty_initialized', $SMARTY);
 
 // Check privileges and execute modules
 if ($AUTH->islogged) {
@@ -246,7 +256,15 @@ if ($AUTH->islogged) {
 		$module = ConfigHelper::getConfig('phpui.default_module');
 	}
 
-	if (file_exists(MODULES_DIR.'/'.$module.'.php'))
+        $module_dir = null;
+        foreach ($modules_dirs as $suspected_module_dir) {
+            if (file_exists($suspected_module_dir.'/'.$module.'.php')) {
+                $module_dir = $suspected_module_dir;
+                break;
+            }
+        }
+        
+	if ($module_dir !== null)
 	{
 		$global_allow = !$AUTH->id || (!empty($access['allow']) && preg_match('/'.$access['allow'].'/i', $module));
 
@@ -268,7 +286,8 @@ if ($AUTH->islogged) {
 		{
 			$layout['module'] = $module;
 			$LMS->InitUI();
-			include(MODULES_DIR.'/'.$module.'.php');
+                        $LMS->executeHook($module.'_on_load');
+			include($module_dir.'/'.$module.'.php');
 		} else {
 			if ($SYSLOG)
 				$SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_USERNOACCESS,

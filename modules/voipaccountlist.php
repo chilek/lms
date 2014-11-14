@@ -52,11 +52,23 @@ $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('valp', $page);
 
+$hook_data = $plugin_manager->executeHook(
+    'voipaccountlist_before_display', 
+    array(
+        'voipaccountlist' => $voipaccountlist,
+        'listdata' => $listdata,
+        'smarty' => $SMARTY,
+    )
+);
+
+$voipaccountlist = $hook_data['voipaccountlist'];
+$listdata = $hook_data['listdata'];
+
 $SMARTY->assign('page',$page);
 $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('start',$start);
 $SMARTY->assign('voipaccountlist',$voipaccountlist);
 $SMARTY->assign('listdata',$listdata);
-$SMARTY->display('voipaccountlist.html');
+$SMARTY->display('voipaccount/voipaccountlist.html');
 
 ?>

@@ -581,9 +581,14 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		if (zoom)
 			map.setCenter(new OpenLayers.LonLat(startLon, startLat)
 					.transform(lmsProjection, map.getProjectionObject()), zoom);
-		else
+		else {
 			map.setCenter(new OpenLayers.LonLat(startLon, startLat)
 					.transform(lmsProjection, map.getProjectionObject()));
+			if (deviceArray || nodeArray)
+				map.zoomToExtent(area);
+			else
+				map.zoomToMaxExtent();
+		}
 	else
 		if (loadedSettings)
 			map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);

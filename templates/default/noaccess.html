@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 <h1 class="text-center alert">{trans("Access denied!")}</h1>
 <table width="100%">
@@ -17,4 +19,4 @@
 <script type="text/javascript" src="img/autoiframe.js"></script>
 <script type="text/javascript" src="img/common.js"></script>
 {/if}
-{include file="footer.html"}
+{/block}

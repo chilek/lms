@@ -23,9 +23,9 @@
 
 $DB->BeginTrans();
 
-$DB->Execute("ALTER TABLE netdevices ADD COLUMN status smallint DEFAULT 0");
+$DB->Execute("ALTER TABLE messageitems ADD lastreaddate int(11) NOT NULL DEFAULT '0'");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014092900', 'dbversion'));
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014111200', 'dbversion'));
 
 $DB->CommitTrans();
 

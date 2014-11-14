@@ -27,7 +27,7 @@
 function module_main()
 {
     global $DB,$LMS,$SESSION,$SMARTY;
-    
+
   if(isset($_GET['confirm_old']))
     {
        $DB->Execute('UPDATE nodes SET warning=0 WHERE ownerid = ?', array($SESSION->id));
@@ -37,20 +37,20 @@ function module_main()
        $warning = $LMS->GetCustomerMessage($SESSION->id);
        $SMARTY->assign('warning', $warning);
     }
-    
-       
+
+
   if(isset($_GET['confirm']))
     {
        $confirm = $_GET['confirm'];
-       $DB->Execute('UPDATE messageitems SET status = 2 WHERE id = ?', array($confirm));
+       $DB->Execute('UPDATE messageitems SET status = 2, lastdate = ?NOW? WHERE id = ?', array($confirm));
 					header('Location: ?m=notices');
     }
 
   else
   {
-       $notice = $DB->GetAll('SELECT m.subject, m.cdate, m.body, m.type, mi.id, mi.messageid, mi.destination, mi.status 
-                              FROM customers c, messageitems mi, messages m 
-                              WHERE c.id=mi.customerid 
+       $notice = $DB->GetAll('SELECT m.subject, m.cdate, m.body, m.type, mi.id, mi.messageid, mi.destination, mi.status, mi.lastdate
+                              FROM customers c, messageitems mi, messages m
+                              WHERE c.id=mi.customerid
                               AND m.id=mi.messageid
                               AND m.type in (5,6)
                               AND c.id=?
@@ -62,11 +62,22 @@ function module_main()
   if(isset($_GET['confirm_urgent']))
   {
 					$confirm_urgent = $_GET['confirm_urgent'];
-					$DB->Execute('UPDATE messageitems SET status = 2 WHERE id = ?', array($confirm_urgent));
-                                      header('Location: ?');
+					$DB->Execute('UPDATE messageitems SET status = 2, lastdate = ?NOW? WHERE id = ?', array($confirm_urgent));
+        header('Location: ?m=notices');
   }
 
        $SMARTY->display('module:notices.html');
  }
 
+function setNoticeRead($noticeid)
+{
+	global $DB;
+	$result = new xajaxResponse();
+	$DB->Execute('UPDATE messageitems SET lastreaddate = ?NOW? WHERE id = ?', array($noticeid));
+	return $result;
+}
+
+$LMS->InitXajax();
+$LMS->RegisterXajaxFunction('setNoticeRead');
+$SMARTY->assign('xajax', $LMS->RunXajax());
 ?>
