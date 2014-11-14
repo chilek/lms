@@ -78,7 +78,7 @@ $DB->Execute("CREATE VIEW vmacs AS
 		FROM nodes n
 		JOIN macs m ON (n.id = m.nodeid)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014091600', 'dbversion'));
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014111400', 'dbversion'));
 
 $DB->CommitTrans();
 
