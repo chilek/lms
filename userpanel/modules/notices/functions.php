@@ -69,4 +69,15 @@ function module_main()
        $SMARTY->display('module:notices.html');
  }
 
+function setNoticeRead($noticeid)
+{
+	global $DB;
+	$result = new xajaxResponse();
+	$DB->Execute('UPDATE messageitems SET lastreaddate = ?NOW? WHERE id = ?', array($noticeid));
+	return $result;
+}
+
+$LMS->InitXajax();
+$LMS->RegisterXajaxFunction('setNoticeRead');
+$SMARTY->assign('xajax', $LMS->RunXajax());
 ?>
