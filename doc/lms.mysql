@@ -2012,4 +2012,4 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('userpanel','default_categories','1','',0),
 ('directories','userpanel_dir','userpanel','',0);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014111200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014111400');
