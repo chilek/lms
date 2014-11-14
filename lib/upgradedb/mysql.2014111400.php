@@ -62,6 +62,8 @@ $DB->Execute("ALTER TABLE netdevices ADD FOREIGN KEY (netnodeid) REFERENCES netn
 $DB->Execute("ALTER TABLE netdevices ADD COLUMN invprojectid int(11) DEFAULT NULL");
 $DB->Execute("ALTER TABLE netdevices ADD FOREIGN KEY (invprojectid) REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE");
 
+$DB->Execute("ALTER TABLE netdevices ADD COLUMN status tinyint DEFAULT '0'");
+
 $DB->Execute("ALTER TABLE nodes ADD COLUMN invprojectid int(11) DEFAULT NULL");
 $DB->Execute("ALTER TABLE nodes ADD FOREIGN KEY (invprojectid) REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE");
 
@@ -76,7 +78,7 @@ $DB->Execute("CREATE VIEW vmacs AS
 		FROM nodes n
 		JOIN macs m ON (n.id = m.nodeid)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014091600', 'dbversion'));
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014111400', 'dbversion'));
 
 $DB->CommitTrans();
 
