@@ -2765,6 +2765,9 @@ $_LANG['Casual'] = 'Zwykła';
 $_LANG['Unread'] = 'Nieprzeczytana';
 $_LANG['Read status:'] = 'Status przeczytania:';
 $_LANG['Was read on:'] = 'Przeczytana dnia:';
+$_LANG['Last read on:'] = 'Ostatnio czytana dnia:';
+$_LANG['Was confirm on:'] = 'Potwierdzona dnia:';
+$_LANG['only userpanel message'] = 'tylko wiadomości userpanel';
 
 
 $_LANG['New ticket customer notification subject:'] = 'Temat listu z powiadomieniem klienta o nowym zgłoszeniu:';
