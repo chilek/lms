@@ -1,0 +1,102 @@
+<!--// $Id$ //-->
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD style="width: 100%; text-align: left; white-space: nowrap;" class="hand" >
+		<table style="width:100%;"> 
+			<tr>
+			<td style="width:50%;text-align:left;" class="bold" onClick="showOrHide('devicenodes');">
+				<IMG SRC="img/node.gif" ALT="">{t a=$netdevlist|@count}Assigned net devices ($a):{/t}</td>
+			<td style="width:50%;text-align:right;">
+				<a href="#" onclick="popup('?m=choosenetdev&id={$objectid}',1,1,-50,-40);autoiframe_setsize('autoiframe',500,290);return false;">
+					<IMG SRC="img/netdev.gif" ALT=""> {trans("Add devices to node")}</a></td>
+		</table>
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR id="devicenodes" style="display:none;">
+		<TD style="width: 100%;">
+			<TABLE class="lmsbox-inner">
+                            <THEAD>
+				<TR>
+					<TD style="width: 97%; white-space: nowrap;">
+						<img src="img/node.gif" ALT=""> <span class="bold">{trans("Name:")}</span><BR>
+						<img src="img/producer.gif" ALT=""> {trans("Manufacturer:")}/{trans("Model:")}/{trans("Location:")}
+					</TD>
+					<TD style="width: 1%; text-align: right; white-space: nowrap;">
+						{trans("ID:")}
+					</TD>
+					<TD style="width: 1%; white-space: nowrap;">
+						<img src="img/serialnumber.gif"> {trans("Serial number:")}
+					</TD>
+					<TD style="width: 1%;">&nbsp;</TD>
+				</TR>
+                            </THEAD>
+                            <TBODY>
+				{cycle values="light,lucid" print=false}
+				{section name=netdevlist loop=$netdevlist start=$start}
+				<tr class="highlight {cycle}"  id="ndsp{$netdevlist[netdevlist].id}" onclick="window.location='?m=netdevinfo&id={$netdevlist[netdevlist].id}'" >
+					<td width="95%" style="vertical-align: top;">
+						<img src="img/netdev.gif" alt=""><b>{$netdevlist[netdevlist].name}</b><br/>
+							<img src="img/producer.gif" alt=""><nobr>{$netdevlist[netdevlist].producer} / {$netdevlist[netdevlist].model} /	{if $netdevlist[netdevlist].location} {$netdevlist[netdevlist].location|truncate:60:"...":true}	{/if}
+							</nobr>
+			 		</td>
+					<td>
+					 	{$netdevlist[netdevlist].id|string_format:"%04d"}
+					</td>
+					<td>
+						{$netdevlist[netdevlist].serialnumber}
+					</td>
+					<td>
+						<nobr><A href="?m=netnodedeldev&id={$objectid}&did={$netdevlist[netdevlist].id}" OnClick="return confirmLink(this, '{t a=$netdevlist[netdevlist].name}Are you sure, you want to remove net device  \'$a\' from node?{/t}');"><img src="img/delete.gif"  alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+						<a href="?m=netdevinfo&id={$netdevlist[netdevlist].id}"><img src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A></nobr>
+					</td>
+				</tr>
+				{sectionelse}
+				<TR>
+					<TD colspan="4" style="text-align: center;">
+						<p>&nbsp;</p>
+						<p><span class="bold">{trans("No assigned devices.")}</span></p>
+						<p>&nbsp;</p>
+					</TD>
+				</TR>
+				{/section}
+				
+                            </TBODY>
+			</TABLE>
+		</TD>
+	</TR>
+    </TBODY>
+</TABLE>
+<SCRIPT type="text/javascript">
+<!--
+function change_nodelinktype(linktype) {
+	linktype = parseInt(linktype);
+	var options = document.getElementById('devnodeslinktechnology').options;
+	while (options.length)
+		options.remove(0);
+	options.add(new Option('{trans("- unknown -")}', 0));
+	switch (linktype) {
+		case 0:
+			{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
+			options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+			{/foreach}
+			break;
+		case 1:
+			{foreach $_LINKTECHNOLOGIES[1] as $linktechnologyidx => $linktechnology}
+			options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+			{/foreach}
+			break;
+		case 2:
+			{foreach $_LINKTECHNOLOGIES[2] as $linktechnologyidx => $linktechnology}
+			options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+			{/foreach}
+			break;
+	}
+}
+
+if (getCookie('devicenodes') == '1')
+	document.getElementById('devicenodes').style.display = '';
+//-->
+</SCRIPT>

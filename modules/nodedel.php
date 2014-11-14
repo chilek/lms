@@ -54,6 +54,7 @@ else
     $LMS->ExecHook('node_del_before', $plugin_data);
 
 	$LMS->DeleteNode($nodeid);
+	$LMS->CleanupInvprojects();
 
     $LMS->ExecHook('node_del_after', $plugin_data);
 

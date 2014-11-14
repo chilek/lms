@@ -106,6 +106,10 @@ DROP TABLE IF EXISTS up_info_changes;
 DROP TABLE IF EXISTS supermasters;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS customers;
+DROP TABLE IF EXISTS invprojects;
+DROP TABLE IF EXISTS netnodes;
+
+
 
 # --------------------------------------------------------
 #
@@ -559,6 +563,17 @@ CREATE TABLE ewx_channels (
 
 # --------------------------------------------------------
 #
+# Structure of table invprojects
+#
+CREATE TABLE invprojects (
+        id int(11) NOT NULL auto_increment,
+	name varchar(255) NOT NULL, 
+	type tinyint DEFAULT 0, 
+	PRIMARY KEY (id)
+) ENGINE=INNODB;
+
+# --------------------------------------------------------
+#
 # Structure of table  netdevices
 #
 CREATE TABLE netdevices (
@@ -582,15 +597,20 @@ CREATE TABLE netdevices (
   secret 	varchar(60) 	NOT NULL DEFAULT '',
   community 	varchar(50) 	NOT NULL DEFAULT '',
   channelid 	int(11) 	DEFAULT NULL,
-  longitude decimal(10, 6) DEFAULT NULL,
-  latitude decimal(10, 6) DEFAULT NULL,
+  longitude	decimal(10, 6)	DEFAULT NULL,
+  latitude	decimal(10, 6)	DEFAULT NULL,
+  netnodeid	int(11)		DEFAULT NULL,
+  invprojectid	int(11)		DEFAULT NULL,
+  status	tinyint		DEFAULT '0',
   PRIMARY KEY (id),
   INDEX channelid (channelid),
   INDEX location_city (location_city, location_street, location_house, location_flat),
   INDEX location_street (location_street),
   FOREIGN KEY (location_city) REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
   FOREIGN KEY (location_street) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  FOREIGN KEY (channelid) REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE
+  FOREIGN KEY (channelid) REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  FOREIGN KEY (netnodeid) REFERENCES netnodes(id) ON DELETE SET NULL ON UPDATE CASCADE,
+  FOREIGN KEY (invprojectid) REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -685,6 +705,7 @@ CREATE TABLE nodes (
   longitude decimal(10, 6) DEFAULT NULL,
   latitude decimal(10, 6) DEFAULT NULL,
   netid int(11) NOT NULL DEFAULT '0',
+  invprojectid int(11) DEFAULT NULL,
   PRIMARY KEY  (id),
   UNIQUE KEY name (name),
   UNIQUE KEY ipaddr (ipaddr, netid),
@@ -695,7 +716,8 @@ CREATE TABLE nodes (
   INDEX location_street (location_street),
   FOREIGN KEY (location_city) REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
   FOREIGN KEY (location_street) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  FOREIGN KEY (netid) REFERENCES networks (id) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (netid) REFERENCES networks (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (invprojectid) REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1815,6 +1837,31 @@ CREATE TABLE up_info_changes (
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
+# --------------------------------------------------------
+#
+# Structure of table netnodes
+#
+CREATE TABLE netnodes (
+        id int(11) NOT NULL auto_increment,
+	name varchar(255) NOT NULL, 
+	type tinyint DEFAULT 0,
+	invprojectid int(11),
+	status tinyint DEFAULT 0,
+	location varchar(255) DEFAULT '',
+	location_city int(11) DEFAULT NULL,
+	location_street int(11) DEFAULT NULL,
+	location_house varchar(8) DEFAULT NULL,
+	location_flat varchar(8) DEFAULT NULL,
+	longitude decimal(10,6) DEFAULT NULL,
+	latitude decimal(10,6) DEFAULT NULL,
+	ownership tinyint(1) DEFAULT 0,
+	coowner varchar(255) DEFAULT '',
+	uip tinyint(1) DEFAULT 0,
+	miar tinyint(1) DEFAULT 0,
+	PRIMARY KEY (id),
+	FOREIGN KEY (invprojectid) REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=INNODB;
+
 INSERT INTO rtcategories (name, description)
 	VALUES ('default', 'default category');
 INSERT INTO up_rights(module, name, description)
@@ -1965,4 +2012,4 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('userpanel','default_categories','1','',0),
 ('directories','userpanel_dir','userpanel','',0);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014111200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014111400');

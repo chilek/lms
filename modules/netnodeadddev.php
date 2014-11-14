@@ -23,27 +23,23 @@
  *
  *  $Id$
  */
-
-if (!$LMS->NetDevExists($_GET['id']))
-	$SESSION->redirect('?m=netdevlist');
-
-$layout['pagetitle'] = trans('Deletion of Device with ID: $a', sprintf('%04d', $_GET['id']));
-$SMARTY->assign('netdevid', $_GET['id']);
-
-if ($LMS->CountNetDevLinks($_GET['id']) > 0)
-	$body = '<P>' . trans('Device connected to other device or node can\'t be deleted.') . '</P>';
-else
-	if ($_GET['is_sure'] != 1) {
-		$body = '<P>' . trans('Are you sure, you want to delete that device?') . '</P>'; 
-		$body .= '<P><A HREF="?m=netdevdel&id=' . $_GET['id'] . '&is_sure=1">' . trans('Yes, I am sure.') . '</A></P>';
-	} else {
-		header('Location: ?m=netdevlist');
-		$body = '<P>' . trans('Device has been deleted.') . '</P>';
-		$LMS->DeleteNetDev($_GET['id']);
-		$LMS->CleanupInvprojects();
+$id = intval($_GET['id']);
+$row = $DB->GetRow('SELECT * FROM netnodes WHERE id=?',array($id));
+if (!$row)
+	$SESSION->redirect('?m=netnodelist');
+$list = $_GET['list'];
+if (!empty($list)) {
+	$items = explode(',',$list);
+	foreach($items as $it) {
+		$DB->Execute("UPDATE netdevices SET netnodeid=?,location=?,location_city=?,
+			location_street=?,location_house=?,location_flat=?,longitude=?,latitude=? WHERE id=?",
+			array($id,$row['location'],$row['location_city'],$row['location_street'],
+			$row['location_house'],$row['location_flat'],$row['longitude'],$row['latitude'],$it));
 	}
+}
 
-$SMARTY->assign('body',$body);
-$SMARTY->display('dialog.html');
 
+
+header('Location: ?m=netnodeinfo&id='.$id);
+		
 ?>

@@ -334,6 +334,10 @@ if ($type == 'openlayers')
 			$SMARTY->assign('lon', $nodes[$nodeid]['lon']);
 			$SMARTY->assign('lat', $nodes[$nodeid]['lat']);
 		}
+		else {
+			$SMARTY->assign('lon', $_GET['lon']);
+			$SMARTY->assign('lat', $_GET['lat']);
+		}
 
 	$SMARTY->assign('type', $type);
 	$SMARTY->display('netdevmap.html');

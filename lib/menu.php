@@ -228,16 +228,28 @@ $menu = array(
 					'prio' => 30,
 				),
 				array(
-					'name' => trans('Map'),
-					'link' => '?m=netdevmap',
-					'tip' => trans('Network map display'),
+					'name' => trans('Nodes list'),
+					'link' => '?m=netnodelist',
+					'tip' => trans('Network device nodes list'),
 					'prio' => 40,
 				),
 				array(
-					'name' => trans('UKE report'),
-					'link' => '?m=uke',
-					'tip' => trans('Allows you to prepare SIIS v4 report for UKE'),
+					'name' => trans('New node'),
+					'link' => '?m=netnodeadd',
+					'tip' => trans('Add new network device node'),
 					'prio' => 50,
+				),
+				array(
+					'name' => trans('Map'),
+					'link' => '?m=netdevmap',
+					'tip' => trans('Network map display'),
+					'prio' => 60,
+				),
+				array(
+					'name' => trans('Reports'),
+					'link' => '?m=netdevprint',
+					'tip' => trans('Lists and reports printing'),
+					'prio' => 70,
 				),
 			),
 		),
@@ -719,13 +731,13 @@ if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false)
 		'name' => trans('Channels List'),
 		'link' => '?m=ewxchlist',
 		'tip' => trans('List of STM channels'),
-		'prio' => 50,
+		'prio' => 80,
 	);
 	$menu['netdevices']['submenu'][] = array(
 		'name' => trans('New Channel'),
 		'link' => '?m=ewxchadd',
 		'tip' => trans('Add new STM channel'),
-		'prio' => 51,
+		'prio' => 81,
 	);
 }
 

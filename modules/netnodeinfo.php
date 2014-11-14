@@ -24,26 +24,27 @@
  *  $Id$
  */
 
-if (!$LMS->NetDevExists($_GET['id']))
-	$SESSION->redirect('?m=netdevlist');
+$id = intval($_GET['id']);
+$result = $DB->GetRow('SELECT n.*,p.name AS projectname FROM netnodes n LEFT JOIN invprojects p ON n.invprojectid=p.id WHERE n.id=? ',array($id));
+if (!$result)
+	$SESSION->redirect('?m=netnodelist');
 
-$layout['pagetitle'] = trans('Deletion of Device with ID: $a', sprintf('%04d', $_GET['id']));
-$SMARTY->assign('netdevid', $_GET['id']);
 
-if ($LMS->CountNetDevLinks($_GET['id']) > 0)
-	$body = '<P>' . trans('Device connected to other device or node can\'t be deleted.') . '</P>';
-else
-	if ($_GET['is_sure'] != 1) {
-		$body = '<P>' . trans('Are you sure, you want to delete that device?') . '</P>'; 
-		$body .= '<P><A HREF="?m=netdevdel&id=' . $_GET['id'] . '&is_sure=1">' . trans('Yes, I am sure.') . '</A></P>';
-	} else {
-		header('Location: ?m=netdevlist');
-		$body = '<P>' . trans('Device has been deleted.') . '</P>';
-		$LMS->DeleteNetDev($_GET['id']);
-		$LMS->CleanupInvprojects();
-	}
+//$netdevinfo = $LMS->GetNetDev($_GET['id']);
 
-$SMARTY->assign('body',$body);
-$SMARTY->display('dialog.html');
+
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+
+$layout['pagetitle'] = trans('Net Device Node Info: $a', $info['name']);
+
+$SMARTY->assign('nodeinfo', $result);
+$SMARTY->assign('objectid', $result['id']);
+
+$nlist = $DB->GetAll("SELECT * FROM netdevices WHERE netnodeid=".$id." ORDER BY NAME");
+$SMARTY->assign('netdevlist', $nlist);
+
+
+
+$SMARTY->display('netnodeinfo.html');
 
 ?>

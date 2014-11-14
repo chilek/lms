@@ -169,7 +169,8 @@ $DEFAULTS = array(
 		'default_assignment_invoice' => 0,
 		'default_editor' => 'html',
 		'logging' => false,
-		'hide_toolbar' => false
+		'hide_toolbar' => false,
+		'auto_remove_investment_project' => true
 	),
 	'invoices' => array(
 		'template_file' => 'invoice.html',
