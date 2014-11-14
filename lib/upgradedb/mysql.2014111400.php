@@ -62,6 +62,8 @@ $DB->Execute("ALTER TABLE netdevices ADD FOREIGN KEY (netnodeid) REFERENCES netn
 $DB->Execute("ALTER TABLE netdevices ADD COLUMN invprojectid int(11) DEFAULT NULL");
 $DB->Execute("ALTER TABLE netdevices ADD FOREIGN KEY (invprojectid) REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE");
 
+$DB->Execute("ALTER TABLE netdevices ADD COLUMN status tinyint DEFAULT '0'");
+
 $DB->Execute("ALTER TABLE nodes ADD COLUMN invprojectid int(11) DEFAULT NULL");
 $DB->Execute("ALTER TABLE nodes ADD FOREIGN KEY (invprojectid) REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE");
 
