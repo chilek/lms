@@ -62,10 +62,10 @@
 						{$item.destination}
 					</TD>
 					<TD style="width: 1%;" class="text-right nobr" onClick="return self.location.href='?m=messageinfo&amp;id={$item.id}'">
-						{if ({$item.destination} == 'userpanel' || {$item.destination} == 'userpanel urgent') && {$item.lastreaddate} != 0}{$item.lastreaddate|date_format:"%Y/%m/%d %H:%M"}{else}&nbsp;{/if}
+						{if ($item.type == $smarty.const.MSG_USERPANEL || $item.type == $smarty.const.MSG_USERPANEL_URGENT) && $item.lastreaddate}{$item.lastreaddate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
 					</TD>
 					<TD style="width: 1%;" class="text-right nobr" onClick="return self.location.href='?m=messageinfo&amp;id={$item.id}'">
-						{if $item.status == $smarty.const.MSG_SENT && ({$item.destination} == 'userpanel' || {$item.destination} == 'userpanel urgent') && {$item.lastdate} != 0}{$item.lastdate|date_format:"%Y/%m/%d %H:%M"}{else}&nbsp;{/if}
+						{if $item.status == $smarty.const.MSG_SENT  && ($item.type == $smarty.const.MSG_USERPANEL || $item.type == $smarty.const.MSG_USERPANEL_URGENT) && $item.lastdate}{$item.lastdate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
 					</TD>
 					<TD style="width: 1%;" class="text-right nobr">
 					</TD>
