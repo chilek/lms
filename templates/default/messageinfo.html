@@ -160,10 +160,10 @@
 			{/if}
 		</TD>
 		<TD WIDTH="1%" align="right">
-			{if ({$item.destination} == 'userpanel' || {$item.destination} == 'userpanel urgent') && {$item.lastreaddate} != 0}{$item.lastreaddate|date_format:"%Y/%m/%d %H:%M"}{else}&nbsp;{/if}
+			{if ($message.type == $smarty.const.MSG_USERPANEL || $message.type == $smarty.const.MSG_USERPANEL_URGENT) && $item.lastreaddate}{$item.lastreaddate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
 		</TD>
 		<TD WIDTH="1%" align="right">
-			{if $item.status == $smarty.const.MSG_SENT && ({$item.destination} == 'userpanel' || {$item.destination} == 'userpanel urgent') && {$item.lastdate} != 0}{$item.lastdate|date_format:"%Y/%m/%d %H:%M"}{else}&nbsp;{/if}
+			{if $item.status == $smarty.const.MSG_SENT  && ($message.type == $smarty.const.MSG_USERPANEL || $message.type == $smarty.const.MSG_USERPANEL_URGENT) && $item.lastdate}{$item.lastdate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
 		</TD>
