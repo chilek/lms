@@ -2765,6 +2765,9 @@ $_LANG['Casual'] = 'Zwykła';
 $_LANG['Unread'] = 'Nieprzeczytana';
 $_LANG['Read status:'] = 'Status przeczytania:';
 $_LANG['Was read on:'] = 'Przeczytana dnia:';
+$_LANG['Last read on:'] = 'Ostatnio czytana dnia:';
+$_LANG['Was confirm on:'] = 'Potwierdzona dnia:';
+$_LANG['only userpanel message'] = 'tylko wiadomości userpanel';
 
 
 $_LANG['New ticket customer notification subject:'] = 'Temat listu z powiadomieniem klienta o nowym zgłoszeniu:';
@@ -2820,5 +2823,54 @@ $_LANG['on-line'] = 'włączone';
 
 $_LANG['End time:'] = 'Czas zakończenia:';
 $_LANG['hide VoIP passwords'] = 'ukrywanie haseł VoIP';
+
+$_LANG['Nodes list'] = 'Lista węzłów';
+$_LANG['Network device nodes list'] = 'Lista węzłów sieciowych';
+$_LANG['Network Device Nodes'] = 'Węzły sieciowe';
+$_LANG['New node'] = 'Nowy węzeł';
+$_LANG['Add new network device node'] = 'Dodaj nowy węzeł sieciowy';
+$_LANG['There are no device nodes in your database.'] = 'Brak węzłów sieciowych w bazie.';
+$_LANG['Are you sure, you want to remove net device node \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz usunąć węzeł \\\'$a\\\' z bazy ?';
+$_LANG['existing'] = 'zakończone';
+$_LANG['under construction'] = 'w realizacji';
+$_LANG['planned'] = 'planowane';
+$_LANG['Project:'] = 'Projekt:';
+$_LANG['Ownership:'] = 'Własność:';
+$_LANG['None'] = 'Brak';
+$_LANG['New project'] = 'Nowy projekt';
+$_LANG['Inherited from root device'] = 'Dzedziczenie z jednostki nadrzędnej';
+$_LANG['Enter node type'] = 'Podaj typ węzła';
+$_LANG['Enter node status'] = 'Podaj status węzła';
+$_LANG['Enter node name'] = 'Podaj nazwę węzła';
+$_LANG['Select project for this node'] = 'Wybierz projekt, w ramach którego powstał węzeł';
+$_LANG['Select ownership for this node'] = 'Wybierz rodzaj własności węzła';
+$_LANG['Enter new project name'] = 'Wprowadź nazwę nowego projektu';
+$_LANG['Enter co-owner identifier'] = 'Podaj identyfikator współwłaściciela';
+$_LANG['Yes'] = 'Tak';
+$_LANG['No'] = 'Nie';
+$_LANG['New Net Device Node'] = 'Nowy węzeł sieciowy';
+$_LANG['Net node name is required!'] = 'Nazwa węzła sieciowego jest wymagana!';
+$_LANG['Project name is required'] = 'Nazwa nowego projektu jest wymagana';
+$_LANG['Co-owner identifier is required'] = 'Identyfikator współwłaściciela jest wymagany';
+$_LANG['Net Device Node Info: $a'] = 'Informacje o węźle sieciowym: $a';
+$_LANG['Assigned net devices ($a):'] = 'Przypisane urządzenia sieciowe ($a):';
+$_LANG['No assigned devices.'] = 'Brak przypisanych urządzeń.';
+$_LANG['Net Device Node Edit: $a'] = 'Edycja węzła sieciowego: $a';
+$_LANG['Select net devices to add'] = 'Wybierz urządzenia sieciowe do dodania';
+$_LANG['Add devices to node'] = 'Dodaj urządzenia do węzła';
+$_LANG['Net devices are missing.'] = 'Brak urządzeń sieciowych';
+$_LANG['Filter devices by name'] = 'Filtruj urządzenia po nazwie';
+$_LANG['Are you sure, you want to remove net device  \\\'$a\\\' from node?'] = 'Na pewno usunąć urządzenie \\\'$a\\\' z węzła?';
+$_LANG['Investment project:'] = 'Projekt inwestycyjny:';
+$_LANG['From root device'] = 'Z jednostki nadrzędnej';
+$_LANG['Net node:'] = 'Węzeł sieciowy:';
+$_LANG['Select project'] = 'Wybierz projekt';
+
+$_LANG['Select investment projects'] = 'Wybierz projekty inwestycyjne';
+$_LANG['Investment project:'] = 'Projekt inwestycyjny:';
+
+$_LANG['Select device status'] = 'Wybierz status urządzenia';
+$_LANG['$a (from network node $b)'] = '$a (z węzła sieciowego $b)';
+$_LANG['$a (from network device $b)'] = '$a (z urządzenia sieciowego $b)';
 
 ?>

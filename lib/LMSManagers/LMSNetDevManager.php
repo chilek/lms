@@ -172,12 +172,16 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             'channelid' => !empty($data['channelid']) ? $data['channelid'] : NULL,
             'longitude' => !empty($data['longitude']) ? str_replace(',', '.', $data['longitude']) : null,
             'latitude' => !empty($data['latitude']) ? str_replace(',', '.', $data['latitude']) : null,
+            'invprojectid' => $data['invprojectid'],
+            'netnodeid' => $data['netnodeid'],
+            'status' => $data['status'],
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $data['id'],
         );
         $res = $this->db->Execute('UPDATE netdevices SET name=?, description=?, producer=?, location=?,
 				location_city=?, location_street=?, location_house=?, location_flat=?,
 				model=?, serialnumber=?, ports=?, purchasetime=?, guaranteeperiod=?, shortname=?,
-				nastype=?, clients=?, secret=?, community=?, channelid=?, longitude=?, latitude=? 
+				nastype=?, clients=?, secret=?, community=?, channelid=?, longitude=?, latitude=?,
+				invprojectid=?, netnodeid=?, status=?
 				WHERE id=?', array_values($args));
         if ($this->syslog && $res)
             $this->syslog->AddMessage(SYSLOG_RES_NETDEV, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
@@ -208,15 +212,18 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             'community' => $data['community'],
             'channelid' => !empty($data['channelid']) ? $data['channelid'] : NULL,
             'longitude' => !empty($data['longitude']) ? str_replace(',', '.', $data['longitude']) : NULL,
-            'latitude' => !empty($data['latitude']) ? str_replace(',', '.', $data['latitude']) : NULL
+            'latitude' => !empty($data['latitude']) ? str_replace(',', '.', $data['latitude']) : NULL,
+            'invprojectid' => $data['invprojectid'],
+            'netnodeid' => $data['netnodeid'],
+            'status' => $data['status'],
         );
         if ($this->db->Execute('INSERT INTO netdevices (name, location,
 				location_city, location_street, location_house, location_flat,
 				description, producer, model, serialnumber,
 				ports, purchasetime, guaranteeperiod, shortname,
 				nastype, clients, secret, community, channelid,
-				longitude, latitude)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
+				longitude, latitude, invprojectid, netnodeid, status)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
             $id = $this->db->GetLastInsertID('netdevices');
 
             // EtherWerX support (devices have some limits)

@@ -315,6 +315,19 @@ CREATE TABLE networks (
 );
 CREATE INDEX networks_hostid_idx ON networks (hostid);
 
+/* ---------------------------------------------------
+ Structure of table "invprojects" 
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS invprojects_id_seq;
+CREATE SEQUENCE invprojects_id_seq;
+DROP TABLE IF EXISTS invprojects CASCADE;
+CREATE TABLE invprojects (
+	id integer DEFAULT nextval('invprojects_id_seq'::text) NOT NULL,
+	name varchar(255) NOT NULL,
+	type smallint DEFAULT 0,
+	PRIMARY KEY(id)
+);
+
 /* -------------------------------------------------------- 
   Structure of table "nodes"
 -------------------------------------------------------- */
@@ -355,6 +368,8 @@ CREATE TABLE nodes (
 	latitude numeric(10, 6) DEFAULT NULL,
 	netid integer		DEFAULT 0 NOT NULL
 		REFERENCES networks (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	invprojectid integer DEFAULT NULL
+		REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id),
 	UNIQUE (name),
 	UNIQUE (ipaddr, netid)
@@ -1442,6 +1457,11 @@ CREATE TABLE netdevices (
 	    REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	longitude numeric(10, 6) DEFAULT NULL,
 	latitude numeric(10, 6) DEFAULT NULL,
+	netnodeid integer	DEFAULT NULL
+	    REFERENCES netnodes(id) ON DELETE SET NULL ON UPDATE CASCADE,
+	invprojectid integer	DEFAULT NULL
+	    REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE,
+	status smallint		DEFAULT 0,
 	PRIMARY KEY (id)
 );
 CREATE INDEX netdevices_channelid_idx ON netdevices (channelid);
@@ -1632,7 +1652,8 @@ CREATE TABLE messageitems (
 	destination 	varchar(255) 	DEFAULT '' NOT NULL,
 	lastdate 	integer		DEFAULT 0 NOT NULL,
 	status 		smallint	DEFAULT 0 NOT NULL,
-	error 		text		DEFAULT NULL, 
+	error 		text		DEFAULT NULL,
+	lastreaddate 	integer		DEFAULT 0 NOT NULL,
         PRIMARY KEY (id)
 ); 
 
@@ -1817,6 +1838,34 @@ CREATE TABLE up_info_changes (
 	fieldvalue varchar(255) DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
+
+/* ---------------------------------------------------
+ Structure of table "netnodes" 
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS netnodes_id_seq;
+CREATE SEQUENCE netnodes_id_seq;
+DROP TABLE IF EXISTS netnodes CASCADE;
+CREATE TABLE netnodes (
+	id integer DEFAULT nextval('netnodes_id_seq'::text) NOT NULL,
+	name varchar(255) NOT NULL,
+	type smallint DEFAULT 0,
+	invprojectid integer  REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	status smallint DEFAULT 0,
+	location varchar(255) DEFAULT '',
+	location_city integer DEFAULT NULL,
+	location_street integer DEFAULT NULL,
+	location_house varchar(8) DEFAULT NULL,
+	location_flat varchar(8) DEFAULT NULL,
+	longitude numeric(10,6) DEFAULT NULL,
+	latitude numeric(10,6) DEFAULT NULL,
+	ownership smallint DEFAULT 0,
+	coowner varchar(255) DEFAULT '',
+	uip smallint DEFAULT 0,
+	miar smallint DEFAULT 0,
+	PRIMARY KEY(id)
+);
+
+
 
 /* ---------------------------------------------------
  Functions and Views
@@ -2054,4 +2103,4 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('userpanel', 'default_categories', '1', '', 0),
 ('directories', 'userpanel_dir', 'userpanel', '', 0);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014090600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014111400');

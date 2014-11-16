@@ -179,6 +179,14 @@
 {/if}
 	<TR>
 		<TD style="width: 1%;">
+			<IMG SRC="img/money.gif" ALT="{trans("Investment project:")}">
+		</TD>
+		<TD style="width: 99%;" COLSPAN="2">
+			{$nodeinfo.projectname}
+		</TD>
+	</TR>
+	<TR>
+		<TD style="width: 1%;">
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
 		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
@@ -279,6 +287,7 @@
 			{if $nodeinfo.moddate}{$nodeinfo.modifiedby}, {$nodeinfo.moddateh}{else}-{/if}
 		</TD>
 	</TR>
+	
 						</TABLE>
 					</TD>
 				</TR>

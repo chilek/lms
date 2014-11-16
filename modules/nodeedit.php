@@ -216,6 +216,16 @@ if (isset($_POST['nodeedit'])) {
 	else if ($nodeedit['access'] && $LMS->GetCustomerStatus($nodeedit['ownerid']) < 3)
 		$error['access'] = trans('Node owner is not connected!');
 
+	if ($nodeedit['invprojectid'] == '-1') { // nowy projekt
+		if (!strlen(trim($nodeedit['projectname']))) {
+		 $error['projectname'] = trans('Project name is required');
+		}
+		if ($DB->GetOne("SELECT * FROM invprojects WHERE name=? AND type<>?",
+			array($nodeedit['projectname'], INV_PROJECT_SYSTEM)))
+			$error['projectname'] = trans('Project with that name already exists');
+	}
+
+
 	if (!$error) {
 		if (empty($nodeedit['teryt'])) {
 			$nodeedit['location_city'] = null;
@@ -226,7 +236,21 @@ if (isset($_POST['nodeedit'])) {
 
 		$nodeedit = $LMS->ExecHook('node_edit_before', $nodeedit);
 
+		$ipi = $nodeedit['invprojectid'];
+		if ($ipi == '-1') {
+			$DB->BeginTrans();
+			$DB->Execute("INSERT INTO invprojects (name, type) VALUES (?, ?)",
+				array($nodeedit['projectname'], INV_PROJECT_REGULAR));
+			$ipi = $DB->GetLastInsertID('invprojects');
+			$DB->CommitTrans();
+		}
+		if ($nodeedit['invprojectid'] == '-1' || intval($ipi)>0) {
+			$nodeedit['invprojectid'] = intval($ipi);
+		} else {
+			$nodeedit['invprojectid'] = NULL;
+		}
 		$LMS->NodeUpdate($nodeedit, ($customerid != $nodeedit['ownerid']));
+		$LMS->CleanupInvprojects();
 
 		$nodeedit = $LMS->ExecHook('node_edit_after', $nodeedit);
 
@@ -254,6 +278,7 @@ if (isset($_POST['nodeedit'])) {
 	$nodeinfo['stateid'] = $nodeedit['stateid'];
 	$nodeinfo['latitude'] = $nodeedit['latitude'];
 	$nodeinfo['longitude'] = $nodeedit['longitude'];
+	$nodeinfo['invprojectid'] = $nodeedit['invprojectid'];
 
 	if ($nodeedit['ipaddr_pub'] == '0.0.0.0')
 		$nodeinfo['ipaddr_pub'] = '';
@@ -279,6 +304,10 @@ $nodeinfo = $LMS->ExecHook('node_edit_init', $nodeinfo);
 include(MODULES_DIR . '/nodexajax.inc.php');
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
+
+$nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name",
+	array(INV_PROJECT_SYSTEM));
+$SMARTY->assign('NNprojects',$nprojects);
 
 $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($nodeid));
 $SMARTY->assign('networks', $LMS->GetNetworks(true));

@@ -1,5 +1,6 @@
 <!-- $Id$ -->
 {include file="calendar_js.html"}
+<script type="text/javascript" src="img/netnodehelper.js"></script>
 <TABLE class="lmsbox">
 	<FORM NAME="netdevedit" METHOD="POST" ACTION="?m=netdevedit&id={$netdevinfo.id}">
 	<INPUT type="submit" class="hiddenbtn">
@@ -23,6 +24,21 @@
 		                <TR>
 		                        <TD WIDTH="50%" style="vertical-align:top;">
 		                                <TABLE WIDTH="100%" CELLPADDING="3">
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/producer.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("Status:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<SELECT NAME="netdev[status]"  {tip text="Select device status"}>
+				{foreach $_NETELEMENTSTATUSES as $idx => $status}
+				<OPTION VALUE="{$idx}"{if $netdevinfo.status == $idx} selected{/if}>{$status}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/producer.gif" ALT="">
@@ -230,7 +246,37 @@
 			<TEXTAREA NAME="netdev[description]" COLS="40" ROWS="5" COLS="40" ROWS="5" {tip text="Enter additional information (optional)"}>{$netdevinfo.description}</TEXTAREA>
 		</TD>
 	</TR>
-                                    		</TABLE>
+	<TR>
+		<TD WIDTH="2%" NOWRAP COLSPAN="2">
+		 <B>{trans("Investment project:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<SELECT NAME="netdev[invprojectid]" ID="NNproject" VALUE="{$netdevinfo.invprojectid}" {tip text="Select project for this node"} onchange="setNNProject();">
+				<OPTION value="-2" {if ($netdevinfo.invprojectid == '-2' ) } selected="selected" {/if} >{trans("None")}</OPTION>
+				<OPTION value="-1" {if ($netdevinfo.invprojectid == '-1' ) } selected="selected" {/if}>{trans("New project")}</OPTION>
+				<OPTION value="1" {if ($netdevinfo.invprojectid == '1' ) } selected="selected" {/if}>{trans("From root device")}</OPTION>
+				{section name=project loop=$NNprojects}
+				<OPTION VALUE="{$NNprojects[project].id}" {if ($netdevinfo.invprojectid == $NNprojects[project].id ) } selected="selected" {/if} >{$NNprojects[project].name}</OPTION>
+				{/section}
+			</SELECT>
+			<INPUT TYPE="TEXT" NAME="netdev[projectname]" VALUE="{$netdevinfo.projectname}" {tip text="Enter new project name" trigger="projectname" } ID="NNprojectname"  />
+			 
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="2%" NOWRAP COLSPAN="2">
+		 <B>{trans("Net node:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<SELECT NAME="netdev[netnodeid]" VALUE="{$netdevinfo.netnodeid}" {tip text="Select node"} >
+				<OPTION VALUE="-1">{trans("None")}</OPTION>
+				{section name=nd loop=$NNnodes}
+				<OPTION VALUE="{$NNnodes[nd].id}" {if ($netdevinfo.netnodeid == $NNnodes[nd].id ) } selected="selected" {/if} >{$NNnodes[nd].name}</OPTION>
+				{/section}
+			</SELECT>
+		</TD>
+	</TR>
+	</TABLE>
                             		</TD>
                     		</TR>
             		</TABLE>
@@ -269,5 +315,6 @@
 BUL_TIMECOMPONENT = false;
 var cal1 = new calendar(document.forms['netdevedit'].elements['netdev[purchasedate]']);
 check_teryt('location', true);
+setNNProject();
 //-->
 </SCRIPT>

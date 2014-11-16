@@ -1301,4 +1301,60 @@ cal24.time_comp = false;
 </TABLE>
 </FORM>
 {/if}
+{if $printmenu=="netdev"}
+<P><FORM method="post" name="printnetdev" id="printnetdev" action="?m=netdevprint&type=uke">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD style="width: 1%;">
+		    <IMG src="img/netdev.gif" alt="">
+		</TD>
+		<TD style="width: 99%;">
+		    <B>{trans("UKE report")}</B>
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD class="flr container" width="100%" colspan="2">
+			<TABLE width="100%" cellpadding="3">
+				<TR>
+					<TD style="width: 1%;">
+						<IMG src="img/money.gif" alt="">
+					</TD>
+					<TD style="width: 1%;" nowrap>
+						<B>{trans("Investment project:")}</B>
+					</TD>
+					<TD style="width: 98%;">
+						{if $invprojects}
+						<SELECT name="invprojects[]" id="invprojects" {tip text="Select investment projects"} multiple>
+							{foreach $invprojects as $invproject}
+							<OPTION value="{$invproject.id}">{$invproject.name}</OPTION>
+							{/foreach}
+						</SELECT>
+						{else}
+						{trans("all")}
+						<INPUT type="hidden" name="invprojects" value="0">
+						{/if}
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR>
+		<TD style="width: 100%;" colspan="2" align="right">
+			<A href="javascript:document.printnetdev.submit();">{trans("Save")} <IMG src="img/save.gif" alt="" hspace="2"></A>
+		</TD>
+	</TR>
+    </TBODY>
+</TABLE>
+</FORM>
+<SCRIPT type="text/javascript">
+<!--
+multiselect('printnetdev', 'invprojects', '{trans("- all -")}');
+//-->
+</SCRIPT>
+</P>
+{/if}
 {/block}

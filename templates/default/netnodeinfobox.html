@@ -1,0 +1,164 @@
+<!--// $Id$ //-->
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR{if $devicepanel} class="hand" onClick="showOrHide('devicepanel');"{/if}>
+		<TD WIDTH="1%">
+			<IMG SRC="img/netdev.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%">
+			<B>{$nodeinfo.name} ({$nodeinfo.id|string_format:"%04d"})</B>
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR{if $devicepanel} id="devicepanel" style="display:none;"{/if}>
+	    <TD WIDTH="100%" COLSPAN="2"{if $devicepanel} CLASS="container" ALIGN="RIGHT"{else}CLASS="container"{/if}>
+			<TABLE WIDTH="100%" CELLPADDING="0">
+				<TR>
+					<TD WIDTH="100%" style="vertical-align:top;">
+						<TABLE WIDTH="100%" CELLPADDING="3">
+       	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/producer.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+		        <B>{trans("Type:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+		        {$_NETELEMENTTYPES[$nodeinfo.type]}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/producer.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+		        <B>{trans("Status:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+		        {$_NETELEMENTSTATUSES[$nodeinfo.status]}
+		</TD>
+	</TR>
+	
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/producer.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+		        <B>{trans("Project:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			{if ($nodeinfo.invprojectid == '')} brak {else} {$nodeinfo.projectname} {/if}
+		</TD>
+	</TR>
+	
+	
+	{if $nodeinfo.location}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/home.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+		        <B>{trans("Location:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+		        {$nodeinfo.location}
+		</TD>
+	</TR>
+	{/if}
+	{if $nodeinfo.longitude || $nodeinfo.latitude}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/home.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("GPS longitude:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT ID="longitude" TYPE="hidden" VALUE="{$nodeinfo.longitude}">
+			{$nodeinfo.longitude}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/home.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("GPS latitude:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT ID="latitude" TYPE="hidden" VALUE="{$nodeinfo.latitude}">
+			{$nodeinfo.latitude}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="2%" COLSPAN="2">
+		</TD>
+		<TD WIDTH="98%">
+			<a HREF="?m=netdevmap&lon={$nodeinfo.longitude}&lat={$nodeinfo.latitude}"><img src="img/network.gif" alt=""> {trans("Show on map")} &raquo;&raquo;&raquo;</a>			
+		</TD>
+	</TR>
+	{/if}
+
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/producer.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("Ownership:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			{$_NETELEMENTOWNERSHIPS[$nodeinfo.ownership]} {if ($nodeinfo.ownership >= 1)} ({$nodeinfo.coowner}) {/if}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/producer.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>Udostępnianie powierzchni</B>
+		</TD>
+		<TD WIDTH="98%">
+			{if ($nodeinfo.uip == 1)} {trans('Yes')} {else} {trans('No')} {/if}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/producer.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>Instalacja anten</B>
+		</TD>
+		<TD WIDTH="98%">
+			{if ($nodeinfo.miar == 1)} {trans('Yes')} {else} {trans('No')} {/if}
+		</TD>
+	</TR>
+
+	
+	                        	</TABLE>
+				</TD>
+				
+				</TR>
+			</TABLE>
+{if !$devicepanel}
+    		</TD>
+	</TR>
+	<TR>
+	        <TD WIDTH="100%" COLSPAN="2" ALIGN="RIGHT">
+{/if}
+			<A href="?m=netnodeedit&id={$nodeinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG src="img/edit.gif" ALT="[ {trans("Edit")} ]"></A>
+			<A href="?m=netnodedel&id={$nodeinfo.id}" OnClick="return confirmLink(this, '{t a=$nodeinfo.name}Are you sure, you want to remove net device node \'$a\' from database?{/t}');">{trans("Delete")} <img src="img/delete.gif" ALT=""></A>
+		</TD>
+	</TR>
+    </TBODY>
+</TABLE>
+{if $devicepanel}
+<SCRIPT type="text/javascript">
+<!--
+if (getCookie('devicepanel') == '1')
+{
+	document.getElementById('devicepanel').style.display = '';
+}
+//-->
+</SCRIPT>
+{/if}

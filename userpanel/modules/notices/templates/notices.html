@@ -1,5 +1,6 @@
 <!-- $Id$ -->
 {include file="header.html"}
+{$xajax}
 {if $warning}
 <table width="100%" cellpadding="10">
     <tr>
@@ -37,7 +38,7 @@
 								</tr>
 								{cycle values="light,lucid" print=false name=messages}
 								{foreach $notice as $items}
-								<tr class="dark hand {cycle name=messages}{if $items.status==$smarty.const.MSG_ERROR} alert{elseif $items.status==$smarty.const.MSG_SENT} blend{/if}" onCLick="showOrHide('{$items.id}');">
+								<tr class="dark hand {cycle name=messages}{if $items.status==$smarty.const.MSG_ERROR} alert{elseif $items.status==$smarty.const.MSG_SENT} blend{/if}" onCLick="ReadNotice('{$items.id}');">
 									<td width="2%" class="nobr">{$items.cdate|date_format:"%Y/%m/%d %H:%M"}</td>
 									<td width="8%" >{if $items.type==6 }<b>{trans("Urgent")}</b>{else}{trans("Casual")}{/if}</td>
 									<td width="80%" style="word-break:break-all;">{$items.subject}</td>
@@ -51,8 +52,12 @@
 								</tr>
 								<SCRIPT type="text/javascript">
 								<!--
-									if (getCookie('{$items.id}') == '1')
-										document.getElementById('{$items.id}').style.display = '';
+								function ReadNotice(elem){
+								xajax_setNoticeRead(elem);
+								showOrHide(elem);
+								}
+								if (getCookie('{$items.id}') == '1')
+								document.getElementById('{$items.id}').style.display = '';
 								//-->
 								</SCRIPT>
 							 {/foreach}

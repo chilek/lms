@@ -1,4 +1,10 @@
 {if $notice_urgent}
+{$xajax}
+<SCRIPT type="text/javascript">
+<!--
+xajax_setNoticeRead({$notice_urgent.id});
+//-->
+</SCRIPT>
 <div id="dialog">
 	<div id="dialog-bg">
 		<div id="dialog-title">{$notice_urgent.cdate|date_format:"%Y/%m/%d %H:%M"}<br />{$notice_urgent.subject}</div>
