@@ -55,7 +55,7 @@ $invoice['last'] = TRUE;
 $SMARTY->assign('invoice',$invoice);
 $SMARTY->display(SMARTY_TEMPLATES_DIR.'/clearheader.html');
 $SMARTY->assign('type',trans('ORIGINAL'));
-$SMARTY->display(SMARTY_TEMPLATES_DIR.'/'.ConfigHelper::getConfig('invoices.template_file'));
+$SMARTY->display(SMARTY_TEMPLATES_DIR.'/invoice/'.ConfigHelper::getConfig('invoices.template_file'));
 $SMARTY->display(SMARTY_TEMPLATES_DIR.'/clearfooter.html');
 
 ?>

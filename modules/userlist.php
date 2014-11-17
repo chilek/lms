@@ -29,6 +29,6 @@ $layout['pagetitle'] = trans('Users List');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('userslist',$LMS->GetUserList());
-$SMARTY->display('userlist.html');
+$SMARTY->display('user/userlist.html');
 
 ?>

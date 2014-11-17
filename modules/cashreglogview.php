@@ -120,6 +120,6 @@ $SMARTY->assign('page', $page);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('cashreglog', $cashreglog);
 $SMARTY->assign('listdata', $listdata);
-$SMARTY->display('cashreglogview.html');
+$SMARTY->display('cash/cashreglogview.html');
 
 ?>

@@ -116,6 +116,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('reglog', $reglog);
 $SMARTY->assign('error', $error);
-$SMARTY->display('cashreglogadd.html');
+$SMARTY->display('cash/cashreglogadd.html');
 
 ?>

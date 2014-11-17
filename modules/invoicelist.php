@@ -256,6 +256,6 @@ $SMARTY->assign('page',$page);
 $SMARTY->assign('marks',$marks);
 $SMARTY->assign('grouplist',$LMS->CustomergroupGetAll());
 $SMARTY->assign('invoicelist',$invoicelist);
-$SMARTY->display('invoicelist.html');
+$SMARTY->display('invoice/invoicelist.html');
 
 ?>

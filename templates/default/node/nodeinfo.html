@@ -2,78 +2,77 @@
 {block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<script type="text/javascript" src="img/tinymce3/tiny_mce.js"> </script>
 <H1>{$layout.pagetitle}</H1>
 {include file="calendar_js.html"}
-<TABLE WIDTH="100%" CELLPADDING="3">
+<TABLE WIDTH="100%">
 	<TR>
 		<TD WIDTH="100%">
-			{include file="nodeeditbox.html"}
+			{include file="node/nodeinfobox.html"}
 		</TD>
 	</TR>
 	<TR>
 		<TD WIDTH="100%">
-			{include file="nodesessions.html"}
+			{include file="node/nodesessions.html"}
 		</TD>
 	</TR>
 	<TR>
 		<TD WIDTH="100%">
-			{include file="managementurls.html"}
+			{include file="managementurl/managementurls.html"}
 		</TD>
 	</TR>
 	<TR>
 		<TD WIDTH="100%">
-			{include file="nodegroups.html"}
+			{include file="node/nodegroups.html"}
 		</TD>
 	</TR>
 	<TR>
 		<TD WIDTH="100%">
-			{include file="nodelocks.html"}
+			{include file="node/nodelocks.html"}
 		</TD>
 	</TR>
 	<TR>
 		<TD WIDTH="100%">
-			{include file="customerinfobox.html" customerpanel=1}
+			{include file="customer/customerinfobox.html" customerpanel=1}
 		</TD>
 	</TR>
 	<TR>
 		<TD WIDTH="100%">
-			{include file="customernodesbox.html"}
+			{include file="customer/customernodesbox.html"}
 		</TD>
 	</TR>
 	<TR>
 		<TD WIDTH="100%">
-			{include file="customervoipaccountsbox.html"}
+			{include file="customer/customervoipaccountsbox.html"}
 		</TD>
 	</TR>
 	<TR>
 		<TD WIDTH="100%">
-			{include file="customerdocuments.html" limit=10}
+			{include file="customer/customerdocuments.html" limit=10}
 		</TD>
 	</TR>
 	<TR>
 		<TD WIDTH="100%">
-			{include file="customermessages.html" limit=10}
+			{include file="customer/customermessages.html" limit=10}
 		</TD>
 	</TR>
 	<TR>
 		<TD WIDTH="100%">
-			{include file="customerevents.html" limit=10}
+			{include file="customer/customerevents.html" limit=10}
 		</TD>
 	</TR>
 	<TR>
 		<TD WIDTH="100%">
-			{include file="customergroups.html"}
+			{include file="customer/customergroups.html"}
 		</TD>
 	</TR>
 	<TR>
 		<TD WIDTH="100%">
-			{include file="customerassignments.html"}
+			{include file="customer/customerassignments.html"}
 		</TD>
 	</TR>
 	<TR>
 		<TD WIDTH="100%">
-			{include file="customerbalancebox.html" limit=-10}
+			{include file="customer/customerbalancebox.html" limit=-10}
 		</TD>
 	</TR>
 </TABLE>

@@ -595,6 +595,6 @@ $SMARTY->assign('page', $page);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('configlist', $configlist);
 $SMARTY->assign('listdata', $listdata);
-$SMARTY->display('configlist.html');
+$SMARTY->display('config/configlist.html');
 
 ?>

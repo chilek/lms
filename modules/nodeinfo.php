@@ -29,7 +29,7 @@ if (isset($_GET['nodegroups'])) {
 
 	$SMARTY->assign('nodegroups', $nodegroups);
 	$SMARTY->assign('total', sizeof($nodegroups));
-	$SMARTY->display('nodegrouplistshort.html');
+	$SMARTY->display('node/nodegrouplistshort.html');
 	die;
 }
 
@@ -114,6 +114,6 @@ $SMARTY->assign('nodegroups', $nodegroups);
 $SMARTY->assign('othernodegroups', $othernodegroups);
 $SMARTY->assign('nodeinfo', $nodeinfo);
 $SMARTY->assign('objectid', $nodeinfo['id']);
-$SMARTY->display('nodeinfo.html');
+$SMARTY->display('node/nodeinfo.html');
 
 ?>

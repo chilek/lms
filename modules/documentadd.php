@@ -288,6 +288,6 @@ $SMARTY->assign('docrights', $rights);
 $SMARTY->assign('allnumberplans', $allnumberplans);
 $SMARTY->assign('docengines', $docengines);
 $SMARTY->assign('document', $document);
-$SMARTY->display('documentadd.html');
+$SMARTY->display('document/documentadd.html');
 
 ?>

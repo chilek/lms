@@ -56,6 +56,6 @@ if(isset($_POST['customergroupadd']))
 
 $layout['pagetitle'] = trans('New Group');
 
-$SMARTY->display('customergroupadd.html');
+$SMARTY->display('customer/customergroupadd.html');
 
 ?>

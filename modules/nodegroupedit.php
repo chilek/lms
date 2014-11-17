@@ -85,6 +85,6 @@ $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 $SMARTY->assign('membersnetid', isset($membersnetid) ? $membersnetid : 0);
 $SMARTY->assign('othersnetid', isset($othersnetid) ? $othersnetid : 0);
 
-$SMARTY->display('nodegroupedit.html');
+$SMARTY->display('node/nodegroupedit.html');
 
 ?>

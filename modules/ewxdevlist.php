@@ -42,6 +42,6 @@ $devices = $DB->GetAll('SELECT d.id, d.name, d.producer,
     FROM netdevices d '.$where);
 
 $SMARTY->assign('devices', $devices);
-$SMARTY->display('netdevlistshort.html');
+$SMARTY->display('netdev/netdevlistshort.html');
 
 ?>

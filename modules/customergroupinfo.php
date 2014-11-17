@@ -61,6 +61,6 @@ $SMARTY->assign('customerscount', $customerscount);
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('membersnetid', isset($membersnetid) ? $membersnetid : 0);
 $SMARTY->assign('othersnetid', isset($othersnetid) ? $othersnetid : 0);
-$SMARTY->display('customergroupinfo.html');
+$SMARTY->display('customer/customergroupinfo.html');
 
 ?>

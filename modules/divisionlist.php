@@ -48,6 +48,6 @@ $SMARTY->assign('page', $page);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('divisionlist', $divisionlist);
 $SMARTY->assign('listdata', $listdata);
-$SMARTY->display('divisionlist.html');
+$SMARTY->display('division/divisionlist.html');
 
 ?>

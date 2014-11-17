@@ -166,7 +166,7 @@ if(isset($_GET['search']))
 		$SMARTY->assign('netdevlist', $netdevlist);
 		$SMARTY->assign('listdata', $listdata);
 
-		$SMARTY->display('netdevsearchresults.html');
+		$SMARTY->display('netdev/netdevsearchresults.html');
 	}
 }
 else
@@ -176,7 +176,7 @@ else
 	$SESSION->remove('ndlsp');
 	
 	$SMARTY->assign('k',$k);
-	$SMARTY->display('netdevsearch.html');
+	$SMARTY->display('netdev/netdevsearch.html');
 }
 
 ?>

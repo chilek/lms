@@ -92,6 +92,6 @@ $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('networks',$LMS->GetNetworks());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
-$SMARTY->display('nodelist.html');
+$SMARTY->display('node/nodelist.html');
 
 ?>

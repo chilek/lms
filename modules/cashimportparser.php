@@ -254,6 +254,6 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 $SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources ORDER BY name'));
 $SMARTY->assign('sourcefiles', $sourcefiles);
-$SMARTY->display('cashimport.html');
+$SMARTY->display('cash/cashimport.html');
 
 ?>

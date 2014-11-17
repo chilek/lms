@@ -80,7 +80,7 @@ function GetTemplates($type) {
 	$rights = $DB->GetCol('SELECT doctype FROM docrights WHERE userid = ? AND (rights & 2) = 2', array($AUTH->id));
 	$docengines = GetDocumentTemplates($rights, $type);
 	$SMARTY->assign('docengines', $docengines);
-	$contents = $SMARTY->fetch('documenttemplateoptions.html');
+	$contents = $SMARTY->fetch('document/documenttemplateoptions.html');
 
 	$JSResponse = new xajaxResponse();
 	$JSResponse->assign('templ', 'innerHTML', $contents);

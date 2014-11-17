@@ -165,6 +165,6 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('accesslist', $accesslist);
 $SMARTY->assign('available', $DB->GetAllByKey('SELECT id, name FROM customergroups ORDER BY name', 'id'));
 
-$SMARTY->display('useradd.html');
+$SMARTY->display('user/useradd.html');
 
 ?>

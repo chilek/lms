@@ -54,13 +54,13 @@ if(isset($_POST['event']))
 		
 	$SMARTY->assign('eventlist', $eventlist);
 	$SMARTY->assign('daylist', $daylist);
-	$SMARTY->display('eventsearchresults.html');
+	$SMARTY->display('event/eventsearchresults.html');
 	$SESSION->close();
 	die;
 }
 
 $SMARTY->assign('userlist',$LMS->GetUserNames());
 $SMARTY->assign('customerlist',$LMS->GetCustomerNames());
-$SMARTY->display('eventsearch.html');
+$SMARTY->display('event/eventsearch.html');
 
 ?>

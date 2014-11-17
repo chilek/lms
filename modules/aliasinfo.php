@@ -50,6 +50,6 @@ $layout['pagetitle'] = trans('Alias Info: $a', $alias['login'] .'@'. $alias['dom
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('alias', $alias);
-$SMARTY->display('aliasinfo.html');
+$SMARTY->display('alias/aliasinfo.html');
 
 ?>

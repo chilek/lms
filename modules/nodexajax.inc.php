@@ -55,7 +55,7 @@ function getNodeLocks($nodeid) {
 					'thour' => intval($tosec / 3600), 'tminute' => intval(($tosec % 3600) / 60));
 		}
 	$SMARTY->assign('nodelocks', $nodelocks);
-	$nodelocklist = $SMARTY->fetch('nodelocklist.html');
+	$nodelocklist = $SMARTY->fetch('node/nodelocklist.html');
 
 	$result->assign('nodelocktable', 'innerHTML', $nodelocklist);
 
@@ -139,7 +139,7 @@ function getNodeStats($nodeid) {
 	$nodeip = $DB->GetOne('SELECT INET_NTOA(ipaddr) FROM nodes WHERE id = ?', array($nodeid));
 	$SMARTY->assign('nodeip', $nodeip);
 	$SMARTY->assign('nodestats', $nodestats);
-	$contents = $SMARTY->fetch('nodestats.html');
+	$contents = $SMARTY->fetch('node/nodestats.html');
 	$result->append('nodeinfo', 'innerHTML', $contents);
 
 	if (ConfigHelper::getConfig('phpui.live_traffic_helper')) {
@@ -172,7 +172,7 @@ function getManagementUrls($nodeid) {
 	$mgmurls = NULL;
 	$mgmurls = $DB->GetAll('SELECT id, url, comment FROM managementurls WHERE nodeid = ? ORDER BY id', array($nodeid));
 	$SMARTY->assign('mgmurls', $mgmurls);
-	$mgmurllist = $SMARTY->fetch('managementurllist.html');
+	$mgmurllist = $SMARTY->fetch('managementurl/managementurllist.html');
 
 	$result->assign('managementurltable', 'innerHTML', $mgmurllist);
 

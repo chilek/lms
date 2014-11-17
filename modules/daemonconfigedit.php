@@ -99,6 +99,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('config', $config);
-$SMARTY->display('daemonconfigedit.html');
+$SMARTY->display('daemon/daemonconfigedit.html');
 
 ?>

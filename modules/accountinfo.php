@@ -47,6 +47,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $layout['pagetitle'] = trans('Account Info: $a', $account['login'].'@'.$account['domain']);
 
 $SMARTY->assign('account', $account);
-$SMARTY->display('accountinfo.html');
+$SMARTY->display('account/accountinfo.html');
 
 ?>

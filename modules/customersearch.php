@@ -152,7 +152,7 @@ if(isset($_GET['search']))
 		$SESSION->redirect('?m=customerinfo&id=' . $customerlist[0]['id']);
 	else {
 		$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
-		$SMARTY->display('customersearchresults.html');
+		$SMARTY->display('customer/customersearchresults.html');
 	}
 }
 else
@@ -168,7 +168,7 @@ else
 	$SMARTY->assign('tariffs', $LMS->GetTariffs());
 	$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions ORDER BY shortname'));
 	$SMARTY->assign('k', $k);
-	$SMARTY->display('customersearch.html');
+	$SMARTY->display('customer/customersearch.html');
 }
 
 ?>

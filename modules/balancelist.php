@@ -252,6 +252,6 @@ $SMARTY->assign('start', ($page - 1) * $pagelimit);
 $SMARTY->assign('page',$page);
 $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('grouplist',$LMS->CustomergroupGetAll());
-$SMARTY->display('balancelist.html');
+$SMARTY->display('balance/balancelist.html');
 
 ?>

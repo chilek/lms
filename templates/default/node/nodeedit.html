@@ -1,0 +1,80 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<script type="text/javascript" src="img/tinymce3/tiny_mce.js"> </script>
+<H1>{$layout.pagetitle}</H1>
+{include file="calendar_js.html"}
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR>
+		<TD WIDTH="100%">
+			{include file="node/nodeeditbox.html"}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%">
+			{include file="node/nodesessions.html"}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%">
+			{include file="managementurl/managementurls.html"}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%">
+			{include file="node/nodegroups.html"}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%">
+			{include file="node/nodelocks.html"}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%">
+			{include file="customer/customerinfobox.html" customerpanel=1}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%">
+			{include file="customer/customernodesbox.html"}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%">
+			{include file="customer/customervoipaccountsbox.html"}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%">
+			{include file="customer/customerdocuments.html" limit=10}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%">
+			{include file="customer/customermessages.html" limit=10}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%">
+			{include file="customer/customerevents.html" limit=10}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%">
+			{include file="customer/customergroups.html"}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%">
+			{include file="customer/customerassignments.html"}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%">
+			{include file="customer/customerbalancebox.html" limit=-10}
+		</TD>
+	</TR>
+</TABLE>
+{/block}

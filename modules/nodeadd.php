@@ -263,6 +263,6 @@ $SMARTY->assign('networks', $LMS->GetNetworks(true));
 $SMARTY->assign('netdevices', $LMS->GetNetDevNames());
 $SMARTY->assign('error', $error);
 $SMARTY->assign('nodedata', $nodedata);
-$SMARTY->display('nodeadd.html');
+$SMARTY->display('node/nodeadd.html');
 
 ?>

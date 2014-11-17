@@ -92,8 +92,8 @@ include(MODULES_DIR . '/netdevxajax.inc.php');
 
 if (isset($_GET['ip'])) {
 	$SMARTY->assign('nodeipdata', $LMS->GetNode($_GET['ip']));
-	$SMARTY->display('netdevipinfo.html');
+	$SMARTY->display('netdev/netdevipinfo.html');
 } else {
-	$SMARTY->display('netdevinfo.html');
+	$SMARTY->display('netdev/netdevinfo.html');
 }
 ?>

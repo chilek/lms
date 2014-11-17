@@ -163,6 +163,6 @@ $SMARTY->assign('warnmessage', $SESSION->get('warnmessage'));
 $SMARTY->assign('warnon', $SESSION->get('warnon'));
 $SMARTY->assign('warnoff', $SESSION->get('warnoff'));
 $SMARTY->assign('nodelist',$nodelist);
-$SMARTY->display('nodewarnings.html');
+$SMARTY->display('node/nodewarnings.html');
 
 ?>
