@@ -281,7 +281,7 @@
 					<BR>
 			{/section}
 			{if sizeof($customernodes) > 1}
-				<INPUT TYPE="checkbox" NAME="allbox" onchange="CheckAll('nodeslist', this)" id="allnodes" VALUE="1"><label for="allnodes">{trans("check all<!items>")}</label>
+				<INPUT TYPE="checkbox" NAME="allbox" onchange="CheckAll('assignment', this, ['assignment[invoice]', 'assignment[settlement]')]" id="allnodes" VALUE="1"><label for="allnodes">{trans("check all<!items>")}</label>
 			{/if}
 		</TD>
 	</TR>
