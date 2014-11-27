@@ -286,6 +286,7 @@ if (!empty($docs)) {
 			$body = str_replace('\n', "\n", $body);
 			$subject = preg_replace('/%invoice/', $invoice_number, $subject);
 			$filename = preg_replace('/%docid/', $doc['id'], $invoice_filename);
+			$doc['name'] = '"' . $doc['name'] . '"';
 
 			if (!$quiet || $test)
 				printf("Invoice No. $invoice_number for " . $doc['name'] . " <$custemail>\n");
