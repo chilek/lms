@@ -43,6 +43,6 @@ $layout['pagetitle'] = trans('Info Network: $a', $network['name']);
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('network', $network);
-$SMARTY->display('netinfo.html');
+$SMARTY->display('net/netinfo.html');
 
 ?>
