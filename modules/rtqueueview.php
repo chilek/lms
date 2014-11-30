@@ -143,6 +143,6 @@ $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('page',$page);
 $SMARTY->assign('start',$start);
 $SMARTY->assign('users', $LMS->GetUserNames());
-$SMARTY->display('rtqueueview.html');
+$SMARTY->display('rt/rtqueueview.html');
 
 ?>

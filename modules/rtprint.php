@@ -83,7 +83,7 @@ switch($type)
 		$layout['pagetitle'] = trans('Requests Stats');
 
 		$SMARTY->assign('list', $list);
-		$SMARTY->display('rtprintstats.html');
+		$SMARTY->display('rt/rtprintstats.html');
 	break;
 
 	case 'ticketslist': /******************************************/
@@ -157,7 +157,7 @@ switch($type)
 		$layout['pagetitle'] = trans('List of Requests');
 
 		$SMARTY->assign('list', $list);
-		$SMARTY->display($extended ? 'rtprinttickets-ext.html' : 'rtprinttickets.html');
+		$SMARTY->display($extended ? 'rt/rtprinttickets-ext.html' : 'rt/rtprinttickets.html');
 	break;
 
 	default:
@@ -171,7 +171,7 @@ switch($type)
 		}
 		$SMARTY->assign('queues', $LMS->GetQueueList());
 		$SMARTY->assign('categories', $categories);
-		$SMARTY->display('rtprintindex.html');
+		$SMARTY->display('rt/rtprintindex.html');
 	break;
 }
 

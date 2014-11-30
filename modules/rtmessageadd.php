@@ -410,6 +410,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('message', $message);
 $SMARTY->assign('error', $error);
-$SMARTY->display('rtmessageadd.html');
+$SMARTY->display('rt/rtmessageadd.html');
 
 ?>

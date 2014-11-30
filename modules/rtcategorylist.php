@@ -31,5 +31,5 @@ $categories = $LMS->GetCategoryList();
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('categories', $categories);
-$SMARTY->display('rtcategorylist.html');
+$SMARTY->display('rt/rtcategorylist.html');
 ?>

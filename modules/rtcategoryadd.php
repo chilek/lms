@@ -74,6 +74,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('category', $category);
 $SMARTY->assign('error', $error);
-$SMARTY->display('rtcategoryadd.html');
+$SMARTY->display('rt/rtcategoryadd.html');
 
 ?>

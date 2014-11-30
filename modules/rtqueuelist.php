@@ -31,5 +31,5 @@ $queues = $LMS->GetQueueList();
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('queues', $queues);
-$SMARTY->display('rtqueuelist.html');
+$SMARTY->display('rt/rtqueuelist.html');
 ?>
