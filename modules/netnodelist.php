@@ -129,6 +129,6 @@ $nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name"
 $SMARTY->assign('NNprojects',$nprojects);
 
 
-$SMARTY->display('netnodelist.html');
+$SMARTY->display('netnode/netnodelist.html');
 
 ?>

@@ -45,6 +45,6 @@ $SMARTY->assign('netdevlist', $nlist);
 
 
 
-$SMARTY->display('netnodeinfo.html');
+$SMARTY->display('netnode/netnodeinfo.html');
 
 ?>

@@ -113,6 +113,6 @@ $nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name"
 $layout['pagetitle'] = trans('New Net Device Node');
 $SMARTY->assign('NNprojects',$nprojects);
 
-$SMARTY->display('netnodeadd.html');
+$SMARTY->display('netnode/netnodeadd.html');
 
 ?>
