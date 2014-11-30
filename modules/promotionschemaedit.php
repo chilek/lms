@@ -268,6 +268,6 @@ $layout['pagetitle'] = trans('Schema Edit: $a', $oldschema['name']);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('schema', $schema);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
-$SMARTY->display('promotionschemaedit.html');
+$SMARTY->display('promotion/promotionschemaedit.html');
 
 ?>

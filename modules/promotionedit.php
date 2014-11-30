@@ -100,6 +100,6 @@ $layout['pagetitle'] = trans('Promotion Edit: $a', $promotion['name']);
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('promotion', $promotion);
-$SMARTY->display('promotionedit.html');
+$SMARTY->display('promotion/promotionedit.html');
 
 ?>
