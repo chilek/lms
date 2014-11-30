@@ -48,6 +48,6 @@ $SMARTY->assign('netid', $netid);
 $SMARTY->assign('tariff',$tariff);
 $SMARTY->assign('tariffs',$LMS->GetTariffs());
 $SMARTY->assign('networks',$LMS->GetNetworks());
-$SMARTY->display('tariffinfo.html');
+$SMARTY->display('tariff/tariffinfo.html');
 
 ?>
