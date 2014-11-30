@@ -74,5 +74,5 @@ $link['devid'] = $devid;
 $link['isnetlink'] = $isnetlink;
 
 $SMARTY->assign('link', $link);
-$SMARTY->display('netlinkproperties.html');
+$SMARTY->display('netdev/netlinkproperties.html');
 ?>
