@@ -46,7 +46,7 @@ switch($type) {
 
 		$SMARTY->assign('invprojects', $DB->GetAll('SELECT id, name FROM invprojects WHERE type <> ?', array(INV_PROJECT_SYSTEM)));
 		$SMARTY->assign('printmenu', 'netdev');
-		$SMARTY->display('printindex.html');
+		$SMARTY->display('print/printindex.html');
 	break;
 }
 

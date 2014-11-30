@@ -141,13 +141,13 @@ if(isset($_GET['search']))
 	$SMARTY->assign('start',$start);
 
 	if (isset($_GET['print']))
-		$SMARTY->display('printcustomerlist.html');
+		$SMARTY->display('print/printcustomerlist.html');
 	elseif (isset($_GET['export'])) {
 		$filename = 'customers-' . date('YmdHis') . '.csv';
 		header('Content-Type: text/plain');
 		header('Content-Disposition: attachment; filename=' . $filename);
 		header('Pragma: public');
-		$SMARTY->display('printcustomerlist-csv.html');
+		$SMARTY->display('print/printcustomerlist-csv.html');
 	} elseif ($listdata['total'] == 1)
 		$SESSION->redirect('?m=customerinfo&id=' . $customerlist[0]['id']);
 	else {
