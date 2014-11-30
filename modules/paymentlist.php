@@ -36,6 +36,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('paymentlist',$paymentlist);
 $SMARTY->assign('listdata',$listdata);
-$SMARTY->display('paymentlist.html');
+$SMARTY->display('payment/paymentlist.html');
 
 ?>
