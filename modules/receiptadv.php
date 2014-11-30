@@ -266,6 +266,6 @@ if(isset($_POST['receipt']))
 }
 
 $SMARTY->assign('receipt', $receipt);
-$SMARTY->display('receiptadv.html');
+$SMARTY->display('receipt/receiptadv.html');
 
 ?>
