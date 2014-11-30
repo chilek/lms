@@ -258,6 +258,6 @@ $SMARTY->assign('bars', $bars);
 $SMARTY->assign('bar', $bar);
 $SMARTY->assign('trafficorder', $SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download');
 $SMARTY->assign('trafficnet', $SESSION->is_set('trafficnet') ? $SESSION->get('trafficnet') : 0);
-$SMARTY->display('traffic.html');
+$SMARTY->display('traffic/traffic.html');
 
 ?>

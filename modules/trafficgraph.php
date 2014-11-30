@@ -517,6 +517,6 @@ $SMARTY->assign('from', $from);
 $SMARTY->assign('add', $add);
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('net', $net);
-$SMARTY->display('trafficgraph.html');
+$SMARTY->display('traffic/trafficgraph.html');
 
 ?>

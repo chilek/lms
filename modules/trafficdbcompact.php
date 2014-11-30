@@ -28,7 +28,7 @@ $layout['pagetitle'] = trans('Network Statistics Compacting');
 
 if (!isset($_GET['level']) && !isset($_GET['removeold']) && !isset($_GET['removedeleted']))
 {
-    $SMARTY->display('trafficdbcompact.html');
+    $SMARTY->display('traffic/trafficdbcompact.html');
     $SESSION->close();
     die;
 }
