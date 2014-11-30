@@ -334,7 +334,7 @@ if(isset($_POST['message']))
 
 		$SMARTY->assign('message', $message);
 		$SMARTY->assign('recipcount', sizeof($recipients));
-		$SMARTY->display('messagesend.html');
+		$SMARTY->display('message/messagesend.html');
 
 		$DB->BeginTrans();
 
@@ -505,6 +505,6 @@ $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 $SMARTY->assign('userinfo', $LMS->GetUserInfo($AUTH->id));
 $SMARTY->assign('users', $DB->GetAll('SELECT name, phone FROM users WHERE phone <> \'\' ORDER BY name'));
-$SMARTY->display('messageadd.html');
+$SMARTY->display('message/messageadd.html');
 
 ?>

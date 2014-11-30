@@ -197,6 +197,6 @@ $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('start',($page - 1) * $pagelimit);
 $SMARTY->assign('page', $page);
 $SMARTY->assign('messagelist',$messagelist);
-$SMARTY->display('messagelist.html');
+$SMARTY->display('message/messagelist.html');
 
 ?>
