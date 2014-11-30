@@ -1426,6 +1426,32 @@ CREATE TABLE ewx_channels (
 );
 
 /* ---------------------------------------------------
+ Structure of table "netnodes" 
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS netnodes_id_seq;
+CREATE SEQUENCE netnodes_id_seq;
+DROP TABLE IF EXISTS netnodes CASCADE;
+CREATE TABLE netnodes (
+	id integer DEFAULT nextval('netnodes_id_seq'::text) NOT NULL,
+	name varchar(255) NOT NULL,
+	type smallint DEFAULT 0,
+	invprojectid integer  REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	status smallint DEFAULT 0,
+	location varchar(255) DEFAULT '',
+	location_city integer DEFAULT NULL,
+	location_street integer DEFAULT NULL,
+	location_house varchar(8) DEFAULT NULL,
+	location_flat varchar(8) DEFAULT NULL,
+	longitude numeric(10,6) DEFAULT NULL,
+	latitude numeric(10,6) DEFAULT NULL,
+	ownership smallint DEFAULT 0,
+	coowner varchar(255) DEFAULT '',
+	uip smallint DEFAULT 0,
+	miar smallint DEFAULT 0,
+	PRIMARY KEY(id)
+);
+
+/* ---------------------------------------------------
  Structure of table "netdevices"
 ----------------------------------------------------*/
 DROP SEQUENCE IF EXISTS netdevices_id_seq;
@@ -1838,34 +1864,6 @@ CREATE TABLE up_info_changes (
 	fieldvalue varchar(255) DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
-
-/* ---------------------------------------------------
- Structure of table "netnodes" 
-------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS netnodes_id_seq;
-CREATE SEQUENCE netnodes_id_seq;
-DROP TABLE IF EXISTS netnodes CASCADE;
-CREATE TABLE netnodes (
-	id integer DEFAULT nextval('netnodes_id_seq'::text) NOT NULL,
-	name varchar(255) NOT NULL,
-	type smallint DEFAULT 0,
-	invprojectid integer  REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	status smallint DEFAULT 0,
-	location varchar(255) DEFAULT '',
-	location_city integer DEFAULT NULL,
-	location_street integer DEFAULT NULL,
-	location_house varchar(8) DEFAULT NULL,
-	location_flat varchar(8) DEFAULT NULL,
-	longitude numeric(10,6) DEFAULT NULL,
-	latitude numeric(10,6) DEFAULT NULL,
-	ownership smallint DEFAULT 0,
-	coowner varchar(255) DEFAULT '',
-	uip smallint DEFAULT 0,
-	miar smallint DEFAULT 0,
-	PRIMARY KEY(id)
-);
-
-
 
 /* ---------------------------------------------------
  Functions and Views

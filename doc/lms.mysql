@@ -574,6 +574,31 @@ CREATE TABLE invprojects (
 
 # --------------------------------------------------------
 #
+# Structure of table netnodes
+#
+CREATE TABLE netnodes (
+        id int(11) NOT NULL auto_increment,
+	name varchar(255) NOT NULL, 
+	type tinyint DEFAULT 0,
+	invprojectid int(11),
+	status tinyint DEFAULT 0,
+	location varchar(255) DEFAULT '',
+	location_city int(11) DEFAULT NULL,
+	location_street int(11) DEFAULT NULL,
+	location_house varchar(8) DEFAULT NULL,
+	location_flat varchar(8) DEFAULT NULL,
+	longitude decimal(10,6) DEFAULT NULL,
+	latitude decimal(10,6) DEFAULT NULL,
+	ownership tinyint(1) DEFAULT 0,
+	coowner varchar(255) DEFAULT '',
+	uip tinyint(1) DEFAULT 0,
+	miar tinyint(1) DEFAULT 0,
+	PRIMARY KEY (id),
+	FOREIGN KEY (invprojectid) REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=INNODB;
+
+# --------------------------------------------------------
+#
 # Structure of table  netdevices
 #
 CREATE TABLE netdevices (
@@ -1836,31 +1861,6 @@ CREATE TABLE up_info_changes (
 	fieldvalue varchar(255) NOT NULL DEFAULT '',
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table netnodes
-#
-CREATE TABLE netnodes (
-        id int(11) NOT NULL auto_increment,
-	name varchar(255) NOT NULL, 
-	type tinyint DEFAULT 0,
-	invprojectid int(11),
-	status tinyint DEFAULT 0,
-	location varchar(255) DEFAULT '',
-	location_city int(11) DEFAULT NULL,
-	location_street int(11) DEFAULT NULL,
-	location_house varchar(8) DEFAULT NULL,
-	location_flat varchar(8) DEFAULT NULL,
-	longitude decimal(10,6) DEFAULT NULL,
-	latitude decimal(10,6) DEFAULT NULL,
-	ownership tinyint(1) DEFAULT 0,
-	coowner varchar(255) DEFAULT '',
-	uip tinyint(1) DEFAULT 0,
-	miar tinyint(1) DEFAULT 0,
-	PRIMARY KEY (id),
-	FOREIGN KEY (invprojectid) REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=INNODB;
 
 INSERT INTO rtcategories (name, description)
 	VALUES ('default', 'default category');
