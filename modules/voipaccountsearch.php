@@ -76,7 +76,7 @@ if(isset($_GET['search']))
 	$SMARTY->assign('listdata',$listdata);
 	
 	if(isset($_GET['print']))
-		$SMARTY->display('printvoipaccountlist.html');
+		$SMARTY->display('print/printvoipaccountlist.html');
 	elseif($listdata['total']==1)
 		$SESSION->redirect('?m=voipaccountinfo&id='.$voipaccountlist[0]['id']);
 	else

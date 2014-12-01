@@ -147,6 +147,6 @@ $layout['pagetitle'] = trans('Payment Edit: $a',$payment['name']);
 
 $SMARTY->assign('payment', $payment);
 $SMARTY->assign('error', $error);
-$SMARTY->display('paymentedit.html');
+$SMARTY->display('payment/paymentedit.html');
 
 ?>

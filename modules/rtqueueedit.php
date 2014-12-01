@@ -77,6 +77,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('error', $error);
-$SMARTY->display('rtqueueedit.html');
+$SMARTY->display('rt/rtqueueedit.html');
 
 ?>

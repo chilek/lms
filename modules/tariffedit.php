@@ -129,6 +129,6 @@ $layout['pagetitle'] = trans('Subscription Edit: $a',$tariff['name']);
 $SMARTY->assign('tariff',$tariff);
 $SMARTY->assign('taxeslist',$LMS->GetTaxes());
 $SMARTY->assign('error',$error);
-$SMARTY->display('tariffedit.html');
+$SMARTY->display('tariff/tariffedit.html');
 
 ?>

@@ -158,6 +158,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('note', $note);
 $SMARTY->assign('error', $error);
-$SMARTY->display('rtnoteadd.html');
+$SMARTY->display('rt/rtnoteadd.html');
 
 ?>

@@ -63,6 +63,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('stateedit', $state);
 $SMARTY->assign('error', $error);
-$SMARTY->display('stateedit.html');
+$SMARTY->display('state/stateedit.html');
 
 ?>

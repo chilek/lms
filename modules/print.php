@@ -125,10 +125,10 @@ switch($type)
 		
 		$SMARTY->assign('balancelist', $list);
 		if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
-			$output = $SMARTY->fetch('printcustomerbalance.html');
+			$output = $SMARTY->fetch('print/printcustomerbalance.html');
 			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {
-			$SMARTY->display('printcustomerbalance.html');
+			$SMARTY->display('print/printcustomerbalance.html');
 		}
 	break;
 	
@@ -296,10 +296,10 @@ switch($type)
 			$SMARTY->assign('source', $DB->GetOne('SELECT name FROM cashsources WHERE id = ?', array($source)));
 
 		if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
-			$output = $SMARTY->fetch('printbalancelist.html');
+			$output = $SMARTY->fetch('print/printbalancelist.html');
 			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {
-			$SMARTY->display('printbalancelist.html');
+			$SMARTY->display('print/printbalancelist.html');
 		}
 	break;
 
@@ -337,10 +337,10 @@ switch($type)
 
 		$SMARTY->assign('incomelist', $incomelist);
 		if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
-			$output = $SMARTY->fetch('printincomereport.html');
+			$output = $SMARTY->fetch('print/printincomereport.html');
 			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {
-			$SMARTY->display('printincomereport.html');
+			$SMARTY->display('print/printincomereport.html');
 		}
 	break;
 
@@ -384,10 +384,10 @@ switch($type)
 			$SMARTY->assign('source', $DB->GetOne('SELECT name FROM cashsources WHERE id = ?', array($source)));
 		$SMARTY->assign('importlist', $importlist);
 		if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
-			$output = $SMARTY->fetch('printimportlist.html');
+			$output = $SMARTY->fetch('print/printimportlist.html');
 			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {
-			$SMARTY->display('printimportlist.html');
+			$SMARTY->display('print/printimportlist.html');
 		}
 	break;
 
@@ -653,10 +653,10 @@ switch($type)
 		}
 
 		if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
-			$output = $SMARTY->fetch('printliabilityreport.html');
+			$output = $SMARTY->fetch('print/printliabilityreport.html');
 			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {
-			$SMARTY->display('printliabilityreport.html');
+			$SMARTY->display('print/printliabilityreport.html');
 		}
 	break;
 	
@@ -843,19 +843,19 @@ switch($type)
 			$SMARTY->assign('pagescount', sizeof($pages));
 			$SMARTY->assign('reccount', sizeof($list));
 			if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
-				$output = $SMARTY->fetch('printreceiptlist-ext.html');
+				$output = $SMARTY->fetch('print/printreceiptlist-ext.html');
 				html2pdf($output, trans('Reports'), $layout['pagetitle']);
 			} else {
-				$SMARTY->display('printreceiptlist-ext.html');
+				$SMARTY->display('print/printreceiptlist-ext.html');
 			}
 		}
 		else
 		{
 			if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
-				$output = $SMARTY->fetch('printreceiptlist.html');
+				$output = $SMARTY->fetch('print/printreceiptlist.html');
 				html2pdf($output, trans('Reports'), $layout['pagetitle']);
 			} else {
-				$SMARTY->display('printreceiptlist.html');
+				$SMARTY->display('print/printreceiptlist.html');
 			}
 		}
 	break;
@@ -876,7 +876,7 @@ switch($type)
 		$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions ORDER BY shortname'));
 		$SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources ORDER BY name'));
 		$SMARTY->assign('printmenu', 'finances');
-		$SMARTY->display('printindex.html');
+		$SMARTY->display('print/printindex.html');
 	break;
 }
 

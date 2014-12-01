@@ -92,6 +92,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('tariffs', $tariffs);
 $SMARTY->assign('schema', $schema);
-$SMARTY->display('promotionschemainfo.html');
+$SMARTY->display('promotion/promotionschemainfo.html');
 
 ?>

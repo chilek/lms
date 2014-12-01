@@ -211,7 +211,7 @@ if(isset($search) || isset($_GET['s']))
 		$SMARTY->assign('page',$page);
 		$SMARTY->assign('start',$start);
 		$SMARTY->assign('search', $search);
-		$SMARTY->display('rtsearchresults.html');
+		$SMARTY->display('rt/rtsearchresults.html');
 		$SESSION->close();
 		die;
 	}
@@ -234,6 +234,6 @@ $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
 $SMARTY->assign('search', isset($search) ? $search : NULL);
 $SMARTY->assign('error', $error);
-$SMARTY->display('rtsearch.html');
+$SMARTY->display('rt/rtsearch.html');
 
 ?>

@@ -68,6 +68,6 @@ $SMARTY->assign('recordslist', $recordslist);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->assign('showaddedit', $showAddEdit);
 $SMARTY->assign('domainlist', $DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
-$SMARTY->display('recordlist.html');
+$SMARTY->display('record/recordlist.html');
 
 ?>

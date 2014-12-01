@@ -257,6 +257,6 @@ $SMARTY->assign('start',$start);
 $SMARTY->assign('page',$page);
 $SMARTY->assign('marks',$marks);
 $SMARTY->assign('receiptlist',$receiptlist);
-$SMARTY->display('receiptlist.html');
+$SMARTY->display('receipt/receiptlist.html');
 
 ?>

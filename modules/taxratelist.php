@@ -86,6 +86,6 @@ $SMARTY->assign('page', $page);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('taxratelist', $taxratelist);
 $SMARTY->assign('listdata', $listdata);
-$SMARTY->display('taxratelist.html');
+$SMARTY->display('taxrate/taxratelist.html');
 
 ?>

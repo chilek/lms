@@ -179,7 +179,7 @@ if (isset($_GET['search'])) {
 	$SMARTY->assign('netdevlist', $netdevlist);
 
 	if (isset($_GET['print']))
-		$SMARTY->display('printnodelist.html');
+		$SMARTY->display('print/printnodelist.html');
 	elseif ($listdata['total'] == 1)
 		$SESSION->redirect('?m=nodeinfo&id=' . $nodelist[0]['id']);
 	else

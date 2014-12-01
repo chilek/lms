@@ -143,6 +143,6 @@ $layout['pagetitle'] = trans('New Subscription');
 
 $SMARTY->assign('taxeslist',$LMS->GetTaxes());
 $SMARTY->assign('tariff', $tariff);
-$SMARTY->display('tariffadd.html');
+$SMARTY->display('tariff/tariffadd.html');
 
 ?>

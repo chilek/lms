@@ -94,6 +94,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('categories', $categories);
-$SMARTY->display('rtticketview.html');
+$SMARTY->display('rt/rtticketview.html');
 
 ?>

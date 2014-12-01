@@ -178,6 +178,6 @@ $SMARTY->assign('page', $page);
 $SMARTY->assign('marks', $marks);
 $SMARTY->assign('itemlist', $itemlist);
 
-$SMARTY->display('messageinfo.html');
+$SMARTY->display('message/messageinfo.html');
 
 ?>

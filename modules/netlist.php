@@ -48,6 +48,6 @@ $listdata['total'] = sizeof($netlist);
 
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('netlist',$netlist);
-$SMARTY->display('netlist.html');
+$SMARTY->display('net/netlist.html');
 
 ?>

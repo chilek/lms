@@ -320,6 +320,6 @@ $SMARTY->assign('queuelist', $queuelist);
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('error', $error);
-$SMARTY->display('rtticketedit.html');
+$SMARTY->display('rt/rtticketedit.html');
 
 ?>

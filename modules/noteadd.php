@@ -328,6 +328,6 @@ $SMARTY->assign('customer', $customer);
 $SMARTY->assign('note', $note);
 $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_DNOTE, date('Y/m', $note['cdate'])));
 //$SMARTY->assign('taxeslist', $taxeslist);
-$SMARTY->display('noteadd.html');
+$SMARTY->display('note/noteadd.html');
 
 ?>

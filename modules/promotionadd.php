@@ -68,6 +68,6 @@ $layout['pagetitle'] = trans('New Promotion');
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('promotion', $promotion);
-$SMARTY->display('promotionadd.html');
+$SMARTY->display('promotion/promotionadd.html');
 
 ?>

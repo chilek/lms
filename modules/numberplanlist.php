@@ -90,6 +90,6 @@ $SMARTY->assign('page', $page);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('numberplanlist', $numberplanlist);
 $SMARTY->assign('listdata', $listdata);
-$SMARTY->display('numberplanlist.html');
+$SMARTY->display('numberplan/numberplanlist.html');
 
 ?>

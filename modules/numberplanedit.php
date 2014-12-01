@@ -146,6 +146,6 @@ $SMARTY->assign('available', $DB->GetAllByKey('SELECT id, shortname AS name
 		.(!empty($numberplan['selected']) ? 'OR id IN ('.implode(',', array_keys($numberplan['selected'])).')' : '')
 		.'ORDER BY shortname', 'id', array($numberplan['id'])));
 $SMARTY->assign('error', $error);
-$SMARTY->display('numberplanedit.html');
+$SMARTY->display('numberplan/numberplanedit.html');
 
 ?>

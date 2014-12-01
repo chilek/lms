@@ -79,6 +79,6 @@ $layout['pagetitle'] = trans('Ticket Review');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('message', $message);
-$SMARTY->display('rtmessageview.html');
+$SMARTY->display('rt/rtmessageview.html');
 
 ?>
