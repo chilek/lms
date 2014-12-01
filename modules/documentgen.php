@@ -161,7 +161,7 @@ if (isset($_POST['document'])) {
 
 			$DB->BeginTrans();
 			
-			$division = $this->DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
+			$division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
 				account, inv_header, inv_footer, inv_author, inv_cplace 
 				FROM divisions WHERE id = ? ;',array($gencust['divisionid']));
 
