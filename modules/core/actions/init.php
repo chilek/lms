@@ -32,7 +32,6 @@ require_once(LIB_DIR.'/checkip.php');
 require_once(LIB_DIR.'/common.php');
 require_once(LIB_DIR.'/Session.class.php');
 require_once(LIB_DIR.'/Auth.class.php');
-require_once(LIB_DIR.'/definitions.php');
 require_once(LIB_DIR.'/LMS.class.php');
 
 // Initialize main classes
