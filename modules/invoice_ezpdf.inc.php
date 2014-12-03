@@ -104,7 +104,7 @@ function invoice_dates($x,$y)
 	text_align_right($x, $y, $font_size, trans('Deadline:').' ');
 	$y = $y - text_align_left($x, $y, $font_size, date("Y/m/d", $invoice['pdate']));
 	text_align_right($x, $y, $font_size, trans('Payment type:').' ');
-	$y = $y - text_align_left($x, $y, $font_size, iconv("UTF-8", "ISO-8859-2//TRANSLIT", $invoice['paytypename']));
+	$y = $y - text_align_left($x, $y, $font_size, $invoice['paytypename']);
 	return $y;
 }
 
