@@ -26,6 +26,8 @@ version ?.??.?? (????-??-??):
   - new plugins management system [maciejlew]
   - many sms service providers can be set in sms.service
     setting (separated by colon) [chilan]
+  - bumped ezpdf library version (viewing invoices in firefox should
+    work again) [chilan]
 
 version 1.11.15 (2014-05-15):
 

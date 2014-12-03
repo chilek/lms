@@ -61,7 +61,7 @@ function text_wrap($x,$y,$width,$size,$text,$justify)
 {
     global $pdf;
     while ($text!='') {
-	$text = $pdf->addTextWrap($x, $y, $width, $size,$text,$justify);
+	$text = $pdf->addText($x, $y, $size,$text, $width, $justify);
 	$y = $y - $pdf->getFontHeight($size);
     }
     return($y);
@@ -98,7 +98,7 @@ function check_page_length(&$y, $len=0)
 
 // brzydkie hacki dla ezpdf 
 @setlocale(LC_NUMERIC, 'C');
-mb_internal_encoding('ISO-8859-2'); // can't be set to UTF-8
+//mb_internal_encoding('ISO-8859-2'); // can't be set to UTF-8
 
 function new_page() {
 	global $pdf;
@@ -148,9 +148,10 @@ function init_pdf($pagesize, $orientation, $title)
 	);
 
 	$pdf = new Cezpdf($pagesize, $orientation); //landscape/portrait
+	$pdf->isUnicode = true;
 
 	$pdf->addInfo('Producer','LMS Developers');
-	$pdf->addInfo('Title',iconv("UTF-8","ISO-8859-2//TRANSLIT",$title));
+	$pdf->addInfo('Title', $title);
 	$pdf->addInfo('Creator','LMS '.$layout['lmsv']);
 	$pdf->setPreferences('FitWindow','1');
 	$pdf->ezSetMargins(PDF_MARGIN_TOP, PDF_MARGIN_BOTTOM, PDF_MARGIN_LEFT, PDF_MARGIN_RIGHT);

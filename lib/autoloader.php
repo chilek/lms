@@ -77,8 +77,8 @@ function application_autoloader($class) {
         'TCPDFpl' => 'tcpdf.php',
         'Smarty' => 'Smarty/Smarty.class.php',
         'SmartyBC' => 'Smarty/SmartyBC.class.php',
-        'Cezpdf' => 'ezpdf/class.ezpdf.php',
-        'Cpdf' => 'ezpdf/class.pdf.php',
+        'Cezpdf' => 'ezpdf/Cezpdf.php',
+        'Cpdf' => 'ezpdf/Cpdf.php',
         'HTML2PDF' => 'html2pdf/html2pdf.class.php',
         'TCPDF' => 'tcpdf/tcpdf.php'
     );
