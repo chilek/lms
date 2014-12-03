@@ -702,7 +702,8 @@ function new_invoice_data($x, $y, $width, $font_size, $margin)
 				$data2[$i]['total'] = moneyf($item['total']);
 				$i++;
 			}
-			$pdf->ezSetY($y);
+			//$pdf->ezSetY($y);
+			$pdf->ezSetY($y + 3);
 			$y = $pdf->ezTable($data2, NULL, '', $params2);
 			$data2 = array();
 		}
@@ -743,7 +744,8 @@ function new_invoice_data($x, $y, $width, $font_size, $margin)
 			$i++;
 		}
 
-	$pdf->ezSetY($y);
+	//$pdf->ezSetY($y);
+	$pdf->ezSetY($y + 3);
 	$y = $pdf->ezTable($data, $cols, '', $params);
 
 	$y -= 10;
@@ -779,7 +781,8 @@ function new_invoice_data($x, $y, $width, $font_size, $margin)
 			$data2[$i]['total'] = moneyf($item['total']);
 			$i++;
 		}
-		$pdf->ezSetY($y);
+		//$pdf->ezSetY($y);
+		$pdf->ezSetY($y + 3);
 		$y = $pdf->ezTable($data2, NULL, '', $params2);
 		$data2 = array();
 	}
