@@ -119,7 +119,7 @@ function getThroughput($ip) {
 			$stats[$idx] = (round(floatval($stats[$idx]) / 1000.0, 2)) . ' Kbit/s';
 		else
 			$stats[$idx] = $stats[$idx] . ' bit/s';
-	$result->assign('livetraffic', 'innerHTML', $stats[0] . ' / ' . $stats[2]);
+	$result->assign('livetraffic', 'innerHTML', $stats[0] . ' / ' . $stats[2] . ' (' . $stats[1] . ' pps / ' . $stats[3] . ' pps)');
 	$result->call('live_traffic_finished');
 
 	return $result;
