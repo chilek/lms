@@ -37,6 +37,6 @@ if ($a['template']) {
 $a['paytypename'] = $PAYTYPES[$a['paytype']];
 
 $SMARTY->assign('assignment', $a);
-$SMARTY->display('customerassignmentinfoshort.html');
+$SMARTY->display('customer/customerassignmentinfoshort.html');
 
 ?>

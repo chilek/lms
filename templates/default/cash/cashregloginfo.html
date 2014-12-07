@@ -1,0 +1,71 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+	    <TD width="1%">
+		<IMG src="img/value.gif" ALT="">
+	    </TD>
+	    <TD width="1%" NOWRAP><B>{trans("Real state:")}</B></TD>
+	    <TD width="98%">
+		<B>{$reglog.value|money_format}</B>
+	    </TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR>
+	    <TD width="1%">
+		<IMG src="img/queue.gif" ALT="">
+	    </TD>
+	    <TD width="1%" NOWRAP><B>{trans("Cash state:")}</B></TD>
+	    <TD width="98%">
+		{$reglog.snapshot|money_format}
+	    </TD>
+	</TR>
+	<TR>
+	    <TD width="1%">
+		<IMG src="img/time.gif" ALT="">
+	    </TD>
+	    <TD width="1%"><B>{trans("Time:")}</B></TD>
+	    <TD width="98%">
+		{$reglog.time}
+	    </TD>
+	</TR>
+	<TR>
+	    <TD width="1%">
+		<IMG src="img/users.gif" ALT="">
+	    </TD>
+	    <TD width="1%"><B>{trans("User:")}</B></TD>
+	    <TD width="98%">
+		<A href="?m=userinfo&id={$reglog.userid}">{$reglog.username}</A>
+	    </TD>
+	</TR>
+	{if $reglog.description}
+	<TR>
+	    <TD width="1%">
+		<IMG src="img/info1.gif" ALT="">
+	    </TD>
+	    <TD width="1%"><B>{trans("Description")}:</B></TD>
+	    <TD width="98%">
+		    <TABLE WIDTH="100%" CELLPADDING="5">
+	                    <TR>
+			            <TD CLASS="fall superlight">
+					    {$reglog.description|replace:"\n":"<BR>"}
+				    </TD>
+			    </TR>
+		    </TABLE>
+	    </TD>
+	</TR>
+	{/if}
+	<TR>
+	    <TD width="100%" COLSPAN="3" ALIGN="RIGHT"> 
+	    	<A HREF="?m=cashreglogedit&id={$reglog.id}" accesskey="s">{trans("Edit")} <IMG src="img/save.gif" alt=""></A>
+		<A href="?m=cashreglogdel&id={$reglog.id}" onclick="return confirmLink(this, '{trans("Are you sure, you want to delete selected entry?")}')">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
+	    </TD>
+	</TR>
+    </TBODY>
+</TABLE>
+{/block}

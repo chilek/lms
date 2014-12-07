@@ -204,15 +204,14 @@ else
 	}
 	else
 	{
-		foreach($types as $idx => $name)
-			if(isset($CONFIG['phpui']['quota_'.$name]))
-				$quota[$name] = intval($CONFIG['phpui']['quota_'.$name]);
-			else
-				$quota[$name] = 0;
+		foreach($types as $idx => $name) {
+                        $quota[$name] = intval(ConfigHelper::getConfig('phpui.quota_'.$name, 0));
+                }
 	}
 
-	if(!empty($CONFIG['phpui']['account_type']))
-		$account['type'] = intval($CONFIG['phpui']['account_type']);
+	$account_type = ConfigHelper::getConfig('phpui.account_type');
+	if(!empty($account_type))
+		$account['type'] = intval($account_type);
 }
 
 $layout['pagetitle'] = trans('New Account');
@@ -226,6 +225,6 @@ $SMARTY->assign('account', $account);
 $SMARTY->assign('customers', $LMS->GetCustomerNames());
 $SMARTY->assign('domainlist', $DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
 
-$SMARTY->display('accountadd.html');
+$SMARTY->display('account/accountadd.html');
 
 ?>

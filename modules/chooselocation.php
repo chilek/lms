@@ -187,5 +187,5 @@ $data['formname'] = $_GET['form'];
 
 $SMARTY->assign('data', $data);
 $SMARTY->assign('states', $states);
-$SMARTY->display('chooselocation.html');
+$SMARTY->display('choose/chooselocation.html');
 ?>

@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if (!check_conf('privileges.reports'))
+if (!ConfigHelper::checkConfig('privileges.reports'))
 	access_denied();
 
 $type = isset($_GET['type']) ? $_GET['type'] : '';
@@ -100,11 +100,11 @@ switch($type)
 					    .($sqlord != '' ? $sqlord.' '.$direction : ''));
 				
 				$SMARTY->assign('nodelist', $nodelist);
-				if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
-					$output = $SMARTY->fetch('printindebtnodelist.html');
+				if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
+					$output = $SMARTY->fetch('print/printindebtnodelist.html');
 					html2pdf($output, trans('Reports'), $layout['pagetitle']);
 				} else {
-					$SMARTY->display('printindebtnodelist.html');
+					$SMARTY->display('print/printindebtnodelist.html');
 				}
 				$SESSION->close();
 				die;
@@ -118,11 +118,11 @@ switch($type)
 		unset($nodelist['totaloff']);
 		
 		$SMARTY->assign('nodelist', $nodelist);
-		if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
-			$output = $SMARTY->fetch('printnodelist.html');
+		if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
+			$output = $SMARTY->fetch('print/printnodelist.html');
 			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {
-			$SMARTY->display('printnodelist.html');
+			$SMARTY->display('print/printnodelist.html');
 		}
 	break;
 
@@ -132,7 +132,7 @@ switch($type)
 		$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 		$SMARTY->assign('networks', $LMS->GetNetworks());
 		$SMARTY->assign('printmenu', 'node');
-		$SMARTY->display('printindex.html');
+		$SMARTY->display('print/printindex.html');
 	break;
 }
 

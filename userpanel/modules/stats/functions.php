@@ -29,7 +29,7 @@ if (defined('USERPANEL_SETUPMODE'))
     function module_setup()
     {
 	global $SMARTY,$LMS;
-        $SMARTY->assign('owner_stats', $LMS->CONFIG['userpanel']['owner_stats']);
+        $SMARTY->assign('owner_stats', ConfigHelper::getConfig('userpanel.owner_stats'));
 	$SMARTY->display('module:stats:setup.html');
     }
 
@@ -162,14 +162,14 @@ function Traffic($from = 0, $to = 0, $owner = 0, $order = '')
 
 function module_main()
 {
-    global $SMARTY,$CONFIG,$SESSION;
+    global $SMARTY, $SESSION;
     $bars = 1;
 
     if(isset($_GET['bar']) && isset($_POST['order']))
 	$SESSION->save('trafficorder', $_POST['order']);
 
     $bar = isset($_GET['bar']) ? $_GET['bar'] : '';
-    $owner = check_conf('userpanel.owner_stats') ? $SESSION->id : NULL;
+    $owner = ConfigHelper::checkConfig('userpanel.owner_stats') ? $SESSION->id : NULL;
 
     switch($bar)
     {

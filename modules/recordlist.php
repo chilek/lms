@@ -52,7 +52,7 @@ else
 	$showAddEdit = true;
 
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']);
-$pagelimit = (!isset($CONFIG['phpui']['recordlist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['recordlist_pagelimit']);
+$pagelimit = ConfigHelper::getConfig('phpui.recordlist_pagelimit', $listdata['total']);
 $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('alp', $page);
@@ -68,6 +68,6 @@ $SMARTY->assign('recordslist', $recordslist);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->assign('showaddedit', $showAddEdit);
 $SMARTY->assign('domainlist', $DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
-$SMARTY->display('recordlist.html');
+$SMARTY->display('record/recordlist.html');
 
 ?>

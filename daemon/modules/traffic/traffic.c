@@ -56,20 +56,20 @@ void reload(GLOBAL *g, struct traffic_module *traffic)
 	FILE *fh;
 	
 	// first get hosts data
-	res = g->db_query(g->conn, "SELECT id, ipaddr FROM nodes");
+	res = g->db->query(g->db->conn, "SELECT id, ipaddr FROM nodes");
 
-	if( g->db_nrows(res) )
+	if( g->db->nrows(res) )
 	{
 		if(*traffic->begin_command)
 		{
 			system(traffic->begin_command);
 		}
 		
-		for(i=0; i<g->db_nrows(res); i++)
+		for(i=0; i<g->db->nrows(res); i++)
 		{
 			hosts = (HOSTS *) realloc(hosts, sizeof(HOSTS) * (j + 1));
-			hosts[i].ipaddr = strdup(inet_ntoa(inet_addr(g->db_get_data(res,i,"ipaddr"))));
-			hosts[i].id = atoi(g->db_get_data(res,i,"id"));
+			hosts[i].ipaddr = strdup(inet_ntoa(inet_addr(g->db->get_data(res,i,"ipaddr"))));
+			hosts[i].id = atoi(g->db->get_data(res,i,"id"));
 			j++;
 		}	
 		
@@ -94,7 +94,7 @@ void reload(GLOBAL *g, struct traffic_module *traffic)
 				{
 					if( atoi(download) || atoi(upload) ) // write not null data
 					{
-						g->db_pexec(g->conn, "INSERT INTO stats (nodeid, dt, download, upload) VALUES (?, %NOW%, ?, ?)", itoa(k), download, upload);
+						g->db->pexec(g->db->conn, "INSERT INTO stats (nodeid, dt, download, upload) VALUES (?, %NOW%, ?, ?)", itoa(k), download, upload);
 					}
 				}
 			}
@@ -119,7 +119,7 @@ void reload(GLOBAL *g, struct traffic_module *traffic)
 		system(traffic->end_command);
 	}
 
-	g->db_free(&res);
+	g->db->free(&res);
 	free(hosts);
 	free(traffic->begin_command);
 	free(traffic->end_command);

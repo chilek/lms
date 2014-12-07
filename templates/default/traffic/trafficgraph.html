@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!--// $Id$ //-->
+<html><head>
+<meta name="GENERATOR" content="LMS {$layout.lmsv}">
+<meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
+<meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
+<link href="{ConfigHelper::getConfig('phpui.style', 'img/style.css')}" rel="stylesheet" type="text/css">
+<title>::: LMS :::</title>
+<script type="text/javascript" src="img/autoiframe.js"></script>
+<script type="text/javascript" src="img/common.js"></script>
+<script type="text/javascript">
+<!--
+	function moveGraphByTime(dtime)
+	{
+		document.getElementById('add').value = parseInt(document.getElementById('add').value) + dtime;
+		document.getElementById('table').src = '?m=trafficgraph&nodeid={$nodeid}&bar={$bar}{if $from}&from={$from}{/if}{if $to}&to={$to}{/if}'
+			+ '&add=' + document.getElementById('add').value + '&ts={$smarty.now}';
+	}
+//-->
+</script>
+</head>
+<body style="text-align: center; margin: 0">
+	<form name="params"><input type="hidden" name="add" id="add" value="{if $add}{$add}{else}0{/if}"></form>
+	<img id="table" src="?m=trafficgraph&nodeid={$nodeid}&bar={$bar}{if $from}&from={$from}{/if}{if $to}&to={$to}{/if}{if $add}&add={$add}{/if}&ts={$smarty.now}" width="{$smarty.const.GRAPH_WIDTH}" height="{$smarty.const.GRAPH_HEIGHT}" alt="">
+	<div style="height: 16px; margin-top: 3px; font-weight: bold">
+		&laquo;&nbsp;
+		<a href="javascript:moveGraphByTime(-2592000)">1m</a>&nbsp;
+		<a href="javascript:moveGraphByTime(-604800)">1w</a>&nbsp;
+		<a href="javascript:moveGraphByTime(-86400)">1d</a>&nbsp;
+		<a href="javascript:moveGraphByTime(-43200)">12h</a>&nbsp;
+		<a href="javascript:moveGraphByTime(-21600)">6h</a>&nbsp;
+		<a href="javascript:moveGraphByTime(-3600)">1h</a>&nbsp;
+		|&nbsp;
+		<a href="javascript:moveGraphByTime(3600)">1h</a>&nbsp;
+		<a href="javascript:moveGraphByTime(21600)">6h</a>&nbsp;
+		<a href="javascript:moveGraphByTime(43200)">12h</a>&nbsp;
+		<a href="javascript:moveGraphByTime(86400)">1d</a>&nbsp;
+		<a href="javascript:moveGraphByTime(604800)">1w</a>&nbsp;
+		<a href="javascript:moveGraphByTime(2592000)">1m</a>&nbsp;
+		&raquo;
+	</div>
+<SCRIPT TYPE="text/javascript">
+<!--
+var table = document.getElementById('table');
+autoiframe_setsize('autoiframe', table.offsetWidth, table.offsetHeight + 19);
+</SCRIPT>
+//-->
+</body>
+</html>

@@ -32,14 +32,13 @@ require_once(LIB_DIR.'/checkip.php');
 require_once(LIB_DIR.'/common.php');
 require_once(LIB_DIR.'/Session.class.php');
 require_once(LIB_DIR.'/Auth.class.php');
-require_once(LIB_DIR.'/definitions.php');
 require_once(LIB_DIR.'/LMS.class.php');
 
 // Initialize main classes
 
-$SESSION = new Session($DB, $CONFIG['phpui']['timeout']);
+$SESSION = new Session($DB, ConfigHelper::getConfig('phpui.timeout'));
 $AUTH = new Auth($DB, $SESSION);
-$LMS = new LMS($DB, $AUTH, $CONFIG);
+$LMS = new LMS($DB, $AUTH);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
@@ -48,15 +47,14 @@ $SMARTY->assignByRef('LANGDEFS', $LANGDEFS);
 $SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
 $SMARTY->assignByRef('_language', $LMS->lang);
 $SMARTY->assign('_dochref', is_dir('doc/html/'.$LMS->ui_lang) ? 'doc/html/'.$LMS->ui_lang.'/' : 'doc/html/en/');
-$SMARTY->assign('_config',$CONFIG);
 
 $layout['logname'] = $AUTH->logname;
-$layout['lmsdbv'] = $DB->_version;
+$layout['lmsdbv'] = $DB->GetVersion();
 $layout['smarty_version'] = $SMARTY->_version;
 $layout['hostname'] = hostname();
 $layout['lmsv'] = '1.11-git';
 $layout['lmsvr'] = $LMS->_revision;
-$layout['dberrors'] =& $DB->errors;
+$layout['dberrors'] =& $DB->GetErrors();
 $layout['popup'] = isset($_GET['popup']) ? true : false;
 
 $SMARTY->assignByRef('layout', $layout);

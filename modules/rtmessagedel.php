@@ -37,8 +37,9 @@ if(($rights & 4) != 4)
 
 if($DB->GetOne('SELECT MIN(id) FROM rtmessages WHERE ticketid = ?', array($ticket)) != $msg)
 {
-	if(isset($CONFIG['rt']['mail_dir'])) {
-		rrmdir($CONFIG['rt']['mail_dir'].sprintf('/%06d/%06d', $ticket, $msg));
+	$mail_dir = ConfigHelper::getConfig('rt.mail_dir');
+	if(!empty($mail_dir)) {
+		rmdir($mail_dir.sprintf('/%06d/%06d', $ticket, $msg));
 	}
 
 	$DB->Execute('DELETE FROM rtmessages WHERE id = ?', array($msg));

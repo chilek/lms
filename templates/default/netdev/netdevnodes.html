@@ -1,0 +1,150 @@
+<!--// $Id$ //-->
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		 <TD style="width: 100%; text-align: left; white-space: nowrap;" class="hand" onClick="showOrHide('devicenodes');">
+			<IMG SRC="img/node.gif" ALT="">
+			<span class="bold">{t a=$netcomplist|@count}Connected nodes ($a):{/t}</span>
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR id="devicenodes" style="display:none;">
+		<TD style="width: 100%;">
+			<TABLE class="lmsbox-inner">
+                            <THEAD>
+				<TR>
+					<TD style="width: 97%; white-space: nowrap;">
+						<img src="img/node.gif" ALT=""> <span class="bold">{trans("Name:")}</span><BR>
+						<img src="img/customer.gif" ALT=""> {trans("Owner:")}
+					</TD>
+					<TD style="width: 1%; text-align: right; white-space: nowrap;">
+						{trans("Node ID:")}<BR>
+						{trans("Customer ID:")}
+					</TD>
+					<TD style="width: 1%; white-space: nowrap;">
+						<img src="img/netdev_takenports.gif"> {trans("Port")}:<BR>
+						<img src="img/ip.gif" ALT=""> {trans("Network")} / {trans("IP address:")}
+					</TD>
+					<TD style="width: 1%;">&nbsp;</TD>
+				</TR>
+                            </THEAD>
+                            <TBODY>
+				{cycle values="light,lucid" print=false}
+				{section name=netcomplist loop=$netcomplist start=$start}
+				<TR class="highlight {cycle}"  >
+					<TD style="width: 97%;" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';">
+						<IMG SRC="img/node.gif" ALT=""> <span class="bold">{$netcomplist[netcomplist].name}</span><BR>
+						<IMG SRC="img/customer.gif" ALT=""> <A href="?m=customerinfo&id={$netcomplist[netcomplist].ownerid}" {tip a=$netcomplist[netcomplist].ownerid dynpopup='?m=customerinfoshort&id=$a'}>{$netcomplist[netcomplist].owner}</A>
+					</TD>
+					<TD style="width: 1%; text-align: right; white-space: nowrap;" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';">
+						({$netcomplist[netcomplist].id|string_format:"%04d"})<BR>
+						<span class="blend">({$netcomplist[netcomplist].ownerid|string_format:"%04d"})</span>
+					</TD>
+					<TD style="width: 1%; white-space: nowrap;">
+						<span id="nodelinkproperties_{$netcomplist[netcomplist].id}" onClick="javascript:netlinkpropertieschoosewin('{$netdevinfo.id}', '{$netcomplist[netcomplist].id}', false);" >
+							<IMG src="{if $netcomplist[netcomplist].linktype == 1}img/wireless.gif{elseif $netcomplist[netcomplist].linktype == 2}img/netdev_takenports.gif{else}img/netdev_takenports.gif{/if}" alt="[ {trans("Change connection properties ")} ]" title="[ {trans("Change connection properties")} ]" {tip trigger="nodelinkproperties_$netcomplist[netcomplist].id" text="<span style=\"white-space: nowrap;\">{trans("Link type:")} {$_LINKTYPES[$netcomplist[netcomplist].linktype]}<br>{if $netcomplist[netcomplist].linktechnology}{trans("Link technology:")} {$_LINKTECHNOLOGIES[$netcomplist[netcomplist].linktype][$netcomplist[netcomplist].linktechnology]}<br>{/if}{trans("Link speed:")} {$_LINKSPEEDS[$netcomplist[netcomplist].linkspeed]}</span>"}>
+						</span>
+						<span onclick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';">
+						[{if $netcomplist[netcomplist].port}{$netcomplist[netcomplist].port}{/if}]
+						<BR><IMG SRC="img/ip.gif" ALT=""> {$netcomplist[netcomplist].netname} / {$netcomplist[netcomplist].ip}{if $netcomplist[netcomplist].ip_pub != "0.0.0.0"} ({$netcomplist[netcomplist].ip_pub}){/if}
+						</span>
+					</TD>
+					<TD style="width: 1%; text-align: right;">
+						<A HREF="?m=netdevedit&action=disconnectnode&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that connection?")}');"><IMG SRC="img/delete.gif" ALT="" {tip text="Delete connection"}></A>
+					</TD>
+				</TR>
+				{sectionelse}
+				<TR>
+					<TD colspan="4" style="text-align: center;">
+						<p>&nbsp;</p>
+						<p><span class="bold">{trans("No such connected nodes.")}</span></p>
+						<p>&nbsp;</p>
+					</TD>
+				</TR>
+				{/section}
+				<TR>
+					<TD style="width: 100%; text-align: center; white-space: nowrap;" COLSPAN="4">
+						{if $netdevinfo.ports eq $netdevinfo.takenports}
+						<span class="bold">{trans("All ports in that device are in use.")}</span>
+						{elseif $nodelist eq NULL}
+						<span class="bold">{trans("No such nodes to connection.")}</span>
+						{else}
+						<FORM METHOD="GET" ACTION="?m=netdevedit" NAME="connectnode">
+						<INPUT type="submit" class="hiddenbtn">
+						<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
+						<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
+						<INPUT TYPE="HIDDEN" NAME="action" VALUE="connectnode">
+						<TABLE style="width: 100%;">
+							<TR>
+								<TD style="width: 99%; white-space: nowrap;">
+									<span class="bold">{trans("Connect")}:</span>
+									{trans("Node:")}<SELECT NAME="nodeid" {tip trigger="linknode" text="Select node, which you want to connect to device"}>
+									{section name=nodelist loop=$nodelist}
+										<OPTION VALUE="{$nodelist[nodelist].id}"{if $connectnode.id == $nodelist[nodelist].id} selected{/if}>{$nodelist[nodelist].name} ({$nodelist[nodelist].ip})</OPTION>
+									{/section}
+									</SELECT>
+									<label for="port">{trans("Dest. port")}:<INPUT name="port" id="port" value="{if $connectnode.port}{$connectnode.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
+									<SELECT NAME="linktype" id="devnodeslinktype" {tip trigger="devnodeslinktype" text="Select link type"} onchange="change_nodelinktype(this.options[this.selectedIndex].value)">
+										{foreach from=$_LINKTYPES item=item key=key}
+										<OPTION value="{$key}"{if $key==$nodelinktype} selected{/if}>{$item}</OPTION>
+										{/foreach}
+									</SELECT>
+									{if !$devnodeslinktype}{$devnodeslinktype = 0}{/if}
+									<SELECT NAME="linktechnology" id="devnodeslinktechnology" {tip trigger="devnodeslinktechnology" text="Select link technology"}>
+										<OPTION value="0">{trans("- unknown -")}</OPTION>
+										{foreach $_LINKTECHNOLOGIES[$devnodeslinktype] as $linktechnologyidx => $linktechnology}
+										<OPTION value="{$linktechnologyidx}"{if $linktechnologyidx == $nodelinktechnology} selected{/if}>{$linktechnology}</OPTION>
+										{/foreach}
+									</SELECT>
+									<SELECT NAME="linkspeed" id="devnodeslinkspeed" {tip trigger="devnodeslinkspeed" test="Select link speed"}>
+										{foreach from=$_LINKSPEEDS item=item key=key}
+											<OPTION value="{$key}"{if $key==$nodelinkspeed || (!$nodelinkspeed && $key==100000)} selected{/if}>{$item}</OPTION>
+										{/foreach}
+								</TD>
+								<TD style="width: 1%; text-align: right; white-space: nowrap;">
+									<A HREF="javascript:document.connectnode.submit(); ">{trans("Connect")}</A> <IMG src="img/save.gif" alt="">
+								</TD>
+							</TR>
+						</TABLE>
+						</FORM>
+						{/if}
+					</TD>
+				</TR>
+                            </TBODY>
+			</TABLE>
+		</TD>
+	</TR>
+    </TBODY>
+</TABLE>
+<SCRIPT type="text/javascript">
+<!--
+function change_nodelinktype(linktype) {
+	linktype = parseInt(linktype);
+	var options = document.getElementById('devnodeslinktechnology').options;
+	while (options.length)
+		options.remove(0);
+	options.add(new Option('{trans("- unknown -")}', 0));
+	switch (linktype) {
+		case 0:
+			{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
+			options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+			{/foreach}
+			break;
+		case 1:
+			{foreach $_LINKTECHNOLOGIES[1] as $linktechnologyidx => $linktechnology}
+			options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+			{/foreach}
+			break;
+		case 2:
+			{foreach $_LINKTECHNOLOGIES[2] as $linktechnologyidx => $linktechnology}
+			options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+			{/foreach}
+			break;
+	}
+}
+
+if (getCookie('devicenodes') == '1')
+	document.getElementById('devicenodes').style.display = '';
+//-->
+</SCRIPT>

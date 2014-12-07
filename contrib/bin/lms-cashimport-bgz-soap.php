@@ -55,29 +55,30 @@ define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 define('BACKUP_DIR', $CONFIG['directories']['backup_dir']);
 define('MODULES_DIR', $CONFIG['directories']['modules_dir']);
 
+// Load autloader
+require_once(LIB_DIR.'/autoloader.php');
+
 // Load config defaults
 
 require_once(LIB_DIR.'/config.php');
 
 // Init database 
 
-$_DBTYPE = $CONFIG['database']['type'];
-$_DBHOST = $CONFIG['database']['host'];
-$_DBUSER = $CONFIG['database']['user'];
-$_DBPASS = $CONFIG['database']['password'];
-$_DBNAME = $CONFIG['database']['database'];
+$DB = null;
 
-require_once(LIB_DIR.'/LMSDB.php');
+try {
 
-$DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
+    $DB = LMSDB::getInstance();
 
-// Read configuration of LMS-UI from database
+} catch (Exception $ex) {
+    
+    trigger_error($ex->getMessage(), E_USER_WARNING);
+    
+    // can't working without database
+    die("Fatal error: cannot connect to database!\n");
+    
+}
 
-if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0'))
-	foreach($cfg as $row)
-		$CONFIG[$row['section']][$row['var']] = $row['value'];
-		
-		
 //funkcje
 //bug - modyfikacje błednego wsdl-a z BGZ-tu - zamiast http musi byc https!!
 class My_SoapClient extends SoapClient {

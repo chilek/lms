@@ -1,0 +1,50 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<FORM method="post" name="customergroupadd" action="?m=customergroupadd">
+<p style="display: none;">
+<INPUT type="submit" class="hiddenbtn">
+</p>
+<TABLE class="lmsbox">
+	<THEAD>
+	<TR>
+		<TD style="width: 1%">
+			<IMG src="img/group.gif" alt="">
+		</TD>
+		<TD style="width: 1%" class="bold">
+			{trans("Name:")}
+		</TD>
+		<TD style="width: 98%">
+			<INPUT type="text" name="customergroupadd[name]" value="{$customergroupadd.name}" size="50" {tip trigger="name" bold=1}>
+		</TD>
+	</TR>
+	</THEAD>
+	<TBODY>
+	<TR>
+		<TD style="width: 1%">
+			<IMG src="img/info1.gif" alt="">
+		</TD>
+		<TD style="width: 1%" class="bold">
+			{trans("Description:")}
+		</TD>
+		<TD style="width: 98%">
+			<TEXTAREA name="customergroupadd[description]" cols="50" rows="5" {tip text="Enter additional information (optional)"}>{$customergroupadd.description}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR>
+		<TD style="width: 100%" class="text-right" colspan="3">
+			<A href="javascript:document.customergroupadd.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=customergrouplist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
+		</TD>
+	</TR>
+	</TBODY>
+</TABLE>
+</FORM>
+<SCRIPT type="text/javascript">
+<!--
+document.forms['customergroupadd'].elements['customergroupadd[name]'].focus();
+//-->
+</SCRIPT>
+{/block}

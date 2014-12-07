@@ -1,0 +1,61 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!-- $Id$ -->
+<H1>{$layout.pagetitle}</H1>
+<P><TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD WIDTH="1%" nowrap>
+			<IMG src="img/settings.gif" alt=""><B>{trans("Name:")}</B>
+		</TD>
+		<TD WIDTH="58%" NOWRAP>
+			{trans("Value:")}
+		</TD>
+		<TD WIDTH="40%">
+			{trans("Description:")}
+		</TD>
+		<TD WIDTH="1%" nowrap>
+			<A href="?m=daemonconfigadd&id={$instance.id}">{trans("Add option")} <IMG src="img/save.gif" alt=""></A>
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	{cycle values="light,lucid" print=false}
+	{foreach from=$optionlist item=option}
+	<TR class="highlight {cycle}{if $option.disabled} blend{/if}"  >
+		<TD valign="top" onClick="return self.location.href='?m=daemonconfigedit&id={$option.id}';" nowrap>
+			<IMG src="img/settings.gif" alt="">
+			<B>{$option.var}</B>
+		</TD>
+		<TD valign="top" onClick="return self.location.href='?m=daemonconfigedit&id={$option.id}';" nowrap>
+			<PRE>{$option.value|escape}</PRE>
+		</TD>
+		<TD valign="top" onClick="return self.location.href='?m=daemonconfigedit&id={$option.id}';">
+			{$option.description|escape|replace:"\n":"<BR>"}
+		</TD>
+		<TD align="right" NOWRAP>
+			<A HREF="?m=daemonconfigedit&id={$option.id}&statuschange=1"><IMG src="img/wait.gif" alt="[ {if $option.disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]" title="[ {if $option.disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]"></A>
+			<A HREF="?m=daemonconfigdel&id={$option.id}" OnClick="return confirmLink(this, '{t a=$option.var}Are you sure, you want to remove option \'$a\' from database?{/t}');"><IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			<A HREF="?m=daemonconfigedit&id={$option.id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+		</TD>
+	</TR>
+	{foreachelse}
+	<TR>
+		<TD colspan="4" align="center">
+			<p>&nbsp;</p>
+			<p><B>{trans("That instance hasn't got any configuration option.")}<B></p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/foreach}
+    </TBODY>
+    <TFOOT>
+	<TR>
+		<TD colspan="4" align="right">
+			<A href="?m=daemonconfigadd&id={$instance.id}">{trans("Add option")} <IMG src="img/save.gif" alt=""></A>
+		</TD>
+	</TR>
+    </TFOOT>
+</TABLE></P>
+{/block}

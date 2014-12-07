@@ -69,14 +69,15 @@ function select_location($what, $id) {
 	return $JSResponse;
 }
 
-function connect_nodes($nodeids, $deviceid, $linktype, $linkspeed) {
+function connect_nodes($nodeids, $deviceid, $linktype, $linktechnology, $linkspeed) {
 	global $DB;
 
 	$JSResponse = new xajaxResponse();
 
 	$DB->BeginTrans();
 	foreach ($nodeids as $nodeid)
-		$DB->Execute("UPDATE nodes SET netdev = ?, port = 0, linktype = ?, linkspeed = ? WHERE id = ?", array($deviceid, $linktype, $linkspeed, $nodeid));
+		$DB->Execute("UPDATE nodes SET netdev = ?, port = 0, linktype = ?, linktechnology = ?, linkspeed = ? WHERE id = ?",
+			array($deviceid, $linktype, $linktechnology, $linkspeed, $nodeid));
 	$DB->CommitTrans();
 
 	$JSResponse->call('operation_finished');
@@ -161,7 +162,7 @@ if (isset($_GET['search'])) {
 
 	$page = (!isset($_GET['page']) ? 1 : $_GET['page']);
 
-	$pagelimit = (!$CONFIG['phpui']['nodelist_pagelimit'] ? $listdata['total'] : $CONFIG['phpui']['nodelist_pagelimit']);
+	$pagelimit = ConfigHelper::getConfig('phpui.nodelist_pagelimit', $listdata['total']);
 	$start = ($page - 1) * $pagelimit;
 	$SESSION->save('nslp', $page);
 
@@ -178,11 +179,11 @@ if (isset($_GET['search'])) {
 	$SMARTY->assign('netdevlist', $netdevlist);
 
 	if (isset($_GET['print']))
-		$SMARTY->display('printnodelist.html');
+		$SMARTY->display('print/printnodelist.html');
 	elseif ($listdata['total'] == 1)
 		$SESSION->redirect('?m=nodeinfo&id=' . $nodelist[0]['id']);
 	else
-		$SMARTY->display('nodesearchresults.html');
+		$SMARTY->display('node/nodesearchresults.html');
 }
 else {
 	$LMS->RegisterXajaxFunction('select_location');
@@ -195,6 +196,6 @@ else {
 	$SMARTY->assign('states', $DB->GetAll('SELECT id, name, ident FROM location_states ORDER BY name'));
 	$SMARTY->assign('k', $k);
 
-	$SMARTY->display('nodesearch.html');
+	$SMARTY->display('node/nodesearch.html');
 }
 ?>

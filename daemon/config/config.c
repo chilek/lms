@@ -31,6 +31,8 @@
 
 #include "config.h"
 
+Config *c = NULL;
+
 /* Private: Parse special char sequences in string */
 /* Maybe we don't need this if we have dictionary in database? */
 char * parse(char *string)
@@ -91,9 +93,10 @@ Config * config_new(int size)
 	return dictionary_new(size);
 }
 
-void config_free(Config *c)
+void config_free(Config *_c)
 {
-	dictionary_free(c);
+	dictionary_free(_c);
+	c = NULL;
 }
 
 /* Add an entry to the config object */
@@ -115,47 +118,56 @@ void config_add(Config *c, char *sec, char * key, char *val)
     free(value);
 }
 
-Config * config_load(ConnHandle *conn, const char *dbhost, const char *section)
+Config * config_load(const char *configfile, DB *db, const char *hostname, const char *section)
 {
-#ifdef CONFIGFILE
-    return config_load_from_file(section);
-#else
-    Config *c;
+    if( file_exists(configfile) )
+    {
+        config_load_from_file(configfile, section);
+    }
+    else if ( db->conn == NULL )
+    {
+        syslog(LOG_INFO, "File '%s' not found. I will use default parameters when connecting to database.", configfile);
+    }
+    if( db->conn != NULL )
+        config_load_from_db(db, hostname, section);
+
+    return c;
+}
+
+void config_load_from_db(DB *db, const char *hostname, const char *section)
+{
     QueryHandle *res;
     char *sec, *var, *val;
     int i;
-    
-    if( !conn )
+
+    if( !db->conn )
     {
-	    syslog(LOG_ERR, "ERROR: [config_load] Lost connection handle.");
-	    return NULL;
+        syslog(LOG_ERR, "ERROR: [config_load] Lost connection handle.");
+        return;
     }
 
-    // Initialize a new config entry
-    c = config_new(0);
-    
-    if( ! section )
-	    res = db_pquery(conn, "SELECT daemoninstances.name AS section, var, value FROM daemonconfig, hosts, daemoninstances WHERE hostid=hosts.id AND instanceid=daemoninstances.id AND hosts.name='?' AND daemonconfig.disabled=0", dbhost);
-    else
-	    res = db_pquery(conn, "SELECT daemoninstances.name AS section, var, value FROM daemonconfig, hosts, daemoninstances WHERE hostid=hosts.id AND instanceid=daemoninstances.id AND hosts.name='?' AND daemoninstances.name='?' AND daemonconfig.disabled=0", dbhost, section);
+    // Initialize a new config entry if was not already initialized
+    if( c == NULL )
+        c = config_new(0);
 
-    for(i=0; i<db_nrows(res); i++) 
+    if( ! section )
+            res = db->pquery(db->conn, "SELECT daemoninstances.name AS section, var, value FROM daemonconfig, hosts, daemoninstances WHERE hostid=hosts.id AND instanceid=daemoninstances.id AND hosts.name='?' AND daemonconfig.disabled=0", hostname);
+    else
+            res = db->pquery(db->conn, "SELECT daemoninstances.name AS section, var, value FROM daemonconfig, hosts, daemoninstances WHERE hostid=hosts.id AND instanceid=daemoninstances.id AND hosts.name='?' AND daemoninstances.name='?' AND daemonconfig.disabled=0", hostname, section);
+
+    for(i=0; i<db->nrows(res); i++) 
     {
-	sec = db_get_data(res, i, "section");
-	var = db_get_data(res, i, "var");
-	val = db_get_data(res, i, "value");	
+        sec = db->get_data(res, i, "section");
+        var = db->get_data(res, i, "var");
+        val = db->get_data(res, i, "value");
         config_add(c, sec, var, val);
     }
-    
-    db_free(&res);
-    return c;
-#endif
+
+    db->free(&res);
 }
 
-#ifdef CONFIGFILE
-Config * config_load_from_file(const char *section)
+void config_load_from_file(const char *configfile, const char *section)
 {
-    Config *c;
     char sec[1024+1];
     char key[1024+1];
     char lin[1024+1];
@@ -164,13 +176,16 @@ Config * config_load_from_file(const char *section)
     FILE * ini ;
     int lineno ;
 
-    if ((ini=fopen(CONFIGFILE, "r"))==NULL)
+    if ((ini=fopen(configfile, "r"))==NULL)
     {
-	    syslog(LOG_ERR, "[config_load] Unable to open file '%s'.", CONFIGFILE);
-    	    return NULL ;
+        syslog(LOG_ERR, "[config_load] Unable to open file '%s'.", configfile);
+        return;
     }
 
-    c = config_new(0);
+    // Initialize a new config entry if was not already initialized
+    if( c == NULL )
+        c = config_new(0);
+
     lineno = 0;
     sec[0] = 0;
 
@@ -210,8 +225,10 @@ Config * config_load_from_file(const char *section)
     	    }
     }
 
+    syslog(LOG_INFO, "Configuration file '%s' loaded.", configfile);
+
     fclose(ini);
-    return c ;
+    return;
 }
 
 char * strskp(char * s)
@@ -241,7 +258,6 @@ char * strcrop(char * s)
 	return l;
 }
 
-#endif
 
 char * config_getstring(Config *c, char *sec, char *key, char *def)
 {

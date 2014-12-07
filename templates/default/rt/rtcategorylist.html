@@ -1,0 +1,93 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!-- $Id$ -->
+<H1>{$layout.pagetitle}</H1>
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD WIDTH="20%" COLSPAN="2" NOWRAP>
+			<IMG src="img/queue.gif" ALT="">
+			<B>{trans("Category")}:</B><BR>
+			<IMG src="img/info1.gif" ALT="">
+			{trans("Description")}:
+		</TD>
+		<TD WIDTH="76%" NOWRAP>
+			<IMG src="img/users.gif" ALT="">
+			<B>{trans("Owners")}:</B>
+		</TD>
+		<TD align="right"  WIDTH="1%">
+			{trans("New:")}
+		</TD>
+		<TD align="right" WIDTH="1%">
+			{trans("Opened:")}
+		</TD>
+		<TD align="right" WIDTH="1%" ALIGN="CENTER">
+			{trans("Last:")}
+		</TD>
+		<TD WIDTH="1%">
+			&nbsp;
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	{cycle values="light,lucid" print=false}
+	{foreach from=$categories item=category}
+	<TR class="highlight {cycle}"  >
+		<TD onClick="return self.location.href='?m=rtqueueview&catid={$category.id}';" COLSPAN="2">
+			<IMG src="img/queue.gif" ALT="">
+			<B>{$category.name}</B><BR>
+			{if $category.description}
+				<IMG src="img/info1.gif" ALT=""> {$category.description}
+			{/if}
+		</TD>
+		<TD>
+			{foreach from=$category.owners item=owner key=key}
+				<A HREF="?m=userinfo&id={$owner.id}">{$owner.name}</A>{if $key+1<sizeof($category.owners)}, {/if}
+			{/foreach}
+		</TD>
+		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&catid={$category.id}';">
+			{$category.new|default:0}
+		</TD>
+		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&catid={$category.id}';">
+			{$category.open|default:0}
+		</TD>
+		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&catid={$category.id}';" NOWRAP>
+			{if $category.lastticket}{$category.lastticket|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
+		</TD>
+		<TD NOWRAP>
+			<A HREF="?m=rtqueueview&catid={$category.id}"><IMG SRC="img/view.gif" alt="[ {trans("Browse")} ]" title="[ {trans("Browse")} ]"></A>
+			<A HREF="?m=rtcategorydel&id={$category.id}" OnClick="return confirmLink(this, '{t a=$category.name}Are you sure, you want to remove category \'$a\'?{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			<A HREF="?m=rtcategoryedit&id={$category.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			<A HREF="?m=rtcategoryinfo&id={$category.id}"><IMG SRC="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
+		</TD>
+	</TR>
+	{foreachelse}
+	<TR>
+		<TD colspan="7" align="center">
+			<p>&nbsp;</p>
+			<p><B>{trans("There are no categories.")}<B></p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/foreach}
+        </TBODY>
+        <TFOOT>
+	<TR>
+		<TD COLSPAN="3" ALIGN="RIGHT">
+			<IMG src="img/info2.gif" ALT="">
+			<B>{trans("Total:")}</B>
+		</TD>
+		<TD ALIGN="CENTER">
+			<B>{sum array=$categories column=new}</B>
+		</TD>
+		<TD ALIGN="CENTER">
+			<B>{sum array=$categories column=open}</B>
+		</TD>
+		<TD COLSPAN="2">
+			&nbsp;
+		</TD>
+	</TR>
+        </TFOOT>
+</TABLE>
+{/block}

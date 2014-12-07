@@ -1,0 +1,188 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!--// $Id$ //-->
+<html><head>
+<meta name="GENERATOR" content="LMS {$layout.lmsv}">
+<meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
+<meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
+<title>::: LMS :::</title>
+<link href="img/style.css" rel="stylesheet" type="text/css">
+<SCRIPT TYPE="text/javascript" SRC="img/autoiframe.js"></SCRIPT>
+<SCRIPT TYPE="text/javascript" SRC="img/common.js"></SCRIPT>
+</head>
+<body>
+<TABLE class="lmsbox-inner" id="table">
+    <THEAD>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/customer.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%">
+			<B>{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}){if $customerinfo.deleted} <FONT COLOR="RED">({trans("deleted customer")})</FONT>{/if}</B>
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD WIDTH="1%">
+			{if $customerinfo.status eq "3"}<IMG src="img/customer.gif" alt="">{/if}
+			{if $customerinfo.status eq "2"}<IMG src="img/wait.gif" alt="">{/if}
+			{if $customerinfo.status eq "1"}<IMG src="img/unk.gif" alt="">{/if}
+		</TD>
+		<TD WIDTH="99%">
+			{if $customerinfo.status eq "3"}<B>{trans("connected<!singular>")}</B>{/if}
+			{if $customerinfo.status eq "2"}<B>{trans("waiting")}</B>{/if}
+			{if $customerinfo.status eq "1"}<B>{trans("interested<!singular>")}</B>{/if}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%" >
+			<IMG SRC="img/home.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" NOWRAP>
+			{$customerinfo.address}<BR>
+			{$customerinfo.zip} {$customerinfo.city}
+		</TD>
+	</TR>
+{if $customerinfo.post_name neq "" || $customerinfo.post_address neq ""}
+	<TR>
+		<TD WIDTH="1%" >
+			<IMG SRC="img/post.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" NOWRAP>
+			{if $customerinfo.post_name neq ""}{$customerinfo.post_name}{/if}
+			{if $customerinfo.post_address neq ""}<BR>{$customerinfo.post_address}{/if}
+			<BR>{$customerinfo.post_zip} {$customerinfo.post_city}
+		</TD>
+	</TR>
+{/if}
+{foreach from=$customerinfo.contacts item=item}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/phone.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" NOWRAP>
+		    {$item.phone}
+		    {if $item.typestr}[{$item.typestr}]{/if}
+		    {if $item.name} ({$item.name|truncate:"40":"...":true}){/if}
+		</TD>
+	</TR>
+{/foreach}
+{if $customerinfo.email neq ""}
+	<TR>
+		<TD WIDTH="1%" >
+			<IMG SRC="img/mail.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%">
+			<A HREF="mailto:{$customerinfo.email}">{$customerinfo.email}</A>
+		</TD>
+	</TR>
+{/if}
+{foreach from=$customerinfo.messengers item=item}
+	<TR>
+		<TD>
+			{if $item.type == $smarty.const.IM_GG}
+			<IMG src="http://status.gadu-gadu.pl/users/status.asp?id={$item.uid}&styl=1" alt="">
+			{elseif $item.type == $smarty.const.IM_YAHOO}
+			<IMG src="http://opi.yahoo.com/online?u='{$item.uid}'&m=g&t=5" alt="">
+			{elseif $item.type == $smarty.const.IM_SKYPE}
+			<IMG src="http://mystatus.skype.com/smallicon/{$item.uid}" alt="">
+			{else}
+			<IMG src="img/gg.gif" alt="">
+			{/if}
+		</TD>
+		<TD>
+			{if $item.type == $smarty.const.IM_GG}
+			<A HREF="gg:{$item.uid}">{$item.uid}</A>
+			{elseif $item.type == $smarty.const.IM_YAHOO}
+			<A HREF="ymsgr:sendIM?{$item.uid}">{$item.uid}</A>
+			{elseif $item.type == $smarty.const.IM_SKYPE}
+			<A HREF="skype:{$item.uid}?call">{$item.uid}</A>
+			{else}
+			{$item.uid}
+			{/if}
+		</TD>
+	</TR>
+{/foreach}
+{if $customerinfo.icn neq ""}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/serialnumber.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" NOWRAP>
+			{trans("ICN")}: {$customerinfo.icn}
+		</TD>
+	</TR>
+{/if}
+{if $customerinfo.ssn neq ""}
+	<TR">
+		<TD WIDTH="1%">
+			<IMG SRC="img/serialnumber.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" NOWRAP>
+			{trans("SSN")}: {$customerinfo.ssn}
+		</TD>
+	</TR>
+{/if}
+{if $customerinfo.ten neq ""}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/serialnumber.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" NOWRAP>
+			{trans("TEN")}: {$customerinfo.ten}
+		</TD>
+	</TR>
+{/if}
+{if $customerinfo.regon neq ""}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/serialnumber.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" NOWRAP>
+			{trans("REGON")}: {$customerinfo.regon}
+		</TD>
+	</TR>
+{/if}
+{if $customerinfo.rbe neq ""}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/serialnumber.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" NOWRAP>
+			{trans("RBE")}: {$customerinfo.rbe}
+		</TD>
+	</TR>
+{/if}
+{if $customergroups}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/group.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%">
+			{foreach from=$customergroups item=customergroup name=customergroup}
+				{$customergroup.name}{if !$smarty.foreach.customergroup.last},{/if} 
+			{/foreach}
+		</TD>
+	</TR>
+{/if}
+{if !ConfigHelper::checkConfig('privileges.hide_finances')}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/money.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" NOWRAP>
+			<B>{trans("Balance:")}</B>
+			{if $customerinfo.balance < 0}<FONT class="alert">{$customerinfo.balance|money_format}</FONT>{else}{$customerinfo.balance|default:"0"|money_format}{/if}
+		</TD>
+	</TR>
+{/if}
+    </TBODY>
+</TABLE>
+<SCRIPT TYPE="text/javascript">
+<!--
+var table = document.getElementById('table');
+autoiframe_setsize('autoiframe', table.offsetWidth, table.offsetHeight);
+//-->
+</SCRIPT>
+</BODY>
+</HTML>

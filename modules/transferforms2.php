@@ -111,11 +111,11 @@ if(!$list)
     die;
 }
 
-$_TITLE = (!isset($CONFIG['finances']['pay_title']) ? trans('Not set') : $CONFIG['finances']['pay_title']);
-$_LMARGIN = (!isset($CONFIG['finances']['leftmargin']) ? 0 : $CONFIG['finances']['leftmargin']);
-$_BMARGIN = (!isset($CONFIG['finances']['bottommargin']) ? 0 : $CONFIG['finances']['bottommargin']);
+$_TITLE = ConfigHelper::getConfig('finances.pay_title', trans('Not set'));
+$_LMARGIN = ConfigHelper::getConfig('finances.leftmargin', 0);
+$_BMARGIN = ConfigHelper::getConfig('finances.bottommargin', 0);
 
-require_once(LIB_DIR.'/pdf.php');
+require_once(LIB_DIR . '/ezpdf.php');
 
 $pdf = init_pdf('A4', 'landscape', trans('Form of Cash Transfer'));
 

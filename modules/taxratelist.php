@@ -64,7 +64,7 @@ if ($SESSION->is_set('trlp') && !isset($_GET['page']))
 	$SESSION->restore('trlp', $_GET['page']);
 
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
-$pagelimit = (!isset($CONFIG['phpui']['taxratelist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['taxratelist_pagelimit']);
+$pagelimit = ConfigHelper::getConfig('phpui.taxratelist_pagelimit', $listdata['total']);
 $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('trlp', $page);
@@ -86,6 +86,6 @@ $SMARTY->assign('page', $page);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('taxratelist', $taxratelist);
 $SMARTY->assign('listdata', $listdata);
-$SMARTY->display('taxratelist.html');
+$SMARTY->display('taxrate/taxratelist.html');
 
 ?>

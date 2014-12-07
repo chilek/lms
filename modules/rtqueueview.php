@@ -102,10 +102,8 @@ if(isset($_GET['s']))
 	$s = $_GET['s'];
 elseif($SESSION->is_set('rts'))
 	$SESSION->restore('rts', $s);
-elseif(isset($CONFIG['phpui']['ticketlist_status']))
-	$s = $CONFIG['phpui']['ticketlist_status'];
 else
-	$s = NULL;
+	$s = ConfigHelper::getConfig('phpui.ticketlist_status');
 $SESSION->save('rts', $s);
 
 $layout['pagetitle'] = trans('Tickets List');
@@ -129,7 +127,7 @@ unset($queue['direction']);
 unset($queue['owner']);
 
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
-$pagelimit = (!isset($CONFIG['phpui']['ticketlist_pagelimit']) ? $queuedata['total'] : $CONFIG['phpui']['ticketlist_pagelimit']);
+$pagelimit = ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $queuedata['total']);
 $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('rtp', $page);
@@ -145,6 +143,6 @@ $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('page',$page);
 $SMARTY->assign('start',$start);
 $SMARTY->assign('users', $LMS->GetUserNames());
-$SMARTY->display('rtqueueview.html');
+$SMARTY->display('rt/rtqueueview.html');
 
 ?>

@@ -71,6 +71,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('hostedit', $host);
 $SMARTY->assign('error', $error);
-$SMARTY->display('hostedit.html');
+$SMARTY->display('host/hostedit.html');
 
 ?>

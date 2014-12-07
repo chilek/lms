@@ -44,7 +44,7 @@ if(!isset($_GET['page']))
         $SESSION->restore('ndlp', $_GET['page']);
 	
 $page = (! $_GET['page'] ? 1 : $_GET['page']);
-$pagelimit = (! $CONFIG['phpui']['nodelist_pagelimit'] ? $listdata['total'] : $CONFIG['phpui']['nodelist_pagelimit']);
+$pagelimit = ConfigHelper::getConfig('phpui.nodelist_pagelimit', $listdata['total']);
 $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('ndlp', $page);
@@ -56,6 +56,6 @@ $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('start',$start);
 $SMARTY->assign('netdevlist',$netdevlist);
 $SMARTY->assign('listdata',$listdata);
-$SMARTY->display('netdevlist.html');
+$SMARTY->display('netdev/netdevlist.html');
 
 ?>

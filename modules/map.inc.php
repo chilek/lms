@@ -32,11 +32,10 @@ $devices = $DB->GetAllByKey('SELECT n.id, n.name, n.location, '.$DB->GroupConcat
 				WHERE n.latitude IS NOT NULL AND n.longitude IS NOT NULL 
 				GROUP BY n.id, n.name, n.location, n.latitude, n.longitude', 'id');
 
-if ($devices)
-{
+if ($devices) {
 	foreach ($devices as $devidx => $device) {
 		if ($device['lastonline'])
-			if (time() - $device['lastonline'] > $CONFIG['phpui']['lastonline_limit'])
+			if (time() - $device['lastonline'] > ConfigHelper::getConfig('phpui.lastonline_limit'))
 				$devices[$devidx]['state'] = 2;
 			else
 				$devices[$devidx]['state'] = 1;
@@ -53,15 +52,15 @@ if ($devices)
 
 	$devids = implode(',', array_keys($devices));
 
-	$devlinks = $DB->GetAll('SELECT src, dst, type, speed FROM netlinks WHERE src IN ('.$devids.') AND dst IN ('.$devids.')');
+	$devlinks = $DB->GetAll('SELECT src, dst, type, technology, speed FROM netlinks WHERE src IN ('.$devids.') AND dst IN ('.$devids.')');
 	if ($devlinks)
-		foreach ($devlinks as $devlinkidx => $devlink)
-		{
+		foreach ($devlinks as $devlinkidx => $devlink) {
 			$devlinks[$devlinkidx]['srclat'] = $devices[$devlink['src']]['lat'];
 			$devlinks[$devlinkidx]['srclon'] = $devices[$devlink['src']]['lon'];
 			$devlinks[$devlinkidx]['dstlat'] = $devices[$devlink['dst']]['lat'];
 			$devlinks[$devlinkidx]['dstlon'] = $devices[$devlink['dst']]['lon'];
 			$devlinks[$devlinkidx]['typename'] = trans("Link type:")." ".$LINKTYPES[$devlink['type']];
+			$devlinks[$devlinkidx]['technologyname'] = ($devlink['technology'] ? trans("Link technology:")." ".$LINKTECHNOLOGIES[$devlink['type']][$devlink['technology']] : '');
 			$devlinks[$devlinkidx]['speedname'] = trans("Link speed:")." ".$LINKSPEEDS[$devlink['speed']];
 		}
 }
@@ -70,31 +69,38 @@ $nodes = $DB->GetAllByKey('SELECT n.id, n.name, INET_NTOA(n.ipaddr) AS ipaddr, n
 				FROM nodes n 
 				WHERE n.latitude IS NOT NULL AND n.longitude IS NOT NULL', 'id');
 
-if ($nodes)
-{
-	foreach ($nodes as $nodeidx => $node)
+if ($nodes) {
+	foreach ($nodes as $nodeidx => $node) {
 		if ($node['lastonline'])
-			if (time() - $node['lastonline'] > $CONFIG['phpui']['lastonline_limit'])
+			if (time() - $node['lastonline'] > ConfigHelper::getConfig('phpui.lastonline_limit'))
 				$nodes[$nodeidx]['state'] = 2;
 			else
 				$nodes[$nodeidx]['state'] = 1;
 		else
 			$nodes[$nodeidx]['state'] = 0;
+		$urls = $DB->GetRow('SELECT '.$DB->GroupConcat('url').' AS url,
+			'.$DB->GroupConcat('comment').' AS comment FROM managementurls WHERE nodeid = ?',
+			array($node['id']));
+		if ($urls) {
+			$nodes[$nodeidx]['url'] = $urls['url'];
+			$nodes[$nodeidx]['comment'] = $urls['comment'];
+		}
+	}
 
 	$nodeids = implode(',', array_keys($nodes));
 
-	if ($devices)
-	{
-		$nodelinks = $DB->GetAll('SELECT n.id AS nodeid, netdev, linktype AS type, linkspeed AS speed FROM nodes n WHERE netdev > 0 AND ownerid > 0 
+	if ($devices) {
+		$nodelinks = $DB->GetAll('SELECT n.id AS nodeid, netdev, linktype AS type, linktechnology AS technology,
+			linkspeed AS speed FROM nodes n WHERE netdev > 0 AND ownerid > 0 
 			AND n.id IN ('.$nodeids.') AND netdev IN ('.$devids.')');
 		if ($nodelinks)
-			foreach ($nodelinks as $nodelinkidx => $nodelink)
-			{
+			foreach ($nodelinks as $nodelinkidx => $nodelink) {
 				$nodelinks[$nodelinkidx]['nodelat'] = $nodes[$nodelink['nodeid']]['lat'];
 				$nodelinks[$nodelinkidx]['nodelon'] = $nodes[$nodelink['nodeid']]['lon'];
 				$nodelinks[$nodelinkidx]['netdevlat'] = $devices[$nodelink['netdev']]['lat'];
 				$nodelinks[$nodelinkidx]['netdevlon'] = $devices[$nodelink['netdev']]['lon'];
 				$nodelinks[$nodelinkidx]['typename'] = trans("Link type:")." ".$LINKTYPES[$nodelink['type']];
+				$nodelinks[$nodelinkidx]['technologyname'] = ($nodelink['technology'] ? trans("Link technology:")." ".$LINKTECHNOLOGIES[$nodelink['type']][$nodelink['technology']] : '');
 				$nodelinks[$nodelinkidx]['speedname'] = trans("Link speed:")." ".$LINKSPEEDS[$nodelink['speed']];
 			}
 	}

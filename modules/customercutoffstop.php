@@ -41,8 +41,17 @@ if (isset($_GET['cutoffstop'])) {
 	if (!$DB->GetOne('SELECT 1 FROM customerassignments a
 			JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 			WHERE e.userid = lms_current_user() AND a.customerid = ?',
-			array($customerid)))
-		$DB->Execute('UPDATE customers SET cutoffstop = ? WHERE id = ?', array($cutoffstop, $customerid));
+			array($customerid))) {
+		$args = array(
+			'cutoffstop' => $cutoffstop,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+		);
+		$DB->Execute('UPDATE customers SET cutoffstop = ? WHERE id = ?', array_values($args));
+		if ($SYSLOG)
+			$SYSLOG->AddMessage(SYSLOG_RES_CUST, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+
+	}
 }
 
 $SESSION->redirect('?'.$SESSION->get('backto'));

@@ -229,12 +229,13 @@ function CheckAll(form, elem, excl)
 {
     var i, len, n, e, f,
         form = document.forms[form] ? document.forms[form] : document.getElementById(form),
-        inputs = form.getElementsByTagName('INPUT');
+        //inputs = form.getElementsByTagName('INPUT');
+        inputs = form.elements;
 
     for (i=0, len=inputs.length; i<len; i++) {
         e = inputs[i];
 
-        if (e.type != 'checkbox' || e == elem)
+        if (e.tagName.toUpperCase() != 'INPUT' || e.type != 'checkbox' || e == elem)
             continue;
 
         if (excl && excl.length) {

@@ -102,6 +102,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('instance', isset($instedit) ? $instedit : $instance);
 $SMARTY->assign('hosts', $DB->GetAll('SELECT id, name FROM hosts ORDER BY name'));
-$SMARTY->display('daemoninstanceedit.html');
+$SMARTY->display('daemon/daemoninstanceedit.html');
 
 ?>

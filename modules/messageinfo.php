@@ -79,7 +79,7 @@ function GetItemList($id, $order='id,desc', $search=NULL, $cat=NULL, $status=NUL
 		$where = ' AND '.implode(' AND ', $where);
 
 	$result = $DB->GetAll('SELECT i.id, i.customerid, i.status, i.error,
-			i.destination, i.lastdate, '
+			i.destination, i.lastdate, i.lastreaddate,'
 			.$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customer
 		FROM messageitems i
 		LEFT JOIN customers c ON (c.id = i.customerid)
@@ -163,7 +163,7 @@ if ($SESSION->is_set('milp') && !isset($_GET['page']))
 	$SESSION->restore('milp', $_GET['page']);
 
 $page = (empty($_GET['page']) ? 1 : $_GET['page']);
-$pagelimit = (empty($CONFIG['phpui']['messagelist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['messagelist_pagelimit']);
+$pagelimit = ConfigHelper::getConfig('phpui.messagelist_pagelimit', $listdata['total']);
 $SESSION->save('milp', $page);
 
 $layout['pagetitle'] = trans('Message Info: $a', $subject);
@@ -178,6 +178,6 @@ $SMARTY->assign('page', $page);
 $SMARTY->assign('marks', $marks);
 $SMARTY->assign('itemlist', $itemlist);
 
-$SMARTY->display('messageinfo.html');
+$SMARTY->display('message/messageinfo.html');
 
 ?>

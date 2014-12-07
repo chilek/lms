@@ -24,43 +24,122 @@
  *  $Id$
  */
 
-/*
- * Simple database abstraction layer for LMS. Mainly inspirated by ADOdb,
- * but not so much powerfull. Hope that this bit of code will work stable.
- *
- * This file include required files and do some nasty things ;>
+/**
+ * LMSDB
+ * 
+ * LMS database provider. Factory pattern. Singleton pattern.
+ * 
+ * @package LMS
  */
-
-define('LMSDB_DIR', dirname(__FILE__));
-
-require_once(LMSDB_DIR.'/LMSDB_common.class.php');
-
-function DBInit($dbtype, $dbhost, $dbuser, $dbpasswd, $dbname, $debug = false)
+class LMSDB
 {
-    $dbtype = strtolower($dbtype);
+    const MYSQL = 'mysql';
+    const MYSQLI = 'mysqli';
+    const POSTGRESQL = 'postgres';
 
-	if (!file_exists(LMSDB_DIR."/LMSDB_driver_$dbtype.class.php") )
-		trigger_error('Unable to load driver for "'.$dbtype.'" database!', E_USER_WARNING);
-	else {
-		require_once(LMSDB_DIR."/LMSDB_driver_$dbtype.class.php");
-		$drvname = "LMSDB_driver_$dbtype";
-		$DB = new $drvname($dbhost, $dbuser, $dbpasswd, $dbname);
-
-		if (!$DB->_loaded)
-			trigger_error('PHP Driver for "'.$dbtype.'" database doesn\'t seems to be loaded.', E_USER_WARNING);
-		else if (!$DB->_dblink)
-			trigger_error('Unable to connect to database!', E_USER_WARNING);
-		else {
-            $DB->debug = $debug;
-
-            // set client encoding
-            $DB->SetEncoding('UTF8');
-
-			return $DB;
-	    }
+    private static $db;
+    
+    /**
+     * Returns singleton database handler.
+     * 
+     * @return \LMSDBInterface
+     */
+    public static function getInstance()
+    {
+        if (self::$db === null) {
+            $_DBTYPE = LMSConfig::getIniConfig()->getSection('database')->getVariable('type')->getValue();
+            $_DBHOST = LMSConfig::getIniConfig()->getSection('database')->getVariable('host')->getValue();
+            $_DBUSER = LMSConfig::getIniConfig()->getSection('database')->getVariable('user')->getValue();
+            $_DBPASS = LMSConfig::getIniConfig()->getSection('database')->getVariable('password')->getValue();
+            $_DBNAME = LMSConfig::getIniConfig()->getSection('database')->getVariable('database')->getValue();
+            $_DBDEBUG = false;
+            if (LMSConfig::getIniConfig()->getSection('database')->hasVariable('debug')) {
+                $_DBDEBUG = ConfigHelper::checkValue(LMSConfig::getIniConfig()->getSection('database')->getVariable('debug')->getValue());
+            }
+            self::$db = self::getDB($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME, $_DBDEBUG);
+        }
+        
+        return self::$db;
     }
 
-	return FALSE;
-}
+    /**
+     * Returns databse object.
+     * 
+     * Tries to connect to specified database and returns connection handler 
+     * object. If connection cannot be opened or databbase type is unknown 
+     * throws exception.
+     * 
+     * @param string $dbtype Database engine name
+     * @param string $dbhost Database host
+     * @param string $dbuser Database user
+     * @param string $dbpasswd Database user password
+     * @param string $dbname Database name
+     * @param boolean $debug Debug flag
+     * @return \LMSDBInterface
+     * @throws Exception
+     */
+    public static function getDB($dbtype, $dbhost, $dbuser, $dbpasswd, $dbname, $debug = false)
+    {
+        $dbtype = strtolower($dbtype);
 
-?>
+        $db = null;
+
+        switch ($dbtype) {
+            case self::MYSQL:
+                $db = new LMSDB_driver_mysql($dbhost, $dbuser, $dbpasswd, $dbname);
+                break;
+            case self::MYSQLI:
+                $db = new LMSDB_driver_mysqli($dbhost, $dbuser, $dbpasswd, $dbname);
+                break;
+            case self::POSTGRESQL:
+                $db = new LMSDB_driver_postgres($dbhost, $dbuser, $dbpasswd, $dbname);
+                break;
+            default:
+                throw new Exception('Unable to load driver for "' . $dbtype . '" database!');
+        }
+
+        if (!$db->IsLoaded()) {
+            throw new Exception('PHP Driver for "' . $dbtype . '" database doesn\'t seems to be loaded.');
+        }
+
+        if (!$db->GetDbLink()) {
+            throw new Exception('Unable to connect to database!');
+        }
+
+        $db->SetDebug($debug);
+
+        $db->SetEncoding('UTF8');
+
+        return $db;
+    }
+    
+    /**
+     * Destroys database handler and singleton instance.
+     * 
+     * Useful for unit tests.
+     * @return null Null database handler
+     */
+    public static function destroyInstance()
+    {
+        if (self::$db !== null) {
+            self::$db->Destroy();
+            self::$db = null;
+        }
+        return self::$db;
+    }
+    
+    /**
+     * Checks if database connection exists
+     * 
+     * @return boolean
+     */
+    public static function checkIfInstanceExists()
+    {
+        if (self::$db !== null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+}

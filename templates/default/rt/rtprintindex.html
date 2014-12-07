@@ -1,0 +1,198 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<P><FORM method="post" name="ticketslist" id="ticketslist" action="?m=rtprint&type=ticketslist" target="_blank">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
+			<IMG src="img/ticket.gif" alt="">
+		</TD>
+		<TD width="99%">
+			<B>{trans("List of Requests")}</B>
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD width="100%" colspan="2">
+			<TABLE width="100%">
+				<TR>
+					<TD width="1%">
+						<IMG src="img/queue.gif" alt="">
+					</TD>
+					<TD width="1%" nowrap>
+						<B>{trans("Queue:")}</B>
+					</TD>
+					<TD width="1%">
+						<SELECT size="1" name="queue" {tip text="You can select queue to limit results"}>
+							<OPTION value="0">{trans("- all queues -")}</OPTION>
+							{section name=queues loop=$queues}
+							<OPTION value="{$queues[queues].id}">{$queues[queues].name|truncate:40:"...":true}</OPTION>
+							{/section}
+						</SELECT>
+					</TD>
+					<TD width="1%">
+						<IMG src="img/customer.gif" alt="">
+					</TD>
+					<TD width="1%" nowrap>
+						<B>{trans("Customer:")}</B>
+					</TD>
+					<TD width="1%" colspan="2" nowrap>
+						{if $customers}
+						<SELECT size="1" name="customer" {tip text="You can select customer to limit results"}>
+							<OPTION value="0">{trans("- all customers -")}</OPTION>
+							{foreach from=$customers item=c}
+							<OPTION value="{$c.id}">{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
+							{/foreach}
+						</SELECT>
+						{else}
+						<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
+						<a href="javascript: void(0);" onclick="return customerchoosewin(document.ticketslist.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
+						{/if}
+					</TD>
+					<TD width="1%" nowrap>
+						<IMG src="img/ticket.gif" alt="">
+					</TD>
+					<TD width="1%" nowrap>
+						<B>{trans("Subject:")}</B>
+					</TD>
+					<TD width="92%" nowrap>
+						<INPUT type="text" name="subject" value="" size="30" {tip text="Enter subject"}>
+					</TD>
+				</TR>
+				<TR>
+					<TD width="1%">
+						<IMG src="img/dead.gif" alt="">
+					</TD>
+					<TD width="1%">
+						<B>{trans("Status:")}</B>
+					</TD>
+					<TD width="1%">
+						<SELECT size="1" name="status" {tip text="You can select status to limit results"}>
+							<OPTION value="">- {trans("all")} -</OPTION>
+							<OPTION value="-1">{trans("not resolved")}</OPTION>
+							{foreach from=$_RT_STATES item=item key=key}
+							<OPTION value="{$key}">{$item}</OPTION>
+							{/foreach}
+						</SELECT>
+					</TD>
+					<TD width="1%">
+						<IMG src="img/time.gif" alt="">
+					</TD>
+					<TD width="1%">
+						<B>{trans("Uptime:")}</B>
+					</TD>
+					<TD width="1%" nowrap>
+						<INPUT TYPE="text" NAME="days" SIZE="3"> {trans("days")}
+					</TD>
+					<TD width="10%" nowrap>
+					</TD>
+				</TR>
+				<TR>
+					<TD width="1%" COLSPAN="2" NOWRAP>
+						<IMG src="img/queue.gif" alt=""><B>{trans("Categories:")}</B>
+					</TD>
+					<TD width="1%">
+						<TABLE>
+						{foreach from=$categories item=category}
+							<TR>
+								<TD width="1%" align="center">
+									<INPUT type="checkbox" name="categories[{$category.id}]" ID="cat1{$category.id}" value="1" CHECKED>
+								</TD>
+								<TD width="1%">
+									<label for="cat1{$category.id}">{$category.name}</label>
+								</TD>
+							</TR>
+						{/foreach}
+						</TABLE>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR>
+		<TD width="100%" colspan="2" align="right">
+			<INPUT TYPE="checkbox" NAME="extended" VALUE="1" id="extended"><label for="extended">{trans("extended format")}</label>&nbsp;
+			<INPUT TYPE="checkbox" NAME="contacts" VALUE="1" id="contacts" CHECKED><label for="contacts">{trans("include contact info")}</label>
+			&nbsp; &nbsp; &nbsp;
+			<A href="javascript:document.ticketslist.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
+		</TD>
+	</TR>
+    </TBODY>
+</TABLE>
+</FORM>
+</P>
+<P><FORM method="post" name="stats" id="stats" action="?m=rtprint&type=stats" target="_blank">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
+			<IMG src="img/ticket.gif" alt="">
+		</TD>
+		<TD width="99%">
+			<B>{trans("Requests Stats")}</B>
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD width="100%" colspan="2">
+			<TABLE width="100%">
+				<TR>
+					<TD width="1%">
+						<IMG src="img/queue.gif" alt="">
+					</TD>
+					<TD width="1%" nowrap>
+						<B>{trans("Queue:")}</B>
+					</TD>
+					<TD width="1%">
+						<SELECT size="1" name="queue" {tip text="You can select queue to limit results"}>
+							<OPTION value="0">{trans("- all queues -")}</OPTION>
+							{section name=queues loop=$queues}
+							<OPTION value="{$queues[queues].id}">{$queues[queues].name|truncate:40:"...":true}</OPTION>
+							{/section}
+						</SELECT>
+					</TD>
+					<TD width="1%">
+						<IMG src="img/customer.gif" alt="">
+					</TD>
+					<TD width="96%" nowrap>
+						<B>{t a="<INPUT TYPE=\"text\" NAME=\"times\" SIZE=\"3\">" b="<INPUT TYPE=\"text\" NAME=\"days\" SIZE=\"3\">"}Customers requesting more than $a times in last $b days{/t}</B>
+					</TD>
+				</TR>
+				<TR>
+					<TD width="1%" COLSPAN="2" NOWRAP>
+						<IMG src="img/queue.gif" alt=""><B>{trans("Categories:")}</B>
+					</TD>
+					<TD width="1%">
+						<TABLE>
+						{foreach from=$categories item=category}
+							<TR>
+								<TD width="1%" align="center">
+									<INPUT type="checkbox" name="categories[{$category.id}]" ID="cat2{$category.id}" value="1" CHECKED>
+								</TD>
+								<TD width="1%">
+									<label for="cat2{$category.id}">{$category.name}</label>
+								</TD>
+							</TR>
+						{/foreach}
+						</TABLE>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR>
+		<TD width="100%" colspan="2" align="right">
+			<A href="javascript:document.stats.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
+		</TD>
+	</TR>
+    </TBODY>
+</TABLE>
+</FORM>
+</P>

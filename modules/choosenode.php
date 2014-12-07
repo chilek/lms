@@ -27,6 +27,6 @@
 $layout['pagetitle'] = trans('Select node');
 
 $SMARTY->assign('nodelist',$LMS->GetCustomerNodes(intval($_GET['id'])));
-$SMARTY->display('choosenode.html');
+$SMARTY->display('choose/choosenode.html');
 
 ?>

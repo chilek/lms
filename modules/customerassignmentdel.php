@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2014 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,24 +24,37 @@
  *  $Id$
  */
 
-if($_GET['is_sure'] == '1' && $_GET['id'])
-{
-    $customer = $DB->GetOne('SELECT a.customerid
-        FROM assignments a
-        JOIN customersview c ON (c.id = a.customerid)
-        WHERE a.id = ?', array($_GET['id']));
+if (isset($_GET['id']))
+	$id = intval($_GET['id']);
+if (isset($_GET['cid']))
+	$cid = intval($_GET['cid']);
 
-    if(!$customer)
-    {
-        $SESSION->redirect('?'.$SESSION->get('backto'));
-    }
+if ($_GET['is_sure'] == '1' && (isset($id) || isset($cid))) {
+	if (isset($id)) {
+		$customer = $DB->GetOne('SELECT a.customerid
+			FROM assignments a
+			JOIN customersview c ON (c.id = a.customerid)
+			WHERE a.id = ?', array($id));
+		$ids = array($id);
+	} else {
+		$customer = $DB->GetOne('SELECT id FROM customersview
+			WHERE id = ?', array($cid));
+		$ids = $DB->GetCol('SELECT id FROM assignments
+			WHERE customerid = ?', array($cid));
+	}
 
-	$LMS->DeleteAssignment($_GET['id']);
+	if (!$customer)
+		$SESSION->redirect('?'.$SESSION->get('backto'));
+
+	if (!empty($ids))
+		foreach ($ids as $id)
+			$LMS->DeleteAssignment($id);
+
 	$backto = $SESSION->get('backto');
 	// infinite loop prevention
 	if (preg_match('/customerassignmentedit/', $backto))
-	    $backto = 'm=customerinfo&id='.$customer;
-	$SESSION->redirect('?'.$backto);
+		$backto = 'm=customerinfo&id=' . $customer;
+	$SESSION->redirect('?' . $backto);
 }
 
 ?>

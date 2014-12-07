@@ -26,13 +26,14 @@
 
 // Checking if connection is from allowed IP
 
-if(!empty($CONFIG['phpui']['allow_from']))
-{
+$allow_from = ConfigHelper::getConfig('phpui.allow_from', null);
+
+if ($allow_from) {
 	// delete ipv6 prefix if it's present: 
 	
 	$ipaddr = str_replace('::ffff:','',$_SERVER['REMOTE_ADDR']);
 
-	$allowedlist = explode(',',$CONFIG['phpui']['allow_from']);
+	$allowedlist = explode(',', $allow_from);
 
 	$isin = FALSE;
 
@@ -78,5 +79,3 @@ if(!empty($CONFIG['phpui']['allow_from']))
 		exit(0);
 	}
 }
-
-?>

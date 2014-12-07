@@ -38,6 +38,6 @@ $sourcelist = GetSourceList();
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('sourcelist', $sourcelist);
-$SMARTY->display('cashsourcelist.html');
+$SMARTY->display('cash/cashsourcelist.html');
 
 ?>

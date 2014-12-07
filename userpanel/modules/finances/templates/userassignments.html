@@ -1,6 +1,6 @@
 <!--// $Id$ //-->
 {box title="Your subscriptions"}
-{$show_speeds = check_conf('userpanel.show_speeds')}
+{$show_speeds = ConfigHelper::checkConfig('userpanel.show_speeds')}
 <table style="width: 100%;" cellpadding="3">
 	<tr class="darkest">
 		<td width="93%" class="nobr"><b>{trans("Subscription:")}</b></td>
@@ -17,7 +17,7 @@
 	{foreach from=$assignments item=assignment}
 	{if ($assignment.tariffid || $assignment.liabilityid) && !($assignment.suspended || ($assignment.dateto < $smarty.now && $assignment.dateto) || ($assignment.datefrom > $smarty.now && $assignment.datefrom))}
 	<tr class="dark">
-		<td><b>{if check_conf('userpanel.show_tariffname')}{$assignment.name}{/if}</b></td>
+		<td><b>{if ConfigHelper::checkConfig('userpanel.show_tariffname')}{$assignment.name}{/if}</b></td>
 		<td class="nobr" align="right">{$assignment.value|money_format}</td>
 		<td class="nobr" align="right">{if $assignment.discount > 0}{$assignment.discount}%{/if}</td>
 		<td class="nobr">{$assignment.payday}</td>

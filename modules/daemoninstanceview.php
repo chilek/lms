@@ -48,6 +48,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('optionlist', $optionlist);
 $SMARTY->assign('instance', $instance);
-$SMARTY->display('daemoninstanceview.html');
+$SMARTY->display('daemon/daemoninstanceview.html');
 
 ?>

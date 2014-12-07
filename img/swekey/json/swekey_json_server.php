@@ -41,32 +41,32 @@ define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 define('MODULES_DIR', $CONFIG['directories']['modules_dir']);
 
+// Load autloader
+require_once(LIB_DIR.'/autoloader.php');
+
 // Init database
-$_DBTYPE = $CONFIG['database']['type'];
-$_DBHOST = $CONFIG['database']['host'];
-$_DBUSER = $CONFIG['database']['user'];
-$_DBPASS = $CONFIG['database']['password'];
-$_DBNAME = $CONFIG['database']['database'];
-$_DBDEBUG = (isset($CONFIG['database']['debug']) ? chkconfig($CONFIG['database']['debug']) : false);
+$DB = null;
 
-require(LIB_DIR . '/LMSDB.php');
+try {
 
-$DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME, $_DBDEBUG);
+    $DB = LMSDB::getInstance();
 
-if (!$DB) {
-	die();
+} catch (Exception $ex) {
+    
+    trigger_error($ex->getMessage(), E_USER_WARNING);
+    
+    // can't working without database
+    die("Fatal error: cannot connect to database!\n");
+    
 }
 
 // Include required files
 require_once(LIB_DIR . '/language.php');
-require_once(LIB_DIR . '/LMS.class.php');
-require_once(LIB_DIR . '/Auth.class.php');
-require_once(LIB_DIR . '/Session.class.php');
 
 // Initialize Session, Auth and LMS classes
-$SESSION = new Session($DB, $CONFIG['phpui']['timeout']);
+$SESSION = new Session($DB, ConfigHelper::getConfig('phpui.timeout'));
 $AUTH = new Auth($DB, $SESSION);
-$LMS = new LMS($DB, $AUTH, $CONFIG);
+$LMS = new LMS($DB, $AUTH);
 $LMS->lang = $_language;
 
 // Initialize Swekey class

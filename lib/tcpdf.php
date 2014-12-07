@@ -31,7 +31,6 @@
  */
 
 require_once(LIB_DIR . '/tcpdf/config/lang/pol.php');
-require_once(LIB_DIR . '/tcpdf/tcpdf.php');
 
 class TCPDFpl extends TCPDF {
 
@@ -261,11 +260,10 @@ class TCPDFpl extends TCPDF {
 			}
 
 			/* reason of issue of invoice correction */
-			if ($invoice['reason'] != '') {
+			if ($invoice['reason'] != '')
 				$this->writeHTMLCell(0, 0, '', '', '<b>' . trans('Reason:') . ' ' . $invoice['reason'] . '</b>', 0, 1, 0, true, 'L');
-				$this->writeHTMLCell(0, 0, '', '', '<b>' . trans('Corrected to:') . '</b>', 0, 1, 0, true, 'L');
-				$this->Ln(3);
-			}
+			$this->writeHTMLCell(0, 0, '', '', '<b>' . trans('Corrected to:') . '</b>', 0, 1, 0, true, 'L');
+			$this->Ln(3);
 		}
 
 		/* invoice data */
@@ -344,11 +342,16 @@ class TCPDFpl extends TCPDF {
 
 }
 
+function new_page() {
+	global $pdf;
+	$pdf->AddPage();
+}
+
 function init_pdf($pagesize, $orientation, $title) {
-	global $layout, $CONFIG;
+	global $layout;
 
 	$pdf = new TCPDFpl($orientation, PDF_UNIT, $pagesize, true, 'UTF-8', false, false);
-	$pdf->invoice_type = $CONFIG['invoices']['template_file'];
+	$pdf->invoice_type = ConfigHelper::getConfig('invoices.template_file');
 
 	$pdf->SetProducer('LMS Developers');
 	$pdf->SetSubject($title);

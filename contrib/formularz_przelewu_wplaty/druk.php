@@ -29,32 +29,36 @@ $CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ?
 
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 
+// Load autloader
+require_once(LIB_DIR.'/autoloader.php');
+
 // Load config defaults
 
 require_once(LIB_DIR.'/config.php');
 
 // Init database
-$_DBTYPE = $CONFIG['database']['type'];
-$_DBHOST = $CONFIG['database']['host'];
-$_DBUSER = $CONFIG['database']['user'];
-$_DBPASS = $CONFIG['database']['password'];
-$_DBNAME = $CONFIG['database']['database'];
 
-require_once(LIB_DIR.'/LMSDB.php');
 // funkcja to_words()
 require_once(LIB_DIR.'/locale/pl/ui.php');
 
-$DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
+$DB = null;
 
-// Read configuration of LMS-UI from database
+try {
 
-if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0'))
-        foreach($cfg as $row)
-                $CONFIG[$row['section']][$row['var']] = $row['value'];
+    $DB = LMSDB::getInstance();
 
-$ISP1_DO = (!isset($CONFIG['finances']['line_1']) ? 'LINIA1xxxxxxxxxxxxxxxxxxxyz' : $CONFIG['finances']['line_1']);
-$ISP2_DO = (!isset($CONFIG['finances']['line_2']) ? 'linia2xxxxxxxxxxxxxxxxxxxyz' : $CONFIG['finances']['line_2']);
-$USER_T1 = (!isset($CONFIG['finances']['pay_title']) ? 'Abonament - ID:%CID% %LongCID%' : $CONFIG['finances']['pay_title']);
+} catch (Exception $ex) {
+    
+    trigger_error($ex->getMessage(), E_USER_WARNING);
+    
+    // can't working without database
+    die("Fatal error: cannot connect to database!\n");
+    
+}
+
+$ISP1_DO = ConfigHelper::getConfig('finances.line_1', 'LINIA1xxxxxxxxxxxxxxxxxxxyz');
+$ISP2_DO = ConfigHelper::getConfig('finances.line_2', 'linia2xxxxxxxxxxxxxxxxxxxyz');
+$USER_T1 = ConfigHelper::getConfig('finances.pay_title', 'Abonament - ID:%CID% %LongCID%');
 $UID = isset($_GET['UID']) ? intval($_GET['UID']) : 0;
 
 $Before = array ("%CID%","%LongCID%");
@@ -63,7 +67,7 @@ $After = array ($UID, sprintf('%04d', $UID));
 $USER_TY = str_replace($Before,$After,$USER_T1);
 
 //  NRB 26 cyfr, 2 kontrolne, 8 nr banku, 16 nr konta 
-$KONTO_DO = (!isset($CONFIG['finances']['account']) ? '98700000000000000000000123' : $CONFIG['finances']['account']);
+$KONTO_DO = ConfigHelper::getConfig('finances.account', '98700000000000000000000123');
 $CURR = 'PLN';		// oznaczenie waluty
 $SHORT_TO_WORDS = 0;	// 1 - krótki format kwoty słownej 'jed dwa trz 15/100'
 			// 0 - długi format kwoty słownej 'sto dwadzieścia trzy 15/100 zł'

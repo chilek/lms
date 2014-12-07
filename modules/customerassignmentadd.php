@@ -53,7 +53,7 @@ if(isset($_POST['assignment']))
 		case WEEKLY:
 			$at = sprintf('%d',$a['at']);
 
-			if(chkconfig($CONFIG['phpui']['use_current_payday']) && $at==0)
+			if(ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.use_current_payday', false)) && $at==0)
 			{
 				$at = strftime('%u', time());
 			}
@@ -65,13 +65,13 @@ if(isset($_POST['assignment']))
 		case MONTHLY:
 			$at = sprintf('%d',$a['at']);
 
-			if(chkconfig($CONFIG['phpui']['use_current_payday']) && $at==0)
+			if(ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.use_current_payday', false)) && $at==0)
 				$at = date('j', time());
 
-			if(!chkconfig($CONFIG['phpui']['use_current_payday']) 
-				&& $CONFIG['phpui']['default_monthly_payday']>0 && $at==0)
+			if(!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.use_current_payday', false)) 
+				&& ConfigHelper::getConfig('phpui.default_monthly_payday')>0 && $at==0)
 			{
-				$at = $CONFIG['phpui']['default_monthly_payday'];
+				$at = ConfigHelper::getConfig('phpui.default_monthly_payday');
 			}
 
 			$a['at'] = $at;
@@ -81,7 +81,7 @@ if(isset($_POST['assignment']))
 		break;
 
 		case QUARTERLY:
-			if(chkconfig($CONFIG['phpui']['use_current_payday']) && !$a['at'])
+			if(ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.use_current_payday', false)) && !$a['at'])
 			{
 				$d = date('j', time());
 				$m = date('n', time());
@@ -112,7 +112,7 @@ if(isset($_POST['assignment']))
 			{
 				$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
 			}
-			elseif(chkconfig($CONFIG['phpui']['use_current_payday']) && !$a['at'])
+			elseif(ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.use_current_payday', false)) && !$a['at'])
 			{
 				$d = date('j', time());
 				$m = date('n', time());
@@ -135,7 +135,7 @@ if(isset($_POST['assignment']))
 		break;
 
 		case YEARLY:
-			if(chkconfig($CONFIG['phpui']['use_current_payday']) && !$a['at'])
+			if(ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.use_current_payday', false)) && !$a['at'])
 			{
 				$d = date('j', time());
 				$m = date('n', time());
@@ -267,6 +267,16 @@ if(isset($_POST['assignment']))
 		unset($a['schemaid']);
 	}
 
+        $hook_data = $LMS->executeHook(
+            'customerassignmentadd_validation_before_submit', 
+            array(
+                'a' => $a,
+                'error' => $error
+            )
+        );
+        $a = $hook_data['a'];
+        $error = $hook_data['error'];
+        
 	if (!$error)
 	{
 		$a['customerid'] = $customer['id'];
@@ -286,14 +296,18 @@ if(isset($_POST['assignment']))
 }
 else
 {
-	if (!empty($CONFIG['phpui']['default_assignment_invoice']))
+	$default_assignment_invoice = ConfigHelper::getConfig('phpui.default_assignment_invoice');
+	if (!empty($default_assignment_invoice))
 		$a['invoice'] = true;
-	if (!empty($CONFIG['phpui']['default_assignment_settlement']))
+	$default_assignment_settlement = ConfigHelper::getConfig('phpui.default_assignment_settlement');
+	if (!empty($default_assignment_settlement))
 		$a['settlement'] = true;
-	if (!empty($CONFIG['phpui']['default_assignment_period']))
-		$a['period'] = $CONFIG['phpui']['default_assignment_period'];
-	if (!empty($CONFIG['phpui']['default_assignment_at']))
-		$a['at'] = $CONFIG['phpui']['default_assignment_at'];
+	$default_assignment_period = ConfigHelper::getConfig('phpui.default_assignment_period');
+	if (!empty($default_assignment_period))
+		$a['period'] = $default_assignment_period;
+	$default_assignment_at = ConfigHelper::getConfig('phpui.default_assignment_at');
+	if (!empty($default_assignment_at))
+		$a['at'] = $default_assignment_at;
 }
 
 $expired = isset($_GET['expired']) ? $_GET['expired'] : false;
@@ -316,6 +330,14 @@ $schemas = $DB->GetAll('SELECT p.name AS promotion, s.name, s.id,
 		WHERE promotionschemaid = s.id LIMIT 1)
 	ORDER BY p.name, s.name');
 
+$LMS->executeHook(
+    'customerassignmentadd_before_display', 
+    array(
+        'a' => $a,
+        'smarty' => $SMARTY,
+    )
+);
+
 $SMARTY->assign('assignment', $a);
 $SMARTY->assign('customernodes', $customernodes);
 $SMARTY->assign('promotionschemas', $schemas);
@@ -326,6 +348,6 @@ $SMARTY->assign('assignments', $LMS->GetCustomerAssignments($customer['id'], $ex
 $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_INVOICE, NULL, $customer['divisionid'], false));
 $SMARTY->assign('customerinfo', $customer);
 
-$SMARTY->display('customerassignmentsedit.html');
+$SMARTY->display('customer/customerassignmentsedit.html');
 
 ?>

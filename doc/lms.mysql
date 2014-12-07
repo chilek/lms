@@ -106,6 +106,10 @@ DROP TABLE IF EXISTS up_info_changes;
 DROP TABLE IF EXISTS supermasters;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS customers;
+DROP TABLE IF EXISTS invprojects;
+DROP TABLE IF EXISTS netnodes;
+
+
 
 # --------------------------------------------------------
 #
@@ -349,6 +353,7 @@ CREATE TABLE documents (
 	reference int(11) NOT NULL DEFAULT '0',
 	reason varchar(255) NOT NULL DEFAULT '',
 	div_name text NOT NULL DEFAULT '',
+	div_shortname text NOT NULL DEFAULT '',
 	div_address varchar(255) NOT NULL DEFAULT '',
 	div_city varchar(255) NOT NULL DEFAULT '',
 	div_zip varchar(255) NOT NULL DEFAULT '',
@@ -360,6 +365,7 @@ CREATE TABLE documents (
 	div_inv_footer text NOT NULL DEFAULT '',
 	div_inv_author text NOT NULL DEFAULT '',
 	div_inv_cplace text NOT NULL DEFAULT '',
+	fullnumber varchar(50) DEFAULT NULL,
 	PRIMARY KEY (id),
 	INDEX cdate (cdate),
 	INDEX numberplanid (numberplanid),
@@ -557,6 +563,42 @@ CREATE TABLE ewx_channels (
 
 # --------------------------------------------------------
 #
+# Structure of table invprojects
+#
+CREATE TABLE invprojects (
+        id int(11) NOT NULL auto_increment,
+	name varchar(255) NOT NULL, 
+	type tinyint DEFAULT 0, 
+	PRIMARY KEY (id)
+) ENGINE=INNODB;
+
+# --------------------------------------------------------
+#
+# Structure of table netnodes
+#
+CREATE TABLE netnodes (
+        id int(11) NOT NULL auto_increment,
+	name varchar(255) NOT NULL, 
+	type tinyint DEFAULT 0,
+	invprojectid int(11),
+	status tinyint DEFAULT 0,
+	location varchar(255) DEFAULT '',
+	location_city int(11) DEFAULT NULL,
+	location_street int(11) DEFAULT NULL,
+	location_house varchar(8) DEFAULT NULL,
+	location_flat varchar(8) DEFAULT NULL,
+	longitude decimal(10,6) DEFAULT NULL,
+	latitude decimal(10,6) DEFAULT NULL,
+	ownership tinyint(1) DEFAULT 0,
+	coowner varchar(255) DEFAULT '',
+	uip tinyint(1) DEFAULT 0,
+	miar tinyint(1) DEFAULT 0,
+	PRIMARY KEY (id),
+	FOREIGN KEY (invprojectid) REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=INNODB;
+
+# --------------------------------------------------------
+#
 # Structure of table  netdevices
 #
 CREATE TABLE netdevices (
@@ -580,15 +622,20 @@ CREATE TABLE netdevices (
   secret 	varchar(60) 	NOT NULL DEFAULT '',
   community 	varchar(50) 	NOT NULL DEFAULT '',
   channelid 	int(11) 	DEFAULT NULL,
-  longitude decimal(10, 6) DEFAULT NULL,
-  latitude decimal(10, 6) DEFAULT NULL,
+  longitude	decimal(10, 6)	DEFAULT NULL,
+  latitude	decimal(10, 6)	DEFAULT NULL,
+  netnodeid	int(11)		DEFAULT NULL,
+  invprojectid	int(11)		DEFAULT NULL,
+  status	tinyint		DEFAULT '0',
   PRIMARY KEY (id),
   INDEX channelid (channelid),
   INDEX location_city (location_city, location_street, location_house, location_flat),
   INDEX location_street (location_street),
   FOREIGN KEY (location_city) REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
   FOREIGN KEY (location_street) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  FOREIGN KEY (channelid) REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE
+  FOREIGN KEY (channelid) REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  FOREIGN KEY (netnodeid) REFERENCES netnodes(id) ON DELETE SET NULL ON UPDATE CASCADE,
+  FOREIGN KEY (invprojectid) REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -601,6 +648,7 @@ CREATE TABLE netlinks (
   dst int(11) NOT NULL DEFAULT '0',
   type tinyint(1) NOT NULL DEFAULT '0',
   speed int(11) NOT NULL DEFAULT '100000',
+  technology int(11) NOT NULL DEFAULT '0',
   srcport smallint NOT NULL DEFAULT '0',
   dstport smallint NOT NULL DEFAULT '0',
   PRIMARY KEY  (id),
@@ -665,6 +713,7 @@ CREATE TABLE nodes (
   netdev int(11) NOT NULL DEFAULT '0',
   linktype tinyint(1) NOT NULL DEFAULT '0',
   linkspeed int(11) NOT NULL DEFAULT '100000',
+  linktechnology int(11) NOT NULL DEFAULT '0',
   port smallint NOT NULL DEFAULT '0',
   access tinyint(1) NOT NULL DEFAULT '1',
   warning tinyint(1) NOT NULL DEFAULT '0',
@@ -681,6 +730,7 @@ CREATE TABLE nodes (
   longitude decimal(10, 6) DEFAULT NULL,
   latitude decimal(10, 6) DEFAULT NULL,
   netid int(11) NOT NULL DEFAULT '0',
+  invprojectid int(11) DEFAULT NULL,
   PRIMARY KEY  (id),
   UNIQUE KEY name (name),
   UNIQUE KEY ipaddr (ipaddr, netid),
@@ -691,7 +741,8 @@ CREATE TABLE nodes (
   INDEX location_street (location_street),
   FOREIGN KEY (location_city) REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
   FOREIGN KEY (location_street) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  FOREIGN KEY (netid) REFERENCES networks (id) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (netid) REFERENCES networks (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (invprojectid) REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1048,6 +1099,8 @@ CREATE TABLE promotionassignments (
     promotionschemaid int(11) DEFAULT NULL,
     tariffid int(11)    DEFAULT NULL,
     data text           DEFAULT NULL,
+    optional tinyint    DEFAULT '0' NOT NULL,
+    selectionid tinyint DEFAULT '0' NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY promotionschemaid (promotionschemaid, tariffid),
     INDEX tariffid (tariffid),
@@ -1196,6 +1249,7 @@ CREATE TABLE events (
     note text NOT NULL DEFAULT '',
     date int(11) NOT NULL DEFAULT '0',
     begintime smallint(4) NOT NULL DEFAULT '0',
+    enddate int(11) NOT NULL DEFAULT '0',
     endtime smallint(4) NOT NULL DEFAULT '0',
     userid int(11) NOT NULL DEFAULT '0',
     customerid int(11) NOT NULL DEFAULT '0',
@@ -1524,7 +1578,8 @@ CREATE TABLE messageitems (
 	destination 	varchar(255) 	DEFAULT '' NOT NULL,
 	lastdate 	int(11)		DEFAULT '0' NOT NULL,
 	status 		smallint	DEFAULT '0' NOT NULL,
-	error 		text		DEFAULT NULL, 
+	error 		text		DEFAULT NULL,
+	lastreaddate 	int(11)		DEFAULT '0' NOT NULL,
         PRIMARY KEY (id),
 	INDEX messageid (messageid),
 	INDEX customerid (customerid)
@@ -1547,11 +1602,13 @@ CREATE TABLE nastypes (
 #
 CREATE TABLE managementurls (
 	id int(11)		NOT NULL auto_increment,
-	netdevid int(11)	NOT NULL,
+	netdevid int(11)	NULL DEFAULT NULL,
+	nodeid int(11)		NULL DEFAULT NULL,
 	url text		DEFAULT '' NOT NULL,
 	comment varchar(100)	DEFAULT NULL,
 	PRIMARY KEY (id),
-	FOREIGN KEY (netdevid) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE
+	FOREIGN KEY (netdevid) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=INNODB;
 
 # --------------------------------------------------------
@@ -1619,6 +1676,7 @@ CREATE TABLE templates (
 	id int(11)		NOT NULL auto_increment,
 	type tinyint		NOT NULL,
 	name varchar(50)	NOT NULL,
+	subject varchar(255)	DEFAULT '' NOT NULL,
 	message	text		DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE KEY name (type, name)
@@ -1806,40 +1864,6 @@ CREATE TABLE up_info_changes (
 
 INSERT INTO rtcategories (name, description)
 	VALUES ('default', 'default category');
-INSERT INTO uiconfig (section, var)
-	VALUES ('userpanel', 'data_consent_text');
-INSERT INTO uiconfig (section, var, value, description, disabled) 
-	VALUES ('userpanel', 'disable_transferform', '0', '', 0);
-INSERT INTO uiconfig (section, var, value, description, disabled)
-	VALUES ('userpanel', 'disable_invoices', '0', '', 0);
-INSERT INTO uiconfig (section, var, value, description, disabled)
-	VALUES ('userpanel', 'invoice_duplicate', '0', '', 0);
-INSERT INTO uiconfig (section, var, value)
-	VALUES ('userpanel', 'show_tariffname', '1');
-INSERT INTO uiconfig (section, var, value)
-	VALUES ('userpanel', 'show_speeds', '1');
-INSERT INTO uiconfig (section, var, value, description, disabled)
-	VALUES ('userpanel', 'queues', '1', '', 0);
-INSERT INTO uiconfig (section, var, value, description, disabled)
-	VALUES ('userpanel', 'tickets_from_selected_queues', '0', '', 0);
-INSERT INTO uiconfig (section, var, value, description, disabled)
-	VALUES ('userpanel', 'allow_message_add_to_closed_tickets', '1', '', 0);
-INSERT INTO uiconfig (section, var, value, description, disabled)
-	VALUES ('userpanel', 'limit_ticket_movements_to_selected_queues', '0', '', 0);
-INSERT INTO uiconfig (section, var, value, description, disabled)
-	VALUES ('userpanel', 'default_userid', '0', '', 0);
-INSERT INTO uiconfig (section, var, value, description, disabled)
-	VALUES ('userpanel', 'debug_email', '', '', 0);
-INSERT INTO uiconfig (section, var, value, description, disabled)
-	VALUES ('userpanel', 'lms_url', '', '', 0);
-INSERT INTO uiconfig (section, var, value, description, disabled)
-	VALUES ('userpanel', 'hide_nodesbox', '0', '', 0);
-INSERT INTO uiconfig (section, var, value, description, disabled)
-	VALUES ('userpanel', 'logout_url', '', '', 0);
-INSERT INTO uiconfig (section, var, value, description, disabled)
-	VALUES ('userpanel', 'owner_stats', '0', '', 0);
-INSERT INTO uiconfig (section, var, value)
-	VALUES ('userpanel', 'default_categories', (SELECT MAX(id) FROM rtcategories));
 INSERT INTO up_rights(module, name, description)
 	VALUES ('info', 'edit_addr_ack', 'Customer can change address information with admin acknowlegment');
 INSERT INTO up_rights(module, name, description)
@@ -1849,25 +1873,143 @@ INSERT INTO up_rights(module, name, description, setdefault)
 INSERT INTO up_rights(module, name, description)
         VALUES ('info', 'edit_contact', 'Customer can change contact information');
 
-INSERT INTO countries (name) VALUES ('Lithuania');
-INSERT INTO countries (name) VALUES ('Poland');
-INSERT INTO countries (name) VALUES ('Romania');
-INSERT INTO countries (name) VALUES ('Slovakia');
-INSERT INTO countries (name) VALUES ('USA');
+INSERT INTO countries (name) VALUES
+('Lithuania'),
+('Poland'),
+('Romania'),
+('Slovakia'),
+('USA');
 
-INSERT INTO nastypes (name) VALUES ('mikrotik_snmp');
-INSERT INTO nastypes (name) VALUES ('cisco');
-INSERT INTO nastypes (name) VALUES ('computone');
-INSERT INTO nastypes (name) VALUES ('livingston');
-INSERT INTO nastypes (name) VALUES ('max40xx');
-INSERT INTO nastypes (name) VALUES ('multitech');
-INSERT INTO nastypes (name) VALUES ('netserver');
-INSERT INTO nastypes (name) VALUES ('pathras');
-INSERT INTO nastypes (name) VALUES ('patton');
-INSERT INTO nastypes (name) VALUES ('portslave');
-INSERT INTO nastypes (name) VALUES ('tc');
-INSERT INTO nastypes (name) VALUES ('usrhiper');
-INSERT INTO nastypes (name) VALUES ('other');
+INSERT INTO nastypes (name) VALUES
+('mikrotik_snmp'),
+('cisco'),
+('computone'),
+('livingston'),
+('max40xx'),
+('multitech'),
+('netserver'),
+('pathras'),
+('patton'),
+('portslave'),
+('tc'),
+('usrhiper'),
+('other');
 
-# --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014021400');
+INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
+('phpui','lang','','',0),
+('phpui','allow_from','','',0),
+('phpui','default_module','welcome','',0),
+('phpui','timeout','600','',0),
+('phpui','customerlist_pagelimit','100','',0),
+('phpui','nodelist_pagelimit','100','',0),
+('phpui','balancelist_pagelimit','100','',0),
+('phpui','invoicelist_pagelimit','100','',0),
+('phpui','debitnotelist_pagelimit','100','',0),
+('phpui','ticketlist_pagelimit','100','',0),
+('phpui','accountlist_pagelimit','100','',0),
+('phpui','domainlist_pagelimit','100','',0),
+('phpui','aliaslist_pagelimit','100','',0),
+('phpui','configlist_pagelimit','100','',0),
+('phpui','receiptlist_pagelimit','100','',0),
+('phpui','taxratelist_pagelimit','100','',0),
+('phpui','numberplanlist_pagelimit','100','',0),
+('phpui','divisionlist_pagelimit','100','',0),
+('phpui','documentlist_pagelimit','100','',0),
+('phpui','voipaccountlist_pagelimit','100','',0),
+('phpui','networkhosts_pagelimit','256','',0),
+('phpui','messagelist_pagelimit','100','',0),
+('phpui','recordlist_pagelimit','100','',0),
+('phpui','cashreglog_pagelimit','100','',0),
+('phpui','reload_type','sql','',0),
+('phpui','reload_execcmd','/bin/true','',0),
+('phpui','reload_sqlquery','','',0),
+('phpui','lastonline_limit','600','',0),
+('phpui','timetable_days_forward','7','',0),
+('phpui','gd_translate_to','ISO-8859-2','',0),
+('phpui','check_for_updates_period','86400','',0),
+('phpui','homedir_prefix','/home/','',0),
+('phpui','default_taxrate','23','',0),
+('phpui','default_zip','','',0),
+('phpui','default_city','','',0),
+('phpui','default_address','','',0),
+('phpui','smarty_debug','false','',0),
+('phpui','force_ssl','false','',0),
+('phpui','allow_mac_sharing','false','',0),
+('phpui','big_networks','false','',0),
+('phpui','short_pagescroller','false','',0),
+('phpui','helpdesk_stats','true','',0),
+('phpui','helpdesk_customerinfo','true','',0),
+('phpui','helpdesk_backend_mode','false','',0),
+('phpui','helpdesk_sender_name','','',0),
+('phpui','helpdesk_reply_body','false','',0),
+('phpui','use_invoices','false','',0),
+('phpui','ticket_template_file','rtticketprint.html','',0),
+('phpui','use_current_payday','false','',0),
+('phpui','default_monthly_payday','','',0),
+('phpui','newticket_notify','false','',0),
+('phpui','to_words_short_version','false','',0),
+('phpui','ticketlist_status','','',0),
+('phpui','ewx_support','false','',0),
+('phpui','invoice_check_payment','false','',0),
+('phpui','note_check_payment','false','',0),
+('phpui','radius','1','',0),
+('phpui','public_ip','1','',0),
+('phpui','default_assignment_period','3','',0),
+('phpui','default_assignment_invoice','0','',0),
+('phpui','default_editor','html','',0),
+('phpui','logging','false','',0),
+('phpui','hide_toolbar','false','',0),
+('invoices','template_file','invoice.html','',0),
+('invoices','content_type','text/html','',0),
+('invoices','cnote_template_file','invoice.html','',0),
+('invoices','print_balance_history','false','',0),
+('invoices','print_balance_history_limit','10','',0),
+('invoices','default_printpage','original,copy','',0),
+('invoices','type','html','',0),
+('invoices','attachment_name','','',0),
+('invoices','paytime','14','',0),
+('invoices','paytype','1','',0),
+('notes','template_file','note.html','',0),
+('notes','content_type','text/html','',0),
+('notes','type','html','',0),
+('notes','attachment_name','','',0),
+('notes','paytime','14','',0),
+('receipts','template_file','receipt.html','',0),
+('receipts','content_type','text/html','',0),
+('receipts','type','html','',0),
+('receipts','attachment_name','','',0),
+('finances','suspension_percentage','0','',0),
+('mail','debug_email','','',0),
+('mail','smtp_host','127.0.0.1','',0),
+('mail','smtp_port','25','',0),
+('zones','hostmaster_mail','hostmaster.localhost','',0),
+('zones','master_dns','localhost','',0),
+('zones','slave_dns','localhost','',0),
+('zones','default_ttl','3600','',0),
+('zones','ttl_refresh','28800','',0),
+('zones','ttl_retry','7200','',0),
+('zones','ttl_expire','604800','',0),
+('zones','ttl_minimum','86400','',0),
+('zones','default_webserver_ip','127.0.0.1','',0),
+('zones','default_mailserver_ip','127.0.0.1','',0),
+('zones','default_mx','localhost','',0),
+('userpanel','data_consent_text','','',0),
+('userpanel','disable_transferform','0','',0),
+('userpanel','disable_invoices','0','',0),
+('userpanel','invoice_duplicate','0','',0),
+('userpanel','show_tariffname','1','',0),
+('userpanel','show_speeds','1','',0),
+('userpanel','queues','1','',0),
+('userpanel','tickets_from_selected_queues','0','',0),
+('userpanel','allow_message_add_to_closed_tickets','1','',0),
+('userpanel','limit_ticket_movements_to_selected_queues','0','',0),
+('userpanel','default_userid','0','',0),
+('userpanel','debug_email','','',0),
+('userpanel','lms_url','','',0),
+('userpanel','hide_nodesbox','0','',0),
+('userpanel','logout_url','','',0),
+('userpanel','owner_stats','0','',0),
+('userpanel','default_categories','1','',0),
+('directories','userpanel_dir','userpanel','',0);
+
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014111400');

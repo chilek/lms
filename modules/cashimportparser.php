@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-include(!empty($CONFIG['phpui']['import_config']) ? $CONFIG['phpui']['import_config'] : 'cashimportcfg.php');
+include(ConfigHelper::getConfig('phpui.import_config', 'cashimportcfg.php'));
 
 if(!isset($patterns) || !is_array($patterns))
 {
@@ -254,6 +254,6 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 $SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources ORDER BY name'));
 $SMARTY->assign('sourcefiles', $sourcefiles);
-$SMARTY->display('cashimport.html');
+$SMARTY->display('cash/cashimport.html');
 
 ?>

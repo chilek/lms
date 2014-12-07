@@ -40,7 +40,11 @@ switch ($action) {
 		if (empty($_GET['devid']) || !($netdev = $LMS->GetNetDev($_GET['devid']))) {
 			$SESSION->redirect('?m=nodeinfo&id=' . $nodeid);
 		} else if ($netdev['ports'] > $netdev['takenports']) {
-			$LMS->NetDevLinkNode($nodeid, $_GET['devid'], isset($_GET['linktype']) ? intval($_GET['linktype']) : 0, isset($_GET['linkspeed']) ? intval($_GET['linkspeed']) : 100000, intval($_GET['port']));
+			$LMS->NetDevLinkNode($nodeid, $_GET['devid'],
+				isset($_GET['linktype']) ? intval($_GET['linktype']) : 0,
+				isset($_GET['linktechnology']) ? intval($_GET['linktechnology']) : 0,
+				isset($_GET['linkspeed']) ? intval($_GET['linkspeed']) : 100000,
+				intval($_GET['port']));
 			$SESSION->redirect('?m=nodeinfo&id=' . $nodeid);
 		} else {
 			$SESSION->redirect('?m=nodeinfo&id=' . $nodeid . '&devid=' . $_GET['devid']);
@@ -110,11 +114,16 @@ if (isset($_POST['nodeedit'])) {
 			if (empty($nodeedit['netid']))
 				$nodeedit['netid'] = $DB->GetOne('SELECT id FROM networks WHERE INET_ATON(?) & INET_ATON(mask) = address ORDER BY id LIMIT 1',
 					array($nodeedit['ipaddr']));
-			$ip = $LMS->GetNodeIPByID($nodeedit['id']);
-			if ($ip != $nodeedit['ipaddr'] && !$LMS->IsIPFree($nodeedit['ipaddr'], $nodeedit['netid']))
-				$error['ipaddr'] = trans('Specified IP address is in use!');
-			elseif ($ip != $nodeedit['ipaddr'] && $LMS->IsIPGateway($nodeedit['ipaddr']))
-				$error['ipaddr'] = trans('Specified IP address is network gateway!');
+			if (!$LMS->IsIPInNetwork($nodeedit['ipaddr'], $nodeedit['netid']))
+				$error['ipaddr'] = trans('Specified IP address doesn\'t belong to selected network!');
+			else {
+				$ip = $LMS->GetNodeIPByID($nodeedit['id']);
+				if ($ip != $nodeedit['ipaddr'])
+					if (!$LMS->IsIPFree($nodeedit['ipaddr'], $nodeedit['netid']))
+						$error['ipaddr'] = trans('Specified IP address is in use!');
+					elseif ($LMS->IsIPGateway($nodeedit['ipaddr']))
+						$error['ipaddr'] = trans('Specified IP address is network gateway!');
+			}
 		}
 		else
 			$error['ipaddr'] = trans('Specified IP address doesn\'t overlap with any network!');
@@ -143,7 +152,7 @@ if (isset($_POST['nodeedit'])) {
 	$macs = array();
 	foreach ($nodeedit['macs'] as $key => $value)
 		if (check_mac($value)) {
-			if ($value != '00:00:00:00:00:00' && (!isset($CONFIG['phpui']['allow_mac_sharing']) || !chkconfig($CONFIG['phpui']['allow_mac_sharing']))) {
+			if ($value != '00:00:00:00:00:00' && !ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.allow_mac_sharing', false))) {
 				if (($nodeid = $LMS->GetNodeIDByMAC($value)) != NULL && $nodeid != $nodeinfo['id'])
 					$error['mac' . $key] = trans('Specified MAC address is in use!');
 			}
@@ -207,6 +216,16 @@ if (isset($_POST['nodeedit'])) {
 	else if ($nodeedit['access'] && $LMS->GetCustomerStatus($nodeedit['ownerid']) < 3)
 		$error['access'] = trans('Node owner is not connected!');
 
+	if ($nodeedit['invprojectid'] == '-1') { // nowy projekt
+		if (!strlen(trim($nodeedit['projectname']))) {
+		 $error['projectname'] = trans('Project name is required');
+		}
+		if ($DB->GetOne("SELECT * FROM invprojects WHERE name=? AND type<>?",
+			array($nodeedit['projectname'], INV_PROJECT_SYSTEM)))
+			$error['projectname'] = trans('Project with that name already exists');
+	}
+
+
 	if (!$error) {
 		if (empty($nodeedit['teryt'])) {
 			$nodeedit['location_city'] = null;
@@ -217,7 +236,21 @@ if (isset($_POST['nodeedit'])) {
 
 		$nodeedit = $LMS->ExecHook('node_edit_before', $nodeedit);
 
+		$ipi = $nodeedit['invprojectid'];
+		if ($ipi == '-1') {
+			$DB->BeginTrans();
+			$DB->Execute("INSERT INTO invprojects (name, type) VALUES (?, ?)",
+				array($nodeedit['projectname'], INV_PROJECT_REGULAR));
+			$ipi = $DB->GetLastInsertID('invprojects');
+			$DB->CommitTrans();
+		}
+		if ($nodeedit['invprojectid'] == '-1' || intval($ipi)>0) {
+			$nodeedit['invprojectid'] = intval($ipi);
+		} else {
+			$nodeedit['invprojectid'] = NULL;
+		}
 		$LMS->NodeUpdate($nodeedit, ($customerid != $nodeedit['ownerid']));
+		$LMS->CleanupInvprojects();
 
 		$nodeedit = $LMS->ExecHook('node_edit_after', $nodeedit);
 
@@ -227,6 +260,7 @@ if (isset($_POST['nodeedit'])) {
 	$nodeinfo['name'] = $nodeedit['name'];
 	$nodeinfo['macs'] = $nodeedit['macs'];
 	$nodeinfo['ip'] = $nodeedit['ipaddr'];
+	$nodeinfo['netid'] = $nodeedit['netid'];
 	$nodeinfo['ip_pub'] = $nodeedit['ipaddr_pub'];
 	$nodeinfo['passwd'] = $nodeedit['passwd'];
 	$nodeinfo['access'] = $nodeedit['access'];
@@ -244,6 +278,7 @@ if (isset($_POST['nodeedit'])) {
 	$nodeinfo['stateid'] = $nodeedit['stateid'];
 	$nodeinfo['latitude'] = $nodeedit['latitude'];
 	$nodeinfo['longitude'] = $nodeedit['longitude'];
+	$nodeinfo['invprojectid'] = $nodeedit['invprojectid'];
 
 	if ($nodeedit['ipaddr_pub'] == '0.0.0.0')
 		$nodeinfo['ipaddr_pub'] = '';
@@ -260,7 +295,7 @@ if (empty($nodeinfo['macs']))
 
 include(MODULES_DIR . '/customer.inc.php');
 
-if (!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks'])) {
+if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false))) {
 	$SMARTY->assign('customers', $LMS->GetCustomerNames());
 }
 
@@ -270,6 +305,10 @@ include(MODULES_DIR . '/nodexajax.inc.php');
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
+$nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name",
+	array(INV_PROJECT_SYSTEM));
+$SMARTY->assign('NNprojects',$nprojects);
+
 $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($nodeid));
 $SMARTY->assign('networks', $LMS->GetNetworks(true));
 $SMARTY->assign('netdevices', $LMS->GetNetDevNames());
@@ -277,6 +316,7 @@ $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNamesByNode($nodeid));
 $SMARTY->assign('othernodegroups', $LMS->GetNodeGroupNamesWithoutNode($nodeid));
 $SMARTY->assign('error', $error);
 $SMARTY->assign('nodeinfo', $nodeinfo);
-$SMARTY->display('nodeedit.html');
+$SMARTY->assign('objectid', $nodeinfo['id']);
+$SMARTY->display('node/nodeedit.html');
 
 ?>

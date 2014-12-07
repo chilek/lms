@@ -59,15 +59,15 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 
 		if( strlen(netname) )
 		{
-		        res = g->db_pquery(g->conn, "SELECT name, address, INET_ATON(mask) AS mask  FROM networks WHERE UPPER(name)=UPPER('?')",netname);
-			if( g->db_nrows(res) ) 
+		        res = g->db->pquery(g->db->conn, "SELECT name, address, INET_ATON(mask) AS mask  FROM networks WHERE UPPER(name)=UPPER('?')",netname);
+			if( g->db->nrows(res) ) 
 			{
 				nets = (struct net *) realloc(nets, (sizeof(struct net) * (nc+1)));
-				nets[nc].name = strdup(g->db_get_data(res,0,"name"));
-				nets[nc].address = inet_addr(g->db_get_data(res,0,"address"));
+				nets[nc].name = strdup(g->db->get_data(res,0,"name"));
+				nets[nc].address = inet_addr(g->db->get_data(res,0,"address"));
 				nc++;
 			}
-	    		g->db_free(&res);
+	    		g->db->free(&res);
 		}
 	}
 	free(netname); free(netnames);
@@ -78,15 +78,15 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 
 		if( strlen(groupname) )
 		{
-			res = g->db_pquery(g->conn, "SELECT name, id FROM customergroups WHERE UPPER(name)=UPPER('?')",groupname);
-			if( g->db_nrows(res) )
+			res = g->db->pquery(g->db->conn, "SELECT name, id FROM customergroups WHERE UPPER(name)=UPPER('?')",groupname);
+			if( g->db->nrows(res) )
 			{
 		    		ugps = (struct group *) realloc(ugps, (sizeof(struct group) * (gc+1)));
-				ugps[gc].name = strdup(g->db_get_data(res,0,"name"));
-				ugps[gc].id = atoi(g->db_get_data(res,0,"id"));
+				ugps[gc].name = strdup(g->db->get_data(res,0,"name"));
+				ugps[gc].id = atoi(g->db->get_data(res,0,"id"));
 				gc++;
 			}
-	    		g->db_free(&res);
+	    		g->db->free(&res);
 		}		
 	}
 	free(groupname); free(groupnames);
@@ -94,15 +94,15 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 	fh = fopen(dhcp->file, "w");
 	if(fh)
 	{
-		res = g->db_query(g->conn, "SELECT name, mac, ipaddr, ipaddr_pub, ownerid FROM vnodes ORDER BY ipaddr");
+		res = g->db->query(g->db->conn, "SELECT name, mac, ipaddr, ipaddr_pub, ownerid FROM vnodes ORDER BY ipaddr");
 
-		for(i=0; i<g->db_nrows(res); i++)
+		for(i=0; i<g->db->nrows(res); i++)
 		{
-			int ownerid = atoi(g->db_get_data(res,i,"ownerid"));
-			char *name = g->db_get_data(res,i,"name");
-			char *mac = g->db_get_data(res,i,"mac");
-			char *ipaddr = g->db_get_data(res,i,"ipaddr");
-			char *ipaddr_pub = g->db_get_data(res,i,"ipaddr_pub");
+			int ownerid = atoi(g->db->get_data(res,i,"ownerid"));
+			char *name = g->db->get_data(res,i,"name");
+			char *mac = g->db->get_data(res,i,"mac");
+			char *ipaddr = g->db->get_data(res,i,"ipaddr");
+			char *ipaddr_pub = g->db->get_data(res,i,"ipaddr_pub");
 		
 			if(name && mac && ipaddr)
 			{
@@ -112,16 +112,16 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 					if( ownerid==0 ) continue;
 					m = gc;
 					
-					res1 = g->db_pquery(g->conn, "SELECT customergroupid FROM customerassignments WHERE customerid=?", g->db_get_data(res,i,"ownerid"));
-					for(k=0; k<g->db_nrows(res1); k++)
+					res1 = g->db->pquery(g->db->conn, "SELECT customergroupid FROM customerassignments WHERE customerid=?", g->db->get_data(res,i,"ownerid"));
+					for(k=0; k<g->db->nrows(res1); k++)
 					{
-						int groupid = atoi(g->db_get_data(res1, k, "customergroupid"));
+						int groupid = atoi(g->db->get_data(res1, k, "customergroupid"));
 						for(m=0; m<gc; m++) 
 							if(ugps[m].id==groupid) 
 								break;
 						if(m!=gc) break;
 					}
-					g->db_free(&res1);
+					g->db->free(&res1);
 					if( m==gc )
 						continue;
 				}
@@ -142,20 +142,20 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 				}
 			}
 		}
-		g->db_free(&res);
+		g->db->free(&res);
 	
 		fprintf(fh, "%s\n", dhcp->prefix);
 		
-		res = g->db_query(g->conn, "SELECT inet_ntoa(address) AS address, mask, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend, interface FROM networks ORDER BY interface");
+		res = g->db->query(g->db->conn, "SELECT inet_ntoa(address) AS address, mask, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend, interface FROM networks ORDER BY interface");
 
-		for(i=0; i<g->db_nrows(res); i++)
+		for(i=0; i<g->db->nrows(res); i++)
 		{
 			char *s, *d, *d2, *e, *b;
 			unsigned long netmask, network, broadcast;
 			char iface[MAXIFN] = "";
 			
-			e = g->db_get_data(res,i,"address");
-			d = g->db_get_data(res,i,"mask");
+			e = g->db->get_data(res,i,"address");
+			d = g->db->get_data(res,i,"mask");
 			
 			network = inet_addr(e);
 			netmask = inet_addr(d);
@@ -171,7 +171,7 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 			}
 			
 			// shared (interface) network ?
-			sscanf(g->db_get_data(res,i,"interface"), "%[a-zA-Z0-9.]", iface);
+			sscanf(g->db->get_data(res,i,"interface"), "%[a-zA-Z0-9.]", iface);
 			
 			if( strlen(lastif) && strlen(iface) && strcmp(iface, lastif)!=0 )
 			{
@@ -196,7 +196,7 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 			fprintf(fh, "%s\n", s);
 			free(s); 
 
-			if( (d = g->db_get_data(res,i,"dhcpstart")) && ((e = g->db_get_data(res,i,"dhcpend"))) )
+			if( (d = g->db->get_data(res,i,"dhcpstart")) && ((e = g->db->get_data(res,i,"dhcpend"))) )
 			{
 				if( strlen(d) && strlen(e) ) {
 					s = strdup(dhcp->rangeline);
@@ -207,7 +207,7 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 				}
 			}
 			
-			if( (d = g->db_get_data(res,i,"gateway")) )
+			if( (d = g->db->get_data(res,i,"gateway")) )
 			{
 				if( strlen(d) ) {
 					s = strdup(dhcp->gateline);
@@ -217,9 +217,9 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 				}
 			}
 
-			if( (d = g->db_get_data(res,i,"dns")) )
+			if( (d = g->db->get_data(res,i,"dns")) )
 			{
-				if( (d2 = g->db_get_data(res,i,"dns2")) )
+				if( (d2 = g->db->get_data(res,i,"dns2")) )
 				{
 					if( strlen(d) && strlen(d2) ) {
 						e = (char*) malloc(strlen(d)+strlen(d2)+2);
@@ -237,7 +237,7 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 				}
 			}
 
-			if( (d = g->db_get_data(res,i,"domain")) )
+			if( (d = g->db->get_data(res,i,"domain")) )
 			{
 				if( strlen(d) ) {
 					s = strdup(dhcp->domainline);
@@ -247,7 +247,7 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 				}
 			}
 
-			if( (d = g->db_get_data(res,i,"wins")) )
+			if( (d = g->db->get_data(res,i,"wins")) )
 			{
 				if( strlen(d) ) {
 					s = strdup(dhcp->winsline);
@@ -288,7 +288,7 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 		
 		fprintf(fh, "%s", dhcp->append);
 		
-		g->db_free(&res);
+		g->db->free(&res);
 		fclose(fh);
 		
 		system(dhcp->command);

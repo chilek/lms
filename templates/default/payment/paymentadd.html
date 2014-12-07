@@ -1,0 +1,87 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!-- $Id$ -->
+<H1>{$layout.pagetitle}</H1>
+<FORM METHOD="POST" NAME="paymentadd" ACTION="?m=paymentadd">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/payment.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+			<B>{trans("Name:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT TYPE="TEXT" NAME="payment[name]" VALUE="{$payment.name}" {tip text="Enter standing payment name" trigger="name" bold=1}>
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/creditor.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+			<B>{trans("Creditor:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT TYPE="TEXT" SIZE="50" NAME="payment[creditor]" VALUE="{$payment.creditor}" {tip text="Enter creditor name" trigger="creditor"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/value.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("Value:")}</B> 
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT TYPE="TEXT" SIZE="8" NAME="payment[value]" VALUE="{$payment.value}" {tip text="Enter value" trigger="value"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/calendar.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("Accounting day:")}</B>
+		</TD>
+		<TD WIDTH="98%">								
+			<SELECT SIZE="1" NAME="payment[period]" {tip text="Select accounting frequency"}>
+				{foreach from=$_PERIODS key=key item=item}{if $key>0}
+				<OPTION VALUE="{$key}"{if $payment.period eq $key} SELECTED{/if}>{$item}</OPTION>
+				{/if}{/foreach}
+			</SELECT>&nbsp;
+    			<INPUT TYPE="TEXT" NAME="payment[at]" VALUE="{$payment.at}" {tip text="Enter when to account payment. For weekly payment enter day of week (Monday = 1), for monthly payment enter day of month (from 1 to 28), for yearly payment enter day and month in format DD/MM (15/09 means 15 September), for half-yearly DD/MM (MM <=6) and quarterly DD/MM (MM <= 3)" trigger="at"} SIZE="5">
+		</TD>
+	</TR>	
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/info1.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+			<B>{trans("Description:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<TEXTAREA NAME="payment[description]" COLS="50" ROWS="5" {tip text="Enter additional information (optional)"}>{$payment.description}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT"> 
+			<A HREF="javascript:document.paymentadd.submit();" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
+			<A HREF="?m=paymentlist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A><BR>
+			<INPUT TYPE="checkbox" NAME="payment[reuse]" VALUE="ON" {if $payment.reuse} checked{/if}> {trans("Display this form again, when this payment is saved")}
+		</TD>
+	</TR>
+    </TBODY>
+</TABLE></FORM>
+</P>
+<SCRIPT type="text/javascript">
+<!--
+document.forms['paymentadd'].elements['payment[name]'].focus();
+//-->
+</SCRIPT>
+{/block}

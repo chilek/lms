@@ -33,9 +33,10 @@ if(isset($_GET['ajax']))
 	{
 	        case 'address':
 			$mode='address';
-			if ($CONFIG['database']['type'] == 'mysql' || $CONFIG['database']['type'] == 'mysqli') 
+                        $database_type = ConfigHelper::getConfig('database.type');
+			if ($database_type == 'mysql' || $database_type == 'mysqli') 
 				$mode = 'substring(address from 1 for length(address)-locate(\' \',reverse(address))+1)';
-			elseif($CONFIG['database']['type'] == 'postgres') 
+			elseif($database_type == 'postgres') 
 				$mode = 'substring(address from \'^.* \')';
 		break;
 	        case 'zip':
@@ -179,6 +180,17 @@ if (isset($_POST['customeradd']))
 	} else
 		$error['cutoffstop'] = trans('Incorrect date of cutoff suspending!');
 
+        $hook_data = $LMS->executeHook(
+            'customeradd_validation_before_submit', 
+            array(
+                'customeradd' => $customeradd,
+                'error' => $error
+            )
+        );
+        $customeradd = $hook_data['customeradd'];
+        $error = $hook_data['error'];
+        
+        
 	if (!$error) {
 		$customeradd['cutoffstop'] = $cutoffstop;
 
@@ -189,6 +201,16 @@ if (isset($_POST['customeradd']))
 
 		$id = $LMS->CustomerAdd($customeradd);
 
+                $hook_data = $LMS->executeHook(
+                    'customeradd_after_submit', 
+                    array(
+                        'id' => $id,
+                        'customeradd' => $customeradd,
+                    )
+                );
+                $customeradd = $hook_data['customeradd'];
+                $id = $hook_data['id'];
+                
 		if(isset($im) && $id)
 			foreach($im as $idx => $val) {
 				$DB->Execute('INSERT INTO imessengers (customerid, uid, type)
@@ -243,20 +265,36 @@ else
 	$customeradd['contacts'][] = array();
 }
 
-if(!isset($customeradd['zip']) && isset($CONFIG['phpui']['default_zip']))
-	$customeradd['zip'] = $CONFIG['phpui']['default_zip'];
-if(!isset($customeradd['city']) && isset($CONFIG['phpui']['default_city']))
-	$customeradd['city'] = $CONFIG['phpui']['default_city'];
-if(!isset($customeradd['address']) && isset($CONFIG['phpui']['default_address']))
-	$customeradd['address'] = $CONFIG['phpui']['default_address'];
+$default_zip = ConfigHelper::getConfig('phpui.default_zip');
+$default_city = ConfigHelper::getConfig('phpui.default_city');
+$default_address = ConfigHelper::getConfig('phpui.default_address');
+
+if (!isset($customeradd['zip']) && $default_zip) {
+	$customeradd['zip'] = $default_zip;
+} if (!isset($customeradd['city']) && $default_city) {
+	$customeradd['city'] = $default_city;
+} if (!isset($customeradd['address']) && $default_address) {
+	$customeradd['address'] = $default_address;
+}
 
 $layout['pagetitle'] = trans('New Customer');
+
+$hook_data = $LMS->executeHook(
+    'customeradd_before_display',
+    array(
+        'customeradd' => $customeradd,
+        'smarty' => $SMARTY
+    )
+);
+$customeradd = $hook_data['customeradd'];
 
 $SMARTY->assign('cstateslist', $LMS->GetCountryStates());
 $SMARTY->assign('countrieslist', $LMS->GetCountries());
 $SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname, status FROM divisions ORDER BY shortname'));
 $SMARTY->assign('customeradd', $customeradd);
 $SMARTY->assign('error', $error);
-$SMARTY->display('customeradd.html');
+
+
+$SMARTY->display('customer/customeradd.html');
 
 ?>

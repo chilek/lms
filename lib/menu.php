@@ -66,22 +66,6 @@ $menu = array(
 			),
 		),
 
-		'log' => array(
-			'name' => trans('Transaction Log'),
-			'img' => 'recover.gif',
-			'link' => '?m=archiveview',
-			'tip' => trans('Transaction Log Management'),
-			'accesskey' => 't',
-			'prio' => 3,
-			'submenu' => array(
-				array(
-					'name' => trans('View'),
-					'link' =>'?m=archiveview',
-					'tip' => trans('Allows you to view transaction log'),
-					'prio' => 10,
-				),
-			),
-		),
 
 		'customers' => array(
 			'name' => trans('Customers'),
@@ -244,16 +228,28 @@ $menu = array(
 					'prio' => 30,
 				),
 				array(
-					'name' => trans('Map'),
-					'link' => '?m=netdevmap',
-					'tip' => trans('Network map display'),
+					'name' => trans('Nodes list'),
+					'link' => '?m=netnodelist',
+					'tip' => trans('Network device nodes list'),
 					'prio' => 40,
 				),
 				array(
-					'name' => trans('UKE report'),
-					'link' => '?m=uke',
-					'tip' => trans('Allows you to prepare SIIS v3 report for UKE'),
+					'name' => trans('New node'),
+					'link' => '?m=netnodeadd',
+					'tip' => trans('Add new network device node'),
 					'prio' => 50,
+				),
+				array(
+					'name' => trans('Map'),
+					'link' => '?m=netdevmap',
+					'tip' => trans('Network map display'),
+					'prio' => 60,
+				),
+				array(
+					'name' => trans('Reports'),
+					'link' => '?m=netdevprint',
+					'tip' => trans('Lists and reports printing'),
+					'prio' => 70,
 				),
 			),
 		),
@@ -730,32 +726,53 @@ $menu = array(
 	);
 
 // menu item for EtherWerX STM channels management
-if (chkconfig($CONFIG['phpui']['ewx_support'])) {
+if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false))) {
 	$menu['netdevices']['submenu'][] = array(
 		'name' => trans('Channels List'),
 		'link' => '?m=ewxchlist',
 		'tip' => trans('List of STM channels'),
-		'prio' => 50,
+		'prio' => 80,
 	);
 	$menu['netdevices']['submenu'][] = array(
 		'name' => trans('New Channel'),
 		'link' => '?m=ewxchadd',
 		'tip' => trans('Add new STM channel'),
-		'prio' => 51,
+		'prio' => 81,
+	);
+}
+
+if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.logging', false))) {
+	$menu['log'] = array(
+		'name' => trans('Transaction Log'),
+		'img' => 'recover.gif',
+		'link' => '?m=archiveview',
+		'tip' => trans('Transaction Log Management'),
+		'accesskey' => 't',
+		'prio' => 3,
+		'submenu' => array(
+			array(
+				'name' => trans('View'),
+				'link' =>'?m=archiveview',
+				'tip' => trans('Allows you to view transaction log'),
+				'prio' => 10,
+			),
+		),
 	);
 }
 
 // Adding Userpanel menu items
-if(!empty($CONFIG['directories']['userpanel_dir']))
+$userpanel_dir = ConfigHelper::getConfig('directories.userpanel_dir');
+if(!empty($userpanel_dir))
         // be sure that Userpanel exists
-	if(file_exists($CONFIG['directories']['userpanel_dir'].'/lib/LMS.menu.php'))
-	        require_once($CONFIG['directories']['userpanel_dir'].'/lib/LMS.menu.php');
+	if(file_exists($userpanel_dir.'/lib/LMS.menu.php'))
+	        require_once($userpanel_dir.'/lib/LMS.menu.php');
 
 // Adding user-defined menu items
-if(!empty($CONFIG['phpui']['custom_menu']))
+$custom_menu = ConfigHelper::getConfig('phpui.custom_menu');
+if(!empty($custom_menu))
         // be sure that file exists
-	if(file_exists($CONFIG['phpui']['custom_menu']))
-	        require_once($CONFIG['phpui']['custom_menu']);
+	if(file_exists($custom_menu))
+	        require_once($custom_menu);
 
 /* Example for custom_menu file
 <?php

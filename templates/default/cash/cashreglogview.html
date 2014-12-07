@@ -1,0 +1,86 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%" NOWRAP>
+			<IMG src="img/time.gif" alt=""><A href="?m=cashreglogview&o=time{if $listdata.direction eq "asc" && $listdata.order eq "time"},desc{/if}">{trans("Date:")}</A> {if $listdata.order eq "time"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD width="1%" align="right" NOWRAP>
+			<A href="?m=cashreglogview&o=value{if $listdata.direction eq "asc" && $listdata.order eq "value"},desc{/if}">{trans("Real state:")}</A> {if $listdata.order eq "value"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD width="1%" align="right" NOWRAP>
+			<A href="?m=cashreglogview&o=snapshot{if $listdata.direction eq "asc" && $listdata.order eq "snapshot"},desc{/if}">{trans("Cash state:")}</A> {if $listdata.order eq "snapshot"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD width="1%" align="left" NOWRAP>
+			<A href="?m=cashreglogview&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}">{trans("User:")}</A> {if $listdata.order eq "username"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD width="95%" NOWRAP>
+			<A href="?m=cashreglogview&o=description{if $listdata.direction eq "asc" && $listdata.order eq "description"},desc{/if}">{trans("Description:")}</A> {if $listdata.order eq "description"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD width="1%" NOWRAP>
+			<a href="?m=cashreglogadd&regid={$listdata.regid}">{trans("Add entry")} <img src="img/save.gif" alt=""></a>
+		</TD>
+	</TR>
+	{if $listdata.total != 0}
+	<TR>
+		<TD class="pagination" COLSPAN="6">
+			{include file="scroller.html" loop=$cashreglog}
+		</TD>
+	</TR>
+	{/if}
+    </THEAD>
+    <TBODY>
+	{cycle values="light,lucid" print=false}
+	{section name=cashreglog loop=$cashreglog start=$start max=$pagelimit}
+	<TR class="highlight {cycle}{if ($cashreglog[cashreglog].validfrom !=0 && $cashreglog[cashreglog].validfrom > $smarty.now) || ($cashreglog[cashreglog].validto !=0 && $cashreglog[cashreglog].validto < $smarty.now)} blend{/if}"  >
+		<TD NOWRAP onclick="location.href='?m=cashregloginfo&id={$cashreglog[cashreglog].id}'">
+			<IMG src="img/time.gif" alt=""> {$cashreglog[cashreglog].time|date_format:"%x %H:%M"}
+		</TD>
+		<TD align="right" NOWRAP onclick="location.href='?m=cashregloginfo&id={$cashreglog[cashreglog].id}'">
+			{$cashreglog[cashreglog].value|money_format}
+		</TD>
+		<TD align="right" NOWRAP onclick="location.href='?m=cashregloginfo&id={$cashreglog[cashreglog].id}'">
+			{$cashreglog[cashreglog].snapshot|money_format}
+		</TD>
+		<TD align="left" NOWRAP onclick="location.href='?m=cashregloginfo&id={$cashreglog[cashreglog].id}'">
+			<A href="?m=userinfo&id={$cashreglog[cashreglog].userid}">{$cashreglog[cashreglog].username|truncate:16:"...":true}</A>
+		</TD>
+		<TD align="left" NOWRAP onclick="location.href='?m=cashregloginfo&id={$cashreglog[cashreglog].id}'">
+			{$cashreglog[cashreglog].description|replace:"\n":"<BR>"}
+		</TD>
+		<TD align="right" NOWRAP>
+			<A href="?m=cashregloginfo&id={$cashreglog[cashreglog].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
+			<A href="?m=cashreglogedit&id={$cashreglog[cashreglog].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			<A href="?m=cashreglogdel&id={$cashreglog[cashreglog].id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete selected entry?")}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD colspan="6" align="center">
+			<p>&nbsp;</p>
+			<p><B>{trans("No such cash history entries in database.")}</B></p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/section}
+    </TBODY>
+    <TFOOT>
+	{if $listdata.total != 0}
+	<TR>
+		<TD class="pagination" COLSPAN="6">
+			{include file="scroller.html" loop=$cashreglog}
+		</TD>
+	</TR>
+	{/if}
+	<TR>
+		<TD colspan="6" align="right">
+			<A href="?m=cashreglogadd&regid={$listdata.regid}">{trans("Add entry")} <img src="img/save.gif" alt=""></a>
+		</TD>
+	</TR>
+    </TFOOT>
+</TABLE>
+{/block}

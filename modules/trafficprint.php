@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if (!check_conf('privileges.reports'))
+if (!ConfigHelper::checkConfig('privileges.reports'))
 	access_denied();
 
 $type = isset($_GET['type']) ? $_GET['type'] : '';
@@ -82,11 +82,11 @@ switch($type)
 			$SMARTY->assign('listdata', $listdata);
 		}
 
-		if (strtolower($CONFIG['phpui']['report_type']) == 'pdf') {
-			$output = $SMARTY->fetch('printcustomertraffic.html');
+		if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
+			$output = $SMARTY->fetch('print/printcustomertraffic.html');
 			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {
-			$SMARTY->display('printcustomertraffic.html');
+			$SMARTY->display('print/printcustomertraffic.html');
 		}
 	break;
 
@@ -100,7 +100,7 @@ switch($type)
 		for($i=1; $i<13; $i++)
 			$months[$i] = strftime('%B', mktime(0,0,0,$i,1));
 
-		if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
+		if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
 		{
 			$SMARTY->assign('customers', $LMS->GetCustomerNames());
 		}
@@ -109,7 +109,7 @@ switch($type)
 		$SMARTY->assign('statyears', $statyears);
 		$SMARTY->assign('months', $months);
 		$SMARTY->assign('printmenu', 'traffic');
-		$SMARTY->display('printindex.html');
+		$SMARTY->display('print/printindex.html');
 	break;
 }
 

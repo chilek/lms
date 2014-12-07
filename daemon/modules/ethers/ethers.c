@@ -51,32 +51,32 @@ void reload(GLOBAL *g, struct ethers_module *fm)
 
 		if( strlen(netname) )
 		{
-		        res = g->db_pquery(g->conn, "SELECT name, address, INET_ATON(mask) AS mask  FROM networks WHERE UPPER(name)=UPPER('?')", netname);
+		        res = g->db->pquery(g->db->conn, "SELECT name, address, INET_ATON(mask) AS mask  FROM networks WHERE UPPER(name)=UPPER('?')", netname);
 
-			if( g->db_nrows(res) ) 
+			if( g->db->nrows(res) ) 
 			{
 				nets = (struct net *) realloc(nets, (sizeof(struct net) * (nc+1)));
-				nets[nc].name = strdup(g->db_get_data(res,0,"name"));
-				nets[nc].address = inet_addr(g->db_get_data(res,0,"address"));
-				nets[nc].mask = inet_addr(g->db_get_data(res,0,"mask"));
+				nets[nc].name = strdup(g->db->get_data(res,0,"name"));
+				nets[nc].address = inet_addr(g->db->get_data(res,0,"address"));
+				nets[nc].mask = inet_addr(g->db->get_data(res,0,"mask"));
 				nc++;
 			}
-	    		g->db_free(&res);
+	    		g->db->free(&res);
 		}				
 	}
 	free(netname); free(netnames);
 
 	if( !nc )
 	{
-		res = g->db_query(g->conn, "SELECT name, address, INET_ATON(mask) AS mask FROM networks");
-		for(nc=0; nc<g->db_nrows(res); nc++)
+		res = g->db->query(g->db->conn, "SELECT name, address, INET_ATON(mask) AS mask FROM networks");
+		for(nc=0; nc<g->db->nrows(res); nc++)
 		{
 			nets = (struct net*) realloc(nets, (sizeof(struct net) * (nc+1)));
-			nets[nc].name = strdup(g->db_get_data(res,nc,"name"));
-			nets[nc].address = inet_addr(g->db_get_data(res,nc,"address"));
-			nets[nc].mask = inet_addr(g->db_get_data(res,nc,"mask"));
+			nets[nc].name = strdup(g->db->get_data(res,nc,"name"));
+			nets[nc].address = inet_addr(g->db->get_data(res,nc,"address"));
+			nets[nc].mask = inet_addr(g->db->get_data(res,nc,"mask"));
 		}
-		g->db_free(&res);
+		g->db->free(&res);
 	}
 
 	while( k>1 )
@@ -85,16 +85,16 @@ void reload(GLOBAL *g, struct ethers_module *fm)
 
 		if( strlen(groupname) )
 		{
-			res = g->db_pquery(g->conn, "SELECT name, id FROM customergroups WHERE UPPER(name)=UPPER('?')", groupname);
+			res = g->db->pquery(g->db->conn, "SELECT name, id FROM customergroups WHERE UPPER(name)=UPPER('?')", groupname);
 
-			if( g->db_nrows(res) )
+			if( g->db->nrows(res) )
 			{
 		    		ugps = (struct group *) realloc(ugps, (sizeof(struct group) * (gc+1)));
-				ugps[gc].name = strdup(g->db_get_data(res,0,"name"));
-				ugps[gc].id = atoi(g->db_get_data(res,0,"id"));
+				ugps[gc].name = strdup(g->db->get_data(res,0,"name"));
+				ugps[gc].id = atoi(g->db->get_data(res,0,"id"));
 				gc++;
 			}
-    			g->db_free(&res);
+    			g->db->free(&res);
 		}		
 	}		
 	free(groupname); free(groupnames);
@@ -102,12 +102,12 @@ void reload(GLOBAL *g, struct ethers_module *fm)
 	fh = fopen(fm->file, "w");
 	if(fh)
 	{
-		res = g->db_query(g->conn, "SELECT mac, ipaddr, access, ownerid FROM vmacs ORDER BY ipaddr");
+		res = g->db->query(g->db->conn, "SELECT mac, ipaddr, access, ownerid FROM vmacs ORDER BY ipaddr");
 	
-		for(i=0; i<g->db_nrows(res); i++)
+		for(i=0; i<g->db->nrows(res); i++)
 		{
-			unsigned long inet = inet_addr(g->db_get_data(res,i,"ipaddr"));
-			int ownerid = atoi(g->db_get_data(res,i,"ownerid"));
+			unsigned long inet = inet_addr(g->db->get_data(res,i,"ipaddr"));
+			int ownerid = atoi(g->db->get_data(res,i,"ownerid"));
 				
 			// networks test
 			for(j=0; j<nc; j++)
@@ -118,29 +118,29 @@ void reload(GLOBAL *g, struct ethers_module *fm)
 			m = gc;
 			if(gc && ownerid)
 			{
-				res1 = g->db_pquery(g->conn, "SELECT customergroupid FROM customerassignments WHERE customerid=?", g->db_get_data(res,i,"ownerid"));
-				for(k=0; k<g->db_nrows(res1); k++)
+				res1 = g->db->pquery(g->db->conn, "SELECT customergroupid FROM customerassignments WHERE customerid=?", g->db->get_data(res,i,"ownerid"));
+				for(k=0; k<g->db->nrows(res1); k++)
 				{
-					int groupid = atoi(g->db_get_data(res1, k, "customergroupid"));
+					int groupid = atoi(g->db->get_data(res1, k, "customergroupid"));
 					for(m=0; m<gc; m++) 
 						if(ugps[m].id==groupid) 
 							break;
 					if( m!=gc ) break;
 				}
-				g->db_free(&res1);
+				g->db->free(&res1);
 			}
 				
 			if( j!=nc && (gc==0 || m!=gc) )
 			{
-				if( atoi(g->db_get_data(res,i,"access")) )
-					fprintf(fh, "%s\t%s\n", g->db_get_data(res,i,"mac"), inet_ntoa(inet_makeaddr(htonl(inet), 0)));
+				if( atoi(g->db->get_data(res,i,"access")) )
+					fprintf(fh, "%s\t%s\n", g->db->get_data(res,i,"mac"), inet_ntoa(inet_makeaddr(htonl(inet), 0)));
 				else
 					if( fm->dummy_macs )
 						fprintf(fh, "00:00:00:00:00:00\t%s\n", inet_ntoa(inet_makeaddr(htonl(inet), 0)));	
 			}
 		}
 
-    		g->db_free(&res);
+    		g->db->free(&res);
 		fclose(fh);
 		system(fm->command);
 #ifdef DEBUG1

@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!--// $Id$ //-->
+<html><head>
+<meta name="GENERATOR" content="LMS {$layout.lmsv}">
+<meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
+<meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
+<title>::: LMS :::</title>
+<link href="img/style.css" rel="stylesheet" type="text/css">
+<SCRIPT TYPE="text/javascript" SRC="img/autoiframe.js"></SCRIPT>
+<SCRIPT TYPE="text/javascript" SRC="img/common.js"></SCRIPT>
+</head>
+<body>
+<TABLE class="lmsbox-inner" id="table">
+    <THEAD>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/netdev.gif" alt="">
+		</TD>
+		<TD WIDTH="99%" NOWRAP>
+		    {if $layout.module == 'ewxdevlist'}
+		    <B>{t a=$devices|@count|default:"0"}Channel Devices ($a):{/t}</B>
+		    {else}
+			<B>{t a=$devices|@count|default:"0"}Devices ($a):{/t}</B>
+			{/if}
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	{cycle values="light,lucid" print=false}
+	{section name=devices loop=$devices}
+	<TR class="highlight {cycle}"  >
+	    <TD onClick="parent.location.href='?m=netdevinfo&id={$devices[devices].id}';">
+            <IMG src="img/netdev.gif" ALT=""><BR>
+            <IMG src="img/producer.gif" ALT="">
+	    </TD>
+		<TD onClick="parent.location.href='?m=netdevinfo&id={$devices[devices].id}';" NOWRAP>
+            <B>{$devices[devices].name}</B><BR>
+            {$devices[devices].producer} {if $devices[devices].model}/ {$devices[devices].model}{/if}{if $devices[devices].location} / {$devices[devices].location}{/if}
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD WIDTH="100%" COLSPAN="2" align="center">
+			<P>&nbsp;</P>
+			<P><B>{trans("No devices found in database.")}</B></P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	{/section}
+    </TBODY>
+</TABLE>
+<SCRIPT TYPE="text/javascript">
+<!--
+var table = document.getElementById('table');
+autoiframe_setsize('autoiframe', table.offsetWidth, table.offsetHeight);
+//-->
+</SCRIPT>
+</BODY>
+</HTML>

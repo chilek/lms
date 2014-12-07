@@ -104,6 +104,6 @@ $layout['pagetitle'] = trans('Cash History Entry Edit');
 
 $SMARTY->assign('reglog', $reglog);
 $SMARTY->assign('error', $error);
-$SMARTY->display('cashreglogedit.html');
+$SMARTY->display('cash/cashreglogedit.html');
 
 ?>

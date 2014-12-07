@@ -26,30 +26,31 @@
 
 class Auth {
 
-	var $id;
-	var $login;
-	var $logname;
-	var $passwd;
-	var $islogged = FALSE;
-	var $passverified = FALSE;
-	var $hostverified = FALSE;
-	var $access = FALSE;
-	var $accessfrom = FALSE;
-	var $accessto = FALSE;
-	var $swekeyauthenticated = FALSE;
-	var $swekeyid;
-	var $last;
-	var $ip;
-	var $lastip;
-	var $passwdrequiredchange = FALSE;
-	var $error;
-	var $_version = '1.11-git';
-	var $_revision = '$Revision$';
-	var $DB = NULL;
-	var $SESSION = NULL;
-	var $SYSLOG = NULL;
+	public $id;
+	public $login;
+	public $logname;
+	public $passwd;
+	public $islogged = FALSE;
+	public $nousers = FALSE;
+	public $passverified = FALSE;
+	public $hostverified = FALSE;
+	public $access = FALSE;
+	public $accessfrom = FALSE;
+	public $accessto = FALSE;
+	public $swekeyauthenticated = FALSE;
+	public $swekeyid;
+	public $last;
+	public $ip;
+	public $lastip;
+	public $passwdrequiredchange = FALSE;
+	public $error;
+	public $_version = '1.11-git';
+	public $_revision = '$Revision$';
+	public $DB = NULL;
+	public $SESSION = NULL;
+	public $SYSLOG = NULL;
 
-	function Auth(&$DB, &$SESSION, &$SYSLOG) {
+	public function __construct(&$DB, &$SESSION, &$SYSLOG) {
 		$this->DB = &$DB;
 		$this->SESSION = &$SESSION;
 		$this->SYSLOG = &$SYSLOG;
@@ -83,6 +84,7 @@ class Auth {
 		elseif ($this->DB->GetOne('SELECT COUNT(id) FROM users') == 0)
 		{
 			$this->islogged = TRUE;
+			$this->nousers = TRUE;
 			$_GET['m'] = 'useradd';
 			return TRUE;
 		}
@@ -148,11 +150,11 @@ class Auth {
 		}
 	}
 
-	function _postinit() {
+	public function _postinit() {
 		return TRUE;
 	}
 
-	function LogOut() {
+	public function LogOut() {
 		if ($this->islogged) {
 			writesyslog('User ' . $this->login . ' logged out.', LOG_INFO);
 			if ($this->SYSLOG) {
@@ -165,7 +167,7 @@ class Auth {
 		$this->SESSION->finish();
 	}
 
-	function VerifyPassword($dbpasswd = '') {
+	public function VerifyPassword($dbpasswd = '') {
 		if (crypt($this->passwd, $dbpasswd) == $dbpasswd)
 			return TRUE;
 
@@ -173,7 +175,7 @@ class Auth {
 		return FALSE;
 	}
 
-	function VerifyAccess($access) {
+	public function VerifyAccess($access) {
 	    $access = intval($access);
 	    if (empty($access)) {
 		$this->error = trans('Account is disabled');
@@ -182,7 +184,7 @@ class Auth {
 	    else return TRUE;
 	}
 	
-	function VerifyAccessFrom($access) {
+	public function VerifyAccessFrom($access) {
 	    $access = intval($access);
 	    if (empty($access)) return TRUE;
 	    if ($access < time()) return TRUE;
@@ -192,7 +194,7 @@ class Auth {
 	    }
 	}
 	
-	function VerifyAccessTo($access) {
+	public function VerifyAccessTo($access) {
 	    $access = intval($access);
 	    if (empty($access)) return TRUE;
 	    if ($access > time()) return TRUE;
@@ -202,7 +204,7 @@ class Auth {
 	    }
 	}
 
-	function VerifyHost($hosts = '') {
+	public function VerifyHost($hosts = '') {
 		if (!$hosts)
 			return TRUE;
 
@@ -235,9 +237,7 @@ class Auth {
 		return FALSE;
 	}
 
-	function VerifyUser() {
-		global $CONFIG;
-
+	public function VerifyUser() {
 		$this->islogged = false;
 
 		if ($user = $this->DB->GetRow('SELECT id, name, passwd, hosts, lastlogindate, lastloginip, 
@@ -259,7 +259,7 @@ class Auth {
 			$this->accessto = $this->VerifyAccessTo($user['accessto']);
 			$this->islogged = ($this->passverified && $this->hostverified && $this->access && $this->accessfrom && $this->accessto);
 
-			if (chkconfig($CONFIG['phpui']['use_swekey'])) {
+			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.use_swekey', false))) {
 				require_once(LIB_DIR . '/swekey/swekey_integration.php');
 				$SWEKEY = new SwekeyIntegration;
 				$this->swekeyauthenticated = $SWEKEY->IsSwekeyAuthenticated($this->swekeyid);

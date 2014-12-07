@@ -24,22 +24,42 @@
  *  $Id$
  */
 
+$startup_errors = array();
+
 if(!is_dir(SMARTY_COMPILE_DIR))
-	die('Missing directory <B>'.SMARTY_COMPILE_DIR.'</B>. Can anybody make them?');
+	$startup_errors[] = 'mkdir '.SMARTY_COMPILE_DIR;
 
 if(!is_writable(SMARTY_COMPILE_DIR))
-	die('Can\'t write to directory <B>'.SMARTY_COMPILE_DIR.'</B>. Run: <BR><PRE>chown '.posix_geteuid().':'.posix_getegid().' '.SMARTY_COMPILE_DIR."\nchmod 755 ".SMARTY_COMPILE_DIR.'</PRE>This helps me to work. Thanks.');
+	$startup_errors[] = 'chown '.posix_geteuid().':'.posix_getegid().' '.SMARTY_COMPILE_DIR."\nchmod 755 ".SMARTY_COMPILE_DIR;
 
 if(!is_dir(BACKUP_DIR))
-	die('Missing directory <B>'.BACKUP_DIR.'</B>. Can anybody make them?');
+	$startup_errors[] = 'mkdir '.BACKUP_DIR;
 	
 if(!is_writable(BACKUP_DIR))
-	die('Can\'t write to directory <B>'.BACKUP_DIR.'</B>. Run: <BR><PRE>chown '.posix_geteuid().':'.posix_getegid().' '.BACKUP_DIR."\nchmod 755 ".BACKUP_DIR.'</PRE>This helps me to work. Thanks.');
+	$startup_errors[] = 'chown '.posix_geteuid().':'.posix_getegid().' '.BACKUP_DIR."\nchmod 755 ".BACKUP_DIR;
 
 if(!is_dir(DOC_DIR))
-	die('Missing directory <B>'.DOC_DIR.'</B>. Can anybody make them?');
+	$startup_errors[] = 'mkdir '.DOC_DIR;
 	
 if(!is_writable(DOC_DIR))
-	die('Can\'t write to directory <B>'.DOC_DIR.'</B>. Run: <BR><PRE>chown '.posix_geteuid().':'.posix_getegid().' '.DOC_DIR."\nchmod 755 ".DOC_DIR.'</PRE>This helps me to work. Thanks.');
+	$startup_errors[] = 'chown '.posix_geteuid().':'.posix_getegid().' '.DOC_DIR."\nchmod 755 ".DOC_DIR;
+
+if(!is_readable(LIB_DIR.'/Smarty/Smarty.class.php'))
+	$startup_errors[] = SYS_DIR.'/devel/smarty_install.sh';
+
+if(!is_dir(CACHE_DIR))
+	$startup_errors[] = 'mkdir '.CACHE_DIR;
+
+if(!is_writable(CACHE_DIR))
+	$startup_errors[] = 'chown '.posix_geteuid().':'.posix_getegid().' '.CACHE_DIR."\nchmod 755 ".CACHE_DIR;
+
+if (count($startup_errors) > 0) {
+	print('Can not start because detected some problems. Please run:<PRE>');
+	foreach ($startup_errors as &$err) {
+            print ($err."\n");
+        }
+	print('</PRE>This helps me to work. Thanks.');
+	die();
+}
 
 ?>

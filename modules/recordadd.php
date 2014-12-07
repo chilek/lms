@@ -81,7 +81,7 @@ $layout['pagetitle'] = trans('New DNS Record');
 
 if (empty($record['ttl']))
 {
-	$record['ttl'] = $CONFIG['zones']['default_ttl'];
+	$record['ttl'] = ConfigHelper::getConfig('zones.default_ttl');
 	$error['ttl'] = '';
 }
 
@@ -89,6 +89,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('record', $record);
 $SMARTY->assign('error', $error);
-$SMARTY->display('recordedit.html');
+$SMARTY->display('record/recordedit.html');
 
 ?>

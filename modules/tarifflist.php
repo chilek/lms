@@ -261,6 +261,6 @@ $SMARTY->assign('customergroups', $customergroups);
 $SMARTY->assign('promotions', $promotions);
 $SMARTY->assign('listdata', $listdata);
 
-$SMARTY->display('tarifflist.html');
+$SMARTY->display('tariff/tarifflist.html');
 
 ?>

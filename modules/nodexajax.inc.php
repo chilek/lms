@@ -21,7 +21,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id: nodelocks.php,v 1.1 2012/04/07 23:12:01 chilek Exp $
+ *  $Id$
  */
 
 function NodeStats($id, $dt) {
@@ -55,7 +55,7 @@ function getNodeLocks($nodeid) {
 					'thour' => intval($tosec / 3600), 'tminute' => intval(($tosec % 3600) / 60));
 		}
 	$SMARTY->assign('nodelocks', $nodelocks);
-	$nodelocklist = $SMARTY->fetch('nodelocklist.html');
+	$nodelocklist = $SMARTY->fetch('node/nodelocklist.html');
 
 	$result->assign('nodelocktable', 'innerHTML', $nodelocklist);
 
@@ -96,10 +96,9 @@ function delNodeLock($nodeid, $id) {
 }
 
 function getThroughput($ip) {
-	global $CONFIG;
 
 	$result = new xajaxResponse();
-	$cmd = get_conf('phpui.live_traffic_helper');
+	$cmd = ConfigHelper::getConfig('phpui.live_traffic_helper');
 	if (empty($cmd))
 		return $result;
 
@@ -120,7 +119,7 @@ function getThroughput($ip) {
 			$stats[$idx] = (round(floatval($stats[$idx]) / 1000.0, 2)) . ' Kbit/s';
 		else
 			$stats[$idx] = $stats[$idx] . ' bit/s';
-	$result->assign('livetraffic', 'innerHTML', $stats[0] . ' / ' . $stats[2]);
+	$result->assign('livetraffic', 'innerHTML', $stats[0] . ' / ' . $stats[2] . ' (' . $stats[1] . ' pps / ' . $stats[3] . ' pps)');
 	$result->call('live_traffic_finished');
 
 	return $result;
@@ -137,15 +136,104 @@ function getNodeStats($nodeid) {
 	$nodestats['month'] = NodeStats($nodeid, 60 * 60 * 24 * 30);
 
 	$SMARTY->assign('nodeid', $nodeid);
-	$SMARTY->assign('nodeip', $DB->GetOne('SELECT INET_NTOA(ipaddr) FROM nodes WHERE id = ?', array($nodeid)));
+	$nodeip = $DB->GetOne('SELECT INET_NTOA(ipaddr) FROM nodes WHERE id = ?', array($nodeid));
+	$SMARTY->assign('nodeip', $nodeip);
 	$SMARTY->assign('nodestats', $nodestats);
-	$contents = $SMARTY->fetch('nodestats.html');
+	$contents = $SMARTY->fetch('node/nodestats.html');
 	$result->append('nodeinfo', 'innerHTML', $contents);
+
+	if (ConfigHelper::getConfig('phpui.live_traffic_helper')) {
+		$script = '
+			live_traffic_start = function() {
+				xajax.config.waitCursor = false;
+				xajax_getThroughput(\'' . $nodeip . '\');
+			}
+
+			live_traffic_finished = function() {
+				xajax.config.waitCursor = true;
+				setTimeout("live_traffic_start()", 3000);
+			}
+		';
+
+		$result->script($script);
+		$result->script("live_traffic_start()");
+	}
+
+	return $result;
+}
+
+function getManagementUrls($nodeid) {
+	global $SMARTY, $DB;
+
+	$result = new xajaxResponse();
+
+	$nodeid = intval($nodeid);
+
+	$mgmurls = NULL;
+	$mgmurls = $DB->GetAll('SELECT id, url, comment FROM managementurls WHERE nodeid = ? ORDER BY id', array($nodeid));
+	$SMARTY->assign('mgmurls', $mgmurls);
+	$mgmurllist = $SMARTY->fetch('managementurl/managementurllist.html');
+
+	$result->assign('managementurltable', 'innerHTML', $mgmurllist);
+
+	return $result;
+}
+
+function addManagementUrl($nodeid, $params) {
+	global $DB, $SYSLOG, $SYSLOG_RESOURCE_KEYS;
+
+	$result = new xajaxResponse();
+
+	if (empty($params['url']))
+		return $result;
+
+	$nodeid = intval($nodeid);
+
+	if (!preg_match('/^[[:alnum:]]+:\/\/.+/i', $params['url']))
+		$params['url'] = 'http://' . $params['url'];
+
+	$args = array(
+		$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodeid,
+		'url' => $params['url'],
+		'comment' => $params['comment'],
+	);
+	$DB->Execute('INSERT INTO managementurls (nodeid, url, comment) VALUES (?, ?, ?)', array_values($args));
+	if ($SYSLOG) {
+		$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MGMTURL]] = $DB->GetLastInsertID('managementurls');
+		$SYSLOG->AddMessage(SYSLOG_RES_MGMTURL, SYSLOG_OPER_ADD, $args,
+			array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MGMTURL], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE]));
+	}
+	$result->call('xajax_getManagementUrls', $nodeid);
+	$result->assign('managementurladdlink', 'disabled', false);
+
+	return $result;
+}
+
+function delManagementUrl($nodeid, $id) {
+	global $DB, $SYSLOG, $SYSLOG_RESOURCE_KEYS;
+
+	$result = new xajaxResponse();
+
+	$nodeid = intval($nodeid);
+	$id = intval($id);
+
+	$res = $DB->Execute('DELETE FROM managementurls WHERE id = ?', array($id));
+	if ($res && $SYSLOG) {
+		$args = array(
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MGMTURL] => $id,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodeid,
+		);
+		$SYSLOG->AddMessage(SYSLOG_RES_MGMTURL, SYSLOG_OPER_DELETE, $args, array_keys($args));
+	}
+	$result->call('xajax_getManagementUrls', $nodeid);
+	$result->assign('managementurltable', 'disabled', false);
 
 	return $result;
 }
 
 $LMS->InitXajax();
-$LMS->RegisterXajaxFunction(array('getNodeLocks', 'addNodeLock', 'delNodeLock', 'getThroughput', 'getNodeStats'));
+$LMS->RegisterXajaxFunction(array('getNodeLocks', 'addNodeLock', 'delNodeLock', 'getThroughput', 'getNodeStats',
+	'getManagementUrls', 'addManagementUrl', 'delManagementUrl'));
+$SMARTY->assign('xajax', $LMS->RunXajax());
 
 ?>

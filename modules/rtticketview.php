@@ -42,7 +42,7 @@ if(!$rights || !$catrights)
 $ticket = $LMS->GetTicketContents($_GET['id']);
 $categories = $LMS->GetCategoryListByUser($AUTH->id);
 
-if($ticket['customerid'] && isset($CONFIG['phpui']['helpdesk_stats']) && chkconfig($CONFIG['phpui']['helpdesk_stats']))
+if ($ticket['customerid'] && ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_stats', false)))
 {
 	$yearago = mktime(0, 0, 0, date('n'), date('j'), date('Y')-1);
 	$stats = $DB->GetAllByKey('SELECT COUNT(*) AS num, cause FROM rttickets 
@@ -52,7 +52,7 @@ if($ticket['customerid'] && isset($CONFIG['phpui']['helpdesk_stats']) && chkconf
 	$SMARTY->assign('stats', $stats);
 }
 
-if($ticket['customerid'] && chkconfig($CONFIG['phpui']['helpdesk_customerinfo']))
+if ($ticket['customerid'] && ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_customerinfo', false)))
 {
 	$customer = $LMS->GetCustomer($ticket['customerid'], true);
         $customer['groups'] = $LMS->CustomergroupGetForCustomer($ticket['customerid']);
@@ -94,6 +94,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('categories', $categories);
-$SMARTY->display('rtticketview.html');
+$SMARTY->display('rt/rtticketview.html');
 
 ?>

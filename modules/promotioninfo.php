@@ -57,6 +57,6 @@ $layout['pagetitle'] = trans('Promotion Info: $a', $promotion['name']);
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('promotion', $promotion);
-$SMARTY->display('promotioninfo.html');
+$SMARTY->display('promotion/promotioninfo.html');
 
 ?>

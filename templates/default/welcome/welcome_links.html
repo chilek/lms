@@ -1,0 +1,23 @@
+{if !ConfigHelper::checkConfig('privileges.hide_links')}
+<table class="lmsbox">
+    <thead>
+        <tr>
+            <td class="text-center bold">
+                <img src="img/tip.gif" alt=""> {trans("Useful Links:")}
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="text-center bold">
+                <a href="http://www.lms.org.pl" rel="external">{trans("LMS Project Homepage")}</a><br>
+                <a href="{$_dochref}" rel="external">{trans("Online Documentation")}</a><br>
+                <a href="doc/ChangeLog" rel="external">{trans("ChangeLog")}</a><br>
+                <a href="http://lists.lms.org.pl" rel="external">{trans("Mailing Lists archive")}</a><br>
+                <a href="http://git.lms.org.pl" rel="external">{trans("GIT Repository")}</a><br>
+                <a href="http://bts.lms.org.pl" rel="external">{trans("Bug Tracking System")}</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+{/if}

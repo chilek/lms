@@ -30,7 +30,7 @@ $layout['pagetitle'] = trans('SQL');
 
 if($query = $_POST['query'])
 {
-	$pagelimit = ( $CONFIG['phpui']['sqlpanel_pagelimit'] ? $CONFIG['phpui']['sqlpanel_pagelimit'] : 50 );
+	$pagelimit = ConfigHelper::getConfig('phpui.sqlpanel_pagelimit', 50);
 	$page = (! $_GET['page'] ? 1 : $_GET['page']); 
 	$start = ($page - 1) * $pagelimit;
 	$words = array('SELECT','EXPLAIN','SHOW','DESCRIBE','ANALYZE','CHECK','OPTIMIZE','REPAIR','VACUUM');
@@ -39,7 +39,7 @@ if($query = $_POST['query'])
 	$rows = $LMS->DB->Execute($query);
 	$duration = getmicrotime() - $t;
 
-	if(sizeof($DB->errors)) 
+	if(sizeof($DB->GetErrors())) 
 	{
 		$error['query'] = trans('Query is not correct!');
 		$SMARTY->assign('error', $error);
@@ -58,24 +58,24 @@ if($query = $_POST['query'])
 	{
 		unset($result);
 
-		switch($CONFIG['database']['type'])
+		switch(ConfigHelper::getConfig('database.type'))
 		{
 		case 'postgres':
-			$cols = pg_num_fields($DB->_result);
+			$cols = pg_num_fields($DB->GetResult());
 			for($i=0; $i < $cols; $i++)
-				$colnames[] = pg_field_name($DB->_result, $i);
+				$colnames[] = pg_field_name($DB->GetResult(), $i);
 		break;
 		case 'mysql':
-			$cols = mysql_num_fields($DB->_result);
+			$cols = mysql_num_fields($DB->GetResult());
 			for($i=0; $i < $cols; $i++)
-				$colnames[] = mysql_field_name($DB->_result, $i);
+				$colnames[] = mysql_field_name($DB->GetResult(), $i);
 		break;
 		case 'mysqli':
-			$cols = mysqli_num_fields($DB->_result);
+			$cols = mysqli_num_fields($DB->GetResult());
 			for($i=0; $i < $cols; $i++)
 			{
-				mysqli_field_seek($DB->_result, $i);
-				$finfo = mysqli_fetch_field($DB->_result);
+				mysqli_field_seek($DB->GetResult(), $i);
+				$finfo = mysqli_fetch_field($DB->GetResult());
 				$colnames[] = $finfo->name;
 			}
 		break;

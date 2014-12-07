@@ -216,7 +216,7 @@ switch($bar)
 	default: // set filter window
 		$SMARTY->assign('netlist',$LMS->GetNetworks());
 		$SMARTY->assign('nodelist',$LMS->GetNodeList());
-		if (!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
+		if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
 		{
 				$SMARTY->assign('customers', $LMS->GetCustomerNames());
 		}
@@ -258,6 +258,6 @@ $SMARTY->assign('bars', $bars);
 $SMARTY->assign('bar', $bar);
 $SMARTY->assign('trafficorder', $SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download');
 $SMARTY->assign('trafficnet', $SESSION->is_set('trafficnet') ? $SESSION->get('trafficnet') : 0);
-$SMARTY->display('traffic.html');
+$SMARTY->display('traffic/traffic.html');
 
 ?>

@@ -170,7 +170,7 @@ if(sizeof($search) || isset($_GET['s']))
 		unset($accountlist['direction']);
     
 		$page = (! isset($_GET['page']) ? 1 : $_GET['page']); 
-		$pagelimit = (! $CONFIG['phpui']['accountlist_pagelimit'] ? $queuedata['total'] : $CONFIG['phpui']['accountlist_pagelimit']);
+		$pagelimit = ConfigHelper::getConfig('phpui.accountlist_pagelimit', $queuedata['total']);
 		$start = ($page - 1) * $pagelimit;
 
 		$SESSION->save('asp', $page);
@@ -186,7 +186,7 @@ if(sizeof($search) || isset($_GET['s']))
 		$SMARTY->assign('start',$start);
 		$SMARTY->assign('search', $search);
 		$SMARTY->assign('accountlist',$accountlist);
-		$SMARTY->display('accountlist.html');
+		$SMARTY->display('account/accountlist.html');
 		$SESSION->close();
 		die;
 	}
@@ -196,6 +196,6 @@ $layout['pagetitle'] = trans('Account, Alias, Domain Search');
 
 $SMARTY->assign('customerlist',$LMS->GetAllCustomerNames());
 $SMARTY->assign('search', isset($search) ? $search : $SESSION->get('accountsearch'));
-$SMARTY->display('accountsearch.html');
+$SMARTY->display('account/accountsearch.html');
 
 ?>

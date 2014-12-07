@@ -37,9 +37,9 @@ elseif($p == 'main')
 
 	$maclist = $LMS->GetMACs();
 
-	if(isset($CONFIG['phpui']['arpd_servers']) && $CONFIG['phpui']['arpd_servers'])
+	if (ConfigHelper::getConfig('phpui.arpd_servers'))
 	{
-		$servers = preg_split('/[\t ]+/', $CONFIG['phpui']['arpd_servers']);
+		$servers = preg_split('/[\t ]+/', ConfigHelper::getConfig('phpui.arpd_servers'));
 		foreach($servers as $server)
 		{
 			$res = explode(':', $server);
@@ -59,6 +59,6 @@ elseif($p == 'main')
 
 $SMARTY->assign('part', $p);
 $SMARTY->assign('js', $js);
-$SMARTY->display('choosemac.html');
+$SMARTY->display('choose/choosemac.html');
 
 ?>

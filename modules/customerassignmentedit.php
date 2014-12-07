@@ -64,7 +64,7 @@ if(isset($_POST['assignment']))
 		case WEEKLY:
 			$at = sprintf('%d',$a['at']);
 
-			if(chkconfig($CONFIG['phpui']['use_current_payday']) && $at==0)
+			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.use_current_payday', false)) && $at==0)
 			{
 				$at = strftime('%u', time());
 			}
@@ -76,14 +76,14 @@ if(isset($_POST['assignment']))
 		case MONTHLY:
 			$at = sprintf('%d',$a['at']);
 
-			if(isset($CONFIG['phpui']['use_current_payday']) && chkconfig($CONFIG['phpui']['use_current_payday']) && $at==0)
+			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.use_current_payday', false)) && $at==0)
 			{
 				$at = date('j', time());
 			}
-			elseif(!chkconfig($CONFIG['phpui']['use_current_payday'])
-				 && $CONFIG['phpui']['default_monthly_payday']>0 && $at==0)
+			elseif (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.use_current_payday', false))
+				 && ConfigHelper::getConfig('phpui.default_monthly_payday')>0 && $at==0)
 			{
-				$at = $CONFIG['phpui']['default_monthly_payday'];
+				$at = ConfigHelper::getConfig('phpui.default_monthly_payday');
 			}
 
 			$a['at'] = $at;
@@ -93,7 +93,7 @@ if(isset($_POST['assignment']))
 		break;
 
 		case QUARTERLY:
-			if(chkconfig($CONFIG['phpui']['use_current_payday']) && !$a['at'])
+			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.use_current_payday', false)) && !$a['at'])
 			{
 				$d = date('j', time());
 				$m = date('n', time());
@@ -124,7 +124,7 @@ if(isset($_POST['assignment']))
 			{
 				$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
 			}
-			elseif(chkconfig($CONFIG['phpui']['use_current_payday']) && !$a['at'])
+			elseif (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.use_current_payday', false)) && !$a['at'])
 			{
 				$d = date('j', time());
 				$m = date('n', time());
@@ -147,7 +147,7 @@ if(isset($_POST['assignment']))
 		break;
 
 		case YEARLY:
-			if(chkconfig($CONFIG['phpui']['use_current_payday']) && !$a['at'])
+			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.use_current_payday', false)) && !$a['at'])
 			{
 				$d = date('j', time());
 				$m = date('n', time());
@@ -250,6 +250,16 @@ if(isset($_POST['assignment']))
 		elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['value']))
 			$error['value'] = trans('Incorrect value!');
 	}
+        
+        $hook_data = $LMS->executeHook(
+            'customerassignmentedit_validation_before_submit', 
+            array(
+                'a' => $a,
+                'error' => $error
+            )
+        );
+        $a = $hook_data['a'];
+        $error = $hook_data['error'];
 
 	if(!$error) 
 	{
@@ -376,6 +386,13 @@ if(isset($_POST['assignment']))
 				}
 			}
 		}
+                
+                $LMS->executeHook(
+                    'customerassignmentedit_after_submit', 
+                    array(
+                        'a' => $a,
+                    )
+                );
 
 		$DB->CommitTrans();
 
@@ -445,6 +462,14 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $customernodes = $LMS->GetCustomerNodes($customer['id']);
 unset($customernodes['total']);
 
+$LMS->executeHook(
+    'customerassignmentedit_before_display', 
+    array(
+        'a' => $a,
+        'smarty' => $SMARTY,
+    )
+);
+
 $SMARTY->assign('customernodes', $customernodes);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->assign('taxeslist', $LMS->GetTaxes());
@@ -453,6 +478,6 @@ $SMARTY->assign('assignment', $a);
 $SMARTY->assign('assignments', $LMS->GetCustomerAssignments($customer['id'], $expired));
 $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_INVOICE, NULL, $customer['divisionid'], false));
 $SMARTY->assign('customerinfo', $customer);
-$SMARTY->display('customerassignmentsedit.html');
+$SMARTY->display('customer/customerassignmentsedit.html');
 
 ?>

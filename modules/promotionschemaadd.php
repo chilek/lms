@@ -77,6 +77,7 @@ if ($schema) {
 		}
 
 		// pre-fill promotionassignments with all tariffs in specified promotion
+/*
 		$tariffs = $DB->GetCol('SELECT DISTINCT tariffid FROM promotionassignments
 			WHERE promotionschemaid IN (SELECT id FROM promotionschemas WHERE promotionid = ?)
 			GROUP BY tariffid', array($schema['promotionid']));
@@ -97,6 +98,7 @@ if ($schema) {
 				}
 			}
 		}
+*/
 
 		if (empty($schema['reuse']))
 			$SESSION->redirect('?m=promotionschemainfo&id=' . $sid);
@@ -118,6 +120,6 @@ $layout['pagetitle'] = trans('New Schema');
 $SMARTY->assign('error', $error);
 $SMARTY->assign('schema', $schema);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
-$SMARTY->display('promotionschemaadd.html');
+$SMARTY->display('promotion/promotionschemaadd.html');
 
 ?>

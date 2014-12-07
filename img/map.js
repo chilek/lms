@@ -110,7 +110,9 @@ function ping_any_host(id)
 	if (!ip.match(/^([0-9]{1,3}\.){3}[0-9]{1,3}$/))
 		return false;
 
-	ping_host(id, ip);
+	var type = document.forms[id + '_ipform'].type.value;
+
+	ping_host(id, ip, type);
 
 	return false;
 }
@@ -334,7 +336,9 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 										'</div><div class="lmsMapPopupAddress">') + '</div>'
 									: '');
 						else
-							content += '<span class="bold">' + features[i].data.typename + '<br>' + features[i].data.speedname + '</span>';
+							content += '<span class="bold">' + features[i].data.typename + '<br>'
+								+ (features[i].data.technologyname.length ? '<span class="bold">' + features[i].data.technologyname + '<br>' : '')
+								+ features[i].data.speedname + '</span>';
 					}
 					content += '</div>';
 					mappopup = new OpenLayers.Popup.Anchored(null, mapLonLat, new OpenLayers.Size(10, 10), content);
@@ -416,11 +420,12 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 								+ features[i].data.ipaddr + '</a></div>';
 						content += '<div class="lmsInfoPopupDetails"><a href="?m=' + features[i].data.type + '&id=' + features[i].data.id + '">'
 							+ '<img src="img/info1.gif" alt="">&nbsp;Info</a></div>';
-						if (features[i].data.type == 'netdevinfo' && features[i].data.url) {
+						if (features[i].data.url) {
 							var urls = features[i].data.url.split(',');
 							var comments = features[i].data.comment.split(',');
 							for (var j in urls) {
-								content += '<div class="lmsInfoPopupDetails"><a href="' + urls[j] + '" target="_blank">'
+								content += '<div class="lmsInfoPopupDetails"><a href="' + urls[j] + '"'
+									+ (urls[j].match(/^(https?|ftp):/) ? ' target="_blank"' : '') + '>'
 									+ '<img src="img/network.gif" alt=""> '
 									+ (comments[j].length ? comments[j] : urls[j]) + '</a></div>';
 							}
@@ -576,9 +581,14 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		if (zoom)
 			map.setCenter(new OpenLayers.LonLat(startLon, startLat)
 					.transform(lmsProjection, map.getProjectionObject()), zoom);
-		else
+		else {
 			map.setCenter(new OpenLayers.LonLat(startLon, startLat)
 					.transform(lmsProjection, map.getProjectionObject()));
+			if (deviceArray || nodeArray)
+				map.zoomToExtent(area);
+			else
+				map.zoomToMaxExtent();
+		}
 	else
 		if (loadedSettings)
 			map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);

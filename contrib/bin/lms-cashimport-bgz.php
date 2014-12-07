@@ -102,33 +102,30 @@ $CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ?
 
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
+
+// Load autloader
+require_once(LIB_DIR.'/autoloader.php');
+
 // Do some checks and load config defaults
 
 require_once(LIB_DIR.'/config.php');
 
 // Init database
- 
-$_DBTYPE = $CONFIG['database']['type'];
-$_DBHOST = $CONFIG['database']['host'];
-$_DBUSER = $CONFIG['database']['user'];
-$_DBPASS = $CONFIG['database']['password'];
-$_DBNAME = $CONFIG['database']['database'];
 
-require(LIB_DIR.'/LMSDB.php');
+$DB = null;
 
-$DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
+try {
 
-if(!$DB)
-{
-	// can't working without database
-	die("Fatal error: cannot connect to database!\n");
+    $DB = LMSDB::getInstance();
+
+} catch (Exception $ex) {
+    
+    trigger_error($ex->getMessage(), E_USER_WARNING);
+    
+    // can't working without database
+    die("Fatal error: cannot connect to database!\n");
+    
 }
-
-// Read configuration from database
-
-if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0'))
-	foreach($cfg as $row)
-		$CONFIG[$row['section']][$row['var']] = $row['value'];
 
 // Include required files (including sequence is important)
 
@@ -136,18 +133,20 @@ require_once(LIB_DIR.'/language.php');
 include_once(LIB_DIR.'/definitions.php');
 require_once(LIB_DIR.'/unstrip.php');
 require_once(LIB_DIR.'/common.php');
-require_once(LIB_DIR.'/LMS.class.php');
 require_once(LIB_DIR . '/SYSLOG.class.php');
 
 // Initialize Session, Auth and LMS classes
 
 $AUTH = NULL;
 $SYSLOG = NULL;
-$LMS = new LMS($DB, $AUTH, $CONFIG, $SYSLOG);
+$LMS = new LMS($DB, $AUTH, $SYSLOG);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
-if (empty($CONFIG['finances']['bgz_username']) || empty($CONFIG['finances']['bgz_password']) || empty($CONFIG['finances']['bgz_firm']))
+$bgz_username = ConfigHelper::getConfig('finances.bgz_username');
+$bgz_password = ConfigHelper::getConfig('finances.bgz_password');
+$bgz_firm = ConfigHelper::getConfig('finances.bgz_firm');
+if (empty($bgz_username) || empty($bgz_password) || empty($bgz_firm))
 	die("Fatal error: BGZ credentials are not set!\n");
 
 define('USER_AGENT', "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
@@ -307,12 +306,12 @@ function get_file_contents($fileid) {
 }
 
 function parse_file($filename, $contents) {
-	global $CONFIG, $DB, $quiet;
+	global $DB, $quiet;
 
 	if (!$quiet)
 		printf("Getting cash import file ".$filename." ... ");
 
-	@include(!empty($CONFIG['phpui']['import_config']) ? $CONFIG['phpui']['import_config'] : 'cashimportcfg.php');
+	@include(ConfigHelper::getConfig('phpui.import_config', 'cashimportcfg.php'));
 
 	if (!isset($patterns) || !is_array($patterns))
 	{
@@ -508,7 +507,7 @@ function parse_file($filename, $contents) {
 
 function commit_cashimport()
 {
-	global $DB, $LMS, $CONFIG;
+	global $DB, $LMS;
 
 	$imports = $DB->GetAll('SELECT i.*, f.idate
 		FROM cashimport i
@@ -516,10 +515,10 @@ function commit_cashimport()
 		WHERE i.closed = 0 AND i.customerid <> 0');
 
 	if (!empty($imports)) {
-		$idate  = isset($CONFIG['finances']['cashimport_use_idate'])
-			&& chkconfig($CONFIG['finances']['cashimport_use_idate']);
-		$icheck = isset($CONFIG['finances']['cashimport_checkinvoices'])
-			&& chkconfig($CONFIG['finances']['cashimport_checkinvoices']);
+            
+		$idate  = ConfigHelper::checkValue(ConfigHelper::getConfig('finances.cashimport_use_idate', false));
+                
+		$icheck = ConfigHelper::checkValue(ConfigHelper::getConfig('finances.cashimport_checkinvoices', false));
 
 		foreach ($imports as $import) {
 
@@ -582,7 +581,7 @@ function commit_cashimport()
 
 if (!$quiet)
 	printf("Logging in to BGZ ... ");
-$res = log_in_to_bgz($CONFIG['finances']['bgz_username'], $CONFIG['finances']['bgz_firm'], $CONFIG['finances']['bgz_password']);
+$res = log_in_to_bgz(ConfigHelper::getConfig('finances.bgz_username'), ConfigHelper::getConfig('finances.bgz_firm'), ConfigHelper::getConfig('finances.bgz_password'));
 if (!$res) {
 	unlink(COOKIE_FILE);
 	die("Cannot log in to BGZ!\n");
@@ -631,12 +630,12 @@ while ($xml->valid()) {
 	$xml->next();
 }
 
-$lastchange = !empty($CONFIG['finances']['bgz_password_lastchange']) ? intval($CONFIG['finances']['bgz_password_lastchange']) : 0;
+$lastchange = intval(ConfigHelper::getConfig('finances.bgz_password_lastchange', 0));
 if (!$lastchange || time() - $lastchange > 30 * 86400)
 {
 	if (!$quiet)
 		printf("Changing BGZ password ... ");
-	$oldpass = $CONFIG['finances']['bgz_password'];
+	$oldpass = ConfigHelper::getConfig('finances.bgz_password');
 	$newpassarray = str_split($oldpass);
 	array_unshift($newpassarray, array_pop($newpassarray));
 	$newpass = implode('', $newpassarray);
@@ -646,8 +645,9 @@ if (!$lastchange || time() - $lastchange > 30 * 86400)
 			array($newpass));
 		$DB->Execute("DELETE FROM uiconfig WHERE section = 'finances' AND var = 'bgz_password_lastchange'");
 		$DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('finances', 'bgz_password_lastchange', ?NOW?)");
-		if (!empty($CONFIG['finances']['bgz_newpassword_email']))
-			$LMS->SendMail($CONFIG['finances']['bgz_newpassword_email'],
+		$bgz_newpassword_email = ConfigHelper::getConfig('finances.bgz_newpassword_email');
+		if (!empty($bgz_newpassword_email))
+			$LMS->SendMail($bgz_newpassword_email,
 				array('From' => 'lms-cashimport-bgz.php', 'Subject' => 'Aktualne hasło do panelu BGŻ'), $newpass);
 	}
 	if (!$quiet)

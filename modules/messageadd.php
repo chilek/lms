@@ -24,12 +24,12 @@
  *  $Id$
  */
 
-function getMessageTemplate($tmplid, $elem) {
+function getMessageTemplate($tmplid, $subjectelem, $messageelem) {
 	global $DB;
 
 	$result = new xajaxResponse();
-	$message = $DB->GetOne('SELECT message FROM templates WHERE id = ?', array($tmplid));
-	$result->call('messageTemplateReceived', $elem, $message);
+	$row = $DB->GetRow('SELECT subject, message FROM templates WHERE id = ?', array($tmplid));
+	$result->call('messageTemplateReceived', $subjectelem, $row['subject'], $messageelem, $row['message']);
 
 	return $result;
 }
@@ -61,6 +61,7 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 	$nodegroup = intval($filter['nodegroup']);
 	$linktype = intval($filter['linktype']);
 	$tarifftype = intval($filter['tarifftype']);
+	$consent = isset($filter['consent']);
 
 	if($group == 4)
 	{
@@ -111,11 +112,12 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 		) b ON (b.customerid = c.id) '
 		.(!empty($smstable) ? $smstable : '')
 		. ($tarifftype ? $tarifftable : '')
-		.'WHERE deleted = '.$deleted
+		.'WHERE deleted = ' . $deleted
+		. ($consent ? ' AND c.mailingnotice = 1' : '')
 		.($type == MSG_MAIL ? ' AND email != \'\'' : '')
 		.($group!=0 ? ' AND status = '.$group : '')
 		.($network ? ' AND c.id IN (SELECT ownerid FROM nodes WHERE 
-			(ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') 
+			(netid = ' . $net['id'] . ' AND ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ')
 			OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
 		.($customergroup ? ' AND c.id IN (SELECT customerid FROM customerassignments
 			WHERE customergroupid IN (' . $customergroup . '))' : '')
@@ -202,8 +204,12 @@ if(isset($_POST['message']))
 		$message['type'] == MSG_SMS;
 	elseif ($message['type'] == MSG_ANYSMS)
 		$message['type'] == MSG_ANYSMS;
-	else
+	elseif ($message['type'] == MSG_WWW)
 		$message['type'] == MSG_WWW;
+	elseif ($message['type'] == MSG_USERPANEL)
+		$message['type'] == MSG_USERPANEL;
+	else
+		$message['type'] == MSG_USERPANEL_URGENT;
 
 	if(empty($message['customerid']) && ($message['group'] < 0 || $message['group'] > 7))
 		$error['group'] = trans('Incorrect customers group!');
@@ -216,7 +222,7 @@ if(isset($_POST['message']))
 			$error['sender'] = trans('Specified e-mail is not correct!');
 		if ($message['from'] == '')
 			$error['from'] = trans('Sender name is required!');
-	} elseif ($message['type'] == MSG_WWW)
+	} elseif ($message['type'] == MSG_WWW || $message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT)
 		$message['body'] = $message['mailbody'];
 	else {
 		$message['body'] = $message['smsbody'];
@@ -250,17 +256,23 @@ if(isset($_POST['message']))
 			case MSG_WWW:
 				$msgtmpltype = TMPL_WWW;
 				break;
+			case MSG_USERPANEL:
+				$msgtmpltype = TMPL_USERPANEL;
+				break;
+			case MSG_USERPANEL_URGENT:
+				$msgtmpltype = TMPL_USERPANEL_URGENT;
+				break;
 		}
 		switch ($msgtmploper) {
 			case 2:
 				if (empty($msgtmplid))
 					break;
-				$LMS->UpdateMessageTemplate($msgtmplid, $msgtmpltype, null, $message['body']);
+				$LMS->UpdateMessageTemplate($msgtmplid, $msgtmpltype, null, $message['subject'], $message['body']);
 				break;
 			case 3:
 				if (!strlen($msgtmplname))
 					break;
-				$LMS->AddMessageTemplate($msgtmpltype, $msgtmplname, $message['body']);
+				$LMS->AddMessageTemplate($msgtmpltype, $msgtmplname, $message['subject'], $message['body']);
 				break;
 		}
 	}
@@ -322,7 +334,7 @@ if(isset($_POST['message']))
 
 		$SMARTY->assign('message', $message);
 		$SMARTY->assign('recipcount', sizeof($recipients));
-		$SMARTY->display('messagesend.html');
+		$SMARTY->display('message/messagesend.html');
 
 		$DB->BeginTrans();
 
@@ -342,6 +354,10 @@ if(isset($_POST['message']))
 				$recipients[$key]['destination'] = explode(',', $row['email']);
 			elseif ($message['type'] == MSG_WWW)
 				$recipients[$key]['destination'] = array(trans('www'));
+			elseif ($message['type'] == MSG_USERPANEL)
+				$recipients[$key]['destination'] = array(trans('userpanel'));
+			elseif ($message['type'] == MSG_USERPANEL_URGENT)
+				$recipients[$key]['destination'] = array(trans('userpanel urgent'));
 			else
 				$recipients[$key]['destination'] = explode(',', $row['phone']);
 
@@ -368,8 +384,9 @@ if(isset($_POST['message']))
 				$files[0]['data'] = $file;
 			}
 
-			if(!empty($CONFIG['mail']['debug_email']))
-				echo '<B>'.trans('Warning! Debug mode (using address $a).',$CONFIG['mail']['debug_email']).'</B><BR>';
+			$debug_email = ConfigHelper::getConfig('mail.debug_email');
+			if(!empty($debug_email))
+				echo '<B>'.trans('Warning! Debug mode (using address $a).',ConfigHelper::getConfig('mail.debug_email')).'</B><BR>';
 
 			$headers['From'] = '"'.$message['from'].'" <'.$message['sender'].'>';
 			$headers['Subject'] = $message['subject'];
@@ -377,8 +394,9 @@ if(isset($_POST['message']))
 			if (!empty($message['wysiwyg']))
 				$headers['X-LMS-Format'] = 'html';
 		} elseif ($message['type'] != MSG_WWW) {
-			if (!empty($CONFIG['sms']['debug_phone']))
-				echo '<B>'.trans('Warning! Debug mode (using phone $a).',$CONFIG['sms']['debug_phone']).'</B><BR>';
+			$debug_phone = ConfigHelper::getConfig('sms.debug_phone');
+			if (!empty($debug_phone))
+				echo '<B>'.trans('Warning! Debug mode (using phone $a).',$debug_phone).'</B><BR>';
 		}
 
 		foreach ($recipients as $key => $row) {
@@ -393,6 +411,8 @@ if(isset($_POST['message']))
 					echo '<img src="img/mail.gif" border="0" align="absmiddle" alt=""> ';
 				} elseif ($message['type'] == MSG_WWW)
 					echo '<img src="img/network.gif" border="0" align="absmiddle" alt=""> ';
+				elseif ($message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT)
+					echo '<img src="img/cms.gif" border="0" align="absmiddle" alt=""> ';
 				else {
 					$destination = preg_replace('/[^0-9]/', '', $destination);
 					echo '<img src="img/sms.gif" border="0" align="absmiddle" alt=""> ';
@@ -405,7 +425,7 @@ if(isset($_POST['message']))
 
 				if ($message['type'] == MSG_MAIL)
 					$result = $LMS->SendMail($destination, $headers, $body, $files);
-				elseif ($message['type'] == MSG_WWW)
+				elseif ($message['type'] == MSG_WWW || $message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT)
 					$result = MSG_NEW;
 				else
 					$result = $LMS->SendSMS($destination, $body, $msgid);
@@ -427,7 +447,7 @@ if(isset($_POST['message']))
 							is_int($result) ? $result : MSG_ERROR,
 							is_int($result) ? null : $result,
 							$msgid,
-							$row['id'],
+							isset($row['id']) ? $row['id'] : 0,
 							$orig_destination,
 						));
 			}
@@ -470,6 +490,12 @@ if (isset($message['type'])) {
 		case MSG_WWW:
 			$msgtmpltype = TMPL_WWW;
 			break;
+		case MSG_USERPANEL:
+			$msgtmpltype = TMPL_USERPANEL;
+			break;
+		case MSG_USERPANEL_URGENT:
+			$msgtmpltype = TMPL_USERPANEL_URGENT;
+			break;
 	}
 } else
 	$msgtmpltype = TMPL_MAIL;
@@ -479,6 +505,6 @@ $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 $SMARTY->assign('userinfo', $LMS->GetUserInfo($AUTH->id));
 $SMARTY->assign('users', $DB->GetAll('SELECT name, phone FROM users WHERE phone <> \'\' ORDER BY name'));
-$SMARTY->display('messageadd.html');
+$SMARTY->display('message/messageadd.html');
 
 ?>

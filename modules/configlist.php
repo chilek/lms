@@ -277,6 +277,14 @@ function GetConfigList($order='var,asc', $section='', $search='')
 					$config[$idx]['description'] = trans('Documents type. You can use "html" or "pdf". Default: html.');
 				break;
 
+				case 'hide_toolbar':
+					$config[$idx]['description'] = trans('Hide toolbar from user interface. Default: false.');
+				break;
+
+				case 'logging':
+					$config[$idx]['description'] = trans('Does this LMS have transaction log support (not opensource). Default: false.');
+				break;
+
 				default:
 					$config[$idx]['description'] = trans('Unknown option. No description.');
 				break;
@@ -574,7 +582,7 @@ unset($configlist['direction']);
 unset($configlist['section']);
 
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
-$pagelimit = (! $LMS->CONFIG['phpui']['configlist_pagelimit'] ? $listdata['total'] : $LMS->CONFIG['phpui']['configlist_pagelimit']);
+$pagelimit = ConfigHelper::getConfig('phpui.configlist_pagelimit', $listdata['total']);
 $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('conlp', $page);
@@ -587,6 +595,6 @@ $SMARTY->assign('page', $page);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('configlist', $configlist);
 $SMARTY->assign('listdata', $listdata);
-$SMARTY->display('configlist.html');
+$SMARTY->display('config/configlist.html');
 
 ?>

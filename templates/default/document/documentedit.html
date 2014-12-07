@@ -1,0 +1,188 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+{include file="calendar_js.html"}
+<script type="text/javascript">
+<!--
+	function setnumberplans()
+	{
+		var type = document.forms['documentedit'].elements['document[type]'].value,
+			plans = document.getElementById('numberplans');
+
+		if (type == 0)
+		{
+			plans.style.display = 'none';
+			plans.innerHTML = '<INPUT type="hidden" name="document[numberplanid]" value="0">';
+		}
+		else
+		{
+			var p = [], pr = [];
+			var s = {$document.numberplanid|default:0};
+			{foreach from=$_DOCTYPES key=key item=item}{if $key < 0}
+				p[{$key}] = [];
+				pr[{$key}] = [];
+				{foreach from=$allnumberplans item=plan}{if $plan.doctype == $key}{assign var=period value=$plan.period}
+					p[{$key}][{$plan.id}] = '{number number=$plan.next template=$plan.template time=$document.cdate}';
+					pr[{$key}][{$plan.id}] = '{$_NUM_PERIODS.$period}';
+				{/if}{/foreach}
+			{/if}{/foreach}
+			if (p[type].length)
+			{
+				var key, result = '<SELECT name="document[numberplanid]">';
+				for (key in p[type])
+				{
+					result = result + '<OPTION value="' + key + '"';
+					if(key == s)
+						result += ' SELECTED';
+					result = result + '>' + p[type][key] + ' (' + pr[type][key] + ') </OPTION>';
+				}
+				result += '</SELECT>';
+
+				plans.innerHTML = result;
+			}
+			else
+				plans.innerHTML = '<INPUT type="hidden" name="document[numberplanid]" value="0">';
+
+			plans.style.display = 'inline';
+		}
+	}
+//-->
+</script>
+<P><FORM name="documentedit" method="POST" action="?m=documentedit&id={$document.id}" enctype="multipart/form-data">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
+			<IMG src="img/docum.gif" alt="">
+		</TD>
+		<TD width="1%" NOWRAP>
+			<B>{trans("Title:")}
+		</TD>
+		<TD width="98%" NOWRAP>
+			<INPUT type="text" name="document[title]" value="{$document.title}" {tip text="Enter document title" trigger="title"} size="40">
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD width="1%">
+			<IMG src="img/info.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Type:")}
+		</TD>
+		<TD width="98%">
+			<SELECT SIZE="1" NAME="document[type]" onchange="setnumberplans();" {tip text="Select document type" trigger="type"}>
+				{foreach from=$_DOCTYPES key=key item=item}{if $key < 0 && in_array($key, $docrights)}
+				<OPTION VALUE="{$key}"{if $document.type==$key} SELECTED{/if}>{$item}</OPTION>
+				{/if}{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR>
+		<TD width="1%">
+			<IMG src="img/docum.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Number:")}
+		</TD>
+		<TD width="98%">
+			<INPUT type="text" name="document[number]" value="{$document.number}" size="15" {tip text="Enter document number (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
+			<DIV id="numberplans" style="display: {if !$document.numberplanid}none{else}inline{/if};">
+			{if $numberplans}
+			<SELECT name="document[numberplanid]" {tip text="Select numbering plan"}>
+			{foreach item=plan from=$numberplans}
+				{assign var=period value=$plan.period}
+				<OPTION value="{$plan.id}"{if $plan.id==$document.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$document.cdate} ({$_NUM_PERIODS.$period})</OPTION>
+			{/foreach}
+			</SELECT>
+			{else}
+				<INPUT type="hidden" name="document[numberplanid]" value="0">
+			{/if}
+			</DIV>
+		</TD>
+	</TR>
+	<TR>
+		<TD width="1%">
+			<IMG src="img/calendar.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Period:")}
+		</TD>
+		<TD width="98%">
+			{trans("from:")} <INPUT type="TEXT" name="document[fromdate]" value="{if $document.fromdate}{$document.fromdate}{/if}" OnClick="cal1.popup();" {tip text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"} size="10">&nbsp;
+			{trans("to:")} <INPUT type="TEXT" name="document[todate]" value="{if $document.todate}{$document.todate}{/if}" OnClick="cal2.popup();" {tip text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"} size="10"><BR>
+		</TD>
+	</TR>
+	<TR>
+		<TD width="1%">
+			<IMG src="img/info.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Description:")}
+		</TD>
+		<TD width="98%">
+			<TEXTAREA name="document[description]" rows="5" cols="50" {tip text="Enter additional information (optional)"}>{$document.description}</TEXTAREA>
+		</TD>
+	</TR>
+{*
+	<TR>
+		<TD width="1%">
+			<IMG src="img/save.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("File:")}
+		</TD>
+		<TD width="98%">
+			<INPUT size="50" type="file" name="file" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD width="1%">
+			<IMG src="img/class.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Template:")}
+		</TD>
+		<TD width="98%">
+			<SELECT SIZE="1" NAME="document[template]" {tip text="Select template to generate new document if you haven't got prepared file" trigger="template"}>
+				<OPTION VALUE="0">... {trans("select template")} ...</OPTION>
+				{foreach from=$docengines item=item}
+				<OPTION VALUE="{$item.name}"{if $document.template==$item.name} SELECTED{/if}>{$item.title}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+*}
+	<TR>
+		<TD width="1%">
+	        	<IMG src="img/confirm.gif" ALT="">
+		</TD>
+		<TD width="1%" nowrap><B>{trans("Confirmed:")}</B></TD>
+		<TD width="98%">
+		        <INPUT type="checkbox" name="document[closed]" value="1" {if $document.closed} checked{/if}>
+		</TD>
+	</TR>
+	<TR>
+		<TD colspan="3" align="right" NOWRAP>
+			<A href="javascript: document.documentedit.submit();">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
+			<A href="?m=customerinfo&id={$document.customerid}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
+		</TD>
+	</TR>
+    </TBODY>
+</TABLE>
+</FORM></P>
+<SCRIPT type="text/javascript">
+<!--
+var cal1 = new calendar(document.forms['documentedit'].elements['document[fromdate]']);
+cal1.time_comp = false;
+var cal2 = new calendar(document.forms['documentedit'].elements['document[todate]']);
+cal2.time_comp = false;
+document.forms['documentedit'].elements['document[title]'].focus();
+setnumberplans();
+//-->
+</SCRIPT>
+{/block}

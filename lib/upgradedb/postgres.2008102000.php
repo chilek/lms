@@ -64,22 +64,28 @@ SELECT c.* FROM customers c
 
 ");
 
-if($list = $DB->GetAll("SELECT * FROM uiconfig WHERE section = 'finances' OR section = 'invoices'"))
-	foreach($list as $opt)
-		$CONFIG[$opt['section']][$opt['var']] = $opt['value'];
-
-$DB->Execute("INSERT INTO divisions (shortname, inv_header, inv_footer, inv_author, inv_cplace, name, address, city, zip, account)
-		VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-	array(!empty($CONFIG['finances']['shortname']) && $CONFIG['finances']['shortname'] != 'finances/shortname' ? $CONFIG['finances']['shortname'] : 'default',
-		!empty($CONFIG['invoices']['header']) ? str_replace("\\n", "\n", $CONFIG['invoices']['header']) : '',
-		!empty($CONFIG['invoices']['footer']) ? str_replace("\\n", "\n", $CONFIG['invoices']['footer']) : '',
-		!empty($CONFIG['invoices']['default_author']) ? $CONFIG['invoices']['default_author'] : '',
-		!empty($CONFIG['invoices']['cplace']) ? $CONFIG['invoices']['cplace'] : '',
-		!empty($CONFIG['finances']['name']) && $CONFIG['finances']['name'] != 'finances/name' ? $CONFIG['finances']['name'] : 'default',
-		!empty($CONFIG['finances']['address']) && $CONFIG['finances']['address'] != 'finances/address' ? $CONFIG['finances']['address'] : '',
-		!empty($CONFIG['finances']['city']) && $CONFIG['finances']['city'] != 'finances/city' ? $CONFIG['finances']['city'] : '',
-		!empty($CONFIG['finances']['zip']) && $CONFIG['finances']['zip'] != 'finances/zip' ? $CONFIG['finances']['zip'] : '',
-		!empty($CONFIG['finances']['account']) ? $CONFIG['finances']['account'] : '',
+$shortname = ConfigHelper::getConfig('finances.shortname');
+$header = ConfigHelper::getConfig('invoices.header');
+$footer = ConfigHelper::getConfig('invoices.footer');
+$default_author = ConfigHelper::getConfig('invoices.default_author');
+$cplace = ConfigHelper::getConfig('invoices.cplace');
+$name = ConfigHelper::getConfig('finances.name');
+$address = ConfigHelper::getConfig('finances.address');
+$city = ConfigHelper::getConfig('finances.city');
+$zip = ConfigHelper::getConfig('finances.zip');
+$account = ConfigHelper::getConfig('finances.account');
+$DB->Execute("INSERT INTO divisions (shortname, inv_header, inv_footer, inv_author, inv_cplace, name, 
+	address, city, zip, account) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+	array(!empty($shortname) && $shortname != 'finances/shortname' ? $shortname : 'default',
+		!empty($header) ? str_replace("\\n", "\n", $header) : '',
+		!empty($footer) ? str_replace("\\n", "\n", $footer) : '',
+		!empty($default_author) ? $default_author : '',
+		!empty($cplace) ? $cplace : '',
+		!empty($name) && $name != 'finances/name' ? $name : 'default',
+		!empty($address) && $address != 'finances/address'  ? $address : '',
+		!empty($city) && $city != 'finances/city'  ? $city : '',
+		!empty($zip) && $zip != 'finances/zip'  ? $zip : '',
+		!empty($account) ? $account : '',
 	));
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008102000', 'dbversion'));

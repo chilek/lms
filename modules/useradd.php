@@ -29,6 +29,9 @@ $useradd = isset($_POST['useradd']) ? $_POST['useradd'] : array();
 
 if(sizeof($useradd))
 {
+    
+        $error = array();
+    
 	foreach($useradd as $key => $value)
 	    if (!is_array($value))
 		    $useradd[$key] = trim($value);
@@ -107,6 +110,11 @@ if(sizeof($useradd))
 	if (!empty($useradd['ntype']))
 		$useradd['ntype'] = array_sum(array_map('intval', $useradd['ntype']));
 
+        $hook_data = $LMS->executeHook('useradd_validation_before_submit', array('useradd' => $useradd,
+                                                                                 'error' => $error));
+        $useradd = $hook_data['useradd'];
+        $error   = $hook_data['error'];
+
 	if (!$error) {
 		$useradd['accessfrom'] = $accessfrom;
 		$useradd['accessto'] = $accessto;
@@ -128,6 +136,7 @@ if(sizeof($useradd))
 				}
 			}
 
+                $LMS->executeHook('useradd_after_submit', $id);
 		$SESSION->redirect('?m=userinfo&id='.$id);
 	} elseif (isset($_POST['selected']))
 		foreach ($_POST['selected'] as $idx => $name) {
@@ -146,6 +155,9 @@ foreach($access['table'] as $idx => $row)
 	$accesslist[] = $row;
 }
 
+if($AUTH->nousers == TRUE)           // if there is no users
+    $accesslist[0][enabled]=1;       // then new users should have "full privileges" checked to make new installation more human error proof.
+
 $layout['pagetitle'] = trans('New User');
 
 $SMARTY->assign('useradd', $useradd);
@@ -153,6 +165,6 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('accesslist', $accesslist);
 $SMARTY->assign('available', $DB->GetAllByKey('SELECT id, name FROM customergroups ORDER BY name', 'id'));
 
-$SMARTY->display('useradd.html');
+$SMARTY->display('user/useradd.html');
 
 ?>

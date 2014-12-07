@@ -1,0 +1,48 @@
+<TABLE class="lmsbox-inner">
+<THEAD>
+<TR>
+	<TD style="width: 1%; white-space: nowrap;" COLSPAN="2">{trans("URL:")}</TD>
+	<TD style="width: 1%;">{trans("Comment:")}</TD>
+	<TD style="width: 98%;">&nbsp;</TD>
+</TR>
+</THEAD>
+<TBODY>
+{cycle name=locks values="light,lucid" print=false}
+{foreach from=$mgmurls item=mgmurl}
+<TR class="highlight {cycle name=managementurls}"  >
+	<TD style="width: 1%; white-space: nowrap;" COLSPAN="2">
+		<a href="{$mgmurl.url}"{if preg_match("/^(https?|ftp):/", $mgmurl.url)} target="_blank"{/if}>{$mgmurl.url}</a>
+	</TD>
+	<TD style="width: 1%; white-space: nowrap;">
+		{$mgmurl.comment}
+	</TD>
+	<TD style="width: 98%; text-align: right; white-space: nowrap;">
+		<A HREF="javascript:delManagementUrl({$mgmurl.id});"><IMG SRC="img/delete.gif" ALT="[ {trans("Delete")} ]" {tip text="Remove management URL"}></A>
+	</TD>
+</TR>
+{foreachelse}
+<TR>
+	<TD style="width: 100%; text-align: center;" colspan="4">
+		<p>&nbsp;</p>
+		<p><span class="bold">{trans("No management URL's.")}</span></p>
+		<p>&nbsp;</p>
+	</TD>
+</TR>
+{/foreach}
+<TR>
+	<TD COLSPAN="2" style="white-space: nowrap;">
+		<label for="url">{trans("URL:")}
+		<input size="80" name="url" id="url" value="" {tip text="Enter management URL" trigger="url"}>
+		</label>
+	</TD>
+	<TD style="white-space: nowrap;">
+		<label for="comment">{trans("Comment:")}
+		<input size="40" name="comment" id="comment" value="" {tip text="Enter URL comment" trigger="comment"}>
+		</label>
+	</TD>
+	<TD style="text-align: right; white-space: nowrap;" ROWSPAN="2">
+		<A id="managementurladdlink" HREF="javascript:addManagementUrl();" {tip text="Add new management URL"}>{trans("Add")} <IMG SRC="img/save.gif" alt=""></A>
+	</TD>
+</TR>
+</TBODY>
+</TABLE>

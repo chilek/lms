@@ -26,12 +26,12 @@
 
 $layout['pagetitle'] = trans('Configuration Reload');
 
-$_RELOAD_TYPE = $CONFIG['phpui']['reload_type'];
-$_EXECCMD = $CONFIG['phpui']['reload_execcmd'];
+$_RELOAD_TYPE = ConfigHelper::getConfig('phpui.reload_type');
+$_EXECCMD = ConfigHelper::getConfig('phpui.reload_execcmd');
 
 $serverTime = date("r");
 
-if (check_conf('phpui.reload_timer'))
+if (ConfigHelper::checkConfig('phpui.reload_timer'))
 	$SMARTY->assign('serverTime', $serverTime);
 
 switch($_RELOAD_TYPE)
@@ -86,13 +86,14 @@ switch($_RELOAD_TYPE)
 	
 		$hosts = $DB->GetAll('SELECT id, name, lastreload, reload, description FROM hosts ORDER BY name');
 		
-		if(!empty($CONFIG['phpui']['reload_sqlquery']) && $hosts)
+		$reload_sqlquery = ConfigHelper::getConfig('phpui.reload_sqlquery');
+		if(!empty($reload_sqlquery) && $hosts)
 		{
 			$SMARTY->display('header.html');
 			
 			if(isset($_GET['setreloads']) && isset($_POST['hosts']))
 			{
-				$sqlqueries = explode(';', $CONFIG['phpui']['reload_sqlquery']);
+				$sqlqueries = explode(';', $reload_sqlquery);
 				
 				echo '<H1>'.$layout['pagetitle'].'</H1>';
 

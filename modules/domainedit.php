@@ -124,6 +124,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('domain', $domain);
 $SMARTY->assign('customers', $LMS->GetCustomerNames());
-$SMARTY->display('domainedit.html');
+$SMARTY->display('domain/domainedit.html');
 
 ?>

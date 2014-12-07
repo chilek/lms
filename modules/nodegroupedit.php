@@ -65,7 +65,7 @@ if(isset($_POST['nodegroup']))
 		$LMS->DB->Execute('UPDATE nodegroups SET name=?, description=?
 				WHERE id=?', array_values($args));
 		if ($SYSLOG)
-			$SYSLOG->AddMessages(SYSLOG_RES_NODEGROUP, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP]));
+			$SYSLOG->AddMessage(SYSLOG_RES_NODEGROUP, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP]));
 
 		$SESSION->redirect('?m=nodegroupinfo&id='.$id);
 	}
@@ -85,6 +85,6 @@ $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 $SMARTY->assign('membersnetid', isset($membersnetid) ? $membersnetid : 0);
 $SMARTY->assign('othersnetid', isset($othersnetid) ? $othersnetid : 0);
 
-$SMARTY->display('nodegroupedit.html');
+$SMARTY->display('node/nodegroupedit.html');
 
 ?>

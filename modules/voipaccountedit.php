@@ -83,7 +83,7 @@ if(isset($_POST['voipaccountedit']))
 		$error['passwd'] = trans('Voip account password is required!');
 	elseif(strlen($voipaccountedit['passwd']) > 32)
 		$error['passwd'] = trans('Voip account password is too long (max.32 characters)!');
-	elseif(!preg_match('/^[_a-z0-9-]+$/i', $voipaccountedit['passwd']))
+	elseif(!preg_match('/^[_a-z0-9-@]+$/i', $voipaccountedit['passwd']))
 		$error['passwd'] = trans('Specified password contains forbidden characters!');		
 
 	if($voipaccountedit['phone']=='')
@@ -111,6 +111,16 @@ if(isset($_POST['voipaccountedit']))
 	$voipaccountinfo['phone'] = $voipaccountedit['phone'];
 	$voipaccountinfo['ownerid'] = $voipaccountedit['ownerid'];
 
+        $hook_data = $plugin_manager->executeHook(
+            'voipaccountedit_before_submit',
+            array(
+                'voipaccountedit' => $voipaccountedit,
+                'error' => $error
+            )
+        );
+        $voipaccountedit = $hook_data['voipaccountedit'];
+        $error = $hook_data['error'];
+        
 	if(!$error)
 	{
 		$LMS->VoipAccountUpdate($voipaccountedit);
@@ -123,10 +133,20 @@ $customers = $LMS->GetCustomerNames();
 
 include(MODULES_DIR.'/customer.inc.php');
 
+$hook_data = $plugin_manager->executeHook(
+    'voipaccountedit_before_display', 
+    array(
+        'voipaccountinfo' => $voipaccountinfo,
+        'smarty' => $SMARTY,
+    )
+);
+
+$voipaccountinfo = $hook_data['voipaccountinfo'];
+
 $SMARTY->assign('customervoipaccounts',$customervoipaccounts);
 $SMARTY->assign('error',$error);
 $SMARTY->assign('voipaccountinfo',$voipaccountinfo);
 $SMARTY->assign('customers',$customers);
-$SMARTY->display('voipaccountedit.html');
+$SMARTY->display('voipaccount/voipaccountedit.html');
 
 ?>

@@ -8,4 +8,4 @@
 <title>::: LMS :{if $layout.pagetitle neq ""} {$layout.pagetitle} :{/if}::</title>
 <link href="img/style_print.css" rel="stylesheet" type="text/css">
 </head>
-<body{if $landscape} class="landscape"{/if}{if preg_match('/report/i', get_conf('phpui.printer_window'))} onload="window.print()"{/if}>
+<body{if $landscape} class="landscape"{/if}{if preg_match('/report/i', ConfigHelper::getConfig('phpui.printer_window'))} onload="window.print()"{/if}>

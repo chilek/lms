@@ -24,16 +24,17 @@
  *  $Id$
  */
 
-if(strtolower($CONFIG['invoices']['type']) == 'pdf')
+if(strtolower(ConfigHelper::getConfig('invoices.type')) == 'pdf')
 {
-    include('invoice_tcpdf.php');
+    include('invoice_pdf.php');
     $SESSION->close();
     die;
 }
 
-header('Content-Type: '.$CONFIG['invoices']['content_type']);
-if(!empty($CONFIG['invoices']['attachment_name']))
-	header('Content-Disposition: attachment; filename='.$CONFIG['invoices']['attachment_name']);
+header('Content-Type: '.ConfigHelper::getConfig('invoices.content_type'));
+$attachment_name = ConfigHelper::getConfig('invoices.attachment_name');
+if(!empty($attachment_name))
+	header('Content-Disposition: attachment; filename='.$attachment_name);
 
 $SMARTY->assign('css', file('img/style_print.css')); 
 
@@ -56,7 +57,7 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached')
 	}
 
 	$layout['pagetitle'] = trans('Invoices');
-	$SMARTY->display('invoiceheader.html');
+	$SMARTY->display('invoice/invoiceheader.html');
 	
 	if(isset($_GET['cash']))
 	{
@@ -88,9 +89,9 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached')
 			$SMARTY->assign('duplicate',$type==trans('DUPLICATE') ? TRUE : FALSE);
 			$SMARTY->assign('invoice',$invoice);
 			if(isset($invoice['invoice']))
-				$SMARTY->display($CONFIG['invoices']['cnote_template_file']);
+				$SMARTY->display('invoice/'.ConfigHelper::getConfig('invoices.cnote_template_file'));
 			else
-				$SMARTY->display($CONFIG['invoices']['template_file']);
+				$SMARTY->display('invoice/'.ConfigHelper::getConfig('invoices.template_file'));
 		}
 	}
 	$SMARTY->display('clearfooter.html');
@@ -132,7 +133,7 @@ elseif(isset($_GET['fetchallinvoices']))
 	$count = sizeof($ids) * sizeof($which);
 	$i=0;
 
-	$SMARTY->display('invoiceheader.html');
+	$SMARTY->display('invoice/invoiceheader.html');
 
 	foreach($ids as $idx => $invoiceid)
 	{
@@ -143,9 +144,9 @@ elseif(isset($_GET['fetchallinvoices']))
 			$SMARTY->assign('type',$type);
 			$SMARTY->assign('invoice',$invoice);
 			if(isset($invoice['invoice']))
-				$SMARTY->display($CONFIG['invoices']['cnote_template_file']);
+				$SMARTY->display('invoice/'.ConfigHelper::getConfig('invoices.cnote_template_file'));
 			else
-				$SMARTY->display($CONFIG['invoices']['template_file']);
+				$SMARTY->display('invoice/'.ConfigHelper::getConfig('invoices.template_file'));
 		}
 	}
 	$SMARTY->display('clearfooter.html');
@@ -166,7 +167,7 @@ elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 
 	if(!sizeof($which))
         {
-	        $tmp = explode(',', $CONFIG['invoices']['default_printpage']);
+	        $tmp = explode(',', ConfigHelper::getConfig('invoices.default_printpage'));
 	        foreach($tmp as $t)
 			if(trim($t) == 'original') $which[] = trans('ORIGINAL');
 			elseif(trim($t) == 'copy') $which[] = trans('COPY');
@@ -178,7 +179,7 @@ elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 	$count = sizeof($which);
 	$i = 0;
 	
-	$SMARTY->display('invoiceheader.html');
+	$SMARTY->display('invoice/invoiceheader.html');
 	foreach($which as $type)
 	{
 		$i++;
@@ -188,9 +189,9 @@ elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 		$SMARTY->assign('type',$type);
 
 		if(isset($invoice['invoice']))
-			$SMARTY->display($CONFIG['invoices']['cnote_template_file']);
+			$SMARTY->display('invoice/'.ConfigHelper::getConfig('invoices.cnote_template_file'));
 		else
-			$SMARTY->display($CONFIG['invoices']['template_file']);
+			$SMARTY->display('invoice/'.ConfigHelper::getConfig('invoices.template_file'));
 	}
 	$SMARTY->display('clearfooter.html');
 }

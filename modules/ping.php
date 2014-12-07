@@ -26,7 +26,7 @@
 
 function refresh($params)
 {
-	global $CONFIG, $SESSION;
+	global $SESSION;
 
 	// xajax response
 	$objResponse = new xajaxResponse();
@@ -39,20 +39,22 @@ function refresh($params)
 
 	switch ($type) {
 		case 2:
-			if (empty($CONFIG['phpui']['arping_helper']))
+			$arping_helper = ConfigHelper::getConfig('phpui.arping_helper');
+			if (empty($arping_helper))
 				$cmd = 'arping %i -c 1 -w 1.0';
 			else
-				$cmd = $CONFIG['phpui']['arping_helper'];
+				$cmd = $arping_helper;
 			$summary_regexp = '/^sent+[[:blank:]]+[0-9]+[[:blank:]]+probes/i';
 			$reply_regexp = '/unicast/i';
 			$reply_detailed_regexp = '/\ \[(.*?)\].+\ ([0-9\.]+.+)$/';
 			break;
 		case 1:
         default:
-			if (empty($CONFIG['phpui']['ping_helper']))
+			$ping_helper = ConfigHelper::getConfig('phpui.ping_helper');
+			if (empty($ping_helper))
 				$cmd = 'ping %i -c 1 -s 1450 -w 1.0';
 			else
-				$cmd = $CONFIG['phpui']['ping_helper'];
+				$cmd = $ping_helper;
 			$summary_regexp = '/^[0-9]+[[:blank:]]+packets[[:blank:]]+transmitted/i';
 			$reply_regexp = '/icmp_[rs]eq/';
 			$reply_detailed_regexp = '/^([0-9]+).+icmp_[rs]eq=([0-9]+).+ttl=([0-9]+).+time=([0-9\.]+.+)$/';

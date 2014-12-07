@@ -82,6 +82,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('error', $error);
-$SMARTY->display('rtqueueadd.html');
+$SMARTY->display('rt/rtqueueadd.html');
 
 ?>

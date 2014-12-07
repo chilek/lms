@@ -54,12 +54,12 @@ if(isset($setwarnings['mnodeid']))
 			case 2:
 				if (empty($msgtmplid))
 					break;
-				$LMS->UpdateMessageTemplate($msgtmplid, TMPL_WARNING, null, $setwarnings['message']);
+				$LMS->UpdateMessageTemplate($msgtmplid, TMPL_WARNING, null, '', $setwarnings['message']);
 				break;
 			case 3:
 				if (!strlen($msgtmplname))
 					break;
-				$LMS->AddMessageTemplate(TMPL_WARNING, $msgtmplname, $setwarnings['message']);
+				$LMS->AddMessageTemplate(TMPL_WARNING, $msgtmplname, '', $setwarnings['message']);
 				break;
 		}
 
@@ -163,6 +163,6 @@ $SMARTY->assign('warnmessage', $SESSION->get('warnmessage'));
 $SMARTY->assign('warnon', $SESSION->get('warnon'));
 $SMARTY->assign('warnoff', $SESSION->get('warnoff'));
 $SMARTY->assign('nodelist',$nodelist);
-$SMARTY->display('nodewarnings.html');
+$SMARTY->display('node/nodewarnings.html');
 
 ?>

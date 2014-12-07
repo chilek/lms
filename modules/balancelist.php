@@ -216,7 +216,7 @@ else
 	$to = '';
 $SESSION->save('blt', $to);
 
-$pagelimit = $CONFIG['phpui']['balancelist_pagelimit'];
+$pagelimit = ConfigHelper::getConfig('phpui.balancelist_pagelimit');
 $page = (empty($_GET['page']) ? 0 : intval($_GET['page']));
 
 $balancelist = GetBalanceList($s, $c, array('group' => $g, 'exclude'=> $ge), $pagelimit, $page, $from, $to);
@@ -252,6 +252,6 @@ $SMARTY->assign('start', ($page - 1) * $pagelimit);
 $SMARTY->assign('page',$page);
 $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('grouplist',$LMS->CustomergroupGetAll());
-$SMARTY->display('balancelist.html');
+$SMARTY->display('balance/balancelist.html');
 
 ?>

@@ -36,6 +36,6 @@ $layout['pagetitle'] = trans('Category Info: $a',$category['name']);
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('category', $category);
-$SMARTY->display('rtcategoryinfo.html');
+$SMARTY->display('rt/rtcategoryinfo.html');
 
 ?>

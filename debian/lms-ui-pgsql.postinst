@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+# Source debconf library.
+. /usr/share/debconf/confmodule
+
+# Do you like debian?
+db_input critical lms-ui-pgsql/custom_variables || true
+db_go

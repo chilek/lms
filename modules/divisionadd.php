@@ -107,12 +107,17 @@ if(!empty($_POST['division']))
 	}
 }	
 
-if(!isset($division['zip']) && isset($CONFIG['phpui']['default_zip']))
-	$division['zip'] = $CONFIG['phpui']['default_zip'];
-if(!isset($division['city']) && isset($CONFIG['phpui']['default_city']))
-	$division['city'] = $CONFIG['phpui']['default_city'];
-if(!isset($division['address']) && isset($CONFIG['phpui']['default_address']))
-	$division['address'] = $CONFIG['phpui']['default_address'];
+$default_zip = ConfigHelper::getConfig('phpui.default_zip');
+$default_city = ConfigHelper::getConfig('phpui.default_city');
+$default_address = ConfigHelper::getConfig('phpui.default_address');
+
+if (!isset($division['zip']) && $default_zip) {
+	$division['zip'] = $default_zip;
+} if (!isset($division['city']) && $default_city) {
+	$division['city'] = $default_city;
+} if (!isset($division['address']) && $default_address) {
+	$division['address'] = $default_address;
+}
 
 $layout['pagetitle'] = trans('New Division');
 
@@ -121,6 +126,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('division', $division);
 $SMARTY->assign('countries', $LMS->GetCountries());
 $SMARTY->assign('error', $error);
-$SMARTY->display('divisionadd.html');
+$SMARTY->display('division/divisionadd.html');
 
 ?>

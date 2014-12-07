@@ -104,6 +104,8 @@ if (!$quiet) {
 if (!is_readable($CONFIG_FILE))
 	die("Unable to read configuration file [".$CONFIG_FILE."]!\n");
 
+define('CONFIG_FILE', $CONFIG_FILE);
+
 $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 
 // Check for configuration vars and set default values
@@ -112,55 +114,49 @@ $CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ?
 
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
+
+// Load autloader
+require_once(LIB_DIR.'/autoloader.php');
+
 // Do some checks and load config defaults
 
 require_once(LIB_DIR.'/config.php');
 
 // Init database
- 
-$_DBTYPE = $CONFIG['database']['type'];
-$_DBHOST = $CONFIG['database']['host'];
-$_DBUSER = $CONFIG['database']['user'];
-$_DBPASS = $CONFIG['database']['password'];
-$_DBNAME = $CONFIG['database']['database'];
 
-require(LIB_DIR.'/LMSDB.php');
+$DB = null;
 
-$DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
+try {
 
-if(!$DB)
-{
-	// can't working without database
-	die("Fatal error: cannot connect to database!\n");
+    $DB = LMSDB::getInstance();
+
+} catch (Exception $ex) {
+    
+    trigger_error($ex->getMessage(), E_USER_WARNING);
+    
+    // can't working without database
+    die("Fatal error: cannot connect to database!\n");
+    
 }
 
-// Read configuration from database
-
-if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0'))
-	foreach($cfg as $row)
-		$CONFIG[$row['section']][$row['var']] = $row['value'];
-
 // debtors notify
-$limit = (!empty($CONFIG['notify-sms']['limit']) ? intval($CONFIG['notify-sms']['limit']) : 0);
-$debtors_message = (!empty($CONFIG['notify-sms']['debtors_message']) ? $CONFIG['notify-sms']['debtors_message'] : '');
-$debtors_subject = (!empty($CONFIG['notify-sms']['debtors_subject']) ? $CONFIG['notify-sms']['debtors_subject'] : 'Debtors notification');
+$limit = ConfigHelper::getConfig('notify-sms.limit', 0);
+$debtors_message = ConfigHelper::getConfig('notify-sms.debtors_message', '');
+$debtors_subject = ConfigHelper::getConfig('notify-sms.debtors_subject', 'Debtors notification');
 // new debit note notify
-$notes_message = (!empty($CONFIG['notify-sms']['notes_message']) ? $CONFIG['notify-sms']['notes_message'] : '');
-$notes_subject = (!empty($CONFIG['notify-sms']['notes_subject']) ? $CONFIG['notify-sms']['notes_subject'] : 'New debit note notification');
+$notes_message = ConfigHelper::getConfig('notify-sms.notes_message', '');
+$notes_subject = ConfigHelper::getConfig('notify-sms.notes_subject', 'New debit note notification');
 // new invoice notify
-$invoices_message = (!empty($CONFIG['notify-sms']['invoices_message']) ? $CONFIG['notify-sms']['invoices_message'] : '');
-$invoices_subject = (!empty($CONFIG['notify-sms']['invoices_subject']) ? $CONFIG['notify-sms']['invoices_subject'] : 'New invoice notification');
+$invoices_message = ConfigHelper::getConfig('notify-sms.invoices_message', '');
+$invoices_subject = ConfigHelper::getConfig('notify-sms.invoices_subject', 'New invoice notification');
 // before deadline notify
-$deadline_message = (!empty($CONFIG['notify-sms']['deadline_message']) ? $CONFIG['notify-sms']['deadline_message'] : '');
-$deadline_subject = (!empty($CONFIG['notify-sms']['deadline_subject']) ? $CONFIG['notify-sms']['deadline_subject'] : 'Invoice deadline notification');
-$deadline_days = (!empty($CONFIG['notify-sms']['deadline_days']) ? intval($CONFIG['notify-sms']['deadline_days']) : 0);
+$deadline_message = ConfigHelper::getConfig('notify-sms.deadline_message', '');
+$deadline_subject = ConfigHelper::getConfig('notify-sms.deadline_subject', 'Invoice deadline notification');
+$deadline_days = ConfigHelper::getConfig('notify-sms.deadline_days', 0);
 
-$script_service = (!empty($CONFIG['notify-sms']['service']) ? $CONFIG['notify-sms']['service'] : '');
+$script_service = ConfigHelper::getConfig('notify-sms.service');
 
-$debug_sms = (!empty($CONFIG['sms']['debug_sms']) ? $CONFIG['sms']['debug_sms'] : '');
-
-if ($script_service)
-	$CONFIG['sms']['service'] = $script_service;
+$debug_sms = ConfigHelper::getConfig('sms.debug_sms', '');
 
 // Include required files (including sequence is important)
 
@@ -168,10 +164,9 @@ require_once(LIB_DIR.'/language.php');
 include_once(LIB_DIR.'/definitions.php');
 require_once(LIB_DIR.'/unstrip.php');
 require_once(LIB_DIR.'/common.php');
-require_once(LIB_DIR.'/LMS.class.php');
 require_once(LIB_DIR . '/SYSLOG.class.php');
 
-if (check_conf('phpui.logging') && class_exists('SYSLOG'))
+if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG'))
 	$SYSLOG = new SYSLOG($DB);
 else
 	$SYSLOG = null;
@@ -179,7 +174,7 @@ else
 // Initialize Session, Auth and LMS classes
 
 $AUTH = NULL;
-$LMS = new LMS($DB, $AUTH, $CONFIG, $SYSLOG);
+$LMS = new LMS($DB, $AUTH, $SYSLOG);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
@@ -217,14 +212,14 @@ function parse_data($data, $row) {
 	return $data;
 }
 
-function send_message($msgid, $cid, $phone, $data) {
+function send_message($msgid, $cid, $phone, $data, $script_service) {
 	global $LMS, $DB;
 	$DB->Execute("INSERT INTO messageitems
 		(messageid, customerid, destination, status)
 		VALUES (?, ?, ?, ?)",
 		array($msgid, $cid, $phone, 1));
 
-	$result = $LMS->SendSMS(str_replace(' ', '', $phone), $data, $msgid);
+	$result = $LMS->SendSMS(str_replace(' ', '', $phone), $data, $msgid, $script_service);
 	$query = "UPDATE messageitems
 		SET status = ?, lastdate = ?NOW?, error = ?
 		WHERE messageid = ? AND customerid = ?";
@@ -280,7 +275,7 @@ if ($debtors_message && (empty($types) || in_array('debtors', $types))) {
 						$row['lastname'] . ' ' . $row['name'], $row['id'], $phone);
 
 				if (!$debug)
-					send_message($msgid, $row['id'], $phone, parse_data($debtors_message, $row));
+					send_message($msgid, $row['id'], $phone, parse_data($debtors_message, $row), $script_service);
 			}
 		}
 	}
@@ -327,7 +322,7 @@ if ($invoices_message && (empty($types) || in_array('invoices', $types))) {
 						$row['name'], $row['id'], $row['doc_number'], $phone);
 
 				if (!$debug)
-					send_message($msgid, $row['id'], $phone, parse_data($invoices_message, $row));
+					send_message($msgid, $row['id'], $phone, parse_data($invoices_message, $row), $script_service);
 			}
 		}
 	}
@@ -382,7 +377,7 @@ if ($deadline_message && (empty($types) || in_array('deadline', $types))) {
 						$row['name'], $row['id'], $row['doc_number'], $phone);
 
 				if (!$debug)
-					send_message($msgid, $row['id'], $phone, parse_data($deadline_message, $row));
+					send_message($msgid, $row['id'], $phone, parse_data($deadline_message, $row), $script_service);
 			}
 		}
 	}
@@ -428,7 +423,7 @@ if ($notes_message && (empty($types) || in_array('notes', $types))) {
 						$row['name'], $row['id'], $row['doc_number'], $phone);
 
 				if (!$debug)
-					send_message($msgid, $row['id'], $phone, parse_data($notes_message, $row));
+					send_message($msgid, $row['id'], $phone, parse_data($notes_message, $row), $script_service);
 			}
 		}
 	}

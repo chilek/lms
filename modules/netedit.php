@@ -42,7 +42,7 @@ else
 
 $SESSION->save('ntlp.'.$_GET['id'], $page);
 	
-$network = $LMS->GetNetworkRecord($_GET['id'], $page, $CONFIG['phpui']['networkhosts_pagelimit']);
+$network = $LMS->GetNetworkRecord($_GET['id'], $page, ConfigHelper::getConfig('phpui.networkhosts_pagelimit'));
 
 if(isset($_POST['networkdata']))
 {
@@ -191,6 +191,6 @@ $SMARTY->assign('netlistsize',sizeof($networks));
 $SMARTY->assign('prefixlist', $LMS->GetPrefixList());
 $SMARTY->assign('hostlist', $LMS->DB->GetAll('SELECT id, name FROM hosts ORDER BY name'));
 $SMARTY->assign('error',$error);
-$SMARTY->display('netinfo.html');
+$SMARTY->display('net/netinfo.html');
 
 ?>

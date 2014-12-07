@@ -1,0 +1,213 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+{if $invoice.invoice}
+<SCRIPT type="text/javascript">
+window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy={$invoice.copy}&duplicate={$invoice.duplicate}');
+</SCRIPT>
+{/if}
+<SCRIPT type="text/javascript">
+<!--
+	function pays()
+	{
+		if (!confirm('{trans("Are you sure, you want to check/uncheck selected invoices as accounted?")}'))
+			return;
+		document.page.action="?m=invoicepaid";
+		document.page.target="";
+		document.page.submit();
+	}
+
+	function prints()
+	{
+		var add = "";
+		if (document.page.original.checked)
+			add = "&original=1";
+		if (document.page.copy.checked)
+			add += "&copy=1";
+		if (document.page.duplicate.checked)
+			add += "&duplicate=1";
+
+		document.page.action="?m=invoice&print=cached" + add;
+		document.page.target="_blank";
+		document.page.submit();
+	}
+
+	function filter()
+	{
+		document.page.action="?m=invoicelist";
+		document.page.target="";
+		document.page.submit();
+	}
+
+{if ConfigHelper::checkConfig('phpui.short_pagescroller')}
+	function pagechange1()
+	{
+		document.page.action="?m=invoicelist&page=" + document.forms['page'].elements['page1'].value;
+		document.page.target="";
+		document.page.submit();
+	}
+	function pagechange2()
+	{
+		document.page.action="?m=invoicelist&page=" + document.forms['page'].elements['page2'].value;
+		document.page.target="";
+		document.page.submit();
+	}
+{/if}
+//-->
+</SCRIPT>
+{$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
+<FORM METHOD="POST" NAME="page">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD WIDTH="1%" nowrap>
+			<A href="?m=invoicelist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD WIDTH="1%" nowrap>
+			<A href="?m=invoicelist&o=cdate{if $listdata.direction eq "asc" && $listdata.order eq "cdate"},desc{/if}">{trans("Date:")}</A> {if $listdata.order eq "cdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD WIDTH="1%" nowrap>
+			<A href="?m=invoicelist&o=number{if $listdata.direction eq "asc" && $listdata.order eq "number"},desc{/if}">{trans("Number:")}</A> {if $listdata.order eq "number"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD WIDTH="1%" nowrap>
+			<A href="?m=invoicelist&o=value{if $listdata.direction eq "asc" && $listdata.order eq "value"},desc{/if}">{trans("Value:")}</A> {if $listdata.order eq "value"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD WIDTH="1%" nowrap>
+			<A href="?m=invoicelist&o=count{if $listdata.direction eq "asc" && $listdata.order eq "count"},desc{/if}">{trans("Items:")}</A> {if $listdata.order eq "count"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD WIDTH="94%" nowrap>
+			<A href="?m=invoicelist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}">{trans("For:")}</A> {if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD WIDTH="1%">
+			&nbsp;
+		</TD>
+	</TR>
+	<TR>
+		<TD colspan="7">
+				<B>{trans("Filter:")} </B> 
+				<INPUT type="text" name="search" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>&nbsp;
+				<SELECT size="1" name="cat">
+					<OPTION value=""{if $listdata.cat eq ""} SELECTED{/if}>{trans("- select filter category -")}</OPTION>
+					<OPTION value="cdate"{if $listdata.cat eq "cdate"} SELECTED{/if}>{trans("day (YYYY/MM/DD)")}</OPTION>
+					<OPTION value="month"{if $listdata.cat eq "month"} SELECTED{/if}>{trans("month (YYYY/MM)")}</OPTION>
+					<OPTION value="number"{if $listdata.cat eq "number"} SELECTED{/if}>{trans("number")}</OPTION>
+					<OPTION value="value"{if $listdata.cat eq "value"} SELECTED{/if}>{trans("value")}</OPTION>
+					<OPTION value="name"{if $listdata.cat eq "name"} SELECTED{/if}>{trans("customer name")}</OPTION>
+					<OPTION value="customerid"{if $listdata.cat eq "customerid"} SELECTED{/if}>{trans("customer ID")}</OPTION>
+					<OPTION value="ten"{if $listdata.cat eq "ten"} SELECTED{/if}>{trans("TEN")}</OPTION>
+					<OPTION value="address"{if $listdata.cat eq "address"} SELECTED{/if}>{trans("address")}</OPTION>
+					<OPTION value="cnotes"{if $listdata.cat eq "cnotes"} SELECTED{/if}>{trans("show only credit notes")}</OPTION>
+				</SELECT>&nbsp;
+				{trans("Group:")}
+				<SELECT size="1" name="group">
+					<OPTION value="0"{if !$listdata.group} SELECTED{/if}>{trans("- all groups -")}</OPTION>
+					{section name="grouplist" loop=$grouplist}
+					<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group eq $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:30:"...":true}</OPTION>
+					{/section}
+				</SELECT>
+				<NOBR>
+				<INPUT type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} CHECKED{/if}><label for="groupexclude">{trans("exclude group")}</label>
+				</NOBR>
+				<NOBR>
+				<INPUT type="checkbox" name="hideclosed" id="hideclosed"{if $listdata.hideclosed} CHECKED{/if}><label for="hideclosed">{trans("hide accounted<!plural>")}</label>
+				&nbsp;<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>
+				</NOBR>
+		</TD>
+	</TR>		
+	{if $listdata.total != 0}
+	<TR>
+		<TD class="pagination" WIDTH="100%" COLSPAN="7">
+			{include file="scroller.html" loop=$invoicelist scrollerno=1}
+		</TD>
+	</TR>
+	{/if}
+    </THEAD>
+    <TBODY>
+	{cycle values="light,lucid" print=false}
+	{section name=invoicelist loop=$invoicelist start=$start max=$pagelimit}
+	{assign var=invoice value=$invoicelist[invoicelist]}
+	{assign var=invoiceid value=$invoice.id}
+	<TR class="highlight {cycle}{if $invoice.closed} blend{/if}"  >
+		<TD WIDTH="1%">
+			{$invoice.id|string_format:"%06d"}
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			{$invoice.cdate|date_format:"%Y/%m/%d %H:%M"}
+		</TD>
+		<TD WIDTH="1%" NOWRAP align="right">
+			{number number=$invoice.number template=$invoice.template time=$invoice.cdate assign=number}{$number}
+		</TD>
+		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+			{$invoice.value|money_format} 
+		</TD>
+		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+			{$invoice.count}
+		</TD>
+		<TD WIDTH="94%">
+			<A HREF="?m=customerinfo&id={$invoice.customerid}"{if $invoice.closed} class="blend"{/if}>{$invoice.name}, {$invoice.address}, {$invoice.zip} {$invoice.city}{if $invoice.country neq ""}, {t}{$invoice.country}{/t}{/if}</A>
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT">
+			<NOBR>
+			{if $invoice.type == $smarty.const.DOC_INVOICE}
+			    <A HREF="?m=invoicenote&id={$invoice.id}&action=init"><IMG src="img/eraser.gif" alt="[ {trans("Revise")} ]" title="[ {trans("Revise")} ]"></A>
+			    {if ! $invoice.closed}
+			    <A onClick="return confirmLink(this, '{t a=$number}Are you sure, you want to remove invoice \'$a\' from database?{/t}')" HREF="?m=invoicedel&id={$invoice.id}"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			    {/if}
+		        <A HREF="?m=invoiceedit&id={$invoice.id}&action=edit"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+		    {/if}
+			{if $invoice.type == $smarty.const.DOC_CNOTE && !$invoice.closed}
+			    <A onClick="return confirmLink(this, '{t a=$number}Are you sure, you want to remove credit note \'$a\' from database?{/t}')" HREF="?m=invoicedel&id={$invoice.id}"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			{/if}
+			{if $invoice.type == $smarty.const.DOC_INVOICE}
+			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG src="img/print.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]"></A>
+			{/if}
+			{if $invoice.type == $smarty.const.DOC_CNOTE}
+			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG src="img/printn.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]"></A>
+			{/if}
+			<INPUT TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}"{if $marks.$invoiceid}CHECKED{/if}>
+			</NOBR>
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD WIDTH="100%" ALIGN="center"  COLSPAN="7">
+			<P>&nbsp;</P>
+			<P><B>{trans("No such invoices in database.")}</B></P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>	
+	{/section}
+    </TBODY>
+    <TFOOT>
+	{if $listdata.total != 0}
+	<TR>
+		<TD class="pagination" WIDTH="100%" COLSPAN="7">
+			{include file="scroller.html" loop=$invoicelist scrollerno=2}
+		</TD>
+	</TR>
+	{/if}
+	<TR>
+		<TD COLSPAN="7">
+			<TABLE WIDTH="100%">
+				<TR>
+					<TD ALIGN="left">
+						<NOBR><A HREF="javascript:pays();">{trans("Check/Uncheck as accounted")} <IMG SRC="img/pay.gif" ALT=""></A></NOBR>&nbsp;
+						<NOBR><A HREF="javascript:prints();">{trans("Print")} <IMG SRC="img/print.gif" ALT="" ></A></NOBR>&nbsp;
+						<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i', $default_printpage)} checked{/if}><label for="original">{trans("original")}</label>
+						<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}><label for="copy">{trans("copy")}</label>
+						<INPUT type="checkbox" name="duplicate" id="duplicate"{if preg_match('/duplicate/i', $default_printpage)} checked{/if}><label for="duplicate">{trans("duplicate")}</label>
+					</TD>
+					<TD ALIGN="right">
+						<NOBR><label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('page', this, ['original', 'duplicate', 'copy', 'groupexclude', 'hideclosed'])" VALUE="1"></NOBR>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+    </TFOOT>
+</TABLE>
+</FORM>
+{/block}

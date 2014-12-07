@@ -26,12 +26,21 @@
 
 // REPLACE THIS WITH PATH TO YOU CONFIG FILE
 
-$CONFIG_FILE = (is_readable('lms.ini')) ? 'lms.ini' : '/etc/lms/lms.ini';
+$CONFIG_FILE = '';
 
 // PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 ini_set('error_reporting', E_ALL&~E_NOTICE);
+
+if(is_readable('/etc/lms/lms-'.$_SERVER['HTTP_HOST'].'.ini'))
+        $CONFIG_FILE = '/etc/lms/lms-'.$_SERVER['HTTP_HOST'].'.ini';
+elseif(is_readable('/etc/lms/lms.ini'))
+        $CONFIG_FILE = '/etc/lms/lms.ini';
+elseif (!is_readable($CONFIG_FILE))
+        die('Unable to read configuration file ['.$CONFIG_FILE.']!');
+
+define('CONFIG_FILE', $CONFIG_FILE);
 
 // Parse configuration file
 $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
@@ -51,33 +60,35 @@ define('MODULES_DIR', $CONFIG['directories']['modules_dir']);
 define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir']);
 define('SMARTY_TEMPLATES_DIR', $CONFIG['directories']['smarty_templates_dir']);
 
+// Load autloader
+require_once(LIB_DIR.'/autoloader.php');
+
 // Load config defaults
 
 require_once(LIB_DIR.'/config.php');
 
-// Init database 
+// Init database
 
-$_DBTYPE = $CONFIG['database']['type'];
-$_DBHOST = $CONFIG['database']['host'];
-$_DBUSER = $CONFIG['database']['user'];
-$_DBPASS = $CONFIG['database']['password'];
-$_DBNAME = $CONFIG['database']['database'];
+$DB = null;
 
-require_once(LIB_DIR.'/LMSDB.php');
+try {
 
-$DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
+    $DB = LMSDB::getInstance();
 
-// Read configuration of LMS-UI from database
-
-if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0'))
-	foreach($cfg as $row)
-		$CONFIG[$row['section']][$row['var']] = $row['value'];
+} catch (Exception $ex) {
+    
+    trigger_error($ex->getMessage(), E_USER_WARNING);
+    
+    // can't working without database
+    die("Fatal error: cannot connect to database!\n");
+    
+}
 
 // Initialize templates engine
-
-require_once(LIB_DIR.'/Smarty/Smarty.class.php');
-
 $SMARTY = new Smarty;
+
+// add LMS's custom plugins directory
+$SMARTY->addPluginsDir(LIB_DIR.'/SmartyPlugins');
 
 // Include required files (including sequence is important)
 
@@ -85,12 +96,11 @@ require_once(LIB_DIR.'/unstrip.php');
 require_once(LIB_DIR.'/language.php');
 require_once(LIB_DIR.'/definitions.php');
 require_once(LIB_DIR.'/common.php');
-require_once(LIB_DIR.'/LMS.class.php');
 
 // Initialize LMS class
 
 $AUTH = NULL;
-$LMS = new LMS($DB, $AUTH, $CONFIG);
+$LMS = new LMS($DB, $AUTH);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 

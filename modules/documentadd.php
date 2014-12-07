@@ -166,15 +166,18 @@ if (isset($_POST['document'])) {
 
 		$DB->BeginTrans();
 		
-		$division = $DB->GetRow('SELECT name, address, city, zip, countryid, ten, regon,
+		$division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
 				account, inv_header, inv_footer, inv_author, inv_cplace 
 				FROM divisions WHERE id = ? ;',array($customer['divisionid']));
 
+		$fullnumber = docnumber($document['number'],
+			$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($document['numberplanid'])),
+			$time);
 		$DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, 
 			customerid, userid, name, address, zip, city, ten, ssn, divisionid, 
-			div_name, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
-			div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, closed)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($document['type'],
+			div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
+			div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, closed, fullnumber)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($document['type'],
 				$document['number'],
 				$document['numberplanid'],
 				$time,
@@ -188,6 +191,7 @@ if (isset($_POST['document'])) {
 				$customer['ssn'] ? $customer['ssn'] : '',
 				$customer['divisionid'],
 				($division['name'] ? $division['name'] : ''),
+				($division['shortname'] ? $division['shortname'] : ''),
 				($division['address'] ? $division['address'] : ''), 
 				($division['city'] ? $division['city'] : ''), 
 				($division['zip'] ? $division['zip'] : ''),
@@ -199,7 +203,8 @@ if (isset($_POST['document'])) {
 				($division['inv_footer'] ? $division['inv_footer'] : ''), 
 				($division['inv_author'] ? $division['inv_author'] : ''), 
 				($division['inv_cplace'] ? $division['inv_cplace'] : ''),
-				isset($document['closed']) ? 1 : 0
+				isset($document['closed']) ? 1 : 0,
+				$fullnumber,
 		));
 
 		$docid = $DB->GetLastInsertID('documents');
@@ -261,9 +266,9 @@ if ($templist = $LMS->GetNumberPlans())
 		if ($item['doctype'] < 0)
 			$allnumberplans[] = $item;
 
-if (isset($document['numberplanid'])) {
+if (isset($document['type'])) {
 	foreach ($allnumberplans as $plan)
-		if ($plan['doctype'] == $document['numberplanid'])
+		if ($plan['doctype'] == $document['type'])
 			$numberplans[] = $plan;
 }
 
@@ -273,7 +278,7 @@ $layout['pagetitle'] = trans('New Document');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-if (!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks'])) {
+if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false))) {
 	$SMARTY->assign('customers', $LMS->GetCustomerNames());
 }
 
@@ -283,6 +288,6 @@ $SMARTY->assign('docrights', $rights);
 $SMARTY->assign('allnumberplans', $allnumberplans);
 $SMARTY->assign('docengines', $docengines);
 $SMARTY->assign('document', $document);
-$SMARTY->display('documentadd.html');
+$SMARTY->display('document/documentadd.html');
 
 ?>

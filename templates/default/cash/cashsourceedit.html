@@ -1,0 +1,48 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<P><FORM method="POST" action="?m=cashsourceedit&id={$sourceedit.id}" name="sourceedit">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
+			<img src="img/isource.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Name:")}</B>
+		</TD>
+		<TD width="98%">
+			<INPUT type="text" size="40" name="sourceedit[name]" value="{$sourceedit.name}" {tip text="Enter source name" trigger="name" bold=1}>
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD width="1%">
+			<img src="img/info.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Description:")}</B>
+		</TD>
+		<TD width="98%">
+			<TEXTAREA rows="5" cols="50" name="sourceedit[description]" {tip text="Enter additional information (optional)" trigger="value"}>{$sourceedit.description}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR>
+		<TD align="right" colspan="3">
+			<A href="javascript:document.sourceedit.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
+			<A href="?m=cashsourcelist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A><BR>
+		</TD>
+	</TR>
+    </TBODY>
+</TABLE>
+</P>
+<SCRIPT type="text/javascript">
+<!--
+document.forms['sourceedit'].elements['sourceedit[name]'].focus();
+//-->
+</SCRIPT>
+{/block}

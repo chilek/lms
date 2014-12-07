@@ -878,7 +878,7 @@ $_LANG['Network name:'] = 'Nazwa sieci:';
 $_LANG['Network name contains forbidden characters!'] = 'Nazwa sieci zawiera niedozwolone znaki!';
 $_LANG['Network name is required!'] = 'Nazwa sieci jest wymagana!';
 $_LANG['Host/network/prefix (interface):'] = 'Host/sieć/prefiks (interfejs):';
-$_LANG['networks and devices management'] = 'zarządzenie sieciami i urządzeniami';
+$_LANG['networks and devices management'] = 'zarządzanie sieciami i urządzeniami';
 $_LANG['Network size:'] = 'Rozmiar sieci:';
 $_LANG['Network Statistics'] = 'Statystyki sieci';
 $_LANG['Network Statistics Compacting'] = 'Kompaktowanie statystyk sieci';
@@ -1289,7 +1289,7 @@ $_LANG['There are no devices in your database.'] = 'Nie ma żadnych urządzeń w
 $_LANG['The rest of group:'] = 'Reszta grupy:';
 $_LANG['This field must be greater than 8 and greater than download rate'] = 'To pole musi mieć wartość większą niż 8 i większą niż download';
 $_LANG['This field must be greater than 8 and greater than upload rate'] = 'To pole musi mieć wartość większą niż 8 i większą niż upload';
-$_LANG['This field must be within range 8 - 100000'] = 'To pole musi zawierać się w przedziale 8 - 100000';
+$_LANG['This field must be within range 8 - 500000'] = 'To pole musi zawierać się w przedziale 8 - 500000';
 $_LANG['This field must contain number greater than 8 and greater than download rate'] = 'To pole musi mieć wartość większą niż 8 i większą niż download';
 $_LANG['This field must contain number greater than 8 and greater than upload rate'] = 'To pole musi mieć wartość większą niż 8 i większą niż upload';
 $_LANG['This group hasn\'t got any members.'] = 'Ta grupa nie posiada żadnych członków.';
@@ -2540,7 +2540,6 @@ $_LANG['Enter IP address:'] = 'Podaj adres IP:';
 $_LANG['Ping to $a'] = 'Ping do $a';
 $_LANG['Enabled'] = 'Włączony';
 
-$_LANG['any sms'] = 'dowolny sms';
 $_LANG['Enter phone numbers separated by commas'] = 'Podaj numery telefonów oddzielone przecinkami';
 $_LANG['Specified phone number is not correct!'] = 'Podany numer telefonu nie jest poprawny!';
 $_LANG['Characters:'] = 'Znaków:';
@@ -2569,7 +2568,7 @@ $_LANG['Remove lock'] = 'Usuń blokadę';
 $_LANG['Days:'] = 'Dni:';
 
 $_LANG['UKE report'] = 'Raport do UKE';
-$_LANG['Allows you to prepare SIIS v3 report for UKE'] = 'Wygenerowanie raportu SIIS w wersji 3 do UKE';
+$_LANG['Allows you to prepare SIIS v4 report for UKE'] = 'Wygenerowanie raportu SIIS w wersji 4 do UKE';
 
 $_LANG['Link speed:'] = 'Szybkość łącza:';
 $_LANG['Select link speed'] = 'Wybierz szybkość łącza';
@@ -2757,6 +2756,19 @@ $_LANG['Ticket has been assigned to user $a.'] = 'Zgłoszenie zostało przypisan
 $_LANG['Ticket has been moved from queue $a to queue $b.'] = 'Zgłoszenie zostało przeniesione z kolejki $a do kolejki $b.';
 
 $_LANG['www'] = 'www';
+$_LANG['any sms'] = 'dowolny sms';
+$_LANG['userpanel'] = 'panel abonencki';
+$_LANG['userpanel urgent'] = 'panel abonencki (pilne)';
+$_LANG['I confirm reading'] = 'Zapoznałem się';
+$_LANG['Urgent'] = 'Pilna';
+$_LANG['Casual'] = 'Zwykła';
+$_LANG['Unread'] = 'Nieprzeczytana';
+$_LANG['Read status:'] = 'Status przeczytania:';
+$_LANG['Was read on:'] = 'Przeczytana dnia:';
+$_LANG['Last read on:'] = 'Ostatnio czytana dnia:';
+$_LANG['Was confirm on:'] = 'Potwierdzona dnia:';
+$_LANG['only userpanel message'] = 'tylko wiadomości userpanel';
+
 
 $_LANG['New ticket customer notification subject:'] = 'Temat listu z powiadomieniem klienta o nowym zgłoszeniu:';
 $_LANG['New ticket customer notification body:'] = 'Treść listu z powiadomieniem klienta o nowym zgłoszeniu:';
@@ -2776,5 +2788,89 @@ $_LANG['Body of mail which is sent to customer when the ticket is resolved'] = '
 $_LANG['backup access forbidden'] = 'brak dostępu do kopii zapasowych';
 
 $_LANG['Tariff type:'] = 'Typ taryfy:';
+
+$_LANG['Consent required:'] = 'Wymagana zgoda:';
+$_LANG['Check if customer consent to messages delivery via e-mail or sms is required'] = 'Zaznacz jeśli wymagana jest zgoda klienta na dostarczanie informacji pocztą elektr. lub sms-em';
+
+$_LANG['Select link technology'] = 'Wybierz technologię łącza';
+$_LANG['Link technology:'] = 'Technologia łącza:';
+$_LANG['- unknown -'] = '- nieznana -';
+
+$_LANG['Hide toolbar from user interface. Default: false.'] = 'Ukryj górne menu w interfejsie użytkownika. Domyślnie: 0 (wyłączone).';
+$_LANG['Does this LMS have transaction log support (not opensource). Default: false.'] = 'Czy ta instalacja LMS posiada log transakcji (opcja nie opensource). Domyślnie: 0 (wyłączone).';
+
+$_LANG['Optional'] = 'Opcjonalna';
+$_LANG['Selection list'] = 'Lista wyboru';
+$_LANG['Check if tariff should be optional'] = 'Zaznacz, jeśli taryfa powinna być opcjonalna';
+$_LANG['Choose selection list'] = 'Wybierz listę wyboru';
+$_LANG['All rights'] = 'Pełne prawa';
+
+$_LANG['Specified IP address doesn\'t belong to selected network!'] = 'Podany adres IP nie należy do wybranej sieci!';
+
+$_LANG['Delete all'] = 'Usuń wszystkie';
+$_LANG['Are you sure, you want to delete all liabilities?'] = 'Jesteś pewien, że chcesz usunąć wszystkie zobowiązania?';
+
+$_LANG['Enter document number and press Enter'] = 'Wprowadź numer dokumentu i naciśnij Enter';
+$_LANG['Document id:'] = 'Id dokumentu:';
+
+$_LANG['prefix'] = 'prefiks';
+$_LANG['interface'] = 'interfejs';
+$_LANG['network'] = 'sieć';
+$_LANG['Addresses'] = 'Adresy';
+$_LANG['total'] = 'wszystkie';
+$_LANG['busy'] = 'zajęte';
+$_LANG['on-line'] = 'włączone';
+
+$_LANG['End time:'] = 'Czas zakończenia:';
+$_LANG['hide VoIP passwords'] = 'ukrywanie haseł VoIP';
+
+$_LANG['Nodes list'] = 'Lista węzłów';
+$_LANG['Network device nodes list'] = 'Lista węzłów sieciowych';
+$_LANG['Network Device Nodes'] = 'Węzły sieciowe';
+$_LANG['New node'] = 'Nowy węzeł';
+$_LANG['Add new network device node'] = 'Dodaj nowy węzeł sieciowy';
+$_LANG['There are no device nodes in your database.'] = 'Brak węzłów sieciowych w bazie.';
+$_LANG['Are you sure, you want to remove net device node \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz usunąć węzeł \\\'$a\\\' z bazy ?';
+$_LANG['existing'] = 'zakończone';
+$_LANG['under construction'] = 'w realizacji';
+$_LANG['planned'] = 'planowane';
+$_LANG['Project:'] = 'Projekt:';
+$_LANG['Ownership:'] = 'Własność:';
+$_LANG['None'] = 'Brak';
+$_LANG['New project'] = 'Nowy projekt';
+$_LANG['Inherited from root device'] = 'Dzedziczenie z jednostki nadrzędnej';
+$_LANG['Enter node type'] = 'Podaj typ węzła';
+$_LANG['Enter node status'] = 'Podaj status węzła';
+$_LANG['Enter node name'] = 'Podaj nazwę węzła';
+$_LANG['Select project for this node'] = 'Wybierz projekt, w ramach którego powstał węzeł';
+$_LANG['Select ownership for this node'] = 'Wybierz rodzaj własności węzła';
+$_LANG['Enter new project name'] = 'Wprowadź nazwę nowego projektu';
+$_LANG['Enter co-owner identifier'] = 'Podaj identyfikator współwłaściciela';
+$_LANG['Yes'] = 'Tak';
+$_LANG['No'] = 'Nie';
+$_LANG['New Net Device Node'] = 'Nowy węzeł sieciowy';
+$_LANG['Net node name is required!'] = 'Nazwa węzła sieciowego jest wymagana!';
+$_LANG['Project name is required'] = 'Nazwa nowego projektu jest wymagana';
+$_LANG['Co-owner identifier is required'] = 'Identyfikator współwłaściciela jest wymagany';
+$_LANG['Net Device Node Info: $a'] = 'Informacje o węźle sieciowym: $a';
+$_LANG['Assigned net devices ($a):'] = 'Przypisane urządzenia sieciowe ($a):';
+$_LANG['No assigned devices.'] = 'Brak przypisanych urządzeń.';
+$_LANG['Net Device Node Edit: $a'] = 'Edycja węzła sieciowego: $a';
+$_LANG['Select net devices to add'] = 'Wybierz urządzenia sieciowe do dodania';
+$_LANG['Add devices to node'] = 'Dodaj urządzenia do węzła';
+$_LANG['Net devices are missing.'] = 'Brak urządzeń sieciowych';
+$_LANG['Filter devices by name'] = 'Filtruj urządzenia po nazwie';
+$_LANG['Are you sure, you want to remove net device  \\\'$a\\\' from node?'] = 'Na pewno usunąć urządzenie \\\'$a\\\' z węzła?';
+$_LANG['Investment project:'] = 'Projekt inwestycyjny:';
+$_LANG['From root device'] = 'Z jednostki nadrzędnej';
+$_LANG['Net node:'] = 'Węzeł sieciowy:';
+$_LANG['Select project'] = 'Wybierz projekt';
+
+$_LANG['Select investment projects'] = 'Wybierz projekty inwestycyjne';
+$_LANG['Investment project:'] = 'Projekt inwestycyjny:';
+
+$_LANG['Select device status'] = 'Wybierz status urządzenia';
+$_LANG['$a (from network node $b)'] = '$a (z węzła sieciowego $b)';
+$_LANG['$a (from network device $b)'] = '$a (z urządzenia sieciowego $b)';
 
 ?>

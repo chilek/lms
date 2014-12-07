@@ -1,0 +1,332 @@
+<!--// $Id$ //-->
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR{if $devicepanel} class="hand" onClick="showOrHide('devicepanel');"{/if}>
+		<TD WIDTH="1%">
+			<IMG SRC="img/netdev.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%">
+			<B>{$netdevinfo.name} ({$netdevinfo.id|string_format:"%04d"})</B>
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR{if $devicepanel} id="devicepanel" style="display:none;"{/if}>
+	    <TD WIDTH="100%" COLSPAN="2"{if $devicepanel} CLASS="container" ALIGN="RIGHT"{else}CLASS="container"{/if}>
+			<TABLE WIDTH="100%" CELLPADDING="0">
+				<TR>
+					<TD WIDTH="50%" style="vertical-align:top;">
+						<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/producer.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+		        <B>{trans("Status:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+		        {$_NETELEMENTSTATUSES[$netdevinfo.status]}
+		</TD>
+	</TR>
+        {if $netdevinfo.producer}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/producer.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+		        <B>{trans("Producer:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+		        {$netdevinfo.producer}
+		</TD>
+	</TR>
+	{/if}
+	{if $netdevinfo.model}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/netdev_model.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+		        <B>{trans("Model:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+		        {$netdevinfo.model}
+		</TD>
+	</TR>
+	{/if}
+	{if $netdevinfo.serialnumber}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/serialnumber.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+		        <B>{trans("Serial number:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+		        {$netdevinfo.serialnumber}
+		</TD>
+	</TR>
+	{/if}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/port.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+		        <B>{trans("Number of ports:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+		        {$netdevinfo.ports}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/netdev_takenports.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+		        <B>{trans("Ports used:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+		        {$netdevinfo.takenports}
+		</TD>
+	</TR>
+	{if $netdevinfo.location}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/home.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+		        <B>{trans("Location:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+		        {$netdevinfo.location}
+		</TD>
+	</TR>
+	{/if}
+	{if $netdevinfo.longitude || $netdevinfo.latitude}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/home.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("GPS longitude:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT ID="longitude" TYPE="hidden" VALUE="{$netdevinfo.longitude}">
+			{$netdevinfo.longitude}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/home.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("GPS latitude:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT ID="latitude" TYPE="hidden" VALUE="{$netdevinfo.latitude}">
+			{$netdevinfo.latitude}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="2%" COLSPAN="2">
+		</TD>
+		<TD WIDTH="98%">
+			<a HREF="?m=netdevmap&netdevid={$netdevinfo.id}"><img src="img/network.gif" alt=""> {trans("Show on map")} &raquo;&raquo;&raquo;</a>
+		</TD>
+	</TR>
+	{/if}
+{if get_conf('phpui.radius')}
+	{if $netdevinfo.shortname}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/radius.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("Shortname:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+		        {$netdevinfo.shortname}
+		</TD>
+	</TR>
+	{/if}
+	{if $netdevinfo.nastype}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/radius.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("Type:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+		        {$netdevinfo.nastypename}
+		</TD>
+	</TR>
+	{/if}
+	{if $netdevinfo.clients}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/radius.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("Max clients:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+		        {$netdevinfo.clients}
+		</TD>
+	</TR>
+	{/if}
+	{if $netdevinfo.secret}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/radius.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("Secret:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+		        {$netdevinfo.secret}
+		</TD>
+	</TR>
+	{/if}
+	{if $netdevinfo.community}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/radius.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("Community:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+		        {$netdevinfo.community}
+		</TD>
+	</TR>
+	{/if}
+{/if}
+	{if $netdevinfo.channelid}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/channel.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("Channel:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+		        <a href="?m=ewxchinfo&id={$netdevinfo.channelid}">{$netdevinfo.channel} ({$netdevinfo.channelid|string_format:"%04d"})</a>
+		</TD>
+	</TR>
+	{/if}
+	                        	</TABLE>
+				</TD>
+				<TD WIDTH="50%" style="vertical-align:top;">
+				        <TABLE WIDTH="100%" CELLPADDING="3">
+	{if $netdevinfo.purchasetime}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/calendar.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+		        <B>{trans("Purchase date:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+		        {$netdevinfo.purchasetime|date_format:"%Y/%m/%d"}
+		</TD>
+	</TR>
+	{/if}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/guarantee.png" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+		        <B>{trans("Guarantee:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			{if !$netdevinfo.guaranteeperiod}
+				{trans("no guarantee")}
+			{elseif $netdevinfo.guaranteeperiod == -1}
+				{trans("lifetime")}
+			{else}
+				{assign var=periodid value=$netdevinfo.guaranteeperiod}
+				{$_GUARANTEEPERIODS.$periodid}
+		        	({if $netdevinfo.guaranteetime-$smarty.now < 0}{trans("expired<!guarantee>")}{else}{$netdevinfo.guaranteetime|date_format:"%Y/%m/%d"}{/if})
+			{/if}
+		</TD>
+	</TR>
+        {if $netdevinfo.description}
+        <TR>
+                <TD WIDTH="1%">
+                        <IMG SRC="img/desc.gif" ALT="">
+                </TD>
+                <TD WIDTH="99%" COLSPAN="2">
+                        <TABLE WIDTH="100%" CELLPADDING="5">
+                                <TR>
+                                        <TD class="fall superlight">
+						{$netdevinfo.description|escape|replace:"\n":"<BR>"}
+                                        </TD>
+                                </TR>
+                        </TABLE>
+                </TD>
+        </TR>
+        {/if}
+	<TR>
+		<TD colspan="2" NOWRAP>
+			<b>{trans("Investment project:")}</b>	
+		</TD>
+		<TD>
+			{$netdevinfo.projectname}
+		</TD>
+	</TR>
+	<TR>
+		<TD colspan="2" NOWRAP>
+			<b>{trans("Net node:")}</b>	
+		</TD>
+		<TD>
+			{if $netdevinfo.netnodeid}<a href="?m=netnodeinfo&id={$netdevinfo.netnodeid}" class="bold">{$netdevinfo.nodename}</a>
+			{else}-{/if}
+		</TD>
+	</TR>
+
+	                                        </TABLE>
+					</TD>
+				</TR>
+			</TABLE>
+{if !$devicepanel}
+    		</TD>
+	</TR>
+	<TR>
+	        <TD WIDTH="100%" COLSPAN="2" ALIGN="RIGHT">
+{/if}
+			{if $replacelisttotal>1}
+			<FORM METHOD="GET" ACTION="?m=netdevedit" NAME="replace">
+			<INPUT type="submit" class="hiddenbtn">
+			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
+			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
+			<INPUT TYPE="HIDDEN" NAME="action" VALUE="replace">
+			<A HREF="javascript:document.replace.submit(); ">{trans("Replace with:")}</A>
+			<SELECT NAME="netdev" {tip trigger="replace" text="Select device from list for replacement"}>
+				{section name=replacelist loop=$replacelist}
+					{if $replacelist[replacelist].id != $netdevinfo.id}
+					{assign var=netdevname value=$replacelist[replacelist].name}
+					{if $replacelist[replacelist].producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$replacelist[replacelist].producer}{/if}
+					{if $replacelist[replacelist].location}{assign var=netdevname value=$netdevname|cat:" ("|cat:$replacelist[replacelist].location|cat:")"}{/if}
+					<OPTION VALUE="{$replacelist[replacelist].id}">{$netdevname|truncate:120:"...":true}</OPTION>
+					{/if}
+				{/section}
+			</SELECT>
+			</FORM>
+			{/if}
+			<A href="?m=netdevedit&id={$netdevinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG src="img/edit.gif" ALT="[ {trans("Edit")} ]"></A>
+			<A href="?m=netdevdel&id={$netdevinfo.id}" OnClick="return confirmLink(this, '{t a=$netdevinfo.name}Are you sure, you want to remove device \'$a\' from database?{/t}');">{trans("Delete")} <img src="img/delete.gif" ALT=""></A>
+		</TD>
+	</TR>
+    </TBODY>
+</TABLE>
+{if $devicepanel}
+<SCRIPT type="text/javascript">
+<!--
+if (getCookie('devicepanel') == '1')
+{
+	document.getElementById('devicepanel').style.display = '';
+}
+//-->
+</SCRIPT>
+{/if}

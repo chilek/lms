@@ -62,7 +62,7 @@ foreach ($schema['data'] as $idx => $data) {
 $schema['data'] = implode(' &raquo; ', (array)$schema['data']);
 
 $schema['tariffs'] = $DB->GetAll('SELECT t.name, t.value,
-    a.tariffid, a.id, a.data
+    a.tariffid, a.id, a.data, a.optional, a.selectionid
     FROM promotionassignments a
     JOIN tariffs t ON (a.tariffid = t.id)
     WHERE a.promotionschemaid = ?
@@ -92,6 +92,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('tariffs', $tariffs);
 $SMARTY->assign('schema', $schema);
-$SMARTY->display('promotionschemainfo.html');
+$SMARTY->display('promotion/promotionschemainfo.html');
 
 ?>

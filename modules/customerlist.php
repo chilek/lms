@@ -81,7 +81,7 @@ $listdata['division'] = $d;
 $listdata['state'] = $s;
 
 $page = (! $_GET['page'] ? 1 : $_GET['page']); 
-$pagelimit = (!$CONFIG['phpui']['customerlist_pagelimit'] ? $listdata['total'] : $CONFIG['phpui']['customerlist_pagelimit']);
+$pagelimit = ConfigHelper::getConfig('phpui.customerlist_pagelimit', $listdata['total']);
 $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('clp', $page);
@@ -103,6 +103,6 @@ $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('page',$page);
 $SMARTY->assign('start',$start);
 
-$SMARTY->display('customerlist.html');
+$SMARTY->display('customer/customerlist.html');
 
 ?>

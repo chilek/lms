@@ -69,7 +69,7 @@ $access['table'][12]['name']        	= trans('configuration');
 $access['table'][12]['allow_reg']   	= '^(((host|config|numberplan|taxrate|state|division|cashsource)(list|edit|add|del|load))|((promotion|promotionschema)(list|edit|add|del|set|info)))$';
 
 $access['table'][13]['name']        	= trans('networks and devices management');
-$access['table'][13]['allow_reg']   	= '^((net|netdev|ewxch)(info|list|edit|add|del|cmp|map(refresh|)|remap|search)|choose(mac|ip|gpscoords)|ewxnodelist|ewxdevlist|chooselocation|ping)$';
+$access['table'][13]['allow_reg']   	= '^((net|netdev|ewxch)(info|list|edit|add|del|print|cmp|map(refresh|)|remap|search)|choose(mac|ip|gpscoords)|ewxnodelist|ewxdevlist|chooselocation|ping|netnode(add|adddev|del|deldev|edit|info|list))$';
 
 $access['table'][14]['name']        	= trans('timetable management');
 $access['table'][14]['allow_reg']   	= '^(event(list|edit|add|del|info|print|search)|choosecustomer)$';
@@ -121,6 +121,9 @@ $access['table'][29]['name']		= trans('transaction logs');
 $access['table'][29]['allow_reg']	= '^archive(info|view)$';
 $access['table'][29]['privilege']	= 'transaction_logs';
 
+$access['table'][30]['name']		= trans('hide VoIP passwords');
+$access['table'][30]['privilege']     = 'hide_voip_passwords';
+
 $access['table'][249]['name']		= trans('backup access forbidden');
 $access['table'][249]['deny_reg']	= '^db(del|list|new|recover|view)$';
 
@@ -131,8 +134,7 @@ $access['table'][255]['name']		= trans('no access');
 $access['table'][255]['deny_reg']	= '^.*$';
 
 // read user-defined access rights table
-if(isset($CONFIG['phpui']['custom_accesstable']))
-	if(is_readable($CONFIG['phpui']['custom_accesstable']))
-                @include_once($CONFIG['phpui']['custom_accesstable']);
-
-?>
+$custom_access_table = ConfigHelper::getConfig('phpui.custom_accesstable');
+if (!is_null($custom_access_table))
+	if (is_readable($custom_access_table))
+		@include_once($custom_access_table);

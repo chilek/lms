@@ -1853,7 +1853,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	$DB->Execute('DELETE FROM invoicecontents');
 	$DB->Execute('DELETE FROM receiptcontents');
 
-	if($CONFIG['database']['type']=='postgres')
+	if(ConfigHelper::getConfig('database.type')=='postgres')
 	{
 		$DB->Execute('DROP SEQUENCE "nodes_id_seq"; CREATE SEQUENCE "nodes_id_seq"');
 		$DB->Execute('DROP SEQUENCE "divisions_id_seq"; CREATE SEQUENCE "divisions_id_seq"');
@@ -1869,7 +1869,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$DB->Execute('DROP SEQUENCE "documents_id_seq";  CREATE SEQUENCE "documents_id_seq"');
 		$DB->Execute('DROP SEQUENCE "taxes_id_seq";  CREATE SEQUENCE "taxes_id_seq"');
 	}
-	elseif($CONFIG['database']['type'] == 'mysql' || $CONFIG['database']['type'] == 'mysqli')
+	elseif(ConfigHelper::getConfig('database.type') == 'mysql' || ConfigHelper::getConfig('database.type') == 'mysqli')
 	{
 		$DB->Execute('ALTER TABLE customers auto_increment=0');
 		$DB->Execute('ALTER TABLE customercontacts auto_increment=0');

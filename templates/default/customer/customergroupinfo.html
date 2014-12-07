@@ -1,0 +1,52 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<TABLE class="lmsbox">
+	<THEAD>
+	<TR>
+		<TD style="width: 1%;">
+			<IMG src="img/group.gif" alt="">
+		</TD>
+		<TD style="width: 99%;" class="bold nobr" colspan="2">
+			{$customergroup.name} ({$customergroup.id|string_format:"%04d"})
+		</TD>
+	</TR>
+	</THEAD>
+	<TBODY>
+	<TR>
+		<TD style="width: 1%;">
+			<IMG src="img/customers.gif" alt="">
+		</TD>
+		<TD style="width: 1%;" class="bold nobr">
+			{trans("Members Count:")}
+		</TD>
+		<TD style="width: 98%;">
+			{$customergroup.count}
+		</TD>
+	</TR>
+	{if $customergroup.description}
+	<TR>
+		<TD style="width: 1%;">
+			<IMG src="img/info1.gif" alt="">
+		</TD>
+		<TD style="width: 98%;" colspan="2">
+			<TABLE width="100%" cellpadding="3"> 
+				<TR><TD class="fall superlight">
+					{$customergroup.description|replace:"\n":"<BR>"}
+				</TD></TR>
+			</TABLE>
+		</TD>
+	</TR>
+	{/if}
+	<TR>
+		<TD class="text-right" colspan="3">
+			<A href="?m=customergroupedit&amp;id={$customergroup.id}{if $membersnetid}&amp;membersnetid={$membersnetid}{/if}{if $othersnetid}&amp;othersnetid={$othersnetid}{/if}" accesskey="E">{trans("Edit")} <IMG src="img/edit.gif" alt=""></A>
+			{if $customergroup.count eq 0} <A href="?m=customergroupdel&amp;id={$customergroup.id}" onclick="return confirmLink(this,'{trans("Are you sure, you want to delete that group?")}');">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>{/if}
+		</TD>
+	</TR>
+	</TBODY>
+</TABLE>
+{include file="customer/customergroupassignments.html"}
+{/block}

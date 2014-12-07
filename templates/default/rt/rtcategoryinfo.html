@@ -1,0 +1,75 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+	    <TD width="1%">
+		<IMG src="img/queue.gif" ALT="">
+	    </TD>
+	    <TD width="99%" colspan="2"><B>{$category.name} ({$category.id|string_format:"%04d"})</B></TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	{if $category.description}
+	<TR>
+	    <TD width="1%">
+		<IMG src="img/info1.gif" ALT="">
+	    </TD>
+	    <TD width="1%"><B>{trans("Description:")}</B></TD>
+	    <TD width="98%">
+		<TABLE width="100%" cellpadding="5">
+		    <TR>
+			<TD class="fall superlight">
+			    {$category.description|replace:"\n":"<BR>"}
+			</TD>
+		    </TR>
+		</TABLE>
+	    </TD>
+	</TR>
+	{/if}
+	<TR>
+	    <TD width="1%">
+		<IMG src="img/users.gif" ALT="">
+	    </TD>
+	    <TD width="1%"><B>{trans("Users:")}</B></TD>
+	    <TD width="98%">
+		    <TABLE class="lmsbox">
+                        <THEAD>
+			<TR>
+			    <TD width="99%"><B>{trans("User")}</B>
+			    </TD>
+			    <TD width="1%" align="center" nowrap><B>{trans("Owner")}</B></TD>
+			</TR>
+                        </THEAD>
+                        <TBODY>
+			{cycle values="light,lucid" print=false}
+			{foreach from=$category.owners item=owner}
+			{if $owner}
+			<TR class="highlight {cycle}"  >
+			    <TD width="99%">
+				<A href="?m=userinfo&id={$owner.id}">{$owner.name}</A>
+				<INPUT type="hidden" name="category[usernames][{$right.id}]" value="{$right.name}">
+			    </TD>
+			    <TD width="1%" align="center">
+				{if $owner.owner > 0}<IMG src="img/pass.gif" alt="">{/if}
+			    </TD>
+			</TR>
+			{/if}
+			{/foreach}
+                        </TBODY>
+		</TABLE>
+	    </TD>
+	</TR>
+	<TR>
+	    <TD width="100%" COLSPAN="3" ALIGN="RIGHT"> 
+	        <A HREF="?m=rtqueueview&catid={$category.id}">{trans("Browse")} <IMG src="img/view.gif" alt=""></A>
+	    	<A HREF="?m=rtcategoryedit&id={$category.id}">{trans("Edit")} <IMG src="img/save.gif" alt=""></A>
+		<A HREF="?m=rtcategorydel&id={$category.id}" OnClick="return confirmLink(this, '{t a=$category.name}Are you sure, you want to remove category \'$a\'?{/t}');">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
+	    </TD>
+	</TR>
+    </TBODY>
+</TABLE></P>
+{/block}

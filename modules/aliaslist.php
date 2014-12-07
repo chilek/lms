@@ -109,7 +109,7 @@ unset($aliaslist['domain']);
 unset($aliaslist['direction']);
 	    
 $page = (empty($_GET['page']) ? 1 : $_GET['page']); 
-$pagelimit = (empty($CONFIG['phpui']['aliaslist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['aliaslist_pagelimit']);
+$pagelimit = ConfigHelper::getConfig('phpui.aliaslist_pagelimit', $listdata['total']);
 $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('allp', $page);
@@ -123,6 +123,6 @@ $SMARTY->assign('aliaslist', $aliaslist);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 $SMARTY->assign('domainlist', $DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
-$SMARTY->display('aliaslist.html');
+$SMARTY->display('alias/aliaslist.html');
 
 ?>

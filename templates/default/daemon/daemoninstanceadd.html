@@ -1,0 +1,99 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<P><FORM method="POST" action="?m=daemoninstanceadd" name="instance">
+<INPUT type="submit" class="hiddenbtn">
+<INPUT type="hidden" name="instance[id]" value="{$instance.id}">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
+			<img src="img/settings.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Name:")}</B>
+		</TD>
+		<TD width="98%">
+			<INPUT type="text" name="instance[name]" value="{$instance.name}" {tip text="Enter instance name" trigger="name" bold=1}>
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD width="1%">
+			<img src="img/host.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Host:")}</B>
+		</TD>
+		<TD width="98%">
+			<SELECT name="instance[hostid]" {tip text="Select host name" trigger="hostid"}>
+				<OPTION value="0"{if !$instance.hostid} SELECTED{/if}>{trans("- select host -")}</OPTION>
+				{foreach from=$hosts item=host}
+				<OPTION value="{$host.id}"{if $instance.hostid == $host.id} SELECTED{/if}>{$host.name}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR>
+		<TD width="1%">
+			<img src="img/plain.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Module:")}</B>
+		</TD>
+		<TD width="98%">
+			<INPUT type="text" size="50" name="instance[module]" value="{$instance.module}" {tip text="Enter module name and location" trigger="module"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD width="1%">
+			<img src="img/time.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Crontab:")}</B>
+		</TD>
+		<TD width="98%">
+			<INPUT type="text" size="50" name="instance[crontab]" value="{$instance.crontab}" {tip text="Enter instance crontab (optional)" trigger="crontab"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD width="1%">
+			<img src="img/dhcp.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Priority:")}</B>
+		</TD>
+		<TD width="98%">
+			<INPUT type="text" size="10" name="instance[priority]" value="{$instance.priority}" {tip text="Enter instance reload priority" trigger="priority"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD width="1%">
+			<img src="img/info.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Description:")}</B>
+		</TD>
+		<TD width="98%">
+			<TEXTAREA rows="5" cols="50" name="instance[description]" {tip text="Enter additional information (optional)" trigger="description"}>{$instance.description}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR>
+		<TD align="right" colspan="3">
+			<A href="javascript:document.instance.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
+			<A href="?m=daemoninstancelist&id={$instance.hostid}">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A><BR>
+			<INPUT type="checkbox" name="instance[reuse]" id="instance_reuse" value="ON" {if $instance.reuse}checked{/if}> <label for="instance_reuse">{trans("Display this form again, when this instance is saved")}</label>
+		</TD>
+	</TR>
+    </TBODY>
+</TABLE>
+</P>
+<SCRIPT type="text/javascript">
+<!--
+document.forms['instance'].elements['instance[name]'].focus();
+//-->
+</SCRIPT>
+{/block}

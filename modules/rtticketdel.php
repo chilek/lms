@@ -38,8 +38,9 @@ if(($right & 4) != 4)
 $DB->Execute('DELETE FROM rttickets WHERE id = ?', array($ticket));
 //HINT: We delete messages connected with deleted ticket in database (ON DELETE CASCADE mechanism)
 
-if (isset($CONFIG['rt']['mail_dir']))
-	rrmdir($CONFIG['rt']['mail_dir'].sprintf('/%06d', $ticket));
+$mail_dir = ConfigHelper::getConfig('rt.mail_dir');
+if (!empty($mail_dir))
+	rmdir($mail_dir.sprintf('/%06d', $ticket));
 
 header('Location: ?m=rtqueueview&id='.$queue);
 

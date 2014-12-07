@@ -1,0 +1,187 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<SCRIPT type="text/javascript">
+<!--
+	function setWarnings(on)
+	{
+		if (on == 1)
+		{
+			document.getElementById('warnon').value = 1;
+			document.getElementById('warnoff').value = 0;
+		}
+		else
+		{
+			document.getElementById('warnon').value = 0;
+			document.getElementById('warnoff').value = 1;
+		}
+		document.setwarnings.submit();
+	}
+
+	function customerGroup(add)
+	{
+		if (add == 1)
+		{
+			document.setwarnings.action = '?m=customergroup&oper=addtogroup';
+		}
+		else
+		{
+			document.setwarnings.action = '?m=customergroup&oper=removefromgroup';
+		}
+		document.setwarnings.submit();
+	}
+-->
+</SCRIPT>
+<P>
+<FORM NAME="setwarnings" ID="customersearchresults" METHOD="POST" ACTION="?m=customerwarn&search=0">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR {tip text="Click on column name to change sorting order"}>
+		<TD width="97%">
+			<img src="img/customer.gif" ALT="">&nbsp;<a href="?m=customersearch&search=1&o=customername{if $listdata.direction eq "asc" && $listdata.order eq "customername"},desc{/if}">{trans("First/last or Company name:")}</A></B> {if $listdata.order eq "customername"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<img src="img/home.gif" ALT="">&nbsp;<a href="?m=customersearch&search=1&o=address{if $listdata.direction eq "asc" && $listdata.order eq "address"},desc{/if}">{trans("Address:")}</A> {if $listdata.order eq "address"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD align="right" width="1%" valign="top">
+			<a href="?m=customersearch&search=1&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{trans("ID:")}</A></B> {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			{trans("Services:")}
+		</TD>
+		<TD width="1%" ALIGN="right" valign="top">
+			{if !ConfigHelper::checkConfig('privileges.hide_finances')}<a href="?m=customersearch&search=1&o=balance{if $listdata.direction eq "asc" && $listdata.order eq "balance"},desc{/if}">{trans("Balance:")}</A>&nbsp;{if $listdata.order eq "balance"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<a href="?m=customersearch&search=1&o=tariff{if $listdata.direction eq "asc" && $listdata.order eq "tariff"},desc{/if}">{trans("Subscription:")}</A>&nbsp;{if $listdata.order eq "tariff"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}{/if}
+		</TD>
+		<TD width="1%" align="right" nowrap>
+			<B>{t a=$listdata.total|default:"0"}Total: $a{/t}</B>&nbsp;
+		</TD>
+	</TR>
+	{if $listdata.total != 0}
+	<TR class="ftop">
+		<TD class="pagination" COLSPAN="4">
+			{include file="scroller.html" loop=$customerlist adlink="&search=1"}
+			<INPUT type="hidden" id="warnon" name="setwarnings[warnon]" value="0">
+			<INPUT type="hidden" id="warnoff" name="setwarnings[warnoff]" value="0">
+		</TD>
+	</TR>
+	{/if}
+    </THEAD>
+    <TBODY>
+	{section name=customerlist loop=$customerlist}
+	<INPUT type="hidden" class="hiddenbtn" name="setwarnings[mcustomerid][]" value="{$customerlist[customerlist].id}">
+	{/section}
+	{cycle values="light,lucid" print=false}
+	{section name=customerlist loop=$customerlist start=$start max=$pagelimit}
+	<TR class="highlight {cycle}{if $customerlist[customerlist].account && !$customerlist[customerlist].nodeac} blend{/if}"  >
+		<TD onClick="return self.location.href='?m=customerinfo&id={$customerlist[customerlist].id}';" valign="top">
+			<IMG src="img/{if $customerlist[customerlist].status eq 1}unk{/if}{if $customerlist[customerlist].status eq 2}wait{/if}{if $customerlist[customerlist].status eq 3}customer{/if}.gif" alt="">{if $customerlist[customerlist].info} <img src="img/info1.gif" ALT="" {tip text=$customerlist[customerlist].info}>{/if} <A name="{$customerlist[customerlist].id}" {tip a=$customerlist[customerlist].id dynpopup='?m=customerinfoshort&id=$a'}><B>{$customerlist[customerlist].customername}</B>{if $customerlist[customerlist].deleted} (<FONT class="red">{trans("deleted customer")}</FONT>){/if}</A><BR>
+			<IMG src="img/home.gif" alt="">&nbsp;{$customerlist[customerlist].address}{if $customerlist[customerlist].city neq ""},{/if} {$customerlist[customerlist].zip} {$customerlist[customerlist].city}{if $customerlist[customerlist].country neq ""}, {t}{$customerlist[customerlist].country}{/t}{/if}
+		</TD>
+		<TD valign="top" align="right" NOWRAP>
+			({$customerlist[customerlist].id|string_format:"%04d"})<BR>
+			{if $customerlist[customerlist].account}
+				<IMG SRC="img/node{if !$customerlist[customerlist].online}_off{/if}.gif" alt="" {tip a=$customerlist[customerlist].id dynpopup='?m=nodelistshort&id=$a'}></A>
+			{/if}
+		</TD>
+		<TD align="right" valign="top" NOWRAP>
+			{if !ConfigHelper::checkConfig('privileges.hide_finances')}
+			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALT="">{if $customerlist[customerlist].balance < 0}<font class="alert">{/if}{$customerlist[customerlist].balance|money_format}{if $customerlist[customerlist].balance < 0}</FONT>{/if}<BR><IMG src="img/empty.gif" width="1" height="16" ALT=""><FONT CLASS="blend">{$customerlist[customerlist].tariffvalue|money_format}</FONT></NOBR>
+			{/if}
+		</TD>
+		<TD align="right">
+			<NOBR>
+			{if $customerlist[customerlist].balance < 0}
+				<A href="?m=customerbalanceok&id={$customerlist[customerlist].id}" OnClick="return confirmLink(this, '{t a=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$a\'?{/t}');"><IMG src="img/pay.gif" alt="[ {trans("Account")} ]" title="[ {trans("Account")} ]"></A>
+			{/if}
+			{if $customerlist[customerlist].account}
+				{if $customerlist[customerlist].status eq 3}
+					{if $customerlist[customerlist].nodeac eq 1}
+						<A href="?m=nodeset&ownerid={$customerlist[customerlist].id}"><IMG src="img/access.gif" alt="[ {trans("Disconnect All")} ]" title="[ {trans("Disconnect All")} ]"></A>
+					{else}
+						{if $customerlist[customerlist].nodeac eq 2}
+							<A href="?m=nodeset&ownerid={$customerlist[customerlist].id}"><IMG src="img/mixaccess.gif" alt="[ {trans("Disconnect All")} ]" title="[ {trans("Disconnect All")} ]"></A>
+						{else}<A href="?m=nodeset&ownerid={$customerlist[customerlist].id}&access=1"><IMG src="img/noaccess.gif" alt="[ {trans("Connect All")} ]" title="[ {trans("Connect All")} ]"></A>
+						{/if}
+					{/if}
+				{/if}
+			{/if}
+			{if $customerlist[customerlist].warncount}
+				{if $customerlist[customerlist].status eq 3}
+					{if $customerlist[customerlist].nodewarn eq 1}
+						<A href="?m=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningon.gif" alt="[ {trans("Disable notices for all")} ]" title="[ {trans("Disable notices for all")} ]"></A>
+					{else}
+						{if $customerlist[customerlist].nodewarn eq 2}
+							<A href="?m=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningmix.gif" alt="[ {trans("Disable notices for all")} ]" title="[ {trans("Disable notices for all")} ]"></A>
+						{else}<A href="?m=nodewarn&ownerid={$customerlist[customerlist].id}&warning=1" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningoff.gif" alt="[ {trans("Enable notices for all")} ]" title="[ {trans("Enable notices for all")} ]"></A>
+						{/if}
+					{/if}
+				{/if}
+			{/if}
+			{if $listdata.state eq 4}
+			<A href="?m=customeredit&id={$customerlist[customerlist].id}&action=recover"><IMG src="img/recover.gif" alt="[ {trans("Recover")} ]" title="[ {trans("Recover")} ]"></A>
+			{else}
+			<A href="?m=customerdel&id={$customerlist[customerlist].id}" OnClick="return confirmLink(this, '{t a=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to remove customer \'$a\' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			<A href="?m=customeredit&id={$customerlist[customerlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			{/if} 
+			<A href="?m=customerinfo&id={$customerlist[customerlist].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
+			</NOBR>
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD colspan="4" align="center">
+			<p>&nbsp;</p>
+			<p><B>{trans("No such customers matching search criteria.")}</B></p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/section}
+    </TBODY>
+    <TFOOT>
+	{if $listdata.total != 0}
+	<TR class="ftop">
+		<TD class="pagination" COLSPAN="4">
+			{include file="scroller.html" loop=$customerlist adlink="&search=1"}
+		</TD>
+	</TR>
+	<TR class="ftop">
+		<TD width="100%" align="left" COLSPAN="4" nowrap>
+			<IMG SRC="img/warningon.gif"> <A HREF="javascript:setWarnings(1);">{trans("Enable")}</A> / <A HREF="javascript:setWarnings(0);">{trans("Disable")}</A>&nbsp;
+			<IMG SRC="img/mail.gif"> <A HREF="?m=customerwarn&search=1">{trans("Set notice content")}</A>
+		</TD>
+	</TR>
+	<TR class="ftop">
+		<TD width="100%" align="left" COLSPAN="4" nowrap>
+			<IMG SRC="img/group.gif"> <A HREF="javascript:customerGroup(1);">{trans("Add")}</A> / <A HREF="javascript:customerGroup(0);">{trans("Remove Group")}</A>:
+			<SELECT SIZE="1" NAME="setwarnings[customergroup]">
+				{section name=customergroups loop=$customergroups}
+				<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroup eq $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"...":true}</OPTION>
+				{/section}
+			</SELECT>
+		</TD>
+	</TR>
+	{/if}
+	<TR class="ftop">
+		<TD align="right">
+			&nbsp;
+		</TD>
+		<TD align="right">
+			{if !ConfigHelper::checkConfig('privileges.hide_finances') && !ConfigHelper::checkConfig('privileges.hide_summaries')}
+			<B>{trans("Outstandings")}:<BR>
+			{trans("Overcharges")}:</B>
+			{/if}
+		</TD>
+		<TD align="right" nowrap>
+			{if !ConfigHelper::checkConfig('privileges.hide_finances') && !ConfigHelper::checkConfig('privileges.hide_summaries')}
+			<B>{$listdata.below|money_format}<BR>
+			{$listdata.over|money_format}</B>
+			{/if}
+		</TD>
+		<TD align="right" valign="top" nowrap>
+			<B>{trans("Total:")} {$listdata.total|default:"0"}</B>&nbsp;
+		</TD>
+	</TR>
+    </TFOOT>
+</TABLE>
+</FORM>
+</P>
+{/block}
