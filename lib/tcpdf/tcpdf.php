@@ -1,9 +1,9 @@
 <?php
 //============================================================+
 // File name   : tcpdf.php
-// Version     : 5.9.207
+// Version     : 5.9.209
 // Begin       : 2002-08-03
-// Last Update : 2013-03-04
+// Last Update : 2013-03-14
 // Author      : Nicola Asuni - Tecnick.com LTD - Manor Coach House, Church Hill, Aldershot, Hants, GU12 4RQ, UK - www.tecnick.com - info@tecnick.com
 // License     : http://www.tecnick.com/pagefiles/tcpdf/LICENSE.TXT GNU-LGPLv3
 // -------------------------------------------------------------------
@@ -139,7 +139,7 @@
  * Tools to encode your unicode fonts are on fonts/utils directory.</p>
  * @package com.tecnick.tcpdf
  * @author Nicola Asuni
- * @version 5.9.207
+ * @version 5.9.208
  */
 
 // Main configuration file. Define the K_TCPDF_EXTERNAL_CONFIG constant to skip this file.
@@ -151,7 +151,7 @@ require_once(dirname(__FILE__).'/config/tcpdf_config.php');
  * TCPDF project (http://www.tcpdf.org) has been originally derived in 2002 from the Public Domain FPDF class by Olivier Plathey (http://www.fpdf.org), but now is almost entirely rewritten.<br>
  * @package com.tecnick.tcpdf
  * @brief PHP class for generating PDF documents without requiring external extensions.
- * @version 5.9.207
+ * @version 5.9.208
  * @author Nicola Asuni - info@tecnick.com
  */
 class TCPDF {
@@ -162,7 +162,7 @@ class TCPDF {
 	 * Current TCPDF version.
 	 * @private
 	 */
-	private $tcpdf_version = '5.9.207';
+	private $tcpdf_version = '5.9.208';
 
 	// Protected properties
 
@@ -7978,17 +7978,6 @@ class TCPDF {
 		if ($file[0] === '@') {
 			// image from string
 			$imgdata = substr($file, 1);
-			$file = $this->getObjFilename('img');
-			$fp = fopen($file, 'w');
-			fwrite($fp, $imgdata);
-			fclose($fp);
-			unset($imgdata);
-			$imsize = @getimagesize($file);
-			if ($imsize === FALSE) {
-				unlink($file);
-			} else {
-				$this->cached_files[] = $file;
-			}
 		} else { // image file
 			if ($file{0} === '*') {
 				// image as external stream
@@ -8004,7 +7993,7 @@ class TCPDF {
 				// get image dimensions
 				$imsize = @getimagesize($file);
 			} else {
-				$imsize = false;
+				$imsize = FALSE;
 			}
 			if ($imsize === FALSE) {
 				if (function_exists('curl_init')) {
@@ -8024,7 +8013,12 @@ class TCPDF {
 					curl_setopt($cs, CURLOPT_USERAGENT, 'TCPDF');
 					$imgdata = curl_exec($cs);
 					curl_close($cs);
-					if ($imgdata !== FALSE) {
+				} else {
+					$imgdata = @file_get_contents($file);
+				}
+			}
+		}
+		if (isset($imgdata) AND ($imgdata !== FALSE)) {
 						// copy image to cache
 						$file = $this->getObjFilename('img');
 						$fp = fopen($file, 'w');
@@ -8038,16 +8032,8 @@ class TCPDF {
 							$this->cached_files[] = $file;
 						}
 					}
-				} elseif (($w > 0) AND ($h > 0)) {
-					// get measures from specified data
-					$pw = $this->getHTMLUnitToUnits($w, 0, $this->pdfunit, true) * $this->imgscale * $this->k;
-					$ph = $this->getHTMLUnitToUnits($h, 0, $this->pdfunit, true) * $this->imgscale * $this->k;
-					$imsize = array($pw, $ph);
-				}
-			}
-		}
 		if ($imsize === FALSE) {
-			if (substr($file, 0, -34) == K_PATH_CACHE.'msk') { // mask file
+			if (($w > 0) AND ($h > 0)) {
 				// get measures from specified data
 				$pw = $this->getHTMLUnitToUnits($w, 0, $this->pdfunit, true) * $this->imgscale * $this->k;
 				$ph = $this->getHTMLUnitToUnits($h, 0, $this->pdfunit, true) * $this->imgscale * $this->k;
@@ -8262,7 +8248,7 @@ class TCPDF {
 					}
 					$img->setCompressionQuality($this->jpeg_quality);
 					$img->setImageFormat('jpeg');
-					$tempname = tempnam(K_PATH_CACHE, 'jpg_');
+					$tempname = $this->getObjFilename('jpg');
 					$img->writeImage($tempname);
 					$info = $this->_parsejpeg($tempname);
 					unlink($tempname);
@@ -8413,7 +8399,7 @@ class TCPDF {
 	 * @protected
 	 */
 	protected function _toJPEG($image) {
-		$tempname = tempnam(K_PATH_CACHE, 'jpg_');
+		$tempname = $this->getObjFilename('jpg');
 		imagejpeg($image, $tempname, $this->jpeg_quality);
 		imagedestroy($image);
 		$retvars = $this->_parsejpeg($tempname);
@@ -8432,7 +8418,7 @@ class TCPDF {
 	 */
 	protected function _toPNG($image) {
 		// set temporary image file name
-		$tempname = tempnam(K_PATH_CACHE, 'jpg_');
+		$tempname = $this->getObjFilename('png');
 		// turn off interlaced mode
 		imageinterlace($image, 0);
 		// create temporary PNG image
@@ -9053,7 +9039,7 @@ class TCPDF {
 			$byterange .= str_repeat(' ', ($byterange_string_len - strlen($byterange)));
 			$pdfdoc = str_replace($this->byterange_string, $byterange, $pdfdoc);
 			// write the document to a temporary folder
-			$tempdoc = tempnam(K_PATH_CACHE, 'tmppdf_');
+			$tempdoc = $this->getObjFilename('tmppdf');
 			$f = fopen($tempdoc, 'wb');
 			if (!$f) {
 				$this->Error('Unable to create temporary file: '.$tempdoc);
@@ -9062,7 +9048,7 @@ class TCPDF {
 			fwrite($f, $pdfdoc, $pdfdoc_length);
 			fclose($f);
 			// get digital signature via openssl library
-			$tempsign = tempnam(K_PATH_CACHE, 'tmpsig_');
+			$tempsign = $this->getObjFilename('tmpsig');
 			if (empty($this->signature_data['extracerts'])) {
 				openssl_pkcs7_sign($tempdoc, $tempsign, $this->signature_data['signcert'], array($this->signature_data['privkey'], $this->signature_data['password']), array(), PKCS7_BINARY | PKCS7_DETACHED);
 			} else {
@@ -14772,7 +14758,7 @@ class TCPDF {
 				// envelope data
 				$envelope = $seed.$pkpermissions;
 				// write the envelope data to a temporary file
-				$tempkeyfile = tempnam(K_PATH_CACHE, 'tmpkey_');
+				$tempkeyfile = $this->getObjFilename('tmpkey');
 				$f = fopen($tempkeyfile, 'wb');
 				if (!$f) {
 					$this->Error('Unable to create temporary key file: '.$tempkeyfile);
@@ -14780,7 +14766,7 @@ class TCPDF {
 				$envelope_length = strlen($envelope);
 				fwrite($f, $envelope, $envelope_length);
 				fclose($f);
-				$tempencfile = tempnam(K_PATH_CACHE, 'tmpenc_');
+				$tempencfile = $this->getObjFilename('tmpenc');
 				if (!openssl_pkcs7_encrypt($tempkeyfile, $tempencfile, $pubkey['c'], array(), PKCS7_BINARY | PKCS7_DETACHED)) {
 					$this->Error('Unable to encrypt the file: '.$tempkeyfile);
 				}
@@ -25977,7 +25963,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 
 	/**
 	 * Returns a temporary filename for caching object on filesystem.
-	 * @param $name (string) prefix to add to filename
+	 * @param $name (string) Prefix to add to the file name.
 	 * @return string filename.
 	 * @since 4.5.000 (2008-12-31)
 	 * @protected
@@ -27071,6 +27057,10 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 	 * @since 4.5.029 (2009-03-19)
 	 */
 	public function objclone($object) {
+		if (($object instanceof Imagick) AND (version_compare(phpversion('imagick'), '3.0.1') !== 1)) {
+			// on the versions after 3.0.1 the clone() method was deprecated in favour of clone keyword
+			return @$object->clone();
+		}
 		return @clone($object);
 	}
 
