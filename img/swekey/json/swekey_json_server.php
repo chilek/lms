@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2014 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -18,7 +18,7 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
  */
@@ -42,22 +42,19 @@ define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 define('MODULES_DIR', $CONFIG['directories']['modules_dir']);
 
 // Load autloader
-require_once(LIB_DIR.'/autoloader.php');
+require_once(LIB_DIR . '/autoloader.php');
 
 // Init database
 $DB = null;
 
 try {
-
-    $DB = LMSDB::getInstance();
+	$DB = LMSDB::getInstance();
 
 } catch (Exception $ex) {
-    
-    trigger_error($ex->getMessage(), E_USER_WARNING);
-    
-    // can't working without database
-    die("Fatal error: cannot connect to database!\n");
-    
+	trigger_error($ex->getMessage(), E_USER_WARNING);
+
+	// can't working without database
+	die("Fatal error: cannot connect to database!\n");
 }
 
 // Include required files

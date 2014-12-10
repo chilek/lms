@@ -318,7 +318,7 @@ class SwekeyIntegration {
 
 		$output = "\n<!-- Swekey Integration Begin -->\n";
 		$emul = empty($config['allow_mobile_emulation']) ? "off" : "on";
-		$output .= "<!-- LMS-Integration 27/03/2013 (emulation:$emul) -->\n";
+		$output .= "<!-- LMS-Integration (2.0.6.5398) 10/12/2014 (emulation:$emul) -->\n";
 
 		if ($require_js_includes)
 			$output .= $this->GetJavaScriptIncludes();
@@ -442,7 +442,8 @@ class SwekeyIntegration {
 			case 'show_result':
 				if (get_magic_quotes_gpc())
 					$params['result'] = stripslashes(@$params['result']);
-				echo htmlentities (@$params['result']);
+
+				echo "/*SWEKEY-BEGIN*/".htmlentities(@$params['result'])."/*SWEKEY-END*/";
 				exit;
 
 			default:
