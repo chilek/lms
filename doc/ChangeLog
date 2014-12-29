@@ -29,6 +29,11 @@ version ?.??.?? (????-??-??):
   - bumped ezpdf library version (viewing invoices in firefox should
     work again) [chilan]
   - pdf receipts ported to new ezpdf library version [chilan]
+  - new tags: %period_begin() and %period_end() to customize period date format
+    in lms-payments [kcem]
+  - support for more than one email per customer, comma is a delimiter [kcem]
+  - explicitly given language in http headers when lms-sendinvoice get invoices
+    to be sure that script get invoices in correct language [kcem]
 
 version 1.11.15 (2014-05-15):
 
