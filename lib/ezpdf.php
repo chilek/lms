@@ -159,10 +159,10 @@ function init_pdf($pagesize, $orientation, $title)
 	$pdf->setFontFamily('arial.afm',$tmp);
 	$pdf->selectFont(LIB_DIR.'/ezpdf/arialbd.afm',
 			array('encoding'=>'WinAnsiEncoding',
-				'differences'=>$diff));
+				'differences'=>$diff), 1, true);
 	$pdf->selectFont(LIB_DIR.'/ezpdf/arial.afm',
 			array('encoding'=>'WinAnsiEncoding',
-				'differences'=>$diff));
+				'differences'=>$diff), 1, true);
 
 	return $pdf;
 }
