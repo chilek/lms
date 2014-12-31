@@ -29,6 +29,7 @@ version ?.??.?? (????-??-??):
   - bumped ezpdf library version (viewing invoices in firefox should
     work again) [chilan]
   - pdf receipts ported to new ezpdf library version [chilan]
+  - reduced ezpdf invoice file size by subset font usage [chilan]
 
 version 1.11.15 (2014-05-15):
 
