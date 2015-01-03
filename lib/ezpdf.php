@@ -143,10 +143,6 @@ function init_pdf($pagesize, $orientation, $title)
 		174=>'Zcaron'
 	);
 
-	$tmp = array(
-	    'b'=>'arialbd.afm',
-	);
-
 	$pdf = new Cezpdf($pagesize, $orientation); //landscape/portrait
 	$pdf->isUnicode = true;
 
@@ -156,13 +152,9 @@ function init_pdf($pagesize, $orientation, $title)
 	$pdf->setPreferences('FitWindow','1');
 	$pdf->ezSetMargins(PDF_MARGIN_TOP, PDF_MARGIN_BOTTOM, PDF_MARGIN_LEFT, PDF_MARGIN_RIGHT);
 	$pdf->setLineStyle(0.5);
-	$pdf->setFontFamily('arial.afm',$tmp);
-	$pdf->selectFont(LIB_DIR.'/ezpdf/arialbd.afm',
-			array('encoding'=>'WinAnsiEncoding',
-				'differences'=>$diff), 1, true);
-	$pdf->selectFont(LIB_DIR.'/ezpdf/arial.afm',
-			array('encoding'=>'WinAnsiEncoding',
-				'differences'=>$diff), 1, true);
+	$pdf->setFontFamily('arial', array('b' => 'arialbd'));
+	$pdf->selectFont('arial', array('encoding' => 'WinAnsiEncoding', 'differences' => $diff),
+		1, true);
 
 	return $pdf;
 }
