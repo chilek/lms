@@ -130,7 +130,7 @@ if (isset($_POST['customeradd']))
         elseif(!preg_match('/^[0-9]{4,6}$/', $customeradd['pin']))
 	        $error['pin'] = trans('Incorrect PIN code!');
 
-	if($customeradd['email']!='' && !check_email($customeradd['email']))
+	if($customeradd['email']!='' && !check_emails($customeradd['email']))
 		$error['email'] = trans('Incorrect email!');
 
 	foreach($customeradd['uid'] as $idx => $val)
