@@ -35,6 +35,7 @@ version ?.??.?? (????-??-??):
   - explicitly given language in http headers when lms-sendinvoice get invoices
     to be sure that script get invoices in correct language [kcem]
   - reduced ezpdf invoice file size by subset font usage [chilan]
+  - new privilege for compacting traffic statistics [maniac]
 
 version 1.11.15 (2014-05-15):
 

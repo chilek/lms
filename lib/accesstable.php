@@ -124,6 +124,9 @@ $access['table'][29]['privilege']	= 'transaction_logs';
 $access['table'][30]['name']		= trans('hide VoIP passwords');
 $access['table'][30]['privilege']     = 'hide_voip_passwords';
 
+$access['table'][31]['name']		= trans('traffic stats compacting');
+$access['table'][31]['allow_reg']	= '^trafficdbcompact$';
+
 $access['table'][249]['name']		= trans('backup access forbidden');
 $access['table'][249]['deny_reg']	= '^db(del|list|new|recover|view)$';
 

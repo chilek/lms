@@ -2130,6 +2130,7 @@ $_LANG['sent<!plural>'] = 'wysłane';
 $_LANG['sms'] = 'sms';
 $_LANG['subject'] = 'temat';
 $_LANG['traffic stats'] = 'statystyki ruchu sieciowego';
+$_LANG['traffic stats compacting'] = 'kompaktowanie statystyk ruchu sieciowego';
 $_LANG['Unable to send message. No recipients selected!'] = 'Nie można wysłać wiadomości. Nie wybrano odbiorców!';
 $_LANG['user ID'] = 'ID użytkownika';
 $_LANG['user name'] = 'nazwisko użytkownika';
