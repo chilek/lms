@@ -2,7 +2,7 @@ Source: lms
 Section: admin
 Priority: optional
 Maintainer: LMS Developersi <lms-dev@lists.lms.org.pl>
-Build-Depends: debhelper (>= 8.0.0), flex, bison, libmysqlclient-dev, libpq-dev
+Build-Depends: debhelper (>= 8.0.0), flex, bison, libmysqlclient-dev, libpq-dev, libsnmp-dev
 Standards-Version: 3.9.3
 Homepage: http://lms.org.pl/
 
