@@ -98,6 +98,9 @@
 		<TD CLASS="HEADGREY" COLSPAN="4" ALIGN="RIGHT">
 			<B>{trans("Total:")}</B>
 		</TD>
+		<TD CLASS="HEADGREY" ALIGN="RIGHT">
+			<B>{$listdata.brutto|string_format:"%01.2f"}</B>
+		</TD>
 		{foreach item=tax from=$taxes}
 		{assign var=taxid value=$tax.id}
 		<TD CLASS="HEADGREY" ALIGN="RIGHT">
@@ -109,9 +112,6 @@
 		</TD>
 		{/if}
 		{/foreach}
-		<TD CLASS="HEADGREY" ALIGN="RIGHT">
-			<B>{$listdata.brutto|string_format:"%01.2f"}</B>
-		</TD>
 		<TD CLASS="HEADGREY" ALIGN="RIGHT">
 			<B>{$listdata.tax|string_format:"%01.2f"}</B>
 		</TD>
