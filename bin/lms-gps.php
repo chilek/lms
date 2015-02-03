@@ -89,7 +89,7 @@ EOF;
 if (array_key_exists('config-file', $options))
         $CONFIG_FILE = $options['config-file'];
 else
-        $CONFIG_FILE = '/etc/lms/lms.ini';
+        $CONFIG_FILE = '/etc/lms/lms2.ini';
 
 if (!$quiet) {
         echo "Using file ".$CONFIG_FILE." as config.\n";
@@ -173,9 +173,9 @@ if ($update) {
                         $accuracy = $page["results"][0]["geometry"]["location_type"];
                         if (($status == "OK") && ($accuracy == "ROOFTOP")) {
                                 $DB->Execute("UPDATE nodes SET latitude = ?, longitude = ? WHERE id = ?", array($latitude, $longitude, $row['id']));
-                                echo $row['id']." - OK\n";
+                                echo $row['id']." - OK - Accuracy: ".$accuracy." (lat.: ".$latitude." long.: ".$longitude.")\n";
                         } else {
-                                echo $row['id']." - ERROR\n";
+                                echo $row['id']." - ERROR - Accuracy: ".$accuracy." (lat.: ".$latitude." long.: ".$longitude.")\n";
                         }
                         sleep(2);
                 }
@@ -195,9 +195,9 @@ if ($update_netdevices) {
                         $accuracy = $page["results"][0]["geometry"]["location_type"];
                         if (($status == "OK") && ($accuracy == "ROOFTOP")) {
                                 $DB->Execute("UPDATE netdevices SET latitude = ?, longitude = ? WHERE id = ?", array($latitude, $longitude, $row['id']));
-                                echo $row['id']." - OK\n";
+                                echo $row['id']." - OK - Accuracy: ".$accuracy." (lat.: ".$latitude." long.: ".$longitude.")\n";
                         } else {
-                                echo $row['id']." - ERROR\n";
+                                echo $row['id']." - ERROR - Accuracy: ".$accuracy." (lat.: ".$latitude." long.: ".$longitude.")\n";
                         }
                         sleep(2);
                 }
