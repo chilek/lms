@@ -76,7 +76,7 @@ EOF
 
 if(!$configfile)
 {
-	$configfile = "/etc/lms/lms.ini";
+	$configfile = "/etc/lms/lms2.ini";
 }
 
 if(!$quiet)
@@ -640,6 +640,12 @@ sub location_update
 		$flat = $3;
 		$house =~ s/^\s*([^\s]+)\s*$/$1/g;
 	}
+	elsif ($addr =~ /\s(([0-9-]+\s*[a-z]*)\/([0-9a-z]+)\/([0-9a-z]+))$/i) {
+		$addr = substr($addr, 0, -1 * length($1));
+		$house = $2;
+		$flat = $3;
+		$house =~ s/^\s*([^\s]+)\s*$/$1/g;
+	}
 
 	# assume format: <City>, <Street>
 	if ($addr =~ /^([^,]+),.*/i) {
@@ -652,7 +658,7 @@ sub location_update
 	}
 
 	# try to remove prefix UL., AL., PL., SKWER, BULW., RONDO, PARK, RYNEK, SZOSA, DROGA, OS., OGRÓD, WYSPA, WYB.
-	$street =~ s/^\s*(((ul\.|pl\.|al\.|bulw\.|os\.|wyb\.)\s*)|((skwer|rondo|park|rynek|szosa|droga|ogród|wyspa)\s+))//i;
+	$street =~ s/^\s*(((ul\.|pl\.|al\.|bulw\.|os\.|wyb\.)\s*)|((plac|skwer|rondo|park|rynek|szosa|droga|ogród|wyspa)\s+))//i;
 	$street =~ s/(^\s+|\s+$)//g;
 	$city =~ s/(^\s+|\s+$)//g;
 
