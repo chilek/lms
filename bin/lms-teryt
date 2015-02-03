@@ -76,7 +76,7 @@ EOF
 
 if(!$configfile)
 {
-	$configfile = "/etc/lms/lms2.ini";
+	$configfile = "/etc/lms/lms.ini";
 }
 
 if(!$quiet)
