@@ -89,7 +89,7 @@ EOF;
 if (array_key_exists('config-file', $options))
         $CONFIG_FILE = $options['config-file'];
 else
-        $CONFIG_FILE = '/etc/lms/lms2.ini';
+        $CONFIG_FILE = '/etc/lms/lms.ini';
 
 if (!$quiet) {
         echo "Using file ".$CONFIG_FILE." as config.\n";
