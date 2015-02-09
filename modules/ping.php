@@ -110,7 +110,7 @@ function refresh($params)
 	$objResponse->assign('transmitted', 'value', $transmitted);
 	$objResponse->assign('received', 'value', $received);
 	$objResponse->assign('total', 'innerHTML', trans('Total: $a% ($b/$c)', 
-		round(($received / $transmitted) * 100), $received, $transmitted));
+		($transmitted ? round(($received / $transmitted) * 100) : 0), $received, $transmitted));
 	$objResponse->assign('times', 'value', json_encode($times));
 	$objResponse->call('ping_reply');
 

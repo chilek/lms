@@ -32,9 +32,12 @@
 		<TD WIDTH="520" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Contractor")}
 		</TD>
+		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
+			{trans("Gross value")}
+		</TD>
 		{foreach item=tax from=$taxes}
 		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
-			{trans("Net value")} {$tax.label}
+			{trans("Net value")}
 		</TD>
 		{if $tax.value}
 		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
@@ -42,9 +45,6 @@
 		</TD>
 		{/if}
 		{/foreach}
-		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
-			{trans("Gross value")}
-		</TD>
 		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Total Tax")}
 		</TD>
@@ -67,6 +67,9 @@
 			<B>{$invoice.custname}</B> ({$invoice.customerid|string_format:"%04d"}){if $invoice.ten}, {$invoice.ten}{/if}<BR>
 			{$invoice.custaddress}
 		</TD>
+		<TD ALIGN="RIGHT">
+			{$invoice.brutto|string_format:"%01.2f"}
+		</TD>
 		{foreach item=tax from=$taxes}
 		{assign var=taxid value=$tax.id}
 		<TD ALIGN="RIGHT">
@@ -78,9 +81,6 @@
 		</TD>
 		{/if}
 		{/foreach}
-		<TD ALIGN="RIGHT">
-			{$invoice.brutto|string_format:"%01.2f"}
-		</TD>
 		<TD ALIGN="RIGHT">
 			{$invoice.tax|string_format:"%01.2f"}
 		</TD>
@@ -98,6 +98,9 @@
 		<TD CLASS="HEADGREY" COLSPAN="4" ALIGN="RIGHT">
 			<B>{trans("Total:")}</B>
 		</TD>
+		<TD CLASS="HEADGREY" ALIGN="RIGHT">
+			<B>{$listdata.brutto|string_format:"%01.2f"}</B>
+		</TD>
 		{foreach item=tax from=$taxes}
 		{assign var=taxid value=$tax.id}
 		<TD CLASS="HEADGREY" ALIGN="RIGHT">
@@ -109,9 +112,6 @@
 		</TD>
 		{/if}
 		{/foreach}
-		<TD CLASS="HEADGREY" ALIGN="RIGHT">
-			<B>{$listdata.brutto|string_format:"%01.2f"}</B>
-		</TD>
 		<TD CLASS="HEADGREY" ALIGN="RIGHT">
 			<B>{$listdata.tax|string_format:"%01.2f"}</B>
 		</TD>
