@@ -45,8 +45,11 @@ if(isset($_POST['voipaccountedit']))
 {
 	$voipaccountedit = $_POST['voipaccountedit'];
 	
-	foreach($voipaccountedit as $key => $value)
-		$voipaccountedit[$key] = trim($value);
+	foreach($voipaccountedit as $key => $value) {
+		if (!is_array($value)) {
+			$voipaccountedit[$key] = trim($value);
+		}
+	}
 	
 	if($voipaccountedit['login']=='')
 		$error['login'] = trans('Voip account login is required!');
