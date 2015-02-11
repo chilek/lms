@@ -1,28 +1,28 @@
 <?php
 
-/*function bzwbk_check_sum($data, $sum)
-{
-	$positions = intval($sum[1]);
-	$total = floatval($sum[2]);
-	$x = 0;
-	foreach ($data as $rec)
-		$x += floatval($rec['value']);
-	$x *= 100.0;
-	return ($positions == count($data) && $total == $x);
-}
-
-function bzwbk_time($time, $filename)
-{
-	if (preg_match('/.*PZ([0-9]{4}).*/', $filename, $matches)) {
-		$day = substr($matches[1], 0, 2);
-		$month = substr($matches[1], 2, 2);
-		$year = intval(date('Y'));
-		if (intval(date('n')) < $month)
-			$year--;
-		$time = mktime(0, 6, 0, $month, $day, $year);
-	}
-	return $time;
-}*/
+//function bzwbk_check_sum($data, $sum)
+//{
+//	$positions = intval($sum[1]);
+//	$total = floatval($sum[2]);
+//	$x = 0;
+//	foreach ($data as $rec)
+//		$x += floatval($rec['value']);
+//	$x *= 100.0;
+//	return ($positions == count($data) && $total == $x);
+//}
+//
+//function bzwbk_time($time, $filename)
+//{
+//	if (preg_match('/.*PZ([0-9]{4}).*/', $filename, $matches)) {
+//		$day = substr($matches[1], 0, 2);
+//		$month = substr($matches[1], 2, 2);
+//		$year = intval(date('Y'));
+//		if (intval(date('n')) < $month)
+//			$year--;
+//		$time = mktime(0, 6, 0, $month, $day, $year);
+//	}
+//	return $time;
+//}
 
 $patterns[] = array(
 	'pattern' => '/^[0-9]+,([0-9]+),([0-9]+),[0-9]+,[0-9]+,"[0-9]+","[0-9]{2}[0-9]{19}([0-9]{5})",'
