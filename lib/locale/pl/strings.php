@@ -2874,4 +2874,8 @@ $_LANG['Select device status'] = 'Wybierz status urządzenia';
 $_LANG['$a (from network node $b)'] = '$a (z węzła sieciowego $b)';
 $_LANG['$a (from network device $b)'] = '$a (z urządzenia sieciowego $b)';
 
-?>
+$_LANG['Network device models database is empty.'] = 'Baza danych urządzeń sieciowych jest pusta.';
+$_LANG['Select producer'] = 'Wybierz producenta';
+$_LANG['Select model'] = 'Wybierz model';
+$_LANG['Enter producer name'] = 'Wpisz nazwę producenta';
+$_LANG['Click to select model'] = 'Kliknij w celu wybrania modelu';
