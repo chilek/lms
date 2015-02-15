@@ -29,4 +29,6 @@ $DB->BeginTrans();
 
 $DB->Execute("ALTER TABLE netdevices ADD FOREIGN KEY (netdevicemodelid) REFERENCES netdevicemodels(id) ON DELETE CASCADE ON UPDATE CASCADE");
 
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015021500', 'dbversion'));
+
 $DB->CommitTrans();
