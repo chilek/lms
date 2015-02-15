@@ -55,7 +55,7 @@ $DB->Execute("INSERT INTO netdeviceproducers (id, name) VALUES
 (2, 'Ubiquiti')");
 
 $DB->Execute("
-INSERT INTO netdevicemodels (id, name, alternative_name, netdeviceproducerid) VALUES
+INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('RB750', NULL, 1),
 ('RB750UP', NULL, 1),
 ('RB750GL', NULL, 1),
@@ -234,7 +234,7 @@ INSERT INTO netdevicemodels (id, name, alternative_name, netdeviceproducerid) VA
 ");
 
 $DB->Execute("
-INSERT INTO netdevicemodels (id, name, alternative_name, netdeviceproducerid) VALUES
+INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('3391-A', 'SR71A', 2),
 ('AF-24', 'AIRFIBER 1.4GBPS+ BACKHAUL 24GHZ (SHIPPED AS SINGLES)', 2),
 ('AF-5', 'AIRFIBER 1GBPS+ BACKHAUL 5.4-5.8GHZ', 2),
