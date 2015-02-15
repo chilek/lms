@@ -2221,7 +2221,7 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('mANT30 PA', NULL, 1),
 ('mANT30', NULL, 1);
 
-INSERT INTO netdevicemodels (id, name, alternative_name, netdeviceproducerid) VALUES
+INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('3391-A', 'SR71A', 2),
 ('AF-24', 'AIRFIBER 1.4GBPS+ BACKHAUL 24GHZ (SHIPPED AS SINGLES)', 2),
 ('AF-5', 'AIRFIBER 1GBPS+ BACKHAUL 5.4-5.8GHZ', 2),
