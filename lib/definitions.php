@@ -323,16 +323,20 @@ $NETELEMENTSTATUSES = array(
 
 $NETELEMENTTYPES = array(
 	0	=> 'budynek biurowy',
-	1	=> 'budynek przemysłowy',
 	2	=> 'budynek mieszkalny',
+	1	=> 'budynek przemysłowy',
+	11	=> 'budynek usługowy',
+	12	=> 'budynek użyteczności publicznej',
 	3	=> 'obiekt sakralny',
-	4	=> 'maszt',
+	13	=> 'obiekt sieci elektroenergetycznej',
 	5	=> 'wieża',
+	4	=> 'maszt',
+	10	=> 'komin',
 	6	=> 'kontener',
 	7	=> 'szafa uliczna',
+	14	=> 'słup',
 	8	=> 'skrzynka',
 	9	=> 'studnia kablowa',
-	10	=> 'komin',
 );
 
 $NETELEMENTOWNERSHIPS = array(
