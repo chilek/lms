@@ -151,7 +151,7 @@ $LMS = new LMS($DB, $AUTH, $SYSLOG);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
-$plugin_manager = new LMSPluginManager($LMS);
+$plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
 
 // Initialize Swekey class

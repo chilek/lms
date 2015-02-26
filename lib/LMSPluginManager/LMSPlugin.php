@@ -37,12 +37,10 @@ use Phine\Observer\SubjectInterface;
 abstract class LMSPlugin implements ObserverInterface
 {
     protected $handlers;
-    protected $lms;
     
-    public function __construct(&$LMS)
+    public function __construct()
     {
         $this->registerHandlers();
-        $this->lms = &$LMS;
     }
     
     /**
