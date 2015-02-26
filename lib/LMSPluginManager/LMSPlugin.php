@@ -38,7 +38,7 @@ abstract class LMSPlugin implements ObserverInterface
 {
     protected $handlers;
     
-    public function __construct()
+    public function __construct(&$LMS)
     {
         $this->registerHandlers();
     }

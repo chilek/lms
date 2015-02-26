@@ -42,7 +42,7 @@ class LMSPluginManager extends Subject implements SubjectInterface
      * 
      * @throws Exception Throws exception if plugin not found
      */
-    public function __construct()
+    public function __construct(&$LMS)
     {
         $plugins_config = ConfigHelper::getConfig('phpui.plugins');
         if ($plugins_config) {
@@ -52,7 +52,7 @@ class LMSPluginManager extends Subject implements SubjectInterface
                 if (!class_exists($plugin_name)) {
                     throw new Exception("Unknown plugin $plugin_name at position $position");
                 }
-                $plugin = new $plugin_name();
+                $plugin = new $plugin_name($LMS);
                 if (!($plugin instanceof LMSPlugin)) {
                     throw new Exception("Plugin object must be instance of LMSPlugin class");
                 }
