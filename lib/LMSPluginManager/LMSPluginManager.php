@@ -36,13 +36,14 @@ class LMSPluginManager extends Subject implements SubjectInterface
 {
     protected $hook_name;
     protected $hook_data;
+    protected $lms;
     
     /**
      * Loads plugins
      * 
      * @throws Exception Throws exception if plugin not found
      */
-    public function __construct()
+    public function __construct(&$LMS)
     {
         $plugins_config = ConfigHelper::getConfig('phpui.plugins');
         if ($plugins_config) {
@@ -52,13 +53,15 @@ class LMSPluginManager extends Subject implements SubjectInterface
                 if (!class_exists($plugin_name)) {
                     throw new Exception("Unknown plugin $plugin_name at position $position");
                 }
-                $plugin = new $plugin_name();
+                $plugin = new $plugin_name($LMS);
                 if (!($plugin instanceof LMSPlugin)) {
                     throw new Exception("Plugin object must be instance of LMSPlugin class");
                 }
                 if ($plugin_priority === null) {
                     $plugin_priority = SubjectInterface::LAST_PRIORITY;
                 }
+
+                $this->lms = &$LMS;
                 $this->registerObserver($plugin, $plugin_priority);
             }
         }
