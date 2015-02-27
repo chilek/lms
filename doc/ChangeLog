@@ -37,6 +37,7 @@ version ?.??.?? (????-??-??):
   - reduced ezpdf invoice file size by subset font usage [chilan]
   - new privilege for compacting traffic statistics [maniac]
   - correction of typos on domain record list [darton]
+  - correction of the table that displays a list of domain records [darton]
 
 version 1.11.15 (2014-05-15):
 
