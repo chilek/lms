@@ -36,6 +36,7 @@ version ?.??.?? (????-??-??):
     to be sure that script get invoices in correct language [kcem]
   - reduced ezpdf invoice file size by subset font usage [chilan]
   - new privilege for compacting traffic statistics [maniac]
+  - correction of typos on domain record list [darton]
 
 version 1.11.15 (2014-05-15):
 
