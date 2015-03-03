@@ -329,6 +329,7 @@ if(isset($_POST['assignment']))
 		$args = array(
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => intval($a['tariffid']),
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+                        'attribute' => !empty($a['attribute']) ? $a['attribute'] : NULL,
 			'period' => $period,
 			'at' => $at,
 			'invoice' => isset($a['invoice']) ? 1 : 0,
@@ -342,7 +343,7 @@ if(isset($_POST['assignment']))
 			'paytype' => !empty($a['paytype']) ? $a['paytype'] : NULL,
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN] => $a['id']
 		);
-		$DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, period=?, at=?,
+		$DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, attribute=?, period=?, at=?,
 			invoice=?, settlement=?, datefrom=?, dateto=?, pdiscount=?, vdiscount=?,
 			liabilityid=?, numberplanid=?, paytype=?
 			WHERE id=?', array_values($args));
@@ -405,7 +406,7 @@ else
 {
 	$a = $DB->GetRow('SELECT a.id AS id, a.customerid, a.tariffid, a.period,
 				a.at, a.datefrom, a.dateto, a.numberplanid, a.paytype,
-				a.invoice, a.settlement, a.pdiscount, a.vdiscount, a.liabilityid, 
+				a.invoice, a.settlement, a.pdiscount, a.vdiscount, a.attribute, a.liabilityid, 
 				(CASE liabilityid WHEN 0 THEN tariffs.name ELSE liabilities.name END) AS name, 
 				liabilities.value AS value, liabilities.prodid AS prodid, liabilities.taxid AS taxid
 				FROM assignments a
@@ -415,6 +416,7 @@ else
 
 	$a['pdiscount'] = floatval($a['pdiscount']);
 	$a['vdiscount'] = floatval($a['vdiscount']);
+        $a['attribute'] = $a['attribute'];
 	if (!empty($a['pdiscount'])) {
 		$a['discount'] = $a['pdiscount'];
 		$a['discount_type'] = DISCOUNT_PERCENTAGE;
