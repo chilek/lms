@@ -40,6 +40,7 @@ version ?.??.?? (????-??-??):
   - correction of the table that displays a list of domain records [darton]
   - update top level domains list to newest version [darton]
   - prepare databases to tariff liabilities with the attribute [darton]
+  - prepare templates to tariff liabilities with the attribute [darton]
 
 version 1.11.15 (2014-05-15):
 
