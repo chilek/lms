@@ -1,9 +1,9 @@
 <?php
 
 /*
- * LMS version 1.11-git
+ *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  Copyright (C) 2001-2013 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,19 +24,11 @@
  *  $Id$
  */
 
-$a = $DB->GetRow('SELECT a.invoice, a.settlement,
-        a.numberplanid, a.paytype, n.template, n.period, a.attribute
-		FROM assignments a
-		LEFT JOIN numberplans n ON (n.id = a.numberplanid)
-		WHERE a.id = ?',array(intval($_GET['id'])));
+$DB->BeginTrans();
 
-if ($a['template']) {
-    $a['numberplan'] = $a['template'].' ('.$NUM_PERIODS[$a['period']].')';
-}
+$DB->Execute("ALTER TABLE assignments ADD attribute varchar(255) DEFAULT NULL");
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015030300', 'dbversion'));
 
-$a['paytypename'] = $PAYTYPES[$a['paytype']];
-
-$SMARTY->assign('assignment', $a);
-$SMARTY->display('customer/customerassignmentinfoshort.html');
+$DB->CommitTrans();
 
 ?>

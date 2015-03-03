@@ -4,7 +4,7 @@
 <H1>{$layout.pagetitle}</H1>
 <P><TABLE class="lmsbox">
     <THEAD>
-	<TR">
+	<TR>
 		<TD width="46%" NOWRAP>{trans("Host:")}</TD>
 		<TD width="2%" NOWRAP align="right">{trans("TTL")}:</TD>
 		<TD width="2%" NOWRAP>{trans("Type")}:</TD>
@@ -75,7 +75,7 @@
     <TFOOT>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" COLSPAN="7">
+		<TD class="pagination" COLSPAN="6">
 			{include file="scroller.html" loop=$recordslist adlink=$suffix}
 		</TD>
 	</TR>
