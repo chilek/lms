@@ -26,7 +26,7 @@
 
 $DB->BeginTrans();
 
-$DB->Execute("ALTER TABLE assignments ADD attribute varchar(255) DEFAULT NULL AFTER numberplanid");
+$DB->Execute("ALTER TABLE assignments ADD attribute varchar(255) DEFAULT NULL");
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015030300', 'dbversion'));
 
 $DB->CommitTrans();
