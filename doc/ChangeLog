@@ -41,6 +41,8 @@ version ?.??.?? (????-??-??):
   - update top level domains list to newest version [darton]
   - prepare databases to tariff liabilities with the attribute [darton]
   - prepare templates to tariff liabilities with the attribute [darton]
+  - prepare modules to tariff liabilities with the attribute [darton]
+  - prepare lms-payments.php to using the tariff liabilities with the attribute [darton] 
 
 version 1.11.15 (2014-05-15):
 

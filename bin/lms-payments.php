@@ -145,7 +145,7 @@ require_once(LIB_DIR.'/language.php');
 $deadline = ConfigHelper::getConfig('payments.deadline', 14);
 $sdate_next = ConfigHelper::getConfig('payments.saledate_next_month', 0);
 $paytype = ConfigHelper::getConfig('payments.paytype', 2); // TRANSFER
-$comment = ConfigHelper::getConfig('payments.comment', "Tariff %tariff subscription for period %period");
+$comment = ConfigHelper::getConfig('payments.comment', "Tariff %tariff - %attribute subscription for period %period");
 $s_comment = ConfigHelper::getConfig('payments.settlement_comment', ConfigHelper::getConfig('payments.comment'));
 $suspension_description = ConfigHelper::getConfig('payments.suspension_description', '');
 $suspension_percentage = ConfigHelper::getConfig('finances.suspension_percentage', 0);
@@ -340,7 +340,7 @@ if (!empty($groupsql))
 $query = "SELECT a.tariffid, a.liabilityid, a.customerid, 
 		a.period, a.at, a.suspended, a.settlement, a.datefrom, a.pdiscount, a.vdiscount, 
 		a.invoice, t.description AS description, a.id AS assignmentid, 
-		c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid, 
+		c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid, a.attribute,
 		d.inv_paytype AS d_paytype, t.period AS t_period, 
 		(CASE a.liabilityid WHEN 0 THEN t.type ELSE -1 END) AS tarifftype, 
 		(CASE a.liabilityid WHEN 0 THEN t.name ELSE l.name END) AS name, 
@@ -398,6 +398,7 @@ foreach($assigns as $assign)
 		$desc = $comment;
 	$desc = preg_replace("/\%type/", $assign['tarifftype'] != TARIFF_OTHER ? $TARIFFTYPES[$assign['tarifftype']] : '', $desc);
 	$desc = preg_replace("/\%tariff/", $assign['name'], $desc);
+        $desc = preg_replace("/\%attribute/", $assign['attribute'], $desc);
 	$desc = preg_replace("/\%desc/", $assign['description'], $desc);
 	$desc = preg_replace("/\%period/", $txts[$assign['period']], $desc);
 	$desc = preg_replace("/\%current_month/", $current_month, $desc);
@@ -587,6 +588,7 @@ foreach($assigns as $assign)
 			$sdesc = $s_comment;
 			$sdesc = preg_replace("/\%type/", $assign['tarifftype'] != TARIFF_OTHER ? $TARIFFTYPES[$assign['tarifftype']] : '', $sdesc);
 			$sdesc = preg_replace("/\%tariff/", $assign['name'], $sdesc);
+                        $sdesc = preg_replace("/\%attribute/", $assign['attribute'], $sdesc);
 			$sdesc = preg_replace("/\%desc/", $assign['description'], $sdesc);
 			$sdesc = preg_replace("/\%period/", $period, $sdesc);
 			$sdesc = preg_replace("/\%current_month/", $current_month, $sdesc);
