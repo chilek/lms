@@ -53,7 +53,7 @@
 					{else}
 					<TD OnClick="return self.location.href='?m=customerassignmentedit&amp;id={$a.id}'">
 						{if $a.tariffid}
-							<A href="?m=tariffinfo&amp;id={$a.tariffid}"><span class="bold">{$a.name}</span></A>
+							<A href="?m=tariffinfo&amp;id={$a.tariffid}"><span class="bold">{$a.name}</span></A><b>{if $a.attribute} - {$a.attribute}{/if}</b>
 						{else}
 							{$a.name}
 						{/if}

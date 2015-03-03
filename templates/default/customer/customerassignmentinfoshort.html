@@ -22,7 +22,14 @@
 	</TR>
     </THEAD>
     <TBODY>
-	<TR>
+    {if $assignment.attribute}
+       <TR>
+               <TD><IMG src="img/id.gif" ALT=""></TD>
+               <TD style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Attribute:")}</span></TD>
+               <TD style="white-space: nowrap;">{if $assignment.attribute}{$assignment.attribute}{/if}</TD>
+       </TR>
+    {/if}
+        <TR>
 		<TD><IMG src="img/id.gif" ALT=""></TD>
 		<TD style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Numbering Plan:")}</span></TD>
 		<TD style="white-space: nowrap;">{if $assignment.numberplan}{$assignment.numberplan}{else}{trans("default")}{/if}</TD>

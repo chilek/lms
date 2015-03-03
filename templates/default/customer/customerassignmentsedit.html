@@ -19,6 +19,7 @@
 		document.getElementById('a_value').style.display = val == '' ? '' : 'none';
 		document.getElementById('a_productid').style.display = val == '' ? '' : 'none';
 		document.getElementById('a_name').style.display = val == '' ? '' : 'none';
+                document.getElementById('a_attribute').style.display = val == '' ? 'none' : '';
 		document.getElementById('a_options').style.display = val == -1 ? 'none' : '';
 		document.getElementById('a_nodes').style.display = val == -1 ? 'none' : '';
 		document.getElementById('a_day').style.display = val == -1 ? 'none' : '';
@@ -133,6 +134,17 @@
 		    <INPUT type="text" name="assignment[name]" value="{if $assignment.tariffid<=0}{$assignment.name}{/if}" size="30" {tip text="Enter liability name/description (tariffless liabilities only)" trigger="name"}>
 		</TD>
 	</TR>
+        <TR id="a_attribute">
+               <TD style="width: 1%;">
+                       <IMG src="img/money.gif" alt="">
+               </TD>
+               <TD style="width: 1%; white-space: nowrap;">
+                       <span class="bold">{trans("Attribute:")}</span>
+               </TD>
+               <TD style="width: 98%;">
+                   <INPUT type="text" name="assignment[attribute]" value="{if $assignment.attribute}{$assignment.attribute}{/if}" size="30" {tip text="Enter tariff attribute" trigger="attribute"}>
+               </TD>
+       </TR>
 	<TR id="a_day">
 		<TD style="width: 1%;">
 			<IMG src="img/calendar.gif" alt="">
