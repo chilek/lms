@@ -2879,3 +2879,7 @@ $_LANG['Select producer'] = 'Wybierz producenta';
 $_LANG['Select model'] = 'Wybierz model';
 $_LANG['Enter producer name'] = 'Wpisz nazwę producenta';
 $_LANG['Click to select model'] = 'Kliknij w celu wybrania modelu';
+$_LANG['Attribute:'] = 'Atrybut:';
+$_LANG['Enter tariff attribute'] = 'Wprowadź atrybut dla taryfy';
+
+?>
