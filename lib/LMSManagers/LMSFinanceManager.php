@@ -46,7 +46,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         if ($assignments = $this->db->GetAll('SELECT a.id AS id, a.tariffid,
 			a.customerid, a.period, a.at, a.suspended, a.invoice, a.settlement,
-			a.datefrom, a.dateto, a.pdiscount, a.vdiscount, a.liabilityid,
+			a.datefrom, a.dateto, a.pdiscount, a.vdiscount, a.attribute, a.liabilityid,
 			t.uprate, t.upceil, t.downceil, t.downrate,
 			(CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) AS value,
 			(CASE WHEN t.name IS NULL THEN l.name ELSE t.name END) AS name
