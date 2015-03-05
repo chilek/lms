@@ -24,8 +24,39 @@
  *  $Id$
  */
 
-$body = trans('Transaction logging is not supported in this LMS version.');
-$SMARTY->assign('body', $body);
-$SMARTY->display('dialog.html');
+if (!$SYSLOG) {
+	$body = trans('Transaction logging is disabled.');
+	$SMARTY->assign('body', $body);
+	$SMARTY->display('dialog.html');
+	die;
+}
+
+$type = isset($_GET['type']) ? intval($_GET['type']) : 0;
+$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+$date = isset($_GET['date']) ? intval($_GET['date']) : 0;
+
+$resource = array(
+	'type' => $type,
+	'id' => $id
+);
+if (!empty($date))
+	$resource['date'] = $date;
+
+$resource['properties'] = $SYSLOG->GetResourceProperties($resource);
+$resource['name'] = $SYSLOG_RESOURCES[$type];
+
+//xdebug_var_dump($resource);
+//die;
+
+$trans = $SYSLOG->GetTransactions(array('key' => $SYSLOG_RESOURCE_KEYS[$type], 'value' => $id));
+if (!empty($trans))
+	foreach ($trans as $idx => $tran)
+		$SYSLOG->DecodeTransaction($trans[$idx]);
+$SMARTY->assign('transactions', $trans);
+
+$layout['pagetitle'] = trans('Archived Resource Information');
+
+$SMARTY->assign('resource', $resource);
+$SMARTY->display('archiveinfo.html');
 
 ?>

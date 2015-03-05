@@ -148,4 +148,293 @@ $SYSLOG_RESOURCE_KEYS = array(
 	SYSLOG_RES_TMPL => 'templateid',
 );
 
+define('SYSLOG_OPER_ADD', 1);
+define('SYSLOG_OPER_DELETE', 2);
+define('SYSLOG_OPER_UPDATE', 3);
+define('SYSLOG_OPER_DBBACKUPRECOVER', 240);
+define('SYSLOG_OPER_USERPASSWDCHANGE', 251);
+define('SYSLOG_OPER_USERNOACCESS', 252);
+define('SYSLOG_OPER_USERLOGFAIL', 253);
+define('SYSLOG_OPER_USERLOGIN', 254);
+define('SYSLOG_OPER_USERLOGOUT', 255);
+
+$SYSLOG_OPERATIONS = array(
+	SYSLOG_OPER_ADD => trans('addition<!syslog>'),
+	SYSLOG_OPER_DELETE => trans('deletion<!syslog>'),
+	SYSLOG_OPER_UPDATE => trans('update<!syslog>'),
+	SYSLOG_OPER_DBBACKUPRECOVER => trans('recover<!syslog>'),
+	SYSLOG_OPER_USERPASSWDCHANGE => trans('password change<!syslog>'),
+	SYSLOG_OPER_USERNOACCESS => trans('access denied<!syslog>'),
+	SYSLOG_OPER_USERLOGFAIL => trans('log in failed<!syslog>'),
+	SYSLOG_OPER_USERLOGIN => trans('log in<!syslog>'),
+	SYSLOG_OPER_USERLOGOUT => trans('log out<!syslog>'),
+);
+
+if (isset($SMARTY)) {
+	asort($SYSLOG_RESOURCES);
+	$SMARTY->assign('_SYSLOG_RESOURCES', $SYSLOG_RESOURCES);
+	$SMARTY->assign('_SYSLOG_RESOURCE_KEYS', $SYSLOG_RESOURCE_KEYS);
+	$SMARTY->assign('_SYSLOG_OPERATIONS', $SYSLOG_OPERATIONS);
+}
+
+class SYSLOG {
+	private $DB;
+	private $AUTH = null;
+	private $userid = 0;
+	private $transid = 0;
+	private $module = '';
+
+	function SYSLOG(&$DB) {
+		$this->DB = $DB;
+	}
+
+	function SetAuth(&$AUTH) {
+		$this->AUTH = $AUTH;
+	}
+
+	function NewTransaction($module, $userid = null) {
+		if (is_null($this->AUTH)) {
+			if (!is_null($userid))
+				$this->userid = intval($userid);
+		} else
+			$this->userid = $this->AUTH->id;
+		$this->module = $module;
+		$this->transid = 0;
+		//$this->DB->Execute('INSERT INTO logtransactions (time, userid, module)
+		//	VALUES(?NOW?, ?, ?)', array($this->userid, $this->module));
+		//$this->transid = $this->DB->GetLastInsertID('logtransactions');
+	}
+
+	function AddMessage($resource, $operation, $data = null, $keys = null) {
+		if (empty($this->transid) && empty($this->module))
+			return;
+		if (empty($this->transid)) {
+			$this->DB->Execute('INSERT INTO logtransactions (time, userid, module)
+				VALUES(?NOW?, ?, ?)', array($this->userid, $this->module));
+			$this->transid = $this->DB->GetLastInsertID('logtransactions');
+		}
+
+		$this->DB->Execute('INSERT INTO logmessages (transactionid, resource, operation)
+			VALUES(?, ?, ?)', array($this->transid, $resource, $operation));
+		$id = $this->DB->GetLastInsertID('logmessages');
+		if (!empty($data) && is_array($data))
+			foreach ($data as $name => $val)
+				if (!empty($keys) && is_array($keys) && array_search($name, $keys) !== FALSE
+					&& (is_long($val) || is_int($val) || preg_match('/^[0-9]+$/', $val)))
+					$this->DB->Execute('INSERT INTO logmessagekeys (logmessageid, name, value)
+						VALUES(?, ?, ?)',
+						array($id, $name, $val));
+				else
+					$this->DB->Execute('INSERT INTO logmessagedata (logmessageid, name, value)
+						VALUES(?, ?, ?)',
+						array($id, $name, $val));
+	}
+
+	function GetTransactions($params) {
+		$key = (isset($params['key']) && !empty($params['key']) ? $params['key'] : '');
+		$value = (isset($params['value']) && preg_match('/^[0-9]+$/', $params['value']) ? $params['value'] : '');
+		$propname = (isset($params['propname']) && !empty($params['propname']) ? $params['propname'] : '');
+		$propvalue = (isset($params['propvalue']) && !empty($params['propvalue']) ? $params['propvalue'] : '');
+		$userid = (isset($params['userid']) && !empty($params['userid']) ? intval($params['userid']) : 0);
+		$offset = (isset($params['offset']) && !empty($params['offset']) ? intval($params['offset']) : 0);
+		$limit = (isset($params['limit']) && !empty($params['limit']) ? intval($params['limit']) : 20);
+		$order = (isset($params['order']) && preg_match('/ASC/i', $params['order']) ? 'ASC' : 'DESC');
+		$datefrom = (isset($params['datefrom']) && !empty($params['datefrom']) ? intval($params['datefrom']) : 0);
+		$dateto = (isset($params['dateto']) && !empty($params['dateto']) ? intval($params['dateto']) : 0);
+		$resource = (isset($params['resource']) && !empty($params['resource']) ? $params['resource'] : 0);
+		$args = array();
+		$where = array();
+		$joins = array();
+		if ($key != '' && strval($value) != '') {
+			$joins[] = 'JOIN logmessagekeys lmk ON lmk.logmessageid = lm.id';
+			$where[] = 'lmk.name = ? AND lmk.value ' . (empty($value) ? '>' : '=') . ' ?';
+			$args[] = $key;
+			$args[] = $value;
+		}
+		if ($propname != '' && $propvalue != '') {
+			$joins[] = 'JOIN logmessagedata lmd ON lmd.logmessageid = lm.id';
+			$where[] = 'lmd.name = ? AND lmd.value ?LIKE? ?';
+			$args[] = $propname;
+			$args[] = '%' . $propvalue . '%';
+		}
+		if ($resource) {
+			$where[] = 'lm.resource = ?';
+			$args[] = $resource;
+		}
+		if ($userid) {
+			$where[] = 'lt.userid = ?';
+			$args[] = $userid;
+		}
+		if ($datefrom) {
+			$where[] = 'lt.time >= ?';
+			$args[] = $datefrom;
+		}
+		if ($dateto) {
+			$where[] = 'lt.time <= ?';
+			$args[] = $dateto;
+		}
+		$trans = $this->DB->GetAll('SELECT DISTINCT lt.id, lt.time, lt.userid, u.login, lt.module FROM logtransactions lt
+			JOIN logmessages lm ON lm.transactionid = lt.id 
+			LEFT JOIN users u ON u.id = lt.userid ' . implode(' ', $joins)
+			. (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '') . ' ORDER BY lt.id ' . $order
+			. ' LIMIT ' . $limit . (!empty($offset) ? ' OFFSET ' . $offset : ''),
+				$args);
+		return $trans;
+	}
+
+	function DecodeMessageData(&$data) {
+		global $SYSLOG_RESOURCES, $SYSLOG_OPERATIONS, $PERIODS, $PAYTYPES, $LINKTYPES, $LINKSPEEDS;
+
+		switch ($data['name']) {
+			case 'datefrom':
+			case 'dateto':
+			case 'issuedto':
+			case 'consentdate':
+			case 'time':
+			case 'sdate':
+			case 'cdate':
+				$data['value'] = !empty($data['value']) ? $data['value'] = date('Y.m.d', $data['value']) : $data['value'];
+				break;
+			case 'at':
+				$data['value'] = strlen($data['value']) > 6 ? date('Y.m.d', $data['value']) : $data['value'];
+				break;
+			case 'period':
+				$data['value'] = $PERIODS[$data['value']];
+				break;
+			case 'paytype':
+				$data['value'] = empty($data['value']) ? trans('default') : $PAYTYPES[$data['value']];
+				break;
+			case 'paytime':
+				$data['value'] = $data['value'] == -1 ? trans('default') : $data['value'];
+				break;
+			case 'invoice':
+			case 'issuetoendofyear':
+			case 'access':
+			case 'warning':
+			case 'chkmac':
+			case 'halfduplex':
+				$data['value'] = $data['value'] == 1 ? trans('yes') : trans('no');
+				break;
+			case 'type':
+				if ($data['resource'] == SYSLOG_RES_CUST)
+					$data['value'] = empty($data['value']) ? trans('private person') : trans('legal entity');
+				else
+					$data['value'] = $data['value'];
+				break;
+			case 'ipaddr_pub':
+				$data['value'] = $data['value'] == '0.0.0.0' ? trans('none') : $data['value'];
+				break;
+			case 'linktype':
+				$data['value'] = $LINKTYPES[$data['value']];
+				break;
+			case 'linkspeed':
+				$data['value'] = !empty($data['value']) ? $LINKSPEEDS[$data['value']] : '';
+				break;
+			case 'port':
+				$data['value'] = $data['value'] == 0 ? trans('none') : $data['value'];
+				break;
+			default:
+				$data['value'] = $data['value'];
+		}
+		if ($data['resource'] != SYSLOG_RES_USER && strlen($data['value']) > 50)
+			$data['value'] = substr($data['value'], 0, 50) . '...';
+		$data['value'] = htmlspecialchars($data['value']);
+		//$data['name'] = trans($data['name']);
+	}
+
+	function DecodeTransaction(&$tran) {
+		global $SYSLOG_RESOURCES, $SYSLOG_OPERATIONS, $SYSLOG_RESOURCE_KEYS;
+		$tran['messages'] = $this->DB->GetAll('SELECT id, resource, operation FROM logmessages lm
+			WHERE lm.transactionid = ? ORDER BY lm.id LIMIT 11',
+			array($tran['id']));
+		if (!empty($tran['messages']))
+			foreach ($tran['messages'] as $idx => $tr) {
+				$msg = &$tran['messages'][$idx];
+				$msg['text'] = '<span class="bold">' . $SYSLOG_RESOURCES[$tr['resource']];
+				$msg['text'] .= ': ' . $SYSLOG_OPERATIONS[$tr['operation']] . '</span>';
+				$keys =	$this->DB->GetAll('SELECT name, value FROM logmessagekeys 
+					WHERE logmessageid = ? ORDER BY name', array($tr['id']));
+				if (!empty($keys)) {
+					$msg['keys'] = array();
+					foreach ($keys as $key => $v) {
+						$msg['text'] .= ', ' . $v['name'] . ': ' . $v['value'];
+						$key_name = preg_replace('/^[a-z]+_/i', '', $v['name']);
+						$msg['keys'][$v['name']] = array('type' => array_search($key_name, $SYSLOG_RESOURCE_KEYS), 'value' => $v['value']);
+					}
+				}
+				$data = $this->DB->GetAll('SELECT name, value FROM logmessagedata 
+					WHERE logmessageid = ? ORDER BY name', array($tr['id']));
+				if (!empty($data)) {
+					$msg['data'] = array();
+					foreach ($data as $key => $v) {
+						$v['resource'] = $msg['resource'];
+						$this->DecodeMessageData($v);
+						$msg['text'] .= ', ' . $v['name'] . ': ' . $v['value'];
+						$msg['data'][$v['name']] = $v['value'];
+					}
+				}
+			}
+	}
+
+	function GetResourcePropertyNames($type) {
+		$names = $this->DB->GetCol('SELECT DISTINCT name FROM logmessagedata lmd
+			JOIN logmessages lm ON lm.id = lmd.logmessageid
+			WHERE lm.resource = ? ORDER BY name', array($type));
+		return $names;
+	}
+
+	function GetResourcePropertyValues($type, $name) {
+		$values = $this->DB->GetCol('SELECT DISTINCT value FROM logmessagedata lmd
+			JOIN logmessages lm ON lm.id = lmd.logmessageid
+			WHERE lm.resource = ? AND lmd.name = ? AND lmd.value <> ? ORDER BY value LIMIT 20',
+				array($type, $name, ''));
+		return $values;
+	}
+
+	function GetResourceProperties($resource) {
+		global $SYSLOG_RESOURCE_KEYS;
+		$type = $resource['type'];
+		$id = $resource['id'];
+		$date = !isset($resource['date']) || empty($resource['date']) ? time() : intval($resource['date']);
+		// get all possible resource properties
+		$names = $this->GetResourcePropertyNames($type);
+		if (empty($names))
+			return null;
+		$result = array();
+		// check if resource has already been deleted
+		$value = $this->DB->GetOne('SELECT lmk.value FROM logmessagekeys lmk
+			JOIN logmessages lm ON lm.id = lmk.logmessageid
+			JOIN logtransactions lt ON lt.id = lm.transactionid
+			WHERE lmk.name = ? AND lmk.value = ?
+				AND lt.time < ? AND lm.operation = ?
+				AND lm.resource = ?
+			ORDER BY lm.id DESC LIMIT 1',
+			array($SYSLOG_RESOURCE_KEYS[$type], $id, $date,
+				SYSLOG_OPER_DELETE, $type));
+		if (!empty($value))
+			return null;
+		// get all resource property values
+		foreach ($names as $name) {
+			$value = $this->DB->GetCol('SELECT lmd.value FROM logmessagedata lmd
+				JOIN logmessages lm ON lm.id = lmd.logmessageid
+				JOIN logmessagekeys lmk ON lmk.logmessageid = lm.id
+				JOIN logtransactions lt ON lt.id = lm.transactionid
+				WHERE lmk.name = ? AND lmk.value = ? AND lmd.name = ?
+					AND lt.time <= ? AND lm.operation IN (?, ?)
+					AND lm.resource = ?
+				ORDER BY lm.id DESC LIMIT 1',
+				array($SYSLOG_RESOURCE_KEYS[$type], $id, $name, $date,
+					SYSLOG_OPER_ADD, SYSLOG_OPER_UPDATE, $type));
+			if (!empty($value)) {
+				$value = $value[0];
+				$data = array('name' => $name, 'value' => $value, 'resource' => $type);
+				$this->DecodeMessageData($data);
+				$result[$name] = $data['value'];
+			}
+		}
+		//xdebug_var_dump($result);
+		return $result;
+	}
+}
+
 ?>
