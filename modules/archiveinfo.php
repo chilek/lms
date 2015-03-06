@@ -57,6 +57,6 @@ $SMARTY->assign('transactions', $trans);
 $layout['pagetitle'] = trans('Archived Resource Information');
 
 $SMARTY->assign('resource', $resource);
-$SMARTY->display('archiveinfo.html');
+$SMARTY->display('archive/archiveinfo.html');
 
 ?>
