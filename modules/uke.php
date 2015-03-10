@@ -199,10 +199,11 @@ if (!empty($invprojects))
 			unset($projects[$idx]);
 $projectid = 1;
 $sprojects = '';
-foreach ($projects as $project) {
-	$sprojects .= "$projectid,${project['name']}\n";
-	$projectid++;
-}
+if (!empty($projects))
+	foreach ($projects as $project) {
+		$sprojects .= "$projectid,${project['name']}\n";
+		$projectid++;
+	}
 
 $truenetnodes = $DB->GetAllByKey("SELECT nn.id, nn.name, nn.invprojectid, nn.type, nn.status, nn.ownership, nn.coowner,
 		nn.uip, nn.miar,
