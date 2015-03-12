@@ -119,6 +119,8 @@ function application_autoloader($class) {
                 }
                 $directories = new RecursiveDirectoryIterator($search_path);
                 foreach (new RecursiveIteratorIterator($directories) as $file) {
+                    if ($file->getPath() == LIB_DIR . DIRECTORY_SEPARATOR . 'plugins')
+                        continue;
                     if (in_array($file->getFilename(), $suspicious_file_names)) {
                         // get class file path
                         $full_path = $file->getRealPath();

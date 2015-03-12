@@ -50,7 +50,8 @@ class LMSPluginManager extends Subject implements SubjectInterface
             foreach ($plugins_tuples as $position => $plugin_tuple) {
                 list($plugin_name, $plugin_priority) = explode(":", $plugin_tuple);
                 if (!class_exists($plugin_name)) {
-                    throw new Exception("Unknown plugin $plugin_name at position $position");
+                    writesyslog("Unknown plugin $plugin_name at position $position", LOG_ERR);
+                    continue;
                 }
                 $plugin = new $plugin_name();
                 if (!($plugin instanceof LMSPlugin)) {
