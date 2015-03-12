@@ -142,8 +142,8 @@
 			<B>Udostępnianie powierzchni</B>
 		</TD>
 		<TD WIDTH="98%">
-			<INPUT TYPE="RADIO" NAME="netnode[uip]"   {tip text="Możliwość udostępniania innym podmiotom powierzchni w obiekcie, w którym znajduje się węzeł"} VALUE="1" {if ($netnode['uip']==1)}checked{/if}>{trans("Yes")}</INPUT>
-		 <INPUT TYPE="RADIO" NAME="netnode[uip]" VALUE="0" {if ($netnode['uip']==0)}checked{/if}>{trans("No")}</INPUT>
+			<INPUT TYPE="RADIO" NAME="netnode[uip]" VALUE="1" id="uip_yes" {tip text="Możliwość udostępniania innym podmiotom powierzchni w obiekcie, w którym znajduje się węzeł"}{if ($netnode['uip']==1)}checked{/if}><label for="uip_yes">{trans("Yes")}</label>
+			<INPUT TYPE="RADIO" NAME="netnode[uip]" VALUE="0" id="uip_no"{if ($netnode['uip']==0)} checked{/if}><label for="uip_no">{trans("No")}</label>
 		</TD>
 	</TR>
 	<TR>
@@ -154,8 +154,8 @@
 			<B>Instalacja anten</B>
 		</TD>
 		<TD WIDTH="98%">
-			<INPUT TYPE="RADIO" NAME="netnode[miar]" {tip text="Możliwość instalacji anten dla radiowej sieci dostępowej lub anten dla radiolinii w obiekcie, w którym znajduje się węzeł"} VALUE="1" {if ($netnode['miar']==1)}checked{/if}>{trans("Yes")}</INPUT>
-		 <INPUT TYPE="RADIO" NAME="netnode[miar]" VALUE="0" {if ($netnode['miar']==0)}checked{/if}>{trans("No")}</INPUT>
+			<INPUT TYPE="RADIO" NAME="netnode[miar]" VALUE="1" id="miar_yes" {tip text="Możliwość instalacji anten dla radiowej sieci dostępowej lub anten dla radiolinii w obiekcie, w którym znajduje się węzeł"}{if ($netnode['miar']==1)} checked{/if}><label for="miar_yes">{trans("Yes")}</label>
+			<INPUT TYPE="RADIO" NAME="netnode[miar]" VALUE="0" id="miar_no"{if ($netnode['miar']==0)} checked{/if}><label for="miar_no">{trans("No")}</label>
 		</TD>
 	</TR>
  	</TABLE>
