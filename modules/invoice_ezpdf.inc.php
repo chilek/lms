@@ -866,6 +866,7 @@ function invoice_body_standard()
     	$top=invoice_buyer(30,$top);
 	$top=$top-20;
     	$return=new_invoice_data(30,$top,530,7,2);
+	$return[1] += 5;
 	invoice_expositor(30,$return[1]-20);
     	$top=$return[2]-20;
 	$top=invoice_to_pay(30,$top);
@@ -891,6 +892,7 @@ function invoice_body_ft0100()
 	invoice_footnote(470,$top,90,8);
     	$return=new_invoice_data(30,$top,430,6,1);
     	$top=$return[2]-10;
+	$return[1] += 5;
 	invoice_expositor(30,$return[1]);
 	invoice_to_pay(30,$top);
 	check_page_length($top, 200);
