@@ -2866,6 +2866,8 @@ $_LANG['Investment project:'] = 'Projekt inwestycyjny:';
 $_LANG['From root device'] = 'Z jednostki nadrzędnej';
 $_LANG['Net node:'] = 'Węzeł sieciowy:';
 $_LANG['Select project'] = 'Wybierz projekt';
+$_LANG['Enter node latitude (optional)'] = 'Podaj szerokość geograficzną dla węzła sieciowego (opcjonalne)';
+$_LANG['Enter node longitude (optional)'] = 'Podaj długość geograficzną dla węzła sieciowego (opcjonalne)';
 
 $_LANG['Select investment projects'] = 'Wybierz projekty inwestycyjne';
 $_LANG['Investment project:'] = 'Projekt inwestycyjny:';
