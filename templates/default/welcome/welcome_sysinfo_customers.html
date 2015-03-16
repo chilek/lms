@@ -39,13 +39,13 @@
         <tr>
             <td class="text-right bold">
                 <a href="?m=customerlist&amp;s=0">{trans("Total:")}</a><br>
-                {if !ConfigHelper::checkConfig('privileges.hide_finances')}
+                {if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
                 <a href="?m=customerlist&amp;s=6">{trans("Total Dues:")}</a>
                 {/if}
             </td>
             <td class="nobr">
                 {$customerstats.total}<br>
-                {if !ConfigHelper::checkConfig('privileges.hide_finances')}
+                {if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
                 {$customerstats.debt} ({trans("amount")} {$customerstats.debtvalue|money_format})
                 {/if}
             </td>

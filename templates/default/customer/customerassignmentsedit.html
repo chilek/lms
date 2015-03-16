@@ -23,7 +23,7 @@
 		document.getElementById('a_options').style.display = val == -1 ? 'none' : '';
 		document.getElementById('a_nodes').style.display = val == -1 ? 'none' : '';
 		document.getElementById('a_day').style.display = val == -1 ? 'none' : '';
-		{if !ConfigHelper::checkConfig('privileges.hide_finances')}
+		{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 		document.getElementById('a_discount').style.display = val < -1 ? 'none' : '';
 		{/if}
 	}
@@ -75,7 +75,7 @@
 				{/if}
 				{section name=t loop=$tariffs}
 				<OPTION value="{$tariffs[t].id}" {if $tariffs[t].id==$assignment.tariffid}SELECTED{/if}>
-				{$tariffs[t].name} ({if !ConfigHelper::checkConfig('privileges.hide_finances')}{$tariffs[t].value|money_format}, {/if}{if $tariffs[t].upceil || $tariffs[t].downceil}{$tariffs[t].downceil}/{$tariffs[t].upceil} kbit/s{/if})
+				{$tariffs[t].name} ({if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{$tariffs[t].value|money_format}, {/if}{if $tariffs[t].upceil || $tariffs[t].downceil}{$tariffs[t].downceil}/{$tariffs[t].upceil} kbit/s{/if})
 				</OPTION>
 				{/section}
 			</SELECT>

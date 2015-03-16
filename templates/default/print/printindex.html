@@ -385,7 +385,7 @@ multiselect('printbalancelist', 'balancelisttype', '{trans("- all types -")}');
 </SCRIPT>
 </P>
 {/if}
-{if ($printmenu=="customer" || $printmenu=="finances") && !ConfigHelper::checkConfig('privileges.hide_finances')}
+{if ($printmenu=="customer" || $printmenu=="finances") && (ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances'))}
 <br>
 <FORM method="post" name="printcustomerbalance" id="printcustomerbalance" action="?m=print&amp;type=customerbalance">
 <p style="display: none;">
@@ -965,7 +965,7 @@ cal6.time_comp = false;
 </SCRIPT>
 </P>
 {/if}
-{if ($printmenu=="customer" || $printmenu=="finances") && !ConfigHelper::checkConfig('privileges.hide_finances')}
+{if ($printmenu=="customer" || $printmenu=="finances") && (ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances'))}
 <br>
 <FORM method="post" name="liabilityreport" id="liabilityreport" action="?m=print&amp;type=liabilityreport">
 <p style="display: none;">
