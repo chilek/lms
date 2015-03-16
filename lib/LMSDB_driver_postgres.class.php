@@ -84,7 +84,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
     public function _driver_connect($dbhost, $dbuser, $dbpasswd, $dbname)
     {
         $cstring = join(' ', array(
-            ($dbhost != '' && $dbhost != 'localhost' ? 'host=' . $dbhost : ''),
+            ($dbhost != '' ? 'host=' . $dbhost : ''),
             ($dbuser != '' ? 'user=' . $dbuser : ''),
             ($dbpasswd != '' ? 'password=' . $dbpasswd : ''),
             ($dbname != '' ? 'dbname=' . $dbname : ''),
