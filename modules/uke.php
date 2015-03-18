@@ -1088,7 +1088,7 @@ if (!extension_loaded ('zip'))
 
 $zip = new ZipArchive();
 $filename = tempnam('/tmp', 'LMS_SIIS_').'.zip';
-if ($zip->open($filename, ZIPARCHIVE::OVERWRITE)) {
+if ($zip->open($filename, ZIPARCHIVE::CREATE)) {
 	$zip->addFromString('PROJ.csv', $sprojects);
 	$zip->addFromString('OB.csv', $sforeigners);
 	$zip->addFromString('WW.csv', $snetnodes);
