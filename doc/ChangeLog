@@ -42,7 +42,7 @@ version ?.??.?? (????-??-??):
   - tariff liabilities composed of two elements [darton]
   - added transaction log core modules [chilan]
   - allow to use old-style and new-style plugins at the same time [chilan]
-  - added terminate cause in node sessions (db schemas) [chilan]
+  - added terminate cause in node sessions [chilan]
 
 version 1.11.15 (2014-05-15):
 
