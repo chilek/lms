@@ -2884,4 +2884,6 @@ $_LANG['Click to select model'] = 'Kliknij w celu wybrania modelu';
 $_LANG['Attribute:'] = 'Atrybut:';
 $_LANG['Enter tariff attribute'] = 'Wprowadź atrybut dla taryfy';
 
+$_LANG['Terminate Cause:'] = 'Powód rozłączenia:';
+
 ?>

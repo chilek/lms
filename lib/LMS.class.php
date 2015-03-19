@@ -2109,8 +2109,9 @@ class LMS
 
     public function GetNodeSessions($nodeid)
     {
-        $nodesessions = $this->DB->GetAll('SELECT INET_NTOA(ipaddr) AS ipaddr, mac, start, stop, download, upload
-			FROM nodesessions WHERE nodeid = ? ORDER BY stop DESC LIMIT 10', array($nodeid));
+        $nodesessions = $this->DB->GetAll('SELECT INET_NTOA(ipaddr) AS ipaddr, mac, start, stop,
+		download, upload, terminatecause
+		FROM nodesessions WHERE nodeid = ? ORDER BY stop DESC LIMIT 10', array($nodeid));
         if (!empty($nodesessions))
             foreach ($nodesessions as $idx => $session) {
                 list ($number, $unit) = setunits($session['download']);
