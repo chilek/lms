@@ -142,6 +142,14 @@ require_once(USERPANEL_LIB_DIR.'/ULMS.class.php');
 unset($LMS); // reset LMS class to enable wrappers for LMS older versions
 
 $LMS = new ULMS($DB, $AUTH, $SYSLOG);
+
+// Load plugin files and register hook callbacks
+$plugins = preg_split('/[;,\s\t\n]+/', ConfigHelper::getConfig('phpui.plugins', ''), -1, PREG_SPLIT_NO_EMPTY);
+if (!empty($plugins))
+	foreach ($plugins as $plugin_name)
+		if(is_readable(LIB_DIR . '/plugins/' . $plugin_name . '.php'))
+			require LIB_DIR . '/plugins/' . $plugin_name . '.php';
+
 $SESSION = new Session($DB, $_TIMEOUT);
 $USERPANEL = new USERPANEL($DB, $SESSION);
 $LMS->ui_lang = $_ui_language;
