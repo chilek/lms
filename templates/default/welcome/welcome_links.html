@@ -1,4 +1,4 @@
-{if !ConfigHelper::checkConfig('privileges.hide_links')}
+{if !ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.hide_links')}
 <table class="lmsbox">
     <thead>
         <tr>

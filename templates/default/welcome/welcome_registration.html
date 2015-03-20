@@ -1,4 +1,4 @@
-{if ConfigHelper::checkConfig('privileges.superuser')}
+{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.superuser')}
 <table class="lmsbox">
     <thead>
         <tr>
