@@ -616,7 +616,7 @@ foreach ($netnodes as $netnodename => $netnode) {
 							$snetinterfaces .= "$netintid," . (!strlen($prj) ? "," : "$prj,${NETELEMENTSTATUSES[$status]}")
 								. ",$netintid,${netnode['id']}"
 								. ",Tak,Nie,Nie,$technology,$bandwidth"
-								. ",$ltech," . implode(',', array_fill(0, 2, round($linkspeed / 1000)))
+								. ",\"$ltech\"," . implode(',', array_fill(0, 2, round($linkspeed / 1000)))
 								. ",$totalbackboneports,$totalbackboneports,0,Nie\n";
 							$netnodes[$netnodename]['backbonenetintid'][$prj][$status][$linktype][$linktechnology][$linkspeed] =
 								$netintid;
@@ -652,7 +652,7 @@ foreach ($netnodes as $netnodename => $netnode) {
 							$snetinterfaces .= "$netintid," . (!strlen($prj) ? "," : "$prj,${NETELEMENTSTATUSES[$status]}")
 								. ",$netintid,${netnode['id']}"
 								. ",Nie,Tak,Nie,$technology,$bandwidth"
-								. ",$ltech," . implode(',', array_fill(0, 2, round($linkspeed / 1000)))
+								. ",\"$ltech\"," . implode(',', array_fill(0, 2, round($linkspeed / 1000)))
 								. ",$totaldistports,$totaldistports,0,Nie\n";
 							$netintid++;
 						}
@@ -691,7 +691,7 @@ foreach ($netnodes as $netnodename => $netnode) {
 								$snetinterfaces .= "$netintid," . (!strlen($prj) ? "," : "$prj,${NETELEMENTSTATUSES[$status]}")
 									. ",$netintid,${netnode['id']}"
 									. ",Nie,Nie,Tak,$technology,$bandwidth"
-									. ",$ltech," . implode(',', array_fill(0, 2, round($linkspeed / 1000))) . ","
+									. ",\"$ltech\"," . implode(',', array_fill(0, 2, round($linkspeed / 1000))) . ","
 									. ($netnode['ports'] - $netnode['totaldistports']
 										- $netnode['personalaccessports'] - $netnode['commercialaccessports']
 										+ $ports )
@@ -701,7 +701,7 @@ foreach ($netnodes as $netnodename => $netnode) {
 							else
 								$snetinterfaces .= $netintid . "," . $netintid . "," . $netnode['id']
 									. ",Nie,Nie,Tak,$technology,$bandwidth"
-									. ",$ltech," . implode(',', array_fill(0, 2, $linkspeed)) . ","
+									. ",\"$ltech\"," . implode(',', array_fill(0, 2, $linkspeed)) . ","
 									. implode(',', array_fill(0, 2, $ports))
 									. ",0,Nie\n";
 							$netintid++;
