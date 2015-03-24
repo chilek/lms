@@ -86,8 +86,11 @@ if (strlen(trim($t)) && $t!=-1) {
 if (strlen(trim($s)) && $s!=-1) {
 	$warr[] = "n.status=$s";
 }
-if (strlen(trim($p)) && $p!=-1) {
-	$warr[] = "n.invprojectid=$p";
+if (strlen(trim($p))) {
+	if ($p == -2)
+		$warr[] = "n.invprojectid IS NULL";
+	elseif ($p != -1)
+		$warr[] = "n.invprojectid=$p";
 }
 if (strlen(trim($w)) && $w!=-1) {
 	$warr[] = "n.ownership=$w";
@@ -96,7 +99,8 @@ if (strlen(trim($w)) && $w!=-1) {
 
 $fstr = empty($warr) ? '' : ' WHERE ' . implode(' AND ', $warr);
 
-$nlist = $DB->GetAll('SELECT n.id,n.name,n.type,n.status,n.invprojectid,p.name AS project FROM netnodes n LEFT JOIN invprojects p ON (n.invprojectid = p.id) '.$fstr.' '.$ostr.' '.$dir);
+$nlist = $DB->GetAll("SELECT n.id, n.name, n.type, n.status, n.invprojectid, p.name AS project
+	FROM netnodes n LEFT JOIN invprojects p ON (n.invprojectid = p.id) " . $fstr . " " . $ostr . " " . $dir);
 
 $listdata['total'] = sizeof($nlist);
 $listdata['order'] = $order;
