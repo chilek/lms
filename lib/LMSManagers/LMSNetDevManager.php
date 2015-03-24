@@ -322,6 +322,9 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             case 'location':
                 $sqlord = ' ORDER BY location';
                 break;
+            case 'netnode':
+                $sqlord = ' ORDER BY netnode';
+                break;
             default:
                 $sqlord = ' ORDER BY name';
                 break;
@@ -331,8 +334,9 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			d.description, d.producer, d.model, d.serialnumber, d.ports,
 			(SELECT COUNT(*) FROM nodes WHERE netdev=d.id AND ownerid > 0)
 			+ (SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id)
-			AS takenports
-			FROM netdevices d '
+			AS takenports, d.netnodeid, n.name AS netnode
+			FROM netdevices d
+			LEFT JOIN netnodes n ON n.id = d.netnodeid '
                 . ($sqlord != '' ? $sqlord . ' ' . $direction : ''));
 
         $netdevlist['total'] = sizeof($netdevlist);

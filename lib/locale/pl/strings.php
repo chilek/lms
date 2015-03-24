@@ -2837,6 +2837,7 @@ $_LANG['under construction'] = 'w realizacji';
 $_LANG['planned'] = 'planowane';
 $_LANG['Project:'] = 'Projekt:';
 $_LANG['without project'] = 'bez projektu';
+$_LANG['Network node:'] = 'Węzeł sieciowy:';
 $_LANG['Ownership:'] = 'Własność:';
 $_LANG['None'] = 'Brak';
 $_LANG['New project'] = 'Nowy projekt';
