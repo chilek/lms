@@ -91,7 +91,7 @@ if(isset($_POST['netnode']))
 
 
 	$DB->Execute("INSERT INTO netnodes (".$fields.") VALUES (".$values.")",array_values($args));
-
+	$netnodeid = $DB->GetLastInsertID('netnodes');
 	$SESSION->redirect('?m=netnodeinfo&id='.$netnodeid);
     }
 
