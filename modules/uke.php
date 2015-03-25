@@ -903,7 +903,7 @@ foreach ($netnodes as $netnodename => $netnode) {
 				$allservices = array_unique($allservices);
 				$snetbuildings .= ",Nie," . (array_search('TEL', $allservices) !== FALSE ? "Tak" : "Nie")
 					. ",Nie," . (array_search('INT', $allservices) !== FALSE ? "Tak" : "Nie")
-					. ",Nie," . (array_search('TV', $allservices) !== FALSE ? "Tak" : "Nie") . ",Nie,"
+					. ",Nie," . (array_search('TV', $allservices) !== FALSE ? "Tak" : "Nie") . ",,"
 					. round($maxdownstream / 1000) . ",0\n";
 				$netbuildingid++;
 			}
