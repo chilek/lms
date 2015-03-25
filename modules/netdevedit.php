@@ -618,8 +618,8 @@ if (isset($_POST['netdev'])) {
 		}
 		if ($netdevdata['netnodeid']=="-1") {
 			$netdevdata['netnodeid']=NULL;
-			$tmp = $DB->GetRow("SELECT netnodeid FROM netdevices WHERE id=?",array($netdevdata['id']));
-			if ($tmp && $tmp['netnodeid']) {
+			$netnodeid = $DB->GetOne("SELECT netnodeid FROM netdevices WHERE id = ?", array($netdevdata['id']));
+			if ($netnodeid) {
 				/* Był jakiś węzeł i został usunięty */
 				$netdevdata['location'] = '';
 				$netdevdata['location_city'] = null;
@@ -631,15 +631,15 @@ if (isset($_POST['netdev'])) {
 			}
 		} else {
 			/* dziedziczenie lokalizacji */
-			$dev = $DB->GetRow("SELECT * FROM netnodes n WHERE id=?",array($netdevdata['netnodeid']));
+			$dev = $DB->GetRow("SELECT * FROM netnodes n WHERE id = ?", array($netdevdata['netnodeid']));
 			if ($dev) {
 				$netdevdata['location'] = $dev['location'];
 				$netdevdata['location_city'] = $dev['location_city'];
-            			$netdevdata['location_street'] = $dev['location_street'];
-            			$netdevdata['location_house'] = $dev['location_house'];
+				$netdevdata['location_street'] = $dev['location_street'];
+				$netdevdata['location_house'] = $dev['location_house'];
 				$netdevdata['location_flat'] = $dev['location_flat'];
 				$netdevdata['longitude'] = $dev['longitude'];
-            			$netdevdata['latitude'] = $dev['latitude'];
+	 			$netdevdata['latitude'] = $dev['latitude'];
 			}
 		}
 
