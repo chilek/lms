@@ -901,10 +901,55 @@ foreach ($netnodes as $netnodename => $netnode) {
 				}
 
 				$allservices = array_unique($allservices);
+
+				$maxdownstream = round($maxdownstream / 1000, 2);
+				if ($maxdownstream <= 1)
+					$maxdownstream = 1;
+				elseif ($maxdownstream <= 2)
+					$maxdownstream = 2;
+				elseif ($maxdownstream <= 4)
+					$maxdownstream = 4;
+				elseif ($maxdownstream <= 6)
+					$maxdownstream = 6;
+				elseif ($maxdownstream <= 8)
+					$maxdownstream = 8;
+				elseif ($maxdownstream <= 10)
+					$maxdownstream = 10;
+				elseif ($maxdownstream <= 20)
+					$maxdownstream = 20;
+				elseif ($maxdownstream <= 30)
+					$maxdownstream = 30;
+				elseif ($maxdownstream <= 40)
+					$maxdownstream = 40;
+				elseif ($maxdownstream <= 60)
+					$maxdownstream = 60;
+				elseif ($maxdownstream <= 80)
+					$maxdownstream = 80;
+				elseif ($maxdownstream <= 100)
+					$maxdownstream = 100;
+				elseif ($maxdownstream <= 120)
+					$maxdownstream = 120;
+				elseif ($maxdownstream <= 150)
+					$maxdownstream = 150;
+				elseif ($maxdownstream <= 250)
+					$maxdownstream = 250;
+				elseif ($maxdownstream <= 500)
+					$maxdownstream = 500;
+				elseif ($maxdownstream <= 1000)
+					$maxdownstream = 1000;
+				elseif ($maxdownstream <= 2500)
+					$maxdownstream = 2500;
+				elseif ($maxdownstream <= 10000)
+					$maxdownstream = 10000;
+				elseif ($maxdownstream <= 40000)
+					$maxdownstream = 40000;
+				else
+					$maxdownstream = 100000;
+
 				$snetbuildings .= ",Nie," . (array_search('TEL', $allservices) !== FALSE ? "Tak" : "Nie")
 					. ",Nie," . (array_search('INT', $allservices) !== FALSE ? "Tak" : "Nie")
 					. ",Nie," . (array_search('TV', $allservices) !== FALSE ? "Tak" : "Nie") . ",,"
-					. round($maxdownstream / 1000) . ",0\n";
+					. $maxdownstream . ",0\n";
 				$netbuildingid++;
 			}
 		}
