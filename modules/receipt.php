@@ -117,7 +117,7 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached' && sizeof($_POST['marks']
 			$receipt['first'] = $i > 1 ? FALSE : TRUE;
 
 			$SMARTY->assign('receipt',$receipt);
-			$SMARTY->display(ConfigHelper::getConfig('receipts.template_file'));
+			$SMARTY->display('receipt/' . ConfigHelper::getConfig('receipts.template_file'));
 		}
 	}
 	$SMARTY->display('clearfooter.html');
@@ -139,7 +139,7 @@ elseif($receipt = GetReceipt($_GET['id']))
 	$SMARTY->assign('type', isset($_GET['which']) ? $_GET['which'] : NULL);
 	$SMARTY->assign('receipt',$receipt);
 	$SMARTY->display('receipt/receiptheader.html');
-	$SMARTY->display(ConfigHelper::getConfig('receipts.template_file'));
+	$SMARTY->display('receipt/' . ConfigHelper::getConfig('receipts.template_file'));
 	$SMARTY->display('clearfooter.html');
 }
 else
