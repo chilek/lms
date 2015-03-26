@@ -895,10 +895,35 @@ foreach ($netnodes as $netnodename => $netnode) {
 					$snetranges .= ",Nie," . (array_search('TEL', $ukeservices) !== FALSE ? "Tak" : "Nie")
 						. ",Nie," . (array_search('INT', $ukeservices) !== FALSE ? "Tak" : "Nie")
 						. ",Nie," . (array_search('TV', $ukeservices) !== FALSE ? "Tak" : "Nie") . ",,";
-					$snetranges .= (implode(',', array_search('INT', $allservices) !== FALSE && isset($personalnodes[$servicetype])
-							? $personalnodes[$servicetype] : array_fill(0, 11, '0'))) . ","
-						. (implode(',', array_search('INT', $allservices) !== FALSE && isset($commercialnodes[$servicetype])
-							? $commercialnodes[$servicetype] : array_fill(0, 11, '0'))) . "\n";
+
+					if (isset($personalnodes[$servicetype])) {
+						if (array_search('INT', $allservices) !== FALSE)
+							$personalservices = $personalnodes[$servicetype];
+						else {
+							$count = 0;
+							foreach ($personalnodes[$servicetype] as $nodes)
+								$count += $nodes;
+							$personalservices = array_fill(0, 10, '0');
+							array_unshift($personalservices, $count);
+						}
+					} else
+						$personalservices = array_fill(0, 11, '0');
+
+					if (isset($commercialnodes[$servicetype])) {
+						if (array_search('INT', $allservices) !== FALSE)
+							$commercialservices = $commercialnodes[$servicetype];
+						else {
+							$count = 0;
+							foreach ($commercialnodes[$servicetype] as $nodes)
+								$count += $nodes;
+							$commercialservices = array_fill(0, 10, '0');
+							array_unshift($commercialservices, $count);
+						}
+					} else
+						$commercialservices = array_fill(0, 11, '0');
+
+					$snetranges .= implode(',', $personalservices) . ","
+						. implode(',', $commercialservices) . "\n";
 					$netrangeid++;
 				}
 
