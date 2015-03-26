@@ -895,8 +895,10 @@ foreach ($netnodes as $netnodename => $netnode) {
 					$snetranges .= ",Nie," . (array_search('TEL', $ukeservices) !== FALSE ? "Tak" : "Nie")
 						. ",Nie," . (array_search('INT', $ukeservices) !== FALSE ? "Tak" : "Nie")
 						. ",Nie," . (array_search('TV', $ukeservices) !== FALSE ? "Tak" : "Nie") . ",,";
-					$snetranges .= (implode(',', isset($personalnodes[$servicetype]) ? $personalnodes[$servicetype] : array_fill(0, 11, '0'))) . ","
-						. (implode(',', isset($commercialnodes[$servicetype]) ? $commercialnodes[$servicetype] : array_fill(0, 11, '0'))) . "\n";
+					$snetranges .= (implode(',', array_search('INT', $allservices) !== FALSE && isset($personalnodes[$servicetype])
+							? $personalnodes[$servicetype] : array_fill(0, 11, '0'))) . ","
+						. (implode(',', array_search('INT', $allservices) !== FALSE && isset($commercialnodes[$servicetype])
+							? $commercialnodes[$servicetype] : array_fill(0, 11, '0'))) . "\n";
 					$netrangeid++;
 				}
 
@@ -949,7 +951,7 @@ foreach ($netnodes as $netnodename => $netnode) {
 				$snetbuildings .= ",Nie," . (array_search('TEL', $allservices) !== FALSE ? "Tak" : "Nie")
 					. ",Nie," . (array_search('INT', $allservices) !== FALSE ? "Tak" : "Nie")
 					. ",Nie," . (array_search('TV', $allservices) !== FALSE ? "Tak" : "Nie") . ",,"
-					. $maxdownstream . ",0\n";
+					. (array_search('INT', $allservices) !== FALSE ? $maxdownstream : "0") . ",0\n";
 				$netbuildingid++;
 			}
 		}
