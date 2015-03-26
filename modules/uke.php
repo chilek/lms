@@ -897,7 +897,7 @@ foreach ($netnodes as $netnodename => $netnode) {
 						. ",Nie," . (array_search('TV', $ukeservices) !== FALSE ? "Tak" : "Nie") . ",,";
 
 					if (isset($personalnodes[$servicetype])) {
-						if (array_search('INT', $allservices) !== FALSE)
+						if (array_search('INT', $ukeservices) !== FALSE)
 							$personalservices = $personalnodes[$servicetype];
 						else {
 							$count = 0;
@@ -910,7 +910,7 @@ foreach ($netnodes as $netnodename => $netnode) {
 						$personalservices = array_fill(0, 11, '0');
 
 					if (isset($commercialnodes[$servicetype])) {
-						if (array_search('INT', $allservices) !== FALSE)
+						if (array_search('INT', $ukeservices) !== FALSE)
 							$commercialservices = $commercialnodes[$servicetype];
 						else {
 							$count = 0;
