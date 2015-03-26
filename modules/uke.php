@@ -524,10 +524,12 @@ foreach ($foreigners as $name => $foreigner)
 $netintid = 1;
 $netbuildingid = 1;
 $netrangeid = 1;
+$radiosectorid = 1;
 $snetnodes = '';
 $sforeignernetnodes = '';
 $snetconnections = '';
 $snetinterfaces = '';
+$sradiosectors = '';
 $snetranges = '';
 $snetbuildings = '';
 if ($netnodes)
@@ -704,6 +706,12 @@ foreach ($netnodes as $netnodename => $netnode) {
 									. ",\"$ltech\"," . implode(',', array_fill(0, 2, $linkspeed)) . ","
 									. implode(',', array_fill(0, 2, $ports))
 									. ",0,Nie\n";
+							if ($linktype == 1) {
+								$sradiosectors .= "$radiosectorid,"
+									. (!strlen($prj) ? "," : "$prj,${NETELEMENTSTATUSES[$status]}") . ",$radiosectorid,"
+									. "${netnode['id']},$netintid,Nie,,0,360,20,500," . round($linkspeed / 1000) . "\n";
+								$radiosectorid++;
+							}
 							$netintid++;
 						}
 					}
@@ -1166,6 +1174,7 @@ if ($zip->open($filename, ZIPARCHIVE::CREATE)) {
 	$zip->addFromString('WW.csv', $snetnodes);
 	$zip->addFromString('WO.csv', $sforeignernetnodes);
 	$zip->addFromString('INT.csv', $snetinterfaces);
+	$zip->addFromString('SR.csv', $sradiosectors);
 	$zip->addFromString('PS.csv', $snetconnections);
 	$zip->addFromString('LP.csv', $snetcablelines);
 	$zip->addFromString('RL.csv', $snetradiolines);
