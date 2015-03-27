@@ -668,7 +668,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function GetInvoiceContent($invoiceid)
     {
-        global $PAYTYPES;
+        global $PAYTYPES, $LMS;
 
         if ($result = $this->db->GetRow('SELECT d.id, d.number, d.name, d.customerid,
 				d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
@@ -762,9 +762,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             // NOTE: don't waste CPU/mem when printing history is not set:
             if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.print_balance_history', false))) {
                 if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.print_balance_history_save', false))) {
-                    $result['customerbalancelist'] = $this->GetCustomerBalanceList($result['customerid'], $result['cdate']);
+                    $result['customerbalancelist'] = $LMS->GetCustomerBalanceList($result['customerid'], $result['cdate']);
                 } else {
-                    $result['customerbalancelist'] = $this->GetCustomerBalanceList($result['customerid']);
+                    $result['customerbalancelist'] = $LMS->GetCustomerBalanceList($result['customerid']);
                 }
                 $result['customerbalancelistlimit'] = ConfigHelper::getConfig('invoices.print_balance_history_limit');
             }
@@ -836,9 +836,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             // NOTE: don't waste CPU/mem when printing history is not set:
             if (ConfigHelper::checkValue(ConfigHelper::getConfig('notes.print_balance', false))) {
                 if (ConfigHelper::checkValue(ConfigHelper::getConfig('notes.print_balance_history', false))) {
-                    $result['customerbalancelist'] = $this->GetCustomerBalanceList($result['customerid'], $result['cdate']);
+                    $result['customerbalancelist'] = $LMS->GetCustomerBalanceList($result['customerid'], $result['cdate']);
                 } else {
-                    $result['customerbalancelist'] = $this->GetCustomerBalanceList($result['customerid']);
+                    $result['customerbalancelist'] = $LMS->GetCustomerBalanceList($result['customerid']);
                 }
                 $result['customerbalancelistlimit'] = ConfigHelper::getConfig('notes.print_balance_history_limit');
             }
