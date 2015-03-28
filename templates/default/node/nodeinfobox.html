@@ -116,7 +116,7 @@
 			<IMG SRC="img/home.gif" ALT="{trans("Location:")}">
 		</TD>
 		<TD style="width: 99%;" COLSPAN="2">
-			{$nodeinfo.location}
+			{$nodeinfo.location}{if $nodeinfo.borough_name} ({$nodeinfo.state_name} / {$nodeinfo.district_name} / {$_BOROUGHTYPES[$nodeinfo.borough_type]} {$nodeinfo.borough_name}){/if}
 		</TD>
 	</TR>
 {/if}

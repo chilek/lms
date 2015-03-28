@@ -208,11 +208,17 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         if ($result = $this->db->GetRow('SELECT n.*,
 		    inet_ntoa(n.ipaddr) AS ip, inet_ntoa(n.ipaddr_pub) AS ip_pub,
 		    lc.name AS city_name,
-				(CASE WHEN ls.name2 IS NOT NULL THEN ' . $this->db->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END) AS street_name, lt.name AS street_type
+				(CASE WHEN ls.name2 IS NOT NULL THEN ' . $this->db->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END) AS street_name,
+				lt.name AS street_type,
+			lb.name AS borough_name, lb.type AS borough_type,
+			ld.name AS district_name, lst.name AS state_name
 			FROM vnodes n
 			LEFT JOIN location_cities lc ON (lc.id = n.location_city)
 			LEFT JOIN location_streets ls ON (ls.id = n.location_street)
 			LEFT JOIN location_street_types lt ON (lt.id = ls.typeid)
+			LEFT JOIN location_boroughs lb ON (lb.id = lc.boroughid)
+			LEFT JOIN location_districts ld ON (ld.id = lb.districtid)
+			LEFT JOIN location_states lst ON (lst.id = ld.stateid)
 			WHERE n.id = ?', array($id))
         ) {
             $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);

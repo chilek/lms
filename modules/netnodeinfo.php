@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,7 +25,16 @@
  */
 
 $id = intval($_GET['id']);
-$result = $DB->GetRow('SELECT n.*,p.name AS projectname FROM netnodes n LEFT JOIN invprojects p ON n.invprojectid=p.id WHERE n.id=? ',array($id));
+$result = $DB->GetRow('SELECT n.*, p.name AS projectname,
+	lb.name AS borough_name, lb.type AS borough_type,
+	ld.name AS district_name, ls.name AS state_name
+	FROM netnodes n
+	LEFT JOIN invprojects p ON n.invprojectid = p.id
+	LEFT JOIN location_cities lc ON lc.id = n.location_city
+	LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
+	LEFT JOIN location_districts ld ON ld.id = lb.districtid
+	LEFT JOIN location_states ls ON ls.id = ld.stateid
+	WHERE n.id=? ',array($id));
 if (!$result)
 	$SESSION->redirect('?m=netnodelist');
 

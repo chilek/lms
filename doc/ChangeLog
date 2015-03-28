@@ -45,6 +45,7 @@ version ?.??.?? (????-??-??):
   - added terminate cause in node sessions [chilan]
   - network node list can be filtered by nodes without investment project [chilan]
   - added network node column in network device list [chilan]
+  - show info about state, district and borough in netnode, netdev and node info boxes [chilan]
 
 version 1.11.15 (2014-05-15):
 
