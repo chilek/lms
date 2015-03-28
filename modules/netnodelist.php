@@ -99,8 +99,16 @@ if (strlen(trim($w)) && $w!=-1) {
 
 $fstr = empty($warr) ? '' : ' WHERE ' . implode(' AND ', $warr);
 
-$nlist = $DB->GetAll("SELECT n.id, n.name, n.type, n.status, n.invprojectid, p.name AS project
-	FROM netnodes n LEFT JOIN invprojects p ON (n.invprojectid = p.id) " . $fstr . " " . $ostr . " " . $dir);
+$nlist = $DB->GetAll('SELECT n.id, n.name, n.type, n.status, n.invprojectid, p.name AS project,
+		n.location,
+		lb.name AS borough_name, lb.type AS borough_type,
+		ld.name AS district_name, ls.name AS state_name
+	FROM netnodes n
+	LEFT JOIN invprojects p ON (n.invprojectid = p.id) 
+	LEFT JOIN location_cities lc ON lc.id = n.location_city
+	LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
+	LEFT JOIN location_districts ld ON ld.id = lb.districtid
+	LEFT JOIN location_states ls ON ls.id = ld.stateid ' . $fstr . ' ' . $ostr . ' ' . $dir);
 
 $listdata['total'] = sizeof($nlist);
 $listdata['order'] = $order;

@@ -334,9 +334,15 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			d.description, d.producer, d.model, d.serialnumber, d.ports,
 			(SELECT COUNT(*) FROM nodes WHERE netdev=d.id AND ownerid > 0)
 			+ (SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id)
-			AS takenports, d.netnodeid, n.name AS netnode
+			AS takenports, d.netnodeid, n.name AS netnode,
+			lb.name AS borough_name, lb.type AS borough_type,
+			ld.name AS district_name, ls.name AS state_name
 			FROM netdevices d
-			LEFT JOIN netnodes n ON n.id = d.netnodeid '
+			LEFT JOIN netnodes n ON n.id = d.netnodeid
+			LEFT JOIN location_cities lc ON lc.id = d.location_city
+			LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
+			LEFT JOIN location_districts ld ON ld.id = lb.districtid
+			LEFT JOIN location_states ls ON ls.id = ld.stateid '
                 . ($sqlord != '' ? $sqlord . ' ' . $direction : ''));
 
         $netdevlist['total'] = sizeof($netdevlist);
