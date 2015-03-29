@@ -598,6 +598,8 @@ undef %cities;
 }
 
 ######## Merge TERYT with LMS database ###########################################
+my %unique_cities;
+
 sub location_update
 {
 	my $row = shift;
@@ -678,10 +680,17 @@ sub location_update
 		else {
 			my $city_matches = 0;
 			if ($unique_city_matches) {
-				$city_count->execute($street);
-				my $srow = $city_count->fetchrow_hashref();
-				if ($srow->{'city_count'} eq 1) {
-					$city_matches = 1;
+				if (exists($unique_cities{$street})) {
+					$city_matches = $unique_cities{$street};
+				} else {
+					$city_count->execute($street);
+					my $srow = $city_count->fetchrow_hashref();
+					if ($srow->{'city_count'} eq 1) {
+						$city_matches = 1;
+						$unique_cities{$street} = 1;
+					} else {
+						$unique_cities{$street} = 0;
+					}
 				}
 			} else {
 				$city_matches = 1;
@@ -698,10 +707,17 @@ sub location_update
 	elsif ($city) {
 		my $city_matches = 0;
 		if ($unique_city_matches) {
-			$city_count->execute($city);
-			my $crow = $city_count->fetchrow_hashref();
-			if ($crow->{'city_count'} eq 1) {
-				$city_matches = 1;
+			if (exists($unique_cities{$city})) {
+				$city_matches = $unique_cities{$city};
+			} else {
+				$city_count->execute($city);
+				my $crow = $city_count->fetchrow_hashref();
+				if ($crow->{'city_count'} eq 1) {
+					$city_matches = 1;
+					$unique_cities{$city} = 1;
+				} else {
+					$unique_cities{$city} = 0;
+				}
 			}
 		} else {
 			$city_matches = 1;
