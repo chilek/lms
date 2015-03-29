@@ -2,7 +2,7 @@
 #
 #  LMS version 1.11-git
 #
-#  Copyright (C) 2001-2014 LMS Developers
+#  Copyright (C) 2001-2015 LMS Developers
 #
 #  Please, see the doc/AUTHORS for more information about authors!
 #
@@ -26,7 +26,7 @@ use strict;
 use DBI;
 use Config::IniFiles;
 use Getopt::Long;
-use vars qw($configfile $quiet $help $version $update $fetch $list $merge);
+use vars qw($configfile $quiet $help $version $update $fetch $list $merge $unique_city_matches);
 use Cwd;
 use LWP::UserAgent;
 
@@ -41,6 +41,7 @@ my %options = (
 	"--list|l=s"	    =>	\$list,
 	"--fetch|f"	        =>	\$fetch,
 	"--merge|m"	        =>	\$merge,
+	"--only-unique-city-matches|o"	=>	\$unique_city_matches,
 );
 
 Getopt::Long::config("no_ignore_case");
@@ -50,7 +51,7 @@ if($help)
 {
 	print STDERR <<EOF;
 lms-teryt, version $_version
-(C) 2001-2014 LMS Developers
+(C) 2001-2015 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini	alternate config file (default: /etc/lms/lms.ini);
 -h, --help			print this help and exit;
@@ -60,6 +61,7 @@ lms-teryt, version $_version
 -l, --list=<list>   comma-separated list of state IDs
 -f, --fetch	        fetch TERYT XML files from the Internet
 -m, --merge	        merge TERYT with LMS database
+-o, --only-unique-city-matches	        update TERYT location only if city matches uniquely
 EOF
 	exit 0;
 }
@@ -68,7 +70,7 @@ if($version)
 {
 	print STDERR <<EOF;
 lms-teryt, version $_version
-(C) 2001-2014 LMS Developers
+(C) 2001-2015 LMS Developers
 
 EOF
 	exit 0;
@@ -82,7 +84,7 @@ if(!$configfile)
 if(!$quiet)
 {
 	print STDOUT "lms-teryt, version $_version\n";
-	print STDOUT "(C) 2001-2014 LMS Developers\n";
+	print STDOUT "(C) 2001-2015 LMS Developers\n";
 	print STDOUT "Using file $configfile as config.\n";
 }
 
@@ -601,6 +603,7 @@ sub location_update
 	my $row = shift;
 	my $street_get = shift;
 	my $city_get = shift;
+	my $city_count = shift;
 	my $update = shift;
 
 	my $street_id;
@@ -673,17 +676,41 @@ sub location_update
 			}
 		}
 		else {
-			$city_get->execute($street);
-			if (my $srow = $city_get->fetchrow_hashref()) {
-				$city_id = $srow->{'id'};
-				$orig_location =~ s/$city, //;
+			my $city_matches = 0;
+			if ($unique_city_matches) {
+				$city_count->execute($street);
+				my $srow = $city_count->fetchrow_hashref();
+				if ($srow->{'city_count'} eq 1) {
+					$city_matches = 1;
+				}
+			} else {
+				$city_matches = 1;
+			}
+			if ($city_matches) {
+				$city_get->execute($street);
+				if (my $srow = $city_get->fetchrow_hashref()) {
+					$city_id = $srow->{'id'};
+					$orig_location =~ s/$city, //;
+				}
 			}
 		}
 	}
 	elsif ($city) {
-		$city_get->execute($city);
-		if (my $crow = $city_get->fetchrow_hashref()) {
-			$city_id = $crow->{'id'};
+		my $city_matches = 0;
+		if ($unique_city_matches) {
+			$city_count->execute($city);
+			my $crow = $city_count->fetchrow_hashref();
+			if ($crow->{'city_count'} eq 1) {
+				$city_matches = 1;
+			}
+		} else {
+			$city_matches = 1;
+		}
+		if ($city_matches) {
+			$city_get->execute($city);
+			if (my $crow = $city_get->fetchrow_hashref()) {
+				$city_id = $crow->{'id'};
+			}
 		}
 	}
 
@@ -715,6 +742,9 @@ if ($merge)
 		FROM location_cities
 		WHERE name = ?
 		ORDER BY cityid LIMIT 1");
+	my $city_count = $dbase->prepare("SELECT COUNT(*) AS city_count
+		FROM location_cities
+		WHERE name = ?");
 
 	# nodes
 	$dbq = $dbase->prepare("SELECT n.id, n.name, n.location, c.address, c.city
@@ -724,7 +754,7 @@ if ($merge)
 			AND (n.location <> '' OR c.address <> '')");
 	$dbq->execute();
 	while ($row = $dbq->fetchrow_hashref()) {
-		location_update($row, $street_get, $city_get, $node_update);
+		location_update($row, $street_get, $city_get, $city_count, $node_update);
 	}
 
 	# netdevices
@@ -733,13 +763,14 @@ if ($merge)
 		AND location <> ''");
 	$dbq->execute();
 	while ($row = $dbq->fetchrow_hashref()) {
-		location_update($row, $street_get, $city_get, $dev_update);
+		location_update($row, $street_get, $city_get, $city_count, $dev_update);
 	}
 
 	$node_update->finish();
 	$dev_update->finish();
 	$street_get->finish();
 	$city_get->finish();
+	$city_count->finish();
 }
 
 $dbq->finish();
