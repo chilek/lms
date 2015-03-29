@@ -48,6 +48,7 @@ version ?.??.?? (????-??-??):
   - show info about state, district and borough in netnode, netdev and node info boxes [chilan]
   - full location info in netnode, netdev and node lists [chilan]
   - lms-teryt: added option which allows to choose if city matches should be unique [chilan]
+  - added network device producers and models management [chilan]
 
 version 1.11.15 (2014-05-15):
 

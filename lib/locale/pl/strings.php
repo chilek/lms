@@ -2888,4 +2888,28 @@ $_LANG['Enter tariff attribute'] = 'Wprowadź atrybut dla taryfy';
 
 $_LANG['Terminate Cause:'] = 'Powód rozłączenia:';
 
+$_LANG['Network device producers and models'] = 'Producenci i modele osprzętu sieciowego';
+$_LANG['New producer'] = 'Nowy producent';
+$_LANG['Producer edit: $a'] = 'Edycja producenta: $a';
+$_LANG['Producer name is required!'] = 'Wymagana nazwa producenta!';
+$_LANG['Producer already exists!'] = 'Producent już istnieje!';
+$_LANG['New model'] = 'Nowy model';
+$_LANG['Model edit: $a'] = 'Edycja modelu: $a';
+$_LANG['Model name is required!'] = 'Wymagana nazwa modelu!';
+$_LANG['Model already exists!'] = 'Model już istnieje!';
+$_LANG['Producer name'] = 'Nazwa producenta';
+$_LANG['Alternative name (optional)'] = 'Alternatywna nazwa (opcjonalnie)';
+$_LANG['Producer removal will cause removal of all assigned models! Are you sure you want to continue?'] = 'Usunięcie producenta spowoduje usunięcie wszystkich powiązanych modeli! Jesteś pewien, że chcesz kontynuować?';
+$_LANG['Producers'] = 'Producenci';
+$_LANG['Add producer'] = 'Dodaj producenta';
+$_LANG['Model name'] = 'Nazwa modelu';
+$_LANG['Model list'] = 'Lista modeli';
+$_LANG['Alternative name'] = 'Alternatywna nazwa';
+$_LANG['Network devices'] = 'Urządzenia sieciowe';
+$_LANG['Add model'] = 'Dodaj model';
+$_LANG['There are no models matching to defined filter or model list is empty'] = 'Brak modeli pasujących do zdefiniowanego filtra lub lista modeli jest pusta!';
+$_LANG['Add new model'] = 'Dodaj nowy model';
+$_LANG['Producers and models'] = 'Producenci i modele';
+$_LANG['Network device producers and models management'] = 'Zarządzanie producentami i modelami osprzętu sieciowego';
+
 ?>

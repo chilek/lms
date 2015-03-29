@@ -1,0 +1,195 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+
+{$xajax}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+
+<div id="div_produceredit" style="display:none">
+    <form name="produceredit" id="produceredit" method="POST">
+    <input type="hidden" name="produceredit[id]" value="{$produceredit.id}" id="id_producer">
+	<table width="100%" cellpadding="3">
+		<tr class="dark">
+			<td width="100%" class="fall bold" colspan="2">
+				<span id="id_action_name">{trans("New producer")}</span>
+			</td>
+		</tr>
+		<tr class="light">
+			<td width="1%" class="fleft nobr">
+				{trans("Producer name")}
+			</td>
+			<td width="99%" class="fright">
+				{trans("Alternative name (optional)")}
+			</td>
+		</tr>
+		<tr class="light">
+			<td class="fleft nobr valign-top">
+				<input type="text" name="produceredit[name]" style="width:250px" id="id_producername" value="{$produceredit.name}" {tip trigger="name" text="Enter producer name"}>
+			</td>
+			<td class="fright valign-top">
+				<input type="text" name="produceredit[alternative_name]" style="width:550px" id="id_alternative_name" value="{$produceredit.alternative_name}">
+			</td>
+		</tr>
+		<tr class="dark">
+			<td width="100%" class="fall text-right" colspan="2">
+				<a href="javascript:void(0);" onclick="xajax_save_producer(xajax.getFormValues('produceredit'));">{trans("Save")} <img src="img/add.gif" alt=""></a>
+				<a href="javascript:void(0);" onclick="xajax_cancel_producer();">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
+			</td>
+		</tr>
+	</table>
+    </form>
+    <br>
+</div>
+
+<script type="text/javascript" language="JavaScript">
+<!--
+	function delproducer(id) {
+		if (confirm('{trans("Producer removal will cause removal of all assigned models! Are you sure you want to continue?")}'))
+			xajax_delete_producer(id);
+	}
+//-->
+</script>
+
+<form name="producer" id="producer" method="GET" action="?m=netdevmodels">
+<input type="submit" class="hiddenbtn">
+<input type="hidden" name="m" value="netdevmodels">
+<input type="hidden" name="page" value="1">
+
+	<table width="100%" cellpadding="3" class="table">
+		<tr class="dark">
+			<td width="100%" class="fall bold" colspan="2">
+				{trans("Producers")}
+			</td>
+		</tr>
+		<tr class="light">
+			<td width="99%" class="fleft">
+				<select name="p_id" style="min-width:250px;" onchange="document.producer.submit();" {tip text="Select producer" trigger="p_id"}>
+					<option value="">- {trans("none")} -</option>
+					{section name="producerlist" loop=$producerlist}
+					<option value="{$producerlist[producerlist].id}"{if $listdata.pid == $producerlist[producerlist].id} selected{/if}>
+						{$producerlist[producerlist].name}
+					</option>
+					{/section}
+				</select>
+				{if $producerinfo.alternative_name}<span title="[ Alternatywna nazwa producenta ]">{$producerinfo.alternative_name}</span>{/if}
+			</td>
+			<td width="1%" class="fright nobr text-right">
+				{if $listdata.pid}
+				<a href="javascript:void(0);" onclick="delproducer({$listdata.pid});"><img src="img/delete.gif" alt="[ {trans("Remove")} ]"></a>
+				<a href="javascript:void(0);" onclick="xajax_edit_producer({$listdata.pid});"><img src="img/edit.gif" alt="[ {trans("Edit")} ]"></a>
+				{/if}
+			</td>
+		</tr>
+		<tr class="dark">
+			<td colspan="2" class="fall text-right">
+				<a href="javascript:void(0);" onclick="xajax_add_producer();">{trans("Add producer")} <img src="img/add.gif" alt=""></a>
+			</td>
+		</tr>
+	</table>
+</form>
+<br>
+
+<div id="div_modeledit" style="display:none;">
+    <form name="modeledit" id="modeledit" method="POST">
+    <input type="hidden" name="modeledit[id]" value="{$modeledit.id}" id="id_model">
+    <input type="hidden" name="modeledit[pid]" value="{$listdata.pid}" id="id_pid">
+	<table width="100%" cellpadding="3">
+		<tr class="dark">
+			<td width="100%" class="fall bold" colspan="2">
+				<span id="id_model_action_name">{trans("New model")}</span>
+			</td>
+		</tr>
+		<tr class="light">
+			<td width="1%" class="fleft nobr">
+				{trans("Model name")}
+			</td>
+			<td width="99%" class="fright">
+				{trans("Alternative name (optional)")}
+			</td>
+		</tr>
+		<tr class="light">
+			<td class="fleft nobr valign-top">
+				<input type="text" name="modeledit[name]" style="width:250px" id="id_model_name" value="{$modeledit.name}" {tip text="Enter model name" trigger="name"}>
+			</td>
+			<td class="fright valign-top">
+				<input type="text" name="modeledit[alternative_name]" style="width:550px" id="id_model_alternative_name" value="{$modeledit.alternative_name}">
+			</td>
+		</tr>
+		<tr class="pgdark">
+			<td width="100%" class="fall text-right" colspan="2">
+				<a href="javascript:void(0);" onclick="xajax_save_model(xajax.getFormValues('modeledit'));">{trans("Save")} <img src="img/add.gif" alt=""></a>
+				<a href="javascript:void(0);" onclick="xajax_cancel_model();">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
+			</td>
+		</tr>
+	</table>
+    </form>
+    <br>
+</div>
+
+
+{if $modellist}
+<table width="100%" cellpadding="3" class="table" cellspacing="3px">
+	<tr class="dark">
+		<td width="99%" class="fleftu bold" colspan="3">
+			{trans("Model list")}
+		</td>
+		<td width="1%" class="frightu text-right nobr bold">
+			{trans("Total:")} {$listdata.total}
+		</td>
+	</tr>
+	{if $listdata.total != 0}
+	<tr class="scroller">
+		<td colspan="4" class="dark fall">
+			{include file="scroller.html" loop=$modellist}
+		</td>
+	</tr>
+	{/if}
+	<tr class="dark">
+		<td width="1%" class="fleft nobr bold" style="min-width:150px;">{trans("Name")}</td>
+		<td width="97%" class="bold">{trans("Alternative name")}</td>
+		<td width="1%" class="text-center nobr bold">{trans("Network devices")}</td>
+		<td width="1%" class="fright text-right nobr">
+			<a href="javascript:void(0);" onclick="xajax_add_model();">{trans("Add model")} <img src="img/add.gif"></a>
+		</td>
+	</tr>
+	{cycle values="lucid,light" print=false}
+	{section name=modellist loop=$modellist start=$start max=$pagelimit}
+	{assign var="modelid" value=$modellist[modellist].id}
+	<tr id="idtr{$modelid}" class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<td width="1%" class="fleft nobr">{$modellist[modellist].name}</td>
+		<td width="97%">{$modellist[modellist].alternative_name}</td>
+		<td width="1%" class="text-center nobr">{if $modellist[modellist].netdevcount}{$modellist[modellist].netdevcount}{/if}</td>
+		<td width="1%" class="fright text-right nobr">
+			<img src="img/delete.gif" onclick="xajax_delete_model({$modelid});">
+			<img src="img/edit.gif" onclick="xajax_edit_model({$modelid});">
+		</td>
+	</tr>
+	{/section}
+	{if $listdata.total != 0}
+	<tr class="scroller">
+		<td colspan="4" class="dark fall">
+			{include file="scroller.html" loop=$modellist}
+		</td>
+	</tr>
+	{/if}
+</table>
+{/if}
+
+{if !$modellist && $listdata.pid}
+<table width="100%">
+	<tr class="light">
+		<td width="100%" class="fall text-center bold">
+			<br>
+			<p>
+			{trans("There are no models matching to defined filter or model list is empty")}
+			</p>
+			<a href="javascript:void(0);" onclick="xajax_add_model();">{trans("Add new model")}</a>
+			<br>
+			<br>
+		</td>
+	</tr>
+</table>
+{/if}
+
+{/block}
