@@ -167,7 +167,7 @@ function edit_model($id) {
 
 	$obj->script("xajax.$('div_modeledit').style.display='';");
 	$obj->script("removeClass(xajax.$('id_model_name'),'alert');");
-	$obj->assign("id_model_action_name","innerHTML", trans("Model edit: $a", $model['name']));
+	$obj->assign("id_model_action_name","innerHTML", trans('Model edit: $a', $model['name']));
 
 	$obj->assign("id_model","value", $model['id']);
 	$obj->assign("id_model_name","value", $model['name']);
