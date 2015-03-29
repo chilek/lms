@@ -900,8 +900,11 @@ foreach ($netnodes as $netnodename => $netnode) {
 						}
 					$snetranges .= "$netrangeid," . (!strlen($prj) ? "," : "$prj,${NETELEMENTSTATUSES[$status]}")
 						. ",$netrangeid,$netbuildingid";
-					$snetranges .= ",Nie," . (array_search('TEL', $ukeservices) !== FALSE ?
-							(($range['linktechnology'] >= 105 && $range['linktechnology'] < 200) ? "Nie,Tak" : "Tak,Nie") : "Nie,Nie")
+					$snetranges .= "," . (array_search('TEL', $ukeservices) !== FALSE ?
+							($range['linktechnology'] == 12 ?
+								"Tak,Nie,Nie"
+								: ($range['linktechnology'] >= 105 && $range['linktechnology'] < 200 ? "Nie,Nie,Tak" : "Nie,Tak,Nie"))
+							: "Nie,Nie,Nie")
 						. "," . (array_search('INT', $ukeservices) !== FALSE ?
 							(($range['linktechnology'] >= 105 && $range['linktechnology'] < 200) ? "Nie,Tak" : "Tak,Nie") : "Nie,Nie")
 						. "," . (array_search('TV', $ukeservices) !== FALSE ? "Tak" : "Nie") . ",,";
@@ -983,8 +986,11 @@ foreach ($netnodes as $netnodename => $netnode) {
 				else
 					$maxdownstream = 100000;
 
-				$snetbuildings .= ",Nie," . (array_search('TEL', $allservices) !== FALSE ?
-						(($range['linktechnology'] >= 105 && $range['linktechnology'] < 200) ? "Nie,Tak" : "Tak,Nie") : "Nie,Nie")
+				$snetbuildings .= "," . (array_search('TEL', $allservices) !== FALSE ?
+						($range['linktechnology'] == 12 ?
+							"Tak,Nie,Nie"
+							: ($range['linktechnology'] >= 105 && $range['linktechnology'] < 200 ? "Nie,Nie,Tak" : "Nie,Tak,Nie"))
+						: "Nie,Nie,Nie")
 					. "," . (array_search('INT', $allservices) !== FALSE ?
 						(($range['linktechnology'] >= 105 && $range['linktechnology'] < 200) ? "Nie,Tak" : "Tak,Nie") : "Nie,Nie")
 					. "," . (array_search('TV', $allservices) !== FALSE ? "Tak" : "Nie") . ",,"
