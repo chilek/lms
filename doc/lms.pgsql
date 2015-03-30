@@ -1437,11 +1437,14 @@ CREATE TABLE netnodes (
 	id integer DEFAULT nextval('netnodes_id_seq'::text) NOT NULL,
 	name varchar(255) NOT NULL,
 	type smallint DEFAULT 0,
-	invprojectid integer  REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	invprojectid integer
+		REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	status smallint DEFAULT 0,
 	location varchar(255) DEFAULT '',
-	location_city integer DEFAULT NULL,
-	location_street integer DEFAULT NULL,
+	location_city integer DEFAULT NULL
+		REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	location_street integer DEFAULT NULL
+		REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	location_house varchar(8) DEFAULT NULL,
 	location_flat varchar(8) DEFAULT NULL,
 	longitude numeric(10,6) DEFAULT NULL,
@@ -2463,4 +2466,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015031900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015033000');
