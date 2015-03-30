@@ -14,7 +14,10 @@
 			<IMG src="img/producer.gif" ALT="">&nbsp;<A href="?m=netnodelist&o=type{if $listdata.direction eq "asc" && $listdata.order eq "type"},desc{/if}">{trans("Type:")}</A> {if $listdata.order eq "type"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} / 
 			<A href="?m=netnodelist&o=status{if $listdata.direction eq "asc" && $listdata.order eq "status"},desc{/if}">{trans("Status:")}</A> {if $listdata.order eq "status"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} 
 		</TD>
-		<TD width="30%">
+		<TD width="15%">
+			<A href="?m=netnodelist&o=location{if $listdata.direction eq "asc" && $listdata.order eq "location"},desc{/if}">{trans("Location:")}</A> {if $listdata.order eq "location"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} 
+		</TD>
+		<TD width="15%">
 		   	<A href="?m=netnodelist&o=project{if $listdata.direction eq "asc" && $listdata.order eq "project"},desc{/if}">{trans("Project:")}</A> {if $listdata.order eq "project"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} 
 		</TD>
 		<TD width="1%" align="right" valign="top">
@@ -28,7 +31,7 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD colspan="5" class="nobr">
+		<TD colspan="6" class="nobr">
 			<span class="bold">{trans("Filter:")}</span> {trans("Type:")}
 			<SELECT SIZE="1" NAME="t" ONCHANGE="document.choosefilter.submit();">
 				<OPTION VALUE="-1" {if $listdata.type==-1} SELECTED {/if} >- {trans("all")} -</OPTION>
@@ -63,7 +66,7 @@
 	</TR>    
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" colspan="5" WIDTH="100%">
+		<TD class="pagination" colspan="6">
 			{include file="scroller.html" loop=$nlist}
 		</TD>
 	</TR>
@@ -74,19 +77,22 @@
 	{cycle values="light,lucid" print=false}
 	{section name=nlist loop=$nlist start=$start max=$pagelimit}
 	<TR class="highlight {cycle}"  >
-		<TD width="67%" onClick="return self.location.href='?m=netnodeinfo&id={$nlist[nlist].id}';" VALIGN="TOP">
+		<TD onClick="return self.location.href='?m=netnodeinfo&id={$nlist[nlist].id}';" VALIGN="TOP">
 			<IMG src="img/netdev.gif" ALT=""> <a name="{$nlist[nlist].id}"><B>{$nlist[nlist].name}</B></A><BR>
 			<IMG src="img/producer.gif" ALT=""> {$_NETELEMENTTYPES[$nlist[nlist].type]} / {$_NETELEMENTSTATUSES[$nlist[nlist].status]}
 		</TD>
-		<TD width="30%">
+		<TD nowrap>
+			{$nlist[nlist].location}{if $nlist[nlist].borough_name} ({$nlist[nlist].state_name} / {$nlist[nlist].district_name} / {$_BOROUGHTYPES[$nlist[nlist].borough_type]} {$nlist[nlist].borough_name}){/if}
+		</TD>
+		<TD>
 			{if ($nlist[nlist].invprojectid==1)} DD {else} {$nlist[nlist].project} {/if}
 		</TD>
-		<TD WIDTH="1%" onClick="return self.location.href='?m=netnodeinfo&id={$nlist[nlist].id}';" align="right" VALIGN="TOP">
+		<TD onClick="return self.location.href='?m=netnodeinfo&id={$nlist[nlist].id}';" align="right" VALIGN="TOP">
 			({$nlist[nlist].id|string_format:"%04d"})
 		</TD>
-		<TD width="1%" onClick="return self.location.href='?m=netnodeinfo&id={$nlist[nlist].id}';" NOWRAP>
+		<TD onClick="return self.location.href='?m=netnodeinfo&id={$nlist[nlist].id}';" NOWRAP>
 		</TD>
-		<TD WIDTH="1%" align="right">
+		<TD align="right">
 			<nobr>
 			<a href="?m=netnodedel&id={$nlist[nlist].id}" onClick="return confirmLink(this, '{t a=$nlist[nlist].name}Are you sure, you want to remove net device node \'$a\' from database?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 			<a href="?m=netnodeedit&id={$nlist[nlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
@@ -97,7 +103,7 @@
 	{if $nlist[nlist.index_next].ownerid eq $nlist[nlist].ownerid && $listdata.order eq "owner"}{cycle print=false}{/if}
 	{sectionelse}
 	<TR>
-		<TD colspan="5" align="center">
+		<TD colspan="6" align="center">
 			<p>&nbsp;</p>
 			<p><B>{trans("There are no device nodes in your database.")}</b></p>
 			<p>&nbsp;</p>
@@ -109,19 +115,19 @@
 
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" colspan="5" WIDTH="100%">
+		<TD class="pagination" colspan="6">
 			{include file="scroller.html" loop=$nlist}
 		</TD>
 	</TR>
 	{/if}
 	<TR>
-		<TD WIDTH="99%" COLSPAN="4" ALIGN="right">
+		<TD COLSPAN="5" ALIGN="right">
 			<B>
 				{trans("Total:")} {$listdata.total|default:"0"}
 			</B>
 		</TD>
-		<TD WIDTH="1%" COLSPAN="1"></TD>				
-	</TR>			
+		<TD COLSPAN="1"></TD>
+	</TR>
     </TBODY>
 </TABLE>
 </FORM>

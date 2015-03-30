@@ -9,7 +9,9 @@
 		<TD width="96%">
 			<IMG src="img/netdev.gif" ALT="">&nbsp;<A href="?m=netdevlist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<IMG src="img/producer.gif" ALT="">&nbsp;<A href="?m=netdevlist&o=producer{if $listdata.direction eq "asc" && $listdata.order eq "producer"},desc{/if}">{trans("Manufacturer:")}</A> {if $listdata.order eq "producer"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} / 
-			<A href="?m=netdevlist&o=model{if $listdata.direction eq "asc" && $listdata.order eq "model"},desc{/if}">{trans("Model:")}</A> {if $listdata.order eq "model"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} /
+			<A href="?m=netdevlist&o=model{if $listdata.direction eq "asc" && $listdata.order eq "model"},desc{/if}">{trans("Model:")}</A> {if $listdata.order eq "model"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD width="1%" class="nobr alift-left valign-top">
 			<A href="?m=netdevlist&o=location{if $listdata.direction eq "asc" && $listdata.order eq "location"},desc{/if}">{trans("Location:")}</A> {if $listdata.order eq "location"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="nobr align-left valign-top">
@@ -29,7 +31,7 @@
 	</TR>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" colspan="5" WIDTH="100%">
+		<TD class="pagination" colspan="6">
 			{include file="scroller.html" loop=$netdevlist}
 		</TD>
 	</TR>
@@ -38,10 +40,13 @@
     <TBODY>
 	{cycle values="light,lucid" print=false}
 	{section name=netdevlist loop=$netdevlist start=$start max=$pagelimit}
-	<TR class="highlight {cycle}"  >
+	<TR class="highlight {cycle}">
 		<TD onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';" VALIGN="TOP">
 			<IMG src="img/netdev.gif" ALT=""> <a name="{$netdevlist[netdevlist].id}"><B>{$netdevlist[netdevlist].name}</B></A><BR>
-			<IMG src="img/producer.gif" ALT=""> {$netdevlist[netdevlist].producer} {if $netdevlist[netdevlist].model}/ {$netdevlist[netdevlist].model}{/if}{if $netdevlist[netdevlist].location} / {$netdevlist[netdevlist].location}{/if}
+			<IMG src="img/producer.gif" ALT=""> {$netdevlist[netdevlist].producer} {if $netdevlist[netdevlist].model}/ {$netdevlist[netdevlist].model}{/if}
+		</TD>
+		<TD onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';" class="nobr valign-top">
+			{if $netdevlist[netdevlist].location}{$netdevlist[netdevlist].location} {if $netdevlist[netdevlist].borough_name} ({$netdevlist[netdevlist].state_name} / {$netdevlist[netdevlist].district_name} / {$_BOROUGHTYPES[$netdevlist[netdevlist].borough_type]} {$netdevlist[netdevlist].borough_name}){/if}{/if}
 		</TD>
 		<TD onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';" class="nobr valign-top">
 			{if $netdevlist[netdevlist].netnode}<a href="?m=netnodeinfo&id={$netdevlist[netdevlist].netnodeid}">{$netdevlist[netdevlist].netnode}</a>{/if}
@@ -64,7 +69,7 @@
 	{if $netdevlist[netdevlist.index_next].ownerid eq $netdevlist[netdevlist].ownerid && $listdata.order eq "owner"}{cycle print=false}{/if}
 	{sectionelse}
 	<TR>
-		<TD colspan="5" align="center">
+		<TD colspan="6" align="center">
 			<p>&nbsp;</p>
 			<p><B>{trans("There are no devices in your database.")}</b></p>
 			<p>&nbsp;</p>
@@ -73,19 +78,19 @@
 	{/section}
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" colspan="5" WIDTH="100%">
+		<TD class="pagination" colspan="6">
 			{include file="scroller.html" loop=$netdevlist}
 		</TD>
 	</TR>
 	{/if}
 	<TR>
-		<TD WIDTH="99%" COLSPAN="4" ALIGN="right">
+		<TD COLSPAN="5" ALIGN="right">
 			<B>
 				{trans("Total:")} {$listdata.total|default:"0"}
 			</B>
 		</TD>
-		<TD WIDTH="1%" COLSPAN="1"></TD>				
-	</TR>			
+		<TD COLSPAN="1"></TD>
+	</TR>
     </TBODY>
 </TABLE>
 {/block}

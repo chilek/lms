@@ -41,6 +41,10 @@ function get_loc_streets($cityid) {
 				$list[$idx] = $row;
 			}
 		}
+	else
+		$list = array();
+
+	array_unshift($list, array('id' => 0, 'name' => ''));
 
 	return $list;
 }

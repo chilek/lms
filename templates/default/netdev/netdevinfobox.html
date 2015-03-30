@@ -98,7 +98,7 @@
 		        <B>{trans("Location:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-		        {$netdevinfo.location}
+		        {$netdevinfo.location}{if $netdevinfo.borough_name} ({$netdevinfo.state_name} / {$netdevinfo.district_name} / {$_BOROUGHTYPES[$netdevinfo.borough_type]} {$netdevinfo.borough_name}){/if}
 		</TD>
 	</TR>
 	{/if}

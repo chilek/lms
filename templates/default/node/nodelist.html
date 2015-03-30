@@ -24,7 +24,7 @@
 			<SPAN class="nobr lighter"><img src="img/customer.gif" alt=""> <A href="?m=nodelist&amp;o=owner{if $listdata.direction eq "asc" && $listdata.order eq "owner"},desc{/if}">{trans("Customer:")}</A>{if $listdata.order eq "owner"} <IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN>
 		</td>
 		<td scope="col">
-		<SPAN class="nobr"><A href="?m=nodelist&amp;o=location{if $listdata.direction eq "asc" && $listdata.order eq "location"},desc{/if}">{trans("Address:")}</A>{if $listdata.order eq "location"} <IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN>
+		<SPAN class="nobr"><A href="?m=nodelist&amp;o=location{if $listdata.direction eq "asc" && $listdata.order eq "location"},desc{/if}">{trans("Location:")}</A>{if $listdata.order eq "location"} <IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN>
 		</td>
 		<td scope="col" class="text-right lighter nobr">
 			<img src="img/empty.gif" alt="" width="1" height="16"><A href="?m=nodelist&amp;o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{trans("Node ID:")}</A>{if $listdata.order eq "id"} <IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
@@ -123,7 +123,7 @@
 			<span class="nobr{if ! $nodelist[nodelist].access} blend{/if}"><img src="img/customer.gif" alt=""> <A href="?m=customerinfo&amp;id={$nodelist[nodelist].ownerid}" {tip a=$nodelist[nodelist].ownerid dynpopup='?m=customerinfoshort&amp;id=$a'}>{$nodelist[nodelist].owner|truncate:40:"...":true|replace:" ":"&nbsp;"}</A></span>
 		</TD>
 		<TD class="nobr" onClick="return self.location.href='?m=nodeinfo&amp;id={$nodelist[nodelist].id}';">
-		{$nodelist[nodelist].location}
+		{$nodelist[nodelist].location}{if $nodelist[nodelist].borough_name} ({$nodelist[nodelist].state_name} / {$nodelist[nodelist].district_name} / {$_BOROUGHTYPES[$nodelist[nodelist].borough_type]} {$nodelist[nodelist].borough_name}){/if}
 		</TD>
 		<TD class="text-right" onClick="return self.location.href='?m=nodeinfo&amp;id={$nodelist[nodelist].id}';">
 			({$nodelist[nodelist].id|string_format:"%04d"})<BR>

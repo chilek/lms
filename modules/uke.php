@@ -900,9 +900,14 @@ foreach ($netnodes as $netnodename => $netnode) {
 						}
 					$snetranges .= "$netrangeid," . (!strlen($prj) ? "," : "$prj,${NETELEMENTSTATUSES[$status]}")
 						. ",$netrangeid,$netbuildingid";
-					$snetranges .= ",Nie," . (array_search('TEL', $ukeservices) !== FALSE ? "Tak" : "Nie")
-						. ",Nie," . (array_search('INT', $ukeservices) !== FALSE ? "Tak" : "Nie")
-						. ",Nie," . (array_search('TV', $ukeservices) !== FALSE ? "Tak" : "Nie") . ",,";
+					$snetranges .= "," . (array_search('TEL', $ukeservices) !== FALSE ?
+							($range['linktechnology'] == 12 ?
+								"Tak,Nie,Nie"
+								: ($range['linktechnology'] >= 105 && $range['linktechnology'] < 200 ? "Nie,Nie,Tak" : "Nie,Tak,Nie"))
+							: "Nie,Nie,Nie")
+						. "," . (array_search('INT', $ukeservices) !== FALSE ?
+							(($range['linktechnology'] >= 105 && $range['linktechnology'] < 200) ? "Nie,Tak" : "Tak,Nie") : "Nie,Nie")
+						. "," . (array_search('TV', $ukeservices) !== FALSE ? "Tak" : "Nie") . ",,";
 
 					if (isset($personalnodes[$servicetype])) {
 						if (array_search('INT', $ukeservices) !== FALSE)
@@ -981,9 +986,14 @@ foreach ($netnodes as $netnodename => $netnode) {
 				else
 					$maxdownstream = 100000;
 
-				$snetbuildings .= ",Nie," . (array_search('TEL', $allservices) !== FALSE ? "Tak" : "Nie")
-					. ",Nie," . (array_search('INT', $allservices) !== FALSE ? "Tak" : "Nie")
-					. ",Nie," . (array_search('TV', $allservices) !== FALSE ? "Tak" : "Nie") . ",,"
+				$snetbuildings .= "," . (array_search('TEL', $allservices) !== FALSE ?
+						($range['linktechnology'] == 12 ?
+							"Tak,Nie,Nie"
+							: ($range['linktechnology'] >= 105 && $range['linktechnology'] < 200 ? "Nie,Nie,Tak" : "Nie,Tak,Nie"))
+						: "Nie,Nie,Nie")
+					. "," . (array_search('INT', $allservices) !== FALSE ?
+						(($range['linktechnology'] >= 105 && $range['linktechnology'] < 200) ? "Nie,Tak" : "Tak,Nie") : "Nie,Nie")
+					. "," . (array_search('TV', $allservices) !== FALSE ? "Tak" : "Nie") . ",,"
 					. (array_search('INT', $allservices) !== FALSE ? $maxdownstream : "0") . ",0\n";
 				$netbuildingid++;
 			}
