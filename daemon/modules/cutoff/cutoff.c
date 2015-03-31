@@ -376,7 +376,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 
 		free(query);
 	}
-	//Cut on devices where no debt
+	//Connect devices where no debt
 	if(c->connect)
 	            {
 		    n = g->db->pexec(g->db->conn, "UPDATE nodes n1,"
