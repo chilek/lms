@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2014 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,120 +24,7 @@
  *  $Id$
  */
 
-/*
-ini_set('error_reporting', E_ALL&~E_NOTICE);
-
-$parameters = array(
-	'C:' => 'config-file:',
-	'q' => 'quiet',
-	'h' => 'help',
-	'v' => 'version',
-	'm:' => 'message-file:',
-);
-
-foreach ($parameters as $key => $val) {
-	$val = preg_replace('/:/', '', $val);
-	$newkey = preg_replace('/:/', '', $key);
-	$short_to_longs[$newkey] = $val;
-}
-$options = getopt(implode('', array_keys($parameters)), $parameters);
-foreach($short_to_longs as $short => $long)
-	if (array_key_exists($short, $options))
-	{
-		$options[$long] = $options[$short];
-		unset($options[$short]);
-	}
-
-if (array_key_exists('version', $options))
-{
-	print <<<EOF
-lms-uke.php
-(C) 2001-2014 LMS Developers
-
-EOF;
-	exit(0);
-}
-
-if (array_key_exists('help', $options))
-{
-	print <<<EOF
-lms-uke.php
-(C) 2001-2014 LMS Developers
-
--C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
--m, --message-file=<message-file>       name of message file;
--h, --help                      print this help and exit;
--v, --version                   print version info and exit;
--q, --quiet                     suppress any output, except errors;
-
-EOF;
-	exit(0);
-}
-
-$quiet = array_key_exists('quiet', $options);
-if (!$quiet)
-{
-	print <<<EOF
-lms-uke.php
-(C) 2001-2014 LMS Developers
-
-EOF;
-}
-
-if (array_key_exists('config-file', $options))
-	$CONFIG_FILE = $options['config-file'];
-else
-	$CONFIG_FILE = '/etc/lms/lms.ini';
-
-if (!$quiet)
-	echo "Using file ".$CONFIG_FILE." as config.\n";
-
-if (!is_readable($CONFIG_FILE))
-	die('Unable to read configuration file ['.$CONFIG_FILE.']!'); 
-
-$CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
-
-// Check for configuration vars and set default values
-$CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
-$CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'].'/lib' : $CONFIG['directories']['lib_dir']);
-
-define('SYS_DIR', $CONFIG['directories']['sys_dir']);
-define('LIB_DIR', $CONFIG['directories']['lib_dir']);
-// Do some checks and load config defaults
-
-// Load autloader
-require_once(LIB_DIR.'/autoloader.php');
-
-require_once(LIB_DIR.'/config.php');
-
-// Init database
-
-$DB = null;
-
-try {
-	$DB = LMSDB::getInstance();
-} catch (Exception $ex) {
-	trigger_error($ex->getMessage(), E_USER_WARNING);
-
-	// can't working without database
-	die("Fatal error: cannot connect to database!\n");
-}
-
-// Include required files (including sequence is important)
-
-require_once(LIB_DIR.'/language.php');
-include_once(LIB_DIR.'/definitions.php');
-require_once(LIB_DIR.'/unstrip.php');
-require_once(LIB_DIR.'/common.php');
-
-// Initialize Session, Auth and LMS classes
-
-$AUTH = NULL;
-$SYSLOG = NULL;
-$LMS = new LMS($DB, $AUTH, $CONFIG, $SYSLOG);
-$LMS->ui_lang = $_ui_language;
-$LMS->lang = $_language;
-*/
+//require_once(dirname(__FILE__) . '/../contrib/initLMS.php');
 
 /*
 function to_wgs84($coord, $ifLongitude = true) {
@@ -156,11 +43,79 @@ function to_wgs84($coord, $ifLongitude = true) {
 }
 */
 
+define(EOL, "\r\n");
+define(ZIP_CODE, '15-950');
+
+if (isset($_POST['sheets']) && is_array($_POST['sheets']))
+	$sheets = array_keys($_POST['sheets']);
+else
+	$sheets = array();
+
+$format = intval($_POST['format']);
+if ($format == 2) {
+	$buffer = '#SIIS wersja 5.28' . EOL;
+	$header = ConfigHelper::getConfig('siis.header', '');
+	if (strlen($header))
+		$buffer .= str_replace("\n", EOL, $header) . EOL;
+}
+
+// prepare old csv key arrays
+$ob_keys = array('ob_id', 'ob_invproject', 'ob_name', 'ob_nip', 'ob_regon', 'ob_rpt', 'ob_state',
+	'ob_district', 'ob_borough', 'ob_terc', 'ob_city', 'ob_simc', 'ob_street', 'ob_ulic', 'ob_house',
+	'ob_zip');
+$proj_keys = array('proj_id', 'proj_name', 'proj_agreementnr', 'proj_title', 'proj_program', 'proj_case',
+	'proj_companyname', 'proj_startdate', 'proj_enddate', 'proj_state', 'proj_range');
+$ww_keys = array('ww_id', 'ww_invproject', 'ww_invstatus', 'ww_id', 'ww_ownership', 'ww_coowner', 'ww_coloc',
+	'ww_state', 'ww_district', 'ww_borough', 'ww_terc', 'ww_city', 'ww_simc',
+	'ww_street', 'ww_ulic', 'ww_house', 'ww_zip', 'ww_latitude', 'ww_longitude', 'ww_objtype',
+	'ww_uip', 'ww_miar', 'ww_eu');
+$wo_keys = array('wo_id', 'wo_invproject', 'wo_id', 'wo_agreement', 'wo_coowner',
+	'wo_state', 'wo_district', 'wo_borough', 'wo_terc', 'wo_city', 'wo_simc',
+	'wo_street', 'wo_ulic', 'wo_house', 'wo_zip', 'wo_latitude', 'wo_longitude', 'wo_objtype');
+$int_keys = array('int_id', 'int_invproject', 'int_invstatus', 'int_id', 'int_wwid', 'int_blayer',
+	'int_dlayer', 'int_alayer', 'int_tech', 'int_bandwidth', 'int_ltech', 'int_maxdown', 'int_maxup',
+	'int_totalports', 'int_usedports', 'int_freeports', 'int_portleasing');
+$sr_keys = array('sr_id', 'sr_invproject', 'sr_invstatus', 'sr_id', 'sr_wwid', 'sr_intid',
+	'sr_license', 'sr_licensenr', 'sr_angle', 'sr_anglewidth', 'sr_high', 'sr_range', 'sr_maxspeed');
+$ps_keys = array('ps_id', 'ps_invproject', 'ps_invstatus', 'ps_id', 'ps_wwid', 'ps_woid', 'ps_intid',
+	'ps_internetusage', 'ps_voiceusage', 'ps_otherusage', 'ps_totalspeed', 'ps_internetspeed');
+$pol_keys = array('pol_id', 'pol_invproject', 'pol_invstatus', 'pol_id', 'pol_owner', 'pol_foreignerid',
+	'pol_wa', 'pol_wb', 'pol_blayer', 'pol_dlayer', 'pol_alayer', 'pol_internetusage', 'pol_voiceusage',
+	'pol_otherusage', 'pol_totalspeed', 'pol_internetspeed');
+$lp_keys = array('lp_id', 'lp_invproject', 'lp_invstatus', 'lp_id', 'lp_owner', 'lp_foreignerid', 'lp_anodetype',
+	'lp_anodeid', 'lp_bnodetype', 'lp_bnodeid', 'lp_tech', 'lp_fibertype', 'lp_fibertotal',
+	'lp_fiberused', 'lp_eu', 'lp_passiveavail', 'lp_passivetype', 'lp_fiberlease', 'lp_fiberleasecount',
+	'lp_bandwidthlease', 'lp_duct', 'lp_length');
+$rl_keys = array('rl_id', 'rl_invproject', 'rl_invstatus', 'rl_id', 'rl_anodeid', 'rl_bnodeid', 'rl_mediumtype',
+	'rl_licencenr', 'rl_bandwidth', 'rl_transmission', 'rl_throughput', 'rl_leaseavail');
+$zas_keys = array('zas_id', 'zas_invproject', 'zas_invstatus', 'zas_id', 'zas_ownership', 'zas_leasetype',
+	'zas_foreignerid', 'zas_nodeid', 'zas_state', 'zas_district', 'zas_borough', 'zas_terc', 'zas_city',
+	'zas_simc', 'zas_street', 'zas_ulic', 'zas_house', 'zas_zip', 'zas_latitude', 'zas_longitude',
+	'zas_tech', 'zas_ltech', 'zas_phonepots', 'zas_phonevoip', 'zas_phonemobile', 'zas_internetstationary',
+	'zas_internetmobile', 'zas_tv', 'zas_other', 'zas_stationarymaxspeed', 'zas_mobilemaxspeed');
+$us_keys = array('us_id', 'us_invproject', 'us_invstatus', 'us_id', 'us_netbuildingid', 'us_phonepots',
+	'us_phonevoip', 'us_phonemobile', 'us_internetstationary', 'us_internetmobile', 'us_tv', 'us_other');
+for ($i = 0; $i < 11; $i++)
+	$us_keys[] = 'us_personal' . $i;
+for ($i = 0; $i < 11; $i++)
+	$us_keys[] = 'us_commercial' . $i;
+
+function to_csv($data) {
+	foreach ($data as $key => $val)
+		$data[$key] = '"' . str_replace('"', '""', $val) . '"';
+	return implode(',', array_values($data));
+}
+
+function to_old_csv($keys, $array) {
+	$result = array();
+	foreach ($keys as $key)
+		$result[] = strpos($array[$key], ',') === FALSE ? $array[$key] : '"' . $array[$key] . '"';
+	return implode(',', $result);
+}
+
 function to_wgs84($coord, $ifLongitude = true) {
 	return str_replace(',', '.', sprintf("%.04f", $coord));
 }
-
-define(ZIP_CODE, '15-950');
 
 $borough_types = array(
 	1 => 'gm. miejska',
@@ -201,7 +156,24 @@ $projectid = 1;
 $sprojects = '';
 if (!empty($projects))
 	foreach ($projects as $project) {
-		$sprojects .= "$projectid,${project['name']}\n";
+		$data = array(
+			'proj_id' => $projectid,
+			'proj_name' => $project['name'],
+			'proj_agreementnr' => '',
+			'proj_title' => '',
+			'proj_program' => '',
+			'proj_case' => '',
+			'proj_companyname' => '',
+			'proj_startdate' => '',
+			'proj_enddate' => '',
+			'proj_state' => '',
+			'proj_range' => '',
+		);
+		if (in_array('proj', $sheets))
+			if ($format == 2)
+				$buffer .= 'PROJ,' . to_csv($data) . EOL;
+			else
+				$sprojects .= to_old_csv($proj_keys, $data) . EOL;
 		$projectid++;
 	}
 
@@ -517,7 +489,29 @@ $foreignerid = 1;
 $sforeigners = '';
 foreach ($foreigners as $name => $foreigner)
 	foreach ($foreigner['projects'] as $project) {
-		$sforeigners .= "$foreignerid,$project,$name\n";
+		$data = array(
+			'ob_id' => $foreignerid,
+			'ob_name' => $name,
+			'ob_nip' => '',
+			'ob_regon' => '',
+			'ob_rpt' => '',
+			'ob_state' => '',
+			'ob_district' => '',
+			'ob_borough' => '',
+			'ob_terc' => '',
+			'ob_city' => '',
+			'ob_simc' => '',
+			'ob_street' => '',
+			'ob_ulic' => '',
+			'ob_house' => '',
+			'ob_zip' => '',
+			'ob_invproject' => $project,
+		);
+		if (in_array('po', $sheets))
+			if ($format == 2)
+				$buffer .= 'PO,' . to_csv($data) . EOL;
+			else
+				$sforeigners .= to_old_csv($ob_keys, $data) . EOL;
 		$foreignerid++;
 	}
 
@@ -563,32 +557,66 @@ foreach ($netnodes as $netnodename => $netnode) {
 		$netnodes[$netnodename]['invproject'] = $netnode['invproject'] =
 			count($netnode['invproject']) == 1 ? $netnode['invproject'][0] : '';
 
-	if ($netnode['ownership'] < 2)
-		$snetnodes .= "${netnode['id']},${netnode['invproject']}," . ($netnode['invproject'] ? $NETELEMENTSTATUSES[$netnode['status']] : "")
-			. ",${netnode['id']}," . $NETELEMENTOWNERSHIPS[$netnode['ownership']] . ",${netnode['coowner']},,"
-			.(isset($netnode['area_woj'])
-				? implode(',', array($netnode['area_woj'], $netnode['area_pow'], $netnode['area_gmi'],
-					$netnode['area_terc'], $netnode['area_city'], $netnode['area_simc'],
-					(!empty($netnode['address_cecha']) && $netnode['address_cecha'] != 'inne'
-						? $netnode['address_cecha'] . ' ' : '') . $netnode['address_ulica'],
-					$netnode['address_symul'], $netnode['address_budynek'], $netnode['location_zip']))
-				: "LMS netdevinfo ID's: " . implode(' ', $netnode['netdevices']) . "," . implode(',', array_fill(0, 9, '')))
-			. "," . (isset($netnode['longitude']) ? $netnode['latitude'] . "," . $netnode['longitude'] : ",")
-			."," . $NETELEMENTTYPES[$netnode['type']] . ","
-			. ($netnode['uip'] ? "Tak" : "Nie") . "," . ($netnode['miar'] ? "Tak" : "Nie")
-			. "," . ($netnode['invproject'] ? "Tak" : "Nie") . "\n";
-	else
-		$sforeignernetnodes .= "${netnode['id']},${netnode['invproject']},${netnode['id']},"
-			. "Umowa o dostęp do sieci telekomunikacyjnej,${netnode['coowner']},"
-			.(isset($netnode['area_woj'])
-				? implode(',', array($netnode['area_woj'], $netnode['area_pow'], $netnode['area_gmi'],
-					$netnode['area_terc'], $netnode['area_city'], $netnode['area_simc'],
-					(!empty($netnode['address_cecha']) && $netnode['address_cecha'] != 'inne'
-						? $netnode['address_cecha'] . ' ' : '') . $netnode['address_ulica'],
-					$netnode['address_symul'], $netnode['address_budynek'], $netnode['location_zip']))
-				: "LMS netdevinfo ID's: " . implode(' ', $netnode['netdevices']) . "," . implode(',', array_fill(0, 9, '')))
-			. "," . (isset($netnode['longitude']) ? $netnode['latitude'] . "," . $netnode['longitude'] : ",")
-			."," . $NETELEMENTTYPES[$netnode['type']] . "\n";
+	if ($netnode['ownership'] < 2) {
+		$data = array(
+			'ww_id' => $netnode['id'],
+			'ww_ownership' => $NETELEMENTOWNERSHIPS[$netnode['ownership']],
+			'ww_coowner' => $netnode['coowner'],
+			'ww_coloc' => '',
+			'ww_state' => isset($netnode['area_woj']) ? $netnode['area_woj']
+				: "LMS netdevinfo ID's:" . implode(' ', $netnode['netdevices']) . "," . implode(',', array_fill(0, 9, '')),
+			'ww_district' => $netnode['area_pow'],
+			'ww_borough' => $netnode['area_gmi'],
+			'ww_terc' => $netnode['area_terc'],
+			'ww_city' => $netnode['area_city'],
+			'ww_simc' => $netnode['area_simc'],
+			'ww_street' => (!empty($netnode['address_cecha']) && $netnode['address_cecha'] != 'inne'
+				? $netnode['address_cecha'] . ' ' : '') . $netnode['address_ulica'],
+			'ww_ulic' => $netnode['address_symul'],
+			'ww_house' => $netnode['address_budynek'],
+			'ww_zip' => $netnode['location_zip'],
+			'ww_latitude' =>  isset($netnode['latitude']) ? $netnode['latitude'] : '',
+			'ww_longitude' => isset($netnode['longitude']) ? $netnode['longitude'] : '',
+			'ww_objtype' => $NETELEMENTTYPES[$netnode['type']],
+			'ww_uip' => $netnode['uip'] ? 'Tak' : 'Nie',
+			'ww_miar' => $netnode['miar'] ? 'Tak' : 'Nie',
+			'ww_eu' => $netnode['invproject'] ? 'Tak' : 'Nie',
+			'ww_invproject' => $netnode['invproject'],
+			'ww_invstatus' => $netnode['invproject'] ? $NETELEMENTSTATUSES[$netnode['status']] : '',
+		);
+		if (in_array('ww', $sheets))
+			if ($format == 2)
+				$buffer .= 'WW,' . to_csv($data) . EOL;
+			else
+				$snetnodes .= to_old_csv($ww_keys, $data) . EOL;
+	} else {
+		$data = array(
+			'wo_id' => $netnode['id'],
+			'wo_agreement' => 'Umowa o dostęp do sieci telekomunikacyjnej',
+			'wo_coowner' => $netnode['coowner'],
+			'wo_state' => isset($netnode['area_woj']) ? $netnode['area_woj']
+				: "LMS netdevinfo ID's:" . implode(' ', $netnode['netdevices']) . "," . implode(',', array_fill(0, 9, '')),
+			'wo_district' => $netnode['area_pow'],
+			'wo_borough' => $netnode['area_gmi'],
+			'wo_terc' => $netnode['area_terc'],
+			'wo_city' => $netnode['area_city'],
+			'wo_simc' => $netnode['area_simc'],
+			'wo_street' => (!empty($netnode['address_cecha']) && $netnode['address_cecha'] != 'inne'
+				? $netnode['address_cecha'] . ' ' : '') . $netnode['address_ulica'],
+			'wo_ulic' => $netnode['address_symul'],
+			'wo_house' => $netnode['address_budynek'],
+			'wo_zip' => $netnode['location_zip'],
+			'wo_latitude' =>  isset($netnode['latitude']) ? $netnode['latitude'] : '',
+			'wo_longitude' => isset($netnode['longitude']) ? $netnode['longitude'] : '',
+			'wo_objtype' => $NETELEMENTTYPES[$netnode['type']],
+			'wo_invproject' => $netnode['invproject'],
+		);
+		if (in_array('wo', $sheets))
+			if ($format == 2)
+				$buffer .= 'WO,' . to_csv($data) . EOL;
+			else
+				$sforeignernetnodes .= to_old_csv($wo_keys, $data) . EOL;
+	}
 	if ($netnode['ownership'] == 2)
 		continue;
 
@@ -615,11 +643,29 @@ foreach ($netnodes as $netnodename => $netnode) {
 								break;
 						}
 						foreach ($linkspeeds as $linkspeed => $totalbackboneports) {
-							$snetinterfaces .= "$netintid," . (!strlen($prj) ? "," : "$prj,${NETELEMENTSTATUSES[$status]}")
-								. ",$netintid,${netnode['id']}"
-								. ",Tak,Nie,Nie,$technology,$bandwidth"
-								. ",\"$ltech\"," . implode(',', array_fill(0, 2, round($linkspeed / 1000)))
-								. ",$totalbackboneports,$totalbackboneports,0,Nie\n";
+							$data = array(
+								'int_id' => $netintid,
+								'int_wwid' => $netnode['id'],
+								'int_blayer' => 'Tak',
+								'int_dlayer' => 'Nie',
+								'int_alayer' => 'Nie',
+								'int_tech' => $technology,
+								'int_bandwidth' => $bandwidth,
+								'int_ltech' => $ltech,
+								'int_maxdown' => round($linkspeed / 1000),
+								'int_maxup' => round($linkspeed / 1000),
+								'int_totalports' => $totalbackboneports,
+								'int_usedports' => $totalbackboneports,
+								'int_freeports' => 0,
+								'int_portleasing' => 'Nie',
+								'int_invproject' => strlen($prj) ? $prj : '',
+								'int_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
+							);
+							if (in_array('int', $sheets))
+								if ($format == 2)
+									$buffer .= 'I,' . to_csv($data) . EOL;
+								else
+									$snetinterfaces .= to_old_csv($int_keys, $data) . EOL;
 							$netnodes[$netnodename]['backbonenetintid'][$prj][$status][$linktype][$linktechnology][$linkspeed] =
 								$netintid;
 							$netintid++;
@@ -651,11 +697,29 @@ foreach ($netnodes as $netnodename => $netnode) {
 								break;
 						}
 						foreach ($linkspeeds as $linkspeed => $totaldistports) {
-							$snetinterfaces .= "$netintid," . (!strlen($prj) ? "," : "$prj,${NETELEMENTSTATUSES[$status]}")
-								. ",$netintid,${netnode['id']}"
-								. ",Nie,Tak,Nie,$technology,$bandwidth"
-								. ",\"$ltech\"," . implode(',', array_fill(0, 2, round($linkspeed / 1000)))
-								. ",$totaldistports,$totaldistports,0,Nie\n";
+							$data = array(
+								'int_id' => $netintid,
+								'int_wwid' => $netnode['id'],
+								'int_blayer' => 'Nie',
+								'int_dlayer' => 'Tak',
+								'int_alayer' => 'Nie',
+								'int_tech' => $technology,
+								'int_bandwidth' => $bandwidth,
+								'int_ltech' => $ltech,
+								'int_maxdown' => round($linkspeed / 1000),
+								'int_maxup' => round($linkspeed / 1000),
+								'int_totalports' => $totaldistports,
+								'int_usedports' => $totaldistports,
+								'int_freeports' => 0,
+								'int_portleasing' => 'Nie',
+								'int_invproject' => strlen($prj) ? $prj : '',
+								'int_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
+							);
+							if (in_array('int', $sheets))
+								if ($format == 2)
+									$buffer .= 'I,' . to_csv($data) . EOL;
+								else
+									$snetinterfaces .= to_old_csv($int_keys, $data) . EOL;
 							$netintid++;
 						}
 					}
@@ -689,27 +753,64 @@ foreach ($netnodes as $netnodename => $netnode) {
 							$ports = 0;
 							foreach ($customertypes as $customertypeports)
 								$ports += $customertypeports;
-							if (!$idx)
-								$snetinterfaces .= "$netintid," . (!strlen($prj) ? "," : "$prj,${NETELEMENTSTATUSES[$status]}")
-									. ",$netintid,${netnode['id']}"
-									. ",Nie,Nie,Tak,$technology,$bandwidth"
-									. ",\"$ltech\"," . implode(',', array_fill(0, 2, round($linkspeed / 1000))) . ","
-									. ($netnode['ports'] - $netnode['totaldistports']
-										- $netnode['personalaccessports'] - $netnode['commercialaccessports']
-										+ $ports )
-									. ",$ports,"
-									. ($netnode['ports'] - $netnode['totaldistports']
-										- $netnode['personalaccessports'] - $netnode['commercialaccessports']) . ",Nie\n";
-							else
-								$snetinterfaces .= $netintid . "," . $netintid . "," . $netnode['id']
-									. ",Nie,Nie,Tak,$technology,$bandwidth"
-									. ",\"$ltech\"," . implode(',', array_fill(0, 2, $linkspeed)) . ","
-									. implode(',', array_fill(0, 2, $ports))
-									. ",0,Nie\n";
+							$data = array(
+								'int_id' => $netintid,
+								'int_wwid' => $netnode['id'],
+								'int_blayer' => 'Nie',
+								'int_dlayer' => 'Nie',
+								'int_alayer' => 'Tak',
+								'int_tech' => $technology,
+								'int_bandwidth' => $bandwidth,
+								'int_ltech' => $ltech,
+								'int_maxdown' => round($linkspeed / 1000),
+								'int_maxup' => round($linkspeed / 1000),
+								'int_totalports' => ($netnode['ports'] - $netnode['totaldistports']
+									- $netnode['personalaccessports'] - $netnode['commercialaccessports']
+									+ $ports),
+								'int_usedports' => $ports,
+								'int_freeports' => ($netnode['ports'] - $netnode['totaldistports']
+									- $netnode['personalaccessports'] - $netnode['commercialaccessports']),
+								'int_portleasing' => 'Nie',
+								'int_invproject' => strlen($prj) ? $prj : '',
+								'int_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
+							);
+							if (!$idx) {
+								$data['int_totalports'] = $netnode['ports'] - $netnode['totaldistports']
+									- $netnode['personalaccessports'] - $netnode['commercialaccessports']
+									+ $ports;
+								$data['int_usedports'] = $ports;
+								$data['int_freeports'] = $netnode['ports'] - $netnode['totaldistports']
+									- $netnode['personalaccessports'] - $netnode['commercialaccessports'];
+							} else {
+								$data['int_totalports'] = $ports;
+								$data['int_usedports'] = $ports;
+								$data['int_freeports'] = 0;
+							}
+							if (in_array('int', $sheets))
+								if ($format == 2)
+									$buffer .= 'I,' . to_csv($data) . EOL;
+								else
+									$snetinterfaces .= to_old_csv($int_keys, $data) . EOL;
 							if ($linktype == 1) {
-								$sradiosectors .= "$radiosectorid,"
-									. (!strlen($prj) ? "," : "$prj,${NETELEMENTSTATUSES[$status]}") . ",$radiosectorid,"
-									. "${netnode['id']},$netintid,Nie,,0,360,20,500," . round($linkspeed / 1000) . "\n";
+								$data = array(
+									'sr_id' => $radiosectorid,
+									'sr_wwid' => $netnode['id'],
+									'sr_intid' => $netintid,
+									'sr_license' => 'Nie',
+									'sr_licensenr' => '',
+									'sr_angle' => 0,
+									'sr_anglewidth' => 360,
+									'sr_high' => 20,
+									'sr_range' => 500,
+									'sr_maxspeed' => round($linkspeed / 1000),
+									'sr_invproject' => strlen($prj) ? $prj : '',
+									'sr_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
+								);
+								if (in_array('sr', $sheets))
+									if ($format == 2)
+										$buffer .= 'Z,' . to_csv($data) . EOL;
+									else
+										$sradiosectors .= to_old_csv($sr_keys, $data) . EOL;
 								$radiosectorid++;
 							}
 							$netintid++;
@@ -879,15 +980,29 @@ foreach ($netnodes as $netnodename => $netnode) {
 					$commercialnodes[$servicetype] = $services;
 				}
 
-				$snetbuildings .= "$netbuildingid," . (!strlen($prj) ? "," : "$prj,${NETELEMENTSTATUSES[$status]}")
-					. ",$netbuildingid,Własna,,,${netnode['id']},"
-					. implode(',', array($teryt['area_woj'], $teryt['area_pow'], $teryt['area_gmi'],
-						$teryt['area_terc'], $teryt['area_city'], $teryt['area_simc'],
-						(!empty($teryt['address_cecha']) && $teryt['address_cecha'] != 'inne'
-							? $teryt['address_cecha'] . ' ' : '') . $teryt['address_ulica'], $teryt['address_symul'],
-						$teryt['address_budynek'], $teryt['location_zip']))
-					. ",${netnode['latitude']},${netnode['longitude']},"
-					. "$technology,\"$linktechnology\"";
+				$data = array(
+					'zas_id' => $netbuildingid,
+					'zas_ownership' => 'Własna',
+					'zas_leasetype' => '',
+					'zas_foreignerid' => '',
+					'zas_nodeid' => $netnode['id'],
+					'zas_state' => $teryt['area_woj'],
+					'zas_district' => $teryt['area_pow'],
+					'zas_borough' => $teryt['area_gmi'],
+					'zas_terc' => $teryt['area_terc'],
+					'zas_city' => $teryt['area_city'],
+					'zas_simc' => $teryt['area_simc'],
+					'zas_street' => (!empty($teryt['address_cecha']) && $teryt['address_cecha'] != 'inne'
+						? $teryt['address_cecha'] . ' ' : '') . $teryt['address_ulica'],
+					'zas_ulic' => $teryt['address_symul'],
+					'zas_house' => $teryt['address_budynek'],
+					'zas_zip' => $teryt['location_zip'],
+					'zas_latitude' => $netnode['latitude'],
+					'zas_longitude' => $netnode['longitude'],
+					'zas_tech' => $technology,
+					'zas_ltech' => $linktechnology,
+				);
+
 				$allservices = array();
 
 				foreach (array_unique(array_merge(array_keys($personalnodes), array_keys($commercialnodes))) as $servicetype) {
@@ -898,16 +1013,22 @@ foreach ($netnodes as $netnodename => $netnode) {
 							$ukeservices[] = $service;
 							$allservices[] = $service;
 						}
-					$snetranges .= "$netrangeid," . (!strlen($prj) ? "," : "$prj,${NETELEMENTSTATUSES[$status]}")
-						. ",$netrangeid,$netbuildingid";
-					$snetranges .= "," . (array_search('TEL', $ukeservices) !== FALSE ?
-							($range['linktechnology'] == 12 ?
-								"Tak,Nie,Nie"
-								: ($range['linktechnology'] >= 105 && $range['linktechnology'] < 200 ? "Nie,Nie,Tak" : "Nie,Tak,Nie"))
-							: "Nie,Nie,Nie")
-						. "," . (array_search('INT', $ukeservices) !== FALSE ?
-							(($range['linktechnology'] >= 105 && $range['linktechnology'] < 200) ? "Nie,Tak" : "Tak,Nie") : "Nie,Nie")
-						. "," . (array_search('TV', $ukeservices) !== FALSE ? "Tak" : "Nie") . ",,";
+					$us_data = array(
+						'us_id' => $netrangeid,
+						'us_netbuildingid' => $netbuildingid,
+						'us_phonepots' => array_search('TEL', $ukeservices) !== FALSE
+							&& $range['linktechnology'] == 12 ? 'Tak' : 'Nie',
+						'us_phonevoip' => array_search('TEL', $ukeservices) !== FALSE && $range['linktechnology'] != 12
+							&& ($range['linktechnology'] < 105 || $range['linktechnology'] >= 200) ? 'Tak' : 'Nie',
+						'us_phonemobile' => array_search('TEL', $ukeservices) !== FALSE
+							&& $range['linktechnology'] >= 105 && $range['linktechnology'] < 200 ? 'Tak' : 'Nie',
+						'us_internetstationary' => array_search('INT', $ukeservices) !== FALSE
+							&& ($range['linktechnology'] < 105 || $range['linktechnology'] >= 200) ? 'Tak' : 'Nie',
+						'us_internetmobile' => array_search('INT', $ukeservices) !== FALSE
+							&& $range['linktechnology'] >= 105 && $range['linktechnology'] < 200 ? 'Tak' : 'Nie',
+						'us_tv' => array_search('TV', $ukeservices) !== FALSE ? 'Tak' : 'Nie',
+						'us_other' => '',
+					);
 
 					if (isset($personalnodes[$servicetype])) {
 						if (array_search('INT', $ukeservices) !== FALSE)
@@ -935,8 +1056,21 @@ foreach ($netnodes as $netnodename => $netnode) {
 					} else
 						$commercialservices = array_fill(0, 11, '0');
 
-					$snetranges .= implode(',', $personalservices) . ","
-						. implode(',', $commercialservices) . "\n";
+					foreach ($personalservices as $idx => $service)
+						$us_data['us_personal' . $idx] = $service;
+					foreach ($commercialservices as $idx => $service)
+						$us_data['us_commercial' . $idx] = $service;
+
+					$us_data = array_merge($us_data, array(
+						'us_invproject' => strlen($prj) ? $prj : '',
+						'us_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
+					));
+
+					if (in_array('us', $sheets))
+						if ($format == 2)
+							$buffer .= 'U,' . to_csv($us_data) . EOL;
+						else
+							$snetranges .= to_old_csv($us_keys, $us_data) . EOL;
 					$netrangeid++;
 				}
 
@@ -986,15 +1120,31 @@ foreach ($netnodes as $netnodename => $netnode) {
 				else
 					$maxdownstream = 100000;
 
-				$snetbuildings .= "," . (array_search('TEL', $allservices) !== FALSE ?
-						($range['linktechnology'] == 12 ?
-							"Tak,Nie,Nie"
-							: ($range['linktechnology'] >= 105 && $range['linktechnology'] < 200 ? "Nie,Nie,Tak" : "Nie,Tak,Nie"))
-						: "Nie,Nie,Nie")
-					. "," . (array_search('INT', $allservices) !== FALSE ?
-						(($range['linktechnology'] >= 105 && $range['linktechnology'] < 200) ? "Nie,Tak" : "Tak,Nie") : "Nie,Nie")
-					. "," . (array_search('TV', $allservices) !== FALSE ? "Tak" : "Nie") . ",,"
-					. (array_search('INT', $allservices) !== FALSE ? $maxdownstream : "0") . ",0\n";
+				$data = array_merge($data, array(
+					'zas_phonepots' => array_search('TEL', $allservices) !== FALSE
+						&& $range['linktechnology'] == 12 ? 'Tak' : 'Nie',
+					'zas_phonevoip' => array_search('TEL', $allservices) !== FALSE && $range['linktechnology'] != 12
+						&& ($range['linktechnology'] < 105 || $range['linktechnology'] >= 200) ? 'Tak' : 'Nie',
+					'zas_phonemobile' => array_search('TEL', $allservices) !== FALSE
+						&& $range['linktechnology'] >= 105 && $range['linktechnology'] < 200 ? 'Tak' : 'Nie',
+					'zas_internetstationary' => array_search('INT', $allservices) !== FALSE
+						&& ($range['linktechnology'] < 105 || $range['linktechnology'] >= 200) ? 'Tak' : 'Nie',
+					'zas_internetmobile' => array_search('INT', $allservices) !== FALSE
+						&& $range['linktechnology'] >= 105 && $range['linktechnology'] < 200 ? 'Tak' : 'Nie',
+					'zas_tv' => array_search('TV', $allservices) !== FALSE ? 'Tak' : 'Nie',
+					'zas_other' => '',
+					'zas_stationarymaxspeed' => array_search('INT', $allservices) !== FALSE 
+						&& ($range['linktechnology'] < 105 || $range['linktechnology'] >= 200) ? $maxdownstream : '0',
+					'zas_mobilemaxspeed' => array_search('INT', $allservices) !== FALSE
+						&& $range['linktechnology'] >= 105 && $range['linktechnology'] < 200 ? $maxdownstream : '0',
+					'zas_invproject' => strlen($prj) ? $prj : '',
+					'zas_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
+				));
+				if (in_array('zas', $sheets))
+					if ($format == 2)
+						$buffer .= 'ZS,' . to_csv($data) . EOL;
+					else
+						$snetbuildings .= to_old_csv($zas_keys, $data) . EOL;
 				$netbuildingid++;
 			}
 		}
@@ -1042,20 +1192,49 @@ if ($netdevices)
 							if ($netnodes[$netdevnetnode]['ownership'] == 2 && $netnodes[$dstnetnode]['ownership'] < 2) {
 								$invproject = strlen($netnodes[$dstnetnode]['invproject']) ? $netnodes[$dstnetnode]['invproject'] : '';
 								$netintid = $netnodes[$dstnetnode]['backbonenetintid'][$invproject][$netnodes[$dstnetnode]['status']][$netlink['type']][$netlink['technology']][$netlink['speed']];
-								$snetconnections .= "$netconnectionid," . $netnodes[$netdevnetnode]['invproject'] . ","
-									. (strlen($netnodes[$netdevnetnode]['invproject']) ? $NETELEMENTSTATUSES[$netnodes[$netdevnetnode]['status']] : '')
-									. ",$netconnectionid," . $netnodes[$dstnetnode]['id']
-									. "," . $netnodes[$netdevnetnode]['id'] . ",$netintid,Tak,Nie,Nie,$speed,$speed\n";
+								$data = array(
+									'ps_id' => $netconnectionid,
+									'ps_wwid' => $netnodes[$dstnetnode]['id'],
+									'ps_woid' => $netnodes[$netdevnetnode]['id'],
+									'ps_intid' => $netintid,
+									'ps_internetusage' => 'Tak',
+									'ps_voiceusage' => 'Nie',
+									'ps_otherusage' => 'Nie',
+									'ps_totalspeed' => $speed,
+									'ps_internetspeed' => $speed,
+									'ps_invproject' => $netnodes[$netdevnetnode]['invproject'],
+									'ps_invstatus' => strlen($netnodes[$netdevnetnode]['invproject']) ? $NETELEMENTSTATUSES[$netnodes[$netdevnetnode]['status']] : '',
+								);
+								if (in_array('ps', $sheets))
+									if ($format == 2)
+										$buffer .= 'PS,' . to_csv($data) . EOL;
+									else
+										$snetconnections .= to_old_csv($ps_keys, $data) . EOL;
+
 								$netconnectionid++;
 								$foreign = true;
 							}
 							if ($netnodes[$netdevnetnode]['ownership'] < 2 && $netnodes[$dstnetnode]['ownership'] == 2) {
 								$invproject = strlen($netnodes[$netdevnetnode]['invproject']) ? $netnodes[$netdevnetnode]['invproject'] : '';
 								$netintid = $netnodes[$netdevnetnode]['backbonenetintid'][$invproject][$netnodes[$netdevnetnode]['status']][$netlink['type']][$netlink['technology']][$netlink['speed']];
-								$snetconnections .= "$netconnectionid," . $netnodes[$dstnetnode]['invproject'] . ","
-									. (strlen($netnodes[$dstnetnode]['invproject']) ? $NETELEMENTSTATUSES[$netnodes[$dstnetnode]['status']] : '')
-									. ",$netconnectionid," . $netnodes[$netdevnetnode]['id']
-									. "," . $netnodes[$dstnetnode]['id'] . ",$netintid,Tak,Nie,Nie,$speed,$speed\n";
+								$data = array(
+									'ps_id' => $netconnectionid,
+									'ps_wwid' => $netnodes[$netdevnetnode]['id'],
+									'ps_woid' => $netnodes[$dstnetnode]['id'],
+									'ps_intid' => $netintid,
+									'ps_internetusage' => 'Tak',
+									'ps_voiceusage' => 'Nie',
+									'ps_otherusage' => 'Nie',
+									'ps_totalspeed' => $speed,
+									'ps_internetspeed' => $speed,
+									'ps_invproject' => $netnodes[$dstnetnode]['invproject'],
+									'ps_invstatus' => strlen($netnodes[$dstnetnode]['invproject']) ? $NETELEMENTSTATUSES[$netnodes[$dstnetnode]['status']] : '',
+								);
+								if (in_array('ps', $sheets))
+									if ($format == 2)
+										$buffer .= 'PS,' . to_csv($data) . EOL;
+									else
+										$snetconnections .= to_old_csv($ps_keys, $data) . EOL;
 								$netconnectionid++;
 								$foreign = true;
 							}
@@ -1092,20 +1271,48 @@ if ($netdevices)
 							if ($netnodes[$netdevnetnode]['ownership'] == 2 && $netnodes[$srcnetnode]['ownership'] < 2) {
 								$invproject = strlen($netnodes[$srcnetnode]['invproject']) ? $netnodes[$srcnetnode]['invproject'] : '';
 								$netintid = $netnodes[$srcnetnode]['backbonenetintid'][$invproject][$netnodes[$srcnetnode]['status']][$netlink['type']][$netlink['technology']][$netlink['speed']];
-								$snetconnections .= "$netconnectionid," . $netnodes[$netdevnetnode]['invproject'] . ","
-									. (strlen($netnodes[$netdevnetnode]['invproject']) ? $NETELEMENTSTATUSES[$netnodes[$netdevnetnode]['status']] : '')
-									. ",$netconnectionid," . $netnodes[$srcnetnode]['id']
-									. "," . $netnodes[$netdevnetnode]['id'] . ",$netintid,Tak,Nie,Nie,$speed,$speed\n";
+								$data = array(
+									'ps_id' => $netconnectionid,
+									'ps_wwid' => $netnodes[$srcnetnode]['id'],
+									'ps_woid' => $netnodes[$netdevnetnode]['id'],
+									'ps_intid' => $netintid,
+									'ps_internetusage' => 'Tak',
+									'ps_voiceusage' => 'Nie',
+									'ps_otherusage' => 'Nie',
+									'ps_totalspeed' => $speed,
+									'ps_internetspeed' => $speed,
+									'ps_invproject' => $netnodes[$netdevnetnode]['invproject'],
+									'ps_invstatus' => strlen($netnodes[$netdevnetnode]['invproject']) ? $NETELEMENTSTATUSES[$netnodes[$netdevnetnode]['status']] : '',
+								);
+								if (in_array('ps', $sheets))
+									if ($format == 2)
+										$buffer .= 'PS,' . to_csv($data) . EOL;
+									else
+										$snetconnections .= to_old_csv($ps_keys, $data) . EOL;
 								$netconnectionid++;
 								$foreign = true;
 							}
 							if ($netnodes[$netdevnetnode]['ownership'] < 2 && $netnodes[$srcnetnode]['ownership'] == 2) {
 								$invproject = strlen($netnodes[$netdevnetnode]['invproject']) ? $netnodes[$netdevnetnode]['invproject'] : '';
 								$netintid = $netnodes[$netdevnetnode]['backbonenetintid'][$invproject][$netnodes[$netdevnetnode]['status']][$netlink['type']][$netlink['technology']][$netlink['speed']];
-								$snetconnections .= "$netconnectionid," . $netnodes[$srcnetnode]['invproject'] . ","
-									. (strlen($netnodes[$srcnetnode]['invproject']) ? $NETELEMENTSTATUSES[$netnodes[$srcnetnode]['status']] : '')
-									. ",$netconnectionid," . $netnodes[$netdevnetnode]['id']
-									. "," . $netnodes[$srcnetnode]['id'] . ",$netintid,Tak,Nie,Nie,$speed,$speed\n";
+								$data = array(
+									'ps_id' => $netconnectionid,
+									'ps_wwid' => $netnodes[$netdevnetnode]['id'],
+									'ps_woid' => $netnodes[$srcnetnode]['id'],
+									'ps_intid' => $netintid,
+									'ps_internetusage' => 'Tak',
+									'ps_voiceusage' => 'Nie',
+									'ps_otherusage' => 'Nie',
+									'ps_totalspeed' => $speed,
+									'ps_internetspeed' => $speed,
+									'ps_invproject' => $netnodes[$srcnetnode]['invproject'],
+									'ps_invstatus' => strlen($netnodes[$srcnetnode]['invproject']) ? $NETELEMENTSTATUSES[$netnodes[$srcnetnode]['status']] : '',
+								);
+								if (in_array('ps', $sheets))
+									if ($format == 2)
+										$buffer .= 'PS,' . to_csv($data) . EOL;
+									else
+										$snetconnections .= to_old_csv($ps_keys, $data) . EOL;
 								$netconnectionid++;
 								$foreign = true;
 							}
@@ -1131,28 +1338,55 @@ $snetradiolines = '';
 if ($netlinks)
 	foreach ($netlinks as $netlink)
 		if ($netnodes[$netlink['src']]['id'] != $netnodes[$netlink['dst']]['id']) {
-			if ($netlink['type'] == 1)
-				$snetradiolines .= "$netlineid,${netlink['invproject']},"
-					. (strlen($netlink['invproject']) ? $NETELEMENTSTATUSES[$netlink['status']] : '')
-					. ",$netlineid,"
-					. $netnodes[$netlink['src']]['id'] . "," . $netnodes[$netlink['dst']]['id']
-					. ",radiowe na częstotliwości ogólnodostępnej,," . $linktypes[$netlink['type']]['pasmo']
-					. "," . $linktypes[$netlink['type']]['typ'] . ","
-					. $linktypes[$netlink['type']]['szybkosc_radia'] . ",Nie\n";
-			else
-				$snetcablelines .= "$netlineid,${netlink['invproject']},"
-					. (strlen($netlink['invproject']) ? $NETELEMENTSTATUSES[$netlink['status']] : '')
-					. ",$netlineid,własna,"
-					. "," . ($NETELEMENTOWNERSHIPS[$netnodes[$netlink['src']]['ownership']]) . "," . $netnodes[$netlink['src']]['id']
-					. "," . ($NETELEMENTOWNERSHIPS[$netnodes[$netlink['dst']]['ownership']]) . "," . $netnodes[$netlink['dst']]['id']
-					. "," . $linktypes[$netlink['type']]['technologia'] . ","
-					. ($netlink['type'] == 2 ? $linktypes[$netlink['type']]['typ'] . ","
-						. implode(',', array_fill(0, 2, $linktypes[$netlink['type']]['liczba_jednostek']))
-						: ",,")
-					. "," . (strlen($netlink['invproject']) ? "Tak" : "Nie") . ",Brak danych,,"
-					. ($netlink['type'] == 2 ? "Nie" : "") . ",,Nie,"
-					. $linktypes[$netlink['type']]['trakt'] . ","
-					. ($netlink['type'] == 2 ? "0.1" : "") . "\n";
+			if ($netlink['type'] == 1) {
+				$data = array(
+					'rl_id' => $netlineid,
+					'rl_anodeid' => $netnodes[$netlink['src']]['id'],
+					'rl_bnodeid' => $netnodes[$netlink['dst']]['id'],
+					'rl_mediumtype' => 'radiowe na częstotliwości ogólnodostępnej',
+					'rl_licencenr' => '',
+					'rl_bandwidth' => $linktypes[$netlink['type']]['pasmo'],
+					'rl_transmission' => $linktypes[$netlink['type']]['typ'],
+					'rl_throughput' => $linktypes[$netlink['type']]['szybkosc_radia'],
+					'rl_leaseavail' => 'Nie',
+					'rl_invproject' => $netlink['invproject'],
+					'rl_invstatus' => strlen($netlink['invproject']) ? $NETELEMENTSTATUSES[$netlink['status']] : '',
+				);
+				if (in_array('rl', $sheets))
+					if ($format == 2)
+						$buffer .= 'LB,' . to_csv($data) . EOL;
+					else
+						$snetradiolines .= to_old_csv($rl_keys, $data) . EOL;
+			} else {
+				$data = array(
+					'lp_id' => $netlineid,
+					'lp_owner' => 'Własna',
+					'lp_foreingerid' => '',
+					'lp_anodetype' => $NETELEMENTOWNERSHIPS[$netnodes[$netlink['src']]['ownership']],
+					'lp_anodeid' => $netnodes[$netlink['src']]['id'],
+					'lp_bnodetype' => $NETELEMENTOWNERSHIPS[$netnodes[$netlink['dst']]['ownership']],
+					'lp_bnodeid' => $netnodes[$netlink['dst']]['id'],
+					'lp_tech' => $linktypes[$netlink['type']]['technologia'],
+					'lp_fibertype' => $netlink['type'] == 2 ? $linktypes[$netlink['type']]['typ'] : '',
+					'lp_fibertotal' => $netlink['type'] == 2 ? $linktypes[$netlink['type']]['liczba_jednostek'] : '',
+					'lp_fiberused' => $netlink['type'] == 2 ? $linktypes[$netlink['type']]['liczba_jednostek'] : '',
+					'lp_eu' => strlen($netlink['invproject']) ? 'Tak' : 'Nie',
+					'lp_passiveavail' => 'Brak danych',
+					'lp_passivetype' => '',
+					'lp_fiberlease' => $netlink['type'] == 2 ? 'Nie' : '',
+					'lp_fiberleasecount' => '',
+					'lp_bandwidthlease' => 'Nie',
+					'lp_duct' => $linktypes[$netlink['type']]['trakt'],
+					'lp_length' => $netlink['type'] == 2 ? '0.1' : '',
+					'lp_invproject' => $netlink['invproject'],
+					'lp_invstatus' => strlen($netlink['invproject']) ? $NETELEMENTSTATUSES[$netlink['status']] : '',
+				);
+				if (in_array('lp', $sheets))
+					if ($format == 2)
+						$buffer .= 'LK,' . to_csv($data) . EOL;
+					else
+						$snetcablelines .= to_old_csv($lp_keys, $data) . EOL;
+			}
 			$netlineid++;
 		}
 
@@ -1162,35 +1396,58 @@ $snetlinks = '';
 if ($netlinks)
 	foreach ($netlinks as $netlink)
 		if ($netnodes[$netlink['src']]['id'] != $netnodes[$netlink['dst']]['id']) {
-			$snetlinks .= "$netlinkid,${netlink['invproject']},"
-				. (strlen($netlink['invproject']) ? $NETELEMENTSTATUSES[$netlink['status']] : '')
-				. ",$netlinkid,Własna,,"
-				. $netnodes[$netlink['src']]['id'] . "," . $netnodes[$netlink['dst']]['id']
-				. "," . ($netlink['foreign'] ? "Tak,Nie" : "Nie,Tak") . ",Nie,"
-				. "Tak,Nie,Nie,"
-				. implode(',', array_fill(0, 2, $netlink['speed'])) . "\n";
+			$data = array(
+				'pol_id' => $netlinkid,
+				'pol_owner' => 'Własna',
+				'pol_foreignerid' => '',
+				'pol_wa' => $netnodes[$netlink['src']]['id'],
+				'pol_wb' => $netnodes[$netlink['dst']]['id'],
+				'pol_blayer' => $netlink['foreign'] ? 'Tak' : 'Nie',
+				'pol_dlayer' => $netlink['foreign'] ? 'Nie' : 'Tak',
+				'pol_alayer' => 'Nie',
+				'pol_internetusage' => 'Tak',
+				'pol_voiceusage' => 'Nie',
+				'pol_otherusage' => 'Nie',
+				'pol_totalspeed' => $netlink['speed'],
+				'pol_internetspeed' => $netlink['speed'],
+				'pol_invproject' => $netlink['invproject'],
+				'pol_invstatus' => strlen($netlink['invproject']) ? $NETELEMENTSTATUSES[$netlink['status']] : '',
+			);
+			if (in_array('pol', $sheets))
+				if ($format == 2)
+					$buffer .= 'P,' . to_csv($data) . EOL;
+				else
+					$snetlinks .= to_old_csv($pol_keys, $data) . EOL;
 			$netlinkid++;
 		}
 
+if ($format == 2) {
+	header('Content-type: text/csv');
+	header('Content-Disposition: attachment; filename="LMS_SIIS.csv"');
+	header('Pragma: public');
+	echo $buffer;
+	die;
+}
+
 // prepare zip archive package containing all generated files
-if (!extension_loaded ('zip'))
+if (!extension_loaded('zip'))
 	die ('<B>Zip extension not loaded! In order to use this extension you must compile PHP with zip support by using the --enable-zip configure option. </B>');
 
 $zip = new ZipArchive();
 $filename = tempnam('/tmp', 'LMS_SIIS_').'.zip';
 if ($zip->open($filename, ZIPARCHIVE::CREATE)) {
-	$zip->addFromString('PROJ.csv', $sprojects);
-	$zip->addFromString('OB.csv', $sforeigners);
-	$zip->addFromString('WW.csv', $snetnodes);
-	$zip->addFromString('WO.csv', $sforeignernetnodes);
-	$zip->addFromString('INT.csv', $snetinterfaces);
-	$zip->addFromString('SR.csv', $sradiosectors);
-	$zip->addFromString('PS.csv', $snetconnections);
-	$zip->addFromString('LP.csv', $snetcablelines);
-	$zip->addFromString('RL.csv', $snetradiolines);
-	$zip->addFromString('POL.csv', $snetlinks);
-	$zip->addFromString('ZAS.csv', $snetbuildings);
-	$zip->addFromString('US.csv', $snetranges);
+	if (in_array('proj', $sheets)) $zip->addFromString('PROJ.csv', $sprojects);
+	if (in_array('ob', $sheets)) $zip->addFromString('OB.csv', $sforeigners);
+	if (in_array('ww', $sheets)) $zip->addFromString('WW.csv', $snetnodes);
+	if (in_array('wo', $sheets)) $zip->addFromString('WO.csv', $sforeignernetnodes);
+	if (in_array('int', $sheets)) $zip->addFromString('INT.csv', $snetinterfaces);
+	if (in_array('sr', $sheets)) $zip->addFromString('SR.csv', $sradiosectors);
+	if (in_array('ps', $sheets)) $zip->addFromString('PS.csv', $snetconnections);
+	if (in_array('lp', $sheets)) $zip->addFromString('LP.csv', $snetcablelines);
+	if (in_array('rl', $sheets)) $zip->addFromString('RL.csv', $snetradiolines);
+	if (in_array('pol', $sheets)) $zip->addFromString('POL.csv', $snetlinks);
+	if (in_array('zas', $sheets)) $zip->addFromString('ZAS.csv', $snetbuildings);
+	if (in_array('us', $sheets)) $zip->addFromString('US.csv', $snetranges);
 	$zip->close();
 
 	// send zip archive package to web browser
