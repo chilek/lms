@@ -337,6 +337,9 @@ if ($netdevices)
 			if (array_key_exists($netdevice['netnodeid'], $truenetnodes)) {
 				$netnode = $truenetnodes[$netdevice['netnodeid']];
 				$netnodes[$netnodename]['location'] = $netnode['location'];
+				$netnodes[$netnodename]['location_city'] = $netnode['location_city'];
+				$netnodes[$netnodename]['location_street'] = $netnode['location_street'];
+				$netnodes[$netnodename]['location_house'] = $netnode['location_house'];
 				$netnodes[$netnodename]['status'] = intval($netnode['status']);
 				$netnodes[$netnodename]['type'] = intval($netnode['type']);
 				$netnodes[$netnodename]['uip'] = intval($netnode['uip']);
@@ -369,6 +372,9 @@ if ($netdevices)
 				}
 			} else {
 				$netnodes[$netnodename]['location'] = $netdevice['location'];
+				$netnodes[$netnodename]['location_city'] = $netdevice['location_city'];
+				$netnodes[$netnodename]['location_street'] = $netdevice['location_street'];
+				$netnodes[$netnodename]['location_house'] = $netdevice['location_house'];
 				$netnodes[$netnodename]['status'] = 0;
 				$netnodes[$netnodename]['type'] = 8;
 				$netnodes[$netnodename]['uip'] = 0;
@@ -827,6 +833,10 @@ foreach ($netnodes as $netnodename => $netnode) {
 	if (empty($ranges))
 		continue;
 
+	// this variable will change its value to true if network node will have range with the same location (city, street, house)
+	$range_netbuilding = false;
+
+	$range_maxdownstream = 0;
 	foreach ($ranges as $range) {
 		// get teryt info for group of computers connected to network node
 		$teryt = $DB->GetRow("SELECT 
@@ -917,6 +927,12 @@ foreach ($netnodes as $netnodename => $netnode) {
 
 		if (empty($nodes))
 			continue;
+
+		// check if this is range with the same location as owning network node
+		if ($range['location_city'] == $netnode['location_city']
+			&& $range['location_street'] == $netnode['location_street']
+			&& $range['location_house'] == $netnode['location_house'])
+			$range_netbuilding = true;
 
 		$prjnodes = array();
 		foreach ($nodes as $node) {
@@ -1120,6 +1136,12 @@ foreach ($netnodes as $netnodename => $netnode) {
 				else
 					$maxdownstream = 100000;
 
+				if ($maxdownstream > $range_maxdownstream) {
+					$range_maxdownstream = $maxdownstream;
+					$range_technology = $technology;
+					$range_linktechnology = $linktechnology;
+				}
+
 				$data = array_merge($data, array(
 					'zas_phonepots' => array_search('TEL', $allservices) !== FALSE
 						&& $range['linktechnology'] == 12 ? 'Tak' : 'Nie',
@@ -1148,6 +1170,48 @@ foreach ($netnodes as $netnodename => $netnode) {
 				$netbuildingid++;
 			}
 		}
+	}
+	// unfortunately network node doesn't have range with the same location
+	if (!$range_netbuilding) {
+		$data = array(
+			'zas_id' => $netbuildingid,
+			'zas_ownership' => 'Własna',
+			'zas_leasetype' => '',
+			'zas_foreignerid' => '',
+			'zas_nodeid' => $netnode['id'],
+			'zas_state' => $netnode['area_woj'],
+			'zas_district' => $netnode['area_pow'],
+			'zas_borough' => $netnode['area_gmi'],
+			'zas_terc' => $netnode['area_terc'],
+			'zas_city' => $netnode['area_city'],
+			'zas_simc' => $netnode['area_simc'],
+			'zas_street' => (!empty($netnode['address_cecha']) && $netnode['address_cecha'] != 'inne'
+				? $netnode['address_cecha'] . ' ' : '') . $netnode['address_ulica'],
+			'zas_ulic' => $netnode['address_symul'],
+			'zas_house' => $netnode['address_budynek'],
+			'zas_zip' => $netnode['location_zip'],
+			'zas_latitude' => $netnode['latitude'],
+			'zas_longitude' => $netnode['longitude'],
+			'zas_tech' => $range_technology,
+			'zas_ltech' => $range_linktechnology,
+			'zas_phonepots' => 'Nie',
+			'zas_phonevoip' => 'Nie',
+			'zas_phonemobile' => 'Nie',
+			'zas_internetstationary' => 'Tak',
+			'zas_internetmobile' => 'Nie',
+			'zas_tv' => 'Nie',
+			'zas_other' => '',
+			'zas_stationarymaxspeed' => $range_maxdownstream,
+			'zas_mobilemaxspeed' => 0,
+			'zas_invproject' => '',
+			'zas_invstatus' => '',
+		);
+		if (in_array('zas', $sheets))
+			if ($format == 2)
+				$buffer .= 'ZS,' . to_csv($data) . EOL;
+			else
+				$snetbuildings .= to_old_csv($zas_keys, $data) . EOL;
+		$netbuildingid++;
 	}
 }
 
