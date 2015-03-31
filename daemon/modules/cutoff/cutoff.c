@@ -376,6 +376,19 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 
 		free(query);
 	}
+	#Cut on devices where no debt
+	if(c->cuton)
+		{
+		    n = g->db_pexec(g->conn, "UPDATE nodes n1,"
+			"(SELECT n.id FROM nodes n LEFT JOIN nodeassignments ON n.id = nodeassignments.nodeid "
+			"LEFT JOIN assignments ON nodeassignments.assignmentid=assignments.id "
+			"WHERE (assignments.dateto > %NOW%() or assignments.dateto='0') "
+			"AND assignments.datefrom < %NOW%() "
+			"AND assignments.suspended = 0 "
+			"AND access = 0 AND (SELECT SUM(value) FROM cash WHERE customerid = n.ownerid) >= 0) "
+			"AS n2 SET n1.access=1, n1.warning=0 WHERE n1.id = n2.id");
+		    execn = 1;
+		}
 
 	// debtors
 	if(plimit)
