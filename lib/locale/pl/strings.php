@@ -2728,7 +2728,7 @@ $_LANG['network device<!syslog>'] = 'urządzenie sieciowe';
 $_LANG['network link<!syslog>'] = 'połączenie sieciowe';
 $_LANG['management url<!syslog>'] = 'adres url do zarządzania';
 $_LANG['template<!syslog>'] = 'szablon';
-
+$_LANG['radio sector<!syslog>'] = 'sektor radiowy';
 $_LANG['addition<!syslog>'] = 'dodanie';
 $_LANG['deletion<!syslog>'] = 'usunięcie';
 $_LANG['update<!syslog>'] = 'aktualizacja';
@@ -2916,5 +2916,34 @@ $_LANG['Format type:'] = 'Typ formatu:';
 $_LANG['multi file zip archive (lms legacy format)'] = 'archiwum zip z wieloma plikami (dotychczasowy format)';
 $_LANG['single csv file (uke siis format)'] = 'pojedynczy plik csv (format zgodny ze specyfikacją uke siis)';
 $_LANG['Exported sheets:'] = 'Eksportowane arkusze:';
+
+$_LANG['Azimuth:'] = 'Azymut:';
+$_LANG['Radius:'] = 'Kąt:';
+$_LANG['Altitude:'] = 'Wysokość:';
+$_LANG['Range:'] = 'Zasięg:';
+$_LANG['$a deg.'] = '$a st.';
+$_LANG['$a m'] = '$a m';
+$_LANG['Remove radio sector'] = 'Usuń sektor radiowy';
+$_LANG['No radio sectors.'] = 'Brak sektorów radiowych';
+$_LANG['Enter azimuth in degrees'] = 'Podaj azymut w stopniach';
+$_LANG['Enter radius in degrees'] = 'Podaj kąt w stopniach';
+$_LANG['Enter altitude in meters'] = 'Podaj wysokość w metrach';
+$_LANG['Enter range in meters'] = 'Podaj zasięg w metrach';
+$_LANG['Add new radio sector'] = 'Dodaj nowy sektor radiowy';
+$_LANG['Radio sectors:'] = 'Sektory radiowe:';
+$_LANG['Radio sector name cannot be empty!'] = 'Nazwa sektora radiowego nie może być pusta!';
+$_LANG['Radio sector name is too long!'] = 'Nazwa sektora radiowego  jest zbyt długa!';
+$_LANG['Radio sector name contains invalid characters!'] = 'Nazwa sektora radiowego zawiera niepoprawne znaki!';
+$_LANG['Radio sector with entered name already exists for this network device!'] = 'Sektor radiowy o podanej nazwie już istnieje dla tego urządzenia sieciowego!';
+$_LANG['Radio sector azimuth cannot be empty!'] = 'Azymut sektora radiowego nie może być pusty!';
+$_LANG['Radio sector azimuth has invalid format!'] = 'Azymut sektora radiowego zawiera niepoprawne znaki!';
+$_LANG['Radio sector radius cannot be empty!'] = 'Kąt sektora radiowego nie może być pusty!';
+$_LANG['Radio sector radius has invalid format!'] = 'Kąt sektora radiowego zawiera niepoprawne znaki!';
+$_LANG['Radio sector altitude cannot be empty!'] = 'Wysokość sektora radiowego nie może być pusta!';
+$_LANG['Radio sector altitude has invalid format!'] = 'Wysokość sektora radiowego zawiera niepoprawne znaki!';
+$_LANG['Radio sector range cannot be empty!'] = 'Zasięg sektora radiowego nie może być pusty!';
+$_LANG['Radio sector range has invalid format!'] = 'Zasięg sektora radiowego zawiera niepoprawne znaki!';
+$_LANG['Radio sector:'] = 'Sektor radiowy:';
+$_LANG['Select radio sector'] = 'Wybierz sektor radiowy';
 
 ?>

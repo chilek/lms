@@ -25,6 +25,19 @@
 				</select>
 			</td>
 		</tr>
+		{if !$link.isnetlink}
+		<tr class="light">
+			<td class="nobr">{trans("Radio sector:")}</td>
+			<td>
+				<SELECT NAME="radiosector" id="radiosector" {tip trigger="radiosector" text="Select radio sector"}{if $link.type != 1} disabled{/if}>
+					<OPTION value="0">- {trans("none")} -</OPTION>
+					{foreach $radiosectors as $radiosector}
+					<OPTION value="{$radiosector.id}"{if $link.type == 1 && $link.radiosector == $radiosector.id} selected{/if}>{$radiosector.name}</OPTION>
+					{/foreach}
+				</SELECT>
+			</td>
+		</tr>
+		{/if}
 		<tr class="light">
 			<td class="nobr">{trans("Link technology:")}</td>
 			<td>
@@ -58,7 +71,7 @@
 <!--
 function change_linktype(linktype) {
 	linktype = parseInt(linktype);
-	var options = document.getElementById('linktechnology').options;
+	var options = xjx.$('linktechnology').options;
 	while (options.length)
 		options.remove(0);
 	options.add(new Option('{trans("- unknown -")}', 0));
@@ -79,15 +92,24 @@ function change_linktype(linktype) {
 			{/foreach}
 			break;
 	}
+	if (linktype != 1)
+		xjx.$('radiosector').selectedIndex = 0;
+	xjx.$('radiosector').disabled = (linktype != 1);
 }
 
 function submit_netlink_properties() {
 	var form = document.forms['netlinkproperties'];
 	var linktype = form.elements['linktype'].value;
+	var radiosector = form.elements['radiosector'].value;
 	var linktechnology = form.elements['linktechnology'].value;
 	var linkspeed = form.elements['linkspeed'].value;
 
-	xajax_update_netlink_properties({$link.id}, {$link.devid}, linktype, linktechnology, linkspeed);
+	xajax_update_netlink_properties({$link.id}, {$link.devid}, {
+			type: linktype,
+			radiosector: radiosector,
+			technology: linktechnology,
+			speed: linkspeed
+		} );
 }
 
 function update_netlink_info(newcontent) {
@@ -99,7 +121,7 @@ function update_netlink_info(newcontent) {
 }
 
 function resize_frame() {
-	var pt = document.getElementById('propertiestable'),
+	var pt = xjx.$('propertiestable'),
 	h = pt.offsetHeight;
 	autoiframe_setsize('autoiframe', 350, Math.max(h, 10));
 }

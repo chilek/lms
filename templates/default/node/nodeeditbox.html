@@ -109,6 +109,12 @@
 				<OPTION value="{$key}"{if $key==$nodeinfo.linktype} selected{/if}>{$item}</OPTION>
 				{/foreach}
 			</SELECT>
+			<SELECT NAME="nodeedit[radiosector]" id="radiosector" {tip trigger="radiosector" text="Select radio sector"}{if $nodeinfo.linktype != 1} style="display: none;"{/if}>
+				<OPTION value="0">- {trans("none")} -</OPTION>
+				{foreach $nodeinfo.radiosectors as $radiosector}
+				<OPTION value="{$radiosector.id}"{if $radiosector.id == $nodeinfo.linkradiosector} selected{/if}>{$radiosector.name}</OPTION>
+				{/foreach}
+			</SELECT>
 			<SELECT NAME="nodeedit[linktechnology]" id="linktechnology" {tip trigger="linktechnology" text="Select link technology"}>
 				<OPTION value="0">{trans("- unknown -")}</OPTION>
 				{foreach $_LINKTECHNOLOGIES[$nodeinfo.linktype] as $linktechnologyidx => $linktechnology}
@@ -325,6 +331,7 @@
 				{/foreach}
 				break;
 		}
+		document.getElementById('radiosector').style.display = (linktype == 1 ? '' : 'none');
 	}
 
 	check_teryt('location', true);

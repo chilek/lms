@@ -34,31 +34,48 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
     public function GetNetDevLinkedNodes($id)
     {
-        return $this->db->GetAll('SELECT n.id AS id, n.name AS name, linktype, linktechnology, linkspeed,
+        return $this->db->GetAll('SELECT n.id AS id, n.name AS name, linktype, rs.name AS radiosector,
+        		linktechnology, linkspeed,
 			ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, 
-			netdev, port, ownerid,
+			n.netdev, port, ownerid,
 			' . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS owner,
 			net.name AS netname
 			FROM nodes n
 			JOIN customersview c ON c.id = ownerid
 			JOIN networks net ON net.id = n.netid
-			WHERE netdev = ? AND ownerid > 0 
+			LEFT JOIN netradiosectors rs ON rs.id = n.linkradiosector
+			WHERE n.netdev = ? AND ownerid > 0 
 			ORDER BY n.name ASC', array($id));
     }
 
-    public function NetDevLinkNode($id, $devid, $type = 0, $technology = 0, $speed = 100000, $port = 0)
+    public function NetDevLinkNode($id, $devid, $link = NULL)
     {
         global $SYSLOG_RESOURCE_KEYS;
 
+	if (empty($link)) {
+		$type = 0;
+		$technology = 0;
+		$radiosector = NULL;
+		$speed = 100000;
+		$port = 0;
+	} else {
+		$type = isset($link['type']) ? intval($link['type']) : 0;
+		$radiosector = isset($link['radiosector']) ? intval($link['radiosector']) : NULL;
+		$technology = isset($link['technology']) ? intval($link['technology']) : 0;
+		$speed = isset($link['speed']) ? intval($link['speed']) : 100000;
+		$port = isset($link['port']) ? intval($link['port']) : 0;
+	}
+
         $args = array(
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $devid,
-            'linktype' => intval($type),
-            'linktechnology' => intval($technology),
-            'linkspeed' => intval($speed),
+            'linktype' => $type,
+            'linkradiosector' => $radiosector,
+            'linktechnology' => $technology,
+            'linkspeed' => $speed,
             'port' => intval($port),
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $id,
         );
-        $res = $this->db->Execute('UPDATE nodes SET netdev=?, linktype=?,
+        $res = $this->db->Execute('UPDATE nodes SET netdev=?, linktype=?, linkradiosector=?,
 			linktechnology=?, linkspeed=?, port=?
 			WHERE id=?', array_values($args));
         if ($this->syslog && $res) {
@@ -70,9 +87,19 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         return $res;
     }
 
-    public function SetNetDevLinkType($dev1, $dev2, $type = 0, $technology = 0, $speed = 100000)
+    public function SetNetDevLinkType($dev1, $dev2, $link = NULL)
     {
         global $SYSLOG_RESOURCE_KEYS;
+
+	if (empty($link)) {
+		$type = 0;
+		$technology = 0;
+		$speed = 100000;
+	} else {
+		$type = isset($link['type']) ? $link['type'] : 0;
+		$technology = isset($link['technology']) ? $link['technology'] : 0;
+		$speed = isset($link['speed']) ? $link['speed'] : 100000;
+	}
 
         $res = $this->db->Execute('UPDATE netlinks SET type=?, technology=?, speed=? WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($type, $technology, $speed, $dev1, $dev2, $dev1, $dev2));
         if ($this->syslog && $res) {
@@ -82,6 +109,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 'src_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netlink['src'],
                 'dst_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netlink['dst'],
                 'type' => $type,
+                'technology' => $technology,
                 'speed' => $speed,
             );
             $this->syslog->AddMessage(SYSLOG_RES_NETLINK, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETLINK],
@@ -391,6 +419,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			WHERE d.id = ?', array($id));
 
         $result['takenports'] = $this->CountNetDevLinks($id);
+	$result['radiosectors'] = $this->db->GetAll('SELECT * FROM netradiosectors WHERE netdev = ?', array($id));
 
         if ($result['guaranteeperiod'] != NULL && $result['guaranteeperiod'] != 0)
             $result['guaranteetime'] = strtotime('+' . $result['guaranteeperiod'] . ' month', $result['purchasetime']); // transform to UNIX timestamp
