@@ -2,6 +2,10 @@ $Id$
 
 version ?.??.?? (????-??-??):
 
+  - added support for radio sectors management in user interface [chilan]
+
+version 1.11.16 (2015-03-31):
+
   - allow for separated template files in userpanel style [chilan]
   - print customer list from selected division is possible [chilan]
   - save also message subjects in message templates [chilan]
@@ -53,7 +57,6 @@ version ?.??.?? (????-??-??):
     the old generator still works and can be selected by user [chilan]
   - siisv5: create fake network ranges with the same location as network node
     to avoid strange siis bussiness logic rules [chilan]
-  - added support for radio sectors management in user interface [chilan]
 
 version 1.11.15 (2014-05-15):
 
