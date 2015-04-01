@@ -111,7 +111,9 @@ function application_autoloader($class) {
                 strtoupper($class) . '.php',
                 strtoupper($class) . '.class.php',
             );
-            $search_paths = array(LIB_DIR, PLUGIN_DIR);
+            $search_paths = array(LIB_DIR);
+	    if (defined(PLUGIN_DIR))
+		array_push($search_paths, PLUGIN_DIR);
             $file_found = false;
             foreach ($search_paths as $search_path) {
                 if ($file_found === true) {
