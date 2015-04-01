@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -2914,5 +2914,10 @@ $_LANG['There are no models matching to defined filter or model list is empty'] 
 $_LANG['Add new model'] = 'Dodaj nowy model';
 $_LANG['Producers and models'] = 'Producenci i modele';
 $_LANG['Network device producers and models management'] = 'Zarządzanie producentami i modelami osprzętu sieciowego';
+
+$_LANG['Format type:'] = 'Typ formatu:';
+$_LANG['multi file zip archive (lms legacy format)'] = 'archiwum zip z wieloma plikami (dotychczasowy format)';
+$_LANG['single csv file (uke siis format)'] = 'pojedynczy plik csv (format zgodny ze specyfikacją uke siis)';
+$_LANG['Exported sheets:'] = 'Eksportowane arkusze:';
 
 ?>

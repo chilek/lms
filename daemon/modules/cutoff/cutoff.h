@@ -10,6 +10,7 @@ struct cutoff_module
 	int checkinvoices;
 	int deadline;
 	int disable_suspended;
+	int connect;
 
 	char *limit;
 	char *command;

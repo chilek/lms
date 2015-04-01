@@ -33,7 +33,7 @@ switch($type)
 {
 	case 'customerbalance': /********************************************/
 
-		if (!ConfigHelper::checkConfig('privileges.finances_management'))
+		if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
 		$from = $_POST['from'];
@@ -134,7 +134,7 @@ switch($type)
 	
 	case 'balancelist': /********************************************/
 
-		if (!ConfigHelper::checkConfig('privileges.finances_management'))
+		if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
 		$from = $_POST['balancefrom'];
@@ -305,7 +305,7 @@ switch($type)
 
 	case 'incomereport': /********************************************/
 
-		if (!ConfigHelper::checkConfig('privileges.finances_management'))
+		if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
 		$from = $_POST['from'];
@@ -346,7 +346,7 @@ switch($type)
 
 	case 'importlist': /********************************************/
 
-		if (!ConfigHelper::checkConfig('privileges.finances_management'))
+		if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
 		$from = $_POST['importfrom'];
@@ -393,7 +393,7 @@ switch($type)
 
 	case 'invoices': /********************************************/
 
-		if (!ConfigHelper::checkConfig('privileges.finances_management'))
+		if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
 		$from = $_POST['invoicefrom'];
@@ -438,7 +438,7 @@ switch($type)
 
 	case 'transferforms': /********************************************/
 
-		if (!ConfigHelper::checkConfig('privileges.finances_management'))
+		if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
 		$from = $_POST['invoicefrom'];
@@ -474,7 +474,7 @@ switch($type)
 
 	case 'transferforms2': /********************************************/
 
-		if (!ConfigHelper::checkConfig('privileges.finances_management'))
+		if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
 		require_once(MODULES_DIR.'/transferforms2.php');
@@ -482,7 +482,7 @@ switch($type)
 
 	case 'liabilityreport': /********************************************/
 
-		if (!ConfigHelper::checkConfig('privileges.finances_management'))
+		if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
 		if (isset($_POST['day']) && $_POST['day']) 
@@ -662,7 +662,7 @@ switch($type)
 	
 	case 'receiptlist':
 
-		if (!ConfigHelper::checkConfig('privileges.cash_operations'))
+		if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.cash_operations'))
 			access_denied();
 
 		if($_POST['from'])

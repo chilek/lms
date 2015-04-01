@@ -1307,24 +1307,22 @@ cal24.time_comp = false;
 <TABLE class="lmsbox">
     <THEAD>
 	<TR>
-		<TD style="width: 1%;">
-		    <IMG src="img/netdev.gif" alt="">
-		</TD>
-		<TD style="width: 99%;">
-		    <B>{trans("UKE report")}</B>
+		<TD style="width: 100%;" colspan="2" class="bold">
+		    <IMG src="img/netdev.gif" alt=""> {trans("UKE report")}
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
-		<TD class="flr container" width="100%" colspan="2">
+{*
+		<TD class="fleft container" style="width: 1%;">
 			<TABLE width="100%" cellpadding="3">
 				<TR>
 					<TD style="width: 1%;">
 						<IMG src="img/money.gif" alt="">
 					</TD>
-					<TD style="width: 1%;" nowrap>
-						<B>{trans("Investment project:")}</B>
+					<TD style="width: 1%;" class="bold nobr">
+						{trans("Investment project:")}
 					</TD>
 					<TD style="width: 98%;">
 						{if $invprojects}
@@ -1337,6 +1335,50 @@ cal24.time_comp = false;
 						{trans("all")}
 						<INPUT type="hidden" name="invprojects" value="0">
 						{/if}
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+*}
+		<TD class="fleft container" style="width: 1%;">
+			<TABLE width="100%" cellpadding="3">
+				<TR>
+					<TD style="width: 1%;">
+						<IMG src="img/edit.gif" alt="">
+					</TD>
+					<TD style="width: 1%;" class="bold nobr">
+						{trans("Format type:")}
+					</TD>
+					<TD style="width: 98%;" class="nobr">
+						<INPUT type="radio" name="format" value="1" id="format1"> <label for="format1">{trans("multi file zip archive (lms legacy format)")}</label><br>
+						<INPUT type="radio" name="format" value="2" id="format2" checked> <label for="format2">{trans("single csv file (uke siis format)")}</label>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+		<TD class="fright container" style="width: 99%;">
+			<TABLE width="100%" cellpadding="3">
+				<TR>
+					<TD style="width: 1%;">
+						<IMG src="img/docum.gif" alt="">
+					</TD>
+					<TD style="width: 1%;" class="bold nobr">
+						{trans("Exported sheets:")}
+					</TD>
+					<TD style="width: 98%;">
+						{*<INPUT type="checkbox" name="sheets[dp]" id="sheets_dp" value="1" checked> <label for="sheets_dp">DP</label> *}
+						<INPUT type="checkbox" name="sheets[proj]" id="sheets_proj" value="1" checked> <label for="sheets_proj">PROJ</label> 
+						<INPUT type="checkbox" name="sheets[ob]" id="sheets_ob" value="1" checked> <label for="sheets_ob">OB</label> 
+						<INPUT type="checkbox" name="sheets[ww]" id="sheets_ww" value="1" checked> <label for="sheets_ww">WW</label> 
+						<INPUT type="checkbox" name="sheets[wo]" id="sheets_wo" value="1" checked> <label for="sheets_wo">WO</label> 
+						<INPUT type="checkbox" name="sheets[int]" id="sheets_int" value="1" checked> <label for="sheets_int">INT</label> 
+						<INPUT type="checkbox" name="sheets[sr]" id="sheets_sr" value="1" checked> <label for="sheets_sr">SR</label> 
+						<INPUT type="checkbox" name="sheets[ps]" id="sheets_ps" value="1" checked> <label for="sheets_ps">PS</label> 
+						<INPUT type="checkbox" name="sheets[lp]" id="sheets_lp" value="1" checked> <label for="sheets_lp">LP</label>
+						<INPUT type="checkbox" name="sheets[rl]" id="sheets_rl" value="1" checked> <label for="sheets_rl">RL</label> 
+						<INPUT type="checkbox" name="sheets[pol]" id="sheets_pol" value="1" checked> <label for="sheets_pol">POL</label> 
+						<INPUT type="checkbox" name="sheets[zas]" id="sheets_zas" value="1" checked> <label for="sheets_zas">ZAS</label> 
+						<INPUT type="checkbox" name="sheets[us]" id="sheets_us" value="1" checked> <label for="sheets_us">US</label>
 					</TD>
 				</TR>
 			</TABLE>

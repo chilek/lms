@@ -49,6 +49,10 @@ version ?.??.?? (????-??-??):
   - full location info in netnode, netdev and node lists [chilan]
   - lms-teryt: added option which allows to choose if city matches should be unique [chilan]
   - added network device producers and models management [chilan]
+  - siisv5: new version of siis report generator which allows to save much time;
+    the old generator still works and can be selected by user [chilan]
+  - siisv5: create fake network ranges with the same location as network node
+    to avoid strange siis bussiness logic rules [chilan]
 
 version 1.11.15 (2014-05-15):
 

@@ -33,6 +33,7 @@ use Phine\Observer\SubjectInterface;
  * Abstractaction for all plugin classes
  *
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
+ * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
  */
 abstract class LMSPlugin implements ObserverInterface
 {
@@ -41,13 +42,27 @@ abstract class LMSPlugin implements ObserverInterface
     public function __construct()
     {
         $this->registerHandlers();
+        $this->loadLocales();
     }
     
     /**
-     * Registres hooks handlers
+     * Registers hooks handlers
      */
     abstract function registerHandlers();
     
+    /**
+     * Loads plugin locales
+     */
+    protected function loadLocales() {
+       global $_ui_language, $_LANG;
+
+       $reflector = new ReflectionClass(get_class($this));
+       $filename = dirname($reflector->getFileName()) . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR
+               . 'locale' . DIRECTORY_SEPARATOR . $_ui_language . DIRECTORY_SEPARATOR . 'strings.php';
+       if (is_readable($filename))
+               require_once($filename);
+    }
+
     /**
      * Receives notification from plugin manager and processes it.
      * 
