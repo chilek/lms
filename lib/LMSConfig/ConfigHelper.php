@@ -73,7 +73,7 @@ class ConfigHelper
             return false;
         }
         
-        if ($section_name === 'privileges' && !self::getConfig($name)) {
+        if ($section_name === 'privileges' && self::getConfig($name)) {
             return preg_match('/^hide/', $variable_name) ? false : true;
         }
 
