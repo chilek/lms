@@ -38,7 +38,7 @@ $DB->Execute("CREATE TABLE netradiosectors (
 	UNIQUE KEY name (name, netdev),
 	INDEX netdev (netdev),
 	FOREIGN KEY (netdev) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE
-)");
+) ENGINE=InnoDB");
 
 $DB->Execute("DROP VIEW vnodes");
 $DB->Execute("DROP VIEW vmacs");

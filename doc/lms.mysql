@@ -38,6 +38,7 @@ DROP TABLE IF EXISTS location_districts;
 DROP TABLE IF EXISTS location_states;
 DROP TABLE IF EXISTS pna;
 DROP TABLE IF EXISTS netdevices;
+DROP TABLE IF EXISTS netradiosectors;
 DROP TABLE IF EXISTS netlinks;
 DROP TABLE IF EXISTS networks;
 DROP TABLE IF EXISTS macs;
@@ -628,6 +629,24 @@ CREATE TABLE netdevicemodels (
 
 # --------------------------------------------------------
 #
+# Structure of table netradiosectors
+#
+CREATE TABLE netradiosectors (
+	id int(11) NOT NULL auto_increment,
+	name varchar(64) NOT NULL,
+	azimuth decimal(9,2) DEFAULT 0 NOT NULL,
+	radius decimal(9,2) DEFAULT 0 NOT NULL,
+	altitude smallint DEFAULT 0 NOT NULL,
+	range int(11) DEFAULT 0 NOT NULL,
+	netdev int(11) NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE KEY name (name, netdev),
+	INDEX netdev (netdev),
+	FOREIGN KEY (netdev) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=INNODB;
+
+# --------------------------------------------------------
+#
 # Structure of table  netdevices
 #
 CREATE TABLE netdevices (
@@ -743,6 +762,7 @@ CREATE TABLE nodes (
   modid int(11) NOT NULL DEFAULT '0',
   netdev int(11) NOT NULL DEFAULT '0',
   linktype tinyint(1) NOT NULL DEFAULT '0',
+  linkradiosector int(11) DEFAULT NULL,
   linkspeed int(11) NOT NULL DEFAULT '100000',
   linktechnology int(11) NOT NULL DEFAULT '0',
   port smallint NOT NULL DEFAULT '0',
@@ -770,10 +790,12 @@ CREATE TABLE nodes (
   INDEX ipaddr_pub (ipaddr_pub),
   INDEX location_city (location_city, location_street, location_house, location_flat),
   INDEX location_street (location_street),
+  INDEX linkradiosector (linkradiosector),
   FOREIGN KEY (location_city) REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
   FOREIGN KEY (location_street) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
   FOREIGN KEY (netid) REFERENCES networks (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (invprojectid) REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE
+  FOREIGN KEY (invprojectid) REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE,
+  FOREIGN KEY (linkradiosector) REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -2371,4 +2393,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015040100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015040200');
