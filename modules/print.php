@@ -134,7 +134,7 @@ switch($type)
 	
 	case 'balancelist': /********************************************/
 
-		if (!ConfigHelper::checkConfig('privileges.finances_management'))
+		if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
 		$from = $_POST['balancefrom'];
