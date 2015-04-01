@@ -362,8 +362,8 @@ CREATE TABLE nodes (
 		REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	location_street integer DEFAULT NULL
 		REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	location_house varchar(8) DEFAULT NULL,
-	location_flat varchar(8) DEFAULT NULL,
+	location_house varchar(32) DEFAULT NULL,
+	location_flat varchar(32) DEFAULT NULL,
 	nas smallint 		DEFAULT 0 NOT NULL,
 	longitude numeric(10, 6) DEFAULT NULL,
 	latitude numeric(10, 6) DEFAULT NULL,
@@ -1445,8 +1445,8 @@ CREATE TABLE netnodes (
 		REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	location_street integer DEFAULT NULL
 		REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	location_house varchar(8) DEFAULT NULL,
-	location_flat varchar(8) DEFAULT NULL,
+	location_house varchar(32) DEFAULT NULL,
+	location_flat varchar(32) DEFAULT NULL,
 	longitude numeric(10,6) DEFAULT NULL,
 	latitude numeric(10,6) DEFAULT NULL,
 	ownership smallint DEFAULT 0,
@@ -1501,8 +1501,8 @@ CREATE TABLE netdevices (
         REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
     location_street integer DEFAULT NULL
         REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    location_house varchar(8) DEFAULT NULL,
-    location_flat varchar(8) DEFAULT NULL,
+    location_house varchar(32) DEFAULT NULL,
+    location_flat varchar(32) DEFAULT NULL,
 	description text 	DEFAULT '' NOT NULL,
 	producer varchar(64) 	DEFAULT '' NOT NULL,
 	model varchar(32) 	DEFAULT '' NOT NULL,
@@ -2466,4 +2466,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015033000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015040100');

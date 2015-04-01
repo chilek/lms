@@ -586,8 +586,8 @@ CREATE TABLE netnodes (
 	location varchar(255) DEFAULT '',
 	location_city int(11) DEFAULT NULL,
 	location_street int(11) DEFAULT NULL,
-	location_house varchar(8) DEFAULT NULL,
-	location_flat varchar(8) DEFAULT NULL,
+	location_house varchar(32) DEFAULT NULL,
+	location_flat varchar(32) DEFAULT NULL,
 	longitude decimal(10,6) DEFAULT NULL,
 	latitude decimal(10,6) DEFAULT NULL,
 	ownership tinyint(1) DEFAULT 0,
@@ -636,8 +636,8 @@ CREATE TABLE netdevices (
   location 	varchar(255) 	NOT NULL DEFAULT '',
   location_city int(11) DEFAULT NULL,
   location_street int(11) DEFAULT NULL,
-  location_house varchar(8) DEFAULT NULL,
-  location_flat varchar(8) DEFAULT NULL,
+  location_house varchar(32) DEFAULT NULL,
+  location_flat varchar(32) DEFAULT NULL,
   description 	text 		NOT NULL DEFAULT '',
   producer 	varchar(64) 	NOT NULL DEFAULT '',
   model 	varchar(32) 	NOT NULL DEFAULT '',
@@ -755,8 +755,8 @@ CREATE TABLE nodes (
   location varchar(255) DEFAULT NULL,
   location_city int(11) DEFAULT NULL,
   location_street int(11) DEFAULT NULL,
-  location_house varchar(8) DEFAULT NULL,
-  location_flat varchar(8) DEFAULT NULL,
+  location_house varchar(32) DEFAULT NULL,
+  location_flat varchar(32) DEFAULT NULL,
   nas tinyint(1) NOT NULL DEFAULT '0',
   longitude decimal(10, 6) DEFAULT NULL,
   latitude decimal(10, 6) DEFAULT NULL,
@@ -2371,4 +2371,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015033000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015040100');
