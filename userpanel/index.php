@@ -54,7 +54,7 @@ $CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ?
 $CONFIG['directories']['userpanel_dir'] = (!isset($CONFIG['directories']['userpanel_dir']) ? getcwd() : $CONFIG['directories']['userpanel_dir']);
 $CONFIG['directories']['modules_dir'] = (!isset($CONFIG['directories']['modules_dir']) ? $CONFIG['directories']['sys_dir'].'/modules' : $CONFIG['directories']['modules_dir']);
 $CONFIG['directories']['smarty_compile_dir'] = $CONFIG['directories']['userpanel_dir'].'/templates_c';
-$CONFIG['directories']['plugins_dir'] = (!isset($CONFIG['directories']['plugins_dir']) ? $CONFIG['directories']['sys_dir'].'/plugins' : $CONFIG['directories']['plugins_dir']);
+$CONFIG['directories']['plugin_dir'] = (!isset($CONFIG['directories']['plugin_dir']) ? $CONFIG['directories']['sys_dir'].'/plugins' : $CONFIG['directories']['plugin_dir']);
 $CONFIG['directories']['doc_dir'] = (!isset($CONFIG['directories']['doc_dir']) ? $CONFIG['directories']['sys_dir'].'/documents' : $CONFIG['directories']['doc_dir']);
 
 define('USERPANEL_DIR', $CONFIG['directories']['userpanel_dir']);
@@ -66,7 +66,7 @@ define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 define('DOC_DIR', $CONFIG['directories']['doc_dir']);
 define('MODULES_DIR', $CONFIG['directories']['modules_dir']);
 define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir']);
-define('PLUGINS_DIR', $CONFIG['directories']['plugins_dir']);
+define('PLUGIN_DIR', $CONFIG['directories']['plugin_dir']);
 
 // include required files
 

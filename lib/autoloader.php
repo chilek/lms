@@ -102,7 +102,7 @@ function application_autoloader($class) {
                 require_once $path_cache[$class];
             }
         } else {
-            // try to find class file in LIB_DIR, PLUGINS_DIR and VENDOR_DIR
+            // try to find class file in LIB_DIR, PLUGIN_DIR and VENDOR_DIR
             $suspicious_file_names = array(
                 $class . '.php',
                 $class . '.class.php',
@@ -111,7 +111,7 @@ function application_autoloader($class) {
                 strtoupper($class) . '.php',
                 strtoupper($class) . '.class.php',
             );
-            $search_paths = array(LIB_DIR, PLUGINS_DIR);
+            $search_paths = array(LIB_DIR, PLUGIN_DIR);
             $file_found = false;
             foreach ($search_paths as $search_path) {
                 if ($file_found === true) {
