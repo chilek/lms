@@ -2600,11 +2600,14 @@ $_LANG['You haven\\\'t selected any nodes!'] = 'Nie wybrałeś żadnego komputer
 $_LANG['Your balance on date of invoice issue:'] = 'Saldo w dniu wystawienia faktury:';
 
 $_LANG['Remove management URL'] = 'Usuń adres URL do zarządzania';
+$_LANG['Edit management URL'] = 'Edytuj adres URL do zarządzania';
 $_LANG['Enter management URL'] = 'Podaj adres URL do zarządzania';
 $_LANG['No management URL\'s.'] = 'Brak adresów URL do zarządzania.';
 $_LANG['Management URL\'s:'] = 'Adresy URL do zarządzania';
 $_LANG['Enter URL comment'] = 'Podaj komentarz adresu URL do zarządzania';
 $_LANG['Add new management URL'] = 'Dodaj nowy adres URL do zarządzania';
+$_LANG['Management URL cannot be empty!'] = 'Adres URL do zarządzania nie może być pusty!';
+$_LANG['Management URL is too short!'] = 'Adres URL do zarządzania jest zbyt krótki!';
 
 $_LANG['only automatically issued'] = 'tylko wystawione automatycznie';
 

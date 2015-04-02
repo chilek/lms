@@ -23,23 +23,23 @@
 <!--
 if (getCookie('radiosectorspanel') == '1') {
 	xjx.$('radiosectorspanel').style.display = '';
-	xajax_getRadioSectors({$objectid}, null);
+	xajax_getRadioSectors();
 }
 
 function showOrHideRadioSectorPanel() {
 	showOrHide('radiosectorspanel');
 	if (xjx.$('radiosectorspanel').style.display == '')
-		xajax_getRadioSectors({$objectid}, null);
+		xajax_getRadioSectors();
 }
 
 function addRadioSector() {
 	xjx.$('radiosectoraddlink').disabled = true;
-	xajax_addRadioSector({$objectid}, xjx.getFormValues('radiosectoradd'));
+	xajax_addRadioSector(xjx.getFormValues('radiosectoradd'));
 }
 
 function delRadioSector(id) {
 	xjx.$('radiosectortable').disabled = true;
-	xajax_delRadioSector({$objectid}, id);
+	xajax_delRadioSector(id);
 }
 
 function toggleEditRadioSector(id) {
@@ -58,14 +58,16 @@ function toggleEditRadioSector(id) {
 function updateRadioSector(id) {
 	var elems = ['name', 'azimuth', 'radius', 'altitude', 'rsrange'];
 	var params = {};
+
+	xjx.$('radiosectortable').disabled = true;
 	for (i = 0; i < elems.length; i++) {
 		params[elems[i]] = xjx.$(elems[i] + '_edit_' + id).value;
-		xjx.$(elems[i] + '_edit_' + id).disabled = true;
+//		xjx.$(elems[i] + '_edit_' + id).disabled = true;
 	}
 	params['rsid'] = id;
-	xjx.$('save_button_' + id).disabled = true;
-	xjx.$('cancel_button_' + id).disabled = true;
-	xjx.$('delete_button_' + id).disabled = true;
+//	xjx.$('save_button_' + id).disabled = true;
+//	xjx.$('cancel_button_' + id).disabled = true;
+//	xjx.$('delete_button_' + id).disabled = true;
 	xajax_updateRadioSector(id, params);
 }
 //-->

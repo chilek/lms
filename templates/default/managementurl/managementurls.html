@@ -23,25 +23,52 @@
 <!--
 if (getCookie('managementurlspanel') == '1') {
 	document.getElementById('managementurlspanel').style.display = '';
-	xajax_getManagementUrls({$objectid});
+	xajax_getManagementUrls();
 }
 
 function showOrHideManagementUrlsPanel() {
 	showOrHide('managementurlspanel');
 	if (xjx.$('managementurlspanel').style.display == '')
-		xajax_getManagementUrls({$objectid});
+		xajax_getManagementUrls();
 }
 
 function addManagementUrl() {
-	if (xajax.$('url').value.length < 10)
-		return;
-	xajax.$('managementurladdlink').disabled = true;
-	xajax_addManagementUrl({$objectid}, xajax.getFormValues('managementurladd'));
+	xjx.$('managementurladdlink').disabled = true;
+	xajax_addManagementUrl(xjx.getFormValues('managementurladd'));
 }
 
 function delManagementUrl(id) {
-	xajax.$('managementurltable').disabled = true;
-	xajax_delManagementUrl({$objectid}, id);
+	xjx.$('managementurltable').disabled = true;
+	xajax_delManagementUrl(id);
+}
+
+function toggleEditManagementUrl(id) {
+	var elems = ['url', 'comment'];
+	var edit = (xjx.$('edit_button_' + id).style.display != 'none');
+
+	for (i = 0; i < elems.length; i++) {
+		xjx.$(elems[i] + '_' + id).style.display = (edit ? 'none' : '');
+		xjx.$(elems[i] + '_edit_' + id).style.display = (edit ? '' : 'none');
+	}
+	xjx.$('cancel_button_' + id).style.display = (edit ? '' : 'none');
+	xjx.$('save_button_' + id).style.display = (edit ? '' : 'none');
+	xjx.$('edit_button_' + id).style.display = (edit ? 'none' : '');
+}
+
+function updateManagementUrl(id) {
+	var elems = ['url', 'comment'];
+	var params = {};
+
+	xjx.$('managementurltable').disabled = true;
+	for (i = 0; i < elems.length; i++) {
+		params[elems[i]] = xjx.$(elems[i] + '_edit_' + id).value;
+//		xjx.$(elems[i] + '_edit_' + id).disabled = true;
+	}
+	params['urlid'] = id;
+//	xjx.$('save_button_' + id).disabled = true;
+//	xjx.$('cancel_button_' + id).disabled = true;
+//	xjx.$('delete_button_' + id).disabled = true;
+	xajax_updateManagementUrl(id, params);
 }
 //-->
 </SCRIPT>
