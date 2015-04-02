@@ -26,14 +26,52 @@ if (getCookie('radiosectorspanel') == '1') {
 }
 
 function addRadioSector() {
-	xajax.$('radiosectoraddlink').disabled = true;
-	xajax_addRadioSector({$objectid}, xajax.getFormValues('radiosectoradd'));
+	xjx.$('radiosectoraddlink').disabled = true;
+	xajax_addRadioSector({$objectid}, xjx.getFormValues('radiosectoradd'));
 }
 
 function delRadioSector(id) {
-	xajax.$('radiosectortable').disabled = true;
+	xjx.$('radiosectortable').disabled = true;
 	xajax_delRadioSector({$objectid}, id);
 }
+
+function toggleEditRadioSector(id) {
+	var elems = ['name', 'azimuth', 'radius', 'altitude', 'rsrange'];
+	var edit = (xjx.$('edit_button_' + id).style.display != 'none');
+
+	for (i = 0; i < elems.length; i++) {
+		xjx.$(elems[i] + '_' + id).style.display = (edit ? 'none' : '');
+		xjx.$(elems[i] + '_edit_' + id).style.display = (edit ? '' : 'none');
+	}
+	xjx.$('cancel_button_' + id).style.display = (edit ? '' : 'none');
+	xjx.$('save_button_' + id).style.display = (edit ? '' : 'none');
+	xjx.$('edit_button_' + id).style.display = (edit ? 'none' : '');
+}
+
+function updateRadioSector(id) {
+	var elems = ['name', 'azimuth', 'radius', 'altitude', 'rsrange'];
+	var params = {};
+	for (i = 0; i < elems.length; i++) {
+		params[elems[i]] = xjx.$(elems[i] + '_edit_' + id).value;
+		xjx.$(elems[i] + '_edit_' + id).disabled = true;
+	}
+	xjx.$('save_button_' + id).disabled = true;
+	xjx.$('cancel_button_' + id).disabled = true;
+	xjx.$('delete_button_' + id).disabled = true;
+	xajax_updateRadioSector(id, params);
+}
+
+/*
+function updateRadioSectorFinished(id) {
+	var elems = ['name', 'azimuth', 'radius', 'altitude', 'rsrange'];
+	for (i = 0; i < elems.length; i++)
+		xjx.$(elems[i] + '_edit_' + id).disabled = false;
+	xjx.$('save_button_' + id).disabled = false;
+	xjx.$('cancel_button_' + id).disabled = false;
+	xjx.$('delete_button_' + id).disabled = false;
+	toggleEditRadioSector(id);
+}
+*/
 
 xajax_getRadioSectors({$objectid}, null);
 //-->

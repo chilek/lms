@@ -2924,6 +2924,7 @@ $_LANG['Range:'] = 'Zasięg:';
 $_LANG['$a deg.'] = '$a st.';
 $_LANG['$a m'] = '$a m';
 $_LANG['Remove radio sector'] = 'Usuń sektor radiowy';
+$_LANG['Edit radio sector'] = 'Edytuj sektor radiowy';
 $_LANG['No radio sectors.'] = 'Brak sektorów radiowych.';
 $_LANG['Enter azimuth in degrees'] = 'Podaj azymut w stopniach';
 $_LANG['Enter radius in degrees'] = 'Podaj kąt w stopniach';

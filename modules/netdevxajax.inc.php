@@ -112,12 +112,10 @@ function getRadioSectors($netdevid, $formdata = NULL) {
 	return $result;
 }
 
-function addRadioSector($netdevid, $params) {
-	global $DB, $SYSLOG, $SYSLOG_RESOURCE_KEYS;
+function validateRadioSector($params, $update = false) {
+	global $DB;
 
-	$result = new xajaxResponse();
-
-	$netdevid = intval($netdevid);
+	$error = NULL;
 
 	if (!strlen($params['name']))
 		$error['name'] = trans('Radio sector name cannot be empty!');
@@ -125,7 +123,7 @@ function addRadioSector($netdevid, $params) {
 		$error['name'] = trans('Radio sector name is too long!');
 	elseif (!preg_match('/^[a-z0-9_\-]+$/i', $params['name']))
 		$error['name'] = trans('Radio sector name contains invalid characters!');
-	elseif ($DB->GetOne('SELECT 1 FROM netradiosectors WHERE UPPER(name) = UPPER(?)', array($params['name'])))
+	elseif (!$update && $DB->GetOne('SELECT 1 FROM netradiosectors WHERE UPPER(name) = UPPER(?)', array($params['name'])))
 		$error['name'] = trans('Radio sector with entered name already exists for this network device!');
 
 	if (!strlen($params['azimuth']))
@@ -147,6 +145,18 @@ function addRadioSector($netdevid, $params) {
 		$error['rsrange'] = trans('Radio sector range cannot be empty!');
 	elseif (!preg_match('/^[0-9]+$/', $params['rsrange']))
 		$error['rsrange'] = trans('Radio sector range has invalid format!');
+
+	return $error;
+}
+
+function addRadioSector($netdevid, $params) {
+	global $DB, $SYSLOG, $SYSLOG_RESOURCE_KEYS;
+
+	$result = new xajaxResponse();
+
+	$netdevid = intval($netdevid);
+
+	$error = validateRadioSector($params);
 
 	$params['error'] = $error;
 
@@ -196,11 +206,43 @@ function delRadioSector($netdevid, $id) {
 	return $result;
 }
 
+function updateRadioSector($rsid, $params) {
+	global $DB;
+
+	$result = new xajaxResponse();
+
+	$rsid = intval($rsid);
+	$netdevid = intval($_GET['id']);
+
+	$error = validateRadioSector($params, true);
+
+	if (!$error) {
+		$args = array(
+			'name' => $params['name'],
+			'azimuth' => $params['azimuth'],
+			'radius' => $params['radius'],
+			'altitude' => $params['altitude'],
+			'rsrange' => $params['rsrange'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR] => $rsid,
+		);
+		$DB->Execute('UPDATE netradiosectors SET name = ?, azimuth = ?, radius = ?, altitude = ?,
+			rsrange = ? WHERE id = ?', array_values($args));
+		if ($SYSLOG) {
+			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]] = $netdevid;
+			$SYSLOG->AddMessage(SYSLOG_RES_RADIOSECTOR, SYSLOG_OPER_ADD, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
+		}
+	}
+
+	$result->call('xajax_getRadioSectors', $netdevid);
+
+	return $result;
+}
 
 $LMS->InitXajax();
 $LMS->RegisterXajaxFunction(array(
 	'getManagementUrls','addManagementUrl', 'delManagementUrl',
-	'getRadioSectors', 'addRadioSector', 'delRadioSector',
+	'getRadioSectors', 'addRadioSector', 'delRadioSector', 'updateRadioSector',
 ));
 $SMARTY->assign('xajax', $LMS->RunXajax());
 

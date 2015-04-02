@@ -12,24 +12,33 @@
 <TBODY>
 {cycle name=locks values="light,lucid" print=false}
 {foreach from=$radiosectors item=radiosector}
+{$rsid = $radiosector.id}
 <TR class="highlight {cycle name=radiosectors}">
 	<TD class="bold nobr">
-		<img src="img/wireless.gif" alt=""> {$radiosector.name}
+		<img src="img/wireless.gif" alt=""> <span id="name_{$rsid}">{$radiosector.name}</span>
+		<input type="text" size="60" name="name_edit_{$rsid}" id="name_edit_{$rsid}" value="{$radiosector.name}" {tip text="Enter name" trigger="name_edit_{$rsid}"} style="display: none;">
 	</TD>
 	<TD class="nobr">
-		{t a=$radiosector.azimuth}$a deg.{/t}
+		<span id="azimuth_{$rsid}">{t a=$radiosector.azimuth}$a deg.{/t}</span>
+		<input type="text" size="10" name="azimuth_edit_{$rsid}" id="azimuth_edit_{$rsid}" value="{$radiosector.azimuth}" {tip text="Enter azimuth in degrees" trigger="azimuth_edit_{$rsid}"} style="display: none;">
 	</TD>
 	<TD class="nobr">
-		{t a=$radiosector.radius}$a deg.{/t}
+		<span id="radius_{$rsid}">{t a=$radiosector.radius}$a deg.{/t}</span>
+		<input type="text" size="10" name="radius_edit_{$rsid}" id="radius_edit_{$rsid}" value="{$radiosector.radius}" {tip text="Enter radius in degrees" trigger="radius_edit_{$rsid}"} style="display: none;">
 	</TD>
 	<TD class="nobr">
-		{t a=$radiosector.altitude}$a m{/t}
+		<span id="altitude_{$rsid}">{t a=$radiosector.altitude}$a m{/t}</span>
+		<input type="text" size="10" name="altitude_edit_{$rsid}" id="altitude_edit_{$rsid}" value="{$radiosector.altitude}" {tip text="Enter altitude in meters" trigger="altitude_edit_{$rsid}"} style="display: none;">
 	</TD>
 	<TD class="nobr">
-		{t a=$radiosector.rsrange}$a m{/t}
+		<span id="rsrange_{$rsid}">{t a=$radiosector.rsrange}$a m{/t}</span>
+		<input type="text" size="10" name="rsrange_edit_{$rsid}" id="rsrange_edit_{$rsid}" value="{$radiosector.rsrange}" {tip text="Enter range in meters" trigger="rsrange_edit_{$rsid}"} style="display: none;">
 	</TD>
 	<TD class="text-right nobr">
-		<A HREF="javascript:delRadioSector({$radiosector.id});"><IMG SRC="img/delete.gif" ALT="[ {trans("Delete")} ]" {tip text="Remove radio sector"}></A>
+		<A HREF="javascript:toggleEditRadioSector({$rsid});" id="edit_button_{$rsid}"><IMG SRC="img/edit.gif" ALT="[ {trans("Edit")} ]" {tip text="Edit radio sector"}></A>
+		<A HREF="javascript:updateRadioSector({$rsid});" id="save_button_{$rsid}" style="display: none;"><IMG SRC="img/save.gif" ALT="[ {trans("Save")} ]" {tip text="Save"}></A>
+		<A HREF="javascript:toggleEditRadioSector({$rsid});" id="cancel_button_{$rsid}" style="display: none;"><IMG SRC="img/cancel.gif" ALT="[ {trans("Cancel")} ]" {tip text="Cancel"}></A>
+		<A HREF="javascript:delRadioSector({$rsid});" id="delete_button_{$rsid}"><IMG SRC="img/delete.gif" ALT="[ {trans("Delete")} ]" {tip text="Remove radio sector"}></A>
 	</TD>
 </TR>
 {foreachelse}
