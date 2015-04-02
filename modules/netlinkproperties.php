@@ -80,7 +80,7 @@ $link['isnetlink'] = $isnetlink;
 
 $SMARTY->assign('link', $link);
 $radiosectors = ($isnetlink ? NULL :
-	$DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ?', array($id)));
+	$DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ? ORDER BY name', array($id)));
 $SMARTY->assign('radiosectors', $radiosectors);
 $SMARTY->display('netdev/netlinkproperties.html');
 
