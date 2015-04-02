@@ -782,22 +782,22 @@ class LMS
         return $manager->GetNetDevLinkedNodes($id);
     }
 
-    public function NetDevLinkNode($id, $devid, $type = 0, $technology = 0, $speed = 100000, $port = 0)
+    public function NetDevLinkNode($id, $devid, $link = NULL)
     {
         $manager = $this->getNetDevManager();
-        return $manager->NetDevLinkNode($id, $devid, $type, $technology, $speed, $port);
+        return $manager->NetDevLinkNode($id, $devid, $link);
     }
 
-    public function SetNetDevLinkType($dev1, $dev2, $type = 0, $technology = 0, $speed = 100000)
+    public function SetNetDevLinkType($dev1, $dev2, $link)
     {
         $manager = $this->getNetDevManager();
-        return $manager->SetNetDevLinkType($dev1, $dev2, $type, $technology, $speed);
+        return $manager->SetNetDevLinkType($dev1, $dev2, $link);
     }
 
-    public function SetNodeLinkType($node, $type = 0, $technology = 0, $speed = 100000)
+    public function SetNodeLinkType($node, $link)
     {
         $manager = $this->getNodeManager();
-        return $manager->SetNodeLinkType($node, $type, $technology, $speed);
+        return $manager->SetNodeLinkType($node, $link);
     }
 
     /*

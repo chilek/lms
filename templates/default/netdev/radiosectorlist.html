@@ -1,0 +1,78 @@
+<TABLE class="lmsbox-inner">
+<THEAD>
+<TR>
+	<TD style="width: 1%;" class="bold nobr"><img src="img/wireless.gif" alt=""> {trans("Name:")}</TD>
+	<TD style="width: 1%;"><img src="img/time.gif" alt=""> {trans("Azimuth:")}</TD>
+	<TD style="width: 1%;"><img src="img/time.gif" alt=""> {trans("Radius:")}</TD>
+	<TD style="width: 1%;">{trans("Altitude:")}</TD>
+	<TD style="width: 1%;">{trans("Range:")}</TD>
+	<TD style="width: 95%;">&nbsp;</TD>
+</TR>
+</THEAD>
+<TBODY>
+{cycle name=locks values="light,lucid" print=false}
+{foreach from=$radiosectors item=radiosector}
+<TR class="highlight {cycle name=radiosectors}">
+	<TD class="bold nobr">
+		<img src="img/wireless.gif" alt=""> {$radiosector.name}
+	</TD>
+	<TD class="nobr">
+		{t a=$radiosector.azimuth}$a deg.{/t}
+	</TD>
+	<TD class="nobr">
+		{t a=$radiosector.radius}$a deg.{/t}
+	</TD>
+	<TD class="nobr">
+		{t a=$radiosector.altitude}$a m{/t}
+	</TD>
+	<TD class="nobr">
+		{t a=$radiosector.range}$a m{/t}
+	</TD>
+	<TD class="text-right nobr">
+		<A HREF="javascript:delRadioSector({$radiosector.id});"><IMG SRC="img/delete.gif" ALT="[ {trans("Delete")} ]" {tip text="Remove radio sector"}></A>
+	</TD>
+</TR>
+{foreachelse}
+<TR>
+	<TD class="empty-table" colspan="6">
+		<p>&nbsp;</p>
+		<p>{trans("No radio sectors.")}</p>
+		<p>&nbsp;</p>
+	</TD>
+</TR>
+{/foreach}
+<TR>
+	<TD class="dark ftop nobr">
+		<img src="img/wireless.gif" alt="">
+		<label for="name">{trans("Name:")}
+		<input type="text" size="60" name="name" id="name" value="{$formdata.name}" {tip text="Enter name" trigger="name"}>
+		</label>
+	</TD>
+	<TD class="dark ftop nobr">
+		<img src="img/time.gif" alt="">
+		<label for="azimuth">{trans("Azimuth:")}
+		<input type="text" size="10" name="azimuth" id="azimuth" value="{$formdata.azimuth}" {tip text="Enter azimuth in degrees" trigger="azimuth"}>
+		</label>
+	</TD>
+	<TD class="dark ftop nobr">
+		<img src="img/time.gif" alt="">
+		<label for="radius">{trans("Radius:")}
+		<input type="text" size="10" name="radius" id="radius" value="{$formdata.radius}" {tip text="Enter radius in degrees" trigger="radius"}>
+		</label>
+	</TD>
+	<TD class="dark ftop nobr">
+		<label for="altitude">{trans("Altitude:")}
+		<input type="text" size="10" name="altitude" id="altitude" value="{$formdata.altitude}" {tip text="Enter altitude in meters" trigger="altitude"}>
+		</label>
+	</TD>
+	<TD class="dark ftop nobr">
+		<label for="range">{trans("Range:")}
+		<input type="text" size="10" name="range" id="range" value="{$formdata.range}" {tip text="Enter range in meters" trigger="range"}>
+		</label>
+	</TD>
+	<TD class="dark ftop text-right nobr" rowspan="2">
+		<A id="radiosectoraddlink" HREF="javascript:addRadioSector();" {tip text="Add new radio sector"}>{trans("Add")} <IMG SRC="img/save.gif" alt=""></A>
+	</TD>
+</TR>
+</TBODY>
+</TABLE>

@@ -1,0 +1,41 @@
+<!--// $Id$ //-->
+{$xajax}
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR class="hand" onclick="showOrHide('radiosectorspanel');">
+		<TD class="bold">
+			<IMG src="img/wireless.gif" alt="">
+			<A name="radiosectors">{trans("Radio sectors:")}</A>
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR id="radiosectorspanel" style="display: none;">
+		<TD style="width: 100%;">
+			<FORM id="radiosectoradd" name="radiosectoradd">
+			<DIV id="radiosectortable">
+			</DIV>
+			</FORM>
+		</TD>
+	</TR>
+    </TBODY>
+</TABLE>
+<SCRIPT type="text/javascript">
+<!--
+if (getCookie('radiosectorspanel') == '1') {
+	document.getElementById('radiosectorspanel').style.display = '';
+}
+
+function addRadioSector() {
+	xajax.$('radiosectoraddlink').disabled = true;
+	xajax_addRadioSector({$objectid}, xajax.getFormValues('radiosectoradd'));
+}
+
+function delRadioSector(id) {
+	xajax.$('radiosectortable').disabled = true;
+	xajax_delRadioSector({$objectid}, id);
+}
+
+xajax_getRadioSectors({$objectid}, null);
+//-->
+</SCRIPT>

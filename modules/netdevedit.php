@@ -114,7 +114,12 @@ switch ($action) {
 					if (isset($row['dstport'])) // device
 						$LMS->NetDevLink($dev2['id'], $row['id'], $row['type'], $row['technology'], $row['speed'], $sport, $row['dstport']);
 					else // node
-						$LMS->NetDevLinkNode($row['id'], $dev2['id'], $row['type'], $row['technology'], $row['speed'], $sport);
+						$LMS->NetDevLinkNode($row['id'], $dev2['id'], array(
+							'type' => $row['type'],
+							'technology' => $row['technology'],
+							'speed' => $row['speed'],
+							'port' => $sport,
+						));
 				}
 
 			$ports = array();
@@ -135,7 +140,12 @@ switch ($action) {
 					if (isset($row['dstport'])) // device
 						$LMS->NetDevLink($dev1['id'], $row['id'], $row['type'], $row['technology'], $row['speed'], $sport, $row['dstport']);
 					else // node
-						$LMS->NetDevLinkNode($row['id'], $dev1['id'], $row['type'], $row['technology'], $row['speed'], $sport);
+						$LMS->NetDevLinkNode($row['id'], $dev1['id'], array(
+							'type' => $row['type'],
+							'technology' => $row['technology'],
+							'speed' => $row['speed'],
+							'port' => $sport,
+						));
 				}
 
 			$DB->CommitTrans();
@@ -252,6 +262,7 @@ switch ($action) {
 	case 'connectnode':
 
 		$linktype = !empty($_GET['linktype']) ? intval($_GET['linktype']) : '0';
+		$linkradiosector = ($linktype == 1 ? intval($_GET['radiosector']) : null);
 		$linktechnology = !empty($_GET['linktechnology']) ? intval($_GET['linktechnology']) : '0';
 		$linkspeed = !empty($_GET['linkspeed']) ? intval($_GET['linkspeed']) : '0';
 		$node['port'] = !empty($_GET['port']) ? intval($_GET['port']) : '0';
@@ -277,7 +288,13 @@ switch ($action) {
 		$SESSION->save('nodelinkspeed', $linkspeed);
 
 		if (!$error) {
-			$LMS->NetDevLinkNode($node['id'], $_GET['id'], $linktype, $linktechnology, $linkspeed, $node['port']);
+			$LMS->NetDevLinkNode($node['id'], $_GET['id'], array(
+				'type' => $linktype,
+				'radiosector' => $linkradiosector,
+				'technology' => $linktechnology,
+				'speed' => $linkspeed,
+				'port' => $node['port']
+			));
 			$SESSION->redirect('?m=netdevinfo&id=' . $_GET['id']);
 		}
 

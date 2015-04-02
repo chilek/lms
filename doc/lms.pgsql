@@ -272,6 +272,62 @@ CREATE TABLE pna (
 );
 
 /* ---------------------------------------------------
+ Structure of table "ewx_stm_nodes" (EtherWerX(R))
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS ewx_stm_nodes_id_seq;
+CREATE SEQUENCE ewx_stm_nodes_id_seq;
+DROP TABLE IF EXISTS ewx_stm_nodes CASCADE;
+CREATE TABLE ewx_stm_nodes (
+        id 		integer		DEFAULT nextval('ewx_stm_nodes_id_seq'::text) NOT NULL,
+	nodeid 		integer         DEFAULT 0 NOT NULL,
+	mac 		varchar(20)     DEFAULT '' NOT NULL,
+	ipaddr 		bigint          DEFAULT 0 NOT NULL,
+	channelid 	integer       	DEFAULT 0 NOT NULL,
+	uprate 		integer         DEFAULT 0 NOT NULL,
+	upceil 		integer         DEFAULT 0 NOT NULL,
+	downrate 	integer        	DEFAULT 0 NOT NULL,
+	downceil 	integer        	DEFAULT 0 NOT NULL,
+	halfduplex 	smallint     	DEFAULT 0 NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE (nodeid)
+);
+
+/* ---------------------------------------------------
+ Structure of table "ewx_stm_channels" (EtherWerX(R))
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS ewx_stm_channels_id_seq;
+CREATE SEQUENCE ewx_stm_channels_id_seq;
+DROP TABLE IF EXISTS ewx_stm_channels CASCADE;
+CREATE TABLE ewx_stm_channels (
+    id 		integer 	DEFAULT nextval('ewx_stm_channels_id_seq'::text) NOT NULL,
+    cid 	integer      	DEFAULT 0 NOT NULL,
+    upceil 	integer         DEFAULT 0 NOT NULL,
+    downceil 	integer        	DEFAULT 0 NOT NULL,
+    halfduplex  smallint    DEFAULT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (cid)
+);
+
+/* ---------------------------------------------------
+ Structure of table "ewx_channels" (EtherWerX(R))
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS ewx_channels_id_seq;
+CREATE SEQUENCE ewx_channels_id_seq;
+DROP TABLE IF EXISTS ewx_channels CASCADE;
+CREATE TABLE ewx_channels (
+    id 		integer 	DEFAULT nextval('ewx_channels_id_seq'::text) NOT NULL,
+    name 	varchar(32)     DEFAULT '' NOT NULL,
+    upceil 	integer         DEFAULT 0 NOT NULL,
+    downceil 	integer        	DEFAULT 0 NOT NULL,
+    upceil_n 	integer         DEFAULT NULL,
+    downceil_n 	integer        	DEFAULT NULL,
+    halfduplex  smallint    DEFAULT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (name)
+);
+
+
+/* ---------------------------------------------------
  Structure of table "hosts"
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS hosts_id_seq;
@@ -329,6 +385,130 @@ CREATE TABLE invprojects (
 	PRIMARY KEY(id)
 );
 
+/* ---------------------------------------------------
+ Structure of table "netnodes" 
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS netnodes_id_seq;
+CREATE SEQUENCE netnodes_id_seq;
+DROP TABLE IF EXISTS netnodes CASCADE;
+CREATE TABLE netnodes (
+	id integer DEFAULT nextval('netnodes_id_seq'::text) NOT NULL,
+	name varchar(255) NOT NULL,
+	type smallint DEFAULT 0,
+	invprojectid integer
+		REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	status smallint DEFAULT 0,
+	location varchar(255) DEFAULT '',
+	location_city integer DEFAULT NULL
+		REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	location_street integer DEFAULT NULL
+		REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	location_house varchar(32) DEFAULT NULL,
+	location_flat varchar(32) DEFAULT NULL,
+	longitude numeric(10,6) DEFAULT NULL,
+	latitude numeric(10,6) DEFAULT NULL,
+	ownership smallint DEFAULT 0,
+	coowner varchar(255) DEFAULT '',
+	uip smallint DEFAULT 0,
+	miar smallint DEFAULT 0,
+	PRIMARY KEY(id)
+);
+
+/* ---------------------------------------------------
+ Structure of table "netdeviceproducers" 
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS netdeviceproducers_id_seq;
+CREATE SEQUENCE netdeviceproducers_id_seq;
+DROP TABLE IF EXISTS netdeviceproducers CASCADE;
+CREATE TABLE netdeviceproducers (
+	id integer DEFAULT nextval('netdeviceproducers_id_seq'::text) NOT NULL,
+	name varchar(255) NOT NULL,
+	alternative_name VARCHAR(255),
+	PRIMARY KEY (id),
+	UNIQUE (name)
+);
+
+/* ---------------------------------------------------
+ Structure of table "netdevicemodels" 
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS netdevicemodels_id_seq;
+CREATE SEQUENCE netdevicemodels_id_seq;
+DROP TABLE IF EXISTS netdevicemodels CASCADE;
+CREATE TABLE netdevicemodels (
+	id integer DEFAULT nextval('netdevicemodels_id_seq'::text) NOT NULL,
+	netdeviceproducerid integer NOT NULL,
+	name varchar(255) NOT NULL,
+	alternative_name VARCHAR(255),
+	PRIMARY KEY (id),
+	FOREIGN KEY (netdeviceproducerid)
+		REFERENCES netdeviceproducers(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	UNIQUE (name, netdeviceproducerid)
+);
+
+/* ---------------------------------------------------
+ Structure of table "netdevices"
+----------------------------------------------------*/
+DROP SEQUENCE IF EXISTS netdevices_id_seq;
+CREATE SEQUENCE netdevices_id_seq;
+DROP TABLE IF EXISTS netdevices CASCADE;
+CREATE TABLE netdevices (
+	id integer default nextval('netdevices_id_seq'::text) NOT NULL,
+	name varchar(32) 	DEFAULT '' NOT NULL,
+	location varchar(255) 	DEFAULT '' NOT NULL,
+    location_city integer DEFAULT NULL
+        REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    location_street integer DEFAULT NULL
+        REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    location_house varchar(32) DEFAULT NULL,
+    location_flat varchar(32) DEFAULT NULL,
+	description text 	DEFAULT '' NOT NULL,
+	producer varchar(64) 	DEFAULT '' NOT NULL,
+	model varchar(32) 	DEFAULT '' NOT NULL,
+	serialnumber varchar(32) DEFAULT '' NOT NULL,
+	ports integer 		DEFAULT 0 NOT NULL,
+	purchasetime integer	DEFAULT 0 NOT NULL,
+	guaranteeperiod smallint DEFAULT 0,
+	shortname varchar(32) 	DEFAULT '' NOT NULL,
+	nastype integer 	DEFAULT 0 NOT NULL,
+	clients integer 	DEFAULT 0 NOT NULL,
+	secret varchar(60) 	DEFAULT '' NOT NULL,
+	community varchar(50) 	DEFAULT '' NOT NULL,
+	channelid integer 	DEFAULT NULL
+	    REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	longitude numeric(10, 6) DEFAULT NULL,
+	latitude numeric(10, 6) DEFAULT NULL,
+	netnodeid integer	DEFAULT NULL
+	    REFERENCES netnodes(id) ON DELETE SET NULL ON UPDATE CASCADE,
+	invprojectid integer	DEFAULT NULL
+	    REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE,
+	status smallint		DEFAULT 0,
+	netdevicemodelid integer DEFAULT NULL
+		REFERENCES netdevicemodels (id) ON UPDATE CASCADE ON DELETE SET NULL,
+	PRIMARY KEY (id)
+);
+CREATE INDEX netdevices_channelid_idx ON netdevices (channelid);
+CREATE INDEX netdevices_location_street_idx ON netdevices (location_street);
+CREATE INDEX netdevices_location_city_idx ON netdevices (location_city, location_street, location_house, location_flat);
+
+/* ---------------------------------------------------
+ Structure of table "netradiosectors"
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS netradiosectors_id_seq;
+CREATE SEQUENCE netradiosectors_id_seq;
+DROP TABLE IF EXISTS netradiosectors CASCADE;
+CREATE TABLE netradiosectors (
+	id integer DEFAULT nextval('netradiosectors_id_seq'::text) NOT NULL,
+	name varchar(64) NOT NULL,
+	azimuth numeric(9,2) DEFAULT 0 NOT NULL,
+	radius numeric(9,2) DEFAULT 0 NOT NULL,
+	altitude smallint DEFAULT 0 NOT NULL,
+	range integer DEFAULT 0 NOT NULL,
+	netdev integer NOT NULL
+		REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id),
+	UNIQUE (name, netdev)
+);
+
 /* -------------------------------------------------------- 
   Structure of table "nodes"
 -------------------------------------------------------- */
@@ -344,6 +524,8 @@ CREATE TABLE nodes (
 	ownerid integer 	DEFAULT 0 NOT NULL,
 	netdev integer 		DEFAULT 0 NOT NULL,
 	linktype smallint	DEFAULT 0 NOT NULL,
+	linkradiosector integer DEFAULT NULL
+		REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE;
 	linkspeed integer	DEFAULT 100000 NOT NULL,
 	linktechnology integer	DEFAULT 0 NOT NULL,
 	port smallint		DEFAULT 0 NOT NULL,
@@ -380,6 +562,7 @@ CREATE INDEX nodes_ownerid_idx ON nodes (ownerid);
 CREATE INDEX nodes_ipaddr_pub_idx ON nodes (ipaddr_pub);
 CREATE INDEX nodes_location_street_idx ON nodes (location_street);
 CREATE INDEX nodes_location_city_idx ON nodes (location_city, location_street, location_house, location_flat);
+CREATE INDEX nodes_linkradiosector_idx ON nodes (linkradiosector);
 
 /* ----------------------------------------------------
  Structure of table "nodelocks"
@@ -1373,166 +1556,6 @@ CREATE TABLE ewx_pt_config (
 );
 
 /* ---------------------------------------------------
- Structure of table "ewx_stm_nodes" (EtherWerX(R))
-------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS ewx_stm_nodes_id_seq;
-CREATE SEQUENCE ewx_stm_nodes_id_seq;
-DROP TABLE IF EXISTS ewx_stm_nodes CASCADE;
-CREATE TABLE ewx_stm_nodes (
-        id 		integer		DEFAULT nextval('ewx_stm_nodes_id_seq'::text) NOT NULL,
-	nodeid 		integer         DEFAULT 0 NOT NULL,
-	mac 		varchar(20)     DEFAULT '' NOT NULL,
-	ipaddr 		bigint          DEFAULT 0 NOT NULL,
-	channelid 	integer       	DEFAULT 0 NOT NULL,
-	uprate 		integer         DEFAULT 0 NOT NULL,
-	upceil 		integer         DEFAULT 0 NOT NULL,
-	downrate 	integer        	DEFAULT 0 NOT NULL,
-	downceil 	integer        	DEFAULT 0 NOT NULL,
-	halfduplex 	smallint     	DEFAULT 0 NOT NULL,
-	PRIMARY KEY (id),
-	UNIQUE (nodeid)
-);
-
-/* ---------------------------------------------------
- Structure of table "ewx_stm_channels" (EtherWerX(R))
-------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS ewx_stm_channels_id_seq;
-CREATE SEQUENCE ewx_stm_channels_id_seq;
-DROP TABLE IF EXISTS ewx_stm_channels CASCADE;
-CREATE TABLE ewx_stm_channels (
-    id 		integer 	DEFAULT nextval('ewx_stm_channels_id_seq'::text) NOT NULL,
-    cid 	integer      	DEFAULT 0 NOT NULL,
-    upceil 	integer         DEFAULT 0 NOT NULL,
-    downceil 	integer        	DEFAULT 0 NOT NULL,
-    halfduplex  smallint    DEFAULT NULL,
-    PRIMARY KEY (id),
-    UNIQUE (cid)
-);
-
-/* ---------------------------------------------------
- Structure of table "ewx_channels" (EtherWerX(R))
-------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS ewx_channels_id_seq;
-CREATE SEQUENCE ewx_channels_id_seq;
-DROP TABLE IF EXISTS ewx_channels CASCADE;
-CREATE TABLE ewx_channels (
-    id 		integer 	DEFAULT nextval('ewx_channels_id_seq'::text) NOT NULL,
-    name 	varchar(32)     DEFAULT '' NOT NULL,
-    upceil 	integer         DEFAULT 0 NOT NULL,
-    downceil 	integer        	DEFAULT 0 NOT NULL,
-    upceil_n 	integer         DEFAULT NULL,
-    downceil_n 	integer        	DEFAULT NULL,
-    halfduplex  smallint    DEFAULT NULL,
-    PRIMARY KEY (id),
-    UNIQUE (name)
-);
-
-/* ---------------------------------------------------
- Structure of table "netnodes" 
-------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS netnodes_id_seq;
-CREATE SEQUENCE netnodes_id_seq;
-DROP TABLE IF EXISTS netnodes CASCADE;
-CREATE TABLE netnodes (
-	id integer DEFAULT nextval('netnodes_id_seq'::text) NOT NULL,
-	name varchar(255) NOT NULL,
-	type smallint DEFAULT 0,
-	invprojectid integer
-		REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	status smallint DEFAULT 0,
-	location varchar(255) DEFAULT '',
-	location_city integer DEFAULT NULL
-		REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	location_street integer DEFAULT NULL
-		REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	location_house varchar(32) DEFAULT NULL,
-	location_flat varchar(32) DEFAULT NULL,
-	longitude numeric(10,6) DEFAULT NULL,
-	latitude numeric(10,6) DEFAULT NULL,
-	ownership smallint DEFAULT 0,
-	coowner varchar(255) DEFAULT '',
-	uip smallint DEFAULT 0,
-	miar smallint DEFAULT 0,
-	PRIMARY KEY(id)
-);
-
-/* ---------------------------------------------------
- Structure of table "netdeviceproducers" 
-------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS netdeviceproducers_id_seq;
-CREATE SEQUENCE netdeviceproducers_id_seq;
-DROP TABLE IF EXISTS netdeviceproducers CASCADE;
-CREATE TABLE netdeviceproducers (
-	id integer DEFAULT nextval('netdeviceproducers_id_seq'::text) NOT NULL,
-	name varchar(255) NOT NULL,
-	alternative_name VARCHAR(255),
-	PRIMARY KEY (id),
-	UNIQUE (name)
-);
-
-/* ---------------------------------------------------
- Structure of table "netdevicemodels" 
-------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS netdevicemodels_id_seq;
-CREATE SEQUENCE netdevicemodels_id_seq;
-DROP TABLE IF EXISTS netdevicemodels CASCADE;
-CREATE TABLE netdevicemodels (
-	id integer DEFAULT nextval('netdevicemodels_id_seq'::text) NOT NULL,
-	netdeviceproducerid integer NOT NULL,
-	name varchar(255) NOT NULL,
-	alternative_name VARCHAR(255),
-	PRIMARY KEY (id),
-	FOREIGN KEY (netdeviceproducerid)
-		REFERENCES netdeviceproducers(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	UNIQUE (name, netdeviceproducerid)
-);
-
-/* ---------------------------------------------------
- Structure of table "netdevices"
-----------------------------------------------------*/
-DROP SEQUENCE IF EXISTS netdevices_id_seq;
-CREATE SEQUENCE netdevices_id_seq;
-DROP TABLE IF EXISTS netdevices CASCADE;
-CREATE TABLE netdevices (
-	id integer default nextval('netdevices_id_seq'::text) NOT NULL,
-	name varchar(32) 	DEFAULT '' NOT NULL,
-	location varchar(255) 	DEFAULT '' NOT NULL,
-    location_city integer DEFAULT NULL
-        REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    location_street integer DEFAULT NULL
-        REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    location_house varchar(32) DEFAULT NULL,
-    location_flat varchar(32) DEFAULT NULL,
-	description text 	DEFAULT '' NOT NULL,
-	producer varchar(64) 	DEFAULT '' NOT NULL,
-	model varchar(32) 	DEFAULT '' NOT NULL,
-	serialnumber varchar(32) DEFAULT '' NOT NULL,
-	ports integer 		DEFAULT 0 NOT NULL,
-	purchasetime integer	DEFAULT 0 NOT NULL,
-	guaranteeperiod smallint DEFAULT 0,
-	shortname varchar(32) 	DEFAULT '' NOT NULL,
-	nastype integer 	DEFAULT 0 NOT NULL,
-	clients integer 	DEFAULT 0 NOT NULL,
-	secret varchar(60) 	DEFAULT '' NOT NULL,
-	community varchar(50) 	DEFAULT '' NOT NULL,
-	channelid integer 	DEFAULT NULL
-	    REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	longitude numeric(10, 6) DEFAULT NULL,
-	latitude numeric(10, 6) DEFAULT NULL,
-	netnodeid integer	DEFAULT NULL
-	    REFERENCES netnodes(id) ON DELETE SET NULL ON UPDATE CASCADE,
-	invprojectid integer	DEFAULT NULL
-	    REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE,
-	status smallint		DEFAULT 0,
-	netdevicemodelid integer DEFAULT NULL
-		REFERENCES netdevicemodels (id) ON UPDATE CASCADE ON DELETE SET NULL,
-	PRIMARY KEY (id)
-);
-CREATE INDEX netdevices_channelid_idx ON netdevices (channelid);
-CREATE INDEX netdevices_location_street_idx ON netdevices (location_street);
-CREATE INDEX netdevices_location_city_idx ON netdevices (location_city, location_street, location_house, location_flat);
-
-/* ---------------------------------------------------
  Structure of table "dbinfo"
 ------------------------------------------------------*/
 DROP TABLE IF EXISTS dbinfo CASCADE;
@@ -2466,4 +2489,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015040100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015040200');
