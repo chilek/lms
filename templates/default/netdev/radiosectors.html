@@ -61,18 +61,6 @@ function updateRadioSector(id) {
 	xajax_updateRadioSector(id, params);
 }
 
-/*
-function updateRadioSectorFinished(id) {
-	var elems = ['name', 'azimuth', 'radius', 'altitude', 'rsrange'];
-	for (i = 0; i < elems.length; i++)
-		xjx.$(elems[i] + '_edit_' + id).disabled = false;
-	xjx.$('save_button_' + id).disabled = false;
-	xjx.$('cancel_button_' + id).disabled = false;
-	xjx.$('delete_button_' + id).disabled = false;
-	toggleEditRadioSector(id);
-}
-*/
-
 xajax_getRadioSectors({$objectid}, null);
 //-->
 </SCRIPT>
