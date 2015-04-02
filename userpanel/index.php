@@ -66,7 +66,7 @@ define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 define('DOC_DIR', $CONFIG['directories']['doc_dir']);
 define('MODULES_DIR', $CONFIG['directories']['modules_dir']);
 define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir']);
-define('PLUGIN_DIR', $CONFIG['directories']['plugin_dir']);
+define('PLUGINS_DIR', $CONFIG['directories']['plugin_dir']);
 
 // include required files
 
