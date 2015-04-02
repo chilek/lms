@@ -214,7 +214,11 @@ function updateRadioSector($rsid, $params) {
 	$rsid = intval($rsid);
 	$netdevid = intval($_GET['id']);
 
-	$error = validateRadioSector($params, true);
+	$res = validateRadioSector($params, true);
+	$error = array();
+	foreach ($res as $key => $val)
+		$error[$key . '_edit_' . $rsid] = $val;
+	$params['error'] = $error;
 
 	if (!$error) {
 		$args = array(
@@ -232,9 +236,10 @@ function updateRadioSector($rsid, $params) {
 			$SYSLOG->AddMessage(SYSLOG_RES_RADIOSECTOR, SYSLOG_OPER_UPDATE, $args,
 				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
 		}
+		$params = NULL;
 	}
 
-	$result->call('xajax_getRadioSectors', $netdevid);
+	$result->call('xajax_getRadioSectors', $netdevid, $params);
 
 	return $result;
 }
