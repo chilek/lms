@@ -143,10 +143,10 @@ function addRadioSector($netdevid, $params) {
 	elseif (!preg_match('/^[0-9]+$/', $params['altitude']))
 		$error['altitude'] = trans('Radio sector altitude has invalid format!');
 
-	if (!strlen($params['range']))
-		$error['range'] = trans('Radio sector range cannot be empty!');
-	elseif (!preg_match('/^[0-9]+$/', $params['range']))
-		$error['range'] = trans('Radio sector range has invalid format!');
+	if (!strlen($params['rsrange']))
+		$error['rsrange'] = trans('Radio sector range cannot be empty!');
+	elseif (!preg_match('/^[0-9]+$/', $params['rsrange']))
+		$error['rsrange'] = trans('Radio sector range has invalid format!');
 
 	$params['error'] = $error;
 
@@ -156,10 +156,10 @@ function addRadioSector($netdevid, $params) {
 			'azimuth' => $params['azimuth'],
 			'radius' => $params['radius'],
 			'altitude' => $params['altitude'],
-			'range' => $params['range'],
+			'rsrange' => $params['rsrange'],
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netdevid,
 		);
-		$DB->Execute('INSERT INTO netradiosectors (name, azimuth, radius, altitude, range, netdev) VALUES (?, ?, ?, ?, ?, ?)',
+		$DB->Execute('INSERT INTO netradiosectors (name, azimuth, radius, altitude, rsrange, netdev) VALUES (?, ?, ?, ?, ?, ?)',
 			array_values($args));
 		if ($SYSLOG) {
 			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR]] = $DB->GetLastInsertID('netradiosectors');

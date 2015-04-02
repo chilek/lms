@@ -26,7 +26,7 @@
 		{t a=$radiosector.altitude}$a m{/t}
 	</TD>
 	<TD class="nobr">
-		{t a=$radiosector.range}$a m{/t}
+		{t a=$radiosector.rsrange}$a m{/t}
 	</TD>
 	<TD class="text-right nobr">
 		<A HREF="javascript:delRadioSector({$radiosector.id});"><IMG SRC="img/delete.gif" ALT="[ {trans("Delete")} ]" {tip text="Remove radio sector"}></A>
@@ -66,8 +66,8 @@
 		</label>
 	</TD>
 	<TD class="dark ftop nobr">
-		<label for="range">{trans("Range:")}
-		<input type="text" size="10" name="range" id="range" value="{$formdata.range}" {tip text="Enter range in meters" trigger="range"}>
+		<label for="rsrange">{trans("Range:")}
+		<input type="text" size="10" name="rsrange" id="rsrange" value="{$formdata.rsrange}" {tip text="Enter range in meters" trigger="rsrange"}>
 		</label>
 	</TD>
 	<TD class="dark ftop text-right nobr" rowspan="2">
