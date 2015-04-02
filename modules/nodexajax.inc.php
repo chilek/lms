@@ -231,9 +231,23 @@ function delManagementUrl($nodeid, $id) {
 	return $result;
 }
 
+function getRadioSectors($netdev) {
+	global $DB;
+
+	$result = new xajaxResponse();
+
+	$radiosectors = $DB->GetAll('SELECT * FROM netradiosectors WHERE netdev = ?', array(intval($netdev)));
+	if (!$radiosectors)
+		$radiosectors = array();
+
+	$result->call('radiosectors_received', $radiosectors);
+
+	return $result;
+}
+
 $LMS->InitXajax();
 $LMS->RegisterXajaxFunction(array('getNodeLocks', 'addNodeLock', 'delNodeLock', 'getThroughput', 'getNodeStats',
-	'getManagementUrls', 'addManagementUrl', 'delManagementUrl'));
+	'getManagementUrls', 'addManagementUrl', 'delManagementUrl', 'getRadioSectors'));
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
 ?>

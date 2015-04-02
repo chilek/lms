@@ -18,9 +18,35 @@
 			location.href = '?m=nodeedit&id={$nodeinfo.id}&action=duplex&duplex=0';
 	}
 
+	function change_netdevice(id) {
+		if (xjx.$('linktype').value == 1) {
+			xjx.$('linktype').disabled = true;
+			xjx.$('radiosector').disabled = true;
+			xjx.$('linktechnology').disabled = true;
+			xjx.$('linkspeed').disabled = true;
+			xajax_getRadioSectors(id);
+		}
+	}
+
+	function radiosectors_received(radiosectors) {
+		var rselem = xjx.$('radiosector');
+		var options = rselem.options;
+
+		while (options.length)
+			options.remove(0);
+		options.add(new Option('- {trans("none")} -', 0));
+		for (i = 0; i < radiosectors.length; i++)
+			options.add(new Option(radiosectors[i].name, radiosectors[i].id));
+
+		xjx.$('linktype').disabled = false;
+		rselem.disabled = false;
+		xjx.$('linktechnology').disabled = false;
+		xjx.$('linkspeed').disabled = false;
+	}
+
 	function change_linktype(linktype) {
 		linktype = parseInt(linktype);
-		var options = document.getElementById('linktechnology').options;
+		var options = xjx.$('linktechnology').options;
 		while (options.length)
 			options.remove(0);
 		options.add(new Option('{trans("- unknown -")}', 0));
@@ -41,6 +67,7 @@
 				{/foreach}
 				break;
 		}
+		xjx.$('radiosector').style.display = (linktype == 1 ? '' : 'none');
 	}
 //-->
 </SCRIPT>
@@ -141,7 +168,7 @@
 				<IMG src="img/{if $nodeinfo.linktype == 1}wireless.gif{elseif $nodeinfo.linktype == 2}netdev_takenports.gif{else}netdev_takenports.gif{/if}" alt="{$_LINKTYPES[$nodeinfo.linktype]}" {tip text="{if $nodeinfo.linktechnology}{$_LINKTECHNOLOGIES[$nodeinfo.linktype][$nodeinfo.linktechnology]} / {/if}{$_LINKSPEEDS[$nodeinfo.linkspeed]}"}>
 			{else}
 				{if $netdevices}
-				<SELECT SIZE="1" style="width: 300px;" NAME="devid" {tip trigger="netdev"}>
+				<SELECT SIZE="1" style="width: 300px;" NAME="devid" {tip trigger="netdev"} onchange="change_netdevice(this.options[this.selectedIndex].value)">
 				<OPTION VALUE="0" {if !$netdevice}SELECTED{/if}>- {trans("no device")} -</OPTION>
 					{section name=netdev loop=$netdevices}
 					{assign var=netdevname value=$netdevices[netdev].name}
@@ -156,6 +183,9 @@
 					{foreach from=$_LINKTYPES item=item key=key}
 					<OPTION VAlUE="{$key}">{$item}</OPTION>
 					{/foreach}
+				</SELECT>
+				<SELECT NAME="radiosector" id="radiosector" {tip trigger="radiosector" text="Select radio sector"} style="display: none;">
+					<OPTION value="0">- {trans("none")} -</OPTION>
 				</SELECT>
 				<SELECT NAME="linktechnology" id="linktechnology" {tip trigger="linktechnology" text="Select link technology"}>
 					<OPTION value="0">{trans("- unknown -")}</OPTION>
