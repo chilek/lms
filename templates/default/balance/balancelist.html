@@ -19,7 +19,6 @@
 	function printr()
 	{
 		var add = "";
-		var count = 0;
 		if(document.page.original.checked && document.page.copy.checked)
 			add = "";
 		else if(document.page.original.checked && !document.page.copy.checked)
@@ -27,27 +26,14 @@
 		else if(!document.page.original.checked && document.page.copy.checked)
 			add = "&which=copy";
 
-		if (document.page.elements["marks[]"] != undefined) {
-			for (var i=0; i<document.page.elements["marks[]"].length; i++) {
-				if (document.page.elements["marks[]"][i].checked == true) {
-					count++;
-				}
-			}
-		}
-
-		if (count == 0) {
-			alert('{trans("You must choose at least one cash receipt!")}');
-		} else {
-			document.page.action = "?m=receipt&print=cached&cash=1" + add;
-			document.page.target = "_blank";
-			document.page.submit();
-		}
+		document.page.action = "?m=receipt&print=cached&cash=1" + add;
+		document.page.target = "_blank";
+		document.page.submit();
 	}
 
 	function printi()
 	{
 		var add = "";
-		var count = 0;
 		if(document.page.original.checked)
 			add = "&original=1";
 		if(document.page.copy.checked)
@@ -55,21 +41,9 @@
 		if(document.page.duplicate.checked)
 			add += "&duplicate=1";
 
-		if (document.page.elements["marks[]"] != undefined) {
-			for (var i=0; i<document.page.elements["marks[]"].length; i++) {
-				if (document.page.elements["marks[]"][i].checked == true) {
-					count++;
-				}
-			}
-		}
-
-		if (count == 0) {
-			alert('{trans("You must choose at least one invoice!")}');
-		} else {
-			document.page.action="?m=invoice&print=cached&cash=1" + add;
-			document.page.target="_blank";
-			document.page.submit();
-		}
+		document.page.action="?m=invoice&print=cached&cash=1" + add;
+		document.page.target="_blank";
+		document.page.submit();
 	}
 
 	function filter()
@@ -86,7 +60,6 @@
 		document.page.target="";
 		document.page.submit();
 	}
-
 	function pagechange2()
 	{
 		document.page.action="?m=balancelist&page=" + document.forms['page'].elements['page2'].value;
@@ -99,19 +72,19 @@
 <FORM METHOD="POST" NAME="page">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
-	<COLGROUP>
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 91%;">
-		<COL style="width: 1%;">
-	</COLGROUP>
-	<THEAD>
+    <COLGROUP>
+        <COL style="width: 1%;">
+        <COL style="width: 1%;">
+        <COL style="width: 1%;">
+        <COL style="width: 1%;">
+        <COL style="width: 1%;">
+        <COL style="width: 1%;">
+        <COL style="width: 1%;">
+        <COL style="width: 1%;">
+        <COL style="width: 91%;">
+        <COL style="width: 1%;">
+    </COLGROUP>
+    <THEAD>
 	<TR>
 		<TH scope="col">
 			{trans("Date:")}
@@ -132,7 +105,7 @@
 		<TH scope="col" class="text-right">
 			{trans("After:")}
 		</TH>
-		<TH scope="col">
+                <TH scope="col">
 			{trans("Customer:")}
 		</TH>
 		<TH scope="col">
@@ -142,36 +115,36 @@
 	</TR>
 	<TR>
 		<TD colspan="10">
-			<SPAN class="nobr bold">{trans("Filter:")} </SPAN>
-			<INPUT type="text" name="search" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>
-			<SELECT size="1" name="cat" style="width: 150px">
-				<OPTION value=""{if $listdata.cat eq ""} SELECTED{/if}>{trans("- select category -")}</OPTION>
-				<OPTION value="comment"{if $listdata.cat eq "comment"} SELECTED{/if}>{trans("comment")}</OPTION>
-				<OPTION value="cdate"{if $listdata.cat eq "cdate"} SELECTED{/if}>{trans("date (YYYY/MM/DD)")}</OPTION>
-				<OPTION value="number"{if $listdata.cat eq "number"} SELECTED{/if}>{trans("document number")}</OPTION>
-				<OPTION value="value"{if $listdata.cat eq "value"} SELECTED{/if}>{trans("value")}</OPTION>
-				<OPTION value="name"{if $listdata.cat eq "name"} SELECTED{/if}>{trans("customer name")}</OPTION>
-				<OPTION value="customerid"{if $listdata.cat eq "customerid"} SELECTED{/if}>{trans("customer ID")}</OPTION>
-				<OPTION value="ten"{if $listdata.cat eq "ten"} SELECTED{/if}>{trans("TEN")}</OPTION>
-				<OPTION value="address"{if $listdata.cat eq "address"} SELECTED{/if}>{trans("address")}</OPTION>
-				<OPTION value="documented"{if $listdata.cat eq "documented"} SELECTED{/if}>{trans("with document")}</OPTION>
-				<OPTION value="notdocumented"{if $listdata.cat eq "notdocumented"} SELECTED{/if}>{trans("without document")}</OPTION>
-			</SELECT>
-			{trans("Group:")}
-			<SELECT size="1" name="group">
-				<OPTION value="0"{if !$listdata.group} SELECTED{/if}>{trans("- all groups -")}</OPTION>
-				{section name="grouplist" loop=$grouplist}
-				<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group eq $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:40:"...":true}</OPTION>
-				{/section}
-			</SELECT>
-			<SPAN class="nobr">
-			<INPUT type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} CHECKED{/if}><label for="groupexclude">{trans("exclude group")}</label>
-			</SPAN>
-			<SPAN class="nobr">
-			{trans("From:")} <INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
-			{trans("To:")} <INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal2.popup();"  {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
-			<A href="javascript: filter();">&raquo;&raquo;&raquo;</A><BR>
-			</SPAN>
+                        <SPAN class="nobr bold">{trans("Filter:")} </SPAN>
+                        <INPUT type="text" name="search" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>
+                        <SELECT size="1" name="cat" style="width: 150px">
+                                <OPTION value=""{if $listdata.cat eq ""} SELECTED{/if}>{trans("- select category -")}</OPTION>
+                                <OPTION value="comment"{if $listdata.cat eq "comment"} SELECTED{/if}>{trans("comment")}</OPTION>
+                                <OPTION value="cdate"{if $listdata.cat eq "cdate"} SELECTED{/if}>{trans("date (YYYY/MM/DD)")}</OPTION>
+                                <OPTION value="number"{if $listdata.cat eq "number"} SELECTED{/if}>{trans("document number")}</OPTION>
+                                <OPTION value="value"{if $listdata.cat eq "value"} SELECTED{/if}>{trans("value")}</OPTION>
+                                <OPTION value="name"{if $listdata.cat eq "name"} SELECTED{/if}>{trans("customer name")}</OPTION>
+                                <OPTION value="customerid"{if $listdata.cat eq "customerid"} SELECTED{/if}>{trans("customer ID")}</OPTION>
+                                <OPTION value="ten"{if $listdata.cat eq "ten"} SELECTED{/if}>{trans("TEN")}</OPTION>
+                                <OPTION value="address"{if $listdata.cat eq "address"} SELECTED{/if}>{trans("address")}</OPTION>
+                                <OPTION value="documented"{if $listdata.cat eq "documented"} SELECTED{/if}>{trans("with document")}</OPTION>
+                                <OPTION value="notdocumented"{if $listdata.cat eq "notdocumented"} SELECTED{/if}>{trans("without document")}</OPTION>
+                        </SELECT>
+                        {trans("Group:")}
+                        <SELECT size="1" name="group">
+                                <OPTION value="0"{if !$listdata.group} SELECTED{/if}>{trans("- all groups -")}</OPTION>
+                                {section name="grouplist" loop=$grouplist}
+                                <OPTION value="{$grouplist[grouplist].id}"{if $listdata.group eq $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:40:"...":true}</OPTION>
+                                {/section}
+                        </SELECT>
+                        <SPAN class="nobr">
+                        <INPUT type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} CHECKED{/if}><label for="groupexclude">{trans("exclude group")}</label>
+                        </SPAN>
+                        <SPAN class="nobr">
+                        {trans("From:")} <INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+                        {trans("To:")} <INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal2.popup();"  {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+                        <A href="javascript: filter();">&raquo;&raquo;&raquo;</A><BR>
+                        </SPAN>
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
@@ -181,13 +154,13 @@
 		</TD>
 	</TR>
 	{/if}
-	</THEAD>
-	<TBODY>
+    </THEAD>
+    <TBODY>
 	{cycle values="light,lucid" print=false}
 	{section name=balancelist loop=$balancelist start=$start max=$pagelimit}
-	<TR class="highlight {cycle}">
+	<TR class="highlight {cycle}"  >
 		<TD>
-		<SPAN class="nobr">{$balancelist[balancelist].time|date_format:"%Y/%m/%d %H:%M"}</SPAN>
+                        <SPAN class="nobr">{$balancelist[balancelist].time|date_format:"%Y/%m/%d %H:%M"}</SPAN>
 		</TD>
 		<TD>
 			{if $balancelist[balancelist].userid}<SPAN class="nobr">{$balancelist[balancelist].user|truncate:16:"...":true}</SPAN>{else}-{/if}
@@ -196,7 +169,7 @@
 			{if $balancelist[balancelist].covenant}<SPAN class="nobr">{($balancelist[balancelist].value*-1)|money_format}</SPAN>{else}-{/if}
 		</TD>
 		<TD class="text-right">
-			{if !$balancelist[balancelist].covenant && $balancelist[balancelist].value > 0}<SPAN class="nobr">{$balancelist[balancelist].value|money_format}</SPAN>{else}-{/if}
+                        {if !$balancelist[balancelist].covenant && $balancelist[balancelist].value > 0}<SPAN class="nobr">{$balancelist[balancelist].value|money_format}</SPAN>{else}-{/if}
 		</TD>
 		<TD class="text-right">
 			{if !$balancelist[balancelist].covenant && $balancelist[balancelist].value < 0}<SPAN class="nobr">{($balancelist[balancelist].value*-1)|money_format}</SPAN>{else}-{/if}
@@ -205,7 +178,7 @@
 			&raquo;
 		</TD>
 		<TD class="text-right">
-			{if $balancelist[balancelist].covenant}-{else}<SPAN class="nobr">{$balancelist[balancelist].after|money_format}</SPAN>{/if}
+                        {if $balancelist[balancelist].covenant}-{else}<SPAN class="nobr">{$balancelist[balancelist].after|money_format}</SPAN>{/if}
 		</TD>
 		<TD class="text-right">
 			{if $balancelist[balancelist].customerid}<SPAN class="nobr"><A HREF="?m=customerinfo&id={$balancelist[balancelist].customerid}">{$balancelist[balancelist].customername|truncate:20:"...":true}</A></SPAN>{else} - {/if}
@@ -214,7 +187,7 @@
 			{$balancelist[balancelist].comment}
 		</TD>
 		<TD class="text-right">
-			<SPAN class="nobr">
+                        <SPAN class="nobr">
 			{if $balancelist[balancelist].docid}
 				{if $balancelist[balancelist].doctype==$smarty.const.DOC_INVOICE}
 				<A HREF="?m=invoice&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/print.gif" ALT="[ {trans("Invoice")} ]" {tip a=$balancelist[balancelist].docid dynpopup='?m=number&id=$a'}></A>
@@ -226,10 +199,8 @@
 				<A HREF="?m=note&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/printd.gif" ALT="[ {trans("Debit note")} ]" {tip a=$balancelist[balancelist].docid dynpopup='?m=number&id=$a'}></A>
 				{/if}
 			{/if}
-			{if $balancelist[balancelist].doctype != 0}
-			<INPUT TYPE="checkbox" NAME="marks[]" VALUE="{$balancelist[balancelist].id}">
-			{/if}
-			</SPAN>
+			<INPUT TYPE="checkbox" NAME="marks[{$balancelist[balancelist].id}]" VALUE="{$balancelist[balancelist].id}">
+                        </SPAN>
 		</TD>
 	</TR>
 	{sectionelse}
@@ -239,21 +210,21 @@
 		</TD>
 	</TR>
 	{/section}
-	</TBODY>
-	<TFOOT>
+    </TBODY>
+    <TFOOT>
 	<TR>
 		<TD COLSPAN="8">
-			<SPAN class="nobr">
+                        <SPAN class="nobr">
 			<A HREF="javascript:DeleteMarked();">{trans("Delete")} <IMG SRC="img/delete.gif" ALT="{trans("Delete")}" HSPACE="2"></A>&nbsp;
 			<A HREF="javascript:printi();">{trans("Print invoices")} <IMG SRC="img/print.gif" ALT="" HSPACE="2"></A>&nbsp;
 			<A HREF="javascript:printr();">{trans("Print cash receipts")} <IMG SRC="img/printr.gif" ALT="" HSPACE="2"></A>&nbsp;
 			<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i', ConfigHelper::getConfig('invoices.default_printpage'))} checked{/if}><label for="original">{trans("original")}</label>
 			<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i', ConfigHelper::getConfig('invoices.default_printpage'))} checked{/if}><label for="copy">{trans("copy")}</label>
 			<INPUT type="checkbox" name="duplicate" id="duplicate"{if preg_match('/duplicate/i', ConfigHelper::getConfig('invoices.default_printpage'))} checked{/if}><label for="duplicate">{trans("duplicate")}</label>
-			</SPAN>
+                        </SPAN>
 		</TD>
 		<TD colspan="2" class="text-right">
-			<SPAN class="nobr"><label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('page', this, ['original', 'duplicate', 'copy'])" VALUE="1"></SPAN>
+                        <SPAN class="nobr"><label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('page', this, ['original', 'duplicate', 'copy'])" VALUE="1"></SPAN>
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
