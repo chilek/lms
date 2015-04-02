@@ -761,10 +761,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
             // NOTE: don't waste CPU/mem when printing history is not set:
             if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.print_balance_history', false))) {
+		$customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
                 if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.print_balance_history_save', false))) {
-                    $result['customerbalancelist'] = $LMS->GetCustomerBalanceList($result['customerid'], $result['cdate']);
+                    $result['customerbalancelist'] = $customer_manager->GetCustomerBalanceList($result['customerid'], $result['cdate']);
                 } else {
-                    $result['customerbalancelist'] = $LMS->GetCustomerBalanceList($result['customerid']);
+                    $result['customerbalancelist'] = $customer_manager->GetCustomerBalanceList($result['customerid']);
                 }
                 $result['customerbalancelistlimit'] = ConfigHelper::getConfig('invoices.print_balance_history_limit');
             }
