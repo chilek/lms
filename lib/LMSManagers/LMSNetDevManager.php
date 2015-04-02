@@ -311,7 +311,9 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			l.technology AS linktechnology, l.speed AS linkspeed, l.srcport, l.dstport,
 			(SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id) 
 			+ (SELECT COUNT(*) FROM nodes WHERE netdev = d.id AND ownerid > 0)
-			AS takenports 
+			AS takenports,
+			lc.name AS city_name, lb.name AS borough_name, lb.type AS borough_type,
+			ld.name AS district_name, ls.name AS state_name
 			FROM netdevices d
 			JOIN (SELECT DISTINCT type, technology, speed, 
 				(CASE src WHEN ? THEN dst ELSE src END) AS dev, 
@@ -319,6 +321,10 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				(CASE src WHEN ? THEN srcport ELSE dstport END) AS dstport 
 				FROM netlinks WHERE src = ? OR dst = ?
 			) l ON (d.id = l.dev)
+			LEFT JOIN location_cities lc ON lc.id = d.location_city
+			LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
+			LEFT JOIN location_districts ld ON ld.id = lb.districtid
+			LEFT JOIN location_states ls ON ls.id = ld.stateid
 			ORDER BY name', array($id, $id, $id, $id, $id));
     }
 
@@ -402,20 +408,16 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
     public function GetNetDev($id)
     {
         $result = $this->db->GetRow('SELECT d.*, t.name AS nastypename, c.name AS channel,
-		        lc.name AS city_name,
-				(CASE WHEN ls.name2 IS NOT NULL THEN ' . $this->db->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END) AS street_name,
-				lt.name AS street_type,
+				lc.name AS city_name,
 				lb.name AS borough_name, lb.type AS borough_type,
-				ld.name AS district_name, lst.name AS state_name
+				ld.name AS district_name, ls.name AS state_name
 			FROM netdevices d
 			LEFT JOIN nastypes t ON (t.id = d.nastype)
 			LEFT JOIN ewx_channels c ON (d.channelid = c.id)
 			LEFT JOIN location_cities lc ON (lc.id = d.location_city)
-			LEFT JOIN location_streets ls ON (ls.id = d.location_street)
-			LEFT JOIN location_street_types lt ON (lt.id = ls.typeid)
 			LEFT JOIN location_boroughs lb ON (lb.id = lc.boroughid)
 			LEFT JOIN location_districts ld ON (ld.id = lb.districtid)
-			LEFT JOIN location_states lst ON (lst.id = ld.stateid)
+			LEFT JOIN location_states ls ON (ls.id = ld.stateid)
 			WHERE d.id = ?', array($id));
 
         $result['takenports'] = $this->CountNetDevLinks($id);
