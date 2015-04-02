@@ -60,7 +60,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             'halfduplex' => $nodedata['halfduplex'],
             'linktype' => isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
 	    'linkradiosector' => (isset($nodedata['linktype']) && intval($nodedata['linktype']) == 1 ?
-		(isset($nodedata['radiosector']) ? intval($nodedata['radiosector']) : null) : null),
+		(isset($nodedata['radiosector']) && intval($nodedata['radiosector']) ? intval($nodedata['radiosector']) : null) : null),
             'linktechnology' => isset($nodedata['linktechnology']) ? intval($nodedata['linktechnology']) : 0,
             'linkspeed' => isset($nodedata['linkspeed']) ? intval($nodedata['linkspeed']) : 100000,
             'port' => isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
@@ -560,6 +560,8 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             'location_house' => $nodedata['location_house'] ? $nodedata['location_house'] : null,
             'location_flat' => $nodedata['location_flat'] ? $nodedata['location_flat'] : null,
             'linktype' => isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
+	    'linkradiosector' => (isset($nodedata['linktype']) && intval($nodedata['linktype']) == 1 ?
+		(isset($nodedata['radiosector']) && intval($nodedata['radiosector']) ? intval($nodedata['radiosector']) : null) : null),
             'linktechnology' => isset($nodedata['linktechnology']) ? intval($nodedata['linktechnology']) : 0,
             'linkspeed' => isset($nodedata['linkspeed']) ? intval($nodedata['linkspeed']) : 100000,
             'port' => isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
@@ -575,10 +577,10 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         if ($this->db->Execute('INSERT INTO nodes (name, ipaddr, ipaddr_pub, ownerid,
 			passwd, creatorid, creationdate, access, warning, info, netdev,
 			location, location_city, location_street, location_house, location_flat,
-			linktype, linktechnology, linkspeed, port, chkmac, halfduplex, nas,
+			linktype, linkradiosector, linktechnology, linkspeed, port, chkmac, halfduplex, nas,
 			longitude, latitude, netid, invprojectid)
 			VALUES (?, inet_aton(?), inet_aton(?), ?, ?, ?,
-			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
+			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
             $id = $this->db->GetLastInsertID('nodes');
 
             // EtherWerX support (devices have some limits)
