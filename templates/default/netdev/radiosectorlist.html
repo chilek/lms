@@ -14,13 +14,14 @@
 {foreach from=$radiosectors item=radiosector}
 {$rsid = $radiosector.id}
 <TR class="highlight {cycle name=radiosectors}">
+	{if $formdata.rsid && $formdata.rsid == $rsid}{$edit = true}{else}{$edit = false}{/if}
 	<TD class="bold nobr">
 		<img src="img/wireless.gif" alt=""> <span id="name_{$rsid}">{$radiosector.name}</span>
 		<input type="text" size="60" name="name_edit_{$rsid}" id="name_edit_{$rsid}" value="{$radiosector.name}" {tip text="Enter name" trigger="name_edit_{$rsid}"} style="display: none;">
 	</TD>
 	<TD class="nobr">
-		<span id="azimuth_{$rsid}">{t a=$radiosector.azimuth}$a deg.{/t}</span>
-		<input type="text" size="10" name="azimuth_edit_{$rsid}" id="azimuth_edit_{$rsid}" value="{$radiosector.azimuth}" {tip text="Enter azimuth in degrees" trigger="azimuth_edit_{$rsid}"} style="display: none;">
+		<span id="azimuth_{$rsid}"{if $edit} style="display: none;"{/if}>{t a=$radiosector.azimuth}$a deg.{/t}</span>
+		<input type="text" size="10" name="azimuth_edit_{$rsid}" id="azimuth_edit_{$rsid}" value="{if $edit}{$formdata.azimuth}{else}{$radiosector.azimuth}{/if}" {tip text="Enter azimuth in degrees" trigger="azimuth_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
 	</TD>
 	<TD class="nobr">
 		<span id="radius_{$rsid}">{t a=$radiosector.radius}$a deg.{/t}</span>
@@ -35,9 +36,9 @@
 		<input type="text" size="10" name="rsrange_edit_{$rsid}" id="rsrange_edit_{$rsid}" value="{$radiosector.rsrange}" {tip text="Enter range in meters" trigger="rsrange_edit_{$rsid}"} style="display: none;">
 	</TD>
 	<TD class="text-right nobr">
-		<A HREF="javascript:toggleEditRadioSector({$rsid});" id="edit_button_{$rsid}"><IMG SRC="img/edit.gif" ALT="[ {trans("Edit")} ]" {tip text="Edit radio sector"}></A>
-		<A HREF="javascript:updateRadioSector({$rsid});" id="save_button_{$rsid}" style="display: none;"><IMG SRC="img/save.gif" ALT="[ {trans("Save")} ]" {tip text="Save"}></A>
-		<A HREF="javascript:toggleEditRadioSector({$rsid});" id="cancel_button_{$rsid}" style="display: none;"><IMG SRC="img/cancel.gif" ALT="[ {trans("Cancel")} ]" {tip text="Cancel"}></A>
+		<A HREF="javascript:toggleEditRadioSector({$rsid});" id="edit_button_{$rsid}"{if $edit} style="display: none;"{/if}><IMG SRC="img/edit.gif" ALT="[ {trans("Edit")} ]" {tip text="Edit radio sector"}></A>
+		<A HREF="javascript:updateRadioSector({$rsid});" id="save_button_{$rsid}"{if !$edit} style="display: none;"{/if}><IMG SRC="img/save.gif" ALT="[ {trans("Save")} ]" {tip text="Save"}></A>
+		<A HREF="javascript:toggleEditRadioSector({$rsid});" id="cancel_button_{$rsid}"{if !$edit} style="display: none;"{/if}><IMG SRC="img/cancel.gif" ALT="[ {trans("Cancel")} ]" {tip text="Cancel"}></A>
 		<A HREF="javascript:delRadioSector({$rsid});" id="delete_button_{$rsid}"><IMG SRC="img/delete.gif" ALT="[ {trans("Delete")} ]" {tip text="Remove radio sector"}></A>
 	</TD>
 </TR>

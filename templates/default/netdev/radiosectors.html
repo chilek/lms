@@ -1,7 +1,7 @@
 <!--// $Id$ //-->
 <TABLE class="lmsbox">
     <THEAD>
-	<TR class="hand" onclick="showOrHide('radiosectorspanel');">
+	<TR class="hand" onclick="showOrHideRadioSectorPanel();">
 		<TD class="bold">
 			<IMG src="img/wireless.gif" alt="">
 			<A name="radiosectors">{trans("Radio sectors:")}</A>
@@ -22,7 +22,14 @@
 <SCRIPT type="text/javascript">
 <!--
 if (getCookie('radiosectorspanel') == '1') {
-	document.getElementById('radiosectorspanel').style.display = '';
+	xjx.$('radiosectorspanel').style.display = '';
+	xajax_getRadioSectors({$objectid}, null);
+}
+
+function showOrHideRadioSectorPanel() {
+	showOrHide('radiosectorspanel');
+	if (xjx.$('radiosectorspanel').style.display == '')
+		xajax_getRadioSectors({$objectid}, null);
 }
 
 function addRadioSector() {
@@ -55,12 +62,11 @@ function updateRadioSector(id) {
 		params[elems[i]] = xjx.$(elems[i] + '_edit_' + id).value;
 		xjx.$(elems[i] + '_edit_' + id).disabled = true;
 	}
+	params['rsid'] = id;
 	xjx.$('save_button_' + id).disabled = true;
 	xjx.$('cancel_button_' + id).disabled = true;
 	xjx.$('delete_button_' + id).disabled = true;
 	xajax_updateRadioSector(id, params);
 }
-
-xajax_getRadioSectors({$objectid}, null);
 //-->
 </SCRIPT>
