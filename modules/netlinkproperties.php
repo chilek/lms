@@ -43,16 +43,20 @@ function update_netlink_properties($id, $devid, $link) {
 			$bitmap = 'wireless.gif';
 	}
 
-	$radiosectorname = $DB->GetOne('SELECT name FROM netradiosectors WHERE id = ?', array($link['radiosector']));
+	if (!$isnetlink)
+		$radiosectorname = $DB->GetOne('SELECT name FROM netradiosectors WHERE id = ?', array($link['radiosector']));
 
-	$contents = "<IMG src=\"img/" . $bitmap
+	$content1 = ($link['technology'] ? $LINKTECHNOLOGIES[$link['type']][$link['technology']] : '')
+		. '<br>' . $LINKSPEEDS[$link['speed']];
+
+	$content2 = "<IMG src=\"img/" . $bitmap
 			. "\" alt=\"[ " . trans("Change connection properties") . " ]\" title=\"[ " . trans("Change connection properties") . " ]\""
 			. " onmouseover=\"popup('<span class=&quot;nobr;&quot;>" . trans("Link type:") . " " . $LINKTYPES[$link['type']] . "<br>"
 			. (!$isnetlink && $radiosectorname ? trans("Radio sector:") . " " . $radiosectorname . "<br>" : '')
 			. ($link['technology'] ? trans("Link technology:") . " " . $LINKTECHNOLOGIES[$link['type']][$link['technology']] . "<br>" : '')
 			. trans("Link speed:") . " " . $LINKSPEEDS[$link['speed']]
 			. "</span>');\" onmouseout=\"pophide();\">";
-	$result->call('update_netlink_info', $contents);
+	$result->call('update_netlink_info', $content1, $content2);
 
 	return $result;
 }
