@@ -32,7 +32,7 @@ $DB->Execute("CREATE TABLE netradiosectors (
 	azimuth decimal(9,2) DEFAULT 0 NOT NULL,
 	radius decimal(9,2) DEFAULT 0 NOT NULL,
 	altitude smallint DEFAULT 0 NOT NULL,
-	range int(11) DEFAULT 0 NOT NULL,
+	`range` int(11) DEFAULT 0 NOT NULL,
 	netdev int(11) NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE KEY name (name, netdev),

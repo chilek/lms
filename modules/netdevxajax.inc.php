@@ -159,7 +159,7 @@ function addRadioSector($netdevid, $params) {
 			'range' => $params['range'],
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netdevid,
 		);
-		$DB->Execute('INSERT INTO netradiosectors (name, azimuth, radius, altitude, range, netdev) VALUES (?, ?, ?, ?, ?, ?)',
+		$DB->Execute('INSERT INTO netradiosectors (name, azimuth, radius, altitude, `range`, netdev) VALUES (?, ?, ?, ?, ?, ?)',
 			array_values($args));
 		if ($SYSLOG) {
 			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR]] = $DB->GetLastInsertID('netradiosectors');
