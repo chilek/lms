@@ -75,6 +75,10 @@ $attachment_name = ConfigHelper::getConfig('receipts.attachment_name');
 if(!empty($attachment_name))
 	header('Content-Disposition: attachment; filename='.$attachment_name);
 
+$template_file = ConfigHelper::getConfig('receipts.template_file');
+if (!$SMARTY->templateExists($template_file))
+	$template_file = 'receipt' . DIRECTORY_SEPARATOR . $template_file;
+
 if(isset($_GET['print']) && $_GET['print'] == 'cached' && sizeof($_POST['marks']))
 {
         $SESSION->restore('rlm', $rlm);
@@ -105,10 +109,6 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached' && sizeof($_POST['marks']
 	$layout['pagetitle'] = trans('Cash Receipts');
 	$SMARTY->display('receipt/receiptheader.html');
 	$SMARTY->assign('type', !empty($_GET['which']) ? $_GET['which'] : '');
-
-	$template_file = ConfigHelper::getConfig('receipts.template_file');
-	if (!$SMARTY->templateExists($template_file))
-		$template_file = 'receipt' . DIRECTORY_SEPARATOR . $template_file;
 
 	$i = 0;
 	$count = sizeof($ids);
@@ -143,9 +143,6 @@ elseif($receipt = GetReceipt($_GET['id']))
 	$SMARTY->assign('type', isset($_GET['which']) ? $_GET['which'] : NULL);
 	$SMARTY->assign('receipt',$receipt);
 	$SMARTY->display('receipt/receiptheader.html');
-	$template_file = ConfigHelper::getConfig('receipts.template_file');
-	if (!$SMARTY->templateExists($template_file))
-		$template_file = 'receipt' . DIRECTORY_SEPARATOR . $template_file;
 	$SMARTY->display($template_file);
 	$SMARTY->display('clearfooter.html');
 }

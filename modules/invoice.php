@@ -38,6 +38,13 @@ if(!empty($attachment_name))
 
 $SMARTY->assign('css', file('img/style_print.css')); 
 
+if(isset($invoice['invoice']))
+	$template_file = ConfigHelper::getConfig('invoices.cnote_template_file');
+else
+	$template_file = ConfigHelper::getConfig('invoices.template_file');
+if (!$SMARTY->templateExists($template_file))
+	$template_file = 'invoice' . DIRECTORY_SEPARATOR . $template_file;
+
 if(isset($_GET['print']) && $_GET['print'] == 'cached')
 {
 	$SESSION->restore('ilm', $ilm);
@@ -74,13 +81,6 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached')
 	if(!empty($_GET['duplicate'])) $which[] = trans('DUPLICATE');
 
 	if(!sizeof($which)) $which[] = trans('ORIGINAL');
-
-	if(isset($invoice['invoice']))
-		$template_file = ConfigHelper::getConfig('invoices.cnote_template_file');
-	else
-		$template_file = ConfigHelper::getConfig('invoices.template_file');
-	if (!$SMARTY->templateExists($template_file))
-		$template_file = 'invoice' . DIRECTORY_SEPARATOR . $template_file;
 
 	$count = sizeof($ids) * sizeof($which);
 	$i=0;
@@ -139,13 +139,6 @@ elseif(isset($_GET['fetchallinvoices']))
 
 	$SMARTY->display('invoice/invoiceheader.html');
 
-	if(isset($invoice['invoice']))
-		$template_file = ConfigHelper::getConfig('invoices.cnote_template_file');
-	else
-		$template_file = ConfigHelper::getConfig('invoices.template_file');
-	if (!$SMARTY->templateExists($template_file))
-		$template_file = 'invoice' . DIRECTORY_SEPARATOR . $template_file;
-
 	foreach($ids as $idx => $invoiceid)
 	{
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
@@ -186,13 +179,6 @@ elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 	
 	$count = sizeof($which);
 	$i = 0;
-
-	if(isset($invoice['invoice']))
-		$template_file = ConfigHelper::getConfig('invoices.cnote_template_file');
-	else
-		$template_file = ConfigHelper::getConfig('invoices.template_file');
-	if (!$SMARTY->templateExists($template_file))
-		$template_file = 'invoice' . DIRECTORY_SEPARATOR . $template_file;
 
 	$SMARTY->display('invoice/invoiceheader.html');
 	foreach($which as $type)
