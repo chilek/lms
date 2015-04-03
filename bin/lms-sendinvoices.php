@@ -112,7 +112,8 @@ $CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ?
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 
-// Load autloader
+// Load autoloader
+
 require_once(LIB_DIR.'/autoloader.php');
 
 // Do some checks and load config defaults
@@ -124,16 +125,11 @@ require_once(LIB_DIR.'/config.php');
 $DB = null;
 
 try {
-
-    $DB = LMSDB::getInstance();
-
+	$DB = LMSDB::getInstance();
 } catch (Exception $ex) {
-    
-    trigger_error($ex->getMessage(), E_USER_WARNING);
-    
-    // can't working without database
-    die("Fatal error: cannot connect to database!\n");
-    
+	trigger_error($ex->getMessage(), E_USER_WARNING);
+	// can't working without database
+	die("Fatal error: cannot connect to database!\n");
 }
 
 // Include required files (including sequence is important)
@@ -172,7 +168,7 @@ if (empty($sender_email))
 	die("Fatal error: sender_email unset! Can't continue, exiting.\n");
 
 $smtp_auth_type = ConfigHelper::getConfig('mail.smtp_auth_type');
-if (($auth || !empty($smtp_auth_type)) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', ConfigHelper::getConfig('mail.smtp_auth_type')))
+if (($auth || !empty($smtp_auth_type)) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $smtp_auth_type))
 	die("Fatal error: smtp_auth setting not supported! Can't continue, exiting.\n");
 
 $fakedate = (array_key_exists('fakedate', $options) ? $options['fakedate'] : NULL);
