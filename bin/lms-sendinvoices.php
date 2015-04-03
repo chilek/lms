@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -22,7 +22,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
  *  USA.
  *
- *  $Id: lms-sendinvoices.php,v 1.1 2012/03/03 15:27:16 chilek Exp $
+ *  $Id$
  */
 
 ini_set('error_reporting', E_ALL&~E_NOTICE);
@@ -54,7 +54,7 @@ if (array_key_exists('version', $options))
 {
 	print <<<EOF
 lms-sendinvoices.php
-(C) 2001-2013 LMS Developers
+(C) 2001-2015 LMS Developers
 
 EOF;
 	exit(0);
@@ -64,7 +64,7 @@ if (array_key_exists('help', $options))
 {
 	print <<<EOF
 lms-sendinvoices.php
-(C) 2001-2013 LMS Developers
+(C) 2001-2015 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -83,7 +83,7 @@ if (!$quiet)
 {
 	print <<<EOF
 lms-sendinvoices.php
-(C) 2001-2013 LMS Developers
+(C) 2001-2015 LMS Developers
 
 EOF;
 }
@@ -97,9 +97,8 @@ if (!$quiet) {
 	echo "Using file ".$CONFIG_FILE." as config.\n";
 }
 
-if (!is_readable($CONFIG_FILE)) {
+if (!is_readable($CONFIG_FILE))
 	die("Unable to read configuration file [".$CONFIG_FILE."]!\n");
-}
 
 define('CONFIG_FILE', $CONFIG_FILE);
 
