@@ -22,6 +22,7 @@
  */
 
 $DB->BeginTrans();
+$DB->LockTables("documents");
 
 $DB->Execute("ALTER TABLE documents ADD fullnumber varchar(50) DEFAULT NULL");
 $DB->Execute("ALTER TABLE documents ADD INDEX fullnumber (fullnumber)");
@@ -45,6 +46,7 @@ do {
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014072500', 'dbversion'));
 
+$DB->UnLockTables("documents");
 $DB->CommitTrans();
 
 ?>

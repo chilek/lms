@@ -22,11 +22,13 @@
  */
 
 $DB->BeginTrans();
+$DB->LockTables("documents");
 
 $DB->Execute("ALTER TABLE documents ADD fullnumber varchar(50) DEFAULT NULL");
 $DB->Execute("CREATE INDEX documents_fullnumber_idx ON documents (fullnumber)");
 
 include(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
+
 $offset = 0;
 do {
 	$docs = $DB->GetAll("SELECT d.id, cdate, number, template FROM documents d
@@ -44,6 +46,7 @@ do {
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014072500', 'dbversion'));
 
+$DB->UnLockTables("documents");
 $DB->CommitTrans();
 
 ?>
