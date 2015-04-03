@@ -72,6 +72,10 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached')
 
 	sort($ids);
 
+	$template_file = ConfigHelper::getConfig('notes.template_file');
+	if (!$SMARTY->templateExists($template_file))
+		$template_file = 'note' . DIRECTORY_SEPARATOR . $template_file;
+
 	$count = sizeof($ids);
 	$i=0;
 	foreach($ids as $idx => $noteid)
@@ -81,7 +85,7 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached')
 		$i++;
 		if($i == $count) $note['last'] = TRUE;
 		$SMARTY->assign('note', $note);
-		$SMARTY->display(ConfigHelper::getConfig('notes.template_file'));
+		$SMARTY->display($template_file);
 	}
 	$SMARTY->display('clearfooter.html');
 }
@@ -116,12 +120,16 @@ elseif(isset($_GET['fetchallnotes']))
 
 	$SMARTY->display('note/noteheader.html');
 
+	$template_file = ConfigHelper::getConfig('notes.template_file');
+	if (!$SMARTY->templateExists($template_file))
+		$template_file = 'note' . DIRECTORY_SEPARATOR . $template_file;
+
 	foreach($ids as $idx => $noteid)
 	{
 		$note = $LMS->GetNoteContent($noteid);
 
 		$SMARTY->assign('note',$note);
-		$SMARTY->display(ConfigHelper::getConfig('notes.template_file'));
+		$SMARTY->display($template_file);
 	}
 	$SMARTY->display('clearfooter.html');
 }
@@ -134,7 +142,10 @@ elseif($note = $LMS->GetNoteContent($_GET['id']))
 
 	$note['last'] = TRUE;
 	$SMARTY->assign('note',$note);
-	$SMARTY->display(ConfigHelper::getConfig('notes.template_file'));
+	$template_file = ConfigHelper::getConfig('notes.template_file');
+	if (!$SMARTY->templateExists($template_file))
+		$template_file = 'note' . DIRECTORY_SEPARATOR . $template_file;
+	$SMARTY->display($template_file);
 	$SMARTY->display('clearfooter.html');
 }
 else
