@@ -298,7 +298,7 @@ if (!empty($docs)) {
 					$headers['Cc'] = $notify_email;
 				$res = $LMS->SendMail($custemail . ',' . $notify_email, $headers, $body,
 					array(0 => array('content_type' => $ftype, 'filename' => $filename . '.' . $fext,
-						'data' => $res)));
+						'data' => $res)), $host, $port, $user, $pass, $auth);
 
 				if (is_string($res))
 					fprintf(STDERR, "Error sending mail: $res\n");
