@@ -92,15 +92,17 @@ function change_linktype(linktype) {
 			{/foreach}
 			break;
 	}
-	if (linktype != 1)
-		xjx.$('radiosector').selectedIndex = 0;
-	xjx.$('radiosector').disabled = (linktype != 1);
+	if (xjx.$('radiosector') != null) {
+		if (linktype != 1)
+			xjx.$('radiosector').selectedIndex = 0;
+		xjx.$('radiosector').disabled = (linktype != 1);
+	}
 }
 
 function submit_netlink_properties() {
 	var form = document.forms['netlinkproperties'];
 	var linktype = form.elements['linktype'].value;
-	var radiosector = form.elements['radiosector'].value;
+	var radiosector = (form.elements['radiosector'] != null ? form.elements['radiosector'].value : null);
 	var linktechnology = form.elements['linktechnology'].value;
 	var linkspeed = form.elements['linkspeed'].value;
 
@@ -112,10 +114,13 @@ function submit_netlink_properties() {
 		} );
 }
 
-function update_netlink_info(newcontent) {
+function update_netlink_info(content1, content2) {
 	var elem = window.parent.document.getElementById(
+		'{if $link.isnetlink}dev{else}node{/if}_' + '{$link.devid}');
+	elem.innerHTML = content1;
+	elem = window.parent.document.getElementById(
 		'{if $link.isnetlink}dev{else}node{/if}linkproperties_' + '{$link.devid}');
-	elem.innerHTML = newcontent;
+	elem.innerHTML = content2;
 
 	window.parent.popclick();
 }

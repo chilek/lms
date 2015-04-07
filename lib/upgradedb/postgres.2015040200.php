@@ -34,7 +34,7 @@ $DB->Execute("
 		azimuth numeric(9,2) DEFAULT 0 NOT NULL,
 		radius numeric(9,2) DEFAULT 0 NOT NULL,
 		altitude smallint DEFAULT 0 NOT NULL,
-		range integer DEFAULT 0 NOT NULL,
+		rsrange integer DEFAULT 0 NOT NULL,
 		netdev integer NOT NULL
 			REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
 		PRIMARY KEY (id),

@@ -38,6 +38,13 @@ if(!empty($attachment_name))
 
 $SMARTY->assign('css', file('img/style_print.css')); 
 
+if(isset($invoice['invoice']))
+	$template_file = ConfigHelper::getConfig('invoices.cnote_template_file');
+else
+	$template_file = ConfigHelper::getConfig('invoices.template_file');
+if (!$SMARTY->templateExists($template_file))
+	$template_file = 'invoice' . DIRECTORY_SEPARATOR . $template_file;
+
 if(isset($_GET['print']) && $_GET['print'] == 'cached')
 {
 	$SESSION->restore('ilm', $ilm);
@@ -88,10 +95,7 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached')
 			$SMARTY->assign('type',$type);
 			$SMARTY->assign('duplicate',$type==trans('DUPLICATE') ? TRUE : FALSE);
 			$SMARTY->assign('invoice',$invoice);
-			if(isset($invoice['invoice']))
-				$SMARTY->display('invoice/'.ConfigHelper::getConfig('invoices.cnote_template_file'));
-			else
-				$SMARTY->display('invoice/'.ConfigHelper::getConfig('invoices.template_file'));
+			$SMARTY->display($template_file);
 		}
 	}
 	$SMARTY->display('clearfooter.html');
@@ -143,10 +147,7 @@ elseif(isset($_GET['fetchallinvoices']))
 		{
 			$SMARTY->assign('type',$type);
 			$SMARTY->assign('invoice',$invoice);
-			if(isset($invoice['invoice']))
-				$SMARTY->display('invoice/'.ConfigHelper::getConfig('invoices.cnote_template_file'));
-			else
-				$SMARTY->display('invoice/'.ConfigHelper::getConfig('invoices.template_file'));
+			$SMARTY->display($template_file);
 		}
 	}
 	$SMARTY->display('clearfooter.html');
@@ -178,7 +179,7 @@ elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 	
 	$count = sizeof($which);
 	$i = 0;
-	
+
 	$SMARTY->display('invoice/invoiceheader.html');
 	foreach($which as $type)
 	{
@@ -187,11 +188,7 @@ elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 		$SMARTY->assign('invoice',$invoice);
 		$SMARTY->assign('duplicate',$type==trans('DUPLICATE') ? TRUE : FALSE);
 		$SMARTY->assign('type',$type);
-
-		if(isset($invoice['invoice']))
-			$SMARTY->display('invoice/'.ConfigHelper::getConfig('invoices.cnote_template_file'));
-		else
-			$SMARTY->display('invoice/'.ConfigHelper::getConfig('invoices.template_file'));
+		$SMARTY->display($template_file);
 	}
 	$SMARTY->display('clearfooter.html');
 }

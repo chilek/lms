@@ -12,24 +12,34 @@
 <TBODY>
 {cycle name=locks values="light,lucid" print=false}
 {foreach from=$radiosectors item=radiosector}
+{$rsid = $radiosector.id}
+{if $formdata.rsid && $formdata.rsid == $rsid}{$edit = true}{else}{$edit = false}{/if}
 <TR class="highlight {cycle name=radiosectors}">
 	<TD class="bold nobr">
-		<img src="img/wireless.gif" alt=""> {$radiosector.name}
+		<img src="img/wireless.gif" alt=""> <span id="name_{$rsid}"{if $edit} style="display: none;"{/if}>{$radiosector.name}</span>
+		<input type="text" size="60" name="name_edit_{$rsid}" id="name_edit_{$rsid}" value="{$radiosector.name}" {tip text="Enter name" trigger="name_edit_{$rsid}"} style="display: none;">
 	</TD>
 	<TD class="nobr">
-		{t a=$radiosector.azimuth}$a deg.{/t}
+		<span id="azimuth_{$rsid}"{if $edit} style="display: none;"{/if}>{t a=$radiosector.azimuth}$a deg.{/t}</span>
+		<input type="text" size="10" name="azimuth_edit_{$rsid}" id="azimuth_edit_{$rsid}" value="{if $edit}{$formdata.azimuth}{else}{$radiosector.azimuth}{/if}" {tip text="Enter azimuth in degrees" trigger="azimuth_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
 	</TD>
 	<TD class="nobr">
-		{t a=$radiosector.radius}$a deg.{/t}
+		<span id="radius_{$rsid}">{t a=$radiosector.radius}$a deg.{/t}</span>
+		<input type="text" size="10" name="radius_edit_{$rsid}" id="radius_edit_{$rsid}" value="{$radiosector.radius}" {tip text="Enter radius in degrees" trigger="radius_edit_{$rsid}"} style="display: none;">
 	</TD>
 	<TD class="nobr">
-		{t a=$radiosector.altitude}$a m{/t}
+		<span id="altitude_{$rsid}">{t a=$radiosector.altitude}$a m{/t}</span>
+		<input type="text" size="10" name="altitude_edit_{$rsid}" id="altitude_edit_{$rsid}" value="{$radiosector.altitude}" {tip text="Enter altitude in meters" trigger="altitude_edit_{$rsid}"} style="display: none;">
 	</TD>
 	<TD class="nobr">
-		{t a=$radiosector.range}$a m{/t}
+		<span id="rsrange_{$rsid}">{t a=$radiosector.rsrange}$a m{/t}</span>
+		<input type="text" size="10" name="rsrange_edit_{$rsid}" id="rsrange_edit_{$rsid}" value="{$radiosector.rsrange}" {tip text="Enter range in meters" trigger="rsrange_edit_{$rsid}"} style="display: none;">
 	</TD>
 	<TD class="text-right nobr">
-		<A HREF="javascript:delRadioSector({$radiosector.id});"><IMG SRC="img/delete.gif" ALT="[ {trans("Delete")} ]" {tip text="Remove radio sector"}></A>
+		<A HREF="javascript:toggleEditRadioSector({$rsid});" id="edit_button_{$rsid}"{if $edit} style="display: none;"{/if}><IMG SRC="img/edit.gif" ALT="[ {trans("Edit")} ]" {tip text="Edit radio sector"}></A>
+		<A HREF="javascript:updateRadioSector({$rsid});" id="save_button_{$rsid}"{if !$edit} style="display: none;"{/if}><IMG SRC="img/save.gif" ALT="[ {trans("Save")} ]" {tip text="Save"}></A>
+		<A HREF="javascript:toggleEditRadioSector({$rsid});" id="cancel_button_{$rsid}"{if !$edit} style="display: none;"{/if}><IMG SRC="img/cancel.gif" ALT="[ {trans("Cancel")} ]" {tip text="Cancel"}></A>
+		<A HREF="javascript:delRadioSector({$rsid});" id="delete_button_{$rsid}"><IMG SRC="img/delete.gif" ALT="[ {trans("Delete")} ]" {tip text="Remove radio sector"}></A>
 	</TD>
 </TR>
 {foreachelse}
@@ -45,29 +55,29 @@
 	<TD class="dark ftop nobr">
 		<img src="img/wireless.gif" alt="">
 		<label for="name">{trans("Name:")}
-		<input type="text" size="60" name="name" id="name" value="{$formdata.name}" {tip text="Enter name" trigger="name"}>
+		<input type="text" size="60" name="name" id="name" value="{if !$formdata.rsid}{$formdata.name}{/if}" {tip text="Enter name" trigger="name"}>
 		</label>
 	</TD>
 	<TD class="dark ftop nobr">
 		<img src="img/time.gif" alt="">
 		<label for="azimuth">{trans("Azimuth:")}
-		<input type="text" size="10" name="azimuth" id="azimuth" value="{$formdata.azimuth}" {tip text="Enter azimuth in degrees" trigger="azimuth"}>
+		<input type="text" size="10" name="azimuth" id="azimuth" value="{if !$formdata.rsid}{$formdata.azimuth}{/if}" {tip text="Enter azimuth in degrees" trigger="azimuth"}>
 		</label>
 	</TD>
 	<TD class="dark ftop nobr">
 		<img src="img/time.gif" alt="">
 		<label for="radius">{trans("Radius:")}
-		<input type="text" size="10" name="radius" id="radius" value="{$formdata.radius}" {tip text="Enter radius in degrees" trigger="radius"}>
+		<input type="text" size="10" name="radius" id="radius" value="{if !$formdata.rsid}{$formdata.radius}{/if}" {tip text="Enter radius in degrees" trigger="radius"}>
 		</label>
 	</TD>
 	<TD class="dark ftop nobr">
 		<label for="altitude">{trans("Altitude:")}
-		<input type="text" size="10" name="altitude" id="altitude" value="{$formdata.altitude}" {tip text="Enter altitude in meters" trigger="altitude"}>
+		<input type="text" size="10" name="altitude" id="altitude" value="{if !$formdata.rsid}{$formdata.altitude}{/if}" {tip text="Enter altitude in meters" trigger="altitude"}>
 		</label>
 	</TD>
 	<TD class="dark ftop nobr">
-		<label for="range">{trans("Range:")}
-		<input type="text" size="10" name="range" id="range" value="{$formdata.range}" {tip text="Enter range in meters" trigger="range"}>
+		<label for="rsrange">{trans("Range:")}
+		<input type="text" size="10" name="rsrange" id="rsrange" value="{if !$formdata.rsid}{$formdata.rsrange}{/if}" {tip text="Enter range in meters" trigger="rsrange"}>
 		</label>
 	</TD>
 	<TD class="dark ftop text-right nobr" rowspan="2">

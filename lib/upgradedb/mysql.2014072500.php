@@ -22,24 +22,31 @@
  */
 
 $DB->BeginTrans();
+$DB->LockTables("documents");
 
 $DB->Execute("ALTER TABLE documents ADD fullnumber varchar(50) DEFAULT NULL");
 $DB->Execute("ALTER TABLE documents ADD INDEX fullnumber (fullnumber)");
 
-$docs = $DB->GetAll('SELECT d.id, cdate, number, template FROM documents d
-	JOIN numberplans n ON n.id = d.numberplanid
-	WHERE numberplanid <> 0 ORDER BY id');
-if (!empty($docs)) {
-	include(LIB_DIR . '/common.php');
-	foreach ($docs as $doc) {
-		$fullnumber = docnumber($doc['number'], $doc['template'], $doc['cdate']);
-		$DB->Execute('UPDATE documents SET fullnumber = ? WHERE id = ?',
-			array($fullnumber, $doc['id']));
+include(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
+
+$offset = 0;
+do {
+	$docs = $DB->GetAll("SELECT d.id, cdate, number, template FROM documents d
+		JOIN numberplans n ON n.id = d.numberplanid
+		WHERE numberplanid <> 0 ORDER BY id OFFSET $offset LIMIT 1000");
+	if (!empty($docs)) {
+		foreach ($docs as $doc) {
+			$fullnumber = docnumber($doc['number'], $doc['template'], $doc['cdate']);
+			$DB->Execute("UPDATE documents SET fullnumber = ? WHERE id = ?",
+				array($fullnumber, $doc['id']));
+		}
+		$offset += count($docs);
 	}
-}
+} while (!empty($docs));
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014072500', 'dbversion'));
 
+$DB->UnLockTables("documents");
 $DB->CommitTrans();
 
 ?>
