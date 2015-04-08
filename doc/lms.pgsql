@@ -1011,9 +1011,15 @@ CREATE TABLE netlinks (
 	technology integer	DEFAULT 0 NOT NULL,
 	srcport smallint	DEFAULT 0 NOT NULL,
 	dstport smallint	DEFAULT 0 NOT NULL,
+	srcradiosector integer	DEFAULT NULL
+		REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	dstradiosector integer	DEFAULT NULL
+		REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY  (id),
 	CONSTRAINT netlinks_src_key UNIQUE (src, dst)
 );
+CREATE INDEX netlinks_srcradiosector_idx ON netlinks (srcradiosector);
+CREATE INDEX netlinks_dstradiosector_idx ON netlinks (dstradiosector);
 
 /* ---------------------------------------------------
  Functions for network address translations
@@ -2489,4 +2495,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015040200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015040800');
