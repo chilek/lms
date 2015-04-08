@@ -60,7 +60,7 @@ if (!defined('CACHE_DIR')) {
  */
 function application_autoloader($class) {
 
-    $namespace = explode('\\', $class);
+    $namespace = explode("\\", $class);
     
     $class = $namespace[count($namespace) - 1];
     
@@ -83,13 +83,14 @@ function application_autoloader($class) {
         'TCPDF' => 'tcpdf/tcpdf.php'
     );
 
-    if (array_key_exists($class, $base_classes)) {
+    if (array_key_exists($class, $base_classes))
         require_once LIB_DIR . DIRECTORY_SEPARATOR . $base_classes[$class];
-    } else {
+    else {
         // set cache file path
         $cache_file = CACHE_DIR . "/classpaths.cache";
         // read cache
-        $path_cache = (file_exists($cache_file)) ? unserialize(file_get_contents($cache_file)) : array();
+	$serialized_path_cache = (file_exists($cache_file) ? file_get_contents($cache_file) : '');
+        $path_cache = unserialize($serialized_path_cache);
         // create empty cache container if cache is empty
         if (!is_array($path_cache)) {
             $path_cache = array();
@@ -139,9 +140,8 @@ function application_autoloader($class) {
         // serialize cache
         $serialized_paths = serialize($path_cache);
         // if cache changed save it
-        if ($serialized_paths != $path_cache) {
+        if ($serialized_paths != $serialized_path_cache)
             file_put_contents($cache_file, $serialized_paths);
-        }
     }
 }
 
