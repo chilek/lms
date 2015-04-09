@@ -701,8 +701,14 @@ CREATE TABLE netlinks (
   technology int(11) NOT NULL DEFAULT '0',
   srcport smallint NOT NULL DEFAULT '0',
   dstport smallint NOT NULL DEFAULT '0',
+  srcradiosector int(11) DEFAULT NULL,
+  dstradiosector int(11) DEFAULT NULL,
   PRIMARY KEY  (id),
-  UNIQUE KEY src (src,dst)
+  UNIQUE KEY src (src,dst),
+  INDEX srcradiosector (srcradiosector),
+  INDEX dstradiosector (dstradiosector),
+  FOREIGN KEY (srcradiosector) REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  FOREIGN KEY (dstradiosector) REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -2393,4 +2399,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015040200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015040800');

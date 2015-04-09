@@ -38,7 +38,7 @@ class ConfigHelper
      * @param string $default Default value
      * @return string
      */
-    public static function getConfig($name, $default = null)
+    public static function getConfig($name, $default = null, $allow_empty_value = false)
     {
         list($section_name, $variable_name) = explode('.', $name, 2);
 
@@ -56,7 +56,7 @@ class ConfigHelper
 
         $value = LMSConfig::getConfig()->getSection($section_name)->getVariable($variable_name)->getValue();
 
-        return $value == '' ? $default : $value;
+        return $value == '' && !$allow_empty_value ? $default : $value;
     }
     
     /**
