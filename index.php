@@ -178,6 +178,13 @@ $SMARTY->AddTemplateDir(
 		SMARTY_TEMPLATES_DIR,
 	)
 );
+if (!empty($custom_templates_dir)) {
+	$SMARTY->assign('cssdir','templates/'.$custom_templates_dir.'/css');
+	$SMARTY->assign('jsdir','templates/'.$custom_templates_dir.'/js');
+} else {
+	$SMARTY->assign('cssdir','templates/default/css');
+	$SMARTY->assign('jsdir','templates/default/js');
+};
 $SMARTY->setCompileDir(SMARTY_COMPILE_DIR);
 $SMARTY->debugging = ConfigHelper::checkConfig('phpui.smarty_debug');
 
