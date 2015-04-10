@@ -93,15 +93,15 @@
 									{/section}
 									</SELECT>
 									<label for="port">{trans("Dest. port")}:<INPUT name="port" id="port" value="{if $connectnode.port}{$connectnode.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
-									<SELECT NAME="linktype" id="devnodeslinktype" {tip trigger="devnodeslinktype" text="Select link type"} onchange="change_nodelinktype(this.options[this.selectedIndex].value)">
-										{foreach from=$_LINKTYPES item=item key=key}
-										<OPTION value="{$key}"{if $key==$nodelinktype} selected{/if}>{$item}</OPTION>
-										{/foreach}
-									</SELECT>
 									<SELECT NAME="radiosector" id="devnodesradiosector" {tip trigger="devnodesradiosector" text="Select radio sector"}{if $nodelinktype != 1} style="display: none;"{/if}>
 										<OPTION value="0">- {trans("none")} -</OPTION>
 										{foreach $netdevinfo.radiosectors as $radiosector}
 										<OPTION value="{$radiosector.id}"{if $radiosector.id == $nodelinkradiosector} selected{/if}>{$radiosector.name}</OPTION>
+										{/foreach}
+									</SELECT>
+									<SELECT NAME="linktype" id="devnodeslinktype" {tip trigger="devnodeslinktype" text="Select link type"} onchange="change_nodelinktype(this.options[this.selectedIndex].value)">
+										{foreach from=$_LINKTYPES item=item key=key}
+										<OPTION value="{$key}"{if $key==$nodelinktype} selected{/if}>{$item}</OPTION>
 										{/foreach}
 									</SELECT>
 									{if !$devnodeslinktype}{$devnodeslinktype = 0}{/if}
