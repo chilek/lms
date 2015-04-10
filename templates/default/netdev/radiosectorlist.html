@@ -12,7 +12,7 @@
 </TR>
 </THEAD>
 <TBODY>
-{cycle name=locks values="light,lucid" print=false}
+{cycle name=radiosectors values="light,lucid" print=false}
 {foreach from=$radiosectors item=radiosector}
 {$rsid = $radiosector.id}
 {if $formdata.rsid && $formdata.rsid == $rsid}{$edit = true}{else}{$edit = false}{/if}
