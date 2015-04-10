@@ -5,7 +5,8 @@
 	<TD style="width: 1%;"><img src="img/time.gif" alt=""> {trans("Azimuth:")}</TD>
 	<TD style="width: 1%;"><img src="img/time.gif" alt=""> {trans("Radius:")}</TD>
 	<TD style="width: 1%;">{trans("Altitude:")}</TD>
-	<TD style="width: 93%;">{trans("Range:")}</TD>
+	<TD style="width: 1%;">{trans("Range:")}</TD>
+	<TD style="width: 92%;">{trans("Radio license number:")}</TD>
 	<TD style="width: 1%;" class="nobr text-center">{trans("Nodes:")}</TD>
 	<TD style="width: 1%;" class="nobr text-center">{trans("Net devices:")}</TD>
 	<TD style="width: 1%;">&nbsp;</TD>
@@ -37,6 +38,10 @@
 		<span id="rsrange_{$rsid}">{t a=$radiosector.rsrange}$a m{/t}</span>
 		<input type="text" size="10" name="rsrange_edit_{$rsid}" id="rsrange_edit_{$rsid}" value="{$radiosector.rsrange}" {tip text="Enter range in meters" trigger="rsrange_edit_{$rsid}"} style="display: none;">
 	</TD>
+	<TD class="nobr">
+		<span id="license_{$rsid}">{$radiosector.license}</span>
+		<input type="text" size="30" name="license_edit_{$rsid}" id="license_edit_{$rsid}" value="{$radiosector.license}" {tip text="Enter radio license number" trigger="license_edit_{$rsid}"} style="display: none;">
+	</TD>
 	<TD class="nobr text-center">
 		{$radiosector.computers}
 	</TD>
@@ -52,7 +57,7 @@
 </TR>
 {foreachelse}
 <TR>
-	<TD class="empty-table" colspan="8">
+	<TD class="empty-table" colspan="9">
 		<p>&nbsp;</p>
 		<p>{trans("No radio sectors.")}</p>
 		<p>&nbsp;</p>
@@ -86,6 +91,11 @@
 	<TD class="dark ftop nobr">
 		<label for="rsrange">{trans("Range:")}
 		<input type="text" size="10" name="rsrange" id="rsrange" value="{if !$formdata.rsid}{$formdata.rsrange}{/if}" {tip text="Enter range in meters" trigger="rsrange"}>
+		</label>
+	</TD>
+	<TD class="dark ftop nobr">
+		<label for="license">{trans("Radio license number:")}
+		<input type="text" size="30" name="license" id="license" value="{if !$formdata.rsid}{$formdata.license}{/if}" {tip text="Enter radio license number" trigger="license"}>
 		</label>
 	</TD>
 	<TD class="dark ftop text-right nobr" colspan="3" rowspan="2">

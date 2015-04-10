@@ -187,6 +187,9 @@ function validateRadioSector($params, $update = false) {
 	elseif (!preg_match('/^[0-9]+$/', $params['rsrange']))
 		$error['rsrange'] = trans('Radio sector range has invalid format!');
 
+	if (strlen($params['license']) > 63)
+		$error['license'] = trans('Radio sector license number is too long!');
+
 	return $error;
 }
 
@@ -243,9 +246,10 @@ function addRadioSector($params) {
 			'radius' => $params['radius'],
 			'altitude' => $params['altitude'],
 			'rsrange' => $params['rsrange'],
+			'license' => (strlen($params['license']) ? $params['license'] : null),
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netdevid,
 		);
-		$DB->Execute('INSERT INTO netradiosectors (name, azimuth, radius, altitude, rsrange, netdev) VALUES (?, ?, ?, ?, ?, ?)',
+		$DB->Execute('INSERT INTO netradiosectors (name, azimuth, radius, altitude, rsrange, license, netdev) VALUES (?, ?, ?, ?, ?, ?, ?)',
 			array_values($args));
 		if ($SYSLOG) {
 			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR]] = $DB->GetLastInsertID('netradiosectors');
@@ -303,10 +307,11 @@ function updateRadioSector($rsid, $params) {
 			'radius' => $params['radius'],
 			'altitude' => $params['altitude'],
 			'rsrange' => $params['rsrange'],
+			'license' => (strlen($params['license']) ? $params['license'] : null),
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR] => $rsid,
 		);
 		$DB->Execute('UPDATE netradiosectors SET name = ?, azimuth = ?, radius = ?, altitude = ?,
-			rsrange = ? WHERE id = ?', array_values($args));
+			rsrange = ?, license = ? WHERE id = ?', array_values($args));
 		if ($SYSLOG) {
 			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]] = $netdevid;
 			$SYSLOG->AddMessage(SYSLOG_RES_RADIOSECTOR, SYSLOG_OPER_UPDATE, $args,

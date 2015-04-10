@@ -503,6 +503,7 @@ CREATE TABLE netradiosectors (
 	radius numeric(9,2) DEFAULT 0 NOT NULL,
 	altitude smallint DEFAULT 0 NOT NULL,
 	rsrange integer DEFAULT 0 NOT NULL,
+	license varchar(64) DEFAULT NULL,
 	netdev integer NOT NULL
 		REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id),
@@ -2495,4 +2496,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015040800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015041000');
