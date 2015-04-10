@@ -46,27 +46,32 @@ switch ($action) {
 
 		if (!$error) {
 			$links1 = $DB->GetAll('(SELECT type, 
-                        (CASE src WHEN ? THEN dst ELSE src END) AS id,
-			(CASE src WHEN ? THEN srcport ELSE dstport END) AS srcport,
-			(CASE src WHEN ? THEN dstport ELSE srcport END) AS dstport,
-			(CASE src WHEN ? THEN srcradiosector ELSE dstradiosector END) AS srcradiosector,
-			(CASE src WHEN ? THEN dstradiosector ELSE srcradiosector END) AS dstradiosector
-			FROM netlinks WHERE src = ? OR dst = ?)
+				(CASE src WHEN ? THEN dst ELSE src END) AS id,
+				speed, technology,
+				(CASE src WHEN ? THEN srcport ELSE dstport END) AS srcport,
+				(CASE src WHEN ? THEN dstport ELSE srcport END) AS dstport,
+				(CASE src WHEN ? THEN srcradiosector ELSE dstradiosector END) AS srcradiosector,
+				(CASE src WHEN ? THEN dstradiosector ELSE srcradiosector END) AS dstradiosector
+				FROM netlinks WHERE src = ? OR dst = ?)
 			UNION
-			(SELECT linktype AS type, linkradiosector AS srcradiosector, linktechnology AS technology, linkspeed AS speed, id, port AS srcport, NULL AS dstport
-			FROM nodes WHERE netdev = ? AND ownerid > 0)
+				(SELECT linktype AS type, linkradiosector AS srcradiosector, NULL AS dstradiosector,
+				linktechnology AS technology, linkspeed AS speed, id, port AS srcport, NULL AS dstport
+				FROM nodes WHERE netdev = ? AND ownerid > 0)
 			ORDER BY srcport', array($dev1['id'], $dev1['id'], $dev1['id'], $dev1['id'], $dev1['id'],
 					$dev1['id'], $dev1['id'], $dev1['id']));
+
 			$links2 = $DB->GetAll('(SELECT type, 
-                        (CASE src WHEN ? THEN dst ELSE src END) AS id,
-			(CASE src WHEN ? THEN srcport ELSE dstport END) AS srcport,
-			(CASE src WHEN ? THEN dstport ELSE srcport END) AS dstport,
-			(CASE src WHEN ? THEN srcradiosector ELSE dstradiosector END) AS srcradiosector,
-			(CASE src WHEN ? THEN dstradiosector ELSE srcradiosector END) AS dstradiosector
-			FROM netlinks WHERE src = ? OR dst = ?)
+				(CASE src WHEN ? THEN dst ELSE src END) AS id,
+				speed, technology,
+				(CASE src WHEN ? THEN srcport ELSE dstport END) AS srcport,
+				(CASE src WHEN ? THEN dstport ELSE srcport END) AS dstport,
+				(CASE src WHEN ? THEN srcradiosector ELSE dstradiosector END) AS srcradiosector,
+				(CASE src WHEN ? THEN dstradiosector ELSE srcradiosector END) AS dstradiosector
+				FROM netlinks WHERE src = ? OR dst = ?)
 			UNION
-			(SELECT linktype AS type, linkradiosector AS srcradiosector, linktechnology AS technology, linkspeed AS speed, id, port AS srcport, NULL AS dstport
-			FROM nodes WHERE netdev = ? AND ownerid > 0)
+				(SELECT linktype AS type, linkradiosector AS srcradiosector, NULL AS dstradiosector,
+					linktechnology AS technology, linkspeed AS speed, id, port AS srcport, NULL AS dstport
+					FROM nodes WHERE netdev = ? AND ownerid > 0)
 			ORDER BY srcport', array($dev2['id'], $dev2['id'], $dev2['id'], $dev2['id'], $dev2['id'],
 					$dev2['id'], $dev2['id'], $dev2['id']));
 
