@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- * (C) Copyright 2001-2013 LMS Developers
+ * (C) Copyright 2001-2015 LMS Developers
  *
  * Please, see the doc/AUTHORS for more information about authors!
  *
@@ -722,7 +722,9 @@ $menu = array(
 		'documentation' => array(
 			'name' => trans('Documentation'),
 			'img' => 'doc.gif',
-			'link' => (is_dir('doc/html/'.$LMS->ui_lang) ? 'doc/html/'.$LMS->ui_lang.'/' : 'doc/html/en/'),
+			'link' => (is_dir('doc' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . $LMS->ui_lang)
+				? 'doc' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . $LMS->ui_lang . DIRECTORY_SEPARATOR
+				: 'doc' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'en' . DIRECTORY_SEPARATOR),
 			'tip' => trans('Documentation'),
 			'accesskey' => 'h',
 			'prio' => 70,
@@ -770,8 +772,8 @@ if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.logging', false))) {
 $userpanel_dir = ConfigHelper::getConfig('directories.userpanel_dir');
 if(!empty($userpanel_dir))
         // be sure that Userpanel exists
-	if(file_exists($userpanel_dir.'/lib/LMS.menu.php'))
-	        require_once($userpanel_dir.'/lib/LMS.menu.php');
+	if(file_exists($userpanel_dir . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'LMS.menu.php'))
+	        require_once($userpanel_dir . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'LMS.menu.php');
 
 // Adding user-defined menu items
 $custom_menu = ConfigHelper::getConfig('phpui.custom_menu');

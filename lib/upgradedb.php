@@ -31,7 +31,7 @@ define('DBVERSION', '2015041000'); // here should be always the newest version o
  * This file contains procedures for upgradeing automagicly database.
  */
 
-function getdir($pwd = './', $pattern = '^.*$')
+function getdir($pwd = '.' . DIRECTORY_SEPARATOR, $pattern = '^.*$')
 {
 	if ($handle = @opendir($pwd))
 	{
@@ -50,7 +50,7 @@ if($dbversion = $DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype = ?',arra
 		$lastupgrade = $dbversion;
 		$_dbtype = ConfigHelper::getConfig('database.type') == 'mysqli' ? 'mysql' : ConfigHelper::getConfig('database.type');
 
-		$upgradelist = getdir(LIB_DIR.'/upgradedb/', '^'.$_dbtype.'.[0-9]{10}.php$');
+		$upgradelist = getdir(LIB_DIR . DIRECTORY_SEPARATOR . 'upgradedb' . DIRECTORY_SEPARATOR, '^'.$_dbtype.'.[0-9]{10}.php$');
 		if(sizeof($upgradelist))
 			foreach($upgradelist as $upgrade)
 			{
@@ -65,7 +65,7 @@ if($dbversion = $DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype = ?',arra
 			sort($pendingupgrades);
 			foreach($pendingupgrades as $upgrade)
 			{
-				include(LIB_DIR.'/upgradedb/'.$_dbtype.'.'.$upgrade.'.php');
+				include(LIB_DIR . DIRECTORY_SEPARATOR . 'upgradedb' . DIRECTORY_SEPARATOR . $_dbtype.'.'.$upgrade.'.php');
 				if(!sizeof($DB->GetErrors()))
 					$lastupgrade = $upgrade;
 				else
@@ -89,8 +89,8 @@ if($dbversion = $DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype = ?',arra
         } else
             die ('Could not determine database type!');
 
-        if (! $sql = file_get_contents(SYS_DIR . '/doc/' . $schema))
-            die ('Could not open database schema file '.SYS_DIR.'/'.$schema);
+        if (! $sql = file_get_contents(SYS_DIR . DIRECTORY_SEPARATOR . 'doc' . DIRECTORY_SEPARATOR . $schema))
+            die ('Could not open database schema file ' . SYS_DIR . DIRECTORY_SEPARATOR . $schema);
 
         if (! $DB->MultiExecute($sql))    // execute
             die ('Could not load database schema!');

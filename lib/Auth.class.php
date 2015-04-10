@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -260,7 +260,7 @@ class Auth {
 			$this->islogged = ($this->passverified && $this->hostverified && $this->access && $this->accessfrom && $this->accessto);
 
 			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.use_swekey', false))) {
-				require_once(LIB_DIR . '/swekey/swekey_integration.php');
+				require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'swekey' . DIRECTORY_SEPARATOR . 'swekey_integration.php');
 				$SWEKEY = new SwekeyIntegration;
 				$this->swekeyauthenticated = $SWEKEY->IsSwekeyAuthenticated($this->swekeyid);
 				if (!$this->swekeyauthenticated && $this->swekeyid) {

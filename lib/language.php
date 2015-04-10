@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -143,12 +143,12 @@ if (empty($_ui_language))
 	$_ui_language = $_language;
 $_LANG = array();
 
-if (@is_readable(LIB_DIR.'/locale/'.$_ui_language.'/strings.php'))
-	include(LIB_DIR.'/locale/'.$_ui_language.'/strings.php');
-if (@is_readable(LIB_DIR.'/locale/'.$_ui_language.'/ui.php'))
-	include(LIB_DIR.'/locale/'.$_ui_language.'/ui.php');
-if (@is_readable(LIB_DIR.'/locale/'.$_language.'/system.php'))
-	include(LIB_DIR.'/locale/'.$_language.'/system.php');
+if (@is_readable(LIB_DIR . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_ui_language . DIRECTORY_SEPARATOR . 'strings.php'))
+	include(LIB_DIR . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_ui_language . DIRECTORY_SEPARATOR . 'strings.php');
+if (@is_readable(LIB_DIR . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_ui_language . DIRECTORY_SEPARATOR . 'ui.php'))
+	include(LIB_DIR . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_ui_language . DIRECTORY_SEPARATOR . 'ui.php');
+if (@is_readable(LIB_DIR . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_language . DIRECTORY_SEPARATOR . 'system.php'))
+	include(LIB_DIR . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_language . DIRECTORY_SEPARATOR . 'system.php');
 
 setlocale(LC_COLLATE, $LANGDEFS[$_language]['locale']);
 setlocale(LC_CTYPE, $LANGDEFS[$_language]['locale']);

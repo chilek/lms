@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -139,7 +139,9 @@ $access['table'][255]['deny_reg']	= '^.*$';
 // read user-defined access rights table
 $custom_access_table = ConfigHelper::getConfig('phpui.custom_accesstable');
 if (!is_null($custom_access_table))
-	if (is_readable($custom_access_table) && ($custom_access_table{0} == '/'))
+	if (is_readable($custom_access_table) && ($custom_access_table{0} == DIRECTORY_SEPARATOR))
 		@include_once($custom_access_table);
-	else if (is_readable(LIB_DIR . '/' . $custom_access_table))
-		@include_once(LIB_DIR . '/' . $custom_access_table);
+	else if (is_readable(LIB_DIR . DIRECTORY_SEPARATOR . $custom_access_table))
+		@include_once(LIB_DIR . DIRECTORY_SEPARATOR . $custom_access_table);
+
+?>
