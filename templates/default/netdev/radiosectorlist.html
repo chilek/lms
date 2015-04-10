@@ -44,8 +44,8 @@
 		<input type="text" size="30" name="license_edit_{$rsid}" id="license_edit_{$rsid}" value="{if $edit}{$formdata.license}{else}{$radiosector.license}{/if}" {tip text="Enter radio license number" trigger="license_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
 	</TD>
 	<TD class="nobr">
-		<span id="frequency_{$rsid}"{if $edit} style="display: none;"{/if}>{if $radiosector.frequency}{t a=$radiosector.frequency}$a GHz{/t}{else}{trans("(default for link technology)")}{/if}</span>
-		<input type="text" size="10" name="frequency_edit_{$rsid}" id="frequency_edit_{$rsid}" value="{if $edit}{$formdata.frequency}{else}{$radiosector.frequency}{/if}" {tip text="Enter radio frequency" trigger="frequency_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
+		<span id="frequency_{$rsid}"{if $edit} style="display: none;"{/if}>{if $radiosector.frequency}{t a=((float)$radiosector.frequency)|replace:",":"."}$a GHz{/t}{else}{trans("(default for link technology)")}{/if}</span>
+		<input type="text" size="10" name="frequency_edit_{$rsid}" id="frequency_edit_{$rsid}" value="{if $edit}{$formdata.frequency}{else}{((float)$radiosector.frequency)|replace:",":"."}{/if}" {tip text="Enter radio frequency" trigger="frequency_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
 	</TD>
 	<TD class="nobr text-center">
 		{$radiosector.computers}
