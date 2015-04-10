@@ -33,7 +33,7 @@ $offset = 0;
 do {
 	$docs = $DB->GetAll("SELECT d.id, cdate, number, template FROM documents d
 		JOIN numberplans n ON n.id = d.numberplanid
-		WHERE numberplanid <> 0 ORDER BY id OFFSET $offset LIMIT 1000");
+		WHERE numberplanid <> 0 ORDER BY id LIMIT 1000 OFFSET $offset");
 	if (!empty($docs)) {
 		foreach ($docs as $doc) {
 			$fullnumber = docnumber($doc['number'], $doc['template'], $doc['cdate']);
