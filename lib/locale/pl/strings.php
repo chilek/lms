@@ -2949,5 +2949,6 @@ $_LANG['Radio sector range cannot be empty!'] = 'Zasięg sektora radiowego nie m
 $_LANG['Radio sector range has invalid format!'] = 'Zasięg sektora radiowego zawiera niepoprawne znaki!';
 $_LANG['Radio sector:'] = 'Sektor radiowy:';
 $_LANG['Select radio sector'] = 'Wybierz sektor radiowy';
+$_LANG['Destination radio sector:'] = 'Docelowy sektor radiowy:';
 
 ?>

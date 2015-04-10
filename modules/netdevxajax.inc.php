@@ -304,10 +304,22 @@ function updateRadioSector($rsid, $params) {
 	return $result;
 }
 
+function getRadioSectorsForNetdev($devid) {
+	global $DB;
+
+	$result = new xajaxResponse();
+
+	$radiosectors = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ? ORDER BY name', array(intval($devid)));
+	$result->call('radio_sectors_received', $radiosectors);
+
+	return $result;
+}
+
 $LMS->InitXajax();
 $LMS->RegisterXajaxFunction(array(
 	'getManagementUrls','addManagementUrl', 'delManagementUrl', 'updateManagementUrl',
 	'getRadioSectors', 'addRadioSector', 'delRadioSector', 'updateRadioSector',
+	'getRadioSectorsForNetdev',
 ));
 $SMARTY->assign('xajax', $LMS->RunXajax());
 

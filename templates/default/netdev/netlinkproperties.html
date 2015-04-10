@@ -25,7 +25,30 @@
 				</select>
 			</td>
 		</tr>
-		{if !$link.isnetlink}
+		{if $link.isnetlink}
+		<tr class="light">
+			<td class="nobr">{trans("Radio sector:")}</td>
+			<td>
+				<SELECT NAME="srcradiosector" id="srcradiosector" {tip trigger="srcradiosector" text="Select radio sector"}{if $link.type != 1} disabled{/if}>
+					<OPTION value="0">- {trans("none")} -</OPTION>
+					{foreach $radiosectors.src as $radiosector}
+					<OPTION value="{$radiosector.id}"{if $link.type == 1 && $radiosectors.srcradiosector == $radiosector.id} selected{/if}>{$radiosector.name}</OPTION>
+					{/foreach}
+				</SELECT>
+			</td>
+		</tr>
+		<tr class="light">
+			<td class="nobr">{trans("Destination radio sector:")}</td>
+			<td>
+				<SELECT NAME="dstradiosector" id="dstradiosector" {tip trigger="dstradiosector" text="Select radio sector"}{if $link.type != 1} disabled{/if}>
+					<OPTION value="0">- {trans("none")} -</OPTION>
+					{foreach $radiosectors.dst as $radiosector}
+					<OPTION value="{$radiosector.id}"{if $link.type == 1 && $radiosectors.dstradiosector == $radiosector.id} selected{/if}>{$radiosector.name}</OPTION>
+					{/foreach}
+				</SELECT>
+			</td>
+		</tr>
+		{else}
 		<tr class="light">
 			<td class="nobr">{trans("Radio sector:")}</td>
 			<td>
@@ -96,6 +119,13 @@ function change_linktype(linktype) {
 		if (linktype != 1)
 			xjx.$('radiosector').selectedIndex = 0;
 		xjx.$('radiosector').disabled = (linktype != 1);
+	} else {
+		if (linktype != 1) {
+			xjx.$('srcradiosector').selectedIndex = 0;
+			xjx.$('dstradiosector').selectedIndex = 0;
+		}
+		xjx.$('srcradiosector').disabled = (linktype != 1);
+		xjx.$('dstradiosector').disabled = (linktype != 1);
 	}
 }
 
@@ -103,12 +133,16 @@ function submit_netlink_properties() {
 	var form = document.forms['netlinkproperties'];
 	var linktype = form.elements['linktype'].value;
 	var radiosector = (form.elements['radiosector'] != null ? form.elements['radiosector'].value : null);
+	var srcradiosector = (form.elements['srcradiosector'] != null ? form.elements['srcradiosector'].value : null);
+	var dstradiosector = (form.elements['dstradiosector'] != null ? form.elements['dstradiosector'].value : null);
 	var linktechnology = form.elements['linktechnology'].value;
 	var linkspeed = form.elements['linkspeed'].value;
 
 	xajax_update_netlink_properties({$link.id}, {$link.devid}, {
 			type: linktype,
 			radiosector: radiosector,
+			srcradiosector: srcradiosector,
+			dstradiosector: dstradiosector,
 			technology: linktechnology,
 			speed: linkspeed
 		} );

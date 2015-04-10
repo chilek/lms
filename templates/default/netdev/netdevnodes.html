@@ -135,7 +135,7 @@
 <!--
 function change_nodelinktype(linktype) {
 	linktype = parseInt(linktype);
-	var options = document.getElementById('devnodeslinktechnology').options;
+	var options = xjx.$('devnodeslinktechnology').options;
 	while (options.length)
 		options.remove(0);
 	options.add(new Option('{trans("- unknown -")}', 0));
@@ -156,10 +156,10 @@ function change_nodelinktype(linktype) {
 			{/foreach}
 			break;
 	}
-	document.getElementById('devnodesradiosector').style.display = (linktype == 1 ? '' : 'none');
+	xjx.$('devnodesradiosector').style.display = (linktype == 1 ? '' : 'none');
 }
 
 if (getCookie('devicenodes') == '1')
-	document.getElementById('devicenodes').style.display = '';
+	xjx.$('devicenodes').style.display = '';
 //-->
 </SCRIPT>
