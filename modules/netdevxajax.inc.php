@@ -197,7 +197,23 @@ function getRadioSectors($formdata = NULL) {
 
 	$netdevid = intval($_GET['id']);
 
-	$radiosectors = $DB->GetAll('SELECT * FROM netradiosectors WHERE netdev = ? ORDER BY name', array($netdevid));
+	$radiosectors = $DB->GetAll('SELECT s.*, (CASE WHEN n.computers IS NULL THEN 0 ELSE n.computers END),
+		((CASE WHEN l1.devices IS NULL THEN 0 ELSE l1.devices END)
+		+ (CASE WHEN l2.devices IS NULL THEN 0 ELSE l2.devices END)) AS devices
+		FROM netradiosectors s
+		LEFT JOIN (
+			SELECT linkradiosector AS rs, COUNT(*) AS computers
+			FROM nodes n WHERE n.ownerid > 0 AND linkradiosector IS NOT NULL
+			GROUP BY rs
+		) n ON n.rs = s.id
+		LEFT JOIN (
+			SELECT srcradiosector, COUNT(*) AS devices FROM netlinks GROUP BY srcradiosector
+		) l1 ON l1.srcradiosector = s.id
+		LEFT JOIN (
+			SELECT dstradiosector, COUNT(*) AS devices FROM netlinks GROUP BY dstradiosector
+		) l2 ON l2.dstradiosector = s.id
+		WHERE s.netdev = ?
+		ORDER BY s.name', array($netdevid));
 	$SMARTY->assign('radiosectors', $radiosectors);
 	if (isset($formdata['error']))
 		$SMARTY->assign('error', $formdata['error']);

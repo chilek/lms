@@ -5,8 +5,10 @@
 	<TD style="width: 1%;"><img src="img/time.gif" alt=""> {trans("Azimuth:")}</TD>
 	<TD style="width: 1%;"><img src="img/time.gif" alt=""> {trans("Radius:")}</TD>
 	<TD style="width: 1%;">{trans("Altitude:")}</TD>
-	<TD style="width: 1%;">{trans("Range:")}</TD>
-	<TD style="width: 95%;">&nbsp;</TD>
+	<TD style="width: 93%;">{trans("Range:")}</TD>
+	<TD style="width: 1%;" class="nobr text-center">{trans("Nodes:")}</TD>
+	<TD style="width: 1%;" class="nobr text-center">{trans("Net devices:")}</TD>
+	<TD style="width: 1%;">&nbsp;</TD>
 </TR>
 </THEAD>
 <TBODY>
@@ -35,6 +37,12 @@
 		<span id="rsrange_{$rsid}">{t a=$radiosector.rsrange}$a m{/t}</span>
 		<input type="text" size="10" name="rsrange_edit_{$rsid}" id="rsrange_edit_{$rsid}" value="{$radiosector.rsrange}" {tip text="Enter range in meters" trigger="rsrange_edit_{$rsid}"} style="display: none;">
 	</TD>
+	<TD class="nobr text-center">
+		{$radiosector.computers}
+	</TD>
+	<TD class="nobr text-center">
+		{$radiosector.devices}
+	</TD>
 	<TD class="text-right nobr">
 		<A HREF="javascript:toggleEditRadioSector({$rsid});" id="edit_button_{$rsid}"{if $edit} style="display: none;"{/if}><IMG SRC="img/edit.gif" ALT="[ {trans("Edit")} ]" {tip text="Edit radio sector"}></A>
 		<A HREF="javascript:updateRadioSector({$rsid});" id="save_button_{$rsid}"{if !$edit} style="display: none;"{/if}><IMG SRC="img/save.gif" ALT="[ {trans("Save")} ]" {tip text="Save"}></A>
@@ -44,7 +52,7 @@
 </TR>
 {foreachelse}
 <TR>
-	<TD class="empty-table" colspan="6">
+	<TD class="empty-table" colspan="8">
 		<p>&nbsp;</p>
 		<p>{trans("No radio sectors.")}</p>
 		<p>&nbsp;</p>
@@ -80,7 +88,7 @@
 		<input type="text" size="10" name="rsrange" id="rsrange" value="{if !$formdata.rsid}{$formdata.rsrange}{/if}" {tip text="Enter range in meters" trigger="rsrange"}>
 		</label>
 	</TD>
-	<TD class="dark ftop text-right nobr" rowspan="2">
+	<TD class="dark ftop text-right nobr" colspan="3" rowspan="2">
 		<A id="radiosectoraddlink" HREF="javascript:addRadioSector();" {tip text="Add new radio sector"}>{trans("Add")} <IMG SRC="img/save.gif" alt=""></A>
 	</TD>
 </TR>
