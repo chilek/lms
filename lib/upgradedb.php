@@ -31,7 +31,7 @@ define('DBVERSION', '2015041000'); // here should be always the newest version o
  * This file contains procedures for upgradeing automagicly database.
  */
 
-function getdir($pwd = '.' . DIRECTORY_SEPARATOR, $pattern = '^.*$')
+function getdir($pwd = './', $pattern = '^.*$')
 {
 	if ($handle = @opendir($pwd))
 	{
