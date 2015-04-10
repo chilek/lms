@@ -48,22 +48,26 @@ switch ($action) {
 			$links1 = $DB->GetAll('(SELECT type, 
                         (CASE src WHEN ? THEN dst ELSE src END) AS id,
 			(CASE src WHEN ? THEN srcport ELSE dstport END) AS srcport,
-			(CASE src WHEN ? THEN dstport ELSE srcport END) AS dstport
+			(CASE src WHEN ? THEN dstport ELSE srcport END) AS dstport,
+			(CASE src WHEN ? THEN srcradiosector ELSE dstradiosector END) AS srcradiosector,
+			(CASE src WHEN ? THEN dstradiosector ELSE srcradiosector END) AS dstradiosector
 			FROM netlinks WHERE src = ? OR dst = ?)
 			UNION
-			(SELECT linktype AS type, linktechnology AS technology, linkspeed AS speed, id, port AS srcport, NULL AS dstport
+			(SELECT linktype AS type, linkradiosector AS srcradiosector, linktechnology AS technology, linkspeed AS speed, id, port AS srcport, NULL AS dstport
 			FROM nodes WHERE netdev = ? AND ownerid > 0)
-			ORDER BY srcport', array($dev1['id'], $dev1['id'], $dev1['id'],
+			ORDER BY srcport', array($dev1['id'], $dev1['id'], $dev1['id'], $dev1['id'], $dev1['id'],
 					$dev1['id'], $dev1['id'], $dev1['id']));
 			$links2 = $DB->GetAll('(SELECT type, 
                         (CASE src WHEN ? THEN dst ELSE src END) AS id,
 			(CASE src WHEN ? THEN srcport ELSE dstport END) AS srcport,
-			(CASE src WHEN ? THEN dstport ELSE srcport END) AS dstport
+			(CASE src WHEN ? THEN dstport ELSE srcport END) AS dstport,
+			(CASE src WHEN ? THEN srcradiosector ELSE dstradiosector END) AS srcradiosector,
+			(CASE src WHEN ? THEN dstradiosector ELSE srcradiosector END) AS dstradiosector
 			FROM netlinks WHERE src = ? OR dst = ?)
 			UNION
-			(SELECT linktype AS type, linktechnology AS technology, linkspeed AS speed, id, port AS srcport, NULL AS dstport
+			(SELECT linktype AS type, linkradiosector AS srcradiosector, linktechnology AS technology, linkspeed AS speed, id, port AS srcport, NULL AS dstport
 			FROM nodes WHERE netdev = ? AND ownerid > 0)
-			ORDER BY srcport', array($dev2['id'], $dev2['id'], $dev2['id'],
+			ORDER BY srcport', array($dev2['id'], $dev2['id'], $dev2['id'], $dev2['id'], $dev2['id'],
 					$dev2['id'], $dev2['id'], $dev2['id']));
 
 			$DB->BeginTrans();
@@ -114,6 +118,8 @@ switch ($action) {
 					if (isset($row['dstport'])) // device
 						$LMS->NetDevLink($dev2['id'], $row['id'], array(
 							'type' => $row['type'],
+							'srcradiosector' => $row['srcradiosector'],
+							'dstradiosector' => $row['dstradiosector'],
 							'technology' => $row['technology'],
 							'speed' => $row['speed'],
 							'srcport' => $sport,
@@ -122,6 +128,7 @@ switch ($action) {
 					else // node
 						$LMS->NetDevLinkNode($row['id'], $dev2['id'], array(
 							'type' => $row['type'],
+							'radiosector' => $row['srcradiosector'],
 							'technology' => $row['technology'],
 							'speed' => $row['speed'],
 							'port' => $sport,
@@ -146,6 +153,8 @@ switch ($action) {
 					if (isset($row['dstport'])) // device
 						$LMS->NetDevLink($dev1['id'], $row['id'], array(
 							'type' => $row['type'],
+							'srcradiosector' => $row['srcradiosector'],
+							'dstradiosector' => $row['dstradiosector'],
 							'technology' => $row['technology'],
 							'speed' => $row['speed'],
 							'srcport' => $sport,
@@ -154,6 +163,7 @@ switch ($action) {
 					else // node
 						$LMS->NetDevLinkNode($row['id'], $dev1['id'], array(
 							'type' => $row['type'],
+							'radiosector' => $row['srcradiosector'],
 							'technology' => $row['technology'],
 							'speed' => $row['speed'],
 							'port' => $sport,
