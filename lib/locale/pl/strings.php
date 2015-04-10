@@ -2926,6 +2926,7 @@ $_LANG['Altitude:'] = 'Wysokość:';
 $_LANG['Range:'] = 'Zasięg:';
 $_LANG['$a deg.'] = '$a st.';
 $_LANG['$a m'] = '$a m';
+$_LANG['$a GHz'] = '$a GHz';
 $_LANG['Remove radio sector'] = 'Usuń sektor radiowy';
 $_LANG['Edit radio sector'] = 'Edytuj sektor radiowy';
 $_LANG['No radio sectors.'] = 'Brak sektorów radiowych.';
@@ -2951,6 +2952,10 @@ $_LANG['Radio sector:'] = 'Sektor radiowy:';
 $_LANG['Select radio sector'] = 'Wybierz sektor radiowy';
 $_LANG['Destination radio sector:'] = 'Docelowy sektor radiowy:';
 $_LANG['Radio license number:'] = 'Numer zezwolenia radiowego:';
-$_LANG['Enter radio license number'] = 'Wprowadź numer zezwolenia radiowego';
+$_LANG['Enter radio license number'] = 'Podaj numer zezwolenia radiowego';
+$_LANG['Frequency:'] = 'Częstotliwość:';
+$_LANG['Enter radio frequency'] = 'Podaj częstotliwość radiową';
+$_LANG['(default for link technology)'] = '(domyślna dla technologii łącza)';
+$_LANG['Radio frequency has invalid format!'] = 'Częstotliwość radiowa zawiera niepoprawne znaki!';
 
 ?>

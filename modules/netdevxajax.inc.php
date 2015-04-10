@@ -190,6 +190,9 @@ function validateRadioSector($params, $update = false) {
 	if (strlen($params['license']) > 63)
 		$error['license'] = trans('Radio sector license number is too long!');
 
+	if (strlen($params['frequency']) && !preg_match('/^[0-9]{1,3}\.[0-9]{1,5}$/', $params['frequency']))
+		$error['frequency'] = trans('Radio frequency has invalid format!');
+
 	return $error;
 }
 
@@ -247,9 +250,11 @@ function addRadioSector($params) {
 			'altitude' => $params['altitude'],
 			'rsrange' => $params['rsrange'],
 			'license' => (strlen($params['license']) ? $params['license'] : null),
+			'frequency' => (strlen($params['frequency']) ? $params['frequency'] : null),
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netdevid,
 		);
-		$DB->Execute('INSERT INTO netradiosectors (name, azimuth, radius, altitude, rsrange, license, netdev) VALUES (?, ?, ?, ?, ?, ?, ?)',
+		$DB->Execute('INSERT INTO netradiosectors (name, azimuth, radius, altitude, rsrange, license, frequency, netdev)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
 			array_values($args));
 		if ($SYSLOG) {
 			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR]] = $DB->GetLastInsertID('netradiosectors');
@@ -308,10 +313,11 @@ function updateRadioSector($rsid, $params) {
 			'altitude' => $params['altitude'],
 			'rsrange' => $params['rsrange'],
 			'license' => (strlen($params['license']) ? $params['license'] : null),
+			'frequency' => (strlen($params['frequency']) ? $params['frequency'] : null),
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR] => $rsid,
 		);
 		$DB->Execute('UPDATE netradiosectors SET name = ?, azimuth = ?, radius = ?, altitude = ?,
-			rsrange = ?, license = ? WHERE id = ?', array_values($args));
+			rsrange = ?, license = ?, frequency = ? WHERE id = ?', array_values($args));
 		if ($SYSLOG) {
 			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]] = $netdevid;
 			$SYSLOG->AddMessage(SYSLOG_RES_RADIOSECTOR, SYSLOG_OPER_UPDATE, $args,
