@@ -52,7 +52,7 @@ $DB->Execute("CREATE VIEW vmacs AS
 		SELECT n.*, m.mac, m.id AS macid
 		FROM nodes n
 		JOIN macs m ON (n.id = m.nodeid)");
-$DB->Execute("CREATE INDEX nodes_linkradiosector ON nodes (linkradiosector)");
+$DB->Execute("ALTER TABLE nodes ADD INDEX linkradiosector (linkradiosector)");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015040200', 'dbversion'));
 

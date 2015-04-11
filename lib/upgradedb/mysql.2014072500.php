@@ -28,7 +28,7 @@ $numberplans = $DB->GetAllByKey("SELECT * FROM numberplans ORDER BY id", 'id');
 $DB->BeginTrans();
 
 $DB->Execute("ALTER TABLE documents ADD fullnumber varchar(50) DEFAULT NULL");
-$DB->Execute("CREATE INDEX documents_fullnumber_idx ON documents (fullnumber)");
+$DB->Execute("ALTER TABLE documents ADD INDEX fullnumber (fullnumber)");
 
 $DB->LockTables("documents");
 

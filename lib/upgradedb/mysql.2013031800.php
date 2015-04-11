@@ -38,8 +38,8 @@ $DB->Execute("UPDATE location_streets SET typeid = NULL WHERE typeid IS NOT NULL
 $DB->Execute("ALTER TABLE location_streets ADD FOREIGN KEY (cityid) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	ADD FOREIGN KEY (typeid) REFERENCES location_street_types (id) ON DELETE SET NULL ON UPDATE CASCADE");
 $DB->Execute("DELETE FROM pna WHERE cityid NOT IN (SELECT id FROM location_cities) OR streetid NOT IN (SELECT id FROM location_streets)");
-$DB->Execute("CREATE INDEX pna_streetid_idx ON pna (streetid)");
-$DB->Executw("CREATE INDEX pna_cityid_idx ON pna (cityid)");
+$DB->Execute("ALTER TABLE pna ADD INDEX streetid (streetid)");
+$DB->Executw("ALTER TABLE pna ADD INDEX cityid (cityid)");
 $DB->Execute("ALTER TABLE pna ADD FOREIGN KEY (cityid) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	ADD FOREIGN KEY (streetid) REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE");
 $DB->Execute("UPDATE netdevices SET location_city = NULL WHERE location_city IS NOT NULL AND NOT EXISTS (SELECT 1 FROM location_cities WHERE id = location_city)");
@@ -62,15 +62,15 @@ $DB->Execute("ALTER TABLE rtnotes ADD FOREIGN KEY (ticketid) REFERENCES rtticket
 	ADD FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE");
 $DB->Execute("ALTER TABLE rttickets ADD FOREIGN KEY (queueid) REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE");
 $DB->Execute("DELETE FROM rtrights WHERE queueid NOT IN (SELECT id FROM rtqueues) OR userid NOT IN (SELECT id FROM users)");
-$DB->Execute("CREATE INDEX rtrights_queueid_idx ON rtrights (queueid)");
+$DB->Execute("ALTER TABLE rtrights ADD INDEX queueid (queueid)");
 $DB->Execute("ALTER TABLE rtrights ADD FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	ADD FOREIGN KEY (queueid) REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE");
 $DB->Execute("DELETE FROM rtcategoryusers WHERE userid NOT IN (SELECT id FROM users) OR categoryid NOT IN (SELECT id FROM rtcategories)");
-$DB->Execute("CREATE INDEX rtcategoryusers_categoryid_idx ON rtcategoryusers (categoryid)");
+$DB->Execute("ALTER TABLE rtcategoryusers ADD INDEX categoryid (categoryid)");
 $DB->Execute("ALTER TABLE rtcategoryusers ADD FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	ADD FOREIGN KEY (categoryid) REFERENCES rtcategories (id) ON DELETE CASCADE ON UPDATE CASCADE");
 $DB->Execute("DELETE FROM rtticketcategories WHERE ticketid NOT IN (SELECT id FROM rttickets) OR categoryid NOT IN (SELECT id FROM rtcategories)");
-$DB->Execute("CREATE INDEX rtticketcategories_categoryid_idx ON rtticketcategories (categoryid)");
+$DB->Execute("ALTER TABLE rtticketcategories ADD INDEX categoryid (categoryid)");
 $DB->Execute("ALTER TABLE rtticketcategories ADD FOREIGN KEY (ticketid) REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	ADD FOREIGN KEY (categoryid) REFERENCES rtcategories (id) ON DELETE CASCADE ON UPDATE CASCADE");
 $DB->Execute("DELETE FROM promotionschemas WHERE promotionid NOT IN (SELECT id FROM promotions) OR ctariffid NOT IN (SELECT id FROM tariffs)");
