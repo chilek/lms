@@ -35,7 +35,7 @@ $DB->LockTables("documents");
 $offset = 0;
 do {
 	$docs = $DB->GetAll("SELECT id, cdate, number, numberplanid FROM documents
-		WHERE numberplanid <> 0 ORDER BY id LIMIT 30000 OFFSET $offset");
+		WHERE numberplanid <> 0 ORDER BY id LIMIT 100000 OFFSET $offset");
 	$stop = empty($docs);
 	if (!$stop) {
 		foreach ($docs as $doc) {

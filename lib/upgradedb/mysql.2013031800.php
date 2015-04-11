@@ -62,7 +62,6 @@ $DB->Execute("ALTER TABLE rtnotes ADD FOREIGN KEY (ticketid) REFERENCES rtticket
 	ADD FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE");
 $DB->Execute("ALTER TABLE rttickets ADD FOREIGN KEY (queueid) REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE");
 $DB->Execute("DELETE FROM rtrights WHERE queueid NOT IN (SELECT id FROM rtqueues) OR userid NOT IN (SELECT id FROM users)");
-$DB->Execute("ALTER TABLE rtrights ADD INDEX queueid (queueid)");
 $DB->Execute("ALTER TABLE rtrights ADD FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	ADD FOREIGN KEY (queueid) REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE");
 $DB->Execute("DELETE FROM rtcategoryusers WHERE userid NOT IN (SELECT id FROM users) OR categoryid NOT IN (SELECT id FROM rtcategories)");
