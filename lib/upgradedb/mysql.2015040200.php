@@ -43,6 +43,7 @@ $DB->Execute("CREATE TABLE netradiosectors (
 $DB->Execute("DROP VIEW vnodes");
 $DB->Execute("DROP VIEW vmacs");
 $DB->Execute("ALTER TABLE nodes ADD COLUMN linkradiosector int(11) DEFAULT NULL");
+$DB->Execute("ALTER TABLE nodes ADD INDEX linkradiosector (linkradiosector)");
 $DB->Execute("ALTER TABLE nodes ADD FOREIGN KEY (linkradiosector) REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE");
 $DB->Execute("CREATE VIEW vnodes AS
 		SELECT n.*, m.mac
@@ -52,7 +53,6 @@ $DB->Execute("CREATE VIEW vmacs AS
 		SELECT n.*, m.mac, m.id AS macid
 		FROM nodes n
 		JOIN macs m ON (n.id = m.nodeid)");
-$DB->Execute("ALTER TABLE nodes ADD INDEX linkradiosector (linkradiosector)");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015040200', 'dbversion'));
 
