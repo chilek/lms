@@ -34,7 +34,7 @@ include(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 $offset = 0;
 do {
 	$docs = $DB->GetAll("SELECT id, cdate, number, numberplanid FROM documents
-		WHERE numberplanid <> 0 ORDER BY id LIMIT 1000 OFFSET $offset");
+		WHERE numberplanid <> 0 ORDER BY id LIMIT 100000 OFFSET $offset");
 	if (!empty($docs)) {
 		foreach ($docs as $doc) {
 			$fullnumber = docnumber($doc['number'], $numberplans[$doc['numberplanid']]['template'], $doc['cdate']);
