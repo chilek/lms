@@ -568,10 +568,16 @@ function docnumber($number=NULL, $template=NULL, $time=NULL, $ext_num='')
 	$result = str_replace('%I', $ext_num, $template);
 
 	// main document number
-	global $docnumber_preg_replace_callback_function;
-	if (!isset($docnumber_preg_replace_callback_function))
-		$docnumber_preg_replace_callback_function = create_function('$m', "return sprintf(\"%0\$m[1]d\", $number);");
-	$result = preg_replace_callback('/%(\\d*)N/', $docnumber_preg_replace_callback_function, $result);
+	// code for php < 5.3
+/*
+	$result = preg_replace_callback('/%(\\d*)N/',
+		create_function('$m', "return sprintf(\"%0\$m[1]d\", $number);"),
+		$result);
+*/
+	$result = preg_replace_callback('/%(\\d*)N/',
+		function ($m) use ($number) {
+			return sprintf('%0' . $m[1] . 'd', $number);
+		}, $result);
 
 	// time conversion specifiers
 	return strftime($result, $time);
