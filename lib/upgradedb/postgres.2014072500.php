@@ -31,8 +31,8 @@ include(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 
 $offset = 0;
 do {
-	$docs = $DB->GetAll("SELECT d.id, cdate, number, template FROM documents d
-		JOIN numberplans n ON n.id = d.numberplanid
+	$docs = $DB->GetAll("SELECT documents.id, cdate, number, template FROM documents
+		JOIN numberplans n ON n.id = documents.numberplanid
 		WHERE numberplanid <> 0 ORDER BY id LIMIT 1000 OFFSET $offset");
 	if (!empty($docs)) {
 		foreach ($docs as $doc) {
