@@ -27,7 +27,7 @@ $DB->BeginTrans();
 $DB->LockTables("documents");
 
 $DB->Execute("ALTER TABLE documents ADD fullnumber varchar(50) DEFAULT NULL");
-$DB->Execute("CREATE INDEX documents_fullnumber_idx ON documents (fullnumber)");
+$DB->Execute("ALTER TABLE documents ADD INDEX (fullnumber)");
 
 include(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 
