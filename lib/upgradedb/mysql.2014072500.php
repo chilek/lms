@@ -22,7 +22,7 @@
  */
 
 $DB->BeginTrans();
-$DB->LockTables("documents");
+$DB->LockTables("documents,numberplans");
 
 $DB->Execute("ALTER TABLE documents ADD fullnumber varchar(50) DEFAULT NULL");
 $DB->Execute("ALTER TABLE documents ADD INDEX (fullnumber)");
@@ -32,8 +32,8 @@ include(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 $offset = 0;
 do {
 	$docs = $DB->GetAll("SELECT documents.id, cdate, number, template FROM documents
-		JOIN numberplans n ON n.id = documents.numberplanid
-		WHERE numberplanid <> 0 ORDER BY id LIMIT 1000 OFFSET $offset");
+		JOIN numberplans ON numberplans.id = documents.numberplanid
+		WHERE numberplanid <> 0 ORDER BY documents.id LIMIT 1000 OFFSET $offset");
 	if (!empty($docs)) {
 		foreach ($docs as $doc) {
 			$fullnumber = docnumber($doc['number'], $doc['template'], $doc['cdate']);
@@ -46,7 +46,7 @@ do {
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014072500', 'dbversion'));
 
-$DB->UnLockTables("documents");
+$DB->UnLockTables("documents,numberplans");
 $DB->CommitTrans();
 
 ?>
