@@ -21,7 +21,7 @@
 <TR class="highlight {cycle name=radiosectors}">
 	<TD class="bold nobr">
 		<img src="img/wireless.gif" alt=""> <span id="name_{$rsid}"{if $edit} style="display: none;"{/if}>{$radiosector.name}</span>
-		<input type="text" size="60" name="name_edit_{$rsid}" id="name_edit_{$rsid}" value="{if $edit}{$formdata.name}{else}{$radiosector.name}{/if}" {tip text="Enter name" trigger="name_edit_{$rsid}"} style="display: none;">
+		<input type="text" size="60" name="name_edit_{$rsid}" id="name_edit_{$rsid}" value="{if $edit}{$formdata.name}{else}{$radiosector.name}{/if}" {tip text="Enter name" trigger="name_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
 	</TD>
 	<TD class="nobr">
 		<span id="azimuth_{$rsid}"{if $edit} style="display: none;"{/if}>{t a=$radiosector.azimuth}$a deg.{/t}</span>

@@ -190,7 +190,7 @@ function validateRadioSector($params, $update = false) {
 	if (strlen($params['license']) > 63)
 		$error['license'] = trans('Radio sector license number is too long!');
 
-	if (strlen($params['frequency']) && !preg_match('/^[0-9]{1,3}\.[0-9]{1,5}$/', $params['frequency']))
+	if (strlen($params['frequency']) && !preg_match('/^[0-9]{1,3}(\.[0-9]{1,5})?$/', $params['frequency']))
 		$error['frequency'] = trans('Radio frequency has invalid format!');
 
 	return $error;
