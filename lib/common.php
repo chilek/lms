@@ -559,11 +559,15 @@ if (!function_exists('bcmod'))
 }
 
 function _docnumber_callback($m) {
-	return sprintf("%0\${m[1]}d", $number);
+	global $_number;
+
+	return sprintf('%0' . $m[1] . 'd', $_number);
 }
 
 function docnumber($number=NULL, $template=NULL, $time=NULL, $ext_num='')
 {
+	global $_number;
+
 	$number = $number ? $number : 1;
 	$template = $template ? $template : DEFAULT_NUMBER_TEMPLATE;
 	$time = $time ? $time : time();
@@ -572,6 +576,7 @@ function docnumber($number=NULL, $template=NULL, $time=NULL, $ext_num='')
 	$result = str_replace('%I', $ext_num, $template);
 
 	// main document number
+	$_number = $number;
 	$result = preg_replace_callback('/%(\\d*)N/', _docnumber_callback, $result);
 
 	// time conversion specifiers
