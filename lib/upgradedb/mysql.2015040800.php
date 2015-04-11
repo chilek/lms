@@ -28,8 +28,8 @@ $DB->BeginTrans();
 
 $DB->Execute("ALTER TABLE netlinks ADD COLUMN srcradiosector int(11) DEFAULT NULL");
 $DB->Execute("ALTER TABLE netlinks ADD COLUMN dstradiosector int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE netlinks ADD INDEX (srcradiosector)");
-$DB->Execute("ALTER TABLE netlinks ADD INDEX (dstradiosector)");
+$DB->Execute("CREATE INDEX netlinks_srcradiosector_idx ON netlinks (srcradiosector)");
+$DB->Execute("CREATE INDEX netlinks_dstradiosector_idx ON netlinks (dstradiosector)");
 $DB->Execute("ALTER TABLE netlinks ADD FOREIGN KEY (srcradiosector) REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE");
 $DB->Execute("ALTER TABLE netlinks ADD FOREIGN KEY (dstradiosector) REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE");
 

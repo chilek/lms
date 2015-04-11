@@ -96,11 +96,11 @@ $DB->Execute("
 // netdevices
 $DB->Execute("ALTER TABLE netdevices ADD location_city int(11) DEFAULT NULL");
 $DB->Execute("ALTER TABLE netdevices ADD location_street int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE netdevices ADD INDEX location_street (location_street)");
+$DB->Execute("CREATE INDEX netdevices_location_street_idx ON netdevices (location_street)");
 $DB->Execute("ALTER TABLE netdevices ADD FOREIGN KEY (location_street) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE");
 $DB->Execute("ALTER TABLE netdevices ADD location_house varchar(8) DEFAULT NULL");
 $DB->Execute("ALTER TABLE netdevices ADD location_flat varchar(8) DEFAULT NULL");
-$DB->Execute("ALTER TABLE netdevices ADD INDEX location_city (location_city, location_street, location_house, location_flat)");
+$DB->Execute("CREATE INDEX netdevices_location_city_idx ON netdevices (location_city, location_street, location_house, location_flat)");
 $DB->Execute("ALTER TABLE netdevices ADD FOREIGN KEY (location_city) REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE");
 
 $DB->Execute("ALTER TABLE nodes ADD location varchar(255) DEFAULT NULL");
@@ -125,9 +125,9 @@ $DB->Execute("ALTER TABLE nodes ADD location_house varchar(8) DEFAULT NULL");
 $DB->Execute("ALTER TABLE nodes ADD location_flat varchar(8) DEFAULT NULL");
 $DB->Execute("ALTER TABLE nodes ADD location_city int(11) DEFAULT NULL");
 $DB->Execute("ALTER TABLE nodes ADD location_street int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE nodes ADD INDEX location_city (location_city, location_street, location_house, location_flat)");
+$DB->Execute("CREATE INDEX nodes_location_city_idx ON nodes (location_city, location_street, location_house, location_flat)");
 $DB->Execute("ALTER TABLE nodes ADD FOREIGN KEY (location_city) REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE");
-$DB->Execute("ALTER TABLE nodes ADD INDEX location_street (location_street)");
+$DB->Execute("CREATE INDEX nodes_location_street_idx ON nodes (location_street)");
 $DB->Execute("ALTER TABLE nodes ADD FOREIGN KEY (location_street) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE");
 
 // TERYT database views (irrelevant fields are skipped)

@@ -23,7 +23,7 @@
 
 $DB->BeginTrans();
 
-$DB->Execute("ALTER TABLE documents ADD INDEX (reference)");
+$DB->Execute("CREATE INDEX documents_reference_idx ON documents (reference)");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014012700', 'dbversion'));
 
