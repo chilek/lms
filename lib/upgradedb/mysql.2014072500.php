@@ -36,7 +36,8 @@ $offset = 0;
 do {
 	$docs = $DB->GetAll("SELECT id, cdate, number, numberplanid FROM documents
 		WHERE numberplanid <> 0 ORDER BY id LIMIT 30000 OFFSET $offset");
-	if (!empty($docs)) {
+	$stop = empty($docs);
+	if (!$stop) {
 		foreach ($docs as $doc) {
 			$fullnumber = docnumber($doc['number'], $numberplans[$doc['numberplanid']]['template'], $doc['cdate']);
 			$DB->Execute("UPDATE documents SET fullnumber = ? WHERE id = ?",
@@ -45,7 +46,7 @@ do {
 		$offset += count($docs);
 		unset($docs);
 	}
-} while (!empty($docs));
+} while (!$stop);
 
 $DB->UnLockTables("documents");
 
