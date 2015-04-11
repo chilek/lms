@@ -39,7 +39,7 @@ $DB->Execute("ALTER TABLE location_streets ADD FOREIGN KEY (cityid) REFERENCES l
 	ADD FOREIGN KEY (typeid) REFERENCES location_street_types (id) ON DELETE SET NULL ON UPDATE CASCADE");
 $DB->Execute("DELETE FROM pna WHERE cityid NOT IN (SELECT id FROM location_cities) OR streetid NOT IN (SELECT id FROM location_streets)");
 $DB->Execute("ALTER TABLE pna ADD INDEX streetid (streetid)");
-$DB->Executw("ALTER TABLE pna ADD INDEX cityid (cityid)");
+$DB->Execute("ALTER TABLE pna ADD INDEX cityid (cityid)");
 $DB->Execute("ALTER TABLE pna ADD FOREIGN KEY (cityid) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	ADD FOREIGN KEY (streetid) REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE");
 $DB->Execute("UPDATE netdevices SET location_city = NULL WHERE location_city IS NOT NULL AND NOT EXISTS (SELECT 1 FROM location_cities WHERE id = location_city)");
