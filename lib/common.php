@@ -577,7 +577,7 @@ function docnumber($number=NULL, $template=NULL, $time=NULL, $ext_num='')
 
 	// main document number
 	$_number = $number;
-	$result = preg_replace_callback('/%(\\d*)N/', _docnumber_callback, $result);
+	$result = preg_replace_callback('/%(\\d*)N/', '_docnumber_callback', $result);
 
 	// time conversion specifiers
 	return strftime($result, $time);
