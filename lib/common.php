@@ -558,16 +558,8 @@ if (!function_exists('bcmod'))
     }
 }
 
-function _docnumber_callback($m) {
-	global $_number;
-
-	return sprintf('%0' . $m[1] . 'd', $_number);
-}
-
 function docnumber($number=NULL, $template=NULL, $time=NULL, $ext_num='')
 {
-	global $_number;
-
 	$number = $number ? $number : 1;
 	$template = $template ? $template : DEFAULT_NUMBER_TEMPLATE;
 	$time = $time ? $time : time();
@@ -576,8 +568,16 @@ function docnumber($number=NULL, $template=NULL, $time=NULL, $ext_num='')
 	$result = str_replace('%I', $ext_num, $template);
 
 	// main document number
-	$_number = $number;
-	$result = preg_replace_callback('/%(\\d*)N/', '_docnumber_callback', $result);
+	// code for php < 5.3
+/*
+	$result = preg_replace_callback('/%(\\d*)N/',
+		create_function('$m', "return sprintf(\"%0\$m[1]d\", $number);"),
+		$result);
+*/
+	$result = preg_replace_callback('/%(\\d*)N/',
+		function ($m) use ($number) {
+			return sprintf('%0' . $m[1] . 'd', $number);
+		}, $result);
 
 	// time conversion specifiers
 	return strftime($result, $time);
