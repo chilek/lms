@@ -556,7 +556,11 @@ if (!function_exists('bcmod'))
 	while ( strlen($x) );
 	    return (int)$mod;
     }
-}					     
+}
+
+function _docnumber_callback($m) {
+	return sprintf("%0\${m[1]}d", $number);
+}
 
 function docnumber($number=NULL, $template=NULL, $time=NULL, $ext_num='')
 {
@@ -568,11 +572,8 @@ function docnumber($number=NULL, $template=NULL, $time=NULL, $ext_num='')
 	$result = str_replace('%I', $ext_num, $template);
 
 	// main document number
-	$result = preg_replace_callback(
-		'/%(\\d*)N/',
-		create_function('$m', "return sprintf(\"%0\$m[1]d\", $number);"),
-		$result);
-	
+	$result = preg_replace_callback('/%(\\d*)N/', _docnumber_callback, $result);
+
 	// time conversion specifiers
 	return strftime($result, $time);
 }
