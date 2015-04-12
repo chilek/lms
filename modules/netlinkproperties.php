@@ -66,7 +66,12 @@ function update_netlink_properties($id, $devid, $link) {
 	} else
 		$radiosectorname = $DB->GetOne('SELECT name FROM netradiosectors WHERE id = ?', array($link['radiosector']));
 
-	$content1 = ($link['technology'] ? $LINKTECHNOLOGIES[$link['type']][$link['technology']] : '')
+	$content1 = ($link['technology'] ? $LINKTECHNOLOGIES[$link['type']][$link['technology']]
+			. (!$isnetlink ? ($radiosectorname ? " ($radiosectorname)" : '')
+				: ($srcradiosectorname || $dstradiosectorname ? ' ('
+					. ($srcradiosectorname ? $srcradiosectorname : '-')
+					. '/' . ($dstradiosectorname ? $dstradiosectorname : '-') . ')' : ''))
+			: '')
 		. '<br>' . $LINKSPEEDS[$link['speed']];
 
 	$content2 = "<IMG src=\"img/" . $bitmap

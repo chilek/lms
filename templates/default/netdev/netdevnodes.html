@@ -42,7 +42,7 @@
 						<IMG SRC="img/customer.gif" ALT=""> <A href="?m=customerinfo&id={$netcomplist[netcomplist].ownerid}" {tip a=$netcomplist[netcomplist].ownerid dynpopup='?m=customerinfoshort&id=$a'}>{$netcomplist[netcomplist].owner}</A>
 					</TD>
 					<TD class="valign-top nobr" id="node_{$netcomplist[netcomplist].id}">
-						{if $netcomplist[netcomplist].linktechnology}{$_LINKTECHNOLOGIES[$netcomplist[netcomplist].linktype][$netcomplist[netcomplist].linktechnology]}{/if}<BR>
+						{if $netcomplist[netcomplist].linktechnology}{$_LINKTECHNOLOGIES[$netcomplist[netcomplist].linktype][$netcomplist[netcomplist].linktechnology]}{/if}{if $netcomplist[netcomplist].linktype == 1 && $netcomplist[netcomplist].radiosector} ({$netcomplist[netcomplist].radiosector}){/if}<BR>
 						{if $netcomplist[netcomplist].linkspeed}{$_LINKSPEEDS[$netcomplist[netcomplist].linkspeed]}{/if}
 					</TD>
 					<TD class="text-right nobr" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';">
