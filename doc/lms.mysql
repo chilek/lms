@@ -627,25 +627,6 @@ CREATE TABLE netdevicemodels (
 	UNIQUE (name, netdeviceproducerid)
 ) ENGINE=INNODB;
 
-# --------------------------------------------------------
-#
-# Structure of table netradiosectors
-#
-CREATE TABLE netradiosectors (
-	id int(11) NOT NULL auto_increment,
-	name varchar(64) NOT NULL,
-	azimuth decimal(9,2) DEFAULT 0 NOT NULL,
-	radius decimal(9,2) DEFAULT 0 NOT NULL,
-	altitude smallint DEFAULT 0 NOT NULL,
-	rsrange int(11) DEFAULT 0 NOT NULL,
-	license varchar(64) DEFAULT NULL,
-	frequency numeric(9,5) DEFAULT NULL,
-	netdev int(11) NOT NULL,
-	PRIMARY KEY (id),
-	UNIQUE KEY name (name, netdev),
-	INDEX netdev (netdev),
-	FOREIGN KEY (netdev) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=INNODB;
 
 # --------------------------------------------------------
 #
@@ -690,6 +671,25 @@ CREATE TABLE netdevices (
   FOREIGN KEY (netdevicemodelid) REFERENCES netdevicemodels (id) ON UPDATE CASCADE ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
+# --------------------------------------------------------
+#
+# Structure of table netradiosectors
+#
+CREATE TABLE netradiosectors (
+	id int(11) NOT NULL auto_increment,
+	name varchar(64) NOT NULL,
+	azimuth decimal(9,2) DEFAULT 0 NOT NULL,
+	radius decimal(9,2) DEFAULT 0 NOT NULL,
+	altitude smallint DEFAULT 0 NOT NULL,
+	rsrange int(11) DEFAULT 0 NOT NULL,
+	license varchar(64) DEFAULT NULL,
+	frequency numeric(9,5) DEFAULT NULL,
+	netdev int(11) NOT NULL,
+	PRIMARY KEY (id),
+	INDEX netdev (netdev),
+	FOREIGN KEY (netdev) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	UNIQUE KEY name (name, netdev)
+) ENGINE=INNODB;
 # --------------------------------------------------------
 #
 # Structure of table  netlinks
