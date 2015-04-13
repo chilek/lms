@@ -171,11 +171,15 @@ function validateRadioSector($params, $update = false) {
 		$error['azimuth'] = trans('Radio sector azimuth cannot be empty!');
 	elseif (!preg_match('/^[0-9]+(\.[0-9]+)?$/', $params['azimuth']))
 		$error['azimuth'] = trans('Radio sector azimuth has invalid format!');
+	elseif ($params['azimuth'] >= 360)
+		$error['azimuth'] = trans('Radio sector azimuth should be less than 360 degrees!');
 
 	if (!strlen($params['radius']))
 		$error['radius'] = trans('Radio sector radius cannot be empty!');
 	elseif (!preg_match('/^[0-9]+(\.[0-9]+)?$/', $params['radius']))
 		$error['radius'] = trans('Radio sector radius has invalid format!');
+	elseif ($params['radius'] >= 360)
+		$error['radius'] = trans('Radio sector radius should be less than 360 degrees!');
 
 	if (!strlen($params['altitude']))
 		$error['altitude'] = trans('Radio sector altitude cannot be empty!');
