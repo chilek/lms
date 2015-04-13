@@ -3,7 +3,7 @@
 <TR>
 	<TD style="width: 1%;" class="bold nobr"><img src="img/wireless.gif" alt=""> {trans("Name:")}</TD>
 	<TD style="width: 1%;"><img src="img/time.gif" alt=""> {trans("Azimuth:")}</TD>
-	<TD style="width: 1%;"><img src="img/time.gif" alt=""> {trans("Radius:")}</TD>
+	<TD style="width: 1%;"><img src="img/time.gif" alt=""> {trans("Angular width:")}</TD>
 	<TD style="width: 1%;">{trans("Altitude:")}</TD>
 	<TD style="width: 1%;">{trans("Range:")}</TD>
 	<TD style="width: 1%;">{trans("Radio license number:")}</TD>
@@ -28,8 +28,8 @@
 		<input type="text" size="10" name="azimuth_edit_{$rsid}" id="azimuth_edit_{$rsid}" value="{if $edit}{$formdata.azimuth}{else}{$radiosector.azimuth}{/if}" {tip text="Enter azimuth in degrees" trigger="azimuth_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
 	</TD>
 	<TD class="nobr">
-		<span id="radius_{$rsid}"{if $edit} style="display: none;"{/if}>{t a=$radiosector.radius}$a deg.{/t}</span>
-		<input type="text" size="10" name="radius_edit_{$rsid}" id="radius_edit_{$rsid}" value="{if $edit}{$formdata.radius}{else}{$radiosector.radius}{/if}" {tip text="Enter radius in degrees" trigger="radius_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
+		<span id="width_{$rsid}"{if $edit} style="display: none;"{/if}>{t a=$radiosector.width}$a deg.{/t}</span>
+		<input type="text" size="10" name="width_edit_{$rsid}" id="width_edit_{$rsid}" value="{if $edit}{$formdata.width}{else}{$radiosector.width}{/if}" {tip text="Enter angular width in degrees" trigger="width_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
 	</TD>
 	<TD class="nobr">
 		<span id="altitude_{$rsid}"{if $edit} style="display: none;"{/if}>{t a=$radiosector.altitude}$a m{/t}</span>
@@ -84,8 +84,8 @@
 	</TD>
 	<TD class="dark ftop nobr">
 		<img src="img/time.gif" alt="">
-		<label for="radius">{trans("Radius:")}<br>
-		<input type="text" size="10" name="radius" id="radius" value="{if !$formdata.rsid}{$formdata.radius}{/if}" {tip text="Enter radius in degrees" trigger="radius"}>
+		<label for="width">{trans("Angular width:")}<br>
+		<input type="text" size="10" name="width" id="width" value="{if !$formdata.rsid}{$formdata.width}{/if}" {tip text="Enter angular width in degrees" trigger="width"}>
 		</label>
 	</TD>
 	<TD class="dark ftop nobr">

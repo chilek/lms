@@ -135,7 +135,7 @@
 		</TD>
 	</TR>
 	{/if}
-{if get_conf('phpui.radius')}
+{if ConfigHelper::checkConfig('phpui.radius')}
 	{if $netdevinfo.shortname}
 	<TR>
 		<TD WIDTH="1%">
