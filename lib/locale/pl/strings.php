@@ -2943,9 +2943,9 @@ $_LANG['Radio sector with entered name already exists for this network device!']
 $_LANG['Radio sector azimuth cannot be empty!'] = 'Azymut sektora radiowego nie może być pusty!';
 $_LANG['Radio sector azimuth has invalid format!'] = 'Azymut sektora radiowego zawiera niepoprawne znaki!';
 $_LANG['Radio sector azimuth should be less than 360 degrees!'] = 'Azymut sektora radiowego powinien być mniejszy niż 360 stopni!';
-$_LANG['Radio sector radius cannot be empty!'] = 'Szerokość kątowa sektora radiowego nie może być pusty!';
+$_LANG['Radio sector radius cannot be empty!'] = 'Szerokość kątowa sektora radiowego nie może być pusta!';
 $_LANG['Radio sector radius has invalid format!'] = 'Szerokość kątowa sektora radiowego zawiera niepoprawne znaki!';
-$_LANG['Radio sector radius should be less than 360 degrees!'] = 'Szerokość kątowa sektora radiowego powinien być mniejszy niż 360 stopni!';
+$_LANG['Radio sector radius should be less than 360 degrees!'] = 'Szerokość kątowa sektora radiowego powinna być mniejsza niż 360 stopni!';
 $_LANG['Radio sector altitude cannot be empty!'] = 'Wysokość sektora radiowego nie może być pusta!';
 $_LANG['Radio sector altitude has invalid format!'] = 'Wysokość sektora radiowego zawiera niepoprawne znaki!';
 $_LANG['Radio sector range cannot be empty!'] = 'Zasięg sektora radiowego nie może być pusty!';
