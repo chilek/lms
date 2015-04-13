@@ -24,6 +24,23 @@
  *  $Id$
  */
 
+function GetNetLinkRadioSectors($dev1, $dev2) {
+	global $DB;
+
+	$result = $DB->GetRow('SELECT (CASE src WHEN ? THEN dstradiosector ELSE srcradiosector END) AS srcradiosector,
+		(CASE src WHEN ? THEN srcradiosector ELSE dstradiosector END) AS dstradiosector
+		FROM netlinks
+		WHERE (src = ? AND dst = ?) OR (dst = ? AND src = ?)',
+		array($dev1, $dev1, $dev1, $dev2, $dev1, $dev2));
+	if (empty($result))
+		$result = array();
+
+	$result['dst'] = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ? ORDER BY name', array($dev1));
+	$result['src'] = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ? ORDER BY name', array($dev2));
+
+	return $result;
+}
+
 function update_netlink_properties($id, $devid, $link) {
 	global $LMS, $DB, $LINKTYPES, $LINKTECHNOLOGIES, $LINKSPEEDS;
 
@@ -43,19 +60,30 @@ function update_netlink_properties($id, $devid, $link) {
 			$bitmap = 'wireless.gif';
 	}
 
-	if (!$isnetlink)
+	if ($isnetlink) {
+		$srcradiosectorname = $DB->GetOne('SELECT name FROM netradiosectors WHERE id = ?', array($link['srcradiosector']));
+		$dstradiosectorname = $DB->GetOne('SELECT name FROM netradiosectors WHERE id = ?', array($link['dstradiosector']));
+	} else
 		$radiosectorname = $DB->GetOne('SELECT name FROM netradiosectors WHERE id = ?', array($link['radiosector']));
 
-	$content1 = ($link['technology'] ? $LINKTECHNOLOGIES[$link['type']][$link['technology']] : '')
+	$content1 = ($link['technology'] ? $LINKTECHNOLOGIES[$link['type']][$link['technology']]
+			. (!$isnetlink ? ($radiosectorname ? " ($radiosectorname)" : '')
+				: ($srcradiosectorname || $dstradiosectorname ? ' ('
+					. ($srcradiosectorname ? $srcradiosectorname : '-')
+					. '/' . ($dstradiosectorname ? $dstradiosectorname : '-') . ')' : ''))
+			: '')
 		. '<br>' . $LINKSPEEDS[$link['speed']];
 
 	$content2 = "<IMG src=\"img/" . $bitmap
 			. "\" alt=\"[ " . trans("Change connection properties") . " ]\" title=\"[ " . trans("Change connection properties") . " ]\""
 			. " onmouseover=\"popup('<span class=&quot;nobr;&quot;>" . trans("Link type:") . " " . $LINKTYPES[$link['type']] . "<br>"
-			. (!$isnetlink && $radiosectorname ? trans("Radio sector:") . " " . $radiosectorname . "<br>" : '')
+			. (!$isnetlink ? ($radiosectorname ? trans("Radio sector:") . " " . $radiosectorname . "<br>" : '')
+				: ($srcradiosectorname ? trans("Radio sector:") . " " . $srcradiosectorname . "<br>" : '')
+					. ($dstradiosectorname ? trans("Destination radio sector:") . " " . $dstradiosectorname . "<br>" : ''))
 			. ($link['technology'] ? trans("Link technology:") . " " . $LINKTECHNOLOGIES[$link['type']][$link['technology']] . "<br>" : '')
 			. trans("Link speed:") . " " . $LINKSPEEDS[$link['speed']]
 			. "</span>');\" onmouseout=\"pophide();\">";
+
 	$result->call('update_netlink_info', $content1, $content2);
 
 	return $result;
@@ -83,8 +111,10 @@ $link['devid'] = $devid;
 $link['isnetlink'] = $isnetlink;
 
 $SMARTY->assign('link', $link);
-$radiosectors = ($isnetlink ? NULL :
-	$DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ? ORDER BY name', array($id)));
+if ($isnetlink)
+	$radiosectors = GetNetLinkRadioSectors($id, $devid);
+else
+	$radiosectors = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ? ORDER BY name', array($id));
 $SMARTY->assign('radiosectors', $radiosectors);
 $SMARTY->display('netdev/netlinkproperties.html');
 

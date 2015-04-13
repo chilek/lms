@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -21,7 +21,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id: common.php,v 1.130 2012/01/02 11:01:28 alec Exp $
+ *  $Id$
  */
 
 // Common functions, that making it in class would be nonsense :)
@@ -364,15 +364,15 @@ function writesyslog($message,$type)
 // Creates directories tree
 function rmkdir($dir)
 {
-	if($dir[0]!='/')
-		$dir = getcwd() . '/' . $dir;
-	$directories = explode('/',$dir);
+	if($dir[0]!= DIRECTORY_SEPARATOR)
+		$dir = getcwd() . DIRECTORY_SEPARATOR . $dir;
+	$directories = explode(DIRECTORY_SEPARATOR, $dir);
 	$makedirs = 0;
 	for($i=1;$i<sizeof($directories);$i++)
 	{
 		$cdir = '';
 		for($j=1;$j<$i+1;$j++)
-			$cdir .= '/'.$directories[$j];
+			$cdir .= DIRECTORY_SEPARATOR . $directories[$j];
 		if(!is_dir($cdir))
 		{
 			$result = mkdir($cdir,0777);
@@ -388,7 +388,7 @@ function rmkdir($dir)
 // Deletes directory and all subdirs and files in it
 function rrmdir($dir)
 {
-    $files = glob($dir . '/*', GLOB_MARK);
+    $files = glob($dir . DIRECTORY_SEPARATOR . '*', GLOB_MARK);
     foreach ($files as $file) {
         if (is_dir($file))
             rrmdir($file);
@@ -478,7 +478,7 @@ function get_producer($mac) {
 	if (!$mac)
 		return '';
 
-	$maclines = @file(LIB_DIR . '/ethercodes.txt', FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES);
+	$maclines = @file(LIB_DIR . DIRECTORY_SEPARATOR . 'ethercodes.txt', FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES);
 	if (!empty($maclines))
 		foreach ($maclines as $line) {
 			list ($prefix, $producer) = explode(':', $line);
@@ -556,7 +556,7 @@ if (!function_exists('bcmod'))
 	while ( strlen($x) );
 	    return (int)$mod;
     }
-}					     
+}
 
 function docnumber($number=NULL, $template=NULL, $time=NULL, $ext_num='')
 {
@@ -568,11 +568,17 @@ function docnumber($number=NULL, $template=NULL, $time=NULL, $ext_num='')
 	$result = str_replace('%I', $ext_num, $template);
 
 	// main document number
-	$result = preg_replace_callback(
-		'/%(\\d*)N/',
+	// code for php < 5.3
+/*
+	$result = preg_replace_callback('/%(\\d*)N/',
 		create_function('$m', "return sprintf(\"%0\$m[1]d\", $number);"),
 		$result);
-	
+*/
+	$result = preg_replace_callback('/%(\\d*)N/',
+		function ($m) use ($number) {
+			return sprintf('%0' . $m[1] . 'd', $number);
+		}, $result);
+
 	// time conversion specifiers
 	return strftime($result, $time);
 }
@@ -873,8 +879,8 @@ function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $o
 		);
 
 		/* setup your cert & key file */
-		$cert = 'file://'.LIB_DIR.'/tcpdf/config/lms.cert';
-		$key = 'file://'.LIB_DIR.'/tcpdf/config/lms.key';
+		$cert = 'file://' . LIB_DIR . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'lms.cert';
+		$key = 'file://' . LIB_DIR . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'lms.key';
 
 		/* set document digital signature & protection */
 		if (file_exists($cert) && file_exists($key)) {

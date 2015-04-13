@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,7 +26,7 @@
 
 // set cache directory
 if (!defined('CACHE_DIR')) {
-    $CONFIG['directories']['cache_dir'] = (!isset($CONFIG['directories']['cache_dir']) ? $CONFIG['directories']['sys_dir'].'/cache' : $CONFIG['directories']['cache_dir']);
+    $CONFIG['directories']['cache_dir'] = (!isset($CONFIG['directories']['cache_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'cache' : $CONFIG['directories']['cache_dir']);
     define('CACHE_DIR', $CONFIG['directories']['cache_dir']);
 }
 
@@ -75,19 +75,19 @@ function application_autoloader($class) {
         'Session' => 'Session.class.php',
         'Sysinfo' => 'Sysinfo.class.php',
         'TCPDFpl' => 'tcpdf.php',
-        'Smarty' => 'Smarty/Smarty.class.php',
-        'SmartyBC' => 'Smarty/SmartyBC.class.php',
-        'Cezpdf' => 'ezpdf/Cezpdf.php',
-        'Cpdf' => 'ezpdf/Cpdf.php',
-        'HTML2PDF' => 'html2pdf/html2pdf.class.php',
-        'TCPDF' => 'tcpdf/tcpdf.php'
+        'Smarty' => 'Smarty' . DIRECTORY_SEPARATOR . 'Smarty.class.php',
+        'SmartyBC' => 'Smarty' . DIRECTORY_SEPARATOR . 'SmartyBC.class.php',
+        'Cezpdf' => 'ezpdf' . DIRECTORY_SEPARATOR . 'Cezpdf.php',
+        'Cpdf' => 'ezpdf' . DIRECTORY_SEPARATOR . 'Cpdf.php',
+        'HTML2PDF' => 'html2pdf' . DIRECTORY_SEPARATOR . 'html2pdf.class.php',
+        'TCPDF' => 'tcpdf' . DIRECTORY_SEPARATOR . 'tcpdf.php'
     );
 
     if (array_key_exists($class, $base_classes))
         require_once LIB_DIR . DIRECTORY_SEPARATOR . $base_classes[$class];
     else {
         // set cache file path
-        $cache_file = CACHE_DIR . "/classpaths.cache";
+        $cache_file = CACHE_DIR . DIRECTORY_SEPARATOR . 'classpaths.cache';
         // read cache
 	$serialized_path_cache = (file_exists($cache_file) ? file_get_contents($cache_file) : '');
         $path_cache = unserialize($serialized_path_cache);

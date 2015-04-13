@@ -26,14 +26,9 @@
 
 $DB->BeginTrans();
 
-$DB->Execute("ALTER TABLE netlinks ADD COLUMN srcradiosector int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE netlinks ADD COLUMN dstradiosector int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE netlinks ADD INDEX srcradiosector (srcradiosector)");
-$DB->Execute("ALTER TABLE netlinks ADD INDEX dstradiosector (dstradiosector)");
-$DB->Execute("ALTER TABLE netlinks ADD FOREIGN KEY (srcradiosector) REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE");
-$DB->Execute("ALTER TABLE netlinks ADD FOREIGN KEY (dstradiosector) REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE");
+$DB->Execute("ALTER TABLE netradiosectors CHANGE frequency frequency numeric(9,5) DEFAULT NULL");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015040800', 'dbversion'));
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015041200', 'dbversion'));
 
 $DB->CommitTrans();
 

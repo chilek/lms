@@ -1200,10 +1200,10 @@ class LMS
         return $manager->IsNetDevLink($dev1, $dev2);
     }
 
-    public function NetDevLink($dev1, $dev2, $type = 0, $technology = 0, $speed = 100000, $sport = 0, $dport = 0)
+    public function NetDevLink($dev1, $dev2, $link)
     {
         $manager = $this->getNetDevManager();
-        return $manager->NetDevLink($dev1, $dev2, $type, $technology, $speed, $sport, $dport);
+        return $manager->NetDevLink($dev1, $dev2, $link);
     }
 
     public function NetDevUnLink($dev1, $dev2)

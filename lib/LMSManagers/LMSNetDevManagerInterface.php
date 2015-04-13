@@ -39,7 +39,7 @@ interface LMSNetDevManagerInterface
     
     public function IsNetDevLink($dev1, $dev2);
     
-    public function NetDevLink($dev1, $dev2, $type = 0, $technology = 0, $speed = 100000, $sport = 0, $dport = 0);
+    public function NetDevLink($dev1, $dev2, $link);
     
     public function NetDevUnLink($dev1, $dev2);
     

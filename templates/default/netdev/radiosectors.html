@@ -43,7 +43,7 @@ function delRadioSector(id) {
 }
 
 function toggleEditRadioSector(id) {
-	var elems = ['name', 'azimuth', 'radius', 'altitude', 'rsrange'];
+	var elems = ['name', 'azimuth', 'radius', 'altitude', 'rsrange', 'license', 'frequency'];
 	var edit = (xjx.$('edit_button_' + id).style.display != 'none');
 
 	for (i = 0; i < elems.length; i++) {
@@ -56,18 +56,14 @@ function toggleEditRadioSector(id) {
 }
 
 function updateRadioSector(id) {
-	var elems = ['name', 'azimuth', 'radius', 'altitude', 'rsrange'];
+	var elems = ['name', 'azimuth', 'radius', 'altitude', 'rsrange', 'license', 'frequency'];
 	var params = {};
 
 	xjx.$('radiosectortable').disabled = true;
 	for (i = 0; i < elems.length; i++) {
 		params[elems[i]] = xjx.$(elems[i] + '_edit_' + id).value;
-//		xjx.$(elems[i] + '_edit_' + id).disabled = true;
 	}
 	params['rsid'] = id;
-//	xjx.$('save_button_' + id).disabled = true;
-//	xjx.$('cancel_button_' + id).disabled = true;
-//	xjx.$('delete_button_' + id).disabled = true;
 	xajax_updateRadioSector(id, params);
 }
 //-->

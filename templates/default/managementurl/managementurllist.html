@@ -7,7 +7,7 @@
 </TR>
 </THEAD>
 <TBODY>
-{cycle name=locks values="light,lucid" print=false}
+{cycle name=managementurls values="light,lucid" print=false}
 {foreach from=$mgmurls item=mgmurl}
 {$urlid = $mgmurl.id}
 {if $formdata.urlid && $formdata.urlid == $urlid}{$edit = true}{else}{$edit = false}{/if}

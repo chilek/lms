@@ -4,6 +4,8 @@ version ?.??.?? (????-??-??):
 
   - added support for radio sectors management in user interface [chilan]
   - fixed serious performance regression introduced by autoloader [chilan]
+  - added radio sector management for network device links [chilan]
+  - added license number and frequency for radio sectors [chilan]
 
 version 1.11.16 (2015-03-31):
 

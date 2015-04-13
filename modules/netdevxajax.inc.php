@@ -187,6 +187,12 @@ function validateRadioSector($params, $update = false) {
 	elseif (!preg_match('/^[0-9]+$/', $params['rsrange']))
 		$error['rsrange'] = trans('Radio sector range has invalid format!');
 
+	if (strlen($params['license']) > 63)
+		$error['license'] = trans('Radio sector license number is too long!');
+
+	if (strlen($params['frequency']) && !preg_match('/^[0-9]{1,3}(\.[0-9]{1,5})?$/', $params['frequency']))
+		$error['frequency'] = trans('Radio frequency has invalid format!');
+
 	return $error;
 }
 
@@ -197,7 +203,23 @@ function getRadioSectors($formdata = NULL) {
 
 	$netdevid = intval($_GET['id']);
 
-	$radiosectors = $DB->GetAll('SELECT * FROM netradiosectors WHERE netdev = ? ORDER BY name', array($netdevid));
+	$radiosectors = $DB->GetAll('SELECT s.*, (CASE WHEN n.computers IS NULL THEN 0 ELSE n.computers END),
+		((CASE WHEN l1.devices IS NULL THEN 0 ELSE l1.devices END)
+		+ (CASE WHEN l2.devices IS NULL THEN 0 ELSE l2.devices END)) AS devices
+		FROM netradiosectors s
+		LEFT JOIN (
+			SELECT linkradiosector AS rs, COUNT(*) AS computers
+			FROM nodes n WHERE n.ownerid > 0 AND linkradiosector IS NOT NULL
+			GROUP BY rs
+		) n ON n.rs = s.id
+		LEFT JOIN (
+			SELECT srcradiosector, COUNT(*) AS devices FROM netlinks GROUP BY srcradiosector
+		) l1 ON l1.srcradiosector = s.id
+		LEFT JOIN (
+			SELECT dstradiosector, COUNT(*) AS devices FROM netlinks GROUP BY dstradiosector
+		) l2 ON l2.dstradiosector = s.id
+		WHERE s.netdev = ?
+		ORDER BY s.name', array($netdevid));
 	$SMARTY->assign('radiosectors', $radiosectors);
 	if (isset($formdata['error']))
 		$SMARTY->assign('error', $formdata['error']);
@@ -227,9 +249,12 @@ function addRadioSector($params) {
 			'radius' => $params['radius'],
 			'altitude' => $params['altitude'],
 			'rsrange' => $params['rsrange'],
+			'license' => (strlen($params['license']) ? $params['license'] : null),
+			'frequency' => (strlen($params['frequency']) ? $params['frequency'] : null),
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netdevid,
 		);
-		$DB->Execute('INSERT INTO netradiosectors (name, azimuth, radius, altitude, rsrange, netdev) VALUES (?, ?, ?, ?, ?, ?)',
+		$DB->Execute('INSERT INTO netradiosectors (name, azimuth, radius, altitude, rsrange, license, frequency, netdev)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
 			array_values($args));
 		if ($SYSLOG) {
 			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR]] = $DB->GetLastInsertID('netradiosectors');
@@ -287,10 +312,12 @@ function updateRadioSector($rsid, $params) {
 			'radius' => $params['radius'],
 			'altitude' => $params['altitude'],
 			'rsrange' => $params['rsrange'],
+			'license' => (strlen($params['license']) ? $params['license'] : null),
+			'frequency' => (strlen($params['frequency']) ? $params['frequency'] : null),
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR] => $rsid,
 		);
 		$DB->Execute('UPDATE netradiosectors SET name = ?, azimuth = ?, radius = ?, altitude = ?,
-			rsrange = ? WHERE id = ?', array_values($args));
+			rsrange = ?, license = ?, frequency = ? WHERE id = ?', array_values($args));
 		if ($SYSLOG) {
 			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]] = $netdevid;
 			$SYSLOG->AddMessage(SYSLOG_RES_RADIOSECTOR, SYSLOG_OPER_UPDATE, $args,
@@ -304,10 +331,22 @@ function updateRadioSector($rsid, $params) {
 	return $result;
 }
 
+function getRadioSectorsForNetdev($devid) {
+	global $DB;
+
+	$result = new xajaxResponse();
+
+	$radiosectors = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ? ORDER BY name', array(intval($devid)));
+	$result->call('radio_sectors_received', $radiosectors);
+
+	return $result;
+}
+
 $LMS->InitXajax();
 $LMS->RegisterXajaxFunction(array(
 	'getManagementUrls','addManagementUrl', 'delManagementUrl', 'updateManagementUrl',
 	'getRadioSectors', 'addRadioSector', 'delRadioSector', 'updateRadioSector',
+	'getRadioSectorsForNetdev',
 ));
 $SMARTY->assign('xajax', $LMS->RunXajax());
 

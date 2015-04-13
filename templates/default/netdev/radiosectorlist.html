@@ -6,34 +6,52 @@
 	<TD style="width: 1%;"><img src="img/time.gif" alt=""> {trans("Radius:")}</TD>
 	<TD style="width: 1%;">{trans("Altitude:")}</TD>
 	<TD style="width: 1%;">{trans("Range:")}</TD>
-	<TD style="width: 95%;">&nbsp;</TD>
+	<TD style="width: 1%;">{trans("Radio license number:")}</TD>
+	<TD style="width: 91%;">{trans("Frequency:")}</TD>
+	<TD style="width: 1%;" class="nobr text-center">{trans("Nodes:")}</TD>
+	<TD style="width: 1%;" class="nobr text-center">{trans("Net devices:")}</TD>
+	<TD style="width: 1%;">&nbsp;</TD>
 </TR>
 </THEAD>
 <TBODY>
-{cycle name=locks values="light,lucid" print=false}
+{cycle name=radiosectors values="light,lucid" print=false}
 {foreach from=$radiosectors item=radiosector}
 {$rsid = $radiosector.id}
 {if $formdata.rsid && $formdata.rsid == $rsid}{$edit = true}{else}{$edit = false}{/if}
 <TR class="highlight {cycle name=radiosectors}">
 	<TD class="bold nobr">
 		<img src="img/wireless.gif" alt=""> <span id="name_{$rsid}"{if $edit} style="display: none;"{/if}>{$radiosector.name}</span>
-		<input type="text" size="60" name="name_edit_{$rsid}" id="name_edit_{$rsid}" value="{$radiosector.name}" {tip text="Enter name" trigger="name_edit_{$rsid}"} style="display: none;">
+		<input type="text" size="60" name="name_edit_{$rsid}" id="name_edit_{$rsid}" value="{if $edit}{$formdata.name}{else}{$radiosector.name}{/if}" {tip text="Enter name" trigger="name_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
 	</TD>
 	<TD class="nobr">
 		<span id="azimuth_{$rsid}"{if $edit} style="display: none;"{/if}>{t a=$radiosector.azimuth}$a deg.{/t}</span>
 		<input type="text" size="10" name="azimuth_edit_{$rsid}" id="azimuth_edit_{$rsid}" value="{if $edit}{$formdata.azimuth}{else}{$radiosector.azimuth}{/if}" {tip text="Enter azimuth in degrees" trigger="azimuth_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
 	</TD>
 	<TD class="nobr">
-		<span id="radius_{$rsid}">{t a=$radiosector.radius}$a deg.{/t}</span>
-		<input type="text" size="10" name="radius_edit_{$rsid}" id="radius_edit_{$rsid}" value="{$radiosector.radius}" {tip text="Enter radius in degrees" trigger="radius_edit_{$rsid}"} style="display: none;">
+		<span id="radius_{$rsid}"{if $edit} style="display: none;"{/if}>{t a=$radiosector.radius}$a deg.{/t}</span>
+		<input type="text" size="10" name="radius_edit_{$rsid}" id="radius_edit_{$rsid}" value="{if $edit}{$formdata.radius}{else}{$radiosector.radius}{/if}" {tip text="Enter radius in degrees" trigger="radius_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
 	</TD>
 	<TD class="nobr">
-		<span id="altitude_{$rsid}">{t a=$radiosector.altitude}$a m{/t}</span>
-		<input type="text" size="10" name="altitude_edit_{$rsid}" id="altitude_edit_{$rsid}" value="{$radiosector.altitude}" {tip text="Enter altitude in meters" trigger="altitude_edit_{$rsid}"} style="display: none;">
+		<span id="altitude_{$rsid}"{if $edit} style="display: none;"{/if}>{t a=$radiosector.altitude}$a m{/t}</span>
+		<input type="text" size="10" name="altitude_edit_{$rsid}" id="altitude_edit_{$rsid}" value="{if $edit}{$formdata.altitude}{else}{$radiosector.altitude}{/if}" {tip text="Enter altitude in meters" trigger="altitude_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
 	</TD>
 	<TD class="nobr">
-		<span id="rsrange_{$rsid}">{t a=$radiosector.rsrange}$a m{/t}</span>
-		<input type="text" size="10" name="rsrange_edit_{$rsid}" id="rsrange_edit_{$rsid}" value="{$radiosector.rsrange}" {tip text="Enter range in meters" trigger="rsrange_edit_{$rsid}"} style="display: none;">
+		<span id="rsrange_{$rsid}"{if $edit} style="display: none;"{/if}>{t a=$radiosector.rsrange}$a m{/t}</span>
+		<input type="text" size="10" name="rsrange_edit_{$rsid}" id="rsrange_edit_{$rsid}" value="{if $edit}{$formdata.rsrange}{else}{$radiosector.rsrange}{/if}" {tip text="Enter range in meters" trigger="rsrange_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
+	</TD>
+	<TD class="nobr">
+		<span id="license_{$rsid}"{if $edit} style="display: none;"{/if}>{$radiosector.license}</span>
+		<input type="text" size="30" name="license_edit_{$rsid}" id="license_edit_{$rsid}" value="{if $edit}{$formdata.license}{else}{$radiosector.license}{/if}" {tip text="Enter radio license number" trigger="license_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
+	</TD>
+	<TD class="nobr">
+		<span id="frequency_{$rsid}"{if $edit} style="display: none;"{/if}>{if $radiosector.frequency}{t a=((float)$radiosector.frequency)|replace:",":"."}$a GHz{/t}{else}{trans("(default for link technology)")}{/if}</span>
+		<input type="text" size="10" name="frequency_edit_{$rsid}" id="frequency_edit_{$rsid}" value="{if $edit}{$formdata.frequency}{else}{if $radiosector.frequency}{((float)$radiosector.frequency)|replace:",":"."}{/if}{/if}" {tip text="Enter radio frequency" trigger="frequency_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
+	</TD>
+	<TD class="nobr text-center">
+		{$radiosector.computers}
+	</TD>
+	<TD class="nobr text-center">
+		{$radiosector.devices}
 	</TD>
 	<TD class="text-right nobr">
 		<A HREF="javascript:toggleEditRadioSector({$rsid});" id="edit_button_{$rsid}"{if $edit} style="display: none;"{/if}><IMG SRC="img/edit.gif" ALT="[ {trans("Edit")} ]" {tip text="Edit radio sector"}></A>
@@ -44,43 +62,53 @@
 </TR>
 {foreachelse}
 <TR>
-	<TD class="empty-table" colspan="6">
+	<TD class="empty-table" colspan="10">
 		<p>&nbsp;</p>
 		<p>{trans("No radio sectors.")}</p>
 		<p>&nbsp;</p>
 	</TD>
 </TR>
 {/foreach}
-<TR>
+<TR cellpadding="5">
 	<TD class="dark ftop nobr">
 		<img src="img/wireless.gif" alt="">
-		<label for="name">{trans("Name:")}
+		<label for="name">{trans("Name:")}<br>
 		<input type="text" size="60" name="name" id="name" value="{if !$formdata.rsid}{$formdata.name}{/if}" {tip text="Enter name" trigger="name"}>
 		</label>
 	</TD>
 	<TD class="dark ftop nobr">
 		<img src="img/time.gif" alt="">
-		<label for="azimuth">{trans("Azimuth:")}
+		<label for="azimuth">{trans("Azimuth:")}<br>
 		<input type="text" size="10" name="azimuth" id="azimuth" value="{if !$formdata.rsid}{$formdata.azimuth}{/if}" {tip text="Enter azimuth in degrees" trigger="azimuth"}>
 		</label>
 	</TD>
 	<TD class="dark ftop nobr">
 		<img src="img/time.gif" alt="">
-		<label for="radius">{trans("Radius:")}
+		<label for="radius">{trans("Radius:")}<br>
 		<input type="text" size="10" name="radius" id="radius" value="{if !$formdata.rsid}{$formdata.radius}{/if}" {tip text="Enter radius in degrees" trigger="radius"}>
 		</label>
 	</TD>
 	<TD class="dark ftop nobr">
-		<label for="altitude">{trans("Altitude:")}
+		<label for="altitude">{trans("Altitude:")}<br>
 		<input type="text" size="10" name="altitude" id="altitude" value="{if !$formdata.rsid}{$formdata.altitude}{/if}" {tip text="Enter altitude in meters" trigger="altitude"}>
 		</label>
 	</TD>
 	<TD class="dark ftop nobr">
-		<label for="rsrange">{trans("Range:")}
+		<label for="rsrange">{trans("Range:")}<br>
 		<input type="text" size="10" name="rsrange" id="rsrange" value="{if !$formdata.rsid}{$formdata.rsrange}{/if}" {tip text="Enter range in meters" trigger="rsrange"}>
 		</label>
 	</TD>
-	<TD class="dark ftop text-right nobr" rowspan="2">
+	<TD class="dark ftop nobr">
+		<label for="license">{trans("Radio license number:")}<br>
+		<input type="text" size="30" name="license" id="license" value="{if !$formdata.rsid}{$formdata.license}{/if}" {tip text="Enter radio license number" trigger="license"}>
+		</label>
+	</TD>
+	<TD class="dark ftop nobr">
+		<label for="frequency">{trans("Frequency:")}<br>
+		<input type="text" size="10" name="frequency" id="frequency" value="{if !$formdata.rsid}{$formdata.frequency}{/if}" {tip text="Enter radio frequency" trigger="frequency"}>
+		</label>
+	</TD>
+	<TD class="dark ftop text-right nobr" colspan="3" rowspan="2">
 		<A id="radiosectoraddlink" HREF="javascript:addRadioSector();" {tip text="Add new radio sector"}>{trans("Add")} <IMG SRC="img/save.gif" alt=""></A>
 	</TD>
 </TR>
