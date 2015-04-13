@@ -2017,7 +2017,7 @@ class LMS
     public function CalcAt($period, $date)
     {
         $manager = $this->getFinanaceManager();
-        $manager->CalcAt($period, $date);
+        return $manager->CalcAt($period, $date);
     }
 
     /**
