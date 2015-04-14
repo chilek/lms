@@ -157,6 +157,7 @@ function change_nodelinktype(linktype) {
 			break;
 	}
 	xjx.$('devnodesradiosector').style.display = (linktype == 1 ? '' : 'none');
+	xajax_getRadioSectorsForNetdev('radio_sectors_received_for_node', {$netdevinfo.id});
 }
 
 function change_nodelinktechnology(linktechnology) {
