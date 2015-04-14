@@ -305,13 +305,13 @@ function get_file_contents($fileid) {
 	return $res;
 }
 
+@include(ConfigHelper::getConfig('phpui.import_config', 'cashimportcfg.php'));
+
 function parse_file($filename, $contents) {
-	global $DB, $quiet;
+	global $DB, $quiet, $patterns;
 
 	if (!$quiet)
 		printf("Getting cash import file ".$filename." ... ");
-
-	@require_once(ConfigHelper::getConfig('phpui.import_config', 'cashimportcfg.php'));
 
 	if (!isset($patterns) || !is_array($patterns))
 	{
