@@ -311,7 +311,7 @@ function parse_file($filename, $contents) {
 	if (!$quiet)
 		printf("Getting cash import file ".$filename." ... ");
 
-	@include(ConfigHelper::getConfig('phpui.import_config', 'cashimportcfg.php'));
+	@require_once(ConfigHelper::getConfig('phpui.import_config', 'cashimportcfg.php'));
 
 	if (!isset($patterns) || !is_array($patterns))
 	{
