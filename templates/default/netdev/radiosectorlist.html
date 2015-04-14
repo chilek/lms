@@ -48,7 +48,7 @@
 		<SELECT NAME="technology_edit_{$rsid}" id="technology_edit_{$rsid}" {tip trigger="technology_edit_{$rsid}" text="Select link technology"}{if !$edit} style="display: none;"{/if}>
 			<OPTION value="0">{trans("- unknown -")}</OPTION>
 			{foreach $_LINKTECHNOLOGIES[1] as $technologyidx => $technology}
-			<OPTION value="{$technologyidx}"{if $edit}{if $formdata.technology == $technologyidx} selected{else}{if $radiosector.technology == $technologyidx} selected{/if}{/if}{/if}>{$technology}</OPTION>
+			<OPTION value="{$technologyidx}"{if $edit}{if $formdata.technology == $technologyidx} selected{/if}{else}{if $radiosector.technology == $technologyidx} selected{/if}{/if}>{$technology}</OPTION>
 			{/foreach}
 		</SELECT><br>
 		<span id="frequency_{$rsid}"{if $edit} style="display: none;"{/if}>{if $radiosector.frequency}{t a=((float)$radiosector.frequency)|replace:",":"."}$a GHz{/t}{else}{trans("(default for link technology)")}{/if}</span>
