@@ -132,7 +132,9 @@ $SMARTY->assign('link', $link);
 if ($isnetlink)
 	$radiosectors = GetNetLinkRadioSectors($id, $devid);
 else
-	$radiosectors = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ? ORDER BY name', array($id));
+	$radiosectors = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ?'
+		. ($link['technology'] ? ' AND (technology = ' . $link['technology'] . ' OR technology = 0)' : '')
+		. ' ORDER BY name', array($id));
 $SMARTY->assign('radiosectors', $radiosectors);
 $SMARTY->display('netdev/netlinkproperties.html');
 
