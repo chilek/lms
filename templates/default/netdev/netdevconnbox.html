@@ -89,7 +89,7 @@
 				<TR>
 					<TD style="width: 99%; white-space: nowrap;">
 						<span class="bold">{trans("Connect")}:</span>
-						{trans("Device:")}<SELECT NAME="netdev" style="width: 300px" {tip trigger="link" text="Select from list device for connection"} onchange="get_radio_sectors_for_netdev(this.options[this.selectedIndex].value);">
+						{trans("Device:")}<SELECT NAME="netdev" id="srcnetdev" style="width: 300px" {tip trigger="link" text="Select from list device for connection"} onchange="get_radio_sectors_for_netdev(this.options[this.selectedIndex].value)">
 						{section name=restnetdevlist loop=$restnetdevlist}
 							{assign var=netdevname value=$restnetdevlist[restnetdevlist].name}
 							{if $restnetdevlist[restnetdevlist].producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$restnetdevlist[restnetdevlist].producer}{/if}
@@ -113,7 +113,7 @@
 							<OPTION VALUE="{$key}"{if $key==$devlinktype} selected{/if}>{$item}</OPTION>
 							{/foreach}
 						</SELECT>
-						<SELECT NAME="linktechnology" id="connboxlinktechnology" {tip trigger="connboxlinktechnology" text="Select link technology"}>
+						<SELECT NAME="linktechnology" id="connboxlinktechnology" {tip trigger="connboxlinktechnology" text="Select link technology"} onchange="change_devlinktechnology(this.options[this.selectedIndex].value)">
 							<OPTION value="0">{trans("- unknown -")}</OPTION>
 							{if !$devlinktype}{$devlinktype = 0}{/if}
 							{foreach $_LINKTECHNOLOGIES[$devlinktype] as $linktechnologyidx => $linktechnology}
@@ -168,27 +168,70 @@ function change_devlinktype(linktype) {
 	}
 	xjx.$('connboxsrcradiosector').style.display = (linktype == 1 ? '' : 'none');
 	xjx.$('connboxdstradiosector').style.display = (linktype == 1 ? '' : 'none');
+
+	if (linktype == 1) {
+		var selected = xjx.$('srcnetdev').selectedIndex;
+		if (selected) {
+			netdev = xjx.$('srcnetdev').options[selected].value;
+			xajax_getRadioSectorsForNetdev('radio_sectors_received_for_srcnetdev', netdev);
+		}
+	}
+}
+
+function change_devlinktechnology(linktechnology) {
+	linktechnology = parseInt(linktechnology);
+	var linktype = xjx.$('connboxlinktype').options[xjx.$('connboxlinktype').selectedIndex].value;
+	if (linktype != 1)
+		return;
+	var netdev = xjx.$('srcnetdev').options[xjx.$('srcnetdev').selectedIndex].value;
+	if (netdev !== undefined) {
+		xjx.$('connboxsrcradiosector').disabled = true;
+		xjx.$('connboxdstradiosector').disabled = true;
+		xajax_getRadioSectorsForNetdev('radio_sectors_received_for_srcnetdev', netdev, linktechnology);
+		xajax_getRadioSectorsForNetdev('radio_sectors_received_for_dstnetdev', {$netdevinfo.id}, linktechnology);
+	}
 }
 
 function get_radio_sectors_for_netdev(netdev) {
 	xjx.$('connboxsrcradiosector').disabled = true;
-	xajax_getRadioSectorsForNetdev(netdev);
+	xajax_getRadioSectorsForNetdev('radio_sectors_received_for_srcnetdev', netdev);
 }
 
-function radio_sectors_received(radiosectors) {
+function radio_sectors_received_for_srcnetdev(radiosectors) {
 	var options = xjx.$('connboxsrcradiosector').options;
+	var oldvalue = options[xjx.$('connboxsrcradiosector').selectedIndex].value;
 	while (options.length)
 		options.remove(0);
 	options.add(new Option('- {trans("none")} -', 0));
 	if (radiosectors !== null) {
 		radiosectors.forEach(function(elem) {
-			options.add(new Option(elem.name, elem.id));
-		})
+			var option = new Option(elem.name, elem.id);
+			if (elem.id == oldvalue)
+				option.selected = true;
+			options.add(option);
+		});
 	}
 	xjx.$('connboxsrcradiosector').disabled = false;
 }
 
-xajax_getRadioSectorsForNetdev({$restnetdevlist[0].id});
+function radio_sectors_received_for_dstnetdev(radiosectors) {
+	var options = xjx.$('connboxdstradiosector').options;
+	var oldvalue = options[xjx.$('connboxdstradiosector').selectedIndex].value;
+	while (options.length)
+		options.remove(0);
+	options.add(new Option('- {trans("none")} -', 0));
+	if (radiosectors !== null) {
+		radiosectors.forEach(function(elem) {
+			var option = new Option(elem.name, elem.id);
+			if (elem.id == oldvalue)
+				option.selected = true;
+			options.add(option);
+		});
+	}
+	xjx.$('connboxdstradiosector').disabled = false;
+}
+
+xajax_getRadioSectorsForNetdev('radio_sectors_received_for_srcnetdev', {$restnetdevlist[0].id});
 
 if (getCookie('devicedevices') == '1')
 	xjx.$('devicedevices').style.display = '';

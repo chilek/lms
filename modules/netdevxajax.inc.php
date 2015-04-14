@@ -337,13 +337,20 @@ function updateRadioSector($rsid, $params) {
 	return $result;
 }
 
-function getRadioSectorsForNetdev($devid) {
+function getRadioSectorsForNetdev($callback_name, $devid, $technology = 0) {
 	global $DB;
 
 	$result = new xajaxResponse();
 
-	$radiosectors = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ? ORDER BY name', array(intval($devid)));
-	$result->call('radio_sectors_received', $radiosectors);
+	if (!in_array($callback_name, array('radio_sectors_received_for_srcnetdev', 'radio_sectors_received_for_dstnetdev',
+		'radio_sectors_received_for_node')))
+		return $result;
+
+	$technology = intval($technology);
+	$radiosectors = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ?'
+		. ($technology ? ' AND (technology = ' . $technology . ' OR technology = 0)' : '')
+		. ' ORDER BY name', array(intval($devid)));
+	$result->call($callback_name, $radiosectors);
 
 	return $result;
 }
