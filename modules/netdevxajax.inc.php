@@ -174,12 +174,12 @@ function validateRadioSector($params, $update = false) {
 	elseif ($params['azimuth'] >= 360)
 		$error['azimuth'] = trans('Radio sector azimuth should be less than 360 degrees!');
 
-	if (!strlen($params['radius']))
-		$error['radius'] = trans('Radio sector angular width cannot be empty!');
-	elseif (!preg_match('/^[0-9]+(\.[0-9]+)?$/', $params['radius']))
-		$error['radius'] = trans('Radio sector angular width has invalid format!');
-	elseif ($params['radius'] >= 360)
-		$error['radius'] = trans('Radio sector angular width should be less than 360 degrees!');
+	if (!strlen($params['width']))
+		$error['width'] = trans('Radio sector angular width cannot be empty!');
+	elseif (!preg_match('/^[0-9]+(\.[0-9]+)?$/', $params['width']))
+		$error['width'] = trans('Radio sector angular width has invalid format!');
+	elseif ($params['width'] >= 360)
+		$error['width'] = trans('Radio sector angular width should be less than 360 degrees!');
 
 	if (!strlen($params['altitude']))
 		$error['altitude'] = trans('Radio sector altitude cannot be empty!');
@@ -250,14 +250,14 @@ function addRadioSector($params) {
 		$args = array(
 			'name' => $params['name'],
 			'azimuth' => $params['azimuth'],
-			'radius' => $params['radius'],
+			'width' => $params['width'],
 			'altitude' => $params['altitude'],
 			'rsrange' => $params['rsrange'],
 			'license' => (strlen($params['license']) ? $params['license'] : null),
 			'frequency' => (strlen($params['frequency']) ? $params['frequency'] : null),
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netdevid,
 		);
-		$DB->Execute('INSERT INTO netradiosectors (name, azimuth, radius, altitude, rsrange, license, frequency, netdev)
+		$DB->Execute('INSERT INTO netradiosectors (name, azimuth, width, altitude, rsrange, license, frequency, netdev)
 			VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
 			array_values($args));
 		if ($SYSLOG) {
@@ -313,14 +313,14 @@ function updateRadioSector($rsid, $params) {
 		$args = array(
 			'name' => $params['name'],
 			'azimuth' => $params['azimuth'],
-			'radius' => $params['radius'],
+			'width' => $params['width'],
 			'altitude' => $params['altitude'],
 			'rsrange' => $params['rsrange'],
 			'license' => (strlen($params['license']) ? $params['license'] : null),
 			'frequency' => (strlen($params['frequency']) ? $params['frequency'] : null),
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR] => $rsid,
 		);
-		$DB->Execute('UPDATE netradiosectors SET name = ?, azimuth = ?, radius = ?, altitude = ?,
+		$DB->Execute('UPDATE netradiosectors SET name = ?, azimuth = ?, width = ?, altitude = ?,
 			rsrange = ?, license = ?, frequency = ? WHERE id = ?', array_values($args));
 		if ($SYSLOG) {
 			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]] = $netdevid;

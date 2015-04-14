@@ -679,10 +679,11 @@ CREATE TABLE netradiosectors (
 	id int(11) NOT NULL auto_increment,
 	name varchar(64) NOT NULL,
 	azimuth decimal(9,2) DEFAULT 0 NOT NULL,
-	radius decimal(9,2) DEFAULT 0 NOT NULL,
+	width decimal(9,2) DEFAULT 0 NOT NULL,
 	altitude smallint DEFAULT 0 NOT NULL,
 	rsrange int(11) DEFAULT 0 NOT NULL,
 	license varchar(64) DEFAULT NULL,
+	technology int(11) DEFAULT 0 NOT NULL,
 	frequency numeric(9,5) DEFAULT NULL,
 	netdev int(11) NOT NULL,
 	PRIMARY KEY (id),
@@ -2401,4 +2402,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015041200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015041400');
