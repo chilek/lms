@@ -7,7 +7,7 @@
 	<TD style="width: 1%;">{trans("Altitude:")}</TD>
 	<TD style="width: 1%;">{trans("Range:")}</TD>
 	<TD style="width: 1%;">{trans("Radio license number:")}</TD>
-	<TD style="width: 91%;">{trans("Frequency:")}</TD>
+	<TD style="width: 91%;">{trans("Link technology:")}<br>{trans("Frequency:")}</TD>
 	<TD style="width: 1%;" class="nobr text-center">{trans("Nodes:")}</TD>
 	<TD style="width: 1%;" class="nobr text-center">{trans("Net devices:")}</TD>
 	<TD style="width: 1%;">&nbsp;</TD>
@@ -44,6 +44,13 @@
 		<input type="text" size="30" name="license_edit_{$rsid}" id="license_edit_{$rsid}" value="{if $edit}{$formdata.license}{else}{$radiosector.license}{/if}" {tip text="Enter radio license number" trigger="license_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
 	</TD>
 	<TD class="nobr">
+		<span id="technology_{$rsid}"{if $edit} style="display: none;"{/if}>{if $radiosector.technology}{$_LINKTECHNOLOGIES[1][$radiosector.technology]}{/if}</span>
+		<SELECT NAME="technology_edit_{$rsid}" id="technology_edit_{$rsid}" {tip trigger="technology_edit_{$rsid}" text="Select link technology"}{if !$edit} style="display: none;"{/if}>
+			<OPTION value="0">{trans("- unknown -")}</OPTION>
+			{foreach $_LINKTECHNOLOGIES[1] as $technologyidx => $technology}
+			<OPTION value="{$technologyidx}"{if $edit}{if $formdata.technology == $technologyidx} selected{else}{if $radiosector.technology == $technologyidx} selected{/if}{/if}{/if}>{$technology}</OPTION>
+			{/foreach}
+		</SELECT><br>
 		<span id="frequency_{$rsid}"{if $edit} style="display: none;"{/if}>{if $radiosector.frequency}{t a=((float)$radiosector.frequency)|replace:",":"."}$a GHz{/t}{else}{trans("(default for link technology)")}{/if}</span>
 		<input type="text" size="10" name="frequency_edit_{$rsid}" id="frequency_edit_{$rsid}" value="{if $edit}{$formdata.frequency}{else}{if $radiosector.frequency}{((float)$radiosector.frequency)|replace:",":"."}{/if}{/if}" {tip text="Enter radio frequency" trigger="frequency_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
 	</TD>
@@ -104,7 +111,15 @@
 		</label>
 	</TD>
 	<TD class="dark ftop nobr">
-		<label for="frequency">{trans("Frequency:")}<br>
+		<label for="technology">{trans("Link technology:")}
+		<SELECT NAME="technology" id="technology" {tip trigger="technology" text="Select link technology"}>
+			<OPTION value="0">{trans("- unknown -")}</OPTION>
+			{foreach $_LINKTECHNOLOGIES[1] as $technologyidx => $technology}
+			<OPTION value="{$technologyidx}"{if $formdata.technology == $technologyidx} selected{/if}>{$technology}</OPTION>
+			{/foreach}
+		</SELECT>
+		</label><br>
+		<label for="frequency">{trans("Frequency:")}
 		<input type="text" size="10" name="frequency" id="frequency" value="{if !$formdata.rsid}{$formdata.frequency}{/if}" {tip text="Enter radio frequency" trigger="frequency"}>
 		</label>
 	</TD>
