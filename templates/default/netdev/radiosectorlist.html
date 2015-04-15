@@ -51,9 +51,13 @@
 			{foreach $_LINKTECHNOLOGIES[1] as $technologyidx => $technology}
 			<OPTION value="{$technologyidx}"{if $edit}{if $formdata.technology == $technologyidx} selected{/if}{else}{if $radiosector.technology == $technologyidx} selected{/if}{/if}>{$technology}</OPTION>
 			{/foreach}
-		</SELECT><br>
+		</SELECT>
+	</TD>
+	<TD class="nobr">
 		<span id="frequency_{$rsid}"{if $edit} style="display: none;"{/if}>{if $radiosector.frequency}{t a=((float)$radiosector.frequency)|replace:",":"."}$a GHz{/t}{else}{trans("(default for link technology)")}{/if}</span>
-		<input type="text" size="10" name="frequency_edit_{$rsid}" id="frequency_edit_{$rsid}" value="{if $edit}{$formdata.frequency}{else}{if $radiosector.frequency}{((float)$radiosector.frequency)|replace:",":"."}{/if}{/if}" {tip text="Enter radio frequency" trigger="frequency_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
+		<input type="text" size="10" name="frequency_edit_{$rsid}" id="frequency_edit_{$rsid}" value="{if $edit}{$formdata.frequency}{else}{if $radiosector.frequency}{((float)$radiosector.frequency)|replace:",":"."}{/if}{/if}" {tip text="Enter frequency in GHz" trigger="frequency_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}><br>
+		<span id="bandwidth_{$rsid}"{if $edit} style="display: none;"{/if}>{if $radiosector.bandwidth}{t a=$radiosector.bandwidth}$a MHz{/t}{else}{trans("(default for link technology)")}{/if}</span>
+		<input type="text" size="10" name="bandwidth_edit_{$rsid}" id="bandwidth_edit_{$rsid}" value="{if $edit}{$formdata.bandwidth}{else}{if $radiosector.bandwidth}{$radiosector.bandwidth}{/if}{/if}" {tip text="Enter bandwidth in MHz" trigger="bandwidth_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
 	</TD>
 	<TD class="nobr text-center">
 		{$radiosector.computers}
@@ -70,7 +74,7 @@
 </TR>
 {foreachelse}
 <TR>
-	<TD class="empty-table" colspan="10">
+	<TD class="empty-table" colspan="11">
 		<p>&nbsp;</p>
 		<p>{trans("No radio sectors.")}</p>
 		<p>&nbsp;</p>
@@ -119,9 +123,14 @@
 			<OPTION value="{$technologyidx}"{if $formdata.technology == $technologyidx} selected{/if}>{$technology}</OPTION>
 			{/foreach}
 		</SELECT>
-		</label><br>
+		</label>
+	</TD>
+	<TD class="dark ftop nobr">
 		<label for="frequency">{trans("Frequency:")}
-		<input type="text" size="10" name="frequency" id="frequency" value="{if !$formdata.rsid}{$formdata.frequency}{/if}" {tip text="Enter radio frequency" trigger="frequency"}>
+		<input type="text" size="10" name="frequency" id="frequency" value="{if !$formdata.rsid}{$formdata.frequency}{/if}" {tip text="Enter frequency in GHz" trigger="frequency"}>
+		</label><br>
+		<label for="bandwidth">{trans("Bandwidth:")}
+		<input type="text" size="10" name="bandwidth" id="bandwidth" value="{if !$formdata.rsid}{$formdata.bandwidth}{/if}" {tip text="Enter bandwidth in MHz" trigger="bandwidth"}>
 		</label>
 	</TD>
 	<TD class="dark ftop text-right nobr" colspan="3" rowspan="2">
