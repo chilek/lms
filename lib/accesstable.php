@@ -70,6 +70,7 @@ $access['table'][12]['allow_reg']   	= '^(((host|config|numberplan|taxrate|state
 
 $access['table'][13]['name']        	= trans('networks and devices management');
 $access['table'][13]['allow_reg']   	= '^((net|netdev|ewxch)(info|list|edit|add|del|print|cmp|map(refresh|)|remap|search)|choose(mac|ip|gpscoords)|ewxnodelist|ewxdevlist|chooselocation|ping|netnode(add|adddev|del|deldev|edit|info|list)|netdevmodels)$';
+$access['table'][13]['privilege']	= 'network_management';
 
 $access['table'][14]['name']        	= trans('timetable management');
 $access['table'][14]['allow_reg']   	= '^(event(list|edit|add|del|info|print|search)|choosecustomer)$';
