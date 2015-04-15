@@ -140,7 +140,7 @@ $access['table'][255]['deny_reg']	= '^.*$';
 // read user-defined access rights table
 $custom_access_table = ConfigHelper::getConfig('phpui.custom_accesstable');
 if (!is_null($custom_access_table))
-	if (is_readable($custom_access_table) && ($custom_access_table{0} == DIRECTORY_SEPARATOR))
+	if (is_readable($custom_access_table) && ($custom_access_table[0] == DIRECTORY_SEPARATOR))
 		@include_once($custom_access_table);
 	else if (is_readable(LIB_DIR . DIRECTORY_SEPARATOR . $custom_access_table))
 		@include_once(LIB_DIR . DIRECTORY_SEPARATOR . $custom_access_table);
