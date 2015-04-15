@@ -506,6 +506,7 @@ CREATE TABLE netradiosectors (
 	license varchar(64) DEFAULT NULL,
 	technology integer DEFAULT 0 NOT NULL,
 	frequency numeric(9,5) DEFAULT NULL,
+	bandwidth numeric(9,5) DEFAULT NULL,
 	netdev integer NOT NULL
 		REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id),

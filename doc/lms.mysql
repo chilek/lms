@@ -685,6 +685,7 @@ CREATE TABLE netradiosectors (
 	license varchar(64) DEFAULT NULL,
 	technology int(11) DEFAULT 0 NOT NULL,
 	frequency numeric(9,5) DEFAULT NULL,
+	bandwidth numeric(9,5) DEFAULT NULL,
 	netdev int(11) NOT NULL,
 	PRIMARY KEY (id),
 	INDEX netdev (netdev),
