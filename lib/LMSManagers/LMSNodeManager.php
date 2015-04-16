@@ -69,6 +69,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             'latitude' => !empty($nodedata['latitude']) ? str_replace(',', '.', $nodedata['latitude']) : null,
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK] => $nodedata['netid'],
             'invprojectid' => $nodedata['invprojectid'],
+	    'conntype' => $nodedata['conntype'],
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodedata['id']
         );
         $this->db->Execute('UPDATE nodes SET name=UPPER(?), ipaddr_pub=inet_aton(?),
@@ -76,7 +77,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 				modid=?, access=?, warning=?, ownerid=?, info=?, location=?,
 				location_city=?, location_street=?, location_house=?, location_flat=?,
 				chkmac=?, halfduplex=?, linktype=?, linkradiosector=?, linktechnology=?, linkspeed=?,
-				port=?, nas=?, longitude=?, latitude=?, netid=?, invprojectid=?
+				port=?, nas=?, longitude=?, latitude=?, netid=?, invprojectid=?, conntype=?
 				WHERE id=?', array_values($args));
 
         if ($this->syslog) {
@@ -572,15 +573,16 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             'latitude' => !empty($nodedata['latitude']) ? str_replace(',', '.', $nodedata['latitude']) : null,
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK] => $nodedata['netid'],
             'invprojectid' => $nodedata['invprojectid'],
+	    'conntype' => $nodedata['conntype'],
         );
 
         if ($this->db->Execute('INSERT INTO nodes (name, ipaddr, ipaddr_pub, ownerid,
 			passwd, creatorid, creationdate, access, warning, info, netdev,
 			location, location_city, location_street, location_house, location_flat,
 			linktype, linkradiosector, linktechnology, linkspeed, port, chkmac, halfduplex, nas,
-			longitude, latitude, netid, invprojectid)
+			longitude, latitude, netid, invprojectid, conntype)
 			VALUES (?, inet_aton(?), inet_aton(?), ?, ?, ?,
-			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
+			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
             $id = $this->db->GetLastInsertID('nodes');
 
             // EtherWerX support (devices have some limits)
