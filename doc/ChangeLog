@@ -6,6 +6,9 @@ version ?.??.?? (????-??-??):
   - fixed serious performance regression introduced by autoloader [chilan]
   - added radio sector management for network device links [chilan]
   - added license number and frequency for radio sectors [chilan]
+  - added link technology and bandwidth support for radio sectors [chilan]
+  - userpanel: we can enable/disable modules from lms user interface [chilan]
+  - added connection type (PPPoE, DHCP, EAP) in nodes [nicraM Marcin Romanowski]
 
 version 1.11.16 (2015-03-31):
 

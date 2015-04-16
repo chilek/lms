@@ -500,11 +500,13 @@ CREATE TABLE netradiosectors (
 	id integer DEFAULT nextval('netradiosectors_id_seq'::text) NOT NULL,
 	name varchar(64) NOT NULL,
 	azimuth numeric(9,2) DEFAULT 0 NOT NULL,
-	radius numeric(9,2) DEFAULT 0 NOT NULL,
+	width numeric(9,2) DEFAULT 0 NOT NULL,
 	altitude smallint DEFAULT 0 NOT NULL,
 	rsrange integer DEFAULT 0 NOT NULL,
 	license varchar(64) DEFAULT NULL,
+	technology integer DEFAULT 0 NOT NULL,
 	frequency numeric(9,5) DEFAULT NULL,
+	bandwidth numeric(9,5) DEFAULT NULL,
 	netdev integer NOT NULL
 		REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id),
@@ -537,6 +539,7 @@ CREATE TABLE nodes (
 	modid integer 		DEFAULT 0 NOT NULL,
 	access smallint 	DEFAULT 1 NOT NULL,
 	warning smallint 	DEFAULT 0 NOT NULL,
+	conntech smallint 	DEFAULT 0 NOT NULL,
 	chkmac smallint 	DEFAULT 1 NOT NULL,
 	halfduplex smallint	DEFAULT 0 NOT NULL,
 	lastonline integer	DEFAULT 0 NOT NULL,
@@ -565,6 +568,7 @@ CREATE INDEX nodes_ipaddr_pub_idx ON nodes (ipaddr_pub);
 CREATE INDEX nodes_location_street_idx ON nodes (location_street);
 CREATE INDEX nodes_location_city_idx ON nodes (location_city, location_street, location_house, location_flat);
 CREATE INDEX nodes_linkradiosector_idx ON nodes (linkradiosector);
+CREATE INDEX nodes_conntech_idx ON nodes (conntech);
 
 /* ----------------------------------------------------
  Structure of table "nodelocks"
@@ -2497,4 +2501,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015041200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015041400');

@@ -305,19 +305,15 @@ function get_file_contents($fileid) {
 	return $res;
 }
 
+@include(ConfigHelper::getConfig('phpui.import_config', 'cashimportcfg.php'));
+if (!isset($patterns) || !is_array($patterns))
+	die(trans("Configuration error. Patterns array not found!")."\n");
+
 function parse_file($filename, $contents) {
-	global $DB, $quiet;
+	global $DB, $quiet, $patterns;
 
 	if (!$quiet)
 		printf("Getting cash import file ".$filename." ... ");
-
-	@include(ConfigHelper::getConfig('phpui.import_config', 'cashimportcfg.php'));
-
-	if (!isset($patterns) || !is_array($patterns))
-	{
-		printf(trans("Configuration error. Patterns array not found!")."\n");
-		return;
-	}
 
 	$file		= explode("\n", $contents);
 	$patterns_cnt	= isset($patterns) ? sizeof($patterns) : 0;

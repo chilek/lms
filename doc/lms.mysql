@@ -679,11 +679,13 @@ CREATE TABLE netradiosectors (
 	id int(11) NOT NULL auto_increment,
 	name varchar(64) NOT NULL,
 	azimuth decimal(9,2) DEFAULT 0 NOT NULL,
-	radius decimal(9,2) DEFAULT 0 NOT NULL,
+	width decimal(9,2) DEFAULT 0 NOT NULL,
 	altitude smallint DEFAULT 0 NOT NULL,
 	rsrange int(11) DEFAULT 0 NOT NULL,
 	license varchar(64) DEFAULT NULL,
+	technology int(11) DEFAULT 0 NOT NULL,
 	frequency numeric(9,5) DEFAULT NULL,
+	bandwidth numeric(9,5) DEFAULT NULL,
 	netdev int(11) NOT NULL,
 	PRIMARY KEY (id),
 	INDEX netdev (netdev),
@@ -776,6 +778,7 @@ CREATE TABLE nodes (
   port smallint NOT NULL DEFAULT '0',
   access tinyint(1) NOT NULL DEFAULT '1',
   warning tinyint(1) NOT NULL DEFAULT '0',
+  conntech tinyint(1) NOT NULL DEFAULT '0',
   chkmac tinyint(1) NOT NULL DEFAULT '1',
   halfduplex tinyint(1) NOT NULL DEFAULT '0',
   lastonline int(11) NOT NULL DEFAULT '0',
@@ -799,6 +802,7 @@ CREATE TABLE nodes (
   INDEX location_city (location_city, location_street, location_house, location_flat),
   INDEX location_street (location_street),
   INDEX linkradiosector (linkradiosector),
+  INDEX conntech (conntech),
   FOREIGN KEY (location_city) REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
   FOREIGN KEY (location_street) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
   FOREIGN KEY (netid) REFERENCES networks (id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -2401,4 +2405,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015041200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015041400');

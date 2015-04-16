@@ -89,8 +89,26 @@ function update_netlink_properties($id, $devid, $link) {
 	return $result;
 }
 
+function get_radio_sectors_for_technology($technology) {
+	global $DB;
+
+	$result = new xajaxResponse();
+
+	//$isnetlink = intval($_GET['isnetlink']);
+	$technology = intval($technology);
+	$devid = intval($_GET['id']);
+
+	$radiosectors = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ?'
+		. ($technology ? ' AND (technology = 0 OR technology = ' . $technology . ')' : '')
+		. ' ORDER BY name',
+		array($devid));
+	$result->call('update_radio_sector_list', $radiosectors);
+
+	return $result;
+}
+
 $LMS->InitXajax();
-$LMS->RegisterXajaxFunction('update_netlink_properties');
+$LMS->RegisterXajaxFunction(array('update_netlink_properties', 'get_radio_sectors_for_technology'));
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
 $layout['pagetitle'] = trans('Select link properties');
@@ -114,7 +132,9 @@ $SMARTY->assign('link', $link);
 if ($isnetlink)
 	$radiosectors = GetNetLinkRadioSectors($id, $devid);
 else
-	$radiosectors = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ? ORDER BY name', array($id));
+	$radiosectors = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ?'
+		. ($link['technology'] ? ' AND (technology = ' . $link['technology'] . ' OR technology = 0)' : '')
+		. ' ORDER BY name', array($id));
 $SMARTY->assign('radiosectors', $radiosectors);
 $SMARTY->display('netdev/netlinkproperties.html');
 

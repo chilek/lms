@@ -105,7 +105,7 @@
 										{/foreach}
 									</SELECT>
 									{if !$devnodeslinktype}{$devnodeslinktype = 0}{/if}
-									<SELECT NAME="linktechnology" id="devnodeslinktechnology" {tip trigger="devnodeslinktechnology" text="Select link technology"}>
+									<SELECT NAME="linktechnology" id="devnodeslinktechnology" {tip trigger="devnodeslinktechnology" text="Select link technology"} onchange="change_nodelinktechnology(this.options[this.selectedIndex].value)">
 										<OPTION value="0">{trans("- unknown -")}</OPTION>
 										{foreach $_LINKTECHNOLOGIES[$devnodeslinktype] as $linktechnologyidx => $linktechnology}
 										<OPTION value="{$linktechnologyidx}"{if $linktechnologyidx == $nodelinktechnology} selected{/if}>{$linktechnology}</OPTION>
@@ -157,6 +157,33 @@ function change_nodelinktype(linktype) {
 			break;
 	}
 	xjx.$('devnodesradiosector').style.display = (linktype == 1 ? '' : 'none');
+	xajax_getRadioSectorsForNetdev('radio_sectors_received_for_node', {$netdevinfo.id});
+}
+
+function change_nodelinktechnology(linktechnology) {
+	linktechnology = parseInt(linktechnology);
+	var linktype = xjx.$('devnodeslinktype').value;
+	if (linktype != 1)
+		return;
+	xjx.$('devnodesradiosector').disabled = true;
+	xajax_getRadioSectorsForNetdev('radio_sectors_received_for_node', {$netdevinfo.id}, linktechnology);
+}
+
+function radio_sectors_received_for_node(radiosectors) {
+	var options = xjx.$('devnodesradiosector').options;
+	var oldvalue = options[xjx.$('devnodesradiosector').selectedIndex].value;
+	while (options.length)
+		options.remove(0);
+	options.add(new Option('- {trans("none")} -', 0));
+	if (radiosectors !== null) {
+		radiosectors.forEach(function(elem) {
+			var option = new Option(elem.name, elem.id);
+			if (elem.id == oldvalue)
+				option.selected = true;
+			options.add(option);
+		});
+	}
+	xjx.$('devnodesradiosector').disabled = false;
 }
 
 if (getCookie('devicenodes') == '1')

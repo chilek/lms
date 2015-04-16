@@ -70,6 +70,7 @@ $access['table'][12]['allow_reg']   	= '^(((host|config|numberplan|taxrate|state
 
 $access['table'][13]['name']        	= trans('networks and devices management');
 $access['table'][13]['allow_reg']   	= '^((net|netdev|ewxch)(info|list|edit|add|del|print|cmp|map(refresh|)|remap|search)|choose(mac|ip|gpscoords)|ewxnodelist|ewxdevlist|chooselocation|ping|netnode(add|adddev|del|deldev|edit|info|list)|netdevmodels)$';
+$access['table'][13]['privilege']	= 'network_management';
 
 $access['table'][14]['name']        	= trans('timetable management');
 $access['table'][14]['allow_reg']   	= '^(event(list|edit|add|del|info|print|search)|choosecustomer)$';
@@ -139,7 +140,7 @@ $access['table'][255]['deny_reg']	= '^.*$';
 // read user-defined access rights table
 $custom_access_table = ConfigHelper::getConfig('phpui.custom_accesstable');
 if (!is_null($custom_access_table))
-	if (is_readable($custom_access_table) && ($custom_access_table{0} == DIRECTORY_SEPARATOR))
+	if (is_readable($custom_access_table) && ($custom_access_table[0] == DIRECTORY_SEPARATOR))
 		@include_once($custom_access_table);
 	else if (is_readable(LIB_DIR . DIRECTORY_SEPARATOR . $custom_access_table))
 		@include_once(LIB_DIR . DIRECTORY_SEPARATOR . $custom_access_table);
