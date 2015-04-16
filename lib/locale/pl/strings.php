@@ -2963,5 +2963,11 @@ $_LANG['Radio sector:'] = 'Sektor radiowy:';
 $_LANG['Select radio sector'] = 'Wybierz sektor radiowy';
 $_LANG['Destination radio sector:'] = 'Docelowy sektor radiowy:';
 $_LANG['(default for link technology)'] = '(domyślna dla technologii łącza)';
+$_LANG['PPPoE Client'] = 'Klient PPPoE';
+$_LANG['DHCP Client'] = 'Klient DHCP';
+$_LANG['EAP Client'] = 'Klient EAP';
+$_LANG['Enable/disable PPPoE Server Client'] = 'Włącza/Wyłącza komputer jako klient PPPoE';
+$_LANG['Enable/disable DHCP Server Client'] = 'Włącza/Wyłącza komputer jako klient DHCP';
+$_LANG['Enable/disable EAP Server Client'] = 'Włącza/Wyłącza komputer jako klient EAP';
 
 ?>

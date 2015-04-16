@@ -93,6 +93,13 @@ else
 
 $layout['pagetitle'] = trans('Node Edit: $a', $nodeinfo['name']);
 
+$nodeconntype = array();
+$conntype = $nodeinfo['conntype'];
+if ($conntype != 0) {
+	$nodeconntype['pppoe'] = ($conntype & 1);
+	$nodeconntype['dhcp'] = ($conntype & 2);
+	$nodeconntype['eap'] = ($conntype & 4);
+}
 if (isset($_POST['nodeedit'])) {
 	$nodeedit = $_POST['nodeedit'];
 
@@ -225,8 +232,16 @@ if (isset($_POST['nodeedit'])) {
 			array($nodeedit['projectname'], INV_PROJECT_SYSTEM)))
 			$error['projectname'] = trans('Project with that name already exists');
 	}
-
-
+	$nodeedit['conntype'] = 0;
+	if(isset($_POST['nodeconntype'])) {
+		$conntype = $_POST['nodeconntype'];
+		if (!empty($conntype)) {
+			foreach ($conntype as $op) {
+			$op = (int)$op;
+			$nodeedit['conntype'] |= $op;
+			}
+		}
+	}
 	if (!$error) {
 		if (empty($nodeedit['teryt'])) {
 			$nodeedit['location_city'] = null;
@@ -318,6 +333,7 @@ $SMARTY->assign('othernodegroups', $LMS->GetNodeGroupNamesWithoutNode($nodeid));
 $SMARTY->assign('error', $error);
 $SMARTY->assign('nodeinfo', $nodeinfo);
 $SMARTY->assign('objectid', $nodeinfo['id']);
+$SMARTY->assign('nodeconntype', $nodeconntype);
 $SMARTY->display('node/nodeedit.html');
 
 ?>

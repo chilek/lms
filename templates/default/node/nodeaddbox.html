@@ -182,6 +182,16 @@
 			<label for="chkmac">{trans("MAC checking")}:</label><INPUT TYPE="checkbox" NAME="nodedata[chkmac]" VALUE="1" id="chkmac" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if !isset($nodedata.chkmac) || $nodedata.chkmac} checked{/if}>&nbsp;
 			<label for="halfduplex">{trans("Half duplex")}:</label><INPUT TYPE="checkbox" NAME="nodedata[halfduplex]" VALUE="1" id="halfduplex" {if $nodedata.halfduplex} checked{/if} {tip text="Select transmission mode"}> 
 		</TD>
+		<TR>
+		<TD style="width: 1%;">
+			<IMG SRC="img/netdev.gif" ALT="">
+		</TD>
+		<TD style="border: solid #CCC 1px; white-space: nowrap; padding: 5px 5px 5px 0;">
+			<INPUT TYPE="checkbox" NAME="nodeconntype[pppoe]" value="1" id="pppoe" {tip text="Enable/disable PPPoE Server Client" trigger="pppoe"}>&nbsp;<label for="pppoe">{trans("PPPoE Client")}</label>
+			<INPUT TYPE="checkbox" NAME="nodeconntype[dhcp]" value="2" id="dhcp" {tip text="Enable/disable DHCP Server Client" trigger="dhcp"}>&nbsp;<label for="dhcp">{trans("DHCP Client")}</label>
+			<INPUT TYPE="checkbox" NAME="nodeconntype[eap]" value="4" id="eap" {tip text="Enable/disable EAP Server Client" trigger="eap"}>&nbsp;<label for="eap">{trans("EAP Client")}</label>
+		</TD>
+		</TR>
 	</TR>
 					</TABLE>
 				</TD>
