@@ -90,11 +90,12 @@
 	<TD class="fbt" align="center"><B>{trans("Prio")}</B></TD>
 	<TD class="fbt" align="center"><B>{trans("Database version")}</B></TD>
 	<TD class="fbt" align="center"><B>{trans("Tip")}</B></TD>
-	<TD class="frightu" align="center"><B>{trans("Description")}</B></TD>
+	<TD class="fbt" align="center"><B>{trans("Description")}</B></TD>
+	<TD class="frightu" align="center"><B>{trans("Enabled")}</B></TD>
     </tr>
     {cycle values="light,lucid" print=false}
     {foreach from=$menu item=menuitem}
-    <TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+    <TR class="{if !in_array($menuitem.module, $enabled_modules)}blend {/if}{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 	<td class="fleft" onClick="return self.location.href='?m=userpanel&module={$menuitem.module}';">
 	    {$menuitem.module}
 	</td>
@@ -110,14 +111,20 @@
 	<td onClick="return self.location.href='?m=userpanel&module={$menuitem.module}';">
 	    {t}{$menuitem.tip}{/t}
 	</td>
-	<td class="fright" onClick="return self.location.href='?m=userpanel&module={$menuitem.module}';">
+	<td onClick="return self.location.href='?m=userpanel&module={$menuitem.module}';">
 	    {t}{$menuitem.description}{/t}
+	</td>
+	<td class="fright text-center">
+		<input type="checkbox" name="enabled_modules[{$menuitem.module}]" value="1"{if in_array($menuitem.module, $enabled_modules)} checked{/if}>
 	</td>
     </tr>
     {/foreach}
     <TR CLASS="light">
-	<TD WIDTH="98%" COLSPAN="6" CLASS="fall" ALIGN="right">
-	    <B>{trans("Total:")} {$total}</B>
+	<TD COLSPAN="6" class="fleftu bold text-center">
+		{trans("Total:")} {$total}
+	</TD>
+	<TD style="width: 2%;" class="frightu buttons nobr">
+		<A HREF="javascript:document.config.submit();" accesskey="S">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 	</TD>
     </TR>
 </table>

@@ -7,6 +7,7 @@ version ?.??.?? (????-??-??):
   - added radio sector management for network device links [chilan]
   - added license number and frequency for radio sectors [chilan]
   - added link technology and bandwidth support for radio sectors [chilan]
+  - userpanel: we can enable/disable modules from lms user interface [chilan]
 
 version 1.11.16 (2015-03-31):
 
