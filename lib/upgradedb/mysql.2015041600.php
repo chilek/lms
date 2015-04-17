@@ -27,7 +27,7 @@
 $DB->BeginTrans();
 
 $DB->Execute("ALTER TABLE nodes ADD COLUMN pppoe tinyint DEFAULT 0 NOT NULL;
-		CREATE INDEX conntype (conntype);
+		CREATE INDEX conntype ON nodes(conntype);
 		DROP VIEW vnodes;
 		CREATE VIEW vnodes_mac AS
 		  SELECT nodeid, GROUP_CONCAT(mac SEPARATOR ',') AS mac
