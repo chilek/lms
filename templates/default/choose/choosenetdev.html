@@ -49,9 +49,9 @@
 			{
 				if (rows[i].id.lastIndexOf('ndsp',0)===0) {
 					if (ndspDict[rows[i].id] != '' && ndspDict[rows[i].id].lastIndexOf(txt,0) != 0) {
-						rows[i].style='display:none;'
+						rows[i].style.display = 'none';
 					} else {
-						rows[i].style='';
+						rows[i].style.display = '';
 					}
 				}
 			}
@@ -80,8 +80,10 @@
 	{if $netdevlist.total > 0}
 	{section name=netdevlist loop=$netdevlist}
 	{if $netdevlist[netdevlist].id}
-	<script>
-		ndspDict['ndsp{$netdevlist[netdevlist].id}'] = '{$netdevlist[netdevlist].name}'.toLowerCase();	
+	<script type="text/javascript">
+	<!--
+		ndspDict['ndsp{$netdevlist[netdevlist].id}'] = '{$netdevlist[netdevlist].name}'.toLowerCase();
+	//-->
 	</script>
 	<tr class="highlight {cycle}"  id="ndsp{$netdevlist[netdevlist].id}" >
 		<td width="1%">
