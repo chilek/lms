@@ -35,11 +35,15 @@ $DB->LockTables("documents");
 $offset = 0;
 do {
 	$docs = $DB->GetAll("SELECT id, cdate, number, numberplanid FROM documents
-		WHERE numberplanid <> 0 ORDER BY id LIMIT 30000 OFFSET $offset");
+		ORDER BY id LIMIT 30000 OFFSET $offset");
 	$stop = empty($docs);
 	if (!$stop) {
 		foreach ($docs as $doc) {
-			$fullnumber = docnumber($doc['number'], $numberplans[$doc['numberplanid']]['template'], $doc['cdate']);
+			if ($doc['numberplanid'])
+				$template = $numberplans[$doc['numberplanid']]['template'];
+			else
+				$template = DEFAULT_NUMBER_TEMPLATE;
+			$fullnumber = docnumber($doc['number'], $template, $doc['cdate']);
 			$DB->Execute("UPDATE documents SET fullnumber = ? WHERE id = ?",
 				array($fullnumber, $doc['id']));
 		}
