@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -29,6 +29,6 @@ $list = $DB->GetAll("SELECT n.name,n.id,n.producer,n.model,n.location FROM netde
 $list['total'] = count($list);
 $SMARTY->assign('netdevlist',$list);
 $SMARTY->assign('objectid',$_GET['id']);
-$SMARTY->display('choosenetdev.html');
+$SMARTY->display('choose/choosenetdev.html');
 
 ?>
