@@ -237,8 +237,8 @@ if (isset($_POST['nodeedit'])) {
 		$conntype = $_POST['nodeconntype'];
 		if (!empty($conntype)) {
 			foreach ($conntype as $op) {
-			$op = (int)$op;
-			$nodeedit['conntype'] |= $op;
+				$op = (int)$op;
+				$nodeedit['conntype'] |= $op;
 			}
 		}
 	}
