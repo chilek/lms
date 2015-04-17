@@ -26,7 +26,7 @@
 
 $DB->BeginTrans();
 
-$DB->Execute("ALTER TABLE nodes ADD COLUMN pppoe tinyint DEFAULT 0 NOT NULL;
+$DB->Execute("ALTER TABLE nodes ADD COLUMN conntype tinyint DEFAULT 0 NOT NULL;
 		CREATE INDEX conntype (conntype);
 		DROP VIEW vnodes;
 		CREATE VIEW vnodes_mac AS
