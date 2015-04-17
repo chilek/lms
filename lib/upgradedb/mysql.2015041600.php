@@ -26,12 +26,13 @@
 
 $DB->BeginTrans();
 
-$DB->Execute("ALTER TABLE nodes ADD COLUMN pppoe tinyint DEFAULT 0 NOT NULL;
-		CREATE INDEX conntype (conntype);
+$DB->Execute("ALTER TABLE nodes ADD COLUMN conntype tinyint DEFAULT 0 NOT NULL;
+		CREATE INDEX conntype ON nodes(conntype);
 		DROP VIEW vnodes;
-		CREATE VIEW vnodes_mac AS
-		  SELECT nodeid, GROUP_CONCAT(mac SEPARATOR ',') AS mac
-		  FROM macs GROUP BY nodeid;
+		CREATE VIEW vnodes AS
+		SELECT n.*, m.mac
+		FROM nodes n
+    		LEFT JOIN vnodes_mac m ON (n.id = m.nodeid);
 	");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015041600', 'dbversion'));
