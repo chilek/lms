@@ -43,15 +43,13 @@ foreach ($parameters as $key => $val) {
 	$short_to_longs[$newkey] = $val;
 }
 $options = getopt(implode('', array_keys($parameters)), $parameters);
-foreach($short_to_longs as $short => $long)
-	if (array_key_exists($short, $options))
-	{
+foreach ($short_to_longs as $short => $long)
+	if (array_key_exists($short, $options)) {
 		$options[$long] = $options[$short];
 		unset($options[$short]);
 	}
 
-if (array_key_exists('version', $options))
-{
+if (array_key_exists('version', $options)) {
 	print <<<EOF
 lms-sendinvoices.php
 (C) 2001-2015 LMS Developers
@@ -60,8 +58,7 @@ EOF;
 	exit(0);
 }
 
-if (array_key_exists('help', $options))
-{
+if (array_key_exists('help', $options)) {
 	print <<<EOF
 lms-sendinvoices.php
 (C) 2001-2015 LMS Developers
@@ -79,8 +76,7 @@ EOF;
 }
 
 $quiet = array_key_exists('quiet', $options);
-if (!$quiet)
-{
+if (!$quiet) {
 	print <<<EOF
 lms-sendinvoices.php
 (C) 2001-2015 LMS Developers
@@ -91,14 +87,13 @@ EOF;
 if (array_key_exists('config-file', $options))
 	$CONFIG_FILE = $options['config-file'];
 else
-	$CONFIG_FILE = '/etc/lms/lms.ini';
+	$CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc ' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
 
-if (!$quiet) {
-	echo "Using file ".$CONFIG_FILE." as config.\n";
-}
+if (!$quiet)
+	echo "Using file ".$CONFIG_FILE." as config." . PHP_EOL;
 
 if (!is_readable($CONFIG_FILE))
-	die("Unable to read configuration file [".$CONFIG_FILE."]!\n");
+	die("Unable to read configuration file [".$CONFIG_FILE."]!" . PHP_EOL);
 
 define('CONFIG_FILE', $CONFIG_FILE);
 
@@ -106,16 +101,16 @@ $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 
 // Check for configuration vars and set default values
 $CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
-$CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'].'/lib' : $CONFIG['directories']['lib_dir']);
+$CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib' : $CONFIG['directories']['lib_dir']);
 
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 
 // Load autoloader
-require_once(LIB_DIR.'/autoloader.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'autoloader.php');
 
 // Do some checks and load config defaults
-require_once(LIB_DIR.'/config.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'config.php');
 
 // Init database
 
@@ -126,16 +121,16 @@ try {
 } catch (Exception $ex) {
 	trigger_error($ex->getMessage(), E_USER_WARNING);
 	// can't working without database
-	die("Fatal error: cannot connect to database!\n");
+	die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
 // Include required files (including sequence is important)
 
-require_once(LIB_DIR.'/language.php');
-include_once(LIB_DIR.'/definitions.php');
-require_once(LIB_DIR.'/unstrip.php');
-require_once(LIB_DIR.'/common.php');
-require_once(LIB_DIR . '/SYSLOG.class.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
+include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'SYSLOG.class.php');
 
 if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG'))
 	$SYSLOG = new SYSLOG($DB);
@@ -162,17 +157,16 @@ $invoice_filename = ConfigHelper::getConfig('sendinvoices.invoice_filename', 'in
 $notify_email = ConfigHelper::getConfig('sendinvoices.notify_email', '');
 
 if (empty($sender_email))
-	die("Fatal error: sender_email unset! Can't continue, exiting.\n");
+	die("Fatal error: sender_email unset! Can't continue, exiting." . PHP_EOL);
 
 $smtp_auth_type = ConfigHelper::getConfig('mail.smtp_auth_type');
 if (($auth || !empty($smtp_auth_type)) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $auth ? $auth : $smtp_auth_type))
-	die("Fatal error: smtp_auth setting not supported! Can't continue, exiting.\n");
+	die("Fatal error: smtp_auth setting not supported! Can't continue, exiting." . PHP_EOL);
 
 $fakedate = (array_key_exists('fakedate', $options) ? $options['fakedate'] : NULL);
 $invoiceid = (array_key_exists('invoiceid', $options) ? $options['invoiceid'] : NULL);
 
-function localtime2()
-{
+function localtime2() {
 	global $fakedate;
 	if (!empty($fakedate)) {
 		$date = explode("/", $fakedate);
@@ -209,8 +203,7 @@ $customergroups = " AND EXISTS (SELECT 1 FROM customergroups g, customerassignme
 $groupnames = ConfigHelper::getConfig('sendinvoices.customergroups');
 $groupsql = "";
 $groups = preg_split("/[[:blank:]]+/", $groupnames, -1, PREG_SPLIT_NO_EMPTY);
-foreach ($groups as $group)
-{
+foreach ($groups as $group) {
 	if (!empty($groupsql))
 		$groupsql .= " OR ";
 	$groupsql .= "UPPER(g.name) = UPPER('".$group."')";
@@ -226,16 +219,16 @@ $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
 define('USER_AGENT', "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
-define('COOKIE_FILE', tempnam('/tmp', 'lms-sendinvoices-cookies-'));
+define('COOKIE_FILE', tempnam(DIRECTORY_SEPARATOR . 'tmp', 'lms-sendinvoices-cookies-'));
 
 if (array_key_exists('test', $options)) {
 	$test = TRUE;
-	printf("WARNING! You are using test mode.\n");
+	printf("WARNING! You are using test mode." . PHP_EOL);
 }
 
 $ch = curl_init();
 if (!$ch)
-	die("Fatal error: Can't init curl library!\n");
+	die("Fatal error: Can't init curl library!" . PHP_EOL);
 
 $query = "SELECT d.id, d.number, d.cdate, c.email, d.name, d.customerid, n.template 
 		FROM documents d 
@@ -282,7 +275,7 @@ if (!empty($docs)) {
 			$doc['name'] = '"' . $doc['name'] . '"';
 
 			if (!$quiet || $test)
-				printf("Invoice No. $invoice_number for " . $doc['name'] . " <$custemail>\n");
+				printf("Invoice No. $invoice_number for " . $doc['name'] . " <$custemail>" . PHP_EOL);
 
 			if (!$test) {
 				$headers = array('From' => $from, 'To' => qp_encode($doc['name']) . ' <' . $custemail . '>',
@@ -294,7 +287,7 @@ if (!empty($docs)) {
 						'data' => $res)), $host, $port, $user, $pass, $auth);
 
 				if (is_string($res))
-					fprintf(STDERR, "Error sending mail: $res\n");
+					fprintf(STDERR, "Error sending mail: $res" . PHP_EOL);
 			}
 		}
 	}

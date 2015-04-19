@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2014 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -22,7 +22,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
  *  USA.
  *
- *  $Id: index.php,v 1.219 2010/05/24 07:43:16 chilek Exp $
+ *  $Id$
  */
 
 // REPLACE THIS WITH PATH TO YOUR CONFIG FILE
@@ -47,28 +47,25 @@ foreach ($parameters as $key => $val) {
 	$short_to_longs[$newkey] = $val;
 }
 $options = getopt(implode('', array_keys($parameters)), $parameters);
-foreach($short_to_longs as $short => $long)
-	if (array_key_exists($short, $options))
-	{
+foreach ($short_to_longs as $short => $long)
+	if (array_key_exists($short, $options)) {
 		$options[$long] = $options[$short];
 		unset($options[$short]);
 	}
 
-if (array_key_exists('version', $options))
-{
+if (array_key_exists('version', $options)) {
 	print <<<EOF
 lms-payments.php
-(C) 2001-2014 LMS Developers
+(C) 2001-2015 LMS Developers
 
 EOF;
 	exit(0);
 }
 
-if (array_key_exists('help', $options))
-{
+if (array_key_exists('help', $options)) {
 	print <<<EOF
 lms-payments.php
-(C) 2001-2014 LMS Developers
+(C) 2001-2015 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -81,11 +78,10 @@ EOF;
 }
 
 $quiet = array_key_exists('quiet', $options);
-if (!$quiet)
-{
+if (!$quiet) {
 	print <<<EOF
 lms-payments.php
-(C) 2001-2014 LMS Developers
+(C) 2001-2015 LMS Developers
 
 EOF;
 }
@@ -93,10 +89,10 @@ EOF;
 if (array_key_exists('config-file', $options))
 	$CONFIG_FILE = $options['config-file'];
 else
-	$CONFIG_FILE = '/etc/lms/lms.ini';
+	$CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
 
 if (!$quiet)
-	echo "Using file ".$CONFIG_FILE." as config.\n";
+	echo "Using file ".$CONFIG_FILE." as config." . PHP_EOL;
 
 if (!is_readable($CONFIG_FILE))
 	die('Unable to read configuration file ['.$CONFIG_FILE.']!'); 
@@ -107,40 +103,34 @@ $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 
 // Check for configuration vars and set default values
 $CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
-$CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'].'/lib' : $CONFIG['directories']['lib_dir']);
+$CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib' : $CONFIG['directories']['lib_dir']);
 
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 
-// Load autloader
-require_once(LIB_DIR.'/autoloader.php');
+// Load autoloader
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'autoloader.php');
 
 // Do some checks and load config defaults
-
-require_once(LIB_DIR.'/config.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'config.php');
 
 // Init database
 
 $DB = null;
 
 try {
-
-    $DB = LMSDB::getInstance();
-
+	$DB = LMSDB::getInstance();
 } catch (Exception $ex) {
-    
-    trigger_error($ex->getMessage(), E_USER_WARNING);
-    
-    // can't working without database
-    die("Fatal error: cannot connect to database!\n");
-    
+	trigger_error($ex->getMessage(), E_USER_WARNING);
+	// can't working without database
+	die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
 // Include required files (including sequence is important)
 
-//require_once(LIB_DIR.'/definitions.php');
-require_once(LIB_DIR.'/common.php');
-require_once(LIB_DIR.'/language.php');
+//require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 
 $deadline = ConfigHelper::getConfig('payments.deadline', 14);
 $sdate_next = ConfigHelper::getConfig('payments.saledate_next_month', 0);
@@ -150,15 +140,12 @@ $s_comment = ConfigHelper::getConfig('payments.settlement_comment', ConfigHelper
 $suspension_description = ConfigHelper::getConfig('payments.suspension_description', '');
 $suspension_percentage = ConfigHelper::getConfig('finances.suspension_percentage', 0);
 
-function localtime2()
-{
+function localtime2() {
 	global $fakedate;
-	if (!empty($fakedate))
-	{
+	if (!empty($fakedate)) {
 		$date = explode("/", $fakedate);
 		return mktime(0, 0, 0, $date[1], $date[2], $date[0]);
-	}
-	else
+	} else
 		return time();
 }
 
@@ -221,13 +208,11 @@ $q_month = $month + 2;
 $q_year = $year;
 $y_month  = $month + 5;
 $y_year = $year;
-if ($q_month > 12)
-{
+if ($q_month > 12) {
 	$q_month -= 12;
 	$q_year += 1;
 }
-if ($y_month > 12)
-{
+if ($y_month > 12) {
 	$y_month -= 12;
 	$y_year += 1;
 }
@@ -253,8 +238,7 @@ if ($sdate_next)
 	$saledate = strftime("%s", mktime(12, 0, 0, $month + 1, 1, $year));
 
 // calculate start and end of numbering period
-function get_period($period)
-{
+function get_period($period) {
 	global $dom, $month, $year;
 	if (empty($period))
 		$period = YEAR;
@@ -312,8 +296,7 @@ $query = "SELECT n.id, n.period, COALESCE(a.divisionid, 0) AS divid, isdefault
 		LEFT JOIN numberplanassignments a ON (a.planid = n.id) 
 		WHERE doctype = 1";
 $results = $DB->GetAll($query);
-foreach($results as $row)
-{
+foreach ($results as $row) {
 	if ($row['isdefault'])
 		$plans[$row['divid']] = $row['id'];
 	$periods[$row['id']] = ($row['period'] ? $row['period'] : YEAR);
@@ -327,8 +310,7 @@ $customergroups = " AND EXISTS (SELECT 1 FROM customergroups g, customerassignme
 $groupnames = ConfigHelper::getConfig('payments.customergroups');
 $groupsql = "";
 $groups = preg_split("/[[:blank:]]+/", $groupnames, -1, PREG_SPLIT_NO_EMPTY);
-foreach ($groups as $group)
-{
+foreach ($groups as $group) {
 	if (!empty($groupsql))
 		$groupsql .= " OR ";
 	$groupsql .= "UPPER(g.name) = UPPER('".$group."')";
@@ -382,8 +364,7 @@ $invoices = array();
 $paytypes = array();
 $numberplans = array();
 
-foreach($assigns as $assign)
-{
+foreach ($assigns as $assign) {
 	$cid = $assign['customerid'];
 	$divid = ($assign['divisionid'] ? $assign['divisionid'] : 0);
 
@@ -536,7 +517,7 @@ foreach($assigns as $assign)
 			$DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment) 
 				VALUES ($currtime, $val * -1, ?, $cid, ?)", array($assign['taxid'], $desc));
 
-		if (!$quiet) print "CID:$cid\tVAL:$val\tDESC:$desc\n";
+		if (!$quiet) print "CID:$cid\tVAL:$val\tDESC:$desc" . PHP_EOL;
 
 		// settlement accounting
 		if ($assign['settlement'] && $assign['datefrom'])
@@ -583,7 +564,7 @@ foreach($assigns as $assign)
 
 			$value = str_replace(',', '.', sprintf("%.2f", $alldays != 30 ? $diffdays * $val / $alldays : $value));
 
-			//print "value: $val diffdays: $diffdays alldays: $alldays settl_value: $value\n";
+			//print "value: $val diffdays: $diffdays alldays: $alldays settl_value: $value" . PHP_EOL;
 
 			$sdesc = $s_comment;
 			$sdesc = preg_replace("/\%type/", $assign['tarifftype'] != TARIFF_OTHER ? $TARIFFTYPES[$assign['tarifftype']] : '', $sdesc);
@@ -627,7 +608,7 @@ foreach($assigns as $assign)
 				$DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment) 
 					VALUES ($currtime, $value * -1, ?, $cid, ?)", array($assign['taxid'], $sdesc));
 
-			if (!$quiet) print "CID:$cid\tVAL:$value\tDESC:$sdesc\n";
+			if (!$quiet) print "CID:$cid\tVAL:$value\tDESC:$sdesc" . PHP_EOL;
 
 			// remove settlment flag
 			$DB->Execute("UPDATE assignments SET settlement = 0 WHERE id = ?", array($assign['assignmentid']));
@@ -649,7 +630,7 @@ if (!empty($assigns))
 		$DB->Execute("INSERT INTO cash (time, type, value, customerid, comment) 
 			VALUES (?, 1, ? * -1, 0, ?)",
 			array($currtime, $assign['value'], $assign['name']."/".$assign['creditor']));
-		if (!$quiet) print "CID:0\tVAL:".$assign['value']."\tDESC:".$assign['name']."/".$assign['creditor']."\n";
+		if (!$quiet) print "CID:0\tVAL:".$assign['value']."\tDESC:".$assign['name']."/".$assign['creditor'] . PHP_EOL;
 	}
 
 // delete old assignments

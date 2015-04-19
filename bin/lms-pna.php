@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2014 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -43,28 +43,25 @@ foreach ($parameters as $key => $val) {
 	$short_to_longs[$newkey] = $val;
 }
 $options = getopt(implode('', array_keys($parameters)), $parameters);
-foreach($short_to_longs as $short => $long)
-	if (array_key_exists($short, $options))
-	{
+foreach ($short_to_longs as $short => $long)
+	if (array_key_exists($short, $options)) {
 		$options[$long] = $options[$short];
 		unset($options[$short]);
 	}
 
-if (array_key_exists('version', $options))
-{
+if (array_key_exists('version', $options)) {
 	print <<<EOF
 lms-pna.php
-(C) 2001-2014 LMS Developers
+(C) 2001-2015 LMS Developers
 
 EOF;
 	exit(0);
 }
 
-if (array_key_exists('help', $options))
-{
+if (array_key_exists('help', $options)) {
 	print <<<EOF
 lms-pna.php
-(C) 2001-2014 LMS Developers
+(C) 2001-2015 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -f, --fetch                     fetch PNA file from server;
@@ -79,11 +76,10 @@ EOF;
 }
 
 $quiet = array_key_exists('quiet', $options);
-if (!$quiet)
-{
+if (!$quiet) {
 	print <<<EOF
 lms-pna.php
-(C) 2001-2014 LMS Developers
+(C) 2001-2015 LMS Developers
 
 EOF;
 }
@@ -91,17 +87,16 @@ EOF;
 if (array_key_exists('config-file', $options))
 	$CONFIG_FILE = $options['config-file'];
 else
-	$CONFIG_FILE = '/etc/lms/lms.ini';
+	$CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
 
-if (!$quiet) {
-	echo "Using file ".$CONFIG_FILE." as config.\n";
-}
+if (!$quiet)
+	echo "Using file ".$CONFIG_FILE." as config." . PHP_EOL;
 
 $fetch = array_key_exists('fetch', $options);
 $update = array_key_exists('update', $options);
 
 if (!is_readable($CONFIG_FILE))
-	die("Unable to read configuration file [".$CONFIG_FILE."]!\n");
+	die("Unable to read configuration file [".$CONFIG_FILE."]!" . PHP_EOL);
 
 define('CONFIG_FILE', $CONFIG_FILE);
 
@@ -109,41 +104,35 @@ $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 
 // Check for configuration vars and set default values
 $CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
-$CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'].'/lib' : $CONFIG['directories']['lib_dir']);
+$CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib' : $CONFIG['directories']['lib_dir']);
 
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 
-// Load autloader
-require_once(LIB_DIR.'/autoloader.php');
+// Load autoloader
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'autoloader.php');
 
 // Do some checks and load config defaults
-
-require_once(LIB_DIR.'/config.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'config.php');
 
 // Init database
 $DB = null;
 
 try {
-
-    $DB = LMSDB::getInstance();
-
+	$DB = LMSDB::getInstance();
 } catch (Exception $ex) {
-    
-    trigger_error($ex->getMessage(), E_USER_WARNING);
-    
-    // can't working without database
-    die("Fatal error: cannot connect to database!\n");
-    
+	trigger_error($ex->getMessage(), E_USER_WARNING);
+	// can't working without database
+	die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
 // Include required files (including sequence is important)
 
-require_once(LIB_DIR.'/language.php');
-include_once(LIB_DIR.'/definitions.php');
-require_once(LIB_DIR.'/unstrip.php');
-require_once(LIB_DIR.'/common.php');
-require_once(LIB_DIR . '/SYSLOG.class.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
+include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'SYSLOG.class.php');
 
 if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG'))
 	$SYSLOG = new SYSLOG($DB);
@@ -313,17 +302,17 @@ function convert_pna_to_teryt($data) {
 		printf("city=%s", implode(",", $data[CITY]));
 		if (!empty($data[STREET][0]))
 			printf(" street=%s", implode(",", $data[STREET]));
-		printf(" not found.\n");
+		printf(" not found." . PHP_EOL);
 	}
 }
 
 if ($fetch) {
 	$fh = fopen("compress.zlib://http://lms.org.pl/spispna.txt.gz", "r");
 	if (!$fh)
-		die("Unable to fetch http://lms.org.pl/spispna.txt.gz!\n");
+		die("Unable to fetch http://lms.org.pl/spispna.txt.gz!" . PHP_EOL);
 	$lh = fopen("spispna.txt", "w");
 	if (!$lh)
-		die("Unable to create spispna.txt file!\n");
+		die("Unable to create spispna.txt file!" . PHP_EOL);
 
 	while (!feof($fh)) {
 		$line = fgets($fh, 1024);
@@ -337,12 +326,12 @@ if ($fetch) {
 if ($update) {
 	$fh = fopen("spispna.txt", "r");
 	if (!$fh)
-		die("Unable to open spispna.txt file!\n");
+		die("Unable to open spispna.txt file!" . PHP_EOL);
 
 	$DB->Execute("DELETE FROM pna");
 	while (!feof($fh)) {
 		$line = fgets($fh, 200);
-		$line = mb_ereg_replace("\n$", "", $line);
+		$line = mb_ereg_replace(PHP_EOL . "$", "", $line);
 		$data = mb_split(";", $line);
 		if (mb_ereg_match("^[0-9]{2}-[0-9]{3}$", $data[PNA]) && in_array($data[STATE], $states))
 			convert_pna_to_teryt($data);
