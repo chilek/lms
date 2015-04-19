@@ -173,7 +173,7 @@
 				<A HREF="?m=netdevinfo&id={$netdevices.id}">{$netdevices.name} {$netdevices.producer}{if $netdevices.location} / {$netdevices.location}{/if}</A>
 				</span>
 				{if $nodeinfo.port}[{$nodeinfo.port}]{/if}
-				<IMG src="img/{if $nodeinfo.linktype == 1}wireless.gif{elseif $nodeinfo.linktype == 2}netdev_takenports.gif{else}netdev_takenports.gif{/if}" alt="{$_LINKTYPES[$nodeinfo.linktype]}" {tip text="{if $nodeinfo.linktechnology}{$_LINKTECHNOLOGIES[$nodeinfo.linktype][$nodeinfo.linktechnology]} / {/if}{$_LINKSPEEDS[$nodeinfo.linkspeed]}"}>
+				<IMG src="img/{if $nodeinfo.linktype == 1}wireless.gif{elseif $nodeinfo.linktype == 2}netdev_takenports.gif{else}netdev_takenports.gif{/if}" alt="{$_LINKTYPES[$nodeinfo.linktype]}" {tip text="{if $nodeinfo.linktechnology}{$_LINKTECHNOLOGIES[$nodeinfo.linktype][$nodeinfo.linktechnology]} / {/if}{if $nodeinfo.linkradiosector}{$nodeinfo.linkradiosectorname} / {/if}{$_LINKSPEEDS[$nodeinfo.linkspeed]}"}>
 			{else}
 				{if $netdevices}
 				<SELECT SIZE="1" style="width: 300px;" NAME="devid" {tip trigger="netdev"} onchange="change_netdevice(this.options[this.selectedIndex].value)">
