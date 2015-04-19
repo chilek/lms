@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2014 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -92,7 +92,7 @@ class LMS
     public function InitXajax()
     {
         if (!$this->xajax) {
-            require(LIB_DIR . '/xajax/xajax_core/xajax.inc.php');
+            require(LIB_DIR . DIRECTORY_SEPARATOR . 'xajax' . DIRECTORY_SEPARATOR . 'xajax_core' . DIRECTORY_SEPARATOR . 'xajax.inc.php');
             $this->xajax = new xajax();
             $this->xajax->configure('errorHandler', true);
             $this->xajax->configure('javascript URI', 'img');
@@ -273,10 +273,10 @@ class LMS
         $basename = 'lms-' . time() . '-' . DBVERSION;
         if (($gzipped) && (extension_loaded('zlib'))) {
             $filename = $basename . '.sql.gz';
-            $res = $this->DBDump(ConfigHelper::getConfig('directories.backup_dir') . '/' . $filename, TRUE, $stats);
+            $res = $this->DBDump(ConfigHelper::getConfig('directories.backup_dir') . DIRECTORY_SEPARATOR . $filename, TRUE, $stats);
         } else {
             $filename = $basename . '.sql';
-            $res = $this->DBDump(ConfigHelper::getConfig('directories.backup_dir') . '/' . $filename, FALSE, $stats);
+            $res = $this->DBDump(ConfigHelper::getConfig('directories.backup_dir') . DIRECTORY_SEPARATOR . $filename, FALSE, $stats);
         }
         if ($this->SYSLOG)
             $this->SYSLOG->AddMessage(SYSLOG_RES_DBBACKUP, SYSLOG_OPER_ADD, array('filename' => $filename), null);
@@ -1804,7 +1804,7 @@ class LMS
                 }
                 break;
             case 'smstools':
-                $dir = ConfigHelper::getConfig('sms.smstools_outdir', '/var/spool/sms/outgoing');
+                $dir = ConfigHelper::getConfig('sms.smstools_outdir', DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'spool' . DIRECTORY_SEPARATOR . 'sms' . DIRECTORY_SEPARATOR . 'outgoing');
 
                 if (!file_exists($dir)) {
                     $errors[] = trans('SMSTools outgoing directory not exists ($a)!', $dir);
@@ -1815,7 +1815,7 @@ class LMS
                     continue 2;
                 }
 
-                $filename = $dir . '/lms-' . $messageid . '-' . $number;
+                $filename = $dir . DIRECTORY_SEPARATOR . 'lms-' . $messageid . '-' . $number;
                 $latin1 = iconv('UTF-8', 'ISO-8859-15', $message);
                 $alphabet = '';
                 if (strlen($latin1) != mb_strlen($message, 'UTF-8')) {
