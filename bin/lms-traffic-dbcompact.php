@@ -128,7 +128,7 @@ try {
 } catch (Exception $ex) {
 	trigger_error($ex->getMessage(), E_USER_WARNING);
 	// can't working without database
-	die("Fatal error: cannot connect to database!\n");
+	die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
 // Include required files (including sequence is important)
