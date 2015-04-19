@@ -149,7 +149,7 @@ if ($remove_old && ($deleted = $DB->Execute('DELETE FROM stats where dt < ?NOW? 
 	printf('%d at least one year old records have been removed' . PHP_EOL, $deleted);
 
 if ($remove_deleted && ($deleted = $DB->Execute('DELETE FROM stats WHERE nodeid NOT IN (SELECT id FROM nodes)')) > 0)
-	printf('%d records for deleted nodes has been removed' . PHP_EOL, $deleted);
+	printf('%d records for deleted nodes have been removed' . PHP_EOL, $deleted);
 
 $time = time();
 switch ($level) {

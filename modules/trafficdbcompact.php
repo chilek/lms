@@ -54,7 +54,7 @@ if(isset($_GET['removedeleted']))
 {
     if($deleted = $DB->Execute('DELETE FROM stats WHERE nodeid NOT IN (SELECT id FROM nodes)'))
     {
-    	echo trans('$a records for deleted nodes has been removed.<BR>', $deleted);
+    	echo trans('$a records for deleted nodes have been removed.<BR>', $deleted);
 	flush();
     }
 }
