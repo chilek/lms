@@ -140,8 +140,8 @@ set_time_limit(0);
 
 print('Compacting database: ' . ConfigHelper::getConfig('database.database') . PHP_EOL);
 print('Level: ' . $level . PHP_EOL);
-print('Remove old: ' . ($remove_old ? 'Yes' : 'No') . PHP_EOL);
-print('Remove deleted: ' . ($remove_deleted ? 'Yes' : 'No') . PHP_EOL);
+print('Remove old stats: ' . ($remove_old ? 'Yes' : 'No') . PHP_EOL);
+print('Remove stats for deleted nodes: ' . ($remove_deleted ? 'Yes' : 'No') . PHP_EOL);
 
 printf('%d records before compacting ' . PHP_EOL, $DB->GetOne('SELECT COUNT(*) FROM stats'));
 
