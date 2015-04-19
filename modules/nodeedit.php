@@ -77,6 +77,19 @@ switch ($action) {
 		}
 		$SESSION->redirect('?m=nodeinfo&id=' . $nodeid);
 		break;
+	case 'conntype':
+		$DB->Execute('UPDATE nodes SET conntype=? WHERE id=?', array(intval($_GET['conntype']), $nodeid));
+		if ($SYSLOG) {
+			$args = array(
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodeid,
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+				'conntype' => intval($_GET['conntype']),
+			);
+			$SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+		}
+		$SESSION->redirect('?m=nodeinfo&id=' . $nodeid);
+		break;
 }
 
 $nodeinfo = $LMS->GetNode($nodeid);
