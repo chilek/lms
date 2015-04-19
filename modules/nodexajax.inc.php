@@ -291,16 +291,16 @@ function updateManagementUrl($urlid, $params) {
 	return $result;
 }
 
-function getRadioSectors($netdev) {
+function getRadioSectors($netdev, $technology = 0) {
 	global $DB;
 
 	$result = new xajaxResponse();
 
-	$radiosectors = $DB->GetAll('SELECT * FROM netradiosectors WHERE netdev = ?', array(intval($netdev)));
-	if (!$radiosectors)
-		$radiosectors = array();
+	$radiosectors = $DB->GetAll('SELECT * FROM netradiosectors WHERE netdev = ?'
+		. ($technology ? ' AND (technology = ' . intval($technology) . ' OR technology = 0)' : '')
+		. ' ORDER BY name', array($netdev));
 
-	$result->call('radiosectors_received', $radiosectors);
+	$result->call('radio_sectors_received', $radiosectors);
 
 	return $result;
 }
