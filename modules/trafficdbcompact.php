@@ -116,20 +116,20 @@ if(isset($_GET['level']))
                 $DB->Execute('DELETE FROM stats WHERE nodeid = ? AND dt >= ? AND dt <= ?',
                     array($node['id'], $nodemintime, $maxtime));
 
-                // insert new (summary) records
-                foreach ($data as $record) {
-    			    $deleted += $record['count'];
+		// insert new (summary) records
+		foreach ($data as $record) {
+			$deleted += $record['count'];
 
-                    if (!$record['download'] && !$record['upload'])
-                        continue;
+			if (!$record['download'] && !$record['upload'])
+				continue;
 
-                    $values[] = sprintf('(%d, %d, %d, %d)',
-                        $node['id'], $record['maxtime'], $record['upload'], $record['download']);
-                }
+			$values[] = sprintf('(%d, %d, %d, %d)',
+				$node['id'], $record['maxtime'], $record['upload'], $record['download']);
+		}
 
-                if (!empty($values))
-                    $inserted = $DB->Execute('INSERT INTO stats
-                        (nodeid, dt, upload, download) VALUES ' . implode(', ', $values));
+		if (!empty($values))
+			$inserted = $DB->Execute('INSERT INTO stats
+				(nodeid, dt, upload, download) VALUES ' . implode(', ', $values));
 
                 $DB->CommitTrans();
 
