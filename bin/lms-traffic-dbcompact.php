@@ -175,9 +175,9 @@ if ($mintime = $DB->GetOne('SELECT MIN(dt) FROM stats')) {
 		$dtdivider = 'FLOOR((dt+'.$timeoffset.')/'.$step.')';
 
 		$data = $DB->GetAll('SELECT SUM(download) AS download, SUM(upload) AS upload,
-			COUNT(dt) AS count, MIN(dt) AS mintime, MAX(dt) AS maxtime
+			COUNT(dt) AS count, MIN(dt) AS mintime, MAX(dt) AS maxtime, nodesessionid
 			FROM stats WHERE nodeid = ? AND dt >= ? AND dt < ?
-			GROUP BY nodeid, '.$dtdivider.'
+			GROUP BY nodeid, nodesessionid, '.$dtdivider.'
 			ORDER BY mintime', array($node['id'], $mintime, $maxtime));
 
 		if ($data) {
@@ -215,13 +215,13 @@ if ($mintime = $DB->GetOne('SELECT MIN(dt) FROM stats')) {
 				if (!$record['download'] && !$record['upload'])
 					continue;
 
-				$values[] = sprintf('(%d, %d, %d, %d)',
-					$node['id'], $record['maxtime'], $record['upload'], $record['download']);
+				$values[] = sprintf('(%d, %d, %d, %d, %d)',
+					$node['id'], $record['maxtime'], $record['upload'], $record['download'], $record['nodesessionid']);
 			}
 
 			if (!empty($values))
 				$inserted = $DB->Execute('INSERT INTO stats
-					(nodeid, dt, upload, download) VALUES ' . implode(', ', $values));
+					(nodeid, dt, upload, download, nodesessionid) VALUES ' . implode(', ', $values));
 
 			$DB->CommitTrans();
 
