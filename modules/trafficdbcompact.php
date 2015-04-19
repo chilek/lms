@@ -65,7 +65,7 @@ if(isset($_GET['level']))
     switch($_GET['level'])
     {
         case 'medium' : $period = $time-30*24*60*60; $step = 24*60*60; break;//month, day
-        case 'high' : $period = $time-365*24*60*60; $step = 60*60; break; //month, hour
+        case 'high' : $period = $time-30*24*60*60; $step = 60*60; break; //month, hour
         default: $period = $time-24*60*60; $step = 24*60*60; break; //1 day, day
     }
 
