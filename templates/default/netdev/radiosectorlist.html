@@ -22,7 +22,7 @@
 <TR class="highlight {cycle name=radiosectors}">
 	<TD class="bold nobr">
 		<img src="img/wireless.gif" alt=""> <span id="name_{$rsid}"{if $edit} style="display: none;"{/if}>{$radiosector.name}</span>
-		<input type="text" size="60" name="name_edit_{$rsid}" id="name_edit_{$rsid}" value="{if $edit}{$formdata.name}{else}{$radiosector.name}{/if}" {tip text="Enter name" trigger="name_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
+		<input type="text" size="30" name="name_edit_{$rsid}" id="name_edit_{$rsid}" value="{if $edit}{$formdata.name}{else}{$radiosector.name}{/if}" {tip text="Enter name" trigger="name_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
 	</TD>
 	<TD class="nobr">
 		<span id="azimuth_{$rsid}"{if $edit} style="display: none;"{/if}>{t a=$radiosector.azimuth}$a deg.{/t}</span>
@@ -42,7 +42,7 @@
 	</TD>
 	<TD class="nobr">
 		<span id="license_{$rsid}"{if $edit} style="display: none;"{/if}>{$radiosector.license}</span>
-		<input type="text" size="30" name="license_edit_{$rsid}" id="license_edit_{$rsid}" value="{if $edit}{$formdata.license}{else}{$radiosector.license}{/if}" {tip text="Enter radio license number" trigger="license_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
+		<input type="text" size="20" name="license_edit_{$rsid}" id="license_edit_{$rsid}" value="{if $edit}{$formdata.license}{else}{$radiosector.license}{/if}" {tip text="Enter radio license number" trigger="license_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
 	</TD>
 	<TD class="nobr">
 		<span id="technology_{$rsid}"{if $edit} style="display: none;"{/if}>{if $radiosector.technology}{$_LINKTECHNOLOGIES[1][$radiosector.technology]}{/if}</span>
@@ -92,7 +92,7 @@
 	<TD class="dark ftop nobr">
 		<img src="img/wireless.gif" alt="">
 		<label for="name">{trans("Name:")}<br>
-		<input type="text" size="60" name="name" id="name" value="{if !$formdata.rsid}{$formdata.name}{/if}" {tip text="Enter name" trigger="name"}>
+		<input type="text" size="30" name="name" id="name" value="{if !$formdata.rsid}{$formdata.name}{/if}" {tip text="Enter name" trigger="name"}>
 		</label>
 	</TD>
 	<TD class="dark ftop nobr">
@@ -119,7 +119,7 @@
 	</TD>
 	<TD class="dark ftop nobr">
 		<label for="license">{trans("Radio license number:")}<br>
-		<input type="text" size="30" name="license" id="license" value="{if !$formdata.rsid}{$formdata.license}{/if}" {tip text="Enter radio license number" trigger="license"}>
+		<input type="text" size="20" name="license" id="license" value="{if !$formdata.rsid}{$formdata.license}{/if}" {tip text="Enter radio license number" trigger="license"}>
 		</label>
 	</TD>
 	<TD class="dark ftop nobr">
