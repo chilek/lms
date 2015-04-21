@@ -22,68 +22,7 @@
 <!--
 	function init()
 	{
-		var devices = [];
-		{if $devices}
-			{foreach from=$devices item=device}
-				devices.push({
-					lon: {$device.lon},
-					lat: {$device.lat},
-					state: {$device.state},
-					name: "{$device.name}",
-					ipaddr: "{$device.ipaddr}",
-					nodeid: "{$device.nodeid}",
-					id: {$device.id},
-					type: "netdevinfo"
-				});
-			{/foreach}
-		{/if}
-
-		var devlinks = [];
-		{if $devlinks}
-			{foreach from=$devlinks item=devlink}
-				devlinks.push({
-					srclon: {$devlink.srclon},
-					srclat: {$devlink.srclat},
-					dstlon: {$devlink.dstlon},
-					dstlat: {$devlink.dstlat},
-					type: {$devlink.type},
-					speed: {$devlink.speed},
-					typename: "{$devlink.typename}",
-					speedname: "{$devlink.speedname}"
-				});
-			{/foreach}
-		{/if}
-
-		var nodes = [];
-		{if $nodes}
-			{foreach from=$nodes item=node}
-				nodes.push({
-					lon: {$node.lon},
-					lat: {$node.lat},
-					state: {$node.state},
-					name: "{$node.name}",
-					ipaddr: "{$node.ipaddr}",
-					id: {$node.id},
-					type: "nodeinfo"
-				});
-			{/foreach}
-		{/if}
-
-		var nodelinks = [];
-		{if $nodelinks}
-			{foreach from=$nodelinks item=nodelink}
-				nodelinks.push({
-					nodelon: {$nodelink.nodelon},
-					nodelat: {$nodelink.nodelat},
-					netdevlon: {$nodelink.netdevlon},
-					netdevlat: {$nodelink.netdevlat},
-					type: {$nodelink.type},
-					speed: {$nodelink.speed},
-					typename: "{$nodelink.type}",
-					speedname: "{$nodelink.speed}"
-				});
-			{/foreach}
-		{/if}
+		{include file="map.js"}
 
 		if (targetfield1.value.match(/^[0-9]+\.[0-9]+$/) && targetfield2.value.match(/^[0-9]+\.[0-9]+$/))
 			map = createMap(devices, devlinks, nodes, nodelinks, false, targetfield1.value, targetfield2.value);
