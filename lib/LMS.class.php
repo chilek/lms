@@ -632,6 +632,11 @@ class LMS
         return $manager->GetNodeIDByMAC($mac);
     }
 
+    public function GetNodeConnType($id)
+    {
+        $manager = $this->getNodeManager();
+        return $manager->GetNodeConnType($id);
+    }
     public function GetNodeIDByName($name)
     {
         $manager = $this->getNodeManager();
