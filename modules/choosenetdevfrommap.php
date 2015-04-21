@@ -39,6 +39,6 @@ elseif ($p == 'main') {
 
 $SMARTY->assign('part', $p);
 $SMARTY->assign('js', $js);
-$SMARTY->display('choosenetdevfrommap.html');
+$SMARTY->display('choose/choosenetdevfrommap.html');
 
 ?>
