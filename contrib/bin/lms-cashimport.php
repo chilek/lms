@@ -1,4 +1,3 @@
-#!/usr/bin/php
 <?php
 
 /*
@@ -380,18 +379,27 @@ function commit_cashimport()
 
 			if ($import['value'] > 0 && $icheck)
 			{
-				if($invoices = $DB->GetAll('SELECT d.id,
-						(SELECT SUM(value*count) FROM invoicecontents WHERE docid = d.id) +
-						COALESCE((SELECT SUM((a.value+b.value)*(a.count+b.count)) - SUM(b.value*b.count)
-							FROM documents dd
-							JOIN invoicecontents a ON (a.docid = dd.id)
-							JOIN invoicecontents b ON (dd.reference = b.docid AND a.itemid = b.itemid)
-							WHERE dd.reference = d.id
-							GROUP BY dd.reference), 0) AS value
-					FROM documents d
-					WHERE d.customerid = ? AND d.type = ? AND d.closed = 0
-					GROUP BY d.id, d.cdate ORDER BY d.cdate',
-					array($balance['customerid'], DOC_INVOICE)))
+				if($invoices = $DB->GetAll('SELECT x.id, x.value FROM (
+                                        SELECT d.id,
+                                            (SELECT SUM(value*count) FROM invoicecontents WHERE docid = d.id) +
+                                            COALESCE((
+                                                SELECT SUM((a.value+b.value)*(a.count+b.count)) - SUM(b.value*b.count) 
+                                                FROM documents dd
+                                                JOIN invoicecontents a ON (a.docid = dd.id)
+                                                JOIN invoicecontents b ON (dd.reference = b.docid AND a.itemid = b.itemid)
+                                                WHERE dd.reference = d.id
+                                                GROUP BY dd.reference), 0) AS value,
+                                            d.cdate
+                                        FROM documents d
+                                        WHERE d.customerid = ? AND d.type = ? AND d.closed = 0
+                                        GROUP BY d.id, d.cdate
+                                        UNION
+                                        SELECT d.id, dn.value, d.cdate
+                                        FROM documents d 
+                                        JOIN debitnotecontents dn ON dn.docid = d.id 
+                                        WHERE d.customerid = ?
+                                    ) x ORDER BY x.cdate',
+					array($balance['customerid'], DOC_INVOICE, $balance['customerid'])))
 				{
 					foreach($invoices as $inv)
 						$sum += $inv['value'];
