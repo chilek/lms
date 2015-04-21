@@ -26,9 +26,10 @@
 
 $DB->BeginTrans();
 
-$DB->Execute("ALTER TABLE nodes ADD COLUMN conntype tinyint DEFAULT 0 NOT NULL;
-		CREATE INDEX conntype ON nodes(conntype);
+$DB->Execute("
 		DROP VIEW vnodes;
+		ALTER TABLE nodes ADD COLUMN conntype tinyint DEFAULT 0 NOT NULL;
+		CREATE INDEX conntype ON nodes(conntype);
 		CREATE VIEW vnodes AS
 		SELECT n.*, m.mac
 		FROM nodes n
