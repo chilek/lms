@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,9 +26,11 @@
 
 $devices = $DB->GetAllByKey('SELECT n.id, n.name, n.location, '.$DB->GroupConcat('INET_NTOA(CASE WHEN nodes.ownerid = 0 THEN nodes.ipaddr ELSE NULL END)')
 				.' AS ipaddr, '.$DB->GroupConcat('CASE WHEN nodes.ownerid = 0 THEN nodes.id ELSE NULL END').' AS nodeid, 
-				MAX(lastonline) AS lastonline, n.latitude AS lat, n.longitude AS lon 
+				MAX(lastonline) AS lastonline, n.latitude AS lat, n.longitude AS lon,
+				' . $DB->GroupConcat('rs.id') . ' AS radiosectors
 				FROM netdevices n 
-				LEFT JOIN nodes ON (n.id = netdev) 
+				LEFT JOIN nodes ON n.id = nodes.netdev 
+				LEFT JOIN netradiosectors rs ON rs.netdev = n.id
 				WHERE n.latitude IS NOT NULL AND n.longitude IS NOT NULL 
 				GROUP BY n.id, n.name, n.location, n.latitude, n.longitude', 'id');
 
@@ -48,6 +50,12 @@ if ($devices) {
 			$devices[$devidx]['url'] = $urls['url'];
 			$devices[$devidx]['comment'] = $urls['comment'];
 		}
+		if ($device['radiosectors'])
+			$devices[$devidx]['radiosectors'] = $DB->GetAll('SELECT name, azimuth, width, rsrange,
+				frequency, frequency2, bandwidth FROM netradiosectors WHERE id IN
+				(' . $device['radiosectors'] . ')');
+		else
+			unset($devices[$devidx]['radiosectors']);
 	}
 
 	$devids = implode(',', array_keys($devices));
