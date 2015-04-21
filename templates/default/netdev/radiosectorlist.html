@@ -55,7 +55,11 @@
 	</TD>
 	<TD class="nobr">
 		<span id="frequency_{$rsid}"{if $edit} style="display: none;"{/if}>{if $radiosector.frequency}{t a=((float)$radiosector.frequency)|replace:",":"."}$a GHz{/t}{else}{trans("(default for link technology)")}{/if}</span>
-		<input type="text" size="10" name="frequency_edit_{$rsid}" id="frequency_edit_{$rsid}" value="{if $edit}{$formdata.frequency}{else}{if $radiosector.frequency}{((float)$radiosector.frequency)|replace:",":"."}{/if}{/if}" {tip text="Enter frequency in GHz" trigger="frequency_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}><br>
+		<input type="text" size="10" name="frequency_edit_{$rsid}" id="frequency_edit_{$rsid}" value="{if $edit}{$formdata.frequency}{else}{if $radiosector.frequency}{((float)$radiosector.frequency)|replace:",":"."}{/if}{/if}" {tip text="Enter frequency in GHz" trigger="frequency_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
+		<span id="frequency_separator_{$rsid}"{if $edit} style="display: none;"{/if}>{if $radiosector.frequency2} / {/if}</span>
+		<span id="frequency_separator_edit_{$rsid}"{if !$edit} style="display: none;"{/if}> / </span>
+		<span id="frequency2_{$rsid}"{if $edit} style="display: none;"{/if}>{if $radiosector.frequency2}{t a=((float)$radiosector.frequency2)|replace:",":"."}$a GHz{/t}{/if}</span>
+		<input type="text" size="10" name="frequency2_edit_{$rsid}" id="frequency2_edit_{$rsid}" value="{if $edit}{$formdata.frequency2}{else}{if $radiosector.frequency2}{((float)$radiosector.frequency2)|replace:",":"."}{/if}{/if}" {tip text="Enter frequency in GHz" trigger="frequency2_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}><br>
 		<span id="bandwidth_{$rsid}"{if $edit} style="display: none;"{/if}>{if $radiosector.bandwidth}{t a=$radiosector.bandwidth}$a MHz{/t}{else}{trans("(default for link technology)")}{/if}</span>
 		<input type="text" size="10" name="bandwidth_edit_{$rsid}" id="bandwidth_edit_{$rsid}" value="{if $edit}{$formdata.bandwidth}{else}{if $radiosector.bandwidth}{$radiosector.bandwidth}{/if}{/if}" {tip text="Enter bandwidth in MHz" trigger="bandwidth_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
 	</TD>
@@ -131,6 +135,8 @@
 	<TD class="dark ftop nobr">
 		<label for="frequency">{trans("Frequency:")}
 		<input type="text" size="10" name="frequency" id="frequency" value="{if !$formdata.rsid}{$formdata.frequency}{/if}" {tip text="Enter frequency in GHz" trigger="frequency"}>
+		/
+		<input type="text" size="10" name="frequency2" id="frequency2" value="{if !$formdata.rsid}{$formdata.frequency2}{/if}" {tip text="Enter frequency in GHz" trigger="frequency2"}>
 		</label><br>
 		<label for="bandwidth">{trans("Bandwidth:")}
 		<input type="text" size="10" name="bandwidth" id="bandwidth" value="{if !$formdata.rsid}{$formdata.bandwidth}{/if}" {tip text="Enter bandwidth in MHz" trigger="bandwidth"}>

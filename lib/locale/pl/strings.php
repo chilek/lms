@@ -2958,6 +2958,7 @@ $_LANG['Radio sector altitude has invalid format!'] = 'Wysokość sektora radiow
 $_LANG['Radio sector range cannot be empty!'] = 'Zasięg sektora radiowego nie może być pusty!';
 $_LANG['Radio sector range has invalid format!'] = 'Zasięg sektora radiowego zawiera niepoprawne znaki!';
 $_LANG['Radio sector frequency has invalid format!'] = 'Częstotliwość sektora radiowa zawiera niepoprawne znaki!';
+$_LANG['Radio sector second frequency should be also empty if first frequency is empty!'] = 'Druga częstotliwość sektora radiowego powinna również pozostać pusta, w przypadku gdy pierwsza częstotliwość jest pusta!';
 $_LANG['Radio sector bandwidth has invalid format!'] = 'Szerokość pasma sektora radiowego zawiera niepoprawne znaki!';
 $_LANG['Radio sector:'] = 'Sektor radiowy:';
 $_LANG['Select radio sector'] = 'Wybierz sektor radiowy';

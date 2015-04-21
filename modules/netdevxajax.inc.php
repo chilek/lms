@@ -197,6 +197,13 @@ function validateRadioSector($params, $update = false) {
 	if (strlen($params['frequency']) && !preg_match('/^[0-9]{1,3}(\.[0-9]{1,5})?$/', $params['frequency']))
 		$error['frequency'] = trans('Radio sector frequency has invalid format!');
 
+	if (strlen($params['frequency2'])) {
+		if (!strlen($params['frequency']))
+			$error['frequency2'] = trans('Radio sector second frequency should be also empty if first frequency is empty!');
+		elseif (!preg_match('/^[0-9]{1,3}(\.[0-9]{1,5})?$/', $params['frequency2']))
+			$error['frequency2'] = trans('Radio sector frequency has invalid format!');
+	}
+
 	if (strlen($params['bandwidth']) && !preg_match('/^[0-9]{1,4}?$/', $params['bandwidth']))
 		$error['bandwidth'] = trans('Radio sector bandwidth has invalid format!');
 
@@ -262,11 +269,13 @@ function addRadioSector($params) {
 			'license' => (strlen($params['license']) ? $params['license'] : null),
 			'technology' => intval($params['technology']),
 			'frequency' => (strlen($params['frequency']) ? $params['frequency'] : null),
+			'frequency2' => (strlen($params['frequency2']) ? $params['frequency2'] : null),
 			'bandwidth' => (strlen($params['bandwidth']) ? str_replace(',', '.', $params['bandwidth'] / 1000) : null),
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netdevid,
 		);
-		$DB->Execute('INSERT INTO netradiosectors (name, azimuth, width, altitude, rsrange, license, technology, frequency, bandwidth, netdev)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+		$DB->Execute('INSERT INTO netradiosectors (name, azimuth, width, altitude, rsrange, license, technology,
+			frequency, frequency2, bandwidth, netdev)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			array_values($args));
 		if ($SYSLOG) {
 			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR]] = $DB->GetLastInsertID('netradiosectors');
@@ -327,11 +336,13 @@ function updateRadioSector($rsid, $params) {
 			'license' => (strlen($params['license']) ? $params['license'] : null),
 			'technology' => intval($params['technology']),
 			'frequency' => (strlen($params['frequency']) ? $params['frequency'] : null),
+			'frequency2' => (strlen($params['frequency2']) ? $params['frequency2'] : null),
 			'bandwidth' => (strlen($params['bandwidth']) ? str_replace(',', '.', $params['bandwidth'] / 1000) : null),
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR] => $rsid,
 		);
 		$DB->Execute('UPDATE netradiosectors SET name = ?, azimuth = ?, width = ?, altitude = ?,
-			rsrange = ?, license = ?, technology = ?, frequency = ?, bandwidth = ? WHERE id = ?', array_values($args));
+			rsrange = ?, license = ?, technology = ?,
+			frequency = ?, frequency2 = ?, bandwidth = ? WHERE id = ?', array_values($args));
 		if ($SYSLOG) {
 			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]] = $netdevid;
 			$SYSLOG->AddMessage(SYSLOG_RES_RADIOSECTOR, SYSLOG_OPER_UPDATE, $args,
