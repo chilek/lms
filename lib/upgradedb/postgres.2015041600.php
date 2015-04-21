@@ -26,7 +26,7 @@
 
 $DB->BeginTrans();
 
-$DB->Execute("ALTER TABLE nodes ADD COLUMN conntype smallint DEFAULT 0 NOT NULL;
+$DB->Execute("ALTER TABLE nodes ADD COLUMN conntype smallint DEFAULT;
 		DROP VIEW vnodes;
 		CREATE INDEX nodes_conntype_idx ON nodes (conntype);
 		CREATE VIEW vnodes AS

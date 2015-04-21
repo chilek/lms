@@ -779,7 +779,7 @@ CREATE TABLE nodes (
   port smallint NOT NULL DEFAULT '0',
   access tinyint(1) NOT NULL DEFAULT '1',
   warning tinyint(1) NOT NULL DEFAULT '0',
-  conntype tinyint(1) NOT NULL DEFAULT '0',
+  conntype tinyint(1) DEFAULT '0',
   chkmac tinyint(1) NOT NULL DEFAULT '1',
   halfduplex tinyint(1) NOT NULL DEFAULT '0',
   lastonline int(11) NOT NULL DEFAULT '0',

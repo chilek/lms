@@ -27,7 +27,7 @@
 $DB->BeginTrans();
 
 $DB->Execute("DROP VIEW vnodes");
-$DB->Execute("ALTER TABLE nodes ADD COLUMN conntype tinyint DEFAULT 0 NOT NULL");
+$DB->Execute("ALTER TABLE nodes ADD COLUMN conntype tinyint(1) DEFAULT 0");
 $DB->Execute("CREATE INDEX conntype ON nodes(conntype)");
 $DB->Execute("CREATE VIEW vnodes AS SELECT n.*, m.mac FROM nodes n LEFT JOIN vnodes_mac m ON (n.id = m.nodeid)");
 
