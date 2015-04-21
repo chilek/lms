@@ -123,6 +123,11 @@ function gpscoordschoosewin(formfield1, formfield2)
 	return openSelectWindow2('?m=choosegpscoords', 'choosegpscoords', 450, 300, 'true', formfield1, formfield2);
 }
 
+function netdevfrommapchoosewin(netdevid)
+{
+	return openSelectWindow('?m=choosenetdevfrommap', 'choosenetdevfrommap', 450, 300, 'true', netdevid);
+}
+
 function netlinkpropertieschoosewin(id, devid, isnetlink)
 {
 	return openSelectWindow('?m=netlinkproperties&id=' + id + '&devid=' + devid + '&isnetlink=' + (isnetlink ? 1 : 0),

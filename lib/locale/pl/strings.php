@@ -2971,4 +2971,7 @@ $_LANG['Enable/disable PPPoE Server Client'] = 'Włącza/Wyłącza komputer jako
 $_LANG['Enable/disable DHCP Server Client'] = 'Włącza/Wyłącza komputer jako klient DHCP';
 $_LANG['Enable/disable EAP Server Client'] = 'Włącza/Wyłącza komputer jako klient EAP';
 
+$_LANG['Select network device:'] = 'Wybierz urządzenie sieciowe:';
+$_LANG['Click to select network device from map'] = 'Kliknij w celu wybrania urządzenia sieciowego z mapy';
+
 ?>
