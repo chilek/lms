@@ -442,6 +442,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
     public function GetNetDev($id)
     {
         $result = $this->db->GetRow('SELECT d.*, t.name AS nastypename, c.name AS channel,
+				(CASE WHEN lst.name2 IS NOT NULL THEN ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' ELSE lst.name END) AS street_name,
+				lt.name AS street_type,
 				lc.name AS city_name,
 				lb.name AS borough_name, lb.type AS borough_type,
 				ld.name AS district_name, ls.name AS state_name
@@ -449,6 +451,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			LEFT JOIN nastypes t ON (t.id = d.nastype)
 			LEFT JOIN ewx_channels c ON (d.channelid = c.id)
 			LEFT JOIN location_cities lc ON (lc.id = d.location_city)
+			LEFT JOIN location_streets lst ON (lst.id = d.location_street)
+			LEFT JOIN location_street_types lt ON (lt.id = lst.typeid)
 			LEFT JOIN location_boroughs lb ON (lb.id = lc.boroughid)
 			LEFT JOIN location_districts ld ON (ld.id = lb.districtid)
 			LEFT JOIN location_states ls ON (ls.id = ld.stateid)
