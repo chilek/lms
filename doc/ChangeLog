@@ -2,6 +2,7 @@ $Id$
 
 version ?.??.?? (????-??-??):
 
+  - added connection type (DHCP, EAP) in net nodes [nicraM]
   - added support for radio sectors management in user interface [chilan]
   - fixed serious performance regression introduced by autoloader [chilan]
   - added radio sector management for network device links [chilan]

@@ -69,7 +69,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             'latitude' => !empty($nodedata['latitude']) ? str_replace(',', '.', $nodedata['latitude']) : null,
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK] => $nodedata['netid'],
             'invprojectid' => $nodedata['invprojectid'],
-	    'conntype' => $nodedata['conntype'],
+	    'conntype' => $nodedata['conntype'] ? $nodedata['conntype'] : 0,
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodedata['id']
         );
         $this->db->Execute('UPDATE nodes SET name=UPPER(?), ipaddr_pub=inet_aton(?),
@@ -204,6 +204,10 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
     public function GetNodeNameByIP($ipaddr)
     {
         return $this->db->GetOne('SELECT name FROM nodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)', array($ipaddr, $ipaddr));
+    }
+    public function GetNodeConnType($id)
+    {
+        return $this->db->GetOne('SELECT conntype FROM nodes WHERE id=?', array($id));
     }
 
     public function GetNode($id)

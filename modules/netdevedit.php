@@ -476,7 +476,16 @@ switch ($action) {
 			$nodeipdata['halfduplex'] = 0;
 		if (!isset($nodeipdata['nas']))
 			$nodeipdata['nas'] = 0;
-
+		$nodeipdata['conntype'] = 0;
+		if(isset($_POST['netdevconntype'])) {
+			$conntype = $_POST['netdevconntype'];
+			if (!empty($conntype)) {
+				foreach ($conntype as $op) {
+					$op = (int)$op;
+					$nodeipdata['conntype'] |= $op;
+				}
+			}
+		}
 		if (!$error) {
 			$nodeipdata['warning'] = 0;
 			$nodeipdata['location'] = '';
@@ -570,7 +579,16 @@ switch ($action) {
 			$nodeipdata['halfduplex'] = 0;
 		if (!isset($nodeipdata['nas']))
 			$nodeipdata['nas'] = 0;
-
+		$nodeipdata['conntype'] = 0;
+		if(isset($_POST['netdevconntype'])) {
+			$conntype = $_POST['netdevconntype'];
+			if (!empty($conntype)) {
+				foreach ($conntype as $op) {
+					$op = (int)$op;
+					$nodeipdata['conntype'] |= $op;
+				}
+			}
+		}
 		if (!$error) {
 			$nodeipdata['warning'] = 0;
 			$nodeipdata['location'] = '';
@@ -584,7 +602,19 @@ switch ($action) {
 		$SMARTY->assign('nodeipdata', $nodeipdata);
 		$edit = 'ip';
 		break;
-
+	case 'conntype':
+		$DB->Execute('UPDATE nodes SET conntype=? WHERE id=?', array($_GET['conntype'], $_GET['ip']));
+		if ($SYSLOG) {
+			$args = array(
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $_GET['ip'],
+				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+				'conntype' => intval($_GET['conntype']),
+			);
+			$SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+		}
+		$SESSION->redirect('?m=netdevinfo&id=' . $_GET['id'].'&ip='.$_GET['ip']);
+		break;
 	default:
 		$edit = 'data';
 		break;
@@ -722,6 +752,12 @@ if (isset($_POST['netdev'])) {
 
 $netdevdata['id'] = $_GET['id'];
 
+$netdevconntype = array();
+if ($conntype != 0) {
+        $netdevconntype['dhcp'] = ($conntype & 2);
+        $netdevconntype['eap'] = ($conntype & 4);
+}
+
 $netdevips = $LMS->GetNetDevIPs($_GET['id']);
 $nodelist = $LMS->GetUnlinkedNodes();
 $netdevconnected = $LMS->GetNetDevConnectedNames($_GET['id']);
@@ -757,6 +793,8 @@ $SMARTY->assign('objectid', $netdevdata['id']);
 $SMARTY->assign('netdevlist', $netdevconnected);
 $SMARTY->assign('netcomplist', $netcomplist);
 $SMARTY->assign('nodelist', $nodelist);
+$SMARTY->assign('netdevcontype', $netdevcontype);
+$SMARTY->assign('netdevconntype', $netdevconntype);
 $SMARTY->assign('netdevips', $netdevips);
 $SMARTY->assign('restnetdevlist', $netdevlist);
 $SMARTY->assign('replacelist', $replacelist);

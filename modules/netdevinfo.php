@@ -91,7 +91,15 @@ $SMARTY->assign('nodelinkspeed', $SESSION->get('nodelinkspeed'));
 include(MODULES_DIR . '/netdevxajax.inc.php');
 
 if (isset($_GET['ip'])) {
+	$nodeipdata = $LMS->GetNodeConnType($_GET['ip']);
+	$netdevconntype = array();
+	$conntype = $nodeipdata['conntype'];
+	if ($conntype != 0) {
+		$netdevconntype['dhcp'] = ($conntype & 2);
+		$netdevconntype['eap'] = ($conntype & 4);
+	}
 	$SMARTY->assign('nodeipdata', $LMS->GetNode($_GET['ip']));
+	$SMARTY->assign('netdevconntype', $netdevconntype);
 	$SMARTY->display('netdev/netdevipinfo.html');
 } else {
 	$SMARTY->display('netdev/netdevinfo.html');
