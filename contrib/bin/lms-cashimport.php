@@ -399,7 +399,7 @@ function commit_cashimport()
                                         JOIN debitnotecontents dn ON dn.docid = d.id 
                                         WHERE d.customerid = ?
                                     ) x ORDER BY x.cdate',
-					array($balance['customerid'], DOC_INVOICE)))
+					array($balance['customerid'], DOC_INVOICE, $balance['customerid'])))
 				{
 					foreach($invoices as $inv)
 						$sum += $inv['value'];
