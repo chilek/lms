@@ -206,7 +206,10 @@ function invoice_simple_form_fill() {
 	global $pdf, $invoice;
 
 	/* set font style & color */
-	$pdf->SetFont('courier', '', 9);
+	if (mb_strlen($invoice['division_shortname']) > 25)
+		$pdf->SetFont('courier', '', floor(235 / strlen($invoice['division_shortname'])));
+	else
+		$pdf->SetFont('courier', '', 9);
 	$pdf->setColor('text', 0, 0, 0);
 
 	/* division name */
