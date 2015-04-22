@@ -2,8 +2,8 @@
 <THEAD>
 <TR>
 	<TD style="width: 10%;" class="bold nobr"><img src="img/wireless.gif" alt=""> {trans("Name:")}</TD>
-	<TD style="width: 15%;"><img src="img/time.gif" alt=""> {trans("Azimuth:")}<br /><img src="img/time.gif" alt=""> {trans("Angular width:")}</TD>
-	<TD style="width: 10%;">{trans("Altitude:")}<br />{trans("Range:")}</TD>
+	<TD style="width: 15%;"><img src="img/time.gif" alt=""> {trans("Azimuth:")}<br><img src="img/time.gif" alt=""> {trans("Angular width:")}</TD>
+	<TD style="width: 10%;">{trans("Altitude:")}<br>{trans("Range:")}</TD>
 	<TD style="width: 15%;">{trans("Radio license number:")}</TD>
 	<TD style="width: 10%;">{trans("Link technology:")}</TD>
 	<TD style="width: 19%;">{trans("Frequency:")}<br>{trans("Bandwidth:")}</TD>
@@ -24,13 +24,13 @@
 	</TD>
 	<TD class="nobr">
 		<span id="azimuth_{$rsid}"{if $edit} style="display: none;"{/if}>{t a=$radiosector.azimuth}$a deg.{/t}</span>
-		<input type="text" size="10" name="azimuth_edit_{$rsid}" id="azimuth_edit_{$rsid}" value="{if $edit}{$formdata.azimuth}{else}{$radiosector.azimuth}{/if}" {tip text="Enter azimuth in degrees" trigger="azimuth_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}><br />
+		<input type="text" size="10" name="azimuth_edit_{$rsid}" id="azimuth_edit_{$rsid}" value="{if $edit}{$formdata.azimuth}{else}{$radiosector.azimuth}{/if}" {tip text="Enter azimuth in degrees" trigger="azimuth_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}><br>
 		<span id="width_{$rsid}"{if $edit} style="display: none;"{/if}>{t a=$radiosector.width}$a deg.{/t}</span>
 		<input type="text" size="10" name="width_edit_{$rsid}" id="width_edit_{$rsid}" value="{if $edit}{$formdata.width}{else}{$radiosector.width}{/if}" {tip text="Enter angular width in degrees" trigger="width_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
 	</TD>
 	<TD class="nobr">
 		<span id="altitude_{$rsid}"{if $edit} style="display: none;"{/if}>{t a=$radiosector.altitude}$a m{/t}</span>
-		<input type="text" size="8" name="altitude_edit_{$rsid}" id="altitude_edit_{$rsid}" value="{if $edit}{$formdata.altitude}{else}{$radiosector.altitude}{/if}" {tip text="Enter altitude in meters" trigger="altitude_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}><br />
+		<input type="text" size="8" name="altitude_edit_{$rsid}" id="altitude_edit_{$rsid}" value="{if $edit}{$formdata.altitude}{else}{$radiosector.altitude}{/if}" {tip text="Enter altitude in meters" trigger="altitude_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}><br>
 		<span id="rsrange_{$rsid}"{if $edit} style="display: none;"{/if}>{t a=$radiosector.rsrange}$a m{/t}</span>
 		<input type="text" size="8" name="rsrange_edit_{$rsid}" id="rsrange_edit_{$rsid}" value="{if $edit}{$formdata.rsrange}{else}{$radiosector.rsrange}{/if}" {tip text="Enter range in meters" trigger="rsrange_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
 	</TD>
@@ -91,19 +91,19 @@
 	</TD>
 	<TD class="dark ftop nobr">
 		<img src="img/time.gif" alt="">
-		<label for="azimuth">{trans("Azimuth:")}<br>
+		<label for="azimuth">{trans("Azimuth:")}
 		<input type="text" size="10" name="azimuth" id="azimuth" value="{if !$formdata.rsid}{$formdata.azimuth}{/if}" {tip text="Enter azimuth in degrees" trigger="azimuth"}>
-		</label><br />
+		</label><br>
 		<img src="img/time.gif" alt="">
-		<label for="width">{trans("Angular width:")}<br>
+		<label for="width">{trans("Angular width:")}
 		<input type="text" size="10" name="width" id="width" value="{if !$formdata.rsid}{$formdata.width}{/if}" {tip text="Enter angular width in degrees" trigger="width"}>
 		</label>
     </TD>
     <TD class="dark ftop nobr">
-		<label for="altitude">{trans("Altitude:")}<br>
+		<label for="altitude">{trans("Altitude:")}
 		<input type="text" size="8" name="altitude" id="altitude" value="{if !$formdata.rsid}{$formdata.altitude}{/if}" {tip text="Enter altitude in meters" trigger="altitude"}>
-		</label><br />
-		<label for="rsrange">{trans("Range:")}<br>
+		</label><br>
+		<label for="rsrange">{trans("Range:")}
 		<input type="text" size="8" name="rsrange" id="rsrange" value="{if !$formdata.rsid}{$formdata.rsrange}{/if}" {tip text="Enter range in meters" trigger="rsrange"}>
 		</label>
 	</TD>
