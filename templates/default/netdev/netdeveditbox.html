@@ -293,25 +293,7 @@
 	</FORM>
 	<TR>
 		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT">
-			{if $replacelisttotal>1}
-			<FORM METHOD="GET" ACTION="?m=netdevedit" NAME="replace">
-			<INPUT type="submit" class="hiddenbtn">
-			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
-			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
-			<INPUT TYPE="HIDDEN" NAME="action" VALUE="replace">
-			<A HREF="javascript:document.replace.submit(); ">{trans("Replace with:")}</A>
-			<SELECT NAME="netdev" {tip trigger="replace" text="Select from list device for replacement"}>
-				{section name=replacelist loop=$replacelist}
-				{if $replacelist[replacelist].id != $netdevinfo.id}
-				{assign var=netdevname value=$replacelist[replacelist].name}
-				{if $replacelist[replacelist].producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$replacelist[replacelist].producer}{/if}
-				{if $replacelist[replacelist].location}{assign var=netdevname value=$netdevname|cat:" ("|cat:$replacelist[replacelist].location|cat:")"}{/if}
-				<OPTION VALUE="{$replacelist[replacelist].id}">{$netdevname|truncate:120:"..."}</OPTION>
-				{/if}
-				{/section}
-			</SELECT>
-			</FORM>
-			{/if}
+			<A href="javascript:openSelectWindow('?m=choosenetdevreplace&id={$netdevinfo.id}', 'Replace netdev', 600, 290, 1, 1)">{trans("Replace")} <img src="img/alias.gif" ALT="[ {trans("Replace")} ]"></A>
 			<A HREF="javascript:document.netdevedit.submit();" ACCESSKEY="S">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
 			<A HREF="?m=netdevinfo&id={$netdevinfo.id}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
 		</TD>

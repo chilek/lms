@@ -32,12 +32,6 @@ $netdevinfo = $LMS->GetNetDev($_GET['id']);
 $netdevconnected = $LMS->GetNetDevConnectedNames($_GET['id']);
 $netcomplist = $LMS->GetNetdevLinkedNodes($_GET['id']);
 $netdevlist = $LMS->GetNotConnectedDevices($_GET['id']);
-$replacelist = $LMS->GetNetDevList();
-
-$replacelisttotal = $replacelist['total'];
-unset($replacelist['order']);
-unset($replacelist['total']);
-unset($replacelist['direction']);
 
 $nodelist = $LMS->GetUnlinkedNodes();
 $netdevips = $LMS->GetNetDevIPs($_GET['id']);
@@ -79,8 +73,6 @@ $SMARTY->assign('netcomplist', $netcomplist);
 $SMARTY->assign('restnetdevlist', $netdevlist);
 $SMARTY->assign('netdevips', $netdevips);
 $SMARTY->assign('nodelist', $nodelist);
-$SMARTY->assign('replacelist', $replacelist);
-$SMARTY->assign('replacelisttotal', $replacelisttotal);
 $SMARTY->assign('devlinktype', $SESSION->get('devlinktype'));
 $SMARTY->assign('devlinktechnology', $SESSION->get('devlinktechnology'));
 $SMARTY->assign('devlinkspeed', $SESSION->get('devlinkspeed'));
