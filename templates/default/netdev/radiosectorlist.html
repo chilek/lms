@@ -1,16 +1,14 @@
 <TABLE class="lmsbox-inner">
 <THEAD>
 <TR>
-	<TD style="width: 1%;" class="bold nobr"><img src="img/wireless.gif" alt=""> {trans("Name:")}</TD>
-	<TD style="width: 1%;"><img src="img/time.gif" alt=""> {trans("Azimuth:")}</TD>
-	<TD style="width: 1%;"><img src="img/time.gif" alt=""> {trans("Angular width:")}</TD>
-	<TD style="width: 1%;">{trans("Altitude:")}</TD>
-	<TD style="width: 1%;">{trans("Range:")}</TD>
-	<TD style="width: 1%;">{trans("Radio license number:")}</TD>
-	<TD style="width: 1%;">{trans("Link technology:")}</TD>
-	<TD style="width: 90%;">{trans("Frequency:")}<br>{trans("Bandwidth:")}</TD>
-	<TD style="width: 1%;" class="nobr text-center">{trans("Nodes:")}</TD>
-	<TD style="width: 1%;" class="nobr text-center">{trans("Net devices:")}</TD>
+	<TD style="width: 10%;" class="bold nobr"><img src="img/wireless.gif" alt=""> {trans("Name:")}</TD>
+	<TD style="width: 15;"><img src="img/time.gif" alt=""> {trans("Azimuth:")}<br /><img src="img/time.gif" alt=""> {trans("Angular width:")}</TD>
+	<TD style="width: 10%;">{trans("Altitude:")}<br />{trans("Range:")}</TD>
+	<TD style="width: 15%;">{trans("Radio license number:")}</TD>
+	<TD style="width: 10%;">{trans("Link technology:")}</TD>
+	<TD style="width: 19%;">{trans("Frequency:")}<br>{trans("Bandwidth:")}</TD>
+	<TD style="width: 10%;" class="nobr text-center">{trans("Nodes:")}</TD>
+	<TD style="width: 10%;" class="nobr text-center">{trans("Net devices:")}</TD>
 	<TD style="width: 1%;">&nbsp;</TD>
 </TR>
 </THEAD>
@@ -26,19 +24,15 @@
 	</TD>
 	<TD class="nobr">
 		<span id="azimuth_{$rsid}"{if $edit} style="display: none;"{/if}>{t a=$radiosector.azimuth}$a deg.{/t}</span>
-		<input type="text" size="10" name="azimuth_edit_{$rsid}" id="azimuth_edit_{$rsid}" value="{if $edit}{$formdata.azimuth}{else}{$radiosector.azimuth}{/if}" {tip text="Enter azimuth in degrees" trigger="azimuth_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
-	</TD>
-	<TD class="nobr">
+		<input type="text" size="10" name="azimuth_edit_{$rsid}" id="azimuth_edit_{$rsid}" value="{if $edit}{$formdata.azimuth}{else}{$radiosector.azimuth}{/if}" {tip text="Enter azimuth in degrees" trigger="azimuth_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}><br />
 		<span id="width_{$rsid}"{if $edit} style="display: none;"{/if}>{t a=$radiosector.width}$a deg.{/t}</span>
 		<input type="text" size="10" name="width_edit_{$rsid}" id="width_edit_{$rsid}" value="{if $edit}{$formdata.width}{else}{$radiosector.width}{/if}" {tip text="Enter angular width in degrees" trigger="width_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
 	</TD>
 	<TD class="nobr">
 		<span id="altitude_{$rsid}"{if $edit} style="display: none;"{/if}>{t a=$radiosector.altitude}$a m{/t}</span>
-		<input type="text" size="10" name="altitude_edit_{$rsid}" id="altitude_edit_{$rsid}" value="{if $edit}{$formdata.altitude}{else}{$radiosector.altitude}{/if}" {tip text="Enter altitude in meters" trigger="altitude_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
-	</TD>
-	<TD class="nobr">
+		<input type="text" size="8" name="altitude_edit_{$rsid}" id="altitude_edit_{$rsid}" value="{if $edit}{$formdata.altitude}{else}{$radiosector.altitude}{/if}" {tip text="Enter altitude in meters" trigger="altitude_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}><br />
 		<span id="rsrange_{$rsid}"{if $edit} style="display: none;"{/if}>{t a=$radiosector.rsrange}$a m{/t}</span>
-		<input type="text" size="10" name="rsrange_edit_{$rsid}" id="rsrange_edit_{$rsid}" value="{if $edit}{$formdata.rsrange}{else}{$radiosector.rsrange}{/if}" {tip text="Enter range in meters" trigger="rsrange_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
+		<input type="text" size="8" name="rsrange_edit_{$rsid}" id="rsrange_edit_{$rsid}" value="{if $edit}{$formdata.rsrange}{else}{$radiosector.rsrange}{/if}" {tip text="Enter range in meters" trigger="rsrange_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
 	</TD>
 	<TD class="nobr">
 		<span id="license_{$rsid}"{if $edit} style="display: none;"{/if}>{$radiosector.license}</span>
@@ -55,11 +49,11 @@
 	</TD>
 	<TD class="nobr">
 		<span id="frequency_{$rsid}"{if $edit} style="display: none;"{/if}>{if $radiosector.frequency}{t a=((float)$radiosector.frequency)|replace:",":"."}$a GHz{/t}{else}{trans("(default for link technology)")}{/if}</span>
-		<input type="text" size="10" name="frequency_edit_{$rsid}" id="frequency_edit_{$rsid}" value="{if $edit}{$formdata.frequency}{else}{if $radiosector.frequency}{((float)$radiosector.frequency)|replace:",":"."}{/if}{/if}" {tip text="Enter frequency in GHz" trigger="frequency_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
+		<input type="text" size="6" name="frequency_edit_{$rsid}" id="frequency_edit_{$rsid}" value="{if $edit}{$formdata.frequency}{else}{if $radiosector.frequency}{((float)$radiosector.frequency)|replace:",":"."}{/if}{/if}" {tip text="Enter frequency in GHz" trigger="frequency_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
 		<span id="frequency_separator_{$rsid}"{if $edit} style="display: none;"{/if}>{if $radiosector.frequency2} / {/if}</span>
 		<span id="frequency_separator_edit_{$rsid}"{if !$edit} style="display: none;"{/if}> / </span>
 		<span id="frequency2_{$rsid}"{if $edit} style="display: none;"{/if}>{if $radiosector.frequency2}{t a=((float)$radiosector.frequency2)|replace:",":"."}$a GHz{/t}{/if}</span>
-		<input type="text" size="10" name="frequency2_edit_{$rsid}" id="frequency2_edit_{$rsid}" value="{if $edit}{$formdata.frequency2}{else}{if $radiosector.frequency2}{((float)$radiosector.frequency2)|replace:",":"."}{/if}{/if}" {tip text="Enter frequency in GHz" trigger="frequency2_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}><br>
+		<input type="text" size="6" name="frequency2_edit_{$rsid}" id="frequency2_edit_{$rsid}" value="{if $edit}{$formdata.frequency2}{else}{if $radiosector.frequency2}{((float)$radiosector.frequency2)|replace:",":"."}{/if}{/if}" {tip text="Enter frequency in GHz" trigger="frequency2_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}><br>
 		<span id="bandwidth_{$rsid}"{if $edit} style="display: none;"{/if}>{if $radiosector.bandwidth}{t a=$radiosector.bandwidth}$a MHz{/t}{else}{trans("(default for link technology)")}{/if}</span>
 		<input type="text" size="10" name="bandwidth_edit_{$rsid}" id="bandwidth_edit_{$rsid}" value="{if $edit}{$formdata.bandwidth}{else}{if $radiosector.bandwidth}{$radiosector.bandwidth}{/if}{/if}" {tip text="Enter bandwidth in MHz" trigger="bandwidth_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
 	</TD>
@@ -80,7 +74,7 @@
 </TR>
 {foreachelse}
 <TR>
-	<TD class="empty-table" colspan="11">
+	<TD class="empty-table" colspan="9">
 		<p>&nbsp;</p>
 		<p>{trans("No radio sectors.")}</p>
 		<p>&nbsp;</p>
@@ -99,22 +93,18 @@
 		<img src="img/time.gif" alt="">
 		<label for="azimuth">{trans("Azimuth:")}<br>
 		<input type="text" size="10" name="azimuth" id="azimuth" value="{if !$formdata.rsid}{$formdata.azimuth}{/if}" {tip text="Enter azimuth in degrees" trigger="azimuth"}>
-		</label>
-	</TD>
-	<TD class="dark ftop nobr">
+		</label><br />
 		<img src="img/time.gif" alt="">
 		<label for="width">{trans("Angular width:")}<br>
 		<input type="text" size="10" name="width" id="width" value="{if !$formdata.rsid}{$formdata.width}{/if}" {tip text="Enter angular width in degrees" trigger="width"}>
 		</label>
-	</TD>
-	<TD class="dark ftop nobr">
+    </TD>
+    <TD class="dark ftop nobr">
 		<label for="altitude">{trans("Altitude:")}<br>
-		<input type="text" size="10" name="altitude" id="altitude" value="{if !$formdata.rsid}{$formdata.altitude}{/if}" {tip text="Enter altitude in meters" trigger="altitude"}>
-		</label>
-	</TD>
-	<TD class="dark ftop nobr">
+		<input type="text" size="8" name="altitude" id="altitude" value="{if !$formdata.rsid}{$formdata.altitude}{/if}" {tip text="Enter altitude in meters" trigger="altitude"}>
+		</label><br />
 		<label for="rsrange">{trans("Range:")}<br>
-		<input type="text" size="10" name="rsrange" id="rsrange" value="{if !$formdata.rsid}{$formdata.rsrange}{/if}" {tip text="Enter range in meters" trigger="rsrange"}>
+		<input type="text" size="8" name="rsrange" id="rsrange" value="{if !$formdata.rsid}{$formdata.rsrange}{/if}" {tip text="Enter range in meters" trigger="rsrange"}>
 		</label>
 	</TD>
 	<TD class="dark ftop nobr">
@@ -134,9 +124,9 @@
 	</TD>
 	<TD class="dark ftop nobr">
 		<label for="frequency">{trans("Frequency:")}
-		<input type="text" size="10" name="frequency" id="frequency" value="{if !$formdata.rsid}{$formdata.frequency}{/if}" {tip text="Enter frequency in GHz" trigger="frequency"}>
+		<input type="text" size="6" name="frequency" id="frequency" value="{if !$formdata.rsid}{$formdata.frequency}{/if}" {tip text="Enter frequency in GHz" trigger="frequency"}>
 		/
-		<input type="text" size="10" name="frequency2" id="frequency2" value="{if !$formdata.rsid}{$formdata.frequency2}{/if}" {tip text="Enter frequency in GHz" trigger="frequency2"}>
+		<input type="text" size="6" name="frequency2" id="frequency2" value="{if !$formdata.rsid}{$formdata.frequency2}{/if}" {tip text="Enter frequency in GHz" trigger="frequency2"}>
 		</label><br>
 		<label for="bandwidth">{trans("Bandwidth:")}
 		<input type="text" size="10" name="bandwidth" id="bandwidth" value="{if !$formdata.rsid}{$formdata.bandwidth}{/if}" {tip text="Enter bandwidth in MHz" trigger="bandwidth"}>
@@ -146,7 +136,7 @@
 		<A id="radiosectoraddlink" HREF="javascript:addRadioSector();" {tip text="Add new radio sector"}>{trans("Add")} <IMG SRC="img/save.gif" alt=""></A>
 	</TD>
 	{else}
-	<TD class="dark ftop nobr" colspan="11">&nbsp;</TD>
+	<TD class="dark ftop nobr" colspan="9">&nbsp;</TD>
 	{/if}
 </TR>
 </TBODY>
