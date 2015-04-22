@@ -768,12 +768,6 @@ unset($netdevlist['total']);
 unset($netdevlist['order']);
 unset($netdevlist['direction']);
 
-$replacelist = $LMS->GetNetDevList();
-
-$replacelisttotal = $replacelist['total'];
-unset($replacelist['order']);
-unset($replacelist['total']);
-unset($replacelist['direction']);
 
 $layout['pagetitle'] = trans('Device Edit: $a ($b)', $netdevdata['name'], $netdevdata['producer']);
 
@@ -797,8 +791,6 @@ $SMARTY->assign('netdevcontype', $netdevcontype);
 $SMARTY->assign('netdevconntype', $netdevconntype);
 $SMARTY->assign('netdevips', $netdevips);
 $SMARTY->assign('restnetdevlist', $netdevlist);
-$SMARTY->assign('replacelist', $replacelist);
-$SMARTY->assign('replacelisttotal', $replacelisttotal);
 $SMARTY->assign('devlinktype', $SESSION->get('devlinktype'));
 $SMARTY->assign('devlinksrcradiosector', $SESSION->get('devlinksrcradiosector'));
 $SMARTY->assign('devlinkdstradiosector', $SESSION->get('devlinkdstradiosector'));

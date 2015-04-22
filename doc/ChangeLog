@@ -11,6 +11,7 @@ version ?.??.?? (????-??-??):
   - added connection type (PPPoE, DHCP, EAP) in nodes [nicraM Marcin Romanowski]
   - added network device selection from map [chilan]
   - added connection type (DHCP, EAP) in network device nodes [nicraM Marcin Romanowski]
+  - move 'replace device" to popup for better netdevinfo/edit performance [maniac]
 
 version 1.11.16 (2015-03-31):
 

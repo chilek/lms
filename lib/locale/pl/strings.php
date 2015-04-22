@@ -2973,5 +2973,6 @@ $_LANG['Enable/disable EAP Server Client'] = 'Włącza/Wyłącza komputer jako k
 
 $_LANG['Select network device:'] = 'Wybierz urządzenie sieciowe:';
 $_LANG['Click to select network device from map'] = 'Kliknij w celu wybrania urządzenia sieciowego z mapy';
+$_LANG['Replace'] = 'Wymień';
 
 ?>
