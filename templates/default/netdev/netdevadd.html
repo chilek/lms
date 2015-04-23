@@ -223,7 +223,7 @@
 			<B>{trans("Purchase date:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-			<INPUT TYPE="TEXT" NAME="netdev[purchasedate]" VALUE="{if $netdev.purchasedate}{$netdev.purchasedate}{/if}" SIZE="10" MAXSIZE="10" OnClick="javascript:cal1.popup();" {tip trigger="purchasedate" text="Enter device purchase date in 'yyyy/mm/dd' format or click to choose date from calendar (optional)"}>
+			<INPUT TYPE="TEXT" class="calendar" NAME="netdev[purchasedate]" VALUE="{if $netdev.purchasedate}{$netdev.purchasedate}{/if}" SIZE="10" MAXSIZE="10" {tip trigger="purchasedate" text="Enter device purchase date in 'yyyy/mm/dd' format or click to choose date from calendar (optional)"}>
 		</TD>
 	</TR>
 	<TR>
@@ -306,8 +306,6 @@
 <SCRIPT type="text/javascript">
 <!--
 document.forms['netdevadd'].elements['netdev[name]'].focus();
-BUL_TIMECOMPONENT = false;
-var cal1 = new calendar(document.forms['netdevadd'].elements['netdev[purchasedate]']);
 check_teryt('location', true);
 setNNProject();
 //-->

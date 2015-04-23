@@ -198,7 +198,7 @@ function f_tcalInit() {
 			cal.time_comp = false;
 		e_input.onclick = function() {
 			for (var i = 0; i < calendars.length; i++)
-				if (calendars[i].target.id == this.id) {
+				if (typeof calendars[i].target != 'function' && calendars[i].target.form.name == this.form.name && calendars[i].target.name == this.name) {
 					calendars[i].popup();
 					break;
 				}

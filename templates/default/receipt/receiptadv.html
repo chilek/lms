@@ -55,7 +55,7 @@
 					{trans("Settlement date:")}
 				    </TD>
 				    <TD WIDTH="99%" NOWRAP>
-					<INPUT TYPE="TEXT" NAME="receiptr[cdate]" VALUE="{$receipt.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} OnClick="javascript:cal1.popup();">
+					<INPUT TYPE="TEXT" class="calendar" NAME="receiptr[cdate]" VALUE="{$receipt.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
 					{if $receipt.cdatewarning}
 					<INPUT TYPE="HIDDEN" NAME="receiptr[cdatewarning]" VALUE="1">
 					{/if}
@@ -93,7 +93,7 @@
 					{trans("Settlement date:")}
 				    </TD>
 				    <TD WIDTH="99%" NOWRAP>
-					<INPUT TYPE="TEXT" NAME="receipt[cdate]" VALUE="{$receipt.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} OnClick="javascript:cal2.popup();">
+					<INPUT TYPE="TEXT" class="calendar" NAME="receipt[cdate]" VALUE="{$receipt.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
 					{if $receipt.cdatewarning}
 					<INPUT TYPE="HIDDEN" NAME="receipt[cdatewarning]" VALUE="1">
 					{/if}
@@ -139,10 +139,6 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-var cal1 = new calendar(document.forms['receipt'].elements['receiptr[cdate]']);
-cal1.time_comp = false;
-var cal2 = new calendar(document.forms['receipt'].elements['receipt[cdate]']);
-cal2.time_comp = false;
 document.forms['receipt'].elements['receipt[name]'].focus();
 //-->
 </SCRIPT>

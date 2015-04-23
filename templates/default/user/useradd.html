@@ -75,8 +75,8 @@
 			<img src="img/calendar.gif" alt=""> {trans("Account active:")}
 		</td>
 		<td class="nobr">
-			{trans('from')}:<input type="text" name="useradd[accessfrom]" value="{if $useradd.accessfrom}{$useradd.accessfrom}{/if}" size="10" {tip text="Enter access start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="accessfrom"} onclick="javascript:cal1.popup();">&nbsp;
-			{trans('to')}:<input type="text" name="useradd[accessto]" value="{if $useradd.accessto}{$useradd.accessto}{/if}" size="10"  {tip text="Enter access end date in YYYY/MM/DD format. If you don't want to define 'To' date leave this field empty" trigger="accessto"} onclick="javascript:cal2.popup();">
+			{trans('from')}:<input type="text" class="calendar" name="useradd[accessfrom]" value="{if $useradd.accessfrom}{$useradd.accessfrom}{/if}" size="10" {tip text="Enter access start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="accessfrom"}>&nbsp;
+			{trans('to')}:<input type="text" class="calendar" name="useradd[accessto]" value="{if $useradd.accessto}{$useradd.accessto}{/if}" size="10"  {tip text="Enter access end date in YYYY/MM/DD format. If you don't want to define 'To' date leave this field empty" trigger="accessto"}>
 		</td>
 	</tr>
 	<TR>
@@ -160,8 +160,6 @@
 <SCRIPT type="text/javascript">
 <!--
 document.forms['useradd'].elements['useradd[login]'].focus();
-var cal1=new calendar(document.forms['useradd'].elements['useradd[accessfrom]']);cal1.time_comp = false;
-var cal2=new calendar(document.forms['useradd'].elements['useradd[accessto]']);cal2.time_comp = false;
 //-->
 </SCRIPT>
 {/block}

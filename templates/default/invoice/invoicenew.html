@@ -132,7 +132,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 			{trans("Settlement date:")}
 		</TD>
 		<TD style="width: 99%;" class="nobr">
-			<INPUT type="text" name="invoice[cdate]" value="{$invoice.cdate|date_format:"%Y/%m/%d"}" size="12" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} OnClick="cal1.popup();" >
+			<INPUT type="text" class="calendar" name="invoice[cdate]" value="{$invoice.cdate|date_format:"%Y/%m/%d"}" size="12" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
 			{if $invoice.cdatewarning}
 			<INPUT type="hidden" name="invoice[cdatewarning]" value="1">
 			{/if}
@@ -143,7 +143,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 			{trans("Sale date:")}
 		</TD>
 		<TD style="width: 99%;" class="nobr">
-			<INPUT type="text" name="invoice[sdate]" value="{$invoice.sdate|date_format:"%Y/%m/%d"}" size="12" {tip text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"} OnClick="cal2.popup();">
+			<INPUT type="text" class="calendar" name="invoice[sdate]" value="{$invoice.sdate|date_format:"%Y/%m/%d"}" size="12" {tip text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}>
 		</TD>
 	</TR>
 	<TR>
@@ -451,10 +451,6 @@ deadline_callback = function(val) {
 	deadline = parseInt((deadline - ts) / 86400000);
 	document.getElementById('paytime').value = deadline <= 0 ? '' : deadline;
 }
-var cal1 = new calendar(document.forms['setcustomer'].elements['invoice[cdate]']);
-cal1.time_comp = false;
-var cal2 = new calendar(document.forms['setcustomer'].elements['invoice[sdate]']);
-cal2.time_comp = false;
 var cal3 = new calendar(deadline_callback);
 cal3.time_comp = false;
 document.forms['setcustomer'].elements['invoice[number]'].focus();

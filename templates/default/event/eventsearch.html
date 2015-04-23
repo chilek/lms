@@ -34,8 +34,8 @@
 			<B>{trans("Date:")}</B>
 		</TD>
 		<TD width="98%">
-			{trans("From:")} <INPUT type="text" name="event[datefrom]" size="10" OnCLick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
-			{trans("To:")} <INPUT type="text" name="event[dateto]" size="10" OnCLick="javascript:cal2.popup();" {tip text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
+			{trans("From:")} <INPUT type="text" class="calendar" name="event[datefrom]" size="10" {tip text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
+			{trans("To:")} <INPUT type="text" class="calendar" name="event[dateto]" size="10" {tip text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
 		</TD>
 	</TR>
 	<TR>
@@ -114,10 +114,6 @@
 </P>
 <SCRIPT type="text/javascript">
 <!--
-var cal1 = new calendar(document.forms['event'].elements['event[datefrom]']);
-cal1.time_comp = false;
-var cal2 = new calendar(document.forms['event'].elements['event[dateto]']);
-cal2.time_comp = false;
 multiselect('event', 'userid', '{trans("- select user -")}');
 document.forms['event'].elements['event[title]'].focus();
 //-->

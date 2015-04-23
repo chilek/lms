@@ -141,8 +141,8 @@
                         <INPUT type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} CHECKED{/if}><label for="groupexclude">{trans("exclude group")}</label>
                         </SPAN>
                         <SPAN class="nobr">
-                        {trans("From:")} <INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
-                        {trans("To:")} <INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal2.popup();"  {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+                        {trans("From:")} <INPUT TYPE="text" class="calendar" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+                        {trans("To:")} <INPUT TYPE="text" class="calendar" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
                         <A href="javascript: filter();">&raquo;&raquo;&raquo;</A><BR>
                         </SPAN>
 		</TD>
@@ -259,12 +259,4 @@
     </TFOOT>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
-var cal1 = new calendar(document.page.elements['from']);
-cal1.time_comp = false;
-var cal2 = new calendar(document.page.elements['to']);
-cal2.time_comp = false;
-//-->
-</SCRIPT>
 {/block}

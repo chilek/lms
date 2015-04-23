@@ -25,7 +25,7 @@
 	    </TD>
 	    <TD width="1%"><B>{trans("Time:")}</B></TD>
 	    <TD width="98%">
-		<INPUT TYPE="TEXT" NAME="reglog[time]" VALUE="{if $reglog.time}{$reglog.time}{/if}" SIZE="16" OnClick="javascript:cal.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="time"}>
+		<INPUT TYPE="TEXT" class="calendar-time" NAME="reglog[time]" VALUE="{if $reglog.time}{$reglog.time}{/if}" SIZE="16" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="time"}>
 	    </TD>
 	</TR>
 	<TR>
@@ -49,7 +49,6 @@
 <SCRIPT type="text/javascript">
 <!--
 document.forms['reglog'].elements['reglog[value]'].focus();
-var cal = new calendar(document.reglog.elements['reglog[time]']);
 //-->
 </SCRIPT>
 {/block}

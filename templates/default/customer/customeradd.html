@@ -381,7 +381,7 @@
 									{trans("Cutoff suspending:")}
 								</TD>
 								<TD>
-									<INPUT type="text" name="customeradd[cutoffstop]" id="cutoffstop" {if $customerinfo.cutoffstop}value="{$customerinfo.cutoffstop}"{/if} size="10" onclick="cal1.popup()" {tip text="Select date of cutoff suspending (optional)" trigger="cutoffstop"}>
+									<INPUT type="text" class="calendar" name="customeradd[cutoffstop]" id="cutoffstop" {if $customerinfo.cutoffstop}value="{$customerinfo.cutoffstop}"{/if} size="10" {tip text="Select date of cutoff suspending (optional)" trigger="cutoffstop"}>
 								</TD>
 							</TR>
 						</TABLE>
@@ -471,9 +471,6 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-	var cal1 = new calendar(document.forms['customeradd'].elements['customeradd[cutoffstop]']);
-	cal1.time_comp = false;
-
 	document.forms['customeradd'].elements['customeradd[lastname]'].focus();
 	if(document.forms['customeradd'].elements['customeradd[pin]'].value == '') randomize();
 

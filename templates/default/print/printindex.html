@@ -175,7 +175,7 @@
 								<TD style="width: 1%;" class="nobr"><IMG src="img/calendar.gif" alt=""></TD>
 								<TD style="width: 1%;" class="bold nobr">{trans("Balance date:")}</TD>
 								<TD style="width: 98%;" class="nobr">
-									<INPUT type="text" name="day" size="10" maxlength="10" OnClick="javascript:cal12.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+									<INPUT type="text" class="calendar" name="day" size="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
 								</TD>
 							</TR>
 							<TR>
@@ -189,8 +189,8 @@
 										{/foreach}
 									</SELECT>
 									<span class="bold">{trans("in date:")}</span>
-									{trans("From")}&nbsp;<INPUT type="text" name="docfrom" size="10" maxlength="10" OnClick="javascript:cal21.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
-									{trans("To")}&nbsp;<INPUT type="text" name="docto" size="10" maxlength="10" OnClick="javascript:cal22.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+									{trans("From")}&nbsp;<INPUT type="text" class="calendar" name="docfrom" size="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+									{trans("To")}&nbsp;<INPUT type="text" class="calendar" name="docto" size="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
 								</TD>
 							</TR>
 						</TABLE>
@@ -207,16 +207,6 @@
 	</TBODY>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
-var cal12 = new calendar(document.printcustomerlist.elements['day']);
-cal12.time_comp = false;
-var cal21 = new calendar(document.printcustomerlist.elements['docfrom']);
-cal21.time_comp = false;
-var cal22 = new calendar(document.printcustomerlist.elements['docto']);
-cal22.time_comp = false;
-//-->
-</SCRIPT>
 {/if}
 {if $printmenu=="finances"}
 <P><FORM method="post" name="printbalancelist" id="printbalancelist" action="?m=print&type=balancelist">
@@ -359,8 +349,8 @@ cal22.time_comp = false;
 					</TD>
 					<TD style="width: 95%;" nowrap style="vertical-align: middle">
 						<B>{trans("Period:")}</B>
-						{trans("From")}&nbsp;<INPUT type="text" name="balancefrom" SIZE="10" maxlength="10" OnClick="javascript:cal1.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
-						{trans("To")}&nbsp;<INPUT type="text" name="balanceto" SIZE="10" maxlength="10" OnClick="javascript:cal2.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+						{trans("From")}&nbsp;<INPUT type="text" class="calendar" name="balancefrom" SIZE="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<INPUT type="text" class="calendar" name="balanceto" SIZE="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
 					</TD>
 				</TR>
 			</TABLE>
@@ -376,10 +366,6 @@ cal22.time_comp = false;
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-var cal1 = new calendar(document.printbalancelist.elements['balancefrom']);
-cal1.time_comp = false;
-var cal2 = new calendar(document.printbalancelist.elements['balanceto']);
-cal2.time_comp = false;
 multiselect('printbalancelist', 'balancelisttype', '{trans("- all types -")}');
 //-->
 </SCRIPT>
@@ -430,8 +416,8 @@ multiselect('printbalancelist', 'balancelisttype', '{trans("- all types -")}');
 					</TD>
 					<TD style="width: 96%;" class="nobr">
 						<span class="bold">{trans("Period:")}</span>&nbsp;
-						{trans("From")}&nbsp;<INPUT type="text" name="from" size="10" maxlength="10" OnClick="javascript:cal3.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means 1970/01/01) or click to choose it from calendar"}>
-						{trans("To")}&nbsp;<INPUT type="text" name="to" size="10" maxlength="10" OnClick="javascript:cal4.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+						{trans("From")}&nbsp;<INPUT type="text" class="calendar" name="from" size="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means 1970/01/01) or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<INPUT type="text" class="calendar" name="to" size="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
 					</TD>
 				</TR>
 			</TABLE>
@@ -445,14 +431,6 @@ multiselect('printbalancelist', 'balancelisttype', '{trans("- all types -")}');
 	</TBODY>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
-var cal3 = new calendar(document.printcustomerbalance.elements['from']);
-cal3.time_comp = false;
-var cal4 = new calendar(document.printcustomerbalance.elements['to']);
-cal4.time_comp = false;
-//-->
-</SCRIPT>
 {/if}
 {if $printmenu=="finances"}
 <P><FORM method="post" name="invoicereport" id="invoicereport" action="?m=invoicereport">
@@ -538,10 +516,10 @@ cal4.time_comp = false;
 						            <B>{trans("Period:")}</B>
 					            </TD>
 					            <TD style="width: 1%;" nowrap>
-						            {trans("From")}&nbsp;<INPUT type="text" name="from" SIZE="10" maxlength="10" OnClick="javascript:cal8.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						            {trans("From")}&nbsp;<INPUT type="text" class="calendar" name="from" SIZE="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					            </TD>
 					            <TD style="width: 98%;" nowrap>
-						            {trans("To")}&nbsp;<INPUT type="text" name="to" SIZE="10" maxlength="10" OnClick="javascript:cal9.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						            {trans("To")}&nbsp;<INPUT type="text" class="calendar" name="to" SIZE="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					            </TD>
 					        </TR>
 						    <TR>
@@ -574,10 +552,6 @@ cal4.time_comp = false;
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-var cal8 = new calendar(document.forms['invoicereport'].elements['from']);
-cal8.time_comp = false;
-var cal9 = new calendar(document.forms['invoicereport'].elements['to']);
-cal9.time_comp = false;
 multiselect('invoicereport', 'invoicereportgroup', '{trans("- all groups -")}');
 multiselect('invoicereport', 'numberplanid', '{trans("all")}');
 //-->
@@ -660,8 +634,8 @@ multiselect('invoicereport', 'numberplanid', '{trans("all")}');
 					</TD>
 					<TD style="width: 1%;" nowrap>
 						<B>{trans("Period:")}</B>&nbsp;
-						{trans("From")}&nbsp;<INPUT type="text" name="from" SIZE="10" maxlength="10" OnClick="javascript:cal12.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-						{trans("To")}&nbsp;<INPUT type="text" name="to" SIZE="10" maxlength="10" OnClick="javascript:cal13.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+						{trans("From")}&nbsp;<INPUT type="text" class="calendar" name="from" SIZE="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<INPUT type="text" class="calendar" name="to" SIZE="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
 					</TD>
 					<TD style="width: 97%;" nowrap>
 						<input type="checkbox" name="extended" value="1" id="receiptlist-extended"><label for="receiptlist-extended">{trans("extended format")}</label>
@@ -678,14 +652,6 @@ multiselect('invoicereport', 'numberplanid', '{trans("all")}');
     </TBODY>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
-var cal12 = new calendar(document.printreceiptlist.elements['from']);
-cal12.time_comp = false;
-var cal13 = new calendar(document.printreceiptlist.elements['to']);
-cal13.time_comp = false;
-//-->
-</SCRIPT>
 </P>
 {/if}
 {if $printmenu=="finances"}
@@ -791,8 +757,8 @@ cal13.time_comp = false;
 								</TD>
 								<TD style="width: 1%; white-space: nowrap;">
 									<span class="bold">{trans("Period:")}</span>&nbsp;
-									{trans("From")}&nbsp;<INPUT type="text" name="invoicefrom" SIZE="10" maxlength="10" OnClick="javascript:cal10.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-									{trans("To")}&nbsp;<INPUT type="text" name="invoiceto" SIZE="10" maxlength="10" OnClick="javascript:cal11.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+									{trans("From")}&nbsp;<INPUT type="text" class="calendar" name="invoicefrom" SIZE="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+									{trans("To")}&nbsp;<INPUT type="text" class="calendar" name="invoiceto" SIZE="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
 								</TD>
 								<TD style="width: 1%;">
 									<IMG src="img/info.gif" alt="">
@@ -825,14 +791,6 @@ cal13.time_comp = false;
     </TBODY>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
-var cal10 = new calendar(document.printinvoices.elements['invoicefrom']);
-cal10.time_comp = false;
-var cal11 = new calendar(document.printinvoices.elements['invoiceto']);
-cal11.time_comp = false;
-//-->
-</SCRIPT>
 </P>
 {/if}
 {if $printmenu=="finances"}
@@ -940,8 +898,8 @@ cal11.time_comp = false;
 					</TD>
 					<TD style="width: 99%;" nowrap>
 						<B>{trans("Period:")}</B>&nbsp;
-						{trans("From")}&nbsp;<INPUT type="text" name="from" SIZE="10" maxlength="10" OnClick="javascript:cal5.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
-						{trans("To")}&nbsp;<INPUT type="text" name="to" SIZE="10" maxlength="10" OnClick="javascript:cal6.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+						{trans("From")}&nbsp;<INPUT type="text" class="calendar" name="from" SIZE="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<INPUT type="text" class="calendar" name="to" SIZE="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
 					</TD>
 				</TR>
 			</TABLE>
@@ -955,14 +913,6 @@ cal11.time_comp = false;
     </TBODY>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
-var cal5 = new calendar(document.printincomereport.elements['from']);
-cal5.time_comp = false;
-var cal6 = new calendar(document.printincomereport.elements['to']);
-cal6.time_comp = false;
-//-->
-</SCRIPT>
 </P>
 {/if}
 {if ($printmenu=="customer" || $printmenu=="finances") && (ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances'))}
@@ -1011,7 +961,7 @@ cal6.time_comp = false;
 					</TD>
 					<TD style="width: 1%;" class="bold nobr">
 						{trans("Day:")}&nbsp;
-						<INPUT type="text" name="day" size="10" maxlength="10" OnClick="javascript:cal7.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						<INPUT type="text" class="calendar" name="day" size="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					</TD>
 					<TD style="width: 1%;">
 						<IMG src="img/view.gif" alt="">
@@ -1051,12 +1001,6 @@ cal6.time_comp = false;
 	</TBODY>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
-var cal7 = new calendar(document.liabilityreport.elements['day']);
-cal7.time_comp = false;
-//-->
-</SCRIPT>
 {/if}
 {if $printmenu=="finances"}
 <P><FORM method="post" name="printimportlist" id="printimportlist" action="?m=print&type=importlist">
@@ -1096,8 +1040,8 @@ cal7.time_comp = false;
 					</TD>
 					<TD style="width: 96%;" nowrap style="vertical-align: middle">
 						<B>{trans("Period:")}</B>
-						{trans("From")}&nbsp;<INPUT type="text" name="importfrom" SIZE="10" maxlength="10" OnClick="javascript:cal23.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
-						{trans("To")}&nbsp;<INPUT type="text" name="importto" SIZE="10" maxlength="10" OnClick="javascript:cal24.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						{trans("From")}&nbsp;<INPUT type="text" class="calendar" name="importfrom" SIZE="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<INPUT type="text" class="calendar" name="importto" SIZE="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					</TD>
 				</TR>
 			</TABLE>
@@ -1111,14 +1055,6 @@ cal7.time_comp = false;
     </TBODY>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
-var cal23 = new calendar(document.printimportlist.elements['importfrom']);
-cal23.time_comp = false;
-var cal24 = new calendar(document.printimportlist.elements['importto']);
-cal24.time_comp = false;
-//-->
-</SCRIPT>
 </P>
 {/if}
 {if $printmenu=="node"}

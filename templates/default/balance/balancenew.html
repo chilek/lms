@@ -109,7 +109,7 @@
 						<B>{trans("Date:")}</B>
 					</TD>
 					<TD WIDTH="98%">
-						<INPUT TYPE="TEXT" class="calendar calendar-time-component" NAME="addbalance[time]" VALUE="{if $time}{$time|date_format:"%Y/%m/%d %H:%M"}{/if}" SIZE="15" MAXSIZE="15" {tip text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
+						<INPUT TYPE="TEXT" class="calendar-time" NAME="addbalance[time]" VALUE="{if $time}{$time|date_format:"%Y/%m/%d %H:%M"}{/if}" SIZE="15" MAXSIZE="15" {tip text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
 					</TD>
 				</TR>
 				{if $sourcelist}
