@@ -2975,4 +2975,17 @@ $_LANG['Select network device:'] = 'Wybierz urządzenie sieciowe:';
 $_LANG['Click to select network device from map'] = 'Kliknij w celu wybrania urządzenia sieciowego z mapy';
 $_LANG['Replace'] = 'Wymień';
 
+$_LANG['January'] = 'Styczeń';
+$_LANG['February'] = 'Luty';
+$_LANG['March'] = 'Marzec';
+$_LANG['April'] = 'Kwiecień';
+$_LANG['May'] = 'Maj';
+$_LANG['June'] = 'Czerwiec';
+$_LANG['July'] = 'Lipiec';
+$_LANG['August'] = 'Sierpień';
+$_LANG['September'] = 'Wrzesień';
+$_LANG['October'] = 'Październik';
+$_LANG['November'] = 'Listopad';
+$_LANG['December'] = 'Grudzień';
+
 ?>
