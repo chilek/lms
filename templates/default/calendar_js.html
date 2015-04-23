@@ -12,7 +12,6 @@
 //    Contact us at sales@softcomplex.com if you have any programming task you
 //    want to be handled by professionals. Our typical hourly rate is $20.
 *}
-{literal}
 
 // if two digit year input dates after this year considered 20 century.
 var NUM_CENTYEAR = 30;
@@ -108,18 +107,18 @@ function cal_prs_date1 (str_date) {
 
 	var arr_date = str_date.split('/');
 
-	if (arr_date.length != 3) return cal_error ("{/literal}{t a="'\" + str_date + \"'"}Invalid date format: $a.\nFormat accepted is 'YYYY/MM/DD hh:mm'.{/t}{literal}");
-	if (!arr_date[0]) return cal_error ("{/literal}{t a="'\" + str_date + \"'"}Invalid date format: $a.\nNo year value can be found.{/t}{literal}");
-	if (!RE_NUM.exec(arr_date[0])) return cal_error ("{/literal}{t a="'\" + arr_date[0] + \"'"}Invalid year value: $a.\nAllowed values are unsigned integers.{/t}{literal}");
-	if (!arr_date[1]) return cal_error ("{/literal}{t a="'\" + str_date + \"'"}Invalid date format: $a.\nNo month value can be found.{/t}{literal}");
-	if (!RE_NUM.exec(arr_date[1])) return cal_error ("{/literal}{t a="'\" + arr_date[1] + \"'"}Invalid month value: $a.\nAllowed values are unsigned integers.{/t}{literal}");
-	if (!arr_date[2]) return cal_error ("{/literal}{t a="'\" + str_date + \"'"}Invalid date format: $a.\nNo day of month value can be found.{/t}{literal}");
-	if (!RE_NUM.exec(arr_date[2])) return cal_error ("{/literal}{t a="'\" + arr_date[2] + \"'"}Invalid day of month value: $a.\nAllowed values are unsigned integers.{/t}{literal}");
+	if (arr_date.length != 3) return cal_error ("{t a="'\" + str_date + \"'"}Invalid date format: $a.\nFormat accepted is 'YYYY/MM/DD hh:mm'.{/t}");
+	if (!arr_date[0]) return cal_error ("{t a="'\" + str_date + \"'"}Invalid date format: $a.\nNo year value can be found.{/t}");
+	if (!RE_NUM.exec(arr_date[0])) return cal_error ("{t a="'\" + arr_date[0] + \"'"}Invalid year value: $a.\nAllowed values are unsigned integers.{/t}");
+	if (!arr_date[1]) return cal_error ("{t a="'\" + str_date + \"'"}Invalid date format: $a.\nNo month value can be found.{/t}");
+	if (!RE_NUM.exec(arr_date[1])) return cal_error ("{t a="'\" + arr_date[1] + \"'"}Invalid month value: $a.\nAllowed values are unsigned integers.{/t}");
+	if (!arr_date[2]) return cal_error ("{t a="'\" + str_date + \"'"}Invalid date format: $a.\nNo day of month value can be found.{/t}");
+	if (!RE_NUM.exec(arr_date[2])) return cal_error ("{t a="'\" + arr_date[2] + \"'"}Invalid day of month value: $a.\nAllowed values are unsigned integers.{/t}");
 
 	var dt_date = new Date();
 	dt_date.setDate(1);
 
-	if (arr_date[1] < 1 || arr_date[1] > 12) return cal_error ("{/literal}{t a="'\" + arr_date[1] + \"'"}Invalid month value: $a.\nAllowed range is 01-12.{/t}{literal}");
+	if (arr_date[1] < 1 || arr_date[1] > 12) return cal_error ("{t a="'\" + arr_date[1] + \"'"}Invalid month value: $a.\nAllowed range is 01-12.{/t}");
 	dt_date.setMonth(arr_date[1]-1);
 
 	if (arr_date[0] < 100) arr_date[0] = Number(arr_date[0]) + (arr_date[0] < NUM_CENTYEAR ? 2000 : 1900);
@@ -127,7 +126,7 @@ function cal_prs_date1 (str_date) {
 
 	var dt_numdays = new Date(arr_date[0], arr_date[1], 0);
 	dt_date.setDate(arr_date[2]);
-	if (dt_date.getMonth() != (arr_date[1]-1)) return cal_error ("{/literal}{t a="'\" + arr_date[2] + \"'" b="\"+dt_numdays.getDate()+\""}Invalid day of month value: $a.\nAllowed range is 01-$b.{/t}{literal}");
+	if (dt_date.getMonth() != (arr_date[1]-1)) return cal_error ("{t a="'\" + arr_date[2] + \"'" b="\"+dt_numdays.getDate()+\""}Invalid day of month value: $a.\nAllowed range is 01-$b.{/t}");
 
 	return (dt_date)
 }
@@ -141,14 +140,14 @@ function cal_prs_time1 (str_time, dt_date) {
 	if (!arr_time[0]) dt_date.setHours(0);
 	else if (RE_NUM.exec(arr_time[0])) 
 		if (arr_time[0] < 24) dt_date.setHours(arr_time[0]);
-		else return cal_error ("{/literal}{t a="'\" + arr_time[0] + \"'"}Invalid hour value: $a.\nAllowed range is 00-23.{/t}{literal}");
-	else return cal_error ("{/literal}{t a="'\" + arr_time[0] + \"'"}Invalid hour value: $a.\nAllowed values are unsigned integers.{/t}{literal}");
+		else return cal_error ("{t a="'\" + arr_time[0] + \"'"}Invalid hour value: $a.\nAllowed range is 00-23.{/t}");
+	else return cal_error ("{t a="'\" + arr_time[0] + \"'"}Invalid hour value: $a.\nAllowed values are unsigned integers.{/t}");
 
 	if (!arr_time[1]) dt_date.setMinutes(0);
 	else if (RE_NUM.exec(arr_time[1]))
 		if (arr_time[1] < 60) dt_date.setMinutes(arr_time[1]);
-		else return cal_error ("{/literal}{t a="'\" + arr_time[1] + \"'"}Invalid minutes value: $a.\nAllowed range is 00-59.{/t}{literal}");
-	else return cal_error ("{/literal}{t a="'\" + arr_time[1] + \"'"}Invalid minutes value: $a.\nAllowed values are unsigned integers.{/t}{literal}");
+		else return cal_error ("{t a="'\" + arr_time[1] + \"'"}Invalid minutes value: $a.\nAllowed range is 00-59.{/t}");
+	else return cal_error ("{t a="'\" + arr_time[1] + \"'"}Invalid minutes value: $a.\nAllowed values are unsigned integers.{/t}");
 
 	dt_date.setMilliseconds(0);
 	return dt_date;
@@ -158,5 +157,72 @@ function cal_error (str_message) {
 	alert (str_message);
 	return null;
 }
-{/literal}
+
+function f_tcalGetInputs() {
+	var a_inputs = document.getElementsByTagName('input'),
+		e_input, s_rel, a_result = [];
+
+	for (n = 0; n < a_inputs.length; n++) {
+		e_input = a_inputs[n];
+		if (!e_input.type || e_input.type != 'text')
+			continue;
+
+		if (!f_tcalHasClass(e_input, 'calendar'))
+			continue;
+
+		a_result[a_result.length] = e_input;
+	}
+	return a_result;
+}
+
+function f_tcalHasClass(e_elem, s_class) {
+	var s_classes = e_elem.className;
+	if (!s_classes)
+		return false;
+	var a_classes = s_classes.split(' ');
+	for (var n = 0; n < a_classes.length; n++)
+		if (a_classes[n] == s_class)
+			return true;
+	return false;
+}
+
+function f_tcalInit() {
+	if (!document.getElementsByTagName)
+		return;
+
+	var e_input, a_inputs = f_tcalGetInputs();
+	for (var n = 0; n < a_inputs.length; n++) {
+		e_input = a_inputs[n];
+		var cal = new calendar(e_input);
+		if (!f_tcalHasClass(e_input, 'calendar-time-component'))
+			cal.time_comp = false;
+		e_input.onclick = function() {
+			for (var i = 0; i < calendars.length; i++)
+				if (calendars[i].target.id == this.id) {
+					calendars[i].popup();
+					break;
+				}
+		}
+	}
+}
+
+function f_tcalAddOnload(f_func) {
+	if (document.addEventListener)
+		window.addEventListener('load', f_func, false);
+	else if (window.attachEvent)
+		window.attachEvent('onload', f_func);
+	else {
+		var f_onLoad = window.onload;
+		if (typeof window.onload != 'function')
+			window.onload = f_func;
+		else
+			window.onload = function() {
+				f_onLoad();
+				f_func();
+			}
+	}
+}
+
+f_tcalAddOnload(f_tcalInit);
+
 </SCRIPT>

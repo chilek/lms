@@ -383,7 +383,7 @@
 						{trans("Cutoff suspending:")}
 					</TD>
 					<TD>
-						<INPUT type="text" name="customerdata[cutoffstop]" id="cutoffstop" {if $customerinfo.cutoffstop}value="{$customerinfo.cutoffstop}"{/if} size="10" onclick="cal1.popup()" {tip text="Select date of cutoff suspending (optional)" trigger="cutoffstop"}>
+						<INPUT type="text" class="calendar" name="customerdata[cutoffstop]" id="cutoffstop" {if $customerinfo.cutoffstop}value="{$customerinfo.cutoffstop}"{/if} size="10" {tip text="Select date of cutoff suspending (optional)" trigger="cutoffstop"}>
 					</TD>
 				</TR>
 			</TABLE>
@@ -499,9 +499,6 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-var cal1 = new calendar(document.forms['customeredit'].elements['customerdata[cutoffstop]']);
-cal1.time_comp = false;
-
 document.forms['customeredit'].elements['customerdata[lastname]'].focus();
 
 tinymce_init('{$_ui_language}');

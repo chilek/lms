@@ -109,7 +109,7 @@
 						<B>{trans("Date:")}</B>
 					</TD>
 					<TD WIDTH="98%">
-						<INPUT TYPE="TEXT" NAME="addbalance[time]" VALUE="{if $time}{$time|date_format:"%Y/%m/%d %H:%M"}{/if}" SIZE="15" MAXSIZE="15" OnClick="javascript:cal1.popup();" {tip text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
+						<INPUT TYPE="TEXT" class="calendar calendar-time-component" NAME="addbalance[time]" VALUE="{if $time}{$time|date_format:"%Y/%m/%d %H:%M"}{/if}" SIZE="15" MAXSIZE="15" {tip text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
 					</TD>
 				</TR>
 				{if $sourcelist}
@@ -251,9 +251,4 @@
 </TABLE>
 </FORM>
 </P>
-<SCRIPT type="text/javascript">
-<!--
-var cal1 = new calendar(document.forms['addbalance'].elements['addbalance[time]']);
-//-->
-</SCRIPT>
 {/block}
