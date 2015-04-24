@@ -167,7 +167,7 @@ function f_tcalGetInputs() {
 		if (!e_input.type || e_input.type != 'text')
 			continue;
 
-		if (!f_tcalHasClass(e_input, 'calendar'))
+		if (!f_tcalHasClass(e_input, 'calendar') && !f_tcalHasClass(e_input, 'calendar-time'))
 			continue;
 
 		a_result[a_result.length] = e_input;
@@ -194,7 +194,7 @@ function f_tcalInit() {
 	for (var n = 0; n < a_inputs.length; n++) {
 		e_input = a_inputs[n];
 		var cal = new calendar(e_input);
-		if (!f_tcalHasClass(e_input, 'calendar-time-component'))
+		if (!f_tcalHasClass(e_input, 'calendar-time'))
 			cal.time_comp = false;
 		e_input.onclick = function() {
 			for (var i = 0; i < calendars.length; i++)
