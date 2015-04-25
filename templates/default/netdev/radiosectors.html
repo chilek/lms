@@ -55,6 +55,30 @@ function toggleEditRadioSector(id) {
 	xjx.$('edit_button_' + id).style.display = (edit ? 'none' : '');
 }
 
+function showAddRadioSector() {
+	var elems = ['name', 'azimuth', 'width', 'altitude', 'rsrange', 'license', 'frequency', 'frequency2', 'bandwidth'];
+	for (i = 0; i < elems.length; i++) {
+		xjx.$(elems[i]).value = '';
+		xjx.$(elems[i]).onmouseover = '';
+	}
+	xjx.$('technology').value = 0;
+	if (xjx.$('no_radio_sectors') != null) {
+		xjx.$('no_radio_sectors').style.display = ('none');
+	}
+	xjx.$('radiosectoraddlink').style.display = ('none');
+	xjx.$('add_radio_sector').style.display = ('');
+	xjx.$('name').focus();
+}
+
+function hideAddRadioSector() {
+	xjx.$('add_radio_sector').style.display = ('none');
+	if (xjx.$('no_radio_sectors') != null) {
+		xjx.$('no_radio_sectors').style.display = ('');
+	}
+	xjx.$('radiosectoraddlink').style.display = ('');
+
+}
+
 function updateRadioSector(id) {
 	var elems = ['name', 'azimuth', 'width', 'altitude', 'rsrange', 'license', 'technology', 'frequency', 'frequency_separator', 'frequency2', 'bandwidth'];
 	var params = {};
