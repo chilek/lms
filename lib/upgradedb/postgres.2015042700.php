@@ -26,9 +26,9 @@
 
 $DB->BeginTrans();
 
-$DB->Execute("ALTER TABLE nodes ADD COLUMN conntype smallint DEFAULT 0 NOT NULL;
-		DROP VIEW vnodes;
-		CREATE INDEX nodes_conntype_idx ON nodes (conntype);
+$DB->Execute("DROP VIEW vnodes;
+		ALTER TABLE nodes ADD COLUMN authtype smallint DEFAULT 0 NOT NULL;
+		CREATE INDEX nodes_authtype_idx ON nodes (authtype);
 		CREATE VIEW vnodes AS
 		    SELECT n.*, m.mac
 		    FROM nodes n
@@ -36,7 +36,7 @@ $DB->Execute("ALTER TABLE nodes ADD COLUMN conntype smallint DEFAULT 0 NOT NULL;
 		    FROM macs GROUP BY nodeid) m ON (n.id = m.nodeid);		
 	");	
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015041600', 'dbversion'));
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015042700', 'dbversion'));
 
 $DB->CommitTrans();
 

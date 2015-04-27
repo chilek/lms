@@ -77,13 +77,13 @@ switch ($action) {
 		}
 		$SESSION->redirect('?m=nodeinfo&id=' . $nodeid);
 		break;
-	case 'conntype':
-		$DB->Execute('UPDATE nodes SET conntype=? WHERE id=?', array(intval($_GET['conntype']), $nodeid));
+	case 'authtype':
+		$DB->Execute('UPDATE nodes SET authtype=? WHERE id=?', array(intval($_GET['authtype']), $nodeid));
 		if ($SYSLOG) {
 			$args = array(
 				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodeid,
 				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
-				'conntype' => intval($_GET['conntype']),
+				'authtype' => intval($_GET['authtype']),
 			);
 			$SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
 				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
@@ -106,12 +106,12 @@ else
 
 $layout['pagetitle'] = trans('Node Edit: $a', $nodeinfo['name']);
 
-$nodeconntype = array();
-$conntype = $nodeinfo['conntype'];
-if ($conntype != 0) {
-	$nodeconntype['pppoe'] = ($conntype & 1);
-	$nodeconntype['dhcp'] = ($conntype & 2);
-	$nodeconntype['eap'] = ($conntype & 4);
+$nodeauthtype = array();
+$authtype = $nodeinfo['authtype'];
+if ($authtype != 0) {
+	$nodeauthtype['pppoe'] = ($authtype & 1);
+	$nodeauthtype['dhcp'] = ($authtype & 2);
+	$nodeauthtype['eap'] = ($authtype & 4);
 }
 if (isset($_POST['nodeedit'])) {
 	$nodeedit = $_POST['nodeedit'];
@@ -245,13 +245,13 @@ if (isset($_POST['nodeedit'])) {
 			array($nodeedit['projectname'], INV_PROJECT_SYSTEM)))
 			$error['projectname'] = trans('Project with that name already exists');
 	}
-	$nodeedit['conntype'] = 0;
-	if(isset($_POST['nodeconntype'])) {
-		$conntype = $_POST['nodeconntype'];
-		if (!empty($conntype)) {
-			foreach ($conntype as $op) {
+	$nodeedit['authtype'] = 0;
+	if(isset($_POST['nodeauthtype'])) {
+		$authtype = $_POST['nodeauthtype'];
+		if (!empty($authtype)) {
+			foreach ($authtype as $op) {
 				$op = (int)$op;
-				$nodeedit['conntype'] |= $op;
+				$nodeedit['authtype'] |= $op;
 			}
 		}
 	}
@@ -346,7 +346,7 @@ $SMARTY->assign('othernodegroups', $LMS->GetNodeGroupNamesWithoutNode($nodeid));
 $SMARTY->assign('error', $error);
 $SMARTY->assign('nodeinfo', $nodeinfo);
 $SMARTY->assign('objectid', $nodeinfo['id']);
-$SMARTY->assign('nodeconntype', $nodeconntype);
+$SMARTY->assign('nodeauthtype', $nodeauthtype);
 $SMARTY->display('node/nodeedit.html');
 
 ?>

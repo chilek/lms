@@ -476,13 +476,13 @@ switch ($action) {
 			$nodeipdata['halfduplex'] = 0;
 		if (!isset($nodeipdata['nas']))
 			$nodeipdata['nas'] = 0;
-		$nodeipdata['conntype'] = 0;
-		if(isset($_POST['netdevconntype'])) {
-			$conntype = $_POST['netdevconntype'];
-			if (!empty($conntype)) {
-				foreach ($conntype as $op) {
+		$nodeipdata['authtype'] = 0;
+		if(isset($_POST['netdevauthtype'])) {
+			$authtype = $_POST['netdevauthtype'];
+			if (!empty($authtype)) {
+				foreach ($authtype as $op) {
 					$op = (int)$op;
-					$nodeipdata['conntype'] |= $op;
+					$nodeipdata['authtype'] |= $op;
 				}
 			}
 		}
@@ -579,13 +579,13 @@ switch ($action) {
 			$nodeipdata['halfduplex'] = 0;
 		if (!isset($nodeipdata['nas']))
 			$nodeipdata['nas'] = 0;
-		$nodeipdata['conntype'] = 0;
-		if(isset($_POST['netdevconntype'])) {
-			$conntype = $_POST['netdevconntype'];
-			if (!empty($conntype)) {
-				foreach ($conntype as $op) {
+		$nodeipdata['authtype'] = 0;
+		if(isset($_POST['netdevauthtype'])) {
+			$authtype = $_POST['netdevauthtype'];
+			if (!empty($authtype)) {
+				foreach ($authtype as $op) {
 					$op = (int)$op;
-					$nodeipdata['conntype'] |= $op;
+					$nodeipdata['authtype'] |= $op;
 				}
 			}
 		}
@@ -602,13 +602,13 @@ switch ($action) {
 		$SMARTY->assign('nodeipdata', $nodeipdata);
 		$edit = 'ip';
 		break;
-	case 'conntype':
-		$DB->Execute('UPDATE nodes SET conntype=? WHERE id=?', array($_GET['conntype'], $_GET['ip']));
+	case 'authtype':
+		$DB->Execute('UPDATE nodes SET authtype=? WHERE id=?', array($_GET['authtype'], $_GET['ip']));
 		if ($SYSLOG) {
 			$args = array(
 				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $_GET['ip'],
 				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
-				'conntype' => intval($_GET['conntype']),
+				'authtype' => intval($_GET['authtype']),
 			);
 			$SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
 				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
@@ -752,10 +752,10 @@ if (isset($_POST['netdev'])) {
 
 $netdevdata['id'] = $_GET['id'];
 
-$netdevconntype = array();
-if ($conntype != 0) {
-        $netdevconntype['dhcp'] = ($conntype & 2);
-        $netdevconntype['eap'] = ($conntype & 4);
+$netdevauthtype = array();
+if ($authtype != 0) {
+        $netdevauthtype['dhcp'] = ($authtype & 2);
+        $netdevauthtype['eap'] = ($authtype & 4);
 }
 
 $netdevips = $LMS->GetNetDevIPs($_GET['id']);
@@ -788,7 +788,7 @@ $SMARTY->assign('netdevlist', $netdevconnected);
 $SMARTY->assign('netcomplist', $netcomplist);
 $SMARTY->assign('nodelist', $nodelist);
 $SMARTY->assign('netdevcontype', $netdevcontype);
-$SMARTY->assign('netdevconntype', $netdevconntype);
+$SMARTY->assign('netdevauthtype', $netdevauthtype);
 $SMARTY->assign('netdevips', $netdevips);
 $SMARTY->assign('restnetdevlist', $netdevlist);
 $SMARTY->assign('devlinktype', $SESSION->get('devlinktype'));
