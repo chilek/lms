@@ -210,10 +210,11 @@ function validateRadioSector($params, $update = false) {
 	return $error;
 }
 
-function getRadioSectors($formdata = NULL) {
+function getRadioSectors($formdata = NULL, $result = NULL) {
 	global $SMARTY, $DB;
 
-	$result = new xajaxResponse();
+	if (! $result)
+		$result = new xajaxResponse();
 
 	$netdevid = intval($_GET['id']);
 
@@ -284,7 +285,8 @@ function addRadioSector($params) {
 		}
 		$params = NULL;
 	}
-	$result->call('xajax_getRadioSectors', $params);
+	$result = getRadioSectors($params, $result);
+	//$result->call('xajax_getRadioSectors', $params);
 	$result->assign('radiosectoraddlink', 'disabled', false);
 
 	return $result;
