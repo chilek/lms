@@ -16,11 +16,11 @@
 		else
 			location.href = '?m=netdevedit&id={$netdevinfo.id}&ip={$nodeipdata.id}&action=duplex&duplex=0';
 	}
-	function change_conntype() {
-		var conntype = 0;
-		conntype |= (document.getElementById('conntype_dhcp').checked == true) * 2;
-		conntype |= (document.getElementById('conntype_eap').checked == true) * 4;
-		location.href = '?m=netdevedit&ip={$nodeipdata.id}&id={$netdevinfo.id}&action=conntype&conntype=' + conntype;
+	function change_authtype() {
+		var authtype = 0;
+		authtype |= (document.getElementById('authtype_dhcp').checked == true) * 2;
+		authtype |= (document.getElementById('authtype_eap').checked == true) * 4;
+		location.href = '?m=netdevedit&ip={$nodeipdata.id}&id={$netdevinfo.id}&action=authtype&authtype=' + authtype;
 
 	}
 	function nas_change()
@@ -114,8 +114,8 @@
 		<IMG SRC="img/netdev.gif" ALT="">
         </TD>
         <TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
-	<label for="conntype_dhcp">{trans("DHCP Client")}</label><INPUT TYPE="checkbox" NAME="netdevconntype[dhcp]" value="2" id="conntype_dhcp" {if $netdevconntype.dhcp} checked{/if} {tip text="Enable/disable DHCP Server Client" trigger="dhcp"} onchange="change_conntype()">&nbsp;
-	<label for="conntype_eap">{trans("EAP Client")}</label><INPUT TYPE="checkbox" NAME="netdevonntype[eap]" value="4" id="conntype_eap" {if $netdevconntype.eap} checked {/if} {tip text="Enable/disable EAP Server Client" trigger="eap"} onchange="change_conntype()">
+	<label for="authtype_dhcp">{trans("DHCP Client")}</label><INPUT TYPE="checkbox" NAME="netdevauthtype[dhcp]" value="2" id="authtype_dhcp" {if $netdevauthtype.dhcp} checked{/if} {tip text="Enable/disable DHCP Server Client" trigger="dhcp"} onchange="change_authtype()">&nbsp;
+	<label for="authtype_eap">{trans("EAP Client")}</label><INPUT TYPE="checkbox" NAME="netdevonntype[eap]" value="4" id="authtype_eap" {if $netdevauthtype.eap} checked {/if} {tip text="Enable/disable EAP Server Client" trigger="eap"} onchange="change_authtype()">
 	</TD>
 	</TR>
 	<TR>

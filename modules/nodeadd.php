@@ -26,7 +26,7 @@
 
 $nodedata['access'] = 1;
 $nodedata['ownerid'] = 0;
-$nodedata['conntype'] = 0;
+$nodedata['authtype'] = 0;
 
 if(isset($_GET['ownerid']))
 {
@@ -184,16 +184,16 @@ if (isset($_POST['nodedata']))
 			$error['projectname'] = trans('Project with that name already exists');
 	}
 
-	if(isset($_POST['nodeconntype'])) {
-		$conntype = $_POST['nodeconntype'];
-		if (!empty($conntype)) {
-			foreach ($conntype as $op) {
+	if(isset($_POST['nodeauthtype'])) {
+		$authtype = $_POST['nodeauthtype'];
+		if (!empty($authtype)) {
+			foreach ($authtype as $op) {
 			$op = (int)$op;
-			$nodedata['conntype'] |= $op;
+			$nodedata['authtype'] |= $op;
 			}
 		}
 	}
-	if(!isset($nodedata['conntype'])) $nodedata['conntype'] = 0;
+	if(!isset($nodedata['authtype'])) $nodedata['authtype'] = 0;
 	if(!$error)
 	{
         if (empty($nodedata['teryt'])) {
