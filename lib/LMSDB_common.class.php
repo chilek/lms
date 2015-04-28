@@ -472,11 +472,12 @@ abstract class LMSDB_common implements LMSDBInterface
      * 
      * @param string $field
      * @param string $separator
+     * @param boolean $distinct
      * @return string
      */
-    public function GroupConcat($field, $separator = ',')
+    public function GroupConcat($field, $separator = ',', $distinct = false)
     {
-        return $this->_driver_groupconcat($field, $separator);
+        return $this->_driver_groupconcat($field, $separator, $distinct);
 
     }
 
