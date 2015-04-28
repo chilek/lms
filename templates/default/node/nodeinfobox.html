@@ -18,12 +18,12 @@
 			location.href = '?m=nodeedit&id={$nodeinfo.id}&action=duplex&duplex=0';
 	}
 
-	function change_conntype() {
-		var conntype = 0;
-		conntype |= (xjx.$('conntype_pppoe').checked == true) * 1;
-		conntype |= (xjx.$('conntype_dhcp').checked == true) * 2;
-		conntype |= (xjx.$('conntype_eap').checked == true) * 4;
-		location.href = '?m=nodeedit&id={$nodeinfo.id}&action=conntype&conntype=' + conntype;
+	function change_authtype() {
+		var authtype = 0;
+		authtype |= (xjx.$('authtype_pppoe').checked == true) * 1;
+		authtype |= (xjx.$('authtype_dhcp').checked == true) * 2;
+		authtype |= (xjx.$('authtype_eap').checked == true) * 4;
+		location.href = '?m=nodeedit&id={$nodeinfo.id}&action=authtype&authtype=' + authtype;
 	}
 
 	function change_netdevice(id) {
@@ -265,9 +265,9 @@
 			<IMG SRC="img/netdev.gif" ALT="">
 		</TD>
 		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
-			<label for="conntype_pppoe">{trans("PPPoE Client")}</label><INPUT TYPE="checkbox" NAME="nodeconntype[pppoe]" value="1" id="conntype_pppoe" {if $nodeconntype.pppoe} checked {/if} {tip text="Enable/disable PPPoE Server Client" trigger="pppoe"} onchange="change_conntype()">&nbsp;
-			<label for="conntype_dhcp">{trans("DHCP Client")}</label><INPUT TYPE="checkbox" NAME="nodeconntype[dhcp]" value="2" id="conntype_dhcp" {if $nodeconntype.dhcp} checked{/if} {tip text="Enable/disable DHCP Server Client" trigger="dhcp"} onchange="change_conntype()">&nbsp;
-			<label for="conntype_eap">{trans("EAP Client")}</label><INPUT TYPE="checkbox" NAME="nodeconntype[eap]" value="4" id="conntype_eap" {if $nodeconntype.eap} checked {/if} {tip text="Enable/disable EAP Server Client" trigger="eap"} onchange="change_conntype()">
+			<label for="authtype_pppoe">{trans("PPPoE Client")}</label><INPUT TYPE="checkbox" NAME="nodeauthtype[pppoe]" value="1" id="authtype_pppoe" {if $nodeauthtype.pppoe} checked {/if} {tip text="Enable/disable PPPoE Server Client" trigger="pppoe"} onchange="change_authtype()">&nbsp;
+			<label for="authtype_dhcp">{trans("DHCP Client")}</label><INPUT TYPE="checkbox" NAME="nodeauthtype[dhcp]" value="2" id="authtype_dhcp" {if $nodeauthtype.dhcp} checked{/if} {tip text="Enable/disable DHCP Server Client" trigger="dhcp"} onchange="change_authtype()">&nbsp;
+			<label for="authtype_eap">{trans("EAP Client")}</label><INPUT TYPE="checkbox" NAME="nodeauthtype[eap]" value="4" id="authtype_eap" {if $nodeauthtype.eap} checked {/if} {tip text="Enable/disable EAP Server Client" trigger="eap"} onchange="change_authtype()">
 		</TD>
 		</TR>
 					</TABLE>

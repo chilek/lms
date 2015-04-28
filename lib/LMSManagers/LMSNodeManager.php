@@ -69,7 +69,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             'latitude' => !empty($nodedata['latitude']) ? str_replace(',', '.', $nodedata['latitude']) : null,
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK] => $nodedata['netid'],
             'invprojectid' => $nodedata['invprojectid'],
-	    'conntype' => $nodedata['conntype'] ? $nodedata['conntype'] : 0,
+	    'authtype' => $nodedata['authtype'] ? $nodedata['authtype'] : 0,
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodedata['id']
         );
         $this->db->Execute('UPDATE nodes SET name=UPPER(?), ipaddr_pub=inet_aton(?),
@@ -77,7 +77,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 				modid=?, access=?, warning=?, ownerid=?, info=?, location=?,
 				location_city=?, location_street=?, location_house=?, location_flat=?,
 				chkmac=?, halfduplex=?, linktype=?, linkradiosector=?, linktechnology=?, linkspeed=?,
-				port=?, nas=?, longitude=?, latitude=?, netid=?, invprojectid=?, conntype=?
+				port=?, nas=?, longitude=?, latitude=?, netid=?, invprojectid=?, authtype=?
 				WHERE id=?', array_values($args));
 
         if ($this->syslog) {
@@ -207,7 +207,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
     }
     public function GetNodeConnType($id)
     {
-        return $this->db->GetOne('SELECT conntype FROM nodes WHERE id=?', array($id));
+        return $this->db->GetOne('SELECT authtype FROM nodes WHERE id=?', array($id));
     }
 
     public function GetNode($id)
@@ -577,14 +577,14 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             'latitude' => !empty($nodedata['latitude']) ? str_replace(',', '.', $nodedata['latitude']) : null,
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK] => $nodedata['netid'],
             'invprojectid' => $nodedata['invprojectid'],
-	    'conntype' => $nodedata['conntype'],
+	    'authtype' => $nodedata['authtype'],
         );
 
         if ($this->db->Execute('INSERT INTO nodes (name, ipaddr, ipaddr_pub, ownerid,
 			passwd, creatorid, creationdate, access, warning, info, netdev,
 			location, location_city, location_street, location_house, location_flat,
 			linktype, linkradiosector, linktechnology, linkspeed, port, chkmac, halfduplex, nas,
-			longitude, latitude, netid, invprojectid, conntype)
+			longitude, latitude, netid, invprojectid, authtype)
 			VALUES (?, inet_aton(?), inet_aton(?), ?, ?, ?,
 			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
             $id = $this->db->GetLastInsertID('nodes');

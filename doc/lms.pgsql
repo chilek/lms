@@ -540,7 +540,7 @@ CREATE TABLE nodes (
 	modid integer 		DEFAULT 0 NOT NULL,
 	access smallint 	DEFAULT 1 NOT NULL,
 	warning smallint 	DEFAULT 0 NOT NULL,
-	conntype smallint 	DEFAULT 0 NOT NULL,
+	authtype smallint 	DEFAULT 0 NOT NULL,
 	chkmac smallint 	DEFAULT 1 NOT NULL,
 	halfduplex smallint	DEFAULT 0 NOT NULL,
 	lastonline integer	DEFAULT 0 NOT NULL,
@@ -569,7 +569,7 @@ CREATE INDEX nodes_ipaddr_pub_idx ON nodes (ipaddr_pub);
 CREATE INDEX nodes_location_street_idx ON nodes (location_street);
 CREATE INDEX nodes_location_city_idx ON nodes (location_city, location_street, location_house, location_flat);
 CREATE INDEX nodes_linkradiosector_idx ON nodes (linkradiosector);
-CREATE INDEX nodes_conntype_idx ON nodes (conntype);
+CREATE INDEX nodes_authtype_idx ON nodes (authtype);
 
 /* ----------------------------------------------------
  Structure of table "nodelocks"

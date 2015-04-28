@@ -84,14 +84,14 @@ if (! array_key_exists('xjxfun', $_POST)) {                  // xajax was called
 
 	if (isset($_GET['ip'])) {
 		$nodeipdata = $LMS->GetNodeConnType($_GET['ip']);
-		$netdevconntype = array();
-		$conntype = $nodeipdata['conntype'];
-		if ($conntype != 0) {
-			$netdevconntype['dhcp'] = ($conntype & 2);
-			$netdevconntype['eap'] = ($conntype & 4);
+		$netdevauthtype = array();
+		$authtype = $nodeipdata['authtype'];
+		if ($authtype != 0) {
+			$netdevauthtype['dhcp'] = ($authtype & 2);
+			$netdevauthtype['eap'] = ($authtype & 4);
 		}
 		$SMARTY->assign('nodeipdata', $LMS->GetNode($_GET['ip']));
-		$SMARTY->assign('netdevconntype', $netdevconntype);
+		$SMARTY->assign('netdevauthtype', $netdevauthtype);
 		$SMARTY->display('netdev/netdevipinfo.html');
 	} else {
 		$SMARTY->display('netdev/netdevinfo.html');

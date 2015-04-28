@@ -107,16 +107,16 @@ if ($nodeinfo['invprojectid']) {
 			$nodeinfo['projectname'] = $prj['name'];
 	}
 }
-$nodeconntype = array();
-$conntype = $nodeinfo['conntype'];
-if ($conntype != 0) {
-	$nodeconntype['pppoe'] = ($conntype & 1);
-	$nodeconntype['dhcp'] = ($conntype & 2);
-	$nodeconntype['eap'] = ($conntype & 4);
+$nodeauthtype = array();
+$authtype = $nodeinfo['authtype'];
+if ($authtype != 0) {
+	$nodeauthtype['pppoe'] = ($authtype & 1);
+	$nodeauthtype['dhcp'] = ($authtype & 2);
+	$nodeauthtype['eap'] = ($authtype & 4);
 }
 $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($nodeid));
 $SMARTY->assign('netdevices', $netdevices);
-$SMARTY->assign('nodeconntype', $nodeconntype);
+$SMARTY->assign('nodeauthtype', $nodeauthtype);
 $SMARTY->assign('nodegroups', $nodegroups);
 $SMARTY->assign('othernodegroups', $othernodegroups);
 $SMARTY->assign('nodeinfo', $nodeinfo);
