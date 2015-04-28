@@ -15,7 +15,7 @@
 			{include file="customer/customernodesbox.html"}
 		</TD>
 	</TR>
-	{if ConfigHelper::checkConfig('privileges.logging') && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))}
+	{if ConfigHelper::checkConfig('phpui.logging') && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))}
 	<TR>
 		<TD WIDTH="100%">
 			{include file="transactions.html"}
