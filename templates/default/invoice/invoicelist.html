@@ -5,7 +5,9 @@
 <H1>{$layout.pagetitle}</H1>
 {if $invoice.invoice}
 <SCRIPT type="text/javascript">
+<!--
 window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy={$invoice.copy}&duplicate={$invoice.duplicate}');
+//-->
 </SCRIPT>
 {/if}
 <SCRIPT type="text/javascript">
@@ -68,22 +70,22 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
     </COLGROUP>
     <THEAD>
 	<TR>
-		<TD nowrap>
+		<TD class="nobr">
 			<A href="?m=invoicelist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD nowrap>
+		<TD class="nobr">
 			<A href="?m=invoicelist&o=cdate{if $listdata.direction eq "asc" && $listdata.order eq "cdate"},desc{/if}">{trans("Date:")}</A> {if $listdata.order eq "cdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD nowrap>
+		<TD class="nobr">
 			<A href="?m=invoicelist&o=number{if $listdata.direction eq "asc" && $listdata.order eq "number"},desc{/if}">{trans("Number:")}</A> {if $listdata.order eq "number"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD nowrap>
+		<TD class="nobr">
 			<A href="?m=invoicelist&o=value{if $listdata.direction eq "asc" && $listdata.order eq "value"},desc{/if}">{trans("Value:")}</A> {if $listdata.order eq "value"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD nowrap>
+		<TD class="nobr">
 			<A href="?m=invoicelist&o=count{if $listdata.direction eq "asc" && $listdata.order eq "count"},desc{/if}">{trans("Items:")}</A> {if $listdata.order eq "count"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD nowrap>
+		<TD class="nobr">
 			<A href="?m=invoicelist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}">{trans("For:")}</A> {if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD>
@@ -124,7 +126,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 	</TR>		
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" WIDTH="100%" COLSPAN="7">
+		<TD class="pagination" COLSPAN="7">
 			{include file="scroller.html" loop=$invoicelist scrollerno=1}
 		</TD>
 	</TR>
@@ -135,27 +137,26 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 	{section name=invoicelist loop=$invoicelist start=$start max=$pagelimit}
 	{assign var=invoice value=$invoicelist[invoicelist]}
 	{assign var=invoiceid value=$invoice.id}
-	<TR class="highlight {cycle}{if $invoice.closed} blend{/if}"  >
+	<TR class="highlight {cycle}{if $invoice.closed} blend{/if}">
 		<TD>
 			{$invoice.id|string_format:"%06d"}
 		</TD>
-		<TD NOWRAP>
+		<TD class="nobr">
 			{$invoice.cdate|date_format:"%Y/%m/%d %H:%M"}
 		</TD>
-		<TD NOWRAP align="right">
+		<TD class="text-right nobr">
 			{number number=$invoice.number template=$invoice.template time=$invoice.cdate assign=number}{$number}
 		</TD>
-		<TD NOWRAP ALIGN="RIGHT">
+		<TD class="text-right nobr">
 			{$invoice.value|money_format} 
 		</TD>
-		<TD NOWRAP ALIGN="RIGHT">
+		<TD class="text-right nobr">
 			{$invoice.count}
 		</TD>
 		<TD>
 			<A HREF="?m=customerinfo&id={$invoice.customerid}"{if $invoice.closed} class="blend"{/if}>{$invoice.name}, {$invoice.address}, {$invoice.zip} {$invoice.city}{if $invoice.country neq ""}, {t}{$invoice.country}{/t}{/if}</A>
 		</TD>
-		<TD ALIGN="RIGHT">
-			<NOBR>
+		<TD class="text-right nobr">
 			{if $invoice.type == $smarty.const.DOC_INVOICE}
 			    <A HREF="?m=invoicenote&id={$invoice.id}&action=init"><IMG src="img/eraser.gif" alt="[ {trans("Revise")} ]" title="[ {trans("Revise")} ]"></A>
 			    {if ! $invoice.closed}
@@ -173,14 +174,13 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG src="img/printn.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]"></A>
 			{/if}
 			<INPUT TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}"{if $marks.$invoiceid}CHECKED{/if}>
-			</NOBR>
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD ALIGN="center"  COLSPAN="7">
+		<TD class="empty-table" COLSPAN="7">
 			<P>&nbsp;</P>
-			<P><B>{trans("No such invoices in database.")}</B></P>
+			<P>{trans("No such invoices in database.")}</P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>	
@@ -198,15 +198,15 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 		<TD COLSPAN="7">
 			<TABLE WIDTH="100%">
 				<TR>
-					<TD ALIGN="left">
+					<TD class="text-left">
 						<NOBR><A HREF="javascript:pays();">{trans("Check/Uncheck as accounted")} <IMG SRC="img/pay.gif" ALT=""></A></NOBR>&nbsp;
 						<NOBR><A HREF="javascript:prints();">{trans("Print")} <IMG SRC="img/print.gif" ALT="" ></A></NOBR>&nbsp;
 						<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i', $default_printpage)} checked{/if}><label for="original">{trans("original")}</label>
 						<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}><label for="copy">{trans("copy")}</label>
 						<INPUT type="checkbox" name="duplicate" id="duplicate"{if preg_match('/duplicate/i', $default_printpage)} checked{/if}><label for="duplicate">{trans("duplicate")}</label>
 					</TD>
-					<TD ALIGN="right">
-						<NOBR><label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('page', this, ['original', 'duplicate', 'copy', 'groupexclude', 'hideclosed'])" VALUE="1"></NOBR>
+					<TD class="text-right nobr">
+						<label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('page', this, ['original', 'duplicate', 'copy', 'groupexclude', 'hideclosed'])" VALUE="1">
 					</TD>
 				</TR>
 			</TABLE>
