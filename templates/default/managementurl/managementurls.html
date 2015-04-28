@@ -32,6 +32,7 @@ function showOrHideManagementUrlsPanel() {
 		xajax_getManagementUrls();
 }
 
+
 function addManagementUrl() {
 	xjx.$('managementurladdlink').disabled = true;
 	xajax_addManagementUrl(xjx.getFormValues('managementurladd'));
@@ -53,6 +54,29 @@ function toggleEditManagementUrl(id) {
 	xjx.$('cancel_button_' + id).style.display = (edit ? '' : 'none');
 	xjx.$('save_button_' + id).style.display = (edit ? '' : 'none');
 	xjx.$('edit_button_' + id).style.display = (edit ? 'none' : '');
+}
+
+function showAddManagementUrl() {
+	var elems = ['url', 'comment'];
+
+	for (i = 0; i < elems.length; i++) {
+		xjx.$(elems[i]).value = '';
+		xjx.$(elems[i]).onmouseover = '';
+	}
+
+	
+	xjx.$('managementurladdlink').style.display = ('none');
+	xjx.$('add_management_url').style.display = ('');
+	xjx.$('url').focus();
+}
+
+function hideAddManagementUrl() {
+	xjx.$('add_management_url').style.display = ('none');
+	if (xjx.$('managementurls') != null) {
+		xjx.$('no_management_urls').style.display = ('');
+	}
+	xjx.$('managementurladdlink').style.display = ('');
+	xajax_getManagementUrls();
 }
 
 function updateManagementUrl(id) {
