@@ -381,11 +381,16 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
      * 
      * @param string $field
      * @param string $separator
+     * @param boolean $distinct
      * @return string
      */
-    public function _driver_groupconcat($field, $separator = ',')
+    public function _driver_groupconcat($field, $separator = ',', $distinct = false)
     {
-        return 'array_to_string(array_agg(' . $field . '), \'' . $separator . '\')';
+        if ($distinct === false) {
+            return 'array_to_string(array_agg(' . $field . '), \'' . $separator . '\')';
+        } else {
+            return 'array_to_string(array_agg(DISTINCT ' . $field . '), \'' . $separator . '\')';
+        }
 
     }
 

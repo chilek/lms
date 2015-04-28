@@ -383,12 +383,17 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
      * 
      * @param string $field
      * @param string $separator
+     * @param boolean $distinct
      * @return string
      */
-    public function _driver_groupconcat($field, $separator = ',')
+    public function _driver_groupconcat($field, $separator = ',', $distinct = false)
     {
-        return 'GROUP_CONCAT(' . $field . ' SEPARATOR \'' . $separator . '\')';
-
+        if ($distinct === false) {
+            return 'GROUP_CONCAT(' . $field . ' SEPARATOR \'' . $separator . '\')';
+        } else {
+            return 'GROUP_CONCAT(DISTINCT ' . $field . ' SEPARATOR \'' . $separator . '\')';
+        }
+        
     }
 
     /**
