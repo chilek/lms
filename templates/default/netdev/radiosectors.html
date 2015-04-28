@@ -33,7 +33,8 @@ function showOrHideRadioSectorPanel() {
 }
 
 function addRadioSector() {
-	xjx.$('radiosectoraddlink').disabled = true;
+	xjx.$('save_new_radiosector_button').disabled = true;
+	xjx.$('cancel_new_radiosector_button').disabled = true;
 	xajax_addRadioSector(xjx.getFormValues('radiosectoradd'));
 }
 

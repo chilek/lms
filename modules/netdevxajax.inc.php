@@ -287,7 +287,8 @@ function addRadioSector($params) {
 	}
 	$result = getRadioSectors($params, $result);
 	//$result->call('xajax_getRadioSectors', $params);
-	$result->assign('radiosectoraddlink', 'disabled', false);
+	$result->assign('add_new_radiosector_button', 'disabled', false);
+	$result->assign('cancel_new_radiosector_button', 'disabled', false);
 
 	return $result;
 }
