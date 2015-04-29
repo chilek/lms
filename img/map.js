@@ -406,6 +406,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 
 	var area = new OpenLayers.Bounds();
 	var devices = [];
+	var areas = [];
 	var directions = [];
 	if (deviceArray)
 		for (i in deviceArray)
@@ -441,7 +442,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				rsPointList.push(rsPointList[0]);
 				var rsRing = new OpenLayers.Geometry.LinearRing(rsPointList);
 				var rsFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Polygon([rsRing]));
-				rsarealayer.addFeatures([rsFeature]);
+				areas.push(rsFeature);
 
 				rsPointList = [];
 				rsPoint = new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat);
@@ -457,8 +458,10 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				var rsFeature = new OpenLayers.Feature.Vector(
 					rsCurve.getCentroid(true), radiosector);
 				directions.push(rsFeature);
+				directions.push(rsFeature);
 			}
 		}
+	rsarealayer.addFeatures(areas);
 	rsdirectionlayer.addFeatures(directions);
 
 	devicesLbl = OpenLayers.Lang.translate("Devices");

@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-$devices = $DB->GetAllByKey('SELECT n.id, n.name, n.location, '.$DB->GroupConcat('INET_NTOA(CASE WHEN nodes.ownerid = 0 THEN nodes.ipaddr ELSE NULL END)')
-				.' AS ipaddr, '.$DB->GroupConcat('CASE WHEN nodes.ownerid = 0 THEN nodes.id ELSE NULL END').' AS nodeid, 
+$devices = $DB->GetAllByKey('SELECT n.id, n.name, n.location, '.$DB->GroupConcat('INET_NTOA(CASE WHEN nodes.ownerid = 0 THEN nodes.ipaddr ELSE NULL END)', ',', true)
+				.' AS ipaddr, '.$DB->GroupConcat('CASE WHEN nodes.ownerid = 0 THEN nodes.id ELSE NULL END', ',', true).' AS nodeid, 
 				MAX(lastonline) AS lastonline, n.latitude AS lat, n.longitude AS lon,
 				' . $DB->GroupConcat('rs.id') . ' AS radiosectors
 				FROM netdevices n 
