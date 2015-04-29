@@ -218,7 +218,7 @@ function getRadioSectors($formdata = NULL, $result = NULL) {
 
 	$netdevid = intval($_GET['id']);
 
-	$radiosectors = $DB->GetAll('SELECT s.*, (CASE WHEN n.computers IS NULL THEN 0 ELSE n.computers END),
+	$radiosectors = $DB->GetAll('SELECT s.*, (CASE WHEN n.computers IS NULL THEN 0 ELSE n.computers END) AS computers,
 		((CASE WHEN l1.devices IS NULL THEN 0 ELSE l1.devices END)
 		+ (CASE WHEN l2.devices IS NULL THEN 0 ELSE l2.devices END)) AS devices
 		FROM netradiosectors s
