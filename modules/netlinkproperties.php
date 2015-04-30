@@ -24,19 +24,23 @@
  *  $Id$
  */
 
-function GetNetLinkRadioSectors($dev1, $dev2) {
+function GetNetLinkRadioSectors($link) {
 	global $DB;
 
 	$result = $DB->GetRow('SELECT (CASE src WHEN ? THEN dstradiosector ELSE srcradiosector END) AS srcradiosector,
 		(CASE src WHEN ? THEN srcradiosector ELSE dstradiosector END) AS dstradiosector
 		FROM netlinks
 		WHERE (src = ? AND dst = ?) OR (dst = ? AND src = ?)',
-		array($dev1, $dev1, $dev1, $dev2, $dev1, $dev2));
+		array($link['id'], $link['id'], $link['id'], $link['devid'], $link['id'], $link['devid']));
 	if (empty($result))
 		$result = array();
 
-	$result['dst'] = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ? ORDER BY name', array($dev1));
-	$result['src'] = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ? ORDER BY name', array($dev2));
+	$result['dst'] = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ? '
+		. ($link['technology'] ? ' AND (technology = 0 OR technology = ' . intval($link['technology']) . ')' : '')
+		. ' ORDER BY name', array($link['id']));
+	$result['src'] = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ? '
+		. ($link['technology'] ? ' AND (technology = 0 OR technology = ' . intval($link['technology']) . ')' : '')
+		. ' ORDER BY name', array($link['devid']));
 
 	return $result;
 }
@@ -137,7 +141,7 @@ $link['isnetlink'] = $isnetlink;
 
 $SMARTY->assign('link', $link);
 if ($isnetlink)
-	$radiosectors = GetNetLinkRadioSectors($id, $devid);
+	$radiosectors = GetNetLinkRadioSectors($link);
 else
 	$radiosectors = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ?'
 		. ($link['technology'] ? ' AND (technology = ' . $link['technology'] . ' OR technology = 0)' : '')
