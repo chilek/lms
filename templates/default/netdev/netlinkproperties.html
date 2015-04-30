@@ -144,16 +144,14 @@ function change_linktechnology(linktechnology) {
 }
 
 function update_radio_sector_list(radiosectors) {
-	var controls = xjx.$('radiosector') != null ? [ 'radiosector' ]
-		: [ 'srcradiosector', 'dstradiosector' ];
-	controls.forEach(function(control) {
+	Object.keys(radiosectors).forEach(function(control) {
 		var options = xjx.$(control).options;
 		var oldvalue = options[xjx.$(control).selectedIndex].value;
 		while (options.length)
 			options.remove(0);
 		options.add(new Option('- {trans("none")} -', 0));
-		if (radiosectors !== null) {
-			radiosectors.forEach(function(elem) {
+		if (radiosectors[control] !== null) {
+			radiosectors[control].forEach(function(elem) {
 				var option = new Option(elem.name, elem.id);
 				if (elem.id == oldvalue)
 					option.selected = true;

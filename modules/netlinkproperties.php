@@ -94,14 +94,21 @@ function get_radio_sectors_for_technology($technology) {
 
 	$result = new xajaxResponse();
 
-	//$isnetlink = intval($_GET['isnetlink']);
+	$isnetlink = intval($_GET['isnetlink']);
 	$technology = intval($technology);
-	$devid = intval($_GET['id']);
+	$id = intval($_GET['id']);
+	$devid = intval($_GET['devid']);
 
-	$radiosectors = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ?'
+	$radiosectors = array();
+	if ($isnetlink)
+		$radiosectors['srcradiosector'] = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ?'
+			. ($technology ? ' AND (technology = 0 OR technology = ' . $technology . ')' : '')
+			. ' ORDER BY name',
+			array($devid));
+	$radiosectors[$isnetlink ? 'dstradiosector' : 'radiosector'] = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ?'
 		. ($technology ? ' AND (technology = 0 OR technology = ' . $technology . ')' : '')
 		. ' ORDER BY name',
-		array($devid));
+		array($id));
 	$result->call('update_radio_sector_list', $radiosectors);
 
 	return $result;
