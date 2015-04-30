@@ -247,6 +247,7 @@ if ($debtors_message && (empty($types) || in_array('debtors', $types))) {
 		WHERE cash.docid = 0 OR (cash.docid <> 0
 			AND (d.type = 2 OR (d.type IN (1,3)
 				AND d.cdate + d.paytime * 86400 < ?NOW?)))
+				AND c. mailingnotice = 1
 		GROUP BY c.id, c.pin, c.lastname, c.name, x.phone
 		HAVING SUM(value) < ?", array($limit));
 
@@ -293,6 +294,7 @@ if ($invoices_message && (empty($types) || in_array('invoices', $types))) {
 		) ca ON (ca.customerid = d.customerid)
 		WHERE d.type = 1
 			AND d.cdate > ?NOW? - 86400
+		 	AND c.mailingnotice = 1
 		");
 
 	if (!empty($documents)) {
@@ -347,7 +349,8 @@ if ($deadline_message && (empty($types) || in_array('deadline', $types))) {
 		) ca ON (ca.customerid = d.customerid)
 		WHERE d.type = 1 AND d.closed = 0 AND ca.balance < 0
 			AND d.cdate + (d.paytime + 1 + ?) * 86400 > ?NOW?
-			AND d.cdate + (d.paytime + ?) * 86400 < ?NOW?",
+			AND d.cdate + (d.paytime + ?) * 86400 < ?NOW?
+			AND c.mailingnotice = 1",
 		array($deadline_days, $deadline_days));
 
 	if (!empty($documents)) {
@@ -394,7 +397,8 @@ if ($notes_message && (empty($types) || in_array('notes', $types))) {
 			GROUP BY customerid
 		) ca ON (ca.customerid = d.customerid)
 		WHERE d.type = 5
-			AND d.cdate > ?NOW? - 86400");
+			AND d.cdate > ?NOW? - 86400
+			AND c.mailingnotice = 1");
 
 	if (!empty($documents)) {
 		if (!$debug)
