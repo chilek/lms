@@ -34,8 +34,10 @@
 			<B>{trans("Date:")}</B>
 		</TD>
 		<TD width="98%">
-			{trans("From:")} <INPUT type="text" class="calendar" name="event[datefrom]" size="10" {tip text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
-			{trans("To:")} <INPUT type="text" class="calendar" name="event[dateto]" size="10" {tip text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
+			<div class="calendar">
+			{trans("From:")} <INPUT type="text" name="event[datefrom]" size="10" {tip text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
+			{trans("To:")} <INPUT type="text" name="event[dateto]" size="10" {tip text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
+			</div>
 		</TD>
 	</TR>
 	<TR>

@@ -29,10 +29,14 @@
 						<B>{trans("Period:")}&nbsp;</B>
 					</TD>
 					<TD width="1%" nowrap>
-						{trans("From")}&nbsp;<INPUT TYPE="text" class="calendar" NAME="from" SIZE="10" MAXSIZE="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						<div class="calendar">
+						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						</div>
 					</TD>
 					<TD width="97%" nowrap>
-						{trans("To")}&nbsp;<INPUT TYPE="text" class="calendar" NAME="to" SIZE="10" MAXSIZE="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+						<div class="calendar">
+						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+						</div>
 					</TD>
 				</TR>
 			</TABLE>
@@ -83,8 +87,10 @@
 					</TD>
 					<TD width="1%" nowrap>
 						<B>{trans("Period:")}</B>&nbsp;
-						{trans("From")}&nbsp;<INPUT TYPE="text" class="calendar" NAME="from" SIZE="10" MAXSIZE="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-						{trans("To")}&nbsp;<INPUT TYPE="text" class="calendar" NAME="to" SIZE="10" MAXSIZE="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+						<div class="calendar">
+						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+						</div>
 					</TD>
 					<TD width="1%">
 						<IMG src="img/users.gif" alt="">

@@ -383,7 +383,9 @@
 						{trans("Cutoff suspending:")}
 					</TD>
 					<TD>
-						<INPUT type="text" class="calendar" name="customerdata[cutoffstop]" id="cutoffstop" {if $customerinfo.cutoffstop}value="{$customerinfo.cutoffstop}"{/if} size="10" {tip text="Select date of cutoff suspending (optional)" trigger="cutoffstop"}>
+						<div class="calendar">
+						<INPUT type="text" name="customerdata[cutoffstop]" id="cutoffstop" {if $customerinfo.cutoffstop}value="{$customerinfo.cutoffstop}"{/if} size="10" {tip text="Select date of cutoff suspending (optional)" trigger="cutoffstop"}>
+						</div>
 					</TD>
 				</TR>
 			</TABLE>

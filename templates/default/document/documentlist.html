@@ -83,8 +83,10 @@
 					{/if}{/foreach}
 				</SELECT>&nbsp;
 				<B>{trans("Period:")}</B>&nbsp;
-				{trans("from")}&nbsp;<INPUT TYPE="text" class="calendar" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
-				{trans("to")}&nbsp;<INPUT TYPE="text" class="calendar" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
+				<div class="calendar">
+				{trans("from")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+				{trans("to")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
+				</div>
 				<SELECT name="p" onChange="filter()" {tip text="Select numbering plan"}>
 					<OPTION value="0">- {trans("all")} -</OPTION>
 					{foreach $numberplans as $plan}

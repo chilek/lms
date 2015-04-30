@@ -72,8 +72,10 @@
 			<B>{trans("Period:")}
 		</TD>
 		<TD width="98%">
-			{trans("from:")} <INPUT type="TEXT" class="calendar" name="document[fromdate]" value="{if $document.fromdate}{$document.fromdate}{/if}" {tip text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"} size="10">&nbsp;
-			{trans("to:")} <INPUT type="TEXT" class="calendar" name="document[todate]" value="{if $document.todate}{$document.todate}{/if}" {tip text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"} size="10"><BR>
+			<div class="calendar">
+			{trans("from:")} <INPUT type="TEXT" name="document[fromdate]" value="{if $document.fromdate}{$document.fromdate}{/if}" {tip text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"} size="10">&nbsp;
+			{trans("to:")} <INPUT type="TEXT" name="document[todate]" value="{if $document.todate}{$document.todate}{/if}" {tip text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"} size="10"><BR>
+			</div>
 		</TD>
 	</TR>
 	<TR>

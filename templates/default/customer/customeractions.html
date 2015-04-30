@@ -24,7 +24,9 @@
 					</TD>
 					<TD style="width: 98%;">
 						{trans("Cutoff suspending:")}
-						<INPUT type="text" class="calendar" name="cutoffstop" id="cutoffstop" {if $customerinfo.cutoffstop}value="{$customerinfo.cutoffstop|date_format:"%Y/%m/%d"}"{/if} size="10" {tip text="Select date of cutoff suspending (optional)" trigger="cutoffstop"}>
+						<div class="calendar">
+						<INPUT type="text" name="cutoffstop" id="cutoffstop" {if $customerinfo.cutoffstop}value="{$customerinfo.cutoffstop|date_format:"%Y/%m/%d"}"{/if} size="10" {tip text="Select date of cutoff suspending (optional)" trigger="cutoffstop"}>
+						</div>
 					</TD>
 					<TD width="1%" NOWRAP align="RIGHT">
 						<A href="javascript: document.cutoffstopaction.submit()">{trans("Submit")} <img src="img/save.gif" alt=""></a>
