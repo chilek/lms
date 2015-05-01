@@ -408,14 +408,33 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         }
 
 	$where = array();
-	if (isset($search['status']) && $search['status'] != -1)
-		$where[] = 'd.status = ' . intval($search['status']);
-	if (isset($search['project']))
-		if ($search['project'] > 0)
-			$where[] = '(d.invprojectid = ' . intval($search['project'])
-				. ' OR (d.invprojectid = ' . INV_PROJECT_SYSTEM . ' AND (n.invprojectid = ' . intval($search['project']) . ' OR n.invprojectid IS NULL)))';
-		elseif ($search['project'] == -2)
-			$where[] = '(d.invprojectid IS NULL OR (d.invprojectid = ' . INV_PROJECT_SYSTEM . ' AND n.invprojectid IS NULL))';
+	foreach ($search as $key => $value)
+		switch ($key) {
+			case 'status':
+				if ($value != -1)
+					$where[] = 'd.status = ' . intval($value);
+				break;
+			case 'project':
+				if ($value > 0)
+					$where[] = '(d.invprojectid = ' . intval($value)
+						. ' OR (d.invprojectid = ' . INV_PROJECT_SYSTEM . ' AND (n.invprojectid = ' . intval($value) . ' OR n.invprojectid IS NULL)))';
+				elseif ($value == -2)
+					$where[] = '(d.invprojectid IS NULL OR (d.invprojectid = ' . INV_PROJECT_SYSTEM . ' AND n.invprojectid IS NULL))';
+				break;
+			case 'netnode':
+				if ($value > 0)
+					$where[] = 'd.netnodeid = ' . intval($value);
+				elseif ($value == -2)
+					$where[] = 'd.netnodeid IS NULL';
+				break;
+			case 'producer':
+			case 'model':
+				if (!preg_match('/^-[0-9]+$/', $value))
+					$where[] = "UPPER(TRIM(d.$key)) = UPPER(" . $this->db->Escape($value) . ")";
+				elseif ($value == -2)
+					$where[] = "d.$key = ''";
+				break;
+		}
 
 	$netdevlist = $this->db->GetAll('SELECT d.id, d.name, d.location,
 			d.description, d.producer, d.model, d.serialnumber, d.ports,
