@@ -371,7 +371,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			ORDER BY name', array($id, $id, $id, $id, $id, $id, $id));
     }
 
-    public function GetNetDevList($order = 'name,asc')
+    public function GetNetDevList($order = 'name,asc', $search = array())
     {
         list($order, $direction) = sscanf($order, '%[^,],%s');
 
@@ -407,7 +407,17 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 break;
         }
 
-        $netdevlist = $this->db->GetAll('SELECT d.id, d.name, d.location,
+	$where = array();
+	if (isset($search['status']) && $search['status'] != -1)
+		$where[] = 'd.status = ' . intval($search['status']);
+	if (isset($search['project']))
+		if ($search['project'] > 0)
+			$where[] = '(d.invprojectid = ' . intval($search['project'])
+				. ' OR (d.invprojectid = ' . INV_PROJECT_SYSTEM . ' AND (n.invprojectid = ' . intval($search['project']) . ' OR n.invprojectid IS NULL)))';
+		elseif ($search['project'] == -2)
+			$where[] = '(d.invprojectid IS NULL OR (d.invprojectid = ' . INV_PROJECT_SYSTEM . ' AND n.invprojectid IS NULL))';
+
+	$netdevlist = $this->db->GetAll('SELECT d.id, d.name, d.location,
 			d.description, d.producer, d.model, d.serialnumber, d.ports,
 			(SELECT COUNT(*) FROM nodes WHERE netdev=d.id AND ownerid > 0)
 			+ (SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id)
@@ -415,11 +425,13 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			lb.name AS borough_name, lb.type AS borough_type,
 			ld.name AS district_name, ls.name AS state_name
 			FROM netdevices d
+			LEFT JOIN invprojects p ON p.id = d.invprojectid
 			LEFT JOIN netnodes n ON n.id = d.netnodeid
 			LEFT JOIN location_cities lc ON lc.id = d.location_city
 			LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
 			LEFT JOIN location_districts ld ON ld.id = lb.districtid
 			LEFT JOIN location_states ls ON ls.id = ld.stateid '
+			. (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
                 . ($sqlord != '' ? $sqlord . ' ' . $direction : ''));
 
         $netdevlist['total'] = sizeof($netdevlist);

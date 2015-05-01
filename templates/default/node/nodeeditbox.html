@@ -136,7 +136,7 @@
 		</TD>
 		<TD WIDTH="98%">
 			<SELECT NAME="nodeedit[invprojectid]" ID="NNproject" VALUE="{$nodeinfo.invprojectid}" {tip text="Select project"} onchange="setNNProject();">
-				<OPTION value="-2" {if ($nodeinfo.invprojectid == '-2' ) } selected="selected" {/if} >{trans("None")}</OPTION>
+				<OPTION value="-2" {if ($nodeinfo.invprojectid == '-2' ) } selected="selected" {/if} >- {trans("none")} -</OPTION>
 				<OPTION value="-1" {if ($nodeinfo.invprojectid == '-1' ) } selected="selected" {/if}>{trans("New project")}</OPTION>
 				<OPTION value="1" {if ($nodeinfo.invprojectid == '1' ) } selected="selected" {/if}>{trans("From root device")}</OPTION>
 				{section name=project loop=$NNprojects}

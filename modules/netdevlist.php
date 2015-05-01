@@ -32,10 +32,24 @@ else
 	$o = $_GET['o'];
 $SESSION->save('ndlo', $o);
 
-$netdevlist = $LMS->GetNetDevList($o);
+if(!isset($_GET['s']))
+	$SESSION->restore('ndfs', $s);
+else
+	$s = $_GET['s'];
+$SESSION->save('ndfs', $s);
+
+if(!isset($_GET['p']))
+	$SESSION->restore('ndfp', $p);
+else
+	$p = $_GET['p'];
+$SESSION->save('ndfp', $p);
+
+$netdevlist = $LMS->GetNetDevList($o, array('status' => $s, 'project' => $p));
 $listdata['total'] = $netdevlist['total'];
 $listdata['order'] = $netdevlist['order'];
 $listdata['direction'] = $netdevlist['direction'];
+$listdata['status'] = $s;
+$listdata['invprojectid'] = $p;
 unset($netdevlist['total']);
 unset($netdevlist['order']);
 unset($netdevlist['direction']);
@@ -56,6 +70,8 @@ $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('start',$start);
 $SMARTY->assign('netdevlist',$netdevlist);
 $SMARTY->assign('listdata',$listdata);
+$SMARTY->assign('NNprojects', $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name",
+	array(INV_PROJECT_SYSTEM)));
 $SMARTY->display('netdev/netdevlist.html');
 
 ?>

@@ -48,7 +48,7 @@
 		        <B>{trans("Project:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-			{if ($nodeinfo.invprojectid == '')} brak {else} {$nodeinfo.projectname} {/if}
+			{if ($nodeinfo.invprojectid == '')}{trans("none")}{else}{$nodeinfo.projectname}{/if}
 		</TD>
 	</TR>
 	

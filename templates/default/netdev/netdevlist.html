@@ -3,6 +3,9 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
+<FORM method="get" action="?m=netdevlist" name="choosefilter">
+<INPUT type="hidden" NAME="m" VALUE="netdevlist">
+<INPUT type="hidden" NAME="page" VALUE="1">
 <TABLE class="lmsbox">
     <THEAD>
 	<TR {tip text="Click on column name to change sorting order"}>
@@ -27,6 +30,26 @@
 		</TD>
 		<TD width="1%" align="right" nowrap>
 			<B>{trans("Total:")} {$listdata.total|default:"0"}</B>
+		</TD>
+	</TR>
+	<TR>
+		<TD colspan="6" class="nobr">
+			<span class="bold">{trans("Filter:")}</span> {trans("Type:")}
+			{trans("Status")}:
+			<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
+				<OPTION VALUE="-1" {if $listdata.status == -1}  SELECTED {/if}>- {trans("all")} -</OPTION>
+				{foreach $_NETELEMENTSTATUSES as $idx => $status}
+					<OPTION VALUE="{$idx}"{if $listdata.status == $idx} SELECTED{/if}>{$status}</OPTION>
+				{/foreach}
+			</SELECT>
+			{trans("Project:")}
+			<SELECT SIZE="1" NAME="p" ONCHANGE="document.choosefilter.submit();">
+				<OPTION VALUE="-1"{if $listdata.invprojectid == -1} selected{/if}>- {trans("all")} -</OPTION>
+				<OPTION VALUE="-2"{if $listdata.invprojectid == -2} selected{/if}>- {trans("without project")} -</OPTION>
+				{section name=project loop=$NNprojects}
+				<OPTION VALUE="{$NNprojects[project].id}" {if ($listdata.invprojectid == $NNprojects[project].id ) } SELECTED {/if} >{$NNprojects[project].name}</OPTION>
+				{/section}
+			</SELECT>
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
@@ -93,4 +116,5 @@
 	</TR>
     </TBODY>
 </TABLE>
+</FORM>
 {/block}

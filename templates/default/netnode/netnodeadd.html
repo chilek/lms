@@ -63,7 +63,7 @@
 		</TD>
 		<TD WIDTH="98%">
 			<SELECT NAME="netnode[invprojectid]" ID="NNproject" VALUE="{$netnode.invprojectid}" {tip text="Select project for this node"} onchange="setNNProject();">
-				<OPTION value="-2" {if ($netnode.invprojectid == '-2' ) } selected="selected" {/if} >{trans("None")}</OPTION>
+				<OPTION value="-2" {if ($netnode.invprojectid == '-2' ) } selected="selected" {/if} >- {trans("none")} -</OPTION>
 				<OPTION value="-1" {if ($netnode.invprojectid == '-1' ) } selected="selected" {/if}>{trans("New project")}</OPTION>
 				<!--
 				<OPTION value="1" {if ($netnode.invprojectid == '1' ) } selected="selected" {/if}>{trans("Inherited from root device")}</OPTION>
