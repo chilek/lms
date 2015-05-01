@@ -62,6 +62,14 @@ else
 	$model = $_GET['model'];
 $SESSION->save('ndfmodel', $model);
 
+$producers = $DB->GetCol("SELECT DISTINCT UPPER(TRIM(producer)) AS producer FROM netdevices WHERE producer <> '' ORDER BY producer");
+$models = $DB->GetCol("SELECT DISTINCT UPPER(TRIM(model)) AS model FROM netdevices WHERE model <> ''"
+	. ($producer != '-1' ? " AND UPPER(TRIM(producer)) = " . $DB->Escape($producer == '-2' ? '' : $producer) : '') . " ORDER BY model");
+if (!preg_match('/^-[0-9]+$/', $model) && !in_array($model, $models)) {
+	$SESSION->save('ndfmodel', '-1');
+	$SESSION->redirect('?' . preg_replace('/&model=[^&]+/', '', $_SERVER['QUERY_STRING']));
+}
+
 $search = array(
 	'status' => $s,
 	'project' => $p,
@@ -101,9 +109,8 @@ $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('netnodes', $DB->GetAll("SELECT id, name FROM netnodes ORDER BY name"));
 $SMARTY->assign('NNprojects', $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name",
 	array(INV_PROJECT_SYSTEM)));
-$SMARTY->assign('producers', $DB->GetCol("SELECT DISTINCT UPPER(TRIM(producer)) AS producer FROM netdevices WHERE producer <> '' ORDER BY producer"));
-$SMARTY->assign('models', $DB->GetCol("SELECT DISTINCT UPPER(TRIM(model)) AS model FROM netdevices WHERE model <> ''"
-	. ($producer != '-1' ? " AND UPPER(TRIM(producer)) = " . $DB->Escape($producer == '-2' ? '' : $producer) : '') . " ORDER BY model"));
+$SMARTY->assign('producers', $producers);
+$SMARTY->assign('models', $models);
 $SMARTY->display('netdev/netdevlist.html');
 
 ?>
