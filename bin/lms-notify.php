@@ -190,6 +190,7 @@ function parse_data($data, $row) {
 	$data = preg_replace("/\%b/", $amount, $data);
 	$data = preg_replace("/\%date-y/", strftime("%Y"), $data);
 	$data = preg_replace("/\%date-m/", strftime("%m"), $data);
+	$data = preg_replace("/\%date-d/", strftime("%d"), $data);
 	$data = preg_replace("/\%date_month_name/", strftime("%B"), $data);
 	$deadline = $row['cdate'] + $row['paytime'] * 86400;
 	$data = preg_replace("/\%deadline-y/", strftime("%Y", $deadline), $data);
