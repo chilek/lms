@@ -69,6 +69,10 @@ if (!preg_match('/^-[0-9]+$/', $model) && !in_array($model, $models)) {
 	$SESSION->save('ndfmodel', '-1');
 	$SESSION->redirect('?' . preg_replace('/&model=[^&]+/', '', $_SERVER['QUERY_STRING']));
 }
+if (!preg_match('/^-[0-9]+$/', $producer) && !in_array($producer, $producers)) {
+	$SESSION->save('ndfproducer', '-1');
+	$SESSION->redirect('?' . preg_replace('/&producer=[^&]+/', '', $_SERVER['QUERY_STRING']));
+}
 
 $search = array(
 	'status' => $s,
