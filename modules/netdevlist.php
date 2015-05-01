@@ -103,7 +103,7 @@ $SMARTY->assign('NNprojects', $DB->GetAll("SELECT * FROM invprojects WHERE type<
 	array(INV_PROJECT_SYSTEM)));
 $SMARTY->assign('producers', $DB->GetCol("SELECT DISTINCT UPPER(TRIM(producer)) AS producer FROM netdevices WHERE producer <> '' ORDER BY producer"));
 $SMARTY->assign('models', $DB->GetCol("SELECT DISTINCT UPPER(TRIM(model)) AS model FROM netdevices WHERE model <> ''"
-	. (!preg_match('/^-[0-9]+$/', $producers) ? " AND UPPER(TRIM(producer)) = " . $DB->Escape($producer) : '') . " ORDER BY model"));
+	. ($producer != '-1' ? " AND UPPER(TRIM(producer)) = " . $DB->Escape($producer == '-2' ? '' : $producer) : '') . " ORDER BY model"));
 $SMARTY->display('netdev/netdevlist.html');
 
 ?>
