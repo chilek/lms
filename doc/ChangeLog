@@ -13,6 +13,8 @@ version ?.??.?? (????-??-??):
   - added connection type (DHCP, EAP) in network device nodes [nicraM Marcin Romanowski]
   - move 'replace device" to popup for better netdevinfo/edit performance [maniac]
   - added visualisation of radio sectors on network device map [chilan]
+  - added filter in network device list which allows to select device status
+    and investment project to which device belong to [chilan]
 
 version 1.11.16 (2015-03-31):
 
