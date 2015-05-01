@@ -102,7 +102,8 @@ $SMARTY->assign('netnodes', $DB->GetAll("SELECT id, name FROM netnodes ORDER BY 
 $SMARTY->assign('NNprojects', $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name",
 	array(INV_PROJECT_SYSTEM)));
 $SMARTY->assign('producers', $DB->GetCol("SELECT DISTINCT UPPER(TRIM(producer)) AS producer FROM netdevices WHERE producer <> '' ORDER BY producer"));
-$SMARTY->assign('models', $DB->GetCol("SELECT DISTINCT UPPER(TRIM(model)) AS model FROM netdevices WHERE model <> '' ORDER BY model"));
+$SMARTY->assign('models', $DB->GetCol("SELECT DISTINCT UPPER(TRIM(model)) AS model FROM netdevices WHERE model <> ''"
+	. (!preg_match('/^-[0-9]+$/', $producers) ? " AND UPPER(producer) = " . $DB->Escape($producer) : '') . " ORDER BY model"));
 $SMARTY->display('netdev/netdevlist.html');
 
 ?>
