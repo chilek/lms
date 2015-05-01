@@ -36,10 +36,10 @@ function GetNetLinkRadioSectors($link) {
 		$result = array();
 
 	$result['dst'] = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ? '
-		. ($link['technology'] ? ' AND (technology = 0 OR technology = ' . intval($link['technology']) . ')' : '')
+		. ($link['type'] == 1 && $link['technology'] ? ' AND (technology = 0 OR technology = ' . intval($link['technology']) . ')' : '')
 		. ' ORDER BY name', array($link['id']));
 	$result['src'] = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ? '
-		. ($link['technology'] ? ' AND (technology = 0 OR technology = ' . intval($link['technology']) . ')' : '')
+		. ($link['type'] == 1 && $link['technology'] ? ' AND (technology = 0 OR technology = ' . intval($link['technology']) . ')' : '')
 		. ' ORDER BY name', array($link['devid']));
 
 	return $result;

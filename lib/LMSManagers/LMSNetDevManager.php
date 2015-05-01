@@ -89,7 +89,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
     public function SetNetDevLinkType($dev1, $dev2, $link = NULL)
     {
-        global $SYSLOG_RESOURCE_KEYS;
+	global $SYSLOG_RESOURCE_KEYS;
 
 	if (empty($link)) {
 		$type = 0;
@@ -99,38 +99,47 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 		$speed = 100000;
 	} else {
 		$type = isset($link['type']) ? $link['type'] : 0;
-		$srcradiosector = isset($link['srcradiosector']) ? intval($link['srcradiosector']) : null;
-		$dstradiosector = isset($link['dstradiosector']) ? intval($link['dstradiosector']) : null;
+		$srcradiosector = isset($link['srcradiosector']) ? (intval($link['srcradiosector']) ? intval($link['srcradiosector']) : null) : null;
+		$dstradiosector = isset($link['dstradiosector']) ? (intval($link['dstradiosector']) ? intval($link['dstradiosector']) : null) : null;
 		$technology = isset($link['technology']) ? $link['technology'] : 0;
 		$speed = isset($link['speed']) ? $link['speed'] : 100000;
 	}
 
-        $res = $this->db->Execute('UPDATE netlinks SET type=?, srcradiosector=?, dstradiosector=?, technology=?, speed=?
-        	WHERE (src=? AND dst=?) OR (dst=? AND src=?)',
-        		array($type,
-        			$srcradiosector ? $srcradiosector : null,
-        			$dstradiosector ? $dstradiosector : null,
-        			$technology, $speed, $dev1, $dev2, $dev1, $dev2));
-        if ($this->syslog && $res) {
-            $netlink = $this->db->GetRow('SELECT id, src, dst FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($dev1, $dev2, $dev1, $dev2));
-            $args = array(
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETLINK] => $netlink['id'],
-                'src_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netlink['src'],
-                'dst_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netlink['dst'],
-                'type' => $type,
-                'src_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR] => $srcradiosector,
-                'dst_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR] => $dstradiosector,
-                'technology' => $technology,
-                'speed' => $speed,
-            );
-            $this->syslog->AddMessage(SYSLOG_RES_NETLINK, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETLINK],
-                'src_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV],
-                'dst_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV],
-                'src_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR],
-                'dst_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR],
-            ));
-        }
-        return $res;
+	$args = array(
+		'type' => $type,
+		'src_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR] => $srcradiosector,
+		'dst_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR] => $dstradiosector,
+		'technology' => $technology,
+		'speed' => $speed,
+		'src_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $dev2,
+		'dst_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $dev1,
+	);
+	$res = $this->db->Execute('UPDATE netlinks SET type=?, srcradiosector=?, dstradiosector=?, technology=?, speed=?
+		WHERE src=? AND dst=?', array_values($args));
+	if (!$res) {
+		$args = array(
+			'type' => $type,
+			'src_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR] => $srcradiosector,
+			'dst_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR] => $dstradiosector,
+			'technology' => $technology,
+			'speed' => $speed,
+			'src_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $dev1,
+			'dst_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $dev2,
+		);
+		$res = $this->db->Execute('UPDATE netlinks SET type=?, dstradiosector=?, srcradiosector=?, technology=?, speed=?
+			WHERE src=? AND dst=?', array_values($args));
+	}
+	if ($this->syslog && $res) {
+		$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETLINK]] =
+			$this->db->GetOne('SELECT id FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($dev1, $dev2, $dev1, $dev2));
+		$this->syslog->AddMessage(SYSLOG_RES_NETLINK, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETLINK],
+			'src_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV],
+			'dst_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV],
+			'src_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR],
+			'dst_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR],
+		));
+	}
+	return $res;
     }
 
     public function IsNetDevLink($dev1, $dev2)
