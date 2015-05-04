@@ -97,7 +97,7 @@
 					<OPTION value="address"{if $listdata.cat eq "address"} SELECTED{/if}>{trans("address")}</OPTION>
 				</SELECT>&nbsp;
 				</div>
-				<div class="calendar">
+				<div class="calendar" style="float: left;">
 				<B>{trans("Period:")}</B>&nbsp;
 				{trans("from")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
 				{trans("to")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
