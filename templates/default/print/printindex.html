@@ -340,6 +340,7 @@
                         			    <TD style="width: 98%;">
 							<SELECT size="1" name="source" {tip text="You can select import source to limit results"}>
 							<OPTION value="0">{trans("- all sources -")}</OPTION>
+							<OPTION value="-1">- {trans("none")} -</OPTION>
 							{foreach from=$sourcelist item=item}
 							<OPTION value="{$item.id}">{$item.name}</OPTION>
 							{/foreach}
