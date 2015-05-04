@@ -114,9 +114,9 @@
 		<TH scope="col">&nbsp;</TH>
 	</TR>
 	<TR>
-		<TD colspan="10">
+		<TD colspan="10" class="nobr">
 			<div style="float: left;">
-                        <SPAN class="nobr bold">{trans("Filter:")} </SPAN>
+                        <SPAN class="bold">{trans("Filter:")} </SPAN>
                         <INPUT type="text" name="search" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>
                         <SELECT size="1" name="cat" style="width: 150px">
                                 <OPTION value=""{if $listdata.cat eq ""} SELECTED{/if}>{trans("- select category -")}</OPTION>
@@ -138,17 +138,13 @@
                                 <OPTION value="{$grouplist[grouplist].id}"{if $listdata.group eq $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:40:"...":true}</OPTION>
                                 {/section}
                         </SELECT>
-                        <SPAN class="nobr">
-                        <INPUT type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} CHECKED{/if}><label for="groupexclude">{trans("exclude group")}</label>
-                        </SPAN>
+                        <INPUT type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} CHECKED{/if}><label for="groupexclude">{trans("exclude group")}</label>&nbsp;
                         </div>
-                        <SPAN class="nobr">
-                        <div class="calendar" style="float: left;">
+                        <div class="calendar">
                         {trans("From:")} <INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
                         {trans("To:")} <INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
-                        </div>
                         <A href="javascript: filter();">&raquo;&raquo;&raquo;</A><BR>
-                        </SPAN>
+                        </div>
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
