@@ -115,6 +115,7 @@
 	</TR>
 	<TR>
 		<TD colspan="10">
+			<div style="float: left;">
                         <SPAN class="nobr bold">{trans("Filter:")} </SPAN>
                         <INPUT type="text" name="search" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>
                         <SELECT size="1" name="cat" style="width: 150px">
@@ -140,13 +141,14 @@
                         <SPAN class="nobr">
                         <INPUT type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} CHECKED{/if}><label for="groupexclude">{trans("exclude group")}</label>
                         </SPAN>
+                        </div>
+                        <div class="calendar" style="float: left;">
                         <SPAN class="nobr">
-                        <div class="calendar">
                         {trans("From:")} <INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
                         {trans("To:")} <INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
                         <A href="javascript: filter();">&raquo;&raquo;&raquo;</A><BR>
-                        </div>
                         </SPAN>
+                        </div>
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
