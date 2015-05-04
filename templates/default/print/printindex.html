@@ -183,6 +183,7 @@
 							<TR>
 								<TD style="width: 1%;" class="nobr"><IMG src="img/docum.gif" alt=""></TD>
 								<TD style="width: 99%;" class="nobr" colspan="2">
+									<div class="calendar">
 									<span class="bold">{trans("With document of type:")}</span>
 									<SELECT SIZE="1" name="doctype" {tip text="Select document type"}>
 										<OPTION value="0">{trans("- all -")}</OPTION>
@@ -191,7 +192,6 @@
 										{/foreach}
 									</SELECT>
 									<span class="bold">{trans("in date:")}</span>
-									<div class="calendar">
 									{trans("From")}&nbsp;<INPUT type="text" name="docfrom" size="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
 									{trans("To")}&nbsp;<INPUT type="text" name="docto" size="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
 									</div>
