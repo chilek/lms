@@ -63,8 +63,9 @@
 	</TR>
 	<TR>
 		<TD colspan="5">
+				<div style="float: left;">
 				<B>{trans("Filter:")} </B> {trans("Customer:")}
-                {if $customerlist}
+				{if $customerlist}
 				    <SELECT size="1" name="c" OnChange="filter()">
 					<OPTION value="0"{if $listdata.customer eq ""} SELECTED{/if}>{trans("- all customers -")}</OPTION>
 					{foreach from=$customerlist item=customer}
@@ -74,7 +75,7 @@
 				{else}
 				    <INPUT TYPE="TEXT" NAME="c" VALUE="{if $listdata.customer}{$listdata.customer}{/if}" SIZE="5">
 				    <A href="javascript: void(0);" onClick="return customerchoosewin(document.page.elements['c']);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
-                {/if}&nbsp;
+				{/if}&nbsp;
 				{trans("Type:")}
 				<SELECT size="1" name="t" ONCHANGE="filter()">
 					<OPTION value="0"{if !$listdata.type} SELECTED {/if}>{trans("- all -")}</OPTION>
@@ -83,10 +84,12 @@
 					{/if}{/foreach}
 				</SELECT>&nbsp;
 				<B>{trans("Period:")}</B>&nbsp;
-				<div class="calendar">
+				</div>
+				<div class="calendar" style="float: left;">
 				{trans("from")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
 				{trans("to")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
 				</div>
+				<div style="float: left;">
 				<SELECT name="p" onChange="filter()" {tip text="Select numbering plan"}>
 					<OPTION value="0">- {trans("all")} -</OPTION>
 					{foreach $numberplans as $plan}
@@ -95,6 +98,7 @@
 					{/foreach}
 				</SELECT>&nbsp;
 				<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>&nbsp;
+				</div>
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
