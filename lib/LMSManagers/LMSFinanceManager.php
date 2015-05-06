@@ -248,13 +248,29 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $cday = 0;
 
                     // Find tariff with specified name+value+period...
-                    $tariffid = $this->db->GetOne('SELECT id FROM tariffs
-						WHERE name = ? AND value = ? AND period = ?
-						LIMIT 1', array(
-                        $tariff['name'],
-                        str_replace(',', '.', $value),
-                        $tariff['period'],
-                    ));
+                    $tariffid = null;
+                    if ($tariff['period'] !== null) {
+                        $tariffid = $this->db->GetOne('
+                            SELECT id FROM tariffs
+                            WHERE name = ? AND value = ? AND period = ?
+                            LIMIT 1',
+                            array(
+                                $tariff['name'],
+                                str_replace(',', '.', $value),
+                                $tariff['period'],
+                            )
+                        );
+                    } else {
+                        $tariffid = $this->db->GetOne('
+                            SELECT id FROM tariffs
+                            WHERE name = ? AND value = ? AND period IS NULL
+                            LIMIT 1', 
+                            array(
+                                $tariff['name'],
+                                str_replace(',', '.', $value),
+                            )
+                        );
+                    }
 
                     // ... if not found clone tariff
                     if (!$tariffid) {
