@@ -100,13 +100,13 @@ $SMARTY = new Smarty;
 // test for proper version of Smarty
 
 if (defined('Smarty::SMARTY_VERSION'))
-	$ver_chunks = preg_split('/[- ]/', Smarty::SMARTY_VERSION);
+	$ver_chunks = preg_split('/[- ]/', preg_replace('/^smarty-/i', '', Smarty::SMARTY_VERSION), -1, PREG_SPLIT_NO_EMPTY);
 else
 	$ver_chunks = NULL;
-if (count($ver_chunks) < 2 || version_compare('3.1', $ver_chunks[1]) > 0)
+if (count($ver_chunks) < 1 || version_compare('3.1', $ver_chunks[0]) > 0)
 	die('<B>Wrong version of Smarty engine! We support only Smarty-3.x greater than 3.1.</B>');
 
-define('SMARTY_VERSION', $ver_chunks[1]);
+define('SMARTY_VERSION', $ver_chunks[0]);
 
 // add LMS's custom plugins directory
 $SMARTY->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
