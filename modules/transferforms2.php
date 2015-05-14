@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -60,9 +60,9 @@ function main_form($x, $y, $data)
     $y += $_BMARGIN;
 
     $y += 275;
-    $pdf->addtext($x,$y,$font_size,iconv('UTF-8', 'ISO-8859-2',$data['d_name']));
+    $pdf->addtext($x,$y,$font_size, $data['d_name']);
     $y -= $lineh;
-    $pdf->addtext($x,$y,$font_size,iconv('UTF-8', 'ISO-8859-2',trim($data['d_zip'].' '.$data['d_city'].' '.$data['d_address'])));
+    $pdf->addtext($x,$y,$font_size, trim($data['d_zip'].' '.$data['d_city'].' '.$data['d_address']));
     $y -= $lineh;
 //    for($i=0; $i<26; $i++)
 //    {
@@ -72,15 +72,15 @@ function main_form($x, $y, $data)
     $y -= $lineh;
     $pdf->addtext($x+220,$y,$font_size,sprintf('%.2f',$balance));
     $y -= $lineh;
-    $pdf->addtext($x,$y,$font_size,iconv('UTF-8', 'ISO-8859-2',trans('$a dollars $b cents',to_words(floor($balance)),to_words(round(($balance-floor($balance))*100)))));
+    $pdf->addtext($x,$y,$font_size, trans('$a dollars $b cents',to_words(floor($balance)),to_words(round(($balance-floor($balance))*100))));
     $y -= $lineh;
-    $pdf->addtext($x,$y,$font_size,truncate(iconv('UTF-8', 'ISO-8859-2',$data['customername'])));
+    $pdf->addtext($x,$y,$font_size,truncate($data['customername']));
     $y -= $lineh;
-    $pdf->addtext($x,$y,$font_size,truncate(iconv('UTF-8', 'ISO-8859-2',trim($data['zip'].' '.$data['city'].' '.$data['address']))));
+    $pdf->addtext($x,$y,$font_size,truncate(trim($data['zip'].' '.$data['city'].' '.$data['address'])));
     $y -= $lineh;
-    $pdf->addtext($x,$y,$font_size,iconv('UTF-8', 'ISO-8859-2',$_TITLE));
+    $pdf->addtext($x,$y,$font_size, $_TITLE);
     $y -= $lineh;
-    $pdf->addtext($x,$y,$font_size,iconv('UTF-8', 'ISO-8859-2',trans('Customer ID: $a',sprintf('%04d',$data['id']))));
+    $pdf->addtext($x,$y,$font_size, trans('Customer ID: $a',sprintf('%04d',$data['id'])));
 }
 
 $balance = $_POST['balance'] ? $_POST['balance'] : 0;
@@ -121,7 +121,7 @@ $pdf = init_pdf('A4', 'landscape', trans('Form of Cash Transfer'));
 
 $pdf->setLineStyle(2);
 
-$id = $pdf->getFirstPageId();
+//$id = $pdf->getFirstPageId();
 
 $count = sizeof($list);;
 $i = 0;
@@ -133,7 +133,8 @@ foreach($list as $row)
     main_form(440,0,$row);
     main_form(440,310,$row);
     $i++;
-    if($i < $count) $id = $pdf->newPage(1, $id, 'after');
+    //if($i < $count) $id = $pdf->newPage(1, $id, 'after');
+    if($i < $count) $pdf->newPage();
 }
 
 close_pdf($pdf);

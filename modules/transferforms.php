@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -38,13 +38,13 @@ function main_fill($x,$y,$scale)
 	$pdf->line(978*$scale+$x,726*$scale+$y,978*$scale+$x,696*$scale+$y);
         $pdf->line(978*$scale+$x,726*$scale+$y,948*$scale+$x,726*$scale+$y);
     }
-    $pdf->addtext(15*$scale+$x,680*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2', $_NAME));
-    $pdf->addtext(15*$scale+$x,617*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2', $_ADDRESS." ".$_ZIP." ".$_CITY));
+    $pdf->addtext(15*$scale+$x,680*$scale+$y,30*$scale, $_NAME);
+    $pdf->addtext(15*$scale+$x,617*$scale+$y,30*$scale, $_ADDRESS." ".$_ZIP." ".$_CITY);
     $pdf->addtext(15*$scale+$x,555*$scale+$y,30*$scale, bankaccount($invoice['customerid'], $invoice['account']));
     $pdf->addtext(550*$scale+$x,497*$scale+$y,30*$scale,number_format($invoice['total'],2,',',''));
-    $pdf->addtext(15*$scale+$x,375*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',$invoice['name']));
-    $pdf->addtext(15*$scale+$x,315*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',$invoice['address']."; ".$invoice['zip']." ".$invoice['city']));
-    $pdf->addtext(15*$scale+$x,250*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',trans('Payment for invoice No. $a', $invoice['t_number'])));
+    $pdf->addtext(15*$scale+$x,375*$scale+$y,30*$scale, $invoice['name']);
+    $pdf->addtext(15*$scale+$x,315*$scale+$y,30*$scale, $invoice['address']."; ".$invoice['zip']." ".$invoice['city']);
+    $pdf->addtext(15*$scale+$x,250*$scale+$y,30*$scale, trans('Payment for invoice No. $a', $invoice['t_number']));
 }
 
 function simple_fill_mip($x,$y,$scale)
@@ -61,23 +61,23 @@ function simple_fill_mip($x,$y,$scale)
         $pdf->line(370*$scale+$x,726*$scale+$y,370*$scale+$x,696*$scale+$y);
 	$pdf->line(370*$scale+$x,726*$scale+$y,340*$scale+$x,726*$scale+$y);
     }
-    $pdf->addtext(15*$scale+$x,560*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',$_SHORT_NAME));
-    $pdf->addtext(15*$scale+$x,525*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',$_ADDRESS));
-    $pdf->addtext(15*$scale+$x,490*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',$_ZIP." ".$_CITY));
+    $pdf->addtext(15*$scale+$x,560*$scale+$y,30*$scale, $_SHORT_NAME);
+    $pdf->addtext(15*$scale+$x,525*$scale+$y,30*$scale, $_ADDRESS);
+    $pdf->addtext(15*$scale+$x,490*$scale+$y,30*$scale, $_ZIP." ".$_CITY);
     $pdf->addtext(15*$scale+$x,680*$scale+$y,30*$scale, substr(bankaccount($invoice['customerid'], $invoice['account']),0,17));
     $pdf->addtext(15*$scale+$x,620*$scale+$y,30*$scale, substr(bankaccount($invoice['customerid'], $invoice['account']),18,200));
     $pdf->addtext(15*$scale+$x,435*$scale+$y,30*$scale,'**'.number_format($invoice['total'],2,',','').'**');
     //$pdf->addtext(15*$scale+$x,310*$scale+$y,30*$scale,$invoice['name']);
 
     $font_size=30;
-    while ($pdf->getTextWidth($font_size*$scale, iconv('UTF-8', 'ISO-8859-2',$invoice['name']))>135)
+    while ($pdf->getTextWidth($font_size*$scale, $invoice['name'])>135)
 	$font_size=$font_size-1;    
-    $pdf->addtext(15*$scale+$x,310*$scale+$y,$font_size*$scale, iconv('UTF-8', 'ISO-8859-2',$invoice['name']));
+    $pdf->addtext(15*$scale+$x,310*$scale+$y,$font_size*$scale, $invoice['name']);
     $font_size=30;
-    while ($pdf->getTextWidth($font_size*$scale, iconv('UTF-8', 'ISO-8859-2',$invoice['address']))>135)
+    while ($pdf->getTextWidth($font_size*$scale, $invoice['address'])>135)
 	$font_size=$font_size-1;    
-    $pdf->addtext(15*$scale+$x,275*$scale+$y,$font_size*$scale, iconv('UTF-8', 'ISO-8859-2',$invoice['address']));
-    $pdf->addtext(15*$scale+$x,240*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',$invoice['zip']." ".$invoice['city']));
+    $pdf->addtext(15*$scale+$x,275*$scale+$y,$font_size*$scale, $invoice['address']);
+    $pdf->addtext(15*$scale+$x,240*$scale+$y,30*$scale, $invoice['zip']." ".$invoice['city']);
 
     $font_size=30;
     while ($pdf->getTextWidth($font_size*$scale,trans('Invoice No. $a', $invoice['t_number']))>135)
@@ -91,11 +91,11 @@ function address_box($x,$y,$scale)
     global $pdf,$_NAME,$_ADDRESS,$_ZIP,$_CITY,$_SERVICE,$_SHORT_NAME,$invoice;
 
     $font_size=30;
-    while ($pdf->getTextWidth($font_size*$scale, iconv('UTF-8', 'ISO-8859-2',$invoice['name']))>240)
+    while ($pdf->getTextWidth($font_size*$scale, $invoice['name'])>240)
 	$font_size=$font_size-1;
-    $pdf->addtext(5*$scale+$x,310*$scale+$y,$font_size*$scale, iconv('UTF-8', 'ISO-8859-2',$invoice['name']));
-    $pdf->addtext(5*$scale+$x,275*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',$invoice['address']));
-    $pdf->addtext(5*$scale+$x,240*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',$invoice['zip']." ".$invoice['city']));
+    $pdf->addtext(5*$scale+$x,310*$scale+$y,$font_size*$scale, $invoice['name']);
+    $pdf->addtext(5*$scale+$x,275*$scale+$y,30*$scale, $invoice['address']);
+    $pdf->addtext(5*$scale+$x,240*$scale+$y,30*$scale, $invoice['zip']." ".$invoice['city']);
 }
 
 require_once(LIB_DIR . '/ezpdf.php');
@@ -104,7 +104,7 @@ $pdf = init_pdf('A4', 'portrait', trans('Form of Cash Transfer'));
 
 $pdf->setLineStyle(2);
 
-$id = $pdf->getFirstPageId();
+//$id = $pdf->getFirstPageId();
 
 $control_lines = 0;
 
@@ -157,7 +157,8 @@ foreach($ids as $idx => $invoiceid)
     simple_fill_mip(5,313,0.395);
     address_box(390,600,0.395);
     $i++;
-    if($i < $count) $id = $pdf->newPage(1,$id,'after');
+    //if($i < $count) $id = $pdf->newPage(1,$id,'after');
+    if($i < $count) $pdf->newPage();
 }
 
 close_pdf($pdf);
