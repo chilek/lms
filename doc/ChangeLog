@@ -15,6 +15,7 @@ version ?.??.?? (????-??-??):
   - added visualisation of radio sectors on network device map [chilan]
   - added filter in network device list which allows to select device status
     and investment project to which device belong to [chilan]
+  - added in debt above 100% and 200% filters in add message form [chilan]
 
 version 1.11.16 (2015-03-31):
 
