@@ -75,7 +75,7 @@ class ConfigHelper
         
         if ($section_name === 'privileges') {
             $value = self::getConfig($name);
-            return $value ? (preg_match('/^hide/', $variable_name) ? false : true) : false;
+	    return $value;
         }
 
         if (!LMSConfig::getConfig()->hasSection($section_name)) {
