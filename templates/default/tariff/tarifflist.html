@@ -7,30 +7,30 @@
     <THEAD>
 	<TR {tip text="Click on column name to change sorting order"}>
 		<TD WIDTH="93%" NOWRAP>
-			<IMG SRC="img/money.gif" ALT=""> <A href="?m=tarifflist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order eq "name"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<IMG SRC="img/info1.gif" ALT=""> <A href="?m=tarifflist&o=description{if $listdata.direction eq "asc" && $listdata.order eq "description"},desc{/if}">{trans("Description:")}</A> {if $listdata.order eq "description"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG SRC="img/money.gif" ALT=""> <A href="?m=tarifflist&o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<IMG SRC="img/info1.gif" ALT=""> <A href="?m=tarifflist&o=description{if $listdata.direction == "asc" && $listdata.order == "description"},desc{/if}">{trans("Description:")}</A> {if $listdata.order == "description"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" align="right" NOWRAP>
-			<A href="?m=tarifflist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=tarifflist&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order == "id"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" align="right" NOWRAP>
-			<A href="?m=tarifflist&o=downrate{if $listdata.direction eq "asc" && $listdata.order eq "downrate"},desc{/if}">{trans("Downrate:")}</A> {if $listdata.order eq "downrate"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<A href="?m=tarifflist&o=uprate{if $listdata.direction eq "asc" && $listdata.order eq "uprate"},desc{/if}">{trans("Uprate")}:</A> {if $listdata.order eq "uprate"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=tarifflist&o=downrate{if $listdata.direction == "asc" && $listdata.order == "downrate"},desc{/if}">{trans("Downrate:")}</A> {if $listdata.order == "downrate"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<A href="?m=tarifflist&o=uprate{if $listdata.direction == "asc" && $listdata.order == "uprate"},desc{/if}">{trans("Uprate")}:</A> {if $listdata.order == "uprate"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" align="right" NOWRAP>
-			<A href="?m=tarifflist&o=uprate{if $listdata.direction eq "asc" && $listdata.order eq "downceil"},desc{/if}">{trans("Downceil:")}</A> {if $listdata.order eq "downceil"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<A href="?m=tarifflist&o=upceil{if $listdata.direction eq "asc" && $listdata.order eq "upceil"},desc{/if}">{trans("Upceil:")}</A> {if $listdata.order eq "upceil"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=tarifflist&o=uprate{if $listdata.direction == "asc" && $listdata.order == "downceil"},desc{/if}">{trans("Downceil:")}</A> {if $listdata.order == "downceil"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<A href="?m=tarifflist&o=upceil{if $listdata.direction == "asc" && $listdata.order == "upceil"},desc{/if}">{trans("Upceil:")}</A> {if $listdata.order == "upceil"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD NOWRAP WIDTH="1%" align="right" NOWRAP>
-			<A href="?m=tarifflist&o=value{if $listdata.direction eq "asc" && $listdata.order eq "value"},desc{/if}"><B>{trans("Value:")}</B></A> {if $listdata.order eq "value"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<A href="?m=tarifflist&o=value{if $listdata.direction == "asc" && $listdata.order == "value"},desc{/if}"><B>{trans("Value:")}</B></A> {if $listdata.order == "value"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			{trans("Tax:")}
 		</TD>
 		<TD WIDTH="1%" align="right" NOWRAP>
-			<A href="?m=tarifflist&o=count{if $listdata.direction eq "asc" && $listdata.order eq "count"},desc{/if}">{trans("Assigned:")}</A> {if $listdata.order eq "count"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=tarifflist&o=count{if $listdata.direction == "asc" && $listdata.order == "count"},desc{/if}">{trans("Assigned:")}</A> {if $listdata.order == "count"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" align="right" NOWRAP>
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')}
-			<A href="?m=tarifflist&o=income{if $listdata.direction eq "asc" && $listdata.order eq "income"},desc{/if}">{trans("Avg. monthly income:")}</A> {if $listdata.order eq "income"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=tarifflist&o=income{if $listdata.direction == "asc" && $listdata.order == "income"},desc{/if}">{trans("Avg. monthly income:")}</A> {if $listdata.order == "income"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 			{/if}
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT">
@@ -50,27 +50,27 @@
 				<SELECT SIZE="1" NAME="t" ONCHANGE="document.choosefilter.submit();">
 					<OPTION value="0"{if !$listdata.type} SELECTED{/if}>{trans("- all -")}</OPTION>
 					{foreach from=$_TARIFFTYPES item=item key=key}
-					<OPTION value="{$key}" {if $listdata.type eq $key} SELECTED {/if}>{$item}</OPTION>
+					<OPTION value="{$key}" {if $listdata.type == $key} SELECTED {/if}>{$item}</OPTION>
 					{/foreach}
 				</SELECT>
 				{trans("Promotion:")}
 				<SELECT SIZE="1" NAME="p" ONCHANGE="document.choosefilter.submit();">
 					<OPTION value="0"{if !$listdata.promotionid} SELECTED{/if}>{trans("- all -")}</OPTION>
 					{section name=promotions loop=$promotions}
-					<OPTION value="{$promotions[promotions].id}" {if $listdata.promotionid eq $promotions[promotions].id} SELECTED {/if}>{$promotions[promotions].name|truncate:50:"...":true}</OPTION>
+					<OPTION value="{$promotions[promotions].id}" {if $listdata.promotionid == $promotions[promotions].id} SELECTED {/if}>{$promotions[promotions].name|truncate:50:"...":true}</OPTION>
 					{/section}
 				</SELECT>
 				{trans("Status:")}
 				<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
 					<OPTION value=""{if !$listdata.state} SELECTED{/if}>{trans("- all -")}</OPTION>
-					<OPTION value="1"{if $listdata.state eq 1} SELECTED{/if}>{trans("enabled")}</OPTION>
-					<OPTION value="2"{if $listdata.state eq 2} SELECTED{/if}>{trans("disabled")}</OPTION>
+					<OPTION value="1"{if $listdata.state == 1} SELECTED{/if}>{trans("enabled")}</OPTION>
+					<OPTION value="2"{if $listdata.state == 2} SELECTED{/if}>{trans("disabled")}</OPTION>
 				</SELECT>
 				{trans("Group:")}
 				<SELECT SIZE="1" NAME="g" ONCHANGE="document.choosefilter.submit();">
 					<OPTION value="0"{if !$listdata.customergroupid} SELECTED{/if}>{trans("- all -")}</OPTION>
 					{section name=customergroups loop=$customergroups}
-					<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroupid eq $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"...":true}</OPTION>
+					<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroupid == $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"...":true}</OPTION>
 					{/section}
 				</SELECT>
 			</FORM>

@@ -29,7 +29,7 @@
 		</TD>
 		<TD WIDTH="99%">
 			<INPUT class="radio light" type="radio" name="message[sender]" id="sender0" value="user" CHECKED><label for="sender0">{trans("user")}</label>
-			<INPUT class="radio light" type="radio" name="message[sender]" id="sender1" value="customer" {if $message.sender eq 'customer'}CHECKED{/if}><label for="sender1">{trans("customer")}</label>
+			<INPUT class="radio light" type="radio" name="message[sender]" id="sender1" value="customer" {if $message.sender == 'customer'}CHECKED{/if}><label for="sender1">{trans("customer")}</label>
 		</TD>
 	</TR>
 	<TR>

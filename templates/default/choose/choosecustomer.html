@@ -4,7 +4,7 @@
 <meta name="GENERATOR" content="LMS {$layout.lmsv}">
 <meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
 <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
-<title>::: LMS :{if $layout.pagetitle neq ""} {$layout.pagetitle} :{/if}::</title>
+<title>::: LMS :{if $layout.pagetitle != ""} {$layout.pagetitle} :{/if}::</title>
 <link href="img/style.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="img/common.js"></script>
 {if $js}<script type="text/javascript">
@@ -19,7 +19,7 @@
 	<frame scrolling="always" frameborder="0" marginheight="0" marginwidth="0" name="main" noresize src="?m=choosecustomer&p=main">
 </frameset>
 {/if}
-{if $part eq "top"}
+{if $part == "top"}
 <body>
 <form name="search" method="post" action="?m=choosecustomer&p=main" target="main">
 <input type="submit" class="hiddenbtn">
@@ -41,7 +41,7 @@ document.search.searchcustomer.focus();
 </script>
 </body>
 {/if}
-{if $part eq "main"}
+{if $part == "main"}
 <body>
 <table cellpadding="3" width="100%">
 	{cycle values="light,lucid" print=false}
@@ -50,7 +50,7 @@ document.search.searchcustomer.focus();
 		<td {$customerlist[customerlist].id} style="vertical-align: top;" onClick="sendvalue(targetfield,'{$customerlist[customerlist].id}');">
 			<b>{$customerlist[customerlist].customername}</b>
 			({$customerlist[customerlist].id|string_format:"%04d"})<br>
-			{$customerlist[customerlist].address}{if $customerlist[customerlist].city neq ""},{/if} {$customerlist[customerlist].zip} {$customerlist[customerlist].city}
+			{$customerlist[customerlist].address}{if $customerlist[customerlist].city != ""},{/if} {$customerlist[customerlist].zip} {$customerlist[customerlist].city}
 		</td>
 		<td width="1%" align="right" style="vertical-align: top;" onClick="sendvalue(targetfield,'{$customerlist[customerlist].id}');">
 			{foreach from=$customerlist[customerlist].nodes item=node}

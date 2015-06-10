@@ -79,15 +79,15 @@
 			<TABLE cellpadding="3" width="100%">
 				<TR>
 					<TD style="width: 1%;">
-						{if $customeradd.status eq "3" || !$customeradd.status}<img src="img/customer.gif" alt="">{/if}
-						{if $customeradd.status eq "2"}<img src="img/wait.gif" alt="">{/if}
-						{if $customeradd.status eq "1"}<img src="img/unk.gif" alt="">{/if}
+						{if $customeradd.status == "3" || !$customeradd.status}<img src="img/customer.gif" alt="">{/if}
+						{if $customeradd.status == "2"}<img src="img/wait.gif" alt="">{/if}
+						{if $customeradd.status == "1"}<img src="img/unk.gif" alt="">{/if}
 					</TD>
 					<TD style="width: 99%;">
 						<SELECT size="1" name="customeradd[status]" {tip text="Select customer state" trigger="status"}>
-							<OPTION value="3"{if $customeradd.status eq "3"} SELECTED{/if}>{trans("connected<!singular>")}</OPTION>
-							<OPTION value="2"{if $customeradd.status eq "2"} SELECTED{/if}>{trans("waiting")}</option>
-							<OPTION value="1"{if $customeradd.status eq "1"} SELECTED{/if}>{trans("interested<!singular>")}</OPTION>
+							<OPTION value="3"{if $customeradd.status == "3"} SELECTED{/if}>{trans("connected<!singular>")}</OPTION>
+							<OPTION value="2"{if $customeradd.status == "2"} SELECTED{/if}>{trans("waiting")}</option>
+							<OPTION value="1"{if $customeradd.status == "1"} SELECTED{/if}>{trans("interested<!singular>")}</OPTION>
 						</SELECT>
 					</TD>
 				</TR>

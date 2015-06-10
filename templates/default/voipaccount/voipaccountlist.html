@@ -15,33 +15,33 @@
         <tr {tip text="Click on column name to change sorting order"}>
             <th nowrap>
                 <img src="img/voip.gif" alt=""> 
-                <a href="?m=voipaccountlist&o=login{if $listdata.direction eq "asc" && $listdata.order eq "login"},desc{/if}">{trans("Login:")}</a> 
-                {if $listdata.order eq "login"}
-                <img src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">
+                <a href="?m=voipaccountlist&o=login{if $listdata.direction == "asc" && $listdata.order == "login"},desc{/if}">{trans("Login:")}</a> 
+                {if $listdata.order == "login"}
+                <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
                 {/if}
                 <br>
                 <img src="img/customer.gif" alt=""> 
-                <a href="?m=voipaccountlist&o=owner{if $listdata.direction eq "asc" && $listdata.order eq "owner"},desc{/if}">{trans("Customer:")}</a> 
-                {if $listdata.order eq "owner"}
-                <img src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">
+                <a href="?m=voipaccountlist&o=owner{if $listdata.direction == "asc" && $listdata.order == "owner"},desc{/if}">{trans("Customer:")}</a> 
+                {if $listdata.order == "owner"}
+                <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
                 {/if}
             </th>
             <th nowrap>
-                <a href="?m=voipaccountlist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{trans("ID:")}</a> 
-                {if $listdata.order eq "id"}
-                <img src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">
+                <a href="?m=voipaccountlist&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</a> 
+                {if $listdata.order == "id"}
+                <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
                 {/if}
             </th>
             <th nowrap>
-                <a href="?m=voipaccountlist&o=phone{if $listdata.direction eq "asc" && $listdata.order eq "phone"},desc{/if}">{trans("Phone number:")}</a> 
-                {if $listdata.order eq "phone"}
-                <img src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">
+                <a href="?m=voipaccountlist&o=phone{if $listdata.direction == "asc" && $listdata.order == "phone"},desc{/if}">{trans("Phone number:")}</a> 
+                {if $listdata.order == "phone"}
+                <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
                 {/if}
             </th>
             <th nowrap>
-                <a href="?m=voipaccountlist&o=passwd{if $listdata.direction eq "asc" && $listdata.order eq "passwd"},desc{/if}">{trans("Password:")}</a> 
-                {if $listdata.order eq "passwd"}
-                <img src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">
+                <a href="?m=voipaccountlist&o=passwd{if $listdata.direction == "asc" && $listdata.order == "passwd"},desc{/if}">{trans("Password:")}</a> 
+                {if $listdata.order == "passwd"}
+                <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
                 {/if}
             </th>
             <th align="right">
@@ -60,7 +60,7 @@
                         <select size="1" name="g" onchange="document.choosefilter.submit();">
                             <option value="" {if !$listdata.customergroup} selected {/if}>{trans("- all groups -")}</option>
                             {section name=customergroups loop=$customergroups}
-                            <option value="{$customergroups[customergroups].id}" {if $listdata.customergroup eq $customergroups[customergroups].id} selected {/if}>
+                            <option value="{$customergroups[customergroups].id}" {if $listdata.customergroup == $customergroups[customergroups].id} selected {/if}>
                                 {$customergroups[customergroups].name|truncate:30:"...":true}
                             </option>
                             {/section}
@@ -117,7 +117,7 @@
                 </nobr>
             </td>
         </tr>
-        {if $voipaccountlist[voipaccountlist.index_next].ownerid eq $voipaccountlist[voipaccountlist].ownerid && $listdata.order eq "owner"}{cycle print=false}{/if}
+        {if $voipaccountlist[voipaccountlist.index_next].ownerid == $voipaccountlist[voipaccountlist].ownerid && $listdata.order == "owner"}{cycle print=false}{/if}
         {sectionelse}
         <tr>
             <td class="empty-table" colspan="5">

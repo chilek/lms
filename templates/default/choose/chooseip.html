@@ -4,7 +4,7 @@
 <meta name="GENERATOR" content="LMS {$layout.lmsv}">
 <meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
 <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
-<title>::: LMS :{if $layout.pagetitle neq ""} {$layout.pagetitle} :{/if}::</title>
+<title>::: LMS :{if $layout.pagetitle != ""} {$layout.pagetitle} :{/if}::</title>
 <link href="img/style.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="img/common.js"></script>
 {if $js}<script type="text/javascript">
@@ -18,7 +18,7 @@
 	<frame scrolling="no" frameborder="0" marginheight="0" marginwidth="0" name="down" noresize src="?m=chooseip&p=down{if $device}&device={$device}{/if}">
 </frameset>
 {/if}
-{if $part eq "main"}
+{if $part == "main"}
 <body>
 	<script type="text/javascript">
 	<!--
@@ -34,9 +34,9 @@
 	<table width="100%" cellpadding="1">
 	{section name=iplist loop=$network.nodes.address}
 	{if $smarty.section.iplist.index is even}<TR>{/if}
-		<TD width="50%" align="center" class="highlight" {if $network.nodes.name[iplist] eq ""} onClick="send_address_settings('{$network.nodes.address[iplist]}');"{/if}>
-			{if $network.nodes.name[iplist] neq ""}
-				{if $device && $network.nodes.name[iplist] eq "<b>GATEWAY</b>"}
+		<TD width="50%" align="center" class="highlight" {if $network.nodes.name[iplist] == ""} onClick="send_address_settings('{$network.nodes.address[iplist]}');"{/if}>
+			{if $network.nodes.name[iplist] != ""}
+				{if $device && $network.nodes.name[iplist] == "<b>GATEWAY</b>"}
 					<A href="javascript: void(0);" onClick="send_address_settings('{$network.nodes.address[iplist]}');">{$network.nodes.name[iplist]}</A>
 				{else}
 					<FONT class="blend">{$network.nodes.name[iplist]}</FONT>
@@ -58,7 +58,7 @@
 	</table>
 </body>
 {/if}
-{if $part eq "top"}
+{if $part == "top"}
 <body>
 <table cellpadding="5" width="100%">
 	<tr>
@@ -72,7 +72,7 @@
 		<td class="fall light" align="center">
 			<SELECT SIZE="1" onchange="parent.location.href='?m=chooseip{if $device}&device={$device}{/if}&netid='+document.selectnet.elements['netid'].value" NAME="netid">
 				{section name=networks loop=$networks}
-				<OPTION VALUE="{$networks[networks].id}" {if $networks[networks].id eq $netid} SELECTED {/if} {if $networks[networks].disabled eq 1} class="alert" {/if}>{$networks[networks].name|truncate:20:"":true}: {$networks[networks].address}/{$networks[networks].prefix}</OPTION>
+				<OPTION VALUE="{$networks[networks].id}" {if $networks[networks].id == $netid} SELECTED {/if} {if $networks[networks].disabled == 1} class="alert" {/if}>{$networks[networks].name|truncate:20:"":true}: {$networks[networks].address}/{$networks[networks].prefix}</OPTION>
 				{sectionelse}
 				<OPTION VALUE="0">{trans("You don't have any IP network.")}</OPTION>
 				{/section}
@@ -83,7 +83,7 @@
 </table>
 </body>
 {/if}
-{if $part eq "down"}
+{if $part == "down"}
 <body>
 <table cellpadding="5" width="100%">
 	<tr>

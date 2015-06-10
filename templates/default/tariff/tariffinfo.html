@@ -251,7 +251,7 @@
 	<TR>
 	        <TD ALIGN="RIGHT" COLSPAN="2">
 			<A HREF="?m=tariffedit&id={$tariff.id}" ACCESSKEY="E">{trans("Edit")} <IMG SRC="img/edit.gif" ALT=""></A>
-			{if $tariff.count eq 0}
+			{if $tariff.count == 0}
 			<A HREF="?m=tariffdel&id={$tariff.id}" onclick="return confirmLink(this,'{trans("Are you sure, you want to delete that tariff?")}');">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
 			{/if}
 		</TD>
@@ -275,7 +275,7 @@
                                                 <SELECT SIZE="1" NAME="netid" ONCHANGE="javascript:changeNetwork();">
                                                         <OPTION value="0" {if !$netid}SELECTED{/if}>{trans("- all networks -")}</OPTION>
                                                         {section name=networks loop=$networks}
-                                                        <OPTION value="{$networks[networks].id}" {if $networks[networks].id eq $netid}SELECTED{/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
+                                                        <OPTION value="{$networks[networks].id}" {if $networks[networks].id == $netid}SELECTED{/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
                                                         {/section}
                                                 </SELECT>&nbsp;
                                         </FORM>
@@ -314,7 +314,7 @@
                                                         <B><A HREF="javascript:document.tmove.submit();" onClick="return confirmForm(document.tmove.elements['is_sure'],'{trans("Are you sure, you want to move customers to selected tariff?")}','1');">{trans("Move customers to subscription:")}</A> </B>
                                                         <SELECT SIZE="1" NAME="to">
                                                                 {section name=lt loop=$tariffs}
-                                                                {if $tariffs[lt].id neq $tariff.id}<OPTION VALUE="{$tariffs[lt].id}">{$tariffs[lt].name} ({$tariffs[lt].value|money_format} )</OPTION>{/if}
+                                                                {if $tariffs[lt].id != $tariff.id}<OPTION VALUE="{$tariffs[lt].id}">{$tariffs[lt].name} ({$tariffs[lt].value|money_format} )</OPTION>{/if}
                                                                 {/section}
                                                         </SELECT>
                                                 </FORM>

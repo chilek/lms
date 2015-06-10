@@ -4,7 +4,7 @@
 <meta name="GENERATOR" content="LMS {$layout.lmsv}">
 <meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
 <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
-<title>::: LMS :{if $layout.pagetitle neq ""} {$layout.pagetitle} :{/if}::</title>
+<title>::: LMS :{if $layout.pagetitle != ""} {$layout.pagetitle} :{/if}::</title>
 <link href="img/style.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="img/common.js"> </script>
 {if $js}<script type="text/javascript">
@@ -19,26 +19,26 @@
 	<frame scrolling="always" frameborder="0" marginheight="0" marginwidth="0" name="m" noresize src="?m=choosemac&p=main">
 </frameset>
 {/if}
-{if $part eq "main"}
+{if $part == "main"}
 <body>
 	<table width="100%" cellpadding="1">
 	{section name=maclist loop=$maclist.mac}
-	<TR class="highlight" {if $maclist.nodename[maclist] eq ""} onClick="sendvalue(targetfield,'{$maclist.mac[maclist]}');"{/if}>
+	<TR class="highlight" {if $maclist.nodename[maclist] == ""} onClick="sendvalue(targetfield,'{$maclist.mac[maclist]}');"{/if}>
 		<TD align="center">
-			{if $maclist.nodename[maclist] eq ""}
+			{if $maclist.nodename[maclist] == ""}
 			<a href="javascript: void(0);" onclick="sendvalue(targetfield,'{$maclist.mac[maclist]}');">
-				{if $smarty.server.REMOTE_ADDR eq $maclist.ip[maclist]}<font class="red"><B>{/if}{$maclist.mac[maclist]}{if $smarty.server.REMOTE_ADDR eq $maclist.ip[maclist]}</B></font>{/if}
+				{if $smarty.server.REMOTE_ADDR == $maclist.ip[maclist]}<font class="red"><B>{/if}{$maclist.mac[maclist]}{if $smarty.server.REMOTE_ADDR == $maclist.ip[maclist]}</B></font>{/if}
 			</A>
 			{else}
 			<font class="blend">{$maclist.mac[maclist]}</font>
 			{/if}
 		</td>
 		<TD align="center">
-			{if $maclist.nodename[maclist] eq ""}
+			{if $maclist.nodename[maclist] == ""}
 			<a href="javascript: void(0);" onclick="sendvalue(targetfield,'{$maclist.mac[maclist]}');">
-				{if $smarty.server.REMOTE_ADDR eq $maclist.ip[maclist]}<font class="alert">{/if}
+				{if $smarty.server.REMOTE_ADDR == $maclist.ip[maclist]}<font class="alert">{/if}
 						{$maclist.ip[maclist]}
-				{if $smarty.server.REMOTE_ADDR eq $maclist.ip[maclist]}</font>{/if}
+				{if $smarty.server.REMOTE_ADDR == $maclist.ip[maclist]}</font>{/if}
 			</A>
 			{else}
 			<font class="blend">{$maclist.nodename[maclist]}</font>
@@ -58,7 +58,7 @@
 	</table>
 </body>
 {/if}
-{if $part eq "top"}
+{if $part == "top"}
 <body>
 <table cellpadding="5" width="100%">
 	<tr>

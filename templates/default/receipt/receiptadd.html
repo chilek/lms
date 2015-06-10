@@ -68,7 +68,7 @@
 			<SELECT SIZE="1" NAME="receipt[regid]" {tip text="Select cash registry" trigger="regid"}>
 				<OPTION VALUE="0">{trans("- select registry -")}</OPTION>
 				{foreach from=$cashreglist item=c}
-				<OPTION VALUE="{$c.id}"{if $c.id eq $receipt.regid} SELECTED{/if}>{$c.name|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
+				<OPTION VALUE="{$c.id}"{if $c.id == $receipt.regid} SELECTED{/if}>{$c.name|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
@@ -130,7 +130,7 @@
 				<SELECT SIZE="1" NAME="customer"  onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value; document.getElementById('radio_customer').checked=true;" {tip trigger="customerid"}>
 				    <OPTION VALUE="0">{trans("... select customer ...")}</OPTION>
 				    {foreach from=$customerlist item=c}
-				    <OPTION VALUE="{$c.id}"{if $c.id eq $customer.id || $receipt.customerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
+				    <OPTION VALUE="{$c.id}"{if $c.id == $customer.id || $receipt.customerid == $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
 				    {/foreach}
 				</SELECT>
 				{trans("or Customer ID:")}

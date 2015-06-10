@@ -183,7 +183,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 			<SELECT size="1" name="customer" onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value">
 				<OPTION value="0">{trans("... select customer ...")}</OPTION>
 				{foreach from=$customers item=c}
-				<OPTION value="{$c.id}"{if $c.id eq $customer.id || $invoice.customerid eq $c.id} selected{/if}>{$c.customername|truncate:"40":"...":true} ({$c.id|string_format:"%04d"})</OPTION>
+				<OPTION value="{$c.id}"{if $c.id == $customer.id || $invoice.customerid == $c.id} selected{/if}>{$c.customername|truncate:"40":"...":true} ({$c.id|string_format:"%04d"})</OPTION>
 				{/foreach}
 			</SELECT>
 			{trans("or Customer ID:")}

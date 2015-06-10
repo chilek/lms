@@ -182,7 +182,7 @@
 						<SELECT size="1" name="message[nodegroup]" {tip trigger="nodegroup" text="Select nodes group"}>
 							<OPTION value="" {if !$listdata.nodegroup} selected{/if}>{trans("- all groups -")}</OPTION>
 							{foreach from=$nodegroups item=nodegroup}
-							<OPTION value="{$nodegroup.id}" {if $message.nodegroup eq $nodegroup.id} selected{/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
+							<OPTION value="{$nodegroup.id}" {if $message.nodegroup == $nodegroup.id} selected{/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
 							{/foreach}
 						</SELECT>
 					</TD>

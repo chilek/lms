@@ -57,11 +57,11 @@
     <THEAD>
 	<TR>
 		<TD WIDTH="1%" nowrap>
-			<A href="?m=receiptlist&o=cdate{if $listdata.direction eq "asc" && $listdata.order eq "cdate"},desc{/if}">{trans("Date:")}</A> {if $listdata.order eq "cdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<A href="?m=receiptlist&o=user{if $listdata.direction eq "asc" && $listdata.order eq "user"},desc{/if}">{trans("User:")}</A> {if $listdata.order eq "user"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=receiptlist&o=cdate{if $listdata.direction == "asc" && $listdata.order == "cdate"},desc{/if}">{trans("Date:")}</A> {if $listdata.order == "cdate"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<A href="?m=receiptlist&o=user{if $listdata.direction == "asc" && $listdata.order == "user"},desc{/if}">{trans("User:")}</A> {if $listdata.order == "user"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" nowrap>
-			<A href="?m=receiptlist&o=number{if $listdata.direction eq "asc" && $listdata.order eq "number"},desc{/if}">{trans("Number:")}</A> {if $listdata.order eq "number"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=receiptlist&o=number{if $listdata.direction == "asc" && $listdata.order == "number"},desc{/if}">{trans("Number:")}</A> {if $listdata.order == "number"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" nowrap>
 			{trans("Income:")}
@@ -70,7 +70,7 @@
 			{trans("Expense:")}
 		</TD>
 		<TD WIDTH="40%" nowrap>
-			<A href="?m=receiptlist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}">{trans("For:")}</A> {if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=receiptlist&o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}">{trans("For:")}</A> {if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="50%" nowrap>
 			{trans("Title:")}
@@ -88,13 +88,13 @@
 				<B>{trans("Filter:")} </B> 
 				<INPUT name="search" type="text" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>&nbsp;
 				<SELECT size="1" name="cat">
-					<OPTION value=""{if $listdata.cat eq ""} SELECTED{/if}>{trans("- select filter -")}</OPTION>
-					<OPTION value="number"{if $listdata.cat eq "number"} SELECTED{/if}>{trans("number")}</OPTION>
-					<OPTION value="value"{if $listdata.cat eq "value"} SELECTED{/if}>{trans("value")}</OPTION>
-					<OPTION value="name"{if $listdata.cat eq "name"} SELECTED{/if}>{trans("customer name")}</OPTION>
-					<OPTION value="customerid"{if $listdata.cat eq "customerid"} SELECTED{/if}>{trans("customer ID")}</OPTION>
-					<OPTION value="ten"{if $listdata.cat eq "ten"} SELECTED{/if}>{trans("TEN")}</OPTION>
-					<OPTION value="address"{if $listdata.cat eq "address"} SELECTED{/if}>{trans("address")}</OPTION>
+					<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("- select filter -")}</OPTION>
+					<OPTION value="number"{if $listdata.cat == "number"} SELECTED{/if}>{trans("number")}</OPTION>
+					<OPTION value="value"{if $listdata.cat == "value"} SELECTED{/if}>{trans("value")}</OPTION>
+					<OPTION value="name"{if $listdata.cat == "name"} SELECTED{/if}>{trans("customer name")}</OPTION>
+					<OPTION value="customerid"{if $listdata.cat == "customerid"} SELECTED{/if}>{trans("customer ID")}</OPTION>
+					<OPTION value="ten"{if $listdata.cat == "ten"} SELECTED{/if}>{trans("TEN")}</OPTION>
+					<OPTION value="address"{if $listdata.cat == "address"} SELECTED{/if}>{trans("address")}</OPTION>
 				</SELECT>&nbsp;
 				</div>
 				<div class="calendar" style="float: left;">

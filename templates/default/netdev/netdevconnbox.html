@@ -75,7 +75,7 @@
 	{/section}
 	<TR>
 		<TD class="ftop dark text-center nobr" COLSPAN="6">
-			{if $netdevinfo.ports eq $netdevinfo.takenports}
+			{if $netdevinfo.ports == $netdevinfo.takenports}
 			<span class="bold">{trans("All ports in that device are in use.")}</span>
 			{elseif !$restnetdevlist}
 			<span class="bold">{trans("No such devices for connection.")}</span>

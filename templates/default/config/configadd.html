@@ -27,9 +27,9 @@
 			<B>{trans("Section:")}</B>
 			<SELECT size="1" name="config[section]" {tip text="Select section" trigger="section"} onchange="javascript:change_section(this.options[this.selectedIndex].value);">
 				{foreach $sections as $section}
-				<OPTION value="{$section}"{if $config.section eq $section} selected{/if}>{$section}</OPTION>
+				<OPTION value="{$section}"{if $config.section == $section} selected{/if}>{$section}</OPTION>
 				{/foreach}
-				<OPTION value=""{if $config.section eq ""} selected{/if}>{trans("- new section -")}</OPTION>
+				<OPTION value=""{if $config.section == ""} selected{/if}>{trans("- new section -")}</OPTION>
 			</SELECT>&nbsp;
 			<INPUT type="text" name="config[newsection]" id="newsection" value="{$config.newsection}"{if $config.section != ""} style="display: none;"{/if} {tip text="Enter section name" trigger="newsection"}>
 		</TD>

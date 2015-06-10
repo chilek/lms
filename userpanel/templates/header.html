@@ -7,7 +7,7 @@
 <link type="text/css" rel="stylesheet" href="{stylefile}" />
 <script type="text/javascript" language="JavaScript" src="style/default/common.js"></script>
 {$hint_mode = ConfigHelper::getConfig('userpanel.hint')}
-{if $hint_mode neq 'classic' and $hint_mode neq 'none'}
+{if $hint_mode != 'classic' && $hint_mode != 'none'}
 <script type="text/javascript" language="JavaScript" src="style/default/avatar.js"></script>
 </head>
 <body onload="javascript:draginit()">
@@ -24,7 +24,7 @@
 </div>
 <img id="avatar" src="style/default/avatar.gif" alt="" style="cursor:move;">
 </div>
-{elseif $hint_mode eq 'classic'}
+{elseif $hint_mode == 'classic'}
 </head>
 <div id="overDiv" style="position:absolute; visibility:hidden; z-index:100;"></div>
 <script type="text/javascript" language="JavaScript" src="style/default/overlib.js"></script>

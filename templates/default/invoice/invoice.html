@@ -23,7 +23,7 @@
 			{trans("Payment type:")}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="LEFT" VALIGN="TOP" CLASS="sdr">
-			{$invoice.cdate|date_format:"%Y/%m/%d"}{if $invoice.division_cplace neq ""}, {$invoice.division_cplace}{/if}<BR>
+			{$invoice.cdate|date_format:"%Y/%m/%d"}{if $invoice.division_cplace != ""}, {$invoice.division_cplace}{/if}<BR>
 			{$invoice.sdate|date_format:"%Y/%m/%d"}<BR>
 			{$invoice.pdate|date_format:"%Y/%m/%d"}<BR>
 			{$invoice.paytypename}
@@ -48,7 +48,7 @@
 			{$invoice.name}<BR>
 			{$invoice.address}<BR>
 			{$invoice.zip} {$invoice.city}<BR>
-			{if $invoice.ten neq ""}{trans("TEN:")} {$invoice.ten}<BR>{elseif $invoice.ssn neq ""}{trans("SSN:")} {$invoice.ssn}<BR>{/if}
+			{if $invoice.ten != ""}{trans("TEN:")} {$invoice.ten}<BR>{elseif $invoice.ssn != ""}{trans("SSN:")} {$invoice.ssn}<BR>{/if}
 			<BR>
 		</TD>
 		<TD WIDTH="34%" VALIGN="TOP" CLASS="sdr">

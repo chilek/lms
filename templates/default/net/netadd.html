@@ -22,7 +22,7 @@
 	<TBODY>
 	<TR>
 		<TD style="width: 1%;" class="bold nobr"><IMG src="img/ip.gif" alt=""> {trans("Network address/mask:")}</TD>
-		<TD class="bold"><INPUT type="text" size="23" name="netadd[address]" value="{$netadd.address}" {tip text="Enter IP address and select mask" trigger="address"}> / <SELECT size="1" title="Prefixlen" name="netadd[prefix]">{section name=prefixlist loop=$prefixlist.id}<OPTION value="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] eq $netadd.prefix} SELECTED{/if}>{$prefixlist.value[prefixlist]}</OPTION>{/section}</SELECT>
+		<TD class="bold"><INPUT type="text" size="23" name="netadd[address]" value="{$netadd.address}" {tip text="Enter IP address and select mask" trigger="address"}> / <SELECT size="1" title="Prefixlen" name="netadd[prefix]">{section name=prefixlist loop=$prefixlist.id}<OPTION value="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] == $netadd.prefix} SELECTED{/if}>{$prefixlist.value[prefixlist]}</OPTION>{/section}</SELECT>
 	</TR>
 	<TR>
 		<TD style="width: 1%;" class="bold nobr"><IMG src="img/mac.gif" alt=""> {trans("Interface:")}</TD>
@@ -61,7 +61,7 @@
 			<select size="1" name="netadd[hostid]" {tip text="Select host" trigger="hostid"}>
 				<option value="0">{trans("- none -")}</option>
 				{foreach $hostlist as $host}
-				<option value="{$host.id}"{if $host.id eq $netadd.hostid} selected{/if}>{$host.name}</option>
+				<option value="{$host.id}"{if $host.id == $netadd.hostid} selected{/if}>{$host.name}</option>
 				{/foreach}
 			</select>
 		</td>

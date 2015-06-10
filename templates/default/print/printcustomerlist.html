@@ -48,7 +48,7 @@
 		</TD>
 		<TD>
 			<B>{$customerlist[customerlist].customername}</B><BR>
-			{$customerlist[customerlist].zip} {$customerlist[customerlist].city}{if $customerlist[customerlist].city neq ""},{/if} {$customerlist[customerlist].address}<BR>
+			{$customerlist[customerlist].zip} {$customerlist[customerlist].city}{if $customerlist[customerlist].city != ""},{/if} {$customerlist[customerlist].address}<BR>
 			{if $contactlist.$cid.type}{trans("mobile")}{else}{trans("phone<!plural>")}{/if} {$contactlist.$cid.phone}
 		</TD>
 		<TD ALIGN="RIGHT">

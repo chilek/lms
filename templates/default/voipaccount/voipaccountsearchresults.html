@@ -15,33 +15,33 @@
         <tr {tip text="Click on column name to change sorting order"}>
             <td class="nobr">
                 <img src="img/voip.gif" alt=""> 
-                <a class="bold" href="?m=voipaccountsearch&search&o=login{if $listdata.direction eq "asc" && $listdata.order eq "login"},desc{/if}">{trans("Login:")}</a> 
-                {if $listdata.order eq "login"}
-                <img src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">
+                <a class="bold" href="?m=voipaccountsearch&search&o=login{if $listdata.direction == "asc" && $listdata.order == "login"},desc{/if}">{trans("Login:")}</a> 
+                {if $listdata.order == "login"}
+                <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
                 {/if}
                 <br>
                 <img src="img/customer.gif" alt=""> 
-                <a href="?m=voipaccountsearch&search&o=owner{if $listdata.direction eq "asc" && $listdata.order eq "owner"},desc{/if}">{trans("Owner:")}</a> 
-                {if $listdata.order eq "owner"}
-                <img src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">
+                <a href="?m=voipaccountsearch&search&o=owner{if $listdata.direction == "asc" && $listdata.order == "owner"},desc{/if}">{trans("Owner:")}</a> 
+                {if $listdata.order == "owner"}
+                <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
                 {/if}
             </td>
             <td class="nobr">
-                <a href="?m=voipaccountsearch&search&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{trans("ID:")}</a> 
-                {if $listdata.order eq "id"}
-                <img src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">
+                <a href="?m=voipaccountsearch&search&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</a> 
+                {if $listdata.order == "id"}
+                <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
                 {/if}
             </td>
             <td class="nobr">
-                <a href="?m=voipaccountsearch&search&o=phone{if $listdata.direction eq "asc" && $listdata.order eq "phone"},desc{/if}">{trans("Phone number:")}</a> 
-                {if $listdata.order eq "phone"}
-                <img src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">
+                <a href="?m=voipaccountsearch&search&o=phone{if $listdata.direction == "asc" && $listdata.order == "phone"},desc{/if}">{trans("Phone number:")}</a> 
+                {if $listdata.order == "phone"}
+                <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
                 {/if}
             </td>
             <td class="nobr">
-                <a href="?m=voipaccountsearch&search&o=passwd{if $listdata.direction eq "asc" && $listdata.order eq "passwd"},desc{/if}">{trans("Password:")}</a> 
-                {if $listdata.order eq "passwd"}
-                <img src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">
+                <a href="?m=voipaccountsearch&search&o=passwd{if $listdata.direction == "asc" && $listdata.order == "passwd"},desc{/if}">{trans("Password:")}</a> 
+                {if $listdata.order == "passwd"}
+                <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
                 {/if}
             </td>
             <td class="text-right bold nobr">

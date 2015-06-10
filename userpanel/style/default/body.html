@@ -33,8 +33,8 @@ xajax_setNoticeRead({$notice_urgent.id});
 <tr><td>
 <table style="text-align: left; width: 100%; background-image: url(style/default/tabs_bg.gif); background-repeat: repeat-x;" cellspacing="0" cellpadding="0">
     <tr>
-	{foreach from=$modules item=menuitem name=menu}
-	{if $smarty.foreach.menu.first}
+	{foreach $modules as $menuitem}
+	{if $menuitem@first}
 	    <td style="vertical-align: top;" width="1px">
     	    <img src="style/default/{if $menuitem.selected}tabs_begin_sel.gif{else}tabs_begin_notsel.gif{/if}" alt=""/>
 	</td>
@@ -54,7 +54,7 @@ xajax_setNoticeRead({$notice_urgent.id});
         <td style="vertical-align: top; background-image: url(style/default/{if $menuitem.selected}tabs_tab_sel.gif{else}tabs_tab_notsel.gif{/if}); background-repeat: repeat-x; padding-top: 2px;" width="1px">
     	    <a href="?m={$menuitem.module}" {userpaneltip text=$menuitem.tip} class="{if $menuitem.selected}tabsel{else}tabnotsel{/if}">{$menuitem.name|replace:" ":"&nbsp;"}</a>
         </td>
-	{if $smarty.foreach.menu.last}
+	{if $menuitem@last}
 	    <td style="vertical-align: top;" width="1px">
 	{if $menuitem.selected}
     	    <img src="style/default/tabs_end_sel.gif" alt=''/>
@@ -69,7 +69,7 @@ xajax_setNoticeRead({$notice_urgent.id});
         </td>
 	{/if}
 	{/if}
-	{if $menuitem.selected}{assign var=display_spacer value=0}{else}{assign var=display_spacer value=1}{/if}
+	{if $menuitem.selected}{$display_spacer = 0}{else}{$display_spacer = 1}{/if}
 	{/foreach}
 	<td>&nbsp;</td>
     </tr>

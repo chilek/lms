@@ -108,7 +108,7 @@ window.open('?m=note&id={$newnoteid}');
 			<SELECT SIZE="1" NAME="customer" onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value">
 				<OPTION VALUE="0">{trans("... select customer ...")}</OPTION>
 				{foreach from=$customers item=c}
-				<OPTION VALUE="{$c.id}"{if $c.id eq $customer.id || $note.customerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:"40":"...":true} ({$c.id|string_format:"%04d"})</OPTION>
+				<OPTION VALUE="{$c.id}"{if $c.id == $customer.id || $note.customerid == $c.id} SELECTED{/if}>{$c.customername|truncate:"40":"...":true} ({$c.id|string_format:"%04d"})</OPTION>
 				{/foreach}
 			</SELECT>
 			{trans("or Customer ID:")}

@@ -73,9 +73,9 @@
 				{/section}
 				<TR>
 					<TD class="dark ftop text-center nobr" COLSPAN="5">
-						{if $netdevinfo.ports eq $netdevinfo.takenports}
+						{if $netdevinfo.ports == $netdevinfo.takenports}
 						<span class="bold">{trans("All ports in that device are in use.")}</span>
-						{elseif $nodelist eq NULL}
+						{elseif $nodelist == NULL}
 						<span class="bold">{trans("No such nodes to connection.")}</span>
 						{else}
 						<FORM METHOD="GET" ACTION="?m=netdevedit" NAME="connectnode">

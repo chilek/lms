@@ -58,22 +58,22 @@ window.open('?m=note&id={$note}');
     <THEAD>
 	<TR>
 		<TD WIDTH="1%" nowrap>
-			<A href="?m=notelist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=notelist&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order == "id"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" nowrap>
-			<A href="?m=notelist&o=cdate{if $listdata.direction eq "asc" && $listdata.order eq "cdate"},desc{/if}">{trans("Date:")}</A> {if $listdata.order eq "cdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=notelist&o=cdate{if $listdata.direction == "asc" && $listdata.order == "cdate"},desc{/if}">{trans("Date:")}</A> {if $listdata.order == "cdate"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" nowrap>
-			<A href="?m=notelist&o=number{if $listdata.direction eq "asc" && $listdata.order eq "number"},desc{/if}">{trans("Number:")}</A> {if $listdata.order eq "number"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=notelist&o=number{if $listdata.direction == "asc" && $listdata.order == "number"},desc{/if}">{trans("Number:")}</A> {if $listdata.order == "number"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" nowrap>
-			<A href="?m=notelist&o=value{if $listdata.direction eq "asc" && $listdata.order eq "value"},desc{/if}">{trans("Value:")}</A> {if $listdata.order eq "value"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=notelist&o=value{if $listdata.direction == "asc" && $listdata.order == "value"},desc{/if}">{trans("Value:")}</A> {if $listdata.order == "value"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" nowrap>
-			<A href="?m=notelist&o=count{if $listdata.direction eq "asc" && $listdata.order eq "count"},desc{/if}">{trans("Items:")}</A> {if $listdata.order eq "count"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=notelist&o=count{if $listdata.direction == "asc" && $listdata.order == "count"},desc{/if}">{trans("Items:")}</A> {if $listdata.order == "count"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="94%" nowrap>
-			<A href="?m=notelist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}">{trans("For:")}</A> {if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=notelist&o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}">{trans("For:")}</A> {if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%">
 			&nbsp;
@@ -84,21 +84,21 @@ window.open('?m=note&id={$note}');
 				<B>{trans("Filter:")} </B> 
 				<INPUT type="text" name="search" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>&nbsp;
 				<SELECT size="1" name="cat">
-					<OPTION value=""{if $listdata.cat eq ""} SELECTED{/if}>{trans("- select filter category -")}</OPTION>
-					<OPTION value="cdate"{if $listdata.cat eq "cdate"} SELECTED{/if}>{trans("day (YYYY/MM/DD)")}</OPTION>
-					<OPTION value="month"{if $listdata.cat eq "month"} SELECTED{/if}>{trans("month (YYYY/MM)")}</OPTION>
-					<OPTION value="number"{if $listdata.cat eq "number"} SELECTED{/if}>{trans("number")}</OPTION>
-					<OPTION value="value"{if $listdata.cat eq "value"} SELECTED{/if}>{trans("value")}</OPTION>
-					<OPTION value="name"{if $listdata.cat eq "name"} SELECTED{/if}>{trans("customer name")}</OPTION>
-					<OPTION value="customerid"{if $listdata.cat eq "customerid"} SELECTED{/if}>{trans("customer ID")}</OPTION>
-					<OPTION value="ten"{if $listdata.cat eq "ten"} SELECTED{/if}>{trans("TEN")}</OPTION>
-					<OPTION value="address"{if $listdata.cat eq "address"} SELECTED{/if}>{trans("address")}</OPTION>
+					<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("- select filter category -")}</OPTION>
+					<OPTION value="cdate"{if $listdata.cat == "cdate"} SELECTED{/if}>{trans("day (YYYY/MM/DD)")}</OPTION>
+					<OPTION value="month"{if $listdata.cat == "month"} SELECTED{/if}>{trans("month (YYYY/MM)")}</OPTION>
+					<OPTION value="number"{if $listdata.cat == "number"} SELECTED{/if}>{trans("number")}</OPTION>
+					<OPTION value="value"{if $listdata.cat == "value"} SELECTED{/if}>{trans("value")}</OPTION>
+					<OPTION value="name"{if $listdata.cat == "name"} SELECTED{/if}>{trans("customer name")}</OPTION>
+					<OPTION value="customerid"{if $listdata.cat == "customerid"} SELECTED{/if}>{trans("customer ID")}</OPTION>
+					<OPTION value="ten"{if $listdata.cat == "ten"} SELECTED{/if}>{trans("TEN")}</OPTION>
+					<OPTION value="address"{if $listdata.cat == "address"} SELECTED{/if}>{trans("address")}</OPTION>
 				</SELECT>&nbsp;
 				{trans("Group:")}
 				<SELECT size="1" name="group">
 					<OPTION value="0"{if !$listdata.group} SELECTED{/if}>{trans("- all groups -")}</OPTION>
 					{section name="grouplist" loop=$grouplist}
-					<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group eq $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:30:"...":true}</OPTION>
+					<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group == $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:30:"...":true}</OPTION>
 					{/section}
 				</SELECT>
 				<NOBR>
@@ -140,7 +140,7 @@ window.open('?m=note&id={$note}');
 			{$note.count}
 		</TD>
 		<TD WIDTH="94%">
-			<A HREF="?m=customerinfo&id={$note.customerid}"{if $note.closed} class="blend"{/if}>{$note.name}, {$note.address}, {$note.zip} {$note.city}{if $note.country neq ""}, {t}{$note.country}{/t}{/if}</A>
+			<A HREF="?m=customerinfo&id={$note.customerid}"{if $note.closed} class="blend"{/if}>{$note.name}, {$note.address}, {$note.zip} {$note.city}{if $note.country != ""}, {t}{$note.country}{/t}{/if}</A>
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT">
 			<NOBR>

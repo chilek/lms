@@ -10,18 +10,18 @@
 	
 	<TR {tip text="Click on column name to change sorting order"}>
 		<TD width="67%">
-			<IMG src="img/netdev.gif" ALT="">&nbsp;<A href="?m=netnodelist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<IMG src="img/producer.gif" ALT="">&nbsp;<A href="?m=netnodelist&o=type{if $listdata.direction eq "asc" && $listdata.order eq "type"},desc{/if}">{trans("Type:")}</A> {if $listdata.order eq "type"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} / 
-			<A href="?m=netnodelist&o=status{if $listdata.direction eq "asc" && $listdata.order eq "status"},desc{/if}">{trans("Status:")}</A> {if $listdata.order eq "status"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} 
+			<IMG src="img/netdev.gif" ALT="">&nbsp;<A href="?m=netnodelist&o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<IMG src="img/producer.gif" ALT="">&nbsp;<A href="?m=netnodelist&o=type{if $listdata.direction == "asc" && $listdata.order == "type"},desc{/if}">{trans("Type:")}</A> {if $listdata.order == "type"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} / 
+			<A href="?m=netnodelist&o=status{if $listdata.direction == "asc" && $listdata.order == "status"},desc{/if}">{trans("Status:")}</A> {if $listdata.order == "status"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} 
 		</TD>
 		<TD width="15%">
-			<A href="?m=netnodelist&o=location{if $listdata.direction eq "asc" && $listdata.order eq "location"},desc{/if}">{trans("Location:")}</A> {if $listdata.order eq "location"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} 
+			<A href="?m=netnodelist&o=location{if $listdata.direction == "asc" && $listdata.order == "location"},desc{/if}">{trans("Location:")}</A> {if $listdata.order == "location"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} 
 		</TD>
 		<TD width="15%">
-		   	<A href="?m=netnodelist&o=project{if $listdata.direction eq "asc" && $listdata.order eq "project"},desc{/if}">{trans("Project:")}</A> {if $listdata.order eq "project"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} 
+		   	<A href="?m=netnodelist&o=project{if $listdata.direction == "asc" && $listdata.order == "project"},desc{/if}">{trans("Project:")}</A> {if $listdata.order == "project"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} 
 		</TD>
 		<TD width="1%" align="right" valign="top">
-			<A href="?m=netnodelist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">ID:</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=netnodelist&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">ID:</A> {if $listdata.order == "id"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" NOWRAP>
 		 <!-- pozostałe pola -->
@@ -100,7 +100,7 @@
 			</nobr>
 		</TD>
 	</TR>
-	{if $nlist[nlist.index_next].ownerid eq $nlist[nlist].ownerid && $listdata.order eq "owner"}{cycle print=false}{/if}
+	{if $nlist[nlist.index_next].ownerid == $nlist[nlist].ownerid && $listdata.order == "owner"}{cycle print=false}{/if}
 	{sectionelse}
 	<TR>
 		<TD colspan="6" align="center">

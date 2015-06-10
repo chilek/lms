@@ -1,4 +1,4 @@
-{if $part eq "titlebar"}
+{if $part == "titlebar"}
 <div class="lmsPopupTitleBar" style="width: auto !important; width: 452px">
 	<div class="lmsPopupTitle">{t a=$ipaddr}Ping to $a{/t}</div>
 	<div id="{$popupid}_popupCloseBox" class="olPopupCloseBox lmsPopupCloseBox">&nbsp;</div>
@@ -6,7 +6,7 @@
 <div class="lmsPingContentsFrame">
 	<iframe id="autoiframe_{$popupid}" width="450px" height="300px" frameborder="0" framespacing="0" scrolling="no" src="?m=ping&ip={$ipaddr}&type={$type}"></iframe>
 </div>
-{elseif $part eq "ipform"}
+{elseif $part == "ipform"}
 <div class="lmsPopupTitleBar">
 	<div class="lmsPopupTitle">&nbsp;</div>
 	<div id="{$popupid}_popupCloseBox" class="olPopupCloseBox lmsPopupCloseBox">&nbsp;</div>
@@ -29,7 +29,7 @@
 <meta name="GENERATOR" content="LMS {$layout.lmsv}">
 <meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
 <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
-<title>::: LMS :{if $layout.pagetitle neq ""} {$layout.pagetitle} :{/if}::</title>
+<title>::: LMS :{if $layout.pagetitle != ""} {$layout.pagetitle} :{/if}::</title>
 <link href="img/style.css" rel="stylesheet" type="text/css">
 <link href="img/map.css" rel="stylesheet" type="text/css">
 {$xajax}

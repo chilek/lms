@@ -169,7 +169,7 @@
 			<SELECT SIZE="1" NAME="customer" onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value">
 				<OPTION VALUE="0">{trans("... select customer ...")}</OPTION>
 				{foreach from=$customers item=c}
-				<OPTION VALUE="{$c.id}"{if $c.id eq $customer.id || $invoice.customerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:"40":"...":true} ({$c.id|string_format:"%04d"})</OPTION>
+				<OPTION VALUE="{$c.id}"{if $c.id == $customer.id || $invoice.customerid == $c.id} SELECTED{/if}>{$c.customername|truncate:"40":"...":true} ({$c.id|string_format:"%04d"})</OPTION>
 				{/foreach}
 			</SELECT>
 			{trans("or Customer ID:")}
@@ -242,7 +242,7 @@
     <TBODY>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$contents item=item}
-	<TR class="highlight {cycle}"  {if !$invoice.closed} onclick="setProduct('{$item.name}', '{$item.prodid}', '{$item.count|string_format:"%.2f"}', '{$item.jm}', {if $item.pdiscount != 0}'{$item.pdiscount|string_format:"%.2f"}', {$smarty.const.DISCOUNT_PERCENTAGE - 1}{else}{if $item.vdiscount != 0}'{$item.vdiscount|string_format:"%.2f"}', {$smarty.const.DISCOUNT_AMOUNT - 1}{else}'', {$smarty.const.DISCOUNT_PERCENTAGE - 1}{/if}{/if}, '{$item.valuenetto|string_format:"%.2f"}', {foreach item=tax from=$taxeslist}{if $tax.label eq $item.tax}{$tax.id}{/if}{/foreach}, '{$item.valuebrutto|string_format:"%.2f"}');"{/if}>
+	<TR class="highlight {cycle}"  {if !$invoice.closed} onclick="setProduct('{$item.name}', '{$item.prodid}', '{$item.count|string_format:"%.2f"}', '{$item.jm}', {if $item.pdiscount != 0}'{$item.pdiscount|string_format:"%.2f"}', {$smarty.const.DISCOUNT_PERCENTAGE - 1}{else}{if $item.vdiscount != 0}'{$item.vdiscount|string_format:"%.2f"}', {$smarty.const.DISCOUNT_AMOUNT - 1}{else}'', {$smarty.const.DISCOUNT_PERCENTAGE - 1}{/if}{/if}, '{$item.valuenetto|string_format:"%.2f"}', {foreach item=tax from=$taxeslist}{if $tax.label == $item.tax}{$tax.id}{/if}{/foreach}, '{$item.valuebrutto|string_format:"%.2f"}');"{/if}>
 		<TD WIDTH="1%">
 			<B>{counter}.</B>
 		</TD>

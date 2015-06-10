@@ -30,7 +30,7 @@
 			<SELECT SIZE="1" name="nodeeditnetid" {tip text="Choose network" trigger="netid"}>
 				<OPTION VALUE="0">{trans("- automatic selection -")}</OPTION>
 				{foreach $networks as $net}
-				<OPTION VALUE="{$net.id}" {if $net.id eq $nodeinfo.netid} selected{/if}{if $net.disabled eq 1} class="alert"{/if}>{$net.name|truncate:20:"":true}: {$net.address}/{$net.prefix}</OPTION>
+				<OPTION VALUE="{$net.id}" {if $net.id == $nodeinfo.netid} selected{/if}{if $net.disabled == 1} class="alert"{/if}>{$net.name|truncate:20:"":true}: {$net.address}/{$net.prefix}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
@@ -155,7 +155,7 @@
 			{if $customers}
 			<SELECT SIZE="1" NAME="nodeedit[customerid]" {tip text="Assign node to customer"} style="max-width:160px;" onChange="document.editnode.elements['nodeedit[ownerid]'].value=this.value">
 				{foreach from=$customers item=c}
-				<OPTION VALUE="{$c.id}"{if $nodeinfo.ownerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
+				<OPTION VALUE="{$c.id}"{if $nodeinfo.ownerid == $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
 				{/foreach}
 			</SELECT>
 			{trans("or Customer ID:")}

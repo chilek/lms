@@ -8,21 +8,21 @@
 	<TR {tip text="Click on column name to change sorting order"}>
 		<TD style="width: 96%;" class="nobr">
 			<IMG src="img/network.gif" alt="">
-				<A href="?m=netlist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"> <span class="bold">{trans("Name:")}</span></A>{if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+				<A href="?m=netlist&o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"> <span class="bold">{trans("Name:")}</span></A>{if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 				<BR>
 				<IMG src="img/ip.gif" ALT="">
-				<A href="?m=netlist&o=host{if $listdata.direction eq "asc" && $listdata.order eq "host"},desc{/if}">{trans("host")}</A>{if $listdata.order eq "host"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} /
-				<A href="?m=netlist&o=address{if $listdata.direction eq "asc" && $listdata.order eq "address"},desc{/if}">{trans("network")}</A>{if $listdata.order eq "address"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} /
-				<A href="?m=netlist&o=mask{if $listdata.direction eq "asc" && $listdata.order eq "mask"},desc{/if}">{trans("prefix")}</A>{if $listdata.order eq "mask"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-				(<A href="?m=netlist&o=interface{if $listdata.direction eq "asc" && $listdata.order eq "interface"},desc{/if}">{trans("interface")}</A>{if $listdata.order eq "interface"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if})
+				<A href="?m=netlist&o=host{if $listdata.direction == "asc" && $listdata.order == "host"},desc{/if}">{trans("host")}</A>{if $listdata.order == "host"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} /
+				<A href="?m=netlist&o=address{if $listdata.direction == "asc" && $listdata.order == "address"},desc{/if}">{trans("network")}</A>{if $listdata.order == "address"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} /
+				<A href="?m=netlist&o=mask{if $listdata.direction == "asc" && $listdata.order == "mask"},desc{/if}">{trans("prefix")}</A>{if $listdata.order == "mask"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+				(<A href="?m=netlist&o=interface{if $listdata.direction == "asc" && $listdata.order == "interface"},desc{/if}">{trans("interface")}</A>{if $listdata.order == "interface"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if})
 		</TD>
 		<TD style="width: 1%;" class="valign-top right nobr">
 			<IMG src="img/empty.gif" width="1" height="16" alt="">
-				<A href="?m=netlist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}"> <span class="bold">{trans("ID:")}</span></A>{if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+				<A href="?m=netlist&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}"> <span class="bold">{trans("ID:")}</span></A>{if $listdata.order == "id"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<IMG src="img/empty.gif" width="1" height="16" alt="">{trans("Addresses")}
-				(<A href="?m=netlist&o=size{if $listdata.direction eq "asc" && $listdata.order eq "size"},desc{/if}">{trans("total")}</A>{if $listdata.order eq "size"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} /
-				<A href="?m=netlist&o=assigned{if $listdata.direction eq "asc" && $listdata.order eq "assigned"},desc{/if}">{trans("busy")}</A>{if $listdata.order eq "assigned"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} /
-				<A href="?m=netlist&o=online{if $listdata.direction eq "asc" && $listdata.order eq "online"},desc{/if}">{trans("on-line")}</A>{if $listdata.order eq "online"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if})
+				(<A href="?m=netlist&o=size{if $listdata.direction == "asc" && $listdata.order == "size"},desc{/if}">{trans("total")}</A>{if $listdata.order == "size"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} /
+				<A href="?m=netlist&o=assigned{if $listdata.direction == "asc" && $listdata.order == "assigned"},desc{/if}">{trans("busy")}</A>{if $listdata.order == "assigned"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} /
+				<A href="?m=netlist&o=online{if $listdata.direction == "asc" && $listdata.order == "online"},desc{/if}">{trans("on-line")}</A>{if $listdata.order == "online"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if})
 		</TD>
 		<TD style="width: 1%;" class="nobr">
 			<IMG src="img/dns.gif" alt=""> {trans("DNS servers:")}<BR>
@@ -61,12 +61,12 @@
 			<img src="img/empty.gif" width="1" height="16" alt="">({$netlist[netlist].id|string_format:"%04d"})<BR><img src="img/empty.gif" width="1" height="16" alt="">{$netlist[netlist].size}/{$netlist[netlist].assigned|string_format:"%01d"}/{$netlist[netlist].online|string_format:"%01d"}
 		</TD>
 		<TD style="width: 1%;" class="nobr" onClick="return self.location.href='?m=netinfo&amp;id={$netlist[netlist].id}';">
-			{if $netlist[netlist].dns neq ""}<IMG src="img/dns.gif" alt=""> {$netlist[netlist].dns}{if $netlist[netlist].dns2 neq ""}, {$netlist[netlist].dns2}{/if}{/if}<BR>
-			{if $netlist[netlist].domain neq ""}<IMG src="img/domain.gif" alt=""> {$netlist[netlist].domain}{/if}&nbsp;
+			{if $netlist[netlist].dns != ""}<IMG src="img/dns.gif" alt=""> {$netlist[netlist].dns}{if $netlist[netlist].dns2 != ""}, {$netlist[netlist].dns2}{/if}{/if}<BR>
+			{if $netlist[netlist].domain != ""}<IMG src="img/domain.gif" alt=""> {$netlist[netlist].domain}{/if}&nbsp;
 		</TD>
 		<TD style="width: 1%;" class="nobr" onClick="return self.location.href='?m=netinfo&amp;id={$netlist[netlist].id}';">
-			{if $netlist[netlist].gateway neq ""}<IMG src="img/gateway.gif" alt=""> {$netlist[netlist].gateway}{/if}<BR>
-			{if $netlist[netlist].wins neq ""}<IMG src="img/wins.gif" alt=""> {$netlist[netlist].wins}{/if}&nbsp;
+			{if $netlist[netlist].gateway != ""}<IMG src="img/gateway.gif" alt=""> {$netlist[netlist].gateway}{/if}<BR>
+			{if $netlist[netlist].wins != ""}<IMG src="img/wins.gif" alt=""> {$netlist[netlist].wins}{/if}&nbsp;
 		</TD>
 		<TD style="width: 1%;" class="nobr" onClick="return self.location.href='?m=netinfo&amp;id={$netlist[netlist].id}';">
 			{if $netlist[netlist].dhcpstart}<IMG src="img/dhcpstart.gif" alt=""> {$netlist[netlist].dhcpstart}<BR><IMG src="img/dhcpend.gif" alt=""> {$netlist[netlist].dhcpend}{/if}

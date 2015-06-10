@@ -22,7 +22,7 @@
 				    <NOBR>{trans("Domain:")}
 				    <SELECT size="1" name="d" OnChange="document.filter.submit();">
 					{section name=domainlist loop=$domainlist}
-					    <OPTION value="{$domainlist[domainlist].id}"{if $domainlist[domainlist].id eq $listdata.domain} SELECTED{/if}>{$domainlist[domainlist].name}</OPTION>
+					    <OPTION value="{$domainlist[domainlist].id}"{if $domainlist[domainlist].id == $listdata.domain} SELECTED{/if}>{$domainlist[domainlist].name}</OPTION>
 					{/section}
 				    </SELECT></NOBR>
 				</FORM>

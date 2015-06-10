@@ -1,7 +1,7 @@
 <!--// $Id$ //-->
 <DIV{if !$note.last} STYLE="page-break-after: always"{/if}>
 <DIV align="right" class="sdr">
-{trans("Draw-up date:")} {$note.cdate|date_format:"%Y/%m/%d"}{if $note.division_cplace neq ""}, {$note.division_cplace}{/if}
+{trans("Draw-up date:")} {$note.cdate|date_format:"%Y/%m/%d"}{if $note.division_cplace != ""}, {$note.division_cplace}{/if}
 <BR>
 {trans("Deadline:")} {$note.pdate|date_format:"%Y/%m/%d"}
 </DIV>

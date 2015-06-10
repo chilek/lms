@@ -8,20 +8,20 @@
     <THEAD>
 	<TR>
 		<TD width="95%" NOWRAP>
-			<IMG src="img/domain.gif" alt=""> <A href="?m={$layout.module}{$suffix}&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG src="img/domain.gif" alt=""> <A href="?m={$layout.module}{$suffix}&o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" align="center" NOWRAP>
-			<IMG src="img/empty.gif" alt="" height="16"><A href="?m={$layout.module}{$suffix}&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG src="img/empty.gif" alt="" height="16"><A href="?m={$layout.module}{$suffix}&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order == "id"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
                 <TD width="1%" NOWRAP>
-                    <IMG src="img/empty.gif" alt="" height="16"><A href="?m={$layout.module}{$suffix}&o=type{if $listdata.direction eq "asc" && $listdata.order eq "type"},desc{/if}">{trans("Type:")}</A> {if $listdata.order eq "type"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+                    <IMG src="img/empty.gif" alt="" height="16"><A href="?m={$layout.module}{$suffix}&o=type{if $listdata.direction == "asc" && $listdata.order == "type"},desc{/if}">{trans("Type:")}</A> {if $listdata.order == "type"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
                 </TD>
 		<TD width="1%" NOWRAP>
-			<IMG src="img/customer.gif" alt=""> <A href="?m={$layout.module}{$suffix}&o=customer{if $listdata.direction eq "asc" && $listdata.order eq "customer"},desc{/if}">{trans("Customer:")}</A> {if $listdata.order eq "customer"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG src="img/customer.gif" alt=""> <A href="?m={$layout.module}{$suffix}&o=customer{if $listdata.direction == "asc" && $listdata.order == "customer"},desc{/if}">{trans("Customer:")}</A> {if $listdata.order == "customer"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" NOWRAP>
 		    <IMG src="img/empty.gif" alt="" height="16">
-		    <A href="?m={$layout.module}{$suffix}&o=cnt{if $listdata.direction eq "asc" && $listdata.order eq "cnt"},desc{/if}">{trans("Accounts:")}</A> {if $listdata.order eq "cnt"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		    <A href="?m={$layout.module}{$suffix}&o=cnt{if $listdata.direction == "asc" && $listdata.order == "cnt"},desc{/if}">{trans("Accounts:")}</A> {if $listdata.order == "cnt"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" NOWRAP>
 			<IMG src="img/empty.gif" alt="" height="16">
@@ -41,17 +41,17 @@
 							<B>{trans("Filter:")} </B>
 							{trans("Owner:")}
 							<SELECT size="1" name="c" OnChange="document.filter.submit();">
-								<OPTION value=""{if $listdata.customer eq ""} SELECTED{/if}>{trans("- all owners -")}</OPTION>
-			        				<OPTION value="0"{if $listdata.customer eq "0"} SELECTED{/if}>{trans("SYSTEM DOMAIN")}</OPTION>
+								<OPTION value=""{if $listdata.customer == ""} SELECTED{/if}>{trans("- all owners -")}</OPTION>
+			        				<OPTION value="0"{if $listdata.customer == "0"} SELECTED{/if}>{trans("SYSTEM DOMAIN")}</OPTION>
 								{foreach from=$customerlist item=customer}
-				    					<OPTION value="{$customer.id}"{if $customer.id eq $listdata.customer} SELECTED{/if}>{$customer.customername|truncate:40:"...":true}</OPTION>
+				    					<OPTION value="{$customer.id}"{if $customer.id == $listdata.customer} SELECTED{/if}>{$customer.customername|truncate:40:"...":true}</OPTION>
 								{/foreach}
 							</SELECT>
 							&nbsp;{trans("Name:")}
 							<SELECT size="1" name="f" OnChange="document.filter.submit();">
-								<OPTION value=""{if $listdata.name eq ""} SELECTED{/if}>{trans("- all -")}</OPTION>
+								<OPTION value=""{if $listdata.name == ""} SELECTED{/if}>{trans("- all -")}</OPTION>
 								{foreach from=$domaincount item=item key=key}
-				    					<OPTION value="{$key}"{if $key eq $listdata.name} SELECTED{/if}>{$key}...</OPTION>
+				    					<OPTION value="{$key}"{if $key == $listdata.name} SELECTED{/if}>{$key}...</OPTION>
 								{/foreach}
 							</SELECT>
 						</FORM>

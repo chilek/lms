@@ -7,30 +7,30 @@
     <THEAD>
 	<TR {tip text="Click on column name to change sorting order"}>
 		<TD WIDTH="92%" NOWRAP>
-			<IMG SRC="img/channel.gif" ALT=""> <A href="?m=ewxchlist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order eq "name"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG SRC="img/channel.gif" ALT=""> <A href="?m=ewxchlist&o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" align="right" NOWRAP>
-			<A href="?m=ewxchlist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=ewxchlist&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order == "id"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" align="right" NOWRAP>
-			<A href="?m=ewxchlist&o=cid{if $listdata.direction eq "asc" && $listdata.order eq "cid"},desc{/if}">STMID:</A> {if $listdata.order eq "cid"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=ewxchlist&o=cid{if $listdata.direction == "asc" && $listdata.order == "cid"},desc{/if}">STMID:</A> {if $listdata.order == "cid"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" align="right" NOWRAP>
-			<A href="?m=ewxchlist&o=downceil{if $listdata.direction eq "asc" && $listdata.order eq "downceil"},desc{/if}">{trans("Downceil:")}</A> {if $listdata.order eq "downceil"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<A href="?m=ewxchlist&o=upceil{if $listdata.direction eq "asc" && $listdata.order eq "upceil"},desc{/if}">{trans("Upceil:")}</A> {if $listdata.order eq "upceil"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=ewxchlist&o=downceil{if $listdata.direction == "asc" && $listdata.order == "downceil"},desc{/if}">{trans("Downceil:")}</A> {if $listdata.order == "downceil"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<A href="?m=ewxchlist&o=upceil{if $listdata.direction == "asc" && $listdata.order == "upceil"},desc{/if}">{trans("Upceil:")}</A> {if $listdata.order == "upceil"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" align="right" NOWRAP>
-			<A href="?m=ewxchlist&o=downceil_n{if $listdata.direction eq "asc" && $listdata.order eq "downceil_n"},desc{/if}">{trans("Night Downceil:")}</A> {if $listdata.order eq "downceil_n"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<A href="?m=ewxchlist&o=upceil_n{if $listdata.direction eq "asc" && $listdata.order eq "upceil_n"},desc{/if}">{trans("Night Upceil:")}</A> {if $listdata.order eq "upceil_n"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=ewxchlist&o=downceil_n{if $listdata.direction == "asc" && $listdata.order == "downceil_n"},desc{/if}">{trans("Night Downceil:")}</A> {if $listdata.order == "downceil_n"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<A href="?m=ewxchlist&o=upceil_n{if $listdata.direction == "asc" && $listdata.order == "upceil_n"},desc{/if}">{trans("Night Upceil:")}</A> {if $listdata.order == "upceil_n"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" align="right" NOWRAP>
-			<A href="?m=ewxchlist&o=halfduplex{if $listdata.direction eq "asc" && $listdata.order eq "halfduplex"},desc{/if}">{trans("Half duplex")}:</A> {if $listdata.order eq "halfduplex"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=ewxchlist&o=halfduplex{if $listdata.direction == "asc" && $listdata.order == "halfduplex"},desc{/if}">{trans("Half duplex")}:</A> {if $listdata.order == "halfduplex"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" align="right" NOWRAP>
-			<A href="?m=ewxchlist&o=devcnt{if $listdata.direction eq "asc" && $listdata.order eq "devcnt"},desc{/if}">{trans("Devices:")}</A> {if $listdata.order eq "devcnt"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=ewxchlist&o=devcnt{if $listdata.direction == "asc" && $listdata.order == "devcnt"},desc{/if}">{trans("Devices:")}</A> {if $listdata.order == "devcnt"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" align="right" NOWRAP>
-			<A href="?m=ewxchlist&o=nodecnt{if $listdata.direction eq "asc" && $listdata.order eq "nodecnt"},desc{/if}">{trans("Nodes:")}</A> {if $listdata.order eq "nodecnt"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=ewxchlist&o=nodecnt{if $listdata.direction == "asc" && $listdata.order == "nodecnt"},desc{/if}">{trans("Nodes:")}</A> {if $listdata.order == "nodecnt"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT">
 			<NOBR><B>{t a=$listdata.total}Total: $a{/t}</B></NOBR>

@@ -7,19 +7,19 @@
     <THEAD>
 	<TR>
 		<TD width="1%" NOWRAP>
-			<IMG src="img/time.gif" alt=""><A href="?m=cashreglogview&o=time{if $listdata.direction eq "asc" && $listdata.order eq "time"},desc{/if}">{trans("Date:")}</A> {if $listdata.order eq "time"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG src="img/time.gif" alt=""><A href="?m=cashreglogview&o=time{if $listdata.direction == "asc" && $listdata.order == "time"},desc{/if}">{trans("Date:")}</A> {if $listdata.order == "time"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" align="right" NOWRAP>
-			<A href="?m=cashreglogview&o=value{if $listdata.direction eq "asc" && $listdata.order eq "value"},desc{/if}">{trans("Real state:")}</A> {if $listdata.order eq "value"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=cashreglogview&o=value{if $listdata.direction == "asc" && $listdata.order == "value"},desc{/if}">{trans("Real state:")}</A> {if $listdata.order == "value"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" align="right" NOWRAP>
-			<A href="?m=cashreglogview&o=snapshot{if $listdata.direction eq "asc" && $listdata.order eq "snapshot"},desc{/if}">{trans("Cash state:")}</A> {if $listdata.order eq "snapshot"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=cashreglogview&o=snapshot{if $listdata.direction == "asc" && $listdata.order == "snapshot"},desc{/if}">{trans("Cash state:")}</A> {if $listdata.order == "snapshot"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" align="left" NOWRAP>
-			<A href="?m=cashreglogview&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}">{trans("User:")}</A> {if $listdata.order eq "username"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=cashreglogview&o=username{if $listdata.direction == "asc" && $listdata.order == "username"},desc{/if}">{trans("User:")}</A> {if $listdata.order == "username"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="95%" NOWRAP>
-			<A href="?m=cashreglogview&o=description{if $listdata.direction eq "asc" && $listdata.order eq "description"},desc{/if}">{trans("Description:")}</A> {if $listdata.order eq "description"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=cashreglogview&o=description{if $listdata.direction == "asc" && $listdata.order == "description"},desc{/if}">{trans("Description:")}</A> {if $listdata.order == "description"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" NOWRAP>
 			<a href="?m=cashreglogadd&regid={$listdata.regid}">{trans("Add entry")} <img src="img/save.gif" alt=""></a>

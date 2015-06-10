@@ -53,10 +53,10 @@
 <TABLE class="lmsbox">
     <THEAD>
 	<TR>
-		<TD WIDTH="1%" NOWRAP> <A href="?m=documentlist&o=cdate{if $listdata.direction eq "asc" && $listdata.order eq "cdate"},desc{/if}">{trans("Date:")}</A>{if $listdata.order eq "cdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR><B>{trans("Number:")}</B></TD>
-		<TD WIDTH="1%" NOWRAP> <A href="?m=documentlist&o=type{if $listdata.direction eq "asc" && $listdata.order eq "type"},desc{/if}"><B>{trans("Type:")}</B></A>{if $listdata.order eq "type"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</TD>
-		<TD WIDTH="1%" NOWRAP> <A href="?m=documentlist&o=title{if $listdata.direction eq "asc" && $listdata.order eq "title"},desc{/if}">{trans("Title:")}</A>{if $listdata.order eq "title"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>{trans("Period:")}</TD>
-		<TD WIDTH="96%" NOWRAP> <A href="?m=documentlist&o=customer{if $listdata.direction eq "asc" && $listdata.order eq "customer"},desc{/if}">{trans("Customer:")}</A>{if $listdata.order eq "customer"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</TD>
+		<TD WIDTH="1%" NOWRAP> <A href="?m=documentlist&o=cdate{if $listdata.direction == "asc" && $listdata.order == "cdate"},desc{/if}">{trans("Date:")}</A>{if $listdata.order == "cdate"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR><B>{trans("Number:")}</B></TD>
+		<TD WIDTH="1%" NOWRAP> <A href="?m=documentlist&o=type{if $listdata.direction == "asc" && $listdata.order == "type"},desc{/if}"><B>{trans("Type:")}</B></A>{if $listdata.order == "type"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</TD>
+		<TD WIDTH="1%" NOWRAP> <A href="?m=documentlist&o=title{if $listdata.direction == "asc" && $listdata.order == "title"},desc{/if}">{trans("Title:")}</A>{if $listdata.order == "title"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>{trans("Period:")}</TD>
+		<TD WIDTH="96%" NOWRAP> <A href="?m=documentlist&o=customer{if $listdata.direction == "asc" && $listdata.order == "customer"},desc{/if}">{trans("Customer:")}</A>{if $listdata.order == "customer"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</TD>
 		<TD WIDTH="1%" NOWRAP align="right">
 			<A href="?m=documentadd&cid={$listdata.customer}&type={$listdata.type}">{trans("New Document")}</A> <IMG src="img/save.gif" alt="">
 		</TD>
@@ -67,9 +67,9 @@
 				<B>{trans("Filter:")} </B> {trans("Customer:")}
 				{if $customerlist}
 				    <SELECT size="1" name="c" OnChange="filter()">
-					<OPTION value="0"{if $listdata.customer eq ""} SELECTED{/if}>{trans("- all customers -")}</OPTION>
+					<OPTION value="0"{if $listdata.customer == ""} SELECTED{/if}>{trans("- all customers -")}</OPTION>
 					{foreach from=$customerlist item=customer}
-					<OPTION value="{$customer.id}"{if $customer.id eq $listdata.customer} SELECTED{/if}>{$customer.customername|truncate:40:"...":true}</OPTION>
+					<OPTION value="{$customer.id}"{if $customer.id == $listdata.customer} SELECTED{/if}>{$customer.customername|truncate:40:"...":true}</OPTION>
 					{/foreach}
 				    </SELECT>
 				{else}

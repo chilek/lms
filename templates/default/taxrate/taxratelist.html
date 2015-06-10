@@ -7,13 +7,13 @@
     <THEAD>
 	<TR>
 		<TD width="94%" NOWRAP>
-			<IMG src="img/tax.gif" alt=""> <A href="?m=taxratelist&o=label{if $listdata.direction eq "asc" && $listdata.order eq "label"},desc{/if}"><B>{trans("Label:")}</B></A> {if $listdata.order eq "label"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG src="img/tax.gif" alt=""> <A href="?m=taxratelist&o=label{if $listdata.direction == "asc" && $listdata.order == "label"},desc{/if}"><B>{trans("Label:")}</B></A> {if $listdata.order == "label"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" align="center" NOWRAP>
-			<IMG src="img/empty.gif" alt="" height="16"><A href="?m=taxratelist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG src="img/empty.gif" alt="" height="16"><A href="?m=taxratelist&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order == "id"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" NOWRAP>
-			<IMG src="img/empty.gif" alt=""> <A href="?m=taxratelist&o=value{if $listdata.direction eq "asc" && $listdata.order eq "value"},desc{/if}">{trans("Value:")}</A> {if $listdata.order eq "value"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG src="img/empty.gif" alt=""> <A href="?m=taxratelist&o=value{if $listdata.direction == "asc" && $listdata.order == "value"},desc{/if}">{trans("Value:")}</A> {if $listdata.order == "value"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" NOWRAP>{trans("Taxing:")}</TD>
 		<TD width="1%" NOWRAP>{trans("Binds from date:")}</TD>

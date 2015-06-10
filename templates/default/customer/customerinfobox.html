@@ -18,14 +18,14 @@
 						<TABLE WIDTH="100%" CELLPADDING="3">
 	<TR>
 		<TD WIDTH="1%">
-			{if $customerinfo.status eq "3"}<IMG src="img/customer.gif" alt="">{/if}
-			{if $customerinfo.status eq "2"}<IMG src="img/wait.gif" alt="">{/if}
-			{if $customerinfo.status eq "1"}<IMG src="img/unk.gif" alt="">{/if}
+			{if $customerinfo.status == "3"}<IMG src="img/customer.gif" alt="">{/if}
+			{if $customerinfo.status == "2"}<IMG src="img/wait.gif" alt="">{/if}
+			{if $customerinfo.status == "1"}<IMG src="img/unk.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="99%">
-			{if $customerinfo.status eq "3"}<B>{trans("connected<!singular>")}</B>{/if}
-			{if $customerinfo.status eq "2"}<B>{trans("waiting")}</B>{/if}
-			{if $customerinfo.status eq "1"}<B>{trans("interested<!singular>")}</B>{/if}
+			{if $customerinfo.status == "3"}<B>{trans("connected<!singular>")}</B>{/if}
+			{if $customerinfo.status == "2"}<B>{trans("waiting")}</B>{/if}
+			{if $customerinfo.status == "1"}<B>{trans("interested<!singular>")}</B>{/if}
 		</TD>
 	</TR>
 {if $customerinfo.division}
@@ -57,14 +57,14 @@
 			{if $customerinfo.country}<BR>{t}{$customerinfo.country}{/t}{/if}
 		</TD>
 	</TR>
-{if $customerinfo.post_name neq "" || $customerinfo.post_address neq ""}
+{if $customerinfo.post_name != "" || $customerinfo.post_address != ""}
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/post.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%">
-			{if $customerinfo.post_name neq ""}{$customerinfo.post_name}{/if}
-			{if $customerinfo.post_address neq ""}<BR>{$customerinfo.post_address}{/if}
+			{if $customerinfo.post_name != ""}{$customerinfo.post_name}{/if}
+			{if $customerinfo.post_address != ""}<BR>{$customerinfo.post_address}{/if}
 			{$customerinfo.post_zip} {$customerinfo.post_city}
 			{if $customerinfo.post_cstate}<BR>{$customerinfo.post_cstate}{/if}
 			{if $customerinfo.post_country}<BR>{t}{$customerinfo.post_country}{/t}{/if}
@@ -83,7 +83,7 @@
 		</TD>
 	</TR>
 {/foreach}
-{if $customerinfo.email neq ""}
+{if $customerinfo.email != ""}
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/mail.gif" ALT="">
@@ -119,7 +119,7 @@
 		</TD>
 	</TR>
 {/foreach}
-{if $customerinfo.pin neq 0}
+{if $customerinfo.pin != 0}
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/pin.gif" ALT="">
@@ -129,7 +129,7 @@
 		</TD>
 	</TR>
 {/if}
-{if $customerinfo.icn neq ""}
+{if $customerinfo.icn != ""}
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/serialnumber.gif" ALT="">
@@ -139,7 +139,7 @@
 		</TD>
 	</TR>
 {/if}
-{if $customerinfo.ssn neq ""}
+{if $customerinfo.ssn != ""}
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/serialnumber.gif" ALT="">
@@ -149,7 +149,7 @@
 		</TD>
 	</TR>
 {/if}
-{if $customerinfo.ten neq ""}
+{if $customerinfo.ten != ""}
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/serialnumber.gif" ALT="">
@@ -159,7 +159,7 @@
 		</TD>
 	</TR>
 {/if}
-{if $customerinfo.regon neq ""}
+{if $customerinfo.regon != ""}
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/serialnumber.gif" ALT="">
@@ -169,7 +169,7 @@
 		</TD>
 	</TR>
 {/if}
-{if $customerinfo.rbe neq ""}
+{if $customerinfo.rbe != ""}
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/serialnumber.gif" ALT="">
@@ -200,7 +200,7 @@
 			            {trans("Deadline:")}
 			        </TD>
 			        <TD>
-			            {if $customerinfo.paytime eq -1}{trans("default")}{else}{$customerinfo.paytime}&nbsp;{trans("days")}{/if}
+			            {if $customerinfo.paytime == -1}{trans("default")}{else}{$customerinfo.paytime}&nbsp;{trans("days")}{/if}
 		            </TD>
 	            </TR>
                 <TR>

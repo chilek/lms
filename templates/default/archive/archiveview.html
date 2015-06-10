@@ -65,9 +65,9 @@
 						</div>
 						<label for="user">{trans("User:")}</label>
 						<SELECT size="1" name="user" id="user">
-							<OPTION value="0"{if $listdata.user eq "0"} SELECTED{/if}>{trans("- all -")}</OPTION>
+							<OPTION value="0"{if $listdata.user == "0"} SELECTED{/if}>{trans("- all -")}</OPTION>
 							{foreach $listdata.users as $idx => $user}
-							<OPTION value="{$idx}"{if $listdata.user eq "{$idx}"} SELECTED{/if}>{$user.login}</OPTION>
+							<OPTION value="{$idx}"{if $listdata.user == "{$idx}"} SELECTED{/if}>{$user.login}</OPTION>
 							{/foreach}
 						</SELECT>&nbsp;
 					</TD>
@@ -79,9 +79,9 @@
 								</TD>
 								<TD>
 									<SELECT size="1" name="resourcetype" id="resourcetype" onchange="javascript:GetPropertyNames(null);">
-										<OPTION value="0"{if $listdata.resourcetype eq "0"} SELECTED{/if}>{trans("- all -")}</OPTION>
+										<OPTION value="0"{if $listdata.resourcetype == "0"} SELECTED{/if}>{trans("- all -")}</OPTION>
 										{foreach $_SYSLOG_RESOURCES as $idx => $resourcetype}
-										<OPTION value="{$idx}"{if $listdata.resourcetype eq "{$idx}"} SELECTED{/if}>{$resourcetype}</OPTION>
+										<OPTION value="{$idx}"{if $listdata.resourcetype == "{$idx}"} SELECTED{/if}>{$resourcetype}</OPTION>
 										{/foreach}
 									</SELECT>
 								</TD>
@@ -104,7 +104,7 @@
 								</TD>
 								<TD>
 									<SELECT size="1" name="propertyname" id="propertyname" onchange="javascript:GetPropertyValues();">
-										<OPTION value=""{if $listdata.propertyname eq "0"} SELECTED{/if}>{trans("- all -")}</OPTION>
+										<OPTION value=""{if $listdata.propertyname == "0"} SELECTED{/if}>{trans("- all -")}</OPTION>
 									</SELECT>
 								</TD>
 							</TR>

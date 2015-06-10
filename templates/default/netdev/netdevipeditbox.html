@@ -40,7 +40,7 @@
 			<SELECT NAME="ipadd[netid]" {tip text="Choose network" trigger="netid"}>
 				<OPTION value="0">{trans("- automatic selection -")}</OPTION>
 				{foreach $networks as $net}
-				<OPTION VALUE="{$net.id}" {if $net.id eq $nodeipdata.netid} selected{/if}{if $net.disabled eq 1} class="alert"{/if}>{$net.name|truncate:20:"":true}: {$net.address}/{$net.prefix}</OPTION>
+				<OPTION VALUE="{$net.id}" {if $net.id == $nodeipdata.netid} selected{/if}{if $net.disabled == 1} class="alert"{/if}>{$net.name|truncate:20:"":true}: {$net.address}/{$net.prefix}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>

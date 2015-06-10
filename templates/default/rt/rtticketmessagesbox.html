@@ -17,13 +17,13 @@
 	<TFOOT>
 	<TR>
 		<TD style="width: 100%;" class="navigation" colspan="3">
-			{if $ticket.prev_ticketid neq NULL}
+			{if $ticket.prev_ticketid != NULL}
 				<A href="?m=rtticketview&amp;id={$ticket.prev_ticketid}">&laquo;&laquo;&laquo;&nbsp;{trans("Previous ticket")}</A>
 			{else}
 				&laquo;&laquo;&laquo;&nbsp;{trans("Previous ticket")}
 			{/if}
 			&nbsp;&nbsp;&nbsp;
-			{if $ticket.next_ticketid neq NULL}
+			{if $ticket.next_ticketid != NULL}
 				<A href="?m=rtticketview&amp;id={$ticket.next_ticketid}">{trans("Next ticket")}&nbsp;&raquo;&raquo;&raquo;</A>
 			{else}
 				{trans("Next ticket")}&nbsp;&raquo;&raquo;&raquo;

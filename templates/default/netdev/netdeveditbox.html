@@ -235,7 +235,7 @@
 		<TD WIDTH="98%">
 			<SELECT SIZE="1" NAME="netdev[guaranteeperiod]" {tip text="Select device guarantee period (optional)"}>
 				{foreach from=$_GUARANTEEPERIODS key=key item=period}
-				<OPTION VALUE="{$key}"{if $netdevinfo.guaranteeperiod eq $key} SELECTED{/if}>{$period}</OPTION>
+				<OPTION VALUE="{$key}"{if $netdevinfo.guaranteeperiod == $key} SELECTED{/if}>{$period}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>

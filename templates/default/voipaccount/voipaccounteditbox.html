@@ -69,7 +69,7 @@
                 <td>
                     <select size="1" name="voipaccountedit[ownerid]" {tip text="Assign voip account to customer"} style="max-width:250px;">
                         {foreach from=$customers item=c}
-                        <option value="{$c.id}"{if $voipaccountinfo.ownerid eq $c.id} selected{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</option>
+                        <option value="{$c.id}"{if $voipaccountinfo.ownerid == $c.id} selected{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</option>
                         {/foreach}
                     </select>
                 </td>

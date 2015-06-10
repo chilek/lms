@@ -7,15 +7,15 @@
     <THEAD>
 	<TR>
 		<TD WIDTH="1%" nowrap>
-			<A href="?m=messagelist&o=cdate{if $listdata.direction eq "asc" && $listdata.order eq "cdate"},desc{/if}">{trans("Date:")}</A> {if $listdata.order eq "cdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=messagelist&o=cdate{if $listdata.direction == "asc" && $listdata.order == "cdate"},desc{/if}">{trans("Date:")}</A> {if $listdata.order == "cdate"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" nowrap>
 		</TD>
 		<TD WIDTH="96%" nowrap>
-			<A href="?m=messagelist&o=subject{if $listdata.direction eq "asc" && $listdata.order eq "number"},desc{/if}">{trans("Subject:")}</A> {if $listdata.order eq "subject"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=messagelist&o=subject{if $listdata.direction == "asc" && $listdata.order == "number"},desc{/if}">{trans("Subject:")}</A> {if $listdata.order == "subject"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" nowrap>
-			<A href="?m=messagelist&o=cnt{if $listdata.direction eq "asc" && $listdata.order eq "cnt"},desc{/if}">{trans("Recipients:")}</A> {if $listdata.order eq "cnt"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=messagelist&o=cnt{if $listdata.direction == "asc" && $listdata.order == "cnt"},desc{/if}">{trans("Recipients:")}</A> {if $listdata.order == "cnt"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" nowrap>
 			<B>{t a=$listdata.total}Total: $a{/t}</B>&nbsp;
@@ -28,13 +28,13 @@
 			<B>{trans("Filter:")} </B> 
 			<INPUT type="text" name="search" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>&nbsp;
 			<SELECT size="1" name="cat">
-				<OPTION value=""{if $listdata.cat eq ""} SELECTED{/if}>{trans("- select filter category -")}</OPTION>
-				<OPTION value="subject"{if $listdata.cat eq "subject"} SELECTED{/if}>{trans("subject")}</OPTION>
-				<OPTION value="name"{if $listdata.cat eq "name"} SELECTED{/if}>{trans("customer name")}</OPTION>
-				<OPTION value="customerid"{if $listdata.cat eq "customerid"} SELECTED{/if}>{trans("customer ID")}</OPTION>
-				<OPTION value="username"{if $listdata.cat eq "username"} SELECTED{/if}>{trans("user name")}</OPTION>
-				<OPTION value="userid"{if $listdata.cat eq "userid"} SELECTED{/if}>{trans("user ID")}</OPTION>
-				<OPTION value="destination"{if $listdata.cat eq "destination"} SELECTED{/if}>{trans("destination number/email")}</OPTION>
+				<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("- select filter category -")}</OPTION>
+				<OPTION value="subject"{if $listdata.cat == "subject"} SELECTED{/if}>{trans("subject")}</OPTION>
+				<OPTION value="name"{if $listdata.cat == "name"} SELECTED{/if}>{trans("customer name")}</OPTION>
+				<OPTION value="customerid"{if $listdata.cat == "customerid"} SELECTED{/if}>{trans("customer ID")}</OPTION>
+				<OPTION value="username"{if $listdata.cat == "username"} SELECTED{/if}>{trans("user name")}</OPTION>
+				<OPTION value="userid"{if $listdata.cat == "userid"} SELECTED{/if}>{trans("user ID")}</OPTION>
+				<OPTION value="destination"{if $listdata.cat == "destination"} SELECTED{/if}>{trans("destination number/email")}</OPTION>
 			</SELECT>&nbsp;
 			{trans("Type:")}
 			<SELECT size="1" name="type">

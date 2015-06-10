@@ -156,14 +156,14 @@
 		<TD style="width: 1%;" class="fleft"></TD>
 		<TD style="width: 1%;" class="bold nobr">{trans("Last login:")}</TD>
 		<TD style="width: 98%;" class="fright">
-			{$userinfo.lastlogin}, {$userinfo.lastloginip} {if $userinfo.lastloginip neq $userinfo.lastloginhost}({$userinfo.lastloginhost}){/if}
+			{$userinfo.lastlogin}, {$userinfo.lastloginip} {if $userinfo.lastloginip != $userinfo.lastloginhost}({$userinfo.lastloginhost}){/if}
 		</TD>
 	</TR>
 	<TR class="light">
 		<TD style="width: 1%;" class="fleft"></TD>
 		<TD style="width: 1%;" class="bold nobr">{trans("Last failed login:")}</TD>
 		<TD style="width: 98%;" class="fright">
-			{$userinfo.faillogin}, {$userinfo.failedloginip} {if $userinfo.failedloginip neq $userinfo.failedloginhost}({$userinfo.failedloginhost}){/if}
+			{$userinfo.faillogin}, {$userinfo.failedloginip} {if $userinfo.failedloginip != $userinfo.failedloginhost}({$userinfo.failedloginhost}){/if}
 		</TD>
 	</TR>
 	<TR class="light">

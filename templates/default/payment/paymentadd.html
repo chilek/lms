@@ -52,7 +52,7 @@
 		<TD WIDTH="98%">								
 			<SELECT SIZE="1" NAME="payment[period]" {tip text="Select accounting frequency"}>
 				{foreach from=$_PERIODS key=key item=item}{if $key>0}
-				<OPTION VALUE="{$key}"{if $payment.period eq $key} SELECTED{/if}>{$item}</OPTION>
+				<OPTION VALUE="{$key}"{if $payment.period == $key} SELECTED{/if}>{$item}</OPTION>
 				{/if}{/foreach}
 			</SELECT>&nbsp;
     			<INPUT TYPE="TEXT" NAME="payment[at]" VALUE="{$payment.at}" {tip text="Enter when to account payment. For weekly payment enter day of week (Monday = 1), for monthly payment enter day of month (from 1 to 28), for yearly payment enter day and month in format DD/MM (15/09 means 15 September), for half-yearly DD/MM (MM <=6) and quarterly DD/MM (MM <= 3)" trigger="at"} SIZE="5">

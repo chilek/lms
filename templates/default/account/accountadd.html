@@ -47,7 +47,7 @@
 					<select name="account[domainid]" {tip text="Select domain name" trigger="domainid"}>
 					    <option value="0" {if !$account.domainid}SELECTED{/if}>{trans("- select domain -")}</option>
 					    {section name=domainlist loop=$domainlist}
-					    <option value="{$domainlist[domainlist].id}" {if $domainlist[domainlist].id eq $account.domainid}SELECTED{/if}>{$domainlist[domainlist].name}</option>
+					    <option value="{$domainlist[domainlist].id}" {if $domainlist[domainlist].id == $account.domainid}SELECTED{/if}>{$domainlist[domainlist].name}</option>
 					    {/section}
 					</select>
 				    </TD>

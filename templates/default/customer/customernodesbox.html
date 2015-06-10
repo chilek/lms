@@ -38,7 +38,7 @@ function setgroup(act)
 			{t a=$customernodes|@count|default:"0"}Customer Nodes ($a):{/t}
 		</TD>
 		<TD style="width: 1%;" class="text-right nobr">
-			{if $customerinfo.status neq "1" and ! $customerinfo.deleted}<A href="?m=nodeadd&amp;ownerid={$customerinfo.id}">{trans("New Node")} &raquo;</A>&nbsp;{/if}
+			{if $customerinfo.status != "1" and ! $customerinfo.deleted}<A href="?m=nodeadd&amp;ownerid={$customerinfo.id}">{trans("New Node")} &raquo;</A>&nbsp;{/if}
 		</TD>
 	</TR>
 	</THEAD>
@@ -143,7 +143,7 @@ function setgroup(act)
 							<A href="javascript: setgroup('setgroup')"> {trans("Add")}</A>/<A href="javascript: setgroup('unsetgroup')">{trans("Remove Group")}</A>:
 							<SELECT SIZE="1" id="groupselect">
 								{foreach from=$allnodegroups item=nodegroup}
-								<OPTION value="{$nodegroup.id}" {if $listdata.nodegroup eq $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
+								<OPTION value="{$nodegroup.id}" {if $listdata.nodegroup == $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
 								{/foreach}
 							</SELECT>
 							{/if}

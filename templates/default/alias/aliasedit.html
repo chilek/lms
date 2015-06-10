@@ -65,7 +65,7 @@ function togglelogin()
 			<select name="alias[domainid]" {tip text="Select domain name" trigger="domainid"}>
 				<option value="0" {if !$alias.domainid}SELECTED{/if}>{trans("- select domain -")}</option>
     				{foreach from=$domainlist item=item}
-				<option value="{$item.id}"{if $item.id eq $alias.domainid} SELECTED{/if}>{$item.name}</option>
+				<option value="{$item.id}"{if $item.id == $alias.domainid} SELECTED{/if}>{$item.name}</option>
 	    			{/foreach}
 			</select>
 		</TD>
@@ -85,7 +85,7 @@ function togglelogin()
 			<SELECT size="1" name="alias[accountid]" {tip text="Select account" trigger="accountid"}>
 				<OPTION value="0"{if !$alias.accountid} SELECTED{/if}>{trans("- select account -")}</OPTION>
 				{foreach from=$accountlist item=item}
-				<OPTION value="{$item.id}"{if $item.id eq $alias.accountid} SELECTED{/if}>{$item.login}@{$item.domain}</OPTION>
+				<OPTION value="{$item.id}"{if $item.id == $alias.accountid} SELECTED{/if}>{$item.login}@{$item.domain}</OPTION>
 				{/foreach}
 			</SELECT>
 			<A href="javascript:addaccount()"><IMG src="img/add.gif" alt="" {tip text="Add"}></A>
