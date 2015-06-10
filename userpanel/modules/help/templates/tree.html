@@ -1,7 +1,7 @@
 {if $tree}
 <ul>
 {foreach from=$tree key="name" item="subtree"}
-{if ($name|truncate:4:"") eq 'next'}
+{if ($name|truncate:4:"") == 'next'}
     {include file=$treefile tree=$subtree treefile=$treefile}
 {else}
     <li><a href="?m=userpanel&module=help&f=edit&nr={$name}" {tip text="Edit this item"}>{$subtree} <img src="img/edit.gif"></a> 
