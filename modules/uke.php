@@ -165,7 +165,7 @@ if (!empty($projects))
 		);
 		if (in_array('proj', $sheets))
 			if ($format == 2)
-				$buffer .= 'PROJ,' . to_csv($data) . EOL;
+				$buffer .= 'PR,' . to_csv($data) . EOL;
 			else
 				$sprojects .= to_old_csv($proj_keys, $data) . EOL;
 		$projectid++;
