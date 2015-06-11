@@ -20,6 +20,9 @@ version ?.??.?? (????-??-??):
   - uke siis generator adjusted to earlier added radio sector feature [chilan]
   - daemon: ewx-pt module: fixed inproper mac content copying which caused segfaults
     on systems with newer system libraries [chilan]
+  - daemon: ewx-pt module: don't remove hosts from ewx_pt_config sql table
+    when host doesn't belong to any network defined by networks setting
+    - in other words more sane multi ewx-pt instance support [chilan]
 
 version 1.11.16 (2015-03-31):
 
