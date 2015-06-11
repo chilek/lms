@@ -76,7 +76,7 @@ $int_keys = array('int_id', 'int_invproject', 'int_invstatus', 'int_id', 'int_ww
 	'int_dlayer', 'int_alayer', 'int_tech', 'int_bandwidth', 'int_ltech', 'int_maxdown', 'int_maxup',
 	'int_totalports', 'int_usedports', 'int_freeports', 'int_portleasing');
 $sr_keys = array('sr_id', 'sr_invproject', 'sr_invstatus', 'sr_id', 'sr_wwid', 'sr_intid',
-	'sr_license', 'sr_licensenr', 'sr_angle', 'sr_anglewidth', 'sr_high', 'sr_range', 'sr_maxspeed');
+	'sr_license', 'sr_licensenr', 'sr_azimuth', 'sr_width', 'sr_altitude', 'sr_range', 'sr_maxspeed');
 $ps_keys = array('ps_id', 'ps_invproject', 'ps_invstatus', 'ps_id', 'ps_wwid', 'ps_woid', 'ps_intid',
 	'ps_internetusage', 'ps_voiceusage', 'ps_otherusage', 'ps_totalspeed', 'ps_internetspeed');
 $pol_keys = array('pol_id', 'pol_invproject', 'pol_invstatus', 'pol_id', 'pol_owner', 'pol_foreignerid',
@@ -131,20 +131,14 @@ $borough_types = array(
 
 $linktypes = array(
 	array('linia' => "kablowa", 'trakt' => "podziemny", 'technologia' => "kablowe parowe miedziane", 'typ' => "UTP",
-		'pasmo' => "", 'szybkosc_radia' => "",
-		'technologia_dostepu' => "100 Mb/s Fast Ethernet", 'szybkosc' => "100", 'liczba_jednostek' => "1",
-		'jednostka' => "linie w kablu",
-		'specyficzne' => array('szybkosc_dystrybucyjna' => "100")),
+		'technologia_dostepu' => "100 Mb/s Fast Ethernet", 'liczba_jednostek' => "1",
+		'jednostka' => "linie w kablu"),
 	array('linia' => "bezprzewodowa", 'trakt' => "NIE DOTYCZY", 'technologia' => "radiowe", 'typ' => "WiFi",
-		'pasmo' => "5.5", 'szybkosc_radia' => "100",
-		'technologia_dostepu' => "WiFi - 2,4 GHz", 'szybkosc' => "54", 'liczba_jednostek' => "1",
-		'jednostka' => "kanały",
-		'specyficzne' => array('szybkosc_dystrybucyjna' => "100")),
+		'technologia_dostepu' => "WiFi - 2,4 GHz", 'liczba_jednostek' => "1",
+		'jednostka' => "kanały"),
 	array('linia' => "kablowa", 'trakt' => "podziemny w kanalizacji", 'technologia' => "światłowodowe", 'typ' => "G.652", 
-		'pasmo' => "", 'szybkosc_radia' => "",
-		'technologia_dostepu' => "100 Mb/s Fast Ethernet", 'szybkosc' => "100", 'liczba_jednostek' => "2",
-		'jednostka' => "włókna",
-		'specyficzne' => array('szybkosc_dystrybucyjna' => "1000"))
+		'technologia_dostepu' => "100 Mb/s Fast Ethernet", 'liczba_jednostek' => "2",
+		'jednostka' => "włókna")
 );
 
 $projects = $DB->GetAllByKey("SELECT id, name FROM invprojects WHERE type <> ?", "id", array(INV_PROJECT_SYSTEM));
@@ -176,6 +170,8 @@ if (!empty($projects))
 				$sprojects .= to_old_csv($proj_keys, $data) . EOL;
 		$projectid++;
 	}
+
+$allradiosectors = $DB->GetAllByKey("SELECT * FROM netradiosectors ORDER BY id", "id");
 
 $truenetnodes = $DB->GetAllByKey("SELECT nn.id, nn.name, nn.invprojectid, nn.type, nn.status, nn.ownership, nn.coowner,
 		nn.uip, nn.miar,
@@ -259,32 +255,44 @@ $foreigners = array();
 $netnodeid = 1;
 if ($netdevices)
 	foreach ($netdevices as $netdevid => $netdevice) {
-		$backboneports = $DB->GetAll("SELECT nl.type, technology, speed, COUNT(nl.id) AS portcount
+		$backboneports = $DB->GetAll("SELECT nl.type, technology, speed,
+				(CASE src WHEN ? THEN (CASE WHEN rssrc.frequency IS NULL THEN rsdst.frequency ELSE rssrc.frequency END)
+					ELSE (CASE WHEN rsdst.frequency IS NULL THEN rssrc.frequency ELSE rsdst.frequency END) END) AS freq,
+				COUNT(nl.id) AS portcount
 			FROM netlinks nl
 			JOIN netdevices ndsrc ON ndsrc.id = nl.src
 			LEFT JOIN netnodes nnsrc ON nnsrc.id = ndsrc.netnodeid
+			LEFT JOIN netradiosectors rssrc ON rssrc.id = nl.srcradiosector
 			JOIN netdevices nddst ON nddst.id = nl.dst
 			LEFT JOIN netnodes nndst ON nndst.id = nddst.netnodeid
+			LEFT JOIN netradiosectors rsdst ON rsdst.id = nl.dstradiosector
 			WHERE (src = ? OR dst = ?)
 				AND ((ndsrc.netnodeid IS NOT NULL AND nnsrc.ownership = 2)
 					OR (nddst.netnodeid IS NOT NULL AND nndst.ownership = 2))
-			GROUP BY nl.type, technology, speed",
-			array($netdevice['id'], $netdevice['id']));
-		$distports = $DB->GetAll("SELECT nl.type, technology, speed, COUNT(nl.id) AS portcount FROM netlinks nl
+			GROUP BY nl.type, technology, speed, freq",
+			array($netdevice['id'], $netdevice['id'], $netdevice['id']));
+		$distports = $DB->GetAll("SELECT nl.type, technology, speed,
+				(CASE src WHEN ? THEN (CASE WHEN rssrc.frequency IS NULL THEN rsdst.frequency ELSE rssrc.frequency END)
+					ELSE (CASE WHEN rsdst.frequency IS NULL THEN rssrc.frequency ELSE rsdst.frequency END) END) AS freq,
+				COUNT(nl.id) AS portcount FROM netlinks nl
 			JOIN netdevices ndsrc ON ndsrc.id = nl.src
 			LEFT JOIN netnodes nnsrc ON nnsrc.id = ndsrc.netnodeid
+			LEFT JOIN netradiosectors rssrc ON rssrc.id = nl.srcradiosector
 			JOIN netdevices nddst ON nddst.id = nl.dst
 			LEFT JOIN netnodes nndst ON nndst.id = nddst.netnodeid
+			LEFT JOIN netradiosectors rsdst ON rsdst.id = nl.dstradiosector
 			WHERE (src = ? OR dst = ?)
 				AND (ndsrc.netnodeid IS NULL OR nnsrc.ownership < 2)
 				AND (nddst.netnodeid IS NULL OR nndst.ownership < 2)
-			GROUP BY nl.type, technology, speed",
-			array($netdevice['id'], $netdevice['id']));
+			GROUP BY nl.type, technology, speed, freq",
+			array($netdevice['id'], $netdevice['id'], $netdevice['id']));
 		$accessports = $DB->GetAll("SELECT linktype AS type, linktechnology AS technology,
-				linkspeed AS speed, c.type AS customertype, COUNT(port) AS portcount
+				linkspeed AS speed, rs.frequency, " . $DB->GroupConcat('rs.id') . " AS radiosectors,
+				c.type AS customertype, COUNT(port) AS portcount
 			FROM nodes n
 			JOIN customers c ON c.id = n.ownerid
-			WHERE netdev = ? 
+			LEFT JOIN netradiosectors rs ON rs.id = n.linkradiosector
+			WHERE n.netdev = ? 
 				AND EXISTS
 					(SELECT na.id FROM nodeassignments na
 						JOIN assignments a ON a.id = na.assignmentid
@@ -296,7 +304,7 @@ if ($netdevices)
 						WHERE aa.customerid = c.id AND aa.tariffid = 0 AND aa.liabilityid = 0
 							AND (aa.datefrom < ?NOW? OR aa.datefrom = 0)
 							AND (aa.dateto > ?NOW? OR aa.dateto = 0))
-			GROUP BY linktype, linktechnology, linkspeed, c.type
+			GROUP BY linktype, linktechnology, linkspeed, rs.frequency, c.type
 			ORDER BY c.type", array($netdevice['id']));
 
 		$netdevices[$netdevid]['invproject'] = $netdevice['invproject'] =
@@ -415,6 +423,7 @@ if ($netdevices)
 				$linktype = $port['type'];
 				$linktechnology = $port['technology'];
 				$linkspeed = $port['speed'];
+				$linkfrequency = empty($port['freq']) ? '' : (float) $port['freq'];
 				if (!$linktechnology)
 					switch ($linktype) {
 						case 0:
@@ -427,9 +436,22 @@ if ($netdevices)
 							$linktechnology = 205;
 							break;
 					}
-				if (!isset($netnodes[$netnodename]['backboneports'][$prj][$status][$linktype][$linktechnology][$linkspeed]))
-					$netnodes[$netnodename]['backboneports'][$prj][$status][$linktype][$linktechnology][$linkspeed] = 0;
-				$netnodes[$netnodename]['backboneports'][$prj][$status][$linktype][$linktechnology][$linkspeed] += $port['portcount'];
+				if ($linktype == 1 && empty($linkfrequency))
+					switch ($linktechnology) {
+						case 100:
+							$linkfrequency = 2.4;
+							break;
+						case 101:
+							$linkfrequency = 5.5;
+							break;
+						default:
+							$linkfrequency = '';
+					}
+				if (!empty($linkfrequency))
+					$linkfrequency = str_replace(',', '.', (float) $linkfrequency);
+				if (!isset($netnodes[$netnodename]['backboneports'][$prj][$status][$linktype][$linktechnology][$linkspeed][$linkfrequency]))
+					$netnodes[$netnodename]['backboneports'][$prj][$status][$linktype][$linktechnology][$linkspeed][$linkfrequency] = 0;
+				$netnodes[$netnodename]['backboneports'][$prj][$status][$linktype][$linktechnology][$linkspeed][$linkfrequency] += $port['portcount'];
 				$netnodes[$netnodename]['totalbackboneports'] += $port['portcount'];
 				$netnodes[$netnodename]['ports'] += $port['portcount'];
 			}
@@ -439,6 +461,7 @@ if ($netdevices)
 				$linktype = $port['type'];
 				$linktechnology = $port['technology'];
 				$linkspeed = $port['speed'];
+				$linkfrequency = empty($port['freq']) ? '' : (float) $port['freq'];
 				if (!$linktechnology)
 					switch ($linktype) {
 						case 0:
@@ -451,9 +474,22 @@ if ($netdevices)
 							$linktechnology = 205;
 							break;
 					}
-				if (!isset($netnodes[$netnodename]['distports'][$prj][$status][$linktype][$linktechnology][$linkspeed]))
-					$netnodes[$netnodename]['distports'][$prj][$status][$linktype][$linktechnology][$linkspeed] = 0;
-				$netnodes[$netnodename]['distports'][$prj][$status][$linktype][$linktechnology][$linkspeed] += $port['portcount'];
+				if ($linktype == 1 && empty($linkfrequency))
+					switch ($linktechnology) {
+						case 100:
+							$linkfrequency = 2.4;
+							break;
+						case 101:
+							$linkfrequency = 5.5;
+							break;
+						default:
+							$linkfrequency = '';
+					}
+				if (!empty($linkfrequency))
+					$linkfrequency = str_replace(',', '.', (float) $linkfrequency);
+				if (!isset($netnodes[$netnodename]['distports'][$prj][$status][$linktype][$linktechnology][$linkspeed][$linkfrequency]))
+					$netnodes[$netnodename]['distports'][$prj][$status][$linktype][$linktechnology][$linkspeed][$linkfrequency] = 0;
+				$netnodes[$netnodename]['distports'][$prj][$status][$linktype][$linktechnology][$linkspeed][$linkfrequency] += $port['portcount'];
 				$netnodes[$netnodename]['totaldistports'] += $port['portcount'];
 				$netnodes[$netnodename]['ports'] += $port['portcount'];
 			}
@@ -463,6 +499,7 @@ if ($netdevices)
 				$linktype = $ports['type'];
 				$linktechnology = $ports['technology'];
 				$linkspeed = $ports['speed'];
+				$linkfrequency = empty($ports['frequency']) ? '' : (float) $ports['frequency'];
 				$customertype = $ports['customertype'];
 				if (!$linktechnology)
 					switch ($linktype) {
@@ -476,9 +513,24 @@ if ($netdevices)
 							$linktechnology = 205;
 							break;
 					}
-				if (!isset($netnodes[$netnodename]['accessports'][$prj][$status][$linktype][$linktechnology][$linkspeed][$customertype]))
-					$netnodes[$netnodename]['accessports'][$prj][$status][$linktype][$linktechnology][$linkspeed][$customertype] = 0;
-				$netnodes[$netnodename]['accessports'][$prj][$status][$linktype][$linktechnology][$linkspeed][$customertype] += $ports['portcount'];
+				if ($linktype == 1 && empty($linkfrequency))
+					switch ($linktechnology) {
+						case 100:
+							$linkfrequency = 2.4;
+							break;
+						case 101:
+							$linkfrequency = 5.5;
+							break;
+						default:
+							$linkfrequency = '';
+					}
+				if (!empty($linkfrequency))
+					$linkfrequency = str_replace(',', '.', (float) $linkfrequency);
+				if (!isset($netnodes[$netnodename]['accessports'][$prj][$status][$linktype][$linktechnology][$linkspeed][$linkfrequency]['customers'][$customertype]))
+					$netnodes[$netnodename]['accessports'][$prj][$status][$linktype][$linktechnology][$linkspeed][$linkfrequency]['customers'][$customertype] = 0;
+				$netnodes[$netnodename]['accessports'][$prj][$status][$linktype][$linktechnology][$linkspeed][$linkfrequency]['customers'][$customertype] += $ports['portcount'];
+				$netnodes[$netnodename]['accessports'][$prj][$status][$linktype][$linktechnology][$linkspeed][$linkfrequency]['radiosectors'] =
+					empty($ports['radiosectors']) ? array() : explode(',', $ports['radiosectors']);
 				$netnodes[$netnodename][($customertype ? 'commercialaccessports' : 'personalaccessports')] += $ports['portcount'];
 				$netnodes[$netnodename]['ports'] += $ports['portcount'];
 			}
@@ -637,44 +689,36 @@ foreach ($netnodes as $netnodename => $netnode) {
 						else
 							$technology = 'kablowe współosiowe miedziane';
 						$ltech = $LINKTECHNOLOGIES[$linktype][$linktechnology];
-						switch ($linktechnology) {
-							case 100:
-								$bandwidth = "2.4";
-								break;
-							case 101:
-								$bandwidth = "5.5";
-								break;
-							default:
-								$bandwidth = "";
-								break;
-						}
-						foreach ($linkspeeds as $linkspeed => $totalbackboneports) {
-							$data = array(
-								'int_id' => $netintid,
-								'int_wwid' => $netnode['id'],
-								'int_blayer' => 'Tak',
-								'int_dlayer' => 'Nie',
-								'int_alayer' => 'Nie',
-								'int_tech' => $technology,
-								'int_bandwidth' => $bandwidth,
-								'int_ltech' => $ltech,
-								'int_maxdown' => round($linkspeed / 1000),
-								'int_maxup' => round($linkspeed / 1000),
-								'int_totalports' => $totalbackboneports,
-								'int_usedports' => $totalbackboneports,
-								'int_freeports' => 0,
-								'int_portleasing' => 'Nie',
-								'int_invproject' => strlen($prj) ? $prj : '',
-								'int_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
-							);
-							if (in_array('int', $sheets))
-								if ($format == 2)
-									$buffer .= 'I,' . to_csv($data) . EOL;
-								else
-									$snetinterfaces .= to_old_csv($int_keys, $data) . EOL;
-							$netnodes[$netnodename]['backbonenetintid'][$prj][$status][$linktype][$linktechnology][$linkspeed] =
-								$netintid;
-							$netintid++;
+
+						foreach ($linkspeeds as $linkspeed => $linkfrequencies) {
+							foreach ($linkfrequencies as $linkfrequency => $totalbackboneports) {
+								$data = array(
+									'int_id' => $netintid,
+									'int_wwid' => $netnode['id'],
+									'int_blayer' => 'Tak',
+									'int_dlayer' => 'Nie',
+									'int_alayer' => 'Nie',
+									'int_tech' => $technology,
+									'int_bandwidth' => $linkfrequency,
+									'int_ltech' => $ltech,
+									'int_maxdown' => round($linkspeed / 1000),
+									'int_maxup' => round($linkspeed / 1000),
+									'int_totalports' => $totalbackboneports,
+									'int_usedports' => $totalbackboneports,
+									'int_freeports' => 0,
+									'int_portleasing' => 'Nie',
+									'int_invproject' => strlen($prj) ? $prj : '',
+									'int_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
+								);
+								if (in_array('int', $sheets))
+									if ($format == 2)
+										$buffer .= 'I,' . to_csv($data) . EOL;
+									else
+										$snetinterfaces .= to_old_csv($int_keys, $data) . EOL;
+								$netnodes[$netnodename]['backbonenetintid'][$prj][$status][$linktype][$linktechnology][$linkspeed] =
+									$netintid;
+								$netintid++;
+							}
 						}
 					}
 		}
@@ -691,42 +735,34 @@ foreach ($netnodes as $netnodename => $netnode) {
 						else
 							$technology = 'kablowe współosiowe miedziane';
 						$ltech = $LINKTECHNOLOGIES[$linktype][$linktechnology];
-						switch ($linktechnology) {
-							case 100:
-								$bandwidth = "2.4";
-								break;
-							case 101:
-								$bandwidth = "5.5";
-								break;
-							default:
-								$bandwidth = "";
-								break;
-						}
-						foreach ($linkspeeds as $linkspeed => $totaldistports) {
-							$data = array(
-								'int_id' => $netintid,
-								'int_wwid' => $netnode['id'],
-								'int_blayer' => 'Nie',
-								'int_dlayer' => 'Tak',
-								'int_alayer' => 'Nie',
-								'int_tech' => $technology,
-								'int_bandwidth' => $bandwidth,
-								'int_ltech' => $ltech,
-								'int_maxdown' => round($linkspeed / 1000),
-								'int_maxup' => round($linkspeed / 1000),
-								'int_totalports' => $totaldistports,
-								'int_usedports' => $totaldistports,
-								'int_freeports' => 0,
-								'int_portleasing' => 'Nie',
-								'int_invproject' => strlen($prj) ? $prj : '',
-								'int_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
-							);
-							if (in_array('int', $sheets))
-								if ($format == 2)
-									$buffer .= 'I,' . to_csv($data) . EOL;
-								else
-									$snetinterfaces .= to_old_csv($int_keys, $data) . EOL;
-							$netintid++;
+
+						foreach ($linkspeeds as $linkspeed => $linkfrequencies) {
+							foreach ($linkfrequencies as $linkfrequency => $totaldistports) {
+								$data = array(
+									'int_id' => $netintid,
+									'int_wwid' => $netnode['id'],
+									'int_blayer' => 'Nie',
+									'int_dlayer' => 'Tak',
+									'int_alayer' => 'Nie',
+									'int_tech' => $technology,
+									'int_bandwidth' => $linkfrequency,
+									'int_ltech' => $ltech,
+									'int_maxdown' => round($linkspeed / 1000),
+									'int_maxup' => round($linkspeed / 1000),
+									'int_totalports' => $totaldistports,
+									'int_usedports' => $totaldistports,
+									'int_freeports' => 0,
+									'int_portleasing' => 'Nie',
+									'int_invproject' => strlen($prj) ? $prj : '',
+									'int_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
+								);
+								if (in_array('int', $sheets))
+									if ($format == 2)
+										$buffer .= 'I,' . to_csv($data) . EOL;
+									else
+										$snetinterfaces .= to_old_csv($int_keys, $data) . EOL;
+								$netintid++;
+							}
 						}
 					}
 		}
@@ -743,84 +779,100 @@ foreach ($netnodes as $netnodename => $netnode) {
 						else
 							$technology = 'kablowe współosiowe miedziane';
 						$ltech = $LINKTECHNOLOGIES[$linktype][$linktechnology];
-						switch ($linktechnology) {
-							case 100:
-								$bandwidth = "2.4";
-								break;
-							case 101:
-								$bandwidth = "5.5";
-								break;
-							default:
-								$bandwidth = "";
-								break;
-						}
 
-						foreach ($linkspeeds as $linkspeed => $customertypes) {
-							$ports = 0;
-							foreach ($customertypes as $customertypeports)
-								$ports += $customertypeports;
-							$data = array(
-								'int_id' => $netintid,
-								'int_wwid' => $netnode['id'],
-								'int_blayer' => 'Nie',
-								'int_dlayer' => 'Nie',
-								'int_alayer' => 'Tak',
-								'int_tech' => $technology,
-								'int_bandwidth' => $bandwidth,
-								'int_ltech' => $ltech,
-								'int_maxdown' => round($linkspeed / 1000),
-								'int_maxup' => round($linkspeed / 1000),
-								'int_totalports' => ($netnode['ports'] - $netnode['totaldistports']
-									- $netnode['personalaccessports'] - $netnode['commercialaccessports']
-									+ $ports),
-								'int_usedports' => $ports,
-								'int_freeports' => ($netnode['ports'] - $netnode['totaldistports']
-									- $netnode['personalaccessports'] - $netnode['commercialaccessports']),
-								'int_portleasing' => 'Nie',
-								'int_invproject' => strlen($prj) ? $prj : '',
-								'int_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
-							);
-							if (!$idx) {
-								$data['int_totalports'] = $netnode['ports'] - $netnode['totaldistports']
-									- $netnode['personalaccessports'] - $netnode['commercialaccessports']
-									+ $ports;
-								$data['int_usedports'] = $ports;
-								$data['int_freeports'] = $netnode['ports'] - $netnode['totaldistports']
-									- $netnode['personalaccessports'] - $netnode['commercialaccessports'];
-							} else {
-								$data['int_totalports'] = $ports;
-								$data['int_usedports'] = $ports;
-								$data['int_freeports'] = 0;
-							}
-							if (in_array('int', $sheets))
-								if ($format == 2)
-									$buffer .= 'I,' . to_csv($data) . EOL;
-								else
-									$snetinterfaces .= to_old_csv($int_keys, $data) . EOL;
-							if ($linktype == 1) {
+						foreach ($linkspeeds as $linkspeed => $linkfrequencies)
+							foreach ($linkfrequencies as $linkfrequency => $customertypes) {
+								$ports = 0;
+								foreach ($customertypes['customers'] as $customertypeports)
+									$ports += $customertypeports;
 								$data = array(
-									'sr_id' => $radiosectorid,
-									'sr_wwid' => $netnode['id'],
-									'sr_intid' => $netintid,
-									'sr_license' => 'Nie',
-									'sr_licensenr' => '',
-									'sr_angle' => 0,
-									'sr_anglewidth' => 360,
-									'sr_high' => 20,
-									'sr_range' => 500,
-									'sr_maxspeed' => round($linkspeed / 1000),
-									'sr_invproject' => strlen($prj) ? $prj : '',
-									'sr_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
+									'int_id' => $netintid,
+									'int_wwid' => $netnode['id'],
+									'int_blayer' => 'Nie',
+									'int_dlayer' => 'Nie',
+									'int_alayer' => 'Tak',
+									'int_tech' => $technology,
+									'int_bandwidth' => $linkfrequency,
+									'int_ltech' => $ltech,
+									'int_maxdown' => round($linkspeed / 1000),
+									'int_maxup' => round($linkspeed / 1000),
+									'int_totalports' => ($netnode['ports'] - $netnode['totaldistports']
+										- $netnode['personalaccessports'] - $netnode['commercialaccessports']
+										+ $ports),
+									'int_usedports' => $ports,
+									'int_freeports' => ($netnode['ports'] - $netnode['totaldistports']
+										- $netnode['personalaccessports'] - $netnode['commercialaccessports']),
+									'int_portleasing' => 'Nie',
+									'int_invproject' => strlen($prj) ? $prj : '',
+									'int_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
 								);
-								if (in_array('sr', $sheets))
+								if (!$idx) {
+									$data['int_totalports'] = $netnode['ports'] - $netnode['totaldistports']
+										- $netnode['personalaccessports'] - $netnode['commercialaccessports']
+										+ $ports;
+									$data['int_usedports'] = $ports;
+									$data['int_freeports'] = $netnode['ports'] - $netnode['totaldistports']
+										- $netnode['personalaccessports'] - $netnode['commercialaccessports'];
+								} else {
+									$data['int_totalports'] = $ports;
+									$data['int_usedports'] = $ports;
+									$data['int_freeports'] = 0;
+								}
+								if (in_array('int', $sheets))
 									if ($format == 2)
-										$buffer .= 'Z,' . to_csv($data) . EOL;
+										$buffer .= 'I,' . to_csv($data) . EOL;
 									else
-										$sradiosectors .= to_old_csv($sr_keys, $data) . EOL;
-								$radiosectorid++;
+										$snetinterfaces .= to_old_csv($int_keys, $data) . EOL;
+								if ($linktype == 1) {
+									$radiosectors = $customertypes['radiosectors'];
+									if (empty($radiosectors)) {
+										$data = array(
+											'sr_id' => $radiosectorid,
+											'sr_wwid' => $netnode['id'],
+											'sr_intid' => $netintid,
+											'sr_license' => 'Nie',
+											'sr_licensenr' => '',
+											'sr_azimuth' => 0,
+											'sr_width' => 360,
+											'sr_altitude' => 20,
+											'sr_range' => 500,
+											'sr_maxspeed' => round($linkspeed / 1000),
+											'sr_invproject' => strlen($prj) ? $prj : '',
+											'sr_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
+										);
+										if (in_array('sr', $sheets))
+											if ($format == 2)
+												$buffer .= 'Z,' . to_csv($data) . EOL;
+											else
+												$sradiosectors .= to_old_csv($sr_keys, $data) . EOL;
+										$radiosectorid++;
+									} else
+										foreach ($radiosectors as $radiosector) {
+											$radiosector = $allradiosectors[$radiosector];
+											$data = array(
+												'sr_id' => $radiosectorid,
+												'sr_wwid' => $netnode['id'],
+												'sr_intid' => $netintid,
+												'sr_license' => empty($radiosector['license']) ? 'Nie' : 'Tak',
+												'sr_licensenr' => empty($radiosector['license']) ? '' : $radiosector['license'],
+												'sr_azimuth' => round($radiosector['azimuth']),
+												'sr_width' => round($radiosector['width']),
+												'sr_altitude' => $radiosector['altitude'],
+												'sr_range' => $radiosector['rsrange'],
+												'sr_maxspeed' => round($linkspeed / 1000),
+												'sr_invproject' => strlen($prj) ? $prj : '',
+												'sr_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
+											);
+											if (in_array('sr', $sheets))
+												if ($format == 2)
+													$buffer .= 'Z,' . to_csv($data) . EOL;
+												else
+													$sradiosectors .= to_old_csv($sr_keys, $data) . EOL;
+											$radiosectorid++;
+										}
+								}
+								$netintid++;
 							}
-							$netintid++;
-						}
 					}
 		}
 	}
@@ -1221,8 +1273,16 @@ $processed_netlinks = array();
 $netlinks = array();
 if ($netdevices)
 	foreach ($netdevices as $netdevice) {
-		$ndnetlinks = $DB->GetAll("SELECT src, dst, type, speed, technology FROM netlinks WHERE src = ? OR dst = ?",
-			array($netdevice['id'], $netdevice['id']));
+		$ndnetlinks = $DB->GetAll("SELECT src, dst, type, speed, technology,
+			(CASE src WHEN ? THEN (CASE WHEN srcrs.license IS NULL THEN dstrs.license ELSE srcrs.license END)
+				ELSE (CASE WHEN dstrs.license IS NULL THEN srcrs.license ELSE dstrs.license END) END) AS license,
+			(CASE src WHEN ? THEN (CASE WHEN srcrs.frequency IS NULL THEN dstrs.frequency ELSE srcrs.frequency END)
+				ELSE (CASE WHEN dstrs.frequency IS NULL THEN srcrs.frequency ELSE dstrs.frequency END) END) AS frequency
+			FROM netlinks nl
+			LEFT JOIN netradiosectors srcrs ON srcrs.id = nl.srcradiosector
+			LEFT JOIN netradiosectors dstrs ON dstrs.id = nl.dstradiosector
+			WHERE src = ? OR dst = ?",
+			array($netdevice['id'], $netdevice['id'], $netdevice['id'], $netdevice['id']));
 		if ($ndnetlinks)
 			foreach ($ndnetlinks as $netlink) {
 				$netdevnetnode = $netdevs[$netdevice['id']];
@@ -1309,6 +1369,8 @@ if ($netdevices)
 								'technology' => $netlink['technology'],
 								'src' => $netdevnetnode,
 								'dst' => $dstnetnode,
+								'license' => $netlink['license'],
+								'frequency' => $netlink['frequency'],
 								'invproject' => $invproject,
 								'status' => $status,
 								'foreign' => $foreign,
@@ -1386,6 +1448,8 @@ if ($netdevices)
 								'speed' => $speed,
 								'src' => $netdevnetnode,
 								'dst' => $srcnetnode,
+								'license' => $netlink['license'],
+								'frequency' => $netlink['frequency'],
 								'invproject' => $invproject,
 								'status' => $status,
 								'foreign' => $foreign,
@@ -1403,15 +1467,35 @@ if ($netlinks)
 	foreach ($netlinks as $netlink)
 		if ($netnodes[$netlink['src']]['id'] != $netnodes[$netlink['dst']]['id']) {
 			if ($netlink['type'] == 1) {
+				$linktechnology = $netlink['technology'];
+				if (!$linktechnology)
+					$linktechnology = 101;
+				switch ($linktechnology) {
+					case 100: case 101:
+						$linktransmission = 'WiFi';
+						break;
+					case 102: case 103: case 104:
+						$linktransmission = $LINKTECHNOLOGIES[1][$linktechnology];
+						break;
+					default:
+						$linktransmission = '';
+				}
+				$linkfrequency = $netlink['frequency'];
+				if (empty($linkfrequency))
+					$linkfrequency = 5.5;
+				else
+					$linkfrequency = str_replace(',', '.', (float) $linkfrequency);
 				$data = array(
 					'rl_id' => $netlineid,
 					'rl_anodeid' => $netnodes[$netlink['src']]['id'],
 					'rl_bnodeid' => $netnodes[$netlink['dst']]['id'],
-					'rl_mediumtype' => 'radiowe na częstotliwości ogólnodostępnej',
-					'rl_licencenr' => '',
-					'rl_bandwidth' => $linktypes[$netlink['type']]['pasmo'],
-					'rl_transmission' => $linktypes[$netlink['type']]['typ'],
-					'rl_throughput' => $linktypes[$netlink['type']]['szybkosc_radia'],
+					'rl_mediumtype' => empty($netlink['license'])
+						? 'radiowe na częstotliwości ogólnodostępnej'
+						: 'radiowe na częstotliwości wymagającej uzyskanie pozwolenia radiowego',
+					'rl_licencenr' => empty($netlink['license']) ? '' : $netlink['license'],
+					'rl_bandwidth' => $linkfrequency,
+					'rl_transmission' => $linktransmission,
+					'rl_throughput' => $netlink['speed'],
 					'rl_leaseavail' => 'Nie',
 					'rl_invproject' => $netlink['invproject'],
 					'rl_invstatus' => strlen($netlink['invproject']) ? $NETELEMENTSTATUSES[$netlink['status']] : '',
