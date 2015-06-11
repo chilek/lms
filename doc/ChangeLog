@@ -18,6 +18,8 @@ version ?.??.?? (????-??-??):
   - added in debt above 100% and 200% filters in add message form [chilan]
   - adjustements to smarty versions above or equal 3.1.22 [chilan]
   - uke siis generator adjusted to earlier added radio sector feature [chilan]
+  - daemon: ewx-pt module: fixed inproper mac content copying which caused segfaults
+    on systems with newer system libraries [chilan]
 
 version 1.11.16 (2015-03-31):
 
