@@ -116,5 +116,17 @@ class ConfigHelper
 
         trigger_error('Incorrect option value: '.$value);
     }
-    
+
+	/**
+	 * Determines if user has got access privilege
+	 * 
+	 * @param string $privilege privilege to check
+	 * @param boolean $checkIfSuperUser check if full access privilege should be taken into account
+	 * @return boolean
+	*/
+	public static function checkPrivilege($privilege, $checkIfSuperUser = true) {
+		if ($checkIfSuperUser && self::checkConfig('privileges.superuser'))
+			return preg_match('/^hide_/', $privilege) ? false : true;
+		return self::checkConfig("privileges.$privilege");
+	}
 }

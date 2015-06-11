@@ -1,4 +1,4 @@
-{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_sysinfo')}
+{if !ConfigHelper::checkPrivilege('hide_sysinfo')}
 <table class="lmsbox">
     <colgroup>
         <col style="width: 50%;"/>
