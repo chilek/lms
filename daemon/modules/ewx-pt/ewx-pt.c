@@ -635,7 +635,7 @@ int update_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, stru
     }
 	if (strcmp(h.mac, o.mac) != 0) {
 		snmp_add_var(pdu, UserAllowedMacAddr, PT_OID_LEN, 's', h.mac);
-		memcpy((*old).mac, h.mac, 6);
+		memcpy((*old).mac, h.mac, strlen(h.mac));
     }
 	snmp_add_var(pdu, UserStatus, PT_OID_LEN, 'i', ACTIVE);
 
