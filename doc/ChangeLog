@@ -23,6 +23,7 @@ version ?.??.?? (????-??-??):
   - daemon: ewx-pt module: don't remove hosts from ewx_pt_config sql table
     when host doesn't belong to any network defined by networks setting
     - in other words more sane multi ewx-pt instance support [chilan]
+  - helpdesk notifications: attach all phone contacts [chilan]
 
 version 1.11.16 (2015-03-31):
 
