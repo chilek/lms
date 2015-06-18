@@ -1,0 +1,69 @@
+{include file="header.html"}
+<H1>{$layout.pagetitle}</H1>
+<TABLE WIDTH="100%" CELLPADDING="3">
+    <TR CLASS="DARK">
+        <TD COLSPAN=9 WIDTH="100%" NOWRAP class="frightu" align="right"><B>
+ 
+            </B></TD>
+    </TR>
+    {if $listdata.total != 0}
+    <TR CLASS="DARK">
+        <TD CLASS="FALL" COLSPAN=9>
+            {include file="scroller.html" loop=$pppoelist}
+        </TD>
+    </TR>
+    {/if}
+    <TR CLASS="DARK">
+        <TD CLASS="FALL">Rozpoczecie sesji: </TD>
+        <TD CLASS="FALL">Zakonczenie sesji: </TD>
+        <TD CLASS="FALL">Czas trwania sesji: </TD>
+        <TD CLASS="FALL">IP klienta: </TD>
+        <TD CLASS="FALL">Upload w sesji: </TD>
+        <TD CLASS="FALL">Download w sesji: </TD>
+        <TD CLASS="FALL">Powod zakonczenia: </TD>
+        <TD CLASS="FALL">IP koncentratora dla sesji: </TD>
+    </TR>
+    {php}
+    $lastdate=date("Y-m-d");
+    {/php}
+ 
+    {cycle values="light,lucid" print=false}
+    {section loop=$pppoelist name=pppoelist start=$start max=$pagelimit}
+    {assign var=pppoe value=$pppoelist[pppoelist]}
+    {php}
+    //            $zmienna=$this->get_template_vars('pppoe');
+    $currentdate=explode(" ",$zmienna['acctstarttime']);
+    if ($currentdate[0]!=$lastdate) {
+    $lastdate=$currentdate[0];
+    echo "<TR><TD COLSPAN=9 style=\"font-size: 1px;\">&nbsp;</TD></TR>";
+    }
+    {/php}
+    <TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+        <TD WIDTH="12%">{$pppoe.acctstarttime}</TD>
+        <TD WIDTH="12%">{$pppoe.acctstoptime}</TD>
+        <TD WIDTH="10%">{$pppoe.acctsessiontimeconv}</TD>
+        <TD WIDTH="13%">{$pppoe.framedipaddress}</TD>
+ 
+        <TD WIDTH="11%">{$pppoe.upload|number_format:2} {$pppoe.uploadunit}</TD>
+        <TD WIDTH="11%">{$pppoe.download|number_format:2} {$pppoe.downloadunit}</TD>
+        <TD WIDTH="11%">{$pppoe.acctterminatecause}</TD>
+        <TD WIDTH="13%">{$pppoe.nasipaddress}</TD>
+    </TR>
+    {sectionelse}
+    <TR>
+        <TD align="center" WIDTH="100%" class="fall" COLSPAN=9>
+            <p>&nbsp;</p>
+            <p><B>{t}No sessions for this node.{/t}</B></p>
+            <p>&nbsp;</p>
+        </TD>
+    </TR>
+    {/section}
+    {if $listdata.total != 0}
+    <TR CLASS="DARK">
+        <TD CLASS="FALL" COLSPAN="9">
+            {include file="scroller.html" loop=$documentlist}
+        </TD>
+    </TR>
+    {/if}
+</TABLE>
+{include file="footer.html"}
