@@ -170,6 +170,12 @@ $menu = array(
 					'tip' => trans('Lists and reports printing'),
 					'prio' => 70,
 				),
+                                array(
+                                        'name' => trans('IP change logs'),
+                                        'link' => '?m=alfa_ipchangelogs',
+                                        'tip' => trans('IP change logs'),
+                                        'prio' => 90,
+                                ),
 			),
 		),
 
@@ -257,8 +263,8 @@ $menu = array(
 					'tip' => trans('Lists and reports printing'),
 					'prio' => 80,
 				),
-				),
 			),
+		),
 
 		'networks' => array(
 			'name' => trans('IP Networks'),
