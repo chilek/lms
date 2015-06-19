@@ -381,6 +381,12 @@ $menu = array(
 					'tip' => trans('Lists and reports printing'),
 					'prio' => 130,
 				),
+                                array(
+                                        'name' => trans('Import OKBANK'),
+                                        'link' => '?m=alfa_cashimportokbank',
+                                        'tip' => trans('Import OKBANK'),
+                                        'prio' => 150,
+                                ),
 			),
 		),
 
