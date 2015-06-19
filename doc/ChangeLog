@@ -24,6 +24,8 @@ version ?.??.?? (????-??-??):
     when host doesn't belong to any network defined by networks setting
     - in other words more sane multi ewx-pt instance support [chilan]
   - helpdesk notifications: attach all phone contacts [chilan]
+  - nodes list can be filtered by nodes without TERYT [kyob]
+
 
 version 1.11.16 (2015-03-31):
 

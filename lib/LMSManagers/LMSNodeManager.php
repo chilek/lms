@@ -361,6 +361,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 . ($status == 1 ? ' AND n.access = 1' : '') //connected
                 . ($status == 2 ? ' AND n.access = 0' : '') //disconnected
                 . ($status == 3 ? ' AND n.lastonline > ?NOW? - ' . intval(ConfigHelper::getConfig('phpui.lastonline_limit')) : '') //online
+                . ($status == 4 ? ' AND length(n.location) < 1 AND n.ownerid > 0 ' : '') //without TERYT
                 . ($customergroup ? ' AND customergroupid = ' . intval($customergroup) : '')
                 . ($nodegroup ? ' AND nodegroupid = ' . intval($nodegroup) : '')
                 . (isset($searchargs) ? $searchargs : '')
