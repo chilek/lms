@@ -1,0 +1,34 @@
+{include file="header.html"}
+<table width="100%">
+    <tr>
+        <td>
+            <form enctype="multipart/form-data" action="?m=alfa_cashimportokbank&act=parsexml" method="POST">
+                <input type="hidden" name="MAX_FILE_SIZE" value="5000000" />
+                <input name="plik" type="file" />
+                <input name="submit" type="submit" value="Wyslij" />
+            </form>
+        </td>
+    </tr>
+    <tr>
+    <td>
+        <p>Dodano {$rows_affected} rekordów. Na kwotę {$suma_wplat} zł.</p>
+ 
+        <h1>Dane prawidłowe:</h1>
+        <table border cellpadding=5 cellspacing=5>
+            <tr style="background:black;color:white;font-weight:bold;"><td>L.p.</td><td>Data ksiegowania</td><td>Kwota</td><td>Zleceniodawca</td><td>Tytułem</td></tr>
+            {foreach from=$arr item=i}
+                <tr><td>{$i.id}</td><td>{$i.date}</td><td>{$i.value}</td><td>{$i.customer}</td><td>{$i.description}</td></tr>
+            {/foreach}
+        </table>
+ 
+        <h1>Duplikaty:</h1>
+        <table border cellpadding=5 cellspacing=5>
+            <tr style="background:black;color:white;font-weight:bold;"><td>L.p.</td><td>Data ksiegowania</td><td>Kwota</td><td>Zleceniodawca</td><td>Tytułem</td></tr>
+            {foreach from=$arr_dup item=j}
+                <tr><td>{$j.id}</td><td>{$j.date}</td><td>{$j.value}</td><td>{$j.customer}</td><td>{$j.description}</td></tr>
+            {/foreach}
+        </table>
+        </td>
+    </tr>
+</table>
+{include file="footer.html"}
