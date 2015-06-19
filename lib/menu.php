@@ -382,6 +382,12 @@ $menu = array(
 					'prio' => 130,
 				),
                                 array(
+                                        'name' => trans('Income'),
+                                        'link' => '?m=alfa_income',
+                                        'tip' => trans('Income count by day or month'),
+                                        'prio' => 140,
+                                ),
+                                array(
                                         'name' => trans('Import OKBANK'),
                                         'link' => '?m=alfa_cashimportokbank',
                                         'tip' => trans('Import OKBANK'),

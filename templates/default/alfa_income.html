@@ -1,0 +1,103 @@
+{include file="header.html"}
+<TABLE WIDTH="100%" CELLPADDING="3">
+    <TR CLASS="DARK">
+        <TD WIDTH="1%" CLASS="fleftu"></TD>
+        <TD WIDTH="1%" CLASS="fbt"><B></B></TD>
+        <TD WIDTH="98%" CLASS="frightu"><h1>Przychody wg. dni i miesięcy</h1></TD>
+    </TR>
+    <TR class="LIGHT">
+        <TD WIDTH="100%" COLSPAN="3" CLASS="flr">
+            <TABLE WIDTH="100%" CELLPADDING="0">
+                <TR CLASS="LIGHT">
+                    <TD WIDTH="80%" VALIGN="top">
+                        <TABLE WIDTH="100%" CELLPADDING="3" border=0>
+                            <tr CLASS="frightu">    
+                            <td align=left colspan=8>
+                                <form method="get" name="formpbx" action="?m=alfa_income&year={$year}&$month={$month}">
+                                <INPUT TYPE="HIDDEN" NAME="m" VALUE="alfa_income">
+                                <select size="1" name="year">
+                                {section name=y max=($currentYear-$firstYear+1) loop=$currentYear+1 step=-1}
+                                <option {if ($smarty.get.year eq $smarty.section.y.index)}  selected {/if} value={$smarty.section.y.index}>{$smarty.section.y.index}</option>
+                                {/section}
+                                </select>
+ 
+                                <select size="1" name="month">
+                                {section name=m start=1 loop=13 step=1}
+                                <option {if ($smarty.get.month eq $smarty.section.m.index)}  selected {/if} value={$smarty.section.m.index}>{$smarty.section.m.index}</option>
+                                {/section}
+                                </select>
+ 
+                                <INPUT type="submit" >
+                                </form>
+ 
+                                <table border cellpadding="5" cellspacing="5">
+                                <tr>
+                                    <td>miesiąc</td>
+                                    {if $user eq 3 || $user eq 9 || $user eq 6}<td>dochód netto</td>{/if}
+                                    {if $user eq 3 || $user eq 9 || $user eq 6}<td>VAT</td>{/if}
+                                    <td>wykres</td>
+                                </tr>       
+                                {foreach from=$income item=i}                        
+                                <tr>
+                                    <td>{$i.day}</td>
+                                    {if $user eq 3 || $user eq 9 || $user eq 6}<td align="center">{math equation="x / y" x=$i.suma y=1.23 format="%.2f"} zł</td>{/if}
+                                    {if $user eq 3 || $user eq 9 || $user eq 6}<td align="center">{math equation="z - (x / y)" z=$i.suma x=$i.suma y=1.23 format="%.2f"} zł</td>{/if}
+                                    <td>
+                                    <hr style="text-align:left;float:left;color:black;height:5px;background:red;width:{math equation="(x / y)/100" x=$i.suma y=1.23 format="%.0f"}px">
+                                    <hr style="text-align:left;float:left;color:black;height:5px;background:blue;width:{math equation="(z - (x / y))/100" z=$i.suma x=$i.suma y=1.23 format="%.0f"}px">
+                                    </td>
+                                </tr>
+                                {/foreach}
+                            </table>
+ 
+                            <form method="get" name="formpbx2" action="?m=alfa_income&only_year={$only_year}">
+                            <INPUT TYPE="HIDDEN" NAME="m" VALUE="alfa_income">
+                            <select size="1" name="only_year">
+                            {section name=y max=($currentYear-$firstYear+1) loop=$currentYear+1 step=-1}
+                            <option {if ($smarty.get.only_year eq $smarty.section.y.index)}  selected {/if} value={$smarty.section.y.index}>{$smarty.section.y.index}</option>
+                            {/section}
+                            </select>
+                            <INPUT type="submit" >
+ 
+                            <table border cellpadding="5" cellspacing="5">
+                                <tr>
+                                    <td>miesiąc</td>
+                                    {if $user eq 3 || $user eq 9 || $user eq 6}<td>dochód netto</td>{/if}
+                                    {if $user eq 3 || $user eq 9 || $user eq 6}<td>VAT</td>{/if}
+                                    <td>wykres</td>
+                                    </tr>       
+                                    {foreach from=$IncomePerMonth item=i}                        
+                                    <tr>
+                                    <td>{$i.month}</td>
+                                    {if $user eq 3 || $user eq 9 || $user eq 6}<td align="center">{math equation="x / y" x=$i.suma y=1.23}{*format="%.2f"*} zł</td>{/if}
+                                    {if $user eq 3 || $user eq 9 || $user eq 6}<td align="center">{math equation="z - (x / y)" z=$i.suma x=$i.suma y=1.23} {*format="%.2f"*} zł</td>{/if}
+                                    <td>
+                                    <hr style="text-align:left;float:left;color:black;height:5px;background:red;width:{math equation="(x / y)/1000" x=$i.suma y=1.23 format="%.0f"}px">
+                                    <hr style="text-align:left;float:left;color:black;height:5px;background:blue;width:{math equation="(z - (x / y))/1000" z=$i.suma x=$i.suma y=1.23 format="%.0f"}px">
+		    </td>
+                                    </tr>
+                                    {/foreach}
+                            </table>
+                            </form>
+                            </td>
+                        </tr>
+                        </table>
+ 
+                    </TD>
+                    <TD WIDTH="30%" VALIGN="top">
+                        <TABLE WIDTH="100%" CELLPADDING="3">
+ 
+                            </TABLE>
+                        </TD>
+                    </TR>
+                </TABLE>
+            </TD>
+        </TR>
+        <TR CLASS="LIGHT">
+            <TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
+ 
+            </TD>
+        </TR>
+</TABLE></FORM></P>
+ 
+{include file="footer.html"}
