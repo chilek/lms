@@ -1,6 +1,6 @@
 $Id$
 
-version ?.??.?? (????-??-??):
+version 1.11.17 (2015-06-29):
 
   - added support for radio sectors management in user interface [chilan]
   - fixed serious performance regression introduced by autoloader [chilan]
