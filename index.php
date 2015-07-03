@@ -226,7 +226,9 @@ if ($AUTH->islogged) {
 	$res = $LMS->ExecHook('access_table_init', array('accesstable' => $access['table']));
 	if (isset($res['accesstable']))
 		$access['table'] = $res['accesstable'];
-        
+
+	$access['table'] = $LMS->executeHook('access_table_init', $access['table']);
+
         LMSConfig::getConfig(array(
             'force' => true,
             'force_user_rights_only' => true,
