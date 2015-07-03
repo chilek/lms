@@ -177,64 +177,65 @@ function _smarty_function_img($params, $template)
     return $result;
 }
 
-function module_get_template($tpl_name, &$tpl_source, $template)
-{
-	global $module_dir;
+class Smarty_Resource_Userpanel_Module extends Smarty_Resource_Custom {
+	/**
+	  * Fetch a template and its modification time from database
+	  *
+	  * @param string $name template name
+	  * @param string $source template source
+	  * @param integer $mtime template modification timestamp (epoch)
+	  * @return void
+	  */
+	protected function fetch($name, &$source, &$mtime) {
+		global $module_dir;
 
-	$module = $_GET['m'];
-	$style = ConfigHelper::getConfig('userpanel.style', 'default');
-	$template_path = $module_dir . $module . '/style/' . $style . '/templates/' . $tpl_name;
-	if (file_exists($template_path))
-	{
-		$tpl_source = file_get_contents($template_path);
-		return true;
-	} else {
-		$template_path = $module_dir . $module.'/templates/'.$tpl_name;
+		$module = $_GET['m'];
+		$style = ConfigHelper::getConfig('userpanel.style', 'default');
+		$template_path = $module_dir . $module . DIRECTORY_SEPARATOR . 'style' . DIRECTORY_SEPARATOR
+			. $style . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $name;
 		if (file_exists($template_path)) {
-			$tpl_source = file_get_contents($template_path);
-			return true;
-		} else
-			return false;
+			$mtime = filectime($template_path);
+			$source = file_get_contents($template_path);
+		} else {
+			$template_path = $module_dir . $module . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $name;
+			if (file_exists($template_path)) {
+				$mtime = filectime($template_path);
+				$source = file_get_contents($template_path);
+			} else {
+				$mtime = 0;
+				$source = null;
+			}
+		}
 	}
-}
 
-function module_get_timestamp($tpl_name, &$tpl_timestamp, $template)
-{
-	global $module_dir;
+	/**
+	  * Fetch a template's modification time from database
+	  *
+	  * @note implementing this method is optional. Only implement it if modification times can be accessed faster than loading the comple template source.
+	  * @param string $name template name
+	  * @return integer timestamp (epoch) the template was modified
+	  */
+	protected function fetchTimestamp($name) {
+		global $module_dir;
 
-	$module = $_GET['m'];
-	$style = ConfigHelper::getConfig('userpanel.style', 'default');
-	$template_path = $module_dir . $module . '/style/' . $style . '/templates/' . $tpl_name;
-	if (file_exists($template_path))
-	{
-		$tpl_timestamp = filectime($template_path);
-		return true;
-	} else {
-		$template_path = $module_dir . $module.'/templates/'.$tpl_name;
-		if (file_exists($template_path)) {
-			$tpl_timestamp = filectime($template_path);
-			return true;
-		} else
-			return false;
+		$module = $_GET['m'];
+		$style = ConfigHelper::getConfig('userpanel.style', 'default');
+		$template_path = $module_dir . $module . DIRECTORY_SEPARATOR . 'style' . DIRECTORY_SEPARATOR
+			.  $style . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $name;
+		if (file_exists($template_path))
+			return filectime($template_path);
+		else {
+			$template_path = $module_dir . $module . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $name;
+			if (file_exists($template_path))
+				return filectime($template_path);
+			else
+				return 0;
+		}
 	}
-}
-
-function module_get_secure($tpl_name, $template)
-{
-	// assume all templates are secure
-	return true;
-}
-
-function module_get_trusted($tpl_name, $template)
-{
-	// not used for templates
 }
 
 // register the resource name "module"
-$SMARTY->registerResource("module", array("module_get_template",
-					"module_get_timestamp",
-					"module_get_secure",
-					"module_get_trusted"));
+$SMARTY->registerResource('module', new Smarty_Resource_Userpanel_Module());
 
 $SMARTY->registerPlugin('block', 'box', '_smarty_block_box');
 $SMARTY->registerPlugin('function', 'userpaneltip','_smarty_function_userpaneltip');

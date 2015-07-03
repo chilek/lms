@@ -28,48 +28,45 @@ define('USERPANEL_SETUPMODE', 1);
 
 // register smarty extensions
 
-function module_get_template($tpl_name, &$tpl_source, $smarty_obj)
-{
-	global $LMS, $module_dir;
-	$template = explode(':', $tpl_name);
-	$template_path = $module_dir . $template[0].'/templates/'.$template[1];
-	if (file_exists($template_path))
-	{
-		$tpl_source = file_get_contents($template_path);
-		return true;
-	} else
-		return false;
-}
+class Smarty_Resource_Userpanel_Module extends Smarty_Resource_Custom {
+	/**
+	  * Fetch a template and its modification time from database
+	  *
+	  * @param string $name template name
+	  * @param string $source template source
+	  * @param integer $mtime template modification timestamp (epoch)
+	  * @return void
+	  */
+	protected function fetch($name, &$source, &$mtime) {
+		global $module_dir;
+		$template = explode(':', $name);
+		$template_path = $module_dir . $template[0] . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template[1];
+		if (file_exists($template_path)) {
+			$mtime = filectime($template_path);
+			$source = file_get_contents($template_path);
+		}
+	}
 
-function module_get_timestamp($tpl_name, &$tpl_timestamp, $smarty_obj)
-{
-	global $LMS, $module_dir;
-	$template = explode(':', $tpl_name);
-	$template_path = $module_dir . $template[0].'/templates/'.$template[1];
-	if (file_exists($template_path))
-	{
-		$tpl_timestamp = filectime($template_path);
-		return true;
-	} else
-		return false;
-}
-
-function module_get_secure($tpl_name, &$smarty_obj)
-{
-	// assume all templates are secure
-	return true;
-}
-
-function module_get_trusted($tpl_name, &$smarty_obj)
-{
-	// not used for templates
+	/**
+	  * Fetch a template's modification time from database
+	  *
+	  * @note implementing this method is optional. Only implement it if modification times can be accessed faster than loading the comple template source.
+	  * @param string $name template name
+	  * @return integer timestamp (epoch) the template was modified
+	  */
+	protected function fetchTimestamp($name) {
+		global $module_dir;
+		$template = explode(':', $name);
+		$template_path = $module_dir . $template[0] . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template[1];
+		if (file_exists($template_path))
+			return filectime($template_path);
+		else
+			return 0;
+	}
 }
 
 // register the resource name "module"
-$SMARTY->registerResource('module', array('module_get_template',
-					'module_get_timestamp',
-					'module_get_secure',
-					'module_get_trusted'));
+$SMARTY->registerResource('module', new Smarty_Resource_Userpanel_Module());
 
 // Include locale file (main)
 @include(USERPANEL_DIR.'/lib/locale/'.$_ui_language.'/strings.php');
