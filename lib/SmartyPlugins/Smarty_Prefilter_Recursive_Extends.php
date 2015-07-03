@@ -35,7 +35,7 @@ class Smarty_Prefilter_Recursive_Extends {
 			return $tpl_source;
 		$currentPath = rtrim(dirname($template->smarty->_current_file), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 		//$currentFile = basename($template->smarty->_current_file);
-		$currentFile = $templates->resource_file;
+		$currentFile = $template->template_resource;
 		// can we find an {extend} block for the current template?
 		$res = preg_match('#(?P<before>\{extends\s*file=[\'"])' . preg_quote($currentFile) . '(?P<after>[\'"][^}]*\})#i', $tpl_source, $regexResult);
 		if (empty($res))
