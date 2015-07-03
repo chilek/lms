@@ -179,15 +179,17 @@ function _smarty_function_img($params, $template)
 
 function module_get_template($tpl_name, &$tpl_source, $template)
 {
+	global $module_dir;
+
 	$module = $_GET['m'];
 	$style = ConfigHelper::getConfig('userpanel.style', 'default');
-	$template_path = ConfigHelper::getConfig('directories.userpanel_dir') . '/modules/' . $module . '/style/' . $style . '/templates/' . $tpl_name;
+	$template_path = $module_dir . $module . '/style/' . $style . '/templates/' . $tpl_name;
 	if (file_exists($template_path))
 	{
 		$tpl_source = file_get_contents($template_path);
 		return true;
 	} else {
-		$template_path = ConfigHelper::getConfig('directories.userpanel_dir').'/modules/'.$module.'/templates/'.$tpl_name;
+		$template_path = $module_dir . $module.'/templates/'.$tpl_name;
 		if (file_exists($template_path)) {
 			$tpl_source = file_get_contents($template_path);
 			return true;
@@ -198,15 +200,17 @@ function module_get_template($tpl_name, &$tpl_source, $template)
 
 function module_get_timestamp($tpl_name, &$tpl_timestamp, $template)
 {
+	global $module_dir;
+
 	$module = $_GET['m'];
 	$style = ConfigHelper::getConfig('userpanel.style', 'default');
-	$template_path = ConfigHelper::getConfig('directories.userpanel_dir') . '/modules/' . $module . '/style/' . $style . '/templates/' . $tpl_name;
+	$template_path = $module_dir . $module . '/style/' . $style . '/templates/' . $tpl_name;
 	if (file_exists($template_path))
 	{
 		$tpl_timestamp = filectime($template_path);
 		return true;
 	} else {
-		$template_path = ConfigHelper::getConfig('directories.userpanel_dir').'/modules/'.$module.'/templates/'.$tpl_name;
+		$template_path = $module_dir . $module.'/templates/'.$tpl_name;
 		if (file_exists($template_path)) {
 			$tpl_timestamp = filectime($template_path);
 			return true;

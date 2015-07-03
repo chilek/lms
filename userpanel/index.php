@@ -160,23 +160,27 @@ $LMS->lang = $_language;
 $enabled_modules = ConfigHelper::getConfig('userpanel.enabled_modules', null, true);
 if (!is_null($enabled_modules))
 	$enabled_modules = explode(',', $enabled_modules);
-$dh  = opendir(USERPANEL_MODULES_DIR);
-while (false !== ($filename = readdir($dh))) {
-    if ((is_null($enabled_modules) || in_array($filename, $enabled_modules)) && (preg_match('/^[a-zA-Z0-9]/',$filename))
-	&& (is_dir(USERPANEL_MODULES_DIR.$filename)) && file_exists(USERPANEL_MODULES_DIR.$filename . DIRECTORY_SEPARATOR . 'configuration.php'))
-    {
-	@include(USERPANEL_MODULES_DIR.$filename . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_ui_language . DIRECTORY_SEPARATOR . 'strings.php');
-	include(USERPANEL_MODULES_DIR.$filename . DIRECTORY_SEPARATOR . 'configuration.php');
-	if (is_dir(USERPANEL_MODULES_DIR.$filename . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR))
-	{
-		$plugins = glob(USERPANEL_MODULES_DIR.$filename . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . '*.php');
-		if (!empty($plugins))
-			foreach ($plugins as $plugin_name)
-				if(is_readable($plugin_name))
-					include($plugin_name);
+
+$modules_dirs = array(USERPANEL_MODULES_DIR);
+$modules_dirs = $plugin_manager->executeHook('userpanel_modules_dir_initialized', $modules_dirs);
+
+foreach ($modules_dirs as $suspected_module_dir) {
+	$dh  = opendir($suspected_module_dir);
+	while (false !== ($filename = readdir($dh))) {
+		if ((is_null($enabled_modules) || in_array($filename, $enabled_modules)) && (preg_match('/^[a-zA-Z0-9]/',$filename))
+			&& (is_dir($suspected_module_dir . $filename)) && file_exists($suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'configuration.php')) {
+				@include($suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_ui_language . DIRECTORY_SEPARATOR . 'strings.php');
+				include($suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'configuration.php');
+				if (is_dir($suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR)) {
+					$plugins = glob($suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . '*.php');
+					if (!empty($plugins))
+						foreach ($plugins as $plugin_name)
+							if (is_readable($plugin_name))
+								include($plugin_name);
+				}
+		}
 	}
-    }
-};
+}
 
 $SMARTY->assignByRef('LANGDEFS', $LANGDEFS);
 $SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
@@ -231,10 +235,16 @@ if($SESSION->islogged)
 
 	$LMS->executeHook('userpanel_' . $module . '_on_load');
 
-	if( file_exists(USERPANEL_MODULES_DIR.$module . DIRECTORY_SEPARATOR . 'functions.php')
-	    && isset($USERPANEL->MODULES[$module]) )
-        {
-    		include(USERPANEL_MODULES_DIR.$module . DIRECTORY_SEPARATOR . 'functions.php');
+	$module_dir = null;
+	foreach ($modules_dirs as $suspected_module_dir)
+		if (file_exists($suspected_module_dir . $module . DIRECTORY_SEPARATOR . 'functions.php')
+			&& isset($USERPANEL->MODULES[$module])) {
+			$module_dir = $suspected_module_dir;
+			break;
+		}
+
+	if ($module_dir !== null) {
+    		include($module_dir . $module . DIRECTORY_SEPARATOR . 'functions.php');
 
 		$function = isset($_GET['f']) && $_GET['f']!='' ? $_GET['f'] : 'main';
 		if (function_exists('module_'.$function)) 
