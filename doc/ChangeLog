@@ -1,5 +1,10 @@
 $Id$
 
+version ?.??.?? (????-??-??):
+
+  - added support of new style plugins in userpanel - hooks executed before
+    module load have 'userpanel_*_on_load' name pattern [chilan]
+
 version 1.11.17 (2015-06-29):
 
   - added support for radio sectors management in user interface [chilan]
