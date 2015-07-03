@@ -110,6 +110,7 @@ define('SMARTY_VERSION', $ver_chunks[0]);
 
 // add LMS's custom plugins directory
 $SMARTY->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
+$SMARTY->registerFilter('pre', array('Smarty_Prefilter_Recursive_Extends', 'prefilter_recursive_extends'));
 
 // uncomment this line if you're not gonna change template files no more
 //$SMARTY->compile_check = false;
