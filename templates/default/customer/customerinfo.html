@@ -4,63 +4,39 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {include file="calendar_js.html"}
-<TABLE WIDTH="100%">
-	<TR>
-		<TD WIDTH="100%">
-			{include file="customer/customerinfobox.html"}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="customer/customernodesbox.html"}
-		</TD>
-	</TR>
+{block name="customerinfobox"}
+	{include file="customer/customerinfobox.html"}
+{/block}
+{block name="customernodesbox"}
+	{include file="customer/customernodesbox.html"}
+{/block}
+{block name="transactions"}
 	{if ConfigHelper::checkConfig('phpui.logging') && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))}
-	<TR>
-		<TD WIDTH="100%">
-			{include file="transactions.html"}
-		</TD>
-	</TR>
+		{include file="transactions.html"}
 	{/if}
-	<TR>
-		<TD WIDTH="100%">
-			{include file="customer/customervoipaccountsbox.html"}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="customer/customerdocuments.html" limit=10}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="customer/customermessages.html" limit=10}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="customer/customerevents.html" limit=10}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="customer/customergroups.html"}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="customer/customerassignments.html"}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="customer/customerbalancebox.html" limit=-10}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="customer/customeractions.html"}
-		</TD>
-	</TR>
-</TABLE>
+{/block}
+{block name="customervoipaccountsbox"}
+	{include file="customer/customervoipaccountsbox.html"}
+{/block}
+{block name="customerdocuments"}
+	{include file="customer/customerdocuments.html" limit=10}
+{/block}
+{block name="customermessages"}
+	{include file="customer/customermessages.html" limit=10}
+{/block}
+{block name="customerevents"}
+	{include file="customer/customerevents.html" limit=10}
+{/block}
+{block name="customergroups"}
+	{include file="customer/customergroups.html"}
+{/block}
+{block name="customerassignments"}
+	{include file="customer/customerassignments.html"}
+{/block}
+{block name="customerbalancebox"}
+	{include file="customer/customerbalancebox.html" limit=-10}
+{/block}
+{block name="customeractions"}
+	{include file="customer/customeractions.html"}
+{/block}
 {/block}

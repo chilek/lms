@@ -6,76 +6,46 @@
 {$xajax}
 <H1>{$layout.pagetitle}</H1>
 {include file="calendar_js.html"}
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR>
-		<TD WIDTH="100%">
-			{include file="node/nodeeditbox.html"}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="node/nodesessions.html"}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="managementurl/managementurls.html"}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="node/nodegroups.html"}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="node/nodelocks.html"}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="customer/customerinfobox.html" customerpanel=1}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="customer/customernodesbox.html"}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="customer/customervoipaccountsbox.html"}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="customer/customerdocuments.html" limit=10}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="customer/customermessages.html" limit=10}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="customer/customerevents.html" limit=10}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="customer/customergroups.html"}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="customer/customerassignments.html"}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="customer/customerbalancebox.html" limit=-10}
-		</TD>
-	</TR>
-</TABLE>
+{block name="nodeeditbox"}
+	{include file="node/nodeeditbox.html"}
+{/block}
+{block name="nodesessions"}
+	{include file="node/nodesessions.html"}
+{/block}
+{block name="managementurls"}
+	{include file="managementurl/managementurls.html"}
+{/block}
+{block name="nodegroups"}
+	{include file="node/nodegroups.html"}
+{/block}
+{block name="nodelocks"}
+	{include file="node/nodelocks.html"}
+{/block}
+{block name="customerinfobox"}
+	{include file="customer/customerinfobox.html" customerpanel=1}
+{/block}
+{block name="customernodesbox"}
+	{include file="customer/customernodesbox.html"}
+{/block}
+{block name="customervoipaccountsbox"}
+	{include file="customer/customervoipaccountsbox.html"}
+{/block}
+{block name="customerdocuments"}
+	{include file="customer/customerdocuments.html" limit=10}
+{/block}
+{block name="customermessages"}
+	{include file="customer/customermessages.html" limit=10}
+{/block}
+{block name="customerevents"}
+	{include file="customer/customerevents.html" limit=10}
+{/block}
+{block name="customergroups"}
+	{include file="customer/customergroups.html"}
+{/block}
+{block name="customerassignments"}
+	{include file="customer/customerassignments.html"}
+{/block}
+{block name="customerbalancebox"}
+	{include file="customer/customerbalancebox.html" limit=-10}
+{/block}
 {/block}
