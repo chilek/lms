@@ -203,9 +203,9 @@ $SMARTY->assignByRef('layout', $layout);
 
 header('X-Powered-By: LMS/'.$layout['lmsv']);
 
-$plugin_manager->executeHook('lms_initialized', $LMS);
+$plugin_manager->executeHook('userpanel_lms_initialized', $LMS);
 
-$plugin_manager->executeHook('smarty_initialized', $SMARTY);
+$plugin_manager->executeHook('userpanel_smarty_initialized', $SMARTY);
 
 if($SESSION->islogged)
 {
